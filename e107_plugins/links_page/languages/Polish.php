@@ -6,19 +6,14 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.13 $
-|     $Date: 2008-01-08 19:31:13 $
+|     $Revision: 1.14 $
+|     $Date: 2008-08-27 11:58:20 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/links_page/languages/English.php rev. 1.29
+|     Zgodne z: /e107_plugins/links_page/languages/English.php rev. 1.30
 +-----------------------------------------------------------------------------+
 */
- 
-// if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}  <--
-// Lisa, could you please move this out of the language file ?
-
-
 
 define("LCLAN_PLUGIN_LAN_1", "Strona linków");
 define("LCLAN_PLUGIN_LAN_2", "Plugin Strona linków służy do katalogowania i wyświetlania linków prowadzących do zewnętrznych serwisów.");
@@ -318,6 +313,8 @@ define("LAN_LINKS_47", "Linki nawigacyjne...");
 define("LAN_LINKS_48", "-- zobacz kategorie --");
 define("LAN_LINKS_49", "");
 define("LAN_LINKS_50", "Obecnie nie masz uprawnień do dodawania linków");
+
+define('LAN_LINKS_SCH_1','Opublikowany w odpowiedzi na link');
 
 define("LAN_ADMIN_HELP_0", "Strona linków");
 

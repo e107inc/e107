@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.8 $
-|     $Date: 2008-01-08 19:25:32 $
+|     $Revision: 1.9 $
+|     $Date: 2008-08-27 11:57:43 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_signup.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.29
+|     Zgodne z: /e107_languages/English/lan_signup.php rev. 1.30
 +-----------------------------------------------------------------------------+
 */
  
@@ -32,7 +32,7 @@ define("LAN_109", "Serwis ten przestrzega The Children's Online Privacy Protecti
 define("LAN_110", "Rejestracja");
 define("LAN_111", "Powtórz hasło: ");
 define("LAN_112", "Adres email: ");
-define("LAN_113", "Ukryć adres email ?: ");
+define("LAN_113", "Ukryć adres email?: ");
 define("LAN_114", "Ta opcja pozwala ukryć adresu email na wyświetlanych stronach");
 define("LAN_123", "Rejestracja");
 define("LAN_185", "Nie wypełniłeś wszystkich wymaganych pól");
@@ -84,7 +84,7 @@ define("LAN_SIGNUP_26", "Wyślij swoje zdjęcie");
 define("LAN_SIGNUP_27", "Pokaż");
 define("LAN_SIGNUP_28", "wybierz zawartość/listy mailingowe");
 define("LAN_SIGNUP_29", "Email weryfikacyjny zostanie wysłany na adres, który wpiszesz w poniższym formularzu, w związku z czym musi on być poprawny.");
-define("LAN_SIGNUP_30", "Jeśli nie chcesz, aby Twój adres email był wyświetlany dla innych użytkowników, proszę zaznaczyć pole 'ukryj adres email'.");
+define("LAN_SIGNUP_30", "Jeśli nie chcesz, aby Twój adres email był wyświetlany na tej stronie, proszę zaznaczyć 'Tak' przy opcji 'Ukryć adres email?'.");
 
 define("LAN_SIGNUP_31", "Adres URL do pliku XUP");
 define("LAN_SIGNUP_32", "Co to jest plik XUP?");

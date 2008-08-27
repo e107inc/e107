@@ -6,19 +6,19 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.15 $
-|     $Date: 2008-01-08 19:25:37 $
+|     $Revision: 1.16 $
+|     $Date: 2008-08-27 11:57:59 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_admin.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.58
+|     Zgodne z: /e107_languages/English/admin/lan_admin.php rev. 1.60
 +-----------------------------------------------------------------------------+
 */
 
 define("ADLAN_0", "Aktualności");
 define("ADLAN_1", "Dodawanie/edytowanie/usuwanie aktualności");
-define("ADLAN_2", "Kategorie aktualności");
-define("ADLAN_3", "Dodawanie/edytowanie/usuwanie kategorii aktualności");
+//define("ADLAN_2", "Kategorie aktualności");
+//define("ADLAN_3", "Dodawanie/edytowanie/usuwanie kategorii aktualności");
 define("ADLAN_4", "Preferencje");
 define("ADLAN_5", "Edytowanie ustawień strony");
 define("ADLAN_6", "Menu");
@@ -27,26 +27,26 @@ define("ADLAN_8", "Administratorzy");
 define("ADLAN_9", "Dodawanie/usuwanie administratorów strony");
 define("ADLAN_10", "Hasło administratora");
 define("ADLAN_11", "Tutaj możesz zmienić swoje hasło");
-define("ADLAN_12", "Forum");
-define("ADLAN_13", "Dodawanie/edytowanie forum");
-define("ADLAN_14", "Artykuły");
-define("ADLAN_15", "Dodawanie nowych/edytowanie/usuwanie artykułów");
-define("ADLAN_16", "Zawartość");
-define("ADLAN_17", "Dodawanie nowej/edytowanie/usuwanie zawartości stron");
-define("ADLAN_18", "Recenzje");
-define("ADLAN_19", "Dodawanie nowej/edytowanie/usuwanie recenzji");
-define("ADLAN_22", "Kategorie linków");
-define("ADLAN_23", "Dodawanie/edytowanie/usuwanie kategorii linków");
+//define("ADLAN_12", "Forum");
+//define("ADLAN_13", "Dodawanie/edytowanie forum");
+//define("ADLAN_14", "Artykuły");
+//define("ADLAN_15", "Dodawanie nowych/edytowanie/usuwanie artykułów");
+//define("ADLAN_16", "Zawartość");
+//define("ADLAN_17", "Dodawanie nowej/edytowanie/usuwanie zawartości stron");
+//define("ADLAN_18", "Recenzje");
+//define("ADLAN_19", "Dodawanie nowej/edytowanie/usuwanie recenzji");
+//define("ADLAN_22", "Kategorie linków");
+//define("ADLAN_23", "Dodawanie/edytowanie/usuwanie kategorii linków");
 define("ADLAN_24", "Download");
 define("ADLAN_25", "Zarządzanie plikami do pobrania");
-define("ADLAN_26", "Kategorie downloadu");
-define("ADLAN_27", "Dodawanie nowej/edytowanie/usuwanie kategorii plików do pobrania");
+//define("ADLAN_26", "Kategorie downloadu");
+//define("ADLAN_27", "Dodawanie nowej/edytowanie/usuwanie kategorii plików do pobrania");
 define("ADLAN_28", "Wiadomość powitalna");
 define("ADLAN_29", "Ustawienia wiadomości powitalnej");
 define("ADLAN_30", "Menedżer plików");
 define("ADLAN_31", "Zarządzanie plikami oraz ładowanie ich na serwer");
-define("ADLAN_32", "Otrzymane aktualności");
-define("ADLAN_33", "Przeglądanie nadesłanych wiadomości od użytkowników");
+//define("ADLAN_32", "Otrzymane aktualności");
+//define("ADLAN_33", "Przeglądanie nadesłanych wiadomości od użytkowników");
 define("ADLAN_34", "Lista blokowanych");
 define("ADLAN_35", "Możesz tu blokować osoby odwiedzające Twoją stronę");
 define("ADLAN_36", "Użytkownicy");
@@ -63,53 +63,53 @@ define("ADLAN_46", "Wyloguj");
 define("ADLAN_47", "Witaj");
 define("ADLAN_48", "Zalogowany");
 define("ADLAN_49", "główny administrator strony");
-define("ADLAN_50", "uprawnienia");
+//define("ADLAN_50", "uprawnienia");
 define("ADLAN_51", "Proszę się zalogować, aby uzyskać dostęp do strefy administracyjnej");
 define("ADLAN_52", "Główna strona administratora");
 define("ADLAN_53", "Wyjdź");
 define("ADLAN_54", "Reklamy");
 define("ADLAN_55", "Konfiguracja działu reklamy");
-define("ADLAN_56", "Czat");
-define("ADLAN_57", "Konfiguracja czatu");
+//define("ADLAN_56", "Czat");
+//define("ADLAN_57", "Konfiguracja czatu");
 define("ADLAN_58", "Emotikony");
 define("ADLAN_59", "Konfiguracja emotikon");
 define("ADLAN_60", "Strona główna");
 define("ADLAN_61", "Konfiguracja zawartości pierwszej strony");
-define("ADLAN_62", "Wiadomości zdalne");
-define("ADLAN_63", "Konfiguracja wiadomości zdalnych");
-define("ADLAN_64", "Statystyki logowań");
-define("ADLAN_65", "Statystyki logowań/licznik etc");
+//define("ADLAN_62", "Wiadomości zdalne");
+//define("ADLAN_63", "Konfiguracja wiadomości zdalnych");
+//define("ADLAN_64", "Statystyki logowań");
+//define("ADLAN_65", "Statystyki logowań/licznik etc");
 define("ADLAN_66", "Znaczniki meta");
 define("ADLAN_67", "Dodawanie/edytowanie znaczników meta strony");
 define("ADLAN_68", "Informacje PHP");
 define("ADLAN_69", "Zestawienie informacji o konfiguracji PHP");
-define("ADLAN_70", "Ankiety");
-define("ADLAN_71", "Dodawanie/edytowanie ankiet");
+//define("ADLAN_70", "Ankiety");
+//define("ADLAN_71", "Dodawanie/edytowanie ankiet");
 define("ADLAN_72", "Publiczny upload");
 define("ADLAN_73", "Konfiguracja ładowania plików na serwer przez użytkowników");
 define("ADLAN_74", "Pamięć podręczna");
 define("ADLAN_75", "Ustawiania statusu pamięci podręcznej");
-define("ADLAN_77", "Masz nową wiadomość - proszę tutaj kliknąć, aby ją sprawdzić.");
+//define("ADLAN_77", "Masz nową wiadomość - proszę tutaj kliknąć, aby ją sprawdzić.");
 define("ADLAN_78", "Dodatkowe pola userów");
 define("ADLAN_79", "Edycja dodatkowych pól użytkowników");
 
 
-define("ADLAN_86", "Niepoprawne hasło ");
-define("ADLAN_87", "Nazwa administratora nie została znaleziona w bazie danych ");
-define("ADLAN_88", "Logowanie niemożliwe ");
+//define("ADLAN_86", "Niepoprawne hasło ");
+//define("ADLAN_87", "Nazwa administratora nie została znaleziona w bazie danych ");
+//define("ADLAN_88", "Logowanie niemożliwe ");
 define("ADLAN_89", "Nazwa administratora ");
 define("ADLAN_90", "Hasło administratora ");
 define("ADLAN_91", "Zaloguj");
 define("ADLAN_92", "Proszę się zalogować, aby przejść do panelu administracyjnego ...");
 define("ADLAN_93", "Pokaż zadania administratora");
-define("ADLAN_94", "Pokaż zainstalowane pluginy");
+//define("ADLAN_94", "Pokaż zainstalowane pluginy");
 define("ADLAN_95", "Zarządzanie pluginami");
-define("ADLAN_96", "Brak");
-define("ADLAN_97", "Kliknij tutaj, aby przejść do FAQ");
+//define("ADLAN_96", "Brak");
+//define("ADLAN_97", "Kliknij tutaj, aby przejść do FAQ");
 define("ADLAN_98", "Menedżer pluginów");
 define("ADLAN_99", "Instalacja/aktualizacja pluginów etc");
-define("ADLAN_100", "Układ tematu");
-define("ADLAN_101", "Kreator szablonów");
+//define("ADLAN_100", "Układ tematu");
+//define("ADLAN_101", "Kreator szablonów");
 define("ADLAN_102", "Główne hasło administratora nie było zmieniane w przeciągu ostatnich 30 dni - ");
 define("ADLAN_103", "Kliknij tutaj, aby zmienić je teraz");
 define("ADLAN_104", "Ochrona");
@@ -117,9 +117,9 @@ define("ADLAN_104", "Ochrona");
 define("ADLAN_105", "Obrazy");
 define("ADLAN_106", "Ustawienia obrazów");
 
-define("ADLAN_107", "Nieskontrolowane, nadesłane newsy");
-define("ADLAN_108", "Nieskontrolowane, załadowane pliki");
-define("ADLAN_109", "Informacje");
+//define("ADLAN_107", "Nieskontrolowane, nadesłane newsy");
+//define("ADLAN_108", "Nieskontrolowane, załadowane pliki");
+//define("ADLAN_109", "Informacje");
 define("ADLAN_110", "Użytkowników");
 define("ADLAN_111", "Konta bez weryfikacji");
 define("ADLAN_112", "Zablokowane konta");

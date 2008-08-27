@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.13 $
-|     $Date: 2008-01-08 19:25:30 $
+|     $Revision: 1.14 $
+|     $Date: 2008-08-27 11:57:31 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_comment.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_comment.php rev. 1.13
+|     Zgodne z: /e107_languages/English/lan_comment.php rev. 1.14
 +-----------------------------------------------------------------------------+
 */
 
@@ -35,6 +35,7 @@ define("COMLAN_102", "Odpowiadanie na temat: ");
 define("COMLAN_103", "Artykuły");
 define("COMLAN_104", "Recenzja");
 define("COMLAN_105", "Publikacje");
+define("COMLAN_106", "Download");
 define("COMLAN_145", "Zarejestrowany: ");
 define("COMLAN_194", "Gość");
 define("COMLAN_195", "Zarejestrowany użytkownik");

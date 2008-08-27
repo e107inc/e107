@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.5 $
-|     $Date: 2008-01-08 19:35:32 $
+|     $Revision: 1.6 $
+|     $Date: 2008-08-27 11:58:24 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/admin/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/pm/languages/admin/English.php rev. 1.11
+|     Zgodne z: /e107_plugins/pm/languages/admin/English.php rev. 1.12
 +-----------------------------------------------------------------------------+
 */
  
@@ -34,8 +34,8 @@ define('ADLAN_PM_15', "Dodaj limit wiadomości prywatnych");
 define('ADLAN_PM_16', "Nazwa pluginu");
 define('ADLAN_PM_17', "Pokaż animację nowej wiadomości prywatnej");
 define('ADLAN_PM_18', "Pokaż rozwijalną listę użytkowników");
-define('ADLAN_PM_19', "Odznacz jako CZYTANĄ wiadomość po upływie:");  // READ message timeout
-define('ADLAN_PM_20', "Odznacz jako NIEPRZECZYTANĄ wiadomość po upływie:"); // UNREAD message timeout
+define('ADLAN_PM_19', "Odznacz wiadomość jako CZYTANĄ  po upływie (dni):");  // READ message timeout
+define('ADLAN_PM_20', "Odznacz wiadomość jako NIEPRZECZYTANĄ po upływie (dni):"); // UNREAD message timeout
 define('ADLAN_PM_21', "Powiadomienia w oknie popup dla nowych wiadomości");
 define('ADLAN_PM_22', "Opóźnienie wyskakującego okienka"); // Popup delay timeou
 define('ADLAN_PM_23', "Ogranicz używanie Wiadomości Prywatnych do");

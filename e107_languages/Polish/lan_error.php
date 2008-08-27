@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.7 $
-|     $Date: 2008-01-08 19:25:30 $
+|     $Revision: 1.8 $
+|     $Date: 2008-08-27 11:57:33 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_error.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_error.php rev. 1.7
+|     Zgodne z: /e107_languages/English/lan_error.php rev. 1.8
 +-----------------------------------------------------------------------------+
 */
  
@@ -45,11 +45,19 @@ define("LAN_ERROR_24", " nie powiodła się.");
 define("LAN_ERROR_25", "[1]: Nie mogę odczytać ustawień jądra z bazy danych - Ustawienia jądra istnieją, lecz nie mogą być odzyskane. Usiłuję przywrócić kopię bezpieczeństwa rdzenia...");
 define("LAN_ERROR_26", "[2]: Nie mogę odczytać ustawień jądra z bazy danych - ustawienia jądra nie istnieją.");
 define("LAN_ERROR_27", "[3]: Ustawienia jądra zostały zapisane - kopia bezpieczeństwa aktywowana.");
-define("LAN_ERROR_28", "[4]: Kopia bezpieczeństwa jądra nie została odnaleziona. Proszę uruchomić narzędzie <a href='".e_FILE."resetcore/resetcore.php'>Reset Core</a> do odnowienia ustawień jądra. <br />Po odnowieniu swoich ustawień, proszę zapisać kopię bezpieczeństwa jądra z poziomu strony: Panel administratora -> Baza danych.");
+define("LAN_ERROR_28", "[4]: Kopia bezpieczeństwa jądra nie została odnaleziona. Sprawdź czy Twoja baza danych zawiera poprawne dane. Jeli nie, proszę uruchomić narzędzie <a href='".e_FILE."resetcore/resetcore.php'>Reset Core</a> do odnowienia ustawień jądra. <br />Po odnowieniu swoich ustawień, proszę zapisać kopię bezpieczeństwa jądra z poziomu strony: Panel administratora -> Baza danych.");
 define("LAN_ERROR_29", "[5]: Wymagane pola pozostały puste. Proszę wypełnić wymagane pola i ponownie przesłać formularz.");
 define("LAN_ERROR_30", "[6]: Nie mogę nawiązać poprawnego połączenia z serwerem MySQL. Proszę sprawdzić, czy plik e107_config.php zawiera prawidłowe informacje.");
 define("LAN_ERROR_31", "[7]: Proces MySQL jest uruchomiony, lecz baza danych ({$mySQLdefaultdb}) nie może być podłączona.<br />Proszę sprawdzić, czy baza istnieje oraz czy plik e107_config.php zawiera prawidłowe informacje.");
 define("LAN_ERROR_32", "Aby zakończyć aktualizację, zapisz następujące informacje do pliku e107_config.php:");
 
+define("LAN_ERROR_33", "Błąd przetwarzania! Zazwyczaj, przeadresowuje do strony głównej.");
+define("LAN_ERROR_34", "Nieznany błąd! Proszę poinformować administratora strony o wystąpieniu błędu:");
+
+define('LAN_ERROR_35', 'Błąd 400 - Nieudane zapytanie');
+define('LAN_ERROR_36', 'Wystąpił błąd formatowania na stronie, którą chcesz odwiedzić');  //There is a formatting error in the web page you are trying to access.
+define('LAN_ERROR_37', 'Ikona błędu');
+define('LAN_ERROR_38', '');
+define('LAN_ERROR_39', '');
 
 ?>

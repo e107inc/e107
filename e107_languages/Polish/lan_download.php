@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.13 $
-|     $Date: 2008-01-08 19:25:30 $
+|     $Revision: 1.14 $
+|     $Date: 2008-08-27 11:57:32 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_download.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_download.php rev. 1.16
+|     Zgodne z: /e107_languages/English/lan_download.php rev. 1.17
 +-----------------------------------------------------------------------------+
 */
  
@@ -102,6 +102,8 @@ define("LAN_dl_74", "Wszystkich pobrań z tego mirrora: ");
 
 define("LAN_dl_75", "brak");
 define("LAN_dl_76", "Przejdź do strony");
-define("LAN_dl_77", "Pobrań");		// Intentional duplicate - some languages need it to be different. This is for number of townloads
+define("LAN_dl_77", "Pobrań");		// Intentional duplicate - some languages need it to be different. This is for number of downloads
+
+define('LAN_dl_78', 'Pobieranie zostało wyłączone lub przerwane. Proszę sprawdzić na stronie --LINK--</a>, czy jest dostępna nowsza wersja żądanego pliku.'); 
 
 ?>

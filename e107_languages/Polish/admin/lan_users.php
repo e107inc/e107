@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-01-08 19:25:41 $
+|     $Revision: 1.15 $
+|     $Date: 2008-08-27 11:58:08 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_users.php rev. 1.32
+|     Zgodne z: /e107_languages/English/admin/lan_users.php rev. 1.33
 +-----------------------------------------------------------------------------+
 */
  
@@ -174,7 +174,7 @@ define("DUSRLAN_2", "Wyświetlana nazwa");
 define("DUSRLAN_3", "Login");
 define("DUSRLAN_4", "Dodatkowy opis");
 define("DUSRLAN_5", "Hasło");
-define("DUSRLAN_6", "Sesja");
+define("DUSRLAN_6", "Zdjęcie");
 define("DUSRLAN_7", "Email");
 define("DUSRLAN_8", "Strona domowa");
 define("DUSRLAN_9", "ICQ");
@@ -183,7 +183,7 @@ define("DUSRLAN_11", "MSN");
 define("DUSRLAN_12", "Miejscowość");
 define("DUSRLAN_13", "Urodziny");
 define("DUSRLAN_14", "Sygnatura");
-define("DUSRLAN_15", "Obraz");
+define("DUSRLAN_15", "Awatar");
 define("DUSRLAN_16", "Strefa czasowa");
 define("DUSRLAN_17", "Ukryj email");
 define("DUSRLAN_18", "Data dołączenia");
@@ -203,7 +203,7 @@ define("DUSRLAN_31", "Administrator");
 define("DUSRLAN_32", "Prawdziwe imię");
 define("DUSRLAN_33", "Grupa użytkownika");
 define("DUSRLAN_34", "Uprawnienia");
-define("DUSRLAN_35", "Obraz");
+define("DUSRLAN_35", "Śledzone wątki");
 define("DUSRLAN_36", "Zmień hasło");
 define("DUSRLAN_37", "XUP");
 

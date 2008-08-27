@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.12 $
-|     $Date: 2008-01-08 19:25:38 $
+|     $Revision: 1.13 $
+|     $Date: 2008-08-27 11:58:00 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_cpage.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_cpage.php rev. 1.4
+|     Zgodne z: /e107_languages/English/admin/lan_cpage.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -57,5 +57,7 @@ define("CUSLAN_40", "Zapisz opcje");
 
 define("CUSLAN_41", "Wyświetl informacje o autorze oraz datę");
 define("CUSLAN_42", "Nie ma jeszcze zdefiniowanych stron");
+define('CUSLAN_43', 'Niezatytułowane menu: ');
+define('CUSLAN_44', 'Niezatytułowana strona');
 
 ?>

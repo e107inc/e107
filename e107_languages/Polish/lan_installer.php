@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.6 $
-|     $Date: 2008-01-08 19:25:30 $
+|     $Revision: 1.7 $
+|     $Date: 2008-08-27 11:57:33 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_installer.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.19
+|     Zgodne z: /e107_languages/English/lan_installer.php rev. 1.23
 +-----------------------------------------------------------------------------+
 */
  
@@ -96,14 +96,15 @@ System e107 został pomyślnie zainstalowany i jest gotowy do aktualizacji zawar
 [b]Wsparcie[/b]
 Oficjalna strona e107: [link=http://e107.org]http://e107.org[/link], znajdziesz tutaj FAQ najczęściej zadawane pytania) oraz dokumentację.
 Forum: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
+Społecznoć dewelepoerów wtyczek: [link=http://www.e107coders.org]http://e107coders.org[/link]
 
 [b]Strony polskiego wsparcia[/b]
-Serwis e107poland.org: [link=http://e107poland.org]http://e107poland.org[/link] - download, newsy, FAQ, forum i inne.
-Serwis e107.org.pl: [link=http://e107.org.pl]http://e107.org.pl[/link] - strona zespołu [i]e107pl Dev Team[/i] - newsy, download, forum, bugtracker, dokumentacja e107 itp.
+Serwis e107.org.pl: [link=http://e107.org.pl]http://e107.org.pl[/link] - strona grupy [i]e107pl Dev Team[/i] - newsy, download, forum, dokumentacja e107 itp.
+Serwis e107poland.org: [link=http://e107poland.org]http://e107poland.org[/link] - motywy, download, forum i inne.
 
 [b]Download[/b]
-Pluginy: [link=http://e107coders.org]http://e107coders.org[/link]
-Tematy: [link=http://e107themes.org]http://e107themes.org[/link]
+Wtyczki: [link=http://plugins.e107.org]http://plugins.e107.org[/link]
+Motywy: [link=http://themes.e107.org]http://themes.e107.org[/link]
 
 Dziękujemy za korzystanie z e107, mamy nadzieję, że spełni on Twoje potrzeby i będziesz zadowolony z jego użytkowania.
 (Możesz usunąć tego newsa za pomocą panelu administracyjnego.)");
@@ -160,7 +161,10 @@ define("LANINS_102", 'Data / Czas');
 define("LANINS_103", 'Odwiedzin');
 define("LANINS_104", 'Odwiedź stronę startową ...');
 
-define("LANINS_105", '');
-define("LANINS_106", '');
-?>
+define("LANINS_105", 'Rozpoczynanie nazwy bazy danych lub prefiksu cyfrą, a następnie literą \'e\' lub \'E\' jest zabronione');
+define("LANINS_106", 'OSTRZEŻENIE - E107 nie może zapisywać do katalogów i/lub wylistować plików. Jeli to nie zatrzyma instalacji e107, będzie to oznaczało, że niektóre funkcjonalnoci są niedostępne. 
+				Musisz zmienić uprawnienia plików w celu użycia tej funkcjonalnoci');
+define("LANINS_107", '');
+define("LANINS_108", '');
 
+?>

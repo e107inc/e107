@@ -6,18 +6,18 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-01-08 19:25:40 $
+|     $Revision: 1.15 $
+|     $Date: 2008-08-27 11:58:03 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_mailout.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_mailout.php rev. 1.14
+|     Zgodne z: /e107_languages/English/admin/lan_mailout.php rev. 1.16
 +-----------------------------------------------------------------------------+
 */
  
 define("PRFLAN_52", "Zapisz zmiany");
 define("PRFLAN_63", "Wyślij testowego emaila");
-define("PRFLAN_64", "Kliknięcie na przycisk spowoduje wysłanie emaila na adres głównego administratora strony."); // Clicking button will send test email to main admin email address
+//define("PRFLAN_64", "Kliknięcie na przycisk spowoduje wysłanie emaila na adres głównego administratora strony."); // Clicking button will send test email to main admin email address
 define("PRFLAN_65", "Kliknij, aby wysłać email do");
 define("PRFLAN_66", "Testowa wiadomość email ze strony");
 define("PRFLAN_67", "To jest testowa wiadomość email. Otrzymanie jej świadczy o tym, że ustawienia email są poprawnie skonfigurowane!\n\nPozdrowienia\ne107 website system.");
@@ -100,5 +100,6 @@ define("MAILAN_64", "Całkowity czas wysyłania:"); // Total time elapsed
 define("MAILAN_65", "sekundy");
 define("MAILAN_66", "Anulowanie zostało zakończone pomyślnie");
 define("MAILAN_67", "Używaj 'POP przed uwierzytelnianiem SMTP'");
+define('MAILAN_68', 'Adres testowy');
 
 ?>

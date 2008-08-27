@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.13 $
-|     $Date: 2008-01-08 19:25:41 $
+|     $Revision: 1.14 $
+|     $Date: 2008-08-27 11:58:08 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users_extended.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_users_extended.php rev. 1.20
+|     Zgodne z: /e107_languages/English/admin/lan_users_extended.php rev. 1.21
 +-----------------------------------------------------------------------------+
 */
  
@@ -66,7 +66,7 @@ define("EXTLAN_47", "Dodaj nowy parametr");
 define("EXTLAN_48", "Dodaj nową wartość");
 define("EXTLAN_49", "Zezwól użytkownikowi na ukrycie");
 define("EXTLAN_50", "Ustawienie na tak, pozwoli użytkownikowi ukryć tą wartość przed innymi użytkownikami (nie dotyczy administracji)");
-define("EXTLAN_51", "Tu możesz wpisywać ważne parametry zgodne ze standardem w3c<br />ie <i><b>class='tbox' size='40' maxlength='80'</i></b>");
+define("EXTLAN_51", "Tu możesz wpisywać ważne parametry zgodne ze standardem w3c<br />np. <b><i>class='tbox' size='40' maxlength='80'</i></b>");
 define("EXTLAN_52", "Walidacja kodu wyrażeń regularnych");
 define("EXTLAN_53", "Wprowadź kod wyrażeń regularnych, który będzie potrzebny do wykonania porównania poprawności zapisu <br />**ograniczniki wyrażeń regularnych są wymagane**");  // Enter the regex code that will need to be matched to make it a valid entry <br />**regex delimiters are required**");
 define("EXTLAN_54", "Komunikat niepowodzenia wyrażeń regularnych");

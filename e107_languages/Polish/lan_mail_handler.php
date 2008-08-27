@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.13 $
-|     $Date: 2008-01-08 19:25:30 $
+|     $Revision: 1.14 $
+|     $Date: 2008-08-27 11:57:34 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_mail_handler.php,v $
 +-----------------------------------------------------------------------------+

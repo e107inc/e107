@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.13 $
-|     $Date: 2008-01-08 19:25:41 $
+|     $Revision: 1.14 $
+|     $Date: 2008-08-27 11:58:07 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_userclass.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/lan_userclass.php rev. 1.2
+|     Zgodne z: /e107_languages/English/admin/lan_userclass.php rev. 1.3
 +-----------------------------------------------------------------------------+
 */
  
@@ -25,5 +25,6 @@ define("UCSLAN_7", "Ustaw grupę");
 define("UCSLAN_8", "Powiadom użytkownika");
 define("UCSLAN_9", "Grupy zostały zaktualizowane.");
 define("UCSLAN_10", "Pozdrawiam,");
+define('UCSLAN_12', 'Tylko uprzywilejowani użytkownicy');
 
 ?>
