@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-10-30 03:58:29 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2008-08-28 19:22:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("4")) {
+if (!getperms("4")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -26,8 +27,37 @@ $e_sub_cat = 'failed_login';
 require_once("auth.php");
 
 $tmp = (e_QUERY) ? explode(".", e_QUERY) : "";
-$from = (!$tmp[0]) ? 0 : intval($tmp[0]);
-$amount = (!$tmp[1]) ? 50 : intval($tmp[1]);
+$from = intval(varset($tmp[0], 0));
+$amount = intval(varset($tmp[1], 50));
+
+/*
+'generic' table:
+  gen_id 		- unique identifier
+  gen_type 		- 'auto_banned' is of interest here
+  gen_datestamp	- date/time of ban
+  gen_user_id 	- set to zero
+  gen_ip 		- IP address of ban
+  gen_intdata 	- user ID (where known)
+  gen_chardata 	- ban detail as known
+
+*/
+
+function deleteBan($banID, $banIP = '')
+{
+	global $sql2;
+	if ($banIP == '')
+	{
+		if($sql2->db_Select("generic", "gen_ip", "gen_id={$banID}"))
+		{
+			$at = $sql2->db_Fetch();
+			$banIP = $at['gen_ip'];
+		}
+	}
+	if ($banIP == '') return FALSE;
+	$sql2->db_Delete("banlist", "banlist_ip='{$banIP}'");		// Delete from main banlist
+	$sql2->db_Delete("generic", "gen_id='{$banID}' ");			// Delete from generic table
+	return TRUE;
+}
 
 
 if(isset($_POST['delbanSubmit']))
@@ -36,20 +66,22 @@ if(isset($_POST['delbanSubmit']))
 	$delcount = 0;
 	foreach($_POST['fladelete'] as $delete)
 	{
-		$delcount ++;
-		$sql -> db_Delete("generic", "gen_id='$delete' ");
+		if (deleteBan($delete))
+		{
+			$delcount ++;
+		}
 	}
 	$message = FLALAN_3.": ".$delcount;
 
 	$bancount = 0;
 	foreach($_POST['flaban'] as $ban)
 	{
-		if($sql -> db_Select("generic", "*", "gen_id=$ban"))
+		if($sql -> db_Select("generic", "*", "gen_id={$ban}"))
 		{
 			$at = $sql -> db_Fetch();
 			$banlist_ip = $at['gen_ip'];
-			$sql->db_Insert("banlist", "'$banlist_ip', '".ADMINID."', '".FLALAN_4."' ");
-			$sql -> db_Delete("generic", "gen_id='$ban' ");
+			$sql->db_Insert("banlist", "'{$banlist_ip}', '".ADMINID."', '".FLALAN_4."' ");
+			$sql -> db_Delete("generic", "gen_id='{$ban}' ");
 			$bancount ++;
 		}
 	}
@@ -59,11 +91,19 @@ if(isset($_POST['delbanSubmit']))
 
 if(e_QUERY == "dabl")
 {
-	$sql -> db_Delete("generic", "gen_type='auto_banned' ");
+	$sql -> db_Select("generic", 'gen_ip,gen_id',"gen_type='auto_banned' ");
+	while ($row = $sql->db_Fetch())
+	{
+		if (deleteBan($row['gen_id'],$row['gen_ip']))
+		{
+			$delcount ++;
+		}
+	}
 	$message = FLALAN_17;
 }
 
 
+// Now display any outstanding auto-banned IP addresses
 if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC "))
 {
 	$abArray = $sql -> db_getList();
@@ -77,13 +117,14 @@ if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datest
 
 }
 
-if (isset($message)) {
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $gen = new convert;
 $fla_total = $sql->db_Count("generic", "(*)", "WHERE gen_type='failed_login'");
-if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT $from,$amount"))
+if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT {$from},{$amount}"))
 {
 	$text = "<div style='text-align: center;'>".FLALAN_2."</div>";
 }
@@ -113,8 +154,8 @@ else
 		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", htmlentities($gen_chardata, ENT_QUOTES, CHARSET))."</td>
 		<td style='width: 20%;' class='forumheader'>".$fa['gen_ip']."<br />{$host}</td>
 		<td style='width: 10%; text-align: left;' class='forumheader3'>
-		<input type='checkbox' name='fladelete[]' value='$gen_id' /> ".LAN_DELETE."<br />
-		<input type='checkbox' name='flaban[]' value='$gen_id' /> ".LAN_BAN."
+		<input type='checkbox' name='fladelete[]' value='{$gen_id}' /> ".LAN_DELETE."<br />
+		<input type='checkbox' name='flaban[]' value='{$gen_id}' /> ".LAN_BAN."
 		</td>
 		</tr>
 		";
