@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-12-26 13:21:34 $
+|     $Revision: 1.4 $
+|     $Date: 2008-08-28 19:22:56 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,35 @@ require_once("auth.php");
 $tmp = (e_QUERY) ? explode(".", e_QUERY) : "";
 $from = intval(varset($tmp[0], 0));
 $amount = intval(varset($tmp[1], 50));
+
+/*
+'generic' table:
+  gen_id 		- unique identifier
+  gen_type 		- 'auto_banned' is of interest here
+  gen_datestamp	- date/time of ban
+  gen_user_id 	- set to zero
+  gen_ip 		- IP address of ban
+  gen_intdata 	- user ID (where known)
+  gen_chardata 	- ban detail as known
+
+*/
+
+function deleteBan($banID, $banIP = '')
+{
+	global $sql2;
+	if ($banIP == '')
+	{
+		if($sql2->db_Select("generic", "gen_ip", "gen_id={$banID}"))
+		{
+			$at = $sql2->db_Fetch();
+			$banIP = $at['gen_ip'];
+		}
+	}
+	if ($banIP == '') return FALSE;
+	$sql2->db_Delete("banlist", "banlist_ip='{$banIP}'");		// Delete from main banlist
+	$sql2->db_Delete("generic", "gen_id='{$banID}' ");			// Delete from generic table
+	return TRUE;
+}
 
 
 if(isset($_POST['delbanSubmit']))
@@ -70,11 +99,19 @@ if(isset($_POST['delbanSubmit']))
 
 if(e_QUERY == "dabl")
 {
-	$sql -> db_Delete("generic", "gen_type='auto_banned' ");
+	$sql -> db_Select("generic", 'gen_ip,gen_id',"gen_type='auto_banned' ");
+	while ($row = $sql->db_Fetch())
+	{
+		if (deleteBan($row['gen_id'],$row['gen_ip']))
+		{
+			$delcount ++;
+		}
+	}
 	$message = FLALAN_17;
 }
 
 
+// Now display any outstanding auto-banned IP addresses
 if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC "))
 {
 	$abArray = $sql -> db_getList();
@@ -88,7 +125,8 @@ if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datest
 
 }
 
-if (isset($message)) {
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
