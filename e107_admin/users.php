@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2008-06-06 19:14:14 $
+|     $Revision: 1.95 $
+|     $Date: 2008-08-28 19:57:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -175,47 +175,70 @@ if (isset($_POST['prune']))
 
 
 // ------- Quick Add User --------------
-if (isset($_POST['adduser'])) {
+if (isset($_POST['adduser'])) 
+{
 	$e107cache->clear("online_menu_totals");
-	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
+	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) 
+	{
 		exit;
 	}
 
 	require_once(e_HANDLER."message_handler.php");
-	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=")) {
+	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=")) 
+	{
 		message_handler("P_ALERT", USRLAN_92);
 		$error = TRUE;
 	}
 	$_POST['name'] = trim(str_replace("&nbsp;", "", $_POST['name']));
-	if ($_POST['name'] == "Anonymous") {
+	if ($_POST['name'] == "Anonymous") 
+	{
 		message_handler("P_ALERT", USRLAN_65);
 		$error = TRUE;
 	}
-	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' ")) {
+	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' ")) 
+	{
 		message_handler("P_ALERT", USRLAN_66);
 		$error = TRUE;
 	}
-	if ($_POST['password1'] != $_POST['password2']) {
+	if ($_POST['password1'] != $_POST['password2']) 
+	{
 		message_handler("P_ALERT", USRLAN_67);
 		$error = TRUE;
 	}
 
-	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "") {
+	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "") 
+	{
 		message_handler("P_ALERT", USRLAN_68);
 		$error = TRUE;
 	}
-	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])) {
-		message_handler("P_ALERT", USRLAN_69);
-		$error = TRUE;
-	}
-	if (!$error) {
-		if ($sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1' ")) {
-			exit;
-		}
-		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'")) {
-			exit;
-		}
 
+	if (!varset($pref['disable_emailcheck'],FALSE))
+	{
+		// Email address checks
+		if (!check_email($_POST['email'])) 
+		{
+			message_handler("P_ALERT", USRLAN_69);
+			$error = TRUE;
+		}
+		elseif ($sql->db_Count("user", "(*)", "WHERE user_email='".$_POST['email']."' AND user_ban='1' ")) 
+		{	// Specifically identify banned users
+			message_handler("P_ALERT", USRLAN_147);
+			$error = TRUE;
+		}
+		elseif ($sql->db_Count("banlist", "(*)", "WHERE banlist_ip='".$_POST['email']."'")) 
+		{	// ... and filter against the ban list
+			message_handler("P_ALERT", USRLAN_148);
+			$error = TRUE;
+		}
+		elseif ($sql->db_Count("user", "(*)", "WHERE user_email='".$_POST['email']."' ")) 
+		{	// Finally, email addresses are required to be unique anyway
+			message_handler("P_ALERT", USRLAN_156);
+			$error = TRUE;
+		}
+	}
+
+	if (!$error) 
+	{
 		$username = strip_tags($_POST['name']);
 		$loginname = strip_tags($_POST['loginname']);
 
@@ -969,7 +992,7 @@ class users
 
 	function add_user() {
 		global $rs, $ns;
-		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF, "adduserform")."
+		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF.'?create', "adduserform")."
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_61."</td>
