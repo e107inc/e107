@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-04-06 21:38:02 $
+|     $Revision: 1.11 $
+|     $Date: 2008-08-29 19:56:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -273,6 +273,7 @@ class users_ext
 
 		if(!$current)
 		{	// Show existing fields
+		$mode = 'show';
 			$text = "<div style='text-align:center'>";
 			$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
@@ -357,6 +358,7 @@ class users_ext
 		{
 			if($current == 'new')
 			{
+			$mode = 'new';
 		  $current = array();
 		  $current_include = '';
 		  $current_regex = '';
@@ -365,8 +367,10 @@ class users_ext
 			}
 		else
 		{	// Editing existing definition
+			$mode = 'edit';
 			list($current_include, $current_regex, $current_regexfail, $current_hide) = explode("^,^",$current['user_extended_struct_parms']);
 		}
+
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			";
@@ -624,7 +628,8 @@ class users_ext
 			$text .= "<tr>
 			<td colspan='4' style='text-align:center' class='forumheader'>";
 
-			if ((!is_array($current) || $action == "continue") && $sub_action == "")
+//			if ((!is_array($current) || $action == "continue") && $sub_action == "")
+			if ((($mode == 'new') || $action == "continue") && $sub_action == "")
 			{
 				$text .= "
 				<input class='button' type='submit' name='add_field' value='".EXTLAN_23."' />
