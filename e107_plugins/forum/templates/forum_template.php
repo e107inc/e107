@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-07-16 21:57:03 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2008-08-29 19:58:42 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -60,7 +60,7 @@ if (!isset($FORUM_TRACK_START))
 		$FORUM_TRACK_MAIN = "<tr>
 			<td style='text-align:center; vertical-align:middle; width:6%'  class='forumheader3'>{NEWIMAGE}</td>
 			<td style='vertical-align:middle; text-align:left; width:70%'  class='forumheader3'><span class='mediumtext'>{TRACKPOSTNAME}</span></td>
-			<td style='vertical-align:middle; text-align:center; width:24%'  class='forumheader3'><span class='mediumtext'>{UNTRACK}</td>
+			<td style='vertical-align:middle; text-align:center; width:24%'  class='forumheader3'><span class='mediumtext'>{UNTRACK}</span></td>
 			</tr>";
 	}
 }
