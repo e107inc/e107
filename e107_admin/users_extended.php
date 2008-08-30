@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-08-29 19:56:26 $
+|     $Revision: 1.12 $
+|     $Date: 2008-08-30 20:22:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -963,8 +963,16 @@ function field_activate()
 		{
 			$ret .= EXTLAN_68." $f ".EXTLAN_69."<br />";
 
-			if($tmp[$f]['type']=="db field" && is_readable(e_ADMIN."sql/extended_".$f.".php")){
+			if ($tmp[$f]['type']=="db field")
+			{
+				if (is_readable(e_ADMIN.'sql/extended_'.$f.'.php'))
+				{
              	$ret .= (process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
+			}
+				else
+				{
+					$ret .= str_replace('--FILE--',e_ADMIN.'sql/extended_'.$f.'.php',EXTLAN_78);
+				}
 			}
 		}
 		else
