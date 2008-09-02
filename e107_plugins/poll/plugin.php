@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-11-04 18:33:58 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2008-09-02 21:12:08 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = POLL_ADLAN01;
+$eplug_name = 'POLL_ADLAN01';
 $eplug_version = "2.0";
 $eplug_author = "Steve Dunstan (jalist)";
 $eplug_url = "http://e107.org";

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-05-30 20:48:59 $
+|     $Revision: 1.7 $
+|     $Date: 2008-09-02 21:12:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ if (!defined('e107_INIT')) { exit; }
 @include_once(e_PLUGIN."log/languages/admin/English.php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = ADSTAT_L3;
+$eplug_name = 'ADSTAT_L3';
 $eplug_version = "2.0";
 $eplug_author = "jalist";
 $eplug_url = "http://e107.org";
