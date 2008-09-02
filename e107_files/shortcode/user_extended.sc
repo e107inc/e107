@@ -98,7 +98,7 @@ if ($parms[1] == 'value')
 		$sql_ue = new db;			// Use our own DB object to avoid conflicts
 		if($sql_ue->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql_ue->db_Fetch();
 			$ret_data = $row[$tmp[2]];
 		}
 		else
