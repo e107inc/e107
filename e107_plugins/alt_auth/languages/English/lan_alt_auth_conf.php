@@ -26,6 +26,8 @@ define('LAN_ALT_23', 'XUP file field');
 define('LAN_ALT_24', 'Password salt field');
 define('LAN_ALT_25', '(sometimes combined with password for added security)');
 define('LAN_ALT_26', 'Database type:');
+define('LAN_ALT_27', 'To transfer a field value into the local database, specify the field name in the corresponding box below. (Username and password are always transferred)
+		<br />Leave the field blank for it not to be transferred at all');
 
 define('LAN_ALT_29', 'Auth methods');
 define('LAN_ALT_30', 'Configure ');
@@ -37,6 +39,7 @@ define("LAN_ALT_35", "Database:");
 define("LAN_ALT_36", "Table:");
 define("LAN_ALT_37", "Username Field:");
 define("LAN_ALT_38", "Password Field:");
+define('LAN_ALT_39', 'Table Prefix:');
 
 define('LAN_ALT_40', 'Test database access');
 define('LAN_ALT_41', ' (using above credentials)');
@@ -60,9 +63,13 @@ define('LAN_ALT_58', 'Authentification successful');
 define('LAN_ALT_59', 'Retrieved parameters:');
 define('LAN_ALT_60', '');
 
-define("LAN_ALT_FALLBACK", "Use e107 user table");
-define("LAN_ALT_FAIL", "Failed login");
-define('LAN_ALT_UPDATESET', "Update settings");
+define('LAN_ALT_FALLBACK', 'Use e107 user table');
+define('LAN_ALT_FAIL', 'Failed login');
+define('LAN_ALT_UPDATESET', 'Update settings');
 define('LAN_ALT_UPDATED','Settings updated');
+
+define('LAN_ALT_AUTH_HELP', 'These are the settings common to all authentication methods, and determine the actions to be taken');
+define('LAN_ALT_VALIDATE_HELP', 'You can check the settings by using the \'Test Database Access\' section to try and validate a user - this uses exactly 
+	the same process as when a user tries to log in, and confirms whether your settings are correct');
 
 ?>

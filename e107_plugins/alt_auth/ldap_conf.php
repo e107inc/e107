@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_conf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-07-25 19:33:02 $
+|     $Revision: 1.3 $
+|     $Date: 2008-09-02 19:39:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ $eplug_admin = true;
 require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
-include_lan("languages/".e_LANGUAGE."/lan_ldap_auth.php");
+include_lan("languages/".e_LANGUAGE."/lan_ldap_conf.php");
 include_lan("languages/".e_LANGUAGE."/lan_alt_auth_conf.php");
 define("ALT_AUTH_ACTION", "ldap");
 require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
@@ -106,7 +106,7 @@ $text .= "<tr><td class='forumheader3'>".LDAPLAN_7."<br /><span class='smalltext
 $text .= $frm -> form_text("ldap_edirfilter", 35, $ldap['ldap_edirfilter'], 120);
 $text .= "<br /><span class='smalltext'>".LDAPLAN_9."<br />".htmlentities($current_filter)."</span></td></tr>";
 
-	$text .= "<tr><td class='forumheader2' colspan='2'>".LDAPLAN_14."</td></tr>";
+	$text .= "<tr><td class='forumheader2' colspan='2'>".LAN_ALT_27."</td></tr>";
 
 	$text .= alt_auth_get_field_list('ldap',$frm, $ldap, FALSE);
 

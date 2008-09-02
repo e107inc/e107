@@ -107,6 +107,7 @@ $common_fields = array(
   'pwd'    => array('fieldname' => 'password',	'size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_34, 'help' => ''),
   'db'     => array('fieldname' => 'database',	'size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_35, 'help' => ''),
   'table'  => array('fieldname' => 'table',		'size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_36, 'help' => ''),
+  'prefix' => array('fieldname' => 'prefix',	'size' => 35, 'max_size' =>  35, 'prompt' => LAN_ALT_39, 'help' => ''),
   'ufield' => array('fieldname' => 'user_field','size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_37, 'help' => ''),
   'pwfield'=> array('fieldname' => 'password_field','size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_38, 'help' => ''),
   'salt'   => array('fieldname' => 'password_salt','size' => 35, 'max_size' => 120,  'prompt' => LAN_ALT_24, 'help' => LAN_ALT_25)
@@ -234,6 +235,7 @@ function alt_auth_test_form($prefix,$frm)
 	  default :
 	    $text .= "Coding error";
 	}
+	if (isset($_login ->ErrorText)) $text .= '<br />'.$_login ->ErrorText;
 	$text .= "</td></tr>";
   }
 

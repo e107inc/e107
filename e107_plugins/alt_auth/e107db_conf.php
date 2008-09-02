@@ -15,7 +15,7 @@ $eplug_admin = true;
 require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
-include_lan("languages/".e_LANGUAGE."/lan_e107db_auth.php");
+include_lan("languages/".e_LANGUAGE."/lan_e107db_conf.php");
 include_lan("languages/".e_LANGUAGE."/lan_alt_auth_conf.php");
 define("ALT_AUTH_ACTION", "e107db");
 require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
@@ -57,7 +57,7 @@ function show_e107db_form()
 	$text .= E107DB_LAN_1;
 	$text .= "</td></tr>";
 
-	$text .= alt_auth_get_db_fields('e107db', $frm, $parm, 'server|uname|pwd|db');
+	$text .= alt_auth_get_db_fields('e107db', $frm, $parm, 'server|uname|pwd|db|prefix');
 
 	$text .= "<tr><td class='forumheader3'>".E107DB_LAN_9."</td><td class='forumheader3'>";
 	$text .= $frm -> form_select_open("e107db_password_method");

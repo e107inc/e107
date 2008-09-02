@@ -12,8 +12,9 @@ define("LDAPLAN_10", "Settings Updated");
 define("LDAPLAN_11", "WARNING:  It appears as if the ldap module is not currently available; setting your auth method to LDAP will probably not work!");
 define("LDAPLAN_12", "Server Type");
 define("LDAPLAN_13", "Update settings");
-define("LDAPLAN_14", "To transfer a field (attribute) value into the local database, specify its name in the corresponding box below. Fields marked with
-		an asterisk (*) are mandatory.
-		<br />Leave the box blank for it not to be transferred at all");
+
+
+define('LAN_AUTHENTICATE_HELP','This method can be used to authenticate against most LDAP servers, including Novell\'s eDirectory and Microsoft\'s Active Directory. Refer to the wiki for further information.');
+
 
 ?>
