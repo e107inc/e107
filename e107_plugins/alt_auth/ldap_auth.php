@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-07-25 19:33:02 $
+|     $Revision: 1.3 $
+|     $Date: 2008-09-02 19:39:12 $
 |     $Author: e107steved $
 
 To do:
@@ -30,6 +30,7 @@ class auth_login
 	var $serverType;
 	var $ldapErrorCode;
 	var $ldapErrorText;
+	var $ErrorText;
 	var $connection;
 	var $result;
 	var $ldapVersion;
@@ -72,6 +73,13 @@ class auth_login
 	}
 
 
+	function makeErrorText($extra = '')
+	{
+		$this->ldapErrorCode = ldap_errno( $this->connection);
+		$this->ldapErrorText = ldap_error( $this->connection);
+		$this->ErrorText = $extra.' '.$this->ldapErrorCode.': '.$this->ldapErrorText;
+	}
+
 
 	function connect()
 	{
@@ -89,6 +97,7 @@ class auth_login
 		
 		$this->ldapErrorCode = -1;
 		$this->ldapErrorText = "Unable to connect to any server";
+		$this->ErrorText = $this->ldapErrorCode.': '.$this->ldapErrorText;
 		return false;
 	}
 
@@ -98,8 +107,7 @@ class auth_login
 	{
 		if ( !@ldap_close( $this->connection))
 		{
-			$this->ldapErrorCode = ldap_errno( $this->connection);
-			$this->ldapErrorText = ldap_error( $this->connection);
+			$this->makeErrorText();				// Read the error code and explanatory string
 			return false;
 		}
 		else
@@ -134,6 +142,7 @@ class auth_login
 		  if ($this->result === FALSE)
 		  {
 //		    echo "LDAP bind failed<br />";
+			$this->makeErrorText();				// Read the error code and explanatory string
 			return AUTH_NOCONNECT;
 		  }
 			
@@ -155,6 +164,7 @@ class auth_login
 		  {
 //				Could not perform query to LDAP directory
 			echo "LDAP - search for user failed<br />";
+			$this->makeErrorText();				// Read the error code and explanatory string
 			return AUTH_NOCONNECT;
 		  }
 		  else
@@ -207,14 +217,16 @@ class auth_login
 				else
 				{
 //				  echo " Unexpected non-array value - Key: {$k}   Value: {$tlv}<br />";
-				  return AUTH_NOCONNECT;  		// Not really a suitable return code for this - its an error
+					$this->makeErrorText();				// Read the error code and explanatory string
+					return AUTH_NOCONNECT;  		// Not really a suitable return code for this - its an error
 				}
 			  }
 			}
 			else
 			{
 //			  echo "Got wrong number of entries<br />";
-			  return AUTH_NOUSER;			// Bit debateable what to return if this happens
+				$this->makeErrorText();				// Read the error code and explanatory string
+				return AUTH_NOUSER;			// Bit debateable what to return if this happens
 			}
 		  }
 		  else
@@ -234,8 +246,7 @@ class auth_login
 			** 49 - Wrong password
 			** 53 - Account inactive (manually locked out by administrator)
 			*/
-			$this->ldapErrorCode = ldap_errno( $this->connection);
-			$this->ldapErrorText = ldap_error( $this->connection);
+			$this->makeErrorText();				// Read the error code and explanatory string
 
 			switch ($this -> ldapErrorCode)
 			{

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/importdb_auth.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-07-25 19:33:03 $
+|     $Revision: 1.2 $
+|     $Date: 2008-09-02 19:39:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -29,42 +29,29 @@
 class auth_login
 {
 
-	var $od;
+	var $conf;
+	var $ErrorText;
 	
 	function auth_login()
 	{
-	  global $importdb_conf, $sql;
-	  if (!$sql -> db_Select("alt_auth", "*", "auth_type = 'importdb' ")) return AUTH_NOCONNECT;	// We should get at least one value
-	  while ($row = $sql -> db_Fetch())
-	  {
-		$importdb_conf[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
-	  }
-	  $this->Available = TRUE;
-	  $this->od = new importdb_mysql_class;
+	  global $sql;
+		$this->ErrorText = '';
+		$this->conf = array();
+		if (!$sql -> db_Select("alt_auth", "*", "auth_type = 'importdb' ")) return AUTH_NOCONNECT;	// We should get at least one value
+		while ($row = $sql -> db_Fetch())
+		{
+			$this->conf[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
+		}
+		$this->Available = TRUE;
 	}
-
-
-	function login($uname, $pword, &$newvals, $connect_only = FALSE)
+	
+	
+	function makeErrorText($extra = '')
 	{
-//		global $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $sql;
-		$ret = $this->od->login($uname, $pword, $newvals, $connect_only);
-//		$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-		return $ret;
+		$this->ErrorText = $extra;
 	}
 
-}
 
-class importdb_mysql_class
-{
-	
-	var $conf;
-	
-	function importdb_mysql_class()
-	{
-	  global $importdb_conf;
-	  $this->conf = $importdb_conf;
-	}
-	
 	function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
 	  if ($connect_only) return AUTH_SUCCESS;			// Big problem if can't connect to our own DB!
@@ -73,6 +60,7 @@ class importdb_mysql_class
 	  global $sql, $tp;
 	  if (!$sql->db_Select("user", "user_loginname, user_password", "user_loginname = '".$tp -> toDB($uname)."'")) 
 	  {	// Invalid user
+		$this->makeErrorText('User not found');
 		return AUTH_NOUSER;
 	  }
 
@@ -80,6 +68,7 @@ class importdb_mysql_class
 	  // Higher levels will always convert an authorised password to E107 format and save it for us.
 	  if (!$row = $sql->db_Fetch())
 	  {
+		$this->makeErrorText('Error reading DB');
 	    return AUTH_NOCONNECT;			// Debateable return code - really a DB error. But consistent with other handler
 	  }
 
@@ -87,13 +76,19 @@ class importdb_mysql_class
 	  $pass_check = new ExtendedPasswordHandler();
 
 	  $passMethod = $pass_check->passwordMapping($this->conf['importdb_password_method']);
-	  if ($passMethod === FALSE) return AUTH_BADPASSWORD;
+	  if ($passMethod === FALSE) 
+	  {
+		$this->makeErrorText('Password error - invalid method');
+		return AUTH_BADPASSWORD;
+	  }
 
 	  $pwFromDB = $row['user_password'];					// Password stored in DB
 	  if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
 	  {
+		$this->makeErrorText('Password incorrect');
 		return AUTH_BADPASSWORD;
 	  }
+		$this->makeErrorText('');
 	  return AUTH_SUCCESS;
 	}
 }

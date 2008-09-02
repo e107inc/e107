@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/otherdb_auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-07-25 19:33:02 $
+|     $Revision: 1.3 $
+|     $Date: 2008-09-02 19:39:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -29,53 +29,32 @@
 class auth_login
 {
 
-	var $od;
 	var $Available;
+	var $ErrorText;
+	var	$conf;				// Configuration parameters
 	
 	function auth_login()
 	{
-//		global $otherdb_conf, $sql;
 		global $sql;
+		$this->conf = array();
+		$this->ErrorText = '';
 		$sql -> db_Select("alt_auth", "*", "auth_type = 'otherdb' ");
 		while($row = $sql -> db_Fetch())
 		{
-			$otherdb_conf[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
+			$this->conf[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
 		}
-		$class_name = "otherdb_mysql_class";
-
-		if(class_exists($class_name))
-		{
-		  $this->od = new $class_name($otherdb_conf);
-		  $this->Available = TRUE;
-		}
-		else
-		{
-		  $this->Available = FALSE;
-		  return AUTH_NOCONNECT;
-		}
+		$this->Available = TRUE;
 	}
 
-	function login($uname, $pword, &$newvals, $connect_only = FALSE)
+
+	// Add the reconnect function in here - might be needed
+	function makeErrorText($extra = '')
 	{
+		$this->ErrorText = $extra;
 		global $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $sql;
-		$ret = $this->od->login($uname, $pword, $newvals, $connect_only);
 		$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-		return $ret;
 	}
 
-}
-
-class otherdb_mysql_class
-{
-	
-	var $conf;
-	
-	function otherdb_mysql_class($otherdb_conf)
-	{
-//		global $otherdb_conf;
-		$this->conf = $otherdb_conf;
-	}
-	
 
 
 	function login($uname, $pword, &$newvals, $connect_only = FALSE)
@@ -83,12 +62,14 @@ class otherdb_mysql_class
 	  //Attempt to open connection to sql database
 	  if(!$res = mysql_connect($this->conf['otherdb_server'], $this->conf['otherdb_username'], $this->conf['otherdb_password']))
 	  {
+		$this->makeErrorText('Cannot connect to remote server');
 		return AUTH_NOCONNECT;
 	  }
 	  //Select correct db
 	  if(!mysql_select_db($this->conf['otherdb_database'], $res))
 	  {
 		mysql_close($res);
+		$this->makeErrorText('Cannot connect to remote DB');
 		return AUTH_NOCONNECT;
 	  }
 	  if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
@@ -115,11 +96,13 @@ class otherdb_mysql_class
 	  if(!$r1 = mysql_query($qry))
 	  {
 		mysql_close($res);
+		$this->makeErrorText('Lookup query failed');
 		return AUTH_NOCONNECT;
 	  }
 	  if(!$row = mysql_fetch_array($r1))
 	  {
 		mysql_close($res);
+		$this->makeErrorText('User not found');
 		return AUTH_NOUSER;
 	  }
 		
@@ -130,13 +113,18 @@ class otherdb_mysql_class
 	  $pass_check = new ExtendedPasswordHandler();
 
 	  $passMethod = $pass_check->passwordMapping($this->conf['otherdb_password_method']);
-	  if ($passMethod === FALSE) return AUTH_BADPASSWORD;
+	  if ($passMethod === FALSE) 
+	  {
+		$this->makeErrorText('Password error - invalid method');
+		return AUTH_BADPASSWORD;
+	  }
 
 	  $pwFromDB = $row[$this->conf['otherdb_password_field']];					// Password stored in DB
 	  if ($salt_field) $pwFromDB .= ':'.$row[$salt_field];
 
 	  if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
 	  {
+		$this->makeErrorText('Password incorrect');
 		return AUTH_BADPASSWORD;
 	  }
 	  // Now copy across any values we have selected
@@ -148,6 +136,7 @@ class otherdb_mysql_class
 		}
 	  }
 
+		$this->makeErrorText('');		// Success - just reconnect to E107 DB if needed
 	  return AUTH_SUCCESS;
 	}
 }
