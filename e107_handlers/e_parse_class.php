@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2008-08-17 15:04:20 $
+|     $Revision: 1.38 $
+|     $Date: 2008-09-04 19:50:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -208,13 +208,13 @@ class e_parse
 
 
 
-
-	function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $utf = false)
+	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = false)
 	{
 		/*
 		Pretty well complete rewrite to try and handle utf-8 properly.
-		Breaks a utf-8 string every $width characters max. If possible, breaks after 'safe' characters.
+		Breaks each utf-8 'word' every $width characters max. If possible, breaks after 'safe' characters.
 		$break is the character inserted to flag the break.
+		$nobreak is a list of tags within which word wrap is to be inactive
 		*/
 
   if (!ctype_digit($width)) return $str;		// Don't wrap if non-numeric width
@@ -233,7 +233,26 @@ class e_parse
   $lbrks = "/?!%)-}]\\\"':;&";
 
   // Is $str a UTF8 string?
-	$utf8 = ($utf || strtolower(CHARSET) == 'utf-8') ? "u" : "";
+	if ($utf || strtolower(CHARSET) == 'utf-8')
+	{	// 0x1680, 0x180e, 0x2000-0x200a, 0x2028, 0x205f, 0x3000 are 'non-ASCII' Unicode UCS-4 codepoints - see http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
+		// All convert to 3-byte utf-8 sequences:
+		// 0x1680	0xe1	0x9a	0x80
+		// 0x180e	0xe1	0xa0	0x8e
+		// 0x2000	0xe2	0x80	0x80
+		//   -
+		// 0x200a	0xe2	0x80	0x8a
+		// 0x2028	0xe2	0x80	0xa8
+		// 0x205f	0xe2	0x81	0x9f
+		// 0x3000	0xe3	0x80	0x80
+		$utf8 = 'u';
+		$whiteSpace = '#([\x20|\x0c]|[\xe1][\x9a][\x80]|[\xe1][\xa0][\x8e]|[\xe2][\x80][\x80-\x8a,\xa8]|[\xe2][\x81][\x9f]|[\xe3][\x80][\x80]+)#';	
+		// Have to explicitly enumerate the whitespace chars, and use non-utf-8 mode, otherwise regex fails on badly formed utf-8
+	}
+	else
+	{
+		$utf8 = '';
+		$whiteSpace = '#(\s+)#';		// For non-utf-8, can use a simple match string
+	}
 	
 
 // Start of the serious stuff - split into HTML tags and text between
@@ -286,19 +305,27 @@ class e_parse
             $value = str_replace("\x06", "", $value);
             preg_match_all("/&([a-z\d]{2,7}|#\d{2,5});/i", $value, $ents);
             $value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5});/i", "\x06", $value);
-			$split = preg_split('#(\s)#'.$utf8, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+//			echo "Found block length ".strlen($value).': '.substr($value,20).'<br />';
+			// Split at spaces - note that this will fail if presented with invalid utf-8 when doing the regex whitespace search
+//			$split = preg_split('#(\s)#'.$utf8, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+			$split = preg_split($whiteSpace, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 			$value = '';
 			foreach ($split as $sp)
 			{
+//			echo "Split length ".strlen($sp).': '.substr($sp,20).'<br />';
+				$loopCount = 0;
 			  while (strlen($sp) > $width)
 			  {	// Enough characters that we may need to do something.
 				$pulled = '';
 				if ($utf8)
 				{
 				  // Pull out a piece of the maximum permissible length
-				  preg_match('#^((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$width.'})(.{0,1}).*#s',$sp,$matches);
-
-				  if (empty($matches[2]))
+				  if (preg_match('#^((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$width.'})(.{0,1}).*#s',$sp,$matches) == 0)
+				  {
+					$value .= '[!<b>invalid utf-8: '.$sp.'<b>!]';		// Make any problems obvious for now
+					$sp = '';
+				  }
+				  elseif (empty($matches[2]))
 				  {  // utf-8 length is less than specified - treat as a special case
 				    $value .= $sp;
 					$sp = '';
@@ -317,6 +344,12 @@ class e_parse
 					{
 					  $pulled = substr($sp,0,$i+1);
 					}
+				  }
+				  $loopCount++;
+				  if ($loopCount > 20)
+				  {
+					$value .= '[!<b>loop count exceeded: '.$sp.'</b>!]';		// Make any problems obvious for now
+					$sp = '';
 				  }
 				}
 				else
@@ -352,6 +385,7 @@ class e_parse
 	  // Return contents of the drain
 	  return $drain;
 	}
+
 
 
 
