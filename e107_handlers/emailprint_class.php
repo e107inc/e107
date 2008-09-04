@@ -11,21 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-07 15:41:50 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2008-09-04 20:07:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_print.php");
-@include_once(e_LANGUAGEDIR."English/lan_print.php");
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
-@include_once(e_LANGUAGEDIR."English/lan_email.php");
+@include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_print.php");
+//@include_once(e_LANGUAGEDIR."English/lan_print.php");
+@include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
+//@include_once(e_LANGUAGEDIR."English/lan_email.php");
 
-class emailprint {
-	function render_emailprint($mode, $id, $look = 0) {
+class emailprint 
+{
+	function render_emailprint($mode, $id, $look = 0) 
+	{
 		// $look = 0  --->display all icons
 		// $look = 1  --->display email icon only
 		// $look = 2  --->display print icon only
@@ -35,17 +37,24 @@ class emailprint {
 		$text_emailprint = "";
 
 		//new method emailprint_class : (only news is core, rest is plugin: searched for e_emailprint.php which should hold $email and $print values)
-		if($mode == "news"){
+		if($mode == "news")
+		{
 			$email = "news";
 			$print = "news";
-		}else{
+		}
+		else
+		{
 			//load the others from plugins
 			$handle = opendir(e_PLUGIN);
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+			while (false !== ($file = readdir($handle))) 
+			{
+				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) 
+				{
 					$plugin_handle = opendir(e_PLUGIN.$file."/");
-					while (false !== ($file2 = readdir($plugin_handle))) {
-						if ($file2 == "e_emailprint.php") {
+					while (false !== ($file2 = readdir($plugin_handle))) 
+					{
+						if ($file2 == "e_emailprint.php") 
+						{
 							require_once(e_PLUGIN.$file."/".$file2);
 						}
 					}
@@ -53,13 +62,15 @@ class emailprint {
 			}
 		}
 
-		if ($look == 0 || $look == 1) {
-			$ico_mail = (file_exists(THEME."images/email.png") ? THEME."images/email.png" : e_IMAGE."packs/".$imode."/generic/email.png");
-			$text_emailprint .= "<a href='".e_BASE."email.php?".$email.".".$id."'><img src='".$ico_mail."' style='border:0' alt='".LAN_EMAIL_7."' title='".LAN_EMAIL_7."' /></a> ";
+		if ($look == 0 || $look == 1) 
+		{
+			$ico_mail = (file_exists(THEME."images/".ICONMAIL) ? THEME_ABS."images/".ICONMAIL : e_IMAGE_ABS."packs/".$imode."/generic/email.png");
+			$text_emailprint .= "<a href='".e_HTTP."email.php?".$email.".".$id."'><img src='".$ico_mail."' style='border:0' alt='".LAN_EMAIL_7."' title='".LAN_EMAIL_7."' /></a> ";
 		}
-		if ($look == 0 || $look == 2) {
-			$ico_print = (file_exists(THEME."images/printer.png") ? THEME."images/printer.png" : e_IMAGE."packs/".$imode."/generic/printer.png");
-			$text_emailprint .= "<a href='".e_BASE."print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='".LAN_PRINT_1."' title='".LAN_PRINT_1."' /></a>";
+		if ($look == 0 || $look == 2) 
+		{
+			$ico_print = (file_exists(THEME."images/".ICONPRINT) ? THEME_ABS."images/".ICONPRINT : e_IMAGE_ABS."packs/".$imode."/generic/printer.png");
+			$text_emailprint .= "<a href='".e_HTTP."print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='".LAN_PRINT_1."' title='".LAN_PRINT_1."' /></a>";
 		}
 		return $text_emailprint;
 	}
