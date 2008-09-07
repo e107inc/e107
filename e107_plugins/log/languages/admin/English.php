@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-05-30 20:48:59 $
+|     $Revision: 1.14 $
+|     $Date: 2008-09-07 20:51:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -53,6 +53,8 @@ define("ADSTAT_L31", "Remove selected pages");
 define("ADSTAT_L32", "Page Tidy");
 define("ADSTAT_L33", "Configure Statistics Logging");
 define("ADSTAT_L34", "Site Stats");
+
+define('ADSTAT_L38', "You must set the e107_plugins/log/logs folder to be writable");	// Constant compatible with 0.8
 
 
 ?>

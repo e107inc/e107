@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-04-25 19:17:04 $
+|     $Revision: 1.19 $
+|     $Date: 2008-09-07 20:51:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -82,8 +82,9 @@ if(IsSet($_POST['wipeSubmit']))
 
 
 
-if(!is_writable(LOGPATH."logs")) {
-	$message = "<b>You must set the permissions of the e107_plugins/log/logs folder to 777 (chmod 777)</b>";
+if(!is_writable(LOGPATH."logs")) 
+{
+	$message = "<b>".ADSTAT_L38."</b>";
 }
 
 if (isset($_POST['updatesettings'])) {
