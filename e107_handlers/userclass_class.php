@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-07-25 19:26:32 $
-|     $Author: e107steved $
+|     $Revision: 1.17 $
+|     $Date: 2008-09-15 16:20:27 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -233,7 +233,7 @@ class user_class
 
 	  $show_classes = $this->uc_required_class_list($optlist);
 
-	  $text = '';
+	  $text = ''; 
 	  foreach ($show_classes as $k => $v)
 	  {
 		if ($k == e_UC_BLANK)
@@ -242,12 +242,12 @@ class user_class
 		}
 		else
 		{
-		  $s = ($curval == $k) ?  "selected='selected'" : "";
+		  $s = ($curval == $k && $curval !== '') ?  "selected='selected'" : ""; 
 		  $text .= "<option  value='".$k."' ".$s.">".$v."</option>\n";
 		}
 	  }
 
-	  if (isset($opt_arr['language']) && $pref['multilanguage']) 
+	  if (strpos($optlist, "language") !== FALSE && $pref['multilanguage']) 
 	  {
 		$text .= "<optgroup label=' ------ ' />\n";
 		$tmpl = explode(",",e_LANLIST);
