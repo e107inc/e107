@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-11-16 10:24:14 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2008-09-17 19:56:14 $
+|     $Author: e107steved $
 |
 | 11.11.06 - steved - mods for next CVS release
 |
@@ -57,7 +57,7 @@ $num = (isset($_POST['num']) && $_POST['num'] ? $_POST['num'] : "");
 $category_filter = "";
 if  ((isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] != "all"))
 {
-  $category_filter = " AND (e.event_category = '".$_POST['event_cat_ids']."') ";
+  $category_filter = " AND (e.event_category = '".intval($_POST['event_cat_ids'])."') ";
 }
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2007-10-29 20:49:54 $
+|     $Revision: 1.33 $
+|     $Date: 2008-09-17 19:56:14 $
 |     $Author: e107steved $
 |
 | 09.11.06 - Started next batch of mods
@@ -50,7 +50,7 @@ $cal = new DHTML_Calendar(true);
 $category_filter = "";
 if  ((isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] != "all"))
 {
-  $category_filter = " AND (e.event_category = '".$_POST['event_cat_ids']."') ";
+  $category_filter = " AND (e.event_category = '".intval($_POST['event_cat_ids'])."') ";
 }
 
 /*
