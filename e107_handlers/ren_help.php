@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-11-13 07:54:30 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2008-09-18 19:12:44 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -208,7 +208,7 @@ function PreImage_Select($formid) {
 			}
 			else
 			{
-				$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value); expandit('{$formid}')\">
+				$text .= "<select class='tbox' name='preimageselect' onchange=\"addtext(this.value, true); expandit('{$formid}')\">
 				<option value=''>".LANHELP_42."</option>";
 				foreach($imagelist as $image)
 				{
