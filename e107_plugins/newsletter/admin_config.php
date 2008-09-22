@@ -11,21 +11,25 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-01-27 17:47:29 $
+|     $Revision: 1.6 $
+|     $Date: 2008-09-22 20:38:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!getperms("P")) {
+if (!getperms("P")) 
+{
 	header("location:".e_BASE."index.php");
-	 exit;
+	exit;
 }
 $e_sub_cat = 'newsletter';
 require_once(e_ADMIN."auth.php");
 
-if (e_QUERY) {
-	list($action, $id) = explode(".", e_QUERY);
+if (e_QUERY) 
+{
+	list($action, $id, $key) = explode(".", e_QUERY);
+	$key = intval($key);
+	$id = intval($id);
 }
 else
 {
@@ -42,13 +46,24 @@ if(!e_QUERY)
 }
 else
 {
-	$function = $action."Newsletter";
-	$nl -> $function();
+	if ($action == "vs") 
+	{ // View subscribers of a newsletter
+		$nl -> view_subscribers($id);
+	} 
+	elseif ($action == "remove") 
+	{ // Remove subscriber
+		$nl -> remove_subscribers($id,$key);
+	} 
+	else 
+	{
+		$function = $action."Newsletter";
+		$nl -> $function();
+	}
 }
+
 
 class newsletter
 {
-
 	var $message;
 
 
@@ -100,7 +115,7 @@ class newsletter
 			$text = "<form action='".e_SELF."' id='newsletterform' method='post'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
-			<td style='width:5%; text-align: center;' class='forumheader'>ID</td>
+			<td style='width:5%; text-align: center;' class='forumheader'>".NLLAN_55."</td>
 			<td style='width:65%' class='forumheader'>".NLLAN_06."</td>
 			<td style='width:20%; text-align: center;' class='forumheader'>".NLLAN_07."</td>
 			<td style='width:10%; text-align: center;' class='forumheader'>".NLLAN_08."</td>
@@ -113,7 +128,7 @@ class newsletter
 				$text .= "<tr>
 				<td style='width:5%; text-align: center;' class='forumheader3'>".$data['newsletter_id']."</td>
 				<td style='width:65%' class='forumheader3'>".$data['newsletter_title']."</td>
-				<td style='width:20%; text-align: center;' class='forumheader'>".substr_count($data['newsletter_subscribers'], chr(1))."</td>
+				<td style='width:20%; text-align: center;' class='forumheader'>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
 				<td style='width:10%; text-align: center;' class='forumheader3'>
 				<a href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_09." [ID: ".$data['newsletter_id']." ]")."') \"/>
@@ -137,7 +152,6 @@ class newsletter
 		}
 		else
 		{
-
 			$text = "<form action='".e_SELF."' id='newsletterform2' method='post'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
@@ -153,7 +167,6 @@ class newsletter
 
 			foreach($nlArray as $data)
 			{
-
 				$text .= "<tr>
 				<td style='width:5%; text-align: center;' class='forumheader3'>".$data['newsletter_id']."</td>
 				<td style='width:10%; text-align: center;' class='forumheader3'>".$data['newsletter_issue']."</td>
@@ -172,16 +185,15 @@ class newsletter
 			</form>
 			</div>
 			";
-
 		}
 		$ns -> tablerender(NLLAN_20, $text);
-
 	}
+
+
 
 
 	function defineNewsletter($edit=FALSE)
 	{
-
 		global $ns, $tp;
 
 		if($edit)
@@ -226,9 +238,8 @@ class newsletter
 		$caption = ($edit ? NLLAN_25 : NLLAN_26);
 
 		$ns -> tablerender($caption, $text);
-
-
 	}
+
 
 
 	function createNewsletter()
@@ -253,9 +264,9 @@ class newsletter
 	}
 
 
+
 	function makeNewsletter($edit=FALSE)
 	{
-
 		global $sql, $ns, $tp;
 
 		if($edit)
@@ -320,6 +331,7 @@ class newsletter
 	}
 
 
+
 	function createIssue()
 	{
 		global $sql, $tp;
@@ -339,9 +351,9 @@ class newsletter
 	}
 
 
+
 	function releaseIssue($issue)
 	{
-
 		global $pref, $sql, $ns, $tp, $THEMES_DIRECTORY;
 
 		$issue = str_replace("nlmailnow_", "", $issue);
@@ -384,7 +396,7 @@ class newsletter
 		$mail->Subject = $newsletterParentInfo['newsletter_title'] . ": ".$newsletterInfo['newsletter_title'];
 		$mail->IsHTML(true);
 
-		// ============================  Render Results and Mailit =========
+		// ============================  Render Results and Mail it =========
 
 		$message_subject = stripslashes($tp -> toHTML($mail->Subject));
 		$message_body = stripslashes($tp -> toHTML($mail->Subject, TRUE));
@@ -459,6 +471,7 @@ class newsletter
 	}
 
 
+
 	function deleteNewsletter()
 	{
 		global $sql;
@@ -500,6 +513,95 @@ class newsletter
 		show_admin_menu(NLLAN_47, $action, $var);
 	}
 
+
+
+	
+ function view_subscribers($p_id)
+ {
+	global $ns;
+
+	$nl_sql = new db;
+	if(!$nl_sql -> db_Select("newsletter", "*", "newsletter_id=".$p_id))
+	{
+		// Check if newsletter id is available
+		$vs_text .= "<br /><br /><center>".NLLAN_56."<br /><br/>
+                 <input class='button' type=button value='".NLLAN_57."' onClick='history.go(-1)'></center>";
+		$ns -> tablerender(NLLAN_58, $vs_text);
+		return;
+	} 
+	else 
+	{
+	  $vs_text .= "
+		<table style='".ADMIN_WIDTH."' class='fborder'>
+			<tr>
+			<td style='width:5%; text-align: center;' class='forumheader'>".NLLAN_55."</td>
+			<td style='width:35%' class='forumheader'>".NLLAN_59."</td>
+			<td style='width:45%;' class='forumheader'>".NLLAN_60."</td>
+			<td style='width:15%; text-align: center;' class='forumheader'>".NLLAN_61."</td>
+			</tr>";
+
+		$nl_sql -> db_Select("newsletter", "*", "newsletter_id='".$p_id."'");
+		if($nl_row = $nl_sql-> db_Fetch())
+		{
+//			$subscribers_total_count = substr_count($nl_row['newsletter_subscribers'], chr(1));
+			$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
+			$subscribers_total_count = count($subscribers_list) - 1;		// Get a null entry as well
+		}
+		if ($subscribers_total_count<1) 
+		{
+			header("location:".e_SELF);
+			exit;
+		}
+		// Loop through each user in the array subscribers_list
+		foreach ($subscribers_list as $val)
+		{
+			$val=trim($val);
+			if ($val) 
+			{
+				$nl_sql -> db_Select("user", "*", "user_id=".$val);
+				if($nl_row = $nl_sql-> db_Fetch())
+				{
+					$vs_text .= "<tr>
+						<td text-align: center;' class='forumheader3'>{$val}
+						</td>
+						<td class='forumheader3'><a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
+						</td>
+						<td class='forumheader3'>".$nl_row['user_email']."
+						</td>
+						<td text-align: center;' class='forumheader3'><a href='".e_SELF."?remove.{$p_id}.{$key}'>".ADMIN_DELETE_ICON."</a>
+					".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."
+					</td>
+					</tr>";
+				}
+			}
+		}
+	}
+
+	$vs_text .= "
+      <tr>
+      <td colspan=4 class='forumheader'>".NLLAN_63.": ".$subscribers_total_count."</td>
+      </tr>
+      <tr><td colspan=4 style='text-align:center;'><br /><input class='button' type=button value='".NLLAN_64."' onClick='history.go(-1)'></td></tr>
+      </table>
+      ";
+	$ns -> tablerender(NLLAN_65.' '.$p_id, $vs_text);
+ }
+ 
+ 
+  function remove_subscribers($p_id, $p_key) 
+  {
+	global $sql;
+   	$sql -> db_Select("newsletter", "*", "newsletter_id=".$p_id);
+  	if($nl_row = $sql-> db_Fetch())
+	{
+		$subscribers_list = explode(chr(1), $nl_row['newsletter_subscribers']);
+		unset($subscribers_list[$p_key]);
+		$new_subscriber_list = implode(chr(1), $subscribers_list);
+		$sql -> db_Update("newsletter", "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id=".$p_id);
+		header("location:".e_SELF."?vs.{$p_id}");
+     	exit;
+  	}
+  }
 }
 
 
@@ -513,6 +615,5 @@ function admin_config_adminmenu()
 	global $action;
 	$nl->show_options($action);
 }
-
 
 ?>
