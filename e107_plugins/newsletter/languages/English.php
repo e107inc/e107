@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/languages/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-11-04 18:28:51 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2008-09-22 20:38:19 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,7 +80,16 @@ define("NLLAN_53", "Are you sure you want to subscribe to this newsletter?");
 
 define("NLLAN_54", "Sending");
 
-
-
+define("NLLAN_55", "ID");
+define("NLLAN_56", "Newsletter ID not available");
+define("NLLAN_57", "Return to previous page");
+define("NLLAN_58", "Error");
+define("NLLAN_59", "Name");
+define("NLLAN_60", "Email");
+define("NLLAN_61", "Actions");
+define("NLLAN_62", "User is banned! (or not fully signed up)");
+define("NLLAN_63", "Total subscribers");
+define("NLLAN_64", "Return to Newsletter frontpage");
+define("NLLAN_65", "Subscribers overview newsletter ID");
 
 ?>
