@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-08-14 22:58:34 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2008-09-23 19:31:59 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -454,7 +454,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 
 		// Its a structured display option - need a 2-step process to create a tree
 	    $catlist = array();
-	    while ($row = $sql->db_Fetch())
+	    while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 	    {
 			$tmp = $row['download_category_parent'];
 	      	if ($tmp == '0')
@@ -484,14 +484,14 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 	    {  // Main categories
 			// Could add a display class to the group, but the default looked OK
 
-            if(count($catlist)>1)
+            if(count($thiscat['subcats'])>0)
 			{
 				$boxinfo .= "<optgroup label='".htmlspecialchars($thiscat['download_category_name'])."'>\n";
 		  		$scprefix = '';
 			}
 			else
 			{
-				$sel = ($cdc == $sc['download_category_id']) ? " selected='selected'" : "";
+				$sel = ($cdc == $thiscat['download_category_id']) ? " selected='selected'" : "";
             	$boxinfo .= "<option value='".$thiscat['download_category_id']."' {$sel}>".htmlspecialchars($thiscat['download_category_name'])."</option>\n";
 			}
 
