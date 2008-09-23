@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.117 $
-|     $Date: 2008-07-16 22:12:24 $
-|     $Author: e107coders $
+|     $Revision: 1.118 $
+|     $Date: 2008-09-23 19:55:36 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -658,6 +658,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	if($error_message)
 	{
 	  message_handler("P_ALERT", $error_message);
+	  $error_message = '';
 	}
 
 	// ========== End of verification.. ====================================================
@@ -757,7 +758,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 			}
 			if(isset($error_message))
 			{
-				$text .= "<br /><b>".$error_message."</b><br />";
+				$text = "<br /><b>".$error_message."</b><br />";	// Just display the error message
 			}
 			$ns->tablerender(LAN_406, $text);
 			require_once(FOOTERF);
