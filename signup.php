@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-07-16 22:19:57 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2008-09-23 19:55:43 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -681,6 +681,7 @@ global $db_debug;
 	if($error_message)
 	{
 		message_handler("P_ALERT", $error_message);
+		$error_message = '';
 	}
 
 	// ========== End of verification.. ==============
@@ -806,24 +807,24 @@ global $db_debug;
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			require_once(HEADERF);
-		if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
+			if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 			{
-		  $text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $loginname, $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
+				$text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $loginname, $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
 			}
 			else
 			{
 				if ($pref['user_reg_veri'] == 2)
 				{
-			$text = LAN_SIGNUP_37.'<br /><br />'.$adviseLoginName;
+					$text = LAN_SIGNUP_37.'<br /><br />'.$adviseLoginName;
 				}
 				else
 				{
-			$text = LAN_405.'<br /><br />'.$adviseLoginName;
+					$text = LAN_405.'<br /><br />'.$adviseLoginName;
 				}
 			}
 			if(isset($error_message))
 			{
-				$text .= "<br /><b>".$error_message."</b><br />";
+				$text = "<br /><b>".$error_message."</b><br />";		// Just display error message
 			}
 			$ns->tablerender(LAN_406, $text);
 			require_once(FOOTERF);
