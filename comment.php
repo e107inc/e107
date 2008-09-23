@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2008-06-03 21:31:19 $
+|     $Revision: 1.58 $
+|     $Date: 2008-09-23 19:43:55 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,8 @@ require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."comment_class.php");
 define("PAGE_NAME", COMLAN_99);
 
-if (!e_QUERY) {
+if (!e_QUERY) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -221,7 +222,7 @@ if ($action == "reply")
 	define('e_PAGETITLE', $title." / ".COMLAN_99." / ".COMLAN_102.$subject."");
 	require_once(HEADERF);
 } 
-else 
+elseif ($action == 'comment')
 {  //  Default code if not reply
 
 	// Check cache
@@ -342,6 +343,11 @@ else
 		  }
 	  }
 	}
+}
+else
+{	// Invalid action - just exit
+	header("location:".e_BASE."index.php");
+	exit;
 }
 
 if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news")
