@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2008-08-06 19:10:46 $
+|     $Revision: 1.61 $
+|     $Date: 2008-09-23 20:03:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -223,7 +223,7 @@ class rssCreate {
 			case comments:
 			case 5:
 				$path='';
-				$this -> rssQuery = "SELECT * FROM #comments ORDER BY comment_datestamp DESC LIMIT 0,".$this -> limit;
+				$this -> rssQuery = "SELECT * FROM `#comments` WHERE `comment_blocked` = 0 ORDER BY `comment_datestamp` DESC LIMIT 0,".$this -> limit;
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
