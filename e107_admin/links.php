@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-07-10 20:36:57 $
+|     $Revision: 1.12 $
+|     $Date: 2008-09-23 19:37:36 $
 |     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -148,11 +148,13 @@ if (isset($_POST['updateoptions'])) {
 
 if ($delete == 'main')
 {
-	if($sql->db_Select("links", "link_id, link_name, link_order", "link_id='".$del_id."'")){
+	if ($sql->db_Select("links", "link_id, link_name, link_order, link_parent", "link_id=".intval($del_id)))
+	{
 		$row = $sql->db_Fetch();
 		$msg = $linkpost->delete_link($row);
 
-		if($msg){
+		if ($msg)
+		{
 			$e107cache->clear("sitelinks");
 			$linkpost->show_message($msg);
 		}
@@ -594,6 +596,8 @@ class links
 		}
 	}
 
+
+
 	function show_pref_options() {
 		global $pref, $ns;
 		$text = "<div style='text-align:center'>
@@ -631,19 +635,27 @@ class links
 		$ns->tablerender(LCLAN_88, $text);
 	}
 
-	function delete_link($linkInfo)	{
+
+
+	// Delete link
+	// We need to update the 'order' number of other links with the same parentage - may be top level or a sub-level
+	function delete_link($linkInfo)	
+	{
 		global $sql;
 
-		if ($sql->db_Select("links", "link_id", "link_order > '{$linkInfo['link_order']}'")){
+		if ($sql->db_Select("links", "link_id", "link_order > '{$linkInfo['link_order']}' AND `link_parent`={$linkInfo['link_parent']} "))
+		{
 			$linkList = $sql->db_getList();
-			foreach($linkList as $l){
+			foreach($linkList as $l)
+			{
 				$sql->db_Update("links", "link_order = link_order -1 WHERE link_id = '{$l['link_id']}'");
 			}
 		}
 
 
-		if ($sql->db_Delete("links", "link_id='".$linkInfo['link_id']."'")){
-			// Update ophaned sublinks.
+		if ($sql->db_Delete("links", "link_id='".$linkInfo['link_id']."'"))
+		{
+			// Update orphaned sublinks - just hide them, and make them top level. And delete any obsolete naming while we're there
 			$sql->db_Update("links", "link_name = SUBSTRING_INDEX(link_name, '.', -1) , link_parent = '0', link_class='255' WHERE link_parent= '".$linkInfo['link_id']."'");
 
 			return LCLAN_53." #".$linkInfo['link_id']." ".LCLAN_54."<br />";
@@ -656,7 +668,8 @@ class links
 
 // -------------------------- Sub links generator ------------->
 
-function show_sublink_generator() {
+function show_sublink_generator() 
+{
 	global $ns,$sql;
 
     $sublinks = $this->sublink_list();
@@ -708,7 +721,8 @@ function show_sublink_generator() {
 
 
 
-function sublink_list($name=""){
+function sublink_list($name="")
+{
     global $sql,$PLUGINS_DIRECTORY;
 	$sublink_type['news']['title'] = LINKLAN_8; // "News Categories";
 	$sublink_type['news']['table'] = "news_category";
@@ -727,14 +741,18 @@ function sublink_list($name=""){
 	$sublink_type['downloads']['fieldicon'] = "download_category_icon";
 
 
-	if ($sql -> db_Select("plugin", "plugin_path", "plugin_installflag = '1'")) {
-		while ($row = $sql -> db_Fetch()) {
+	if ($sql -> db_Select("plugin", "plugin_path", "plugin_installflag = '1'")) 
+	{
+		while ($row = $sql -> db_Fetch()) 
+		{
 			$sublink_plugs[] = $row['plugin_path'];
 		}
 	}
 
-	foreach ($sublink_plugs as $plugin_id) {
-		if (is_readable(e_PLUGIN.$plugin_id.'/e_linkgen.php')) {
+	foreach ($sublink_plugs as $plugin_id) 
+	{
+		if (is_readable(e_PLUGIN.$plugin_id.'/e_linkgen.php')) 
+		{
 		  	require_once(e_PLUGIN.$plugin_id.'/e_linkgen.php');
 		}
 	}
@@ -761,7 +779,7 @@ function prepOpts($aData)
 // each entry is array( 'val'=>value, 'txt'=>text )
 //
 
-$i=0;
+	$i=0;
 	foreach($aData as $aVal)
 	{
 		$sVal = $aVal['val'];
@@ -774,7 +792,8 @@ $i=0;
 		$aPrep[$i++] = $sOut;
 		$sTxtPrev = $sTxt;
 	}
-	if ($i) {  // terminate final option
+	if ($i) 
+	{  // terminate final option
 		$aPrep[$i] = '>'.$sTxtPrev.'</option>';
 	}
 
@@ -807,9 +826,11 @@ function genOpts($aPrep, $aTest,$sSelected, $sId)
 
 }
 
-function links_adminmenu() {
+function links_adminmenu() 
+{
 	global $action;
-	if ($action == "") {
+	if ($action == "") 
+	{
 		$action = "main";
 	}
 	$var['main']['text'] = LCLAN_62;
