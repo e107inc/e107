@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-02-24 00:04:19 $
-|     $Author: secretr $
+|     $Revision: 1.8 $
+|     $Date: 2008-09-25 20:01:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -491,7 +491,8 @@ function displayCategoryLinks($mode=''){
 				$arr[$rowl['link_category_id']][] = $rowl;
 			}
 		}
-		if($mode){
+		if($mode)
+		{
 			$link_category_total	= $link_total;
 			$link_table_start		= $tp -> parseTemplate($LINK_TABLE_START, FALSE, $link_shortcodes);
 			$link_table_end			= $tp -> parseTemplate($LINK_TABLE_END, FALSE, $link_shortcodes);
@@ -501,15 +502,21 @@ function displayCategoryLinks($mode=''){
 			$caption .= " (<b title='".(ADMIN ? LAN_LINKS_2 : LAN_LINKS_1)."' >".$link_total."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_LINKS_1 : "" )."' >".$link_total."</b>" : "").") ";
 			$ns->tablerender($caption, $text);
 
-			if(is_numeric($mode)){
+			if(is_numeric($mode))
+			{
 				$lc->ShowNextPrev($from, $number, $link_total);
 			}
-		}else{
-			foreach($arr as $key => $value){
+		}
+		else
+		{
+			$text = '';
+			foreach($arr as $key => $value)
+			{
 				$link_table_string = "";
 				$linkbutton_count = 0;
 				$i=0;
-				for($i=0;$i<count($value);$i++){
+				for($i=0;$i<count($value);$i++)
+				{
 					$rowl				= $value[$i];
 
 					$linkbutton_count   = ($rowl['link_button']) ?  $linkbutton_count + 1 : $linkbutton_count;
