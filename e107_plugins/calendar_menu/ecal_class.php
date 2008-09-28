@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ecal_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-08-11 21:24:42 $
+|     $Revision: 1.8 $
+|     $Date: 2008-09-28 20:35:05 $
 |     $Author: e107steved $
 |
 | Event calendar class:
@@ -81,6 +81,11 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
     function ecal_class()
 	{  // Constructor
 	  global $pref;
+	  if (!isset($pref['plug_installed']['calendar_menu']))
+	  {
+		header('location:'.e_BASE.'index.php');
+		exit;
+	  }
 
 		// Get all the times in terms of 'clock time' - i.e. allowing for TZ, DST, etc
 		// All the times in the DB should be 'absolute' - so if we compare with 'clock time' it should work out.
