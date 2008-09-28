@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/ecal_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-11-16 10:24:14 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2008-09-28 20:27:04 $
+|     $Author: e107steved $
 |
 | Event calendar class for gradual enhancement
 | (Some bits may be usefully transferred to common code later)
@@ -62,6 +62,11 @@ Preferences used:
     function ecal_class()
 	{  // Constructor
 	  global $pref;
+	  if (!isset($pref['plug_installed']['calendar_menu']))
+	  {
+		header('location:'.e_BASE.'index.php');
+		exit;
+	  }
 	  
 	  $this->time_now = time();
 	  $this->site_timedate = $this->time_now + ($pref['time_offset'] * 3600);			// Check sign of offset
