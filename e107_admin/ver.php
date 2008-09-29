@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ver.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-08-25 23:37:52 $
+|     $Revision: 1.25 $
+|     $Date: 2008-09-29 01:49:29 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-$e107info['e107_version'] = "0.7.12";
+$e107info['e107_version'] = "0.7.13";
 
 ?>
