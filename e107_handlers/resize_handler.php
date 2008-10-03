@@ -11,11 +11,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-01-12 16:51:43 $
+|     $Revision: 1.9 $
+|     $Date: 2008-10-03 20:28:54 $
 |     $Author: e107steved $
 |
-| Mod to give correct return code if source image already smaller than max size
 |
 +----------------------------------------------------------------------------+
 */
@@ -25,11 +24,14 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 {
 // $destination_file - 'stdout' sends direct to browser. Otherwise treated as file name	
 //						- if its a file, given '644' permissions
-// $type - "upload"
-//		 - numeric - sets new width of image
-//		 - anything else - default preference for image width used, or failing that, 120 pixels
-//			'avatar' is used
-// $model - if "copy", creates a new file from $destination_file with the prefix 'thumb_'. 
+// $type	- numeric - sets new width of image
+//			- "upload" - uses preference 'im_width', or 400px if not defined
+//		 	- anything else - default preference for image width  & heightused, or failing that, 120 px x 100 px
+//				'avatar' may be used to invoke the default (see usersettings.php)
+// $model	- "copy" -  creates a new file for the destination, by prefixing $destination_file with 'thumb_'. Return error for small images.
+//			- 'upsize' - small images are enlarged
+//			- 'noscale' - small images are transferred at their original size
+//			- 'nocopy' - used in content manager plugin
 //					Otherwise overwrites any existing $destination_file
 
 // Returns:  TRUE - essentially, if $destination_file (or a file with a modified name) is valid:
@@ -56,8 +58,9 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	  $new_height = varset($pref['im_height'], 100);
 	}
 	 
-//	$im_quality = varset($pref['im_quality'], 99);
-	$im_quality = 99;
+
+	$im_quality = varset($pref['im_quality'], 99);
+
 	 
 	$image_stats = getimagesize($source_file);
 	if ($image_stats == null) 
@@ -83,7 +86,39 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	{  // Nothing to do if image width already smaller than the maximum
 	  // If we were basically ensuring an existing file was within limits, return TRUE
 	  // If we had to create a new file, return FALSE since it wasn't done.
-	  return (($source_file == $destination_file) && ($model != 'copy'));
+		switch ($model)
+		{
+			case 'copy' :		// Not sure what to do here!
+				return FALSE;	// This is what it used to do
+				break;
+			case 'upsize' :		// Scale source up to required size
+				break;			// Just fall through to do that.
+			case 'noscale' :	// No scaling of small images- just want destination to be the same as source
+				if ($destination_file == 'stdout')
+				{
+					$fileExt = strtolower(substr(strrchr($source_file, "."), 1));
+					$mimeTypes = array(
+						'jpg' 	=> 'jpeg',
+						'gif' 	=> 'gif',
+						'png'	=> 'png',
+						'jpeg'	=> 'jpeg',
+						'pjpeg' => 'jpeg',
+						'bmp'	=> 'bmp'
+						);
+					if (!isset($mimeTypes[$fileExt])) {	return FALSE;  }		// only allow image files  }
+					header("Content-type: image/".$mimeTypes[$fileExt]);
+					if (@readfile($source_file) === FALSE) { return FALSE; }
+				}
+				else
+				{
+					return copy($source_file,$destination_file);
+				}
+				return TRUE;
+				break;
+			default :
+				return ($source_file == $destination_file);
+		}
+//	  return (($source_file == $destination_file) && ($model != 'copy'));
 	}
 	
 	$ratio = ($imagewidth / $new_size);
@@ -96,30 +131,30 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		 
 	}
 
+	if (($destination_file != 'stdout') && ($model == 'copy'))
+	{
+		$destination_file = dirname($destination_file).'/thumb_'.basename($destination_file);
+	}
+	$returnError = 0;		// Return value from some of the commands
 	switch ($mode)
 	{
 	  case "ImageMagick" :
 	    if ($destination_file == "stdout") 
-		{		/* if destination is stdout, output directly to the browser */
+		{		// if destination is stdout, output directly to the browser 
 //		  $destination_file = "jpg:-";
 		  header("Content-type: image/jpeg");
 		  // Use double quotes instead of single to keep Bill happy
-		  passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"jpg:-\"");
+		  passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"jpg:-\"", $returnError);
 		} 
 		else 
-		{		/* otherwise output to file */
-		  if ($model == "copy") 
-		  {
-			$name = substr($destination_file, (strrpos($destination_file, "/")+1));
-			$name2 = "thumb_".$name;
-			$destination_file = str_replace($name, $name2, $destination_file);
-		  }
+		{		// otherwise output to file 
 		  // Use double quotes instead of single to keep Bill happy
-//		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." '".$destination_file."'");
-		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"".$destination_file."\"");
+		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"".$destination_file."\"", $dummy, $returnError);
 		}
+		if ($returnError) echo "ImageMagick resize/output error: {$returnError}<br />";
 		break;
-	  case "gd1" :
+	  case 'gd1' :
+	  case 'gd2' :
 		switch ($image_stats[2])
 		{
 		  case IMAGETYPE_PNG : // 3 - PNG
@@ -139,71 +174,43 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		{
 		  return FALSE;
 		}
-		$dst_img = imagecreate($new_size, $new_imageheight);		// Create blank image of correct size as target
 		// Only next line is different between gd1 and gd2
-		imagecopyresized($dst_img, $src_img, 0, 0, 0, 0, $new_size, $new_imageheight, $imagewidth, $imageheight);
-		if ($model == "copy") 
+		if ($mode == 'gd1')
 		{
-		  $name = substr($destination_file, (strrpos($destination_file, "/")+1));
-		  $name2 = "thumb_".$name;
-		  $destination_file = str_replace($name, $name2, $destination_file);
-		}
-		 
-		if ($destination_file == "stdout") 
-		{
-		  header("Content-type: image/jpeg");
-		  imagejpeg($dst_img, '', $im_quality);
+			$dst_img = imagecreate($new_size, $new_imageheight);		// Create blank image of correct size as target
+			if (!imagecopyresized($dst_img, $src_img, 0, 0, 0, 0, $new_size, $new_imageheight, $imagewidth, $imageheight))  { $returnError = -4; }
 		} 
 		else 
 		{
-		  imagejpeg($dst_img, $destination_file, $im_quality);
-		  imagedestroy($src_img);
-		  imagedestroy($dst_img);
+			$dst_img = imagecreatetruecolor($new_size, $new_imageheight);
+			if (!imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $new_size, $new_imageheight, $imagewidth, $imageheight)) { $returnError = -5; }
 		}
-		break;
-	  case "gd2" :
-		switch ($image_stats[2])
+		if ($returnError)
 		{
-		  case IMAGETYPE_PNG : // 3 - PNG
-			$src_img = @imagecreatefrompng($source_file);
-			break;
-		  case IMAGETYPE_GIF : // 1 - GIF
-		    if (!function_exists('imagecreatefromgif')) return FALSE;		// Some versions of GD library don't support GIF
-			$src_img = @imagecreatefromgif($source_file);
-			break;
-		  case IMAGETYPE_JPEG :	// 2 - Jpeg
-		    $src_img = @imagecreatefromjpeg($source_file);
-			break;
-		  default :
-			return FALSE; // Unsupported image type
-		}
-		if (!$src_img) 
-		{
+			echo "Resizing error: {$returnError}<br />";
 		  return FALSE;
 		}
 		 
-		$dst_img = imagecreatetruecolor($new_size, $new_imageheight);
-		// Only next line is different between gd1 and gd2
-		imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $new_size, $new_imageheight, $imagewidth, $imageheight);
-		if ($model == "copy") 
-		{
-		  $name = substr($destination_file, (strrpos($destination_file, "/")+1));
-		  $name2 = "thumb_".$name;
-		  $destination_file = str_replace($name, $name2, $destination_file);
-		}
-		
 		if ($destination_file == "stdout") 
 		{
 		  header("Content-type: image/jpeg");
-		  imagejpeg($dst_img, '', $im_quality);
+		  if (!imagejpeg($dst_img, '', $im_quality)) $returnError = -1;
 		} 
 		else 
 		{
-		  imagejpeg($dst_img, $destination_file, $im_quality);
-		  imagedestroy($src_img);
-		  imagedestroy($dst_img);
+			if (!imagejpeg($dst_img, $destination_file, $im_quality)) { $returnError = -1; }
+		}
+		if (!imagedestroy($src_img)) { $returnError = -2; }
+		if (!imagedestroy($dst_img)) { $returnError = -3; }
+		if ($returnError)
+		{
+			echo "Resizing error: {$returnError}<br />";
+			return FALSE;
 		}
 		break;
+		default :
+			echo "Invalid resize function: {$mode}<br />";
+			return FALSE;
 	}   // End switch($mode)
 
 	if ($destination_file == "stdout") return TRUE;		// Can't do anything more if file sent to stdout - assume success

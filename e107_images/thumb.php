@@ -11,53 +11,55 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_images/thumb.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-10-03 20:28:54 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 /*
  Usage: simply replace your <img src='filename.jpg'
  with
- <img src='".e_IMAGE."thumb.php?filename.jpg+size"' />
+ <img src='".e_IMAGE_ABS."thumb.php?filename.jpg+size"' />
  or
- <img src='".e_IMAGE."thumb.php?<full path to file>/filename.jpg+size"' />
- eg <img src='".e_IMAGE."thumb.php?home/images/myfilename.jpg+100)"' />
+ <img src='".e_IMAGE_ABS."thumb.php?<full path to file>/filename.jpg+size"' />
+ eg <img src='".e_IMAGE_ABS."thumb.php?home/images/myfilename.jpg+100)"' />
+ By default a small image is upsized. To render the image unchanged, append '+noscale', thus:
+ eg <img src='".e_IMAGE_ABS."thumb.php?home/images/myfilename.jpg+100+noscale)"' />
 
 */
+
 
 require_once("../class2.php");
 require_once(e_HANDLER."resize_handler.php");
 
-// var 3.
-// 1= newspost images/preview
-// 2= 
-
-	if (e_QUERY){
-		$tmp = explode("+",rawurldecode(e_QUERY));
-		if(strpos($tmp[0], "/") === 0 || strpos($tmp[0], ":") >= 1){
-			$source = $tmp[0];
-		}else{
-			$source = "../".str_replace("../","",$tmp[0]);
-		}
-
-
-
-
-		$newsize = $tmp[1];
-		if(!file_exists(e_IMAGE."newspost_images/preview/preview_".basename($source))){
-
-		  	if(!resize_image($source, e_IMAGE."newspost_images/preview/preview_".basename($source), $newsize)){
-		  		echo "Couldn't find: ".$source;
-		  	}
-		}
-
-
-		header("Content-type: image/jpg");
-		$imagedata = file_get_contents(e_IMAGE."newspost_images/preview/preview_".basename($source));
-		echo $imagedata;
-		exit;
-
-
+if (e_QUERY)
+{
+	$tmp = explode('+',rawurldecode(e_QUERY));
+	if(strpos($tmp[0], '/') === 0 || strpos($tmp[0], ":") >= 1)
+	{
+		$source = $tmp[0];	// Full path to image specified
 	}
+	else
+	{
+		$source = "../".str_replace('../','',$tmp[0]);
+	}
+	if (!$source)
+	{
+		echo "No image name.<br />";
+		exit;
+	} 
+	$newsize = intval($tmp[1]);
+	
+	if (($newsize < 5) || ($newsize > 4000))	// Pretty generous limits
+	{
+		echo "Bad image size: {$newsize}<br />";
+		exit;
+	} 
+	$opts = varset($tmp[2],'upsize');
+	if(!resize_image($source, 'stdout', $newsize, $opts))
+	{
+		echo "Couldn't find: {$source}<br />";
+	} 
+} 
+
 ?>
