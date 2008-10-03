@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-09-23 20:03:45 $
+|     $Revision: 1.7 $
+|     $Date: 2008-10-03 20:15:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -54,14 +54,21 @@ if (is_readable(THEME."rss_template.php")) {
 }
 
 //query handler
-list($content_type, $rss_type, $topic_id) = explode(".", e_QUERY);
+if (e_QUERY)
+{
+	$tmp = explode(".", e_QUERY);
+	$content_type = $tp->toDB($tmp[0]);
+	$rss_type = intval(varset($tmp[1],0));
+	$topic_id = $tp->toDB($tmp[2],'');
+}
 
 //list available rss feeds
-if (intval($rss_type) == false) {
+if (!$rss_type) 
+{
 	require_once(HEADERF);
  	require_once(e_PLUGIN."rss_menu/rss_template.php");
 
-	if(!$sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 AND rss_topicid NOT REGEXP ('\\\*') ORDER BY rss_name"))
+	if(!$sql->db_Select("rss", "*", "`rss_class`='0' AND `rss_limit`>0 AND `rss_topicid` NOT REGEXP ('\\\*') ORDER BY `rss_name`"))
 	{
 		$ns->tablerender(LAN_ERROR, RSS_LAN_ERROR_4);
 	}
@@ -88,14 +95,17 @@ $conversion[12] = "download";
 //-------------------------------------
 
 //convert certain old urls so we can check the db entries ---------------------
-if($topic_id){
-	//rss.php?1.2.14 (news, rss-2, cat=14)
-	if(is_numeric($content_type) && isset($conversion[$content_type]) ){
+if($topic_id)
+{	//rss.php?1.2.14 (news, rss-2, cat=14)
+	if(is_numeric($content_type) && isset($conversion[$content_type]) )
+	{
 		$content_type = $conversion[$content_type];
 	}
-}else{
-	//rss.php?1.2 (news, rss-2) --> check = news (check conversion table)
-	if(is_numeric($content_type) && isset($conversion[$content_type]) ){
+}
+else
+{	//rss.php?1.2 (news, rss-2) --> check = news (check conversion table)
+	if(is_numeric($content_type) && isset($conversion[$content_type]) )
+	{
 		$content_type = $conversion[$content_type];
 	}
 }
@@ -112,10 +122,14 @@ if(!$sql -> db_Select("rss", "*", "rss_class!='2' AND rss_url='".$content_type."
 		$ns->tablerender("", RSS_LAN_ERROR_1);
 		require_once(FOOTERF);
 		exit;
-	}else{
+	}
+	else
+	{
 		$row = $sql->db_Fetch();
 	}
-}else{
+}
+else
+{
 	$row = $sql->db_Fetch();
 }
 
