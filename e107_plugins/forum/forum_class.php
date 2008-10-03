@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2007-11-11 23:45:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.72 $
+|     $Date: 2008-10-03 19:27:49 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -696,7 +696,7 @@ class e107forum
 		$forum_sub = intval($forum_sub);
 		$ip = $e107->getip();
 		//Check for duplicate post
-		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_thread=".$thread_thread." and thread_datestamp > ".($post_time - 180)))
+		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_thread='".$thread_thread."' and thread_datestamp > ".($post_time - 180)))
 		{
 			return -1;
 		}
