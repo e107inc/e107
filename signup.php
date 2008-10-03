@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.118 $
-|     $Date: 2008-09-23 19:55:36 $
+|     $Revision: 1.119 $
+|     $Date: 2008-10-03 19:48:15 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -756,7 +756,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 					$text = LAN_405;
 				}
 			}
-			if(isset($error_message))
+			if($error_message)
 			{
 				$text = "<br /><b>".$error_message."</b><br />";	// Just display the error message
 			}
