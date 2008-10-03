@@ -11,35 +11,58 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/thumb.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-08-23 03:54:04 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2008-10-03 20:28:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
+*/
+/*
+		!!!!***** Deprecated location for this file - use the one in e107_images *****!!!
 */
 /*
  Usage: simply replace your <img src='filename.jpg'
  with
- <img src='".e_IMAGE."thumb.php?filename.jpg+size"' />
+ <img src='".e_IMAGE_ABS."thumb.php?filename.jpg+size"' />
  or
- <img src='".e_IMAGE."thumb.php?<full path to file>/filename.jpg+size"' />
- eg <img src='".e_IMAGE."thumb.php?home/images/myfilename.jpg+100)"' />
+ <img src='".e_IMAGE_ABS."thumb.php?<full path to file>/filename.jpg+size"' />
+ eg <img src='".e_IMAGE_ABS."thumb.php?home/images/myfilename.jpg+100)"' />
+ By default a small image is upsized. To render the image unchanged, append '+noscale', thus:
+ eg <img src='".e_IMAGE_ABS."thumb.php?home/images/myfilename.jpg+100+noscale)"' />
 
 */
+
 
 require_once("../class2.php");
 require_once(e_HANDLER."resize_handler.php");
 
-    if (e_QUERY){
-        $tmp = explode("+",rawurldecode(e_QUERY));
-        if(strpos($tmp[0], "/") === 0 || strpos($tmp[0], ":") >= 1){
-            $source = $tmp[0];
-        }else{
-            $source = "../".str_replace("../","",$tmp[0]);
-        }
+if (e_QUERY)
+{
+	$tmp = explode('+',rawurldecode(e_QUERY));
+	if(strpos($tmp[0], '/') === 0 || strpos($tmp[0], ":") >= 1)
+	{
+		$source = $tmp[0];	// Full path to image specified
+	}
+	else
+	{
+		$source = "../".str_replace('../','',$tmp[0]);
+	}
+	if (!$source)
+	{
+		echo "No image name.<br />";
+		exit;
+	} 
+	$newsize = intval($tmp[1]);
+	
+	if (($newsize < 5) || ($newsize > 4000))	// Pretty generous limits
+	{
+		echo "Bad image size: {$newsize}<br />";
+		exit;
+	} 
+	$opts = varset($tmp[2],'upsize');
+	if(!resize_image($source, 'stdout', $newsize, $opts))
+	{
+		echo "Couldn't find: {$source}<br />";
+	} 
+} 
 
-        $newsize = $tmp[1];
-        if(!resize_image($source, "stdout", $newsize)){
-            echo "Couldn't find: ".$source;
-        }
-    }
 ?>
