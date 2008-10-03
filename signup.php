@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-09-23 19:55:43 $
+|     $Revision: 1.21 $
+|     $Date: 2008-10-03 19:48:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -822,7 +822,7 @@ global $db_debug;
 					$text = LAN_405.'<br /><br />'.$adviseLoginName;
 				}
 			}
-			if(isset($error_message))
+			if ($error_message)
 			{
 				$text = "<br /><b>".$error_message."</b><br />";		// Just display error message
 			}
