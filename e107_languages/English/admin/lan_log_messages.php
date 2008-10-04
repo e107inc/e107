@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.11 2008-08-25 15:25:19 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.12 2008-10-04 16:24:43 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -114,5 +114,12 @@ define('LAN_AL_FRONTPG_03', 'Rule edited');
 define('LAN_AL_FRONTPG_04', 'Rule deleted');
 define('LAN_AL_FRONTPG_05', '');
 define('LAN_AL_FRONTPG_06', '');
+
+
+// User theme admin
+//-----------------
+define('LAN_AL_UTHEME_00', 'Unknown user theme related event');
+define('LAN_AL_UTHEME_01', 'User theme settings changed');
+define('LAN_AL_UTHEME_02', '');
 
 ?>
