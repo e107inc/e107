@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.16 $
-|   $Date: 2008-08-25 10:46:33 $
+|   $Revision: 1.17 $
+|   $Date: 2008-10-04 16:10:55 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -775,7 +775,7 @@ function get_filetypes($file_mask = FALSE, $filename = '')
 {
   if ($filename != '')
   {
-	if (strtolower(substr($filename) == '.xml'))
+	if (strtolower(substr($filename,-4) == '.xml'))
 	{
 	  return get_XML_filetypes($filename, $file_mask);
 	}
