@@ -38,7 +38,7 @@ if ($parms[0] != LAN_410)
 {
   $ret_cause = 0;
   if (!check_class($ueStruct["user_".$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])) $ret_cause = 1;
-  if (!check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])) $ret_cause = 2;
+  if (!check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'], $udata['user_class'])) $ret_cause = 2;
   if (($ueStruct["user_".$parms[0]]['user_extended_struct_read'] == e_UC_READONLY && (!ADMIN && $udata['user_id'] != USERID))) $ret_cause = 3;
   if ((!ADMIN && substr($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], -1) == 1 
 	&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE && $uid != USERID)) $ret_cause = 4;
