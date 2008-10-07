@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-12-18 20:25:18 $
+|     $Revision: 1.9 $
+|     $Date: 2008-10-07 19:08:50 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ require_once("../../class2.php");
 $bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
 $eplug_css[] = "<style type='text/css'>
 <!--
-.b { background-image: url(".$bar."); border: 1px solid #999; height: 10px; font: 0px }
+.b { background-image: url(".$bar."); border: 1px solid #999; height: 10px; font-size: 0px }
 -->
 </style>";
 
