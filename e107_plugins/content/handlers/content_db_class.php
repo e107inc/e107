@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2007-04-16 22:11:09 $
-|		$Author: lisa_ $
+|		$Revision: 1.10 $
+|		$Date: 2008-10-07 19:22:20 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -22,13 +22,14 @@ if (!defined('e107_INIT')) { exit; }
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
 $plugindir = e_PLUGIN."content/";
-$plugintable = "pcontent";
+$plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 $datequery = " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
 
 //icon, file, image upload
-if(isset($_POST['uploadfile'])){
-	
-	if($_POST['uploadtype']){
+if(isset($_POST['uploadfile']))
+{
+	if($_POST['uploadtype'])
+	{
 		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php");
 		$mainparent = $aa -> getMainParent(intval($_POST['parent1']));
@@ -44,7 +45,8 @@ if(isset($_POST['uploadfile'])){
 	}
 
 	//icon
-	if($_POST['uploadtype'] == "1"){
+	if($_POST['uploadtype'] == "1")
+	{
 		$pref['upload_storagetype'] = "1";
 		$pathtmp = $_POST['tmppathicon'];
 		$uploaded = file_upload($pathtmp);
@@ -62,7 +64,9 @@ if(isset($_POST['uploadfile'])){
 		$message = ($new ? CONTENT_ADMIN_ITEM_LAN_106 : CONTENT_ADMIN_ITEM_LAN_107);
 
 	//file
-	}elseif($_POST['uploadtype'] == "2"){
+	}
+	elseif($_POST['uploadtype'] == "2")
+	{
 		$pref['upload_storagetype'] = "1";
 		$pathtmp = $_POST['tmppathfile'];
 		$uploaded = file_upload($pathtmp);
@@ -77,7 +81,9 @@ if(isset($_POST['uploadfile'])){
 		$message = ($new ? CONTENT_ADMIN_ITEM_LAN_108 : CONTENT_ADMIN_ITEM_LAN_109);
 
 	//image
-	}elseif($_POST['uploadtype'] == "3"){
+	}
+	elseif($_POST['uploadtype'] == "3")
+	{
 		$pref['upload_storagetype'] = "1";
 		$pathtmp = $_POST['tmppathimage'];
 		$uploaded = file_upload($pathtmp);
@@ -109,7 +115,9 @@ class contentdb{
 		$_POST['content_heading']		= $tp -> toDB(trim($_POST['content_heading']));
 		$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
 		$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
-		if(e_WYSIWYG){
+
+		if(e_WYSIWYG)
+		{
 			$_POST['content_text']		= $tp->createConstants($_POST['content_text']); // convert e107_images/ to {e_IMAGE} etc.
 		}
 		//the problem with tiny_mce is it's storing e_HTTP with an image path, while it should only use the {e_xxx} variables
@@ -122,7 +130,8 @@ class contentdb{
 		$_POST['content_meta']			= $tp -> toDB($_POST['content_meta']);
 
 		//content create
-		if( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='create' || $qs[1]=='submit') && isset($qs[2]) && is_numeric($qs[2]) ){
+		if( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='create' || $qs[1]=='submit') && isset($qs[2]) && is_numeric($qs[2]) )
+		{
 			$parent = intval($_POST['parent1']);
 
 		//content edit
@@ -136,31 +145,47 @@ class contentdb{
 		}
 		$_POST['parent'] = $parent;
 
-		if(USER){
-			if($_POST['content_author_id']){
-				if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
-					
+		if(USER)
+		{
+			if($_POST['content_author_id'])
+			{
+				if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) )
+				{
 					$author = $_POST['content_author_id'];
 					
-					if($_POST['content_author_name'] != CONTENT_ADMIN_ITEM_LAN_14){
+					if ($_POST['content_author_name'] != CONTENT_ADMIN_ITEM_LAN_14)
+					{
 						$author .= "^".$_POST['content_author_name'];
 					}
-					if($_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
+					if ($_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15)
+					{
 						$author .= "^".$_POST['content_author_email'];
 					}
-					
-				}else{
+				}
+				else
+				{
 					$author = $_POST['content_author_id'];
 				}
-			}else{
+			}
+			else
+			{
 				$author = $_POST['content_author_name'];
-				if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
+				if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15)
+				{
 					$author .= "^".$_POST['content_author_email'];
 				}
 			}
-		}else{
+		}
+		else
+		{	// Non-user posting content
+			if ($type != 'submit')
+			{	// Naughty!
+				header("location:".$plugindir."content.php"); 	// but be kind
+				exit;
+			}
 			$author = $_POST['content_author_name'];
-			if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
+			if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15)
+			{
 				$author .= "^".$_POST['content_author_email'];
 			}
 		}
