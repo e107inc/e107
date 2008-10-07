@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2008-08-14 13:18:26 $
-|     $Author: secretr $
+|     $Revision: 1.66 $
+|     $Date: 2008-10-07 21:29:25 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1782,6 +1782,17 @@ function e107_ini_set($var, $value){
 		ini_set($var, $value);
 	}
 }
+
+
+// Return TRUE if specified plugin installed, FALSE if not
+function plugInstalled($plugname)
+{
+	global $pref;
+	if (!isset($pref['plug_installed'][$plugname])) return FALSE;
+	// Could add more checks here later if appropriate
+	return TRUE;
+}
+
 
 function echo_gzipped_page() {
 
