@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2008-06-27 21:22:02 $
+|		$Revision: 1.8 $
+|		$Date: 2008-10-07 19:22:20 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -51,6 +51,14 @@ $deltest = array_flip($_POST);
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);
 }
+
+
+if (!USER)
+{	// non-user can never manage content
+	header("location:".$plugindir."content.php"); 
+	exit;
+}
+
 
 // define e_pagetitle
 $aa -> setPageTitle();
