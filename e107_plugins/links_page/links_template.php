@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-02-20 20:28:23 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2008-10-07 19:25:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -150,9 +150,10 @@ $sc_style['LINK_BUTTON_LAN']['post'] = "</td>";
 $sc_style['LINK_CAT_DESC']['pre'] = "<br /><span class='smalltext'><i>";
 $sc_style['LINK_CAT_DESC']['post'] = "</i></span>";
 
+//$LINK_TABLE_CAPTION = LCLAN_ITEM_24."{NAVIGATOR}" ;
 $LINK_TABLE_CAPTION = LCLAN_ITEM_24;
 
-$LINK_TABLE_START = "
+$LINK_TABLE_START = "{NAVIGATOR}
 	<div style='text-align:center'>
 	<table class='fborder' style='".USER_WIDTH.";margin-bottom:20px;'>
 	<tr>
