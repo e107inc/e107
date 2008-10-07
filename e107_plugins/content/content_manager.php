@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.25 $
-|		$Date: 2008-06-27 21:22:19 $
+|		$Revision: 1.26 $
+|		$Date: 2008-10-07 19:22:17 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -46,19 +46,25 @@ include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/
 
 $deltest = array_flip($_POST);
 
-if(e_QUERY){
+if(e_QUERY)
+{
 	$qs = explode(".", e_QUERY);
 }
+
+
+if (!USER)
+{	// non-user can never manage content
+	header("location:".$plugindir."content.php"); 
+	exit;
+}
+
 
 // define e_pagetitle
 $aa -> setPageTitle();
 
-//if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS("delete")],$matches)){
-//	$delete = $matches[1];
-//	$del_id = $matches[2];
-//}
 
-if(isset($_POST['delete'])){
+if(isset($_POST['delete']))
+{
 	$tmp = array_pop(array_flip($_POST['delete']));
 	list($delete, $del_id) = explode("_", $tmp);
 }
@@ -67,83 +73,110 @@ if(isset($_POST['delete'])){
 $e_wysiwyg	= "content_text";
 
 //include js
-function headerjs(){
+function headerjs()
+{
 	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
 }
 // ##### DB ---------------------------------------------------------------------------------------
 
+
+
 require_once(HEADERF);
 
-if(isset($_POST['create_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+if(isset($_POST['create_content']))
+{
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none")
+	{
 		$adb -> dbContent("create", "contentmanager");
-	}else{
+	}
+	else
+	{
 		$message = CONTENT_ADMIN_ITEM_LAN_0;
 	}
 }
 
-if(isset($_POST['update_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+
+if(isset($_POST['update_content']))
+{
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none")
+	{
 		$adb -> dbContent("update", "contentmanager");
-	}else{
+	}
+	else
+	{
 		$message = CONTENT_ADMIN_ITEM_LAN_0;
 	}
 }
 
-if($delete == 'content' && is_numeric($del_id)){
-	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+if($delete == 'content' && is_numeric($del_id))
+{
+	if($sql -> db_Delete($plugintable, "content_id='{$del_id}' "))
+	{
 		$message = CONTENT_ADMIN_ITEM_LAN_3;
 		$e107cache->clear("content");
 	}
 }
 
-if(isset($message)){
+if(isset($message))
+{
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-if(!e_QUERY){
-	if(USER){
-		$aform -> show_contentmanager("edit", USERID, USERNAME);
-		require_once(FOOTERF);
-		exit;
-	}else{
-		header("location:".$plugindir."content.php"); exit;
-	}
-}else{
+if(!e_QUERY)
+{
+	$aform -> show_contentmanager("edit", USERID, USERNAME);
+	require_once(FOOTERF);
+	exit;
+}
 
-	if($qs[0] == "c"){
+
+	if($qs[0] == "c")
+	{
 		$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />".CONTENT_ADMIN_ITEM_LAN_55;
 		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 		require_once(FOOTERF);
 		exit;
 
-	}elseif($qs[0] == "u"){
+	}
+	elseif($qs[0] == "u")
+	{
 		$message = CONTENT_ADMIN_ITEM_LAN_2."<br /><br />".CONTENT_ADMIN_ITEM_LAN_55;
 		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 		require_once(FOOTERF);
 		exit;
 
 	//show list of items in this category
-	}elseif($qs[0] == "content" && is_numeric($qs[1])){
+	}
+	elseif($qs[0] == "content" && is_numeric($qs[1]))
+	{
 		$aform -> show_manage_content("contentmanager", USERID, USERNAME);
 
 	//create new item
-	}elseif($qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2])){
+	}
+	elseif($qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2]))
+	{
 		$aform -> show_create_content("contentmanager", USERID, USERNAME);
 
 	//edit item
-	}elseif($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2])){
+	}
+	elseif($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2]))
+	{
 		$aform -> show_create_content("contentmanager", USERID, USERNAME);
 
 	//manage submitted
-	}elseif($qs[0] == "content" && $qs[1] == "submitted" && is_numeric($qs[2])){
+	}
+	elseif($qs[0] == "content" && $qs[1] == "submitted" && is_numeric($qs[2]))
+	{
 		//$aform -> show_submitted("contentmanager", USERID, USERNAME, $qs[2]);
 		$aform -> show_submitted($qs[2]);
 
 		//post submitted content item
-	}elseif($qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) ){
+	}
+	elseif($qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) )
+	{
 		$newqs = array_reverse($qs);
-		if($newqs[0] == "cu"){										//item; submit post / update redirect
+		if($newqs[0] == "cu")
+		{										//item; submit post / update redirect
 			$mainparent = $aa -> getMainParent($qs[2]);
 			$message = CONTENT_ADMIN_ITEM_LAN_117."<br /><br />";
 			$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?content.create.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
@@ -156,10 +189,12 @@ if(!e_QUERY){
 		}
 		$aform -> show_create_content("sa", USERID, USERNAME);
 
-	}else{
+	}
+	else
+	{
 		header("location:".e_SELF); exit;
 	}
-}
+
 
 
 require_once(FOOTERF);

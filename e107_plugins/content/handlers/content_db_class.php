@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.56 $
-|		$Date: 2007-01-14 14:24:41 $
-|		$Author: lisa_ $
+|		$Revision: 1.57 $
+|		$Date: 2008-10-07 19:22:18 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -27,9 +27,10 @@ $datequery		= " AND content_datestamp < ".time()." AND (content_enddate=0 || con
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
 //icon, file, image upload
-if(isset($_POST['uploadfile'])){
-	
-	if($_POST['uploadtype']){
+if(isset($_POST['uploadfile']))
+{
+	if($_POST['uploadtype'])
+	{
 		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php");
 		$mainparent		= $aa -> getMainParent(intval($_POST['parent1']));
@@ -45,7 +46,8 @@ if(isset($_POST['uploadfile'])){
 	}
 
 	//icon
-	if($_POST['uploadtype'] == "1"){
+	if($_POST['uploadtype'] == "1")
+	{
 		$pref['upload_storagetype'] = "1";
 		$pathtmp		= $_POST['tmppathicon'];
 		$uploaded		= file_upload($pathtmp);
@@ -63,7 +65,9 @@ if(isset($_POST['uploadfile'])){
 		$message = ($new ? CONTENT_ADMIN_ITEM_LAN_106 : CONTENT_ADMIN_ITEM_LAN_107);
 
 	//file
-	}elseif($_POST['uploadtype'] == "2"){
+	}
+	elseif($_POST['uploadtype'] == "2")
+	{
 		$pref['upload_storagetype'] = "1";
 		$pathtmp		= $_POST['tmppathfile'];
 		$uploaded		= file_upload($pathtmp);
@@ -78,7 +82,9 @@ if(isset($_POST['uploadfile'])){
 		$message = ($new ? CONTENT_ADMIN_ITEM_LAN_108 : CONTENT_ADMIN_ITEM_LAN_109);
 
 	//image
-	}elseif($_POST['uploadtype'] == "3"){
+	}
+	elseif($_POST['uploadtype'] == "3")
+	{
 		$pref['upload_storagetype'] = "1";
 		$pathtmp		= $_POST['tmppathimage'];
 		$uploaded		= file_upload($pathtmp);
@@ -99,89 +105,114 @@ if(isset($_POST['uploadfile'])){
 	}
 }
 
-class contentdb{
+class contentdb
+{
+	// Method to update content in DB
+	function dbContent($mode, $type)
+	{
+		//$mode		: create or update
+		//$type		: none(=admin), submit, contentmanager
+		global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage, $e_event;
 
-		//function dbContentUpdate($mode, $type){
-		function dbContent($mode, $type){
-			//$mode		: create or update
-			//$type		: none(=admin), submit, contentmanager
-			global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage, $e_event;
+		$_POST['content_heading']		= $tp -> toDB(trim($_POST['content_heading']));
+		$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
+		$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
 
-			$_POST['content_heading']		= $tp -> toDB(trim($_POST['content_heading']));
-			$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
-			$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
-
-			if(e_WYSIWYG){
-				$_POST['content_text']		= $tp->createConstants($_POST['content_text']); // convert e107_images/ to {e_IMAGE} etc.
-			}
-			//the problem with tiny_mce is it's storing e_HTTP with an image path, while it should only use the {e_xxx} variables
-			//this small check resolves this, and stores the paths correctly
-			if(strstr($_POST['content_text'],e_HTTP."{e_")){
-				$_POST['content_text'] = str_replace(e_HTTP."{e_", "{e_", $_POST['content_text']);
-			}
+		if(e_WYSIWYG)
+		{
+			$_POST['content_text']		= $tp->createConstants($_POST['content_text']); // convert e107_images/ to {e_IMAGE} etc.
+		}
+		//the problem with tiny_mce is it's storing e_HTTP with an image path, while it should only use the {e_xxx} variables
+		//this small check resolves this, and stores the paths correctly
+		if(strstr($_POST['content_text'],e_HTTP."{e_"))
+		{
+			$_POST['content_text'] = str_replace(e_HTTP."{e_", "{e_", $_POST['content_text']);
+		}
 			
-			$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
-			$_POST['content_class']			= ($_POST['content_class'] ? intval($_POST['content_class']) : "0");
-			$_POST['content_meta']			= $tp -> toDB($_POST['content_meta']);
-			//content create
-			if( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='create' || $qs[1]=='submit') && isset($qs[2]) && is_numeric($qs[2]) ){
-				$parent = intval($_POST['parent1']);
+		$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
+		$_POST['content_class']			= ($_POST['content_class'] ? intval($_POST['content_class']) : "0");
+		$_POST['content_meta']			= $tp -> toDB($_POST['content_meta']);
 
+		//content create
+		if( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='create' || $qs[1]=='submit') && isset($qs[2]) && is_numeric($qs[2]) )
+		{
+			$parent = intval($_POST['parent1']);
 			//content edit
-			}elseif( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='edit' || $qs[1]=='sa') && isset($qs[2]) && is_numeric($qs[2]) ){
-				if( isset($_POST['parent1']) && strpos($_POST['parent1'], ".") ){
-					$tmp = explode(".", $_POST['parent1']);
-					$parent = $tmp[1];
-				}else{
-					$parent = $_POST['parent1'];
-				}
+		}
+		elseif ( isset($qs[0]) && $qs[0]=='content' && isset($qs[1]) && ($qs[1]=='edit' || $qs[1]=='sa') && isset($qs[2]) && is_numeric($qs[2]) )
+		{
+			if( isset($_POST['parent1']) && strpos($_POST['parent1'], ".") )
+			{
+				$tmp = explode(".", $_POST['parent1']);
+				$parent = $tmp[1];
 			}
-			$_POST['parent'] = $parent;
+			else
+			{
+				$parent = $_POST['parent1'];
+			}
+		}
+		$_POST['parent'] = $parent;
 
-			if(USER){
-				if($_POST['content_author_id']){
-					if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
+		if(USER)
+		{
+			if($_POST['content_author_id'])
+			{
+				if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) )
+				{
+					$author = $_POST['content_author_id'];
 						
-						$author = $_POST['content_author_id'];
-						
-						if($_POST['content_author_name'] != CONTENT_ADMIN_ITEM_LAN_14){
-							$author .= "^".$_POST['content_author_name'];
-						}
-						if($_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
-							$author .= "^".$_POST['content_author_email'];
-						}
-						
-					}else{
-						$author = $_POST['content_author_id'];
+					if ($_POST['content_author_name'] != CONTENT_ADMIN_ITEM_LAN_14)
+					{
+						$author .= "^".$_POST['content_author_name'];
 					}
-				}else{
-					$author = $_POST['content_author_name'];
-					if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
+					if ($_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15)
+					{
 						$author .= "^".$_POST['content_author_email'];
 					}
 				}
-			}else{
+				else
+				{
+					$author = $_POST['content_author_id'];
+				}
+			}
+			else
+			{
 				$author = $_POST['content_author_name'];
-				if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
+				if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15)
+				{
 					$author .= "^".$_POST['content_author_email'];
 				}
 			}
+		}
+		else
+		{	// Non-user posting content
+			if ($type != 'submit')
+			{	// Naughty!
+				header("location:".$plugindir."content.php"); 	// but be kind
+				exit;
+			}
+			$author = $_POST['content_author_name'];
+			if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15)
+			{
+				$author .= "^".$_POST['content_author_email'];
+			}
+		}
 
-			$mainparent						= $aa -> getMainParent(intval($_POST['parent']));
-			$content_pref					= $aa -> getContentPref($mainparent);
+		$mainparent						= $aa -> getMainParent(intval($_POST['parent']));
+		$content_pref					= $aa -> getContentPref($mainparent);
 			
-			$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
-			$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
-			$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
+		$content_pref["content_icon_path_tmp"] = ($content_pref["content_icon_path_tmp"] ? $content_pref["content_icon_path_tmp"] : $content_pref["content_icon_path"]."tmp/");
+		$content_pref["content_file_path_tmp"] = ($content_pref["content_file_path_tmp"] ? $content_pref["content_file_path_tmp"] : $content_pref["content_file_path"]."tmp/");
+		$content_pref["content_image_path_tmp"] = ($content_pref["content_image_path_tmp"] ? $content_pref["content_image_path_tmp"] : $content_pref["content_image_path"]."tmp/");
 			
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
-			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
-			$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
-			$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
-			$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
-			$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
-			$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
+		$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large"]);
+		$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small"]);
+		$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path"]);
+		$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path"]);
+		$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path"]);
+		$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp"]);
+		$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp"]);
+		$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp"]);
 
 			//move icon to correct folder
 			if($_POST['content_icon']){
@@ -279,7 +310,9 @@ class contentdb{
 			//content_refer : only added in sql if posting submitted item
 			//$refer = (isset($_POST['content_refer']) && $_POST['content_refer']=='sa' ? ", content_refer='' " : "");
 
-			if($mode == "create"){
+			
+		if($mode == "create")
+		{
 				if($type == "submit"){
 					$refer = ($content_pref["content_submit_directpost"] ? "" : "sa");
 				}else{
@@ -304,23 +337,33 @@ class contentdb{
 						js_location(e_SELF."?d");
 					}							
 				}
-			}
+		}
 
-			if($mode == "update"){
-				if($type == "submit"){
-					if(isset($_POST['content_refer']) && $_POST['content_refer']=='sa'){
-						$refer = ", content_refer='' ";
-					}else{
-						$refer = "";
-					}
-				}else{
-					if(isset($_POST['content_refer']) && $_POST['content_refer']=='sa'){
-						$refer = ", content_refer='' ";
-					}else{
-						$refer = "";
-					}
+		if($mode == "update")
+		{
+			if($type == "submit")
+			{
+				if(isset($_POST['content_refer']) && $_POST['content_refer']=='sa')
+				{
+					$refer = ", content_refer='' ";
 				}
-				$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$tp->toDB($author)."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".intval($_POST['content_comment'])."', content_rate = '".intval($_POST['content_rate'])."', content_pe = '".intval($_POST['content_pe'])."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".intval($_POST['content_score'])."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".intval($_POST['content_id'])."' ");
+				else
+				{
+					$refer = "";
+				}
+			}
+			else
+			{
+				if(isset($_POST['content_refer']) && $_POST['content_refer']=='sa')
+				{
+					$refer = ", content_refer='' ";
+				}
+				else
+				{
+					$refer = "";
+				}
+			}
+			$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$tp->toDB($author)."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".intval($_POST['content_comment'])."', content_rate = '".intval($_POST['content_rate'])."', content_pe = '".intval($_POST['content_pe'])."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".intval($_POST['content_score'])."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".intval($_POST['content_id'])."' ");
 
 				$e107cache->clear("$plugintable");
 				$e107cache->clear("comment.$plugintable.{$_POST['content_id']}");
