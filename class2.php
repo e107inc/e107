@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2008-10-07 21:29:25 $
+|     $Revision: 1.67 $
+|     $Date: 2008-10-11 11:55:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -600,6 +600,7 @@ define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off, defs"));
 define("SITECONTACTINFO", $tp->toHTML($pref['sitecontactinfo'], TRUE, "emotes_off, defs"));
 
+/* Withdrawn 0.8
 // legacy module.php file loading.
 if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
@@ -609,7 +610,7 @@ if (isset($pref['modules']) && $pref['modules']) {
 		}
 	}
 }
-
+*/
 
 $js_body_onload = array();			// Initialise this array in case a module wants to add to it
 

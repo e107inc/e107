@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2008-08-24 09:56:57 $
+|     $Revision: 1.28 $
+|     $Date: 2008-10-11 11:55:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -211,7 +211,8 @@ function update_706_to_800($type='')
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
 						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone',
-						'plug_sc', 'plug_bb');
+						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest'
+);
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');

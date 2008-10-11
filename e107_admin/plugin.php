@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-08-11 21:24:32 $
+|     $Revision: 1.19 $
+|     $Date: 2008-10-11 11:55:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -194,11 +194,11 @@ if ($action == 'uninstall')
 				$text .= ($plugin->manage_comments('remove', $eplug_comment_ids)) ? EPL_ADLAN_50."<br />" : "";
 			}
 	
+/* Not used in 0.8	
 			if ($eplug_module)
 			{
 				$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
 			}
-	
 			if ($eplug_status)
 			{
 				$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
@@ -208,7 +208,7 @@ if ($action == 'uninstall')
 			{
 				$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
 			}
-
+*/
 			if (is_array($eplug_array_pref))
 			{
 				foreach($eplug_array_pref as $key => $val)
@@ -216,7 +216,8 @@ if ($action == 'uninstall')
 					$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
 				}
 			}
-	
+
+/* Not used in 0.8	
 			if (is_array($eplug_sc))
 			{
 				$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
@@ -226,7 +227,7 @@ if ($action == 'uninstall')
 			{
 				$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
 			}
-	
+*/	
 			if ($eplug_menu_name)
 			{
 				$sql->db_Delete('menus', "menu_name='$eplug_menu_name' ");
@@ -320,6 +321,7 @@ if ($action == 'upgrade')
 			}
 		}
 	
+/* Not used in 0.8	
 		if ($eplug_module)
 		{
 			$plugin->manage_plugin_prefs('add', 'modules', $eplug_folder);
@@ -366,7 +368,7 @@ if ($action == 'upgrade')
 		{
 			$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
 		}
-	
+*/	
 		if (is_array($upgrade_add_prefs))
 		{
 			$plugin->manage_prefs('add', $upgrade_add_prefs);
