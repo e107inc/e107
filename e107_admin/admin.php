@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-08-25 10:46:30 $
+|     $Revision: 1.4 $
+|     $Date: 2008-10-11 11:55:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -33,6 +33,7 @@ if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 	$ns -> tablerender(ADLAN_ERR_1, $text);
 }
 
+/* Not used in 0.8	
 // check for old modules.
 if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Field("plugin",5) == "plugin_addons")
 {
@@ -60,6 +61,7 @@ if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Fiel
 		$ns -> tablerender(ADLAN_ERR_4,$text);
 	}
 }
+*/
 
 // check for file-types;
 $allowed_types = get_filetypes();			// Get allowed types according to filetypes.xml or filetypes.php
