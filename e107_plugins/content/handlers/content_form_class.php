@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.130 $
-|		$Date: 2008-10-07 19:22:18 $
+|		$Revision: 1.131 $
+|		$Date: 2008-10-11 14:36:57 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -583,16 +583,27 @@ class contentform
 						<table style='".$tableprop." ".ADMIN_WIDTH."' class='fborder'>";
 
 						$hidden = "";
-						if($mode == "contentmanager"){
-							if($qs[1] == "edit"){
+						if($mode == "contentmanager")
+						{
+							if($qs[1] == "edit")
+							{
 								$hidden .= $rs -> form_hidden("parent1", $row['content_parent']);
-							}else{
+								$hidden .= $rs -> form_hidden("preview_parent1", varset($_POST['preview_parent1'],$row['content_parent']));
+								echo "CM Edit mode parent1 post: {$_POST['parent1']},{$_POST['preview_parent1']},{$row['content_parent']}<br />";
+							}
+							else
+							{
 								$hidden .= $rs -> form_hidden("parent1", intval($qs[2]));
 							}
-						}else{
-							if($mode == "submit"){
+						}
+						else
+						{
+							if($mode == "submit")
+							{
 								$parent = "submit";
-							}else{
+							}
+							else
+							{
 								$parent = (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : (isset($row['content_parent']) ? $row['content_parent'] : "") );
 							}
 							//category parent
