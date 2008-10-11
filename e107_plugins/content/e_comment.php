@@ -15,7 +15,7 @@ $e_comment['eplug_comment_ids'] = "pcontent"; //This is set to the table name yo
 $e_comment['plugin_path'] = "content"; //The path of your plugin.
 $e_comment['plugin_name'] = "content"; //A name for your plugin. It will be used in links to comments, in list_new/new.php.
 //This is set to the location you'd like the user to return to after replying to a comment.
-$e_comment['reply_location'] = e_PLUGIN."content/content.php?content.{NID}"; 
+$e_comment['reply_location'] = e_PLUGIN_ABS."content/content.php?content.{NID}"; 
 $e_comment['db_title'] = "content_heading"; //This is the name of the field in your plugin's db table that corresponds to it's name or title.
 $e_comment['db_id'] = "content_id"; // This is the name of the field in your plugin's db table that correspond to it's unique id number.
 

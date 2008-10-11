@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2008-07-31 19:26:35 $
+|     $Revision: 1.76 $
+|     $Date: 2008-10-11 10:49:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ require_once(e_FILE."shortcode/batch/comment_shortcodes.php");
 class comment {
 
 	/**
-	 * Enter description here...
+	 * Display the comment editing form
 	 *
 	 * @param unknown_type $action
 	 * @param unknown_type $table
@@ -47,7 +47,8 @@ class comment {
 	{
 		//rating	: boolean, to show rating system in comment
 		global $pref, $sql, $tp;
-		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE){
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
+		{
         	return;
 		}
 
@@ -65,7 +66,8 @@ class comment {
 
 			if ($pref['nested_comments'])
 			{
-				$text .= "<tr>\n<td style='width:20%'>".COMLAN_324."</td>\n<td style='width:80%'>\n<input class='tbox comment subject' type='text' name='subject' size='61' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%'>".COMLAN_324."</td>\n<td style='width:80%'>\n
+				<input class='tbox comment subject' type='text' name='subject' size='61' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
 				$text2 = "";
 			}
 			else
@@ -78,7 +80,7 @@ class comment {
 				$eaction = 'edit';
 				$id = $_GET['comment_id'];
 			}
-			else if (strstr(e_QUERY, "edit"))
+		  elseif (strstr(e_QUERY, "edit"))
 			{
 				$eaction = "edit";
 				$tmp = explode(".", e_QUERY);
@@ -103,18 +105,18 @@ class comment {
 				list($prid, $pname) = explode(".", $ecom['comment_author']);
 
 				if($prid != USERID || !USER)
-				{
+			{  // Editing not allowed
 					echo "<div style='text-align: center;'>".COMLAN_329."</div>";
 					require_once(FOOTERF);
 					exit;
 				}
 
 				$caption = COMLAN_318;
-				$comval = $tp -> toFORM($ecom['comment_comment']);
+			$comval = $tp -> toForm($ecom['comment_comment']);
 				$comval = preg_replace("#\[ ".COMLAN_319.".*\]#si", "", $comval);
 			}
 			else
-			{
+		  {  // New comment - blank form
 				$caption = COMLAN_9;
 				$comval = "";
 			}
@@ -128,16 +130,17 @@ class comment {
 				if(!is_object($rater)){ $rater = new rater; }
 				$rate = $rater -> composerating($table, $itemid, $enter=TRUE, USERID, TRUE);
 				$rate = "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_327.":</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
-			}
-			//end rating area
+		  }  //end rating area
 
 			if (ANON == TRUE && USER == FALSE)
-			{
-				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".COMLAN_16."</td>\n<td style='width:80%'>\n<input class='tbox comment author' type='text' name='author_name' size='61' value='$author_name' maxlength='100' />\n</td>\n</tr>";
+		  {	// Box for author name (anonymous comments - if allowed)
+			$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".COMLAN_16."</td>\n<td style='width:80%'>\n<input class='tbox comment author' type='text' name='author_name' size='61' value='{$author_name}' maxlength='100' />\n</td>\n</tr>";
 			}
 			$text .= $rate."<tr> \n
 			<td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='tbox comment' id='comment' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
-			".display_help('helpb',"comment")."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? COMLAN_320 : COMLAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
+			".display_help('helpb',"comment")."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n
+			<td id='commentformbutton' style='width:80%;'>\n
+			". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='{$id}' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='{$id}' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='{$content_type}' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? COMLAN_320 : COMLAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
 
 			if($tablerender)
 			{
@@ -154,7 +157,7 @@ class comment {
 			}
 		}
 		else
-		{
+		{  // Comment entry not allowed - point to signup link
 			echo "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
 		}
 	}
@@ -171,13 +174,15 @@ class comment {
 	 * @param unknown_type $addrating
 	 * @return unknown
 	 */
-	function render_comment($row, $table, $action, $id, $width, $subject, $addrating=FALSE) {
+	function render_comment($row, $table, $action, $id, $width, $subject, $addrating=FALSE) 
+	{
 		//addrating	: boolean, to show rating system in rendered comment
 		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction, $thistable, $thisid;
 
-		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE){
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
+		{
         	return;
 		}
 
@@ -210,7 +215,8 @@ class comment {
 		$delete		= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
 		$userinfo	= "[<a href='".e_ADMIN_ABS."userinfo.php?".$comrow['comment_ip']."'>".COMLAN_4."</a>]";
 
-		if (!$COMMENTSTYLE) {
+		if (!$COMMENTSTYLE) 
+		{
 			global $THEMES_DIRECTORY;
 			$COMMENTSTYLE = "";
 			if (file_exists(THEME."comment_template.php")) {
@@ -219,10 +225,12 @@ class comment {
 				require_once(e_BASE.$THEMES_DIRECTORY."templates/comment_template.php");
 			}
 		}
-		if ($pref['nested_comments']) {
+		if ($pref['nested_comments']) 
+		{
 			$width2 = 100 - $width;
 			$total_width = (isset($pref['standards_mode']) && $pref['standards_mode'] ? "98%" : "95%");
-			if($width){
+			if($width)
+			{
 				$renderstyle = "
 				<table style='width:".$total_width."' border='0'>
 				<tr>
@@ -307,11 +315,13 @@ class comment {
 	 * @param unknown_type $subject
 	 * @param unknown_type $rateindex
 	 */
-	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex=FALSE) {
+	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex=FALSE) 
+	{
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
 		global $sql, $sql2, $tp, $e107cache, $e_event, $e107, $pref, $rater;
 
-		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE){
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
+		{
         	return;
 		}
 
@@ -320,7 +330,7 @@ class comment {
 			$eaction = 'edit';
 			$editpid = $_GET['comment_id'];
 		}
-		else if (strstr(e_QUERY, "edit"))
+		elseif (strstr(e_QUERY, "edit"))
 		{
 			$eaction = "edit";
 			$tmp = explode(".", e_QUERY);
@@ -369,7 +379,7 @@ class comment {
 					if($editpid)
 					{
 						$comment .= "\n[ ".COMLAN_319." [time=short]".time()."[/time] ]";
-						$sql -> db_Update("comments", "comment_comment='$comment' WHERE comment_id='".intval($editpid)."' ");
+				$sql -> db_Update("comments", "comment_comment='{$comment}' WHERE comment_id='".intval($editpid)."' ");
 						$e107cache->clear("comment");
 						return;
 					}
@@ -380,7 +390,8 @@ class comment {
 					}
 					else
 					{
-						if (USER == TRUE) {
+				if (USER == TRUE) 
+				{
 							$sql -> db_Update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
 						}
 						$edata_li = array("comment_type" => $type, "comment_subject" => $subject, "comment_item_id" => $id, "comment_nick" => $nick, "comment_time" => $_t, "comment_comment" => $comment);
@@ -456,19 +467,21 @@ class comment {
 	/**
 	 * Enter description here...
 	 *
-	 * @param unknown_type $table
-	 * @param unknown_type $action
-	 * @param unknown_type $id
-	 * @param unknown_type $width
+	 * @param unknown_type $table - the source table for the associated item
+	 * @param unknown_type $action - usually 'comment' or 'reply'
+	 * @param unknown_type $id - ID of item associated with comments (e.g. news ID)
+	 * @param unknown_type $width - appears to not be used
 	 * @param unknown_type $subject
 	 * @param unknown_type $rate
 	 */
-	function compose_comment($table, $action, $id, $width, $subject, $rate=FALSE, $return=FALSE, $tablerender=TRUE){
+	function compose_comment($table, $action, $id, $width, $subject, $rate=FALSE, $return=FALSE, $tablerender=TRUE)
+	{
 		//compose comment	: single call function will render the existing comments and show the form_comment
 		//rate				: boolean, to show/hide rating system in comment, default FALSE
 		global $pref, $sql, $ns, $e107cache, $tp, $totcc;
 
-		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE){
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
+		{
         	return;
 		}
 
@@ -551,6 +564,9 @@ class comment {
 		return (!$return) ? "" : $ret;
 	}
 
+
+
+
 	function recalc_user_comments($id)
 	{
 	  global $sql;
@@ -575,6 +591,7 @@ class comment {
 	  }
 	}
 	
+	
 	function get_author_list($id, $comment_type)
 	{
 		global $sql;
@@ -594,6 +611,8 @@ class comment {
 		}
 		return $authors;
 	}
+
+
 
 	function delete_comments($table, $id)
 	{
@@ -617,10 +636,11 @@ class comment {
 	//6) from file: render the returned data
 
 	//get all e_comment.php files and collect the variables
-	function get_e_comment(){
-
+	function get_e_comment()
+	{
 		$data = getcachedvars('e_comment');
-		if($data!==FALSE){
+	  if($data!==FALSE)
+	  {
 			return $data;
 		}
 
@@ -628,7 +648,6 @@ class comment {
 		$fl = new e_file;
 
 		$omit = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','.bak$');
-//		$files = $fl->get_files(e_PLUGIN, $fmask = 'e_comment.php', $omit, $recurse_level = 1, $current_level = 0);
 		$files = $fl->get_files(e_PLUGIN, 'e_comment.php', $omit, 1, 0);
 
 		foreach($files as $file){
@@ -673,7 +692,8 @@ class comment {
 	* @param array $cdreta : current data set
 	*/
 
-	function getCommentData($amount='', $from='', $qry='', $cdvalid=FALSE, $cdreta=FALSE){
+	function getCommentData($amount='', $from='', $qry='', $cdvalid=FALSE, $cdreta=FALSE)
+	{
 		global $pref, $menu_pref, $sql, $sql2, $tp;
 
 		$from1 = ($from ? $from : '0');
@@ -715,7 +735,7 @@ class comment {
 				$comment_author_name = substr($row['comment_author'] , (strpos($row['comment_author'] , ".")+1));
 				$ret['comment_author_id'] = $comment_author_id;
 				$ret['comment_author_name'] = $comment_author_name;
-				$ret['comment_author'] = (USERID ? "<a href='".e_BASE."user.php?id.".$comment_author_id."'>".$comment_author_name."</a>" : $comment_author_name);
+				$ret['comment_author'] = (USERID ? "<a href='".e_HTTP."user.php?id.".$comment_author_id."'>".$comment_author_name."</a>" : $comment_author_name);
 
 				//comment text
 				$comment = strip_tags(preg_replace("/\[.*\]/", "", $row['comment_comment'])); // remove bbcode
@@ -733,9 +753,9 @@ class comment {
 
 						$ret['comment_type']				= COMLAN_TYPE_1;
 						$ret['comment_title']				= $tp -> toHTML($row2['news_title'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_BASE."comment.php?comment.news.".$row['comment_item_id'];
+						$ret['comment_url']					= e_HTTP."comment.php?comment.news.".$row['comment_item_id'];
 						$ret['comment_category_heading']	= COMLAN_TYPE_1;
-						$ret['comment_category_url']		= e_BASE."news.php";
+						$ret['comment_category_url']		= e_HTTP."news.php";
 					}
 					break;
 					
@@ -750,9 +770,9 @@ class comment {
 
 						$ret['comment_type']				= COMLAN_TYPE_2;
 						$ret['comment_title']				= $tp -> toHTML($row2['download_name'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_BASE."download.php?view.".$row['comment_item_id'];
+						$ret['comment_url']					= e_HTTP."download.php?view.".$row['comment_item_id'];
 						$ret['comment_category_heading']	= $row2['download_category_name'];
-						$ret['comment_category_url']		= e_BASE."download.php?list.".$row2['download_category_id'];
+						$ret['comment_category_url']		= e_HTTP."download.php?list.".$row2['download_category_id'];
 					}
 					break;
 						// '3' was FAQ
@@ -763,7 +783,8 @@ class comment {
 
 						$ret['comment_type']				= COMLAN_TYPE_4;
 						$ret['comment_title']				= $tp -> toHTML($row2['poll_title'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_BASE."comment.php?comment.poll.".$row['comment_item_id'];
+						$ret['comment_url']					= e_HTTP."comment.php?comment.poll.".$row['comment_item_id'];
+						$ret['comment_category_url']		= e_PLUGIN_ABS.'poll/poll.php';
 					}
 					break;
 					
@@ -776,14 +797,14 @@ class comment {
 					{
 						$ret['comment_type']				= COMLAN_TYPE_8;
 						$ret['comment_title']				= $comment_author_name;
-						$ret['comment_url']					= e_BASE."user.php?id.".$row['comment_item_id'];
+						$ret['comment_url']					= e_HTTP."user.php?id.".$row['comment_item_id'];
 					}
 					break;
 
 				  case 'page' :		//	Custom Page
 					$ret['comment_type']				= COMLAN_TYPE_PAGE;
 					$ret['comment_title']				= $ret['comment_subject'] ? $ret['comment_subject'] : $ret['comment_comment'];
-					$ret['comment_url']					= e_BASE."page.php?".$row['comment_item_id'];
+					$ret['comment_url']					= e_HTTP."page.php?".$row['comment_item_id'];
 					break;
 
 				  default :
@@ -794,7 +815,6 @@ class comment {
 						//new method must use the 'qry' variable
 					  if(isset($var) && $var['qry']!='')
 					  {
-//						if ($installed = $sql2 -> db_Select("plugin", "*", "plugin_path = '".$var['plugin_path']."' AND plugin_installflag = '1' "))
 						if ($installed = isset($pref['plug_installed'][$var['plugin_path']]))
 						{
 							$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
@@ -805,20 +825,21 @@ class comment {
 								$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE,'emotes_off, no_make_clickable');
 								$ret['comment_url']					= str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
 								$ret['comment_category_heading']	= $var['plugin_name'];
-								$ret['comment_category_url']		= $var['plugin_name'];
+								$ret['comment_category_url']		= e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
 							}
 						}
 					//old method
 					  }
 					  else
 					  {
-						if($sql2 -> db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' ")){
+						if($sql2 -> db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' "))
+						{
 							$row2 = $sql2 -> db_Fetch();
 							$ret['comment_type']				= $var['plugin_name'];
 							$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE,'emotes_off, no_make_clickable');
 							$ret['comment_url']					= str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
 							$ret['comment_category_heading']	= $var['plugin_name'];
-							$ret['comment_category_url']		= $var['plugin_name'];
+							$ret['comment_category_url']		= e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
 						}
 					  }
 					}
