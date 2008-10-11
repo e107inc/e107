@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-05-25 08:26:11 $
+|     $Revision: 1.13 $
+|     $Date: 2008-10-11 10:48:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -795,9 +795,9 @@ class comment {
 
 						$ret['comment_type']				= COMLAN_TYPE_1;
 						$ret['comment_title']				= $tp -> toHTML($row2['news_title'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_BASE."comment.php?comment.news.".$row['comment_item_id'];
+						$ret['comment_url']					= e_HTTP."comment.php?comment.news.".$row['comment_item_id'];
 						$ret['comment_category_heading']	= COMLAN_TYPE_1;
-						$ret['comment_category_url']		= e_BASE."news.php";
+						$ret['comment_category_url']		= e_HTTP."news.php";
 					}
 					break;
 					
@@ -812,9 +812,9 @@ class comment {
 
 						$ret['comment_type']				= COMLAN_TYPE_2;
 						$ret['comment_title']				= $tp -> toHTML($row2['download_name'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_BASE."download.php?view.".$row['comment_item_id'];
+						$ret['comment_url']					= e_HTTP."download.php?view.".$row['comment_item_id'];
 						$ret['comment_category_heading']	= $row2['download_category_name'];
-						$ret['comment_category_url']		= e_BASE."download.php?list.".$row2['download_category_id'];
+						$ret['comment_category_url']		= e_HTTP."download.php?list.".$row2['download_category_id'];
 					}
 					break;
 						// '3' was FAQ
@@ -825,7 +825,8 @@ class comment {
 
 						$ret['comment_type']				= COMLAN_TYPE_4;
 						$ret['comment_title']				= $tp -> toHTML($row2['poll_title'], TRUE,'emotes_off, no_make_clickable');
-						$ret['comment_url']					= e_BASE."comment.php?comment.poll.".$row['comment_item_id'];
+						$ret['comment_url']					= e_HTTP."comment.php?comment.poll.".$row['comment_item_id'];
+						$ret['comment_category_url']		= e_PLUGIN_ABS.'poll/poll.php';
 					}
 					break;
 					
@@ -838,14 +839,14 @@ class comment {
 					{
 						$ret['comment_type']				= COMLAN_TYPE_8;
 						$ret['comment_title']				= $comment_author_name;
-						$ret['comment_url']					= e_BASE."user.php?id.".$row['comment_item_id'];
+						$ret['comment_url']					= e_HTTP."user.php?id.".$row['comment_item_id'];
 					}
 					break;
 
 				  case 'page' :		//	Custom Page
 					$ret['comment_type']				= COMLAN_TYPE_PAGE;
 					$ret['comment_title']				= $ret['comment_subject'] ? $ret['comment_subject'] : $ret['comment_comment'];
-					$ret['comment_url']					= e_BASE."page.php?".$row['comment_item_id'];
+					$ret['comment_url']					= e_HTTP."page.php?".$row['comment_item_id'];
 					break;
 
 				  default :
@@ -856,7 +857,6 @@ class comment {
 						//new method must use the 'qry' variable
 					  if(isset($var) && $var['qry']!='')
 					  {
-//						if ($installed = $sql2 -> db_Select("plugin", "*", "plugin_path = '".$var['plugin_path']."' AND plugin_installflag = '1' "))
 						if ($installed = isset($pref['plug_installed'][$var['plugin_path']]))
 						{
 							$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
@@ -867,20 +867,21 @@ class comment {
 								$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE,'emotes_off, no_make_clickable');
 								$ret['comment_url']					= str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
 								$ret['comment_category_heading']	= $var['plugin_name'];
-								$ret['comment_category_url']		= $var['plugin_name'];
+								$ret['comment_category_url']		= e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
 							}
 						}
 					//old method
 					  }
 					  else
 					  {
-						if($sql2 -> db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' ")){
+						if($sql2 -> db_Select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' "))
+						{
 							$row2 = $sql2 -> db_Fetch();
 							$ret['comment_type']				= $var['plugin_name'];
 							$ret['comment_title']				= $tp -> toHTML($row2[$var['db_title']], TRUE,'emotes_off, no_make_clickable');
 							$ret['comment_url']					= str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
 							$ret['comment_category_heading']	= $var['plugin_name'];
-							$ret['comment_category_url']		= $var['plugin_name'];
+							$ret['comment_category_url']		= e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
 						}
 					  }
 					}
