@@ -64,21 +64,21 @@ if (!defined('e107_INIT')) { exit; }
 
 					while($rowi = $sqli -> db_Fetch()){
 						$rowheading = $this -> parse_heading($rowi['content_heading'], $mode);
-						$HEADING = "<a href='".e_PLUGIN."content/content.php?content.".$rowi['content_id']."' title='".$rowi['content_heading']."'>".$rowheading."</a>";
+						$HEADING = "<a href='".e_PLUGIN_ABS."content/content.php?content.".$rowi['content_id']."' title='".$rowi['content_heading']."'>".$rowheading."</a>";
 						//category
 						if($arr[4]){
 							$crumb = "";
 							if(array_key_exists($rowi['content_parent'], $array)){
 								$newarr = $array[$rowi['content_parent']];
 								$newarr = array_reverse($newarr);
-								$CATEGORY = "<a href='".e_PLUGIN."content/content.php?cat.".$newarr[1]."'>".$newarr[0]."</a>";
+								$CATEGORY = "<a href='".e_PLUGIN_ABS."content/content.php?cat.".$newarr[1]."'>".$newarr[0]."</a>";
 							}
 						}
 
 						$DATE = ($arr[5] ? $this -> getListDate($rowi['content_datestamp'], $mode) : "");
 						//$ICON = $this -> getBullet($arr[6], $mode);
 
-						$image_link_append = "<a href='".e_PLUGIN."content/content.php?content.".$rowi['content_id']."'>";
+						$image_link_append = "<a href='".e_PLUGIN_ABS."content/content.php?content.".$rowi['content_id']."'>";
 						if($rowi['content_icon'] && file_exists($content_recent_pref["content_icon_path"].$rowi['content_icon'])){
 							$ICON = $image_link_append."<img src='".$content_recent_pref["content_icon_path"].$rowi['content_icon']."' style='width:50px; border:1px solid #000;' alt='' /></a>";
 						}else{
@@ -89,7 +89,7 @@ if (!defined('e107_INIT')) { exit; }
 						if($arr[3]){
 							$authordetails = $aa -> getAuthor($rowi['content_author']);
 							if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0"){
-								$AUTHOR = "<a href='".e_BASE."user.php?id.".$authordetails[0]."' >".$authordetails[1]."</a>";
+								$AUTHOR = "<a href='".e_HTTP."user.php?id.".$authordetails[0]."' >".$authordetails[1]."</a>";
 							}else{
 								$AUTHOR = $authordetails[1];
 							}
@@ -104,5 +104,6 @@ if (!defined('e107_INIT')) { exit; }
 			}
 		}
 	}
+
 
 ?>
