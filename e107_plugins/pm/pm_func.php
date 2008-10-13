@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_func.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-08-08 19:34:34 $
+|     $Revision: 1.4 $
+|     $Date: 2008-10-13 19:06:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,9 @@ function pm_getInfo($which = "inbox")
 	{
 		unset($pm_info['inbox']);
 		unset($pm_info['outbox']);
+		return;
 	}
+
 	if('inbox' == $which)
 	{
 		$qry = "SELECT count(pm.pm_id) AS total, SUM(pm.pm_size)/1024 size, SUM(pm.pm_read = 0) as unread FROM #private_msg as pm WHERE pm.pm_to = ".USERID." AND pm.pm_read_del = 0";
@@ -35,11 +37,12 @@ function pm_getInfo($which = "inbox")
 	{
 		$qry = "SELECT count(pm.pm_from) AS total, SUM(pm.pm_size)/1024 size, SUM(pm.pm_read = 0) as unread FROM #private_msg as pm WHERE pm.pm_from = ".USERID." AND pm.pm_sent_del = 0";
 	}
+
 	if(!isset($pm_info[$which]['total']))
 	{
 		$sql->db_Select_gen($qry);
 		$pm_info[$which] = $sql->db_Fetch();
-		if($which == 'inbox' && $pm_prefs['animate'] == 1 || $pm_prefs['popup'] == 1)
+		if ($which == 'inbox' && ($pm_prefs['animate'] == 1 || $pm_prefs['popup'] == 1))
 		{
 			if($new = $sql->db_Count("private_msg", "(*)", "WHERE pm_sent > '.USERLV.' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
 			{
@@ -51,6 +54,7 @@ function pm_getInfo($which = "inbox")
 			}
 		}
 	}
+
 	if(!isset($pm_info[$which]['limit']))
 	{
 		if(varset($pref['pm_limits'],0) > 0)
