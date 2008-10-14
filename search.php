@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/search.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-03-27 21:14:06 $
+|     $Revision: 1.10 $
+|     $Date: 2008-10-14 20:59:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -501,8 +501,11 @@ $text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 $ns -> tablerender(PAGE_NAME." ".SITENAME, $text);
 
 // parse search
-if ($perform_search) {
-	foreach ($search_info as $key => $a) {
+if ($perform_search) 
+{
+	$_GET['q'] = rawurlencode($_GET['q']);
+	foreach ($search_info as $key => $a) 
+	{
 		if (isset($searchtype[$key]) || isset($searchtype['all'])) {
 			unset($text);
 			if (file_exists($search_info[$key]['sfile'])) {
@@ -510,7 +513,6 @@ if ($perform_search) {
 				$search_chars = $search_info[$key]['chars'];
 				$search_res = $search_info[$key]['results'];
 				@require_once($search_info[$key]['sfile']);
-				$_GET['q'] = rawurlencode($_GET['q']);
 				$parms = $results.",".$search_res.",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
 				$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
 				foreach ($_GET as $pparm_key => $pparm_value) {
