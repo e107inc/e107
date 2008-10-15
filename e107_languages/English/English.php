@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/English.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-08-13 19:56:30 $
+|     $Revision: 1.12 $
+|     $Date: 2008-10-15 21:23:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -38,6 +38,10 @@ define("CORE_LAN13", " of that for queries. ");
 define("CORE_LAN14", "");			// Used in 0.8
 define("CORE_LAN15", "DB queries: ");
 define("CORE_LAN16", "Memory Usage: ");
+
+// img.bb
+define('CORE_LAN17', '[ image disabled ]');
+define('CORE_LAN18', 'Image: ');
 
 define("CORE_LAN_B", "b");
 define("CORE_LAN_KB", "kb");

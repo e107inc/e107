@@ -58,18 +58,18 @@ else
         }
         else
         {
-            return ($pref['image_post_disabled_method'] ? "[ image disabled ]" : "Image: $code_text");
+            return ($pref['image_post_disabled_method'] ? CORE_LAN17 : CORE_LAN18.$code_text);
         }
     }
     else
     {
         if ($pref['image_post_disabled_method'])
 		{
-            return '[ image disabled ]';
+            return CORE_LAN17;
         }
 		else
 		{
-            return "Image: $code_text";
+            return CORE_LAN18.$code_text;
         }
     }
 }
