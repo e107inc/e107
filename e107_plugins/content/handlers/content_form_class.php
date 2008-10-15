@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.131 $
-|		$Date: 2008-10-11 14:36:57 $
+|		$Revision: 1.132 $
+|		$Date: 2008-10-15 19:09:32 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -589,7 +589,7 @@ class contentform
 							{
 								$hidden .= $rs -> form_hidden("parent1", $row['content_parent']);
 								$hidden .= $rs -> form_hidden("preview_parent1", varset($_POST['preview_parent1'],$row['content_parent']));
-								echo "CM Edit mode parent1 post: {$_POST['parent1']},{$_POST['preview_parent1']},{$row['content_parent']}<br />";
+//								echo "CM Edit mode parent1 post: {$_POST['parent1']},{$_POST['preview_parent1']},{$row['content_parent']}<br />";
 							}
 							else
 							{
