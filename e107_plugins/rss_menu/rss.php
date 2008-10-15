@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-10-03 20:15:09 $
+|     $Revision: 1.8 $
+|     $Date: 2008-10-15 19:13:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -243,10 +243,13 @@ class rssCreate {
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
-				foreach($tmp as $value) {
+				foreach($tmp as $value) 
+				{
 					$this -> rssItems[$loop]['title'] = $value['comment_subject'];
+					$this -> rssItems[$loop]['pubdate'] = $value['comment_datestamp'];
 
-					switch ($value['comment_type']) {
+					switch ($value['comment_type']) 
+					{
 						case 0:
 							$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['comment_item_id'];
 							break;
