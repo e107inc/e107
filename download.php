@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.21 $ 
-|     $Date: 2008-08-04 20:31:49 $
+|     $Revision: 1.22 $ 
+|     $Date: 2008-10-17 19:19:54 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -632,18 +632,18 @@ function parsesize($size) {
 		return '0';
 	}
 	if ($size < $kb) {
-		return $size." b";
+		return $size." ".CORE_LAN_B;
 	}
 	else if($size < $mb) {
-		return round($size/$kb, 2)." kb";
+		return round($size/$kb, 2)." ".CORE_LAN_KB;
 	}
 	else if($size < $gb) {
-		return round($size/$mb, 2)." mb";
+		return round($size/$mb, 2)." ".CORE_LAN_MB;
 	}
 	else if($size < $tb) {
-		return round($size/$gb, 2)." gb";
+		return round($size/$gb, 2)." ".CORE_LAN_GB;
 	} else {
-		return round($size/$tb, 2)." tb";
+		return round($size/$tb, 2)." ".CORE_LAN_TB;
 	}
 }
 
