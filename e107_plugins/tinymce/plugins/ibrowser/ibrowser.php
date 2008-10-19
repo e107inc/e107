@@ -9,12 +9,12 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.2 $Date: 2004/10/04
+// $Revision: 1.3 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.2 $
-// $Date: 2007-08-09 19:09:56 $
+// $Revision: 1.3 $
+// $Date: 2008-10-19 11:35:00 $
 // $Author: e107steved $
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
@@ -323,7 +323,7 @@ $errors = array();
 	  $size = getimagesize($_root.$imglib.$entry);
 	  $fsize = filesize($_root.$imglib.$entry);
    ?>
-            <option  value="<?php echo $size[0]; ?>|<?php echo $size[1]; ?>|<?php echo filesize_h($fsize,2); ?>|<?php echo $entry?>" <?php echo ($entry == $img)?'selected':''?>><?php echo $entry?></option>
+            <option  value="<?php echo $size[0]; ?>|<?php echo $size[1]; ?>|<?php echo $e107->parseMemorySize($fsize,2); ?>|<?php echo $entry?>" <?php echo ($entry == $img)?'selected':''?>><?php echo $entry?></option>
             <?php
 	  }
     }
@@ -455,22 +455,5 @@ function liboptions($arr, $prefix = '', $sel = '')
 }
 
 
-// Return the human readable size of a file
-// @param int $size a file size
-// @param int $dec a number of decimal places
-
-function filesize_h($size, $dec = 1)
-{
-	$sizes = array('byte(s)', 'kb', 'mb', 'gb');
-	$count = count($sizes);
-	$i = 0;
-
-	while ($size >= 1024 && ($i < $count - 1)) {
-		$size /= 1024;
-		$i++;
-	}
-
-	return round($size, $dec) . ' ' . $sizes[$i];
-}
 
 ?>

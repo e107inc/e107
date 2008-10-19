@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-09-23 19:31:59 $
+|     $Revision: 1.14 $
+|     $Date: 2008-10-19 11:35:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -72,8 +72,8 @@ SC_END
 
 
 SC_BEGIN DOWNLOAD_LIST_FILESIZE
-global $row;
-return parsesize($row['download_filesize']);
+global $row, $e107;
+return $e107->parseMemorySize($row['download_filesize']);
 SC_END
 
 
@@ -282,7 +282,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_FILESIZE
 global $dl;
-return ($dl['download_filesize']) ? parsesize($dl['download_filesize']) : "";
+return ($dl['download_filesize']) ? $e107->parseMemorySize($dl['download_filesize']) : "";
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_RATING

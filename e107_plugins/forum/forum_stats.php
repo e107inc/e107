@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-06-26 19:59:11 $
+|     $Revision: 1.4 $
+|     $Date: 2008-10-19 11:35:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -63,8 +63,8 @@ foreach($array as $table)
 {
 	if($table['Name'] == MPREFIX."forum_t")
 	{
-		$db_size = parsesize($table['Data_length']);
-		$avg_row_len = parsesize($table['Avg_row_length']);
+		$db_size = $e107->parseMemorySize($table['Data_length']);
+		$avg_row_len = $e107->parseMemorySize($table['Avg_row_length']);
 		break;
 	}
 }
@@ -353,30 +353,6 @@ $ns -> tablerender(FSLAN_23, $text);
 
 require_once(FOOTERF);
 
-function parsesize($size) {
-	$kb = 1024;
-	$mb = 1024 * $kb;
-	$gb = 1024 * $mb;
-	$tb = 1024 * $gb;
-	if(!$size)
-	{
-		return '0';
-	}
-	if ($size < $kb) {
-		return $size." b";
-	}
-	else if($size < $mb) {
-		return round($size/$kb, 2)." kb";
-	}
-	else if($size < $gb) {
-		return round($size/$mb, 2)." mb";
-	}
-	else if($size < $tb) {
-		return round($size/$gb, 2)." gb";
-	} else {
-		return round($size/$tb, 2)." tb";
-	}
-}
 
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-05-25 09:04:16 $
+|     $Revision: 1.5 $
+|     $Date: 2008-10-19 11:35:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -272,7 +272,7 @@ while ($files[$c]) {
 	if (!$img || !preg_match("/css|exe|gif|htm|jpg|js|php|png|txt|xml|zip/i", $img)) {
 		$img = "def";
 	}
-	$size = parsesize(filesize(e_BASE.$path."/".$files[$c]));
+	$size = $e107->parseMemorySize(filesize(e_BASE.$path."/".$files[$c]));
 	$text .= "<tr>
 		<td class=\"forumheader3\" style=\"vertical-align:middle; text-align:center; width:5%\">
 		<img src=\"".$imagedir.$img.".png\" alt=\"".$files[$c]."\" style=\"border:0\" />
@@ -343,7 +343,10 @@ while ($files[$c]) {
 
 $ns->tablerender(FMLAN_29.": <b>root/".$pathd."</b>&nbsp;&nbsp;[ ".count($dirs)." ".$dstr.", ".count($files)." ".$cstr." ]", $text);
 
-function dirsize($dir) {
+
+function dirsize($dir) 
+{
+	global $e107;
 	$_SERVER["DOCUMENT_ROOT"].e_HTTP.$dir;
 	$dh = @opendir($_SERVER["DOCUMENT_ROOT"].e_HTTP.$dir);
 	$size = 0;
@@ -358,7 +361,7 @@ function dirsize($dir) {
 		}
 	}
 	@closedir($dh);
-	return parsesize($size);
+	return $e107->parseMemorySize($size);
 }
 
 

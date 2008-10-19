@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-05-16 19:40:39 $
+|     $Revision: 1.19 $
+|     $Date: 2008-10-19 11:35:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -351,34 +351,47 @@ class e107
 		return $this->_ip_cache;
 	}
 
-	function get_host_name($ip_address) {
-		if(!$this->_host_name_cache[$ip_address]) {
+
+	function get_host_name($ip_address) 
+	{
+		if(!$this->_host_name_cache[$ip_address]) 
+		{
 			$this->_host_name_cache[$ip_address] = gethostbyaddr($ip_address);
 		}
 		return $this->_host_name_cache[$ip_address];
 	}
 
+
 	// Return a memory value formatted helpfully
-	function ret_memory_text($memusage)
+	// $dp overrides the number of decimal places displayed - realistically, only 0..3 are sensible
+	function parseMemorySize($size, $dp = 2) 
 	{
-	  $memunit = CORE_LAN_B;
-	  if ($memusage > 65536)
-	  {
-		$memusage = $memusage / 1024; // more than 64k, show in k
+		if (!$size) { $size = 0; }
+		if ($size < 4096)
+		{	// Fairly arbitrary limit below which we always return number of bytes
+			return number_format($size, 0).CORE_LAN_B;
+		}
+
+		$size = $size / 1024;
 		$memunit = CORE_LAN_KB;
-	  }
-	  if ($memusage > 1024)
-	  { /* 1.002 mb, etc */
-		$memusage = $memusage / 1024;
-		$memunit = CORE_LAN_MB;
-	  }
-	  if ($memusage > 1024)
-	  { /* show in GB if >1GB */
-		$memusage = $memusage / 1024;
-		$memunit = CORE_LAN_GB;
-	  }
-	  return (number_format($memusage, ($memunit=='b'? 0 : 3)).$memunit);
-	}
+
+		if ($size > 1024)
+		{ /* 1.002 mb, etc */
+			$size = $size / 1024;
+			$memunit = CORE_LAN_MB;
+		}
+		if ($size > 1024)
+		{ /* show in GB if >1GB */
+			$size = $size / 1024;
+			$memunit = CORE_LAN_GB;
+		}
+		if ($size > 1024)
+		{ /* show in TB if >1TB */
+			$size = $size / 1024;
+			$memunit = CORE_LAN_TB;
+		}
+		return (number_format($size, $dp).$memunit);
+}
 	
 	
 	/**
@@ -386,12 +399,13 @@ class e107
 	 *
 	 * @return string memory usage
 	 */
-	function get_memory_usage(){
+	function get_memory_usage()
+	{
 		if(function_exists("memory_get_usage"))
 		{
-	      $ret = $this->ret_memory_text(memory_get_usage());
+	      $ret = $this->parseMemorySize(memory_get_usage());
 		  // With PHP>=5.2.0, can show peak usage as well
-	      if (function_exists("memory_get_peak_usage")) $ret .= '/'.$this->ret_memory_text(memory_get_peak_usage(TRUE));
+	      if (function_exists("memory_get_peak_usage")) $ret .= '/'.$this->parseMemorySize(memory_get_peak_usage(TRUE));
 		  return $ret;
 		} 
 		else 

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.17 $
-|   $Date: 2008-10-04 16:10:55 $
+|   $Revision: 1.18 $
+|   $Date: 2008-10-19 11:35:00 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -655,29 +655,6 @@ function file_size_decode($source, $compare = 0, $action = '')
   return 0;
 }
 
-
-
-function parsesize($size) 
-{
-	$kb = 1024;
-	$mb = 1024 * $kb;
-	$gb = 1024 * $mb;
-	$tb = 1024 * $gb;
-	if ($size < $kb) {
-		return $size." b";
-	}
-	else if($size < $mb) {
-		return round($size/$kb, 2)." kb";
-	}
-	else if($size < $gb) {
-		return round($size/$mb, 2)." Mb";
-	}
-	else if($size < $tb) {
-		return round($size/$gb, 2)." Gb";
-	} else {
-		return round($size/$tb, 2)." Tb";
-	}
-}
 
 
 // Similar to get_allowed_filetypes(), but expects an XML file
