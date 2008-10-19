@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-06-13 20:20:20 $
+|     $Revision: 1.26 $
+|     $Date: 2008-10-19 21:13:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
@@ -377,25 +377,28 @@ if (isset($_POST['updatesettings']))
 		}
 	  }
 
-	  foreach($_POST['ue'] as $key => $val)
-	  {
-			$err = $ue->user_extended_validate_entry($val,$extList[$key]);
-	  		if($err === TRUE && !$_uid)
-			{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-         	  $error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
+		foreach($_POST['ue'] as $key => $val)
+		{
+			if (isset($extList[$key]))
+			{	// Only allow valid keys
+				$err = $ue->user_extended_validate_entry($val,$extList[$key]);
+				if($err === TRUE && !$_uid)
+				{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+					$error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
+				}
+				elseif ($err)
+				{	// Specific error message returned - usually regex fail
+					$error .= $err."\\n";
+					$err = TRUE;
+				}
+				if(!$err)
+				{
+					$val = $tp->toDB($val);
+					$ue_fields .= ($ue_fields) ? ", " : "";
+					$ue_fields .= $key."='".$val."'";
+				}
 			}
-			elseif ($err)
-			{	// Specific error message returned - usually regex fail
-			  $error .= $err."\\n";
-			  $err = TRUE;
-			}
-			if(!$err)
-			{
-				$val = $tp->toDB($val);
-				$ue_fields .= ($ue_fields) ? ", " : "";
-				$ue_fields .= $key."='".$val."'";
-			}
-	  }
+		}
     }
 
 
