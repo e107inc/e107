@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.102 $
-|     $Date: 2008-06-10 19:30:03 $
+|     $Revision: 1.103 $
+|     $Date: 2008-10-19 21:17:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -373,21 +373,24 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 		$ue_fields = "";
 		foreach($_POST['ue'] as $key => $val)
 		{
-			$err = $ue->user_extended_validate_entry($val,$extList[$key]);
-	  		if($err === TRUE && !$_uid)
-			{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-         	  $error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
-			}
-			elseif ($err)
-			{	// Specific error message returned - usually regex fail
-			  $error .= $err."\\n";
-			  $err = TRUE;
-			}
-			if(!$err)
-			{
-			  $val = $tp->toDB($val);
-			  $ue_fields .= ($ue_fields) ? ", " : "";
-			  $ue_fields .= $key."='".$val."'";
+			if (isset($extList[$key]))
+			{	// Only allow valid keys
+				$err = $ue->user_extended_validate_entry($val,$extList[$key]);
+				if($err === TRUE && !$_uid)
+				{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+					$error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
+				}
+				elseif ($err)
+				{	// Specific error message returned - usually regex fail
+					$error .= $err."\\n";
+					$err = TRUE;
+				}
+				if(!$err)
+				{
+					$val = $tp->toDB($val);
+					$ue_fields .= ($ue_fields) ? ", " : "";
+					$ue_fields .= $key."='".$val."'";
+				}
 			}
 		}
     }
