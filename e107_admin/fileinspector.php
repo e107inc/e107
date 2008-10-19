@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-01-05 21:09:54 $
+|     $Revision: 1.13 $
+|     $Date: 2008-10-19 11:35:00 $
 |     $Author: e107steved $
 
 Includes standalone function - needs finishing
@@ -696,7 +696,7 @@ class file_inspector {
 
 	function scan_results() 
 	{
-		global $ns, $rs, $core_image, $deprecated_image, $imode, $tp;
+		global $ns, $rs, $core_image, $deprecated_image, $imode, $tp, $e107;
 		$scan_text = $this -> inspect($core_image, $deprecated_image, 0, $this -> root_dir);
 
 //		if ($_POST['type'] == 'tree') 
@@ -748,19 +748,19 @@ class file_inspector {
 		}
 
 		if ($_POST['core'] != 'none') {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_core.png' class='i' alt='' />&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_core.png' class='i' alt='' />&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['core']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['missing']) {
 			$text .= "<tr><td class='f' colspan='2'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_missing.png' class='i' alt='' />&nbsp;".FR_LAN_22.":&nbsp;".($this -> count['missing']['num'] ? $this -> count['missing']['num'] : FR_LAN_21)."&nbsp;</td></tr>";
 		}
 		if ($_POST['noncore']) {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_unknown.png' class='i' alt='' />&nbsp;".FR_LAN_5.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['unknown']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_unknown.png' class='i' alt='' />&nbsp;".FR_LAN_5.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['unknown']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['oldcore']) {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_old.png' class='i' alt='' />&nbsp;".FR_LAN_24.":&nbsp;".($this -> count['deprecated']['num'] ? $this -> count['deprecated']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['deprecated']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_old.png' class='i' alt='' />&nbsp;".FR_LAN_24.":&nbsp;".($this -> count['deprecated']['num'] ? $this -> count['deprecated']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['core'] == 'all') {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'] + $this -> count['deprecated']['num'])."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'] + $this -> count['unknown']['size'] + $this -> count['deprecated']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'] + $this -> count['deprecated']['num'])."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['core']['size'] + $this -> count['unknown']['size'] + $this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['regex']) {
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_29.":&nbsp;".($this -> results)."&nbsp;</td><td class='s'>&nbsp;</td></tr>";
@@ -773,7 +773,7 @@ class file_inspector {
 			$text .= "<tr><td style='padding-left: 4px' colspan='2'>
 			<img src='".e_IMAGE."packs/".$imode."/fileinspector/warning.png' class='i' alt='' />&nbsp;<b>".FR_LAN_26."</b></td></tr>";
 		
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_warning.png' class='i' alt='' />&nbsp;".FR_LAN_28.":&nbsp;".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['warning']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_warning.png' class='i' alt='' />&nbsp;".FR_LAN_28.":&nbsp;".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['warning']['size'], 2)."</td></tr>";
 			
 			$text .= "<tr><td class='w' colspan='2'><img src='".e_IMAGE."packs/".$imode."/fileinspector/info.png' class='i' alt='' />&nbsp;".FR_LAN_27."</td></tr>";
 
@@ -785,9 +785,9 @@ class file_inspector {
 			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
 			<img src='".e_IMAGE."packs/".$imode."/fileinspector/".$integrity_icon."' class='i' alt='' />&nbsp;<b>".FR_LAN_7."</b> ".$integrity_text."</td></tr>";
 		
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_fail.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_uncalc.png' class='i' alt='' />&nbsp;".FR_LAN_25.":&nbsp;".($this -> count['uncalculable']['num'] ? $this -> count['uncalculable']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['uncalculable']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['pass']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_fail.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['fail']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_uncalc.png' class='i' alt='' />&nbsp;".FR_LAN_25.":&nbsp;".($this -> count['uncalculable']['num'] ? $this -> count['uncalculable']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['uncalculable']['size'], 2)."</td></tr>";
 		
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 
@@ -884,7 +884,7 @@ class file_inspector {
 					else 
 					{
 						$text .= "</td>
-						<td class='s'>".$this -> parsesize($stext['size']);
+						<td class='s'>".$e107->parseMemorySize($stext['size']);
 					}
 					$text .= "</td></tr>";
 				}
@@ -949,8 +949,8 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.12 $\n";
-			$data .= "|     \$Date: 2008-01-05 21:09:54 $\n";
+			$data .= "|     \$Revision: 1.13 $\n";
+			$data .= "|     \$Date: 2008-10-19 11:35:00 $\n";
 			$data .= "|     \$Author: e107steved $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";
@@ -1079,25 +1079,7 @@ class file_inspector {
 		$checksum = md5(str_replace(array(chr(13),chr(10)), "", file_get_contents($filename)));
 		return $checksum;
 	}
-	
-	function parsesize($size, $dec = 0) {
-		$size = $size ? $size : 0;
-		$kb = 1024;
-		$mb = 1024 * $kb;
-		$gb = 1024 * $mb;
-		$tb = 1024 * $gb;
-		if ($size < $kb) {
-			return $size." b";
-		} else if($size < $mb) {
-			return round($size/$kb)." kb";
-		} else if($size < $gb) {
-			return round($size/$mb, $dec)." mb";
-		} else if($size < $tb) {
-			return round($size/$gb, $dec)." gb";
-		} else {
-			return round($size/$tb, $dec)." tb";
-		}
-	}
+
 	
 	function regex_match($file) {
 		$file_content = file_get_contents($file);

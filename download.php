@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.22 $ 
-|     $Date: 2008-10-17 19:19:54 $
+|     $Revision: 1.23 $ 
+|     $Date: 2008-10-19 11:35:00 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -613,7 +613,7 @@ function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 	$DOWNLOAD_MIRROR_LOCATION = ($mirror_location ? $mirror_location : "");
 	$DOWNLOAD_MIRROR_DESCRIPTION = ($mirror_description ? $mirror_description : "");
 
-	$DOWNLOAD_MIRROR_FILESIZE = parsesize($row['download_filesize']);
+	$DOWNLOAD_MIRROR_FILESIZE = $e107->parseMemorySize($row['download_filesize']);
 	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.{$row['download_id']}.{$mirrorHost_id}' title='".LAN_dl_32."'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 
 	$DOWNLOAD_MIRROR_REQUESTS = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
@@ -622,37 +622,12 @@ function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR));
 }
 
-function parsesize($size) {
-	$kb = 1024;
-	$mb = 1024 * $kb;
-	$gb = 1024 * $mb;
-	$tb = 1024 * $gb;
-	if(!$size)
-	{
-		return '0';
-	}
-	if ($size < $kb) {
-		return $size." ".CORE_LAN_B;
-	}
-	else if($size < $mb) {
-		return round($size/$kb, 2)." ".CORE_LAN_KB;
-	}
-	else if($size < $gb) {
-		return round($size/$mb, 2)." ".CORE_LAN_MB;
-	}
-	else if($size < $tb) {
-		return round($size/$gb, 2)." ".CORE_LAN_GB;
-	} else {
-		return round($size/$tb, 2)." ".CORE_LAN_TB;
-	}
-}
-
 
 
 
 function parse_download_cat_parent_table($row) 
 {
-	global $tp,$current_row,$DOWNLOAD_CAT_PARENT_TABLE;
+	global $tp,$e107,$current_row,$DOWNLOAD_CAT_PARENT_TABLE;
 	extract($row);
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
 
@@ -699,7 +674,7 @@ function parse_download_cat_parent_table($row)
 
 function parse_download_cat_child_table($row)
 {
-	global $tp,$current_row, $DOWNLOAD_CAT_CHILD_TABLE, $DOWNLOAD_CAT_SUBSUB_TABLE;
+	global $tp,$e107,$current_row, $DOWNLOAD_CAT_CHILD_TABLE, $DOWNLOAD_CAT_SUBSUB_TABLE;
 
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
 	$template = ($current_row == 1) ? $DOWNLOAD_CAT_CHILD_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_CHILD_TABLE);
@@ -711,7 +686,7 @@ function parse_download_cat_child_table($row)
 	$DOWNLOAD_CAT_SUB_NAME_LINKED = "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$dcatname."</a>";
 	$DOWNLOAD_CAT_SUB_DESCRIPTION = $tp->toHTML($row['download_category_description'],TRUE,'description');
 	$DOWNLOAD_CAT_SUB_COUNT = $row['d_count'];
-	$DOWNLOAD_CAT_SUB_SIZE = parsesize( $row['d_size']);
+	$DOWNLOAD_CAT_SUB_SIZE = $e107->parseMemorySize($row['d_size']);
 	$DOWNLOAD_CAT_SUB_DOWNLOADED = intval( $row['d_requests']);
 	$DOWNLOAD_CAT_SUBSUB = "";
 	// check for subsub cats ...
@@ -720,7 +695,7 @@ function parse_download_cat_child_table($row)
 	  $DOWNLOAD_CAT_SUBSUB_ICON = get_cat_icons($subrow['download_category_icon'],$subrow['d_count']);
 	  $DOWNLOAD_CAT_SUBSUB_DESCRIPTION = $tp->toHTML($subrow['download_category_description'],TRUE,'description');
 	  $DOWNLOAD_CAT_SUBSUB_COUNT = intval($subrow['d_count']);
-	  $DOWNLOAD_CAT_SUBSUB_SIZE = parsesize($subrow['d_size']);
+	  $DOWNLOAD_CAT_SUBSUB_SIZE = $e107->parseMemorySize($subrow['d_size']);
 	  $DOWNLOAD_CAT_SUBSUB_DOWNLOADED = intval($subrow['d_requests']);
 
 	  $DOWNLOAD_CAT_SUBSUB_NEW_ICON = check_new_download($subrow['d_last']);

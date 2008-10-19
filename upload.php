@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/upload.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-04-22 20:32:40 $
+|     $Revision: 1.6 $
+|     $Date: 2008-10-19 11:35:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -191,7 +191,7 @@ if (ADMIN)
   $allowed_filetypes = "<table><tr><td>".LAN_UL_023."&nbsp;&nbsp;</td><td style='text-align:right'>".LAN_UL_024."</td></tr>";
   foreach ($a_filetypes as $type => $size)
   {
-    $allowed_filetypes .= "<tr><td>{$type}</td><td style='text-align:right'>".parsesize($size)."</td></tr>";
+    $allowed_filetypes .= "<tr><td>{$type}</td><td style='text-align:right'>".$e107->parseMemorySize($size,0)."</td></tr>";
   }
   $allowed_filetypes .= "</table>";
 }
@@ -202,7 +202,7 @@ else
 }
 
 $text .= " ".$allowed_filetypes."<br />".LAN_407."<br />
-	".LAN_418.parsesize($max_upload_size)." (".LAN_UL_022.")<br />";
+	".LAN_418.$e107->parseMemorySize($max_upload_size,0)." (".LAN_UL_022.")<br />";
 
 $text .= "<span style='text-decoration:underline'>".LAN_408."</span> ".LAN_420."</td>
 	</tr>";

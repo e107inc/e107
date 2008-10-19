@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-04-22 20:32:39 $
+|     $Revision: 1.5 $
+|     $Date: 2008-10-19 11:35:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -363,7 +363,7 @@ switch ($action)
 
 		<tr>
 		<td class='forumheader3'>".UPLLAN_11."</td>
-		<td class='forumheader3'>".parsesize($upload_filesize)."</td>
+		<td class='forumheader3'>".$e107->parseMemorySize($upload_filesize)."</td>
 		</tr>
 
 		<tr>
@@ -442,7 +442,7 @@ switch ($action)
 		<td class='forumheader3'>".$poster."</td>
 		<td class='forumheader3'><a href='".e_SELF."?view.".$upload_id."'>".$upload_name ."</a></td>
 		<td class='forumheader3'>".$upload_file ."</td>
-		<td class='forumheader3'>".parsesize($upload_filesize)."</td>
+		<td class='forumheader3'>".$e107->parseMemorySize($upload_filesize)."</td>
 		<td class='forumheader3'>
 		<form action='".e_SELF."?dis.{$upload_id}' id='uploadform_{$upload_id}' method='post'>
 		<div><a href='".e_SELF."?dlm.{$upload_id}'><img src='".e_IMAGE."packs/".$imode."/admin_images/downloads_16.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
