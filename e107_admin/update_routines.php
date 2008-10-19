@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2008-10-11 11:55:18 $
+|     $Revision: 1.29 $
+|     $Date: 2008-10-19 20:31:51 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
 
 require_once("../class2.php");
 require_once(e_HANDLER.'db_table_admin_class.php');
-
+//include_lan(e_LANGUAGE.'admin/lan_e107_update.php');
 
 // Modified update routine - combines checking and update code into one block per function
 //		- reduces code size typically 30%.
@@ -165,9 +165,10 @@ function update_check()
 //--------------------------------------------
 function update_core_prefs($type='')
 {
-  global $pref;
+  global $pref, $admin_log, $e107info;
   $do_save = FALSE;
   $should = get_default_prefs();
+  $accum = array();
 
   $just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
   foreach ($should as $k => $v)
@@ -176,10 +177,15 @@ function update_core_prefs($type='')
 	{
 	  if ($just_check) return update_needed('Missing pref: '.$k);
 	  $pref[$k] = $v;
+	  $accum[] = $k;
 	  $do_save = TRUE;
 	}
   }
-  if ($do_save) { save_prefs();  }
+  if ($do_save) 
+  { 
+	save_prefs();  
+	$admin_log->log_event('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
+  }
   return $just_check;
 }
 
@@ -206,7 +212,7 @@ if (defined('TEST_UPDATE'))
 //--------------------------------------------
 function update_706_to_800($type='') 
 {
-	global $sql,$ns, $pref;
+	global $sql,$ns, $pref, $admin_log, $e107info;
 	
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
@@ -238,6 +244,7 @@ function update_706_to_800($type='')
 
 	$db_parser = new db_table_admin;				// Class to read table defs and process them
 	$do_save = FALSE;								// Set TRUE to update prefs when update complete
+	$updateMessages = array();
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
 
@@ -277,37 +284,40 @@ function update_706_to_800($type='')
 		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
 		if ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") === FALSE)
 		{
-			echo "Error writing notify values<br />";
+			$updateMessages[] = LAN_UPDATE_21;		// Log error
 		}
-/*		else
+		else
 		{
-			echo "Notify values written - {$nt_changed} updates<br />";
-		} */
+			$updateMessages[] = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);		// Log success
+		} 
 	}
 
 
 
 	if (isset($pref['forum_user_customtitle']) && !isset($pref['signup_option_customtitle']))
 	{
-	  if ($just_check) return update_needed();
-	  $pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
-	  unset($pref['forum_user_customtitle']);
-	  $do_save = TRUE;
+		if ($just_check) return update_needed();
+		$pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
+		unset($pref['forum_user_customtitle']);
+		$updateMessages[] = LAN_UPDATE_22;
+		$do_save = TRUE;
 	}
 
 	//change menu_path for usertheme_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu' || menu_path='usertheme_menu/'"))
 	{
-	  if ($just_check) return update_needed();
-	  $sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='usertheme_menu' || menu_path='usertheme_menu/' ");
-	  catch_error();
+		if ($just_check) return update_needed();
+		$sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='usertheme_menu' || menu_path='usertheme_menu/' ");
+		$updateMessages[] = LAN_UPDATE_23;
+		catch_error();
 	}
 
 	//change menu_path for userlanguage_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu' || menu_path='userlanguage_menu/'"))
 	{
-	  if ($just_check) return update_needed();
+		if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='userlanguage_menu' || menu_path='userlanguage_menu/' ");
+		$updateMessages[] = LAN_UPDATE_24;
 		catch_error();
 	}
 
@@ -316,6 +326,7 @@ function update_706_to_800($type='')
 	{
 	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='compliance_menu' || menu_path='compliance_menu/' ");
+		$updateMessages[] = LAN_UPDATE_25;
 		catch_error();
 	}
 
@@ -324,6 +335,7 @@ function update_706_to_800($type='')
 	{
 	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='powered_by_menu' || menu_path='powered_by_menu/' ");
+		$updateMessages[] = LAN_UPDATE_26;
 		catch_error();
 	}
 
@@ -332,6 +344,7 @@ function update_706_to_800($type='')
 	{
 	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='sitebutton_menu' || menu_path='sitebutton_menu/' ");
+		$updateMessages[] = LAN_UPDATE_27;
 		catch_error();
 	}
 
@@ -340,6 +353,7 @@ function update_706_to_800($type='')
 	{
 	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='counter_menu' || menu_path='counter_menu/' ");
+		$updateMessages[] = LAN_UPDATE_28;
 		catch_error();
 	}
 
@@ -348,6 +362,7 @@ function update_706_to_800($type='')
 	{
 	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='online/' WHERE menu_path='lastseen_menu' || menu_path='lastseen_menu/' ");
+		$updateMessages[] = LAN_UPDATE_29;
 		catch_error();
 	}
 
@@ -362,11 +377,13 @@ function update_706_to_800($type='')
 	  if($row['menu_location']!=0)
 	  {
 		$sql->db_Update("menus", "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
+		$updateMessages[] = LAN_UPDATE_30;
 	  }
 	  else
 	  {	//else if the menu is not active
 		//we need to delete the online_extended menu row, and change the online_menu to online
 		$sql->db_Delete("menus", " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
+		$updateMessages[] = LAN_UPDATE_31;
 	  }
 	  catch_error();
 	}
@@ -376,6 +393,7 @@ function update_706_to_800($type='')
 	{
 	  if ($just_check) return update_needed();
 		$sql->db_Update("menus", "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ");
+		$updateMessages[] = LAN_UPDATE_32;
 		catch_error();
 	}
 
@@ -386,30 +404,32 @@ function update_706_to_800($type='')
 	if($sql->db_Field("comments","comment_author"))
 	{
       if ($just_check) return update_needed('Comment table author field update');
+		$commentMessage = LAN_UPDATE_33;
 	  if ((!$sql->db_Field("comments","comment_author_id"))		// Check to see whether new fields already added - maybe data copy failed part way through
 		&& (!$sql->db_Select_gen("ALTER TABLE `#comments` 
 			ADD COLUMN comment_author_id int(10) unsigned NOT NULL default '0' AFTER `comment_author`,
 			ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
 	  {
 		// Flag error
-		echo "Error adding columns to comment table<br />";
+		$commentMessage = LAN_UPDATE_34;
 	  }
 	  else
 	  {
 		if (FALSE ===$sql->db_Update("comments","comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
 		{
 			// Flag error
-		  echo "Error modifying data in comment table<br />";
+			$commentMessage = LAN_UPDATE_35;
 		}
 		else
 		{	// Delete superceded field - comment_author
 		  if (!$sql->db_Select_gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
 		  {
 			// Flag error
-			echo "Error deleting old field in comment table<br />";
+			$commentMessage = LAN_UPDATE_36;
 		  }
 		}
 	  }
+		$updateMessages[] = $commentMessage;	// Hopefully this will usually add the 'success' message
 	}
 
 
@@ -431,6 +451,7 @@ function update_706_to_800($type='')
 	  {
 		if ($just_check) return update_needed();
 		mysql_query("ALTER TABLE `".MPREFIX."download_requests` ADD INDEX `download_request_datestamp` (`download_request_datestamp`);");
+		$updateMessages[] = LAN_UPDATE_37;
 	  }
 	}
 
@@ -441,6 +462,7 @@ function update_706_to_800($type='')
 	  if ($just_check) return update_needed('Change front page prefs');
 	  $pref['frontpage_force'] = array(e_UC_PUBLIC => '');
 	  $pref['frontpage'] = array(e_UC_PUBLIC => 'news.php');
+		$updateMessages[] = LAN_UPDATE_38;
 	  $do_save = TRUE;
 	}
 
@@ -452,9 +474,10 @@ function update_706_to_800($type='')
 		$row = $sql -> db_Fetch();
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(200)')
 		{
-		  if ($just_check) return update_needed('Update linkwords field definition');
-		  mysql_query("ALTER TABLE `".MPREFIX."linkwords` MODIFY `linkword_link` VARCHAR(200) NOT NULL DEFAULT '' ");
-		  catch_error();
+			if ($just_check) return update_needed('Update linkwords field definition');
+			mysql_query("ALTER TABLE `".MPREFIX."linkwords` MODIFY `linkword_link` VARCHAR(200) NOT NULL DEFAULT '' ");
+			$updateMessages[] = LAN_UPDATE_39;
+			catch_error();
 		}
 	  }
 	}
@@ -467,9 +490,10 @@ function update_706_to_800($type='')
 		$row = $sql -> db_Fetch();
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
 		{
-		  if ($just_check) return update_needed('Update newsfeed field definition');
-		  mysql_query("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ");
-		  catch_error();
+			if ($just_check) return update_needed('Update newsfeed field definition');
+			mysql_query("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ");
+			$updateMessages[] = LAN_UPDATE_40;
+			catch_error();
 		}
 	  }
 	}
@@ -483,9 +507,10 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Move user timezone info');
 		if (!copy_user_timezone())
 		{  // Error doing the transfer
-		  echo "Error transferring user timezone data - aborted<br />";
-		  return FALSE;
+			$updateMessages[] = LAN_UPDATE_42;
+			return FALSE;
 		}
+		$updateMessages[] = LAN_UPDATE_41;
 	  }
 	}
 
@@ -494,17 +519,19 @@ function update_706_to_800($type='')
 	//---------------------------------
 	if (mysql_table_exists('dblog') && !mysql_table_exists('admin_log'))
 	{
-	  if ($just_check) return update_needed('Rename dblog to admin_log');
-	  $sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
-	  catch_error();
+		if ($just_check) return update_needed('Rename dblog to admin_log');
+		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
+		catch_error();
+		$updateMessages[] = LAN_UPDATE_43;
 	}
 
 	// Next bit will be needed only by the brave souls who used an early CVS - probably delete before release
 	if (mysql_table_exists('rl_history') && !mysql_table_exists('dblog'))
 	{
-	  if ($just_check) return update_needed('Rename rl_history to dblog');
-	  $sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
-	  catch_error();
+		if ($just_check) return update_needed('Rename rl_history to dblog');
+		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
+		$updateMessages[] = LAN_UPDATE_44;
+		catch_error();
 	}
 
 
@@ -518,11 +545,13 @@ function update_706_to_800($type='')
 		$defs = $db_parser->get_table_def($nt,e_ADMIN."sql/core_sql.php");
 		if (count($defs))
 		{	// **** Add in table here
-		  $sql->db_Select_gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]);
-		  catch_error();
+			$sql->db_Select_gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]);
+			$updateMessages[] = LAN_UPDATE_45.$defs[0][1];
+			catch_error();
 		}
 		else
 		{  // error parsing defs file
+			$updateMessages[] = LAN_UPDATE_46.$defs[0][1];
 		}
 		unset($defs);
 	  }
@@ -555,6 +584,7 @@ function update_706_to_800($type='')
 		  $qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
 		  if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
 		  mysql_query($qry);
+			$updateMessages[] = LAN_UPDATE_47.$ct;
 		  catch_error();
 		}
 	  }
@@ -564,11 +594,12 @@ function update_706_to_800($type='')
 	// Obsolete tables (list at top)
 	foreach ($obs_tables as $ot)
 	{
-	  if (mysql_table_exists($ot)) 
-	  {
-	    if ($just_check) return update_needed("Delete table: ".$ot);
-		mysql_query('DROP TABLE `'.MPREFIX.$ot.'`');
-	  }
+		if (mysql_table_exists($ot)) 
+		{
+			if ($just_check) return update_needed("Delete table: ".$ot);
+			mysql_query('DROP TABLE `'.MPREFIX.$ot.'`');
+			$updateMessages[] = LAN_UPDATE_48.$ot;
+		}
 	}
 	
 	
@@ -584,6 +615,7 @@ function update_706_to_800($type='')
 		  {
             if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
 			mysql_query("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';");
+			$updateMessages[] = LAN_UPDATE_49.$t.' - '.$f;
 			catch_error();
 		  }
 	    }
@@ -596,6 +628,7 @@ function update_706_to_800($type='')
 
 	// Obsolete prefs (list at top)
 	// Intentionally do this last - we may check some of them during the update
+	$accum = array();
 	foreach ($obs_prefs as $p)
 	{
 	  if (isset($pref[$p]))
@@ -603,12 +636,19 @@ function update_706_to_800($type='')
 	    if ($just_check) return update_needed('Remove obsolete prefs');
 		unset($pref[$p]);
 		$do_save = TRUE;
+		$accum[] = $p;
 	  }
 	}
 
 
-	if ($do_save) save_prefs();
+	if ($do_save) 
+	{
+		save_prefs();
+		$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum);
+	}
 	
+	if ($just_check) return TRUE;
+	$admin_log->log_event('UPDATE_01',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode('[!br!]',$updateMessages),E_LOG_INFORMATIVE,'');	// Log result of actual update
 	return $just_check;
 }
 
@@ -616,7 +656,7 @@ function update_706_to_800($type='')
 
 function update_70x_to_706($type='') 
 {
-	global $sql,$ns, $pref;
+	global $sql,$ns, $pref, $e107info, $admin_log;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;
 	if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one.
@@ -691,6 +731,8 @@ function update_70x_to_706($type='')
 	}
 	
 	// If we get to here, in checking mode no updates are required. In update mode, all done.
+	if ($just_check) return TRUE;
+	$admin_log->log_event('UPDATE_02',LAN_UPDATE_14.$e107info['e107_version'],E_LOG_INFORMATIVE,'');	// Log result of actual update
 	return $just_check;		// TRUE if no updates needed, FALSE if updates needed and completed
 
 }
