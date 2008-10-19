@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.12 2008-10-04 16:24:43 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.13 2008-10-19 20:31:57 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -121,5 +121,14 @@ define('LAN_AL_FRONTPG_06', '');
 define('LAN_AL_UTHEME_00', 'Unknown user theme related event');
 define('LAN_AL_UTHEME_01', 'User theme settings changed');
 define('LAN_AL_UTHEME_02', '');
+
+
+// Update routines
+//----------------
+define('LAN_AL_UPDATE_00','Unknown software update related event');
+define('LAN_AL_UPDATE_01','Update from 0.7 to 0.8 executed');
+define('LAN_AL_UPDATE_02','Update from 0.7.x to 0.7.6 executed');
+define('LAN_AL_UPDATE_03','Missing prefs added');
+
 
 ?>
