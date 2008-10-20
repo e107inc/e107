@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-08-09 17:23:26 $
+|     $Revision: 1.5 $
+|     $Date: 2008-10-20 21:52:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -262,6 +262,7 @@ function pref_editor()
 		}
         $text .= "<tr><td class='forumheader' colspan='4' style='text-align:center'>
 			<input class='button' type='submit' title='".LAN_DELETE."' value=\"".DBLAN_21."\" name='delpref_checked' onclick=\"return jsconfirm('".LAN_CONFIRMDEL."')\" />
+			</td>
 			</tr>
 		</table></div></form>";
         $text .= "<div style='text-align:center'><br /><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";

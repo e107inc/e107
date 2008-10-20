@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.13 2008-10-19 20:31:57 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.14 2008-10-20 21:52:38 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -130,5 +130,12 @@ define('LAN_AL_UPDATE_01','Update from 0.7 to 0.8 executed');
 define('LAN_AL_UPDATE_02','Update from 0.7.x to 0.7.6 executed');
 define('LAN_AL_UPDATE_03','Missing prefs added');
 
+
+// Administrator routines
+//-----------------------
+define('LAN_AL_ADMIN_00','Unknown administrator event');
+define('LAN_AL_ADMIN_01','Update admin permissions');
+define('LAN_AL_ADMIN_02','Admin rights removed');
+define('LAN_AL_ADMIN_03','');
 
 ?>

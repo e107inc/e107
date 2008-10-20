@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-06-27 20:16:07 $
+|     $Revision: 1.7 $
+|     $Date: 2008-10-20 21:52:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -25,17 +25,25 @@ if (!getperms('3'))
 $e_sub_cat = 'admin';
 require_once('auth.php');
 
+$action = '';
+$sub_action = -1;
 if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
-	$sub_action = $tmp[1];
+	$action = $tmp[0];					// Used when called from elsewhere
+	$sub_action = varset($tmp[1],-1);	// User ID 
 	unset($tmp);
 }
 
+
 if (isset($_POST['update_admin']))
-{
-	$sql->db_Select("user", "*", "user_id='".$_POST['a_id']."' ");
+{	// Permissions updated
+	$modID = intval($_POST['a_id']);
+	if ($modID == 0)
+	{
+		exit;
+	}
+	$sql->db_Select("user", "*", "user_id=".$modID);
 	$row = $sql->db_Fetch();
 	$a_name = $row['user_name'];
 
@@ -43,30 +51,37 @@ if (isset($_POST['update_admin']))
 
 	foreach($_POST['perms'] as $value)
 	{
-      if ($value == "0")
-      {
-        if (!getperms('0')) { $value = ""; break; }
+		$value = $tp->toDB($value);
+		if ($value == "0")
+		{
+			if (!getperms('0')) { $value = ""; break; }
+			$perm = "0."; break;
+		}
 
-        $perm = "0."; break;
-      }
-
-      if ($value)
-      {
-        $perm .= $value.".";
-      }
+		if ($value)
+		{
+			$perm .= $value.".";
+		}
     }
 
-	admin_update($sql -> db_Update("user", "user_perms='$perm' WHERE user_name='$a_name' "), 'update', ADMSLAN_56." ".$_POST['ad_name']." ".ADMSLAN_2."<br />");
-	unset($ad_name, $a_perms);
+	admin_update($sql -> db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', ADMSLAN_56." ".$tp->toDB($_POST['ad_name'])." ".ADMSLAN_2."<br />");
+	$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
+	$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');	
+	unset($modID, $ad_name, $a_perms);
 }
 
-if ($_POST['edit_admin'] || $action == "edit")
+
+if (isset($_POST['edit_admin']) || $action == "edit")
 {
 	$edid = array_keys($_POST['edit_admin']);
-    $theid = ($edid[0]) ? $edid[0] : $sub_action;
-	$sql->db_Select("user", "*", "user_id=".$theid);
-	$row = $sql->db_Fetch();
-
+    $theid = intval(($sub_action < 0) ? $edid[0] : $sub_action);
+	if ((!$sql->db_Select("user", "*", "user_id=".$theid))
+		|| !($row = $sql->db_Fetch()))
+	{
+		echo "Couldn't find user ID: {$theid}, {$sub_action}, {$edid[0]}<br />";	// Debug code - shouldn't be executed
+	}
+	
+/*  Code would never be executed - $a_perms not set at this point
 	if ($a_perms == "0")
 	{
 		$text = "<div style='text-align:center'>$ad_name ".ADMSLAN_3."
@@ -75,17 +90,19 @@ if ($_POST['edit_admin'] || $action == "edit")
 		$ns->tablerender(LAN_ERROR, $text);
 		require_once("footer.php");
 		exit;
-	}
+	}  */
 }
 
-if (isset($_POST['del_admin']))
+
+if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 {
 	$delid = array_keys($_POST['del_admin']);
-	$sql->db_Select("user", "*", "user_id= ".$delid[0]);
+	$aID = intval($delid[0]);
+	$sql->db_Select("user", "*", "user_id= ".$aID);
 	$row = $sql->db_Fetch();
 
 	if ($row['user_id'] == 1)
-	{
+	{	// CAn't delete main admin
 		$text = "<div style='text-align:center'>".$row['user_name']." ".ADMSLAN_6."
 		<br /><br />
 		<a href='administrator.php'>".ADMSLAN_4."</a>";
@@ -94,16 +111,25 @@ if (isset($_POST['del_admin']))
 		exit;
 	}
 
-	admin_update($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$delid[0]), 'update', ADMSLAN_61, LAN_DELETED_FAILED);
+	admin_update($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED);
+	$logMsg = str_replace(array('--ID--', '--NAME--'),array($aID, $row['user_name']),ADMSLAN_73);
+	$admin_log->log_event('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');	
 }
 
-if($_POST['edit_admin'] || $action == "edit"){
+
+if(isset($_POST['edit_admin']) || $action == "edit")
+{
 	edit_administrator($row);
-}else{
+}
+else
+{
    show_admins();
 }
 
-function show_admins(){
+
+
+function show_admins()
+{
     global $sql, $tp, $ns, $pref, $imode;
 
 	$sql->db_Select("user", "*", "user_admin='1'");
@@ -122,7 +148,6 @@ function show_admins(){
 
 	while ($row = $sql->db_Fetch())
 	{
-
 		$text .= "<tr>
 		<td style='width:5%' class='forumheader3'>".$row['user_id']."</td>
 		<td style='width:20%' class='forumheader3'><a href='".e_BASE."user.php?id.".$row['user_id']."'>".$row['user_name']."</a></td>
@@ -153,7 +178,8 @@ function show_admins(){
 
 
 
-function edit_administrator($row){
+function edit_administrator($row)
+{
     global $sql,$tp,$ns,$pref;
 	$lanlist = explode(",",e_LANLIST);
 
@@ -285,26 +311,29 @@ function checkb($arg, $perms)
 {
 	if (getperms($arg, $perms))
 	{
-		$par = "<input type='checkbox' name='perms[]' value='$arg' checked='checked' />\n";
+		$par = "<input type='checkbox' name='perms[]' value='{$arg}' checked='checked' />\n";
 	}
 	else
 	{
-		$par = "<input type='checkbox' name='perms[]' value='$arg' />\n";
+		$par = "<input type='checkbox' name='perms[]' value='{$arg}' />\n";
 	}
 	return $par;
 }
 
 
-function renderperms($perm,$id){
+function renderperms($perm,$id)
+{
 	global $pref,$sql,$pt;
-	if($perm == "0"){
+	if($perm == "0")
+	{
    		return ADMSLAN_58;
 	}
     $sql2 = new db;
 	$lanlist = explode(",",e_LANLIST);
 
 
-	if(!$pt){
+	if(!$pt)
+	{
     	$pt["1"] = ADMSLAN_19;
 		$pt["2"] = ADMSLAN_20;
 		$pt["3"] = ADMSLAN_21;
@@ -339,35 +368,38 @@ function renderperms($perm,$id){
 		$pt["Z"] = ADMSLAN_62;
 		
 
-  //		foreach($lanlist as $lan){
-  //      	$pt[$lan] = $lan;
-  //		}
-
 		$sql2->db_Select("plugin", "*", "plugin_installflag='1'");
-		while ($row2 = $sql2->db_Fetch()){
+		while ($row2 = $sql2->db_Fetch())
+		{
 			$pt[("P".$row2['plugin_id'])] = LAN_PLUGIN." - ".$row2['plugin_name'];
 		}
 	}
 
 	$tmp = explode(".", $perm);
 		$langperm = "";
-		foreach($tmp as $pms){
-			if(in_array($pms, $lanlist)){
+		foreach($tmp as $pms)
+		{
+			if(in_array($pms, $lanlist))
+			{
 				$langperm .= $pms."&nbsp;";
-			}else{
+			}
+			else
+			{
 				$permtxt[] = $pms;
-                if($pt[$pms]){
+                if($pt[$pms])
+				{
 		   			$ptext[] = $pt[$pms];
 				}
 			}
 		}
 
 	$ret = implode(" ",$permtxt);
-	if($pref['multilanguage']){
+	if($pref['multilanguage'])
+	{
 		$ret .= ",&nbsp;". $langperm;
 	}
 
-	$text = "<div onclick=\"expandit('id_$id')\" style='cursor:pointer' title='".ADMSLAN_71."'>$ret</div>
+	$text = "<div onclick=\"expandit('id_{$id}')\" style='cursor:pointer' title='".ADMSLAN_71."'>{$ret}</div>
 	<div id='id_$id' style='display:none'><br />".implode("<br />",$ptext)."</div>";
     return $text;
 
