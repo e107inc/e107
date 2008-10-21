@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2007-09-16 17:27:11 $
+|		$Revision: 1.6 $
+|		$Date: 2008-10-21 19:10:35 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -312,7 +312,8 @@ class listclass {
 		global $LIST_DISPLAYSTYLE, $LIST_CAPTION, $LIST_STYLE_CAPTION, $LIST_STYLE_BODY;
 		global $LIST_PAGE_NEW, $LIST_PAGE_RECENT, $LIST_MENU_NEW, $LIST_MENU_RECENT, $LIST_PAGE_NEW_START, $LIST_PAGE_RECENT_START, $LIST_MENU_NEW_START, $LIST_MENU_RECENT_START, $LIST_PAGE_NEW_END, $LIST_PAGE_RECENT_END, $LIST_MENU_NEW_END, $LIST_MENU_RECENT_END;
 
-		$menu_installed = $sql -> db_Select("menus", "menu_id", "(menu_name = 'list_new_menu' || menu_name = 'list_recent_menu') AND menu_location != '0' AND menu_class REGEXP '".e_CLASS_REGEXP."' ");
+		// Following query no longer used
+		//$menu_installed = $sql -> db_Select("menus", "menu_id", "(menu_name = 'list_new_menu' || menu_name = 'list_recent_menu') AND menu_location != '0' AND menu_class REGEXP '".e_CLASS_REGEXP."' ");
 		$LIST_DATA = "";
 		$LIST_CAPTION = "";
 
