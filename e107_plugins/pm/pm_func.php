@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_func.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-10-13 19:06:46 $
+|     $Revision: 1.5 $
+|     $Date: 2008-10-21 19:06:06 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ function pm_getInfo($which = "inbox")
 		$pm_info[$which] = $sql->db_Fetch();
 		if ($which == 'inbox' && ($pm_prefs['animate'] == 1 || $pm_prefs['popup'] == 1))
 		{
-			if($new = $sql->db_Count("private_msg", "(*)", "WHERE pm_sent > '.USERLV.' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
+			if($new = $sql->db_Count("private_msg", "(*)", "WHERE pm_sent > '".USERLV."' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
 			{
 				$pm_info['inbox']['new'] = $new;
 			}
