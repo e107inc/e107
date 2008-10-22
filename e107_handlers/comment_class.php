@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2008-10-22 21:28:37 $
+|     $Revision: 1.78 $
+|     $Date: 2008-10-22 21:31:02 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -485,7 +485,8 @@ class comment {
         	return;
 		}
 
-		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
+//		Query no longer used
+//		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
 
 		$type = $this -> getCommentType($table);
 
