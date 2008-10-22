@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2008-10-11 10:49:10 $
+|     $Revision: 1.77 $
+|     $Date: 2008-10-22 21:28:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -459,7 +459,7 @@ class comment {
 	{
 		global $sql, $tp;
 		$type = $this -> getCommentType($table);
-		$count_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_item_id='".intval($id)."' AND comment_type='".$tp -> toDB($type, true)."' ORDER BY comment_item_id");
+		$count_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_item_id='".intval($id)."' AND comment_type='".$tp -> toDB($type, true)."' ");
 		return $count_comments;
 	}
 
