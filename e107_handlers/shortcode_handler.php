@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.13 $
-| $Date: 2008-03-13 19:15:56 $
-| $Author: lisa_ $
+| $Revision: 1.14 $
+| $Date: 2008-10-30 20:21:55 $
+| $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,15 +32,17 @@ function register_shortcode($code, $filename, $function, $force=false)
 class e_shortcode
 {
 	var $scList;					// The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
-	var $parseSCFiles;			// True if shortcode file has been parsed
+	var $parseSCFiles;				// True if individual shortcode files are to be used
 	var $addedCodes;				// Apparently not used
-	var $registered_codes;		// Shortcodes added by plugins
+	var $registered_codes;			// Shortcodes added by plugins
 
 	function e_shortcode()
 	{
 		global $pref, $register_sc;
 
-		$this->shortcode_functions = array();
+		$this->parseSCFiles = TRUE;			// Default probably never used, but make sure its defined.
+
+		$this->registered_codes = array();	// Think this used to access an undefined variable
 		if(varset($pref['shortcode_list'],'') != '')
 		{
 			foreach($pref['shortcode_list'] as $path=>$namearray)
@@ -74,6 +76,7 @@ class e_shortcode
 
 	function parseCodes($text, $useSCFiles = true, $extraCodes = '')
 	{
+		$saveParseSCFiles = $this->parseSCFiles;		// In case of nested call
 		$this->parseSCFiles = $useSCFiles;
 		if(is_array($extraCodes))
 		{
@@ -83,6 +86,7 @@ class e_shortcode
 			}
 		}
 		$ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
+		$this->parseSCFiles = $saveParseSCFiles;		// Restore previous value
 		return $ret;
 	}
 
