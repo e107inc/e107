@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2008-09-04 19:50:10 $
+|     $Revision: 1.39 $
+|     $Date: 2008-10-30 22:42:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1084,6 +1084,23 @@ class e_parse
 	  	$text = (strtolower($mods) != "rawtext") ? $this->replaceConstants($text,"full") : $text;
     	$text = $this->toHTML($text,TRUE,$mods);
         return $text;
+	}
+
+
+	// Given an email address, returns a link including js-based obfuscation
+	function emailObfuscate($email, $words='', $subject='')
+	{
+		if (strpos($email,'@') === FALSE)
+		{
+			return '';
+		}
+		if ($subject)
+		{
+			$subject = '?subject='.$subject;
+		}
+		list($name,$address) = explode('@',$email,2);
+		$reassembled = '"'.$name.'"+"@"+"'.$address.'"';
+		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+".$reassembled.$subject.";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+".$reassembled."; return true;' onmouseout='window.status=\"\";return true;'>".$words.'</a>';
 	}
 
 }
