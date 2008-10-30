@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/e107.js,v $
-|	$Revision: 1.10 $
-|	$Date: 2008-01-16 10:13:45 $
-|	$Author: e107coders $
+|	$Revision: 1.11 $
+|	$Date: 2008-10-30 21:00:31 $
+|	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -134,7 +134,7 @@ function open_window(url,wth,hgt) {
 			myheight=400;
 		}
 
-		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height='+myheight+',scrollbars=yes,menubar=yes')
+		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height='+myheight+',scrollbars=yes,menubar=yes');
 	}
 	pwindow.focus();
 }
@@ -214,7 +214,7 @@ function mozWrap(txtarea, open, close){
 	var selEnd = txtarea.selectionEnd;
 	if (selEnd == 1 || selEnd == 2) selEnd = selLength;
 	var s1 = (txtarea.value).substring(0,selStart);
-	var s2 = (txtarea.value).substring(selStart, selEnd)
+	var s2 = (txtarea.value).substring(selStart, selEnd);
 	var s3 = (txtarea.value).substring(selEnd, selLength);
 	txtarea.value = s1 + open + s2 + close + s3;
 	return;
@@ -322,11 +322,11 @@ function addtext(text, emote)
 	}
 }
 
-function help(help,tagid){
+function help(helpstr,tagid){
 	if(tagid){
-		document.getElementById(tagid).value = help;
+		document.getElementById(tagid).value = helpstr;
 	} else if(document.getElementById('dataform')) {
-		document.getElementById('dataform').helpb.value = help;
+		document.getElementById('dataform').helpb.value = helpstr;
 	}
 }
 function externalLinks() {
