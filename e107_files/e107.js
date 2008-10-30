@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.28 $
-|	$Date: 2008-06-24 08:00:32 $
-|	$Author: secretr $
+|	$Revision: 1.29 $
+|	$Date: 2008-10-30 21:00:23 $
+|	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -130,7 +130,7 @@ function open_window(url,wth,hgt) {
 			myheight=400;
 		}
 
-		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height='+myheight+',scrollbars=yes,menubar=yes')
+		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height='+myheight+',scrollbars=yes,menubar=yes');
 	}
 	pwindow.focus();
 }
@@ -282,7 +282,7 @@ function addtext(text, emote) {
 		selEnd = selLength;
 	}
 	var sel1 = (eField.value).substring(0,selStart);
-	var sel2 = (eField.value).substring(selStart, selEnd)
+	var sel2 = (eField.value).substring(selStart, selEnd);
 	var sel3 = (eField.value).substring(selEnd, selLength);
 
 	var newStart = selStart + tagOpen.length + sel2.length + tagClose.length;
@@ -296,11 +296,11 @@ function addtext(text, emote) {
 
 }
 
-function help(help,tagid){
+function help(helpstr,tagid){
 	if(tagid){
-		document.getElementById(tagid).value = help;
+		document.getElementById(tagid).value = helpstr;
 	} else if(document.getElementById('dataform')) {
-		document.getElementById('dataform').helpb.value = help;
+		document.getElementById('dataform').helpb.value = helpstr;
 	}
 }
 function externalLinks() {
