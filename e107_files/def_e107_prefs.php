@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-10-11 11:55:18 $
+|     $Revision: 1.16 $
+|     $Date: 2008-10-30 20:40:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -46,17 +46,31 @@ City, State, Country
   'flood_timeout' => '5',
   'flood_time' => '30',
   'flood_hits' => '100',
-
   'anon_post' => '0',
+
   'user_reg' => '1',
-  'use_coppa' => '1',
   'membersonly_enabled' => '0',
+
+  'use_coppa' => '1',
+  'signcode' => '0',
+  'user_reg_veri' => '1',
+  'user_reg_secureveri' => '1',
   'signup_pass_len' => '',
   'signup_maxip' => '3',
   'signup_disallow_text' => '',
+  'disable_emailcheck' => 0,
+  'signup_text' => '',
+  'signup_text_after' => '',
+  'signup_option_realname' => '1',
+  'signup_option_signature' => '1',
+  'signup_option_image' => '1',
+  'signup_option_class' => '1',
+  'signup_remote_emailcheck' => 0,
+
   'displayname_class' => 255,
   'displayname_maxlength' => 15,
   'loginname_maxlength' => 30,
+  
   'profanity_filter' => '0',
   'profanity_replace' => '[censored]',
   'smiley_activate' => '',
@@ -68,7 +82,6 @@ City, State, Country
   'maintainance_flag' => '0',
   'time_offset' => '0',
   'meta_tag' => '',
-  'user_reg_veri' => '1',
   'email_notify' => '0',
   'resize_method' => 'gd2',
   'im_path' => '/usr/X11R6/bin/',
@@ -92,16 +105,11 @@ City, State, Country
   'wmessage_sc' => '0',
   'frontpage_force' => array(e_UC_PUBLIC => ''),
   'frontpage' => array(e_UC_PUBLIC => 'news.php'),
-  'signup_text' => '',
+
   'admin_alerts_ok' => '1',
   'link_replace' => '0',
   'link_text' => '',
-  'signcode' => '0',
   'logcode' => '0',
-  'signup_option_realname' => '1',
-  'signup_option_signature' => '1',
-  'signup_option_image' => '1',
-  'signup_option_class' => '1',
   'newsposts_archive' => '0',
   'newsposts_archive_title' => '',
   'news_cats' => '',
@@ -130,7 +138,6 @@ City, State, Country
   'post_html' => '254',
   'redirectsiteurl' => '0',
   'admin_alerts_uniquemenu' => '0',
-  'signup_text_after' => '',
   'null' => '',
   'links_new_window' => '1',
   'main_wordwrap' => '',
@@ -138,7 +145,6 @@ City, State, Country
   'php_bbcode' => '255',
   'ssl_enabled' => '0',
   'fpwcode' => '0',
-  'user_reg_secureveri' => '1',
   'disallowMultiLogin' => '0',
   'profanity_words' => '',
   'adminpwordchange' => '0',
