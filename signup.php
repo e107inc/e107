@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.119 $
-|     $Date: 2008-10-03 19:48:15 $
+|     $Revision: 1.120 $
+|     $Date: 2008-10-30 20:40:02 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -489,7 +489,7 @@ global $db_debug;
 		$error = TRUE;
 		$email = "";
 		$email_confirm = "";
-	  $email_address_OK = FALSE;
+		$email_address_OK = FALSE;
 	}
 	
 	// Always validate an email address if entered. If its blank, that's OK if checking disabled
@@ -557,65 +557,67 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	  $error = TRUE;
 	  $email_address_OK = FALSE;
 	}
-
-	// Check Email against banlist.
-	$wc = make_email_query($_POST['email']);
-	if ($wc) $wc = ' OR '.$wc;
-	
-	if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
+	else
 	{
-	  $email_address_OK = FALSE;
-	  $brow = $sql -> db_Fetch();
-	  $error = TRUE;
-	  if($brow['banlist_reason'])
-	  {
-		$repl = array("\n","\r","<br />");
-		$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak, defs"))."\\n";
-		$email = "";
-	  }
-	  else
-	  {
-		exit;
-	  }
+		// Check Email against banlist.
+		$wc = make_email_query($_POST['email']);
+		if ($wc) $wc = ' OR '.$wc;
+
+		if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
+		{
+			$email_address_OK = FALSE;
+			$brow = $sql -> db_Fetch();
+			$error = TRUE;
+			if($brow['banlist_reason'])
+			{
+				$repl = array("\n","\r","<br />");
+				$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak, defs"))."\\n";
+				$email = "";
+			}
+			else
+			{
+				exit;
+			}
+		}
 	}
 
 	// Check email address on remote server (if enabled) - but only if previous checks passed.
 	if ($do_email_validate && $email_address_OK && varsettrue($pref['signup_remote_emailcheck']) && $error != TRUE)
 	{
-	  require_once(e_HANDLER."mail_validation_class.php");
-	  list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
-	  $validator = new email_validation_class;
-	  $validator->localuser= $adminuser;
-	  $validator->localhost= $adminhost;
-	  $validator->timeout=3;
+		require_once(e_HANDLER."mail_validation_class.php");
+		list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
+		$validator = new email_validation_class;
+		$validator->localuser= $adminuser;
+		$validator->localhost= $adminhost;
+		$validator->timeout=3;
 		//	$validator->debug=1;
 		//	$validator->html_debug=1;
-	  if($validator->ValidateEmailBox(trim($_POST['email'])) != 1)
-	  {
-		$email_address_OK = FALSE;
-		$error_message .= LAN_106."\\n";
-		$error = TRUE;
-		$email = "";
-		$email_confirm = "";
-	  }
+		if($validator->ValidateEmailBox(trim($_POST['email'])) != 1)
+		{
+			$email_address_OK = FALSE;
+			$error_message .= LAN_106."\\n";
+			$error = TRUE;
+			$email = "";
+			$email_confirm = "";
+		}
 	}
 
 	// Check for Duplicate Email address - but only if previous checks passed.
 	if ($do_email_validate && $email_address_OK && $sql->db_Select("user", "user_email, user_ban, user_sess", "user_email='".$_POST['email']."' "))
 	{
-      $chk = $sql -> db_Fetch();
-	  if($chk['user_ban']== 2 && $chk['user_sess'])
-	  {  // duplicate because unactivated
-		$error = TRUE;
-        header("Location: ".e_BASE."signup.php?resend");
-		exit;
-	  }
-	  else
-	  {
-	  $email_address_OK = FALSE;
-		$error_message .= LAN_408."\\n";
-		$error = TRUE;
-	  }
+		$chk = $sql -> db_Fetch();
+		if($chk['user_ban']== 2 && $chk['user_sess'])
+		{  // duplicate because unactivated
+			$error = TRUE;
+			header("Location: ".e_BASE."signup.php?resend");
+			exit;
+		}
+		else
+		{
+			$email_address_OK = FALSE;
+			$error_message .= LAN_408."\\n";
+			$error = TRUE;
+		}
 	}
 
 	// Extended Field validation
