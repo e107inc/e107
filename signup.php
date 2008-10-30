@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-10-03 19:48:00 $
+|     $Revision: 1.22 $
+|     $Date: 2008-10-30 20:40:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -579,17 +579,19 @@ global $db_debug;
 	  $error = TRUE;
 	  $email_address_OK = FALSE;
 	}
-
-	// Check Email against banlist.
-	$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
-//	if ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'"))
-	if ($do_email_validate && !$e107->check_ban("banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'",FALSE,TRUE))
+	else
 	{
-	  $email_address_OK = FALSE;
-	  $brow = $sql -> db_Fetch();
-	  $error = TRUE;
-	  $error_message = varsettrue($pref['ban_messages'][$row['banlist_bantype']]);
-	  if (!$error_message) exit;
+
+		// Check Email against banlist.
+		$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
+//	if ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'"))
+		if ($do_email_validate && !$e107->check_ban("banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'",FALSE,TRUE))
+		{
+		  $email_address_OK = FALSE;
+		  $brow = $sql -> db_Fetch();
+		  $error = TRUE;
+		  $error_message = varsettrue($pref['ban_messages'][$row['banlist_bantype']]);
+		  if (!$error_message) exit;
 /*	  if($brow['banlist_reason'])
 	  {
 		$repl = array("\n","\r","<br />");
@@ -600,7 +602,8 @@ global $db_debug;
 	  {
 		exit;
 	  }
-*/	}
+*/		}
+	}
 
 	// Check email address on remote server (if enabled) - but only if previous checks passed.
 	if ($do_email_validate && $email_address_OK && varsettrue($pref['signup_remote_emailcheck']) && $error != TRUE)
