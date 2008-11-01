@@ -11,23 +11,40 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/ugflag.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-11-01 23:01:05 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("9")) {
+if (!getperms("9")) 
+{
 	header("location:".e_BASE."index.php");
-	 exit;
+	exit;
 }
 
 require_once(e_HANDLER."ren_help.php");
 
-if (isset($_POST['updatesettings'])) {
-	$pref['maintainance_flag'] = intval($_POST['maintainance_flag']);
-	$pref['maintainance_text'] = $tp->toDB($_POST['maintainance_text']);
-	save_prefs();
+if (isset($_POST['updatesettings'])) 
+{
+	$changed = FALSE;
+	$temp = intval($_POST['maintainance_flag']);
+	if ($pref['maintainance_flag'] != $temp)
+	{
+		$pref['maintainance_flag'] = $temp;
+		$changed = TRUE;
+	}
+	$temp = $tp->toDB($_POST['maintainance_text']);
+	if ($pref['maintainance_text'] != $temp)
+	{
+		$pref['maintainance_text'] = $temp;
+		$changed = TRUE;
+	}
+	if ($changed)
+	{
+		$admin_log->log_event(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01',$pref['maintainance_text'],E_LOG_INFORMATIVE,'');
+		save_prefs();
+	}
 	header("location:".e_SELF."?u");
 	exit;
 }

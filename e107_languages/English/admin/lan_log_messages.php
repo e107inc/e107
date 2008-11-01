@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.14 2008-10-20 21:52:38 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.15 2008-11-01 23:01:11 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -137,5 +137,11 @@ define('LAN_AL_ADMIN_00','Unknown administrator event');
 define('LAN_AL_ADMIN_01','Update admin permissions');
 define('LAN_AL_ADMIN_02','Admin rights removed');
 define('LAN_AL_ADMIN_03','');
+
+// Maintenance mode
+//-----------------
+define('LAN_AL_MAINT_00','Unknown maintenance message');
+define('LAN_AL_MAINT_01','Maintenance mode set');
+define('LAN_AL_MAINT_02','Maintenance mode cleared');
 
 ?>
