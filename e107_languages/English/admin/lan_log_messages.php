@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.18 2008-11-02 11:04:34 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.19 2008-11-02 11:19:35 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -175,6 +175,14 @@ define('LAN_AL_CACHE_01','Cache settings updated');
 define('LAN_AL_CACHE_02','System cache emptied');
 define('LAN_AL_CACHE_03','Content cache emptied');
 define('LAN_AL_CACHE_04','');
+
+
+// Emote admin
+//------------
+define('LAN_AL_EMOTE_00','Unknown emote-related message');
+define('LAN_AL_EMOTE_01','Active emote pack changed');
+define('LAN_AL_EMOTE_02','Emotes activated');
+define('LAN_AL_EMOTE_03','Emotes deactivated');
 
 
 ?>

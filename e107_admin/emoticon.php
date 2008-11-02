@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-12-26 15:55:22 $
+|     $Revision: 1.8 $
+|     $Date: 2008-11-02 11:19:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -41,6 +41,7 @@ if (isset($_POST['active']))
 if ($pref['smiley_activate'] != $_POST['smiley_activate']) 
 {
 	$pref['smiley_activate'] = $_POST['smiley_activate'];
+	$admin_log->log_event($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03',$pref['emotepack'],E_LOG_INFORMATIVE,'');
 	save_prefs();
 	$update = true;
   }
@@ -76,6 +77,7 @@ foreach($_POST as $key => $value)
 	{
 		$pref['emotepack'] = str_replace("defPack_", "", $key);
 		save_prefs();
+		$admin_log->log_event('EMOTE_01',$pref['emotepack'],E_LOG_INFORMATIVE,'');
 		break;
 	}
 
