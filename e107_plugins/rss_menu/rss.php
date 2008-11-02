@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-10-15 19:13:20 $
+|     $Revision: 1.9 $
+|     $Date: 2008-11-02 22:29:33 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -183,7 +183,7 @@ class rssCreate {
 		}
 
 		switch ($content_type) {
-			case news:
+			case 'news' :
 			case 1:
 				if($topic_id && is_numeric($topic_id)){
 					$topic = " AND news_category = ".intval($topic_id);
@@ -235,7 +235,7 @@ class rssCreate {
 				$path='';
 				$this -> contentType = "content";
 				break;
-			case comments:
+			case 'comments' :
 			case 5:
 				$path='';
 				$this -> rssQuery = "SELECT * FROM `#comments` WHERE `comment_blocked` = 0 ORDER BY `comment_datestamp` DESC LIMIT 0,".$this -> limit;
@@ -250,10 +250,16 @@ class rssCreate {
 
 					switch ($value['comment_type']) 
 					{
-						case 0:
+						case 0 :
+						case 'news' :
 							$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['comment_item_id'];
 							break;
+						case 2 :
+						case 'download' :
+							$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.download.".$value['comment_item_id'];
+							break;
 						case 4:
+						case 'poll' :
 							$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.poll.".$value['comment_item_id'];
 							break;
 					}
