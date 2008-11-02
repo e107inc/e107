@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-10 03:25:00 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2008-11-02 11:04:29 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("C")) {
+if (!getperms("C")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -25,7 +26,8 @@ $e_sub_cat = 'cache';
 require_once("auth.php");
 require_once(e_HANDLER."cache_handler.php");
 $ec = new ecache;
-if ($pref['cachestatus'] == '2') {
+if ($pref['cachestatus'] == '2') 
+{
 	$pref['cachestatus'] = '1';
 	save_prefs();
 }
@@ -44,6 +46,7 @@ if (isset($_POST['submit_cache']))
 		$pref['cachestatus'] = $_POST['cachestatus'];
 		$pref['syscachestatus'] = $_POST['syscachestatus'];
 		save_prefs();
+		$admin_log->log_event('CACHE_01',$pref['syscachestatus'].', '.$pref['cachestatus'],E_LOG_INFORMATIVE,'');
 		$ec->clear();
 		$ec->clear_sys();
 		$update = true;
@@ -51,15 +54,21 @@ if (isset($_POST['submit_cache']))
 	}
 }
 
-if (isset($_POST['empty_syscache'])) {
+if (isset($_POST['empty_syscache'])) 
+{
 	$ec->clear_sys();
+	$admin_log->log_event('CACHE_02',$pref['syscachestatus'].', '.$pref['cachestatus'],E_LOG_INFORMATIVE,'');
 	$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_15."</b></div>");
 }
 
-if (isset($_POST['empty_cache'])) {
+if (isset($_POST['empty_cache'])) 
+{
 	$ec->clear();
+	$admin_log->log_event('CACHE_03',$pref['syscachestatus'].', '.$pref['cachestatus'],E_LOG_INFORMATIVE,'');
 	$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_6."</b></div>");
 }
+
+
 	
 $syscache_files = glob($e107->file_path.$FILES_DIRECTORY."cache/S_*.*");
 $cache_files = glob($e107->file_path.$FILES_DIRECTORY."cache/C_*.*");
