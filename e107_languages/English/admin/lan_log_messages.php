@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.17 2008-11-02 10:28:30 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.18 2008-11-02 11:04:34 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -166,6 +166,15 @@ define('LAN_AL_THEME_02','Admin theme updated');
 define('LAN_AL_THEME_03','Image preload/site CSS updated');
 define('LAN_AL_THEME_04','Admin style/CSS updated');
 define('LAN_AL_THEME_05','');
+
+
+// Cache control routines
+//-----------------------
+define('LAN_AL_CACHE_00','Unknown cache-control message');
+define('LAN_AL_CACHE_01','Cache settings updated');
+define('LAN_AL_CACHE_02','System cache emptied');
+define('LAN_AL_CACHE_03','Content cache emptied');
+define('LAN_AL_CACHE_04','');
 
 
 ?>
