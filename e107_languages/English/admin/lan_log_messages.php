@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.16 2008-11-02 10:15:37 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.17 2008-11-02 10:28:30 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -156,9 +156,16 @@ define('LAN_AL_SLINKS_05','Sitelinks options updated');
 define('LAN_AL_SLINKS_06','Sitelink deleted');
 define('LAN_AL_SLINKS_07','Sitelink submitted');
 define('LAN_AL_SLINKS_08','Sitelink updated');
-define('LAN_AL_SLINKS_09','');
-define('LAN_AL_SLINKS_10','');
-define('LAN_AL_SLINKS_11','');
+
+
+// Theme manager routines
+//-----------------------
+define('LAN_AL_THEME_00','Unknown theme-related message');
+define('LAN_AL_THEME_01','Site theme updated');
+define('LAN_AL_THEME_02','Admin theme updated');
+define('LAN_AL_THEME_03','Image preload/site CSS updated');
+define('LAN_AL_THEME_04','Admin style/CSS updated');
+define('LAN_AL_THEME_05','');
 
 
 ?>

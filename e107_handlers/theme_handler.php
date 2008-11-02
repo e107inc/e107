@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-08-25 10:46:32 $
+|     $Revision: 1.11 $
+|     $Date: 2008-11-02 10:28:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -448,6 +448,7 @@ class themeHandler{
 		$pref['themecss'] ='style.css';
 		$e107cache->clear_sys();
 		save_prefs();
+		$this->theme_adminlog('01',$pref['sitetheme'].', '.$pref['themecss']);
 		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
 	}
 
@@ -459,6 +460,7 @@ class themeHandler{
 		$pref['admincss'] = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
 		$e107cache->clear_sys();
 		save_prefs();
+		$this->theme_adminlog('02',$pref['admintheme'].', '.$pref['admincss']);
 		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
 	}
 
@@ -469,6 +471,7 @@ class themeHandler{
 		$pref['image_preload'] = $_POST['image_preload'];
 		$e107cache->clear_sys();
 		save_prefs();
+		$this->theme_adminlog('03',$pref['image_preload'].', '.$pref['themecss']);
 		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_37.".</div><br />");
 	}
 
@@ -479,7 +482,17 @@ class themeHandler{
 		$pref['adminstyle'] = $_POST['adminstyle'];
 		$e107cache->clear_sys();
 		save_prefs();
+		$this->theme_adminlog('04',$pref['adminstyle'].', '.$pref['admincss']);
 		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_43.".</div><br />");
+	}
+
+
+	// Log event to admin log
+	function theme_adminlog($msg_num='00', $woffle='')
+	{
+		global $pref, $admin_log;
+		//  if (!varset($pref['admin_log_log']['admin_banlist'],0)) return;
+		$admin_log->log_event('THEME_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 	}
 
 }
