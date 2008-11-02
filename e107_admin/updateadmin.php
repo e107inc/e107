@@ -11,22 +11,42 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/updateadmin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-11-02 14:03:04 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
 $e_sub_cat = 'admin_pass';
 require_once('auth.php');
+require_once(e_HANDLER."user_handler.php");
+$user_info = new UserHandler;
 
-if (isset($_POST['update_settings'])) {
-	if ($_POST['ac'] == md5(ADMINPWCHANGE)) {
-		if ($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])) {
-			if (admin_update($sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."'"), 'update', UDALAN_3." ".ADMINNAME)) {
+
+if (isset($_POST['update_settings'])) 
+{
+	if ($_POST['ac'] == md5(ADMINPWCHANGE)) 
+	{
+		if ($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])) 
+		{
+			$newPassword = $sql->escape($user_info->HashPassword($_POST['a_password'], $currentUser['user_loginname']), FALSE);
+			$newPrefs = '';
+			unset($_POST['a_password']);
+			unset($_POST['a_password2']);
+			if (varsettrue($pref['allowEmailLogin']))
+			{
+				$user_prefs = unserialize($currentUser['user_prefs']);
+				$user_prefs['email_password'] = $user_info->HashPassword($new_pass, $email);
+				$newPrefs = "user_prefs='".serialize($user_prefs)."', ";
+			}
+			if (admin_update($sql -> db_Update("user", "user_password='".$newPassword."', ".$newPrefs."user_pwchange='".time()."' WHERE user_id=".USERID), 'update', UDALAN_3." ".ADMINNAME)) 
+			{
+				$admin_log->log_event('ADMINPW_01','',E_LOG_INFORMATIVE,'');
 				$e_event -> trigger('adpword');
 			}
-		} else {
+		} 
+		else 
+		{
 			$ns->tablerender(LAN_UPDATED_FAILED, "<div style='text-align:center'><b>".UDALAN_1."</b></div>");
 		}
 	}
