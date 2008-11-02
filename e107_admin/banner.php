@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-08-26 19:45:11 $
+|     $Revision: 1.7 $
+|     $Date: 2008-11-02 21:02:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -43,16 +43,18 @@ if(e_QUERY)
 //$images = $fl->get_files(e_IMAGE."banners/","",$reject);
 $images = $fl->get_files(e_IMAGE."banners/","","standard");
 
-if (isset($_POST['update_menu'])) {
-
+if (isset($_POST['update_menu'])) 
+{
 	$menu_pref['banner_caption']	= $tp->toDB($_POST['banner_caption']);
 	$menu_pref['banner_amount']		= intval($_POST['banner_amount']);
 	$menu_pref['banner_rendertype']	= intval($_POST['banner_rendertype']);
 
-	if (isset($_POST['catid'])) {
+	if (isset($_POST['catid'])) 
+	{
 		$array_cat = explode("-", $_POST['catid']);
 		$cat='';
-		for($i = 0; $i < count($array_cat); $i++) {
+		for($i = 0; $i < count($array_cat); $i++) 
+		{
 			$cat .= $tp->toDB($array_cat[$i])."|";
 		}
 		$cat = substr($cat, 0, -1);
@@ -60,6 +62,7 @@ if (isset($_POST['update_menu'])) {
 	}
 
 	$sysprefs->setArray('menu_pref');
+	banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
 	$message = BANNER_MENU_L2;
 }
 
@@ -67,42 +70,56 @@ if (isset($_POST['update_menu'])) {
 
 if ($_POST['createbanner'] || $_POST['updatebanner'])
 {
-
 	$start_date = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
-
 	$end_date = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
+	$cli = $tp->toDB($_POST['client_name'] ? $_POST['client_name'] : $_POST['banner_client_sel']);
+	$cLogin = $tp->toDB($_POST['client_login']);
+	$cPassword = $tp->toDB($_POST['client_password']);
+	$banImage = $tp->toDB($_POST['banner_image']);
+	$banURL = $tp->toDB($_POST['click_url']);
 
-	$cli = ($_POST['client_name'] ? $_POST['client_name'] : $_POST['banner_client_sel']);
-
-	if ($_POST['banner_pages']) {
-		$postcampaign = ($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
+	if ($_POST['banner_pages']) 
+	{	// Section redundant?
+		$postcampaign = $tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
 		$pagelist = explode("\r\n", $_POST['banner_pages']);
-		for($i = 0 ; $i < count($pagelist) ; $i++) {
+		for($i = 0 ; $i < count($pagelist) ; $i++) 
+		{
 			$pagelist[$i] = trim($pagelist[$i]);
 		}
 		$plist = implode("|", $pagelist);
 		$pageparms = $postcampaign."^".$_POST['banner_listtype']."-".$plist;
 		$pageparms = preg_replace("#\|$#", "", $pageparms);
-		$pageparms = (trim($_POST['banner_pages']) == '') ? '' :
-		 $pageparms;
+		$pageparms = (trim($_POST['banner_pages']) == '') ? '' : $pageparms;
 		$cam = $pageparms;
-	} else {
-		$cam = ($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
+		$logString = $postcampaign.'[!br!]';
+	} 
+	else 
+	{
+		$cam = $tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
 	}
 
-	if ($_POST['createbanner']) {
-		admin_update($sql->db_Insert("banner", "0, '".$cli."', '".$_POST['client_login']."', '".$_POST['client_password']."', '".$_POST['banner_image']."', '".$_POST['click_url']."', '".intval($_POST['impressions_purchased'])."', '$start_date', '$end_date', '".$_POST['banner_class']."', 0, 0, '', '".$cam."'"), 'insert', BNRLAN_63);
-	} else {
-		admin_update($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$_POST['client_login']."', banner_clientpassword='".$_POST['client_password']."', banner_image='".$_POST['banner_image']."', banner_clickurl='".$_POST['click_url']."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='$start_date', banner_enddate='$end_date', banner_active='".$_POST['banner_class']."', banner_campaign='".$cam."' WHERE banner_id='".$_POST['eid']."'"), 'update', BNRLAN_64);
+	$logString .= $cam.'[!br!]'.$cli.'[!br!]'.$banImage.'[!br!]'.$banURL;
+	if ($_POST['createbanner']) 
+	{
+		admin_update($sql->db_Insert("banner", "0, '".$cli."', '".$cLogin."', '".$cPassword."', '".$banImage."', '".$banURL."', '".intval($_POST['impressions_purchased'])."', '{$start_date}', '{$end_date}', '".intval($_POST['banner_class'])."', 0, 0, '', '".$cam."'"), 'insert', BNRLAN_63);
+		banners_adminlog('02',$logString);
+	} 
+	else 
+	{
+		admin_update($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$cLogin."', banner_clientpassword='".$cPassword."', banner_image='".$banImage."', banner_clickurl='".$banURL."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='{$start_date}', banner_enddate='{$end_date}', banner_active='".intval($_POST['banner_class'])."', banner_campaign='".$cam."' WHERE banner_id=".intval($_POST['eid'])), 'update', BNRLAN_64);
+		banners_adminlog('03',$logString);
 	}
 	unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['click_url'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['banner_class'], $_POST['banner_pages'], $_POST['banner_listtype']);
 }
 
-if (isset($_POST['confirm'])) {
-	admin_update($sql->db_Delete("banner", "banner_id='".$_POST['id']."' "), 'delete', BNRLAN_1);
+if (isset($_POST['confirm'])) 
+{
+	admin_update($sql->db_Delete("banner", "banner_id=".intval($_POST['id'])), 'delete', BNRLAN_1);
+	banners_adminlog('04','Id: '.intval($_POST['id']));
 }
 
-if ($action == "delete" && $sub_action) {
+if ($action == "delete" && $sub_action) 
+{
 	$text = "<div style='text-align:center'>
 		<b>".BNRLAN_2."</b>
 		<br /><br />
@@ -117,16 +134,20 @@ if ($action == "delete" && $sub_action) {
 	require_once("footer.php");
 	exit;
 }
-if (isset($_POST['cancel'])) {
+if (isset($_POST['cancel'])) 
+{
 	$message = BNRLAN_6;
 }
 
-if (isset($message)) {
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-if ($sql->db_Select("banner")) {
-	while ($row = $sql->db_Fetch()) {
+if ($sql->db_Select("banner")) 
+{
+	while ($row = $sql->db_Fetch()) 
+	{
 		extract($row);
 
 		if (strpos($banner_campaign, "^") !== FALSE) {
@@ -679,5 +700,16 @@ function banner_adminmenu() {
 }
 
 require_once("footer.php");
+
+
+// Log event to admin log
+function banners_adminlog($msg_num='00', $woffle='')
+{
+  global $pref, $admin_log;
+//  if (!varset($pref['admin_log_log']['admin_banners'],0)) return;
+  $admin_log->log_event('BANNER_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
+}
+
+
 
 ?>
