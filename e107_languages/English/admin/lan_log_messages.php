@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.20 2008-11-02 12:23:56 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.21 2008-11-02 14:03:12 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -193,6 +193,11 @@ define('LAN_AL_WELCOME_02','Welcome message updated');
 define('LAN_AL_WELCOME_03','Welcome message deleted');
 define('LAN_AL_WELCOME_04','Welcome message options changed');
 define('LAN_AL_WELCOME_05','');
+
+
+// Admin Password
+//---------------
+define('LAN_AL_ADMINPW_01','Admin password changed');
 
 
 ?>
