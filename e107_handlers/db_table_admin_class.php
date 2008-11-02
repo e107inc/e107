@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-08-12 20:26:43 $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-02 14:54:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -237,6 +237,7 @@ class db_table_admin
 	  }
 	  elseif ($list1[$i]['type'] == $list2[0]['type'])
 	  {  // Worth doing a compare - fields are same type
+//		echo $i.': compare - '.$list1[$i]['name'].', '.$list2[0]['name'].'<br />';
 		if (strcasecmp($list1[$i]['name'],$list2[0]['name']) != 0)
 		{		// Names differ, so need to add or subtract a field. 
 //		  echo $i.': names differ - '.$list1[$i]['name'].', '.$list2[0]['name'].'<br />';
@@ -336,12 +337,19 @@ class db_table_admin
 		{
 		  case 'key' :
 		  case 'ukey' :
-		  case 'pkey' :		// Require a key - got a field
+		  case 'pkey' :		// Require a key - got a field, or a key of a different type
 			while ((count($list2)>0) && ($list2[0]['type'] == 'field'))
 			{
 			  $error_list[] = 'Extra field: '.$list2[0]['name'];
 			  $change_list[] = 'DROP '.$list2[0]['name'];
 			  array_shift($list2);
+			}
+			if ((count($list2) == 0) || ($list1[$i]['type'] != $list2[0]['type']))
+			{	// need to add a key
+				$change_list[] = 'ADD '.$this->make_def($list1[$i]);
+				$error_list[] = 'Missing index: '.$list1[$i]['name'];
+				$created_list[$j] = $list1[$i]['name'];
+				$j++;
 			}
 		    break;
 
