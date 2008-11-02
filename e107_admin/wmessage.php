@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/wmessage.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-11-02 12:23:51 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("M")) {
+if (!getperms("M")) 
+{
 	header("location:".e_BASE."index.php");
 	 exit;
 }
@@ -38,7 +39,9 @@ require_once(e_HANDLER."ren_help.php");
 
 $rs = new form;
 
-if (e_QUERY) {
+$action == '';
+if (e_QUERY) 
+{
 	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
@@ -51,37 +54,60 @@ if($_POST)
 	$e107cache->clear("wmessage");
 }
 
-if (isset($_POST['wm_update'])) {
+if (isset($_POST['wm_update'])) 
+{
 	$data = $tp->toDB($_POST['data']);
 	$wm_title = $tp->toDB($_POST['wm_caption']);
-	$message = ($sql->db_Update("generic", "gen_chardata ='$data',gen_ip ='$wm_title', gen_intdata='".$_POST['wm_active']."' WHERE gen_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+	$wmId = intval($_POST['wm_id']);
+	welcome_adminlog('02', $wmId, $wm_title);
+	$message = ($sql->db_Update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
 }
 
-if (isset($_POST['wm_insert'])) {
+if (isset($_POST['wm_insert'])) 
+{
 	$wmtext = $tp->toDB($_POST['data']);
 	$wmtitle = $tp->toDB($_POST['wm_caption']);
+	welcome_adminlog('01', 0, $wmtitle);
 	$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
 }
 
-if (isset($_POST['updateoptions'])) {
-	$pref['wm_enclose'] = $_POST['wm_enclose'];
-	$pref['wmessage_sc'] = $_POST['wmessage_sc'];
-	save_prefs();
-	$message = LAN_SETSAVED;
+if (isset($_POST['updateoptions'])) 
+{
+	$changed = FALSE;
+	foreach (array('wm_enclose','wmessage_sc') as $opt)
+	{
+		$temp = intval($_POST[$opt]);
+		if ($temp != $pref[$opt])
+		{
+			$pref[$opt] = $temp;
+			$changed = TRUE;
+		}
+	}
+	if ($changed)
+	{
+		save_prefs();
+		welcome_adminlog('04', 0, $pref['wm_enclose'].', '.$pref['wmessage_sc']);
+		$message = LAN_SETSAVED;
+	}
 }
 
-if (isset($_POST['main_delete'])) {
+if (isset($_POST['main_delete'])) 
+{
 	$del_id = array_keys($_POST['main_delete']);
+	welcome_adminlog('03', $wmId, '');
 	$message = ($sql->db_Delete("generic", "gen_id='".$del_id[0]."' ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
 }
 
-if (isset($message)) {
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 // Show Existing -------
-if ($action == "main" || $action == "") {
-	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) {
+if ($action == "main" || $action == "") 
+{
+	if ($wm_total = $sql->db_Select("generic", "*", "gen_type='wmessage' ORDER BY gen_id ASC")) 
+	{
 		$wmList = $sql->db_getList();
 		$text = $rs->form_open("post", e_SELF, "myform_{$gen_id}", "", "");
 		$text .= "<div style='text-align:center'>
@@ -92,7 +118,8 @@ if ($action == "main" || $action == "") {
 			<td class='fcaption' style='width:20%'>".WMLAN_03."</td>
 			<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
 			</tr>";
-		foreach($wmList as $row) {
+		foreach($wmList as $row) 
+		{
 			$text .= "
 			<tr>
 				<td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
@@ -228,4 +255,23 @@ function wmessage_adminmenu() {
 }
 
 require_once("footer.php");
+
+
+
+// Log event to admin log
+function welcome_adminlog($msg_num='00', $id=0, $woffle='')
+{
+  global $pref, $admin_log;
+//  if (!varset($pref['admin_log_log']['admin_welcome'],0)) return;
+	$msg = '';
+	if ($id) $msg = 'ID: '.$id;
+	if ($woffle)
+	{
+		if ($msg) $msg .= '[!br!]';
+		$msg .= $woffle;
+	}
+	$admin_log->log_event('WELCOME_'.$msg_num,$msg,E_LOG_INFORMATIVE,'');
+}
+
+
 ?>
