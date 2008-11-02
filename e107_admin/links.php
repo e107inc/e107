@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-09-23 19:37:36 $
+|     $Revision: 1.13 $
+|     $Date: 2008-11-02 10:15:31 $
 |     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -52,8 +52,8 @@ if (e_QUERY)
 {
   $tmp = explode('.', e_QUERY);
   $action = $tmp[0];
-  $sub_action = $tmp[1];
-  $id = $tmp[2];
+  $sub_action = varset($tmp[1],'');
+  $id = varset($tmp[2],'');
   unset($tmp);
 }
 
@@ -75,6 +75,8 @@ foreach(array_keys($_POST) as $k)
   }
 }
 
+
+
 if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] !="" )
 {
 	$subtype = $_POST['sublink_type'];
@@ -90,7 +92,8 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 
 	$sql -> db_Select($sublink['table'], "*", $sublink['query']);
 	$count = 1;
-	while($row = $sql-> db_Fetch()){
+	while($row = $sql-> db_Fetch())
+	{
 		$subcat = $row[($sublink['fieldid'])];
 		$name = $row[($sublink['fieldname'])];
 		$subname = $name;  // eliminate old embedded hierarchy from names. (e.g. 'submenu.TopName.name')
@@ -99,29 +102,40 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 		$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
 		$subparent = $_POST['sublink_parent'];
 
-		if($sql2->db_Insert("links", "0, '$subname', '$suburl', '$subdiz', '$subicon', '$link_category', '$count', '$subparent', '$link_open', '$link_class' ")){
-			$message .= LAN_CREATED. " ($name)<br />";
-		}else{
-			$message .= LAN_CREATED_FAILED. " ($name)<br />";
+		if($sql2->db_Insert("links", "0, '$subname', '$suburl', '$subdiz', '$subicon', '$link_category', '$count', '$subparent', '$link_open', '$link_class' "))
+		{
+			$message .= LAN_CREATED. " ({$name})<br />";
+		}
+		else
+		{
+			$message .= LAN_CREATED_FAILED. " ({$name})<br />";
 		}
 		$count++;
 	}
 
-    if($message){
+    if($message)
+	{
 		$ns -> tablerender(LAN_CREATED, $message);
+		sitelinks_adminlog('01', str_replace('<br />','[!br!]',$message));			// 'Sublinks generated'
 	}
 }
 
+
+
 if ($incdec_action == 'inc') 
 {
-  $sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order-1)."'");
-  $sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".intval($linkid)."'");
+	$sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order-1)."'");
+	$sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".intval($linkid)."'");
+	sitelinks_adminlog('02', 'Id: '.$linkid);
 }
 elseif ($incdec_action =='dec') 
 {
-  $sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order+1)."'");
-  $sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".intval($linkid)."'");
+	$sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order+1)."'");
+	$sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".intval($linkid)."'");
+	sitelinks_adminlog('03', 'Id: '.$linkid);
 }
+
+
 
 if (isset($_POST['update'])) 
 {
@@ -136,22 +150,43 @@ if (isset($_POST['update']))
 	}
 	$e107cache->clear("sitelinks");
 	$linkpost->show_message(LAN_UPDATED);
+	sitelinks_adminlog('04', '');
 }
 
-if (isset($_POST['updateoptions'])) {
-	$pref['linkpage_screentip'] = $_POST['linkpage_screentip'];
-	$pref['sitelinks_expandsub'] = $_POST['sitelinks_expandsub'];
-	save_prefs();
-	$e107cache->clear("sitelinks");
-	$linkpost->show_message(LCLAN_1);
+
+
+if (isset($_POST['updateoptions'])) 
+{
+	$changed = FALSE;
+	foreach (array('linkpage_screentip','sitelinks_expandsub') as $opt)
+	{
+		$temp = intval($_POST[$opt]);
+		if ($temp != $pref[$opt])
+		{
+			$pref[$opt] = $temp;
+			$changed = TRUE;
+		}
+	}
+	if ($changed)
+	{
+		save_prefs();
+		$e107cache->clear("sitelinks");
+		sitelinks_adminlog('05', $pref['linkpage_screentip'].','.$pref['sitelinks_expandsub']);
+		$linkpost->show_message(LCLAN_1);
+	}
+	else
+	{
+		$linkpost->show_message(LINKLAN_11);		// 'Nothing changed
+	}
 }
+
 
 if ($delete == 'main')
 {
 	if ($sql->db_Select("links", "link_id, link_name, link_order, link_parent", "link_id=".intval($del_id)))
 	{
 		$row = $sql->db_Fetch();
-		$msg = $linkpost->delete_link($row);
+		$msg = $linkpost->delete_link($row);		// Admin logging in class routine
 
 		if ($msg)
 		{
@@ -161,19 +196,26 @@ if ($delete == 'main')
 	}
 }
 
-if (isset($_POST['add_link'])) {
+
+
+
+if (isset($_POST['add_link'])) 
+{
 	$linkpost->submit_link($sub_action, $_POST['link_id']);
 	unset($id);
 }
 
+
+
 $linkArray = $linkpost->getLinks();
 
-if ($action == 'create') {
+if ($action == 'create') 
+{
 	$linkpost->create_link($sub_action, $id);
 }
 
-
-if (!e_QUERY || $action == 'main') {
+if (!e_QUERY || $action == 'main') 
+{
 	$linkpost->show_existing_items();
 }
 
@@ -182,11 +224,13 @@ if ($action == 'debug')
   $linkpost->show_existing_items(TRUE);
 }
 
-if ($action == 'opt') {
+if ($action == 'opt') 
+{
 	$linkpost->show_pref_options();
 }
 
-if($action == "sublinks"){
+if($action == "sublinks")
+{
   $linkpost->show_sublink_generator();
 }
 
@@ -415,7 +459,9 @@ class links
 
 
 
-	function create_link($sub_action, $id) {
+	// Show the form for link create/edit
+	function create_link($sub_action, $id) 
+	{
 		global $sql, $rs, $ns, $pst,$tp;
 		$preset = $pst->read_preset("admin_links");
 		extract($preset);
@@ -579,26 +625,30 @@ class links
 		$link_open = intval($_POST['linkopentype']);
 		$link_class = $tp->toDB($_POST['link_class']);
 
+		$message = implode('[!br!]',array($link_name,$link_url,$link_class));		// Probably enough to log
 		$link_t = $sql->db_Count("links", "(*)");
 		if ($id) 
 		{
-		  $sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'");
+			$sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'");
 			//rename all sublinks to eliminate old embedded 'submenu' etc hierarchy.
 		    // this is for upgrade compatibility only. Current hierarchy uses link_parent.
 			$e107cache->clear("sitelinks");
+			sitelinks_adminlog('08',$message);
 			$this->show_message(LCLAN_3);
 		} 
 		else 
-		{
-		  $sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t+1).", ".$parent_id.", ".$link_open.", ".$link_class);
+		{	// New link
+			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t+1).", ".$parent_id.", ".$link_open.", ".$link_class);
 			$e107cache->clear("sitelinks");
+			sitelinks_adminlog('07',$message);
 			$this->show_message(LCLAN_2);
 		}
 	}
 
 
 
-	function show_pref_options() {
+	function show_pref_options() 
+	{
 		global $pref, $ns;
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>\n
@@ -658,8 +708,12 @@ class links
 			// Update orphaned sublinks - just hide them, and make them top level. And delete any obsolete naming while we're there
 			$sql->db_Update("links", "link_name = SUBSTRING_INDEX(link_name, '.', -1) , link_parent = '0', link_class='255' WHERE link_parent= '".$linkInfo['link_id']."'");
 
-			return LCLAN_53." #".$linkInfo['link_id']." ".LCLAN_54."<br />";
-		}else{
+			$message = LCLAN_53." #".$linkInfo['link_id']." ".LCLAN_54;
+			sitelinks_adminlog('06',$message.'[!br!]'.$linkInfo['link_name']);
+			return $message."<br />";
+		}
+		else
+		{
         	return DELETED_FAILED;
 		}
 
@@ -810,13 +864,15 @@ function genOpts($aPrep, $aTest,$sSelected, $sId)
 //
 // if $sId is nonblank, a global search/replace is done to change all "|||" to $sId.
 
-  $iKey = array_search( $sSelected, $aTest);
-  if ($iKey !== FALSE) {
-  	$aNew = $aPrep;
-  	$aNew[$iKey] .= " selected='selected'";
-  	$sOut = implode($aNew);
-  }
-  else {
+	$iKey = array_search( $sSelected, $aTest);
+	if ($iKey !== FALSE) 
+	{
+		$aNew = $aPrep;
+		$aNew[$iKey] .= " selected='selected'";
+		$sOut = implode($aNew);
+	}
+	else 
+	{
 		$sOut = implode($aPrep);
 	}
 	if (strlen($sId)) $sOut = str_replace("|||",$sId,$sOut);
@@ -824,7 +880,18 @@ function genOpts($aPrep, $aTest,$sSelected, $sId)
 }
 
 
+}		// End - class 'links'
+
+
+// Log event to admin log
+function sitelinks_adminlog($msg_num='00', $woffle='')
+{
+  global $pref, $admin_log;
+//  if (!varset($pref['admin_log_log']['admin_sitelinks'],0)) return;
+  $admin_log->log_event('SLINKS_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 }
+
+
 
 function links_adminmenu() 
 {

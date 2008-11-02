@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.15 2008-11-01 23:01:11 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.16 2008-11-02 10:15:37 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -143,5 +143,22 @@ define('LAN_AL_ADMIN_03','');
 define('LAN_AL_MAINT_00','Unknown maintenance message');
 define('LAN_AL_MAINT_01','Maintenance mode set');
 define('LAN_AL_MAINT_02','Maintenance mode cleared');
+
+
+// Sitelinks routines
+//-------------------
+define('LAN_AL_SLINKS_00','Unknown sitelinks message');
+define('LAN_AL_SLINKS_01','Sublinks generated');
+define('LAN_AL_SLINKS_02','Sitelink moved up');
+define('LAN_AL_SLINKS_03','Sitelink moved down');
+define('LAN_AL_SLINKS_04','Sitelink order updated');
+define('LAN_AL_SLINKS_05','Sitelinks options updated');
+define('LAN_AL_SLINKS_06','Sitelink deleted');
+define('LAN_AL_SLINKS_07','Sitelink submitted');
+define('LAN_AL_SLINKS_08','Sitelink updated');
+define('LAN_AL_SLINKS_09','');
+define('LAN_AL_SLINKS_10','');
+define('LAN_AL_SLINKS_11','');
+
 
 ?>
