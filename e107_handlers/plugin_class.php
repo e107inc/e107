@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2008-08-24 09:56:58 $
+|     $Revision: 1.49 $
+|     $Date: 2008-11-02 21:28:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -833,6 +833,11 @@ class e107plugin
 			foreach($plug_vars['menuLink'] as $link)
 			{
 				$attrib = $link['@attributes'];
+				$linkName = $attrib['name'];
+				if (defined($linkName)) 
+				{
+					$linkName = constant($linkName);
+				}
 				switch($function)
 				{
 				  case 'upgrade':
@@ -842,21 +847,21 @@ class e107plugin
 					{
 					  $addlink = e_PLUGIN.$attrib['url'];
 						$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
-						$txt .= "Adding link {$attrib['name']} with url [{$addlink}] and perm {$perm} <br />";
-						$this->manage_link('add', $addlink, $attrib['name'], $perm);
+						$txt .= "Adding link {$linkName} with url [{$addlink}] and perm {$perm} <br />";
+						$this->manage_link('add', $addlink, $linkName, $perm);
 					}
 					//remove inactive links on upgrade
 					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
 					{
-						$txt .= "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
-						$this->manage_link('remove', $attrib['url'], $attrib['name']);
+						$txt .= "Removing link {$linkName} with url [{$attrib['url']}] <br />";
+						$this->manage_link('remove', $attrib['url'], $linkName);
 					}
 					break;
 
 				  case 'uninstall':
 					//remove all links
-					$txt .= "Removing link {$attrib['name']} with url [{$attrib['url']}] <br />";
-					$this->manage_link('remove', $attrib['url'], $attrib['name']);
+					$txt .= "Removing link {$linkName} with url [{$attrib['url']}] <br />";
+					$this->manage_link('remove', $attrib['url'], $linkName);
 					break;
 				}
 			}
