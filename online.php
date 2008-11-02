@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-08-01 19:23:38 $
+|     $Revision: 1.18 $
+|     $Date: 2008-11-02 18:30:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -180,7 +180,8 @@ foreach($listuserson as $uinfo => $pinfo) {
 			$class_check = FALSE;
 		}
 	}
-	if (strstr($online_location, "forum")) {
+	if (isset($pref['plug_installed']['forum'])) && strstr($online_location, "forum")) 
+	{
 		$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 		if (strstr($online_location, "_viewtopic")) {
 			if ($tmp[2]) {
@@ -220,20 +221,25 @@ foreach($listuserson as $uinfo => $pinfo) {
 			$online_location = e_PLUGIN."forum/forum_viewtopic.php?$tmp[0].$tmp[1]";
 		}
 	}
-	if (strstr($online_location, "admin")) {
+	if (strstr($online_location, "admin")) 
+	{
 		$class_check = FALSE;
 		$online_location_page = ADMINAREA;
 	}
 
 	$ONLINE_TABLE_ICON = (varsettrue($pref['plug_installed']['pm']) && $oid != USERID ? $tp->parseTemplate("{SENDPM={$oid}}", 'sendpm.sc') : "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' />");
 	 
-	$ONLINE_TABLE_USERNAME = "<a href='".e_BASE."user.php?id.$oid'>$oname</a>";
-	$ONLINE_TABLE_LOCATION = ($class_check ? "<a href='$online_location'>$online_location_page</a>" : $online_location_page);
+	$ONLINE_TABLE_USERNAME = "<a href='".e_BASE."user.php?id.{$oid}'>{$oname}</a>";
+	$ONLINE_TABLE_LOCATION = ($class_check ? "<a href='{$online_location}'>{$online_location_page}</a>" : $online_location_page);
 	 
-	if (!$ONLINE_TABLE) {
-		if (file_exists(THEME."online_template.php")) {
+	if (!$ONLINE_TABLE) 
+	{
+		if (file_exists(THEME."online_template.php")) 
+		{
 			require_once(THEME."online_template.php");
-		} else {
+		} 
+		else 
+		{
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/online_template.php");
 		}
 	}
@@ -242,7 +248,9 @@ foreach($listuserson as $uinfo => $pinfo) {
 	
 $ONLINE_TABLE_MEMBERS_ONLINE = ONLINE_EL1.GUESTS_ONLINE;
 $ONLINE_TABLE_GUESTS_ONLINE = ONLINE_EL2.MEMBERS_ONLINE;
-if ((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])) {
+// The check for (count($menu_pref) > 3) is to try and prevent DB updates if the host does something nasty to earlier queries - can end up with $menu_pref empty
+if (((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])) && (count($menu_pref) > 3))
+{
 	global $sysprefs;
 	$menu_pref['most_members_online'] = MEMBERS_ONLINE;
 	$menu_pref['most_guests_online'] = GUESTS_ONLINE;
@@ -250,7 +258,8 @@ if ((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $men
 	$sysprefs->setArray('menu_pref');
 }
 	
-if (!isset($gen) || !is_object($gen)) {
+if (!isset($gen) || !is_object($gen)) 
+{
 	$gen = new convert;
 }
 	
