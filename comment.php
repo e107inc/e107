@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2008-09-23 19:43:55 $
+|     $Revision: 1.59 $
+|     $Date: 2008-11-04 22:10:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -402,12 +402,15 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "n
 	}
 }
 
-if (!strstr(e_QUERY, "poll")) 
+
+//if (!strstr(e_QUERY, "poll")) 
+// If output buffering started, cache the result
+if ($comment_ob_start) 
 {
-  $cache = ob_get_contents();
-  $e107cache->set("comment.php?{$table}.{$field}", $cache);
+	$cache = ob_get_contents();
+	$e107cache->set("comment.php?{$table}.{$field}", $cache);
+	ob_end_flush(); // dump the buffer we started
 }
-if ($comment_ob_start) ob_end_flush(); // dump the buffer we started
 
 
 require_once(FOOTERF);
