@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2008-11-04 21:34:59 $
+|     $Revision: 1.43 $
+|     $Date: 2008-11-06 20:59:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -704,9 +704,9 @@ class e_parse
 				{
 				  $_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
 //				  $sub_blk = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
-				  $sub_blk = preg_replace("#(^|[\s\]])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
+				  $sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
 //				  $sub_blk = preg_replace("#(^|[\n \]])((www|ftp)\.[\w+-]+?\.[\w+\-.]*(?(?=/)(/.+?(?=\s|,\s))|(?=\W)))#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
-				  $sub_blk = preg_replace("#(^|[\s\]])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
+				  $sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
 				  if(CHARSET != "utf-8" && CHARSET != "UTF-8")
 				  {
 					$email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : "\\1\\2&copy;\\3";
@@ -720,9 +720,9 @@ class e_parse
 				else
 				{
 //				  $sub_blk = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $sub_blk);
-				  $sub_blk = preg_replace("#(^|[\s\]])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $sub_blk);
+				  $sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $sub_blk);
 //				  $sub_blk = preg_replace("#(^|[\n \]])((www|ftp)\.[\w+-]+?\.[\w+\-.]*(?(?=/)(/.+?(?=\s|,\s))|(?=\W)))#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $sub_blk);
-				  $sub_blk = preg_replace("#(^|[\s\]])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $sub_blk);
+				  $sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $sub_blk);
 				  $sub_blk = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".LAN_EMAIL_SUBS."</a>", $sub_blk);
 				}
 			  }
