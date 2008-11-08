@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-02-02 22:41:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2008-11-08 17:11:44 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -113,12 +113,14 @@ if('block' == $action)
 {
 	$message = $pm->block_add($pm_proc_id);
 	$action = 'inbox';
+	$pm_proc_id = 0;
 }
 
 if('unblock' == $action)
 {
 	$message = $pm->block_del($pm_proc_id);
 	$action = 'inbox';
+	$pm_proc_id = 0;
 }
 
 if("get" == $action)
