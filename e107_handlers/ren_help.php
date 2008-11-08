@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2008-09-18 19:12:36 $
+|     $Revision: 1.66 $
+|     $Date: 2008-11-08 17:24:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -56,11 +56,14 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	}
 
     // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
-	foreach($pref['e_bb_list'] as $val)
+	if  (!empty($pref['e_bb_list']))
 	{
-    	if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+		foreach($pref['e_bb_list'] as $val)
 		{
-        	require(e_PLUGIN.$val."/e_bb.php");
+			if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+			{
+				require(e_PLUGIN.$val."/e_bb.php");
+			}
 		}
 	}
 
