@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-04 19:42:45 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-11-09 20:31:10 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,8 +40,10 @@ define("IMODE", "lite");
 
 // [dont render core style sheet link]
 
-$no_core_css = TRUE;
-
+/* 
+	enable core css for now
+	$no_core_css = TRUE;
+*/
 
 // [layout]
 

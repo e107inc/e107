@@ -11,11 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-07-09 20:37:18 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2008-11-09 20:31:10 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
+
+//AJAX check
+if(isset($_REQUEST['ajax_used'])) 
+{
+	define('e_AJAX_REQUEST', true); 
+	$E107['minimal'] = true;
+} 
+else 
+{
+	define('e_AJAX_REQUEST', false); 
+}
 
 require_once("../class2.php");
 if (!getperms("4")) 
@@ -25,7 +36,7 @@ if (!getperms("4"))
 }
 $e_sub_cat = 'userclass';
 //define('UC_DEBUG_OPTS',FALSE);
-require_once("auth.php");
+
 require_once(e_HANDLER."userclass_class.php");		// Modified class handler
 $uclass = new e_userclass;							// Class management functions - legacy stuff from 0.7
 $e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
@@ -33,25 +44,24 @@ $e_userclass = new user_class_admin;				// Admin functions - should just obliter
 
 $message = '';
 
-
-
-function check_allowed($class_id)
+function check_allowed($class_id, $redirect = true)
 {
   global $sql;
   if (!$sql->db_Select('userclass_classes', '*', "userclass_id = {$class_id}"))
   {
-	header("location:".SITEURL);
+	if(!$redirect) return false;
+    header("location:".SITEURL);
 	exit;
   }
   $row = $sql->db_Fetch();
   if (!getperms('0') && !check_class($row['userclass_editclass']))
   {
+	if(!$redirect) return false;
 	header("location:".SITEURL);
 	exit;
   }
+  return true;
 }
-
-
 
 if (e_QUERY) 
 {
@@ -60,8 +70,47 @@ if (e_QUERY)
 $action = varset($uc_qs[0],'config');
 $params = varset($uc_qs[1],'');
 
+if(e_AJAX_REQUEST) 
+{ 
+    $class_num = varset($uc_qs[2],0);
+	if(!$class_num && isset($_POST['edit']))
+	{
+	  $params = 'edit';
+	  $class_num = varset($_POST['existing'],0);
+	}
 
+	if ($params == 'edit')
+	{
+	    require_once(e_HANDLER.'js_helper.php');
+	    $jshelper = new e_jshelper();
+	    if(!check_allowed($class_num, false)) {
+	      //This will raise an error
+	      //'Access denied' is the message which will be thrown 
+	      //by the JS AJAX handler
+          e_jshelper::sendAjaxError('403', 'Access denied. Form update failed!');
+	  }
+	  $sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
+	  $row = $sql->db_Fetch(MYSQL_ASSOC);
+	  unset($row['userclass_accum']);
+	  $row['createclass'] = UCSLAN_14; //update the submit button value
+      $row['existing'] = $class_num; //required when user tree is clicked
+      //icon
+      $row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif"; 
+      $row["uc_icon_select"] = $row['userclass_icon']; //icons select box
+      
+	  //Send the prefered response type
+	  //echo $jshelper->sendJSONResponse('fill-form', $row);  
+	  echo $jshelper->sendXMLResponse('fill-form', $row);
+	  exit;
+	}
+}
 
+/*
+ * Authorization should be done a bit later!
+ * FIXME - should we call auth.php and header.php separate? 
+ * Definitely yes if AJAX is in the game.
+ */
+require_once("auth.php");
 
 //---------------------------------------------------
 //		Set Initial Classes
@@ -148,7 +197,7 @@ if (isset($_POST['updateclass']) || isset($_POST['createclass']))
 
   $do_tree = FALSE;
 
-  if (isset($_POST['updateclass']))
+  if (isset($_POST['createclass']) && $_POST['userclass_id'])
   {
 	check_allowed($_POST['userclass_id']);
 	$class_record['userclass_id'] = intval($_POST['userclass_id']);
@@ -263,7 +312,7 @@ switch ($action)
 	  $text .= "<span class='defaulttext'>".UCSLAN_8.":</span>";
 	  $text .= "<select name='existing' class='tbox'>".$e_userclass->vetted_tree('existing',array($e_userclass,'select'), $userclass_id,"main,admin,classes,matchclass").'</select>';
 	  $text .= "
-		<input class='button' type='submit' name='edit' value='".LAN_EDIT."' />
+		<input class='button' type='submit' id='edit' name='edit' value='".LAN_EDIT."' />
 		<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
 		<input type='checkbox' name='confirm' value='1' /><span class='smalltext'> ".UCSLAN_11."</span>
 		</td>
@@ -361,12 +410,18 @@ switch ($action)
 
 if($params == 'edit')
 {
-	$text .= "<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />&nbsp;&nbsp;<input class='button' type='submit' name='updatecancel' value='".LAN_CANCEL."' />
-		<input type='hidden' name='userclass_id' value='{$userclass_id}' />";
+	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_14."' />&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />
+		<input type='hidden' name='userclass_id' value='{$userclass_id}' />
+	    <script type='text/javascript'>
+	        //just in case...
+	        \$('updatecancel').show();
+	    </script>
+		";
 }
 else
 {
-	$text .= "<input class='button' type='submit' name='createclass' value='".UCSLAN_15."' />";
+	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_15."' />&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />
+	    <input type='hidden' name='userclass_id' value='0' />";
 }
 
 $text .= "</td></tr></table>";
@@ -899,13 +954,50 @@ require_once("footer.php");
 
 function headerjs()
 {
-  if (!e_QUERY) return '';
+   /*
+	* e107Ajax.fillForm demonstration 
+	* Open Firebug console for Ajax transaction details
+	* 
+	*/
+	$script_js = "<script type=\"text/javascript\">
+		//<![CDATA[
+
+			//Click observer
+            document.observe('click', (function(event){
+                var target = (event.findElement('a.userclass_edit') || event.findElement('input#edit'));
+                if (target) {
+                    event.stop();
+                    
+                    //show cancel button in edit mod only
+                    \$('updatecancel').show();
+					
+                    //If link is clicked use it's href as a target
+                    
+    				$('classForm').fillForm($(document.body), { handler: target.readAttribute('href') });
+                }
+            }));
+            
+            //run on e107 init finished (dom is loaded)
+    		e107.runOnLoad( function() {
+				\$('updatecancel').hide(); //hide cancel button onload	
+			});
+    		
+    		//Observe fillForm errors
+    		e107Event.register('ajax_fillForm_error', function(transport) {
+    			//memo.error object contains the error message
+    			//error handling will be extended in the near future
+				alert(transport.memo.error.message);
+    		});
+    		
+	//]]>
+	</script>\n";
+  if (!e_QUERY) return $script_js;
   $qs = explode('.',e_QUERY);
-  if ($qs[0] != 'membs') return '';
- 
+  if ($qs[0] != 'membs') return $script_js;
+
 // We only want this JS on the class membership selection page
 
-	$script_js = "<script type=\"text/javascript\">
+	$script_js .= "<script type=\"text/javascript\">
 		//<![CDATA[
 // Inspiration (and some of the code) from a script by Sean Geraty -  Web Site:  http://www.freewebs.com/sean_geraty/ 
 // Script from: The JavaScript Source!! http://javascript.internet.com
