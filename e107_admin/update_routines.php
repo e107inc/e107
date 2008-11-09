@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2008-10-19 20:31:51 $
+|     $Revision: 1.30 $
+|     $Date: 2008-11-09 20:14:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -203,6 +203,9 @@ if (defined('TEST_UPDATE'))
 	// Add your test code in here
 	//--------------**************---------------
 	
+	//--------------**************---------------
+	// End of test code
+	//--------------**************---------------
 	return $just_check;
   }
 }  // End of test routine
@@ -231,6 +234,12 @@ function update_706_to_800($type='')
 	// List of changed DB tables (defined in core_sql.php) 
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
 	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist');
+
+	
+	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
+	// key = plugin directory nane. Data = comma-separated list of tables to check
+	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
+	$pluginChangedTables = array('linkwords' => 'linkwords');
 
 	
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
@@ -467,22 +476,6 @@ function update_706_to_800($type='')
 	}
 
 
-	if (mysql_table_exists('linkwords'))
-	{	// Need to extend field linkword_link varchar(200) NOT NULL default ''
-	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."linkwords LIKE 'linkword_link'")) 
-	  {
-		$row = $sql -> db_Fetch();
-		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(200)')
-		{
-			if ($just_check) return update_needed('Update linkwords field definition');
-			mysql_query("ALTER TABLE `".MPREFIX."linkwords` MODIFY `linkword_link` VARCHAR(200) NOT NULL DEFAULT '' ");
-			$updateMessages[] = LAN_UPDATE_39;
-			catch_error();
-		}
-	  }
-	}
-
-
 	if (mysql_table_exists('newsfeed'))
 	{	// Need to extend field newsfeed_url varchar(250) NOT NULL default ''
 	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'")) 
@@ -590,6 +583,52 @@ function update_706_to_800($type='')
 	  }
 	}
 
+
+	// Plugin tables whose definition needs changing significantly
+	foreach ($pluginChangedTables as $plugName => $plugList)
+	{
+		if (plugInstalled($plugName))
+		{
+			$ttc = explode(',',$plugList);
+			foreach ($ttc as $ct)
+			{
+				$sqlDefs = e_PLUGIN.$plugName.'/'.$plugName.'_sql.php';		// Filename containing definitions
+//				echo "Looking at file: {$sqlDefs}, table {$ct}<br />";
+				$req_defs = $db_parser->get_table_def($ct,$sqlDefs);
+				if (!is_array($req_defs))
+				{
+					echo "Couldn't get definitions from file {$sqlDefs}<br />";
+					continue;
+				}
+				$req_fields = $db_parser->parse_field_defs($req_defs[0][2]);					// Required definitions
+				if (E107_DBG_FILLIN8) echo "Required plugin table structure: <br />".$db_parser->make_field_list($req_fields);
+
+				if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
+				{
+//	    			echo "Couldn't get table structure: {$ct}<br />";
+				}
+				else
+				{
+//					echo $db_parser->make_table_list($actual_defs);
+					$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
+					if (E107_DBG_FILLIN8) echo "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
+  
+					$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
+					if (count($diffs[0]))
+					{  // Changes needed
+						if (E107_DBG_FILLIN8) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
+						if ($just_check) return update_needed("Field changes rqd; plugin table: ".$ct);
+						// Do the changes here 
+						$qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
+						if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
+						mysql_query($qry);
+						$updateMessages[] = LAN_UPDATE_51.$ct;
+						catch_error();
+					}
+				}
+			}
+		}
+	}
 
 	// Obsolete tables (list at top)
 	foreach ($obs_tables as $ot)
