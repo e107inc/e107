@@ -2,43 +2,57 @@ table { margin-left:auto; margin-right:auto; }
 .searchhighlight{text-decoration: underline;color:#FF0000;font-weight:bold;}
 
 /*
- * Please DO NOT USE or reference any of the following class definitions.
- * They are not referenced anywhere in the e107 core. (0.700, 7 Feb 2005)
- * This file will be eliminated after the remaining definitions (above) 
- *   have been either verified as unnecessary, or added to all themes.
+ * e107 v0.800 - new class definitions.
+ *
  */
+ 
+ /*
+	Core Formatting
+ */
+.left { text-align: left }
+.right { text-align: right }
+.center { text-align: center }
+.leftF { float: left }
+.rightF { float: right }
+.top { vertical-align: top }
+.middle { vertical-align: middle }
+.bottom { vertical-align: bottom }
+.clear { clear: both }
+.clearL { clear: right }
+.clearR { clear: left }
+.icon { border: 0 }
+.icon.action { vertical-align: middle }
 
-.defaulttable, .fbdefault, .fdefault, .f2default, .f3default, .fcdefault{ display: block; width: auto; }
-.center{ text-align:center; }
-.right { text-align:right; }
-.left { text-align:left; }
-.day {
-  text-align: center;
-  background: #F1EAE1;
-  font: 10px tahoma, verdana, arial, helvetica, sans-serif;
-  padding: 2px 1px 2px 1px;
+/* Loading Status default style */
+#loading-mask {
+	color: #556B2F;
+	font-size: 1.2em;
+	font-weight:bold;
+	position:absolute;
+	text-align: center;
+	padding: 0; margin: 0;
 }
-.dayentry {
-  text-align: center;
-  background: #F1C7B7;
-  font: 10px tahoma, verdana, arial, helvetica, sans-serif;
-  padding: 2px 1px 2px 1px;
+#loading-mask .loader {
+	position: fixed;
+	top: 40%;
+	left: 50%;
+	width: 200px; 
+	text-align: center;
+	background: #F0F9E3 none repeat scroll 0 0;
+	border: 2px solid #556B2F;
+	font-weight: bold;
+	padding: 10px 5px;
+	margin-left: -100px;
+	margin-top: 0;
+	
 }
-.forumheader4{
-	background-color: #EBEFF2;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 11px;
-	color:#000;
-	padding: 4px;
-	border: #C3BDBD 1px solid;
-	cursor: pointer;
-}
-.forumheader5{
-	background-color: #BCD5EA;
-	color:#000;
-	cursor: pointer;
-}
-ul{
-	margin-top:0px;
-	margin-bottom:0px;
-}
+#loading-mask img { margin: 10px auto; }
+
+/* Debug Console - this will be moved to debug.css */
+#e-debug-console-cont { position: fixed; top: 0px; left: 5px; margin: 0px; padding: 0px; width: 600px; border: 1px solid #c0c0c0; background-color: white; color: black }
+#e-debug-console { padding: 10px; margin: 0px; height: 100px; overflow: auto; text-align: left; }
+#e-debug-console div div { padding: 5px }
+#e-debug-console-controls { text-align: left; padding: 5px; border-top: 1px solid #c0c0c0; background-color: #fff; line-height: 0 }
+#e-debug-console-controls a { text-decoration: none; color: #000; background-color: #f5f5f5; border: 1px solid: #f0f0f0; padding: 5px; margin: 2px 5px; }
+#e-debug-console-input { width: 480px; border: 1px solid #f5f5f5; }
+#e-debug-console .console-output { border-bottom: 1px solid #f5f5f5; padding: 5px }

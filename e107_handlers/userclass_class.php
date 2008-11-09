@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-09-15 16:20:27 $
+|     $Revision: 1.18 $
+|     $Date: 2008-11-09 20:31:10 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -858,7 +858,7 @@ class user_class_admin extends user_class
 	$is_open = TRUE;
 	$tag_name = 'uclass_tree_'.$listnum;
 
-	$ret = "<div class='uclass_tree' style='height:20px'>";
+	$ret = "<div class='uclass_tree' style='height: 20px'>\n";
 	
 	foreach ($indent_images as $im)
 	{
@@ -868,25 +868,26 @@ class user_class_admin extends user_class
 	if ($num_children) 
 	{
 	  $ret .= "<span onclick=\"javascript: expandit('{$tag_name}'); expandit('{$tag_name}_p'); expandit('{$tag_name}_m')\"><img src='".UC_ICON_DIR.$this->tree_icons[TRUE][$is_last][TRUE]."' alt='class icon' id='{$tag_name}_m' />";
-	  $ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[TRUE][$is_last][FALSE]."' style='display:none' id='{$tag_name}_p' alt='class icon' /></span>";
+	  $ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[TRUE][$is_last][FALSE]."' style='display:none' id='{$tag_name}_p' alt='class icon' /></span>\n";
 	}
 	else
 	{
-	  $ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[FALSE][$is_last][$is_open]."' alt='class icon' />";
+	  $ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[FALSE][$is_last][$is_open]."' alt='class icon' />\n";
 	}
 	$name_line = '';
 	if ($this->graph_debug) $name_line = $this->class_tree[$listnum]['userclass_id'].":";
 	$name_line .= $this->class_tree[$listnum]['userclass_name'];
 	if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum'];
 	// Next (commented out) line gives a 'conventional' link
-//	$ret .= "<img src='images/topicon.png' alt='class icon' /><a href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a></div>";
-	$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
-		<span style='cursor:pointer; vertical-align: bottom' onclick=\"javascript: document.location.href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'\">".$name_line."</span></div>";
-// vertical-align: middle doesn't work! Nor does text-top
+    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a>
+    </div>";
+	//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
+		//<span style='cursor:pointer; vertical-align: bottom' onclick=\"javascript: document.location.href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'\">".$name_line."</span></div>";
+    // vertical-align: middle doesn't work! Nor does text-top
 
 	if ($num_children)
 	{
-	  $ret .= "<div class='uclass_tree' id='{$tag_name}'>";
+	  $ret .= "<div class='uclass_tree' id='{$tag_name}'>\n";
 	  $image_level = count($indent_images);
 	  if ($is_last)
 	  {
@@ -919,7 +920,10 @@ class user_class_admin extends user_class
   {
     $this->graph_debug = $show_debug;
     $indent_images = array();
-    $ret = "<div class='uclass_tree' style='height:16px'><img src='".UC_ICON_DIR."topicon.png' alt='class icon' style='vertical-align: bottom' /><span style='top:3px'>".UC_LAN_0."</span></div>";		// 'Everyone' link
+    $ret = "<div class='uclass_tree' style='height:16px'>
+    	<img src='".UC_ICON_DIR."topicon.png' alt='class icon' style='vertical-align: bottom' />
+    	<span style='top:3px'>".UC_LAN_0."</span>
+    </div>";		// 'Everyone' link
 	$num_parents = count($this->class_parents);
     foreach ($this->class_parents as $p)
 	{

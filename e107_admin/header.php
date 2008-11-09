@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.17 $
-|   $Date: 2008-08-11 20:45:01 $
-|   $Author: e107steved $
+|   $Revision: 1.18 $
+|   $Date: 2008-11-09 20:31:10 $
+|   $Author: secretr $
 +---------------------------------------------------------------+
 */
 
@@ -140,9 +140,14 @@ if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset(
 	define("e_WYSIWYG",FALSE);
 }
 
+// Load Javascript Libraries 
+$hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).THEME.e_LANGUAGE.ADMIN).'_admin';
+//echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
+echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
+
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e_ajax.php'></script>\n";
+	
+	//echo "<script type='text/javascript' src='".e_FILE_ABS."e_ajax.php'></script>\n";
 }
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
@@ -167,6 +172,23 @@ function savepreset(ps,pid){
 }
 //-->
 </script>\n";
+}
+
+//iepngfix - IE6 only
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
+    /*
+     * The only problem is that the browser is REALLY, 
+     * REALLY slow when it has to render more elements
+     * try e.g. "div, img, td, input" (or just *) instead only img rule
+     * However I hope this will force IE6 user to hate it :)
+     */
+	echo "<!--[if lte IE 6]>\n";
+	echo "<style type='text/css'>\n";
+	echo "img {\n";
+	echo "  behavior: url('".e_FILE_ABS."iepngfix.htc.php');\n";
+	echo "}\n";
+	echo "</style>\n";
+	echo "<![endif]-->\n";
 }
 
 if (function_exists('headerjs')){echo headerjs();  }
@@ -258,6 +280,20 @@ $body_onload = "";
 //
 // J: Send end of <head> and start of <body>
 //
+
+
+/*
+ * Fire Event e107:loaded 
+ */
+echo "<script type='text/javascript'>\n";
+echo "<!--\n";
+echo "document.observe('dom:loaded', function () {\n";
+echo "e107Event.trigger('loaded', {element: null}, document);\n";
+echo "});\n";
+echo "// -->\n";
+echo "</script>\n";
+
+
 echo "</head>
 <body".$body_onload.">\n";
 $sql->db_Mark_Time("End Head, Start Body");

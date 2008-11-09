@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-08-26 21:24:22 $
-|     $Author: e107steved $
+|     $Revision: 1.23 $
+|     $Date: 2008-11-09 20:31:10 $
+|     $Author: secretr $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $sql->db_Mark_Time('(Header Top)');
 // A: Define themable header parsing
 // B: Send HTTP headers that come before any html
 // C: Send start of HTML
-// D: Send JS
-// E: Send CSS
+// D: Send CSS
+// E: Send JS
 // F: Send Meta Tags and Icon links
 // G: Send final theme headers (theme_head() function)
 // H: Generate JS for image preloading (setup for onload)
@@ -88,9 +88,6 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n\n";
 
-//
-// D: Send JS
-//
 
 // Wysiwyg JS support on or off.
 if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") 
@@ -102,80 +99,17 @@ else
 	define("e_WYSIWYG",FALSE);
 }
 
+//
+// D: send CSS comes first
+//
 
-// Load Plugin Header Files
-if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
-{
-	foreach($pref['e_header_list'] as $val)
-	{
-		if(is_readable(e_PLUGIN.$val."/e_header.php"))
-		{
-			require_once(e_PLUGIN.$val."/e_header.php");
-		}
-	}
-}
-
-
-if (!isset($no_core_js) || !$no_core_js)
-{
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
-}
-if (isset($theme_js_php) && $theme_js_php) 
-{
-	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n";
-} 
-else 
-{
-	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
-	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
-	if (file_exists(THEME.'theme.vbs')) { echo "<script type='text/vbscript' src='".THEME_ABS."theme.vbs'></script>\n"; }
-  if (is_readable(e_FILE.'user.vbs') && filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
-}
+//Core CSS first
+if (!defined("PREVIEWTHEME") && (!isset($no_core_css) || !$no_core_css)) {
 	
-
-if (isset($eplug_js) && $eplug_js) 
-{
-	echo "\n<!-- eplug_js -->\n";
-	if(is_array($eplug_js))
-	{
-	   	$eplug_js_unique = array_unique($eplug_js);
-    	foreach($eplug_js_unique as $kjs)
-		{
-        	echo ($kjs[0] == "<") ? $kjs : "<script type='text/javascript' src='{$kjs}'></script>\n";
-		}
-	}
-	else
-	{
-    	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
-	}
+	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 }
 
-
-if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
-{
-  if ($pref['password_CHAP'] == 2)
-  {
-		// *** Add in the code to swap the display tags
-	$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
-  }
-  echo "<script type='text/javascript' src='".e_FILE_ABS."chap_script.js'></script>\n";
-  $js_body_onload[] = "getChallenge();";
-}
-
-
-if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) 
-{
-	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
-}
-
-if (function_exists('headerjs')) {echo headerjs();  }
-
-
-
-//
-// E: Send CSS
-//
-
+//Plugin specific CSS
 if (isset($eplug_css) && $eplug_css)
 {
     if(is_array($eplug_css))
@@ -193,6 +127,7 @@ if (isset($eplug_css) && $eplug_css)
 
 }
 
+//Theme CSS
 if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
@@ -228,18 +163,110 @@ if(defined("PREVIEWTHEME")) {
 			}
 			echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='{$css_default}' />\n";
 		}
-		if (!isset($no_core_css) || !$no_core_css) {
-			echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
+	}
+}
+
+
+// Load Plugin Header Files
+if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
+{
+	foreach($pref['e_header_list'] as $val)
+	{
+		if(is_readable(e_PLUGIN.$val."/e_header.php"))
+		{
+			require_once(e_PLUGIN.$val."/e_header.php");
 		}
 	}
 }
+
+//
+// E: Send JS
+//
+
+// Send Javascript Libraries ALWAYS (for now)
+$hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).THEME.e_LANGUAGE.ADMIN).'_front';
+echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
+/*
+if (!isset($no_core_js) || !$no_core_js)
+{
+	echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
+}
+*/
+
+// Send Plugin JS Files
+if (isset($eplug_js) && $eplug_js) 
+{
+	echo "\n<!-- eplug_js -->\n";
+	if(is_array($eplug_js))
+	{
+	   	$eplug_js_unique = array_unique($eplug_js);
+    	foreach($eplug_js_unique as $kjs)
+		{
+        	echo ($kjs[0] == "<") ? $kjs : "<script type='text/javascript' src='{$kjs}'></script>\n";
+		}
+	}
+	else
+	{
+    	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+	}
+}
+
+// Send Theme JS Files
+if (isset($theme_js_php) && $theme_js_php) 
+{
+	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n";
+} 
+else 
+{
+	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
+	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
+	if (file_exists(THEME.'theme.vbs')) { echo "<script type='text/vbscript' src='".THEME_ABS."theme.vbs'></script>\n"; }
+ 	if (is_readable(e_FILE.'user.vbs') && filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
+}
+
+//XXX - CHAP JS 
+if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
+{
+  if ($pref['password_CHAP'] == 2)
+  {
+		// *** Add in the code to swap the display tags
+	$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
+  }
+  echo "<script type='text/javascript' src='".e_FILE_ABS."chap_script.js'></script>\n";
+  $js_body_onload[] = "getChallenge();";
+}
+
+
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) 
+{
+	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
+}
+
+//IEpngfix - visible by IE6 only
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
+    /*
+     * The only problem is that the browser is REALLY, 
+     * REALLY slow when it has to render more elements
+     * try e.g. "div, img, td, input" (or just *) instead only img rule
+     * However I hope it'll force IE6 users to switch to a modern browser...
+     */
+	echo "<!--[if lte IE 6]>\n";
+	echo "<style type='text/css'>\n";
+	echo "img {\n";
+	echo "  behavior: url('".e_FILE_ABS."iepngfix.htc.php');\n";
+	echo "}\n";
+	echo "</style>\n";
+	echo "<![endif]-->\n";
+}
+
+//headerjs moved below 
 
 // Deprecated function finally removed
 //if(function_exists('core_head')){ echo core_head(); }
 
 
 //
-// F: Send Meta Tags and Icon links
+// F: Send Meta Tags, Icon links, headerjs()
 //
 
 // Multi-Language meta-tags with merge and override option.
@@ -252,14 +279,17 @@ echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE
 // --- Load plugin Meta files and eplug_ before others --------
 if (is_array($pref['e_meta_list']))
 {
-foreach($pref['e_meta_list'] as $val)
-{
-	if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+	foreach($pref['e_meta_list'] as $val)
 	{
-		require_once(e_PLUGIN.$val."/e_meta.php");
+		if(is_readable(e_PLUGIN.$val."/e_meta.php"))
+		{
+			require_once(e_PLUGIN.$val."/e_meta.php");
+		}
 	}
 }
-}
+
+//headerjs moved here - it should be able to read any JS/code sent by e_meta
+if (function_exists('headerjs')) {echo headerjs();  }
 
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
@@ -307,8 +337,8 @@ if(function_exists('theme_head')){
 
 
 //
-// H: Generate JS for image preloads
-//
+// FIXME H: Generate JS for image preloads
+// 
 
 if ($pref['image_preload']) {
 	$ejs_listpics = '';
@@ -336,14 +366,14 @@ if (isset($script_text) && $script_text) {
 
 
 //
-// I: Calculate JS onload() functions for the BODY tag
-//
+// FIXME - I: Calculate JS onload() functions for the BODY tag
+// 
 // Fader menu
 global $eMenuActive, $eMenuArea;
 if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
 
 // External links handling
-$js_body_onload[] = 'externalLinks();';
+$js_body_onload[] = array();//'externalLinks();'; - already registered to e107:loaded Event by the new JS API
 
 // Theme JS
 if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
@@ -352,6 +382,18 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
 //
 // J: Send end of <head> and start of <body>
 //
+
+/*
+ * Fire Event e107:loaded 
+ */
+echo "<script type='text/javascript'>\n";
+echo "<!--\n";
+echo "document.observe('dom:loaded', function() {\n";
+echo "e107Event.trigger('loaded', {element: null}, document);\n";
+echo "});\n";
+echo "// -->\n";
+echo "</script>\n";
+
 echo "</head>
 <body".$body_onload.">\n";
 $sql->db_Mark_Time("Main Page Body");
@@ -370,6 +412,8 @@ if ($e107_popup != 1) {
 //
 // L: (optional) Body JS to disable right clicks
 //
+
+// --------------------- REMOVE IT!!! ------------------------->
 	if (isset($pref['no_rightclick']) && $pref['no_rightclick']) {
 		echo "<script language='javascript'>\n";
 		echo "<!--\n";
@@ -395,6 +439,7 @@ if ($e107_popup != 1) {
 		echo "// -->\n";
 		echo "</script>\n";
 	}
+// --------------------- REMOVE END  ------------------------->
 
 //
 // M: Send top of body for custom pages and for news
