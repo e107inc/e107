@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.58 $
-|		$Date: 2008-10-11 14:36:57 $
+|		$Revision: 1.59 $
+|		$Date: 2008-11-10 20:12:39 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -146,7 +146,7 @@ class contentdb
 				$tmp = explode(".", $_POST['parent1']);
 				$parent = $tmp[1];
 			}
-			if(isset($_POST['preview_parent1']) && $_POST['preview_parent1'])
+			elseif(isset($_POST['preview_parent1']) && $_POST['preview_parent1'])
 			{
 				$parent = $_POST['preview_parent1'];
 			}
