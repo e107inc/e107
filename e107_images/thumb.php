@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_images/thumb.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-10-03 20:28:54 $
+|     $Revision: 1.3 $
+|     $Date: 2008-11-10 20:22:15 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -28,6 +28,7 @@
 
 */
 
+$_E107['minimal'] = TRUE;
 
 require_once("../class2.php");
 require_once(e_HANDLER."resize_handler.php");
