@@ -1219,14 +1219,14 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 	
 	startObserving: function() {
 		Event.observe(window,"resize", this.re_center);
-    	if(Prototype.Browser.IE && Prototype.Browser.IE <= 6)
+    	if(Prototype.Browser.IE && Prototype.Browser.IE <= 7)
     		Event.observe(window,"scroll", this.re_center);
     	return this;
 	},
 	
 	stopObserving:  function() {
 		Event.stopObserving(window, "resize", this.re_center);
-    	if(Prototype.Browser.IE && Prototype.Browser.IE <= 6)
+    	if(Prototype.Browser.IE && Prototype.Browser.IE <= 7)
     		Event.stopObserving(window, "scroll", this.re_center);
     	return this;
 	},
@@ -1286,8 +1286,9 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 		return this;
 	},
 	
-	iecenter: function() {
-		if(Prototype.Browser.IE && Prototype.Browser.IE <= 6) {
+	iecenter: function() { 
+		//TODO - actually ie7 should work without this - investigate
+		if(Prototype.Browser.IE && Prototype.Browser.IE <= 7) {
 			//The 'freezing' problem solved (opacity = 1 ?!)
 			this.loading_mask.show();
 			var offset = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop;
@@ -2058,9 +2059,9 @@ Ajax.Updater = Class.create(Ajax.Updater, {
  */
 var e107AjaxAbstract = Class.create ({
 	_processResponse: function(transport) {
-		if(transport.responseXML) {
+		if(null !== transport.responseXML) {
 			this._handleXMLResponse(transport.responseXML);
-		} else if(transport.responseJSON) {
+		} else if(null !== transport.responseJSON) {
 			this._handleJSONResponse(transport.responseJSON);
 		} else {
 			this._handleTextResponse(transport.responseText);
@@ -2071,6 +2072,7 @@ var e107AjaxAbstract = Class.create ({
 	_handleXMLResponse: function (response) {
 		var xfields = $A(response.childNodes[0].childNodes);
 		//getElementsByTagName('e107response')[0]
+		
 		var parsed = {}; 
 		xfields.each( function(el) { 
 			if (el.nodeType == 1 && el.nodeName == 'e107action' && el.getAttribute('name') && el.childNodes) {
@@ -2121,25 +2123,57 @@ var e107AjaxAbstract = Class.create ({
 	
 	_processResponseAuto: function(response) {
 		//find by keys as IDs & update
+		Object.keys(response).each(function(key) {
+			this._updateElement(key, response[key]);
+		}.bind(this));
 	},
 	
+	/**
+	 * Reset checked property of form elements by selector (checkbox, radio)
+	 */
+	_processResponseResetChecked: function(response) {
+		Object.keys(response).each(function(key) {
+			var checked = parseInt(response[key]) ? true : false;
+			$$('input[name^=' + key + ']').each( function(felement) {
+				var itype = String(felement.type);
+				if('checkbox radio'.include(itype.toLowerCase()))
+					felement.checked = checked;
+			});
+		}.bind(this));
+	},
+	
+	/**
+	 * Update element by type
+	 */
 	_updateElement: function(el, data) {
 		el = $(el); if(!el) return; 
-		var type = el.nodeName.toLowerCase(); 
+		var type = el.nodeName.toLowerCase(), itype = el.type; 
         if(type == 'input' || type == 'textarea') {
         	//FIXME checkbox, radio
-            el.value = data;
+        	if(itype) itype = itype.toLowerCase();
+        	
+        	switch (itype) {
+        		case 'checkbox':
+        		case 'radio':
+        			el.checked = (el.value == data);
+        			break;
+        		default:
+        			el.value = data;
+        			break;
+        	}
+            
         } else if(type == 'select') {
             if(el.options) {
-                var opt = $A(el.options).find( function(opt, ind) {
-                    return opt.value == data; 
+                var opt = $A(el.options).find( function(op, ind) {
+                    return op.value == data; 
                 });
-                el.selectedIndex = opt.index;
+                if(opt)
+                	el.selectedIndex = opt.index;
             }
         } else if(type == 'img') {
         	el.writeAttribute('src', data).show(); //show if hidden
-        }else {
-        	elupdate(data);
+        }else if(el.nodeType == 1) {
+        	el.update(data);
         }
 	}
 });
@@ -2196,6 +2230,7 @@ e107Ajax.Updater = Class.create({
     initialize: function(container, url, options) {
         
         this.options = {};
+        if(!options.parameters) options.parameters = {};
         
         Object.extend(this.options, options || {});
         if(!this.options['parameters'] || !this.options.parameters['ajax_used'])
@@ -2254,7 +2289,7 @@ Object.extend(e107Ajax, {
 		if(container)
 			return new e107Ajax.Updater(container, url, opt);
 		
-		return new e107Ajax.Request(url, opt); 
+		return new e107Ajax.Request(url, opt);
 	},
 	
 	/**
@@ -2297,11 +2332,11 @@ e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
 			
 			history: false,
 			
-			onSuccess: function(transport) { 
+			onSuccess: function(transport) {
 				try {
 					this._processResponse(transport);
 				} catch(e) {
-					var err_obj = { message: 'callback_error', extended: 'callback_error', code: -1 }
+					var err_obj = { message: 'Callback Error!', extended: e, code: -1 }
 					e107Event.trigger("ajax_fillForm_error", {form: this.form, error: err_obj});
 				}
 			}.bind(C),
@@ -2309,35 +2344,42 @@ e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
 			onFailure: function(transport) { 
 				//We don't use transport.statusText only because of Safari!!!
 				var err = transport.getHeader('e107ErrorMessage') || ''; 
-				//TODO - move error messages to the ajax responder object, convert it to an 'error' object (text, code, 
+				//TODO - move error messages to the ajax responder object, convert it to an 'error' object (message, extended, code)
 				//Add Ajax option e.g. printErrors (true|false)
 				var err_obj = { message: err, extended: transport.responseText, code: transport.status }
 				e107Event.trigger("ajax_fillForm_error", {form: this.form, error: err_obj });
 			}.bind(C)
 		}
+		Object.extend(options, this.options.request || {}); //update - allow passing request options
 		
 		this.form.submitForm(null, options, this.options.handler);
 	},
 	
 	_processResponseFillForm: function(response) {
-		if(!response || !this.form) return;
-		var C = this;
-		this.form.getElements().each(function(el) {
-			var elid = el.identify(), elname = el.readAttribute('name'), data;
-			if(isset(response[elid])) {
-				data = response[elid];
-				delete response[elid];
-			} else if(isset(response[elname])) {
-				data = response[elname];
-				delete response[elname];
+		if(!response || !this.form) return; 
+		var C = this, left_response = Object.clone(response); 
+		this.form.getElements().each(function(el) { 
+			var elid = el.identify(), elname = el.readAttribute('name'), data, elnameid = String(elname).gsub(/[\[\]\_]/, '-');
+
+			if(isset(response[elname])) {
+				data = response[elname]; 
+				if(left_response[elname]) delete left_response[elname];
+			} else if(isset(response[elnameid])) {
+				data = response[elnameid]; 
+				if(left_response[elnameid]) delete left_response[elnameid];
+			} else if(isset(response[elid])) {
+				data = response[elid]; 
+				if(left_response[elid]) delete left_response[elid];
 			} else {
 				return;
 			}
             this._updateElement(el, data);
 		}.bind(C));
-		if(response) { //update non-form elements (by id)
-			Object.keys(response).each( function(el) {
-				this._updateElement(el, response[el]);
+		
+		if(left_response) { //update non-form elements (by id)
+			Object.keys(left_response).each( function(el) {
+				
+				this._updateElement(el, left_response[el]);
 			}.bind(C));
 		}
 
