@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.120 $
-|     $Date: 2008-10-30 20:40:02 $
+|     $Revision: 1.121 $
+|     $Date: 2008-11-11 22:36:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -428,8 +428,8 @@ global $db_debug;
 		}
 	}
 
-	// Check if form maxlength has been bypassed
-	if ( strlen($_POST['name']) > 30 || strlen($_POST['loginname']) > 100)
+	// Check if form maxlength has been bypassed (need to allow 100 chars for both here - can have display name and login name the same, and want an error message)
+	if ( strlen($_POST['name']) > 100 || strlen($_POST['loginname']) > 100)
 	{
 	  exit;
 	}
