@@ -1,14 +1,12 @@
-table { margin-left:auto; margin-right:auto; }
-.searchhighlight{text-decoration: underline;color:#FF0000;font-weight:bold;}
+/*table { margin-left:auto; margin-right:auto; }*/
+
+.searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
 
 /*
- * e107 v0.800 - new class definitions.
- *
+ * e107 v0.800 - new class definitions
  */
  
- /*
-	Core Formatting
- */
+/* Core Formatting */
 .left { text-align: left }
 .right { text-align: right }
 .center { text-align: center }
@@ -20,32 +18,23 @@ table { margin-left:auto; margin-right:auto; }
 .clear { clear: both }
 .clearL { clear: right }
 .clearR { clear: left }
+
+/* Core Icons */
 .icon { border: 0 }
 .icon.action { vertical-align: middle }
+.S16 { width: 16px; height: 16px }
+.S32 { width: 32px; height: 32px }
+.S64 { width: 64px; height: 64px }
+.S128 { width: 128px; height: 128px }
+
+/* Decorate JS - see core/decorate.js */
+.odd {  }
+.even { background-color: #F5F5F5 }
+.first, .last {  }
 
 /* Loading Status default style */
-#loading-mask {
-	color: #556B2F;
-	font-size: 1.2em;
-	font-weight:bold;
-	position:absolute;
-	text-align: center;
-	padding: 0; margin: 0;
-}
-#loading-mask .loader {
-	position: fixed;
-	top: 40%;
-	left: 50%;
-	width: 200px; 
-	text-align: center;
-	background: #F0F9E3 none repeat scroll 0 0;
-	border: 2px solid #556B2F;
-	font-weight: bold;
-	padding: 10px 5px;
-	margin-left: -100px;
-	margin-top: 0;
-	
-}
+#loading-mask { color: #556B2F; font-size: 1.2em; font-weight:bold; position:absolute; text-align: center; padding: 0; margin: 0; }
+#loading-mask .loader { position: fixed; top: 40%; left: 50%; width: 200px;  text-align: center; background: #F0F9E3 none repeat scroll 0 0; border: 2px solid #556B2F; font-weight: bold; padding: 10px 5px; margin-left: -100px; margin-top: 0; }
 #loading-mask img { margin: 10px auto; }
 
 /* Debug Console - this will be moved to debug.css */

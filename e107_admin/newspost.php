@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.15 $
-|   $Date: 2008-06-15 20:20:14 $
-|   $Author: e107steved $
+|   $Revision: 1.16 $
+|   $Date: 2008-11-11 13:26:49 $
+|   $Author: secretr $
 +---------------------------------------------------------------+
 
 */
@@ -323,13 +323,16 @@ class newspost
 		$newsarray = $sql -> db_getList();
 		$text .= "
 			<form action='".e_SELF."' id='newsform' method='post'>
-			<table class='fborder' style='".ADMIN_WIDTH."'>
+			<table class='fborder e-list' style='".ADMIN_WIDTH."'>
+			<thead>
 			<tr>
 			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.{$sort_link}.{$from}'>".LAN_NEWS_45."</a></td>
 			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.{$sort_link}.{$from}'>".NWSLAN_40."</a></td>
 			<td style='width:15%' class='fcaption'>".LAN_NEWS_49."</td>
 			<td style='width:15%' class='fcaption'>".LAN_OPTIONS."</td>
-			</tr>";
+			</tr>
+			</thead>
+			<tbody>";
 		$ren_type = array("default","title","other-news","other-news 2");
 		foreach($newsarray as $row)
 		{
@@ -356,7 +359,7 @@ class newspost
 				</td>
 				</tr>";
 		}
-		$text .= "</table></form>";
+		$text .= "</tbody></table></form>";
 	  }
 	  else
 	  {

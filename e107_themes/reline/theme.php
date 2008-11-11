@@ -11,8 +11,8 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.8/e107_themes/reline/theme.php,v $
-|	$Revision: 1.3 $
-|	$Date: 2008-11-09 20:31:10 $
+|	$Revision: 1.4 $
+|	$Date: 2008-11-11 13:26:49 $
 |	$Author: secretr $
 |
 +----------------------------------------------------------------------------+
@@ -95,9 +95,20 @@ $csscompliant = TRUE;	// If set to TRUE will display a CSS compliant logo in the
 // into this, and as with theme.js, a link will automatically be generated to this file.
 // Uncomment the following three lines to use.
 
-//function theme_head() {
-//	echo "<script></script>";
-//}
+function theme_head() {
+    return "
+    <script type='text/javascript'>
+       /**
+    	* Decorate all tables having e-list class
+    	* TODO: add 'e-list' class to all list core tables, allow theme decorate. 
+    	*/
+        e107.runOnLoad( function() {
+            \$\$('table.e-list').each(function(element) {
+            	e107Utils.Decorate.table(element);
+            });
+        }, document, true);
+    </script>";
+}
 
 
 // Header and footer templates for the body of your site.
@@ -117,6 +128,13 @@ $csscompliant = TRUE;	// If set to TRUE will display a CSS compliant logo in the
 // the files directly. Documentation for this can be found on e107.org.
 
 // $layout = '_your_version'; // uncomment this line (remove the // ) to use alternative template files.
+
+
+//Require e107Utils#Decorate JS 
+// This include method could be changed soon
+$THEME_CORE_JSLIB = array(
+	'jslib/core/decorate.js' => 'all'
+);
 
 
 // Main header
