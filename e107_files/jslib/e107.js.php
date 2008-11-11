@@ -2390,9 +2390,9 @@ e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
 
 Element.addMethods('FORM', {
 	
-	submitForm: e107Ajax.submitForm,
+	submitForm: e107Ajax.submitForm.bind(e107Ajax),
 	
-	submitFormSC: e107Ajax.submitFormSC,
+	submitFormSC: e107Ajax.submitFormSC.bind(e107Ajax),
 	
 	fillForm: function(form, overlay_element, options) {
 		new e107Ajax.fillForm(form, overlay_element, options);

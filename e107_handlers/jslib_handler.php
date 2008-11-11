@@ -8,11 +8,12 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision: 1.1 $
- * $Date: 2008-11-09 20:31:10 $
+ * $Revision: 1.2 $
+ * $Date: 2008-11-11 13:17:18 $
  * $Author: secretr $
  * 
 */
+global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
 
 class e_jslib
 {
@@ -45,11 +46,12 @@ class e_jslib
             $THEME_JSLIB = array();
             
         //available values - admin,front,all,none
-        $core_jslib = array(
-            'jslib/prototype/prototype.js' => 'all' , //'jslib/scriptaculous/scriptaculous.js' => 'all',
-        	'jslib/scriptaculous/effects.js' => 'all' , 'jslib/e107.js.php' => 'all'
-            //'jslib/core/decorate.js' => 'all',
-            //'jslib/core/window.js' => 'all'
+        $core_jslib = array( //FIXME - core jslib prefs, debug options
+            'jslib/prototype/prototype.js' => 'all' , 
+            'jslib/scriptaculous/scriptaculous.js' => 'all',
+        	'jslib/scriptaculous/effects.js' => 'all',
+        	'jslib/e107.js.php' => 'all'
+            //'jslib/core/decorate.js' => 'all'
         );
         
         $core_jslib = array_merge($core_jslib, $THEME_CORE_JSLIB, varsettrue($pref['e_jslib']['core'], array()));

@@ -3,11 +3,11 @@
  * Inspired by Magento' decorate JS functions (www.magentocommerce.com) 
 */
 
-var e107Decorate = {
+e107Utils.Decorate = {
 	
 	/**
 	 * Decorate table rows and cells, tbody etc
-	 * @see eDecorate()
+	 * @see e107Utils.Decorate._decorate()
 	 */
 	 table: function(table) {
 	    var table = $(table);
@@ -16,31 +16,31 @@ var e107Decorate = {
 	    //default options
 	    this._options = {
 	        'tbody': false,
-	        'tbody tr': 'odd,even,first,last',
-	        'thead tr': 'first,last',
-	        'tfoot tr': 'first,last',
-	        'tr td': 'last'
+	        'tbody_tr': 'odd even first last',
+	        'thead_tr': 'first last',
+	        'tfoot_tr': 'first last',
+	        'tr_td': false
 	    };
 	    
 	    // overload options
 	    Object.extend(this._options, (arguments[1] || {}));
-	    
+    	
 	    // decorate
 	    if (this._options['tbody']) {
 	        this._decorate(table.select('tbody'), this._options['tbody']);
 	    }
 	    if (this._options['tbody_tr']) {
-	        this._decorate(table.select('tbody tr'), this._options['tbody tr']);
+	        this._decorate(table.select('tbody tr'), this._options['tbody_tr']);
 	    }
 	    if (this._options['thead_tr']) {
-	        this._decorate(table.select('thead tr'), this._options['thead tr']);
+	        this._decorate(table.select('thead tr'), this._options['thead_tr']);
 	    }
 	    if (this._options['tfoot_tr']) {
-	        this._decorate(table.select('tfoot tr'), this._options['tfoot tr']);
+	        this._decorate(table.select('tfoot tr'), this._options['tfoot_tr']);
 	    }
 	    if (this._options['tr_td']) {
 	        table.select('tr').each( function(tr) {
-	            this._decorate(tr.select('td'), this._options['tr td']);
+	            this._decorate(tr.select('td'), this._options['tr_td']);
 	        }.bind(this));
 	    }
 	},
@@ -50,22 +50,22 @@ var e107Decorate = {
 	 * Default decorate CSS classes for list items are "odd", "even" and "last" 
 	 * 
 	 * Examples: 
-	 *  eDecorateList('mylist'); //default decorate options over element with id 'mylist'
-	 *  eDecorateList('mylist', 'odd,even'); //decorate options odd and even only over element with id 'mylist'
+	 *  e107Utils.Decorate.list('mylist'); //default decorate options over element with id 'mylist'
+	 *  e107Utils.Decorate.list('mylist', 'odd even'); //decorate options odd and even only over element with id 'mylist'
 	 * 
 	 * @param list - id/DOM object of list element (ul) to be decorated
-	 * [@param options] - string|array decorate options - @see eDecorate()
+	 * [@param options] - string|array decorate options - @see e107Utils.Decorate._decorate()
 	 * [@param recursive] - boolean decorate all childs if present
 	 */
 	list: function(list) {
 	    list = $(list);
 	    if (list) {
-	        if (typeof(arguments[2]) == 'undefined') {
-	            var items = list.select('li')
+	        if (!varset(arguments[2])) {
+	            var items = list.select('li');
 	        } else {
 	            var items = list.childElements();
 	        }
-	        this._decorate(items, (arguments[1] || 'odd,even,last'));
+	        this._decorate(items, (arguments[1] || 'odd even last'));
 	    }
 	},
 	
@@ -73,17 +73,17 @@ var e107Decorate = {
 	 * Set "odd", "even" and "last" CSS classes for list items
 	 * 
 	 * Examples: 
-	 *  eDecorateDataList('mydatalist'); //default decorate options over element with id 'mydatalist'
-	 *  eDecorateDataList('mydatalist', 'odd,even'); //decorate options odd and even for dt elements, default for dd elements
+	 *  e107Utils.Decorate.dataList('mydatalist'); //default decorate options over element with id 'mydatalist'
+	 *  e107Utils.Decorate.dataList('mydatalist', 'odd even'); //decorate options odd and even for dt elements, default for dd elements
 	 * 
-	 * [@param dt_options] - string|array dt element decorate options - @see eDecorate()
-	 * [@param dd_options] - string|array dd element decorate options - @see eDecorate()
+	 * [@param dt_options] - string|array dt element decorate options - @see e107Utils.Decorate._decorate()
+	 * [@param dd_options] - string|array dd element decorate options - @see e107Utils.Decorate._decorate()
 	 */
 	dataList: function(list) {
 	    list = $(list);
 	    if (list) {
-	        this._decorate(list.select('dt'), (arguments[1] || 'odd,even,last'));
-	        this._decorate(list.select('dd'), (arguments[2] || 'odd,even,last'));
+	        this._decorate(list.select('dt'), (arguments[1] || 'odd even last'));
+	        this._decorate(list.select('dd'), (arguments[2] || 'odd even last'));
 	    }
 	},
 	
@@ -95,8 +95,8 @@ var e107Decorate = {
 	 * [@param decorateParams] - array of classes to be set. If omitted or empty, all available will be used
 	 */
 	_decorate: function(elements) {
-	    var decorateAllParams = ['odd', 'even', 'first', 'last'];
-	    this.decorateParams = [];
+	    var decorateAllParams = $w('odd even first last');
+	    this.decorateParams = $A();
 	    this.params = {};
 	    
 	    if (!elements.length)  return;
@@ -104,7 +104,7 @@ var e107Decorate = {
 	    if(!varset(arguments[1])) {
 	        this.decorateParams = decorateAllParams;
 	    } else if(typeof(arguments[1]) == 'string') {
-	        this.decorateParams = arguments[1].replace(/[\s]/, '').split(',');
+	        this.decorateParams = $w(arguments[1]);
 	    } else {
 	        this.decorateParams = arguments[1];
 	    }
@@ -112,7 +112,7 @@ var e107Decorate = {
 	    decorateAllParams.each( function(v) {
 	        this.params[v] = this.decorateParams.include(v);
 	    }.bind(this));
-	    
+	    console.log(elements[0]);
 	    // decorate first
 	    if(this.params.first) {
 	        Element.addClassName(elements[0], 'first');
@@ -125,9 +125,9 @@ var e107Decorate = {
 	    if(!this.params.even && !this.params.odd) {
 	        return;
 	    }
-	    //elements.select(_eDecorateIsEven).invoke('addClassName', 'even');
+
 	    var selections = elements.partition(this._isEven);
-	    // decorate even
+
 	    if(this.params.even) {
 	        selections[0].invoke('addClassName', 'even');
 	    }
@@ -139,7 +139,7 @@ var e107Decorate = {
     /**
      * Select/Reject/Partition callback function
      * 
-     * @see eDecorate()
+     * @see e107Utils.Decorate._decorate()
      */
     _isEven: function(dummy, i) {
         return ((i+1) % 2 == 0);
