@@ -1,4 +1,5 @@
 global $pref;
+if (trim($code_text) == "") return ""; 						// Do nothing on empty file
 if (preg_match("#\.php\?.*#",$code_text)){return "";}
 global $IMAGES_DIRECTORY, $FILES_DIRECTORY, $e107;
 $search = array('"', '{E_IMAGE}', '{E_FILE}', '{e_IMAGE}', '{e_FILE}');
@@ -29,7 +30,7 @@ foreach($imgParms as $k => $v)
 // Only look for file if not a url - suspected bug in PHP 5.2.5 on XP
 if((strpos($code_text,'../') === FALSE) && (strpos($code_text,'://') === FALSE) && file_exists(e_IMAGE."newspost_images/".$code_text))
 {
-    $code_text = e_IMAGE."newspost_images/".$code_text;
+    $code_text = e_IMAGE_ABS."newspost_images/".$code_text;
 }
 
 if (!$postID || $postID == 'admin')
