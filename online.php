@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-11-02 18:30:58 $
+|     $Revision: 1.19 $
+|     $Date: 2008-11-13 20:19:01 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -180,7 +180,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 			$class_check = FALSE;
 		}
 	}
-	if (isset($pref['plug_installed']['forum'])) && strstr($online_location, "forum")) 
+	if (isset($pref['plug_installed']['forum']) && strstr($online_location, "forum"))
 	{
 		$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 		if (strstr($online_location, "_viewtopic")) {
