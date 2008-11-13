@@ -11,16 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2008-11-06 20:59:46 $
+|     $Revision: 1.44 $
+|     $Date: 2008-11-13 20:41:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
+define('E_UTF8_PACK',e_HANDLER.'utf8/');		// Directory for the hard-coded utf-8 handling routines
+
 define ("E_NL", chr(2));
 class e_parse
 {
+	var	$utfAction;			// Determine how to handle utf-8.   0 = 'do nothing'    1 = 'use mb_string'    2 = emulation
 	var $e_sc;
 	var $e_bb;
 	var $e_pf;
@@ -114,6 +117,113 @@ class e_parse
 		$this->e_SuperMods[$key]['context']=$key;
 	  }
 	}
+
+
+
+	// This has to be a separate function - can't be called until CHARSET known
+	function initCharset()
+	{
+		// Start by working out what, if anything, we do about utf-8 handling.
+		$this->utfAction = 0;			// 'Do nothing' is the simple option
+		if ((strtolower(CHARSET) == 'utf-8') && (version_compare(PHP_VERSION, '6.0.0') < 1))
+		{	// Need to do something here
+			if(extension_loaded('mbstring'))
+			{
+				$temp = ini_get('mbstring.func_overload');		// Check for function overloading
+				if (($temp & MB_OVERLOAD_STRING) == 0)			// Just check the string functions - will be non-zero if overloaded
+				{
+					$this->utfAction = 1;			// Can use the mb_string routines
+				}
+				mb_internal_encoding('UTF-8');		// Set the default encoding, so we don't have to specify every time
+			}
+			else
+			{
+				$this->utfAction = 2;			// Must use emulation - will probably be slow!
+				require(E_UTF8_PACK.'utils/unicode.php');
+				require(E_UTF8_PACK.'native/core.php');			// Always load the core routines - bound to need some of them!
+			}
+		}
+	}
+
+
+	function uStrLen($str)
+	{
+		switch ($this->utfAction)
+		{
+			case 0 : return strlen($str);
+			case 1 : return mb_strlen($str);
+		}
+		// Default case shouldn't happen often
+		return strlen(utf8_decode($str));		// Save a call - invoke the function directly
+	}
+
+
+	function uStrToLower($str)
+	{
+		switch ($this->utfAction)
+		{
+			case 0 : return strtolower($str);
+			case 1 : return mb_strtolower($str);
+		}
+		// Default case shouldn't happen often
+		
+		return utf8_strtolower($str);
+	}
+
+	function uStrToUpper($str)
+	{
+		switch ($this->utfAction)
+		{
+			case 0 : return strtoupper($str);
+			case 1 : return mb_strtoupper($str);
+		}
+		// Default case shouldn't happen often
+		
+		return utf8_strtoupper($str);
+	}
+
+
+	function uStrPos($haystack, $needle, $offset = 0)
+	{
+		switch ($this->utfAction)
+		{
+			case 0 : return strpos($haystack, $needle, $offset);
+			case 1 : return mb_strpos($haystack, $needle, $offset);
+		}
+		utf8_strpos($haystack, $needle, $offset);
+	}
+
+	function uStrrPos($haystack, $needle, $offset = 0)
+	{
+		switch ($this->utfAction)
+		{
+			case 0 : return strrpos($haystack, $needle, $offset);
+			case 1 : return mb_strrpos($haystack, $needle, $offset);
+		}
+		utf8_strrpos($haystack, $needle, $offset);
+	}
+
+
+	// May be subtle differences in return values dependent on which routine is used. 
+	//   native substr() routine can return FALSE. mb_substr and utf8_substr just return an empty string.
+	function uSubStr($str, $start, $length = NULL)
+	{
+		switch ($this->utfAction)
+		{
+			case 0 : return strrpos($str, $start, $length);
+			case 1 : 
+				if (is_null($length))
+				{
+					return mb_strrpos($haystack, $needle);
+				}
+				else
+				{
+					return mb_strrpos($haystack, $needle, $offset);
+				}
+		}
+		utf8_substr($str, $start, $length);
+	}
+
 
 
 	// Initialise the shortcode handler - has to be done when $prefs valid, so can't be done in constructor ATM
