@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2008-10-11 11:55:18 $
+|     $Revision: 1.68 $
+|     $Date: 2008-11-13 20:41:20 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -554,6 +554,9 @@ define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
+
+$tp->initCharset();				// Now we know the site CHARSET, define how to handle utf-8 as necessary
+
 
 if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref['multilanguage'] && !$pref['multilanguage_subdomain']){
 	list($clc) = explode("_",CORE_LC);
