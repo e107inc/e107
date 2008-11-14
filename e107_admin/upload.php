@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-10-19 11:35:00 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-14 06:01:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -445,8 +445,8 @@ switch ($action)
 		<td class='forumheader3'>".$e107->parseMemorySize($upload_filesize)."</td>
 		<td class='forumheader3'>
 		<form action='".e_SELF."?dis.{$upload_id}' id='uploadform_{$upload_id}' method='post'>
-		<div><a href='".e_SELF."?dlm.{$upload_id}'><img src='".e_IMAGE."packs/".$imode."/admin_images/downloads_16.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
-		<a href='".e_SELF."?news.{$upload_id}'><img src='".e_IMAGE."packs/".$imode."/admin_images/news_16.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
+		<div><a href='".e_SELF."?dlm.{$upload_id}'><img src='".e_IMAGE."admin_images/downloads_16.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
+		<a href='".e_SELF."?news.{$upload_id}'><img src='".e_IMAGE."admin_images/news_16.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
         <input type='image' title='".LAN_DELETE."' name='updelete[upload_{$upload_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(UPLLAN_45." [ {$upload_name} ]")."') \"/>
 		</div></form></td>
 		</tr>";

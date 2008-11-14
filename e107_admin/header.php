@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.18 $
-|   $Date: 2008-11-09 20:31:10 $
-|   $Author: secretr $
+|   $Revision: 1.19 $
+|   $Date: 2008-11-14 06:01:06 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -94,29 +94,29 @@ if (!defined('ADMIN_WIDTH')) {
 
 if (!defined('ADMIN_TRUE_ICON'))
 {
-	define("ADMIN_TRUE_ICON", "<img src='".e_IMAGE_ABS."packs/".$imode."/fileinspector/integrity_pass.png' alt='' style='border:0px; height:16px; width:16px' />");
-	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."packs/".$imode."/fileinspector/integrity_pass.png");
+	define("ADMIN_TRUE_ICON", "<img src='".e_IMAGE_ABS."fileinspector/integrity_pass.png' alt='' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."fileinspector/integrity_pass.png");
 }
 
 if (!defined('ADMIN_FALSE_ICON'))
 {
-	define("ADMIN_FALSE_ICON", "<img src='".e_IMAGE_ABS."packs/".$imode."/fileinspector/integrity_fail.png' alt='' style='border:0px; height:16px; width:16px' />");
-	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."packs/".$imode."/fileinspector/integrity_fail.png");
+	define("ADMIN_FALSE_ICON", "<img src='".e_IMAGE_ABS."fileinspector/integrity_fail.png' alt='' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."fileinspector/integrity_fail.png");
 }
 
 
 if (!defined('ADMIN_EDIT_ICON'))
 {
-	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
-	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."packs/".$imode."/admin_images/edit_16.png");
+	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
 }
 
 
 
 if (!defined('ADMIN_DELETE_ICON'))
 {
-	define("ADMIN_DELETE_ICON", "<img src='".e_IMAGE_ABS."packs/".$imode."/admin_images/delete_16.png' alt='' title='".LAN_DELETE."' style='border:0px; height:16px; width:16px' />");
-	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."packs/".$imode."/admin_images/delete_16.png");
+	define("ADMIN_DELETE_ICON", "<img src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
 }
 
 //

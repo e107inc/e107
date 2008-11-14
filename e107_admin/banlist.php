@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-16 22:18:19 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2008-11-14 06:01:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -48,15 +48,15 @@ if (e_QUERY)
   unset($tmp);
 }
 
-
+/*
 if (varsettrue($imode))
 {
   $images_path = e_IMAGE.'packs/'.$imode.'/admin_images/';
 }
 else
-{
+{*/
   $images_path = e_IMAGE.'admin_images/';
-}
+// }
 
 
 if (isset($_POST['update_ban_prefs']))

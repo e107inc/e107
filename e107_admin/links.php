@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-11-02 10:15:31 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2008-11-14 06:01:06 $
+|     $Author: e107coders $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
 +----------------------------------------------------------------------------+
@@ -414,7 +414,7 @@ class links
 
 		if ($indent) 
 		{
-		  $subimage = "<img src='".e_IMAGE."packs/".$imode."/admin_images/sublink.png' alt='' />";
+		  $subimage = "<img src='".e_IMAGE."admin_images/sublink.png' alt='' />";
 		  $subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
 		  $subindent = "<td".$subspacer.">".$subimage."</td>";
 		}
@@ -431,15 +431,15 @@ class links
 				</table>
 				</td>";
 		$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
-		$text .= "<a href='".e_SELF."?create.sub.{$link_id}'><img src='".e_IMAGE."packs/".$imode."/admin_images/sublink_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;";
+		$text .= "<a href='".e_SELF."?create.sub.{$link_id}'><img src='".e_IMAGE."admin_images/sublink_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;";
 		$text .= "<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;";
 		$text .= "<input type='image' title='".LAN_DELETE."' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."') \" />";
 		$text .= "</td>";
 		$text .= "<td style='text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
 		$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
 		$name_suffix = URL_SEPARATOR.$link_id.URL_SEPARATOR.$link_order;
-		$text .= "<input name='inc".$name_suffix."' type='image' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' title='".LCLAN_30."' />";
-		$text .= "<input name='dec".$name_suffix."' type='image' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' title='".LCLAN_31."' />";
+		$text .= "<input name='inc".$name_suffix."' type='image' src='".e_IMAGE."admin_images/up.png' title='".LCLAN_30."' />";
+		$text .= "<input name='dec".$name_suffix."' type='image' src='".e_IMAGE."admin_images/down.png' title='".LCLAN_31."' />";
 		$text .= "</td>";
 		$text .= "<td style='text-align:center' class='forumheader3'>";
 		$text .= "<select name='link_order[]' class='tbox'>\n";
