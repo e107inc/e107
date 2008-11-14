@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-08-25 15:25:12 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2008-11-14 06:01:06 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -313,8 +313,8 @@ class frontpage
 				<td class='forumheader3'>".$this->lookup_path($current_value['page'])."</td>
 				<td class='forumheader3'>".$this->lookup_path($current_value['force'])."</td>
 				<td class='forumheader3' style='text-align:center'>
-				<input type='image' src='".e_IMAGE."packs/".$imode."/admin_images/up.png' title='".FRTLAN_47."' value='".$order."' name='fp_inc' />
-				<input type='image' src='".e_IMAGE."packs/".$imode."/admin_images/down.png' title='".FRTLAN_48."' value='".$order."' name='fp_dec' />
+				<input type='image' src='".e_IMAGE."admin_images/up.png' title='".FRTLAN_47."' value='".$order."' name='fp_inc' />
+				<input type='image' src='".e_IMAGE."admin_images/down.png' title='".FRTLAN_48."' value='".$order."' name='fp_dec' />
 				<input type='image' title='".LAN_EDIT."' name='fp_edit_rule[".$order."]' src='".ADMIN_EDIT_ICON_PATH."' />
 				<input type='image' title='".LAN_DELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
 				</td>
@@ -330,7 +330,7 @@ class frontpage
 	  $ns -> tablerender(FRTLAN_33, $text);
 	}
  
- 
+
 
 
 	function edit_rule($rule_info)

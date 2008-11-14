@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-10-20 21:52:31 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2008-11-14 06:01:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -161,8 +161,8 @@ function show_admins()
 		if($row['user_id'] != "1")
 		{
     		$text .= "
-			<input type='image' name='edit_admin[{$row['user_id']}]' value='edit' src='".e_IMAGE."packs/".$imode."/admin_images/edit_16.png' title='".LAN_EDIT."' />
-			<input type='image' name='del_admin[{$row['user_id']}]' value='del' src='".e_IMAGE."packs/".$imode."/admin_images/delete_16.png' onclick=\"return jsconfirm('".$tp->toJS(ADMSLAN_59."? [".$row['user_name']."]")."') \"  title='".ADMSLAN_59."' style='border:0px' />";
+			<input type='image' name='edit_admin[{$row['user_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' title='".LAN_EDIT."' />
+			<input type='image' name='del_admin[{$row['user_id']}]' value='del' src='".e_IMAGE."admin_images/delete_16.png' onclick=\"return jsconfirm('".$tp->toJS(ADMSLAN_59."? [".$row['user_name']."]")."') \"  title='".ADMSLAN_59."' style='border:0px' />";
     	}
 		$text .= "&nbsp;</td>
 

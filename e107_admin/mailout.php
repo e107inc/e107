@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-07-28 21:33:27 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2008-11-14 06:01:06 $
+|     $Author: e107coders $
 |
 | Work in progress - supplementary mailer plugin
 |
@@ -68,14 +68,8 @@ if (!getperms("W"))
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 require_once(e_HANDLER."userclass_class.php");
 
-if (varsettrue($imode))
-{
-  $images_path = e_IMAGE.'packs/'.$imode.'/admin_images/';
-}
-else
-{
+
   $images_path = e_IMAGE.'admin_images/';
-}
 
 
 $mail_plugin = FALSE;
@@ -970,7 +964,7 @@ function show_mailform($foo="")
 			"name"		=> 'shortcode',
 			"onclick"	=> 'expandit',
 			"onclick_var" => "sc_selector",
-			"icon"		=> (varsettrue($imode) ? e_IMAGE."packs/".$imode."/bbcode/shortcode.png" : e_IMAGE."generic/bbcode/shortcode.png"),
+			"icon"		=> e_IMAGE."generic/bbcode/shortcode.png",
 			"helptext"	=> LAN_MAILOUT_11,
 			"function"	=> "sc_Select",
 			"function_var"	=> "sc_selector"

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-07-17 21:53:51 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2008-11-14 06:01:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -136,7 +136,7 @@ class auth
 		$text .= ">\n
 			<table style='width:50%' class='fborder'>
 			<tr>
-            <td rowspan='4' style='vertical-align:middle;width:65px'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."packs/".$imode."/generic/password.png' alt='' />\n" )."</td>
+            <td rowspan='4' style='vertical-align:middle;width:65px'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."generic/password.png' alt='' />\n" )."</td>
 			<td style='width:35%' class='forumheader3'>".ADLAN_89."</td>
 			<td class='forumheader3' style='text-align:center'><input class='tbox' type='text' name='authname' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'],30)."' />\n</td>
 

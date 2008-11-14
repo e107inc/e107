@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/modcomment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-18 15:00:52 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-11-14 06:01:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -121,12 +121,12 @@ if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type
 
 		$comments .= "
 		<tr>
-			<td class='forumheader3' style='width:5%; text-align:center;'>".($row['comment_blocked'] ? "<img src='".e_IMAGE."packs/".$imode."/admin_images/blocked.png' />" : "&nbsp;")."</td>
+			<td class='forumheader3' style='width:5%; text-align:center;'>".($row['comment_blocked'] ? "<img src='".e_IMAGE."admin_images/blocked.png' />" : "&nbsp;")."</td>
 			<td class='forumheader3' style='width:15%;'>".$datestamp."</td>
 			<td class='forumheader3' style='width:15%;'><b>".$comment_nick."</b><br />".$comment_str."</td>
 			<td class='forumheader3' style='width:40%;'>".$row['comment_comment']."</td>
 			<td class='forumheader3' style='width:25%;'>
-				<a href='".e_ADMIN."modcomment.php?{$table}.{$id}.".$row['comment_id']."'><img src='".e_IMAGE."packs/".$imode."/admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:none' /></a>"
+				<a href='".e_ADMIN."modcomment.php?{$table}.{$id}.".$row['comment_id']."'><img src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:none' /></a>"
 				."&nbsp;".($row['comment_blocked'] ? "<input type='checkbox' name='comment_unblocked[]' value='".$row['comment_id']."' /> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='".$row['comment_id']."' /> ".MDCLAN_6."")
 				."&nbsp;<input type='checkbox' name='comment_delete[]' value='".$row['comment_id']."' /> ".LAN_DELETE."
 			</td>

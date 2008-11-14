@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-11-14 05:30:31 $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-14 06:01:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -45,22 +45,22 @@ if (!defined('E_16_CAT_PLUG')) {
 
 // Large Category Images
 if (!defined('E_32_CAT_SETT')) {
-	define('E_32_CAT_SETT', "<img src='".e_IMAGE."packs/".$imode."admin_images/cat_settings_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CAT_SETT', "<img src='".e_IMAGE."admin_images/cat_settings_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_USER')) {
-	define('E_32_CAT_USER', "<img src='".e_IMAGE."packs/".$imode."admin_images/cat_users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CAT_USER', "<img src='".e_IMAGE."admin_images/cat_users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_CONT')) {
-	define('E_32_CAT_CONT', "<img src='".e_IMAGE."packs/".$imode."admin_images/cat_content_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CAT_CONT', "<img src='".e_IMAGE."admin_images/cat_content_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_FILE')) {
-	define('E_32_CAT_FILE', "<img src='".e_IMAGE."packs/".$imode."admin_images/cat_files_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_CAT_FILE', "<img src='".e_IMAGE."admin_images/cat_files_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_TOOL')) {
-	define('E_32_CAT_TOOL', "<img src='".e_IMAGE."packs/".$imode."admin_images/cat_tools_32.png' alt='' style='border:0px; width:32px; height:32px' />");
+	define('E_32_CAT_TOOL', "<img src='".e_IMAGE."admin_images/cat_tools_32.png' alt='' style='border:0px; width:32px; height:32px' />");
 }
 if (!defined('E_32_CAT_PLUG')) {
-	define('E_32_CAT_PLUG', "<img src='".e_IMAGE."packs/".$imode."admin_images/cat_plugins_32.png' alt='' style='border:0px; width:32px; height:32px' />");
+	define('E_32_CAT_PLUG', "<img src='".e_IMAGE."admin_images/cat_plugins_32.png' alt='' style='border:0px; width:32px; height:32px' />");
 }
 
 // Small Nav Images
