@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.23 $ 
-|     $Date: 2008-10-19 11:35:00 $
-|     $Author: e107steved $
+|     $Revision: 1.24 $ 
+|     $Date: 2008-11-16 09:11:59 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -36,8 +36,8 @@ if(!defined("USER_WIDTH")) { define("USER_WIDTH","width:100%"); }
 //$pref['download_incinfo'] = '1';
 
 /* define images */
-define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE.'packs/'.$imode."/generic/download.png"));
-define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE.'packs/'.$imode."/generic/new.png"));
+define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/download.png"));
+define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : e_IMAGE."generic/new.png"));
 
 $template_load_core = '
   $template_name = $load_template.".php";
