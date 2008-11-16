@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2008-11-13 20:41:20 $
-|     $Author: e107steved $
+|     $Revision: 1.69 $
+|     $Date: 2008-11-16 09:17:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -742,7 +742,7 @@ if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SEL
 {
 	if(!isset($_E107['allow_guest']))
 	{
-		if($_POST['ajax_used'] || $_GET['ajax_used'] || e_PAGE == "e_ajax.php" || e_PAGE == "e_js.php")
+		if($_POST['ajax_used'] || $_GET['ajax_used'] || e_PAGE == "e_ajax.php" || e_PAGE == "e_js.php" || e_PAGE == "e_jslib.php")
 		{
         	exit;
 		}
