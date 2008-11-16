@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-10-07 19:25:58 $
+|     $Revision: 1.10 $
+|     $Date: 2008-11-16 17:28:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -138,13 +138,15 @@ if(isset($qs[0]) && $qs[0] == "cat" && !isset($qs[1]) ){
 	displayCategory();
 }
 //show all links in all categories
-if( ((!isset($qs[0]) || $qsorder) && !$linkspage_pref['link_page_categories']) || (isset($qs[0]) && $qs[0] == "all") ){
+if( ((!isset($qs[0]) || $qsorder) && !$linkspage_pref['link_page_categories']) || (isset($qs[0]) && $qs[0] == "all") )
+{
   //	displayNavigator('');
 	displayCategoryLinks();
 }
-//show all links in one categories
-if(isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && is_numeric($qs[1])){
-	echo displayNavigator('');
+//show all links in one category
+if(isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && is_numeric($qs[1]))
+{
+//	echo displayNavigator('');
 	displayCategoryLinks($qs[1]);
 }
 //view top rated
