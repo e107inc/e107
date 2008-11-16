@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-04-07 20:29:24 $
-|     $Author: secretr $
+|     $Revision: 1.17 $
+|     $Date: 2008-11-16 09:11:59 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -313,7 +313,6 @@ class pageClass
 
 	function pageRating($page_rating_flag)
 	{
-		global $imode;
 		$rate_text = '';      // Notice removal
 		if($page_rating_flag)
 		{
@@ -327,7 +326,7 @@ class pageClass
 				{
 					$ratearray[2] = 0;
 				}
-				$rate_text .= "<img src='".e_IMAGE."packs/".$imode."/rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
+				$rate_text .= "<img src='".e_IMAGE."rate/box/box".$ratearray[1].".png' alt='' style='vertical-align:middle;' />\n";
 				$rate_text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
 				$rate_text .= ($ratearray[0] == 1 ? "vote" : "votes");
 			}
@@ -430,7 +429,7 @@ class pageClass
 		<tr>
 		<td class='forumheader3' style='width:20%;'>".LAN_PAGE_9.":</td>
 		<td class='forumheader3' style='width: 60%;'><input type='password' id='page_pw' name='page_pw' style='width: 90%;'/></td>
-		<td class='forumheader3' style='width:20%; vertical-align:middle; margin-left:auto; margin-right:auto; text-align:center;'><img src='".e_IMAGE."generic/".IMODE."/password.png' alt='' /></td>
+		<td class='forumheader3' style='width:20%; vertical-align:middle; margin-left:auto; margin-right:auto; text-align:center;'><img src='".e_IMAGE."generic/password.png' alt='' /></td>
 		</tr>
 		<tr>
 		<td class='forumheader' colspan='3' style='text-align:center;'><input class='button' type='submit' name='submit_page_pw' value='".LAN_PAGE_10."' /></td>
