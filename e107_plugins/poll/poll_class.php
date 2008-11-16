@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-11-16 17:49:24 $
+|     $Revision: 1.13 $
+|     $Date: 2008-11-16 17:56:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -346,8 +346,8 @@ class poll
 
 		$comment_total = 0;
 		if ($pollArray['poll_comment'])
-		{	// Only get comments if they're allowed on poll
-		$comment_total = $sql->db_Select("comments", "*", "comment_item_id='".intval($pollArray['poll_id'])."' AND comment_type=4");
+		{	// Only get comments if they're allowed on poll. And we only need the count ATM
+			$comment_total = $sql->db_Count("comments", "*", "comment_item_id='".intval($pollArray['poll_id'])."' AND comment_type=4");
 		}
 
 		$QUESTION = $tp -> toHTML($pollArray['poll_title'], TRUE,"emotes_off, defs");
