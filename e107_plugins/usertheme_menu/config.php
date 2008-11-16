@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/usertheme_menu/config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-10-02 21:10:34 $
+|     $Revision: 1.2 $
+|     $Date: 2008-11-16 16:46:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -97,7 +97,7 @@ $text = "
 	$text .= "
 			<tr>
 			<td class='forumheader3'>".LAN_UMENU_THEME_7."</td>
-			<td class='forumheader3'>".r_userclass("themeeditclass", $themeeditclass, "off", "main,admin,classes,matchclass,nobody")."</td>
+			<td class='forumheader3'>".r_userclass("themeeditclass", $themeeditclass, "off", "main,member,admin,classes,matchclass,nobody")."</td>
 			</tr>";
 
 
