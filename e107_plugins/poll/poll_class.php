@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-08-17 11:54:39 $
+|     $Revision: 1.12 $
+|     $Date: 2008-11-16 17:49:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -137,14 +137,12 @@ class poll
 		if ($sql->db_Select_gen($query))
 		{
 			$pollArray = $sql -> db_Fetch();
-
 			if (!check_class($pollArray['poll_vote_userclass']))
 			{
 				$POLLMODE = "disallowed";
 			}
 			else
 			{
-
 				switch($pollArray['poll_storage_method'])
 				{
 					case POLL_MODE_COOKIE:
@@ -194,6 +192,10 @@ class poll
 					break;
 				}
 			}
+		}
+		else
+		{
+			return FALSE;
 		}
 		if(isset($_POST['pollvote']) && $POLLMODE == "notvoted" && ($POLLMODE != "disallowed"))
 		{
@@ -251,7 +253,10 @@ class poll
 		switch ($POLLMODE)
 		{
 		  case "query" :	// Show poll, register any vote
-			$this->get_poll($pollArray);
+			if ($this->get_poll($pollArray) === FALSE)
+			{
+				return '';		// No display if no poll
+			}
 			$pollArray = $this->pollRow;
 			$POLLMODE = $this->pollmode;
 			break;
@@ -270,8 +275,7 @@ class poll
 		if($type == "preview")
 		{
 			/* load lan file */
-			@include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
-			@include_once(e_PLUGIN."poll/languages/English.php");
+			@include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 			$optionArray = $pollArray['poll_option'];
 			$voteArray = array();
 			$voteArray = array_pad($voteArray, count($optionArray), 0);
@@ -279,8 +283,7 @@ class poll
 		}
 		else if($type == "forum")
 		{
-			@include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
-			@include_once(e_PLUGIN."poll/languages/English.php");
+			@include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 			if(isset($_POST['fpreview']))
 			{
 				$pollArray['poll_allow_multiple'] = $pollArray['multipleChoice'];
@@ -341,12 +344,16 @@ class poll
 			$preview = TRUE;
 		}
 
+		$comment_total = 0;
+		if ($pollArray['poll_comment'])
+		{	// Only get comments if they're allowed on poll
 		$comment_total = $sql->db_Select("comments", "*", "comment_item_id='".intval($pollArray['poll_id'])."' AND comment_type=4");
+		}
 
 		$QUESTION = $tp -> toHTML($pollArray['poll_title'], TRUE,"emotes_off, defs");
 		$VOTE_TOTAL = POLLAN_31.": ".$voteTotal;
 		$COMMENTS = ($pollArray['poll_comment'] ? " <a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
-		$OLDPOLLS = ($type == "menu" ? "<a href='".e_PLUGIN."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
+		$OLDPOLLS = ($type == "menu" ? "<a href='".e_PLUGIN_ABS."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
 		$AUTHOR = POLLAN_35." ".($type == "preview" || $type == "forum" ? USERNAME : "<a href='".e_BASE."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>");
 
 		switch ($POLLMODE)
