@@ -1,11 +1,32 @@
 /*
+ * e107 website system
+ * 
+ * Copyright (c) 2001-2008 e107 Developers (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://gnu.org).
+ * 
+ * e107 Javascript API
+ * 
+ * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
+ * $Revision: 1.4 $
+ * $Date: 2008-11-17 17:43:57 $
+ * $Author: secretr $
+ * 
+*/
+
+var e107API = {
+	Version: '1.0.1',
+	ServerVersion: '0.8.1'
+}
+
+/*
  * Old stuff
  * FIXME ASAP
  */
-
 var nowLocal = new Date();		/* time at very beginning of js execution */
 var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
-/* NOTE: if serverDelta is needed for js functions, you must pull it from
+/**
+ * NOTE: if serverDelta is needed for js functions, you must pull it from
  * the cookie (as calculated during a previous page load!)
  * The value calculated in SyncWithServerTime is not known until after the
  * entire page has been processed.
@@ -36,7 +57,7 @@ function SyncWithServerTime(serverTime)
  * @copyright (c) 2008 Netatoo SARL <http://www.netatoo.fr>
  * @license   MIT License <http://www.prototypextensions.com/#main=license>
  *
- * @desc Used to retrieve the browser version
+ * @desc Retrieve the browser version
  */
 (function() {
     var nav       = navigator;
@@ -44,7 +65,7 @@ function SyncWithServerTime(serverTime)
     var v         = nav.appVersion;
     var version   = parseFloat(v);
 
-    Prototype.Browser = {
+    e107API.Browser = {
         IE      : (Prototype.Browser.IE)    ? parseFloat(v.split("MSIE ")[1]) || 0 : 0,
         Firefox : (Prototype.Browser.Gecko) ? parseFloat(ua.split("Firefox/")[1]) || 0 : 0,
         Camino  : (Prototype.Browser.Gecko) ? parseFloat(ua.split("Camino/")[1]) || 0 : 0,
@@ -113,9 +134,8 @@ var e107Registry = {
     
     //Global Preferences
     Pref: {
-    	
     	Core: {
-    		zIndex: 100 //base system z-index
+    		zIndex: 5 //base system z-index
     	}
     }
 }
@@ -205,7 +225,7 @@ var e107Event = {
  * EventManager
  * Prototype Xtensions http://www.prototypextensions.com
  * 
- * @desc Easly event manager for creating custom event on your own class
+ * @desc Create custom events on your own class
  */
 var e107EventManager = Class.create({
         
@@ -231,7 +251,7 @@ var e107EventManager = Class.create({
     /**
      * observe
      *
-     * @desc Add an callback for listener 'name'
+     * @desc Add a callback for listener 'name'
      */
     observe: function(name, callback) {
         var observers = this.events.get(name);
@@ -239,12 +259,32 @@ var e107EventManager = Class.create({
         if(!observers) observers = this.addObserver(name);
         
         if(!Object.isFunction(callback)) {
-            throw('e107EventManager.observe : callback must be an js function');
+            //throw('e107EventManager.observe : callback must be an js function');
+            //surpess error 
+            return this;
         }
         
         var i = this.events.get(name).keys().length;
         observers.set(i, callback.bind(this.scope));
         
+        return this;
+    },
+    
+    /**
+     * stopObserving (class improvements)
+     *
+     * @desc Remove callback for listener 'name'
+     */
+    stopObserving: function(name, callback) {
+        var observers = this.events.get(name);
+        
+        if(!observers) return this;
+        observers.each( function(pair) {
+        	if(pair.value == callback) {
+        		observers.unset(pair.key);
+        		$break;
+        	}
+        });
         return this;
     },
     
@@ -255,12 +295,14 @@ var e107EventManager = Class.create({
      */
     notify: function(name) {
         var observers = this.events.get(name);
-        
-        if(observers) {
-            var args = $A(arguments).slice(1);
-            observers.each(function(callback) {
-                if(Object.isFunction(callback[1])) {
-                    callback[1].apply(this.scope, args);
+        //console.log('notifying ' + name);
+        if(observers) { 
+            var args = $A(arguments).slice(1); 
+            //Fix - preserve order
+            observers.keys().sort().each( function(key) {
+            	var callback = observers.get(key);
+                if(Object.isFunction(callback)) { 
+                    callback.apply(this.scope, args);
                 }
             });
         }
@@ -439,22 +481,20 @@ var e107Base = {
     
     setCache: function(cache_str, cache_item) {
     	this.clearCache(cache_str); 
-        e107Registry.Cache.set(cache_str, cache_item);
+        e107Registry.Cache['cache-' + cache_str] = cache_item;
         return this;
     },
     
     getCache: function(cache_str, def) {  
-        return varset(e107Registry.Cache.get(cache_str), def);
+        return varset(e107Registry.Cache['cache-' + cache_str], def);
     },
     
-    clearCache: function(cache_str, def) {
+    clearCache: function(cache_str) {
     	var cached = this.getCache(cache_str);
-    	if(null !== cached) {
-    		if(cached.destroy) {
-    			cached.destroy();
-    		}
-    	}
-    	return varset(e107Registry.Cache.unset(cache_str), def);
+    	if(cached && Object.isFunction(cached['destroy'])) cached.destroy();
+    	e107Registry.Cache['cache-' + cache_str] = null;
+    	delete e107Registry.Cache['cache-' + cache_str];
+    	return this;
     },
 
     parseTemplate: function(mod, name, data) {
@@ -570,7 +610,8 @@ Object.extend(String.prototype, {
 /**
  * e107WidgetAbstract Class
  */
-var e107WidgetAbstract = Class.create({
+var e107WidgetAbstract = Class.create(e107Base);
+var e107WidgetAbstract = Class.create(e107WidgetAbstract, {
     
     initMod: function(modId, options, inherit) {
 
@@ -588,8 +629,7 @@ var e107WidgetAbstract = Class.create({
 				return match[1] + 'Mod' + match[2];
 			});
 			var parent_method = !e107Base[mod_method] ? method : mod_method;
-			this[mod_method] = e107Base[parent_method].bind(e107Base, this.mod);
-			//console.log(mod_method, parent_method);
+			this[mod_method] = e107Base[parent_method].bind(this, this.mod);
 		}.bind(that));
 		
 		Object.extend(that, {
@@ -602,20 +642,24 @@ var e107WidgetAbstract = Class.create({
 		    },
 		    
 		    setModCache: function(cache_str, cache_item) {
-		    	return e107Base.setCache(this.getModName(true) + cache_str, cache_item);
+		    	e107Base.setCache(this.getModName(true) + varsettrue(cache_str, ''), cache_item);
+		    	return this;
 		    },
 		    
 		    getModCache: function(cache_str) {
-		    	return e107Base.getCache(this.getModName(true) + cache_str);
+		    	return e107Base.getCache(this.getModName(true) + varsettrue(cache_str, ''));
 		    },
 		    
 		    clearModCache: function(cache_str) {
-		    	return e107Base.clearCache(this.getModName(true) + cache_str);
+		    	e107Base.clearCache(this.getModName(true) + varsettrue(cache_str, ''));
+		    	return this;
 		    }
 		});
 		
         //Merge option object (recursive) 
         this.setOptions(options, inherit);
+        
+        return this;
     },
     
 
@@ -1219,14 +1263,14 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 	
 	startObserving: function() {
 		Event.observe(window,"resize", this.re_center);
-    	if(Prototype.Browser.IE && Prototype.Browser.IE <= 7)
+    	if(e107API.Browser.IE && e107API.Browser.IE <= 7)
     		Event.observe(window,"scroll", this.re_center);
     	return this;
 	},
 	
 	stopObserving:  function() {
 		Event.stopObserving(window, "resize", this.re_center);
-    	if(Prototype.Browser.IE && Prototype.Browser.IE <= 7)
+    	if(e107API.Browser.IE && e107API.Browser.IE <= 7)
     		Event.stopObserving(window, "scroll", this.re_center);
     	return this;
 	},
@@ -1288,7 +1332,7 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 	
 	iecenter: function() { 
 		//TODO - actually ie7 should work without this - investigate
-		if(Prototype.Browser.IE && Prototype.Browser.IE <= 7) {
+		if(e107API.Browser.IE && e107API.Browser.IE <= 7) {
 			//The 'freezing' problem solved (opacity = 1 ?!)
 			this.loading_mask.show();
 			var offset = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop;
@@ -1346,7 +1390,7 @@ e107Event.register('ajax_loading_start', function(event) {
 		loadingObj = new e107Utils.LoadingStatus(false, { show_auto: false });
 		e107.setModCache('ajax-loader', loadingObj);
 	}
-	loadingObj.set_destination(event.memo.overlayElement).show();
+	loadingObj.set_destination(event.memo.overlayPage).show();
 });
 
 e107Event.register('ajax_loading_end', function(event) {
@@ -1504,7 +1548,7 @@ var e107History = {
 
         this.__title = document.title;
         
-        if(Prototype.Browser.IE && Prototype.Browser.IE < 8) {
+        if(e107API.Browser.IE && e107API.Browser.IE < 8) {
             document.observe('dom:loaded', function(e) {
                 if(!$('e107-px-historyframe')) {
                     e107History.__iframe = new Element('iframe', {
@@ -1566,7 +1610,7 @@ var e107History = {
         var hash = window.location.hash.substring(1);
 
         // If IE, look in the iframe if the hash is updated
-        if(Prototype.Browser.IE && Prototype.Browser.IE < 8 && this.__iframe) {
+        if(e107API.Browser.IE && e107API.Browser.IE < 8 && this.__iframe) {
             var hashInFrame = this.getHashOnIframe();
             
             if(hashInFrame != hash) {
@@ -1590,7 +1634,7 @@ var e107History = {
         window.location.hash = newHash;
         
         // If IE, apply new hash to frame for history    
-        if(Prototype.Browser.IE && Prototype.Browser.IE < 8 && this.__iframe) {
+        if(e107API.Browser.IE && e107API.Browser.IE < 8 && this.__iframe) {
             if(this.__currentHash != newHash) 
             {
                 this.setHashOnIframe(newHash);   
@@ -1609,7 +1653,7 @@ var e107History = {
      * this.__altered allows to force the dispatch.
      */
     isAltered: function() {
-        if(this.__altered == true) {
+        if(this.__altered) {
             return true;
         }
         this.__altered = false;
@@ -1805,9 +1849,12 @@ e107History.Observer = {
 
         // Dispatch only if location.hash has been altered
         if(e107History.isAltered()) {
+        	var oldstate = String(e107History.__previousHash).toQueryParams();
+        	//FIXME - possible bugs/performance issues here - investigate further
             e107History.hash.each(function(pair)  {
                 var registry = e107History.Registry.get(pair.key);
-                if(registry) {
+                //Bugfix - notify callbacks only when required
+                if(registry && (e107History.__altered === pair.key || oldstate[pair.key] !== pair.value)) {
                    registry.onStateChange.bind(e107History)( pair.value );
                 }
             });
@@ -1866,7 +1913,7 @@ e107Ajax.History = {
                 ? options.history.state : this.getCurrentVersion(id);
             getter.set(currentVersion, options);
         }
-                
+            
         // add handler on registry
         this.addCallback(type, id);
 
@@ -1883,24 +1930,25 @@ e107Ajax.History = {
         e107History.Observer.start();
        // console.log(this.cacheString + id, e107.getModCache(this.cacheString + id).get('0'));
         // Set history altered state to true : force dispatch
-        e107History.__altered = true;
+        e107History.__altered = id;
         
         // Return void if registry is already set
         if(!Object.isUndefined(e107History.Registry.get(id))) return; 
-		
+
         // Add this id to history registry
         var cacheS = this.cacheString + id;
-        e107History.Registry.set({
+        e107History.Registry.set({ 
             id: id,
             onStateChange: function(state) { 
                 var options = e107.getModCache(cacheS).get(state.toString()); 
                 var request = null;
-                
-                if(Object.isUndefined(options)) return;
 
-                if(options.history.cache == true && options.history.__request) {
+                if(Object.isUndefined(options)) return;
+				                	
+                if(options.history.cache == true && options.history.__request) { 
                     new Ajax.Cache(options.history.__request);
                 } else {
+                	
                 	//make a request
                     if(type == 'Request') {
                         request = new Ajax.Request(options.history.__url, options);
@@ -2030,8 +2078,10 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 					if(request.options.updateElement) {
 						e107Event.trigger('ajax_update_before', request.options);
 					}
-					if(request.options.overlayElement){
+					if(request.options.overlayPage){
 						e107Event.trigger('ajax_loading_start', request.options);
+					} else if(request.options.overlayElement) { //FIXME - overlay element feature
+						e107Event.trigger('ajax_loading_element_start', request.options, $(request.options.overlayElement));
 					}
 				},
 				
@@ -2040,9 +2090,11 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 						e107Event.trigger('ajax_update_after', request.options);
 					}
 					/*Ajax.activeRequestCount == 0 && */
-					if(request.options.overlayElement) {
+					if(request.options.overlayPage) {
 						e107Event.trigger('ajax_loading_end', request.options);						
-					}					
+					} else if(request.options.overlayElement) { //FIXME - overlay element feature
+						e107Event.trigger('ajax_loading_element_end', request.options, $(request.options.overlayElement));
+					}		
 				},
 				
 				onException: function(request, e) {
@@ -2230,11 +2282,12 @@ e107Ajax.Updater = Class.create({
     initialize: function(container, url, options) {
         
         this.options = {};
-        if(!options.parameters) options.parameters = {};
         
         Object.extend(this.options, options || {});
-        if(!this.options['parameters'] || !this.options.parameters['ajax_used'])
-			Object.extend(this.options['parameters'], { 'ajax_used': 1 });
+        if(!this.options['parameters'])
+        	this.options['parameters'] = { 'ajax_used': 1 }
+        else if(!this.options.parameters['ajax_used'])
+        	this.options['parameters']['ajax_used'] = 1;
 		
 		//required for ajax_update event trigger
 		this.options.updateElement = container;
@@ -2255,7 +2308,7 @@ e107Ajax.Updater = Class.create({
             }
             // Add container to this.options
             this.options.container = container;
-            
+
             // Enable history observer
             var version = e107Ajax.History.observe('Updater', id, url, this.options);
             
@@ -2328,7 +2381,7 @@ e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
 		
 		//Ajax history is NOT supported (and shouldn't be)
 		var options = {
-			overlayElement: destEl,
+			overlayPage: destEl,
 			
 			history: false,
 			
