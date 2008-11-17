@@ -32,7 +32,20 @@
 .even { background-color: #F5F5F5 }
 .first, .last {  }
 
-/* Loading Status default style */
+/* e107 Tabs - see core/tabs.js */
+ul.e-tabs { list-style-type: none; }
+
+ul.e-tabs li { display: inline; margin: 0px; border: 0 none; background-color: transparent; }
+ul.e-tabs li a { text-decoration: none; padding: 5px; }
+
+ul.e-tabs li a:link,
+ul.e-tabs li a:visited { border: 1px solid #C0C0C0; }
+
+ul.e-tabs li a:hover,
+ul.e-tabs li.active a:link,
+ul.e-tabs li.active a:visited  { background-color: #EEEEEE; border: 1px solid #808080; }
+
+/* Page Loading Status default style */
 #loading-mask { color: #556B2F; font-size: 1.2em; font-weight:bold; position:absolute; text-align: center; padding: 0; margin: 0; }
 #loading-mask .loader { position: fixed; top: 40%; left: 50%; width: 200px;  text-align: center; background: #F0F9E3 none repeat scroll 0 0; border: 2px solid #556B2F; font-weight: bold; padding: 10px 5px; margin-left: -100px; margin-top: 0; }
 #loading-mask img { margin: 10px auto; }

@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_helper.php,v $
- * $Revision: 1.1 $
- * $Date: 2008-11-09 20:31:10 $
+ * $Revision: 1.2 $
+ * $Date: 2008-11-17 17:43:57 $
  * $Author: secretr $
  * 
 */
@@ -53,9 +53,16 @@ class e_jshelper
     /**
      * Response array getter
      *
+     * @param bool $reset clear current response actions
      * @return array response actions
      */
-    function getResponseActions() {
+    function getResponseActions($reset = false) {
+        if($reset)
+        {
+            $ret = $this->_response_actions;
+            $this->_reset();
+            return $ret;
+        }
         return $this->_response_actions;
     }
     
@@ -68,7 +75,7 @@ class e_jshelper
      */
     function buildXMLResponse()
     {
-        $action_array = $this->getResponseActions();
+        $action_array = $this->getResponseActions(true);
         $ret = "<e107response>\n";
         foreach ($action_array as $action => $field_array) 
         {
@@ -82,7 +89,7 @@ class e_jshelper
 	                continue; 
 	            $transport_value = $value;
 	            if(!is_numeric($value) && !is_bool($value)) { $transport_value = "<![CDATA[{$value}]]>"; }
-	            $ret .= "\t<item type='".gettype($value)."' name='{$field}'>{$transport_value}</item>\n";
+	            $ret .= "\t\t<item type='".gettype($value)."' name='{$field}'>{$transport_value}</item>\n";
 	        }
 	        $ret .= "\t</e107action>\n";
         }
@@ -114,7 +121,7 @@ class e_jshelper
      */
     function buildJSONResponse()
     {
-        return "/*-secure-\n".json_encode($this->getResponseActions())."\n*/";
+        return "/*-secure-\n".json_encode($this->getResponseActions(true))."\n*/";
     }
     
     /**
@@ -131,6 +138,17 @@ class e_jshelper
     	    $this->addResponseAction($action, $data_array);
     	}
     	echo $this->buildJSONResponse();
+    }
+    
+    /**
+     * Reset response action array to prevent duplicates
+     * 
+     * @access private
+     * @return void
+     */
+    function _reset()
+    {
+        $this->_response_actions = array();
     }
     
     /**
@@ -153,14 +171,14 @@ class e_jshelper
      * @param string $errextended
      * @param bool $exit
      */
-    function sendAjaxError($errcode, $errmessage, $errextended='', $exit=true)
+    function sendAjaxError($errcode, $errmessage, $errextended = '', $exit = true)
     {
         header('Content-type: text/html; charset='.CHARSET, true);
         header("HTTP/1.0 {$errcode} {$errmessage}", true);
         header("e107ErrorMessage: {$errmessage}", true);
         header("e107ErrorCode: {$errcode}", true);
 
-        //Safari also needs some kind of output
+        //Safari expects some kind of output, even empty
         echo ($errextended ? $errextended : ' ');
         
         if($exit) exit;
@@ -170,13 +188,13 @@ class e_jshelper
      * Clean string to be used as JS string
      * Should be using for passing strings to e107 JS API - e.g Languages,Templates etc.
      * 
-     * @param string $lan_string
+     * @param string $string
      * @return string
      * @access static
      */
-    function toString($lan_string) 
+    function toString($string)
     {
-        return "'".str_replace(array("\\", "'"), array("", "\\'"), $lan_string)."'";
+        return "'".str_replace(array("\\", "'"), array("", "\\'"), $string)."'";
     }
 }
 ?>

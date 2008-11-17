@@ -1,6 +1,18 @@
-/* 
- * DECORATE HTML ELEMENTS
+/*
+ * e107 website system
+ * 
+ * Copyright (c) 2001-2008 e107 Developers (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://gnu.org).
+ * 
+ * DECORATE HTML LIST ELEMENTS
  * Inspired by Magento' decorate JS functions (www.magentocommerce.com) 
+ * 
+ * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/decorate.js,v $
+ * $Revision: 1.3 $
+ * $Date: 2008-11-17 17:43:57 $
+ * $Author: secretr $
+ * 
 */
 
 e107Utils.Decorate = {
@@ -112,7 +124,7 @@ e107Utils.Decorate = {
 	    decorateAllParams.each( function(v) {
 	        this.params[v] = this.decorateParams.include(v);
 	    }.bind(this));
-	    console.log(elements[0]);
+
 	    // decorate first
 	    if(this.params.first) {
 	        Element.addClassName(elements[0], 'first');
