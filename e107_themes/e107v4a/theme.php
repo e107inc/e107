@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-02-23 23:51:39 $
+|     $Revision: 1.4 $
+|     $Date: 2008-11-17 07:17:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -99,6 +99,67 @@ $FOOTER['3_column'] =
 </div>";
 
 
+// 2 Column Layout ------------------------------------------------------------
+
+$HEADER['2_column'] =
+"
+<table style='width:100%; background-color:#E4E0E0' cellspacing='3' class='topborder'>
+<tr>
+<td style='text-align:left; vertical-align:bottom'>
+{CUSTOM=clock}
+</td>
+<td style='text-align:right'>
+{CUSTOM=search+".THEME_ABS."images/search.png+18+19}
+</td>
+</tr>
+</table>
+
+<table style='width:100%;' cellspacing='3' id='header'>
+<tr>
+<td colspan='2' style='text-align:left; vertical-align: middle;'>
+<img src='".THEME_ABS."images/logo.png' alt='' /> [ {SITENAME} ]
+</td>
+<td style='text-align:right'>
+{BANNER}
+</td>
+</tr>
+</table>
+<table style='width:100%' cellspacing='3'>
+<tr>
+<td style='width:20%;'></td>
+<td style='width:60%;'><img src='".THEME_ABS."images/blank.gif' width='1' height='1' alt='' /></td>
+</tr>
+<tr>
+<td style='width:20%; vertical-align: top;'>
+{SITELINKS=menu}
+{MENU=1}
+</td><td style='width:60%; vertical-align: top;'>";
+
+
+$FOOTER['2_column'] =
+"</td></tr>
+<tr>
+<td colspan='2' style='text-align:center' class='smalltext'>
+
+{SITEDISCLAIMER}
+<br />
+{THEME_DISCLAIMER}
+</td>
+</tr>
+</table>
+<div style='text-align:center'>
+<table style='width:100%'>
+<tr>
+<td style='width:30%; vertical-align:top'>
+&nbsp;
+{MENU=3}
+</td>
+<td style='width:40%; vertical-align:top'>
+{MENU=4}
+</td>
+</tr>
+</table>
+</div>";
 
 function rand_tag(){
         $tags = file(e_BASE."files/taglines.txt");

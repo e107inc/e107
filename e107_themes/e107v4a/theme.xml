@@ -12,6 +12,19 @@
 	<xhtmlCompliant>true</xhtmlCompliant>
 	<cssCompliant>true</cssCompliant>
 	<layouts>
-		<layout name='3_column' title='3 Columns' preview='preview.png' previewFull='preview_full.png' />
+		<layout name='3_column' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' requiredPlugins='chatbox' default='true' >
+		<menuPresets>
+				<area id='1' >
+                	<menu name='login' />
+					<menu name='compliance' />
+				</area>
+				<area id='2'>
+					<menu name='online' userclass='E_UC_ADMIN' />
+					<menu name='powered_by' />
+					<menu name='sitebutton' />
+				</area>
+			</menuPresets>
+		</layout>
+		<layout name='2_column' title='2 Columns' preview='preview.jpg' previewFull='preview_full.png' />
 	</layouts>
 </e107Theme>
