@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_e107_update.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-11-09 20:14:22 $
+|     $Revision: 1.5 $
+|     $Date: 2008-11-18 21:29:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ define('LAN_UPDATE_33', 'Update comment table format');
 define('LAN_UPDATE_34', 'Error adding columns to comment table');
 define('LAN_UPDATE_35', 'Error modifying data in comment table');
 define('LAN_UPDATE_36', 'Error deleting old field in comment table');
-define('LAN_UPDATE_37', 'Add index to download history');
+define('LAN_UPDATE_37', 'Add index --INDEX-- to table --TABLE--');
 define('LAN_UPDATE_38', 'Update front page settings');
 define('LAN_UPDATE_39', 'Update linkwords table');
 define('LAN_UPDATE_40', 'Update newsfeeds table');
