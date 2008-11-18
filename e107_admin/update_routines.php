@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2008-11-09 20:14:17 $
+|     $Revision: 1.31 $
+|     $Date: 2008-11-18 21:29:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -442,28 +442,24 @@ function update_706_to_800($type='')
 	}
 
 
-//---------------------------------------------------------
-//			Add index to download history
-//---------------------------------------------------------
-	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."download_requests")) 
+
+	//	Add index to download history
+	if (FALSE !== ($temp = addIndexToTable('download_requests', 'download_request_datestamp', $just_check, &$updateMessages)))
 	{
-	  $found = FALSE;
-	  while ($row = $sql -> db_Fetch())
-	  {		// One index per field
-	    if (in_array('download_request_datestamp', $row)) 
+		if ($just_check)
 		{
-		  $found = TRUE;
-		  break;
+			return update_needed($temp);
 		}
-	  }
-	  if (!$found)
-	  {
-		if ($just_check) return update_needed();
-		mysql_query("ALTER TABLE `".MPREFIX."download_requests` ADD INDEX `download_request_datestamp` (`download_request_datestamp`);");
-		$updateMessages[] = LAN_UPDATE_37;
-	  }
 	}
 
+	// Extra index to tmp table
+	if (FALSE !== ($temp = addIndexToTable('tmp', 'tmp_time', $just_check, &$updateMessages)))
+	{
+		if ($just_check)
+		{
+			return update_needed($temp);
+		}
+	}
 
 	// Front page prefs (logic has changed)
 	if (!isset($pref['frontpage_force']))
@@ -822,6 +818,32 @@ function mysql_table_exists($table)
   $exists = mysql_query("SELECT 1 FROM ".MPREFIX."$table LIMIT 0");
   if ($exists) return TRUE;
   return FALSE;
+}
+
+
+// Add index to a table. Returns FALSE if not required. Returns a message if required and just checking
+function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages)
+{
+	global $sql;
+	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX.$target)) 
+	{
+		$found = FALSE;
+		while ($row = $sql -> db_Fetch())
+		{		// One index per field
+			if (in_array($indexSpec, $row)) 
+			{
+				return !$just_check;		// Found - nothing to do
+			}
+		}
+		// Index not found here
+		if ($just_check)
+		{
+			return 'Required to add index to '.$target;
+		}
+		mysql_query("ALTER TABLE `".MPREFIX.$target."` ADD INDEX `".$indexSpec."` (`".$indexSpec."`);");
+		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_37);
+	}
+	return FALSE;
 }
 
 

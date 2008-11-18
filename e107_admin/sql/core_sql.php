@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-11-02 14:54:38 $
+|     $Revision: 1.13 $
+|     $Date: 2008-11-18 21:29:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -457,7 +457,8 @@ CREATE TABLE tmp (
   tmp_ip varchar(45) NOT NULL default '',
   tmp_time int(10) unsigned NOT NULL default '0',
   tmp_info text NOT NULL,
-  KEY tmp_ip (tmp_ip)
+  KEY tmp_ip (tmp_ip),
+  KEY tmp_time (tmp_time)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
