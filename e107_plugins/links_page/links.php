@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-11-16 17:28:45 $
+|     $Revision: 1.11 $
+|     $Date: 2008-11-18 22:03:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -143,6 +143,7 @@ if( ((!isset($qs[0]) || $qsorder) && !$linkspage_pref['link_page_categories']) |
   //	displayNavigator('');
 	displayCategoryLinks();
 }
+
 //show all links in one category
 if(isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && is_numeric($qs[1]))
 {
@@ -150,7 +151,8 @@ if(isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && is_numeric($qs[1]))
 	displayCategoryLinks($qs[1]);
 }
 //view top rated
-if(isset($qs[0]) && $qs[0] == "rated"){
+if(isset($qs[0]) && $qs[0] == "rated")
+{
 	echo displayNavigator('');
 	displayTopRated();
 }
@@ -430,16 +432,27 @@ function displayCategory(){
 	return;
 }
 
-function displayNavigator($mode=''){
+function displayNavigator($mode='')
+{
 	global $sql2, $ns, $lc, $tp, $cobj, $rowl, $qs, $linkspage_pref, $from, $link_shortcodes;
 	global $LINK_NAVIGATOR_TABLE, $LINK_SORTORDER, $LINK_NAVIGATOR, $LINK_NAVIGATOR_TABLE_PRE, $LINK_NAVIGATOR_TABLE_POST;
 
-	if($mode == "cat"){
-		if(isset($linkspage_pref['link_cat_sortorder']) && $linkspage_pref['link_cat_sortorder']){
+	static $hasBeenShown = FALSE;
+	
+	if ($hasBeenShown) return '';
+	$hasBeenShown = TRUE;
+
+	if($mode == "cat")
+	{
+		if(isset($linkspage_pref['link_cat_sortorder']) && $linkspage_pref['link_cat_sortorder'])
+		{
 			$LINK_SORTORDER = $lc->showLinkSort('cat');
 		}
-	}else{
-		if(isset($linkspage_pref['link_sortorder']) && $linkspage_pref['link_sortorder']){
+	}
+	else
+	{
+		if(isset($linkspage_pref['link_sortorder']) && $linkspage_pref['link_sortorder'])
+		{
 			$LINK_SORTORDER = $lc->showLinkSort();
 		}
 	}
