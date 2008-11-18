@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2008-11-16 17:28:38 $
+|     $Revision: 1.51 $
+|     $Date: 2008-11-18 22:03:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -432,16 +432,27 @@ function displayCategory(){
 	return;
 }
 
-function displayNavigator($mode=''){
+function displayNavigator($mode='')
+{
 	global $sql2, $ns, $lc, $tp, $cobj, $rowl, $qs, $linkspage_pref, $from, $link_shortcodes;
 	global $LINK_NAVIGATOR_TABLE, $LINK_SORTORDER, $LINK_NAVIGATOR, $LINK_NAVIGATOR_TABLE_PRE, $LINK_NAVIGATOR_TABLE_POST;
 
-	if($mode == "cat"){
-		if(isset($linkspage_pref['link_cat_sortorder']) && $linkspage_pref['link_cat_sortorder']){
+	static $hasBeenShown = FALSE;
+	
+	if ($hasBeenShown) return '';
+	$hasBeenShown = TRUE;
+
+	if($mode == "cat")
+	{
+		if(isset($linkspage_pref['link_cat_sortorder']) && $linkspage_pref['link_cat_sortorder'])
+		{
 			$LINK_SORTORDER = $lc->showLinkSort('cat');
 		}
-	}else{
-		if(isset($linkspage_pref['link_sortorder']) && $linkspage_pref['link_sortorder']){
+	}
+	else
+	{
+		if(isset($linkspage_pref['link_sortorder']) && $linkspage_pref['link_sortorder'])
+		{
 			$LINK_SORTORDER = $lc->showLinkSort();
 		}
 	}
