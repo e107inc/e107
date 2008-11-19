@@ -8,8 +8,8 @@
  * e107 Javascript API
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-11-17 17:43:57 $
+ * $Revision: 1.5 $
+ * $Date: 2008-11-19 12:19:51 $
  * $Author: secretr $
  * 
 */
@@ -769,7 +769,7 @@ Element.addMethods( {
 Object.extend(e107Helper, {
 	
 	toggle: function(el) {
-		var eltoggle;
+		var eltoggle; 
 		/**
 		 * (SecretR) Notice
 		 * 
@@ -780,7 +780,11 @@ Object.extend(e107Helper, {
 		 * This method will be rewritten after the core is cleaned up. After this point
 		 * the target element will be auto-hidden (no need of class="e-hideme")
 		 */
-        if(Object.isElement(el) && ($(el).readAttribute('href')) || $(el).nodeName.toLowerCase() == 'a' || $(el).readAttribute('type').toLowerCase() == 'input') {
+        if(false === Object.isString(el) || ( 
+        	($(el) && $(el).nodeName.toLowerCase() == 'a' && $(el).readAttribute('href'))
+        		|| 
+        	($(el) && $(el).readAttribute('type') && $(el).readAttribute('type').toLowerCase() == 'input')
+        )) {
         	eltoggle = (function(el) {
 	    		return Try.these(
 	    		    function() { var ret= $(el.readAttribute('href').match(/#(\w.+)$/)[1]); if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
