@@ -8,8 +8,8 @@
  * e107 Javascript API
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-11-19 12:19:51 $
+ * $Revision: 1.6 $
+ * $Date: 2008-11-19 12:52:22 $
  * $Author: secretr $
  * 
 */
@@ -783,11 +783,11 @@ Object.extend(e107Helper, {
         if(false === Object.isString(el) || ( 
         	($(el) && $(el).nodeName.toLowerCase() == 'a' && $(el).readAttribute('href'))
         		|| 
-        	($(el) && $(el).readAttribute('type') && $(el).readAttribute('type').toLowerCase() == 'input')
+        	($(el) && $(el).readAttribute('type') && $(el).readAttribute('type').toLowerCase() == 'input') /* deprecated */
         )) {
         	eltoggle = (function(el) {
 	    		return Try.these(
-	    		    function() { var ret= $(el.readAttribute('href').match(/#(\w.+)$/)[1]); if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
+	    		    function() { var ret= $(el.readAttribute('href').hash.substr(1)); if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
                     function() { var ret=el.next('.e-expandme'); if(ret) { return ret; } throw 'Error';},
                     function() { var ret=el.next('div'); if(ret) { return ret; } throw 'Error'; }, //backward compatibality - DEPRECATED
                     function() { return null; } //break
@@ -823,10 +823,8 @@ Object.extend(e107Helper, {
     toggleObserver: function(event) {
     	var expandthem = event.memo.element ? $(event.memo.element) : $$('body')[0];
         expandthem.select('.e-expandit').invoke('observe', 'click', function(e) {
-           var relval = e.element().getAttribute('rel') ? '{' + String(e.element().getAttribute('rel').toJSON()) + '}' : '{}';
             e.stop();
-            //security - evalJSON(true)
-             this.toggle(e.element(), relval.evalJSON(true) || {});
+             this.toggle(e.element(), {});
         }.bindAsEventListener(e107Helper));
     },
     

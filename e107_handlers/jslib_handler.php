@@ -1,15 +1,14 @@
 <?php
-
 /*
  * e107 website system
  * 
- * Copyright (c) 2001-2008 Steve Dunstan (e107.org)
+ * Copyright (c) 2001-2008 e107 Developers (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-11-11 13:17:18 $
+ * $Revision: 1.3 $
+ * $Date: 2008-11-19 12:52:22 $
  * $Author: secretr $
  * 
 */
@@ -25,7 +24,15 @@ class e_jslib
     
     /**
      * Collect & output all available JS libraries  (requires e107 API)
-     *
+     * FIXME 
+     * - cache jslib in a pref on plugin/theme install only (plugin.xml, theme.xml)
+     * - the structure of the cached pref array?
+     * - kill all dupps
+     * - jslib settings - Administration area (compression on/off, admin log on/off 
+     * manual control for included JS - really not sure about this, 
+     * Force Browser Cache refresh - timestamp added to the url hash)
+     * - how and when to add JS lans for core libraries? 
+     * - separate methods for collecting & storing JS files (to be used in install/update routines) and output the JS content 
      */
     function core_run()
     {
@@ -140,7 +147,7 @@ class e_jslib
      */
     function content_out()
     {
-        global $pref;
+        global $pref, $admin_log;
         
         $encoding = $this->browser_enc();
         
@@ -161,17 +168,18 @@ class e_jslib
             $this->set_cache($gzdata, $encoding);
             
             header('Content-Encoding: ' . $encoding);
-            //header('Content-Length: '.$gsize);
+            header('Content-Length: '.$gsize);
             header('X-Content-size: ' . $size);
             print($gzdata);
-            //TODO - log
+            //TODO - log/debug
             //@file_put_contents('cache/e_jslib_log', "----------\n cache used - ".$encoding."\nOld size - $size, New compressed size - $gsize\nCache hash: ".($_SERVER['QUERY_STRING'] ? md5($_SERVER['QUERY_STRING']) : 'nomd5')."\n\n", FILE_APPEND);
         }
         else
         {
+            header('Content-Length: '.strlen($contents));
             $this->set_cache($contents);
             print($contents);
-            //TODO - log
+            //TODO - log/debug
             //@file_put_contents('cache/e_jslib_log', "----------\nno cache used - raw\n\n", FILE_APPEND);
         }
         exit();
@@ -204,7 +212,8 @@ class e_jslib
      */
     function browser_enc()
     {
-        if (headers_sent())
+        //double-compression fix (thanks Topper), remove possible php warning
+        if ( headers_sent() || ini_get('zlib.output_compression') || !isset($_SERVER["HTTP_ACCEPT_ENCODING"]) )
         {
             $encoding = '';
         }
@@ -227,13 +236,14 @@ class e_jslib
      * Create cache filename (doesn't require e107 API)
      *
      * @param string $encoding
+     * @param string $cacheStr
      * @return string cache filename
      */
-    function cache_file($encoding = '')
+    function cache_file($encoding = '', $cacheStr =  'S_e_jslib')
     {
         $cacheDir = 'cache/';
         $hash = $_SERVER['QUERY_STRING'] ? md5($_SERVER['QUERY_STRING']) : 'nomd5';
-        $cacheFile = $cacheDir . 'S_e_jslib' . ($encoding ? '_' . $encoding : '') . '_' . $hash . '.cache.php';
+        $cacheFile = $cacheDir . $cacheStr . ($encoding ? '_' . $encoding : '') . '_' . $hash . '.cache.php';
         
         return $cacheFile;
     }
