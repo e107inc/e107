@@ -1,16 +1,29 @@
 <?php
-/*	$Id: e_jslib.php,v 1.1 2008-11-09 20:31:10 secretr Exp $ */
+/*
+ * e107 website system
+ * 
+ * Copyright (c) 2001-2008 e107 Developers (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://gnu.org).
+ * 
+ * e107 Javascript API
+ * 
+ * $Source: /cvs_backup/e107_0.8/e107_files/e_jslib.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2008-11-19 12:52:22 $
+ * $Author: secretr $
+ * 
+*/
 
 /*
     called from header_default.php - just after e_header processing
 */
-
     error_reporting(0);
 
 //output cache if available before calling the api
     e_jslib_cache_out();
 
-//v0.8 - we need THEME defines here
+//v0.8 - we need THEME defines here (do we?)
     $_E107 = array('no_forceuserupdate' => 1, 'no_online' => 1,'no_menus' => 1,'no_prunetmp' => 1);
     
 //admin or front-end call
@@ -44,7 +57,9 @@
 			if($encoding)
 				header('Content-Encoding: '.$encoding);
 			
-    		echo @file_get_contents($cacheFile);
+			$tmp = @file_get_contents($cacheFile);
+			header('Content-Length: '.strlen($tmp));
+    		echo $tmp;
     		//TODO - log
     		//@file_put_contents('cache/e_jslib_log', "----------\ncache used - ".$cacheFile."\n\n", FILE_APPEND);
     		exit;
@@ -82,7 +97,8 @@
      */
     function e_jslib_browser_enc() {
     	
-    	if( headers_sent() ){
+         //double-compression fix - thanks Topper
+    	if( headers_sent() || ini_get('zlib.output_compression') || !isset($_SERVER["HTTP_ACCEPT_ENCODING"]) ){
     	
             $encoding = '';
         } elseif ( strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false ){
@@ -107,7 +123,7 @@
      */
     function e_jslib_cache_file($encoding='') {
  	      
-    	$cacheDir = 'cache/';
+    	$cacheDir = './cache/';
     	$hash = $_SERVER['QUERY_STRING'] ? md5($_SERVER['QUERY_STRING']) : 'nomd5';
     	$cacheFile = $cacheDir.'S_e_jslib'.($encoding ? '_'.$encoding : '').'_'.$hash.'.cache.php';
     	
