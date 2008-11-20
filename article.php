@@ -11,29 +11,39 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/article.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-08-27 02:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-20 22:10:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 // This file is now deprecated and remains in core for backward compatibility reasons.
 	
 $tmp = explode(".", $_SERVER['QUERY_STRING']);
-$action = $tmp[0];
-$sub_action = $tmp[1];
-$id = $tmp[2];
+$action = -1;
+$sub_action = 0;
+if (isset($tmp[0])) 
+{ 
+	$action = $tmp[0]; 
+	if (isset($tmp[1])) { $sub_action = $tmp[1]; }
+}
+
 	
-if ($sub_action == 255) {
+if ($sub_action == 255) 
+{
 	// content page
 	header("Location: content.php?content.{$action}");
 	exit;
 }
+
 	
-if ($action == 0) {
+if ($action == 0) 
+{
 	// content page
 	header("Location: content.php?article");
 	exit;
-} else {
+} 
+else 
+{
 	header("Location: content.php?review");
 	exit;
 }

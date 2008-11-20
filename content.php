@@ -11,16 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-12-28 01:16:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.21 $
+|     $Date: 2008-11-20 22:10:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 	
 require_once("class2.php");
 
 //##### REDIRECTION MANAGEMENT -----------------------------------------------------------------------------
-if($content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' AND plugin_installflag = '1' ")){
+if($content_install = varset($pref['plug_installed']['content']))
+{
 	//require_once($plugindir."handlers/content_class.php");
 	//$aa = new content;
 	
