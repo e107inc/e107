@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-09-23 19:31:50 $
+|     $Revision: 1.14 $
+|     $Date: 2008-11-20 20:34:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -111,11 +111,13 @@ if ($sql->db_Select("rbinary"))
 
 
 
-if($image_array = $fl->get_files(e_FILE."downloadimages/", ".gif|.jpg|.png|.GIF|.JPG|.PNG","standard",2)){
+if($image_array = $fl->get_files(e_FILE.'downloadimages/', '\.gif$|\.jpg$|\.png$|\.GIF$|\.JPG$|\.PNG$','standard',2))
+{
 	sort($image_array);
 }
 
-if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", ".gif|.jpg|.png|.GIF|.JPG|.PNG","standard",2)){
+if($thumb_array = $fl->get_files(e_FILE.'downloadimages/', '\.gif$|\.jpg$|\.png$|\.GIF$|\.JPG$|\.PNG$','standard',2))
+{
 	sort($thumb_array);
 }
 
@@ -1686,8 +1688,9 @@ class download
 
 		require_once(e_HANDLER."file_class.php");
 		$fl = new e_file;
-		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
-		$imagelist = $fl->get_files(e_FILE."downloadimages/","",$rejecthumb);
+//		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
+//		$imagelist = $fl->get_files(e_FILE."downloadimages/","",$rejecthumb);
+		$imagelist = $fl->get_files(e_FILE.'downloadimages/');					// Standard reject filter should work
 
 		if($sub_action == "edit" && !defined("SUBMITTED"))
 		{

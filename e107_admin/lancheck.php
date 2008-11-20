@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-08 20:22:54 $
+|     $Revision: 1.10 $
+|     $Date: 2008-11-20 20:34:44 $
 |     $Author: e107steved $
 |	  With code from Izydor and Lolo.
 +----------------------------------------------------------------------------+
@@ -345,7 +345,7 @@ function get_comp_lan_phrases($comp_dir,$lang,$depth=0)
 	$fl = new e_file;
 	$ret = array();
 
-	if($lang_array = $fl->get_files($comp_dir, ".php","standard",$depth)){
+	if($lang_array = $fl->get_files($comp_dir, '\.php','standard',$depth)){
 		sort($lang_array);
 	}
 
@@ -381,7 +381,7 @@ function get_comp_lan_phrases($comp_dir,$lang,$depth=0)
 
 }
 
-// for plugins and themes - checkes what kind of language files directory structure we have
+// for plugins and themes - checks what kind of language files directory structure we have
 function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 	global $ns,$sql;
 
@@ -672,3 +672,6 @@ function lancheck_adminmenu() {
 
 	show_admin_menu(ADLAN_132, $action, $var);
 }
+
+	$ns -> tablerender(LAN_CHECK_1, 'No data');
+	require_once(e_ADMIN."footer.php");

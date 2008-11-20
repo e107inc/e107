@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.8 $
-|    $Date: 2008-07-28 20:16:11 $
+|    $Revision: 1.9 $
+|    $Date: 2008-11-20 20:35:24 $
 |    $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -643,9 +643,9 @@ class linkclass {
         </td>
         </tr>";
 
-        $rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'blank*');
+//        $rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'blank*');
         $iconpath = e_PLUGIN."links_page/link_images/";
-        $iconlist = $fl->get_files($iconpath,"",$rejectlist);
+        $iconlist = $fl->get_files($iconpath);
         $iconpath = e_PLUGIN_ABS."links_page/link_images/";			// Absolute paths now we've got the files
 
         $text .= "
@@ -841,8 +841,8 @@ class linkclass {
             $row['link_category_description']   = "";
             $row['link_category_icon']          = "";
         }
-        $rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
-        $iconlist = $fl->get_files(e_PLUGIN."links_page/cat_images/","",$rejectlist);
+//        $rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
+        $iconlist = $fl->get_files(e_PLUGIN."links_page/cat_images/");
 
         $text = "<div style='text-align:center'>
         ".$rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "linkform", "", "enctype='multipart/form-data'", "")."

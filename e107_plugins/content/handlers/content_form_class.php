@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.20 $
-|		$Date: 2008-07-25 21:03:19 $
+|		$Revision: 1.21 $
+|		$Date: 2008-11-20 20:35:10 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -604,15 +604,16 @@ class contentform{
 			}
 			if( $checkicon || $checkattach || $checkimages ){
 				//prepare file lists
-				$rejectlist	= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
+//				$rejectlist	= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
+				$rejectlist = '~^thumb_|$th_';
 				$show['upload'] = true;
 			}else{
 				$show['upload'] = false;
 			}
 			if($checkicon){
-				$list1 = $fl->get_files($content_pref['content_icon_path_tmp'],"",$rejectlist);
+				$list1 = $fl->get_files($content_pref['content_icon_path_tmp'],$rejectlist);
 				if(varsettrue($content_pref['content_admin_loadicons'])){
-					$list2 = $fl->get_files($content_pref['content_icon_path'],"",$rejectlist);
+					$list2 = $fl->get_files($content_pref['content_icon_path'],$rejectlist);
 				}
 				$iconlist = ($list2) ? array_merge($list1, $list2) : $list1;
 				$show['icon'] = true;
@@ -621,9 +622,9 @@ class contentform{
 				$hidden .= $rs -> form_hidden("content_icon", $row['content_icon']);
 			}
 			if($checkattach){
-				$list1 = $fl->get_files($content_pref['content_file_path_tmp'],"",$rejectlist);
+				$list1 = $fl->get_files($content_pref['content_file_path_tmp'],$rejectlist);
 				if(varsettrue($content_pref['content_admin_loadattach'])){
-					$list2 = $fl->get_files($content_pref['content_file_path'],"",$rejectlist);
+					$list2 = $fl->get_files($content_pref['content_file_path'],$rejectlist);
 				}
 				$filelist = ($list2) ? array_merge($list1, $list2) : $list1;
 				$show['attach'] = true;
@@ -632,7 +633,7 @@ class contentform{
 				$hidden .= $rs -> form_hidden("content_file", $row['content_file']);
 			}
 			if($checkimages){
-				$imagelist	= $fl->get_files($content_pref['content_image_path_tmp'],"",$rejectlist);
+				$imagelist	= $fl->get_files($content_pref['content_image_path_tmp'],$rejectlist);
 				$show['images'] = true;
 			}else{
 				$show['images'] = false;
@@ -2223,8 +2224,8 @@ class contentform{
 				}
 			}
 			//get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0, $dirs_only = FALSE)
-			$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', '.bak');
-			$templatelist = $fl->get_files($dir,"content_content_",$rejectlist);
+//			$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', '.bak');
+			$templatelist = $fl->get_files($dir,"content_content_");
 
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_21;
 			$TOPIC_FIELD = "

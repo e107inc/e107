@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-11-14 06:01:06 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2008-11-20 20:34:44 $
+|     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
 +----------------------------------------------------------------------------+
@@ -487,10 +487,10 @@ class links
         require_once(e_HANDLER."file_class.php");
         $fl = new e_file;
 
-        if($iconlist = $fl->get_files(e_IMAGE."icons/", ".jpg|.gif|.png|.JPG|.GIF|.PNG")){
+        if($iconlist = $fl->get_files(e_IMAGE."icons/", '\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG'))
+		{
         	sort($iconlist);
         }
-
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."' id='linkform'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>";
@@ -506,7 +506,7 @@ class links
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_15.": </td>
 			<td style='width:70%' class='forumheader3'>
-			<input class='tbox' type='text' name='link_name' size='60' value='$link_name' maxlength='100' />
+			<input class='tbox' type='text' name='link_name' size='60' value='{$link_name}' maxlength='100' />
 			</td>
 			</tr>
 
@@ -536,10 +536,11 @@ class links
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_18.": </td>
 			<td style='width:70%' class='forumheader3'>
-			<input class='tbox' type='text' id='link_button' name='link_button' size='42' value='$link_button' maxlength='100' />
+			<input class='tbox' type='text' id='link_button' name='link_button' size='42' value='{$link_button}' maxlength='100' />
 
-					<input class='button' type ='button' style='cursor:pointer' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
-			<div id='linkicn' style='display:none;{head}'>";
+			<input class='button' type ='button' style='cursor:pointer' size='30' value='".LCLAN_39."' onclick='expandit(\"linkicn\")' />
+			<div id='linkicn' style='display:none;{head}'>
+			";
 
 		foreach($iconlist as $icon)
 		{

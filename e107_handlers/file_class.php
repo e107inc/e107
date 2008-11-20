@@ -11,20 +11,79 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-11-20 20:34:44 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/*
+Class to return a list of files, with options to specify a filename matching string and exclude specified directories.
+get_files() is the usual entry point.
+	$path - start directory (doesn't matter whether it has a trailing '/' or not - its stripped)
+	$fmask - regex expression of file names to match (empty string matches all). Omit the start and end delimiters - '#' is added here.
+				If the first character is '~', this becomes a list of files to exclude (the '~' is stripped)
+				Note that 'special' characters such as '.' must be escaped by the caller
+				There is a standard list of files which are always excluded (not affected by the leading '~')
+				The regex is case-sensitive.
+	$omit - specifies directories to exclude, in addition to the standard list. Does an exact, case-sensitive match.
+				'standard' or empty string - uses the standard exclude list
+				Otherwise a single directory name, or an array of names.
+	$recurse_level - number of directory levels to search.
+	
+	If the standard file or directory filter is unacceptable in a special application, the relevant variable can be set to an empty array (emphasis - ARRAY).
+
+setDefaults() restores the defaults - preferable to setting using a 'fixed' string. Can be called prior to using the class without knowledge of what went before.
+
+get_dirs() returns a list of the directories in a specified directory (no recursion) - similar critera to get_files()
+
+rmtree() attempts to remove a complete directory tree, including the files it contains
+
+
+Note: 
+	Directory filters look for an exact match (i.e. regex not supported)
+	Behaviour is slightly different to previous version:
+		$omit used to be applied to just files (so would recurse down a tree even if no files match) - now used for directories
+		The default file and directory filters are always applied (unless modified between instantiation/set defaults and call)
+
+*/
+
+
 class e_file
 {
-	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0)
+	var	$dirFilter;				// Array of directory names to ignore (in addition to any set by caller)
+	var $fileFilter;			// Array of file names to ignore (in addition to any set by caller)
+
+
+	// Constructor
+	function e_file()
+	{
+		$this->setDefaults();
+	}
+
+
+	function setDefaults()
+	{
+		$this->dirFilter = array('/', 'CVS', '.svn');										// Default directory filter (exact matches only)
+		$this->fileFilter = array('^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^index\.html$','^null\.txt$','\.bak$');		// Default file filter (regex format)
+	}
+	
+
+
+	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0)
 	{
 		$ret = array();
-		if($recurse_level != 0 && $current_level > $recurse_level)
+		$invert = FALSE;
+		if (substr($fmask,0,1) == '~')
+		{
+			$invert = TRUE;						// Invert selection - exclude files which match selection
+			$fmask = substr($fmask,1);
+		}
+
+		if($recurse_level < 0)
 		{
 			return $ret;
 		}
@@ -37,54 +96,60 @@ class e_file
 		{
 			return $ret;
 		}
-		if($omit == 'standard')
+		if (($omit == 'standard') || ($omit == ''))
 		{
-			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
+			$omit = array();
 		}
 		else
 		{
-			if(is_array($omit))
+			if (!is_array($omit))
 			{
-				$rejectArray = $omit;
-			}
-			else
-			{
-				$rejectArray = array($omit);
+				$omit = array($omit);
 			}
 		}
 		while (false !== ($file = readdir($handle)))
 		{
 			if(is_dir($path.'/'.$file))
-			{
-				if($file != '.' && $file != '..' && $file != 'CVS' && $recurse_level > 0 && $current_level < $recurse_level)
+			{	// Its a directory - recurse into it unless a filtered directory or required depth achieved
+				// Must always check for '.' and '..'
+				if(($file != '.') && ($file != '..') && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && ($recurse_level > 0))
 				{
-					$xx = $this->get_files($path.'/'.$file, $fmask, $omit, $recurse_level, $current_level+1);
+					$xx = $this->get_files($path.'/'.$file, $fmask, $omit, $recurse_level - 1);
 					$ret = array_merge($ret,$xx);
 				}
 			}
-			elseif ($fmask == '' || preg_match("#".$fmask."#", $file))
+			else
 			{
-				$rejected = FALSE;
+				// Now check against standard reject list and caller-specified list
+				if (($fmask == '') || ($invert != preg_match("#".$fmask."#", $file)))
+				{	// File passes caller's filter here
+					$rejected = FALSE;
 
-				foreach($rejectArray as $rmask)
-				{
-					if(preg_match("#".$rmask."#", $file))
+					// Check against the generic file reject filter
+					foreach($this->fileFilter as $rmask)
 					{
-						$rejected = TRUE;
-						break;
+						if(preg_match("#".$rmask."#", $file))
+						{
+							$rejected = TRUE;
+							break;			// continue 2 may well work
+						}
 					}
-				}
-				if($rejected == FALSE)
-				{
-					$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
-					$finfo['fname'] = $file;
-					$ret[] = $finfo;
+					if($rejected == FALSE)
+					{
+						$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
+						$finfo['fname'] = $file;
+						$ret[] = $finfo;
+					}
 				}
 			}
 		}
 		return $ret;
 	}
 
+
+
+	// Get a list of directories matching $fmask, omitting any in the $omit array - same calling syntax as get_files()
+	// N.B. - no recursion - just looks in the specified directory.
 	function get_dirs($path, $fmask = '', $omit='standard')
 	{
 		$ret = array();
@@ -97,46 +162,34 @@ class e_file
 		{
 			return $ret;
 		}
+
 		if($omit == 'standard')
 		{
-			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$');
+			$omit = array();
 		}
 		else
 		{
-			if(is_array($omit))
+			if (!is_array($omit))
 			{
-				$rejectArray = $omit;
-			}
-			else
-			{
-				$rejectArray = array($omit);
+				$omit = array($omit);
 			}
 		}
 		while (false !== ($file = readdir($handle)))
 		{
-			if(is_dir($path.'/'.$file) && ($fmask == '' || preg_match("#".$fmask."#", $file)))
+			if(is_dir($path.'/'.$file) && ($file != '.') && ($file != '..') && !in_array($file, $this->dirFilter) && !in_array($file, $omit) && ($fmask == '' || preg_match("#".$fmask."#", $file)))
 			{
-				$rejected = FALSE;
-				foreach($rejectArray as $rmask)
-				{
-					if(preg_match("#".$rmask."#", $file))
-					{
-						$rejected = TRUE;
-						break;
-					}
-				}
-				if($rejected == FALSE)
-				{
-					$ret[] = $file;
-				}
+				$ret[] = $file;
 			}
 		}
 		return $ret;
 	}
 
+
+
+	// Delete a complete directory tree
 	function rmtree($dir)
 	{
-		if (substr($dir, strlen($dir)-1, 1) != '/')
+		if (substr($dir, -1) != '/')
 		{
 			$dir .= '/';
 		}

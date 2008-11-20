@@ -1,4 +1,4 @@
-// $Id: imageselector.sc,v 1.6 2008-03-18 00:39:02 e107coders Exp $
+// $Id: imageselector.sc,v 1.7 2008-11-20 20:34:58 e107steved Exp $
 
 global $sql,$parm,$tp;
 
@@ -21,7 +21,7 @@ $imagelist = array();
 
 foreach($paths as $pths)
 {
-	$imagelist += $fl->get_files($pths,".jpg|.gif|.png|.JPG|.GIF|.PNG", 'standard', $recurse);
+	$imagelist += $fl->get_files($pths,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG', 'standard', $recurse);
 }
 
 if($imagelist)

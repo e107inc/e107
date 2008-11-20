@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-08-28 19:13:49 $
+|     $Revision: 1.4 $
+|     $Date: 2008-11-20 20:35:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -26,8 +26,9 @@ require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
-$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
-$templatelist = $fl->get_files(e_PLUGIN."featurebox/templates/","",$rejecthumb);
+//$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
+$rejecthumb = '~^thumb_|^th_';
+$templatelist = $fl->get_files(e_PLUGIN."featurebox/templates/",$rejecthumb);
 
 if (e_QUERY) {
 	list($action, $id) = explode(".", e_QUERY);

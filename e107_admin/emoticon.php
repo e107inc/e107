@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-11-02 11:19:30 $
+|     $Revision: 1.9 $
+|     $Date: 2008-11-20 20:34:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -153,11 +153,11 @@ class emotec
 		<td class='forumheader' style='width: 20%;'>".EMOLAN_9."</td>
 		</tr>";
 
-		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '\.bak$');
+		$reject = '~^emoteconf|\.html$|\.php$|\.txt$';		// Files to exclude
 		foreach($this -> packArray as $pack)
 		{
-		  $can_scan = FALSE;
-			$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$pack, "", $reject);
+			$can_scan = FALSE;
+			$emoteArray = $fl -> get_files(e_IMAGE.'emotes/'.$pack, $reject);
 
 			$text .= "
 			<tr>
@@ -167,16 +167,17 @@ class emotec
 
 			foreach($emoteArray as $emote)
 			{
-			  if (strstr($emote['fname'], ".pak") 
-			  || strstr($emote['fname'], ".xml") 
-			  || strstr($emote['fname'], "phpBB"))
-			  {
-				$can_scan = TRUE;		// Allow re-scan of config files
-			  }
-			  elseif  (!strstr($emote['fname'], ".txt") && !strstr($emote['fname'], ".bak") && !strstr($emote['fname'], ".html") && !strstr($emote['fname'], ".php") )
-			  {  // Emote file found
-				$text .= "<img src='".$emote['path'].$emote['fname']."' alt='' /> ";
-			  }
+				if (strstr($emote['fname'], ".pak") 
+				|| strstr($emote['fname'], ".xml") 
+				|| strstr($emote['fname'], "phpBB"))
+				{
+					$can_scan = TRUE;		// Allow re-scan of config files
+				}
+//				elseif  (!strstr($emote['fname'], ".txt") && !strstr($emote['fname'], ".bak") && !strstr($emote['fname'], ".html") && !strstr($emote['fname'], ".php") )
+				else
+				{  // Emote file found (might get other non-image files, but shouldn't)
+					$text .= "<img src='".$emote['path'].$emote['fname']."' alt='' /> ";
+				}
 			}
 
 			$text .= "</td>
@@ -207,17 +208,18 @@ class emotec
 
 		$emotecode = $sysprefs -> getArray($corea);
 
-		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '*\.txt', '*\.html', '*\.pak', '*php*', '.cvsignore', '\.bak$');
-		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, "", $reject);
+//		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '*\.txt', '*\.html', '*\.pak', '*php*', '.cvsignore', '\.bak$');
+		$reject = '~^emoteconf|\.html$|\.php$|\.txt$|\.pak$|\.xml|\.phpBB';		// Files to exclude
+		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, $reject);
 
 		$eArray = array();
 		foreach($emoteArray as $value)
 		{
-		  if(!strstr($value['fname'], ".php") 
+/*		  if(!strstr($value['fname'], ".php") 
 		  && !strstr($value['fname'], ".txt") 
 		  && !strstr($value['fname'], ".pak") && !strstr($value['fname'], ".bak") 
 		  && !strstr($value['fname'], ".xml") 
-		  && !strstr($value['fname'], "phpBB") && !strstr($value['fname'], ".html"))
+		  && !strstr($value['fname'], "phpBB") && !strstr($value['fname'], ".html"))   */
 		  {
 			$eArray[] = array('path' => $value['path'], 'fname' => $value['fname']);
 		  }
@@ -281,17 +283,18 @@ class emotec
 		$corea = "emote_".$packID;
 		$emotecode = $sysprefs -> getArray($corea);
 
-		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '*\.txt', '*\.html', '*\.pak', '*php*', '.cvsignore', '\.bak$');
-		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, "", $reject);
+//		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '*\.txt', '*\.html', '*\.pak', '*php*', '.cvsignore', '\.bak$');
+		$reject = '~^emoteconf|\.html$|\.php$|\.txt$|\.pak$|\.xml|\.phpBB';		// Files to exclude
+		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, $reject);
 
 		$eArray = array();
 		foreach($emoteArray as $value)
 		{
-		  if(!strstr($value['fname'], ".php") 
+/*		  if(!strstr($value['fname'], ".php") 
 		  && !strstr($value['fname'], ".txt") 
 		  && !strstr($value['fname'], ".pak") && !strstr($value['fname'], ".bak") 
 		  && !strstr($value['fname'], ".xml") 
-		  && !strstr($value['fname'], "phpBB") && !strstr($value['fname'], ".html"))
+		  && !strstr($value['fname'], "phpBB") && !strstr($value['fname'], ".html"))  */
 		  {
 			$eArray[] = $value['fname'];
 		  }
@@ -335,21 +338,12 @@ class emotec
 
 		$packID = $_POST['packID'];
 		unset($_POST['sub_conf'], $_POST['packID']);
-/*
-		foreach($_POST as $key => $value)		// $key is file name, with '.' already replaced by '!'
-		{
-		  unset($_POST[$key]);
-//		  $key = str_replace("_", "!", $key);	// Why?
-//		  $key = str_replace(".", "!", $key);	// Don't think we need this, either
-		  $_POST[$key] = $value;
-		}
-*/
 		$encoded_emotes = $tp -> toDB($_POST);
 		$tmp = addslashes(serialize($encoded_emotes));
 
 		if ($sql->db_Select("core", "*", "e107_name='emote_".$packID."'")) 
 		{
-		  admin_update($sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='emote_".$packID."' "), 'update', EMOLAN_16);
+		  admin_update($sql->db_Update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', EMOLAN_16);
 		} 
 		else 
 		{
@@ -396,17 +390,17 @@ class emotec
 				return FALSE;
 			}
 
-		  if (array_key_exists($value,$pack_local))
-		  {
-		    unset($pack_local[$value]);
-		  }
+			if (array_key_exists($value,$pack_local))
+			{
+				unset($pack_local[$value]);
+			}
 			
 			if (($do_one == $value) || !$do_one &&  (!$sql -> db_Select("core", "*", "e107_name='emote_".$value."' ")))
 			{  // Pack info not in DB, or to be re-scanned
 			  $no_error = TRUE;
 			  $File_type = 'Unknown';
 				// Array of all files in the directory of the selected emote pack
-				$fileArray = $fl -> get_files(e_IMAGE."emotes/".$value);
+				$fileArray = $fl -> get_files(e_IMAGE."emotes/".$value);		// We actually want all the files in the directory
 				$confFile = '';
 				foreach($fileArray as $k => $file)
 				{
@@ -455,10 +449,6 @@ class emotec
 				if($confFile['type'] == "xml")
 				{
 					$filename = e_IMAGE."emotes/".$value."/".$confFile['file'];
-
-//					$handle = fopen ($filename, "r");
-//					$contents = fread ($handle, filesize ($filename));	// Get the XML file for the emote pack
-//					fclose ($handle);
 					$contents = file_get_contents($filename);
 					$confArray = array();
 					$xml_type = 0;
@@ -481,6 +471,7 @@ class emotec
 					}
 					elseif (strpos($contents, "<emoticon") !== FALSE)
 					{	//  "Original" E107 format (as used on KDE, although they may be changing to XEP-0038)
+						echo "Decoding standard XML file<br />";
 					  preg_match_all("#\<emoticon file=\"(.*?)\"\>(.*?)\<\/emoticon\>#si", $contents, $match);
 					
 					  $xml_type = 2;
@@ -543,7 +534,10 @@ class emotec
 						  }
 					    }
 					  // Only add if the file exists. OK if no definition - might want to be added
-					  if ($file) $confArray[$file] = $codet;
+						if ($file) 
+						{
+							$confArray[$file] = $codet;
+						}
 					  }
 					}
 					else
