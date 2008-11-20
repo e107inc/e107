@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-08-25 13:34:55 $
+|     $Revision: 1.10 $
+|     $Date: 2008-11-20 21:43:57 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -28,42 +28,104 @@ if (!getperms("P"))
 }
 	
 	
-include_lan_admin(e_PLUGIN.'calendar_menu');
+include_lan_admin(e_PLUGIN.'calendar_menu/');
 
 
 $message = "";
 $calendarmenu_text = '';	// Notice removal
 $calendarmenu_msg  = '';	// Notice removal
 
-if (isset($_POST['updatesettings'])) {
-	$pref['eventpost_admin'] = $_POST['eventpost_admin'];
-	$pref['eventpost_adminlog'] = $_POST['eventpost_adminlog'];
-	$pref['eventpost_showeventcount'] = $_POST['eventpost_showeventcount'];
-	$pref['eventpost_showmouseover'] = $_POST['eventpost_showmouseover'];
-	$pref['eventpost_forum'] = $_POST['eventpost_forum'];	
-	$pref['eventpost_recentshow'] = $_POST['eventpost_recentshow'];
-	$pref['eventpost_super'] = $_POST['eventpost_super'];
-	$pref['eventpost_menulink'] = $_POST['eventpost_menulink'];
-	$pref['eventpost_dateformat'] = $_POST['eventpost_dateformat'];	
-	$pref['eventpost_fivemins'] = $_POST['eventpost_fivemins'];
-	$pref['eventpost_weekstart'] = $_POST['eventpost_weekstart'];
-	$pref['eventpost_lenday'] = $_POST['eventpost_lenday'];			
-	$pref['eventpost_caltime'] = $_POST['eventpost_caltime'];
-	$pref['eventpost_datedisplay'] = $_POST['eventpost_datedisplay'];
-	$pref['eventpost_timedisplay']	= $_POST['eventpost_timedisplay'];
-	$pref['eventpost_timecustom'] = $_POST['eventpost_timecustom'];
-	$pref['eventpost_dateevent'] = $_POST['eventpost_dateevent'];
-	$pref['eventpost_datenext'] = $_POST['eventpost_datenext'];
-	$pref['eventpost_eventdatecustom'] = $_POST['eventpost_eventdatecustom'];
-	$pref['eventpost_nextdatecustom'] = $_POST['eventpost_nextdatecustom'];
-	$pref['eventpost_printlists'] = $_POST['eventpost_printlists'];
-	$pref['eventpost_mailsubject'] = $_POST['eventpost_mailsubject'];			
-	$pref['eventpost_mailfrom'] = $_POST['eventpost_mailfrom'];		
-	$pref['eventpost_mailaddress'] = $_POST['eventpost_mailaddress'];
-	$pref['eventpost_asubs'] = $_POST['eventpost_asubs'];
-	$pref['eventpost_emaillog'] = $_POST['eventpost_emaillog'];
-	$pref['eventpost_editmode'] = $_POST['eventpost_editmode'];
-	save_prefs();
+// Given an array of name => format, reads the $_POST variable of each name, applies the specified formatting, 
+// identifies changes, writes back the changes, makes admin log entry
+function logPrefChanges(&$prefList, $logRef)
+{
+	global $pref, $tp, $admin_log;
+	$prefChanges = array();
+	foreach ($prefList as $prefName => $process)
+	{
+		switch ($process)
+		{
+			case 0 :
+				$temp = varset($_POST[$prefName],'');
+				break;
+			case 1 :
+				$temp = intval(varset($_POST[$prefName],0));
+				break;
+			case 2 :
+				$temp = $tp->toDB(varset($_POST[$prefName],''));
+				break;
+			case 3 :			// Array of integers - turn into comma-separated string
+				$tmp = array();
+				foreach ($_POST[$prefName] as $v)
+				{
+					$tmp[] = intval($v);
+				}
+				$temp = implode(",", $tmp);
+				unset($tmp);
+				break;
+		}
+		if (!isset($pref[$prefName]) || ($temp != $pref[$prefName]))
+		{	// Change to process
+			$pref[$prefName] = $temp;
+			$prefChanges[] = $prefName.' => '.$temp;
+		}
+	}
+	if (count($prefChanges))
+	{
+		save_prefs();
+		// Do admin logging
+		$logString = implode('[!br!]', $prefChanges);
+		$admin_log->log_event($logRef,$logString,'');
+	}
+}
+
+
+$prefSettings = array(
+	'updateOptions' => array(
+		'eventpost_admin' =>  1,			// Integer
+		'eventpost_super' => 1,				// Integer
+		'eventpost_adminlog' =>  1,			// Integer
+		'eventpost_menulink' => 1,			// Integer
+		'eventpost_showmouseover' => 1,		// Integer
+		'eventpost_showeventcount' =>  1,	// Integer
+		'eventpost_forum' => 1,				// Integer
+		'eventpost_recentshow' => 2,		// String ('LV' or an integer)
+		'eventpost_weekstart' => 1, 		// Integer
+		'eventpost_lenday' => 1,			// Integer
+		'eventpost_dateformat' => 2,		// String ('my' or 'ym')
+		'eventpost_datedisplay' => 1,		// Integer
+		'eventpost_fivemins' => 1,			// Integer
+		'eventpost_editmode' => 1,			// Integer
+		'eventpost_caltime' => 1,			// Integer
+		'eventpost_timedisplay'	=> 1,		// Integer
+		'eventpost_timecustom' => 2,		// String
+		'eventpost_dateevent' => 1,			// Integer
+		'eventpost_eventdatecustom' => 2,	// String
+		'eventpost_datenext' => 1,			// Integer
+		'eventpost_nextdatecustom' => 2,	// String
+		'eventpost_printlists' => 1,		// Integer
+		'eventpost_asubs' => 1,				// Integer
+		'eventpost_mailfrom' => 2,			// String
+		'eventpost_mailsubject' => 2,		// String
+		'eventpost_mailaddress' => 2,		// String
+		'eventpost_emaillog' => 1			// Integer
+		),
+	'updateForthcoming' => array(
+		'eventpost_menuheading' => 2,		// String
+		'eventpost_daysforward' => 1,		// Integer
+		'eventpost_numevents' => 1,		// Integer
+		'eventpost_checkrecur' =>1, 		// Integer
+		'eventpost_linkheader' => 1,		// Integer
+		'eventpost_fe_set' => 3,  			// Array of class values
+		'eventpost_fe_hideifnone' => 1,	// Integer
+		'eventpost_fe_showrecent' => 1,	// Integer
+		'eventpost_showcaticon' => 1,		// Integer
+		'eventpost_namelink' => 1			// Integer
+		)
+);
+if (isset($_POST['updatesettings'])) 
+{
+	logPrefChanges(&$prefSettings['updateOptions'], 'EC_ADM_06');
 	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
 	$message = EC_ADLAN_A204; // "Calendar settings updated.";
 }
@@ -71,19 +133,9 @@ if (isset($_POST['updatesettings'])) {
 // ****************** FORTHCOMING EVENTS ******************
 if (isset($_POST['updateforthcoming']))
 {
-  $pref['eventpost_menuheading'] = $_POST['eventpost_fe_menuheading'];
-  $pref['eventpost_daysforward'] = $_POST['eventpost_fe_daysforward'];
-  $pref['eventpost_numevents'] = $_POST['eventpost_fe_numevents'];
-  $pref['eventpost_checkrecur'] = $_POST['eventpost_fe_checkrecur'];
-  $pref['eventpost_linkheader'] = $_POST['eventpost_fe_linkheader'];
-  $pref['eventpost_fe_set'] =  implode(",", $_POST['fe_eventclass']);
-  $pref['eventpost_fe_hideifnone'] = $_POST['eventpost_fe_hideifnone'];
-  $pref['eventpost_fe_showrecent'] = $_POST['eventpost_fe_showrecent'];
-  $pref['eventpost_showcaticon'] = $_POST['eventpost_showcaticon'];
-  $pref['eventpost_namelink'] = $_POST['eventpost_namelink'];
-  save_prefs();
-  $e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
-  $message = EC_ADLAN_A109; // "Forthcoming Events settings updated.";
+	logPrefChanges(&$prefSettings['updateForthcoming'], 'EC_ADM_07');
+	$e107cache->clear('nq_event_cal');		// Clear cache as well, in case displays changed
+	$message = EC_ADLAN_A109; // "Forthcoming Events settings updated.";
 }
 
 if (e_QUERY) 
@@ -99,7 +151,7 @@ $ecal_class = new ecal_class;
 // ****************** MAINTENANCE ******************
 if (isset($_POST['deleteold']) && isset($_POST['eventpost_deleteoldmonths']))
 {
-  $back_count = $_POST['eventpost_deleteoldmonths'];
+  $back_count = intval($_POST['eventpost_deleteoldmonths']);
   if (($back_count >= 1) && ($back_count <= 12))
   {
     $old_date = intval(mktime(0,0,0,$ecal_class->now_date['mon']-$back_count,1,$ecal_class->now_date['year']));
@@ -235,29 +287,26 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 	// * If we are updating then update or insert the record
 	if ($calendarmenu_action == 'update')
 	{
-		$calendarmenu_id = $_POST['calendarmenu_id'];
+		$calendarmenu_id = intval($_POST['calendarmenu_id']);
+		$calPars = array();
+		$calPars['event_cat_name']			= $tp->toDB($_POST['event_cat_name']);
+		$calPars['event_cat_description']	= $tp->toDB($_POST['event_cat_description']);
+		$calPars['event_cat_icon']			= $tp->toDB($_POST['ne_new_category_icon']);
+		$calPars['event_cat_class']			= intval($_POST['event_cat_class']);
+		$calPars['event_cat_subs']			= intval($_POST['event_cat_subs']);
+		$calPars['event_cat_force_class']	= intval($_POST['event_cat_force_class']);
+		$calPars['event_cat_ahead']			= intval($_POST['event_cat_ahead']);
+		$calPars['event_cat_msg1']			= $tp->toDB($_POST['event_cat_msg1']);
+		$calPars['event_cat_msg2']			= $tp->toDB($_POST['event_cat_msg2']);
+		$calPars['event_cat_notify']		= intval($_POST['event_cat_notify']);
+		$calPars['event_cat_lastupdate']	= intval(time());
+		$calPars['event_cat_addclass']		= intval($_POST['event_cat_addclass']);
 		if ($calendarmenu_id == 0)
 		{ 	// New record so add it
-			// Enumerate fields so it doesn't matter if they're in the wrong order.
-			// db_Insert can take an array of key => value pairs
-			$calendarmenu_args = array (
-			'event_cat_id'			=> 0,
-			'event_cat_name'		=> $_POST['event_cat_name'],
-			'event_cat_description'	=> $_POST['event_cat_description'],
-			'event_cat_icon'		=> $_POST['ne_new_category_icon'],
-			'event_cat_class'		=> intval($_POST['event_cat_class']),
-			'event_cat_subs'		=> intval($_POST['event_cat_subs']),
-			'event_cat_force_class'	=> intval($_POST['event_cat_force_class']),
-			'event_cat_ahead'		=> intval($_POST['event_cat_ahead']),
-			'event_cat_msg1'		=> $_POST['event_cat_msg1'],
-			'event_cat_msg2'		=> $_POST['event_cat_msg2'],
-			'event_cat_notify'		=> intval($_POST['event_cat_notify']),
-			'event_cat_lastupdate'	=> intval(time()),
-			'event_cat_addclass'	=>  intval($_POST['event_cat_addclass'])
-			);
-			if ($calendarmenu_db->db_Insert("event_cat", $calendarmenu_args))
+			if ($calendarmenu_db->db_Insert("event_cat", $calPars))
 			{
-			  $calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A26."</strong></td></tr>";
+				$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A26."</strong></td></tr>";
+				$admin_log->log_event(EC_ADM_08,$calPars['event_cat_name'],'');
 			}
 			else
 			{
@@ -265,25 +314,11 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 			} 
 		}
 		else
-		{ 
-			// Update existing
-			$calendarmenu_args = "
-			event_cat_name='".$_POST['event_cat_name']."',
-			event_cat_description='".$_POST['event_cat_description']."',
-			event_cat_class='".intval($_POST['event_cat_class'])."',
-			event_cat_icon='".$_POST['ne_new_category_icon']."',
-			event_cat_subs='".intval($_POST['event_cat_subs'])."',
-			event_cat_force_class='".intval($_POST['event_cat_force_class'])."',
-			event_cat_ahead='".intval($_POST['event_cat_ahead'])."',
-			event_cat_msg1='".$_POST['event_cat_msg1']."',
-			event_cat_msg2='".$_POST['event_cat_msg2']."',
-			event_cat_notify='".intval($_POST['event_cat_notify'])."',
-			event_cat_addclass='".intval($_POST['event_cat_addclass'])."',
-			event_cat_lastupdate='".time()."'		
-			where event_cat_id='$calendarmenu_id'";
-			if ($calendarmenu_db->db_Update("event_cat", $calendarmenu_args))
+		{ 	// Update existing
+			if ($calendarmenu_db->db_UpdateArray("event_cat", $calPars, 'WHERE `event_cat_id` = '.$calendarmenu_id))
 			{ 	// Changes saved
-			  $calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><b>".EC_ADLAN_A28."</b></td></tr>";
+				$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><b>".EC_ADLAN_A28."</b></td></tr>";
+				$admin_log->log_event(EC_ADM_09,'ID: '.$calendarmenu_id.', '.$calPars['event_cat_name'],'');
 			}
 			else
 			{
@@ -305,8 +340,8 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 	// We are creating, editing or deleting a record
 	if ($calendarmenu_action == 'dothings')
 	{
-		$calendarmenu_id = $_POST['calendarmenu_selcat'];
-		$calendarmenu_do = $_POST['calendarmenu_recdel'];
+		$calendarmenu_id = intval($_POST['calendarmenu_selcat']);
+		$calendarmenu_do = intval($_POST['calendarmenu_recdel']);
 		$calendarmenu_dodel = false;
 
 		switch ($calendarmenu_do)
@@ -388,7 +423,8 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 					  {
 						if ($calendarmenu_db->db_Delete("event_cat", " event_cat_id='{$calendarmenu_id}'"))
 						{
-						  $calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A30."</strong></td></tr>";
+							$admin_log->log_event(EC_ADM_10,'ID: '.$calendarmenu_id,'');
+							$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A30."</strong></td></tr>";
 						}
 						else
 						{
@@ -573,25 +609,25 @@ if (!isset($pref['eventpost_namelink']))    $pref['eventpost_namelink'] = '1';
 	<tr><td style='vertical-align:top;' colspan='2' class='fcaption'>".EC_ADLAN_A100." </td></tr>
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A108."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_fe_menuheading' size='35' value='".$pref['eventpost_menuheading']."' maxlength='30' />
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_menuheading' size='35' value='".$pref['eventpost_menuheading']."' maxlength='30' />
 		</td>
 	</tr>
 
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A101."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_fe_daysforward' size='20' value='".$pref['eventpost_daysforward']."' maxlength='10' />
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_daysforward' size='20' value='".$pref['eventpost_daysforward']."' maxlength='10' />
 		</td>
 	</tr>
 
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A102."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_fe_numevents' size='20' value='".$pref['eventpost_numevents']."' maxlength='10' />
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_numevents' size='20' value='".$pref['eventpost_numevents']."' maxlength='10' />
 		</td>
 	</tr>
 
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A103."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_fe_checkrecur' value='1' ".($pref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_checkrecur' value='1' ".($pref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
@@ -616,7 +652,7 @@ if (!isset($pref['eventpost_namelink']))    $pref['eventpost_namelink'] = '1';
 	
 	<tr>
 		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A104."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_fe_linkheader' value='1' ".($pref['eventpost_linkheader']==1?" checked='checked' ":"")." />
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_linkheader' value='1' ".($pref['eventpost_linkheader']==1?" checked='checked' ":"")." />
 		</td>
 	</tr>
 	
@@ -639,7 +675,7 @@ if (!isset($pref['eventpost_namelink']))    $pref['eventpost_namelink'] = '1';
 	  while ($row = $calendarmenu2_db->db_Fetch())
 	  {
 	    $selected = isset($cal_fe_prefs[$row['event_cat_id']]);
-		$text .= "<input type='checkbox' name='fe_eventclass[]' value='".$row['event_cat_id'].($selected == 1?"' checked='checked'":"'")." />".$row['event_cat_name']."<br /> ";
+		$text .= "<input type='checkbox' name='eventpost_fe_set[]' value='".$row['event_cat_id'].($selected == 1?"' checked='checked'":"'")." />".$row['event_cat_name']."<br /> ";
 	  } 
 	}
 	else
