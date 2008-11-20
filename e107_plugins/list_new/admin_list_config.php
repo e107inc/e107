@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2008-03-09 20:33:18 $
+|		$Revision: 1.4 $
+|		$Date: 2008-11-20 20:35:24 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -52,8 +52,9 @@ if(isset($_POST['update_menu'])){
 $list_pref	= $rc -> getListPrefs();
 
 
-$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
-$iconlist = $fl->get_files($listplugindir."images/", "", $rejectlist);
+//$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
+//$iconlist = $fl->get_files($listplugindir."images/", "", $rejectlist);
+$iconlist = $fl->get_files($listplugindir."images/");
 
 //render message if set
 if(isset($message)){

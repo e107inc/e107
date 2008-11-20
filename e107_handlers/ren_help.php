@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-11-08 17:24:28 $
+|     $Revision: 1.7 $
+|     $Date: 2008-11-20 20:34:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -194,8 +194,8 @@ function PreImage_Select($formid) {
 		$fl = new e_file;
 	}
 
-	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-	$imagelist = $fl->get_files($path,"",$rejecthumb,2);
+//	$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
+	$imagelist = $fl->get_files($path,'','standard',2);
     sort($imagelist);
 
 	$text ="<!-- Start of PreImage selector -->
@@ -247,7 +247,7 @@ function PreImage_Select($formid) {
 function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
 	require_once(e_HANDLER."userclass_class.php");
 	global $IMAGES_DIRECTORY, $fl, $sql;
-		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
+//		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 
 		$filelist = array();
 		$downloadList = array();
@@ -262,7 +262,7 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
 			}
 		}
 
-		$tmp = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
+		$tmp = $fl->get_files(e_FILE."downloads/");
 		foreach($tmp as $value)
 		{
 			if(!in_array($value['fname'], $downloadList))

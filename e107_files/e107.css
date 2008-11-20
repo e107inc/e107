@@ -55,6 +55,6 @@ ul.e-tabs li.active a:visited  { background-color: #EEEEEE; border: 1px solid #8
 #e-debug-console { padding: 10px; margin: 0px; height: 100px; overflow: auto; text-align: left; }
 #e-debug-console div div { padding: 5px }
 #e-debug-console-controls { text-align: left; padding: 5px; border-top: 1px solid #c0c0c0; background-color: #fff; line-height: 0 }
-#e-debug-console-controls a { text-decoration: none; color: #000; background-color: #f5f5f5; border: 1px solid: #f0f0f0; padding: 5px; margin: 2px 5px; }
+#e-debug-console-controls a { text-decoration: none; color: #000; background-color: #f5f5f5; border: 1px solid #f0f0f0; padding: 5px; margin: 2px 5px; }
 #e-debug-console-input { width: 480px; border: 1px solid #f5f5f5; }
 #e-debug-console .console-output { border-bottom: 1px solid #f5f5f5; padding: 5px }

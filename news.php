@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-12-11 20:38:56 $
+|     $Revision: 1.11 $
+|     $Date: 2008-11-20 20:34:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -597,8 +597,9 @@ if ($action != "item") {
 if(is_dir("remotefile")) {
 	require_once(e_HANDLER."file_class.php");
 	$file = new e_file;
-	$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
-	$crem = $file -> get_files(e_BASE."remotefile", "", $reject);
+//	$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
+//	$crem = $file -> get_files(e_BASE."remotefile", "", $reject);
+	$crem = $file -> get_files(e_BASE."remotefile", '~Readme\.txt');
 	if(count($crem)) {
 		foreach($crem as $loadrem) {
 			if(strstr($loadrem['fname'], "load_")) {
