@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2008-11-16 09:17:13 $
-|     $Author: e107coders $
+|     $Revision: 1.70 $
+|     $Date: 2008-11-21 11:08:53 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 //
@@ -50,7 +50,7 @@ $oblev_before_start = ob_get_level();
 // B: Remove all output buffering
 //
 if(!isset($_E107) || !is_array($_E107)) { $_E107 = array(); }
-if($_E107['cli'] && !$_E107['debug'] && isset($_SERVER["HTTP_USER_AGENT"]))
+if(varset($_E107['cli']) && !varset($_E107['debug']) && isset($_SERVER["HTTP_USER_AGENT"]))
 {
 	exit;
 }
