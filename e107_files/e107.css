@@ -10,14 +10,14 @@
 .left { text-align: left }
 .right { text-align: right }
 .center { text-align: center }
-.leftF { float: left }
-.rightF { float: right }
+.f-left { float: left }
+.f-right { float: right }
 .top { vertical-align: top }
 .middle { vertical-align: middle }
 .bottom { vertical-align: bottom }
 .clear { clear: both }
-.clearL { clear: right }
-.clearR { clear: left }
+.clear-l { clear: right }
+.clear-r { clear: left }
 
 /* Core Icons */
 .icon { border: 0 }
@@ -31,30 +31,32 @@
 .odd {  }
 .even { background-color: #F5F5F5 }
 .first, .last {  }
+.e-list { /* core selector - can be used per theme (JS) to decorate list blocks */ }
 
 /* e107 Tabs - see core/tabs.js */
 ul.e-tabs { list-style-type: none; }
-
 ul.e-tabs li { display: inline; margin: 0px; border: 0 none; background-color: transparent; }
 ul.e-tabs li a { text-decoration: none; padding: 5px; }
-
 ul.e-tabs li a:link,
 ul.e-tabs li a:visited { border: 1px solid #C0C0C0; }
-
 ul.e-tabs li a:hover,
 ul.e-tabs li.active a:link,
 ul.e-tabs li.active a:visited  { background-color: #EEEEEE; border: 1px solid #808080; }
 
 /* Page Loading Status default style */
-#loading-mask { color: #556B2F; font-size: 1.2em; font-weight:bold; position:absolute; text-align: center; padding: 0; margin: 0; }
+#loading-mask { color: #556B2F; font-size: 1.2em; font-weight:bold; position:absolute; text-align: center; padding: 0; margin: 0; background-color: transparent; }
 #loading-mask .loader { position: fixed; top: 40%; left: 50%; width: 200px;  text-align: center; background: #F0F9E3 none repeat scroll 0 0; border: 2px solid #556B2F; font-weight: bold; padding: 10px 5px; margin-left: -100px; margin-top: 0; }
 #loading-mask img { margin: 10px auto; }
 
+/* Element Loading Status default style */
+.element-loading-mask { background-repeat: no-repeat; background-position: 50% 50%; background-color: #f5f5f5; }
+
+
 /* Debug Console - this will be moved to debug.css */
-#e-debug-console-cont { position: fixed; top: 0px; left: 5px; margin: 0px; padding: 0px; width: 600px; border: 1px solid #c0c0c0; background-color: white; color: black }
+#e-debug-console-cont { position: fixed; top: 0px; left: 5px; margin: 0px; padding: 0px; width: 600px; border: 1px solid #c0c0c0; background-color: white; color: black; }
 #e-debug-console { padding: 10px; margin: 0px; height: 100px; overflow: auto; text-align: left; }
-#e-debug-console div div { padding: 5px }
-#e-debug-console-controls { text-align: left; padding: 5px; border-top: 1px solid #c0c0c0; background-color: #fff; line-height: 0 }
+#e-debug-console div div { padding: 5px; }
+#e-debug-console-controls { text-align: left; padding: 5px; border-top: 1px solid #c0c0c0; background-color: #fff; line-height: 0; }
 #e-debug-console-controls a { text-decoration: none; color: #000; background-color: #f5f5f5; border: 1px solid #f0f0f0; padding: 5px; margin: 2px 5px; }
 #e-debug-console-input { width: 480px; border: 1px solid #f5f5f5; }
 #e-debug-console .console-output { border-bottom: 1px solid #f5f5f5; padding: 5px }
