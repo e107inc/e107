@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-11-17 07:17:23 $
-|     $Author: e107coders $
+|     $Revision: 1.25 $
+|     $Date: 2008-11-21 11:12:06 $
+|     $Author: secretr $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -373,7 +373,7 @@ global $eMenuActive, $eMenuArea;
 if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
 
 // External links handling
-$js_body_onload[] = array();//'externalLinks();'; - already registered to e107:loaded Event by the new JS API
+$js_body_onload = array();//'externalLinks();'; - already registered to e107:loaded Event by the new JS API
 
 // Theme JS
 if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
