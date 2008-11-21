@@ -83,7 +83,7 @@ table {
 
 .forumheader, .forumheader2, .forumheader3, .forumheader4, .fcaption, .finfobar {
 	padding: 5px;
-	background-color: #fff;
+	/* background-color: #fff; - inherited from body */
 	border-bottom: 1px solid #bbb;
 }
 

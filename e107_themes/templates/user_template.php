@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-01-06 21:26:32 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-21 16:40:48 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,7 @@ global $user_shortcodes, $pref, $user;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
 define("HIDE_EMPTY_FIELDS", FALSE);
 
-$EXTENDED_CATEGORY_START = "<tr><td colspan='2' class='forumheader' style='text-align:left'>{EXTENDED_NAME}</td></tr>";
+$EXTENDED_CATEGORY_START = "<tr><td colspan='2' class='forumheader center'>{EXTENDED_NAME}</td></tr>";
 
 $EXTENDED_CATEGORY_TABLE = "
 	<tr>
@@ -38,9 +38,12 @@ $EXTENDED_CATEGORY_TABLE = "
 
 $EXTENDED_CATEGORY_END = "";
 
-
+/**
+ * Preparing for huge markup/css changes
+ */
 $USER_SHORT_TEMPLATE_START = "
-	<div style='text-align:center'>".LAN_138." {TOTAL_USERS}
+	<div class='content user-list'>
+	<div class='center'>".LAN_138." {TOTAL_USERS}
 	<br />
 	<br />
 	{USER_FORM_START}
@@ -51,41 +54,46 @@ $USER_SHORT_TEMPLATE_START = "
 	</div>
 	<br />
 	<br />
-	<table style='".USER_WIDTH."' class='fborder'>
+	<table style='".USER_WIDTH."' class='fborder e-list'>
+	<thead>
 	<tr>
 	<td class='fcaption' style='width:2%'>&nbsp;</td>
 	<td class='fcaption' style='width:20%'>".LAN_142."</td>
 	<td class='fcaption' style='width:20%'>".LAN_112."</td>
 	<td class='fcaption' style='width:20%'>".LAN_145."</td>
 	</tr>
+	</thead>
+	<tbody>
 ";
 $USER_SHORT_TEMPLATE_END = "
+</tbody>
 </table>
+</div>
 ";
 
 $USER_SHORT_TEMPLATE = "
 <tr>
 	<td class='forumheader3' style='width:2%'>{USER_ICON_LINK}</td>
-	<td class='forumheader' style='width:20%'>{USER_ID}: {USER_NAME_LINK}</td>
+	<td class='forumheader3' style='width:20%'>{USER_ID}: {USER_NAME_LINK}</td>
 	<td class='forumheader3' style='width:20%'>{USER_EMAIL}</td>
 	<td class='forumheader3' style='width:20%'>{USER_JOIN}</td>
 </tr>
 ";
 
-$sc_style['USER_SIGNATURE']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:left'>";
+$sc_style['USER_SIGNATURE']['pre'] = "<tr><td colspan='2' class='forumheader3 left'>";
 $sc_style['USER_SIGNATURE']['post'] = "</td></tr>";
 
-$sc_style['USER_COMMENTS_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:left'>";
+$sc_style['USER_COMMENTS_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3 left'>";
 $sc_style['USER_COMMENTS_LINK']['post'] = "</td></tr>";
 
-$sc_style['USER_FORUM_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:left'>";
+$sc_style['USER_FORUM_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3 left'>";
 $sc_style['USER_FORUM_LINK']['post'] = "</td></tr>";
 
-$sc_style['USER_UPDATE_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>";
+$sc_style['USER_UPDATE_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3 center'>";
 $sc_style['USER_UPDATE_LINK']['post'] = "</td></tr>";
 
-$sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' style='width:100%' class='forumheader3'><span style='float:left'>".LAN_406."</span></span><span style='float:right;'>";
-$sc_style['USER_RATING']['post'] = "</span></td></tr>";
+$sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>".LAN_406."</div><div class='f-right'>";
+$sc_style['USER_RATING']['post'] = "</div></td></tr>";
 
 $sc_style['USER_LOGINNAME']['pre'] = " : ";
 
@@ -102,49 +110,49 @@ else
 	$main_colspan = " colspan = '2' ";
 }
 
-$sc_style['USER_SENDPM']['pre'] = "<tr><td colspan='2' style='width:100%' class='forumheader3'><span style='float:left'>";
-$sc_style['USER_SENDPM']['post'] = "</span><span style='float:right;'>".LAN_425."</span></td></tr>";
+$sc_style['USER_SENDPM']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>";
+$sc_style['USER_SENDPM']['post'] = "</div><div class='f-right'>".LAN_425."</div></td></tr>";
 
 // Determine which other bits are installed; let photo span those rows (can't do signature - will vary with user)
 $span = 4;
 if ($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes)) $span++;
 $span = " rowspan='".$span."' ";
 
-$sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
+$sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3 center middle' style='width:20%'>";
 $sc_style['USER_PICTURE']['post']="</td>";
 
 $USER_FULL_TEMPLATE = "
-<div style='text-align:center'>
+<div class='content user'>
 <table style='".USER_WIDTH."' class='fborder'>
 <tr>
-	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
+	<td colspan='2' class='fcaption center'>".LAN_142." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
 </tr>
 <tr>
 	{$user_picture}
-	<td {$main_colspan} class='forumheader3' style='width:100%'>
-		<span style='float:left'>{USER_REALNAME_ICON} ".LAN_308."</span>
-		<span style='float:right; text-align:right'>{USER_REALNAME}</span>
+	<td {$main_colspan} class='forumheader3'>
+		<div class='f-left'>{USER_REALNAME_ICON} ".LAN_308."</div>
+		<div class='f-right right'>{USER_REALNAME}</div>
 	</td>
 </tr>
 
 <tr>
-	<td  {$main_colspan} style='width:100%' class='forumheader3'>
-		<span style='float:left'>{USER_EMAIL_ICON} ".LAN_112."</span>
-		<span style='float:right; text-align:right'>{USER_EMAIL_LINK}</span>
+	<td  {$main_colspan} class='forumheader3'>
+		<div class='f-left'>{USER_EMAIL_ICON} ".LAN_112."</div>
+		<div class='f-right right'>{USER_EMAIL_LINK}</div>
 	</td>
 </tr>
 
 <tr>
-	<td  {$main_colspan} style='width:100%' class='forumheader3'>
-		<span style='float:left'>".LAN_406.":</span>
-		<span style='float:right; text-align:right'>{USER_LEVEL}</span>
+	<td  {$main_colspan} class='forumheader3'>
+		<div class='f-left'>".LAN_406.":</div>
+		<div class='f-right right'>{USER_LEVEL}</div>
 	</td>
 </tr>
 
 <tr>
-	<td  {$main_colspan} style='width:100%' class='forumheader3'>
-		<span style='float:left'>".LAN_404.":&nbsp;&nbsp;</span>
-		<span style='float:right; text-align:right'>{USER_LASTVISIT}<br />{USER_LASTVISIT_LAPSE}</span>
+	<td  {$main_colspan} class='forumheader3'>
+		<div class='f-left'>".LAN_404.":&nbsp;&nbsp;</div>
+		<div class='f-right right'>{USER_LASTVISIT}<br />{USER_LASTVISIT_LAPSE}</div>
 	</td>
 </tr>
 {USER_SENDPM}
@@ -183,11 +191,11 @@ $USER_FULL_TEMPLATE = "
 {USER_EMBED_USERPROFILE}
 {USER_UPDATE_LINK}
 <tr>
-	<td colspan='2' class='forumheader3' style='text-align:center'>
+	<td colspan='2' class='forumheader3 center'>
 		<table style='width:95%'>
 			<tr>
 				<td style='width:50%'>{USER_JUMP_LINK=prev}</td>
-				<td style='width:50%; text-align:right'>{USER_JUMP_LINK=next}</td>
+				<td class='right' style='width:50%;'>{USER_JUMP_LINK=next}</td>
 			</tr>
 		</table>
 	</td>
