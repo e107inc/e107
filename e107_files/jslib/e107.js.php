@@ -8,8 +8,8 @@
  * e107 Javascript API
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-11-19 12:52:22 $
+ * $Revision: 1.7 $
+ * $Date: 2008-11-21 16:24:49 $
  * $Author: secretr $
  * 
 */
@@ -93,10 +93,10 @@ var e107Registry = {
     //System Path
     Path: {
         e_IMAGE:    '<?php echo e_IMAGE_ABS; ?>',
-        e_IMAGE_PACK:    '<?php global $imode; echo e_IMAGE_ABS."packs/{$imode}/"; ?>',
+        e_IMAGE_PACK:    '<?php echo e_IMAGE_ABS; ?>',
         e_PLUGIN:   '<?php echo e_PLUGIN_ABS; ?>',
         e_FILE:     '<?php echo e_FILE_ABS; ?>',
-        <?php if(ADMIN) echo 'e_ADMIN:    \''.e_ADMIN_ABS."',\n"; ?>
+        e_ADMIN: 	'<?php echo defsettrue(ADMIN) ? e_ADMIN_ABS : ""; ?>',
         e_THEME:    '<?php echo e_THEME_ABS; ?>',
         THEME:      '<?php echo THEME_ABS; ?>'
     },
@@ -108,8 +108,7 @@ var e107Registry = {
     Template: {
     	Core: {
     		//e107Helper#duplicateHTML method
-    		//TODO CSS - icon , icon.d16, icon.d32, icon.d64, top, middle, bottom definitions
-	        duplicateHTML:	'<div><div class="clear-all" style="clear: both; height: 5px"><!-- --></div>' +
+	        duplicateHTML:	'<div><div class="clear"><!-- --></div>' +
                            		'#{duplicateBody}' +
                            		'<a href="#" id="#{removeId}"><img src="#{e_IMAGE_PACK}admin_images/delete_16.png" class="icon action" style="vertical-align: middle" /></a>' +
                            	'</div>'
@@ -447,12 +446,12 @@ var e107Base = {
         return '';
     },
 
-    setPref: function(mod, pref_object) { 
+    setPrefs: function(mod, pref_object) { 
         mod = this.toModName(mod);
         if(!varset(e107Registry.Pref[mod])) {
             e107Registry.Pref[mod] = {};
         }
-        Object.extend(e107Registry.Pref[mod] || {}, (pref_object || {}));
+        Object.extend(e107Registry.Pref[mod], (pref_object || {}));
         
         return this;
     },
@@ -489,9 +488,9 @@ var e107Base = {
         return varset(e107Registry.Cache['cache-' + cache_str], def);
     },
     
-    clearCache: function(cache_str) {
+    clearCache: function(cache_str, nodestroy) {
     	var cached = this.getCache(cache_str);
-    	if(cached && Object.isFunction(cached['destroy'])) cached.destroy();
+    	if(!nodestroy && cached && Object.isFunction(cached['destroy'])) cached.destroy();
     	e107Registry.Cache['cache-' + cache_str] = null;
     	delete e107Registry.Cache['cache-' + cache_str];
     	return this;
@@ -525,7 +524,7 @@ var e107Base = {
         return data;
     },
     
-    parseLan: function(str) {
+    parseLan: function(str) { 
         return String(str).interpolate(this.getLanVars());
     },
     
@@ -620,7 +619,7 @@ var e107WidgetAbstract = Class.create(e107WidgetAbstract, {
             throw 'Illegal Mod ID';
         }
 
-		var methods = 'setTemplate addTemplate getTemplate parseTemplate setPref addPref getPref getPrefs getLan getLanVars addLan setLan';
+		var methods = 'setTemplate addTemplate getTemplate parseTemplate setPrefs addPref getPref getPrefs getLan getLanVars addLan setLan';
 		var that = this;
 		
 		//Some magic
@@ -1097,6 +1096,10 @@ Element.addMethods('A', {
 	externalLink: e107Helper.externalLink
 });
 
+Element.addMethods('FORM', {
+	toggleChecked: e107Helper.toggleChecked
+});
+
 // -------------------------------------------------------------------
 
 /**
@@ -1366,7 +1369,7 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 	},
 	
 	createShim: function() {
-		if(!this.iframeShim) {
+		if(e107API.Browser.IE && e107API.Browser.IE <= 7 && !this.iframeShim) {
 			this.iframeShim = new e107Utils.IframeShim().hide();
 			this.setModCache(this.cacheStr +'-iframe', this.iframeShim);
 		}
@@ -1375,6 +1378,7 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 	},
 	
 	positionShim: function(hide) {
+		if(!e107API.Browser.IE || e107API.Browser.IE > 6) return this;
 		if(hide) {
 			this.iframeShim.hide(); return this;
 		}
@@ -1384,7 +1388,7 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 });
 
 /**
- * Register core loading events
+ * Register page loading core events
  */
 e107Event.register('ajax_loading_start', function(event) {
 	var loadingObj = e107.getModCache('ajax-loader');
@@ -1400,6 +1404,79 @@ e107Event.register('ajax_loading_end', function(event) {
 	if(loadingObj) {
 		window.setTimeout( function(){ loadingObj.hide() }, 200);
 	}
+});
+
+/**
+ * e107Utils.LoadingElement
+ * based on Protoload by Andreas Kalsch
+ */
+e107Base.setPrefs('core-loading-element', {
+	overlayDelay: 50,
+	opacity: 0.8,
+	zIndex: 10,
+	className: 'element-loading-mask',
+	backgroundImage: '#{e_IMAGE}generic/loading_32.gif'
+});
+
+e107Utils.LoadingElement = {
+	startLoading: function(element, options) {
+		if(!options) options = {};
+		Object.extend(options, e107Base.getPrefs('core-loading-element') || {});
+		element = $(element);
+			
+		var zindex = parseInt(e107.getModPref('zIndex')) + parseInt(options.zIndex);
+		var cacheStr = 'core-loading-element-' + $(element).identify();
+		element._waiting = true;
+		//can't use element._eloading for storing objects because of IE6 memory leak
+		var _eloading = e107Base.getCache(cacheStr);
+		
+		if (!_eloading) {
+			_eloading = new Element('div', { 'class': options.className }).setStyle({
+				position: 'absolute',
+				opacity: options.opacity,
+				zIndex: zindex
+				//backgroundImage: 'url(' + options.backgroundImage.parsePath() + ')'
+			});
+			
+			$$('body')[0].insert({ bottom: _eloading }); 
+			var imgcheck = _eloading.getStyle('background-image');
+			//console.log(options.backgroundImage.parsePath());
+			if(!imgcheck || imgcheck == 'none') //only if not specified by CSS
+				_eloading.setStyle( {backgroundImage: 'url(' + options.backgroundImage.parsePath() + ')'});
+			e107Base.setCache(cacheStr, _eloading);
+		}
+		window.setTimeout(( function() {
+			if (this._waiting) {
+				Element.clonePosition(_eloading, this);
+				_eloading.show();
+			}
+		}).bind(element), options.overlayDelay);
+		
+	},
+	
+	stopLoading: function(element) {
+		if (element._waiting) {
+			element._waiting = false;
+			var cacheStr = 'core-loading-element-' + $(element).identify(), _eloading = e107Base.getCache(cacheStr);
+			if($(_eloading)) $(_eloading).hide();//remove it or not?
+			//e107Base.clearCache(cacheStr);
+		}
+	}
+};
+
+Element.addMethods(e107Utils.LoadingElement);
+
+/**
+ * Register element loading core events
+ */
+e107Event.register('ajax_loading_element_start', function(event) {
+	var element = $(event.memo.overlayElement);
+	if(element) element.startLoading();
+});
+
+e107Event.register('ajax_loading_element_end', function(event) {
+	var element = $(event.memo.overlayElement);
+	if(element)  window.setTimeout( function(){ element.stopLoading() }.bind(element), 50);
 });
 
 // -------------------------------------------------------------------
@@ -1506,7 +1583,7 @@ var help = function(help,tagid) {
 
 //Use Prototype JS e.g.: $(object).addClassName(over); $(object).removeClassName(over);
 var eover = function(object, over) {
-    $(object).addClassName(over);
+    $(object).writeAttribute('class', over);
 }
 
 //@see e107Helper#duplicateHTML
@@ -1930,7 +2007,6 @@ e107Ajax.History = {
     addCallback: function(type, id) {
         
         e107History.Observer.start();
-       // console.log(this.cacheString + id, e107.getModCache(this.cacheString + id).get('0'));
         // Set history altered state to true : force dispatch
         e107History.__altered = id;
         
@@ -2078,24 +2154,24 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 		var e_responder = {
 				onCreate: function(request) {
 					if(request.options.updateElement) {
-						e107Event.trigger('ajax_update_before', request.options);
+						e107Event.trigger('ajax_update_before', request.options, request.options.updateElement);
 					}
 					if(request.options.overlayPage){
 						e107Event.trigger('ajax_loading_start', request.options);
-					} else if(request.options.overlayElement) { //FIXME - overlay element feature
-						e107Event.trigger('ajax_loading_element_start', request.options, $(request.options.overlayElement));
+					} else if(request.options.overlayElement) { 
+						e107Event.trigger('ajax_loading_element_start', request.options);
 					}
 				},
 				
-				onComplete: function(request) {
+				onComplete: function(request) { 
 					if(request.options.updateElement) {
-						e107Event.trigger('ajax_update_after', request.options);
+						e107Event.trigger('ajax_update_after', request.options, request.options.updateElement);
 					}
 					/*Ajax.activeRequestCount == 0 && */
 					if(request.options.overlayPage) {
 						e107Event.trigger('ajax_loading_end', request.options);						
-					} else if(request.options.overlayElement) { //FIXME - overlay element feature
-						e107Event.trigger('ajax_loading_element_end', request.options, $(request.options.overlayElement));
+					} else if(request.options.overlayElement) { 
+						e107Event.trigger('ajax_loading_element_end', request.options);
 					}		
 				},
 				
@@ -2113,7 +2189,7 @@ Ajax.Updater = Class.create(Ajax.Updater, {
  */
 var e107AjaxAbstract = Class.create ({
 	_processResponse: function(transport) {
-		if(null !== transport.responseXML) {
+		if(null !== transport.responseXML) { 
 			this._handleXMLResponse(transport.responseXML);
 		} else if(null !== transport.responseJSON) {
 			this._handleJSONResponse(transport.responseJSON);
@@ -2124,10 +2200,8 @@ var e107AjaxAbstract = Class.create ({
 	},
 
 	_handleXMLResponse: function (response) {
-		var xfields = $A(response.childNodes[0].childNodes);
-		//getElementsByTagName('e107response')[0]
-		
-		var parsed = {}; 
+		var xfields = $A(response.getElementsByTagName('e107response')[0].childNodes);
+		var parsed = {};  
 		xfields.each( function(el) { 
 			if (el.nodeType == 1 && el.nodeName == 'e107action' && el.getAttribute('name') && el.childNodes) {
 				
@@ -2138,7 +2212,7 @@ var e107AjaxAbstract = Class.create ({
 				
 				for(var i=0, len=items.length; i<len; i++) {
 					var field = items[i];
-
+					
 					if(field.nodeType!=1)
 						continue;
 					
@@ -2183,13 +2257,13 @@ var e107AjaxAbstract = Class.create ({
 	},
 	
 	/**
-	 * Reset checked property of form elements by selector (checkbox, radio)
+	 * Reset checked property of form elements by selector name attribute (checkbox, radio)
 	 */
 	_processResponseResetChecked: function(response) {
-		Object.keys(response).each(function(key) {
+		Object.keys(response).each(function(key) { 
 			var checked = parseInt(response[key]) ? true : false;
 			$$('input[name^=' + key + ']').each( function(felement) {
-				var itype = String(felement.type);
+				var itype = String(felement.type); 
 				if('checkbox radio'.include(itype.toLowerCase()))
 					felement.checked = checked;
 			});
@@ -2340,7 +2414,7 @@ Object.extend(e107Ajax, {
 		
 		if ($(form).hasAttribute('method') && !opt.method)
 		      opt.method = $(form).method;
-
+		
 		if(container)
 			return new e107Ajax.Updater(container, url, opt);
 		
@@ -2433,7 +2507,6 @@ e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
 		
 		if(left_response) { //update non-form elements (by id)
 			Object.keys(left_response).each( function(el) {
-				
 				this._updateElement(el, left_response[el]);
 			}.bind(C));
 		}
