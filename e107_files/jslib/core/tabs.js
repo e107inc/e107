@@ -11,8 +11,8 @@
  * (unobtrusive Javascript)
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/tabs.js,v $
- * $Revision: 1.1 $
- * $Date: 2008-11-17 17:43:57 $
+ * $Revision: 1.2 $
+ * $Date: 2008-11-21 16:26:15 $
  * $Author: secretr $
  * 
 */
@@ -20,7 +20,7 @@
 /**
  * Global prefs
  */
-e107Base.setPref('core-tabs', {
+e107Base.setPrefs('core-tabs', {
 	bookmarkFix: true,
 	historyNavigation: false,
 	pageOverlay: false,
@@ -107,26 +107,22 @@ e107Widgets.Tabs = Class.create(e107WidgetAbstract, {
 	_detectLoad: function(tab) {
 		if(tab.ajaxUrl) {
 			var lopts = $w(tab.ajaxUrl).detect(function (values) {
-				return values.startsWith('ajax-tab-url');
+				return values.startsWith('ajax-tab');
 			});
 			if(lopts) { 
-				lopts = lopts.substr(('ajax-tab-url::').length);
-				if(!lopts) {
-					var link = tab.actionItem.readAttribute('href').split('#')[0]; //link url
-					tab.ajaxUrl = link ? link : document.location.href.split('#')[0]; //self url
-				} else {
-					tab.ajaxUrl = decodeURIComponent(lopts);
-				}
+				var link = tab.actionItem.readAttribute('href').split('#')[0]; //link url
+				tab.ajaxUrl = link ? link : document.location.href.split('#')[0]; //self url
 			}
+			return tab;
 		}
+		tab.ajaxUrl = false;
 		return tab;
 	},
 	
 	_exec: function(index, method, options) {
 		if(!this.___methods.include(method) || !this.tabData.list[index]) {
-			throw('e107Widgets.Tabs_exec: wrong method or object not found!');
+			throw('e107Widgets.Tabs._exec: wrong method or object not found!');
 		}
-
 		this.tabData.list[index][method](options);
 		return this.tabData.list[index];
 	},
@@ -241,11 +237,11 @@ e107Widgets.Tabs = Class.create(e107WidgetAbstract, {
 	ajaxSelect: function(tab) {
 		if(!tab.ajaxUrl || (this.global.options.ajaxCache && tab.options['ajaxCached'])) 
 			return tab.tabSelect();
-			
+		var ovel = this.global.options.overlayElement === true ? tab.getPanel() : $(this.global.options.overlayElement);
 		tab.getMenu().addClassName('active'); 
 		new e107Ajax.Updater(tab.getPanel(), tab.ajaxUrl, {
 			overlayPage: this.options.pageOverlay ? tab.getPanel() : false,
-			overlayElement: this.global.options.overlayElement ? this.global.options.overlayElement : false,
+			overlayElement: ovel || false,
 			onComplete: function() { tab.options.ajaxCached = this.global.options.ajaxCache; tab.tabSelect(); }.bind(this)
 		});
 		
