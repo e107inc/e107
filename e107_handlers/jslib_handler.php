@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-11-19 12:52:22 $
+ * $Revision: 1.4 $
+ * $Date: 2008-11-21 16:24:48 $
  * $Author: secretr $
  * 
 */
@@ -168,7 +168,7 @@ class e_jslib
             $this->set_cache($gzdata, $encoding);
             
             header('Content-Encoding: ' . $encoding);
-            header('Content-Length: '.$gsize);
+            //header('Content-Length: '.$gsize);
             header('X-Content-size: ' . $size);
             print($gzdata);
             //TODO - log/debug
@@ -176,7 +176,7 @@ class e_jslib
         }
         else
         {
-            header('Content-Length: '.strlen($contents));
+            //header('Content-Length: '.strlen($contents));
             $this->set_cache($contents);
             print($contents);
             //TODO - log/debug

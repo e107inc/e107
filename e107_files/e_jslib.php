@@ -9,8 +9,8 @@
  * e107 Javascript API
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/e_jslib.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-11-19 12:52:22 $
+ * $Revision: 1.3 $
+ * $Date: 2008-11-21 16:24:49 $
  * $Author: secretr $
  * 
 */
@@ -56,10 +56,8 @@
 			header('Content-type: text/javascript', TRUE);
 			if($encoding)
 				header('Content-Encoding: '.$encoding);
-			
-			$tmp = @file_get_contents($cacheFile);
-			header('Content-Length: '.strlen($tmp));
-    		echo $tmp;
+
+    		echo @file_get_contents($cacheFile);
     		//TODO - log
     		//@file_put_contents('cache/e_jslib_log', "----------\ncache used - ".$cacheFile."\n\n", FILE_APPEND);
     		exit;
