@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/online_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-13 10:51:34 $
+|     $Revision: 1.3 $
+|     $Date: 2008-11-22 12:57:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -111,7 +111,7 @@ class e_online
 		  $row['online_pagecount'] = 1;
 		}
 
-			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) 
+			if ($row['online_pagecount'] > $online_bancount && ($e107->ipDecode($row['online_ip'],TRUE) != "127.0.0.1")) 
 			{
 //				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
 			  if ($e107->add_ban(2,"Hit count exceeded ({$row['online_pagecount']} requests within allotted time)",$ip,0))

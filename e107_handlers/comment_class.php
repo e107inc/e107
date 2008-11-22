@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-10-22 21:31:08 $
+|     $Revision: 1.16 $
+|     $Date: 2008-11-22 12:57:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -187,7 +187,7 @@ class comment {
 		//addrating	: boolean, to show rating system in rendered comment
 		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen, $imode;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
-		global $thisaction, $thistable, $thisid;
+		global $thisaction, $thistable, $thisid, $e107;
 
 		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
@@ -221,7 +221,7 @@ class comment {
 		$unblock	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
 		$block		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
 		$delete		= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_3."</a>] ";
-		$userinfo	= "[<a href='".e_ADMIN_ABS."userinfo.php?".$comrow['comment_ip']."'>".COMLAN_4."</a>]";
+		$userinfo	= "[<a href='".e_ADMIN_ABS."userinfo.php?".$e107->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
 
 		if (!$COMMENTSTYLE) 
 		{
@@ -390,7 +390,7 @@ class comment {
 
 			if (!defined("emessage"))
 			{
-			  $ip = $e107->getip();		// Store IP 'in the raw' - could be IPv4 or IPv6
+			  $ip = $e107->getip();		// Store IP 'in the raw' - could be IPv4 or IPv6. Its always returned in a normalised form
 			  $_t = time();
 
 			  if($editpid)

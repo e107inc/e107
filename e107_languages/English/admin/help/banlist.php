@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/banlist.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-06-15 10:05:53 $
+|     $Revision: 1.8 $
+|     $Date: 2008-11-22 12:57:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -63,6 +63,7 @@ Either enter their full IP address or use a wildcard to ban a range of IP addres
 <b>Banning by IP address:</b><br />
 Entering the IP address 123.123.123.123 will stop the user with that address visiting your site.<br />
 Entering the IP address 123.123.123.* will stop anyone in that IP range from visiting your site.<br /><br />
+IPV6 format addresses are also supported, including '::' to represent a block of zero values.<br /><br />
 <b>Banning by email address</b><br />
 Entering the email address foo@bar.com will stop anyone using that email address from registering as a member on your site.<br />
 Entering the email address *@bar.com will stop anyone using that email domain from registering as a member on your site.<br /><br />

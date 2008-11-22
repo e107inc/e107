@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-10-19 11:35:00 $
+|     $Revision: 1.20 $
+|     $Date: 2008-11-22 12:57:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -203,19 +203,28 @@ class e107
 	 */
 	function ban() 
 	{
-	  global $sql, $e107, $tp, $pref;
-	  $ban_count = $sql->db_Count("banlist");
-	  if($ban_count)
-	  {
-	    $vals = array();
-		$ip = $this->getip();
-		if ($ip != 'x.x.x.x')
+		global $sql, $e107, $tp, $pref;
+		$ban_count = $sql->db_Count("banlist");
+		if($ban_count)
 		{
-		  $tmp = explode(".",$ip);
-		  $vals[] = $tp -> toDB($_SERVER['REMOTE_ADDR'], true);
-		  $vals[] = $tmp[0].".".$tmp[1].".".$tmp[2].".*";
-		  $vals[] = $tmp[0].".".$tmp[1].".*.*";
-		}
+			$vals = array();
+			$ip = $this->getip();			// This will be in normalised IPV6 form
+			if ($ip != 'x.x.x.x')
+			{
+				$vals[] = $ip;				// Always look for exact match
+				if (strpos($ip,'0000:0000:0000:0000:0000:ffff:') === 0)
+				{	// It's an IPV4 address
+					$vals[] = substr($ip,0,-2).'*';
+					$vals[] = substr($ip,0,-4).'*';
+					$vals[] = substr($ip,0,-7).'*';		// Knock off colon as well here
+				}
+				else
+				{	// Its an IPV6 address - ban in blocks of 16 bits
+					$vals[] = substr($ip,0,-4).'*';
+					$vals[] = substr($ip,0,-9).'*';
+					$vals[] = substr($ip,0,-14).'*';
+				}
+			}
 
 		if(varsettrue($pref['enable_rdns']))
 		{
@@ -324,33 +333,166 @@ class e107
 	 * Get the current user's IP address
 	 *
 	 * @return string
+	 * returns the address in internal 'normalised' IPV6 format - so most code should continue to work provided the DB Field is big enougn
 	 */
-	function getip() {
-		if(!$this->_ip_cache){
-			if (getenv('HTTP_X_FORWARDED_FOR')) {
+	function getip() 
+	{
+		if(!$this->_ip_cache)
+		{
+			if (getenv('HTTP_X_FORWARDED_FOR')) 
+			{
 				$ip=$_SERVER['REMOTE_ADDR'];
-				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) {
-				$ip2 = array('#^0\..*#',
-					'#^127\..*#', 							// Local loopbacks
-					'#^192\.168\..*#', 						// RFC1918 - Private Network
-					'#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
-					'#^10\..*#', 							// RFC1918 - Private Network
-					'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP
-					'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
-					);
+				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
+				{
+					$ip2 = array('#^0\..*#',
+						'#^127\..*#', 							// Local loopbacks
+						'#^192\.168\..*#', 						// RFC1918 - Private Network
+						'#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
+						'#^10\..*#', 							// RFC1918 - Private Network
+						'#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP
+						'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
+						);
 					$ip = preg_replace($ip2, $ip, $ip3[1]);
 				}
-			} else {
+			} 
+			else 
+			{
 				$ip = $_SERVER['REMOTE_ADDR'];
 			}
-			if ($ip == "") {
+			if ($ip == "") 
+			{
 				$ip = "x.x.x.x";
 			}
-			$this->_ip_cache = $ip;
+			$this->_ip_cache = $this->ipEncode($ip);			// Normalise for storage
 		}
 		return $this->_ip_cache;
 	}
 
+  
+	// Encode an IP address to internal representation. Returns string if successful; FALSE on error
+	// Default separates fields with ':'; set $div='' to produce a 32-char packed hex string
+	function ipEncode($ip, $div=':')
+	{
+		$ret = '';
+		$divider = '';
+		if (strstr($ip,':'))
+		{   // Its IPV6 (could have an IP4 'tail')
+			if (strstr($ip,'.'))
+			{  // IPV4 'tail' to deal with
+				$temp = strrpos($ip,':') +1;
+				$ip4 = substr($ip,$temp);
+				$ip = substr($ip,0, $temp).$this->ip4_encode($ip4);
+			}
+			// Now 'normalise' the address
+			$temp = explode(':',$ip);
+			$s = 8 - count($temp);		// One element will of course be the blank
+			foreach ($temp as $f)
+			{
+				if ($f == '')
+				{
+					$ret .= $divider.'0000';		// Always put in one set of zeros for the blank
+					$divider = $div;
+					if ($s > 0) 
+					{
+						$ret .= str_repeat($div.'0000',$s);
+						$s = 0;
+					}
+				}
+				else
+				{
+					$ret .= $divider.sprintf('%04x',hexdec($f));
+					$divider = $div;
+				}
+			}
+			return $ret;
+		}
+		if (strstr($ip,'.'))
+		{  // Its IPV4
+			$ipa = explode('.', $ip);
+			$temp = sprintf('%02x%02x%s%02x%02x', $ipa[0], $ipa[1], $div, $ipa[2], $ipa[3]);
+			return str_repeat('0000'.$div,5).'ffff'.$div.$temp;
+		}
+		return FALSE;		// Unknown
+	}
+  
+  
+	// Takes an encoded IP address - returns a displayable one
+	// Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format
+	// Should handle most things that can be thrown at it.
+	function ipDecode($ip, $IP4Legacy = FALSE)
+	{
+		if (strstr($ip,'.'))
+		{
+			if ($IP4Legacy) return $ip;			// Assume its unencoded IPV4
+			$ipa = explode('.', $ip);
+			$ip = '0:0:0:0:0:ffff:'.sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
+		}
+		if (strstr($ip,'::')) return $ip;			// Assume its a compressed IPV6 address already
+		if ((strlen($ip) == 8) && !strstr($ip,':'))
+		{	// Assume a 'legacy' IPV4 encoding
+			$ip = '0:0:0:0:0:ffff:'.implode(':',str_split($ip,4));		// Turn it into standard IPV6
+		}
+		elseif ((strlen($ip) == 32) && !strstr($ip,':'))
+		{  // Assume a compressed hex IPV6
+			$ip = implode(':',str_split($ip,4));
+		}
+		if (!strstr($ip,':')) return FALSE;			// Return on problem - no ':'!
+		$temp = explode(':',$ip);
+		$z = 0;		// State of the 'zero manager' - 0 = not started, 1 = running, 2 = done
+		$ret = '';
+		$zc = 0;			// Count zero fields (not always required)
+		foreach ($temp as $t)
+		{
+			$v = hexdec($t);
+			if (($v != 0) || ($z == 2))
+			{
+				if ($z == 1)
+				{ // Just finished a run of zeros
+					$z++;
+					$ret .= ':';
+				}
+				if ($ret) $ret .= ':';
+				$ret .= sprintf('%x',$v);				// Drop leading zeros
+			}
+			else
+			{  // Zero field
+				$z = 1;
+				$zc++;
+			}
+		}
+		if ($z == 1)
+		{  // Need to add trailing zeros, or double colon
+			if ($zc > 1) $ret .= '::'; else $ret .= ':0';
+		}
+		if ($IP4Legacy && (substr($ret,0,7) == '::ffff:'))
+		{
+			$temp = explode(':',substr($ret,7));		// Should give us two 16-bit hex values
+			$z = array();
+			foreach ($temp as $t)
+			{
+				$zc = hexdec($t);
+				$z[] = intval($zc / 256);		// intval needed to avoid small rounding error
+				$z[] = $zc % 256;
+			}
+			$ret = implode('.',$z);
+		}
+		return $ret;
+	}
+
+
+	// Given a string which may be IP address, email address etc, tries to work out what it is
+	function whatIsThis($string)
+	{
+		if (strstr($string,'@')) return 'email';		// Email address
+		if (strstr($string,'http://')) return 'url';
+		if (strstr($string,'ftp://')) return 'ftp';
+		$string = strtolower($string);
+		if (str_replace(' ','',strtr($string,'0123456789abcdef.:*','                   ')) == '')	// Delete all characters found in ipv4 or ipv6 addresses, plus wildcards
+		{
+			return 'ip';
+		}
+		return 'unknown';
+	}
 
 	function get_host_name($ip_address) 
 	{

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-08-10 11:41:01 $
+|     $Revision: 1.18 $
+|     $Date: 2008-11-22 12:57:25 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -107,12 +107,12 @@ if (isset($_POST['deleteitems']) && ($action == 'comments'))
 unset($back_count);
 if (isset($_POST['deleteoldadmin']) && isset($_POST['rolllog_clearadmin']))
 {
-  $back_count = $_POST['rolllog_clearadmin'];
+  $back_count = intval($_POST['rolllog_clearadmin']);
   $next_action = 'confdel';
 }
 elseif (isset($_POST['deleteoldaudit']) && isset($_POST['rolllog_clearaudit']))
 {
-  $back_count = $_POST['rolllog_clearaudit'];
+  $back_count = intval($_POST['rolllog_clearaudit']);
   $next_action = 'auditdel';
 }
 
@@ -252,41 +252,41 @@ $last_noted_time = 0;
 $rl_cookiename = $pref['cookie_name']."_rl_admin";
 if (isset($_POST['updatefilters']) || isset($_POST['clearfilters']))
 {	// Need to put the filter values into the cookie
-  if (!isset($_POST['clearfilters']))
-  {	// Only update filter values from S_POST[] if 'clear filters' not active
-  $start_time = $_POST['starttimedate'] + $_POST['starttimehours']*3600 + $_POST['starttimemins']*60;
-  $start_enabled = isset($_POST['start_enabled']);
-  if (isset($_POST['timelength']))
-  {
-    $end_time = intval($_POST['timelength'])*60 + $start_time;
-  }
-  else
-  {
-	$end_time   = $_POST['endtimedate'] + $_POST['endtimehours']*3600 + $_POST['endtimemins']*60;
-  }
-  $end_enabled = isset($_POST['end_enabled']);
-  $user_filter = $_POST['roll_user_filter'];
-  $event_filter = $_POST['roll_event_filter'];
-  $pri_filter_cond = $_POST['roll_pri_cond'];
-  $pri_filter_val  = $_POST['roll_pri_val'];
-  $caller_filter   = $_POST['roll_caller_filter'];
-  $ipaddress_filter = $_POST['roll_ipaddress_filter'];
-  $downloadid_filter = $_POST['roll_downloadid_filter'];
-  }
-  $cookie_string = implode("|",array($start_time,$start_enabled,$end_time,$end_enabled,$user_filter,$event_filter,$pri_filter_cond,$pri_filter_val,$caller_filter,$ipaddress_filter,$downloadid_filter));
+	if (!isset($_POST['clearfilters']))
+	{	// Only update filter values from S_POST[] if 'clear filters' not active
+		$start_time = intval($_POST['starttimedate'] + $_POST['starttimehours']*3600 + $_POST['starttimemins']*60);
+		$start_enabled = isset($_POST['start_enabled']);
+		if (isset($_POST['timelength']))
+		{
+			$end_time = intval($_POST['timelength'])*60 + $start_time;
+		}
+		else
+		{
+			$end_time   = intval($_POST['endtimedate'] + $_POST['endtimehours']*3600 + $_POST['endtimemins']*60);
+		}
+		$end_enabled = isset($_POST['end_enabled']);
+		$user_filter = intval($_POST['roll_user_filter']);
+		$event_filter = $tp->toDB($_POST['roll_event_filter']);
+		$pri_filter_cond = $tp->toDB($_POST['roll_pri_cond']);
+		$pri_filter_val  = $tp->toDB($_POST['roll_pri_val']);
+		$caller_filter   = $tp->toDB($_POST['roll_caller_filter']);
+		$ipaddress_filter = $e107->ipEncode($tp->toDB($_POST['roll_ipaddress_filter']));
+		$downloadid_filter = $tp->toDB($_POST['roll_downloadid_filter']);
+	}
+	$cookie_string = implode("|",array($start_time,$start_enabled,$end_time,$end_enabled,$user_filter,$event_filter,$pri_filter_cond,$pri_filter_val,$caller_filter,$ipaddress_filter,$downloadid_filter));
 //  echo $cookie_string."<br />";
 // Create session cookie to store values
-  cookie($rl_cookiename,$cookie_string,0);    // Use session cookie
+	cookie($rl_cookiename,$cookie_string,0);    // Use session cookie
 }
 else
 {
 // Now try and get the filters from the cookie
-  if (isset($_COOKIE[$rl_cookiename]))
-    list($start_time,$start_enabled,$end_time,$end_enabled,$user_filter,$event_filter,$pri_filter_cond,$pri_filter_val, $caller_filter,$ipaddress_filter,$downloadid_filter) = explode("|",$_COOKIE[$rl_cookiename]);
-  if (isset($qs[1]) && isset($qs[2]) && ($qs[1] == 'user') && ctype_digit($qs[2]) && (intval($qs[2]) > 0))
-  {
-	$user_filter = intval($qs[2]);
-  }
+	if (isset($_COOKIE[$rl_cookiename]))
+		list($start_time,$start_enabled,$end_time,$end_enabled,$user_filter,$event_filter,$pri_filter_cond,$pri_filter_val, $caller_filter,$ipaddress_filter,$downloadid_filter) = explode("|",$_COOKIE[$rl_cookiename]);
+	if (isset($qs[1]) && isset($qs[2]) && ($qs[1] == 'user') && ctype_digit($qs[2]) && (intval($qs[2]) > 0))
+	{
+		$user_filter = intval($qs[2]);
+	}
 }
 
 $timelength = 5;
@@ -789,7 +789,7 @@ $sort_fields = array(
 		  break;
 		case 'ipfilter' :
 		  $text .= "<td class='forumheader3'>".RL_LAN_060."<br /><span class='smalltext'><em>".RL_LAN_061."</em></span></td>
-			<td class='forumheader3'><input class='tbox' type='text' name='roll_ipaddress_filter' size='20' value='".$ipaddress_filter."' maxlength='20' /></td>";
+			<td class='forumheader3'><input class='tbox' type='text' name='roll_ipaddress_filter' size='20' value='".$e107->ipDecode($ipaddress_filter)."' maxlength='20' /></td>";
 		  $filter_cols += 2;
 		  break;
 		case 'userfilter' :
@@ -923,13 +923,16 @@ function log_process($matches)
 		    // Look for pseudo-code for newlines, link insertion
 		    $val = preg_replace_callback("#\[!(\w+?)(=.+?){0,1}!]#",'log_process',$row['dblog_remarks']);
 		    break;
+		  case 'dblog_ip' :
+		    $val = $e107->ipDecode($row['dblog_ip']);
+			break;
 		  case 'comment_ip' :
-		    $val = $row['comment_ip'];
-		    if (strlen($val) == 8)
+		    $val = $e107->ipDecode($row['comment_ip']);
+/*		    if (strlen($val) == 8)		// New decoder should handle this automatically
 			{
 			  $hexip = explode('.', chunk_split($val, 2, '.'));
 			  $val = hexdec($hexip[0]). '.' . hexdec($hexip[1]) . '.' . hexdec($hexip[2]) . '.' . hexdec($hexip[3]);
-			}
+			}  */
 		    break;
 		  case 'comment_comment' :
 		    $val =$tp->text_truncate($row['comment_comment'],100,'...');	// Just display first bit of comment
