@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-11-14 06:01:06 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2008-11-22 12:57:25 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -92,7 +92,11 @@ if (isset($_POST['ban_ip']))
 		'whedit' - Editing whitelist
 		'whadd'	- Adding to whitelist
 */
-    $new_vals = array('banlist_ip' => $_POST['ban_ip']);
+	if ($e107->whatIsThis($new_ban_ip) == 'ip')
+	{
+		$new_ban_ip = $e107->IPencode($new_ban_ip);		// Normalise numeric IP addresses
+	}
+    $new_vals = array('banlist_ip' => $new_ban_ip);
 	if (isset($_POST['add_ban']))
 	{
 	  $new_vals['banlist_datestamp'] = time();
@@ -400,7 +404,7 @@ switch ($action)
 		<tr>
 		  <td style='width:30%' class='forumheader3'><input type='hidden' name='entry_intent' value='{$action}' />".BANLAN_5.": </td>
 		  <td style='width:70%' class='forumheader3'>
-		  <input class='tbox' type='text' name='ban_ip' size='40' value='".$banlist_ip."' maxlength='200' />{$rdns_warn}
+		  <input class='tbox' type='text' name='ban_ip' size='40' value='".$e107->ipDecode($banlist_ip)."' maxlength='200' />{$rdns_warn}
 		  </td>
 		</tr>";
 
@@ -587,7 +591,7 @@ switch ($action)
 				$val = "<a title='".constant('BANLAN_11'.$banlist_bantype)."'>".constant('BANLAN_10'.$banlist_bantype)."</a>";
 				break;
 			  case 'ip_reason' :
-			    $val = $banlist_ip."<br />".$fv.": ".$banlist_reason;
+			    $val = $e107->ipDecode($banlist_ip)."<br />".$fv.": ".$banlist_reason;
 			    break;
 			  case 'banlist_banexpires' :
 			    $val = ($banlist_banexpires ? strftime(BAN_TIME_FORMAT,$banlist_banexpires).(($banlist_banexpires < time()) ? ' ('.BANLAN_34.')' : '') 
@@ -596,7 +600,7 @@ switch ($action)
 			  case 'ban_options' :
 			    $val = "<a href='".e_SELF."?{$edit_action}-{$banlist_ip}'><img src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' /></a>
 					<input name='delete_ban_entry' type='image' src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' 
-					onclick=\" var r = jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$banlist_ip."]")."');
+					onclick=\" var r = jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$e107->ipDecode($banlist_ip)."]")."');
 					if (r) { document.getElementById('ban_form').action='".e_SELF."?{$del_action}-{$banlist_ip}'; } return r; \" />";
 				break;
 			  case 'banlist_notes' :
@@ -669,7 +673,7 @@ function parse_date($instr)
 // Return a message
 function process_csv($filename, $override_imports, $override_expiry, $separator = ',', $quote = '"')
 {
-  global $sql, $pref;
+  global $sql, $pref, $e107;
 //  echo "Read CSV: {$filename} separator: {$separator}, quote: {$quote}  override imports: {$override_imports}  override expiry: {$override_expiry}<br />";
   // Renumber imported bans
   if ($override_imports) $sql->db_Update('banlist', "`banlist_bantype`=".BAN_TYPE_TEMPORARY." WHERE `banlist_bantype` = ".BAN_TYPE_IMPORTED);
@@ -703,7 +707,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 		switch ($field_num)
 		{
 		  case 1 :		// IP address
-			$field_list['banlist_ip'] = $f;
+			$field_list['banlist_ip'] = $e107->ipEncode($f);
 		    break;
 		  case 2 :		// Original date of ban
 			$field_list['banlist_datestamp'] = parse_date($f);

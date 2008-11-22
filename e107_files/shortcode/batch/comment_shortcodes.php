@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-05-25 08:26:11 $
+|     $Revision: 1.7 $
+|     $Date: 2008-11-22 12:57:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -126,9 +126,9 @@ return $RATING;
 SC_END
 
 SC_BEGIN IPADDRESS
-global $IPADDRESS, $comrow;
+global $IPADDRESS, $comrow, $e107;
 //require_once(e_HANDLER."encrypt_handler.php");
-return (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".$comrow['comment_ip']."</a>" : "");
+return (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.".$comrow['user_id']."'>".COMLAN_330." ".$e107->ipDecode($comrow['comment_ip'])."</a>" : "");
 SC_END
 
 SC_BEGIN LEVEL
