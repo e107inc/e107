@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2008-10-19 21:17:58 $
+|     $Revision: 1.104 $
+|     $Date: 2008-11-22 10:19:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -25,32 +25,6 @@ $ue = new e107_user_extended;
 //define("US_DEBUG",TRUE);
 define("US_DEBUG",FALSE);
 
-
-if (isset($_POST['sub_news']))
-{
-    header("location:".e_BASE."submitnews.php");
-    exit;
-}
-
-if (isset($_POST['sub_link'])) {
-    header("location:".e_PLUGIN."links_page/links.php?submit");
-    exit;
-}
-
-if (isset($_POST['sub_download'])) {
-    header("location:".e_BASE."upload.php");
-    exit;
-}
-
-if (isset($_POST['sub_article'])) {
-    header("location:".e_BASE."subcontent.php?article");
-    exit;
-}
-
-if (isset($_POST['sub_review'])) {
-    header("location:".e_BASE."subcontent.php?review");
-    exit;
-}
 
 if (!USER) {
     header("location:".e_BASE."index.php");
