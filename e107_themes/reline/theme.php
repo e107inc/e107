@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |	$Source: /cvs_backup/e107_0.8/e107_themes/reline/theme.php,v $
-|	$Revision: 1.4 $
-|	$Date: 2008-11-11 13:26:49 $
-|	$Author: secretr $
+|	$Revision: 1.5 $
+|	$Date: 2008-11-22 15:09:56 $
+|	$Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 |	Photo Credits
@@ -332,7 +332,7 @@ function tablestyle($caption, $text, $mode){
 
 // Comment post style
 $sc_style['REPLY']['pre'] = "<tr><td class='forumheader'>";
-$sc_style['REPLY']['post'] = "";
+$sc_style['REPLY']['post'] = "</td>";
 
 $sc_style['SUBJECT']['pre'] = "<td class='forumheader'>";
 $sc_style['SUBJECT']['post'] = "</td></tr>";
@@ -346,7 +346,7 @@ $sc_style['LOCATION']['post'] = "<br />";
 
 $sc_style['RATING']['post'] = "<br /><br />";
 
-$sc_style['RATING']['post'] = "<br />";
+$sc_style['COMMENT']['post'] = "<br />";
 
 $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fborder' style='width: 95%'>
 <tr>
