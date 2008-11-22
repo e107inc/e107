@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2008-07-18 19:50:13 $
-|     $Author: e107coders $
+|     $Revision: 1.59 $
+|     $Date: 2008-11-22 15:16:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -218,7 +218,7 @@ $CHATBOXSTYLE = "
 
 // comment post style
 $sc_style['REPLY']['pre'] = "<tr><td class='forumheader'>";
-$sc_style['REPLY']['post'] = "";
+$sc_style['REPLY']['post'] = "</td>";
 
 $sc_style['SUBJECT']['pre'] = "<td class='forumheader'>";
 $sc_style['SUBJECT']['post'] = "</td></tr>";
@@ -232,7 +232,7 @@ $sc_style['LOCATION']['post'] = "<br />";
 
 $sc_style['RATING']['post'] = "<br /><br />";
 
-$sc_style['RATING']['post'] = "<br />";
+$sc_style['COMMENT']['post'] = "<br />";
 
 $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fborder' style='width: 95%'>
 <tr>
