@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-11-22 12:57:25 $
+|     $Revision: 1.21 $
+|     $Date: 2008-11-23 20:26:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -417,9 +417,9 @@ class e107
   
   
 	// Takes an encoded IP address - returns a displayable one
-	// Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format
+	// Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format, FALSE to display in standard IPV6 format
 	// Should handle most things that can be thrown at it.
-	function ipDecode($ip, $IP4Legacy = FALSE)
+	function ipDecode($ip, $IP4Legacy = TRUE)
 	{
 		if (strstr($ip,'.'))
 		{
