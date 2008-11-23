@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-11-22 12:57:25 $
+|     $Revision: 1.19 $
+|     $Date: 2008-11-23 20:26:23 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -41,6 +41,7 @@ unset($qs);
 
 require_once(e_ADMIN."auth.php");
 
+define ('AL_DATE_TIME_FORMAT', 'y-m-d  H:i:s');
 
 if (isset($_POST['setoptions'])) 
 {
@@ -884,7 +885,7 @@ function log_process($matches)
 		  switch ($cf)
 		  {
 		  case 'cf_datestring' :
-			$val = date("d-m-y  H:i:s",$row['dblog_datestamp']);  
+			$val = date(AL_DATE_TIME_FORMAT,$row['dblog_datestamp']);  
 			break;
 		  case 'cf_microtime' :
 			$val = date("H:i:s",intval($row['dblog_time']) % 86400).'.'.str_pad(100000*round($row['dblog_time']-floor($row['dblog_time']),6),6,'0');  
