@@ -21,6 +21,7 @@ class e107Form
 		$this->parms['action'] = e_SELF.'?'.e_QUERY;
 		$this->parms['class'] = 'fborder';
 		$this->txt = '';
+		$this->template = '';
 		$this->fields = array();
 	}
 
@@ -56,29 +57,41 @@ class e107Form
 		$text = $this->open();
 		foreach ($this->fields as $f)
 		{
-			$text .= $f->render();
+			$text .= $f->show();
 		}
 		$text .= $this->close();
 	}
 
-
-	function render($template, $redraw = false)
+	function render($redraw = false)
 	{
+		echo 'Rendering..';
 		$this->redraw = $redraw;
-		return preg_replace_callback("#\[-(.*?)-]#", array($this, 'replace_fields'), $template);
+		$text = $this->open();
+		$text .= preg_replace_callback("#\[-(.*?)-]#", array($this, 'replace_fields'), $this->template);
+		$text .= $this->close();
+		return $text;
 	}
 
-	function validateFields()
+	function validateFields($redraw=false)
 	{
 		$this->validated = true;
 		foreach($this->fields as $key => $field)
 		{
-			if($errorText = $field->validate())
+			$errorText = '';
+			if(!$errorText = $field->checkRequired($this))
+			{
+				$errorText = $field->validate();
+			}
+			if($errorText)
 			{
 				$field->config['errorText'] = $errorText; 
 				$this->redraw = true;
 				$this->validated = false;
 			}
+		}
+		if(!$this->validated && $redraw)
+		{
+			return $this->render(true);
 		}
 	}
 
@@ -94,47 +107,76 @@ class e107Form
 				return $this->close();
 				break;
 
-			default :
-				if(substr($matches[1], -6) == '_error')
+			default:
+//				print_a($this);
+				$tmp = explode('_', $matches[1], 2);
+				$fname = $tmp[0];
+				if(!isset($tmp[1])) { $tmp[1] = 'field'; }
+				switch ($tmp[1])
 				{
-					$fname = substr($matches[1], 0, -6);
-					if(isset($this->fields[$fname]->config['errorText']))
-					{
-						$errorText  = varset($this->fields[$fname]->config['errorTextPre']);
-						$errorText .= $this->fields[$fname]->config['errorText'];
-						$errorText .= varset($this->fields[$fname]->config['errorTextPost']);
-						return $errorText;
-					}
-					else
-					{
-						return '';
-					}
+					case 'error':
+					
+						if(isset($this->fields[$fname]->config['errorText']))
+						{
+							$errorText  = varset($this->fields[$fname]->config['errorTextPre']);
+							$errorText .= $this->fields[$fname]->config['errorText'];
+							$errorText .= varset($this->fields[$fname]->config['errorTextPost']);
+							return $errorText;
+						}
+						else
+						{
+							return '';
+						}
+						break;
+				
+					case 'id':
+						return "id='".(isset($this->fields[$fname]->id) ? $this->fields[$fname]->id : $this->fields[$fname]->name.'_id')."'";
+						break;
+
+					case 'label_id':
+						return "id='".(isset($this->fields[$fname]->label_id) ? $this->fields[$fname]->label_id : $this->fields[$fname]->name.'_label_id')."'";;
+						break;
+							
+					case 'label':
+						return $this->fields[$fname]->label;
+						break;
+					
+					case 'field':
+						return $this->fields[$fname]->render($this->redraw);
+						break;
 				}
-				else
-				{
-					return $this->fields[$matches[1]]->render($this->redraw);
-				}
-				break;
 		}
 	}
 }
 
 
-/*********************/
-/* BEGIN FORM FIELDS */
-/*********************/
+/********************************************************************************************/
+/* BEGIN FORM FIELDS ************************************************************************/
+/********************************************************************************************/
 class e107FormItem
 {
-	var $parms, $txt, $config;
+	var $parms, $txt, $config, $required, $label;
 
-	function e107FormItem($name='', $value=null)
+	function e107FormItem($name='', $label='', $parms=null)
 	{
 		$this->config = array('errorTextPre' => '<br />');
-		$this->parms = array();
+		$this->label = ($label == '' ? $name : $label);
+		$this->name = $name;
 		$this->parms = array( 'class' => 'tbox', 'name' => $name );
-		if(!is_null($value))
+		$this->required = false;
+		if(!is_null($parms))
 		{
-			$this->parms['value'] = $value;
+			if(is_array($parms))
+			{
+				foreach($parms as $p => $v)
+				{ 
+					$this->setParm($p, $v);
+				}
+			}
+			else
+			{
+				$this->parms['value'] = $value;
+			}
 		}
 		$this->init();
 	}
@@ -174,6 +216,16 @@ class e107FormItem
 		return '';
 	}
 
+	function checkRequired(&$form)
+	{
+		if($this->required === true)
+		{ 
+			if(!isset($_POST[$this->parms['name']]) || trim($_POST[$this->parms['name']]) == '')
+			{
+				return (varset($this->config['required']) ? $this->config['required'] : '*Required Field');
+			} 
+		}
+	}
 }
 
 class e107FormText extends e107FormItem
@@ -192,13 +244,6 @@ class e107FormText extends e107FormItem
 	
 	function validate()
 	{
-		if(varset($this->config['required']))
-		{ 
-			if(!isset($_POST[$this->parms['name']]) || trim($_POST[$this->parms['name']]) == '')
-			{
-				return $this->config['required'];
-			} 
-		}
 		
 		if(varset($this->config['regexp']))
 		{
@@ -475,95 +520,3 @@ class e107FormReset extends e107FormButton
 	}
 }
 
-
-class e107FormTable extends e107FormItem
-{
-	var $headerlist = array();
-	var $rowlist = array();
-
-	function open()
-	{
-		return '<table>';		// Add parameters to this
-	}
-
-	function close()
-	{
-		return '</table>';
-	}
-
-	function render()
-	{
-		$text = $this->open();
-		foreach ($this->headerlist as $h)
-		{
-			$text .= $h->render();
-		}
-		foreach ($this->rowlist as $r)
-		{
-			$text .= $r->render();
-		}
-		$text .= $this->close();
-	}
-}
-
-
-class e107FormRow extends e107FormItem
-{
-	var $rows = array();
-	function open()
-	{
-		return '<tr>';		// Add parameters to this
-	}
-
-	function close()
-	{
-		return '</tr>';
-	}
-
-	function render()
-	{
-		$text = $this->open();
-		foreach ($this->rows as $r)
-		{
-			$text .= $r->render();
-		}
-		$text .= $this->close();
-	}
-}
-
-
-class e107FormCell extends e107FormItem
-{
-	function open()
-	{
-		return '<td>';		// Add parameters to this
-	}
-
-	function close()
-	{
-		return '</td>';
-	}
-
-	function render()
-	{
-		$text = $this->open();
-		$text .= $this->txt;
-		$text .= $this->close();
-	}
-}
-
-
-// Header cell - same as ordinary cell apart from open() and close() text
-class e107FormHeaderCell extends e107FormCell
-{
-	function open()
-	{
-		return '<th>';		// Add parameters to this
-	}
-
-	function close()
-	{
-		return '</th>';
-	}
-
-}
