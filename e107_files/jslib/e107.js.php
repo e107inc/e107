@@ -8,8 +8,8 @@
  * e107 Javascript API
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-11-23 12:17:07 $
+ * $Revision: 1.9 $
+ * $Date: 2008-11-23 12:21:49 $
  * $Author: secretr $
  * 
 */
@@ -912,7 +912,7 @@ Object.extend(e107Helper, {
 	
 	//TODO Widget - e107Window#confirm;
     confirm: function(thetext) {
-    	confirm(thetext);
+    	return confirm(thetext);
     },
     
     autoConfirm: function(event) {
