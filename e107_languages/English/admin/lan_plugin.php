@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-08-11 20:21:17 $
+|     $Revision: 1.7 $
+|     $Date: 2008-11-23 20:47:55 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -50,12 +50,12 @@ define("EPL_ADLAN_36", "Parser code insert failed, incorrectly formatted.");
 
 define("EPL_ADLAN_37", "Upload plugin (.zip or .tar.gz format)");
 define("EPL_ADLAN_38", "Upload Plugin");
-define("EPL_ADLAN_39", "The file could not be uploaded as the ".e_PLUGIN." folder does not have the correct permissions - please CHMOD to 777 and re-upload the file.");
+define("EPL_ADLAN_39", "The file could not be uploaded as the ".e_PLUGIN." folder does not have the correct permissions - please change the write permissions and re-upload the file.");
 define("EPL_ADLAN_40", "Admin Message");
 define("EPL_ADLAN_41", "That file does not appear to be a valid .zip or .tar archive.");
 define("EPL_ADLAN_42", "An error has occurred, unable to un-archive the file");
 define("EPL_ADLAN_43", "Your plugin has been uploaded and unzipped, please scroll down to see your plugin in the list.");
-define("EPL_ADLAN_44", "Auto plugin upload and extraction is disabled as your plugins folder does not have the correct permissions - please CHMOD your e107_plugins folder to 777.");
+define("EPL_ADLAN_44", "Auto plugin upload and extraction is disabled as upload to your plugins folder is not allowed at present - if you want to be able to do this, please change the permissions on your ".e_PLUGIN." folder to allow uploads.");
 define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activate go to <a href='".e_ADMIN."menus.php'>your menus page</a>.");
 define("EPL_ADLAN_46", "PCLZIP extract error:");
 define("EPL_ADLAN_47", "PCLTAR extract error: ");
