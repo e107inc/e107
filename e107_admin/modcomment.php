@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/modcomment.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-11-14 06:01:06 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2008-11-23 21:11:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -93,9 +93,12 @@ if ($editid)
 	require_once("footer.php"); exit;
 }
 
-if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type='".$table."') AND comment_item_id=$id")) {
+if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type='".$table."') AND comment_item_id={$id} ORDER BY `comment_datestamp` ")) 
+{
 	$text .= "<tr><td class='forumheader3' style='text-align:center'>".MDCLAN_2.".</td></tr>";
-} else {
+} 
+else 
+{
 	$con = new convert;
 
 	$commentArray = $sql -> db_getList();
