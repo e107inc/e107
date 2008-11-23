@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-10-30 20:40:22 $
+|     $Revision: 1.17 $
+|     $Date: 2008-11-23 22:49:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -154,6 +154,7 @@ City, State, Country
   'admincss' => 'style.css',
   'developer' => '0',
   'download_email' => '0',
+  'log_page_accesses' => '0',
   'comments_disabled' => '0',
   'memberlist_access' => '253',
   'check_updates' => '0',

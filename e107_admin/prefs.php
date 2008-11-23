@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-08-17 15:18:05 $
+|     $Revision: 1.17 $
+|     $Date: 2008-11-23 22:49:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1031,36 +1031,44 @@ $text .= "</table></div>";
 //Advanced Features
 $text .= "<div id='advanced' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
+	<colgroup>
+	<col style='width:50%' />
+	<col style='width:50%' />
+	</colgroup>
 	<tr>
 	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_149."</td>
 	</tr>";
 
 	$text .= "<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_147.":<br /><span class='smalltext'>".PRFLAN_148."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='developer' value='1'".($pref['developer'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='developer' value='0'".(!$pref['developer'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_147.":<br /><span class='smalltext'>".PRFLAN_148."</span></td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('developer',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['developer'])."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_17."<br /><span class='smalltext'>&nbsp;</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='compress_output' value='1'".($pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='compress_output' value='0'".(!$pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_196."<br /><span class='smalltext'>&nbsp;</span></td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('log_page_accesses',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['log_page_accesses'])."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_150."<br /><span class='smalltext'>&nbsp;</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>{$auth_dropdown}</td>
+	<td class='forumheader3'>".PRFLAN_17."<br /><span class='smalltext'>&nbsp;</span></td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('compress_output',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['compress_output'])."
+	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_173."<br /><span class='smalltext'>&nbsp;</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='check_updates' value='1'".($pref['check_updates'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='check_updates' value='0'".(!$pref['check_updates'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	<td class='forumheader3'>".PRFLAN_150."<br /><span class='smalltext'>&nbsp;</span></td>
+	<td style='text-align:right' class='forumheader3'>{$auth_dropdown}</td>
+	</tr>
+
+	<tr>
+	<td class='forumheader3'>".PRFLAN_173."<br /><span class='smalltext'>&nbsp;</span></td>
+	<td style='text-align:right' class='forumheader3'>".
+	multi_radio('check_updates',array('1' => PRFLAN_112, '0' => PRFLAN_113),$pref['check_updates'])."
 	</td>
 	</tr>
 

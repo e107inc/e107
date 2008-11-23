@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-05 20:49:06 $
+|     $Revision: 1.12 $
+|     $Date: 2008-11-23 22:49:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,12 @@ if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
 
 global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $FOOTER, $e107;
+
+$pref['accessLog'] = '0';			// Temporary flag to determine log format
+									// 1 - text format
+									// 2 - CSV format
+									// 5 - extended text format
+									// 6 - extended CSV format
 
 //
 // SHUTDOWN SEQUENCE
@@ -46,17 +52,20 @@ global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $myS
 // A Ensure sql and traffic objects exist
 //
 
-if(!is_object($sql)){
+if(!is_object($sql))
+{
 	// reinstigate db connection if another connection from third-party script closed it ...
 	$sql = new db;
 	$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
-if (!is_object($eTraffic)) {
+if (!is_object($eTraffic)) 
+{
 	$eTraffic = new e107_traffic;
 	$eTraffic->Bump('Lost Traffic Counters');
 }
 
-if(varset($e107_popup)!=1){
+if(varset($e107_popup)!=1)
+{
 	//
 	// B.1 Clear cache (admin-only)
 	//
@@ -76,6 +85,11 @@ if(varset($e107_popup)!=1){
 	$dbPercent  = number_format($dbPercent,0);	// DB as percent of clock
 	$memuse     = $e107->get_memory_usage();		// Memory at end, in B/KB/MB/GB ;)
 	$rinfo = '';
+	$logLine = '';
+	if ($pref['log_page_accesses'])
+	{	// Collect the first batch of data to log
+		$logLine.= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S',$now)."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$memuse."'";
+	}
 
 	if ( function_exists( 'getrusage' ) ) 
 	{
@@ -116,6 +130,14 @@ if(varset($e107_popup)!=1){
 	if($pref['displaysql']){ $rinfo .= CORE_LAN15.$sql -> db_QueryCount().". "; }
 	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= CORE_LAN16.$memuse; }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
+
+	if ($pref['log_page_accesses'])
+	{	// Need to log the page info to a text file as CSV data
+		$logname = e_FILE."logs/logd_".date("z.Y", time()).".csv";
+		$logfp = fopen($logname, 'a+');
+		fwrite($logfp, $logLine."\n"); 
+		fclose($logfp);
+	}
 
 	if (function_exists('theme_renderinfo'))
 	{
