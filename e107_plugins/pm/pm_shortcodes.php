@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2007-09-22 17:41:20 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-24 18:06:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -350,10 +350,15 @@ if($pm_info['pm_to'] == USERID)
 SC_END
 
 SC_BEGIN SEND_PM_LINK
+$e107 = e107::getInstance();
 $pm_outbox = pm_getInfo('outbox');
 if($pm_outbox['outbox']['filled'] < 100)
 {
-	return "<a href='".e_PLUGIN_ABS."pm/pm.php?send'>".PM_SEND_LINK."</a>";
+	$e107->url->core = false;
+	if($e107->url->createUrl('pm','main','send'))
+	{
+		return "<a href='{$e107->url->link}'>".PM_SEND_LINK."</a>";
+	}
 }
 return "";
 SC_END
