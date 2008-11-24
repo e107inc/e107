@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2008-11-02 21:28:05 $
-|     $Author: e107steved $
+|     $Revision: 1.50 $
+|     $Date: 2008-11-24 00:36:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -86,6 +86,7 @@ class e107plugin
 	var $plug_vars;
 	var $current_plug;
 	var $parsed_plugin;
+	var $module = array();
 
 	function e107plugin()
 	{
@@ -257,13 +258,32 @@ class e107plugin
 		return $getinfo_results[$id];
 	}
 
+	function manage_extended_field($action, $field_name, $field_type, $field_default, $field_source)
+	{
+		if(!isset($this->module['ue']))
+		{
+			include_once(e_HANDLER.'user_extended_class.php');
+			$this->module['ue'] = new e107_user_extended;
+		}
+		$type = constant($field_type);
+		
+		if($action == 'add')
+		{
+			return $this->module['ue']->user_extended_add_system($field_name, $type, $field_default, $field_source);
+		}
+		
+		if ($action == 'remove')
+		{
+			return $this->module['ue']->user_extended_remove($field_name, $field_name);
+		}
+	}
 
 
 	function manage_userclass($action, $class_name, $class_description)
 	{
 		global $sql, $tp;
-		$class_name = $tp -> toDB($class_name, true);
-		$class_description = $tp -> toDB($class_description, true);
+		$class_name = $tp->toDB($class_name, true);
+		$class_description = $tp->toDB($class_description, true);
 		if ($action == 'add')
 		{
 			$i = 1;
@@ -702,7 +722,6 @@ class e107plugin
 		  $canContinue = FALSE;
 		}
 
-
 		// First of all, see if there's a language file specific to install
 		if (isset($plug_vars['installLanguageFile']) && isset($plug_vars['installLanguageFile']['@attributes']['filename']))
 		{
@@ -947,7 +966,50 @@ class e107plugin
 				}
 			}
 		}
-		
+
+		//Extended user fields
+		if(isset($plug_vars['extendedField']))
+		{
+			$efield_list = (isset($plug_vars['extendedField'][0]) ? $plug_vars['extendedField'] : array($plug_vars['extendedFields']));
+			foreach($efield_list as $efield)
+			{
+				$attrib = $efield['@attributes'];
+				$attrib['default'] = varset($attrib['default']);
+				$attrib['name'] = 'plugin_'.$plug_vars['folder'].'_'.$attrib['name'];
+				$source = 'plugin_'.$plug_vars['folder'];
+				
+				switch($function)
+				{
+					case 'install':
+					case 'upgrade':
+						// Add all active extended fields
+						if(!isset($attrib['active']) || $attrib['active'] == 'true')
+						{
+							$txt .= 'Adding extended field: '.$attrib['name'].' ... ';
+							$result = $this->manage_extended_field('add', $attrib['name'], $attrib['type'], $attrib['default'], $source);
+							$txt .= ($result ? LAN_CREATED : LAN_CREATED_FAILED).'<br />';
+						}
+
+						//If upgrading, removing any inactive extended fields
+						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
+						{
+							$txt .= 'Removing extended field: '.$attrib['name'].' ... ';
+							$result = $this->manage_extended_field('remove', $attrib['name'], $source);
+							$txt .= ($result ? LAN_DELETED : LAN_DELETED_FAILED).'<br />';
+						}
+						break;
+
+					//If uninstalling, remove all extended fields (active or inactive)
+					case 'uninstall':
+						$txt .= 'Removing extended field: '.$attrib['name'].' ... ';
+						$result = $this->manage_extended_field('remove', $attrib['name'], $source);
+						$txt .= ($result ? LAN_DELETED : LAN_DELETED_FAILED).'<br />';
+
+					break;
+				}
+			}
+		}
+
 		//If any commentIDs are configured, we need to remove all comments on uninstall
 		if($function == 'uninstall' && isset($plug_vars['commentID']))
 		{

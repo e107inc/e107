@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-07-04 20:59:37 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2008-11-24 00:36:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -222,9 +222,9 @@ class e107_user_extended
 
 
 	// For use by plugins to add extended user fields and won't be visible anywhere else
-	function user_extended_add_system($name, $type, $default = '')
+	function user_extended_add_system($name, $type, $default = '', $source = '_system_')
 	{
-	  return $this->user_extended_add($name, '_system_', $type, '', '', $default, 0, 255, 255, 255, 0, 0);
+	  return $this->user_extended_add($name, '_system_', $type, $source, '', $default, 0, 255, 255, 255, 0, 0);
 	}
 
 
