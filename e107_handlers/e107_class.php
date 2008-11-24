@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-11-24 18:06:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.23 $
+|     $Date: 2008-11-24 20:18:24 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,12 +44,12 @@ class e107
 	 */
 	function e107($e107_paths, $e107_root_path)
 	{
-    if(!defsettrue('e107_php4_check'))
-    {
-      echo ('Fatal error! You are not allowed to direct instantinate an object for singleton class! Please use e107::getInstance()');
-      exit();
-    }
-    $this->_init($e107_paths, $e107_root_path);
+        if(defsettrue('e107_php4_check'))
+        {
+            echo ('Fatal error! You are not allowed to direct instantinate an object for singleton class! Please use e107::getInstance()');
+            exit();
+        }
+        $this->_init($e107_paths, $e107_root_path);
 	}
 	
 	function _init($e107_paths, $e107_root_path)
@@ -70,8 +70,8 @@ class e107
     
     if(!$instance)
     {
-      define('e107_php4_check', true);
-      $instance[0] = new e107();
+        $instance[0] = new e107();
+        define('e107_php4_check', true);
     }
     return $instance[0];
   }

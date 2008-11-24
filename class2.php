@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2008-11-24 18:06:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.72 $
+|     $Date: 2008-11-24 20:18:59 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 //
@@ -224,8 +224,8 @@ e107_require_once(e_HANDLER.'e107Url.php');
 $e107->url = new eURL;
 
 e107_require_once(e_HANDLER.'e_parse_class.php');
-$tp = new e_parse;
-$e107->tp = &$tp;
+$e107->tp = new e_parse;
+$tp = &$e107->tp;
 
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
