@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-09-04 20:07:19 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2008-11-24 02:01:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -118,20 +118,25 @@ if($pref['comments_disabled'] == 1)
 }
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_item['news_comment_total'] = $sql->db_Select("comments", "*", "comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
-if ($news_item['news_comment_total']) {
-	$sql->db_Select("comments", "comment_datestamp", "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
+if ($pref['comments_icon'] && $news_item['news_comment_total'])
+{
+	$sql->db_Select('comments', 'comment_datestamp', "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
 	list($comments['comment_datestamp']) = $sql->db_Fetch();
 	$latest_comment = $comments['comment_datestamp'];
-	if ($latest_comment > USERLV ) {
+	if ($latest_comment > USERLV )
+	{
 		$NEWIMAGE = $param['image_new_small'];
-	} else {
+	}
+	else
+	{
 		$NEWIMAGE = $param['image_nonew_small'];
 	}
-} else {
+}
+else
+{
 	$NEWIMAGE = $param['image_nonew_small'];
 }
-return ($news_item['news_allow_comments'] ? $param['commentoffstring'] : "".($pref['comments_icon'] ? $NEWIMAGE : "")." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total']."</a>");
+return ($news_item['news_allow_comments'] ? $param['commentoffstring'] : ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>');
 SC_END
 
 SC_BEGIN NEWSCOMMENTLINK
