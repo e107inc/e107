@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-07-28 20:16:14 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-11-24 18:06:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -47,14 +47,14 @@ $sc_style['NEWPM_ANIMATE']['post'] = "</a>";
 if(!isset($pm_menu_template))
 {
 	$pm_menu_template = "
-	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
-	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PM_25."</a>
+	<a href='{URL=plugin::pm::main::box=inbox}'>".PM_INBOX_ICON."</a>
+	<a href='{URL=plugin::pm::main::box=inbox}'>".LAN_PM_25."</a>
 	{NEWPM_ANIMATE}
 	<br />
 	{INBOX_TOTAL} ".LAN_PM_36.", {INBOX_UNREAD} ".LAN_PM_37." {INBOX_FILLED}
 	<br />
-	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".PM_OUTBOX_ICON."</a>
-	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".LAN_PM_26."</a><br />
+	<a href='{URL=plugin::pm::main::box=outbox}'>".PM_OUTBOX_ICON."</a>
+	<a href='{URL=plugin::pm::main::box=outbox}'>".LAN_PM_26."</a><br />
 	{OUTBOX_TOTAL} ".LAN_PM_36.", {OUTBOX_UNREAD} ".LAN_PM_37." {OUTBOX_FILLED}
 	{SEND_PM_LINK}
 	";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2008-11-21 11:08:53 $
-|     $Author: secretr $
+|     $Revision: 1.71 $
+|     $Date: 2008-11-24 18:06:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -177,11 +177,13 @@ if(!isset($ADMIN_DIRECTORY))
 }
 
 //
-// clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
+// clever stuff that figures out where the paths are on the fly.. no more need for hard-coded e_HTTP :)
 //
 e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
-$e107 = new e107($e107_paths, realpath(dirname(__FILE__)));
+$e107 = e107::getInstance();
+$e107->_init($e107_paths, realpath(dirname(__FILE__)));
+//$e107 = new e107($e107_paths, realpath(dirname(__FILE__)));
 
 $inArray = array("'", ";", "/**/", "/UNION/", "/SELECT/", "AS ");
 if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
@@ -218,8 +220,12 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 // Start the parser; use it to grab the full query string
 //
 
+e107_require_once(e_HANDLER.'e107Url.php');
+$e107->url = new eURL;
+
 e107_require_once(e_HANDLER.'e_parse_class.php');
 $tp = new e_parse;
+$e107->tp = &$tp;
 
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);

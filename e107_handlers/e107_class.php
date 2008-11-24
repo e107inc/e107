@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-11-23 20:26:23 $
-|     $Author: e107steved $
+|     $Revision: 1.22 $
+|     $Date: 2008-11-24 18:06:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,6 +34,7 @@ class e107
 	var $relative_base_path;
 	var $_ip_cache;
 	var $_host_name_cache;
+
 	/**
 	 * e107 class constructor
 	 *
@@ -43,11 +44,37 @@ class e107
 	 */
 	function e107($e107_paths, $e107_root_path)
 	{
+    if(!defsettrue('e107_php4_check'))
+    {
+      echo ('Fatal error! You are not allowed to direct instantinate an object for singleton class! Please use e107::getInstance()');
+      exit();
+    }
+    $this->_init($e107_paths, $e107_root_path);
+	}
+	
+	function _init($e107_paths, $e107_root_path)
+	{
 		$this->e107_dirs = $e107_paths;
 		$this->set_paths();
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
 	}
 
+  /**
+   * Get instance - php4 singleton implementation
+   *
+   * @return singleton object
+   */
+  function &getInstance()
+  {
+    static $instance = array();//it's array because of an odd PHP 4 bug
+    
+    if(!$instance)
+    {
+      define('e107_php4_check', true);
+      $instance[0] = new e107();
+    }
+    return $instance[0];
+  }
 
 	function set_base_path()
 	{
