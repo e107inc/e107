@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-11-25 16:26:02 $
+|     $Revision: 1.3 $
+|     $Date: 2008-11-25 17:02:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,11 @@ class eURL
 			$this->_link_handlers[$handlerId] = $this->_initHandler($section, $urlType);
 		}
 
-		return (string )call_user_func($this->_link_handlers[$handlerId], $urlItems);
+		if($link = call_user_func($this->_link_handlers[$handlerId], $urlItems))
+		{
+			return $link;
+		}
+		return '#url-not-found';
 	}
 
 	function _initHandler($section, $urlType)
