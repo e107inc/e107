@@ -1,4 +1,19 @@
 <?php
+/*
+* e107 website system
+*
+* Copyright ( c ) 2001-2008 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Custom forum install/uninstall/update routines
+*
+* $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_management.php,v $
+* $Revision: 1.2 $
+* $Date: 2008-11-25 19:58:32 $
+* $Author: mcfly_e107 $
+*
+*/
 
 class forum_management
 {
@@ -12,9 +27,9 @@ class forum_management
 	{
 		global $sql;
 		echo "Setting all user_forums to 0 <br />";
-		$sql -> db_Update("user", "user_forums='0'");		
+		$sql -> db_Update("user", "user_forums='0'");
 	}
-	
+
 	function forum_uninstatll(&$var)
 	{
 		global $sql;
@@ -26,9 +41,8 @@ class forum_management
 		global $sql;
 		if(version_compare($var['current_plug']['plugin_version'], "1.2", "<"))
 		{
-			$qry = "ALTER TABLE #forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;"
+			$qry = "ALTER TABLE #forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;";
 			$sql->db_Select_gen($qry);
 		}
 	}
 }
-
