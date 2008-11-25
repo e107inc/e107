@@ -1,15 +1,15 @@
 <?php
-// $Id: main.php,v 1.2 2008-11-25 16:26:03 mcfly_e107 Exp $
+// $Id: main.php,v 1.3 2008-11-25 17:38:56 mcfly_e107 Exp $
 function url_pm_main($parms)
 {
-	if(isset($parms['box']))
+	switch($parms['f'])
 	{
-		return e_PLUGIN_ABS."pm/pm.php?{$parms['box']}";
-	}
+		case 'box':
+			return e_PLUGIN_ABS."pm/pm.php?{$parms['box']}";
+			break;
 
-	if(isset($parms['send']))
-	{
-		return e_PLUGIN_ABS."pm/pm.php?send";
+		case 'send':
+			return e_PLUGIN_ABS."pm/pm.php?send";
+			break;
 	}
-
 }

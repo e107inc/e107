@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-11-25 16:26:02 $
+|     $Revision: 1.8 $
+|     $Date: 2008-11-25 17:38:56 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -354,10 +354,8 @@ $pm_outbox = pm_getInfo('outbox');
 if($pm_outbox['outbox']['filled'] < 100)
 {
 	$e107 = e107::getInstance();
-	if($link = $e107->url->getUrl('pm','main','send'))
-	{
-		return "<a href='{$link}'>".PM_SEND_LINK."</a>";
-	}
+	$link = $e107->url->getUrl('pm','main',array('f' => 'send'));
+	return "<a href='{$link}'>".PM_SEND_LINK."</a>";
 }
 return "";
 SC_END
@@ -372,7 +370,7 @@ if($pm_prefs['animate'])
 		return NEWPM_ANIMATION;
 	}
 }
-return "";
+return '';
 SC_END
 
 SC_BEGIN PM_NEXTPREV
