@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-11-25 14:36:33 $
+|     $Revision: 1.25 $
+|     $Date: 2008-11-25 16:26:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -42,16 +42,15 @@ class e107
 	 * @param string $e107_root_path
 	 * @return e107
 	 */
-	function e107($e107_paths, $e107_root_path)
+	function e107()
 	{
 		if(defined('e107_php4_check') && constant('e107_php4_check'))
 		{
-            echo ('Fatal error! You are not allowed to direct instantinate an object for singleton class! Please use e107::getInstance()');
-            exit();
-        }
-        $this->_init($e107_paths, $e107_root_path);
+			echo ('Fatal error! You are not allowed to direct instantinate an object for singleton class! Please use e107::getInstance()');
+			exit();
+		}
 	}
-	
+
 	function _init($e107_paths, $e107_root_path)
 	{
 		$this->e107_dirs = $e107_paths;
@@ -67,7 +66,7 @@ class e107
   function &getInstance()
   {
     static $instance = array();//it's array because of an odd PHP 4 bug
-    
+
     if(!$instance)
     {
         $instance[0] = new e107();
@@ -228,7 +227,7 @@ class e107
 	 * Check if current user is banned
 	 *
 	 */
-	function ban() 
+	function ban()
 	{
 		global $sql, $e107, $tp, $pref;
 		$ban_count = $sql->db_Count("banlist");
@@ -297,7 +296,7 @@ class e107
 //	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
 		  return TRUE;
 		}
-		
+
 		// Found banlist entry in table here
 		if (($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
 		{	// Ban has expired - delete from DB
@@ -322,11 +321,11 @@ class e107
 		}
 		$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,'BAN_03','LAN_AUDIT_LOG_003',$query,FALSE,LOG_TO_ROLLING);
 		exit();
-	  }  
+	  }
 //	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
 	  return TRUE;			// Email address OK
 	}
-	
+
 
 	// Add an entry to the banlist. $bantype = 1 for manual, 2 for flooding, 4 for multiple logins
 	// Returns TRUE if ban accepted.
@@ -340,7 +339,7 @@ class e107
 	  if (!$ban_ip) return FALSE;
 	  // See if the address is in the whitelist
 	  if ($sql->db_Select('banlist','*','`banlist_bantype` >= '.BAN_TYPE_WHITELIST))
-	  { // Got a whitelist entry for this 
+	  { // Got a whitelist entry for this
 	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"BANLIST_11",'LAN_AL_BANLIST_11',$ban_ip,FALSE,LOG_TO_ROLLING);
 		return FALSE;
 	  }
@@ -362,14 +361,14 @@ class e107
 	 * @return string
 	 * returns the address in internal 'normalised' IPV6 format - so most code should continue to work provided the DB Field is big enougn
 	 */
-	function getip() 
+	function getip()
 	{
 		if(!$this->_ip_cache)
 		{
-			if (getenv('HTTP_X_FORWARDED_FOR')) 
+			if (getenv('HTTP_X_FORWARDED_FOR'))
 			{
 				$ip=$_SERVER['REMOTE_ADDR'];
-				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
+				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3))
 				{
 					$ip2 = array('#^0\..*#',
 						'#^127\..*#', 							// Local loopbacks
@@ -381,12 +380,12 @@ class e107
 						);
 					$ip = preg_replace($ip2, $ip, $ip3[1]);
 				}
-			} 
-			else 
+			}
+			else
 			{
 				$ip = $_SERVER['REMOTE_ADDR'];
 			}
-			if ($ip == "") 
+			if ($ip == "")
 			{
 				$ip = "x.x.x.x";
 			}
@@ -395,7 +394,7 @@ class e107
 		return $this->_ip_cache;
 	}
 
-  
+
 	// Encode an IP address to internal representation. Returns string if successful; FALSE on error
 	// Default separates fields with ':'; set $div='' to produce a 32-char packed hex string
 	function ipEncode($ip, $div=':')
@@ -419,7 +418,7 @@ class e107
 				{
 					$ret .= $divider.'0000';		// Always put in one set of zeros for the blank
 					$divider = $div;
-					if ($s > 0) 
+					if ($s > 0)
 					{
 						$ret .= str_repeat($div.'0000',$s);
 						$s = 0;
@@ -441,8 +440,8 @@ class e107
 		}
 		return FALSE;		// Unknown
 	}
-  
-  
+
+
 	// Takes an encoded IP address - returns a displayable one
 	// Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format, FALSE to display in standard IPV6 format
 	// Should handle most things that can be thrown at it.
@@ -521,9 +520,9 @@ class e107
 		return 'unknown';
 	}
 
-	function get_host_name($ip_address) 
+	function get_host_name($ip_address)
 	{
-		if(!$this->_host_name_cache[$ip_address]) 
+		if(!$this->_host_name_cache[$ip_address])
 		{
 			$this->_host_name_cache[$ip_address] = gethostbyaddr($ip_address);
 		}
@@ -533,7 +532,7 @@ class e107
 
 	// Return a memory value formatted helpfully
 	// $dp overrides the number of decimal places displayed - realistically, only 0..3 are sensible
-	function parseMemorySize($size, $dp = 2) 
+	function parseMemorySize($size, $dp = 2)
 	{
 		if (!$size) { $size = 0; }
 		if ($size < 4096)
@@ -561,8 +560,8 @@ class e107
 		}
 		return (number_format($size, $dp).$memunit);
 }
-	
-	
+
+
 	/**
 	 * Get the current memory usage of the code
 	 *
@@ -576,8 +575,8 @@ class e107
 		  // With PHP>=5.2.0, can show peak usage as well
 	      if (function_exists("memory_get_peak_usage")) $ret .= '/'.$this->parseMemorySize(memory_get_peak_usage(TRUE));
 		  return $ret;
-		} 
-		else 
+		}
+		else
 		{
 		  return ('Unknown');
 		}
