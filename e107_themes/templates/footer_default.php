@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-11-23 22:49:52 $
+|     $Revision: 1.13 $
+|     $Date: 2008-11-25 20:12:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,12 +20,6 @@ if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
 
 global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $FOOTER, $e107;
-
-$pref['accessLog'] = '0';			// Temporary flag to determine log format
-									// 1 - text format
-									// 2 - CSV format
-									// 5 - extended text format
-									// 6 - extended CSV format
 
 //
 // SHUTDOWN SEQUENCE
