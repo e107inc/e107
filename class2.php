@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2008-11-24 20:18:59 $
-|     $Author: secretr $
+|     $Revision: 1.73 $
+|     $Date: 2008-11-25 16:26:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -277,17 +277,20 @@ define("MPREFIX", $mySQLprefix);
 
 e107_require_once(e_HANDLER."mysql_class.php");
 
-$sql =& new db;
+$e107->sql =& new db;
+$sql = &$e107->sql;
+
 $sql->db_SetErrorReporting(FALSE);
 
 $sql->db_Mark_Time('Start: SQL Connect');
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-$sql2 =& new db; // create after the initial connection. 
+$sql2 =& new db; // create after the initial connection.
 $sql->db_Mark_Time('Start: Prefs, misc tables');
 
 
 require_once(e_HANDLER.'admin_log_class.php');
-$admin_log = new e_admin_log();
+$e107->admin_log =& new e_admin_log;
+$admin_log = &$e107->admin_log;
 
 if ($merror === "e1") {
 	message_handler("CRITICAL_ERROR", 6, ": generic, ", "class2.php");
@@ -437,7 +440,7 @@ if ($pref['user_tracking'] == "session")
 	$_SESSION['challenge'] = sha1(time().session_id());		// Create a unique challenge string for CHAP login
   }
   $ubrowser = md5('E107'.$_SERVER['HTTP_USER_AGENT']);
-  if (!isset($_SESSION['ubrowser'])) 
+  if (!isset($_SESSION['ubrowser']))
   {
     $_SESSION['ubrowser'] = $ubrowser;
   }
@@ -563,14 +566,16 @@ e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
 $tp->initCharset();				// Now we know the site CHARSET, define how to handle utf-8 as necessary
 
-
-if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref['multilanguage'] && !$pref['multilanguage_subdomain']){
+if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref['multilanguage'] && !$pref['multilanguage_subdomain'])
+{
 	list($clc) = explode("_",CORE_LC);
 	define("e_LAN", strtolower($clc));
 	define("e_LANQRY", "[".e_LAN."]");
 	unset($clc);
-}else{
-    define("e_LAN", FALSE);
+}
+else
+{
+	define("e_LAN", FALSE);
 	define("e_LANQRY", FALSE);
 }
 $sql->db_Mark_Time('(Start: Pref/multilang done)');
@@ -581,13 +586,16 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 $sql -> db_Mark_Time('Start: Misc resources. Online user tracking, cache');
 
 // cache class
-$e107cache = new ecache;
+$e107->ecache = new ecache;
+$e107cache = &$e107->ecache;
 
 e107_require_once(e_HANDLER."override_class.php");
-$override=new override;
+$e107->override = new override;
+$override = &$e107->override;
 
 e107_require_once(e_HANDLER."event_class.php");
-$e_event=new e107_event;
+$e107->e_event = new e107_event;
+$e_event = &$e107->e_event;
 
 if (isset($pref['notify']) && $pref['notify'] == true) {
 	e107_require_once(e_HANDLER.'notify_class.php');
@@ -725,13 +733,15 @@ if (!class_exists('e107_table')) {
 }
 //#############################################################
 
-$ns=new e107table;
+
+$e107->ns = new e107table;
+$ns = &$e107->ns;
 
 $e107->ban();
 
 if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']))
 {
-	if(force_userupdate()) 
+	if(force_userupdate())
 	{
 	  header("Location: ".e_BASE."usersettings.php?update");
 	  exit();
@@ -784,14 +794,14 @@ if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") 
 
 $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
 
-if (isset($_POST['userlogin']) || isset($_POST['userlogin_x'])) 
+if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 {
 	e107_require_once(e_HANDLER."login.php");
 	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'],varset($_POST['hashchallenge'],''));
 }
 
 if ((e_QUERY == 'logout') || (($pref['user_tracking'] == "session") && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser)))
-//if (e_QUERY == 'logout') 
+//if (e_QUERY == 'logout')
 {
   if (USER)
   {
@@ -885,15 +895,15 @@ $sql->db_Mark_Time('(Start: Find/Load Theme)');
 //----------------------------
 // The following files are assumed to use admin theme:
 //	  1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
-// 	  2. any plugin file starting with 'admin_' 
-// 	  3. any plugin file in a folder called admin/ 
+// 	  2. any plugin file starting with 'admin_'
+// 	  3. any plugin file in a folder called admin/
 // 	  4. any file that specifies $eplug_admin = TRUE;
 //
 // e_SELF has the full HTML path
 $inAdminDir = FALSE;
 $isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
 $e107Path = str_replace($e107->base_path, "", e_SELF);				// Knock off the initial bits
-if	( 
+if	(
 		 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 								// Core admin directory
 	  || ($isPluginDir && (strpos(e_PAGE,"admin_") === 0 || strpos($e107Path, "admin/") !== FALSE)) // Plugin admin file or directory
 	  || (varsettrue($eplug_admin))																	// Admin forced
@@ -907,17 +917,17 @@ if(!defined("THEME"))
 {
 	if ($inAdminDir && varsettrue($pref['admintheme'])&& (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE))
 	{
-/*	  if (strpos(e_SELF, "newspost.php") !== FALSE) 
+/*	  if (strpos(e_SELF, "newspost.php") !== FALSE)
 	  {
 		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");		MAINTHEME no longer used in core distribution
 	  }  */
 	  checkvalidtheme($pref['admintheme']);
-	} 
-	elseif (USERTHEME !== FALSE && USERTHEME != "USERTHEME") 
+	}
+	elseif (USERTHEME !== FALSE && USERTHEME != "USERTHEME")
 	{
 	  checkvalidtheme(USERTHEME);
-	} 
-	else 
+	}
+	else
 	{
 	  checkvalidtheme($pref['sitetheme']);
 	}
@@ -930,16 +940,16 @@ if(!defined("THEME"))
 // here we USE the theme
 if ($inAdminDir)
 {
-  if (file_exists(THEME.'admin_theme.php')) 
+  if (file_exists(THEME.'admin_theme.php'))
   {
 	require_once(THEME.'admin_theme.php');
-  } 
-  else 
+  }
+  else
   {
 	require_once(THEME."theme.php");
   }
-} 
-else 
+}
+else
 {
   require_once(THEME."theme.php");
 }
@@ -959,8 +969,8 @@ if ($inAdminDir)
 {
   e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
   e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
-} 
-elseif (!in_array("lan_".e_PAGE,$exclude_lan) && !$isPluginDir) 
+}
+elseif (!in_array("lan_".e_PAGE,$exclude_lan) && !$isPluginDir)
 {
   e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
   e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
@@ -982,7 +992,7 @@ if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 
 if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 
-if ($pref['antiflood1'] == 1) 
+if ($pref['antiflood1'] == 1)
 {
   define('FLOODPROTECT', TRUE);
   define('FLOODTIMEOUT', max(varset($pref['antiflood_timeout'],10),3));
@@ -1068,7 +1078,7 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 	$lans = explode(",", e_LANLIST);
 	$varList = explode(",", trim($var));
-	
+
 	rsort($varList); // check the language first.(ie. numbers come last)
 	foreach($varList as $v)
 	{
@@ -1182,19 +1192,20 @@ function get_user_data($uid, $extra = "")
 			}
 		}
 	}
-	
+
 	//===========================================================
 	// Now look up the 'inherited' user classes
 	global $e_userclass;
-	if (!isset($e_userclass) && !is_object($e_userclass)) 
+	if (!isset($e_userclass) && !is_object($e_userclass))
 	{
 	  require_once(e_HANDLER."userclass_class.php");
-	  $e_userclass = new user_class;
+	  $e107->e_userclass = new user_class;
+	  $e_userclass = &$e107->e_userclass;
 	}
 	$var['user_class'] = $e_userclass->get_all_user_classes($var['user_class']);
-	
+
 	//===========================================================
-	
+
 	cachevars("userdata_{$uid}", $var);
 	return $var;
 }
@@ -1204,9 +1215,9 @@ function get_user_data($uid, $extra = "")
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
   global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
-  if ($table == 'core') 
+  if ($table == 'core')
   {
-		if ($row_val == '') 
+		if ($row_val == '')
 		{ 	// Save old version as a backup first
 	  		$sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs_Backup', '".addslashes($PrefCache)."') ");
 
@@ -1225,7 +1236,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 			}
 		}
   }
-  else 
+  else
   {
 		$_user_pref = $tp -> toDB($user_pref);
 		$tmp=addslashes(serialize($_user_pref));
@@ -1317,7 +1328,7 @@ function init_session() {
         	list($uid, $upw)= explode(".", $cli_log);
 		}
 
-		if (empty($uid) || empty($upw)) 
+		if (empty($uid) || empty($upw))
 		{
 			cookie(e_COOKIE, "", (time() - 2592000));
 			$_SESSION[e_COOKIE] = "";
@@ -1363,18 +1374,18 @@ function init_session() {
 			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
 			define("USERLV", $result['user_lastvisit']);
 
-			if ($result['user_ban'] == 1) 
-			{ 
+			if ($result['user_ban'] == 1)
+			{
 			  if (isset($pref['ban_messages']))
 			  {
 				echo $tp->toHTML(varsettrue($pref['ban_messages'][6]));		// Show message if one set
 			  }
-			  exit; 
+			  exit;
 			}
 
 			$user_pref = ($result['user_prefs']) ? unserialize($result['user_prefs']) : '';
 
-			if (isset($_POST['settheme'])) 
+			if (isset($_POST['settheme']))
 			{
 				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
 				save_prefs("user");
@@ -1382,7 +1393,7 @@ function init_session() {
 
 			define("USERTHEME", (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
 			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
-			if ($result['user_admin']) 
+			if ($result['user_admin'])
 			{
 				define("ADMIN", TRUE);
 				define("ADMINID", $result['user_id']);
@@ -1390,13 +1401,13 @@ function init_session() {
 				define("ADMINPERMS", $result['user_perms']);
 				define("ADMINEMAIL", $result['user_email']);
 				define("ADMINPWCHANGE", $result['user_pwchange']);
-			} 
-			else 
+			}
+			else
 			{
 				define("ADMIN", FALSE);
 			}
-		} 
-		else 
+		}
+		else
 		{
 			define("USER", FALSE);
 			define('USERID', 0);
@@ -1418,7 +1429,8 @@ $sql->db_Mark_Time('Start: Go online');
 if(!isset($_E107['no_online']) && varset($pref['track_online']))
 {
 	e107_require_once(e_HANDLER."online_class.php");
-	$e_online = new e_online();
+	$e107->e_online = new e_online;
+	$e_online = &$e107->e_online;
 	$e_online->online($pref['track_online'], $pref['flood_protect']);
 }
 
@@ -1533,9 +1545,9 @@ function class_list($uid = '')
 		{
 			$clist = explode(',', $class_list);
 		}
-		
+
 		$clist[] = e_UC_MEMBER;
-		
+
 		if ($admin_status == true)
 		{
 			$clist[] = e_UC_ADMIN;
@@ -1550,10 +1562,10 @@ function class_list($uid = '')
 	{
 		$clist[] = e_UC_GUEST;
 	}
-	
+
 	$clist[] = e_UC_READONLY;
 	$clist[] = e_UC_PUBLIC;
-	
+
 	return implode(',', $clist);
 }
 
@@ -1586,9 +1598,9 @@ function e107_require($fname) {
 
 
 
-function include_lan($path, $force = false) 
+function include_lan($path, $force = false)
 {
-	if (!is_readable($path)) 
+	if (!is_readable($path))
 	{
 		$path = str_replace(e_LANGUAGE, 'English', $path);
 	}
@@ -1607,12 +1619,12 @@ function include_lan_admin($path)
 
 
 
-if(!function_exists("print_a")) 
+if(!function_exists("print_a"))
 {
-  function print_a($var, $return = false) 
+  function print_a($var, $return = false)
   {
 	$charset = "utf-8";
-	if(defined("CHARSET")) 
+	if(defined("CHARSET"))
 	{
 	  $charset = CHARSET;
 	}
@@ -1620,8 +1632,8 @@ if(!function_exists("print_a"))
 	{
 	  echo '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
 	  return true;
-	} 
-	else 
+	}
+	else
 	{
 	  return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
 	}
@@ -1631,7 +1643,7 @@ if(!function_exists("print_a"))
 
 // Check that all required user fields (including extended fields) are valid.
 // Return TRUE if update required
-function force_userupdate() 
+function force_userupdate()
 {
 	global $sql,$pref,$currentUser;
 
