@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-11-24 20:18:24 $
-|     $Author: secretr $
+|     $Revision: 1.24 $
+|     $Date: 2008-11-25 14:36:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,8 +44,8 @@ class e107
 	 */
 	function e107($e107_paths, $e107_root_path)
 	{
-        if(defsettrue('e107_php4_check'))
-        {
+		if(defined('e107_php4_check') && constant('e107_php4_check'))
+		{
             echo ('Fatal error! You are not allowed to direct instantinate an object for singleton class! Please use e107::getInstance()');
             exit();
         }
