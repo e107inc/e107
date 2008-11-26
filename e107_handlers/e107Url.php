@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-11-26 11:06:49 $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-26 13:28:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -54,14 +54,19 @@ class eURL
 	{
 		global $pref; //FIXME pref handler, $e107->prefs instance
 
-		$handlerId = $section . '/' . $urlType;
-		$handler = 'url_' . $section . '_' . $urlType;
 		$core = false;
 		if (strpos($section, ':') !== false)
 		{
 			list($tmp, $section) = explode(':', $section, 2);
 			$core = ($tmp === 'core');
 		}
+		elseif (isset($this->_link_handlers['plugin:'.$section]))
+		{
+			return $this->_link_handlers['plugin:'.$section];
+		}
+
+		$handlerId = $section . '/' . $urlType;
+		$handler = 'url_' . $section . '_' . $urlType;
 
 		// Check to see if custom code is active and exists
 		if (varsettrue($pref['url_config'][$section]))
