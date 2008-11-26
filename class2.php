@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2008-11-26 15:00:56 $
+|     $Revision: 1.75 $
+|     $Date: 2008-11-26 19:43:56 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -317,7 +317,8 @@ $sysprefs = new prefs;
 
 e107_require_once(e_HANDLER.'cache_handler.php');
 e107_require_once(e_HANDLER.'arraystorage_class.php');
-$eArrayStorage = new ArrayData();
+$e107->arrayStorage =& new ArrayData();
+$eArrayStorage = &$e107->arrayStorage;
 
 $PrefCache = ecache::retrieve_sys('SitePrefs', 24 * 60, true);
 if(!$PrefCache){
