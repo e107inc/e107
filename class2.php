@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2008-11-25 16:26:02 $
+|     $Revision: 1.74 $
+|     $Date: 2008-11-26 15:00:56 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1138,7 +1138,8 @@ function getperms($arg, $ap = ADMINPERMS) {
 function get_user_data($uid, $extra = "")
 {
 	global $pref, $sql;
-	$uid = intval($uid);
+	$e107 = e107::getInstance();
+	$uid = (int)$uid;
 	$var = array();
 	if($uid == 0) { return $var; }
 	if($ret = getcachedvars("userdata_{$uid}"))
