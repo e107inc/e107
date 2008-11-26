@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-11-26 13:28:35 $
+|     $Revision: 1.7 $
+|     $Date: 2008-11-26 21:00:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -71,6 +71,7 @@ class eURL
 		// Check to see if custom code is active and exists
 		if (varsettrue($pref['url_config'][$section]))
 		{
+			// Search the central url config repository - one config to rull them all
 			$fileName = ($core ? e_FILE."url/custom/base/{$handlerId}.php" : e_FILE."url/custom/plugins/{$handlerId}.php");
 			if (is_readable($fileName))
 			{
@@ -80,7 +81,21 @@ class eURL
 			{
 				return $handler;
 			}
+			// Search for custom url config released with the plugin
+			if (!$core) 
+			{
+				$fileName = e_PLUGIN."{$section}/url/custom/{$urlType}.php";
+				if (is_readable($fileName))
+				{
+					include_once ($fileName);
+				}
+				if (function_exists($handler))
+				{
+					return $handler;
+				}
+			}
 		}
+		// Search the default url config - the last station 
 		$fileName = ($core ? e_FILE."url/base/{$handlerId}.php" : e_PLUGIN."{$section}/url/{$urlType}.php");
 		if (is_readable($fileName))
 		{
