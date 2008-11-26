@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-11-26 03:24:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2008-11-26 11:06:49 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,6 +52,8 @@ class eURL
 
 	function _initHandler($section, $urlType)
 	{
+		global $pref; //FIXME pref handler, $e107->prefs instance
+
 		$handlerId = $section . '/' . $urlType;
 		$handler = 'url_' . $section . '_' . $urlType;
 		$core = false;
