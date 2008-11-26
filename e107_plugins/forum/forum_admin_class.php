@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.2 $
-* $Date: 2008-11-26 03:24:51 $
+* $Revision: 1.3 $
+* $Date: 2008-11-26 19:59:06 $
 * $Author: mcfly_e107 $
 *
 */
@@ -29,7 +29,7 @@ class forumAdmin
 		$var['main']['link'] = e_SELF;
 		$var['cat']['text'] = FORLAN_83;
 		$var['cat']['link'] = e_SELF."?cat";
-		if ($sql->db_Select("forum", "*", "forum_parent='0' "))
+		if ($sql->db_Select('forum', 'forum_id', "forum_parent='0' LIMIT 1"))
 		{
 			$var['create']['text'] = FORLAN_77;
 			$var['create']['link'] = e_SELF."?create";
@@ -57,8 +57,8 @@ class forumAdmin
 	function delete_item($id)
 	{
 		global $sql;
-		$id = intval($id);
-		$confirm = isset($_POST['confirm']) ? TRUE : FALSE;
+		$id = (int)$id;
+		$confirm = isset($_POST['confirm']) ? true : false;
 
 		if($sql->db_Select('forum', '*', "forum_id = {$id}"))
 		{
@@ -87,11 +87,11 @@ class forumAdmin
 		}
 	}
 
-	function delete_parent($id, $confirm = FALSE)
+	function delete_parent($id, $confirm = false)
 	{
 		global $sql;
 		$ret = "";
-		if($sql->db_Select("forum", "forum_id", "forum_parent = {$id} AND forum_sub = 0"))
+		if($sql->db_Select('forum', 'forum_id', "forum_parent = {$id} AND forum_sub = 0"))
 		{
 			$fList = $sql->db_getList();
 			foreach($fList as $f)
@@ -101,25 +101,25 @@ class forumAdmin
 		}
 		if($confirm)
 		{
-			if($sql->db_Delete("forum", "forum_id = {$id}"))
+			if($sql->db_Delete('forum', "forum_id = {$id}"))
 			{
-				$ret .= "Forum parent successfully deleted";
+				$ret .= 'Forum parent successfully deleted';
 			}
 			else
 			{
-				$ret .= "Forum parent could not be deleted";
+				$ret .= 'Forum parent could not be deleted';
 			}
 			return $ret;
 		}
-		return "The forum parent has the following info: <br />".$ret;
+		return 'The forum parent has the following info: <br />'.$ret;
 
 	}
 
-	function delete_forum($id, $confirm = FALSE)
+	function delete_forum($id, $confirm = false)
 	{
 		global $sql, $tp;
-		$ret = "";
-		if($sql->db_Select("forum", "forum_id", "forum_sub = {$id}"))
+		$ret = '';
+		if($sql->db_Select('forum', 'forum_id', "forum_sub = {$id}"))
 		{
 			$fList = $sql->db_getList();
 			foreach($fList as $f)
@@ -129,7 +129,7 @@ class forumAdmin
 		}
 		if($confirm)
 		{
-			$cnt = $sql->db_Delete("forum_t","thread_forum_id = {$id}");
+			$cnt = $sql->db_Delete('forum_t',"thread_forum_id = {$id}");
 			$ret .= $cnt." forum {$id} thread(s) deleted <br />";
 			if($sql->db_Delete("forum", "forum_id = {$id}"))
 			{
@@ -142,7 +142,7 @@ class forumAdmin
 			return $ret;
 		}
 
-		$sql->db_Select("forum", "*", "forum_id = {$id}");
+		$sql->db_Select('forum', 'forum_name, forum_threads, forum_replies', "forum_id = {$id}");
 		$row = $sql->db_Fetch();
 		return "Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
 	}
@@ -290,7 +290,7 @@ class forumAdmin
 				$text .= "
 				<tr>
 				<td colspan='2' class='forumheader'>".$parent['forum_name']."
-				<br /><b>".FORLAN_140.":</b> ".r_userclass_name($parent['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".r_userclass_name($parent['forum_postclass'])."
+				<br /><b>".FORLAN_140.":</b> ".$e107->e_userclass->uc_get_classname($parent['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->e_userclass->uc_get_classname($parent['forum_postclass'])."
 				</td>";
 
 				$text .= "<td class='forumheader' style='text-align:center'>";
@@ -336,7 +336,7 @@ class forumAdmin
 
 						$text .= "
 						<br /><span class='smallblacktext'>".$e107->tp->toHTML($forum['forum_description'])."&nbsp;</span>
-						<br /><b>".FORLAN_140.":</b> ".r_userclass_name($forum['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".r_userclass_name($forum['forum_postclass'])."
+						<br /><b>".FORLAN_140.":</b> ".$e107->e_userclass->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->e_userclass->uc_get_classname($forum['forum_postclass'])."
 
 						</td>
 
@@ -347,7 +347,7 @@ class forumAdmin
 							$text .= "<select name='forum_order[]' class='tbox'>\n";
 							for($a = 1; $a <= $forumCount; $a++)
 							{
-								$sel = ($forum['forum_order'] == $a ? "selected='selected'" : ''); 
+								$sel = ($forum['forum_order'] == $a ? "selected='selected'" : '');
 								$text .= "<option value='{$forum['forum_id']}.{$a}' {$sel}>{$a}</option>\n";
 							}
 							$text .= "</select>";
@@ -394,6 +394,7 @@ class forumAdmin
 				$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
 			}
 		}
+
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -407,12 +408,12 @@ class forumAdmin
 
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
-		<td style='width:60%' class='forumheader3'>".r_userclass("forum_class", $row['forum_class'], 'off', 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".$e107->e_userclass->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_142.":<br /><span class='smalltext'>(".FORLAN_143.")</span></td>
-		<td style='width:60%' class='forumheader3'>".r_userclass("forum_postclass", $row['forum_postclass'], 'off', 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".$e107->e_userclass->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr style='vertical-align:top'>
@@ -439,8 +440,8 @@ class forumAdmin
 	function create_forums($sub_action, $id)
 	{
 		global $e107;
-		
-		$id = (int)$id; 
+
+		$id = (int)$id;
 		if ($sub_action == 'edit' && !$_POST['update_forum'])
 		{
 			if ($e107->sql->db_Select('forum', '*', "forum_id=$id"))
@@ -460,7 +461,7 @@ class forumAdmin
 		$text .= "<select name='forum_parent' class='tbox'>\n";
 		while (list($fid, $fname) = $e107->sql->db_Fetch())
 		{
-			$sel = ($fid == $fInfor['forum_parent'] ? "selected='selected'" : ''); 
+			$sel = ($fid == $fInfor['forum_parent'] ? "selected='selected'" : '');
 			$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";
 		}
 		$text .= "</select>
@@ -486,18 +487,18 @@ class forumAdmin
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_33.":<br /><span class='smalltext'>(".FORLAN_34.")</span></td>
 		<td style='width:60%' class='forumheader3'>";
-		$text .= r_userclass('forum_moderators', $fInfo['forum_moderators'], 'off', 'admin,classes');
+		$text .= $e107->e_userclass->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes');
 
 		$text .= "</td>
 		</tr>
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
-		<td style='width:60%' class='forumheader3'>".r_userclass("forum_class", $fInfo['forum_class'], 'off', 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".$e107->e_userclass->uc_dropdown('forum_moderators', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_142.":<br /><span class='smalltext'>(".FORLAN_143.")</span></td>
-		<td style='width:60%' class='forumheader3'>".r_userclass("forum_postclass", $fInfo['forum_postclass'], 'off', 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".$e107->e_userclass->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr style='vertical-align:top'>
@@ -602,7 +603,7 @@ class forumAdmin
 				save_prefs();
 			}
 		}
-		
+
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -952,7 +953,7 @@ class forumAdmin
 				$txt .= "
 				<tr>
 				<td class='forumheader'>{$f['forum_name']}</td>
-				<td class='forumheader'>".r_userclass("mods[{$f['forum_id']}]", $f['forum_moderators'], 'off', 'admin,classes')."</td>
+				<td class='forumheader'>".$e107->e_userclass->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
 				</tr>
 				";
 				foreach($subList[$f['forum_id']] as $s)
@@ -960,7 +961,7 @@ class forumAdmin
 					$txt .= "
 					<tr>
 					<td class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;{$s['forum_name']}</td>
-					<td class='forumheader3'>".r_userclass("mods[{$s['forum_id']}]", $s['forum_moderators'], 'off', 'admin,classes')."</td>
+					<td class='forumheader3'>".$e107->e_userclass->uc_dropdown("mods[{$s['forum_id']}]", $s['forum_moderators'], 'admin,classes')."</td>
 					</tr>
 					";
 				}

@@ -48,6 +48,7 @@ CREATE TABLE forum_post (
   `post_edit_datestamp` int(10) unsigned NOT NULL default '0',
   `post_edit_user` int(10) unsigned NOT NULL,
   `post_ip` varchar(45) NOT NULL,
+  `post_anon_name` varchar(30) NULL,
   `post_attachments` text default NULL,
   `post_options` text,
   PRIMARY KEY  (`post_id`),
