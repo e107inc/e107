@@ -6,11 +6,11 @@
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
-* View all forums
+* View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/viewforum.php,v $
-* $Revision: 1.1 $
-* $Date: 2008-11-26 03:24:51 $
+* $Revision: 1.2 $
+* $Date: 2008-11-26 19:59:06 $
 * $Author: mcfly_e107 $
 *
 */
@@ -20,7 +20,7 @@ $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
 
 if (isset($_POST['fjsubmit'])) {
-	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);
+	header("location:".e_SELF.'?'.$_POST['forumjump']);
 	exit;
 }
 
@@ -31,8 +31,8 @@ if (!e_QUERY)
 else
 {
 	$tmp = explode(".", e_QUERY);
-	$forum_id = intval($tmp[0]);
-	$thread_from = (isset($tmp[1]) ? intval($tmp[1]) : 0);
+	$forum_id = (int)$tmp[0];
+	$thread_from = (isset($tmp[1]) ? (int)$tmp[1] : 0);
 }
 $view = 25;
 
@@ -124,7 +124,8 @@ if ($pages)
 
 if (check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass']))
 {
-	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
+//	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
+	$NEWTHREADBUTTON = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $forum_id))."'>".IMAGE_newthread.'</a>';
 }
 
 if(substr($forum_info['forum_name'], 0, 1) == "*")
@@ -336,7 +337,7 @@ function parse_thread($thread_info)
 
 	$THREADDATE = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
 	$ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
-	if ($REPLIES >= $pref['forum_popular']) 
+	if ($REPLIES >= $pref['forum_popular'])
 	{
 	  $ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
 	}
@@ -458,7 +459,7 @@ function parse_thread($thread_info)
 
 	if (!$REPLIES)
 	{
-		$REPLIES = LAN_317;		// 'None' 
+		$REPLIES = LAN_317;		// 'None'
 		$LASTPOST = " - ";
 	}
 

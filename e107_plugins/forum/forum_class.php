@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-11-26 04:00:36 $
+|     $Revision: 1.9 $
+|     $Date: 2008-11-26 19:59:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,83 @@ if (!defined('e107_INIT')) { exit; }
 
 class e107forum
 {
+	var $permList = array();
+
+	function e107forum()
+	{
+		$this->loadPermList();
+//		print_a($this->permList);
+	}
+
+	function loadPermList()
+	{
+		global $e107;
+		if($tmp = $e107->ecache->retrieve_sys('forum_perms'))
+		{
+			$this->permList = $e107->arrayStorage->ReadArray($tmp);
+		}
+		else
+		{
+			$this->getForumPermList();
+			$tmp = $e107->arrayStorage->WriteArray($this->permList);
+			$e107->ecache->set_sys('forum_perms', $tmp);
+
+		}
+		unset($tmp);
+	}
+
+
+	function getForumPermList()
+	{
+
+		global $e107;
+
+		$this->permList = array();
+		$qryList = array();
+
+		$qryList[view] = "
+		SELECT f.forum_id
+		FROM `#forum` AS f
+		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_class IN (".USERCLASS_LIST.")
+		WHERE f.forum_class IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
+		";
+
+		$qryList[post] = "
+		SELECT f.forum_id
+		FROM `#forum` AS f
+		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_postclass IN (".USERCLASS_LIST.")
+		WHERE f.forum_postclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
+		";
+
+		$qryList[thread] = "
+		SELECT f.forum_id
+		FROM `#forum` AS f
+		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_threadclass IN (".USERCLASS_LIST.")
+		WHERE f.forum_threadclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
+		";
+
+		foreach($qryList as $key => $qry)
+		{
+			if($e107->sql->db_Select_gen($qry))
+			{
+				while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+				{
+					$this->permList[$key][] = $row['forum_id'];
+				}
+			}
+		}
+
+//		print_a($this->permList);
+
+//		LEFT JOIN #forum_t AS ft ON ft.thread_parent = t.thread_parent AND ft.thread_id <= ".intval($thread_id)."
+//		LEFT JOIN #forum_t as fp ON fp.thread_id = t.thread_parent
+//		WHERE t.thread_id = ".intval($thread_id)." AND t.thread_parent != 0
+//		ORDER  BY ft.thread_datestamp ASC
+//		";
+
+
+	}
+
 
 	function thread_postnum($thread_id)
 	{
@@ -36,7 +113,7 @@ class e107forum
 		";
 		if($ret['post_num'] = $sql->db_Select_gen($query))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql->db_Fetch(MYSQL_ASSOC);
 			$ret['parent'] = $row['parent'];
 		}
 		return $ret;
@@ -71,7 +148,7 @@ class e107forum
 			{
 				if ($sql->db_Select('forum', 'forum_id', 'forum_parent != 0'))
 				{
-					while ($row = $sql->db_Fetch())
+					while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 					{
 						$parentList[] = $row['forum_id'];
 					}
@@ -91,7 +168,7 @@ class e107forum
 				{
 					if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
 					{
-						while ($row = $sql2->db_Fetch())
+						while ($row = $sql2->db_Fetch(MYSQL_ASSOC))
 						{
 							$this->update_lastpost('thread', $row['thread_id']);
 						}
@@ -99,7 +176,7 @@ class e107forum
 				}
 				if ($sql->db_Select("forum_t", "*", "thread_forum_id={$id} ORDER BY thread_datestamp DESC LIMIT 0,1"))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->db_Fetch(MYSQL_ASSOC);
 					$tmp = explode(chr(1), $row['thread_user']);
 					$forum_lp_user = $tmp[0];
 					$last_id = $row['thread_parent'] ? $row['thread_parent'] : $row['thread_id'];
@@ -110,18 +187,18 @@ class e107forum
 		}
 	}
 
-	function forum_markasread($forum_id) 
+	function forum_markasread($forum_id)
 	{
 	  global $sql;
-	  if ($forum_id != 'all') 
+	  if ($forum_id != 'all')
 	  {
 		$forum_id = intval($forum_id);
 		$extra = " AND thread_forum_id={$forum_id}";
 	  }
 	  $qry = "thread_lastpost > ".USERLV." AND thread_parent = 0 {$extra} ";
-	  if ($sql->db_Select('forum_t', 'thread_id', $qry)) 
+	  if ($sql->db_Select('forum_t', 'thread_id', $qry))
 	  {
-		while ($row = $sql->db_Fetch()) 
+		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 		{
 		  $u_new .= $row['thread_id'].".";
 		}
@@ -147,7 +224,7 @@ class e107forum
 		global $sql;
 		if ($sql->db_Select('forum', '*', "forum_parent=0 ORDER BY forum_order ASC"))
 		{
-			while ($row = $sql->db_Fetch()) {
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC)) {
 				$ret[] = $row;
 			}
 			return $ret;
@@ -167,7 +244,7 @@ class e107forum
 			$regex = "(^|,)(".str_replace(",", "|", $uclass).")(,|$)";
 			$sql->db_Select("user", "user_id, user_name", "user_class REGEXP '{$regex}'");
 		}
-		while($row = $sql->db_Fetch())
+		while($row = $sql->db_Fetch(MYSQL_ASSOC))
 		{
 			$ret[$row['user_id']] = $row['user_name'];
 		}
@@ -185,7 +262,7 @@ class e107forum
 		";
 		if ($sql->db_Select_gen($qry))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				if($type == 'all')
 				{
@@ -258,7 +335,7 @@ class e107forum
 		";
 		if($sql->db_Select_gen($_newqry))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row['thread_forum_id'];
 				if($row['forum_sub'])
@@ -302,7 +379,7 @@ class e107forum
 				$result = $e107->sql->db_Insert('forum_track', $tmp);
 				unset($tmp);
 				break;
-			
+
 			case 'delete':
 			case 'del':
 			 	$result = $e107->sql->db_Delete('forum_track', 'WHERE `track_userid` = {$uid} AND `track_thread');
@@ -333,7 +410,7 @@ class e107forum
 		global $sql;
 		if ($sql->db_Select_gen($qry))
 		{
-			return $sql->db_Fetch();
+			return $sql->db_Fetch(MYSQL_ASSOC);
 		}
 		return FALSE;
 	}
@@ -350,7 +427,7 @@ class e107forum
 		";
 		if ($sql->db_Select_gen($qry))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[$row['forum_id']] = $row['forum_name'];
 			}
@@ -390,7 +467,7 @@ class e107forum
 		$ret = array();
 		if ($sql->db_Select_gen($qry))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row;
 			}
@@ -418,7 +495,7 @@ class e107forum
 		";
 		if ($sql->db_Select_gen($qry))
 		{
-			return $sql->db_Fetch();
+			return $sql->db_Fetch(MYSQL_ASSOC);
 		}
 		return FALSE;
 	}
@@ -449,7 +526,7 @@ class e107forum
 			if ($sql->db_Select_gen($qry))
 			{
 				$i = 0;
-				while ($row = $sql->db_Fetch())
+				while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 				{
 					$threadList[$i++] = $row['thread_id'];
 				}
@@ -494,7 +571,7 @@ class e107forum
 			if ($sql->db_Select_gen($qry))
 			{
 				$i = 0;
-				while ($row = $sql->db_Fetch())
+				while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 				{
 					$threadList[$i++] = $row['thread_id'];
 				}
@@ -560,7 +637,7 @@ class e107forum
 		if ($sql->db_Select_gen($qry))
 		{
 			$i = $array_start;
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[$i] = $row;
 				$i++;
@@ -577,7 +654,7 @@ class e107forum
 		";
 		if ($sql->db_Select_gen($qry))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql->db_Fetch(MYSQL_ASSOC);
 			$ret['head'] = $row;
 			if (!array_key_exists(0, $ret))
 			{
@@ -606,7 +683,7 @@ class e107forum
 		";
 		if ($sql->db_Select_gen($qry))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[$row['thread_parent']] = $row['thread_replies'];
 			}
@@ -636,7 +713,7 @@ class e107forum
 		";
 		if ($sql->db_Select_gen($qry))
 		{
-			$ret[0] = $sql->db_Fetch();
+			$ret[0] = $sql->db_Fetch(MYSQL_ASSOC);
 		}
 		else
 		{
@@ -662,7 +739,7 @@ class e107forum
 			";
 			if ($sql->db_Select_gen($qry))
 			{
-				$row = $sql->db_Fetch();
+				$row = $sql->db_Fetch(MYSQL_ASSOC);
 				$ret['head'] = $row;
 			}
 		}
@@ -755,7 +832,7 @@ class e107forum
 			{
 				include_once(e_HANDLER.'mail.php');
 				$message = LAN_385.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$email_post."<br /><br />". LAN_383."<br /><br />".$mail_link;
-				while ($row = $sql->db_Fetch())
+				while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 				{	// Don't sent to self, nor to originator of thread if they've got 'notify' set
 					if ($row['user_email'] && ($row['user_email'] != $email_addy) && ($row['user_id'] != USERID))	// (May be wrong, but this could be faster than filtering current user in the query)
 					{
@@ -889,7 +966,7 @@ class e107forum
 		if($sql->db_Select_gen($qry))
 		{
 			$ret = array();
-			while($row = $sql->db_Fetch())
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[$row['uid']] = $row['cnt'];
 			}
@@ -897,7 +974,7 @@ class e107forum
 		}
 		return FALSE;
 	}
-	
+
 	/*
 	 * set bread crumb
 	 * $forum_href override ONLY applies when template is missing FORUM_CRUMB
@@ -907,17 +984,17 @@ class e107forum
 	{
 		global $FORUM_CRUMB,$forum_info,$thread_info,$tp;
 		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
-		
+
 		if(is_array($FORUM_CRUMB))
 		{
 			$search 	= array("{SITENAME}", "{SITENAME_HREF}");
 			$replace 	= array(SITENAME, "href='".e_BASE."index.php'");
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
-		
+
 			$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
 			$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
-		
+
 			$search 	= "{PARENT_TITLE}";
 			$replace 	= $tp->toHTML($forum_info['parent_name']);
 			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
@@ -964,7 +1041,7 @@ class e107forum
 				$forum_sub_parent = (substr($forum_info['sub_parent'], 0, 1) == "*" ? substr($forum_info['sub_parent'], 1) : $forum_info['sub_parent']);
 				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
-			
+
 			$tmpFname = $forum_info['forum_name'];
 			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
 			if ($forum_href)

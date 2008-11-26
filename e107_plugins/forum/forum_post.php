@@ -11,69 +11,81 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-01-18 21:07:47 $
-|     $Author: e107steved $
+|     $Revision: 1.17 $
+|     $Date: 2008-11-26 19:59:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-require_once("../../class2.php");
-$e_wysiwyg = "post";
+require_once('../../class2.php');
+$e_wysiwyg = 'post';
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php';
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_post.php');
 
-if (IsSet($_POST['fjsubmit'])) {
-	header("location:".e_BASE.$PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$_POST['forumjump']);
+if (isset($_POST['fjsubmit']))
+{
+	header('location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id'=>$_POST['forumjump'])));
 	exit;
 }
+
+//$_POST['forumjump']
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
-if (!e_QUERY) {
-	header("Location:".e_PLUGIN."forum/forum.php");
+if (!e_QUERY || !isset($_REQUEST['id']))
+{
+	header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
-} else {
-	$tmp = explode(".", e_QUERY);
-	$action = preg_replace('#\W#', '', $tmp[0]);
-	$id = intval($tmp[1]);
-	$from = intval($tmp[2]);
 }
+//else
+//{
+//	$tmp = explode(".", e_QUERY);
+//	$action = preg_replace('#\W#', '', $tmp[0]);
+//	$id = intval($tmp[1]);
+//	$from = intval($tmp[2]);
+//}
+
+$action = $_REQUEST['f'];
+$id = (int)$_REQUEST['id'];
 
 // check if user can post to this forum ...
-if ($action == 'rp')
+if (!in_array($id, $forum->permList['post']))
 {
-	// reply to thread
-	$thread_info = $forum->thread_get($id, 'last', 11);
-	if (!is_array($thread_info) || !count($thread_info))
-	{
-	  $forum_info = FALSE;		// Someone fed us a dud forum id - should exist if replying
-	}
-	else
-	{
-	  $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-	}
-}
-elseif ($action == 'nt')
-{
-	// New post
-	$forum_info = $forum->forum_get($id);
-}
-elseif ($action == 'quote' || $action == 'edit')
-{
-	$thread_info = $forum->thread_get_postinfo($id, TRUE);
-	$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-	if($action == 'quote')
-	{
-		$id = $thread_info['head']['thread_id'];
-	}
-}
-
-if (($forum_info === FALSE) || !check_class($forum_info['forum_postclass']) || !check_class($forum_info['parent_postclass'])) {
 	require_once(HEADERF);
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
 	require_once(FOOTERF);
 	exit;
 }
+
+switch($action)
+{
+	case 'rp':
+		$thread_info = $forum->thread_get($id, 'last', 11);
+		if (!is_array($thread_info) || !count($thread_info))
+		{
+		  $forum_info = false;		// Someone fed us a dud forum id - should exist if replying
+		}
+		else
+		{
+		  $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
+		}
+		break;
+
+	case 'nt':
+		$forum_info = $forum->forum_get($id);
+		break;
+
+	case 'quote':
+	case 'edit':
+		$thread_info = $forum->thread_get_postinfo($id, true);
+		$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
+		if($_REQUST['f'] == 'quote')
+		{
+			$id = $thread_info['head']['thread_id'];
+		}
+		break;
+}
+
 define("MODERATOR", check_class($forum_info['forum_moderators']));
 //require_once(e_HANDLER.'forum_include.php');
 require_once(e_PLUGIN."forum/forum_post_shortcodes.php");
@@ -93,16 +105,6 @@ if ($sql->db_Select("tmp", "*", "tmp_ip='$ip' ")) {
 	$sql->db_Delete("tmp", "tmp_ip='$ip' ");
 }
 
-//Check to see if user had post rights
-if (!check_class($forum_info['forum_postclass']))
-{
-	require_once(HEADERF);
-	$text .= "<div style='text-align:center'>".LAN_399."</div>";
-	$ns->tablerender(LAN_20, $text);
-	require_once(FOOTERF);
-	exit;
-}
-
 //if thread is not active and not new thread, show warning
 if ($action != "nt" && !$thread_info['head']['thread_active'] && !MODERATOR)
 {
@@ -112,16 +114,17 @@ if ($action != "nt" && !$thread_info['head']['thread_active'] && !MODERATOR)
 	exit;
 }
 
-$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
-
-define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == "rp" ? LAN_02.$forum_info['thread_name'] : LAN_03));
+$forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], true);
+define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == 'rp' ? LAN_02.$forum_info['thread_name'] : LAN_03));
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if (is_readable(e_ADMIN.'filetypes.php')) {
+if (is_readable(e_ADMIN.'filetypes.php'))
+{
 	$a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
 	$a_filetypes = explode(',', $a_filetypes);
-	foreach ($a_filetypes as $ftype) {
+	foreach ($a_filetypes as $ftype)
+	{
 		$sa_filetypes[] = '.'.trim(str_replace('.', '', $ftype));
 	}
 	$allowed_filetypes = implode(' | ', $sa_filetypes);
@@ -193,7 +196,7 @@ if (isset($_POST['fpreview']))
 	$ns->tablerender(LAN_323, $text);
 	$anonname = $tp->post_toHTML($_POST['anonname'], FALSE);
 
-  	$post = $tp->post_toForm($_POST['post']); 
+  	$post = $tp->post_toForm($_POST['post']);
 	$subject = $tp->post_toHTML($_POST['subject'], false);
 
 	if ($action == "edit")
@@ -463,7 +466,7 @@ elseif($action == "nt")
 else
 {
   // DB access should pass - after all, the thread should exist
-	$sql->db_Select_gen("SELECT t.*, p.forum_postclass FROM #forum_t AS t 
+	$sql->db_Select_gen("SELECT t.*, p.forum_postclass FROM #forum_t AS t
 	LEFT JOIN #forum AS p ON t.thread_forum_id=p.forum_id WHERE thread_id='{$id}'");
 	$fpr = $sql -> db_Fetch();
 	if(!check_class($fpr['forum_postclass']))
