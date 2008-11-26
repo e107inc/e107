@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-08-14 22:34:06 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2008-11-26 23:34:35 $
+|     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.25 $
-* @author $Author: e107coders $
+* @version $Revision: 1.26 $
+* @author $Author: mcfly_e107 $
 */
 class db {
 
@@ -365,22 +365,39 @@ class db {
 
 	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
-	   	 	$new_data = "";
+	   	 	$new_data = '';
 			$the_where = $arg['WHERE'];
 			unset($arg['WHERE']);
 			foreach ($arg as $fn => $fv)
 			{
 			  $new_data .= ($new_data) ? ", " : "";
-			  $new_data .= "`{$fn}`='{$fv}'";
-			}
+			  if(!is_array($fv)) { $fv = array('string', $fv); }
+				switch ($fv[0])
+		  		{
+			  		case 'int':
+					  $new_data .= "`{$fn}`=".(int)$fv[1];
+					  break;
+					
+					case 'cmd':
+					  $new_data .= "`{$fn}`={$fv[1]}";
+					  break;
+					
+					default:
+					  $new_data .= "`{$fn}`='{$fv[1]}'";
+					  break;
+			  	}
+			  }
 			$arg = $new_data ." WHERE ". $the_where;
-	   	}
+		}
 
-		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark)) {
+		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark))
+		{
 			$result = mysql_affected_rows($this->mySQLaccess);
 			if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
 			return $result;
-		} else {
+		}
+		else
+		{
 			$this->dbError("db_Update ($query)");
 			return FALSE;
 		}
