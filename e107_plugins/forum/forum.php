@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-02-16 21:46:38 $
+|     $Revision: 1.5 $
+|     $Date: 2008-11-26 04:00:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e107_INIT")) {
+if(!defined("e107_INIT"))
+{
 	require_once("../../class2.php");
 }
 
@@ -25,12 +26,10 @@ include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
-if (strstr(e_QUERY, "untrack"))
+if ($untrackId = varset($_REQUEST['untrack']))
 {
-	$tmp1 = explode(".", e_QUERY);
-	$tmp = str_replace("-".$tmp1[1]."-", "", USERREALM);
-	$sql->db_Update("user", "user_realm='".$tp -> toDB($tmp, true)."' WHERE user_id='".USERID."' ");
-	header("location:".e_SELF."?track");
+	$forum->track('del', USERID, $untrackId);
+	header('location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'track')));
 	exit;
 }
 
@@ -43,11 +42,9 @@ if (e_QUERY == "mark.all.as.read")
 }
 
 //Mark all threads in specific forum as read
-if (strstr(e_QUERY, 'mfar'))
+if (varset($_REQUEST['mfar']))
 {
-	$tmp = explode(".", e_QUERY);
-	$forum_id = intval($tmp[1]);
-	$forum->forum_markasread($forum_id);
+	$forum->forum_markasread((int)$_REQUEST['mfar']);
 	header("location:".e_SELF);
 	exit;
 }

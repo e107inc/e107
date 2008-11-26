@@ -58,9 +58,9 @@ CREATE TABLE forum_post (
 
 CREATE TABLE forum_track (
   `track_userid` int(10) unsigned NOT NULL,
-  `track_threadid` int(10) unsigned NOT NULL,
+  `track_thread` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`track_userid`,`track_threadid`),
   KEY `track_userid` (`track_userid`),
-  KEY `track_threadid` (`track_threadid`)
+  KEY `track_thread` (`track_thread`)
 ) Type=MyISAM;
 
