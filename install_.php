@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/install_.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-07-25 19:26:32 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2008-11-26 00:26:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -134,7 +134,9 @@ $installer_folder_name = 'e107_install';
 include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
-$e107 = new e107($e107_paths, realpath(dirname(__FILE__)));
+
+$e107 = e107::getInstance();
+$e107->_init($e107_paths, realpath(dirname(__FILE__)));
 unset($e107_paths);
 
 $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
