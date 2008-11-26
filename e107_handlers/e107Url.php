@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-11-25 17:02:02 $
+|     $Revision: 1.4 $
+|     $Date: 2008-11-26 03:24:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ class eURL
 			$urlItems = array($urlItems => 1);
 		}
 
-		$handlerId = $section . '/' . $urlType;
+		$handlerId = $section . '/' . $urlType;		if (!isset($this->_link_handlers[$handlerId]))
 		if (!isset($this->_link_handlers[$handlerId]))
 		{
 			$this->_link_handlers[$handlerId] = $this->_initHandler($section, $urlType);
