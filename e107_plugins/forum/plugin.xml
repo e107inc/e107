@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <e107Plugin>
 	<name>Forum</name>
-	<version>1.2</version>
+	<version>2.0</version>
 	<author>e107dev</author>
 	<authorUrl>http://e107.org</authorUrl>
 	<description>This plugin is a fully featured Forum system</description>
 	<compatibility>0.8</compatibility>
 	<installRequired>true</installRequired>
 	<folder>forum</folder>
-	<commentID>forum1</commentID>
-	<commentID>forum2</commentID>
 	<administration>
 		<configFile>forum_admin.php</configFile>
 		<icon>images/forums_32.png</icon>
@@ -18,7 +16,6 @@
 		<installDone>Your forum is now installed</installDone>
 	</administration>
 	<menuLink name="Forum" url="forum/forum.php" perm='everyone'/>
-	<menuLink name="Forum1" url="forum/forum1.php" perm='everyone' active='false'/>
 	<mainPrefs>
 		<pref name="forum_show_topics" value="1" />
 		<pref name="forum_postfix" value="[more...]" />
@@ -30,15 +27,10 @@
 		<pref name="forum_title" value="Forums" />
 		<pref name="forum_postspage" value="10" />
 		<pref name="forum_hilightsticky" value="1" />
-		<pref name="forum_obsolete_pref" value="1" active="false"/>
-		<pref name="forum_tmp" type="array">
-			<key name="pref1" value="val1" active="false" />
-			<key name="pref2" value="val2" />
-			<key name="pref3" value="val3" />
-		</pref>
 	</mainPrefs>
 	<userclass name="forum_moderator" description="Moderator of all forums" />
-	<userclass name="forum_moderator2" description="Moderator of all forums" />
+	<extendedField name="viewed" type='EUF_INTEGER' default='0' active="true" />
+	<extendedField name="posts" type='EUF_INTEGER' default='0' active="true" />
 	<management>
 		<install when="post" type="classFunction" file="forum_management.php" class="forum_management" function="forum_install_post" />
 		<uninstall type="classFunction" file="forum_management.php" class="forum_management" function="forum_uninstall" />

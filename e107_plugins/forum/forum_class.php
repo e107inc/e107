@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-10-03 19:27:56 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2008-11-26 03:24:51 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -201,19 +201,19 @@ class e107forum
 		return FALSE;
 	}
 
-	function forum_getsubs($forum_id = "")
+	function forum_getsubs($forum_id = '')
 	{
 		global $sql;
-		$where = ($forum_id != "" && $forum_id != 'bysub' ? "AND forum_sub = ".intval($forum_id) : "");
+		$where = ($forum_id != '' && $forum_id != 'bysub' ? "AND forum_sub = ".(int)$forum_id : '');
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id
+		LEFT JOIN #user AS u ON f.forum_lastpost_user = u.user_id
 		WHERE forum_sub != 0 {$where}
 		ORDER BY f.forum_order ASC
 		";
 		if ($sql->db_Select_gen($qry))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				if($forum_id == "")
 				{
@@ -230,7 +230,7 @@ class e107forum
 			}
 			return $ret;
 		}
-		return FALSE;
+		return false;
 	}
 
 
