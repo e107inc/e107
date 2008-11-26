@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-11-26 03:24:51 $
+|     $Revision: 1.8 $
+|     $Date: 2008-11-26 04:00:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -287,20 +287,39 @@ class e107forum
 		}
 	}
 
-	function untrack($thread_id, $from)
+	function track($which, $uid, $threadId)
 	{
-		$thread_id = intval($thread_id);
-		global $sql;
-		$tmp = str_replace("-".$thread_id."-", "", USERREALM);
-		return $sql->db_Update("user", "user_realm='$tmp' WHERE user_id=".USERID);
+		global $e107;
+		$threadId = (int)$threadId;
+		$uid = (int)$uid;
+		$result = false;
+		switch($which)
+		{
+			case 'add':
+				$tmp = array();
+				$tmp['track_userid'] = $uid;
+				$tmp['track_thread'] = $threadId;
+				$result = $e107->sql->db_Insert('forum_track', $tmp);
+				unset($tmp);
+				break;
+			
+			case 'delete':
+			case 'del':
+			 	$result = $e107->sql->db_Delete('forum_track', 'WHERE `track_userid` = {$uid} AND `track_thread');
+			 	break;
+		}
+		return $result;
 	}
 
-	function track($thread_id, $from)
+/*
+	function track($uid, $thread_id)
 	{
-		$thread_id = intval($thread_id);
+		$thread_id = (int)$thread_id;
+		$uid = (int)$uid;
 		global $sql;
 		return $sql->db_Update("user", "user_realm='".USERREALM."-".$thread_id."-' WHERE user_id=".USERID);
 	}
+*/
 
 	function forum_get($forum_id)
 	{
