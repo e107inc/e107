@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-11-26 19:59:06 $
+|     $Revision: 1.10 $
+|     $Date: 2008-11-27 03:02:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -85,18 +85,59 @@ class e107forum
 				}
 			}
 		}
-
-//		print_a($this->permList);
-
-//		LEFT JOIN #forum_t AS ft ON ft.thread_parent = t.thread_parent AND ft.thread_id <= ".intval($thread_id)."
-//		LEFT JOIN #forum_t as fp ON fp.thread_id = t.thread_parent
-//		WHERE t.thread_id = ".intval($thread_id)." AND t.thread_parent != 0
-//		ORDER  BY ft.thread_datestamp ASC
-//		";
-
-
 	}
 
+
+	function checkPerm($forumId, $type='view')
+	{
+		return (in_array($forumId, $this->permList[$type]));
+	}
+
+	/*
+	 * Add a post to the db.
+	 *
+	 * If threadinfo is given, then we're adding a new thread.
+	 * We must get thread_id to provide to postInfo after insertion
+	*/  
+	function postAdd($postInfo, $updateThread = true)
+	{
+		$e107 = e107::getInstance();
+		$result = $e107->sql->db_Insert('forum_post', $postInfo, true);
+		if($result && $updateThread)
+		{
+			$threadInfo = array();
+			if(varset($postInfo['post_user']))
+			{
+				$threadInfo['thread_lastuser'] = $postInfo['post_user'];
+				$threadInfo['thread_lastuser_anon'] = '';
+			}
+			else
+			{
+				$threadInfo['thread_lastuser'] = array('int', 0);
+				$threadInfo['thread_lastuser_anon'] = $postInfo['post_anon_name'];
+			}
+			$threadInfo['thread_lastpost'] = array('int', $postInfo['post_datestamp']);
+			$threadInfo['thread_total_replies'] = array('cmd', 'thread-total_replies + 1');
+			$threadInfo['WHERE'] = 'thread_id = '.$postInfo['post_thread'];
+			$result = $e107->sql->db_Update('forum_thread', $threadInfo, true);
+		}
+	}
+	
+	function threadAdd($threadInfo, $postInfo)
+	{
+		$e107 = e107::getInstance();
+		if($result = $e107->sql->db_Insert('forum_thread', $threadInfo, true))
+		{
+			$postInfo['post_thread'] = $result;
+			$result = $this->postAdd($postInfo, false);
+		}
+	}
+	
+	function threadUpdate($threadInfo, $inc)
+	{
+		$e107 = e107::getInstance();
+	}
+	
 
 	function thread_postnum($thread_id)
 	{
@@ -400,7 +441,7 @@ class e107forum
 
 	function forum_get($forum_id)
 	{
-		$forum_id = intval($forum_id);
+		$forum_id = (int)$forum_id;
 		$qry = "
 		SELECT f.*, fp.forum_class as parent_class, fp.forum_name as parent_name, fp.forum_id as parent_id, fp.forum_postclass as parent_postclass, sp.forum_name AS sub_parent FROM #forum AS f
 		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
@@ -451,23 +492,22 @@ class e107forum
 
 	function forum_get_topics($forum_id, $from, $view)
 	{
-		$forum_id = intval($forum_id);
-		global $sql;
+		$e107 = e107::getInstance();
+		$forum_id = (int)$forum_id;
 		$qry = "
-		SELECT t.*, u.user_name, lpu.user_name AS lastpost_username from #forum_t as t
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
-		LEFT JOIN #user AS lpu ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lpu.user_id
-		WHERE t.thread_forum_id = $forum_id AND t.thread_parent = 0
+		SELECT t.*, u.user_name, lpu.user_name AS lastpost_username from `#forum_thread` as t
+		LEFT JOIN `#user` AS u ON t.thread_user = u.user_id
+		LEFT JOIN `#user` AS lpu ON t.thread_lastuser = lpu.user_id
+		WHERE t.thread_forum_id = {$forum_id}
 		ORDER BY
 		t.thread_s DESC,
-		t.thread_lastpost DESC,
-		t.thread_datestamp DESC
-		LIMIT ".intval($from).",".intval($view)."
-		";
+		t.thread_lastpost DESC
+		LIMIT ".(int)$from.','.(int)$view;
+		
 		$ret = array();
-		if ($sql->db_Select_gen($qry))
+		if ($e107->sql->db_Select_gen($qry))
 		{
-			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+			while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[] = $row;
 			}
@@ -502,8 +542,8 @@ class e107forum
 
 	function forum_get_topic_count($forum_id)
 	{
-		global $sql;
-		return $sql->db_Count("forum_t", "(*)", " WHERE thread_forum_id=".intval($forum_id)." AND thread_parent=0 ");
+		$e107 = e107::getInstance();
+		return $e107->sql->db_Count('forum_thread', '(*)', 'WHERE thread_forum_id='.(int)$forum_id);
 	}
 
 	function thread_getnext($thread_id, $forum_id, $from = 0, $limit = 100)

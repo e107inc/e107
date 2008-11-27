@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-11-26 19:59:06 $
+|     $Revision: 1.18 $
+|     $Date: 2008-11-27 03:02:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -37,19 +37,12 @@ if (!e_QUERY || !isset($_REQUEST['id']))
 	header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
-//else
-//{
-//	$tmp = explode(".", e_QUERY);
-//	$action = preg_replace('#\W#', '', $tmp[0]);
-//	$id = intval($tmp[1]);
-//	$from = intval($tmp[2]);
-//}
 
 $action = $_REQUEST['f'];
 $id = (int)$_REQUEST['id'];
 
 // check if user can post to this forum ...
-if (!in_array($id, $forum->permList['post']))
+if (!$forum->checkPerm($id, 'post'))
 {
 	require_once(HEADERF);
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
@@ -69,10 +62,12 @@ switch($action)
 		{
 		  $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
 		}
+		$forum_id = $forum_info['forum_id'];
 		break;
 
 	case 'nt':
 		$forum_info = $forum->forum_get($id);
+		$forum_id = $id;
 		break;
 
 	case 'quote':
@@ -83,6 +78,7 @@ switch($action)
 		{
 			$id = $thread_info['head']['thread_id'];
 		}
+		$forum_id = $forum_info['forum_id'];
 		break;
 }
 
@@ -93,17 +89,8 @@ require_once(e_PLUGIN."forum/forum_shortcodes.php");
 require_once(e_HANDLER."ren_help.php");
 $gen = new convert;
 $fp = new floodprotect;
-global $tp;
+$e107 = e107::getInstance();
 
-if ($sql->db_Select("tmp", "*", "tmp_ip='$ip' ")) {
-	$row = $sql->db_Fetch();
-	$tmp = explode("^", $row['tmp_info']);
-	$action = $tmp[0];
-	$anonname = $tmp[1];
-	$subject = $tmp[2];
-	$post = $tmp[3];
-	$sql->db_Delete("tmp", "tmp_ip='$ip' ");
-}
 
 //if thread is not active and not new thread, show warning
 if ($action != "nt" && !$thread_info['head']['thread_active'] && !MODERATOR)
@@ -220,64 +207,68 @@ if (isset($_POST['fpreview']))
 
 if (isset($_POST['newthread']) || isset($_POST['reply']))
 {
-	$poster = array();
-	if ((isset($_POST['newthread']) && trim($_POST['subject']) == "") || trim($_POST['post']) == "")
+	$postInfo = array();
+	$threadInfo = array();
+	if ((isset($_POST['newthread']) && trim($_POST['subject']) == '') || trim($_POST['post']) == '')
 	{
 		message_handler("ALERT", 5);
 	}
 	else
 	{
-		if ($fp->flood("forum_t", "thread_datestamp") == FALSE && !ADMIN)
+		if ($fp->flood('forum_t', 'thread_datestamp') == false && !ADMIN)
 		{
 			echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
-		}
-		if (USER)
-		{
-			$poster['post_userid'] = USERID;
-			$poster['post_user_name'] = USERNAME;
-		}
-		else
-		{
-			$poster = getuser($_POST['anonname']);
-			if ($poster == -1)
-			{
-				require_once(HEADERF);
-				$ns->tablerender(LAN_20, LAN_310);
-				if (isset($_POST['reply']))
-				{
-					$tmpdata = "reply.".$tp -> toDB($_POST['anonname']).".".$tp -> toDB($_POST['subject']).".".$tp -> toDB($_POST['post']);
-				}
-				else
-				{
-					$tmpdata = "newthread^".$tp -> toDB($_POST['anonname'])."^".$tp -> toDB($_POST['subject'])."^".$tp -> toDB($_POST['post']);
-				}
-				$sql->db_Insert("tmp", "'$ip', '".time()."', '$tmpdata' ");
-				loginf();
-				require_once(FOOTERF);
-				exit;
-			}
+			exit;
 		}
 		process_upload();
+		$postInfo['post_ip'] = $e107->getip();
 
-		$post = $tp->toDB($_POST['post']);
-		$subject = $tp->toDB($_POST['subject']);
-		$email_notify = ($_POST['email_notify'] ? 99 : 1);
-		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "")
+		if (USER)
 		{
-			$subject = "[".LAN_402."] ".$subject;
-		}
-
-		$threadtype = (MODERATOR ? intval($_POST['threadtype']) : 0);
-		if (isset($_POST['reply']))
-		{
-			$parent = $id;
-			$forum_id = $thread_info['head']['thread_forum_id'];
+			$postInfo['post_user'] = USERID;
+			$threadInfo['thread_lastuser'] = USERID;
+			$threadInfo['thread_user'] = USERID;
 		}
 		else
 		{
-			$parent = 0;
-			$forum_id = $id;
+			$postInfo['post_anon_name'] = $e107->tp->toDB($_POST['anonname']);
+			$threadInfo['thread_lastuser'] = $postInfo['post_anon_name']; 
+			$threadInfo['thread_user_anon'] = $postInfo['post_anon_name']; 
 		}
+		$time = time(); 
+		$postInfo['post_entry'] = $e107->tp->toDB($_POST['post']);
+		$postInfo['post_forum'] = $forum_id;
+		$postInfo['post_datestamp'] = $time;
+		$threadInfo['thread_lastpost'] = $time;
+		
+		switch($action)
+		{
+			case 'rp':
+				$postInfo['post_thread'] = $id;
+				$result = $forum->postAdd($postInfo);
+				break;
+
+			case 'nt':
+				$threadInfo['thread_s'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
+				$threadInfo['thread_name'] = $e107->tp->toDB($_POST['subject']);
+				$threadInfo['thread_forum_id'] = $forum_id;
+				$threadInfo['thread_active'] = 1;
+				$threadInfo['thread_datestamp'] = $time;
+				$result = $forum->threadAdd($threadInfo, $postInfo);
+				break;
+		}
+
+//		$email_notify = ($_POST['email_notify'] ? 99 : 1);
+
+//		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "")
+//		{
+//			$subject = "[".LAN_402."] ".$subject;
+//		}
+		print_a($threadInfo);
+		print_a($postInfo);
+		exit;
+
+		$result = $forum->postAdd($postInfo, $threadInfo);
 
 		$iid = $forum->thread_insert($subject, $post, $forum_id, $parent, $poster, $email_notify, $threadtype, $forum_info['forum_sub']);
 		if($iid === -1)
