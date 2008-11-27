@@ -9,37 +9,45 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/viewforum.php,v $
-* $Revision: 1.2 $
-* $Date: 2008-11-26 19:59:06 $
+* $Revision: 1.3 $
+* $Date: 2008-11-27 03:02:26 $
 * $Author: mcfly_e107 $
 *
 */
 
-require_once("../../class2.php");
+require_once('../../class2.php');
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
 
-if (isset($_POST['fjsubmit'])) {
+if (isset($_POST['fjsubmit']))
+{
 	header("location:".e_SELF.'?'.$_POST['forumjump']);
 	exit;
 }
 
 if (!e_QUERY)
 {
-	js_location(e_PLUGIN."forum/forum.php");
+	js_location(e_PLUGIN.'forum/forum.php');
+	exit;
 }
+
+$view = 25;
+$thread_from = (isset($_REQUEST['p']) ? $_REQUEST['p'] * $view : 0); 
+
+/*
 else
 {
-	$tmp = explode(".", e_QUERY);
+	$tmp = explode('.', e_QUERY);
 	$forum_id = (int)$tmp[0];
 	$thread_from = (isset($tmp[1]) ? (int)$tmp[1] : 0);
 }
-$view = 25;
 
 if(is_numeric(e_MENU))
 {
 	$thread_from = (intval(e_MENU)-1)*$view;
 }
+*/
+
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
@@ -50,68 +58,73 @@ $LASTPOSTITLE = LAN_57;
 $VIEWTITLE = LAN_56;
 
 global $forum_info, $FORUM_CRUMB;
-$forum_info = $forum->forum_get($forum_id);
 
-if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class']) || !$forum_info['forum_parent'])
+$forum_id = (int)$_REQUEST['id'];
+
+if (!$forum->checkPerm($forum_id, 'view'))
 {
-	header("Location:".e_PLUGIN."forum/forum.php");
+	header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
 
+$forum_info = $forum->forum_get($forum_id);
+
 if (!$FORUM_VIEW_START) {
-	if (file_exists(THEME."forum_viewforum_template.php"))
+	if (file_exists(THEME.'forum_viewforum_template.php'))
 	{
-		require_once(THEME."forum_viewforum_template.php");
+		require_once(THEME.'forum_viewforum_template.php');
 	}
-	else if (file_exists(THEME."forum_template.php"))
+	else if (file_exists(THEME.'forum_template.php'))
 	{
-		require_once(THEME."forum_template.php");
+		require_once(THEME.'forum_template.php');
 	}
 	else
 	{
-		require_once(e_PLUGIN."forum/templates/forum_viewforum_template.php");
+		require_once(e_PLUGIN.'forum/templates/forum_viewforum_template.php');
 	}
 }
 
+$forum_info['forum_name'] = $e107->tp->toHTML($forum_info['forum_name'], true, 'no_hook, emotes_off');
+$forum_info['forum_description'] = $e107->tp->toHTML($forum_info['forum_description'], true, 'no_hook');
 
-$forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook, emotes_off');
-$forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'], TRUE, 'no_hook');
-
-$_forum_name = (substr($forum_info['forum_name'], 0, 1) == "*" ? substr($forum_info['forum_name'], 1) : $forum_info['forum_name']);
-define("e_PAGETITLE", LAN_01." / ".$_forum_name);
-define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
+$_forum_name = (substr($forum_info['forum_name'], 0, 1) == '*' ? substr($forum_info['forum_name'], 1) : $forum_info['forum_name']);
+define('e_PAGETITLE', LAN_01.' / '.$_forum_name);
+define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
-$message = "";
+$message = '';
 if (MODERATOR)
 {
 	if ($_POST)
 	{
-		require_once(e_PLUGIN."forum/forum_mod.php");
+		require_once(e_PLUGIN.'forum/forum_mod.php');
 		$message = forum_thread_moderate($_POST);
 	}
 }
 
-$member_users = $sql->db_Select("online", "*", "online_location REGEXP('forum_viewforum.php.$forum_id') AND online_user_id!='0' ");
-$guest_users = $sql->db_Select("online", "*", "online_location REGEXP('forum_viewforum.php.$forum_id') AND online_user_id='0' ");
-$users = $member_users+$guest_users;
+if(varset($pref['track_online']))
+{
+	$member_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forum_id\$') AND online_user_id != 0");
+	$guest_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forum_id\$') AND online_user_id = 0");
+	$users = $member_users+$guest_users;
+}
 
 require_once(HEADERF);
 $text='';
 if ($message)
 {
-	$ns->tablerender("", $message, array('forum_viewforum', 'msg'));
+	$ns->tablerender('', $message, array('forum_viewforum', 'msg'));
 }
 
 $topics = $forum->forum_get_topic_count($forum_id);
-
 if ($topics > $view)
 {
 	$pages = ceil($topics/$view);
 }
 else
 {
-	$pages = FALSE;
+	$pages = false;
 }
+
 
 if ($pages)
 {
@@ -122,13 +135,12 @@ if ($pages)
 	}
 }
 
-if (check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass']))
+if($forum->checkPerm($forum_id, 'post'))
 {
-//	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
 	$NEWTHREADBUTTON = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $forum_id))."'>".IMAGE_newthread.'</a>';
 }
 
-if(substr($forum_info['forum_name'], 0, 1) == "*")
+if(substr($forum_info['forum_name'], 0, 1) == '*')
 {
 	$forum_info['forum_name'] = substr($forum_info['forum_name'], 1);
 	$container_only = true;
@@ -138,7 +150,7 @@ else
 	$container_only = false;
 }
 
-if(substr($forum_info['sub_parent'], 0, 1) == "*")
+if(substr($forum_info['sub_parent'], 0, 1) == '*')
 {
 	$forum_info['sub_parent'] = substr($forum_info['sub_parent'], 1);
 }
@@ -147,8 +159,13 @@ $forum->set_crumb(); // set $BREADCRUMB (and $BACKLINK)
 
 $FORUMTITLE = $forum_info['forum_name'];
 //$MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
-$MODERATORS = LAN_404.": ".implode(", ", $modArray);
-$BROWSERS = $users." ".($users == 1 ? LAN_405 : LAN_406)." (".$member_users." ".($member_users == 1 ? LAN_407 : LAN_409).", ".$guest_users." ".($guest_users == 1 ? LAN_408 : LAN_410).")";
+$MODERATORS = LAN_404.': '.implode(', ', $modArray);
+$BROWSERS = '';
+if(varset($pref['track_online']))
+{
+	$BROWSERS = $users.' '.($users == 1 ? LAN_405 : LAN_406).' ('.$member_users.' '.($member_users == 1 ? LAN_407 : LAN_409).", ".$guest_users." ".($guest_users == 1 ? LAN_408 : LAN_410).')';
+}
+
 
 $ICONKEY = "
 	<table style='width:100%'>
@@ -184,30 +201,30 @@ $SEARCH = "
 	</p>
 	</form>";
 
-if(check_class($forum_info['forum_postclass']))
+if($forum->checkPerm($forum_id, 'post'))
 {
-	$PERMS = LAN_204." - ".LAN_206." - ".LAN_208;
+	$PERMS = LAN_204.' - '.LAN_206.' - '.LAN_208;
 }
 else
 {
-	$PERMS = LAN_205." - ".LAN_207." - ".LAN_209;
+	$PERMS = LAN_205.' - '.LAN_207.' - '.LAN_209;
 }
 
 $sticky_threads = 0;
-$stuck = FALSE;
+$stuck = false;
 $reg_threads = 0;
-$unstuck = FALSE;
+$unstuck = false;
 
 $thread_list = $forum->forum_get_topics($forum_id, $thread_from, $view);
 $sub_list = $forum->forum_getsubs($forum_id);
 //print_a($sub_list);
 $gen = new convert;
 
-$SUBFORUMS = "";
+$SUBFORUMS = '';
 if(is_array($sub_list))
 {
 	$newflag_list = $forum->forum_newflag_list();
-	$sub_info = "";
+	$sub_info = '';
 	foreach($sub_list as $sub)
 	{
 		$sub_info .= parse_sub($sub);
@@ -215,15 +232,17 @@ if(is_array($sub_list))
 	$SUBFORUMS = $FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END;
 }
 
-
 if (count($thread_list) )
 {
-	foreach($thread_list as $thread_info) {
+	foreach($thread_list as $thread_info)
+	{
 		$idArray[] = $thread_info['thread_id'];
 	}
 	$inList = '('.implode(',', $idArray).')';
-	foreach($thread_list as $thread_info) {
-		if ($thread_info['thread_s']) {
+	foreach($thread_list as $thread_info)
+	{
+		if ($thread_info['thread_s'])
+		{
 			$sticky_threads ++;
 		}
 		if ($sticky_threads > 0 && !$stuck && $pref['forum_hilightsticky'])
@@ -236,13 +255,13 @@ if (count($thread_list) )
 			{
 				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
 			}
-			$stuck = TRUE;
+			$stuck = true;
 		}
 		if (!$thread_info['thread_s'])
 		{
 			$reg_threads ++;
 		}
-		if ($reg_threads == "1" && !$unstuck && $stuck)
+		if ($reg_threads == '1' && !$unstuck && $stuck)
 		{
 			if($FORUM_NORMAL_ROW)
 			{
@@ -252,7 +271,7 @@ if (count($thread_list) )
 			{
 				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
 			}
-			$unstuck = TRUE;
+			$unstuck = true;
 		}
 		$forum_view_forum .= parse_thread($thread_info);
 	}
@@ -262,15 +281,15 @@ else
 	$forum_view_forum .= "<tr><td class='forumheader' colspan='6'>".LAN_58."</td></tr>";
 }
 
-$sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
+//$sql->db_Select('forum', '*', "forum_parent !=0 AND forum_class != '255' ");
 $FORUMJUMP = forumjump();
-$TOPLINK = "<a href='".e_SELF."?".e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_02."</a>";
+$TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_02.'</a>';
 
 if($container_only)
 {
 	$FORUM_VIEW_START = ($FORUM_VIEW_START_CONTAINER ? $FORUM_VIEW_START_CONTAINER : $FORUM_VIEW_START);
 	$FORUM_VIEW_END = ($FORUM_VIEW_END_CONTAINER ? $FORUM_VIEW_END_CONTAINER : $FORUM_VIEW_END);
-	$forum_view_forum = "";
+	$forum_view_forum = '';
 }
 
 $forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
