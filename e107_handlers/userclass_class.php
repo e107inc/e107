@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-11-09 20:31:10 $
-|     $Author: secretr $
+|     $Revision: 1.19 $
+|     $Date: 2008-11-27 22:07:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,6 +46,8 @@ define('UC_CLASS_ICON_DIR','userclasses/');		// Directory for userclass icons
 define('UC_ICON_DIR',e_IMAGE.'generic/');		// Directory for the icons used in the admin tree displays
 
 define('e_UC_BLANK','-1');
+define('UC_TYPE_STD', '0');
+define('UC_TYPE_GROUP', '1');
 
 class user_class
 {
@@ -92,7 +94,7 @@ class user_class
 
 	$this->sql_r->db_Select("userclass_classes", '*', "ORDER BY userclass_parent", 'nowhere');		// The order statement should give a consistent return
 
-	while ($row = $this->sql_r->db_Fetch()) 
+	while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC)) 
 	{
 	  $this->class_tree[$row['userclass_id']] = $row;
 	  $this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
@@ -111,7 +113,7 @@ class user_class
 		$this->class_tree[$c]['userclass_visibility'] = e_UC_PUBLIC;
 		$this->class_tree[$c]['userclass_editclass'] = e_UC_MAINADMIN;
 		$this->class_tree[$c]['userclass_accum'] = $c;
-//		$this->class_parents[] = $c;
+		$this->class_tree[$c]['userclass_type'] = UC_TYPE_STD;
 	  }
 	}
 
@@ -449,7 +451,7 @@ class user_class
     if ($nest_level == 0)
 	{
 	  $prefix = '';
-	  $style = " style='font-weight:bold; font_style: italic;'";
+	  $style = " style='font-weight:bold; font-style: italic;'";
 	}
 	elseif ($nest_level == 1)
 	{
@@ -687,6 +689,7 @@ class user_class_admin extends user_class
 						'userclass_parent' => "tinyint(3) unsigned NOT NULL default '0'",
 						'userclass_accum' => "varchar(250) NOT NULL default ''", 
 						'userclass_visibility' => "tinyint(3) unsigned NOT NULL default '0'",
+						'userclass_type'		=>"tinyint(1) unsigned NOT NULL default '0'",
 						'userclass_icon' => "varchar(250) NOT NULL default ''"
 						);		// Note - 'userclass_id' intentionally not in this list
 
@@ -756,6 +759,11 @@ class user_class_admin extends user_class
 	  $this->topdown_tree($parent);
 	  return;
 	}
+	if ($this->class_tree[$parent]['userclass_type'] == UC_TYPE_GROUP)
+	{
+		echo "Bottom up - skip: {$parent}<br />";
+		return;			// Probably just stop here for a group class
+	}
     $rights[]  = $parent;
 	$imp_rights = implode(',',$rights);
 	if ($this->class_tree[$parent]['userclass_accum'] != $imp_rights)
@@ -775,9 +783,12 @@ class user_class_admin extends user_class
   function topdown_tree($our_class) 
   {
     $rights  = array($our_class);				// Accumulator always has rights to its own class
+
+	if ($this->class_tree[$cc] = UC_TYPE_GROUP) return $rights;					// Stop rights accumulation at a group
+
     foreach ($this->class_tree[$our_class]['class_children'] as $cc)
 	{
-	  $rights = array_merge($rights,$this->topdown_tree($cc));				// Recursive call
+		$rights = array_merge($rights,$this->topdown_tree($cc));				// Recursive call
     }
 	$rights = array_unique($rights);
 	$imp_rights = implode(',',$rights);
@@ -875,12 +886,21 @@ class user_class_admin extends user_class
 	  $ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[FALSE][$is_last][$is_open]."' alt='class icon' />\n";
 	}
 	$name_line = '';
-	if ($this->graph_debug) $name_line = $this->class_tree[$listnum]['userclass_id'].":";
-	$name_line .= $this->class_tree[$listnum]['userclass_name'];
+	if ($this->graph_debug) { $name_line = $this->class_tree[$listnum]['userclass_id'].":";  }
+//	if ($this->graph_debug) { $name_line = varset($this->class_tree[$listnum]['userclass_id'], 'XXX').":";  }
+
+	if ($this->class_tree[$listnum]['userclass_type'] == UC_TYPE_GROUP)
+	{
+		$name_line .= '<b>'.$this->class_tree[$listnum]['userclass_name'].'</b> '.UCSLAN_84;	// Highlight groups
+	}
+	else
+	{
+		$name_line .= $this->class_tree[$listnum]['userclass_name'];
+	}
 	if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum'];
 	// Next (commented out) line gives a 'conventional' link
-    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a>
-    </div>";
+    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
+//    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a></div>";
 	//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
 		//<span style='cursor:pointer; vertical-align: bottom' onclick=\"javascript: document.location.href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'\">".$name_line."</span></div>";
     // vertical-align: middle doesn't work! Nor does text-top

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-03-23 10:11:17 $
+|     $Revision: 1.5 $
+|     $Date: 2008-11-27 22:07:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -87,6 +87,13 @@ define('UCSLAN_75', 'Registered and logged in members');
 define('UCSLAN_76', 'Site Administrators');
 define('UCSLAN_77', 'Main site Administrators');
 define('UCSLAN_78', 'Moderators for Forums and other areas');
+define('UCSLAN_79', 'Class type');
+define('UCSLAN_80', 'Standard');
+define('UCSLAN_81', 'Group');
+define('UCSLAN_82', 'A group brings together a number of individual classes');
+define('UCSLAN_83', 'Classes in group');
+define('UCSLAN_84', ' (Group)');
+define('UCSLAN_85', '');
 
 
 define("UCSLAN_UPDATE", 'Update');

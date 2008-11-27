@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-11-09 20:31:10 $
-|     $Author: secretr $
+|     $Revision: 1.14 $
+|     $Date: 2008-11-27 22:07:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,7 +21,7 @@
 if(isset($_REQUEST['ajax_used'])) 
 {
 	define('e_AJAX_REQUEST', true); 
-	$E107['minimal'] = true;
+	$_E107['minimal'] = true;
 } 
 else 
 {
@@ -72,36 +72,41 @@ $params = varset($uc_qs[1],'');
 
 if(e_AJAX_REQUEST) 
 { 
-    $class_num = varset($uc_qs[2],0);
+    $class_num = intval(varset($uc_qs[2],0));
 	if(!$class_num && isset($_POST['edit']))
 	{
 	  $params = 'edit';
-	  $class_num = varset($_POST['existing'],0);
+	  $class_num = intval(varset($_POST['existing'],0));
 	}
 
 	if ($params == 'edit')
 	{
 	    require_once(e_HANDLER.'js_helper.php');
 	    $jshelper = new e_jshelper();
-	    if(!check_allowed($class_num, false)) {
-	      //This will raise an error
-	      //'Access denied' is the message which will be thrown 
-	      //by the JS AJAX handler
-          e_jshelper::sendAjaxError('403', 'Access denied. Form update failed!');
-	  }
-	  $sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
-	  $row = $sql->db_Fetch(MYSQL_ASSOC);
-	  unset($row['userclass_accum']);
-	  $row['createclass'] = UCSLAN_14; //update the submit button value
-      $row['existing'] = $class_num; //required when user tree is clicked
-      //icon
-      $row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif"; 
-      $row["uc_icon_select"] = $row['userclass_icon']; //icons select box
+	    if(!check_allowed($class_num, false)) 
+		{
+			//This will raise an error
+			//'Access denied' is the message which will be thrown 
+			//by the JS AJAX handler
+			e_jshelper::sendAjaxError('403', 'Access denied. Form update failed!');
+		}
+		$sql->db_Select('userclass_classes', '*', "userclass_id='".$class_num."' ");
+		$row = $sql->db_Fetch(MYSQL_ASSOC);
+		if ($row['userclass_type'] != UC_TYPE_GROUP)
+		{
+//			$row['group_classes_select'] = array_flip(explode(',',$row['userclass_accum']));		// Need to do something to fill in the classes array
+		}
+		unset($row['userclass_accum']);
+		$row['createclass'] = UCSLAN_14; //update the submit button value
+		$row['existing'] = $class_num; //required when user tree is clicked
+		//icon
+		$row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif"; 
+		$row["uc_icon_select"] = $row['userclass_icon']; //icons select box
       
-	  //Send the prefered response type
-	  //echo $jshelper->sendJSONResponse('fill-form', $row);  
-	  echo $jshelper->sendXMLResponse('fill-form', $row);
-	  exit;
+		//Send the prefered response type
+		//echo $jshelper->sendJSONResponse('fill-form', $row);  
+		echo $jshelper->sendXMLResponse('fill-form', $row);
+		exit;
 	}
 }
 
@@ -155,7 +160,7 @@ if (isset($_POST['delete']))
 		userclass2_adminlog("02","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
 		if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
 		{	// Delete existing users from class
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 			  $uidList[$row['user_id']] = $row['user_class'];
 			}
@@ -192,8 +197,18 @@ if (isset($_POST['updateclass']) || isset($_POST['createclass']))
 	'userclass_editclass' 	=> intval(varset($_POST['userclass_editclass'],0)),
 	'userclass_parent'		=> intval(varset($_POST['userclass_parent'],0)),
 	'userclass_visibility'	=> intval(varset($_POST['userclass_visibility'],0)),
-	'userclass_icon' 		=> varset($tp->toDB($_POST['userclass_icon']),'')
+	'userclass_icon' 		=> varset($tp->toDB($_POST['userclass_icon']),''),
+	'userclass_type'		=> intval(varset($_POST['userclass_type'],UC_TYPE_STD))
 	);
+	if ($class_record['userclass_type'] == UC_TYPE_GROUP)
+	{
+		$temp = array();
+		foreach ($_POST['group_classes_select'] as $gc)
+		{
+			$temp[] = intval($gc);
+		}
+		$class_record['userclass_accum'] = implode(',',$temp);
+	}
 
   $do_tree = FALSE;
 
@@ -261,36 +276,49 @@ switch ($action)
   case 'config' :
 	if(isset($_POST['edit']))
 	{
-	  $params = 'edit';
-	  $class_num = varset($_POST['existing'],0);
+		$params = 'edit';
+		$class_num = intval(varset($_POST['existing'],0));
 	}
 	else
 	{
-	  $class_num = varset($uc_qs[2],0);
+		$class_num = intval(varset($uc_qs[2],0));
 	}
+	$userclass_id = 0;		// Set defaults for new class to start with
+	$userclass_name = '';
+	$userclass_description = '';
+	$userclass_editclass = e_UC_ADMIN;
+	$userclass_visibility = e_UC_ADMIN;
+	$userclass_parent = e_UC_PUBLIC;
+	$userclass_icon = '';
+	$userclass_type = UC_TYPE_STD;
+	$userclass_groupclass = '';
 	if ($params == 'edit')
 	{
-	  check_allowed($class_num);
-	  $sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
-	  $row = $sql->db_Fetch();
-	  extract($row);
+		check_allowed($class_num);
+		$sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
+		$row = $sql->db_Fetch();
+		$userclass_id = $row['userclass_id'];			// Update fields from DB if editing
+		$userclass_name = $row['userclass_name'];
+		$userclass_description = $row['userclass_description'];
+		$userclass_editclass = $row['userclass_editclass'];
+		$userclass_visibility = $row['userclass_visibility'];
+		$userclass_parent = $row['userclass_parent'];
+		$userclass_icon = $row['userclass_icon'];
+		$userclass_type = $row['userclass_type'];
+		if ($userclass_type == UC_TYPE_GROUP)
+		{
+			$userclass_groupclass = $row['userclass_accum'];
+		}
 	}
 
 	// Get the userclass icons
-	require_once(e_HANDLER."file_class.php");
+	require_once(e_HANDLER.'file_class.php');
 	$fl = new e_file;
-    $rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'blank*');
     $iconpath = e_IMAGE.UC_CLASS_ICON_DIR;
-    $iconlist = $fl->get_files($iconpath,"",$rejectlist);
+    $iconlist = $fl->get_files($iconpath);
 
 
-	$userclass_id = varset($userclass_id,0);
-	$userclass_editclass = varset($userclass_editclass,e_UC_ADMIN);
-	$userclass_visibility = varset($userclass_visibility,e_UC_ADMIN);
-	$userclass_parent = varset($userclass_parent,e_UC_PUBLIC);
-	$userclass_icon = varset($userclass_icon,'');
-
-	$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
+	$class_total = $sql->db_Count('userclass_classes', '(*)');
 
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."' id='classForm'>
@@ -369,25 +397,47 @@ switch ($action)
 		</tr>
 		";
 
-
-
 	$text .= "
 		<tr>
+		<td class='forumheader3'>".UCSLAN_79."</td>
+		<td class='forumheader3'>\n
+		<select name='userclass_type' class='tbox' onchange='setGroupStatus(this)'>
+		<option value='".UC_TYPE_STD."'".(UC_TYPE_STD == $userclass_type ? " selected='selected'" : "").">".UCSLAN_80."</option>\n
+		<option value='".UC_TYPE_GROUP."'".(UC_TYPE_GROUP == $userclass_type ? " selected='selected'" : "").">".UCSLAN_81."</option>\n
+		</select>\n
+		</td>
+		<td class='forumheader3'>".UCSLAN_82."</td>
+		</tr>
+	";
+
+	// Who can manage class
+	$text .= "
+		<tr id='userclass_type_standard' ".(UC_TYPE_GROUP == $userclass_type ? " style='display:none'" : "").">
 		<td class='forumheader3'>".UCSLAN_24."</td>
 		<td class='forumheader3'>";
 	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,"nobody,public,main,admin,classes,matchclass,member").'</select>';
-//		.r_userclass("userclass_editclass", $userclass_editclass, "off", "main,admin,classes,matchclass,public,nobody").
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_32."</td>
 		</tr>
 		";
+
+	// List of class checkboxes for grouping
+	$text .= "
+		<tr id='userclass_type_groups'".(UC_TYPE_STD == $userclass_type ? " style='display:none'" : "").">
+		<td class='forumheader3'>".UCSLAN_83."</td>
+		<td class='forumheader3'>";
+	  $text .= $e_userclass->vetted_tree('group_classes_select',array($e_userclass,'checkbox'),  $userclass_groupclass,"classes,matchclass");
+	$text .= "</td>
+		<td class='forumheader3'>".UCSLAN_32."</td>
+		</tr>
+		";
+
 
 	$text .= "
 		<tr>
 		<td class='forumheader3'>".UCSLAN_34."</td>
 		<td class='forumheader3'>";
 	  $text .= "<select name='userclass_visibility' class='tbox'>".$e_userclass->vetted_tree('userclass_visibility',array($e_userclass,'select'), $userclass_visibility,"main,admin,classes,matchclass,public,member,nobody").'</select>';
-//		.r_userclass("userclass_visibility", $userclass_visibility, "off", "main,admin,classes,matchclass,public,nobody,member").
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_33."</td>
 		</tr>
@@ -496,7 +546,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	$text .= $e_userclass->show_graphical_tree(TRUE);			// Print with debug options
 	$ns->tablerender(UCSLAN_21, $text);
 	
-	$text = "<table cellpadding='3'><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
+	$text = "<table cellpadding='5' cellspacing='0' border='1'><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
 	<tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td><td>Editable classes</td></tr>";
 	$sql->db_Select('user','user_id,user_name,user_class',"ORDER BY user_id LIMIT 0,20",'no_where');
 	while ($row = $sql->db_Fetch())
@@ -988,7 +1038,26 @@ function headerjs()
     			//error handling will be extended in the near future
 				alert(transport.memo.error.message);
     		});
-    		
+
+
+
+function setGroupStatus(dropdown)
+{
+	var temp1 = document.getElementById('userclass_type_standard');
+	var temp2 = document.getElementById('userclass_type_groups');
+	if (!temp1 || !temp2) return;
+	if (dropdown.value == 0)
+	{
+		temp1.style.display = '';
+		temp2.style.display = 'none';
+	}
+	else
+	{
+		temp2.style.display = '';
+		temp1.style.display = 'none';
+	}
+}    		
+
 	//]]>
 	</script>\n";
   if (!e_QUERY) return $script_js;
