@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2008-11-26 23:34:35 $
+|     $Revision: 1.27 $
+|     $Date: 2008-11-27 20:13:58 $
 |     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.26 $
+* @version $Revision: 1.27 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -48,7 +48,7 @@ class db {
 	var $mySQLlanguage;
 	var $mySQLinfo;
 	var $tabset;
-	
+
 	var $total_results;			// Total number of results
 
 	/**
@@ -56,18 +56,18 @@ class db {
 	* @desc db constructor gets language options from the cookie or session
 	* @access public
 	*/
-	function db() 
+	function db()
 	{
 	  global $pref, $eTraffic, $db_defaultPrefix;
 	  $eTraffic->BumpWho('Create db object', 1);
 	  $this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
 	  $langid = 'e107language_'.$pref['cookie_name'];
-	  if ($pref['user_tracking'] == 'session') 
+	  if ($pref['user_tracking'] == 'session')
 	  {
 		if (!isset($_SESSION[$langid])) { return; }
 		$this->mySQLlanguage = $_SESSION[$langid];
-	  } 
-	  else 
+	  }
+	  else
 	  {
 		if (!isset($_COOKIE[$langid])) { return; }
 		$this->mySQLlanguage = $_COOKIE[$langid];
@@ -92,7 +92,7 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = FALSE, $mySQLPrefix = MPREFIX) 
+	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = FALSE, $mySQLPrefix = MPREFIX)
 	{
 	  global $eTraffic, $db_ConnectionID, $db_defaultPrefix;
 	  $eTraffic->BumpWho('db Connect', 1);
@@ -114,16 +114,16 @@ class db {
 	  }
 	  else
 	  {
-		if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink)) 
+		if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
 		  return 'e1';
-		} 
+		}
 	  }
 
-	  if (!@mysql_select_db($this->mySQLdefaultdb,$this->mySQLaccess)) 
+	  if (!@mysql_select_db($this->mySQLdefaultdb,$this->mySQLaccess))
 	  {
 		return 'e2';
-	  } 
+	  }
 
 	  $this->dbError('dbConnect/SelectDB');
 
@@ -138,9 +138,9 @@ class db {
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Mark_Time($sMarker) 
+	function db_Mark_Time($sMarker)
 	{
-	  if (E107_DEBUG_LEVEL > 0) 
+	  if (E107_DEBUG_LEVEL > 0)
 	  {
 		global $db_debug;
 		$db_debug->Mark_Time($sMarker);
@@ -165,7 +165,7 @@ class db {
 		global $tp, $e107;
 		list($time_usec, $time_sec) = explode(" ", microtime());
 		$uid = (USER) ? USERID : '0';
-		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS"); 
+		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS");
 		$ip = $e107->getip();
 		$qry = $tp->toDB($log_query);
 		$this->db_Insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
@@ -214,7 +214,7 @@ class db {
 		  // Have to do this before any debug action, otherwise this bit gets messed up
 		  $fr = mysql_query("SELECT FOUND_ROWS()", $this->mySQLaccess);
 		  $rc = mysql_fetch_array($fr);
-		  $this->total_results = $rc['FOUND_ROWS()']; 		  
+		  $this->total_results = $rc['FOUND_ROWS()'];
 		}
 
 		if (E107_DEBUG_LEVEL) {
@@ -259,7 +259,7 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '') 
+	function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 	  global $db_mySQLQueryCount;
 
@@ -311,7 +311,13 @@ class db {
 		if(is_array($arg))
 		{
 			$keyList= "`".implode("`,`", array_keys($arg))."`";
-			$valList= "'".implode("','", $arg)."'";
+			$tmp = array();
+			foreach($arg as $fv)
+			{
+				$tmp[] = $this->_getFieldValue($fv);
+			}
+			$valList= implode(', ', $tmp);
+			unset($tmp);
 			$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
 		}
 		else
@@ -365,35 +371,21 @@ class db {
 
 	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
-	   	 	$new_data = '';
+	   	$new_data = '';
 			$the_where = $arg['WHERE'];
 			unset($arg['WHERE']);
 			foreach ($arg as $fn => $fv)
 			{
-			  $new_data .= ($new_data) ? ", " : "";
-			  if(!is_array($fv)) { $fv = array('string', $fv); }
-				switch ($fv[0])
-		  		{
-			  		case 'int':
-					  $new_data .= "`{$fn}`=".(int)$fv[1];
-					  break;
-					
-					case 'cmd':
-					  $new_data .= "`{$fn}`={$fv[1]}";
-					  break;
-					
-					default:
-					  $new_data .= "`{$fn}`='{$fv[1]}'";
-					  break;
-			  	}
-			  }
-			$arg = $new_data ." WHERE ". $the_where;
+				$new_data .= ($new_data ? ', ' : '');
+				$new_data .= "`{$fn}`=".$this->_getFieldValue($fv);
+			}
+			$arg = $new_data .' WHERE '. $the_where;
 		}
 
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark))
 		{
 			$result = mysql_affected_rows($this->mySQLaccess);
-			if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
+			if ($result == -1) { return false; }	// Error return from mysql_affected_rows
 			return $result;
 		}
 		else
@@ -403,13 +395,48 @@ class db {
 		}
 	}
 
+	/**
+	* @return mixed
+	* @param string|array $fieldValue
+	* @desc Return new field value in proper format<br />
+	*
+	* @access private
+	*/
+	function _getFieldValue($fieldValue)
+	{
+		if(!is_array($fieldValue))
+		{
+			return "'{$fieldValue}'";
+		}
+
+		switch ($fieldValue[0])
+		{
+			case 'int':
+				return (int)$fieldValue[1];
+				break;
+
+			case 'cmd':
+				return $fieldValue[1];
+				break;
+
+			case 'todb':
+				$e107 = e107::getInstance();
+				return "'".$e107->tp->toDB($fieldValue[1])."'";
+				break;
+
+			default:
+				return "'{$fieldValue[1]}'";
+				break;
+	  	}
+	}
+
 	/* Similar to db_Update(), but splits the variables and the 'WHERE' clause.
 		$vars may be an array (fieldname=>newvalue) of fields to be updated, or a simple list.
 		$arg is usually a 'WHERE' clause
-		The way the code is written at the moment, a call to db_Update() with just the first two parameters specified can be 
+		The way the code is written at the moment, a call to db_Update() with just the first two parameters specified can be
 			converted simply by changing the function name - it will still work.
 	*/
-	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '') 
+	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 	  $table = $this->db_IsLang($table);
 	  $this->mySQLcurTable = $table;
@@ -431,13 +458,13 @@ class db {
 		}
 		$vars = '';
 	  }
-	  if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg, NULL, 'db_UpdateArray', $debug, $log_type, $log_remark)) 
+	  if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg, NULL, 'db_UpdateArray', $debug, $log_type, $log_remark))
 	  {
 		$result = mysql_affected_rows($this->mySQLaccess);
 		if ($result == -1) return FALSE;	// Error return from mysql_affected_rows
 		return $result;
-	  } 
-	  else 
+	  }
+	  else
 	  {
 		$this->dbError("db_Update ($query)");
 		return FALSE;
@@ -857,10 +884,10 @@ class db {
 	  }
 
         $result = mysql_query("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table,$this->mySQLaccess);
-        if (mysql_num_rows($result) > 0) 
+        if (mysql_num_rows($result) > 0)
 		{
           $c=0;
-   		  while ($row = mysql_fetch_assoc($result)) 
+   		  while ($row = mysql_fetch_assoc($result))
 		  {
 			if(is_numeric($fieldid))
 			{
