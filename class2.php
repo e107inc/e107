@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.364 $
-|     $Date: 2008-08-03 08:00:19 $
+|     $Revision: 1.365 $
+|     $Date: 2008-11-29 13:10:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1755,10 +1755,13 @@ function array_stripslashes($data) {
 $sql->db_Mark_Time('(After class2)');
 
 
-function e107_ini_set($var, $value){
-	if (function_exists('ini_set')){
-		ini_set($var, $value);
+function e107_ini_set($var, $value)
+{
+	if (function_exists('ini_set'))
+	{
+		return ini_set($var, $value);
 	}
+	return FALSE;
 }
 
 ?>
