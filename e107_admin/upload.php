@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-11-14 06:01:06 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2008-11-29 15:27:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -95,10 +95,15 @@ if ($action == "dl")
 
 require_once(e_HANDLER.'upload_handler.php');
 require_once("auth.php");
-require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER.'userclass_class.php');
 $gen = new convert;
-require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
+
+
+// Need the userclass object for class selectors
+if (!is_object($e_userclass)) { $e_userclass = new user_class; }
+
 
 if (isset($_POST['optionsubmit'])) 
 {
