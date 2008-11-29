@@ -11,22 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-11-29 21:16:48 $
-|     $Author: e107steved $
+|     $Revision: 1.17 $
+|     $Date: 2008-11-29 23:31:02 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-
-//AJAX check
-if(isset($_REQUEST['ajax_used'])) 
-{
-	define('e_AJAX_REQUEST', true); 
-	$_E107['minimal'] = true;
-} 
-else 
-{
-	define('e_AJAX_REQUEST', false); 
-}
 
 require_once("../class2.php");
 if (!getperms("4")) 
@@ -70,6 +59,7 @@ if (e_QUERY)
 $action = varset($uc_qs[0],'config');
 $params = varset($uc_qs[1],'');
 
+//AJAX request check is already  made by the API 
 if(e_AJAX_REQUEST) 
 { 
     $class_num = intval(varset($uc_qs[2],0));
@@ -116,7 +106,7 @@ if(e_AJAX_REQUEST)
 		$row['existing'] = $class_num; //required when user tree is clicked
 		//icon
 		$row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif"; 
-		$row["uc_icon_select"] = $row['userclass_icon']; //icons select box
+		$row['uc_icon_select'] = $row['userclass_icon']; //icons select box
 
 		//Send the prefered response type
 		//echo $jshelper->sendJSONResponse('fill-form', $row);  
@@ -377,7 +367,7 @@ switch ($action)
 	  $text .= "
 		<input class='button' type='submit' id='edit' name='edit' value='".LAN_EDIT."' />
 		<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
-		<input type='checkbox' name='confirm' value='1' /><span class='smalltext'> ".UCSLAN_11."</span>
+		<input type='checkbox' name='confirm' id='confirm' value='1' /><label for='confirm' class='smalltext'> ".UCSLAN_11."</span>
 		</td>
 		</tr>";
 	}

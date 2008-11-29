@@ -8,8 +8,8 @@
  * e107 Javascript API
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-11-29 17:35:38 $
+ * $Revision: 1.11 $
+ * $Date: 2008-11-29 23:31:02 $
  * $Author: secretr $
  * 
 */
@@ -2305,8 +2305,8 @@ var e107AjaxAbstract = Class.create ({
         		case 'radio': 
         			el.checked = (el.value == data);
         			break;
-        		default:
-        			el.value = data;
+        		default: 
+        			el.value = data.unescapeHTML(); //browsers doesn't unescape entities on JS update, why?!
         			break;
         	}
             
