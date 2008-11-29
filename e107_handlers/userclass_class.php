@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-11-29 17:35:38 $
-|     $Author: secretr $
+|     $Revision: 1.21 $
+|     $Date: 2008-11-29 21:16:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,6 +23,8 @@ This class handles everything a user needs. Admin functions inherit from it.
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+require_once(e_HANDLER.'arraystorage_class.php');
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
 
@@ -41,6 +43,7 @@ define("e_UC_NOBODY", 255);
 define("e_UC_ADMINMOD",249);
 define("e_UC_MODS",248);
 //define("e_UC_USERS",247);
+define('e_UC_SPECIAL_BASE',245);			// Assign class IDs 245 and above for fixed/special purposes
 
 define('UC_CLASS_ICON_DIR','userclasses/');		// Directory for userclass icons
 define('UC_ICON_DIR',e_IMAGE.'generic/');		// Directory for the icons used in the admin tree displays
@@ -48,6 +51,8 @@ define('UC_ICON_DIR',e_IMAGE.'generic/');		// Directory for the icons used in th
 define('e_UC_BLANK','-1');
 define('UC_TYPE_STD', '0');
 define('UC_TYPE_GROUP', '1');
+
+define('UC_CACHE_TAG', 'nomd5_classtree');
 
 class user_class
 {
@@ -78,7 +83,7 @@ class user_class
 	  $this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER, 
 									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'readonly' => e_UC_READONLY);
 
-      $this->read_tree(TRUE);			// Initialise the classes on entry
+      $this->readTree(TRUE);			// Initialise the classes on entry
 	}
 
 
@@ -86,59 +91,73 @@ class user_class
 	  Ensure the tree of userclass data is stored in our object. 
 	  Only read if its either not present, or the $force flag is set
 	*/
-  function read_tree($force = FALSE)
+  function readTree($force = FALSE)
   {
-    if (isset($this->class_tree) && !$force) return $this->class_tree;
+    if (isset($this->class_tree) && count($this->class_tree) && !$force) return $this->class_tree;
+	
+	global $e107;
 	$this->class_tree = array();
 	$this->class_parents = array();
 
-	$this->sql_r->db_Select("userclass_classes", '*', "ORDER BY userclass_parent", 'nowhere');		// The order statement should give a consistent return
-
-	while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC)) 
+	$array = new ArrayData;
+	if ($temp = $e107->ecache->retrieve_sys(UC_CACHE_TAG))
 	{
-	  $this->class_tree[$row['userclass_id']] = $row;
-	  $this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
+		$this->class_tree = $array->ReadArray($temp);
+		unset($temp);
 	}
-
-	// Add in any fixed classes that aren't already defined
-	foreach ($this->fixed_classes as $c => $d)
+	else
 	{
-	  if (!isset($this->class_tree[$c]) && ($c != e_UC_PUBLIC))
-	  {
-//		$this->class_tree[$c]['userclass_parent'] = (($c == e_UC_MEMBER) || ($c == e_UC_NOBODY)) ? e_UC_PUBLIC :  e_UC_MEMBER;
-		$this->class_tree[$c]['userclass_parent'] = (($c == e_UC_ADMIN) || ($c == e_UC_MAINADMIN)) ? e_UC_MEMBER : e_UC_PUBLIC ;
-		$this->class_tree[$c]['userclass_id'] = $c;
-		$this->class_tree[$c]['userclass_name'] = $d;
-		$this->class_tree[$c]['userclass_description'] = 'Fixed class';
-		$this->class_tree[$c]['userclass_visibility'] = e_UC_PUBLIC;
-		$this->class_tree[$c]['userclass_editclass'] = e_UC_MAINADMIN;
-		$this->class_tree[$c]['userclass_accum'] = $c;
-		$this->class_tree[$c]['userclass_type'] = UC_TYPE_STD;
-	  }
+		$this->sql_r->db_Select("userclass_classes", '*', "ORDER BY userclass_parent", 'nowhere');		// The order statement should give a consistent return
+
+		while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC)) 
+		{
+			$this->class_tree[$row['userclass_id']] = $row;
+			$this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
+		}
+
+
+		// Add in any fixed classes that aren't already defined
+		foreach ($this->fixed_classes as $c => $d)
+		{
+			if (!isset($this->class_tree[$c]) && ($c != e_UC_PUBLIC))
+			{
+		//		$this->class_tree[$c]['userclass_parent'] = (($c == e_UC_MEMBER) || ($c == e_UC_NOBODY)) ? e_UC_PUBLIC :  e_UC_MEMBER;
+				$this->class_tree[$c]['userclass_parent'] = (($c == e_UC_ADMIN) || ($c == e_UC_MAINADMIN)) ? e_UC_MEMBER : e_UC_PUBLIC ;
+				$this->class_tree[$c]['userclass_id'] = $c;
+				$this->class_tree[$c]['userclass_name'] = $d;
+				$this->class_tree[$c]['userclass_description'] = 'Fixed class';
+				$this->class_tree[$c]['userclass_visibility'] = e_UC_PUBLIC;
+				$this->class_tree[$c]['userclass_editclass'] = e_UC_MAINADMIN;
+				$this->class_tree[$c]['userclass_accum'] = $c;
+				$this->class_tree[$c]['userclass_type'] = UC_TYPE_STD;
+			}
+		}
+
+		$userCache = $array->WriteArray($this->class_tree, FALSE);
+		$e107->ecache->set_sys(UC_CACHE_TAG,$userCache);
+		unset($userCache);
 	}
 
 
 	// Now build the tree
 	foreach ($this->class_tree as $uc)
 	{
-	  if ($uc['userclass_parent'] == e_UC_PUBLIC)
-//	  if (($uc['userclass_parent'] == e_UC_PUBLIC) || ($uc['userclass_parent'] == e_UC_NOBODY) || ($uc['userclass_parent'] == e_UC_MEMBER))
-	  {	// Note parent (top level) classes
-	    $this->class_parents[$uc['userclass_id']] = $uc['userclass_id'];
-	  }
-	  else
-	  {
-	    if (!array_key_exists($uc['userclass_parent'],$this->class_tree))
-		{
-		  echo "Orphaned class record: ID=".$uc['userclass_id']." Name=".$uc['userclass_name']."  Parent=".$uc['userclass_parent']."<br />";
+		if ($uc['userclass_parent'] == e_UC_PUBLIC)
+		{	// Note parent (top level) classes
+			$this->class_parents[$uc['userclass_id']] = $uc['userclass_id'];
 		}
 		else
-		{	// Add to array
-		  $this->class_tree[$uc['userclass_parent']]['class_children'][] = $uc['userclass_id'];
+		{
+			if (!array_key_exists($uc['userclass_parent'],$this->class_tree))
+			{
+				echo "Orphaned class record: ID=".$uc['userclass_id']." Name=".$uc['userclass_name']."  Parent=".$uc['userclass_parent']."<br />";
+			}
+			else
+			{	// Add to array
+				$this->class_tree[$uc['userclass_parent']]['class_children'][] = $uc['userclass_id'];
+			}
 		}
-	  }
 	} 
-	
   }
 
 
@@ -514,7 +533,7 @@ class user_class
 	function uc_get_classlist($filter = FALSE)
 	{
 	  $ret = array();
-	  $this->read_tree(FALSE);				// Make sure we have data
+	  $this->readTree(FALSE);				// Make sure we have data
 	  foreach ($this->class_tree as $k => $v)
 	  {
 	    if (!$filter || check_class($filter))
@@ -560,6 +579,20 @@ class user_class
 	    return $this->class_tree[$id]['userclass_icon'];
 	  }
 	  return '';
+	}
+	
+	function ucGetClassIDFromName($name)
+	{
+		$this->readTree();
+		// We have all the info - can just search the array
+		foreach ($this->class_tree as $uc => $info)
+		{
+			if ($info['userclass_name'] == $name)
+			{
+				return $uc;
+			}
+		}
+		return FALSE;		// not found
 	}
 	
 	
@@ -740,7 +773,7 @@ class user_class_admin extends user_class
   function calc_tree()
   {
 //    echo "Calc Tree<br />";
-    $this->read_tree(TRUE);			// Make sure we have accurate data
+    $this->readTree(TRUE);			// Make sure we have accurate data
 	foreach ($this->class_parents as $cp)
 	{
 	  $rights = array();
@@ -966,12 +999,38 @@ class user_class_admin extends user_class
 	}
 	return $ret;
   }
-  
+
+
+	// Return an unused class ID - FALSE if none spare. Misses the predefined classes.
+	function findNewClassID()
+	{
+		$i = 1;
+		// Start by allocating a new class with a number higher than any previously allocated
+		foreach ($this->class_tree as $id => $r)
+		{
+			if ($id < e_UC_SPECIAL_BASE)
+			{
+				$i = max($i,$id);
+			}
+		}
+		$i++;
+		if ($i < e_UC_SPECIAL_BASE) return $i;
+		
+		// Looks like we've had a lot of activity in classes - try and find a gap.
+		for ($i = 1; ($i < e_UC_SPECIAL_BASE); $i++)
+		{
+			if (!isset($this->class_tree[$i])) return $i;
+		}
+		return FALSE;			// Just in case all classes assigned!
+	}
+
+
   
   function add_new_class($classrec)
   {
 //    echo "Add new class<br />";
     $this->sql_r->db_Insert('userclass_classes',$this->copy_rec($classrec, TRUE));
+	$this->clearCache();
   }
   
   
@@ -994,6 +1053,7 @@ class user_class_admin extends user_class
 	  }
 	}
 	$this->sql_r->db_Update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'");
+	$this->clearCache();
   }
   
  
@@ -1008,35 +1068,45 @@ class user_class_admin extends user_class
 	  if ($c['userclass_visibility'] == $class_id) return FALSE;
 	}
     if (!$this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$class_id}'")) return FALSE;
-	$this->read_tree(TRUE);			// Re-read the class tree
+	$this->clearCache();
+	$this->readTree(TRUE);			// Re-read the class tree
 	return TRUE;
   }
 
 
-
-  
-  // Update the userclass table with the extra fields for 0.8
-  // Return TRUE if all fields present. Return FALSE if update needed
-  function update_db($check_only = FALSE)
-  {	// Just run through all the fields that should be there, and add if not
-
-    $fn = 1;		// Count fields
-	$prev_field = 'userclass_id';
-	foreach ($this->field_list as $fl => $parms)
+	// Certain fields on admin records have constraints on their values.
+	// Checks the passed array, and updates any values which are unacceptable.
+	// Returns TRUE if nothing changed, FALSE if changes made
+	function checkAdminInfo(&$data, $id)
 	{
-	  $field_name = $this->sql_r->db_Field("userclass_classes",$fn);
-//	  echo "Compare: {$field_name} : {$fl}<br />";
-	  if ($field_name != $fl)
-	  {
-	    if ($check_only) return FALSE;
-		$this->sql_r->db_Select_gen("ALTER TABLE #userclass_classes ADD `{$fl}` {$parms} AFTER `{$prev_field}`;");
-	  }
-	  $fn++;
-	  $prev_field = $fl;
+		$ret = TRUE;
+		if ($id < e_UC_SPECIAL_BASE) return TRUE;
+		if (isset($data['userclass_parent']))
+		{
+			if ($data['userclass_parent'] < e_UC_SPECIAL_BASE)
+			{
+				$data['userclass_parent'] = e_UC_NOBODY;
+				$ret = FALSE;
+			}
+		}
+		if (isset($data['userclass_editclass']))
+		{
+			if ($id == e_UC_MAINADMIN)
+			{
+				if ($data['userclass_editclass'] < e_UC_MAINADMIN)
+				{
+					$data['userclass_editclass'] = e_UC_MAINADMIN;
+					$ret = FALSE;
+				}
+			}
+			elseif ($data['userclass_editclass'] < e_UC_SPECIAL_BASE)
+			{
+				$data['userclass_editclass'] = e_UC_MAINADMIN;
+				$ret = FALSE;
+			}
+		}
+		return $ret;
 	}
-	return TRUE;
-  }
-  
 
 
   // Set default tree structure
@@ -1088,6 +1158,12 @@ class user_class_admin extends user_class
 	  }
 	}
   }
+ 
+	function clearCache()
+	{
+		global $e107;
+		$e107->ecache->clear_sys(UC_CACHE_TAG);
+	}
 }
 
 
