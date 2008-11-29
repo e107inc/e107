@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-02-03 15:22:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-29 13:39:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -124,7 +124,7 @@ class private_message
 					$ret .= LAN_PM_39.": {$u['user_name']} <br />";
 				}
 			}
-			if(!$pmid = $sql->db_Insert("private_msg", "0, '".intval($vars['from_id'])."', '".$tp -> toDB($toclass)."', '".intval($sendtime)."', '1', '{$pm_subject}', '{$pm_message}', '0', '0', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
+			if(!$pmid = $sql->db_Insert("private_msg", "0, '".intval($vars['from_id'])."', '".$tp -> toDB($toclass)."', '".intval($sendtime)."', '1', '{$pm_subject}', '{$pm_message}', '0', '1', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
 			{
 				$ret .= LAN_PM_41."<br />";
 			}
