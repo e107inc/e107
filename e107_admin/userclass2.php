@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-11-27 22:07:30 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2008-11-29 17:35:38 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -92,9 +92,24 @@ if(e_AJAX_REQUEST)
 		}
 		$sql->db_Select('userclass_classes', '*', "userclass_id='".$class_num."' ");
 		$row = $sql->db_Fetch(MYSQL_ASSOC);
-		if ($row['userclass_type'] != UC_TYPE_GROUP)
-		{
-//			$row['group_classes_select'] = array_flip(explode(',',$row['userclass_accum']));		// Need to do something to fill in the classes array
+		
+		//Response action - reset all group checkboxes
+		$jshelper->addResponseAction('reset-checked', array('group_classes_select' => '0'));
+		
+		//it's grouped userclass
+		if ($row['userclass_type'] == UC_TYPE_GROUP)
+		{	
+			//Response action - show group, hide standard
+			$jshelper->addResponseAction('element-invoke-by-id', array('show' => 'userclass_type_groups', 'hide' => 'userclass_type_standard'));
+			
+			//fill in the classes array
+			$tmp = explode(',',$row['userclass_accum']);
+			foreach ($tmp as $uid) {
+				$row['group_classes_select_'.$uid] = $uid;
+			}
+		} else {
+			//hide group, show standard rows
+			$jshelper->addResponseAction('element-invoke-by-id', array('hide' => 'userclass_type_groups', 'show' => 'userclass_type_standard'));
 		}
 		unset($row['userclass_accum']);
 		$row['createclass'] = UCSLAN_14; //update the submit button value
@@ -102,7 +117,7 @@ if(e_AJAX_REQUEST)
 		//icon
 		$row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif"; 
 		$row["uc_icon_select"] = $row['userclass_icon']; //icons select box
-      
+
 		//Send the prefered response type
 		//echo $jshelper->sendJSONResponse('fill-form', $row);  
 		echo $jshelper->sendXMLResponse('fill-form', $row);
@@ -1022,7 +1037,6 @@ function headerjs()
                     \$('updatecancel').show();
 					
                     //If link is clicked use it's href as a target
-                    
     				$('classForm').fillForm($(document.body), { handler: target.readAttribute('href') });
                 }
             }));
