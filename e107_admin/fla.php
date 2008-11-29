@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-08-28 19:22:40 $
+|     $Revision: 1.14 $
+|     $Date: 2008-11-29 13:24:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -53,9 +53,9 @@ function deleteBan($banID, $banIP = '')
 			$banIP = $at['gen_ip'];
 		}
 	}
+	$sql2->db_Delete("generic", "gen_id='{$banID}' ");			// Delete from generic table regardless
 	if ($banIP == '') return FALSE;
-	$sql2->db_Delete("banlist", "banlist_ip='{$banIP}'");		// Delete from main banlist
-	$sql2->db_Delete("generic", "gen_id='{$banID}' ");			// Delete from generic table
+	$sql2->db_Delete("banlist", "banlist_ip='{$banIP}'");		// Delete from main banlist only if we've got an IP address
 	return TRUE;
 }
 
