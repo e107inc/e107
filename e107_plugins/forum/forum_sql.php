@@ -28,6 +28,7 @@ CREATE TABLE forum_thread (
   `thread_active` tinyint(3) unsigned NOT NULL default '0',
   `thread_lastpost` int(10) unsigned NOT NULL default '0',
   `thread_s` tinyint(1) unsigned NOT NULL default '0',
+  `thread_datestamp` int(10) unsigned default NULL,
   `thread_user` int(10) unsigned default NULL,
   `thread_user_anon` varchar(30) NULL,
   `thread_lastuser` int(10) unsigned default NULL,

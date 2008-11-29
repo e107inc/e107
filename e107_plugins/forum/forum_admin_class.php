@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.3 $
-* $Date: 2008-11-26 19:59:06 $
+* $Revision: 1.4 $
+* $Date: 2008-11-29 01:24:27 $
 * $Author: mcfly_e107 $
 *
 */
@@ -394,6 +394,13 @@ class forumAdmin
 				$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
 			}
 		}
+		else
+		{
+			$row = array();
+			$row['forum_name'] = '';
+			$row['forum_class'] = e_UC_PUBLIC;
+			$row['forum_postclass'] = e_UC_MEMBER;
+		}
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
@@ -448,6 +455,15 @@ class forumAdmin
 			{
 				$fInfo = $e107->sql->db_Fetch();
 			}
+		}
+		else
+		{
+			$fInfo = array(
+				'forum_parent' => 0,
+				'forum_moderators' => e_UC_ADMIN,
+				'forum_class' => e_UC_PUBLIC,
+				'forum_postclass' => e_UC_MEMBER
+			);
 		}
 
 		$text = "<div style='text-align:center'>

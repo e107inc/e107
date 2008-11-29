@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2008-11-27 20:13:58 $
+|     $Revision: 1.28 $
+|     $Date: 2008-11-29 01:24:27 $
 |     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.27 $
+* @version $Revision: 1.28 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -310,11 +310,12 @@ class db {
 		$this->mySQLcurTable = $table;
 		if(is_array($arg))
 		{
+			$fieldTypes = $this->_getTypes($arg);
 			$keyList= "`".implode("`,`", array_keys($arg))."`";
 			$tmp = array();
-			foreach($arg as $fv)
+			foreach($arg as $fk => $fv)
 			{
-				$tmp[] = $this->_getFieldValue($fv);
+				$tmp[] = $this->_getFieldValue($fk, $fv, $fieldTypes);
 			}
 			$valList= implode(', ', $tmp);
 			unset($tmp);
@@ -332,10 +333,13 @@ class db {
 		}
 
 
-		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
+		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark ))
+		{
 			$tmp = mysql_insert_id($this->mySQLaccess);
 			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
-		} else {
+		}
+		else
+		{
 			$this->dbError("db_Insert ($query)");
 			return FALSE;
 		}
@@ -372,12 +376,15 @@ class db {
 	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
 	   	$new_data = '';
+			print_a($arg);
 			$the_where = $arg['WHERE'];
 			unset($arg['WHERE']);
+			echo "where = {$the_where} <br />";
+			$fieldTypes = $this->_getTypes($arg);
 			foreach ($arg as $fn => $fv)
 			{
 				$new_data .= ($new_data ? ', ' : '');
-				$new_data .= "`{$fn}`=".$this->_getFieldValue($fv);
+				$new_data .= "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
 			}
 			$arg = $new_data .' WHERE '. $the_where;
 		}
@@ -395,6 +402,25 @@ class db {
 		}
 	}
 
+	function _getTypes(&$arg)
+	{
+		if(isset($arg['_FIELD_TYPES']))
+		{
+			if(!isset($arg['_FIELD_TYPES']['_DEFAULT']))
+			{
+				$arg['_FIELD_TYPES']['_DEFAULT'] = 'todb';
+			}
+			$fieldTypes = $arg['_FIELD_TYPES'];
+			unset($arg['_FIELD_TYPES']);
+		}
+		else
+		{
+			$fieldTypes = array();
+			$fieldTypes['_DEFAULT'] = 'string';
+		}
+		return $fieldTypes;
+	}
+
 	/**
 	* @return mixed
 	* @param string|array $fieldValue
@@ -402,30 +428,30 @@ class db {
 	*
 	* @access private
 	*/
-	function _getFieldValue($fieldValue)
+	function _getFieldValue($fieldKey, $fieldValue, &$fieldTypes)
 	{
-		if(!is_array($fieldValue))
-		{
-			return "'{$fieldValue}'";
-		}
+		if($fieldValue == '_NULL_') { return 'NULL';}
+		$type = (isset($fieldTypes[$fieldKey]) ? $fieldTypes[$fieldKey] : $fieldTypes['_DEFAULT']);
 
-		switch ($fieldValue[0])
+		switch ($type)
 		{
 			case 'int':
-				return (int)$fieldValue[1];
+				return (int)$fieldValue;
 				break;
 
 			case 'cmd':
-				return $fieldValue[1];
+				return $fieldValue;
+				break;
+
+			case 'string':
+				return "'{$fieldValue}'";
 				break;
 
 			case 'todb':
-				$e107 = e107::getInstance();
-				return "'".$e107->tp->toDB($fieldValue[1])."'";
-				break;
-
 			default:
-				return "'{$fieldValue[1]}'";
+				if($fieldValue == '') { return ''; }
+				$e107 = e107::getInstance();
+				return "'".$e107->tp->toDB($fieldValue)."'";
 				break;
 	  	}
 	}

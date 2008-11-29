@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-11-27 03:02:26 $
+|     $Revision: 1.19 $
+|     $Date: 2008-11-29 01:24:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -215,7 +215,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 	}
 	else
 	{
-		if ($fp->flood('forum_t', 'thread_datestamp') == false && !ADMIN)
+		if ($fp->flood('forum_thread', 'thread_datestamp') == false && !ADMIN)
 		{
 			echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
 			exit;
@@ -228,29 +228,36 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$postInfo['post_user'] = USERID;
 			$threadInfo['thread_lastuser'] = USERID;
 			$threadInfo['thread_user'] = USERID;
+			$threadInfo['thread_lastuser_anon'] = '';
 		}
 		else
 		{
-			$postInfo['post_anon_name'] = $e107->tp->toDB($_POST['anonname']);
-			$threadInfo['thread_lastuser'] = $postInfo['post_anon_name']; 
-			$threadInfo['thread_user_anon'] = $postInfo['post_anon_name']; 
+			$postInfo['post_user_anon'] = $_POST['anonname'];
+			$threadInfo['thread_lastuser_anon'] = $_POST['anonname'];
+			$threadInfo['thread_user_anon'] = $_POST['anonname'];
 		}
-		$time = time(); 
-		$postInfo['post_entry'] = $e107->tp->toDB($_POST['post']);
+		$time = time();
+		$postInfo['post_entry'] = $_POST['post'];
 		$postInfo['post_forum'] = $forum_id;
 		$postInfo['post_datestamp'] = $time;
 		$threadInfo['thread_lastpost'] = $time;
-		
+
+
 		switch($action)
 		{
+			// Reply only.  Add the post, update thread record with latest post info.
+			// Update forum with latest post info
 			case 'rp':
 				$postInfo['post_thread'] = $id;
 				$result = $forum->postAdd($postInfo);
 				break;
 
+
+			// New thread started.  Add the thread info (with lastest post info), add the post.
+			// Update forum with latest post info
 			case 'nt':
-				$threadInfo['thread_s'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
-				$threadInfo['thread_name'] = $e107->tp->toDB($_POST['subject']);
+				$threadInfo['thread_s'] = (MODERATOR ? $_POST['threadtype'] : 0);
+				$threadInfo['thread_name'] = $_POST['subject'];
 				$threadInfo['thread_forum_id'] = $forum_id;
 				$threadInfo['thread_active'] = 1;
 				$threadInfo['thread_datestamp'] = $time;
@@ -264,8 +271,8 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 //		{
 //			$subject = "[".LAN_402."] ".$subject;
 //		}
-		print_a($threadInfo);
-		print_a($postInfo);
+//		print_a($threadInfo);
+//		print_a($postInfo);
 		exit;
 
 		$result = $forum->postAdd($postInfo, $threadInfo);

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-11-27 03:02:26 $
+|     $Revision: 1.11 $
+|     $Date: 2008-11-29 01:24:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -21,10 +21,26 @@ if (!defined('e107_INIT')) { exit; }
 class e107forum
 {
 	var $permList = array();
+	var $fieldTypes = array();
 
 	function e107forum()
 	{
 		$this->loadPermList();
+		$this->fieldTypes['forum_post']['post_user'] = 'int';
+		$this->fieldTypes['forum_post']['post_forum'] = 'int';
+		$this->fieldTypes['forum_post']['post_datestamp'] = 'int';
+		$this->fieldTypes['forum_post']['post_thread'] = 'int';
+
+		$this->fieldTypes['forum_thread']['thread_user'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_lastpost'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_lastuser'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_s'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_forum_id'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_active'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_datestamp'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_views'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_replies'] = 'int';
+
 //		print_a($this->permList);
 	}
 
@@ -98,11 +114,13 @@ class e107forum
 	 *
 	 * If threadinfo is given, then we're adding a new thread.
 	 * We must get thread_id to provide to postInfo after insertion
-	*/  
-	function postAdd($postInfo, $updateThread = true)
+	*/
+	function postAdd($postInfo, $updateThread = true, $updateForum = true)
 	{
 		$e107 = e107::getInstance();
 		$result = $e107->sql->db_Insert('forum_post', $postInfo, true);
+		$forumInfo = array();
+
 		if($result && $updateThread)
 		{
 			$threadInfo = array();
@@ -110,34 +128,73 @@ class e107forum
 			{
 				$threadInfo['thread_lastuser'] = $postInfo['post_user'];
 				$threadInfo['thread_lastuser_anon'] = '';
+				$forumInfo['forum_lastpost_user'] = $postInfo['post_user'];
+				$forumInfo['forum_lastpost_user_anon'] = '';
 			}
 			else
 			{
-				$threadInfo['thread_lastuser'] = array('int', 0);
+				$threadInfo['thread_lastuser'] = 0;
 				$threadInfo['thread_lastuser_anon'] = $postInfo['post_anon_name'];
+				$forumInfo['forum_lastpost_user'] = 0;
+				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_anon_name'];
 			}
-			$threadInfo['thread_lastpost'] = array('int', $postInfo['post_datestamp']);
-			$threadInfo['thread_total_replies'] = array('cmd', 'thread-total_replies + 1');
+			$threadInfo['thread_lastpost'] = $postInfo['post_datestamp'];
+			$threadInfo['thread_total_replies'] = 'thread-total_replies + 1';
 			$threadInfo['WHERE'] = 'thread_id = '.$postInfo['post_thread'];
+
+			$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+			$threadInfo['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 			$result = $e107->sql->db_Update('forum_thread', $threadInfo, true);
+
+		}
+		if($result && $updateForum)
+		{
+			if(varset($postInfo['post_user']))
+			{
+				$forumInfo['forum_lastpost_user'] = $postInfo['post_user'];
+				$forumInfo['forum_lastpost_user_anon'] = '_NULL_';
+			}
+			else
+			{
+				$forumInfo['forum_lastpost_user'] = 0;
+				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_anon_name'];
+			}
+
+			//If we updated the thread, then we assume it was a reply, otherwise we've added a reply only.'
+			$forumInfo['_FIELD_TYPES'] = $this->fieldTypes['forum'];
+			if($updateThread)
+			{
+				$forumInfo['forum_replies'] = 'forum_replies+1';
+				$forumInfo['_FIELD_TYPES']['forum_replies'] = 'cmd';
+			}
+			else
+			{
+				$forumInfo['forum_threads'] = 'forum_threads+1';
+				$forumInfo['_FIELD_TYPES']['forum_threads'] = 'cmd';
+			}
+			$forumInfo['forum_lastpost_info'] = $postInfo['post_datestamp'].'.'.$postInfo['post_thread'];
+			$forumInfo['WHERE'] = 'forum_id = '.$postInfo['post_forum'];
+//			print_a($forumInfo);
+			$result = $e107->sql->db_Update('forum', $forumInfo, true);
 		}
 	}
-	
+
 	function threadAdd($threadInfo, $postInfo)
 	{
 		$e107 = e107::getInstance();
+		$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		if($result = $e107->sql->db_Insert('forum_thread', $threadInfo, true))
 		{
+			$postInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 			$postInfo['post_thread'] = $result;
 			$result = $this->postAdd($postInfo, false);
 		}
 	}
-	
+
 	function threadUpdate($threadInfo, $inc)
 	{
 		$e107 = e107::getInstance();
 	}
-	
 
 	function thread_postnum($thread_id)
 	{
@@ -503,7 +560,7 @@ class e107forum
 		t.thread_s DESC,
 		t.thread_lastpost DESC
 		LIMIT ".(int)$from.','.(int)$view;
-		
+
 		$ret = array();
 		if ($e107->sql->db_Select_gen($qry))
 		{
