@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:15 $
+|     $Revision: 1.2 $
+|     $Date: 2008-11-29 01:24:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once('../../class2.php');
 
-include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php';
-include_once e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php';
+include_lan(e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php');
 include_once(e_PLUGIN.'forum/forum_class.php');
 
 
@@ -35,11 +34,7 @@ if (isset($_POST['fjsubmit']))
 	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);
 	exit;
 }
-$highlight_search = FALSE;
-if (isset($_POST['highlight_search']))
-{
-	$highlight_search = TRUE;
-}
+$highlight_search = isset($_POST['highlight_search']);
 
 if (!e_QUERY)
 {
