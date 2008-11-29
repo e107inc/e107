@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-11-20 20:34:44 $
+|     $Revision: 1.12 $
+|     $Date: 2008-11-29 15:35:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -84,10 +84,10 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 // Just title and a few other details
 if ($action == 'cat' || $action == 'all')
 {	// --> Cache
-	if($tmp = checkCache($cacheString))
+	if($newsCachedPage = checkCache($cacheString))
 	{
 		require_once(HEADERF);
-		renderCache($tmp, TRUE);
+		renderCache($newsCachedPage, TRUE);
 	}
 	// <-- Cache
 
@@ -199,10 +199,10 @@ if ($action == 'cat' || $action == 'all')
 //------------------------------------------------------
 if ($action == "extend") 
 {	// --> Cache
-	if($tmp = checkCache($cacheString))
+	if($newsCachedPage = checkCache($cacheString))
 	{
 	  require_once(HEADERF);
-	  renderCache($tmp, TRUE);
+	  renderCache($newsCachedPage, TRUE);
 	}
 	// <-- Cache
 
@@ -358,7 +358,7 @@ switch ($action)
 }	// END - switch($action)
 
 
-if($tmp_cache = checkCache($cacheString)) // normal news front-page - with cache.
+if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with cache.
 {
 	require_once(HEADERF);
 
@@ -380,13 +380,13 @@ if($tmp_cache = checkCache($cacheString)) // normal news front-page - with cache
 		if ($sql->db_Select_gen($query)) {
 			$newsAr = $sql -> db_getList();
 			if($newsarchive = checkCache('newsarchive')){
-				$tmp_cache = $tmp_cache.$newsarchive;
+				$newsCachedPage = $newsCachedPage.$newsarchive;
 			}else{
 				show_newsarchive($newsAr,$interval);
 			}
 		}
 	}
-	renderCache($tmp_cache, TRUE);
+	renderCache($newsCachedPage, TRUE);
 }
 
 
