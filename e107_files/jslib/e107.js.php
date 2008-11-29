@@ -8,8 +8,8 @@
  * e107 Javascript API
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.9 $
- * $Date: 2008-11-23 12:21:49 $
+ * $Revision: 1.10 $
+ * $Date: 2008-11-29 17:35:38 $
  * $Author: secretr $
  * 
 */
@@ -2264,12 +2264,34 @@ var e107AjaxAbstract = Class.create ({
 			var checked = parseInt(response[key]) ? true : false;
 			$$('input[name^=' + key + ']').each( function(felement) {
 				var itype = String(felement.type); 
-				if('checkbox radio'.include(itype.toLowerCase()))
+				if(itype && 'checkbox radio'.include(itype.toLowerCase()))
 					felement.checked = checked;
 			});
 		}.bind(this));
 	},
 	
+	/**
+	 * Invoke methods on element or element collections by id
+	 * 
+	 * Examples:
+	 * {'show': 'id1,id2,id3'} -> show elements with id id1,id2 and id3
+	 * {'writeAttribute,rel,external': 'id1,id2,id3'} -> invoke writeAttribute('rel', 'external') on elements with id id1,id2 and id3
+	 */
+	_processResponseElementInvokeById: function(response) {
+		//response.key is comma separated list representing method -> args to be invoked on every element
+		Object.keys(response).each(function(key) {
+			var tmp = $A(key.split(',')), 
+				method = tmp[0], 
+				args = tmp.slice(1);
+			//response.value is comma separated element id list
+			$A(response[key].split(',')).each( function(el) {
+				el = $(el.strip());
+				if(el)
+					el[method].apply(el, args)
+			});
+		});
+	},
+
 	/**
 	 * Update element by type
 	 */
@@ -2277,12 +2299,10 @@ var e107AjaxAbstract = Class.create ({
 		el = $(el); if(!el) return; 
 		var type = el.nodeName.toLowerCase(), itype = el.type; 
         if(type == 'input' || type == 'textarea') {
-        	//FIXME checkbox, radio
         	if(itype) itype = itype.toLowerCase();
-        	
         	switch (itype) {
         		case 'checkbox':
-        		case 'radio':
+        		case 'radio': 
         			el.checked = (el.value == data);
         			break;
         		default:

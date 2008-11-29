@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-11-27 22:07:30 $
-|     $Author: e107steved $
+|     $Revision: 1.20 $
+|     $Date: 2008-11-29 17:35:38 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -482,7 +482,7 @@ class user_class
 //	  $style = " style='text-indent:".(12*$nest_level)."px'";
 	  $style = " style='text-indent:".(1.2*$nest_level)."em'";
 	}
-    return "<div {$style}><input type='checkbox' name='{$treename}[]' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name']."</div>\n";
+    return "<div {$style}><input type='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name']."</div>\n";
   }
 
 
@@ -500,7 +500,7 @@ class user_class
 	{
 	  $style = " style='text-indent:".(1.2*$nest_level)."em'";
 	}
-    return "<div {$style}><input type='checkbox' name='{$treename}[]' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</div>\n";
+    return "<div {$style}><input type='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</div>\n";
   }
 
 
