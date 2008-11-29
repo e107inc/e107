@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2008-11-29 18:22:46 $
+|     $Revision: 1.31 $
+|     $Date: 2008-11-29 18:47:39 $
 |     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.30 $
+* @version $Revision: 1.31 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -184,7 +184,7 @@ class db {
 		$db_mySQLQueryCount++;
 
 		if ($debug == 'now') {
-			echo "** $query";
+			echo "** $query<br />\n";
 		}
 		if ($debug !== FALSE || strstr(e_QUERY, 'showsql'))
 		{
@@ -376,10 +376,8 @@ class db {
 	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
 	   	$new_data = '';
-			print_a($arg);
 			$the_where = $arg['WHERE'];
 			unset($arg['WHERE']);
-			echo "where = {$the_where} <br />";
 			$fieldTypes = $this->_getTypes($arg);
 			foreach ($arg as $fn => $fv)
 			{
