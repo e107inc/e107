@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2008-11-29 18:09:51 $
+|     $Revision: 1.30 $
+|     $Date: 2008-11-29 18:22:46 $
 |     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.29 $
+* @version $Revision: 1.30 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -430,7 +430,7 @@ class db {
 	*/
 	function _getFieldValue($fieldKey, $fieldValue, &$fieldTypes)
 	{
-		if($fieldValue == '_NULL_') { return 'NULL';}
+		if($fieldValue === '_NULL_') { return 'NULL';}
 		$type = (isset($fieldTypes[$fieldKey]) ? $fieldTypes[$fieldKey] : $fieldTypes['_DEFAULT']);
 
 		switch ($type)
