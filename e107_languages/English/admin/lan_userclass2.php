@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-11-27 22:07:36 $
+|     $Revision: 1.6 $
+|     $Date: 2008-11-29 21:16:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -71,7 +71,7 @@ define("UCSLAN_59", 'Enable admin logging of user class edits');
 define("UCSLAN_60", 'User Class Configuration options');
 define("UCSLAN_61", 'User class setup');
 define("UCSLAN_62", 'Create default class tree: ');
-define("UCSLAN_63", 'Must add new DB fields first');
+define("UCSLAN_63", 'That class name already exists - please choose another');
 define("UCSLAN_64", 'completed');
 define("UCSLAN_65", 'Flatten user class hierarchy: ');
 define("UCSLAN_66", 'Confirm flatten user class hierarchy');
@@ -93,7 +93,8 @@ define('UCSLAN_81', 'Group');
 define('UCSLAN_82', 'A group brings together a number of individual classes');
 define('UCSLAN_83', 'Classes in group');
 define('UCSLAN_84', ' (Group)');
-define('UCSLAN_85', '');
+define('UCSLAN_85', 'You have assigned all available classes; please reassign one which is not in use');
+define('UCSLAN_86', 'Some settings not allowed for admin classes - they have been set to defaults. ');
 
 
 define("UCSLAN_UPDATE", 'Update');

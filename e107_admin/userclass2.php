@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-11-29 17:35:38 $
-|     $Author: secretr $
+|     $Revision: 1.16 $
+|     $Date: 2008-11-29 21:16:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -204,17 +204,17 @@ if (isset($_POST['delete']))
 //---------------------------------------------------
 //		Add/Edit class information
 //---------------------------------------------------
-if (isset($_POST['updateclass']) || isset($_POST['createclass']))
+if (($action == 'config') && isset($_POST['createclass']))		// Add or edit
 { 
-  $class_record = array(
-	'userclass_name' 		=> varset($tp->toDB($_POST['userclass_name']),''),
-	'userclass_description' => varset($tp->toDB($_POST['userclass_description']),''),
-	'userclass_editclass' 	=> intval(varset($_POST['userclass_editclass'],0)),
-	'userclass_parent'		=> intval(varset($_POST['userclass_parent'],0)),
-	'userclass_visibility'	=> intval(varset($_POST['userclass_visibility'],0)),
-	'userclass_icon' 		=> varset($tp->toDB($_POST['userclass_icon']),''),
-	'userclass_type'		=> intval(varset($_POST['userclass_type'],UC_TYPE_STD))
-	);
+	$class_record = array(
+		'userclass_name' 		=> varset($tp->toDB($_POST['userclass_name']),''),
+		'userclass_description' => varset($tp->toDB($_POST['userclass_description']),''),
+		'userclass_editclass' 	=> intval(varset($_POST['userclass_editclass'],0)),
+		'userclass_parent'		=> intval(varset($_POST['userclass_parent'],0)),
+		'userclass_visibility'	=> intval(varset($_POST['userclass_visibility'],0)),
+		'userclass_icon' 		=> varset($tp->toDB($_POST['userclass_icon']),''),
+		'userclass_type'		=> intval(varset($_POST['userclass_type'],UC_TYPE_STD))
+		);
 	if ($class_record['userclass_type'] == UC_TYPE_GROUP)
 	{
 		$temp = array();
@@ -225,48 +225,64 @@ if (isset($_POST['updateclass']) || isset($_POST['createclass']))
 		$class_record['userclass_accum'] = implode(',',$temp);
 	}
 
-  $do_tree = FALSE;
+	$do_tree = FALSE;		// Set flag to rebuild tree if no errors
+	$forwardVals = FALSE;	// Set to ripple through existing values to a subsequent pass
 
-  if (isset($_POST['createclass']) && $_POST['userclass_id'])
-  {
-	check_allowed($_POST['userclass_id']);
-	$class_record['userclass_id'] = intval($_POST['userclass_id']);
-	$e_userclass->save_edited_class($class_record);
-	userclass2_adminlog("03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
-	$do_tree = TRUE;
-	$message = UCSLAN_5;
-  } 
-  elseif (isset($_POST['createclass']))
-  {
-	if($class_record['userclass_name'])
-	{
-	  if (getperms("0") || ($class_record['userclass_editclass'] && check_class($class_record['userclass_editclass']))) 
-	  {
-		$i = 1;
-		while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
-		{
-		  $i++;
-		}
-		if ($i < 245)
-		{
-		  $class_record['userclass_id'] = $i;
-		  $e_userclass->add_new_class($class_record);
-		  userclass2_adminlog("01","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
-		  $do_tree = TRUE;
-		}
-		$message = UCSLAN_6;
-	  }
-	  else
-	  {
-		header("location:".SITEURL);
-		exit;
-	  }
+	$tempID = intval(varset($_POST['userclass_id'], -1));
+	if (($tempID < 0) && $e_userclass->ucGetClassIDFromName($class_record['userclass_name']))
+	{	// Duplicate name
+		$message = UCSLAN_63;
+		$forwardVals = TRUE;
 	}
-	else
+	elseif ($e_userclass->checkAdminInfo($class_record, $tempID) === FALSE)
 	{
-	  $message = UCSLAN_37;
+		$message = UCSLAN_86;
 	}
-  }
+
+	if (!$forwardVals)
+	{
+		if ($tempID > 0)
+		{		// Editing existing class here
+			check_allowed($_POST['userclass_id']);
+			$class_record['userclass_id'] = $tempID;
+			$e_userclass->save_edited_class($class_record);
+			userclass2_adminlog("03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
+			$do_tree = TRUE;
+			$message .= UCSLAN_5;
+		} 
+		else
+		{	// Creating new class
+			if($class_record['userclass_name'])
+			{
+				if (getperms("0") || ($class_record['userclass_editclass'] && check_class($class_record['userclass_editclass']))) 
+				{
+					$i = $e_userclass->findNewClassID();
+					if ($i === FALSE)
+					{
+						$message = UCSLAN_85;
+					}
+					else
+					{
+						$class_record['userclass_id'] = $i;
+						$e_userclass->add_new_class($class_record);
+						userclass2_adminlog("01","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
+						$do_tree = TRUE;
+						$message .= UCSLAN_6;
+					}
+				}
+				else
+				{
+					header("location:".SITEURL);
+					exit;
+				}
+			}
+			else
+			{
+				$message = UCSLAN_37;		// Class name required
+				$forwardVals = TRUE;
+			}
+		}
+	}
 
   if ($do_tree)
   {
@@ -298,6 +314,7 @@ switch ($action)
 	{
 		$class_num = intval(varset($uc_qs[2],0));
 	}
+
 	$userclass_id = 0;		// Set defaults for new class to start with
 	$userclass_name = '';
 	$userclass_description = '';
@@ -307,22 +324,25 @@ switch ($action)
 	$userclass_icon = '';
 	$userclass_type = UC_TYPE_STD;
 	$userclass_groupclass = '';
-	if ($params == 'edit')
+	if ($params == 'edit' || $forwardVals)
 	{
-		check_allowed($class_num);
-		$sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
-		$row = $sql->db_Fetch();
-		$userclass_id = $row['userclass_id'];			// Update fields from DB if editing
-		$userclass_name = $row['userclass_name'];
-		$userclass_description = $row['userclass_description'];
-		$userclass_editclass = $row['userclass_editclass'];
-		$userclass_visibility = $row['userclass_visibility'];
-		$userclass_parent = $row['userclass_parent'];
-		$userclass_icon = $row['userclass_icon'];
-		$userclass_type = $row['userclass_type'];
+		if (!$forwardVals)
+		{	// Get the values from DB (else just recycle data uer was trying to store)
+			check_allowed($class_num);
+			$sql->db_Select('userclass_classes', '*', "userclass_id='".intval($class_num)."' ");
+			$class_record = $sql->db_Fetch();
+			$userclass_id = $class_record['userclass_id'];			// Update fields from DB if editing
+		}
+		$userclass_name = $class_record['userclass_name'];
+		$userclass_description = $class_record['userclass_description'];
+		$userclass_editclass = $class_record['userclass_editclass'];
+		$userclass_visibility = $class_record['userclass_visibility'];
+		$userclass_parent = $class_record['userclass_parent'];
+		$userclass_icon = $class_record['userclass_icon'];
+		$userclass_type = $class_record['userclass_type'];
 		if ($userclass_type == UC_TYPE_GROUP)
 		{
-			$userclass_groupclass = $row['userclass_accum'];
+			$userclass_groupclass = $class_record['userclass_accum'];
 		}
 	}
 
@@ -593,19 +613,12 @@ $ns->tablerender(UCSLAN_21, $text);
 
 	if (isset($_POST['add_class_tree']))
 	{	// Create a default tree
-	  $message = UCSLAN_62;
-	  if (!$e_userclass->update_db(TRUE))
-	  {
-	    $message .= UCSLAN_63;
-	  }
-	  else
-	  {
+		$message = UCSLAN_62;
 	    $e_userclass->set_default_structure();
 		$e_userclass->calc_tree();
 		$e_userclass->save_tree();
 		$e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
 		$message .= UCSLAN_64;
-	  }
 	}
 	
 	if (isset($_POST['flatten_class_tree']))
