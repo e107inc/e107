@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-11-18 21:29:37 $
+|     $Revision: 1.14 $
+|     $Date: 2008-11-29 13:08:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -539,6 +539,7 @@ CREATE TABLE userclass_classes (
   userclass_parent tinyint(3) unsigned NOT NULL default '0',
   userclass_accum varchar(250) NOT NULL default '', 
   userclass_visibility tinyint(3) unsigned NOT NULL default '0',
+  userclass_type tinyint(1) unsigned NOT NULL default '0',
   userclass_icon varchar(250) NOT NULL default '',
   PRIMARY KEY  (userclass_id)
 ) TYPE=MyISAM;
