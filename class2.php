@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2008-11-29 13:10:56 $
-|     $Author: e107steved $
+|     $Revision: 1.78 $
+|     $Date: 2008-11-29 23:23:31 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 //
@@ -85,8 +85,10 @@ if($register_globals == true)
 	unset($global);
 }
 
+define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
+$_REQUEST['ajax_used'] = ''; unset($_REQUEST['ajax_used']);
 
-if(isset($_E107['minimal']))
+if(isset($_E107['minimal']) || e_AJAX_REQUEST)
 {
 	$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
 	foreach($_e107vars as $v)
