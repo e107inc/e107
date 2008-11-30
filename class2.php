@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2008-11-29 23:23:31 $
-|     $Author: secretr $
+|     $Revision: 1.79 $
+|     $Date: 2008-11-30 23:15:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -637,6 +637,10 @@ e107_require_once(e_HANDLER.'event_class.php');
 $e107->e_event = new e107_event;
 $e_event = &$e107->e_event;
 
+e107_require_once(e_HANDLER.'userclass_class.php');
+$e107->e_userclass = new user_class;
+$e_userclass = &$e107->e_userclass;
+
 if(isset($pref['notify']) && $pref['notify'] == true)
 {
 	e107_require_once(e_HANDLER.'notify_class.php');
@@ -1218,7 +1222,6 @@ function getperms($arg, $ap = ADMINPERMS)
  */
 function get_user_data($uid, $extra = '')
 {
-	global $pref, $sql;
 	$e107 = e107::getInstance();
 	$uid = (int)$uid;
 	$var = array();
@@ -1233,38 +1236,46 @@ function get_user_data($uid, $extra = '')
 	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
 	WHERE u.user_id = {$uid} {$extra}
 	";
-	if (!$sql->db_Select_gen($qry))
+	if (!$e107->sql->db_Select_gen($qry))
 	{
 		$qry = "SELECT * FROM #user AS u WHERE u.user_id = {$uid} {$extra}";
-		if(!$sql->db_Select_gen($qry))
+		if(!$e107->sql->db_Select_gen($qry))
 		{
 			return FALSE;
 		}
 	}
+	$var = $e107->sql->db_Fetch();
 
-	$var = $sql->db_Fetch();
-	$extended_struct = getcachedvars('extended_struct');
-	if(!$extended_struct)
+	if(!$extended_struct = getcachedvars('extended_struct'))
 	{
-		unset($extended_struct);
-		$qry = 'SHOW COLUMNS FROM #user_extended ';
-		if($sql->db_Select_gen($qry))
+		if($tmp = $e107->ecache->retrieve_sys('nomd5_extended_struct'))
 		{
-			while($row = $sql->db_Fetch())
+			$extended_struct = $e107->arrayStorage->ReadArray($tmp);
+		}
+		else
+		{
+			$qry = 'SHOW COLUMNS FROM #user_extended ';
+			if($e107->sql->db_Select_gen($qry))
 			{
-				if($row['Default'] != '')
+				while($row = $e107->sql->db_Fetch())
 				{
-					$extended_struct[] = $row;
+					if($row['Default'] != '')
+					{
+						$extended_struct[] = $row;
+					}
 				}
 			}
-			if(isset($extended_struct))
-			{
-				cachevars('extended_struct', $extended_struct);
-			}
+			$tmp = $e107->arrayStorage->WriteArray($extended_struct);
+			$e107->ecache->set_sys('nomd5_extended_struct', $tmp);
+			unset($tmp);
+		}
+		if(isset($extended_struct))
+		{
+			cachevars('extended_struct', $extended_struct);
 		}
 	}
 
-	if(isset($extended_struct))
+	if(isset($extended_struct) && is_array($extended_struct))
 	{
 		foreach($extended_struct as $row)
 		{
@@ -1277,14 +1288,7 @@ function get_user_data($uid, $extra = '')
 
 	//===========================================================
 	// Now look up the 'inherited' user classes
-	global $e_userclass;
-	if (!isset($e_userclass) && !is_object($e_userclass))
-	{
-	  require_once(e_HANDLER.'userclass_class.php');
-	  $e107->e_userclass = new user_class;
-	  $e_userclass = &$e107->e_userclass;
-	}
-	$var['user_class'] = $e_userclass->get_all_user_classes($var['user_class']);
+	$var['user_class'] = $e107->e_userclass->get_all_user_classes($var['user_class']);
 
 	//===========================================================
 

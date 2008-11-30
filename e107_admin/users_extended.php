@@ -11,19 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-08-30 20:22:23 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2008-11-30 23:15:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-require_once("../class2.php");
-if (!getperms("4")) {
-	header("location:".e_BASE."index.php");
+require_once('../class2.php');
+if (!getperms('4'))
+{
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 if (isset($_POST['cancel']))
 {
-	header("location:".e_SELF);
+	header('location:'.e_SELF);
 	exit;
 }
 if (isset($_POST['cancel_cat']))
@@ -35,12 +36,11 @@ if (isset($_POST['cancel_cat']))
 $e_sub_cat = 'user_extended';
 $user = new users_ext;
 $curtype = '1';
-require_once(e_HANDLER."calendar/calendar_class.php");
+require_once(e_HANDLER.'calendar/calendar_class.php');
 $cal = new DHTML_Calendar(true);
 require_once("auth.php");
-require_once(e_HANDLER."user_extended_class.php");
-require_once(e_HANDLER."userclass_class.php");
-
+require_once(e_HANDLER.'user_extended_class.php');
+require_once(e_HANDLER.'userclass_class.php');
 
 $ue = new e107_user_extended;
 $message = '';
@@ -53,7 +53,6 @@ if (e_QUERY)
 	$id = varset($tmp[2],0);
 	unset($tmp);
 }
-
 
 
 if (isset($_POST['up_x']))
