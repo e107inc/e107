@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-11-29 01:24:27 $
+|     $Revision: 1.12 $
+|     $Date: 2008-11-30 22:05:12 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -26,20 +26,22 @@ class e107forum
 	function e107forum()
 	{
 		$this->loadPermList();
-		$this->fieldTypes['forum_post']['post_user'] = 'int';
-		$this->fieldTypes['forum_post']['post_forum'] = 'int';
-		$this->fieldTypes['forum_post']['post_datestamp'] = 'int';
-		$this->fieldTypes['forum_post']['post_thread'] = 'int';
+		$this->fieldTypes['forum_post']['post_user'] 			= 'int';
+		$this->fieldTypes['forum_post']['post_forum'] 			= 'int';
+		$this->fieldTypes['forum_post']['post_datestamp'] 		= 'int';
+		$this->fieldTypes['forum_post']['post_thread'] 			= 'int';
 
-		$this->fieldTypes['forum_thread']['thread_user'] = 'int';
-		$this->fieldTypes['forum_thread']['thread_lastpost'] = 'int';
-		$this->fieldTypes['forum_thread']['thread_lastuser'] = 'int';
-		$this->fieldTypes['forum_thread']['thread_s'] = 'int';
-		$this->fieldTypes['forum_thread']['thread_forum_id'] = 'int';
-		$this->fieldTypes['forum_thread']['thread_active'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_user'] 		= 'int';
+		$this->fieldTypes['forum_thread']['thread_lastpost'] 	= 'int';
+		$this->fieldTypes['forum_thread']['thread_lastuser'] 	= 'int';
+		$this->fieldTypes['forum_thread']['thread_s'] 			= 'int';
+		$this->fieldTypes['forum_thread']['thread_forum_id'] 	= 'int';
+		$this->fieldTypes['forum_thread']['thread_active'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_datestamp'] = 'int';
-		$this->fieldTypes['forum_thread']['thread_views'] = 'int';
-		$this->fieldTypes['forum_thread']['thread_replies'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_views'] 		= 'int';
+		$this->fieldTypes['forum_thread']['thread_replies'] 	= 'int';
+
+		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
 
 //		print_a($this->permList);
 	}
@@ -127,9 +129,9 @@ class e107forum
 			if(varset($postInfo['post_user']))
 			{
 				$threadInfo['thread_lastuser'] = $postInfo['post_user'];
-				$threadInfo['thread_lastuser_anon'] = '';
+				$threadInfo['thread_lastuser_anon'] = '_NULL_';
 				$forumInfo['forum_lastpost_user'] = $postInfo['post_user'];
-				$forumInfo['forum_lastpost_user_anon'] = '';
+				$forumInfo['forum_lastpost_user_anon'] = '_NULL_';
 			}
 			else
 			{
@@ -174,7 +176,6 @@ class e107forum
 			}
 			$forumInfo['forum_lastpost_info'] = $postInfo['post_datestamp'].'.'.$postInfo['post_thread'];
 			$forumInfo['WHERE'] = 'forum_id = '.$postInfo['post_forum'];
-//			print_a($forumInfo);
 			$result = $e107->sql->db_Update('forum', $forumInfo, true);
 		}
 	}
