@@ -1,6 +1,6 @@
 <?php
 define("LDAPLAN_1", "Server address");
-define("LDAPLAN_2", "Base DN or Domain<br />If LDAP - Enter BaseDN<br />If AD - Enter domain");
+define("LDAPLAN_2", "Base DN or Domain<br />LDAP - Enter BaseDN<br />AD - enter the fqdn eg ad.mydomain.co.uk");
 define("LDAPLAN_3", "LDAP Browsing user<br />Full context of the user who is able to search the directory.");
 define("LDAPLAN_4", "LDAP Browsing password<br />Password for the LDAP Browsing user.");
 define("LDAPLAN_5", "LDAP Version");
@@ -10,8 +10,9 @@ define("LDAPLAN_8", "This will be used to ensure the username is in the correct 
 define("LDAPLAN_9", "Current search filter will be:");
 define("LDAPLAN_10", "Settings Updated");
 define("LDAPLAN_11", "WARNING:  It appears as if the ldap module is not currently available; setting your auth method to LDAP will probably not work!");
-define("LDAPLAN_12", "Server Type");
-define("LDAPLAN_13", "Update settings");
+define("LDAPLAN_12", 'Server Type');
+define("LDAPLAN_13", 'Update settings');
+define('LDAPLAN_14', 'OU for AD (e.g. ou=itdept)');
 
 
 define('LAN_AUTHENTICATE_HELP','This method can be used to authenticate against most LDAP servers, including Novell\'s eDirectory and Microsoft\'s Active Directory. Refer to the wiki for further information.');

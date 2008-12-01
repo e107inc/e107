@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_conf.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-09-02 19:39:12 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-01 21:47:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -77,9 +77,11 @@ $text .= "</td></tr>";
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_1."</td><td class='forumheader3'>";
 $text .= $frm -> form_text("ldap_server", 35, $ldap['ldap_server'], 120);
 $text .= "</td></tr>";
-
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_2."</td><td class='forumheader3'>";
 $text .= $frm -> form_text("ldap_basedn", 35, $ldap['ldap_basedn'], 120);
+$text .= "</td></tr>";
+$text .= "<tr><td class='forumheader3'>".LDAPLAN_14."</td><td class='forumheader3'>";
+$text .= $frm -> form_text("ldap_ou", 35, $ldap['ldap_ou'], 60);
 $text .= "</td></tr>";
 
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_3."</td><td class='forumheader3'>";
