@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-11-26 04:00:36 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-01 01:10:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -305,7 +305,7 @@ function parse_forum($f, $restricted_string = "")
 	$f['forum_name'] = $tp -> toHTML($f['forum_name'], TRUE, "no_hook");
 	$f['forum_description'] = $tp -> toHTML($f['forum_description'], TRUE, "no_hook");
 
-	$FORUMNAME = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$f['forum_id']}'>{$f['forum_name']}</a>";
+	$FORUMNAME = "<a href='".e_PLUGIN."forum/viewforum.php?id={$f['forum_id']}'>{$f['forum_name']}</a>";
 	$FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
 	$THREADS = $f['forum_threads'];
 	$REPLIES = $f['forum_replies'];

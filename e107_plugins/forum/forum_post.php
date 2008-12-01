@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-11-29 01:24:27 $
+|     $Revision: 1.20 $
+|     $Date: 2008-12-01 01:10:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -241,7 +241,6 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		$postInfo['post_forum'] = $forum_id;
 		$postInfo['post_datestamp'] = $time;
 		$threadInfo['thread_lastpost'] = $time;
-
 
 		switch($action)
 		{
