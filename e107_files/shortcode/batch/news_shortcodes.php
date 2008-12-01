@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-11-24 02:01:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2008-12-01 21:04:12 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -118,6 +118,12 @@ if($pref['comments_disabled'] == 1)
 }
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
+
+if (varsettrue($pref['multilanguage']))
+{	// Can have multilanguage news table, monlingual comment table. If the comment table is multilingual, it'll only count entries in the current language
+	$news_item['news_comment_total'] = $sql->db_Select("comments", "*", "comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
+}
+
 if ($pref['comments_icon'] && $news_item['news_comment_total'])
 {
 	$sql->db_Select('comments', 'comment_datestamp', "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
