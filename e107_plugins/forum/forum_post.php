@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-12-01 01:10:50 $
+|     $Revision: 1.21 $
+|     $Date: 2008-12-01 21:11:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -41,33 +41,27 @@ if (!e_QUERY || !isset($_REQUEST['id']))
 $action = $_REQUEST['f'];
 $id = (int)$_REQUEST['id'];
 
-// check if user can post to this forum ...
-if (!$forum->checkPerm($id, 'post'))
-{
-	require_once(HEADERF);
-	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-	require_once(FOOTERF);
-	exit;
-}
 
 switch($action)
 {
 	case 'rp':
-		$thread_info = $forum->thread_get($id, 'last', 11);
-		if (!is_array($thread_info) || !count($thread_info))
-		{
-		  $forum_info = false;		// Someone fed us a dud forum id - should exist if replying
-		}
-		else
-		{
-		  $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-		}
-		$forum_id = $forum_info['forum_id'];
+		$threadInfo = $forum->threadGet($id, false);
+		$forumId = $threadInfo['thread_forum_id'];
+		print_a($threadInfo);
+//		if (!is_array($thread_info) || !count($thread_info))
+//		{
+//		  $forum_info = false;		// Someone fed us a dud forum id - should exist if replying
+//		}
+//		else
+//		{
+//		  $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
+//		}
+//		$forum_id = $forum_info['forum_id'];
 		break;
 
 	case 'nt':
 		$forum_info = $forum->forum_get($id);
-		$forum_id = $id;
+		$forumId = $id;
 		break;
 
 	case 'quote':
@@ -78,8 +72,22 @@ switch($action)
 		{
 			$id = $thread_info['head']['thread_id'];
 		}
-		$forum_id = $forum_info['forum_id'];
+		$forumId = $forum_info['forum_id'];
 		break;
+
+	default:
+		header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+		exit;
+
+}
+
+// check if user can post to this forum ...
+if (!$forum->checkPerm($forumId, 'post'))
+{
+	require_once(HEADERF);
+	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_399.'</div>');
+	require_once(FOOTERF);
+	exit;
 }
 
 define("MODERATOR", check_class($forum_info['forum_moderators']));
@@ -93,16 +101,16 @@ $e107 = e107::getInstance();
 
 
 //if thread is not active and not new thread, show warning
-if ($action != "nt" && !$thread_info['head']['thread_active'] && !MODERATOR)
+if ($action != 'nt' && !$threadInfo['thread_active'] && !MODERATOR)
 {
 	require_once(HEADERF);
-	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
+	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_397.'</div>');
 	require_once(FOOTERF);
 	exit;
 }
 
 $forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], true);
-define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == 'rp' ? LAN_02.$forum_info['thread_name'] : LAN_03));
+define('e_PAGETITLE', LAN_01.' / '.$forumInfo['forum_name'].' / '.($action == 'rp' ? LAN_02.$threadInfo['thread_name'] : LAN_03));
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -198,10 +206,10 @@ if (isset($_POST['fpreview']))
 		}
 		$eaction = TRUE;
 	}
-	else if($action == "quote")
+	else if($action == 'quote')
 	{
-		$action = "reply";
-		$eaction = FALSE;
+		$action = 'reply';
+		$eaction = false;
 	}
 }
 
@@ -211,7 +219,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 	$threadInfo = array();
 	if ((isset($_POST['newthread']) && trim($_POST['subject']) == '') || trim($_POST['post']) == '')
 	{
-		message_handler("ALERT", 5);
+		message_handler('ALERT', 5);
 	}
 	else
 	{
@@ -238,7 +246,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		}
 		$time = time();
 		$postInfo['post_entry'] = $_POST['post'];
-		$postInfo['post_forum'] = $forum_id;
+		$postInfo['post_forum'] = $forumId;
 		$postInfo['post_datestamp'] = $time;
 		$threadInfo['thread_lastpost'] = $time;
 
@@ -443,36 +451,36 @@ if (!$FORUMPOST)
   include_once(e_PLUGIN."forum/templates/forum_post_template.php");
   }
 }
-/* check post access (bugtracker #1424) */
 
-if($action == "rp" && !$sql -> db_Select("forum_t", "*", "thread_id='{$id}'"))
-{
-	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-	 require_once(FOOTERF);
-	exit;
-}
-elseif($action == "nt")
-{
-  if (!$sact && !$sql -> db_Select("forum", "*", "forum_id='{$id}'"))
-  {
-	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-	require_once(FOOTERF);
-	exit;
-  }
-}
-else
-{
-  // DB access should pass - after all, the thread should exist
-	$sql->db_Select_gen("SELECT t.*, p.forum_postclass FROM #forum_t AS t
-	LEFT JOIN #forum AS p ON t.thread_forum_id=p.forum_id WHERE thread_id='{$id}'");
-	$fpr = $sql -> db_Fetch();
-	if(!check_class($fpr['forum_postclass']))
-	{
-		$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-		require_once(FOOTERF);
-		exit;
-	}
-}
+/* check post access (bugtracker #1424) */
+//if($action == "rp" && !$sql -> db_Select("forum_t", "*", "thread_id='{$id}'"))
+//{
+//	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+//	 require_once(FOOTERF);
+//	exit;
+//}
+//elseif($action == "nt")
+//{
+//  if (!$sact && !$sql -> db_Select("forum", "*", "forum_id='{$id}'"))
+//  {
+//	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+//	require_once(FOOTERF);
+//	exit;
+//  }
+//}
+//else
+//{
+//  // DB access should pass - after all, the thread should exist
+//	$sql->db_Select_gen("SELECT t.*, p.forum_postclass FROM #forum_t AS t
+//	LEFT JOIN #forum AS p ON t.thread_forum_id=p.forum_id WHERE thread_id='{$id}'");
+//	$fpr = $sql -> db_Fetch();
+//	if(!check_class($fpr['forum_postclass']))
+//	{
+//		$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+//		require_once(FOOTERF);
+//		exit;
+//	}
+//}
 
 if($action == 'rp')
 {
@@ -493,9 +501,8 @@ else
 
 function isAuthor()
 {
-	global $thread_info;
-	$tmp = explode(".", $thread_info[0]['thread_user'], 2);
-	return ($tmp[0] == USERID || MODERATOR);
+	global $threadInfo;
+	return ((USERID === $postInfo['post_user']) || MODERATOR);
 }
 
 function getuser($name)
