@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-12-01 01:10:50 $
+|     $Revision: 1.14 $
+|     $Date: 2008-12-01 21:11:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -119,6 +119,9 @@ class e107forum
 	*/
 	function postAdd($postInfo, $updateThread = true, $updateForum = true)
 	{
+		//Future option, will just set to true here
+		$addUserPostCount = true;
+
 		$e107 = e107::getInstance();
 		$result = $e107->sql->db_Insert('forum_post', $postInfo, true);
 		$forumInfo = array();
@@ -149,6 +152,7 @@ class e107forum
 			$result = $e107->sql->db_Update('forum_thread', $threadInfo, true);
 
 		}
+
 		if($result && $updateForum)
 		{
 			if(varset($postInfo['post_user']))
@@ -178,6 +182,17 @@ class e107forum
 			$forumInfo['WHERE'] = 'forum_id = '.$postInfo['post_forum'];
 			$result = $e107->sql->db_Update('forum', $forumInfo, true);
 		}
+
+		if($result && USER && $addUserPostCount)
+		{
+			$qry = '
+			INSERT INTO `#user_extended` (user_extended_id, user_plugin_forum_posts)
+			VALUES ('.USERID.', 1)
+			ON DUPLICATE KEY UPDATE user_plugin_forum_posts = user_plugin_forum_posts + 1
+			';
+			$result = $e107->sql->db_Select_gen($qry, true);
+		}
+
 	}
 
 	function threadAdd($threadInfo, $postInfo)
@@ -197,21 +212,21 @@ class e107forum
 		$e107 = e107::getInstance();
 		//TODO: Add this
 	}
-	
+
 	function threadGet($id, $joinForum = true, $uid = USERID)
 	{
-		$e107 = e107::getInstance(); 
+		$e107 = e107::getInstance();
 		$id = (int)$id;
 		$uid = (int)$uid;
 
 		if($joinForum)
 		{
-			//TODO: Fix query to get only forum and parent info needed, with correct naming 
+			//TODO: Fix query to get only forum and parent info needed, with correct naming
 			$qry = '
 			SELECT t.*, f.*, tr.track_userid
 			FROM `#forum_thread` AS t
 			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
-			LEFT JOIN `#forum_track` AS tr ON tr.track_thread = t.thread_id AND tr.track_userid = '.$uid.' 
+			LEFT JOIN `#forum_track` AS tr ON tr.track_thread = t.thread_id AND tr.track_userid = '.$uid.'
 			WHERE thread_id = '.$id;
 		}
 		else
@@ -235,26 +250,35 @@ class e107forum
 		}
 		return false;
 	}
-	
+
 	function postGet($threadId, $start, $num)
 	{
+		$ret = false;
 		$e107 = e107::getInstance();
 		$qry = '
-		SELECT p.*, u.user_name, u.user_customtitle, eu.user_name AS edit_name
+		SELECT p.*,
+		u.user_name, u.user_customtitle, u.user_hideemail, u.user_email, u.user_signature,
+		u.user_admin, u.user_image, u.user_join, ue.user_plugin_forum_posts,
+		eu.user_name AS edit_name
 		FROM `#forum_post` AS p
 		LEFT JOIN `#user` AS u ON p.post_user = u.user_id
-		LEFT JOIN `#user` AS eu ON p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id 
+		LEFT JOIN `#user` AS eu ON p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id
+		LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = p.post_user
 		WHERE p.post_thread = '.$threadId."
 		ORDER BY p.post_datestamp ASC
 		LIMIT {$start}, {$num}
 		";
 		if($e107->sql->db_Select_gen($qry, true))
 		{
-			return $e107->sql->db_Fetch(MYSQL_ASSOC);
+			$ret = array();
+			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			{
+				$ret[] = $row;
+			}
 		}
-		return false;
+		return $ret;
 	}
-	
+
 	function thread_postnum($thread_id)
 	{
 		global $sql;
@@ -1140,9 +1164,9 @@ class e107forum
 	 * $forum_href override ONLY applies when template is missing FORUM_CRUMB
 	 * $thread_title is needed for post-related breadcrumbs
 	 */
-	function set_crumb($forum_href=FALSE,$thread_title="")
+	function set_crumb($forum_href=false, $thread_title='')
 	{
-		global $FORUM_CRUMB,$forum_info,$thread_info,$tp;
+		global $FORUM_CRUMB, $forum_info, $threadInfo, $tp;
 		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
 
 		if(is_array($FORUM_CRUMB))

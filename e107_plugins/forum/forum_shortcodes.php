@@ -6,29 +6,27 @@ $forum_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 SC_BEGIN TOP
 return "<a href='".e_SELF."?".e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_10."</a>";
 SC_END
-	
+
 SC_BEGIN JOINED
-global $post_info, $gen;
-if ($post_info['user_id']) {
-return LAN_06.': '.$gen->convert_date($post_info['user_join'], 'forum').'<br />';
+global $postInfo, $gen;
+if ($postInfo['post_user'])
+{
+	return LAN_06.': '.$gen->convert_date($postInfo['user_join'], 'forum').'<br />';
 }
 SC_END
-	
+
 SC_BEGIN THREADDATESTAMP
-global $post_info, $gen, $thread_id;
-return "<a id='post_{$post_info['thread_id']}' href='".e_SELF."?{$post_info['thread_id']}.post'>".IMAGE_post."</a> ".$gen->convert_date($post_info['thread_datestamp'], "forum");
+global $postInfo, $gen;
+$e107 = e107::getInstance();
+return "<a id='post_{$post_info['post_id']}' href='".$e107->url->getUrl('forum', 'thread', array('func' => 'post', 'id' => $postInfo['post_id']))."'>".IMAGE_post."</a> ".$gen->convert_date($postInfo['post_datestamp'], 'forum');
 SC_END
-	
+
 SC_BEGIN POST
-global $post_info, $tp, $iphost;
-$ret = "";
-$ret = $tp->toHTML($post_info["thread_thread"], TRUE, "USER_BODY", 'class:'.$post_info["user_class"]);
-if (ADMIN && $iphost) {
-$ret .= "<br />".$iphost;
-}
-return $ret;
+global $postInfo;
+$e107 = e107::getInstance();
+return $e107->tp->toHTML($postInfo['post_entry'], true, 'USER_BODY', 'class:'.$post_info['user_class']);
 SC_END
-	
+
 SC_BEGIN PRIVMESSAGE
 global $pref, $post_info, $tp;
 if(isset($pref['plug_installed']['pm']) && ($post_info['user_id'] > 0))
@@ -36,61 +34,70 @@ if(isset($pref['plug_installed']['pm']) && ($post_info['user_id'] > 0))
 	return $tp->parseTemplate("{SENDPM={$post_info['user_id']}}");
 }
 SC_END
-	
+
 SC_BEGIN AVATAR
-global $post_info;
-if ($post_info['user_id']) {
-if ($post_info["user_image"]) {
-require_once(e_HANDLER."avatar_handler.php");
-return "<div class='spacer'><img src='".avatar($post_info['user_image'])."' alt='' /></div><br />";
-} else {
-return "";
+global $postInfo;
+if ($postInfo['post_user'])
+{
+	if(!$avatar = getcachedvars('forum_avatar_'.$postInfo['post_user']))
+	{
+		if ($postInfo['user_image'])
+		{
+			require_once(e_HANDLER.'avatar_handler.php');
+			$avatar = "<div class='spacer'><img src='".avatar($postInfo['user_image'])."' alt='' /></div><br />";
+		}
+		else
+		{
+			$avatar = '';
+		}
+		cachevars('forum_avatar_'.$postInfo['post_user'], $avatar);
+	}
+	return $avatar;
 }
-} else {
-return "<span class='smallblacktext'>".LAN_194."</span>";
+return '';
+SC_END
+
+SC_BEGIN ANON_IP
+global $postInfo;
+$e107 = e107::getInstance();
+if(ADMIN || MODERATOR)
+{
+	return $e107->ipDecode($postInfo['post_ip']);
 }
 SC_END
-	
-SC_BEGIN ANON_IP
-global $post_info;
-//die($post_info['thread_user']);
-$x = explode(chr(1), $post_info['thread_user']);
-if($x[1] && ADMIN)
+
+SC_BEGIN IP
+global $postInfo;
+$e107 = e107::getInstance();
+if((ADMIN || MODERATOR) && !$postInfo['user_admin'])
 {
-	return $x[1];
+	return $e107->ipDecode($postInfo['post_ip']);
 }
 SC_END
 
 SC_BEGIN POSTER
-global $post_info, $tp;
-if($post_info['user_name'])
+global $postInfo;
+$e107 = e107::getInstance();
+if($postInfo['user_name'])
 {
-	return "<a href='".e_BASE."user.php?id.".$post_info['user_id']."'><b>".$post_info['user_name']."</b></a>";
+	return "<a href='".$e107->url->getUrl('core:user', 'main', array('func' => 'profile', 'id' => $postInfo['post_user']))."'>{$postInfo['user_name']}</a>";
 }
 else
 {
-	$x = explode(chr(1), $post_info['thread_user']);
-	$tmp = explode(".", $x[0], 2);
-	if(!$tmp[1])
-	{
-		return FORLAN_103;
-	}
-	else
-	{
-		return "<b>".$tp->toHTML($tmp[1])."</b>";
-	}
+	return '<b>'.$e107->tp->toHTML($postInfo['post_anon_name']).'</b>';
 }
 SC_END
-	
+
 SC_BEGIN EMAILIMG
-global $post_info, $tp;
-if($post_info['user_id'])
+global $postInfo;
+$e107 = e107::getInstance();
+if($postInfo['user_name'])
 {
-	return (!$post_info['user_hideemail'] ? $tp->parseTemplate("{EMAILTO={$post_info['user_email']}}") : "");
+	return (!$post_info['user_hideemail'] ? $e107->tp->parseTemplate("{EMAILTO={$postInfo['user_email']}}") : '');
 }
-return "";
+return '';
 SC_END
-	
+
 SC_BEGIN EMAILITEM
 global $post_info, $tp;
 if($post_info['thread_parent'] == 0)
@@ -106,12 +113,13 @@ if($post_info['thread_parent'] == 0)
 	return $tp->parseTemplate("{PRINT_ITEM=".FORLAN_102."^plugin:forum.{$post_info['thread_id']}}");
 }
 SC_END
-	
+
 SC_BEGIN SIGNATURE
-global $post_info, $tp;
-return ($post_info['user_signature'] ? "<br /><hr style='width:15%; text-align:left' /><span class='smalltext'>".$tp->toHTML($post_info['user_signature'],TRUE)."</span>" : "");
+global $postInfo;
+$e107 = e107::getInstance();
+return ($postInfo['user_signature'] ? "<br /><hr style='width:15%; text-align:left' /><span class='smalltext'>".$e107->tp->toHTML($postInfo['user_signature'], true).'</span>' : '');
 SC_END
-	
+
 SC_BEGIN PROFILEIMG
 global $post_info, $tp;
 if (USER && $post_info['user_id']) {
@@ -120,70 +128,82 @@ return $tp->parseTemplate("{PROFILE={$post_info['user_id']}}");
 return "";
 }
 SC_END
-	
+
 SC_BEGIN POSTS
-global $post_info;
-if ($post_info['user_id']) {
-return LAN_67.": ".$post_info['user_forums']."<br />";
+global $postInfo;
+if ($postInfo['post_user'])
+{
+	return LAN_67.': '.(int)$postInfo['user_plugin_forum_posts'].'<br />';
 }
 SC_END
-	
+
 SC_BEGIN VISITS
 global $post_info;
 if ($post_info['user_id']) {
 return LAN_09.": ".$post_info['user_visits']."<br />";
 }
 SC_END
-	
-SC_BEGIN EDITIMG
-global $post_info, $thread_info, $thread_id;
-if ($post_info['user_id'] != '0' && $post_info['user_name'] === USERNAME && $thread_info['head']['thread_active']) {
-return "<a href='forum_post.php?edit.".$post_info['thread_id']."'>".IMAGE_edit."</a> ";
-} else {
-return "";
-}
-SC_END
-	
+
 SC_BEGIN CUSTOMTITLE
-global $post_info, $tp;
-if ($post_info['user_customtitle']) {
-return $tp->toHTML($post_info['user_customtitle'])."<br />";
+global $postInfo;
+$e107 = e107::getInstance();
+if ($postInfo['user_customtitle'])
+{
+	return $e107->tp->toHTML($postInfo['user_customtitle']).'<br />';
 }
 SC_END
-	
+
 SC_BEGIN WEBSITE
 global $post_info, $tp;
 if ($post_info['user_homepage']) {
 return LAN_08.": ".$post_info['user_homepage']."<br />";
 }
 SC_END
-	
+
 SC_BEGIN WEBSITEIMG
 global $post_info;
 if ($post_info['user_homepage'] && $post_info['user_homepage'] != "http://") {
 return "<a href='{$post_info['user_homepage']}'>".IMAGE_website."</a>";
 }
 SC_END
-	
+
+SC_BEGIN EDITIMG
+global $postInfo, $threadInfo;
+$e107 = e107::getInstance();
+if (USER && $postInfo['post_user'] == USERID && $threadInfo['thread_active'])
+{
+	return "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'edit', 'id' => $postInfo['post_id']))."'>".IMAGE_edit.'</a> ';
+}
+return '';
+SC_END
+
 SC_BEGIN QUOTEIMG
-global $thread_info, $post_info, $forum_info;
-if (check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass']) && $thread_info["head"]["thread_active"]) {
-return "<a href='".e_PLUGIN."forum/forum_post.php?quote.{$post_info['thread_id']}'>".IMAGE_quote."</a>";
+global $postInfo, $forum;
+$e107 = e107::getInstance();
+if($forum->checkperm($postInfo['post_forum'], 'post'))
+{
+	return "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'quote', 'id' => $postInfo['post_id']))."'>".IMAGE_quote.'</a> ';
 }
 SC_END
-	
+
 SC_BEGIN REPORTIMG
-global $post_info, $from;
+global $postInfo, $page;
 if (USER) {
-return "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post_info['thread_id']}.{$from}.report'>".IMAGE_report."</a> ";
+	$e107 = e107::getInstance();
+	$tmp = array (
+	'func' => 'report',
+	'id' => $postInfo['post_thread'],
+	'report' => $postInfo['post_id']
+	);
+	return "<a href='".$e107->url->getUrl('forum', 'thread', $tmp)."'>".IMAGE_report.'</a> ';
 }
 SC_END
-	
+
 SC_BEGIN RPG
 global $post_info;
 return rpg($post_info['user_join'],$post_info['user_forums']);
 SC_END
-	
+
 SC_BEGIN MEMBERID
 global $post_info, $ldata, $pref, $forum_info;
 if ($post_info['anon']) {
@@ -200,7 +220,7 @@ if (!array_key_exists($post_info['user_id'],$ldata)) {
 }
 return $ldata[$post_info['user_id']][0];
 SC_END
-	
+
 SC_BEGIN LEVEL
 global $post_info, $ldata, $pref, $forum_info;
 if ($post_info['anon']) {
@@ -232,19 +252,30 @@ return $ldata[$post_info['user_id']]['userid'];
 }
 return $ldata[$post_info['user_id']][1];
 SC_END
-	
+
 SC_BEGIN MODOPTIONS
 if (MODERATOR) {
 return showmodoptions();
 }
 SC_END
-	
+
 SC_BEGIN LASTEDIT
-global $post_info, $gen;
-if ($post_info['thread_edit_datestamp']) {
-return $gen->convert_date($post_info['thread_edit_datestamp'],'forum');
+global $postInfo, $gen;
+if ($postInfo['post_edit_datestamp'])
+{
+	return $gen->convert_date($postInfo['thread_edit_datestamp'],'forum');
 }
-return "";
+return '';
+SC_END
+
+SC_BEGIN LASTEDITBY
+global $postInfo;
+$e107 = e107::getInstance();
+if ($postInfo['post_edit_datestamp'])
+{
+	return $postInfo['edit_name'];
+}
+return '';
 SC_END
 
 SC_BEGIN POLL
