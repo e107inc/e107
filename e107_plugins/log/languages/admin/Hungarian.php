@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - rev: 1.10 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.14 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:40 $
 # --------------------------------------------------------------------------
 
 define("ADSTAT_ON", "Be");
@@ -39,5 +39,9 @@ define("ADSTAT_L31", "Kiválasztott oldal törlése");
 define("ADSTAT_L32", "Oldal rendezése");
 define("ADSTAT_L33", "Statisztika Loggolása - Beállítás");
 define("ADSTAT_L34", "Oldal statisztika");
+
+
+define('ADSTAT_L38', "Az e107_plugins/log/logs mappának írhatónak kell lennie");	// Constant compatible with 0.8
+
 
 ?>

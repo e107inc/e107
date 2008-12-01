@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.14 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.22 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # --------------------------------------------------------------------------
 
 define("EXTLAN_1", "Név");
@@ -84,6 +84,7 @@ define("EXTLAN_74", "ez egy védett mező és nem lehet használni.");
 define("EXTLAN_75", "Hiba, a mezőt nem sikerült hozzáadni az adatbázishoz.");
 define("EXTLAN_76", "Érvénytelen karakter a mező nevében - csak A-Z, a-z, 0-9, '_' engedélyezett.");
 define("EXTLAN_77", "Kategória nincs törölve - először töröld a benne lévő mezőket: ");
+define('EXTLAN_78', 'File nem található --FILE-- adattábla létrehozása szükséges');
 
 
  //textbox

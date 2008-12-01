@@ -1,6 +1,6 @@
 <?php
 # ---------------------------------------------------------------------------
-# e107 Hungarian language file - $Version: 1.65 $ - $Author: e107hun-lac $ - $Date: 2007-11-11 08:59:44 $
+# e107 Hungarian language file - $Version: 1.65 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # ---------------------------------------------------------------------------
 
 define("PRFLAN_1", "Oldal információk");

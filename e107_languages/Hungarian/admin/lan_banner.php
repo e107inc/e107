@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.12 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # --------------------------------------------------------------------------
 
 define("BNRLAN_1", "Reklámcsík törölve");
@@ -59,8 +59,8 @@ define("BANNER_MENU_L7", "jelenlegi kampányok");
 define("BANNER_MENU_L8", "kiválasztott kampány:");
 define("BANNER_MENU_L9", "kijelölés törlése");
 define("BANNER_MENU_L10", "Megjelenítés típusa");
-define("BANNER_MENU_L12", "egyszerű");
-define("BANNER_MENU_L13", "box-ban címsorral");
+// define("BANNER_MENU_L12", "egyszeru");
+// define("BANNER_MENU_L13", "box-ban címsorral");
 define("BANNER_MENU_L18", "Menü beállítás frissítése");
 define("BANNER_MENU_L19", "megjelenített bannerek száma:<br />ez csak akkor használható, ha több reklámkampány van kiválasztva"); 
 

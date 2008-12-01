@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 1.11 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.17 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # --------------------------------------------------------------------------
 
 define("PAGE_NAME", "Letöltések");
@@ -91,5 +91,7 @@ define("LAN_dl_74", "Összes letöltés a tükörszerverről: ");
 define("LAN_dl_75", "nincs kép ");
 define("LAN_dl_76", "Ugrás"); 
 define("LAN_dl_77", "Letöltések");		// Intentional duplicate - some languages need it to be different. This is for number of townloads
+
+define('LAN_dl_78', 'A letöltés le lett tiltva vagy nem folytatható. Ellenorizd a --LINK--letötések</a> felületen egy frissebb verziót keresve.'); 
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.8 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # --------------------------------------------------------------------------
 
 define("PAGE_NAME", "Hiba");
@@ -38,5 +38,14 @@ define("LAN_ERROR_29", "[5]: Mező(k) maradtak üresen. Lépj vissza és töltsd
 define("LAN_ERROR_30", "[6]: Nincs megfelelő kapcsolat a mySQL-hoz. Ellenőrizd az e107_config.php file-t, hogy megfelelő információkat tartalmaz-e.");
 define("LAN_ERROR_31", "[7]: mySQL fut, de az adatbázis ({$mySQLdefaultdb}) nem tud kapcsolódni hozzá.<br />Ellenőrizd az adatbázis létezését és az e107_config.php file tartalmát, hogy megfelelő információkat tartalmaz-e.");
 define("LAN_ERROR_32", "A frissítés befejezéséhez másold a következő szöveget az e107_config.php file-be:");
+
+define("LAN_ERROR_33", "Folyamat hiba! Át foglak irányítani a kezdo oldalra.");
+define("LAN_ERROR_34", "Ismeretlen hiba! Informáld az oldal adminját a tapasztalt hibáról:");
+
+define('LAN_ERROR_35', 'Error 400 - Rossz lekérdezés');
+define('LAN_ERROR_36', 'Formázási hiba a keresett oldalon.');
+define('LAN_ERROR_37', 'Hiba ikon');
+define('LAN_ERROR_38', '');
+define('LAN_ERROR_39', '');
 
 ?>

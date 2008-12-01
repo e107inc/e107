@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.0 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # --------------------------------------------------------------------------
 
 define("LANINS_001", "e107 Telepítés");
@@ -85,7 +85,8 @@ e107 telepítése sikeres, megkezdheted a tartalom feltöltését.<br />Az admin
 [b]Támogatás[/b]
 e107 főoldala: [link=http://e107.org]http://e107.org[/link], itt megtalálhatod a FAQ-t és a dokumentációt.
 e107 Magyarország főoldala: [link=http://e107hungary.org]http://e107hungary.org[/link], a magyar e107 TEAM oldala.
-Source: [link=http://source.e107hungary.org]http://source.e107hungary.org[/link], Plugin-ok, theme-k, módosítások, ...
+Source: [link=http://source.e107hungary.org]http://source.e107hungary.org[/link], Plugin-ok, módosítások, ...
+Themes: [link=http://themes.e107hungary.org]http://themes.e107hungary.org[/link], Themek, sablonok, ...
 Fórumok: [link=http://e107hungary.org/e107_plugins/forum/forum.php]http://e107hungary.org/e107_plugins/forum/forum.php[/link]
 
 [b]Letöltések[/b]
@@ -148,7 +149,10 @@ define("LANINS_102", 'Dátum / Idő');
 define("LANINS_103", 'Leírások');
 define("LANINS_104", 'Leírások főoldal ...');
 
-define("LANINS_105", '');
-define("LANINS_106", '');
+define("LANINS_105", 'Az adatbázisnév vagy a prefix elején a következo jegyek \'e\' or \'E\' nem elfogadhatóak');
+define("LANINS_106", 'FIGYELMEZTETÉS - E107 nem ír hozzá a kilistázott könyvtárakhoz és/vagy file-khez. Mivel ez nem állítja le a telepítést, de bizonyos funkciók, tulajdonságok nem lesznek engedélyezve. 
+				Ezen tulajdonságok használatához meg kell változtatni a file jogosultságokat');
+define("LANINS_107", '');
+define("LANINS_108", '');
 
 ?>

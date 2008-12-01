@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/chatbox.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-11-11 08:59:44 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-01 16:42:39 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */

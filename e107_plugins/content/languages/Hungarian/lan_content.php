@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - rev: 1.66 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.76 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:40 $
 # --------------------------------------------------------------------------
 
 define("CONTENT_EMAILPRINT_LAN_1", "ez a tartalom innen van");
@@ -181,6 +181,8 @@ define("CONTENT_LAN_89", "oldal kiválasztása");
 define("CONTENT_LAN_90", "előző oldal");
 define("CONTENT_LAN_91", "következő oldal");
 define("CONTENT_LAN_92", " - aktuális");
+
+define('CONTENT_LAN_ALL', 'összes');
 
 define("CONTENT_MENU_LAN_0", "Tartalom Menü :");
 define("CONTENT_MENU_LAN_1", "Jelenleg nincs tartalom");

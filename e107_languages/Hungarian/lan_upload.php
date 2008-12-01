@@ -5,14 +5,18 @@
 
 define("PAGE_NAME", "Feltöltés");
 
-define("LAN_20", "Hiba");
+define('LAN_UL_001','Érvénytelen email cím');
+define('LAN_UL_002', 'Nincs jogosultságod file feltöltésre erre a szerverre.');	// LAN_403
+
+define('LAN_UL_020', 'Hiba');
+define('LAN_UL_021', 'Feltöltés sikertelen');
+
 define("LAN_61", "Neved: ");
 define("LAN_112", "E-mail címed: ");
 define("LAN_144", "Weboldal URL címe: ");
 define("LAN_402", "A feltöltéshez regisztrálnod kell.");
-define("LAN_403", "Nincs jogosultságod fájlok feltöltéséhez.");
 define("LAN_404", "Köszönjük. A feltöltött fájlt az adminisztrátor ellenőrizni fogja, ha megfelel a követelményeknek, akkor kirakja az oldalra.");
-define("LAN_405", "A fájl meghaladta a maximális méretet, ezért törlésre került.");
+// define("LAN_405", "A fájl meghaladta a maximális méretet, ezért törlésre került.");
 define("LAN_406", "Figyelem");
 define("LAN_407", "Bármely más típusú fájl azonnali törlésre kerül.");
 define("LAN_408", "Az aláhúzott");

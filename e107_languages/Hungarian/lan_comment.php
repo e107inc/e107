@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.14 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # --------------------------------------------------------------------------
 
 
@@ -24,6 +24,7 @@ define("COMLAN_102", "Válasz: ");
 define("COMLAN_103", "Cikk");
 define("COMLAN_104", "Leírás");
 define("COMLAN_105", "Tartalom");
+define("COMLAN_106", "Letöltés");
 define("COMLAN_145", "Regisztrált: ");
 define("COMLAN_194", "Vendég");
 define("COMLAN_195", "Regisztrált tag");

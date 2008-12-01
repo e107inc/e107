@@ -1,11 +1,7 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - rev: 1.23 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.30 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:40 $
 # --------------------------------------------------------------------------
-
-//if(!defined("PAGE_NAME")){define("PAGE_NAME", "Linkek");} <--
-// Lisa, could you please move this out of the language file ?
-
 
 
 define("LCLAN_PLUGIN_LAN_1", "Linkek oldal");
@@ -306,6 +302,8 @@ define("LAN_LINKS_47", "link navigátor...");
 define("LAN_LINKS_48", "-- Kategória megtekintése --");
 define("LAN_LINKS_49", "");
 define("LAN_LINKS_50", "Jelenleg nem rendelkezel link beküldés jogosultsággal");
+
+define('LAN_LINKS_SCH_1','Válasz a linkhez');
 
 define("LAN_ADMIN_HELP_0", "Linkoldal - Súgó");
 

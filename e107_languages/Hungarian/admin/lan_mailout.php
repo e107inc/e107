@@ -1,11 +1,11 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
+# e107 hungarian language file - ver: 1.16 - author: e107hungary.org team - 2008
 # --------------------------------------------------------------------------
 
 define("PRFLAN_52", "Módosítások mentése");
 define("PRFLAN_63", "Teszt e-mail küldése");
-define("PRFLAN_64", "A gombra kattintva egy teszt e-mail lesz elküldve a fő admin e-mail címére");
+// define("PRFLAN_64", "A gombra kattintva egy teszt e-mail lesz elküldve a fő admin e-mail címére");
 define("PRFLAN_65", "E-mail küldése:");
 define("PRFLAN_66", "Teszt e-mail innét:");
 define("PRFLAN_67", "Ez egy teszt e-mail, azt jelzi, hogy az e-mail beállításaid jók!\n\nÜdvözlettel\naz e107 website system.");
@@ -88,6 +88,6 @@ define("MAILAN_64", "Összes eltelt idő:");
 define("MAILAN_65", "másodperc");
 define("MAILAN_66", "Kilépés sikeres");
 define("MAILAN_67", "Használd a 'POP before SMTP' lehetőséget a hitelesítéshez"); 
-
+define('MAILAN_68', 'Teszt cím');
 
 ?>

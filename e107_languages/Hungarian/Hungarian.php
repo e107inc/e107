@@ -1,11 +1,11 @@
 <?php
 # ------------------------------------------------------------------------------------------------------------------
-# e107 hungarian language file - $Revision: 1.8 $ - $author: e107hungary.org team $ - $Date: 2007-11-11 08:59:48 $
+# e107 hungarian language file - $Revision: 1.9 $ - $author: e107hungary.org team $ - $Date: 2008-12-01 16:42:39 $
 # ------------------------------------------------------------------------------------------------------------------
 
 setlocale(LC_ALL, 'hu_HU.UTF-8', 'hu_HU@euro', 'hu_HU', 'hu', 'Hungarian');
 define("CORE_LC", 'hu');
-define("CORE_LC2", 'HU.utf-8');
+define("CORE_LC2", 'HU.UTF-8');
 // define("TEXTDIRECTION","rtl");
 define("CHARSET", "utf-8");  // for a true multi-language site. :)
 define("CORE_LAN1","Hiba : A téma hiányzik.\\n\\nCseréld le a beállításoknál a használt témát (admin terület) vagy tölts fel az aktuális téma file-it a szerverre.");
@@ -32,6 +32,10 @@ define("CORE_LAN13", " lekérdezési idő. ");
 define("CORE_LAN14", "");			// Used in 0.8
 define("CORE_LAN15", "Adatbázis lekérdezés: ");
 define("CORE_LAN16", "Memória használat: ");
+
+// img.bb
+define('CORE_LAN17', '[ Kép letiltva ]');
+define('CORE_LAN18', 'Kép: ');
 
 define("CORE_LAN_B", "b");
 define("CORE_LAN_KB", "kb");

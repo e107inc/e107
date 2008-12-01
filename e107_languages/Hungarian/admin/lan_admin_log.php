@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/lan_admin_log.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2007-11-11 08:59:42 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-01 16:42:39 $
 |     $Author: lisa_ 
 +----------------------------------------------------------------------------+
 */

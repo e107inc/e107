@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
+# e107 hungarian language file - ver: 1.5 - author: e107hungary.org team - 2008
 # --------------------------------------------------------------------------
 
 define("CUSLAN_1", "Cím");
@@ -45,4 +45,6 @@ define("CUSLAN_40", "Beállítások mentése");
 
 define("CUSLAN_41", "Szerző és dátum információk megjelenítése");
 define("CUSLAN_42", "Még nics oldal beállítva");
+define('CUSLAN_43', 'cím nélküli menü: ');
+define('CUSLAN_44', 'cím nélküli oldal');
 ?>

@@ -1,6 +1,6 @@
 <?php
 # ---------------------------------------------------------------------------
-# e107 Hungarian language file - $Version: 1.32 $ - $Author: e107hun-lac $ - $Date: 2007-11-11 08:59:44 $
+# e107 Hungarian language file - $Version: 1.34 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # ---------------------------------------------------------------------------
 
 define("USRLAN_1", "Beállítások elmentve");
@@ -150,6 +150,7 @@ define("USRLAN_152", "Visszadobás, aktiválás törlés");
 define("USRLAN_153", "Nem visszadobott email törlése");
 define("USRLAN_154", "Megjelölt email törlése");
 define("USRLAN_155", "Összes {TOTAL} emails találat. {DELCOUNT} törlési folyamat beállítása.<br />{DELUSER} felhasználók, akik 'visszautasítottnak' jelölve (out of {FOUND} emails)");
+define("USRLAN_156", "Email cím már használatban van");
 
 define("LAN_MAINADMIN","Fő Admin");
 define("LAN_ADMIN","Admin");

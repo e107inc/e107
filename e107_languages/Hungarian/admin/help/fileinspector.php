@@ -1,4 +1,4 @@
- <?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Hungarian/admin/help/fileinspector.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-11-11 08:59:45 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-01 16:42:39 $
 |     $Author: e107hun-lac $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Non Core File</div>";
 $ns -> tablerender("File Key", $text);
 
-$text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters
+$text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters 
 an e107 core file, it checks it for file consistency to make sure it isn't corrupted.";
 
 if ($pref['developer']) {

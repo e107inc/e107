@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - rev: 1.1 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.5 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:40 $
 # --------------------------------------------------------------------------
 
 define("NLLAN_MENU_CAPTION", "Hírlevél");
@@ -66,6 +66,17 @@ define("NLLAN_53", "Valóban megrendeled a hírlevelet?");
 
 define("NLLAN_54", "Küldés");
 
+define("NLLAN_55", "ID");
+define("NLLAN_56", "Hírlevél ID nem érvényes");
+define("NLLAN_57", "Vissza az elozo oldalra");
+define("NLLAN_58", "Hiba");
+define("NLLAN_59", "Név");
+define("NLLAN_60", "Email");
+define("NLLAN_61", "Muveletek");
+define("NLLAN_62", "Felhasználó kitiltva! (vagy nem teljesen regisztrált)");
+define("NLLAN_63", "Összes felíratkozó");
+define("NLLAN_64", "Vissza a hírlevél fooldalra");
+define("NLLAN_65", "Felíratkozók átnézhetik a hírlevél ID-t");
 
 
 

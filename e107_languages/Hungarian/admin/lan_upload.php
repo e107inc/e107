@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 Hungarian language file - $Version: 1.7 $ - $Author: e107hun-lac $ - $Date: 2007-11-11 08:59:40 $
+# e107 Hungarian language file - $Version: 1.7 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # --------------------------------------------------------------------------
 
 define("UPLLAN_1", "Feltöltés törölve a listából");

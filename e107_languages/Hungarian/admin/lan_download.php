@@ -134,4 +134,8 @@ define("DOWLAN_154", "ha tükörszervert használsz, akkor válaszd ki, hogyan j
 define("DOWLAN_155", "Tükörszerver megjelenési tipusa:");
 define("DOWLAN_156", "Tükörszerver lista megjelenítése, tükörszerver kiválasztása");
 define("DOWLAN_157", "Véletlenszerű tükörszerver használata - nem a felhasználó válassza ki");  
+
+define("DOWLAN_158", "Al-al-kategóriák megjelenítése a fő letöltés oldalon");
+define("DOWLAN_159", "Al-al-kategória számlálás beleszámítása az al-kategória számításba");
+
 ?>

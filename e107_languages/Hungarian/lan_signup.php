@@ -1,6 +1,6 @@
 <?php
 # --------------------------------------------------------------------------
-# e107 hungarian language file - ver: 0.700 - author: e107hungary.org team - 2006
+# e107 Hungarian language file - $Version: 1.30 $ - $Author: e107hun-lac $ - $Date: 2008-12-01 16:42:39 $
 # --------------------------------------------------------------------------
 
 define("PAGE_NAME", "Regisztráció");
@@ -112,7 +112,7 @@ define("LAN_SIGNUP_55", "Túl hosszú a megjelenő név. Válassz másikat");
 define("LAN_SIGNUP_56", "Túl rövid a megjelenő név. Válassz másikat");
 define("LAN_SIGNUP_57", "Túl hosszú a bejelentkező név. Válassz másikat");
 define("LAN_SIGNUP_58", "Regisztráció előnézet");
-
+define("LAN_SIGNUP_59","**** Ha a link nem működik, ellenőrizd, nincs-e a link felülírva a következő sorban. ****");
 
 
 ?>
