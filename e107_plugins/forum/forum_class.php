@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-11-30 22:05:12 $
+|     $Revision: 1.13 $
+|     $Date: 2008-12-01 01:10:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ class e107forum
 		else
 		{
 			$this->getForumPermList();
-			$tmp = $e107->arrayStorage->WriteArray($this->permList);
+			$tmp = $e107->arrayStorage->WriteArray($this->permList, false);
 			$e107->ecache->set_sys('forum_perms', $tmp);
 
 		}
@@ -195,8 +195,66 @@ class e107forum
 	function threadUpdate($threadInfo, $inc)
 	{
 		$e107 = e107::getInstance();
+		//TODO: Add this
 	}
+	
+	function threadGet($id, $joinForum = true, $uid = USERID)
+	{
+		$e107 = e107::getInstance(); 
+		$id = (int)$id;
+		$uid = (int)$uid;
 
+		if($joinForum)
+		{
+			//TODO: Fix query to get only forum and parent info needed, with correct naming 
+			$qry = '
+			SELECT t.*, f.*, tr.track_userid
+			FROM `#forum_thread` AS t
+			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
+			LEFT JOIN `#forum_track` AS tr ON tr.track_thread = t.thread_id AND tr.track_userid = '.$uid.' 
+			WHERE thread_id = '.$id;
+		}
+		else
+		{
+			$qry = '
+			SELECT *
+			FROM `#forum_thread`
+			WHERE thread_id = '.$id;
+		}
+		if($e107->sql->db_Select_gen($qry, true))
+		{
+			$tmp = $e107->sql->db_Fetch(MYSQL_ASSOC);
+			if($tmp)
+			{
+				if(trim($tmp['thread_options']) != '')
+				{
+					$tmp['thread_options'] = inserialize($tmp['thread_options']);
+				}
+				return $tmp;
+			}
+		}
+		return false;
+	}
+	
+	function postGet($threadId, $start, $num)
+	{
+		$e107 = e107::getInstance();
+		$qry = '
+		SELECT p.*, u.user_name, u.user_customtitle, eu.user_name AS edit_name
+		FROM `#forum_post` AS p
+		LEFT JOIN `#user` AS u ON p.post_user = u.user_id
+		LEFT JOIN `#user` AS eu ON p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id 
+		WHERE p.post_thread = '.$threadId."
+		ORDER BY p.post_datestamp ASC
+		LIMIT {$start}, {$num}
+		";
+		if($e107->sql->db_Select_gen($qry, true))
+		{
+			return $e107->sql->db_Fetch(MYSQL_ASSOC);
+		}
+		return false;
+	}
+	
 	function thread_postnum($thread_id)
 	{
 		global $sql;
@@ -465,7 +523,7 @@ class e107forum
 
 	function track($which, $uid, $threadId)
 	{
-		global $e107;
+		$e107 = e107::getInstance();
 		$threadId = (int)$threadId;
 		$uid = (int)$uid;
 		$result = false;
@@ -481,8 +539,12 @@ class e107forum
 
 			case 'delete':
 			case 'del':
-			 	$result = $e107->sql->db_Delete('forum_track', 'WHERE `track_userid` = {$uid} AND `track_thread');
+			 	$result = $e107->sql->db_Delete('forum_track', "`track_userid` = {$uid} AND `track_thread` = {$threadId}");
 			 	break;
+
+			case 'check':
+				$result = $e107->sql->db_Count('forum_track', '(*)', "WHERE `track_userid` = {$uid} AND `track_thread` = {$threadId}");
+				break;
 		}
 		return $result;
 	}
@@ -789,11 +851,11 @@ class e107forum
 		return $ret;
 	}
 
-	function thread_incview($thread_id)
+	function threadIncView($id)
 	{
-		$thread_id = intval($thread_id);
-		global $sql;
-		return $sql->db_Update("forum_t", "thread_views=thread_views+1 WHERE thread_id=".$thread_id);
+		$e107 = e107::getInstance();
+		$id = (int)($id);
+		return $e107->sql->db_Update('forum_thread', 'thread_views=thread_views+1 WHERE thread_id='.$id);
 	}
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2008-11-30 23:15:15 $
+|     $Revision: 1.80 $
+|     $Date: 2008-12-01 01:10:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1265,7 +1265,7 @@ function get_user_data($uid, $extra = '')
 					}
 				}
 			}
-			$tmp = $e107->arrayStorage->WriteArray($extended_struct);
+			$tmp = $e107->arrayStorage->WriteArray($extended_struct, false);
 			$e107->ecache->set_sys('nomd5_extended_struct', $tmp);
 			unset($tmp);
 		}

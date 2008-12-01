@@ -9,25 +9,24 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/viewforum.php,v $
-* $Revision: 1.3 $
-* $Date: 2008-11-27 03:02:26 $
+* $Revision: 1.4 $
+* $Date: 2008-12-01 01:10:50 $
 * $Author: mcfly_e107 $
 *
 */
 
 require_once('../../class2.php');
-$lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php';
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
+include_lan(e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
 
 if (isset($_POST['fjsubmit']))
 {
-	header("location:".e_SELF.'?'.$_POST['forumjump']);
+	header('location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id'=>$_POST['forumjump'])));
 	exit;
 }
 
 if (!e_QUERY)
 {
-	js_location(e_PLUGIN.'forum/forum.php');
+	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
 
@@ -74,7 +73,7 @@ if (!$FORUM_VIEW_START) {
 	{
 		require_once(THEME.'forum_viewforum_template.php');
 	}
-	else if (file_exists(THEME.'forum_template.php'))
+	elseif (file_exists(THEME.'forum_template.php'))
 	{
 		require_once(THEME.'forum_template.php');
 	}
@@ -392,7 +391,7 @@ function parse_thread($thread_info)
 	} else {
 		$title = "";
 	}
-	$THREADNAME = "<a {$title} href='".e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['thread_id']}'>{$thread_name}</a>";
+	$THREADNAME = "<a {$title} href='".e_PLUGIN."forum/forum_viewtopic.php?id={$thread_info['thread_id']}'>{$thread_name}</a>";
 
 	$pages = ceil(($REPLIES+1)/$pref['forum_postspage']);
 	if ($pages > 1)
