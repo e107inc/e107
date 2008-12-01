@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-07-25 19:33:02 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-01 21:47:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -34,9 +34,8 @@ class alt_login
 		return AUTH_NOCONNECT;
 	  }
 
-
 	  $login_result = $_login -> login($username, $userpass, $newvals, FALSE);
-		
+
 	  if($login_result === AUTH_SUCCESS )
 	  {
 		if (MAGIC_QUOTES_GPC == FALSE)
@@ -45,7 +44,7 @@ class alt_login
 		}
 		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 		$username = substr($username, 0, varset($pref['loginname_maxlength'],30));
-			
+
 		$aa_sql = new db;
 		$uh = new UserHandler;
 		$db_vals = array('user_password' => $aa_sql->escape($uh->HashPassword($userpass,$username)));
@@ -65,10 +64,14 @@ class alt_login
 		}
 		else
 		{  // Just add a new user
-		  if (!isset($db_vals['user_name'])) $db_vals['user_name'] = $username;
-		  if (!isset($db_vals['user_loginname'])) $db_vals['user_loginname'] = $username;
-		  if (!isset($db_vals['user_join'])) $db_vals['user_join'] = time();
-		  $aa_sql->db_Insert('user',$db_vals);
+			if (!isset($db_vals['user_name'])) $db_vals['user_name'] = $username;
+			if (!isset($db_vals['user_loginname'])) $db_vals['user_loginname'] = $username;
+			if (!isset($db_vals['user_join'])) $db_vals['user_join'] = time();
+			$db_vals['user_class'] = varset($pref['initial_user_classes'],'');
+			if (!isset($db_vals['user_signature'])) $db_vals['user_signature'] = '';
+			if (!isset($db_vals['user_prefs'])) $db_vals['user_prefs'] = '';
+			if (!isset($db_vals['user_perms'])) $db_vals['user_perms'] = '';
+			$aa_sql->db_Insert('user',$db_vals);
 		}
 		return LOGIN_CONTINUE;
 	  }

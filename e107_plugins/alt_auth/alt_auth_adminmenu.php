@@ -27,8 +27,6 @@ function alt_auth_get_authlist()
 
 // All user fields which might, just possibly, be transferred. The option name must be the corresponding field in the E107 user database, prefixed with 'xf_'
 $alt_auth_user_fields = array(
-//  'user_loginname' 	=> array('prompt' => LAN_ALT_10, 'optname' => 'xf_user_loginname', 'default' => 'user_loginname', 'optional' => FALSE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' =>  TRUE, 'ldap' => TRUE, 'ldap_field' => 'cn'),
-//  'user_password' 	=> array('prompt' => LAN_ALT_11, 'optname' => 'xf_user_password', 'default' => 'user_password', 'optional' => FALSE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' =>  TRUE, 'ldap' => TRUE, 'ldap_field' => ''),
   'user_email' 		=> array('prompt' => LAN_ALT_12, 'optname' => 'xf_user_email', 'default' => 'user_email', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'mail'),
   'user_hideemail' 	=> array('prompt' => LAN_ALT_13, 'optname' => 'xf_user_hideemail', 'default' => 'user_hideemail', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
   'user_name' 		=> array('prompt' => LAN_ALT_14, 'optname' => 'xf_user_name', 'default' => 'user_name', 'optional' => TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
@@ -187,7 +185,7 @@ function alt_auth_test_form($prefix,$frm)
 	$log_result = AUTH_UNKNOWN;
 	$pass_vars = array();
 	$val_name = trim(varset($_POST['nametovalidate'],''));
-	
+
 	if(isset($_login->Available) && ($_login->Available === FALSE))
 	{	// Relevant auth method not available (e.g. PHP extension not loaded)
 	  $log_result = AUTH_NOT_AVAILABLE;
