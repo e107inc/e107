@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-12-01 21:11:01 $
+|     $Revision: 1.22 $
+|     $Date: 2008-12-02 21:34:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ switch($action)
 	case 'rp':
 		$threadInfo = $forum->threadGet($id, false);
 		$forumId = $threadInfo['thread_forum_id'];
-		print_a($threadInfo);
+		var_dump($threadInfo);
 //		if (!is_array($thread_info) || !count($thread_info))
 //		{
 //		  $forum_info = false;		// Someone fed us a dud forum id - should exist if replying
@@ -265,7 +265,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			case 'nt':
 				$threadInfo['thread_s'] = (MODERATOR ? $_POST['threadtype'] : 0);
 				$threadInfo['thread_name'] = $_POST['subject'];
-				$threadInfo['thread_forum_id'] = $forum_id;
+				$threadInfo['thread_forum_id'] = $forumId;
 				$threadInfo['thread_active'] = 1;
 				$threadInfo['thread_datestamp'] = $time;
 				$result = $forum->threadAdd($threadInfo, $postInfo);

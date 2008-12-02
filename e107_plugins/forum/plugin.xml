@@ -29,11 +29,11 @@
 		<pref name="forum_hilightsticky" value="1" />
 	</mainPrefs>
 	<userclass name="forum_moderator" description="Moderator of all forums" />
-	<extendedField name="viewed" type='EUF_INTEGER' default='0' active="true" />
+	<extendedField name="viewed" type='EUF_TEXTAREA' default='0' active="true" />
 	<extendedField name="posts" type='EUF_INTEGER' default='0' active="true" />
 	<management>
 		<install when="post" type="classFunction" file="forum_management.php" class="forum_management" function="forum_install_post" />
 		<uninstall type="classFunction" file="forum_management.php" class="forum_management" function="forum_uninstall" />
 		<upgrade type="classFunction" file="forum_management.php" class="forum_management" function="forum_upgrade"  />
 	</management>
-</e107Plugin>	
+</e107Plugin>
