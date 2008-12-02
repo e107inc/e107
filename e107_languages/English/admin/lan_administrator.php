@@ -1,13 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-10-20 21:52:38 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_administrator.php,v $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-02 00:32:30 $
+ * $Author: secretr $
 */
 define("ADMSLAN_0", "New user/admin entry created for");
 define("ADMSLAN_1", "now has admin status.");
@@ -45,9 +49,9 @@ define("ADMSLAN_37", "Moderate comments");
 // define("ADMSLAN_38", "Moderate/configure chatbox");
 define("ADMSLAN_39", "Post news");
 define("ADMSLAN_40", "Post links");
-define("ADMSLAN_41", "Post articles");
-define("ADMSLAN_42", "Post reviews");
-define("ADMSLAN_43", "Post content pages");
+//define("ADMSLAN_41", "Post articles"); - NOW PLUGIN
+//define("ADMSLAN_42", "Post reviews"); - NOW PLUGIN
+define("ADMSLAN_43", "Configure URLs");
 define("ADMSLAN_44", "Post downloads");
 define("ADMSLAN_45", "Schedule Tasks");
 define("ADMSLAN_46", "Welcome message");

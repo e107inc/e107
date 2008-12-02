@@ -1,13 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-06-29 15:23:43 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Language File
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_admin.php,v $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-02 00:32:30 $
+ * $Author: secretr $
 */
 define("ADLAN_0", "News");
 define("ADLAN_1", "Add/edit/delete news items");
@@ -180,6 +184,9 @@ define('ADLAN_156', 'Admin log, user audit, rolling log');
 
 define("ADLAN_157", "Schedule Tasks");
 define("ADLAN_158", "Cron Jobs and Automated Tasks");
+
+define("ADLAN_159", "URL Configuration");
+define("ADLAN_160", "Configure Site URLs");
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');
