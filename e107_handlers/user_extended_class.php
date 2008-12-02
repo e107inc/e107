@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-11-30 23:15:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2008-12-02 20:23:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -160,15 +160,15 @@ class e107_user_extended
 	}
 
 	// Get the definition of all fields, or those in a specific category, indexed by field ID
-	function user_extended_get_fieldList($cat = "")
+	function user_extended_get_fieldList($cat = "", $indexField = 'user_extended_struct_id')
 	{
 		global $sql;
 		$more = ($cat != '') ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
-		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 {$more} ORDER BY user_extended_struct_order ASC"))
+		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
 		{
 			while($row = $sql->db_Fetch())
 			{
-				$ret[$row['user_extended_struct_id']] = $row;
+				$ret[$row[$indexField]] = $row;
 			}
 		}
 		return $ret;
