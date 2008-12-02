@@ -1,5 +1,5 @@
 <?php
-// $Id: thread.php,v 1.4 2008-12-01 21:11:01 mcfly_e107 Exp $
+// $Id: thread.php,v 1.1 2008-12-02 00:33:29 secretr Exp $
 function url_forum_thread($parms)
 {
 	switch($parms['func'])
