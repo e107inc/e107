@@ -1,5 +1,5 @@
 <?php
-// $Id: forum.php,v 1.4 2008-11-29 01:24:27 mcfly_e107 Exp $
+// $Id: forum.php,v 1.1 2008-12-02 00:33:29 secretr Exp $
 function url_forum_forum($parms)
 {
 	switch($parms['func'])
