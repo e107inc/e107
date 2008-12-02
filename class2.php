@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2008-12-01 01:10:50 $
+|     $Revision: 1.81 $
+|     $Date: 2008-12-02 18:27:35 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -505,7 +505,7 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 		if (!$urlport) { $urlport = 80; }
 		$aPrefURL = explode('/',$pref['siteurl'],4);
 		if (count($aPrefURL) > 2) // we can do this -- there's at least http[s]://dom.ain/whatever
-		{ 
+		{
 			$PrefRoot = $aPrefURL[2];
 			list($PrefSiteBase,$PrefSitePort) = explode(':',$PrefRoot.':');
 			if (!$PrefSitePort)
@@ -604,7 +604,7 @@ e107_include(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.'_custom.php');
 
 // Now we know the site CHARSET, define how to handle utf-8 as necessary
-$tp->initCharset();	
+$tp->initCharset();
 
 if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref['multilanguage'] && !$pref['multilanguage_subdomain'])
 {
@@ -1119,7 +1119,7 @@ function js_location($qry)
 	}
 	else
 	{
-		echo "<script type='text/javascript'>document.location.href='{$qry}'</script>\n"; 
+		echo "<script type='text/javascript'>document.location.href='{$qry}'</script>\n";
 		exit;
 	}
 }
@@ -1244,7 +1244,7 @@ function get_user_data($uid, $extra = '')
 			return FALSE;
 		}
 	}
-	$var = $e107->sql->db_Fetch();
+	$var = $e107->sql->db_Fetch(MYSQL_ASSOC);
 
 	if(!$extended_struct = getcachedvars('extended_struct'))
 	{
@@ -1466,6 +1466,7 @@ function init_session()
 
 			$currentUser = $result;
 			$currentUser['user_realname'] = $result['user_login']; // Used by force_userupdate
+			$e107->currentUser = &$currentUser;
 			define('USERLV', $result['user_lastvisit']);
 
 			if ($result['user_ban'] == 1)
