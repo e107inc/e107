@@ -9,14 +9,14 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-02 00:40:28 $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-02 11:03:02 $
  * $Author: secretr $
 */
 
 require_once('../class2.php');
-if (!getperms('L')) 
-{ 
+if (!getperms('L'))
+{
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
@@ -39,12 +39,12 @@ $urlc->renderPage();
 require_once(e_ADMIN.'footer.php');
 
 class admin_url_config {
-	
+
 	var $_rs;
 	var $_plug;
 	var $_api;
-	
-	function admin_url_config() 
+
+	function admin_url_config()
 	{
 		global $e107;
 		require_once(e_HANDLER.'plugin_class.php');
@@ -56,7 +56,7 @@ class admin_url_config {
 		$this->_api = &$e107;
 	}
 
-	function renderPage() 
+	function renderPage()
 	{
 		global $plug_message;
 		$text = "<div class='center'>
@@ -65,23 +65,34 @@ class admin_url_config {
 		<table style='".ADMIN_WIDTH."' class='fborder admin-config'>
 		";
 
+		$empty = "
+		<tr>
+			<td colspan='2' class='forumheader3 center'>".LAN_EURL_EMPTY."</td>
+		</tr>
+		";
+
 		$text .= "
 		<tbody>
 		<tr>
-			<td colspan='2' class='forumheader'>Configure Core URLs</td>
-		</tr>";
+			<td colspan='2' class='forumheader'>".LAN_EURL_CORECONFIG."</td>
+		</tr>
+		";
 
-		$text .= $this->render_sections('core');
-		
+		$tmp = $this->render_sections('core');
+		if($tmp) $text .= $tmp;
+		else $text .= $empty;
+
 		$text .= "
 		<tr>
-			<td colspan='2' class='forumheader'>Configure Plugin URLs</td>
+			<td colspan='2' class='forumheader'>".LAN_EURL_PLUGCONFIG."</td>
 		</tr>";
 
-		$text .= $this->render_sections('plugin');
+		$tmp = $this->render_sections('plugin');
+		if($tmp) $text .= $tmp;
+		else $text .= $empty;
 
 		$text .= "
-		
+
 		<tr>
 			<td colspan='2' class='forumheader tfoot center'>".$this->_rs->form_button('submit', 'update', LAN_UPDATE)."</td>
 		</tr>
@@ -90,38 +101,39 @@ class admin_url_config {
 		</form>
 		</div>";
 
-		$this->_api->ns->tablerender('Manage Site URLs', $text);
+		$this->_api->ns->tablerender(PAGE_NAME, $text);
 	}
 
-	function render_sections($id) 
+	function render_sections($id)
 	{
-		
-		if($id == 'core') 
+
+		if($id == 'core')
 		{
 			$sections = $this->get_core_sections();
-		} else 
+		} else
 		{
 			$sections = $this->_plug->getall(1);
 		}
-		
+
 		$ret = '';
-		foreach ($sections as $section) 
+		foreach ($sections as $section)
 		{
 			if($id == 'core' && !is_readable(e_FILE.'e_url/core/'.$section['core_path'])) continue;
 			elseif($id == 'plugin' && !is_readable(e_PLUGIN.$section['plugin_path'].'/e_url')) continue;
 			$ret .= $this->render_section($id, $section);
 		}
-		
+
 		return $ret;
 	}
 
-	function render_section($id, $section) 
+	function render_section($id, $section)
 	{
-		$this->normalize($id, $section); //var_dump($id, $section);
+		$this->normalize($id, $section);
+
 		$text .= "
 			<tr>
 				<td class='forumheader3' style='width: 30%'>{$section['name']}</td>
-				<td class='forumheader3' style='width: 70%; white-space: nowrap'>
+				<td class='forumheader3' style='width: 70%'>
 					".$this->render_section_radio($id, $section)."
 		";
 		$text .= "
@@ -130,17 +142,17 @@ class admin_url_config {
 		";
 		return $text;
 	}
-	
-	function render_section_radio($id, $section) 
+
+	function render_section_radio($id, $section)
 	{
 		global $pref;
 		//DEFAULT
 		$checked_def = varset($pref['url_config'][$section['path']]) ? '' : ' checked="checked"';
 		$def = "
 			<input type='radio' id='{$section['path']}-default' name='cprofile[{$section['path']}]' value='0'{$checked_def} />
-			<label for='{$section['path']}-default'>Default</label>
+			<label for='{$section['path']}-default'>".LAN_EURL_DEFAULT."</label>
 		";
-		
+
 		//CUSTOM - CENTRAL REPOSITORY
 		$udefined_id = $id.'-custom:'.$section['path'];
 		$udefined_path = e_FILE."e_url/custom/{$id}/{$section['path']}/";
@@ -154,68 +166,67 @@ class admin_url_config {
 				$pref['url_config'][$section['path']] = $udefined_id;
 				$need_save = true;
 			}
-			
+
 			$checked = $pref['url_config'][$section['path']] == $udefined_id ? ' checked="checked"' : '';
 			$custom = "
 				<div class='clear'><!-- --></div>
 				<input type='radio' id='{$section['path']}-custom' name='cprofile[{$section['path']}]' value='{$udefined_id}'{$checked} />
-				<label for='{$section['path']}-custom'>User Defined Config</label>
-				<a href='#{$section['path']}-custom-info' class='e-expandit' title='Info'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
+				<label for='{$section['path']}-custom'>".LAN_EURL_UDEFINED."</label>
+				<a href='#{$section['path']}-custom-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
 				<div class='e-hideme' id='{$section['path']}-custom-info'>
 				<div class='indent'>
-					User defined URL configuration - overrides (disables) all custom configuration profiles.<br />
-					Remove the User defined configuration folder to enable the custom configuration profiles.<br />
-					<strong>Location:</strong> ".e_FILE_ABS."e_url/custom/{$id}/{$section['path']}/"."
+					".LAN_EURL_UDEFINED_INFO."<br />
+					<strong>".LAN_EURL_LOCATION."</strong> ".e_FILE_ABS."e_url/custom/{$id}/{$section['path']}/"."
 				</div>
 				</div>
 			";
 		}
 
-		
+
 		//CUSTOM PROFILES - PLUGINS ONLY
-		$config_profiles = ''; $profile_id = ''; 
+		$config_profiles = ''; $profile_id = '';
 		if($id == 'plugin')
-			$profile_path = e_PLUGIN."{$section['path']}/e_url/"; 
-		else 
-			$profile_path = e_FILE."e_url/core/{$section['path']}/"; 
+			$profile_path = e_PLUGIN."{$section['path']}/e_url/";
+		else
+			$profile_path = e_FILE."e_url/core/{$section['path']}/";
 
 		$config_profiles_array = $this->get_plug_profiles($profile_path);
 		//Search for custom url config released with the plugin
 		if($config_profiles_array)
 		{
 			foreach ($config_profiles_array as $config_profile) {
-				$profile_id = $id.'-profile:'.$config_profile; 
+				$profile_id = $id.'-profile:'.$config_profile;
 				$checked_profile = $pref['url_config'][$section['path']] == $profile_id ? ' checked="checked"' : '';
-				if($custom) $checked_profile = ' disabled="disabled"'; 
+				if($custom) $checked_profile = ' disabled="disabled"';
 				$config_profiles .= "
 					<div class='clear'><!-- --></div>
 					<input type='radio' id='{$section['path']}-profile-{$config_profile}' name='cprofile[{$section['path']}]' value='{$profile_id}'{$checked_profile} />
 					<label for='{$section['path']}-profile-{$config_profile}'>
-						Config Profile [{$config_profile}] 
+						".LAN_EURL_PROFILE." [{$config_profile}]
 					</label>
-					<a href='#{$section['path']}-profile-{$config_profile}-info' class='e-expandit' title='Info'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
+					<a href='#{$section['path']}-profile-{$config_profile}-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
 					<div class='e-hideme' id='{$section['path']}-profile-{$config_profile}-info'>
 						<div class='indent'>
-							Under Construction - profile.xml<br />
-							<strong>Location:</strong> ".str_replace(array(e_PLUGIN, e_FILE), array(e_PLUGIN_ABS, e_FILE_ABS), $profile_path)."{$config_profile}/
+							".LAN_EURL_PROFILE_INFO."<br />
+							<strong>".LAN_EURL_LOCATION."</strong> ".str_replace(array(e_PLUGIN, e_FILE), array(e_PLUGIN_ABS, e_FILE_ABS), $profile_path)."{$config_profile}/
 						</div>
 					</div>
 				";
 			}
-			
+
 		}
 
 		$this->render_shutdown($need_save);
-		
+
 		return $def.$config_profiles.$custom;
 	}
-	
+
 	function get_plug_profiles($path)
 	{
 		$ret = $this->_fl->get_dirs($path, '', array('CVS', '.svn'));
 		return $ret;
 	}
-	
+
 	function render_shutdown($now)
 	{
 		global $pref;
@@ -224,28 +235,28 @@ class admin_url_config {
 			save_prefs();
 		}
 	}
-	
-	function get_core_sections() 
+
+	function get_core_sections()
 	{
 		$core_def = array(
-			'news' => 		array("core_name" => 'News', 'core_path' => 'news'),
-			'downloads' => 	array("core_name" => 'Downloads', 'core_path' => 'downloads')
+			'news' => 		array("core_name" => LAN_EURL_CORE_NEWS, 'core_path' => 'news'),
+			'downloads' => 	array("core_name" => LAN_EURL_CORE_DOWNLOADS, 'core_path' => 'downloads')
 		);
-		
+
 		return $core_def;
 	}
-	
+
 	function normalize($id, &$section)
 	{
 		$tmp = $section;
-		foreach ($tmp as $k => $v) 
+		foreach ($tmp as $k => $v)
 		{
-			$section[str_replace($id.'_', '', $k)] = $v; 
+			$section[str_replace($id.'_', '', $k)] = $v;
 			unset($section[$k]);
 		}
 	}
-	
-	function update() 
+
+	function update()
 	{
 		global $pref;
 		$pref['url_config'] = $_POST['cprofile'];
@@ -253,16 +264,16 @@ class admin_url_config {
 	}
 }
 
-
+/*
 function headerjs()
 {
-	/*
+
 	$js = "
 	<script type='text/javascript'>
 
 	</script>";
 
 	return $js;
-	*/
-}
+
+}*/
 ?>
