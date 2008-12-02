@@ -1,20 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-11-14 06:01:06 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administrators Management
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-02 00:32:30 $
+ * $Author: secretr $
 */
 require_once('../class2.php');
 if (!getperms('3'))
@@ -236,9 +233,9 @@ function edit_administrator($row)
 	$text .= checkb("I", $a_perms).ADMSLAN_40."<br />";			// Post links
 //	$text .= checkb("J", $a_perms).ADMSLAN_41."<br />";					// Post articles   - NOW PLUGIN
 //	$text .= checkb("K", $a_perms).ADMSLAN_42."<br />";					// Post reviews    - NOW PLUGIN
-//	$text .= checkb("L", $a_perms).ADMSLAN_43."<br />";					// Post content pages - NOW PLUGIN
+	$text .= checkb("L", $a_perms).ADMSLAN_43."<br />";			// Configure URLs
 	$text .= checkb("R", $a_perms).ADMSLAN_44."<br />";			// Post downloads
-	$text .= checkb("U", $a_perms).ADMSLAN_45."<br />";			// Post polls
+	$text .= checkb("U", $a_perms).ADMSLAN_45."<br />";			// Schedule Tasks
 	$text .= checkb("M", $a_perms).ADMSLAN_46."<br />";			// Welcome message
 	$text .= checkb("N", $a_perms).ADMSLAN_47."<br /><br />";	// Moderate submitted news
 

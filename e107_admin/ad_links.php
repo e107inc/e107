@@ -1,20 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-11-14 06:01:06 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin Navigation
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
+ * $Revision: 1.7 $
+ * $Date: 2008-12-02 00:32:30 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -194,6 +191,9 @@ if (!defined('E_16_SEARCH')) {
 if (!defined('E_16_UPLOADS')) {
 	define('E_16_UPLOADS', "<img src='".e_IMAGE."admin_images/uploads_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
+if (!defined('E_16_EURL')) {
+	define('E_16_EURL', "<img src='".e_IMAGE."admin_images/eurl_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+}
 if (!defined('E_16_USER')) {
 	define('E_16_USER', "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
@@ -321,6 +321,9 @@ if (!defined('E_32_SEARCH')) {
 if (!defined('E_32_UPLOADS')) {
 	define('E_32_UPLOADS', "<img src='".e_IMAGE."admin_images/uploads_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
+if (!defined('E_32_EURL')) {
+	define('E_32_EURL', "<img src='".e_IMAGE."admin_images/eurl_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+}
 if (!defined('E_32_USER')) {
 	define('E_32_USER', "<img src='".e_IMAGE."admin_images/users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
@@ -398,6 +401,7 @@ $e_icon_array = array(
 	'theme_manage' => E_32_THEMEMANAGER,
 	'maintain' => E_32_MAINTAIN,
 	'upload' => E_32_UPLOADS,
+	'eurl' => E_32_EURL,
 	'userclass' => E_32_USERCLASS,
 	'user_extended' => E_32_USER_EXTENDED,
 	'users' => E_32_USER,
@@ -476,6 +480,7 @@ $array_functions = array(
 	28 => array(e_ADMIN."users_extended.php", ADLAN_78, ADLAN_79, "4", 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
 	29 => array(e_ADMIN."fileinspector.php", ADLAN_147, ADLAN_148, "Y", 4, E_16_INSPECT, E_32_INSPECT),
 	30 => array(e_ADMIN."notify.php", ADLAN_149, ADLAN_150, "O", 4, E_16_NOTIFY, E_32_NOTIFY),
-	31 => array(e_ADMIN."cron.php", ADLAN_157, ADLAN_158, "U", 4, E_16_CRON, E_32_CRON)
+	31 => array(e_ADMIN."cron.php", ADLAN_157, ADLAN_158, "U", 4, E_16_CRON, E_32_CRON),
+	32 => array(e_ADMIN."eurl.php", ADLAN_159, ADLAN_160, "L", 1, E_16_EURL, E_32_EURL)
 	);
 ?>
