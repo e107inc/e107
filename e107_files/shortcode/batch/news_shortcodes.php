@@ -9,8 +9,8 @@
  * News Shortcode Batch
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/news_shortcodes.php,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-02 16:50:15 $
+ * $Revision: 1.13 $
+ * $Date: 2008-12-02 23:44:19 $
  * $Author: secretr $
 */
 if (!defined('e107_INIT')) { exit; }
@@ -251,15 +251,15 @@ SC_END
 SC_BEGIN NEWSTHUMBNAIL
 global $e107;
 $news_item = getcachedvars('current_news_item');
-$param = getcachedvars('current_news_param'); echo
-return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".$e107->url->getUrl('core:news', 'main', "action=item&id={$news_item['news_id']}&cat={$news_item['news_category']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
+$param = getcachedvars('current_news_param');
+return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$news_item['news_id']}&value2={$news_item['news_category']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
 SC_END
 
 SC_BEGIN NEWSIMAGE
 global $e107;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".$e107->url->getUrl('core:news', 'main', "action=item&id={$news_item['news_id']}&cat={$news_item['news_category']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
+return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$news_item['news_id']}&value1={$news_item['news_category']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
 SC_END
 
 SC_BEGIN STICKY_ICON
@@ -272,7 +272,7 @@ SC_BEGIN NEWSTITLELINK
 global $e107;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return "<a style='".(isset($param['itemlink']) ? $param['itemlink'] : "null")."' href='".$e107->url->getUrl('core:news', 'main', "action=item&id={$news_item['news_id']}&cat={$news_item['news_category']}")."'>".$news_item['news_title']."</a>";
+return "<a style='".(isset($param['itemlink']) ? $param['itemlink'] : "null")."' href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$news_item['news_id']}&value2={$news_item['news_category']}")."'>".$news_item['news_title']."</a>";
 SC_END
 
 SC_BEGIN NEWSCATICON

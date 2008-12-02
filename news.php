@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-12-02 20:51:52 $
+|     $Revision: 1.14 $
+|     $Date: 2008-12-02 23:44:19 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
+
 require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."comment_class.php");
@@ -172,7 +173,8 @@ if ($action == 'cat' || $action == 'all')
 	$amount = ($action == "all") ? NEWSALL_LIMIT : NEWSLIST_LIMIT;
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
-	$parms = $news_total.",".$amount.",".$newsfrom.",".e_SELF.'?'.$action.".".$category.".[FROM]";
+
+	$parms = $news_total.",".$amount.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action={$action}&subaction={$category}");
 	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
     if(!$NEWSLISTTITLE)
@@ -466,7 +468,7 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
 	$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
 
 	require_once(HEADERF);
-	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
+	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
     $nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
     $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 //    $text=''.$text.'<center>'.$nextprev.'</center>';
@@ -509,7 +511,8 @@ else
 		$ix->render_newsitem($news);
 		$i++;
 	}
-	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
+
+	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
 	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
  	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 
