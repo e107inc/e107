@@ -9,8 +9,8 @@
  * URL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
- * $Revision: 1.9 $
- * $Date: 2008-12-02 01:20:36 $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-02 13:50:17 $
  * $Author: secretr $
 */
 
@@ -31,10 +31,11 @@ class eURL
 	{
 		if (!is_array($urlItems))
 		{
-			$urlItems = array($urlItems => 1);
+			//strange looking... well, I like it
+			parse_str($urlItems, $urlItems);
 		}
 
-		$handlerId = $section . '/' . $urlType;	
+		$handlerId = $section . '/' . $urlType;
 		if (!isset($this->_link_handlers[$handlerId]))
 		{
 			$this->_link_handlers[$handlerId] = $this->_initHandler($section, $urlType);
@@ -62,7 +63,7 @@ class eURL
 			$request = e_QUERY;
 		}
 
-		$handlerId = $section . '/' . $urlType;	
+		$handlerId = $section . '/' . $urlType;
 		if (!isset($this->_link_handlers[$handlerId]))
 		{
 			$this->_link_handlers[$handlerId] = $this->_initHandler($section, $urlType);
@@ -79,7 +80,7 @@ class eURL
 		{
 			$section = 'plugin:'.$section;
 		}
-		
+
 		list($type, $section) = explode(':', $section, 2);
 		$handler = 'url_' . $section . '_' . $urlType;
 
@@ -88,21 +89,21 @@ class eURL
 		{
 			$filePath = str_replace(
 				array(
-					'core-custom:', 
-					'core-profile:', 
+					'core-custom:',
+					'core-profile:',
 					'plugin-custom:',
 					'plugin-profile:'
-				), 
+				),
 				array(
-					e_FILE.'e_url/custom/core/', 
-					e_FILE.'e_url/core/'.$section.'/', 
+					e_FILE.'e_url/custom/core/',
+					e_FILE.'e_url/core/'.$section.'/',
 					e_FILE.'e_url/custom/plugin/',
 					e_PLUGIN.$section.'/e_url/',
-				), 
+				),
 				$pref['url_config'][$section]
 			);
 			$fileName = $filePath.'/'.$urlType.'.php';
-			
+
 			if (is_readable($fileName))
 			{
 				include_once ($fileName);
@@ -112,8 +113,8 @@ class eURL
 				return $handler;
 			}
 		}
-		
-		//Search the default url config - the last station 
+
+		//Search the default url config - the last station
 		$core = ($type === 'core');
 		$handlerId = $section . '/' . $urlType;
 		$fileName = ($core ? e_FILE."url/core/{$handlerId}.php" : e_PLUGIN."{$section}/url/{$urlType}.php");
