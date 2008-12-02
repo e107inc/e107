@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-11-29 15:35:31 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2008-12-02 20:51:52 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -399,11 +399,11 @@ if (!($news_total = $sql->db_Select_gen($query)))
 } 
 
 $newsAr = $sql -> db_getList();
-
+$news_total=$sql->total_results;
 // Get number of entries
-$sql -> db_Select_gen("SELECT FOUND_ROWS()");
+//$sql -> db_Select_gen("SELECT FOUND_ROWS()");
 $frows = $sql -> db_Fetch();
-$news_total = $frows[0];
+//$news_total = $frows[0];
 
 //echo "<br />Total ".$news_total." items found, ".count($newsAr)." displayed, Interval = {$interval}<br /><br />";
 
