@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2008-11-24 00:36:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.51 $
+|     $Date: 2008-12-02 21:51:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -134,6 +134,27 @@ class e107plugin
 				$pluginDBList[$row['plugin_path']]['status'] = 'read';
 				//			echo "Found plugin: ".$row['plugin_path']." in DB<br />";
 			}
+		}
+
+		$i = 1;
+		while ( $i < count($pluginList))
+		{
+			if ($pluginList[$i-1]['path'] == $pluginList[$i]['path'])
+			{	// Must have plugin.php and plugin.xml
+				if (($pluginList[$i-1]['fname'] == 'plugin.php') && ($pluginList[$i]['fname'] == 'plugin.xml'))
+				{
+//					echo "deleting: {$pluginList[$i-1]['path']}<br />";
+					unset($pluginList[$i-1]);
+					$i++;
+				}
+				if (($pluginList[$i]['fname'] == 'plugin.php') && ($pluginList[$i-1]['fname'] == 'plugin.xml'))
+				{
+//					echo "deleting: {$pluginList[$i]['path']}<br />";
+					unset($pluginList[$i]);
+					$i++;
+				}
+			}
+			$i++;
 		}
 
 		foreach($pluginList as $p)
