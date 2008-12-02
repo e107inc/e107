@@ -9,9 +9,9 @@
  * URL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-02 13:50:17 $
- * $Author: secretr $
+ * $Revision: 1.11 $
+ * $Date: 2008-12-02 14:21:19 $
+ * $Author: mcfly_e107 $
 */
 
 class eURL
@@ -117,7 +117,7 @@ class eURL
 		//Search the default url config - the last station
 		$core = ($type === 'core');
 		$handlerId = $section . '/' . $urlType;
-		$fileName = ($core ? e_FILE."url/core/{$handlerId}.php" : e_PLUGIN."{$section}/url/{$urlType}.php");
+		$fileName = ($core ? e_FILE."e_url/core/{$handlerId}.php" : e_PLUGIN."{$section}/e_url/{$urlType}.php");
 		if (is_readable($fileName))
 		{
 			include_once ($fileName);
