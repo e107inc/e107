@@ -1,21 +1,17 @@
 <?php
 /*
-+---------------------------------------------------------------+
-| e107 website system
-| /classes/news_class.php
-|
-| ©Steve Dunstan 2001-2002
-| http://jalist.com
-| stevedunstan@jalist.com
-|
-| Released under the terms and conditions of the
-| GNU General Public License (http://gnu.org).
-|
-| $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
-| $Revision: 1.5 $
-| $Date: 2008-05-18 16:34:16 $
-| $Author: e107coders $
-+---------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * News handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-02 16:50:15 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -108,14 +104,14 @@ class news {
 	}
 
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='') {
-		global $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid, $imode;
+		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid, $imode;
 		if ($override_newsitem = $override -> override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return') {
 				return;
 			}
 		}
-		if (!is_object($tp)) $tp = new e_parse;
+		if (!is_object($e107->tp)) $e107->tp = new e_parse;
 
 		if ($n_restrict == 'userclass') {
 			$news['news_id'] = 0;
@@ -129,7 +125,7 @@ class news {
 			$news['comment_total'] = 0;
 		}
 
-		if (!$param) 
+		if (!$param)
 		{
 			$param['caticon'] = ICONSTYLE;
 			$param['commentoffstring'] = COMMENTOFFSTRING;
@@ -152,10 +148,10 @@ class news {
 		  }
 		  $param['image_nonew_small'] = IMAGE_nonew_small;
 		}
-		
+
 		if (!isset($param['image_new_small']))
 		{
-		  if (!defined("IMAGE_new_small"))	
+		  if (!defined("IMAGE_new_small"))
 		  {
 			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/new_comments.png' alt=''  /> "));
 		  }
@@ -196,7 +192,7 @@ class news {
 		$loop_uid = $news['news_author'];
 
 		require_once(e_FILE.'shortcode/batch/news_shortcodes.php');
-		$text = $tp -> parseTemplate($NEWS_PARSE, TRUE, $news_shortcodes);
+		$text = $e107->tp -> parseTemplate($NEWS_PARSE, TRUE, $news_shortcodes);
 
 		if ($mode == 'return') {
 			return $text;
@@ -207,12 +203,12 @@ class news {
 	}
 
 	function make_xml_compatible($original) {
-		global $tp, $ml;
-		if (!is_object($tp)) $tp = new e_parse;
-		$original = $tp->toHTML($original, TRUE);
+		global $e107;
+		if (!is_object($e107->tp)) $e107->tp = new e_parse;
+		$original = $e107->tp->toHTML($original, TRUE);
 		$original = str_replace('&pound', '&amp;#163;', $original);
 		$original = str_replace('&copy;', '(c)', $original);
-		return htmlspecialchars($original);
+		return htmlspecialchars($original, ENT_COMPAT, CHARSET);
 	}
 }
 

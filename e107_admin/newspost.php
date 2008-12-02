@@ -1,21 +1,17 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|   $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
-|   $Revision: 1.16 $
-|   $Date: 2008-11-11 13:26:49 $
-|   $Author: secretr $
-+---------------------------------------------------------------+
-
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * News Administration
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
+ * $Revision: 1.17 $
+ * $Date: 2008-12-02 16:50:16 $
+ * $Author: secretr $
 */
 require_once("../class2.php");
 
@@ -57,7 +53,7 @@ $rs = new form;
 $ix = new news;
 
 
-if (e_QUERY) 
+if (e_QUERY)
 {
   $tmp = explode(".", e_QUERY);
   $action = $tmp[0];
@@ -126,7 +122,7 @@ if($delete == "sn" && $del_id)
 }
 
 
-if (isset($_POST['submitupload'])) 
+if (isset($_POST['submitupload']))
 {
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
@@ -151,7 +147,7 @@ if (isset($_POST['submitupload']))
 
 
 // required.
-if (isset($_POST['preview'])) 
+if (isset($_POST['preview']))
 {
 	$_POST['news_title'] = $tp->toDB($_POST['news_title']);
 	$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
@@ -159,7 +155,7 @@ if (isset($_POST['preview']))
 }
 
 
-if (isset($_POST['submit_news'])) 
+if (isset($_POST['submit_news']))
 {
 	$newspost->submit_item($sub_action, $id);
 	$e107cache->clear("news.php");
@@ -199,7 +195,7 @@ if (isset($_POST['update_category'])) {
 	$e107cache->clear("othernews2");
 }
 
-if (isset($_POST['save_prefs'])) 
+if (isset($_POST['save_prefs']))
 {
 	$pref['newsposts'] = $_POST['newsposts'];
    	$pref['newsposts_archive'] 		= $_POST['newsposts_archive'];
@@ -223,16 +219,16 @@ if (isset($_POST['save_prefs']))
 	$newspost->show_message(NWSLAN_119);
 }
 
-if (!e_QUERY || $action == "main") 
+if (!e_QUERY || $action == "main")
 {
   $newspost->show_existing_items($action, $sub_action, $sort_order, $from, $amount);
 }
 
-if ($action == "create") 
+if ($action == "create")
 {
   $preset = $pst->read_preset("admin_newspost");  //only works here because $_POST is used.
 
-  if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit_news']) 
+  if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit_news'])
   {
 	if ($sql->db_Select("news", "*", "news_id='$id' "))
 	{
@@ -261,21 +257,21 @@ if ($action == "create")
 
 
 
-if ($action == "cat") 
+if ($action == "cat")
 {
   $newspost->show_categories($sub_action, $id);
 }
 
 
 
-if ($action == "sn") 
+if ($action == "sn")
 {
   $newspost->submitted_news($sub_action, $id);
 }
 
 
 
-if ($action == "pref") 
+if ($action == "pref")
 {
   $newspost->show_news_prefs($sub_action, $id);
 }
@@ -296,7 +292,7 @@ exit;
 
 
 
-class newspost 
+class newspost
 {
 
 	function show_existing_items($action, $sub_action, $sort_order, $from, $amount)
@@ -308,7 +304,7 @@ class newspost
 	  if (!$sort_order) $sort_order = 'desc';
 	  if ($sort_order != 'asc') $sort_order = 'desc';
 	  $sort_link = $sort_order == 'asc' ? 'desc' : 'asc';		// Effectively toggle setting for headings
-	  
+
 	  if (isset($_POST['searchquery']))
 	  {
 		$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
@@ -415,12 +411,12 @@ class newspost
 	function create_item($sub_action, $id)
 	{
 	  global $cal;
-	  // ##### Display creation form 
+	  // ##### Display creation form
 	  global $sql, $rs, $ns, $pref, $tp, $pst, $e107;
 
-	  if ($sub_action == "sn" && !$_POST['preview']) 
+	  if ($sub_action == "sn" && !$_POST['preview'])
 	  {
-		if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) 
+		if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE))
 		{
 				list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
 
@@ -440,7 +436,7 @@ class newspost
 			}
 	  }
 
-	  if ($sub_action == "upload" && !$_POST['preview']) 
+	  if ($sub_action == "upload" && !$_POST['preview'])
 	  {
 			if ($sql->db_Select("upload", "*", "upload_id=$id")) {
 				$row = $sql->db_Fetch();
@@ -1172,12 +1168,12 @@ class newspost
 
 
 
-	function submitted_news($sub_action, $id) 
+	function submitted_news($sub_action, $id)
 	{
 		global $rs, $ns, $tp;
 		$sql2 = new db;
 		$text = "<div style='text-align: center'>";
-		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC")) 
+		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
 		{
 			$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
@@ -1185,7 +1181,7 @@ class newspost
 			<td style='width:70%' class='fcaption'>".NWSLAN_57."</td>
 			<td style='width:25%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 			</tr>";
-		  while ($row = $sql2->db_Fetch()) 
+		  while ($row = $sql2->db_Fetch())
 		  {
 				extract($row);
 			if (substr($submitnews_item,-7,7) == '[/html]') $submitnews_item = substr($submitnews_item,0,-7);
@@ -1206,7 +1202,7 @@ class newspost
 			}
 			$text .= "</table>";
 		}
-		else 
+		else
 		{
 			$text .= "<div style='text-align:center'>".NWSLAN_59."</div>";
 		}
