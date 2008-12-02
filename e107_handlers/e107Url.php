@@ -9,8 +9,8 @@
  * URL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-02 00:32:30 $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-02 01:20:36 $
  * $Author: secretr $
 */
 
@@ -102,7 +102,7 @@ class eURL
 				$pref['url_config'][$section]
 			);
 			$fileName = $filePath.'/'.$urlType.'.php';
-			var_dump('FileName: '.$fileName, $handler);
+			
 			if (is_readable($fileName))
 			{
 				include_once ($fileName);
