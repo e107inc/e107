@@ -9,8 +9,8 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-02 12:27:10 $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-02 23:44:19 $
  * $Author: secretr $
 */
 
@@ -259,7 +259,8 @@ class admin_url_config {
 	{
 		$core_def = array(
 			'news' => 		array("core_name" => LAN_EURL_CORE_NEWS, 'core_path' => 'news'),
-			'downloads' => 	array("core_name" => LAN_EURL_CORE_DOWNLOADS, 'core_path' => 'downloads')
+			'download' => 	array("core_name" => LAN_EURL_CORE_DOWNLOADS, 'core_path' => 'download'),
+			'user' => 		array("core_name" => LAN_EURL_CORE_USERS, 'core_path' => 'user')
 		);
 
 		return $core_def;

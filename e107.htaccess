@@ -1,5 +1,18 @@
-ErrorDocument 400 /error.php?400
-ErrorDocument 401 /error.php?401
-ErrorDocument 403 /error.php?403
-ErrorDocument 404 /error.php?404
-ErrorDocument 500 /error.php?500
+Options +FollowSymlinks
+RewriteEngine On
+
+### Set this to your e107 site root
+RewriteBase /
+
+### NEWS ###
+RewriteRule ^news/?$ news.php
+#item, default, cat actions
+RewriteRule ^news/([a-z]+)-([0-9]+)-([0-9]+)(\.html)?$ news.php?$1.$2.$3 [L]
+#extend, cat, list actions
+RewriteRule ^news/([a-z]+)-([0-9]+)(\.html)?$ news.php?.$1.$2 [L]
+
+#ErrorDocument 400 /error.php?400
+#ErrorDocument 401 /error.php?401
+#ErrorDocument 403 /error.php?403
+#ErrorDocument 404 /error.php?404
+#ErrorDocument 500 /error.php?500
