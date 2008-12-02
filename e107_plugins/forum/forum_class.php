@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-12-01 21:11:01 $
+|     $Revision: 1.15 $
+|     $Date: 2008-12-02 21:34:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ class e107forum
 
 		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
 
-//		print_a($this->permList);
+//		var_dump($this->permList);
 	}
 
 	function loadPermList()
@@ -103,6 +103,7 @@ class e107forum
 				}
 			}
 		}
+		//var_dump($this->permList);
 	}
 
 
@@ -144,7 +145,7 @@ class e107forum
 				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_anon_name'];
 			}
 			$threadInfo['thread_lastpost'] = $postInfo['post_datestamp'];
-			$threadInfo['thread_total_replies'] = 'thread-total_replies + 1';
+			$threadInfo['thread_total_replies'] = 'thread_total_replies + 1';
 			$threadInfo['WHERE'] = 'thread_id = '.$postInfo['post_thread'];
 
 			$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
@@ -166,7 +167,7 @@ class e107forum
 				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_anon_name'];
 			}
 
-			//If we updated the thread, then we assume it was a reply, otherwise we've added a reply only.'
+			//If we update the thread, then we assume it was a reply, otherwise we've added a reply only.
 			$forumInfo['_FIELD_TYPES'] = $this->fieldTypes['forum'];
 			if($updateThread)
 			{
@@ -190,7 +191,7 @@ class e107forum
 			VALUES ('.USERID.', 1)
 			ON DUPLICATE KEY UPDATE user_plugin_forum_posts = user_plugin_forum_posts + 1
 			';
-			$result = $e107->sql->db_Select_gen($qry, true);
+			$result = $e107->sql->db_Select_gen($qry);
 		}
 
 	}
@@ -236,7 +237,7 @@ class e107forum
 			FROM `#forum_thread`
 			WHERE thread_id = '.$id;
 		}
-		if($e107->sql->db_Select_gen($qry, true))
+		if($e107->sql->db_Select_gen($qry))
 		{
 			$tmp = $e107->sql->db_Fetch(MYSQL_ASSOC);
 			if($tmp)
@@ -268,7 +269,7 @@ class e107forum
 		ORDER BY p.post_datestamp ASC
 		LIMIT {$start}, {$num}
 		";
-		if($e107->sql->db_Select_gen($qry, true))
+		if($e107->sql->db_Select_gen($qry))
 		{
 			$ret = array();
 			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
@@ -386,18 +387,22 @@ class e107forum
 		$u_new .= USERVIEWED;
 		$t = array_unique(explode('.',$u_new));		// Filter duplicates
 		$u_new = implode('.',$t);
-		$sql->db_Update("user", "user_viewed='{$u_new}' WHERE user_id=".USERID);
+		$sql->db_Update('user', "user_viewed='{$u_new}' WHERE user_id=".USERID);
 		header("location:".e_SELF);
 		exit;
 	  }
 	}
 
-	function thread_markasread($thread_id)
+	function threadMarkAsRead($threadId)
 	{
-		global $sql;
-		$thread_id = intval($thread_id);
-		$u_new = USERVIEWED.".".$thread_id;
-		return $sql->db_Update("user", "user_viewed='$u_new' WHERE user_id=".USERID);
+		$e107 = e107::getInstance();
+		$threadId = (int)$threadId;
+		$currentUser['user_plugin_forum_viewed'] = '4..5..6.7.8';
+		$_tmp = preg_split('#\.+#', $currentUser['user_plugin_forum_viewed']);
+		$_tmp[] = $threadId;
+		$viewed = '.'.implode('.', $_tmp).'.';
+		unset($_tmp);
+		return $e107->sql->db_Update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
 	}
 
 	function forum_getparents()
@@ -418,7 +423,7 @@ class e107forum
 		global $sql;
 		if($uclass == e_UC_ADMIN || trim($uclass) == '')
 		{
-			$sql->db_Select('user', 'user_id, user_name',"user_admin = 1");
+			$sql->db_Select('user', 'user_id, user_name','user_admin = 1');
 		}
 		else
 		{
@@ -634,15 +639,15 @@ class e107forum
 		return $sql->db_Update('forum_t', $newString);
 	}
 
-	function forum_get_topics($forum_id, $from, $view)
+	function forumGetThreads($forumId, $from, $view)
 	{
 		$e107 = e107::getInstance();
-		$forum_id = (int)$forum_id;
+		$forumId = (int)$forumId;
 		$qry = "
 		SELECT t.*, u.user_name, lpu.user_name AS lastpost_username from `#forum_thread` as t
 		LEFT JOIN `#user` AS u ON t.thread_user = u.user_id
 		LEFT JOIN `#user` AS lpu ON t.thread_lastuser = lpu.user_id
-		WHERE t.thread_forum_id = {$forum_id}
+		WHERE t.thread_forum_id = {$forumId}
 		ORDER BY
 		t.thread_s DESC,
 		t.thread_lastpost DESC
@@ -684,11 +689,11 @@ class e107forum
 		return FALSE;
 	}
 
-	function forum_get_topic_count($forum_id)
-	{
-		$e107 = e107::getInstance();
-		return $e107->sql->db_Count('forum_thread', '(*)', 'WHERE thread_forum_id='.(int)$forum_id);
-	}
+//	function forum_get_topic_count($forum_id)
+//	{
+//		$e107 = e107::getInstance();
+//		return $e107->sql->db_Count('forum_thread', '(*)', 'WHERE thread_forum_id='.(int)$forum_id);
+//	}
 
 	function thread_getnext($thread_id, $forum_id, $from = 0, $limit = 100)
 	{

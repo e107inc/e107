@@ -11,23 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-01 21:11:01 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-02 21:34:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once('../../class2.php');
 
-include_lan(e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php');
-include_once(e_PLUGIN.'forum/forum_class.php');
 
-if (file_exists(THEME.'forum_design.php'))
-{
-	include_once(THEME.'forum_design.php');
-}
-
-$forum = new e107forum;
 if (isset($_POST['fjsubmit']))
 {
 	header('location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id'=>$_POST['forumjump'])));
@@ -42,172 +34,38 @@ if (!e_QUERY)
 	exit;
 }
 
-global $page;
+include_lan(e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php');
+include_once(e_PLUGIN.'forum/forum_class.php');
+
+$forum = new e107forum;
+
+if(isset($_REQUEST['f']))
+{
+	processFunction();
+}
+
 $threadId = (int)varset($_GET['id']);
 $perPage = (varset($_REQUEST['perpage']) ? (int)$_REQUEST['perpage'] : $pref['forum_postspage']);
 $page = (varset($_REQUEST['p']) ? (int)$_REQUEST['p'] : 0);
 
-//	$tmp = explode(".", e_QUERY);
-//	$thread_id = varset($tmp[0]);
-//	$topic_from = varset($tmp[1], 0);
-//	$action = varset($tmp[2]);
-
-//$threadInfo = $forum->threadGet($threadId);
-//print_a($threadInfo);
-//exit;
-
+//If threadId doesn't exist, or not given, redirect to main forum page
 if (!$threadId || !$threadInfo = $forum->threadGet($threadId))
 {
 	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
 
-
+//If not permitted to view forum, redirect to main forum page
 if(!$forum->checkPerm($threadInfo['thread_forum_id'], 'view'))
 {
 	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
 
-print_a($threadInfo);
-//print_a($forum->permList);
-//die('here');
-
-if($topic_from === 'post')
-{
-	if($thread_id)
-	{
-		$post_num = $forum->thread_postnum($thread_id);
-		$pages = ceil(($post_num['post_num']+1)/$pref['forum_postspage']);
-		$topic_from = ($pages-1) * $pref['forum_postspage'];
-		if($post_num['parent'] != $thread_id)
-		{
-			header("location: ".e_SELF."?{$post_num['parent']}.{$topic_from}#post_{$thread_id}");
-			exit;
-		}
-	}
-	else
-	{
-		header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
-		exit;
-	}
-}
-
 require_once(e_PLUGIN.'forum/forum_shortcodes.php');
 
-if ($action == 'track' && USER)
-{
-	$forum->track($thread_id);
-	header("location:".e_SELF."?{$thread_id}.{$topic_from}");
-	exit;
-}
-
-if ($action == 'untrack' && USER)
-{
-	$forum->untrack($thread_id);
-	header("location:".e_SELF."?{$thread_id}.{$topic_from}");
-	exit;
-}
-
-if ($action == 'next')
-{
-	$next = $forum->thread_getnext($thread_id, $topic_from);
-	if ($next)
-	{
-		header("location:".e_SELF."?{$next}");
-		exit;
-	}
-	else
-	{
-		require_once(HEADERF);
-		$ns->tablerender('', LAN_405, array('forum_viewtopic', '405'));
-		require_once(FOOTERF);
-		exit;
-	}
-}
-
-if ($action == 'prev')
-{
-	$prev = $forum->thread_getprev($thread_id, $topic_from);
-	if ($prev)
-	{
-		header("location:".e_SELF."?{$prev}");
-		exit;
-	}
-	else
-	{
-		require_once(HEADERF);
-		$ns->tablerender('', LAN_404, array('forum_viewtopic', '404'));
-		require_once(FOOTERF);
-		exit;
-	}
-}
-
-if ($action == 'report')
-{
-	$thread_info = $forum->thread_get_postinfo($thread_id, TRUE);
-
-	if (isset($_POST['report_thread']))
-	{
-		$report_add = $tp -> toDB($_POST['report_add']);
-		if ($pref['reported_post_email'])
-		{
-			require_once(e_HANDLER."mail.php");
-			$report = LAN_422.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/").$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_id.".post\n".LAN_425.USERNAME."\n".$report_add;
-			$subject = LAN_421." ".SITENAME;
-			sendemail(SITEADMINEMAIL, $subject, $report);
-		}
-		$sql->db_Insert('generic', "0, 'reported_post', ".time().", '".USERID."', '{$thread_info['head']['thread_name']}', ".intval($thread_id).", '{$report_add}'");
-		define("e_PAGETITLE", LAN_01." / ".LAN_428);
-		require_once(HEADERF);
-		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$thread_id.".post'>".LAN_429."</a";
-		$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
-	}
-	else
-	{
-		$thread_name = $tp -> toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off');
-		define("e_PAGETITLE", LAN_01." / ".LAN_426." ".$thread_name);
-		require_once(HEADERF);
-		$text = "<form action='".e_PLUGIN."forum/forum_viewtopic.php?".e_QUERY."' method='post'> <table style='width:100%'>
-			<tr>
-			<td  style='width:50%' >
-			".LAN_415.": ".$thread_name." <a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id.".post'><span class='smalltext'>".LAN_420." </span>
-			</a>
-			</td>
-			<td style='text-align:center;width:50%'>
-			</td>
-			</tr>
-			<tr>
-			<td>".LAN_417."<br />".LAN_418."
-			</td>
-			<td style='text-align:center;'>
-			<textarea cols='40' rows='10' class='tbox' name='report_add'></textarea>
-			</td>
-			</tr>
-			<tr>
-			<td colspan='2' style='text-align:center;'><br />
-			<input class='button' type='submit' name='report_thread' value='".LAN_419."' />
-			</td>
-			</tr>
-			</table>";
-		$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'));
-	}
-	require_once(FOOTERF);
-	exit;
-}
 $pm_installed = plugInstalled('pm');
 
-//$replies = $forum->thread_count($thread_id)-1;
-
-if ($topic_from === 'last')
-{
-	$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-	$pages = ceil(($threadInfo['thread_total_replies']+1)/$pref['forum_postspage']);
-	$topic_from = ($pages-1) * $pref['forum_postspage'];
-}
-$gen = new convert;
-//$thread_info = $forum->thread_get($thread_id, $topic_from-1, $pref['forum_postspage']);
-$postList = $forum->PostGet($threadId, $page * $perPage, $perPage);
 
 //Only increment thread views if not being viewed by thread starter
 if(!USER || USER != $threadInfo['thread_user'])
@@ -215,7 +73,7 @@ if(!USER || USER != $threadInfo['thread_user'])
 	$forum->threadIncview($threadId);
 }
 
-print_a($postList);
+//print_a($postList);
 //if(intval($thread_info['head']['thread_forum_id']) == 0)
 //{
 //	require_once(HEADERF);
@@ -231,44 +89,43 @@ print_a($postList);
 //	exit;
 //}
 
-
-define('e_PAGETITLE', LAN_01.' / '.$e107->tp->toHTML($forum_info['forum_name'], true, 'no_hook, emotes_off')." / ".$tp->toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off'));
+define('e_PAGETITLE', LAN_01.' / '.$e107->tp->toHTML($threadInfo['forum_name'], true, 'no_hook, emotes_off')." / ".$tp->toHTML($threadInfo['thread_name'], true, 'no_hook, emotes_off'));
 //define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
 define('MODERATOR', ($forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators'])));
-//$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
+$modArray = $forum->forum_getmods($threadInfo['forum_moderators']);
+//var_dump($modArray);
 
 $message = '';
-if (MODERATOR)
+if (MODERATOR && isset($_POST['mod']))
 {
-	if ($_POST)
-	{
-		require_once(e_PLUGIN.'forum/forum_mod.php');
-		$message = forum_thread_moderate($_POST);
-		$thread_info = $forum->thread_get($thread_id, $topic_from-1, $pref['forum_postspage']);
-	}
+	require_once(e_PLUGIN.'forum/forum_mod.php');
+	$message = forum_thread_moderate($_POST);
+	$threadInfo = $forum->threadGet($threadId);
 }
 
+$postList = $forum->PostGet($threadId, $page * $perPage, $perPage);
+
+var_dump($threadInfo);
 require_once(HEADERF);
 require_once(e_HANDLER.'level_handler.php');
+$gen = new convert;
 if ($message)
 {
 	$ns->tablerender('', $message, array('forum_viewtopic', 'msg'));
 }
 
 if(isset($threadInfo['thread_options']['poll']))
-//if (stristr($thread_info['head']['thread_name'], "[".LAN_430."]"))
 {
-	if(!defined('POLLCLASS'))
-	{
-		include(e_PLUGIN.'poll/poll_class.php');
-	}
+	if(!defined('POLLCLASS')) { include(e_PLUGIN.'poll/poll_class.php'); }
 	$_qry = 'SELECT * FROM `#polls` WHERE `poll_datestamp` = '.$threadId;
 	$poll = new poll;
 	$pollstr = "<div class='spacer'>".$poll->render_poll($_qry, 'forum', 'query', true).'</div>';
 }
 //Load forum templates
 
-if (!$FORUMSTART) {
+if (file_exists(THEME.'forum_design.php')) { include_once(THEME.'forum_design.php'); }
+if (!$FORUMSTART)
+{
 	if (file_exists(THEME.'forum_viewtopic_template.php'))
 	{
 		require_once(THEME.'forum_viewtopic_template.php');
@@ -283,7 +140,7 @@ if (!$FORUMSTART) {
 	}
 }
 
-$forum_info['forum_name'] = $e107->tp->toHTML($threadInfo['forum_name'], true, 'no_hook,emotes_off');
+//$forum_info['forum_name'] = $e107->tp->toHTML($threadInfo['forum_name'], true, 'no_hook,emotes_off');
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -296,7 +153,7 @@ $NEXTPREV .= "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => '
 
 if ($pref['forum_track'] && USER)
 {
-	if($forum->track('check', USERID, $threadId))
+	if($threadInfo['track_userid'])
 	{
 		$TRACK = "<span class='smalltext'><a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $threadId))."'>".LAN_392."</a></span>";
 	}
@@ -306,11 +163,9 @@ if ($pref['forum_track'] && USER)
 	}
 }
 
-$MODERATORS = LAN_321.implode(", ", $modArray);
+$MODERATORS = LAN_321.implode(', ', $modArray);
 
 $THREADSTATUS = (!$threadInfo['thread_active'] ? LAN_66 : '');
-
-//$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 
 $pages = ceil(($threadInfo['thread_total_replies']+1) / $perPage);
 
@@ -339,32 +194,17 @@ $forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
 unset($forrep);
 if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
 $alt = false;
-//for($i = 0; $i < count($thread_info)-1; $i++)
 
 $i=$page;
 global $postInfo;
 foreach($postList as $postInfo)
 {
-	print_a($postInfo);
+//	print_a($postInfo);
 	$loop_uid = (int)$postInfo['post_user'];
 	$i++;
 
-/*
-	if (!$postInfo['user_name'])
-	{
-		// guest
-		$tmp = explode(chr(1), $post_info['thread_anon']);
-		$ip = $tmp[1];
-		$host = $e107->get_host_name($ip);
-		$post_info['iphost'] = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
-		$post_info['anon'] = false;
-	}
-	else
-	{
-		$post_info['anon'] = FALSE;
-	}
-*/
-	$e_hide_query = "SELECT thread_id FROM #forum_t WHERE (`thread_parent` = {$thread_id} OR `thread_id` = {$thread_id}) AND SUBSTRING_INDEX(thread_user,'.',1) = ".USERID;
+	//TODO: Look into fixing this, to limit to a single query per pageload
+	$e_hide_query = "SELECT post_id FROM `#forum_post` WHERE (`post_thread` = {$threadId} AND post_user= ".USERID.' LIMIT 1';
 	$e_hide_hidden = FORLAN_HIDDEN;
 	$e_hide_allowed = USER;
 
@@ -387,11 +227,11 @@ foreach($postList as $postInfo)
 }
 unset($loop_uid);
 
-if (((check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass'])) || MODERATOR) && $thread_info['head']['thread_active'] )
+if($forum->checkPerm($threadInfo['thread_forum_id'], 'post') && $threadInfo['thread_active'])
 {
 	if (!$forum_quickreply)
 	{
-		$QUICKREPLY = "<form action='".e_PLUGIN."forum/forum_post.php?rp.".e_QUERY."' method='post'>\n<p>\n".LAN_393.":<br /><textarea cols='60' rows='4' class='tbox' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea><br /><input type='submit' name='fpreview' value='".LAN_394."' class='button' /> &nbsp;\n<input type='submit' name='reply' value='".LAN_395."' class='button' />\n<input type='hidden' name='thread_id' value='$thread_parent' />\n</p>\n</form>";
+		$QUICKREPLY = "<form action='".$e107->url->getUrl('forum', 'thread', array('func' => 'rp', 'id' => $threadId))."' method='post'>\n<p>\n".LAN_393.":<br /><textarea cols='60' rows='4' class='tbox' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea><br /><input type='submit' name='fpreview' value='".LAN_394."' class='button' /> &nbsp;\n<input type='submit' name='reply' value='".LAN_395."' class='button' />\n<input type='hidden' name='thread_id' value='$thread_parent' />\n</p>\n</form>";
 	}
 	else
 	{
@@ -403,8 +243,10 @@ $forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
 $forumstring = $forstr.$forthr.$forrep.$forend;
 
 
-if ($thread_info['head']['thread_lastpost'] > USERLV && (strpos(USERVIEWED, ".{$thread_info['head']['thread_id']}.") === FALSE)) {
-	$tst = $forum->thread_markasread($thread_info['head']['thread_id']);
+//If last post came after USERLV and not yet marked as read, mark the thread id as read
+if ($threadInfo['thread_lastpost'] > USERLV && (strpos($currentUser['user_plugin_forum_viewed'], '.'.$threadId.'.') === false))
+{
+	$tst = $forum->threadMarkAsRead($threadId);
 }
 
 if ($pref['forum_enclose'])
@@ -559,6 +401,140 @@ function rpg($user_join, $user_forums)
 	$rpg_info .= "MP = ".$lvl_mp."<br /><img src='{$bar_image}' alt='' style='border:#345487 1px solid; height:10px; width:".$lvl_mp_percent."%'><br />";
 	$rpg_info .= "</div>";
 	return $rpg_info;
+}
+
+function processFunction()
+{
+if($topic_from === 'post')
+{
+	if($thread_id)
+	{
+		$post_num = $forum->thread_postnum($thread_id);
+		$pages = ceil(($post_num['post_num']+1)/$pref['forum_postspage']);
+		$topic_from = ($pages-1) * $pref['forum_postspage'];
+		if($post_num['parent'] != $thread_id)
+		{
+			header("location: ".e_SELF."?{$post_num['parent']}.{$topic_from}#post_{$thread_id}");
+			exit;
+		}
+	}
+	else
+	{
+		header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+		exit;
+	}
+}
+
+if ($action == 'track' && USER)
+{
+	$forum->track($thread_id);
+	header("location:".e_SELF."?{$thread_id}.{$topic_from}");
+	exit;
+}
+
+if ($action == 'untrack' && USER)
+{
+	$forum->untrack($thread_id);
+	header("location:".e_SELF."?{$thread_id}.{$topic_from}");
+	exit;
+}
+
+if ($action == 'next')
+{
+	$next = $forum->thread_getnext($thread_id, $topic_from);
+	if ($next)
+	{
+		header("location:".e_SELF."?{$next}");
+		exit;
+	}
+	else
+	{
+		require_once(HEADERF);
+		$ns->tablerender('', LAN_405, array('forum_viewtopic', '405'));
+		require_once(FOOTERF);
+		exit;
+	}
+}
+
+if ($action == 'prev')
+{
+	$prev = $forum->thread_getprev($thread_id, $topic_from);
+	if ($prev)
+	{
+		header("location:".e_SELF."?{$prev}");
+		exit;
+	}
+	else
+	{
+		require_once(HEADERF);
+		$ns->tablerender('', LAN_404, array('forum_viewtopic', '404'));
+		require_once(FOOTERF);
+		exit;
+	}
+}
+
+if ($action == 'report')
+{
+	$thread_info = $forum->thread_get_postinfo($thread_id, TRUE);
+
+	if (isset($_POST['report_thread']))
+	{
+		$report_add = $tp -> toDB($_POST['report_add']);
+		if ($pref['reported_post_email'])
+		{
+			require_once(e_HANDLER."mail.php");
+			$report = LAN_422.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/").$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_id.".post\n".LAN_425.USERNAME."\n".$report_add;
+			$subject = LAN_421." ".SITENAME;
+			sendemail(SITEADMINEMAIL, $subject, $report);
+		}
+		$sql->db_Insert('generic', "0, 'reported_post', ".time().", '".USERID."', '{$thread_info['head']['thread_name']}', ".intval($thread_id).", '{$report_add}'");
+		define("e_PAGETITLE", LAN_01." / ".LAN_428);
+		require_once(HEADERF);
+		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$thread_id.".post'>".LAN_429."</a";
+		$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
+	}
+	else
+	{
+		$thread_name = $tp -> toHTML($thread_info['head']['thread_name'], TRUE, 'no_hook, emotes_off');
+		define("e_PAGETITLE", LAN_01." / ".LAN_426." ".$thread_name);
+		require_once(HEADERF);
+		$text = "<form action='".e_PLUGIN."forum/forum_viewtopic.php?".e_QUERY."' method='post'> <table style='width:100%'>
+			<tr>
+			<td  style='width:50%' >
+			".LAN_415.": ".$thread_name." <a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id.".post'><span class='smalltext'>".LAN_420." </span>
+			</a>
+			</td>
+			<td style='text-align:center;width:50%'>
+			</td>
+			</tr>
+			<tr>
+			<td>".LAN_417."<br />".LAN_418."
+			</td>
+			<td style='text-align:center;'>
+			<textarea cols='40' rows='10' class='tbox' name='report_add'></textarea>
+			</td>
+			</tr>
+			<tr>
+			<td colspan='2' style='text-align:center;'><br />
+			<input class='button' type='submit' name='report_thread' value='".LAN_419."' />
+			</td>
+			</tr>
+			</table>";
+		$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'));
+	}
+	require_once(FOOTERF);
+	exit;
+}
+
+
+if ($topic_from === 'last')
+{
+	$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
+	$pages = ceil(($threadInfo['thread_total_replies']+1)/$pref['forum_postspage']);
+	$topic_from = ($pages-1) * $pref['forum_postspage'];
+}
+
+
 }
 
 ?>

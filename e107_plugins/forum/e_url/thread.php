@@ -1,5 +1,5 @@
 <?php
-// $Id: thread.php,v 1.1 2008-12-02 00:33:29 secretr Exp $
+// $Id: thread.php,v 1.2 2008-12-02 21:34:18 mcfly_e107 Exp $
 function url_forum_thread($parms)
 {
 	switch($parms['func'])
@@ -18,36 +18,36 @@ function url_forum_thread($parms)
 			break;
 
 		case 'post':
-			return e_PLUGIN_ABS."forum/forum_viewtopic.php?post={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=post&id={$parms['id']}";
 			break;
 
 		case 'report':
 			$page = (isset($parms['page']) ? (int)$parms['page'] : 0 );
-			return e_PLUGIN_ABS."forum/forum_viewtopic.php?id={$parms['id']}&report={$parms['report']}&page={$page}";
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=report&id={$parms['report']}&page={$page}";
 			break;
 
 		case 'edit':
-			return e_PLUGIN_ABS."forum/forum_post.php?edit={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_post.php?f=edit&id={$parms['id']}";
 			break;
 
 		case 'quote':
-			return e_PLUGIN_ABS."forum/forum_post.php?quote={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_post.php?f=quote&id={$parms['id']}";
 			break;
 
 		case 'next':
-			return e_PLUGIN_ABS."forum/forum_viewtopic.php?next={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=next&id={$parms['id']}";
 			break;
 
 		case 'prev':
-			return e_PLUGIN_ABS."forum/forum_viewtopic.php?prev={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=prev&id={$parms['id']}";
 			break;
 
 		case 'track':
-			return e_PLUGIN_ABS."forum/forum_viewtopic.php?track={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=track&id={$parms['id']}";
 			break;
 
 		case 'untrack':
-			return e_PLUGIN_ABS."forum/forum_viewtopic.php?untrack={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=untrack&id={$parms['id']}";
 			break;
 
 

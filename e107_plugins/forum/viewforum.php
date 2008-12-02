@@ -9,8 +9,8 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/viewforum.php,v $
-* $Revision: 1.4 $
-* $Date: 2008-12-01 01:10:50 $
+* $Revision: 1.5 $
+* $Date: 2008-12-02 21:34:18 $
 * $Author: mcfly_e107 $
 *
 */
@@ -31,7 +31,7 @@ if (!e_QUERY)
 }
 
 $view = 25;
-$thread_from = (isset($_REQUEST['p']) ? $_REQUEST['p'] * $view : 0); 
+$threadFrom = (isset($_REQUEST['p']) ? $_REQUEST['p'] * $view : 0);
 
 /*
 else
@@ -58,15 +58,15 @@ $VIEWTITLE = LAN_56;
 
 global $forum_info, $FORUM_CRUMB;
 
-$forum_id = (int)$_REQUEST['id'];
+$forumId = (int)$_REQUEST['id'];
 
-if (!$forum->checkPerm($forum_id, 'view'))
+if (!$forum->checkPerm($forumId, 'view'))
 {
 	header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
 
-$forum_info = $forum->forum_get($forum_id);
+$forumInfo = $forum->forum_get($forumId);
 
 if (!$FORUM_VIEW_START) {
 	if (file_exists(THEME.'forum_viewforum_template.php'))
@@ -83,10 +83,10 @@ if (!$FORUM_VIEW_START) {
 	}
 }
 
-$forum_info['forum_name'] = $e107->tp->toHTML($forum_info['forum_name'], true, 'no_hook, emotes_off');
-$forum_info['forum_description'] = $e107->tp->toHTML($forum_info['forum_description'], true, 'no_hook');
+$forumInfo['forum_name'] = $e107->tp->toHTML($forumInfo['forum_name'], true, 'no_hook, emotes_off');
+$forumInfo['forum_description'] = $e107->tp->toHTML($forumInfo['forum_description'], true, 'no_hook');
 
-$_forum_name = (substr($forum_info['forum_name'], 0, 1) == '*' ? substr($forum_info['forum_name'], 1) : $forum_info['forum_name']);
+$_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
 define('e_PAGETITLE', LAN_01.' / '.$_forum_name);
 define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
@@ -102,8 +102,8 @@ if (MODERATOR)
 
 if(varset($pref['track_online']))
 {
-	$member_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forum_id\$') AND online_user_id != 0");
-	$guest_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forum_id\$') AND online_user_id = 0");
+	$member_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
+	$guest_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id = 0");
 	$users = $member_users+$guest_users;
 }
 
@@ -114,32 +114,34 @@ if ($message)
 	$ns->tablerender('', $message, array('forum_viewforum', 'msg'));
 }
 
-$topics = $forum->forum_get_topic_count($forum_id);
-if ($topics > $view)
+$threadCount = $forumInfo['forum_threads'];
+
+if ($threadCount > $view)
 {
-	$pages = ceil($topics/$view);
+	$pages = ceil($threadCount/$view);
 }
 else
 {
 	$pages = false;
 }
 
+//echo "pages = $pages <br />";
 
 if ($pages)
 {
-	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== FALSE || strpos($FORUM_VIEW_END, 'THREADPAGES') !== FALSE)
+	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
 	{
-		$parms = "{$topics},{$view},{$thread_from},".e_SELF.'?'.$forum_id.'.[FROM],off';
+		$parms = "{$threadCount},{$view},{$threadFrom},".e_SELF.'?'.$forumId.'.[FROM],off';
 		$THREADPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 	}
 }
 
-if($forum->checkPerm($forum_id, 'post'))
+if($forum->checkPerm($forumId, 'post'))
 {
-	$NEWTHREADBUTTON = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $forum_id))."'>".IMAGE_newthread.'</a>';
+	$NEWTHREADBUTTON = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $forumId))."'>".IMAGE_newthread.'</a>';
 }
 
-if(substr($forum_info['forum_name'], 0, 1) == '*')
+if(substr($forumInfo['forum_name'], 0, 1) == '*')
 {
 	$forum_info['forum_name'] = substr($forum_info['forum_name'], 1);
 	$container_only = true;
@@ -200,7 +202,7 @@ $SEARCH = "
 	</p>
 	</form>";
 
-if($forum->checkPerm($forum_id, 'post'))
+if($forum->checkPerm($forumId, 'post'))
 {
 	$PERMS = LAN_204.' - '.LAN_206.' - '.LAN_208;
 }
@@ -214,8 +216,8 @@ $stuck = false;
 $reg_threads = 0;
 $unstuck = false;
 
-$thread_list = $forum->forum_get_topics($forum_id, $thread_from, $view);
-$sub_list = $forum->forum_getsubs($forum_id);
+$threadList = $forum->forumGetThreads($forumId, $threadFrom, $view);
+$subList = $forum->forum_getsubs($forum_id);
 //print_a($sub_list);
 $gen = new convert;
 
@@ -231,14 +233,14 @@ if(is_array($sub_list))
 	$SUBFORUMS = $FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END;
 }
 
-if (count($thread_list) )
+if (count($threadList) )
 {
-	foreach($thread_list as $thread_info)
+	foreach($threadList as $thread_info)
 	{
 		$idArray[] = $thread_info['thread_id'];
 	}
 	$inList = '('.implode(',', $idArray).')';
-	foreach($thread_list as $thread_info)
+	foreach($threadList as $thread_info)
 	{
 		if ($thread_info['thread_s'])
 		{

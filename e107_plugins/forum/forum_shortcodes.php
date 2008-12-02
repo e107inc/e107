@@ -115,8 +115,17 @@ if($post_info['thread_parent'] == 0)
 SC_END
 
 SC_BEGIN SIGNATURE
-global $postInfo;
+if(!USER) { return ''; }
+global $postInfo, $pref;
+static $forum_sig_shown;
 $e107 = e107::getInstance();
+//$pref['forum_sig_once'] = true;
+if(varsettrue($pref['forum_sig_once']))
+{
+	$_tmp = 'forum_sig_shown_'.$postInfo['post_user'];
+	if(getcachedvars($_tmp)) { return ''; }
+	cachevars($_tmp, 1);
+}
 return ($postInfo['user_signature'] ? "<br /><hr style='width:15%; text-align:left' /><span class='smalltext'>".$e107->tp->toHTML($postInfo['user_signature'], true).'</span>' : '');
 SC_END
 
