@@ -9,8 +9,8 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-02 11:03:02 $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-02 12:27:10 $
  * $Author: secretr $
 */
 
@@ -194,7 +194,7 @@ class admin_url_config {
 		//Search for custom url config released with the plugin
 		if($config_profiles_array)
 		{
-			foreach ($config_profiles_array as $config_profile) {
+			foreach ($config_profiles_array as $config_profile => $profile_info) {
 				$profile_id = $id.'-profile:'.$config_profile;
 				$checked_profile = $pref['url_config'][$section['path']] == $profile_id ? ' checked="checked"' : '';
 				if($custom) $checked_profile = ' disabled="disabled"';
@@ -202,12 +202,13 @@ class admin_url_config {
 					<div class='clear'><!-- --></div>
 					<input type='radio' id='{$section['path']}-profile-{$config_profile}' name='cprofile[{$section['path']}]' value='{$profile_id}'{$checked_profile} />
 					<label for='{$section['path']}-profile-{$config_profile}'>
-						".LAN_EURL_PROFILE." [{$config_profile}]
+						".LAN_EURL_PROFILE." [".varsettrue($profile_info['title'], $config_profile)."]
 					</label>
 					<a href='#{$section['path']}-profile-{$config_profile}-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
 					<div class='e-hideme' id='{$section['path']}-profile-{$config_profile}-info'>
 						<div class='indent'>
-							".LAN_EURL_PROFILE_INFO."<br />
+							".(varsettrue($profile_info['title']) ? '<strong>'.$profile_info['title'].'</strong><br /><br />' : '')."
+							".varsettrue($profile_info['description'], LAN_EURL_PROFILE_INFO)."<br /><br />
 							<strong>".LAN_EURL_LOCATION."</strong> ".str_replace(array(e_PLUGIN, e_FILE), array(e_PLUGIN_ABS, e_FILE_ABS), $profile_path)."{$config_profile}/
 						</div>
 					</div>
@@ -223,14 +224,32 @@ class admin_url_config {
 
 	function get_plug_profiles($path)
 	{
-		$ret = $this->_fl->get_dirs($path, '', array('CVS', '.svn'));
+		$tmp = $this->_fl->get_dirs($path, '', array('CVS', '.svn'));
+		$ret = array();
+		foreach ($tmp as $s) {
+			$ret[$s] = $this->parse_config_xml($path.$s.'/profile.xml');
+		}
+
 		return $ret;
 	}
 
-	function render_shutdown($now)
+	function parse_config_xml($path)
+	{
+		require_once(e_HANDLER.'xml_class.php');
+		$xml = new xmlClass;
+		$parsed = $xml->loadXMLfile($path, true, true);
+
+		//Load Lan file if required
+		if($parsed && varsettrue($parsed['adminLan'])) {
+			include_lan($parsed['adminLan']);
+		}
+		return $parsed;
+	}
+
+	function render_shutdown($save)
 	{
 		global $pref;
-		if($now && !isset($_POST['update']))
+		if($save && !isset($_POST['update']))
 		{
 			save_prefs();
 		}
