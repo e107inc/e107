@@ -9,16 +9,17 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.1 $
- * $Date: 2008-12-02 00:32:30 $
+ * $Revision: 1.2 $
+ * $Date: 2008-12-02 00:40:28 $
  * $Author: secretr $
 */
 
 require_once('../class2.php');
-/*if (!getperms('')) { FIXME
+if (!getperms('L')) 
+{ 
 	header('location:'.e_BASE.'index.php');
 	exit;
-}*/
+}
 
 $e_sub_cat = 'eurl';
 require_once(e_ADMIN.'auth.php');
@@ -55,7 +56,8 @@ class admin_url_config {
 		$this->_api = &$e107;
 	}
 
-	function renderPage() {
+	function renderPage() 
+	{
 		global $plug_message;
 		$text = "<div class='center'>
 		{$plug_message}
@@ -91,16 +93,20 @@ class admin_url_config {
 		$this->_api->ns->tablerender('Manage Site URLs', $text);
 	}
 
-	function render_sections($id) {
+	function render_sections($id) 
+	{
 		
-		if($id == 'core') {
+		if($id == 'core') 
+		{
 			$sections = $this->get_core_sections();
-		} else {
+		} else 
+		{
 			$sections = $this->_plug->getall(1);
 		}
 		
 		$ret = '';
-		foreach ($sections as $section) {
+		foreach ($sections as $section) 
+		{
 			if($id == 'core' && !is_readable(e_FILE.'e_url/core/'.$section['core_path'])) continue;
 			elseif($id == 'plugin' && !is_readable(e_PLUGIN.$section['plugin_path'].'/e_url')) continue;
 			$ret .= $this->render_section($id, $section);
@@ -111,7 +117,6 @@ class admin_url_config {
 
 	function render_section($id, $section) 
 	{
-		
 		$this->normalize($id, $section); //var_dump($id, $section);
 		$text .= "
 			<tr>
@@ -251,12 +256,13 @@ class admin_url_config {
 
 function headerjs()
 {
-
+	/*
 	$js = "
 	<script type='text/javascript'>
 
 	</script>";
 
 	return $js;
+	*/
 }
 ?>
