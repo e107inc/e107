@@ -1,20 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/news.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-12-02 23:44:19 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * News frontend
+ *
+ * $Source: /cvs_backup/e107_0.8/news.php,v $
+ * $Revision: 1.15 $
+ * $Date: 2008-12-03 12:38:07 $
+ * $Author: secretr $
 */
 
 require_once("class2.php");
@@ -22,7 +19,7 @@ require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
 
-if (isset($NEWSHEADER)) 
+if (isset($NEWSHEADER))
 {
   require_once(HEADERF);
   require_once(FOOTERF);
@@ -40,7 +37,7 @@ if (!defined("ITEMVIEW"))
   define("ITEMVIEW", varset($pref['newsposts'],15));
 }
 
-if (e_QUERY) 
+if (e_QUERY)
 {
   $tmp = explode(".", e_QUERY);
   $action = $tmp[0];						// At least one parameter here
@@ -62,7 +59,7 @@ if (is_numeric($action) && isset($tmp[1]) && (($tmp[1] == 'list') || ($tmp[1] ==
 
 
 
-if ($action == 'all' || $action == 'cat') 
+if ($action == 'all' || $action == 'cat')
 {
   $sub_action = intval(varset($tmp[1],0));
 }
@@ -94,7 +91,7 @@ if ($action == 'cat' || $action == 'all')
 
 
 	$category = intval($sub_action);
-	if ($action == 'cat' && $category != 0)	
+	if ($action == 'cat' && $category != 0)
 	{
 		$gen = new convert;
 		$sql->db_Select("news_category", "*", "category_id='$category'");
@@ -110,8 +107,8 @@ if ($action == 'cat' || $action == 'all')
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()."
-		AND (n.news_end=0 || n.news_end>".time().")  
-		ORDER BY n.news_sticky DESC, n.news_datestamp DESC 
+		AND (n.news_end=0 || n.news_end>".time().")
+		ORDER BY n.news_sticky DESC, n.news_datestamp DESC
 		LIMIT ".intval($newsfrom).",".NEWSALL_LIMIT;
 		$category_name = "All";
 	}
@@ -123,10 +120,10 @@ if ($action == 'cat' || $action == 'all')
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
-		AND n.news_category=".intval($sub_action)." 
-		ORDER BY n.news_datestamp DESC 
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+		AND n.news_category=".intval($sub_action)."
+		ORDER BY n.news_datestamp DESC
 		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;
 	}
 
@@ -199,7 +196,7 @@ if ($action == 'cat' || $action == 'all')
 //------------------------------------------------------
 //		DISPLAY SINGLE ITEM IN EXTENDED FORMAT HERE
 //------------------------------------------------------
-if ($action == "extend") 
+if ($action == "extend")
 {	// --> Cache
 	if($newsCachedPage = checkCache($cacheString))
 	{
@@ -208,15 +205,15 @@ if ($action == "extend")
 	}
 	// <-- Cache
 
-	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) 
+	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'])
 	{
 	  $query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."' 
-		AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
+		WHERE n.news_id=".intval($sub_action)." AND n.news_class REGEXP '".e_CLASS_REGEXP."'
+		AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		GROUP by n.news_id";
 	}
 	else
@@ -269,9 +266,9 @@ switch ($action)
 	$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
-		AND n.news_category={$sub_action} 
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+		AND n.news_category={$sub_action}
 		ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 	break;
 
@@ -279,22 +276,22 @@ switch ($action)
   case "item" :
 	$sub_action = intval($sub_action);
 	$news_total = 1;
-	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) 
+	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'])
 	{
 	  $query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
+		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		GROUP by n.news_id";
 	}
 	else
-	{ 
+	{
 	  $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
+		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
 	}
 	break;
@@ -319,9 +316,9 @@ switch ($action)
 	$query = "SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
-		AND n.news_render_type<2 AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate} 
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+		AND n.news_render_type<2 AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate}
 		ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 	break;
 
@@ -392,13 +389,13 @@ if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with 
 }
 
 
-if (!($news_total = $sql->db_Select_gen($query))) 
+if (!($news_total = $sql->db_Select_gen($query)))
 {  // No news items
   require_once(HEADERF);
   echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</b></div><br /><br />";
   require_once(FOOTERF);
   exit;
-} 
+}
 
 $newsAr = $sql -> db_getList();
 $news_total=$sql->total_results;
@@ -432,7 +429,7 @@ if(!$action)
 	}
 }
 
-if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(THEME."news_template.php")) 
+if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 {
 	// theme specific template required ...
 	require_once(THEME."news_template.php");
@@ -472,11 +469,11 @@ if(isset($pref['news_unstemplate']) && $pref['news_unstemplate'] && file_exists(
     $nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
     $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 //    $text=''.$text.'<center>'.$nextprev.'</center>';
-   
+
     echo $text;
     setNewsCache($cacheString, $text);
-} 
-else 
+}
+else
 {
 	ob_start();
 
@@ -497,13 +494,13 @@ else
 		$news = $newsAr[$i];
 		//        render new date header if pref selected ...
 		$thispostday = strftime("%j", $news['news_datestamp']);
-		if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader'])) 
+		if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader']))
 		{
 		  echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
 		}
 		$newpostday = $thispostday;
 		$news['category_id'] = $news['news_category'];
-		if ($action == "item") 
+		if ($action == "item")
 		{
 		  unset($news['news_render_type']);
 		}
@@ -582,7 +579,7 @@ function show_newsarchive($newsAr, $i = 1)
 }
 
 // #### new: news archive ---------------------------------------------------------------------------------------------
-if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) 
+if ($action != "item" && $action != 'list' && $pref['newsposts_archive'])
 {
   show_newsarchive($newsAr,$interval);
 }

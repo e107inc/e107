@@ -1,17 +1,9 @@
 <?php
 /*
- * e107 website system
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: news_shortcodes.php,v 1.14 2008-12-03 12:38:07 secretr Exp $
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * News Shortcode Batch
- *
- * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/news_shortcodes.php,v $
- * $Revision: 1.13 $
- * $Date: 2008-12-02 23:44:19 $
- * $Author: secretr $
+ * News shortcode batch
 */
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
@@ -259,7 +251,7 @@ SC_BEGIN NEWSIMAGE
 global $e107;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$news_item['news_id']}&value1={$news_item['news_category']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
+return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$news_item['news_id']}&value2={$news_item['news_category']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
 SC_END
 
 SC_BEGIN STICKY_ICON
@@ -282,7 +274,7 @@ $param = getcachedvars('current_news_param');
 $category_icon = $e107->tp->parseTemplate('{NEWSHEADER}', FALSE, $news_shortcodes);
 if (!$category_icon) return '';
 if($param['caticon'] == ""){$param['caticon'] = "border:0px";}
-return "<a href='".$e107->url->getUrl('core:news', 'main', "action=cat&value{$news_item['news_category']}")."'><img style='".$param['caticon']."' src='".$category_icon."' alt='' /></a>";
+return "<a href='".$e107->url->getUrl('core:news', 'main', "action=cat&value={$news_item['news_category']}")."'><img style='".$param['caticon']."' src='".$category_icon."' alt='' /></a>";
 SC_END
 
 SC_BEGIN TRACKBACK
