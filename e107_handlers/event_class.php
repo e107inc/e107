@@ -11,19 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-03 00:48:19 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-03 17:21:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 class e107_event
 {
 	var $functions = array();
 	var $includes = array();
-	 
+
 	function register($eventname, $function, $include='')
 	{
 		if ($include!='')
@@ -32,7 +32,7 @@ class e107_event
 		}
 		$this->functions[$eventname][] = $function;
 	}
-	 
+
 	function trigger($eventname, &$data)
 	{
 		if (isset($this -> includes[$eventname]))
@@ -70,6 +70,8 @@ class e107_event
 		}
 		if(isset($pref['e_admin_events_list']) && is_array($pref['e_admin_events_list']))
 		{
+			$called = getcachedvars('admin_events_called');
+			if(!is_array($called)) { $called = array(); }
 			foreach($pref['e_admin_events_list'] as $plugin)
 			{
 				if(plugInstalled($plugin))
@@ -78,19 +80,22 @@ class e107_event
 					if(!function_exists($func))
 					{
 						$fname = e_PLUGIN.$plugin.'/e_admin_events.php';
-						if(is_readable($fname))
-						{
-							include_once($fname);
-						}
+						if(is_readable($fname)) { include_once($fname); }
 					}
 					if(function_exists($func))
 					{
-						call_user_func($func, $type, $parms);
+						$event_func = call_user_func($func, $type, $parms);
+						if ($event_func && function_exists($event_func) && !in_array($event_func, $called))
+						{
+							$called[] = $event_func;
+							cachevars('admin_events_called', $called);
+							call_user_func($event_func);
+						}
 					}
 				}
-			} 
+			}
 		}
 	}
 }
-	
+
 ?>
