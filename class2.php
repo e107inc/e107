@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2008-12-02 18:27:35 $
+|     $Revision: 1.82 $
+|     $Date: 2008-12-03 00:43:00 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -342,6 +342,10 @@ e107_require_once(e_HANDLER.'arraystorage_class.php');
 $e107->arrayStorage =& new ArrayData();
 $eArrayStorage = &$e107->arrayStorage;
 
+e107_require_once(e_HANDLER.'event_class.php');
+$e107->e_event = new e107_event;
+$e_event = &$e107->e_event;
+
 $PrefCache = ecache::retrieve_sys('SitePrefs', 24 * 60, true);
 if(!$PrefCache)
 {
@@ -632,10 +636,6 @@ $e107cache = &$e107->ecache;
 e107_require_once(e_HANDLER.'override_class.php');
 $e107->override = new override;
 $override = &$e107->override;
-
-e107_require_once(e_HANDLER.'event_class.php');
-$e107->e_event = new e107_event;
-$e_event = &$e107->e_event;
 
 e107_require_once(e_HANDLER.'userclass_class.php');
 $e107->e_userclass = new user_class;
