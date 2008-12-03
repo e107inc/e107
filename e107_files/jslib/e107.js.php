@@ -8,8 +8,8 @@
  * e107 Javascript API
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-02 00:32:30 $
+ * $Revision: 1.13 $
+ * $Date: 2008-12-03 13:03:54 $
  * $Author: secretr $
  * 
 */
@@ -932,7 +932,7 @@ Object.extend(e107Helper, {
 	toggleChecked: function(form, state, selector, byId) {
 		form = $(form); if(!form) { return; } 
 		if(byId) selector = 'id^=' + selector; 
-		$A(form.select('input[type=checkbox][' + selector + ']')).invoke('writeAttribute', { checked: state });
+		$A(form.select('input[type=checkbox][' + selector + ']')).each(function(element) { element.checked=state });
 	},
 	
 	//This will be replaced later with upload_ui.php own JS method
