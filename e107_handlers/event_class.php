@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-03 00:43:00 $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-03 00:48:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -72,18 +72,21 @@ class e107_event
 		{
 			foreach($pref['e_admin_events_list'] as $plugin)
 			{
-				$func = 'plugin_'.$plugin.'_admin_events';
-				if(!function_exists($func))
+				if(plugInstalled($plugin))
 				{
-					$fname = e_PLUGIN.$plugin.'/e_admin_events.php';
-					if(is_readable($fname))
+					$func = 'plugin_'.$plugin.'_admin_events';
+					if(!function_exists($func))
 					{
-						include_once($fname);
+						$fname = e_PLUGIN.$plugin.'/e_admin_events.php';
+						if(is_readable($fname))
+						{
+							include_once($fname);
+						}
 					}
-				}
-				if(function_exists($func))
-				{
-					call_user_func($func, $type, $parms);
+					if(function_exists($func))
+					{
+						call_user_func($func, $type, $parms);
+					}
 				}
 			} 
 		}
