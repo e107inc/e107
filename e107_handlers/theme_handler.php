@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-11-17 07:17:23 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2008-12-03 18:09:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -124,14 +124,14 @@ class themeHandler{
 				  	closedir($handle2);
 
 					// Load Theme information and merge with existing array. theme.xml (0.8 themes) is given priority over theme.php (0.7).
- 		            if(in_array("theme.xml",$themeArray[$file]['files']) )
+					if(in_array("theme.xml",$themeArray[$file]['files']) )
 					{
 		 	        	$themeArray[$file] = array_merge($themeArray[$file], $this->parse_theme_xml($file));
 		    		}
-		            elseif(in_array("theme.php",$themeArray[$file]['files']))
+					elseif(in_array("theme.php",$themeArray[$file]['files']))
 					{
-					  	$themeArray[$file] =  array_merge($themeArray[$file], $this->parse_theme_php($file));
-		            }
+						$themeArray[$file] =  array_merge($themeArray[$file], $this->parse_theme_php($file));
+		         }
 				}
 		  	}
 		}
@@ -237,8 +237,8 @@ class themeHandler{
 		if(!is_writable(e_THEME)) {
 			$ns->tablerender(TPVLAN_16, TPVLAN_15);
 			$text = "";
-		} 
-		else 
+		}
+		else
 		{
 		  require_once(e_HANDLER.'upload_handler.php');
 		  $max_file_size = get_user_max_upload();
@@ -459,17 +459,8 @@ class themeHandler{
 			</td></tr></table>\n";
 		}
 
-            /*if($theme['xhtmlcompliant'] || $theme['xhtmlcompliant'])
-			{
-				$text .= "<table cellspacing='3' style='width:97%'><tr><td >";
-				$text .= ($theme['xhtmlcompliant']) ? "<img src='".e_IMAGE."generic/valid-xhtml11_small.png' alt='' style='border: 0px;' /> ": "";
-            	$text .= ($theme['csscompliant']) ? "<img src='".e_IMAGE."generic/vcss_small.png' alt='' style='border: 0px;' /> " : "";
-				$text .= "</td></tr></table>";
-			}*/
-
 		$text .= "</td></tr></table></div>\n";
 		return $text;
-
 	}
 
 	function themePreview()
@@ -544,7 +535,7 @@ class themeHandler{
 
 	function parse_theme_php($path)
 	{
-        $fp=fopen(e_THEME.$path."/theme.php", "r");
+		$fp=fopen(e_THEME.$path."/theme.php", "r");
 		$themeContents = fread ($fp, filesize(e_THEME.$path."/theme.php"));
 		fclose($fp);
 
@@ -571,12 +562,10 @@ class themeHandler{
 		$css = strtolower($match[2]);
 		$themeArray['csscompliant'] = ($css == "true" ? true : false);
 
-
-
   		if (!$themeArray['name'])
 		{
-				unset($themeArray);
-        }
+			unset($themeArray);
+		}
     	return $themeArray;
 	}
 
@@ -588,12 +577,22 @@ class themeHandler{
 		$xml = new xmlClass;
 		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
 
-        $vars['email']	 			= $vars['authorEmail'];
-        $vars['website'] 			= $vars['authorUrl'];
-		$vars['info'] 				= $vars['description'];
-		$vars['xhtmlcompliant'] 	= (strtolower($vars['xhtmlCompliant']) == "true") ? 1 : 0;
-		$vars['csscompliant'] 		= (strtolower($vars['cssCompliant']) == "true") ? 1 : 0;
-		$vars['path']				= $path;
+		$vars['name']					= varset($vars['@attributes']['name']);
+		$vars['version']				= varset($vars['@attributes']['version']);
+		$vars['date']					= varset($vars['@attributes']['date']);
+		$vars['compatibility']		= varset($vars['@attributes']['compatibility']);
+
+
+		$vars['email']	 				= varset($vars['author']['@attributes']['email']);
+      $vars['website'] 				= varset($vars['author']['@attributes']['url']);
+		$tmp								= varset($vars['author']['@attributes']['name']);
+		$vars['author'] = $tmp;
+
+
+		$vars['info'] 					= $vars['description'];
+		$vars['xhtmlcompliant'] 	= (strtolower($vars['compliance']['@attributes']['xhtml']) == 'true' ? 1 : 0);
+		$vars['csscompliant'] 		= (strtolower($vars['compliance']['@attributes']['css']) == 'true' ? 1 : 0);
+		$vars['path']					= $path;
 		$vars['@attributes']['default'] = (strtolower($vars['@attributes']['default'])=='true') ? 1 : 0;
 
 		unset($vars['authorEmail'],$vars['authorUrl'],$vars['xhtmlCompliant'],$vars['cssCompliant'],$vars['description']);
@@ -605,10 +604,10 @@ class themeHandler{
 			{
 				$name = $val['@attributes']['name'];
 				unset($val['@attributes']['name']);
-            	$lays[$name] = $val;
+				$lays[$name] = $val;
 			}
 		}
-        $vars['layouts'] = $lays;
+		$vars['layouts'] = $lays;
 
 	  	return $vars;
 	}

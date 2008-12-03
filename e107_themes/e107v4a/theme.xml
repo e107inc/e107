@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-
-<e107Theme>
-	<name>e107.v4</name>
-	<version>3.0</version>
-	<date>2003-06-11</date>
-	<author>Steve Dunstan [jalist]</author>
-	<authorEmail>jalist@e107.org</authorEmail>
-	<authorUrl>http://e107.org</authorUrl>
+<e107Theme name="e107.v4" version="3.0" date="2003-06-11" compatibility="0.8">
+	<author name ="Steve Dunstan [jalist]" email="jalist@e107.org" url="http://e107.org"/>
 	<description>Classic e107 theme</description>
-	<compatibility>0.8</compatibility>
-	<xhtmlCompliant>true</xhtmlCompliant>
-	<cssCompliant>true</cssCompliant>
+	<compliance xhtml="true" css="true"/>
 	<layouts>
 		<layout name='3_column' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' requiredPlugins='chatbox' default='true' >
 		<menuPresets>
