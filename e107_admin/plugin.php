@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-10-11 11:55:18 $
+|     $Revision: 1.20 $
+|     $Date: 2008-12-03 22:29:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -479,7 +479,7 @@ function render_plugs($pluginList)
 		if($plug_vars)
 		{
 
-			if ($plug_vars['installRequired'])
+			if ($plug_vars['@attributes']['installRequired'])
 			{
 				$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."packs/".$imode."/admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."packs/".$imode."/admin_images/installed.png' alt='' />");
 			}
@@ -488,7 +488,7 @@ function render_plugs($pluginList)
 				$img = "<img src='".e_IMAGE."packs/".$imode."/admin_images/noinstall.png' alt='' />";
 			}
 
-			if ($plug['plugin_version'] != $plug_vars['version'] && $plug['plugin_installflag'])
+			if ($plug['plugin_version'] != $plug_vars['@attributes']['version'] && $plug['plugin_installflag'])
 			{
 				$img = "<img src='".e_IMAGE."packs/".$imode."/admin_images/upgrade.png' alt='' />";
 			}
@@ -498,17 +498,20 @@ function render_plugs($pluginList)
 
 			if ($plug_vars['administration']['configFile'] && $plug['plugin_installflag'] == true)
 			{
-				$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['name'], "", "defs,emotes_off, no_make_clickable");
+				$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
 				$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile']."' >".$plugin_icon.'</a>';
 			}
 
+			$plugEmail = varset($plug_vars['author']['@attributes']['email'],'');
+			$plugAuthor = varset($plug_vars['author']['@attributes']['name'],'');
+			$plugURL = varset($plug_vars['author']['@attributes']['url'],'');
 			$text .= "
 			<tr>
 			<td class='forumheader3' style='width:160px; text-align:center; vertical-align:top'>
 			<table style='width:100%'><tr><td style='text-align:left;width:40px;vertical-align:top'>
 			".$plugin_icon."
 			</td><td>
-			$img <b>".$tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable")."</b><br /><b>".EPL_ADLAN_11."</b>&nbsp;{$plug['plugin_version']}
+			{$img} <b>".$tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable")."</b><br /><b>".EPL_ADLAN_11."</b>&nbsp;{$plug['plugin_version']}
 			<br /><br />
 			<b>".EPL_ADLAN_64."</b>&nbsp;".$plug['plugin_path']."
 			<br />
@@ -517,10 +520,11 @@ function render_plugs($pluginList)
 			</td>
 			<td class='forumheader3' style='vertical-align:top'>
 			<table cellspacing='3' style='width:98%'>
-			<tr><td style='vertical-align:top;width:15%'><b>".EPL_ADLAN_12."</b>:</td><td style='vertical-align:top'><a href='mailto:{$plug_vars['authorEmail']}' title='{$plug_vars['authorEmail']}'>{$plug_vars['author']}</a>&nbsp;";
-			if($plug_vars['authorUrl'])
+			<tr><td style='vertical-align:top;width:15%'><b>".EPL_ADLAN_12."</b>:</td>
+				<td style='vertical-align:top'><a href='mailto:{$plugEmail}' title='{$plugEmail}'>{$plugAuthor}</a>&nbsp;";
+			if($plugURL)
 			{
-				$text .= "&nbsp;&nbsp;[ <a href='{$plug_vars['authorUrl']}' title='{$plug_vars['authorUrl']}' >".EPL_WEBSITE."</a> ] ";
+				$text .= "&nbsp;&nbsp;[ <a href='{$plugURL}' title='{$plugURL}' >".EPL_WEBSITE."</a> ] ";
 			}
 			$text .="</td></tr>
 			<tr><td style='vertical-align:top'><b>".EPL_ADLAN_14."</b>:</td><td style='vertical-align:top'> ".$tp->toHTML($plug_vars['description'], false, "defs,emotes_off, no_make_clickable")."&nbsp;";
@@ -530,7 +534,7 @@ function render_plugs($pluginList)
 			}
 
 			$text .="</td></tr>
-			<tr><td style='vertical-align:top'><b>".EPL_ADLAN_13."</b>:</td><td style='vertical-align:top'><span style='vertical-align:top'> {$plug_vars['compatibility']}&nbsp;</span>";
+			<tr><td style='vertical-align:top'><b>".EPL_ADLAN_13."</b>:</td><td style='vertical-align:top'><span style='vertical-align:top'> ".varset($plug_vars['@attributes']['compatibility'],'')."&nbsp;</span>";
 
 			if ($plug_vars['compliant'])
 			{
@@ -541,7 +545,7 @@ function render_plugs($pluginList)
 			$text .= "</table></td>";
 			$text .= "<td class='forumheader3' style='width:70px;text-align:center'>";
 
-			if ($plug_vars['installRequired'])
+			if ($plug_vars['@attributes']['installRequired'])
 			{
 				$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' /> " : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
 			}
@@ -562,8 +566,8 @@ function render_plugs($pluginList)
 				}
 			}
 
-			if ($plug['plugin_version'] != $plug_vars['version'] && $plug['plugin_installflag']) {
-				$text .= "<br /><input type='button' class='button' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$plug_vars['version']."' value='".EPL_UPGRADE."' />";
+			if ($plug['plugin_version'] != $plug_vars['@attributes']['version'] && $plug['plugin_installflag']) {
+				$text .= "<br /><input type='button' class='button' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
 			}
 
 			$text .="</td>";

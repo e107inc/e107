@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<e107Plugin>
-<!-- $Id: plugin.xml,v 1.1 2008-08-25 13:43:08 e107steved Exp $ -->
-	<name>ADSTAT_L3</name>
-	<version>2.1</version>
-	<author>jalist</author>
-	<authorUrl>http://e107.org</authorUrl>
-	<authorEmail>jalist@e107.org</authorEmail>
+<!-- $Id: plugin.xml,v 1.2 2008-12-03 22:29:58 e107steved Exp $ -->
+<e107Plugin name="ADSTAT_L3" version="2.1" compatibility="0.8" installRequired="true" >
+	<author name="jalist" url="http://e107.org" />
 	<description>ADSTAT_L1</description>
-	<compatibility>e107v0.7</compatibility>
-	<installRequired>true</installRequired>
 	<folder>log</folder>
 	<logLanguageFile filename="languages/admin/--LAN--.php" />
 	<administration>
