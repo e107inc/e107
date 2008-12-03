@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2008-12-02 21:51:22 $
+|     $Revision: 1.52 $
+|     $Date: 2008-12-03 22:29:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -180,9 +180,9 @@ class e107plugin
 				{  // Update the addons needed by the plugin
 					$pluginDBList[$plugin_path]['status'] = 'exists';
 					// If plugin not installed, and version number of files changed, update version as well
-					if (($pluginDBList[$plugin_path]['plugin_installflag'] == 0) && ($pluginDBList[$plugin_path]['plugin_version'] != $plug_info['version']))
+					if (($pluginDBList[$plugin_path]['plugin_installflag'] == 0) && ($pluginDBList[$plugin_path]['plugin_version'] != $plug_info['@attributes']['version']))
 					{  // Update stored version
-						$pluginDBList[$plugin_path]['plugin_version'] = $plug_info['version'];
+						$pluginDBList[$plugin_path]['plugin_version'] = $plug_info['@attributes']['version'];
 						$pluginDBList[$plugin_path]['status'] = 'update';
 					}
 					if ($pluginDBList[$plugin_path]['plugin_addons'] != $eplug_addons)
@@ -218,7 +218,7 @@ class e107plugin
 						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
 						$_installed = ($plug_info['installRequired'] == 'true' || $plug_info['installRequired'] == 1 ? 0 : 1 );
-						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['name'], true)."', '".$tp -> toDB($plug_info['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}' ");
+						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}' ");
 					}
 				}
 			}
@@ -1089,14 +1089,14 @@ class e107plugin
 
 		if($function == 'install' || $function == 'upgrade')
 		{
-			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['version']}' WHERE plugin_id = ".$id);
-			$pref['plug_installed'][$plug['plugin_path']] = $plug_vars['version'];
+			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}' WHERE plugin_id = ".$id);
+			$pref['plug_installed'][$plug['plugin_path']] = $plug_vars['@attributes']['version'];
 			save_prefs();
 		}
 
 		if($function == 'uninstall')
 		{
-			$sql->db_Update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['version']}' WHERE plugin_id = ".$id);
+			$sql->db_Update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}' WHERE plugin_id = ".$id);
 			unset($pref['plug_installed'][$plug['plugin_path']]);
 			save_prefs();
 		}
@@ -1510,16 +1510,16 @@ class e107plugin
 		$ret = array();
 
 //		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
-		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
+		$ret['@attributes']['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
 
-		$ret['version'] = varset($eplug_version);
-		$ret['name'] = varset($eplug_name);
+		$ret['@attributes']['version'] = varset($eplug_version);
+		$ret['@attributes']['name'] = varset($eplug_name);
+		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
 		$ret['folder'] = varset($eplug_folder);
 		$ret['description'] = varset($eplug_description);
-		$ret['author'] = varset($eplug_author);
-		$ret['authorUrl'] = varset($eplug_url);
-		$ret['authorEmail'] = varset($eplug_email);
-		$ret['compatibility'] = varset($eplug_compatible);
+		$ret['author']['@attributes']['name'] = varset($eplug_author);
+		$ret['author']['@attributes']['url'] = varset($eplug_url);
+		$ret['author']['@attributes']['email'] = varset($eplug_email);
 		$ret['readme'] = varset($eplug_readme);
 		$ret['compliant'] = varset($eplug_compliant);
 		$ret['menuName'] = varset($eplug_menu_name);
@@ -1547,9 +1547,6 @@ class e107plugin
 		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);
 		if ($this->plug_vars === FALSE) return FALSE;
 //		print_a($this->plug_vars);
-//		$xml->loadXMLfile($path.'plugin.xml', true, true);
-//		$xml->xmlFileContents = $tp->replaceConstants($xml->xmlFileContents, '', true);
-//		$this->plug_vars = $xml->parseXml();
 		return true;
 	}
 

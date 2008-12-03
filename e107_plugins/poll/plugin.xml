@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<e107Plugin>
-<!-- $Id: plugin.xml,v 1.2 2008-08-17 11:54:39 e107steved Exp $ -->
-	<name>POLL_ADLAN01</name>
-	<version>2.0</version>
-	<author>Steve Dunstan (jalist)</author>
-	<authorUrl>http://e107.org</authorUrl>
+<!-- $Id: plugin.xml,v 1.3 2008-12-03 22:29:58 e107steved Exp $ -->
+<e107Plugin name="POLL_ADLAN01" version="2.0" compatibility="0.8" installRequired="true" >
+	<author="Steve Dunstan (jalist)" url="http://e107.org" />
 	<description>POLL_ADLAN02</description>
-	<compatibility>0.8</compatibility>
-	<installRequired>true</installRequired>
 	<folder>poll</folder>
 	<logLanguageFile filename="languages/admin/--LAN--.php" />
 	<commentID>poll</commentID>

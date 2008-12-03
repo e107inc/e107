@@ -4,8 +4,8 @@
 |	e107 website system - Converter for plugin.php to plugin.xml
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/utilities/pluginxmlgen.php,v $
-|	$Revision: 1.7 $
-|	$Date: 2008-11-09 18:00:27 $
+|	$Revision: 1.8 $
+|	$Date: 2008-12-03 22:29:52 $
 |	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -80,7 +80,7 @@ define('LAN_XMLGEN_25','Type');
 define('LAN_XMLGEN_26','Function');
 define('LAN_XMLGEN_27','Class');
 define('LAN_XMLGEN_28','File name');
-define('LAN_XMLGEN_29','Function name');
+define('LAN_XMLGEN_29','Function/method name');
 define('LAN_XMLGEN_30','When');
 define('LAN_XMLGEN_31','Pre');
 define('LAN_XMLGEN_32','Post');
@@ -108,10 +108,29 @@ $selectOptions = array(
 );
 
 
+// Writes a single value within open tag and close tag
 function writeTag($tag,$value,$level=1)
 {
   if (!$value) return '';
   return str_repeat(TAB_CHAR,$level)."<{$tag}>{$value}</{$tag}>\n";
+}
+
+
+// Writes a tag with some attributes
+function writeTagList($tag,$values,$closeTag = TRUE,$level=1)
+{
+	if (!count($values)) return '';
+	$ret = str_repeat(TAB_CHAR,$level).'<'.$tag;
+	foreach ($values as $aname => $aval)
+	{
+		if ($aval)
+		{
+			$ret .= ' '.$aname.'="'.$aval.'"';
+		}
+	}
+	if ($closeTag) { $ret .= ' /'; }
+	$ret .= ">\n";
+	return $ret;
 }
 
 
@@ -159,8 +178,8 @@ function makeXML($pluginDir, $extras=array())
   $adminText = '';
   $mainPrefText = '';
   $manageText = '';
-  $fileText  = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n<e107Plugin>\n";
-  $fileText .= '<!-- $'.'Id: plugin.xml,v 0.0 2008/06/26 20:44:10 e107steved Exp '.'$ -'."->\n";	// Split it to stop message getting edited when this file committed!
+  $fileText  = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n\n";
+  $fileText .= '<!-- $'.'Id: plugin.xml,v 0.0 2008/06/26 20:44:10 e107steved Exp '.'$ -'."->\n\n";	// Split it to stop message getting edited when this file committed!
 
   if (!is_readable($sourceFile))
   {
@@ -169,15 +188,21 @@ function makeXML($pluginDir, $extras=array())
 
   include_once($sourceFile);
 // Transcribe variables
-  $fileText .= writeTag('name',$eplug_name);
-  $fileText .= writeTag('version',$eplug_version);
-  $fileText .= writeTag('author',$eplug_author);
-  $fileText .= writeTag('authorUrl',$eplug_url);
-  $fileText .= writeTag('authorEmail',$eplug_email);
+	$fileText .= writeTagList('e107Plugin', 
+						array('name' => $eplug_name,
+							'version' => $eplug_version,
+							'compatibility' => '0.8',
+							'installRequired' => $extras['installationrequired'] ? 'true' : 'false'
+							), TRUE);
+	
+	$fileText .= writeTagList('author',
+ 						array('name' => $eplug_author,
+							'url' => $eplug_url,
+							'email' => $eplug_email
+							), TRUE);
   $fileText .= writeTag('description',$eplug_description);
   $fileText .= writeTag('compatibility',$eplug_compatible);
   $fileText .= writeTag('readMe',$eplug_readme);
-  $fileText .= writeTag('installRequired',$extras['installationrequired'] ? 'true' : 'false');
   $fileText .= writeTag('folder',$baseFolder);
   if (isset($eplug_comment_ids) && is_array($eplug_comment_ids))
   {
@@ -190,6 +215,10 @@ function makeXML($pluginDir, $extras=array())
   foreach ($extras as $k => $v)
   {
     if (in_array($k,array('copyright','update_url'))) $fileText .= writeTag($k,$v);
+  }
+  if (!varsettrue($extras['copyright']))
+  {
+	$fileText .= writeTag('copyright','Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)');
   }
   $baseFolder .= '/';
   // 'commentID' tags needed
