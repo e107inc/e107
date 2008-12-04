@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2008-12-03 15:05:52 $
+|     $Revision: 1.84 $
+|     $Date: 2008-12-04 21:05:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -638,8 +638,9 @@ $e107->override = new override;
 $override = &$e107->override;
 
 e107_require_once(e_HANDLER.'userclass_class.php');
-$e107->e_userclass = new user_class;
-$e_userclass = &$e107->e_userclass;
+$e107->e_userclass = new e_userclass;
+$e107->user_class = new user_class;
+$e_userclass = &$e107->user_class;
 
 if(isset($pref['notify']) && $pref['notify'] == true)
 {
@@ -1288,7 +1289,7 @@ function get_user_data($uid, $extra = '')
 
 	//===========================================================
 	// Now look up the 'inherited' user classes
-	$var['user_class'] = $e107->e_userclass->get_all_user_classes($var['user_class']);
+	$var['user_class'] = $e107->user_class->get_all_user_classes($var['user_class']);
 
 	//===========================================================
 
