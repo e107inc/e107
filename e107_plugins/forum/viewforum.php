@@ -9,8 +9,8 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/viewforum.php,v $
-* $Revision: 1.5 $
-* $Date: 2008-12-02 21:34:18 $
+* $Revision: 1.6 $
+* $Date: 2008-12-04 21:36:09 $
 * $Author: mcfly_e107 $
 *
 */
@@ -68,7 +68,8 @@ if (!$forum->checkPerm($forumId, 'view'))
 
 $forumInfo = $forum->forum_get($forumId);
 
-if (!$FORUM_VIEW_START) {
+if (!$FORUM_VIEW_START)
+{
 	if (file_exists(THEME.'forum_viewforum_template.php'))
 	{
 		require_once(THEME.'forum_viewforum_template.php');
@@ -158,7 +159,7 @@ if(substr($forum_info['sub_parent'], 0, 1) == '*')
 
 $forum->set_crumb(); // set $BREADCRUMB (and $BACKLINK)
 
-$FORUMTITLE = $forum_info['forum_name'];
+$FORUMTITLE = $forumInfo['forum_name'];
 //$MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
 $MODERATORS = LAN_404.': '.implode(', ', $modArray);
 $BROWSERS = '';
@@ -324,26 +325,27 @@ function parse_thread($thread_info)
 	$REPLIES = $thread_info['thread_total_replies'];
 
 
+print_a($thread_info);
 	if ($REPLIES)
 	{
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
-		$tmp = explode(".", $thread_info['thread_lastuser'], 2);
+//		$tmp = explode(".", $thread_info['thread_lastuser'], 2);
 		if($thread_info['lastpost_username'])
 		{
 			$LASTPOST = "<a href='".e_BASE."user.php?id.".$tmp[0]."'>".$thread_info['lastpost_username']."</a>";
 		}
 		else
 		{
-			if($tmp[1])
+			if(!$thread_info['thread_lastuser'])
 			{
-				$LASTPOST = $tp->toHTML($tmp[1]);
+				$LASTPOST = $tp->toHTML($thread_info['thread_lastuser_anon']);
 			}
 			else
 			{
 				$LASTPOST = FORLAN_19;
 			}
 		}
-		$LASTPOST .= "<br />".$lastpost_datestamp;
+		$LASTPOST .= '<br />'.$lastpost_datestamp;
 	}
 
 	$newflag = FALSE;
@@ -379,19 +381,24 @@ function parse_thread($thread_info)
 	}
 
 	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name'], false, 'no_hook, emotes_off'));
-	if (strtoupper($THREADTYPE) == strtoupper(substr($thread_name, 0, strlen($THREADTYPE)))) {
+	if (strtoupper($THREADTYPE) == strtoupper(substr($thread_name, 0, strlen($THREADTYPE))))
+	{
 		$thread_name = substr($thread_name, strlen($THREADTYPE));
 	}
-	if ($pref['forum_tooltip']) {
+	if ($pref['forum_tooltip'])
+	{
 		$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread'], true, 'no_hook'));
 		$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 400);
-		if (strlen($thread_thread) > $tip_length) {
+		if (strlen($thread_thread) > $tip_length)
+		{
 			$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
 		}
 		$thread_thread = str_replace("'", "&#39;", $thread_thread);
 		$title = "title='".$thread_thread."'";
-	} else {
-		$title = "";
+	}
+	else
+	{
+		$title = '';
 	}
 	$THREADNAME = "<a {$title} href='".e_PLUGIN."forum/forum_viewtopic.php?id={$thread_info['thread_id']}'>{$thread_name}</a>";
 
@@ -489,6 +496,7 @@ function parse_thread($thread_info)
 function parse_sub($subInfo)
 {
 	global $FORUM_VIEW_SUB, $gen, $tp, $newflag_list;
+	$e107 = e107::getInstance();
 	$SUB_FORUMTITLE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$subInfo['forum_id']}'>{$subInfo['forum_name']}</a>";
 	$SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
 	$SUB_THREADS = $subInfo['forum_threads'];
@@ -504,10 +512,14 @@ function parse_sub($subInfo)
 
 	if($subInfo['forum_lastpost_info'])
 	{
-		$tmp = explode(".", $subInfo['forum_lastpost_info']);
-		$lp_thread = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tmp[1]}.last'>".IMAGE_post2."</a>";
+		$tmp = explode('.', $subInfo['forum_lastpost_info']);
+
+//		$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $tmp[1]));
+
+		$lp_thread = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $tmp[1]))."'>".IMAGE_post2.'</a>';
 		$lp_date = $gen->convert_date($tmp[0], 'forum');
 		$tmp = explode(".", $subInfo['forum_lastpost_user'],2);
+
 		if($subInfo['user_name'])
 		{
 			$lp_name = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>{$subInfo['user_name']}</a>";

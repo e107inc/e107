@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-12-02 21:34:18 $
+|     $Revision: 1.16 $
+|     $Date: 2008-12-04 21:36:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -140,9 +140,9 @@ class e107forum
 			else
 			{
 				$threadInfo['thread_lastuser'] = 0;
-				$threadInfo['thread_lastuser_anon'] = $postInfo['post_anon_name'];
+				$threadInfo['thread_lastuser_anon'] = $postInfo['post_user_anon'];
 				$forumInfo['forum_lastpost_user'] = 0;
-				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_anon_name'];
+				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_user_anon'];
 			}
 			$threadInfo['thread_lastpost'] = $postInfo['post_datestamp'];
 			$threadInfo['thread_total_replies'] = 'thread_total_replies + 1';
@@ -150,6 +150,8 @@ class e107forum
 
 			$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 			$threadInfo['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
+//			print_a($threadInfo);
+//			exit;
 			$result = $e107->sql->db_Update('forum_thread', $threadInfo, true);
 
 		}
@@ -164,7 +166,7 @@ class e107forum
 			else
 			{
 				$forumInfo['forum_lastpost_user'] = 0;
-				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_anon_name'];
+				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_user_anon'];
 			}
 
 			//If we update the thread, then we assume it was a reply, otherwise we've added a reply only.
@@ -420,19 +422,18 @@ class e107forum
 
 	function forum_getmods($uclass = e_UC_ADMIN)
 	{
-		global $sql;
+		$e107 = e107::getInstance();
 		if($uclass == e_UC_ADMIN || trim($uclass) == '')
 		{
-			$sql->db_Select('user', 'user_id, user_name','user_admin = 1');
+			$e107->sql->db_Select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
+			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			{
+				$ret[$row['user_id']] = $row['user_name'];
+			}
 		}
 		else
 		{
-			$regex = "(^|,)(".str_replace(",", "|", $uclass).")(,|$)";
-			$sql->db_Select("user", "user_id, user_name", "user_class REGEXP '{$regex}'");
-		}
-		while($row = $sql->db_Fetch(MYSQL_ASSOC))
-		{
-			$ret[$row['user_id']] = $row['user_name'];
+			$ret = $e107->user_class->get_users_in_class($uclass, 'user_name', true);
 		}
 		return $ret;
 	}
@@ -553,6 +554,10 @@ class e107forum
 	function track($which, $uid, $threadId)
 	{
 		$e107 = e107::getInstance();
+		global $pref;
+
+		if (!varsettrue($pref['forum_track'])) { return false; }
+
 		$threadId = (int)$threadId;
 		$uid = (int)$uid;
 		$result = false;
@@ -695,49 +700,41 @@ class e107forum
 //		return $e107->sql->db_Count('forum_thread', '(*)', 'WHERE thread_forum_id='.(int)$forum_id);
 //	}
 
-	function thread_getnext($thread_id, $forum_id, $from = 0, $limit = 100)
+	function threadGetNextPrev($which, $threadId, $forumId, $lastpost)
 	{
-		global $sql;
-		$forum_id = intval($forum_id);
-		global $sql;
-		$ftab = MPREFIX.'forum_t';
-		while (!$found)
-		{
-			$qry = "
-			SELECT t.thread_id from #forum_t AS t
-			WHERE t.thread_forum_id = $forum_id
-			AND t.thread_parent = 0
-			ORDER BY
-			t.thread_s DESC,
-			t.thread_lastpost DESC,
-			t.thread_datestamp DESC
-			LIMIT ".intval($from).",".intval($limit);
-			if ($sql->db_Select_gen($qry))
-			{
-				$i = 0;
-				while ($row = $sql->db_Fetch(MYSQL_ASSOC))
-				{
-					$threadList[$i++] = $row['thread_id'];
-				}
+//		echo "threadid = $threadId <br />forum id = $forumId <br />";
+//		return;
+		$e107 = e107::getInstance();
+		$threadId = (int)$threadId;
+		$forumId = (int)$forumId;
+		$lastpost = (int)$lastpost;
 
-				if (($id = array_search($thread_id, $threadList)) !== FALSE)
-				{
-					if ($id != 99)
-					{
-						return $threadList[$id+1];
-					}
-					else
-					{
-						return $this->thread_getnext($thread_id, $forum_id, $from+99, 2);
-					}
-				}
-			}
-			else
-			{
-				return FALSE;
-			}
-			$from += 100;
+		if($which == 'next')
+		{
+			$dir = '<';
+			$sort = 'ASC';
 		}
+		else
+		{
+			$dir = '>';
+			$sort = 'DESC';
+		}
+
+		$qry = "
+			SELECT thread_id from `#forum_thread`
+			WHERE thread_forum_id = $forumId
+			AND thread_lastpost {$dir} $lastpost
+			ORDER BY
+			thread_s DESC,
+			thread_lastpost {$sort}
+			LIMIT 1";
+			if ($e107->sql->db_Select_gen($qry))
+			{
+				$row = $e107->sql->db_Fetch();
+				return $row['thread_id'];
+
+			}
+			return false;
 	}
 
 	function thread_getprev($thread_id, $forum_id, $from = 0, $limit = 100)

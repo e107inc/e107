@@ -60,7 +60,7 @@ SC_END
 SC_BEGIN ANON_IP
 global $postInfo;
 $e107 = e107::getInstance();
-if(ADMIN || MODERATOR)
+if($postInfo['post_user_anon'] && (ADMIN || MODERATOR))
 {
 	return $e107->ipDecode($postInfo['post_ip']);
 }
@@ -84,7 +84,7 @@ if($postInfo['user_name'])
 }
 else
 {
-	return '<b>'.$e107->tp->toHTML($postInfo['post_anon_name']).'</b>';
+	return '<b>'.$e107->tp->toHTML($postInfo['post_user_anon']).'</b>';
 }
 SC_END
 

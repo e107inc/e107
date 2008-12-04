@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-01 01:10:50 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-04 21:36:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -288,6 +288,7 @@ function parse_parent($parent)
 function parse_forum($f, $restricted_string = "")
 {
 	global $FORUM_MAIN_FORUM, $gen, $forum, $tp, $newflag_list, $sub_list;
+	$e107 = e107::getInstance();
 
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
@@ -345,7 +346,9 @@ function parse_forum($f, $restricted_string = "")
 			}
 		}
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
-		$LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$lastpost_thread}.last'>".IMAGE_post2.'</a>';
+//		$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $lastpost_thread));
+
+		$LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 	}
 	else
 	{
