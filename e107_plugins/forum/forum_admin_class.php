@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.4 $
-* $Date: 2008-11-29 01:24:27 $
+* $Revision: 1.5 $
+* $Date: 2008-12-04 21:36:09 $
 * $Author: mcfly_e107 $
 *
 */
@@ -290,7 +290,7 @@ class forumAdmin
 				$text .= "
 				<tr>
 				<td colspan='2' class='forumheader'>".$parent['forum_name']."
-				<br /><b>".FORLAN_140.":</b> ".$e107->e_userclass->uc_get_classname($parent['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->e_userclass->uc_get_classname($parent['forum_postclass'])."
+				<br /><b>".FORLAN_140.":</b> ".$e107->user_class->uc_get_classname($parent['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->user_class->uc_get_classname($parent['forum_postclass'])."
 				</td>";
 
 				$text .= "<td class='forumheader' style='text-align:center'>";
@@ -336,7 +336,7 @@ class forumAdmin
 
 						$text .= "
 						<br /><span class='smallblacktext'>".$e107->tp->toHTML($forum['forum_description'])."&nbsp;</span>
-						<br /><b>".FORLAN_140.":</b> ".$e107->e_userclass->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->e_userclass->uc_get_classname($forum['forum_postclass'])."
+						<br /><b>".FORLAN_140.":</b> ".$e107->user_class->uc_get_classname($forum['forum_class'])."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".$e107->user_class->uc_get_classname($forum['forum_postclass'])."
 
 						</td>
 
@@ -503,18 +503,18 @@ class forumAdmin
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_33.":<br /><span class='smalltext'>(".FORLAN_34.")</span></td>
 		<td style='width:60%' class='forumheader3'>";
-		$text .= $e107->e_userclass->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes');
+		$text .= $e107->user_class->uc_dropdown('forum_moderators', $fInfo['forum_moderators'], 'admin,classes');
 
 		$text .= "</td>
 		</tr>
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
-		<td style='width:60%' class='forumheader3'>".$e107->e_userclass->uc_dropdown('forum_moderators', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".$e107->user_class->uc_dropdown('forum_class', $fInfo['forum_class'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_142.":<br /><span class='smalltext'>(".FORLAN_143.")</span></td>
-		<td style='width:60%' class='forumheader3'>".$e107->e_userclass->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".$e107->user_class->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr style='vertical-align:top'>

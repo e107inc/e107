@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-12-03 22:29:46 $
-|     $Author: e107steved $
+|     $Revision: 1.21 $
+|     $Date: 2008-12-04 21:36:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -156,13 +156,13 @@ if ($action == 'uninstall')
 		else
 		{
 			include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-	
+
 			$func = $eplug_folder.'_uninstall';
 			if (function_exists($func))
 			{
 				$text .= call_user_func($func);
 			}
-	
+
 			if($_POST['delete_tables'])
 			{
 				if (is_array($eplug_table_names))
@@ -182,19 +182,19 @@ if ($action == 'uninstall')
 			{
 				$text .= EPL_ADLAN_49."<br />";
 			}
-	
+
 			if (is_array($eplug_prefs))
 			{
 				$plugin->manage_prefs('remove', $eplug_prefs);
 				$text .= EPL_ADLAN_29."<br />";
 			}
-	
+
 			if (is_array($eplug_comment_ids))
 			{
 				$text .= ($plugin->manage_comments('remove', $eplug_comment_ids)) ? EPL_ADLAN_50."<br />" : "";
 			}
-	
-/* Not used in 0.8	
+
+/* Not used in 0.8
 			if ($eplug_module)
 			{
 				$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
@@ -203,7 +203,7 @@ if ($action == 'uninstall')
 			{
 				$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
 			}
-	
+
 			if ($eplug_latest)
 			{
 				$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
@@ -217,27 +217,27 @@ if ($action == 'uninstall')
 				}
 			}
 
-/* Not used in 0.8	
+/* Not used in 0.8
 			if (is_array($eplug_sc))
 			{
 				$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
 			}
-	
+
 			if (is_array($eplug_bb))
 			{
 				$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
 			}
-*/	
+*/
 			if ($eplug_menu_name)
 			{
 				$sql->db_Delete('menus', "menu_name='$eplug_menu_name' ");
 			}
-	
+
 			if ($eplug_link)
 			{
 				$plugin->manage_link('remove', $eplug_link_url, $eplug_link_name);
 			}
-	
+
 			if ($eplug_userclass)
 			{
 				$plugin->manage_userclass('remove', $eplug_userclass);
@@ -245,7 +245,7 @@ if ($action == 'uninstall')
 
 			$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
 			$plugin->manage_search('remove', $eplug_folder);
-	
+
 			$plugin->manage_notify('remove', $eplug_folder);
 		}
 
@@ -268,7 +268,7 @@ if ($action == 'uninstall')
 	{
 		$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
 	}
-	
+
 	$plugin->save_addon_prefs();
 	$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
 	$text = '';
@@ -292,7 +292,7 @@ if ($action == 'install')
 if ($action == 'upgrade')
 {
 	$plug = $plugin->getinfo($id);
-	
+
 	$_path = e_PLUGIN.$plug['plugin_path'].'/';
 	if(file_exists($_path.'plugin.xml'))
 	{
@@ -301,13 +301,13 @@ if ($action == 'upgrade')
 	else
 	{
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-	
+
 		$func = $eplug_folder.'_upgrade';
 		if (function_exists($func))
 		{
 			$text .= call_user_func($func);
 		}
-	
+
 		if (is_array($upgrade_alter_tables))
 		{
 			$result = $plugin->manage_tables('upgrade', $upgrade_alter_tables);
@@ -320,8 +320,8 @@ if ($action == 'upgrade')
 				$text .= EPL_ADLAN_7."<br />";
 			}
 		}
-	
-/* Not used in 0.8	
+
+/* Not used in 0.8
 		if ($eplug_module)
 		{
 			$plugin->manage_plugin_prefs('add', 'modules', $eplug_folder);
@@ -330,7 +330,7 @@ if ($action == 'upgrade')
 		{
 			$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
 		}
-	
+
 		if ($eplug_status)
 		{
 			$plugin->manage_plugin_prefs('add', 'plug_status', $eplug_folder);
@@ -339,7 +339,7 @@ if ($action == 'upgrade')
 		{
 			$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
 		}
-	
+
 		if ($eplug_latest)
 		{
 			$plugin->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
@@ -348,38 +348,38 @@ if ($action == 'upgrade')
 		{
 			$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
 		}
-	
+
 		if (is_array($upgrade_add_eplug_sc))
 		{
 			$plugin->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
 		}
-	
+
 		if (is_array($upgrade_remove_eplug_sc))
 		{
 			$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
 		}
-	
+
 		if (is_array($upgrade_add_eplug_bb))
 		{
 			$plugin->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
 		}
-	
+
 		if (is_array($upgrade_remove_eplug_bb))
 		{
 			$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
 		}
-*/	
+*/
 		if (is_array($upgrade_add_prefs))
 		{
 			$plugin->manage_prefs('add', $upgrade_add_prefs);
 			$text .= EPL_ADLAN_8.'<br />';
 		}
-	
+
 		if (is_array($upgrade_remove_prefs))
 		{
 			$plugin->manage_prefs('remove', $upgrade_remove_prefs);
 		}
-	
+
 		if (is_array($upgrade_add_array_pref))
 		{
 			foreach($upgrade_add_array_pref as $key => $val)
@@ -387,7 +387,7 @@ if ($action == 'upgrade')
 				$plugin->manage_plugin_prefs('add', $key, $eplug_folder, $val);
 			}
 		}
-	
+
 		if (is_array($upgrade_remove_array_pref))
 		{
 			foreach($upgrade_remove_array_pref as $key => $val)
@@ -395,12 +395,12 @@ if ($action == 'upgrade')
 				$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
 			}
 		}
-	
+
 		$plugin->manage_search('upgrade', $eplug_folder);
 		$plugin->manage_notify('upgrade', $eplug_folder);
-	
+
 		$eplug_addons = $plugin -> getAddons($eplug_folder);
-	
+
 		$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
 		$sql->db_Update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$id' ");
 		$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
