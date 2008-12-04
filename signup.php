@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.121 $
-|     $Date: 2008-11-11 22:36:31 $
+|     $Revision: 1.122 $
+|     $Date: 2008-12-04 21:32:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -687,10 +687,13 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 		$ue_fields = "";
 		foreach($_POST['ue'] as $key => $val)
 		{
-			$key = $tp->toDB($key);
-			$val = $tp->toDB($val);
-			$ue_fields .= ($ue_fields) ? ", " : "";
-			$ue_fields .= $key."='".$val."'";
+			if (isset($extList[$key]))
+			{	// Only allow valid keys
+				$key = $tp->toDB($key);
+				$val = $tp->toDB($val);
+				$ue_fields .= ($ue_fields) ? ", " : "";
+				$ue_fields .= $key."='".$val."'";
+			}
 		}
 
 		$u_key = md5(uniqid(rand(), 1));
