@@ -32,45 +32,15 @@ if((strpos($code_text,'../') === FALSE) && (strpos($code_text,'://') === FALSE) 
 {
     $code_text = e_IMAGE_ABS."newspost_images/".$code_text;
 }
-
-if (!$postID || $postID == 'admin')
+if (varsettrue($pref['image_post']) && check_class($pref['image_post_class']))
 {
-    return "<img src='".$code_text."' {$parmStr} />";
+	return "<img src='".$code_text."' {$parmStr} />";
 }
-else
+switch ($pref['image_post_disabled_method'])
 {
-    if(strstr($postID,'class:'))
-	{
-        $uc = substr($postID,6);
-    }
-    if ($pref['image_post'])
-	{
-        if(!isset($uc) || ($uc == ''))
-		{
-            if (!function_exists('e107_userGetuserclass'))
-			{
-                require_once(e_HANDLER.'user_func.php');
-            }
-            $uc = e107_userGetuserclass($postID);
-        }
-        if (check_class($pref['image_post_class'],$uc))
-		{
-            return "<img src='".$code_text."' {$parmStr} />";
-        }
-        else
-        {
-            return ($pref['image_post_disabled_method'] ? CORE_LAN17 : CORE_LAN18.$code_text);
-        }
-    }
-    else
-    {
-        if ($pref['image_post_disabled_method'])
-		{
-            return CORE_LAN17;
-        }
-		else
-		{
-            return CORE_LAN18.$code_text;
-        }
-    }
+	case '1' :
+		return CORE_LAN17;
+	case '2' :
+		return '';
 }
+return CORE_LAN18.$code_text;

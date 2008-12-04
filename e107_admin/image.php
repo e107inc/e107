@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2007-12-07 19:52:47 $
+|     $Revision: 1.20 $
+|     $Date: 2008-12-04 22:29:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -74,12 +74,12 @@ if (isset($_POST['avdelete'])) {
 }
 
 if (isset($_POST['update_options'])) {
-	$pref['image_post'] = $_POST['image_post'];
+	$pref['image_post'] = intval($_POST['image_post']);
 	$pref['resize_method'] = $_POST['resize_method'];
 	$pref['im_path'] = trim($tp->toDB($_POST['im_path']));
-	$pref['image_post_class'] = $_POST['image_post_class'];
-	$pref['image_post_disabled_method'] = $_POST['image_post_disabled_method'];
-	$pref['enable_png_image_fix'] = $_POST['enable_png_image_fix'];
+	$pref['image_post_class'] = intval($_POST['image_post_class']);
+	$pref['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
+	$pref['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
 
 	save_prefs();
 	$message = IMALAN_9;
@@ -90,8 +90,8 @@ if (isset($message)) {
 }
 
 
-if (isset($_POST['show_avatars'])) {
-
+if (isset($_POST['show_avatars'])) 
+{
 	$handle = opendir(e_FILE."public/avatars/");
 	while ($file = readdir($handle)) {
 		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db' && !is_dir($file)) {
@@ -333,7 +333,10 @@ $text = "<div style='text-align:center'>
 	<span class='smalltext'>".IMALAN_13."</span>
 	</td>
 	<td style='width:25%;text-align:center' class='forumheader3' >
-	<select name='image_post_disabled_method' class='tbox'>". ($pref['image_post_disabled_method'] == "0" ? "<option value='1' selected='selected'>".IMALAN_14."</option>" : "<option value='0'>".IMALAN_14."</option>"). ($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected='selected'>".IMALAN_15."</option>" : "<option value='1'>".IMALAN_15."</option>")."
+	<select name='image_post_disabled_method' class='tbox'>". 
+	($pref['image_post_disabled_method'] == "0" ? "<option value='0' selected='selected'>".IMALAN_14."</option>" : "<option value='0'>".IMALAN_14."</option>"). 
+	($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected='selected'>".IMALAN_19."</option>" : "<option value='1'>".IMALAN_19."</option>").
+	($pref['image_post_disabled_method'] == "2" ? "<option value='2' selected='selected'>".IMALAN_15."</option>" : "<option value='2'>".IMALAN_15."</option>")."
 	</select></td>
 	</tr>
 
