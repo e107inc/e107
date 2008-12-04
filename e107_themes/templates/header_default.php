@@ -6,16 +6,17 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-11-21 11:12:06 $
-|     $Author: secretr $
+|     $Revision: 1.26 $
+|     $Date: 2008-12-04 21:05:05 $
+|     $Author: mcfly_e107 $
 +-----------------------------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 define("USER_AREA",TRUE);
 define("ADMIN_AREA",FALSE);
-$sql->db_Mark_Time('(Header Top)');
+$e107 = e107::getInstance();
+$e107->sql->db_Mark_Time('(Header Top)');
 
 //
 // *** Code sequence for headers ***
@@ -72,7 +73,7 @@ if (!function_exists("parseheader")) {
 
 // send the charset to the browser - overrides spurious server settings with the lan pack settings.
 // Would like to set the MIME type appropriately - but it broke other things
-//if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) 
+//if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml"))
 //  header("Content-type: application/xhtml+xml; charset=".CHARSET, true);
 //else
   header("Content-type: text/html; charset=".CHARSET, true);
@@ -90,7 +91,7 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 
 
 // Wysiwyg JS support on or off.
-if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") 
+if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "")
 {
 	define("e_WYSIWYG",TRUE);
 }
@@ -105,7 +106,7 @@ else
 
 //Core CSS first
 if (!defined("PREVIEWTHEME") && (!isset($no_core_css) || !$no_core_css)) {
-	
+
 	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 }
 
@@ -194,7 +195,7 @@ if (!isset($no_core_js) || !$no_core_js)
 */
 
 // Send Plugin JS Files
-if (isset($eplug_js) && $eplug_js) 
+if (isset($eplug_js) && $eplug_js)
 {
 	echo "\n<!-- eplug_js -->\n";
 	if(is_array($eplug_js))
@@ -212,11 +213,11 @@ if (isset($eplug_js) && $eplug_js)
 }
 
 // Send Theme JS Files
-if (isset($theme_js_php) && $theme_js_php) 
+if (isset($theme_js_php) && $theme_js_php)
 {
 	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n";
-} 
-else 
+}
+else
 {
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
@@ -224,7 +225,7 @@ else
  	if (is_readable(e_FILE.'user.vbs') && filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
 }
 
-//XXX - CHAP JS 
+//XXX - CHAP JS
 if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
 {
   if ($pref['password_CHAP'] == 2)
@@ -237,7 +238,7 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
 }
 
 
-if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) 
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
 {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
 }
@@ -245,7 +246,7 @@ if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == tru
 //IEpngfix - visible by IE6 only
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
     /*
-     * The only problem is that the browser is REALLY, 
+     * The only problem is that the browser is REALLY,
      * REALLY slow when it has to render more elements
      * try e.g. "div, img, td, input" (or just *) instead only img rule
      * However I hope it'll force IE6 users to switch to a modern browser...
@@ -259,7 +260,7 @@ if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == tru
 	echo "<![endif]-->\n";
 }
 
-//headerjs moved below 
+//headerjs moved below
 
 // Deprecated function finally removed
 //if(function_exists('core_head')){ echo core_head(); }
@@ -338,7 +339,7 @@ if(function_exists('theme_head')){
 
 //
 // FIXME H: Generate JS for image preloads
-// 
+//
 
 if ($pref['image_preload']) {
 	$ejs_listpics = '';
@@ -367,7 +368,7 @@ if (isset($script_text) && $script_text) {
 
 //
 // FIXME - I: Calculate JS onload() functions for the BODY tag
-// 
+//
 // Fader menu
 global $eMenuActive, $eMenuArea;
 if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
@@ -384,7 +385,7 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
 //
 
 /*
- * Fire Event e107:loaded 
+ * Fire Event e107:loaded
  */
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
@@ -396,7 +397,7 @@ echo "</script>\n";
 
 echo "</head>
 <body".$body_onload.">\n";
-$sql->db_Mark_Time("Main Page Body");
+$e107->sql->db_Mark_Time("Main Page Body");
 
 //
 // K: (The rest is ignored for popups, which have no menus)
@@ -504,7 +505,7 @@ if ($e107_popup != 1) {
 
 // Display Welcome Message when old method activated.
 
-	echo $tp->parseTemplate("{WMESSAGE=header}");
+	echo $e107->tp->parseTemplate("{WMESSAGE=header}");
 
 
 
