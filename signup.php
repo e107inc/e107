@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-11-11 22:38:43 $
+|     $Revision: 1.24 $
+|     $Date: 2008-12-04 21:32:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -712,10 +712,13 @@ global $db_debug;
 		$ue_fields = "";
 		foreach($_POST['ue'] as $key => $val)
 		{
-			$key = $tp->toDB($key);
-			$val = $tp->toDB($val);
-			$ue_fields .= ($ue_fields) ? ", " : "";
-			$ue_fields .= $key."='".$val."'";
+			if (isset($extList[$key]))
+			{	// Only allow valid keys
+				$key = $tp->toDB($key);
+				$val = $tp->toDB($val);
+				$ue_fields .= ($ue_fields) ? ", " : "";
+				$ue_fields .= $key."='".$val."'";
+			}
 		}
 
 	$u_key = md5(uniqid(rand(), 1));				// Key for signup completion
