@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/categories.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-08-25 10:46:32 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-04 20:17:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
-		$xml->filter = array('name' => FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
+		$xml->filter = array('@attributes' => FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
 
 		if ($text_rend) 
 		{
