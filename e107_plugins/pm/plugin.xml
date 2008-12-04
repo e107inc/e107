@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<e107Plugin>
-	<name>{ADLAN_PM}</name>
-	<version>3.0</version>
-	<author>McFly</author>
-	<authorEmail>mcfly@e107.org</authorEmail>
+<!-- $Id: plugin.xml,v 1.3 2008-12-04 12:49:30 mcfly_e107 Exp $ -->
+<e107Plugin name="{ADLAN_PM}" version="3.0" compatibility="0.8" installRequired="true">
+	<author name="McFly" email="mcfly@e107.org"/>
 	<description>{ADLAN_PM_57}</description>
-	<compatibility>0.8</compatibility>
-	<installRequired>true</installRequired>
 	<folder>pm</folder>
 	<administration>
 		<configFile>pm_conf.php</configFile>

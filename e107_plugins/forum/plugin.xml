@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<e107Plugin>
-	<name>Forum</name>
-	<version>2.0</version>
-	<author>e107dev</author>
-	<authorUrl>http://e107.org</authorUrl>
+<!-- $Id: plugin.xml,v 1.13 2008-12-04 12:49:30 mcfly_e107 Exp $ -->
+<e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true">
+	<author name="e107dev" url="http://e107.org"/>
 	<description>This plugin is a fully featured Forum system</description>
-	<compatibility>0.8</compatibility>
-	<installRequired>true</installRequired>
 	<folder>forum</folder>
 	<administration>
 		<configFile>forum_admin.php</configFile>
