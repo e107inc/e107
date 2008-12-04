@@ -1,6 +1,6 @@
 /*
 * e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: admin_nav.sc,v 1.3 2008-12-03 22:29:52 e107steved Exp $
+* $Id: admin_nav.sc,v 1.4 2008-12-04 20:17:54 e107steved Exp $
 */
 if (ADMIN) 
 {
@@ -32,7 +32,7 @@ if (ADMIN)
 
 	require_once(e_HANDLER.'xml_class.php');
 	$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
-	$xml->filter = array('name' => FALSE, 'administration' => FALSE);	// .. and they're all going to need the same filter
+	$xml->filter = array('@attributes' => FALSE, 'administration' => FALSE);	// .. and they're all going to need the same filter
 
 	$nav_sql = new db;
 	if ($nav_sql -> db_Select("plugin", "*", "plugin_installflag=1")) 

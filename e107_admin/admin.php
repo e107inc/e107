@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-10-11 11:55:18 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-04 20:17:49 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -148,28 +148,38 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 {
 	global $td,$tp;
 	$text = '';
-	if (getperms($perms)) {
-		if ($mode == 'adminb') {
+	if (getperms($perms)) 
+	{
+		if ($mode == 'adminb') 
+		{
 			$text = "<tr><td class='forumheader3'>
 				<div class='td' style='text-align:left; vertical-align:top; width:100%'
 				onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">
 				".$icon." <b>".$title."</b> ".($description ? "[ <span class='smalltext'>".$description."</span> ]" : "")."</div></td></tr>";
-		} else {
-			if ($td == (ADLINK_COLS+1)) {
+		} 
+		else 
+		{
+			if ($td == (ADLINK_COLS+1)) 
+			{
 				$text .= '</tr>';
 				$td = 1;
 			}
-			if ($td == 1) {
+			if ($td == 1) 
+			{
 				$text .= '<tr>';
 			}
-			if ($mode == 'default') {
+			if ($mode == 'default') 
+			{
 				$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
 					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs, emotes_off")."</td>";
 			}
-			else if ($mode == 'classis') {
-				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."' title='$description'>".$icon."</a><br />
+			elseif ($mode == 'classis') 
+			{
+				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."' title='{$description}'>".$icon."</a><br />
 					<a href='".$link."' title='$description'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";
-			}elseif ($mode == 'beginner'){
+			}
+			elseif ($mode == 'beginner')
+			{
                 $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a href='".$link."' >".$icon."</a>
 					<div style='padding:5px'>
 					<a href='".$link."' title='".$description."' style='text-decoration:none'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a></div><br /><br /><br /></td>";
@@ -192,6 +202,7 @@ function render_clean()
 	$td = 1;
 	return $text;
 }
+
 
 $newarray = asortbyindex($array_functions, 1);
 
@@ -269,7 +280,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 
 	require_once(e_HANDLER.'xml_class.php');
 	$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
-	$xml->filter = array('name' => FALSE,'description'=>FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
+	$xml->filter = array('@attributes' => FALSE,'description'=>FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
 
 	if ($sql->db_Select("plugin", "*", "plugin_installflag=1")) 
 	{
@@ -285,12 +296,19 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 			if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
 			{
 				$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
-				include_lan_admin($plugin_path);
-				$eplug_name 		= $tp->toHTML($readFile['name'],FALSE,"defs, emotes_off");
-				$eplug_conffile 	= $readFile['administration']['configFile'];
-				$eplug_icon_small 	= $plugin_path.'/'.$readFile['administration']['iconSmall'];
-				$eplug_icon 		= $plugin_path.'/'.$readFile['administration']['icon'];
-				$eplug_caption 		= $tp->toHTML($readFile['description'],FALSE,"defs, emotes_off");
+				if ($readFile === FALSE)
+				{
+					echo 'Error in file: '.e_PLUGIN.$plugin_path.'/plugin.xml'.'<br />';
+				}
+				else
+				{
+					include_lan_admin($plugin_path);
+					$eplug_name 		= $tp->toHTML($readFile['@attributes']['name'],FALSE,"defs, emotes_off");
+					$eplug_conffile 	= $readFile['administration']['configFile'];
+					$eplug_icon_small 	= $plugin_path.'/'.$readFile['administration']['iconSmall'];
+					$eplug_icon 		= $plugin_path.'/'.$readFile['administration']['icon'];
+					$eplug_caption 		= $tp->toHTML($readFile['description'],FALSE,"defs, emotes_off");
+				}
 			}
 			elseif (is_readable(e_PLUGIN.$plugin_path."/plugin.php"))
 			{
