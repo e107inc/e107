@@ -9,8 +9,8 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/viewforum.php,v $
-* $Revision: 1.6 $
-* $Date: 2008-12-04 21:36:09 $
+* $Revision: 1.7 $
+* $Date: 2008-12-05 01:30:56 $
 * $Author: mcfly_e107 $
 *
 */
@@ -62,7 +62,7 @@ $forumId = (int)$_REQUEST['id'];
 
 if (!$forum->checkPerm($forumId, 'view'))
 {
-	header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
 
@@ -89,8 +89,12 @@ $forumInfo['forum_description'] = $e107->tp->toHTML($forumInfo['forum_descriptio
 
 $_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
 define('e_PAGETITLE', LAN_01.' / '.$_forum_name);
-define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
-$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
+//define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
+//$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
+
+$modArray = $forum->forum_getmods($thread->forum_info['forum_moderators']);
+define('MODERATOR', (USER && is_array($modArray) && in_array(USERID, array_keys($modArray))));
+
 $message = '';
 if (MODERATOR)
 {
@@ -160,7 +164,6 @@ if(substr($forum_info['sub_parent'], 0, 1) == '*')
 $forum->set_crumb(); // set $BREADCRUMB (and $BACKLINK)
 
 $FORUMTITLE = $forumInfo['forum_name'];
-//$MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
 $MODERATORS = LAN_404.': '.implode(', ', $modArray);
 $BROWSERS = '';
 if(varset($pref['track_online']))
@@ -320,16 +323,14 @@ require_once(FOOTERF);
 function parse_thread($thread_info)
 {
 	global $forum, $tp, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $forum_id, $menu_pref;
-	$text = "";
+	$e107 = e107::getInstance();
+	$text = '';
 	$VIEWS = $thread_info['thread_views'];
 	$REPLIES = $thread_info['thread_total_replies'];
 
-
-print_a($thread_info);
 	if ($REPLIES)
 	{
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
-//		$tmp = explode(".", $thread_info['thread_lastuser'], 2);
 		if($thread_info['lastpost_username'])
 		{
 			$LASTPOST = "<a href='".e_BASE."user.php?id.".$tmp[0]."'>".$thread_info['lastpost_username']."</a>";
@@ -348,12 +349,12 @@ print_a($thread_info);
 		$LASTPOST .= '<br />'.$lastpost_datestamp;
 	}
 
-	$newflag = FALSE;
+	$newflag = false;
 	if (USER)
 	{
-		if ($thread_info['thread_lastpost'] > USERLV && !preg_match("#\b".$thread_info['thread_id']."\b#", USERVIEWED))
+		if ($thread_info['thread_lastpost'] > USERLV && !$forum->threadViewed($thread_info['thread_id']))
 		{
-			$newflag = TRUE;
+			$newflag = true;
 		}
 	}
 
@@ -393,7 +394,7 @@ print_a($thread_info);
 		{
 			$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
 		}
-		$thread_thread = str_replace("'", "&#39;", $thread_thread);
+		$thread_thread = str_replace("'", '&#39;', $thread_thread);
 		$title = "title='".$thread_thread."'";
 	}
 	else
@@ -409,10 +410,10 @@ print_a($thread_info);
 		{
 			for($a = 0; $a <= 2; $a++)
 			{
-				$PAGES .= $PAGES ? " " : "";
+				$PAGES .= $PAGES ? ' ' : '';
 				$PAGES .= "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
 			}
-			$PAGES .= " ... ";
+			$PAGES .= ' ... ';
 			for($a = $pages-3; $a <= $pages-1; $a++)
 			{
 				$PAGES .= $PAGES ? " " : "";
@@ -423,15 +424,15 @@ print_a($thread_info);
 		{
 			for($a = 0; $a <= ($pages-1); $a++)
 			{
-				$PAGES .= $PAGES ? " " : "";
+				$PAGES .= $PAGES ? ' ' : '';
 				$PAGES .= "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
 			}
 		}
-		$PAGES = LAN_316." [&nbsp;".$PAGES."&nbsp;]";
+		$PAGES = LAN_316.' [&nbsp;'.$PAGES.'&nbsp;]';
 	}
 	else
 	{
-		$PAGES = "";
+		$PAGES = '';
 	}
 
 	if (MODERATOR)
@@ -454,19 +455,18 @@ print_a($thread_info);
 	}
 
 	$text .= "</td>
-		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE."<br />
-		";
-	$tmp = explode(".", $thread_info['thread_user'], 2);
+		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE.'<br />';
+	$tmp = explode('.', $thread_info['thread_user'], 2);
+
 	if($thread_info['user_name'])
 	{
 		$POSTER = "<a href='".e_BASE."user.php?id.".$tmp[0]."'>".$thread_info['user_name']."</a>";
 	}
 	else
 	{
-		if($tmp[1])
+		if($thread_info['thread_user_anon'])
 		{
-			$x = explode(chr(1), $tmp[1]);
-			$POSTER = $tp->toHTML($x[0]);
+			$POSTER = $e107->tp->toHTML($thread_info['thread_user_anon']);
 		}
 		else
 		{
@@ -487,7 +487,7 @@ print_a($thread_info);
 	if (!$REPLIES)
 	{
 		$REPLIES = LAN_317;		// 'None'
-		$LASTPOST = " - ";
+		$LASTPOST = ' - ';
 	}
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
@@ -518,7 +518,7 @@ function parse_sub($subInfo)
 
 		$lp_thread = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $tmp[1]))."'>".IMAGE_post2.'</a>';
 		$lp_date = $gen->convert_date($tmp[0], 'forum');
-		$tmp = explode(".", $subInfo['forum_lastpost_user'],2);
+		$tmp = explode('.', $subInfo['forum_lastpost_user'],2);
 
 		if($subInfo['user_name'])
 		{

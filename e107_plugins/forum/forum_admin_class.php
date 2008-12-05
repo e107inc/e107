@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.5 $
-* $Date: 2008-12-04 21:36:09 $
+* $Revision: 1.6 $
+* $Date: 2008-12-05 01:30:56 $
 * $Author: mcfly_e107 $
 *
 */
@@ -359,7 +359,7 @@ class forumAdmin
 							<div style='text-align:left; padding-left: 30px'>
 							<a href='".e_SELF."?create.edit.{$forum['forum_id']}'>".ADMIN_EDIT_ICON."</a>
 							<a href='".e_SELF."?delete.{$forum['forum_id']}'>".ADMIN_DELETE_ICON."</a>
-							&nbsp;&nbsp;<a href='".e_SELF."?subs.{$forum['forum_id']}'>".$sub_img."</a>
+							&nbsp;&nbsp;<a href='".e_SELF."?subs.{$forum['forum_id']}'>".$sub_img."</a> (".count($subList[$forum['forum_parent']][$forum['forum_id']]).")
 							</div>
 							";
 						}
@@ -400,6 +400,7 @@ class forumAdmin
 			$row['forum_name'] = '';
 			$row['forum_class'] = e_UC_PUBLIC;
 			$row['forum_postclass'] = e_UC_MEMBER;
+			$row['forum_threadclass'] = e_UC_MEMBER;
 		}
 
 		$text = "<div style='text-align:center'>
@@ -415,12 +416,17 @@ class forumAdmin
 
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
-		<td style='width:60%' class='forumheader3'>".$e107->e_userclass->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".$e107->user_class->uc_dropdown('forum_class', $row['forum_class'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_142.":<br /><span class='smalltext'>(".FORLAN_143.")</span></td>
-		<td style='width:60%' class='forumheader3'>".$e107->e_userclass->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."</td>
+		<td style='width:60%' class='forumheader3'>".$e107->user_class->uc_dropdown("forum_postclass", $row['forum_postclass'], 'nobody,public,member,admin,classes')."</td>
+		</tr>
+
+		<tr>
+		<td style='width:40%' class='forumheader3'>".FORLAN_184.":<br /><span class='smalltext'>(".FORLAN_185.")</span></td>
+		<td style='width:60%' class='forumheader3'>".$e107->user_class->uc_dropdown('forum_threadclass', $row['forum_threadclass'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr style='vertical-align:top'>
@@ -453,7 +459,7 @@ class forumAdmin
 		{
 			if ($e107->sql->db_Select('forum', '*', "forum_id=$id"))
 			{
-				$fInfo = $e107->sql->db_Fetch();
+				$fInfo = $e107->sql->db_Fetch(MYSQL_ASSOC);
 			}
 		}
 		else
@@ -462,7 +468,8 @@ class forumAdmin
 				'forum_parent' => 0,
 				'forum_moderators' => e_UC_ADMIN,
 				'forum_class' => e_UC_PUBLIC,
-				'forum_postclass' => e_UC_MEMBER
+				'forum_postclass' => e_UC_MEMBER,
+				'forum_threadclass' => e_UC_MEMBER
 			);
 		}
 
@@ -515,6 +522,11 @@ class forumAdmin
 		<tr>
 		<td style='width:40%' class='forumheader3'>".FORLAN_142.":<br /><span class='smalltext'>(".FORLAN_143.")</span></td>
 		<td style='width:60%' class='forumheader3'>".$e107->user_class->uc_dropdown('forum_postclass', $fInfo['forum_postclass'], 'nobody,public,member,admin,classes')."</td>
+		</tr>
+
+		<tr>
+		<td style='width:40%' class='forumheader3'>".FORLAN_184.":<br /><span class='smalltext'>(".FORLAN_185.")</span></td>
+		<td style='width:60%' class='forumheader3'>".$e107->user_class->uc_dropdown('forum_threadclass', $fInfo['forum_threadclass'], 'nobody,public,member,admin,classes')."</td>
 		</tr>
 
 		<tr style='vertical-align:top'>

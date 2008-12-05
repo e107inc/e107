@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-11-26 03:24:51 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-05 01:30:56 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -172,6 +172,7 @@ if(isset($_POST['submit_parent']))
 	$tmp['forum_datestamp'] = time();
 	$tmp['forum_class'] = (int)$_POST['forum_class'];
 	$tmp['forum_postclass'] = (int)$_POST['forum_postclass'];
+	$tmp['forum_threadclass'] = (int)$_POST['forum_threadclass'];
 	if($e107->sql->db_Insert('forum',$tmp))
 	{
 		$forum->show_message(FORLAN_22.' - '.LAN_CREATED);
@@ -184,10 +185,17 @@ if(isset($_POST['submit_parent']))
 
 if(isset($_POST['update_parent']))
 {
-	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_class='".$_POST['forum_class']."', forum_postclass='{$_POST['forum_postclass']}'  WHERE forum_id=$id");
+	$tmp = $_POST;
+	unset($tmp['update_parent']);
+	$tmp['_FIELD_TYPES']['forum_name'] = 'todb';
+	$tmp['_FIELD_TYPES']['forum_class'] = 'int';
+	$tmp['_FIELD_TYPES']['forum_postclass'] = 'int';
+	$tmp['_FIELD_TYPES']['forum_threadclass'] = 'int';
+	$tmp['WHERE'] = 'forum_id = '.(int)$id;
+//	print_a($tmp);
+	$sql->db_Update('forum', $tmp);
 	$forum->show_message(FORLAN_14);
-	$action = "main";
+	$action = 'main';
 }
 
 if(isset($_POST['submit_forum']))
@@ -199,6 +207,7 @@ if(isset($_POST['submit_forum']))
 	$tmp['forum_datestamp'] = time();
 	$tmp['forum_class'] = (int)$_POST['forum_class'];
 	$tmp['forum_postclass'] = (int)$_POST['forum_postclass'];
+	$tmp['forum_threadclass'] = (int)$_POST['forum_threadclass'];
 	$tmp['forum_parent'] = (int)$_POST['forum_parent'];
 	if($e107->sql->db_Insert('forum',$tmp))
 	{
@@ -212,14 +221,29 @@ if(isset($_POST['submit_forum']))
 
 if(isset($_POST['update_forum']))
 {
-	$mods = $_POST['forum_moderators'];
-	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$_POST['forum_description'] = $tp->toDB($_POST['forum_description']);
-	$forum_parent = $row['forum_id'];
-	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_description='".$_POST['forum_description']."', forum_parent='".$_POST['forum_parent']."', forum_moderators='".$mods."', forum_class='".$_POST['forum_class']."', forum_postclass='{$_POST['forum_postclass']}' WHERE forum_id=$id");
-	$sql->db_Update("forum", "forum_moderators='".$mods."', forum_class='".$_POST['forum_class']."', forum_postclass='{$_POST['forum_postclass']}' WHERE forum_sub=$id");
+	$tmp = $_POST;
+	unset($tmp['update_forum']);
+	$tmp['_FIELD_TYPES']['forum_name'] = 'todb';
+	$tmp['_FIELD_TYPES']['forum_description'] = 'todb';
+	$tmp['_FIELD_TYPES']['forum_parent'] = 'int';
+	$tmp['_FIELD_TYPES']['forum_class'] = 'int';
+	$tmp['_FIELD_TYPES']['forum_postclass'] = 'int';
+	$tmp['_FIELD_TYPES']['forum_threadclass'] = 'int';
+	$tmp['_FIELD_TYPES']['forum_moderators'] = 'int';
+	$tmp['WHERE'] = 'forum_id = '.(int)$id;
+
+	$tmp2['_FIELD_TYPES'] = $tmp['_FIELD_TYPES'];
+	$tmp2['forum_moderators'] = $tmp['forum_moderators'];		
+	$tmp2['forum_class'] = $tmp['forum_class'];		
+	$tmp2['forum_postclass'] = $tmp['forum_postclass'];		
+	$tmp2['forum_threadclass'] = $tmp['forum_threadclass'];		
+	$tmp2['WHERE'] = 'forum_sub = '.(int)$id;
+	
+	$sql->db_Update('forum', $tmp);
+	$sql->db_Update('forum', $tmp2);
+
 	$forum->show_message(FORLAN_12);
-	$action = "main";
+	$action = 'main';
 }
 
 if (isset($_POST['update_order']))
@@ -261,7 +285,7 @@ if (isset($_POST['do_prune']))
 {
 	$msg = $for->forum_prune($_POST['prune_type'], $_POST['prune_days'], $_POST['pruneForum']);
 	$forum->show_message($msg);
-	$action = "main";
+	$action = 'main';
 }
 
 if (isset($_POST['set_ranks']))
@@ -307,20 +331,20 @@ if (isset($_POST['frsubmit']))
 
 
 if ($delete == 'main') {
-	if ($sql->db_Delete("forum", "forum_id='$del_id' ")) {
+	if ($sql->db_Delete('forum', "forum_id='$del_id' ")) {
 		$forum->show_message(FORLAN_96);
 	}
 }
 
-if ($action == "create")
+if ($action == 'create')
 {
-	if ($sql->db_Select("forum", "*", "forum_parent='0' "))
+	if ($sql->db_Select('forum', '*', "forum_parent='0' "))
 	{
 		$forum->create_forums($sub_action, $id);
 	}
 	else
 	{
-		header("location:".e_ADMIN."forum.php");
+		header('location:'.e_ADMIN.'forum.php');
 		exit;
 	}
 }
@@ -390,12 +414,12 @@ if ($delete == 'reported')
 }
 
 
-if ($action == "sr")
+if ($action == 'sr')
 {
 	$forum->show_reported($sub_action);
 }
 
-if (!e_QUERY || $action == "main")
+if (!e_QUERY || $action == 'main')
 {
 	$forum->show_existing_forums($sub_action, $id);
 }
@@ -421,10 +445,10 @@ function headerjs()
 }
 
 
-	function forum_admin_adminmenu()
-	{
-		global $forum;
-		global $action;
-		$forum->show_options($action);
-	}
-	?>
+function forum_admin_adminmenu()
+{
+	global $forum;
+	global $action;
+	$forum->show_options($action);
+}
+?>

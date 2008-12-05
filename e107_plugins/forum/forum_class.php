@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-12-04 21:36:09 $
+|     $Revision: 1.17 $
+|     $Date: 2008-12-05 01:30:56 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@ class e107forum
 {
 	var $permList = array();
 	var $fieldTypes = array();
+	var $userViewed = array();
 
 	function e107forum()
 	{
@@ -110,6 +111,38 @@ class e107forum
 	function checkPerm($forumId, $type='view')
 	{
 		return (in_array($forumId, $this->permList[$type]));
+	}
+
+	function threadViewed($threadId)
+	{
+		$e107 = e107::getInstance();
+		if(!$this->userViewed)
+		{
+			if(isset($e107->currentUser['user_plugin_forum_views']))
+			{
+				$this->userViewed = explode('.', $e107->currentUser['user_plugin_forum_viewed']);	
+			}
+		}
+		if(is_array($this->userViewed) && in_array($threadId, $this->userViewed))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	function getTrackedThreadList($id, $retType = 'array')
+	{
+		$e107 = e107::getInstance();
+		$id = (int)$id;
+		if($e107->sql->db_Select('forum_track', 'track_thread', 'track_userid = '.$id))
+		{
+			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			{
+				$ret[] = $row['track_thread'];
+			}
+			return ($retType == 'array' ? $ret : implode(',', $ret));
+		}
+		return false;
 	}
 
 	/*

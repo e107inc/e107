@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-06 21:16:37 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-05 01:30:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -204,5 +204,8 @@ define("FORLAN_180", "Confirm delete operation");
 define("FORLAN_181", "Confirm Delete");
 define("FORLAN_182", "also recalculate replies for all threads in selected forum");
 define("FORLAN_183", "(this function is not allowed when selecting 'all forums' due to the number of queries it will generate)");
+
+define('FORLAN_184', 'Thread Creation permission');
+define('FORLAN_185', 'Indicates who can create new threads');
 
 ?>
