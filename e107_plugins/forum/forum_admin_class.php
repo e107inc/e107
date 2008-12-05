@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.6 $
-* $Date: 2008-12-05 01:30:56 $
+* $Revision: 1.7 $
+* $Date: 2008-12-05 20:28:05 $
 * $Author: mcfly_e107 $
 *
 */
@@ -962,6 +962,7 @@ class forumAdmin
 	function show_mods()
 	{
 		global $sql, $ns, $for, $tp;
+		$e107 = e107::getInstance();
 		$forumList = $for->forum_getforums('all');
 		$parentList = $for->forum_getparents('list');
 		$subList   = $for->forum_getsubs('bysub');
@@ -981,7 +982,7 @@ class forumAdmin
 				$txt .= "
 				<tr>
 				<td class='forumheader'>{$f['forum_name']}</td>
-				<td class='forumheader'>".$e107->e_userclass->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
+				<td class='forumheader'>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
 				</tr>
 				";
 				foreach($subList[$f['forum_id']] as $s)

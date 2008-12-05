@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_post.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-08-11 15:11:03 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-05 20:28:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -60,7 +60,7 @@ define("LAN_324", "Your message has been successfully posted.");
 define("LAN_325", "Click Here to view your message");
 define("LAN_326", "Click here to return to the forum");
 define("LAN_327", "Review");
-define("LAN_380", "If you wish to be notified by email when a reply is posted to your thread please tick the box ");
+define("LAN_380", "Enable email tracking (email sent when reply is posted)");
 define("LAN_381", "Forum reply from ");
 define("LAN_382", "Post made: ");
 define("LAN_383", "Please click the following link to view the full thread ...");

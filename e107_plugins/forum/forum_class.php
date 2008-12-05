@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-12-05 01:30:56 $
+|     $Revision: 1.18 $
+|     $Date: 2008-12-05 20:28:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -120,7 +120,7 @@ class e107forum
 		{
 			if(isset($e107->currentUser['user_plugin_forum_views']))
 			{
-				$this->userViewed = explode('.', $e107->currentUser['user_plugin_forum_viewed']);	
+				$this->userViewed = explode('.', $e107->currentUser['user_plugin_forum_viewed']);
 			}
 		}
 		if(is_array($this->userViewed) && in_array($threadId, $this->userViewed))
@@ -157,7 +157,7 @@ class e107forum
 		$addUserPostCount = true;
 
 		$e107 = e107::getInstance();
-		$result = $e107->sql->db_Insert('forum_post', $postInfo, true);
+		$result = $e107->sql->db_Insert('forum_post', $postInfo);
 		$forumInfo = array();
 
 		if($result && $updateThread)
@@ -185,7 +185,7 @@ class e107forum
 			$threadInfo['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 //			print_a($threadInfo);
 //			exit;
-			$result = $e107->sql->db_Update('forum_thread', $threadInfo, true);
+			$result = $e107->sql->db_Update('forum_thread', $threadInfo);
 
 		}
 
@@ -216,7 +216,7 @@ class e107forum
 			}
 			$forumInfo['forum_lastpost_info'] = $postInfo['post_datestamp'].'.'.$postInfo['post_thread'];
 			$forumInfo['WHERE'] = 'forum_id = '.$postInfo['post_forum'];
-			$result = $e107->sql->db_Update('forum', $forumInfo, true);
+			$result = $e107->sql->db_Update('forum', $forumInfo);
 		}
 
 		if($result && USER && $addUserPostCount)
@@ -235,12 +235,14 @@ class e107forum
 	{
 		$e107 = e107::getInstance();
 		$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-		if($result = $e107->sql->db_Insert('forum_thread', $threadInfo, true))
+		if($newThreadId = $e107->sql->db_Insert('forum_thread', $threadInfo))
 		{
 			$postInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
-			$postInfo['post_thread'] = $result;
+			$postInfo['post_thread'] = $newThreadId;
 			$result = $this->postAdd($postInfo, false);
+			return $newThreadId;
 		}
+		return false;
 	}
 
 	function threadUpdate($threadInfo, $inc)

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-12-02 21:34:18 $
+|     $Revision: 1.23 $
+|     $Date: 2008-12-05 20:28:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -34,20 +34,19 @@ $forum = new e107forum;
 
 if (!e_QUERY || !isset($_REQUEST['id']))
 {
-	header("Location:".$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
 
-$action = $_REQUEST['f'];
+$action = trim($_REQUEST['f']);
 $id = (int)$_REQUEST['id'];
-
 
 switch($action)
 {
 	case 'rp':
 		$threadInfo = $forum->threadGet($id, false);
 		$forumId = $threadInfo['thread_forum_id'];
-		var_dump($threadInfo);
+//		var_dump($threadInfo);
 //		if (!is_array($thread_info) || !count($thread_info))
 //		{
 //		  $forum_info = false;		// Someone fed us a dud forum id - should exist if replying
@@ -256,7 +255,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			// Update forum with latest post info
 			case 'rp':
 				$postInfo['post_thread'] = $id;
-				$result = $forum->postAdd($postInfo);
+				$postResult = $forum->postAdd($postInfo);
 				break;
 
 
@@ -268,7 +267,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 				$threadInfo['thread_forum_id'] = $forumId;
 				$threadInfo['thread_active'] = 1;
 				$threadInfo['thread_datestamp'] = $time;
-				$result = $forum->threadAdd($threadInfo, $postInfo);
+				$postResult = $forum->threadAdd($threadInfo, $postInfo);
 				break;
 		}
 
@@ -280,32 +279,32 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 //		}
 //		print_a($threadInfo);
 //		print_a($postInfo);
-		exit;
+//		exit;
 
-		$result = $forum->postAdd($postInfo, $threadInfo);
-
-		$iid = $forum->thread_insert($subject, $post, $forum_id, $parent, $poster, $email_notify, $threadtype, $forum_info['forum_sub']);
-		if($iid === -1)
+		if($postResult === -1) //Duplicate post
 		{
 			require_once(HEADERF);
-			$ns->tablerender("", LAN_FORUM_2);
+			$ns->tablerender('', LAN_FORUM_2);
 			require_once(FOOTERF);
 			exit;
 		}
-		if (isset($_POST['reply'])) {
-			$iid = $parent;
-		}
 
-		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "" && isset($_POST['newthread'])) {
-			require_once(e_PLUGIN."poll/poll_class.php");
+		$threadId = ($action == 'nt' ? $postResult : $id);
+
+		if ($action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '')
+		{
+			require_once(e_PLUGIN.'poll/poll_class.php');
 			$_POST['iid'] = $iid;
 			$poll = new poll;
-			$poll -> submit_poll(2);
+			$poll->submit_poll(2);
 		}
 
+		$threadLink = $e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $threadId));
+		$forumLink = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $forumId));
 		if ($pref['forum_redirect'])
 		{
-			redirect(e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last");
+			header('location:'.$threadLink);
+			exit;
 		}
 		else
 		{
@@ -323,7 +322,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			}
 
 			echo (isset($_POST['newthread']) ? $FORUMTHREADPOSTED : $FORUMREPLYPOSTED);
-			$e107cache->clear("newforumposts");
+			$e107cache->clear('newforumposts');
 			require_once(FOOTERF);
 			exit;
 		}
