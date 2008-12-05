@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2008-12-05 14:18:51 $
-|     $Author: secretr $
+|     $Revision: 1.54 $
+|     $Date: 2008-12-05 19:56:51 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -218,7 +218,7 @@ class e107plugin
 //					  echo "New plugin to add: {$plug_info['name']}<br />";
 						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
-						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['installRequired'] == 1 ? 0 : 1 );
+						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1 );
 						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}' ");
 					}
 				}
@@ -1546,7 +1546,11 @@ class e107plugin
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);
-		if ($this->plug_vars === FALSE) return FALSE;
+		if ($this->plug_vars === FALSE) 
+		{
+			echo "Error reading {$path}/plugin.xml<br />";
+			return FALSE;
+		}
 //		print_a($this->plug_vars);
 		return true;
 	}
