@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-07 19:53:26 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-05 22:01:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,74 +27,115 @@ require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
 
-if (isset($_POST['delete'])) {
-	$image = $_POST['filename'];
+if (isset($_POST['delete'])) 
+{
+	$image = $tp->toDB($_POST['filename']);
 	@unlink(e_FILE."public/avatars/".$image);
-	$sql->db_Update("user", "user_image='' WHERE user_image='-upload-$image'");
-	$sql->db_Update("user", "user_sess='' WHERE user_sess='$image'");
+	$sql->db_Update("user", "user_image='' WHERE user_image='-upload-{$image}'");
+	$sql->db_Update("user", "user_sess='' WHERE user_sess='{$image}'");
+	$admin_log->log_event('IMALAN_01',$image,E_LOG_INFORMATIVE,'');
 	$message = $image." ".IMALAN_28;
 }
 
-if (isset($_POST['deleteall'])) {
+
+if (isset($_POST['deleteall'])) 
+{
 	$handle = opendir(e_FILE."public/avatars/");
-	while ($file = readdir($handle)) {
-		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') {
+	while ($file = readdir($handle)) 
+	{
+		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') 
+		{
 			$dirlist[] = $file;
 		}
 	}
 	closedir($handle);
 	$count = 0;
-	while (list($key, $image_name) = each($dirlist)) {
-		if (!$sql->db_Select("user", "*", "user_image='-upload-$image_name' OR user_sess='$image_name'")) {
+	$imgList = '';
+	while (list($key, $image_name) = each($dirlist)) 
+	{
+		if (!$sql->db_Select("user", "*", "user_image='-upload-{$image_name}' OR user_sess='{$image_name}'")) 
+		{
 			unlink(e_FILE."public/avatars/".$image_name);
 			$count ++;
+			$imgList .= '[!br!]'.$image_name;
 		}
 	}
 	$message = $count." ".IMALAN_26;
+	$admin_log->log_event('IMALAN_02',$message.$imgList,E_LOG_INFORMATIVE,'');
+	unset($imgList);
 }
 
-if (isset($_POST['avdelete'])) {
+
+if (isset($_POST['avdelete'])) 
+{
 	require_once(e_HANDLER."avatar_handler.php");
+	$avList = array();
 	foreach($_POST['avdelete'] as $key => $val)
 	{
-		$key = $tp->toDB($key); // We only need the key
-		if ($sql->db_Select("user", "*", "user_id='$key'")) {
+		$key = intval($key); // We only need the key
+		if ($sql->db_Select("user", 'user_id, user_name, user_image', "user_id='{$key}'")) 
+		{
 			$row = $sql->db_Fetch();
-			extract($row);
-			$avname=avatar($user_image);
+			$avname=avatar($row['user_image']);
 			if (strpos($avname,"http://")===FALSE) 
 			{ // Internal file, so unlink it
 				@unlink($avname);
 			}
-			$sql->db_Update("user","user_image='' WHERE user_id='$key'");
-			$message = IMALAN_51.$user_name." ".IMALAN_28;
+			$sql->db_Update("user","user_image='' WHERE user_id='{$key}'");
+			$message = IMALAN_51.$row['user_name']." ".IMALAN_28;
+			$avList[] = $key.':'.$row['user_name'].':'.$row['user_image'];
 		}
 	}
+	$admin_log->log_event('IMALAN_03',implode('[!br!]',$avList),E_LOG_INFORMATIVE,'');
+	unset($avList);
 	$_POST['check_avatar_sizes'] = TRUE;	// Force size recheck after doing one or more deletes
 }
 
-if (isset($_POST['update_options'])) {
-	$pref['image_post'] = $_POST['image_post'];
-	$pref['resize_method'] = $_POST['resize_method'];
-	$pref['im_path'] = trim($tp->toDB($_POST['im_path']));
-	$pref['image_post_class'] = $_POST['image_post_class'];
-	$pref['image_post_disabled_method'] = $_POST['image_post_disabled_method'];
-	$pref['enable_png_image_fix'] = $_POST['enable_png_image_fix'];
+if (isset($_POST['update_options'])) 
+{
+	unset($temp);
+	$changes = array();
+	$temp['image_post'] = intval($_POST['image_post']);
+	$temp['resize_method'] = $_POST['resize_method'];
+	$temp['im_path'] = trim($tp->toDB($_POST['im_path']));
+	$temp['image_post_class'] = intval($_POST['image_post_class']);
+	$temp['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
+	$temp['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
 
-	save_prefs();
-	$message = IMALAN_9;
+	foreach ($temp as $k => $v)
+	{
+		if ($v != $pref[$k])
+		{
+			$pref[$k] = $v;
+			$changes[] = $k.'=>'.$v;
+		}
+	}
+	if (count($changes))
+	{
+		save_prefs();
+		$admin_log->log_event('IMALAN_04',implode('[!br!]',$changes),E_LOG_INFORMATIVE,'');
+		$message = IMALAN_9;
+	}
+	else
+	{
+		$message = IMALAN_20;
+	}
+	unset($changes);
 }
 
-if (isset($message)) {
+
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 
-if (isset($_POST['show_avatars'])) {
-
+if (isset($_POST['show_avatars'])) 
+{
 	$handle = opendir(e_FILE."public/avatars/");
 	while ($file = readdir($handle)) {
-		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db' && !is_dir($file)) {
+		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db' && !is_dir($file)) 
+		{
 			$dirlist[] = $file;
 		}
 	}
@@ -102,13 +143,14 @@ if (isset($_POST['show_avatars'])) {
 
 	$text = "<div style='text-align:center'>\n";
 
-	if (!is_array($dirlist)) {
+	if (!is_array($dirlist)) 
+	{
 		$text .= IMALAN_29;
-	} else {
-
-
-
-		while (list($key, $image_name) = each($dirlist)) {
+	} 
+	else 
+	{
+		while (list($key, $image_name) = each($dirlist)) 
+		{
 			$users = IMALAN_21." | ";
 			if ($sql->db_Select("user", "*", "user_image='-upload-$image_name' OR user_sess='$image_name'")) {
 				while ($row = $sql->db_Fetch()) {
@@ -158,8 +200,8 @@ if (isset($_POST['show_avatars'])) {
 	$ns->tablerender(IMALAN_18, $text);
 }
 
-if (isset($_POST['check_avatar_sizes'])) {
-	//
+if (isset($_POST['check_avatar_sizes'])) 
+{
 	// Set up to track what we've done
 	//
 	$iUserCount  = 0;
@@ -186,9 +228,9 @@ if (isset($_POST['check_avatar_sizes'])) {
 	//
 	$iUserCount = $sql->db_Count("user");
 	if ($sql->db_Select("user", "*", "user_image!=''")) {
-		while ($row = $sql->db_Fetch()) {
+		while ($row = $sql->db_Fetch()) 
+		{
 			extract($row);
-	
 	//
 	// Check size
 	//
@@ -324,25 +366,7 @@ $text = "<div style='text-align:center'>
 	".IMALAN_10."<br />
 	<span class='smalltext'>".IMALAN_11."</span>
 	</td>
-	<td style='width:25%;text-align:center' class='forumheader3' >
-
-
-	<select class='tbox' name='image_post_class'>
-	<option value='".e_UC_PUBLIC."'".($pref['image_post_class'] == e_UC_PUBLIC ? " selected='selected'" : "").">".IMALAN_30."</option>
-	<option value='".e_UC_GUEST."'".($pref['image_post_class'] == e_UC_GUEST ? " selected='selected'" : "").">".IMALAN_31."</option>
-	<option value='".e_UC_MEMBER."'".($pref['image_post_class'] == e_UC_MEMBER ? " selected='selected'" : "").">".IMALAN_32."</option>
-	<option value='".e_UC_ADMIN."'".($pref['image_post_class'] == e_UC_ADMIN ? " selected='selected'" : "").">".IMALAN_33."</option>\n";
-
-
-if ($sql->db_Select("userclass_classes")) {
-	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		$text .= "<option value='".$userclass_id."'".($pref['image_post_class'] == $userclass_id ? " selected='selected'" : "").">$userclass_name</option>\n";
-	}
-}
-$text .= "</select>
-
-	</td>
+	<td style='width:25%;text-align:center' class='forumheader3' >".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."</td>
 	</tr>
 
 	<tr>
@@ -351,7 +375,10 @@ $text .= "</select>
 	<span class='smalltext'>".IMALAN_13."</span>
 	</td>
 	<td style='width:25%;text-align:center' class='forumheader3' >
-	<select name='image_post_disabled_method' class='tbox'>". ($pref['image_post_disabled_method'] == "0" ? "<option value='1' selected='selected'>".IMALAN_14."</option>" : "<option value='0'>".IMALAN_14."</option>"). ($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected='selected'>".IMALAN_15."</option>" : "<option value='1'>".IMALAN_15."</option>")."
+	<select name='image_post_disabled_method' class='tbox'>". 
+	($pref['image_post_disabled_method'] == "0" ? "<option value='0' selected='selected'>".IMALAN_14."</option>" : "<option value='0'>".IMALAN_14."</option>"). 
+	($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected='selected'>".IMALAN_19."</option>" : "<option value='1'>".IMALAN_19."</option>").
+	($pref['image_post_disabled_method'] == "2" ? "<option value='2' selected='selected'>".IMALAN_15."</option>" : "<option value='2'>".IMALAN_15."</option>")."
 	</select></td>
 	</tr>
 

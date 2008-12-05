@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.22 2008-11-02 21:02:30 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.23 2008-12-05 22:01:25 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -208,6 +208,16 @@ define('LAN_AL_BANNER_02','Banner created');
 define('LAN_AL_BANNER_03','Banner updated');
 define('LAN_AL_BANNER_04','Banner deleted');
 define('LAN_AL_BANNER_05','');
+
+// Image management
+//-----------------
+define('LAN_AL_IMALAN_00','Unknown image-related message');
+define('LAN_AL_IMALAN_01','Avatar deleted');
+define('LAN_AL_IMALAN_02','All avatars and photos deleted');
+define('LAN_AL_IMALAN_03','Avatar deleted');
+define('LAN_AL_IMALAN_04','Settings updated');
+define('LAN_AL_IMALAN_05','');
+define('LAN_AL_IMALAN_06','');
 
 
 ?>
