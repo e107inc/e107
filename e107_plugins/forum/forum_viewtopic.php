@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-04 21:36:09 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-05 20:28:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -88,7 +88,7 @@ if (MODERATOR && isset($_POST['mod']))
 	$thread->threadInfo = $forum->threadGet($thread->threadId);
 }
 
-$postList = $forum->PostGet($thread->threadId, $thread->threadpage * $thread->perPage, $thread->perPage);
+$postList = $forum->PostGet($thread->threadId, $thread->page * $thread->perPage, $thread->perPage);
 
 //var_dump($thread->threadInfo);
 require_once (HEADERF);

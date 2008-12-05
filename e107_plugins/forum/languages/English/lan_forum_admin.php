@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-05 01:30:56 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-05 20:28:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -74,6 +74,7 @@ define("FORLAN_62", "Forum Options");
 define("FORLAN_63", "Ranks");
 define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Separate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
+define('FORLAN_66', 'Not installed');
 
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post,");

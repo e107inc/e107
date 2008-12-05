@@ -111,7 +111,7 @@ if (MODERATOR && $action == "nt")
 	$thread_s = (isset($_POST['threadtype']) ? $_POST['threadtype'] : $thread_info['head']['thread_s']);
 	return "<br /><span class='defaulttext'>".LAN_400."<input name='threadtype' type='radio' value='0' ".(!$thread_s ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_s == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_s == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
 }
-return "";
+return '';
 SC_END
 
 SC_BEGIN BACKLINK
@@ -122,35 +122,35 @@ SC_END
 
 SC_BEGIN EMAILNOTIFY
 global $pref, $thread_info, $action;
-if ($pref['email_notify'] && $action == "nt" && USER)
+if ($pref['email_notify'] && $action == 'nt' && USER)
 {
 	if(isset($_POST['fpreview']))
 	{
-		$chk = ($_POST['email_notify'] ? "checked = 'checked'" : "");
+		$chk = ($_POST['email_notify'] ? "checked = 'checked'" : '');
 	}
 	else
 	{
 		if(isset($thread_info))
 		{
-			$chk = ($thread_info['head']['thread_active'] == 99 ? "checked='checked'" : "");
+			$chk = ($thread_info['head']['thread_active'] == 99 ? "checked='checked'" : '');
 		}
 		else
 		{
-			$chk = ($pref['email_notify_on'] ? "checked='checked'" : "");
+			$chk = ($pref['email_notify_on'] ? "checked='checked'" : '');
 		}
 	}
-	return "<span class='defaulttext'>".LAN_380."</span><input type='checkbox' name='email_notify' value='1' {$chk} />";
+	return "<br /><input type='checkbox' name='email_notify' value='1' {$chk} />&nbsp;<span class='defaulttext'>".LAN_380."</span>";
 }
-return "";
+return '';
 SC_END
 
 SC_BEGIN POLL
 global $poll_form, $action, $pref;
-if ($action == "nt" && $pref['forum_poll'] && strpos(e_QUERY, "edit") === FALSE)
+if ($action == 'nt' && $pref['forum_poll'] && strpos(e_QUERY, 'edit') === false)
 {
 	return $poll_form;
 }
-return "";
+return '';
 SC_END
 
 */
