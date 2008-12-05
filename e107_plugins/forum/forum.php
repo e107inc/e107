@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-04 21:36:09 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-05 01:30:56 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -359,15 +359,17 @@ function parse_forum($f, $restricted_string = "")
 
 function parse_subs($subList, $lastpost_datestamp)
 {
+	$e107 = e107::getInstance();
 	$ret = array();
 	$ret['text'] = "";
 	foreach($subList as $sub)
 	{
-		$ret['text'] .= 	($ret['text'] ? ", " : "");
-		$ret['text'] .= "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$sub['forum_id']}'>{$sub['forum_name']}</a>";
+		$ret['text'] .= ($ret['text'] ? ", " : "");
+		$suburl = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $sub['forum_id']));		
+		$ret['text'] .= "<a href='{$suburl}'>".$e107->tp->toHTML($sub['forum_name']).'</a>';
 		$ret['threads'] += $sub['forum_threads'];
 		$ret['replies'] += $sub['forum_replies'];
-		$tmp = explode(".", $sub['forum_lastpost_info']);
+		$tmp = explode('.', $sub['forum_lastpost_info']);
 		if($tmp[0] > $lastpost_datestamp)
 		{
 			$ret['lastpost_info'] = $sub['forum_lastpost_info'];
@@ -378,11 +380,27 @@ function parse_subs($subList, $lastpost_datestamp)
 	return $ret;
 }
 
-if (e_QUERY == "track")
+if (e_QUERY == 'track')
 {
-	$sql2 = new db;
-	$tmp = explode("-", USERREALM);
-	foreach($tmp as $key => $value)
+//	if(!USER) { return ; }
+	if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list'))
+	{
+
+//	$sql2 = new db;
+//	$tmp = explode("-", USERREALM);
+
+		$qry = "SELECT * from `#forum_thread` WHERE thread_id IN({$trackedThreadList}) ORDER BY thread_lastpost DESC";
+		if($e107->sql->db_Select_gen($qry))
+		{
+			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			{
+				var_dump($row);
+			}
+		}
+	}
+
+/*
+	foreach($trackedThreads as $threadId)
 	{
 		if ($value)
 		{
@@ -424,6 +442,7 @@ if (e_QUERY == "track")
 	{
 		echo $forum_track_start.$forum_trackstring.$forum_track_end;
 	}
+*/
 }
 
 if (e_QUERY == "new")
