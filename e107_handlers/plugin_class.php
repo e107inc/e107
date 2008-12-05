@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2008-12-03 22:29:46 $
-|     $Author: e107steved $
+|     $Revision: 1.53 $
+|     $Date: 2008-12-05 14:18:51 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,21 +22,21 @@ if (!defined('e107_INIT')) { exit; }
 class e107plugin
 {
 	var	$plugin_addons = array(
-		"e_rss", 
-		"e_notify", 
-		"e_linkgen", 
-		"e_list", 
-		"e_bb", 
-		"e_meta", 
-		"e_emailprint", 
-		"e_frontpage", 
-		"e_latest", 
-		"e_status", 
-		"e_search", 
-		"e_sc", 
-		"e_module", 
-		"e_comment", 
-		"e_sql", 
+		"e_rss",
+		"e_notify",
+		"e_linkgen",
+		"e_list",
+		"e_bb",
+		"e_meta",
+		"e_emailprint",
+		"e_frontpage",
+		"e_latest",
+		"e_status",
+		"e_search",
+		"e_sc",
+		"e_module",
+		"e_comment",
+		"e_sql",
 		"e_userprofile",
 		"e_header"
 		);
@@ -212,13 +212,14 @@ class e107plugin
 				}
 				else
 				{  // New plugin - not in table yet, so add it. If no install needed, mark it as 'installed'
-					if ($plug_info['name'])
+					//SecretR - update to latest XML version
+					if ($plug_info['@attributes']['name'])
 					{
 //					  echo "New plugin to add: {$plug_info['name']}<br />";
 						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
-						$_installed = ($plug_info['installRequired'] == 'true' || $plug_info['installRequired'] == 1 ? 0 : 1 );
-						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}' ");
+						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['installRequired'] == 1 ? 0 : 1 );
+						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}' ");
 					}
 				}
 			}
@@ -287,12 +288,12 @@ class e107plugin
 			$this->module['ue'] = new e107_user_extended;
 		}
 		$type = constant($field_type);
-		
+
 		if($action == 'add')
 		{
 			return $this->module['ue']->user_extended_add_system($field_name, $type, $field_default, $field_source);
 		}
-		
+
 		if ($action == 'remove')
 		{
 			return $this->module['ue']->user_extended_remove($field_name, $field_name);
@@ -760,7 +761,7 @@ class e107plugin
 			  switch ($dt)
 			  {
 				case 'plugin' :
-				  if (!isset($pref['plug_installed'][$dv['@attributes']['name']])) 
+				  if (!isset($pref['plug_installed'][$dv['@attributes']['name']]))
 				  { // Plugin not installed
 					$canContinue = FALSE;
 					$error[] = EPL_ADLAN_70.$dv['@attributes']['name'];
@@ -874,7 +875,7 @@ class e107plugin
 			{
 				$attrib = $link['@attributes'];
 				$linkName = $attrib['name'];
-				if (defined($linkName)) 
+				if (defined($linkName))
 				{
 					$linkName = constant($linkName);
 				}
@@ -964,7 +965,7 @@ class e107plugin
 				{
 					case 'install':
 					case 'upgrade':
-					// Add all active userclasses						
+					// Add all active userclasses
 					if(!isset($attrib['active']) || $attrib['active'] == 'true')
 					{
 						$txt .= "Adding userclass ".$attrib['name']."<br />";
@@ -998,7 +999,7 @@ class e107plugin
 				$attrib['default'] = varset($attrib['default']);
 				$attrib['name'] = 'plugin_'.$plug_vars['folder'].'_'.$attrib['name'];
 				$source = 'plugin_'.$plug_vars['folder'];
-				
+
 				switch($function)
 				{
 					case 'install':
@@ -1130,7 +1131,7 @@ class e107plugin
 					{
 						$result = call_user_func($attrib['function'], $this);
 						return $result;
-					}	
+					}
 					elseif($attrib['type'] == 'classFunction')
 					{
 						$_tmp = new $attrib['class'];
@@ -1175,7 +1176,7 @@ class e107plugin
 		}
 		return $ret;
 	}
-	
+
 	function install_plugin_php($id)
 	{
 		global $sql;
@@ -1273,7 +1274,7 @@ class e107plugin
 		$id = (int)$id;
 		$plug = $this->getinfo($id);
 		$plug['plug_action'] = 'install';
-	
+
 		if ($plug['plugin_installflag'] == FALSE)
 		{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
