@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-04-22 20:32:49 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-06 23:00:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("UPLLAN_1", "Upload removed from list.");
 define("UPLLAN_2", "Settings saved in database");
 define("UPLLAN_3", "Upload ID");
-
+define('UPLLAN_4', 'Nothing changed - not updated');
 define("UPLLAN_5", "Poster");
 define("UPLLAN_6", "Email");
 define("UPLLAN_7", "Website");
