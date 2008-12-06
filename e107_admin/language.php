@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-06 10:57:19 $
+|     $Revision: 1.9 $
+|     $Date: 2008-12-06 11:13:50 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -63,7 +63,7 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
 			$changes[] = $k.'=>'.$v;
 		}
 	}
-	$admin_log->log_event('LAN_AL_LANG_01',implode('[!br!]',$changes),E_LOG_INFORMATIVE,'');
+	$admin_log->log_event('LANG_01',implode('[!br!]',$changes),E_LOG_INFORMATIVE,'');
 	save_prefs();
 	$ns->tablerender(LAN_SAVED, "<div style='text-align:center'>".LAN_SETSAVED."</div>");
 
@@ -91,7 +91,7 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices'])
 			}
 		}
 	}
-	$admin_log->log_event('LAN_AL_LANG_02',str_replace('<br />','[!br!]',$message),E_LOG_INFORMATIVE,'');
+	$admin_log->log_event('LANG_02',str_replace('<br />','[!br!]',$message),E_LOG_INFORMATIVE,'');
 	global $cachevar;
 	unset($cachevar['table_list']);
 
@@ -133,7 +133,7 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 			}
 		}
 	}
-	$admin_log->log_event('LAN_AL_LANG_03',str_replace('<br />','[!br!]',$message),E_LOG_INFORMATIVE,'');
+	$admin_log->log_event('LANG_03',str_replace('<br />','[!br!]',$message),E_LOG_INFORMATIVE,'');
     global $cachevar;
 	unset($cachevar['table_list']);
 }
@@ -164,7 +164,7 @@ if ($action == 'db')
 if($_POST['ziplang'] && $_POST['language'])
 {
  	$text = zip_up_lang($_POST['language']);
-	$admin_log->log_event('LAN_AL_LANG_04',$_POST['language'],E_LOG_INFORMATIVE,'');
+	$admin_log->log_event('LANG_04',$_POST['language'],E_LOG_INFORMATIVE,'');
     $ns -> tablerender(LANG_LAN_25, $text);
 }
 

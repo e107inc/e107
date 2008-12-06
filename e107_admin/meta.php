@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-23 21:46:41 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-06 11:13:50 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,11 +26,12 @@ require_once("auth.php");
 
 $current_lang = ($sql->mySQLlanguage != "") ? $sql->mySQLlanguage : $pref['sitelanguage'];
 
-if (isset($_POST['metasubmit'])) {
-
+if (isset($_POST['metasubmit'])) 
+{
 	$tmp = $pref['meta_tag'];
 	$langs = explode(",",e_LANLIST);
-	foreach($langs as $lan){
+	foreach($langs as $lan)
+	{
 		$meta_tag[$lan] = $tmp[$lan];
 		$meta_diz[$lan] = $pref['meta_description'][$lan];
 		$meta_keywords[$lan] = $pref['meta_keywords'][$lan];
@@ -44,7 +45,7 @@ if (isset($_POST['metasubmit'])) {
 	$meta_copyright[$current_lang] = strip_if_magic(chop($_POST['meta_copyright']));
 	$meta_author[$current_lang] = strip_if_magic(chop($_POST['meta_author']));
 
-    $pref['meta_news_summary'] = $_POST['meta_news_summary'];
+    $pref['meta_news_summary'] = intval($_POST['meta_news_summary']);
 	$pref['meta_tag'] = $meta_tag;
 	$pref['meta_description'] = $meta_diz;
 	$pref['meta_keywords'] = $meta_keywords;
@@ -56,11 +57,13 @@ if (isset($_POST['metasubmit'])) {
         unset($meta_tag[$current_lang]);
     }*/
 
+	$admin_log->log_event('META_01','meta_news_summary=>'.$pref['meta_news_summary'].'[!br!]'.$current_lang,E_LOG_INFORMATIVE,'');
 	save_prefs();
 	$message = METLAN_1;
 }
 
-if ($message) {
+if ($message) 
+{
 	$ns->tablerender(METLAN_4, "<div style='text-align:center'>".METLAN_1." (".$current_lang.").</div>");
 }
 
