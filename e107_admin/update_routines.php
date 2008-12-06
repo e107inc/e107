@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2008-11-18 21:29:37 $
+|     $Revision: 1.32 $
+|     $Date: 2008-12-06 15:48:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -482,6 +482,37 @@ function update_706_to_800($type='')
 			if ($just_check) return update_needed('Update newsfeed field definition');
 			mysql_query("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ");
 			$updateMessages[] = LAN_UPDATE_40;
+			catch_error();
+		}
+	  }
+	}
+
+
+	if (mysql_table_exists('download'))
+	{	// Need to extend field download_url varchar(255) NOT NULL default ''
+	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download LIKE 'download_url'")) 
+	  {
+		$row = $sql -> db_Fetch();
+		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
+		{
+			if ($just_check) return update_needed('Update download table field definition');
+			mysql_query("ALTER TABLE `".MPREFIX."download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
+			$updateMessages[] = LAN_UPDATE_52;
+			catch_error();
+		}
+	  }
+	}
+
+	if (mysql_table_exists('download_mirror'))
+	{	// Need to extend field download_url varchar(255) NOT NULL default ''
+	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'")) 
+	  {
+		$row = $sql -> db_Fetch();
+		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
+		{
+			if ($just_check) return update_needed('Update download mirror table field definition');
+			mysql_query("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
+			$updateMessages[] = LAN_UPDATE_53;
 			catch_error();
 		}
 	  }

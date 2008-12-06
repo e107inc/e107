@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-05 22:01:11 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-06 15:48:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -102,18 +102,9 @@ if (isset($_POST['update_options']))
 	$temp['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
 	$temp['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
 
-	foreach ($temp as $k => $v)
+	if ($admin_log->logArrayDiffs($temp, $pref, 'IMALAN_04'))
 	{
-		if ($v != $pref[$k])
-		{
-			$pref[$k] = $v;
-			$changes[] = $k.'=>'.$v;
-		}
-	}
-	if (count($changes))
-	{
-		save_prefs();
-		$admin_log->log_event('IMALAN_04',implode('[!br!]',$changes),E_LOG_INFORMATIVE,'');
+		save_prefs();		// Only save if changes
 		$message = IMALAN_9;
 	}
 	else

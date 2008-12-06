@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.25 2008-12-06 11:13:55 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.26 2008-12-06 15:48:26 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -231,6 +231,24 @@ define('LAN_AL_LANG_05', '');
 // Meta Tags
 //----------
 define('LAN_AL_META_01', 'Meta tags updated');
+
+// Downloads
+//----------
+define('LAN_AL_DOWNL_01', 'Download options changed');
+define('LAN_AL_DOWNL_02', 'Download category created');
+define('LAN_AL_DOWNL_03', 'Download category updated');
+define('LAN_AL_DOWNL_04', 'Download category deleted');
+define('LAN_AL_DOWNL_05', 'Download created');
+define('LAN_AL_DOWNL_06', 'Download updated');
+define('LAN_AL_DOWNL_07', 'Download deleted');
+define('LAN_AL_DOWNL_08', 'Download category order updated');
+define('LAN_AL_DOWNL_09', 'Download limit added');
+define('LAN_AL_DOWNL_10', 'Download limit edited');
+define('LAN_AL_DOWNL_11', 'Download limit deleted');
+define('LAN_AL_DOWNL_12', 'Download mirror added');
+define('LAN_AL_DOWNL_13', 'Download mirror updated');
+define('LAN_AL_DOWNL_14', 'Download mirror deleted');
+define('LAN_AL_DOWNL_15', '');
 
 
 ?>

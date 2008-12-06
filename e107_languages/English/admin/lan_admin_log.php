@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_admin_log.php,v 1.6 2008-06-10 21:43:57 e107steved Exp $
+// $Id: lan_admin_log.php,v 1.7 2008-12-06 15:48:26 e107steved Exp $
 	
 define('RL_LAN_001', 'System Logs');
 define('RL_LAN_002', "Rolling Log");
@@ -20,11 +20,11 @@ define('RL_LAN_015', "User ID filter");
 define('RL_LAN_016', "Blank for none, zero for guest");
 define('RL_LAN_017', "No log entries, or none match filter");
 define('RL_LAN_018', "Refresh log");
-define('RL_LAN_019', "Date");
+define('RL_LAN_019', "yy-mm-dd hh:mm:ss");
 define('RL_LAN_020', "IP");
 define('RL_LAN_021', "ID");
 define('RL_LAN_022', "User");
-define('RL_LAN_023', "Type");
+define('RL_LAN_023', "Event Type");
 define('RL_LAN_024', "From");
 define('RL_LAN_025', "Event Title");
 define('RL_LAN_026', "Class for which user actions logged");
