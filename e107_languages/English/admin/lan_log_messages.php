@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.27 2008-12-06 16:41:29 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.28 2008-12-06 20:56:45 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -256,5 +256,21 @@ define('LAN_AL_CPAGE_01','Custom page/menu added');
 define('LAN_AL_CPAGE_02','Custom page/menu updated');
 define('LAN_AL_CPAGE_03','Custom page/menu deleted');
 define('LAN_AL_CPAGE_04','Custom page/menu settings updated');
+
+// Extended User Fields
+//---------------------
+define('LAN_AL_EUF_01', 'EUF moved up');
+define('LAN_AL_EUF_02', 'EUF moved down');
+define('LAN_AL_EUF_03', 'EUF category moved up');
+define('LAN_AL_EUF_04', 'EUF category moved down');
+define('LAN_AL_EUF_05', 'Extended User Field added');
+define('LAN_AL_EUF_06', 'Extended User Field updated');
+define('LAN_AL_EUF_07', 'Extended User Field deleted');
+define('LAN_AL_EUF_08', 'EUF category added');
+define('LAN_AL_EUF_09', 'EUF category updated');
+define('LAN_AL_EUF_10', 'EUF category deleted');
+define('LAN_AL_EUF_11', 'Extended user fields activated');
+define('LAN_AL_EUF_12', 'Extended user fields deactivated');
+
 
 ?>
