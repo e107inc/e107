@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-01 22:21:42 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-06 10:57:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,8 @@ $tabs = table_list(); // array("news","content","links");
 $lanlist = explode(",",e_LANLIST);
 $message = "";
 
-if (e_QUERY) {
+if (e_QUERY) 
+{
 	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
@@ -45,12 +46,24 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
+if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) 
+{
+	unset($temp);
+	$changes = array();
 
-	$pref['multilanguage']	= $_POST['multilanguage'];
-    $pref['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
-	$pref['sitelanguage'] = $_POST['mainsitelanguage'];
+	$temp['multilanguage']	= $_POST['multilanguage'];
+    $temp['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
+	$temp['sitelanguage'] = $_POST['mainsitelanguage'];
 
+	foreach ($temp as $k => $v)
+	{
+		if ($v != $pref[$k])
+		{
+			$pref[$k] = $v;
+			$changes[] = $k.'=>'.$v;
+		}
+	}
+	$admin_log->log_event('LAN_AL_LANG_01',implode('[!br!]',$changes),E_LOG_INFORMATIVE,'');
 	save_prefs();
 	$ns->tablerender(LAN_SAVED, "<div style='text-align:center'>".LAN_SETSAVED."</div>");
 
@@ -59,17 +72,26 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage'])) {
 
 
 // ----------------- delete tables ---------------------------------------------
-if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
-
+if (isset($_POST['del_existing']) && $_POST['lang_choices']) 
+{
 	$lang = strtolower($_POST['lang_choices']);
-	foreach ($tabs as $del_table) {
-		if (db_Table_exists($lang."_".$del_table)) {
+	foreach ($tabs as $del_table) 
+	{
+		if (db_Table_exists($lang."_".$del_table)) 
+		{
 			$qry = "DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table;
-		echo $qry;
-			$message .= (mysql_query($qry)) ? $_POST['lang_choices']." ".$del_table." deleted<br />" :
-			 $_POST['lang_choices']." $del_table couldn't be deleted<br />";
+//		echo $qry;
+			if (mysql_query($qry))
+			{
+				$message .= $_POST['lang_choices']." ".$del_table." deleted<br />" ;
+			}
+			else
+			{
+				$message .= $_POST['lang_choices']." {$del_table} couldn't be deleted<br />";
+			}
 		}
 	}
+	$admin_log->log_event('LAN_AL_LANG_02',str_replace('<br />','[!br!]',$message),E_LOG_INFORMATIVE,'');
 	global $cachevar;
 	unset($cachevar['table_list']);
 
@@ -77,38 +99,49 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
 
 // ----------create tables -----------------------------------------------------
 
-if (isset($_POST['create_tables']) && $_POST['language']) {
-
+if (isset($_POST['create_tables']) && $_POST['language']) 
+{
 	$table_to_copy = array();
 	$lang_to_create = array();
 
-
-	foreach ($tabs as $value) {
+	foreach ($tabs as $value) 
+	{
 		$lang = strtolower($_POST['language']);
-		if (isset($_POST[$value])) {
+		if (isset($_POST[$value])) 
+		{
             $copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
-			if (copy_table($value, "lan_".$lang."_".$value, $_POST['drop'],$copdata)) {
+			if (copy_table($value, "lan_".$lang."_".$value, $_POST['drop'],$copdata)) 
+			{
 				$message .= " ".$_POST['language']." ".$value." created<br />";
-			} else {
+			} 
+			else 
+			{
 				$message .= (!$_POST['drop'])? " ".$_POST['language']." ".$value." ".LANG_LAN_00."<br />" : $_POST['language']." ".$value." ".LANG_LAN_01."<br />";
 			}
-		} elseif(db_Table_exists($lang."_".$value)) {
-			if ($_POST['remove']) {
+		} 
+		elseif (db_Table_exists($lang."_".$value)) 
+		{
+			if ($_POST['remove']) 
+			{
 				// Remove table.
 				$message .= (mysql_query("DROP TABLE ".$mySQLprefix."lan_".$lang."_".$value)) ? $_POST['language']." ".$value." ".LAN_DELETED."<br />" :  $_POST['language']." $value ".LANG_LAN_02."<br />";
-			} else {
+			} 
+			else 
+			{
 				// leave table.
 				$message = $_POST['language']." ".$value." was disabled but left intact.";
 			}
 		}
 	}
+	$admin_log->log_event('LAN_AL_LANG_03',str_replace('<br />','[!br!]',$message),E_LOG_INFORMATIVE,'');
     global $cachevar;
 	unset($cachevar['table_list']);
 }
 
 
 
-	if(isset($message) && $message){
+	if(isset($message) && $message)
+	{
   		$ns->tablerender(LAN_OK, $message);
 	}
 
@@ -118,21 +151,25 @@ unset($text);
 
 
 
-if (!e_QUERY || $action == 'main' && !$_POST['language'] && !$_POST['edit_existing']) {
+if (!e_QUERY || $action == 'main' && !$_POST['language'] && !$_POST['edit_existing']) 
+{
 	multilang_prefs();
 }
 
-if ($action == 'db') {
+if ($action == 'db') 
+{
 	multilang_db();
 }
 
 if($_POST['ziplang'] && $_POST['language'])
 {
  	$text = zip_up_lang($_POST['language']);
+	$admin_log->log_event('LAN_AL_LANG_04',$_POST['language'],E_LOG_INFORMATIVE,'');
     $ns -> tablerender(LANG_LAN_25, $text);
 }
 
-if($action == "tools"){
+if($action == "tools")
+{
 	show_tools();
 }
 
@@ -140,7 +177,8 @@ if($action == "tools"){
 
 
 // Grab Language configuration. ---
-if ($_POST['edit_existing']) {
+if ($_POST['edit_existing']) 
+{
 
 	$text .= "
 	<form method='post' action='".e_SELF."?db' >
@@ -467,19 +505,23 @@ function show_tools()
 
 // ----------------------------------------------------------------------------
 
-function language_adminmenu() {
+function language_adminmenu() 
+{
 	global $action,$pref;
-	if ($action == "") {
+	if ($action == "") 
+	{
 		$action = "main";
 	}
 
-	if($action == "modify"){
+	if($action == "modify")
+	{
     	$action = "db";
 	}
 	$var['main']['text'] = LAN_PREFS;
 	$var['main']['link'] = e_SELF;
 
-	if(isset($pref['multilanguage']) && $pref['multilanguage']){
+	if(isset($pref['multilanguage']) && $pref['multilanguage'])
+	{
 		$var['db']['text'] = LANG_LAN_03;
 		$var['db']['link'] = e_SELF."?db";
 	}

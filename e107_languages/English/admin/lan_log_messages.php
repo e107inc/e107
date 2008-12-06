@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.23 2008-12-05 22:01:25 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.24 2008-12-06 10:57:25 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -218,6 +218,15 @@ define('LAN_AL_IMALAN_03','Avatar deleted');
 define('LAN_AL_IMALAN_04','Settings updated');
 define('LAN_AL_IMALAN_05','');
 define('LAN_AL_IMALAN_06','');
+
+// Language management
+//====================
+define('LAN_AL_LANG_00', 'Unknown language-related message');
+define('LAN_AL_LANG_01', 'Language prefs changed');
+define('LAN_AL_LANG_02', 'Language tables deleted');
+define('LAN_AL_LANG_03', 'Language tables created');
+define('LAN_AL_LANG_04', 'Language zip created');
+define('LAN_AL_LANG_05', '');
 
 
 ?>
