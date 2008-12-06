@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.26 2008-12-06 15:48:26 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.27 2008-12-06 16:41:29 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -250,5 +250,11 @@ define('LAN_AL_DOWNL_13', 'Download mirror updated');
 define('LAN_AL_DOWNL_14', 'Download mirror deleted');
 define('LAN_AL_DOWNL_15', '');
 
+// Custom Pages/Menus
+//-------------------
+define('LAN_AL_CPAGE_01','Custom page/menu added');
+define('LAN_AL_CPAGE_02','Custom page/menu updated');
+define('LAN_AL_CPAGE_03','Custom page/menu deleted');
+define('LAN_AL_CPAGE_04','Custom page/menu settings updated');
 
 ?>
