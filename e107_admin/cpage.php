@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-07-09 20:08:09 $
+|     $Revision: 1.9 $
+|     $Date: 2008-12-06 16:40:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -35,8 +35,8 @@ if (e_QUERY)
 	$tmp        = explode(".", e_QUERY);
 	$action     = $tmp[0];
 	$sub_action = $tmp[1];
-	$id         = $tmp[2];
-	$from       = varset($tmp[3],0);
+	$id         = intval($tmp[2]);
+	$from       = intval(varset($tmp[3],0));
 }
 
 if(isset($_POST['submitPage']))
@@ -48,7 +48,7 @@ if(isset($_POST['uploadfiles']))
 {
 
 	$page -> uploadPage();
-	$id = $_POST['pe_id'];
+	$id = intval(varset($_POST['pe_id'],0));
 	$sub_action = ($_POST['pe_id']) ? "edit" : "";
 	$page -> createPage($_POST['mode']);
 }
@@ -76,7 +76,8 @@ if(isset($_POST['delete']))
 	}
 }
 
-if (isset($_POST['saveOptions'])) {
+if (isset($_POST['saveOptions'])) 
+{
 	$page -> saveSettings();
 }
 
@@ -149,10 +150,12 @@ class page
 		$ns -> tablerender(CUSLAN_5, $text);
 	}
 
+
 	function createmPage()
 	{
 		$this -> createPage(TRUE);
 	}
+
 
 	function uploadPage()
 	{
@@ -161,6 +164,7 @@ class page
 		require_once(e_HANDLER."upload_handler.php");
 		$uploaded = file_upload(e_IMAGE."custom/");
 	}
+
 
 	function createPage($mode=FALSE)
 	{
@@ -172,7 +176,7 @@ class page
 		{
         	$query = "SELECT p.*,l.link_name,m.menu_name FROM #page AS p
 			LEFT JOIN #links AS l ON l.link_url='page.php?".$id."'
-			LEFT JOIN #menus AS m ON m.menu_path='$id' WHERE p.page_id ='$id' LIMIT 1";
+			LEFT JOIN #menus AS m ON m.menu_path='{$id}' WHERE p.page_id ='{$id}' LIMIT 1";
 
             if ($sql->db_Select_gen($query))
 			{
@@ -275,8 +279,8 @@ class page
 		<td colspan='2' style='text-align:center' class='forumheader'>".
 
 		(!$mode ?
-		($edit  ? "<input class='button' type='submit' name='updatePage' value='".CUSLAN_19."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='".CUSLAN_20."' />") :
-		($edit  ? "<input class='button' type='submit' name='updateMenu' value='".CUSLAN_21."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitMenu' value='".CUSLAN_22."' />"))
+		($edit  ? "<input class='button' type='submit' name='updatePage' value='".CUSLAN_19."' /><input type='hidden' name='pe_id' value='{$id}' />" : "<input class='button' type='submit' name='submitPage' value='".CUSLAN_20."' />") :
+		($edit  ? "<input class='button' type='submit' name='updateMenu' value='".CUSLAN_21."' /><input type='hidden' name='pe_id' value='{$id}' />" : "<input class='button' type='submit' name='submitMenu' value='".CUSLAN_22."' />"))
 
 		."<input type='hidden' name='mode' value='$mode' />
 		</td>
@@ -291,26 +295,29 @@ class page
 	}
 
 
+	// Write new/edited page/menu to the DB
+	// $mode - zero for new page, page id for existing
+	// $type = FALSE for page, TRUE for menu
 	function submitPage($mode = FALSE, $type=FALSE)
 	{
-		global $sql, $tp, $e107cache;
+		global $sql, $tp, $e107cache, $admin_log;
 
 		$page_title = $tp -> toDB($_POST['page_title']);
 		$page_text = $tp -> toDB($_POST['data']);
 		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0);
 
 
-		if($mode)
+		if ($mode)
 		{	// Don't think $_POST['page_ip_restrict'] is ever set.
-
-			$update = $sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."' WHERE page_id='$mode'");
+			$update = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."' WHERE page_id='{$mode}'");
+			$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
 
 			if($type)
 			{
 				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
-				$sql -> db_Update("menus", "menu_name='$menu_name' WHERE menu_path='$mode' ");
+				$sql -> db_Update("menus", "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ");
 				$update++;
 			}
 
@@ -339,11 +346,11 @@ class page
 			admin_update($update, 'update', LAN_UPDATED);
 		}
 		else
-		{
-
+		{	// New page/menu
 			$menuname = ($type ? $tp -> toDB($_POST['menu_name']) : "");
 
-			admin_update($sql -> db_Insert("page", "0, '$page_title', '$page_text', '$pauthor', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27);
+			admin_update($sql -> db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27);
+			$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 
 			if($type)
 			{
@@ -356,7 +363,7 @@ class page
 				if (!$sql->db_Select("links", "link_id", "link_name='".$tp -> toDB($_POST['page_link'])."'"))
 				{
 					$linkname = $tp -> toDB($_POST['page_link']);
-					$sql->db_Insert("links", "0, '$linkname', '$link', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
+					$sql->db_Insert("links", "0, '{$linkname}', '{$link}', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
 					$e107cache->clear("sitelinks");
 				}
 			}
@@ -365,9 +372,10 @@ class page
 
 	function delete_page($del_id)
 	{
-		global $sql, $e107cache;
-		admin_update($sql -> db_Delete("page", "page_id='$del_id' "), 'delete', CUSLAN_28);
+		global $sql, $e107cache, $admin_log;
+		admin_update($sql -> db_Delete("page", "page_id='{$del_id}' "), 'delete', CUSLAN_28);
 		$sql -> db_Delete("menus", "menu_path='$del_id' ");
+		$admin_log->log_event('CPAGE_03','ID: '.$del_id,E_LOG_INFORMATIVE,'');
 		if ($sql -> db_Select("links", "link_id", "link_url='page.php?".$del_id."'"))
 		{
 			$sql -> db_Delete("links", "link_url='page.php?".$del_id."'");
@@ -382,7 +390,7 @@ class page
 		if(!isset($pref['pageCookieExpire'])) $pref['pageCookieExpire'] = 84600;
 
 		$text = "<div style='text-align: center; margin-left:auto; margin-right: auto;'>
-		<form method='post' action='".e_SELF."'>
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 
 		<tr>
@@ -415,12 +423,20 @@ class page
 
 	function saveSettings()
 	{
-		global $pref;
-		$pref['listPages'] = $_POST['listPages'];
-		$pref['pageCookieExpire'] = $_POST['pageCookieExpire'];
-		save_prefs();
-		$this -> message = "Settings saved.";
+		global $pref, $admin_log;
+		$temp['listPages'] = $_POST['listPages'];
+		$temp['pageCookieExpire'] = $_POST['pageCookieExpire'];
+		if ($admin_log->logArrayDiffs($temp, $pref, 'CPAGE_04'))
+		{
+			save_prefs();		// Only save if changes
+			$this -> message = CUSLAN_45;
+		}
+		else
+		{
+			$this -> message = CUSLAN_46;
+		}
 	}
+
 
 	function show_options($action)
 	{
@@ -445,7 +461,8 @@ class page
 	}
 }
 
-function cpage_adminmenu() {
+function cpage_adminmenu() 
+{
 	global $page;
 	global $action;
 	$page -> show_options($action);
