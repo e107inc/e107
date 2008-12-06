@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-11-29 15:27:55 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-06 23:00:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -56,6 +56,7 @@ if ($action == "dis" && isset($_POST['updelete']['upload_'.$id]) )
 		unlink(e_FILE."public/".$row['upload_ss']);
 	}
 	$message = ($sql->db_Delete("upload", "upload_id='".intval($id)."'")) ? UPLLAN_1 : LAN_DELETED_FAILED;
+	$admin_log->log_event('UPLOAD_01',$row['upload_file'],E_LOG_INFORMATIVE,'');
 }
 
 if ($action == "dlm") 
@@ -75,7 +76,8 @@ if ($action == "dl")
 {
 	$id = str_replace("%20", " ", $id);
 
-	if (preg_match("/Binary\s(.*?)\/.*/", $id, $result)) {
+	if (preg_match("/Binary\s(.*?)\/.*/", $id, $result)) 
+	{
 		$bid = $result[1];
 		$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
 		$binary_data = @mysql_result($result, 0, "binary_data");
@@ -87,7 +89,9 @@ if ($action == "dl")
 		header("Content-Description: PHP Generated Data");
 		echo $binary_data;
 		exit;
-	} else {
+	} 
+	else 
+	{
 		header("location:".e_FILE."public/".str_replace("dl.", "", e_QUERY));
 		exit;
 	}
@@ -107,22 +111,30 @@ if (!is_object($e_userclass)) { $e_userclass = new user_class; }
 
 if (isset($_POST['optionsubmit'])) 
 {
-	$pref['upload_storagetype'] = $_POST['upload_storagetype'];
-	$pref['upload_maxfilesize'] = $_POST['upload_maxfilesize'];
-	$pref['upload_class'] = $_POST['upload_class'];
-	$pref['upload_enabled'] = (FILE_UPLOADS ? $_POST['upload_enabled'] : 0);
-	if ($pref['upload_enabled'] && !$sql->db_Select("links", "*", "link_url='upload.php' ")) 
+	$temp = array();
+	$temp['upload_storagetype'] = $_POST['upload_storagetype'];
+	$temp['upload_maxfilesize'] = $_POST['upload_maxfilesize'];
+	$temp['upload_class'] = $_POST['upload_class'];
+	$temp['upload_enabled'] = (FILE_UPLOADS ? $_POST['upload_enabled'] : 0);
+	if ($temp['upload_enabled'] && !$sql->db_Select("links", "*", "link_url='upload.php' ")) 
 	{
 	  $sql->db_Insert("links", "0, '".UPLLAN_44."', 'upload.php', '', '', 1,0,0,0,0");
 	}
 
-	if (!$pref['upload_enabled'] && $sql->db_Select("links", "*", "link_url='upload.php' ")) 
+	if (!$temp['upload_enabled'] && $sql->db_Select("links", "*", "link_url='upload.php' ")) 
 	{
 		$sql->db_Delete("links", "link_url='upload.php' ");
 	}
 
-	save_prefs();
-	$message = UPLLAN_2;
+	if ($admin_log->logArrayDiffs($temp, $pref, 'UPLOAD_02'))
+	{
+		save_prefs();		// Only save if changes
+		$message = UPLLAN_2;
+	}
+	else
+	{
+		$message = UPLLAN_4;
+	}
 }
 
 if (isset($message)) 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-06 15:48:16 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-06 23:00:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -94,7 +94,6 @@ if (isset($_POST['avdelete']))
 if (isset($_POST['update_options'])) 
 {
 	unset($temp);
-	$changes = array();
 	$temp['image_post'] = intval($_POST['image_post']);
 	$temp['resize_method'] = $_POST['resize_method'];
 	$temp['im_path'] = trim($tp->toDB($_POST['im_path']));
@@ -111,7 +110,6 @@ if (isset($_POST['update_options']))
 	{
 		$message = IMALAN_20;
 	}
-	unset($changes);
 }
 
 
