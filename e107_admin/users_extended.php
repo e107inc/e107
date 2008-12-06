@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-11-30 23:15:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2008-12-06 20:56:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -58,86 +58,108 @@ if (e_QUERY)
 if (isset($_POST['up_x']))
 {
 	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
-	$_parent = $qs[2];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
+	$_id = intval($qs[0]);
+	$_order = intval($qs[1]);
+	$_parent = intval($qs[2]);
+	if (($_id > 0) && ($_order > 0) && ($_parent > 0))
+	{
+		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
+		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
+		$admin_log->log_event('EUF_01',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
+	}
 }
 
 
 if (isset($_POST['down_x']))
 {
 	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
-	$_parent = $qs[2];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order+1)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
+	$_id = intval($qs[0]);
+	$_order = intval($qs[1]);
+	$_parent = intval($qs[2]);
+	if (($_id > 0) && ($_order > 0) && ($_parent > 0))
+	{
+		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order+1)."'");
+		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
+		$admin_log->log_event('EUF_02',$_id.', '.$_order.', '.$_parent,E_LOG_INFORMATIVE,'');
+	}
 }
 
 
 if (isset($_POST['catup_x']))
 {
 	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order-1)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
+	$_id = intval($qs[0]);
+	$_order = intval($qs[1]);
+	if (($_id > 0) && ($_order > 0))
+	{
+		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order-1)."'");
+		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
+		$admin_log->log_event('EUF_03',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
+	}
 }
 
 
 if (isset($_POST['catdown_x']))
 {
 	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order+1)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
+	$_id = intval($qs[0]);
+	$_order = intval($qs[1]);
+	if (($_id > 0) && ($_order > 0))
+	{
+		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order+1)."'");
+		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
+		$admin_log->log_event('EUF_04',$_id.', '.$_order,E_LOG_INFORMATIVE,'');
+	}
 }
 
 
 if (isset($_POST['add_field']))
 {
-  $ue_field_name = str_replace(' ','_',trim($_POST['user_field']));		// Replace space with underscore - better security
-  if (preg_match('#^\w+$#',$ue_field_name) === 1)						// Check for allowed characters, finite field length
-  {
-	if($_POST['user_type']==4)
+	$ue_field_name = str_replace(' ','_',trim($_POST['user_field']));		// Replace space with underscore - better security
+	if (preg_match('#^\w+$#',$ue_field_name) === 1)						// Check for allowed characters, finite field length
 	{
-    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
-	}
-	$new_values = make_delimited($_POST['user_values']);
-	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
+		if($_POST['user_type']==EUF_DB_FIELD)
+		{
+			$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
+		}
+		$new_values = make_delimited($_POST['user_values']);
+		$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	
 // Check to see if its a reserved field name before adding to database
-	if($ue->user_extended_reserved($ue_field_name))
-	{  // Reserved field name
-	  $message = "[user_".$tp->toHTML($ue_field_name)."] ".EXTLAN_74;
+		if ($ue->user_extended_reserved($ue_field_name))
+		{  // Reserved field name
+			$message = "[user_".$tp->toHTML($ue_field_name)."] ".EXTLAN_74;
+		}
+		else
+		{
+			$result = admin_update($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29);
+			if(!$result)
+			{
+				$message = EXTLAN_75;
+			}
+			else
+			{
+				$admin_log->log_event('EUF_05',$ue_field_name.'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
+			}
+		}
 	}
 	else
 	{
-	  $result = admin_update($ue->user_extended_add($ue_field_name, $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']), 'insert', EXTLAN_29);
-	  if(!$result)
-	  {
-		$message = EXTLAN_75;
-	  }
+		$message = EXTLAN_76." : ".$tp->toHTML($ue_field_name);
 	}
-  }
-  else
-  {
-    $message = EXTLAN_76." : ".$tp->toHTML($ue_field_name);
-  }
 }
 
 
 if (isset($_POST['update_field'])) 
 {
-	if($_POST['user_type']==4){
+	if($_POST['user_type']==EUF_DB_FIELD)
+	{
     	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 	}
 	$upd_values = make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	admin_update($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']), 'update', EXTLAN_29);
+	admin_update($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29);
+	$admin_log->log_event('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
 }
 
 
@@ -145,21 +167,24 @@ if (isset($_POST['update_category']))
 {
 	$name = trim($tp->toHTML($_POST['user_field']));
 	admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
+	$admin_log->log_event('EUF_09',$name,E_LOG_INFORMATIVE,'');
 }
 
 
 if (isset($_POST['add_category']))
 {
 	$name = $tp->toHTML($_POST['user_field']);
-	admin_update($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
+	admin_update($sql->db_Insert("user_extended_struct","'0', '{$name}', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
+	$admin_log->log_event('EUF_08',$name,E_LOG_INFORMATIVE,'');
 }
 
 
 if (varset($_POST['eu_action'],'') == "delext")
 {
 	list($_id, $_name) = explode(",",$_POST['key']);
-	if($ue->user_extended_remove($_id, $_name))
+	if ($ue->user_extended_remove($_id, $_name))
 	{
+		$admin_log->log_event('EUF_07',$_id.', '.$_name,E_LOG_INFORMATIVE,'');
 		$message = EXTLAN_30;
 	}
 }
@@ -174,6 +199,7 @@ if (varset($_POST['eu_action'],'') == "delcat")
 	}
 	elseif($ue->user_extended_remove($_id, $_name))
 	{
+		$admin_log->log_event('EUF_10',$_id.', '.$_name,E_LOG_INFORMATIVE,'');
 		$message = EXTLAN_41;
 	}
 }
@@ -187,6 +213,8 @@ if(isset($_POST['deactivate']))
 {
 	$message .= field_deactivate();
 }
+
+
 
 if($sql->db_Select("user_extended_struct","DISTINCT(user_extended_struct_parent)"))
 {
@@ -206,12 +234,16 @@ if($sql->db_Select("user_extended_struct","DISTINCT(user_extended_struct_parent)
 	}
 }
 
+
 if($message)
 {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field']){
+
+
+if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field'])
+{
 	$action = "continue";
 	$current['user_extended_struct_name'] = $_POST['user_field'];
     $current['user_extended_struct_parms'] = $_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide'];
@@ -220,10 +252,12 @@ if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field'])
 	$user->show_extended($current);
 }
 
+
 if (!e_QUERY || $action == 'main')
 {
 	$user->show_extended();
 }
+
 
 if ($action == "editext")
 {
@@ -979,13 +1013,14 @@ function field_activate()
 			$ret .= EXTLAN_70." $f ".EXTLAN_71."<br />";
 		}
 	}
+	$admin_log->log_event('EUF_11',implode(', ',$_POST['activate']),E_LOG_INFORMATIVE,'');
 	return $ret;
 }
 
 
 function field_deactivate()
 {
-	global $ue, $ns, $tp,$sql;
+	global $ue, $ns, $tp, $sql, $admin_log;
 	$ret = "";
 	foreach(array_keys($_POST['deactivate']) as $f)
 	{
@@ -1001,6 +1036,7 @@ function field_deactivate()
 			$ret .= EXTLAN_70." $f ".EXTLAN_73."<br />";
 		}
 	}
+	$admin_log->log_event('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
 	return $ret;
 }
 
