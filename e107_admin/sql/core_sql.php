@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-11-29 13:08:31 $
+|     $Revision: 1.15 $
+|     $Date: 2008-12-06 15:48:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -173,7 +173,7 @@ CREATE TABLE dblog (
 CREATE TABLE download (
   download_id int(10) unsigned NOT NULL auto_increment,
   download_name varchar(100) NOT NULL default '',
-  download_url varchar(150) NOT NULL default '',
+  download_url varchar(255) NOT NULL default '',
   download_author varchar(100) NOT NULL default '',
   download_author_email varchar(200) NOT NULL default '',
   download_author_website varchar(200) NOT NULL default '',
@@ -219,7 +219,7 @@ CREATE TABLE download_category (
 CREATE TABLE download_mirror (
   mirror_id int(10) unsigned NOT NULL auto_increment,
   mirror_name varchar(200) NOT NULL default '',
-  mirror_url varchar(200) NOT NULL default '',
+  mirror_url varchar(255) NOT NULL default '',
   mirror_image varchar(200) NOT NULL default '',
   mirror_location varchar(100) NOT NULL default '',
   mirror_description text NOT NULL,
@@ -241,6 +241,22 @@ CREATE TABLE download_requests (
   KEY download_request_userid (download_request_userid),
   KEY download_request_download_id (download_request_download_id),
   KEY download_request_datestamp (download_request_datestamp)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `generic`
+#
+CREATE TABLE generic (
+  gen_id int(10) unsigned NOT NULL auto_increment,
+  gen_type varchar(80) NOT NULL default '',
+  gen_datestamp int(10) unsigned NOT NULL default '0',
+  gen_user_id int(10) unsigned NOT NULL default '0',
+  gen_ip varchar(80) NOT NULL default '',
+  gen_intdata int(10) unsigned NOT NULL default '0',
+  gen_chardata text NOT NULL,
+  PRIMARY KEY  (gen_id),
+  KEY gen_type (gen_type)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -580,19 +596,3 @@ CREATE TABLE user_extended_struct (
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
-
-#
-# Table structure for table `generic`
-#
-CREATE TABLE generic (
-  gen_id int(10) unsigned NOT NULL auto_increment,
-  gen_type varchar(80) NOT NULL default '',
-  gen_datestamp int(10) unsigned NOT NULL default '0',
-  gen_user_id int(10) unsigned NOT NULL default '0',
-  gen_ip varchar(80) NOT NULL default '',
-  gen_intdata int(10) unsigned NOT NULL default '0',
-  gen_chardata text NOT NULL,
-  PRIMARY KEY  (gen_id),
-  KEY gen_type (gen_type)
-) TYPE=MyISAM;
-# --------------------------------------------------------

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-06-13 20:20:21 $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-06 15:48:16 $
 |     $Author: e107steved $
 
 To do:
@@ -302,6 +302,33 @@ Generic log entry point
 		  $sql->db_Delete("dblog", "WHERE `dblog_datestamp` < {$time}", true);
 		}
 	}
+
+//--------------------------------------
+//		HELPER ROUTINES
+//--------------------------------------
+	// Generic routine to log changes to an array. Only elements in $new are checked
+	// Returns true if changes, false otherwise.
+	// Only makes log entry if changes detected.
+	// The $old array is updated with changes, but not saved anywhere
+	function logArrayDiffs(&$new, &$old, $event)
+	{
+		$changes = array();
+		foreach ($new as $k => $v)
+		{
+			if ($v != $old[$k])
+			{
+				$old[$k] = $v;
+				$changes[] = $k.'=>'.$v;
+			}
+		}
+		if (count($changes))
+		{
+			$this->log_event($event,implode('[!br!]',$changes),E_LOG_INFORMATIVE,'');
+			return TRUE;
+		}
+		return FALSE;
+	}
+
 }
 
 ?>

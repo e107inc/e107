@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-06 11:13:50 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-06 15:48:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -55,16 +55,10 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
     $temp['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
 	$temp['sitelanguage'] = $_POST['mainsitelanguage'];
 
-	foreach ($temp as $k => $v)
+	if ($admin_log->logArrayDiffs($temp, $pref, 'LANG_01'))
 	{
-		if ($v != $pref[$k])
-		{
-			$pref[$k] = $v;
-			$changes[] = $k.'=>'.$v;
-		}
+		save_prefs();		// Only save if changes
 	}
-	$admin_log->log_event('LANG_01',implode('[!br!]',$changes),E_LOG_INFORMATIVE,'');
-	save_prefs();
 	$ns->tablerender(LAN_SAVED, "<div style='text-align:center'>".LAN_SETSAVED."</div>");
 
 }

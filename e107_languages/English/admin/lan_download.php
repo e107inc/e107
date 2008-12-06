@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-11-21 22:52:46 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-06 15:48:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -16,6 +16,8 @@ define("DOWLAN_4", "Please tick the confirm box to delete the download");
 define("DOWLAN_5", "There are no download categories defined yet, until you define some you cannot enter any downloads.");
 define("DOWLAN_6", "No existing downloads");
 define("DOWLAN_7", "Existing Downloads");
+define("DOWLAN_8", "Nothing changed - not saved");
+define('DOWLAN_9', 'Download detail:');
 
 define("DOWLAN_11", "Category");
 define("DOWLAN_12", "Name");

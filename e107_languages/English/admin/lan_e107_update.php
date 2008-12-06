@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_e107_update.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-11-18 21:29:43 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-06 15:48:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -56,8 +56,8 @@ define('LAN_UPDATE_48', 'Delete obsolete table: ');
 define('LAN_UPDATE_49', 'Extend IP address field: ');
 define('LAN_UPDATE_50', 'Obsolete prefs deleted: ');
 define('LAN_UPDATE_51', 'Update plugin table definition: ');
-define('LAN_UPDATE_52', '');
-define('LAN_UPDATE_53', '');
+define('LAN_UPDATE_52', 'Update downloads table');
+define('LAN_UPDATE_53', 'Update download mirror table');
 define('LAN_UPDATE_54', '');
 define('LAN_UPDATE_55', '');
 define('LAN_UPDATE_56', '');
