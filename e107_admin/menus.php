@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-08-25 13:43:00 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-06 22:14:31 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -76,35 +76,48 @@ else
 
 
 $layouts_str = $HEADER.$FOOTER;
-if ($NEWSHEADER) {
+if ($NEWSHEADER) 
+{
 	$layouts_str .= $NEWSHEADER;
 }
 
-if ($CUSTOMPAGES) {
-	if (is_array($CUSTOMPAGES)) {
-		foreach ($CUSTOMPAGES as $custom_extract_key => $custom_extract_value) {
-			if ($CUSTOMHEADER[$custom_extract_key]) {
+if ($CUSTOMPAGES) 
+{
+	if (is_array($CUSTOMPAGES)) 
+	{
+		foreach ($CUSTOMPAGES as $custom_extract_key => $custom_extract_value) 
+		{
+			if ($CUSTOMHEADER[$custom_extract_key]) 
+			{
 				$layouts_str .= $CUSTOMHEADER[$custom_extract_key];
 			}
-			if ($CUSTOMFOOTER[$custom_extract_key]) {
+			if ($CUSTOMFOOTER[$custom_extract_key]) 
+			{
 				$layouts_str .= $CUSTOMFOOTER[$custom_extract_key];
 			}
 		}
-	} else {
-		if ($CUSTOMHEADER) {
+	} 
+	else 
+	{
+		if ($CUSTOMHEADER) 
+		{
 			$layouts_str .= $CUSTOMHEADER;
 		}
-		if ($CUSTOMFOOTER) {
+		if ($CUSTOMFOOTER) 
+		{
 			$layouts_str .= $CUSTOMFOOTER;
 		}
 	}
 }
 
+
 $menu_array = parseheader($layouts_str, 'check');
 sort($menu_array, SORT_NUMERIC);
 $menu_check = 'set';
-foreach ($menu_array as $menu_value) {
-	if ($menu_value != $menu_check) {
+foreach ($menu_array as $menu_value) 
+{
+	if ($menu_value != $menu_check) 
+	{
 		$menu_areas[] = $menu_value;
 	}
 	$menu_check = $menu_value;
@@ -138,6 +151,7 @@ if($_POST['menuActivate'])
 				VALUES ('{$row['menu_name']}', {$location}, {$menu_count}, '', '{$row['menu_path']}')
 				";
 				$sql->db_Select_gen($qry);
+				$admin_log->log_event('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 				$menu_count++;
 			}
 		}
@@ -157,18 +171,20 @@ if (isset($_POST['menuAct']))
   }
 }
 
-if ($menu_act == 'config') {
+if ($menu_act == 'config') 
+{
 	if($newloc)
 	{
 		$newloc = ".".$newloc;
 	}
 	$newurl = $PLUGINS_DIRECTORY.$location."/{$position}{$newloc}.php";
 	$newurl = SITEURL.str_replace("//", "/", $newurl);
-	echo "<script>	top.location.href = '$newurl'; </script> ";
+	echo "<script>	top.location.href = '{$newurl}'; </script> ";
 	exit;
 }
 
-if ($menu_act == "adv") {
+if ($menu_act == "adv") 
+{
 	require_once(e_HANDLER."userclass_class.php");
 	$sql->db_Select("menus", "*", "menu_id=".$id);
 	$row = $sql->db_Fetch();
@@ -206,21 +222,24 @@ if ($menu_act == "adv") {
 
 unset($message);
 
-if ($menu_act == "sv") {
+if ($menu_act == "sv") 
+{
 	$pagelist = explode("\r\n", $_POST['pagelist']);
-	for ($i = 0 ; $i < count($pagelist) ; $i++) {
+	for ($i = 0 ; $i < count($pagelist) ; $i++) 
+	{
 		$pagelist[$i] = trim($pagelist[$i]);
 	}
 	$plist = implode("|", $pagelist);
 	$pageparms = $_POST['listtype'].'-'.$plist;
 	$pageparms = preg_replace("#\|$#", "", $pageparms);
-	$pageparms = (trim($_POST['pagelist']) == '') ? '' :
-	$pageparms;
-	$sql->db_Update("menus", "menu_class='".$_POST['menu_class']."', menu_pages='{$pageparms}' WHERE menu_id='$id' ");
+	$pageparms = (trim($_POST['pagelist']) == '') ? '' : $pageparms;
+	$sql->db_Update("menus", "menu_class='".$_POST['menu_class']."', menu_pages='{$pageparms}' WHERE menu_id=".intval($id));
+	$admin_log->log_event('MENU_02',$_POST['menu_class'].'[!br!]'.$pageparms.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
 	$message = "<br />".MENLAN_8."<br />";
 }
 
-if ($menu_act == "move") {
+if ($menu_act == "move") 
+{
 	// Get current menu name
 	if($sql->db_Select('menus', 'menu_name', 'menu_id='.$id, 'default'))
 	{
@@ -229,13 +248,15 @@ if ($menu_act == "move") {
 		if(!$sql->db_Select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = ".$newloc))
 		{
 			$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location=".$newloc);
-			$sql->db_Update("menus", "menu_location='$newloc', menu_order=".($menu_count+1)." WHERE menu_id=".$id);
-			$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
+			$sql->db_Update("menus", "menu_location='{$newloc}', menu_order=".($menu_count+1)." WHERE menu_id=".$id);
+			$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position}");
 		}
+		$admin_log->log_event('MENU_03',$row['menu_name'].'[!br!]'.$newloc.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
 	}
 }
 
-if ($menu_act == "deac") {
+if ($menu_act == "deac") 
+{
 	// Get current menu name
 	if($sql->db_Select('menus', 'menu_name', 'menu_id='.$id, 'default'))
 	{
@@ -252,29 +273,38 @@ if ($menu_act == "deac") {
 			$sql->db_Update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$id);
 		}
 		//Move all other menus up
-		$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location={$location} AND menu_order > $position");
+		$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location={$location} AND menu_order > {$position}");
+		$admin_log->log_event('MENU_04',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
 	}
 }
 
-if ($menu_act == "bot") {
-	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$location' ");
-	$sql->db_Update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='$position' AND menu_location='$location' ");
-	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
+if ($menu_act == "bot") 
+{
+	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='{$location}' ");
+	$sql->db_Update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='{$position}' AND menu_location='{$location}' ");
+	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position}");
+	$admin_log->log_event('MENU_06',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
 }
 
-if ($menu_act == "top") {
-	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_location='$location' AND menu_order < $position");
-	$sql->db_Update("menus", "menu_order=1 WHERE menu_id='$id' ");
+if ($menu_act == "top") 
+{
+	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_location='{$location}' AND menu_order < {$position}");
+	$sql->db_Update("menus", "menu_order=1 WHERE menu_id='{$id}' ");
+	$admin_log->log_event('MENU_05',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
 }
 
-if ($menu_act == "dec") {
-	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='$location' ");
-	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='$id' AND menu_location='$location' ");
+if ($menu_act == "dec") 
+{
+	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='{$location}' ");
+	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='{$id}' AND menu_location='{$location}' ");
+	$admin_log->log_event('MENU_08',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
 }
 
-if ($menu_act == "inc") {
-	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='$location' ");
-	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
+if ($menu_act == "inc") 
+{
+	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='{$location}' ");
+	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='{$id}' AND menu_location='{$location}' ");
+	$admin_log->log_event('MENU_07',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
 }
 
 if (strpos(e_QUERY, 'configure') === FALSE)
@@ -308,6 +338,7 @@ if (strpos(e_QUERY, 'configure') === FALSE)
 		if (!$existing_menu)
 		{  // New menu to add to list
 		  $sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'");
+		  // Could do admin logging here - but probably not needed
 		  $message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
 		}
 	  }
@@ -354,7 +385,8 @@ else
 
 	if ($CUSTOMPAGES) 
 	{
-		if ($menu_act != 'adv') {
+		if ($menu_act != 'adv') 
+		{
 			$text = "<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'><div style='width: 100%'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
@@ -365,33 +397,51 @@ else
 
 			$text .= $frm->form_select_open('custom_select', 'onchange="this.form.submit()"');
 
-			if ($menus_equery[1] == '' || $menus_equery[1] == 'default_layout') {
+			if ($menus_equery[1] == '' || $menus_equery[1] == 'default_layout') 
+			{
 				$text .= $frm->form_option(MENLAN_31, 'selected', 'default_layout');
-			} else {
+			} 
+			else 
+			{
 				$text .= $frm->form_option(MENLAN_31, FALSE, 'default_layout');
 			}
 
-			if ($NEWSHEADER) {
-				if ($menus_equery[1] == 'newsheader_layout') {
+			if ($NEWSHEADER) 
+			{
+				if ($menus_equery[1] == 'newsheader_layout') 
+				{
 					$text .= $frm->form_option(MENLAN_32, 'selected', 'newsheader_layout');
-				} else {
+				} 
+				else 
+				{
 					$text .= $frm->form_option(MENLAN_32, FALSE, 'newsheader_layout');
 				}
 			}
 
-			if ($CUSTOMPAGES) {
-				if (is_array($CUSTOMPAGES)) {
-					foreach ($CUSTOMPAGES as $custom_pages_key => $custom_pages_value) {
-						if ($menus_equery[1] == $custom_pages_key) {
+			if ($CUSTOMPAGES) 
+			{
+				if (is_array($CUSTOMPAGES)) 
+				{
+					foreach ($CUSTOMPAGES as $custom_pages_key => $custom_pages_value) 
+					{
+						if ($menus_equery[1] == $custom_pages_key) 
+						{
 							$text .= $frm->form_option($custom_pages_key, 'selected', $custom_pages_key);
-						} else {
+						} 
+						else 
+						{
 							$text .= $frm->form_option($custom_pages_key, FALSE, $custom_pages_key);
 						}
 					}
-				} else {
-					if ($menus_equery[1] == 'custom_layout') {
+				} 
+				else 
+				{
+					if ($menus_equery[1] == 'custom_layout') 
+					{
 						$text .= $frm->form_option(MENLAN_33, 'selected', 'custom_layout');
-					} else {
+					} 
+					else 
+					{
 						$text .= $frm->form_option(MENLAN_33, FALSE, 'custom_layout');
 					}
 				}
