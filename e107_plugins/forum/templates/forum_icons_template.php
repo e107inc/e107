@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_icons_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-04 16:59:32 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-07 00:21:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -51,6 +51,9 @@ define("IMAGE_admin_move2", "<img src='".img_path('admin_move.png')."' alt='".LA
 define("IMAGE_post", "<img src='".img_path('post.png')."' alt='' title='' style='border:0' />");
 define("IMAGE_post2", "<img src='".img_path('post2.png')."' alt='' title='' style='border:0; vertical-align:bottom' />");
 define("IMAGE_report", "<img src='".img_path('report.png')."' alt='".LAN_413."' title='".LAN_413."' style='border:0' />");
+
+define("IMAGE_track", "<img src='".img_path('edit.png')."' alt='".LAN_391."' title='".LAN_391."' style='border:0' />");
+define("IMAGE_untrack", "<img src='".img_path('quote.png')."' alt='".LAN_392."' title='".LAN_392."' style='border:0' />");
 	
 // Admin <input> Icons
 	

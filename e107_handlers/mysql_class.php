@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2008-11-29 18:47:39 $
+|     $Revision: 1.32 $
+|     $Date: 2008-12-07 00:21:20 $
 |     $Author: mcfly_e107 $
 |
 +----------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.31 $
+* @version $Revision: 1.32 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -443,6 +443,10 @@ class db {
 
 			case 'string':
 				return "'{$fieldValue}'";
+				break;
+
+			case 'escape':
+				return "'".mysql_real_escape_string($fieldValue)."'";
 				break;
 
 			case 'todb':

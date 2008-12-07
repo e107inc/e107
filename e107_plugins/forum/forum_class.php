@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-12-05 20:28:05 $
+|     $Revision: 1.19 $
+|     $Date: 2008-12-07 00:21:21 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -31,16 +31,18 @@ class e107forum
 		$this->fieldTypes['forum_post']['post_forum'] 			= 'int';
 		$this->fieldTypes['forum_post']['post_datestamp'] 		= 'int';
 		$this->fieldTypes['forum_post']['post_thread'] 			= 'int';
+		$this->fieldTypes['forum_post']['post_options'] 		= 'escape';
 
 		$this->fieldTypes['forum_thread']['thread_user'] 		= 'int';
 		$this->fieldTypes['forum_thread']['thread_lastpost'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_lastuser'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_s'] 			= 'int';
 		$this->fieldTypes['forum_thread']['thread_forum_id'] 	= 'int';
-		$this->fieldTypes['forum_thread']['thread_active'] 	= 'int';
-		$this->fieldTypes['forum_thread']['thread_datestamp'] = 'int';
+		$this->fieldTypes['forum_thread']['thread_active'] 		= 'int';
+		$this->fieldTypes['forum_thread']['thread_datestamp']	= 'int';
 		$this->fieldTypes['forum_thread']['thread_views'] 		= 'int';
 		$this->fieldTypes['forum_thread']['thread_replies'] 	= 'int';
+		$this->fieldTypes['forum_thread']['thread_options'] 	= 'escape';
 
 		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
 
@@ -67,7 +69,6 @@ class e107forum
 
 	function getForumPermList()
 	{
-
 		global $e107;
 
 		$this->permList = array();
@@ -253,6 +254,7 @@ class e107forum
 
 	function threadGet($id, $joinForum = true, $uid = USERID)
 	{
+		global $pref;
 		$e107 = e107::getInstance();
 		$id = (int)$id;
 		$uid = (int)$uid;
@@ -281,7 +283,7 @@ class e107forum
 			{
 				if(trim($tmp['thread_options']) != '')
 				{
-					$tmp['thread_options'] = inserialize($tmp['thread_options']);
+					$tmp['thread_options'] = unserialize($tmp['thread_options']);
 				}
 				return $tmp;
 			}

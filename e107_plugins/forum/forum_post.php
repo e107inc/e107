@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-12-05 20:28:05 $
+|     $Revision: 1.24 $
+|     $Date: 2008-12-07 00:21:21 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,9 @@ require_once('../../class2.php');
 $e_wysiwyg = 'post';
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php';
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_post.php');
+
+//var_dump($_POST);
+//exit;
 
 if (isset($_POST['fjsubmit']))
 {
@@ -162,11 +165,11 @@ if (isset($_POST['fpreview']))
 	$tsubject = $tp->post_toHTML($_POST['subject'], true);
 	$tpost = $tp->post_toHTML($_POST['post'], true);
 
-	if ($_POST['poll_title'] != "" && $pref['forum_poll'])
+	if ($_POST['poll_title'] != '' && $pref['forum_poll'])
 	{
 		require_once(e_PLUGIN."poll/poll_class.php");
 		$poll = new poll;
-		$poll->render_poll($_POST, "forum", "notvoted");
+		$poll->render_poll($_POST, 'forum', 'notvoted');
 	}
 
 	if (!$FORUM_PREVIEW)
@@ -216,6 +219,9 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 {
 	$postInfo = array();
 	$threadInfo = array();
+	$postOptions = array();
+	$threadOptions = array();
+	
 	if ((isset($_POST['newthread']) && trim($_POST['subject']) == '') || trim($_POST['post']) == '')
 	{
 		message_handler('ALERT', 5);
@@ -227,6 +233,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
 			exit;
 		}
+		$hasPoll = ($action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '');
 		process_upload();
 		$postInfo['post_ip'] = $e107->getip();
 
@@ -258,7 +265,6 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 				$postResult = $forum->postAdd($postInfo);
 				break;
 
-
 			// New thread started.  Add the thread info (with lastest post info), add the post.
 			// Update forum with latest post info
 			case 'nt':
@@ -267,6 +273,11 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 				$threadInfo['thread_forum_id'] = $forumId;
 				$threadInfo['thread_active'] = 1;
 				$threadInfo['thread_datestamp'] = $time;
+				if($hasPoll)
+				{
+					$threadOptions['poll'] = '1';
+				}
+				$threadInfo['thread_options'] = serialize($threadOptions);
 				$postResult = $forum->threadAdd($threadInfo, $postInfo);
 				break;
 		}
@@ -294,7 +305,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		if ($action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '')
 		{
 			require_once(e_PLUGIN.'poll/poll_class.php');
-			$_POST['iid'] = $iid;
+			$_POST['iid'] = $threadId;
 			$poll = new poll;
 			$poll->submit_poll(2);
 		}

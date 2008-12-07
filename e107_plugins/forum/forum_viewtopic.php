@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-05 20:28:05 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-07 00:21:21 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -37,6 +37,7 @@ if (!e_QUERY)
 
 include_lan(e_PLUGIN . 'forum/languages/English/lan_forum_viewtopic.php');
 include_once (e_PLUGIN . 'forum/forum_class.php');
+include_lan(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 
 $forum = new e107forum;
 $thread = new e107ForumThread;
@@ -120,7 +121,8 @@ if (!$FORUMSTART)
 	if (file_exists(THEME . 'forum_viewtopic_template.php'))
 	{
 		require_once (THEME . 'forum_viewtopic_template.php');
-	} elseif (file_exists(THEME . 'forum_template.php'))
+	}
+	elseif (file_exists(THEME . 'forum_template.php'))
 	{
 		require_once (THEME . 'forum_template.php');
 	}
@@ -129,8 +131,6 @@ if (!$FORUMSTART)
 		require_once (e_PLUGIN . 'forum/templates/forum_viewtopic_template.php');
 	}
 }
-
-//$forum_info['forum_name'] = $e107->tp->toHTML($threadInfo['forum_name'], true, 'no_hook,emotes_off');
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -144,11 +144,50 @@ if ($pref['forum_track'] && USER)
 {
 	if ($thread->threadInfo['track_userid'])
 	{
-		$TRACK = "<span class='smalltext'><a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId)) . "'>" . LAN_392 . "</a></span>";
+		$TRACK = "
+			<span class='smalltext'>
+				<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId)) . "'>" . LAN_392 . "</a>
+			</span>";
+		$url = $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId)); 
+		$TRACK = "
+			<span id='forum-track-trigger-container'>
+			<a href='{$url}' id='forum-track-trigger'>".IMAGE_untrack."</a>
+			</span>
+			
+			<script type='text/javascript'>
+				//put this in header_js or as inline script just after the markup above
+				$('forum-track-trigger').observe('click', function(e) { 
+					e.stop(); 
+					new e107Ajax.Updater('forum-track-trigger-container', '".e_SELF."?id={$thread->threadId}&f=untrack', {
+						overlayPage: $(document.body)
+					});
+				});
+			</script>
+		";
 	}
 	else
 	{
-		$TRACK = "<span class='smalltext'><a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId)) . "'>" . LAN_391 . "</a></span>";
+		$TRACK = "
+			<span class='smalltext'>
+				<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId)) . "'>" . LAN_391 . "</a>
+			</span>
+		";
+		$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId)); 
+		$TRACK = "
+			<span id='forum-track-trigger-container'>
+			<a href='{$url}' id='forum-track-trigger'>".IMAGE_track."</a>
+			</span>
+			
+			<script type='text/javascript'>
+				//put this in header_js or as inline script just after the markup above
+				$('forum-track-trigger').observe('click', function(e) { 
+					e.stop(); 
+					new e107Ajax.Updater('forum-track-trigger-container', '".e_SELF."?id={$thread->threadId}&f=track', {
+						overlayPage: $(document.body)
+					});
+				});
+			</script>
+		";
 	}
 }
 
@@ -451,7 +490,7 @@ class e107ForumThread
 
 	function processFunction()
 	{
-		global $forum;
+		global $forum, $thread;
 		$e107 = e107::getInstance();
 		if (!isset($_GET['f']))
 		{
@@ -481,22 +520,26 @@ class e107ForumThread
 				break;
 
 			case 'track':
-				if (!USER || !isset($_GET['id']))
-				{
-					return;
-				}
+				if (!USER || !isset($_GET['id'])) { return; }
 				$forum->track('add', USERID, $_GET['id']);
+				
+				if(e_AJAX_REQUEST)
+				{
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId)); 
+					echo "<a href='{$url}' id='forum-track-trigger'>".IMAGE_untrack."</a>";
+					exit();
+				}
 				break;
 
-				//			header("location:".e_SELF."?{$thread_id}.{$topic_from}");
-				//			exit;
-
 			case 'untrack':
-				if (!USER || !isset($_GET['id']))
-				{
-					return;
-				}
+				if (!USER || !isset($_GET['id'])) { return; }
 				$forum->track('del', USERID, $_GET['id']);
+				if(e_AJAX_REQUEST)
+				{
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId)); 
+					echo "<a href='{$url}' id='forum-track-trigger'>".IMAGE_track."</a>";
+					exit();
+				}
 				break;
 
 			case 'last':
