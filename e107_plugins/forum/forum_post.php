@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-12-07 00:21:21 $
+|     $Revision: 1.25 $
+|     $Date: 2008-12-07 04:16:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -49,16 +49,6 @@ switch($action)
 	case 'rp':
 		$threadInfo = $forum->threadGet($id, false);
 		$forumId = $threadInfo['thread_forum_id'];
-//		var_dump($threadInfo);
-//		if (!is_array($thread_info) || !count($thread_info))
-//		{
-//		  $forum_info = false;		// Someone fed us a dud forum id - should exist if replying
-//		}
-//		else
-//		{
-//		  $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-//		}
-//		$forum_id = $forum_info['forum_id'];
 		break;
 
 	case 'nt':
@@ -116,15 +106,16 @@ define('e_PAGETITLE', LAN_01.' / '.$forumInfo['forum_name'].' / '.($action == 'r
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if (is_readable(e_ADMIN.'filetypes.php'))
+if($pref['forum_attach'])
 {
-	$a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
-	$a_filetypes = explode(',', $a_filetypes);
-	foreach ($a_filetypes as $ftype)
-	{
-		$sa_filetypes[] = '.'.trim(str_replace('.', '', $ftype));
-	}
-	$allowed_filetypes = implode(' | ', $sa_filetypes);
+	global $allowed_filetypes, $max_upload_size;
+	include_once(e_HANDLER.'upload_handler.php');
+	$a_filetypes = get_filetypes();
+	$max_upload_size = calc_max_upload_size(-1);		// Find overriding maximum upload size
+	$max_upload_size = set_max_size($a_filetypes, $max_upload_size);
+	$max_upload_size = $e107->parseMemorySize($max_upload_size, 0);	
+	$a_filetypes = array_keys($a_filetypes);
+	$allowed_filetypes = implode(' | ', $a_filetypes);	
 }
 
 if (isset($_POST['submitpoll']))
@@ -196,17 +187,17 @@ if (isset($_POST['fpreview']))
   	$post = $tp->post_toForm($_POST['post']);
 	$subject = $tp->post_toHTML($_POST['subject'], false);
 
-	if ($action == "edit")
+	if ($action == 'edit')
 	{
 		if ($_POST['subject'])
 		{
-			$action = "edit";
+			$action = 'edit';
 		}
 		else
 		{
-			$action = "reply";
+			$action = 'reply';
 		}
-		$eaction = TRUE;
+		$eaction = true;
 	}
 	else if($action == 'quote')
 	{
@@ -234,7 +225,6 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			exit;
 		}
 		$hasPoll = ($action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '');
-		process_upload();
 		$postInfo['post_ip'] = $e107->getip();
 
 		if (USER)
@@ -256,13 +246,25 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		$postInfo['post_datestamp'] = $time;
 		$threadInfo['thread_lastpost'] = $time;
 
+		//If we've successfully uploaded something, we'll have to edit the post_entry and post_attachments
+		if($uploadResult = process_upload($newPostId))
+		{
+			foreach($uploadResult as $ur)
+			{
+				$postInfo['post_entry'] .= $ur['txt'];
+				$attachments[] = $ur['att'];
+			}
+			$postInfo['post_attachments'] = implode(',', $attachments);
+			var_dump($uploadResult);
+		}
+
 		switch($action)
 		{
 			// Reply only.  Add the post, update thread record with latest post info.
 			// Update forum with latest post info
 			case 'rp':
 				$postInfo['post_thread'] = $id;
-				$postResult = $forum->postAdd($postInfo);
+				$newPostId = $forum->postAdd($postInfo);
 				break;
 
 			// New thread started.  Add the thread info (with lastest post info), add the post.
@@ -278,7 +280,11 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 					$threadOptions['poll'] = '1';
 				}
 				$threadInfo['thread_options'] = serialize($threadOptions);
-				$postResult = $forum->threadAdd($threadInfo, $postInfo);
+				if($postResult = $forum->threadAdd($threadInfo, $postInfo))
+				{
+					$newPostId = $postResult['postid'];	
+					$newThreadId = $postResult['threadid'];	
+				}
 				break;
 		}
 
@@ -300,8 +306,10 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			exit;
 		}
 
-		$threadId = ($action == 'nt' ? $postResult : $id);
+		$threadId = ($action == 'nt' ? $newThreadId : $id);
 
+
+		//If a poll was submitted, let's add it to the poll db
 		if ($action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '')
 		{
 			require_once(e_PLUGIN.'poll/poll_class.php');
@@ -351,7 +359,7 @@ if (isset($_POST['update_thread']))
 	{
 		if (!isAuthor())
 		{
-			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
+			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96.'</div>');
 			require_once(FOOTERF);
 			exit;
 		}
@@ -452,13 +460,13 @@ if ($action == 'edit' || $action == 'quote')
 
 if (!$FORUMPOST)
 {
-  if (is_readable(THEME."forum_post_template.php"))
+  if (is_readable(THEME.'forum_post_template.php'))
   {
-    include_once(THEME."forum_post_template.php");
+    include_once(THEME.'forum_post_template.php');
   }
   else
   {
-  include_once(e_PLUGIN."forum/templates/forum_post_template.php");
+  include_once(e_PLUGIN.'forum/templates/forum_post_template.php');
   }
 }
 
@@ -515,67 +523,6 @@ function isAuthor()
 	return ((USERID === $postInfo['post_user']) || MODERATOR);
 }
 
-function getuser($name)
-{
-	global $tp, $sql, $e107;
-	$ret = array();
-	$ip = $e107->getip();
-	$name = str_replace("'", "", $name);
-	if (!$name)
-	{
-		// anonymous guest
-//		$name = "0.".LAN_311.chr(1).$ip;
-		$ret['post_userid'] = "0";
-		$ret['post_user_name'] = LAN_311;
-		return $ret;
-	}
-	else
-	{
-		if ($sql->db_Select("user", "user_id, user_ip", "user_name='".$tp -> toDB($name)."'"))
-		{
-			$row = $sql->db_Fetch();
-			if ($row['user_ip'] == $ip)
-			{
-				$ret['post_userid'] = $row['user_id'];
-				$ret['post_user_name'] = $name;
-			}
-			else
-			{
-				return -1;
-			}
-		}
-		else
-		{
-//			$name = "0.".substr($tp->toDB($name), 0, 20).chr(1).$ip;
-			$ret['post_userid'] = "0";
-			$ret['post_user_name'] = $tp->toDB($name);
-		}
-	}
-	return $ret;
-}
-
-function loginf() {
-	$text .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?".e_QUERY."'><p>
-		".LAN_16."<br />
-		<input class='tbox' type='text' name='username' size='15' value='' maxlength='20' />\n
-		<br />
-		".LAN_17."
-		<br />
-		<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />\n
-		<br />
-		<input class='button' type='submit' name='userlogin' value='".LAN_10."' />\n
-		<br />
-		<input type='checkbox' name='autologin' value='1' /> ".LAN_11."
-		<br /><br />
-		[ <a href='".e_BASE."signup.php'>".LAN_174."</a> ]<br />[ <a href='fpw.php'>".LAN_212."</a> ]
-		</p>
-		</form>
-		</div>";
-	$ns = new e107table;
-	$ns->tablerender(LAN_175, $text);
-}
-
 function forumjump()
 {
 	global $forum;
@@ -589,48 +536,40 @@ function forumjump()
 	return $text;
 }
 
-function redirect($url)
-{
-	echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
-}
-
 function process_upload()
 {
 	global $pref, $forum_info, $thread_info, $admin_log;
-
-	if(isset($thread_info['head']['thread_id']))
-	{
-		$tid = $thread_info['head']['thread_id'];
-	}
-	else
-	{
-		$tid = 0;
-	}
+	
+	$postId = (int)$postId;
+	$ret = array(); 
 
 	if (isset($_FILES['file_userfile']['error']))
 	{
-		require_once(e_HANDLER."upload_handler.php");
-		if ($uploaded = file_upload('/'.e_FILE."public/", "attachment", "FT{$tid}_"))
+		require_once(e_HANDLER.'upload_handler.php');
+		if ($uploaded = file_upload('/'.e_FILE.'public/', 'attachment', 'FT_'))
 		{
 			foreach($uploaded as $upload)
 			{
 			  if ($upload['error'] == 0)
 			  {
+				$_txt = '';
+				$_att = '';
 				$fpath = "{e_FILE}public/";
-				if(strstr($upload['type'], "image"))
+				if(strstr($upload['type'], 'image'))
 				{
 					if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
 					{
-						require_once(e_HANDLER."resize_handler.php");
+						require_once(e_HANDLER.'resize_handler.php');
 						$orig_file = $upload['name'];
 						$p = strrpos($orig_file,'.');
-						$new_file = substr($orig_file, 0 , $p)."_".substr($orig_file, $p);
+						$new_file = substr($orig_file, 0 , $p).'_'.substr($orig_file, $p);
 						if(resize_image(e_FILE.'public/'.$orig_file, e_FILE.'public/'.$new_file, $pref['forum_maxwidth']))
 						{
 							if($pref['forum_linkimg'])
 							{
 								$parms = image_getsize(e_FILE.'public/'.$new_file);
-								$_POST['post'] .= "[br][link=".$fpath.$orig_file."][img{$parms}]".$fpath.$new_file."[/img][/link][br]";
+								$_txt = '[br][link='.$fpath.$orig_file."][img{$parms}]".$fpath.$new_file.'[/img][/link][br]';
+								$_att = $new_file;
 								//show resized, link to fullsize
 							}
 							else
@@ -638,33 +577,43 @@ function process_upload()
 								@unlink(e_FILE.'public/'.$orig_file);
 								//show resized
 								$parms = image_getsize(e_FILE.'public/'.$new_file);
-								$_POST['post'] .= "[br][img{$parms}]".$fpath.$new_file."[/img][br]";
+								$_txt = "[br][img{$parms}]".$fpath.$new_file.'[/img][br]';
+								$_att = $new_file;
 							}
 						}
 						else
 						{	//resize failed, show original
 							$parms = image_getsize(e_FILE.'public/'.$upload['name']);
-							$_POST['post'] .= "[br][img{$parms}]".$fpath.$upload['name']."[/img]";
+							$_txt = "[br][img{$parms}]".$fpath.$upload['name'].'[/img]';
+							$_att = $upload['name'];
 						}
 					}
 					else
 					{	//resizing disabled, show original
 						$parms = image_getsize(e_FILE.'public/'.$upload['name']);
 						//resizing disabled, show original
-						$_POST['post'] .= "[br]<div class='spacer'>[img{$parms}]".$fpath.$upload['name']."[/img]</div>\n";
+						$_txt = "[br]<div class='spacer'>[img{$parms}]".$fpath.$upload['name']."[/img]</div>\n";
+						$_att = $upload['name'];
 					}
 				}
 				else
 				{
 					//upload was not an image, link to file
-					$_POST['post'] .= "[br][file=".$fpath.$upload['name']."]".(isset($upload['rawname']) ? $upload['rawname'] : $upload['name'])."[/file]";
+					$_fname = (isset($upload['rawname']) ? $upload['rawname'] : $upload['name']);
+					$_txt = '[br][file='.$fpath.$upload['name'].']'.$_fname.'[/file]';
+					$_att = $upload['name'];
+				}
+				if($_txt && $_att)
+				{
+					$ret[] = array('txt' => $_txt, 'att' => $_att);
 				}
 			  }
 			  else
 			  {  // Error in uploaded file
-			    echo "Error in uploaded file: ".(isset($upload['rawname']) ? $upload['rawname'] : $upload['name'])."<br />";
+			    echo 'Error in uploaded file: '.(isset($upload['rawname']) ? $upload['rawname'] : $upload['name']).'<br />';
 			  }
 			}
+			return $ret;
 		}
 	}
 }
@@ -677,7 +626,7 @@ function image_getsize($fname)
 	}
 	else
 	{
-		return "";
+		return '';
 	}
 }
 

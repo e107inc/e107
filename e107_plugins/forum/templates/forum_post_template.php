@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:18 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-07 04:16:39 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -45,10 +45,10 @@ $subjectbox = "<tr>
 // the poll is optional, be careful when changing the values here, only change if you know what you're doing ...
 if(!$poll_form)
 {
-	if(is_readable(e_PLUGIN."poll/poll_class.php")) {
-		require_once(e_PLUGIN."poll/poll_class.php");
+	if(is_readable(e_PLUGIN.'poll/poll_class.php')) {
+		require_once(e_PLUGIN.'poll/poll_class.php');
 		$pollo = new poll;
-		$poll_form = $pollo -> renderPollForm("forum");
+		$poll_form = $pollo -> renderPollForm('forum');
 	}
 }
 
@@ -61,7 +61,7 @@ $fileattach = "
 </tr>
 <tr>
 	<td style='width:20%' class='forumheader3'>".LAN_392."</td>
-	<td style='width:80%' class='forumheader3'>".LAN_393." | ".$allowed_filetypes." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."
+	<td style='width:80%' class='forumheader3'>".LAN_393." | ".$allowed_filetypes." |<br />".LAN_394."<br />".LAN_395.": ".($max_upload_size ? $max_upload_size.LAN_396 : ini_get('upload_max_filesize'))."
 		<br />
 		<div id='fiupsection'>
 		<span id='fiupopt'>

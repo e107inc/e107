@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-07 00:21:21 $
+|     $Revision: 1.9 $
+|     $Date: 2008-12-07 04:16:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -142,53 +142,22 @@ $NEXTPREV .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' =>
 
 if ($pref['forum_track'] && USER)
 {
-	if ($thread->threadInfo['track_userid'])
-	{
-		$TRACK = "
-			<span class='smalltext'>
-				<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId)) . "'>" . LAN_392 . "</a>
-			</span>";
-		$url = $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId)); 
-		$TRACK = "
+	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
+	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track_toggle', 'id' => $thread->threadId)); 
+	$TRACK .= "
 			<span id='forum-track-trigger-container'>
-			<a href='{$url}' id='forum-track-trigger'>".IMAGE_untrack."</a>
+			<a href='{$url}' id='forum-track-trigger'>{$img}</a>
 			</span>
-			
 			<script type='text/javascript'>
 				//put this in header_js or as inline script just after the markup above
 				$('forum-track-trigger').observe('click', function(e) { 
 					e.stop(); 
-					new e107Ajax.Updater('forum-track-trigger-container', '".e_SELF."?id={$thread->threadId}&f=untrack', {
+					new e107Ajax.Updater('forum-track-trigger-container', '{$url}', {
 						overlayPage: $(document.body)
 					});
 				});
 			</script>
-		";
-	}
-	else
-	{
-		$TRACK = "
-			<span class='smalltext'>
-				<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId)) . "'>" . LAN_391 . "</a>
-			</span>
-		";
-		$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId)); 
-		$TRACK = "
-			<span id='forum-track-trigger-container'>
-			<a href='{$url}' id='forum-track-trigger'>".IMAGE_track."</a>
-			</span>
-			
-			<script type='text/javascript'>
-				//put this in header_js or as inline script just after the markup above
-				$('forum-track-trigger').observe('click', function(e) { 
-					e.stop(); 
-					new e107Ajax.Updater('forum-track-trigger-container', '".e_SELF."?id={$thread->threadId}&f=track', {
-						overlayPage: $(document.body)
-					});
-				});
-			</script>
-		";
-	}
+	";
 }
 
 $MODERATORS = LAN_321 . implode(', ', $modArray);
@@ -541,6 +510,27 @@ class e107ForumThread
 					exit();
 				}
 				break;
+
+			case 'track_toggle':
+				if (!USER || !isset($_GET['id'])) { return; }
+				if($thread->threadInfo['track_userid'])
+				{
+					$forum->track('del', USERID, $_GET['id']);
+					$img = IMAGE_untrack;
+				}
+				else
+				{
+					$forum->track('add', USERID, $_GET['id']);
+					$img = IMAGE_track;
+				}
+				if(e_AJAX_REQUEST)
+				{
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track_toggle', 'id' => $thread->threadId)); 
+					echo "<a href='{$url}' id='forum-track-trigger'>{$img}</a>";
+					exit();
+				}
+				break;
+
 
 			case 'last':
 //				$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);

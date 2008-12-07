@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-12-07 00:21:21 $
+|     $Revision: 1.20 $
+|     $Date: 2008-12-07 04:16:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,7 @@ class e107forum
 		$this->fieldTypes['forum_post']['post_datestamp'] 		= 'int';
 		$this->fieldTypes['forum_post']['post_thread'] 			= 'int';
 		$this->fieldTypes['forum_post']['post_options'] 		= 'escape';
+		$this->fieldTypes['forum_post']['post_attachments'] 	= 'escape';
 
 		$this->fieldTypes['forum_thread']['thread_user'] 		= 'int';
 		$this->fieldTypes['forum_thread']['thread_lastpost'] 	= 'int';
@@ -156,12 +157,13 @@ class e107forum
 	{
 		//Future option, will just set to true here
 		$addUserPostCount = true;
+		$result = false;
 
 		$e107 = e107::getInstance();
-		$result = $e107->sql->db_Insert('forum_post', $postInfo);
+		$postId = $e107->sql->db_Insert('forum_post', $postInfo);
 		$forumInfo = array();
 
-		if($result && $updateThread)
+		if($postId && $updateThread)
 		{
 			$threadInfo = array();
 			if(varset($postInfo['post_user']))
@@ -229,6 +231,7 @@ class e107forum
 			';
 			$result = $e107->sql->db_Select_gen($qry);
 		}
+		return $postId;
 
 	}
 
@@ -240,8 +243,8 @@ class e107forum
 		{
 			$postInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 			$postInfo['post_thread'] = $newThreadId;
-			$result = $this->postAdd($postInfo, false);
-			return $newThreadId;
+			$newPostId = $this->postAdd($postInfo, false);
+			return array('postid' => $newPostId, 'threadid' => $newThreadId);
 		}
 		return false;
 	}

@@ -1,5 +1,5 @@
 <?php
-// $Id: thread.php,v 1.3 2008-12-04 21:36:09 mcfly_e107 Exp $
+// $Id: thread.php,v 1.4 2008-12-07 04:16:38 mcfly_e107 Exp $
 function url_forum_thread($parms)
 {
 	switch($parms['func'])
@@ -54,6 +54,9 @@ function url_forum_thread($parms)
 			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=untrack&id={$parms['id']}";
 			break;
 
+		case 'track_toggle':
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=track_toggle&id={$parms['id']}";
+			break;
 
 	}
 }
