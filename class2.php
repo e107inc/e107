@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2008-12-04 21:05:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.85 $
+|     $Date: 2008-12-07 21:41:03 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1708,20 +1708,93 @@ function e107_require($fname)
 
 function include_lan($path, $force = false)
 {
+	global $pref;
 	if (!is_readable($path))
 	{
+		if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
+		{
+			return FALSE;
+		}
 		$path = str_replace(e_LANGUAGE, 'English', $path);
 	}
 	$ret = ($force) ? include($path) : include_once($path);
 	return (isset($ret)) ? $ret : "";
 }
 
+/*
+withdrawn - use loadLanFiles($path, 'admin') instead
 // Searches a defined set of paths and file names to load language files used for admin (including install etc)
 function include_lan_admin($path)
 {
 	include_lan($path.'languages/'.e_LANGUAGE.'/lan_config.php');
 	include_lan($path.'languages/admin/'.e_LANGUAGE.'.php');
 }
+*/
+
+
+// Routine looks in standard paths for language files associated with a plugin or theme - primarily for core routines, which won't know
+// for sure where the author has put them.
+// $unitName is the name (directory path) of the plugin or theme
+// $type determines what is to be loaded:
+//		'runtime'	- the standard runtime language file for a plugin
+//		'admin'		- the standard admin language file for a plugin
+//		'theme'		- the standard language file for a plugin (these are usually pretty small, so one is enough)
+// Otherwise, $type is treated as part of a filename within the plugin's language directory, prefixed with the current language
+// Returns FALSE on failure (not found).
+// Returns the include_once error return if there is one
+// Otherwise returns an empty string.
+
+// Note - if the code knows precisely where the language file is located, use include_lan()
+
+// $pref['noLanguageSubs'] can be set TRUE to prevent searching for the English files if the files for the current site language don't exist.
+
+function loadLanFiles($unitName, $type='runtime')
+{
+	global $pref;
+	switch ($type)
+	{
+		case 'runtime' :
+			$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_'.$unitName.'.php';
+			$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.$unitName.'.php';
+			break;
+		case 'admin' :
+			$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin_'.$unitName.'.php';
+			$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.'admin_'.$unitName.'.php';
+			break;
+		case 'theme' :
+			$searchPath[1] = e_THEME.$unitName.'/languages/'.e_LANGUAGE.'_'.$unitName.'.php';
+			$searchPath[2] = e_THEME.$unitName.'/languages/'.e_LANGUAGE.'/'.$unitName.'.php';
+			break;
+		default :
+			$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_'.$type.'.php';
+			$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.$type.'.php';
+	}
+	foreach ($searchPath as $s)			// Look for files in current language first - should usually be found
+	{
+		if (is_readable($s))
+		{
+			$ret = include_once($s);
+			return (isset($ret)) ? $ret : "";
+		}
+	}
+	if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
+	{
+		return FALSE;		// No point looking for the English files twice
+	}
+
+	foreach ($searchPath as $s)			// Now look for the English files
+	{
+		$s = str_replace(e_LANGUAGE, 'English', $s);
+		if (is_readable($s))
+		{
+			$ret = include_once($s);
+			return (isset($ret)) ? $ret : "";
+		}
+	}
+	return FALSE;		// Nothing found
+}
+
+
 
 if(!function_exists('print_a'))
 {

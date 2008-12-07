@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-06 15:48:16 $
+|     $Revision: 1.11 $
+|     $Date: 2008-12-07 21:41:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,8 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
 	$temp['multilanguage']	= $_POST['multilanguage'];
     $temp['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
 	$temp['sitelanguage'] = $_POST['mainsitelanguage'];
-
+	$temp['noLanguageSubs'] = $_POST['noLanguageSubs'];
+	
 	if ($admin_log->logArrayDiffs($temp, $pref, 'LANG_01'))
 	{
 		save_prefs();		// Only save if changes
@@ -179,9 +180,11 @@ if ($_POST['edit_existing'])
 	<div style='text-align:center'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>\n";
 
-	foreach ($tabs as $table_name) {
+	foreach ($tabs as $table_name) 
+	{
 		$installed = strtolower($_POST['lang_choices'])."_".$table_name;
-		if (stristr($_POST['lang_choices'], $installed) === FALSE) {
+		if (stristr($_POST['lang_choices'], $installed) === FALSE) 
+		{
 			$text .= "<tr>
 				<td style='width:30%' class='forumheader3'>".ucfirst(str_replace("_", " ", $table_name))."</td>\n
 				<td style='width:70%' class='forumheader3'>\n";
@@ -228,7 +231,8 @@ if ($_POST['edit_existing'])
 require_once(e_ADMIN."footer.php");
 
 // ---------------------------------------------------------------------------
-function multilang_prefs() {
+function multilang_prefs() 
+{
 	global $ns, $pref,$lanlist;
 
 	$text = "<div style='text-align:center'>
@@ -245,7 +249,8 @@ function multilang_prefs() {
 	$text .= "
 		<select name='mainsitelanguage' class='tbox'>\n";
 		$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
-		foreach($lanlist as $lan){
+		foreach($lanlist as $lan)
+		{
 			$sel =  ($lan == $sellan) ? "selected='selected'" : "";
     		$text .= "<option value='{$lan}' {$sel}>".$lan."</option>\n";
 		}
@@ -259,7 +264,17 @@ function multilang_prefs() {
 		<td style='width:80%' class='forumheader3'>".LANG_LAN_12.": </td>
 		<td style='width:20%;text-align:center' class='forumheader3'>";
 	$checked = ($pref['multilanguage'] == 1) ? "checked='checked'" : "";
-	$text .= "<input type='checkbox' name='multilanguage'   value='1' $checked />
+	$text .= "<input type='checkbox' name='multilanguage'   value='1' {$checked} />
+		</td>
+		</tr>
+		";
+
+	$text .= "
+		<tr>
+		<td style='width:80%' class='forumheader3'>".LANG_LAN_26.": <br /><span class='smalltext'>".LANG_LAN_27."</span></td>
+		<td style='width:20%;text-align:center' class='forumheader3'>";
+	$checked = ($pref['noLanguageSubs'] == 1) ? "checked='checked'" : "";
+	$text .= "<input type='checkbox' name='noLanguageSubs'   value='1' {$checked} />
 		</td>
 		</tr>
 		";

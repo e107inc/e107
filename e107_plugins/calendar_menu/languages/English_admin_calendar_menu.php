@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/admin/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-08-12 19:59:59 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_admin_calendar_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2008-12-07 21:41:04 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+

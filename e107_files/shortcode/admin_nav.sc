@@ -1,6 +1,6 @@
 /*
 * e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: admin_nav.sc,v 1.4 2008-12-04 20:17:54 e107steved Exp $
+* $Id: admin_nav.sc,v 1.5 2008-12-07 21:41:04 e107steved Exp $
 */
 if (ADMIN) 
 {
@@ -49,7 +49,7 @@ if (ADMIN)
 			if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
 			{
 				$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
-				include_lan_admin(e_PLUGIN.$plugin_path.'/');
+				loadLanFiles($plugin_path, 'admin');
 				$eplug_caption 		= $tp->toHTML($readFile['@attributes']['name'],FALSE,"defs, emotes_off");
 				$eplug_conffile 	= $readFile['administration']['configFile'];
 			}

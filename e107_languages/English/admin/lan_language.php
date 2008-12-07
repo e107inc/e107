@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_language.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-09-20 21:45:33 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-07 21:41:04 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,6 +36,8 @@ define("LANG_LAN_22", "Language Pack created successfully.");
 define("LANG_LAN_23", "Create Language-Pack (zip)");
 define("LANG_LAN_24", "Generate");
 define("LANG_LAN_25", "Language-Pack Creation Status");
+define('LANG_LAN_26', 'Load language files only for current language');
+define('LANG_LAN_27', 'If checked, and a required language can\'t be found, there will be an error');
 
 
 

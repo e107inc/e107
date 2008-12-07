@@ -1,6 +1,6 @@
 /*
 * e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: admin_alt_nav.sc,v 1.5 2008-12-05 19:56:45 e107steved Exp $
+* $Id: admin_alt_nav.sc,v 1.6 2008-12-07 21:41:04 e107steved Exp $
 */
 
 if (ADMIN) 
@@ -81,6 +81,7 @@ if (ADMIN)
 				if($plug->parse_plugin($_path))
 				{
 					$plug_vars = $plug->plug_vars;
+					loadLanFiles($row['plugin_path'], 'admin');
 					if($plug_vars['administration']['configFile'])
 					{
 						$plug_vars['@attributes']['name'] = $tp->toHTML($plug_vars['@attributes']['name'], FALSE, "defs");
