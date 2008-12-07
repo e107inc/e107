@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-28 11:24:12 $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-07 11:45:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -34,8 +34,8 @@ define("SEALAN_26", "Pre-Title Text");
 define("SEALAN_30", "Highlight keywords on referred to page:");
 define("SEALAN_31", "PHP limited to");
 define("SEALAN_32", "results (leave blank for no limit)");
-define("SEALAN_33", "Could not switch to MySQL sort method as this requires at least version 4.0.1 of MySQL.");
-define("SEALAN_34", "Your version is currently");
+//define("SEALAN_33", "Could not switch to MySQL sort method as this requires at least version 4.0.1 of MySQL.");
+//define("SEALAN_34", "Your version is currently");
 define("SEALAN_35", "Searchable areas selection method:");
 define("SEALAN_36", "Dropdown");
 define("SEALAN_37", "Checkbox");

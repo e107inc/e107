@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/search.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-07 11:45:02 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once('../class2.php');
-if (!getperms('X')) {
+if (!getperms('X')) 
+{
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
@@ -36,16 +37,9 @@ $search_handlers['users'] = SEALAN_7;
 $search_handlers['downloads'] = ADLAN_24;
 $search_handlers['pages'] = SEALAN_39;
 
-preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
-if (version_compare($mysql_version[1], '4.0.1', '<')) {
-	$mysql_supported = false;
-} else {
-	$mysql_supported = true;
-}
 
 foreach($pref['e_search_list'] as $file)
 {
-
 	if (is_readable(e_PLUGIN.$file."/e_search.php") && !isset($search_prefs['plug_handlers'][$file]))
 	{
 		$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
@@ -63,28 +57,36 @@ foreach($pref['e_search_list'] as $file)
 
 
 
-if (!isset($search_prefs['boundary'])) {
+if (!isset($search_prefs['boundary'])) 
+{
 	$search_prefs['boundary'] = 1;
 	$save_search = TRUE;
 }
 
-if ($save_search) {
+if ($save_search) 
+{
 	$serialpref = addslashes(serialize($search_prefs));
 	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
+	$admin_log->log_event('SEARCH_03','',E_LOG_INFORMATIVE,'');
 }
 
-if (isset($_POST['update_main'])) {
-	foreach($search_handlers as $s_key => $s_value) {
+
+if (isset($_POST['update_main'])) 
+{	// Update all the basic handler info
+	foreach($search_handlers as $s_key => $s_value) 
+	{
 		$search_prefs['core_handlers'][$s_key]['class'] = $_POST['core_handlers'][$s_key]['class'];
 		$search_prefs['core_handlers'][$s_key]['order'] = $_POST['core_handlers'][$s_key]['order'];
 	}
 
-	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
+	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) 
+	{
 		$search_prefs['plug_handlers'][$plug_dir]['class'] = $_POST['plug_handlers'][$plug_dir]['class'];
 		$search_prefs['plug_handlers'][$plug_dir]['order'] = $_POST['plug_handlers'][$plug_dir]['order'];
 	}
 
-	foreach ($search_prefs['comments_handlers'] as $key => $value) {
+	foreach ($search_prefs['comments_handlers'] as $key => $value) 
+	{
 		$search_prefs['comments_handlers'][$key]['class'] = $_POST['comments_handlers'][$key]['class'];
 	}
 
@@ -92,50 +94,62 @@ if (isset($_POST['update_main'])) {
 
 	$tmp = addslashes(serialize($search_prefs));
 	admin_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
+	$admin_log->log_event('SEARCH_04','',E_LOG_INFORMATIVE,'');
 }
 
-if (isset($_POST['update_handler'])) {
-	if ($query[1] == 'c') {
+
+if (isset($_POST['update_handler'])) 
+{	// Update a specific handler
+	if ($query[1] == 'c') 
+	{
 		$handler_type = 'core_handlers';
-	} else if ($query[1] == 'p') {
+	} 
+	else if ($query[1] == 'p') 
+	{
 		$handler_type = 'plug_handlers';
 	}
-	$search_prefs[$handler_type][$query[2]]['class'] = $_POST['class'];
+	else
+	{
+		exit;		// Illegal value
+	}
+	$query[2] = $tp->toDB($query[2]);
+	$search_prefs[$handler_type][$query[2]]['class'] = intval($_POST['class']);
 	$search_prefs[$handler_type][$query[2]]['chars'] = $tp -> toDB($_POST['chars']);
 	$search_prefs[$handler_type][$query[2]]['results'] = $tp -> toDB($_POST['results']);
-	$search_prefs[$handler_type][$query[2]]['pre_title'] = $_POST['pre_title'];
+	$search_prefs[$handler_type][$query[2]]['pre_title'] = intval($_POST['pre_title']);
 	$search_prefs[$handler_type][$query[2]]['pre_title_alt'] = $tp -> toDB($_POST['pre_title_alt']);
 
 	$tmp = addslashes(serialize($search_prefs));
 	admin_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
+	$admin_log->log_event('SEARCH_05',$handler_type.', '.$query[2],E_LOG_INFORMATIVE,'');
 }
 
-if (isset($_POST['update_prefs'])) {
-	$search_prefs['relevance'] = $_POST['relevance'];
-	$search_prefs['user_select'] = $_POST['user_select'];
-	$search_prefs['multisearch'] = $_POST['multisearch'];
-	$search_prefs['selector'] = $_POST['selector'];
-	$search_prefs['time_restrict'] = $_POST['time_restrict'];
-	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $tp -> toDB($_POST['time_secs']);
-	if ($_POST['search_sort'] == 'mysql') {
-		if ($mysql_supported) {
-			$search_prefs['mysql_sort'] = TRUE;
-		} else {
-			$search_prefs['mysql_sort'] = FALSE;
-			$ns -> tablerender(LAN_ERROR, "<div style='text-align:center'><b>".SEALAN_33."<br />".SEALAN_34." ".$mysql_version[1]."</b></div>");
-		}
-	} else {
-		$search_prefs['mysql_sort'] = FALSE;
+if (isset($_POST['update_prefs'])) 
+{
+	unset($temp);
+	$temp['relevance'] = intval($_POST['relevance']);
+	$temp['user_select'] = intval($_POST['user_select']);
+	$temp['multisearch'] = intval($_POST['multisearch']);
+	$temp['selector'] = intval($_POST['selector']);
+	$temp['time_restrict'] = intval($_POST['time_restrict']);
+	$temp['time_secs'] = min(intval($_POST['time_secs']), 300);
+	$temp['mysql_sort'] = ($_POST['search_sort'] == 'mysql');
+	$temp['php_limit'] = intval($_POST['php_limit']);
+	$temp['boundary'] = intval($_POST['boundary']);
+
+	if ($admin_log->logArrayDiffs($temp, $search_prefs, 'SEARCH_01'))
+	{
+		$tmp = addslashes(serialize($search_prefs));
+		admin_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
 	}
-	$search_prefs['php_limit'] = $tp -> toDB($_POST['php_limit']);
-	$search_prefs['boundary'] = $_POST['boundary'];
 
-	$tmp = addslashes(serialize($search_prefs));
-	admin_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
-
-	$pref['search_restrict'] = $_POST['search_restrict'];
-	$pref['search_highlight'] = $_POST['search_highlight'];
-	save_prefs();
+	unset($temp);
+	$temp['search_restrict'] = intval($_POST['search_restrict']);
+	$temp['search_highlight'] = intval($_POST['search_highlight']);
+	if ($admin_log->logArrayDiffs($temp, $pref, 'SEARCH_02'))
+	{
+		save_prefs();
+	}
 }
 
 require_once(e_HANDLER."form_handler.php");
@@ -143,7 +157,8 @@ $rs = new form;
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
-if ($query[0] == 'settings') {
+if ($query[0] == 'settings') 
+{
 	$text = "<form method='post' action='".e_SELF."?settings'><div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
 
@@ -210,7 +225,7 @@ if ($query[0] == 'settings') {
 	$text .= "<tr>
 	<td class='forumheader3' style='width:50%'>".SEALAN_3."<br />".SEALAN_49."</td>
 	<td colspan='2' class='forumheader3' style='width:50%'>
-	".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0), 'MySql', ($mysql_supported ? "" : "disabled='true'"))."MySql<br />
+	".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0))."MySql<br />
 	".$rs -> form_radio('search_sort', 'php', ($search_prefs['mysql_sort'] == TRUE ? 0 : 1)).SEALAN_31."
 	".$rs -> form_text("php_limit", 5, $tp -> toForm($search_prefs['php_limit']), 5)." ".SEALAN_32."
 	</td>
@@ -231,13 +246,22 @@ if ($query[0] == 'settings') {
 	$text .= "</table>
 	</div></form>";
 
-} else if ($query[0] == 'edit') {
-	if ($query[1] == 'c') {
+} 
+else if ($query[0] == 'edit') 
+{
+	if ($query[1] == 'c') 
+	{
 		$handlers = $search_handlers;
 		$handler_type = 'core_handlers';
-	} else if ($query[1] == 'p') {
+	} 
+	else if ($query[1] == 'p') 
+	{
 		$handlers = $search_prefs['plug_handlers'];
 		$handler_type = 'plug_handlers';
+	}
+	else
+	{
+		exit;
 	}
 
 	$text = "<form method='post' action='".e_SELF."?main.".$query[1].".".$query[2]."'>
@@ -245,7 +269,7 @@ if ($query[0] == 'settings') {
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 	$text .= "<tr>
-	<td class='fcaption' colspan='2'>".SEALAN_43.": ".$handlers[$query[2]]."</td>
+	<td class='fcaption' colspan='2'>".SEALAN_43.": ".$query[2]."</td>
 	</tr>";
 
 	$text .= "<tr>
@@ -277,8 +301,9 @@ if ($query[0] == 'settings') {
 	</div>
 	</form>";
 
-} else {
-
+} 
+else 
+{		// Default front page
 	$text = "<form method='post' action='".e_SELF."'><div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
 
@@ -293,7 +318,8 @@ if ($query[0] == 'settings') {
 	<td class='forumheader'>".LAN_EDIT."</td>
 	</tr>";
 
-	foreach($search_handlers as $key => $value) {
+	foreach($search_handlers as $key => $value) 
+	{
 		$text .= "<tr>
 		<td style='width:55%; white-space:nowrap' class='forumheader3'>".$value."</td>
 		<td style='width:25%' class='forumheader3'>";
@@ -312,8 +338,10 @@ if ($query[0] == 'settings') {
 		</tr>";
 	}
 
-	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
-		if(is_readable(e_PLUGIN.$plug_dir."/e_search.php")){
+	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) 
+	{
+		if(is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
+		{
 			require_once(e_PLUGIN.$plug_dir."/e_search.php");
 		}
 		$text .= "<tr>
