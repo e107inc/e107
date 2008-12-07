@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2008-12-05 19:56:51 $
+|     $Revision: 1.55 $
+|     $Date: 2008-12-07 21:41:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1542,7 +1542,7 @@ class e107plugin
 	function parse_plugin_xml($path)
 	{
 		global $tp;
-		include_lan_admin($path);					// Look for LAN files on default paths
+		loadLanFiles($path, 'admin');					// Look for LAN files on default paths
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);

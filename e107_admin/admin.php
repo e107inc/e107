@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-04 20:17:49 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-07 21:41:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -302,7 +302,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 				}
 				else
 				{
-					include_lan_admin($plugin_path);
+					loadLanFiles($plugin_path, 'admin');
 					$eplug_name 		= $tp->toHTML($readFile['@attributes']['name'],FALSE,"defs, emotes_off");
 					$eplug_conffile 	= $readFile['administration']['configFile'];
 					$eplug_icon_small 	= $plugin_path.'/'.$readFile['administration']['iconSmall'];

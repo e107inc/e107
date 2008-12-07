@@ -11,17 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-08-13 20:47:09 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-07 21:41:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 
-To do:
-1. Admin log for changes
 */
 
 
 require_once("../../class2.php");
+if (!plugInstalled('log')) header("Location: ".e_BASE."index.php");
 if (!getperms("P")) 
 {
 	header("location:../../index.php");
@@ -31,9 +30,9 @@ if (!getperms("P"))
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 
-define("LOGPATH", e_PLUGIN."log/");
+define('LOGPATH', e_PLUGIN.'log/');
 
-include_lan(LOGPATH."languages/admin/".e_LANGUAGE.".php");
+include_lan(LOGPATH.'languages/'.e_LANGUAGE.'_admin_log.php');
 
 if (e_QUERY) 
 {

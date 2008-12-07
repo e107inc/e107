@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/admin/English_log_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-02-16 14:57:37 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English_log_help.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2008-12-07 21:41:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */

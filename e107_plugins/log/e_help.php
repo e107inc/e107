@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/e_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-01-06 10:18:34 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-07 21:41:04 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 define("LOGPATH", e_PLUGIN."log/");
-include_lan(LOGPATH."languages/admin/".e_LANGUAGE."_log_help.php");
+include_lan(LOGPATH."languages/".e_LANGUAGE."_log_help.php");
 
 if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'list';
 

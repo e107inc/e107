@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-11-20 21:43:57 $
+|     $Revision: 1.11 $
+|     $Date: 2008-12-07 21:41:04 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -28,7 +28,7 @@ if (!getperms("P"))
 }
 	
 	
-include_lan_admin(e_PLUGIN.'calendar_menu/');
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');
 
 
 $message = "";
