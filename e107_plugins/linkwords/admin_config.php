@@ -11,32 +11,53 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-01-11 22:13:43 $
+|     $Revision: 1.7 $
+|
+| ***** START OF VERSION WHICH ALLOWS TOOLTIPS (also order of forms changed )
+|
+|     $Date: 2008-12-07 21:55:01 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!getperms("P")) {
+if (!plugInstalled('linkwords')) header("Location: ".e_BASE."index.php");
+if (!getperms("P")) 
+{
 	header("location:".e_BASE."index.php");
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");
-@include_once(e_PLUGIN."linkwords/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."linkwords/languages/English.php");
+@include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE."_admin_linkwords.php");
 
 $lw_context_areas = array(
-			'title' => LWLAN_33,
-			'summary' => LWLAN_34,
-			'body' => LWLAN_35,
-			'description' => LWLAN_36,
-			'user_title' => LWLAN_40,
-			'user_body'  => LWLAN_41
+			'TITLE' => LWLAN_33,
+			'SUMMARY' => LWLAN_34,
+			'BODY' => LWLAN_35,
+			'DESCRIPTION' => LWLAN_36,
+			'USER_TITLE' => LWLAN_40,
+			'USER_BODY'  => LWLAN_41
 			// Don't do the next three - linkwords are meaningless on them
 //			'olddefault' => LWLAN_37,
 //			'linktext' => LWLAN_38,
 //			'rawtext' => LWLAN_39'
 		);
+
+// Yes, I know its a silly order - but that's history!
+$lwaction_vals = array(1=>LWLAN_51, 0=>LWLAN_52, 2=>LWLAN_53, 3=>LWLAN_54);
+
+// Generate dropdown for possible actions on finding a linkword
+function lw_act_opts($curval)
+{
+  global $lwaction_vals;
+  $ret = '';
+  foreach ($lwaction_vals as $opt => $val)
+  {
+    $selected = ($curval == $opt ? "selected='selected'" : "");
+	$ret .= "<option value='{$opt}' {$selected}>{$val}</option>\n";
+  }
+  return $ret;
+}
+
 		
 $deltest = array_flip($_POST);
 
@@ -47,6 +68,7 @@ if(isset($deltest[LWLAN_17]))
 	if ($sql->db_Count("linkwords", "(*)", "WHERE linkword_id = ".$delete_id))
 	{
 		$sql->db_Delete("linkwords", "linkword_id=".$delete_id);
+		$admin_log->log_event('LINKWD_03','ID: '.$delete_id,'');
 		$message = LWLAN_19;
 	}
 }
@@ -57,7 +79,7 @@ if(e_QUERY)
   if (!isset($lw_qs[0])) $lw_qs[0] = 'words';
   if (!isset($lw_qs[1])) $lw_qs[1] = -1;
   $action = $lw_qs[0];
-  $id = $lw_qs[1];
+  $id = intval($lw_qs[1]);
 }
 if (!isset($action)) $action = 'words';
 
@@ -65,13 +87,15 @@ if (isset($_POST['saveopts_linkword']))
 {  // Save options page
   // Array of context flags
 	$pref['lw_context_visibility'] = array(			
-			'olddefault' => FALSE,
-			'title' => FALSE,
-			'summary' => FALSE,
-			'body' => FALSE,
-			'description' => FALSE,
-			'linktext' => FALSE,
-			'rawtext' => FALSE
+			'OLDDEFAULT' => FALSE,
+			'TITLE' => FALSE,
+			'USER_TITLE' => FALSE,
+			'SUMMARY' => FALSE,
+			'BODY' => FALSE,
+			'USER_BODY' => FALSE,
+			'DESCRIPTION' => FALSE,
+			'LINKTEXT' => FALSE,
+			'RAWTEXT' => FALSE
 			);
   foreach ($_POST['lw_visibility_area'] as $can_see)
   {
@@ -87,40 +111,55 @@ if (isset($_POST['saveopts_linkword']))
 	$pagelist[$i] = trim($pagelist[$i]);
   }
   $pref['lw_page_visibility'] = '2-'.implode("|", $pagelist);		// '2' for 'hide on specified pages'
+  $pref['lw_ajax_enable'] = isset($_POST['lw_ajax_enable']);
   save_prefs();
+  $logString = implode(', ',$pref['lw_context_visibility']).'[!br!]'.$pref['lw_page_visibility'].'[!br!]'.$pref['lw_ajax_enable'];
+	$admin_log->log_event('LINKWD_04',$logString,'');
 }
 
 
-if (isset($_POST['submit_linkword']))
+if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 {
 	if(!$_POST['linkwords_word'] && $_POST['linkwords_url'])
-	{
+	{	// Key fields empty
 		$message = LWLAN_1;
 	}
 	else
 	{
-		$word = $tp -> toDB($_POST['linkword_word']);
-		$link = $tp -> toDB($_POST['linkword_link']);
-		$active = intval($_POST['linkword_active']);
-		$sql -> db_Insert("linkwords", "0, {$active}, '{$word}', '{$link}' ");
-		$message = LWLAN_2;
-	}
-}
+		$data['linkword_word'] = $tp -> toDB($_POST['linkword_word']);
+		$data['linkword_link'] = $tp -> toDB($_POST['linkword_link']);
+		$data['linkword_tooltip'] = $tp -> toDB($_POST['linkword_tooltip']);
+		$data['linkword_tip_id'] = intval($_POST['linkword_tip_id']);
+		$data['linkword_active'] = intval($_POST['linkword_active']);
+		$data['linkword_newwindow'] = isset($_POST['linkword_newwindow']) ? 1 : 0;
 
-if (isset($_POST['update_linkword']))
-{
-	if(!$_POST['linkwords_word'] && $_POST['linkwords_url'])
-	{
-		$message = LWLAN_1;
-	}
-	else
-	{
-		$id = $_POST['id'];
-		$word = $tp -> toDB($_POST['linkword_word']);
-		$link = $tp -> toDB($_POST['linkword_link']);
-		$active = $_POST['linkword_active'];
-		$sql -> db_Update("linkwords", "linkword_active=$active, linkword_word='$word', linkword_link='$link' WHERE linkword_id=".$id);
-		$message = LWLAN_3;
+		$logString = implode('[!br!]',$data);
+		if (isset($_POST['submit_linkword']))
+		{
+			if ($sql -> db_Insert('linkwords', $data))
+			{
+				$message = LWLAN_2;
+				$admin_log->log_event('LINKWD_01',$logString,'');
+			}
+			else
+			{
+				$message = LWLAN_57;
+			}
+		}
+		elseif (isset($_POST['update_linkword']))
+		{
+			$id = intval(varset($_POST['lw_edit_id'],0));
+			if (($id > 0) && $sql -> db_UpdateArray('linkwords', $data, ' WHERE `linkword_id`='.$id))
+			{
+				$message = LWLAN_3;
+				$logString = 'ID: '.$id.'[!br!]'.$logString;
+				$admin_log->log_event('LINKWD_02',$logString,'');
+			}
+			else
+			{
+				$message = LWLAN_57;
+			}
+		}
 	}
 }
 
@@ -131,13 +170,14 @@ if (isset($message))
 }
 
 
-
+$chkNewWindow = " checked='checked'";			// Open links in new window by default
 if($action == "edit")
 {
   if($sql -> db_Select("linkwords", "*", "linkword_id=".$id))
   {
 	$row = $sql -> db_Fetch();
 	extract($row);
+	$chkNewWindow = $row['linkword_newwindow'] ? " checked='checked'" : '';			// Open links in new window by default
 	define("LW_EDIT", TRUE);
   }
 }
@@ -154,45 +194,64 @@ $text = "
 <div class='center'>
 <form method='post' action='".e_SELF."?words'>
 <table style='".ADMIN_WIDTH."' class='fborder'>
+	<colgroup>
+  	<col style='width: 35%; vertical-align:top;' />
+  	<col style='width: 65%; vertical-align:top;' />
+	</colgroup>
 
 <tr>
-<td style='width:50%' class='forumheader3'>".LWLAN_21."</td>
-<td style='width:50%' class='forumheader3'>
+<td class='forumheader3'>".LWLAN_21."</td>
+<td class='forumheader3'>
 <input class='tbox' type='text' name='linkword_word' size='40' value='".$linkword_word."' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style='width:50%' class='forumheader3'>".LWLAN_6."</td>
-<td style='width:50%' class='forumheader3'>
-<input class='tbox' type='text' name='linkword_link' size='60' value='".$linkword_link."' maxlength='200' />
+<td class='forumheader3'>".LWLAN_6."</td>
+<td class='forumheader3'>
+<input class='tbox' type='text' name='linkword_link' size='60' value='".$linkword_link."' maxlength='250' /><br />
+	<input type='checkbox' name='linkword_newwindow' value='1'{$chkNewWindow} />".LWLAN_55."
 </td>
 </tr>
 
 <tr>
-<td style='width:50%' class='forumheader3'>".LWLAN_22."</td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<input type='radio' name='linkword_active' value='0'".(!$linkword_active ? " checked='checked'" : "")." /> ".LWLAN_9."&nbsp;&nbsp;
-<input type='radio' name='linkword_active' value='1'".($linkword_active ? " checked='checked'" : "")." /> ".LWLAN_10."
+<td class='forumheader3'>".LWLAN_50."</td>
+<td class='forumheader3'>
+<textarea rows='3' cols='80' class='tbox' name='linkword_tooltip'>".$linkword_tooltip."</textarea>
+</td>
+</tr>
+
+<tr>
+<td class='forumheader3'>".LWLAN_62."</td>
+<td class='forumheader3'>
+<input class='tbox' type='text' name='linkword_tip_id' size='10' value='".$linkword_tip_id."' maxlength='10' /> ".LWLAN_63."
+</td>
+</tr>
+
+<tr>
+<td class='forumheader3'>".LWLAN_22."</td>
+<td style='text-align:left' class='forumheader3'><select class='tbox' name='linkword_active'>".lw_act_opts($linkword_active).
+"</select>
 </td>
 </tr>
 
 <tr>
 <td colspan='2' style='text-align:center' class='forumheader'>".
-(defined("LW_EDIT") ? "<input class='button' type='submit' name='update_linkword' value='".LWLAN_15."' /><input type='hidden' name='id' value='$id' />" : "<input class='button' type='submit' name='submit_linkword' value='".LWLAN_14."' />")."
+(defined("LW_EDIT") ? "<input class='button' type='submit' name='update_linkword' value='".LWLAN_15."' /><input type='hidden' name='lw_edit_id' value='{$id}' />" : "<input class='button' type='submit' name='submit_linkword' value='".LWLAN_14."' />")."
 </td>
 </tr>
 </table>
 </form>
 </div>\n";
 
+
 $ns -> tablerender(LWLAN_31, $text);
 }
 
-
-// Now display existing linkwords
 if (($action == 'words') || ($action == 'edit'))
 {
+
+
   $text = "<div class='center'>\n";
   if(!$sql -> db_Select("linkwords"))
   {
@@ -201,30 +260,49 @@ if (($action == 'words') || ($action == 'edit'))
   else
   {
 	$text = "
+  <div class='center'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
-	<tr>
-	<td class='forumheader' style='width: 20%;'>".LWLAN_5."</td>
-	<td class='forumheader' style='width: 40%;'>".LWLAN_6."</td>
-	<td class='forumheader' style='width: 10%; text-align: center;'>".LWLAN_7."</td>
-	<td class='forumheader' style='width: 30%; text-align: center;'>".LWLAN_8."</td>
+	  <colgroup>
+  	  <col style='width:  5%; vertical-align:top;' />
+  	  <col style='width: 15%; vertical-align:top;' />
+  	  <col style='width: 20%; vertical-align:top;' />
+  	  <col style='width: 5%; vertical-align:top;' />
+  	  <col style='width: 25%; vertical-align:top;' />
+  	  <col style='width: 5%; vertical-align:top;' />
+  	  <col style='width: 10%; vertical-align:top; text-align: center;' />
+  	  <col style='width: 15%; vertical-align:top; text-align: center;' />
+	</colgroup>	<tr>
+	<td class='forumheader'>".LWLAN_61."</td>
+	<td class='forumheader'>".LWLAN_5."</td>
+	<td class='forumheader'>".LWLAN_6."</td>
+	<td class='forumheader'>".LWLAN_56."</td>
+	<td class='forumheader'>".LWLAN_50."</td>
+	<td class='forumheader'>".LWLAN_60."</td>
+	<td class='forumheader'>".LWLAN_7."</td>
+	<td class='forumheader'>".LWLAN_8."</td>
 	</tr>\n";
 
 	while($row = $sql -> db_Fetch())
 	{
-		extract($row);
 		$text .= "
-		
-		<form action='".e_SELF."' method='post' id='myform_$linkword_id'  onsubmit=\"return jsconfirm('".LWLAN_18." [ID: $linkword_id ]')\">
 		<tr>
-		<td class='forumheader' style='width: 20%;'>$linkword_word</td>
-		<td class='forumheader' style='width: 40%;'>$linkword_link</td>
-		<td class='forumheader' style='width: 10%; text-align: center;'>".(!$linkword_active ? LWLAN_12 : LWLAN_13)."</td>
-		<td class='forumheader' style='width: 30%; text-align: center;'>
-		<input class='button' type='button' onclick=\"document.location='".e_SELF."?edit.$linkword_id'\" value='".LWLAN_16."' id='edit_$linkword_id' name='edit_linkword_id' />
-		<input class='button' type='submit'  value='".LWLAN_17."' id='delete_$linkword_id' name='delete_$linkword_id' />
+		<td class='forumheader'>{$row['linkword_id']}</td>
+		<td class='forumheader'>{$row['linkword_word']}</td>
+		<td class='forumheader'>{$row['linkword_link']}</td>
+		<td class='forumheader'>".($row['linkword_newwindow'] ? LAN_YES : LAN_NO)."</td>
+		<td class='forumheader'>{$row['linkword_tooltip']}</td>
+		<td class='forumheader'>".($row['linkword_tip_id'] > 0 ? $row['linkword_tip_id'] : '')."</td>
+		<td class='forumheader' >".$lwaction_vals[$row['linkword_active']]."</td>
+		<td class='forumheader' >
+		<form action='".e_SELF."' method='post' id='myform_{$row['linkword_id']}'  onsubmit=\"return jsconfirm('".LWLAN_18." [ID: {$row['linkword_id']} ]')\">
+		<div>
+		<input class='button' type='button' onclick=\"document.location='".e_SELF."?edit.{$row['linkword_id']}'\" value='".LWLAN_16."' id='edit_{$row['linkword_id']}' name='edit_linkword_id' />
+		<input class='button' type='submit' value='".LWLAN_17."' id='delete_{$row['linkword_id']}' name='delete_{$row['linkword_id']}' />
+		</div>
+		</form>\n
 		</td>
 		</tr>
-		</form>\n";
+		";
 	}
 	$text .= "</table>";
   }
@@ -239,6 +317,7 @@ if ($action=='options')
 {
   $menu_pages = substr($pref['lw_page_visibility'],2);    // Knock off the 'show/hide' flag
   $menu_pages = str_replace("|", "\n", $menu_pages);
+  $AjaxEnable = varset($pref['lw_ajax_enable'],0);
   $text = "
   <div class='center'>
   <form method='post' action='".e_SELF."?options'>
@@ -265,6 +344,15 @@ if ($action=='options')
   <td class='forumheader3'><textarea rows='5' cols='60' class='tbox' name='linkword_omit_pages' >".$menu_pages."</textarea>
   </td>
   <td class='forumheader3'>".LWLAN_29."
+  </tr>";
+
+  $checked = varset($pref['lw_ajax_enable'],0) ? 'checked=checked' : '';
+  $text .= "
+  <tr>
+  <td class='forumheader3'>".LWLAN_59."</td>
+  <td class='forumheader3'><input type='checkbox' name='lw_ajax_enable' {$checked}>
+  </td>
+  <td class='forumheader3'>".""."
   </tr>
 
 <tr>
