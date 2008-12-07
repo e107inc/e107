@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-11-23 22:49:42 $
+|     $Revision: 1.18 $
+|     $Date: 2008-12-07 13:08:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -118,7 +118,6 @@ City, State, Country
   'subnews_resize' => '',
   'subnews_class' => '0',
   'subnews_htmlarea' => '0',
-  'subnews_hide_news' => '',
   'news_newdateheader' => '0',
   'email_text' => '',
   'useGeshi' => '0',

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-05-18 16:34:28 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-07 13:08:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -161,11 +161,9 @@ define("LAN_NEWS_40", "Insert download links");
 define("LAN_NEWS_42", "Files");
 // define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");  // deprecated see lan_admin.php
 define("LAN_NEWS_44", "Trackback not enabled.");
-
 define("LAN_NEWS_45", "ID");
-
 define("LAN_NEWS_46", "News item not updated as no changes were made.");
-// define("LAN_NEWS_47", "Image");  // already defined above.
+define('LAN_NEWS_47', 'Nothing changed - not updated');
 define("LAN_NEWS_48", "No Image");
 
 define("LAN_NEWS_49", "Render-type");
