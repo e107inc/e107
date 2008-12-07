@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-04-26 14:34:17 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-07 12:00:07 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
-if (!getperms('O')) {
+if (!getperms('O')) 
+{
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
@@ -42,11 +43,14 @@ if (isset($_POST['update']))
 }
 $nc -> config();
 
-class notify_config {
 
+class notify_config 
+{
 	var $notify_prefs;
+	var $changeList = array();
 
-	function notify_config() {
+	function notify_config() 
+	{
 		global $sysprefs, $eArrayStorage, $tp, $sql,$pref;
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
@@ -70,14 +74,16 @@ class notify_config {
 		}
 
 
-		if ($recalibrate) {
+		if ($recalibrate) 
+		{
 			$s_prefs = $tp -> toDB($this -> notify_prefs);
 			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 		}
 	}
 
-	function config() {
+	function config() 
+	{
 		global $ns, $rs;
 
 		$text = "<div style='text-align: center'>
@@ -143,7 +149,9 @@ class notify_config {
 		$ns -> tablerender(NT_LAN_1, $text);
 	}
 
-	function render_event($id, $description) {
+
+	function render_event($id, $description) 
+	{
 		global $rs, $tp, $uc;
 		$text .= "
 			<tr>
@@ -169,8 +177,11 @@ class notify_config {
 		return $text;
 	}
 
-	function update() {
-		global $sql, $pref, $tp, $eArrayStorage;
+
+	function update() 
+	{
+		global $sql, $pref, $tp, $eArrayStorage, $admin_log;
+		$this->changeList = array();
 		foreach ($_POST['event'] as $key => $value)
 		{
 			if ($this -> update_event($key))
@@ -191,7 +202,8 @@ class notify_config {
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		if($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'")!==FALSE)
 		{
-            return TRUE;
+			$admin_log->logArrayAll('NOTIFY_01',$this->changeList);
+			return TRUE;
 		}
 		else
 		{
@@ -200,13 +212,30 @@ class notify_config {
 
 	}
 
-	function update_event($id) {
-
-  		$this -> notify_prefs['event'][$id]['class'] = $_POST['event'][$id]['class'];
-		$this -> notify_prefs['event'][$id]['email'] = $_POST['event'][$id]['email'];
-		if ($this -> notify_prefs['event'][$id]['class'] != 255) {
+	function update_event($id) 
+	{
+		$changed = FALSE;
+		
+		if ($this -> notify_prefs['event'][$id]['class'] != $_POST['event'][$id]['class'])
+		{
+			$this -> notify_prefs['event'][$id]['class'] = $_POST['event'][$id]['class'];
+			$changed = TRUE;
+		}
+		if ($this -> notify_prefs['event'][$id]['email'] != $_POST['event'][$id]['email'])
+		{
+			$this -> notify_prefs['event'][$id]['email'] = $_POST['event'][$id]['email'];
+			$changed = TRUE;
+		}
+		if ($changed)
+		{
+			$this->changeList[$id] = $this->notify_prefs['event'][$id]['class'].', '.$this->notify_prefs['event'][$id]['email'];
+		}
+		if ($this -> notify_prefs['event'][$id]['class'] != 255) 
+		{
 			return TRUE;
-		} else {
+		} 
+		else 
+		{
 			return FALSE;
 		}
 	}

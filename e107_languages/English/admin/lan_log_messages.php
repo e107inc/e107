@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.31 2008-12-07 11:45:08 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.32 2008-12-07 12:00:13 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -297,6 +297,10 @@ define('LAN_AL_SEARCH_03', 'Search params auto-update');
 define('LAN_AL_SEARCH_04', 'Searchable areas updated');
 define('LAN_AL_SEARCH_05', 'Search handler settings updated');
 define('LAN_AL_SEARCH_06', '');
+
+// Notify
+//-------
+define('LAN_AL_NOTIFY_01', 'Notify settings updated');
 
 
 ?>
