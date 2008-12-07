@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.33 2008-12-07 13:08:48 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.34 2008-12-07 14:22:40 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -36,8 +36,11 @@ define('LAN_AUDIT_LOG_020', 'User added by admin');
 
 // Admin log events
 //-----------------
-define('LAN_ADMIN_LOG_002', 'Admin log - delete old data');
-define('LAN_ADMIN_LOG_003', 'User Audit log - delete old data');
+define('LAN_AL_ADLOG_01', 'Admin log - prefs updated');
+define('LAN_AL_ADLOG_02', 'Admin log - delete old data');
+define('LAN_AL_ADLOG_03', 'User Audit log - delete old data');
+define('LAN_AL_ADLOG_04', 'User audit options updated');
+define('LAN_AL_ADLOG_05', '');
 
 // User edits
 //-----------
@@ -314,6 +317,27 @@ define('LAN_AL_NEWS_07', 'Submitted news authorised');
 define('LAN_AL_NEWS_08', 'News item added');
 define('LAN_AL_NEWS_09', 'News item updated');
 define('LAN_AL_NEWS_10', '');
+
+// Comments
+//---------
+define('LAN_AL_COMMENT_01', 'Comment(s) deleted');
+
+// File Manager
+//-------------
+define('LAN_AL_FILEMAN_01','File(s) deleted');
+define('LAN_AL_FILEMAN_02','File(s) moved');
+define('LAN_AL_FILEMAN_03','File(s) uploaded');
+define('LAN_AL_FILEMAN_04','');
+
+// Mail
+//-----
+define('LAN_AL_MAIL_01', 'Test email sent');
+define('LAN_AL_MAIL_02', 'Mailshot created');
+define('LAN_AL_MAIL_03', 'Mail settings updated');
+define('LAN_AL_MAIL_04', 'Mailshot details deleted');
+define('LAN_AL_MAIL_05', 'Delete orphaned emails');
+define('LAN_AL_MAIL_06', '');
+define('LAN_AL_MAIL_07', '');
 
 
 ?>
