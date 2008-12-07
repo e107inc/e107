@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-11-14 06:01:06 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-07 14:22:32 $
+|     $Author: e107steved $
 |
 | Work in progress - supplementary mailer plugin
 |
@@ -154,18 +154,19 @@ if (isset($_POST['testemail']) && getperms("0"))
 	}
 	else
 	{
-	  $mailheader_e107id = USERID;
-	  require_once(e_HANDLER."mail.php");
-	  $add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : " (PHP)";
-	  $sendto = trim($_POST['testaddress']);
-	  if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_125)) 
-	  {
-		$message = ($pref['mailer'] == "smtp")  ? LAN_MAILOUT_67 : LAN_MAILOUT_106;
-	  } 
-	  else 
-	  {
-		$message = LAN_MAILOUT_81. "(".$sendto.")";
-	  }
+		$mailheader_e107id = USERID;
+		require_once(e_HANDLER."mail.php");
+		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : " (PHP)";
+		$sendto = trim($_POST['testaddress']);
+		if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_125)) 
+		{
+			$message = ($pref['mailer'] == "smtp")  ? LAN_MAILOUT_67 : LAN_MAILOUT_106;
+		} 
+		else 
+		{
+			$message = LAN_MAILOUT_81. "(".$sendto.")";
+			$admin_log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
+		}
 	}
 }
 
@@ -357,7 +358,8 @@ Table data:
 	}
   }
   
-  $sql->db_Update('generic',"`gen_intdata`={$c} WHERE `gen_id`={$mail_text_id}");
+	$sql->db_Update('generic',"`gen_intdata`={$c} WHERE `gen_id`={$mail_text_id}");
+	$admin_log->log_event('MAIL_02','ID: '.$mail_text_id.' '.$c.'[!br!]'.$_POST['email_from_name']." &lt;".$_POST['email_from_email'],E_LOG_INFORMATIVE,'');
 
 
 
@@ -465,12 +467,13 @@ Table data:
 
 if (isset($_POST['updateprefs']) && getperms("0")) 
 {
-	$pref['mailer'] = $_POST['mailer'];
+	unset($temp);
+	$temp['mailer'] = $_POST['mailer'];
 	// Allow qmail as an option as well - works much as sendmail
-	if ((strpos($_POST['sendmail'],'sendmail') !== FALSE) || (strpos($_POST['sendmail'],'qmail') !== FALSE)) $pref['sendmail'] = $_POST['sendmail'];
-	$pref['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
-	$pref['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
-	$pref['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
+	if ((strpos($_POST['sendmail'],'sendmail') !== FALSE) || (strpos($_POST['sendmail'],'qmail') !== FALSE)) $temp['sendmail'] = $_POST['sendmail'];
+	$temp['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
+	$temp['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
+	$temp['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
 
 	$smtp_opts = array();
 	switch (trim($_POST['smtp_options']))
@@ -488,25 +491,32 @@ if (isset($_POST['updateprefs']) && getperms("0"))
 	if (varsettrue($_POST['smtp_keepalive'])) $smtp_opts[] = 'keepalive';
 	if (varsettrue($_POST['smtp_useVERP'])) $smtp_opts[] = 'useVERP';
 
-	$pref['smtp_pop3auth'] 	= in_array('pop3auth',$smpt_opts);					// This will go!
-	$pref['smtp_keepalive'] = $_POST['smtp_keepalive'];					// This will go!
+	$temp['smtp_pop3auth'] 	= in_array('pop3auth',$smpt_opts);					// This will go!
+	$temp['smtp_keepalive'] = $_POST['smtp_keepalive'];					// This will go!
 
-	$pref['smtp_options'] = implode(',',$smtp_opts);
+	$temp['smtp_options'] = implode(',',$smtp_opts);
 
-	$pref['mail_pause'] 	= $_POST['mail_pause'];
-	$pref['mail_pausetime'] = $_POST['mail_pausetime'];
-	$pref['mail_bounce_email'] = $_POST['mail_bounce_email'];
-	$pref['mail_bounce_pop3'] = $_POST['mail_bounce_pop3'];
-	$pref['mail_bounce_user'] =	$_POST['mail_bounce_user'];
-	$pref['mail_bounce_pass'] = $_POST['mail_bounce_pass'];
-	$pref['mail_bounce_type'] = $_POST['mail_bounce_type'];
-	$pref['mail_bounce_delete'] = $_POST['mail_bounce_delete'];
+	$temp['mail_pause'] 	= intval($_POST['mail_pause']);
+	$temp['mail_pausetime'] = intval($_POST['mail_pausetime']);
+	$temp['mail_bounce_email'] = $tp->toDB($_POST['mail_bounce_email']);
+	$temp['mail_bounce_pop3'] = $tp->toDB($_POST['mail_bounce_pop3']);
+	$temp['mail_bounce_user'] =	$tp->toDB($_POST['mail_bounce_user']);
+	$temp['mail_bounce_pass'] = $tp->toDB($_POST['mail_bounce_pass']);
+	$temp['mail_bounce_type'] = $tp->toDB($_POST['mail_bounce_type']);
+	$temp['mail_bounce_delete'] = intval($_POST['mail_bounce_delete']);
 
-	$pref['mailout_enabled'] = implode(',',$_POST['mail_mailer_enabled']);
-	$pref['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
+	$temp['mailout_enabled'] = implode(',',$_POST['mail_mailer_enabled']);
+	$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
 
-	save_prefs();
-	$message = LAN_SETSAVED;
+	if ($admin_log->logArrayDiffs($temp, $pref, 'MAIL_03'))
+	{
+		save_prefs();		// Only save if changes
+		$message = LAN_SETSAVED;
+	}
+	else
+	{
+		$message = IMALAN_20;
+	}
 }
 
 
@@ -571,7 +581,8 @@ function showMailouts($sub_par,$mail_id)
 	  case 'delete' :
 		if ($sql->db_Select('generic','gen_datestamp',"`gen_datestamp`={$mail_id} AND `gen_type`='savemail'"))
 		{
-		  $message = $sql->db_Delete('generic',"`gen_datestamp`={$mail_id} AND (`gen_type`='sendmail' OR `gen_type`='savemail')") ? LAN_DELETED : LAN_DELETED_FAILED;
+			$message = $sql->db_Delete('generic',"`gen_datestamp`={$mail_id} AND (`gen_type`='sendmail' OR `gen_type`='savemail')") ? LAN_DELETED : LAN_DELETED_FAILED;
+			$admin_log->log_event('MAIL_04',$mail_id,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{	// Should only happen if people fiddle!
@@ -682,7 +693,8 @@ function showMailouts($sub_par,$mail_id)
 	  case 'orphans' :				// Delete any orphaned emails
 		if ($sql->db_Select('generic','gen_datestamp',"`gen_datestamp`={$mail_id} AND `gen_type`='sendmail'"))
 		{
-		  $message = $sql->db_Delete('generic',"`gen_datestamp`={$mail_id} AND `gen_type`='sendmail'") ? LAN_DELETED : LAN_DELETED_FAILED;
+			$message = $sql->db_Delete('generic',"`gen_datestamp`={$mail_id} AND `gen_type`='sendmail'") ? LAN_DELETED : LAN_DELETED_FAILED;
+			$admin_log->log_event('MAIL_04',$mail_i5,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{	// Should only happen if people fiddle!

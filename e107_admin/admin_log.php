@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-11-23 20:26:23 $
+|     $Revision: 1.20 $
+|     $Date: 2008-12-07 14:22:32 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -35,6 +35,16 @@ if (!getperms("S"))
 }
 
 // Main language file should automatically be loaded
+// Load language files for log messages
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php');		//... for core functions
+if (is_array($pref['logLanguageFile']))										//... and for any plugins which support it
+{
+	foreach($pref['logLanguageFile'] as $path => $file)
+	{
+		$file = str_replace('--LAN--',e_LANGUAGE,$file);
+		include_lan(e_PLUGIN.$path.'/'.$file);
+	}
+}
 
 
 unset($qs);
@@ -45,20 +55,52 @@ define ('AL_DATE_TIME_FORMAT', 'y-m-d  H:i:s');
 
 if (isset($_POST['setoptions'])) 
 {
-  $pref['roll_log_active'] = intval($_POST['roll_log_active']);
-  $pref['roll_log_days']   = intval($_POST['roll_log_days']);
-  save_prefs();
-  $message = RL_LAN_006 ; // "Options updated.";
+	unset($temp);
+	$temp['roll_log_active'] = intval($_POST['roll_log_active']);
+	$temp['roll_log_days']   = intval($_POST['roll_log_days']);
+	if ($admin_log->logArrayDiffs($temp, $pref, 'ADLOG_01'))
+	{
+		save_prefs();		// Only save if changes
+		$message = RL_LAN_006 ; // "Options updated.";
+	}
 }
 
 
 if (isset($_POST['setcommonoptions'])) 
 {
-  $pref['sys_log_perpage'] = intval($_POST['sys_log_perpage']);
-  save_prefs();
-  $message = RL_LAN_006 ; // "Options updated.";
+	unset($temp);
+	$temp['sys_log_perpage'] = intval($_POST['sys_log_perpage']);
+	if ($admin_log->logArrayDiffs($temp, $pref, 'ADLOG_01'))
+	{
+		save_prefs();		// Only save if changes
+		$message = RL_LAN_006 ; // "Options updated.";
+	}
 }
 
+
+// User audit prefs
+if (isset($_POST['setauditoptions']))
+{
+	unset($temp);
+	$message = RL_LAN_063;
+	if (in_array((string)USER_AUDIT_LOGIN,$_POST['user_audit_opts']))
+	{
+		$_POST['user_audit_opts'][] = USER_AUDIT_LOGOUT;
+	}
+	foreach ($_POST['user_audit_opts'] as $k => $v)
+	{
+		if (!is_numeric($v))
+		{
+			unset($_POST['user_audit_opts'][$k]);
+		}
+	}
+	$temp['user_audit_opts'] = implode(',',$_POST['user_audit_opts']);
+	$temp['user_audit_class'] = intval($_POST['user_audit_class']);
+	if ($admin_log->logArrayDiffs($temp, $pref, 'ADLOG_04'))
+	{
+		save_prefs();		// Only save if changes
+	}
+}
 
 
 if (e_QUERY) 
@@ -68,38 +110,28 @@ if (e_QUERY)
 
 $action = varset($qs[0],'adminlog');
 
-// Load language files for log messages
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php');		//... for core functions
-if (is_array($pref['logLanguageFile']))										//... and for any plugins which support it
-{
-  foreach($pref['logLanguageFile'] as $path => $file)
-  {
-    $file = str_replace('--LAN--',e_LANGUAGE,$file);
-	include_lan(e_PLUGIN.$path.'/'.$file);
-  }
-}
 
 
 
 // Delete comments if appropriate
 if (isset($_POST['deleteitems']) && ($action == 'comments'))
 {
-  $c_list = array();
-  foreach ($_POST['del_item'] as $di)
-  {
-    if (intval($di) > 0) $c_list[] = '`comment_id`='.intval($di);
-  }
-  if ($count = $sql->db_Delete('comments',implode(' OR ',$c_list)))
-  {
-    $text = str_replace('--NUMBER--', $count,RL_LAN_112);
-	$admin_log->log_event('COMMENT_01','ID: '.implode(',',$_POST['del_item']),E_LOG_INFORMATIVE,'');
-  }
-  else
-  {
-    $text = RL_LAN_113;
-  }
+	$c_list = array();
+	foreach ($_POST['del_item'] as $di)
+	{
+		if (intval($di) > 0) $c_list[] = '`comment_id`='.intval($di);
+	}
+	if ($count = $sql->db_Delete('comments',implode(' OR ',$c_list)))
+	{
+		$text = str_replace('--NUMBER--', $count,RL_LAN_112);
+		$admin_log->log_event('COMMENT_01','ID: '.implode(',',$_POST['del_item']),E_LOG_INFORMATIVE,'');
+	}
+	else
+	{
+		$text = RL_LAN_113;
+	}
 	$ns -> tablerender(LAN_DELETE, "<div style='text-align:center'><b>".$text."</b></div>");
-  unset($c_list);
+	unset($c_list);
 }
 
 
@@ -151,12 +183,12 @@ if (($action == "backdel") && isset($_POST['backdeltype']))
 	  case 'confdel' :
 	    $db_table = 'admin_log';
 		$db_name = RL_LAN_052;
-		$db_msg = 'LAN_ADMIN_LOG_002';
+		$db_msg = "ADLOG_02";
 	    break;
 	  case 'auditdel' :
 	    $db_table = 'audit_log';
 		$db_name = RL_LAN_053;
-		$db_msg = 'LAN_ADMIN_LOG_003';
+		$db_msg = "ADLOG_03";
 	    break;
 	  default :
 	    exit;				// Someone fooling around!
@@ -165,18 +197,19 @@ if (($action == "backdel") && isset($_POST['backdeltype']))
 	if ($del_count = $sql -> db_Delete($db_table,$qry))
 	{
   // Add in a log event
-	  $message = $db_name.str_replace(array('--OLD--','--NUM--'),array($old_string,$del_count),RL_LAN_057);
-	  $admin_log->log_event($db_msg,"db_Delete - earlier than {$old_string} (past {$qs[2]} days)<br />".$message.'<br />'.$db_table.' '.$qry, 4,'LOG_01');
+		$message = $db_name.str_replace(array('--OLD--','--NUM--'),array($old_string,$del_count),RL_LAN_057);
+		$admin_log->log_event($db_msg,"db_Delete - earlier than {$old_string} (past {$qs[2]} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE,'');
 	}
 	else
 	{
-	  $message = RL_LAN_054." : ".$sql->mySQLresult;
+		$message = RL_LAN_054." : ".$sql->mySQLresult;
 	}
   }
 
+
   if (isset($_POST['confirmcancelold']))
   {
-	$message = RL_LAN_056;
+		$message = RL_LAN_056;
   }
   $action = "config";
   unset($qs[1]);
@@ -184,23 +217,10 @@ if (($action == "backdel") && isset($_POST['backdeltype']))
 }
 
 
-// User audit prefs
-if (isset($_POST['setauditoptions']))
-{
-  $message = RL_LAN_063;
-  if (in_array((string)USER_AUDIT_LOGIN,$_POST['user_audit_opts']))
-  {
-	$_POST['user_audit_opts'][] = USER_AUDIT_LOGOUT;
-  }
-  $pref['user_audit_opts'] = implode(',',$_POST['user_audit_opts']);
-  $pref['user_audit_class'] = intval($_POST['user_audit_class']);
-  save_prefs();
-}
-
 
 if (varsettrue($message)) 
 {
-  $ns->tablerender("", "<div style='text-align:center'><b>$message</b></div>");
+	$ns->tablerender("", "<div style='text-align:center'><b>$message</b></div>");
 }
 
 

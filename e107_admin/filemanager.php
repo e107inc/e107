@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-10-19 11:35:00 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-07 14:22:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("6")) {
+if (!getperms("6")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -42,7 +43,8 @@ $imagedir = e_IMAGE."packs/".$imode."/filemanager/";
 
 
 $path = str_replace("../", "", e_QUERY);
-if (!$path) {
+if (!$path) 
+{
 	$path = str_replace("../", "", $adchoice[0]);
 }
 
@@ -58,69 +60,110 @@ if($path == "/")
 
 if (isset($_POST['deleteconfirm'])) 
 {
-  foreach($_POST['deleteconfirm'] as $key=>$delfile)
-  {
-	// check for delete.
-	if (isset($_POST['selectedfile'][$key]) && isset($_POST['deletefiles'])) {
-		if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
-			exit;
+	$deleteList = array();
+	$moveList = array();
+	foreach($_POST['deleteconfirm'] as $key=>$delfile)
+	{
+		// check for delete.
+		if (isset($_POST['selectedfile'][$key]) && isset($_POST['deletefiles'])) 
+		{
+			if (!$_POST['ac'] == md5(ADMINPWCHANGE)) 
+			{
+				exit;
+			}
+			$destination_file = e_BASE.$delfile;
+			if (@unlink($destination_file)) 
+			{
+				$message .= FMLAN_26." '".$destination_file."' ".FMLAN_27.".<br />";
+				$deleteList[] = $destination_file;
+			} 
+			else 
+			{
+				$message .= FMLAN_28." '".$destination_file."'.<br />";
+			}
 		}
-		$destination_file = e_BASE.$delfile;
-		if (@unlink($destination_file)) {
-			$message .= FMLAN_26." '".$destination_file."' ".FMLAN_27.".<br />";
-		} else {
-			$message .= FMLAN_28." '".$destination_file."'.<br />";
-		}
-	}
 
-	// check for move to downloads or downloadimages.
-	if (isset($_POST['selectedfile'][$key]) && (isset($_POST['movetodls'])) ){
-	$newfile = str_replace($path,"",$delfile);
+		// check for move to downloads or downloadimages.
+		if (isset($_POST['selectedfile'][$key]) && (isset($_POST['movetodls'])) )
+		{
+			$newfile = str_replace($path,"",$delfile);
 
-	// Move file to whatever folder.
-		if (isset($_POST['movetodls'])){
-
-			$newpath = $_POST['movepath'];
-
-			if (rename(e_BASE.$delfile,$newpath.$newfile)){
-				$message .= FMLAN_38." ".$newpath.$newfile."<br />";
-			} else {
-				$message .= FMLAN_39." ".$newpath.$newfile."<br />";
-				$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
+			// Move file to whatever folder.
+			if (isset($_POST['movetodls']))
+			{
+				$newpath = $_POST['movepath'];
+				if (rename(e_BASE.$delfile,$newpath.$newfile))
+				{
+					$message .= FMLAN_38." ".$newpath.$newfile."<br />";
+					$moveList[] = e_BASE.$delfile.'=>'.$newpath.$newfile;
+				} 
+				else 
+				{
+					$message .= FMLAN_39." ".$newpath.$newfile."<br />";
+					$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
+				}
 			}
 		}
 	}
-  }
+	if (count($deleteList))
+	{
+		$admin_log->log_event('FILEMAN_01',implode('[!br!]',$deleteList),E_LOG_INFORMATIVE,'');
+	}
+	if (count($moveList))
+	{
+		$admin_log->log_event('FILEMAN_02',implode('[!br!]',$moveList),E_LOG_INFORMATIVE,'');
+	}
 }
 
 
 
-if (isset($_POST['upload'])) {
-	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
+if (isset($_POST['upload'])) 
+{
+	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) 
+	{
 		exit;
 	}
+	$uploadList = array();
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
 	$files = $_FILES['file_userfile'];
-	foreach($files['name'] as $key => $name) {
-		if ($files['size'][$key]) {
+	foreach($files['name'] as $key => $name) 
+	{
+		if ($files['size'][$key]) 
+		{
 			$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
+			$uploadList[] = $_POST['upload_dir'][$key].$uploaded[0]['name'];
 		}
+	}
+	if (count($uploadList))
+	{
+		$admin_log->log_event('FILEMAN_03',implode('[!br!]',$uploadList),E_LOG_INFORMATIVE,'');
 	}
 }
 
-if (isset($message)) {
+
+
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 
-if (strpos(e_QUERY, ".") && !is_dir(realpath(e_BASE.$path))){
+
+
+if (strpos(e_QUERY, ".") && !is_dir(realpath(e_BASE.$path)))
+{
 	echo "<iframe style=\"width:100%\" src=\"".e_BASE.e_QUERY."\" height=\"300\" scrolling=\"yes\"></iframe><br /><br />";
-	if (!strpos(e_QUERY, "/")) {
+	if (!strpos(e_QUERY, "/")) 
+	{
 		$path = "";
-	} else {
+	} 
+	else 
+	{
 		$path = substr($path, 0, strrpos(substr($path, 0, -1), "/"))."/";
 	}
 }
+
+
 
 $files = array();
 $dirs = array();
@@ -129,7 +172,8 @@ $path = $path[0];
 $path = explode(".. ", $path);
 $path = $path[0];
 
-if ($handle = opendir(e_BASE.$path)) {
+if ($handle = opendir(e_BASE.$path)) 
+{
 	while (false !== ($file = readdir($handle))) {
 		if ($file != "." && $file != "..") {
 
