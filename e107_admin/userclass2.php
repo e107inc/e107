@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-11-29 23:31:02 $
-|     $Author: secretr $
+|     $Revision: 1.18 $
+|     $Date: 2008-12-07 16:37:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -310,7 +310,7 @@ switch ($action)
 	$userclass_description = '';
 	$userclass_editclass = e_UC_ADMIN;
 	$userclass_visibility = e_UC_ADMIN;
-	$userclass_parent = e_UC_PUBLIC;
+	$userclass_parent = e_UC_NOBODY;
 	$userclass_icon = '';
 	$userclass_type = UC_TYPE_STD;
 	$userclass_groupclass = '';

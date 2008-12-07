@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-11-29 21:16:48 $
+|     $Revision: 1.22 $
+|     $Date: 2008-12-07 16:37:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1029,7 +1029,16 @@ class user_class_admin extends user_class
   function add_new_class($classrec)
   {
 //    echo "Add new class<br />";
-    $this->sql_r->db_Insert('userclass_classes',$this->copy_rec($classrec, TRUE));
+	if ($classrec['userclass_type'] == UC_TYPE_GROUP)
+	{	// Need to make sure our ID is in the accumulation array
+		$temp = explode(',',$classrec['userclass_accum']);
+		if (!in_array($classrec['userclass_id'], $temp))
+		{
+			$temp[] = $classrec['userclass_id'];
+			$classrec['userclass_accum'] = implode(',',$temp);
+		}
+	}
+	$this->sql_r->db_Insert('userclass_classes',$this->copy_rec($classrec, TRUE));
 	$this->clearCache();
   }
   
@@ -1044,6 +1053,16 @@ class user_class_admin extends user_class
 	}
     $qry = '';
 	$spacer = '';
+	if ($classrec['userclass_type'] == UC_TYPE_GROUP)
+	{	// Need to make sure our ID is in the accumulation array
+		$temp = explode(',',$classrec['userclass_accum']);
+		if (!in_array($classrec['userclass_id'], $temp))
+		{
+			$temp[] = $classrec['userclass_id'];
+			$classrec['userclass_accum'] = implode(',',$temp);
+		}
+	}
+
 	foreach ($this->field_list as $fl => $val)
 	{
 	  if (isset($classrec[$fl]))
