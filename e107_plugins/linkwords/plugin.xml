@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- $Id: plugin.xml,v 1.1 2008-12-07 21:55:02 e107steved Exp $ -->
+<e107Plugin name="LWLANINS_1" version="1.1" compatibility="0.8" installRequired="true" >
+	<author name="jalist, steved" url="http://e107.org" />
+	<description>This plugin will link specified words with a defined link and/or tooltip</description>
+	<folder>linkwords</folder>
+	<logLanguageFile filename="languages/--LAN--.php" />
+	<administration>
+		<configFile>admin_config.php</configFile>
+		<icon>images/linkwords_32.png</icon>
+		<iconSmall>images/linkwords_16.png</iconSmall>
+		<caption>Configure LinkWords</caption>
+		<installDone>To configure please click on the link in the plugins section of the admin front page</installDone>
+	</administration>
+	<mainPrefs>
+		<pref name="lw_page_visibility" value="" />
+		<pref name="lw_context_visibility" type="array">
+				<key name="OLDDEFAULT" value="" />
+				<key name="TITLE" value="" />
+				<key name="SUMMARY" value="1" />
+				<key name="BODY" value="1" />
+				<key name="DESCRIPTION" value="1" />
+				<key name="USER_TITLE" value="" />
+				<key name="USER_BODY" value="1" />
+				<key name="LINKTEXT" value="" />
+				<key name="RAWTEXT" value="" />
+		</pref>
+		<pref name="lw_ajax_enable" value="0" />
+		<arrayPref name="e_tohtml_list" value="linkwords" />
+	</mainPrefs>
+</e107Plugin>
