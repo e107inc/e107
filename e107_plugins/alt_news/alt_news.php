@@ -9,9 +9,9 @@
  * Alternate News
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_news/alt_news.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-03 12:38:08 $
- * $Author: secretr $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-07 13:08:54 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -91,8 +91,12 @@ function alt_news($news_category) {
 				list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2->db_Fetch();
 				$news['comment_total'] = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='".intval($news['news_id'])."' AND comment_type='0' ");
 				$ix->render_newsitem($news);
-			} else {
-				if ($pref['subnews_hide_news'] == 1) {
+			} 
+			/*
+			else 
+			{
+				if ($pref['subnews_hide_news'] == 1) 		This $pref no longer available
+				{
 					if ($news['admin_id'] == 1 && $pref['siteadmin']) {
 						$news['admin_name'] = $pref['siteadmin'];
 					}
@@ -107,7 +111,7 @@ function alt_news($news_category) {
 					list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2->db_Fetch();
 					$ix->render_newsitem($news, "", "userclass");
 				}
-			}
+			} */
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.32 2008-12-07 12:00:13 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.33 2008-12-07 13:08:48 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -301,6 +301,19 @@ define('LAN_AL_SEARCH_06', '');
 // Notify
 //-------
 define('LAN_AL_NOTIFY_01', 'Notify settings updated');
+
+// News
+//-----
+define('LAN_AL_NEWS_01', 'News item deleted');
+define('LAN_AL_NEWS_02', 'News category deleted');
+define('LAN_AL_NEWS_03', 'Submitted news deleted');
+define('LAN_AL_NEWS_04', 'News category created');
+define('LAN_AL_NEWS_05', 'News category updated');
+define('LAN_AL_NEWS_06', 'News preferences updated');
+define('LAN_AL_NEWS_07', 'Submitted news authorised');
+define('LAN_AL_NEWS_08', 'News item added');
+define('LAN_AL_NEWS_09', 'News item updated');
+define('LAN_AL_NEWS_10', '');
 
 
 ?>
