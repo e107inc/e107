@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.30 2008-12-06 23:00:25 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.31 2008-12-07 11:45:08 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -283,12 +283,20 @@ define('LAN_AL_MENU_06', 'Menu - move to bottom');
 define('LAN_AL_MENU_07', 'Menu - move up');
 define('LAN_AL_MENU_08', 'Menu - move down');
 define('LAN_AL_MENU_09', '');
-define('LAN_AL_MENU_10', '');
 
 // Public Uploads
 //---------------
 define('LAN_AL_UPLOAD_01','Uploaded file deleted');
 define('LAN_AL_UPLOAD_02','Upload prefs changed');
+
+// Search
+//-------
+define('LAN_AL_SEARCH_01', 'Search settings updated');
+define('LAN_AL_SEARCH_02', 'Search prefs updated');
+define('LAN_AL_SEARCH_03', 'Search params auto-update');
+define('LAN_AL_SEARCH_04', 'Searchable areas updated');
+define('LAN_AL_SEARCH_05', 'Search handler settings updated');
+define('LAN_AL_SEARCH_06', '');
 
 
 ?>

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-12-06 15:48:16 $
+|     $Revision: 1.13 $
+|     $Date: 2008-12-07 11:45:02 $
 |     $Author: e107steved $
 
 To do:
@@ -327,6 +327,35 @@ Generic log entry point
 			return TRUE;
 		}
 		return FALSE;
+	}
+	
+
+	// Logs an entry with all the data from an array, one field per line.
+	// If $extra is non-empty, it goes on the first line.
+	// Normally data is in the format keyname=>value, one per line.
+	// If the $niceName array exists and has a definition, the 'nice Name' is displayed instead of the key name
+	function logArrayAll($event, $target, $extra='', $niceNames = NULL)
+	{
+		$logString = '';
+		if ($extra)
+		{
+			$logString = $extra.'[!br!]';
+		}
+		$spacer = '';
+		$checkNice = ($niceNames != NULL) && is_array($niceNames);
+		foreach ($target as $k => $v)
+		{
+			if ($checkNice && isset($niceNames[$k]['niceName']))
+			{
+				$logString .= $spacer.$niceNames[$k]['niceName'].'=>'.$v;
+			}
+			else
+			{
+				$logString .= $spacer.$k.'=>'.$v;
+			}
+			$spacer = '[!br!]';
+		}
+		$this->log_event($event,$logString,E_LOG_INFORMATIVE,'');
 	}
 
 }
