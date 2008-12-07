@@ -11,90 +11,80 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-07-20 17:08:31 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-07 00:21:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
-global $tp;
+$e107 = e107::getInstance();
 $gen = new convert;
 
-if (file_exists(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_newforumposts_menu.php"))
-{
-	include_once(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_newforumposts_menu.php");
-}
-else
-{
-	include_once(e_PLUGIN."forum/languages/English/lan_newforumposts_menu.php");
-}
+include_lan(e_PLUGIN.'forum/languages/English/lan_newforumposts_menu.php');
+include_once(e_PLUGIN.'forum/forum_class.php');
 
-$max_age = varset($menu_pref['newforumposts_maxage'],0);
-$max_age = $max_age == 0 ? '' : "(t.thread_datestamp > ".intval(time()-$max_age*86400).") AND ";
-$query2 = "
-SELECT tp.thread_name AS parent_name, 
-t.thread_datestamp , t.thread_thread, t.thread_name, t.thread_id, t.thread_user, 
-f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
-LEFT JOIN #user AS u ON t.thread_user = u.user_id
-LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
-LEFT JOIN #forum AS f ON (f.forum_id = t.thread_forum_id AND f.forum_class IN (".USERCLASS_LIST."))
-LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-WHERE {$max_age} fp.forum_class IN (".USERCLASS_LIST.")
-ORDER BY t.thread_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
+$max_age = varset($menu_pref['newforumposts_maxage'], 0);
+$max_age = $max_age == 0 ? '' : '(t.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
 
+$forum = new e107forum; 
+$forumList = implode(',', $forum->permList['view']);
 
-$results = $sql->db_Select_gen($query2);
+$qry = "
+SELECT
+	p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry, 
+	t.thread_id, t.thread_datestamp, t.thread_name, u.user_name 
+FROM `#forum_post` as p
+LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
+LEFT JOIN `#user` AS u ON u.user_id = p.post_user
+WHERE {$maxage} p.post_forum IN ({$forumList})
+ORDER BY p.post_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
 
-if(!$results)
+if($results = $e107->sql->db_Select_gen($qry))
 {
-	// no posts yet ..
-	$text = NFP_2;
-}
-else
-{
-	$text = "";
-	$forumArray = $sql->db_getList();
-	foreach($forumArray as $fi)
+	while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
 	{
-		$datestamp = $gen->convert_date($fi['thread_datestamp'], "short");
-		$topic = ($fi['parent_name'] ? "Re: <i>{$fi['parent_name']}</i>" : "<i>{$fi['thread_name']}</i>");
-		$topic = strip_tags($tp->toHTML($topic, TRUE, "emotes_off, no_make_clickable, parse_bb", "", $pref['menu_wordwrap']));
-		$id = $fi['thread_id'];
-
-		if($fi['user_name'])
+		$datestamp = $gen->convert_date($row['post_datestamp'], 'short');
+		$id = $row['thread_id'];
+		$topic = ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
+		$topic .= strip_tags($e107->tp->toHTML($row['thread_name'], true, 'emotes_off, no_make_clickable, parse_bb', '', $pref['menu_wordwrap']));
+		if($row['post_user_anon'])
 		{
-			$poster = $fi['user_name'];
+			$poster = $row['post_user_anon'];
 		}
 		else
 		{
-			$x = explode(chr(1), $fi['thread_user']);
-			$tmp = explode(".", $x[0], 2);
-			if($tmp[1])
+			if($row['user_name'])
 			{
-				$poster = $tmp[1];
+				$poster = "<a href='".$e107->url->getUrl('core:user', 'main', array('func' => 'profile', 'id' => $row['post_user']))."'>{$row['user_name']}</a>";
 			}
 			else
 			{
-				$poster = "[deleted]";
+				$poster = '[deleted]';
 			}
 		}
 
-		$fi['thread_thread'] = strip_tags($tp->toHTML($fi['thread_thread'], TRUE, "emotes_off, no_make_clickable", "", $pref['menu_wordwrap']));
+		$post = strip_tags($e107->tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
+		$post = $e107->tp->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
-		$fi['thread_thread'] = $tp->text_truncate($fi['thread_thread'], $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
-
+		$url = $e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $id));
+		$bullet = "<img src='".THEME_ABS.'images/'.(defined('BULLET') ? BULLET : 'bullet2.gif')."' alt='' />";
+		
+		
 		if ($menu_pref['newforumposts_title'])
 		{
-			$text .= "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".$topic."</a><br />".$fi['thread_thread']."<br />".NFP_11." ".$poster."<br />".$datestamp."<br /><br />";
+			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br />".NFP_11." {$poster}<br />{$datestamp}<br /><br />";
 		}
 		else
 		{
-			$text .= "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".NFP_11." ".$poster."</a><br />".$fi['thread_thread']."<br />".$datestamp."<br/><br />";
+			$text .= "<a href='{$url}'>".NFP_11." {$poster}</a><br />{$post}<br />{$datestamp}<br/><br />";
 		}
 	}
 }
+else
+{
+	$text = NFP_2;	
 
-$ns->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');
-
+}
+$e107->ns->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');
 ?>
