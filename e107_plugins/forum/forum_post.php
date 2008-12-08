@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-12-07 04:16:38 $
+|     $Revision: 1.26 $
+|     $Date: 2008-12-08 02:33:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -251,12 +251,14 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		{
 			foreach($uploadResult as $ur)
 			{
-				$postInfo['post_entry'] .= $ur['txt'];
-				$attachments[] = $ur['att'];
+				//$postInfo['post_entry'] .= $ur['txt'];
+				$_tmp = $ur['type'].'*'.$ur['file'];
+				if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
+				$attachments[] = $_tmp;
 			}
 			$postInfo['post_attachments'] = implode(',', $attachments);
-			var_dump($uploadResult);
 		}
+		var_dump($uploadResult);
 
 		switch($action)
 		{
@@ -542,11 +544,15 @@ function process_upload()
 	
 	$postId = (int)$postId;
 	$ret = array(); 
+//	var_dump($_FILES);
 
 	if (isset($_FILES['file_userfile']['error']))
 	{
 		require_once(e_HANDLER.'upload_handler.php');
-		if ($uploaded = file_upload('/'.e_FILE.'public/', 'attachment', 'FT_'))
+		$attachmentDir = e_PLUGIN.'forum/attachments/';
+		$thumbDir = e_PLUGIN.'forum/attachments/thumb/';
+
+		if ($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
 		{
 			foreach($uploaded as $upload)
 			{
@@ -554,58 +560,63 @@ function process_upload()
 			  {
 				$_txt = '';
 				$_att = '';
-				$fpath = "{e_FILE}public/";
+				$_file = '';
+				$_thumb = '';
+				$fpath = '{e_PLUGIN}forum/attachments/';
 				if(strstr($upload['type'], 'image'))
 				{
+					$_type = 'img';
 					if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
 					{
 						require_once(e_HANDLER.'resize_handler.php');
 						$orig_file = $upload['name'];
-						$p = strrpos($orig_file,'.');
-						$new_file = substr($orig_file, 0 , $p).'_'.substr($orig_file, $p);
-						if(resize_image(e_FILE.'public/'.$orig_file, e_FILE.'public/'.$new_file, $pref['forum_maxwidth']))
+						$new_file = 'th_'.$orig_file;
+						if(resize_image($attachmentDir.$orig_file, $attachmentDir.'thumb/'.$new_file, $pref['forum_maxwidth']))
 						{
 							if($pref['forum_linkimg'])
 							{
-								$parms = image_getsize(e_FILE.'public/'.$new_file);
+								$parms = image_getsize($attachmentDir.$new_file);
 								$_txt = '[br][link='.$fpath.$orig_file."][img{$parms}]".$fpath.$new_file.'[/img][/link][br]';
-								$_att = $new_file;
+								$_file = $orig_file;
+								$_thumb = $new_file;
 								//show resized, link to fullsize
 							}
 							else
 							{
-								@unlink(e_FILE.'public/'.$orig_file);
+								@unlink($attachmentDir.$orig_file);
 								//show resized
-								$parms = image_getsize(e_FILE.'public/'.$new_file);
+								$parms = image_getsize($attachmentDir.$new_file);
 								$_txt = "[br][img{$parms}]".$fpath.$new_file.'[/img][br]';
-								$_att = $new_file;
+								$_file = $new_file;
 							}
 						}
 						else
 						{	//resize failed, show original
-							$parms = image_getsize(e_FILE.'public/'.$upload['name']);
+							$parms = image_getsize($attachmentDir.$upload['name']);
 							$_txt = "[br][img{$parms}]".$fpath.$upload['name'].'[/img]';
-							$_att = $upload['name'];
+							$_file = $upload['name'];
 						}
 					}
 					else
 					{	//resizing disabled, show original
-						$parms = image_getsize(e_FILE.'public/'.$upload['name']);
+						$parms = image_getsize($attachmentDir.$upload['name']);
 						//resizing disabled, show original
 						$_txt = "[br]<div class='spacer'>[img{$parms}]".$fpath.$upload['name']."[/img]</div>\n";
-						$_att = $upload['name'];
+						$_file = $upload['name'];
 					}
 				}
 				else
 				{
 					//upload was not an image, link to file
+					$_type = 'file';
 					$_fname = (isset($upload['rawname']) ? $upload['rawname'] : $upload['name']);
 					$_txt = '[br][file='.$fpath.$upload['name'].']'.$_fname.'[/file]';
-					$_att = $upload['name'];
+					$_file = $upload['name'];
+					$_thumb = $_fname;
 				}
-				if($_txt && $_att)
+				if($_txt && $_file)
 				{
-					$ret[] = array('txt' => $_txt, 'att' => $_att);
+					$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb);
 				}
 			  }
 			  else

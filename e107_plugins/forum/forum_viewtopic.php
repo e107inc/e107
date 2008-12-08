@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-07 04:16:38 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-08 02:33:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -44,6 +44,13 @@ $thread = new e107ForumThread;
 
 
 $thread->init();
+
+if(isset($_POST['track_toggle']))
+{
+	$thread->toggle_track();
+	exit;
+}
+//print_a($_POST);
 
 if(isset($_GET['f']))
 {
@@ -92,7 +99,6 @@ if (MODERATOR && isset($_POST['mod']))
 $postList = $forum->PostGet($thread->threadId, $thread->page * $thread->perPage, $thread->perPage);
 
 //var_dump($thread->threadInfo);
-require_once (HEADERF);
 require_once (e_HANDLER . 'level_handler.php');
 $gen = new convert;
 if ($thread->message)
@@ -143,19 +149,25 @@ $NEXTPREV .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' =>
 if ($pref['forum_track'] && USER)
 {
 	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
-	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track_toggle', 'id' => $thread->threadId)); 
+	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId)); 
 	$TRACK .= "
 			<span id='forum-track-trigger-container'>
 			<a href='{$url}' id='forum-track-trigger'>{$img}</a>
 			</span>
 			<script type='text/javascript'>
+			e107.runOnLoad(function(){
 				//put this in header_js or as inline script just after the markup above
 				$('forum-track-trigger').observe('click', function(e) { 
 					e.stop(); 
 					new e107Ajax.Updater('forum-track-trigger-container', '{$url}', {
+						method: 'post',
+						parameters: { //send query parameters here
+							'track_toggle': 1
+						},
 						overlayPage: $(document.body)
 					});
 				});
+			}, document, true);
 			</script>
 	";
 }
@@ -206,6 +218,7 @@ foreach ($postList as $postInfo)
 
 	if ($i > 1)
 	{
+		$postInfo['thread_start'] = false;
 		$alt = !$alt;
 		if (isset($FORUMREPLYSTYLE_ALT) && $alt)
 		{
@@ -218,6 +231,7 @@ foreach ($postList as $postInfo)
 	}
 	else
 	{
+		$postInfo['thread_start'] = true;
 		$forthr = $e107->tp->parseTemplate($FORUMTHREADSTYLE, true, $forum_shortcodes) . "\n";
 	}
 }
@@ -247,6 +261,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 $forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
 $forumstring = $forstr . $forthr . $forrep . $forend;
 
+require_once (HEADERF);
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
 if ($thread->threadInfo['thread_lastpost'] > USERLV && (strpos($currentUser['user_plugin_forum_viewed'], '.' . $thread->threadId . '.') === false))
 {
@@ -457,6 +472,29 @@ class e107ForumThread
 		$this->noInc = false;
 	}
 
+	function toggle_track()
+	{
+		global $forum, $thread;
+		$e107 = e107::getInstance();
+		if (!USER || !isset($_GET['id'])) { return; }
+		if($thread->threadInfo['track_userid'])
+		{
+			$forum->track('del', USERID, $_GET['id']);
+			$img = IMAGE_untrack;
+		}
+		else
+		{
+			$forum->track('add', USERID, $_GET['id']);
+			$img = IMAGE_track;
+		}
+		if(e_AJAX_REQUEST)
+		{
+			$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId)); 
+			echo "<a href='{$url}' id='forum-track-trigger'>{$img}</a>";
+			exit();
+		}
+	}
+
 	function processFunction()
 	{
 		global $forum, $thread;
@@ -487,7 +525,7 @@ class e107ForumThread
 					exit;
 				}
 				break;
-
+/*
 			case 'track':
 				if (!USER || !isset($_GET['id'])) { return; }
 				$forum->track('add', USERID, $_GET['id']);
@@ -510,27 +548,7 @@ class e107ForumThread
 					exit();
 				}
 				break;
-
-			case 'track_toggle':
-				if (!USER || !isset($_GET['id'])) { return; }
-				if($thread->threadInfo['track_userid'])
-				{
-					$forum->track('del', USERID, $_GET['id']);
-					$img = IMAGE_untrack;
-				}
-				else
-				{
-					$forum->track('add', USERID, $_GET['id']);
-					$img = IMAGE_track;
-				}
-				if(e_AJAX_REQUEST)
-				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track_toggle', 'id' => $thread->threadId)); 
-					echo "<a href='{$url}' id='forum-track-trigger'>{$img}</a>";
-					exit();
-				}
-				break;
-
+*/
 
 			case 'last':
 //				$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);

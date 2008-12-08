@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-16 14:13:28 $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-08 02:33:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,9 @@ $sc_style['LASTEDIT']['post'] = " ]</span>";
 
 $sc_style['LEVEL']['pre'] = "<div class='spacer'>";
 $sc_style['LEVEL']['post'] = "</div>";
+
+$sc_style['ATTACHMENTS']['pre'] = "<div id='forum_attachments'><br />";
+$sc_style['ATTACHMENTS']['post'] = "</div>";
 
 $sc_style['ANON_IP']['pre'] = "<br /><div class='smalltext'>";
 $sc_style['ANON_IP']['post'] = "</div>";
@@ -104,7 +107,7 @@ $FORUMTHREADSTYLE = "<tr>
 	{THREADDATESTAMP}
 	</td>
 	<td style='text-align:right'>
-	{REPORTIMG}{EDITIMG}{QUOTEIMG}
+ 	{EMAILITEM} {PRINTITEM} {REPORTIMG}{EDITIMG}{QUOTEIMG}
 	</td>
 	</tr>
 	</table>
@@ -125,6 +128,7 @@ $FORUMTHREADSTYLE = "<tr>
 	</td>
 	<td class='forumheader3' style='vertical-align:top'>{POLL}
 	{POST}
+	{ATTACHMENTS}
 	{LASTEDIT}
 	{SIGNATURE}
 	</td>
@@ -210,6 +214,7 @@ $FORUMREPLYSTYLE = "<tr>
 	</div>
 	</td>
 	<td class='forumheader3' style='vertical-align:top'>{POST}
+	{ATTACHMENTS}
 	{LASTEDIT}
 	{SIGNATURE}
 	</td>

@@ -27,11 +27,39 @@ $e107 = e107::getInstance();
 return $e107->tp->toHTML($postInfo['post_entry'], true, 'USER_BODY', 'class:'.$post_info['user_class']);
 SC_END
 
-SC_BEGIN PRIVMESSAGE
-global $pref, $post_info, $tp;
-if(isset($pref['plug_installed']['pm']) && ($post_info['user_id'] > 0))
+SC_BEGIN ATTACHMENTS
+global $postInfo;
+$e107 = e107::getInstance();
+if($postInfo['post_attachments'])
 {
-	return $tp->parseTemplate("{SENDPM={$post_info['user_id']}}");
+	$attachments = explode(',', $postInfo['post_attachments']);
+	$txt = '';
+	foreach($attachments as $a)
+	{
+		$info = explode('*', $a);
+		switch($info[0])
+		{
+			case 'file':
+				$txt .= IMAGE_attachment." <a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'>{$info[2]}</a><br />";
+				break;
+				
+			case 'img':
+				//if image has a thumb, show it and link to main
+				if(isset($info[2]))
+				{
+					$txt .= "<a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'><img src='".e_PLUGIN_ABS."forum/attachments/thumb/{$info[2]}' alt='' /></a>"; 
+				}
+		}
+	}
+	return $txt;
+}
+SC_END
+
+SC_BEGIN PRIVMESSAGE
+global $postInfo, $tp;
+if(plugInstalled('pm') && ($postInfo['post_user'] > 0))
+{
+	return $tp->parseTemplate("{SENDPM={$postInfo['post_user']}}");
 }
 SC_END
 
@@ -99,18 +127,18 @@ return '';
 SC_END
 
 SC_BEGIN EMAILITEM
-global $post_info, $tp;
-if($post_info['thread_parent'] == 0)
+global $postInfo, $tp;
+if($postInfo['thread_start'])
 {
-	return $tp->parseTemplate("{EMAIL_ITEM=".FORLAN_101."^plugin:forum.{$post_info['thread_id']}}");
+	return $tp->parseTemplate("{EMAIL_ITEM=".FORLAN_101."^plugin:forum.{$postInfo['post_thread']}}");
 }
 SC_END
 
 SC_BEGIN PRINTITEM
-global $post_info, $tp;
-if($post_info['thread_parent'] == 0)
+global $postInfo, $tp;
+if($postInfo['thread_start'])
 {
-	return $tp->parseTemplate("{PRINT_ITEM=".FORLAN_102."^plugin:forum.{$post_info['thread_id']}}");
+	return $tp->parseTemplate("{PRINT_ITEM=".FORLAN_102."^plugin:forum.{$postInfo['post_thread']}}");
 }
 SC_END
 
@@ -130,11 +158,10 @@ return ($postInfo['user_signature'] ? "<br /><hr style='width:15%; text-align:le
 SC_END
 
 SC_BEGIN PROFILEIMG
-global $post_info, $tp;
-if (USER && $post_info['user_id']) {
-return $tp->parseTemplate("{PROFILE={$post_info['user_id']}}");
-} else {
-return "";
+global $postInfo, $tp;
+if (USER && $postInfo['user_name'])
+{
+	return $tp->parseTemplate("{PROFILE={$postInfo['post_user']}}");
 }
 SC_END
 
@@ -147,9 +174,10 @@ if ($postInfo['post_user'])
 SC_END
 
 SC_BEGIN VISITS
-global $post_info;
-if ($post_info['user_id']) {
-return LAN_09.": ".$post_info['user_visits']."<br />";
+global $postInfo;
+if ($postInfo['user_name'])
+{
+return LAN_09.': '.$postInfo['user_visits'].'<br />';
 }
 SC_END
 
@@ -163,16 +191,17 @@ if ($postInfo['user_customtitle'])
 SC_END
 
 SC_BEGIN WEBSITE
-global $post_info, $tp;
-if ($post_info['user_homepage']) {
-return LAN_08.": ".$post_info['user_homepage']."<br />";
+global $postInfo, $tp;
+if ($postInfo['user_homepage']) {
+return LAN_08.': '.$postInfo['user_homepage'].'<br />';
 }
 SC_END
 
 SC_BEGIN WEBSITEIMG
-global $post_info;
-if ($post_info['user_homepage'] && $post_info['user_homepage'] != "http://") {
-return "<a href='{$post_info['user_homepage']}'>".IMAGE_website."</a>";
+global $postInfo;
+if ($postInfo['user_homepage'] && $postInfo['user_homepage'] != 'http://')
+{
+	return "<a href='{$postInfo['user_homepage']}'>".IMAGE_website.'</a>';
 }
 SC_END
 
@@ -209,8 +238,8 @@ if (USER) {
 SC_END
 
 SC_BEGIN RPG
-global $post_info;
-return rpg($post_info['user_join'],$post_info['user_forums']);
+global $postInfo;
+return rpg($postInfo['user_join'],$postInfo['user_plugin_forum_posts']);
 SC_END
 
 SC_BEGIN MEMBERID
@@ -263,8 +292,9 @@ return $ldata[$post_info['user_id']][1];
 SC_END
 
 SC_BEGIN MODOPTIONS
-if (MODERATOR) {
-return showmodoptions();
+if (MODERATOR)
+{
+	return showmodoptions();
 }
 SC_END
 
@@ -274,7 +304,6 @@ if ($postInfo['post_edit_datestamp'])
 {
 	return $gen->convert_date($postInfo['thread_edit_datestamp'],'forum');
 }
-return '';
 SC_END
 
 SC_BEGIN LASTEDITBY
