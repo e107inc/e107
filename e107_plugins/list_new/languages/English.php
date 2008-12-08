@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-04-02 20:31:46 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-08 07:57:21 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -202,5 +202,7 @@ define("LIST_FORUM_3", "views:");
 define("LIST_FORUM_4", "replies:");
 define("LIST_FORUM_5", "lastpost:");
 define("LIST_FORUM_6", "on:");
+
+define("LIST_LAN_1", "no items in");
 
 ?>

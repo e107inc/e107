@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-07-25 21:03:37 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-08 07:57:12 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -224,4 +224,7 @@ define("CONTENT_MANAGER_LAN_1", "create content");
 define("CONTENT_MANAGER_LAN_2", "edit content");
 define("CONTENT_MANAGER_LAN_3", "approve submitted ");
 define("CONTENT_MANAGER_LAN_4", "submit content");
+
+define("CONTENT_E_LIST_LAN_1", "no valid content category");
+
 ?>
