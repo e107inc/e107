@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.7 $
-* $Date: 2008-12-05 20:28:05 $
+* $Revision: 1.8 $
+* $Date: 2008-12-08 02:33:34 $
 * $Author: mcfly_e107 $
 *
 */
@@ -675,6 +675,10 @@ class forumAdmin
 		if(!$pref['image_post'])
 		{
 			$text .= "<br /><b>".FORLAN_139."</b>";
+		}
+		if(!is_writable(e_PLUGIN.'forum/attachments'))
+		{
+			$text .= "<br /><b>Attachment file is not writable!</b>";
 		}
 
 		$text .= "</td>
