@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2008-09-23 19:31:45 $
+|     $Revision: 1.30 $
+|     $Date: 2008-12-08 21:15:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -449,7 +449,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 	    	exit;
 	  	}
 
-	  	$boxinfo .= "<select name='download_category' class='tbox'>
+	  	$boxinfo .= "<select name='download_category' id='download_category' class='tbox'>
 					<option value=''>&nbsp;</option>\n";
 
 		// Its a structured display option - need a 2-step process to create a tree
