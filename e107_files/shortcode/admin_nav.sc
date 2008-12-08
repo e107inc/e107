@@ -1,10 +1,10 @@
 /*
 * e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: admin_nav.sc,v 1.5 2008-12-07 21:41:04 e107steved Exp $
+* $Id: admin_nav.sc,v 1.6 2008-12-08 21:45:12 e107steved Exp $
 */
 if (ADMIN) 
 {
-	global $ns, $pref, $e107_plug, $array_functions, $tp;
+	global $ns, $pref, $array_functions, $tp;
 	if (strstr(e_SELF, "/admin.php")) 
 	{
 		$active_page = 'x';
@@ -44,14 +44,14 @@ if (ADMIN)
 
 		while($rowplug = $nav_sql -> db_Fetch()) 
 		{
-			extract($rowplug);
-			$e107_plug[$rowplug[1]] = $rowplug[3];
+			$plugin_id = $rowplug['plugin_id'];
+			$plugin_path = $rowplug['plugin_path'];
 			if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
 			{
 				$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
 				loadLanFiles($plugin_path, 'admin');
-				$eplug_caption 		= $tp->toHTML($readFile['@attributes']['name'],FALSE,"defs, emotes_off");
-				$eplug_conffile 	= $readFile['administration']['configFile'];
+				$eplug_caption 	= $tp->toHTML($readFile['@attributes']['name'],FALSE,"defs, emotes_off");
+				$eplug_conffile = $readFile['administration']['configFile'];
 			}
 			elseif (is_readable(e_PLUGIN.$plugin_path."/plugin.php"))
 			{
@@ -59,7 +59,8 @@ if (ADMIN)
 			}
 
 			// Links Plugins
-			if ($eplug_conffile) {
+			if ($eplug_conffile) 
+			{
 				$e107_var['x'.$plugin_id]['text'] = $eplug_caption;
 				$e107_var['x'.$plugin_id]['link'] = e_PLUGIN.$plugin_path."/".$eplug_conffile;
 				$e107_var['x'.$plugin_id]['perm'] = "P".$plugin_id;
