@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/banner_menu/config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-08-26 19:45:33 $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-08 22:23:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -41,11 +41,12 @@ if (e_QUERY)
 	
 if (isset($_POST['update_menu'])) 
 {
+	unset($temp);
 	foreach($_POST as $k => $v) 
 	{
 		if (strpos($k, "banner_") === 0) 
 		{
-			$menu_pref[$k] = $v;
+			$temp[$k] = $v;
 		}
 	}
 	 
@@ -57,11 +58,20 @@ if (isset($_POST['update_menu']))
 			$cat .= $array_cat[$i]."|";
 		}
 		$cat = substr($cat, 0, -1);
-		$menu_pref['banner_campaign'] = $cat;
+		$temp['banner_campaign'] = $cat;
 	}
 	 
-	$sysprefs->setArray('menu_pref');
-	$ns->tablerender("", "<div style='text-align:center'><b>".BANNER_MENU_L2."</b></div>");
+
+	if ($admin_log->logArrayDiffs($temp, $menu_pref, 'BANNER_05'))
+	{
+		$sysprefs->setArray('menu_pref');				// Only save if changes
+		$message = BANNER_MENU_L2;
+	}
+	else
+	{
+		$message = BANNER_MENU_L19;
+	}
+	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 	
 if (!$menu_pref['banner_caption']) 

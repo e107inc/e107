@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/banner_menu/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-08 22:23:53 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,5 +30,6 @@ define("BANNER_MENU_L15", "how many banners should be shown ?");
 define("BANNER_MENU_L16", "this setting will only be used with options 2 and 3.<br />if less banners are present the maximum available amount will be used.");
 define("BANNER_MENU_L17", "set amount ...");
 define("BANNER_MENU_L18", "Update Menu Settings");
+define('BANNER_MENU_L19', 'Nothing changed - not saved');
 
 ?>
