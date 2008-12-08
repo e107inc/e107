@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-06 22:14:31 $
+|     $Revision: 1.11 $
+|     $Date: 2008-12-08 22:21:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("2")) {
+if (!getperms("2")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -310,7 +311,7 @@ if ($menu_act == "inc")
 if (strpos(e_QUERY, 'configure') === FALSE)
 {  // Scan plugin directories to see if menus to add
 	$efile = new e_file;
-	$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
+	$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',1);
 	foreach($fileList as $file) 
 	{
 	  list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
