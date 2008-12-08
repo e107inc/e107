@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_upload.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-04-22 20:32:50 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-08 21:16:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,14 @@ define('LAN_UL_024', 'Max Size');
 define('LAN_UL_025', 'Uploads not allowed	');
 define('LAN_UL_026', '');
 define('LAN_UL_027', '');
+
+define('LAN_UL_032', 'You must select a category');
+define('LAN_UL_033', 'You must enter a valid email address');
+define('LAN_UL_034', 'You must specify the file name');
+define('LAN_UL_035', 'You must enter a description');
+define('LAN_UL_036', 'You must specify the file to upload');
+define('LAN_UL_037', 'You must specify a category');
+define('LAN_UL_038', '');
 
 define("LAN_61", "Your Name: ");
 define("LAN_112", "Email Address: ");

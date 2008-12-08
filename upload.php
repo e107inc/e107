@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/upload.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-10-19 11:35:00 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-08 21:15:57 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ $message = '';
 $postemail ='';
 if (isset($_POST['upload'])) 
 {
-  if (($_POST['file_email'] || USER == TRUE) && $_POST['file_name'] && $_POST['file_description']) 
+  if (($_POST['file_email'] || USER == TRUE) && $_POST['file_name'] && $_POST['file_description'] && $_POST['download_category']) 
   {
 	require_once(e_HANDLER."upload_handler.php");
 //	$uploaded = file_upload(e_FILE."public/", "unique");
@@ -81,6 +81,11 @@ if (isset($_POST['upload']))
 	}
 
 // The upload handler checks max file size
+	$downloadCategory = intval($_POST['download_category']);
+	if (!$downloadCategory)
+	{
+		$message .= LAN_UL_037.'<br />';
+	}
 
 // $message non-null here indicates an error - delete the files to keep things tidy
 	if ($message)
@@ -123,8 +128,8 @@ if (isset($_POST['upload']))
 		if ($postemail == '-witheld-') $postemail = '';
 		$_POST['file_description'] = $tp->toDB($_POST['file_description']);
 		$file_time = time();
-		$sql->db_Insert("upload", "0, '".$poster."', '".$postemail."', '".$tp -> toDB($_POST['file_website'])."', '".$file_time."', '".$tp -> toDB($_POST['file_name'])."', '".$tp -> toDB($_POST['file_version'])."', '".$file."', '".$image."', '".$tp -> toDB($_POST['file_description'])."', '".$tp -> toDB($_POST['file_demo'])."', '".$filesize."', 0, '".$tp -> toDB($_POST['download_category'])."'");
-		$edata_fu = array("upload_user" => $poster, "upload_email" => $postemail, "upload_name" => $tp -> toDB($_POST['file_name']),"upload_file" => $file, "upload_version" => $_POST['file_version'], "upload_description" => $tp -> toDB($_POST['file_description']), "upload_size" => $filesize, "upload_category" => $tp -> toDB($_POST['download_category']), "upload_website" => $tp -> toDB($_POST['file_website']), "upload_image" => $image, "upload_demo" => $tp -> toDB($_POST['file_demo']), "upload_time" => $file_time);
+		$sql->db_Insert("upload", "0, '".$poster."', '".$postemail."', '".$tp -> toDB($_POST['file_website'])."', '".$file_time."', '".$tp -> toDB($_POST['file_name'])."', '".$tp -> toDB($_POST['file_version'])."', '".$file."', '".$image."', '".$tp -> toDB($_POST['file_description'])."', '".$tp -> toDB($_POST['file_demo'])."', '".$filesize."', 0, '".$downloadCategory."'");
+		$edata_fu = array("upload_user" => $poster, "upload_email" => $postemail, "upload_name" => $tp -> toDB($_POST['file_name']),"upload_file" => $file, "upload_version" => $_POST['file_version'], "upload_description" => $tp -> toDB($_POST['file_description']), "upload_size" => $filesize, "upload_category" => $downloadCategory, "upload_website" => $tp -> toDB($_POST['file_website']), "upload_image" => $image, "upload_demo" => $tp -> toDB($_POST['file_demo']), "upload_time" => $file_time);
 		$e_event->trigger("fileupload", $edata_fu);
 		$message .= "<br />".LAN_404;
 	  }
@@ -139,14 +144,15 @@ if (isset($_POST['upload']))
 
 if ($message)
 {
-  $ns->tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$text = "<div style=\"text-align:center\"><b>".$message."</b></div>";
+	$ns->tablerender("", $text);
   require_once(FOOTERF);
   exit;
 }
 
 
 $text = "<div style='text-align:center'>
-	<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
+	<form enctype='multipart/form-data' method='post' onsubmit='return frmVerify()' action='".e_SELF."'>
 	<table style='".USER_WIDTH."' class='fborder'>
 	<colgroup>
 	<col style='width:30%' />
@@ -216,14 +222,14 @@ if (!USER)
 
 	<tr>
 	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_112."</span></td>
-	<td class='forumheader3'><input class='tbox' style='width:90%' name='file_email' type='text' size='50' maxlength='100' value='".$postemail."' /></td>
+	<td class='forumheader3'><input class='tbox' style='width:90%' name='file_email' id='user_email' type='text' size='50' maxlength='100' value='".$postemail."' /></td>
 	</tr>";
 }
 
 $text .= "
 	<tr>
 	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_409."</span></td>
-	<td class='forumheader3'><input class='tbox' style='width:90%'  name='file_name' type='text' size='50' maxlength='100' /></td>
+	<td class='forumheader3'><input class='tbox' style='width:90%'  name='file_name' id='file_name' type='text' size='50' maxlength='100' /></td>
 	</tr>
 
 	<tr>
@@ -234,7 +240,7 @@ $text .= "
 
 	<tr>
 	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_411."</span></td>
-	<td class='forumheader3'><input class='tbox' style='width:90%'  name='file_userfile[]' type='file' size='47' /></td>
+	<td class='forumheader3'><input class='tbox' style='width:90%'  id='file_realpath' name='file_userfile[]' type='file' size='47' /></td>
 	</tr>
 
 	<tr>
@@ -244,7 +250,7 @@ $text .= "
 
 	<tr>
 	<td class='forumheader3'><span style='text-decoration:underline'>".LAN_413."</span></td>
-	<td class='forumheader3'><textarea class='tbox' style='width:90%' name='file_description' cols='59' rows='6'></textarea></td>
+	<td class='forumheader3'><textarea class='tbox' style='width:90%' name='file_description' id='file_description' cols='59' rows='6'></textarea></td>
 	</tr>
 
 	<tr>
@@ -267,4 +273,37 @@ $text .= "
 $ns->tablerender(LAN_417, $text);
 
 require_once(FOOTERF);
+
+
+function headerjs()
+{
+  $script = "<script type=\"text/javascript\">
+		function frmVerify()
+		{
+			var message = '';
+			var spacer = '';
+			var testObjects = new Array(\"download_category\", \"user_email\", \"file_name\", \"file_realpath\", \"file_description\");
+			var errorMessages = new Array('".LAN_UL_032."', '".LAN_UL_033."', '".LAN_UL_034."', '".LAN_UL_036."', '".LAN_UL_035."');
+			var temp;
+			var i;
+			for (i = 0; i < 4; i++)
+			{
+				temp = document.getElementById(testObjects[i]);
+				if (temp && (temp.value == \"\"))
+				{
+					message = message + spacer + errorMessages[i];
+					spacer = '\\n';
+				}
+			}
+			if (message)
+			{
+				alert(message);
+				return false;
+			}
+		}
+		</script>";
+    return $script;
+}
+
+
 ?>
