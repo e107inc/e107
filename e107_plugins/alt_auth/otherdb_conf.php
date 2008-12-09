@@ -15,11 +15,11 @@ $eplug_admin = true;
 require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
-include_lan("languages/".e_LANGUAGE."/lan_otherdb_conf.php");
-include_lan("languages/".e_LANGUAGE."/lan_alt_auth_conf.php");
-define("ALT_AUTH_ACTION", "otherdb");
-require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
-require_once(e_PLUGIN."alt_auth/extended_password_handler.php");
+include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_otherdb_conf.php');
+include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
+define('ALT_AUTH_ACTION', 'otherdb');
+require_once(e_PLUGIN.'alt_auth/alt_auth_adminmenu.php');
+require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');
 
 if($_POST['update'])
 {
@@ -52,7 +52,7 @@ function show_otherdb_form()
 
 	$frm = new form;
 	$text = $frm -> form_open("post", e_SELF);
-	$text .= "<table style='width:96%'>";
+	$text .= "<table style='width:96%' class='fborder'>";
 
 	$text .= "<tr><td class='forumheader3'>".LAN_ALT_26."</td><td class='forumheader3'>";
 	$text .= OTHERDB_LAN_15;
@@ -87,29 +87,8 @@ function show_otherdb_form()
 
 require_once(e_ADMIN."footer.php");
 
-/*
-function update_otherdb_prefs()
-{
-	global $sql;
-	foreach($_POST as $k => $v)
-	{
-		$v = base64_encode(base64_encode($v));
 
-		if(preg_match("/otherdb_/", $k))
-		{
-			if($sql -> db_Select("alt_auth", "*", "auth_type='otherdb' AND auth_parmname='{$k}' "))
-			{
-				$sql -> db_Update("alt_auth", "auth_parmval='{$v}' WHERE  auth_type='otherdb' AND auth_parmname='{$k}' ");
-			}
-			else
-			{
-				$sql -> db_Insert("alt_auth", "'otherdb','{$k}','{$v}' ");
-			}
-		}
-	}
-	return "Settings Updated";
-}
-*/
+
 function otherdb_conf_adminmenu()
 {
 	alt_auth_adminmenu();

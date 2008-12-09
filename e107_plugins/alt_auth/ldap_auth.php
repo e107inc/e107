@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_auth.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-01 21:47:17 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-09 20:40:54 $
 |     $Author: e107steved $
 
 To do:
@@ -210,7 +210,6 @@ class auth_login
 				$entries = ldap_get_entries($this->connection, $this->result);
 				if (count($entries) == 2) // All OK
 				{
-				echo "Count: {$entries[0]['count']}<br />";
 					for ($j = 0; $j < $entries[0]['count']; $j++)
 					{
 						$k = $entries[0][$j];			// LDAP attribute name
