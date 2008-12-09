@@ -12,11 +12,11 @@
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
-require_once("../../class2.php");
-require_once(e_ADMIN."auth.php");
-require_once(e_HANDLER."form_handler.php");
-include_lan("languages/".e_LANGUAGE."/lan_importdb_conf.php");
-include_lan("languages/".e_LANGUAGE."/lan_alt_auth_conf.php");
+require_once('../../class2.php');
+require_once(e_ADMIN.'auth.php');
+require_once(e_HANDLER.'form_handler.php');
+include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_importdb_conf.php');
+include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define("ALT_AUTH_ACTION", "importdb");
 require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
 require_once(e_PLUGIN."alt_auth/extended_password_handler.php");
@@ -54,7 +54,7 @@ function show_importdb_form()
 
 	$frm = new form;
 	$text = $frm -> form_open("post", e_SELF);
-	$text .= "<table style='width:96%'>";
+	$text .= "<table style='width:96%' class='fborder'>";
 
 
 	$text .= "<tr><td colspan='2' class='forumheader3'>".IMPORTDB_LAN_11."</td></tr>";

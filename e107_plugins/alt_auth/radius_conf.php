@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/radius_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-09-02 19:39:12 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-09 20:40:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,8 +20,8 @@ $eplug_admin = true;
 require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
-include_lan("languages/".e_LANGUAGE."/lan_radius_conf.php");
-include_lan("languages/".e_LANGUAGE."/lan_alt_auth_conf.php");
+include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_radius_conf.php');
+include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define("ALT_AUTH_ACTION", "radius");
 require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
 
@@ -53,7 +53,7 @@ while($row = $sql->db_Fetch())
 
 $frm = new form;
 $text = $frm -> form_open("post",e_SELF);
-$text .= "<table style='width:96%'>";
+$text .= "<table style='width:96%' class='fborder'>";
 $text .= "<tr><td class='forumheader3'>".LAN_RADIUS_01."</td><td class='forumheader3'>";
 $text .= $frm -> form_text("radius_server", 35, $radius['radius_server'], 120);
 $text .= "</td></tr>";

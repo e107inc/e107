@@ -1,10 +1,16 @@
 <?php
 
+if (!is_object($euf))
+{
+	require_once(e_HANDLER.'user_extended_class.php');
+	$euf = new e107_user_extended;
+}
 
-  define("AUTH_SUCCESS", -1);
-  define("AUTH_NOUSER", 1);
-  define("AUTH_BADPASSWORD", 2);
-  define("AUTH_NOCONNECT", 3);
+
+  define('AUTH_SUCCESS', -1);
+  define('AUTH_NOUSER', 1);
+  define('AUTH_BADPASSWORD', 2);
+  define('AUTH_NOCONNECT', 3);
   define('AUTH_UNKNOWN', 4);
   define('AUTH_NOT_AVAILABLE', 5);
 
@@ -50,7 +56,7 @@ function alt_auth_get_field_list($tableType, $frm, $parm, $asCheckboxes = FALSE)
   $ret = '';
   foreach ($alt_auth_user_fields as $f => $v)
   {
-    if ($v[$tableType] == TRUE)
+    if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
 	{
 	  $ret .= "<tr><td class='forumheader3'>";
 	  if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
@@ -87,7 +93,7 @@ function alt_auth_get_allowed_fields($tableType)
   $ret = array();
   foreach ($alt_auth_user_fields as $f => $v)
   {
-    if ($v[$tableType] == TRUE)
+    if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
 	{
 	  $fieldname = $tableType.'_'.$v['optname'];
 	  $ret[$fieldname] = '1';
@@ -97,6 +103,29 @@ function alt_auth_get_allowed_fields($tableType)
 }
 
 
+function add_extended_fields()
+{
+	global $alt_auth_user_fields, $euf, $pref;
+	if (!isset($pref['auth_extended'])) return;
+	if (!$pref['auth_extended']) return;
+	static $fieldsAdded = FALSE;
+	if ($fieldsAdded) return;
+	$xFields = $euf->user_extended_get_fieldList('','user_extended_struct_name');
+//	print_a($xFields);
+	$fields = explode(',',$pref['auth_extended']);
+	foreach ($fields as $f)
+	{
+		if (isset($xFields[$f]))
+		{
+			$alt_auth_user_fields['x_'.$f] = array('prompt' => varset($xFields[$f]['user_extended_struct_text'],'').' ('.$f.')', 
+													'optname' => 'xf_x_'.$f, 
+													'default' => varset($xFields[$f]['default'],''),
+													'optional' => TRUE,
+													'showAll' => TRUE );
+		}
+	}
+	$fieldsAdded = TRUE;
+}
 
 
 $common_fields = array(
@@ -135,7 +164,7 @@ function alt_auth_get_db_fields($prefix, $frm, $parm, $fields = 'server|uname|pw
 // Write all the options to the DB. $prefix must NOT have trailing underscore
 function alt_auth_post_options($prefix)
 {
-  global $common_fields, $sql;
+  global $common_fields, $sql, $admin_log;
   $lprefix = $prefix.'_';
 
   $user_fields = alt_auth_get_allowed_fields($prefix);		// Need this list in case checkboxes for parameters
@@ -164,6 +193,7 @@ function alt_auth_post_options($prefix)
 	  }
     }
   }
+  $admin_log->log_event('AUTH_03',$prefix,E_LOG_INFORMATIVE,'');
   return LAN_ALT_UPDATED;
 }
 
@@ -174,7 +204,7 @@ function alt_auth_post_options($prefix)
 function alt_auth_test_form($prefix,$frm)
 {
   $text = $frm -> form_open("post", e_SELF, 'testform');
-  $text .= "<table style='width:96%'>
+  $text .= "<table style='width:96%' class='fborder'>
   <tr><td colspan='2' class='forumheader2' style='text-align:center;'>".LAN_ALT_42."</td></tr>";
 
   if (isset($_POST['testauth']))

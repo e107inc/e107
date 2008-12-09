@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_conf.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-01 21:47:17 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-09 20:40:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,10 +20,10 @@ $eplug_admin = true;
 require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
-include_lan("languages/".e_LANGUAGE."/lan_ldap_conf.php");
-include_lan("languages/".e_LANGUAGE."/lan_alt_auth_conf.php");
-define("ALT_AUTH_ACTION", "ldap");
-require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
+include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE."/admin_ldap_conf.php");
+include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
+define('ALT_AUTH_ACTION', 'ldap');
+require_once(e_PLUGIN.'alt_auth/alt_auth_adminmenu.php');
 
 
 $server_types[1]="LDAP";
@@ -63,7 +63,7 @@ $current_filter = "(&(cn=[USERNAME]){$ldap['ldap_edirfilter']})";
 
 $frm = new form;
 $text = $frm -> form_open("post",e_SELF);
-$text .= "<table style='width:96%'>";
+$text .= "<table style='width:96%' class='fborder'>";
 $text .= "<tr><td class='forumheader3'>".LDAPLAN_12."</td><td class='forumheader3'>";
 $text .= $frm -> form_select_open("ldap_servertype");
 foreach($server_types as $v)
@@ -110,6 +110,7 @@ $text .= "<br /><span class='smalltext'>".LDAPLAN_9."<br />".htmlentities($curre
 
 	$text .= "<tr><td class='forumheader2' colspan='2'>".LAN_ALT_27."</td></tr>";
 
+	add_extended_fields();
 	$text .= alt_auth_get_field_list('ldap',$frm, $ldap, FALSE);
 
 $text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
