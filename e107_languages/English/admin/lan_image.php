@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_image.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-05 22:01:25 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-09 15:19:03 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("IMALAN_1", "Enable image display");
@@ -67,4 +67,27 @@ define("IMALAN_53", "Path to ImageMagick appears to be correct, but convert file
 define("IMALAN_54", "GD version installed:");
 define('IMALAN_55', 'Not installed');
 
+//v0.8
+
+//uploaded avatar list
+define('IMALAN_56', 'Click to select');
+define('IMALAN_57', 'Image too big - click to enlarge');
+define('IMALAN_58', 'Delete checked');
+define('IMALAN_59', 'Check All');
+define('IMALAN_60', 'Uncheck All');
+define('IMALAN_66', 'Filename');
+
+//avatar check
+define('IMALAN_61', 'Options');
+define('IMALAN_62', 'Reason');
+define('IMALAN_63', 'URL');
+define('IMALAN_64', 'User');
+define('IMALAN_65', 'Nothing found');
+
+/*
+define('IMALAN_60', '');
+define('IMALAN_60', '');
+define('IMALAN_60', '');
+define('IMALAN_60', '');
+ */
 ?>

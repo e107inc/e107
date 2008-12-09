@@ -1,0 +1,116 @@
+#nav li.fs-linkSep { width: 2px; margin: 0px; height: 38px; background: url(../images/a01_bar-Sep.png) 0 0 no-repeat; }
+
+#nav, #nav ul { /* all lists */
+	padding: 0px;
+	margin: 0px;
+	list-style: none;
+	line-height: 38px;
+	padding: 0px 0px;
+}
+
+
+#nav a {
+	padding: 0px 15px 0px 36px;
+	vertical-align: middle;
+	display: block;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-align: center;
+	font-size: 12px;
+	color: #13394E;
+	font-weight: bold;
+	text-decoration: none;
+	
+}
+
+#nav a:hover {
+	/* background-position: 0 -44px; */
+	color: #CB0000;
+}
+
+#nav li.sub a:hover,
+#nav li.sub.sfhover a,
+#nav li.sub:hover a {
+
+	/* background-position: 0 -88px; */
+}
+
+#nav li { /* all list items */
+	float: left;
+	/* width: 158px;  width needed or else Opera goes nuts */
+}
+ul.sub {border-top: 1px solid #CCCCCC;}
+#nav li ul { /* second-level lists */
+	position: absolute;
+	z-index: 10;
+	width: 180px;
+	
+	left: -9999px; /* using left instead of display to hide menus because display: none isn't read by screen readers */
+}
+
+#nav li li a,
+#nav li:hover li a,
+#nav li.sfhover li a {
+	text-align: left;
+	background-image: none;
+	background-color: #FBFEF1;
+	line-height: 28px;
+	font-size: 11px;
+	font-weight: bold;
+	padding-left: 10px;
+	padding-right: 0px;
+	border-left: 1px solid #B8DF30;
+	border-right: 1px solid #B8DF30;
+	border-bottom: 1px solid #B8DF30;
+	width: 188px;
+	w\idth : 188px;
+	text-transform: none;
+	color: #13394E;
+}
+
+#nav .menuItem img { width: 16px; height: 16px; padding: 6px 0px; margin-right: 10px; }
+#nav li li a.sub,
+#nav li:hover li a.sub,
+#nav li.sfhover li a.sub {
+	/* background-image: url(../images/1008-links_sub.gif) !important ; background-repeat: no-repeat; background-position:95% 50%; */
+}
+#nav li li a.sub:hover,
+#nav li:hover li a.sub:hover,
+#nav li.sfhover li a.sub:hover {
+	/* background-image: url(../images/0708_link_sub_over.png) !important ; background-repeat: no-repeat; background-position: 100% 50%; */
+}
+
+
+#nav li li a:hover{
+	background-color: #DDF098;
+	color: #990000
+}
+
+
+
+#nav li ul ul { /* third-and-above-level lists */
+	margin: -29px 0 0 180px;
+}
+
+#nav li:hover ul ul, 
+#nav li:hover ul ul ul, 
+#nav li:hover ul ul ul ul, 
+#nav li:hover ul ul ul ul ul,
+#nav li.sfhover ul ul, 
+#nav li.sfhover ul ul ul,
+#nav li.sfhover ul ul ul ul,
+#nav li.sfhover ul ul ul ul ul {
+	left: -999em;
+}
+
+#nav li:hover ul, 
+#nav li li:hover ul, 
+#nav li li li:hover ul,
+#nav li li li li:hover ul,
+#nav li li li li li:hover ul,
+#nav li.sfhover ul, 
+#nav li li.sfhover ul, 
+#nav li li li.sfhover ul,
+#nav li li li li.sfhover ul,
+#nav li li li li li.sfhover ul { /* lists nested under hovered list items */
+	left: auto;
+}

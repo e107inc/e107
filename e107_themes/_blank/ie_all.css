@@ -1,0 +1,14 @@
+
+.col-main		{ zoom: 1 }
+button			{ width:auto; margin-left:5px; overflow:visible; }
+
+input.checkbox,
+input.radio { width:13px; height:13px; }
+
+button { 
+  width:auto; 
+  overflow:visible; 
+}
+button span { 
+  margin-top:1px; 
+}
