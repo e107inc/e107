@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-08 02:33:34 $
+|     $Revision: 1.11 $
+|     $Date: 2008-12-09 21:46:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -149,7 +149,7 @@ $NEXTPREV .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' =>
 if ($pref['forum_track'] && USER)
 {
 	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
-	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId)); 
+	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId));
 	$TRACK .= "
 			<span id='forum-track-trigger-container'>
 			<a href='{$url}' id='forum-track-trigger'>{$img}</a>
@@ -157,8 +157,8 @@ if ($pref['forum_track'] && USER)
 			<script type='text/javascript'>
 			e107.runOnLoad(function(){
 				//put this in header_js or as inline script just after the markup above
-				$('forum-track-trigger').observe('click', function(e) { 
-					e.stop(); 
+				$('forum-track-trigger').observe('click', function(e) {
+					e.stop();
 					new e107Ajax.Updater('forum-track-trigger-container', '{$url}', {
 						method: 'post',
 						parameters: { //send query parameters here
@@ -208,6 +208,10 @@ $i = $thread->page;
 global $postInfo;
 foreach ($postList as $postInfo)
 {
+	if($postInfo['post_options'])
+	{
+		$postInfo['post_options'] = unserialize($postInfo['post_options']);
+	}
 	$loop_uid = (int)$postInfo['post_user'];
 	$i++;
 
@@ -489,7 +493,7 @@ class e107ForumThread
 		}
 		if(e_AJAX_REQUEST)
 		{
-			$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId)); 
+			$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId));
 			echo "<a href='{$url}' id='forum-track-trigger'>{$img}</a>";
 			exit();
 		}
@@ -529,10 +533,10 @@ class e107ForumThread
 			case 'track':
 				if (!USER || !isset($_GET['id'])) { return; }
 				$forum->track('add', USERID, $_GET['id']);
-				
+
 				if(e_AJAX_REQUEST)
 				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId)); 
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId));
 					echo "<a href='{$url}' id='forum-track-trigger'>".IMAGE_untrack."</a>";
 					exit();
 				}
@@ -543,7 +547,7 @@ class e107ForumThread
 				$forum->track('del', USERID, $_GET['id']);
 				if(e_AJAX_REQUEST)
 				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId)); 
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId));
 					echo "<a href='{$url}' id='forum-track-trigger'>".IMAGE_track."</a>";
 					exit();
 				}

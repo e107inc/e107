@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:18 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-09 21:46:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
-	
+
 define("LAN_01", "Forums");
 define("LAN_02", "Back to top");
 define("LAN_03", "Go");
@@ -39,9 +39,9 @@ define("LAN_317", "None");
 define("LAN_321", "Moderators: ");
 define("LAN_395", "[popular]");
 define("LAN_396", "Announcement");
-	
+
 define("LAN_397", "This forum is read only");
-	
+
 define("LAN_398", "Unstick thread");
 define("LAN_399", "Lock thread");
 define("LAN_400", "Unlock thread");
@@ -49,14 +49,14 @@ define("LAN_401", "Stick thread");
 define("LAN_402", "Move thread");
 define("LAN_403", "Jump to forum");
 define("LAN_404", "This forum is moderated by");
-	
+
 define("LAN_405", "user is browsing this forum at the moment");
 define("LAN_406", "users are browsing this forum at the moment");
 define("LAN_407", "member");
 define("LAN_408", "guest");
 define("LAN_409", "members");
 define("LAN_410", "guests");
-	
+
 //v.616
 define("LAN_411", "Important Threads");
 define("LAN_412", "Forum Threads");
@@ -66,7 +66,7 @@ define("LAN_433", "Syndicate this forum: RDF");
 
 define("LAN_434", "Are you sure you want to delete this thread and any replies?");
 define("LAN_435", "Delete thread");
-	
+
 //v.617
 define("FORLAN_CLOSE", "Thread closed.");
 define("FORLAN_OPEN", "Thread reopened.");
@@ -76,7 +76,7 @@ define("FORLAN_6", "Thread deleted");
 define("FORLAN_7", "replies deleted");
 define("FORLAN_8", "here");
 define("FORLAN_9", "to sign up or login from the login menu.");
-	
+
 define("FORLAN_10", "Begin New Thread");
 define("FORLAN_11", "New Posts");
 define("FORLAN_12", "No New Posts");
@@ -90,5 +90,6 @@ define('FORLAN_19', '[user deleted]');
 define('FORLAN_20', 'Sub-forum');
 define('FORLAN_21', 'Threads');
 define('FORLAN_22', 'Last Post');
-	
+define('FORLAN_23', 'Poll');
+
 ?>

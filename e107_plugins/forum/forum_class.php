@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-12-07 04:16:38 $
+|     $Revision: 1.21 $
+|     $Date: 2008-12-09 21:46:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -186,13 +186,13 @@ class e107forum
 
 			$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 			$threadInfo['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
-//			print_a($threadInfo);
+//			var_dump($threadInfo);
 //			exit;
 			$result = $e107->sql->db_Update('forum_thread', $threadInfo);
 
 		}
 
-		if($result && $updateForum)
+		if(($result || !$updateThread) && $updateForum)
 		{
 			if(varset($postInfo['post_user']))
 			{
@@ -232,7 +232,6 @@ class e107forum
 			$result = $e107->sql->db_Select_gen($qry);
 		}
 		return $postId;
-
 	}
 
 	function threadAdd($threadInfo, $postInfo)
@@ -322,6 +321,29 @@ class e107forum
 		return $ret;
 	}
 
+
+	function threadGetUserPostcount($threadId)
+	{
+		$threadId = (int)$threadId;
+		$e107 = e107::getInstance();
+		$ret = false;
+		$qry = "
+		SELECT post_user, count(post_user) AS post_count FROM `#forum_post`
+		WHERE post_thread = {$threadId} AND post_user IS NOT NULL
+		GROUP BY post_user
+		";
+		if($e107->sql->db_Select_gen($qry))
+		{
+			$ret = array();
+			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			{
+				$ret[$row['post_user']] = $row['post_count'];
+			}
+		}
+		return $ret;
+	}
+
+
 	function thread_postnum($thread_id)
 	{
 		global $sql;
@@ -343,7 +365,7 @@ class e107forum
 		return $ret;
 	}
 
-	function update_lastpost($type, $id, $update_threads = FALSE)
+	function forumUpdateLastpost($type, $id, $update_threads = FALSE)
 	{
 		global $sql, $tp;
 		$sql2 = new db;
@@ -385,10 +407,10 @@ class e107forum
 			}
 			else
 			{
-				$id = intval($id);
-				$forum_lp_user = '';
-				$forum_lp_info = '';
-				if($update_threads == TRUE)
+				$id = (int)$id;
+				$lp_info = '';
+				$lp_user = 'NULL';
+				if($update_threads == true)
 				{
 					if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
 					{
@@ -398,15 +420,20 @@ class e107forum
 						}
 					}
 				}
-				if ($sql->db_Select("forum_t", "*", "thread_forum_id={$id} ORDER BY thread_datestamp DESC LIMIT 0,1"))
+				if ($sql->db_Select('forum_thread', 'thread_id, thread_lastuser, thread_lastuser_anon, thread_datestamp', 'thread_forum_id='.$id.' ORDER BY thread_datestamp DESC LIMIT 1'))
 				{
 					$row = $sql->db_Fetch(MYSQL_ASSOC);
-					$tmp = explode(chr(1), $row['thread_user']);
-					$forum_lp_user = $tmp[0];
-					$last_id = $row['thread_parent'] ? $row['thread_parent'] : $row['thread_id'];
-					$forum_lp_info = $row['thread_datestamp'].".".$last_id;
+					$lp_info = $row['thread_datestamp'].'.'.$row['thread_id'];
+					$lp_user = $row['thread_lastuser'];
 				}
-				$sql->db_Update('forum', "forum_lastpost_user = '{$forum_lp_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id={$id}");
+				if($row['thread_lastuser_anon'])
+				{
+					$sql->db_Update('forum', "forum_lastpost_user = 0, forum_lastpost_anon = '{$row['thread_lastuser_anon']}', forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
+				}
+				else
+				{
+					$sql->db_Update('forum', "forum_lastpost_user = {$lp_user}, forum_lastpost_user_anon = NULL, forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
+				}
 			}
 		}
 	}

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2008-12-08 02:33:34 $
+|     $Revision: 1.27 $
+|     $Date: 2008-12-09 21:46:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -113,9 +113,9 @@ if($pref['forum_attach'])
 	$a_filetypes = get_filetypes();
 	$max_upload_size = calc_max_upload_size(-1);		// Find overriding maximum upload size
 	$max_upload_size = set_max_size($a_filetypes, $max_upload_size);
-	$max_upload_size = $e107->parseMemorySize($max_upload_size, 0);	
+	$max_upload_size = $e107->parseMemorySize($max_upload_size, 0);
 	$a_filetypes = array_keys($a_filetypes);
-	$allowed_filetypes = implode(' | ', $a_filetypes);	
+	$allowed_filetypes = implode(' | ', $a_filetypes);
 }
 
 if (isset($_POST['submitpoll']))
@@ -212,7 +212,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 	$threadInfo = array();
 	$postOptions = array();
 	$threadOptions = array();
-	
+
 	if ((isset($_POST['newthread']) && trim($_POST['subject']) == '') || trim($_POST['post']) == '')
 	{
 		message_handler('ALERT', 5);
@@ -272,7 +272,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			// New thread started.  Add the thread info (with lastest post info), add the post.
 			// Update forum with latest post info
 			case 'nt':
-				$threadInfo['thread_s'] = (MODERATOR ? $_POST['threadtype'] : 0);
+				$threadInfo['thread_s'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
 				$threadInfo['thread_name'] = $_POST['subject'];
 				$threadInfo['thread_forum_id'] = $forumId;
 				$threadInfo['thread_active'] = 1;
@@ -281,21 +281,26 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 				{
 					$threadOptions['poll'] = '1';
 				}
-				$threadInfo['thread_options'] = serialize($threadOptions);
+				if(is_array($threadOptions) && count($threadOptions))
+				{
+					$threadInfo['thread_options'] = serialize($threadOptions);
+				}
+				else
+				{
+					$threadInfo['thread_options'] = '';
+				}
 				if($postResult = $forum->threadAdd($threadInfo, $postInfo))
 				{
-					$newPostId = $postResult['postid'];	
-					$newThreadId = $postResult['threadid'];	
+					$newPostId = $postResult['postid'];
+					$newThreadId = $postResult['threadid'];
+					if($_POST['email_notify'])
+					{
+						$forum->track('add', USERID, $newThreadId);
+					}
 				}
+
 				break;
 		}
-
-//		$email_notify = ($_POST['email_notify'] ? 99 : 1);
-
-//		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "")
-//		{
-//			$subject = "[".LAN_402."] ".$subject;
-//		}
 //		print_a($threadInfo);
 //		print_a($postInfo);
 //		exit;
@@ -541,9 +546,9 @@ function forumjump()
 function process_upload()
 {
 	global $pref, $forum_info, $thread_info, $admin_log;
-	
+
 	$postId = (int)$postId;
-	$ret = array(); 
+	$ret = array();
 //	var_dump($_FILES);
 
 	if (isset($_FILES['file_userfile']['error']))
