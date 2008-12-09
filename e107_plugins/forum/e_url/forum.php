@@ -1,11 +1,11 @@
 <?php
-// $Id: forum.php,v 1.1 2008-12-02 00:33:29 secretr Exp $
+// $Id: forum.php,v 1.2 2008-12-09 21:46:14 mcfly_e107 Exp $
 function url_forum_forum($parms)
 {
 	switch($parms['func'])
 	{
 		case 'view':
-			return e_PLUGIN_ABS."forum/viewforum.php?id={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_viewforum.php?id={$parms['id']}";
 			break;
 
 		case 'track':

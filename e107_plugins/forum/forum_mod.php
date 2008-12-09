@@ -11,132 +11,96 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-08-14 21:11:29 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-09 21:46:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT'))
+{
+	exit;
+}
+include_lan(e_PLUGIN.'forum/languages/English/lan_forum_admin.php');
 
-@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php';
-@include_once e_PLUGIN.'forum/languages/English/lan_forum_admin.php';
-	
 function forum_thread_moderate($p)
 {
+	//	var_dump($_POST);
+	//	return;
+	$e107 = e107::getInstance();
 	global $sql;
-	foreach($p as $key => $val) {
+	foreach ($p as $key => $val)
+	{
 		if (preg_match("#(.*?)_(\d+)_x#", $key, $matches))
 		{
 			$act = $matches[1];
-			$id = intval($matches[2]);
-			 
-			switch($act)
+			$id = (int)$matches[2];
+
+			switch ($act)
 			{
-				case 'lock' :
-				$sql->db_Update("forum_t", "thread_active='0' WHERE thread_id='$id' ");
-				return FORLAN_CLOSE;
-				break;
-				 
-				case 'unlock' :
-				$sql->db_Update("forum_t", "thread_active='1' WHERE thread_id='$id' ");
-				return FORLAN_OPEN;
-				break;
-				 
-				case 'stick' :
-				$sql->db_Update("forum_t", "thread_s='1' WHERE thread_id='$id' ");
-				return FORLAN_STICK;
-				break;
-				 
-				case 'unstick' :
-				$sql->db_Update("forum_t", "thread_s='0' WHERE thread_id='$id' ");
-				return FORLAN_UNSTICK;
-				break;
-				 
-				case 'delete' :
-				return forum_delete_thread($id);
-				break;
-				 
+				case 'lock':
+					$e107->sql->db_Update('forum_thread', 'thread_active=0 WHERE thread_id='.$id);
+					return FORLAN_CLOSE;
+					break;
+
+				case 'unlock':
+					$e107->sql->db_Update('forum_thread', 'thread_active=1 WHERE thread_id='.$id);
+					return FORLAN_OPEN;
+					break;
+
+				case 'stick':
+					$e107->sql->db_Update('forum_thread', 'thread_s=1 WHERE thread_id='.$id);
+					return FORLAN_STICK;
+					break;
+
+				case 'unstick':
+					$e107->sql->db_Update('forum_thread', 'thread_s=0 WHERE thread_id='.$id);
+					return FORLAN_UNSTICK;
+					break;
+
+				case 'deleteThread':
+					return forumDeleteThread($id);
+					break;
+
 			}
 		}
 	}
 }
-	
-function forum_delete_thread($thread_id)
+
+function forumDeleteThread($threadId)
 {
-	global $sql;
-	@require_once(e_PLUGIN.'forum/forum_class.php');
-	$f =& new e107forum;
-	$sql->db_Select("forum_t", "*", "thread_id='".intval($thread_id)."' ");
-	$row = $sql->db_Fetch();
-	 
-	if ($row['thread_parent'])
+	require_once (e_PLUGIN.'forum/forum_class.php');
+	$e107 = e107::getInstance();
+	$f = &new e107forum;
+	if ($threadInfo = $f->threadGet($threadId))
 	{
-		// post is a reply?
-		$sql->db_Delete("forum_t", "thread_id='".intval($thread_id)."' ");
-		// dec forum reply count by 1
-		$sql->db_Update("forum", "forum_replies=forum_replies-1 WHERE forum_id='".$row['thread_forum_id']."' AND forum_replies>0");
-		// dec thread reply count by 1
-		$sql->db_Update("forum_t", "thread_total_replies=thread_total_replies-1 WHERE thread_id='".$row['thread_parent']."' AND thread_total_replies>0");
-		// dec user forum post count by 1
-		$tmp = explode(".", $row['thread_user']);
-		$uid = intval($tmp[0]);
-		if($uid > 0)
-		{
-			$sql->db_Update("user", "user_forums=user_forums-1 WHERE user_id='".$uid."' AND user_forums>0");
-		}
-		// update lastpost info
-		$f->update_lastpost('thread', $row['thread_parent']);
-		$f->update_lastpost('forum', $row['thread_forum_id']);
-		return FORLAN_154;
-	}
-	else
-	{
-		// post is thread
 		// delete poll if there is one
-		$sql->db_Delete("poll", "poll_datestamp='".intval($thread_id)."'");
+		$e107->sql->db_Delete('poll', 'poll_datestamp='.$threadId);
+
 		//decrement user post counts
-		forum_userpost_count("WHERE thread_id = '".intval($thread_id)."' OR thread_parent = '".intval($thread_id)."'", "dec");
-		// delete replies and grab how many there were
-		$count = $sql->db_Delete("forum_t", "thread_parent='".intval($thread_id)."'");
-		// delete the post itself
-		$sql->db_Delete("forum_t", "thread_id='".intval($thread_id)."'");
-		// update thread/reply counts
-		$sql->db_Update("forum", "forum_threads=LEAST(forum_threads-1,0), forum_replies=LEAST(forum_replies-{$count},0) WHERE forum_id='".$row['thread_forum_id']."'");
-		// update lastpost info
-		$f->update_lastpost('forum', $row['thread_forum_id']);
-		return FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
-	}
-}
-
-function forum_userpost_count($where = "", $type = "dec")
-{
-	global $sql;
-
-	$qry = "
-	SELECT thread_user, count(thread_user) AS cnt FROM #forum_t 
-	{$where}
-	GROUP BY thread_user
-	";
-
-	if($sql->db_Select_gen($qry))
-	{
-		$uList = $sql->db_getList();
-		foreach($uList as $u)
+		if ($postCount = $f->threadGetUserPostcount($threadId))
 		{
-			$tmp = explode(".", $u['thread_user']);
-			$uid = intval($tmp[0]);
-			if($uid > 0)
+			foreach ($postCount as $k => $v)
 			{
-				if("set" == $type)
-				{
-					$sql->db_Update("user", "user_forums={$u['cnt']} WHERE user_id='".$uid."'");
-				}
-				else
-				{	// user_forums is unsigned, so underflow will give a very big number
-					$sql->db_Update("user", "user_forums=LEAST(user_forums-{$u['cnt']},0) WHERE user_id='".$uid."'");
-				}
+				$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-'.$v.',0) WHERE user_id='.$k);
 			}
 		}
+
+		// delete all posts
+		$e107->sql->db_Delete('forum_post', 'post_thread='.$threadId);
+
+		// delete the thread itself
+		$e107->sql->db_Delete('forum_thread', 'thread_id='.$threadId);
+
+		//Delete any thread tracking
+		$e107->sql->db_Delete('forum_track', 'track_thread='.$threadId);
+
+		// update forum with correct thread/reply counts
+		$e107->sql->db_Update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
+
+		// update lastpost info
+		$f->forumUpdateLastpost('forum', $threadInfo['thread_forum_id']);
+		return FORLAN_6.' and '.$threadInfo['thread_total_replies'].' '.FORLAN_7.'.';
 	}
 }
+
 ?>

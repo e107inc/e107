@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-05 01:30:56 $
+|     $Revision: 1.9 $
+|     $Date: 2008-12-09 21:46:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -299,14 +299,16 @@ function parse_forum($f, $restricted_string = "")
 		$NEWFLAG = IMAGE_nonew;
 	}
 
-	if(substr($f['forum_name'], 0, 1) == "*")
+	if(substr($f['forum_name'], 0, 1) == '*')
 	{
 		$f['forum_name'] = substr($f['forum_name'], 1);
 	}
-	$f['forum_name'] = $tp -> toHTML($f['forum_name'], TRUE, "no_hook");
-	$f['forum_description'] = $tp -> toHTML($f['forum_description'], TRUE, "no_hook");
+	$f['forum_name'] = $tp -> toHTML($f['forum_name'], TRUE, 'no_hook');
+	$f['forum_description'] = $tp -> toHTML($f['forum_description'], TRUE, 'no_hook');
 
-	$FORUMNAME = "<a href='".e_PLUGIN."forum/viewforum.php?id={$f['forum_id']}'>{$f['forum_name']}</a>";
+// $e107->url->getUrl('forum', 'thread', array('func' => 'track')))
+
+	$FORUMNAME = "<a href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$f['forum_id']}")."'>{$f['forum_name']}</a>";
 	$FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
 	$THREADS = $f['forum_threads'];
 	$REPLIES = $f['forum_replies'];
@@ -365,7 +367,7 @@ function parse_subs($subList, $lastpost_datestamp)
 	foreach($subList as $sub)
 	{
 		$ret['text'] .= ($ret['text'] ? ", " : "");
-		$suburl = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $sub['forum_id']));		
+		$suburl = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $sub['forum_id']));
 		$ret['text'] .= "<a href='{$suburl}'>".$e107->tp->toHTML($sub['forum_name']).'</a>';
 		$ret['threads'] += $sub['forum_threads'];
 		$ret['replies'] += $sub['forum_replies'];
@@ -389,7 +391,12 @@ if (e_QUERY == 'track')
 //	$sql2 = new db;
 //	$tmp = explode("-", USERREALM);
 
-		$qry = "SELECT * from `#forum_thread` WHERE thread_id IN({$trackedThreadList}) ORDER BY thread_lastpost DESC";
+		$qry = "
+		SELECT t.*, p.* from `#forum_thread` AS t
+		LEFT JOIN `#forum_post` AS p ON p.post_thread = t.thread_id AND p.post_datestamp = t.thread_datestamp
+		WHERE thread_id IN({$trackedThreadList})
+		ORDER BY thread_lastpost DESC
+		";
 		if($e107->sql->db_Select_gen($qry))
 		{
 			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
