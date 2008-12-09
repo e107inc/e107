@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-09 15:19:02 $
+|     $Revision: 1.9 $
+|     $Date: 2008-12-09 17:49:59 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -136,6 +136,10 @@ if (isset($_POST['show_avatars']))
 	}
 	else
 	{
+		$text = "
+			<form method='post' action='".e_SELF."' id='form-show-avatars'>
+		";
+
 		$count = 0;
 		while (list($key, $image_name) = each($dirlist))
 		{
@@ -156,7 +160,7 @@ if (isset($_POST['show_avatars']))
 			}
 
 			//File info
-			$users = "<a class='e-tooltip' href='#' alt='".IMALAN_66.": {$image_name}' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' /></a> ".$users;
+			$users = "<a class='e-tooltip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
 
 			// Control over the image size (design)
 			$image_size = getimagesize(e_FILE."public/avatars/".$image_name);
@@ -165,21 +169,21 @@ if (isset($_POST['show_avatars']))
 			$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'><img src='".e_FILE_ABS."public/avatars/{$image_name}' alt='{$image_name}' /></label>";
 			if ($image_size[0] > $pref['im_width'] || $image_size[1] > $pref['im_height'])
 			{
-				$img_src = "<a class='image-preview' href='".e_FILE_ABS."public/avatars/{$image_name}'>".IMALAN_57."</a>";
+				$img_src = "<a class='image-preview' href='".e_FILE_ABS."public/avatars/".rawurlencode($image_name)."'>".IMALAN_57."</a>";
 			}
 
 			$text .= "
 			<div class='image-box f-left center' style='width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
 				<div class='spacer'>
-				<form method='post' action='".e_SELF."'>
 				<div class='image-users'>{$users}</div>
 				<div class='image-preview'>{$img_src}</div>
-				<div class='image-delete'>
-					<input type='checkbox' class='checkbox' id='image-action-{$count}' name='filename[]' value='{$image_name}' />
+				<div class='image-delete options'>
+					<input type='checkbox' class='checkbox' id='image-action-{$count}' name='multiaction[]' value='{$image_name}' />
 				</div>
-				</form>
+
 				</div>
 			</div>
+
 			";
 
 			$count++;
@@ -188,15 +192,15 @@ if (isset($_POST['show_avatars']))
 		//FIXME add multi delete for better user experience (not working yet), make check/uncheck-all work
 		$text .= "
 			<div class='spacer clear'>
-			<form method='post' action='".e_SELF."'>
 			<div class='buttons-bar'>
 				<button class='delete' type='submit' name='deleteall'><span>".IMALAN_25."</span></button>
 				<button class='delete' type='submit' name='delete_multi'><span>".IMALAN_58."</span></button>
 				<button class='action' type='button' name='check_all'><span>".IMALAN_59."</span></button>
 				<button class='action' type='button' name='uncheck_all'><span>".IMALAN_60."</span></button>
 			</div>
+			</div>
 			</form>
-			</div>";
+		";
 
 	}
 
@@ -295,7 +299,7 @@ if (isset($_POST['check_avatar_sizes']))
 				$text .= "
 				<tr>
 					<td class='options center'>
-						<input class='checkbox' type='checkbox' name='avdelete[]' id='avdelete-{$user_id}' value='{$user_id}' />
+						<input class='checkbox' type='checkbox' name='multiaction[]' id='avdelete-{$user_id}' value='{$user_id}' />
 					</td>
 					<td>
 						<label for='avdelete-{$user_id}' title='".IMALAN_56."'>".IMALAN_51."</label><a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>
@@ -324,7 +328,7 @@ if (isset($_POST['check_avatar_sizes']))
 			<div class='buttons-bar'>
 				<button class='action' type='button' name='check_all'><span>".IMALAN_59."</span></button>
 				<button class='action' type='button' name='uncheck_all'><span>".IMALAN_60."</span></button>
-				<button class='delete' type='submit' name='delete'><span>".IMALAN_58."</span></button>
+				<button class='delete' type='submit' name='avdelete_multi'><span>".IMALAN_58."</span></button>
 			</div>
 		</fieldset>
 	</form>
@@ -439,7 +443,7 @@ $text = "
 					</tr>
 
 					<tr>
-						<td class='label'>".IMALAN_3."<br/><em>".IMALAN_54." {$gd_version}</em></td>
+						<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
 						<td class='control'>
 							<select name='resize_method' class='tbox'>". ($pref['resize_method'] == "gd1" ? "<option selected='selected'>gd1</option>" : "<option>gd1</option>"). ($pref['resize_method'] == "gd2" ? "<option selected='selected'>gd2</option>" : "<option>gd2</option>"). ($pref['resize_method'] == "ImageMagick" ? "<option selected='selected'>ImageMagick</option>" : "<option>ImageMagick</option>")."
 							</select>
@@ -448,7 +452,7 @@ $text = "
 					</tr>
 
 					<tr>
-						<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</em></td>
+						<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
 						<td class='control'>
 							<input class='tbox input-text' type='text' name='im_path' size='40' value=\"".$pref['im_path']."\" maxlength='200' />
 							<div class='smalltext field-help'>".IMALAN_6."</div>
@@ -487,6 +491,74 @@ $ns->tablerender(IMALAN_7, $text);
 
 
 require_once("footer.php");
+
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+	<script type='text/javascript'>
+		//add required core lan
+		(".e_jshelper::toString(IMALAN_67).").addModLan('core', 'delete_confirm');
+
+		/**
+		 * Admin Image JS Handler
+		 */
+		var eCoreImage = {
+
+			init: function() {
+				this.tCheckEventHandler = this.tCheckHandler.bindAsEventListener(this);
+				this.allCheckEventHandler = this.allCheckHandler.bindAsEventListener(this);
+				this.allUnCheckEventHandler = this.allUnCheckHandler.bindAsEventListener(this);
+
+				\$\$('.options').invoke('observe', 'click', this.tCheckEventHandler);
+				\$\$('button.action[name=check_all]').invoke('observe', 'click', this.allCheckEventHandler);
+				\$\$('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUnCheckHandler);
+				\$\$('button.delete').invoke('observe', 'click', function(e){ if( !e107Helper.confirm(e107.getModLan('delete_confirm')) ) e.stop(); });
+			},
+
+			tCheckHandler: function(event) {
+				//do nothing if checkbox or its label is clicked
+				if(event.element().nodeName.toLowerCase() == 'input') return;
+				//stop event
+				event.stop();
+				//td element
+				var element = event.findElement('td'), check = null;
+				if(element) {
+					check = element.select('input.checkbox'); //search for checkbox
+				}
+				//toggle checked property
+				if(check && check[0]) {
+					\$(check[0]).checked = !(\$(check[0]).checked);
+				}
+			},
+
+			allCheckHandler: function(event) {
+				event.stop();
+				var form = event.element().up('form');
+				if(form) {
+					form.toggleChecked(true, 'name^=multiaction');
+				}
+			},
+
+			allUnCheckHandler: function(event) {
+				event.stop();
+				var form = event.element().up('form');
+				if(form) {
+					form.toggleChecked(false, 'name^=multiaction');
+				}
+			}
+		}
+
+		/**
+		 * Observe e107:loaded
+		 *
+		 */
+		 e107.runOnLoad(eCoreImage.init.bind(eCoreImage), document, true);
+	</script>
+	";
+
+	return $ret;
+}
 /*
 XXX - remove this odd thing?!
 

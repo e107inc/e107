@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_image.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-09 15:19:03 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-09 17:49:59 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ define("IMALAN_30", "Everyone (public)");
 define("IMALAN_31", "Guests only");
 define("IMALAN_32", "Members only");
 define("IMALAN_33", "Admin only");
-define("IMALAN_34", "Enable Sleight");
+define("IMALAN_34", "Enable PNG Fix");
 define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
 
 define("IMALAN_36", "Validate avatar size and access");
@@ -75,7 +75,7 @@ define('IMALAN_57', 'Image too big - click to enlarge');
 define('IMALAN_58', 'Delete checked');
 define('IMALAN_59', 'Check All');
 define('IMALAN_60', 'Uncheck All');
-define('IMALAN_66', 'Filename');
+
 
 //avatar check
 define('IMALAN_61', 'Options');
@@ -84,10 +84,7 @@ define('IMALAN_63', 'URL');
 define('IMALAN_64', 'User');
 define('IMALAN_65', 'Nothing found');
 
-/*
-define('IMALAN_60', '');
-define('IMALAN_60', '');
-define('IMALAN_60', '');
-define('IMALAN_60', '');
- */
+define('IMALAN_66', 'Filename');
+define('IMALAN_67', 'Are you\' sure?');
+
 ?>
