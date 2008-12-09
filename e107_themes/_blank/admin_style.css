@@ -1,0 +1,299 @@
+/* E107 CORE CSS *********************************************************************************************/
+.searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
+
+
+/*
+ * e107 v0.800 - new class definitions
+ */
+ 
+/* Core Formatting */
+.left		{ text-align: left }
+.right		{ text-align: right }
+.center		{ text-align: center }
+.f-left		{ float: left }
+.f-right	{ float: right }
+.top		{ vertical-align: top }
+.middle		{ vertical-align: middle }
+.bottom		{ vertical-align: bottom }
+.clear		{ clear: both }
+.clear-l	{ clear: right }
+.clear-r	{ clear: left }
+.smalltext	{ font-size: 11px; }
+
+/* Core Icons */
+.icon		{ border: 0 }
+.icon.action { vertical-align: middle }
+.S16		{ width: 16px; height: 16px }
+.S32		{ width: 32px; height: 32px }
+.S64		{ width: 64px; height: 64px }
+.S128		{ width: 128px; height: 128px }
+/*******************************************************************************************************************/
+
+/* RESET CSS *********************************************************************************************/
+/* Global */
+* 			{ margin:0; padding:0; }
+body		{ font:12px/1.5em Arial, Helvetica, sans-serif;  }
+img         { border:0; vertical-align:top; }
+a			{ text-decoration:underline; }
+a:hover		{ text-decoration:underline; }
+a img		{ border:0; }
+:focus		{ outline:0; }
+
+/* Headings */
+h1          { font-size:20px; font-weight:normal; line-height:1.3; }
+h2          { font-size:18px; font-weight:normal; line-height:1.34; }
+h3          { font-size:16px; font-weight:bold; line-height:1.375; }
+h4          { font-size:14px; font-weight:bold; }
+h5          { font-size:12px; font-weight:bold; }
+h6          { font-size:11px; font-weight:bold; }
+
+/* Forms */
+form        { display:inline; }
+fieldset    { border:0; }
+input, select{ vertical-align:middle; }
+textarea	{ overflow:auto; }
+
+/* Table */
+table       { border:0; border-spacing:0; empty-cells:show; font-size:100%; }
+th          { vertical-align:top; text-align:left; font-weight:normal; }
+td          { vertical-align:top; }
+
+/* Content */
+address     { font-style:normal; }
+cite        { font-style:normal; }
+q,
+blockquote  { quotes:none; }
+q:before, 
+q:after     { content:''; }
+small,big   { font-size:1em; }
+sup         { font-size:1em; vertical-align:top; }
+
+/* Lists */
+ul,ol       { list-style:none; }
+
+/* Tools */
+.no-display { display:none; }
+.no-margin  { margin:0 !important; }
+.no-padding { padding:0 !important; }
+.no-bg      { background:none !important; }
+.clear		{ clear: both; }
+
+/*******************************************************************************************************************/
+
+/* E107 CORE ADMIN CSS *********************************************************************************************/
+
+
+/******** Decorate JS */
+/* Admin List Table */ 
+.adminlist-table {} /* fieldset */
+.adminlist { width:100%;  border:1px solid #ddd;}
+.adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold; white-space:nowrap; }
+.adminlist td { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; }
+.adminlist th.last,
+.adminlist td.last { border-right: 0px solid;}
+.adminlist tr.last td{ border-bottom: 0px solid;}
+.adminlist thead { background-color:#f2f2f2; }
+
+.adminlist tbody {}
+.adminlist tfoot {}
+.adminlist tr.first {}
+.adminlist tr.last {}
+.adminlist tr.odd {}
+.adminlist tr.even { background-color:#f6f6f6; }
+
+/* Form elements */ 
+input.input-text,
+textarea,
+select {
+    border-width:1px;
+    border-style:solid;
+    border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
+    background:#fff;
+    font:12px arial, helvetica, sans-serif;
+}
+select  { min-height:17px; /* to set the height for empty selects */ }
+input.input-text, textarea      { padding:2px; }
+
+/* custom fields CSS */
+#image-settings-form  input.input-text { width: 300px; }
+
+
+.inline-help { width: 280px; }
+	
+/* form used for settings */
+.adminform  { width:100%;  border:1px solid #ddd;}
+.adminform col.label { width: 250px; }
+
+.adminform td { padding: 5px; text-align: left}
+
+.adminform .select { width: 280px;}
+.adminform .input-text { width: 274px;}
+.adminform td.control textarea { width: 274px;}
+
+.adminform td.label { }
+.adminform td.control { }
+
+.field-help { width: 280px; }
+.label-note { font-style: italic; }
+
+/* form used for content edit */
+.adminedit  { width:100%;  border:1px solid #ddd;}
+.adminedit td { padding: 5px; text-align: left}
+
+.adminedit .select { width: 280px; }
+.adminedit .input-text { width: 274px;}
+.adminedit td.control textarea { width: 274px;}
+
+.adminedit td.label {}
+.adminedit td.control {}
+
+
+/* Admin Info Table */ 
+.admininfo  { width:100%;  border:1px solid #ddd;}
+.admininfo td { padding: 1px 5px; text-align: left}
+
+.admininfo td.label { border-right:1px solid #ddd; }
+.admininfo td.control {}
+
+.info-bar { padding: 5px 0px; }
+
+/* Images and avatars */
+.image-box {border:1px solid #ddd; margin-right: 10px;  position: relative; margin-bottom: 10px; }
+.image-box .spacer { }
+.image-box .image-name { padding: 5px; }
+.image-box .image-delete { position: absolute ; bottom: 10px; text-align: center; width: 100%}
+.image-box .image-users {padding: 5px;}
+.image-box .image-preview {padding: 5px;}
+
+/******** Prepare for Image Preview JS */
+.image-preview {}
+
+/******** Tabs JS */
+.admintabs ul.e-tabs { border-bottom: 1px solid #DDDDDD; height: 31px; }
+.admintabs ul.e-tabs li { border: 1px solid #DDDDDD; display: block; float: left; line-height: 30px; padding: 0px 7px; margin-right: 3px; background-color: #F9F9F9 }
+.admintabs fieldset { clear: both ; border: 1px solid #DDDDDD; padding: 10px; border-top: 0px none; }
+.admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
+
+/******** SyS Messages / Message text formatting */
+.s-message {}
+.s-message .error-box {}
+.warning { color: #FF6600}
+.success {}
+.error { color: #FF0000}
+.info {}
+.validate-result {} /* validate result inline message */
+
+/******** Tooltip info */
+.e-info {}
+
+button { 
+  border:0; 
+  cursor:pointer; 
+  font:bold 12px arial, helvetica, sans-serif;  
+  padding:0 10px 0 0; 
+  text-align:center;
+  color:#0b333c; 
+}
+button span { 
+  position:relative; 
+  display:block; 
+  white-space:nowrap; 
+  padding:0 0 0 11px; 
+  height:22px; line-height:22px;  color:#0b333c;
+}
+
+/*blue buttons*/
+button 					{ background:url(images/btn_right.gif) right no-repeat;  }
+button span 			{ background:url(images/btn_left.gif) left no-repeat;  }
+
+button:hover,
+button:focus 			{ background:url(images/btn_over_right.gif) right no-repeat; }
+button:hover span, 
+button:focus span 		{ background:url(images/btn_over_left.gif) left no-repeat; } 
+
+
+button:active			{ background:url(images/btn_active_right.gif) right no-repeat; }
+button:active	span	{ background:url(images/btn_active_left.gif) left no-repeat; }
+
+button::-moz-focus-inner { border: none; } /*To all who have a problem with 1px spans offset in firefox, the following sentence will solve this problem: */
+
+button.delete span			{ padding-left: 30px; }
+button.delete span			{ background-image:url(images/btn_remove_left.gif); }
+button.delete:hover span,
+button.delete:focus span 	{ background-image:url(images/btn_remove_over_left.gif) } 
+button.delete:active span	{ background-image:url(images/btn_remove_active_left.gif)}
+
+button.submit span			{}
+button.submit span			{}
+button.submit:hover span,
+button.submit:focus span 	{} 
+button.submit:active span	{}
+
+button.update span			{ padding-left: 30px; }
+button.update span			{ background-image:url(images/btn_update_left.gif); }
+button.update:hover span,
+button.update:focus span 	{ background-image:url(images/btn_update_over_left.gif)}
+button.update:active span	{ background-image:url(images/btn_update_active_left.gif)}
+
+button.create span			{ padding-left: 30px; }
+button.create span			{}
+button.create:hover span,
+button.create:focus span 	{} 
+button.create:active span	{}
+
+button.edit span			{ padding-left: 30px; }
+button.edit span			{}
+button.edit:hover span,
+button.edit:focus span 		{} 
+button.edit:active span		{}
+
+
+.buttons-bar { padding: 10px 0px; }
+.buttons-bar button { margin-right: 10px; }
+.buttons-bar button.f-right { margin-right: 0px; }
+
+
+/*******************************************************************************************************************/
+
+
+/* THEME SPECIFIC CSS *********************************************************************************************/
+/******** Page Base */
+.admin-wrapper { min-width: 950px; }
+.admin-header { padding: 20px 15px 0; }
+.admin-header-content {border: 1px solid #DDDDDD;}
+.admin-page-body { padding: 20px 15px 0; }
+.admin-footer {}
+
+/******** Layout */
+.col-left { float:left; width: 220px;}
+.col-main { margin-left: 220px; padding: 0 0 0 20px;}
+.inner-wrapper { float:left; width:100%; }
+
+/******** Horizontal navigation ADMIN_NAV_ALT */
+.admin-navigation { border: 1px solid #DDDDDD;}
+
+
+/******** Side Navigation 
+	- Admin Navigation
+	- Plugin Navigation
+*/
+ul.plugin-navigation { }
+ul.plugin-navigation a { text-decoration: none; }
+
+ul.plugin-navigation li { padding: 0px 10px 0px; }
+ul.plugin-navigation a.link {}
+ul.plugin-navigation a.link-active {font-weight: bold;}
+
+ul.plugin-navigation ul.sub-nav {}
+ul.plugin-navigation ul.sub-nav li { padding: 0px 10px 0px; }
+ul.plugin-navigation ul.sub-nav a.link {}
+ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
+
+
+/******** Block Elements */
+.block { border: 1px solid #DDDDDD; margin-bottom: 10px;}
+.block-text { padding: 10px 10px 10px; }
+.block h4 { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
+.page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
+.page-info p { padding: 10px; }
+

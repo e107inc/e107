@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<e107Theme name="e107.v4" version="3.0" date="2003-06-11" compatibility="0.8">
-	<author name ="Steve Dunstan [jalist]" email="jalist@e107.org" url="http://e107.org"/>
-	<description>Classic e107 theme</description>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<e107Theme name="blank" version="0.1" date="2008-12-01" compatibility="0.8">
+	<author name ="Desislav Yosifov [SonicE]" email="support@free-source.net" url="http://free-source.net"/>
+	<description>Blank e107 admin theme</description>
 	<compliance xhtml="true" css="true"/>
 	<layouts>
 		<layout name='3_column' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' requiredPlugins='chatbox' default='true' >
