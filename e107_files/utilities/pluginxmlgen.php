@@ -4,8 +4,8 @@
 |	e107 website system - Converter for plugin.php to plugin.xml
 |
 |	$Source: /cvs_backup/e107_0.8/e107_files/utilities/pluginxmlgen.php,v $
-|	$Revision: 1.8 $
-|	$Date: 2008-12-03 22:29:52 $
+|	$Revision: 1.9 $
+|	$Date: 2008-12-09 22:45:42 $
 |	$Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -193,7 +193,7 @@ function makeXML($pluginDir, $extras=array())
 							'version' => $eplug_version,
 							'compatibility' => '0.8',
 							'installRequired' => $extras['installationrequired'] ? 'true' : 'false'
-							), TRUE);
+							), FALSE);
 	
 	$fileText .= writeTagList('author',
  						array('name' => $eplug_author,
