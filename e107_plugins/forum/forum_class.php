@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-12-09 21:46:14 $
+|     $Revision: 1.22 $
+|     $Date: 2008-12-10 21:00:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -343,6 +343,23 @@ class e107forum
 		return $ret;
 	}
 
+	function threadGetUserViewed($uid = USERID)
+	{
+		$e107 = e107::getInstance();
+		if($uid == USERID)
+		{
+			$viewed = $e107->currentUser['plugin_forum_user_viewed'];
+		}
+		else
+		{
+			$tmp = get_user_data($uid);
+			$viewed = $tmp['plugin_forum_user_viewed'];
+			unset($tmp);
+		}
+
+		return explode(',', $viewed);
+
+	}
 
 	function thread_postnum($thread_id)
 	{

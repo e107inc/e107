@@ -11,64 +11,58 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-10-19 11:35:00 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-10 21:00:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once('../../class2.php');
 
-@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php';
-@include_once e_PLUGIN.'forum/languages/English/lan_forum_stats.php';
-@require_once(e_PLUGIN.'forum/forum_class.php');
+include_lan(e_PLUGIN.'forum/languages/English/lan_forum_stats.php');
+require_once(e_PLUGIN.'forum/forum_class.php');
 $gen = new convert;
+$forum = new e107forum;
 
-$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_PLUGIN."poll/images/barl.png");
-$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_PLUGIN."poll/images/barr.png");
-$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_PLUGIN."poll/images/bar.png");
+$barl = (file_exists(THEME.'images/barl.png') ? THEME.'images/barl.png' : e_PLUGIN.'poll/images/barl.png');
+$barr = (file_exists(THEME.'images/barr.png') ? THEME.'images/barr.png' : e_PLUGIN.'poll/images/barr.png');
+$bar = (file_exists(THEME.'images/bar.png') ? THEME.'images/bar.png' : e_PLUGIN.'poll/images/bar.png');
 
 require_once(HEADERF);
 
-$total_posts = $sql -> db_Count("forum_t");
-$total_topics = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent=0");
-$total_replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent!=0");
+$total_posts = $sql -> db_Count('forum_post');
+$total_topics = $sql -> db_Count('forum_thread');
+$total_replies = $total_posts - $total_topics;
 $total_views = 0;
-$query = "SELECT sum(thread_views) AS total FROM #forum_t ";		// Try this way - original way didn't work for some users
+$query = 'SELECT sum(thread_views) AS total FROM `#forum_thread` ';
 if ($sql -> db_Select_gen($query))
-//if($sql->db_Select("forum_t", "sum(thread_views) AS total", '', 'nowhere'))
 {
   $row = $sql->db_Fetch();
   $total_views = $row['total'];
 }
 
-$firstpost = $sql -> db_Select("forum_t", "thread_datestamp", "thread_datestamp > 0 ORDER BY thread_datestamp ASC LIMIT 0,1");
-$fp = $sql -> db_Fetch();
+$firstpost = $sql -> db_Select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
+$fp = $sql->db_Fetch();
 
-$open_ds = $fp['thread_datestamp'];
-$open_date = $gen->convert_date($open_ds, "long");
+$open_ds = $fp['post_datestamp'];
+$open_date = $gen->convert_date($open_ds, 'long');
 $open_since = $gen -> computeLapse($open_ds);
 $open_days = floor((time()-$open_ds) / 86400);
 $postsperday = ($open_days < 1 ? $total_posts : round($total_posts / $open_days));
 
 
-//$query = "SHOW TABLE STATUS FROM {$mySQLdefaultdb}";		// Original line - doesn't like DB names with a '-' - enclose in backticks
-//$query = "SHOW TABLE STATUS FROM `{$sql->mySQLdefaultdb}` LIKE '".MPREFIX."forum_t"."' ";	// This selects the one table we want (but didn't always work)
-$query = "SHOW TABLE STATUS FROM `{$mySQLdefaultdb}`";		// Original line with backticks added
+$query = "SHOW TABLE STATUS FROM `{$mySQLdefaultdb}`";
 $sql -> db_Select_gen($query);
 $array = $sql -> db_getList();
-//$table = $sql -> db_Fetch();
-//echo $query."<br />Elements: ".count($array)."<br />";
 foreach($array as $table)
 {
-	if($table['Name'] == MPREFIX."forum_t")
+	if($table['Name'] == MPREFIX.'forum_post')
 	{
 		$db_size = $e107->parseMemorySize($table['Data_length']);
 		$avg_row_len = $e107->parseMemorySize($table['Avg_row_length']);
 		break;
 	}
 }
-
 
 $query = "
 SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_class, u.user_name FROM #forum_t as ft
@@ -343,16 +337,13 @@ foreach($top_repliers as $ma)
 	";
 	$count++;
 }
-$text .= "</table>
+$text .= '</table>
 </div>
-";
+';
 
 
 $ns -> tablerender(FSLAN_23, $text);
 
-
 require_once(FOOTERF);
-
-
 
 ?>

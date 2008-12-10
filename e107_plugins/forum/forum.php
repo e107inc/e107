@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-09 21:46:14 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-10 21:00:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e107_INIT"))
+if(!defined('e107_INIT'))
 {
-	require_once("../../class2.php");
+	require_once('../../class2.php');
 }
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
@@ -34,10 +34,10 @@ if ($untrackId = varset($_REQUEST['untrack']))
 }
 
 //Mark all threads as read
-if (e_QUERY == "mark.all.as.read")
+if (e_QUERY == 'mark.all.as.read')
 {
 	$forum->forum_markasread('all');
-	header("location:".e_SELF);
+	header('location:'.e_SELF);
 	exit;
 }
 
@@ -45,7 +45,7 @@ if (e_QUERY == "mark.all.as.read")
 if (varset($_REQUEST['mfar']))
 {
 	$forum->forum_markasread((int)$_REQUEST['mfar']);
-	header("location:".e_SELF);
+	header('location:'.e_SELF);
 	exit;
 }
 
@@ -89,7 +89,7 @@ $total_replies = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $total_members = $sql->db_Count("user");
 $newest_member = $sql->db_Select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
 list($nuser_id, $nuser_name) = $sql->db_Fetch();
-if(!defined("e_TRACKING_DISABLED"))
+if(!defined('e_TRACKING_DISABLED'))
 {
 	$member_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
 	$guest_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
@@ -177,37 +177,37 @@ if (USER == TRUE)
 }
 else
 {
-	$INFO .= "";
+	$INFO .= '';
 	if (ANON == TRUE)
 	{
-		$INFO .= LAN_410."<br />".LAN_44." <a href='".e_SIGNUP."'>".LAN_437."</a> ".LAN_438;
+		$INFO .= LAN_410.'<br />'.LAN_44." <a href='".e_SIGNUP."'>".LAN_437."</a> ".LAN_438;
 	}
 	elseif(USER == FALSE)
 	{
-		$INFO .= LAN_410."<br />".LAN_45." <a href='".e_SIGNUP."'>".LAN_439."</a> ".LAN_440;
+		$INFO .= LAN_410.'<br />'.LAN_45." <a href='".e_SIGNUP."'>".LAN_439."</a> ".LAN_440;
 	}
 }
 
 if (USER && $allread != TRUE && $total_new_threads && $total_new_threads >= $total_read_threads)
 {
-	$INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_199."</a>".(e_QUERY != "new" ? ", <a href='".e_SELF."?new'>".LAN_421."</a>" : "");
+	$INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_199.'</a>'.(e_QUERY != 'new' ? ", <a href='".e_SELF."?new'>".LAN_421."</a>" : '');
 }
 
-if (USER && USERREALM && e_QUERY != "track")
+if (USER && varsettrue($pref['forum_track']) && e_QUERY != 'track')
 {
-	$INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393."</a>";
+	$INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393.'</a>';
 }
 
 $FORUMINFO = LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
 
 if (!isset($FORUM_MAIN_START))
 {
-	if (file_exists(THEME."forum_template.php"))
+	if (file_exists(THEME.'forum_template.php'))
 	{
-		include_once(THEME."forum_template.php");
+		include_once(THEME.'forum_template.php');
 	}
 }
-include(e_PLUGIN."forum/templates/forum_template.php");
+include(e_PLUGIN.'forum/templates/forum_template.php');
 require_once(HEADERF);
 
 $parent_list = $forum->forum_getparents();
@@ -217,16 +217,18 @@ $newflag_list = $forum->forum_newflag_list();
 
 if (!$parent_list)
 {
-	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51."</div>", array('forum', '51'));
+	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51.'</div>', array('forum', '51'));
 	require_once(FOOTERF);
 	exit;
 }
 
-$forum_string = "";
-foreach ($parent_list as $parent) {
+$forum_string = '';
+foreach ($parent_list as $parent)
+{
 	$status = parse_parent($parent);
 	$PARENTSTATUS = $status[0];
-	if ($status[1]) {
+	if ($status[1])
+	{
 		$PARENTNAME = $parent['forum_name'];
 		$forum_string .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_PARENT);
 		//		$forums = $forum->forum_getforums($parent['forum_id']);
@@ -275,7 +277,7 @@ function parse_parent($parent)
 		$status[1] = TRUE;
 		if(!check_class($parent['forum_postclass']))
 		{
-			$status[0] = "( ".LAN_405." )";
+			$status[0] = '( '.LAN_405.' )';
 		}
 	}
 	else
@@ -285,7 +287,7 @@ function parse_parent($parent)
 	return $status;
 }
 
-function parse_forum($f, $restricted_string = "")
+function parse_forum($f, $restricted_string = '')
 {
 	global $FORUM_MAIN_FORUM, $gen, $forum, $tp, $newflag_list, $sub_list;
 	$e107 = e107::getInstance();
@@ -366,7 +368,7 @@ function parse_subs($subList, $lastpost_datestamp)
 	$ret['text'] = "";
 	foreach($subList as $sub)
 	{
-		$ret['text'] .= ($ret['text'] ? ", " : "");
+		$ret['text'] .= ($ret['text'] ? ', ' : '');
 		$suburl = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $sub['forum_id']));
 		$ret['text'] .= "<a href='{$suburl}'>".$e107->tp->toHTML($sub['forum_name']).'</a>';
 		$ret['threads'] += $sub['forum_threads'];
@@ -390,7 +392,7 @@ if (e_QUERY == 'track')
 
 //	$sql2 = new db;
 //	$tmp = explode("-", USERREALM);
-
+		$viewed = $forum->threadGetUserViewed();
 		$qry = "
 		SELECT t.*, p.* from `#forum_thread` AS t
 		LEFT JOIN `#forum_post` AS p ON p.post_thread = t.thread_id AND p.post_datestamp = t.thread_datestamp
@@ -401,63 +403,37 @@ if (e_QUERY == 'track')
 		{
 			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
 			{
-				var_dump($row);
-			}
-		}
-	}
-
-/*
-	foreach($trackedThreads as $threadId)
-	{
-		if ($value)
-		{
-			if($sql->db_Select("forum_t", "thread_id, thread_datestamp, thread_name", "thread_id='".intval($value)."' "))
-			{
-				$row = $sql->db_Fetch();
-				//extract($row);
 				$NEWIMAGE = IMAGE_nonew_small;
-				if ($row['thread_datestamp'] > USERLV && (strpos(USERVIEWED, ".".$row['thread_id'].".") === FALSE))
+				if ($row['thread_datestamp'] > USERLV && !in_array($row['thread_id'], $viewed))
 				{
 					$NEWIMAGE = IMAGE_new_small;
 				}
-				elseif($sql2->db_SELECT("forum_t", "thread_id", "thread_parent='{$row['thread_id']}' AND thread_datestamp > '".USERLV."' "))
-				{
-					while ($xrow = $sql2->db_Fetch())
-					{
-						if (strpos(USERVIEWED, ".".$xrow['thread_id'].".") === FALSE)
-						{
-							$NEWIMAGE = IMAGE_new_small;
-						}
-					}
-				}
-				$result = preg_split("/\]/", $row['thread_name']);
-				$TRACKPOSTNAME = (($result[1] && $row['thread_name']{0} == "[") ? $result[0]."] <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$row['thread_id']}'>".preg_replace("/\[.*\]/", "", $row['thread_name'])."</a>" : "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$row['thread_id']}'>".$row['thread_name']."</a>");
+
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
+				$TRACKPOSTNAME = "<a href='{$url}'>".$e107->tp->toHTML($row['thread_name']).'</a>';
 				$UNTRACK = "<a href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_392."</a>";
 				$forum_trackstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_MAIN);
 			}
 		}
+		$forum_track_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_START);
+		$forum_track_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_END);
+		if ($pref['forum_enclose'])
+		{
+			$ns->tablerender($pref['forum_title'], $forum_track_start.$forum_trackstring.$forum_track_end, array('forum', 'main1'));
+		}
+		else
+		{
+			echo $forum_track_start.$forum_trackstring.$forum_track_end;
+		}
 	}
-
-	$forum_track_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_START);
-	$forum_track_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_END);
-
-	if ($pref['forum_enclose'])
-	{
-		$ns->tablerender($pref['forum_title'], $forum_track_start.$forum_trackstring.$forum_track_end, array('forum', 'main1'));
-	}
-	else
-	{
-		echo $forum_track_start.$forum_trackstring.$forum_track_end;
-	}
-*/
 }
 
-if (e_QUERY == "new")
+if (e_QUERY == 'new')
 {
 	$newpostList = $forum->post_getnew(10);
 	foreach($newpostList as $post)
 	{
-		list($author_id, $author_info) = explode(".", $post['thread_user'], 2);
+		list($author_id, $author_info) = explode('.', $post['thread_user'], 2);
 		list($author_name, $tmp) = explode(chr(1), $author_info);
 		$datestamp = $gen->convert_date($post['thread_datestamp'], "forum");
 		if($author_id == 0)
