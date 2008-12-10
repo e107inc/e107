@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-10 20:54:06 $
+ * $Revision: 1.12 $
+ * $Date: 2008-12-10 20:55:21 $
  * $Author: secretr $
  *
 */
@@ -685,7 +685,7 @@ function headerjs()
 				var element = event.findElement('.options'), check = null;
 				if(element) { 
 					check = element.select('input.checkbox'); //search for checkbox
-				} console.log(element, check);
+				} 
 				//toggle checked property
 				if(check && check[0] && !(\$(check[0]).disabled)) {
 					\$(check[0]).checked = !(\$(check[0]).checked);
