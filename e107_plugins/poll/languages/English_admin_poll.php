@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/admin/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-08-17 11:54:40 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/English_admin_poll.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2008-12-10 21:49:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
