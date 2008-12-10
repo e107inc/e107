@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.14 2008-12-04 21:36:09 mcfly_e107 Exp $ -->
+<!-- $Id: plugin.xml,v 1.15 2008-12-10 15:29:31 mcfly_e107 Exp $ -->
 <e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true">
 	<author name="e107dev" url="http://e107.org"/>
 	<description>This plugin is a fully featured Forum system</description>
@@ -15,7 +15,7 @@
 	<mainPrefs>
 		<pref name="forum_show_topics" value="1" />
 		<pref name="forum_postfix" value="[more...]" />
-		<pref name="forum_poll" value="0" />
+		<pref name="forum_poll" value="255" />
 		<pref name="forum_popular" value="10" />
 		<pref name="forum_track" value="1" />
 		<pref name="forum_eprefix" value="[forum]" />

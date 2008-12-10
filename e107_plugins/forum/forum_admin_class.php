@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.8 $
-* $Date: 2008-12-08 02:33:34 $
+* $Revision: 1.9 $
+* $Date: 2008-12-10 15:29:31 $
 * $Author: mcfly_e107 $
 *
 */
@@ -617,17 +617,16 @@ class forumAdmin
 	function show_prefs()
 	{
 		global $pref, $ns, $sql;
+		$e107 = e107::getInstance();
 
-		if($sql->db_Count('plugin','(*)', "where plugin_path = 'poll' AND plugin_installflag = 1"))
+		$poll_installed = plugInstalled('poll');
+
+
+		if(!$poll_installed)
 		{
-			$poll_installed = true;
-		}
-		else
-		{
-			$poll_installed = false;
 			if($pref['forum_poll'] == 1)
 			{
-				$pref['forum_poll'] = 0;
+				$pref['forum_poll'] = e_UC_NOBODY;
 				save_prefs();
 			}
 		}
@@ -660,7 +659,8 @@ class forumAdmin
 		<td style='width:75%' class='forumheader3'>".FORLAN_49."<br /><span class='smalltext'>".FORLAN_50."</span></td>";
 		if($poll_installed)
 		{
-			$text .= "<td style='width:25%;text-align:center' class='forumheader3' >".($pref['forum_poll'] ? "<input type='checkbox' name='forum_poll' value='1' checked='checked' />" : "<input type='checkbox' name='forum_poll' value='1' />")."</td>";
+//			<td class='forumheader'>".$e107->user_class->uc_dropdown("mods[{$f['forum_id']}]", $f['forum_moderators'], 'admin,classes')."</td>
+			$text .= "<td style='width:25%;text-align:center' class='forumheader3' >".$e107->user_class->uc_dropdown('forum_poll', $pref['forum_poll'], 'admin,classes').'</td>';
 		}
 		else
 		{
@@ -678,7 +678,7 @@ class forumAdmin
 		}
 		if(!is_writable(e_PLUGIN.'forum/attachments'))
 		{
-			$text .= "<br /><b>Attachment file is not writable!</b>";
+			$text .= "<br /><b>Attachment dir (".e_PLUGIN_ABS.'forum/attachments'.") is not writable!</b>";
 		}
 
 		$text .= "</td>
