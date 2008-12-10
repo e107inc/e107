@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2008-12-07 13:08:41 $
+|     $Revision: 1.34 $
+|     $Date: 2008-12-10 21:46:40 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -444,7 +444,7 @@ function update_706_to_800($type='')
 
 
 	//	Add index to download history
-	if (FALSE !== ($temp = addIndexToTable('download_requests', 'download_request_datestamp', $just_check, &$updateMessages)))
+	if (FALSE !== ($temp = addIndexToTable('download_requests', 'download_request_datestamp', $just_check, $updateMessages)))
 	{
 		if ($just_check)
 		{
@@ -453,7 +453,7 @@ function update_706_to_800($type='')
 	}
 
 	// Extra index to tmp table
-	if (FALSE !== ($temp = addIndexToTable('tmp', 'tmp_time', $just_check, &$updateMessages)))
+	if (FALSE !== ($temp = addIndexToTable('tmp', 'tmp_time', $just_check, $updateMessages)))
 	{
 		if ($just_check)
 		{
