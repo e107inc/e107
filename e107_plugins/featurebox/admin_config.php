@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-11-20 20:35:24 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-10 22:41:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -26,12 +26,13 @@ require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
-//$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
-$rejecthumb = '~^thumb_|^th_';
-$templatelist = $fl->get_files(e_PLUGIN."featurebox/templates/",$rejecthumb);
+$templatelist = $fl->get_files(e_PLUGIN."featurebox/templates/");
 
-if (e_QUERY) {
-	list($action, $id) = explode(".", e_QUERY);
+if (e_QUERY) 
+{
+	$qs = explode(".", e_QUERY);
+	$action = varset($qs[0],FALSE);
+	$id = intval(varset($qs[1],0));
 }
 else
 {
@@ -39,44 +40,47 @@ else
 	$id = FALSE;
 }
 
-if(isset($_POST['createFB']))
+if(isset($_POST['createFB']) || isset($_POST['updateFB']))
 {
-	if ($_POST['fb_title'] && $_POST['fb_text']) {
-		$fb_title = $tp -> toDB($_POST['fb_title']);
-		$fb_text = $tp -> toDB($_POST['fb_text']);
-		$fb_mode = $_POST['fb_mode'];
-		$fb_class = $_POST['fb_class'];
-		$fb_rendertype = $_POST['fb_rendertype'];
-		$fb_template = $_POST['fb_template'];
-		$sql->db_Insert("featurebox", "0, '$fb_title', '$fb_text', '$fb_mode', '$fb_class', '$fb_rendertype', '$fb_template'");
-		$message = FBLAN_15;
-	} else {
+	if ($_POST['fb_title'] && $_POST['fb_text']) 
+	{
+		$fbInfo = array();
+		$fbInfo['fb_title'] = $tp -> toDB($_POST['fb_title']);
+		$fbInfo['fb_text'] = $tp -> toDB($_POST['fb_text']);
+		$fbInfo['fb_mode'] = intval($_POST['fb_mode']);
+		$fbInfo['fb_class'] = intval($_POST['fb_class']);
+		$fbInfo['fb_rendertype'] = intval($_POST['fb_rendertype']);
+		$fbInfo['fb_template'] = $tp -> toDB($_POST['fb_template']);
+		if(isset($_POST['createFB']))
+		{
+			$sql->db_Insert("featurebox", $fbInfo);
+			$admin_log->logArrayAll('FBLAN_01',$fbInfo);
+			$message = FBLAN_15;
+		}
+		if(isset($_POST['updateFB']))
+		{
+			$sql->db_UpdateArray('featurebox',$fbInfo, 'WHERE `fb_id`='.intval($_POST['fb_id']));
+			$admin_log->logArrayAll('FBLAN_02',$fbInfo);
+			$message = FBLAN_16;
+		}
+	} 
+	else 
+	{
 		$message = FBLAN_17;
 	}
 }
 
-if(isset($_POST['updateFB']))
-{
-	if ($_POST['fb_title'] && $_POST['fb_text']) {
-		$fb_title = $tp -> toDB($_POST['fb_title']);
-		$fb_text = $tp -> toDB($_POST['fb_text']);
-		$fb_mode = $_POST['fb_mode'];
-		$fb_class = $_POST['fb_class'];
-		$fb_rendertype = $_POST['fb_rendertype'];
-		$fb_template = $_POST['fb_template'];
-		$sql->db_Update("featurebox", "fb_title='$fb_title', fb_text='$fb_text', fb_mode='$fb_mode', fb_class='$fb_class', fb_rendertype='$fb_rendertype', fb_template='$fb_template' WHERE fb_id=".$_POST['fb_id']);
-		$message = FBLAN_16;
-	} else {
-		$message = FBLAN_17;
-	}
-}
 
-if($action == "delete") {
-	$sql->db_Delete("featurebox", "fb_id=$id");
+if (($action == "delete")  && $id)
+{
+	$sql->db_Delete("featurebox", "fb_id=".$id);
+	$admin_log->log_event('FBLAN_03',$id,E_LOG_INFORMATIVE,'');
 	$message = FBLAN_18;
 }
 
-if (isset($message)) {
+
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -118,7 +122,7 @@ $ns->tablerender(FBLAN_06, $text);
 
 if($action == "edit")
 {
-	if($sql->db_Select("featurebox", "*", "fb_id=$id"))
+	if($sql->db_Select("featurebox", "*", "fb_id=".$id))
 	{
 		$row = $sql->db_Fetch();
 		extract($row);
@@ -136,14 +140,14 @@ $text = "<div style='text-align:center'>
 <tr>
 <td style='width:50%' class='forumheader3'>".FBLAN_07."</td>
 <td style='width:50%; text-align: left;' class='forumheader3'>
-<input class='tbox' type='text' name='fb_title' style='width: 80%' value='$fb_title' maxlength='200' />
+<input class='tbox' type='text' name='fb_title' style='width: 80%' value='{$fb_title}' maxlength='200' />
 </td>
 </tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".FBLAN_08."</td>
 <td style='width:50%; text-align: left;' class='forumheader3'>
-<textarea class='tbox' name='fb_text' style='width: 90%'  rows='6'>$fb_text</textarea>
+<textarea class='tbox' name='fb_text' style='width: 90%'  rows='6'>{$fb_text}</textarea>
 </td>
 </tr>
 	 
@@ -193,7 +197,7 @@ $text .= "</select>
 </tr>
 	 
 </table>
-".($action == "edit" ? "<input type='hidden' name='fb_id' value='$fb_id' />" : "")."
+".($action == "edit" ? "<input type='hidden' name='fb_id' value='{$fb_id}' />" : "")."
 </form>
 </div>";
 

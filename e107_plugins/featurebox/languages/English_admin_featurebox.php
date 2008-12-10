@@ -10,12 +10,13 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:10 $
-|     $Author: mcfly_e107 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/languages/English_admin_featurebox.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2008-12-10 22:41:39 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
+
 
 define("FBLAN_01", "Feature Box");
 define("FBLAN_02", "This plugin allows you to display a box above your news items with features / whatever you like in it. The messages can either be revolved randomly or dynamically faded.");
@@ -43,5 +44,11 @@ define("FBLAN_23", "In theme box");
 define("FBLAN_24", "Plain");
 define("FBLAN_25", "Template");
 define("FBLAN_26", "you can use a different template for each message, add templates to e107_plugins/featurebox/templates/ folder");
+
+// Admin log messages
+define('LAN_AL_FBLAN_01', 'Featurebox created');
+define('LAN_AL_FBLAN_02', 'Featurebox updated');
+define('LAN_AL_FBLAN_03', 'Featurebox deleted');
+
 
 ?>
