@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.34 2008-12-07 14:22:40 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.35 2008-12-10 22:39:43 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -210,7 +210,8 @@ define('LAN_AL_BANNER_01','Banner menu update');
 define('LAN_AL_BANNER_02','Banner created');
 define('LAN_AL_BANNER_03','Banner updated');
 define('LAN_AL_BANNER_04','Banner deleted');
-define('LAN_AL_BANNER_05','');
+define('LAN_AL_BANNER_05','Banner configuration updated');
+define('LAN_AL_BANNER_06','');
 
 // Image management
 //-----------------
@@ -338,6 +339,13 @@ define('LAN_AL_MAIL_04', 'Mailshot details deleted');
 define('LAN_AL_MAIL_05', 'Delete orphaned emails');
 define('LAN_AL_MAIL_06', '');
 define('LAN_AL_MAIL_07', '');
+
+// Plugin Manager
+//---------------
+define('LAN_AL_PLUGMAN_01', 'Plugin installed');
+define('LAN_AL_PLUGMAN_02', 'Plugin updated');
+define('LAN_AL_PLUGMAN_03', 'Plugin uninstalled');
+define('LAN_AL_PLUGMAN_04', 'Plugin refreshed');
 
 
 ?>

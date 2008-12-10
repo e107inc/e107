@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2008-12-10 13:41:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.58 $
+|     $Date: 2008-12-10 22:39:43 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -429,6 +429,7 @@ class e107plugin
 				break;
 
 			  case 'update' :
+			  case 'refresh' :
 				  // Only update if $pref doesn't exist
 				  if (!isset($pref[$k])) $pref[$k] = $v;
 				break;
@@ -452,6 +453,7 @@ class e107plugin
 			{
 			  case 'add' :
 			  case 'update' :
+			  case 'refresh' :
 				if (!in_array($v,$tmp)) $tmp[] = $v;
 				break;
 			  case 'remove' :
@@ -467,6 +469,7 @@ class e107plugin
 				$pref[$k][$path] = $v;
 				break;
 			  case 'update' :
+			  case 'refresh' :
 				if (!isset($pref[$k][$path])) $pref[$k][$path] = $v;
 				break;
 			  case 'remove' :
@@ -503,7 +506,7 @@ class e107plugin
 	// Handle table updates - passed an array of actions.
 	// $var array:
 	//   For 'add' - its a query to create the table
-	//	 For 'upgrade' - its a query to modify the table
+	//	 For 'upgrade' - its a query to modify the table (not called from the plugin.xml handler)
 	//	 For 'remove' - its a table name
 	//  'upgrade' and 'remove' operate on all language variants of the same table
 	function manage_tables($action, $var)
@@ -707,6 +710,12 @@ class e107plugin
 	//----------------------------------------------------------
 	//		Install routine for XML file
 	//----------------------------------------------------------
+	//	$id - the number of the plugin in the DB
+	// Values for $function:
+	//		'install'
+	//		'upgrade'
+	//		'uninstall'
+	// 		'refresh' 	- adds things that are missing, but doesn't change any existing settings
 	function manage_plugin_xml($id, $function='')
 	{
 		global $sql, $pref;
@@ -738,7 +747,7 @@ class e107plugin
 		}
 
 
-		if($canContinue && $this->parse_plugin_xml($path))
+		if($canContinue && $this->parse_plugin_xml($plug['plugin_path']))
 		{
 		  $plug_vars = $this->plug_vars;
 		}
@@ -834,7 +843,7 @@ class e107plugin
 				$tableList = $dbHandler->get_table_def('',$path.$sqlFile);
 				if (!is_array($tableList))
 				{
-					$error[] = "Can't read SQL definition: ".$path.$sqlFile;
+					$error[] = 'Can\'t read SQL definition: '.$path.$sqlFile;
 					break;
 				}
 				// Got the required definition here
@@ -852,12 +861,14 @@ class e107plugin
 							$tmp = $dbHandler->update_table_structure($ct,FALSE,TRUE, $pref['multilanguage']);
 							if ($tmp === FALSE)
 							{
-								$error[] = "Unspecified error updating table: {$ct[1]}";
+								$error[] = 'Error updating table: '.$ct[1];
 							}
 							elseif ($tmp !== TRUE)
 							{
 								$error[] = $tmp;
 							}
+							break;
+						case 'refresh' :		// Leave things alone
 							break;
 						case 'uninstall' :
 							$txt .= "Removing table {$ct[1]} <br />";
@@ -885,29 +896,32 @@ class e107plugin
 				}
 				switch($function)
 				{
-				  case 'upgrade':
-				  case 'install':
-					// Add any active link
-					if(!isset($attrib['active']) || $attrib['active'] == 'true')
-					{
-					  $addlink = e_PLUGIN.$attrib['url'];
-						$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
-						$txt .= "Adding link {$linkName} with url [{$addlink}] and perm {$perm} <br />";
-						$this->manage_link('add', $addlink, $linkName, $perm);
-					}
-					//remove inactive links on upgrade
-					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
-					{
+					case 'upgrade':
+					case 'install':
+						// Add any active link
+						if(!isset($attrib['active']) || $attrib['active'] == 'true')
+						{
+							$addlink = e_PLUGIN.$attrib['url'];
+							$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
+							$txt .= "Adding link {$linkName} with url [{$addlink}] and perm {$perm} <br />";
+							$this->manage_link('add', $addlink, $linkName, $perm);
+						}
+						//remove inactive links on upgrade
+						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
+						{
+							$txt .= "Removing link {$linkName} with url [{$attrib['url']}] <br />";
+							$this->manage_link('remove', $attrib['url'], $linkName);
+						}
+						break;
+
+					case 'refresh' :		// Probably best to leave well alone
+						break;
+
+					case 'uninstall':
+						//remove all links
 						$txt .= "Removing link {$linkName} with url [{$attrib['url']}] <br />";
 						$this->manage_link('remove', $attrib['url'], $linkName);
-					}
-					break;
-
-				  case 'uninstall':
-					//remove all links
-					$txt .= "Removing link {$linkName} with url [{$attrib['url']}] <br />";
-					$this->manage_link('remove', $attrib['url'], $linkName);
-					break;
+						break;
 				}
 			}
 		}
@@ -929,7 +943,8 @@ class e107plugin
 						$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path'], TRUE);
 					}
 					break;
-				case 'upgrade':
+				case 'upgrade' :
+				case 'refresh' :		// Add any defined prefs which don't already exist
 					if(is_array($list['active']))
 					{
 						$txt .= "Updating {$prefType} prefs ".print_a($list['active'], true)."<br />";
@@ -1040,7 +1055,7 @@ class e107plugin
 		if($function == 'uninstall' && isset($plug_vars['commentID']))
 		{
 			$commentArray = (is_array($plug_vars['commentID']) ? $plug_vars['commentID'] : array($plug_vars['commentID']));
-			$txt .= "Removing all plugin comments: (".implode(', ', $commentArray).")<br />";
+			$txt .= 'Removing all plugin comments: ('.implode(', ', $commentArray).')<br />';
 			$this->manage_comments('remove', $commentArray);
 		}
 
@@ -1056,6 +1071,7 @@ class e107plugin
 		  {
 		    case 'install' :
 			case 'upgrade' :
+			case 'refresh' :
 			  $pref['upgradeCheck'][$plug['plugin_path']]['url'] = $tmp['@attributes']['url'];
 			  $pref['upgradeCheck'][$plug['plugin_path']]['method'] = varset($tmp['@attributes']['method'],'sf_news');
 			  $pref['upgradeCheck'][$plug['plugin_path']]['id'] = varset($tmp['@attributes']['id'],$plug['plugin_path']);
@@ -1073,6 +1089,7 @@ class e107plugin
 		  {
 		    case 'install' :
 			case 'upgrade' :
+			case 'refresh' :
 			  $pref['logLanguageFile'][$plug['plugin_path']] = $plug_vars['logLanguageFile']['@attributes']['filename'];
 			  break;
 			case 'uninstall' :
@@ -1190,7 +1207,7 @@ class e107plugin
 
 		$plug['plug_action'] = 'install';
 
-		//	$plug_vars = $this->parse_plugin_php($path);
+		//	$plug_vars = $this->parse_plugin_php($plug['plugin_path']);
 		include_once($_path.'plugin.php');
 
 		$func = $eplug_folder.'_install';
@@ -1484,34 +1501,34 @@ class e107plugin
 
 
 	// Entry point to read plugin configuration data
-	function parse_plugin($path, $force=false)
+	function parse_plugin($plugName, $force=false)
 	{
-		if(isset($this->parsed_plugin[$path]) && $force != true)
+		if(isset($this->parsed_plugin[$plugName]) && $force != true)
 		{
-			$this->plug_vars = $this->parsed_plugin[$path];
+			$this->plug_vars = $this->parsed_plugin[$plugName];
 			return true;
 		}
-		unset($this->parsed_plugin[$path]);		// In case forced parsing which fails
-		if(file_exists($path.'plugin.xml'))
+		unset($this->parsed_plugin[$plugName]);		// In case forced parsing which fails
+		if(file_exists(e_PLUGIN.$plugName.'/plugin.xml'))
 		{
-			$ret = $this->parse_plugin_xml($path);
+			$ret = $this->parse_plugin_xml($plugName);
 		}
-		elseif(file_exists($path.'plugin.php'))
+		elseif(file_exists(e_PLUGIN.$plugName.'/plugin.php'))
 		{
-			$ret = $this->parse_plugin_php($path);
+			$ret = $this->parse_plugin_php($plugName);
 		}
 		if($ret == true)
 		{
-			$this->parsed_plugin[$path] = $this->plug_vars;
+			$this->parsed_plugin[$plugName] = $this->plug_vars;
 		}
 		return $ret;
 	}
 
 
 	// Called to parse the (deprecated) plugin.php file
-	function parse_plugin_php($path)
+	function parse_plugin_php($plugName)
 	{
-		include($path.'plugin.php');
+		include(e_PLUGIN.$plugName.'/plugin.php');
 		$ret = array();
 
 //		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
@@ -1543,16 +1560,16 @@ class e107plugin
 
 
 	// Called to parse the plugin.xml file if it exists
-	function parse_plugin_xml($path)
+	function parse_plugin_xml($plugName)
 	{
 		global $tp;
-		loadLanFiles($path, 'admin');					// Look for LAN files on default paths
+		loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
-		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);
+		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', true, true);
 		if ($this->plug_vars === FALSE)
 		{
-			echo "Error reading {$path}/plugin.xml<br />";
+			echo "Error reading {$plugName}/plugin.xml<br />";
 			return FALSE;
 		}
 //		print_a($this->plug_vars);

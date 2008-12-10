@@ -1,6 +1,6 @@
 /*
 * e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: fs_admin_alt_nav.sc,v 1.2 2008-12-10 16:59:19 secretr Exp $
+* $Id: fs_admin_alt_nav.sc,v 1.3 2008-12-10 22:39:43 e107steved Exp $
 */
 
 if (ADMIN) 
@@ -113,8 +113,7 @@ if (ADMIN)
 		{
 			if(getperms('P'.$row['plugin_id']))
 			{
-				$_path = e_PLUGIN.$row['plugin_path'].'/';
-				if($plug->parse_plugin($_path))
+				if($plug->parse_plugin($row['plugin_path']))
 				{
 					$plug_vars = $plug->plug_vars;
 					loadLanFiles($row['plugin_path'], 'admin');
