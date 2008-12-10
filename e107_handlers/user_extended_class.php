@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-12-02 20:23:32 $
-|     $Author: e107steved $
+|     $Revision: 1.18 $
+|     $Date: 2008-12-10 13:14:51 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -202,7 +202,7 @@ class e107_user_extended
 		  break;
 
 	  }
-	  if($type != EUF_DB_FIELD && $default != '')
+	  if($type != EUF_DB_FIELD && $type != EUF_TEXTAREA && $default != '')
 	  {
 		$default_text = " DEFAULT '".$tp -> toDB($default, true)."'";
 	  }
@@ -223,7 +223,7 @@ class e107_user_extended
 	function clear_cache()
 	{
 		$e107 = e107::getInstance();
-		$e107->ecache->clear_sys('nomd5_extended_struct');		
+		$e107->ecache->clear_sys('nomd5_extended_struct');
 	}
 
 	// For use by plugins to add extended user fields and won't be visible anywhere else
@@ -260,7 +260,7 @@ class e107_user_extended
 			}
 		  }
 		}
-		$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$tp -> toDB($name, true)." ".$field_info);
+		$sql->db_Select_gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
 		$sql->db_Insert('user_extended_struct',"0,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
 		if ($this->user_extended_field_exist($name))
 		{
@@ -341,7 +341,7 @@ class e107_user_extended
 	  $regex = $tp->toText($parms[1]);
 	  $regexfail = $tp->toText($parms[2]);
 	  $fname = "ue[user_".$struct['user_extended_struct_name']."]";
-	  if(strpos($include, 'class') === FALSE)	
+	  if(strpos($include, 'class') === FALSE)
 	  {
 		$include .= " class='tbox' ";
 	  }
@@ -543,15 +543,15 @@ class e107_user_extended
 		return $this->extended_xml;
 	}
 
-	
+
 	/**
 	* Set the value of an extended field
 	*
 	*  $ue = new e107_user_extended;
 	*	$result = $ue->user_extended_setvalue(1, 'location', 'Pittsburgh');
-	*	
+	*
 	*	NOTE:  This function will return false if the field is already set to $newvalue
-	*	
+	*
 	*/
 	function user_extended_setvalue($uid, $field_name, $newvalue)
 	{
@@ -572,7 +572,7 @@ class e107_user_extended
 	*
 	*  $ue = new e107_user_extended;
 	*	$value = $ue->user_extended_getvalue(2, 'location');
-	*	
+	*
 	*/
 	function user_extended_getvalue($uid, $field_name, $ifnotset=false)
 	{
