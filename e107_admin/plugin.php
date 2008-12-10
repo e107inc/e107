@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-12-04 21:36:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2008-12-10 22:39:43 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
-if (!getperms("Z")) {
+if (!getperms("Z")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -31,6 +32,9 @@ $plugin = new e107plugin;
 $tmp = explode('.', e_QUERY);
 $action = $tmp[0];
 $id = intval($tmp[1]);
+
+define('PLUGIN_SHOW_REFRESH', FALSE);
+
 
 if (isset($_POST['upload']))
 {
@@ -249,6 +253,7 @@ if ($action == 'uninstall')
 			$plugin->manage_notify('remove', $eplug_folder);
 		}
 
+		$admin_log->log_event('PLUGMAN_03', $plug['plugin_path'], E_LOG_INFORMATIVE, '');
 
 		if (isset($pref['plug_installed'][$plug['plugin_path']]))
 		{
@@ -274,18 +279,20 @@ if ($action == 'uninstall')
 	$text = '';
 }
 
+
 if ($action == 'install')
 {
 	$text = $plugin->install_plugin($id);
 	if ($text === FALSE)
 	{ // Tidy this up
-	  $ns->tablerender(LAN_INSTALL_FAIL, "Error messages above this line");
+		$ns->tablerender(LAN_INSTALL_FAIL, "Error messages above this line");
 	}
 	else
 	{
-	  $plugin ->save_addon_prefs();
+		$plugin ->save_addon_prefs();
 //	if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".LAN_CONFIGURE."]</a>"; }
-	  $ns->tablerender(EPL_ADLAN_33, $text);
+		$admin_log->log_event('PLUGMAN_01', $id.':'.$eplug_folder, E_LOG_INFORMATIVE, '');
+		$ns->tablerender(EPL_ADLAN_33, $text);
 	}
 }
 
@@ -401,6 +408,7 @@ if ($action == 'upgrade')
 
 		$eplug_addons = $plugin -> getAddons($eplug_folder);
 
+		$admin_log->log_event('PLUGMAN_02', $eplug_folder, E_LOG_INFORMATIVE, '');
 		$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
 		$sql->db_Update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$id' ");
 		$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
@@ -409,6 +417,19 @@ if ($action == 'upgrade')
 	$ns->tablerender(EPL_ADLAN_34, $text);
 
 	$plugin->save_addon_prefs();
+}
+
+
+if ($action == 'refresh')
+{
+	$plug = $plugin->getinfo($id);
+
+	$_path = e_PLUGIN.$plug['plugin_path'].'/';
+	if(file_exists($_path.'plugin.xml'))
+	{
+		$text .= $plugin->manage_plugin_xml($id, 'refresh');
+		$admin_log->log_event('PLUGMAN_04', $id.':'.$plug['plugin_path'], E_LOG_INFORMATIVE, '');
+	}
 }
 
 
@@ -472,7 +493,8 @@ function render_plugs($pluginList)
 	{
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 		$plug_vars = false;
-		if($plugin->parse_plugin($_path))
+//		if($plugin->parse_plugin($_path))
+		if($plugin->parse_plugin($plug['plugin_path']))
 		{
 			$plug_vars = $plugin->plug_vars;
 		}
@@ -547,7 +569,18 @@ function render_plugs($pluginList)
 
 			if ($plug_vars['@attributes']['installRequired'])
 			{
-				$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' /> " : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
+				if ($plug['plugin_installflag'])
+				{
+					$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' /> " : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
+					if (PLUGIN_SHOW_REFRESH && !varsettrue($plug_vars['plugin_php']))
+					{
+						$text .= "<br /><br /><input type='button' class='button' onclick=\"location.href='".e_SELF."?refresh.{$plug['plugin_id']}'\" title='".'Refresh plugin settings'."' value='".'Refresh plugin settings'."' /> ";
+					}
+				}
+				else
+				{
+					$text .=  "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />";
+				}
 			}
 			else
 			{
@@ -595,11 +628,11 @@ function show_uninstall_confirm()
 	global $plugin, $tp, $id, $ns;
 	$id = intval($id);
 	$plug = $plugin->getinfo($id);
-	$_path = e_PLUGIN.$plug['plugin_path'];
+//	$_path = e_PLUGIN.$plug['plugin_path'];
 
 	if ($plug['plugin_installflag'] == true )
 	{
-		if($plugin->parse_plugin($_path))
+		if($plugin->parse_plugin($plug['plugin_path']))
 		{
 			$plug_vars = $plugin->plug_vars;
 		}
