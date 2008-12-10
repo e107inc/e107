@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.122 $
-|     $Date: 2008-12-04 21:32:40 $
+|     $Revision: 1.123 $
+|     $Date: 2008-12-10 18:06:50 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -362,6 +362,7 @@ if (isset($_POST['register']))
 
 		$_POST['name'] = $xup['NICKNAME'];
 		$_POST['email'] = $xup['EMAIL'];
+		$_POST['email_confirm'] = $xup['EMAIL'];
 		$_POST['signature'] = $xup['SIG'];
 		$_POST['hideemail'] = $xup['EMAILHIDE'];
 		$_POST['timezone'] = $xup['TZ'];
