@@ -8,7 +8,21 @@ input.radio { width:13px; height:13px; }
 button { 
   width:auto; 
   overflow:visible; 
+  vertical-align: middle
 }
 button span { 
   margin-top:1px; 
+  
 }
+
+
+/* THEME SPECIFIC CSS *********************************************************************************************/
+
+#core-frontpage-edit-home			{ width: 49%; float: left; margin-right: 10px; } 
+#core-frontpage-edit-post-login		{ width: 49%; float: left;}
+
+#core-frontpage-edit-home .adminlist { width: 100%; }
+#core-frontpage-edit-post-login .adminlist { width: 100%; }
+
+
+

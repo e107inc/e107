@@ -1,104 +1,202 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-09 17:49:59 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Image Administration Area
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-10 16:59:19 $
+ * $Author: secretr $
+ *
 */
 require_once("../class2.php");
 if (!getperms("A")) {
-	header("location:".e_BASE."index.php");
+	header("location:".e_HTTP."index.php");
 	exit;
 }
+
 $e_sub_cat = 'image';
+
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
 
-if (isset($_POST['delete']))
+/*
+ * CLOSE - GO TO MAIN SCREEN
+ */
+if(isset($_POST['submit_cancel_show']))
 {
-	$image = $tp->toDB($_POST['filename']);
-	@unlink(e_FILE."public/avatars/".$image);
-	$sql->db_Update("user", "user_image='' WHERE user_image='-upload-{$image}'");
-	$sql->db_Update("user", "user_sess='' WHERE user_sess='{$image}'");
-	$admin_log->log_event('IMALAN_01',$image,E_LOG_INFORMATIVE,'');
-	$message = $image." ".IMALAN_28;
+	header('Location: '.e_SELF);
+	exit();
 }
 
+/*
+ * DELETE CHECKED AVATARS - SHOW AVATAR SCREEN
+ */
+if (isset($_POST['submit_show_delete_multi']))
+{
+	if(varset($_POST['multiaction']))
+	{
+		$tmp = array(); $tmp1 = array(); $message = array();
 
-if (isset($_POST['deleteall']))
+		foreach ($_POST['multiaction'] as $todel)
+		{
+			$todel = explode('#', $todel);
+			$todel[1] = basename($todel[1]);
+
+			$image_type = 2;
+			if(strpos($todel[1], '-upload-') === 0)
+			{
+				$image_type = 1;
+				$todel[1] = substr($todel[1], strlen('-upload-'));
+			}
+
+			//delete it from server
+			@unlink(e_FILE."public/avatars/".$todel[1]);
+
+			//admin log & sysmessage
+			$message[] = $todel[1];
+
+			//It's owned by an user
+			if($todel[0])
+			{
+				switch ($image_type)
+				{
+					case 1: //avatar
+						$tmp[] = intval($todel[0]);
+						break;
+
+					case 2: //photo
+						$tmp1[] = intval($todel[0]);
+						break;
+				}
+			}
+		}
+
+		//Reset all deleted user avatars with one query
+		if(!empty($tmp))
+		{
+			$sql->db_Update("user", "user_image='' WHERE user_id IN (".implode(',', $tmp).")");
+		}
+		//Reset all deleted user photos with one query
+		if(!empty($tmp1))
+		{
+			$sql->db_Update("user", "user_sess='' WHERE user_id IN (".implode(',', $tmp1).")");
+		}
+		unset($tmp, $tmp1);
+
+		//Format system message
+		if(!empty($message))
+		{
+			$admin_log->log_event('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
+			$message = implode(', ', $message).' '.IMALAN_28;
+		}
+		else $message = '';
+	}
+}
+
+/*
+ * DELETE ALL UNUSED IMAGES - SHOW AVATAR SCREEN
+ */
+if (isset($_POST['submit_show_deleteall']))
 {
 	$handle = opendir(e_FILE."public/avatars/");
+	$dirlist = array();
 	while ($file = readdir($handle)) {
-		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') {
+		if (!is_dir(e_FILE."public/avatars/{$file}") && $file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') {
 			$dirlist[] = $file;
 		}
 	}
 	closedir($handle);
-	$imgList = '';
-	$count = 0;
-	while (list($key, $image_name) = each($dirlist))
+
+	if(!empty($dirlist))
 	{
-		if (!$sql->db_Select("user", "*", "user_image='-upload-$image_name' OR user_sess='$image_name'")) {
-			unlink(e_FILE."public/avatars/".$image_name);
-			$count++;
-			$imgList .= '[!br!]'.$image_name;
+		$imgList = '';
+		$count = 0;
+		foreach ($dirlist as $image_name)
+		{
+			$image_name = basename($image_name);
+			$image_todb = $tp->toDB($image_name);
+			if (!$sql->db_Count('user', '(*)', "WHERE user_image='-upload-{$image_todb}' OR user_sess='{$image_todb}'")) {
+				unlink(e_FILE."public/avatars/".$image_name);
+				$imgList .= '[!br!]'.$image_name;
+				$count++;
+			}
 		}
+
+		$message = $count." ".IMALAN_26;
+		$admin_log->log_event('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
+		unset($imgList);
 	}
-	$message = $count." ".IMALAN_26;
-	$admin_log->log_event('IMALAN_02',$message.$imgList,E_LOG_INFORMATIVE,'');
-	unset($imgList);
 }
 
 
-if (isset($_POST['avdelete']))
+/*
+ * DELETE ALL CHECKED BAD IMAGES - VALIDATE SCREEN
+ */
+if (isset($_POST['submit_avdelete_multi']))
 {
 	require_once(e_HANDLER."avatar_handler.php");
 	$avList = array();
-	foreach($_POST['avdelete'] as $key => $val)
+	$tmp = array();
+	$uids = array();
+	//Sanitize
+	$_POST['multiaction'] = $tp->toDB($_POST['multiaction']);
+
+	//sql queries significant reduced
+	if(!empty($_POST['multiaction']) && $sql->db_Select("user", 'user_id, user_name, user_image', "user_id IN (".implode(',', $_POST['multiaction']).")"))
 	{
-		$key = intval($key); // We only need the key
-		if ($sql->db_Select("user", 'user_id, user_name, user_image', "user_id='{$key}'"))
+		$search_users = $sql->db_getList('ALL', FALSE, FALSE, 'user_id');
+		foreach($_POST['multiaction'] as $uid)
 		{
-			$row = $sql->db_Fetch();
-			$avname=avatar($row['user_image']);
-			if (strpos($avname,"http://")===FALSE)
-			{ // Internal file, so unlink it
-				@unlink($avname);
+			if (varsettrue($search_users[$uid]))
+			{
+				$avname = avatar($search_users[$uid]['user_image']);
+				if (strpos($avname, "http://") === FALSE)
+				{ // Internal file, so unlink it
+					@unlink($avname);
+				}
+
+				$uids[] = $uid;
+				$tmp[] = $search_users[$uid]['user_name'];
+				$avList[] = $uid.':'.$search_users[$uid]['user_name'].':'.$search_users[$uid]['user_image'];
 			}
-			$sql->db_Update("user","user_image='' WHERE user_id='{$key}'");
-			$message = IMALAN_51.$row['user_name']." ".IMALAN_28;
-			$avList[] = $key.':'.$row['user_name'].':'.$row['user_image'];
 		}
+
+		//sql queries significant reduced
+		if(!empty($uids))
+		{
+			$sql->db_Update("user", "user_image='' WHERE user_id IN (".implode(',', $uids).")");
+		}
+
+		$message = IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28;
+		$admin_log->log_event('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
+		unset($search_users);
 	}
-	$admin_log->log_event('IMALAN_03',implode('[!br!]',$avList),E_LOG_INFORMATIVE,'');
-	unset($avList);
-	$_POST['check_avatar_sizes'] = TRUE;	// Force size recheck after doing one or more deletes
+	unset($avList, $tmp, $uids);
+
 }
 
+/*
+ * UPDATE IMAGE OPTIONS - MAIN SCREEN
+ */
 if (isset($_POST['update_options']))
 {
-	unset($temp);
-	$temp['image_post'] = intval($_POST['image_post']);
-	$temp['resize_method'] = $_POST['resize_method'];
-	$temp['im_path'] = trim($tp->toDB($_POST['im_path']));
-	$temp['image_post_class'] = intval($_POST['image_post_class']);
-	$temp['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
-	$temp['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
+	$tmp = array();
+	$tmp['image_post'] = intval($_POST['image_post']);
+	$tmp['resize_method'] = $tp->toDB($_POST['resize_method']);
+	$tmp['im_path'] = trim($tp->toDB($_POST['im_path']));
+	$tmp['image_post_class'] = intval($_POST['image_post_class']);
+	$tmp['image_post_disabled_method'] = intval($_POST['image_post_disabled_method']);
+	$tmp['enable_png_image_fix'] = intval($_POST['enable_png_image_fix']);
 
-	if ($admin_log->logArrayDiffs($temp, $pref, 'IMALAN_04'))
+	if ($admin_log->logArrayDiffs($tmp, $pref, 'IMALAN_04'))
 	{
 		save_prefs();		// Only save if changes
 		$message = IMALAN_9;
@@ -109,16 +207,29 @@ if (isset($_POST['update_options']))
 	}
 }
 
-//FIXME - better message handler, no tablerender for sys-messages anymore
-if (isset($message))
+/*
+ * SYSTEM MESSAGE
+ */
+//FIXME - better message handler, sysmessages CSS rules
+if (varsettrue($message))
 {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	//no tablerender for sys-messages anymore
+	$message = "
+		<div class='s-message info'><span>".$message."</span></div>
+	";
+}
+else
+{
+	$message = '';
 }
 
-
+/*
+ * SHOW AVATARS SCREEN
+ */
 if (isset($_POST['show_avatars']))
 {
 	$handle = opendir(e_FILE."public/avatars/");
+	$dirlist = array();
 	while ($file = readdir($handle))
 	{
 		if ($file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db' && !is_dir($file))
@@ -130,55 +241,77 @@ if (isset($_POST['show_avatars']))
 
 	$text = '';
 
-	if (!is_array($dirlist))
+	if (empty($dirlist))
 	{
 		$text .= IMALAN_29;
 	}
 	else
 	{
 		$text = "
-			<form method='post' action='".e_SELF."' id='form-show-avatars'>
+			<form method='post' action='".e_SELF."' id='core-iamge-show-avatars-form'>
+			<fieldset id='core-iamge-show-avatars'>
 		";
 
 		$count = 0;
 		while (list($key, $image_name) = each($dirlist))
 		{
 			$users = IMALAN_21." | ";
-			if ($sql->db_Select("user", "*", "user_image='-upload-$image_name' OR user_sess='$image_name'"))
+			$row = array('user_id' => '');
+			$image_pre = '';
+			$disabled = '';
+			if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
 			{
 				/*
 				//Is it possible?! I don't think so
 				while ($row = $sql->db_Fetch())
 				{
-					extract($row); //FIXME - kill this!!!
+					extract($row); // kill this!!!
 					$users .= "<a href='".e_BASE."user.php?id.$user_id'>$user_name</a> <span class='smalltext'>(".($user_sess == $image_name ? IMALAN_24 : IMALAN_23).")</span> | ";
 				}*/
 				$row = $sql->db_Fetch();
+				if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
 				$users .= "<a href='".e_BASE."user.php?id.{$row['user_id']}'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
 			} else {
 				$users = '<span class="warning">'.IMALAN_22.'</span>';
 			}
 
-			//File info
-			$users = "<a class='e-tooltip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
-
-			// Control over the image size (design)
-			$image_size = getimagesize(e_FILE."public/avatars/".$image_name);
-
-			//Friendly UI - click text to select a form element
-			$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'><img src='".e_FILE_ABS."public/avatars/{$image_name}' alt='{$image_name}' /></label>";
-			if ($image_size[0] > $pref['im_width'] || $image_size[1] > $pref['im_height'])
+			//directory?
+			if(is_dir(e_FILE."public/avatars/".$image_name))
 			{
-				$img_src = "<a class='image-preview' href='".e_FILE_ABS."public/avatars/".rawurlencode($image_name)."'>".IMALAN_57."</a>";
-			}
+				//File info
+				$users = "<a class='e-tooltip' href='#' title='".IMALAN_69.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".IMALAN_66.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
 
+				// Control over the image size (design)
+				$image_size = getimagesize(e_FILE."public/avatars/".$image_name);
+
+				//Friendly UI - click text to select a form element
+				$img_src =  '<span class="error">'.IMALAN_70.'</span>';
+				$disabled = ' disabled="disabled"';
+			}
+			else
+			{
+				//File info
+				$users = "<a class='e-tooltip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
+
+				// Control over the image size (design)
+				$image_size = getimagesize(e_FILE."public/avatars/".$image_name);
+
+				//Friendly UI - click text to select a form element
+				$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'><img src='".e_FILE_ABS."public/avatars/{$image_name}' alt='{$image_name}' /></label>";
+				if ($image_size[0] > $pref['im_width'] || $image_size[1] > $pref['im_height'])
+				{
+					$img_src = "<a class='image-preview' href='".e_FILE_ABS."public/avatars/".rawurlencode($image_name)."' rel='external'>".IMALAN_57."</a>";
+				}
+			}
+			//style attribute allowed here - server side width/height control
+			//options class - used for JS selectors (see eCoreImage object)
 			$text .= "
-			<div class='image-box f-left center' style='width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
+			<div class='image-box f-left center options' style='width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
 				<div class='spacer'>
 				<div class='image-users'>{$users}</div>
 				<div class='image-preview'>{$img_src}</div>
 				<div class='image-delete options'>
-					<input type='checkbox' class='checkbox' id='image-action-{$count}' name='multiaction[]' value='{$image_name}' />
+					<input type='checkbox' class='checkbox' id='image-action-{$count}' name='multiaction[]' value='{$row['user_id']}#{$image_pre}{$image_name}'{$disabled} />
 				</div>
 
 				</div>
@@ -189,25 +322,30 @@ if (isset($_POST['show_avatars']))
 			$count++;
 		}
 
-		//FIXME add multi delete for better user experience (not working yet), make check/uncheck-all work
 		$text .= "
 			<div class='spacer clear'>
-			<div class='buttons-bar'>
-				<button class='delete' type='submit' name='deleteall'><span>".IMALAN_25."</span></button>
-				<button class='delete' type='submit' name='delete_multi'><span>".IMALAN_58."</span></button>
-				<button class='action' type='button' name='check_all'><span>".IMALAN_59."</span></button>
-				<button class='action' type='button' name='uncheck_all'><span>".IMALAN_60."</span></button>
+				<div class='buttons-bar'>
+					<input type='hidden' name='show_avatars' value='1' />
+					<button class='action' type='button' name='check_all' value='".IMALAN_59."'><span>".IMALAN_59."</span></button>
+					<button class='action' type='button' name='uncheck_all' value='".IMALAN_60."'><span>".IMALAN_60."</span></button>
+					<button class='delete' type='submit' name='submit_show_delete_multi' value='".IMALAN_58."'><span>".IMALAN_58."</span></button>
+					<button class='delete' type='submit' name='submit_show_deleteall' value='".IMALAN_25."'><span>".IMALAN_25."</span></button>
+					<button class='cancel' type='submit' name='submit_cancel_show' value='".IMALAN_68."'><span>".IMALAN_68."</span></button>
+				</div>
 			</div>
-			</div>
+			</fieldset>
 			</form>
 		";
 
 	}
 
 
-	$ns->tablerender(IMALAN_18, $text);
+	$ns->tablerender(IMALAN_18, $message.$text);
 }
 
+/*
+ * CHECK AVATARS SCREEN
+ */
 if (isset($_POST['check_avatar_sizes']))
 {
 	// Set up to track what we've done
@@ -221,10 +359,10 @@ if (isset($_POST['check_avatar_sizes']))
 
 	$text = "
 	<form method='post' action='".e_SELF."'>
-		<fieldset id='bad-avatar-table'>
+		<fieldset id='core-image-check-avatar'>
 			<legend class='e-hideme'>".CACLAN_3."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminlist'>
-				<colgroup span='3'>
+				<colgroup span='4'>
 					<col style='width:10%'></col>
 					<col style='width:20%'></col>
 					<col style='width:25%'></col>
@@ -246,15 +384,15 @@ if (isset($_POST['check_avatar_sizes']))
 	// Loop through avatar field for every user
 	//
 	$iUserCount = $sql->db_Count("user");
+	$found = false;
+	$allowedWidth = intval($pref['im_width']);
+	$allowedHeight = intval($pref['im_width']);
 	if ($sql->db_Select("user", "*", "user_image!=''")) {
+
 		while ($row = $sql->db_Fetch())
 		{
-			extract($row); //FIXME - kill this!!!
-
-	//
-	// Check size
-	//
-			$avname=avatar($user_image);
+			//Check size
+			$avname=avatar($row['user_image']);
 			if (strpos($avname,"http://")!==FALSE)
 			{
 				$iAVexternal++;
@@ -263,23 +401,31 @@ if (isset($_POST['check_avatar_sizes']))
 				$iAVinternal++;
 				$bAVext=FALSE;
 			}
+
 			$image_stats = getimagesize($avname);
 			$sBadImage="";
+
 			if (!$image_stats)
 			{
 				$iAVnotfound++;
 				// allow delete
 				$sBadImage=IMALAN_42;
-			} else {
+			}
+			else
+			{
 				$imageWidth = $image_stats[0];
 				$imageHeight = $image_stats[1];
-				if ( ($imageHeight > $pref['im_height']) || ($imageWidth > $pref['im_width']) )
+
+				if ( ($imageHeight > $allowedHeight) || ($imageWidth > $allowedWidth) )
 				{ // Too tall or too wide
 					$iAVtoobig++;
-					if ($imageWidth > $pref['im_width']) {
+					if ($imageWidth > $allowedWidth)
+					{
 						$sBadImage = IMALAN_40." ($imageWidth)";
 					}
-					if ($imageHeight > $pref['im_height']) {
+
+					if ($imageHeight > $allowedHeight)
+					{
 						if (strlen($sBadImage))
 						{
 							$sBadImage .= ", ";
@@ -289,90 +435,86 @@ if (isset($_POST['check_avatar_sizes']))
 				}
 			}
 
-	//
-	// If not found or too big, allow delete
-	//
+			//If not found or too large, allow delete
 			if (strlen($sBadImage))
 			{
-				//$sBadImage .=" [".$avname."]"; // Show all files that have a problem
-				//FIXME <button class='delete' type='submit' name='avdelete[$user_id]'><span>".($bAVext ? IMALAN_44 : IMALAN_43)."</span></button>
+				$found = true;
 				$text .= "
 				<tr>
 					<td class='options center'>
-						<input class='checkbox' type='checkbox' name='multiaction[]' id='avdelete-{$user_id}' value='{$user_id}' />
+						<input class='checkbox' type='checkbox' name='multiaction[]' id='avdelete-{$row['user_id']}' value='{$row['user_id']}' />
 					</td>
 					<td>
-						<label for='avdelete-{$user_id}' title='".IMALAN_56."'>".IMALAN_51."</label><a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>
+						<label for='avdelete-{$row['user_id']}' title='".IMALAN_56."'>".IMALAN_51."</label><a href='".e_BASE."user.php?id.{$row['user_id']}'>".$row['user_name']."</a>
 					</td>
 					<td>".$sBadImage."</td>
 					<td>".$avname."</td>
 				</tr>";
 			}
-			else
-			{
-				//Nothing found
-				$text .="
-				<tr>
-					<td colspan='4' class='center'>".IMALAN_65."</td>
-				</tr>";
-
-			}
 		}
 	}
-	//
-	// Done, so show stats
-	//
+
+	//Nothing found
+	if(!$found)
+	{
+		$text .= "
+				<tr>
+					<td colspan='4' class='center'>".IMALAN_65."</td>
+				</tr>
+		";
+	}
+
 	$text .= "
 				</tbody>
 			</table>
 			<div class='buttons-bar'>
-				<button class='action' type='button' name='check_all'><span>".IMALAN_59."</span></button>
-				<button class='action' type='button' name='uncheck_all'><span>".IMALAN_60."</span></button>
-				<button class='delete' type='submit' name='avdelete_multi'><span>".IMALAN_58."</span></button>
+				<input type='hidden' name='check_avatar_sizes' value='1' />
+				<button class='action' type='button' name='check_all' value='".IMALAN_59."'><span>".IMALAN_59."</span></button>
+				<button class='action' type='button' name='uncheck_all' value='".IMALAN_60."'><span>".IMALAN_60."</span></button>
+				<button class='delete' type='submit' name='submit_avdelete_multi' value='".IMALAN_58."'><span>".IMALAN_58."</span></button>
 			</div>
 		</fieldset>
 	</form>
 
 	<table cellpadding='0' cellspacing='0' class='admininfo'>
-	<colgroup span='2'>
-		<col style='width:20%'></col>
-		<col style='width:80%'></col>
-	</colgroup>
-	<tbody>
-	<tr>
-	<td class='label'>".IMALAN_38."</td>
-	<td class='control'>".$pref['im_width']."</td>
-	</tr>
-	<tr>
-	<td class='label'>".IMALAN_39."</td>
-	<td class='control'>".$pref['im_height']."</td>
-	</tr>
-
-	<tr>
-	<td class='label'>".IMALAN_45."</td>
-	<td class='control'>".$iAVnotfound."</td>
-	</tr>
-	<tr>
-	<td class='label'>".IMALAN_46."</td>
-	<td>".$iAVtoobig."</td>
-	</tr>
-	<tr class='control'>
-	<td class='label'>".IMALAN_47."</td>
-	<td>".$iAVinternal."</td>
-	</tr>
-	<tr>
-	<td class='label'>".IMALAN_48."</td>
-	<td class='control'>".$iAVexternal."</td>
-	</tr>
-	<tr>
-	<td class='label'>".IMALAN_49."</td>
-	<td class='control'>".($iAVexternal+$iAVinternal)." (".(int)(100.0*(($iAVexternal+$iAVinternal)/$iUserCount)).'%, '.$iUserCount." ".IMALAN_50.")</td>
-	</tr>
-	</tbody>
+		<colgroup span='2'>
+			<col style='width:20%'></col>
+			<col style='width:80%'></col>
+		</colgroup>
+		<tbody>
+			<tr>
+				<td class='label'>".IMALAN_38."</td>
+				<td class='control'>{$allowedWidth}</td>
+			</tr>
+			<tr>
+				<td class='label'>".IMALAN_39."</td>
+				<td class='control'>{$allowedHeight}</td>
+			</tr>
+			<tr>
+				<td class='label'>".IMALAN_45."</td>
+				<td class='control'>{$iAVnotfound}</td>
+			</tr>
+			<tr>
+				<td class='label'>".IMALAN_46."</td>
+				<td class='control'>{$iAVtoobig}</td>
+			</tr>
+			<tr>
+				<td class='label'>".IMALAN_47."</td>
+				<td class='control'>{$iAVinternal}</td>
+			</tr>
+			<tr>
+				<td class='label'>".IMALAN_48."</td>
+				<td class='control'>{$iAVexternal}</td>
+			</tr>
+			<tr>
+				<td class='label'>".IMALAN_49."</td>
+				<td class='control'>".($iAVexternal+$iAVinternal)." (".(int)(100.0*(($iAVexternal+$iAVinternal)/$iUserCount)).'%, '.$iUserCount." ".IMALAN_50.")</td>
+			</tr>
+		</tbody>
 	</table>
 	";
 
-	$ns->tablerender(IMALAN_37, $text);
+	$ns->tablerender(IMALAN_37, $message.$text);
 }
 
 if(function_exists('gd_info'))
@@ -406,12 +548,12 @@ if($pref['im_path'] != "")
 
 $text = "
 	<form method='post' action='".e_SELF."'>
-		<fieldset id='image-settings-form'>
+		<fieldset id='core-image-settings'>
 			<legend class='e-hideme'>".IMALAN_7."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
-					<col style='width:250px'></col>
-					<col></col>
+					<col class='col-label'></col>
+					<col class='col-control'></col>
 				</colgroup>
 				<tbody>
 					<tr>
@@ -487,11 +629,16 @@ $text = "
 			</div>
 		</fieldset>
 	</form>";
-$ns->tablerender(IMALAN_7, $text);
+$ns->tablerender(IMALAN_7, $message.$text);
 
+//Just in case...
+if(!e_AJAX_REQUEST) require_once("footer.php");
 
-require_once("footer.php");
-
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
 function headerjs()
 {
 	require_once(e_HANDLER.'js_helper.php');
@@ -517,17 +664,18 @@ function headerjs()
 			},
 
 			tCheckHandler: function(event) {
-				//do nothing if checkbox or its label is clicked
-				if(event.element().nodeName.toLowerCase() == 'input') return;
+				//do nothing if checkbox or link is clicked
+				var tmp = event.element();
+				if(tmp.nodeName.toLowerCase() == 'input' || tmp.nodeName.toLowerCase() == 'a') return;
 				//stop event
 				event.stop();
-				//td element
-				var element = event.findElement('td'), check = null;
+				//checkbox container element
+				var element = event.findElement('.options'), check = null;
 				if(element) {
 					check = element.select('input.checkbox'); //search for checkbox
 				}
 				//toggle checked property
-				if(check && check[0]) {
+				if(check && check[0] && !(\$(check[0]).disabled)) {
 					\$(check[0]).checked = !(\$(check[0]).checked);
 				}
 			},
@@ -550,8 +698,7 @@ function headerjs()
 		}
 
 		/**
-		 * Observe e107:loaded
-		 *
+		 * Observe e107:loaded event
 		 */
 		 e107.runOnLoad(eCoreImage.init.bind(eCoreImage), document, true);
 	</script>
@@ -559,11 +706,4 @@ function headerjs()
 
 	return $ret;
 }
-/*
-XXX - remove this odd thing?!
-
-$pref['resize_method'] = $_POST['resize_method'];
-$pref['im_path'] = $_POST['im_path'];
-
-*/
 ?>

@@ -1,17 +1,17 @@
 /*
  * e107 website system
- * 
- * Copyright (c) 2001-2008 e107 Developers (e107.org)
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
  * Released under the terms and conditions of the
- * GNU General Public License (http://gnu.org).
- * 
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
  * e107 Javascript API
- * 
+ *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.13 $
- * $Date: 2008-12-03 13:03:54 $
+ * $Revision: 1.14 $
+ * $Date: 2008-12-10 16:59:19 $
  * $Author: secretr $
- * 
+ *
 */
 
 var e107API = {
@@ -932,7 +932,7 @@ Object.extend(e107Helper, {
 	toggleChecked: function(form, state, selector, byId) {
 		form = $(form); if(!form) { return; } 
 		if(byId) selector = 'id^=' + selector; 
-		$A(form.select('input[type=checkbox][' + selector + ']')).each(function(element) { element.checked=state });
+		$A(form.select('input[type=checkbox][' + selector + ']')).each(function(element) { if(!element.disabled) element.checked=state });
 	},
 	
 	//This will be replaced later with upload_ui.php own JS method

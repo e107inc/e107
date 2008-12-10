@@ -38,7 +38,8 @@
 	float: left;
 	/* width: 158px;  width needed or else Opera goes nuts */
 }
-ul.sub {border-top: 1px solid #CCCCCC;}
+ul.sub {border-top: 1px solid #DDDDDD;}
+
 #nav li ul { /* second-level lists */
 	position: absolute;
 	z-index: 10;
@@ -52,15 +53,15 @@ ul.sub {border-top: 1px solid #CCCCCC;}
 #nav li.sfhover li a {
 	text-align: left;
 	background-image: none;
-	background-color: #FBFEF1;
+	background-color: #FFFFFF;
 	line-height: 28px;
 	font-size: 11px;
 	font-weight: bold;
 	padding-left: 10px;
 	padding-right: 0px;
-	border-left: 1px solid #B8DF30;
-	border-right: 1px solid #B8DF30;
-	border-bottom: 1px solid #B8DF30;
+	border-left: 1px solid #DDDDDD;
+	border-right: 1px solid #DDDDDD;
+	border-bottom: 1px solid #DDDDDD;
 	width: 188px;
 	w\idth : 188px;
 	text-transform: none;
@@ -81,7 +82,7 @@ ul.sub {border-top: 1px solid #CCCCCC;}
 
 
 #nav li li a:hover{
-	background-color: #DDF098;
+	background-color: #f6f6f6;
 	color: #990000
 }
 
