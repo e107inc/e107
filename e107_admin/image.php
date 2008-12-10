@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-10 20:55:21 $
+ * $Revision: 1.13 $
+ * $Date: 2008-12-10 23:46:47 $
  * $Author: secretr $
  *
 */
@@ -653,67 +653,13 @@ if(!e_AJAX_REQUEST) require_once("footer.php");
 function headerjs()
 {
 	require_once(e_HANDLER.'js_helper.php');
+	//FIXME - how exactly to call JS lan? 
 	$ret = "
-	<script type='text/javascript'>
-		//add required core lan
-		(".e_jshelper::toString(IMALAN_67).").addModLan('core', 'delete_confirm');
-
-		/**
-		 * Admin Image JS Handler
-		 */
-		var eCoreImage = {
-
-			init: function() {
-				this.tCheckEventHandler = this.tCheckHandler.bindAsEventListener(this);
-				this.allCheckEventHandler = this.allCheckHandler.bindAsEventListener(this);
-				this.allUnCheckEventHandler = this.allUnCheckHandler.bindAsEventListener(this);
-
-				\$\$('.options').invoke('observe', 'click', this.tCheckEventHandler);
-				\$\$('button.action[name=check_all]').invoke('observe', 'click', this.allCheckEventHandler);
-				\$\$('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUnCheckHandler);
-				\$\$('button.delete').invoke('observe', 'click', function(e){ if( !e107Helper.confirm(e107.getModLan('delete_confirm')) ) e.stop(); });
-			},
-
-			tCheckHandler: function(event) {
-				//do nothing if checkbox or link is clicked
-				var tmp = event.element(); 
-				if(tmp.nodeName.toLowerCase() == 'input' || tmp.nodeName.toLowerCase() == 'a') return;
-				//stop event
-				event.stop();
-				
-				//checkbox container element
-				var element = event.findElement('.options'), check = null;
-				if(element) { 
-					check = element.select('input.checkbox'); //search for checkbox
-				} 
-				//toggle checked property
-				if(check && check[0] && !(\$(check[0]).disabled)) {
-					\$(check[0]).checked = !(\$(check[0]).checked);
-				}
-			},
-
-			allCheckHandler: function(event) {
-				event.stop();
-				var form = event.element().up('form');
-				if(form) {
-					form.toggleChecked(true, 'name^=multiaction');
-				}
-			},
-
-			allUnCheckHandler: function(event) {
-				event.stop();
-				var form = event.element().up('form');
-				if(form) {
-					form.toggleChecked(false, 'name^=multiaction');
-				}
-			}
-		}
-
-		/**
-		 * Observe e107:loaded event
-		 */
-		 e107.runOnLoad(eCoreImage.init.bind(eCoreImage), document, true);
-	</script>
+		<script type='text/javascript'>
+			//add required core lan
+			(".e_jshelper::toString(IMALAN_67).").addModLan('core', 'delete_confirm');
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 	";
 
 	return $ret;
