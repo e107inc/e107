@@ -1,28 +1,31 @@
 <?php
 /*
  * e107 website system
- * 
- * Copyright (c) 2001-2008 Steve Dunstan (e107.org)
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
  * Released under the terms and conditions of the
- * GNU General Public License (http://gnu.org).
- * 
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Javascript Helper
+ *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_helper.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-11-21 16:28:04 $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-10 16:59:19 $
  * $Author: secretr $
- * 
+ *
 */
-//PHP <5.2 compatibility
+
+//PHP < 5.2 compatibility
 if (!function_exists('json_encode'))
 {
     require_once(e_HANDLER.'json_compat_handler.php');
-    function json_encode($array) 
+    function json_encode($array)
     {
         $json = new Services_JSON();
         return $json->encode($array);
     }
-    
-    function json_decode($json_obj) 
+
+    function json_decode($json_obj)
     {
         $json = new Services_JSON();
         return $json->decode($json_obj);
@@ -37,8 +40,8 @@ class e_jshelper
      * @var array
      */
     var $_response_actions = array();
-    
-    function addResponseAction($action, $data_array) 
+
+    function addResponseAction($action, $data_array)
     {
         if(!$action) $action = 'auto';
         if(!isset($this->_response_actions[$action]))
@@ -46,10 +49,10 @@ class e_jshelper
             $this->_response_actions[$action] = array();
         }
         $this->_response_actions[$action] = array_merge($this->_response_actions[$action], $data_array);
-        
+
         return $this;
     }
-    
+
     /**
      * Response array getter
      *
@@ -65,12 +68,12 @@ class e_jshelper
         }
         return $this->_response_actions;
     }
-    
+
     /**
      * Buld XML response parsed by the JS API
-     * Quick & dirty, this will be extended to 
+     * Quick & dirty, this will be extended to
      * e107 web service standard (communication protocol).
-     * 
+     *
      * @return string XML response
      */
     function buildXMLResponse()
@@ -78,16 +81,16 @@ class e_jshelper
         $action_array = $this->getResponseActions(true);
         $ret = '<?xml version="1.0"  encoding="'.CHARSET.'" ?>';
         $ret .= "\n<e107response>\n";
-        foreach ($action_array as $action => $field_array) 
+        foreach ($action_array as $action => $field_array)
         {
 	        $ret .= "\t<e107action name='{$action}'>\n";
             foreach ($field_array as $field => $value)
 	        {
 	            //associative arrays only - no numeric keys!
-	            //to speed this up use $sql->db_Fetch(MYSQL_ASSOC); 
-	            //when passing large data from the DB 
+	            //to speed this up use $sql->db_Fetch(MYSQL_ASSOC);
+	            //when passing large data from the DB
 	            if (is_numeric($field))
-	                continue; 
+	                continue;
 	            $transport_value = $value;
 	            if(!is_numeric($value) && !is_bool($value)) { $transport_value = "<![CDATA[{$value}]]>"; }
 	            $ret .= "\t\t<item type='".gettype($value)."' name='{$field}'>{$transport_value}</item>\n";
@@ -97,7 +100,7 @@ class e_jshelper
         $ret .= '</e107response>';
         return $ret;
     }
-    
+
     /**
      * Convert (optional) and send array as XML response string
      *
@@ -111,20 +114,20 @@ class e_jshelper
     	{
     	    $this->addResponseAction($action, $data_array);
     	}
-    	
+
     	echo $this->buildXmlResponse();
     }
-    
+
     /**
      * Build JSON response string
-     * 
+     *
      * @return string JSON response
      */
     function buildJSONResponse()
     {
         return "/*-secure-\n".json_encode($this->getResponseActions(true))."\n*/";
     }
-    
+
     /**
      * Convert (optional) and send array as JSON response string
      *
@@ -140,10 +143,10 @@ class e_jshelper
     	}
     	echo $this->buildJSONResponse();
     }
-    
+
     /**
      * Reset response action array to prevent duplicates
-     * 
+     *
      * @access private
      * @return void
      */
@@ -151,7 +154,7 @@ class e_jshelper
     {
         $this->_response_actions = array();
     }
-    
+
     /**
      * Convert (optional) and send array as JSON response string
      *
@@ -163,7 +166,7 @@ class e_jshelper
     	header('Content-type: text/html; charset='.CHARSET, true);
     	echo $data_text;
     }
-    
+
     /**
      * Send error to the JS Ajax.response object
      *
@@ -171,6 +174,7 @@ class e_jshelper
      * @param string $errmessage
      * @param string $errextended
      * @param bool $exit
+     * @access public static
      */
     function sendAjaxError($errcode, $errmessage, $errextended = '', $exit = true)
     {
@@ -181,17 +185,17 @@ class e_jshelper
 
         //Safari expects some kind of output, even empty
         echo ($errextended ? $errextended : ' ');
-        
+
         if($exit) exit;
     }
-    
+
     /**
      * Clean string to be used as JS string
      * Should be using for passing strings to e107 JS API - e.g Languages,Templates etc.
-     * 
+     *
      * @param string $string
      * @return string
-     * @access static
+     * @access public static
      */
     function toString($string)
     {

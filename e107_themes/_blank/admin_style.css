@@ -34,8 +34,8 @@
 * 			{ margin:0; padding:0; }
 body		{ font:12px/1.5em Arial, Helvetica, sans-serif;  }
 img         { border:0; vertical-align:top; }
-a			{ text-decoration:underline; }
-a:hover		{ text-decoration:underline; }
+a			{ text-decoration:underline; color: #13394E; }
+a:hover		{ text-decoration:underline; color: #CB0000; }
 a img		{ border:0; }
 :focus		{ outline:0; }
 
@@ -49,7 +49,7 @@ h6          { font-size:11px; font-weight:bold; }
 
 /* Forms */
 form        { display:inline; }
-fieldset    { border:0; }
+fieldset    { border: 0; margin-bottom: 10px; }
 input, select{ vertical-align:middle; }
 textarea	{ overflow:auto; }
 
@@ -104,25 +104,27 @@ ul,ol       { list-style:none; }
 /* Form elements */ 
 input.input-text,
 textarea,
-select {
+select, .tbox {
     border-width:1px;
     border-style:solid;
     border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
     background:#fff;
     font:12px arial, helvetica, sans-serif;
 }
-select  { min-height:17px; /* to set the height for empty selects */ }
-input.input-text, textarea      { padding:2px; }
+input.input-text, textarea, .tbox { padding:2px; }
+select.tbox  { min-height:17px; padding: 0px; /* to set the height for empty selects */ }
 
 /* custom fields CSS */
-#image-settings-form  input.input-text { width: 300px; }
-
+#core-emoticon-configure input.input-text { width: 300px; }
+.select.order { width: 40px; }
 
 .inline-help { width: 280px; }
 	
 /* form used for settings */
+.col-label { width: 250px; }
+.col-control {}
+
 .adminform  { width:100%;  border:1px solid #ddd;}
-.adminform col.label { width: 250px; }
 
 .adminform td { padding: 5px; text-align: left}
 
@@ -258,16 +260,18 @@ button.edit:active span		{}
 
 /* THEME SPECIFIC CSS *********************************************************************************************/
 /******** Page Base */
-.admin-wrapper { min-width: 950px; }
+.admin-wrapper { width: 100%; }
 .admin-header { padding: 20px 15px 0; }
-.admin-header-content {border: 1px solid #DDDDDD;}
+.admin-header-content { border: 1px solid #DDDDDD; }
 .admin-page-body { padding: 20px 15px 0; }
 .admin-footer {}
 
 /******** Layout */
-.col-left { float:left; width: 220px;}
-.col-main { margin-left: 220px; padding: 0 0 0 20px;}
-.inner-wrapper { float:left; width:100%; }
+.main-table { width: 100%; border: 0 none; }
+.col-left { width: 220px;}
+.col-right { width: 220px;}
+.col-main { padding: 0 15px 0 0;}
+.inner-wrapper { }
 
 /******** Horizontal navigation ADMIN_NAV_ALT */
 .admin-navigation { border: 1px solid #DDDDDD;}
@@ -296,4 +300,55 @@ ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
 .block h4 { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
 .page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
 .page-info p { padding: 10px; }
+
+
+#core-frontpage-edit-home			{ width: 50%; float: left; } 
+#core-frontpage-edit-post-login		{ width: 50%; float: left; }
+
+#core-frontpage-edit-home .adminlist { width: 99%; }
+#core-frontpage-edit-post-login .adminlist { width: 99%; float: right; }
+
+#core-frontpage-edit .tbox { width: 80%;} 
+#core-frontpage-edit select.tbox { width: 50%;} 
+
+#core-frontpage-edit .buttons-bar select.tbox { width: 140px; }
+#core-frontpage-edit .buttons-bar 	{ clear: both; }
+
+
+/******** Core Block IDs */
+/* cache.php */
+#core-cache-settings				{} /* General cache settings - Default front page */
+
+/* emoticon.php */
+#core-emoticon-activate				{} /* Emote activation - Default front page */
+#core-emoticon-packages				{} /* Installed packs - Default front page */
+#core-emoticon-configure			{} /* Configure an individual emote pack */
+
+/* frontpage.php */
+#core-frontpage-settings			{} /* Display list of current settings - Default front page */
+#core-frontpage-edit				{} /* Add / Edit existing rule - form */
+#core-frontpage-edit-home			{} /* Add / Edit existing rule for home page */
+#core-frontpage-edit-post-login		{} /* Add / Edit existing rule for post-login page */
+
+/* image.php */
+#core-image-check-avatar			{} /* Check avatar sizes table */
+#core-image-settings				{} /* General image settings - Default front page */
+
+/* links.php */
+#core-links-list-1					{} /* Display list of current links - Default front page */
+#core-links-list-2					{} /* Display list of current links - Default front page */
+#core-links-list-3					{} /* Display list of current links - Default front page */
+#core-links-list-4					{} /* Display list of current links - Default front page */
+
+
+/* meta.php */
+#core-dataform						{} /* Form tag ID - Default front page - old core definition */
+#core-meta-settings					{} /* General meta settings - Default front page */
+
+/* search.php */
+#core-search-configuration-main		{} /* Search Configuration for Searchable Areas - Default front page */
+#core-search-configuration-comm		{} /* Search Configuration for Searchable Comments Areas - Default front page */
+#core-search-edit					{} /* Edit search settings for specific area */
+#core-search-settings				{} /* General search settings */
+
 

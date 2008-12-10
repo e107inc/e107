@@ -1,20 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-11-14 06:01:06 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration Area Authorization
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-10 16:59:19 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -24,10 +21,18 @@ if (!defined('e107_INIT')) { exit; }
 if (ADMIN)
 {
 	define("ADMIN_PAGE", true);
-	require_once(e_ADMIN."header.php");
+	//don't include it if it'a an AJAX call or not wanted
+	if(!e_AJAX_REQUEST && !defset('NO_HEADER')) require_once(e_ADMIN."header.php");
 }
 else
 {
+	//login via AJAX call is not allowed
+	if(e_AJAX_REQUEST)
+	{
+		require_once(e_HANDLER.'js_helper.php');
+		e_jshelper::sendAjaxError(403, ADLAN_86, ADLAN_87, true);
+	}
+
 	$use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 	if ($use_imagecode)
 	{
@@ -51,14 +56,14 @@ else
 
 	require_once(e_HANDLER.'user_handler.php');
 	$row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass'], varset($_POST['hashchallenge'],''));
-	if ($row[0] == "authfail") 
+	if ($row[0] == "authfail")
 	{
 	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",LAN_ROLL_LOG_11,"U: ".$tp->toDB($_POST['authname']),FALSE,LOG_TO_ROLLING);
 			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
 			header("location: ../index.php");
 			exit;
-	} 
-	else 
+	}
+	else
 	{
 	  $cookieval = $row['user_id'].".".md5($row['user_password']);
 
@@ -88,11 +93,11 @@ else
 	  $edata_li = array("user_id" => $row['user_id'], "user_name" => $row['user_name'], 'class_list' => implode(',',$class_list));
 	  $e_event->trigger("login", $edata_li);
 
-	  if ($pref['user_tracking'] == "session") 
+	  if ($pref['user_tracking'] == "session")
 	  {
 				$_SESSION[$pref['cookie_name']] = $cookieval;
-	  } 
-	  else 
+	  }
+	  else
 	  {
 				cookie($pref['cookie_name'], $cookieval, (time()+3600 * 24 * 30));
 			}
@@ -101,13 +106,13 @@ else
 	}
 
 	$e_sub_cat = 'logout';
-	require_once(e_ADMIN."header.php");
+	if(!defset('NO_HEADER')) require_once(e_ADMIN."header.php");
 
-	if (ADMIN == FALSE) 
+	if (ADMIN == FALSE)
 	{
 		$obj = new auth;
 		$obj->authform();
-		require_once(e_ADMIN."footer.php");
+		if(!defset('NO_HEADER')) require_once(e_ADMIN."footer.php");
 		exit;
 	}
 }
@@ -149,7 +154,7 @@ class auth
 			</tr>
 			";
 
-		if ($use_imagecode) 
+		if ($use_imagecode)
 		{
 			$text .= "
 			<tr>

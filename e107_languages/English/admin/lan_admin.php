@@ -1,17 +1,9 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_admin.php,v 1.11 2008-12-10 16:59:19 secretr Exp $
  *
  * Admin Language File
- *
- * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_admin.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-02 00:32:30 $
- * $Author: secretr $
 */
 define("ADLAN_0", "News");
 define("ADLAN_1", "Add/edit/delete news items");
@@ -92,8 +84,8 @@ define("ADLAN_78", "Extended User Fields");
 define("ADLAN_79", "Edit extended user fields");
 
 
-//define("ADLAN_86", "Incorrect password ");
-//define("ADLAN_87", "Administrator name not found in database ");
+define("ADLAN_86", "Foirbbiden");
+define("ADLAN_87", "Access denied!");
 //define("ADLAN_88", "Unable to login ");
 define("ADLAN_89", "Admin Name ");
 define("ADLAN_90", "Admin Password ");

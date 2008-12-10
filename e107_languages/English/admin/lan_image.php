@@ -1,14 +1,11 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_image.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-09 17:49:59 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_image.php,v 1.7 2008-12-10 16:59:19 secretr Exp $
+ *
+ * Admin Language File
 */
+
 define("IMALAN_1", "Enable image display");
 define("IMALAN_2", "Display images, this will apply sitewide (comments, chatbox etc) to images posted using the [img] bbcode");
 define("IMALAN_3", "Resize method");
@@ -85,6 +82,8 @@ define('IMALAN_64', 'User');
 define('IMALAN_65', 'Nothing found');
 
 define('IMALAN_66', 'Filename');
-define('IMALAN_67', 'Are you\' sure?');
-
+define('IMALAN_67', 'Are you sure?');
+define('IMALAN_68', 'Close');
+define('IMALAN_69', 'Folder');
+define('IMALAN_70', 'Non-system folder is found!');
 ?>

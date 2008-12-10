@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-09 15:19:03 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-10 16:59:19 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -38,38 +38,48 @@ $ADMIN_HEADER = "
 		</div>
 	</div>
 	<div class='admin-page-body'>
-		<div class='col-2-left'>
-			<div class='col-left'>
-				{ADMIN_LANG}
-				{SETSTYLE=admin_menu}
-				{ADMIN_NAV}
-				{ADMIN_MENU}
-				{SETSTYLE=bla}
-				{ADMIN_PWORD}
-				{ADMIN_STATUS=request}
-				{ADMIN_LATEST=request}
-				{ADMIN_LOG=request}
-				{ADMIN_MSG}
-				{ADMIN_PLUGINS}
-				
-				{ADMIN_PRESET}
-				{ADMIN_UPDATE}
-				{SETSTYLE=site_info}
-				
-				{ADMIN_HELP}
-				{ADMIN_SITEINFO}
-				{ADMIN_DOCS}
-				{SETSTYLE=bla}
-			</div>
-			<div class='col-main'>
-				<div class='inner-wrapper'>
+		<table class='main-table' cellpadding='0' cellspacing='0'>
+			<tr>
+				<!--
+				<td class='col-left'></td>
+				-->
+				<td>
+					<div class='col-main'>
+						<div class='inner-wrapper'>
 ";
 
 $ADMIN_FOOTER = "
-				</div>
-			</div>
-			<div class='clear'><!-- --></div>
-		</div>
+						</div>
+					</div>
+				</td>
+				<td class='col-right'>
+					<div class='col-right'>
+						{SETSTYLE=admin_menu}
+						<!--
+						{ADMIN_NAV}
+						-->
+						{SETSTYLE=admin_menu}
+						{ADMIN_MENU}
+						
+						{SETSTYLE=none}
+						{ADMIN_LANG}
+						{ADMIN_PWORD}
+						{ADMIN_STATUS=request}
+						{ADMIN_LATEST=request}
+						{ADMIN_LOG=request}
+						{ADMIN_MSG}
+						{ADMIN_PLUGINS}
+						
+						{ADMIN_PRESET}
+						{ADMIN_UPDATE}
+						{SETSTYLE=site_info}
+						{ADMIN_HELP}
+						{ADMIN_SITEINFO}
+						{ADMIN_DOCS}
+					</div>
+				</td>
+			</tr>
+		</table>
 	</div>
 	<div class='admin-footer'>
 		{ADMIN_CREDITS}

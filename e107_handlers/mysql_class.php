@@ -1,22 +1,17 @@
 <?php
-
 /*
-+---------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2008-12-07 00:21:20 $
-|     $Author: mcfly_e107 $
-|
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * mySQL Handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
+ * $Revision: 1.33 $
+ * $Date: 2008-12-10 16:59:19 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -30,8 +25,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.32 $
-* @author $Author: mcfly_e107 $
+* @version $Revision: 1.33 $
+* @author $Author: secretr $
 */
 class db {
 
