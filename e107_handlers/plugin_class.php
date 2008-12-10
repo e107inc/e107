@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2008-12-07 21:41:04 $
-|     $Author: e107steved $
+|     $Revision: 1.56 $
+|     $Date: 2008-12-10 13:27:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -304,8 +304,6 @@ class e107plugin
 	function manage_userclass($action, $class_name, $class_description)
 	{
 		global $sql, $tp;
-		$class_name = $tp->toDB($class_name, true);
-		$class_description = $tp->toDB($class_description, true);
 		if ($action == 'add')
 		{
 			$i = 1;
@@ -315,7 +313,13 @@ class e107plugin
 			}
 			if ($i < e_UC_READONLY)
 			{
-				return $sql->db_Insert('userclass_classes', "{$i},'".strip_tags(strtoupper($class_name))."', '{$class_description}' ,".e_UC_PUBLIC);
+				$tmp = array();
+				$tmp['userclass_id'] = $i;
+				$tmp['userclass_name'] = strip_tags(strtoupper($class_name));
+				$tmp['userclass_description'] = $class_description;
+				$tmp['_FIELD_TYPES']['userclass_id'] = 'int';
+				$tmp['_FIELD_TYPES']['_DEFAULT'] = 'todb';
+				return $sql->db_Insert('userclass_classes', $tmp, true);
 			}
 			else
 			{
@@ -1546,7 +1550,7 @@ class e107plugin
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$this->plug_vars = $xml->loadXMLfile($path.'plugin.xml', true, true);
-		if ($this->plug_vars === FALSE) 
+		if ($this->plug_vars === FALSE)
 		{
 			echo "Error reading {$path}/plugin.xml<br />";
 			return FALSE;
