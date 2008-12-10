@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-06-13 20:20:22 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-10 16:37:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,40 +22,40 @@ if (!isset($LOGIN_MENU_FORM)){
 
 /*
     NEW SHORTCODES/PARAMETERS:
-    
+
     $LOGIN_MENU_LOGGED
     - LM_REMEMBERME (parm: 'href' or empty)
     - LM_SIGNUP_LINK (parm: 'href' or empty)
     - LM_FPW_LINK (parm: 'href' or empty)
     - LM_RESEND_LINK (parm: 'href' or empty)
-    - LM_IMAGECODE_NUMBER 
+    - LM_IMAGECODE_NUMBER
     - LM_IMAGECODE_BOX
-    
+
     $LOGIN_MENU_MESSAGE
     - LM_MESSAGE_TEXT
-    
+
     DEPRECATED SHORTCODES:
     - LM_IMAGECODE - use LM_IMAGECODE_NUMBER, LM_IMAGECODE_BOX instead
 */
 
     $sc_style['LM_SIGNUP_LINK']['pre'] = "<br />[ ";
     $sc_style['LM_SIGNUP_LINK']['post'] = " ]";
-    
+
     $sc_style['LM_FPW_LINK']['pre'] = "<br />[ ";
     $sc_style['LM_FPW_LINK']['post'] = " ]";
-    
+
     $sc_style['LM_RESEND_LINK']['pre'] = "<br />[ ";
     $sc_style['LM_RESEND_LINK']['post'] = " ]";
-    
+
     $sc_style['LM_REMEMBERME']['pre'] = "<br />";
     $sc_style['LM_REMEMBERME']['post'] = "";
-    
+
     $sc_style['LM_IMAGECODE_NUMBER']['pre'] = "<br />";
     $sc_style['LM_IMAGECODE_NUMBER']['post'] = "<br />";
-    
+
     $sc_style['LM_IMAGECODE_BOX']['pre'] = "";
     $sc_style['LM_IMAGECODE_BOX']['post'] = "<br />";
-    
+
 	$LOGIN_MENU_FORM = "{LM_MESSAGE}";
 
 	if ((varset($pref['password_CHAP'],0) == 2) && ($pref['user_tracking'] == "session"))
@@ -72,7 +72,7 @@ if (!isset($LOGIN_MENU_FORM)){
 	}
 
 	$LOGIN_MENU_FORM .= "
-            ".LOGIN_MENU_L1."<br />   
+            ".LOGIN_MENU_L1."<br />
             {LM_USERNAME_INPUT}<br />
             ".LOGIN_MENU_L2."<br />
             {LM_PASSWORD_INPUT}<br />
@@ -95,7 +95,7 @@ if (!isset($LOGIN_MENU_LOGGED)){
 
 /*
     NEW SHORTCODES and/or PARAMETERS:
-    
+
     $LOGIN_MENU_LOGGED
     - LM_ADMIN_CONFIGURE (parm: 'href' or empty)
     - LM_ADMINLINK (parm: 'href' or empty)
@@ -105,19 +105,19 @@ if (!isset($LOGIN_MENU_LOGGED)){
     - LM_EXTERNAL_LINKS
     - LM_STATS
     - LM_LISTNEW_LINK
-    
+
     $LOGIN_MENU_EXTERNAL_LINK
     - LM_EXTERNAL_LINK (parm: 'href' or empty)
     - LM_EXTERNAL_LINK_LABEL
-    
+
     $LOGIN_MENU_STATS
     - LM_NEW_NEWS
     - LM_NEW_COMMENTS
     - LM_NEW_USERS
     - LM_PLUGIN_STATS
-    
+
     $LM_STATITEM_SEPARATOR - plugin stats separator
-    
+
     $LOGIN_MENU_STATITEM
     - LM_STAT_NEW
     - LM_STAT_LABEL
@@ -127,19 +127,19 @@ if (!isset($LOGIN_MENU_LOGGED)){
 
     $sc_style['LM_MAINTENANCE']['pre'] = '<div style="text-align:center"><strong>';
 	$sc_style['LM_MAINTENANCE']['post'] = '</strong></div><br />';
-	
+
     $sc_style['LM_ADMINLINK']['pre'] = '';
 	$sc_style['LM_ADMINLINK']['post'] = '<br />';
-	
+
     $sc_style['LM_EXTERNAL_LINKS']['pre'] = '<br />';
 	$sc_style['LM_EXTERNAL_LINKS']['post'] = '<br />';
-	
+
     $sc_style['LM_STATS']['pre'] = '<br /><br /><span class="smalltext">'.LOGIN_MENU_L25.':<br />';
 	$sc_style['LM_STATS']['post'] = '</span>';
-	
+
     $sc_style['LM_LISTNEW_LINK']['pre'] = '<br /><br />';
 	$sc_style['LM_LISTNEW_LINK']['post'] = '';
-	
+
     $sc_style['LM_ADMIN_CONFIGURE']['pre'] = '';
 	$sc_style['LM_ADMIN_CONFIGURE']['post'] = '<br />';
 
@@ -165,16 +165,16 @@ if (!isset($LOGIN_MENU_EXTERNAL_LINK)){
 if (!isset($LOGIN_MENU_STATS)){
     $sc_style['LM_NEW_NEWS']['pre'] = '';
 	$sc_style['LM_NEW_NEWS']['post'] = '<br />';
-	
+
     $sc_style['LM_NEW_COMMENTS']['pre'] = '';
 	$sc_style['LM_NEW_COMMENTS']['post'] = '<br />';
-	
+
     $sc_style['LM_NEW_CHAT']['pre'] = '';
 	$sc_style['LM_NEW_CHAT']['post'] = '<br />';
-	
+
     $sc_style['LM_NEW_FORUM']['pre'] = '';
 	$sc_style['LM_NEW_FORUM']['post'] = '<br />';
-	
+
     $sc_style['LM_NEW_USERS']['pre'] = '';
 	$sc_style['LM_NEW_USERS']['post'] = '<br />';
 
@@ -188,7 +188,7 @@ if (!isset($LOGIN_MENU_STATS)){
 
 $LM_STATITEM_SEPARATOR = '<br />';
 if (!isset($LOGIN_MENU_STATITEM)){
-    
+
 	$LOGIN_MENU_STATITEM = '
         {LM_STAT_NEW} {LM_STAT_LABEL}{LM_STAT_EMPTY}
     ';

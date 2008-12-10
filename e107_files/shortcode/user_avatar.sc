@@ -24,5 +24,10 @@ else
 {
 	$image = USERIMAGE;
 }
-require_once(e_HANDLER."avatar_handler.php");
-return "<div class='spacer'><img src='".avatar($image)."' alt='' /></div><br />";
+if(!$image) { return; }
+require_once(e_HANDLER.'avatar_handler.php');
+$avatar = avatar($image);
+if($avatar)
+{
+	return "<div class='spacer'><img src='".avatar($image)."' alt='' /></div><br />";
+}
