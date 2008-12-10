@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-10 16:59:19 $
+ * $Revision: 1.11 $
+ * $Date: 2008-12-10 20:54:06 $
  * $Author: secretr $
  *
 */
@@ -517,6 +517,9 @@ if (isset($_POST['check_avatar_sizes']))
 	$ns->tablerender(IMALAN_37, $message.$text);
 }
 
+/*
+ * MAIN CONFIG SCREEN
+ */
 if(function_exists('gd_info'))
 {
 	$gd_info = gd_info();
@@ -560,7 +563,8 @@ $text = "
 						<td class='label'>
 							".IMALAN_1."
 						</td>
-						<td class='control'>". ($pref['image_post'] ? "<input class='checkbox' type='checkbox' name='image_post' value='1' checked='checked' />" : "<input type='checkbox' name='image_post' value='1' />")."
+						<td class='options control'>
+							<input class='checkbox' type='checkbox' name='image_post' value='1'".($pref['image_post'] ? " checked='checked'" : '')." />
 							<div class='smalltext field-help'>".IMALAN_2."</div>
 						</td>
 					</tr>
@@ -568,7 +572,8 @@ $text = "
 						<td class='label'>
 							".IMALAN_10."
 						</td>
-						<td class='control'>".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
+						<td class='control'>
+							".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
 							<div class='smalltext field-help'>".IMALAN_11."</div>
 						</td>
 					</tr>
@@ -578,7 +583,9 @@ $text = "
 							".IMALAN_12."
 						</td>
 						<td class='control'>
-							<select name='image_post_disabled_method' class='tbox select'>". ($pref['image_post_disabled_method'] == "0" ? "<option value='1' selected='selected'>".IMALAN_14."</option>" : "<option value='0'>".IMALAN_14."</option>"). ($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected='selected'>".IMALAN_15."</option>" : "<option value='1'>".IMALAN_15."</option>")."
+							<select name='image_post_disabled_method' class='tbox select'>
+								<option value='0'".($pref['image_post_disabled_method'] == "0" ? " selected='selected'" : '').">".IMALAN_14."</option>
+								<option value='1'".($pref['image_post_disabled_method'] == "1" ? " selected='selected'" : "").">".IMALAN_15."</option>
 							</select>
 							<div class='smalltext field-help'>".IMALAN_13."</div>
 						</td>
@@ -587,7 +594,10 @@ $text = "
 					<tr>
 						<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
 						<td class='control'>
-							<select name='resize_method' class='tbox'>". ($pref['resize_method'] == "gd1" ? "<option selected='selected'>gd1</option>" : "<option>gd1</option>"). ($pref['resize_method'] == "gd2" ? "<option selected='selected'>gd2</option>" : "<option>gd2</option>"). ($pref['resize_method'] == "ImageMagick" ? "<option selected='selected'>ImageMagick</option>" : "<option>ImageMagick</option>")."
+							<select name='resize_method' class='tbox'>
+								<option".($pref['resize_method'] == "gd1" ? " selected='selected'" : '').">gd1</option>
+								<option".($pref['resize_method'] == "gd2" ? " selected='selected'" : '').">gd2</option>
+								<option".($pref['resize_method'] == "ImageMagick" ? " selected='selected'" : '').">ImageMagick</option>
 							</select>
 							<div class='smalltext field-help'>".IMALAN_4."</div>
 						</td>
@@ -596,7 +606,7 @@ $text = "
 					<tr>
 						<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='im_path' size='40' value=\"".$pref['im_path']."\" maxlength='200' />
+							<input class='tbox input-text' type='text' name='im_path' size='40' value='{$pref['im_path']}' maxlength='200' />
 							<div class='smalltext field-help'>".IMALAN_6."</div>
 						</td>
 					</tr>
@@ -604,7 +614,8 @@ $text = "
 					<tr>
 						<td class='label'>".IMALAN_34."
 						</td>
-						<td class='control'>".($pref['enable_png_image_fix'] ? "<input type='checkbox' name='enable_png_image_fix' value='1' checked='checked' />" : "<input type='checkbox' name='enable_png_image_fix' value='1' />")."
+						<td class='options control'>
+							<input type='checkbox' class='checkbox' name='enable_png_image_fix' value='1'".($pref['enable_png_image_fix'] ? " checked='checked'" : '')." />
 							<div class='smalltext field-help'>".IMALAN_35."</div>
 						</td>
 					</tr>
@@ -625,7 +636,7 @@ $text = "
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_options'><span>".IMALAN_8."</span></button>
+				<button class='update' type='submit' name='update_options' value='".IMALAN_8."'><span>".IMALAN_8."</span></button>
 			</div>
 		</fieldset>
 	</form>";
@@ -665,15 +676,16 @@ function headerjs()
 
 			tCheckHandler: function(event) {
 				//do nothing if checkbox or link is clicked
-				var tmp = event.element();
+				var tmp = event.element(); 
 				if(tmp.nodeName.toLowerCase() == 'input' || tmp.nodeName.toLowerCase() == 'a') return;
 				//stop event
 				event.stop();
+				
 				//checkbox container element
 				var element = event.findElement('.options'), check = null;
-				if(element) {
+				if(element) { 
 					check = element.select('input.checkbox'); //search for checkbox
-				}
+				} console.log(element, check);
 				//toggle checked property
 				if(check && check[0] && !(\$(check[0]).disabled)) {
 					\$(check[0]).checked = !(\$(check[0]).checked);
