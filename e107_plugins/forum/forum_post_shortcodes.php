@@ -146,7 +146,7 @@ SC_END
 
 SC_BEGIN POLL
 global $poll_form, $action, $pref;
-if ($action == 'nt' && $pref['forum_poll'] && strpos(e_QUERY, 'edit') === false)
+if ($action == 'nt' && check_class($pref['forum_poll']) && strpos(e_QUERY, 'edit') === false)
 {
 	return $poll_form;
 }

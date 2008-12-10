@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2008-12-09 21:46:14 $
+|     $Revision: 1.28 $
+|     $Date: 2008-12-10 15:29:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -120,19 +120,19 @@ if($pref['forum_attach'])
 
 if (isset($_POST['submitpoll']))
 {
-	require_once(e_PLUGIN."poll/poll_class.php");
+	require_once(e_PLUGIN.'poll/poll_class.php');
 	$poll = new poll;
 
 	require_once(HEADERF);
 	if (!$FORUMPOST)
 	{
-		if (file_exists(THEME."forum_posted_template.php"))
+		if (file_exists(THEME.'forum_posted_template.php'))
 		{
-			require_once(THEME."forum_posted_template.php");
+			require_once(THEME.'forum_posted_template.php');
 		}
 		else
 		{
-			require_once(e_PLUGIN."forum/templates/forum_posted_template.php");
+			require_once(e_PLUGIN.'forum/templates/forum_posted_template.php');
 		}
 	}
 	echo $FORUMPOLLPOSTED;
@@ -156,7 +156,7 @@ if (isset($_POST['fpreview']))
 	$tsubject = $tp->post_toHTML($_POST['subject'], true);
 	$tpost = $tp->post_toHTML($_POST['post'], true);
 
-	if ($_POST['poll_title'] != '' && $pref['forum_poll'])
+	if ($_POST['poll_title'] != '' && check_class($pref['forum_poll']))
 	{
 		require_once(e_PLUGIN."poll/poll_class.php");
 		$poll = new poll;

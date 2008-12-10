@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-05 20:28:05 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-10 15:29:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ define("FORLAN_46", "Title displayed in caption if enclose tables is ticked");
 define("FORLAN_47", "Enable email notification");
 define("FORLAN_48", "Tick this to allow your users to have the option of receiving an email when somebody replies to their post");
 define("FORLAN_49", "Enable polls");
-define("FORLAN_50", "Tick this to allow your users to set polls in the forums - the Polls plugin must be installed to use this feature");
+define("FORLAN_50", "Select userclass allowed to create polls in the forums");
 define("FORLAN_51", "Enable tracking");
 define("FORLAN_52", "Tick this to allow your users to track threads and be emailed when the thread is replied to");
 define("FORLAN_53", "Email prefix");
