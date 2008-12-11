@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-08 02:33:34 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-11 21:50:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -245,6 +245,51 @@ $FORUMREPLYSTYLE = "<tr>
 	<td colspan='2'>
 	</td>
 	</tr>";
+
+$FORUMDELETEDSTYLE = "<tr>
+	<td class='forumheader' style='vertical-align:middle'>
+	{POSTER}
+	{ANON_IP}
+	</td>
+	<td class='forumheader' style='vertical-align:middle'>
+	<table cellspacing='0' cellpadding='0' style='width:100%'>
+	<tr>
+	<td class='smallblacktext'>
+	{THREADDATESTAMP}
+	</td>
+	<td style='text-align:right'>
+	</td>
+	</tr>
+	</table>
+	</td>
+	</tr>
+	<tr>
+	<td class='forumheader3' style='vertical-align:top' colspan='2'>
+	{POSTDELETED}
+	</td>
+	</tr>
+	<tr>
+	<td class='finfobar'>
+	<span class='smallblacktext'>
+	</span>
+	</td>
+	<td class='finfobar' style='vertical-align:top' colspan='2'>
+	<table cellspacing='0' cellpadding='0' style='width:100%'>
+	<tr>
+	<td>
+	</td>
+	<td style='text-align:right'>
+	{MODOPTIONS}
+	</td>
+	</tr>
+	</table>
+	</td>
+	</tr>
+	<tr>
+	<td colspan='2'>
+	</td>
+	</tr>";
+
 
 $FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' {SITENAME_HREF}>{SITENAME}</a>";
 $FORUM_CRUMB['sitename']['sep'] = " :: ";

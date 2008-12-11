@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2008-12-11 16:02:05 $
+|     $Revision: 1.30 $
+|     $Date: 2008-12-11 21:50:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,27 +22,23 @@ $e_wysiwyg = 'post';
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php';
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_post.php');
 
-//var_dump($_POST);
-//exit;
-
 if (isset($_POST['fjsubmit']))
 {
 	header('location:'.$e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id'=>$_POST['forumjump'])));
 	exit;
 }
 
-//$_POST['forumjump']
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
-if (!e_QUERY || !isset($_REQUEST['id']))
+if (!e_QUERY || !isset($_GET['id']))
 {
 	header('Location:'.$e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
 
-$action = trim($_REQUEST['f']);
-$id = (int)$_REQUEST['id'];
+$action = trim($_GET['f']);
+$id = (int)$_GET['id'];
 
 switch($action)
 {
@@ -58,13 +54,13 @@ switch($action)
 
 	case 'quote':
 	case 'edit':
-		$thread_info = $forum->thread_get_postinfo($id, true);
-		$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-		if($_REQUST['f'] == 'quote')
-		{
-			$id = $thread_info['head']['thread_id'];
-		}
-		$forumId = $forum_info['forum_id'];
+		$postInfo = $forum->postGet($id, 'post');
+		$threadInfo = $postInfo;
+		$forumId = $postInfo['post_forum'];
+//		print_a($postInfo);
+//		exit;
+//		$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
+//		$forumId = $forum_info['forum_id'];
 		break;
 
 	default:
@@ -73,6 +69,7 @@ switch($action)
 
 }
 
+echo "forumId = $forumId <br />";
 // check if user can post to this forum ...
 if (!$forum->checkPerm($forumId, 'post'))
 {
@@ -419,45 +416,45 @@ if ($error)
 
 if ($action == 'edit' || $action == 'quote')
 {
- 	if ($action == "edit")
+ 	if ($action == 'edit')
 	{
 		if (!isAuthor())
 		{
-			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
+			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96.'</div>');
 			require_once(FOOTERF);
 			exit;
 		}
 	}
 
-	if(!is_array($thread_info[0]))
-	{
-		 $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_96."</div>");
-		 require_once(FOOTERF);
-		exit;
-	}
-
-	$thread_info[0]['user_name'] = $forum->thread_user($thread_info[0]);
 	if (!isset($_POST['fpreview']))
 	{
-		$subject = $thread_info['0']['thread_name'];
-		$post = $tp->toForm($thread_info[0]['thread_thread']);
+		$post = $e107->tp->toForm($postInfo['post_entry']);
+		if($postInfo['post_datestamp'] == $postInfo['thread_datestamp'])
+		{
+			$subject = $e107->tp->toForm($postInfo['thread_name']);
+		}
 	}
-	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
 
-	if ($action == 'quote') {
-		$post = preg_replace("#\[hide].*?\[/hide]#s", "", $post);
-		$tmp = explode(chr(1), $thread_info[0]['user_name']);
-		$timeStamp = time();
-		$post = "[quote{$timeStamp}={$tmp[0]}]\n".$post."\n[/quote{$timeStamp}]\n";
-		$eaction = FALSE;
+	if ($action == 'quote')
+	{
+		//remote [hide] bbcode, or else it doesn't hide stuff too well :)
+		$post = preg_replace('#\[hide].*?\[/hide]#s', '', $post);
+		$quoteName = ($postInfo['user_name'] ? $postInfo['user_name'] : $postInfo['post_user_anon']);
+		$post = "[quote={$quoteName}]\n".$post."\n[/quote]\n";
+//		$eaction = true;
 		$action = 'reply';
-	} else {
-		$eaction = TRUE;
-		if ($thread_info['0']['thread_parent']) {
-			$action = "reply";
-		} else {
-			$action = "nt";
-			$sact = "canc";	// added to override the bugtracker query below
+	}
+	else
+	{
+		$eaction = true;
+		if($postInfo['post_datestamp'] != $postInfo['thread_datestamp'])
+		{
+			$action = 'reply';
+		}
+		else
+		{
+			$action = 'nt';
+			$sact = 'canc';	// added to override the bugtracker query below
 		}
 	}
 }
@@ -526,7 +523,8 @@ else
 
 function isAuthor()
 {
-	global $threadInfo;
+	global $postInfo;
+	print_a($postInfo);
 	return ((USERID === $postInfo['post_user']) || MODERATOR);
 }
 

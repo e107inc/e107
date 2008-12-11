@@ -27,6 +27,19 @@ $e107 = e107::getInstance();
 return $e107->tp->toHTML($postInfo['post_entry'], true, 'USER_BODY', 'class:'.$post_info['user_class']);
 SC_END
 
+SC_BEGIN POSTDELETED
+global $postInfo;
+if($postInfo['post_s'])
+{
+	$info = unserialize($postInfo['post_options']);
+	return  "
+	Post delete on: {$info['deldate']}<br />
+	reason: {$info['delreason']}
+	";
+	$ret = '<pre>'.print_r($info, true).'</pre>';
+}
+SC_END
+
 SC_BEGIN ATTACHMENTS
 global $postInfo;
 $e107 = e107::getInstance();
