@@ -11,23 +11,26 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-04-30 20:17:05 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-11 21:13:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
-	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
-} else {
-	include_once(e_PLUGIN."chatbox_menu/languages/English/English.php");
+if (!plugInstalled('chatbox_menu')) 
+{
+	header("Location: ".e_BASE."index.php");
+	exit;
 }
+
+@include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 require_once(HEADERF);
 
 $sql->db_Select("menus", "*", "menu_name='chatbox_menu'");
 $row = $sql->db_Fetch();
 
-if (!check_class($row['menu_class'])) {
+if (!check_class($row['menu_class'])) 
+{
 	$ns->tablerender(CHATBOX_L23, "<div style='text-align:center'>".CHATBOX_L24."</div>");
 	require_once(FOOTERF);
 	exit;

@@ -11,50 +11,66 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-01-28 13:51:45 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-11 21:13:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 
-if(!getperms("P")) { header("location:".e_BASE."index.php"); exit; }
+if (!plugInstalled('chatbox_menu') || !getperms("P")) 
+{
+	header("Location: ".e_BASE."index.php");
+	exit;
+}
 
-@include_once e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php";
-@include_once e_PLUGIN."chatbox_menu/languages/English/English_config.php";
+@include_lan( e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/admin_chatbox_menu.php");
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 
-if (isset($_POST['updatesettings'])) {
-
-	$pref['chatbox_posts'] = $_POST['chatbox_posts'];
-	$pref['cb_layer'] = $_POST['cb_layer'];
-	$pref['cb_layer_height'] = ($_POST['cb_layer_height'] ? $_POST['cb_layer_height'] : 200);
-	$pref['cb_emote'] = $_POST['cb_emote'];
-	$pref['cb_mod'] = $_POST['cb_mod'];
-	save_prefs();
-	$e107cache->clear("nq_chatbox");
-	$message = CHBLAN_1;
+if (isset($_POST['updatesettings'])) 
+{
+	$temp = array();
+	$temp['chatbox_posts'] = min(intval($_POST['chatbox_posts']), 5);
+	$temp['cb_layer'] = intval($_POST['cb_layer']);
+	$temp['cb_layer_height'] = max(varset($_POST['cb_layer_height'], 200), 150);
+	$temp['cb_emote'] = intval($_POST['cb_emote']);
+	$temp['cb_mod'] = intval($_POST['cb_mod']);
+	if ($admin_log->logArrayDiffs($temp, $pref, 'CHBLAN_01'))
+	{
+		save_prefs();		// Only save if changes
+		$e107cache->clear("nq_chatbox");
+		$message = CHBLAN_1;
+	}
+	else
+	{
+		$message = CHBLAN_39;
+	}
 }
 
-if (isset($_POST['prune'])) {
-	$chatbox_prune = $_POST['chatbox_prune'];
+
+if (isset($_POST['prune'])) 
+{
+	$chatbox_prune = intval($_POST['chatbox_prune']);
 	$prunetime = time() - $chatbox_prune;
 
-	$sql->db_Delete("chatbox", "cb_datestamp < '$prunetime' ");
+	$sql->db_Delete("chatbox", "cb_datestamp < '{$prunetime}' ");
+	$admin_log->log_event('CHBLAN_02', $chatbox_prune.', '.$prunetime, E_LOG_INFORMATIVE, '');
 	$e107cache->clear("nq_chatbox");
 	$message = CHBLAN_28;
 }
 
-if (isset($_POST['recalculate'])) {
+if (isset($_POST['recalculate'])) 
+{
 	$sql->db_Update("user", "user_chats = 0");
 	$qry = "SELECT u.user_id AS uid, count(c.cb_nick) AS count FROM #chatbox AS c
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id
 		WHERE u.user_id > 0
 		GROUP BY uid";
 
-		if ($sql -> db_Select_gen($qry)) {
+		if ($sql -> db_Select_gen($qry)) 
+		{
 			$ret = array();
 			while($row = $sql -> db_Fetch())
 			{
@@ -66,10 +82,12 @@ if (isset($_POST['recalculate'])) {
 		{
 			$sql->db_Update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
 		}
+	$admin_log->log_event('CHBLAN_03','', E_LOG_INFORMATIVE, '');
 	$message = CHBLAN_33;
 }
 
-if (isset($message)) {
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

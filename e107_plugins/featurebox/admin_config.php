@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-10 22:41:39 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-11 21:13:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!getperms("P")) {
+if (!getperms("P") || !plugInstalled('featurebox')) 
+{
 	header("location:".e_BASE."index.php");
 	 exit;
 }
