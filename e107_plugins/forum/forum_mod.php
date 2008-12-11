@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-09 21:46:14 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-11 16:02:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -33,6 +33,7 @@ function forum_thread_moderate($p)
 		if (preg_match("#(.*?)_(\d+)_x#", $key, $matches))
 		{
 			$act = $matches[1];
+//			print_a($matches); return;
 			$id = (int)$matches[2];
 
 			switch ($act)
@@ -59,6 +60,10 @@ function forum_thread_moderate($p)
 
 				case 'deleteThread':
 					return forumDeleteThread($id);
+					break;
+
+				case 'deletePost':
+					return forumDeletePost($id);
 					break;
 
 			}
@@ -102,5 +107,48 @@ function forumDeleteThread($threadId)
 		return FORLAN_6.' and '.$threadInfo['thread_total_replies'].' '.FORLAN_7.'.';
 	}
 }
+
+function forumDeletePost($postId)
+{
+	$postId = (int)$postId;
+	require_once (e_PLUGIN.'forum/forum_class.php');
+	$e107 = e107::getInstance();
+	$f = &new e107forum;
+	if(!$e107->sql->db_Select('forum_post', '*', 'post_id = '.$postId))
+	{
+		echo 'NOT FOUND!'; return;
+	}
+	$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
+
+	//decrement user post counts
+	if ($row['post_user'])
+	{
+		$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_id='.$row['post_user']);
+	}
+
+	//delete attachments if they exist
+	if($row['post_attachments'])
+	{
+		$f->postDeleteAttachments('post', $postId);
+	}
+
+	// delete post
+	$e107->sql->db_Delete('forum_post', 'post_id='.$postId);
+
+	// update thread with correct reply counts
+	$e107->sql->db_Update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$row['post_thread']);
+
+	// update forum with correct thread/reply counts
+	$e107->sql->db_Update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$row['post_forum']);
+
+	// update thread lastpost info
+	$f->forumUpdateLastpost('thread', $row['post_thread']);
+
+	// update forum lastpost info
+	$f->forumUpdateLastpost('forum', $row['post_forum']);
+	return FORLAN_6.' and '.$threadInfo['thread_total_replies'].' '.FORLAN_7.'.';
+
+}
+
 
 ?>

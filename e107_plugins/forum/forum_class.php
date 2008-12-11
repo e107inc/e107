@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-12-10 21:00:48 $
+|     $Revision: 1.23 $
+|     $Date: 2008-12-11 16:02:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ class e107forum
 		$this->fieldTypes['forum_thread']['thread_lastuser'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_s'] 			= 'int';
 		$this->fieldTypes['forum_thread']['thread_forum_id'] 	= 'int';
-		$this->fieldTypes['forum_thread']['thread_active'] 		= 'int';
+		$this->fieldTypes['forum_thread']['thread_active'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_datestamp']	= 'int';
 		$this->fieldTypes['forum_thread']['thread_views'] 		= 'int';
 		$this->fieldTypes['forum_thread']['thread_replies'] 	= 'int';
@@ -356,10 +356,70 @@ class e107forum
 			$viewed = $tmp['plugin_forum_user_viewed'];
 			unset($tmp);
 		}
-
 		return explode(',', $viewed);
-
 	}
+
+	function postDeleteAttachments($type = 'post', $id='', $f='')
+	{
+		$e107 = e107::getInstance();
+		$id = (int)$id;
+		if(!$id) { return; }
+		if($type == 'thread')
+		{
+			if(!$e107->sql->db_Select('forum_post', 'post_id', 'post_attachments IS NOT NULL'))
+			{
+				return true;
+			}
+			$postList = array();
+			while($row = $e107->sql->dbFetch(MYSQL_ASSOC))
+			{
+				$postList[] = $row['post_id'];
+			}
+			foreach($postList as $postId)
+			{
+				$this->postDeleteAttachment('post', $postId);
+			}
+		}
+		if($type == 'post')
+		{
+			if(!$e107->sql->db_Select('forum_post', 'post_attachments', 'post_id = '.$id))
+			{
+				return true;
+			}
+			$tmp = $e107->sql->db_Fetch(MYSQL_ASSOC);
+			$attachments = explode(',', $tmp['post_attachments']);
+			foreach($attachments as $k => $a)
+			{
+				$info = explode('*', $a);
+				if('' == $f || $info[1] == $f)
+				{
+					$fname = e_PLUGIN."forum/attachments/{$info[1]}";
+					@unlink($fname);
+
+					//If attachment is an image and there is a thumb, remove it
+					if('img' == $info[0] && $info[2])
+					{
+						$fname = e_PLUGIN."forum/attachments/thumb/{$info[2]}";
+						@unlink($fname);
+					}
+				}
+				unset($attachments[$k]);
+			}
+			$tmp = array();
+			if(count($attachments))
+			{
+				$tmp['post_attachments'] = implode(',', $attachments);
+			}
+			else
+			{
+				$tmp['post_attachments'] = '_NULL_';
+			}
+			$tmp['_FILE_TYPES']['post_attachments'] = 'escape';
+			$tmp['WHERE'] = 'post_id = '.$id;
+			$e107->sql->db_update('forum_post', $tmp);
+		}
+	}
+
 
 	function thread_postnum($thread_id)
 	{
@@ -388,23 +448,24 @@ class e107forum
 		$sql2 = new db;
 		if ($type == 'thread')
 		{
-			$id = intval($id);
-			$thread_info = $this->thread_get_lastpost($id);
-			list($uid, $uname) = explode(".", $thread_info['thread_user'], 2);
-			if ($thread_info)
+			$id = (int)$id;
+			$lpInfo = $this->threadGetLastpost($id);
+			$tmp = array();
+			if($lpInfo['user_name'])
 			{
-				if($thread_info['user_name'] != "")
-				{
-					$thread_lastuser = $uid.".".$thread_info['user_name'];
-				}
-				else
-				{
-					$tmp = explode(chr(1), $thread_info['thread_user']);
-					$thread_lastuser = $tmp[0];
-				}
-				$sql->db_Update('forum_t', "thread_lastpost = ".intval($thread_info['thread_datestamp']).", thread_lastuser = '".$tp -> toDB($thread_lastuser, true)."' WHERE thread_id = ".$id);
+				$tmp['thread_lastuser'] = $lpInfo['post_user'];
+				$tmp['thread_lastuser_anon'] = '_NULL_';
 			}
-			return $thread_info;
+			else
+			{
+				$tmp['thread_lastuser'] = 0;
+				$tmp['thread_lastuser_anon'] = $lpInfo['post_user_anon'];
+			}
+			$tmp['thread_lastpost'] = $lpInfo['post_datestamp'];
+			$tmp['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+			$sql->db_Update('forum_thread', $tmp);
+
+			return $lpInfo;
 		}
 		if ($type == 'forum') {
 			if ($id == 'all')
@@ -753,29 +814,21 @@ class e107forum
 		return $ret;
 	}
 
-	function thread_get_lastpost($forum_id)
+	function threadGetLastpost($id)
 	{
-		$forum_id = intval($forum_id);
-		global $sql;
-		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_parent = {$forum_id} "))
-		{
-			$where = "WHERE t.thread_parent = $forum_id ";
-		}
-		else
-		{
-			$where = "WHERE t.thread_id = $forum_id ";
-		}
+		$e107 = e107::getInstance();
+		$id = (int)$id;
 		$qry = "
-		SELECT t.thread_user, t.thread_datestamp, u.user_name FROM #forum_t AS t
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
-		{$where}
-		ORDER BY t.thread_datestamp DESC	LIMIT 0,1
+		SELECT p.post_user, p.post_user_anon, p.post_datestamp, p.post_thread, u.user_name FROM `#forum_post` AS p
+		LEFT JOIN `#user` AS u ON u.user_id = p.post_user
+		WHERE p.post_thread = {$id}
+		ORDER BY p.post_datestamp DESC LIMIT 0,1
 		";
-		if ($sql->db_Select_gen($qry))
+		if ($e107->sql->db_Select_gen($qry))
 		{
-			return $sql->db_Fetch(MYSQL_ASSOC);
+			return $e107->sql->db_Fetch(MYSQL_ASSOC);
 		}
-		return FALSE;
+		return false;
 	}
 
 //	function forum_get_topic_count($forum_id)
