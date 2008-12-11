@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/languages/English/English_config.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:51 $
-|     $Author: mcfly_e107 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/languages/English/admin_chatbox_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2008-12-11 21:13:48 $
+|     $Author: e107steved $
 |     Encoding:
 +----------------------------------------------------------------------------+
 */
@@ -52,5 +52,18 @@ define("CHBLAN_35", "Recalculate");
 define("CHBLAN_36", "Chatbox Display options");
 define("CHBLAN_37", "Normal chatbox");
 define("CHBLAN_38", "Use javascript code to update posts dynamically (AJAX)");
+define('CHBLAN_39', 'Nothing changed - not updated');
+define('CHBLAN_40', 'Chatbox');
+define('CHBLAN_41', 'Chatbox Menu');
+define('CHBLAN_42', '');
+define('CHBLAN_43', '');
+
+// Admin Log 
+define('LAN_AL_CHBLAN_01','Chatbox settings updated');
+define('LAN_AL_CHBLAN_02','Chatbox pruned');
+define('LAN_AL_CHBLAN_03','Chatbox posts recalculated');
+define('LAN_AL_CHBLAN_04','');
+define('LAN_AL_CHBLAN_05','');
+
 
 ?>

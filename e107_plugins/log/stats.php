@@ -11,16 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-10-07 19:08:50 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-11 21:13:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
+if (!plugInstalled('log')) 
+{
+	header("Location: ".e_BASE."index.php");
+	exit;
+}
 
-@include_once(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."log/languages/English.php");
-
+@include_lan(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
 
 $bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
 $eplug_css[] = "<style type='text/css'>
@@ -29,16 +32,6 @@ $eplug_css[] = "<style type='text/css'>
 -->
 </style>";
 
-/*
-function core_head() {
-	$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
-	return "<style type='text/css'>
-<!--
-.b { background-image: url(".$bar."); border: 1px solid #999; height: 10px; font: 0px }
--->
-</style>";
-}
-*/
 
 require_once(HEADERF);
 

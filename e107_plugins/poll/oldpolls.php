@@ -11,12 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-03-03 19:41:00 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-11 21:13:48 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
+if (!plugInstalled('poll')) 
+{
+	header("Location: ".e_BASE."index.php");
+	exit;
+}
 require_once(HEADERF);
 require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;

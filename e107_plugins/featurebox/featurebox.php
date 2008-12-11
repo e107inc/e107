@@ -11,13 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/featurebox.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-20 16:19:43 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-11 21:13:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+if (!plugInstalled('featurebox')) 
+{
+	return '';
+}
 
 if($sql -> db_Select("featurebox", "*", "fb_mode=1 AND fb_class IN (".USERCLASS_LIST.") ORDER BY fb_class ASC"))
 {

@@ -11,13 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-01-27 11:02:34 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-11 21:13:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 global $tp, $e107cache, $e_event, $e107, $pref, $footer_js, $PLUGINS_DIRECTORY;
+if (!plugInstalled('chatbox_menu')) 
+{
+	return '';
+}
 
 if(($pref['cb_layer']==2) || isset($_POST['chatbox_ajax']))
 {
