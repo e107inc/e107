@@ -1,32 +1,34 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-11-02 11:04:29 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Cache Administration Area
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-11 18:13:10 $
+ * $Author: secretr $
+ *
 */
 require_once("../class2.php");
-if (!getperms("C")) 
+if (!getperms("C"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
 $e_sub_cat = 'cache';
+
 require_once("auth.php");
 require_once(e_HANDLER."cache_handler.php");
 $ec = new ecache;
-if ($pref['cachestatus'] == '2') 
+$message = array();
+
+if ($pref['cachestatus'] == '2')
 {
 	$pref['cachestatus'] = '1';
 	save_prefs();
@@ -39,37 +41,49 @@ if(!is_writable(e_CACHE))
 	exit;
 }
 
+/*
+ * XXX WORK IN PROGRESS - WAITING THE NEW MESSAGE HANDLER
+ */
+
 if (isset($_POST['submit_cache']))
 {
 	if ($pref['cachestatus'] != $_POST['cachestatus'] || $pref['syscachestatus'] != $_POST['syscachestatus'])
 	{
-		$pref['cachestatus'] = $_POST['cachestatus'];
-		$pref['syscachestatus'] = $_POST['syscachestatus'];
+		$pref['cachestatus'] = $_POST['cachestatus'] ? '1' : '0';
+		$pref['syscachestatus'] = $_POST['syscachestatus'] ? '1' : '0';
+
 		save_prefs();
-		$admin_log->log_event('CACHE_01',$pref['syscachestatus'].', '.$pref['cachestatus'],E_LOG_INFORMATIVE,'');
+		$admin_log->log_event('CACHE_01', $pref['syscachestatus'].', '.$pref['cachestatus'], E_LOG_INFORMATIVE,'');
+
 		$ec->clear();
 		$ec->clear_sys();
-		$update = true;
-		admin_update($update, 'update', CACLAN_4);
+
+		//FIXME - admin_update - return formatted message instead tablerender & output, new message handler
+		//admin_update(true, 'update', CACLAN_4);
+		$message = array(LAN_UPDATE, CACLAN_4);
 	}
 }
 
-if (isset($_POST['empty_syscache'])) 
+if (isset($_POST['empty_syscache']))
 {
 	$ec->clear_sys();
-	$admin_log->log_event('CACHE_02',$pref['syscachestatus'].', '.$pref['cachestatus'],E_LOG_INFORMATIVE,'');
-	$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_15."</b></div>");
+	$admin_log->log_event('CACHE_02', $pref['syscachestatus'].', '.$pref['cachestatus'], E_LOG_INFORMATIVE, '');
+
+	//$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_15."</b></div>");
+	$message = array(LAN_UPDATE, CACLAN_15);
 }
 
-if (isset($_POST['empty_cache'])) 
+if (isset($_POST['empty_cache']))
 {
 	$ec->clear();
-	$admin_log->log_event('CACHE_03',$pref['syscachestatus'].', '.$pref['cachestatus'],E_LOG_INFORMATIVE,'');
-	$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_6."</b></div>");
+	$admin_log->log_event('CACHE_03', $pref['syscachestatus'].', '.$pref['cachestatus'], E_LOG_INFORMATIVE, '');
+
+	//$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_6."</b></div>");
+	$message = array(LAN_UPDATE, CACLAN_6);
 }
 
 
-	
+
 $syscache_files = glob($e107->file_path.$FILES_DIRECTORY."cache/S_*.*");
 $cache_files = glob($e107->file_path.$FILES_DIRECTORY."cache/C_*.*");
 
@@ -107,7 +121,7 @@ $text = "<div style='text-align:center'>
 	</td>
 	</tr>
 
- 
+
 	<tr style='vertical-align:top'>
 	<td colspan='3' style='text-align:center' class='forumheader'>
 	<input class='button' type='submit' name='submit_cache' value=\"".CACLAN_2."\" />
@@ -116,8 +130,8 @@ $text = "<div style='text-align:center'>
 	</table>
 	</form>
 	</div>";
-	
+
 $ns->tablerender(CACLAN_3, $text);
-	
+
 require_once("footer.php");
 ?>

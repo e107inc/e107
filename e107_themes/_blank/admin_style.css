@@ -1,7 +1,6 @@
 /* E107 CORE CSS *********************************************************************************************/
 .searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
 
-
 /*
  * e107 v0.800 - new class definitions
  */
@@ -104,22 +103,20 @@ ul,ol       { list-style:none; }
 /* Form elements */ 
 input.input-text,
 textarea,
-select, .tbox {
+select, .tbox, .helpbox {
     border-width:1px;
     border-style:solid;
     border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
     background:#fff;
     font:12px arial, helvetica, sans-serif;
 }
-input.input-text, textarea, .tbox { padding:2px; }
+input.input-text, textarea, .tbox, .helpbox { padding:2px; }
 select.tbox  { min-height:17px; padding: 0px; /* to set the height for empty selects */ }
-
-/* custom fields CSS */
-#core-emoticon-configure input.input-text { width: 300px; }
-.select.order { width: 40px; }
+.select.order { width: 40px !important; }
+.select.time-offset { width: 60px !important; }
+input.radio { margin-right: 3px; }
 
 /* Related JS functionality - .autocheck together with .auto-toggle-area (see admin/image.php) */
-.inline-help { width: 280px; }
 .auto-toggle-area { width: 280px; }
 	
 /* form used for settings */
@@ -137,7 +134,7 @@ select.tbox  { min-height:17px; padding: 0px; /* to set the height for empty sel
 .adminform td.label { }
 .adminform td.control { }
 
-.field-help { width: 280px; }
+.field-help { width: 280px; line-height: 1.4em; padding-top: 3px; }
 .label-note { font-style: italic; }
 
 /* form used for content edit */
@@ -179,13 +176,21 @@ select.tbox  { min-height:17px; padding: 0px; /* to set the height for empty sel
 .admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
 
 /******** SyS Messages / Message text formatting */
-.s-message {}
-.s-message .error-box {}
-.warning { color: #FF6600}
+/* message boxes */
+#s-message {}
+#s-message div.info, #s-message div.error,  #s-message div.success, #s-message div.warning {}
+.message-title {}
+.message-body {}
+.message-item ()
+
+/* validate result inline message */
+.validate-result {}
+
+/* message text (overall) */
+.warning { color: #FF6600 }
 .success {}
-.error { color: #FF0000}
+.error { color: #FF0000 }
 .info {}
-.validate-result {} /* validate result inline message */
 
 /******** Tooltip info */
 .e-info {}
@@ -202,7 +207,7 @@ button span {
   position:relative; 
   display:block; 
   white-space:nowrap; 
-  padding:0 0 0 11px; 
+  padding:0 0 0 13px; 
   height:22px; line-height:22px;  color:#0b333c;
 }
 
@@ -303,19 +308,22 @@ ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
 .page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
 .page-info p { padding: 10px; }
 
+#core-prefs-main .col-label {}
+
+#core-emoticon-configure input.input-text { width: 300px; }
+#core-links-edit textarea { width: 390px !important; }
+#core-links-edit .helpbox { width: 390px !important; margin: 5px 0px; }
+#core-links-edit .field-help { width: 390px; }
+	
 
 #core-frontpage-edit-home			{ width: 50%; float: left; } 
 #core-frontpage-edit-post-login		{ width: 50%; float: left; }
-
 #core-frontpage-edit-home .adminlist { width: 99%; }
 #core-frontpage-edit-post-login .adminlist { width: 99%; float: right; }
-
 #core-frontpage-edit .tbox { width: 80%;} 
 #core-frontpage-edit select.tbox { width: 50%;} 
-
 #core-frontpage-edit .buttons-bar select.tbox { width: 140px; }
 #core-frontpage-edit .buttons-bar 	{ clear: both; }
-
 
 /******** Core Block IDs */
 /* cache.php */
@@ -336,16 +344,31 @@ ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
 #core-image-check-avatar			{} /* Check avatar sizes table */
 #core-image-settings				{} /* General image settings - Default front page */
 
-/* links.php */
-#core-links-list-1					{} /* Display list of current links - Default front page */
-#core-links-list-2					{} /* Display list of current links - Default front page */
-#core-links-list-3					{} /* Display list of current links - Default front page */
-#core-links-list-4					{} /* Display list of current links - Default front page */
+/* lancheck.php */
+#core-lancheck-edit					{} /* Edid language file */
 
+/* language.php */
+#core-language-settings				{} /* Language Preferences - Default front page */
+#core-language-list					{} /* Multi-language DB tables list */
+#core-language-edit					{} /* Edit Multi-language DB tables */
+#core-language-lancheck 			{} /* Language Tools - Verify/Edit Language Files */
+#core-language-package 				{} /* Language Tools - Create Language-Pack (zip) */
+
+/* links.php */
+#core-links-list-1					{} /* Display list of current links - Links Front Page */
+#core-links-list-2					{} /* Display list of current links - Links Front Page */
+#core-links-list-3					{} /* Display list of current links - Links Front Page */
+#core-links-list-4					{} /* Display list of current links - Links Front Page */
+#core-links-create					{} /* Create or edit link - Create New Link*/
+#core-links-options					{} /* Links general settins - Options */
+#core-links-generator				{} /* Sublink Generator */
 
 /* meta.php */
-#core-dataform						{} /* Form tag ID - Default front page - old core definition */
+#dataform							{} /* Form tag ID - Default front page - old core definition */
 #core-meta-settings					{} /* General meta settings - Default front page */
+
+/* prefs.php */
+#core-prefs							{} /* Main continer - contains all block lemenst from bewlow */
 
 /* search.php */
 #core-search-configuration-main		{} /* Search Configuration for Searchable Areas - Default front page */

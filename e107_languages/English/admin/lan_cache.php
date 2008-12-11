@@ -1,13 +1,10 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_cache.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-04 17:36:16 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_cache.php,v 1.3 2008-12-11 18:13:10 secretr Exp $
+ *
+ * Admin Language File
+ *
 */
 define("CACLAN_1", "Cache System Status");
 define("CACLAN_2", "Set cache status");
