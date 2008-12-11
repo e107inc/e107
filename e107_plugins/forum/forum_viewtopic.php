@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-12-09 21:46:14 $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-11 16:02:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -68,22 +68,6 @@ if (USER || USER != $threadInfo['thread_user'] || !$thread->noInc)
 {
 	$forum->threadIncview($threadId);
 }
-
-//print_a($postList);
-//if(intval($thread_info['head']['thread_forum_id']) == 0)
-//{
-//	require_once(HEADERF);
-//	$ns->tablerender(LAN_01, FORLAN_104, array('forum_viewtopic', '104'));
-//	require_once(FOOTERF);
-//	exit;
-//}
-
-//$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-//
-//if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class'])) {
-//	header("Location:".e_PLUGIN."forum/forum.php");
-//	exit;
-//}
 
 define('e_PAGETITLE', LAN_01 . ' / ' . $e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off') . " / " . $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off'));
 $modArray = $forum->forum_getmods($thread->threadInfo['forum_moderators']);
@@ -286,7 +270,7 @@ else
 
 echo "<script type=\"text/javascript\">
 	function confirm_(mode, forum_id, thread_id, thread) {
-	if (mode == 'thread') {
+	if (mode == 'Thread') {
 	return confirm(\"" . $tp->toJS(LAN_409) . "\");
 	} else {
 	return confirm(\"" . $tp->toJS(LAN_410) . " [ " . $tp->toJS(LAN_411) . "\" + thread + \" ]\");
@@ -297,30 +281,35 @@ require_once (FOOTERF);
 
 function showmodoptions()
 {
-	global $thread_id;
-	global $thread_info;
-	global $forum_info;
-	global $post_info;
-	$forum_id = $forum_info['forum_id'];
-	if ($post_info['thread_parent'] == false)
+	global $thread, $postInfo;
+
+//	var_dump($thread);
+//	var_dump($postInfo);
+
+	$e107 = e107::getInstance();
+	$forum_id = $thread->threadInfo['forum_id'];
+	if ($postInfo['thread_start'])
 	{
-		$type = 'thread';
-		$ret = "<form method='post' action='" . e_PLUGIN . "forum/forum_viewforum.php?{$forum_id}' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>";
+		$type = 'Thread';
+		$ret = "<form method='post' action='" . $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $postInfo['post_thread']))."' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
+		$delId = $postInfo['post_thread'];
 	}
 	else
 	{
-		$type = 'reply';
-		$ret = "<form method='post' action='" . e_SELF . "?" . e_QUERY . "' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>";
+		$type = 'Post';
+		$ret = "<form method='post' action='" . e_SELF . '?' . e_QUERY . "' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
+		$delId = $postInfo['post_id'];
 	}
 
 	$ret .= "
 		<div>
-		<a href='" . e_PLUGIN . "forum/forum_post.php?edit.{$post_info['thread_id']}.{$topic_from}'>" . IMAGE_admin_edit . "</a>
-		<input type='image' " . IMAGE_admin_delete . " name='delete_{$post_info['thread_id']}' value='thread_action' onclick=\"return confirm_('{$type}', {$forum_id}, {$thread_id}, '{$post_info['user_name']}')\" />
+		<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'edit', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_edit . "</a>
+		<input type='image' " . IMAGE_admin_delete . " name='delete{$type}_{$delId}' value='thread_action' onclick=\"return confirm_('{$type}', {$postInfo['post_forum']}, {$postInfo['post_thread']}, '{$postInfo['user_name']}')\" />
+		<input type='hidden' name='mod' value='1'/>
 		";
-	if ($type == 'thread')
+	if ($type == 'Thread')
 	{
-		$ret .= "<a href='" . e_PLUGIN . "forum/forum_conf.php?move.{$thread_id}'>" . IMAGE_admin_move2 . "</a>";
+		$ret .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'move', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_move2 . "</a>";
 	}
 	$ret .= "
 		</div>

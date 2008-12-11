@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2008-12-10 15:29:31 $
+|     $Revision: 1.29 $
+|     $Date: 2008-12-11 16:02:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -258,7 +258,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			}
 			$postInfo['post_attachments'] = implode(',', $attachments);
 		}
-		var_dump($uploadResult);
+//		var_dump($uploadResult);
 
 		switch($action)
 		{
@@ -576,7 +576,10 @@ function process_upload()
 						require_once(e_HANDLER.'resize_handler.php');
 						$orig_file = $upload['name'];
 						$new_file = 'th_'.$orig_file;
-						if(resize_image($attachmentDir.$orig_file, $attachmentDir.'thumb/'.$new_file, $pref['forum_maxwidth']))
+
+						$resizeDir = ($pref['forum_linkimg'] ? 'thumb/' : '');
+
+						if(resize_image($attachmentDir.$orig_file, $attachmentDir.$resizeDir.$new_file, $pref['forum_maxwidth']))
 						{
 							if($pref['forum_linkimg'])
 							{

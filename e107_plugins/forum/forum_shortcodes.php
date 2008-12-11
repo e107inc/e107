@@ -42,12 +42,16 @@ if($postInfo['post_attachments'])
 			case 'file':
 				$txt .= IMAGE_attachment." <a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'>{$info[2]}</a><br />";
 				break;
-				
+
 			case 'img':
 				//if image has a thumb, show it and link to main
 				if(isset($info[2]))
 				{
-					$txt .= "<a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'><img src='".e_PLUGIN_ABS."forum/attachments/thumb/{$info[2]}' alt='' /></a>"; 
+					$txt .= "<a href='".e_PLUGIN_ABS."forum/attachments/{$info[1]}'><img src='".e_PLUGIN_ABS."forum/attachments/thumb/{$info[2]}' alt='' /></a>";
+				}
+				else
+				{
+					$txt .= "<img src='".e_PLUGIN_ABS."forum/attachments/{$info[1]}' alt='' />";
 				}
 		}
 	}
@@ -212,7 +216,6 @@ if (USER && $postInfo['post_user'] == USERID && $threadInfo['thread_active'])
 {
 	return "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'edit', 'id' => $postInfo['post_id']))."'>".IMAGE_edit.'</a> ';
 }
-return '';
 SC_END
 
 SC_BEGIN QUOTEIMG
