@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-12-11 16:02:05 $
+|     $Revision: 1.13 $
+|     $Date: 2008-12-11 21:50:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -208,14 +208,16 @@ foreach ($postList as $postInfo)
 	{
 		$postInfo['thread_start'] = false;
 		$alt = !$alt;
-		if (isset($FORUMREPLYSTYLE_ALT) && $alt)
+
+		if($postInfo['post_s'])
 		{
-			$forrep .= $e107->tp->parseTemplate($FORUMREPLYSTYLE_ALT, true, $forum_shortcodes) . "\n";
+			$_style = (isset($FORUMDELETEDSTYLE_ALT) && $alt ? $FORUMDELETEDSTYLE_ALT : $FORUMDELETEDSTYLE);
 		}
 		else
 		{
-			$forrep .= $e107->tp->parseTemplate($FORUMREPLYSTYLE, true, $forum_shortcodes) . "\n";
+			$_style = (isset($FORUMREPLYSTYLE_ALT) && $alt ? $FORUMREPLYSTYLE_ALT : $FORUMREPLYSTYLE);
 		}
+		$forrep .= $e107->tp->parseTemplate($_style, true, $forum_shortcodes) . "\n";
 	}
 	else
 	{

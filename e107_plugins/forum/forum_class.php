@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-12-11 16:02:05 $
+|     $Revision: 1.24 $
+|     $Date: 2008-12-11 21:50:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -293,23 +293,35 @@ class e107forum
 		return false;
 	}
 
-	function postGet($threadId, $start, $num)
+	function postGet($id, $start, $num)
 	{
+		$id = (int)$id;
 		$ret = false;
 		$e107 = e107::getInstance();
-		$qry = '
-		SELECT p.*,
-		u.user_name, u.user_customtitle, u.user_hideemail, u.user_email, u.user_signature,
-		u.user_admin, u.user_image, u.user_join, ue.user_plugin_forum_posts,
-		eu.user_name AS edit_name
-		FROM `#forum_post` AS p
-		LEFT JOIN `#user` AS u ON p.post_user = u.user_id
-		LEFT JOIN `#user` AS eu ON p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id
-		LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = p.post_user
-		WHERE p.post_thread = '.$threadId."
-		ORDER BY p.post_datestamp ASC
-		LIMIT {$start}, {$num}
-		";
+		if('post' === $start)
+		{
+			$qry = '
+			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, p.* FROM `#forum_post` AS p
+			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
+			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
+			WHERE p.post_id = '.$id;
+		}
+		else
+		{
+			$qry = "
+				SELECT p.*,
+				u.user_name, u.user_customtitle, u.user_hideemail, u.user_email, u.user_signature,
+				u.user_admin, u.user_image, u.user_join, ue.user_plugin_forum_posts,
+				eu.user_name AS edit_name
+				FROM `#forum_post` AS p
+				LEFT JOIN `#user` AS u ON p.post_user = u.user_id
+				LEFT JOIN `#user` AS eu ON p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id
+				LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = p.post_user
+				WHERE p.post_thread = {$id}
+				ORDER BY p.post_datestamp ASC
+				LIMIT {$start}, {$num}
+			";
+		}
 		if($e107->sql->db_Select_gen($qry))
 		{
 			$ret = array();
@@ -318,6 +330,7 @@ class e107forum
 				$ret[] = $row;
 			}
 		}
+		if('post' === $start) { return $ret[0]; }
 		return $ret;
 	}
 

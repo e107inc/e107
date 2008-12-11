@@ -47,6 +47,7 @@ CREATE TABLE forum_post (
   `post_entry` text NOT NULL,
   `post_thread` int(10) unsigned default NULL,
   `post_forum` int(10) unsigned default NULL,
+  `post_s` tinyint(1) unsigned NOT NULL default '0',
   `post_datestamp` int(10) unsigned NOT NULL default '0',
   `post_user` int(10) unsigned NOT NULL,
   `post_edit_datestamp` int(10) unsigned NOT NULL default '0',

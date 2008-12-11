@@ -47,7 +47,7 @@ SC_END
 
 SC_BEGIN SUBJECTBOX
 global $subjectbox, $action;
-return ($action == "nt" ? $subjectbox : "");
+return ($action == 'nt' ? $subjectbox : '');
 SC_END
 
 SC_BEGIN POSTTYPE
@@ -121,7 +121,8 @@ return $BREADCRUMB;
 SC_END
 
 SC_BEGIN EMAILNOTIFY
-global $pref, $thread_info, $action;
+global $pref, $thread_info, $action, $eaction;
+if($eaction == true) { return ; }
 if ($pref['email_notify'] && $action == 'nt' && USER)
 {
 	if(isset($_POST['fpreview']))
