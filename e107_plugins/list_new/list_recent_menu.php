@@ -11,16 +11,18 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_recent_menu.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2007-08-08 19:34:34 $
+|		$Revision: 1.3 $
+|		$Date: 2008-12-11 22:38:06 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if (!isset($pref['plug_installed']['list_new'])) return;
-
+if (!plugInstalled('list_new'))
+{
+	return;
+}
 
 
 global $sysprefs, $tp, $eArrayStorage;

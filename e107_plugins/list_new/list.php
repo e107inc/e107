@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list.php,v $
-|		$Revision: 1.1.1.1 $
-|		$Date: 2006-12-02 04:35:26 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.2 $
+|		$Date: 2008-12-11 22:38:06 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -22,10 +22,9 @@ $listplugindir = e_PLUGIN."list_new/";
 $lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
 
-if(!$sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_installflag = '1' ")){
-	require_once(HEADERF);
-	$ns -> tablerender("", LIST_PLUGIN_6);
-	require_once(FOOTERF);
+if (!plugInstalled('list_new'))
+{
+	header("Location: ".e_BASE."index.php");
 	exit;
 }
 require_once($listplugindir."list_shortcodes.php");
@@ -43,15 +42,20 @@ require_once(HEADERF);
 global $tp;
 
 // check query
-if(e_QUERY){
+if(e_QUERY)
+{
 	$qs = explode(".", e_QUERY);
-	if($qs[0] == "new"){
+	if($qs[0] == "new")
+	{
 		$mode = $qs[0];
 	}
 }
-if(isset($mode) && $mode == "new"){
+if(isset($mode) && $mode == "new")
+{
 	$mode = "new_page";
-}else{
+}
+else
+{
 	$mode = "recent_page";	//default to 'page'
 }
 
