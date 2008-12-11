@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.14 $
- * $Date: 2008-12-11 11:25:21 $
+ * $Revision: 1.15 $
+ * $Date: 2008-12-11 22:09:11 $
  * $Author: secretr $
  *
 */
@@ -25,7 +25,9 @@ $e_sub_cat = 'image';
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER."message_handler.php");
 $rs = new form;
+$emessage = &eMessage::getInstance();
 
 /*
  * CLOSE - GO TO MAIN SCREEN
@@ -95,9 +97,8 @@ if (isset($_POST['submit_show_delete_multi']))
 		if(!empty($message))
 		{
 			$admin_log->log_event('IMALAN_01', implode('[!br!]', $message), E_LOG_INFORMATIVE, '');
-			$message = implode(', ', $message).' '.IMALAN_28;
+			$emessage->add(implode(', ', $message).' '.IMALAN_28, E_MESSAGE_SUCCESS);
 		}
-		else $message = '';
 	}
 }
 
@@ -131,6 +132,7 @@ if (isset($_POST['submit_show_deleteall']))
 		}
 
 		$message = $count." ".IMALAN_26;
+		$emessage->add($message, E_MESSAGE_SUCCESS);
 		$admin_log->log_event('IMALAN_02', $message.$imgList,E_LOG_INFORMATIVE, '');
 		unset($imgList);
 	}
@@ -175,8 +177,9 @@ if (isset($_POST['submit_avdelete_multi']))
 			$sql->db_Update("user", "user_image='' WHERE user_id IN (".implode(',', $uids).")");
 		}
 
-		$message = IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28;
+		$emessage->add(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28, E_MESSAGE_SUCCESS);
 		$admin_log->log_event('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
+		
 		unset($search_users);
 	}
 	unset($avList, $tmp, $uids);
@@ -199,28 +202,12 @@ if (isset($_POST['update_options']))
 	if ($admin_log->logArrayDiffs($tmp, $pref, 'IMALAN_04'))
 	{
 		save_prefs();		// Only save if changes
-		$message = IMALAN_9;
+		$emessage->add(IMALAN_9, E_MESSAGE_SUCCESS);
 	}
 	else
 	{
-		$message = IMALAN_20;
+		$emessage->add(IMALAN_20, E_MESSAGE_INFO);
 	}
-}
-
-/*
- * SYSTEM MESSAGE
- */
-//FIXME - better message handler, sysmessages CSS rules
-if (varsettrue($message))
-{
-	//no tablerender for sys-messages anymore
-	$message = "
-		<div class='s-message info'><span>".$message."</span></div>
-	";
-}
-else
-{
-	$message = '';
 }
 
 /*
@@ -338,7 +325,7 @@ if (isset($_POST['show_avatars']))
 	}
 
 
-	$ns->tablerender(IMALAN_18, $message.$text);
+	$ns->tablerender(IMALAN_18, $emessage->render().$text);
 }
 
 /*
@@ -512,7 +499,7 @@ if (isset($_POST['check_avatar_sizes']))
 	</table>
 	";
 
-	$ns->tablerender(IMALAN_37, $message.$text);
+	$ns->tablerender(IMALAN_37, $emessage->render().$text);
 }
 
 /*
@@ -642,7 +629,8 @@ $text = "
 			</div>
 		</fieldset>
 	</form>";
-$ns->tablerender(IMALAN_7, $message.$text);
+
+$ns->tablerender(IMALAN_7, $emessage->render().$text);
 
 //Just in case...
 if(!e_AJAX_REQUEST) require_once("footer.php");

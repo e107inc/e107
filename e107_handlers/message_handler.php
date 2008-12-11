@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-11 18:13:10 $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-11 22:09:11 $
  * $Author: secretr $
  *
 */
@@ -164,7 +164,7 @@ class eMessage
 	 * @param bool $session merge with session messages
 	 * @return array|string messages
 	 */
-	function render($raw = true, $reset = true, $session = true)
+	function render($raw = false, $reset = true, $session = true)
 	{
 		if($session)
 		{
@@ -276,6 +276,28 @@ class eMessage
 	function isType($type)
 	{
 		return (array_key_exists($type, $this->_type_map()));
+	}
+	
+	/**
+	 * Check for messages
+	 *
+	 * @param mixed $type
+	 * @param bool $session
+	 * @return bool
+	 */
+	function hasMessage($type = false, $session = true)
+	{
+		if(false === $type)
+		{
+			foreach ($this->_get_types() as $_type)
+			{
+				if($this->get($_type, true, false) || ($session && $this->getSession($_type, true, false)))
+				{
+					return true;
+				}
+			}
+		}
+		return ($this->get($type, true, false) || ($session && $this->getSession($type, true, false)));
 	}
 
 	/**
