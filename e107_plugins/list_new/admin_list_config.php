@@ -11,15 +11,19 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2008-11-20 20:35:24 $
+|		$Revision: 1.5 $
+|		$Date: 2008-12-11 22:38:06 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
 //include and require several classes
 require_once("../../class2.php");
-if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
+if(!getperms("1") || !plugInstalled('list_new'))
+{ 
+	header("location:".e_BASE."index.php"); 
+	exit ;
+}
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -30,34 +34,42 @@ require_once($listplugindir."list_class.php");
 $rc = new listclass;
 
 //get language file
-$lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
-include(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
+@include_lan($listplugindir."languages/".e_LANGUAGE.".php");
 
 //get all sections to use (and reload if new e_list.php files are added)
 $rc -> getSections();
 
 //update preferences in database
-if(isset($_POST['update_menu'])){
-	while(list($key, $value) = each($_POST)){
-		if($value != LIST_ADMIN_2){ $list_pref[$tp->toDB($key)] = $tp->toDB($value); }
+if(isset($_POST['update_menu']))
+{
+	$list_pref	= $rc -> getListPrefs();		// Get the preferences so we've got a reference for changes
+	$temp = array();
+	while(list($key, $value) = each($_POST))
+	{
+		if($value != LIST_ADMIN_2){ $temp[$tp->toDB($key)] = $tp->toDB($value); }
 	}
 
-	$tmp = $eArrayStorage->WriteArray($list_pref);
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='list' ");
-
-	$message = LIST_ADMIN_3;
+	if ($admin_log->logArrayDiffs($temp, $list_pref, 'LISTNEW_01'))
+	{
+		$tmp = $eArrayStorage->WriteArray($list_pref);
+		$sql -> db_Update("core", "e107_value='{$tmp}' WHERE e107_name='list' ");
+		$message = LIST_ADMIN_3;
+	}
+	else
+	{
+		$message = LIST_ADMIN_LAN_41;
+	}
 }
 
 //check preferences from database
 $list_pref	= $rc -> getListPrefs();
 
 
-//$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
-//$iconlist = $fl->get_files($listplugindir."images/", "", $rejectlist);
 $iconlist = $fl->get_files($listplugindir."images/");
 
 //render message if set
-if(isset($message)){
+if(isset($message))
+{
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

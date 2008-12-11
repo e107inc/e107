@@ -11,15 +11,16 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_new_menu.php,v $
-|		$Revision: 1.1.1.1 $
-|		$Date: 2006-12-02 04:35:26 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.2 $
+|		$Date: 2008-12-11 22:38:06 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if(!$sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_installflag = '1' ")){
+if (!plugInstalled('list_new'))
+{
 	return;
 }
 
