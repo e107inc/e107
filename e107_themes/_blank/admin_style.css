@@ -118,7 +118,9 @@ select.tbox  { min-height:17px; padding: 0px; /* to set the height for empty sel
 #core-emoticon-configure input.input-text { width: 300px; }
 .select.order { width: 40px; }
 
+/* Related JS functionality - .autocheck together with .auto-toggle-area (see admin/image.php) */
 .inline-help { width: 280px; }
+.auto-toggle-area { width: 280px; }
 	
 /* form used for settings */
 .col-label { width: 250px; }

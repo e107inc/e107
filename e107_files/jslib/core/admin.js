@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.1 $
- * $Date: 2008-12-10 23:46:47 $
+ * $Revision: 1.2 $
+ * $Date: 2008-12-11 11:25:21 $
  * $Author: secretr $
  * 
 */
@@ -30,7 +30,7 @@ e107Admin.Helper = {
 		this.allCheckedEventHandler = this.allChecked.bindAsEventListener(this);
 		this.allUncheckedEventHandler = this.allUnchecked.bindAsEventListener(this);
 	
-		$$('.options').invoke('observe', 'click', this.toggleCheckedHandler);
+		$$('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
 		$$('button.action[name=check_all]').invoke('observe', 'click', this.allCheckedEventHandler);
 		$$('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
 		$$('button.delete').invoke('observe', 'click', function(e){ if( !e107Helper.confirm(e107.getModLan('delete_confirm')) ) e.stop(); });
@@ -42,17 +42,21 @@ e107Admin.Helper = {
 	 * if e107Admin.Helper#init is executed
 	 * 
 	 * Example: 
-	 * <div class='options'>
+	 * <div class='autocheck'>
 	 * 		<input type='checkbox' class='checkbox' />
 	 * 		<div class='smalltext field-help'>Inline Help Text</div>
 	 * </div>
 	 * OR
-	 * <td class='options control'>
-	 * 		<input class='checkbox' type='checkbox' />
-	 *		<div class='smalltext field-help'>Inline Help Text</div>
+	 * <td class='control'>
+	 * 		<div class='auto-toggle-area autocheck'>
+	 * 			<input class='checkbox' type='checkbox' />
+	 *			<div class='smalltext field-help'>Inline Help Text</div>
+	 *		</div>
 	 * </td>
-	 * Note: The important part are classes 'options' and 'checkbox'. 
+	 * Note: The important part are classes 'autocheck' and 'checkbox'. 
 	 * Container tagName is not important (everything is valid)
+	 * 'auto-toggle-area' class should be defined by the admin theme
+	 * to control the e.g. width of the auto-toggle clickable area
 	 * 
 	 * Demo: e107_admin/image.php
 	 * 
@@ -65,7 +69,7 @@ e107Admin.Helper = {
 		event.stop();
 		
 		//checkbox container element
-		var element = event.findElement('.options'), check = null;
+		var element = event.findElement('.autocheck'), check = null;
 		if(element) { 
 			check = element.select('input.checkbox'); //search for checkbox
 		} 
