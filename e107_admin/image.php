@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.13 $
- * $Date: 2008-12-10 23:46:47 $
+ * $Revision: 1.14 $
+ * $Date: 2008-12-11 11:25:21 $
  * $Author: secretr $
  *
 */
@@ -279,10 +279,7 @@ if (isset($_POST['show_avatars']))
 			if(is_dir(e_FILE."public/avatars/".$image_name))
 			{
 				//File info
-				$users = "<a class='e-tooltip' href='#' title='".IMALAN_69.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".IMALAN_66.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
-
-				// Control over the image size (design)
-				$image_size = getimagesize(e_FILE."public/avatars/".$image_name);
+				$users = "<a class='e-tooltip' href='#' title='".IMALAN_69.": {$image_name}'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".IMALAN_66.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
 
 				//Friendly UI - click text to select a form element
 				$img_src =  '<span class="error">'.IMALAN_70.'</span>';
@@ -303,14 +300,15 @@ if (isset($_POST['show_avatars']))
 					$img_src = "<a class='image-preview' href='".e_FILE_ABS."public/avatars/".rawurlencode($image_name)."' rel='external'>".IMALAN_57."</a>";
 				}
 			}
+
 			//style attribute allowed here - server side width/height control
-			//options class - used for JS selectors (see eCoreImage object)
+			//autocheck class - used for JS selectors (see eCoreImage object)
 			$text .= "
-			<div class='image-box f-left center options' style='width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
+			<div class='image-box f-left center autocheck' style='width: ".(intval($pref['im_width'])+40)."px; height: ".(intval($pref['im_height'])+100)."px;'>
 				<div class='spacer'>
 				<div class='image-users'>{$users}</div>
 				<div class='image-preview'>{$img_src}</div>
-				<div class='image-delete options'>
+				<div class='image-delete'>
 					<input type='checkbox' class='checkbox' id='image-action-{$count}' name='multiaction[]' value='{$row['user_id']}#{$image_pre}{$image_name}'{$disabled} />
 				</div>
 
@@ -441,7 +439,7 @@ if (isset($_POST['check_avatar_sizes']))
 				$found = true;
 				$text .= "
 				<tr>
-					<td class='options center'>
+					<td class='autocheck center'>
 						<input class='checkbox' type='checkbox' name='multiaction[]' id='avdelete-{$row['user_id']}' value='{$row['user_id']}' />
 					</td>
 					<td>
@@ -563,9 +561,11 @@ $text = "
 						<td class='label'>
 							".IMALAN_1."
 						</td>
-						<td class='options control'>
-							<input class='checkbox' type='checkbox' name='image_post' value='1'".($pref['image_post'] ? " checked='checked'" : '')." />
-							<div class='smalltext field-help'>".IMALAN_2."</div>
+						<td class='control'>
+							<div class='auto-toggle-area autocheck'>
+								<input class='checkbox' type='checkbox' name='image_post' value='1'".($pref['image_post'] ? " checked='checked'" : '')." />
+								<div class='smalltext field-help'>".IMALAN_2."</div>
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -614,9 +614,11 @@ $text = "
 					<tr>
 						<td class='label'>".IMALAN_34."
 						</td>
-						<td class='options control'>
-							<input type='checkbox' class='checkbox' name='enable_png_image_fix' value='1'".($pref['enable_png_image_fix'] ? " checked='checked'" : '')." />
-							<div class='smalltext field-help'>".IMALAN_35."</div>
+						<td class='control'>
+							<div class='auto-toggle-area autocheck'>
+								<input type='checkbox' class='checkbox' name='enable_png_image_fix' value='1'".($pref['enable_png_image_fix'] ? " checked='checked'" : '')." />
+								<div class='smalltext field-help'>".IMALAN_35."</div>
+							</div>
 						</td>
 					</tr>
 
@@ -653,7 +655,7 @@ if(!e_AJAX_REQUEST) require_once("footer.php");
 function headerjs()
 {
 	require_once(e_HANDLER.'js_helper.php');
-	//FIXME - how exactly to call JS lan? 
+	//FIXME - how exactly to call JS lan?
 	$ret = "
 		<script type='text/javascript'>
 			//add required core lan
