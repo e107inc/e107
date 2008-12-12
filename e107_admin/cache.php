@@ -9,8 +9,8 @@
  * Cache Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-11 18:13:10 $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-12 16:36:45 $
  * $Author: secretr $
  *
 */
@@ -25,8 +25,9 @@ $e_sub_cat = 'cache';
 
 require_once("auth.php");
 require_once(e_HANDLER."cache_handler.php");
+require_once(e_HANDLER."message_handler.php");
 $ec = new ecache;
-$message = array();
+$emessage = &eMessage::getInstance();
 
 if ($pref['cachestatus'] == '2')
 {
@@ -58,9 +59,11 @@ if (isset($_POST['submit_cache']))
 		$ec->clear();
 		$ec->clear_sys();
 
-		//FIXME - admin_update - return formatted message instead tablerender & output, new message handler
-		//admin_update(true, 'update', CACLAN_4);
-		$message = array(LAN_UPDATE, CACLAN_4);
+		$emessage->add(CACLAN_4, E_MESSAGE_SUCCESS);
+	}
+	else
+	{
+		$emessage->add(LAN_NO_CHANGE, E_MESSAGE_INFO);
 	}
 }
 
@@ -68,18 +71,14 @@ if (isset($_POST['empty_syscache']))
 {
 	$ec->clear_sys();
 	$admin_log->log_event('CACHE_02', $pref['syscachestatus'].', '.$pref['cachestatus'], E_LOG_INFORMATIVE, '');
-
-	//$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_15."</b></div>");
-	$message = array(LAN_UPDATE, CACLAN_15);
+	$emessage->add(CACLAN_15, E_MESSAGE_SUCCESS);
 }
 
 if (isset($_POST['empty_cache']))
 {
 	$ec->clear();
 	$admin_log->log_event('CACHE_03', $pref['syscachestatus'].', '.$pref['cachestatus'], E_LOG_INFORMATIVE, '');
-
-	//$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_6."</b></div>");
-	$message = array(LAN_UPDATE, CACLAN_6);
+	$emessage->add(CACLAN_6, E_MESSAGE_SUCCESS);
 }
 
 
@@ -93,43 +92,55 @@ $cache_files_num = count($cache_files);
 $sys_count = CACLAN_17." ".$syscache_files_num." ".($syscache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 $nonsys_count = CACLAN_17." ".$cache_files_num." ".($cache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 
-$text = "<div style='text-align:center'>
+$text = "
 	<form method='post' action='".e_SELF."'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
-	<tr>
-	<td colspan='3' class='fcaption'>".CACLAN_1."</td>
-	</tr>
-
-	<tr>
-	<td class='forumheader3' style='width:60%;'>".CACLAN_11.":  <div class='smalltext'>".CACLAN_13."</div><br />{$nonsys_count}</td>
-	<td class='forumheader3' style='width:20%'>
-	<input type='radio' name='cachestatus' value='1'".($pref['cachestatus'] ? " checked='checked'" : "")." /> ".LAN_ENABLED."&nbsp;&nbsp;
-	<input type='radio' name='cachestatus' value='0'".(!$pref['cachestatus'] ? " checked='checked'" : "")." /> ".LAN_DISABLED."&nbsp;&nbsp;
-    </td>
-	<td class='forumheader3' style='width:20%'> <input class='button' type='submit' name='empty_cache' value=\"".CACLAN_5."\" />
-	</td>
-	</tr>
-
-	<tr>
-	<td class='forumheader3' style='width:60%;'>".CACLAN_12.":  <div class='smalltext'>".CACLAN_14."</div><br />{$sys_count}</td>
-	<td class='forumheader3' style='width:20%'>
-	<input type='radio' name='syscachestatus' value='1'".($pref['syscachestatus'] ? " checked='checked'" : "")." /> ".LAN_ENABLED."&nbsp;&nbsp;
-	<input type='radio' name='syscachestatus' value='0'".(!$pref['syscachestatus'] ? " checked='checked'" : "")." /> ".LAN_DISABLED."&nbsp;&nbsp;
-	</td>
-	<td class='forumheader3' style='width:20%'>
-	<input class='button' type='submit' name='empty_syscache' value=\"".CACLAN_16."\" />
-	</td>
-	</tr>
-
-
-	<tr style='vertical-align:top'>
-	<td colspan='3' style='text-align:center' class='forumheader'>
-	<input class='button' type='submit' name='submit_cache' value=\"".CACLAN_2."\" />
-	</td>
-	</tr>
-	</table>
-	</form>
-	</div>";
+		<fieldset id='core-cache-settings'>
+			<legend class='e-hideme'>".CACLAN_3."</legend>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='2'>
+					<col style='width:80%' />
+					<col style='width:20%' />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><!-- --></th>
+						<th class='center last'>".CACLAN_1."</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<strong>".CACLAN_11."</strong>: {$nonsys_count}
+							<div class='smalltext'>".CACLAN_13."</div>
+						</td>
+						<td class='center middle'>
+							<input type='radio' id='cachestatus-1a' name='cachestatus' value='1'".($pref['cachestatus'] ? " checked='checked'" : "")." />
+							<label for='cachestatus-1a'>".LAN_ENABLED."</label>&nbsp;&nbsp;
+							<input type='radio' id='cachestatus-1b' name='cachestatus' value='0'".(!$pref['cachestatus'] ? " checked='checked'" : "")." />
+							<label for='cachestatus-1b'>".LAN_DISABLED."</label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>".CACLAN_12."</strong>: {$sys_count}
+							<div class='smalltext'>".CACLAN_14."</div>
+						</td>
+						<td class='center middle'>
+							<input type='radio' name='syscachestatus' id='syscachestatus-1a' value='1'".($pref['syscachestatus'] ? " checked='checked'" : "")." />
+							<label for='syscachestatus-1a'>".LAN_ENABLED."</label>&nbsp;&nbsp;
+							<input type='radio' name='syscachestatus' id='syscachestatus-1b' value='0'".(!$pref['syscachestatus'] ? " checked='checked'" : "")." />
+							<label for='syscachestatus-1b'>".LAN_DISABLED."</label>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class='buttons-bar left'>
+				<button class='submit f-right' type='submit' name='submit_cache'><span>".CACLAN_2."</span></button>
+				<button class='delete' type='submit' name='empty_cache'><span>".CACLAN_5."</span></button>
+				<button class='delete' type='submit' name='empty_syscache'><span>".CACLAN_16."</span></button>
+			</div>
+		</fieldset>
+	</form>";
 
 $ns->tablerender(CACLAN_3, $text);
 
