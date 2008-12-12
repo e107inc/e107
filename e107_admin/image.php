@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.16 $
- * $Date: 2008-12-12 09:55:33 $
+ * $Revision: 1.17 $
+ * $Date: 2008-12-12 22:39:17 $
  * $Author: secretr $
  *
 */
@@ -27,6 +27,8 @@ require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."message_handler.php");
 $rs = new form;
+$frm = new e_form(); //new form handler
+
 $emessage = &eMessage::getInstance();
 
 /*
@@ -245,7 +247,7 @@ if (isset($_POST['show_avatars']))
 			$users = IMALAN_21." | ";
 			$row = array('user_id' => '');
 			$image_pre = '';
-			$disabled = '';
+			$disabled = false;
 			if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
 			{
 				$row = $sql->db_Fetch();
@@ -263,7 +265,7 @@ if (isset($_POST['show_avatars']))
 
 				//Friendly UI - click text to select a form element
 				$img_src =  '<span class="error">'.IMALAN_70.'</span>';
-				$disabled = ' disabled="disabled"';
+				$disabled = true;
 			}
 			else
 			{
@@ -289,14 +291,12 @@ if (isset($_POST['show_avatars']))
 				<div class='image-users'>{$users}</div>
 				<div class='image-preview'>{$img_src}</div>
 				<div class='image-delete'>
-					<input type='checkbox' class='checkbox' id='image-action-{$count}' name='multiaction[]' value='{$row['user_id']}#{$image_pre}{$image_name}'{$disabled} />
+					".$frm->checkbox('multiaction[]', "{$row['user_id']}#{$image_pre}{$image_name}", false, array('id' => false, 'disabled' => $disabled))."
 				</div>
 
 				</div>
 			</div>
-
 			";
-
 			$count++;
 		}
 
@@ -304,11 +304,11 @@ if (isset($_POST['show_avatars']))
 			<div class='spacer clear'>
 				<div class='buttons-bar'>
 					<input type='hidden' name='show_avatars' value='1' />
-					<button class='action' type='button' name='check_all' value='".IMALAN_59."'><span>".IMALAN_59."</span></button>
-					<button class='action' type='button' name='uncheck_all' value='".IMALAN_60."'><span>".IMALAN_60."</span></button>
-					<button class='delete' type='submit' name='submit_show_delete_multi' value='".IMALAN_58."'><span>".IMALAN_58."</span></button>
-					<button class='delete' type='submit' name='submit_show_deleteall' value='".IMALAN_25."'><span>".IMALAN_25."</span></button>
-					<button class='cancel' type='submit' name='submit_cancel_show' value='".IMALAN_68."'><span>".IMALAN_68."</span></button>
+					".$frm->admin_button('check_all', IMALAN_59, 'action')."
+					".$frm->admin_button('uncheck_all', IMALAN_60, 'action')."
+					".$frm->admin_button('submit_show_delete_multi', IMALAN_58, 'delete')."
+					".$frm->admin_button('submit_show_deleteall', IMALAN_25, 'delete')."
+					".$frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')."
 				</div>
 			</div>
 			</fieldset>
@@ -447,9 +447,9 @@ if (isset($_POST['check_avatar_sizes']))
 			</table>
 			<div class='buttons-bar'>
 				<input type='hidden' name='check_avatar_sizes' value='1' />
-				<button class='action' type='button' name='check_all' value='".IMALAN_59."'><span>".IMALAN_59."</span></button>
-				<button class='action' type='button' name='uncheck_all' value='".IMALAN_60."'><span>".IMALAN_60."</span></button>
-				<button class='delete' type='submit' name='submit_avdelete_multi' value='".IMALAN_58."'><span>".IMALAN_58."</span></button>
+				".$frm->admin_button('check_all', IMALAN_59, 'action')."
+				".$frm->admin_button('uncheck_all', IMALAN_60, 'action')."
+				".$frm->admin_button('submit_avdelete_multi', IMALAN_58, 'delete')."
 			</div>
 		</fieldset>
 	</form>
@@ -543,7 +543,7 @@ $text = "
 						</td>
 						<td class='control'>
 							<div class='auto-toggle-area autocheck'>
-								<input class='checkbox' type='checkbox' name='image_post' value='1'".($pref['image_post'] ? " checked='checked'" : '')." />
+								".$frm->checkbox('image_post', 1, $pref['image_post'])."
 								<div class='smalltext field-help'>".IMALAN_2."</div>
 							</div>
 						</td>
@@ -563,10 +563,10 @@ $text = "
 							".IMALAN_12."
 						</td>
 						<td class='control'>
-							<select name='image_post_disabled_method' class='tbox select'>
-								<option value='0'".($pref['image_post_disabled_method'] == "0" ? " selected='selected'" : '').">".IMALAN_14."</option>
-								<option value='1'".($pref['image_post_disabled_method'] == "1" ? " selected='selected'" : "").">".IMALAN_15."</option>
-							</select>
+							".$frm->select_open('image_post_disabled_method')."
+								".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
+								".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
+							".$frm->select_close()."
 							<div class='smalltext field-help'>".IMALAN_13."</div>
 						</td>
 					</tr>
@@ -574,11 +574,11 @@ $text = "
 					<tr>
 						<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
 						<td class='control'>
-							<select name='resize_method' class='tbox'>
-								<option".($pref['resize_method'] == "gd1" ? " selected='selected'" : '').">gd1</option>
-								<option".($pref['resize_method'] == "gd2" ? " selected='selected'" : '').">gd2</option>
-								<option".($pref['resize_method'] == "ImageMagick" ? " selected='selected'" : '').">ImageMagick</option>
-							</select>
+							".$frm->select_open('resize_method')."
+								".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
+								".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
+								".$frm->option('ImageMagick', 'ImageMagick', ($pref['resize_method'] == "ImageMagick"))."
+							".$frm->select_close()."
 							<div class='smalltext field-help'>".IMALAN_4."</div>
 						</td>
 					</tr>
@@ -586,7 +586,7 @@ $text = "
 					<tr>
 						<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='im_path' size='40' value='{$pref['im_path']}' maxlength='200' />
+							".$frm->text('im_path', $pref['im_path'])."
 							<div class='smalltext field-help'>".IMALAN_6."</div>
 						</td>
 					</tr>
@@ -596,7 +596,7 @@ $text = "
 						</td>
 						<td class='control'>
 							<div class='auto-toggle-area autocheck'>
-								<input type='checkbox' class='checkbox' name='enable_png_image_fix' value='1'".($pref['enable_png_image_fix'] ? " checked='checked'" : '')." />
+								".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
 								<div class='smalltext field-help'>".IMALAN_35."</div>
 							</div>
 						</td>
@@ -605,20 +605,20 @@ $text = "
 					<tr>
 						<td class='label'>".IMALAN_16."</td>
 						<td class='control'>
-							<button class='action' type='submit' name='show_avatars'><span>".IMALAN_17."</span></button>
+							".$frm->admin_button('show_avatars', IMALAN_17)."
 						</td>
 					</tr>
 
 					<tr>
 						<td class='label'>".IMALAN_36."</td>
 						<td class='control'>
-							<button class='action' type='submit' name='check_avatar_sizes'><span>".IMALAN_17."</span></button>
+							".$frm->admin_button('check_avatar_sizes', IMALAN_17)."
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_options' value='".IMALAN_8."'><span>".IMALAN_8."</span></button>
+				".$frm->admin_button('update_options', IMALAN_8, 'update')."
 			</div>
 		</fieldset>
 	</form>";
