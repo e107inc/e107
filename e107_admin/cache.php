@@ -9,8 +9,8 @@
  * Cache Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-12 16:36:45 $
+ * $Revision: 1.7 $
+ * $Date: 2008-12-12 23:29:32 $
  * $Author: secretr $
  *
 */
@@ -25,8 +25,11 @@ $e_sub_cat = 'cache';
 
 require_once("auth.php");
 require_once(e_HANDLER."cache_handler.php");
+require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."message_handler.php");
 $ec = new ecache;
+$frm = new e_form(); 
+
 $emessage = &eMessage::getInstance();
 
 if ($pref['cachestatus'] == '2')
@@ -114,10 +117,10 @@ $text = "
 							<div class='smalltext'>".CACLAN_13."</div>
 						</td>
 						<td class='center middle'>
-							<input type='radio' id='cachestatus-1a' name='cachestatus' value='1'".($pref['cachestatus'] ? " checked='checked'" : "")." />
-							<label for='cachestatus-1a'>".LAN_ENABLED."</label>&nbsp;&nbsp;
-							<input type='radio' id='cachestatus-1b' name='cachestatus' value='0'".(!$pref['cachestatus'] ? " checked='checked'" : "")." />
-							<label for='cachestatus-1b'>".LAN_DISABLED."</label>
+							".$frm->radio('cachestatus', 1, ($pref['cachestatus']))."
+							".$frm->label(LAN_ENABLED, 'cachestatus', 1)."&nbsp;&nbsp;
+							".$frm->radio('cachestatus', 0, (!$pref['cachestatus']))."
+							".$frm->label(LAN_DISABLED, 'cachestatus', 0)."
 						</td>
 					</tr>
 					<tr>
@@ -126,23 +129,23 @@ $text = "
 							<div class='smalltext'>".CACLAN_14."</div>
 						</td>
 						<td class='center middle'>
-							<input type='radio' name='syscachestatus' id='syscachestatus-1a' value='1'".($pref['syscachestatus'] ? " checked='checked'" : "")." />
-							<label for='syscachestatus-1a'>".LAN_ENABLED."</label>&nbsp;&nbsp;
-							<input type='radio' name='syscachestatus' id='syscachestatus-1b' value='0'".(!$pref['syscachestatus'] ? " checked='checked'" : "")." />
-							<label for='syscachestatus-1b'>".LAN_DISABLED."</label>
+							".$frm->radio('syscachestatus', 1, ($pref['syscachestatus']))."
+							".$frm->label(LAN_ENABLED, 'syscachestatus', 1)."&nbsp;&nbsp;
+							".$frm->radio('syscachestatus', 0, (!$pref['syscachestatus']))."
+							".$frm->label(LAN_DISABLED, 'syscachestatus', 0)."
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<div class='buttons-bar left'>
-				<button class='submit f-right' type='submit' name='submit_cache'><span>".CACLAN_2."</span></button>
-				<button class='delete' type='submit' name='empty_cache'><span>".CACLAN_5."</span></button>
-				<button class='delete' type='submit' name='empty_syscache'><span>".CACLAN_16."</span></button>
+				".$frm->admin_button('submit_cache', CACLAN_2, 'update f-right')."
+				".$frm->admin_button('empty_cache', CACLAN_5, 'delete')."
+				".$frm->admin_button('empty_syscache', CACLAN_16, 'delete')."
 			</div>
 		</fieldset>
 	</form>";
 
-$ns->tablerender(CACLAN_3, $text);
+$ns->tablerender(CACLAN_3, $emessage->render().$text);
 
 require_once("footer.php");
 ?>

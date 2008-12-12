@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-12 09:55:33 $
+ * $Revision: 1.7 $
+ * $Date: 2008-12-12 23:29:32 $
  * $Author: secretr $
  *
 */
@@ -164,7 +164,7 @@ class eMessage
 	 * @param bool $session merge with session messages
 	 * @return array|string messages
 	 */
-	function render($raw = false, $reset = true, $session = true)
+	function render($raw = false, $reset = true, $session = false)
 	{
 		if($session)
 		{
