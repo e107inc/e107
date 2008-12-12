@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.15 $
- * $Date: 2008-12-11 22:09:11 $
+ * $Revision: 1.16 $
+ * $Date: 2008-12-12 09:55:33 $
  * $Author: secretr $
  *
 */
@@ -179,7 +179,7 @@ if (isset($_POST['submit_avdelete_multi']))
 
 		$emessage->add(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28, E_MESSAGE_SUCCESS);
 		$admin_log->log_event('IMALAN_03', implode('[!br!]', $avList), E_LOG_INFORMATIVE, '');
-		
+
 		unset($search_users);
 	}
 	unset($avList, $tmp, $uids);
@@ -248,16 +248,9 @@ if (isset($_POST['show_avatars']))
 			$disabled = '';
 			if ($sql->db_Select("user", "*", "user_image='-upload-".$tp->toDB($image_name)."' OR user_sess='".$tp->toDB($image_name)."'"))
 			{
-				/*
-				//Is it possible?! I don't think so
-				while ($row = $sql->db_Fetch())
-				{
-					extract($row); // kill this!!!
-					$users .= "<a href='".e_BASE."user.php?id.$user_id'>$user_name</a> <span class='smalltext'>(".($user_sess == $image_name ? IMALAN_24 : IMALAN_23).")</span> | ";
-				}*/
 				$row = $sql->db_Fetch();
 				if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
-				$users .= "<a href='".e_BASE."user.php?id.{$row['user_id']}'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
+				$users .= "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
 			} else {
 				$users = '<span class="warning">'.IMALAN_22.'</span>';
 			}
@@ -643,10 +636,10 @@ if(!e_AJAX_REQUEST) require_once("footer.php");
 function headerjs()
 {
 	require_once(e_HANDLER.'js_helper.php');
-	//FIXME - how exactly to call JS lan?
+	//FIXME - how exactly to auto-call JS lan? This and more should be solved in Stage II.
 	$ret = "
 		<script type='text/javascript'>
-			//add required core lan
+			//add required core lan - delete confirm message
 			(".e_jshelper::toString(IMALAN_67).").addModLan('core', 'delete_confirm');
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>

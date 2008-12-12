@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-10 16:59:19 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Admin template - _blank theme
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-12 09:55:33 $
+ * $Author: secretr $
+ *
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -47,20 +45,22 @@ $ADMIN_HEADER = "
 					<div class='col-main'>
 						<div class='inner-wrapper'>
 ";
-
+/*
+	{SETSTYLE=admin_menu}
+	<!--
+	{ADMIN_NAV}
+	-->
+ */
 $ADMIN_FOOTER = "
 						</div>
 					</div>
 				</td>
 				<td class='col-right'>
 					<div class='col-right'>
-						{SETSTYLE=admin_menu}
-						<!--
-						{ADMIN_NAV}
-						-->
+
 						{SETSTYLE=admin_menu}
 						{ADMIN_MENU}
-						
+
 						{SETSTYLE=none}
 						{ADMIN_LANG}
 						{ADMIN_PWORD}
@@ -69,7 +69,7 @@ $ADMIN_FOOTER = "
 						{ADMIN_LOG=request}
 						{ADMIN_MSG}
 						{ADMIN_PLUGINS}
-						
+
 						{ADMIN_PRESET}
 						{ADMIN_UPDATE}
 						{SETSTYLE=site_info}
@@ -107,7 +107,7 @@ $BUTTON_OVER = '
 	</li>
 ';
 $SUB_BUTTONS_START = '
-<ul class="plugin-navigation">	
+<ul class="plugin-navigation">
 	<li>
 		<a class="link" onclick="expandit(\'{SUB_HEAD_ID}\');" >&raquo;&nbsp;{SUB_HEAD}</a>
 		<ul class="sub-nav" id="{SUB_HEAD_ID}" style="display: none">

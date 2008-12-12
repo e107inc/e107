@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-11 22:09:11 $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-12 09:55:33 $
  * $Author: secretr $
  *
 */
@@ -177,7 +177,7 @@ class eMessage
 			$message = $this->get($type, $raw);
 			if(!empty($message))
 			{
-				$ret[$type] = (true === $raw) ? $message : eMessage::formatMessage($type, $message);
+				$ret[$type] = $message;
 			}
 		}
 
@@ -206,14 +206,14 @@ class eMessage
 		if (empty($message)) return '';
 		elseif (is_array($message))
 		{
-			$message = "<div class='message-item'>\n".implode("</div>\n<div class='message-item'>", $message)."</div>";
+			$message = "<div class='message-item'>".implode("</div>\n<div class='message-item'>", $message)."</div>";
 		}
 		return "
 			<div class='{$type}'>
 				<div class='message-title'>".eMessage::getTitle($type)."</div>
 				<div class='message-body'>
 					{$message}
-				<div>
+				</div>
 			</div>
 		";
 	}
@@ -277,7 +277,7 @@ class eMessage
 	{
 		return (array_key_exists($type, $this->_type_map()));
 	}
-	
+
 	/**
 	 * Check for messages
 	 *
