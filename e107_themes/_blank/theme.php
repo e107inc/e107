@@ -1,4 +1,5 @@
 <?php
+include_lan(THEME."languages/".e_LANGUAGE.".php");
 
 $THEME_CORE_JSLIB = array(
 	'jslib/core/decorate.js' => 'all',
@@ -10,7 +11,7 @@ $no_core_css = TRUE;
 
 function theme_head() {
 	$ret = '';
-	$ret .= ' 
+	$ret .= '
 		<link rel="stylesheet" href="'.THEME_ABS.'menu/menu.css" type="text/css" media="all" />
 		<!--[if IE]>
 		<link rel="stylesheet" href="'.THEME_ABS.'ie_all.css" type="text/css" media="all" />
@@ -19,12 +20,12 @@ function theme_head() {
 			<script type="text/javascript" src="'.THEME_ABS.'menu/menu.js"></script>
 		<![endif]-->
 	';
-	
+
     $ret .= "
     <script type='text/javascript'>
        /**
     	* Decorate all tables having e-list class
-    	* TODO: add 'e-list' class to all list core tables, allow theme decorate. 
+    	* TODO: add 'adminlist' class to all list core tables, allow theme decorate.
     	*/
         e107.runOnLoad( function() {
             \$\$('table.adminlist').each(function(element) {
@@ -35,7 +36,7 @@ function theme_head() {
             });
 
         }, document, true);
-		
+
     </script>";
 	return $ret;
 }

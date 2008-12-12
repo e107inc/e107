@@ -134,7 +134,7 @@ input.radio { margin-right: 3px; }
 .adminform td.label { }
 .adminform td.control { }
 
-.field-help { width: 280px; line-height: 1.4em; padding-top: 3px; }
+.field-help { width: 280px; line-height: 1.4em; padding-top: 3px; color:#333333 }
 .label-note { font-style: italic; }
 
 /* form used for content edit */
@@ -177,10 +177,27 @@ input.radio { margin-right: 3px; }
 
 /******** SyS Messages / Message text formatting */
 /* message boxes */
-#s-message {}
-#s-message div.info, #s-message div.error,  #s-message div.success, #s-message div.warning {}
-.message-title {}
-.message-body {}
+#s-message {margin-bottom: 10px; }
+
+#s-message div.info,
+#s-message div.error,
+#s-message div.success,
+#s-message div.warning { padding: 5px;}
+
+
+#s-message div.info 	{ background-color:#C1E0FF; border: 1px solid #3399FF; }
+#s-message div.error 	{ background-color:#FFCECE; border: 1px solid #CC0000; }
+#s-message div.success  { background-color:#DFFFDF; border: 1px solid #009900; }
+#s-message div.warning 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
+
+.message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; font-size: 14px; font-weight: bold; line-height: 32px; }
+
+#s-message div.info 	.message-title 	{ background-image: url(images/messagebox_info.png); }
+#s-message div.error 	.message-title 	{ background-image: url(images/messagebox_critical.png); } 
+#s-message div.success 	.message-title 	{ background-image: url(images/ok.png); }
+#s-message div.warning 	.message-title	{ background-image: url(images/messagebox_warning.png); }
+
+.message-body { padding-left: 42px; }
 .message-item ()
 
 /* validate result inline message */
@@ -367,8 +384,19 @@ ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
 #dataform							{} /* Form tag ID - Default front page - old core definition */
 #core-meta-settings					{} /* General meta settings - Default front page */
 
+
 /* prefs.php */
 #core-prefs							{} /* Main continer - contains all block lemenst from bewlow */
+#core-prefs-main					{} /* Settings section - Site Information */
+#core-prefs-display					{} /* Settings section - Display Information */
+#core-prefs-admindisp				{} /* Settings section - Admin Display Options */
+#core-prefs-date					{} /* Settings section - Date display options */
+#core-prefs-registration			{} /* Settings section - User registration-posting */
+#core-prefs-signup					{} /* Settings section - Signup Page Options */
+#core-prefs-textpost				{} /* Settings section - Text rendering */
+#core-prefs-security				{} /* Settings section - Security & Protection */
+#core-prefs-comments				{} /* Settings section - Comments */
+#core-prefs-advanced				{} /* Settings section - Advanced Features */
 
 /* search.php */
 #core-search-configuration-main		{} /* Search Configuration for Searchable Areas - Default front page */
