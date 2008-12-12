@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-12 16:36:45 $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-12 22:39:17 $
  * $Author: secretr $
  *
 */
@@ -38,10 +38,18 @@ if (!defined('e107_INIT')) { exit; }
  *
  *  - size => (int) size attribute value (used when needed)
  *	default: 40
+ * 
+ *  - title (string) title attribute
+ *  default: empty string (omitted)
  *
  *  - readonly => (bool) readonly attribute
  * 	default: false
- *
+ * 
+ *  - selected => (bool) selected attribute (used when needed)
+ * 	default: false
+ * 
+ *  checked => (bool) checked attribute (used when needed)
+ *  default: false
  *  - disabled => (bool) disabled attribute
  *  default: false
  *
@@ -66,24 +74,113 @@ class e_form
 	function text($name, $value, $maxlength = 200, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
-		return "<input type='text' name='{$name}' value='{$value}' maxlength={$maxlength}".$this->get_attributes($options)." />";
+		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options)." />";
 	}
+
+	function file($name, $options = array()) 
+	{
+		$options = $this->format_options('text', $name, $options);
+		return "<input type='text' name='{$name}'".$this->get_attributes($options)." />";
+	}
+	
 
 	function password($name, $maxlength = 50, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
-		return "<input type='password' name='{$name}' value='' maxlength={$maxlength}".$this->get_attributes($options)." />";
+		return "<input type='password' name='{$name}' value='' maxlength='{$maxlength}'".$this->get_attributes($options)." />";
 	}
 
-	//------------------ Work in progress START --------------------------->
-	function textarea($name, $value, $rows, $cols, $options = array())
+
+	function textarea($name, $value, $rows = 15, $cols = 40, $options = array())
 	{
-		//TODO - Add title to option array
+		$options = $this->format_options('textarea', $name, $options);
+		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options).">{$value}</textarea>";
+	}
+	
+	function checkbox($name, $value, $checked = false, $options = array()) 
+	{
+		$options['checked'] = $checked; //comes as separate argument just for convenience
+		$options = $this->format_options('checkbox', $name, $options);
+		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options)." />";
+
+	}
+	
+	function radio($name, $value, $checked = false, $options = array()) 
+	{
+		$options['checked'] = $checked; //comes as separate argument just for convenience
+		$options = $this->format_options('radio', $name, $options);
+		return "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options)." />";
+
+	}
+	
+	function label($text, $for_id, $name = '') 
+	{
+		if($name) $for_id = $this->_format_id($for_id, $name);
+		return "<label for='{$for_id}'>{$text}</label>";
 	}
 
+	function select_open($name, $options = array()) 
+	{
+		$options = $this->format_options('select', $name, $options);
+		return "<select name='{$name}'".$this->get_attributes($options).">";
+	}
+	
+	function optgroup_open($label, $disabled) 
+	{
+		return "<optgroup class='optgroup' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
+	}
+	
+	function option($option_name, $value, $selected = false, $options = array()) 
+	{
+		if(false === $value) $value = '';
+		$options['selected'] = $selected; //comes as separate argument just for convenience
+		$options = $this->format_options('option', '', $options);
+		return "<option value='{$value}'".$this->get_attributes($options).">{$option_name}</option>";
+	}
 
-	//------------------ Work in progress END --------------------------->
+	function optgroup_close() 
+	{
+		return "</optgroup>";
+	}
+	
+	function select_close() 
+	{
+		return "</select>";
+	}
 
+	function hidden($name, $value, $options = array()) 
+	{
+		$options = $this->format_options('hidden', $name, $options);
+		return "<input type='hidden' name='{$name}' value='{$value}'".$this->get_attributes($options)." />";
+	}
+	
+	function submit($name, $value, $options = array()) 
+	{
+		$options = $this->format_options('submit', $name, $options);
+		return "<input class='button' type='submit' name='{$name}' value='{$value}'".$this->get_attributes($options)." />";
+	}
+	
+	function submit_image($name, $value, $image, $options = array()) 
+	{
+		$options = $this->format_options('submit', $name, $options);
+		return "<input class='image' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options)." />";
+	}
+	
+	function admin_button($name, $value, $action = '', $label = '', $options = array())
+	{
+		$options['class'] = $action; //additional classes not allowed
+		$btype = 'submit';
+		if($action == 'action') $btype = 'button';
+		$options = $this->format_options('admin_button', $name, $options);
+		if(empty($label)) $label = $value;
+		
+		return "
+			<button type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options).">
+				<span>{$label}</span>
+			</button>
+		";
+	}
+	
 	function get_attributes($options)
 	{
 		$ret = '';
@@ -103,14 +200,27 @@ class e_form
 				case 'size':
 					if($optval) $ret .= " size='{$optval}'";
 					break;
+					
+				case 'title':
+					if($optval) $ret .= " title='{$optval}'";
+					break;
 
 				case 'tabindex':
 					if($optval === false || !$this->_tabindex_enabled) break;
-					$ret .= " tabindex='".($optval ? $optval : $this->_tabindex_counter++)."'";
+					$this->_tabindex_counter++;
+					$ret .= " tabindex='".($optval ? $optval : $this->_tabindex_counter)."'";
 					break;
 
 				case 'readonly':
 					if($optval) $ret .= " readonly='readonly'";
+					break;
+
+				case 'selected':
+					if($optval) $ret .= " selected='selected'";
+					break;
+					
+				case 'checked':
+					if($optval) $ret .= " checked='checked'";
 					break;
 
 				case 'disabled':
@@ -174,11 +284,15 @@ class e_form
 		if(isset($this->_cached_attributes[$type])) return $this->_cached_attributes[$type];
 
 		$def_options = array(
+			'id' => '',
 			'class' => '',
+			'title' => '',
 			'size' => '',
 			'readonly' => false,
+			'selected' => false,
+			'checked' => false,
 			'disabled' => false,
-			'tabindex' => $this->_tab_counter,
+			'tabindex' => 0,
 			'other' => ''
 		);
 
@@ -189,34 +303,42 @@ class e_form
 
 			case 'text':
 				$def_options['class'] = 'tbox input-text';
+				unset($def_options['selected'], $def_options['checked']);
 				break;
 
 			case 'textarea':
 				$def_options['class'] = 'tbox textarea';
+				unset($def_options['selected'], $def_options['checked'], $def_options['size']);
 				break;
 
 			case 'select':
 				$def_options['class'] = 'tbox select';
+				unset($def_options['checked'],  $def_options['checked']);
+				break;
+
+			case 'option':
+				$def_options = array('class' => '', 'selected' => false, 'other' => '');
 				break;
 
 			case 'radio':
 				$def_options['class'] = 'radio';
+				unset($def_options['size'], $def_options['selected']);
 				break;
 
 			case 'checkbox':
 				$def_options['class'] = 'checkbox';
+				unset($def_options['size'],  $def_options['selected']);
 				break;
 
 			case 'submit':
 				$def_options['class'] = 'button';
+				unset($def_options['checked'], $def_options['selected'], $def_options['readonly']);
 				break;
 
 			case 'admin_button':
+				unset($def_options['checked'],  $def_options['selected'], $def_options['readonly']);
 				break;
 
-			case 'option':
-				$def_options = array('class' => '', 'other' => '');
-				break;
 		}
 
 		$this->_cached_attributes[$type] = $def_options;
