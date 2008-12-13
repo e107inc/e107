@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-12-11 21:50:18 $
+|     $Revision: 1.14 $
+|     $Date: 2008-12-13 21:52:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,10 @@ include_lan(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 $forum = new e107forum;
 $thread = new e107ForumThread;
 
+if(isset($_GET['f']) && $_GET['f'] == 'post')
+{
+	$thread->processFunction();
+}
 
 $thread->init();
 
@@ -80,7 +84,7 @@ if (MODERATOR && isset($_POST['mod']))
 	$thread->threadInfo = $forum->threadGet($thread->threadId);
 }
 
-$postList = $forum->PostGet($thread->threadId, $thread->page * $thread->perPage, $thread->perPage);
+$postList = $forum->PostGet($thread->threadId, ($thread->page-1) * $thread->perPage, $thread->perPage);
 
 //var_dump($thread->threadInfo);
 require_once (e_HANDLER . 'level_handler.php');
@@ -449,7 +453,7 @@ class e107ForumThread
 		$e107 = e107::getInstance();
 		$this->threadId = (int)varset($_GET['id']);
 		$this->perPage = (varset($_GET['perpage']) ? (int)$_GET['perpage'] : $pref['forum_postspage']);
-		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 0);
+		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 1);
 
 		//If threadId doesn't exist, or not given, redirect to main forum page
 		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
@@ -492,7 +496,7 @@ class e107ForumThread
 
 	function processFunction()
 	{
-		global $forum, $thread;
+		global $forum, $thread, $pref;
 		$e107 = e107::getInstance();
 		if (!isset($_GET['f']))
 		{
@@ -503,47 +507,15 @@ class e107ForumThread
 		switch ($function)
 		{
 			case 'post':
-				if ($thread_id)
-				{
-					$post_num = $forum->thread_postnum($thread_id);
-					$pages = ceil(($post_num['post_num'] + 1) / $pref['forum_postspage']);
-					$topic_from = ($pages - 1) * $pref['forum_postspage'];
-					if ($post_num['parent'] != $thread_id)
-					{
-						header("location: " . e_SELF . "?{$post_num['parent']}.{$topic_from}#post_{$thread_id}");
-						exit;
-					}
-				}
-				else
-				{
-					header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
-					exit;
-				}
+				$postId = varset($_GET['id']);
+				$postInfo = $forum->postGet($postId,'post');
+				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
+				$postPage = ceil($postNum / $pref['forum_postspage']);
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$postInfo['post_thread']}&page=$postPage");
+//				echo "url: $url <br />";
+				header('location: '.$url);
+				exit;
 				break;
-/*
-			case 'track':
-				if (!USER || !isset($_GET['id'])) { return; }
-				$forum->track('add', USERID, $_GET['id']);
-
-				if(e_AJAX_REQUEST)
-				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'untrack', 'id' => $thread->threadId));
-					echo "<a href='{$url}' id='forum-track-trigger'>".IMAGE_untrack."</a>";
-					exit();
-				}
-				break;
-
-			case 'untrack':
-				if (!USER || !isset($_GET['id'])) { return; }
-				$forum->track('del', USERID, $_GET['id']);
-				if(e_AJAX_REQUEST)
-				{
-					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'track', 'id' => $thread->threadId));
-					echo "<a href='{$url}' id='forum-track-trigger'>".IMAGE_track."</a>";
-					exit();
-				}
-				break;
-*/
 
 			case 'last':
 //				$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);

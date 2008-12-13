@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-11 21:50:18 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-13 21:52:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,9 +20,10 @@
 if (!defined('e107_INIT')) { exit; }
 if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%;margin-left:auto;margin-right:auto"); }
 
+$sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN_29.' ';
 
-$sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN_29." ";
-$sc_style['LASTEDIT']['post'] = " ]</span>";
+$sc_style['LASTEDITBY']['pre'] = ' '.FORLAN_BY.' ';
+$sc_style['LASTEDITBY']['post'] = ' ]</span>';
 
 $sc_style['LEVEL']['pre'] = "<div class='spacer'>";
 $sc_style['LEVEL']['post'] = "</div>";
@@ -129,7 +130,7 @@ $FORUMTHREADSTYLE = "<tr>
 	<td class='forumheader3' style='vertical-align:top'>{POLL}
 	{POST}
 	{ATTACHMENTS}
-	{LASTEDIT}
+	{LASTEDIT}{LASTEDITBY=link}
 	{SIGNATURE}
 	</td>
 	</tr>
@@ -215,7 +216,7 @@ $FORUMREPLYSTYLE = "<tr>
 	</td>
 	<td class='forumheader3' style='vertical-align:top'>{POST}
 	{ATTACHMENTS}
-	{LASTEDIT}
+	{LASTEDIT}{LASTEDITBY}
 	{SIGNATURE}
 	</td>
 	</tr>

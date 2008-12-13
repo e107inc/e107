@@ -1,5 +1,5 @@
 <?php
-// $Id: forum.php,v 1.2 2008-12-09 21:46:14 mcfly_e107 Exp $
+// $Id: forum.php,v 1.3 2008-12-13 21:52:19 mcfly_e107 Exp $
 function url_forum_forum($parms)
 {
 	switch($parms['func'])
@@ -15,6 +15,10 @@ function url_forum_forum($parms)
 		case 'main':
 			return e_PLUGIN_ABS.'forum/forum.php';
 			break;
-	}
 
+		case 'post':
+			return e_PLUGIN_ABS."forum/forum_post.php?f={$parms['type']}}id={$parms['id']}";
+			break;
+
+	}
 }
