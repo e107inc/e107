@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2008-12-10 22:39:43 $
-|     $Author: e107steved $
+|     $Revision: 1.59 $
+|     $Date: 2008-12-13 18:43:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -705,6 +705,16 @@ class e107plugin
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
 
+	function displayArray(&$array, $msg='')
+	{
+		$txt = ($msg ? $msg.'<br />' : '');
+		foreach($array as $_k => $_v)
+		{
+			$txt .= "{$_k} -> {$_v}<br />";
+		}
+		$txt .='<br />';
+		return $txt;
+	}
 
 
 	//----------------------------------------------------------
@@ -939,7 +949,7 @@ class e107plugin
 				case 'install':
 					if(is_array($list['active']))
 					{
-						$txt .= "Adding {$prefType} prefs ".print_a($list['active'], true)."<br />";
+						$txt .= $this->displayArray($list['active'], "Adding '{$prefType}' prefs:");
 						$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path'], TRUE);
 					}
 					break;
@@ -947,14 +957,14 @@ class e107plugin
 				case 'refresh' :		// Add any defined prefs which don't already exist
 					if(is_array($list['active']))
 					{
-						$txt .= "Updating {$prefType} prefs ".print_a($list['active'], true)."<br />";
+						$txt .= $this->displayArray($list['active'], "Updating '{$prefType}' prefs:");
 						$this->manage_prefs('update', $list['active'], $prefType, $plug['plugin_path'], TRUE);		// This only adds prefs which aren't already defined
 					}
 
 					//If upgrading, removing any inactive pref
 					if(is_array($list['inactive']))
 					{
-						$txt .= "Removing {$prefType} prefs ".print_a($list['inactive'], true)."<br />";
+						$txt .= $this->displayArray($list['inactive'], "Removing '{$prefType}' prefs:");
 						$this->manage_prefs('remove', $list['inactive'], $prefType, $plug['plugin_path'], TRUE);
 					}
 					break;
@@ -963,7 +973,7 @@ class e107plugin
 				case 'uninstall':
 					if(is_array($list['all']))
 					{
-						$txt .= "Removing {$prefType} prefs ".print_a($list['all'], true)."<br />";
+						$txt .= $this->displayArray($list['all'], "Removing '{$prefType}' prefs:");
 						$this->manage_prefs('remove', $list['all'], $prefType, $plug['plugin_path'], TRUE);
 					}
 					break;
