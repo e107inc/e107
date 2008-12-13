@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-07 22:45:10 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/languages/English_admin_rss_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2008-12-13 12:34:53 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,6 +34,7 @@ define("RSS_FOR", "Forum");
 define("RSS_DL", "Downloads");
 
 define("RSS_PLUGIN_LAN_1", "RSS");
+define("RSS_PLUGIN_LAN_2", "RSS Feeds from your site");
 
 define("RSS_PLUGIN_LAN_6", "Feed Links");
 define("RSS_PLUGIN_LAN_7", "The rss feed of the news");
@@ -83,12 +84,24 @@ define("RSS_LAN_ADMIN_23", "inactive");
 
 define("RSS_LAN_ADMIN_26", "Check All");
 define("RSS_LAN_ADMIN_27", "Uncheck All");
+define('RSS_LAN_ADMIN_28', 'Nothing changed - not saved');
 
-define("RSS_LAN_ADMIN_31", "rss entries limit updated");
+define("RSS_LAN_ADMIN_31", 'rss entries limits updated');
 
 
 define("RSS_LAN_0", "RSS");
 define("RSS_LAN_2", "@nospam.com");
 define("RSS_LAN_3", "noauthor@nospam.com");
+
+// Admin log messages
+//-------------------
+define('LAN_AL_RSS_01','RSS feed deleted');
+define('LAN_AL_RSS_02','RSS feed created');
+define('LAN_AL_RSS_03','RSS feed updated');
+define('LAN_AL_RSS_04','RSS feed imported');
+define('LAN_AL_RSS_05','RSS limits updated');
+define('LAN_AL_RSS_06','RSS settings updated');
+define('LAN_AL_RSS_07','');
+
 
 ?>

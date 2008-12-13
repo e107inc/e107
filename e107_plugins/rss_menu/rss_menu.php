@@ -11,15 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-13 12:34:53 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
+if (!plugInstalled('rss_menu')) 
+{
+	return '';
+}
 
 global $FILES_DIRECTORY,$pref,$sql;
 $path = e_PLUGIN."rss_menu/";
+@include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
 
 $des = "";
 $topic = "";

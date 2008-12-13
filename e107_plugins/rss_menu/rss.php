@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-11-02 22:29:33 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-13 12:34:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -28,30 +28,36 @@ Plugins should use an e_rss.php file in their plugin folder
 */
 
 require_once("../../class2.php");
+if (!plugInstalled('rss_menu')) 
+{
+	header("Location: ".e_BASE."index.php");
+	exit;
+}
 
 global $tp;
 
 require_once(e_PLUGIN."rss_menu/rss_shortcodes.php");
 require_once(e_HANDLER."userclass_class.php");
 
-if (!is_object($tp->e_bb)) {
+if (!is_object($tp->e_bb)) 
+{
 	require_once(e_HANDLER.'bbcode_handler.php');
 	$tp->e_bb = new e_bbcode;
 }
 
 //get language file
-if (is_readable(e_PLUGIN."rss_menu/languages/".e_LANGUAGE.".php")) {
-	include_once(e_PLUGIN."rss_menu/languages/".e_LANGUAGE.".php");
-} else {
-	include_once(e_PLUGIN."rss_menu/languages/English.php");
-}
+@include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
 
 //get template
-if (is_readable(THEME."rss_template.php")) {
+if (is_readable(THEME."rss_template.php")) 
+{
 	require_once(THEME."rss_template.php");
-	} else {
+} 
+else 
+{
 	require_once(e_PLUGIN."rss_menu/rss_template.php");
 }
+
 
 //query handler
 if (e_QUERY)
