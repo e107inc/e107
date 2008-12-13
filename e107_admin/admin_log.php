@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-12-07 14:22:32 $
+|     $Revision: 1.21 $
+|     $Date: 2008-12-13 17:33:38 $
 |     $Author: e107steved $
 |
 | Preferences:
@@ -274,7 +274,7 @@ $rl_cookiename = $pref['cookie_name']."_rl_admin";
 if (isset($_POST['updatefilters']) || isset($_POST['clearfilters']))
 {	// Need to put the filter values into the cookie
 	if (!isset($_POST['clearfilters']))
-	{	// Only update filter values from S_POST[] if 'clear filters' not active
+	{	// Only update filter values from $_POST[] if 'clear filters' not active
 		$start_time = intval($_POST['starttimedate'] + $_POST['starttimehours']*3600 + $_POST['starttimemins']*60);
 		$start_enabled = isset($_POST['start_enabled']);
 		if (isset($_POST['timelength']))
@@ -286,7 +286,8 @@ if (isset($_POST['updatefilters']) || isset($_POST['clearfilters']))
 			$end_time   = intval($_POST['endtimedate'] + $_POST['endtimehours']*3600 + $_POST['endtimemins']*60);
 		}
 		$end_enabled = isset($_POST['end_enabled']);
-		$user_filter = intval($_POST['roll_user_filter']);
+		$user_filter = trim(varset($_POST['roll_user_filter'],''));
+		if ($user_filter != '') $user_filter = intval($user_filter);
 		$event_filter = $tp->toDB($_POST['roll_event_filter']);
 		$pri_filter_cond = $tp->toDB($_POST['roll_pri_cond']);
 		$pri_filter_val  = $tp->toDB($_POST['roll_pri_val']);
@@ -841,7 +842,7 @@ $sort_fields = array(
 	  if ($filter_cols >= 4) { $text .= '</tr>'; $filter_cols = 0; }
 	}
 
-//	$text .= "<tr><td colspan='4'>Query = {$qry}<br />{$_COOKIE[$rl_cookiename]}</td></tr>";
+//	$text .= "<tr><td colspan='4'>Query = ".$qry.$limit_clause."<br />{$_COOKIE[$rl_cookiename]}</td></tr>";
 	$text .= "
 	<tr>
 	<td colspan='1'  style='text-align:center' class='forumheader3'><input class='button' type='submit' name='clearfilters' value='".RL_LAN_114."' /></td>
