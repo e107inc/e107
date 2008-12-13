@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.1 2008-12-07 21:55:02 e107steved Exp $ -->
+<!-- $Id: plugin.xml,v 1.2 2008-12-13 10:30:24 e107steved Exp $ -->
 <e107Plugin name="LWLANINS_1" version="1.1" compatibility="0.8" installRequired="true" >
 	<author name="jalist, steved" url="http://e107.org" />
 	<description>This plugin will link specified words with a defined link and/or tooltip</description>
 	<folder>linkwords</folder>
-	<logLanguageFile filename="languages/--LAN--.php" />
+	<logLanguageFile filename="languages/--LAN--_admin_linkwords.php" />
 	<administration>
 		<configFile>admin_config.php</configFile>
 		<icon>images/linkwords_32.png</icon>

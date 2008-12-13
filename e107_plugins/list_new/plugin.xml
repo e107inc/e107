@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- $Id: plugin.xml,v 1.1 2008-12-11 22:38:06 e107steved Exp $ -->
+<!-- $Id: plugin.xml,v 1.2 2008-12-13 10:30:24 e107steved Exp $ -->
 
 <e107Plugin name="LIST_PLUGIN_1" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="Eric Vanderfeesten (lisa)" url="http://eindhovenseschool.net" email="lisa@eindhovenseschool.net" />
 	<description>LIST_PLUGIN_2</description>
-	<compatibility>e107v0.7+</compatibility>
 	<folder>list_new</folder>
 	<logLanguageFile filename="languages/--LAN--_admin_list_new.php" />
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
