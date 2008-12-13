@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-07 21:55:01 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-13 18:04:52 $
 |     $Author: e107steved $
 |
 | *utf - flags functions which need utf-8-aware code
@@ -27,6 +27,8 @@ TODO:
 if (!defined('e107_INIT')) { exit; }
 if (!plugInstalled('linkwords')) exit;
 
+define('LW_CACHE_ENABLE', TRUEE);
+define('LW_CACHE_TAG', 'nomd5_linkwords');
 
 class e_tohtml_linkwords
 {
@@ -37,72 +39,96 @@ class e_tohtml_linkwords
 	var $link_list	= array();		// Corresponding list of links to apply
 	var $ext_list	= array();		// Flags to determine 'open in new window' for link
 	var $tip_list 	= array();		// Store for tooltips
+	var $LinkID		= array();		// Unique ID for each linkword
 	var $area_opts	= array();		// Process flags for the various contexts
 	var $block_list = array();		// Array of 'blocked' pages
-	var $LinkID		= array();		// Unique ID for each linkword
 
 	
 	/* constructor */
 	function e_tohtml_linkwords()
 	{
-	  global $pref, $tp;
-	// See whether they should be active on this page - if not, no point doing anything!
-	  if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
+		global $pref, $tp, $e107;
+		// See whether they should be active on this page - if not, no point doing anything!
+		if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
 
-// Now see if disabled on specific pages
-	  $check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
-	  $this->block_list = explode("|",substr(varset($pref['lw_page_visibility'],''),2));    // Knock off the 'show/hide' flag
-	  foreach ($this->block_list as $p)
-	  {
-		if ($p=trim($p))
+		// Now see if disabled on specific pages
+		$check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
+		$this->block_list = explode("|",substr(varset($pref['lw_page_visibility'],''),2));    // Knock off the 'show/hide' flag
+		foreach ($this->block_list as $p)
 		{
-		if(substr($p, -1) == '!')
-		{
-		  $p = substr($p, 0, -1);
-		  if(substr($check_url, strlen($p)*-1) == $p) return;
-		}
-		else 
-		{
-		  if(strpos($check_url, $p) !== FALSE) return;
-		  }
-		}
-	  } 
+			if ($p=trim($p))
+			{
+				if(substr($p, -1) == '!')
+				{
+					$p = substr($p, 0, -1);
+					if(substr($check_url, strlen($p)*-1) == $p) return;
+				}
+				else 
+				{
+					if(strpos($check_url, $p) !== FALSE) return;
+				}
+			}
+		} 
 
-	  // Will probably need linkwords on this page - so get the info
-	  $link_sql = new db;
-	  if($link_sql -> db_Select("linkwords", "*", "linkword_active!=1"))
-	  {
-		$this->lw_enabled = TRUE;
-		  while ($row = $link_sql->db_Fetch())
-		  {
-		    extract($row);
-//		    $lw = strtolower($linkword_word);					// It was trimmed when saved		*utf	
-		    $lw = $tp->uStrToLower($linkword_word);					// It was trimmed when saved		*utf	
-			if ($linkword_active == 2) $linkword_link = '';		// Make sure linkword disabled
-			if ($linkword_active < 2) $linkword_tooltip = '';	// Make sure tooltip disabled
-			$lwID = max($row['linkword_tip_id'], $row['linkword_id']);		// If no specific ID defined, use the DB record ID
-			if (strpos($lw,','))
-			{  // Several words to same link
-			  $lwlist = explode(',',$lw);
-			  foreach ($lwlist as $lw)
-			  {
-		        $this->word_list[] = trim($lw);
-			    $this->link_list[] = $linkword_link;
-			    $this->tip_list[] = $linkword_tooltip;
-			    $this->ext_list[] = $linkword_newwindow;
-				$this->LinkID[] = $lwID;
-			  }
+		// Will probably need linkwords on this page - so get the info
+		if (LW_CACHE_ENABLE && ($temp = $e107->ecache->retrieve_sys(LW_CACHE_TAG)))
+		{
+			$ret = eval($temp);
+			if ($ret)
+			{
+				echo "Error reading linkwords cache: {$ret}<br />";
+				$temp = '';
 			}
 			else
 			{
-				$this->word_list[] = $lw;
-				$this->link_list[] = $linkword_link;
-				$this->tip_list[] = $linkword_tooltip;
-				$this->ext_list[] = $linkword_newwindow;
-				$this->LinkID[] = $lwID;
+				$this->lw_enabled = TRUE;
 			}
-		  }
-	  }
+		}
+		if (!$temp)
+		{	// Either cache disabled, or no info in cache (or error reading/processing cache)
+			$link_sql = new db;
+			if($link_sql -> db_Select("linkwords", "*", "linkword_active!=1"))
+			{
+				$this->lw_enabled = TRUE;
+				while ($row = $link_sql->db_Fetch())
+				{
+					extract($row);
+					$lw = $tp->uStrToLower($linkword_word);					// It was trimmed when saved		*utf	
+					if ($linkword_active == 2) $linkword_link = '';		// Make sure linkword disabled
+					if ($linkword_active < 2) $linkword_tooltip = '';	// Make sure tooltip disabled
+					$lwID = max($row['linkword_tip_id'], $row['linkword_id']);		// If no specific ID defined, use the DB record ID
+					if (strpos($lw,','))
+					{  // Several words to same link
+						$lwlist = explode(',',$lw);
+						foreach ($lwlist as $lw)
+						{
+							$this->word_list[] = trim($lw);
+							$this->link_list[] = $linkword_link;
+							$this->tip_list[] = $linkword_tooltip;
+							$this->ext_list[] = $linkword_newwindow;
+							$this->LinkID[] = $lwID;
+						}
+					}
+					else
+					{
+						$this->word_list[] = $lw;
+						$this->link_list[] = $linkword_link;
+						$this->tip_list[] = $linkword_tooltip;
+						$this->ext_list[] = $linkword_newwindow;
+						$this->LinkID[] = $lwID;
+					}
+				}
+				if (LW_CACHE_ENABLE)
+				{	// Write to file for next time
+					$temp = '';
+					foreach (array('word_list', 'link_list', 'tip_list', 'ext_list', 'LinkID') as $var)
+					{
+						$temp .= '$this->'.$var.'='.var_export($this->$var, TRUE).";\n";
+					}
+					$e107->ecache->set_sys(LW_CACHE_TAG,$temp);
+				}
+			}
+		}
 	  $this->area_opts = $pref['lw_context_visibility'];
 	  $this->utfMode = (strtolower(CHARSET) == 'utf-8') ? 'u' : '';		// Flag to enable utf-8 on regex
 	  $this->lwAjaxEnabled = varset($pref['lw_ajax_enable'],0);

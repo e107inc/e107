@@ -11,23 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.7 $
+|     $Revision: 1.8 $
 |
 | ***** START OF VERSION WHICH ALLOWS TOOLTIPS (also order of forms changed )
 |
-|     $Date: 2008-12-07 21:55:01 $
+|     $Date: 2008-12-13 18:04:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!plugInstalled('linkwords')) header("Location: ".e_BASE."index.php");
-if (!getperms("P")) 
+if (!getperms("P") || !plugInstalled('linkwords')) 
 {
 	header("location:".e_BASE."index.php");
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");
 @include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE."_admin_linkwords.php");
+define('LW_CACHE_TAG', 'nomd5_linkwords');
 
 $lw_context_areas = array(
 			'TITLE' => LWLAN_33,
@@ -69,6 +69,7 @@ if(isset($deltest[LWLAN_17]))
 	{
 		$sql->db_Delete("linkwords", "linkword_id=".$delete_id);
 		$admin_log->log_event('LINKWD_03','ID: '.$delete_id,'');
+		$e107->ecache->clear_sys(LW_CACHE_TAG);
 		$message = LWLAN_19;
 	}
 }
@@ -97,23 +98,24 @@ if (isset($_POST['saveopts_linkword']))
 			'LINKTEXT' => FALSE,
 			'RAWTEXT' => FALSE
 			);
-  foreach ($_POST['lw_visibility_area'] as $can_see)
-  {
-    if (key_exists($can_see,$lw_context_areas))
+	foreach ($_POST['lw_visibility_area'] as $can_see)
 	{
-	  $pref['lw_context_visibility'][$can_see] = TRUE;
+		if (key_exists($can_see,$lw_context_areas))
+		{
+			$pref['lw_context_visibility'][$can_see] = TRUE;
+		}
 	}
-  }
-  // Text area for 'exclude' pages - use same method as for menus
-  $pagelist = explode("\r\n", $_POST['linkword_omit_pages']);
-  for ($i = 0 ; $i < count($pagelist) ; $i++) 
-  {
-	$pagelist[$i] = trim($pagelist[$i]);
-  }
-  $pref['lw_page_visibility'] = '2-'.implode("|", $pagelist);		// '2' for 'hide on specified pages'
-  $pref['lw_ajax_enable'] = isset($_POST['lw_ajax_enable']);
-  save_prefs();
-  $logString = implode(', ',$pref['lw_context_visibility']).'[!br!]'.$pref['lw_page_visibility'].'[!br!]'.$pref['lw_ajax_enable'];
+	// Text area for 'exclude' pages - use same method as for menus
+	$pagelist = explode("\r\n", $_POST['linkword_omit_pages']);
+	for ($i = 0 ; $i < count($pagelist) ; $i++) 
+	{
+		$pagelist[$i] = trim($pagelist[$i]);
+	}
+	$pref['lw_page_visibility'] = '2-'.implode("|", $pagelist);		// '2' for 'hide on specified pages'
+	$pref['lw_ajax_enable'] = isset($_POST['lw_ajax_enable']);
+	save_prefs();
+	$logString = implode(', ',$pref['lw_context_visibility']).'[!br!]'.$pref['lw_page_visibility'].'[!br!]'.$pref['lw_ajax_enable'];
+	$e107->ecache->clear_sys(LW_CACHE_TAG);
 	$admin_log->log_event('LINKWD_04',$logString,'');
 }
 
@@ -160,6 +162,7 @@ if (isset($_POST['submit_linkword']) || isset($_POST['update_linkword']))
 				$message = LWLAN_57;
 			}
 		}
+		$e107->ecache->clear_sys(LW_CACHE_TAG);
 	}
 }
 
