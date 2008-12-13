@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/e_notify.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-13 17:33:44 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 
 if(defined('ADMIN_PAGE') && ADMIN_PAGE === true)
 {
-	include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
+	@include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE."_admin_links_page.php");
 	$config_category = NT_LAN_LP_1;
 	$config_events = array('linksub' => NT_LAN_LP_2);
 }
