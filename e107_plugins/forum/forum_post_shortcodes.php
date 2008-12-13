@@ -29,7 +29,7 @@ return $tp->parseTemplate($THREADTOPIC_REPLY, TRUE, $forum_shortcodes);
 SC_END
 
 SC_BEGIN FORMSTART
-return "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>";
+return "<form enctype='multipart/form-data' method='post' action='".e_SELF.'?'.e_QUERY."' id='dataform'>";
 SC_END
 
 SC_BEGIN FORMEND

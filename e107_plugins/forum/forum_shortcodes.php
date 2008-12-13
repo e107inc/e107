@@ -316,20 +316,25 @@ SC_END
 
 SC_BEGIN LASTEDIT
 global $postInfo, $gen;
+//var_dump($postInfo);
 if ($postInfo['post_edit_datestamp'])
 {
-	return $gen->convert_date($postInfo['thread_edit_datestamp'],'forum');
+	return $gen->convert_date($postInfo['post_edit_datestamp'],'forum');
 }
 SC_END
 
 SC_BEGIN LASTEDITBY
 global $postInfo;
-$e107 = e107::getInstance();
-if ($postInfo['post_edit_datestamp'])
+if(isset($postInfo['edit_name']))
 {
+	if($parm == 'link')
+	{
+		$e107 = e107::getInstance();
+		$url = $e107->url->getUrl('core:user', 'main', 'func=profile&id='.$postInfo['post_edit_user']);
+		return "<a href='{$url}'>{$postInfo['edit_name']}</a>";
+	}
 	return $postInfo['edit_name'];
 }
-return '';
 SC_END
 
 SC_BEGIN POLL

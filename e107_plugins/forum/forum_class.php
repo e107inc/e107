@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-12-11 21:50:18 $
+|     $Revision: 1.25 $
+|     $Date: 2008-12-13 21:52:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,6 +30,8 @@ class e107forum
 		$this->fieldTypes['forum_post']['post_user'] 			= 'int';
 		$this->fieldTypes['forum_post']['post_forum'] 			= 'int';
 		$this->fieldTypes['forum_post']['post_datestamp'] 		= 'int';
+		$this->fieldTypes['forum_post']['post_edit_datestamp']	= 'int';
+		$this->fieldTypes['forum_post']['post_edit_user']		= 'int';
 		$this->fieldTypes['forum_post']['post_thread'] 			= 'int';
 		$this->fieldTypes['forum_post']['post_options'] 		= 'escape';
 		$this->fieldTypes['forum_post']['post_attachments'] 	= 'escape';
@@ -248,10 +250,25 @@ class e107forum
 		return false;
 	}
 
-	function threadUpdate($threadInfo, $inc)
+	function threadUpdate($threadId, $threadInfo)
 	{
 		$e107 = e107::getInstance();
+		$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+		$threadInfo['WHERE'] = 'thread_id = '.(int)$threadId;
+//		var_dump($threadInfo);
+//		exit;
+		$e107->sql->db_Update('forum_thread', $threadInfo);
 		//TODO: Add this
+	}
+
+	function postUpdate($postId, $postInfo)
+	{
+		$e107 = e107::getInstance();
+		$postInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
+		$postInfo['WHERE'] = 'post_id = '.(int)$postId;
+//		var_dump($postInfo);
+//		exit;
+		$e107->sql->db_Update('forum_post', $postInfo);
 	}
 
 	function threadGet($id, $joinForum = true, $uid = USERID)
@@ -431,6 +448,18 @@ class e107forum
 			$tmp['WHERE'] = 'post_id = '.$id;
 			$e107->sql->db_update('forum_post', $tmp);
 		}
+	}
+
+	/**
+	 * Given threadId and postId, determine which number of post in thread the postid is
+	 * 
+	*/
+	function postGetPostNum($threadId, $postId)
+	{
+		$threadId = (int)$threadId;
+		$postId = (int)$postId;
+		$e107 = e107::getInstance();
+		return $e107->sql->db_Count('forum_post', '(*)', "WHERE post_id <= {$postId} AND post_thread = {$threadId} ORDER BY post_id ASC");
 	}
 
 

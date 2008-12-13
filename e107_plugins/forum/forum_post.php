@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2008-12-11 21:50:18 $
+|     $Revision: 1.31 $
+|     $Date: 2008-12-13 21:52:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -69,7 +69,7 @@ switch($action)
 
 }
 
-echo "forumId = $forumId <br />";
+//echo "forumId = $forumId <br />";
 // check if user can post to this forum ...
 if (!$forum->checkPerm($forumId, 'post'))
 {
@@ -322,6 +322,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$poll->submit_poll(2);
 		}
 
+		$e107cache->clear('newforumposts');
 		$threadLink = $e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $threadId));
 		$forumLink = $e107->url->getUrl('forum', 'forum', array('func' => 'view', 'id' => $forumId));
 		if ($pref['forum_redirect'])
@@ -345,16 +346,18 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			}
 
 			echo (isset($_POST['newthread']) ? $FORUMTHREADPOSTED : $FORUMREPLYPOSTED);
-			$e107cache->clear('newforumposts');
 			require_once(FOOTERF);
 			exit;
 		}
 	}
 }
-require_once(HEADERF);
 
 if (isset($_POST['update_thread']))
 {
+//	var_dump($_POST);
+//	var_dump($threadInfo);
+//	var_dump($postInfo);
+//	 exit;
 	if (!$_POST['subject'] || !$_POST['post'])
 	{
 		$error = "<div style='text-align:center'>".LAN_27."</div>";
@@ -363,23 +366,24 @@ if (isset($_POST['update_thread']))
 	{
 		if (!isAuthor())
 		{
+			require_once(HEADERF);
 			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96.'</div>');
 			require_once(FOOTERF);
 			exit;
 		}
 
-		$newvals['thread_edit_datestamp'] = time();
-		$newvals['thread_thread'] = $_POST['post'];
-		$newvals['thread_name'] = $_POST['subject'];
-		$newvals['thread_active'] = (isset($_POST['email_notify'])) ? '99' : '1';	// Always set in case it's changed
-		if (isset($_POST['threadtype']) && MODERATOR)
-		{
-			$newvals['thread_s'] = $_POST['threadtype'];
-		}
-		$forum->thread_update($id, $newvals);
-		$e107cache->clear("newforumposts");
-		$url = e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['head']['thread_id']}.0";
-		echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
+		$postVals['post_edit_datestamp'] = time();
+		$postVals['post_edit_user'] = USERID;
+		$postVals['post_entry'] = $_POST['post'];
+		
+		$threadVals['thread_name'] = $_POST['subject'];
+		
+		$forum->threadUpdate($postInfo['post_thread'], $threadVals);
+		$forum->postUpdate($postInfo['post_id'], $postVals);
+		$e107cache->clear('newforumposts');
+		$url = $e107->url->getUrl('forum', 'thread', "func=post&id={$postInfo['post_id']}");
+		header('location:'.$url);
+		exit;
 	}
 }
 
@@ -387,26 +391,30 @@ if (isset($_POST['update_reply']))
 {
 	if (!$_POST['post'])
 	{
-		$error = "<div style='text-align:center'>".LAN_27."</div>";
+		$error = "<div style='text-align:center'>".LAN_27.'</div>';
 	}
 	else
 	{
 		if (!isAuthor())
 		{
-			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
+			require_once(HEADERF);
+			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96.'</div>');
 			require_once(FOOTERF);
 			exit;
 		}
-		$url = e_PLUGIN."forum/forum_viewtopic.php?{$id}.post";
-		echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
-		$newvals['thread_edit_datestamp'] = time();
-		$newvals['thread_thread'] = $_POST['post'];
-		$forum->thread_update($id, $newvals);
-		$e107cache->clear("newforumposts");
-		$url = e_PLUGIN."forum/forum_viewtopic.php?{$id}.post";
-		echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
+		$postVals['post_edit_datestamp'] = time();
+		$postVals['post_edit_user'] = USERID;
+		$postVals['post_entry'] = $_POST['post'];
+		
+		$forum->postUpdate($postInfo['post_id'], $postVals);
+		$e107cache->clear('newforumposts');
+		$url = $e107->url->getUrl('forum', 'thread', "func=post&id={$postInfo['post_id']}");
+		header('location:'.$url);
+		exit;
 	}
 }
+
+require_once(HEADERF);
 
 if ($error)
 {
@@ -524,7 +532,7 @@ else
 function isAuthor()
 {
 	global $postInfo;
-	print_a($postInfo);
+//	print_a($postInfo);
 	return ((USERID === $postInfo['post_user']) || MODERATOR);
 }
 
