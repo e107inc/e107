@@ -11,18 +11,19 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.9 $
-|    $Date: 2008-11-20 20:35:24 $
+|    $Revision: 1.10 $
+|    $Date: 2008-12-13 16:06:11 $
 |    $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-class linkclass {
+class linkclass 
+{
 
-    function LinkPageDefaultPrefs(){
-
+    function LinkPageDefaultPrefs()
+	{
         $linkspage_pref['link_page_categories'] = "0";
         $linkspage_pref['link_submit'] = "0";
         $linkspage_pref['link_submit_class'] = "0";
@@ -95,11 +96,13 @@ class linkclass {
         return $linkspage_pref;
     }
 
-    function getLinksPagePref(){
+    function getLinksPagePref()
+	{
         global $sql, $eArrayStorage;
 
         $num_rows = $sql -> db_Select("core", "*", "e107_name='links_page' ");
-        if ($num_rows == 0) {
+        if ($num_rows == 0) 
+		{
             $linkspage_pref = $this->LinkPageDefaultPrefs();
             $tmp = $eArrayStorage->WriteArray($linkspage_pref);
             $sql -> db_Insert("core", "'links_page', '{$tmp}' ");
@@ -111,38 +114,54 @@ class linkclass {
         return $linkspage_pref;
     }
 
-    function UpdateLinksPagePref(){
-        global $sql, $eArrayStorage, $tp;
+
+    function UpdateLinksPagePref()
+	{
+        global $sql, $eArrayStorage, $tp, $admin_log;
 
         $num_rows = $sql -> db_Select("core", "*", "e107_name='links_page' ");
-        if ($num_rows == 0) {
-            $sql -> db_Insert("core", "'links_page', '' ");
-        }else{
-            $row = $sql -> db_Fetch();
-
-            //assign new preferences
-            foreach($_POST as $k => $v){
-                if(strpos($k, "link_") === 0){
-                    $linkspage_pref[$k] = $tp->toDB($v);
-                }
-            }
-
-            //create new array of preferences
-            $tmp = $eArrayStorage->WriteArray($linkspage_pref);
-
-            $sql -> db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'links_page' ");
+        if ($num_rows == 0) 
+		{
+            $sql -> db_Insert("core", "'links_page', '' ");	// Create dummy entry if none present
+			$oldPref = array();
         }
+		else
+		{
+            $row = $sql -> db_Fetch(MYSQL_ASSOC);
+			$oldPref = $eArrayStorage->ReadArray($row['e107_value']);
+			unset($row);
+		}
+		$linkspage_pref = array();
+		//assign new preferences
+		foreach($_POST as $k => $v)
+		{
+			if(strpos($k, "link_") === 0)
+			{
+				$linkspage_pref[$k] = $tp->toDB($v);
+			}
+		}
+
+		if ($admin_log->logArrayDiffs($linkspage_pref, $oldPref, 'LINKS_01'))
+		{
+			//create new array of preferences
+			$tmp = $eArrayStorage->WriteArray($linkspage_pref);
+			$sql -> db_Update("core", "`e107_value` = '{$tmp}' WHERE `e107_name` = 'links_page' ");
+		}
         return $linkspage_pref;
     }
 
-	function ShowNextPrev($from='0', $number, $total){
+
+	function ShowNextPrev($from='0', $number, $total)
+	{
 		global $linkspage_pref, $qs, $tp, $link_shortcodes, $LINK_NEXTPREV, $LINK_NP_TABLE, $pref;
 
 		$number = (e_PAGE == 'admin_linkspage_config.php' ? '20' : $number);
-		if($total<=$number){
+		if($total<=$number)
+		{
 			return;
 		}
-		if(e_PAGE == 'admin_linkspage_config.php' || (isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"])){
+		if(e_PAGE == 'admin_linkspage_config.php' || (isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]))
+		{
 			$np_querystring = e_SELF."?[FROM]".(isset($qs[0]) ? ".".$qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 			$parms = $total.",".$number.",".$from.",".$np_querystring."";
 			$LINK_NEXTPREV = $tp->parseTemplate("{NEXTPREV={$parms}}");
@@ -159,7 +178,9 @@ class linkclass {
 		}
 	}
 
-    function setPageTitle(){
+
+    function setPageTitle()
+	{
         global $sql, $qs, $linkspage_pref;
 
         //show all categories
@@ -207,8 +228,8 @@ class linkclass {
 
 
 
-    function parse_link_append($rowl){
-
+    function parse_link_append($rowl)
+	{
         global $tp, $linkspage_pref;
         if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
             $link_open_type = $rowl['link_open'];
@@ -239,7 +260,8 @@ class linkclass {
 
 
 
-    function showLinkSort($mode=''){
+    function showLinkSort($mode='')
+	{
         global $rs, $ns, $qs, $linkspage_pref;
 
         $check = "";
@@ -292,7 +314,9 @@ class linkclass {
         return $sotext;
     }
 
-    function parseOrderCat($orderstring){
+
+    function parseOrderCat($orderstring)
+	{
         if(substr($orderstring,6) == "heading"){
             $orderby        = "link_category_name";
             $orderby2       = "";
@@ -310,7 +334,8 @@ class linkclass {
         return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
     }
 
-    function parseOrderLink($orderstring){
+    function parseOrderLink($orderstring)
+	{
         if(substr($orderstring,6) == "heading"){
             $orderby        = "link_name";
             $orderby2       = "";
@@ -334,7 +359,8 @@ class linkclass {
         return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
     }
 
-    function getOrder($mode=''){
+    function getOrder($mode='')
+	{
         global $qs, $linkspage_pref;
 
         if(isset($qs[0]) && substr($qs[0],0,5) == "order"){
@@ -370,12 +396,14 @@ class linkclass {
         return $order;
     }
 
-    function show_message($message, $caption='') {
+    function show_message($message, $caption='') 
+	{
         global $ns;
         $ns->tablerender($caption, "<div style='text-align:center'><b>".$message."</b></div>");
     }
 
-    function uploadLinkIcon(){
+    function uploadLinkIcon()
+	{
         global $ns, $pref;
         $pref['upload_storagetype'] = "1";
         require_once(e_HANDLER."upload_handler.php");
@@ -383,9 +411,11 @@ class linkclass {
         $uploaded = file_upload($pathicon);
 
         $icon = "";
-        if($uploaded) {
+        if($uploaded) 
+		{
             $icon = $uploaded[0]['name'];
-            if($_POST['link_resize_value']){
+            if($_POST['link_resize_value'])
+			{
                 require_once(e_HANDLER."resize_handler.php");
                 resize_image($pathicon.$icon, $pathicon.$icon, $_POST['link_resize_value'], "nocopy");
             }
@@ -394,7 +424,8 @@ class linkclass {
         $this -> show_message($msg);
     }
 
-    function uploadCatLinkIcon(){
+    function uploadCatLinkIcon()
+	{
         global $ns, $pref;
         $pref['upload_storagetype'] = "1";
         require_once(e_HANDLER."upload_handler.php");
@@ -402,9 +433,11 @@ class linkclass {
         $uploaded = file_upload($pathicon);
 
         $icon = "";
-        if($uploaded) {
+        if($uploaded) 
+		{
             $icon = $uploaded[0]['name'];
-            if($_POST['link_cat_resize_value']){
+            if($_POST['link_cat_resize_value'])
+			{
                 require_once(e_HANDLER."resize_handler.php");
                 resize_image($pathicon.$icon, $pathicon.$icon, $_POST['link_cat_resize_value'], "nocopy");
             }
@@ -413,135 +446,190 @@ class linkclass {
         $this -> show_message($msg);
     }
 
-    function dbCategoryCreate() {
-        global $sql, $tp;
+
+    function dbCategoryCreate() 
+	{
+        global $sql, $tp, $admin_log;
         $link_t = $sql->db_Count("links_page_cat", "(*)");
-        $sql->db_Insert("links_page_cat", " '0', '".$tp -> toDB($_POST['link_category_name'])."', '".$tp -> toDB($_POST['link_category_description'])."', '".$tp -> toDB($_POST['link_category_icon'])."', '".($link_t+1)."', '".$tp -> toDB($_POST['link_category_class'])."', '".time()."' ");
+        $linkData = array();
+		$linkData['link_category_name'] = $tp -> toDB($_POST['link_category_name']);
+		$linkData['link_category_description'] = $tp -> toDB($_POST['link_category_description']);
+		$linkData['link_category_icon'] = $tp -> toDB($_POST['link_category_icon']);
+		$linkData['link_category_order'] = $link_t+1;
+		$linkData['link_category_class'] = $tp -> toDB($_POST['link_category_class']);
+		$linkData['link_category_datestamp'] = time();
+        $sql->db_Insert("links_page_cat", $linkData);
+		$admin_log->logArrayAll('LINKS_05',$linkData);
         $this->show_message(LCLAN_ADMIN_4);
     }
-    function dbCategoryUpdate() {
+
+
+    function dbCategoryUpdate() 
+	{
+        global $sql, $tp, $admin_log;
         global $sql, $tp;
         $time = ($_POST['update_datestamp'] ? time() : ($_POST['link_category_datestamp'] != "0" ? $_POST['link_category_datestamp'] : time()) );
-        $sql->db_Update("links_page_cat", "link_category_name ='".$tp -> toDB($_POST['link_category_name'])."', link_category_description='".$tp -> toDB($_POST['link_category_description'])."', link_category_icon='".$tp -> toDB($_POST['link_category_icon'])."', link_category_order='".$tp -> toDB($_POST['link_category_order'])."', link_category_class='".$tp -> toDB($_POST['link_category_class'])."', link_category_datestamp='".intval($time)."'   WHERE link_category_id='".intval($_POST['link_category_id'])."'");
+        $linkData = array();
+		$linkData['link_category_name'] = $tp -> toDB($_POST['link_category_name']);
+		$linkData['link_category_description'] = $tp -> toDB($_POST['link_category_description']);
+		$linkData['link_category_icon'] = $tp -> toDB($_POST['link_category_icon']);
+		$linkData['link_category_order'] = $link_t+1;
+		$linkData['link_category_class'] = $tp -> toDB($_POST['link_category_class']);
+		$linkData['link_category_datestamp'] = $time;
+        $sql->db_UpdateArray("links_page_cat", $linkData," WHERE link_category_id='".intval($_POST['link_category_id'])."'");
+		$admin_log->logArrayAll('LINKS_06',$linkData);
         $this->show_message(LCLAN_ADMIN_5);
     }
 
-    function dbOrderUpdate($order) {
-        global $sql;
-        foreach ($order as $order_id) {
+
+    function dbOrderUpdate($order) 
+	{
+        global $sql, $admin_log;
+        foreach ($order as $order_id) 
+		{
             $tmp = explode(".", $order_id);
-        $sql->db_Update("links_page", "link_order=".intval($tmp[1])." WHERE link_id=".intval($tmp[0]));
+			$sql->db_Update("links_page", "link_order=".intval($tmp[1])." WHERE link_id=".intval($tmp[0]));
         }
+		$admin_log->logArrayAll('LINKS_07',$order);
         $this->show_message(LCLAN_ADMIN_9);
     }
 
-    function dbOrderCatUpdate($order) {
-        global $sql;
-        foreach ($order as $order_id) {
+
+    function dbOrderCatUpdate($order) 
+	{
+        global $sql, $admin_log;
+        foreach ($order as $order_id) 
+		{
             $tmp = explode(".", $order_id);
             $sql->db_Update("links_page_cat", "link_category_order=".intval($tmp[1])." WHERE link_category_id=".intval($tmp[0]));
         }
+		$admin_log->logArrayAll('LINKS_08',$order);
         $this->show_message(LCLAN_ADMIN_9);
     }
 
-    function dbOrderUpdateInc($inc) {
-        global $sql;
+
+    function dbOrderUpdateInc($inc) 
+	{
+        global $sql, $admin_log;
         $tmp = explode(".", $inc);
         $linkid = intval($tmp[0]);
         $link_order = intval($tmp[1]);
-        $location = $tmp[2];
-        if(isset($location)){
-            $location = intval($location);
-            $sql->db_Update("links_page", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location'");
-            $sql->db_Update("links_page", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location'");
-        }else{
-            $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_order='".($link_order-1)."' ");
-            $sql->db_Update("links_page_cat", "link_category_order=link_category_order-1 WHERE link_category_id='$linkid' ");
+        if(isset($tmp[2]))
+		{
+            $location = intval($tmp[2]);
+            $sql->db_Update("links_page", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category=".$location);
+            $sql->db_Update("links_page", "link_order=link_order-1 WHERE link_id='{$linkid}' AND link_category=".$location);
+			$admin_log->log_event('LINKS_09','ID: '.$location.' -inc- '.$link_order,E_LOG_INFORMATIVE,'');
+        }
+		else
+		{
+            $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_order=".($link_order-1));
+            $sql->db_Update("links_page_cat", "link_category_order=link_category_order-1 WHERE link_category_id=".$linkid);
+			$admin_log->log_event('LINKS_10','ID: '.$linkid.' -inc- '.$link_order,E_LOG_INFORMATIVE,'');
         }
     }
 
-    function dbOrderUpdateDec($dec) {
-        global $sql;
+    function dbOrderUpdateDec($dec) 
+	{
+        global $sql, $admin_log;
         $tmp = explode(".", $dec);
         $linkid = intval($tmp[0]);
         $link_order = intval($tmp[1]);
-        $location = $tmp[2];
-        if(isset($location)){
-            $location = intval($location);
-            $sql->db_Update("links_page", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location'");
-            $sql->db_Update("links_page", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location'");
-        }else{
+        if(isset($tmp[2]))
+		{
+            $location = intval($tmp[2]);
+            $sql->db_Update("links_page", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category=".$location);
+            $sql->db_Update("links_page", "link_order=link_order+1 WHERE link_id='{$linkid}' AND link_category=".$location);
+			$admin_log->log_event('LINKS_11','ID: '.$location.' -dec- '.$link_order,E_LOG_INFORMATIVE,'');
+        }
+		else
+		{
             $sql->db_Update("links_page_cat", "link_category_order=link_category_order-1 WHERE link_category_order='".($link_order+1)."' ");
-            $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_id='$linkid' ");
+            $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_id=".$linkid);
+			$admin_log->log_event('LINKS_12','ID: '.$linkid.' -dec- '.$link_order,E_LOG_INFORMATIVE,'');
         }
     }
+
 
 	// Create a new link. If $mode == 'submit', link has to go through the approval process; else its admin entry
     function dbLinkCreate($mode='') 
 	{
-        global $ns, $tp, $qs, $sql, $e107cache, $e_event, $linkspage_pref;
+        global $ns, $tp, $qs, $sql, $e107cache, $e_event, $linkspage_pref, $admin_log;
 
-        $link_name          = $tp->toDB($_POST['link_name']);
-        $link_url           = $tp->toDB($_POST['link_url']);
-        $link_description   = $tp->toDB($_POST['link_description']);
-        $link_button        = $tp->toDB($_POST['link_but']);
+		$edata_ls = array(
+			'link_category' 	=> intval($_POST['cat_id']),
+			'link_name'			=> $tp->toDB($_POST['link_name']), 
+			'link_url' 			=> $tp->toDB($_POST['link_url']), 
+			'link_description' 	=> $tp->toDB($_POST['link_description']), 
+			'link_button' 		=> $tp->toDB($_POST['link_but'])
+			);
 
-		if (!$link_name || !$link_url || !$link_description) 
+		if (!$edata_ls['link_name'] || !$edata_ls['link_url'] || !$edata_ls['link_description']) 
 		{
-		  message_handler("ALERT", 5);
-		  return;
+			message_handler("ALERT", 5);
+			return;
 		} 
 
-        if ($link_url && !strstr($link_url, "http")) 
+        if ($edata_ls['link_url'] && !strstr($edata_ls['link_url'], "http")) 
 		{
-          $link_url = "http://".$link_url;
+			$edata_ls['link_url'] = "http://".$edata_ls['link_url'];
         }
 
         //create link, submit area, tmp table
 		if(isset($mode) && $mode == "submit")
 		{
-		  $username           = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
+			$edata_ls['username'] = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 
-		  $submitted_link     = intval($_POST['cat_id'])."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
-		  $sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
+			$submitted_link     = implode('^', $edata_ls);
+			$sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
 
-		  $edata_ls = array("link_category" => $_POST['cat_id'], "link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
-		  $e_event->trigger("linksub", $edata_ls);
+			$edata_ls['submitted_link'] = $submitted_link;
+			$e_event->trigger("linksub", $edata_ls);
 		  //header("location:".e_SELF."?s");
-		  js_location(e_SELF."?s");
+			js_location(e_SELF."?s");
         }
 		else
-		{
+		{	// Admin-entered link
             $link_t = $sql->db_Count("links_page", "(*)", "WHERE link_category='".intval($_POST['cat_id'])."'");
             $time   = ($_POST['update_datestamp'] ? time() : ($_POST['link_datestamp'] != "0" ? $_POST['link_datestamp'] : time()) );
 
+			$edata_ls['link_open'] = intval($_POST['linkopentype']);
+			$edata_ls['link_class'] =intval(varset($_POST['link_class']));
+            $edata_ls['link_author'] = USERID;		// Default
             //update link
-			if (is_numeric($qs[2]) && $qs[1] != "sn") {
-				$link_class = $_POST['link_class'];
-				if($qs[1] == "manage"){
-                    $link_author = USERID;
-                }else{
-                    $link_author = ($_POST['link_author'] && $_POST['link_author']!='' ? $tp -> toDB($_POST['link_author']) : USERID);
+			if (is_numeric($qs[2]) && $qs[1] != "sn") 
+			{
+				if($qs[1]!== "manage")
+				{
+                    $edata_ls['link_author'] = ($_POST['link_author'] && $_POST['link_author']!='' ? $tp -> toDB($_POST['link_author']) : USERID);
                 }
 
-                $sql->db_Update("links_page", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".intval($_POST['cat_id'])."', link_open='".intval($_POST['linkopentype'])."', link_class='".intval($link_class)."', link_datestamp='".intval($time)."', link_author='".$link_author."' WHERE link_id='".intval($qs[2])."'");
+				$edata_ls['link_datestamp'] = $time;
+                $sql->db_UpdateArray("links_page",   $edata_ls, " WHERE link_id='".intval($qs[2])."'");
+				$admin_log->logArrayAll('LINKS_14',$edata_ls);
                 $e107cache->clear("sitelinks");
                 $this->show_message(LCLAN_ADMIN_3);
             //create link
-			} else {
-
-                $sql->db_Insert("links_page", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".intval($_POST['cat_id'])."', '".($link_t+1)."', '0', '".intval($_POST['linkopentype'])."', '".intval($_POST['link_class'])."', '".time()."', '".USERID."' ");
+			} 
+			else 
+			{
+				$edata_ls['link_datestamp'] = time();
+				$edata_ls['link_order'] = $link_t+1;
+                $sql->db_Insert("links_page", $edata_ls);
+				$admin_log->logArrayAll('LINKS_13',$edata_ls);
                 $e107cache->clear("sitelinks");
                 $this->show_message(LCLAN_ADMIN_2);
             }
             //delete from tmp table after approval
-			if (is_numeric($qs[2]) && $qs[1] == "sn") {
-                $sql->db_Delete("tmp", "tmp_time='".intval($qs[2])."' ");
+			if (is_numeric($qs[2]) && $qs[1] == "sn") 
+			{
+                $sql->db_Delete("tmp", "tmp_time=".intval($qs[2]));
             }
         }
     }
 
-    function show_link_create() {
+    function show_link_create() 
+	{
         global $sql, $rs, $qs, $ns, $fl, $linkspage_pref;
 
         $row['link_category']       = "";
@@ -553,13 +641,16 @@ class linkclass {
         $row['link_class']          = "";
         $link_resize_value          = (isset($linkspage_pref['link_resize_value']) && $linkspage_pref['link_resize_value'] ? $linkspage_pref['link_resize_value'] : "100");
 
-        if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) {
-            if ($sql->db_Select("links_page", "*", "link_id='".intval($qs[2])."' ")) {
+        if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) 
+		{
+            if ($sql->db_Select("links_page", "*", "link_id='".intval($qs[2])."' ")) 
+			{
                 $row = $sql->db_Fetch();
             }
         }
 
-        if (isset($qs[1]) && $qs[1] == 'sn') {
+        if (isset($qs[1]) && $qs[1] == 'sn') 
+		{
             if ($sql->db_Select("tmp", "*", "tmp_time='".intval($qs[2])."'")) {
                 $row = $sql->db_Fetch();
                 $submitted                  = explode("^", $row['tmp_info']);
@@ -1433,7 +1524,8 @@ class linkclass {
         $ns->tablerender(LCLAN_OPT_2, $text);
     }
 
-    function pref_submit() {
+    function pref_submit() 
+	{
         global $rs;
         $text = "
         <tr>

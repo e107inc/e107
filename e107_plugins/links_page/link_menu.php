@@ -1,5 +1,10 @@
 <?php
+
 if (!defined('e107_INIT')) { exit; }
+if (!plugInstalled('links_page')) 
+{
+	return '';
+}
 
 unset($text);
 require_once(e_PLUGIN.'links_page/link_class.php');
@@ -8,8 +13,7 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 global $tp;
 
-$lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");
+@include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 
 $bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' style='border:0;' />";
 global $linkspage_pref;
@@ -18,9 +22,10 @@ $linkspage_pref = $lc -> getLinksPagePref();
 //navigator -------------------------
 $mains = "";
 $text = "";
-$baseurl = e_PLUGIN."links_page/links.php";
+$baseurl = e_PLUGIN_ABS."links_page/links.php";
 if(isset($linkspage_pref['link_menu_navigator_frontpage']) && $linkspage_pref['link_menu_navigator_frontpage']){
-	if(isset($linkspage_pref['link_menu_navigator_rendertype']) && $linkspage_pref['link_menu_navigator_rendertype'] == "1"){
+	if(isset($linkspage_pref['link_menu_navigator_rendertype']) && $linkspage_pref['link_menu_navigator_rendertype'] == "1")
+	{
 		$mains .= $rs -> form_option(LAN_LINKS_14, "0", $baseurl, "");
 	}else{
 		$mains .= $bullet." <a href='".$baseurl."'>".LAN_LINKS_14."</a><br />";

@@ -3,16 +3,16 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.5 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/languages/English_admin_links_page.php,v $
+|     $Revision: 1.1 $
 |     $Date: 2008-12-13 16:06:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
-define("LCLAN_USERPROFILE_1", ">> view all links");
-define("LCLAN_USERPROFILE_2", "links: {total} links found");
-/*
+//define("LCLAN_USERPROFILE_1", ">> view all links");
+//define("LCLAN_USERPROFILE_2", "links: {total} links found");
+
 define("LCLAN_PLUGIN_LAN_1", "Links Page");
 define("LCLAN_PLUGIN_LAN_2", "Links Page For Displaying External Web Links");
 define("LCLAN_PLUGIN_LAN_3", "Configure Links Page");
@@ -107,9 +107,8 @@ define("LCLAN_OPT_64", "only links with a rating larger then the given value are
 define("LCLAN_OPT_65", "show empty categories");
 define("LCLAN_OPT_66", "link to each category");
 define("LCLAN_OPT_67", "link to all links");
-*/
 define("LCLAN_OPT_68", "view all links");
-/*
+
 define("LCLAN_OPT_69", "rendertype navigator links");
 define("LCLAN_OPT_70", "show category links");
 define("LCLAN_OPT_71", "rendertype category links");
@@ -145,6 +144,7 @@ define("LCLAN_ADMIN_12", "Link Category");
 define("LCLAN_ADMIN_13", "Submitted link deleted");
 define("LCLAN_ADMIN_14", "Links");
 define("LCLAN_ADMIN_15", "This category still contains links, please (re)move them first");
+define('LCLAN_ADMIN_16', 'Nothing changed - not updated');
 
 define("LCLAN_SL_1", "Submitted Links");
 define("LCLAN_SL_2", "No submitted links");
@@ -261,8 +261,7 @@ define("LAN_LINKS_MANAGER_6", "");
 define("LAN_LINKS_MANAGER_7", "");
 define("LAN_LINKS_MANAGER_8", "");
 define("LAN_LINKS_MANAGER_9", "");
-*/
-
+/*
 define("LAN_LINKS_1", "Total links");
 define("LAN_LINKS_2", "Total links activated");
 define("LAN_LINKS_3", "Anonymous");
@@ -315,7 +314,28 @@ define("LAN_LINKS_49", "");
 define("LAN_LINKS_50", "You do not have permission to submit links at present");
 
 define('LAN_LINKS_SCH_1','Posted in reply to link');
-/*
+*/
+
+// Admin log texts
+//----------------
+define('LAN_AL_LINKS_01', 'Links page preferences changed');
+define('LAN_AL_LINKS_02', 'Link deleted');
+define('LAN_AL_LINKS_03', 'Link category deleted');
+define('LAN_AL_LINKS_04', 'Submitted link deleted');
+define('LAN_AL_LINKS_05', 'Link category added');
+define('LAN_AL_LINKS_06', 'Link category updated');
+define('LAN_AL_LINKS_07', 'Link order updated');
+define('LAN_AL_LINKS_08', 'Link Category order updated');
+define('LAN_AL_LINKS_09', 'Link: move up');
+define('LAN_AL_LINKS_10', 'Category: move up');
+define('LAN_AL_LINKS_11', 'Link: move down');
+define('LAN_AL_LINKS_12', 'Category: move down');
+define('LAN_AL_LINKS_13', 'Link created');
+define('LAN_AL_LINKS_14', 'Link updated');
+define('LAN_AL_LINKS_15', '');
+define('LAN_AL_LINKS_16', '');
+
+
 define("LAN_ADMIN_HELP_0", "linkspage help area");
 
 define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
@@ -362,5 +382,4 @@ define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selecte
 
 define("LAN_ADMIN_HELP_9", "<i>the edit link page allows you to edit an existing link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
 define("LAN_ADMIN_HELP_10", "<i>the post submitted link page allows you to add a submitted link to the existing links</i><br /><br />A small submitted text is added into the description field.<br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
-*/
 ?>
