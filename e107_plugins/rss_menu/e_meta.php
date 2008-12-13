@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/e_meta.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-06 20:23:13 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-13 12:34:53 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,9 +22,11 @@ global $tp,$PLUGINS_DIRECTORY;
 
 	if($sql->db_Select("rss", "*", "rss_class='0' AND rss_limit>0 ORDER BY rss_name"))
 	{
-   		while($row=$sql->db_Fetch()){
+   		while($row=$sql->db_Fetch())
+		{
 	  		//wildcard topic_id's should not be listed
-	   		if(strpos($row['rss_url'], "*")===FALSE){
+	   		if(strpos($row['rss_url'], "*")===FALSE)
+			{
 		  		$url = SITEURL.$PLUGINS_DIRECTORY."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants, no_hook, emotes_off').".2";
 				$url .= ($row['rss_topicid']) ? ".".$row['rss_topicid'] : "";
 		  		$name = $tp->toHTML($row['rss_name'], TRUE, 'no_hook, emotes_off');
