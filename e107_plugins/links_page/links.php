@@ -11,12 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-11-18 22:03:32 $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-13 16:06:11 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
+if (!plugInstalled('links_page')) 
+{
+	header("location:".e_BASE."index.php");
+	exit;
+}
 
 require_once(e_HANDLER."rate_class.php");
 $rater = new rater;
@@ -42,28 +47,32 @@ $deltest = array_flip($_POST);
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);
 
-	if(is_numeric($qs[0])){
+	if(is_numeric($qs[0]))
+	{
 		$from = array_shift($qs);
-	}else{
+	}
+	else
+	{
 		$from = "0";
 	}
 }
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
-	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
-	} else {
-	include_once(e_PLUGIN."links_page/languages/English.php");
-}
+@include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
+
 $lc -> setPageTitle();
 
 //submit comment
-if (isset($_POST['commentsubmit'])) {
-	if (!$sql->db_Select("links_page", "link_id", "link_id = '".intval($qs[1])."' ")) {
+if (isset($_POST['commentsubmit'])) 
+{
+	if (!$sql->db_Select("links_page", "link_id", "link_id = '".intval($qs[1])."' ")) 
+	{
 		header("location:".e_BASE."index.php");
 		exit;
-	} else {
+	} 
+	else 
+	{
 		$row = $sql->db_Fetch();
-		if ($row[0] && (ANON === TRUE || USER === TRUE)) {
-
+		if ($row[0] && (ANON === TRUE || USER === TRUE)) 
+		{
 			$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "links_page", $qs[1], $pid, $_POST['subject']);
 			$e107cache->clear("comment.links_page.{$qs[1]}");
 		}
@@ -85,50 +94,71 @@ if (isset($qs[0]) && $qs[0] == "view" && isset($qs[1]) && is_numeric($qs[1]))
 require_once(HEADERF);
 
 
-if (is_readable(THEME."links_template.php")) {
+if (is_readable(THEME."links_template.php")) 
+{
 	require_once(THEME."links_template.php");
-	} else {
+} 
+else 
+{
 	require_once(e_PLUGIN."links_page/links_template.php");
 }
 
 //submit / manage link
-if (isset($_POST['add_link'])) {
+if (isset($_POST['add_link'])) 
+{
 	if($qs[0] == "submit"){
-		if(check_class($linkspage_pref['link_submit_class'])){
-			if(isset($linkspage_pref['link_submit_directpost']) && $linkspage_pref['link_submit_directpost']){
+		if(check_class($linkspage_pref['link_submit_class']))
+		{
+			if(isset($linkspage_pref['link_submit_directpost']) && $linkspage_pref['link_submit_directpost'])
+			{
 				$lc -> dbLinkCreate();
-			}else{
+			}
+			else
+			{
 				$lc -> dbLinkCreate("submit");
 			}
-		}else{
+		}
+		else
+		{
 			js_location(e_SELF);
 		}
 	}
-	if($qs[0] == "manage"){
-		if(check_class($linkspage_pref['link_manager_class'])){
-			
+	if($qs[0] == "manage")
+	{
+		if(check_class($linkspage_pref['link_manager_class']))
+		{
 			$lc->verify_link_manage($qs[2]);
 			
-			if(isset($linkspage_pref['link_directpost']) && $linkspage_pref['link_directpost']){
+			if(isset($linkspage_pref['link_directpost']) && $linkspage_pref['link_directpost'])
+			{
 				$lc -> dbLinkCreate();
-			}else{
+			}
+			else
+			{
 				$lc -> dbLinkCreate("submit");
 			}
-		}else{
+		}
+		else
+		{
 			js_location(e_SELF);
 		}
 	}
 }
+
 //message submitted link
-if(isset($qs[0]) && $qs[0] == "s"){
+if(isset($qs[0]) && $qs[0] == "s")
+{
 	$lc->show_message(LAN_LINKS_29, LAN_LINKS_28);
 }
 $qsorder = FALSE;
-if(isset($qs[0]) && substr($qs[0],0,5) == "order"){
+if(isset($qs[0]) && substr($qs[0],0,5) == "order")
+{
 	$qsorder = TRUE;
 }
+
 //show all categories
-if((!isset($qs[0]) || $qsorder) && $linkspage_pref['link_page_categories']){
+if((!isset($qs[0]) || $qsorder) && $linkspage_pref['link_page_categories'])
+{
   	echo displayNavigator('cat');
 	displayCategory();
 }
