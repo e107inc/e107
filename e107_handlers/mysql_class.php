@@ -9,12 +9,31 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.33 $
- * $Date: 2008-12-10 16:59:19 $
- * $Author: secretr $
+ * $Revision: 1.34 $
+ * $Date: 2008-12-13 22:35:13 $
+ * $Author: mcfly_e107 $
 */
 
-if (!defined('e107_INIT')) { exit; }
+if(defined('MYSQL_LIGHT'))
+{
+	class dummyTraffic {
+		function Bump() { return; }
+		function BumpWho() { return; }
+		function TimeDelta() { return; }
+	}
+	$eTraffic = new dummyTraffic;
+	define('E107_DEBUG_LEVEL', 0);
+	define('e_QUERY', '');
+	$path = (MYSQL_LIGHT !== true ? MYSQL_LIGHT : '');
+	require_once($path.'e107_config.php');
+	define('MPREFIX', $mySQLprefix);
+	$sql = new db;
+	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+}
+else
+{
+	if (!defined('e107_INIT')) { exit; }
+}
 
 $db_time = 0.0;				// Global total time spent in all db object queries
 $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
@@ -25,8 +44,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.33 $
-* @author $Author: secretr $
+* @version $Revision: 1.34 $
+* @author $Author: mcfly_e107 $
 */
 class db {
 
