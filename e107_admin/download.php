@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-12-06 15:48:16 $
+|     $Revision: 1.16 $
+|     $Date: 2008-12-14 10:38:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1682,7 +1682,7 @@ class download
 
 	function create_category($sub_action, $id) 
 	{
-		global $sql, $tp;
+		global $sql, $tp, $admin_log;
 		$download_category_name = $tp->toDB($_POST['download_category_name']);
 		$download_category_description = $tp->toDB($_POST['download_category_description']);
 	  	$download_category_icon = $tp->toDB($_POST['download_category_icon']);
