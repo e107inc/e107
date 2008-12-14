@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2008-09-23 19:31:36 $
-|     $Author: e107steved $
+|     $Revision: 1.105 $
+|     $Date: 2008-12-14 03:52:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -866,15 +866,32 @@ class download
 			$text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
 		}
 
+		if($sub_action == 'edit')
+		{
+			$b_sel = "selected='selected'";
+			$kb_sel = '';
+		}
+		else
+		{
+			$kb_sel = "selected='selected'";
+			$b_sel = '';
+		}
+			
 		$text .= "</select></div>
             <span style='padding-top:6px;cursor:pointer;text-decoration:underline' onclick='expandit(this)' title='".DOWLAN_14."'>".DOWLAN_149."</span>
 			<div id='use_ext' style='padding-top:6px;{$dt}'>
            URL:&nbsp;
 
 			<input class='tbox' type='text' name='download_url_external' size='70' value='{$download_url_external}' maxlength='150' />
-			&nbsp;&nbsp;&nbsp;".DOWLAN_66."
-			<input class='tbox' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10' />
-           </div>
+			<br />".DOWLAN_66."
+			<input class='tbox' type='text' name='download_filesize_external' size='12' value='{$download_filesize}' maxlength='10' />
+      <select class='tbox' name='download_filesize_unit'>
+      <option value='B'{$b_sel}>B</option>
+      <option value='KB'{$kb_sel}>KB</option>
+      <option value='MB'>MB</option>
+      <option value='GB'>GB</option>
+      <option value='TB'>TB</option>
+      </div>
 
 			</td>
 			</tr>
@@ -1158,6 +1175,32 @@ class download
 
 // -----------------------------------------------------------------------------
 
+	function calc_filesize($size, $unit)
+	{
+		switch($unit)
+		{
+			case 'B' : 
+				return $size;
+				break;
+
+			case 'KB' : 
+				return $size * 1024;
+				break;
+			
+			case 'MB' : 
+				return $size * 1024 * 1024;
+				break;
+			
+			case 'GB' : 
+				return $size * 1024 * 1024 * 1024;
+				break;
+
+			case 'TB' : 
+				return $size * 1024 * 1024 * 1024 * 1024;
+				break;
+		}
+		
+	}
 
 
 	function submit_download($sub_action, $id) 
@@ -1175,14 +1218,14 @@ class download
 		if ($_POST['download_url_external'] && $_POST['download_url'] == '')
 		{
 			$durl = $_POST['download_url_external'];
-			$filesize = $_POST['download_filesize_external'];
+			$filesize = $this->calc_filesize($_POST['download_filesize_external'], $_POST['download_filesize_unit']);
 		}
 		else
 		{
 			$durl = $_POST['download_url'];
 			if($_POST['download_filesize_external'])
 			{
-				$filesize = $_POST['download_filesize_external'];
+				$filesize = $this->calc_filesize($_POST['download_filesize_external'], $_POST['download_filesize_unit']);
 			}
 			else
 			{
