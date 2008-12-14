@@ -9,8 +9,8 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.8 $
-* $Date: 2008-12-12 03:36:39 $
+* $Revision: 1.9 $
+* $Date: 2008-12-14 03:18:45 $
 * $Author: mcfly_e107 $
 *
 */
@@ -33,20 +33,6 @@ if (!e_QUERY)
 $view = 25;
 $threadFrom = (isset($_REQUEST['p']) ? $_REQUEST['p'] * $view : 0);
 
-/*
-else
-{
-	$tmp = explode('.', e_QUERY);
-	$forum_id = (int)$tmp[0];
-	$thread_from = (isset($tmp[1]) ? (int)$tmp[1] : 0);
-}
-
-if(is_numeric(e_MENU))
-{
-	$thread_from = (intval(e_MENU)-1)*$view;
-}
-*/
-
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
@@ -67,6 +53,8 @@ if (!$forum->checkPerm($forumId, 'view'))
 }
 
 $forumInfo = $forum->forum_get($forumId);
+
+//var_dump($forumInfo);
 
 if (!$FORUM_VIEW_START)
 {
@@ -239,11 +227,6 @@ if(is_array($sub_list))
 
 if (count($threadList) )
 {
-//	foreach($threadList as $thread_info)
-//	{
-//		$idArray[] = $thread_info['thread_id'];
-//	}
-//	$inList = '('.implode(',', $idArray).')';
 	foreach($threadList as $thread_info)
 	{
 		if($thread_info['thread_options'])
@@ -294,7 +277,6 @@ else
 	$forum_view_forum .= "<tr><td class='forumheader' colspan='6'>".LAN_58."</td></tr>";
 }
 
-//$sql->db_Select('forum', '*', "forum_parent !=0 AND forum_class != '255' ");
 $FORUMJUMP = forumjump();
 $TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_02.'</a>';
 
@@ -428,13 +410,15 @@ function parse_thread($thread_info)
 			for($a = 0; $a <= 2; $a++)
 			{
 				$PAGES .= $PAGES ? ' ' : '';
-				$PAGES .= "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$a}");
+				$PAGES .= "<a href='{$url}'>".($a+1).'</a>';
 			}
 			$PAGES .= ' ... ';
 			for($a = $pages-3; $a <= $pages-1; $a++)
 			{
-				$PAGES .= $PAGES ? " " : "";
-				$PAGES .= "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
+				$PAGES .= $PAGES ? ' ' : '';
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$a}");
+				$PAGES .= "<a href='{$url}'>".($a+1).'</a>';
 			}
 		}
 		else
@@ -442,7 +426,8 @@ function parse_thread($thread_info)
 			for($a = 0; $a <= ($pages-1); $a++)
 			{
 				$PAGES .= $PAGES ? ' ' : '';
-				$PAGES .= "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$thread_info['thread_id']}&page={$a}");
+				$PAGES .= "<a href='{$url}'>".($a+1).'</a>';
 			}
 		}
 		$PAGES = LAN_316.' [&nbsp;'.$PAGES.'&nbsp;]';

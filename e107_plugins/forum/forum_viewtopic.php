@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-12-13 21:52:18 $
+|     $Revision: 1.15 $
+|     $Date: 2008-12-14 03:18:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -59,7 +59,7 @@ if(isset($_POST['track_toggle']))
 if(isset($_GET['f']))
 {
 	$thread->processFunction();
-	$thread->init();
+	if($_GET['f'] != 'last') { $thread->init(); }
 }
 
 require_once (e_PLUGIN . 'forum/forum_shortcodes.php');
@@ -84,7 +84,7 @@ if (MODERATOR && isset($_POST['mod']))
 	$thread->threadInfo = $forum->threadGet($thread->threadId);
 }
 
-$postList = $forum->PostGet($thread->threadId, ($thread->page-1) * $thread->perPage, $thread->perPage);
+$postList = $forum->PostGet($thread->threadId, $thread->page * $thread->perPage, $thread->perPage);
 
 //var_dump($thread->threadInfo);
 require_once (e_HANDLER . 'level_handler.php');
@@ -166,9 +166,11 @@ $THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_66 : '');
 
 //$pages = ceil(($threadInfo['thread_total_replies'] + 1) / $perPage);
 
+//echo "pages = {$thread->pages}<br />";
+//var_dump($thread);
 if ($thread->pages > 1)
 {
-	$parms = ($thread->threadInfo['thread_total_replies'] + 1) . ",{$perPage},{$topic_from}," . e_SELF . '?' . $this->threadId . '.[FROM],off';
+	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
 	$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
@@ -445,7 +447,7 @@ function rpg($user_join, $user_forums)
 class e107ForumThread
 {
 
-	var $message, $threadId, $threadInfo, $forumId, $perPage, $noInc;
+	var $message, $threadId, $threadInfo, $forumId, $perPage, $noInc, $pages;
 
 	function init()
 	{
@@ -453,7 +455,7 @@ class e107ForumThread
 		$e107 = e107::getInstance();
 		$this->threadId = (int)varset($_GET['id']);
 		$this->perPage = (varset($_GET['perpage']) ? (int)$_GET['perpage'] : $pref['forum_postspage']);
-		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 1);
+		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 0);
 
 		//If threadId doesn't exist, or not given, redirect to main forum page
 		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
@@ -468,6 +470,7 @@ class e107ForumThread
 			header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 			exit;
 		}
+		$this->pages = ceil(($this->threadInfo['thread_total_replies'] + 1) / $this->perPage);
 		$this->noInc = false;
 	}
 
@@ -510,17 +513,18 @@ class e107ForumThread
 				$postId = varset($_GET['id']);
 				$postInfo = $forum->postGet($postId,'post');
 				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
-				$postPage = ceil($postNum / $pref['forum_postspage']);
+				$postPage = ceil($postNum / $pref['forum_postspage'])-1;
 				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$postInfo['post_thread']}&page=$postPage");
-//				echo "url: $url <br />";
 				header('location: '.$url);
 				exit;
 				break;
 
 			case 'last':
 //				$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-				$pages = ceil(($this->threadInfo['thread_total_replies'] + 1) / $this->perPage);
-				$this->page = ($pages - 1) * $this->perPage;
+//				var_dump($thread);
+				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);
+				echo "pages = $pages<br />";
+				$thread->page = ($pages - 1);
 				break;
 
 			case 'next':
