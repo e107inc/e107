@@ -1,31 +1,29 @@
-
 global $pref;
+$e107 = e107::getInstance();
 
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
-@include_once(e_LANGUAGEDIR."English/lan_np.php");
-
-$parm_count = substr_count($parm, ",");
+include_lan(e_LANGUAGEDIR.'English/lan_np.php');
+$parm_count = substr_count($parm, ',');
 
 while($parm_count < 5)
 {
-	$parm .= ",";
+	$parm .= ',';
 	$parm_count++;
 }
 
-$p = explode(",", $parm, 6);
+$p = explode(',', $parm, 6);
 
 $total_items = intval($p[0]);
 $perpage = intval($p[1]);
 $current_start = intval($p[2]);
 $url = trim($p[3]);
 $caption = trim($p[4]);
-$pagetitle = explode("|",trim($p[5]));
+$pagetitle = explode('|',trim($p[5]));
 
-if($total_items < $perpage) {	return ""; }
+if($total_items < $perpage) {	return ''; }
 
-$caption = (!$caption || $caption == "off") ? NP_3."&nbsp;" : $caption;
+$caption = (!$caption || $caption == 'off') ? NP_3.'&nbsp;' : $caption;
 
-while(substr($url, -1) == ".")
+while(substr($url, -1) == '.')
 {
 	$url=substr($url, 0, -1);
 }
@@ -35,16 +33,16 @@ $total_pages = ceil($total_items/$perpage);
 
 if($total_pages > 1)
 {
-	if(isset($pref['old_np']) && $pref['old_np'])
+	if(varsettrue($pref['old_np']))
 	{
 
-		$NP_PRE_ACTIVE = "";
-		$NP_POST_ACTIVE = "";
-		$NP_STYLE = "";
+		$NP_PRE_ACTIVE = '';
+		$NP_POST_ACTIVE = '';
+		$NP_STYLE = '';
 
-        if(!defined("NEXTPREV_NOSTYLE") || NEXTPREV_NOSTYLE==FALSE){
-        	$NP_PRE_ACTIVE = "[";
-            $NP_POST_ACTIVE = "] ";
+        if(!defined('NEXTPREV_NOSTYLE') || NEXTPREV_NOSTYLE==FALSE){
+        	$NP_PRE_ACTIVE = '[';
+            $NP_POST_ACTIVE = '] ';
 			$NP_STYLE = "style='text-decoration:underline'";
 		}
 
@@ -147,8 +145,8 @@ if($total_pages > 1)
 
 	// Use NEW nextprev method
 	$np_parm['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
-	$np_parms['prev'] = "&nbsp;&nbsp;&lt;&lt;&nbsp;&nbsp;";
-	$np_parms['next'] = "&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;";
+	$np_parms['prev'] = '&nbsp;&nbsp;&lt;&lt;&nbsp;&nbsp;';
+	$np_parms['next'] = '&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;';
 	$np_parms['np_class'] = 'tbox npbutton';
 	$np_parms['dropdown_class'] = 'tbox npdropdown';
 
@@ -161,39 +159,67 @@ if($total_pages > 1)
 		}
 	}
 
-	$prev="";
-	$next="";
+	$prev='';
+	$next='';
 	if($current_page > 1)
 	{
 		$prevstart = ($current_start - $perpage);
-		$link = str_replace("[FROM]", $prevstart, $url);
+
+		if(substr($url, 0, 5) == 'url::')
+		{
+			$urlParms = explode('::', $url);
+			$urlParms[3] = str_replace('[FROM]', $prevstart, $urlParms[3]);
+			$link = $e107->url->getUrl($urlParms[1], $urlParms[2], $urlParms[3]);
+		}
+		else
+		{
+			$link = str_replace('[FROM]', $prevstart, $url);
+		}
 		$prev = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['prev']}</a>";
 	}
 	if($current_page < $total_pages)
 	{
 		$nextstart = ($current_start + $perpage);
-		$link = str_replace("[FROM]", $nextstart, $url);
+		if(substr($url, 0, 5) == 'url::')
+		{
+			$urlParms = explode('::', $url);
+			$urlParms[3] = str_replace('[FROM]', $nextstart, $urlParms[3]);
+			$link = $e107->url->getUrl($urlParms[1], $urlParms[2], $urlParms[3]);
+		}
+		else
+		{
+			$link = str_replace('[FROM]', $nextstart, $url);
+		}
 		$next = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['next']}</a>";
 	}
 	$dropdown = "<select class='{$np_parms['dropdown_class']}' name='pageSelect' onchange='location.href=this.options[selectedIndex].value'>";
 	for($i = 1; $i <= $total_pages; $i++)
 	{
-		$sel = "";
+		$sel = '';
 		if($current_page == $i)
 		{
 			$sel = " selected='selected' ";
 		}
 		$newstart = ($i-1)*$perpage;
-		$link = str_replace("[FROM]", $newstart, $url);
+		if(substr($url, 0, 5) == 'url::')
+		{
+			$urlParms = explode('::', $url);
+			$urlParms[3] = str_replace('[FROM]', $newstart, $urlParms[3]);
+			$link = $e107->url->getUrl($urlParms[1], $urlParms[2], $urlParms[3]);
+		}
+		else
+		{
+			$link = str_replace('[FROM]', $newstart, $url);
+		}
         $c = $i-1;
         $title = ($pagetitle[$c]) ? $pagetitle[$c] : $i;
         $dropdown .= "<option value='{$link}' {$sel}>{$title}</option>\n";
 	}
-	$dropdown .= "</select>";
+	$dropdown .= '</select>';
 	$ret = $np_parm['template'];
 	$ret = str_replace('[DROPDOWN]', $dropdown, $ret);
 	$ret = str_replace('[PREV]', $prev, $ret);
 	$ret = str_replace('[NEXT]', $next, $ret);
 	return $caption.$ret;
 }
-return "";
+return '';

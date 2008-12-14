@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-12-13 21:52:18 $
+|     $Revision: 1.26 $
+|     $Date: 2008-12-14 03:18:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -282,9 +282,14 @@ class e107forum
 		{
 			//TODO: Fix query to get only forum and parent info needed, with correct naming
 			$qry = '
-			SELECT t.*, f.*, tr.track_userid
+			SELECT t.*, f.*, 
+			fp.forum_id as parent_id, fp.forum_name as parent_name,
+			sp.forum_id as forum_sub, sp.forum_name as sub_parent, 
+			tr.track_userid
 			FROM `#forum_thread` AS t
 			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
+			LEFT JOIN `#forum` AS fp ON fp.forum_id = f.forum_parent
+			LEFT JOIN `#forum` AS sp ON sp.forum_id = f.forum_sub
 			LEFT JOIN `#forum_track` AS tr ON tr.track_thread = t.thread_id AND tr.track_userid = '.$uid.'
 			WHERE thread_id = '.$id;
 		}
@@ -1347,63 +1352,57 @@ class e107forum
 	 */
 	function set_crumb($forum_href=false, $thread_title='')
 	{
-		global $FORUM_CRUMB, $forum_info, $threadInfo, $tp;
+		$e107 = e107::getInstance();
+		global $FORUM_CRUMB, $forumInfo, $thread;
 		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
+
+		if(!$forumInfo) { $forumInfo = $thread->threadInfo; }
+//		var_dump($forumInfo);
+//		var_dump($thread);
 
 		if(is_array($FORUM_CRUMB))
 		{
-			$search 	= array("{SITENAME}", "{SITENAME_HREF}");
-			$replace 	= array(SITENAME, "href='".e_BASE."index.php'");
+			$search 	= array('{SITENAME}', '{SITENAME_HREF}');
+			$replace 	= array(SITENAME, "href='".$e107->url->getUrl('core:core', 'main', 'action=index')."'");
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
 
-			$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
-			$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
+			$search 	= array('{FORUMS_TITLE}', '{FORUMS_HREF}');
+			$replace 	= array(LAN_01, "href='".$e107->url->getUrl('forum', 'forum', 'func=main')."'");
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
-			$search 	= "{PARENT_TITLE}";
-			$replace 	= $tp->toHTML($forum_info['parent_name']);
+			$search 	= '{PARENT_TITLE}';
+			$replace 	= $e107->tp->toHTML($forumInfo['parent_name']);
 			$FORUM_CRUMB['parent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['parent']['value']);
 
-			if($forum_info['sub_parent'])
+			if($forum_info['forum_sub'])
 			{
-				$search 	= array("{SUBPARENT_TITLE}", "{SUBPARENT_HREF}");
-				$forum_sub_parent = (substr($forum_info['sub_parent'], 0, 1) == "*" ? substr($forum_info['sub_parent'], 1) : $forum_info['sub_parent']);
-				$replace 	= array($forum_sub_parent, "href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'");
+				$search 	= array('{SUBPARENT_TITLE}', '{SUBPARENT_HREF}');
+				$replace 	= array(ltrim($forumInfo['sub_parent'], '*'), "href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$forumInfo['forum_sub']}")."'");
 				$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
 			}
 			else
 			{
-				$FORUM_CRUMB['subparent']['value'] = "";
+				$FORUM_CRUMB['subparent']['value'] = '';
 			}
 
-			$search 	= array("{FORUM_TITLE}", "{FORUM_HREF}");
-			$tmpFname = $forum_info['forum_name'];
-			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
-			$replace 	= array($tmpFname,"href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'");
+			$search 	= array('{FORUM_TITLE}', '{FORUM_HREF}');
+			$replace 	= array(ltrim($forumInfo['forum_name'], '*'),"href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$forumInfo['forum_id']}")."'");
 			$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
 
-			if(strlen($thread_title))
-			{
-				$search 	= array("{THREAD_TITLE}");
-				$replace 	= array($thread_title);
-				$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
-			}
-			else
-			{
-				$FORUM_CRUMB['thread']['value'] = "";
-			}
+			$search 	= array('{THREAD_TITLE}');
+			$replace 	= array($thread->threadInfo['thread_name']);
+			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, $FORUM_CRUMB['thread']['value']);
 
-			$FORUM_CRUMB['fieldlist'] = "sitename,forums,parent,subparent,forum,thread";
-			$BREADCRUMB = $tp->parseTemplate("{BREADCRUMB=FORUM_CRUMB}", true);
-
+			$FORUM_CRUMB['fieldlist'] = 'sitename,forums,parent,subparent,forum,thread';
+			$BREADCRUMB = $e107->tp->parseTemplate('{BREADCRUMB=FORUM_CRUMB}', true);
 		}
 		else
 		{
-			$dfltsep = " :: ";
+			$dfltsep = ' :: ';
 			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>".$dfltsep;
 			if($forum_info['sub_parent'])
 			{
-				$forum_sub_parent = (substr($forum_info['sub_parent'], 0, 1) == "*" ? substr($forum_info['sub_parent'], 1) : $forum_info['sub_parent']);
+				$forum_sub_parent = (substr($forum_info['sub_parent'], 0, 1) == '*' ? substr($forum_info['sub_parent'], 1) : $forum_info['sub_parent']);
 				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
 
@@ -1448,35 +1447,35 @@ function img_path($filename)
 {
 	global $pref;
 
-	$multilang = array("reply.png","newthread.png","moderator.png","main_admin.png","admin.png");
+	$multilang = array('reply.png','newthread.png','moderator.png','main_admin.png','admin.png');
 	$ML = (in_array($filename,$multilang)) ? TRUE : FALSE;
 
-		if(file_exists(THEME.'forum/'.$filename) || is_readable(THEME.'forum/'.e_LANGUAGE."_".$filename))
+		if(file_exists(THEME.'forum/'.$filename) || is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename))
 		{
-			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE."_".$filename)) ? THEME.'forum/'.e_LANGUAGE."_".$filename :  THEME.'forum/'.$filename;
+			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE.'_'.$filename)) ? THEME.'forum/'.e_LANGUAGE."_".$filename :  THEME.'forum/'.$filename;
 		}
 		else
 		{
-			if(defined("IMODE"))
+			if(defined('IMODE'))
 			{
 				if($ML)
 				{
-                	$image = (is_readable(e_PLUGIN."forum/images/".IMODE."/".e_LANGUAGE."_".$filename)) ? e_PLUGIN."forum/images/".IMODE."/".e_LANGUAGE."_".$filename : e_PLUGIN."forum/images/".IMODE."/English_".$filename;
+                	$image = (is_readable(e_PLUGIN.'forum/images/'.IMODE.'/'.e_LANGUAGE.'_'.$filename)) ? e_PLUGIN.'forum/images/'.IMODE.'/'.e_LANGUAGE.'_'.$filename : e_PLUGIN.'forum/images/'.IMODE.'/English_'.$filename;
 				}
 				else
 				{
-                	$image = e_PLUGIN."forum/images/".IMODE."/".$filename;
+                	$image = e_PLUGIN.'forum/images/'.IMODE.'/'.$filename;
 				}
 			}
 			else
 			{
 				if($ML)
 				{
-					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE."_".$filename)) ? e_PLUGIN."forum/images/lite/".e_LANGUAGE."_".$filename : e_PLUGIN."forum/images/lite/English_".$filename;
+					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE.'_'.$filename)) ? e_PLUGIN.'forum/images/lite/'.e_LANGUAGE.'_'.$filename : e_PLUGIN.'forum/images/lite/English_'.$filename;
 				}
 				else
                 {
-           			$image = e_PLUGIN."forum/images/lite/".$filename;
+           			$image = e_PLUGIN.'forum/images/lite/'.$filename;
 				}
 
 			}
@@ -1492,7 +1491,7 @@ if (file_exists(THEME.'forum/forum_icons_template.php'))
 {
 	require_once(THEME.'forum/forum_icons_template.php');
 }
-else if (file_exists(THEME.'forum_icons_template.php'))
+elseif (file_exists(THEME.'forum_icons_template.php'))
 {
 	require_once(THEME.'forum_icons_template.php');
 }

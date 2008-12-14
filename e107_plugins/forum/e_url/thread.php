@@ -1,5 +1,5 @@
 <?php
-// $Id: thread.php,v 1.6 2008-12-13 21:52:19 mcfly_e107 Exp $
+// $Id: thread.php,v 1.7 2008-12-14 03:18:45 mcfly_e107 Exp $
 function url_forum_thread($parms)
 {
 	switch($parms['func'])
@@ -28,7 +28,7 @@ function url_forum_thread($parms)
 
 		case 'report':
 			$page = (isset($parms['page']) ? (int)$parms['page'] : 0 );
-			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=report&id={$parms['report']}&page={$page}";
+			return e_PLUGIN_ABS."forum/forum_viewtopic.php?f=report&id={$parms['report']}&p={$page}";
 			break;
 
 		case 'edit':
