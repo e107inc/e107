@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.19 $
-|   $Date: 2008-11-14 06:01:06 $
-|   $Author: e107coders $
+|   $Revision: 1.20 $
+|   $Date: 2008-12-14 21:01:58 $
+|   $Author: secretr $
 +---------------------------------------------------------------+
 */
 
@@ -442,26 +442,43 @@ if (!function_exists("parse_admin")) {
 }
 
 function admin_update($update, $type = 'update', $success = false, $failed = false) {
-	global $ns;
+	global $e107;
+	require_once(e_HANDLER."message_handler.php");
+	$emessage = &eMessage::getInstance();
+	
 	if (($type == 'update' && $update) || ($type == 'insert' && $update !== false)) {
-		$caption = LAN_UPDATE;
-		$text = "<b>".($success ? $success : LAN_UPDATED)."</b>";
-	} else if ($type == 'delete' && $update) {
-		$caption = LAN_DELETE;
-		$text = "<b>".($success ? $success : LAN_DELETED)."</b>";
-	} else if (!mysql_errno()) {
-		if ($type == 'update') {
-			$caption = LAN_UPDATED_FAILED;
-			$text = "<b>".LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN."</b>";
-		} else if ($type == 'delete') {
-			$caption = LAN_DELETE;
-			$text = "<b>".LAN_DELETED_FAILED.".<br />".LAN_TRY_AGAIN."</b>";
+		//$caption = LAN_UPDATE;
+		//$text = "<b>".($success ? $success : LAN_UPDATED)."</b>";
+		$emessage->add(($success ? $success : LAN_UPDATED), E_MESSAGE_SUCCESS);
+	} 
+	elseif ($type == 'delete' && $update) 
+	{
+		//$caption = LAN_DELETE;
+		//$text = "<b>".($success ? $success : LAN_DELETED)."</b>";
+		$emessage->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
+	} 
+	elseif (!mysql_errno()) 
+	{
+		if ($type == 'update') 
+		{
+			//$caption = LAN_UPDATED_FAILED;
+			//$text = "<b>".LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN."</b>";
+			$emessage->add(LAN_NO_CHANGE.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
+		} elseif ($type == 'delete') 
+		{
+			//$caption = LAN_DELETE;
+			//$text = "<b>".LAN_DELETED_FAILED.".<br />".LAN_TRY_AGAIN."</b>";
+			$emessage->add(LAN_DELETED_FAILED.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
 		}
-	} else {
-		$caption = LAN_UPDATED_FAILED;
-		$text = "<b>".($failed ? $failed : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN)."</b><br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+	} 
+	else 
+	{
+		//$caption = LAN_UPDATED_FAILED;
+		$text = ($failed ? $failed : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+		$emessage->add($text, E_MESSAGE_ERROR);
 	}
-	$ns -> tablerender($caption, "<div style='text-align:center'>".$text."</div>");
+	//$e107->ns->tablerender($caption, "<div style='text-align:center'>".$text."</div>");
+	echo $emessage->render();
 	return $update;
 }
 
