@@ -1,14 +1,12 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_emoticon.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-05-29 19:45:44 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_emoticon.php,v 1.5 2008-12-14 21:01:58 secretr Exp $
+ *
+ * Admin Language File
+ * 
 */
+
 define("EMOLAN_1", "Emote activation");
 define("EMOLAN_2", "Name");
 define("EMOLAN_3", "Emotes");
@@ -44,4 +42,7 @@ define("EMOLAN_27", "Error occurred processing pack: ");
 define("EMOLAN_28", "Generate XML");
 define("EMOLAN_29", "XML file generated: ");
 define("EMOLAN_30", "Error writing XML file: ");
+
+//0.8
+define("EMOLAN_31", "Total %d files found");
 ?>

@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-11-20 20:34:44 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration Area - Emotions Settings & Packs
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-14 21:01:58 $
+ * $Author: secretr $
+ *
 */
 
 require_once("../class2.php");
@@ -27,6 +25,8 @@ if (!getperms("F"))
 $e_sub_cat = 'emoticon';
 
 require_once("auth.php");
+require_once(e_HANDLER."message_handler.php");
+$emessage = &eMessage::getInstance();
 
 if(!$sql->db_Count("core", "(*)", "WHERE e107_name = 'emote_default'"))
 {	// Set up the default emotes
@@ -38,14 +38,19 @@ if(!$sql->db_Count("core", "(*)", "WHERE e107_name = 'emote_default'"))
 // Change the active emote pack
 if (isset($_POST['active']))
 {
-if ($pref['smiley_activate'] != $_POST['smiley_activate']) 
-{
-	$pref['smiley_activate'] = $_POST['smiley_activate'];
-	$admin_log->log_event($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03',$pref['emotepack'],E_LOG_INFORMATIVE,'');
-	save_prefs();
-	$update = true;
-  }
-  admin_update($update);
+	if ($pref['smiley_activate'] != $_POST['smiley_activate']) 
+	{
+		$pref['smiley_activate'] = $_POST['smiley_activate'];
+		$admin_log->log_event($pref['smiley_activate'] ? 'EMOTE_02' : 'EMOTE_03', $pref['emotepack'], E_LOG_INFORMATIVE, '');
+		save_prefs();
+		$update = true;
+		$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+	}
+	else 
+	{
+		$emessage->add(LAN_NO_CHANGE);
+	}
+  	
 }
 
 
@@ -92,7 +97,7 @@ foreach($_POST as $key => $value)
 
 $check = TRUE;
 //$check = $emote -> installCheck();
-$check = $emote -> installCheck($one_pack);
+$check = $emote->installCheck($one_pack);
 if($check!==FALSE)
 {
 	$emote -> listPacks();
@@ -120,38 +125,68 @@ class emotec
 	// List available emote packs
 	function listPacks()
 	{
-		global $ns, $fl, $pref;
-
-		$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EMOLAN_4.": </td>
-		<td style='width:70%' class='forumheader3'>".($pref['smiley_activate'] ? "<input type='checkbox' name='smiley_activate' value='1'  checked='checked' />" : "<input type='checkbox' name='smiley_activate' value='1' />")."</td>
-		</tr>
-
-		<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>
-		<input class='button' type='submit' name='active' value='".LAN_UPDATE."' />
-		</td>
-		</tr>
-		</table>
-		</form>
-		</div>
-		";
-
-		$ns -> tablerender(EMOLAN_1, $text);
-
+		global $e107, $emessage, $fl, $pref;
 
 		$text = "
+	<div class='admintabs' id='tab-container'>
+		<ul class='e-tabs' id='core-emote-tabs'>
+			<li id='tab-activate'><a href='#emoticon-activate'>".EMOLAN_1."</a></li>
+			<li id='tab-packages'><a href='#emoticon-packages'>".EMOLAN_13."</a></li>
+		</ul>
 		<form method='post' action='".e_SELF."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr>
-		<td class='forumheader' style='width: 20%;'>".EMOLAN_2."</td>
-		<td class='forumheader' style='width: 50%;'>".EMOLAN_3."</td>
-		<td class='forumheader' style='width: 10%; text-align: center;'>".EMOLAN_8."</td>
-		<td class='forumheader' style='width: 20%;'>".EMOLAN_9."</td>
-		</tr>";
+			<fieldset id='emoticon-activate'>
+				<legend class='e-hideme'>".EMOLAN_1."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+					<colgroup span='2'>
+						<col style='width:30%' />
+						<col style='width:70%' />
+					</colgroup>
+					<tbody>
+						<tr>
+							<td class='label'>
+								".EMOLAN_4.": 
+							</td>
+							<td class='control'>
+								<div class='auto-toggle-area autocheck'>
+									<input type='checkbox' class='checkbox' name='smiley_activate' value='1'".($pref['smiley_activate'] ? " checked='checked'" : '')." />
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class='buttons-bar center'>
+					<button class='update' type='submit' name='active'><span>".LAN_UPDATE."</span></button>
+				</div>
+			</fieldset>
+		</form>
+		
+		
+		";
+
+		//$e107->ns -> tablerender(EMOLAN_1, $text);
+
+
+		$text .= "
+			<form method='post' action='".e_SELF."?#etabTabContainer=emoticon-packages'>
+				<fieldset id='emoticon-packages'>
+					<legend class='e-hideme'>".EMOLAN_13."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<colgroup span='4'>
+							<col style='width:15%' />
+							<col style='width:50%' />
+							<col style='width:15%' />
+							<col style='width:20%' />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class='center'>".EMOLAN_2."</th>
+								<th class='center'>".EMOLAN_3."</th>
+								<th class='center'>".EMOLAN_8."</th>
+								<th class='center'>".EMOLAN_9."</th>
+							</tr>
+						</thead>
+						<tbody>
+		";
 
 		$reject = '~^emoteconf|\.html$|\.php$|\.txt$';		// Files to exclude
 		foreach($this -> packArray as $pack)
@@ -173,66 +208,85 @@ class emotec
 				{
 					$can_scan = TRUE;		// Allow re-scan of config files
 				}
-//				elseif  (!strstr($emote['fname'], ".txt") && !strstr($emote['fname'], ".bak") && !strstr($emote['fname'], ".html") && !strstr($emote['fname'], ".php") )
+				//elseif  (!strstr($emote['fname'], ".txt") && !strstr($emote['fname'], ".bak") && !strstr($emote['fname'], ".html") && !strstr($emote['fname'], ".php") )
 				else
 				{  // Emote file found (might get other non-image files, but shouldn't)
 					$text .= "<img src='".$emote['path'].$emote['fname']."' alt='' /> ";
 				}
 			}
 
-			$text .= "</td>
-			<td class='forumheader3' style='width: 10%; text-align: center;'>".($pref['emotepack'] == $pack ? EMOLAN_10 : "<input class='button' type='submit' name='defPack_".$pack."' value=\"".EMOLAN_11."\" />")."</td>
-			<td class='forumheader3' style='width: 20%; text-align: center;'>
-				<input class='button' type='submit' name='subPack_".$pack."' value=\"".EMOLAN_12."\" />";
+			$text .= "
+								</td>
+								<td class='center middle'>".($pref['emotepack'] == $pack ? EMOLAN_10 : "<button type='submit' name='defPack_".$pack."'><span>".EMOLAN_11."</span></button>")."</td>
+								<td>
+									<button class='submit' type='submit' name='subPack_".$pack."'><span>".EMOLAN_12."</span></button>
+			";
 			if ($can_scan && ($pack != 'default'))
 			{
-			  $text .= "<br /><br /><input class='button' type='submit' name='scanPack_".$pack."' value=\"".EMOLAN_26."\" />";
+				$text .= "
+									<br /><br />
+									<button class='submit' type='submit' name='scanPack_".$pack."'><span>".EMOLAN_26."</span></button>
+				";
 			}
-			$text .= "<br /><br /><input class='button' type='submit' name='XMLPack_".$pack."' value=\"".EMOLAN_28."\" />";
-			$text .= "</td></tr>";
+			$text .= "
+									<br /><br />
+									<button class='submit' type='submit' name='XMLPack_".$pack."'><span>".EMOLAN_28."</span></button>
+			";
+			$text .= "
+								</td>
+							</tr>
+			";
 		}
 
 		$text .= "
-		</table>
-		</form>
-		";
-		$ns -> tablerender(EMOLAN_13, $text);
+						</tbody>
+					</table>
+				</fieldset>
+			</form>
+		</div>
+		";	
+		
+		$e107->ns->tablerender(EMOLAN_13, $emessage->render().$text);
 	}
 
 
 	// Configure an individual emote pack
 	function emoteConf($packID)
 	{
-		global $ns, $fl, $pref, $sysprefs, $tp;
+		global $e107, $fl, $sysprefs, $tp;
 		$corea = "emote_".$packID;
 
 		$emotecode = $sysprefs -> getArray($corea);
 
-//		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '*\.txt', '*\.html', '*\.pak', '*php*', '.cvsignore', '\.bak$');
 		$reject = '~^emoteconf|\.html$|\.php$|\.txt$|\.pak$|\.xml|\.phpBB';		// Files to exclude
 		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, $reject);
 
 		$eArray = array();
 		foreach($emoteArray as $value)
 		{
-/*		  if(!strstr($value['fname'], ".php") 
-		  && !strstr($value['fname'], ".txt") 
-		  && !strstr($value['fname'], ".pak") && !strstr($value['fname'], ".bak") 
-		  && !strstr($value['fname'], ".xml") 
-		  && !strstr($value['fname'], "phpBB") && !strstr($value['fname'], ".html"))   */
-		  {
 			$eArray[] = array('path' => $value['path'], 'fname' => $value['fname']);
-		  }
 		}
 
+		//XXX Not sure if we need to know rhe number of files found - count($eArray) - <div class='info-bar'><strong>Total ".count($eArray)." files found</strong></div>
 		$text = "
 		<form method='post' action='".e_SELF."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr>
-		<td class='forumheader' style='width: 20%;'>".EMOLAN_2."</td>
-		<td class='forumheader' style='width: 20%; text-align: center;'>".EMOLAN_5."</td>
-		<td class='forumheader' style='width: 60%;'>".EMOLAN_6." <span class='smalltext'>( ".EMOLAN_7." )</a></td>
-		</tr>
+			<fieldset id='core-emoticon-configure'>
+				<legend class='e-hideme'>".EMOLAN_15."</legend>
+				<div class='info-bar'><strong>Total ".count($eArray)." files found</strong></div>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+					<colgroup span='3'>
+						<col style='width:20px' />
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>".EMOLAN_5."</th>
+							<th>".EMOLAN_2."</th>
+							<th class='last'>".EMOLAN_6."<span class='smalltext'> ( ".EMOLAN_7." )</span></th>
+						</tr>
+					</thead>
+					<tbody>
 		";
 
 		foreach($eArray as $emote)
@@ -244,38 +298,41 @@ class emotec
 
 			if (!isset($emotecode[$evalue]))
 			{
-			  $file_back = ' background-color: #FF8000;';
+			 	$file_back = '<span class="error">&nbsp;&nbsp;Emote not set</span>';
 			}
 			elseif (!$emotecode[$evalue])
 			{
-			   $text_back = ' background-color: #FF8000';
+			   $text_back = '<span class="error">&nbsp;&nbsp;Empty value</span>';
 			}
 			$text .= "
-			<tr>
-			<td class='forumheader3' style='width: 20%;{$file_back}'>".$ename."</td>
-			<td class='forumheader3' style='width: 20%; text-align: center;'><img src='".$emote['path'].$ename."' alt='' /></td>
-			<td class='forumheader3' style='width: 60%;{$text_back}'><input style='width: 80%' class='tbox' type='text' name='{$evalue}' value='".$tp -> toForm(varset($emotecode[$evalue],''))."' maxlength='200' /></td>
-			</tr>
+					<tr>
+						<td class='center'><img src='".$emote['path'].$ename."' alt='' /></td>
+						<td>".$ename."{$file_back}</td>
+						<td>
+							<input class='tbox input-text' type='text' name='{$evalue}' value='".$tp -> toForm(varset($emotecode[$evalue],''))."' maxlength='200' />{$text_back}
+						</td>
+					</tr>
 			";
 		}
-
+		
 		$text .= "
-		<tr>
-		<td class='forumheader'>".count($eArray)." files</td>
-		<td style='text-align: center;' colspan='2' class='forumheader'><input class='button' type='submit' name='sub_conf' value='".EMOLAN_14."' /></td>
-		</tr>
-
-		</table>
-		<input type='hidden' name='packID' value='{$packID}' />
-		</form>";
-		$ns -> tablerender(EMOLAN_15.": '".$packID."'", $text);
+				</tbody>
+			</table>
+			<div class='buttons-bar center'>
+				<input type='hidden' name='packID' value='{$packID}' />
+				<button class='submit' type='submit' name='sub_conf' value='".EMOLAN_14."'><span>".EMOLAN_14."</span></button>
+			</div>
+		</fieldset>
+	</form>";
+				
+		$e107->ns->tablerender(EMOLAN_15.": '".$packID."'", $text);
 	}
 
 
 	// Generate an XML file - packname.xml in root emoticon directory
 	function emoteXML($packID, $strip_xtn = TRUE)
 	{
-		global $fl, $pref, $sysprefs, $tp;
+		global $fl, $sysprefs, $tp;
 		
 		$fname = e_IMAGE."emotes/".$packID."/emoticons.xml";
 		$backname = e_IMAGE."emotes/".$packID."/emoticons.bak";
@@ -283,21 +340,13 @@ class emotec
 		$corea = "emote_".$packID;
 		$emotecode = $sysprefs -> getArray($corea);
 
-//		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '*\.txt', '*\.html', '*\.pak', '*php*', '.cvsignore', '\.bak$');
 		$reject = '~^emoteconf|\.html$|\.php$|\.txt$|\.pak$|\.xml|\.phpBB';		// Files to exclude
 		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, $reject);
 
 		$eArray = array();
 		foreach($emoteArray as $value)
 		{
-/*		  if(!strstr($value['fname'], ".php") 
-		  && !strstr($value['fname'], ".txt") 
-		  && !strstr($value['fname'], ".pak") && !strstr($value['fname'], ".bak") 
-		  && !strstr($value['fname'], ".xml") 
-		  && !strstr($value['fname'], "phpBB") && !strstr($value['fname'], ".html"))  */
-		  {
 			$eArray[] = $value['fname'];
-		  }
 		}
 
 		$f_string = "<?xml version=\"1.0\"?".">\n<messaging-emoticon-map >\n\n\n";
@@ -305,14 +354,14 @@ class emotec
 		foreach($eArray as $emote)
 		{
 			// Optionally strip file extension
-		  $evalue = str_replace(".", "!", $emote);
-		  if ($strip_xtn) $ename = substr($emote,0,strrpos($emote,'.'));
-		  $f_string .= "<emoticon file=\"{$ename}\">\n";
-		  foreach (explode(' ',$tp -> toForm($emotecode[$evalue])) as $v)
-		  {
-		    if (trim($v)) $f_string .= "\t<string>{$v}</string>\n";
-		  }
-		  $f_string .= "</emoticon>\n";
+			$evalue = str_replace(".", "!", $emote);
+			if ($strip_xtn) $ename = substr($emote,0,strrpos($emote,'.'));
+			$f_string .= "<emoticon file=\"{$ename}\">\n";
+			foreach (explode(' ',$tp -> toForm($emotecode[$evalue])) as $v)
+			{
+				if (trim($v)) $f_string .= "\t<string>{$v}</string>\n";
+			}
+			$f_string .= "</emoticon>\n";
 		}
 
 		$f_string .= "\n</messaging-emoticon-map>\n";
@@ -320,6 +369,7 @@ class emotec
 		if (is_file($backname)) unlink($backname);		// Delete any old backup
 		
 		if (is_file($fname)) rename($fname,$backname);
+		//XXX message handler
 		if (file_put_contents($fname,$f_string) === FALSE)
 		{
 		  echo "<br /><div style='text-align: center;'>".EMOLAN_30."<b>".$fname."</b></div><br />";
@@ -334,20 +384,20 @@ class emotec
 	// Save configuration for an emote pack that's been edited
 	function saveConf()
 	{
-		global $ns, $sql, $tp;
+		global $sql, $tp;
 
 		$packID = $_POST['packID'];
 		unset($_POST['sub_conf'], $_POST['packID']);
-		$encoded_emotes = $tp -> toDB($_POST);
+		$encoded_emotes = $tp->toDB($_POST);
 		$tmp = addslashes(serialize($encoded_emotes));
 
 		if ($sql->db_Select("core", "*", "e107_name='emote_".$packID."'")) 
 		{
-		  admin_update($sql->db_Update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', EMOLAN_16);
+			admin_update($sql->db_Update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', EMOLAN_16);
 		} 
 		else 
 		{
-		  admin_update($sql->db_Insert("core", "'emote_".$packID."', '$tmp' "), 'insert', EMOLAN_16);
+			admin_update($sql->db_Insert("core", "'emote_".$packID."', '$tmp' "), 'insert', EMOLAN_16);
 		}
 	}
 
@@ -374,7 +424,7 @@ class emotec
 			{	// Highlight any directory names containing spaces - not allowed
 				global $ns;
 				$msg = "
-				<div style='text-align:center;'><b>".EMOLAN_17."<br />".EMOLAN_18."</b><br /><br />
+				<div class='center'><strong>".EMOLAN_17."<br />".EMOLAN_18."</strong>
 					<table class='fborder'>
 					<tr>
 						<td class='fcaption'>".EMOLAN_19."</td>
@@ -382,7 +432,7 @@ class emotec
 					</tr>
 					<tr>
 						<td class='forumheader3'>".$value."</td>
-						<td class='forumheader3'>".e_IMAGE."emotes/</td>
+						<td class='forumheader3'>".e_IMAGE_ABS."emotes/</td>
 					</tr>
 					</table>
 				</div>";
@@ -591,5 +641,23 @@ class emotec
   
 }
 require_once("footer.php");
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	//FIXME - how exactly to auto-call JS lan? This and more should be solved in Stage II.
+	$ret = "
+		<script type='text/javascript'>
+			//add required core lan - delete confirm message
+			(".e_jshelper::toString(IMALAN_67).").addModLan('core', 'delete_confirm');
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
 
+	return $ret;
+}
 ?>

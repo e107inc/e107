@@ -1,9 +1,10 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_image.php,v 1.7 2008-12-10 16:59:19 secretr Exp $
+ * $Id: lan_image.php,v 1.8 2008-12-14 21:01:59 secretr Exp $
  *
  * Admin Language File
+ * 
 */
 
 define("IMALAN_1", "Enable image display");
