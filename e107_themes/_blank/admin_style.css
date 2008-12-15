@@ -207,7 +207,7 @@ label { cursor: pointer; }
 
 /* message text (overall) */
 .warning { color: #FF6600 }
-.success {}
+.success { color: green; }
 .error { color: #FF0000 }
 .info {}
 
@@ -307,6 +307,7 @@ input.edit {}
 .admin-header-content { border: 1px solid #DDDDDD; }
 .admin-page-body { padding: 20px 15px 0; }
 .admin-footer {}
+legend { font-size: 16px; font-weight: bold; }
 
 /******** Layout */
 .main-table { width: 100%; border: 0 none; }
@@ -317,7 +318,6 @@ input.edit {}
 
 /******** Horizontal navigation ADMIN_NAV_ALT */
 .admin-navigation { border: 1px solid #DDDDDD;}
-
 
 /******** Side Navigation 
 	- Admin Navigation
@@ -339,7 +339,7 @@ ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
 /******** Block Elements */
 .block { border: 1px solid #DDDDDD; margin-bottom: 10px;}
 .block-text { padding: 10px 10px 10px; }
-.block h4 { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
+.block h2, .block h4 { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
 .page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
 .page-info p { padding: 10px; }
 

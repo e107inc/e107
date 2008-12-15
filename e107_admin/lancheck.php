@@ -1,21 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-11-20 20:34:44 $
-|     $Author: e107steved $
-|	  With code from Izydor and Lolo.
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration Area - Language check
+ * With code from Izydor and Lolo.
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
+ * $Revision: 1.11 $
+ * $Date: 2008-12-15 21:16:31 $
+ * $Author: secretr $
+ *
 */
 require_once("../class2.php");
 if (!getperms("0")) {
@@ -24,6 +22,11 @@ if (!getperms("0")) {
 }
 $e_sub_cat = 'language';
 require_once("auth.php");
+require_once(e_HANDLER."message_handler.php");
+require_once(e_HANDLER."form_handler.php");
+
+$frm = new e_form();
+$emessage = &eMessage::getInstance();
 
 $qry = explode("|",e_QUERY);
 $f = $qry[0];
@@ -64,16 +67,19 @@ if(isset($_POST['submit']))
 	{
 		// create CVS compatible description.
 		$diz = chr(47)."*\n";
-		$diz .= "+---------------------------------------------------------------+\n";
-		$diz .= "|        e107 website system ".$lan." Language File\n";
-		$diz .= "|        Released under the terms and conditions of the\n";
-		$diz .= "|        GNU General Public License (http://gnu.org).\n";
-		$diz .= "|\n";
-		$diz .= "|        ".chr(36)."Source: $writeit ".chr(36)."\n";
-		$diz .= "|        ".chr(36)."Revision: 1.0 ".chr(36)."\n";
-		$diz .= "|        ".chr(36)."Date: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
-		$diz .= "|        ".chr(36)."Author: ".USERNAME." ".chr(36)."\n";
-		$diz .= "+---------------------------------------------------------------+\n";
+		$diz .= " * e107 website system\n";
+		$diz .= " *\n";
+		$diz .= " * Copyright (C) 2001-2008 e107 Inc (e107.org)\n";
+		$diz .= " * Released under the terms and conditions of the\n";
+		$diz .= " * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)\n";
+		$diz .= " *\n";
+		$diz .= " * Language File\n";
+		$diz .= " *\n";
+		$diz .= " * ".chr(36)."Source: ".str_replace(array(e_LANGUAGEDIR, e_PLUGIN), array(e_LANGUAGEDIR_ABS, e_PLUGIN_ABS), $writeit)." ".chr(36)."\n";
+		$diz .= " * ".chr(36)."Revision: 1.0 ".chr(36)."\n";
+		$diz .= " * ".chr(36)."Date: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
+		$diz .= " *  ".chr(36)."Author: ".USERNAME." ".chr(36)."\n";
+		$diz .= " *\n";
 		$diz .= "*".chr(47)."\n\n";
 	}
 	else
@@ -123,22 +129,26 @@ if(isset($_POST['submit']))
 	$fp = @fopen($writeit,"w");
 	if(!@fwrite($fp, $input))
 	{
-		$caption = LAN_ERROR;
-		$message = LAN_CHECK_17;
+		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_ERROR;
+		$message = '';
+		$emessage->add(LAN_CHECK_17, E_MESSAGE_ERROR);
 	}
 	else
 	{
-		$caption = LAN_SAVED." <b>$lan/".$writeit."</b>";
+		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24;
+		$emessage->add(sprintf(LAN_CHECK_23, basename($writeit)), E_MESSAGE_SUCCESS);
 	}
 	fclose($writeit);
 
-	$message .= "<form method='post' action='".e_SELF."' id='select_lang'>
-	<div style='text-align:center'><br />";
-	$message .= "<br /><br /><input class='button' type='submit' name='language_sel' value=\"".LAN_BACK."\" />
-	<input type='hidden' name='language' value='$lan' /></div></form>";
+	$message .= "
+	<form method='post' action='".e_SELF."' id='core-lancheck-save-file-form'>
+	<div class='center'>
+		".$frm->admin_button('language_sel', LAN_BACK)."
+		".$frm->hidden('language', $lan)."
+	</div>
+	</form>";
 
-
-	$ns -> tablerender($caption, $message);
+	$e107->ns->tablerender($caption, $emessage->render().$message);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
@@ -174,98 +184,154 @@ if($f != ""){
 // ===========================================================================
 
 $core_plugins = array(
-"alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
-"clock_menu","comment_menu","content","featurebox","forum","gsitemap",
-"links_page","linkwords","list_new","log","login_menu","newforumposts_main",
-"newsfeed","newsletter","online","other_news_menu","pdf","pm","poll",
-"rss_menu","search_menu","siteinfo_menu","trackback","tree_menu","user_menu"
+	"alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
+	"clock_menu","comment_menu","content","featurebox","forum","gsitemap",
+	"links_page","linkwords","list_new","log","login_menu","newforumposts_main",
+	"newsfeed","newsletter","online","other_news_menu","pdf","pm","poll",
+	"rss_menu","search_menu","siteinfo_menu","trackback","tree_menu","user_menu"
 );
 
 $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
-"khatru","kubrick","lamb","leaf","reline","sebes","vekna_blue");
+"khatru","kubrick","lamb","leaf","reline","sebes","vekna_blue","_blank");
 
 
-if(isset($_POST['language_sel']) && isset($_POST['language'])){
+if(isset($_POST['language_sel']) && isset($_POST['language']))
+{
 
-	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language'],check_core_lanfiles($_POST['language']));
-	$ns -> tablerender(LAN_CHECK_3.": ".$_POST['language']."/admin",check_core_lanfiles($_POST['language'],"admin/"));
+	$text = check_core_lanfiles($_POST['language']).check_core_lanfiles($_POST['language'],"admin/");
 
-	$plug_text = "<table class='fborder' style='".ADMIN_WIDTH."'>
-	<tr>
-	<td class='fcaption'>".LAN_PLUGIN."</td>
-	<td class='fcaption'>".LAN_CHECK_16."</td>
-	<td class='fcaption'>".$_POST['language']."</td>
-	<td class='fcaption'>".LAN_OPTIONS."</tr>";
+	$text .= "
+		<fieldset id='core-lancheck-plugin'>
+			<legend>".ADLAN_CL_7."</legend>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='4'>
+					<col style='width: 25%'></col>
+					<col style='width: 25%'></col>
+					<col style='width: 40%'></col>
+					<col style='width: 10%'></col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>".LAN_PLUGIN."</th>
+						<th>".LAN_CHECK_16."</th>
+						<th>".$_POST['language']."</th>
+						<th class='center last'>".LAN_OPTIONS."</th>
+					</tr>
+				</thead>
+				<tbody>
+	";
 
 	foreach($core_plugins as $plugs)
 	{
 		if(is_readable(e_PLUGIN.$plugs))
 		{
-			$plug_text .= check_lanfiles('P',$plugs,"English",$_POST['language']);
+			$text .= check_lanfiles('P',$plugs,"English",$_POST['language']);
 		}
 	}
-	$plug_text .= "</table>";
-	$ns -> tablerender(ADLAN_CL_7,$plug_text);
+	$text .= "
+				</tbody>
+			</table>
+		</fieldset>
+	";
 
-	$theme_text = "<table class='fborder' style='".ADMIN_WIDTH."'>
-	<tr>
-	<td class='fcaption'>".LAN_CHECK_21."</td>
-	<td class='fcaption'>".LAN_CHECK_16."</td>
-	<td class='fcaption'>".$_POST['language']."</td>
-	<td class='fcaption'>".LAN_OPTIONS."</tr>";
+	$text .= "
+		<fieldset id='core-lancheck-theme'>
+			<legend>".LAN_CHECK_22."</legend>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='4'>
+					<col style='width: 25%'></col>
+					<col style='width: 25%'></col>
+					<col style='width: 40%'></col>
+					<col style='width: 10%'></col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>".LAN_CHECK_21."</th>
+						<th>".LAN_CHECK_16."</th>
+						<th>".$_POST['language']."</th>
+						<th class='center last'>".LAN_OPTIONS."</th>
+					</tr>
+				</thead>
+				<tbody>
+	";
 	foreach($core_themes as $them)
 	{
 		if(is_readable(e_THEME.$them))
 		{
-			$theme_text .= check_lanfiles('T',$them,"English",$_POST['language']);
+			$text .= check_lanfiles('T',$them,"English",$_POST['language']);
 		}
 	}
-	$theme_text .= "</table>";
+	$text .= "
+				</tbody>
+			</table>
+		</fieldset>
+	";
 
-	$ns -> tablerender(LAN_CHECK_22,$theme_text);
+	$ns->tablerender(LAN_CHECK_25, $text);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
 
 
 function check_core_lanfiles($checklan,$subdir=''){
-	global $lanfiles,$_POST;
-
+	global $frm;
+	
 	$English = get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,$checklan);
 	$check = get_comp_lan_phrases(e_LANGUAGEDIR.$checklan."/".$subdir,$checklan);
-
-	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
-	<tr>
-	<td class='fcaption'>".LAN_CHECK_16."</td>
-	<td class='fcaption'>".$_POST['language'].' '.LAN_CHECK_20."</td>
-	<td class='fcaption'>".LAN_OPTIONS."</tr>";
+	$legend_txt = LAN_CHECK_3.": ".$_POST['language']."/".$subdir;
+	$fieldset_id = $subdir ? str_replace('/', '', $_POST['language'])."-".str_replace('/', '', $subdir) : str_replace('/', '', $_POST['language']);
+	$text .= "
+		<fieldset id='core-lancheck-{$fieldset_id}'>
+			<legend>{$legend_txt}</legend>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='3'>
+					<col style='width: 50%'></col>
+					<col style='width: 40%'></col>
+					<col style='width: 10%'></col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>".LAN_CHECK_16."</th>
+						<th>".$_POST['language'].' '.LAN_CHECK_20."</th>
+						<th class='center last'>".LAN_OPTIONS."</th>
+					</tr>
+				</thead>
+				<tbody>
+	";
 
 	$keys = array_keys($English);
 
 	sort($keys);
 
+	$i = 0;
 	foreach($keys as $k)
 	{
 		if($k != "bom")
 		{
 			$lnk = $k;
 			$k_check = str_replace("English",$checklan,$k);
+			$text .= "
+					<tr>
+			";
+			
 			if(array_key_exists($k,$check))
 			{
-				$text .= "<tr><td class='forumheader3' style='width:45%'>{$lnk}</td>";
+				$text .= "
+						<td>{$lnk}</td>
+				";
 				$subkeys = array_keys($English[$k]);
 
 				$er="";
 				$utf_error = "";
 
 				$bomkey = str_replace(".php","",$k_check);
-				$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
+				$bom_error = ($check['bom'][$bomkey]) ? "<span class='error'><em>".LAN_CHECK_15."</em></span><br />" : ""; // illegal chars
 
 				foreach($subkeys as $sk)
 				{
 					if($utf_error == "" && !is_utf8($check[$k][$sk]))
 					{
-						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
+						$utf_error = "<span class='error'><em>".LAN_CHECK_19."</em></span><br />";
 					}
 
 					if($sk == "LC_ALL"){
@@ -280,27 +346,46 @@ function check_core_lanfiles($checklan,$subdir=''){
 					}
 				}
 
-				$style = ($er) ? "forumheader2" : "forumheader3";
-				$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
+				$style = ($er) ? "warning" : "success";
+				$text .= "
+						<td class='{$style}' style='width:50%'>
+							<div class='smalltext'>
+				";
 				$text .= $bom_error . $utf_error;
 				$text .= (!$er && !$bom_error && !$utf_error) ? LAN_OK : $er."<br />";
-				$text .= "</div></td>";
+				$text .= "
+							</div>
+						</td>
+				";
 			}
 			else
 			{
-				$text .= "<tr>
-				<td class='forumheader3' style='width:45%'>{$lnk}</td>
-				<td class='forumheader' style='width:50%'>".LAN_CHECK_4."</td>"; // file missing.
+			// file missing
+				$text .= "
+						<td>{$lnk}</td>
+						<td><span class='error'>".LAN_CHECK_4."</span></td>
+				";
 			}
+			
 			// Leave in EDIT button for all entries - to allow re-translation of bad entries.
 			$subpath = ($subdir!='') ? $subdir.$k : $k;
-			$text .="<td class='forumheader3' style='width:5%;text-align:center'>
-			<input class='tbox' type='button' style='width:60px' name='but_$i' value=\"".LAN_EDIT."\" onclick=\"window.location='".e_SELF."?".$subpath."|".$_POST['language']."'\" /> ";
-			$text .="</td></tr>";
+			$text .= "
+						<td class='center'>
+							".$frm->admin_button('but-corelan-'.str_replace(array('/', '\\'), '-', $subdir).$i, LAN_EDIT, 'edit', '', array('other' => "onclick=\"window.location='".e_SELF."?".$subpath."|".$_POST['language']."'\""))."
+			";
+			$text .= "
+						</td>
+					</tr>
+			";
 		}
+		$i++;
 	}
-	$text .= "</table>";
-
+	$text .= "
+				</tbody>
+			</table>
+		</fieldset>
+	";
+	
 	return $text;
 }
 
@@ -382,9 +467,10 @@ function get_comp_lan_phrases($comp_dir,$lang,$depth=0)
 }
 
 // for plugins and themes - checks what kind of language files directory structure we have
-function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
-	global $ns,$sql;
-
+function check_lanfiles($mode, $comp_name, $base_lan="English", $target_lan)
+{
+	global $frm;
+	
 	$folder['P'] = e_PLUGIN.$comp_name;
 	$folder['T'] = e_THEME.$comp_name;
 	$comp_dir = $folder[$mode];
@@ -396,29 +482,34 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 	$keys = array_keys($baselang);
 	sort($keys);
 
+	$i = 0;
 	foreach($keys as $k)
 	{
 		$lnk = $k;
 		//echo "klucz ".$k."<br />";
 		$k_check = str_replace("English",$target_lan,$k);
+		$text .= "
+			<tr>
+		";
 		if(array_key_exists($k_check,$check))
 		{
-			$text .= "<tr>
-			<td class='forumheader3' style='width:20%'>".$comp_name."</td>
-			<td class='forumheader3' style='width:25%'>".str_replace("English/","",$lnk)."</td>";
+			$text .= "
+					<td>".$comp_name."</td>
+					<td>".str_replace("English/","",$lnk)."</td>
+			";
 
 			$subkeys = array_keys($baselang[$k]);
-			$er="";
+			$er = "";
 			$utf_error = "";
 
 			$bomkey = str_replace(".php","",$k_check);
-			$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
+			$bom_error = ($check['bom'][$bomkey]) ? "<span class='error'><em>".LAN_CHECK_15."</em></span><br />" : ""; // illegal chars
 
 			foreach($subkeys as $sk)
 			{
 				if($utf_error == "" && !is_utf8($check[$k_check][$sk]))
 				{
-					$utf_error = "<i>".LAN_CHECK_19."</i><br />";
+					$utf_error = "<span class='error'><em>".LAN_CHECK_19."</em></span><br />";
 				}
 
 				if(!array_key_exists($sk,$check[$k_check]) || (trim($check[$k_check][$sk]) == "" && $baselang[$k][$sk] != ""))
@@ -428,33 +519,43 @@ function check_lanfiles($mode,$comp_name,$base_lan="English",$target_lan){
 				}
 			}
 
-			$style = ($er) ? "forumheader2" : "forumheader3";
-			$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
+			$style = ($er) ? "warning" : "success";
+			$text .= "
+				<td class='{$style}' style='width:50%'>
+					<div class='smalltext'>
+			";
 			$text .= $bom_error . $utf_error;
 			$text .= (!$er && !$bom_error && !$utf_error) ? LAN_OK : $er."<br />";
-			$text .= "</div></td>";
+			$text .= "
+					</div>
+				</td>
+			";
 		}
 		else
 		{
-			$text .= "<tr>
-			<td class='forumheader3' style='width:20%'>".$comp_name."</td>
-			<td class='forumheader3' style='width:25%'>".str_replace("English/","",$lnk)."</td>
-			<td class='forumheader' style='width:50%'><span style='cursor:pointer' title=\"".str_replace("English",$target_lan,$lnk)."\">".LAN_CHECK_4."</span></td>";
+			$text .= "
+				<td>".$comp_name."</td>
+				<td>".str_replace("English/","",$lnk)."</td>
+				<td><span style='cursor:pointer' title='".str_replace("English",$target_lan,$lnk)."'>".LAN_CHECK_4."</span></td>
+			";
 		}
 
-		$text .="<td class='forumheader3' style='width:5%;text-align:center'>
-		<input class='tbox' type='button' style='width:60px' name='but_$i' value=\"".LAN_EDIT."\" onclick=\"window.location='".e_SELF."?".$comp_dir."/languages/".$lnk."|".$target_lan."|file'\" /> ";
-		$text .="</td></tr>";
+		$text .="
+				<td class='center'>
+					".$frm->admin_button('but-corelan-'.str_replace(array('/', '\\'), '-', $comp_dir).$i, LAN_EDIT, 'edit', '', array('other'=> "onclick=\"window.location='".e_SELF."?".$comp_dir."/languages/".$lnk."|".$target_lan."|file'\""))."
+		";
+		$text .="
+				</td>
+			</tr>
+		";
+		$i++;
 	}
 
-
-
-	// if (!$known) {$text = LAN_CHECK_18." : --> ".$fname." :: ".$dname;}
 	return $text;
 }
 
 function edit_lanfiles($dir1,$dir2,$f1,$f2){
-	global $ns,$sql,$lan;
+	global $e107, $emessage, $lan;
 
 	/*    echo "<br />dir1 = $dir1";
 	echo "<br />file1 = $f1";
@@ -484,9 +585,25 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 	$keys = array_keys($trans);
 	sort($keys);
 
-	$text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."?".e_QUERY."' id='transform'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>";
+	$text = "
+		<form method='post' action='".e_SELF."?".e_QUERY."' id='transform'>
+			<fieldset id='core-lancheck-edit'>
+				<legend>".LAN_CHECK_3." ".str_replace(array(e_PLUGIN, e_LANGUAGEDIR), array(e_PLUGIN_ABS, e_LANGUAGEDIR_ABS), $dir2)."{$f2} -&gt; {$lan}</legend>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+					<colgroup span='3'>
+						<col style='width: 20%'></col>
+						<col style='width: 40%'></col>
+						<col style='width: 40%'></col>
+					</colgroup>
+					<thead>
+						<tr>
+							<th>&nbsp;</th>
+							<th>".LAN_CHECK_16."</th>
+							<th class='last'>Translate to ".$lan."</th>
+						</tr>
+					</thead>
+					<tbody>
+	";
 
 	$subkeys = array_keys($trans['orig']);
 	foreach($subkeys as $sk)
@@ -494,58 +611,69 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 		$rowamount = round(strlen($trans['orig'][$sk])/34)+1;
 		$hglt1=""; $hglt2="";
 		if ($trans['tran'][$sk] == "" && $trans['orig'][$sk]!="") {
-			$hglt1="<span style='font-style:italic;font-weight:bold;color:red'>";
+			$hglt1="<span class='error'>";
 			$hglt2="</span>";
 		}
-		$text .="<tr>
-		<td class='forumheader3' style='width:10%;vertical-align:top'>".$hglt1.htmlentities($sk).$hglt2."</td>
-		<td class='forumheader3' style='width:40%;vertical-align:top'>".htmlentities(str_replace("ndef++","",$trans['orig'][$sk])) ."</td>";
-		$text .= "<td class='forumheader3' style='width:50%;vertical-align:top'>";
-		$text .= ($writable) ? "<textarea  class='tbox' name='newlang[]' rows='$rowamount' cols='45' style='height:100%'>" : "";
-		$text .= str_replace("ndef++","",$trans['tran'][$sk]);
-		$text .= ($writable) ? "</textarea>" : "";
+		$text .= "
+						<tr>
+							<td>".$hglt1.htmlentities($sk).$hglt2."</td>
+							<td>".htmlentities(str_replace("ndef++", "", $trans['orig'][$sk])) ."</td>
+							<td>
+								".(($writable) ? "<textarea  class='tbox' name='newlang[]' rows='{$rowamount}' cols='45'>" : "")
+								.str_replace("ndef++","",$trans['tran'][$sk])
+								.(($writable) ? "</textarea>" : "")."
+		";
 		//echo "orig --> ".$trans['orig'][$sk]."<br />";
 		if (strpos($trans['orig'][$sk],"ndef++") !== False)
 		{
 			//echo "+orig --> ".$trans['orig'][$sk]." <> ".strpos($trans['orig'][$sk],"ndef++")."<br />";
-			$text .= "<input type='hidden' name='newdef[]' value='ndef++".$sk."' />";
+			$text .= "
+								<input type='hidden' name='newdef[]' value='ndef++".$sk."' />
+			";
 		}
 		else
 		{
-			$text .= "<input type='hidden' name='newdef[]' value='".$sk."' />";
+			$text .= "
+								<input type='hidden' name='newdef[]' value='".$sk."' />
+			";
 		}
-		$text .="</td></tr>";
+		$text .="
+							</td>
+						</tr>
+		";
 	}
-
+	$text .= "
+					</tbody>
+				</table>
+	";
 	//Check if directory is writable
 	if($writable)
 	{
-		$text .="<tr style='vertical-align:top'>
-		<td colspan='3' style='text-align:center' class='forumheader'>
-		<input class='button' type='submit' name='submit' value=\"".LAN_SAVE." ".str_replace($dir2,"",$root_file)." \" />";
-
-		if($root_file)
-		{
-			$text .= "<input type='hidden' name='root' value='".$root_file."' />";
-		}
-
-		$text .= "</td></tr>";
+		$text .="
+				<div class='buttons-bar center'>
+					<button class='update' type='submit' name='submit' value='".LAN_SAVE." ".str_replace($dir2,"",$root_file)."'><span>".LAN_SAVE." ".str_replace($dir2,"",$root_file)."</span></button>
+					".(($root_file) ? "<input type='hidden' name='root' value='".$root_file."' />" : "")."
+				</div>
+		";
 	}
 
 	$text .= "
-	</table>
-	</form>
-	</div>";
+			</fieldset>
+		</form>
+	";
 
-	$text .= "<form method='post' action='".e_SELF."' id='select_lang'>
-	<div style='text-align:center'><br />";
-	$text .= (!$writable) ? "<br />".$dir2.$f2.LAN_NOTWRITABLE : "";
-	$text .= "<br /><br /><input class='button' type='submit' name='language_sel' value=\"".LAN_BACK."\" />
-	<input type='hidden' name='language' value='$lan' /></div></form>";
+	$text .= "
+		<form method='post' action='".e_SELF."' id='select_lang'>
+			<div style='text-align:center'>
+				".((!$writable) ? $dir2.$f2.LAN_NOTWRITABLE : "")."
+				<br />
+				<button class='submit' type='submit' name='language_sel' value='".LAN_BACK."'><span>".LAN_BACK."</span></button>
+				<input type='hidden' name='language' value='$lan' />
+			</div>
+		</form>
+	";
 
-
-	$caption = LAN_CHECK_3." <b>".$dir2.$f2."</b> -> <b>".$lan."</b>";
-	$ns -> tablerender($caption, $text);
+	$e107->ns->tablerender(LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24, $text);
 	require_once(e_ADMIN."footer.php");
 	exit;
 
@@ -659,19 +787,19 @@ function lancheck_adminmenu() {
 		$action = "db";
 	}
 	$var['main']['text'] = LAN_PREFS;
-	$var['main']['link'] = e_ADMIN."language.php";
+	$var['main']['link'] = e_ADMIN_ABS."language.php";
 
 	if(isset($pref['multilanguage']) && $pref['multilanguage']){
 		$var['db']['text'] = LANG_LAN_03;
-		$var['db']['link'] = e_ADMIN."language.php?db";
+		$var['db']['link'] = e_ADMIN_ABS."language.php?db";
 	}
 
 	$var['tools']['text'] = ADLAN_CL_6;
-	$var['tools']['link'] = e_ADMIN."language.php?tools";
+	$var['tools']['link'] = e_ADMIN_ABS."language.php?tools";
 
 
 	show_admin_menu(ADLAN_132, $action, $var);
 }
 
-	$ns -> tablerender(LAN_CHECK_1, 'No data');
+	$ns -> tablerender(LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_1, LAN_CHECK_26);
 	require_once(e_ADMIN."footer.php");

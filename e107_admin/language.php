@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-15 17:03:25 $
+ * $Revision: 1.13 $
+ * $Date: 2008-12-15 21:16:31 $
  * $Author: secretr $
  *
 */
@@ -28,7 +28,6 @@ require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."message_handler.php");
 
-$rs = new form;
 $frm = new e_form();
 $emessage = &eMessage::getInstance();
 
@@ -454,7 +453,7 @@ function table_list() {
 
 // ------------- render form ---------------------------------------------------
 function multilang_db(){
-	global $pref, $e107, $tp, $rs, $frm, $emessage, $lanlist, $tabs;
+	global $pref, $e107, $tp, $frm, $emessage, $lanlist, $tabs;
 
 	if(isset($pref['multilanguage']) && $pref['multilanguage']){
 
