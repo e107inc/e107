@@ -53,7 +53,7 @@ input, select{ vertical-align:middle; }
 textarea	{ overflow:auto; }
 
 /* Table */
-table       { border:0; border-spacing:0; empty-cells:show; font-size:100%; }
+table       { border:0; border-spacing:0; empty-cells:show; font-size:100%; width: 100%; }
 th          { vertical-align:top; text-align:left; font-weight:normal; }
 td          { vertical-align:top; }
 
@@ -110,6 +110,7 @@ select, .tbox, .helpbox {
     background:#fff;
     font:12px arial, helvetica, sans-serif;
 }
+option { padding-right: 10px;}
 input.input-text, textarea, .tbox, .helpbox { padding:2px; }
 select.tbox  { min-height:17px; padding: 0px; /* to set the height for empty selects */ }
 .select.order { width: 40px !important; }
@@ -134,7 +135,7 @@ input.radio { margin-right: 3px; }
 .adminform td.label { }
 .adminform td.control { }
 
-.field-help { width: 280px; line-height: 1.4em; padding-top: 3px; color:#333333 }
+.field-help { width: 280px; line-height: 1.4em; padding-top: 3px; color:#333333; font-size: 11px; }
 .label-note { font-style: italic; }
 
 /* form used for content edit */
@@ -177,12 +178,12 @@ input.radio { margin-right: 3px; }
 
 /******** SyS Messages / Message text formatting */
 /* message boxes */
-#s-message {margin-bottom: 10px; }
+#s-message { }
 
 #s-message div.info,
 #s-message div.error,
 #s-message div.success,
-#s-message div.warning { padding: 5px;}
+#s-message div.warning { padding: 5px; margin-bottom: 10px; }
 
 
 #s-message div.info 	{ background-color:#C1E0FF; border: 1px solid #3399FF; }
@@ -249,11 +250,13 @@ button.delete:hover span,
 button.delete:focus span 	{ background-image:url(images/btn_remove_over_left.gif) } 
 button.delete:active span	{ background-image:url(images/btn_remove_active_left.gif)}
 
+/* Do we need this? Just no additional class?
 button.submit span			{}
 button.submit span			{}
 button.submit:hover span,
 button.submit:focus span 	{} 
 button.submit:active span	{}
+*/
 
 button.update span			{ padding-left: 30px; }
 button.update span			{ background-image:url(images/btn_update_left.gif); }
@@ -272,6 +275,12 @@ button.edit span			{}
 button.edit:hover span,
 button.edit:focus span 		{} 
 button.edit:active span		{}
+
+button.cancel span			{}
+button.cancel span			{}
+button.cancel:hover span,
+button.cancel:focus span 		{} 
+button.cancel:active span		{}
 
 
 .buttons-bar { padding: 10px 0px; }
@@ -325,13 +334,18 @@ ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
 .page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
 .page-info p { padding: 10px; }
 
-#core-prefs-main .col-label {}
-
 #core-emoticon-configure input.input-text { width: 300px; }
 #core-links-edit textarea { width: 390px !important; }
 #core-links-edit .helpbox { width: 390px !important; margin: 5px 0px; }
 #core-links-edit .field-help { width: 390px; }
-	
+
+#core-admin-log-config legend { font-weight: bold; }
+
+#core-admin-log-options .checkbox,
+#core-admin-log-filter	.checkbox { margin-right: 5px; }
+
+#core-admin-log-maintenance .select { width: 60px; }
+#core-admin-log-maintenance button { margin-left: 10px; }
 
 #core-frontpage-edit-home			{ width: 50%; float: left; } 
 #core-frontpage-edit-post-login		{ width: 50%; float: left; }
@@ -343,6 +357,14 @@ ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
 #core-frontpage-edit .buttons-bar 	{ clear: both; }
 
 /******** Core Block IDs */
+/* admin_log.php */
+#core-admin-log-config				{}
+#core-admin-log-options				{}
+#core-admin-log-maintenance			{}
+#core-admin-log-filter				{}
+#core-admin-log-list				{}
+#core-admin-log-confirm-delete		{}
+
 /* cache.php */
 #core-cache-settings				{} /* General cache settings - Default front page */
 
