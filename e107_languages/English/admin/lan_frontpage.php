@@ -1,13 +1,10 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_frontpage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-15 13:31:02 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_frontpage.php,v 1.4 2008-12-15 13:42:25 secretr Exp $
+ *
+ * Admin Language File
+ *
 */
 
 /*
