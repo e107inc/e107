@@ -213,6 +213,7 @@ input.radio { margin-right: 3px; }
 /******** Tooltip info */
 .e-info {}
 
+/******** Admin Buttons */
 button { 
   border:0; 
   cursor:pointer; 
@@ -250,13 +251,13 @@ button.delete:hover span,
 button.delete:focus span 	{ background-image:url(images/btn_remove_over_left.gif) } 
 button.delete:active span	{ background-image:url(images/btn_remove_active_left.gif)}
 
-/* Do we need this? Just no additional class?
+/*default submit*/
 button.submit span			{}
 button.submit span			{}
 button.submit:hover span,
 button.submit:focus span 	{} 
 button.submit:active span	{}
-*/
+
 
 button.update span			{ padding-left: 30px; }
 button.update span			{ background-image:url(images/btn_update_left.gif); }
@@ -287,6 +288,10 @@ button.cancel:active span		{}
 .buttons-bar button { margin-right: 10px; }
 .buttons-bar button.f-right { margin-right: 0px; }
 
+/* Actions (adminlist ) */
+input.action {} /* default */
+input.delete {}
+input.edit {}
 
 /*******************************************************************************************************************/
 

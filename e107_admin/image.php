@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.17 $
- * $Date: 2008-12-12 22:39:17 $
+ * $Revision: 1.18 $
+ * $Date: 2008-12-15 13:31:01 $
  * $Author: secretr $
  *
 */
@@ -26,7 +26,6 @@ require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."message_handler.php");
-$rs = new form;
 $frm = new e_form(); //new form handler
 
 $emessage = &eMessage::getInstance();

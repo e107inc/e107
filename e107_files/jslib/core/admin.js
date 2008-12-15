@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-11 11:25:21 $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-15 13:31:02 $
  * $Author: secretr $
  * 
 */
@@ -33,7 +33,7 @@ e107Admin.Helper = {
 		$$('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
 		$$('button.action[name=check_all]').invoke('observe', 'click', this.allCheckedEventHandler);
 		$$('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
-		$$('button.delete').invoke('observe', 'click', function(e){ if( !e107Helper.confirm(e107.getModLan('delete_confirm')) ) e.stop(); });
+		$$('button.delete', 'input.delete[type=image]').invoke('observe', 'click', function(e){ if( !e107Helper.confirm(e107.getModLan('delete_confirm')) ) e.stop(); });
 	},
 	
 	/**
