@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-11 16:02:05 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -49,12 +49,12 @@ function forum_thread_moderate($p)
 					break;
 
 				case 'stick':
-					$e107->sql->db_Update('forum_thread', 'thread_s=1 WHERE thread_id='.$id);
+					$e107->sql->db_Update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id);
 					return FORLAN_STICK;
 					break;
 
 				case 'unstick':
-					$e107->sql->db_Update('forum_thread', 'thread_s=0 WHERE thread_id='.$id);
+					$e107->sql->db_Update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id);
 					return FORLAN_UNSTICK;
 					break;
 

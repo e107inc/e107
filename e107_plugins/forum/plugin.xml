@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.15 2008-12-10 15:29:31 mcfly_e107 Exp $ -->
+<!-- $Id: plugin.xml,v 1.16 2008-12-15 00:29:20 mcfly_e107 Exp $ -->
 <e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true">
 	<author name="e107dev" url="http://e107.org"/>
 	<description>This plugin is a fully featured Forum system</description>
@@ -22,6 +22,7 @@
 		<pref name="forum_enclose" value="1" />
 		<pref name="forum_title" value="Forums" />
 		<pref name="forum_postspage" value="10" />
+		<pref name="forum_threadspage" value="25" />
 		<pref name="forum_hilightsticky" value="1" />
 	</mainPrefs>
 	<userclass name="forum_moderator" description="Moderator of all forums" />

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_viewtopic.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-13 21:52:19 $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -85,6 +85,7 @@ define("FORLAN_101", "Email Thread");
 define("FORLAN_102", "Print View");
 define('FORLAN_103', '[user deleted]');
 define('FORLAN_104', 'Thread not found');
+define('FORLAN_105', 'Moderator: Split');
 define('FORLAN_BY', 'by');
 define("FORLAN_HIDDEN", "HIDDEN - LOGIN AND REPLY TO REVEAL");
 ?>

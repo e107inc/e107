@@ -1,5 +1,5 @@
 <?php
-// $Id: thread.php,v 1.7 2008-12-14 03:18:45 mcfly_e107 Exp $
+// $Id: thread.php,v 1.8 2008-12-15 00:29:20 mcfly_e107 Exp $
 function url_forum_thread($parms)
 {
 	switch($parms['func'])
@@ -36,7 +36,11 @@ function url_forum_thread($parms)
 			break;
 
 		case 'move':
-			return e_PLUGIN_ABS."forum/forum_post.php?f=move&id={$parms['id']}";
+			return e_PLUGIN_ABS."forum/forum_conf.php?f=move&id={$parms['id']}";
+			break;
+
+		case 'split':
+			return e_PLUGIN_ABS."forum/forum_conf.php?f=split&id={$parms['id']}";
 			break;
 
 		case 'quote':

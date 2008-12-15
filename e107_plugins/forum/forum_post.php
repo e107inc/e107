@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2008-12-13 21:52:18 $
+|     $Revision: 1.32 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -269,7 +269,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			// New thread started.  Add the thread info (with lastest post info), add the post.
 			// Update forum with latest post info
 			case 'nt':
-				$threadInfo['thread_s'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
+				$threadInfo['thread_sticky'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
 				$threadInfo['thread_name'] = $_POST['subject'];
 				$threadInfo['thread_forum_id'] = $forumId;
 				$threadInfo['thread_active'] = 1;
@@ -375,9 +375,9 @@ if (isset($_POST['update_thread']))
 		$postVals['post_edit_datestamp'] = time();
 		$postVals['post_edit_user'] = USERID;
 		$postVals['post_entry'] = $_POST['post'];
-		
+
 		$threadVals['thread_name'] = $_POST['subject'];
-		
+
 		$forum->threadUpdate($postInfo['post_thread'], $threadVals);
 		$forum->postUpdate($postInfo['post_id'], $postVals);
 		$e107cache->clear('newforumposts');
@@ -405,7 +405,7 @@ if (isset($_POST['update_reply']))
 		$postVals['post_edit_datestamp'] = time();
 		$postVals['post_edit_user'] = USERID;
 		$postVals['post_entry'] = $_POST['post'];
-		
+
 		$forum->postUpdate($postInfo['post_id'], $postVals);
 		$e107cache->clear('newforumposts');
 		$url = $e107->url->getUrl('forum', 'thread', "func=post&id={$postInfo['post_id']}");

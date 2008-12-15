@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-05 01:30:56 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -233,12 +233,12 @@ if(isset($_POST['update_forum']))
 	$tmp['WHERE'] = 'forum_id = '.(int)$id;
 
 	$tmp2['_FIELD_TYPES'] = $tmp['_FIELD_TYPES'];
-	$tmp2['forum_moderators'] = $tmp['forum_moderators'];		
-	$tmp2['forum_class'] = $tmp['forum_class'];		
-	$tmp2['forum_postclass'] = $tmp['forum_postclass'];		
-	$tmp2['forum_threadclass'] = $tmp['forum_threadclass'];		
+	$tmp2['forum_moderators'] = $tmp['forum_moderators'];
+	$tmp2['forum_class'] = $tmp['forum_class'];
+	$tmp2['forum_postclass'] = $tmp['forum_postclass'];
+	$tmp2['forum_threadclass'] = $tmp['forum_threadclass'];
 	$tmp2['WHERE'] = 'forum_sub = '.(int)$id;
-	
+
 	$sql->db_Update('forum', $tmp);
 	$sql->db_Update('forum', $tmp2);
 
@@ -268,6 +268,7 @@ if (isset($_POST['updateoptions']))
 	$pref['forum_enclose'] = $_POST['forum_enclose'];
 	$pref['forum_title'] = $_POST['forum_title'];
 	$pref['forum_postspage'] = $_POST['forum_postspage'];
+	$pref['forum_threadspage'] = $_POST['forum_threadspage'];
 	$pref['html_post'] = $_POST['html_post'];
 	$pref['forum_attach'] = $_POST['forum_attach'];
 	$pref['forum_redirect'] = $_POST['forum_redirect'];

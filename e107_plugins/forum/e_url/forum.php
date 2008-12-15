@@ -1,11 +1,12 @@
 <?php
-// $Id: forum.php,v 1.3 2008-12-13 21:52:19 mcfly_e107 Exp $
+// $Id: forum.php,v 1.4 2008-12-15 00:29:20 mcfly_e107 Exp $
 function url_forum_forum($parms)
 {
 	switch($parms['func'])
 	{
 		case 'view':
-			return e_PLUGIN_ABS."forum/forum_viewforum.php?id={$parms['id']}";
+			$page = (varset($parms['page']) ? '&p='.$parms['page'] : '');
+			return e_PLUGIN_ABS."forum/forum_viewforum.php?id={$parms['id']}{$page}";
 			break;
 
 		case 'track':

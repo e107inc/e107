@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-10 21:00:48 $
+|     $Revision: 1.11 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -212,7 +212,7 @@ require_once(HEADERF);
 
 $parent_list = $forum->forum_getparents();
 $forum_list = $forum->forum_getforums();
-$sub_list = $forum->forum_getsubs();
+$sub_list = $forum->forumGetSubs();
 $newflag_list = $forum->forum_newflag_list();
 
 if (!$parent_list)
