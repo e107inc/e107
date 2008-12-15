@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.123 $
-|     $Date: 2008-12-10 18:06:50 $
+|     $Revision: 1.124 $
+|     $Date: 2008-12-15 22:53:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -462,6 +462,7 @@ global $db_debug;
 		$error = TRUE;
 	}
 
+
 	// check for multiple signups from the same IP address.
 	if($ipcount = $sql->db_Select("user", "*", "user_ip='".$e107->getip()."' and user_ban !='2' "))
 	{
@@ -623,35 +624,42 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 
 	// Extended Field validation
 	$extList = $usere->user_extended_get_fieldList();
+	$eufVals = array();
 
 	foreach($extList as $ext)
 	{
-		if(isset($_POST['ue']['user_'.$ext['user_extended_struct_name']]))
+		$eufName = 'user_'.$ext['user_extended_struct_name'];
+		if(isset($_POST['ue'][$eufName]))
 		{
-			$newval = trim($_POST['ue']['user_'.$ext['user_extended_struct_name']]);
+			$newval = trim($_POST['ue'][$eufName]);
+//			echo "Vetting field ".'user_'.$ext['user_extended_struct_name'].": {$newval} = ".trim($_POST['ue']['user_'.$ext['user_extended_struct_name']])."<br />";
 			if($ext['user_extended_struct_required'] == 1 && (($newval == "") || (($ext['user_extended_struct_type'] == 7) && ($newval == '0000-00-00')) ))
-			{
+			{	// Required field not present
 				$_ftext = (defined($ext['user_extended_struct_text']) ? constant($ext['user_extended_struct_text']) : $ext['user_extended_struct_text']);
 				$error_message .= LAN_SIGNUP_6.$_ftext.LAN_SIGNUP_7."\\n";
 				$error = TRUE;
 			}
-			$parms = explode("^,^", $ext['user_extended_struct_parms']);
-			$regex = (isset($parms[1]) ? $tp->toText($parms[1]) : "");
-			$regexfail = (isset($parms[2]) ? trim($tp->toText($parms[2])) : "");
-
-			if($regexfail == "")
+			else
 			{
-				$regexfail = $ext['user_extended_struct_name']." ".LAN_SIGNUP_53;
-			}
+				$parms = explode("^,^", $ext['user_extended_struct_parms']);
+				$regex = (isset($parms[1]) ? $tp->toText($parms[1]) : "");
+				$regexfail = (isset($parms[2]) ? trim($tp->toText($parms[2])) : "");
 
-			if(defined($regexfail)) {$regexfail = constant($regexfail);}
+				if($regexfail == "")
+				{
+					$regexfail = $ext['user_extended_struct_name']." ".LAN_SIGNUP_53;
+				}
 
-			if($regex != "" && $newval != "")
-			{
-				if(!preg_match($regex, $newval))
+				if(defined($regexfail)) {$regexfail = constant($regexfail);}
+
+				if($regex != "" && $newval != "" && !preg_match($regex, $newval))
 				{
 					$error_message .= $regexfail."\\n";
 					$error = TRUE;
+				}
+				else
+				{
+					$eufVals[$eufName] = $newval;
 				}
 			}
 		}
@@ -686,10 +694,10 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 		$ip = $e107->getip();
 
 		$ue_fields = "";
-		foreach($_POST['ue'] as $key => $val)
+		if (count($eufVals))
 		{
-			if (isset($extList[$key]))
-			{	// Only allow valid keys
+			foreach($eufVals as $key => $val)	// We've already ensured only valid keys here
+			{
 				$key = $tp->toDB($key);
 				$val = $tp->toDB($val);
 				$ue_fields .= ($ue_fields) ? ", " : "";
