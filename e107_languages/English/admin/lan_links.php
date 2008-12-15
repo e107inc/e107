@@ -1,14 +1,12 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-11-02 10:15:37 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_links.php,v 1.4 2008-12-15 22:32:24 secretr Exp $
+ *
+ * Admin Language File
+ * 
 */
+
 define("LCLAN_1", "Options Saved");
 define("LCLAN_2", "Link saved to database.");
 define("LCLAN_3", "Link updated in database.");
