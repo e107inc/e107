@@ -64,6 +64,18 @@ function tablestyle($caption, $text){
 			</div>
 		';
 	break;
+	
+	case 'admin_content':
+		echo '
+			<div class="block">
+				<h2>'.$caption.'</h2>
+				<div class="block-text">
+					'.$text.'
+				</div>
+			</div>
+		';
+	break;
+	
 	default:
 		echo '
 			<div class="block">

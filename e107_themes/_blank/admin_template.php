@@ -9,8 +9,8 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-12 11:23:05 $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-15 21:16:31 $
  * $Author: secretr $
  *
 */
@@ -45,6 +45,7 @@ $ADMIN_HEADER = "
 				<td>
 					<div class='col-main'>
 						<div class='inner-wrapper'>
+						{SETSTYLE=admin_content}
 ";
 /*
 	{SETSTYLE=admin_menu}

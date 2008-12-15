@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-12 23:29:32 $
+ * $Revision: 1.7 $
+ * $Date: 2008-12-15 21:16:32 $
  * $Author: secretr $
  *
 */
@@ -165,7 +165,7 @@ class e_form
 		return "<input class='image' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 	
-	function admin_button($name, $value, $action = '', $label = '', $options = array())
+	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		$options['class'] = $action; //additional classes in options not allowed
 		$btype = 'submit';
