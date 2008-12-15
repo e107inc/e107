@@ -116,9 +116,10 @@ select.tbox  { min-height:17px; padding: 0px; /* to set the height for empty sel
 .select.order { width: 40px !important; }
 .select.time-offset { width: 60px !important; }
 input.radio { margin-right: 3px; }
+label { cursor: pointer; }
 
 /* Related JS functionality - .autocheck together with .auto-toggle-area (see admin/image.php) */
-.auto-toggle-area { width: 280px; }
+.auto-toggle-area { width: 280px; cursor: pointer; }
 	
 /* form used for settings */
 .col-label { width: 250px; }
@@ -292,6 +293,9 @@ button.cancel:active span		{}
 input.action {} /* default */
 input.delete {}
 input.edit {}
+
+/********** Misc */
+.e-pointer { cursor: pointer; }
 
 /*******************************************************************************************************************/
 

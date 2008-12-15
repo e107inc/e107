@@ -1,18 +1,15 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_language.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-07 21:41:04 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_language.php,v 1.6 2008-12-15 17:03:25 secretr Exp $
+ *
+ * Admin Language File
+ *
 */
 
-define("LANG_LAN_00","could not be created.(already exists)");
-define("LANG_LAN_01","was deleted(if existing) and created.");
-define("LANG_LAN_02","couldn't be deleted");
+define("LANG_LAN_00","%s could not be created (already exists).");
+define("LANG_LAN_01","%s was deleted (if existing) and created.");
+define("LANG_LAN_02","%s couldn't be deleted.");
 define("LANG_LAN_03","Tables");
 
 define("LANG_LAN_05","Not Installed");
@@ -39,8 +36,14 @@ define("LANG_LAN_25", "Language-Pack Creation Status");
 define('LANG_LAN_26', 'Load language files only for current language');
 define('LANG_LAN_27', 'If checked, and a required language can\'t be found, there will be an error');
 
+//0.8
+define('LANG_LAN_PAGE_TITLE', 'Languages');
+define('LANG_LAN_28', '%s deleted.');
+define('LANG_LAN_29', '%s couldn\'t be deleted.');
+define('LANG_LAN_30', '%s created.');
+define('LANG_LAN_31', '%s couldn\'t be deleted.');
+define('LANG_LAN_32', '%s was disabled but left intact.');
+define('LANG_LAN_33', 'Delete all tables in %s?');
 
-
-
-
+define('LANG_LAN_09', 'Are you sure?');
 ?>

@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-15 13:31:02 $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-15 17:03:25 $
  * $Author: secretr $
  * 
 */
@@ -33,7 +33,10 @@ e107Admin.Helper = {
 		$$('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
 		$$('button.action[name=check_all]').invoke('observe', 'click', this.allCheckedEventHandler);
 		$$('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
-		$$('button.delete', 'input.delete[type=image]').invoke('observe', 'click', function(e){ if( !e107Helper.confirm(e107.getModLan('delete_confirm')) ) e.stop(); });
+		$$('button.delete', 'input.delete[type=image]').invoke('observe', 'click', function(e) { 
+			var msg = e.element().readAttribute('title') || e107.getModLan('delete_confirm');
+			if( !e107Helper.confirm(msg) ) e.stop(); 
+		});
 	},
 	
 	/**
@@ -66,7 +69,7 @@ e107Admin.Helper = {
 		var tmp = event.element().nodeName.toLowerCase(); 
 		if(tmp == 'input' || tmp == 'a' || tmp == 'select' || tmp == 'textarea' || tmp == 'radio') return;
 		//stop event
-		event.stop();
+		//event.stop();
 		
 		//checkbox container element
 		var element = event.findElement('.autocheck'), check = null;
