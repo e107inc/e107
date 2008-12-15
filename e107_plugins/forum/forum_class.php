@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2008-12-14 03:18:45 $
+|     $Revision: 1.27 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ class e107forum
 		$this->fieldTypes['forum_thread']['thread_user'] 		= 'int';
 		$this->fieldTypes['forum_thread']['thread_lastpost'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_lastuser'] 	= 'int';
-		$this->fieldTypes['forum_thread']['thread_s'] 			= 'int';
+		$this->fieldTypes['forum_thread']['thread_sticky'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_forum_id'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_active'] 	= 'int';
 		$this->fieldTypes['forum_thread']['thread_datestamp']	= 'int';
@@ -282,9 +282,9 @@ class e107forum
 		{
 			//TODO: Fix query to get only forum and parent info needed, with correct naming
 			$qry = '
-			SELECT t.*, f.*, 
+			SELECT t.*, f.*,
 			fp.forum_id as parent_id, fp.forum_name as parent_name,
-			sp.forum_id as forum_sub, sp.forum_name as sub_parent, 
+			sp.forum_id as forum_sub, sp.forum_name as sub_parent,
 			tr.track_userid
 			FROM `#forum_thread` AS t
 			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
@@ -457,7 +457,7 @@ class e107forum
 
 	/**
 	 * Given threadId and postId, determine which number of post in thread the postid is
-	 * 
+	 *
 	*/
 	function postGetPostNum($threadId, $postId)
 	{
@@ -589,13 +589,13 @@ class e107forum
 
 	function threadMarkAsRead($threadId)
 	{
+		global $currentUser;
 		$e107 = e107::getInstance();
 		$threadId = (int)$threadId;
-		$currentUser['user_plugin_forum_viewed'] = '4..5..6.7.8';
-		$_tmp = preg_split('#\.+#', $currentUser['user_plugin_forum_viewed']);
+		$_tmp = preg_split('#\,+#', $currentUser['user_plugin_forum_viewed']);
 		$_tmp[] = $threadId;
-		$viewed = '.'.implode('.', $_tmp).'.';
-		unset($_tmp);
+		$tmp = array_unique($tmp);
+		$viewed = trim(implode(',', $_tmp), ',');
 		return $e107->sql->db_Update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
 	}
 
@@ -657,13 +657,13 @@ class e107forum
 		return FALSE;
 	}
 
-	function forum_getsubs($forum_id = '')
+	function forumGetSubs($forum_id = '')
 	{
 		global $sql;
-		$where = ($forum_id != '' && $forum_id != 'bysub' ? "AND forum_sub = ".(int)$forum_id : '');
+		$where = ($forum_id != '' && $forum_id != 'bysub' ? 'AND forum_sub = '.(int)$forum_id : '');
 		$qry = "
-		SELECT f.*, u.user_name FROM #forum AS f
-		LEFT JOIN #user AS u ON f.forum_lastpost_user = u.user_id
+		SELECT f.*, u.user_name FROM `#forum` AS f
+		LEFT JOIN `#user` AS u ON f.forum_lastpost_user = u.user_id
 		WHERE forum_sub != 0 {$where}
 		ORDER BY f.forum_order ASC
 		";
@@ -671,7 +671,7 @@ class e107forum
 		{
 			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
-				if($forum_id == "")
+				if($forum_id == '')
 				{
 					$ret[$row['forum_parent']][$row['forum_sub']][] = $row;
 				}
@@ -846,7 +846,7 @@ class e107forum
 		LEFT JOIN `#user` AS lpu ON t.thread_lastuser = lpu.user_id
 		WHERE t.thread_forum_id = {$forumId}
 		ORDER BY
-		t.thread_s DESC,
+		t.thread_sticky DESC,
 		t.thread_lastpost DESC
 		LIMIT ".(int)$from.','.(int)$view;
 
@@ -909,7 +909,7 @@ class e107forum
 			WHERE thread_forum_id = $forumId
 			AND thread_lastpost {$dir} $lastpost
 			ORDER BY
-			thread_s DESC,
+			thread_sticky DESC,
 			thread_lastpost {$sort}
 			LIMIT 1";
 			if ($e107->sql->db_Select_gen($qry))
@@ -934,7 +934,7 @@ class e107forum
 			WHERE t.thread_forum_id = $forum_id
 			AND t.thread_parent = 0
 			ORDER BY
-			t.thread_s DESC,
+			t.thread_sticky DESC,
 			t.thread_lastpost DESC,
 			t.thread_datestamp DESC
 			LIMIT ".intval($from).",".intval($limit);
@@ -1127,7 +1127,7 @@ class e107forum
 		}
 	}
 
-	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_poster, $thread_active, $thread_s, $forum_sub)
+	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_poster, $thread_active, $thread_sticky, $forum_sub)
 	{
 		$post_time = time();
 		global $sql, $tp, $pref, $e107;
@@ -1147,7 +1147,7 @@ class e107forum
 		}
 
 		$post_last_user = ($thread_parent ? "" : $post_user);
-		$vals = "'0', '{$thread_name}', '{$thread_thread}', '".intval($thread_forum_id)."', '".intval($post_time)."', '".intval($thread_parent)."', '{$thread_post_user}', '0', '".intval($thread_active)."', '$post_time', '$thread_s', '0', '{$post_last_user}', '0'";
+		$vals = "'0', '{$thread_name}', '{$thread_thread}', '".intval($thread_forum_id)."', '".intval($post_time)."', '".intval($thread_parent)."', '{$thread_post_user}', '0', '".intval($thread_active)."', '$post_time', '$thread_sticky', '0', '{$post_last_user}', '0'";
 		$newthread_id = $sql->db_Insert('forum_t', $vals);
 		if(!$newthread_id)
 		{
@@ -1262,7 +1262,7 @@ class e107forum
 		if($type == 'delete')
 		{
 			//Get list of threads to prune
-			if ($sql->db_Select("forum_t", "thread_id", "thread_lastpost < $prunedate AND thread_parent=0 AND thread_s != 1 AND thread_forum_id IN ({$forumList})"))
+			if ($sql->db_Select("forum_t", "thread_id", "thread_lastpost < $prunedate AND thread_parent=0 AND thread_sticky != 1 AND thread_forum_id IN ({$forumList})"))
 			{
 				$threadList = $sql->db_getList();
 				foreach($threadList as $thread)

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-10 15:29:31 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -208,5 +208,9 @@ define("FORLAN_183", "(this function is not allowed when selecting 'all forums' 
 
 define('FORLAN_184', 'Thread Creation permission');
 define('FORLAN_185', 'Indicates who can create new threads');
+
+define('FORLAN_186', 'Threads per page');
+define('FORLAN_187', 'Number of threads displayed per page');
+
 
 ?>

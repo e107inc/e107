@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_icons_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-08 02:33:34 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
@@ -47,6 +47,7 @@ define("IMAGE_edit", "<img src='".img_path('edit.png')."' alt='".LAN_400."' titl
 define("IMAGE_quote", "<img src='".img_path('quote.png')."' alt='".LAN_401."' title='".LAN_401."' style='border:0' />");
 define("IMAGE_admin_edit", "<img src='".img_path('admin_edit.png')."' alt='".LAN_406."' title='".LAN_406."' style='border:0; vertical-align: top;' />");
 define("IMAGE_admin_move", "<img src='".img_path('admin_move.png')."' alt='".LAN_402."' title='".LAN_402."' style='border:0; vertical-align: top;' />");
+define("IMAGE_admin_split", "<img src='".img_path('admin_split.png')."' alt='".FORLAN_105."' title='".FORLAN_105."' style='border:0; vertical-align: top;' />");
 define("IMAGE_admin_move2", "<img src='".img_path('admin_move.png')."' alt='".LAN_408."' title='".LAN_408."' style='border:0; vertical-align: top;' />");
 define("IMAGE_post", "<img src='".img_path('post.png')."' alt='' title='' style='border:0' />");
 define("IMAGE_post2", "<img src='".img_path('post2.png')."' alt='' title='' style='border:0; vertical-align:bottom' />");
@@ -55,21 +56,21 @@ define("IMAGE_attachment", "<img src='".img_path('attach.png')."' alt='' title='
 
 define("IMAGE_track", "<img src='".img_path('track.png')."' alt='".LAN_392."' title='".LAN_392."' style='border:0' />");
 define("IMAGE_untrack", "<img src='".img_path('untrack.png')."' alt='".LAN_391."' title='".LAN_391."' style='border:0' />");
-	
+
 // Admin <input> Icons
-	
+
 define("IMAGE_admin_delete", "src='".img_path('admin_delete.png')."' alt='".LAN_435."' title='".LAN_435."' style='border:0' ");
 define("IMAGE_admin_unstick", "src='".img_path('admin_unstick.png')."' alt='".LAN_398."' title='".LAN_398."' style='border:0' ");
 define("IMAGE_admin_stick", "src='".img_path('sticky_small.png')."' alt='".LAN_401."' title='".LAN_401."' style='border:0' ");
 define("IMAGE_admin_lock", "src='".img_path('admin_lock.png')."' alt='".LAN_399."' title='".LAN_399."' style='border:0' ");
 define("IMAGE_admin_unlock", "src='".img_path('admin_unlock.png')."' alt='".LAN_400."' title='".LAN_400."' style='border:0' ");
-	
+
 // Multi Language Images
-	
+
 define("IMAGE_newthread", "<img src='".img_path('newthread.png')."' alt='".FORLAN_10."' title='".FORLAN_10."' style='border:0' />");
 define("IMAGE_reply", "<img src='".img_path('reply.png')."' alt='' title='' style='border:0' />");
 define("IMAGE_rank_moderator_image", "<img src='".img_path('moderator.png', '', 'rank_moderator_image')."' alt='' />");
 define("IMAGE_rank_main_admin_image", "<img src='".img_path('main_admin.png', '', 'rank_main_admin_image')."' alt='' />");
 define("IMAGE_rank_admin_image", "<img src='".img_path('admin.png', '', 'rank_admin_image')."' alt='' />");
-	
+
 ?>

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-12-14 03:18:45 $
+|     $Revision: 1.16 $
+|     $Date: 2008-12-15 00:29:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,7 @@ $pm_installed = plugInstalled('pm');
 
 
 //Only increment thread views if not being viewed by thread starter
-if (USER || USER != $threadInfo['thread_user'] || !$thread->noInc)
+if (USER && (USERID != $threadInfo['thread_user'] || $threadInfo['thread_total_replies'] > 0) || !$thread->noInc)
 {
 	$forum->threadIncview($threadId);
 }
@@ -215,7 +215,7 @@ foreach ($postList as $postInfo)
 		$postInfo['thread_start'] = false;
 		$alt = !$alt;
 
-		if($postInfo['post_s'])
+		if($postInfo['post_status'])
 		{
 			$_style = (isset($FORUMDELETEDSTYLE_ALT) && $alt ? $FORUMDELETEDSTYLE_ALT : $FORUMDELETEDSTYLE);
 		}
@@ -259,7 +259,8 @@ $forumstring = $forstr . $forthr . $forrep . $forend;
 
 require_once (HEADERF);
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
-if ($thread->threadInfo['thread_lastpost'] > USERLV && (strpos($currentUser['user_plugin_forum_viewed'], '.' . $thread->threadId . '.') === false))
+$threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
+if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->threadId, $threadsViewed))
 {
 	$tst = $forum->threadMarkAsRead($thread->threadId);
 }
@@ -318,6 +319,11 @@ function showmodoptions()
 	if ($type == 'Thread')
 	{
 		$ret .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'move', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_move2 . "</a>";
+	}
+	else
+	{
+		$ret .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'split', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_split . '</a>';
+
 	}
 	$ret .= "
 		</div>
@@ -523,7 +529,7 @@ class e107ForumThread
 //				$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 //				var_dump($thread);
 				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);
-				echo "pages = $pages<br />";
+//				echo "pages = $pages<br />";
 				$thread->page = ($pages - 1);
 				break;
 

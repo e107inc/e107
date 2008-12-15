@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.9 $
-* $Date: 2008-12-10 15:29:31 $
+* $Revision: 1.10 $
+* $Date: 2008-12-15 00:29:20 $
 * $Author: mcfly_e107 $
 *
 */
@@ -258,7 +258,7 @@ class forumAdmin
 	{
 		global $e107, $for;
 
-		$subList = $for->forum_getsubs();
+		$subList = $for->forumGetSubs();
 
 		if (!$mode)
 		{
@@ -735,6 +735,11 @@ class forumAdmin
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_57."<br /><span class='smalltext'>".FORLAN_58."</span></td>
 		<td style='width:25%;text-align:center' class='forumheader3' ><input class='tbox' type='text' name='forum_postspage' size='3' value='".$pref['forum_postspage']."' maxlength='3' /></td>
+		</tr>
+
+		<tr>
+		<td style='width:75%' class='forumheader3'>".FORLAN_186."<br /><span class='smalltext'>".FORLAN_187."</span></td>
+		<td style='width:25%;text-align:center' class='forumheader3' ><input class='tbox' type='text' name='forum_threadspage' size='3' value='".$pref['forum_threadspage']."' maxlength='3' /></td>
 		</tr>
 
 		<tr>

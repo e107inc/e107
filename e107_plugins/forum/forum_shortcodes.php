@@ -29,7 +29,7 @@ SC_END
 
 SC_BEGIN POSTDELETED
 global $postInfo;
-if($postInfo['post_s'])
+if($postInfo['post_status'])
 {
 	$info = unserialize($postInfo['post_options']);
 	return  "

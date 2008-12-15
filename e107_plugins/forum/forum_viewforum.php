@@ -9,8 +9,8 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.9 $
-* $Date: 2008-12-14 03:18:45 $
+* $Revision: 1.10 $
+* $Date: 2008-12-15 00:29:20 $
 * $Author: mcfly_e107 $
 *
 */
@@ -30,8 +30,12 @@ if (!e_QUERY)
 	exit;
 }
 
-$view = 25;
-$threadFrom = (isset($_REQUEST['p']) ? $_REQUEST['p'] * $view : 0);
+//$view = 25;
+//echo "pref = {$pref['forum_threadspage']} <br />";
+$view = (varset($pref['forum_threadspage']) ? $pref['forum_threadspage'] : 25);
+//echo "view = $view <br />";
+$page = (varset($_GET['p']) ? $_GET['p'] : 0);
+$threadFrom = $page * $view;
 
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
@@ -118,14 +122,12 @@ else
 	$pages = false;
 }
 
-//echo "pages = $pages <br />";
-
 if ($pages)
 {
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
 	{
-		$parms = "{$threadCount},{$view},{$threadFrom},".e_SELF.'?'.$forumId.'.[FROM],off';
-		$THREADPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
+		$parms = "{$pages},1,{$page},url::forum::forum::func=view&id={$forumId}&page=[FROM], off";
+		$THREADPAGES = $e107->tp->parseTemplate("{NEXTPREV={$parms}}");
 	}
 }
 
@@ -209,16 +211,15 @@ $reg_threads = 0;
 $unstuck = false;
 
 $threadList = $forum->forumGetThreads($forumId, $threadFrom, $view);
-$subList = $forum->forum_getsubs($forum_id);
-//print_a($sub_list);
+$subList = $forum->forumGetSubs($forum_id);
 $gen = new convert;
 
 $SUBFORUMS = '';
-if(is_array($sub_list))
+if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
 {
 	$newflag_list = $forum->forum_newflag_list();
 	$sub_info = '';
-	foreach($sub_list as $sub)
+	foreach($subList[$forumInfo['forum_parent']][$forumId] as $sub)
 	{
 		$sub_info .= parse_sub($sub);
 	}
@@ -237,7 +238,7 @@ if (count($threadList) )
 		{
 			$thread_info['thread_options'] = array();
 		}
-		if ($thread_info['thread_s'])
+		if ($thread_info['thread_sticky'])
 		{
 			$sticky_threads ++;
 		}
@@ -253,7 +254,7 @@ if (count($threadList) )
 			}
 			$stuck = true;
 		}
-		if (!$thread_info['thread_s'])
+		if (!$thread_info['thread_sticky'])
 		{
 			$reg_threads ++;
 		}
@@ -312,7 +313,7 @@ require_once(FOOTERF);
 
 function parse_thread($thread_info)
 {
-	global $forum, $tp, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $forum_id, $menu_pref;
+	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $forum_id, $menu_pref;
 	$e107 = e107::getInstance();
 	$text = '';
 
@@ -327,13 +328,14 @@ function parse_thread($thread_info)
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
 		if($thread_info['lastpost_username'])
 		{
-			$LASTPOST = "<a href='".e_BASE."user.php?id.".$tmp[0]."'>".$thread_info['lastpost_username']."</a>";
+			$url = $e107->url->getUrl('core:user', 'main', "func=profile&id={$thread_info['thread_lastuser']}");
+			$LASTPOST = "<a href='{$url}'>".$thread_info['lastpost_username']."</a>";
 		}
 		else
 		{
 			if(!$thread_info['thread_lastuser'])
 			{
-				$LASTPOST = $tp->toHTML($thread_info['thread_lastuser_anon']);
+				$LASTPOST = $e107->tp->toHTML($thread_info['thread_lastuser_anon']);
 			}
 			else
 			{
@@ -360,12 +362,12 @@ function parse_thread($thread_info)
 	}
 
 	$THREADTYPE = '';
-	if ($thread_info['thread_s'] == 1)
+	if ($thread_info['thread_sticky'] == 1)
 	{
 		$ICON = ($thread_info['thread_active'] ? IMAGE_sticky : IMAGE_stickyclosed);
 		$THREADTYPE = '['.LAN_202.']<br />';
 	}
-	elseif($thread_info['thread_s'] == 2)
+	elseif($thread_info['thread_sticky'] == 2)
 	{
 		$ICON = IMAGE_announce;
 		$THREADTYPE = '['.LAN_396.']<br />';
@@ -376,7 +378,7 @@ function parse_thread($thread_info)
 	}
 
 
-	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name'], false, 'no_hook, emotes_off'));
+	$thread_name = strip_tags($e107->tp->toHTML($thread_info['thread_name'], false, 'no_hook, emotes_off'));
 	if(isset($thread_info['thread_options']['poll']))
 	{
 		$thread_name = '['.FORLAN_23.'] ' . $thread_name;
@@ -400,7 +402,7 @@ function parse_thread($thread_info)
 	{
 		$title = '';
 	}
-	$THREADNAME = "<a {$title} href='".e_PLUGIN."forum/forum_viewtopic.php?id={$threadId}'>{$thread_name}</a>";
+	$THREADNAME = "<a {$title} href='".$e107->url->getUrl('forum', 'thread', "func=view&id={$threadId}")."'>{$thread_name}</a>";
 
 	$pages = ceil(($REPLIES+1)/$pref['forum_postspage']);
 	if ($pages > 1)
@@ -439,25 +441,23 @@ function parse_thread($thread_info)
 
 	if (MODERATOR)
 	{
-//		$thread_id = $thread_info['thread_id'];
-//		$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $tmp[1]))
 		$ADMIN_ICONS = "
 		<form method='post' action='".$e107->url->getUrl('forum', 'forum', "func=view&id={$thread_info['thread_forum_id']}")."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'><div>
 		<input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" />
-		".($thread_info['thread_s'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> ")."
+		".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> ")."
 		".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> "). "
-		<a href='".e_PLUGIN."forum/forum_conf.php?move.".$thread_id."'>".IMAGE_admin_move."</a>
+		<a href='".$e107->url->getUrl('forum', 'thread', "func=move&id={$threadId}")."'>".IMAGE_admin_move.'</a>
 		</div></form>
-		";
+		';
 	}
 
 	$text .= "</td>
 		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE.'<br />';
-	$tmp = explode('.', $thread_info['thread_user'], 2);
+//	$tmp = explode('.', $thread_info['thread_user'], 2);
 
 	if($thread_info['user_name'])
 	{
-		$POSTER = "<a href='".e_BASE."user.php?id.".$tmp[0]."'>".$thread_info['user_name']."</a>";
+		$POSTER = "<a href='".$e107->url->getUrl('core:user', 'main', "func=profile&id={$thread_info['thread_user']}")."'>".$thread_info['user_name']."</a>";
 	}
 	else
 	{
@@ -471,12 +471,12 @@ function parse_thread($thread_info)
 		}
 	}
 
-	if ($thread_info['thread_s'] == 1 && $FORUM_VIEW_FORUM_STICKY)
+	if ($thread_info['thread_sticky'] == 1 && $FORUM_VIEW_FORUM_STICKY)
 	{
 		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_STICKY));
 	}
 
-	if ($thread_info['thread_s'] == 2 && $FORUM_VIEW_FORUM_ANNOUNCE)
+	if ($thread_info['thread_sticky'] == 2 && $FORUM_VIEW_FORUM_ANNOUNCE)
 	{
 		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_ANNOUNCE));
 	}
@@ -492,10 +492,11 @@ function parse_thread($thread_info)
 
 function parse_sub($subInfo)
 {
-	global $FORUM_VIEW_SUB, $gen, $tp, $newflag_list;
+	global $FORUM_VIEW_SUB, $gen, $newflag_list;
 	$e107 = e107::getInstance();
-	$SUB_FORUMTITLE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$subInfo['forum_id']}'>{$subInfo['forum_name']}</a>";
-	$SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
+	$forumName = $e107->tp->toHTML($subInfo['forum_name'], true);
+	$SUB_FORUMTITLE = "<a href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$subInfo['forum_id']}")."'>{$forumName}</a>";
+	$SUB_DESCRIPTION = $e107->tp->toHTML($subInfo['forum_description'], false, 'no_hook');
 	$SUB_THREADS = $subInfo['forum_threads'];
 	$SUB_REPLIES = $subInfo['forum_replies'];
 	if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
@@ -510,26 +511,22 @@ function parse_sub($subInfo)
 	if($subInfo['forum_lastpost_info'])
 	{
 		$tmp = explode('.', $subInfo['forum_lastpost_info']);
-
-//		$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $tmp[1]));
-
 		$lp_thread = "<a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $tmp[1]))."'>".IMAGE_post2.'</a>';
 		$lp_date = $gen->convert_date($tmp[0], 'forum');
-		$tmp = explode('.', $subInfo['forum_lastpost_user'],2);
 
 		if($subInfo['user_name'])
 		{
-			$lp_name = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>{$subInfo['user_name']}</a>";
+			$lp_name = "<a href='".$e107->url->getUrl('core:user', 'main', "func=profile&id={$subInfo['forum_lastpost_user']}")."'>{$subInfo['user_name']}</a>";
 		}
 		else
 		{
-			$lp_name = $tmp[1];
+			$lp_name = $subInfo['forum_lastpost_user_anon'];
 		}
-		$SUB_LASTPOST = $lp_date."<br />".$lp_name." ".$lp_thread;
+		$SUB_LASTPOST = $lp_date.'<br />'.$lp_name.' '.$lp_thread;
 	}
 	else
 	{
-		$SUB_LASTPOST = "-";
+		$SUB_LASTPOST = '-';
 	}
 	return  (preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_SUB));
 }
