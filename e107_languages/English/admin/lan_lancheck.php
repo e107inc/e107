@@ -1,13 +1,10 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_lancheck.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-15 21:16:32 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_lancheck.php,v 1.4 2008-12-15 21:53:17 secretr Exp $
+ *
+ * Admin Language File
+ * 
 */
 define("LAN_CHECK_1", "Verify/Edit Language Files"); // modified in 0.7.6
 define("LAN_CHECK_2", "Begin Verify");
