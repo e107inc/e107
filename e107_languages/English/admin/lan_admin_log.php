@@ -1,7 +1,7 @@
 <?php
 // e107 Language File.
-// $Id: lan_admin_log.php,v 1.7 2008-12-06 15:48:26 e107steved Exp $
-	
+// $Id: lan_admin_log.php,v 1.8 2008-12-16 14:22:01 secretr Exp $
+
 define('RL_LAN_001', 'System Logs');
 define('RL_LAN_002', "Rolling Log");
 define('RL_LAN_003', 'User Audit Trail Maintenance');
@@ -107,4 +107,11 @@ define('RL_LAN_119', 'Active');
 define('RL_LAN_120', 'Users on-line');
 
 
+define('RL_LAN_121', 'System Logs Options');
+define('RL_LAN_122', 'System Logs Configuration');
+define('RL_LAN_123', 'User audit trail class');
+define('RL_LAN_124', 'User audit trail actions');
+define('RL_LAN_125', 'System Logs Maintenance');
+define('RL_LAN_126', 'Total <strong>%d</strong> entries matching search condition');
+define('RL_LAN_JS_CONFIRM', 'Are you sure?');
 ?>

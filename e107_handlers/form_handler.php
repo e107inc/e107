@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.7 $
- * $Date: 2008-12-15 21:16:32 $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-16 14:22:01 $
  * $Author: secretr $
  *
 */
@@ -38,16 +38,16 @@ if (!defined('e107_INIT')) { exit; }
  *
  *  - size => (int) size attribute value (used when needed)
  *	default: 40
- * 
+ *
  *  - title (string) title attribute
  *  default: empty string (omitted)
  *
  *  - readonly => (bool) readonly attribute
  * 	default: false
- * 
+ *
  *  - selected => (bool) selected attribute (used when needed)
  * 	default: false
- * 
+ *
  *  checked => (bool) checked attribute (used when needed)
  *  default: false
  *  - disabled => (bool) disabled attribute
@@ -77,12 +77,12 @@ class e_form
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
-	function file($name, $options = array()) 
+	function file($name, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
 		return "<input type='text' name='{$name}'".$this->get_attributes($options, $name, $value)." />";
 	}
-	
+
 
 	function password($name, $maxlength = 50, $options = array())
 	{
@@ -95,41 +95,41 @@ class e_form
 		$options = $this->format_options('textarea', $name, $options);
 		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name, $value).">{$value}</textarea>";
 	}
-	
-	function checkbox($name, $value, $checked = false, $options = array()) 
+
+	function checkbox($name, $value, $checked = false, $options = array())
 	{
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		$options = $this->format_options('checkbox', $name, $options);
 		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 
 	}
-	
-	function radio($name, $value, $checked = false, $options = array()) 
+
+	function radio($name, $value, $checked = false, $options = array())
 	{
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		$options = $this->format_options('radio', $name, $options);
 		return "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
 
 	}
-	
-	function label($text, $name = '', $value = '') 
+
+	function label($text, $name = '', $value = '')
 	{
 		$for_id = $this->_format_id('', $name, $value, 'for');
 		return "<label$for_id>{$text}</label>";
 	}
 
-	function select_open($name, $options = array()) 
+	function select_open($name, $options = array())
 	{
 		$options = $this->format_options('select', $name, $options);
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
-	
-	function optgroup_open($label, $disabled) 
+
+	function optgroup_open($label, $disabled)
 	{
 		return "<optgroup class='optgroup' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
 	}
-	
-	function option($option_name, $value, $selected = false, $options = array()) 
+
+	function option($option_name, $value, $selected = false, $options = array())
 	{
 		if(false === $value) $value = '';
 		$options['selected'] = $selected; //comes as separate argument just for convenience
@@ -137,34 +137,34 @@ class e_form
 		return "<option value='{$value}'".$this->get_attributes($options).">{$option_name}</option>";
 	}
 
-	function optgroup_close() 
+	function optgroup_close()
 	{
 		return "</optgroup>";
 	}
-	
-	function select_close() 
+
+	function select_close()
 	{
 		return "</select>";
 	}
 
-	function hidden($name, $value, $options = array()) 
+	function hidden($name, $value, $options = array())
 	{
 		$options = $this->format_options('hidden', $name, $options);
 		return "<input type='hidden' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
-	
-	function submit($name, $value, $options = array()) 
+
+	function submit($name, $value, $options = array())
 	{
 		$options = $this->format_options('submit', $name, $options);
 		return "<input class='button' type='submit' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
-	
-	function submit_image($name, $value, $image, $options = array()) 
+
+	function submit_image($name, $value, $image, $options = array())
 	{
 		$options = $this->format_options('submit', $name, $options);
 		return "<input class='image' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
-	
+
 	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		$options['class'] = $action; //additional classes in options not allowed
@@ -172,14 +172,12 @@ class e_form
 		if($action == 'action') $btype = 'button';
 		$options = $this->format_options('admin_button', $name, $options);
 		if(empty($label)) $label = $value;
-		
+
 		return "
-			<button type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name).">
-				<span>{$label}</span>
-			</button>
+			<button type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
 		";
 	}
-	
+
 	function get_attributes($options, $name = '', $value = '')
 	{
 		$ret = '';
@@ -199,7 +197,7 @@ class e_form
 				case 'size':
 					if($optval) $ret .= " size='{$optval}'";
 					break;
-					
+
 				case 'title':
 					if($optval) $ret .= " title='{$optval}'";
 					break;
@@ -217,7 +215,7 @@ class e_form
 				case 'selected':
 					if($optval) $ret .= " selected='selected'";
 					break;
-					
+
 				case 'checked':
 					if($optval) $ret .= " checked='checked'";
 					break;
@@ -249,7 +247,7 @@ class e_form
 
 		//format the name first
 		$name = str_replace(array('[]', '[', ']', '_'), array('', '-', '', '-'), $name);
-		
+
 		if(empty($id_value) ) return " {$return_attribute}='{$name}".($value ? "-{$value}" : '')."'";// also useful when name is e.g. name='my_name[some_id]'
 		elseif(is_numeric($id_value) && $name) return " {$return_attribute}='{$name}-{$id_value}'";// also useful when name is e.g. name='my_name[]'
 		else return " {$return_attribute}='{$id_value}'";

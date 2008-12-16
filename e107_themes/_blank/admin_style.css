@@ -89,6 +89,9 @@ ul,ol       { list-style:none; }
 .adminlist { width:100%;  border:1px solid #ddd;}
 .adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold; white-space:nowrap; }
 .adminlist td { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; }
+
+.adminlist td div.field-spacer { clear: both; margin-bottom: 3px; } /* multi-fields per row separator */
+
 .adminlist th.last,
 .adminlist td.last { border-right: 0px solid;}
 .adminlist tr.last td{ border-bottom: 0px solid;}
@@ -113,7 +116,7 @@ select, .tbox, .helpbox {
 }
 option { padding-right: 10px;}
 input.input-text, textarea, .tbox, .helpbox { padding:2px; }
-select.tbox  { min-height:17px; padding: 0px; /* to set the height for empty selects */ }
+select.tbox  { min-height:17px; padding: 0px; /* setting the height of empty selects */ }
 .select.order { width: 40px !important; }
 .select.time-offset { width: 60px !important; }
 input.radio { margin-right: 3px; }
@@ -129,6 +132,7 @@ label { cursor: pointer; }
 .adminform  { width:100%;  border:1px solid #ddd;}
 
 .adminform td { padding: 5px; text-align: left}
+.adminform td div.field-spacer { clear: both; margin-bottom: 3px; } /* multi-fields per row separator */
 
 .adminform .select { width: 280px;}
 .adminform .input-text { width: 274px;}
@@ -143,6 +147,7 @@ label { cursor: pointer; }
 /* form used for content edit */
 .adminedit  { width:100%;  border:1px solid #ddd;}
 .adminedit td { padding: 5px; text-align: left}
+.adminedit td div.field-spacer { clear: both; margin-bottom: 3px; } /* multi-fields per row separator */
 
 .adminedit .select { width: 280px; }
 .adminedit .input-text { width: 274px;}
@@ -298,6 +303,7 @@ input.action.edit {}
 /********** Misc */
 .e-pointer { cursor: pointer; } /* Pointer Hand */
 .expand-container { padding: 10px; } /* Block with expandable items */
+.nextprev-bar { clear: both; padding: 5px; font-size: 14px; margin: 5px; border:1px solid #ddd; } /* Page NextPrev nabigation block */
 
 /*******************************************************************************************************************/
 
@@ -309,7 +315,7 @@ input.action.edit {}
 .admin-header-content { border: 1px solid #DDDDDD; }
 .admin-page-body { padding: 20px 15px 0; }
 .admin-footer {}
-legend { font-size: 16px; font-weight: bold; padding: 5px; }
+legend { font-size: 14px; font-weight: bold; padding: 5px; }
 
 /******** Layout */
 .main-table { width: 100%; border: 0 none; }

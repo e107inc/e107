@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-15 17:03:25 $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-16 14:22:01 $
  * $Author: secretr $
  * 
 */
@@ -33,7 +33,8 @@ e107Admin.Helper = {
 		$$('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
 		$$('button.action[name=check_all]').invoke('observe', 'click', this.allCheckedEventHandler);
 		$$('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
-		$$('button.delete', 'input.delete[type=image]').invoke('observe', 'click', function(e) { 
+		$$('button.delete', 'input.delete[type=image]', 'a.delete').invoke('observe', 'click', function(e) { 
+			if(e.element().hasClassName('no-confirm') || (e.element().readAttribute('rel') &&  e.element().readAttribute('rel').toLowerCase == 'no-confirm')) return;
 			var msg = e.element().readAttribute('title') || e107.getModLan('delete_confirm');
 			if( !e107Helper.confirm(msg) ) e.stop(); 
 		});
@@ -84,53 +85,71 @@ e107Admin.Helper = {
 	
 	/**
 	 * Event listener
-	 * Check all checkboxes in the current form, having 
-	 * name attribute value starting with 'multiaction' 
-	 * This method is auto-attached to every button having name=check_all
-	 * if init() method is executed
+	 * Check all checkboxes in the current form, having name attribute value starting with 'multiaction' 
+	 * by default or any value set by button's value(special command 'jstarget:')
+	 * This method is auto-attached to every button having name=check_all if init() method is executed
 	 * 
 	 * Examples of valid inputbox markup: 
 	 * <input type='checkbox' class='checkbox' name='multiaction[]'> 
 	 * OR
 	 * <input type='checkbox' class='checkbox' name='multiaction_something_else[]'>
+	 * OR
+	 * <input type='checkbox' class='checkbox' name='some_checkbox_arary[]'> (see the button example below) 
+	 * OR
+	 * <input type='checkbox' class='checkbox' name='some_checkbox_arary_some_more[]'> (see the button example below) 
 	 * 
 	 * Example of button being auto-observed (see e107Admin.Helper#init)
-	 * <button class='action' type='button' name='check_all' value='Check All'><span>Check All</span></button>
+	 * <button class='action' type='button' name='check_all' value='Check All'><span>Check All</span></button> // default selector - multiaction
+	 * OR
+	 * <button class='action' type='button' name='check_all' value='jstarget:some_checkbox_arary'><span>Check All</span></button> // checkboxes names starting with - some_checkbox_arary
 	 * 
-	 * Demo: e107_admin/image.php
+	 * Demo: e107_admin/image.php, admin_log.php
 	 * 
 	 */
 	allChecked: function(event) {
 		event.stop();
-		var form = event.element().up('form');
+		var form = event.element().up('form'), selector = 'multiaction';
+		if(event.element().readAttribute('value').startsWith('jstarget:')) {
+			selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
+		}
+
 		if(form) {
-			form.toggleChecked(true, 'name^=multiaction');
+			form.toggleChecked(true, 'name^=' + selector);
 		}
 	},
 	
 	/**
 	 * Event listener
-	 * Uncheck all checkboxes in the current form, having 
-	 * name attribute value starting with 'multiaction' 
-	 * This method is auto-attached to every button having name=uncheck_all
-	 * if init() method is executed
+	 * Uncheck all checkboxes in the current form, having name attribute value starting with 'multiaction' 
+	 * by default or any value set by button's value(special command 'jstarget:')
+	 * This method is auto-attached to every button having name=uncheck_all if init() method is executed
 	 * 
 	 * Examples of valid inputbox markup: 
 	 * <input type='checkbox' class='checkbox' name='multiaction[]'> 
 	 * OR
 	 * <input type='checkbox' class='checkbox' name='multiaction_something_else[]'>
+	 * OR
+	 * <input type='checkbox' class='checkbox' name='some_checkbox_arary[]'> (see the button example below) 
+	 * OR
+	 * <input type='checkbox' class='checkbox' name='some_checkbox_arary_some_more[]'> (see the button example below) 
 	 * 
 	 * Example of button being auto-observed (see e107Admin.Helper#init)
-	 * <button class='action' type='button' name='uncheck_all' value='Uncheck All'><span>Uncheck All</span></button>
+	 * <button class='action' type='button' name='uncheck_all' value='Uncheck All'><span>Uncheck All</span></button> // default selector - multiaction
+	 * OR
+	 * <button class='action' type='button' name='uncheck_all' value='jstarget:some_checkbox_arary'><span>Uncheck All</span></button> // checkboxes names starting with - some_checkbox_arary
 	 * 
-	 * Demo: e107_admin/image.php
+	 * Demo: e107_admin/image.php, admin_log.php
 	 * 
 	 */
 	allUnchecked: function(event) {
 		event.stop();
-		var form = event.element().up('form');
+		var form = event.element().up('form'), selector = 'multiaction';
+		if(event.element().readAttribute('value').startsWith('jstarget:')) {
+			selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
+		}
+
 		if(form) {
-			form.toggleChecked(false, 'name^=multiaction');
+			form.toggleChecked(false, 'name^=' + selector);
 		}
 	}
 }
