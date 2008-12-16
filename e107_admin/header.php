@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.20 $
-|   $Date: 2008-12-14 21:01:58 $
+|   $Revision: 1.21 $
+|   $Date: 2008-12-16 11:05:36 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -94,20 +94,20 @@ if (!defined('ADMIN_WIDTH')) {
 
 if (!defined('ADMIN_TRUE_ICON'))
 {
-	define("ADMIN_TRUE_ICON", "<img src='".e_IMAGE_ABS."fileinspector/integrity_pass.png' alt='' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/integrity_pass.png' alt='' />");
 	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."fileinspector/integrity_pass.png");
 }
 
 if (!defined('ADMIN_FALSE_ICON'))
 {
-	define("ADMIN_FALSE_ICON", "<img src='".e_IMAGE_ABS."fileinspector/integrity_fail.png' alt='' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_FALSE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/integrity_fail.png' alt='' />");
 	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."fileinspector/integrity_fail.png");
 }
 
 
 if (!defined('ADMIN_EDIT_ICON'))
 {
-	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_EDIT_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' />");
 	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
 }
 
@@ -115,7 +115,7 @@ if (!defined('ADMIN_EDIT_ICON'))
 
 if (!defined('ADMIN_DELETE_ICON'))
 {
-	define("ADMIN_DELETE_ICON", "<img src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_DELETE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' />");
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
 }
 
@@ -140,13 +140,13 @@ if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset(
 	define("e_WYSIWYG",FALSE);
 }
 
-// Load Javascript Libraries 
+// Load Javascript Libraries
 $hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).THEME.e_LANGUAGE.ADMIN).'_admin';
 //echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
 echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
 
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
-	
+
 	//echo "<script type='text/javascript' src='".e_FILE_ABS."e_ajax.php'></script>\n";
 }
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
@@ -159,7 +159,7 @@ if (isset($eplug_js) && $eplug_js) {
 if (isset($htmlarea_js) && $htmlarea_js) {
 	echo $htmlarea_js;
 }
-if ((strpos(e_SELF, 'fileinspector.php') === FALSE) && getperms("0")) 
+if ((strpos(e_SELF, 'fileinspector.php') === FALSE) && getperms("0"))
 {
 echo "<script type='text/javascript'>
 <!--
@@ -177,7 +177,7 @@ function savepreset(ps,pid){
 //iepngfix - IE6 only
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
     /*
-     * The only problem is that the browser is REALLY, 
+     * The only problem is that the browser is REALLY,
      * REALLY slow when it has to render more elements
      * try e.g. "div, img, td, input" (or just *) instead only img rule
      * However I hope this will force IE6 user to hate it :)
@@ -283,7 +283,7 @@ $body_onload = "";
 
 
 /*
- * Fire Event e107:loaded 
+ * Fire Event e107:loaded
  */
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
@@ -445,33 +445,33 @@ function admin_update($update, $type = 'update', $success = false, $failed = fal
 	global $e107;
 	require_once(e_HANDLER."message_handler.php");
 	$emessage = &eMessage::getInstance();
-	
+
 	if (($type == 'update' && $update) || ($type == 'insert' && $update !== false)) {
 		//$caption = LAN_UPDATE;
 		//$text = "<b>".($success ? $success : LAN_UPDATED)."</b>";
 		$emessage->add(($success ? $success : LAN_UPDATED), E_MESSAGE_SUCCESS);
-	} 
-	elseif ($type == 'delete' && $update) 
+	}
+	elseif ($type == 'delete' && $update)
 	{
 		//$caption = LAN_DELETE;
 		//$text = "<b>".($success ? $success : LAN_DELETED)."</b>";
 		$emessage->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
-	} 
-	elseif (!mysql_errno()) 
+	}
+	elseif (!mysql_errno())
 	{
-		if ($type == 'update') 
+		if ($type == 'update')
 		{
 			//$caption = LAN_UPDATED_FAILED;
 			//$text = "<b>".LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN."</b>";
 			$emessage->add(LAN_NO_CHANGE.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
-		} elseif ($type == 'delete') 
+		} elseif ($type == 'delete')
 		{
 			//$caption = LAN_DELETE;
 			//$text = "<b>".LAN_DELETED_FAILED.".<br />".LAN_TRY_AGAIN."</b>";
 			$emessage->add(LAN_DELETED_FAILED.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
 		}
-	} 
-	else 
+	}
+	else
 	{
 		//$caption = LAN_UPDATED_FAILED;
 		$text = ($failed ? $failed : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();

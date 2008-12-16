@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.14 $
- * $Date: 2008-12-10 16:59:19 $
+ * $Revision: 1.15 $
+ * $Date: 2008-12-16 11:05:36 $
  * $Author: secretr $
  *
 */
@@ -744,7 +744,7 @@ var e107Utils = {}
  */
 var e107Helper = {
     fxToggle: function(el, fx) {
-    	var opt = Object.extend( { effect: 'blind' , options: {duration: 0.5} }, fx || {})
+    	var opt = Object.extend( { effect: 'blind' , options: {duration: 0.5} }, fx || {});
         Effect.toggle(el, opt.effect, opt.options);
     }
 }
@@ -800,7 +800,7 @@ Object.extend(e107Helper, {
         
 		var fx = varset(arguments[1], null);
 		
-		if(null !== fx)
+		if(false !== fx)
 		    this.fxToggle(eltoggle, fx || {});
 		else 
 		    $(eltoggle).toggle();

@@ -20,12 +20,13 @@
 .smalltext	{ font-size: 11px; }
 
 /* Core Icons */
-.icon		{ border: 0 }
-.icon.action { vertical-align: middle }
-.S16		{ width: 16px; height: 16px }
-.S32		{ width: 32px; height: 32px }
-.S64		{ width: 64px; height: 64px }
-.S128		{ width: 128px; height: 128px }
+img.icon		{ border: 0 }
+img.icon.list	{ margin: 0px 5px 5px 0px }
+img.icon.action { vertical-align: middle }
+img.S16		{ width: 16px; height: 16px }
+img.S32		{ width: 32px; height: 32px }
+img.S64		{ width: 64px; height: 64px }
+img.S128		{ width: 128px; height: 128px }
 /*******************************************************************************************************************/
 
 /* RESET CSS *********************************************************************************************/
@@ -289,13 +290,14 @@ button.cancel:active span		{}
 .buttons-bar button { margin-right: 10px; }
 .buttons-bar button.f-right { margin-right: 0px; }
 
-/* Actions (adminlist ) */
-input.action {} /* default */
-input.delete {}
-input.edit {}
+/* Actions (adminlist) - input type image */
+input.action { vertical-align: middle; } /* default */
+input.action.delete {}
+input.action.edit {}
 
 /********** Misc */
-.e-pointer { cursor: pointer; }
+.e-pointer { cursor: pointer; } /* Pointer Hand */
+.expand-container { padding: 10px; } /* Block with expandable items */
 
 /*******************************************************************************************************************/
 
@@ -307,7 +309,7 @@ input.edit {}
 .admin-header-content { border: 1px solid #DDDDDD; }
 .admin-page-body { padding: 20px 15px 0; }
 .admin-footer {}
-legend { font-size: 16px; font-weight: bold; }
+legend { font-size: 16px; font-weight: bold; padding: 5px; }
 
 /******** Layout */
 .main-table { width: 100%; border: 0 none; }
