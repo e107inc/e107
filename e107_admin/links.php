@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.16 $
- * $Date: 2008-12-15 22:32:24 $
+ * $Revision: 1.17 $
+ * $Date: 2008-12-16 11:05:36 $
  * $Author: secretr $
  *
 */
@@ -26,7 +26,7 @@ $e_sub_cat = 'links';
 
 if(!is_object($tp))
 	$tp = new e_parse();
-	
+
 // ----- Presets.----------
 require_once (e_HANDLER."preset_class.php");
 $pst = new e_preset();
@@ -82,11 +82,11 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 	{
 		$sql2 = new db();
 	}
-	
+
 	$sql->db_Select("links", "*", "link_id = '".$_POST['sublink_parent']."'");
 	$par = $sql->db_Fetch();
 	extract($par);
-	
+
 	$sql->db_Select($sublink['table'], "*", $sublink['query']);
 	$count = 1;
 	while($row = $sql->db_Fetch())
@@ -98,7 +98,7 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 		$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $link_button;
 		$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
 		$subparent = $_POST['sublink_parent'];
-		
+
 		if($sql2->db_Insert("links", "0, '$subname', '$suburl', '$subdiz', '$subicon', '$link_category', '$count', '$subparent', '$link_open', '$link_class' "))
 		{
 			$message .= LAN_CREATED." ({$name})[!br!]";
@@ -110,7 +110,7 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 		}
 		$count++;
 	}
-	
+
 	if($message)
 	{
 		sitelinks_adminlog('01', $message); // 'Sublinks generated'
@@ -122,7 +122,7 @@ if($incdec_action == 'inc')
 	$sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order - 1)."'");
 	$sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".intval($linkid)."'");
 	sitelinks_adminlog('02', 'Id: '.$linkid);
-} 
+}
 elseif($incdec_action == 'dec')
 {
 	$sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order + 1)."'");
@@ -164,7 +164,7 @@ if(isset($_POST['updateoptions']))
 		$e107cache->clear("sitelinks");
 		sitelinks_adminlog('05', $pref['linkpage_screentip'].','.$pref['sitelinks_expandsub']);
 		$emessage->add(LCLAN_1, E_MESSAGE_SUCCESS);
-	} 
+	}
 	else
 	{
 		// Nothing changed
@@ -225,7 +225,7 @@ class links
 	var $link_total;
 	var $aIdOptPrep, $aIdOptData, $aIdOptTest;
 	var $debug_dis = FALSE;
-	
+
 	function getLinks()
 	{
 		global $sql;
@@ -238,14 +238,14 @@ class links
 		}
 		return $ret;
 	}
-	
+
 	function linkName($text)
 	{
 		// This function is ONLY needed for link databases that have been upgraded from
 		// before 0.7+ -- all new link collections make use of link_parent instead
 		// of hierarchy embedded in the link_name. (Unfortunately, the upgraded
 		// data still includes embedded coding.)
-		
+
 
 		if(substr($text, 0, 8) == "submenu.") // for backwards compatibility only.
 		{
@@ -264,17 +264,17 @@ class links
 					$tmp = substr($text, 8 + $parentLen + 1); // Skip submenu.parent.
 			}
 			return $tmp;
-		} 
+		}
 		else
 		{
 			return $text;
 		}
 	}
-	
+
 	function dropdown($curval = "", $lid = 0, $indent = 0)
 	{ // Drop-down list using on the parent_id. :)
 		global $linkArray, $id, $sub_action;
-		
+
 		if(0 == $indent)
 		{
 			$ret = "<option value=''>".LINKLAN_3."</option>\n";
@@ -291,13 +291,13 @@ class links
 			if($sub_action == "sub")
 			{
 				$thelink = ($l['link_id'] != $lid) ? $l['link_id'] : $l['link_parent'];
-			} 
+			}
 			else
 			{
 				$thelink = ($l['link_id'] != $id) ? $l['link_id'] : $l['link_parent'];
 			}
 			$ret .= "<option value='".$thelink."' {$s}>".str_pad("", $indent * 36, "&nbsp;").$thename." </option>\n";
-			
+
 			if(array_key_exists($l['link_id'], $linkArray))
 			{
 				$ret .= $this->dropdown($curval, $l['link_id'], $indent + 1);
@@ -305,7 +305,7 @@ class links
 		}
 		return $ret;
 	}
-	
+
 	function existing($id = 0, $level = 0)
 	{
 		global $linkArray;
@@ -321,15 +321,15 @@ class links
 		}
 		return $ret;
 	}
-	
+
 	function show_existing_items($dbg_display = FALSE)
 	{
 		global $sql, $rs, $e107, $tp, $linkArray, $emessage;
 		$this->debug_dis = $dbg_display;
-		
+
 		if(count($linkArray))
 		{
-			
+
 			$this->prepIdOpts(); // Prepare the options list for all links
 			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
 			$text .= "
@@ -357,7 +357,7 @@ class links
 					<tbody>
 				";
 			$text .= $this->existing(0);
-			
+
 			$text .= "
 					</tbody>
 				</table>
@@ -365,17 +365,17 @@ class links
 					<button class='update' type='submit' name='update' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
 				</div>
 			</fieldset>
-	
+
 			";
 			$text .= $rs->form_close();
-		} 
+		}
 		else
 		{
-			$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
+			$text .= "<div class='center'>".LCLAN_61."</div>";
 		}
 		$e107->ns->tablerender(LCLAN_8, $emessage->render().$text);
 	}
-	
+
 	function prepIdOpts()
 	{
 		for($a = 1; $a <= $this->link_total; $a++)
@@ -386,12 +386,12 @@ class links
 		}
 		$this->aIdOptPrep = $this->prepOpts($this->aIdOptData);
 	}
-	
+
 	function display_row($row2, $indent = FALSE)
 	{
 		global $sql, $rs, $tp, $linkArray, $previous_cat, $imode;
 		extract($row2);
-		
+
 		if($link_category > 1 && $link_category != $previous_cat)
 		{
 			$text .= "
@@ -423,28 +423,28 @@ class links
 		";
 			$previous_cat = $link_category;
 		}
-		
+
 		if(strpos($link_name, "submenu.") !== FALSE || $link_parent != 0) // 'submenu' for upgrade compatibility only.
 		{
 			$link_name = $this->linkName($link_name);
 		}
-		
+
 		if($this->debug_dis)
 		{
 			$link_name .= ' ['.$link_url.']';
 		}
-		
+
 		if($indent)
 		{
-			$subimage = "<img src='".e_IMAGE."admin_images/sublink.png' alt='' />";
+			$subimage = "<img class='icon S16' src='".e_IMAGE_ABS."admin_images/sublink.png' alt='' />";
 			$subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
 		}
-		
+
 		$text .= "
 			<tr>
 				<td title='".$link_description."'>
 		";
-		$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> " : "";
+		$text .= $link_button ? "<img class='icon S16' src='".e_IMAGE_ABS."icons/".$link_button."' alt='' /> " : "";
 		$text .= "
 				</td>
 				<td title='".$link_description."'".$subspacer.">
@@ -453,9 +453,9 @@ class links
 		";
 		$text .= "
 				<td class='center'>
-					<a href='".e_SELF."?create.sub.{$link_id}'><img src='".e_IMAGE."admin_images/sublink_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;
+					<a href='".e_SELF."?create.sub.{$link_id}'><img class='icon action S16' src='".e_IMAGE_ABS."admin_images/sublink_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;
 					<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;
-					<input class='actions delete' type='image' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' title='".$tp->toJS(LCLAN_58." [ $link_name ]")."' />
+					<input class='action delete' type='image' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' title='".$tp->toJS(LCLAN_58." [ $link_name ]")."' />
 				</td>
 				<td>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>
 				<td class='center'>
@@ -474,23 +474,23 @@ class links
 				</td>
 			</tr>
 		";
-		
+
 		return $text;
 	}
-	
+
 	function show_message($message)
 	{
 		global $ns;
 		$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".$message."</b></div>");
 	}
-	
+
 	// Show the form for link create/edit
 	function create_link($sub_action, $id)
 	{
-		global $sql, $rs, $e107, $pst, $tp, $emessage;
+		global $sql, $e107, $pst, $tp, $emessage;
 		$preset = $pst->read_preset("admin_links");
 		extract($preset);
-		
+
 		if($sub_action == "edit" && !$_POST['submit'])
 		{
 			if($sql->db_Select("links", "*", "link_id='$id' "))
@@ -499,26 +499,26 @@ class links
 				extract($row);
 			}
 		}
-		
+
 		if("sub" == $sub_action)
 		{
 			$link_parent = $id;
 		}
-		
+
 		if(strpos($link_name, "submenu.") !== FALSE)
 		{ // 'submenu' for upgrade compatibility only.
 			$link_name = $this->linkName($link_name);
 		}
-		
+
 		require_once (e_HANDLER."file_class.php");
 		$fl = new e_file();
-		
+
 		if($iconlist = $fl->get_files(e_IMAGE."icons/", '\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG'))
 		{
 			sort($iconlist);
 		}
 		$text = "
-	
+
 			<form method='post' action='".e_SELF."' id='core-links-edit-form'>
 				<fieldset id='core-links-edit'>
 					<legend class='e-hideme'>".LCLAN_29."</legend>
@@ -552,25 +552,43 @@ class links
 							<tr>
 								<td class='label'>".LCLAN_17.": </td>
 								<td class='control'>
-									<textarea class='tbox textarea' id='link_description' name='link_description' cols='70' rows='5' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($link_description)."</textarea>
+									<textarea class='tbox textarea' id='link_description' name='link_description' cols='70' rows='5' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($link_description)."</textarea>
 									<br/>".display_help("helpb", "admin")."
-									
+
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".LCLAN_18.": </td>
 								<td class='control'>
 									<input class='tbox input-text' type='text' id='link_button' name='link_button' size='42' value='{$link_button}' maxlength='100' />
-									<button class='submit' type='button' value='".LCLAN_39."' onclick='expandit(\"linkicn\")'><span>".LCLAN_39."</span></button>
-									<div id='linkicn' style='display:none;{head}'>
+									<button class='submit' type='button' value='".LCLAN_39."' onclick='e107Helper.toggle(\"linkicn\")'><span>".LCLAN_39."</span></button>
+									<div id='linkicn' class='e-hideme'>
+										<div class='expand-container'>
 			";
-		
+		//SecretR - more nice view
+		$tmp = array('_16', '_32', '_48', '_64', '_128');
+		$tmp1 = array();
 		foreach($iconlist as $icon)
 		{
+
 			$filepath = str_replace(e_IMAGE."icons/", "", $icon['path'].$icon['fname']);
-			$text .= "<a href=\"javascript:insertext('".$filepath."','link_button','linkicn')\"><img src='".$icon['path'].$icon['fname']."' alt='' /></a>";
+			$str = "<a href='#' onclick=\"e107Helper.insertText('".$filepath."','link_button','linkicn'); return false; \"><img class='icon list' src='".$icon['path'].$icon['fname']."' alt='' /></a>";
+
+			foreach ($tmp as $isize)
+			{
+				if(strpos($filepath, $isize) !== false)
+				{
+					$tmp1[$isize] = varset($tmp1[$isize]).$str;
+					continue 2;
+				}
+			}
+			$tmp1['other'] = varset($tmp1['other']).$str;//other
 		}
-		
+		$text .= $tmp1 ? '<div class="clear">'.implode('</div><div class="clear">', $tmp1).'</div>' : '';
+		unset($tmp, $tmp1);
+		//End view
+
+
 		// 1 = _blank
 		// 2 = _parent   not in use.
 		// 3 = _top   not in use.
@@ -578,9 +596,10 @@ class links
 		$linkop[1] = LCLAN_23;
 		$linkop[4] = LCLAN_24; // 4 = miniwindow  600x400
 		$linkop[5] = LINKLAN_1; // 5 = miniwindow  800x600
-		
+
 
 		$text .= "
+										</div>
 									</div>
 								</td>
 							</tr>
@@ -591,10 +610,10 @@ class links
 			";
 		foreach($linkop as $key => $val)
 		{
-			$selectd = ($link_open == $key) ? "selected='selected'" : "";
-			$text .= "<option value='$key' $selectd>".$val."</option>\n";
+			$selectd = ($link_open == $key) ? " selected='selected'" : "";
+			$text .= "<option value='$key'{$selectd}>".$val."</option>\n";
 		}
-		
+
 		$text .= "
 									</select>
 								</td>
@@ -607,11 +626,11 @@ class links
 		$rentype = array("", "Main", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt");
 		for($i = 1; $i < count($rentype); $i++)
 		{
-			$sel = ($link_category == $i) ? "selected='selected'" : "";
-			$text .= "<option value='$i' $sel>$i - ".$rentype[$i]."</option>";
+			$sel = ($link_category == $i) ? " selected='selected'" : "";
+			$text .= "<option value='$i'{$sel}>$i - ".$rentype[$i]."</option>";
 		}
 		;
-		
+
 		$text .= "
 									</select>
 									<div class='smalltext field-help'>".LCLAN_96." {SITELINKS=flat:[rendertype number]}</div>
@@ -619,7 +638,7 @@ class links
 							</tr>
 							<tr>
 								<td class='label'>".LCLAN_25.":
-									
+
 								</td>
 								<td class='control'>
 									".r_userclass("link_class", $link_class, "off", "public,guest,nobody,member,admin,classes")."
@@ -634,7 +653,7 @@ class links
 		{
 			$text .= "
 						<button class='update' type='submit' name='add_link' value='".LCLAN_27."'><span>".LCLAN_27."</span></button>
-						<input type='hidden' name='link_id' value='$link_id' />
+						<input type='hidden' name='link_id' value='{$link_id}' />
 			";
 		} else
 		{
@@ -649,7 +668,7 @@ class links
 			";
 		$e107->ns->tablerender(LCLAN_29, $emessage->render().$text);
 	}
-	
+
 	function submit_link($sub_action, $id)
 	{
 		global $sql, $e107cache, $tp, $emessage;
@@ -657,21 +676,21 @@ class links
 		{
 			$tp = new e_parse();
 		}
-		
+
 		$id = intval($id);
 		$parent_id = ($_POST['link_parent']) ? intval($_POST['link_parent']) : 0;
-		
+
 		$link_name = $tp->toDB($_POST['link_name']);
 		$link_url = $tp->createConstants($_POST['link_url']);
 		$link_url = str_replace("&", "&amp;", $link_url); // xhtml compliant links.
-		
+
 
 		$link_description = $tp->toDB($_POST['link_description']);
 		$link_button = $tp->toDB($_POST['link_button']);
 		$link_render = intval($_POST['linkrender']);
 		$link_open = intval($_POST['linkopentype']);
 		$link_class = $tp->toDB($_POST['link_class']);
-		
+
 		$message = implode('[!br!]', array($link_name, $link_url, $link_class)); // Probably enough to log
 		$link_t = $sql->db_Count("links", "(*)");
 		if($id)
@@ -682,7 +701,7 @@ class links
 			$e107cache->clear("sitelinks");
 			sitelinks_adminlog('08', $message);
 			$emessage->add(LCLAN_3, E_MESSAGE_SUCCESS);
-		} 
+		}
 		else
 		{ // New link
 			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t + 1).", ".$parent_id.", ".$link_open.", ".$link_class);
@@ -691,7 +710,7 @@ class links
 			$emessage->add(LCLAN_2, E_MESSAGE_SUCCESS);
 		}
 	}
-	
+
 	function show_pref_options()
 	{
 		global $pref, $e107, $emessage;
@@ -730,18 +749,18 @@ class links
 				</div>
 			</fieldset>
 		</form>
-			
-			
+
+
 		";
 		$e107->ns->tablerender(LCLAN_88, $emessage->render().$text);
 	}
-	
+
 	// Delete link
 	// We need to update the 'order' number of other links with the same parentage - may be top level or a sub-level
 	function delete_link($linkInfo)
 	{
 		global $sql, $emessage, $e107cache;
-		
+
 		if($sql->db_Select("links", "link_id", "link_order > '{$linkInfo['link_order']}' AND `link_parent`={$linkInfo['link_parent']} "))
 		{
 			$linkList = $sql->db_getList();
@@ -750,12 +769,12 @@ class links
 				$sql->db_Update("links", "link_order = link_order -1 WHERE link_id = '{$l['link_id']}'");
 			}
 		}
-		
+
 		if($sql->db_Delete("links", "link_id='".$linkInfo['link_id']."'"))
 		{
 			// Update orphaned sublinks - just hide them, and make them top level. And delete any obsolete naming while we're there
 			$sql->db_Update("links", "link_name = SUBSTRING_INDEX(link_name, '.', -1) , link_parent = '0', link_class='255' WHERE link_parent= '".$linkInfo['link_id']."'");
-			
+
 			$message = LCLAN_53." #".$linkInfo['link_id']." ".LCLAN_54;
 			$emessage->add($message, E_MESSAGE_SUCCESS);
 			sitelinks_adminlog('06', $message.'[!br!]'.$linkInfo['link_name']);
@@ -764,18 +783,18 @@ class links
 		{
 			$emessage->add($message, E_MESSAGE_ERROR);
 		}
-	
+
 	}
-	
+
 	// -------------------------- Sub links generator ------------->
-	
+
 
 	function show_sublink_generator()
 	{
 		global $e107, $sql, $emessage;
-		
+
 		$sublinks = $this->sublink_list();
-		
+
 		$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<fieldset id='core-links-generator'>
@@ -827,7 +846,7 @@ class links
 		";
 		$e107->ns->tablerender(LINKLAN_4, $emessage->render().$text);
 	}
-	
+
 	function sublink_list($name = "")
 	{
 		global $sql, $PLUGINS_DIRECTORY;
@@ -838,7 +857,7 @@ class links
 		$sublink_type['news']['fieldid'] = "category_id";
 		$sublink_type['news']['fieldname'] = "category_name";
 		$sublink_type['news']['fieldicon'] = "category_icon";
-		
+
 		$sublink_type['downloads']['title'] = LINKLAN_9; //"Download Categories";
 		$sublink_type['downloads']['table'] = "download_category";
 		$sublink_type['downloads']['query'] = "download_category_parent ='0' ORDER BY download_category_name ASC";
@@ -846,7 +865,7 @@ class links
 		$sublink_type['downloads']['fieldid'] = "download_category_id";
 		$sublink_type['downloads']['fieldname'] = "download_category_name";
 		$sublink_type['downloads']['fieldicon'] = "download_category_icon";
-		
+
 		if($sql->db_Select("plugin", "plugin_path", "plugin_installflag = '1'"))
 		{
 			while($row = $sql->db_Fetch())
@@ -854,7 +873,7 @@ class links
 				$sublink_plugs[] = $row['plugin_path'];
 			}
 		}
-		
+
 		foreach($sublink_plugs as $plugin_id)
 		{
 			if(is_readable(e_PLUGIN.$plugin_id.'/e_linkgen.php'))
@@ -866,11 +885,11 @@ class links
 		{
 			return $sublink_type[$name];
 		}
-		
+
 		return $sublink_type;
-	
+
 	}
-	
+
 	function prepOpts($aData)
 	{
 		//
@@ -885,7 +904,7 @@ class links
 		// $aData is an array containing value/text pairs:
 		// each entry is array( 'val'=>value, 'txt'=>text )
 		//
-		
+
 
 		$i = 0;
 		foreach($aData as $aVal)
@@ -893,11 +912,11 @@ class links
 			$sVal = $aVal['val'];
 			$sTxt = $aVal['txt'];
 			$sOut = "";
-			
+
 			if($i)
 				$sOut = '>'.$sTxtPrev.'</option>';
 			$sOut .= '<option value="'.$sVal.'"';
-			
+
 			$aPrep[$i++] = $sOut;
 			$sTxtPrev = $sTxt;
 		}
@@ -905,10 +924,10 @@ class links
 		{ // terminate final option
 			$aPrep[$i] = '>'.$sTxtPrev.'</option>';
 		}
-		
+
 		return $aPrep;
 	}
-	
+
 	function genOpts($aPrep, $aTest, $sSelected, $sId)
 	{
 		//
@@ -918,7 +937,7 @@ class links
 		// aTest can be any array that matches one-for-one with the options
 		//
 		// if $sId is nonblank, a global search/replace is done to change all "|||" to $sId.
-		
+
 
 		$iKey = array_search($sSelected, $aTest);
 		if($iKey !== FALSE)
@@ -955,19 +974,19 @@ function links_adminmenu()
 	}
 	$var['main']['text'] = LCLAN_62;
 	$var['main']['link'] = e_SELF;
-	
+
 	$var['create']['text'] = LCLAN_63;
 	$var['create']['link'] = e_SELF."?create";
-	
+
 	$var['opt']['text'] = LAN_OPTIONS;
 	$var['opt']['link'] = e_SELF."?opt";
-	
+
 	$var['sub']['text'] = LINKLAN_4;
 	$var['sub']['link'] = e_SELF."?sublinks";
-	
+
 	//	$var['debug']['text'] = "List DB";
 	//	$var['debug']['link'] = e_SELF."?debug";
-	
+
 
 	show_admin_menu(LCLAN_68, $action, $var);
 }
