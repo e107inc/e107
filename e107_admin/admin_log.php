@@ -9,8 +9,8 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.22 $
- * $Date: 2008-12-16 14:22:01 $
+ * $Revision: 1.23 $
+ * $Date: 2008-12-16 14:24:04 $
  * $Author: secretr $
  *
 */
@@ -683,7 +683,7 @@ if(isset($page_title[$action]))
 	$text = "
 		<form method='post' action='".e_SELF."?{$action}.{$from}'>
 		<fieldset id='core-admin-log-filter'>
-			<legend class='e-hideme'>".RL_LAN_012."</legend>
+			<legend>".RL_LAN_012."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='4'>
 					<col style='width:15%;vertical-align:top;' />
