@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-10-02 21:10:02 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-16 17:23:25 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
-define('UTHEME_MENU_L1', 'Set Language');
+define('UTHEME_MENU_L1', 'Set');
 define('UTHEME_MENU_L2', 'Select Language');
 define('UTHEME_MENU_L3', 'tables');
 

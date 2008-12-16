@@ -9,8 +9,8 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-15 21:16:31 $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-16 17:23:25 $
  * $Author: secretr $
  *
 */
@@ -25,6 +25,7 @@ $ADMIN_HEADER = "
 <div class='admin-wrapper'>
 	<div class='admin-header'>
 		<div class='admin-header-content'>
+			<div class='f-right'><!-- -->{ADMIN_LANG=nobutton&nomenu}</div>
 			{ADMIN_LOGO}
 			{ADMIN_LOGGED}
 			{ADMIN_SEL_LAN}
@@ -52,6 +53,11 @@ $ADMIN_HEADER = "
 	<!--
 	{ADMIN_NAV}
 	-->
+		{ADMIN_LANG}
+
+		{ADMIN_SITEINFO}
+
+		{ADMIN_DOCS}
  */
 $ADMIN_FOOTER = "
 						</div>
@@ -64,7 +70,7 @@ $ADMIN_FOOTER = "
 						{ADMIN_MENU}
 
 						{SETSTYLE=none}
-						{ADMIN_LANG}
+
 						{ADMIN_PWORD}
 						{ADMIN_STATUS=request}
 						{ADMIN_LATEST=request}
@@ -76,8 +82,6 @@ $ADMIN_FOOTER = "
 						{ADMIN_UPDATE}
 						{SETSTYLE=site_info}
 						{ADMIN_HELP}
-						{ADMIN_SITEINFO}
-						{ADMIN_DOCS}
 					</div>
 				</td>
 			</tr>

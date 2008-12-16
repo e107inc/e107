@@ -9,8 +9,8 @@
  * Cache Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision: 1.7 $
- * $Date: 2008-12-12 23:29:32 $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-16 17:23:25 $
  * $Author: secretr $
  *
 */
@@ -28,7 +28,7 @@ require_once(e_HANDLER."cache_handler.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."message_handler.php");
 $ec = new ecache;
-$frm = new e_form(); 
+$frm = new e_form();
 
 $emessage = &eMessage::getInstance();
 
@@ -44,10 +44,6 @@ if(!is_writable(e_CACHE))
 	require_once("footer.php");
 	exit;
 }
-
-/*
- * XXX WORK IN PROGRESS - WAITING THE NEW MESSAGE HANDLER
- */
 
 if (isset($_POST['submit_cache']))
 {
