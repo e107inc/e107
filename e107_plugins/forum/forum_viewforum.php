@@ -9,8 +9,8 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.10 $
-* $Date: 2008-12-15 00:29:20 $
+* $Revision: 1.11 $
+* $Date: 2008-12-17 04:22:37 $
 * $Author: mcfly_e107 $
 *
 */
@@ -57,6 +57,8 @@ if (!$forum->checkPerm($forumId, 'view'))
 }
 
 $forumInfo = $forum->forum_get($forumId);
+$threadsViewed = $forum->threadGetUserViewed();
+
 
 //var_dump($forumInfo);
 
@@ -84,7 +86,7 @@ define('e_PAGETITLE', LAN_01.' / '.$_forum_name);
 //define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
 //$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
 
-$modArray = $forum->forum_getmods($thread->forum_info['forum_moderators']);
+$modArray = $forum->forumGetMods($thread->forum_info['forum_moderators']);
 define('MODERATOR', (USER && is_array($modArray) && in_array(USERID, array_keys($modArray))));
 
 $message = '';
@@ -217,7 +219,7 @@ $gen = new convert;
 $SUBFORUMS = '';
 if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
 {
-	$newflag_list = $forum->forum_newflag_list();
+	$newflag_list = $forum->forumGetUnreadForums();
 	$sub_info = '';
 	foreach($subList[$forumInfo['forum_parent']][$forumId] as $sub)
 	{
@@ -313,7 +315,7 @@ require_once(FOOTERF);
 
 function parse_thread($thread_info)
 {
-	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $forum_id, $menu_pref;
+	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $pref, $menu_pref, $threadsViewed;
 	$e107 = e107::getInstance();
 	$text = '';
 
@@ -345,14 +347,7 @@ function parse_thread($thread_info)
 		$LASTPOST .= '<br />'.$lastpost_datestamp;
 	}
 
-	$newflag = false;
-	if (USER)
-	{
-		if ($thread_info['thread_lastpost'] > USERLV && !$forum->threadViewed($thread_info['thread_id']))
-		{
-			$newflag = true;
-		}
-	}
+	$newflag = (USER && $thread_info['thread_lastpost'] > USERLV && !in_array($thread_info['thread_id'], $threadsViewed));
 
 	$THREADDATE = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
 	$ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
@@ -501,7 +496,8 @@ function parse_sub($subInfo)
 	$SUB_REPLIES = $subInfo['forum_replies'];
 	if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
 	{
-		$NEWFLAG = "<a href='".e_SELF."?mfar.{$subInfo['forum_id']}'>".IMAGE_new."</a>";
+		
+		$NEWFLAG = "<a href='".$e107->url->getUrl('forum','forum', 'func=mfar&id='.$subInfo['forum_id'])."'>".IMAGE_new.'</a>';
 	}
 	else
 	{

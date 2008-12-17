@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-12-15 00:29:20 $
+|     $Revision: 1.17 $
+|     $Date: 2008-12-17 04:22:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -74,7 +74,7 @@ if (USER && (USERID != $threadInfo['thread_user'] || $threadInfo['thread_total_r
 }
 
 define('e_PAGETITLE', LAN_01 . ' / ' . $e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off') . " / " . $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off'));
-$modArray = $forum->forum_getmods($thread->threadInfo['forum_moderators']);
+$modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
 define('MODERATOR', (USER && is_array($modArray) && in_array(USERID, array_keys($modArray))));
 
 if (MODERATOR && isset($_POST['mod']))
@@ -86,7 +86,6 @@ if (MODERATOR && isset($_POST['mod']))
 
 $postList = $forum->PostGet($thread->threadId, $thread->page * $thread->perPage, $thread->perPage);
 
-//var_dump($thread->threadInfo);
 require_once (e_HANDLER . 'level_handler.php');
 $gen = new convert;
 if ($thread->message)
@@ -144,7 +143,6 @@ if ($pref['forum_track'] && USER)
 			</span>
 			<script type='text/javascript'>
 			e107.runOnLoad(function(){
-				//put this in header_js or as inline script just after the markup above
 				$('forum-track-trigger').observe('click', function(e) {
 					e.stop();
 					new e107Ajax.Updater('forum-track-trigger-container', '{$url}', {
@@ -164,10 +162,6 @@ $MODERATORS = LAN_321 . implode(', ', $modArray);
 
 $THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_66 : '');
 
-//$pages = ceil(($threadInfo['thread_total_replies'] + 1) / $perPage);
-
-//echo "pages = {$thread->pages}<br />";
-//var_dump($thread);
 if ($thread->pages > 1)
 {
 	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
@@ -257,13 +251,14 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 $forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
 $forumstring = $forstr . $forthr . $forrep . $forend;
 
-require_once (HEADERF);
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
 $threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
 if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->threadId, $threadsViewed))
 {
 	$tst = $forum->threadMarkAsRead($thread->threadId);
 }
+
+require_once (HEADERF);
 
 if ($pref['forum_enclose'])
 {
@@ -273,7 +268,6 @@ else
 {
 	echo $forumstring;
 }
-
 
 // end -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -291,9 +285,6 @@ require_once (FOOTERF);
 function showmodoptions()
 {
 	global $thread, $postInfo;
-
-//	var_dump($thread);
-//	var_dump($postInfo);
 
 	$e107 = e107::getInstance();
 	$forum_id = $thread->threadInfo['forum_id'];
@@ -333,7 +324,6 @@ function showmodoptions()
 
 function forumjump()
 {
-
 	global $forum;
 	$jumpList = $forum->forum_get_allowed();
 	$text = "<form method='post' action='" . e_SELF . "'><p>" . LAN_65 . ": <select name='forumjump' class='tbox'>";
@@ -526,10 +516,7 @@ class e107ForumThread
 				break;
 
 			case 'last':
-//				$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-//				var_dump($thread);
 				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);
-//				echo "pages = $pages<br />";
 				$thread->page = ($pages - 1);
 				break;
 
@@ -541,10 +528,7 @@ class e107ForumThread
 					header("location: {$url}");
 					exit;
 				}
-				else
-				{
-					$this->message = LAN_405;
-				}
+				$this->message = LAN_405;
 				break;
 
 			case 'prev':
@@ -555,40 +539,41 @@ class e107ForumThread
 					header("location: {$url}");
 					exit;
 				}
-				else
-				{
-					$this->message = LAN_404;
-				}
+				$this->message = LAN_404;
 				break;
 
 			case 'report':
-				$thread_info = $forum->thread_get_postinfo($thread_id, true);
+				$postId = (int)$_GET['id'];
+				$postInfo = $forum->postGet($postId, 'post');
 
 				if (isset($_POST['report_thread']))
 				{
-					$report_add = $tp->toDB($_POST['report_add']);
+					$report_add = $e107->tp->toDB($_POST['report_add']);
 					if ($pref['reported_post_email'])
 					{
-						require_once (e_HANDLER . "mail.php");
+						require_once (e_HANDLER . 'mail.php');
 						$report = LAN_422 . SITENAME . " : " . (substr(SITEURL, -1) == "/" ? SITEURL : SITEURL . "/") . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $thread_id . ".post\n" . LAN_425 . USERNAME . "\n" . $report_add;
 						$subject = LAN_421 . " " . SITENAME;
 						sendemail(SITEADMINEMAIL, $subject, $report);
 					}
-					$sql->db_Insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$thread_info['head']['thread_name']}', " . intval($thread_id) . ", '{$report_add}'");
-					define("e_PAGETITLE", LAN_01 . " / " . LAN_428);
+					$e107->sql->db_Insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$thread_info['head']['thread_name']}', " . intval($thread_id) . ", '{$report_add}'");
+					define('e_PAGETITLE', LAN_01 . " / " . LAN_428);
 					require_once (HEADERF);
-					$text = LAN_424 . "<br /><br /><a href='forum_viewtopic.php?" . $thread_id . ".post'>" . LAN_429 . "</a";
-					$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
+					$text = LAN_424 . "<br /><br /><a href='forum_viewtopic.php?" . $thread_id . ".post'>" . LAN_429 . '</a>';
+					$e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
 				}
 				else
 				{
-					$thread_name = $tp->toHTML($thread_info['head']['thread_name'], true, 'no_hook, emotes_off');
-					define("e_PAGETITLE", LAN_01 . " / " . LAN_426 . " " . $thread_name);
+					$thread_name = $e107->tp->toHTML($postInfo['thread_name'], true, 'no_hook, emotes_off');
+					define('e_PAGETITLE', LAN_01 . ' / ' . LAN_426 . ' ' . $thread_name);
 					require_once (HEADERF);
-					$text = "<form action='" . e_PLUGIN . "forum/forum_viewtopic.php?" . e_QUERY . "' method='post'> <table style='width:100%'>
+					$url = $e107->url->getUrl('forum', 'thread', 'func=post&id='.$postId);
+					$actionUrl = $e107->url->getUrl('forum', 'thread', 'func=report&id='.$postId);
+					$text = "<form action='".$actionUrl."' method='post'>
+					<table style='width:100%'>
 					<tr>
 					<td  style='width:50%' >
-					" . LAN_415 . ": " . $thread_name . " <a href='" . e_PLUGIN . "forum/forum_viewtopic.php?" . $thread_id . ".post'><span class='smalltext'>" . LAN_420 . " </span>
+					" . LAN_415 . ': ' . $thread_name . " <a href='".$url."'><span class='smalltext'>" . LAN_420 . " </span>
 					</a>
 					</td>
 					<td style='text-align:center;width:50%'>
@@ -607,7 +592,7 @@ class e107ForumThread
 					</td>
 					</tr>
 					</table>";
-					$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'));
+					$e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'));
 				}
 				require_once (FOOTERF);
 				exit;

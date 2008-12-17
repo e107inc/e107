@@ -11,20 +11,27 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.3 $
-| $Date: 2007-09-26 19:28:47 $
-| $Author: e107steved $
+| $Revision: 1.4 $
+| $Date: 2008-12-17 04:22:37 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
-require_once("../../class2.php");
-@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php';
-@include_once e_PLUGIN.'forum/languages/English/lan_forum_conf.php';
+require_once('../../class2.php');
+require_once(e_PLUGIN.'forum/forum_class.php');
+$forum = new e107forum;
+
+include_lan(e_PLUGIN.'forum/languages/English/lan_forum_conf.php');
 
 $e_sub_cat = 'forum';
 	
-$qs = explode(".", e_QUERY);
-$action = $qs[0];
-$thread_id = intval($qs[1]);
+if(!USER || !isset($_GET['f']) || !isset($_GET['id']))
+{
+	header('location:'.$e107->url->getUrl('core:core', 'main', 'action=index'));
+	exit;
+}
+
+$id = (int)$_GET['id'];
+$action = $_GET['f'];
 
 $qry = "
 SELECT t.*, f.*, fp.forum_id AS forum_parent_id FROM #forum_t as t
@@ -33,18 +40,16 @@ LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
 WHERE t.thread_id = {$thread_id}
 ";
 
-if($sql->db_Select_gen($qry))
+$threadInfo = $forum->threadGet($id);
+$modList = $forum->forumGetMods($threadInfo->forum_moderators);
+
+//var_dump($threadInfo);
+//var_dump($modList);
+
+//If user is not a moderator of indicated forum, redirect to index page
+if(!in_array(USERID, array_keys($modList)))
 {
-	$info=$sql->db_Fetch();
-	if(!check_class($info['forum_moderators']))
-	{
-		header("location:".e_BASE."index.php");
-		exit;
-	}
-}
-else
-{
-	header("location:".e_BASE."index.php");
+	header('location:'.$e107->url->getUrl('core:core', 'main', 'action=index'));
 	exit;
 }
 
@@ -127,10 +132,11 @@ if ($action == "delete_poll")
 	exit;
 }
 	
-if ($action == "move")
+if ($action == 'move')
 {
+	$postInfo = $forum->postGet($id, 0, 1);
 	$text = "
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."'>
 		<tr>
@@ -139,29 +145,26 @@ if ($action == "move")
 		<select name='forum_move' class='tbox'>";
 	$qry = "
 	SELECT f.forum_id, f.forum_name, fp.forum_name AS forum_parent, sp.forum_name AS sub_parent
-	FROM #forum AS f
-	LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-	LEFT JOIN #forum AS sp ON f.forum_sub = sp.forum_id
+	FROM `#forum` AS f
+	LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id
+	LEFT JOIN `#forum` AS sp ON f.forum_sub = sp.forum_id
 	WHERE f.forum_parent != 0
-	AND f.forum_id != ".intval($info['forum_id'])."	
-	AND f.forum_class IN (".USERCLASS_LIST.")
-	AND fp.forum_class IN (".USERCLASS_LIST.")
+	AND f.forum_id != ".(int)$threadInfo['thread_forum_id']."	
 	ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
 	";
-	$sql->db_Select_gen($qry);
-	$fList = $sql->db_getList();
+	$e107->sql->db_Select_gen($qry);
+	$fList = $e107->sql->db_getList();
 
 	foreach($fList as $f)
 	{
-		if($f['forum_sub'] > 0)
+		if(substr($f['forum_name'], 0, 1) != '*')
 		{
-			$f['forum_name'] = "subforum -> ".$f['forum_name'];
+			$f['sub_parent'] = ltrim($f['sub_parent'], '*');
+			$for_name = $f['forum_parent'].' -> ';
+			$for_name .= ($f['sub_parent'] ? $f['sub_parent'].' -> ' : '');
+			$for_name .= $f['forum_name'];
+			$text .= "<option value='{$f['forum_id']}'>".$for_name."</option>";
 		}
-		$for_name = $f['forum_parent']." -> ";
-		$for_name .= ($f['sub_parent'] ? $f['sub_parent']." -> " : "");
-		$for_name .= $f['forum_name'];
-
-		$text .= "<option value='{$f['forum_id']}'>".$for_name."</option>";
 	}
 	$text .= "</select>
 		</td>
@@ -170,7 +173,7 @@ if ($action == "move")
 		<td colspan='2'><br />
 		<b>".FORLAN_32."</b><br />
 		<input type='radio' name='rename_thread' checked='checked' value='none' /> ".FORLAN_28."<br />
-		<input type='radio' name='rename_thread' value='add' /> ".FORLAN_29." [".FORLAN_27."] ".FORLAN_30."<br />
+		<input type='radio' name='rename_thread' value='add' /> ".FORLAN_29.' ['.FORLAN_27.'] '.FORLAN_30."<br />
 		<input type='radio' name='rename_thread' value='rename' /> ".FORLAN_31." <input type='text' class='tbox' name='newtitle' size='60' maxlength='250' value='".$tp->toForm($info['thread_name'])."'/>
 		</td>
 		</tr>
@@ -183,8 +186,8 @@ if ($action == "move")
 		</table>
 		</div>
 		</form><br />";
-	$text = $ns->tablerender($tp->toHTML($info['thread_name']), $tp->toHTML($info['thread_thread']), '', TRUE).$ns->tablerender("", $text, '', true);
-	$ns->tablerender(FORLAN_25, $text);
+	$text = $e107->ns->tablerender($e107->tp->toHTML($threadInfo['thread_name']), $e107->tp->toHTML($postInfo[0]['post_entry']), '', true).$ns->tablerender('', $text, '', true);
+	$e107->ns->tablerender(FORLAN_25, $text);
 	
 }
 require_once(FOOTERF);
