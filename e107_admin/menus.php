@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-12-08 22:21:29 $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-17 20:42:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ if($_POST)
 {
 //	print_a($_POST);
 //	exit;
-	$e107cache->clear("menus_");
+	$e107cache->clear_sys("menus_");
 }
 
 $menus_equery = explode('.', e_QUERY);
