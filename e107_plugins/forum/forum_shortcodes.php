@@ -24,7 +24,8 @@ SC_END
 SC_BEGIN POST
 global $postInfo;
 $e107 = e107::getInstance();
-return $e107->tp->toHTML($postInfo['post_entry'], true, 'USER_BODY', 'class:'.$post_info['user_class']);
+$emote = (isset($postInfo['post_options']['no_emote']) ? ',emotes_off' : '');
+return $e107->tp->toHTML($postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$post_info['user_class']);
 SC_END
 
 SC_BEGIN POSTDELETED

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_post.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-05 20:28:05 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-17 18:48:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -111,5 +111,6 @@ define("POLL_508", "no");
 define("LAN_FORUM_1", "Uploads disabled: ".e_FILE."public directory is not writable");
 define("LAN_FORUM_2", "Duplicate post");
 
+define('LAN_FORUMPOST_EMOTES', 'Deactivate emoticons for this post');
 
 ?>

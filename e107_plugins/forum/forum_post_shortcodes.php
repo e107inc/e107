@@ -120,6 +120,11 @@ $forum->set_crumb(TRUE,($action == "nt" ? ($eaction ? LAN_77 : LAN_60) : ($eacti
 return $BREADCRUMB;
 SC_END
 
+SC_BEGIN NOEMOTES
+if($eaction == true) { return ; }
+return "<input type='checkbox' name='no_emote' value='1' />&nbsp;<span class='defaulttext'>".LAN_FORUMPOST_EMOTES.'</span>';
+SC_END
+
 SC_BEGIN EMAILNOTIFY
 global $pref, $thread_info, $action, $eaction;
 if($eaction == true) { return ; }

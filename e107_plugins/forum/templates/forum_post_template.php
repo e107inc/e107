@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-07 04:16:39 $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-17 18:48:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -104,12 +104,13 @@ $FORUMPOST = "
 <tr>
 <td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
 <td class='forumheader2' style='width:80%'>
-{POSTBOX}<br />{EMAILNOTIFY}<br />{POSTTHREADAS}
+{POSTBOX}<br />
+{EMAILNOTIFY}<br />
+{NOEMOTES}<br />
+{POSTTHREADAS}
 </td>
 </tr>
-
 {POLL}
-
 {FILEATTACH}
 
 <tr style='vertical-align:top'>
@@ -147,7 +148,10 @@ $FORUMPOST_REPLY = "
 <tr>
 <td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
 <td class='forumheader2' style='width:80%'>
-{POSTBOX}<br />{EMAILNOTIFY}<br />{POSTTHREADAS}
+{POSTBOX}<br />
+{EMAILNOTIFY}<br />
+{NOEMOTES}<br />
+{POSTTHREADAS}
 </td>
 </tr>
 
