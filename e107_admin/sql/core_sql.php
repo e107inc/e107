@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-12-06 15:48:16 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2008-12-17 20:03:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -524,11 +524,9 @@ CREATE TABLE user (
   user_lastpost int(10) unsigned NOT NULL default '0',
   user_chats int(10) unsigned NOT NULL default '0',
   user_comments int(10) unsigned NOT NULL default '0',
-  user_forums int(10) unsigned NOT NULL default '0',
   user_ip varchar(45) NOT NULL default '',
   user_ban tinyint(3) unsigned NOT NULL default '0',
   user_prefs text NOT NULL,
-  user_viewed text NOT NULL,
   user_visits int(10) unsigned NOT NULL default '0',
   user_admin tinyint(3) unsigned NOT NULL default '0',
   user_login varchar(100) NOT NULL default '',
@@ -553,7 +551,7 @@ CREATE TABLE userclass_classes (
   userclass_description varchar(250) NOT NULL default '',
   userclass_editclass tinyint(3) unsigned NOT NULL default '0',
   userclass_parent tinyint(3) unsigned NOT NULL default '0',
-  userclass_accum varchar(250) NOT NULL default '', 
+  userclass_accum varchar(250) NOT NULL default '',
   userclass_visibility tinyint(3) unsigned NOT NULL default '0',
   userclass_type tinyint(1) unsigned NOT NULL default '0',
   userclass_icon varchar(250) NOT NULL default '',
