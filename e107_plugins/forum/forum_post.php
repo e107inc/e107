@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2008-12-15 00:29:20 $
+|     $Revision: 1.33 $
+|     $Date: 2008-12-17 18:48:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -242,6 +242,10 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		$postInfo['post_forum'] = $forumId;
 		$postInfo['post_datestamp'] = $time;
 		$threadInfo['thread_lastpost'] = $time;
+		if(isset($_POST['no_emote']))
+		{
+			$postInfo['post_options'] = serialize(array('no_emote' => 1));
+		}
 
 		//If we've successfully uploaded something, we'll have to edit the post_entry and post_attachments
 		if($uploadResult = process_upload($newPostId))
