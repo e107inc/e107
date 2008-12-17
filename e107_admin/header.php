@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.21 $
-|   $Date: 2008-12-16 11:05:36 $
+|   $Revision: 1.22 $
+|   $Date: 2008-12-17 17:27:07 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -400,11 +400,11 @@ if (!function_exists('show_admin_menu')) {
 					$BUTTON_TEMPLATE = $sub_link ? $SUB_BUTTON : $BUTTON;
 				}
 				$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
-				$replace[1] = $e107_vars[$act]['link'];
+				$replace[1] = varset($e107_vars[$act]['link'], "#{$act}");
 				if (!empty($e107_vars[$act]['include'])) {
 					$replace[2] = $e107_vars[$act]['include'];
 				} else {
-					$replace[2] = $js ? "onclick=\"showhideit('".$act."');\"" : "onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
+					$replace[2] = $js ? " onclick=\"showhideit('".$act."');\"" : " onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
 				}
 				$replace[3] = $title;
 				$replace[4] = $id_title;
