@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2008-12-10 21:46:40 $
+|     $Revision: 1.35 $
+|     $Date: 2008-12-17 21:02:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -461,6 +461,15 @@ function update_706_to_800($type='')
 		}
 	}
 
+	// Extra index to rss table (if used)
+	if (FALSE !== ($temp = addIndexToTable('rss', 'rss_name', $just_check, $updateMessages, TRUE)))
+	{
+		if ($just_check)
+		{
+			return update_needed($temp);
+		}
+	}
+
 	// Front page prefs (logic has changed)
 	if (!isset($pref['frontpage_force']))
 	{	// Just set basic options; no real method of converting the existing
@@ -853,9 +862,18 @@ function mysql_table_exists($table)
 
 
 // Add index to a table. Returns FALSE if not required. Returns a message if required and just checking
-function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages)
+function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $optionalTable=FALSE)
 {
 	global $sql;
+	if (!mysql_table_exists($target))
+	{
+		if ($optionalTable)
+		{
+			return !$just_check;		// Nothing to do it table is optional and not there
+		}
+		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_54);
+		return !$just_check;		// No point carrying on - return 'nothing to do'
+	}
 	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX.$target)) 
 	{
 		$found = FALSE;
