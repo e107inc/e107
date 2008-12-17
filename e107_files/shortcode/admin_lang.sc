@@ -1,7 +1,6 @@
-
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: admin_lang.sc,v 1.4 2008-12-16 17:23:25 secretr Exp $
+ * $Id: admin_lang.sc,v 1.5 2008-12-17 17:27:07 secretr Exp $
  *
  * Admin Language Shortcode
  *

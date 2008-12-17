@@ -9,8 +9,8 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-16 17:23:25 $
+ * $Revision: 1.7 $
+ * $Date: 2008-12-17 17:27:07 $
  * $Author: secretr $
  *
 */
@@ -104,18 +104,18 @@ $BUTTONS_START = '
 ';
 $BUTTON = '
 	<li>
-		<a class="link" {ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
+		<a class="link" href="{LINK_URL}"{ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
 	</li>
 ';
 $BUTTON_OVER = '
 	<li>
-		<a class="link-active" {ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
+		<a class="link-active" href="{LINK_URL}"{ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
 	</li>
 ';
 $SUB_BUTTONS_START = '
 <ul class="plugin-navigation">
 	<li>
-		<a class="link" onclick="expandit(\'{SUB_HEAD_ID}\');" >&raquo;&nbsp;{SUB_HEAD}</a>
+		<a class="link" href="{LINK_URL}"onclick="expandit(\'{SUB_HEAD_ID}\');" >&raquo;&nbsp;{SUB_HEAD}</a>
 		<ul class="sub-nav" id="{SUB_HEAD_ID}" style="display: none">
 ';
 $SUB_BUTTON = '
