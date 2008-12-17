@@ -244,12 +244,7 @@ SC_BEGIN REPORTIMG
 global $postInfo, $page;
 if (USER) {
 	$e107 = e107::getInstance();
-	$tmp = array (
-	'func' => 'report',
-	'id' => $postInfo['post_thread'],
-	'report' => $postInfo['post_id']
-	);
-	return "<a href='".$e107->url->getUrl('forum', 'thread', $tmp)."'>".IMAGE_report.'</a> ';
+	return "<a href='".$e107->url->getUrl('forum', 'thread', 'func=report&id='.$postInfo['post_thread'])."'>".IMAGE_report.'</a> ';
 }
 SC_END
 

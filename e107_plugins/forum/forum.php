@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-12-15 00:29:20 $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-17 04:22:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -33,28 +33,28 @@ if ($untrackId = varset($_REQUEST['untrack']))
 	exit;
 }
 
-//Mark all threads as read
-if (e_QUERY == 'mark.all.as.read')
+if(isset($_GET['f']))
 {
-	$forum->forum_markasread('all');
-	header('location:'.e_SELF);
-	exit;
-}
+	if(isset($_GET['id']))
+	{
+		$id = (int)$_GET['id'];
+	}
 
-//Mark all threads in specific forum as read
-if (varset($_REQUEST['mfar']))
-{
-	$forum->forum_markasread((int)$_REQUEST['mfar']);
-	header('location:'.e_SELF);
-	exit;
-}
-
-if (e_QUERY == 'rules')
-{
-	include_once(HEADERF);
-	forum_rules('show');
-	include_once(FOOTERF);
-	exit;
+	switch($_GET['f'])
+	{
+		case 'mfar':
+			$forum->forumMarkAsRead($id);
+			header('location:'.e_SELF);
+			exit;
+			break;
+		
+		case 'rules':
+			include_once(HEADERF);
+			forum_rules('show');
+			include_once(FOOTERF);
+			exit;
+			break;
+	}
 }
 
 $gen = new convert;
@@ -74,7 +74,7 @@ $rules_text = forum_rules('check');
 $USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_429."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_430."</a>";
 if(USER)
 {
-	$USERINFO .= " | <a href='".e_BASE."userposts.php?0.forums.".USERID."'>".LAN_431."</a> | <a href='".e_BASE."usersettings.php'>".LAN_432."</a> | <a href='".e_BASE."user.php?id.".USERID."'>".LAN_435."</a>";
+	$USERINFO .= " | <a href='".e_BASE.'userposts.php?0.forums.'.USERID."'>".LAN_431."</a> | <a href='".e_BASE."usersettings.php'>".LAN_432."</a> | <a href='".e_BASE."user.php?id.".USERID."'>".LAN_435."</a>";
 	if($pref['forum_attach'] && (check_class($pref['upload_class']) || getperms('0')))
 	{
 		$USERINFO .= " | <a href='".e_PLUGIN."forum/forum_uploads.php'>".FORLAN_442."</a>";
@@ -82,7 +82,7 @@ if(USER)
 }
 if($rules_text != '')
 {
-	$USERINFO .= " | <a href='".e_PLUGIN."forum/forum.php?rules'>".LAN_433."</a>";
+	$USERINFO .= " | <a href='".$e107->url->getUrl('forum', 'forum', "func=rules")."'>".LAN_433.'</a>';
 }
 $total_topics = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $total_replies = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
@@ -198,7 +198,7 @@ if (USER && varsettrue($pref['forum_track']) && e_QUERY != 'track')
 	$INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393.'</a>';
 }
 
-$FORUMINFO = LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
+$FORUMINFO = LAN_192.($total_topics+$total_replies).' '.LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
 
 if (!isset($FORUM_MAIN_START))
 {
@@ -210,12 +210,10 @@ if (!isset($FORUM_MAIN_START))
 include(e_PLUGIN.'forum/templates/forum_template.php');
 require_once(HEADERF);
 
-$parent_list = $forum->forum_getparents();
-$forum_list = $forum->forum_getforums();
-$sub_list = $forum->forumGetSubs();
-$newflag_list = $forum->forum_newflag_list();
+$forumList = $forum->forumGetForumList();
+$newflag_list = $forum->forumGetUnreadForums();
 
-if (!$parent_list)
+if (!$forumList)
 {
 	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51.'</div>', array('forum', '51'));
 	require_once(FOOTERF);
@@ -223,7 +221,7 @@ if (!$parent_list)
 }
 
 $forum_string = '';
-foreach ($parent_list as $parent)
+foreach ($forumList['parents'] as $parent)
 {
 	$status = parse_parent($parent);
 	$PARENTSTATUS = $status[0];
@@ -231,14 +229,13 @@ foreach ($parent_list as $parent)
 	{
 		$PARENTNAME = $parent['forum_name'];
 		$forum_string .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_PARENT);
-		//		$forums = $forum->forum_getforums($parent['forum_id']);
-		if (!count($forum_list[$parent['forum_id']]))
+		if (!count($forumList['forums'][$parent['forum_id']]))
 		{
 			$text .= "<td colspan='5' style='text-align:center' class='forumheader3'>".LAN_52."</td>";
 		}
 		else
 		{
-			foreach($forum_list[$parent['forum_id']] as $f)
+			foreach($forumList['forums'][$parent['forum_id']] as $f)
 			{
 				if ($f['forum_class'] == e_UC_ADMIN && ADMIN)
 				{
@@ -273,8 +270,8 @@ function parse_parent($parent)
 {
 	if(check_class($parent['forum_class']))
 	{
-		$status[0]="";
-		$status[1] = TRUE;
+		$status[0] = '';
+		$status[1] = true;
 		if(!check_class($parent['forum_postclass']))
 		{
 			$status[0] = '( '.LAN_405.' )';
@@ -282,19 +279,20 @@ function parse_parent($parent)
 	}
 	else
 	{
-		$status[1] = FALSE;
+		$status[1] = false;
 	}
 	return $status;
 }
 
 function parse_forum($f, $restricted_string = '')
 {
-	global $FORUM_MAIN_FORUM, $gen, $forum, $tp, $newflag_list, $sub_list;
+	global $FORUM_MAIN_FORUM, $gen, $forum, $newflag_list, $forumList;
 	$e107 = e107::getInstance();
 
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
-		$NEWFLAG = "<a href='".e_SELF."?mfar.{$f['forum_id']}'>".IMAGE_new."</a>";
+
+		$NEWFLAG = "<a href='".$e107->url->getUrl('forum','forum', 'func=mfar&id='.$f['forum_id'])."'>".IMAGE_new.'</a>';
 	}
 	else
 	{
@@ -305,58 +303,49 @@ function parse_forum($f, $restricted_string = '')
 	{
 		$f['forum_name'] = substr($f['forum_name'], 1);
 	}
-	$f['forum_name'] = $tp -> toHTML($f['forum_name'], TRUE, 'no_hook');
-	$f['forum_description'] = $tp -> toHTML($f['forum_description'], TRUE, 'no_hook');
-
-// $e107->url->getUrl('forum', 'thread', array('func' => 'track')))
+	$f['forum_name'] = $e107->tp->toHTML($f['forum_name'], true, 'no_hook');
+	$f['forum_description'] = $e107->tp->toHTML($f['forum_description'], true, 'no_hook');
 
 	$FORUMNAME = "<a href='".$e107->url->getUrl('forum', 'forum', "func=view&id={$f['forum_id']}")."'>{$f['forum_name']}</a>";
 	$FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
 	$THREADS = $f['forum_threads'];
 	$REPLIES = $f['forum_replies'];
-	$FORUMSUBFORUMS = "";
+	$FORUMSUBFORUMS = '';
 
-	if(is_array($sub_list[$f['forum_parent']][$f['forum_id']]))
+	if(is_array($forumList['subs'][$f['forum_id']]))
 	{
-		list($lastpost_datestamp, $lastpost_thread) = explode(".", $f['forum_lastpost_info']);
-		$ret = parse_subs($sub_list[$f['forum_parent']][$f['forum_id']], $lastpost_datestamp);
+		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
+		$ret = parse_subs($forumList['subs'][$f['forum_id']], $lastpost_datestamp);
 		$FORUMSUBFORUMS = "<br /><div class='smalltext'>".FORLAN_444.": {$ret['text']}</div>";
 		$THREADS += $ret['threads'];
 		$REPLIES += $ret['replies'];
 		if(isset($ret['lastpost_info']))
 		{
 			$f['forum_lastpost_info'] = $ret['lastpost_info'];
+			$f['forum_lastpost_user'] = $ret['lastpost_user'];
+			$f['forum_lastpost_user_anon'] = $ret['lastpost_user_anon'];
 			$f['user_name'] = $ret['user_name'];
 		}
 	}
 
-	if ($f['forum_lastpost_user'])
+	if ($f['forum_lastpost_info'])
 	{
-		list($lastpost_datestamp, $lastpost_thread) = explode(".", $f['forum_lastpost_info']);
-		$tmp = explode(".", $f['forum_lastpost_user'], 2);
+		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
 		if ($f['user_name'])
 		{
-			$lastpost_name = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>{$f['user_name']}</a>";
+			
+			$lastpost_name = "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$f['forum_lastpost_user'])."'>{$f['user_name']}</a>";
 		}
 		else
 		{
-			if(!$tmp[1])
-			{
-				$lastpost_name = FORLAN_443;
-			}
-			else
-			{
-				$lastpost_name = $tp->toHTML($tmp[1]);
-			}
+			$lastpost_name = $e107->tp->toHTML($f['forum_lastpost_user_anon']);
 		}
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
-//		$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $lastpost_thread));
-
 		$LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 	}
 	else
 	{
-		$LASTPOST = "-";
+		$LASTPOST = '-';
 	}
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_FORUM));
 }
@@ -365,7 +354,7 @@ function parse_subs($subList, $lastpost_datestamp)
 {
 	$e107 = e107::getInstance();
 	$ret = array();
-	$ret['text'] = "";
+	$ret['text'] = '';
 	foreach($subList as $sub)
 	{
 		$ret['text'] .= ($ret['text'] ? ', ' : '');
@@ -377,6 +366,8 @@ function parse_subs($subList, $lastpost_datestamp)
 		if($tmp[0] > $lastpost_datestamp)
 		{
 			$ret['lastpost_info'] = $sub['forum_lastpost_info'];
+			$ret['lastpost_user'] = $sub['forum_lastpost_user'];
+			$ret['lastpost_user_anon'] = $sub['lastpost_user_anon'];
 			$ret['user_name'] = $sub['user_name'];
 			$lastpost_datestamp = $tmp[0];
 		}
@@ -386,12 +377,8 @@ function parse_subs($subList, $lastpost_datestamp)
 
 if (e_QUERY == 'track')
 {
-//	if(!USER) { return ; }
 	if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list'))
 	{
-
-//	$sql2 = new db;
-//	$tmp = explode("-", USERREALM);
 		$viewed = $forum->threadGetUserViewed();
 		$qry = "
 		SELECT t.*, p.* from `#forum_thread` AS t
@@ -488,12 +475,12 @@ require_once(FOOTERF);
 
 function forum_rules($action = 'check')
 {
-	global $tp, $sql, $ns;
-	if (ADMIN == TRUE)
+	$e107 = e107::getInstance();
+	if (ADMIN == true)
 	{
 		$type = 'forum_rules_admin';
 	}
-	elseif(USER == TRUE)
+	elseif(USER == true)
 	{
 		$type = 'forum_rules_member';
 	}
@@ -501,27 +488,18 @@ function forum_rules($action = 'check')
 	{
 		$type = 'forum_rules_guest';
 	}
-	$result = $sql->db_Select('generic', 'gen_chardata', "gen_type = '$type' AND gen_intdata = 1");
-	if ($action == 'check')
-	{
-		if ($result)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
+	$result = $e107->sql->db_Select('generic', 'gen_chardata', "gen_type = '$type' AND gen_intdata = 1");
+	if ($action == 'check') { return $result; }
+
 	if ($result)
 	{
-		$row = $sql->db_Fetch();
-		$rules_text = $tp->toHTML($row['gen_chardata'], TRUE);
+		$row = $e107->sql->db_Fetch();
+		$rules_text = $e107->tp->toHTML($row['gen_chardata'], true);
 	}
 	else
 	{
 		$rules_text = FORLAN_441;
 	}
-	$ns->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
+	$e107->ns->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
 }
 ?>
