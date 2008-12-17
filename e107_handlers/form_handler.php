@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-16 14:22:01 $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-17 11:08:31 $
  * $Author: secretr $
  *
 */
@@ -66,7 +66,7 @@ class e_form
 	var $_tabindex_enabled = true;
 	var $_cached_attributes = array();
 
-	function e_form($enable_tabindex = true)
+	function e_form($enable_tabindex = false)
 	{
 		$this->_tabindex_enabled = $enable_tabindex;
 	}
@@ -74,26 +74,30 @@ class e_form
 	function text($name, $value, $maxlength = 200, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
-		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name, $value)." />";
+		//never allow id in format name-value for text fields
+		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 
 	function file($name, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
-		return "<input type='text' name='{$name}'".$this->get_attributes($options, $name, $value)." />";
+		//never allow id in format name-value for text fields
+		return "<input type='text' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
 
 
 	function password($name, $maxlength = 50, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
-		return "<input type='password' name='{$name}' value='' maxlength='{$maxlength}'".$this->get_attributes($options, $name, $value)." />";
+		//never allow id in format name-value for text fields
+		return "<input type='password' name='{$name}' value='' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 
 	function textarea($name, $value, $rows = 15, $cols = 40, $options = array())
 	{
 		$options = $this->format_options('textarea', $name, $options);
-		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name, $value).">{$value}</textarea>";
+		//never allow id in format name-value for text fields
+		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>";
 	}
 
 	function checkbox($name, $value, $checked = false, $options = array())
@@ -156,26 +160,52 @@ class e_form
 	function submit($name, $value, $options = array())
 	{
 		$options = $this->format_options('submit', $name, $options);
-		return "<input class='button' type='submit' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+		return "<input type='submit' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
-	function submit_image($name, $value, $image, $options = array())
+	function submit_image($name, $value, $image, $title='', $options = array())
 	{
-		$options = $this->format_options('submit', $name, $options);
-		return "<input class='image' type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
+		$options = $this->format_options('submit_image', $name, $options);
+		switch ($image) {
+			case 'edit':
+				$image = e_ADMIN_ABS.'admin_images/edit_16.png';
+				$options['class'] = 'action edit';
+			break;
+
+			case 'delete':
+				$image = e_ADMIN_ABS.'admin_images/delete_16.png';
+				$options['class'] = 'action delete';
+			break;
+		}
+		$options['title'] = $title;//shorthand
+
+		return "<input type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
 	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
-		$options['class'] = $action; //additional classes in options not allowed
+
 		$btype = 'submit';
 		if($action == 'action') $btype = 'button';
 		$options = $this->format_options('admin_button', $name, $options);
+		$options['class'] = $action;//shorthand
 		if(empty($label)) $label = $value;
 
 		return "
 			<button type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
 		";
+	}
+
+	function getNext()
+	{
+		if(!$this->_tabindex_enabled) return 0;
+		$this->_tabindex_counter += 1;
+		return $this->_tabindex_counter;
+	}
+
+	function resetTabindex()
+	{
+		$this->_tabindex_counter = 0;
 	}
 
 	function get_attributes($options, $name = '', $value = '')
@@ -203,8 +233,8 @@ class e_form
 					break;
 
 				case 'tabindex':
-					if($optval === false || !$this->_tabindex_enabled) break;
-					$this->_tabindex_counter++;
+					if(false === $optval || !$this->_tabindex_enabled) break;
+					$this->_tabindex_counter += 1;
 					$ret .= " tabindex='".($optval ? $optval : $this->_tabindex_counter)."'";
 					break;
 
@@ -245,8 +275,11 @@ class e_form
 	{
 		if($id_value === false) return '';
 
-		//format the name first
-		$name = str_replace(array('[]', '[', ']', '_'), array('', '-', '', '-'), $name);
+		//format data first
+		$name = rtrim(str_replace(array('[]', '[', ']', '_'), array('-', '-', '', '-'), $name), '-');
+		$value = trim(preg_replace('#[^a-z0-9\-]/i#','-', $value), '-');
+
+		if(!$id_value && is_numeric($value)) $id_value = $value;
 
 		if(empty($id_value) ) return " {$return_attribute}='{$name}".($value ? "-{$value}" : '')."'";// also useful when name is e.g. name='my_name[some_id]'
 		elseif(is_numeric($id_value) && $name) return " {$return_attribute}='{$name}-{$id_value}'";// also useful when name is e.g. name='my_name[]'
@@ -271,7 +304,7 @@ class e_form
 
 		foreach (array_keys($user_options) as $key)
 		{
-			if(!isset($def_options[$key])) unset($user_options[$key]);
+			if(!isset($def_options[$key])) unset($user_options[$key]);//remove it?
 		}
 
 		$user_options['name'] = $name; //required for some of the automated tasks
@@ -337,6 +370,11 @@ class e_form
 
 			case 'submit':
 				$def_options['class'] = 'button';
+				unset($def_options['checked'], $def_options['selected'], $def_options['readonly']);
+				break;
+
+			case 'submit_image':
+				$def_options['class'] = 'image';
 				unset($def_options['checked'], $def_options['selected'], $def_options['readonly']);
 				break;
 
