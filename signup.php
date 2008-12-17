@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-12-10 18:06:33 $
+|     $Revision: 1.26 $
+|     $Date: 2008-12-17 20:26:51 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -322,31 +322,31 @@ if (e_QUERY)
 		$e107cache->clear("online_menu_totals");
 		if ($sql->db_Select("user", "*", "user_sess='".$tp -> toDB($qs[2], true)."' "))
 		{
-		  if ($row = $sql->db_Fetch())
-		  {
-			// Set initial classes, and any which the user can opt to join
-			$init_classes = '';
-			if ($pref['init_class_stage'] == '2')
+			if ($row = $sql->db_Fetch())
 			{
-			  $init_classes = explode(',',varset($pref['initial_user_classes'],''));
-			  if ($init_classes)
-			  {	// Update the user classes
-			    $row['user_class'] = $tp->toDB(implode(',',array_unique(array_merge($init_classes, explode(',',$row['user_class'])))));
-				$init_classes = ", user_class='".$row['user_class']."' ";
-			  }
-			}
-			$sql->db_Update("user", "user_ban='0', user_sess=''{$init_classes} WHERE user_sess='".$tp -> toDB($qs[2], true)."' ");
+				// Set initial classes, and any which the user can opt to join
+				$init_classes = '';
+				if ($pref['init_class_stage'] == '2')
+				{
+					$init_classes = explode(',',varset($pref['initial_user_classes'],''));
+					if ($init_classes)
+					{	// Update the user classes
+						$row['user_class'] = $tp->toDB(implode(',',array_unique(array_merge($init_classes, explode(',',$row['user_class'])))));
+						$init_classes = ", user_class='".$row['user_class']."' ";
+					}
+				}
+				$sql->db_Update("user", "user_ban='0', user_sess=''{$init_classes} WHERE user_sess='".$tp -> toDB($qs[2], true)."' ");
 
-			// Log to user audit log if enabled
-			$admin_log->user_audit(USER_AUDIT_EMAILACK,$row);
-			
-			$e_event->trigger("userveri", $row);
-			require_once(HEADERF);
-			$text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
-			$ns->tablerender(LAN_402, $text);
-			require_once(FOOTERF);
-			exit;
-		  }
+				// Log to user audit log if enabled
+				$admin_log->user_audit(USER_AUDIT_EMAILACK,$row);
+				
+				$e_event->trigger("userveri", $row);
+				require_once(HEADERF);
+				$text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
+				$ns->tablerender(LAN_402, $text);
+				require_once(FOOTERF);
+				exit;
+			}
 		}
 		else
 		{	// Invalid activation code
@@ -630,16 +630,16 @@ global $db_debug;
 	// Check for Duplicate Email address - but only if previous checks passed.
 	if ($do_email_validate && $email_address_OK && $sql->db_Select("user", "user_email, user_ban, user_sess", "user_email='".$_POST['email']."' "))
 	{
-        $chk = $sql -> db_Fetch();
-	  if($chk['user_ban']== 2 && $chk['user_sess'])
-	  {  // duplicate because unactivated
+		$chk = $sql -> db_Fetch();
+		if($chk['user_ban']== 2 && $chk['user_sess'])
+		{  // duplicate because unactivated
 			$error = TRUE;
         	header("Location: ".e_BASE."signup.php?resend");
 			exit;
-	  }
-	  else
-	  {
-	  $email_address_OK = FALSE;
+		}
+		else
+		{
+			$email_address_OK = FALSE;
 			$error_message .= LAN_408."\\n";
 			$error = TRUE;
 		}
@@ -647,35 +647,42 @@ global $db_debug;
 
 	// Extended Field validation
 	$extList = $usere->user_extended_get_fieldList();
+	$eufVals = array();
 
 	foreach($extList as $ext)
 	{
-		if(isset($_POST['ue']['user_'.$ext['user_extended_struct_name']]))
+		$eufName = 'user_'.$ext['user_extended_struct_name'];
+		if(isset($_POST['ue'][$eufName]))
 		{
-			$newval = trim($_POST['ue']['user_'.$ext['user_extended_struct_name']]);
+			$newval = trim($_POST['ue'][$eufName]);
+//			echo "Vetting field ".'user_'.$ext['user_extended_struct_name'].": {$newval} = ".trim($_POST['ue']['user_'.$ext['user_extended_struct_name']])."<br />";
 			if($ext['user_extended_struct_required'] == 1 && (($newval == "") || (($ext['user_extended_struct_type'] == 7) && ($newval == '0000-00-00')) ))
-			{
+			{	// Required field not present
 				$_ftext = (defined($ext['user_extended_struct_text']) ? constant($ext['user_extended_struct_text']) : $ext['user_extended_struct_text']);
 				$error_message .= LAN_SIGNUP_6.$_ftext.LAN_SIGNUP_7."\\n";
 				$error = TRUE;
 			}
-			$parms = explode("^,^", $ext['user_extended_struct_parms']);
-			$regex = (isset($parms[1]) ? $tp->toText($parms[1]) : "");
-			$regexfail = (isset($parms[2]) ? trim($tp->toText($parms[2])) : "");
-
-			if($regexfail == "")
+			else
 			{
-				$regexfail = $ext['user_extended_struct_name']." ".LAN_SIGNUP_53;
-			}
+				$parms = explode("^,^", $ext['user_extended_struct_parms']);
+				$regex = (isset($parms[1]) ? $tp->toText($parms[1]) : "");
+				$regexfail = (isset($parms[2]) ? trim($tp->toText($parms[2])) : "");
 
-			if(defined($regexfail)) {$regexfail = constant($regexfail);}
+				if($regexfail == "")
+				{
+					$regexfail = $ext['user_extended_struct_name']." ".LAN_SIGNUP_53;
+				}
 
-			if($regex != "" && $newval != "")
-			{
-				if(!preg_match($regex, $newval))
+				if(defined($regexfail)) {$regexfail = constant($regexfail);}
+
+				if($regex != "" && $newval != "" && !preg_match($regex, $newval))
 				{
 					$error_message .= $regexfail."\\n";
 					$error = TRUE;
+				}
+				else
+				{
+					$eufVals[$eufName] = $newval;
 				}
 			}
 		}
@@ -711,10 +718,10 @@ global $db_debug;
 		$ip = $e107->getip();
 
 		$ue_fields = "";
-		foreach($_POST['ue'] as $key => $val)
+		if (count($eufVals))
 		{
-			if (isset($extList[$key]))
-			{	// Only allow valid keys
+			foreach($eufVals as $key => $val)	// We've already ensured only valid keys here
+		{
 				$key = $tp->toDB($key);
 				$val = $tp->toDB($val);
 				$ue_fields .= ($ue_fields) ? ", " : "";
@@ -722,7 +729,7 @@ global $db_debug;
 			}
 		}
 
-	$u_key = md5(uniqid(rand(), 1));				// Key for signup completion
+		$u_key = md5(uniqid(rand(), 1));				// Key for signup completion
 		// ************* Possible class insert
 		
 		// Following array will be logged to both admin log and user's entry
@@ -745,10 +752,10 @@ global $db_debug;
 			'user_login'		=> $tp -> toDB($_POST['realname']),
 			'user_xup'			=> $tp -> toDB($_POST['xupexist'])
 			);
-	if (varsettrue($pref['allowEmailLogin']))
-	{  // Need to create separate password for email login
-	  $new_data['user_prefs'] = serialize(array('email_password' => $user_info->HashPassword($_POST['password1'], $new_data['user_email'])));
-	}
+		if (varsettrue($pref['allowEmailLogin']))
+		{  // Need to create separate password for email login
+			$new_data['user_prefs'] = serialize(array('email_password' => $user_info->HashPassword($_POST['password1'], $new_data['user_email'])));
+		}
 
 		$nid = $sql->db_Insert("user", array_merge($signup_data,$new_data));
 
@@ -767,24 +774,38 @@ global $db_debug;
 		}
 
 
-	$adviseLoginName = '';
-	if (varsettrue($pref['predefinedLoginName']))
-	{
-	  $adviseLoginName = LAN_SIGNUP_65.': '.$loginname.'<br />'.LAN_SIGNUP_66.'<br />';
-	}
+		$adviseLoginName = '';
+		if (varsettrue($pref['predefinedLoginName']))
+		{
+			$adviseLoginName = LAN_SIGNUP_65.': '.$loginname.'<br />'.LAN_SIGNUP_66.'<br />';
+		}
 
 
 		if ($pref['user_reg_veri'])
 		{	// Verification required (may be by email or by admin)
 
-		  // Set initial classes, and any which the user can opt to join
-		  $init_classes = array();
-		  if ($pref['init_class_stage'] == '1') $init_classes = explode(',',varset($pref['initial_user_classes'],''));
-		  if (isset($_POST['class'])) $init_classes = array_unique(array_merge($init_classes, $_POST['class']));
-		  if (count($init_classes))
-		  {
-			$sql->db_Update("user", "user_class='".$tp -> toDB(implode(',',$init_classes))."' WHERE user_id='".$nid."' ");
-		  }
+			// Set initial classes, and any which the user can opt to join
+			$init_classes = array();
+			if ($pref['init_class_stage'] == '1') { $init_classes = explode(',',varset($pref['initial_user_classes'],'')); }
+			if (isset($_POST['class'])) 
+			{
+				foreach ($_POST['class'] as $cl)
+				{
+					if (intval($cl))
+					{
+						$init_classes[] = $cl;
+					}
+				}
+			}
+			if (varsettrue($pref['user_new_period']))
+			{
+				$init_classes[] = e_UC_NEWUSER;
+			}
+			$init_classes = array_unique($init_classes);
+			if (count($init_classes))
+			{
+				$sql->db_Update("user", "user_class='".$tp -> toDB(implode(',',$init_classes))."' WHERE user_id='".$nid."' ");
+			}
 
 			// ========= save extended fields into db table. =====
 
@@ -842,19 +863,33 @@ global $db_debug;
 			require_once(HEADERF);
 
 			if(!$sql -> db_Select("user", "user_id", "user_name='{$username}' AND user_password='".$new_data['user_password']."'"))
-	  {	// Error looking up newly created user
+			{	// Error looking up newly created user
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
 				exit;
 			}
 
 
-		  // Set initial classes, and any which the user can opt to join
-		  $init_classes = explode(',',varset($pref['initial_user_classes'],''));
-		  if (isset($_POST['class'])) $init_classes = array_unique(array_merge($init_classes, $_POST['class']));
+			// Set initial classes, and any which the user can opt to join
+			$init_classes = explode(',',varset($pref['initial_user_classes'],''));
+			if (isset($_POST['class'])) 
+			{
+				foreach ($_POST['class'] as $cl)
+				{
+					if (intval($cl))
+					{
+						$init_classes[] = $cl;
+					}
+				}
+			}
+			if (varsettrue($pref['user_new_period']))
+			{
+				$init_classes[] = e_UC_NEWUSER;
+			}
+			$init_classes = array_unique($init_classes);
 
-		  // Set member as registered, update classes
-	  $sql->db_Update("user", "user_ban = '".USER_VALIDATED."', user_class='".$tp -> toDB(implode(',',$init_classes))."' WHERE user_id = '{$nid}'");
+			// Set member as registered, update classes
+			$sql->db_Update("user", "user_ban = '".USER_VALIDATED."', user_class='".implode(',',$init_classes)."' WHERE user_id = '{$nid}'");
 
 
 			// ======== save extended fields to DB table.
@@ -865,12 +900,12 @@ global $db_debug;
 			}
 
             $_POST['ip'] = $ip;
-	  $_POST['user_id'] = $nid;			// ID for the user
+			$_POST['user_id'] = $nid;			// ID for the user
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
-	  if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
+			if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 			{
-		$text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $loginname, $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
+				$text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $loginname, $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
 			}
 			else
 			{
