@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2008-12-18 14:08:33 $
+|     $Revision: 1.30 $
+|     $Date: 2008-12-18 15:28:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1042,14 +1042,14 @@ class e107forum
 		}
 	}
 
-	function get_user_counts()
+	
+	function getUserCounts()
 	{
 		global $sql;
 		$qry = "
-		SELECT u.user_id AS uid, count(t.thread_user) AS cnt FROM #forum_t AS t
-		LEFT JOIN #user AS u on SUBSTRING_INDEX(t.thread_user,'.',1)  = u.user_id
-		WHERE u.user_id > 0
-		GROUP BY uid
+		SELECT post_user, count(post_user) AS cnt FROM `#forum_post`
+		WHERE post_user > 0
+		GROUP BY post_user
 		";
 
 		if($sql->db_Select_gen($qry))
@@ -1057,7 +1057,7 @@ class e107forum
 			$ret = array();
 			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
-				$ret[$row['uid']] = $row['cnt'];
+				$ret[$row['post_user']] = $row['cnt'];
 			}
 			return $ret;
 		}
