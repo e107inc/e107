@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-12-17 04:22:37 $
+|     $Revision: 1.18 $
+|     $Date: 2008-12-18 14:08:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -325,7 +325,7 @@ function showmodoptions()
 function forumjump()
 {
 	global $forum;
-	$jumpList = $forum->forum_get_allowed();
+	$jumpList = $forum->forumGetAllowed();
 	$text = "<form method='post' action='" . e_SELF . "'><p>" . LAN_65 . ": <select name='forumjump' class='tbox'>";
 	foreach ($jumpList as $key => $val)
 	{
@@ -338,7 +338,7 @@ function forumjump()
 function rpg($user_join, $user_forums)
 {
 	global $FORUMTHREADSTYLE;
-	if (strpos($FORUMTHREADSTYLE, '{RPG}') == false)
+	if (strpos($FORUMTHREADSTYLE, '{RPG}') === false)
 	{
 		return '';
 	}

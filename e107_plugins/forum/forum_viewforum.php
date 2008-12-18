@@ -9,8 +9,8 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.11 $
-* $Date: 2008-12-17 04:22:37 $
+* $Revision: 1.12 $
+* $Date: 2008-12-18 14:08:33 $
 * $Author: mcfly_e107 $
 *
 */
@@ -530,7 +530,7 @@ function parse_sub($subInfo)
 function forumjump()
 {
 	global $forum;
-	$jumpList = $forum->forum_get_allowed();
+	$jumpList = $forum->forumGetAllowed('view');
 	$text = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
 	foreach($jumpList as $key => $val)
 	{

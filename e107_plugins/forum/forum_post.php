@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2008-12-17 18:48:02 $
+|     $Revision: 1.34 $
+|     $Date: 2008-12-18 14:08:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -543,7 +543,7 @@ function isAuthor()
 function forumjump()
 {
 	global $forum;
-	$jumpList = $forum->forum_get_allowed();
+	$jumpList = $forum->forumGetAllowed('view');
 	$text = "<form method='post' action='".e_SELF."'><p>".LAN_401.": <select name='forumjump' class='tbox'>";
 	foreach($jumpList as $key => $val)
 	{
