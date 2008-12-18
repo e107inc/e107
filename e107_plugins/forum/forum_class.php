@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2008-12-18 17:10:48 $
+|     $Revision: 1.32 $
+|     $Date: 2008-12-18 18:32:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -492,7 +492,7 @@ class e107forum
 					}
 					foreach($parentList as $id)
 					{
-						$this->update_lastpost('forum', $id, $update_threads);
+						$this->forumUpdateLastpost('forum', $id, $update_threads);
 					}
 				}
 			}
@@ -968,31 +968,26 @@ class e107forum
 		return $ret;
 	}
 
-	function forum_prune($type, $days, $forumArray)
+	function forumPrune($type, $days, $forumArray)
 	{
-		global $sql;
-		$prunedate = time() - (intval($days) * 86400);
-		$forumList = implode(",", $forumArray);
+		$e107 = e107::getInstance();
+		$prunedate = time() - (int)$days * 86400;
+		$forumList = implode(',', $forumArray);
 
 		if($type == 'delete')
 		{
 			//Get list of threads to prune
-			if ($sql->db_Select("forum_t", "thread_id", "thread_lastpost < $prunedate AND thread_parent=0 AND thread_sticky != 1 AND thread_forum_id IN ({$forumList})"))
+			if ($e107->sql->db_Select('forum_thread', 'thread_id', "thread_lastpost < {$prunedate} AND thread_sticky != 1 AND thread_forum_id IN ({$forumList})"))
 			{
-				$threadList = $sql->db_getList();
+				$threadList = $e107->sql->db_getList();
 				foreach($threadList as $thread)
 				{
-					//Delete all replies
-					$reply_count += $sql->db_Delete("forum_t", "thread_parent='".intval($thread['thread_id'])."'");
-					//Delete thread
-					$thread_count += $sql->db_Delete("forum_t", "thread_id = '".intval($thread['thread_id'])."'");
-					//Delete poll if there is one
-					$sql->db_Delete("poll", "poll_datestamp='".intval($thread['thread_id'])."");
+					$this->threadDelete($thread['thread_id'], false);
 				}
 				foreach($forumArray as $fid)
 				{
-					$this->update_lastpost('forum', $fid);
-					$this->forum_update_counts($fid);
+					$this->forumUpdateLastpost('forum', $fid);
+					$this->forumUpdateCounts($fid);
 				}
 				return FORLAN_8." ( ".$thread_count." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
 			}
@@ -1003,41 +998,40 @@ class e107forum
 		}
 		if($type == 'make_inactive')
 		{
-			$pruned = $sql->db_Update("forum_t", "thread_active=0 WHERE thread_lastpost < $prunedate AND thread_parent=0 AND thread_forum_id IN ({$forumList})");
-			return FORLAN_8." ".$pruned." ".FORLAN_91;
+			$pruned = $e107->sql->db_Update('forum_thread', "thread_active=0 WHERE thread_lastpost < {$prunedate} thread_forum_id IN ({$forumList})");
+			return FORLAN_8.' '.$pruned.' '.FORLAN_91;
 		}
 	}
 
-	function forum_update_counts($forumID, $recalc_threads = false)
+	function forumUpdateCounts($forumId, $recalcThreads = false)
 	{
-		global $sql;
-		if($forumID == 'all')
+		$e107 = e107::getInstance();
+		if($forumId == 'all')
 		{
-			$sql->db_Select('forum', 'forum_id', 'forum_parent != 0');
-			$flist = $sql->db_getList();
+			$e107->sql->db_Select('forum', 'forum_id', 'forum_parent != 0');
+			$flist = $e107->sql->db_getList();
 			foreach($flist as $f)
 			{
-				$this->forum_update_counts($f['forum_id']);
+				$this->forumUpdateCounts($f['forum_id']);
 			}
 			return;
 		}
-		$forumID = intval($forumID);
-		$threads = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent = 0");
-		$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent != 0");
-		$sql->db_Update("forum", "forum_threads='$threads', forum_replies='$replies' WHERE forum_id='$forumID'");
+		$forumId = (int)$forumId;
+		$threads = $e107->sql->db_Count('forum_thread', '(*)', 'WHERE thread_forum_id='.$forumId);
+		$replies = $e107->sql->db_Count('forum_post', '(*)', 'WHERE post_forum='.$forumId);
+		$e107->sql->db_Update('forum', "forum_threads={$threads}, forum_replies={$replies} WHERE forum_id={$forumId}");
 		if($recalc_threads == true)
 		{
-			$sql->db_Select("forum_t", "thread_parent, count(*) as replies", "thread_forum_id = $forumID GROUP BY thread_parent");
-			$tlist = $sql->db_getList();
+			$e107->sql->db_Select('forum_post', 'post_thread, count(post_thread) AS replies', "post_forum={$forumId} GROUP BY post_thread");
+			$tlist = $e107->sql->db_getList();
 			foreach($tlist as $t)
 			{
-				$tid = $t['thread_parent'];
-				$replies = intval($t['replies']);
-				$sql->db_Update("forum_t", "thread_total_replies='$replies' WHERE thread_id='$tid'");
+				$tid = $t['post_thread'];
+				$replies = (int)$t['replies'];
+				$e107->sql->db_Update('forum_thread', "thread_total_replies={$replies} WHERE thread_id={$tid}");
 			}
 		}
 	}
-
 	
 	function getUserCounts()
 	{
@@ -1138,6 +1132,100 @@ class e107forum
 		}
 		$BACKLINK = $BREADCRUMB;
 	}
+	
+	
+	function threadDelete($threadId, $updateForumLastpost = true)
+	{
+		$e107 = e107::getInstance();
+		if ($threadInfo = $this->threadGet($threadId))
+		{
+			// delete poll if there is one
+			$e107->sql->db_Delete('poll', 'poll_datestamp='.$threadId);
+	
+			//decrement user post counts
+			if ($postCount = $this->threadGetUserPostcount($threadId))
+			{
+				foreach ($postCount as $k => $v)
+				{
+					$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-'.$v.',0) WHERE user_id='.$k);
+				}
+			}
+	
+			// delete all posts
+			$qry = 'SELECT post_id FROM `#forum_post` WHERE post_thread = '.$threadId;
+			if($e107->sql->db_Select_gen($qry))
+			{
+				$postList = array();
+				while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+				{
+					$postList[] = $row['post_id'];
+				}
+				foreach($postList as $postId)
+				{
+					$this->postDelete($postId, false);
+				}
+			}
+	
+			// delete the thread itself
+			$e107->sql->db_Delete('forum_thread', 'thread_id='.$threadId);
+	
+			//Delete any thread tracking
+			$e107->sql->db_Delete('forum_track', 'track_thread='.$threadId);
+	
+			// update forum with correct thread/reply counts
+			$e107->sql->db_Update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
+	
+			if($updateForumLastpost)
+			{
+				// update lastpost info
+				$this->forumUpdateLastpost('forum', $threadInfo['thread_forum_id']);
+			}
+			return $threadInfo['thread_total_replies'];
+		}
+	}
+	
+	function postDelete($postId, $updateCounts = true)
+	{
+		$postId = (int)$postId;
+		$e107 = e107::getInstance();
+		if(!$e107->sql->db_Select('forum_post', '*', 'post_id = '.$postId))
+		{
+			echo 'NOT FOUND!'; return;
+		}
+		$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
+	
+		//delete attachments if they exist
+		if($row['post_attachments'])
+		{
+			$this->postDeleteAttachments('post', $postId);
+		}
+	
+		// delete post
+		$e107->sql->db_Delete('forum_post', 'post_id='.$postId);
+	
+		if($updateCounts)
+		{
+			//decrement user post counts
+			if ($row['post_user'])
+			{
+				$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_id='.$row['post_user']);
+			}
+
+			// update thread with correct reply counts
+			$e107->sql->db_Update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$row['post_thread']);
+		
+			// update forum with correct thread/reply counts
+			$e107->sql->db_Update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$row['post_forum']);
+		
+			// update thread lastpost info
+			$this->forumUpdateLastpost('thread', $row['post_thread']);
+		
+			// update forum lastpost info
+			$this->forumUpdateLastpost('forum', $row['post_forum']);
+		}
+		return $threadInfo['thread_total_replies'];
+	}
+	
 }
 
 
