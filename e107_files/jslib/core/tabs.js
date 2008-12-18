@@ -11,8 +11,8 @@
  * (unobtrusive Javascript)
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/tabs.js,v $
- * $Revision: 1.2 $
- * $Date: 2008-11-21 16:26:15 $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-18 16:55:46 $
  * $Author: secretr $
  * 
 */
@@ -21,6 +21,7 @@
  * Global prefs
  */
 e107Base.setPrefs('core-tabs', {
+	tabsClassName: 'e-tabs',
 	bookmarkFix: true,
 	historyNavigation: false,
 	pageOverlay: false,
@@ -30,9 +31,9 @@ e107Base.setPrefs('core-tabs', {
  
 e107Widgets.Tabs = Class.create(e107WidgetAbstract, {
 	
-	Version: '1.0',
-	
 	initialize: function(container, options) {
+		this.Version = '1.0';
+		
 		this.events = new e107EventManager(this);
 		var optHandlers = {
 			show: this.show,
@@ -72,7 +73,13 @@ e107Widgets.Tabs = Class.create(e107WidgetAbstract, {
 				container: celement,
 				list: $A()
 			}
-			celement.select('ul.e-tabs > li').inject(this.tabData.list, function(arr, elitem, i) {
+
+			if(celement.nodeName.toLowerCase != 'ul') 
+				var celements = celement.select('ul.' + this.options.tabsClassName + ' > li');
+			else 
+				var celements = $$('body')[0].select(cstring + ' > li');
+			
+			celements.inject(this.tabData.list, function(arr, elitem, i) {
 				var mid = elitem.identify(),
 					a = elitem.select('a')[0],
 					act = a.hash.substr(1),

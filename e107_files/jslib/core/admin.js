@@ -8,13 +8,24 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-16 14:22:01 $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-18 16:55:46 $
  * $Author: secretr $
  * 
 */
 
-e107Admin = {}
+if(typeof e107Admin == 'undefined') var e107Admin = {}
+
+/**
+ * OnLoad Init Control
+ */
+if(!e107Admin['initRules']) {
+	e107Admin.initRules = {
+		'Helper': true,
+		'AdminMenu': true
+	}
+}
+
 e107Admin.Helper = {
 	
 	/**
@@ -154,4 +165,78 @@ e107Admin.Helper = {
 	}
 }
 
-e107.runOnLoad(e107Admin.Helper.init.bind(e107Admin.Helper), document, true);
+if(e107Admin.initRules.Helper)
+	e107.runOnLoad(e107Admin.Helper.init.bind(e107Admin.Helper), document, true);
+
+/**
+ * Admin Menu Class
+ */
+e107Admin.AdminMenu = {
+
+	init: function(id, selection) {
+		if(!id) {
+			id = 'plugin-navigation';
+			selection = $$('ul.plugin-navigation', 'ul.plugin-navigation-sub');
+		}
+		selection = $A(selection);
+
+		if(this._track.get(id) || !selection) return false;
+
+		this._track.set(id, selection);
+		this.location = document.location.hash.substring(1);
+		this.activeTab = null;
+		this.activeBar = null;
+		if(this.location) {
+			this.activeTab = $(this.location);
+			if(this.activeTab) {
+				this.activeTab.show();
+			}
+		}
+		
+		selection.each( function(element, i) {
+			if(0 === i && !this.activeTab) { //no page hash
+				
+				if(!this.activeTab) {
+					var check = element.select('a[href^=#]:not([href=#])'); 
+					if(check[0]) {
+						this.switchTab(check[0].hash.substr(1), element);
+					}
+				}
+			} else if(!this.activeBar && this.activeTab) {//there is page hash
+				var h = this.activeTab;
+				this.activeBar = element.select('a[href^=#]:not([href=#])').find( function(el){
+					return h = el.hash.substr(1);
+				});
+			}
+			element.select('a[href^=#]:not([href=#])').invoke('observe', 'click', this.observe.bindAsEventListener(this, element));
+		}.bind(this));
+		
+		return true;
+	},
+
+	switchTab: function(show, container) {
+		show = $(show); 
+		if(!show) return false;
+		if(this.activeTab && this.activeTab.identify() != show.identify()) {
+			 //console.log(this.activeTab , container, this.activeTab.identify(), show.identify());
+			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active');
+			this.activeTab.hide().removeClassName('link-active');
+			this.activeTab = show.show().addClassName('link-active');
+		} else if(!this.activeTab) {
+			//init
+			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active');
+			this.activeTab = show.show().addClassName('link-active');
+		}
+		return true;
+	},
+
+	observe: function(event, cont) {
+		if(this.switchTab(event.element().hash.substr(1)), cont)
+			event.stop();
+	},
+
+	_track: $H()
+}
+
+if(e107Admin.initRules.AdminMenu)
+	document.observe( 'dom:loaded', function() { e107Admin.AdminMenu.init() });

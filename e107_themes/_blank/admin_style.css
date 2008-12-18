@@ -352,10 +352,10 @@ ul.plugin-navigation li { padding: 0px 10px 0px; }
 ul.plugin-navigation a.link {}
 ul.plugin-navigation a.link-active {font-weight: bold;}
 
-ul.plugin-navigation ul.sub-nav {}
-ul.plugin-navigation ul.sub-nav li { padding: 0px 10px 0px; }
-ul.plugin-navigation ul.sub-nav a.link {}
-ul.plugin-navigation ul.sub-nav a.link-active {font-weight: bold;}
+ul.plugin-navigation ul.plugin-navigation-sub {}
+ul.plugin-navigation ul.plugin-navigation-sub li { padding: 0px 10px 0px; }
+ul.plugin-navigation ul.plugin-navigation-sub a.link {}
+ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 
 
 /******** Block Elements */

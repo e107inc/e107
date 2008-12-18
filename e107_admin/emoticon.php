@@ -9,8 +9,8 @@
  * Administration Area - Emotions Settings & Packs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-15 11:35:33 $
+ * $Revision: 1.12 $
+ * $Date: 2008-12-18 16:55:45 $
  * $Author: secretr $
  *
 */
@@ -135,7 +135,6 @@ class emotec
 		global $e107, $emessage, $fl, $pref;
 
 		$text = "
-	".$emessage->render()."
 	<div class='admintabs' id='tab-container'>
 		<ul class='e-tabs' id='core-emote-tabs'>
 			<li id='tab-activate'><a href='#emoticon-activate'>".EMOLAN_1."</a></li>
@@ -249,7 +248,7 @@ class emotec
 		</div>
 		";
 
-		$e107->ns->tablerender(EMOLAN_PAGE_TITLE, $text);
+		$e107->ns->tablerender(EMOLAN_PAGE_TITLE, $emessage->render().$text);
 	}
 
 
@@ -373,7 +372,7 @@ class emotec
 		if (is_file($backname)) unlink($backname);		// Delete any old backup
 
 		if (is_file($fname)) rename($fname,$backname);
-		//XXX message handler
+
 		if (file_put_contents($fname,$f_string) === FALSE)
 		{
 			$emessage->add('<strong>'.EMOLAN_30.'</strong>'.str_replace(e_IMAGE, e_IMAGE_ABS, $fname), E_MESSAGE_WARNING);
@@ -397,11 +396,11 @@ class emotec
 
 		if ($sql->db_Select("core", "*", "e107_name='emote_".$packID."'"))
 		{
-			admin_update($sql->db_Update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', EMOLAN_16);
+			admin_update($sql->db_Update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$packID."' "), 'update', EMOLAN_16, false, false);
 		}
 		else
 		{
-			admin_update($sql->db_Insert("core", "'emote_".$packID."', '$tmp' "), 'insert', EMOLAN_16);
+			admin_update($sql->db_Insert("core", "'emote_".$packID."', '$tmp' "), 'insert', EMOLAN_16, false, false);
 		}
 	}
 
