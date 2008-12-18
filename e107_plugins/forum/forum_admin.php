@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-18 15:28:59 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-18 18:32:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -84,13 +84,13 @@ if(isset($_POST['tools']))
 	{
 		if(isset($_POST['counts']))
 		{
-			$for->forum_update_counts($fid, $_POST['counts_threads']);
+			$for->forumUpdateCounts($fid, $_POST['counts_threads']);
 			$msg .= FORLAN_167.": $fid <br />";
 		}
 		if(isset($_POST['lastpost']))
 		{
 			$with_threads = (isset($_POST['lastpost_nothread'])) ? FALSE : TRUE;
-			$for->update_lastpost('forum', $fid, $with_threads);
+			$for->forumUpdateLastpost('forum', $fid, $with_threads);
 			$msg .= FORLAN_168.": $fid <br />";
 		}
 	}
@@ -285,7 +285,7 @@ if (isset($_POST['updateoptions']))
 
 if (isset($_POST['do_prune']))
 {
-	$msg = $for->forum_prune($_POST['prune_type'], $_POST['prune_days'], $_POST['pruneForum']);
+	$msg = $for->forumPrune($_POST['prune_type'], $_POST['prune_days'], $_POST['pruneForum']);
 	$forum->show_message($msg);
 	$action = 'main';
 }

@@ -9,8 +9,8 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.11 $
-* $Date: 2008-12-18 15:28:59 $
+* $Revision: 1.12 $
+* $Date: 2008-12-18 18:32:54 $
 * $Author: mcfly_e107 $
 *
 */
@@ -20,36 +20,33 @@ class forumAdmin
 	function show_options($action)
 	{
 		global $sql;
-		if ($action == "")
-		{
-			$action = "main";
-		}
+		if ($action == '') { $action = 'main'; }
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		$var['main']['text'] = FORLAN_76;
 		$var['main']['link'] = e_SELF;
 		$var['cat']['text'] = FORLAN_83;
-		$var['cat']['link'] = e_SELF."?cat";
+		$var['cat']['link'] = e_SELF.'?cat';
 		if ($sql->db_Select('forum', 'forum_id', "forum_parent='0' LIMIT 1"))
 		{
 			$var['create']['text'] = FORLAN_77;
-			$var['create']['link'] = e_SELF."?create";
+			$var['create']['link'] = e_SELF.'?create';
 		}
 		$var['order']['text'] = FORLAN_78;
-		$var['order']['link'] = e_SELF."?order";
+		$var['order']['link'] = e_SELF.'?order';
 		$var['opt']['text'] = FORLAN_79;
-		$var['opt']['link'] = e_SELF."?opt";
+		$var['opt']['link'] = e_SELF.'?opt';
 		$var['prune']['text'] = FORLAN_59;
-		$var['prune']['link'] = e_SELF."?prune";
+		$var['prune']['link'] = e_SELF.'?prune';
 		$var['rank']['text'] = FORLAN_63;
-		$var['rank']['link'] = e_SELF."?rank";
+		$var['rank']['link'] = e_SELF.'?rank';
 		$var['rules']['text'] = FORLAN_123;
-		$var['rules']['link'] = e_SELF."?rules";
+		$var['rules']['link'] = e_SELF.'?rules';
 		$var['sr']['text'] = FORLAN_116;
-		$var['sr']['link'] = e_SELF."?sr";
+		$var['sr']['link'] = e_SELF.'?sr';
 		$var['mods']['text'] = FORLAN_33;
-		$var['mods']['link'] = e_SELF."?mods";
+		$var['mods']['link'] = e_SELF.'?mods';
 		$var['tools']['text'] = FORLAN_153;
-		$var['tools']['link'] = e_SELF."?tools";
+		$var['tools']['link'] = e_SELF.'?tools';
 
 		show_admin_menu(FORLAN_7, $action, $var);
 	}
@@ -90,7 +87,7 @@ class forumAdmin
 	function delete_parent($id, $confirm = false)
 	{
 		global $sql;
-		$ret = "";
+		$ret = '';
 		if($sql->db_Select('forum', 'forum_id', "forum_parent = {$id} AND forum_sub = 0"))
 		{
 			$fList = $sql->db_getList();
@@ -115,11 +112,38 @@ class forumAdmin
 
 	}
 
+	function deleteForum($forumId)
+	{
+		$e107 = e107::getInstance();
+		$forumId = (int)$forumId;
+//		echo "id = $forumId <br />";
+		// Check for any sub forums
+		if($e107->sql->db_Select('forum', 'forum_id', "forum_sub = {$forumId}"))
+		{
+			$list = $e107->sql->db_getList();
+			foreach($list as $f)
+			{
+				$ret .= $this->deleteForum($f['forum_id']);
+			}
+		}
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$f = new e107Forum;
+		if($e107->sql->db_Select('forum_thread', 'thread_id','thread_forum_id='.$forumId))
+		{
+			$list = $e107->sql->db_getList();
+			foreach($list as $t)
+			{
+				$f->threadDelete($t['thread_id'], false);
+			}
+		}
+		return $e107->sql->db_Delete('forum', 'forum_id = '.$forumId);
+	}
+
 	function delete_forum($id, $confirm = false)
 	{
-		global $sql, $tp;
+		$e107 = e107::getInstance();
 		$ret = '';
-		if($sql->db_Select('forum', 'forum_id', "forum_sub = {$id}"))
+		if($e107->sql->db_Select('forum', 'forum_id', 'forum_sub = '.$id))
 		{
 			$fList = $sql->db_getList();
 			foreach($fList as $f)
@@ -129,9 +153,7 @@ class forumAdmin
 		}
 		if($confirm)
 		{
-			$cnt = $sql->db_Delete('forum_t',"thread_forum_id = {$id}");
-			$ret .= $cnt." forum {$id} thread(s) deleted <br />";
-			if($sql->db_Delete("forum", "forum_id = {$id}"))
+			if($this->deleteForum($id))
 			{
 				$ret .= "Forum {$id} successfully deleted";
 			}
@@ -142,19 +164,17 @@ class forumAdmin
 			return $ret;
 		}
 
-		$sql->db_Select('forum', 'forum_name, forum_threads, forum_replies', "forum_id = {$id}");
-		$row = $sql->db_Fetch();
-		return "Forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
+		$e107->sql->db_Select('forum', 'forum_name, forum_threads, forum_replies', 'forum_id = '.$id);
+		$row = $e107->sql->db_Fetch();
+		return "Forum {$id} [".$e107->tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
 	}
 
 	function delete_sub($id, $confirm = FALSE)
 	{
-		global $sql, $tp;
+		$e107 = e107::getInstance();
 		if($confirm)
 		{
-			$cnt = $sql->db_Delete("forum_t","thread_forum_id = {$id}");
-			$ret .= $cnt." Sub-forum {$id} thread(s) deleted <br />";
-			if($sql->db_Delete("forum", "forum_id = {$id}"))
+			if($this->deleteForum($id))
 			{
 				$ret .= "Sub-forum {$id} successfully deleted";
 			}
@@ -165,9 +185,9 @@ class forumAdmin
 			return $ret;
 		}
 
-		$sql->db_Select("forum", "*", "forum_id = {$id}");
-		$row = $sql->db_Fetch();
-		return "Sub-forum {$id} [".$tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
+		$e107->sql->db_Select('forum', '*', 'forum_id = '.$id);
+		$row = $e107->sql->db_Fetch();
+		return "Sub-forum {$id} [".$e107->tp->toHTML($row['forum_name'])."] has {$row['forum_threads']} threads, {$row['forum_replies']} replies. <br />".$ret;
 	}
 
 	function delete_show_confirm($txt)
@@ -175,7 +195,7 @@ class forumAdmin
 		global $ns;
 		$this->show_message($txt);
 		$txt = "
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<div style='text-align:center'>".FORLAN_180."<br /><br />
 		<input type='submit' class='button' name='confirm' value='".FORLAN_181."' />
 		</div>
@@ -188,7 +208,7 @@ class forumAdmin
 	{
 		global $sql, $tp, $ns;
 		$txt = "
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table style='width:100%'>
 		<tr>
 		<td class='fcaption'>".FORLAN_151."</td>
