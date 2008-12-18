@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2008-12-17 04:22:37 $
+|     $Revision: 1.29 $
+|     $Date: 2008-12-18 14:08:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -748,7 +748,7 @@ class e107forum
 			return false;
 		}
 	}
-
+	
 	function thread_user($post_info)
 	{
 		if($post_info['user_name'])
@@ -794,16 +794,6 @@ class e107forum
 		return $result;
 	}
 
-/*
-	function track($uid, $thread_id)
-	{
-		$thread_id = (int)$thread_id;
-		$uid = (int)$uid;
-		global $sql;
-		return $sql->db_Update("user", "user_realm='".USERREALM."-".$thread_id."-' WHERE user_id=".USERID);
-	}
-*/
-
 	function forum_get($forum_id)
 	{
 		$forum_id = (int)$forum_id;
@@ -821,15 +811,13 @@ class e107forum
 		return FALSE;
 	}
 
-	function forum_get_allowed()
+	function forumGetAllowed($type='view')
 	{
 		global $sql;
+		$forumList = implode(',', $this->permList[$type]);
 		$qry = "
-		SELECT f.forum_id, f.forum_name FROM #forum AS f
-		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
-		WHERE f.forum_parent != 0
-		AND fp.forum_class IN (".USERCLASS_LIST.")
-		AND f.forum_class IN (".USERCLASS_LIST.")
+		SELECT forum_id, forum_name FROM `#forum`
+		WHERE forum_id IN ({$forumList})
 		";
 		if ($sql->db_Select_gen($qry))
 		{
@@ -945,20 +933,17 @@ class e107forum
 	}
 
 
-	function post_getnew($count = 50, $userviewed = USERVIEWED)
+	function threadGetNew($count = 50, $unread = true, $uid = USERID)
 	{
-		global $sql;
-		$viewed = "";
-		if($userviewed)
+		$e107 = e107::getInstance();
+		$viewed = '';
+		if($unread)
 		{
-			$viewed = preg_replace("#\.+#", ".", $userviewed);
-			$viewed = preg_replace("#^\.#", "", $viewed);
-			$viewed = preg_replace("#\.$#", "", $viewed);
-			$viewed = str_replace(".", ",", $viewed);
-		}
-		if($viewed != "")
-		{
-			$viewed = " AND ft.thread_id NOT IN (".$viewed.")";
+			$viewed = implode(',', $this->threadGetUserViewed($uid));
+			if($viewed != '')
+			{
+				$viewed = ' AND p.post_forum NOT IN ('.$viewed.')';
+			}
 		}
 
 		$qry = "
@@ -971,9 +956,18 @@ class e107forum
 		AND f.forum_class IN (".USERCLASS_LIST.")
 		{$viewed}
 		ORDER BY ft.thread_datestamp DESC LIMIT 0, ".intval($count);
-		if($sql->db_Select_gen($qry))
+		
+		$qry = "
+		SELECT t.*, u.user_name FROM `#forum_thread` AS t
+		LEFT JOIN `#user` AS u ON u.user_id = t.thread_lastuser
+		WHERE t.thread_lastpost > ".USERLV. "
+		{$viewed}
+		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
+		
+		
+		if($e107->sql->db_Select_gen($qry))
 		{
-			$ret = $sql->db_getList();
+			$ret = $e107->sql->db_getList();
 		}
 		return $ret;
 	}

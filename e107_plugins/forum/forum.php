@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-12-17 04:22:37 $
+|     $Revision: 1.13 $
+|     $Date: 2008-12-18 14:08:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -417,33 +417,26 @@ if (e_QUERY == 'track')
 
 if (e_QUERY == 'new')
 {
-	$newpostList = $forum->post_getnew(10);
-	foreach($newpostList as $post)
+	$newThreadList = $forum->threadGetNew(10);
+	foreach($newThreadList as $thread)
 	{
-		list($author_id, $author_info) = explode('.', $post['thread_user'], 2);
-		list($author_name, $tmp) = explode(chr(1), $author_info);
-		$datestamp = $gen->convert_date($post['thread_datestamp'], "forum");
-		if($author_id == 0)
+		$author_name = ($thread['user_name'] ? $thread['user_name'] : $thread['lastuser_anon']);
+
+		$datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
+		if(!$thread['user_name'])
 		{
-			$STARTERTITLE = $author_name."<br />".$datestamp;
+			$STARTERTITLE = $author_name.'<br />'.$datestamp;
 		}
 		else
 		{
-			$STARTERTITLE = "<a href='".e_BASE."user.php?id.$author_id'>$author_name</a><br />".$datestamp;
+			$STARTERTITLE = "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='.$thread['thread_lastuser'])."'>{$author_name}</a><br />".$datestamp;
 		}
-		if($post['post_subject'])
-		{
-			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$tp->toHTML($post['post_subject'], TRUE, 'no_make_clickable, no_hook')."</a>";
-		}
-		else
-		{
-			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}'>".$tp->toHTML($post['thread_name'], TRUE, 'no_make_clickable, no_hook')."</a>";
-		}
+		$NEWSPOSTNAME = "<a href='".$e107->url->getUrl('forum', 'thread', 'func=last&id='.$thread['thread_id'])."'>".$e107->tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
 
 		$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
 	}
 
-	if (!$newpostList)
+	if (!$newThreadList)
 	{
 		$NEWSPOSTNAME = LAN_198;
 		$forum_newstring = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
