@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2008-08-28 19:57:55 $
+|     $Revision: 1.35 $
+|     $Date: 2008-12-18 21:19:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -79,7 +79,7 @@ define("USRLAN_70", "User created");
 define("USRLAN_71", "Users Front Page");
 define("USRLAN_72", "Quick Add User");
 define("USRLAN_73", "Prune Users");
-// define("USRLAN_75", "Options");
+define("USRLAN_75", "That login name already exists in the database, please choose a different login name");
 define("USRLAN_76", "User Options");
 define("USRLAN_77", "Existing Users");
 define("USRLAN_78", "User Name");

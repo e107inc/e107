@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2008-08-28 19:57:46 $
+|     $Revision: 1.96 $
+|     $Date: 2008-12-18 21:19:28 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -200,13 +200,18 @@ if (isset($_POST['adduser']))
 		message_handler("P_ALERT", USRLAN_66);
 		$error = TRUE;
 	}
+	if ($sql->db_Select("user", "user_loginname", "user_loginname='".$_POST['loginname']."' ")) 
+	{    
+		message_handler("P_ALERT", USRLAN_75 );   
+		$error = TRUE; 
+	}
 	if ($_POST['password1'] != $_POST['password2']) 
 	{
 		message_handler("P_ALERT", USRLAN_67);
 		$error = TRUE;
 	}
 
-	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "") 
+	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] == "") 
 	{
 		message_handler("P_ALERT", USRLAN_68);
 		$error = TRUE;
