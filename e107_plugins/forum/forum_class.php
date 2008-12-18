@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2008-12-18 15:28:59 $
+|     $Revision: 1.31 $
+|     $Date: 2008-12-18 17:10:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -109,7 +109,6 @@ class e107forum
 		}
 	}
 
-
 	function checkPerm($forumId, $type='view')
 	{
 		return (in_array($forumId, $this->permList[$type]));
@@ -125,11 +124,7 @@ class e107forum
 				$this->userViewed = explode('.', $e107->currentUser['user_plugin_forum_viewed']);
 			}
 		}
-		if(is_array($this->userViewed) && in_array($threadId, $this->userViewed))
-		{
-			return true;
-		}
-		return false;
+		return (is_array($this->userViewed) && in_array($threadId, $this->userViewed));
 	}
 
 	function getTrackedThreadList($id, $retType = 'array')
@@ -241,6 +236,7 @@ class e107forum
 			$postInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
+			$this->threadMarkAsRead($newThreadId);
 			return array('postid' => $newPostId, 'threadid' => $newThreadId);
 		}
 		return false;
