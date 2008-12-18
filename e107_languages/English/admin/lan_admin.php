@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.11 2008-12-10 16:59:19 secretr Exp $
+ * $Id: lan_admin.php,v 1.12 2008-12-18 16:55:46 secretr Exp $
  *
  * Admin Language File
 */
@@ -216,6 +216,7 @@ define("LAN_SAVE","Save");
 define("LAN_SAVED","Saved");
 define("LAN_SETSAVED","Your settings have been saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
+define("LAN_JSCONFIRM","Please confirm you wish to delete");
 define("LAN_OPTIONS","Options");
 define("LAN_PREFS","Preferences");
 define("LAN_DELETED","Successfully deleted");

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.22 $
-|   $Date: 2008-12-17 17:27:07 $
+|   $Revision: 1.23 $
+|   $Date: 2008-12-18 16:55:45 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -325,9 +325,124 @@ if ($e107_popup != 1) {
 $ns = new e107table;
 $e107_var = array();
 
+
+function e_admin_menu($title, $active_page, $e107_vars, $tmpl = FALSE, $sub_link = FALSE, $sortlist = FALSE)
+{
+	global $E_ADMIN_MENU, $e107;
+	if(!$tmpl) $tmpl = $E_ADMIN_MENU;
+
+	/*
+	 * Search for id
+	 */
+	$temp = explode('--id--', $title, 2);
+	$title = $temp[0];
+	$id = str_replace(array(' ', '_'), '-',varset($temp[1]));
+
+	unset($temp);
+
+	/*
+	 * SORT
+	 */
+	if ($sortlist == TRUE)
+	{
+		$temp = $e107_vars;
+		unset($e107_vars);
+		$func_list = array();
+		foreach (array_keys($temp) as $key)
+		{
+			$func_list[] = $temp[$key]['text'];
+		}
+
+		usort($func_list, 'strcoll');
+
+		foreach ($func_list as $func_text)
+		{
+			foreach (array_keys($temp) as $key)
+			{
+				if ($temp[$key]['text'] == $func_text)
+				{
+					$e107_vars[] = $temp[$key];
+				}
+			}
+		}
+		unset($temp);
+	}
+
+	$kpost = '';
+	$text = '';
+	if($sub_link)
+	{
+		$kpost = '_sub';
+	}
+	else $text = $tmpl['start'];
+
+
+	//FIXME - e_parse::array2sc()
+	$search = array();
+	$search[0] = '/\{LINK_TEXT\}(.*?)/si';
+	$search[1] = '/\{LINK_URL\}(.*?)/si';
+	$search[2] = '/\{ONCLICK\}(.*?)/si';
+	$search[3] = '/\{SUB_HEAD\}(.*?)/si';
+	$search[4] = '/\{SUB_MENU\}(.*?)/si';
+	$search[5] = '/\{ID\}(.*?)/si';
+	$search[6] = '/\{SUB_ID\}(.*?)/si';
+	$search[7] = '/\{LINK_CLASS\}(.*?)/si';
+	$search[8] = '/\{SUB_CLASS\}(.*?)/si';
+	foreach (array_keys($e107_vars) as $act)
+	{
+		$replace = array();
+		if ($active_page == $act || (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
+		{
+			$temp = $tmpl['button_active'.$kpost];
+		}
+		else
+		{
+			$temp = $tmpl['button'.$kpost];
+		}
+
+		$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
+		$replace[1] = varsettrue($e107_vars[$act]['link'], "#{$act}");
+		$replace[2] = '';
+		if (varsettrue($e107_vars[$act]['include']))
+		{
+			$replace[2] = $e107_vars[$act]['include'];
+			//$replace[2] = $js ? " onclick=\"showhideit('".$act."');\"" : " onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
+		}
+		$replace[3] = $title;
+		$replace[4] = '';
+
+		$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
+		$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
+		$replace[6] = '';
+		$replace[7] = '';
+		$replace[8] = '';
+
+		if(varsettrue($e107_vars[$act]['sub']))
+		{
+			$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
+			$replace[7] = ' e-expandit';
+			$replace[8] = ' e-hideme e-expandme';
+			$replace[4] = preg_replace($search, $replace, $tmpl['start_sub']);
+			$replace[4] .= e_admin_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
+			$replace[4] .= $tmpl['end_sub'];
+		}
+
+		$text .= preg_replace($search, $replace, $temp);
+	}
+
+	$text .= !$sub_link ? $tmpl['end'] : '';
+	if($sub_link || empty($title)) return $text;
+
+
+	$e107->ns->tablerender($title, $text, array('id' => $id, 'style' => 'button_menu'));
+}
+
 if (!function_exists('show_admin_menu')) {
 	function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE) {
 		global $ns, $BUTTON, $BUTTON_OVER, $BUTTONS_START, $BUTTONS_END, $SUB_BUTTON, $SUB_BUTTON_OVER, $SUB_BUTTONS_START, $SUB_BUTTONS_END;
+		e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
+		return;
+
 		$id_title = "yop_".str_replace(" ", "", $title);
 		if (!isset($BUTTONS_START)) {
 			$BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>\n";
@@ -383,13 +498,13 @@ if (!function_exists('show_admin_menu')) {
 
 		if ($sub_link) {
 			$replace[0] = '';
-			$replace[1] = '';
+			$replace[1] = '#';
 			$replace[2] = '';
 			$replace[3] = $title;
 			$replace[4] = $id_title;
 			$text = preg_replace($search, $replace, $SUB_BUTTONS_START);
 		} else {
-			$text = $BUTTONS_START;
+			$text = $BUTTONS_START.'';
 		}
 
 		foreach (array_keys($e107_vars) as $act) {
@@ -411,7 +526,7 @@ if (!function_exists('show_admin_menu')) {
 				$text .= preg_replace($search, $replace, $BUTTON_TEMPLATE);
 			}
 		}
-		$text .= $sub_link ? $SUB_BUTTONS_END : $BUTTONS_END;
+		$text .= $sub_link ? $SUB_BUTTONS_END : ''.$BUTTONS_END;
 
 		if ($title == "" || $sub_link) {
 			return $text;
@@ -441,44 +556,35 @@ if (!function_exists("parse_admin")) {
 	}
 }
 
-function admin_update($update, $type = 'update', $success = false, $failed = false) {
-	global $e107;
+function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true) {
 	require_once(e_HANDLER."message_handler.php");
 	$emessage = &eMessage::getInstance();
 
 	if (($type == 'update' && $update) || ($type == 'insert' && $update !== false)) {
-		//$caption = LAN_UPDATE;
-		//$text = "<b>".($success ? $success : LAN_UPDATED)."</b>";
 		$emessage->add(($success ? $success : LAN_UPDATED), E_MESSAGE_SUCCESS);
 	}
 	elseif ($type == 'delete' && $update)
 	{
-		//$caption = LAN_DELETE;
-		//$text = "<b>".($success ? $success : LAN_DELETED)."</b>";
 		$emessage->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
 	}
 	elseif (!mysql_errno())
 	{
 		if ($type == 'update')
 		{
-			//$caption = LAN_UPDATED_FAILED;
-			//$text = "<b>".LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN."</b>";
 			$emessage->add(LAN_NO_CHANGE.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
-		} elseif ($type == 'delete')
+		}
+		elseif ($type == 'delete')
 		{
-			//$caption = LAN_DELETE;
-			//$text = "<b>".LAN_DELETED_FAILED.".<br />".LAN_TRY_AGAIN."</b>";
 			$emessage->add(LAN_DELETED_FAILED.' '.LAN_TRY_AGAIN, E_MESSAGE_INFO);
 		}
 	}
 	else
 	{
-		//$caption = LAN_UPDATED_FAILED;
 		$text = ($failed ? $failed : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
 		$emessage->add($text, E_MESSAGE_ERROR);
 	}
-	//$e107->ns->tablerender($caption, "<div style='text-align:center'>".$text."</div>");
-	echo $emessage->render();
+
+	if($output) echo $emessage->render();
 	return $update;
 }
 

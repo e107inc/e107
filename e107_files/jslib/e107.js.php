@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.15 $
- * $Date: 2008-12-16 11:05:36 $
+ * $Revision: 1.16 $
+ * $Date: 2008-12-18 16:55:45 $
  * $Author: secretr $
  *
 */
@@ -779,6 +779,7 @@ Object.extend(e107Helper, {
 		 * This method will be rewritten after the core is cleaned up. After this point
 		 * the target element will be auto-hidden (no need of class="e-hideme")
 		 */
+
         if(false === Object.isString(el) || ( 
         	($(el) && $(el).nodeName.toLowerCase() == 'a' && $(el).readAttribute('href'))
         		|| 
@@ -786,9 +787,9 @@ Object.extend(e107Helper, {
         )) {
         	eltoggle = (function(el) {
 	    		return Try.these(
-	    		    function() { var ret= $(el.readAttribute('href').hash.substr(1)); if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
-                    function() { var ret=el.next('.e-expandme'); if(ret) { return ret; } throw 'Error';},
-                    function() { var ret=el.next('div'); if(ret) { return ret; } throw 'Error'; }, //backward compatibality - DEPRECATED
+	    		    function() { var ret = $(el.readAttribute('href').hash.substr(1)); if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
+                    function() { var ret = el.next('.e-expandme'); if(ret) { return ret; } throw 'Error';},// maybe this too?
+                    function() { var ret = el.next('div'); if(ret) { return ret; } throw 'Error'; }, //backward compatibality - DEPRECATED
                     function() { return null; } //break
 	    		) || false;
         	})($(el));
@@ -796,7 +797,7 @@ Object.extend(e107Helper, {
             var eltoggle = $(el);
         }
 
-        if(!eltoggle) return;
+        if(!eltoggle) return false;
         
 		var fx = varset(arguments[1], null);
 		
@@ -804,6 +805,8 @@ Object.extend(e107Helper, {
 		    this.fxToggle(eltoggle, fx || {});
 		else 
 		    $(eltoggle).toggle();
+		    
+		return true;
 	},
 	
     /**
@@ -822,10 +825,9 @@ Object.extend(e107Helper, {
     toggleObserver: function(event) {
     	var expandthem = event.memo.element ? $(event.memo.element) : $$('body')[0];
         expandthem.select('.e-expandit').invoke('observe', 'click', function(e) {
-            e.stop();
             var element = e.findElement('a');
             if(!element) element = e.element();
-             this.toggle(element, {});
+            if(this.toggle(element, {})) e.stop();
         }.bindAsEventListener(e107Helper));
     },
     

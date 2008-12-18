@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.18 $
- * $Date: 2008-12-17 17:27:07 $
+ * $Revision: 1.19 $
+ * $Date: 2008-12-18 16:55:45 $
  * $Author: secretr $
  *
 */
@@ -180,30 +180,6 @@ $text = "
 	<script type=\"text/javascript\">
 	<!--
 
-	var e107Admin.AdminMenu = {
-		init: function() {
-			this.location = document.location.hash.substring(1);
-			this.activeTab = \$(this.location);
-			if(this.activeTab) {
-				this.activeTab.show();
-			}
-
-			this->_observer = this.observe.bindAsEventListener();
-		},
-
-		switch: function(show) {
-			show = \$(show);
-			if(!show) return;
-			if(this.activeTab && this.activeTab.identify() != show.identify()) {
-				this.activeTab.hide();
-				this.activeTab = show.show();
-			}
-		},
-
-		observe: function(event) {
-
-		}
-	}
 	var hideid=\"core-prefs-main\";
 	function showhideit(showid){
 		if (hideid!=showid){
@@ -218,7 +194,7 @@ $text = "
 	</script>
 	<div id='core-prefs'>
 	<form method='post' action='".e_SELF."'>
-		<fieldset id='core-prefs-main'>
+		<fieldset class='e-hideme' id='core-prefs-main'>
 			<legend class='e-hideme'>".PRFLAN_1."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
@@ -1162,6 +1138,25 @@ function prefs_adminmenu()
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-comments']['text'] = PRFLAN_87;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
-	show_admin_menu(LAN_OPTIONS, '', $var, TRUE);
+	show_admin_menu(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var, TRUE);
+}
+
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			//add required core lan - delete confirm message
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
 }
 ?>

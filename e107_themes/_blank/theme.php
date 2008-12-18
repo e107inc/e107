@@ -41,14 +41,14 @@ function theme_head() {
 	return $ret;
 }
 
-function tablestyle($caption, $text){
+function tablestyle($caption, $text, $mod) {
 	global $style;
 	switch($style) {
 
 	case 'admin_menu' :
 		echo '
 			<div class="block">
-				<h4>'.$caption.'</h4>
+				<h4 class="caption">'.$caption.'</h4>
 				'.$text.'
 			</div>
 		';
@@ -57,25 +57,25 @@ function tablestyle($caption, $text){
 	case 'site_info' :
 		echo '
 			<div class="block">
-				<h4>'.$caption.'</h4>
+				<h4 class="caption">'.$caption.'</h4>
 				<div class="block-text">
 					'.$text.'
 				</div>
 			</div>
 		';
 	break;
-	
+
 	case 'admin_content':
 		echo '
 			<div class="block">
-				<h2>'.$caption.'</h2>
+				<h2 class="caption">'.$caption.'</h2>
 				<div class="block-text">
 					'.$text.'
 				</div>
 			</div>
 		';
 	break;
-	
+
 	default:
 		echo '
 			<div class="block">
