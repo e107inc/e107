@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-09-22 20:38:26 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-18 21:10:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
-require_once("../../class2.php");
+require_once('../../class2.php');
 if (!getperms("P")) 
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 $e_sub_cat = 'newsletter';
@@ -46,20 +46,28 @@ if(!e_QUERY)
 }
 else
 {
-	if ($action == "vs") 
-	{ // View subscribers of a newsletter
-		$nl -> view_subscribers($id);
-	} 
-	elseif ($action == "remove") 
-	{ // Remove subscriber
-		$nl -> remove_subscribers($id,$key);
-	} 
-	else 
+	switch ($action)
 	{
-		$function = $action."Newsletter";
-		$nl -> $function();
+		case 'vs' :	 // View subscribers of a newsletter
+			$nl -> view_subscribers($id);
+			break;
+		case  'remove' :	// Remove subscriber
+			$nl -> remove_subscribers($id,$key);
+			$nl -> view_subscribers($id);
+			break;
+		default:
+			$function = $action."Newsletter";
+			if (method_exists($nl, $function))
+			{
+				$nl -> $function();
+			}
+			else
+			{
+				exit;
+			}
 	}
 }
+
 
 
 class newsletter
@@ -69,30 +77,31 @@ class newsletter
 
 	function newsletter()
 	{
-		global $ns;
+		global $ns, $tp;
 
 		foreach($_POST as $key => $value)
 		{
+			$key = $tp->toDB($key);
 			if(strstr($key, "nlmailnow"))
 			{
-				$this -> releaseIssue($key);
+				$this->releaseIssue($key);
 				break;
 			}
 		}
 
 		if(isset($_POST['delete']))
 		{
-			$this -> deleteNewsletter();
+			$this->deleteNewsletter();
 		}
 
 		if(isset($_POST['createNewsletter']))
 		{
-			$this -> createNewsletter();
+			$this->createNewsletter();
 		}
 
 		if(isset($_POST['createIssue']))
 		{
-			$this -> createIssue();
+			$this->createIssue();
 		}
 
 		if($this -> message)
@@ -195,13 +204,14 @@ class newsletter
 	function defineNewsletter($edit=FALSE)
 	{
 		global $ns, $tp;
+		// We've been passed a value from DB, so should be reasonably sanitised.
 
 		if($edit)
 		{
-			extract($edit);
-			$newsletter_title = $tp -> toFORM($newsletter_title);
-			$newsletter_text = $tp -> toFORM($newsletter_text);
-			$newsletter_footer = $tp -> toFORM($newsletter_footer);
+			$newsletter_title = $tp -> toFORM($edit['newsletter_title']);
+			$newsletter_text = $tp -> toFORM($edit['newsletter_text']);
+			$newsletter_footer = $tp -> toFORM($edit['newsletter_footer']);
+			$newsletter_header = $tp -> toFORM($edit['newsletter_header']);	// Looks as if this was missed
 		}
 
 		$text .= "<div style='text-align:center; margin-left:auto; margin-right: auto;'>
@@ -209,24 +219,24 @@ class newsletter
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
 		<td style='width:30%;' class='forumheader3'>".NLLAN_21."</td>
-		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='newsletter_title' size='60' value='$newsletter_title' maxlength='200' /></td>
+		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='newsletter_title' size='60' value='{$newsletter_title}' maxlength='200' /></td>
 		</tr>
 		<tr>
 		<td style='width:30%;' class='forumheader3'>".NLLAN_22."</td>
-		<td style='width:70%' class='forumheader3'><textarea class='tbox' id='data' name='newsletter_text' cols='80' rows='10' style='width:95%'>$newsletter_text</textarea></td>
+		<td style='width:70%' class='forumheader3'><textarea class='tbox' id='data' name='newsletter_text' cols='80' rows='10' style='width:95%'>{$newsletter_text}</textarea></td>
 		</tr>
 		<tr>
 		<td style='width:30%;' class='forumheader3'>".NLLAN_23."</td>
-		<td style='width:70%' class='forumheader3'><textarea class='tbox' id='data' name='newsletter_header' cols='80' rows='5' style='width:95%'>$newsletter_header</textarea></td>
+		<td style='width:70%' class='forumheader3'><textarea class='tbox' id='data' name='newsletter_header' cols='80' rows='5' style='width:95%'>{$newsletter_header}</textarea></td>
 		</tr>
 		<tr>
 		<td style='width:30%;' class='forumheader3'>".NLLAN_24."</td>
-		<td style='width:70%' class='forumheader3'><textarea class='tbox' id='data' name='newsletter_footer' cols='80' rows='5' style='width:95%'>$newsletter_footer</textarea></td>
+		<td style='width:70%' class='forumheader3'><textarea class='tbox' id='data' name='newsletter_footer' cols='80' rows='5' style='width:95%'>{$newsletter_footer}</textarea></td>
 		</tr>
 		<tr>
 		<td colspan='2' style='text-align:center' class='forumheader'>
 		".
-		($edit ? "<input class='button' type='submit' name='createNewsletter' value='".NLLAN_25."' />\n<input type='hidden' name='editid' value='$newsletter_id' />" : "<input class='button' type='submit' name='createNewsletter' value='".NLLAN_26."' />")."
+		($edit ? "<input class='button' type='submit' name='createNewsletter' value='".NLLAN_25."' />\n<input type='hidden' name='editid' value='{$edit['newsletter_id']}' />" : "<input class='button' type='submit' name='createNewsletter' value='".NLLAN_26."' />")."
 		</td>
 		</tr>
 
@@ -246,19 +256,20 @@ class newsletter
 	{
 		global $sql, $tp;
 
-		$newsletter_title = $tp -> toDB($_POST['newsletter_title']);
-		$newsletter_text = $tp -> toDB($_POST['newsletter_text']);
-		$newsletter_header = $tp -> toDB($_POST['newsletter_header']);
-		$newsletter_footer = $tp -> toDB($_POST['newsletter_footer']);
+		$letter['newsletter_title'] = $tp -> toDB($_POST['newsletter_title']);
+		$letter['newsletter_text'] = $tp -> toDB($_POST['newsletter_text']);
+		$letter['newsletter_header'] = $tp -> toDB($_POST['newsletter_header']);
+		$letter['newsletter_footer'] = $tp -> toDB($_POST['newsletter_footer']);
 
 		if(isset($_POST['editid']))
 		{
-			$sql -> db_Update("newsletter", "newsletter_title='$newsletter_title', newsletter_text='$newsletter_text', newsletter_header='$newsletter_header', newsletter_footer='$newsletter_footer' WHERE newsletter_id='".$_POST['editid']."' ");
+			$sql -> db_Update("newsletter", "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_header='{$letter['newsletter_header']}', newsletter_footer='{$letter['newsletter_footer']}' WHERE newsletter_id=".intval($_POST['editid']));
 			$this -> message = NLLAN_27;
 		}
 		else
 		{
-			$sql -> db_Insert("newsletter", "0, '".time()."', '$newsletter_title', '$newsletter_text', '$newsletter_header', '$newsletter_footer', '', '0', '0', '0' ");
+			$letter['newsletter_datestamp'] = time();
+			$sql -> db_Insert('newsletter', $letter);
 			$this -> message = NLLAN_28;
 		}
 	}
@@ -269,11 +280,11 @@ class newsletter
 	{
 		global $sql, $ns, $tp;
 
+		// Passed data is from DB
 		if($edit)
 		{
-			extract($edit);
-			$newsletter_title = $tp -> toFORM($newsletter_title);
-			$newsletter_text = $tp -> toFORM($newsletter_text);
+			$newsletter_title = $tp -> toFORM($edit['newsletter_title']);
+			$newsletter_text = $tp -> toFORM($edit['newsletter_text']);
 		}
 
 		if(!$sql -> db_Select("newsletter", "*", "newsletter_parent='0' "))
@@ -304,20 +315,20 @@ class newsletter
 
 		<tr>
 		<td style='width:30%;' class='forumheader3'>".NLLAN_31."</td>
-		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='newsletter_title' size='60' value='$newsletter_title' maxlength='200' /></td>
+		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='newsletter_title' size='60' value='{$newsletter_title}' maxlength='200' /></td>
 		</tr>
 		<tr>
 		<td style='width:30%;' class='forumheader3'>".NLLAN_32."</td>
-		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='newsletter_issue' size='10' value='$newsletter_issue' maxlength='200' /></td>
+		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='newsletter_issue' size='10' value='{$newsletter_issue}' maxlength='200' /></td>
 		</tr>
 		<tr>
 		<td style='width:30%;' class='forumheader3'>".NLLAN_33."</td>
-		<td style='width:70%' class='forumheader3'><textarea class='tbox' id='data' name='newsletter_text' cols='80' rows='10' style='width:95%'>$newsletter_text</textarea></td>
+		<td style='width:70%' class='forumheader3'><textarea class='tbox' id='data' name='newsletter_text' cols='80' rows='10' style='width:95%'>{$edit['newsletter_text']}</textarea></td>
 		</tr>
 		<tr>
 		<td colspan='2' style='text-align:center' class='forumheader'>
 		".
-		($edit ? "<input class='button' type='submit' name='createIssue' value='".NLLAN_34."' />\n<input type='hidden' name='editid' value='$newsletter_id' />" : "<input class='button' type='submit' name='createIssue' value='".NLLAN_35."' />")."
+		($edit ? "<input class='button' type='submit' name='createIssue' value='".NLLAN_34."' />\n<input type='hidden' name='editid' value='{$edit['newsletter_id']}' />" : "<input class='button' type='submit' name='createIssue' value='".NLLAN_35."' />")."
 		</td>
 		</tr>
 		</table>
@@ -335,17 +346,20 @@ class newsletter
 	function createIssue()
 	{
 		global $sql, $tp;
-		$newsletter_title = $tp -> toDB($_POST['newsletter_title']);
-		$newsletter_text = $tp -> toDB($_POST['newsletter_text']);
+		$letter['newsletter_title'] = $tp -> toDB($_POST['newsletter_title']);
+		$letter['newsletter_text'] = $tp -> toDB($_POST['newsletter_text']);
+		$letter['newsletter_parent'] = intval($_POST['newsletter_parent']);
+		$letter['newsletter_issue'] = $tp->toDB($_POST['newsletter_issue']);
 
-		if(isset($_POST['editid']))
+		if (isset($_POST['editid']))
 		{
-			$sql -> db_Update("newsletter", "newsletter_title='$newsletter_title', newsletter_text='$newsletter_text', newsletter_parent='".$_POST['newsletter_parent']."', newsletter_issue='".$_POST['newsletter_issue']."' WHERE newsletter_id='".$_POST['editid']."' ");
+			$sql -> db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
 			$this -> message = NLLAN_38;
 		}
 		else
 		{
-			$sql -> db_Insert("newsletter", "0, '".time()."', '$newsletter_title', '$newsletter_text', '', '', '', '".$_POST['newsletter_parent']."', '0', '".$_POST['newsletter_issue']."' ");
+			$letter['newsletter_datestamp'] = time();
+			$sql -> db_Insert('newsletter', $letter);
 			$this -> message = NLLAN_39;
 		}
 	}
@@ -358,7 +372,7 @@ class newsletter
 
 		$issue = str_replace("nlmailnow_", "", $issue);
 
-		if(!$sql -> db_Select("newsletter", "*", "newsletter_id='$issue' "))
+		if(!$sql -> db_Select("newsletter", "*", "newsletter_id='{$issue}' "))
 		{
 			return FALSE;
 		}
@@ -456,7 +470,7 @@ class newsletter
 	{
 		global $id, $sql;
 
-		if($sql -> db_Select("newsletter", "*", "newsletter_id='$id' "))
+		if($sql -> db_Select("newsletter", "*", "newsletter_id='{$id}' "))
 		{
 			$foo = $sql -> db_Fetch();
 			if(!$foo['newsletter_parent'])
@@ -479,13 +493,13 @@ class newsletter
 		if(strstr($tmp['key'], "newsletter"))
 		{
 			$id = str_replace("newsletter_", "", $tmp['key']);
-			$sql -> db_Delete("newsletter", "newsletter_id='$id' ");
+			$sql -> db_Delete("newsletter", "newsletter_id='{$id}' ");
 			$this -> message = NLLAN_42;
 		}
 		else
 		{
 			$id = str_replace("issue_", "", $tmp['key']);
-			$sql -> db_Delete("newsletter", "newsletter_id='$id' ");
+			$sql -> db_Delete("newsletter", "newsletter_id='{$id}' ");
 			$this -> message = NLLAN_43;
 		}
 	}
@@ -521,17 +535,18 @@ class newsletter
 	global $ns;
 
 	$nl_sql = new db;
-	if(!$nl_sql -> db_Select("newsletter", "*", "newsletter_id=".$p_id))
+	if(!$nl_sql -> db_Select('newsletter', '*', 'newsletter_id='.$p_id))
 	{
 		// Check if newsletter id is available
 		$vs_text .= "<br /><br /><center>".NLLAN_56."<br /><br/>
-                 <input class='button' type=button value='".NLLAN_57."' onClick='history.go(-1)'></center>";
+                 <input class='button' type=button value='".NLLAN_57."' onClick=\"window.location='".e_SELF."'\"></center>";
 		$ns -> tablerender(NLLAN_58, $vs_text);
 		return;
 	} 
 	else 
 	{
 	  $vs_text .= "
+			<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width:5%; text-align: center;' class='forumheader'>".NLLAN_55."</td>
@@ -540,10 +555,9 @@ class newsletter
 			<td style='width:15%; text-align: center;' class='forumheader'>".NLLAN_61."</td>
 			</tr>";
 
-		$nl_sql -> db_Select("newsletter", "*", "newsletter_id='".$p_id."'");
+//		$nl_sql -> db_Select("newsletter", "*", "newsletter_id=".$p_id);		Already done
 		if($nl_row = $nl_sql-> db_Fetch())
 		{
-//			$subscribers_total_count = substr_count($nl_row['newsletter_subscribers'], chr(1));
 			$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
 			$subscribers_total_count = count($subscribers_list) - 1;		// Get a null entry as well
 		}
@@ -562,13 +576,13 @@ class newsletter
 				if($nl_row = $nl_sql-> db_Fetch())
 				{
 					$vs_text .= "<tr>
-						<td text-align: center;' class='forumheader3'>{$val}
+						<td style='text-align: center;' class='forumheader3'>{$val}
 						</td>
 						<td class='forumheader3'><a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
 						</td>
 						<td class='forumheader3'>".$nl_row['user_email']."
 						</td>
-						<td text-align: center;' class='forumheader3'><a href='".e_SELF."?remove.{$p_id}.{$key}'>".ADMIN_DELETE_ICON."</a>
+						<td style='text-align: center;' class='forumheader3'><a href='".e_SELF."?remove.{$p_id}.{$val}'>".ADMIN_DELETE_ICON."</a>
 					".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."
 					</td>
 					</tr>";
@@ -579,29 +593,27 @@ class newsletter
 
 	$vs_text .= "
       <tr>
-      <td colspan=4 class='forumheader'>".NLLAN_63.": ".$subscribers_total_count."</td>
+      <td colspan='4' class='forumheader'>".NLLAN_63.": ".$subscribers_total_count."</td>
       </tr>
-      <tr><td colspan=4 style='text-align:center;'><br /><input class='button' type=button value='".NLLAN_64."' onClick='history.go(-1)'></td></tr>
-      </table>
+      <tr><td colspan='4' style='text-align:center;'><br /><input class='button' type='submit' value='".NLLAN_64."' /></td></tr>
+      </table></form>
       ";
 	$ns -> tablerender(NLLAN_65.' '.$p_id, $vs_text);
  }
  
  
-  function remove_subscribers($p_id, $p_key) 
-  {
-	global $sql;
-   	$sql -> db_Select("newsletter", "*", "newsletter_id=".$p_id);
-  	if($nl_row = $sql-> db_Fetch())
+	function remove_subscribers($p_id, $p_key) 
 	{
-		$subscribers_list = explode(chr(1), $nl_row['newsletter_subscribers']);
-		unset($subscribers_list[$p_key]);
-		$new_subscriber_list = implode(chr(1), $subscribers_list);
-		$sql -> db_Update("newsletter", "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id=".$p_id);
-		header("location:".e_SELF."?vs.{$p_id}");
-     	exit;
-  	}
-  }
+		global $sql;
+		$sql -> db_Select("newsletter", "*", "newsletter_id=".$p_id);
+		if($nl_row = $sql-> db_Fetch())
+		{
+			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
+			unset($subscribers_list[$p_key]);
+			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
+			$sql -> db_Update("newsletter", "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id=".$p_id);
+		}
+	}
 }
 
 
