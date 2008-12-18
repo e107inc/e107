@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-15 00:29:20 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-18 15:28:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -37,14 +37,14 @@ require_once(e_PLUGIN.'forum/forum_admin_class.php');
 $rs = new form;
 $for = new e107forum;
 $forum = new forumAdmin;
-define("IMAGE_new", "<img src='".img_path('new.png')."' alt='' style='border:0' />");
-define("IMAGE_sub", "<img src='".e_PLUGIN."forum/images/forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' style='border:0' />");
-define("IMAGE_nosub", "<img src='".e_PLUGIN."forum/images/sub_forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' style='border:0' />");
+define('IMAGE_new', "<img src='".img_path('new.png')."' alt='' style='border:0' />");
+define('IMAGE_sub', "<img src='".e_PLUGIN."forum/images/forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' style='border:0' />");
+define('IMAGE_nosub', "<img src='".e_PLUGIN."forum/images/sub_forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' style='border:0' />");
 
 $deltest = array_flip($_POST);
 if (e_QUERY)
 {
-	$tmp = explode(".", e_QUERY);
+	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
 	$id = $tmp[2];
@@ -54,21 +54,21 @@ if (e_QUERY)
 if(isset($_POST['delete']))
 {
 	$tmp = array_pop(array_flip($_POST['delete']));
-	list($delete, $del_id) = explode("_", $tmp);
+	list($delete, $del_id) = explode('_', $tmp);
 }
 
 if(isset($_POST['setMods']))
 {
 	foreach($_POST['mods'] as $fid => $modid)
 	{
-		$sql->db_Update('forum',"forum_moderators = '{$modid}' WHERE forum_id = {$fid}");
+		$e107->sql->db_Update('forum',"forum_moderators = '{$modid}' WHERE forum_id = {$fid}");
 	}
 	$forum->show_message(FORLAN_144);
 }
 
 if(isset($_POST['tools']))
 {
-	$msg = "";
+	$msg = '';
 	if(isset($_POST['forum_all']))
 	{
 		$fList[]='all';
@@ -96,14 +96,16 @@ if(isset($_POST['tools']))
 	}
 	if(isset($_POST['userpostcounts']))
 	{
-		$list = $for->get_user_counts();
+		require_once(e_HANDLER.'user_extended_class.php');
+		$ue = new e107_user_extended;
+		
+		$list = $for->getUserCounts();
 		foreach($list as $uid => $cnt)
 		{
-			$sql->db_Update("user","user_forums = '{$cnt}' WHERE user_id = '{$uid}'");
+			$ue->user_extended_setvalue($uid, 'user_plugin_forum_posts', $cnt, 'int');
 		}
-		$msg .= FORLAN_169." <br />";
+		$msg .= FORLAN_169.' <br />';
 	}
-
 	$forum->show_message($msg);
 }
 
@@ -111,19 +113,19 @@ if(isset($_POST['create_sub']))
 {
 	$fid = (int)($sub_action);
 	$tmp = array();
-	$tmp['forum_name']  = $tp->toDB($_POST['subname_new']);
-	$tmp['forum_description']  = $tp->toDB($_POST['subdesc_new']);
+	$tmp['forum_name']  = $e107->tp->toDB($_POST['subname_new']);
+	$tmp['forum_description']  = $e107->tp->toDB($_POST['subdesc_new']);
 	$tmp['forum_order'] = (int)$_POST['suborder_new'];
 
-	if($tmp['forum_name'] != '' && $sql->db_Select('forum', '*', "forum_id = {$fid}"))
+	if($tmp['forum_name'] != '' && $e107->sql->db_Select('forum', '*', "forum_id = {$fid}"))
 	{
-		$row = $sql->db_Fetch();
+		$row = $e107->sql->db_Fetch();
 		$tmp['forum_parent'] = $row['forum_parent'];
 		$tmp['forum_moderators'] = $row['forum_moderators'];
 		$tmp['forum_class'] = $row['forum_class'];
 		$tmp['forum_postclass'] = $row['forum_postclass'];
 		$tmp['forum_sub'] = $fid;
-		if($sql->db_Insert('forum', $tmp))
+		if($e107->sql->db_Insert('forum', $tmp))
 		{
 			$forum->show_message(FORLAN_150.' - '.LAN_CREATED);
 		}
@@ -141,21 +143,21 @@ if(isset($_POST['update_subs']))
 	{
 		if($_POST['subname'][$id] == "")
 		{
-			if ($sql->db_Delete("forum", "forum_id='$id' "))
+			if ($e107->sql->db_Delete("forum", "forum_id='$id' "))
 			{
 				$msg .= FORLAN_150." ".$id." ".LAN_DELETED."<br />";
-				$cnt = $sql->db_Delete("forum_t", "thread_forum_id = {$id}");
+				$cnt = $e107->sql->db_Delete("forum_t", "thread_forum_id = {$id}");
 				$msg .= $cnt." ".FORLAN_152." ".LAN_DELETED."<br />";
 			}
 		}
 		else
 		{
-			$_name  = $tp->toDB($_POST['subname'][$id]);
-			$_desc  = $tp->toDB($_POST['subdesc'][$id]);
-			$_order = intval($_POST['suborder'][$id]);
-			if($sql->db_Update("forum", "forum_name='{$_name}', forum_description='{$_desc}', forum_order='{$_order}' WHERE forum_id = {$id}"))
+			$_name  = $e107->tp->toDB($_POST['subname'][$id]);
+			$_desc  = $e107->tp->toDB($_POST['subdesc'][$id]);
+			$_order = (int)$_POST['suborder'][$id];
+			if($e107->sql->db_Update('forum', "forum_name='{$_name}', forum_description='{$_desc}', forum_order='{$_order}' WHERE forum_id = {$id}"))
 			{
-				$msg .= FORLAN_150." ".$id." ".LAN_UPDATED."<br />";
+				$msg .= FORLAN_150.' '.$id.' '.LAN_UPDATED.'<br />';
 			}
 		}
 	}
@@ -168,7 +170,7 @@ if(isset($_POST['update_subs']))
 if(isset($_POST['submit_parent']))
 {
 	$tmp = array();
-	$tmp['forum_name'] = $tp->toDB($_POST['forum_name']);
+	$tmp['forum_name'] = $e107->tp->toDB($_POST['forum_name']);
 	$tmp['forum_datestamp'] = time();
 	$tmp['forum_class'] = (int)$_POST['forum_class'];
 	$tmp['forum_postclass'] = (int)$_POST['forum_postclass'];
@@ -192,8 +194,7 @@ if(isset($_POST['update_parent']))
 	$tmp['_FIELD_TYPES']['forum_postclass'] = 'int';
 	$tmp['_FIELD_TYPES']['forum_threadclass'] = 'int';
 	$tmp['WHERE'] = 'forum_id = '.(int)$id;
-//	print_a($tmp);
-	$sql->db_Update('forum', $tmp);
+	$e107->sql->db_Update('forum', $tmp);
 	$forum->show_message(FORLAN_14);
 	$action = 'main';
 }
@@ -202,8 +203,8 @@ if(isset($_POST['submit_forum']))
 {
 	$tmp = array();
 	$tmp['forum_moderators'] = (int)$_POST['forum_moderators'];
-	$tmp['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$tmp['forum_description'] = $tp->toDB($_POST['forum_description']);
+	$tmp['forum_name'] = $e107->tp->toDB($_POST['forum_name']);
+	$tmp['forum_description'] = $e107->tp->toDB($_POST['forum_description']);
 	$tmp['forum_datestamp'] = time();
 	$tmp['forum_class'] = (int)$_POST['forum_class'];
 	$tmp['forum_postclass'] = (int)$_POST['forum_postclass'];
@@ -239,8 +240,8 @@ if(isset($_POST['update_forum']))
 	$tmp2['forum_threadclass'] = $tmp['forum_threadclass'];
 	$tmp2['WHERE'] = 'forum_sub = '.(int)$id;
 
-	$sql->db_Update('forum', $tmp);
-	$sql->db_Update('forum', $tmp2);
+	$e107->sql->db_Update('forum', $tmp);
+	$e107->sql->db_Update('forum', $tmp2);
 
 	$forum->show_message(FORLAN_12);
 	$action = 'main';
@@ -251,8 +252,8 @@ if (isset($_POST['update_order']))
 	extract($_POST);
 	while (list($key, $id) = each($forum_order))
 	{
-		$tmp = explode(".", $id);
-		$sql->db_Update("forum", "forum_order=".$tmp[1]." WHERE forum_id=".$tmp[0]);
+		$tmp = explode('.', $id);
+		$e107->sql->db_Update('forum', "forum_order=".$tmp[1]." WHERE forum_id=".$tmp[0]);
 	}
 	$forum->show_message(FORLAN_73);
 }
@@ -294,9 +295,9 @@ if (isset($_POST['set_ranks']))
 	extract($_POST);
 	for($a = 0; $a <= 9; $a++)
 	{
-		$r_names .= $tp->toDB($rank_names[$a]).",";
-		$r_thresholds .= $tp->toDB($rank_thresholds[$a]).",";
-		$r_images .= $tp->toDB($rank_images[$a]).",";
+		$r_names .= $e107->tp->toDB($rank_names[$a]).",";
+		$r_thresholds .= $e107->tp->toDB($rank_thresholds[$a]).",";
+		$r_images .= $e107->tp->toDB($rank_images[$a]).",";
 	}
 	$pref['rank_main_admin'] = $_POST['rank_main_admin'];
 	$pref['rank_main_admin_image'] = $_POST['rank_main_admin_image'];
@@ -313,33 +314,33 @@ if (isset($_POST['set_ranks']))
 
 if (isset($_POST['frsubmit']))
 {
-	$guestrules = $tp->toDB($_POST['guestrules']);
-	$memberrules = $tp->toDB($_POST['memberrules']);
-	$adminrules = $tp->toDB($_POST['adminrules']);
-	if(!$sql->db_Update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
+	$guestrules = $e107->tp->toDB($_POST['guestrules']);
+	$memberrules = $e107->tp->toDB($_POST['memberrules']);
+	$adminrules = $e107->tp->toDB($_POST['adminrules']);
+	if(!$e107->sql->db_Update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
 	{
-		$sql -> db_Insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
+		$e107->sql -> db_Insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
 	}
-	if(!$sql->db_Update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' "))
+	if(!$e107->sql->db_Update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' "))
 	{
-		$sql -> db_Insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
+		$e107->sql -> db_Insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
 	}
-	if(!$sql->db_Update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' "))
+	if(!$e107->sql->db_Update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' "))
 	{
-		$sql -> db_Insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
+		$e107->sql -> db_Insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
 	}
 }
 
 
 if ($delete == 'main') {
-	if ($sql->db_Delete('forum', "forum_id='$del_id' ")) {
+	if ($e107->sql->db_Delete('forum', "forum_id='$del_id' ")) {
 		$forum->show_message(FORLAN_96);
 	}
 }
 
 if ($action == 'create')
 {
-	if ($sql->db_Select('forum', '*', "forum_parent='0' "))
+	if ($e107->sql->db_Select('forum', '*', "forum_parent='0' "))
 	{
 		$forum->create_forums($sub_action, $id);
 	}
@@ -352,73 +353,69 @@ if ($action == 'create')
 
 if ($delete == 'cat')
 {
-	if ($sql->db_Delete("forum", "forum_id='$del_id' "))
+	if ($e107->sql->db_Delete('forum', "forum_id='$del_id' "))
 	{
-		$sql->db_Delete("forum", "forum_parent='$del_id' ");
+		$e107->sql->db_Delete('forum', "forum_parent='$del_id' ");
 		$forum->show_message(FORLAN_97);
-		$action = "main";
+		$action = 'main';
 	}
 }
 
-if($action == "delete")
+switch($action)
 {
-	$forum->delete_item(intval($sub_action));
+	case 'delete':
+		$forum->delete_item(intval($sub_action));
+		break;
+
+	case 'cat':
+		$forum->create_parents($sub_action, $id);
+		break;
+
+	case 'order':
+		$forum->show_existing_forums($sub_action, $id, true);
+		break;
+
+	case 'opt':
+		$forum->show_prefs();
+		break;
+	
+	case 'mods':
+		$forum->show_mods();
+		break;
+
+	case 'tools':
+		$forum->show_tools();
+		break;
+
+	case 'prune':
+		$forum->show_prune();
+		break;
+	
+	case 'rank':
+		$forum->show_levels();
+		break;
+
+	case 'rules':
+		$forum->show_rules();
+		break;
+
+	case 'subs':
+		$forum->show_subs($sub_action);
+		break;
+
+	case 'sr':
+		$forum->show_reported($sub_action);
+		break;
 }
 
-if ($action == "cat") {
-	$forum->create_parents($sub_action, $id);
-}
-
-if ($action == "order") {
-	$forum->show_existing_forums($sub_action, $id, TRUE);
-}
-
-if ($action == "opt")
-{
-	$forum->show_prefs();
-}
-
-if ($action == "mods")
-{
-	$forum->show_mods();
-}
-
-if ($action == "tools")
-{
-	$forum->show_tools();
-}
-
-if ($action == "prune")
-{
-	$forum->show_prune();
-}
-
-if ($action == "rank")
-{
-	$forum->show_levels();
-}
-
-if ($action == "rules")
-{
-	$forum->show_rules();
-}
-
-if($action == 'subs')
-{
-	$forum->show_subs($sub_action);
-}
 
 if ($delete == 'reported')
 {
-	$sql->db_Delete("generic", "gen_id='$del_id' ");
+	$e107->sql->db_Delete("generic", "gen_id='$del_id' ");
 	$forum->show_message(FORLAN_118);
 }
 
 
-if ($action == 'sr')
-{
-	$forum->show_reported($sub_action);
-}
 
 if (!e_QUERY || $action == 'main')
 {
@@ -426,25 +423,24 @@ if (!e_QUERY || $action == 'main')
 }
 
 //$forum->show_options($action);
-require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN.'footer.php');
 function headerjs()
 {
-	global $tp;
+	$e107 = e107::getInstance();
 	// These functions need to be removed and replaced with the generic jsconfirm() function.
 	$headerjs = "<script type=\"text/javascript\">
 	function confirm_(mode, forum_id, forum_name) {
 		if (mode == 'sr') {
-			return confirm(\"".$tp->toJS(FORLAN_117)."\");
+			return confirm(\"".$e107->tp->toJS(FORLAN_117)."\");
 		} else if(mode == 'parent') {
-			return confirm(\"".$tp->toJS(FORLAN_81)." [ID: \" + forum_name + \"]\");
+			return confirm(\"".$e107->tp->toJS(FORLAN_81)." [ID: \" + forum_name + \"]\");
 		} else {
-			return confirm(\"".$tp->toJS(FORLAN_82)." [ID: \" + forum_name + \"]\");
+			return confirm(\"".$e107->tp->toJS(FORLAN_82)." [ID: \" + forum_name + \"]\");
 		}
 	}
 	</script>";
 	return $headerjs;
 }
-
 
 function forum_admin_adminmenu()
 {

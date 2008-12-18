@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-12-10 13:14:51 $
+|     $Revision: 1.19 $
+|     $Date: 2008-12-18 15:28:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -548,22 +548,38 @@ class e107_user_extended
 	* Set the value of an extended field
 	*
 	*  $ue = new e107_user_extended;
-	*	$result = $ue->user_extended_setvalue(1, 'location', 'Pittsburgh');
+	*	 $result = $ue->user_extended_setvalue(1, 'location', 'Pittsburgh');
 	*
-	*	NOTE:  This function will return false if the field is already set to $newvalue
 	*
 	*/
-	function user_extended_setvalue($uid, $field_name, $newvalue)
+	function user_extended_setvalue($uid, $field_name, $newvalue, $fieldType = 'todb')
 	{
-		global $sql, $tp;
-		$uid = intval($uid);
-		$newvalue = $tp->toDB($newvalue);
+		$e107 = e107::getInstance();
+		$uid = (int)$uid;
+		switch($fieldType)
+		{
+			case 'int':
+				$newvalue = (int)$newvalue;
+				break;
+			
+			case 'escape':
+				$newvalue = "'".mysql_real_escape_string($newvalue)."'";
+				break;
+			
+			default:
+				$newvalue = "'".$e107->tp->toDB($newvalue)."'";
+				break;
+		}
 		if(substr($field_name, 0, 5) != 'user_')
 		{
 			$field_name = 'user_'.$field_name;
 		}
-	$sql->db_Select_gen("REPLACE INTO #user_extended (user_extended_id, user_hidden_fields) values ('{$uid}', '')");
-		return $sql->db_Update("user_extended", $field_name." = '{$newvalue}' WHERE user_extended_id = '{$uid}'");
+		$qry = "
+		INSERT INTO `#user_extended` (user_extended_id, {$field_name}) 
+		VALUES ({$uid}, {$newvalue}) 
+		ON DUPLICATE KEY UPDATE {$field_name} = {$newvalue}
+		";
+		return $e107->sql->db_Select_gen($qry);
 	}
 
 
