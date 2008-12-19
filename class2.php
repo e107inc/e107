@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2008-12-07 21:41:03 $
+|     $Revision: 1.86 $
+|     $Date: 2008-12-19 22:56:22 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1457,7 +1457,7 @@ function init_session()
 			{
 				$result['user_lastvisit'] = $result['user_currentvisit'];
 				$result['user_currentvisit'] = time();
-				$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}', user_viewed = ''{$update_ip} WHERE user_id='".USERID."' ");
+				$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}' {$update_ip} WHERE user_id='".USERID."' ");
 			}
 			else
 			{
