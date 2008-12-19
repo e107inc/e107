@@ -11,39 +11,137 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-18 22:03:45 $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-19 21:56:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-if (!defined('e107_INIT')) { exit; }
+if(defined('e_PAGE') && e_PAGE == 'e107_update.php')
+{
+	echo "
+	<script type='text/javascript'>
+	window.location='".e_PLUGIN."forum/forum_update.php'
+	</script>
+	";
+	exit;
+}
 
+$eplug_admin = true;
+require_once('../../class2.php');
+if (!getperms('P'))
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
 require_once(e_PLUGIN.'forum/forum_class.php');
+require_once(e_ADMIN.'auth.php');
 $forum = new e107forum;
 $timestart = microtime();
 
 $f = new forumUpgrade;
 $e107 = e107::getInstance();
 
-//Check attachment dir permissions
-if(!isset($f->updateInfo['skip_attach']))
+if(isset($_POST) && count($_POST))
 {
-	$f->checkAttachmentDirs();
-	if(isset($f->error['attach']))
+	if(isset($_POST['skip_attach']))
 	{
-		$errorText = "
-		The following errors have occured.  These issues must be resolved if you ever want to enable attachment or image uploading in your forums. <br />If you do not ever plan on enabling this setting in your forum, you may click the 'skip' button <br /><br />
-		";
-		foreach($f->error['attach'] as $e)
-		{
-			$errorText .= '** '.$e.'<br />';
-		}
-		$e107->ns->tablerender('Attachment directory error', $errorText);
-		require(e_ADMIN.'footer.php');
-		exit;
+		$f->updateInfo['skip_attach'] = 1;
+		$f->updateInfo['currentStep'] = 2;
+		$f->setUpdateInfo();
+	}
+
+	var_dump($_POST);
+	if(isset($_POST['nextStep']))
+	{
+		$tmp = array_keys($_POST['nextStep']);
+		$f->updateInfo['currentStep'] = $tmp[0];
+		$f->setUpdateInfo();
 	}
 }
 
+
+
+
+$currentStep = (isset($f->updateInfo['currentStep']) ? $f->updateInfo['currentStep'] : 1);
+$stepParms = (isset($stepParms) ? $stepParms : '');
+
+if(function_exists('step'.$currentStep))
+{
+	call_user_func('step'.$currentStep, $stepParms);
+}
+
+
+require(e_ADMIN.'footer.php');
+exit;
+
+
+function step1()
+{
+	global $f;
+	$e107 = e107::getInstance();
+	//Check attachment dir permissions
+	if(!isset($f->updateInfo['skip_attach']))
+	{
+		$f->checkAttachmentDirs();
+		if(isset($f->error['attach']))
+		{
+			$text = "
+			<h3>ERROR:</h3>
+			The following errors have occured.  These issues must be resolved if you ever want to enable attachment or image uploading in your forums. <br />If you do not ever plan on enabling this setting in your forum, you may click the 'skip' button <br /><br />
+			";
+			foreach($f->error['attach'] as $e)
+			{
+				$errorText .= '** '.$e.'<br />';
+			}
+			$text .= "
+			<br />
+			<form method='post'>
+			<input class='button' type='submit' name='retest_attach' value='Retest Permissions' />
+			&nbsp;&nbsp;&nbsp;
+			<input class='button' type='submit' name='skip_attach'  value='Skip - I understand the risks' />
+			</form>
+			";
+		}
+		else
+		{
+			$text = "Attachment and attachment/thumb directories are writable
+			<br /><br />
+			<form method='post'>
+			<input class='button' type='submit' name='nextStep[2]' value='Proceed to step 2' />
+			</form>
+			";
+		}
+		$e107->ns->tablerender('Attachment directory permissions', $text);
+	}
+}
+
+function step2()
+{
+	$e107 = e107::getInstance();
+	if(!isset($_POST['create_tables']))
+	{
+		$text = "
+		This step will create the new forum_thread, forum_post, and forum_attach tables.  It will also create a forum_new table that will become the 'real' forum table once the data from the current table is migrated.
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='create_tables' value='Proceed with table creation' />
+		</form>
+		";
+		$e107->ns->tablerender('Step 2: Forum table creation', $text);
+		return;
+	}
+
+	if($sql = file_get_contents(e_PLUGIN.'forum/forum_sql.php'))
+	{
+		echo $sql;
+	}
+	else
+	{
+		echo 'failed';
+	}
+
+	
+}
 
 //print_a($f->error);
 
@@ -77,9 +175,9 @@ class forumUpgrade
 			}
 			else
 			{
-				if(is_writable($dir))
+				if(!is_writable($dir))
 				{
-					$this->error['attach'][] = "Directory '{$dir}' exits, but it now writeable";
+					$this->error['attach'][] = "Directory '{$dir}' exits, but is not writeable";
 				}
 			}
 		}
@@ -103,6 +201,7 @@ class forumUpgrade
 
 	function setUpdateInfo()
 	{
+		$e107 = e107::getInstance();
 		$info = mysql_real_escape_string(serialize($this->updateInfo));
 		$qry = "UPDATE `#generic` Set gen_chardata = '{$info}' WHERE gen_type = 'forumUpgrade'";
 		$e107->sql->db_Select_gen($qry);
@@ -110,10 +209,57 @@ class forumUpgrade
 	
 	function setNewVersion()
 	{
-		global $sql;
-		$sql->db_Update('plugin',"plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
+		$e107 = e107::getInstance();
+		$e107->sql->db_Update('plugin',"plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
 		return "Forum Version updated to version: {$this->newVersion} <br />";
 	}	
 
 }
+
+function forum_update_adminmenu()
+{
+		global $currentStep;
+		
+		$var[1]['text'] = 'Step 1 - Permissions';
+		$var[1]['link'] = '#';
+
+		$var[2]['text'] = 'Step 2 - Create new tables';
+		$var[2]['link'] = '#';
+
+		$var[3]['text'] = 'Step 3 - Create extended fields';
+		$var[3]['link'] = '#';
+
+		$var[4]['text'] = 'Step 4 - Move user data';
+		$var[4]['link'] = '#';
+
+		$var[5]['text'] = 'Step 5 - Migrate forum configuration';
+		$var[5]['link'] = '#';
+
+		$var[6]['text'] = 'Step 6 - Migrate threads/replies';
+		$var[6]['link'] = '#';
+
+		$var[7]['text'] = 'Step 7 - Calc counts/lastpost data';
+		$var[7]['link'] = '#';
+
+		$var[8]['text'] = 'Step 8 - Migrate any poll information';
+		$var[8]['link'] = '#';
+
+		$var[9]['text'] = 'Step 9 - Migrate any attachments';
+		$var[9]['link'] = '#';
+
+		$var[10]['text'] = 'Step 10 - Migrate any attachments';
+		$var[10]['link'] = '#';
+
+		$var[11]['text'] = 'Step 11 - Delete old forum data';
+		$var[11]['link'] = '#';
+
+
+		for($i=1; $i < $currentStep; $i++)
+		{
+			$var[$i]['text'] = "<span style='color:green;'>{$var[$i]['text']}</span>";
+		}
+
+		show_admin_menu('Forum Upgrade', $currentStep, $var);
+}
+
 ?>

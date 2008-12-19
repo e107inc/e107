@@ -38,7 +38,7 @@ CREATE TABLE forum_thread (
   `thread_options` text,
   PRIMARY KEY  (`thread_id`),
   KEY `thread_forum_id` (`thread_forum_id`),
-  KEY `thread_s` (`thread_s`),
+  KEY `thread_sticky` (`thread_sticky`),
   KEY `thread_lastpost` (`thread_lastpost`)
 ) Type=MyISAM AUTO_INCREMENT=1 ;
 
