@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.19 $
- * $Date: 2008-12-18 16:55:45 $
+ * $Revision: 1.20 $
+ * $Date: 2008-12-19 14:01:07 $
  * $Author: secretr $
  *
 */
@@ -113,9 +113,11 @@ if(isset($_POST['updateprefs']))
 	}
 	if($saved)
 	{
-		$emessage->addSession(PRFLAN_106, E_MESSAGE_SUCCESS);
+		/*$emessage->addSession(PRFLAN_106, E_MESSAGE_SUCCESS);
 		header("location:".e_ADMIN."prefs.php?u");
-		exit();
+		exit();*/
+		//no redirect, smarter form (remember last used tab
+		$emessage->add(PRFLAN_106, E_MESSAGE_SUCCESS);
 	}
 	else
 	{
@@ -137,21 +139,7 @@ if($e107->sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' AND pl
 	}
 }
 
-if($authlist)
-{
-	$auth_dropdown .= "<select class='tbox' name='auth_method'>";
-	foreach($authlist as $a)
-	{
-		$s = ($pref['auth_method'] == $a ? " selected='selected' " : "");
-		$auth_dropdown .= "<option{$s}>".$a."</option>";
-	}
-	$auth_dropdown .= "</select>";
-}
-else
-{
-	$auth_dropdown = "<input type='hidden' name='auth_method' value='' />".PRFLAN_151;
-	$pref['auth_method'] = "";
-}
+
 
 require_once (e_ADMIN."auth.php");
 /*
@@ -177,25 +165,10 @@ while($file = readdir($handle))
 closedir($handle);
 
 $text = "
-	<script type=\"text/javascript\">
-	<!--
-
-	var hideid=\"core-prefs-main\";
-	function showhideit(showid){
-		if (hideid!=showid){
-			show=document.getElementById(showid).style;
-			hide=document.getElementById(hideid).style;
-			show.display=\"\";
-			hide.display=\"none\";
-			hideid = showid;
-		}
-	}
-	//-->
-	</script>
-	<div id='core-prefs'>
-	<form method='post' action='".e_SELF."'>
+<div id='core-prefs'>
+	<form class='admin-menu' method='post' action='".e_SELF."'>
 		<fieldset class='e-hideme' id='core-prefs-main'>
-			<legend class='e-hideme'>".PRFLAN_1."</legend>
+			<legend>".PRFLAN_1."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -322,7 +295,7 @@ $text .= "
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-display'>
-			<legend class='e-hideme'>".PRFLAN_13."</legend>
+			<legend>".PRFLAN_13."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -332,22 +305,19 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_14." </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='displaythemeinfo-1' name='displaythemeinfo' value='1'".($pref['displaythemeinfo'] ? " checked='checked'" : "")." /><label for='displaythemeinfo-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='displaythemeinfo-0' name='displaythemeinfo' value='0'".(! $pref['displaythemeinfo'] ? " checked='checked'" : "")." /><label for='displaythemeinfo-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('displaythemeinfo', $pref['displaythemeinfo'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_15." </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='displayrendertime-1' name='displayrendertime' value='1'".($pref['displayrendertime'] ? " checked='checked'" : "")." /><label for='displayrendertime-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='displayrendertime-0' name='displayrendertime' value='0'".(! $pref['displayrendertime'] ? " checked='checked'" : "")." /><label for='displayrendertime-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('displayrendertime', $pref['displayrendertime'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_16." </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='displaysql-1' name='displaysql' value='1'".($pref['displaysql'] ? " checked='checked'" : "")." /><label for='displaysql-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='displaysql-0' name='displaysql' value='0'".(! $pref['displaysql'] ? " checked='checked'" : "")." /><label for='displaysql-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('displaysql', $pref['displaysql'])."
 						</td>
 					</tr>
 	";
@@ -357,8 +327,7 @@ if(function_exists("memory_get_usage"))
 					<tr>
 						<td class='label'>".PRFLAN_137." </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='display_memory_usage-1' name='display_memory_usage' value='1'".($pref['display_memory_usage'] ? " checked='checked'" : "")." /><label for='display_memory_usage-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='display_memory_usage-0' name='display_memory_usage' value='0'".(! $pref['display_memory_usage'] ? " checked='checked'" : "")." /><label for='display_memory_usage-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('display_memory_usage', $pref['display_memory_usage'])."
 						</td>
 					</tr>
 	";
@@ -373,7 +342,7 @@ $text .= "
 // Admin Display Areas
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-admindisp'>
-			<legend class='e-hideme'>".PRFLAN_77."</legend>
+			<legend>".PRFLAN_77."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -383,16 +352,14 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_95."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='admin_alerts_ok-1' name='admin_alerts_ok' value='1'".($pref['admin_alerts_ok'] ? " checked='checked'" : "")." /><label for='admin_alerts_ok-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='admin_alerts_ok-0' name='admin_alerts_ok' value='0'".(! $pref['admin_alerts_ok'] ? " checked='checked'" : "")." /><label for='admin_alerts_ok-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('admin_alerts_ok', $pref['admin_alerts_ok'])."
 							<div class='smalltext field-help'>".PRFLAN_96."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_97."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='admin_alerts_uniquemenu-1' name='admin_alerts_uniquemenu' value='1'".($pref['admin_alerts_uniquemenu'] ? " checked='checked'" : "")." /><label for='admin_alerts_uniquemenu-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='admin_alerts_uniquemenu-0' name='admin_alerts_uniquemenu' value='0'".(! $pref['admin_alerts_uniquemenu'] ? " checked='checked'" : "")." /><label for='admin_alerts_uniquemenu-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('admin_alerts_uniquemenu', $pref['admin_alerts_uniquemenu'])."
 							<div class='smalltext field-help'>".PRFLAN_98."</div>
 						</td>
 					</tr>
@@ -411,7 +378,7 @@ $date3 = $ga->convert_date(time(), "forum");
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-date'>
-			<legend class='e-hideme'>".PRFLAN_21."</legend>
+			<legend>".PRFLAN_21."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -421,29 +388,29 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_22.": </td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='shortdate' size='40' value='".$pref['shortdate']."' maxlength='50' />
-							<br />".PRFLAN_83.": {$date1}
+							".$frm->text('shortdate', $pref['shortdate'], 50)."
+							<div class='field-help'>".PRFLAN_83.": {$date1}</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_23.": </td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='longdate' size='40' value='".$pref['longdate']."' maxlength='50' />
-							<br />".PRFLAN_83.": {$date2}
+							".$frm->text('longdate', $pref['longdate'], 50)."
+							<div class='field-help'>".PRFLAN_83.": {$date2}</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_24."</td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='forumdate' size='40' value='".$pref['forumdate']."' maxlength='50' />
-							<br />".PRFLAN_83.": {$date3}
-							<div class='smalltext field-help'>".PRFLAN_25." <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a></div>
+							".$frm->text('forumdate', $pref['forumdate'], 50)."
+							<div class='field-help'>".PRFLAN_83.": {$date3}</div>
+							<div class='field-help'>".PRFLAN_25." <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a></div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_26."</td>
 						<td class='control'>
-							<select name='time_offset' class='tbox select time-offset'>";
+							".$frm->select_open('time_offset', 'class=tbox select time-offset');//use form handler because of the tabindex
 $toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14", "+15", "+16");
 if(! isset($pref['time_offset']))
 {
@@ -452,7 +419,7 @@ if(! isset($pref['time_offset']))
 foreach($toffset as $o)
 {
 	$text .= "
-								<option".((! isset($pref['time_offset']) || $o == $pref['time_offset']) ? " selected='selected'" : "").">{$o}</option>
+								".$frm->option($o, $o, ($o == $pref['time_offset']))."
 	";
 }
 $text .= "
@@ -463,7 +430,7 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_56.": </td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='timezone' size='20' value='".$pref['timezone']."' maxlength='50' />
+							".$frm->text('timezone', $pref['timezone'], 50)."
 						</td>
 					</tr>
 				</tbody>
@@ -475,7 +442,7 @@ $text .= "
 // =========== Registration Preferences. ==================
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-registration'>
-			<legend class='e-hideme'>".PRFLAN_28."</legend>
+			<legend>".PRFLAN_28."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -484,24 +451,21 @@ $text .= "
 				<tbody>
 					<tr>
 						<td class='label'>".PRFLAN_29."</td>
-						<td class='forumheader3'>
-							<input type='radio' class='radio' id='user_reg-1' name='user_reg' value='1'".($pref['user_reg'] ? " checked='checked'" : "")." /><label for='user_reg-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='user_reg-0' name='user_reg' value='0'".(! $pref['user_reg'] ? " checked='checked'" : "")." /><label for='user_reg-0'>".PRFLAN_113."</label>
+						<td class='control'>
+							".$frm->radio_switch('user_reg', $pref['user_reg'])."
 							<div class='smalltext field-help'>".PRFLAN_30."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_141."</td>
-						<td class='forumheader3'>
-							<input type='radio' class='radio' id='xup_enabled-1' name='xup_enabled' value='1'".($pref['xup_enabled'] ? " checked='checked'" : "")." /><label for='xup_enabled-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='xup_enabled-0' name='xup_enabled' value='0'".(! $pref['xup_enabled'] ? " checked='checked'" : "")." /><label for='xup_enabled-0'>".PRFLAN_113."</label>
+						<td class='control'>
+							".$frm->radio_switch('xup_enabled', $pref['xup_enabled'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_154."</td>
-						<td class='forumheader3'>
-							<select name='user_reg_veri' class='tbox select'>
-";
+						<td class='control'>
+							".$frm->select_open('user_reg_veri');
 
 $veri_list[0] = PRFLAN_152;
 $veri_list[1] = PRFLAN_31;
@@ -509,98 +473,95 @@ $veri_list[2] = PRFLAN_153;
 
 foreach($veri_list as $v => $v_title)
 {
-	$sel = ($pref['user_reg_veri'] == $v) ? "selected='selected'" : "";
 	$text .= "
-								<option value='$v' $sel>".$v_title."</option>
+								".$frm->option($v_title, $v, ($pref['user_reg_veri'] == $v))."
 	";
 }
 
 $text .= "
 							</select>
+							<div class='field-help'>".PRFLAN_154a."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_160."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='signup_remote_emailcheck-1' name='signup_remote_emailcheck' value='1'".($pref['signup_remote_emailcheck'] ? " checked='checked'" : "")." /><label for='signup_remote_emailcheck-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='signup_remote_emailcheck-0' name='signup_remote_emailcheck' value='0'".(! $pref['signup_remote_emailcheck'] ? " checked='checked'" : "")." /><label for='signup_remote_emailcheck-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('signup_remote_emailcheck', $pref['signup_remote_emailcheck'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_167."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='disable_emailcheck-1' name='disable_emailcheck' value='1'".($pref['disable_emailcheck'] ? " checked='checked'" : "")." /><label for='disable_emailcheck-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='disable_emailcheck-0' name='disable_emailcheck' value='0'".(! $pref['disable_emailcheck'] ? " checked='checked'" : "")." /><label for='disable_emailcheck-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('disable_emailcheck', $pref['disable_emailcheck'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_32."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='anon_post-1' name='anon_post' value='1'".($pref['anon_post'] ? " checked='checked'" : "")." /><label for='anon_post-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='anon_post-0' name='anon_post' value='0'".(! $pref['anon_post'] ? " checked='checked'" : "")." /><label for='anon_post-0'>".PRFLAN_113."</label>
-							<div class='smalltext field-help'>".PRFLAN_33."</div>
+							".$frm->radio_switch('anon_post', $pref['anon_post'])."
+							<div class='field-help'>".PRFLAN_33."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_45."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='use_coppa-1' name='use_coppa' value='1'".($pref['use_coppa'] ? " checked='checked'" : "")." /><label for='use_coppa-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='use_coppa-0' name='use_coppa' value='0'".(! $pref['use_coppa'] ? " checked='checked'" : "")." /><label for='use_coppa-0'>".PRFLAN_113."</label>
-							<div class='smalltext field-help'>".PRFLAN_46." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".PRFLAN_94."</a></div>
+							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
+							<div class='field-help'>".PRFLAN_46." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".PRFLAN_94."</a></div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_58."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='membersonly_enabled-1' name='membersonly_enabled' value='1'".($pref['membersonly_enabled'] ? " checked='checked'" : "")." /><label for='membersonly_enabled-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='membersonly_enabled-0' name='membersonly_enabled' value='0'".(! $pref['membersonly_enabled'] ? " checked='checked'" : "")." /><label for='membersonly_enabled-0'>".PRFLAN_113."</label>
-							<div class='smalltext field-help'>".PRFLAN_59."</div>
+							".$frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'])."
+							<div class='field-help'>".PRFLAN_59."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".CUSTSIG_16."</td>
 						<td class='control'>
-							<input type='text' class='tbox input-text' size='3' name='signup_pass_len' value='".$pref['signup_pass_len']."' />
-							<div class='smalltext field-help'>".PRFLAN_78."</div>
+							".$frm->text('signup_pass_len', $pref['signup_pass_len'], 2)."
+							<div class='field-help'>".PRFLAN_78."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_136."</td>
 						<td class='control'>
-							<input type='text' class='tbox input-text' size='3' name='signup_maxip' value='".$pref['signup_maxip']."' />
+							".$frm->text('signup_maxip', $pref['signup_maxip'], 3)."
+							<div class='field-help'>".PRFLAN_78."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".CUSTSIG_18."</td>
 						<td class='control'>
-							<textarea class='tbox textarea' name='signup_disallow_text' cols='1' rows='3'>".$pref['signup_disallow_text']."</textarea>
-							<div class='smalltext field-help'>".CUSTSIG_19."</div>
+							".$frm->textarea('signup_disallow_text', $pref['signup_disallow_text'], 3, 1)."
+							<div class='field-help'>".CUSTSIG_19."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_155.":</td>
 						<td class='control'>
-							".r_userclass('displayname_class', $pref['displayname_class'], 'off', 'nobody,public,admin,classes')."
-							<button class='submit' type='submit' name='submit_resetdisplaynames' value='".PRFLAN_156."'><span>".PRFLAN_156."</span></button>
+							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,public,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
+							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_192.":</td>
 						<td class='control'>
-							<input type='text' class='tbox input-text' size='30' name='predefinedLoginName' value='".varset($pref['predefinedLoginName'], '')."' /><br />".PRFLAN_194."
-							<div class='smalltext field-help'>".PRFLAN_193."</div>
+							".$frm->text('predefinedLoginName', $pref['predefinedLoginName'], 50)."
+							<div class='field-help'>".PRFLAN_193."</div>
+							<div class='field-help'>".PRFLAN_194."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_158.":</td>
 						<td class='control'>
-							<input type='text' class='tbox input-text' size='3' name='displayname_maxlength' value='".varset($pref['displayname_maxlength'], 15)."' />
+							".$frm->text('displayname_maxlength', $pref['displayname_maxlength'], 3)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_172.":</td>
 						<td class='control'>
-							<input type='text' class='tbox input-text' size='3' name='loginname_maxlength' value='".varset($pref['loginname_maxlength'], 30)."' />
+							".$frm->text('loginname_maxlength', $pref['loginname_maxlength'], 3)."
 						</td>
 					</tr>
 				</tbody>
@@ -615,7 +576,7 @@ $text .= "
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-signup'>
-			<legend class='e-hideme'>".PRFLAN_19."</legend>
+			<legend>".PRFLAN_19."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -625,24 +586,26 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_126."</td>
 						<td class='control'>
-							<textarea class='tbox textarea' name='signup_text' cols='1' rows='3'>".$pref['signup_text']."</textarea>
+							".$frm->textarea('signup_text', $pref['signup_text'], 3, 1)."
 						</td>
 					</tr>
 
 					<tr>
 						<td class='label'>".PRFLAN_140."</td>
 						<td class='control'>
-							<textarea class='tbox textarea' name='signup_text_after' cols='1' rows='3'>".$pref['signup_text_after']."</textarea>
+							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 3, 1)."
 						</td>
 					</tr>
+";
+
+/*
 					<!--
 					<tr>
 						<td class='label'>".CUSTSIG_13."</td>
 						<td class='control'>".CUSTSIG_14."</td>
 					</tr>
 					-->
-";
-
+*/
 $signup_option_title = array(CUSTSIG_2, CUSTSIG_6, CUSTSIG_7, CUSTSIG_17, CUSTSIG_20);
 $signup_option_names = array("signup_option_realname", "signup_option_signature", "signup_option_image", "signup_option_class", 'signup_option_customtitle');
 
@@ -651,10 +614,10 @@ foreach($signup_option_names as $key => $value)
 	$text .= "
 					<tr>
 						<td class='label'>".$signup_option_title[$key]."</td>
-						<td class='label'>
-							<input type='radio' class='radio' id='{$value}-0' name='{$value}' value='0'".((! $pref[$value]) ? " checked='checked'" : "")." /><label for='{$value}-0'>".CUSTSIG_12."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='{$value}-1' name='{$value}' value='1'".(($pref[$value] == "1") ? " checked='checked'" : "")." /><label for='{$value}-1'>".CUSTSIG_14."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='{$value}-2' name='{$value}' value='2'".(($pref[$value] == "2") ? " checked='checked'" : "")." /><label for='{$value}-2'>".CUSTSIG_15."</label>&nbsp;&nbsp;
+						<td class='control'>
+							".$frm->radio($value, 0, !$pref[$value]).$frm->label(CUSTSIG_12, $value, 0)."&nbsp;&nbsp;
+							".$frm->radio($value, 1, ($pref[$value] == 1)).$frm->label(CUSTSIG_14, $value, 1)."&nbsp;&nbsp;
+							".$frm->radio($value, 2, ($pref[$value] == 2)).$frm->label(CUSTSIG_15, $value, 2)."
 						</td>
 					</tr>
 	";
@@ -672,7 +635,7 @@ $text .= "
 
 /* text render options */
 
-if(! isset($pref['post_html']))
+if(!isset($pref['post_html']))
 {
 	$pref['post_html'] = '250';
 	save_prefs();
@@ -680,7 +643,7 @@ if(! isset($pref['post_html']))
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-textpost'>
-			<legend class='e-hideme'>".PRFLAN_101."</legend>
+			<legend>".PRFLAN_101."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -690,82 +653,77 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_127.":</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='make_clickable-1' name='make_clickable' value='1'".($pref['make_clickable'] ? " checked='checked'" : "")." /><label for='make_clickable-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='make_clickable-0' name='make_clickable' value='0'".(! $pref['make_clickable'] ? " checked='checked'" : "")." /><label for='make_clickable-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('make_clickable', $pref['make_clickable'])."
 							<div class='smalltext field-help'>".PRFLAN_128."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_102."?:</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='link_replace-1' name='link_replace' value='1'".($pref['link_replace'] ? " checked='checked'" : "")." /><label for='link_replace-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='link_replace-0' name='link_replace' value='0'".(! $pref['link_replace'] ? " checked='checked'" : "")." /><label for='link_replace-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('link_replace', $pref['link_replace'])."
 							<div class='smalltext field-help'>".PRFLAN_103."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_145."?:</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='links_new_window-1' name='links_new_window' value='1'".($pref['links_new_window'] ? " checked='checked'" : "")." /><label for='links_new_window-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='links_new_window-0' name='links_new_window' value='0'".(! $pref['links_new_window'] ? " checked='checked'" : "")." /><label for='links_new_window-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('links_new_window', $pref['links_new_window'])."
 							<div class='smalltext field-help'>".PRFLAN_146."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_104.":</td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='link_text' size='50' value='".$tp->post_toForm($pref['link_text'])."' maxlength='200' />
+							".$frm->text('link_text', $pref['link_text'], 200)."
 							<div class='smalltext field-help'>".PRFLAN_105."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_107.":</td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='email_text' size='50' value='".$tp->post_toForm($pref['email_text'])."' maxlength='200' />
+							".$frm->text('email_text', $tp->post_toForm($pref['email_text']), 200)."
 							<div class='smalltext field-help'>".PRFLAN_108."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_109.":</td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='main_wordwrap' size='5' value='".$pref['main_wordwrap']."' maxlength='3' />
+							".$frm->text('main_wordwrap', $pref['main_wordwrap'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_110."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_111.":</td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='menu_wordwrap' size='5' value='".$pref['menu_wordwrap']."' maxlength='3' />
+							".$frm->text('menu_wordwrap', $pref['menu_wordwrap'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_110."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_116.":</td>
 						<td class='control'>
-							".r_userclass('post_html', $pref['post_html'], 'off', 'nobody,public,member,admin,main,classes')."
+							".$e_userclass->uc_dropdown('post_html', $pref['post_html'], 'nobody,public,member,admin,main,classes', "tabindex='".$frm->getNext()."'")."
 							<div class='smalltext field-help'>".PRFLAN_117."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_122.":</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='wysiwyg-1' name='wysiwyg' value='1'".($pref['wysiwyg'] ? " checked='checked'" : "")." /><label for='wysiwyg-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='wysiwyg-0' name='wysiwyg' value='0'".(! $pref['wysiwyg'] ? " checked='checked'" : "")." /><label for='wysiwyg-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('wysiwyg', $pref['wysiwyg'])."
 							<div class='smalltext field-help'>".PRFLAN_123."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_124.":</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='old_np-1' name='old_np' value='1'".($pref['old_np'] ? " checked='checked'" : "")." /><label for='old_np-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='old_np-0' name='old_np' value='0'".(! $pref['old_np'] ? " checked='checked'" : "")." /><label for='old_np-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('old_np', $pref['old_np'])."
 							<div class='smalltext field-help'>".PRFLAN_125."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_131.":</td>
 						<td class='control'>
-							".r_userclass('php_bbcode', $pref['php_bbcode'], 'off', 'nobody,admin,main,classes')."
+							".$e_userclass->uc_dropdown('php_bbcode', $pref['php_bbcode'], 'nobody,admin,main,classes', "tabindex='".$frm->getNext()."'")."
 							<div class='smalltext field-help'>".PRFLAN_132."</div>
 						</td>
 					</tr>
@@ -777,15 +735,14 @@ if(file_exists(e_PLUGIN."geshi/geshi.php"))
 					<tr>
 						<td class='label'>".PRFLAN_118."?:</div></td>
 						<td class='control'>
-							<input type='radio' class='radio' id='useGeshi-1' name='useGeshi' value='1'".($pref['useGeshi'] ? " checked='checked'" : "")." /><label for='useGeshi-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='useGeshi-0' name='useGeshi' value='0'".(! $pref['useGeshi'] ? " checked='checked'" : "")." /><label for='useGeshi-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('useGeshi', $pref['useGeshi'])."
 							<div class='smalltext field-help'>".PRFLAN_119."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_120."?:</td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='defaultLanGeshi' size='10' value='".($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : "php")."' maxlength='20' />
+							".$frm->text('defaultLanGeshi', ($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : "php"), 20)."
 							<div class='smalltext field-help'>".PRFLAN_121."</div>
 						</td>
 					</tr>
@@ -816,7 +773,7 @@ $hasGD = extension_loaded("gd");
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-security'>
-			<legend class='e-hideme'>".PRFLAN_47."</legend>
+			<legend>".PRFLAN_47."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -825,8 +782,10 @@ $text .= "
 				<tbody>
 					<tr>
 						<td class='label'>".PRFLAN_60."</td>
-						<td class='control'>".multi_radio('ssl_enabled', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['ssl_enabled'])."
-							<div class='smalltext field-help'>".PRFLAN_61."</div>
+
+						<td class='control'>
+							".$frm->radio_switch('ssl_enabled', $pref['ssl_enabled'])."
+							<div class='field-help'>".PRFLAN_61."</div>
 						</td>
 					</tr>
 					<tr>
@@ -836,7 +795,7 @@ $text .= "
 
 if($hasGD)
 {
-	$text .= multi_radio('signcode', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['signcode']);
+	$text .= $frm->radio_switch('signcode', $pref['signcode']);
 }
 else
 {
@@ -852,7 +811,7 @@ $text .= "
 
 if($hasGD)
 {
-	$text .= multi_radio('logcode', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['logcode']);
+	$text .= $frm->radio_switch('logcode', $pref['logcode']);
 }
 else
 {
@@ -867,7 +826,7 @@ $text .= "
 ";
 if($hasGD)
 {
-	$text .= multi_radio('fpwcode', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['fpwcode']);
+	$text .= $frm->radio_switch('fpwcode', $pref['fpwcode']);
 }
 else
 {
@@ -879,48 +838,51 @@ $text .= "
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_92.": </td>
-						<td class='control'>".multi_radio('user_reg_secureveri', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['user_reg_secureveri'])."
+						<td class='control'>
+							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_129.":</td>
-						<td class='control'>".multi_radio('disallowMultiLogin', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['disallowMultiLogin'])."
+						<td class='control'>
+							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>".PRFLAN_130."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_184.":</td>
-						<td class='control'>".multi_radio('allowEmailLogin', array('1' => PRFLAN_186, '0' => PRFLAN_187), varset($pref['allowEmailLogin'], 0))."
+						<td class='control'>
+							".$frm->radio_switch('allowEmailLogin', $pref['allowEmailLogin'], LAN_YES, LAN_NO)."
 							<div class='smalltext field-help'>".PRFLAN_185."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_48.":</td>
-						<td class='control'>".multi_radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])."
-							<br />
-							".PRFLAN_55.": <input class='tbox input-text' type='text' name='cookie_name' size='20' value='".$pref['cookie_name']."' maxlength='20' />
+						<td class='control'>
+							<div class='field-spacer'>".$frm->radio_multi('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), $pref['user_tracking'])."</div>
+							".PRFLAN_55.": <br />".$frm->text('cookie_name', $pref['cookie_name'], 20)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_188.":</td>
-						<td class='control'>".multi_radio('passwordEncoding', array('0' => PRFLAN_189, '1' => PRFLAN_190), varset($pref['passwordEncoding'], 0))."
+						<td class='control'>
+							".$frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189)."
 							<div class='smalltext field-help'>".PRFLAN_191."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_178."</td>
 						<td class='control'>
-							<select name='password_CHAP' class='tbox select'>
-";
+							".$frm->select_open('password_CHAP');
+//TODO - user tracking session name - visible only if Cookie is enabled (JS)
 $CHAP_list[0] = PRFLAN_180;
 $CHAP_list[1] = PRFLAN_181;
 $CHAP_list[2] = PRFLAN_182;
 
 foreach($CHAP_list as $ab => $ab_title)
 {
-	$sel = ($pref['password_CHAP'] == $ab) ? "selected='selected'" : "";
 	$text .= "
-								<option value='$ab' $sel>".$ab_title."</option>
+								".$frm->option($ab_title, $ab, ($pref['password_CHAP'] == $ab))."
 	";
 }
 
@@ -931,62 +893,66 @@ $text .= "
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_40."</td>
-						<td class='control'>".multi_radio('profanity_filter', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['profanity_filter'])."
+						<td class='control'>
+							".$frm->radio_switch('profanity_filter', $pref['profanity_filter'])."
 							<div class='smalltext field-help'>".PRFLAN_41."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_42.":</td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='profanity_replace' size='30' value='".$pref['profanity_replace']."' maxlength='20' />
+							".$frm->text('profanity_replace', $pref['profanity_replace'], 20)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_43.":</td>
 						<td class='control'>
-							<textarea class='tbox textarea' name='profanity_words' cols='59' rows='2'>".$pref['profanity_words']."</textarea>
-							<br />".PRFLAN_44."
+							".$frm->textarea('profanity_words', $pref['profanity_words'], 2, 59)."
+							<div class='field-help'>".PRFLAN_44."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_35.":</td>
-						<td class='control'>".multi_radio('antiflood1', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['antiflood1'])."
+						<td class='control'>
+							".$frm->radio_switch('antiflood1', $pref['antiflood1'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_36.":</td>
 						<td class='control'>
-							<input class='tbox input-text' type='text' name='antiflood_timeout' size='3' value='".$pref['antiflood_timeout']."' maxlength='3' />
+							".$frm->text('antiflood_timeout', $pref['antiflood_timeout'], 3)."
 							<div class='smalltext field-help'>".PRFLAN_38."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_37."</td>
 						<td class='control'>
-							<select name='autoban' class='tbox select'>
-";
+							".$frm->select_open('autoban');
 
-$autoban_list[0] = PRFLAN_113;
-$autoban_list[1] = PRFLAN_144;
-$autoban_list[2] = PRFLAN_142;
-$autoban_list[3] = PRFLAN_143;
+$autoban_list = array(
+	PRFLAN_113,
+	PRFLAN_144,
+	PRFLAN_142,
+	PRFLAN_143
+);
 
 foreach($autoban_list as $ab => $ab_title)
 {
 	$sel = ($pref['autoban'] == $ab) ? "selected='selected'" : "";
 	$text .= "
-								<option value='$ab' $sel>".$ab_title."</option>
+								".$frm->option($ab_title, $ab, ($pref['autoban'] == $ab))."
 	";
 }
 
 $text .= "
 							</select>
-							<div class='smalltext field-help'>".PRFLAN_91."</div>
+							<div class='field-help'>".PRFLAN_91."</div>
 						</td>
 					</tr>
 					<tr>
-						<td class='forumheader3'>".PRFLAN_139.":</td>
-						<td class='control'>".multi_radio('adminpwordchange', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['adminpwordchange'])."
+						<td class='label'>".PRFLAN_139.":</td>
+						<td class='control'>
+							".$frm->radio_switch('adminpwordchange', $pref['adminpwordchange'])."
 						</td>
 					</tr>
 				</tbody>
@@ -997,7 +963,7 @@ $text .= "
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-comments'>
-			<legend class='e-hideme'>".PRFLAN_87."</legend>
+			<legend>".PRFLAN_87."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -1007,36 +973,31 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_89.": </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='comments_icon-1' name='comments_icon' value='1'".($pref['comments_icon'] ? " checked='checked'" : "")." /><label for='comments_icon-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='comments_icon-0' name='comments_icon' value='0'".(! $pref['comments_icon'] ? " checked='checked'" : "")." /><label for='comments_icon-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('comments_icon', $pref['comments_icon'], LAN_YES, LAN_NO)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_88.": </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='nested_comments-1' name='nested_comments' value='1'".($pref['nested_comments'] ? " checked='checked'" : "")." /><label for='nested_comments-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='nested_comments-0' name='nested_comments' value='0'".(! $pref['nested_comments'] ? " checked='checked'" : "")." /><label for='nested_comments-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('nested_comments', $pref['nested_comments'], LAN_YES, LAN_NO)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_90.": </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='allowCommentEdit-1' name='allowCommentEdit' value='1'".($pref['allowCommentEdit'] ? " checked='checked'" : "")." /><label for='allowCommentEdit-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='allowCommentEdit-0' name='allowCommentEdit' value='0'".(! $pref['allowCommentEdit'] ? " checked='checked'" : "")." /><label for='allowCommentEdit-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('allowCommentEdit', $pref['allowCommentEdit'], LAN_YES, LAN_NO)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_161.": </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='comments_disabled-1' name='comments_disabled' value='1'".($pref['comments_disabled'] ? " checked='checked'" : "")." /><label for='comments_disabled-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='comments_disabled-0' name='comments_disabled' value='0'".(! $pref['comments_disabled'] ? " checked='checked'" : "")." /><label for='comments_disabled-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('comments_disabled', $pref['comments_disabled'], LAN_YES, LAN_NO)."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_166.": </td>
 						<td class='control'>
-							<input type='radio' class='radio' id='comments_emoticons-1' name='comments_emoticons' value='1'".($pref['comments_emoticons'] ? " checked='checked'" : "")." /><label for='comments_emoticons-1'>".PRFLAN_112."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='comments_emoticons-0' name='comments_emoticons' value='0'".(! $pref['comments_emoticons'] ? " checked='checked'" : "")." /><label for='comments_emoticons-0'>".PRFLAN_113."</label>
+							".$frm->radio_switch('comments_emoticons', $pref['comments_emoticons'], LAN_YES, LAN_NO)."
 						</td>
 					</tr>
 				</tbody>
@@ -1048,7 +1009,7 @@ $text .= "
 //Advanced Features
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-advanced'>
-			<legend class='e-hideme'>".PRFLAN_149."</legend>
+			<legend>".PRFLAN_149."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -1057,20 +1018,44 @@ $text .= "
 				<tbody>
 					<tr>
 						<td class='label'>".PRFLAN_147.":</td>
-						<td class='control'>".multi_radio('developer', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['developer'])."
+						<td class='control'>
+							".$frm->radio_switch('developer', $pref['developer'])."
 							<div class='smalltext field-help'>".PRFLAN_148."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_196."</td>
-						<td class='control'>".multi_radio('log_page_accesses', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['log_page_accesses'])."
+						<td class='control'>
+						".$frm->radio_switch('log_page_accesses', $pref['log_page_accesses'])."
+						<div class='field-help'>".PRFLAN_196a."<br /><strong>".e_FILE_ABS."logs/</strong></div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_17."</td>
-						<td class='control'>".multi_radio('compress_output', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['compress_output'])."
+						<td class='control'>
+							".$frm->radio_switch('compress_output', $pref['compress_output'])."
 						</td>
 					</tr>
+";
+
+$auth_dropdown = '';
+if($authlist)
+{
+	$auth_dropdown = $frm->select_open('auth_method');
+	foreach($authlist as $a)
+	{
+		$s = ($pref['auth_method'] == $a ? " selected='selected' " : "");
+		$auth_dropdown .= $frm->option($a, $s, ($pref['auth_method'] == $a));
+	}
+	$auth_dropdown .= "</select>";
+}
+else
+{
+	$auth_dropdown = "<input type='hidden' name='auth_method' value='' />".PRFLAN_151;
+	$pref['auth_method'] = "";
+}
+
+$text .= "
 					<tr>
 						<td class='label'>".PRFLAN_150."</td>
 						<td class='control'>
@@ -1079,7 +1064,8 @@ $text .= "
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_173."</td>
-						<td class='control'>".multi_radio('check_updates', array('1' => PRFLAN_112, '0' => PRFLAN_113), $pref['check_updates'])."
+						<td class='control'>
+							".$frm->radio_switch('check_updates', $pref['check_updates'])."
 						</td>
 					</tr>
 				</tbody>

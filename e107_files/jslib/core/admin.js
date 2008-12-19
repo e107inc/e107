@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-18 16:55:46 $
+ * $Revision: 1.7 $
+ * $Date: 2008-12-19 14:01:07 $
  * $Author: secretr $
  * 
 */
@@ -36,15 +36,16 @@ e107Admin.Helper = {
 	 * Do it only ONCE per page!
 	 * 
 	 */
-	init: function() {
+	init: function(event) {
 		this.toggleCheckedHandler = this.toggleChecked.bindAsEventListener(this);
 		this.allCheckedEventHandler = this.allChecked.bindAsEventListener(this);
 		this.allUncheckedEventHandler = this.allUnchecked.bindAsEventListener(this);
-	
-		$$('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
-		$$('button.action[name=check_all]').invoke('observe', 'click', this.allCheckedEventHandler);
-		$$('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
-		$$('button.delete', 'input.delete[type=image]', 'a.delete').invoke('observe', 'click', function(e) { 
+		element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+		
+		element.select('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
+		element.select('button.action[name=check_all]').invoke('observe', 'click', this.allCheckedEventHandler);
+		element.select('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
+		element.select('button.delete', 'input.delete[type=image]', 'a.delete').invoke('observe', 'click', function(e) {
 			if(e.element().hasClassName('no-confirm') || (e.element().readAttribute('rel') &&  e.element().readAttribute('rel').toLowerCase == 'no-confirm')) return;
 			var msg = e.element().readAttribute('title') || e107.getModLan('delete_confirm');
 			if( !e107Helper.confirm(msg) ) e.stop(); 
@@ -80,8 +81,6 @@ e107Admin.Helper = {
 		//do nothing if checkbox/form element or link is clicked
 		var tmp = event.element().nodeName.toLowerCase(); 
 		if(tmp == 'input' || tmp == 'a' || tmp == 'select' || tmp == 'textarea' || tmp == 'radio') return;
-		//stop event
-		//event.stop();
 		
 		//checkbox container element
 		var element = event.findElement('.autocheck'), check = null;
@@ -183,56 +182,68 @@ e107Admin.AdminMenu = {
 		if(this._track.get(id) || !selection) return false;
 
 		this._track.set(id, selection);
+		this.id = id;
 		this.location = document.location.hash.substring(1);
 		this.activeTab = null;
 		this.activeBar = null;
 		if(this.location) {
-			this.activeTab = $(this.location);
+			replace = new RegExp(this.id.camelize() + 'AdminMenu=');
+			this.activeTab = $(this.location.replace(replace, '')); 
 			if(this.activeTab) {
-				this.activeTab.show();
+				this.activeTab.removeClassName('e-hideme').show();
 			}
 		}
 		
 		selection.each( function(element, i) {
-			if(0 === i && !this.activeTab) { //no page hash
-				
-				if(!this.activeTab) {
-					var check = element.select('a[href^=#]:not([href=#])'); 
-					if(check[0]) {
-						this.switchTab(check[0].hash.substr(1), element);
-					}
+			var check = element.select('a[href^=#]:not([href=#])'); 
+			if(!this.activeTab) { //no page hash, set default
+				if(check[0]) {
+					this.switchTab(check[0].hash.substr(1), check[0], element);
 				}
-			} else if(!this.activeBar && this.activeTab) {//there is page hash
-				var h = this.activeTab;
-				this.activeBar = element.select('a[href^=#]:not([href=#])').find( function(el){
-					return h = el.hash.substr(1);
-				});
+			} else if(!this.activeBar && this.activeTab) {//there is page hash, bar is unknown
+				var h = this.activeTab.identify();
+				var bar = check.find( function(el){
+					return h == el.hash.substr(1);
+				}); 
+				this.switchTab(this.activeTab, bar, element);
 			}
-			element.select('a[href^=#]:not([href=#])').invoke('observe', 'click', this.observe.bindAsEventListener(this, element));
+			check.invoke('observe', 'click', this.observer.bindAsEventListener(this, element));
 		}.bind(this));
 		
+		//search for admin-menu forms
+		$$('form.admin-menu').invoke('observe', 'submit', function(event) { var form = event.element(); action = form.readAttribute('action') + document.location.hash; form.writeAttribute('action', action) } );
 		return true;
 	},
 
-	switchTab: function(show, container) {
+	switchTab: function(show, bar, container) {
 		show = $(show); 
 		if(!show) return false;
 		if(this.activeTab && this.activeTab.identify() != show.identify()) {
-			 //console.log(this.activeTab , container, this.activeTab.identify(), show.identify());
-			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active');
-			this.activeTab.hide().removeClassName('link-active');
-			this.activeTab = show.show().addClassName('link-active');
-		} else if(!this.activeTab) {
-			//init
-			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active');
-			this.activeTab = show.show().addClassName('link-active');
+			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active').invoke('addClassName', 'link');
+			this.activeTab.hide();
+			this.activeTab = show;
+			this.activeTab.removeClassName('e-hideme').show();
+			if(bar) this.activeBar = bar;
+			this.activeBar.removeClassName('link').addClassName('link-active');
+			return true;
+		} else if(!this.activeTab) { //init
+			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active').invoke('addClassName', 'link');
+			this.activeTab = show.removeClassName('e-hideme').show(); 
+			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
+			return true;
+		} else if(!this.activeBar && this.activeTab) {//only bar is unknown
+			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active').invoke('addClassName', 'link');
+			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
+			return true;
 		}
-		return true;
+		return false;
 	},
 
-	observe: function(event, cont) {
-		if(this.switchTab(event.element().hash.substr(1)), cont)
+	observer: function(event, cont) {
+		if(this.switchTab(event.element().hash.substr(1), event.element(), cont)) {
 			event.stop();
+			document.location.hash = this.id.camelize() + 'AdminMenu=' + event.element().hash.substr(1)
+		}
 	},
 
 	_track: $H()
