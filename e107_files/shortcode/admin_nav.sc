@@ -1,7 +1,7 @@
 
 /*
 * e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: admin_nav.sc,v 1.7 2008-12-18 16:55:46 secretr Exp $
+* $Id: admin_nav.sc,v 1.8 2008-12-19 14:01:07 secretr Exp $
 */
 if (ADMIN)
 {
@@ -44,8 +44,8 @@ if (ADMIN)
 	if ($nav_sql -> db_Select("plugin", "*", "plugin_installflag=1"))
 	{
 		$tmp = array();
-		$e107_var['plugs']['text'] = ADLAN_95;
-		$e107_var['plugs']['link'] = '';
+		$e107_var['plugm']['text'] = ADLAN_95;
+		$e107_var['plugm']['link'] = '';
 
 		/* SUBLINKS */
 		//Link Plugin Manager

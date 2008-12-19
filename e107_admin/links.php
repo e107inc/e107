@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.17 $
- * $Date: 2008-12-16 11:05:36 $
+ * $Revision: 1.18 $
+ * $Date: 2008-12-19 14:01:07 $
  * $Author: secretr $
  *
 */
@@ -30,7 +30,7 @@ if(!is_object($tp))
 // ----- Presets.----------
 require_once (e_HANDLER."preset_class.php");
 $pst = new e_preset();
-$pst->form = "linkform";
+$pst->form = "core-links-edit-form";
 $pst->page = "links.php?create";
 $pst->id = "admin_links";
 require_once ('auth.php');

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.23 $
-|   $Date: 2008-12-18 16:55:45 $
+|   $Revision: 1.24 $
+|   $Date: 2008-12-19 14:01:07 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -325,8 +325,26 @@ if ($e107_popup != 1) {
 $ns = new e107table;
 $e107_var = array();
 
-
-function e_admin_menu($title, $active_page, $e107_vars, $tmpl = FALSE, $sub_link = FALSE, $sortlist = FALSE)
+/**
+ * Build admin menus - addmin menus are now supporting unlimitted number of submenus
+ *
+ * $e107_vars structure:
+ * $e107_vars['action']['text'] -> link title
+ * $e107_vars['action']['link'] -> if empty '#action' will be added as href attribute
+ * $e107_vars['action']['perm'] -> permissions
+ * $e107_vars['action']['include'] -> additional <a> tag attributes
+ * $e107_vars['action']['sub'] -> (new) array, exactly the same as $e107_vars' first level e.g. $e107_vars['action']['sub']['action2']['link']...
+ * $e107_vars['action']['sort'] -> (new) used only if found in 'sub' array - passed as last parameter (recursive call)
+ *
+ * @param string $title
+ * @param string $active_page
+ * @param array $e107_vars
+ * @param array $tmpl
+ * @param array $sub_link
+ * @param bool $sortlist
+ * @return string parsed admin menu (or empty string if title is empty)
+ */
+function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = array(), $sortlist = false)
 {
 	global $E_ADMIN_MENU, $e107;
 	if(!$tmpl) $tmpl = $E_ADMIN_MENU;
@@ -435,13 +453,15 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = FALSE, $sub_link
 
 
 	$e107->ns->tablerender($title, $text, array('id' => $id, 'style' => 'button_menu'));
+	return '';
 }
 
 if (!function_exists('show_admin_menu')) {
 	function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE) {
+
+		return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
+		/*
 		global $ns, $BUTTON, $BUTTON_OVER, $BUTTONS_START, $BUTTONS_END, $SUB_BUTTON, $SUB_BUTTON_OVER, $SUB_BUTTONS_START, $SUB_BUTTONS_END;
-		e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
-		return;
 
 		$id_title = "yop_".str_replace(" ", "", $title);
 		if (!isset($BUTTONS_START)) {
@@ -532,7 +552,7 @@ if (!function_exists('show_admin_menu')) {
 			return $text;
 		} else {
 			$ns -> tablerender($title, $text, array('id' => $id_title, 'style' => 'button_menu'));
-		}
+		}*/
 	}
 }
 

@@ -9,8 +9,8 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-18 16:55:45 $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-19 14:01:07 $
  * $Author: secretr $
  *
 */
@@ -68,18 +68,17 @@ $ADMIN_FOOTER = "
 
 						{SETSTYLE=admin_menu}
 						{ADMIN_MENU}
-						{ADMIN_NAV}
-						{SETSTYLE=none}
+						{ADMIN_PRESET}
 
+						{SETSTYLE=none}
 						{ADMIN_PWORD}
 						{ADMIN_STATUS=request}
 						{ADMIN_LATEST=request}
 						{ADMIN_LOG=request}
 						{ADMIN_MSG}
 						{ADMIN_PLUGINS}
-
-						{ADMIN_PRESET}
 						{ADMIN_UPDATE}
+
 						{SETSTYLE=site_info}
 						{ADMIN_HELP}
 					</div>
@@ -93,9 +92,9 @@ $ADMIN_FOOTER = "
 </div>
 ";
 
-/* REEDIT
+/* NEW ADMIN MENU TEMPLATE
 
- * function show_admin_menu() in e107_admin/header.php
+ * see function e_admin_menu() in e107_admin/header.php
 
 */
 $E_ADMIN_MENU['start'] = '

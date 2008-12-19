@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-17 11:12:44 $
+ * $Revision: 1.11 $
+ * $Date: 2008-12-19 14:01:07 $
  * $Author: secretr $
  *
 */
@@ -113,6 +113,27 @@ class e_form
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		$options = $this->format_options('radio', $name, $options);
 		return "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
+
+	}
+
+	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '')
+	{
+		return $this->radio($name, 1, $checked_enabled)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
+			".$this->radio($name, 0, !$checked_enabled)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0);
+
+	}
+
+	function radio_multi($name, $elements, $checked)
+	{
+		$text = array();
+		if(is_string($elements)) parse_str($elements, $elements);
+
+		foreach ($elements as $value => $label)
+		{
+			$text[] = $this->radio($name, $value, $checked == $value)."".$this->label($label, $name, $value);
+		}
+
+		return implode("&nbsp;&nbsp;\n", $text);
 
 	}
 

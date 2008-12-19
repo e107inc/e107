@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-11-23 22:49:47 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2008-12-19 14:01:07 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,7 +71,7 @@ define("PRFLAN_56", "Timezone");
 define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
 define("PRFLAN_60", "Enable SSL");
-define("PRFLAN_61", "Only enable SSL if <b>you are sure you know what you are doing!</b>");
+define("PRFLAN_61", "Only enable SSL if <span class='error'>you are sure you know what you are doing!</span>");
 define("PRFLAN_76", "Enable Image-code verification during signup");
 define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
@@ -162,7 +162,7 @@ define("PRFLAN_151", "e107 - No alternate authentication methods installed");
 define("PRFLAN_31", "Email Verification");
 define("PRFLAN_152", "No Verification");
 define("PRFLAN_153", "Admin Approval");
-define("PRFLAN_154", "New user verification method <br />If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");
+define("PRFLAN_154", "New user verification method");
 define("PRFLAN_155", "Display name and login name may be different for");
 define("PRFLAN_156", "Reset ALL Display Names");
 define("PRFLAN_157", "All Display Names have been reset to the Username");
@@ -181,7 +181,7 @@ define("PRFLAN_169", "If the chosen group contains more than one person, the use
 //define("PRFLAN_170", "Use reverse DNS to allow host banning");
 //define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
 define("PRFLAN_172", "Login Name maximum length (10..100)");
-define("PRFLAN_173", "Check at SourceForge for E107 updates once/day");
+define("PRFLAN_173", "Check at SourceForge for e107 updates once/day");
 define("PRFLAN_174", "Name for responses to emails from site");
 define("PRFLAN_175", "This will appear in the 'From' field of registration and other emails from this site");
 define("PRFLAN_176", "Email address for emails from site");
@@ -202,10 +202,12 @@ define('PRFLAN_190', 'Salted');
 define('PRFLAN_191', '(md5 is usually adequate for an Intranet, and often for other sites)');
 define('PRFLAN_192', 'Generate random predefined login names according to a pattern');
 define('PRFLAN_193', 'To allow users to set their own login names, leave blank');
-define('PRFLAN_194', '# - alpha<br />. - numeric<br />* - alphanumeric<br />Other chars used as entered');
+define('PRFLAN_194', '# - alpha<br />. - numeric<br />* - alphanumeric<br />Other chars used as entered.');
 define('PRFLAN_195', 'Changed values:');
-define('PRFLAN_196', 'Log all page accesses to the '.e_FILE_ABS.'logs/ directory');
-define('PRFLAN_197', '');
+define('PRFLAN_196', 'Log all page accesses');
+//define('PRFLAN_197', '');
 
-
+//0.8
+define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");
+define('PRFLAN_196a', 'Log directory:');
 ?>
