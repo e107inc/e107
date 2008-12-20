@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-11-21 16:40:48 $
-|     $Author: secretr $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-20 20:26:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -43,11 +43,11 @@ $EXTENDED_CATEGORY_END = "";
  */
 $USER_SHORT_TEMPLATE_START = "
 	<div class='content user-list'>
-	<div class='center'>".LAN_138." {TOTAL_USERS}
+	<div class='center'>".LAN_USER_56." {TOTAL_USERS}
 	<br />
 	<br />
 	{USER_FORM_START}
-	<p>".LAN_419.": {USER_FORM_RECORDS} ".LAN_139." {USER_FORM_ORDER}
+	<p>".LAN_USER_70.": {USER_FORM_RECORDS} ".LAN_USER_57." {USER_FORM_ORDER}
 	{USER_FORM_SUBMIT}
 	</p>
 	{USER_FORM_END}
@@ -58,9 +58,9 @@ $USER_SHORT_TEMPLATE_START = "
 	<thead>
 	<tr>
 	<td class='fcaption' style='width:2%'>&nbsp;</td>
-	<td class='fcaption' style='width:20%'>".LAN_142."</td>
-	<td class='fcaption' style='width:20%'>".LAN_112."</td>
-	<td class='fcaption' style='width:20%'>".LAN_145."</td>
+	<td class='fcaption' style='width:20%'>".LAN_USER_58."</td>
+	<td class='fcaption' style='width:20%'>".LAN_USER_60."</td>
+	<td class='fcaption' style='width:20%'>".LAN_USER_59."</td>
 	</tr>
 	</thead>
 	<tbody>
@@ -92,7 +92,7 @@ $sc_style['USER_FORUM_LINK']['post'] = "</td></tr>";
 $sc_style['USER_UPDATE_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3 center'>";
 $sc_style['USER_UPDATE_LINK']['post'] = "</td></tr>";
 
-$sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>".LAN_406."</div><div class='f-right'>";
+$sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>".LAN_USER_61."</div><div class='f-right'>";
 $sc_style['USER_RATING']['post'] = "</div></td></tr>";
 
 $sc_style['USER_LOGINNAME']['pre'] = " : ";
@@ -111,7 +111,7 @@ else
 }
 
 $sc_style['USER_SENDPM']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>";
-$sc_style['USER_SENDPM']['post'] = "</div><div class='f-right'>".LAN_425."</div></td></tr>";
+$sc_style['USER_SENDPM']['post'] = "</div><div class='f-right'>".LAN_USER_62."</div></td></tr>";
 
 // Determine which other bits are installed; let photo span those rows (can't do signature - will vary with user)
 $span = 4;
@@ -125,33 +125,33 @@ $USER_FULL_TEMPLATE = "
 <div class='content user'>
 <table style='".USER_WIDTH."' class='fborder'>
 <tr>
-	<td colspan='2' class='fcaption center'>".LAN_142." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
+	<td colspan='2' class='fcaption center'>".LAN_USER_58." {USER_ID} : {USER_NAME}{USER_LOGINNAME}</td>
 </tr>
 <tr>
 	{$user_picture}
 	<td {$main_colspan} class='forumheader3'>
-		<div class='f-left'>{USER_REALNAME_ICON} ".LAN_308."</div>
+		<div class='f-left'>{USER_REALNAME_ICON} ".LAN_USER_63."</div>
 		<div class='f-right right'>{USER_REALNAME}</div>
 	</td>
 </tr>
 
 <tr>
 	<td  {$main_colspan} class='forumheader3'>
-		<div class='f-left'>{USER_EMAIL_ICON} ".LAN_112."</div>
+		<div class='f-left'>{USER_EMAIL_ICON} ".LAN_USER_60."</div>
 		<div class='f-right right'>{USER_EMAIL_LINK}</div>
 	</td>
 </tr>
 
 <tr>
 	<td  {$main_colspan} class='forumheader3'>
-		<div class='f-left'>".LAN_406.":</div>
+		<div class='f-left'>".LAN_USER_61.":</div>
 		<div class='f-right right'>{USER_LEVEL}</div>
 	</td>
 </tr>
 
 <tr>
 	<td  {$main_colspan} class='forumheader3'>
-		<div class='f-left'>".LAN_404.":&nbsp;&nbsp;</div>
+		<div class='f-left'>".LAN_USER_65.":&nbsp;&nbsp;</div>
 		<div class='f-right right'>{USER_LASTVISIT}<br />{USER_LASTVISIT_LAPSE}</div>
 	</td>
 </tr>
@@ -160,32 +160,32 @@ $USER_FULL_TEMPLATE = "
 {USER_SIGNATURE}
 {USER_EXTENDED_ALL}
 <tr>
-	<td colspan='2' class='forumheader'>".LAN_403."</td>
+	<td colspan='2' class='forumheader'>".LAN_USER_64."</td>
 </tr>
 
 <tr>
-	<td style='width:30%' class='forumheader3'>".LAN_145."</td>
+	<td style='width:30%' class='forumheader3'>".LAN_USER_59."</td>
 	<td style='width:70%' class='forumheader3'>{USER_JOIN}<br />{USER_DAYSREGGED}</td>
 </tr>
 
 <tr>
-	<td style='width:30%' class='forumheader3'>".LAN_147."</td>
+	<td style='width:30%' class='forumheader3'>".LAN_USER_67."</td>
 	<td style='width:70%' class='forumheader3'>{USER_CHATPOSTS} ( {USER_CHATPER}% )</td>
 </tr>
 
 <tr>
-	<td style='width:30%' class='forumheader3'>".LAN_148."</td>
+	<td style='width:30%' class='forumheader3'>".LAN_USER_68."</td>
 	<td style='width:70%' class='forumheader3'>{USER_COMMENTPOSTS} ( {USER_COMMENTPER}% )</td>
 </tr>
 {USER_COMMENTS_LINK}
 
 <tr>
-	<td style='width:30%' class='forumheader3'>".LAN_149."</td>
+	<td style='width:30%' class='forumheader3'>".LAN_USER_69."</td>
 	<td style='width:70%' class='forumheader3'>{USER_FORUMPOSTS} ( {USER_FORUMPER}% )</td>
 </tr>
 {USER_FORUM_LINK}
 <tr>
-	<td style='width:30%' class='forumheader3'>".LAN_146."</td>
+	<td style='width:30%' class='forumheader3'>".LAN_USER_66."</td>
 	<td style='width:70%' class='forumheader3'>{USER_VISITS}</td>
 </tr>
 {USER_EMBED_USERPROFILE}
