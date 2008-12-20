@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-20 00:55:29 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-20 04:51:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -229,6 +229,100 @@ function step3()
 	
 }
 
+function step4()
+{
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 4: Move user specific forum data';
+	if(!isset($_POST['move_user_data']))
+	{
+		$text = "
+		This step will move the user_viewed data from user table into the user extended table.<br />
+		The user_forum field data will not be moved, as it will be recalculated later.<br />
+		<br />
+		Depending on the size of your user table, this step could take a while.
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='move_user_data' value='Proceed with user data move' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+	$result = array(
+	'usercount' => 0,
+	'viewcount' => 0,
+	'trackcount' => 0
+	);
+	$db = new db;
+	if($db->db_Select('user', 'user_id, user_viewed, user_realm',"user_viewed != '' OR user_realm != ''"))
+	{
+		require_once(e_HANDLER.'user_extended_class.php');
+		$ue = new e107_user_extended;
+		
+		while($row = $db->db_Fetch(MYSQL_ASSOC))
+		{
+			$result['usercount']++;
+			$userId = (int)$row['user_id'];
+
+			$viewed = $row['user_viewed'];
+			$viewed = trim($viewed, '.');
+			$tmp = preg_split('#\.+#', $viewed);
+			$viewed = implode(',', $tmp);
+			
+			
+			$realm = $row['user_realm'];
+			$realm - str_replace('USERREALM', '', $realm);
+			$realm = trim($realm, '-.');
+			$trackList = preg_split('#\D+#', $realm);
+
+//			echo 'user_id = '.$userId.'<br />';
+//			echo 'viewed = '.$viewed.'<br />';
+//			echo 'realm = '.$realm.'<br />';
+//			echo 'tracking = ' . implode(',', $trackList).'<br />';
+//			print_a($trackList);
+//			echo "<br /><br />";
+
+			if($viewed != '')
+			{
+				$ue->user_extended_setvalue($userId, 'plugin_forum_viewed', mysql_real_escape_string($viewed));
+				$result['viewcount']++;
+			}
+			
+			if(is_array($trackList) && count($trackList))
+			{
+				foreach($trackList as $threadId)
+				{
+					$result['trackcount']++;
+					$threadId = (int)$threadId;
+					if($threadId > 0)
+					{
+						$tmp = array();
+						$tmp['track_userid'] = $userId;
+						$tmp['track_thread'] = $threadId;
+						$tmp['_FIELD_TYPES']['track_userid'] = 'int';
+						$tmp['_FIELD_TYPES']['track_thread'] = 'int';
+						
+						$e107->sql->db_Insert('forum_track', $tmp); 
+					}
+				}
+			}
+		}
+	}
+	
+	$text .= "
+	User data move results:<br />
+	Number of users processed: {$result['usercount']} <br />
+	Number of viewed data processed: {$result['viewcount']} <br />
+	Number of tracked records added: {$result['trackcount']} <br />
+	<br /><br />
+	<form method='post'>
+	<input class='button' type='submit' name='nextStep[5]' value='Proceed to step 5' />
+	</form>
+	";
+
+	$e107->ns->tablerender($stepCaption, $text);
+	
+}
 
 class forumUpgrade
 {
