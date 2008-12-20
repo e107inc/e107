@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-19 21:56:37 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-20 00:55:29 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -67,9 +67,8 @@ $stepParms = (isset($stepParms) ? $stepParms : '');
 
 if(function_exists('step'.$currentStep))
 {
-	call_user_func('step'.$currentStep, $stepParms);
+	$result = call_user_func('step'.$currentStep, $stepParms);
 }
-
 
 require(e_ADMIN.'footer.php');
 exit;
@@ -91,7 +90,7 @@ function step1()
 			";
 			foreach($f->error['attach'] as $e)
 			{
-				$errorText .= '** '.$e.'<br />';
+				$text .= '** '.$e.'<br />';
 			}
 			$text .= "
 			<br />
@@ -131,19 +130,105 @@ function step2()
 		return;
 	}
 
-	if($sql = file_get_contents(e_PLUGIN.'forum/forum_sql.php'))
+	require_once(e_HANDLER.'db_table_admin_class.php');
+	$db = new db_table_admin;
+	
+	$tabList = array('forum' => 'forum_new', 'forum_thread' => '', 'forum_post' => '', 'forum_track' => '');
+	$ret = '';	
+	$failed = false;
+	$text = '';
+	foreach($tabList as $name => $rename)
 	{
-		echo $sql;
+		$text .= 'Creating table '.($rename ? $rename : $name).' -> ';
+		$result = $db->createTable(e_PLUGIN.'forum/forum_sql.php', $name, true, $rename);
+		if($result)
+		{
+			$text .= 'Success <br />';
+		}
+		else
+		{
+			$text .= 'Failed <br />';
+			$failed = true;
+		}
+	}
+	if($failed)
+	{
+		$text .= "
+		<br /><br />
+		Creation of table(s) failed.  You can not continue until these are create successfully!
+		";
 	}
 	else
 	{
-		echo 'failed';
+			$text .= "
+			<br /><br />
+			<form method='post'>
+			<input class='button' type='submit' name='nextStep[3]' value='Proceed to step 3' />
+			</form>
+			";
 	}
+	$e107->ns->tablerender('Step 2: Forum table creation', $text);
+}
 
+function step3()
+{
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 3: Extended user field creation';
+	if(!isset($_POST['create_extended']))
+	{
+		$text = "
+		This step will create the new extended user fields required for the new forum code: <br />
+		* user_plugin_forum_posts (to track number of posts for each user)<br />
+		* user_plugin_forum_viewed (to track threads viewed by each user<br />
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='create_extended' value='Proceed with field creation' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+	require_once(e_HANDLER.'user_extended_class.php');
+	$ue = new e107_user_extended;
+	$fieldList = array(
+	'plugin_forum_posts' => EUF_INTEGER,
+	'plugin_forum_viewed' => EUF_TEXTAREA
+	);
+	$failed = false;
+	foreach($fieldList as $fieldName => $fieldType)
+	{
+		$text .= 'Creating extended user field user_'.$fieldName.' -> ';
+		$result = $ue->user_extended_add_system($fieldName, $fieldType);
+		if($result)
+		{
+			$text .= 'Success <br />';
+		}
+		else
+		{
+			$text .= 'Failed <br />';
+			$failed = true;
+		}
+	}
+	if($failed)
+	{
+		$text .= '
+		<br /><br />
+		Creation of extended field(s) failed.  You can not continue until these are create successfully!
+		';
+	}
+	else
+	{
+			$text .= "
+			<br /><br />
+			<form method='post'>
+			<input class='button' type='submit' name='nextStep[4]' value='Proceed to step 4' />
+			</form>
+			";
+	}
+	$e107->ns->tablerender($stepCaption, $text);
 	
 }
 
-//print_a($f->error);
 
 class forumUpgrade
 {
@@ -155,7 +240,6 @@ class forumUpgrade
 	{
 		$this->getUpdateInfo();
 	}
-
 
 	function checkAttachmentDirs()
 	{
