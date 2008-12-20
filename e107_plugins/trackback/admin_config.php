@@ -1,46 +1,53 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-26 14:19:54 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin administration - newsfeeds
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/admin_config.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-20 22:32:36 $
+ * $Author: e107steved $
+ *
 */
 require_once("../../class2.php");
-if (!getperms("P")) {
+if (!getperms("P") || !plugInstalled('trackback')) 
+{
 	header("location:".e_BASE."index.php");
-	 exit ;
+	exit() ;
 }
 
-@include_once(e_PLUGIN."trackback/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."trackback/languages/English.php");
+@include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
 	
 require_once(e_ADMIN."auth.php");
 	
 if (isset($_POST['updatesettings'])) 
 {
-  if ($pref['trackbackEnabled'] != $_POST['trackbackEnabled'])
-  {
-	$pref['trackbackEnabled'] = $_POST['trackbackEnabled'];
-	$e107cache->clear("news.php");
-  }
-  $pref['trackbackString'] = $tp->toDB($_POST['trackbackString']);
-  save_prefs();
-  $message = TRACKBACK_L4;
+	$temp = array();
+	if ($pref['trackbackEnabled'] != $_POST['trackbackEnabled'])
+	{
+		$temp['trackbackEnabled'] = $_POST['trackbackEnabled'];
+		$e107cache->clear('news.php');
+	}
+	$temp['trackbackString'] = $tp->toDB($_POST['trackbackString']);
+	if ($admin_log->logArrayDiffs($temp, $pref, 'TRACK_01'))
+	{
+		save_prefs();		// Only save if changes
+		$message = TRACKBACK_L4;
+	}
+	else
+	{
+		$message = TRACKBACK_L17;
+	}
 }
 
 	
-if (isset($message)) {
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 	

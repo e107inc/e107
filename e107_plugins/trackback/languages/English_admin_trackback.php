@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:43 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin administration - newsfeeds
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/languages/English_admin_trackback.php,v $
+ * $Revision: 1.1 $
+ * $Date: 2008-12-20 22:32:36 $
+ * $Author: e107steved $
+ *
 */
 	
 define("TRACKBACK_L1", "Configure Trackback");
@@ -33,5 +31,13 @@ define("TRACKBACK_L12", "No trackbacks for this item");
 define("TRACKBACK_L13", "Moderate trackbacks");
 define("TRACKBACK_L14", "Delete");
 define("TRACKBACK_L15", "Trackbacks deleted.");
+define('TRACKBACK_L16', 'Trackback');
+define('TRACKBACK_L17', 'Nothing changed - not saved');
+
+
+// Admin log messages
+//-------------------
+define('LAN_AL_TRACK_01', 'Trackback settings changed');
+define('LAN_AL_TRACK_02', 'Trackback items deleted');
 
 ?>
