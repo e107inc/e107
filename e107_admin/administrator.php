@@ -9,18 +9,33 @@
  * Administrators Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
- * $Revision: 1.9 $
- * $Date: 2008-12-02 00:32:30 $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-20 15:23:48 $
  * $Author: secretr $
+ *
 */
+
 require_once('../class2.php');
 if (!getperms('3'))
 {
-	header('location:'.e_BASE.'index.php');
+	header('Location:'.SITEURL.'index.php');
 	exit;
 }
+
+if(isset($_POST['go_back']))
+{ //return to listing - clear all posted data
+	header('Location:'.e_ADMIN_ABS.e_PAGE);
+	exit;
+}
+
 $e_sub_cat = 'admin';
 require_once('auth.php');
+
+
+require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."message_handler.php");
+$frm = new e_form(true);
+$emessage = &eMessage::getInstance();
 
 $action = '';
 $sub_action = -1;
@@ -28,7 +43,7 @@ if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];					// Used when called from elsewhere
-	$sub_action = varset($tmp[1],-1);	// User ID 
+	$sub_action = varset($tmp[1],-1);	// User ID
 	unset($tmp);
 }
 
@@ -61,9 +76,9 @@ if (isset($_POST['update_admin']))
 		}
     }
 
-	admin_update($sql -> db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', ADMSLAN_56." ".$tp->toDB($_POST['ad_name'])." ".ADMSLAN_2."<br />");
+	admin_update($sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
 	$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
-	$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');	
+	$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	unset($modID, $ad_name, $a_perms);
 }
 
@@ -75,19 +90,8 @@ if (isset($_POST['edit_admin']) || $action == "edit")
 	if ((!$sql->db_Select("user", "*", "user_id=".$theid))
 		|| !($row = $sql->db_Fetch()))
 	{
-		echo "Couldn't find user ID: {$theid}, {$sub_action}, {$edid[0]}<br />";	// Debug code - shouldn't be executed
+		$emessage->add("Couldn't find user ID: {$theid}, {$sub_action}, {$edid[0]}", E_MESSAGE_DEBUG);	// Debug code - shouldn't be executed
 	}
-	
-/*  Code would never be executed - $a_perms not set at this point
-	if ($a_perms == "0")
-	{
-		$text = "<div style='text-align:center'>$ad_name ".ADMSLAN_3."
-		<br /><br />
-		<a href='administrator.php'>".ADMSLAN_4."</a></div>";
-		$ns->tablerender(LAN_ERROR, $text);
-		require_once("footer.php");
-		exit;
-	}  */
 }
 
 
@@ -99,18 +103,21 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 	$row = $sql->db_Fetch();
 
 	if ($row['user_id'] == 1)
-	{	// CAn't delete main admin
-		$text = "<div style='text-align:center'>".$row['user_name']." ".ADMSLAN_6."
+	{	// Can't delete main admin
+		$text = $row['user_name']." ".ADMSLAN_6."
 		<br /><br />
-		<a href='administrator.php'>".ADMSLAN_4."</a>";
-		$ns->tablerender(ADMSLAN_5, $text);
+		<a href='".e_ADMIN_ABS."administrator.php'>".ADMSLAN_4."</a>";
+
+		$emessage->add($text, E_MESSAGE_ERROR);
+		$ns->tablerender(LAN_ERROR, $emessage->render());
+
 		require_once("footer.php");
 		exit;
 	}
 
-	admin_update($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED);
+	admin_update($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
 	$logMsg = str_replace(array('--ID--', '--NAME--'),array($aID, $row['user_name']),ADMSLAN_73);
-	$admin_log->log_event('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');	
+	$admin_log->log_event('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');
 }
 
 
@@ -124,179 +131,212 @@ else
 }
 
 
-
 function show_admins()
 {
-    global $sql, $tp, $ns, $pref, $imode;
+    global $sql, $emessage, $e107, $frm;
+
 
 	$sql->db_Select("user", "*", "user_admin='1'");
 
-	$text = "<div style='text-align:center'><div style='padding: 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>
+	$text = "
 	<form action='".e_SELF."' method='post' id='del_administrator'>
-	<div>
-	<input type='hidden' name='del_administrator_confirm' id='del_administrator_confirm' value='1' />
-	<table class='fborder' style='width:99%'>
-	<tr>
-	<td style='width:5%' class='fcaption'>ID</td>
-	<td style='width:20%' class='fcaption'>".ADMSLAN_56."</td>
-	<td style='width:65%' class='fcaption'>".ADMSLAN_18."</td>
-	<td style='width:10%' class='fcaption'>".LAN_OPTIONS."</td>
-	</tr>";
+		<fieldset id='core-administrator-list'>
+			<legend class='e-hideme'>".ADMSLAN_13."</legend>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='4'>
+					<col style='width:  5%'></col>
+					<col style='width: 20%'></col>
+					<col style='width: 65%'></col>
+					<col style='width: 10%'></col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>".ADMSLAN_56."</th>
+						<th>".ADMSLAN_18."</th>
+						<th class='center last'>".LAN_OPTIONS."</th>
+					</tr>
+				</thead>
+				<tbody>
+
+	";
 
 	while ($row = $sql->db_Fetch())
 	{
-		$text .= "<tr>
-		<td style='width:5%' class='forumheader3'>".$row['user_id']."</td>
-		<td style='width:20%' class='forumheader3'><a href='".e_BASE."user.php?id.".$row['user_id']."'>".$row['user_name']."</a></td>
-		<td style='width:65%' class='forumheader3'>";
-
-		$permtxt = "";
-        $text .= renderperms($row['user_perms'],$row['user_id'],"words");
-   		$text .= "</td>
-
-		<td style='width:10%; text-align:center' class='forumheader3'>";
+		//$permtxt = "";
+		$text .= "
+					<tr>
+						<td>".$row['user_id']."</td>
+						<td><a href='".$e107->url->getUrl('core:user', 'main', "func=profile&id={$row['user_id']}")."'>".$row['user_name']."</a></td>
+						<td>
+							".renderperms($row['user_perms'],$row['user_id'],"words")."
+						</td>
+						<td class='center'>
+		";
 		if($row['user_id'] != "1")
 		{
     		$text .= "
-			<input type='image' name='edit_admin[{$row['user_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' title='".LAN_EDIT."' />
-			<input type='image' name='del_admin[{$row['user_id']}]' value='del' src='".e_IMAGE."admin_images/delete_16.png' onclick=\"return jsconfirm('".$tp->toJS(ADMSLAN_59."? [".$row['user_name']."]")."') \"  title='".ADMSLAN_59."' style='border:0px' />";
-    	}
-		$text .= "&nbsp;</td>
+							".$frm->submit_image("edit_admin[{$row['user_id']}]", 'edit', 'edit', LAN_EDIT)."
+							".$frm->submit_image("del_admin[{$row['user_id']}]", 'del', 'delete', $e107->tp->toJS(ADMSLAN_59."? [".$row['user_name']."]"))."
 
-		</tr>";
+			";
+    	}
+
+		$text .= "
+						</td>
+					</tr>
+		";
 	}
 
-	$text .= "</table></div>\n</form></div>\n</div>";
+	$text .= "
+				</tbody>
+			</table>
+			".$frm->hidden('del_administrator_confirm','1')."
+		</fieldset>
+	</form>
 
-	$ns->tablerender(ADMSLAN_13, $text);
-
+	";
+	$e107->ns->tablerender(ADMSLAN_13, $emessage->render().$text);
 }
-
-
-
 
 function edit_administrator($row)
 {
-    global $sql,$tp,$ns,$pref;
+    global $sql, $e107, $pref, $frm;
 	$lanlist = explode(",",e_LANLIST);
 
 	$a_id = $row['user_id'];
 	$ad_name = $row['user_name'];
 	$a_perms = $row['user_perms'];
 
-	$text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."' id='myform' >
-	<table style='".ADMIN_WIDTH."' class='fborder'>
-	<tr>
-	<td style='width:25%' class='forumheader3'>".ADMSLAN_16.": </td>
-	<td style='width:75%' class='forumheader3'>
-	";
+	$text = "
+		<form method='post' action='".e_SELF."' id='myform'>
+			<fieldset id='core-administrator-edit'>
+				<legend class='e-hideme'>".ADMSLAN_52."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminform'>
+					<colgroup span='2'>
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+					<tbody>
+						<tr>
+							<td class='label'>".ADMSLAN_16.": </td>
+							<td class='control'>
+								".$ad_name."
+								<input type='hidden' name='ad_name' size='60' value='{$ad_name}' />
+							</td>
+						</tr>
+						<tr>
+							<td class='label'>".ADMSLAN_18."</td>
+							<td class='control'>
 
-	$text .= $ad_name;
-	$text .= "<input type='hidden' name='ad_name' size='60' value='$ad_name' />";
+	";
+	//XXX Lan - General
+	$text .= "
+								<div class='field-section'>
+									<h4>".ADMSLAN_74."</h4>
+	";
+	$text .= checkb("1", $a_perms, ADMSLAN_19);			// Alter site preferences
+	$text .= checkb("2", $a_perms, ADMSLAN_20);			// Alter Menus
+	$text .= checkb("3", $a_perms, ADMSLAN_21);			// Modify administrator permissions
+	$text .= checkb("4", $a_perms, ADMSLAN_22);			// Moderate users/bans etc
+	$text .= checkb("5", $a_perms, ADMSLAN_23);			// create/edit custom pages/menus
+	$text .= checkb("Q", $a_perms, ADMSLAN_24);			// Manage download categories
+	$text .= checkb("6", $a_perms, ADMSLAN_25);			// Upload /manage files
+	$text .= checkb("Y", $a_perms, ADMSLAN_67);			// file inspector
+	$text .= checkb("O", $a_perms, ADMSLAN_68);			// notify
+	$text .= checkb("7", $a_perms, ADMSLAN_26);			// Oversee news categories
+//	$text .= checkb("8", $a_perms, ADMSLAN_27);			// Oversee link categories
+	$text .= checkb("C", $a_perms, ADMSLAN_64);			// Clear Cache - Previously moderate chatbox
+	$text .= checkb("9", $a_perms, ADMSLAN_28);			// Take site down for maintenance
+	$text .= checkb("W", $a_perms, ADMSLAN_65);			// Configure mail settings and mailout
+
+	$text .= checkb("D", $a_perms, ADMSLAN_29);			// Manage banners
+//	$text .= checkb("E", $a_perms, ADMSLAN_30);			// Configure news feed headlines - now plugin
+	$text .= checkb("F", $a_perms, ADMSLAN_31);			// Configure emoticons
+	$text .= checkb("G", $a_perms, ADMSLAN_32);			// Configure front page content
+	$text .= checkb("S", $a_perms, ADMSLAN_33);			// Configure system logs  (previously log/stats - now plugin)
+	$text .= checkb("T", $a_perms, ADMSLAN_34);			// Configure meta tags
+	$text .= checkb("V", $a_perms, ADMSLAN_35);			// Configure public file uploads
+	$text .= checkb("X", $a_perms, ADMSLAN_66);			// Configure Search
+	$text .= checkb("A", $a_perms, ADMSLAN_36);			// Configure Image Settings (Previously Moderate forums - NOW PLUGIN)
+	$text .= checkb("B", $a_perms, ADMSLAN_37);			// Moderate comments
+	$text .= checkb("H", $a_perms, ADMSLAN_39);			// Post news
+	$text .= checkb("I", $a_perms, ADMSLAN_40);			// Post links
+//	$text .= checkb("J", $a_perms, ADMSLAN_41);					// Post articles   - NOW PLUGIN
+//	$text .= checkb("K", $a_perms, ADMSLAN_42);					// Post reviews    - NOW PLUGIN
+	$text .= checkb("L", $a_perms, ADMSLAN_43);			// Configure URLs
+	$text .= checkb("R", $a_perms, ADMSLAN_44);			// Post downloads
+	$text .= checkb("U", $a_perms, ADMSLAN_45);			// Schedule Tasks
+	$text .= checkb("M", $a_perms, ADMSLAN_46);			// Welcome message
+	$text .= checkb("N", $a_perms, ADMSLAN_47);			// Moderate submitted news
 
 	$text .= "
-	</td>
-	</tr>";
-
-	$text .="
-	<tr>
-	<td style='width:25%;vertical-align:top' class='forumheader3'>".ADMSLAN_18.": <br /></td>
-	<td style='width:75%' class='forumheader3'>";
-
-	$text .= checkb("1", $a_perms).ADMSLAN_19."<br />";			// Alter site preferences
-	$text .= checkb("2", $a_perms).ADMSLAN_20."<br />";			// Alter Menus
-	$text .= checkb("3", $a_perms).ADMSLAN_21."<br />";			// Modify administrator permissions
-	$text .= checkb("4", $a_perms).ADMSLAN_22."<br />";			// Moderate users/bans etc
-	$text .= checkb("5", $a_perms).ADMSLAN_23."<br />";			// create/edit custom pages/menus
-	$text .= checkb("Q", $a_perms).ADMSLAN_24."<br />";			// Manage download categories
-	$text .= checkb("6", $a_perms).ADMSLAN_25."<br />";			// Upload /manage files
-	$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />";			// file inspector
-	$text .= checkb("O", $a_perms).ADMSLAN_68."<br />";			// notify
-	$text .= checkb("7", $a_perms).ADMSLAN_26."<br />";			// Oversee news categories
-//	$text .= checkb("8", $a_perms).ADMSLAN_27."<br />";			// Oversee link categories
-	$text .= checkb("C", $a_perms).ADMSLAN_64."<br />";			// Clear Cache - Previously moderate chatbox
-	$text .= checkb("9", $a_perms).ADMSLAN_28."<br />";			// Take site down for maintenance
-	$text .= checkb("W", $a_perms).ADMSLAN_65."<br /><br />";	// Configure mail settings and mailout
-
-	$text .= checkb("D", $a_perms).ADMSLAN_29."<br />";			// Manage banners
-//	$text .= checkb("E", $a_perms).ADMSLAN_30."<br />";			// Configure news feed headlines - now plugin
-	$text .= checkb("F", $a_perms).ADMSLAN_31."<br />";			// Configure emoticons
-	$text .= checkb("G", $a_perms).ADMSLAN_32."<br />";			// Configure front page content
-	$text .= checkb("S", $a_perms).ADMSLAN_33."<br />";			// Configure system logs  (previously log/stats - now plugin)
-	$text .= checkb("T", $a_perms).ADMSLAN_34."<br />";			// Configure meta tags
-	$text .= checkb("V", $a_perms).ADMSLAN_35."<br />";			// Configure public file uploads
-	$text .= checkb("X", $a_perms).ADMSLAN_66."<br />";			// Configure Search
-	$text .= checkb("A", $a_perms).ADMSLAN_36."<br />";			// Configure Image Settings (Previously Moderate forums - NOW PLUGIN)
-	$text .= checkb("B", $a_perms).ADMSLAN_37."<br />";			// Moderate comments
-	$text .= checkb("H", $a_perms).ADMSLAN_39."<br />";			// Post news
-	$text .= checkb("I", $a_perms).ADMSLAN_40."<br />";			// Post links
-//	$text .= checkb("J", $a_perms).ADMSLAN_41."<br />";					// Post articles   - NOW PLUGIN
-//	$text .= checkb("K", $a_perms).ADMSLAN_42."<br />";					// Post reviews    - NOW PLUGIN
-	$text .= checkb("L", $a_perms).ADMSLAN_43."<br />";			// Configure URLs
-	$text .= checkb("R", $a_perms).ADMSLAN_44."<br />";			// Post downloads
-	$text .= checkb("U", $a_perms).ADMSLAN_45."<br />";			// Schedule Tasks
-	$text .= checkb("M", $a_perms).ADMSLAN_46."<br />";			// Welcome message
-	$text .= checkb("N", $a_perms).ADMSLAN_47."<br /><br />";	// Moderate submitted news
-
-	$text .= "<br /><div class='fcaption'>".ADLAN_CL_7."</div><br />";
-	$text .= checkb("Z", $a_perms).ADMSLAN_62."<br /><br />";	// Plugin Manager
+								</div>
+								<div class='field-section'>
+									<h4>".ADLAN_CL_7."</h4>";
+	$text .= checkb("Z", $a_perms, ADMSLAN_62);			// Plugin Manager
 
 	$sql->db_Select("plugin", "*", "plugin_installflag='1'");
 	while ($row = $sql->db_Fetch())
 	{
-		$text .= checkb("P".$row['plugin_id'], $a_perms).LAN_PLUGIN." - ".$tp->toHTML($row['plugin_name'],FALSE,'RAWTEXT,defs')."<br />";
+		$text .= checkb("P".$row['plugin_id'], $a_perms, LAN_PLUGIN." - ".$e107->tp->toHTML($row['plugin_name'] ,FALSE , 'RAWTEXT,defs'));
 	}
-
+	$text .= "
+								</div>";
 // Language Rights.. --------------
 	if($pref['multilanguage'])
 	{
 		sort($lanlist);
-		$text .= "<br /><div class='fcaption'>".ADLAN_132."</div><br />\n";
-		$text .= checkb($pref['sitelanguage'], $a_perms).$pref['sitelanguage']."<br />\n";
+		$text .= "
+								<div class='field-section'>
+									<h4>".ADLAN_132."</h4>";
+
+		$text .= checkb($pref['sitelanguage'], $a_perms, $pref['sitelanguage']);
 		foreach($lanlist as $langval)
 		{
-			$langname = $langval;
+			//$langname = $langval;
 			$langval = ($langval == $pref['sitelanguage']) ? "" : $langval;
 			if ($langval)
 	   		{
-				$text .= checkb($langval, $a_perms).$langval."<br />\n";
+				$text .= checkb($langval, $a_perms, $langval);
 			}
 		}
+		$text .= "
+								</div>";
 	}
 	// -------------------------
 
 	if (getperms('0'))
 	{
-		$text .= "<br /><br /><div class='fcaption'>".ADMSLAN_58."</div><br />";
-		$text .= checkb("0", $a_perms).ADMSLAN_58."<br />";
+		$text .= "
+								<div class='field-section'>
+									<h4>".ADMSLAN_58."</h4>";
+		$text .= checkb("0", $a_perms, ADMSLAN_58);
+		$text .= "
+								</div>";
 	}
 
-	$text .= "<br /><br />
-	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('myform', true, 'perms[]'); return false;\">".ADMSLAN_49."</a> -
-	<a href='".e_SELF."' onclick=\"setCheckboxes('myform', false, 'perms[]'); return false;\">".ADMSLAN_51."</a><br />
-	<br />
-	</td>
-	</tr>";
+	$text .= "
+								<div class='field-section'>
+									".$frm->admin_button('check_all', 'jstarget:perms', 'action', LAN_CHECKALL)."
+									".$frm->admin_button('uncheck_all', 'jstarget:perms', 'action', LAN_UNCHECKALL)."
 
-	$text .= "<tr style='vertical-align:top'>
-	<td colspan='2' style='text-align:center' class='forumheader'>";
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class='buttons-bar center'>
+					<input type='hidden' name='a_id' value='{$a_id}' />
+					".$frm->admin_button('update_admin', ADMSLAN_52, 'update')."
+					".$frm->admin_button('go_back', ADMSLAN_70)."
+				</div>
+			</fieldset>
+		</form>
+	";
 
-	$text .= "<input class='button' type='submit' name='update_admin' value='".ADMSLAN_52."' />
-	<input type='hidden' name='a_id' value='$a_id' />";
-
-	$text .= "</td>
-	</tr>
-	</table>
-	</form>
-	</div>";
-
-    $text .= "<div style='text-align:center'><br /><a href='".e_SELF."'>".ADMSLAN_70."</a></div>";
-	$ns->tablerender(ADMSLAN_52, $text);
+	$e107->ns->tablerender(ADMSLAN_52, $text);
 }
-
-
-
 require_once("footer.php");
 
 
@@ -304,23 +344,24 @@ require_once("footer.php");
 
 
 
-function checkb($arg, $perms)
+function checkb($arg, $perms, $label='')
 {
-	if (getperms($arg, $perms))
+	global $frm;
+	$par = "<div class='field-spacer'>";
+	$par .= $frm->checkbox('perms[]', $arg, getperms($arg, $perms));
+	if ($label)
 	{
-		$par = "<input type='checkbox' name='perms[]' value='{$arg}' checked='checked' />\n";
+		$par .= $frm->label($label,'perms[]', $arg);
 	}
-	else
-	{
-		$par = "<input type='checkbox' name='perms[]' value='{$arg}' />\n";
-	}
+	$par .= "</div>";
+
 	return $par;
 }
 
 
-function renderperms($perm,$id)
+function renderperms($perm, $id)
 {
-	global $pref,$sql,$pt;
+	global $pref, $pt, $e107;
 	if($perm == "0")
 	{
    		return ADMSLAN_58;
@@ -363,12 +404,12 @@ function renderperms($perm,$id)
 		$pt["M"] = ADMSLAN_46;
 		$pt["N"] = ADMSLAN_47;
 		$pt["Z"] = ADMSLAN_62;
-		
+
 
 		$sql2->db_Select("plugin", "*", "plugin_installflag='1'");
 		while ($row2 = $sql2->db_Fetch())
 		{
-			$pt[("P".$row2['plugin_id'])] = LAN_PLUGIN." - ".$row2['plugin_name'];
+			$pt[("P".$row2['plugin_id'])] = LAN_PLUGIN." - ".$e107->tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs');
 		}
 	}
 
@@ -393,14 +434,33 @@ function renderperms($perm,$id)
 	$ret = implode(" ",$permtxt);
 	if($pref['multilanguage'])
 	{
-		$ret .= ",&nbsp;". $langperm;
+		$ret .= $langperm;
 	}
 
-	$text = "<div onclick=\"expandit('id_{$id}')\" style='cursor:pointer' title='".ADMSLAN_71."'>{$ret}</div>
-	<div id='id_$id' style='display:none'><br />".implode("<br />",$ptext)."</div>";
+	$text = "
+		<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$ret}</div>
+		<div id='id_{$id}' class='e-hideme'><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>
+	";
+
     return $text;
-
-
 }
 
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			//add required core lan - delete confirm message
+			('".LAN_JSCONFIRM."').addModLan('core', 'delete_confirm');
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
+}
 ?>

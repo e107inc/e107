@@ -9,8 +9,8 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.23 $
- * $Date: 2008-12-16 14:24:04 $
+ * $Revision: 1.24 $
+ * $Date: 2008-12-20 15:23:48 $
  * $Author: secretr $
  *
 */
@@ -427,7 +427,7 @@ if($action == "config")
 		";
 	}
 	$text .= "
-							<div class='field-spacer f-left'>".$frm->admin_button('check_all', 'jstarget:user_audit_opts', 'action', 'Check All').$frm->admin_button('uncheck_all', 'jstarget:user_audit_opts', 'action', 'Uncheck All')."</div>
+							<div class='field-spacer f-left'>".$frm->admin_button('check_all', 'jstarget:user_audit_opts', 'action', LAN_CHECKALL).$frm->admin_button('uncheck_all', 'jstarget:user_audit_opts', 'action', LAN_UNCHECKALL)."</div>
 						</td>
 					</tr>
 	";
