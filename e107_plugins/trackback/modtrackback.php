@@ -1,49 +1,62 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/modtrackback.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-08-04 20:31:49 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin administration - newsfeeds
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/modtrackback.php,v $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-20 22:32:36 $
+ * $Author: e107steved $
+ *
 */
+$eplug_admin = true;
 require_once("../../class2.php");
 
-if (!getperms("P") || !$pref['trackbackEnabled'])
+if (!getperms("P") || !plugInstalled('trackback') || !$pref['trackbackEnabled'])
 {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
 require_once(e_ADMIN."auth.php");
-if (IsSet($_POST['moderate'])) 
+if (isset($_POST['moderate'])) 
 {
-  if (is_array($_POST['trackback_delete'])) 
-  {
-	while (list ($key, $cid) = each ($_POST['trackback_delete'])) 
+	$temp = array();
+	if (is_array($_POST['trackback_delete'])) 
 	{
-	  $sql->db_Delete("trackback", "trackback_id='".intval($cid)."' ");
+		while (list ($key, $cid) = each ($_POST['trackback_delete'])) 
+		{
+			$cid = intval($cid);
+			if ($cid > 0)
+			{
+				$sql->db_Delete("trackback", "trackback_id=".$cid);
+				$temp[] = $cid;
+			}
+		}
+		if (count($temp))
+		{
+			$admin_log->log_event('TRACK_02',implode(', ',$temp), E_LOG_INFORMATIVE,'');
+		}
 	}
-  }
-  $ns->tablerender("", "<div style='text-align:center'><b>".TRACKBACK_L15."</b></div>");
-  $e107cache->clear("news.php");
+	$ns->tablerender("", "<div style='text-align:center'><b>".TRACKBACK_L15."</b></div>");
+	$e107cache->clear("news.php");
 }
 	
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";
 
-if (e_QUERY=='all') {
+if (e_QUERY=='all') 
+{
 	$res=$sql->db_Select("trackback", "*");
-} else {
+} 
+else 
+{
 	$res=$sql->db_Select("trackback", "*", "trackback_pid=".intval(e_QUERY));
 }
 
