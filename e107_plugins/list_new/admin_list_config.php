@@ -11,17 +11,17 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2008-12-11 22:38:06 $
-|		$Author: e107steved $
+|		$Revision: 1.6 $
+|		$Date: 2008-12-20 10:39:13 $
+|		$Author: secretr $
 +---------------------------------------------------------------+
 */
 
 //include and require several classes
 require_once("../../class2.php");
 if(!getperms("1") || !plugInstalled('list_new'))
-{ 
-	header("location:".e_BASE."index.php"); 
+{
+	header("location:".e_BASE."index.php");
 	exit ;
 }
 require_once(e_ADMIN."auth.php");
@@ -91,8 +91,8 @@ $TOPIC_ROW = "
 <tr>
 	<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3'>
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
-		<div style='display: none;'>
+		<a href='#{TOPIC_CONTID}' class='e-pointer e-expandit'>{TOPIC_HEADING}</a>
+		<div class='e-hideme' id='{TOPIC_CONTID}'>
 			<div class='smalltext'>{TOPIC_HELP}</div><br />
 			{TOPIC_FIELD}
 		</div>
@@ -133,7 +133,7 @@ function showhideit(showid){
 
 $text .= "
 <div style='text-align:center'>
-".$rs -> form_open("post", e_SELF, "menu_conf_form", "", "enctype='multipart/form-data'")."\n";
+".$rs -> form_open("post", e_SELF, "menu_conf_form", "", "class='admin-menu' enctype='multipart/form-data'")."\n";
 
 $text .= parse_menu_options("recent_menu");
 $text .= parse_menu_options("new_menu");
@@ -154,6 +154,7 @@ function parse_global_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_1;
 	$TOPIC_HEADING = LIST_ADMIN_SECT_2;
 	$TOPIC_HELP = LIST_ADMIN_SECT_3;
+	$TOPIC_CONTID = "list-new-{$type}-expandable-sections";
 	$TOPIC_FIELD = "";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= $rs -> form_checkbox($sections[$i]."_".$type."_display", 1, ($list_pref[$sections[$i]."_".$type."_display"]) ? "1" : "0")." ".$titles[$i]."<br />";
@@ -164,6 +165,7 @@ function parse_global_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_4;
 	$TOPIC_HEADING = LIST_ADMIN_SECT_5;
 	$TOPIC_HELP = LIST_ADMIN_SECT_6;
+	$TOPIC_CONTID = "list-new-{$type}-expandable-display-style";
 	$TOPIC_FIELD = "";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= $rs -> form_checkbox($sections[$i]."_".$type."_open", 1, (isset($list_pref[$sections[$i]."_".$type."_open"]) ? "1" : "0"))." ".$titles[$i]."<br />";
@@ -174,6 +176,7 @@ function parse_global_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_7;
 	$TOPIC_HEADING = LIST_ADMIN_SECT_8;
 	$TOPIC_HELP = LIST_ADMIN_SECT_9;
+	$TOPIC_CONTID = "list-new-{$type}-expandable-author";
 	$TOPIC_FIELD = "";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= $rs -> form_checkbox($sections[$i]."_".$type."_author", 1, (isset($list_pref[$sections[$i]."_".$type."_author"]) ? "1" : "0"))." ".$titles[$i]."<br />";
@@ -185,6 +188,7 @@ function parse_global_options($type){
 	$TOPIC_HEADING = LIST_ADMIN_SECT_11;
 	$TOPIC_HELP = LIST_ADMIN_SECT_12;
 	$TOPIC_FIELD = "";
+	$TOPIC_CONTID = "list-new-{$type}-expandable-category";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= $rs -> form_checkbox($sections[$i]."_".$type."_category", 1, (isset($list_pref[$sections[$i]."_".$type."_category"]) ? "1" : "0"))." ".$titles[$i]."<br />";
 	}
@@ -195,6 +199,7 @@ function parse_global_options($type){
 	$TOPIC_HEADING = LIST_ADMIN_SECT_14;
 	$TOPIC_HELP = LIST_ADMIN_SECT_15;
 	$TOPIC_FIELD = "";
+	$TOPIC_CONTID = "list-new-{$type}-expandable-date";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= $rs -> form_checkbox($sections[$i]."_".$type."_date", 1, (isset($list_pref[$sections[$i]."_".$type."_date"]) ? "1" : "0"))." ".$titles[$i]."<br />";
 	}
@@ -204,6 +209,7 @@ function parse_global_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_22;
 	$TOPIC_HEADING = LIST_ADMIN_SECT_23;
 	$TOPIC_HELP = LIST_ADMIN_SECT_24;
+	$TOPIC_CONTID = "list-new-{$type}-expandable-icon";
 	$TOPIC_FIELD = "<table $styletable>";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= "
@@ -211,7 +217,7 @@ function parse_global_options($type){
 		<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$titles[$i]."</td>
 		<td class='forumheader3'>
 			".$rs -> form_text($sections[$i]."_".$type."_icon", 15, $list_pref[$sections[$i]."_".$type."_icon"], 100)."
-			<input class='button' type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onClick=\"expandit('div_".$sections[$i]."_".$type."_icon')\" />
+			<input class='button' type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onclick=\"e107Helper.toggle('div_".$sections[$i]."_".$type."_icon'); return false;\" />
 			<div id='div_".$sections[$i]."_".$type."_icon' style='display:none;'>";
 			foreach($iconlist as $icon){
 				$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$icon['fname']."','".$sections[$i]."_".$type."_icon','div_".$sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
@@ -228,6 +234,7 @@ function parse_global_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_16;
 	$TOPIC_HEADING = LIST_ADMIN_SECT_17;
 	$TOPIC_HELP = LIST_ADMIN_SECT_18;
+	$TOPIC_CONTID = "list-new-{$type}-expandable-amount";
 	$TOPIC_FIELD = "<table $styletable>";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= "
@@ -250,6 +257,7 @@ function parse_global_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_19;
 	$TOPIC_HEADING = LIST_ADMIN_SECT_20;
 	$TOPIC_HELP = LIST_ADMIN_SECT_21;
+	$TOPIC_CONTID = "list-new-{$type}-expandable-order";
 	$TOPIC_FIELD = "<table $styletable>";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= "
@@ -271,6 +279,7 @@ function parse_global_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_25;
 	$TOPIC_HEADING = LIST_ADMIN_SECT_26;
 	$TOPIC_HELP = LIST_ADMIN_SECT_27;
+	$TOPIC_CONTID = "list-new-{$type}-expandable-caption";
 	$TOPIC_FIELD = "<table $styletable>";
 	for($i=0;$i<count($sections);$i++){
 		$TOPIC_FIELD .= "
@@ -295,7 +304,7 @@ function parse_menu_options($type){
 	global $rc, $list_pref, $rs, $tp, $sections, $titles, $iconlist, $TOPIC_ROW, $TOPIC_ROW_SPACER, $TOPIC_TABLE_END;
 
 	$text = "
-	<div id='".$type."' style='display:none; text-align:center'>
+	<div id='list-new-".str_replace('_', '-', $type)."' class='e-hideme center'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 	if($type == "new_menu"){
@@ -310,6 +319,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_2;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_3;
 	$TOPIC_HELP = LIST_ADMIN_LAN_4;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-caption";
 	$TOPIC_FIELD = $rs -> form_text($type."_caption", "30", $tp->toHTML($list_pref[$type."_caption"],"","defs"), "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -317,6 +327,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_5;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_6;
 	$TOPIC_HELP = LIST_ADMIN_LAN_7;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-icon-use";
 	$TOPIC_FIELD = "
 		".$rs -> form_radio($type."_icon_use", "1", ($list_pref[$type."_icon_use"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 		".$rs -> form_radio($type."_icon_use", "0", ($list_pref[$type."_icon_use"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -327,6 +338,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_MENU_2;
 	$TOPIC_HEADING = LIST_ADMIN_MENU_3;
 	$TOPIC_HELP = LIST_ADMIN_MENU_4;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-icon-show";
 	$TOPIC_FIELD = "
 		".$rs -> form_radio($type."_icon_default", "1", ($list_pref[$type."_icon_default"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 		".$rs -> form_radio($type."_icon_default", "0", ($list_pref[$type."_icon_default"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -337,6 +349,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_8;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_9;
 	$TOPIC_HELP = LIST_ADMIN_LAN_10;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-amount-chars";
 	$TOPIC_FIELD = $rs -> form_text($type."_char_heading", "30", $list_pref[$type."_char_heading"], "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -344,6 +357,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_11;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_12;
 	$TOPIC_HELP = LIST_ADMIN_LAN_13;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-postfix";
 	$TOPIC_FIELD = $rs -> form_text($type."_char_postfix", "30", $list_pref[$type."_char_postfix"], "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -351,6 +365,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_14;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_15;
 	$TOPIC_HELP = LIST_ADMIN_LAN_16;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-date";
 	$TOPIC_FIELD = $rs -> form_text($type."_datestyle", "30", $list_pref[$type."_datestyle"], "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -358,6 +373,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_17;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_18;
 	$TOPIC_HELP = LIST_ADMIN_LAN_19;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-datet";
 	$TOPIC_FIELD = $rs -> form_text($type."_datestyletoday", "30", $list_pref[$type."_datestyletoday"], "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -365,6 +381,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_26;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_27;
 	$TOPIC_HELP = LIST_ADMIN_LAN_28;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-sempty";
 	$TOPIC_FIELD = "
 		".$rs -> form_radio($type."_showempty", "1", ($list_pref[$type."_showempty"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 		".$rs -> form_radio($type."_showempty", "0", ($list_pref[$type."_showempty"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -375,6 +392,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_39;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_40;
 	$TOPIC_HELP = LIST_ADMIN_LAN_41;
+	$TOPIC_CONTID = "list-new-menu-{$type}-expandable-osie";
 	$TOPIC_FIELD = "
 		".$rs -> form_radio($type."_openifrecords", "1", ($list_pref[$type."_openifrecords"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 		".$rs -> form_radio($type."_openifrecords", "0", ($list_pref[$type."_openifrecords"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -400,7 +418,7 @@ function parse_page_options($type){
 	}
 
 	$text = "
-	<div id='".$type."' style='".$display." text-align:center'>
+	<div id='list-new-".str_replace('_', '-', $type)."' class='e-hideme center'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 	if($type == "new_page"){
@@ -415,6 +433,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_2;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_3;
 	$TOPIC_HELP = LIST_ADMIN_LAN_4;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-caption";
 	$TOPIC_FIELD = $rs -> form_text($type."_caption", "30", $tp->toHTML($list_pref[$type."_caption"],"","defs"), "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -422,6 +441,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_5;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_6;
 	$TOPIC_HELP = LIST_ADMIN_LAN_7;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-icon-use";
 	$TOPIC_FIELD = "
 		".$rs -> form_radio($type."_icon_use", "1", ($list_pref[$type."_icon_use"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 		".$rs -> form_radio($type."_icon_use", "0", ($list_pref[$type."_icon_use"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -432,6 +452,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_29;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_30;
 	$TOPIC_HELP = LIST_ADMIN_LAN_31;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-icon-show";
 	$TOPIC_FIELD = "
 		".$rs -> form_radio($type."_icon_default", "1", ($list_pref[$type."_icon_default"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 		".$rs -> form_radio($type."_icon_default", "0", ($list_pref[$type."_icon_default"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -442,6 +463,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_8;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_9;
 	$TOPIC_HELP = LIST_ADMIN_LAN_10;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-amount-chars";
 	$TOPIC_FIELD = $rs -> form_text($type."_char_heading", "30", $list_pref[$type."_char_heading"], "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -449,6 +471,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_11;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_12;
 	$TOPIC_HELP = LIST_ADMIN_LAN_13;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-postfix";
 	$TOPIC_FIELD = $rs -> form_text($type."_char_postfix", "30", $list_pref[$type."_char_postfix"], "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -456,6 +479,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_14;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_15;
 	$TOPIC_HELP = LIST_ADMIN_LAN_16;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-date";
 	$TOPIC_FIELD = $rs -> form_text($type."_datestyle", "30", $list_pref[$type."_datestyle"], "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -463,6 +487,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_17;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_18;
 	$TOPIC_HELP = LIST_ADMIN_LAN_19;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-datet";
 	$TOPIC_FIELD = $rs -> form_text($type."_datestyletoday", "30", $list_pref[$type."_datestyletoday"], "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -470,6 +495,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_26;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_27;
 	$TOPIC_HELP = LIST_ADMIN_LAN_28;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-showe";
 	$TOPIC_FIELD = "
 		".$rs -> form_radio($type."_showempty", "1", ($list_pref[$type."_showempty"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 		".$rs -> form_radio($type."_showempty", "0", ($list_pref[$type."_showempty"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -480,6 +506,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_20;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_21;
 	$TOPIC_HELP = LIST_ADMIN_LAN_22;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-colomn";
 	$TOPIC_FIELD = $rs -> form_select_open($type."_colomn");
 		for($a=1; $a<=count($sections); $a++){
 			$TOPIC_FIELD .= ($list_pref[$type."_colomn"] == $a ? $rs -> form_option($a, 1, $a) : $rs -> form_option($a, 0, $a));
@@ -491,6 +518,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_23;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_24;
 	$TOPIC_HELP = LIST_ADMIN_LAN_25;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-wtext";
 	$TOPIC_FIELD = $rs -> form_textarea($type."_welcometext", "50", "5", $tp->toHTML($list_pref[$type."_welcometext"],"","defs"), "", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -499,6 +527,7 @@ function parse_page_options($type){
 		$TOPIC_TOPIC = LIST_ADMIN_LAN_36;
 		$TOPIC_HEADING = LIST_ADMIN_LAN_37;
 		$TOPIC_HELP = LIST_ADMIN_LAN_38;
+		$TOPIC_CONTID = "list-new-page-{$type}-expandable-timelapse-show";
 		$TOPIC_FIELD = "
 			".$rs -> form_radio($type."_timelapse", "1", ($list_pref[$type."_timelapse"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 			".$rs -> form_radio($type."_timelapse", "0", ($list_pref[$type."_timelapse"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -509,6 +538,7 @@ function parse_page_options($type){
 		$TOPIC_TOPIC = LIST_ADMIN_LAN_32;
 		$TOPIC_HEADING = LIST_ADMIN_LAN_33;
 		$TOPIC_HELP = LIST_ADMIN_LAN_34;
+		$TOPIC_CONTID = "list-new-page-{$type}-expandable-timelapse-dnm";
 		$TOPIC_FIELD = $rs -> form_text($type."_timelapse_days", "3", $list_pref[$type."_timelapse_days"], "3", "tbox")." ".LIST_ADMIN_LAN_35;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 	}
@@ -517,6 +547,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_39;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_40;
 	$TOPIC_HELP = LIST_ADMIN_LAN_41;
+	$TOPIC_CONTID = "list-new-page-{$type}-expandable-osie";
 	$TOPIC_FIELD = "
 		".$rs -> form_radio($type."_openifrecords", "1", ($list_pref[$type."_openifrecords"] ? "1" : "0"), "", "").LIST_ADMIN_7."
 		".$rs -> form_radio($type."_openifrecords", "0", ($list_pref[$type."_openifrecords"] ? "0" : "1"), "", "").LIST_ADMIN_8."
@@ -548,16 +579,34 @@ function admin_list_config_adminmenu(){
 				unset($var);
 				$var=array();
 				//$var['general']['text']			= LIST_ADMIN_OPT_1;
-				$var['recent_page']['text']		= LIST_ADMIN_OPT_2;
-				$var['recent_menu']['text']		= LIST_ADMIN_OPT_3;
-				$var['new_page']['text']		= LIST_ADMIN_OPT_4;
-				$var['new_menu']['text']		= LIST_ADMIN_OPT_5;
-
-				show_admin_menu(LIST_ADMIN_OPT_6, $act, $var, TRUE);
+				$var['list-new-recent-page']['text']	= LIST_ADMIN_OPT_2;
+				$var['list-new-recent-menu']['text']	= LIST_ADMIN_OPT_3;
+				$var['list-new-new-page']['text']		= LIST_ADMIN_OPT_4;
+				$var['list-new-new-menu']['text']		= LIST_ADMIN_OPT_5;
+				e_admin_menu(LIST_ADMIN_OPT_6.'--id--list_new', 'list-new-recent-page', $var);
+				//e_admin_menu(LIST_ADMIN_OPT_6, $act, $var, TRUE);
 
 }
 // ##### End --------------------------------------------------------------------------------------
 
 require_once(e_ADMIN."footer.php");
 
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			//add required core lan - delete confirm message
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
+}
 ?>

@@ -314,7 +314,7 @@ input.action.edit {}
 .element-loading-mask { background-repeat: no-repeat; background-position: 50% 50%; background-color: #f5f5f5; }
 
 /********** Misc */
-.e-pointer { cursor: pointer; } /* Pointer Hand */
+.e-pointer { cursor: pointer; } /* Pointer Hand - cursor: pointer; cursor: hand */
 .expand-container { padding: 10px; } /* Block with expandable items */
 .nextprev-bar { clear: both; padding: 5px; font-size: 14px; margin: 5px; border:1px solid #ddd; } /* Page NextPrev nabigation block */
 .imgselector-container { clear: both; } /* ImageSelector.sc */

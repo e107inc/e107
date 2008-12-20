@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/reline/admin_template.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:36:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-20 10:39:13 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -147,16 +147,62 @@ $ADMIN_FOOTER .= "</tr>
 
 
 // [admin button style]
+/* NEW ADMIN MENU TEMPLATE
+
+ * see function e_admin_menu() in e107_admin/header.php
+
+*/
+$E_ADMIN_MENU['start'] = '
+<ul class="plugin-navigation">
+';
+
+$E_ADMIN_MENU['button'] = '
+	<li>
+		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
+		{SUB_MENU}
+	</li>
+';
+$E_ADMIN_MENU['button_active'] = '
+	<li>
+		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
+		{SUB_MENU}
+	</li>
+';
+
+$E_ADMIN_MENU['start_sub'] = '
+		<ul class="plugin-navigation-sub{SUB_CLASS}"{SUB_ID}>
+';
+
+$E_ADMIN_MENU['button_sub'] = '
+			<li>
+				<a class="link" href="{LINK_URL}">&raquo;&nbsp;{LINK_TEXT}</a>
+				{SUB_MENU}
+			</li>
+';
+$E_ADMIN_MENU['button_active_sub'] = '
+			<li>
+				<a class="link-active" href="{LINK_URL}">&raquo;&nbsp;{LINK_TEXT}</a>
+				{SUB_MENU}
+			</li>
+';
+
+$E_ADMIN_MENU['end_sub'] = '
+		</ul>
+';
+
+$E_ADMIN_MENU['end'] = '
+</ul>
+';
 
 $BUTTONS_START = "<table class='fborder' style='width: 100%'>";
 
 $BUTTON = "<tr><td><div>
-<div class='menuButton_menu' onmouseover=\"eover(this, 'menuButton_menu_over')\" onmouseout=\"eover(this, 'menuButton_menu')\" {ONCLICK} 
+<div class='menuButton_menu' onmouseover=\"eover(this, 'menuButton_menu_over')\" onmouseout=\"eover(this, 'menuButton_menu')\" {ONCLICK}
 style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 <img src='".E_16_NAV_ARROW."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{LINK_TEXT}</div></div></td></tr>";
 
 $BUTTON_OVER = "<tr><td><div>
-<div class='menuButton_menu' onmouseover=\"eover(this, 'menuButton_menu_over')\" onmouseout=\"eover(this, 'menuButton_menu')\" {ONCLICK} 
+<div class='menuButton_menu' onmouseover=\"eover(this, 'menuButton_menu_over')\" onmouseout=\"eover(this, 'menuButton_menu')\" {ONCLICK}
 style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 <img src='".E_16_NAV_ARROW_OVER."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{LINK_TEXT}</div></div></td></tr>";
 
@@ -164,7 +210,7 @@ $BUTTONS_END = "</table>";
 
 $SUB_BUTTONS_START = "<table class='fborder' style='width:100%;'>
 <tr><td><div>
-<div class='menuButton_menu' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" onclick=\"expandit('{SUB_HEAD_ID}');\" 
+<div class='menuButton_menu' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" onclick=\"expandit('{SUB_HEAD_ID}');\"
 style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 <img src='".E_16_NAV_ARROW."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{SUB_HEAD}</div></div></td></tr>
 <tr id='{SUB_HEAD_ID}' style='display: none' ><td class='forumheader3' style='text-align:left;'>";
