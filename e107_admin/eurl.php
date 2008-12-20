@@ -9,8 +9,8 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-02 23:44:19 $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-20 12:30:18 $
  * $Author: secretr $
 */
 
@@ -23,14 +23,20 @@ if (!getperms('L'))
 
 $e_sub_cat = 'eurl';
 require_once(e_ADMIN.'auth.php');
+require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."message_handler.php");
 
+$frm = new e_form(); //new form handler
+$emessage = &eMessage::getInstance();
 $urlc = new admin_url_config();
 
 if (isset($_POST['update']))
 {
-	$res = $urlc->update();
-	$plug_message = $res ? LAN_UPDATED : ($res === 0 ? LAN_NO_CHANGE : LAN_UPDATED_FAILED);
-	$plug_message = "<div class='center clear'>".$plug_message."</div><br />";
+	//$res = $urlc->update();
+	admin_update($urlc->update(), 'update', false, false, false);
+	//$plug_message = $res ? LAN_UPDATED : ($res === 0 ? LAN_NO_CHANGE : LAN_UPDATED_FAILED);
+	//$plug_message = "<div class='center clear'>".$plug_message."</div><br />";
 }
 
 //var_dump($pref['url_config'], $e107->url->getUrl('pm', 'main', array('f'=>'box', 'box'=>2)));
@@ -40,7 +46,7 @@ require_once(e_ADMIN.'footer.php');
 
 class admin_url_config {
 
-	var $_rs;
+	var $_frm;
 	var $_plug;
 	var $_api;
 
@@ -49,8 +55,9 @@ class admin_url_config {
 		global $e107;
 		require_once(e_HANDLER.'plugin_class.php');
 		require_once(e_HANDLER.'file_class.php');
-		require_once(e_HANDLER.'form_handler.php');
-		$this->_rs = new form();
+		require_once(e_HANDLER."form_handler.php");
+
+		$this->_frm = new e_form();
 		$this->_plug = new e107plugin();
 		$this->_fl = new e_file();
 		$this->_api = &$e107;
@@ -58,50 +65,59 @@ class admin_url_config {
 
 	function renderPage()
 	{
-		global $plug_message;
-		$text = "<div class='center'>
-		{$plug_message}
-		<form action='".e_SELF."' method='post' id='urlconfig-form'>
-		<table style='".ADMIN_WIDTH."' class='fborder admin-config'>
-		";
-
+		global $emessage;
 		$empty = "
-		<tr>
-			<td colspan='2' class='forumheader3 center'>".LAN_EURL_EMPTY."</td>
-		</tr>
+							<tr>
+								<td colspan='2'>".LAN_EURL_EMPTY."</td>
+							</tr>
 		";
-
-		$text .= "
-		<tbody>
-		<tr>
-			<td colspan='2' class='forumheader'>".LAN_EURL_CORECONFIG."</td>
-		</tr>
+		$text = "
+			<form action='".e_SELF."' method='post' id='urlconfig-form'>
+				<fieldset id='core-eurl-core'>
+					<legend>".LAN_EURL_CORECONFIG."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
 		";
 
 		$tmp = $this->render_sections('core');
+
 		if($tmp) $text .= $tmp;
 		else $text .= $empty;
 
 		$text .= "
-		<tr>
-			<td colspan='2' class='forumheader'>".LAN_EURL_PLUGCONFIG."</td>
-		</tr>";
+						</tbody>
+					</table>
+				</fieldset>
+				<fieldset id='core-eurl-plugin'>
+					<legend>".LAN_EURL_PLUGCONFIG."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+		";
 
 		$tmp = $this->render_sections('plugin');
+
 		if($tmp) $text .= $tmp;
 		else $text .= $empty;
 
 		$text .= "
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						".$this->_frm->admin_button('update', LAN_UPDATE, 'update')."
+					</div>
+				</fieldset>
+			</form>
+		";
 
-		<tr>
-			<td colspan='2' class='forumheader tfoot center'>".$this->_rs->form_button('submit', 'update', LAN_UPDATE)."</td>
-		</tr>
-		</tbody>
-		</table>
-		</form>
-		</div>";
-
-		$this->_api->ns->tablerender(PAGE_NAME, $text);
+		$this->_api->ns->tablerender(PAGE_NAME, $emessage->render().$text);
 	}
 
 	function render_sections($id)
@@ -132,8 +148,8 @@ class admin_url_config {
 
 		$text .= "
 			<tr>
-				<td class='forumheader3' style='width: 30%'>{$section['name']}</td>
-				<td class='forumheader3' style='width: 70%'>
+				<td class='label'>{$section['name']}</td>
+				<td class='control'>
 					".$this->render_section_radio($id, $section)."
 		";
 		$text .= "
@@ -149,8 +165,9 @@ class admin_url_config {
 		//DEFAULT
 		$checked_def = varset($pref['url_config'][$section['path']]) ? '' : ' checked="checked"';
 		$def = "
-			<input type='radio' id='{$section['path']}-default' name='cprofile[{$section['path']}]' value='0'{$checked_def} />
-			<label for='{$section['path']}-default'>".LAN_EURL_DEFAULT."</label>
+			<div class='field-spacer'>
+				<input type='radio' class='radio' id='{$section['path']}-default' name='cprofile[{$section['path']}]' value='0'{$checked_def} /><label for='{$section['path']}-default'>".LAN_EURL_DEFAULT."</label>
+			</div>
 		";
 
 		//CUSTOM - CENTRAL REPOSITORY
@@ -169,9 +186,7 @@ class admin_url_config {
 
 			$checked = $pref['url_config'][$section['path']] == $udefined_id ? ' checked="checked"' : '';
 			$custom = "
-				<div class='clear'><!-- --></div>
-				<input type='radio' id='{$section['path']}-custom' name='cprofile[{$section['path']}]' value='{$udefined_id}'{$checked} />
-				<label for='{$section['path']}-custom'>".LAN_EURL_UDEFINED."</label>
+				<input type='radio' class='radio' id='{$section['path']}-custom' name='cprofile[{$section['path']}]' value='{$udefined_id}'{$checked} /><label for='{$section['path']}-custom'>".LAN_EURL_UDEFINED."</label>
 				<a href='#{$section['path']}-custom-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
 				<div class='e-hideme' id='{$section['path']}-custom-info'>
 				<div class='indent'>
@@ -199,11 +214,7 @@ class admin_url_config {
 				$checked_profile = $pref['url_config'][$section['path']] == $profile_id ? ' checked="checked"' : '';
 				if($custom) $checked_profile = ' disabled="disabled"';
 				$config_profiles .= "
-					<div class='clear'><!-- --></div>
-					<input type='radio' id='{$section['path']}-profile-{$config_profile}' name='cprofile[{$section['path']}]' value='{$profile_id}'{$checked_profile} />
-					<label for='{$section['path']}-profile-{$config_profile}'>
-						".LAN_EURL_PROFILE." [".varsettrue($profile_info['title'], $config_profile)."]
-					</label>
+					<input type='radio' class='radio' id='{$section['path']}-profile-{$config_profile}' name='cprofile[{$section['path']}]' value='{$profile_id}'{$checked_profile} /><label for='{$section['path']}-profile-{$config_profile}'>".LAN_EURL_PROFILE." [".varsettrue($profile_info['title'], $config_profile)."]</label>
 					<a href='#{$section['path']}-profile-{$config_profile}-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
 					<div class='e-hideme' id='{$section['path']}-profile-{$config_profile}-info'>
 						<div class='indent'>
@@ -248,16 +259,21 @@ class admin_url_config {
 
 	function render_shutdown($save)
 	{
-		global $pref;
+		global $pref, $emessage;
 		if($save && !isset($_POST['update']))
 		{
-			save_prefs();
+			if(save_prefs())
+			{
+				$emessage->add(LAN_EURL_AUTOSAVE);
+			}
+
 		}
 	}
 
 	function get_core_sections()
 	{
 		$core_def = array(
+			'core' => 		array("core_name" => LAN_EURL_CORE_MAIN, 'core_path' => 'core'),
 			'news' => 		array("core_name" => LAN_EURL_CORE_NEWS, 'core_path' => 'news'),
 			'download' => 	array("core_name" => LAN_EURL_CORE_DOWNLOADS, 'core_path' => 'download'),
 			'user' => 		array("core_name" => LAN_EURL_CORE_USERS, 'core_path' => 'user')

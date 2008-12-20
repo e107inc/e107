@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2008-12-20 10:39:13 $
+|		$Revision: 1.7 $
+|		$Date: 2008-12-20 12:30:18 $
 |		$Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -114,22 +114,6 @@ $TOPIC_TABLE_START = "
 //</div>";
 $TOPIC_TABLE_END = pref_submit()."</table></div>";
 
-
-$text = "
-<script type=\"text/javascript\">
-<!--
-var hideid=\"recent_page\";
-function showhideit(showid){
-	if (hideid!=showid){
-		show=document.getElementById(showid).style;
-		hide=document.getElementById(hideid).style;
-		show.display=\"\";
-		hide.display=\"none\";
-		hideid = showid;
-	}
-}
-//-->
-</script>";
 
 $text .= "
 <div style='text-align:center'>
