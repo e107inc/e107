@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:31 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin - newsfeeds
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/languages/English_admin_newsfeed.php,v $
+ * $Revision: 1.1 $
+ * $Date: 2008-12-20 10:39:29 $
+ * $Author: e107steved $
+ *
 */
 
 
@@ -36,7 +34,7 @@ define("NFLAN_15", "Create Newsfeed");
 define("NFLAN_16", "Update Newsfeed");
 define("NFLAN_17", "enter 'default' in box to use the image defined in the feed, to use your own image enter full path, leave blank for no image.");
 define("NFLAN_18", "Update interval in seconds");
-define("NFLAN_19", "ie, 3600: newsfeed will update every hour");
+define("NFLAN_19", "e.g. 3600: newsfeed will update every hour");
 define("NFLAN_20", "On newsfeed main page only");
 define("NFLAN_21", "In both menu and newsfeed page");
 define("NFLAN_22", "choose where you want the newsfeed displayed");
@@ -46,17 +44,17 @@ define("NFLAN_25", "Newsfeed updated in database.");
 define("NFLAN_26", "Update Interval");
 define("NFLAN_27", "Options");
 define("NFLAN_28", "URL");
-define("NFLAN_29", "Available newsfeeds");
+//define("NFLAN_29", "Available newsfeeds");
 define("NFLAN_30", "Feed name");
-define("NFLAN_31", "Back to newsfeed list");
+//define("NFLAN_31", "Back to newsfeed list");
 define("NFLAN_32", "No feed with that identification number can be found.");
-define("NFLAN_33", "Date published: ");
-define("NFLAN_34", "not known");
+//define("NFLAN_33", "Date published: ");
+//define("NFLAN_34", "not known");
 define("NFLAN_35", "posted by ");
 define("NFLAN_36", "Description");
 define("NFLAN_37", "short description of feed, enter 'default' to use the description defined in the feed");
-define("NFLAN_38", "Headlines");
-define("NFLAN_39", "Details");
+//define("NFLAN_38", "Headlines");
+//define("NFLAN_39", "Details");
 define("NFLAN_40", "Newsfeed deleted");
 define("NFLAN_41", "No newsfeeds defined yet");
 
@@ -85,7 +83,17 @@ define("NFLAN_45", "Number of items to show in menu");
 define("NFLAN_46", "Number of items to show on main page");
 define("NFLAN_47", "0 or blank to show all");
 
-define("NFLAN_48", "Unable to save raw data in database.");
+//define("NFLAN_48", "Unable to save raw data in database.");
 define("NFLAN_49", "Unable to unserialize rss data - uses non-standard syntax");
+define('NFLAN_50', 'Write to database failed: ');
+
+// Admin log messages
+//===================
+define('LAN_AL_NEWSFD_01','News Feed created');
+define('LAN_AL_NEWSFD_02','News Feed updated');
+define('LAN_AL_NEWSFD_03','News Feed deleted');
+define('LAN_AL_NEWSFD_04','');
+define('LAN_AL_NEWSFD_05','');
+
 
 ?>

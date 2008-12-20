@@ -1,27 +1,41 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/newsfeed_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:31 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin - newsfeeds
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/newsfeed_menu.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2008-12-20 10:39:29 $
+ * $Author: e107steved $
+ *
 */
 if (!defined('e107_INIT')) { exit; }
+if (!plugInstalled('newsfeed')) 
+{
+	return '';
+}
 
-include_once(e_PLUGIN."newsfeed/newsfeed_functions.php");
-$info = newsfeed_info('all', 'menu');
+@include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
+
+if(!class_exists('newsfeedClass'))
+{
+	require_once(e_PLUGIN.'newsfeed/newsfeed_functions.php');
+}
+global $newsFeed;
+if (!is_object($newsFeed)) 
+{
+	$newsFeed = new newsfeedClass;
+}
+$info = $newsFeed->newsfeedInfo('all', 'menu');
 if($info['text'])
 {
 	$ns->tablerender($info['title'], $info['text']);
 }
+
+
 ?>

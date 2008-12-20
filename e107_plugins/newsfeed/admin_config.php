@@ -1,32 +1,34 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-06-27 19:40:54 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin administration - newsfeeds
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/admin_config.php,v $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-20 10:39:29 $
+ * $Author: e107steved $
+ *
 */
 require_once("../../class2.php");
-if (!getperms("P")) 
+if (!getperms("P") || !plugInstalled('newsfeed')) 
 {
-  header("location:".e_BASE."index.php");
-  exit;
+	header("location:".e_BASE."index.php");
+	exit;
 }
 
 require_once(e_ADMIN."auth.php");
 
-if (e_QUERY) {
+define('NEWSFEED_LIST_CACHE_TAG', 'nomd5_newsfeeds');
+
+if (e_QUERY) 
+{
 	list($action, $id) = explode(".", e_QUERY);
+	$id = intval($id);
 }
 else
 {
@@ -34,34 +36,60 @@ else
 	$id = FALSE;
 }
 
-if(isset($_POST['createFeed']))
+if (isset($_POST['createFeed']) || isset($_POST['updateFeed']))
 {
-	if ($_POST['newsfeed_url'] && $_POST['newsfeed_name']) {
-		$name = $tp -> toDB($_POST['newsfeed_name']);
-		$description = $tp -> toDB($_POST['newsfeed_description']);
-		$imgfield = $_POST['newsfeed_image']."::".$_POST['newsfeed_showmenu']."::".$_POST['newsfeed_showmain'];
-		$sql->db_Insert("newsfeed", "0, '$name', '".$_POST['newsfeed_url']."', '', '0', '{$description}', '{$imgfield}', ".$_POST['newsfeed_active'].", ".$_POST['newsfeed_updateint']." ");
-		$message = NFLAN_23;
-	} else {
+	if ($_POST['newsfeed_url'] && $_POST['newsfeed_name']) 
+	{
+		$feed['newsfeed_name'] = $tp -> toDB($_POST['newsfeed_name']);
+		$feed['newsfeed_description'] = $tp -> toDB($_POST['newsfeed_description']);
+		$feed['newsfeed_image'] = $tp->toDB($_POST['newsfeed_image'])."::".intval($_POST['newsfeed_showmenu'])."::".intval($_POST['newsfeed_showmain']);
+		$feed['newsfeed_url'] = $tp->toDB($_POST['newsfeed_url']);
+		$feed['newsfeed_active'] = intval($_POST['newsfeed_active']);
+		$feed['newsfeed_updateint'] = intval($_POST['newsfeed_updateint']);
+		$feed['newsfeed_data'] = '';		// Start with blank data feed
+		$feed['newsfeed_timestamp'] = 0;	// This should force an immediate update
+		if (isset($_POST['createFeed']))
+		{
+			if ($sql->db_Insert('newsfeed',$feed))
+			{
+				$admin_log->logArrayAll('NEWSFD_01', $feed);
+				$message = NFLAN_23;
+			}
+			else
+			{
+				$message = NFLAN_50.$sql->mySQLerror;
+			}
+		}
+		elseif (isset($_POST['updateFeed']))
+		{
+			if ($sql->db_UpdateArray('newsfeed',$feed, " WHERE newsfeed_id=".intval($_POST['newsfeed_id'])))
+			{
+				$admin_log->logArrayAll('NEWSFD_02', $feed);
+				$message = NFLAN_25;
+			}
+			else
+			{
+				$message = NFLAN_50.$sql->mySQLerror;
+			}
+		}
+		$e107->ecache->clear(NEWSFEED_LIST_CACHE_TAG);		// This should actually clear all the newsfeed data in one go
+	} 
+	else 
+	{
 		$message = NFLAN_24;
 	}
 }
 
-if(isset($_POST['updateFeed']))
-{
-	$name = $tp -> toDB($_POST['newsfeed_name']);
-	$description = $tp -> toDB($_POST['newsfeed_description']);
-	$imgfield = $_POST['newsfeed_image']."::".$_POST['newsfeed_showmenu']."::".$_POST['newsfeed_showmain'];
-	$sql->db_Update("newsfeed", "newsfeed_name='{$name}', newsfeed_url='".$_POST['newsfeed_url']."', newsfeed_timestamp='0', newsfeed_image='{$imgfield}', newsfeed_description='{$description}', newsfeed_active=".$_POST['newsfeed_active'].", newsfeed_updateint=".$_POST['newsfeed_updateint']." WHERE newsfeed_id=".$_POST['newsfeed_id']);
-	$message = NFLAN_25;
-}
 
-if($action == "delete") {
-	$sql->db_Delete("newsfeed", "newsfeed_id=$id");
+if($action == "delete") 
+{
+	$sql->db_Delete('newsfeed', 'newsfeed_id='.$id);
+	$admin_log->log_event('NEWSFD_03','ID: '.$id,E_LOG_INFORMATIVE,'');
 	$message = NFLAN_40;
 }
 
-if (isset($message)) {
+if (isset($message)) 
+{
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
