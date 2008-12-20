@@ -1,21 +1,20 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-20 16:41:58 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Message Handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-20 23:59:00 $
+ * $Author: mcfly_e107 $
+ *
 */
+
 if(defined('e_PAGE') && e_PAGE == 'e107_update.php')
 {
 	echo "
@@ -413,8 +412,34 @@ function step6()
 	global $f;
 	$e107 = e107::getInstance();
 	$stepCaption = 'Step 6: Thread and post data';
-	$threadLimit = 2500;
+	$threadLimit = 300;
 	$lastThread = varset($f->updateInfo['lastThread'], 0);
+
+	if(!isset($_POST['move_thread_data']))
+	{
+		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$lastThread}");
+		
+		$text = "
+		This step will copy all of your existing forum threads and posts into the new `forum_thread` and `forum_post` tables.<br /><br />
+		Depending on your forum size and speed of server, this could take some time.  This routine will attempt to do it in steps in order to
+		reduce the possibility of data loss and server timeouts.<br />
+		<br /><br />
+		It appears there are {$count} forum threads to convert, we will be doing it in steps of {$threadLimit}
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='move_thread_data' value='Begin thread data move' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+
+	$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$lastThread}");
+	if($count === false)
+	{
+		echo "error: Unable to determine last thread id";
+		exit;
+	}
 
 	$qry = "
 	SELECT thread_id FROM `#forum_t` 
@@ -423,14 +448,56 @@ function step6()
 	ORDER BY thread_id ASC
 	LIMIT 0, {$threadLimit}
 	";
-	if($e107->sql->db_Select_gen($qry, true))
+	if($e107->sql->db_Select_gen($qry))
 	{
+		$postCount = 0;
 		$threadList = $e107->sql->db_getList();
+		$text = '';
 		foreach($threadList as $t)
 		{
-			echo "Migrating thread {$t['thread_id']} <br />";
-			$result = $f->migrateThread($t['thread_id']);
+			$id = (int)$t['thread_id'];
+			$result = $f->migrateThread($id);
+			if($result === false)
+			{
+				echo "ERROR! Failed to migrate thread id: {$id}<br />";
+			}
+			else
+			{
+				$postCount += ($result-1);
+				$f->updateInfo['lastThread'] = $id;
+				$f->setUpdateInfo();
+			}
 		}
+		$text .= '<br />Successfully converted '.count($threadList)." threads and {$postCount} replies.<br />";
+		$text .= "Last thread id = {$t['thread_id']}<br />";
+
+		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$f->updateInfo['lastThread']}");
+		if($count)
+		{
+			$text .= "
+			We still have {$count} threads remaining to convert.<br />
+			<br /><br />
+			<form method='post'>
+			<input class='button' type='submit' name='move_thread_data' value='Continue thread data move' />
+			</form>
+			";
+			$e107->ns->tablerender($stepCaption, $text);
+		}
+		else
+		{
+			$text .= "
+			Thread migration is complete!!
+			<br /><br />
+			<form method='post'>
+			<input class='button' type='submit' name='nextStep[7]' value='Proceed to step 7' />
+			</form>
+			";
+		
+			$e107->ns->tablerender($stepCaption, $text);
+		}
+		
+
+
 	}	
 	
 }
@@ -517,26 +584,99 @@ class forumUpgrade
 				if($post['thread_parent'] == 0)
 				{
 					$result = $this->addThread($post);
-					$result = $this->addPost($post);
+					if($result)
+					{
+						$result = $this->addPost($post);
+					}
 				}
 				else
 				{
 					$result = $this->addPost($post);
 				}
 			}
+			return ($result ? count($threadData) : false);
 		}
+		return false;
 	}
 	
 	function addThread(&$post)
 	{
-		echo "Adding thread {$post['thread_id']}<br />";
-//		var_dump($post);
+		global $forum;
+		$e107 = e107::getInstance();
+		$thread = array();
+		$thread['thread_id'] = $post['thread_id'];
+		$thread['thread_name'] = $post['thread_name'];
+		$thread['thread_forum_id'] = $post['thread_forum_id'];
+		$thread['thread_datestamp'] = $post['thread_datestamp'];
+		$thread['thread_views'] = $post['thread_views'];
+		$thread['thread_active'] = $post['thread_active'];
+		$thread['thread_sticky'] = $post['thread_s'];
+		$userInfo = $this->getUserInfo($post['thread_user']);
+		$thread['thread_user'] = $userInfo['user_id'];
+		$thread['thread_user_anon'] = $userInfo['anon_name'];
+		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
+		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent double entities
+		return $e107->sql->db_Insert('forum_thread', $thread);
+//		print_a($thread);
 	}
 	
 	function addPost(&$post)
 	{
-		echo "Adding post {$post['thread_id']}<br />";
+		global $forum;
+		$e107 = e107::getInstance();
+		$newPost = array();
+		$newPost['post_id'] = $post['thread_id'];
+		$newPost['post_thread'] = ($post['thread_parent'] == 0 ? $post['thread_id'] : $post['thread_parent']);
+		$newPost['post_entry'] = $post['thread_thread'];
+		$newPost['post_forum'] = $post['thread_forum_id'];
+		$newPost['post_datestamp'] = $post['thread_datestamp'];
+		$newPost['post_edit_datestamp'] = ($post['thread_edit_datestamp'] ? $post['thread_edit_datestamp'] : '_NULL_');
+
+		$userInfo = $this->getUserInfo($post['thread_user']);
+		$newPost['post_user'] = $userInfo['user_id'];
+		$newPost['post_user_anon'] = $userInfo['anon_name'];
+		$newPost['post_ip'] = $userInfo['user_ip'];
+		
+		$newPost['_FIELD_TYPES'] = $forum->fieldTypes['forum_post'];
+		$newPost['_FIELD_TYPES']['post_entry'] = 'escape'; //use escape to prevent double entities
+//		print_a($newPost);
+		return $e107->sql->db_Insert('forum_post', $newPost);
 	}
+	
+	function getUserInfo(&$info)
+	{
+		$e107 = e107::getInstance();
+		$tmp = explode('.', $info);
+		$ret = array(
+		'user_id' => 0,
+		'user_ip' => '_NULL_',
+		'anon_name' => '_NULL_'
+		);
+		
+		if(count($tmp) == 2)
+		{
+			$id = (int)$tmp[0];
+			if($id == 0) //Anonymous post
+			{
+				$_tmp = explode(chr(0), $tmp[1]);
+				if(count($_tmp) == 2)  //Ip address exists
+				{
+					$ret['user_ip'] = $e107->ipEncode($_tmp[1]);
+					$ret['anon_name'] = $_tmp[0];
+				}
+			}
+			else
+			{
+				$ret['user_id'] = $id;
+			}
+		}
+		else
+		{
+			$ret['anon_name'] = 'Unknown';
+		}
+		return $ret;
+	}
+	
 	
 }
 
@@ -546,37 +686,37 @@ function forum_update_adminmenu()
 {
 		global $currentStep;
 		
-		$var[1]['text'] = 'Step 1 - Permissions';
+		$var[1]['text'] = '1 - Permissions';
 		$var[1]['link'] = '#';
 
-		$var[2]['text'] = 'Step 2 - Create new tables';
+		$var[2]['text'] = '2 - Create new tables';
 		$var[2]['link'] = '#';
 
-		$var[3]['text'] = 'Step 3 - Create extended fields';
+		$var[3]['text'] = '3 - Create extended fields';
 		$var[3]['link'] = '#';
 
-		$var[4]['text'] = 'Step 4 - Move user data';
+		$var[4]['text'] = '4 - Move user data';
 		$var[4]['link'] = '#';
 
-		$var[5]['text'] = 'Step 5 - Migrate forum configuration';
+		$var[5]['text'] = '5 - Migrate forum config';
 		$var[5]['link'] = '#';
 
-		$var[6]['text'] = 'Step 6 - Migrate threads/replies';
+		$var[6]['text'] = '6 - Migrate threads/replies';
 		$var[6]['link'] = '#';
 
-		$var[7]['text'] = 'Step 7 - Calc counts/lastpost data';
+		$var[7]['text'] = '7 - Calc counts/lastpost data';
 		$var[7]['link'] = '#';
 
-		$var[8]['text'] = 'Step 8 - Migrate any poll information';
+		$var[8]['text'] = '8 - Migrate any poll data';
 		$var[8]['link'] = '#';
 
-		$var[9]['text'] = 'Step 9 - Migrate any attachments';
+		$var[9]['text'] = '9 - Migrate any attachments';
 		$var[9]['link'] = '#';
 
-		$var[10]['text'] = 'Step 10 - Migrate any attachments';
+		$var[10]['text'] = '10 - Migrate any attachments';
 		$var[10]['link'] = '#';
 
-		$var[11]['text'] = 'Step 11 - Delete old forum data';
+		$var[11]['text'] = '11 - Delete old forum data';
 		$var[11]['link'] = '#';
 
 
