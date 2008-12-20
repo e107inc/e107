@@ -1,26 +1,28 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-06-14 19:23:23 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin Administration - gsitemap
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-20 21:48:06 $
+ * $Author: e107steved $
+ *
 */
 require_once("../../class2.php");
-if(!getperms("P")){ header("location:".e_BASE."index.php"); }
+if(!getperms("P") || !plugInstalled('gsitemap'))
+{ 
+	header("location:".e_BASE."index.php"); 
+	exit();
+}
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
-include_lan(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."gsitemap/languages/".e_LANGUAGE."_admin_gsitemap.php");
 
 $gsm = new gsitemap;
 
@@ -31,8 +33,6 @@ class gsitemap
 
 	var $message;
     var $freq_list = array();
-
-/*+----------------------#######################################################################################---------------------+*/
 
 	function gsitemap()
 	{
@@ -94,7 +94,6 @@ class gsitemap
 		}
 	}
 
-/*+----------------------#######################################################################################---------------------+*/
 
 	function showList()
 	{
@@ -163,7 +162,6 @@ class gsitemap
 		$ns -> tablerender("<div style='text-align:center'>".GSLAN_24."</div>", $text);
 	}
 
-/*+----------------------#######################################################################################---------------------+*/
 
 	function editSme()
 	{
@@ -180,7 +178,7 @@ class gsitemap
 		}
 	}
 
-/*+----------------------#######################################################################################---------------------+*/
+
 
 	function doForm($editArray=FALSE)
 	{
@@ -230,7 +228,8 @@ class gsitemap
 		<td class='forumheader3'>
 		<select class='tbox' name='gsitemap_priority' >\n";
 
-		for ($i=0.1; $i<1.0; $i=$i+0.1) {
+		for ($i=0.1; $i<1.0; $i=$i+0.1) 
+		{
 			$sel = ($editArray['gsitemap_priority'] == number_format($i,1))? "selected='selected'" : "";
 			$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
 		};
@@ -280,39 +279,49 @@ class gsitemap
 		";
 
 		$ns -> tablerender("<div style='text-align:center'>".GSLAN_29."</div>", $text);
-
-
 	}
 
-/*+----------------------#######################################################################################---------------------+*/
+
 
 	function addLink()
 	{
-		global $sql, $tp;
-		$gsitemap_name = $tp -> toDB($_POST['gsitemap_name']);
-		$gsitemap_url = $tp -> toDB($_POST['gsitemap_url']);
+		global $sql, $tp, $admin_log;
+		$gmap = array(
+			'gsitemap_name' 	=> $tp->toDB($_POST['gsitemap_name']),
+			'gsitemap_url' 		=> $tp->toDB($_POST['gsitemap_url']), 
+			'gsitemap_priority' => $_POST['gsitemap_priority'],
+			'gsitemap_lastmod' 	=> $_POST['gsitemap_lastmod'],
+			'gsitemap_freq' 	=> $_POST['gsitemap_freq'],
+			'gsitemap_order' 	=> $_POST['gsitemap_order'],
+			'gsitemap_active' 	=> $_POST['gsitemap_active']
+			);
 
 		if(isset($_POST['gsitemap_id']))
 		{
-			$this -> message = $sql -> db_Update("gsitemap", "gsitemap_name='$gsitemap_name', gsitemap_url='$gsitemap_url', gsitemap_priority='".$_POST['gsitemap_priority']."', gsitemap_lastmod='".$_POST['gsitemap_lastmod']."', gsitemap_freq= '".$_POST['gsitemap_freq']."', gsitemap_order='".$_POST['gsitemap_order']."', gsitemap_active='".$_POST['gsitemap_active']."' WHERE gsitemap_id='".$_POST['gsitemap_id']."' ") ? LAN_UPDATED : LAN_UPDATED_FAILED;
+			$this -> message = $sql -> db_UpdateArray("gsitemap", $gmap, ' WHERE gsitemap_id= '.intval($_POST['gsitemap_id'])) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+			$admin_log->logArrayAll('GSMAP_04',$gmap);
 		}
 		else
 		{
-			$this -> message = ($sql -> db_Insert("gsitemap", "0, '".$_POST['gsitemap_name']."', '".$gsitemap_url."', '".$_POST['gsitemap_lastmod']."', '".$_POST['gsitemap_freq']."', '".$_POST['gsitemap_priority']."', '".$_POST['gsitemap_cat']."', '".$_POST['gsitemap_order']."', '".$_POST['gsitemap_img']."', '".$_POST['gsitemap_active']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED;
+			$gmap['gsitemap_img'] = $_POST['gsitemap_img'];
+			$gmap['gsitemap_cat'] = $_POST['gsitemap_cat'];
+			$this -> message = ($sql -> db_Insert('gsitemap',$gmap)) ? LAN_CREATED : LAN_CREATED_FAILED;
+			$admin_log->logArrayAll('GSMAP_03',$gmap);
 		}
 	}
 
-/*+----------------------#######################################################################################---------------------+*/
 
 	function deleteSme()
 	{
-		global $sql;
+		global $sql, $admin_log;
 		$d_idt = array_keys($_POST['delete']);
 		$this -> message = ($sql -> db_Delete("gsitemap", "gsitemap_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
+		$admin_log->log_event('GSMAP_02',$this->message.': '.$d_idt[0], E_LOG_INFORMATIVE,'');
 	}
 
-/*+----------------------#######################################################################################---------------------+*/
 
+
+	// Import site links
 	function importSme()
 	{
 		global $sql, $sql2, $PLUGINS_DIRECTORY, $ns;
@@ -343,37 +352,38 @@ class gsitemap
 
 
 		/* forums ... */
-		$sql -> db_Select("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC");
-		$nfArray = $sql -> db_getList();
-		foreach($nfArray as $row)
-		{
-			if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row['forum_name']."' "))
+		if(plugInstalled('forum'))
+		{ 
+			$sql -> db_Select("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC");
+			$nfArray = $sql -> db_getList();
+			foreach($nfArray as $row)
 			{
-				$importArray[] = array('name' => $row['forum_name'], 'url' => $PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$row['forum_id'], 'type' => "Forum");
+				if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row['forum_name']."' "))
+				{
+					$importArray[] = array('name' => $row['forum_name'], 'url' => $PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$row['forum_id'], 'type' => "Forum");
+				}
 			}
 		}
 
 
 		/* content pages ... */
-		$sql -> db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
-		$nfArray = $sql -> db_getList();
-		foreach($nfArray as $row)
-		{
-			$sql2 -> db_Select("pcontent", "content_id, content_heading", "content_parent = '".$row['content_id']."' AND content_refer != 'sa' ORDER BY content_heading");
-			$nfArray2 = $sql2 -> db_getList();
-			foreach($nfArray2 as $row2)
+		if(plugInstalled('content'))
+		{ 	
+			$sql -> db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
+			$nfArray = $sql -> db_getList();
+			foreach($nfArray as $row)
 			{
-				if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row2['content_heading']."' "))
+				$sql2 -> db_Select("pcontent", "content_id, content_heading", "content_parent = '".$row['content_id']."' AND content_refer != 'sa' ORDER BY content_heading");
+				$nfArray2 = $sql2 -> db_getList();
+				foreach($nfArray2 as $row2)
 				{
-					$importArray[] = array('name' => $row2['content_heading'], 'url' => $PLUGINS_DIRECTORY."content/content.php?content.".$row2['content_id'], 'type' => $row['content_heading']);
+					if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row2['content_heading']."' "))
+					{
+						$importArray[] = array('name' => $row2['content_heading'], 'url' => $PLUGINS_DIRECTORY."content/content.php?content.".$row2['content_id'], 'type' => $row['content_heading']);
+					}
 				}
 			}
-
 		}
-
-
-		/* end */
-
 
 
 		$text = "
@@ -404,17 +414,13 @@ class gsitemap
 			";
 		}
 
-
-
-
-
-
 		$text .= "
 		<tr>
 		<td colspan='4' style='text-align:center' class='forumheader'>
 		<div> ".GSLAN_8." &nbsp; ".GSLAN_9." :&nbsp;<select class='tbox' name='import_priority' >\n";
 
-		for ($i=0.1; $i<1.0; $i=$i+0.1) {
+		for ($i=0.1; $i<1.0; $i=$i+0.1) 
+		{
 			$sel = ($editArray['gsitemap_priority'] == number_format($i,1))? "selected='selected'" : "";
 			$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
 		};
@@ -423,14 +429,13 @@ class gsitemap
 
 
 		<select class='tbox' name='import_freq' >\n";
-
-		foreach($this->freq_list as $k=>$fq){
+		foreach($this->freq_list as $k=>$fq)
+		{
 			$sel = ($editArray['gsitemap_freq'] == $k)? "selected='selected'" : "";
-			$text .= "<option value='$k' $sel>$fq</option>\n";
+			$text .= "<option value='{$k}' {$sel}>{$fq}</option>\n";
 		}
 
 		$text.="</select> <br /><br />
-
 
 		</div>
 		<input class='button' type='submit' name='import_links' value='".GSLAN_18."' />
@@ -443,11 +448,11 @@ class gsitemap
 		$ns -> tablerender("<div style='text-align:center'>".GSLAN_7."</div>", $text);
 	}
 
-/*+----------------------#######################################################################################---------------------+*/
+
 
 	function importLink()
 	{
-		global $sql, $tp;
+		global $sql, $tp, $admin_log;
 		foreach($_POST['importid'] as $import)
 		{
 			list($name, $url, $type) = explode("^", $import);
@@ -456,9 +461,10 @@ class gsitemap
 			$sql -> db_Insert("gsitemap", "0, '$name', '$url', '".time()."', '".$_POST['import_freq']."', '".$_POST['import_priority']."', '$type', '0', '', '0' ");
 		}
 		$this -> message = count($_POST['importid'])." link(s) imported.";
+		$admin_log->log_event('GSMAP_01',$this->message, E_LOG_INFORMATIVE,'');
 	}
 
-/*+----------------------#######################################################################################---------------------+*/
+
 
 	function instructions()
 	{
@@ -475,10 +481,7 @@ class gsitemap
 		";
 
 		$ns -> tablerender("<div style='text-align:center'>".GSLAN_32."</div>", $text);
-
 	}
-
-/*+----------------------#######################################################################################---------------------+*/
 
 }
 
@@ -486,7 +489,8 @@ class gsitemap
 require_once(e_ADMIN."footer.php");
 
 
-function admin_config_adminmenu() {
+function admin_config_adminmenu() 
+{
 	$action = (e_QUERY) ? e_QUERY : "list";
     $var['list']['text'] = GSLAN_20;
 	$var['list']['link'] = e_SELF;

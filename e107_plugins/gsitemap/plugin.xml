@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- $Id: plugin.xml,v 1.1 2008-12-20 21:48:06 e107steved Exp $ -->
+
+<e107Plugin name="GSLAN_19" version="1.0" compatibility="0.8" installRequired="true">
+	<author name="cameron / jalist" url="http://e107coders.org" email="cameron@e107coders.org" />
+	<description>GSLAN_41</description>
+	<logLanguageFile filename="languages/--LAN--_admin_gsitemap.php" />
+	<folder>gsitemap</folder>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<administration>
+		<configFile>admin_config.php</configFile>
+		<icon>images/icon.png</icon>
+		<iconSmall>images/icon_16.png</iconSmall>
+		<caption>Configure Sitemap</caption>
+		<installDone>GSLAN_42</installDone>
+	</administration>
+	<menuLink name="Sitemap" url="/gsitemap.php?show" />
+	<mainPrefs>
+	</mainPrefs>
+</e107Plugin>
