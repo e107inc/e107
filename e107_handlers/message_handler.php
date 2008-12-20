@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.7 $
- * $Date: 2008-12-12 23:29:32 $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-20 12:30:18 $
  * $Author: secretr $
  *
 */
@@ -225,7 +225,7 @@ class eMessage
 	 * @param bool $session reset session messages as well
 	 * @return eMessage
 	 */
-	function reset($type, $session = false)
+	function reset($type = false, $session = false)
 	{
 		if(false === $type) $this->_sysmsg = $this->_type_map();
 		elseif(isset($this->_sysmsg[$type])) $this->_sysmsg[$type] = array();
@@ -241,7 +241,7 @@ class eMessage
 	 * @param mixed $type false for reset all, or valid type constant
 	 * @return eMessage
 	 */
-	function resetSession($type)
+	function resetSession($type = false)
 	{
 		if(!$type) $_SESSION['e107_system_messages'] = $this->_type_map();
 		elseif(isset($_SESSION['e107_system_messages'][$type])) $_SESSION['e107_system_messages'][$type] = array();
