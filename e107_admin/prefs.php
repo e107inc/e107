@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2008-06-29 16:40:23 $
+|     $Revision: 1.105 $
+|     $Date: 2008-12-20 14:36:37 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -530,7 +530,7 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_155.":</td>
 	<td class='forumheader3' style='width:50%;text-align:right' >
-	".r_userclass('displayname_class',$pref['displayname_class'],'off','nobody,public,admin,classes')."
+	".r_userclass('displayname_class',$pref['displayname_class'],'off','nobody,public,member,admin,classes')."
 	<input class='button' type='submit' name='submit_resetdisplaynames' value='".PRFLAN_156."' />
 	</td>
 	</tr>
