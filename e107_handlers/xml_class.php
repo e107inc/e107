@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-02 20:14:47 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-20 20:18:59 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -84,7 +84,7 @@ class xmlClass
 			$remote = @fopen($address, "r");
 			if(!$remote)
 			{
-				$this -> error = "fopen: Unable to open remote XML file.";
+				$this -> error = "fopen: Unable to open remote XML file: ".$address;
 				return FALSE;
 			}
 		}
@@ -94,7 +94,7 @@ class xmlClass
 		  $tmp = parse_url($address);
 		  if(!$remote = fsockopen ($tmp['host'], 80 ,$errno, $errstr, $timeout))
 		  {
-			$this -> error = "Sockets: Unable to open remote XML file.";
+			$this -> error = "Sockets: Unable to open remote XML file: ".$address;
 			return FALSE;
 		  }
 		  else

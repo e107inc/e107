@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-04-01 19:58:41 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * User information - shortcodes
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
+ * $Revision: 1.13 $
+ * $Date: 2008-12-20 20:18:54 $
+ * $Author: e107steved $
+ *
 */
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
@@ -115,11 +113,13 @@ global $user, $pref;
 require_once(e_HANDLER."level_handler.php");
 $ldata = get_level($user['user_id'], $user['user_forums'], $user['user_comments'], $user['user_chats'], $user['user_visits'], $user['user_join'], $user['user_admin'], $user['user_perms'], $pref);
 
-if (strstr($ldata[0], "IMAGE_rank_main_admin_image")) {
-	return LAN_417;
+if (strstr($ldata[0], "IMAGE_rank_main_admin_image")) 
+{
+	return LAN_USER_31;
 }
-else if(strstr($ldata[0], "IMAGE")) {
-	return LAN_418;
+elseif(strstr($ldata[0], "IMAGE")) 
+{
+	return LAN_USER_32;
 }
 else
 {
@@ -130,13 +130,13 @@ SC_END
 SC_BEGIN USER_LASTVISIT
 global $user;
 $gen = new convert;
-return $user['user_currentvisit'] ? $gen->convert_date($user['user_currentvisit'], "long") : "<i>".LAN_401."</i>";
+return $user['user_currentvisit'] ? $gen->convert_date($user['user_currentvisit'], "long") : "<i>".LAN_USER_33."</i>";
 SC_END
 
 SC_BEGIN USER_LASTVISIT_LAPSE
 global $user;
 $gen = new convert;
-return $user['user_currentvisit'] ? "( ".$gen -> computeLapse($user['user_currentvisit'])." ".LAN_426." )" : "<i>".LAN_401."</i>";
+return $user['user_currentvisit'] ? "( ".$gen -> computeLapse($user['user_currentvisit'])." ".LAN_USER_34." )" : "<i>".LAN_USER_33."</i>";
 SC_END
 
 SC_BEGIN USER_VISITS
@@ -153,7 +153,7 @@ SC_END
 SC_BEGIN USER_DAYSREGGED
 global $user;
 $gen = new convert;
-return $gen -> computeLapse($user['user_join'])." ".LAN_426;
+return $gen -> computeLapse($user['user_join'])." ".LAN_USER_34;
 SC_END
 
 SC_BEGIN USER_REALNAME_ICON
@@ -171,7 +171,7 @@ SC_END
 
 SC_BEGIN USER_REALNAME
 global $user;
-return $user['user_login'] ? $user['user_login'] : "<i>".LAN_401."</i>";
+return $user['user_login'] ? $user['user_login'] : "<i>".LAN_USER_33."</i>";
 SC_END
 
 SC_BEGIN USER_EMAIL_ICON
@@ -189,12 +189,12 @@ SC_END
 
 SC_BEGIN USER_EMAIL_LINK
 global $user, $tp;
-return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->parseTemplate("{email={$user['user_email']}-link}");
+return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_USER_35."</i>" : $tp->parseTemplate("{email={$user['user_email']}-link}");
 SC_END
 
 SC_BEGIN USER_EMAIL
 global $user,$tp;
-return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->toHTML($user['user_email'],"no_replace");
+return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_USER_35."</i>" : $tp->toHTML($user['user_email'],"no_replace");
 SC_END
 
 SC_BEGIN USER_ICON
@@ -270,7 +270,7 @@ if ($user['user_birthday'] != "" && $user['user_birthday'] != "0000-00-00" && pr
 }
 else
 {
-	return "<i>".LAN_401."</i>";
+	return "<i>".LAN_USER_33."</i>";
 }
 SC_END
 
@@ -281,12 +281,12 @@ SC_END
 
 SC_BEGIN USER_COMMENTS_LINK
 global $user;
-return $user['user_comments'] ? "<a href='".e_HTTP."userposts.php?0.comments.".$user['user_id']."'>".LAN_423."</a>" : "";
+return $user['user_comments'] ? "<a href='".e_HTTP."userposts.php?0.comments.".$user['user_id']."'>".LAN_USER_36."</a>" : "";
 SC_END
 
 SC_BEGIN USER_FORUM_LINK
 global $user;
-return $user['user_forums'] ? "<a href='".e_HTTP."userposts.php?0.forums.".$user['user_id']."'>".LAN_424."</a>" : "";
+return $user['user_forums'] ? "<a href='".e_HTTP."userposts.php?0.forums.".$user['user_id']."'>".LAN_USER_37."</a>" : "";
 SC_END
 
 SC_BEGIN USER_SENDPM
@@ -324,11 +324,13 @@ SC_END
 
 SC_BEGIN USER_UPDATE_LINK
 global $user;
-if (USERID == $user['user_id']) {
-	return "<a href='".e_HTTP."usersettings.php'>".LAN_411."</a>";
+if (USERID == $user['user_id']) 
+{
+	return "<a href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>";
 }
-else if(ADMIN && getperms("4") && !$user['user_admin']) {
-	return "<a href='".e_HTTP."usersettings.php?".$user['user_id']."'>".LAN_412."</a>";
+else if(ADMIN && getperms("4") && !$user['user_admin']) 
+{
+	return "<a href='".e_HTTP."usersettings.php?".$user['user_id']."'>".LAN_USER_39."</a>";
 }
 SC_END
 
@@ -355,11 +357,11 @@ if(!$userjump = getcachedvars('userjump'))
 }
 if($parm == 'prev')
 {
-	return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_414." [ <a href='".e_SELF."?id.".$userjump['prev']['id']."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
+	return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".e_SELF."?id.".$userjump['prev']['id']."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
 }
 else
 {
-	return isset($userjump['next']['id']) ? "[ <a href='".e_SELF."?id.".$userjump['next']['id']."'>".$userjump['next']['name']."</a> ] ".LAN_415." &gt;&gt;" : "&nbsp;";
+	return isset($userjump['next']['id']) ? "[ <a href='".e_SELF."?id.".$userjump['next']['id']."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
 }
 SC_END
 
@@ -371,7 +373,7 @@ if ($user['user_sess'] && file_exists(e_FILE."public/avatars/".$user['user_sess'
 }
 else
 {
-	return LAN_408;
+	return LAN_USER_42;
 }
 SC_END
 
@@ -383,7 +385,7 @@ if ($user['user_image'])
 }
 else
 {
-	return LAN_408;
+	return LAN_USER_42;
 }
 SC_END
 
@@ -401,7 +403,7 @@ if (USERID == $user['user_id'] || (ADMIN && getperms("4")))
 {
 	return "
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
-	<input class='button' type='submit' name='delp' value='".LAN_413."' />
+	<input class='button' type='submit' name='delp' value='".LAN_USER_43."' />
 	</form>
 	";
 }
@@ -423,7 +425,7 @@ require_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
 $ueCatList = $ue->user_extended_get_categories();
 $ueFieldList = $ue->user_extended_get_fields();
-$ueCatList[0][0] = array('user_extended_struct_name' => LAN_410);
+$ueCatList[0][0] = array('user_extended_struct_name' => LAN_USER_44);
 $ret = "";
 foreach($ueCatList as $catnum => $cat)
 {
@@ -528,15 +530,15 @@ global $order;
 if ($order == "ASC")
 {
 	$ret = "<select name='order' class='tbox'>
-	<option value='DESC'>".LAN_420."</option>
-	<option value='ASC' selected='selected'>".LAN_421."</option>
+	<option value='DESC'>".LAN_USER_45."</option>
+	<option value='ASC' selected='selected'>".LAN_USER_46."</option>
 	</select>";
 }
 else
 {
 	$ret = "<select name='order' class='tbox'>
-	<option value='DESC' selected='selected'>".LAN_420."</option>
-	<option value='ASC'>".LAN_421."</option>
+	<option value='DESC' selected='selected'>".LAN_USER_45."</option>
+	<option value='ASC'>".LAN_USER_46."</option>
 	</select>";
 }
 return $ret;
@@ -556,7 +558,7 @@ return "</form>";
 SC_END
 
 SC_BEGIN USER_FORM_SUBMIT
-return "<input class='button' type='submit' name='submit' value='".LAN_422."' />";
+return "<input class='button' type='submit' name='submit' value='".LAN_USER_47."' />";
 SC_END
 
 SC_BEGIN USER_EMBED_USERPROFILE

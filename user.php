@@ -1,21 +1,21 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/user.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-06-05 19:57:44 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * User information
+ *
+ * $Source: /cvs_backup/e107_0.8/user.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-20 20:18:54 $
+ * $Author: e107steved $
+ *
 */
+define('PAGE_NAME', 'Members');
+
 require_once("class2.php");
 
 // Next bit is to fool PM plugin into doing things
@@ -61,7 +61,7 @@ if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 $full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
 if (!$full_perms && !$self_page)
 {
-	$ns->tablerender(LAN_20, "<div style='text-align:center'>".USERLAN_2."</div>");
+	$ns->tablerender(LAN_USER_48, "<div style='text-align:center'>".LAN_USER_55."</div>");
 	require_once(FOOTERF);
 	exit;
 }
@@ -108,8 +108,8 @@ if (isset($id))
 {
 	if ($id == 0)
 	{
-		$text = "<div style='text-align:center'>".LAN_137." ".SITENAME."</div>";
-		$ns->tablerender(LAN_20, $text);
+		$text = "<div style='text-align:center'>".LAN_USER_49." ".SITENAME."</div>";
+		$ns->tablerender(LAN_USER_48, $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -120,7 +120,7 @@ if (isset($id))
 	if ($ret!='')
 	{
 		$text = "<div style='text-align:center'>".$ret."</div>";
-		$ns->tablerender(LAN_20, $text);
+		$ns->tablerender(LAN_USER_48, $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -139,12 +139,12 @@ if (isset($id))
 
 	if($text = renderuser($id))
 	{
-		$ns->tablerender(LAN_402, $text);
+		$ns->tablerender(LAN_USER_50, $text);
 	}
 	else
 	{
-		$text = "<div style='text-align:center'>".LAN_400."</div>";
-		$ns->tablerender(LAN_20, $text);
+		$text = "<div style='text-align:center'>".LAN_USER_51."</div>";
+		$ns->tablerender(LAN_USER_48, $text);
 	}
 	unset($text);
 	require_once(FOOTERF);
@@ -155,7 +155,7 @@ $users_total = $sql->db_Count("user","(*)", "WHERE user_ban = 0");
 
 if (!$sql->db_Select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
 {
-	echo "<div style='text-align:center'><b>".LAN_141."</b></div>";
+	echo "<div style='text-align:center'><b>".LAN_USER_53."</b></div>";
 }
 else
 {
@@ -170,7 +170,7 @@ else
 	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);
 }
 
-$ns->tablerender(LAN_140, $text);
+$ns->tablerender(LAN_USER_52, $text);
 
 $parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
 echo "<div class='nextprev'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
