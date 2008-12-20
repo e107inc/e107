@@ -1,28 +1,35 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-05-30 20:36:38 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin - newsfeeds
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/newsfeed.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-20 10:39:29 $
+ * $Author: e107steved $
+ *
 */
-require_once("../../class2.php");
-
-@include_once(e_PLUGIN."newsfeed/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."newsfeed/languages/English.php");
-if(!function_exists("checkUpdate"))
+require_once('../../class2.php');
+if (!plugInstalled('newsfeed')) 
 {
-	require(e_PLUGIN."newsfeed/newsfeed_functions.php");
+	header("location:".e_BASE."index.php");
+	exit;
+}
+
+@include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
+if(!class_exists('newsfeedClass'))
+{
+	require(e_PLUGIN.'newsfeed/newsfeed_functions.php');
+}
+global $newsFeed;
+if (!is_object($newsFeed)) 
+{
+	$newsFeed = new newsfeedClass;
 }
 require_once(HEADERF);
 
@@ -31,7 +38,7 @@ if (file_exists(THEME."newsfeed_template.php"))
 {
 	require_once(THEME."newsfeed_template.php");
 }
-else if(!$NEWSFEED_LIST_START)
+else if(!varset($NEWSFEED_LIST_START, FALSE))
 {
 	require_once(e_PLUGIN."newsfeed/templates/newsfeed_template.php");
 }
@@ -39,126 +46,36 @@ else if(!$NEWSFEED_LIST_START)
 $action = FALSE;
 if(e_QUERY)
 {
-	list($action, $id) = explode(".", e_QUERY);
-	$id = intval($id);
+	$qs = explode(".", e_QUERY);
+	$action = $qs[0];
+	$id = intval(varset($qs[1], 0));
 }
 
 if($action == "show")
 {
 	/* 'show' action - show feed */
-	checkUpdate();
 
-	if ($feeds = $sql -> db_Select("newsfeed", "*", "(newsfeed_active=2 OR newsfeed_active=3) AND newsfeed_id=$id"))
-	{
-		$row = $sql->db_Fetch();
-		extract ($row);
-		list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $newsfeed_image);				
-		$numtoshow = $newsfeed_showmain;
-		$numtoshow = (intval($numtoshow) > 0 ? $numtoshow : 999);
-
-		$rss = unserialize($newsfeed_data);
-
-		if(!is_object($rss))
-		{
-			$text = NFLAN_49;
-			$ns->tablerender(NFLAN_01, $text);
-			require_once(FOOTERF);
-			exit;
-		}
-
-		$FEEDNAME = "<a href='".e_SELF."?show.$newsfeed_id'>$newsfeed_name</a>";
-		$FEEDDESCRIPTION = $newsfeed_description;
-		if($newsfeed_image == "default")
-		{
-			if($file = fopen ($rss -> image['url'], "r"))
-			{
-				/* remote image exists - use it! */
-				$FEEDIMAGE = "<a href='".$rss -> image['link']."' rel='external'><img src='".$rss -> image['url']."' alt='".$rss -> image['title']."' style='border: 0; vertical-align: middle;' /></a>";
-			}
-			else
-			{
-				/* remote image doesn't exist - ghah! */
-				$FEEDIMAGE = "";
-			}
-
-
-		}else if ($newsfeed_image)
-		{
-			$FEEDIMAGE = "<img src='".$newsfeed_image."' alt='' />";
-		}
-		else
-		{
-			$FEEDIMAGE = "";
-		}
-		$FEEDLANGUAGE = $rss -> channel['language'];
-
-		if($rss -> channel['lastbuilddate'])
-		{
-			$pubbed = $rss -> channel['lastbuilddate'];
-		}
-		else if($rss -> channel['dc']['date'])
-		{
-			$pubbed = $rss -> channel['dc']['date'];
-		}
-		else
-		{
-			$pubbed = NFLAN_34;
-		}
-
-		$FEEDLASTBUILDDATE = NFLAN_33.$pubbed;
-		$FEEDCOPYRIGHT = $tp -> toHTML($rss -> channel['copyright'], TRUE);
-		$FEEDDOCS = $rss -> channel['docs'];
-		$FEEDTITLE = "<a href='".$rss -> channel['link']."' rel='external'>".$rss -> channel['title']."</a>";
-		$FEEDLINK = $rss -> channel['link'];
-
-		$data = "";
-		
-		$i = 0;
-		while($i < $numtoshow && $rss->items[$i])
-		{
-			$item = $rss->items[$i];
-//		foreach ($rss -> items as $item)
-//		{
-	
-			if($NEWSFEED_COLLAPSE)
-			{
-				$FEEDITEMLINK = "<a href='#' onclick='expandit(this)'>".$tp -> toHTML($item['title'], TRUE)."</a>
-				<div style='display:none' >
-				";
-				$FEEDITEMTEXT = preg_replace("/&#091;.*]/", "", $tp -> toHTML($item['description'], TRUE))."
-				<br /><br /><a href='".$item['link']."' rel='external'>".NFLAN_44."</a><br /><br />
-				</div>";
-			}
-			else
-			{
-				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>\n";
-				$FEEDITEMLINK = str_replace('&', '&amp;', $FEEDITEMLINK);
-				$feeditemtext = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", $item['description']);
-				$FEEDITEMTEXT = $tp -> toHTML($feeditemtext, TRUE)."\n";
-			}
-			$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
-			$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN);
-			$i++;
-		}
-		$BACKLINK = "<a href='".e_SELF."'>".NFLAN_31."</a>";
-		$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN_START) . $data . preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN_END);
-		$ns->tablerender(NFLAN_01, $text);
-		require_once(FOOTERF);
-		exit;
-	}
+	$data = $newsFeed->newsfeedInfo($id == 0 ? 'all' : $id, 'main');
+	$ns->tablerender($data['title'], $data['text']);  
+	require_once(FOOTERF);
+	exit;
 }
+
 	
 /* no action - display feed list ... */
-if ($feeds = $sql -> db_Select("newsfeed", "*", "newsfeed_active=2 OR newsfeed_active=3"))
+$newsFeed->readFeedList();
+if (count($newsFeed->feedList))
 {
 	$data = "";
-	while ($row = $sql->db_Fetch())
+	foreach ($newsFeed->feedList as $feed)
 	{
-		extract($row);
-		$FEEDNAME = "<a href='".e_SELF."?show.$newsfeed_id'>$newsfeed_name</a>";
-		$FEEDDESCRIPTION = ((!$newsfeed_description || $newsfeed_description == "default") ? "&nbsp;" : $newsfeed_description);
-		$FEEDIMAGE = $newsfeed_image;
-		$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_LIST);
+		if (($feed['newsfeed_active'] == 2) || ($feed['newsfeed_active'] == 3))
+		{
+			$FEEDNAME = "<a href='".e_SELF."?show.{$feed['newsfeed_id']}'>{$feed['newsfeed_name']}</a>";
+			$FEEDDESCRIPTION = ((!$feed['newsfeed_description'] || $feed['newsfeed_description'] == "default") ? "&nbsp;" : $feed['newsfeed_description']);
+//			$FEEDIMAGE = $feed['newsfeed_image'];	// This needs splitting up. Not used ATM anyway, so disable for now
+			$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_LIST);
+		}
 	}
 }
 

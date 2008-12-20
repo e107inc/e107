@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-03 00:43:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-20 10:39:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,13 +24,22 @@ if (!defined('e107_INIT')) { exit; }
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.9 $
-* @author      $Author: mcfly_e107 $
+* @version     $Revision: 1.10 $
+* @author      $Author: e107steved $
 */
 class ecache {
 
 	var $CachePageMD5;
 	var $CachenqMD5;
+	var $UserCacheActive;			// Checkable flag - TRUE if user cache enabled
+	var $SystemCacheActive;			// Checkable flag - TRUE if system cache enabled
+
+	function ecache()
+	{
+		global $pref;
+		$this->UserCacheActive = varsettrue($pref['cachestatus']);
+		$this->SystemCacheActive = varsettrue($pref['syscachestatus']);
+	}
 
 	/**
 	* @return string
@@ -46,28 +55,39 @@ class ecache {
 			// Add 'nomd5' to indicate we are not calculating an md5
 			$CheckTag = '_nomd5';
 		}
-		elseif (isset($this)) {
-			if (defined("THEME")) {
-				if (strpos($CacheTag, "nq_") === 0)	{
+		elseif (isset($this)) 
+		{
+			if (defined("THEME")) 
+			{
+				if (strpos($CacheTag, "nq_") === 0)	
+				{
 					// We do not care about e_QUERY, so don't use it in the md5 calculation
-					if (!$this->CachenqMD5) {
+					if (!$this->CachenqMD5) 
+					{
 						$this->CachenqMD5 = md5(e_BASE.(defined("ADMIN") && ADMIN == true ? "admin" : "").e_LANGUAGE.THEME.USERCLASS_LIST.filemtime(THEME.'theme.php'));
 					}
 					// Add 'nq' to indicate we are not using e_QUERY
 					$CheckTag = '_nq_'.$this->CachenqMD5;
 					
-				} else {
+				} 
+				else 
+				{
 					// It's a page - need the query in the hash
-					if (!$this->CachePageMD5) {
+					if (!$this->CachePageMD5) 
+					{
 						$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.e_QUERY.filemtime(THEME.'theme.php'));
 					}
 					$CheckTag = '_'.$this->CachePageMD5;
 				}
-			} else {
+			} 
+			else 
+			{
 				// Check if a custom CachePageMD5 is in use in e_module.php.  
 				$CheckTag = ($this->CachePageMD5) ? "_".$this->CachePageMD5 : "";
 			}
-		} else {
+		} 
+		else 
+		{
 			$CheckTag = '';
 		}
 		$q = ($syscache ? "S_" : "C_").preg_replace("#\W#", "_", $CacheTag);

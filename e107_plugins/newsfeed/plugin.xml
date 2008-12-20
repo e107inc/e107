@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt) -->
+<!-- $Id: plugin.xml,v 1.1 2008-12-20 10:39:29 e107steved Exp $ -->
+
+<e107Plugin name="NFLAN_01" version="2.0" compatibility="0.8" installRequired="true">
+	<author name="Steve Dunstan (jalist)" url="http://e107.org" email="jalist@e107.org" />
+	<description>NFLAN_02</description>
+	<folder>newsfeed</folder>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<logLanguageFile filename="languages/--LAN--_admin_newsfeed.php" />
+	<administration>
+		<configFile>admin_config.php</configFile>
+		<icon>images/newsfeed_32.png</icon>
+		<iconSmall>images/newsfeed_16.png</iconSmall>
+		<caption>Configure newsfeeds</caption>
+		<installDone>NFLAN_02</installDone>
+	</administration>
+	<menuLink name="Newsfeeds" url="newsfeed/newsfeed.php" />
+	<mainPrefs>
+	</mainPrefs>
+</e107Plugin>

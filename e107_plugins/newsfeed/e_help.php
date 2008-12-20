@@ -8,14 +8,18 @@
  *
  * Plugin - newsfeeds
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/languages/English_frontpage.php,v $
- * $Revision: 1.2 $
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/e_help.php,v $
+ * $Revision: 1.1 $
  * $Date: 2008-12-20 10:39:29 $
  * $Author: e107steved $
  *
 */
+if (!defined('e107_INIT')) { exit; }
+if (!plugInstalled('newsfeed')) 
+{
+	return;
+}
 
-define("NWSF_FP_1", "News Feeds");
-define("NWSF_FP_2", "main page");
-
+@include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_admin_newsfeed.php');
+$ns->tablerender(NFLAN_43, NFLAN_42);
 ?>
