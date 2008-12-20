@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.21 $
- * $Date: 2008-12-20 10:39:14 $
- * $Author: secretr $
+ * $Revision: 1.22 $
+ * $Date: 2008-12-20 14:36:09 $
+ * $Author: e107steved $
  *
 */
 require_once ("../class2.php");
@@ -540,7 +540,7 @@ $text .= "
 					<tr>
 						<td class='label'>".PRFLAN_155.":</td>
 						<td class='control'>
-							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,public,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
+							<div class='field-spacer'>".$e_userclass->uc_dropdown('displayname_class', $pref['displayname_class'], 'nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."</div>
 							".$frm->admin_button('submit_resetdisplaynames', PRFLAN_156)."
 						</td>
 					</tr>
