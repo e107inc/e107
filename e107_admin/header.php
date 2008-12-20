@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.24 $
-|   $Date: 2008-12-19 14:01:07 $
+|   $Revision: 1.25 $
+|   $Date: 2008-12-20 10:39:14 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -327,6 +327,7 @@ $e107_var = array();
 
 /**
  * Build admin menus - addmin menus are now supporting unlimitted number of submenus
+ * TODO - add this to a handler for use on front-end as well (tree, sitelinks.sc replacement)
  *
  * $e107_vars structure:
  * $e107_vars['action']['text'] -> link title
@@ -456,11 +457,14 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 	return '';
 }
 
+/*
+ *  DEPRECATED - use e_admin_menu()
+ */
 if (!function_exists('show_admin_menu')) {
 	function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE) {
 
-		return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
-		/*
+		//return e_admin_menu($title, $active_page, $e107_vars, false, false, $sortlist);
+
 		global $ns, $BUTTON, $BUTTON_OVER, $BUTTONS_START, $BUTTONS_END, $SUB_BUTTON, $SUB_BUTTON_OVER, $SUB_BUTTONS_START, $SUB_BUTTONS_END;
 
 		$id_title = "yop_".str_replace(" ", "", $title);
@@ -552,7 +556,7 @@ if (!function_exists('show_admin_menu')) {
 			return $text;
 		} else {
 			$ns -> tablerender($title, $text, array('id' => $id_title, 'style' => 'button_menu'));
-		}*/
+		}
 	}
 }
 
@@ -576,6 +580,17 @@ if (!function_exists("parse_admin")) {
 	}
 }
 
+/**
+ * Automate DB system messages
+ * NOTE: default value of $output parameter will be changed to false (no output by default) in the future
+ *
+ * @param integer|bool $update return result of db::db_Query
+ * @param string $type update|insert|update
+ * @param string $success forced success message
+ * @param string $failed forced error message
+ * @param bool $output false suppress any function output
+ * @return integer|bool db::db_Query result
+ */
 function admin_update($update, $type = 'update', $success = false, $failed = false, $output = true) {
 	require_once(e_HANDLER."message_handler.php");
 	$emessage = &eMessage::getInstance();

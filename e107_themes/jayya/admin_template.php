@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/admin_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-08-25 05:48:53 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-20 10:39:14 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -154,6 +154,52 @@ $ADMIN_FOOTER .= "</tr>
 
 
 // [admin button style]
+/* NEW ADMIN MENU TEMPLATE
+
+ * see function e_admin_menu() in e107_admin/header.php
+
+*/
+$E_ADMIN_MENU['start'] = '
+<ul class="plugin-navigation">
+';
+
+$E_ADMIN_MENU['button'] = '
+	<li>
+		<a class="link{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
+		{SUB_MENU}
+	</li>
+';
+$E_ADMIN_MENU['button_active'] = '
+	<li>
+		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
+		{SUB_MENU}
+	</li>
+';
+
+$E_ADMIN_MENU['start_sub'] = '
+		<ul class="plugin-navigation-sub{SUB_CLASS}"{SUB_ID}>
+';
+
+$E_ADMIN_MENU['button_sub'] = '
+			<li>
+				<a class="link" href="{LINK_URL}">&raquo;&nbsp;{LINK_TEXT}</a>
+				{SUB_MENU}
+			</li>
+';
+$E_ADMIN_MENU['button_active_sub'] = '
+			<li>
+				<a class="link-active" href="{LINK_URL}">&raquo;&nbsp;{LINK_TEXT}</a>
+				{SUB_MENU}
+			</li>
+';
+
+$E_ADMIN_MENU['end_sub'] = '
+		</ul>
+';
+
+$E_ADMIN_MENU['end'] = '
+</ul>
+';
 
 $BUTTONS_START = "<table class='fborder' style='width: 100%'>";
 

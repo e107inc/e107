@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.20 $
- * $Date: 2008-12-19 14:01:07 $
+ * $Revision: 1.21 $
+ * $Date: 2008-12-20 10:39:14 $
  * $Author: secretr $
  *
 */
@@ -1124,7 +1124,7 @@ function prefs_adminmenu()
 	$var['core-prefs-security']['text'] = PRFLAN_47;
 	$var['core-prefs-comments']['text'] = PRFLAN_87;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
-	show_admin_menu(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var, TRUE);
+	e_admin_menu(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
 
 /**
