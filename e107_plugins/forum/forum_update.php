@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-20 04:51:06 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-20 16:41:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -58,8 +58,6 @@ if(isset($_POST) && count($_POST))
 		$f->setUpdateInfo();
 	}
 }
-
-
 
 
 $currentStep = (isset($f->updateInfo['currentStep']) ? $f->updateInfo['currentStep'] : 1);
@@ -324,6 +322,120 @@ function step4()
 	
 }
 
+function step5()
+{
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 5: Migrate forum data';
+	if(!isset($_POST['move_forum_data']))
+	{
+		$text = "
+		This step will copy all of your forum configuration from the `forum` table into the `forum_new` table.<br /><br />
+		Once the information is successfully copied, the existing 0.7 forum table will be renamed `forum_old` and the newly created `forum_new` table will be renamed `forum`.<br />
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='move_forum_data' value='Proceed with forum data move' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+
+	$ftypes['_FIELD_TYPES']['forum_id'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_parent'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_sub'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_datestamp'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_moderators'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_threads'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_replies'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_lastpost_user'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_class'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_order'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_postclass'] = 'int';
+	$ftypes['_FIELD_TYPES']['forum_threadclass'] = 'int';
+
+	$counts = array('parens' => 0, 'forums' => 0, 'subs' => 0);
+	
+	if($e107->sql->db_Select('forum'))
+	{
+		$forumList = $e107->sql->db_getList();
+		foreach($forumList as $forum)
+		{
+			if($forum['forum_parent'] == 0)
+			{
+				$counts['parents']++;
+			} 
+			elseif($forum['forum_sub'] != 0)
+			{
+				$counts['subs']++;
+			}
+			else
+			{
+				$counts['forums']++;
+			}
+				
+			$tmp = $forum;
+			$tmp['forum_threadclass'] = $tmp['forum_postclass'];
+			$tmp['forum_options'] = '_NULL_';
+			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
+			$e107->sql->db_Insert('forum_new', $tmp);
+		}
+		
+		$text = "
+		Forum data move results:<br />
+		Number of forum parents processed: {$counts['parents']} <br />
+		Number of forums processed: {$counts['forums']} <br />
+		Number of sub forums processed: {$counts['subs']} <br />
+		<br /><br />
+		";
+
+		$result = $e107->sql->db_Select_gen('RENAME TABLE `#forum`  TO `#forum_old` ');
+		$text .= "Rename forum to forum_old -> ".($result ? 'Passed' : 'Failed!');
+		$text .= '<br />';
+		
+		$result = $e107->sql->db_Select_gen('RENAME TABLE `#forum_new`  TO `#forum` ');
+		$text .= "Rename forum_new to forum -> ".($result ? 'Passed' : 'Failed!');
+		$text .= '<br />';
+		
+		$text .= "
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='nextStep[6]' value='Proceed to step 6' />
+		</form>
+		";
+	
+		$e107->ns->tablerender($stepCaption, $text);
+		
+	}
+}
+
+function step6()
+{
+	global $f;
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 6: Thread and post data';
+	$threadLimit = 2500;
+	$lastThread = varset($f->updateInfo['lastThread'], 0);
+
+	$qry = "
+	SELECT thread_id FROM `#forum_t` 
+	WHERE thread_parent = 0
+	AND thread_id > {$lastThread}
+	ORDER BY thread_id ASC
+	LIMIT 0, {$threadLimit}
+	";
+	if($e107->sql->db_Select_gen($qry, true))
+	{
+		$threadList = $e107->sql->db_getList();
+		foreach($threadList as $t)
+		{
+			echo "Migrating thread {$t['thread_id']} <br />";
+			$result = $f->migrateThread($t['thread_id']);
+		}
+	}	
+	
+}
+
+
 class forumUpgrade
 {
 	var	$newVersion = '2.0';
@@ -391,8 +503,44 @@ class forumUpgrade
 		$e107->sql->db_Update('plugin',"plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
 		return "Forum Version updated to version: {$this->newVersion} <br />";
 	}	
-
+	
+	function migrateThread($threadId)
+	{
+		global $forum;
+		$e107 = e107::getInstance();
+		$threadId = (int)$threadId;
+		if($e107->sql->db_Select('forum_t', '*', "thread_parent = {$threadId} OR thread_id = {$threadId}", 'default'))
+		{
+			$threadData = $e107->sql->db_getList();
+			foreach($threadData as $post)
+			{
+				if($post['thread_parent'] == 0)
+				{
+					$result = $this->addThread($post);
+					$result = $this->addPost($post);
+				}
+				else
+				{
+					$result = $this->addPost($post);
+				}
+			}
+		}
+	}
+	
+	function addThread(&$post)
+	{
+		echo "Adding thread {$post['thread_id']}<br />";
+//		var_dump($post);
+	}
+	
+	function addPost(&$post)
+	{
+		echo "Adding post {$post['thread_id']}<br />";
+	}
+	
 }
+
+
 
 function forum_update_adminmenu()
 {
