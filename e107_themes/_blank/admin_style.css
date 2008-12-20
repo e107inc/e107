@@ -85,12 +85,9 @@ ul,ol       { list-style:none; }
 
 /******** Decorate JS */
 /* Admin List Table */ 
-.adminlist-table {} /* fieldset */
 .adminlist { width:100%;  border:1px solid #ddd;}
 .adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold; white-space:nowrap; }
 .adminlist td { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; }
-
-.adminlist td div.field-spacer { clear: both; margin-bottom: 3px; } /* multi-fields per row separator */
 
 .adminlist th.last,
 .adminlist td.last { border-right: 0px solid;}
@@ -137,7 +134,8 @@ label { cursor: pointer; }
 
 
 .adminform td { padding: 5px; text-align: left}
-.adminform td div.field-spacer { clear: both; margin-bottom: 3px; } /* multi-fields per row separator */
+.adminform td div.field-spacer { margin-bottom: 3px; } /* multi-fields per row separator */
+.adminform td div.field-section { clear: both; margin-bottom: 10px; } /* multi-field sections per row - wrapper */
 
 .adminform .select { width: 280px;}
 .adminform .input-text { width: 274px;}
@@ -151,9 +149,10 @@ label { cursor: pointer; }
 
 /* form used for content edit */
 .adminedit  { width:100%;  border:1px solid #ddd;}
+.adminedit.options { } /* form used for content item options */
 .adminedit td { padding: 5px; text-align: left}
-.adminedit td div.field-spacer { clear: both; margin-bottom: 3px; } /* multi-fields per row separator */
-
+.adminedit td div.field-spacer { clear: both; margin-bottom: 3px; } /* multi-fields per row - wrapper */
+.adminedit td div.field-section { clear: both; margin-bottom: 10px; } /* multi-field sections per row - wrapper */
 .adminedit .select { width: 280px; }
 .adminedit .input-text { width: 274px;}
 .adminedit td.control textarea { width: 274px;}
@@ -314,7 +313,7 @@ input.action.edit {}
 .element-loading-mask { background-repeat: no-repeat; background-position: 50% 50%; background-color: #f5f5f5; }
 
 /********** Misc */
-.e-pointer { cursor: pointer; } /* Pointer Hand - cursor: pointer; cursor: hand */
+.e-pointer { cursor: pointer; } /* Pointer Hand */
 .expand-container { padding: 10px; } /* Block with expandable items */
 .nextprev-bar { clear: both; padding: 5px; font-size: 14px; margin: 5px; border:1px solid #ddd; } /* Page NextPrev nabigation block */
 .imgselector-container { clear: both; } /* ImageSelector.sc */
@@ -407,14 +406,29 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 #core-banlist-transfer-export		{}
 #core-banlist-transfer-import		{}
 
+/* banner.php */
+#core-banner-list					{}
+#core-banner-edit					{}
+#core-banner-menu					{}
 
 /* cache.php */
 #core-cache-settings				{} /* General cache settings - Default front page */
+
+/* cpage */
+#core-cpage-list					{}
+#core-cpage-create					{}
+#core-cpage-create-general			{}
+#core-cpage-create-options			{}
+#core-cpage-options					{}
 
 /* emoticon.php */
 #core-emoticon-activate				{} /* Emote activation - Default front page */
 #core-emoticon-packages				{} /* Installed packs - Default front page */
 #core-emoticon-configure			{} /* Configure an individual emote pack */
+
+/* eurl.php */
+#core-eurl-core						{}
+#core-eurl-plugin					{}
 
 /* frontpage.php */
 #core-frontpage-settings			{} /* Display list of current settings - Default front page */
@@ -448,7 +462,6 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 /* meta.php */
 #dataform							{} /* Form tag ID - Default front page - old core definition */
 #core-meta-settings					{} /* General meta settings - Default front page */
-
 
 /* prefs.php */
 #core-prefs							{} /* Main continer - contains all block lemenst from bewlow */

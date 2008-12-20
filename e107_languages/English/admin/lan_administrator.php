@@ -9,16 +9,16 @@
  * Admin Language File
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_administrator.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-02 00:32:30 $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-20 15:23:48 $
  * $Author: secretr $
 */
-define("ADMSLAN_0", "New user/admin entry created for");
-define("ADMSLAN_1", "now has admin status.");
-define("ADMSLAN_2", "updated in database.");
+//define("ADMSLAN_0", "New user/admin entry created for"); - no references found
+//define("ADMSLAN_1", "now has admin status."); - no references found
+
 define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
 define("ADMSLAN_4", "Continue");
-define("ADMSLAN_5", "Error!");
+//define("ADMSLAN_5", "Error!"); - global admin LAN_ERROR
 define("ADMSLAN_6", "is the main site administrator and cannot be deleted.");
 
 define("ADMSLAN_13", "Existing Administrators");
@@ -57,8 +57,8 @@ define("ADMSLAN_45", "Schedule Tasks");
 define("ADMSLAN_46", "Welcome message");
 define("ADMSLAN_47", "Moderate submitted news");
 
-define("ADMSLAN_49", "Check All");
-define("ADMSLAN_51", "Uncheck All");
+//define("ADMSLAN_49", "Check All"); - global admin lan
+//define("ADMSLAN_51", "Uncheck All"); - global admin lan
 define("ADMSLAN_52", "Update administrator");
 define("ADMSLAN_53", "Add administrator");
 define("ADMSLAN_54", "Site Administrators");
@@ -81,12 +81,15 @@ define("ADMSLAN_67", "Scan with file inspector");
 define("ADMSLAN_68", "Configure email notification");
 define("ADMSLAN_69", "is already an administrator and must be edited.");
 
+// 0.8
 define("ADMSLAN_70", "Return to Administrator Listing");
-define("ADMSLAN_71", "Click here to display privileges");  
+define("ADMSLAN_71", "Click here to display privileges");
 
 define('ADMSLAN_72', 'Admin ID: --ID-- name: --NAME-- new permissions: ');
 define('ADMSLAN_73', 'Admin ID: --ID-- name: --NAME--');
-define('ADMSLAN_74', '');
+
+define('ADMSLAN_74', 'General');
 define('ADMSLAN_75', '');
 
+define("ADMSLAN_2", "Site Administrator <strong>%s</strong> updated in database.");
 ?>

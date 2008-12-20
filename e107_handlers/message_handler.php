@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-20 12:30:18 $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-20 15:23:48 $
  * $Author: secretr $
  *
 */
@@ -24,6 +24,7 @@ define('E_MESSAGE_INFO', 	'info');
 define('E_MESSAGE_SUCCESS', 'success');
 define('E_MESSAGE_WARNING', 'warning');
 define('E_MESSAGE_ERROR', 	'error');
+define('E_MESSAGE_DEBUG', 	'debug');
 
 //FIXME - language file! new?
 
