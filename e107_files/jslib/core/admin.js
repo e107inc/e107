@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.7 $
- * $Date: 2008-12-19 14:01:07 $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-21 11:47:29 $
  * $Author: secretr $
  * 
 */
@@ -219,7 +219,7 @@ e107Admin.AdminMenu = {
 		show = $(show); 
 		if(!show) return false;
 		if(this.activeTab && this.activeTab.identify() != show.identify()) {
-			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active').invoke('addClassName', 'link');
+			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link') });
 			this.activeTab.hide();
 			this.activeTab = show;
 			this.activeTab.removeClassName('e-hideme').show();
@@ -227,12 +227,12 @@ e107Admin.AdminMenu = {
 			this.activeBar.removeClassName('link').addClassName('link-active');
 			return true;
 		} else if(!this.activeTab) { //init
-			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active').invoke('addClassName', 'link');
+			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link') });
 			this.activeTab = show.removeClassName('e-hideme').show(); 
 			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
 			return true;
 		} else if(!this.activeBar && this.activeTab) {//only bar is unknown
-			if(container) $(container).select('a.link-active[href^=#])').invoke('removeClassName', 'link-active').invoke('addClassName', 'link');
+			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link') });
 			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
 			return true;
 		}
@@ -242,7 +242,7 @@ e107Admin.AdminMenu = {
 	observer: function(event, cont) {
 		if(this.switchTab(event.element().hash.substr(1), event.element(), cont)) {
 			event.stop();
-			document.location.hash = this.id.camelize() + 'AdminMenu=' + event.element().hash.substr(1)
+			document.location.hash = this.id.camelize() + 'AdminMenu=' + event.element().hash.substr(1);
 		}
 	},
 
