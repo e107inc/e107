@@ -9,8 +9,8 @@
  * Administration Area - Users
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
- * $Revision: 1.18 $
- * $Date: 2008-12-21 11:07:58 $
+ * $Revision: 1.19 $
+ * $Date: 2008-12-21 16:19:29 $
  * $Author: e107steved $
  *
 */
@@ -592,7 +592,7 @@ class users
 
 	function show_existing_users($action, $sub_action, $id, $from, $amount) 
 	{
-		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref,$unverified, $userMethods;
+		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref,$unverified, $userMethods, $e107;
 		// save the display choices.
 		if(isset($_POST['searchdisp']))
 		{
@@ -714,7 +714,7 @@ class users
 				foreach($search_display as $disp)
 				{
 					$text .= "<td style='white-space:nowrap' class='forumheader3'>";
-					if($disp == "user_class")
+					if($disp == 'user_class')
 					{
 						if ($user_class)
 						{
@@ -728,6 +728,10 @@ class users
 						{
 							$text .= "&nbsp;";
 						}
+					}
+					elseif($disp == 'user_ip')
+					{
+						$text .= $e107->ipDecode($user_ip);
 					}
 					elseif (in_array($disp,$boleanfields))
 					{
