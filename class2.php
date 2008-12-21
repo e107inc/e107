@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2008-12-21 22:17:05 $
+|     $Revision: 1.89 $
+|     $Date: 2008-12-21 22:29:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1592,6 +1592,7 @@ function message_handler($mode, $message, $line = 0, $file = "")
 	show_emessage($mode, $message, $line, $file);
 }
 
+/*
 // -----------------------------------------------------------------------------
 function table_exists($check)
 {
@@ -1614,6 +1615,7 @@ function table_exists($check)
 		}
 	}
 }
+*/
 
 function class_list($uid = '')
 {
