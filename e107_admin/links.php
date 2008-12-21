@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.18 $
- * $Date: 2008-12-19 14:01:07 $
+ * $Revision: 1.19 $
+ * $Date: 2008-12-21 12:53:11 $
  * $Author: secretr $
  *
 */
@@ -988,7 +988,7 @@ function links_adminmenu()
 	//	$var['debug']['link'] = e_SELF."?debug";
 
 
-	show_admin_menu(LCLAN_68, $action, $var);
+	e_admin_menu(LCLAN_68, $action, $var);
 }
 
 /**
