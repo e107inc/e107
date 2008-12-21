@@ -9,8 +9,8 @@
  * Search Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/search.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-16 17:23:25 $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-21 11:39:34 $
  * $Author: secretr $
  *
 */
@@ -25,7 +25,10 @@ $e_sub_cat = 'search';
 require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER."message_handler.php");
+require_once (e_HANDLER.'form_handler.php');
+$frm = new e_form(true);
 $emessage = &eMessage::getInstance();
+$e_userclass = new user_class();
 
 $query = explode('.', e_QUERY);
 
@@ -71,34 +74,27 @@ if ($save_search)
 }
 
 
-if (isset($_POST['update_main']) || isset($_POST['update_main_com']))
+if (isset($_POST['update_main']))
 {	// Update all the basic handler info
 
-	if(isset($_POST['update_main']))
+	foreach($search_handlers as $s_key => $s_value)
 	{
-		foreach($search_handlers as $s_key => $s_value)
-		{
-			$search_prefs['core_handlers'][$s_key]['class'] = $_POST['core_handlers'][$s_key]['class'];
-			$search_prefs['core_handlers'][$s_key]['order'] = $_POST['core_handlers'][$s_key]['order'];
-		}
-
-		foreach ($search_prefs['plug_handlers'] as $plug_dir => $active)
-		{
-			$search_prefs['plug_handlers'][$plug_dir]['class'] = $_POST['plug_handlers'][$plug_dir]['class'];
-			$search_prefs['plug_handlers'][$plug_dir]['order'] = $_POST['plug_handlers'][$plug_dir]['order'];
-		}
-
-		$search_prefs['google'] = $_POST['google'];
+		$search_prefs['core_handlers'][$s_key]['class'] = $_POST['core_handlers'][$s_key]['class'];
+		$search_prefs['core_handlers'][$s_key]['order'] = $_POST['core_handlers'][$s_key]['order'];
 	}
 
-	if(isset($_POST['update_main_com']))
+	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active)
 	{
-		foreach ($search_prefs['comments_handlers'] as $key => $value)
-		{
-			$search_prefs['comments_handlers'][$key]['class'] = $_POST['comments_handlers'][$key]['class'];
-		}
+		$search_prefs['plug_handlers'][$plug_dir]['class'] = $_POST['plug_handlers'][$plug_dir]['class'];
+		$search_prefs['plug_handlers'][$plug_dir]['order'] = $_POST['plug_handlers'][$plug_dir]['order'];
 	}
 
+	$search_prefs['google'] = $_POST['google'];
+
+	foreach ($search_prefs['comments_handlers'] as $key => $value)
+	{
+		$search_prefs['comments_handlers'][$key]['class'] = $_POST['comments_handlers'][$key]['class'];
+	}
 
 	$tmp = addslashes(serialize($search_prefs));
 
@@ -215,74 +211,65 @@ if ($query[0] == 'settings')
 					<tr>
 						<td class='label'>".SEALAN_15.": </td>
 						<td class='control'>
-							".r_userclass("search_restrict", $pref['search_restrict'], "off", "public,guest,nobody,member,admin,classes")."
+							".$e_userclass->uc_dropdown('search_restrict', $pref['search_restrict'], 'public,guest,nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".SEALAN_30."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='search-highlight-1' name='search_highlight' value='1'".($pref['search_highlight'] ? " checked='checked'" : "")." /><label for='search-highlight-1'>".SEALAN_16."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='search-highlight-0' name='search_highlight' value='0'".(!$pref['search_highlight'] ? " checked='checked'" : "")." /><label for='search-highlight-0'>".SEALAN_17."</label>
+							".$frm->radio_switch('search_highlight', $pref['search_highlight'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".SEALAN_10."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='relevance-1' name='relevance' value='1'".($search_prefs['relevance'] ? " checked='checked'" : "")." /><label for='relevance-1'>".SEALAN_16."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='relevance-0' name='relevance' value='0'".(!$search_prefs['relevance'] ? " checked='checked'" : "")." /><label for='relevance-0'>".SEALAN_17."</label>
+							".$frm->radio_switch('relevance', $search_prefs['relevance'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".SEALAN_11."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='user-select-1' name='user_select' value='1'".($search_prefs['user_select'] ? " checked='checked'" : "")." /><label for='user-select-1'>".SEALAN_16."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='user-select-0' name='user_select' value='0'".(!$search_prefs['user_select'] ? " checked='checked'" : "")." /><label for='user-select-0'>".SEALAN_17."</label>
+							".$frm->radio_switch('user_select', $search_prefs['user_select'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".SEALAN_19."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='multisearch-1' name='multisearch' value='1'".($search_prefs['multisearch'] ? " checked='checked'" : "")." /><label for='multisearch-1'>".SEALAN_16."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='multisearch-0' name='multisearch' value='0'".(!$search_prefs['multisearch'] ? " checked='checked'" : "")." /><label for='multisearch-0'>".SEALAN_17."</label>
+							".$frm->radio_switch('multisearch', $search_prefs['multisearch'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".SEALAN_35."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='selector-2' name='selector' value='2'".($search_prefs['selector'] == '2' ? " checked='checked'" : "")." /><label for='selector-2'>".SEALAN_36."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='selector-1' name='selector' value='1'".($search_prefs['selector'] == '1' ? " checked='checked'" : "")." /><label for='selector-1'>".SEALAN_37."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='selector-0' name='selector' value='0'".($search_prefs['selector'] == '0' ? " checked='checked'" : "")." /><label for='selector-0'>".SEALAN_38."</label>
+							".$frm->radio_multi('selector', array(2 => SEALAN_36, 1 => SEALAN_37, 0 => SEALAN_38), $search_prefs['selector'])."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".SEALAN_12."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='time_restrict-0' name='time_restrict' value='0'".(!$search_prefs['time_restrict'] ? " checked='checked'" : "")." /><label for='selector-0'>".SEALAN_17."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='time_restrict-1' name='time_restrict' value='1'".($search_prefs['time_restrict'] ? " checked='checked'" : "")." /><label for='selector-1'>".SEALAN_13."</label>&nbsp;&nbsp;
-							<input class='tbox' type='text' name='time_secs' value='".$tp -> toForm($search_prefs['time_secs'])."' size='3' maxlength='3' />&nbsp;".SEALAN_14."
+							".$frm->radio_multi('time_restrict', array(0 => LAN_DISABLED, 1 => SEALAN_13), $search_prefs['time_restrict'])."&nbsp;
+							".$frm->text('time_secs', $tp -> toForm($search_prefs['time_secs']), 3, 'class=tbox&size=5')."&nbsp;".SEALAN_14."
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".SEALAN_3."</td>
 						<td class='control'>
-							".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0))." MySql<br />
-							".$rs -> form_radio('search_sort', 'php', ($search_prefs['mysql_sort'] == TRUE ? 0 : 1))." ".SEALAN_31."
-							<input class='tbox' type='text' name='php_limit' value='".$tp -> toForm($search_prefs['php_limit'])."' size='5' maxlength='5' />&nbsp;".SEALAN_32."
+							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySql', SEALAN_31)."&nbsp;
+							".$frm->text('php_limit', $tp -> toForm($search_prefs['php_limit']), 5, 'class=tbox&size=5')."&nbsp;".SEALAN_32."
 							<div class='field-help'>".SEALAN_49."</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".SEALAN_47."</td>
 						<td class='control'>
-							<input type='radio' class='radio' id='boundary-1' name='boundary' value='1'".($search_prefs['boundary'] ? " checked='checked'" : "")." /><label for='boundary-1'>".SEALAN_16."</label>&nbsp;&nbsp;
-							<input type='radio' class='radio' id='boundary-0' name='boundary' value='0'".(!$search_prefs['boundary'] ? " checked='checked'" : "")." /><label for='boundary-0'>".SEALAN_17."</label>
+							".$frm->radio_switch('boundary', $search_prefs['boundary'])."
 							<div class='field-help'>".SEALAN_48."</div>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_prefs' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
+				".$frm->admin_button('update_prefs', LAN_UPDATE, 'update')."
 			</div>
 		</fieldset>
 	</form>
@@ -446,9 +433,6 @@ else
 						</tr>
 				</tbody>
 			</table>
-			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_main' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
-			</div>
 		</fieldset>
 
 	";
@@ -490,7 +474,7 @@ else
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_main_com' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
+				<button class='update' type='submit' name='update_main' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
 			</div>
 		</fieldset>
 		</form>
@@ -516,7 +500,7 @@ function search_adminmenu() {
 	$var['settings']['text'] = SEALAN_42;
 	$var['settings']['link'] = e_SELF."?settings";
 
-	show_admin_menu(SEALAN_40, $action, $var);
+	e_admin_menu(SEALAN_40, $action, $var);
 }
 
 ?>
