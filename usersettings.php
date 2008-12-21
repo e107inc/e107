@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/usersettings.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2008-12-10 16:37:17 $
+|     $Revision: 1.28 $
+|     $Date: 2008-12-21 03:58:07 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 
@@ -801,11 +801,11 @@ if ($_POST)
 	// (Password fields have intentionally been cleared). If no error, there's an unset($_POST) to disable this block
 	foreach ($_POST as $key => $val)
 	{
-		$curVal['user_'.$key] = $val;
+		$curVal['user_'.$key] = $tp->post_toForm($val);
 	}
 	foreach ($_POST['ue'] as $key => $val)
 	{
-		$curVal[$key] = $val;
+		$curVal[$key] = $to->post_toForm($val);
 	}
 }
 
