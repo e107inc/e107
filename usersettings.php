@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2008-11-22 10:19:58 $
-|     $Author: e107steved $
+|     $Revision: 1.105 $
+|     $Date: 2008-12-21 03:57:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -561,15 +561,15 @@ $sql->db_Select_gen($qry);
 $curVal=$sql->db_Fetch();
 $curVal['userclass_list'] = addCommonClasses($curVal);
 
-if($_POST)
+if($_POST && $error)
 {     // Fix for all the values being lost when an error occurred.
 	foreach($_POST as $key => $val)
 	{
-		$curVal["user_".$key] = $val;
+		$curVal["user_".$key] = $tp->post_toForm($val);
 	}
 	foreach($_POST['ue'] as $key => $val)
 	{
-		$curVal[$key] = $val;
+		$curVal[$key] = $tp->post_toForm($val);
 	}
 }
 
