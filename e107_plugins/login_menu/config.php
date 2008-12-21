@@ -1,50 +1,57 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-02-06 00:23:28 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin Administration - Login menu
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/config.php,v $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-21 12:53:48 $
+ * $Author: e107steved $
+ *
 */
 
 $eplug_admin = TRUE;
 
 require_once("../../class2.php");
-if (!getperms("4")) { header("location:".e_BASE."index.php"); exit ;}
+if (!getperms("4")) 
+{ 
+	header("location:".e_BASE."index.php"); 
+	exit() ;
+}
 
 include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 require_once(e_ADMIN."auth.php");
 
 require_once(e_PLUGIN."login_menu/login_menu_class.php");
 
-if ($_POST['update_menu']) {
-	
+if ($_POST['update_menu']) 
+{
     //sort/show/hide links - Start
-	if(varset($_POST['external_links'])) {
-	    
+	if(varset($_POST['external_links'])) 
+	{   
 	    $_POST['pref']['external_links'] = array();
         asort($_POST['external_links_order']);
         
-        foreach ($_POST['external_links_order'] as $key => $value) {
+		foreach ($_POST['external_links_order'] as $key => $value) 
+		{
         	if(array_key_exists($key, $_POST['external_links']))
+			{
                 $_POST['pref']['external_links'][] = $key;
+			}
         }
 
         $_POST['pref']['external_links'] = $_POST['pref']['external_links'] ? implode(',', $_POST['pref']['external_links']) : '';
 
         unset($_POST['external_links']);
         
-	} else {
+	} 
+	else 
+	{
         $_POST['pref']['external_links'] = '';
     }
     
@@ -52,12 +59,15 @@ if ($_POST['update_menu']) {
     //sort/show/hide links - End
     
     //show/hide stats - Start
-	if(varset($_POST['external_stats'])) {
+	if(varset($_POST['external_stats'])) 
+	{
 	    
 	    $_POST['pref']['external_stats'] = implode(',', array_keys($_POST['external_stats']));
         unset($_POST['external_stats']);
         
-	} else {
+	} 
+	else 
+	{
         $_POST['pref']['external_stats'] = '';
     }
     //show/hide stats - End
@@ -65,7 +75,8 @@ if ($_POST['update_menu']) {
 	unset($menu_pref['login_menu']);
 	$menu_pref['login_menu'] = $_POST['pref'];
 	$tmp = addslashes(serialize($menu_pref));
-	$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
+	$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='menu_pref' ");
+	$admin_log->log_event('MISC_03','', E_LOG_INFORMATIVE,'');
 	$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
 
 }

@@ -1,41 +1,47 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/tree_menu/config.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:43 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin Administration - Tree menu
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/tree_menu/config.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2008-12-21 12:53:48 $
+ * $Author: e107steved $
+ *
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
 @include_once(e_PLUGIN."tree_menu/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."tree_menu/languages/English.php");
 
-if (!getperms("4")) {
+if (!getperms("4")) 
+{
 	header("location:".e_BASE."index.php");
 	exit ;
 }
 require_once(e_ADMIN."auth.php");
 	
-if (isset($_POST['update_menu'])) {
-	foreach($_POST as $key => $value) {
-		if ($value != TREE_L2) {
-			$menu_pref[$key] = $value;
+if (isset($_POST['update_menu'])) 
+{
+	$temp = array();
+	foreach($_POST as $key => $value) 
+	{
+		if ($value != TREE_L2) 
+		{
+			$temp[$key] = $value;
 		}
 	}
-	 
-	$tmp = addslashes(serialize($menu_pref));
-	$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
+
+	if ($admin_log->logArrayDiffs($temp,$menu_pref,'MISC_01'))
+	{
+		$tmp = addslashes(serialize($menu_pref));
+		$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='menu_pref' ");
+	}
 	$ns->tablerender("", "<div style='text-align:center'><b>".TREE_L3."</b></div>");
 }
 	

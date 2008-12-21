@@ -1,39 +1,45 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/online/config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-01 19:50:56 $
-|     $Author: lisa_ $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin Administration - Online menu
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/online/config.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2008-12-21 12:53:48 $
+ * $Author: e107steved $
+ *
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
 include_lan(e_PLUGIN."online/languages/".e_LANGUAGE.".php");
 
-if (!getperms("1")) {
+if (!getperms("1")) 
+{
 	header("location:".e_BASE."index.php");
 	exit ;
 }
 require_once(e_ADMIN."auth.php");
 
-if (isset($_POST['update_menu'])) {
-	while (list($key, $value) = each($_POST)) {
-		if ($value != LAN_UPDATE) {
-			$menu_pref[$key] = $value;
+if (isset($_POST['update_menu'])) 
+{
+	$temp = array();
+	while (list($key, $value) = each($_POST)) 
+	{
+		if ($value != LAN_UPDATE) 
+		{
+			$temp[$key] = $value;
 		}
 	}
-	$tmp = addslashes(serialize($menu_pref));
-	$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
+	if ($admin_log->logArrayDiffs($temp,$menu_pref,'MISC_02'))
+	{
+		$tmp = addslashes(serialize($menu_pref));
+		$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='menu_pref' ");
+	}
 	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
 }
 
