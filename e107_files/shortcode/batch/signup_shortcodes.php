@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-06-13 20:20:21 $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-21 10:54:31 $
 |     $Author: e107steved $
 |
 | Mods to show extended field categories
@@ -161,8 +161,8 @@ if($pref['signup_option_class'])
   {
 	global $USERCLASS_SUBSCRIBE_ROW, $e_userclass, $tp;
 	$search = array('{USERCLASS_ID}', '{USERCLASS_NAME}', '{USERCLASS_DESCRIPTION}', '{USERCLASS_INDENT}');
-	$replace = array($classnum, $tp->toHTML($e_userclass->uc_get_classname($classnum), "", "defs"), 
-					$tp->toHTML($e_userclass->uc_get_classdescription($classnum), "", "defs"), " style='text-indent:".(1.2*$nest_level)."em'");
+	$replace = array($classnum, $tp->toHTML($e_userclass->uc_get_classname($classnum), FALSE, 'defs'), 
+					$tp->toHTML($e_userclass->uc_get_classdescription($classnum), FALSE, 'defs'), " style='text-indent:".(1.2*$nest_level)."em'");
 	return str_replace($search, $replace, $USERCLASS_SUBSCRIBE_ROW);
   }
   $ret = $USERCLASS_SUBSCRIBE_START;
@@ -207,11 +207,11 @@ foreach($catList as $cat)
    	{
       if(!$done_heading  && ($cat['user_extended_struct_id'] > 0))
       {	// Add in a heading
-		$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($cat['user_extended_struct_name'], '', 'emotes_off defs'), $SIGNUP_EXTENDED_CAT);
+		$text .= str_replace('{EXTENDED_CAT_TEXT}', $tp->toHTML($cat['user_extended_struct_name'], FALSE, 'emotes_off,defs'), $SIGNUP_EXTENDED_CAT);
 		$done_heading = TRUE;
 	  }
   	  $replace = array(
-    			$tp->toHTML($ext['user_extended_struct_text'], '', 'emotes_off defs'),
+    			$tp->toHTML($ext['user_extended_struct_text'], FALSE, 'emotes_off,defs'),
     			($ext['user_extended_struct_required'] == 1 ? $EXTENDED_USER_FIELD_REQUIRED : ''),
     			$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])
         );
