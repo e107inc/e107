@@ -9,8 +9,8 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.24 $
- * $Date: 2008-12-20 15:23:48 $
+ * $Revision: 1.25 $
+ * $Date: 2008-12-21 12:53:11 $
  * $Author: secretr $
  *
 */
@@ -1036,7 +1036,7 @@ function admin_log_adminmenu()
 		$var['users']['link'] = "users.php";
 	}
 	*/
-	show_admin_menu(RL_LAN_005, $action, $var);
+	e_admin_menu(RL_LAN_005, $action, $var);
 }
 
 require_once (e_ADMIN."footer.php");

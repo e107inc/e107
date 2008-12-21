@@ -10,8 +10,8 @@
  * With code from Izydor and Lolo.
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-15 21:16:31 $
+ * $Revision: 1.12 $
+ * $Date: 2008-12-21 12:53:11 $
  * $Author: secretr $
  *
 */
@@ -798,7 +798,7 @@ function lancheck_adminmenu() {
 	$var['tools']['link'] = e_ADMIN_ABS."language.php?tools";
 
 
-	show_admin_menu(ADLAN_132, $action, $var);
+	e_admin_menu(ADLAN_132, $action, $var);
 }
 
 	$ns -> tablerender(LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_1, LAN_CHECK_26);

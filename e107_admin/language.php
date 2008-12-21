@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.13 $
- * $Date: 2008-12-15 21:16:31 $
+ * $Revision: 1.14 $
+ * $Date: 2008-12-21 12:53:11 $
  * $Author: secretr $
  *
 */
@@ -662,7 +662,7 @@ function language_adminmenu()
 		$var['tools']['link'] = e_SELF."?tools";
     }
 
-	show_admin_menu(ADLAN_132, $action, $var);
+	e_admin_menu(ADLAN_132, $action, $var);
 }
 
 

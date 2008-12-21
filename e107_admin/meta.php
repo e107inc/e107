@@ -9,8 +9,8 @@
  * Administration Area - Meta Tags
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-15 13:42:25 $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-21 12:53:11 $
  * $Author: secretr $
  *
 */
@@ -117,7 +117,9 @@ $text = "
 					<tr>
 						<td class='label'>".METLAN_12."</td>
 						<td class='control'>
-							<input class='checkbox' type='checkbox' name='meta_news_summary' value='1'".($pref['meta_news_summary'] ? " checked='checked'" : '')." />
+							<div class='auto-toggle-area autocheck'>
+								<input class='checkbox' type='checkbox' name='meta_news_summary' value='1'".($pref['meta_news_summary'] ? " checked='checked'" : '')." />
+							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -130,8 +132,29 @@ $text = "
 
 ";
 
-$ns -> tablerender(METLAN_8." (".$current_lang.")", $emessage->render().$text);
+$e107->ns->tablerender(METLAN_8." (".$current_lang.")", $emessage->render().$text);
 
 require_once("footer.php");
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			//add required core lan - delete confirm message
+			var e107Admin = {}
+			e107Admin.initRules = {
+				'Helper': true,
+				'AdminMenu': false
+			}
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
 
+	return $ret;
+}
 ?>
