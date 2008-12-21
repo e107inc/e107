@@ -1,32 +1,34 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-08-26 19:45:12 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Handler - user-related functions
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-21 11:07:58 $
+ * $Author: e107steved $
+ *
 */
 
 
 /*
 USER HANDLER CLASS - manages login and various user functions
 
+Vetting routines TODO:
+	user_sess processing
+	user_image processing
+	user_xup processing - nothing special?
 */
 
 
 if (!defined('e107_INIT')) { exit; }
 
-
+// Codes for `user_ban` field (not all used ATM)
 define('USER_VALIDATED',0);
 define('USER_BANNED',1);
 define('USER_REGISTERED_NOT_VALIDATED',2);
@@ -46,17 +48,69 @@ define('PASSWORD_VALID',TRUE);
 define ('PASSWORD_DEFAULT_TYPE',PASSWORD_E107_MD5);
 //define ('PASSWORD_DEFAULT_TYPE',PASSWORD_E107_SALT);
 
+// Required language file - if not loaded elsewhere, uncomment next line
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 
 class UserHandler
 {
+	var $userVettingInfo = array();
 	var $preferred = PASSWORD_DEFAULT_TYPE;			// Preferred password format
 	var $passwordOpts = 0;							// Copy of pref
 	var $passwordEmail = FALSE;						// True if can use email address to log in
+	var $otherFields = array();
 
 	// Constructor
 	function UserHandler()
 	{
 	  global $pref;
+
+/*
+	Table of vetting methods for user data - lists every field whose value could be set manually.
+	Valid 'vetMethod' values (use comma separated list for multiple vetting):
+		0 - Null method
+		1 - Check for duplicates
+		2 - Check against $pref['signup_disallow_text']
+		
+	Index is the destination field name. If the source index name is different, specify 'srcName' in the array.
+	
+	Possible processing options:
+		'doToDB'		- passes final value through $tp->toDB()
+		'stripTags'		- strips HTML tags from the value (not an error if there are some)
+		'minLength'		- minimum length (in utf-8 characters) for the string
+		'maxLength'		- minimum length (in utf-8 characters) for the string
+		'longTrim'		- if set, and the string exceeds maxLength, its trimmed
+		'enablePref'	- value is processed only if the named $pref evaluates to true; otherwise any input is discarded without error
+*/
+	$this->userVettingInfo = array(
+		'user_name' => array('niceName'=> LAN_USER_01, 'vetMethod' => '1,2', 'vetParam' => 'signup_disallow_text', 'srcName' => 'username', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', fixedBlock => 'anonymous', 'minLength' => 2, 'maxLength' => varset($pref['displayname_maxlength'],15)),				// Display name
+		'user_loginname' => array('niceName'=> LAN_USER_02, 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
+		'user_login' => array('niceName'=> LAN_USER_03, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'realname', 'dbClean' => 'toDB'),				// Real name (no real vetting)
+		'user_customtitle' => array('niceName'=> LAN_USER_04, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'customtitle', 'dbClean' => 'toDB', 'enablePref' => 'signup_option_customtitle'),		// No real vetting
+		'user_password' => array('niceName'=> LAN_USER_05, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'minLength' => varset($pref['signup_pass_len'],1)),
+		'user_sess' => array('niceName'=> LAN_USER_06, 'vetMethod' => '0', 'vetParam' => '', 'dbClean' => 'toDB'),				// Photo
+		'user_image' => array('niceName'=> LAN_USER_07, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'image', 'dbClean' => 'toDB'),				// Avatar
+		'user_email' => array('niceName'=> LAN_USER_08, 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'email', 'dbClean' => 'toDB'),
+		'user_signature' => array('niceName'=> LAN_USER_09, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
+		'user_hideemail' => array('niceName'=> LAN_USER_10, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
+		'user_xup' => array('niceName'=> LAN_USER_11, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
+		'user_class' => array('niceName'=> LAN_USER_12, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'class', 'dataType' => '1')
+	);
+
+		$this->otherFields = array(
+			'user_join'			=> LAN_USER_14,
+			'user_lastvisit'	=> LAN_USER_15,
+			'user_currentvisit'	=> LAN_USER_16,
+			'user_comments'		=> LAN_USER_17,
+			'user_ip'			=> LAN_USER_18,
+			'user_ban'			=> LAN_USER_19,
+			'user_prefs'		=> LAN_USER_20,
+			'user_visits'		=> LAN_USER_21,
+			'user_admin'		=> LAN_USER_22,
+			'user_perms'		=> LAN_USER_23,
+			'user_pwchange'		=> LAN_USER_24
+//			user_chats int(10) unsigned NOT NULL default '0',
+			);
+
 	  $this->passwordOpts = varset($pref['passwordEncoding'],0);
 	  $this->passwordEmail = varset($pref['allowEmailLogin'],FALSE);
 	  switch ($this->passwordOpts)
@@ -142,17 +196,26 @@ class UserHandler
 	// Returns TRUE if change required, FALSE otherwise
 	function isPasswordRequired($fieldName)
 	{
-	  if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
-	  switch ($fieldName)
-	  {
-		case 'user_email' :
-		  return $this->passwordEmail;
-		case 'user_loginname' :
-		  return TRUE;
-	  }
-	  return FALSE;
+		if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
+		switch ($fieldName)
+		{
+			case 'user_email' :
+				return $this->passwordEmail;
+			case 'user_loginname' :
+				return TRUE;
+		}
+		return FALSE;
 	}
-	
+
+
+	// Determines whether its necessary to store a separate password for email address validation
+	function needEmailPassword()
+	{
+		if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
+		if ($this->passwordEmail) return TRUE;
+		return FALSE;
+	}
+
 	
 	// Checks whether the password value can be converted to the current default
 	// Returns TRUE if conversion possible.
@@ -250,7 +313,7 @@ class UserHandler
 	function make_email_query($email, $fieldname = 'banlist_ip')
 	{
 	  global $tp;
-	  $tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));
+	  $tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
 	  if ($tmp == '') return FALSE;
 	  if (strpos($tmp,'.') === FALSE) return FALSE;
 	  $em = array_reverse(explode('.',$tmp));
@@ -259,102 +322,12 @@ class UserHandler
 	  foreach ($em as $e)
 	  {
 		$line = '.'.$e.$line;
-		$out[] = $fieldname."='*{$line}'";
+		$out[] = '`'.$fieldname."`='*{$line}'";
 	  }
 	  return implode(' OR ',$out);
 	}
 
 
-
-	// Validate a standard user field (for length, acceptable characters etc).
-	// Returns TRUE if totally acceptable
-	// If $justStrip is FALSE, returns FALSE for an unacceptable value
-	// If $justStrip is TRUE, usually returns a new value (based on that passed) which does validate - usually characters stripped, length trimmed etc
-	//		Note: will return FALSE for some input values regardless of the setting of $justStrip
-	// Currently coded to always return TRUE if field name not recognised
-	function validateField($fieldName,$fieldValue, $justStrip = FALSE)
-	{
-	  global $pref;
-	  $newValue = $fieldValue;
-	  switch ($fieldName)
-	  {
-	    case 'user_loginname' :
-		  $newValue = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($fieldValue)));
-		  $newValue = substr($newValue,0,varset($pref['loginname_maxlength'],30));
-		  if (strlen($newValue) < 2) return FALSE;			// Always an error if a short string 
-		  break;
-		case 'user_password' :
-		  if (strlen($fieldValue) < $pref['signup_pass_len']) return FALSE;
-		  break;
-	  }
-	  if ($justStrip)
-	  {
-		return $newValue;
-	  }
-	  else
-	  {
-	    return ($newValue == $fieldValue);
-	  }
-	}
-	
-	
-	// Takes an array of $_POST fields whose first characters match $prefix, and passes them through the validateField routine
-	// Returns three arrays - one of validated results, one of failed fields and one of errors corresponding to the failed fields
-	function validatePostList($prefix = '', $doToDB = TRUE, $justStrip = FALSE)
-	{
-	  global $tp;
-	  $ret = array('validate' => array(), 'failed' => array(), 'errors' => array());
-	  foreach ($_POST as $k => $v)
-	  {
-		if (($prefix == '') || (strpos($k,$prefix) === 0))
-		{  // Field to validate
-		  $result = $this->validateField($k,$v,$justStrip);
-		  if ($result === FALSE)
-		  {  // error
-			$ret['failed'][$k] = $v;
-			$ret['errors'][$k] = TRUE;
-		  }
-		  else
-		  {
-			if ($doToTB) $result = $tp->toDB($result);
-			$ret['validate'][$k] = $result;
-		  }
-		}
-	  }
-	  return $ret;
-	}
-
-	// Takes an array of $_POST field names specified in comma-separated form in $fieldlist (blank = 'all'), and passes them through the validateField routine
-	// Returns three arrays - one of validated results, one of failed fields and one of errors corresponding to the failed fields
-	function validatePostFields($fieldList = '', $doToDB = TRUE, $justStrip = FALSE)
-	{
-	  global $tp;
-	  $ret = array('validate' => array(), 'failed' => array(), 'errors' => array());
-	  if ($fieldList == '')
-	  {
-	    $fieldArray = array_keys($_POST);
-	  }
-	  else
-	  {
-		$fieldArray = explode(',',$fieldList);
-	  }
-	  foreach ($fieldArray as $k)
-	  {
-		$k = trim($k);
-		$result = $this->validateField($k,$_POST[$k],$justStrip);
-		if ($result === FALSE)
-		{  // error
-		  $ret['failed'][$k] = $_POST[$k];
-		  $ret['errors'][$k] = TRUE;
-		}
-		else
-		{
-		  if ($doToTB) $result = $tp->toDB($result);
-		  $ret['validate'][$k] = $result;
-		}
-	  }
-	  return $ret;
-	}
 
 	function makeUserCookie($lode,$autologin = FALSE)
 	{
@@ -377,6 +350,188 @@ class UserHandler
 		}
 	}
 
+
+	// Generate an array of all the basic classes a user belongs to
+	// if $asArray TRUE, returns results in an array; else as a comma-separated string
+	// If $incInherited is TRUE, includes inherited classes
+	function addCommonClasses($userData, $asArray = FALSE, $incInherited = FALSE)
+	{
+		if ($incInherited)
+		{
+			$classList = array();
+			global $e_userclass;
+			if (!isset($e_userclass) && !is_object($e_userclass)) 
+			{
+				require_once(e_HANDLER."userclass_class.php");
+				$e_userclass = new user_class;
+			}
+			$classList = $e_userclass->get_all_user_classes($var['user_class']);
+		}
+		else
+		{
+			if ($userData['user_class'] != '') $classList = explode(',',$userData['user_class']);
+		}
+		foreach (array(e_UC_MEMBER, e_UC_READONLY, e_UC_PUBLIC) as $c)
+		{
+			if (!in_array($c,$classList))
+			{
+				$classList[] = $c;
+			}
+		}
+		if ((varset($userData['user_admin'],0) == 1) && strlen($userData['user_perms']))
+		{
+		  $classList[] = e_UC_ADMIN;
+		  if (strpos($userData['user_perms'],'0') === 0)
+		  {
+			$classList[] = e_UC_MAINADMIN;
+		  }
+		}
+		if ($asArray) return $classList;
+		return implode(',',$classList);
+	}
+
+
+	// Return an array of descriptive names for each field in the user DB. If $all is false, just returns the modifiable ones. Else returns all
+	function getNiceNames($all = FALSE)
+	{
+//		$ret = array('user_id' => LAN_USER_13);
+		foreach ($this->userVettingInfo as $k => $v)
+		{
+			$ret[$k] = $v['niceName'];
+		}
+		if ($all)
+		{
+			$ret = array_merge($ret, $this->otherFields);
+		}
+		return $ret;
+	}
+//===================================================
+//			User Field validation
+//===================================================
+
+/*	$_POST field names:
+
+	DB				signup			usersettings	quick add		function
+  ------------------------------------------------------------------------------
+  user_id 			-				user_id			-				Unique user ID
+  user_name 		name			username		username		Display name
+  user_loginname	loginname		loginname 		loginname		User name (login name)
+  user_customtitle 	-				customtitle		-				Custom title
+  user_password 	password1		password1		password1		Password (prior to encoding)
+					password2		password2		password1		(Check password field)
+  user_sess 						*				-				Photo (file on server)
+  user_email		email			email			email			Email address
+					email_confirm
+  user_signature 	signature		signature		-				User signature
+  user_image		image			image*			-				Avatar (may be external URL or file on server)
+  user_hideemail	hideemail		hideemail		-				Flag to hide user's email address
+  user_login		realname		realname		realname		User Real name
+  user_xup			xupexist		user_xup		-				XUP file link
+  user_class		class			class			userclass		User class (array on form)
+ 
+user_loginname may be auto-generated
+* avatar (user_image) and photo (user_sess) may be uploaded files
+
+Following fields auto-filled in code as required:
+  user_join
+  user_lastvisit
+  user_currentvisit
+  user_chats
+  user_comments
+  user_forums
+  user_ip
+  user_ban
+  user_prefs
+  user_viewed
+  user_visits
+  user_admin
+  user_perms
+  user_pwchange
+
+*/
+	// Function does validation specific to user data. Updates the $targetData array as appropriate.
+	// Returns TRUE if nothing updated; FALSE if errors found (only checks data previously passed as good)
+	function userValidation(&$targetData)
+	{
+		global $e107, $pref;
+		$u_sql = new db;
+		$ret = TRUE;
+		if (isset($targetData['validate']['user_email']))
+		{
+			$v = trim($targetData['validate']['user_email']);		// Always check email address if its entered
+			if ($v == '')
+			{
+				$errMsg = ERR_MISSING_VALUE;
+			}
+			elseif (!check_email($v))
+			{
+				$errMsg = ERR_INVALID_EMAIL;
+			}
+			elseif ($u_sql->db_Count('user', '(*)', "WHERE `user_email`='".$v."' AND `user_ban`=1 "))
+			{
+				$errMsg = ERR_BANNED_USER;
+			}
+			else
+			{	// See if email address banned
+				$wc = $this->make_email_query($v);		// Generate the query for the ban list
+				if ($wc) { $wc = "`banlist_ip`='{$v}' OR ".$wc;  }
+				if (($wc === FALSE) || !$e107->check_ban($wc, FALSE, TRUE))
+				{
+					echo "Email banned<br />";
+					$errMsg = ERR_BANNED_EMAIL;
+				}
+			}
+			if ($errMsg)
+			{
+				unset($targetData['validate']['user_email']);			// Remove the valid entry
+			}
+		}
+		else
+		{
+			if (!isset($targetData['errors']['user_email']) && !varset($pref['disable_emailcheck'],FALSE))
+			{	// We may have already picked up an error on the email address - or it may be allowed to be empty
+				$errMsg = ERR_MISSING_VALUE;
+			}
+		}
+		if ($errMsg)
+		{	// Update the error
+			$targetData['errors']['user_email'] = $errMsg;
+			$targetData['failed']['user_email'] = $v;
+			$ret = FALSE;
+		}
+		return $ret;
+	}
+
+	// Given an array of user data intended to be written to the DB, adds empty strings (or other default value) for any field which doesn't have a default in the SQL definition. 
+	// (Avoids problems with MySQL in STRICT mode.).
+	// Returns TRUE if additions made, FALSE if no change.
+	function addNonDefaulted(&$userInfo)
+	{
+		$nonDefaulted = array('user_signature' => '', 'user_prefs' => '', 'user_class' => '', 'user_perms' => '');
+		$ret = FALSE;
+		foreach ($nonDefaulted as $k => $v)
+		{
+			if (!isset($userInfo[$k]))
+			{
+				$userInfo[$k] = $v;
+				$ret = TRUE;
+			}
+		}
+		return $ret;
+	}
+	
+	
+	// Delete time-expired partial registrations from the user DB
+	function deleteExpired()
+	{
+		global $pref, $sql;
+		if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
+		{
+			$threshold=(time() - ($pref['del_unv'] * 60));
+			$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
+		}
+	}
 }
+
 
 ?>

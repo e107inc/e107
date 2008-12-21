@@ -1,5 +1,5 @@
-//USAGE:  {EXTENDED=<field_name>.[text|value|icon|text_value].<user_id>}
-//EXAMPLE: {EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
+//USAGE:  {USER_EXTENDED=<field_name>.[text|value|icon|text_value].<user_id>}
+//EXAMPLE: {USER_EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
 include(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 $parms = explode(".", $parm);
 global $currentUser, $tp, $loop_uid, $e107, $imode, $sc_style;
@@ -64,15 +64,15 @@ if($parms[1] == 'text_value')
 
 if ($parms[1] == 'text')
 {
-  $text_val = $ueStruct["user_".$parms[0]]['user_extended_struct_text'];
-  if($text_val)
-  {
-	return (defined($text_val) ? constant($text_val) : $text_val);
-  }
-  else
-  {
-	return TRUE;
-  }
+	$text_val = $ueStruct["user_".$parms[0]]['user_extended_struct_text'];
+	if($text_val)
+	{
+		return (defined($text_val) ? constant($text_val) : $text_val);
+	}
+	else
+	{
+		return TRUE;
+	}
 }
 
 if ($parms[1] == 'icon')

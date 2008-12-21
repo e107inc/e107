@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-11-29 21:16:54 $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-21 11:07:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -95,6 +95,11 @@ define('UCSLAN_83', 'Classes in group');
 define('UCSLAN_84', ' (Group)');
 define('UCSLAN_85', 'You have assigned all available classes; please reassign one which is not in use');
 define('UCSLAN_86', 'Some settings not allowed for admin classes - they have been set to defaults. ');
+define('UCSLAN_87', 'Recently joined users');
+define('UCSLAN_88', '');
+define('UCSLAN_89', '');
+define('UCSLAN_90', '');
+define('UCSLAN_91', '');
 
 
 define("UCSLAN_UPDATE", 'Update');
