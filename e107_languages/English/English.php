@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/English.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-11-09 18:00:32 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-21 22:17:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -50,11 +50,12 @@ define("CORE_LAN_GB", "GB");
 define("CORE_LAN_TB", "TB");
 
 
-define("LAN_WARNING", "Warning!");
-define("LAN_ERROR", "Error");
-define("LAN_ANONYMOUS", "Anonymous");
-define("LAN_EMAIL_SUBS", "-email-");
+define('LAN_WARNING', 'Warning!');
+define('LAN_ERROR', 'Error');
+define('LAN_ANONYMOUS', 'Anonymous');
+define('LAN_EMAIL_SUBS', '-email-');
 define('LAN_YES', 'Yes');
 define('LAN_NO', 'No');
+define('LAN_CONTINUE', 'Continue');
 
 ?>

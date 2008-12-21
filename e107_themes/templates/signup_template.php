@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-10-30 22:42:41 $
+|     $Revision: 1.11 $
+|     $Date: 2008-12-21 22:17:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ define("REQUIRED_FIELD_MARKER", "<span style='text-align:right;font-size:15px; c
 
 $sc_style['SIGNUP_DISPLAYNAME']['pre'] = "
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_89."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_90."</span></td>
 <td class='forumheader3' style='width:70%'>
 ";
 $sc_style['SIGNUP_DISPLAYNAME']['post'] = "
@@ -37,7 +37,7 @@ $sc_style['SIGNUP_DISPLAYNAME']['post'] = "
 
 $sc_style['SIGNUP_REALNAME']['pre'] = "
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($pref['signup_option_realname'])."<br /><span class='smalltext'>".LAN_310."</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_91."".req($pref['signup_option_realname'])."<br /><span class='smalltext'>".LAN_SIGNUP_92."</span></td>
 <td class='forumheader3' style='width:70%' >
 ";
 $sc_style['SIGNUP_REALNAME']['post'] = "
@@ -66,7 +66,7 @@ $USERCLASS_SUBSCRIBE_ROW = "
 <tr>
 	<td class='defaulttext' style='width:10%;vertical-align:top'>
 		<div {USERCLASS_INDENT}>
-		<input type='checkbox' name='class[]' value='{USERCLASS_ID}'  />
+		<input type='checkbox' name='class[]' value='{USERCLASS_ID}' {USERCLASS_CHECKED} />
 		</div>
 	</td>
 	<td class='defaulttext' style='text-align:left;margin-left:0px;width:90%;padding-top:3px;vertical-align:top'>{USERCLASS_NAME}<br />
@@ -115,7 +115,7 @@ if(!defined($EXTENDED_USER_FIELD_REQUIRED))
 
 $SIGNUP_SIGNATURE_START = "
 <tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($pref['signup_option_signature'])."</td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_SIGNUP_93." ".req($pref['signup_option_signature'])."</td>
 	<td class='forumheader3' style='width:70%' >
 	<textarea class='tbox' style='width:99%' name='signature' cols='10' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>";
 
@@ -128,7 +128,7 @@ $SIGNUP_SIGNATURE_END = "
 
 $sc_style['SIGNUP_IMAGES']['pre'] = "
 <tr>
-<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($pref['signup_option_image'])."<br /><span class='smalltext'>(".LAN_SIGNUP_33.")</span></td>
+<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_SIGNUP_94.req($pref['signup_option_image'])."<br /><span class='smalltext'>(".LAN_SIGNUP_33.")</span></td>
 <td class='forumheader3' style='width:70%;vertical-align:top' >
 ";
 $sc_style['SIGNUP_IMAGES']['post'] = "
@@ -139,7 +139,7 @@ $sc_style['SIGNUP_IMAGES']['post'] = "
 
 $sc_style['SIGNUP_IMAGECODE']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%'>".LAN_410.req(2)."</td>
+	<td class='forumheader3' style='width:30%'>".LAN_SIGNUP_95.req(2)."</td>
 	<td class='forumheader3' style='width:70%'>
 ";
 $sc_style['SIGNUP_IMAGECODE']['post'] = "
@@ -150,7 +150,7 @@ $sc_style['SIGNUP_IMAGECODE']['post'] = "
 
 if(!defined($COPPA_TEMPLATE))
 {
-$COPPA_TEMPLATE = LAN_109." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." ".$tp->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."
+$COPPA_TEMPLATE = LAN_SIGNUP_77." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." ".$tp->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."
 <br />
 <br />
 <div style='text-align:center'><b>".LAN_SIGNUP_17."</b>
@@ -167,7 +167,7 @@ $COPPA_FAIL = "<div style='text-align:center'>".LAN_SIGNUP_9."</div>";
 if(!defined($SIGNUP_TEXT))
 {
 $SIGNUP_TEXT =
-LAN_309." <b>".LAN_SIGNUP_29."</b><br /><br />".LAN_SIGNUP_30."<br />
+LAN_SIGNUP_80." <b>".LAN_SIGNUP_29."</b><br /><br />".LAN_SIGNUP_30."<br />
 ";
 }
 
@@ -185,26 +185,26 @@ $SIGNUP_XUP_FORM = "
 	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_31."
 	</td>
 	<td class='forumheader3' style='width:70%'>
-	<input class='tbox' type='text' name='xupexist' size='50' value='' maxlength='100' />
+	<input class='tbox' type='text' name='user_xup' size='50' value='' maxlength='100' />
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_81."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_82."</span></td>
 	<td class='forumheader3' style='width:70%'>
 	{SIGNUP_XUP_LOGINNAME}
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_17."<span style='font-size:15px; color:red'> *</span></td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span style='font-size:15px; color:red'> *</span></td>
 	<td class='forumheader3' style='width:70%'>
 	{SIGNUP_XUP_PASSWORD1}
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_111."<span style='font-size:15px; color:red'> *</span></td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span style='font-size:15px; color:red'> *</span></td>
 	<td class='forumheader3' style='width:70%'>
 	{SIGNUP_XUP_PASSWORD2}
 	</td>
@@ -218,7 +218,7 @@ $SIGNUP_XUP_FORM = "
 
 	<tr>
 	<td class='forumheader' colspan='2'  style='text-align:center'>
-	<input class='button' type='submit' name='register' value=\"".LAN_123."\" />
+	<input class='button' type='submit' name='register' value=\"".LAN_SIGNUP_79."\" />
 	</td>
 	</tr>
 
@@ -243,7 +243,7 @@ $SIGNUP_BEGIN = "
 <div style='text-align:center;".USER_WIDTH."'>
 {SIGNUP_SIGNUP_TEXT}
 <br />
-".LAN_400."<br /><br /></div>";
+".LAN_SIGNUP_85."<br /><br /></div>";
 }
 
 if(!defined($SIGNUP_BODY))
@@ -255,28 +255,28 @@ $SIGNUP_BODY = "
 <table class='fborder' style='".USER_WIDTH."'>
 {SIGNUP_DISPLAYNAME}
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_81."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_82."</span></td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_LOGINNAME}
 </td>
 </tr>
 {SIGNUP_REALNAME}
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_17."<span style='font-size:15px; color:red'> *</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span style='font-size:15px; color:red'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_PASSWORD1}
 {SIGNUP_PASSWORD_LEN}
 </td>
 </tr>
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_111."<span style='font-size:15px; color:red'> *</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span style='font-size:15px; color:red'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_PASSWORD2}
 </td>
 </tr>
 
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."{SIGNUP_IS_MANDATORY=email}</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_86."{SIGNUP_IS_MANDATORY=email}</td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_EMAIL}
 </td>
@@ -290,7 +290,7 @@ $SIGNUP_BODY = "
 </tr>
 
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_113."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_87."</td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_HIDE_EMAIL}
 </td>
@@ -302,7 +302,7 @@ $SIGNUP_BODY = "
 {SIGNUP_IMAGECODE}
 <tr style='vertical-align:top'>
 <td class='forumheader' colspan='2'  style='text-align:center'>
-<input class='button' type='submit' name='register' value=\"".LAN_123."\" />
+<input class='button' type='submit' name='register' value=\"".LAN_SIGNUP_79."\" />
 <br />
 </td>
 </tr>

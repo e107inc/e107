@@ -9,8 +9,8 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.1 $
- * $Date: 2008-12-21 11:07:58 $
+ * $Revision: 1.2 $
+ * $Date: 2008-12-21 22:17:05 $
  * $Author: e107steved $
  *
 */
@@ -34,6 +34,7 @@ define('ERR_FIELDS_DIFFERENT', '15');
 define('ERR_CODE_ERROR', '16');
 define('ERR_TOO_LOW', '17');
 define('ERR_TOO_HIGH', '18');
+define('ERR_GENERIC', '19');				// This requires coder-defined error text
 
 
 /*
@@ -177,6 +178,7 @@ class validatorClass
 							{
 								$errNum = ERR_ARRAY_EXPECTED;
 							}
+							break;
 						default :
 							$errNum = ERR_CODE_ERROR;		// Pick up bad values
 					}
@@ -230,6 +232,7 @@ class validatorClass
 		0 - Null method
 		1 - Check for duplicates - field name in table must be the same as array index unless 'dbFieldName' specifies otherwise
 		2 - Check against the comma-separated wordlist in the $pref named in vetParam['signup_disallow_text']
+		3 - Check email address against remote server, only if option enabled
 		
 */
 	function dbValidateArray(&$targetData, &$definitions, $targetTable, $userID = 0)
@@ -281,8 +284,25 @@ class validatorClass
 									unset($tmp);
 								}
 								break;
-						default :
-							echo 'Invalid vetMethod: '.$options['vetMethod'].'<br />';	// Really a debug aid - should never get here
+							case 3 :			// Check email address against remote server
+								if (varsettrue($pref['signup_remote_emailcheck']))
+								{
+									require_once(e_HANDLER."mail_validation_class.php");
+									list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
+									$validator = new email_validation_class;
+									$validator->localuser= $adminuser;
+									$validator->localhost= $adminhost;
+									$validator->timeout=3;
+										//	$validator->debug=1;
+										//	$validator->html_debug=1;
+									if($validator->ValidateEmailBox(trim($v)) != 1)
+									{
+										$errMsg = ERR_INVALID_EMAIL;
+									}
+								}
+								break;
+							default :
+								echo 'Invalid vetMethod: '.$options['vetMethod'].'<br />';	// Really a debug aid - should never get here
 						}
 						if ($errMsg) { break; }			// Just trap first error
 					}
@@ -356,7 +376,14 @@ class validatorClass
 		{
 			$curLine = $format;
 			$curLine = str_replace('%n', $n, $curLine);
-			$curLine = str_replace('%t', constant($constPrefix.$n), $curLine);
+			if (($n == ERR_GENERIC) && isset($vars['errortext'][$f]))
+			{
+				$curLine = str_replace('%t', $vars['errortext'][$f], $curLine);			// Coder-defined specific error text
+			}
+			else
+			{
+				$curLine = str_replace('%t', constant($constPrefix.$n), $curLine);		// Standard messages
+			}
 			$curLine = str_replace('%v', $vars['failed'][$f],$curLine);			// Possibly this should have some protection added
 			$curLine = str_replace('%f', $f, $curLine);
 			if ($checkNice & isset($niceNames[$f]['niceName']))
