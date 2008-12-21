@@ -1,4 +1,20 @@
 <?php
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin - PDF generator
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/ufpdf.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-21 12:03:28 $
+ * $Author: e107steved $
+ *
+*/
+
 /*******************************************************************************
 * Software: UFPDF, Unicode Free PDF generator                                  *
 * Version:  0.1                                                                *
@@ -10,6 +26,7 @@
 * UFPDF is a modification of FPDF to support Unicode through UTF-8.            *
 *                                                                              *
 *******************************************************************************/
+if (!defined('e107_INIT')) { exit; }
 
 if(!class_exists('UFPDF'))
 {

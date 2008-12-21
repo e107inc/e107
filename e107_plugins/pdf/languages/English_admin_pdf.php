@@ -3,10 +3,10 @@
 + -----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/languages/English.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:37 $
-|     $Author: mcfly_e107 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/languages/English_admin_pdf.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2008-12-21 12:03:28 $
+|     $Author: e107steved $
 +-----------------------------------------------------------------------------+
 */
 
@@ -35,5 +35,9 @@ define("PDF_LAN_17", "update");
 define("PDF_LAN_18", "PDF preferences successfully updated");
 define("PDF_LAN_19", "Page");
 define("PDF_LAN_20", "error reporting");
+
+
+// Admin logging
+define('LAN_AL_PDF_01', 'PDF settings updated');
 
 ?>

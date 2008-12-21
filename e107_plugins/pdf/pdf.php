@@ -1,36 +1,34 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-01-09 22:06:22 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin - PDF Generator
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/pdf.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-21 12:03:28 $
+ * $Author: e107steved $
+ *
 */
 require_once("../../class2.php");
-$qs = explode(".", e_QUERY,2);
-if ($qs[0] == "") {
+if (!plugInstalled('pdf') || !e_QUERY) 
+{
 	header("location:".e_BASE."index.php");
 	 exit;
 }
+$qs = explode(".", e_QUERY,2);
 $source = $qs[0];
 $parms = varset($qs[1],'');
 
-$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
+include_lan(e_PLUGIN.'pdf/languages/English_admin_pdf.php');
 
 define('FPDF_FONTPATH', 'font/');
-require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class
-require_once(e_PLUGIN."pdf/e107pdf.php");	//require the e107pdf class
+require_once(e_PLUGIN.'pdf/ufpdf.php');		//require the ufpdf class
+require_once(e_PLUGIN.'pdf/e107pdf.php');	//require the e107pdf class
 $pdf = new e107PDF();
 
 if(strpos($source,'plugin:') !== FALSE)
@@ -51,16 +49,20 @@ if(strpos($source,'plugin:') !== FALSE)
 else
 {
 	
-	if($source == 'news'){
+	if($source == 'news')
+	{
 		$con = new convert;
 		$sql->db_Select("news", "*", "news_id='".intval($parms)."'");
 		$row = $sql->db_Fetch(); 
 		$news_body = $tp->toHTML($row['news_body'], TRUE);
 		$news_extended = $tp->toHTML($row['news_extended'], TRUE);
-		if ($row['news_author'] == 0){
+		if ($row['news_author'] == 0)
+		{
 			$a_name = "e107";
 			$category_name = "e107 welcome message";
-		}else{
+		}
+		else
+		{
 			$sql->db_Select("news_category", "category_id, category_name", "category_id='".intval($row['news_category'])."'");
 			list($category_id, $category_name) = $sql->db_Fetch();
 			$sql->db_Select("user", "user_id, user_name", "user_id='".intval($row['news_author'])."'");
@@ -110,9 +112,7 @@ else
 		//always return an array with the following data:
 		$text = array($text, $creator, $author, $title, $subject, $keywords, $url);
 		$pdf->makePDF($text);
-	
 	}
-
 }
 
 ?>

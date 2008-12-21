@@ -1,4 +1,19 @@
 <?php
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin - PDF generator
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/fpdf.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-21 12:03:28 $
+ * $Author: e107steved $
+ *
+*/
 /*******************************************************************************
 * Software: FPDF                                                               *
 * Version:  1.53                                                               *
@@ -8,6 +23,7 @@
 *                                                                              *
 * You may use and modify this software as you wish.                            *
 *******************************************************************************/
+if (!defined('e107_INIT')) { exit; }
 
 if(!class_exists('FPDF'))
 {

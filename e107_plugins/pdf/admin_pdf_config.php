@@ -1,76 +1,91 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|    e107 website system
-|
-|    ©Steve Dunstan 2001-2002
-|    http://e107.org
-|    jalist@e107.org
-|
-|    Released under the terms and conditions of the
-|    GNU General Public License (http://gnu.org).
-|
-|    $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/admin_pdf_config.php,v $
-|    $Revision: 1.1.1.1 $
-|    $Date: 2006-12-02 04:35:32 $
-|    $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin Administration - PDF generator
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/admin_pdf_config.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2008-12-21 12:03:28 $
+ * $Author: e107steved $
+ *
 */
 
-require_once("../../class2.php");
-require_once(e_ADMIN."auth.php");
-require_once(e_HANDLER."form_handler.php");
+require_once('../../class2.php');
+if (!getperms("P") || !plugInstalled('pdf')) 
+{
+	header('location:'.e_BASE.'index.php');
+	exit;
+}
+require_once(e_ADMIN.'auth.php');
+require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 unset($text);
 
-$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
+include_lan(e_PLUGIN.'pdf/languages/English_admin_pdf.php');
 
-if(isset($_POST['update_pdf'])){
+if(isset($_POST['update_pdf']))
+{
 	$message = updatePDFPrefs();
 }
 
-function updatePDFPrefs(){
-	global $sql, $eArrayStorage, $tp;
-	while(list($key, $value) = each($_POST)){
-		foreach($_POST as $k => $v){
-			if(strpos($k, "pdf_") === 0){
+
+function updatePDFPrefs()
+{
+	global $sql, $eArrayStorage, $tp, $admin_log;
+	while(list($key, $value) = each($_POST))
+	{
+		foreach($_POST as $k => $v)
+		{
+			if(strpos($k, 'pdf_') === 0)
+			{
 				$pdfpref[$k] = $tp->toDB($v);
 			}
 		}
 	}
+	//create new array of preferences
 	$tmp = $eArrayStorage->WriteArray($pdfpref);
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pdf' ");
-
+	$sql -> db_Update("core", "e107_value='{$tmp}' WHERE e107_name='pdf' ");
+	$admin_log->logArrayAll('PDF_01',$pdfpref);
 	$message = PDF_LAN_18;
 	return $message;
 }
 
-function getDefaultPDFPrefs(){
-		$pdfpref['pdf_margin_left']				= '25';
-		$pdfpref['pdf_margin_right']			= '15';
-		$pdfpref['pdf_margin_top']				= '15';
-		$pdfpref['pdf_font_family']				= 'arial';
-		$pdfpref['pdf_font_size']				= '8';
-		$pdfpref['pdf_font_size_sitename']		= '14';
-		$pdfpref['pdf_font_size_page_url']		= '8';
-		$pdfpref['pdf_font_size_page_number']	= '8';
-		$pdfpref['pdf_show_logo']				= true;
-		$pdfpref['pdf_show_sitename']			= false;
-		$pdfpref['pdf_show_page_url']			= true;
-		$pdfpref['pdf_show_page_number']		= true;
-		$pdfpref['pdf_error_reporting']			= true;
-		return $pdfpref;
+
+function getDefaultPDFPrefs()
+{
+	$pdfpref['pdf_margin_left']				= '25';
+	$pdfpref['pdf_margin_right']			= '15';
+	$pdfpref['pdf_margin_top']				= '15';
+	$pdfpref['pdf_font_family']				= 'arial';
+	$pdfpref['pdf_font_size']				= '8';
+	$pdfpref['pdf_font_size_sitename']		= '14';
+	$pdfpref['pdf_font_size_page_url']		= '8';
+	$pdfpref['pdf_font_size_page_number']	= '8';
+	$pdfpref['pdf_show_logo']				= true;
+	$pdfpref['pdf_show_sitename']			= false;
+	$pdfpref['pdf_show_page_url']			= true;
+	$pdfpref['pdf_show_page_number']		= true;
+	$pdfpref['pdf_error_reporting']			= true;
+	return $pdfpref;
 }
 
-function getPDFPrefs(){
+
+
+function getPDFPrefs()
+{
 	global $sql, $eArrayStorage;
 
 	if(!is_object($sql)){ $sql = new db; }
 	$num_rows = $sql -> db_Select("core", "*", "e107_name='pdf' ");
-	if($num_rows == 0){
+	if($num_rows == 0)
+	{
 		$tmp = getDefaultPDFPrefs();
 		$tmp2 = $eArrayStorage->WriteArray($tmp);
 		$sql -> db_Insert("core", "'pdf', '".$tmp2."' ");
@@ -81,7 +96,9 @@ function getPDFPrefs(){
 	return $pdfpref;
 }
 
-if(isset($message)){
+
+if(isset($message))
+{
 	$caption = PDF_LAN_1;
 	$ns -> tablerender($caption, $message);
 }
@@ -97,15 +114,15 @@ $text = "
 
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_5."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_left", 74, $pdfpref['pdf_margin_left'], 250)."</td>
+	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_left", 10, $pdfpref['pdf_margin_left'], 10)."</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_6."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_right", 74, $pdfpref['pdf_margin_right'], 250)."</td>
+	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_right", 10, $pdfpref['pdf_margin_right'], 10)."</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_7."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_top", 74, $pdfpref['pdf_margin_top'], 250)."</td>
+	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_top", 10, $pdfpref['pdf_margin_top'], 10)."</td>
 </tr>";
 
 $fontlist=array("arial","times","courier","helvetica","symbol");
@@ -123,19 +140,19 @@ $text .= "
 
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_9."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size", 74, $pdfpref['pdf_font_size'], 250)."</td>
+	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size", 10, $pdfpref['pdf_font_size'], 10)."</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_10."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_sitename", 74, $pdfpref['pdf_font_size_sitename'], 250)."</td>
+	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_sitename", 10, $pdfpref['pdf_font_size_sitename'], 10)."</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_11."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_page_url", 74, $pdfpref['pdf_font_size_page_url'], 250)."</td>
+	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_page_url", 10, $pdfpref['pdf_font_size_page_url'], 10)."</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_12."</td>
-	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_page_number", 74, $pdfpref['pdf_font_size_page_number'], 250)."</td>
+	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_font_size_page_number", 10, $pdfpref['pdf_font_size_page_number'], 10)."</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_13."</td>

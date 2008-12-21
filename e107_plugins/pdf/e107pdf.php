@@ -1,21 +1,20 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/e107pdf.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-08-08 21:13:46 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin - PDF generator
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/e107pdf.php,v $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-21 12:03:28 $
+ * $Author: e107steved $
+ *
 */
+if (!defined('e107_INIT')) { exit; }
 
 // Debug option - adds entries to rolling log (only works in 0.8)
 //define ('PDF_DEBUG', TRUE);
