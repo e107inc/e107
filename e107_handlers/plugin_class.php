@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2008-12-13 18:43:46 $
+|     $Revision: 1.60 $
+|     $Date: 2008-12-21 01:57:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -317,6 +317,10 @@ class e107plugin
 				$tmp['userclass_id'] = $i;
 				$tmp['userclass_name'] = strip_tags(strtoupper($class_name));
 				$tmp['userclass_description'] = $class_description;
+				$tmp['userclass_editclass'] = e_UC_ADMIN;
+				$tmp['userclass_visibility'] = e_UC_ADMIN;
+				$tmp['_FIELD_TYPES']['userclass_editclass'] = 'int';
+				$tmp['_FIELD_TYPES']['userclass_visibility'] = 'int';
 				$tmp['_FIELD_TYPES']['userclass_id'] = 'int';
 				$tmp['_FIELD_TYPES']['_DEFAULT'] = 'todb';
 				return $sql->db_Insert('userclass_classes', $tmp);
