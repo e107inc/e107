@@ -9,8 +9,8 @@
  * Administration Area - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-15 13:31:01 $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-21 10:58:35 $
  * $Author: secretr $
  *
 */
@@ -280,7 +280,7 @@ class frontpage
 
 		//Inline Page Help Info - system message for now
 		//TODO - inline tooltip help system
-		$emessage->add(FRTLAN_38.". ".FRTLAN_39.". ".FRTLAN_41.".");
+		//$emessage->add(FRTLAN_38.". ".FRTLAN_39.". ".FRTLAN_41."."); - moved to a help file
 
 		// List of current settings
 		$show_legend = $show_button ? " class='e-hideme'" : '';

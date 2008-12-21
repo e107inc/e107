@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_frontpage.php,v 1.4 2008-12-15 13:42:25 secretr Exp $
+ * $Id: lan_frontpage.php,v 1.5 2008-12-21 10:58:35 secretr Exp $
  *
  * Admin Language File
  *
@@ -34,10 +34,12 @@ define("FRTLAN_15", "Other (enter url):");
 
 // New language defs for 0.8
 define('FRTLAN_35', 'Post-login page');
-define('FRTLAN_38', 'The rules are searched in order, to find the first where the current user belongs to the class specified in the rule. That rule then determines the front (home) page and any specific post-login page.');
-define('FRTLAN_39', 'If no rule matches, news.php is set as the home page');
+/* moved to the admin help file
+//define('FRTLAN_38', 'The rules are searched in order, to find the first where the current user belongs to the class specified in the rule. That rule then determines the front (home) page and any specific post-login page.');
+//define('FRTLAN_39', 'If no rule matches, news.php is set as the home page');
+//define('FRTLAN_41', 'The user is sent to the specified &quot;Post-login page&quot; (if specified) immediately following a login');
+*/
 define('FRTLAN_40', 'Order');
-define('FRTLAN_41', 'The user is sent to the specified &quot;Post-login page&quot; (if specified) immediately following a login');
 define('FRTLAN_42', 'Add new rule');
 define('FRTLAN_43', 'Class: ');
 define('FRTLAN_44', 'Go to this page after login');
