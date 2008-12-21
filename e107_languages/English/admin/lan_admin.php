@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.13 2008-12-20 15:23:48 secretr Exp $
+ * $Id: lan_admin.php,v 1.14 2008-12-21 12:59:56 e107steved Exp $
  *
  * Admin Language File
 */
@@ -281,5 +281,5 @@ define("LAN_CREDITS","Credits");
 define("LAN_NEWVERSION","New Version Available");
 
 define("LAN_CHECKALL", 'Check All');
-define("LAN_UNCHECKALL", 'Unheck All');
+define("LAN_UNCHECKALL", 'Uncheck All');
 ?>
