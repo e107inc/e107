@@ -9,8 +9,8 @@
  * Administration Area - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision: 1.9 $
- * $Date: 2008-12-21 10:58:35 $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-21 11:47:29 $
  * $Author: secretr $
  *
 */
@@ -25,7 +25,6 @@ $e_sub_cat = 'frontpage';
 require_once ('auth.php');
 require_once (e_HANDLER.'form_handler.php');
 require_once (e_HANDLER."message_handler.php");
-$rs = new form();
 $frm = new e_form();
 $emessage = &eMessage::getInstance();
 

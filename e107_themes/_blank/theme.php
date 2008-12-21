@@ -43,6 +43,8 @@ function theme_head() {
 
 function tablestyle($caption, $text, $mod) {
 	global $style;
+	$class = '';
+	if(is_string($mod) && $mod == 'admin_help') $class = ' '.str_replace('_', '-', $mod); 
 	switch($style) {
 
 	case 'admin_menu' :
@@ -56,7 +58,7 @@ function tablestyle($caption, $text, $mod) {
 
 	case 'site_info' :
 		echo '
-			<div class="block">
+			<div class="block'.$class.'">
 				<h4 class="caption">'.$caption.'</h4>
 				<div class="block-text">
 					'.$text.'
