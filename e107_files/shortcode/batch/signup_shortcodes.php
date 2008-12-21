@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-12-21 10:54:31 $
+|     $Revision: 1.13 $
+|     $Date: 2008-12-21 22:17:05 $
 |     $Author: e107steved $
 |
 | Mods to show extended field categories
@@ -24,7 +24,7 @@ $signup_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 
 /*
 SC_BEGIN SIGNUP_COPPA_FORM
-if (strpos(LAN_109, "stage") !== FALSE)
+if (strpos(LAN_SIGNUP_77, "stage") !== FALSE)
 {
 	return "";
 }
@@ -33,10 +33,10 @@ else
 	return "
 <form method='post' action='".e_SELF."?stage1' >\n
 <div><br />
-<input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_200."
-<input type='radio' name='coppa' value='1' /> ".LAN_201."<br />
+<input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_NO."
+<input type='radio' name='coppa' value='1' /> ".LAN_YES."<br />
 <br />
-<input class='button' type='submit' name='newver' value=\"".LAN_399."\" />
+<input class='button' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
 </div></form>
 ";
 }
@@ -84,7 +84,7 @@ global $pref, $rs;
 if (check_class($pref['displayname_class']))
 {
   $dis_name_len = varset($pref['displayname_maxlength'],15);
-  return $rs->form_text("name", $dis_name_len+5, ($_POST['name'] ? $_POST['name'] : $name), $dis_name_len);
+  return $rs->form_text('username', $dis_name_len+5, ($_POST['username'] ? $_POST['username'] : $username), $dis_name_len);
 }
 SC_END
 
@@ -139,12 +139,12 @@ SC_END
 SC_BEGIN SIGNUP_HIDE_EMAIL
 global $rs;
 $default_email_setting = 1;   // Gives option of turning into a pref later if wanted
-return $rs->form_radio("hideemail", 1, $default_email_setting==1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs->form_radio("hideemail",  0,$default_email_setting==0)." ".LAN_200;
+return $rs->form_radio("hideemail", 1, $default_email_setting==1)." ".LAN_YES."&nbsp;&nbsp;".$rs->form_radio("hideemail",  0,$default_email_setting==0)." ".LAN_NO;
 SC_END
 
 
 SC_BEGIN SIGNUP_USERCLASS_SUBSCRIBE
-global $pref, $e_userclass, $USERCLASS_SUBSCRIBE_START, $USERCLASS_SUBSCRIBE_END;
+global $pref, $e_userclass, $USERCLASS_SUBSCRIBE_START, $USERCLASS_SUBSCRIBE_END, $signupData;
 $ret = "";
 if($pref['signup_option_class'])
 {
@@ -160,13 +160,15 @@ if($pref['signup_option_class'])
   function show_signup_class($treename, $classnum, $current_value, $nest_level)
   {
 	global $USERCLASS_SUBSCRIBE_ROW, $e_userclass, $tp;
-	$search = array('{USERCLASS_ID}', '{USERCLASS_NAME}', '{USERCLASS_DESCRIPTION}', '{USERCLASS_INDENT}');
+	$tmp = explode(',',$current_value);
+	$search = array('{USERCLASS_ID}', '{USERCLASS_NAME}', '{USERCLASS_DESCRIPTION}', '{USERCLASS_INDENT}', '{USERCLASS_CHECKED}');
 	$replace = array($classnum, $tp->toHTML($e_userclass->uc_get_classname($classnum), FALSE, 'defs'), 
-					$tp->toHTML($e_userclass->uc_get_classdescription($classnum), FALSE, 'defs'), " style='text-indent:".(1.2*$nest_level)."em'");
+					$tp->toHTML($e_userclass->uc_get_classdescription($classnum), FALSE, 'defs'), " style='text-indent:".(1.2*$nest_level)."em'",
+					( in_array($classnum, $tmp) ? " checked='checked'" : ''));
 	return str_replace($search, $replace, $USERCLASS_SUBSCRIBE_ROW);
   }
   $ret = $USERCLASS_SUBSCRIBE_START;
-  $ret .= $e_userclass->vetted_tree('class',show_signup_class,'','editable');
+  $ret .= $e_userclass->vetted_tree('class',show_signup_class,varset($signupData['user_class'],''),'editable');
 	$ret .= $USERCLASS_SUBSCRIBE_END;
 	return $ret;
 }

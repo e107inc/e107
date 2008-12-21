@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2008-12-21 11:07:58 $
+|     $Revision: 1.88 $
+|     $Date: 2008-12-21 22:17:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -638,7 +638,6 @@ $e107->override = new override;
 $override = &$e107->override;
 
 e107_require_once(e_HANDLER.'userclass_class.php');
-$e107->e_userclass = new e_userclass;
 $e107->user_class = new user_class;
 $e_userclass = &$e107->user_class;
 

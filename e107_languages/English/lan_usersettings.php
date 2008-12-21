@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-06-13 20:20:22 $
+|     $Revision: 1.14 $
+|     $Date: 2008-12-21 22:17:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,8 +24,8 @@ define("LAN_112", "Email Address: ");
 define("LAN_113", "Hide email address?: ");
 define("LAN_114", "This will prevent your email address from being displayed on site");
 define("LAN_119", "Location: ");
-define("LAN_120", "Signature: ");
-define("LAN_121", "Avatar: ");
+//define("LAN_120", "Signature: ");
+//define("LAN_121", "Avatar: ");
 define("LAN_144", "Website URL: ");
 define("LAN_150", "Settings updated and saved into database.");
 define("LAN_151", "OK");

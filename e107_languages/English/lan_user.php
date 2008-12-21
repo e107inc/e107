@@ -9,8 +9,8 @@
  * Language file - user-related (many generic definitions)
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_user.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-20 20:19:05 $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-21 22:17:05 $
  * $Author: e107steved $
  *
 */
@@ -21,7 +21,6 @@ define("LAN_116", "AIM Address");
 define("LAN_117", "MSN Messenger");
 define("LAN_118", "Birthday");
 define("LAN_119", "Location");
-define("LAN_120", "Signature");
 define("LAN_144", "Website URL");
 define("LAN_405", "days ago");
 define("LAN_407", "none");
@@ -92,32 +91,38 @@ define('LAN_USER_60', 'Email Address');							// LAN_112
 define('LAN_USER_61', 'Rating');								// LAN_406
 define('LAN_USER_62', 'Send Private Message');					// LAN_425
 define('LAN_USER_63', 'Real Name');								// LAN_308
-define('LAN_USER_64', 'Site Stats');								// LAN_403
-define('LAN_USER_65', 'Last visit');								// LAN_404
-define('LAN_USER_66', 'Visits to site since registration');			// LAN_146
-define('LAN_USER_67', 'Chatbox posts');								// LAN_147
-define('LAN_USER_68', 'Comments posted');							// LAN_148
-define('LAN_USER_69', 'Forum posts');								// LAN_149
-define('LAN_USER_70', 'Show');										// LAN_419
+define('LAN_USER_64', 'Site Stats');							// LAN_403
+define('LAN_USER_65', 'Last visit');							// LAN_404
+define('LAN_USER_66', 'Visits to site since registration');		// LAN_146
+define('LAN_USER_67', 'Chatbox posts');							// LAN_147
+define('LAN_USER_68', 'Comments posted');						// LAN_148
+define('LAN_USER_69', 'Forum posts');							// LAN_149
+define('LAN_USER_70', 'Show');									// LAN_419
+define('LAN_USER_71', 'Signature');								// LAN_120
+define('LAN_USER_72', 'Avatar: ');								// LAN_121
 
 
-
-// Error messages for when user data is missing
-define('USER_ERR_01','Missing value');
-define('USER_ERR_02','Unexpected value');
-define('USER_ERR_03','Value contains invalid characters');
-define('USER_ERR_04','Value too short');
-define('USER_ERR_05','Value too long');
-define('USER_ERR_06','Duplicate value');
-define('USER_ERR_07','Value not allowed');
-define('USER_ERR_08','Entry disabled');
-define('USER_ERR_09','Invalid word');
-define('USER_ERR_10','Password fields different');
-define('USER_ERR_11','Banned email address');
-define('USER_ERR_12','Invalid format for email address');
-define('USER_ERR_13','Data error');
-define('USER_ERR_14','Banned user');
-define('USER_ERR_15','User name and display name cannot be different');
+// Error messages for when user data is missing. Done this way so that other code can override the default messages
+if (!defined('USER_ERR_01')) { define('USER_ERR_01','Missing value');  }
+if (!defined('USER_ERR_02')) { define('USER_ERR_02','Unexpected value');  }
+if (!defined('USER_ERR_03')) { define('USER_ERR_03','Value contains invalid characters');  }
+if (!defined('USER_ERR_04')) { define('USER_ERR_04','Value too short');  }
+if (!defined('USER_ERR_05')) { define('USER_ERR_05','Value too long');  }
+if (!defined('USER_ERR_06')) { define('USER_ERR_06','Duplicate value');  }
+if (!defined('USER_ERR_07')) { define('USER_ERR_07','Value not allowed');  }
+if (!defined('USER_ERR_08')) { define('USER_ERR_08','Entry disabled');  }
+if (!defined('USER_ERR_09')) { define('USER_ERR_09','Invalid word');  }
+if (!defined('USER_ERR_10')) { define('USER_ERR_10','Password fields different');  }
+if (!defined('USER_ERR_11')) { define('USER_ERR_11','Banned email address');  }
+if (!defined('USER_ERR_12')) { define('USER_ERR_12','Invalid format for email address');  }
+if (!defined('USER_ERR_13')) { define('USER_ERR_13','Data error');  }
+if (!defined('USER_ERR_14')) { define('USER_ERR_14','Banned user');  }
+if (!defined('USER_ERR_15')) { define('USER_ERR_15','User name and display name cannot be different');  }
+if (!defined('USER_ERR_16')) { define('USER_ERR_16','Software error');  }
+if (!defined('USER_ERR_17')) { define('USER_ERR_17','Value too low');  }
+if (!defined('USER_ERR_18')) { define('USER_ERR_18','Value too high');  }
+if (!defined('USER_ERR_19')) { define('USER_ERR_19','General error');  }
+if (!defined('USER_ERR_20')) { define('USER_ERR_20','Unspecified error');  }
 
 
 ?>

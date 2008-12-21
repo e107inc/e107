@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-21 11:07:58 $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-21 22:17:05 $
  * $Author: e107steved $
  *
 */
@@ -89,7 +89,7 @@ class UserHandler
 		'user_password' => array('niceName'=> LAN_USER_05, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'minLength' => varset($pref['signup_pass_len'],1)),
 		'user_sess' => array('niceName'=> LAN_USER_06, 'vetMethod' => '0', 'vetParam' => '', 'dbClean' => 'toDB'),				// Photo
 		'user_image' => array('niceName'=> LAN_USER_07, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'image', 'dbClean' => 'toDB'),				// Avatar
-		'user_email' => array('niceName'=> LAN_USER_08, 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'email', 'dbClean' => 'toDB'),
+		'user_email' => array('niceName'=> LAN_USER_08, 'vetMethod' => '1,3', 'vetParam' => '', 'srcName' => 'email', 'dbClean' => 'toDB'),
 		'user_signature' => array('niceName'=> LAN_USER_09, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
 		'user_hideemail' => array('niceName'=> LAN_USER_10, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
 		'user_xup' => array('niceName'=> LAN_USER_11, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
@@ -414,7 +414,7 @@ class UserHandler
 	DB				signup			usersettings	quick add		function
   ------------------------------------------------------------------------------
   user_id 			-				user_id			-				Unique user ID
-  user_name 		name			username		username		Display name
+  user_name 		name$			username		username		Display name
   user_loginname	loginname		loginname 		loginname		User name (login name)
   user_customtitle 	-				customtitle		-				Custom title
   user_password 	password1		password1		password1		Password (prior to encoding)
@@ -426,11 +426,12 @@ class UserHandler
   user_image		image			image*			-				Avatar (may be external URL or file on server)
   user_hideemail	hideemail		hideemail		-				Flag to hide user's email address
   user_login		realname		realname		realname		User Real name
-  user_xup			xupexist		user_xup		-				XUP file link
+  user_xup			xupexist$		user_xup		-				XUP file link
   user_class		class			class			userclass		User class (array on form)
  
 user_loginname may be auto-generated
 * avatar (user_image) and photo (user_sess) may be uploaded files
+$changed to match the majority vote
 
 Following fields auto-filled in code as required:
   user_join

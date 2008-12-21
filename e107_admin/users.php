@@ -9,8 +9,8 @@
  * Administration Area - Users
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
- * $Revision: 1.19 $
- * $Date: 2008-12-21 16:19:29 $
+ * $Revision: 1.20 $
+ * $Date: 2008-12-21 22:17:05 $
  * $Author: e107steved $
  *
 */
@@ -609,14 +609,6 @@ class users
 			$search_display = explode("|",$pref['admin_user_disp']);
 		}
 
-		if ($sql->db_Select("userclass_classes")) 
-		{
-			while ($row = $sql->db_Fetch())
-			{
-				$class[$row['userclass_id']] = $tp->toHTML($row['userclass_name'],"","defs,emotes_off, no_make_clickable");
-			}
-		}
-
 		$text = "<div style='text-align:center'>";
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "")
@@ -721,7 +713,7 @@ class users
 							$tmp = explode(",", $user_class);
 							while (list($key, $class_id) = each($tmp))
 							{
-								$text .= ($class[$class_id] ? $class[$class_id]."<br />\n" : "");
+								$text .= $e107->user_class->uc_get_classname($class_id)."<br />\n";
 							}
 						}
 						else

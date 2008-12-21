@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-12-07 11:45:02 $
+|     $Revision: 1.14 $
+|     $Date: 2008-12-21 22:17:05 $
 |     $Author: e107steved $
 
 To do:
@@ -161,6 +161,19 @@ Generic log entry point
 
 	$importance = $tp->toDB($importance,true,false,'no_html');
 	$eventcode = $tp->toDB($eventcode,true,false,'no_html');
+	
+		if (is_array($explain))
+		{
+			$line = '';
+			$spacer = '';
+			foreach ($explain as $k => $v)
+			{
+				$line .= $spacer.$k.'=>'.$v;
+				$spacer = '[!br!]';
+			}
+			$explain = $line;
+			unset($line);
+		}
 	$explain = mysql_real_escape_string($tp->toDB($explain,true,false,'no_html'));
 	$event_title = $tp->toDB($event_title,true,false,'no_html');
 
@@ -211,10 +224,10 @@ Generic log entry point
 			$tmp = $source_call[$i]['file']."|".$source_call[$i]['class'].$source_call[$i]['type'].$source_call[$i]['function']."@".$source_call[$i]['line'];
 			foreach ($source_call[$i]['args'] as $k => $v)
 			{  // Add in the arguments
-			  $explain .= "<br />".$k."=".$v;
+			  $explain .= "[!br!]".$k."=".$v;
 			}
 			$i++;
-			if ($i < $back_count) $explain .= "<br />-------------------";
+			if ($i < $back_count) $explain .= "[!br!]-------------------";
 			if (!isset($tmp1)) $tmp1 = $tmp;		// Pick off the immediate caller as the source
 		}
 		if (isset($tmp1)) $source_call = $tmp1; else $source_call = 'Root level';
@@ -226,7 +239,7 @@ Generic log entry point
 		$source_call = $tp->toDB($source_call,true,false,'no_html');
 	  }
 	// else $source_call is a string
-
+	
 	  // Save new rolling log record
 	  $this->rldb->db_Insert("dblog","0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
 

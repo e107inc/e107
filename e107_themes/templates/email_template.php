@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-07-17 19:24:46 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-21 22:17:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 global $pref;
-$SIGNUPEMAIL_SUBJECT = LAN_404." {SITENAME}";
+$SIGNUPEMAIL_SUBJECT = LAN_SIGNUP_96." {SITENAME}";
 $SIGNUPEMAIL_USETHEME = 1; // Use CSS STYLE from THEME: 0 = Off, 1 = external, 2 = embedded
 $SIGNUPEMAIL_LINKSTYLE = ""; // css to use on links eg. color:red;
 $SIGNUPEMAIL_IMAGES =  e_IMAGE.$pref['sitebutton']; // comma separated paths to image to embed. referenced below with {IMAGE1} (IMAGE2} etc.
@@ -64,7 +64,7 @@ $SIGNUPEMAIL_TEMPLATE = "
 <div style='text-align:left; width:90%'>
 ".LAN_EMAIL_01." {USERNAME},<br />
 <br />".
-LAN_403." {SITENAME}<br />
+LAN_SIGNUP_97." {SITENAME}<br />
 ".LAN_SIGNUP_21.":<br />
 <br />
 {ACTIVATION_LINK}<br />
