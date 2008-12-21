@@ -1,13 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-07-30 19:46:30 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Language file - User signup
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
+ * $Revision: 1.13 $
+ * $Date: 2008-12-21 11:07:58 $
+ * $Author: e107steved $
+ *
 */
 define("PAGE_NAME", "Register");
 define("LAN_7", "Display Name: ");

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2008-12-19 22:56:22 $
+|     $Revision: 1.87 $
+|     $Date: 2008-12-21 11:07:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1446,7 +1446,6 @@ function init_session()
 			define('USEREMAIL', $result['user_email']);
 			define('USER', true);
 			define('USERCLASS', $result['user_class']);
-			define('USERREALM', $result['user_realm']);
 			define('USERVIEWED', $result['user_viewed']);
 			define('USERIMAGE', $result['user_image']);
 			define('USERPHOTO', $result['user_sess']);

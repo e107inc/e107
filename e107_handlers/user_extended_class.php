@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2008-12-18 15:28:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2008-12-21 11:07:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,9 +80,9 @@ class e107_user_extended
 		$this->reserved_names = array (
 		'id', 'name', 'loginname', 'customtitle', 'password',
 		'sess', 'email', 'signature', 'image', 'hideemail',
-		'join', 'lastvisit', 'currentvisit', 'lastpost', 'chats',
+		'join', 'lastvisit', 'currentvisit', 'chats',
 		'comments', 'forums', 'ip', 'ban', 'prefs', 'viewed',
-		'visits', 'admin', 'login', 'class', 'perms', 'realm', 'pwchange',
+		'visits', 'admin', 'login', 'class', 'perms', 'pwchange',
 		'xup'
 		);
 

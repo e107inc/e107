@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-12-12 22:39:17 $
-|     $Author: secretr $
+|     $Revision: 1.24 $
+|     $Date: 2008-12-21 11:07:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,7 +26,7 @@ if (!defined('e107_INIT')) { exit; }
 
 require_once(e_HANDLER.'arraystorage_class.php');
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_userclass.php');
 
 
 /*
@@ -39,10 +39,9 @@ define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 */
-// Move these definitions to class2.php later if they're adopted
-define("e_UC_ADMINMOD",249);
-define("e_UC_MODS",248);
-//define("e_UC_USERS",247);
+define('e_UC_ADMINMOD',249);
+define('e_UC_MODS',248);
+define('e_UC_NEWUSER',247);					// Users in 'probationary' period
 define('e_UC_SPECIAL_BASE',245);			// Assign class IDs 245 and above for fixed/special purposes
 
 define('UC_CLASS_ICON_DIR','userclasses/');		// Directory for userclass icons
@@ -77,11 +76,12 @@ class user_class
 							e_UC_MEMBER => UC_LAN_3,
 							e_UC_ADMIN => UC_LAN_5,
 							e_UC_MAINADMIN => UC_LAN_6,
-							e_UC_READONLY => UC_LAN_4
+							e_UC_READONLY => UC_LAN_4,
+							e_UC_NEWUSER => UC_LAN_9
 							);
 							
 	  $this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER, 
-									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'readonly' => e_UC_READONLY);
+									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'readonly' => e_UC_READONLY, 'new' => e_UC_NEWUSER);
 
       $this->readTree(TRUE);			// Initialise the classes on entry
 	}
@@ -121,8 +121,18 @@ class user_class
 		{
 			if (!isset($this->class_tree[$c]) && ($c != e_UC_PUBLIC))
 			{
-		//		$this->class_tree[$c]['userclass_parent'] = (($c == e_UC_MEMBER) || ($c == e_UC_NOBODY)) ? e_UC_PUBLIC :  e_UC_MEMBER;
-				$this->class_tree[$c]['userclass_parent'] = (($c == e_UC_ADMIN) || ($c == e_UC_MAINADMIN)) ? e_UC_MEMBER : e_UC_PUBLIC ;
+				switch ($c)
+				{
+					case e_UC_ADMIN :
+					case e_UC_MAINADMIN :
+						$this->class_tree[$c]['userclass_parent'] = e_UC_NOBODY;
+						break;
+					case e_UC_NEWUSER :
+						$this->class_tree[$c]['userclass_parent'] = e_UC_MEMBER;
+						break;
+					default :
+						$this->class_tree[$c]['userclass_parent'] = e_UC_PUBLIC;
+				}
 				$this->class_tree[$c]['userclass_id'] = $c;
 				$this->class_tree[$c]['userclass_name'] = $d;
 				$this->class_tree[$c]['userclass_description'] = 'Fixed class';
@@ -236,6 +246,7 @@ class user_class
 			readonly
 			admin
 			main - main admin
+			new - new users
 			classes - shows all classes
 			matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
 			language - list of languages.
@@ -250,9 +261,9 @@ class user_class
 */
 	function uc_dropdown($fieldname, $curval = 0, $optlist = "", $extra_js = '') 
 	{
-	  global $pref;
+		global $pref;
 
-	  $show_classes = $this->uc_required_class_list($optlist);
+		$show_classes = $this->uc_required_class_list($optlist);
 
 	  $text = ''; 
 	  foreach ($show_classes as $k => $v)
@@ -328,7 +339,7 @@ class user_class
 //		if (isset($opt_arr[$k]) || isset($opt_arr['force']))
 		if (isset($opt_arr[$k]))
 		{
-		  $ret[$v] = $just_ids ? '1' : $this->fixed_classes[$v];
+			$ret[$v] = $just_ids ? '1' : $this->fixed_classes[$v];
 	    }
 	  }
 
@@ -362,7 +373,7 @@ class user_class
 	  $ret[e_UC_READONLY] = $this->class_tree[e_UC_READONLY]['userclass_description'];
 	}
 */
-	  return $ret;
+		return $ret;
 	}
 	
 	
@@ -421,44 +432,44 @@ class user_class
 	$current_value is a single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
 	$optlist works the same as for other class displays
 	*/
-  function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms)
-  {
-    $ret = '';
-	$nest_level++;
-	foreach ($this->class_tree[$listnum]['class_children'] as $p)
+	function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms)
 	{
-	// Looks like we don't need to differentiate between function and class calls
-	  if (isset($perms[$p]))
-	  {
-		$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level);
-	  }
-	  $ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms);
+		$ret = '';
+		$nest_level++;
+		foreach ($this->class_tree[$listnum]['class_children'] as $p)
+		{
+			// Looks like we don't need to differentiate between function and class calls
+			if (isset($perms[$p]))
+			{
+				$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level);
+			}
+			$ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms);
+		}
+		return $ret;
 	}
-	return $ret;
-  }
 
 
-  function vetted_tree($treename, $callback='', $current_value='', $optlist = '')
-  {
-	$ret = '';
-	if (!$callback) $callback=array($this,'select');
-	$current_value = str_replace(' ','',$current_value);				// Simplifies parameter passing for the tidy-minded
+	function vetted_tree($treename, $callback='', $current_value='', $optlist = '')
+	{
+		$ret = '';
+		if (!$callback) $callback=array($this,'select');
+		$current_value = str_replace(' ','',$current_value);				// Simplifies parameter passing for the tidy-minded
 
-	$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
-	if (isset($perms[e_UC_BLANK]))
-	{
-	  $ret .= call_user_func($callback,$treename, e_UC_BLANK, $current_value,0);
+		$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
+		if (isset($perms[e_UC_BLANK]))
+		{
+			$ret .= call_user_func($callback,$treename, e_UC_BLANK, $current_value,0);
+		}
+		foreach ($this->class_parents as $p)
+		{
+			if (isset($perms[$p]))
+			{
+				$ret .= call_user_func($callback,$treename, $p,$current_value,0);
+			}
+			$ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms);
+		}
+		return $ret;
 	}
-    foreach ($this->class_parents as $p)
-	{
-	  if (isset($perms[$p]))
-	  {
-		$ret .= call_user_func($callback,$treename, $p,$current_value,0);
-	  }
-	  $ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms);
-	}
-	return $ret;
-  }
 
 
   // Callback for vetted_tree - Creates the option list for a selection box
@@ -593,6 +604,20 @@ class user_class
 			}
 		}
 		return FALSE;		// not found
+	}
+	
+
+	// Utility to remove a specified class ID from the default comma-separated list
+	function ucRemove($classID, $from, $asArray = FALSE)
+	{
+		$tmp = array_flip(explode(',',$from));
+		if (isset($tmp[$classID]))
+		{
+			unset($tmp[$classID]);
+		}
+		$tmp = array_keys($tmp);
+		if ($asArray) { return $tmp; }
+		return implode(',',$tmp);
 	}
 	
 	
@@ -1162,6 +1187,12 @@ class user_class_admin extends user_class
 						'userclass_editclass' => e_UC_MAINADMIN,
 						'userclass_parent' => e_UC_ADMINMOD,
 						'userclass_visibility' => e_UC_MEMBER
+						),
+					array('userclass_id' => e_UC_NEWUSER, 'userclass_name' => UC_LAN_9, 
+						'userclass_description' => UCSLAN_87, 
+						'userclass_editclass' => e_UC_MAINADMIN,
+						'userclass_parent' => e_UC_MEMBER,
+						'userclass_visibility' => e_UC_ADMIN
 						)
 					);
 

@@ -1,36 +1,30 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2008
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/signup.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2008-12-17 20:26:51 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * User signup
+ *
+ * $Source: /cvs_backup/e107_0.8/signup.php,v $
+ * $Revision: 1.27 $
+ * $Date: 2008-12-21 11:07:58 $
+ * $Author: e107steved $
+ *
 */
 
 require_once("class2.php");
 $qs = explode(".", e_QUERY);
 if($qs[0] != "activate")
 {   // multi-language fix.
-	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
-	e107_include_once(e_LANGUAGEDIR."English/lan_signup.php");
-	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
 }
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
 
-if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
-{
-	$threshold=(time() - ($pref['del_unv'] * 60));
-	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
-}
+
 
 include_once(e_HANDLER."user_extended_class.php");
 $usere = new e107_user_extended;
@@ -38,6 +32,7 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 require_once(e_HANDLER.'user_handler.php');
 $user_info = new UserHandler;
+$user_info->deleteExpired();				// Delete time-expired partial registrations
 
 if (is_readable(THEME."signup_template.php")) 
 {
@@ -74,76 +69,76 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 	}
 
 	if($_POST['submit_resend'])
-  {  // Action user's submitted information
-	// 'resend_email' - user name or email address actually used to sign up
-	// 'resend_newemail' - corrected email address
-	// 'resend_password' - password (required if changing email address)
+	{	// Action user's submitted information
+		// 'resend_email' - user name or email address actually used to sign up
+		// 'resend_newemail' - corrected email address
+		// 'resend_password' - password (required if changing email address)
 
 		if($_POST['resend_email'] && !$new_email && $sql->db_Select_gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (user_loginname= \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) "))
-	{	// Account already activated
+		{	// Account already activated
 			$ns -> tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
 			require_once(FOOTERF);
 			exit;
 		}
 
 
-	// Start by looking up the user
-	if(!$sql->db_Select("user", "*", "(user_loginname = \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) AND user_ban=".USER_REGISTERED_NOT_VALIDATED." AND user_sess !='' LIMIT 1"))
-	{
-	  require_once(e_HANDLER."message_handler.php");
-	  message_handler("ALERT",LAN_SIGNUP_64); // email (or other info) not valid.
-	  exit;
-	}
-	$row = $sql -> db_Fetch();
-	// We should have a user record here
-
-		if(trim($_POST['resend_password']) !="" && $new_email)
-	{  // Need to change the email address - check password to make sure
-	  if ($user_info->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
+		// Start by looking up the user
+		if(!$sql->db_Select("user", "*", "(user_loginname = \"".$tp->toDB($_POST['resend_email'])."\" OR user_name = \"".$tp->toDB($_POST['resend_email'])."\" OR user_email = \"".$clean_email."\" ) AND user_ban=".USER_REGISTERED_NOT_VALIDATED." AND user_sess !='' LIMIT 1"))
 		{
-            	if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
+			require_once(e_HANDLER."message_handler.php");
+			message_handler("ALERT",LAN_SIGNUP_64); // email (or other info) not valid.
+			exit;
+		}
+		$row = $sql -> db_Fetch();
+		// We should have a user record here
+	
+		if(trim($_POST['resend_password']) !="" && $new_email)
+		{  // Need to change the email address - check password to make sure
+			if ($user_info->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
+			{
+				if($sql->db_Update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
 				{
-		  $row['user_email'] = $new_email;
+					$row['user_email'] = $new_email;
 				}
 			}
 			else
 			{
-			   	require_once(e_HANDLER."message_handler.php");
-			   	message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
-		exit;
+				require_once(e_HANDLER."message_handler.php");
+				message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
+				exit;
 			}
 		}
+	
+		// Now send the email - got some valid info
+		$_POST['password1'] = "xxxxxxxxx";
+		$_POST['loginname'] = $row['user_loginname'];
+		$_POST['name'] = $row['user_name'];
+		$nid = $row['user_id'];
+		$u_key = $row['user_sess'];
 
-	// Now send the email - got some valid info
-			$_POST['password1'] = "xxxxxxxxx";
-			$_POST['loginname'] = $row['user_loginname'];
-			$_POST['name'] = $row['user_name'];
-			$nid = $row['user_id'];
-			$u_key = $row['user_sess'];
+		$eml = render_email();
+		$mailheader_e107id = $nid;
+		require_once(e_HANDLER."mail.php");
 
-			$eml = render_email();
-        	$mailheader_e107id = $nid;
-			require_once(e_HANDLER."mail.php");
+		$do_log['signup_action'] = LAN_SIGNUP_63;
 
-			$do_log['signup_action'] = LAN_SIGNUP_63;
-
-            if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
-            {
-              $ns -> tablerender(LAN_ERROR,LAN_SIGNUP_42);
-			  $do_log['signup_result'] = LAN_SIGNUP_62;
-            }
-            else
-            {
-                $ns -> tablerender(LAN_SIGNUP_43,LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45."<br /><br />");
-			  $do_log['signup_result'] = LAN_SIGNUP_61;
-            }
-			// Now log this (log will ignore if its disabled)
-			$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,$row['user_id'],$row['user_name']);
-            require_once(FOOTERF);
-            exit;
-         }
+		if(!sendemail($row['user_email'], $eml['subject'], $eml['message'], $row['user_name'], "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], $returnpath, $returnreceipt,$eml['inline-images']))
+		{
+		  $ns -> tablerender(LAN_ERROR,LAN_SIGNUP_42);
+		  $do_log['signup_result'] = LAN_SIGNUP_62;
+		}
+		else
+		{
+			$ns -> tablerender(LAN_SIGNUP_43,LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45."<br /><br />");
+		  $do_log['signup_result'] = LAN_SIGNUP_61;
+		}
+		// Now log this (log will ignore if its disabled)
+		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,$row['user_id'],$row['user_name']);
+		require_once(FOOTERF);
+		exit;
+	}
 	elseif(!$_POST['submit_resend'])
-  {	// Display form to get info from user
+	{	// Display form to get info from user
 		$text .= "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?resend' name='resend_form'>
 		<table style='".USER_WIDTH."' class='fborder'>
@@ -188,7 +183,7 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 
 // ------------------------------------------------------------------
 
-if(!$_POST)   // Notice Removal.
+if(!$_POST)
 {
 
 	$error = "";
@@ -381,7 +376,7 @@ if (isset($_POST['register']))
         $error = TRUE;
 	}
 
-	if($_POST['xupexist'])
+	if (varsettrue($pref['xup_enabled']) && varsettrue($_POST['xupexist']))
 	{
 		require_once(e_HANDLER."xml_class.php");
 		$xml = new parseXml;
@@ -585,7 +580,6 @@ global $db_debug;
 
 		// Check Email against banlist.
 		$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
-//	if ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'"))
 		if ($do_email_validate && !$e107->check_ban("banlist_ip='".$_POST['email']."' OR banlist_ip='{$wc}'",FALSE,TRUE))
 		{
 		  $email_address_OK = FALSE;

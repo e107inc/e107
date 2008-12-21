@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-06-13 20:20:21 $
+|     $Revision: 1.19 $
+|     $Date: 2008-12-21 11:07:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -173,7 +173,7 @@ class userlogin
 		}
 
 
-		$userpass = '';								// Finished with any plaintext password - can get rid of it
+		$userpass = '';				// Finished with any plaintext password - can get rid of it
 	
 
 		$ret = $e_event->trigger("preuserlogin", $username);
@@ -197,58 +197,48 @@ class userlogin
 		  }
 		}
 
+
+		// User login definitely accepted here
+
+
 		if($user_xup) 
 		{
 		  $this->update_xup($user_id, $user_xup);
 		}
 
 
-		$cookieval = $user_id.".".md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
-		if ($pref['user_tracking'] == "session")
-		{
-		  $_SESSION[$pref['cookie_name']] = $cookieval;
-		} 
-		else 
-		{
-		  if ($autologin == 1) 
-		  {	// Cookie valid for up to 30 days
-			cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
-		  } 
-		  else 
-		  {
-			cookie($pref['cookie_name'], $cookieval);
-		  }
-		}
-
-		// User login definitely accepted here
+		$cookieval = $user_info->makeUserCookie($lode,$autologin);
 
 
 		// Calculate class membership - needed for a couple of things
 		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
-		$class_list = explode(',',$lode['user_class']);
-		if ($lode['user_admin'] && strlen($lode['user_perms']))
-		{
-		  $class_list[] = e_UC_ADMIN;
-		  if (strpos($lode['user_perms'],'0') === 0)
-		  {
-			$class_list[] = e_UC_MAINADMIN;
-		  }
-		}
-		$class_list[] = e_UC_MEMBER;
-		$class_list[] = e_UC_PUBLIC;
+		$class_list = $user_info->addCommonClasses($lode, TRUE);
 
 		$user_logging_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
 		if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'],''),$class_list))
 		{  // Need to note in user audit trail
-		  $admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);
+			$admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);
 		}
 
-		$edata_li = array("user_id" => $user_id, "user_name" => $username, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin);
+		$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin);
 		$e_event->trigger("login", $edata_li);
 
 		if($_E107['cli'])
 		{
           return $cookieval;
+		}
+
+		if (in_array(e_UC_NEWUSER,$class_list))
+		{
+			if (time() > ($lode['user_join'] + (varset($pref['user_new_period'],0)*86400)))
+			{	// 'New user' probationary period expired - we can take them out of the class
+				$lode['user_class'] = $e107->user_class->ucRemove(e_UC_NEWUSER, $lode['user_class']);
+//				$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$lode['user_class'],FALSE,FALSE);
+				$sql->db_UpdateArray('user',array('user_class' => $lode['user_class']), 'WHERE `user_id`='.$lode['user_id']);
+				unset($class_list[e_UC_NEWUSER]);
+				$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list));
+				$e_event->trigger('userNotNew', $edata_li);
+			}
 		}
 
 		$redir = e_SELF;

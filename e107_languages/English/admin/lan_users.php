@@ -1,13 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-07-03 21:23:47 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Language file - user admin
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
+ * $Revision: 1.12 $
+ * $Date: 2008-12-21 11:07:58 $
+ * $Author: e107steved $
+ *
 */
 define("USRLAN_1", "Options Saved.");
 define("USRLAN_3", "now listed an Administrator - to set permissions please go to the");
@@ -155,6 +160,7 @@ define("USRLAN_152", "Clear bounce and Activate");
 define("USRLAN_153", "Delete non-bounce emails");
 define("USRLAN_154", "Clear email for checked");
 define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
+define("USRLAN_156", "Email address is already in use");
 
 define('USRLAN_160', 'Total --COUNT-- users of type --TYPE-- pruned');
 define('USRLAN_161', 'User ID --UID-- name --NAME-- banned');
@@ -170,12 +176,12 @@ define('USRLAN_170', 'Random user name');
 define('USRLAN_171', 'Random password');
 define('USRLAN_172', 'Password set');
 define('USRLAN_173', 'Login name set');
-define('USRLAN_174', '');
+define('USRLAN_174', 'User name --NAME-- created');
 define('USRLAN_175', '');
 
-define('USRLAN_179', "User banned: ");
-define('USRLAN_180', "IP address of {IP} appears on whitelist; IP not banned.");
-define('USRLAN_181', "Send confirmation email with password to new user");
+define('USRLAN_179', 'User banned: ');
+define('USRLAN_180', 'IP address of {IP} appears on whitelist; IP not banned.');
+define('USRLAN_181', 'Send confirmation email with password to new user');
 define('USRLAN_182', 'Invalid characters in login name');
 define('USRLAN_183', 'That login name already in use');
 define('USRLAN_184', 'Length of login name outside limits');
@@ -186,49 +192,19 @@ define('USRLAN_187', 'Access to website: ');
 define('USRLAN_188', 'Email sent successfully');
 define('USRLAN_189', 'Error sending email');
 
-define("LAN_MAINADMIN","Main Admin");
-define("LAN_ADMIN","Admin");
-define("LAN_NOTVERIFIED","Not Verified");
-define("LAN_BANNED","Banned");
-define("LAN_BOUNCED","Bounced");
+define('USRLAN_190', 'New user probationary period (days)');
+define('USRLAN_191', '(admin can impose restrictions during this period in some areas)');
+define('USRLAN_192', 'days');
+define('USRLAN_193', 'Nothing changed - not saved');
+define('USRLAN_194', '');
+define('USRLAN_195', '');
 
-define("DUSRLAN_1", "ID");
-define("DUSRLAN_2", "Display Name");
-define("DUSRLAN_3", "Username");
-define("DUSRLAN_4", "Custom Title");
-define("DUSRLAN_5", "Password");
-define("DUSRLAN_6", "Photo");
-define("DUSRLAN_7", "Email");
-define("DUSRLAN_8", "Website");
-define("DUSRLAN_9", "ICQ");
-define("DUSRLAN_10", "AIM");
-define("DUSRLAN_11", "MSN");
-define("DUSRLAN_12", "Location");
-define("DUSRLAN_13", "Birthday");
-define("DUSRLAN_14", "Signature");
-define("DUSRLAN_15", "Avatar");
-define("DUSRLAN_16", "Timezone");
-define("DUSRLAN_17", "Hide Email");
-define("DUSRLAN_18", "Join Date");
-define("DUSRLAN_19", "Last Visit");
-define("DUSRLAN_20", "Current Visit");
-define("DUSRLAN_21", "Last Post");
-define("DUSRLAN_22", "Chatbox Posts");
-define("DUSRLAN_23", "Comments");
-define("DUSRLAN_24", "Forum Posts");
-define("DUSRLAN_25", "IP");
-define("DUSRLAN_26", "Ban");
-define("DUSRLAN_27", "Prefs");
-define("DUSRLAN_28", "New");
-define("DUSRLAN_29", "Viewed");
-define("DUSRLAN_30", "Visits");
-define("DUSRLAN_31", "Admin");
-define("DUSRLAN_32", "Real Name");
-define("DUSRLAN_33", "User Class");
-define("DUSRLAN_34", "Perms");
-define("DUSRLAN_35", "Tracked threads");
-define("DUSRLAN_36", "Password Change");
-define("DUSRLAN_37", "XUP");
+
+define('LAN_MAINADMIN','Main Admin');
+define('LAN_ADMIN','Admin');
+define('LAN_NOTVERIFIED','Not Verified');
+define('LAN_BANNED','Banned');
+define('LAN_BOUNCED','Bounced');
 
 
 ?>
