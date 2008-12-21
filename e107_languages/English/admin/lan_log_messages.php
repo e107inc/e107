@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.35 2008-12-10 22:39:43 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.36 2008-12-21 12:53:42 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -12,15 +12,15 @@ into any of the system logs. They are in three groups with different prefixes:
 
 
 // User audit trail events. For messages 11-30, the last 2 digits must match the define for the event type in the admin log
-define('LAN_AUDIT_LOG_001', "Access by banned user");
-define('LAN_AUDIT_LOG_002', "Flood protection activated");
+define('LAN_AUDIT_LOG_001', 'Access by banned user');
+define('LAN_AUDIT_LOG_002', 'Flood protection activated');
 define('LAN_AUDIT_LOG_003', 'Access from banned IP Address');
-define('LAN_AUDIT_LOG_004', "");
-define('LAN_AUDIT_LOG_005', "");
-define('LAN_AUDIT_LOG_006', "User changed password");
-define('LAN_AUDIT_LOG_007', "User changed email address");
-define('LAN_AUDIT_LOG_008', "");
-define('LAN_AUDIT_LOG_009', "");
+define('LAN_AUDIT_LOG_004', '');
+define('LAN_AUDIT_LOG_005', '');
+define('LAN_AUDIT_LOG_006', 'User changed password');
+define('LAN_AUDIT_LOG_007', 'User changed email address');
+define('LAN_AUDIT_LOG_008', '');
+define('LAN_AUDIT_LOG_009', '');
 define('LAN_AUDIT_LOG_010', 'User data changed by admin');
 define('LAN_AUDIT_LOG_011', 'User signed up');
 define('LAN_AUDIT_LOG_012', 'User confirmed registration');
@@ -346,6 +346,17 @@ define('LAN_AL_PLUGMAN_01', 'Plugin installed');
 define('LAN_AL_PLUGMAN_02', 'Plugin updated');
 define('LAN_AL_PLUGMAN_03', 'Plugin uninstalled');
 define('LAN_AL_PLUGMAN_04', 'Plugin refreshed');
+
+
+// Sundry Pseudo-plugins - technically they're plugins, but not worth the file overhead of treating them separately
+//----------------------
+define('LAN_AL_MISC_01','Tree menu settings updated');
+define('LAN_AL_MISC_02','Online menu settings updated');
+define('LAN_AL_MISC_03','Login menu settings updated');
+define('LAN_AL_MISC_04','Comment menu settings updated');
+define('LAN_AL_MISC_05','Clock menu settings updated');
+define('LAN_AL_MISC_06','Blog calendar menu settings updated');
+define('LAN_AL_MISC_07','');
 
 
 ?>

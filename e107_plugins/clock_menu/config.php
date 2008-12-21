@@ -1,44 +1,50 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/clock_menu/config.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:52 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Plugin Administration - Comment menu
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/clock_menu/config.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2008-12-21 12:53:48 $
+ * $Author: e107steved $
+ *
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
-if (!getperms("1")) {
+if (!getperms("1")) 
+{
 	header("location:".e_BASE."index.php");
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");
-@include_once(e_PLUGIN."clock_menu/languages/admin/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."clock_menu/languages/admin/English.php");
+@include_lan(e_PLUGIN."clock_menu/languages/admin/".e_LANGUAGE.".php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 	
-if (isset($_POST['update_menu'])) {
-	while (list($key, $value) = each($_POST)) {
-		if ($key != "update_menu") {
-			$menu_pref[$key] = $value;
+if (isset($_POST['update_menu'])) 
+{
+	$temp = array();
+	while (list($key, $value) = each($_POST)) 
+	{
+		if ($key != "update_menu") 
+		{
+			$temp[$key] = $value;
 		}
 	}
-	if ($_POST['clock_format'] != 1) {
-		$menu_pref['clock_format'] = 0;
+	if ($_POST['clock_format'] != 1) 
+	{
+		$temp['clock_format'] = 0;
 	}
-	$tmp = addslashes(serialize($menu_pref));
-	$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
+	if ($admin_log->logArrayDiffs($temp,$menu_pref,'MISC_05'))
+	{
+		$tmp = addslashes(serialize($menu_pref));
+		$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='menu_pref' ");
+	}
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".CLOCK_AD_L1."</b></div>");
 }
 	
