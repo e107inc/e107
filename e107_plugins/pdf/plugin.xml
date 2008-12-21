@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- $Id: plugin.xml,v 1.1 2008-12-21 12:03:28 e107steved Exp $ -->
+
+	<e107Plugin name="PDF_PLUGIN_LAN_1" version="1.0" compatibility="0.8" installRequired="true">
+	<author name="Eric Vanderfeesten (lisa)" url="http://eindhovenseschool.net" email="lisa@eindhovenseschool.net" />
+	<description>PDF_PLUGIN_LAN_2</description>
+	<folder>pdf</folder>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<logLanguageFile filename="languages/--LAN--_admin_pdf.php" />
+	<administration>
+		<configFile>admin_pdf_config.php</configFile>
+		<icon>images/pdf_32.png</icon>
+		<iconSmall>images/pdf_16.png</iconSmall>
+		<caption>PDF</caption>
+		<installDone>PDF_PLUGIN_LAN_4</installDone>
+	</administration>
+	<mainPrefs>
+	</mainPrefs>
+</e107Plugin>
