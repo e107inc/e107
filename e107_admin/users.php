@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.21 $
-* $Date: 2008-12-22 03:15:04 $
+* $Revision: 1.22 $
+* $Date: 2008-12-22 14:06:17 $
 * $Author: mcfly_e107 $
 *
 */
@@ -740,7 +740,7 @@ class users
 					}
 					elseif($disp == 'user_name')
 					{
-						$text .= "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='$row['user_id'])."'>{$row['user_name']}</a>";
+						$text .= "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a>";
 					}
 					else
 					{
@@ -1431,8 +1431,18 @@ function users_adminmenu()
 function show_ranks()
 {
 	$e107 = e107::getInstance();
+	include_once(e_HANDLER.'file_class.php');
+	$f = new e_file;
+	$imageList = $f->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
+	
 	$fieldList = array('core' => array(), 'extended' => array());
 
+
+	$fieldList['core'] = array(
+	'comments' => 'Number of comments',
+	'visits' => 'Number of site visits',
+	'days' => 'Number of days member' 
+	);
 
 	foreach($e107->extended_struct as $field)
 	{
@@ -1445,43 +1455,49 @@ function show_ranks()
 	$text .= "
 	<table style='".ADMIN_WIDTH."'>
 	<tr>
-	<td class='label' colspan='3' style='text-align:center'>Core fields</td>
-	</tr>
-	<tr>
+	<td class='label'>Source</td>
 	<td class='label'>Field Name</td>
 	<td class='control'>Operation</td>
 	<td class='control'>Value</td>
 	</tr>
 	";
-	foreach($fieldList['core'] as $f)
+	foreach($fieldList['core'] as $k => $f)
 	{
 		$text .= "
 		<tr>
+		<td class='label'>Core</td>
 		<td class='label'>{$f}</td>
-		<td class='control'><input type='text' class='tbox' name='op_{$f}' size='3' maxlength='3'></td>
+		<td class='control'>
+			<select name='op_{$k}' class='tbox'>
+			<option value='*'>*</option>
+			<option value='/'>/</option>
+			<option value='+'>+</option>
+			<option value='-'>-</option>
+			</select>
+		</td>
 		<td class='control'><input type='text' class='tbox' name='val_{$f}' size='3' maxlength='3'></td>
 		</tr>
 		";
 	}
 	if(count($fieldList['extended']))
 	{
-		$text .= "
-		<table style='".ADMIN_WIDTH."'>
-		<tr>
-		<td class='label' colspan='3' style='text-align:center'>Extended fields</td>
-		</tr>
-		<tr>
-		<td class='label'>Field Name</td>
-		<td class='control'>Operation</td>
-		<td class='control'>Value</td>
-		</tr>
-		";
 		foreach($fieldList['extended'] as $f)
 		{
 			$text .= "
 			<tr>
+				<td colspan='4'>&nbsp;</td>
+			</tr>
+			<tr>
+			<td class='label'>Plugin</td>
 			<td class='label'>{$f}</td>
-			<td class='control'><input type='text' class='tbox' name='op_{$f}' size='3' maxlength='3'></td>
+			<td class='control'>
+				<select name='op_{$f}' class='tbox'>
+				<option value='*'>*</option>
+				<option value='/'>/</option>
+				<option value='+'>+</option>
+				<option value='-'>-</option>
+				</select>
+		</td>
 			<td class='control'><input type='text' class='tbox' name='val_{$f}' size='3' maxlength='3'></td>
 			</tr>
 			";
@@ -1493,18 +1509,62 @@ function show_ranks()
 	$text = "
 	<table style='".ADMIN_WIDTH."'>
 	<tr>
-	<td class='label'>Rank Name</td>
-	<td class='control'>Lower Threshold</td>
-	<td class='control'>Rank Image</td>
+		<td class='label'>Type</td>
+		<td class='label'>Rank Name</td>
+		<td class='label'>Lower Threshold</td>
+		<td class='label'>Lang prefix?</td>
+		<td class='label'>Rank Image</td>
 	</tr>
-	</table>
+	
+	<tr>
+		<td class='control'>Main Site Admin</td>
+		<td class='control'><input class='tbox' type='text' name='main_admin' value='Main Site Admin'></td>
+		<td class='control'>N/A</td>
+		<td class='control'><input type='checkbox' name='main_admin_pfx' value='1'></td>
+		<td class='control'>".RankImageDropdown($imageList, 'main_admin_img')."</td>
+	</tr>
+	
+	<tr>
+		<td class='control'>Site Admin</td>
+		<td class='control'><input class='tbox' type='text' name='admin' value='Main Site Admin'></td>
+		<td class='control'>N/A</td>
+		<td class='control'><input type='checkbox' name='admin_pfx' value='1'></td>
+		<td class='control'>".RankImageDropdown($imageList, 'admin_img')."</td>
+	</tr>
+	<tr>
+		<td colspan='5'>&nbsp;</td>
+	</tr>
 	";
+	
+	$text .= "
+	<tr>
+		<td class='control'>Calculated Rank</td>
+		<td class='control'><input class='tbox' type='text' name='calc_name[0]' value=''></td>
+		<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[0]' value=''></td>
+		<td class='control'><input type='checkbox' name='calc_pfx[0]' value='1'></td>
+		<td class='control'>".RankImageDropdown($imageList, 'calc_img[0]')."</td>
+	</tr>
+	";	
+
+	$text .= "</table>";
 	$e107->ns->tablerender('Ranks', $text);
 
 
 	//	var_dump($fieldList);
 	include(e_ADMIN.'footer.php');
 	exit;
+}
+
+function RankImageDropdown(&$imgList, $field, $curVal='')
+{
+	$ret = "<select class='tbox' name='{$field}'>";
+	foreach($imgList as $img)
+	{
+		$sel = ($img['fname'] == $curVal ? "selected='selected'" : '');
+		$ret .= "\n<option {$sel}>{$img['fname']}</option>";
+	}
+	$ret .= '</option>';
+	return $ret;
 }
 
 ?>
