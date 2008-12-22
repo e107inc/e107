@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-07 21:41:04 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-22 12:54:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -307,7 +307,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 					$eplug_conffile 	= $readFile['administration']['configFile'];
 					$eplug_icon_small 	= $plugin_path.'/'.$readFile['administration']['iconSmall'];
 					$eplug_icon 		= $plugin_path.'/'.$readFile['administration']['icon'];
-					$eplug_caption 		= $tp->toHTML($readFile['description'],FALSE,"defs, emotes_off");
+					$eplug_caption 		= str_replace("'", '', $tp->toHTML($readFile['description'], FALSE, 'defs, emotes_off'));
 				}
 			}
 			elseif (is_readable(e_PLUGIN.$plugin_path."/plugin.php"))
