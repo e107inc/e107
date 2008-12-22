@@ -328,7 +328,6 @@ input.action.edit {}
 .admin-page-body { padding: 20px 15px 0; }
 .admin-footer {}
 legend { font-size: 14px; font-weight: bold; padding: 5px; }
-.admin-help p { margin-bottom: 10px } /* help side menu */
 
 /******** Layout */
 .main-table { width: 100%; border: 0 none; }

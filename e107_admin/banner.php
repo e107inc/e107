@@ -1,34 +1,40 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-11-02 21:02:25 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Banner Administration
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-22 16:50:07 $
+ * $Author: secretr $
+ *
 */
+
 require_once("../class2.php");
-if (!getperms("D")) 
+if (!getperms("D"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
 $e_sub_cat = 'banner';
+
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
+$frm = new e_form();
+
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
+
+require_once(e_HANDLER."message_handler.php");
+$emessage = &eMessage::getInstance();
 
 @include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 @include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
@@ -39,31 +45,30 @@ if(e_QUERY)
 	list($action, $sub_action, $id) = explode(".", e_QUERY);
 }
 
-//$reject = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', '.DS_Store');
-//$images = $fl->get_files(e_IMAGE."banners/","",$reject);
 $images = $fl->get_files(e_IMAGE."banners/","","standard");
 
-if (isset($_POST['update_menu'])) 
+if (isset($_POST['update_menu']))
 {
-	$menu_pref['banner_caption']	= $tp->toDB($_POST['banner_caption']);
+	$menu_pref['banner_caption']	= $e107->tp->toDB($_POST['banner_caption']);
 	$menu_pref['banner_amount']		= intval($_POST['banner_amount']);
 	$menu_pref['banner_rendertype']	= intval($_POST['banner_rendertype']);
 
-	if (isset($_POST['catid'])) 
+	if (isset($_POST['multiaction_cat_active']))
 	{
-		$array_cat = explode("-", $_POST['catid']);
+		/*$array_cat = explode("-", $_POST['catid']);
 		$cat='';
-		for($i = 0; $i < count($array_cat); $i++) 
+		for($i = 0; $i < count($array_cat); $i++)
 		{
-			$cat .= $tp->toDB($array_cat[$i])."|";
+			$cat .= $e107->tp->toDB($array_cat[$i])."|";
 		}
-		$cat = substr($cat, 0, -1);
+		$cat = substr($cat, 0, -1);*/
+		$cat = implode('|', $e107->tp->toDB($_POST['multiaction_cat_active']));
 		$menu_pref['banner_campaign'] = $cat;
 	}
 
 	$sysprefs->setArray('menu_pref');
 	banners_adminlog('01', $menu_pref['banner_caption'].'[!br!]'.$menu_pref['banner_amount'].', '.$menu_pref['banner_rendertype'].'[!br!]'.$menu_pref['banner_campaign']);
-	$message = BANNER_MENU_L2;
+	$emessage->add(BANNER_MENU_L2, E_MESSAGE_SUCCESS);
 }
 
 
@@ -72,17 +77,17 @@ if ($_POST['createbanner'] || $_POST['updatebanner'])
 {
 	$start_date = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 	$end_date = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
-	$cli = $tp->toDB($_POST['client_name'] ? $_POST['client_name'] : $_POST['banner_client_sel']);
-	$cLogin = $tp->toDB($_POST['client_login']);
-	$cPassword = $tp->toDB($_POST['client_password']);
-	$banImage = $tp->toDB($_POST['banner_image']);
-	$banURL = $tp->toDB($_POST['click_url']);
+	$cli = $e107->tp->toDB($_POST['client_name'] ? $_POST['client_name'] : $_POST['banner_client_sel']);
+	$cLogin = $e107->tp->toDB($_POST['client_login']);
+	$cPassword = $e107->tp->toDB($_POST['client_password']);
+	$banImage = $e107->tp->toDB($_POST['banner_image']);
+	$banURL = $e107->tp->toDB($_POST['click_url']);
 
-	if ($_POST['banner_pages']) 
+	if ($_POST['banner_pages'])
 	{	// Section redundant?
-		$postcampaign = $tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
-		$pagelist = explode("\r\n", $_POST['banner_pages']);
-		for($i = 0 ; $i < count($pagelist) ; $i++) 
+		$postcampaign = $e107->tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
+		$pagelist = explode("\r", $_POST['banner_pages']);
+		for($i = 0 ; $i < count($pagelist) ; $i++)
 		{
 			$pagelist[$i] = trim($pagelist[$i]);
 		}
@@ -92,80 +97,94 @@ if ($_POST['createbanner'] || $_POST['updatebanner'])
 		$pageparms = (trim($_POST['banner_pages']) == '') ? '' : $pageparms;
 		$cam = $pageparms;
 		$logString = $postcampaign.'[!br!]';
-	} 
-	else 
+	}
+	else
 	{
-		$cam = $tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
+		$cam = $e107->tp->toDB($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
 	}
 
 	$logString .= $cam.'[!br!]'.$cli.'[!br!]'.$banImage.'[!br!]'.$banURL;
-	if ($_POST['createbanner']) 
+	if ($_POST['createbanner'])
 	{
-		admin_update($sql->db_Insert("banner", "0, '".$cli."', '".$cLogin."', '".$cPassword."', '".$banImage."', '".$banURL."', '".intval($_POST['impressions_purchased'])."', '{$start_date}', '{$end_date}', '".intval($_POST['banner_class'])."', 0, 0, '', '".$cam."'"), 'insert', BNRLAN_63);
+		admin_update($sql->db_Insert("banner", "0, '".$cli."', '".$cLogin."', '".$cPassword."', '".$banImage."', '".$banURL."', '".intval($_POST['impressions_purchased'])."', '{$start_date}', '{$end_date}', '".intval($_POST['banner_class'])."', 0, 0, '', '".$cam."'"), 'insert', BNRLAN_63, false, false);
 		banners_adminlog('02',$logString);
-	} 
-	else 
+	}
+	else
 	{
-		admin_update($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$cLogin."', banner_clientpassword='".$cPassword."', banner_image='".$banImage."', banner_clickurl='".$banURL."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='{$start_date}', banner_enddate='{$end_date}', banner_active='".intval($_POST['banner_class'])."', banner_campaign='".$cam."' WHERE banner_id=".intval($_POST['eid'])), 'update', BNRLAN_64);
+		admin_update($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$cLogin."', banner_clientpassword='".$cPassword."', banner_image='".$banImage."', banner_clickurl='".$banURL."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='{$start_date}', banner_enddate='{$end_date}', banner_active='".intval($_POST['banner_class'])."', banner_campaign='".$cam."' WHERE banner_id=".intval($_POST['eid'])), 'update', BNRLAN_64, false, false);
 		banners_adminlog('03',$logString);
 	}
 	unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['click_url'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['banner_class'], $_POST['banner_pages'], $_POST['banner_listtype']);
 }
 
-if (isset($_POST['confirm'])) 
+/* DELETE ACTIONS */
+if (isset($_POST['delete_cancel']))
 {
-	admin_update($sql->db_Delete("banner", "banner_id=".intval($_POST['id'])), 'delete', BNRLAN_1);
-	banners_adminlog('04','Id: '.intval($_POST['id']));
-}
+	$emessage->addSession(BNRLAN_6);
 
-if ($action == "delete" && $sub_action) 
+	//redirect to main
+	session_write_close();
+	header('Location:'.e_SELF);
+	exit;
+}
+if ($action == "delete" && $sub_action && varsettrue($_POST['delete_confirm']))
 {
-	$text = "<div style='text-align:center'>
-		<b>".BNRLAN_2."</b>
-		<br /><br />
-		<form method='post' action='".e_SELF."'>
-		<input class='button' type='submit' name='cancel' value='".LAN_CANCEL."' />
-		<input class='button' type='submit' name='confirm' value='".LAN_CONFDELETE."' />
-		<input type='hidden' name='id' value='".$sub_action."' />
+	if($sql->db_Delete("banner", "banner_id=".intval($sub_action)))
+	{
+		$emessage->addSession(sprintf(BNRLAN_1, $sub_action), E_MESSAGE_SUCCESS);
+		banners_adminlog('04','Id: '.intval($sub_action));
+	}
+	else $emessage->addSession(LAN_DELETED_FAILED, E_MESSAGE_WARNING);
+
+	//redirect to main
+	session_write_close();
+	header('Location:'.e_SELF);
+	exit;
+}
+elseif ($action == "delete" && $sub_action)
+{ // shown only if JS is disabled or by direct url hit (?delete.banner_id)
+	$emessage->add(BNRLAN_2, E_MESSAGE_WARNING);
+	$text = "
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<fieldset id='core-banner-delete-confirm'>
+		<legend class='e-hideme'>".BNRLAN_5."</legend>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('delete_confirm', LAN_CONFDELETE, 'delete no-confirm')."
+				".$frm->admin_button('delete_cancel', LAN_CANCEL, 'cancel')."
+				<input type='hidden' name='id' value='".$sub_action."' />
+			</div>
+		</fieldset>
 		</form>
-		</div>";
-	$ns->tablerender(BNRLAN_5, $text);
+	";
+	$e107->ns->tablerender(BNRLAN_5, $emessage->render().$text);
 
 	require_once("footer.php");
 	exit;
 }
-if (isset($_POST['cancel'])) 
-{
-	$message = BNRLAN_6;
-}
 
-if (isset($message)) 
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
 
-if ($sql->db_Select("banner")) 
+if ($sql->db_Select("banner"))
 {
-	while ($row = $sql->db_Fetch()) 
+	while ($banner_row = $sql->db_Fetch())
 	{
-		extract($row);
+		//extract($row); - killed by SecretR
 
-		if (strpos($banner_campaign, "^") !== FALSE) {
-			$campaignsplit = explode("^", $banner_campaign);
-			$banner_campaign = $campaignsplit[0];
+		if (strpos($banner_row['banner_campaign'], "^") !== FALSE) {
+			$campaignsplit = explode("^", $banner_row['banner_campaign']);
+			$banner_row['banner_campaign'] = $campaignsplit[0];
 		}
 
-		if ($banner_campaign) {
-			$campaigns[] = $banner_campaign;
+		if ($banner_row['banner_campaign']) {
+			$campaigns[] = $banner_row['banner_campaign'];
 		}
-		if ($banner_clientname) {
-			$clients[] = $banner_clientname;
+		if ($banner_row['banner_clientname']) {
+			$clients[] = $banner_row['banner_clientname'];
 		}
-		if ($banner_clientlogin) {
-			$logins[] = $banner_clientlogin;
+		if ($banner_row['banner_clientlogin']) {
+			$logins[] = $banner_row['banner_clientlogin'];
 		}
-		if ($banner_clientpassword) {
-			$passwords[] = $banner_clientpassword;
+		if ($banner_row['banner_clientpassword']) {
+			$passwords[] = $banner_row['banner_clientpassword'];
 		}
 	}
 }
@@ -173,88 +192,133 @@ if ($sql->db_Select("banner"))
 
 if (!$action) {
 	$text = "
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr><td colspan='7' style='text-align:center' class='fcaption'>".BNRLAN_7."</td></tr>
-		<tr>
-		<td class='forumheader' style='text-align:center'>".BNRLAN_8."</td>
-		<td class='forumheader' style='text-align:center'>".BNRLAN_9."</td>
-		<td class='forumheader' style='text-align:center'>".BNRLAN_10."</td>
-		<td class='forumheader' style='text-align:center'>".BNRLAN_11."</td>
-		<td class='forumheader' style='text-align:center'>".BNRLAN_12."</td>
-		<td class='forumheader' style='text-align:center'>".BNRLAN_13."</td>
-		<td class='forumheader' style='text-align:center'>".LAN_OPTIONS."</td>
-		</tr>";
+		<form method='post' action='".e_SELF."' id='core-banner-list-form'>
+			<fieldset id='core-banner-list'>
+				<legend class='e-hideme'>".BNRLAN_7."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+					<colgroup span='7'>
+						<col style='width: 5%'></col>
+						<col style='width: 35%'></col>
+						<col style='width: 10%'></col>
+						<col style='width: 10%'></col>
+						<col style='width: 15%'></col>
+						<col style='width: 15%'></col>
+						<col style='width: 10%'></col>
+					</colgroup>
+					<thead>
+						<tr>
+							<th class='center'>ID</th>
+							<th>".BNRLAN_9."</th>
+							<th class='center'>".BNRLAN_10."</th>
+							<th class='center'>".BNRLAN_11."</th>
+							<th class='center'>".BNRLAN_12."</th>
+							<th class='center'>".BNRLAN_13."</th>
+							<th class='center last'>".LAN_OPTIONS."</th>
+						</tr>
+					</thead>
+					<tbody>
+	";
 
 	if (!$banner_total = $sql->db_Select("banner")) {
-		$text .= "<tr><td colspan='7' class='forumheader3' style='text-align:center'>".BNRLAN_15."</td></tr>";
+		$text .= "<tr><td colspan='7' class='center'>".BNRLAN_15."</td></tr>";
 	} else {
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
+		while ($banner_row = $sql->db_Fetch()) {
+			//extract($row); - killed by SecretR
 
-			$clickpercentage = ($banner_clicks && $banner_impressions ? round(($banner_clicks / $banner_impressions) * 100)."%" : "-");
-			$impressions_left = ($banner_impurchased ? $banner_impurchased - $banner_impressions : BNRLAN_16);
-			$impressions_purchased = ($banner_impurchased ? $banner_impurchased : BNRLAN_16);
+			$clickpercentage = ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100)."%" : "-");
+			$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BNRLAN_16);
+			$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BNRLAN_16);
 
-			$start_date = ($banner_startdate ? strftime("%d %B %Y", $banner_startdate) : BNRLAN_17);
-			$end_date = ($banner_enddate ? strftime("%d %B %Y", $banner_enddate) : BNRLAN_17);
+			$start_date = ($banner_row['banner_startdate'] ? strftime("%d %B %Y", $banner_row['banner_startdate']) : BNRLAN_17);
+			$end_date = ($banner_row['banner_enddate'] ? strftime("%d %B %Y", $banner_row['banner_enddate']) : BNRLAN_17);
 
-			if (strpos($banner_campaign, "^") !== FALSE) {
-				$campaignsplit = explode("^", $banner_campaign);
-				$banner_campaign = $campaignsplit[0];
+			if (strpos($banner_row['banner_campaign'], "^") !== FALSE) {
+				$campaignsplit = explode("^", $banner_row['banner_campaign']);
+				$banner_row['banner_campaign'] = $campaignsplit[0];
 				$textvisivilitychanged = "(*)";
 			} else {
 				$textvisivilitychanged = "";
 			}
 
-			$text .= "<tr>
-				<td class='forumheader3' style='text-align:center'>".$banner_id."</td>
-				<td class='forumheader3' style='text-align:center'>".$banner_clientname."</td>
-				<td class='forumheader3' style='text-align:center'>".$banner_clicks."</td>
-				<td class='forumheader3' style='text-align:center'>".$clickpercentage."</td>
-				<td class='forumheader3' style='text-align:center'>".$impressions_purchased."</td>
-				<td class='forumheader3' style='text-align:center'>".$impressions_left."</td>
-				<td class='forumheader3' style='text-align:center'><a href='".e_SELF."?create.edit.".$banner_id."'>".ADMIN_EDIT_ICON."</a> <a href='".e_SELF."?delete.".$banner_id."'>".ADMIN_DELETE_ICON."</a></td>
-				</tr>
-				<tr>
-				<td class='forumheader3' style='text-align:center'>&nbsp;</td>
-				<td class='forumheader3' style='text-align:center'>".$banner_campaign."</td>
-				<td colspan='2' class='forumheader3' style='text-align:center'>".r_userclass_name($banner_active)." ".$textvisivilitychanged."</td>
-				<td colspan='3' class='forumheader3' style='text-align:center'>".BNRLAN_45.": ".$start_date." &lt;&gt; ".BNRLAN_21.": ".$end_date."</td>
-				</tr>
-				<tr><td colspan='8'>&nbsp;</td></tr>";
+			$text .= "
+						<tr>
+							<td class='center'>".$banner_row['banner_id']."</td>
+							<td class='e-pointer' onclick=\"e107Helper.toggle('banner-infocell-{$banner_row['banner_id']}')\">
+								<a href='#banner-infocell-{$banner_row['banner_id']}' class='e-expandit f-right' title='".BNRLAN_65."'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
+								".($banner_row['banner_clientname'] ? $banner_row['banner_clientname'] : BNRLAN_66)."
+								<div class='e-hideme clear' id='banner-infocell-{$banner_row['banner_id']}'>
+									<div class='indent'>
+										<div class='field-spacer'><strong>".BNRLAN_24.": </strong>".$banner_row['banner_campaign']."</div>
+										<div class='field-spacer'><strong>".MENLAN_4." </strong>".r_userclass_name($banner_row['banner_active'])." ".$textvisivilitychanged."</div>
+										<div class='field-spacer'><strong>".BNRLAN_45.": </strong>".$start_date."</div>
+										<div class='field-spacer'><strong>".BNRLAN_21.": </strong>".$end_date."</div>
+									</div>
+								</div>
+							</td>
+							<td class='center'>".$banner_row['banner_clicks']."</td>
+							<td class='center'>".$clickpercentage."</td>
+							<td class='center'>".$impressions_purchased."</td>
+							<td class='center'>".$impressions_left."</td>
+							<td class='center'>
+
+								<a href='".e_SELF."?create.edit.".$banner_row['banner_id']."'>".ADMIN_EDIT_ICON."</a>
+								<a class='action delete' id='banner-delete-{$banner_row['banner_id']}' href='".e_SELF."?delete.".$banner_row['banner_id']."' rel='no-confirm' title='".BNRLAN_5."'>".ADMIN_DELETE_ICON."</a>
+							</td>
+						</tr>
+				";
 		}
 	}
-	$text .= "</table>";
+	$text .= "
+					</tbody>
+				</table>
+				<input type='hidden' id='delete_confirm' name='delete_confirm' value='0' />
+			</fieldset>
+		</form>
+		<script type='text/javascript'>
+			\$\$('a[id^=banner-delete-]').each( function(element) {
+				element.observe('click', function(e) {
+					var el = e.findElement('a.delete'), msg = el.readAttribute('title') || e107.getModLan('delete_confirm');
+					 e.stop();
+					if( !e107Helper.confirm(msg) ) return;
+					else {
+						\$('delete_confirm').value = 1;
+						\$('core-banner-list-form').writeAttribute('action', el.href).submit();
+					}
+				});
+			});
+		</script>
+	";
 
-	$ns->tablerender(BNRLAN_42, $text);
+	$e107->ns->tablerender(BNRLAN_42.' - '.BNRLAN_7, $emessage->render().$text);
 }
 
 if ($action == "create") {
 
 	if ($sub_action == "edit" && $id) {
+
 		if (!$sql->db_Select("banner", "*", "banner_id = '".$id."' " )) {
-			$text .= "<div style='text-align:center;'>".BNRLAN_15."</div>";
+			$text .= "<div class='center'>".BNRLAN_15."</div>";
 		} else {
-			while ($row = $sql->db_Fetch()) {
-				extract($row);
+			while ($banner_row = $sql->db_Fetch()) {
+				//extract($row); - killed by SecretR
 
-				$_POST['client_name'] = $banner_clientname;
-				$_POST['client_login'] = $banner_clientlogin;
-				$_POST['client_password'] = $banner_clientpassword;
-				$_POST['banner_image'] = $banner_image;
-				$_POST['click_url'] = $banner_clickurl;
-				$_POST['impressions_purchased'] = $banner_impurchased;
-				$_POST['banner_campaign'] = $banner_campaign;
-				$_POST['banner_active'] = $banner_active;
+				$_POST['client_name'] = $banner_row['banner_clientname'];
+				$_POST['client_login'] = $banner_row['banner_clientlogin'];
+				$_POST['client_password'] = $banner_row['banner_clientpassword'];
+				$_POST['banner_image'] = $banner_row['banner_image'];
+				$_POST['click_url'] = $banner_row['banner_clickurl'];
+				$_POST['impressions_purchased'] = $banner_row['banner_impurchased'];
+				$_POST['banner_campaign'] = $banner_row['banner_campaign'];
+				$_POST['banner_active'] = $banner_row['banner_active'];
 
-				if ($banner_startdate) {
-					$tmp = getdate($banner_startdate);
+				if ($banner_row['banner_startdate']) {
+					$tmp = getdate($banner_row['banner_startdate']);
 					$_POST['startmonth'] = $tmp['mon'];
 					$_POST['startday'] = $tmp['mday'];
 					$_POST['startyear'] = $tmp['year'];
 				}
-				if ($banner_enddate) {
-					$tmp = getdate($banner_enddate);
+				if ($banner_row['banner_enddate']) {
+					$tmp = getdate($banner_row['banner_enddate']);
 					$_POST['endmonth'] = $tmp['mon'];
 					$_POST['endday'] = $tmp['mday'];
 					$_POST['endyear'] = $tmp['year'];
@@ -264,10 +328,10 @@ if ($action == "create") {
 					$campaignsplit = explode("^", $_POST['banner_campaign']);
 					$listtypearray = explode("-", $campaignsplit[1]);
 					$listtype = $listtypearray[0];
-					$campaign_pages = str_replace("|", "\n", $listtypearray[1]);
+					$campaign_pages = str_replace("|", "", $listtypearray[1]);
 					$_POST['banner_campaign'] = $campaignsplit[0];
 				} else {
-					$_POST['banner_campaign'] = $banner_campaign;
+					$_POST['banner_campaign'] = $banner_row['banner_campaign'];
 				}
 
 			}
@@ -275,64 +339,100 @@ if ($action == "create") {
 	}
 
 	$text = "
-		<div style='text-align: center;'>
-		<form method='post' action='".e_SELF."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr><td colspan='2' style='text-align:center' class='fcaption'>".($sub_action == "edit" ? BNRLAN_22 : BNRLAN_23)."</td></tr>
-		<tr>
-		<td class='forumheader3'>".BNRLAN_24."</td>
-		<td class='forumheader3'>";
+	<form method='post' action='".e_SELF."'>
+		<fieldset id='core-banner-edit'>
+			<legend class='e-hideme'>".($sub_action == "edit" ? BNRLAN_22 : BNRLAN_23)."</legend>
+			<table cellpadding='0' cellspacing='0' class='adminedit'>
+				<colgroup span='2'>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td class='label'>".BNRLAN_24."<div class='label-note'>".BNRLAN_25."</div></td>
+						<td class='control'>
+	";
+
 	if (count($campaigns)) {
-		$text .= "<select name='banner_campaign_sel' class='tbox'><option></option>";
+		$for_var = array();
+		$text .= "
+							<div class='field-spacer'>
+							<select name='banner_campaign_sel' id='banner_campaign_sel' class='tbox'>
+								<option>".LAN_SELECT."</option>
+		";
 		$c = 0;
 		while ($campaigns[$c]) {
 			if (!isset($for_var[$campaigns[$c]])) {
-				$text .= ($_POST['banner_campaign'] == $campaigns[$c] ? "<option selected='selected'>".$campaigns[$c]."</option>" : "<option>".$campaigns[$c]."</option>");
+				$text .= "<option".(($_POST['banner_campaign'] == $campaigns[$c]) ? " selected='selected'" : "").">".$campaigns[$c]."</option>";
 				$for_var[$campaigns[$c]] = $campaigns[$c];
 			}
 			$c++;
 		}
 		unset($for_var);
+		//TODO - ajax add campaign
+		$text .= "
+							</select> ".$frm->admin_button('add_new_campaign', BNRLAN_26a, 'action', '', array('other' => "onclick=\"e107Helper.toggle('add-new-campaign-cont', false); \$('banner_campaign_sel').selectedIndex=0; return false;\""))."
+							</div>
 
-		$text .= "</select> ".BNRLAN_25."&nbsp;&nbsp;";
+							<div class='field-spacer e-hideme' id='add-new-campaign-cont'>
+								<input class='tbox' type='text' size='30' maxlength='100' name='banner_campaign' value='' />
+								<div class='field-help'>".BNRLAN_26."</div>
+							</div>
+		";
 	}
-	$text .= " <input class='tbox' type='text' size='30' maxlength='100' name='banner_campaign' value='' />
-		".BNRLAN_26."
-		</td>
-		</tr>
-
-		<tr>
-		<td class='forumheader3'>".BNRLAN_27."</td>
-		<td class='forumheader3'>";
+	else
+	{
+		$text .= "<input class='tbox' type='text' size='30' maxlength='100' name='banner_campaign' value='' />";
+	}
+	$text .= "
+						</td>
+					</tr>
+					<tr>
+					<td class='label'>".BNRLAN_27."<div class='label-note'>".BNRLAN_28."</div></td>
+					<td class='control'>
+	";
 
 	if (count($clients)) {
-		$text .= "<select name='banner_client_sel' class='tbox' onchange=\"Change_Details(this.form)\"><option></option>";
+		$text .= "
+						<div class='field-spacer'>
+						<select name='banner_client_sel' id='banner_client_sel' class='tbox' onchange=\"Banner_Change_Details()\">
+							<option>".LAN_SELECT."</option>
+		";
 		$c = 0;
 		while ($clients[$c]) {
 			if (!isset($for_var[$clients[$c]])) {
-				$text .= ($_POST['client_name'] == $clients[$c] ? "<option selected='selected'>".$clients[$c]."</option>" : "<option>".$clients[$c]."</option>");
+				$text .= "<option".(($_POST['client_name'] == $clients[$c]) ? " selected='selected'" : "").">".$clients[$c]."</option>";
 				$for_var[$clients[$c]] = $clients[$c];
 			}
 			$c++;
 		}
 		unset($for_var);
+		//TODO - ajax add client
+		$text .= "
+						</select> ".$frm->admin_button('add_new_client', BNRLAN_29a, 'action', '', array('other' => "onclick=\"e107Helper.toggle('add-new-client-cont', false); \$('banner_client_sel').selectedIndex=0; return false;\""))."
+						</div>
 
-		$text .= "</select> ".BNRLAN_28."&nbsp;&nbsp;";
-		$text .= "<script type='text/javascript'>
-			function Change_Details(form){
-			var login_field = (document.all) ? document.all(\"clientlogin\") : document.getElementById(\"clientlogin\");
-			var password_field = (document.all) ? document.all(\"clientpassword\") : document.getElementById(\"clientpassword\");
-			switch(form.banner_client_sel.selectedIndex-1){";
+						<div class='field-spacer e-hideme' id='add-new-client-cont'>
+							<input class='tbox' type='text' size='30' maxlength='100' name='client_name' value='' />
+							<div class='field-help'>".BNRLAN_29."</div>
+						</div>
+						<script type='text/javascript'>
+							function Banner_Change_Details() {
+								var login_field = \$('clientlogin'), password_field = \$('clientpassword'), client_field = \$('banner_client_sel');
+								switch(client_field.selectedIndex-1)
+								{
+		";
 
 		$c = 0;
 		$i = 0;
-		while ($logins[$c]) {
+		while ($logins[$c])
+		{
 			if (!isset($for_var[$logins[$c]])) {
 				$text .= "
-					case ".$i.":
-					login_field.value = \"".$logins[$c]."\";
-					password_field.value = \"".$passwords[$c]."\";
-					break;";
+									case ".$i.":
+									login_field.value = \"".$logins[$c]."\";
+									password_field.value = \"".$passwords[$c]."\";
+									break;";
 				$for_var[$logins[$c]] = $logins[$c];
 				$i++;
 			}
@@ -341,36 +441,46 @@ if ($action == "create") {
 		unset($for_var);
 
 		$text .= "
-			default:
-			login_field.value = \"\";
-			password_field.value = \"\";
-			break;
-			}
-			}
-			</script>";
+									default:
+									login_field.value = \"\";
+									password_field.value = \"\";
+									break;
+								}
+							}
+						</script>
+		";
+	}
+	else
+	{
+		$text .= "
+							<input class='tbox' type='text' size='30' maxlength='100' name='client_name' value='' />
+							<div class='field-help'>".BNRLAN_29."</div>
+		";
 	}
 
-	$text .= "<input class='tbox' type='text' size='30' maxlength='100' name='client_name' value='' />
-		".BNRLAN_29."
-		</td></tr>
-
-		<tr>
-		<td class='forumheader3'>".BNRLAN_30."</td>
-		<td class='forumheader3'>
-		<input class='tbox' type='text' size='30' maxlength='20' id='clientlogin' name='client_login' value='".$_POST['client_login']."' />
-		</td></tr>
-
-		<tr>
-		<td class='forumheader3'>".BNRLAN_31."</td>
-		<td class='forumheader3'>
-		<input class='tbox' type='text' size='30' maxlength='50' id='clientpassword' name='client_password' value='".$_POST['client_password']."' />
-		</td></tr>
-
-		<tr>
-		<td class='forumheader3'>".BNRLAN_32."</td>
-		<td class='forumheader3'>
-		<input class='button' type ='button' value='".BNRLAN_43."' onclick='expandit(this)' />
-		<div style='display:none'><br />";
+	$text .= "
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".BNRLAN_30."</td>
+						<td class='control'>
+							<input class='tbox input-text' type='text' size='30' maxlength='20' id='clientlogin' name='client_login' value='".$_POST['client_login']."' />
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".BNRLAN_31."</td>
+						<td class='control'>
+							<input class='tbox input-text' type='text' size='30' maxlength='50' id='clientpassword' name='client_password' value='".$_POST['client_password']."' />
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".BNRLAN_32."</td>
+						<td class='control'>
+							<div class='field-spacer'>
+								<button class='action' type='button' value='".BNRLAN_43."' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_43."</span></button>
+							</div>
+							<div class='e-hideme' id='banner-repo'>
+	";
 	$c = 0;
 	while ($images[$c])
 	{
@@ -380,92 +490,141 @@ if ($action == "create") {
 		$fileext1 = substr(strrchr($image, "."), 1);
 		$fileext2 = substr(strrchr($image, "."), 0);
 
-		$text .= "<input type='radio' name='banner_image' value='".$images[$c]['fname']."'";
+		$text .= "
+								<div class='field-spacer'>
+									".$frm->radio('banner_image', $images[$c]['fname'], (basename($image) == $_POST['banner_image']))."
+		";
 
-		if (basename($image) == $_POST['banner_image']) {
-			$text .= "checked='checked'";
+		if ($fileext1 == 'swf')
+		{ //FIXME - swfObject
+			$text .= "
+									<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0' width='468' height='60'>
+										<param name='movie' value='".e_IMAGE."banners/".$images[$c]['fname']."'>
+										<param name='quality' value='high'><param name='SCALE' value='noborder'>
+										<embed src='".e_IMAGE."banners/".$images[$c]['fname']."' width='468' height='60' scale='noborder' quality='high' pluginspage='http://www.macromedia.com/go/getflashplayer' type='application/x-shockwave-flash'></embed>
+									</object>
+			";
 		}
+		else if($fileext1 == "php" || $fileext1 == "html" || $fileext1 == "js")
+		{
+			$text .= $frm->label(BNRLAN_46.": ".$images[$c]['fname'],'banner_image', $images[$c]['fname']);
+		}
+		else
+		{
+			$text .= $frm->label("<img src='$image' alt='' />", 'banner_image', $images[$c]['fname']);
+		}
+		$text .= "
+								</div>
+		";
 
-		if ($fileext1 == swf) {
-			$text .= " /> <br /><object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0' width='468' height='60'>
-				<param name='movie' value='".e_IMAGE."banners/".$images[$c]['fname']."'>
-				<param name='quality' value='high'><param name='SCALE' value='noborder'>
-				<embed src='".e_IMAGE."banners/".$images[$c]['fname']."' width='468' height='60' scale='noborder' quality='high' pluginspage='http://www.macromedia.com/go/getflashplayer' type='application/x-shockwave-flash'></embed></object>
-				<br />";
-		}
-		else if($fileext1 == "php" || $fileext1 == "html" || $fileext1 == "js") {
-			$text .= " /> ".BNRLAN_46.": ".$images[$c]['fname']."<br />";
-		} else {
-			$text .= " /> <img src='$image' alt='' /><br />";
-		}
 		$c++;
 	}
-	$text .= "</div></td></tr>
+	$text .= "
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".BNRLAN_33."</td>
+						<td class='control'>
+							<input class='tbox input-text' type='text' size='50' maxlength='150' name='click_url' value='".$_POST['click_url']."' />
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".BNRLAN_34."</td>
+						<td class='control'>
+							<input class='tbox input-text' type='text' size='10' maxlength='10' name='impressions_purchased' value='".$_POST['impressions_purchased']."' />
+							<div class='field-help'>0 = ".BNRLAN_35."</div>
+						</td>
+					</tr>
+					<tr>
+					<td class='label'>".BNRLAN_36."</td>
+					<td class='control'>
+						<select name='startday' class='tbox'>
+							<option value='0'>&nbsp;</option>
+	";
 
-		<tr>
-		<td class='forumheader3'>".BNRLAN_33."</td>
-		<td class='forumheader3'>
-		<input class='tbox' type='text' size='70' maxlength='150' name='click_url' value='".$_POST['click_url']."' />
-		</td></tr>
-
-		<tr>
-		<td class='forumheader3'>".BNRLAN_34."</td>
-		<td class='forumheader3'>
-		<input class='tbox' type='text' size='10' maxlength='10' name='impressions_purchased' value='".$_POST['impressions_purchased']."' /> 0 = ".BNRLAN_35."
-		</td></tr>
-
-		<tr>
-		<td class='forumheader3'>".BNRLAN_36."</td>
-		<td class='forumheader3'><select name='startday' class='tbox'><option selected='selected'> </option>";
 	for($a = 1; $a <= 31; $a++) {
-		$text .= ($a == $_POST['startday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
+		$text .= "<option value='{$a}'".(($a == $_POST['startday']) ? " selected='selected'" : "").">".$a."</option>";
 	}
-	$text .= "</select> <select name='startmonth' class='tbox'><option selected='selected'> </option>";
-	for($a = 1; $a <= 12; $a++) {
-		$text .= ($a == $_POST['startmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
-	}
-	$text .= "</select> <select name='startyear' class='tbox'><option selected='selected'> </option>";
-	for($a = 2003; $a <= 2010; $a++) {
-		$text .= ($a == $_POST['startyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
-	}
-	$text .= "</select> ".BNRLAN_38."
-		</td></tr>
 
-		<tr>
-		<td class='forumheader3'>".BNRLAN_37."</td>
-		<td class='forumheader3'>
-		<select name='endday' class='tbox'><option selected='selected'> </option>";
+	$text .= "
+						</select>
+						<select name='startmonth' class='tbox'>
+							<option value='0'>&nbsp;</option>
+	";
+	for($a = 1; $a <= 12; $a++) {
+		$text .= "<option value='{$a}'".(($a == $_POST['startmonth']) ? " selected='selected'" : "").">".$a."</option>";
+	}
+	$text .= "
+						</select>
+						<select name='startyear' class='tbox'>
+							<option value='0'>&nbsp;</option>
+	";
+	for($a = 2003; $a <= 2010; $a++) {
+		$text .= "<option value='{$a}'".(($a == $_POST['startyear']) ? " selected='selected'" : "").">".$a."</option>";
+	}
+	$text .= "
+						</select>
+						<div class='field-help'>".BNRLAN_38."</div>
+					</td>
+				</tr>
+				<tr>
+					<td class='label'>".BNRLAN_37."</td>
+					<td class='control'>
+						<select name='endday' class='tbox'>
+							<option value='0'>&nbsp;</option>
+	";
 	for($a = 1; $a <= 31; $a++) {
-		$text .= ($a == $_POST['endday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
+		$text .= "<option value='{$a}'".(($a == $_POST['endday']) ? " selected='selected'" : "").">".$a."</option>";
 	}
-	$text .= "</select> <select name='endmonth' class='tbox'><option selected='selected'> </option>";
+	$text .= "
+						</select>
+						<select name='endmonth' class='tbox'>
+							<option value='0'>&nbsp;</option>";
 	for($a = 1; $a <= 12; $a++) {
-		$text .= ($a == $_POST['endmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
+		$text .= "<option value='{$a}'".(($a == $_POST['endmonth']) ? " selected='selected'" : "").">".$a."</option>";
 	}
-	$text .= "</select> <select name='endyear' class='tbox'><option selected='selected'> </option>";
+	$text .= "
+						</select>
+						<select name='endyear' class='tbox'>
+							<option value='0}'>&nbsp;</option>
+	";
 	for($a = 2003; $a <= 2010; $a++) {
-		$text .= ($a == $_POST['endyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
+		$text .= "<option value='{$a}'".(($a == $_POST['endyear']) ? " selected='selected'" : "").">".$a."</option>";
 	}
-	$text .= "</select> ".BNRLAN_38."
-		</td>
-		</tr>
+	$text .= "
+						</select>
+						<div class='field-help'>".BNRLAN_38."</div>
+					</td>
+				</tr>
+				<tr>
+					<td class='label'>".MENLAN_4."</td>
+					<td class='control'>
+						".$e_userclass->uc_dropdown('banner_class', $_POST['banner_active'], 'public,member,guest,admin,classes,nobody,classes')."
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<div class='buttons-bar center'>
 
-		<tr>
-		<td class='forumheader3'>".BNRLAN_39."</td>
-		<td class='forumheader3'>
-		".MENLAN_4."
-		".r_userclass("banner_class", $_POST['banner_active'], "off", "public,member,guest,admin,classes,nobody,classes")."
-		</td></tr>
+	";
+	if 	($sub_action == "edit" && $id) {
+		$text .= "
+				<input type='hidden' name='eid' value='".$id."' />
+				<button class='update' type='submit' name='updatebanner' value='".BNRLAN_40."'><span>".BNRLAN_40."</span></button>
+		";
+	} else {
+		$text .= "
+				<button class='create' type='submit' name='createbanner' value='".BNRLAN_41."'><span>".BNRLAN_41."</span></button>
+		";
+	}
+	$text .= "
+			</div>
+		</fieldset>
+	</form>
+		";
 
-
-
-		<tr><td colspan='2' style='text-align:center' class='forumheader'>";
-	$text .= ($sub_action == "edit" && $id ? "<input class='button' type='submit' name='updatebanner' value='".BNRLAN_40."' /><input type='hidden' name='eid' value='".$id."' />" : "<input class='button' type='submit' name='createbanner' value='".BNRLAN_41."' />");
-
-	$text .= "</td></tr></table>
-		</form></div>";
-
-	$ns->tablerender(BNRLAN_42, $text);
+	$e107->ns->tablerender(BNRLAN_42.' - '.($sub_action == "edit" ? BNRLAN_22 : BNRLAN_23), $text);
 
 }
 
@@ -474,7 +633,7 @@ if ($action == "create") {
 if ($action == "menu")
 {
   $in_catname = array();		// Notice removal
-  $out_catname = array();
+  $all_catname = array();
 
 	$array_cat_in = explode("|", $menu_pref['banner_campaign']);
 	if (!$menu_pref['banner_caption'])
@@ -483,112 +642,113 @@ if ($action == "menu")
 	}
 
 	$category_total = $sql -> db_Select("banner", "DISTINCT(banner_campaign) as banner_campaign", "ORDER BY banner_campaign", "mode=no_where");
-	while ($row = $sql -> db_Fetch())
+	while ($banner_row = $sql -> db_Fetch())
 	{
-		extract($row);
-		if (in_array($banner_campaign, $array_cat_in))
+		//extract($row); - killed by SecretR
+		$all_catname[] = $banner_row['banner_campaign'];
+
+		if (in_array($banner_row['banner_campaign'], $array_cat_in))
 		{
-			$in_catname[] = $banner_campaign;
-		} else {
-			$out_catname[] = $banner_campaign;
+			$in_catname[] = $banner_row['banner_campaign'];
 		}
 	}
 
 
-	$text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."?menu' name='menu_conf_form'>
-	<table style='".ADMIN_WIDTH."' class='fborder' >
+	$text = "
+		<form method='post' action='".e_SELF."?menu' id='menu_conf_form'>
+			<fieldset id='core-banner-menu'>
+				<legend class='e-hideme'>".BANNER_MENU_L5."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminform'>
+					<colgroup span='2'>
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+					<tbody>
+						<tr>
+							<td class='label'>".BANNER_MENU_L3.": </td>
+							<td class='control'>
+								<input class='tbox input-text' type='text' name='banner_caption' size='20' value='".$menu_pref['banner_caption']."' maxlength='100' />
+							</td>
+						</tr>
+						<tr>
+							<td class='label'>".BANNER_MENU_L6."</td>
+							<td class='control'>
+	";
+	//removed by SecretR; Reason - BAD UI, null usability
+	//".BANNER_MENU_L7."<br />
+	//<select class='tbox' id='catout' name='catout' size='10' style='width:180px' multiple='multiple' onchange='moveOver();'>
 
-	<tr>
-	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L3.": </td>
-	<td style='width:60%' class='forumheader3'>
-	<input class='tbox' type='text' name='banner_caption' size='20' value='".$menu_pref['banner_caption']."' maxlength='100' />
-	</td>
-	</tr>
-
-	<tr>
-	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L6."</td>
-	<td style='width:60%' class='forumheader3'>
-
-	<table style='width:90%'>
-	<tr>
-	<td style='width:45%; vertical-align:top'>".BANNER_MENU_L7."<br />
-	<select class='tbox' id='catout' name='catout' size='10' style='width:180px' multiple='multiple' onchange='moveOver();'>\n";
-
-	foreach($out_catname as $name)
-	{
-		$text .= "<option value='{$name}'>{$name}</option>\n";
-	}
-
-	$text .= "</select>
-	</td>
-	<td style='width:45%; vertical-align:top'>".BANNER_MENU_L8."<br />
-	<select class='tbox' id='catin' name='catin' size='10' style='width:180px' multiple='multiple'>\n";
-
+/*
 	$catidvalues = "";
 	foreach($in_catname as $name)
 	{
-		$text .= "<option value='{$name}'>{$name}</option>\n";
+		$text .= "<option value='{$name}'>{$name}</option>";
 		$catidvalues .= $name."-";
 	}
 
-	$text .= "</select><br /><br />
-	<input class='button' type='button' value='".BANNER_MENU_L9."' onclick='removeMe();' />
-	<input type='hidden' name='catid' id='catid' value='".$catidvalues."' />
-	</td>
-	</tr>
-	</table>
 
-	</td>
-	</tr>
+									<input class='button' type='button' value='".BANNER_MENU_L9."' onclick='removeMe();' />
+									<input type='hidden' name='catid' id='catid' value='".$catidvalues."' />
+								</div>
+*/
+	if($all_catname)
+	{
+		foreach($all_catname as $name)
+		{
+			//$text .= "<option value='{$name}'>{$name}</option>";
+			$text .= "
+									<div class='field-spacer'>
+										".$frm->checkbox('multiaction_cat_active[]', $name, in_array($name, $in_catname)).$frm->label($name, 'multiaction_cat_active[]', $name)."
+									</div>
+			";
+		}
+		$text .= "
+									<div class='field-spacer'>
+										".$frm->admin_button('check_all', LAN_CHECKALL, 'action')."
+										".$frm->admin_button('uncheck_all', LAN_UNCHECKALL, 'action')."
+									</div>
+		";
+	}
+	else
+	{
+		$text .= '<span class="warning">'.BNRLAN_67.'</span>';
+	}
+	$text .= "
 
-	<tr>
-	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L19."</td>
-	<td style='width:60%' class='forumheader3'>
-	<input class='tbox' type='text' name='banner_amount' size='10' value='".$menu_pref['banner_amount']."' maxlength='2' />
-	</td>
-	</tr>
+							</td>
+						</tr>
+						<tr>
+							<td class='label'>".BANNER_MENU_L19."</td>
+							<td class='control'>
+								<input class='tbox input-text' type='text' name='banner_amount' size='10' value='".$menu_pref['banner_amount']."' maxlength='2' />
+							</td>
+						</tr>
+						<tr>
+							<td class='label'>".BANNER_MENU_L10."</td>
+							<td class='control'>
+								<select class='tbox select' id='banner_rendertype' name='banner_rendertype'>
+									".$frm->option(BANNER_MENU_L11, 0, (empty($menu_pref['banner_rendertype'])))."
+									".$frm->option("1 - ".BANNER_MENU_L12, 1, ($menu_pref['banner_rendertype'] == "1"))."
+									".$frm->option("2 - ".BANNER_MENU_L13, 2, ($menu_pref['banner_rendertype'] == "2"))."
+									".$frm->option("3 - ".BANNER_MENU_L14, 3, ($menu_pref['banner_rendertype'] == "3"))."
+								</select>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class='buttons-bar center'>
+					<button class='update' type='submit' name='update_menu' value='".BANNER_MENU_L18."'><span>".BANNER_MENU_L18."</span></button>
+				</div>
+			</fieldset>
+		</form>
+	";
 
-	<tr>
-	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L10."</td>
-	<td style='width:60%' class='forumheader3'>
-	<select class='tbox' id='banner_rendertype' name='banner_rendertype' size='1'  >
-	".$rs->form_option(BANNER_MENU_L11, (!$menu_pref['banner_rendertype'] || $menu_pref['banner_rendertype'] == "0" ? "1" : "0"), 0)."
-	".$rs->form_option("1 - ".BANNER_MENU_L12."", ($menu_pref['banner_rendertype'] == "1" ? "1" : "0"), 1)."
-	".$rs->form_option("2 - ".BANNER_MENU_L13."", ($menu_pref['banner_rendertype'] == "2" ? "1" : "0"), 2)."
-	".$rs->form_option("3 - ".BANNER_MENU_L14."", ($menu_pref['banner_rendertype'] == "3" ? "1" : "0"), 3)."
-	".$rs->form_select_close()."
-	</td>
-	</tr>
+	/* removed - checkboxes are OK
+	$text .= "
 
-	<tr>
-	<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='update_menu' value='".BANNER_MENU_L18."' /></td>
-	</tr>
-
-	</table>
-	</form>
-	</div>";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	$ns->tablerender(BANNER_MENU_L5, $text);
-	echo "<script type=\"text/javascript\">
+	<script type=\"text/javascript\">
 		//<!--
-		//<!-- Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com) -->
+			// Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com)
 
 		function moveOver(){
 		var boxLength = document.getElementById('catin').length;
@@ -676,13 +836,16 @@ if ($action == "menu")
 		}
 
 		// -->
-		</script>\n";
+		</script>
+	";
+*/
+	$e107->ns->tablerender(BNRLAN_68, $emessage->render().$text);
 }
 
 
 function banner_adminmenu() {
 
-	global $action, $sql, $sub_action, $id;
+	global $action;
 	$act = $action;
 	if ($act == "") {
 		$act = "main";
@@ -696,7 +859,7 @@ function banner_adminmenu() {
 	$var['menu']['text'] = BNRLAN_61;
 	$var['menu']['link'] = e_SELF."?menu";
 
-	show_admin_menu(BNRLAN_62, $act, $var);
+	e_admin_menu(BNRLAN_62, $act, $var);
 }
 
 require_once("footer.php");
@@ -710,6 +873,32 @@ function banners_adminlog($msg_num='00', $woffle='')
   $admin_log->log_event('BANNER_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
 }
 
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			//add required core lan - delete confirm message
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
+			if(typeof e107Admin == 'undefined') var e107Admin = {}
 
+			/**
+			 * OnLoad Init Control
+			 */
+			e107Admin.initRules = {
+				'Helper': true,
+				'AdminMenu': false
+			}
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
+}
 
 ?>
