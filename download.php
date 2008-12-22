@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.97 $ 
-|     $Date: 2008-10-17 19:19:36 $
+|     $Revision: 1.98 $ 
+|     $Date: 2008-12-22 22:53:31 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -61,94 +61,94 @@ $sort_options = array('ASC', 'DESC');
 
 if (!e_QUERY || $_GET['elan'])
 {
-  $action = 'maincats';		// List categories
-  $maincatval = '';			// Show all main categories
+	$action = 'maincats';		// List categories
+	$maincatval = '';			// Show all main categories
 }
 else
 {	// Get parameters from the query
-  $maincatval = '';			// Show all main categories
-  $tmp = explode(".", e_QUERY);
-  if (is_numeric($tmp[0]))			// $tmp[0] at least must be valid
-  {
-	$dl_from = intval($tmp[0]);
-	$action = varset(preg_replace("#\W#", "", $tp -> toDB($tmp[1])),'list');
-	$id = intval($tmp[2]);
-	$view = intval($tmp[3]);
-	$order = preg_replace("#\W#", "", $tp -> toDB($tmp[4]));
-	$sort = preg_replace("#\W#", "", $tp -> toDB($tmp[5]));
-  }
-  else
-  {
-	$action = preg_replace("#\W#", "", $tp -> toDB($tmp[0]));
-	$id = intval($tmp[1]);
-	$errnum = intval(varset($tmp[2],0));
-  }
-  switch ($action)
-  {
-    case 'list' :	// Category-based listing
-	  if (isset($_POST['view'])) 
-	  {
-		$view = intval($_POST['view']);
-		$sort = varset($_POST['sort'],'DESC');
-		$order = varset($_POST['order'],'download_datestamp');
-	  }
-	  if (!isset($dl_from)) $dl_from = 0;
+	$maincatval = '';			// Show all main categories
+	$tmp = explode(".", e_QUERY);
+	if (is_numeric($tmp[0]))			// $tmp[0] at least must be valid
+	{
+		$dl_from = intval($tmp[0]);
+		$action = varset(preg_replace("#\W#", "", $tp -> toDB($tmp[1])),'list');
+		$id = intval($tmp[2]);
+		$view = intval($tmp[3]);
+		$order = preg_replace("#\W#", "", $tp -> toDB($tmp[4]));
+		$sort = preg_replace("#\W#", "", $tp -> toDB($tmp[5]));
+	}
+	else
+	{
+		$action = preg_replace("#\W#", "", $tp -> toDB($tmp[0]));
+		$id = intval($tmp[1]);
+		$errnum = intval(varset($tmp[2],0));
+	}
+	switch ($action)
+	{
+		case 'list' :	// Category-based listing
+			if (isset($_POST['view'])) 
+			{
+				$view = intval($_POST['view']);
+				$sort = varset($_POST['sort'],'DESC');
+				$order = varset($_POST['order'],'download_datestamp');
+			}
+			if (!isset($dl_from)) $dl_from = 0;
 
-	  // Get category type, page title
-	  if ($sql->db_Select("download_category", "download_category_name,download_category_description,download_category_parent,download_category_class", "(download_category_id='{$id}') AND (download_category_class IN (".USERCLASS_LIST."))") )
-	  {
-		$row = $sql->db_Fetch();
-		extract($row);
-		$type = $download_category_name;
-		$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
-		define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
-	  }
-	  else
-	  {  // No access to this category
-		define("e_PAGETITLE", PAGE_NAME);
-		require_once(HEADERF);
-		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
-		require_once(FOOTERF);
-		exit;
-	  }
-	  if ($download_category_parent == 0)
-	  {  // It's a main category - change the listing type required
-	    $action = 'maincats';
-		$maincatval = $id;
-	  }
-	  break;
-	case 'view' :	// Details of individual download
-	  break;
-	case 'report' :
-	  break;
-	case 'mirror' :
-	  break;
-	case 'error' :		// Errors passed from request.php
-	  define("e_PAGETITLE", PAGE_NAME);
-	  require_once(HEADERF);
-	  switch ($errnum)
-	  {
-	    case 1 : 
-		  $errmsg = LAN_dl_63;			// No permissions
-		  break;
-		case 2 : 
-		  $errmsg = LAN_dl_62;			// Quota exceeded
-		  break;
-		default:
-		  $errmsg = LAN_dl_61." ".$errnum;		// Generic error - shouldn't happen
-	  }
-	  $ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".$errmsg."</div>");
-	  require_once(FOOTERF);
-	  exit;
-  }
+			// Get category type, page title
+			if ($sql->db_Select("download_category", "download_category_name,download_category_description,download_category_parent,download_category_class", "(download_category_id='{$id}') AND (download_category_class IN (".USERCLASS_LIST."))") )
+			{
+				$row = $sql->db_Fetch();
+				extract($row);
+				$type = $download_category_name;
+				$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
+				define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
+			}
+			else
+			{  // No access to this category
+				define("e_PAGETITLE", PAGE_NAME);
+				require_once(HEADERF);
+				$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
+				require_once(FOOTERF);
+				exit;
+			}
+			if ($download_category_parent == 0)
+			{  // It's a main category - change the listing type required
+				$action = 'maincats';
+				$maincatval = $id;
+			}
+			break;
+		case 'view' :	// Details of individual download
+			break;
+		case 'report' :
+			break;
+		case 'mirror' :
+			break;
+		case 'error' :		// Errors passed from request.php
+			define("e_PAGETITLE", PAGE_NAME);
+			require_once(HEADERF);
+			switch ($errnum)
+			{
+				case 1 : 
+					$errmsg = LAN_dl_63;			// No permissions
+					break;
+				case 2 : 
+					$errmsg = LAN_dl_62;			// Quota exceeded
+					break;
+				default:
+					$errmsg = LAN_dl_61." ".$errnum;		// Generic error - shouldn't happen
+			}
+			$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".$errmsg."</div>");
+			require_once(FOOTERF);
+			exit;
+	}
 }
 
 if (isset($order) && !in_array($order,$order_options)) unset($order);
 if (isset($sort)  && !in_array($sort,$sort_options)) unset($sort);
 
-if (!isset($order))	$order = varset($pref['download_order'],"download_datestamp");
-if (!isset($sort))	$sort =  varset($pref['download_sort'], "DESC");
-if (!isset($view))	$view =  varset($pref['download_view'], "10");
+if (!isset($order))	$order = varset($pref['download_order'],'download_datestamp');
+if (!isset($sort))	$sort =  varset($pref['download_sort'], 'DESC');
+if (!isset($view))	$view =  varset($pref['download_view'], '10');
 
 
 //--------------------------------------------------
@@ -256,9 +256,9 @@ if (isset($_POST['commentsubmit']))
 //====================================================
 if ($action == "list") 
 {
-  $total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
+	$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
 
-  require_once(HEADERF);
+	require_once(HEADERF);
 
 	/* SHOW SUBCATS ... */
 	if($sql -> db_Select("download_category", "download_category_id", "download_category_parent='{$id}' "))
@@ -307,14 +307,16 @@ if ($action == "list")
 	}  // End of subcategory display
 
 // Now display individual downloads
-	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
+	// Next line looks unnecessary
+//	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
 	if (!check_class($download_category_class))
 	{
-
 		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
 		require_once(FOOTERF);
 		exit;
 	}
+
+	if ($total_downloads < $view) { $dl_from = 0; }
 
 	if(strstr($download_category_icon, chr(1)))
 	{
@@ -334,9 +336,13 @@ if ($action == "list")
 	$rater = new rater;
 	$tdownloads = 0;
 
+	// $dl_from - first entry to show  (note - can get reset due to reuse of query, even if values overridden this time)
+	// $view - number of entries per page  
+	// $total_downloads - total number of entries matching search criteria
 	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$dl_from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
-	while ($row = $sql->db_Fetch()) {
+	while ($row = $sql->db_Fetch()) 
+	{
 		extract($row);
 		$download_list_table_string .= parse_download_list_table($row);
 		$tdownloads += $download_requested;
@@ -352,14 +358,14 @@ if ($action == "list")
 
 	if ($filetotal)
 	{  // Only show list if some files in it
-	  if($DOWNLOAD_LIST_TABLE_RENDERPLAIN) 
-	  {
-		echo $text;
-	  } 
-	  else 
- 	  {
-		$ns->tablerender($type, $text);
-	  }
+		if($DOWNLOAD_LIST_TABLE_RENDERPLAIN) 
+		{
+			echo $text;
+		} 
+			else 
+		{
+			$ns->tablerender($type, $text);
+		}
 	}
 
 	if(!isset($DOWNLOAD_LIST_NEXTPREV))
