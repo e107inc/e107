@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.24 $ 
-|     $Date: 2008-11-16 09:11:59 $
-|     $Author: e107coders $
+|     $Revision: 1.25 $ 
+|     $Date: 2008-12-22 22:53:18 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -146,9 +146,9 @@ else
 if (isset($order) && !in_array($order,$order_options)) unset($order);
 if (isset($sort)  && !in_array($sort,$sort_options)) unset($sort);
 
-if (!isset($order))	$order = varset($pref['download_order'],"download_datestamp");
-if (!isset($sort))	$sort =  varset($pref['download_sort'], "DESC");
-if (!isset($view))	$view =  varset($pref['download_view'], "10");
+if (!isset($order))	$order = varset($pref['download_order'],'download_datestamp');
+if (!isset($sort))	$sort =  varset($pref['download_sort'], 'DESC');
+if (!isset($view))	$view =  varset($pref['download_view'], '10');
 
 
 //--------------------------------------------------
@@ -307,14 +307,16 @@ if ($action == "list")
 	}  // End of subcategory display
 
 // Now display individual downloads
-	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
+	// Next line looks unnecessary
+//	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
 	if (!check_class($download_category_class))
 	{
-
 		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
 		require_once(FOOTERF);
 		exit;
 	}
+
+	if ($total_downloads < $view) { $dl_from = 0; }
 
 	if(strstr($download_category_icon, chr(1)))
 	{
@@ -334,9 +336,13 @@ if ($action == "list")
 	$rater = new rater;
 	$tdownloads = 0;
 
+	// $dl_from - first entry to show  (note - can get reset due to reuse of query, even if values overridden this time)
+	// $view - number of entries per page  
+	// $total_downloads - total number of entries matching search criteria
 	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$dl_from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
-	while ($row = $sql->db_Fetch()) {
+	while ($row = $sql->db_Fetch()) 
+	{
 		extract($row);
 		$download_list_table_string .= parse_download_list_table($row);
 		$tdownloads += $download_requested;
