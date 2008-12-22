@@ -9,9 +9,9 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-21 11:07:58 $
- * $Author: e107steved $
+ * $Revision: 1.13 $
+ * $Date: 2008-12-22 03:15:04 $
+ * $Author: mcfly_e107 $
  *
 */
 define("USRLAN_1", "Options Saved.");
@@ -198,6 +198,8 @@ define('USRLAN_192', 'days');
 define('USRLAN_193', 'Nothing changed - not saved');
 define('USRLAN_194', '');
 define('USRLAN_195', '');
+
+define('USRLAN_196', 'User ranks');
 
 
 define('LAN_MAINADMIN','Main Admin');

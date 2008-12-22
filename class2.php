@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|    	Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/class2.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2008-12-21 22:29:38 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2001-2008 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* General purpose file
+*
+* $Source: /cvs_backup/e107_0.8/class2.php,v $
+* $Revision: 1.90 $
+* $Date: 2008-12-22 03:15:04 $
+* $Author: mcfly_e107 $
+*
 */
 //
 // *** Code sequence for startup ***
@@ -1232,8 +1230,8 @@ function get_user_data($uid, $extra = '')
 	}
 
 	$qry = "
-	SELECT u.*, ue.* FROM #user AS u
-	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
+	SELECT u.*, ue.* FROM `#user` AS u
+	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id
 	WHERE u.user_id = {$uid} {$extra}
 	";
 	if (!$e107->sql->db_Select_gen($qry))
@@ -1246,38 +1244,35 @@ function get_user_data($uid, $extra = '')
 	}
 	$var = $e107->sql->db_Fetch(MYSQL_ASSOC);
 
-	if(!$extended_struct = getcachedvars('extended_struct'))
+	if(!$e107->extended_struct = getcachedvars('extended_struct'))
 	{
 		if($tmp = $e107->ecache->retrieve_sys('nomd5_extended_struct'))
 		{
-			$extended_struct = $e107->arrayStorage->ReadArray($tmp);
+			$e107->extended_struct = $e107->arrayStorage->ReadArray($tmp);
 		}
 		else
 		{
-			$qry = 'SHOW COLUMNS FROM #user_extended ';
+			$qry = 'SHOW COLUMNS FROM `#user_extended` ';
 			if($e107->sql->db_Select_gen($qry))
 			{
 				while($row = $e107->sql->db_Fetch())
 				{
-					if($row['Default'] != '')
-					{
-						$extended_struct[] = $row;
-					}
+					$e107->extended_struct[] = $row;
 				}
 			}
-			$tmp = $e107->arrayStorage->WriteArray($extended_struct, false);
+			$tmp = $e107->arrayStorage->WriteArray($e107->extended_struct, false);
 			$e107->ecache->set_sys('nomd5_extended_struct', $tmp);
 			unset($tmp);
 		}
-		if(isset($extended_struct))
+		if(isset($e107->extended_struct))
 		{
-			cachevars('extended_struct', $extended_struct);
+			cachevars('extended_struct', $e107->extended_struct);
 		}
 	}
 
-	if(isset($extended_struct) && is_array($extended_struct))
+	if(isset($e107->extended_struct) && is_array($e107->extended_struct))
 	{
-		foreach($extended_struct as $row)
+		foreach($e107->extended_struct as $row)
 		{
 			if($row['Default'] != '' && ($var[$row['Field']] == NULL || $var[$row['Field']] == '' ))
 			{
@@ -1292,7 +1287,7 @@ function get_user_data($uid, $extra = '')
 
 	//===========================================================
 
-	cachevars('userdata_{$uid}', $var);
+	cachevars("userdata_{$uid}", $var);
 	return $var;
 }
 
@@ -1309,7 +1304,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
 		  	// Now save the updated values
 		  	// traverse the pref array, with toDB on everything
-		  	$_pref = $tp -> toDB($pref, true, true);
+		  	$_pref = $tp->toDB($pref, true, true);
 		  	// Create the data to be stored
 	  		if($sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') "))
 			{
@@ -1326,7 +1321,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
   {
 		$_user_pref = $tp -> toDB($user_pref);
 		$tmp=addslashes(serialize($_user_pref));
-		$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=".intval($uid));
+		$sql->db_Update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
 		return $tmp;
   }
 }
@@ -1419,7 +1414,7 @@ function init_session()
         }
 		else
 		{
-        	list($uid, $upw)= explode(".", $cli_log);
+        	list($uid, $upw)= explode('.', $cli_log);
 		}
 
 		if (empty($uid) || empty($upw))
@@ -1536,7 +1531,7 @@ function cookie($name, $value, $expire=0, $path = '/', $domain = '', $secure = 0
 function session_set($name, $value, $expire='', $path = '/', $domain = '', $secure = 0)
 {
 	global $pref;
-	if ($pref['user_tracking'] == "session")
+	if ($pref['user_tracking'] == 'session')
 	{
 		$_SESSION[$name] = $value;
 	}
@@ -1586,7 +1581,7 @@ function defsettrue($str,$default='')
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function message_handler($mode, $message, $line = 0, $file = "")
+function message_handler($mode, $message, $line = 0, $file = '')
 {
 	e107_require_once(e_HANDLER.'message_handler.php');
 	show_emessage($mode, $message, $line, $file);
@@ -1824,7 +1819,7 @@ function force_userupdate()
 {
 	global $sql,$pref,$currentUser;
 
-	if (e_PAGE == "usersettings.php" || strpos(e_SELF, ADMINDIR) == TRUE || (defined("FORCE_USERUPDATE") && (FORCE_USERUPDATE == FALSE)))
+	if (e_PAGE == 'usersettings.php' || strpos(e_SELF, ADMINDIR) == TRUE || (defined("FORCE_USERUPDATE") && (FORCE_USERUPDATE == FALSE)))
 	{
 		return FALSE;
 	}
@@ -1841,7 +1836,7 @@ function force_userupdate()
 
 	if (!varset($pref['disable_emailcheck'],TRUE) && !trim($currentUser['user_email'])) return TRUE;
 
-	if($sql -> db_Select("user_extended_struct", "user_extended_struct_name, user_extended_struct_type", "user_extended_struct_required = '1'"))
+	if($sql -> db_Select('user_extended_struct', 'user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1'))
 	{
 	  while($row = $sql -> db_Fetch())
 	  {
@@ -1866,17 +1861,16 @@ class error_handler
 		//
 		// This is initialized before the current debug level is known
 		//
-        global $_E107;
-        if(isset($_E107['debug']))
+		global $_E107;
+		if(isset($_E107['debug']))
 		{
 			$this->debug = true;
 			error_reporting(E_ALL);
 			return;
-        }
-
-        if(isset($_E107['cli']))
+		}
+		if(isset($_E107['cli']))
 		{
-         	error_reporting(E_ALL ^ E_NOTICE);
+			error_reporting(E_ALL ^ E_NOTICE);
 			return;
 		}
 
