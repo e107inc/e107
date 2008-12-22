@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-21 11:47:29 $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-22 16:50:07 $
  * $Author: secretr $
  * 
 */
@@ -46,8 +46,11 @@ e107Admin.Helper = {
 		element.select('button.action[name=check_all]').invoke('observe', 'click', this.allCheckedEventHandler);
 		element.select('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
 		element.select('button.delete', 'input.delete[type=image]', 'a.delete').invoke('observe', 'click', function(e) {
-			if(e.element().hasClassName('no-confirm') || (e.element().readAttribute('rel') &&  e.element().readAttribute('rel').toLowerCase == 'no-confirm')) return;
-			var msg = e.element().readAttribute('title') || e107.getModLan('delete_confirm');
+			var el = e.findElement('a.delete'); 
+			if(!el) el = e.element();
+			if(!el) return; 
+			if(el.hasClassName('no-confirm') || (el.readAttribute('rel') &&  el.readAttribute('rel').toLowerCase() == 'no-confirm')) return;
+			var msg = el.readAttribute('title') || e107.getModLan('delete_confirm');
 			if( !e107Helper.confirm(msg) ) e.stop(); 
 		});
 	},

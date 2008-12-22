@@ -9,8 +9,8 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-20 12:30:18 $
+ * $Revision: 1.7 $
+ * $Date: 2008-12-22 16:50:07 $
  * $Author: secretr $
 */
 
@@ -215,7 +215,7 @@ class admin_url_config {
 				if($custom) $checked_profile = ' disabled="disabled"';
 				$config_profiles .= "
 					<input type='radio' class='radio' id='{$section['path']}-profile-{$config_profile}' name='cprofile[{$section['path']}]' value='{$profile_id}'{$checked_profile} /><label for='{$section['path']}-profile-{$config_profile}'>".LAN_EURL_PROFILE." [".varsettrue($profile_info['title'], $config_profile)."]</label>
-					<a href='#{$section['path']}-profile-{$config_profile}-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
+					<a href='#{$section['path']}-profile-{$config_profile}-info' class='e-expandit' title='".LAN_EURL_INFOALT."'><img class='icon action' src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
 					<div class='e-hideme' id='{$section['path']}-profile-{$config_profile}-info'>
 						<div class='indent'>
 							".(varsettrue($profile_info['title']) ? '<strong>'.$profile_info['title'].'</strong><br /><br />' : '')."

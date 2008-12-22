@@ -1,51 +1,60 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-11-22 12:57:25 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Ban List Management
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
+ * $Revision: 1.12 $
+ * $Date: 2008-12-22 16:50:07 $
+ * $Author: secretr $
+ *
 */
 
-define('BAN_TIME_FORMAT',"%d-%m-%Y %H:%M");
-define('BAN_REASON_COUNT',7);				// Update as more ban reasons added (max 10 supported)
+/*
+ * [SecretR] WORK IN PROGRESS!
+ *
+*/
 
-define('BAN_TYPE_MANUAL',1);				// Manually entered bans
-define('BAN_TYPE_IMPORTED',5);				// Imported bans
-define('BAN_TYPE_TEMPORARY',9);				// Used during CSV import
+define('BAN_TIME_FORMAT', "%d-%m-%Y %H:%M");
+define('BAN_REASON_COUNT', 7); // Update as more ban reasons added (max 10 supported)
 
-define('BAN_TYPE_WHITELIST',100);			// Entry for whitelist
 
-require_once("../class2.php");
-if (!getperms("4")) 
+define('BAN_TYPE_MANUAL', 1); // Manually entered bans
+define('BAN_TYPE_IMPORTED', 5); // Imported bans
+define('BAN_TYPE_TEMPORARY', 9); // Used during CSV import
+
+
+define('BAN_TYPE_WHITELIST', 100); // Entry for whitelist
+
+
+require_once ("../class2.php");
+if(! getperms("4"))
 {
-  header("location:".e_BASE."index.php");
-  exit;
+	header("location:" . e_BASE . "index.php");
+	exit();
 }
 $e_sub_cat = 'banlist';
-require_once("auth.php");
-require_once(e_HANDLER."form_handler.php");
-$rs = new form;
+require_once ("auth.php");
+require_once (e_HANDLER . "form_handler.php");
+
+$rs = new form();
+$frm = new e_form(true);
 
 $action = 'list';
-if (e_QUERY) 
+if(e_QUERY)
 {
-  $tmp = explode("-", e_QUERY);		// Use '-' instead of '.' to avoid confusion with IP addresses
-  $action = $tmp[0];
-  $sub_action = varset($tmp[1],'');
-  if ($sub_action) $sub_action = preg_replace("/[^\w@\.]*/",'',urldecode($sub_action));
-  $id = intval(varset($tmp[2],0));
-  unset($tmp);
+	$tmp = explode("-", e_QUERY); // Use '-' instead of '.' to avoid confusion with IP addresses
+	$action = $tmp[0];
+	$sub_action = varset($tmp[1], '');
+	if($sub_action)
+		$sub_action = preg_replace("/[^\w@\.]*/", '', urldecode($sub_action));
+	$id = intval(varset($tmp[2], 0));
+	unset($tmp);
 }
 
 /*
@@ -55,706 +64,835 @@ if (varsettrue($imode))
 }
 else
 {*/
-  $images_path = e_IMAGE.'admin_images/';
+$images_path = e_IMAGE . 'admin_images/';
 // }
 
 
-if (isset($_POST['update_ban_prefs']))
+if(isset($_POST['update_ban_prefs']))
 {
-  for ($i = 0; $i < BAN_REASON_COUNT; $i++)
-  {
-    $pref['ban_messages'][$i] = $tp->toDB(varset($_POST['ban_text'][$i],''));
-    $pref['ban_durations'][$i] = intval(varset($_POST['ban_time'][$i],0));
-  }
-  save_prefs();
-  banlist_adminlog('08',"");
-  $ns->tablerender(BANLAN_9, "<div style='text-align:center'>".BANLAN_33.'</div>');
+	for($i = 0; $i < BAN_REASON_COUNT; $i ++)
+	{
+		$pref['ban_messages'][$i] = $tp->toDB(varset($_POST['ban_text'][$i], ''));
+		$pref['ban_durations'][$i] = intval(varset($_POST['ban_time'][$i], 0));
+	}
+	save_prefs();
+	banlist_adminlog('08', "");
+	$ns->tablerender(BANLAN_9, "<div style='text-align:center'>" . BANLAN_33 . '</div>');
 }
 
-
-
-if (isset($_POST['ban_ip']))
+if(isset($_POST['ban_ip']))
 {
-  $_POST['ban_ip'] = trim($_POST['ban_ip']);
-  $new_ban_ip = preg_replace("/[^\w@\.\*]*/",'',urldecode($_POST['ban_ip']));
-  if ($new_ban_ip != $_POST['ban_ip'])
-  {
-    $message = BANLAN_27.$new_ban_ip;
-	$ns->tablerender(BANLAN_9, $message);
-	$_POST['ban_ip'] = $new_ban_ip;
-  }
+	$_POST['ban_ip'] = trim($_POST['ban_ip']);
+	$new_ban_ip = preg_replace("/[^\w@\.\*]*/", '', urldecode($_POST['ban_ip']));
+	if($new_ban_ip != $_POST['ban_ip'])
+	{
+		$message = BANLAN_27 . $new_ban_ip;
+		$ns->tablerender(BANLAN_9, $message);
+		$_POST['ban_ip'] = $new_ban_ip;
+	}
 
-  if (isset($_POST['entry_intent']) && (isset($_POST['add_ban']) || isset($_POST['update_ban'])) && $_POST['ban_ip'] != "" && strpos($_POST['ban_ip'], ' ') === false)
-  {
-/*	$_POST['entry_intent'] says why we're here:
+	if(isset($_POST['entry_intent']) && (isset($_POST['add_ban']) || isset($_POST['update_ban'])) && $_POST['ban_ip'] != "" && strpos($_POST['ban_ip'], ' ') === false)
+	{
+		/*	$_POST['entry_intent'] says why we're here:
 		'edit' 	- Editing blacklist
 		'add'	- Adding to blacklist
 		'whedit' - Editing whitelist
 		'whadd'	- Adding to whitelist
 */
-	if ($e107->whatIsThis($new_ban_ip) == 'ip')
-	{
-		$new_ban_ip = $e107->IPencode($new_ban_ip);		// Normalise numeric IP addresses
+		if($e107->whatIsThis($new_ban_ip) == 'ip')
+		{
+			$new_ban_ip = $e107->IPencode($new_ban_ip); // Normalise numeric IP addresses
+		}
+		$new_vals = array('banlist_ip' => $new_ban_ip);
+		if(isset($_POST['add_ban']))
+		{
+			$new_vals['banlist_datestamp'] = time();
+			if($_POST['entry_intent'] == 'add')
+				$new_vals['banlist_bantype'] = BAN_TYPE_MANUAL; // Manual ban
+			if($_POST['entry_intent'] == 'whadd')
+				$new_vals['banlist_bantype'] = BAN_TYPE_WHITELIST;
+		}
+		$new_vals['banlist_admin'] = ADMINID;
+		if(varsettrue($_POST['ban_reason']))
+			$new_vals['banlist_reason'] = $tp->toDB($_POST['ban_reason']);
+		$new_vals['banlist_notes'] = $tp->toDB($_POST['ban_notes']);
+		if(isset($_POST['ban_time']) && is_numeric($_POST['ban_time']) && ($_POST['entry_intent'] == 'edit' || $_POST['entry_intent'] == 'add'))
+		{
+			$bt = intval($_POST['ban_time']);
+			$new_vals['banlist_banexpires'] = $bt ? time() + ($bt * 60 * 60) : 0;
+		}
+		if(isset($_POST['add_ban']))
+		{ // Insert new value - can just pass an array
+			admin_update($sql->db_Insert("banlist", $new_vals), 'insert');
+			if($_POST['entry_intent'] == 'add')
+			{
+				banlist_adminlog('01', $new_vals['banlist_ip']);
+			}
+			else
+			{
+				banlist_adminlog('04', $new_vals['banlist_ip']);
+			}
+		}
+		else
+		{ // Update existing value
+			$qry = '';
+			$spacer = '';
+			foreach($new_vals as $k => $v)
+			{
+				$qry .= $spacer . "`{$k}`='$v'";
+				$spacer = ', ';
+			}
+			admin_update($sql->db_Update("banlist", $qry . " WHERE banlist_ip='" . $_POST['old_ip'] . "'"));
+			if($_POST['entry_intent'] == 'edit')
+			{
+				banlist_adminlog("09", $new_vals['banlist_ip']);
+			}
+			else
+			{
+				banlist_adminlog("10", $new_vals['banlist_ip']);
+			}
+		}
+		unset($ban_ip);
 	}
-    $new_vals = array('banlist_ip' => $new_ban_ip);
-	if (isset($_POST['add_ban']))
-	{
-	  $new_vals['banlist_datestamp'] = time();
-	  if ($_POST['entry_intent'] == 'add') $new_vals['banlist_bantype'] = BAN_TYPE_MANUAL;				// Manual ban
-	  if ($_POST['entry_intent'] == 'whadd') $new_vals['banlist_bantype'] = BAN_TYPE_WHITELIST;
-	}
-	$new_vals['banlist_admin'] = ADMINID;
-	if (varsettrue($_POST['ban_reason'])) $new_vals['banlist_reason'] =$tp->toDB($_POST['ban_reason']);
-	$new_vals['banlist_notes'] = $tp->toDB($_POST['ban_notes']);
-	if (isset($_POST['ban_time']) && is_numeric($_POST['ban_time']) && ($_POST['entry_intent']== 'edit' || $_POST['entry_intent'] == 'add'))
-	{
-	  $bt = intval($_POST['ban_time']);
-	  $new_vals['banlist_banexpires'] = $bt ? time() + ($bt*60*60) : 0;
-	}
-	if (isset($_POST['add_ban']))
-	{  // Insert new value - can just pass an array
-	  admin_update($sql -> db_Insert("banlist",$new_vals), 'insert');
-	  if ($_POST['entry_intent'] == 'add')
-	  {
-	    banlist_adminlog('01',$new_vals['banlist_ip']);
-	  }
-	  else
-	  {
-	    banlist_adminlog('04',$new_vals['banlist_ip']);
-	  }
-	}
-	else
-	{  // Update existing value
-	  $qry = '';
-	  $spacer = '';
-	  foreach ($new_vals as $k => $v)
-	  {
-	    $qry .= $spacer."`{$k}`='$v'";
-	    $spacer = ', ';
-	  }
-	  admin_update($sql -> db_Update("banlist", $qry." WHERE banlist_ip='".$_POST['old_ip']."'"));
-	  if ($_POST['entry_intent'] == 'edit')
-	  {
-	    banlist_adminlog("09",$new_vals['banlist_ip']);
-	  }
-	  else
-	  {
-	    banlist_adminlog("10",$new_vals['banlist_ip']);
-	  }
-	}
-  unset($ban_ip);
-  }
 }
 
 // Remove a ban
-if (($action == "remove" || $action == "whremove") && isset($_POST['ban_secure'])) 
-//if ($action == "remove") 
+if(($action == "remove" || $action == "whremove") && isset($_POST['ban_secure']))
+//if ($action == "remove")
 {
-  $sql -> db_Delete("generic", "gen_type='failed_login' AND gen_ip='{$sub_action}'");
-  admin_update($sql -> db_Delete("banlist", "banlist_ip='{$sub_action}'"), 'delete');
-  if ($action == "remove") 
-  {
-    $action = 'list'; 
-    banlist_adminlog("02",$sub_action);
-  }
-  else 
-  {
-	$action = 'white';
-    banlist_adminlog("05",$sub_action);
-  }
-}
-
-
-// Update the ban expiry time/date - timed from now (only done on banlist)
-if ($action == 'newtime')
-{
-  $end_time = $id ? time() + ($id*60*60) : 0;
-  admin_update($sql -> db_Update("banlist", "banlist_banexpires='".intval($end_time)."' WHERE banlist_ip='".$sub_action."'"));
-  banlist_adminlog("03",$sub_action);
-  $action = 'list';
-}
-
-
-// Edit modes - get existing entry
-if ($action == "edit" || $action == "whedit") 
-{
-  $sql->db_Select("banlist", "*", "banlist_ip='{$sub_action}'");
-  $row = $sql->db_Fetch();
-  extract($row);
-} 
-else 
-{
-  unset($banlist_ip, $banlist_reason);
-  if (e_QUERY && ($action == 'add' || $action == 'whadd') && strpos($_SERVER["HTTP_REFERER"], "userinfo")) 
-  {
-	$banlist_ip = $sub_action;
-  }
-}
-
-
-function ban_time_dropdown($click_js = '', $zero_text=BANLAN_21, $curval=-1,$drop_name='ban_time')
-{
-  $intervals = array(0,1,2,3,6,8,12,24,36,48,72,96,120,168,336,672);
-  $ret = "<select name='{$drop_name}' class='tbox' {$click_js}>\n";
-  $ret .= "<option value=''>&nbsp;</option>\n";
-  foreach ($intervals as $i)
-  {
-    $selected = ($curval == $i) ? " selected='selected'" : '';
-	if ($i == 0)
+	$sql->db_Delete("generic", "gen_type='failed_login' AND gen_ip='{$sub_action}'");
+	admin_update($sql->db_Delete("banlist", "banlist_ip='{$sub_action}'"), 'delete');
+	if($action == "remove")
 	{
-	  $words = $zero_text ? $zero_text : BANLAN_21;
-	}
-	elseif (($i % 24) == 0)
-	{
-	  $words = floor($i / 24).' '.BANLAN_23;
+		$action = 'list';
+		banlist_adminlog("02", $sub_action);
 	}
 	else
 	{
-	  $words = $i.' '.BANLAN_24;
+		$action = 'white';
+		banlist_adminlog("05", $sub_action);
 	}
-	$ret .= "<option value='{$i}'{$selected}>{$words}</option>\n";
-  }
-  $ret .= '</select>';
-  return $ret;
 }
 
+// Update the ban expiry time/date - timed from now (only done on banlist)
+if($action == 'newtime')
+{
+	$end_time = $id ? time() + ($id * 60 * 60) : 0;
+	admin_update($sql->db_Update("banlist", "banlist_banexpires='" . intval($end_time) . "' WHERE banlist_ip='" . $sub_action . "'"));
+	banlist_adminlog("03", $sub_action);
+	$action = 'list';
+}
+
+// Edit modes - get existing entry
+if($action == "edit" || $action == "whedit")
+{
+	$sql->db_Select("banlist", "*", "banlist_ip='{$sub_action}'");
+	$row = $sql->db_Fetch();
+	extract($row);
+}
+else
+{
+	unset($banlist_ip, $banlist_reason);
+	if(e_QUERY && ($action == 'add' || $action == 'whadd') && strpos($_SERVER["HTTP_REFERER"], "userinfo"))
+	{
+		$banlist_ip = $sub_action;
+	}
+}
+
+function ban_time_dropdown($click_js = '', $zero_text = BANLAN_21, $curval = -1, $drop_name = 'ban_time')
+{
+	$intervals = array(0, 1, 2, 3, 6, 8, 12, 24, 36, 48, 72, 96, 120, 168, 336, 672);
+	$ret = "<select name='{$drop_name}' class='tbox' {$click_js}>\n";
+	$ret .= "<option value=''>&nbsp;</option>\n";
+	foreach($intervals as $i)
+	{
+		$selected = ($curval == $i) ? " selected='selected'" : '';
+		if($i == 0)
+		{
+			$words = $zero_text ? $zero_text : BANLAN_21;
+		}
+		elseif(($i % 24) == 0)
+		{
+			$words = floor($i / 24) . ' ' . BANLAN_23;
+		}
+		else
+		{
+			$words = $i . ' ' . BANLAN_24;
+		}
+		$ret .= "<option value='{$i}'{$selected}>{$words}</option>\n";
+	}
+	$ret .= '</select>';
+	return $ret;
+}
 
 // Character options for import & export
 $separator_char = array(1 => ',', 2 => '|');
 $quote_char = array(1 => '(none)', 2 => "'", 3 => '"');
 
-
 function select_box($name, $data, $curval = FALSE)
 {
-  $ret = "<select class='tbox' name='{$name}'>\n";
-  foreach ($data as $k => $v)
-  {
-    $selected = '';
-    if (($curval !== FALSE) && ($curval == $k)) $selected = " selected='selected'";
-	$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
-  }
-  $ret .= "</select>\n";
-  return $ret;
+	$ret = "<select class='tbox' name='{$name}'>\n";
+	foreach($data as $k => $v)
+	{
+		$selected = '';
+		if(($curval !== FALSE) && ($curval == $k))
+			$selected = " selected='selected'";
+		$ret .= "<option value='{$k}'{$selected}>{$v}</option>\n";
+	}
+	$ret .= "</select>\n";
+	return $ret;
 }
 
 $text = "";
 
 // Drop-down box for access counts
-function drop_box($box_name,$curval)
+function drop_box($box_name, $curval)
 {
-  $opts = array(50,100,150,200,250,300,400,500);
-  $ret = "<select class='tbox' name={$box_name}>\n";
-  foreach ($opts as $o)
-  {
-    $sel = ($curval == $o) ? " selected='selected'" : '';
-	$ret .= "<option value='{$o}'{$sel}>{$o}</option>\n";
-  }
-  $ret .= "</select>\n";
-  return $ret;
+	$opts = array(50, 100, 150, 200, 250, 300, 400, 500);
+	$ret = "<select class='tbox' name='{$box_name}'>\n";
+	foreach($opts as $o)
+	{
+		$sel = ($curval == $o) ? " selected='selected'" : '';
+		$ret .= "<option value='{$o}'{$sel}>{$o}</option>\n";
+	}
+	$ret .= "</select>\n";
+	return $ret;
 }
 
-
-switch ($action)
+switch($action)
 {
-  case 'options' :
-	if(!getperms("0")) exit;
-	if (isset($_POST['update_ban_options']))
-	{
-	  $pref['enable_rdns'] = intval($_POST['ban_rdns_on_access']);
-	  $pref['enable_rdns_on_ban'] = intval($_POST['ban_rdns_on_ban']);
-	  $pref['ban_max_online_access'] = intval($_POST['ban_access_guest']).','.intval($_POST['ban_access_member']);
-	  $pref['ban_retrigger'] = intval($_POST['ban_retrigger']);
-	  save_prefs();
-	}
+	case 'options':
+		if(! getperms("0"))
+			exit();
+		if(isset($_POST['update_ban_options']))
+		{
+			$pref['enable_rdns'] = intval($_POST['ban_rdns_on_access']);
+			$pref['enable_rdns_on_ban'] = intval($_POST['ban_rdns_on_ban']);
+			$pref['ban_max_online_access'] = intval($_POST['ban_access_guest']) . ',' . intval($_POST['ban_access_member']);
+			$pref['ban_retrigger'] = intval($_POST['ban_retrigger']);
+			save_prefs();
+		}
 
-	if (isset($_POST['remove_expired_bans']))
-	{
-	  $sql->db_Delete('banlist',"`banlist_bantype` < ".BAN_TYPE_WHITELIST." AND `banlist_banexpires` > 0 AND `banlist_banexpires` < ".time());
-	}
+		if(isset($_POST['remove_expired_bans']))
+		{
+			$sql->db_Delete('banlist', "`banlist_bantype` < " . BAN_TYPE_WHITELIST . " AND `banlist_banexpires` > 0 AND `banlist_banexpires` < " . time());
+		}
 
-	list($ban_access_guest,$ban_access_member) = explode(',',varset($pref['ban_max_online_access'],'100,200'));
-	$ban_access_member = max($ban_access_guest,$ban_access_member);
-	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?options'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<colgroup>
-		<col style='width:40%' />
-		<col style='width:20%' />
-		<col style='width:40%' />
-		</colgroup>
+		list($ban_access_guest, $ban_access_member) = explode(',', varset($pref['ban_max_online_access'], '100,200'));
+		$ban_access_member = max($ban_access_guest, $ban_access_member);
+		$text = "
+			<form method='post' action='" . e_SELF . "?options'>
+				<fieldset id='core-banlist-options'>
+					<legend>" . BANLAN_72 . "</legend>
+					<table cellpadding='0' cellspacing='0' class='adminform'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class='label'>" . BANLAN_63 . "</td>
+								<td class='control'>
+									<input type='checkbox' name='ban_rdns_on_access' value='1'" . ($pref['enable_rdns'] == 1 ? " checked='checked'" : '') . " />
+									<div class='field-help'>" . BANLAN_65 . "</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>" . BANLAN_64 . "</td>
+								<td class='control'>
+									<input type='checkbox' name='ban_rdns_on_ban' value='1'" . ($pref['enable_rdns_on_ban'] == 1 ? " checked='checked'" : '') . " />
+									<div class='field-help'>" . BANLAN_66 . "</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>" . BANLAN_67 . "</td>
+								<td class='control'>
+									<div class='field-spacer'>" . drop_box('ban_access_guest', $ban_access_guest) . BANLAN_70 . "</div>
+									<div class='field-spacer'>" . drop_box('ban_access_member', $ban_access_member) . BANLAN_69 . "</div>
+									<div class='field-help'>" . BANLAN_68 . "</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>" . BANLAN_71 . "</td>
+								<td class='control'>
+									<input type='checkbox' name='ban_retrigger' value='1'" . ($pref['ban_retrigger'] == 1 ? " checked='checked'" : '') . " />
+									<div class='field-help'>" . BANLAN_73 . "</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						" . $frm->admin_button('update_ban_options', LAN_UPDATE, 'update', LAN_UPDATE) . "
+					</div>
+				</fieldset>
+				<fieldset id='core-banlist-options-ban'>
+					<legend>" . BANLAN_74 . "</legend>
+					<table cellpadding='0' cellspacing='0' class='adminform'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class='label'>" . BANLAN_75 . "</td>
+								<td class='control'>
+									" . $frm->admin_button('remove_expired_bans', BANLAN_76, 'delete', BANLAN_76) . "
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</form>
+		";
+		$ns->tablerender(BANLAN_72, $text);
+		break;
 
-		<tr>
-		  <td class='forumheader3'>".BANLAN_63."</td>
-		  <td class='forumheader3'>
-		  <input type='checkbox' name='ban_rdns_on_access' value='1'".($pref['enable_rdns'] == 1 ? " checked='checked'" : '')." />
-		  </td>
-		  <td class='forumheader3'><span style='smalltext'>".BANLAN_65."</span></td>
-		</tr>
+	case 'times':
+		if(! getperms("0"))
+			exit();
+		$text = '';
+		if((! isset($pref['ban_messages'])) || ! is_array($pref['ban_messages']))
+		{
+			$pref['ban_messages'] = array_fill(0, BAN_REASON_COUNT - 1, '');
+		}
+		if((! isset($pref['ban_durations'])) || ! is_array($pref['ban_durations']))
+		{
+			$pref['ban_durations'] = array_fill(0, BAN_REASON_COUNT - 1, 0);
+		}
 
-		<tr>
-		  <td class='forumheader3'>".BANLAN_64."</td>
-		  <td class='forumheader3'>
-		  <input type='checkbox' name='ban_rdns_on_ban' value='1'".($pref['enable_rdns_on_ban'] == 1 ? " checked='checked'" : '')." />
-		  </td>
-		  <td class='forumheader3'><span style='smalltext'>".BANLAN_66."</span></td>
-		</tr>
+		if(! $ban_total = $sql->db_Select("banlist", "*", "ORDER BY banlist_ip", "nowhere"))
+		{
+			$text .= "<div class='center'>" . BANLAN_2 . "</div>";
+		}
+		else
+		{
+			//XXX Lan - Messages/Ban Periods
+			$text .= "
+				<form method='post' action='" . e_SELF . '?' . e_QUERY . "' id='ban_options'>
+					<fieldset id='core-banlist-times'>
+						<legend class='e-hideme'>Messages/Ban Periods</legend>
+						<table cellpadding='0' cellspacing='0' class='adminlist'>
+							<colgroup span='3'>
+								<col style='width: 20%'></col>
+								<col style='width: 65%'></col>
+								<col style='width: 15%'></col>
+							</colgroup>
+							<thead>
+								<tr>
+									<th>" . BANLAN_28 . "</th>
+									<th>" . BANLAN_29 . "<br />" . BANLAN_31 . "</th>
+									<th class='center last'>" . BANLAN_30 . "</th>
+								</tr>
+							</thead>
+							<tbody>
+			";
+			for($i = 0; $i < BAN_REASON_COUNT; $i ++)
+			{
+				$text .= "
+									<tr>
+										<td>
+											<strong>" . constant('BANLAN_10' . $i) . "</strong>
+											<div class='field-help'>" . constant('BANLAN_11' . $i) . "</div>
+										</td>
+										<td class='center'>
+											<textarea class='tbox textarea' name='ban_text[]' cols='50' rows='4'>{$pref['ban_messages'][$i]}</textarea>
+										</td>
+										<td class='center'>" . ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$i], 'ban_time[]') . "</td>
+									</tr>
+					";
+			}
+			$text .= "
+							</tbody>
+						</table>
+						<div class='buttons-bar center'>
+							" . $frm->admin_button('update_ban_prefs', LAN_UPDATE, 'update', LAN_UPDATE) . "
+						</div>
+					</fieldset>
+				</form>
+			";
+		}
+		//XXX Lan - Messages/Ban Periods
+		$ns->tablerender("Messages/Ban Periods", $text);
+		break;
 
-		<tr>
-		  <td class='forumheader3'>".BANLAN_67."</td>
-		  <td class='forumheader3'>".drop_box('ban_access_guest',$ban_access_guest).BANLAN_70.'<br />'.
-		  drop_box('ban_access_member',$ban_access_member).BANLAN_69."
-		  </td>
-		  <td class='forumheader3'>".BANLAN_68."</td>
-		</tr>
-
-		<tr>
-		  <td class='forumheader3'>".BANLAN_71."</td>
-		  <td class='forumheader3'>
-		  <input type='checkbox' name='ban_retrigger' value='1'".($pref['ban_retrigger'] == 1 ? " checked='checked'" : '')." />
-		  </td>
-		  <td class='forumheader3'><span style='smalltext'>".BANLAN_73."</span></td>
-		</tr>
-
+	case 'edit':
+	case 'add':
+	case 'whedit':
+	case 'whadd':
+		$page_title = array('edit' => BANLAN_60, 'add' => BANLAN_9, 'whedit' => BANLAN_59, 'whadd' => BANLAN_58);
+		$rdns_warn = varsettrue($pref['enable_rdns']) ? '' : '<div class="field-help error">' . BANLAN_12 . '</div>';
+		$next = ($action == 'whedit' || $action == 'whadd') ? '?white' : '?list';
+		// Edit/add form first
+		$text .= "
+			<form method='post' action='" . e_SELF . $next . "'>
+				<fieldset id='core-banlist-edit'>
+					<legend class='e-hideme'>" . $page_title[$action] . "</legend>
+					<table cellpadding='0' cellspacing='0' class='adminform'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class='label'><input type='hidden' name='entry_intent' value='{$action}' />" . BANLAN_5 . ": </td>
+								<td class='control'>
+									<input class='tbox input-text' type='text' name='ban_ip' size='40' value='" . $e107->ipDecode($banlist_ip) . "' maxlength='200' />
+									{$rdns_warn}
+								</td>
+							</tr>
 		";
 
-	$text .= "<tr><td class='forumheader3' colspan='3' style='text-align:center'>
-				<input class='button' type='submit' name='update_ban_options' value='".LAN_UPDATE."' /></td>
-			  </tr>
-			</table>\n
-	</form>
-	</div><br />";
-	$ns->tablerender(BANLAN_72, $text);
-
-
-	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?options'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<colgroup>
-		<col style='width:75%' />
-		<col style='width:25%' />
-		</colgroup>
-
-		<tr>
-		  <td class='forumheader3'>".BANLAN_75."</td>
-		  <td class='forumheader3'>
-			<input class='button' type='submit' name='remove_expired_bans' value='".BANLAN_76."' /></td>
-		</tr>
-	</table>\n
-	</form>
-	</div><br />";
-	$ns->tablerender(BANLAN_74, $text);
-	break;
-
-  case 'times' :
-	if(!getperms("0")) exit;
-	  if ((!isset($pref['ban_messages'])) || !is_array($pref['ban_messages']))
-	  {
-	    $pref['ban_messages'] = array_fill(0,BAN_REASON_COUNT-1,'');
-	  }
-	  if ((!isset($pref['ban_durations'])) || !is_array($pref['ban_durations']))
-	  {
-	    $pref['ban_durations'] = array_fill(0,BAN_REASON_COUNT-1,0);
-	  }
-	  $text = $rs->form_open("post", e_SELF.'?'.e_QUERY, "ban_options")."<div style='text-align:center'>";
-	  if (!$ban_total = $sql->db_Select("banlist","*","ORDER BY banlist_ip","nowhere")) 
-	  {
-		$text .= "<div style='text-align:center'>".BANLAN_2."</div>";
-	  } 
-	  else 
-	  {
-		$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
-			<colgroup>
-			<col style='width:20%' />
-			<col style='width:70%' />
-			<col style='width:10%' />
-			</colgroup>
-			<tr>
-			<td class='fcaption'>".BANLAN_28."</td>
-			<td class='fcaption' style='text-align:center'>".BANLAN_29."<br /><span class='smallblacktext'>".BANLAN_31."</span></td>
-			<td class='fcaption'>".BANLAN_30."</td>
-			</tr>";
-		for ($i = 0; $i < BAN_REASON_COUNT; $i++)
-		{
-		  $text .= "<tr>
-		    <td class='forumheader3'><a title='".constant('BANLAN_11'.$i)."'>".constant('BANLAN_10'.$i)."</a></td>
-		    <td class='forumheader3'>
-			<textarea class='tbox' name='ban_text[]' cols='50' rows='4'>{$pref['ban_messages'][$i]}</textarea>
-			</td>
-		    <td class='forumheader3'>".ban_time_dropdown('',BANLAN_32,$pref['ban_durations'][$i],'ban_time[]')."</td>
-			</tr>";
+		if(($action == 'add') || ($action == 'whadd') || ($banlist_bantype <= 1) || ($banlist_bantype >= BAN_TYPE_WHITELIST))
+		{ // Its a manual or unknown entry - only allow edit of reason on those
+			$text .= "
+							<tr>
+								<td class='label'>" . BANLAN_7 . ": </td>
+								<td class='control'>
+									<textarea class='tbox textarea' name='ban_reason' cols='50' rows='4'>{$banlist_reason}</textarea>
+								</td>
+							</tr>
+			";
 		}
-		$text .= "<tr><td class='forumheader3' colspan='3' style='text-align:center'><input class='button' type='submit' name='update_ban_prefs' value='".LAN_UPDATE."' /></td></tr>
-			</table>\n";
-	  }
-	  $text .= "</div>".$rs->form_close();
-	  $ns->tablerender(BANLAN_3, $text);
-    break;
-
-  case 'edit' :
-  case 'add' :
-  case 'whedit' :
-  case 'whadd' :
-    $page_title = array('edit' => BANLAN_60, 'add' => BANLAN_9, 'whedit' => BANLAN_59, 'whadd' => BANLAN_58);
-	$rdns_warn = varsettrue($pref['enable_rdns']) ? '' : '<br />'.BANLAN_12;
-	$next = ($action == 'whedit' || $action == 'whadd') ? '?white' : '?list';
-	// Edit/add form first
-	$text .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF.$next."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr>
-		  <td style='width:30%' class='forumheader3'><input type='hidden' name='entry_intent' value='{$action}' />".BANLAN_5.": </td>
-		  <td style='width:70%' class='forumheader3'>
-		  <input class='tbox' type='text' name='ban_ip' size='40' value='".$e107->ipDecode($banlist_ip)."' maxlength='200' />{$rdns_warn}
-		  </td>
-		</tr>";
-
-	if (($action == 'add') || ($action == 'whadd') || ($banlist_bantype <= 1) || ($banlist_bantype >= BAN_TYPE_WHITELIST))
-	{	// Its a manual or unknown entry - only allow edit of reason on those
-	  $text .= "
-		<tr>
-		<td style='width:20%' class='forumheader3'>".BANLAN_7.": </td>
-		<td style='width:80%' class='forumheader3'>
-		<textarea class='tbox' name='ban_reason' cols='50' rows='4'>{$banlist_reason}</textarea>
-		</td>
-		</tr>";
-	}
-	elseif ($action == 'edit')
-	{
-	  $text .= "
-		<tr>
-		<td style='width:20%' class='forumheader3'>".BANLAN_7.": </td>
-		<td style='width:80%' class='forumheader3'>{$banlist_reason}</td>
-		</tr>";
-	}
-
-	if ($action == 'edit')
-	{
-	  $text .= "
-		<tr>
-		<td style='width:20%' class='forumheader3'>".BANLAN_28.": </td>
-		<td style='width:80%' class='forumheader3'>".constant('BANLAN_10'.$banlist_bantype)." - ".constant('BANLAN_11'.$banlist_bantype)."</td>
-		</tr>";
-	}
-
-	$text .= "
-		<tr>
-		<td style='width:20%' class='forumheader3'>".BANLAN_19.": </td>
-		<td style='width:80%' class='forumheader3'>
-		<textarea class='tbox' name='ban_notes' cols='50' rows='4'>{$banlist_notes}</textarea>
-		</td>
-		</tr>";
-
-	if ($action == 'edit' || $action == 'add')
-	{
-	  $text .= "<tr>
-		<td style='width:20%' class='forumheader3'>".BANLAN_18.": </td>
-		<td style='width:80%' class='forumheader3'>".ban_time_dropdown().
-		(($action == 'edit') ? '&nbsp;&nbsp;&nbsp;('.BANLAN_26.($banlist_banexpires ? strftime(BAN_TIME_FORMAT,$banlist_banexpires) : BANLAN_21).')' : '').
-		"</td>
-		</tr>";
-	}
-
-	$text .= "
-		<tr style='vertical-align:top'>
-		<td colspan='2' style='text-align:center' class='forumheader'>";
-	if ($action == "edit" || $action == "whedit")
-	{
-	  $text .= "<input type='hidden' name='old_ip' value='{$banlist_ip}' /><input class='button' type='submit' name='update_ban' value='".LAN_UPDATE."' />";
-	}
-	else
-	{
-	  $text .= "<input class='button' type='submit' name='add_ban' value='".($action == 'add' ? BANLAN_8 : BANLAN_53)."' />";
-	}
-	$text .= "</td>
-	</tr>
-	</table>
-	</form>
-	</div>";
-
-	$text .= "<div style='text-align:center'><br />".BANLAN_13."<a href='".e_ADMIN."users.php'><img src='".$images_path."users_16.png' alt='' /></a></div>";
-	if(!varsettrue($pref['enable_rdns']))
-	{
-	  $text .= "<div style='text-align:center'><br />".BANLAN_12."</div>";
-	}
-	$ns->tablerender($page_title[$action], $text);
-    break;			// End of 'Add' and 'Edit'
-
-
-  case 'transfer' :
-    $message = '';
-    if (isset($_POST['ban_import']))
-	{  // Got a file to import
-	  require_once(e_HANDLER.'upload_handler.php');
-	  if (($files = process_uploaded_files(e_FILE."public/",FALSE,array('overwrite'=>TRUE, 'max_file_count' => 1, 'file_mask'=> 'csv'))) === FALSE)
-	  {  // Invalid file
-	    $message = BANLAN_47;
-	  }
-	  if (!$message && $files[0]['error']) $message = $files[0]['message'];
-	  if (!$message)
-	  {  // Got a file of some sort
-		$message = process_csv(e_FILE."public/".$files[0]['name'],
-								intval(varset($_POST['ban_over_import'],0)),
-								intval(varset($_POST['ban_over_expiry'],0)),
-								$separator_char[intval(varset($_POST['ban_separator'],1))],
-								$quote_char[intval(varset($_POST['ban_quote'],3))]);
-	    banlist_adminlog("07",'File: '.e_FILE."public/".$files[0]['name'].'<br />'.$message);
-	  }
-	  
-	}
-	if ($message) $ns->tablerender(BANLAN_48, "<div style='text-align:center; font-weight:bold'>{$message}</div>");
-
-	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_ADMIN."banlist_export.php' id='ban_export_form' >
-		<table>
-		<colgroup>
-		<col style='width:70%' />
-		<col style='width:30%' />
-		</colgroup>
-		<tr><td class='fcaption'>".BANLAN_36."</td><td class='fcaption'>".BANLAN_15."</td></tr>";
-	$text .= "<tr><td class='forumheader3' rowspan='3'>\n";
-	$spacer = '';
-	for ($i = 0;  $i < BAN_REASON_COUNT; $i++)
-	{
-	  $text .= $spacer."<input type='checkbox' name='ban_types[{$i}]' value='".($i)."' />&nbsp;".constant('BANLAN_10'.$i)." - ".constant('BANLAN_11'.$i);
-	  $spacer = "<br />\n";
-	}
-	$text .= "</td><td class='forumheader3'>".select_box('ban_separator',$separator_char).' '.BANLAN_37;
-	$text .= "</td></tr><tr><td class='forumheader3'>".select_box('ban_quote',$quote_char).' '.BANLAN_38."</td></tr><tr><td class='forumheader3' style='text-align:right'>";
-	$text .= "<input class='button' type='submit' name='ban_export' value='".BANLAN_39."' />
-	</td></tr>";
-	$text .= "</table></form><br /><br /></div>";
-	$ns->tablerender(BANLAN_40, $text);
-	
-	// Now do the import options
-	$text = "<div style='text-align:center'>
-		<form enctype=\"multipart/form-data\" method='post' action='".e_SELF."?transfer' id='ban_import_form' >
-		<table>
-		<colgroup>
-		<col style='width:70%' />
-		<col style='width:30%' />
-		</colgroup>
-		<tr><td class='fcaption'>".BANLAN_42."</td><td class='fcaption'>".BANLAN_15."</td></tr>";
-	$text .= "<tr><td class='forumheader3' rowspan='2'>\n";
-	$text .= "<input type='checkbox' name='ban_over_import' value='1' />&nbsp;".BANLAN_43.'<br />';
-	$text .= "<input type='checkbox' name='ban_over_expiry' value='1' />&nbsp;".BANLAN_44;
-
-	$text .= "</td><td class='forumheader3'>".select_box('ban_separator',$separator_char).' '.BANLAN_37;
-	$text .= "</td></tr><tr><td class='forumheader3'>".select_box('ban_quote',$quote_char).' '.BANLAN_38."</td></tr>
-		<tr><td class='forumheader3'><input class='tbox' type='file' name='file_userfile[]' style='width:90%' size='50' /></td>
-		<td class='forumheader3' style='text-align:right'>";
-	$text .= "<input class='button' type='submit' name='ban_import' value='".BANLAN_45."' />
-	</td></tr>";
-	$text .= "</table></form><br /><br /></div>";
-	$ns->tablerender(BANLAN_41, $text);
-    break;
-
-
-  case 'list' :
-  case 'white' :
-  default :
-	  if (($action != 'list') && ($action != 'white')) $action = 'list';
-	  $edit_action = ($action == 'list' ? 'edit' : 'whedit');
-	  $del_action = ($action == 'list' ? 'remove' : 'whremove');
-	  $col_widths = array('list' => array(10,5,35,30,10,10), 'white' => array(15,40,35,10));
-	  $col_titles = array('list' => array(BANLAN_17,BANLAN_20,BANLAN_10,BANLAN_19,BANLAN_18,LAN_OPTIONS),
-							'white' => array(BANLAN_55,BANLAN_56,BANLAN_19,LAN_OPTIONS));
-	  $no_values = array('list' => BANLAN_2, 'white' => BANLAN_54);
-	  $col_defs = array('list' => array('banlist_datestamp'=>0,'banlist_bantype'=>0,'ip_reason'=>BANLAN_7,'banlist_notes'=>0,'banlist_banexpires'=>0,'ban_options'=>0),
-						'white' => array('banlist_datestamp'=>0,'ip_reason'=>BANLAN_57,'banlist_notes'=>0,'ban_options'=>0));
-							
-	  $text = $rs->form_open("post", e_SELF.'?'.$action, "ban_form")."<div style='text-align:center'>".$rs->form_hidden("ban_secure", "1");
-	  $filter = ($action == 'white') ? 'banlist_bantype='.BAN_TYPE_WHITELIST : 'banlist_bantype!='.BAN_TYPE_WHITELIST ;
-	  if (!$ban_total = $sql->db_Select("banlist","*",$filter." ORDER BY banlist_ip")) 
-	  {
-		$text .= "<div style='text-align:center'>".$no_values[$action]."</div>";
-	  } 
-	  else 
-	  {
-		$text .= "<table class='fborder' style='".ADMIN_WIDTH."'><colgroup>";
-		foreach($col_widths[$action] as $fw) $text .= "<col style='width:{$fw}%' />\n";
-		$text .= "</colgroup>\n<tr>";
-		foreach ($col_titles[$action] as $ct) $text .= "<td class='fcaption'>{$ct}</td>";
-		$text .= "</tr>";
-		while ($row = $sql->db_Fetch()) 
+		elseif($action == 'edit')
 		{
-		  extract($row);
-		  $banlist_reason = str_replace("LAN_LOGIN_18", BANLAN_11, $banlist_reason);
-		  $text .= "<tr>";
-		  foreach ($col_defs[$action] as $cd => $fv)
-		  {
-		    switch ($cd)
-			{
-			  case 'banlist_datestamp' :
-			    $val = ($banlist_datestamp ? strftime(BAN_TIME_FORMAT,$banlist_datestamp) : BANLAN_22 );
-			    break;
-			  case 'banlist_bantype' :
-				$val = "<a title='".constant('BANLAN_11'.$banlist_bantype)."'>".constant('BANLAN_10'.$banlist_bantype)."</a>";
-				break;
-			  case 'ip_reason' :
-			    $val = $e107->ipDecode($banlist_ip)."<br />".$fv.": ".$banlist_reason;
-			    break;
-			  case 'banlist_banexpires' :
-			    $val = ($banlist_banexpires ? strftime(BAN_TIME_FORMAT,$banlist_banexpires).(($banlist_banexpires < time()) ? ' ('.BANLAN_34.')' : '') 
-					: BANLAN_21)."<br />".ban_time_dropdown("onchange=\"urljump('".e_SELF."?newtime-{$banlist_ip}-'+this.value)\"");
-			    break;
-			  case 'ban_options' :
-			    $val = "<a href='".e_SELF."?{$edit_action}-{$banlist_ip}'><img src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' /></a>
-					<input name='delete_ban_entry' type='image' src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' 
-					onclick=\" var r = jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$e107->ipDecode($banlist_ip)."]")."');
-					if (r) { document.getElementById('ban_form').action='".e_SELF."?{$del_action}-{$banlist_ip}'; } return r; \" />";
-				break;
-			  case 'banlist_notes' :
-			  default : 
-			    $val = $row[$cd];
+			$text .= "
+							<tr>
+								<td class='label'>" . BANLAN_7 . ": </td>
+								<td class='control'>{$banlist_reason}</td>
+							</tr>
+			";
+		}
+
+		if($action == 'edit')
+		{
+			$text .= "
+							<tr>
+								<td class='label'>" . BANLAN_28 . ": </td>
+								<td class='control'>" . constant('BANLAN_10' . $banlist_bantype) . " - " . constant('BANLAN_11' . $banlist_bantype) . "</td>
+							</tr>
+			";
+		}
+
+		$text .= "
+							<tr>
+								<td class='label'>" . BANLAN_19 . ": </td>
+								<td class='control'>
+									<textarea class='tbox textarea' name='ban_notes' cols='50' rows='4'>{$banlist_notes}</textarea>
+								</td>
+							</tr>
+		";
+
+		if($action == 'edit' || $action == 'add')
+		{
+			$text .= "
+							<tr>
+								<td class='label'>" . BANLAN_18 . ": </td>
+								<td class='control'>" . ban_time_dropdown() . (($action == 'edit') ? '&nbsp;&nbsp;&nbsp;(' . BANLAN_26 . ($banlist_banexpires ? strftime(BAN_TIME_FORMAT, $banlist_banexpires) : BANLAN_21) . ')' : '') . "</td>
+							</tr>
+			";
+		}
+
+		$text .= "
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+		";
+
+		if($action == "edit" || $action == "whedit")
+		{
+			$text .= "
+									<input type='hidden' name='old_ip' value='{$banlist_ip}' />
+									" . $frm->admin_button('update_ban', LAN_UPDATE, 'update', LAN_UPDATE) . "
+			";
+		}
+		else
+		{
+			$text .= "
+									" . $frm->admin_button('add_ban', ($action == 'add' ? BANLAN_8 : BANLAN_53), 'submit', ($action == 'add' ? BANLAN_8 : BANLAN_53)) . "
+			";
+		}
+
+		$text .= "
+					</div>
+				</fieldset>
+			</form>
+		";
+
+		//FIXME - Put this notes somewhere
+		$text .= "
+			<div style='text-align:center'>
+				" . BANLAN_13 . "<a href='" . e_ADMIN . "users.php'><img src='" . $images_path . "users_16.png' alt='' /></a>
+			</div>
+		";
+		if(! varsettrue($pref['enable_rdns']))
+		{
+			$text .= "
+			<div style='text-align:center'><br />" . BANLAN_12 . "</div>
+		";
+		}
+		$ns->tablerender($page_title[$action], $text);
+		break; // End of 'Add' and 'Edit'
+
+
+	case 'transfer':
+		$message = '';
+		if(isset($_POST['ban_import']))
+		{ // Got a file to import
+			require_once (e_HANDLER . 'upload_handler.php');
+			if(($files = process_uploaded_files(e_FILE . "public/", FALSE, array('overwrite' => TRUE, 'max_file_count' => 1, 'file_mask' => 'csv'))) === FALSE)
+			{ // Invalid file
+				$message = BANLAN_47;
 			}
-			$text .= "<td class='forumheader3'>{$val}</td>";
-		  }
-		  $text .= '</tr>';
+			if(! $message && $files[0]['error'])
+				$message = $files[0]['message'];
+			if(! $message)
+			{ // Got a file of some sort
+				$message = process_csv(e_FILE . "public/" . $files[0]['name'], intval(varset($_POST['ban_over_import'], 0)), intval(varset($_POST['ban_over_expiry'], 0)), $separator_char[intval(varset($_POST['ban_separator'], 1))], $quote_char[intval(varset($_POST['ban_quote'], 3))]);
+				banlist_adminlog("07", 'File: ' . e_FILE . "public/" . $files[0]['name'] . '<br />' . $message);
+			}
+
 		}
-		$text .= "</table>\n";
-	  }
-	  $text .= "</div>".$rs->form_close();
-	  $ns->tablerender(($action == 'list' ? BANLAN_3 : BANLAN_61), $text);
-	  // End of case 'list' and the default case
-}		// End switch ($action)
+		if($message)
+			$ns->tablerender(BANLAN_48, "<div style='text-align:center; font-weight:bold'>{$message}</div>");
+
+		$text = "
+			<form method='post' action='" . e_ADMIN . "banlist_export.php' id='ban_export_form' >
+				<fieldset id='core-banlist-transfer-export'>
+					<legend>" . BANLAN_40 . "</legend>
+					<table cellpadding='0' cellspacing='0' class='adminform'>
+						<colgroup span='2'>
+							<col style='width:70%' />
+							<col style='width:30%' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th>" . BANLAN_36 . "</th>
+								<th>" . BANLAN_15 . "</th>
+							</tr>
+							<tr>
+								<td class='forumheader3' rowspan='2'>
+		";
+
+		for($i = 0; $i < BAN_REASON_COUNT; $i ++)
+		{
+			$text .= "
+									<div class='field-spacer'>
+										<input type='checkbox' name='ban_types[{$i}]' value='" . ($i) . "' />&nbsp;" . constant('BANLAN_10' . $i) . " - " . constant('BANLAN_11' . $i) . "
+									</div>
+			";
+		}
+
+		$text .= "
+								</td>
+								<td class='forumheader3'>
+									<div class='field-spacer'>" . select_box('ban_separator', $separator_char) . ' ' . BANLAN_37 . "</div>
+									<div class='field-spacer'>" . select_box('ban_quote', $quote_char) . ' ' . BANLAN_38 . "</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='bottom' style='text-align:right'>
+									" . $frm->admin_button('ban_export', BANLAN_39, 'submit', BANLAN_39) . "
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</form>
+		";
+
+		// Now do the import options
+		$text .= "
+			<form enctype='multipart/form-data' method='post' action='" . e_SELF . "?transfer' id='ban_import_form' >
+				<fieldset id='core-banlist-transfer-import'>
+					<legend>" . BANLAN_41 . "</legend>
+					<table cellpadding='0' cellspacing='0' class='adminform'>
+						<colgroup span='2'>
+							<col style='width:70%' />
+							<col style='width:30%' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th>" . BANLAN_42 . "</th>
+								<th>" . BANLAN_15 . "</th>
+							</tr>
+							<tr>
+								<td class='forumheader3'>
+									<input type='checkbox' name='ban_over_import' value='1' />&nbsp;" . BANLAN_43 . "<br />
+									<input type='checkbox' name='ban_over_expiry' value='1' />&nbsp;" . BANLAN_44 . "
+								</td>
+								<td class='forumheader3'>
+									<div class='field-spacer'>" . select_box('ban_separator', $separator_char) . ' ' . BANLAN_37 . "</div>
+									<div class='field-spacer'>" . select_box('ban_quote', $quote_char) . ' ' . BANLAN_38 . "</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='forumheader3'>
+									<input class='tbox' type='file' name='file_userfile[]' style='width:90%' size='50' />
+								</td>
+								<td class='forumheader3' style='text-align:right'>
+									" . $frm->admin_button('ban_import', BANLAN_45, 'submit', BANLAN_45) . "
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</form>
+	";
+
+		//XXX LAN - Import/Export
+		$ns->tablerender("Import/Export", $text);
+		break;
+
+	case 'list':
+	case 'white':
+	default:
+		if(($action != 'list') && ($action != 'white'))
+			$action = 'list';
+
+		$edit_action = ($action == 'list' ? 'edit' : 'whedit');
+		$del_action = ($action == 'list' ? 'remove' : 'whremove');
+		$col_widths = array('list' => array(10, 5, 35, 30, 10, 10), 'white' => array(15, 40, 35, 10));
+		$col_titles = array('list' => array(BANLAN_17, BANLAN_20, BANLAN_10, BANLAN_19, BANLAN_18, LAN_OPTIONS), 'white' => array(BANLAN_55, BANLAN_56, BANLAN_19, LAN_OPTIONS));
+		$no_values = array('list' => BANLAN_2, 'white' => BANLAN_54);
+		$col_defs = array('list' => array('banlist_datestamp' => 0, 'banlist_bantype' => 0, 'ip_reason' => BANLAN_7, 'banlist_notes' => 0, 'banlist_banexpires' => 0, 'ban_options' => 0), 'white' => array('banlist_datestamp' => 0, 'ip_reason' => BANLAN_57, 'banlist_notes' => 0, 'ban_options' => 0));
+
+		$text = "
+			<form method='post' action='" . e_SELF . '?' . $action . "' id='ban_form'>
+				<fieldset id='core-banlist'>
+					<legend class='e-hideme'>" . ($action == 'list' ? BANLAN_3 : BANLAN_61) . "</legend>
+					" . $frm->hidden("ban_secure", "1") . "
+		";
+
+		$filter = ($action == 'white') ? 'banlist_bantype=' . BAN_TYPE_WHITELIST : 'banlist_bantype!=' . BAN_TYPE_WHITELIST;
+
+		if(! $ban_total = $sql->db_Select("banlist", "*", $filter . " ORDER BY banlist_ip"))
+		{
+			$text .= "<div style='text-align:center'>" . $no_values[$action] . "</div>";
+		}
+		else
+		{
+			$text .= "
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<colgroup span='" . count($col_widths[$action]) . "'>
+			";
+			foreach($col_widths[$action] as $fw)
+			{
+				$text .= "
+								<col style='width:{$fw}%' />
+				";
+			}
+			$text .= "
+						</colgroup>
+						<thead>
+							<tr>
+			";
+			$cnt = 0;
+			foreach($col_titles[$action] as $ct)
+			{
+				$cnt ++;
+				$text .= "
+								<th" . (($cnt == count($col_widths[$action])) ? " class='center last'" : "") . ">{$ct}</th>
+				";
+			}
+			$text .= "
+							</tr>
+						</thead>
+						<tbody>
+			";
+			while($row = $sql->db_Fetch())
+			{
+				extract($row);
+				$banlist_reason = str_replace("LAN_LOGIN_18", BANLAN_11, $banlist_reason);
+				$text .= "
+						<tr>
+				";
+				foreach($col_defs[$action] as $cd => $fv)
+				{
+					$row_class = '';
+					switch($cd)
+					{
+						case 'banlist_datestamp':
+							$val = ($banlist_datestamp ? strftime(BAN_TIME_FORMAT, $banlist_datestamp) : BANLAN_22);
+							break;
+						case 'banlist_bantype':
+							$val = "<a title='" . constant('BANLAN_11' . $banlist_bantype) . "'>" . constant('BANLAN_10' . $banlist_bantype) . "</a>";
+							break;
+						case 'ip_reason':
+							$val = $e107->ipDecode($banlist_ip) . "<br />" . $fv . ": " . $banlist_reason;
+							break;
+						case 'banlist_banexpires':
+							$val = ($banlist_banexpires ? strftime(BAN_TIME_FORMAT, $banlist_banexpires) . (($banlist_banexpires < time()) ? ' (' . BANLAN_34 . ')' : '') : BANLAN_21) . "<br />" . ban_time_dropdown("onchange=\"urljump('" . e_SELF . "?newtime-{$banlist_ip}-'+this.value)\"");
+							break;
+						case 'ban_options':
+							$row_class = ' class="center"';
+							$val = "
+							<a href='" . e_SELF . "?{$edit_action}-{$banlist_ip}'><img src='" . $images_path . "edit_16.png' alt='" . LAN_EDIT . "' title='" . LAN_EDIT . "' style='border:0px' /></a>
+							<input name='delete_ban_entry' type='image' src='" . $images_path . "delete_16.png' alt='" . LAN_DELETE . "' title='" . LAN_DELETE . "' style='border:0px'
+							onclick=\" var r = jsconfirm('" . $tp->toJS(LAN_CONFIRMDEL . " [" . $e107->ipDecode($banlist_ip) . "]") . "');
+							if (r) { document.getElementById('ban_form').action='" . e_SELF . "?{$del_action}-{$banlist_ip}'; } return r; \" />";
+							break;
+						case 'banlist_notes':
+						default:
+							$val = $row[$cd];
+					}
+
+					$text .= "
+							<td{$row_class}>{$val}</td>
+					";
+				}
+				$text .= '
+						</tr>
+				';
+			}
+			$text .= "
+						</tbody>
+					</table>
+			";
+		}
+		$text .= "
+				</fieldset>
+			</form>
+		";
+
+		$ns->tablerender(($action == 'list' ? BANLAN_3 : BANLAN_61), $text);
+	// End of case 'list' and the default case
+} // End switch ($action)
 
 
-require_once("footer.php");
+require_once ("footer.php");
 
-
-function banlist_adminmenu() 
+function banlist_adminmenu()
 {
 	$action = (e_QUERY) ? e_QUERY : "list";
 
-    $var['list']['text'] = BANLAN_14;			// List existing bans
-	$var['list']['link'] = e_SELF."?list";
+	$var['list']['text'] = BANLAN_14; // List existing bans
+	$var['list']['link'] = e_SELF . "?list";
 	$var['list']['perm'] = "4";
 
-    $var['add']['text'] = BANLAN_25;			// Add a new ban
-	$var['add']['link'] = e_SELF."?add";
+	$var['add']['text'] = BANLAN_25; // Add a new ban
+	$var['add']['link'] = e_SELF . "?add";
 	$var['add']['perm'] = "4";
 
-    $var['white']['text'] = BANLAN_52;			// List existing whitelist entries
-	$var['white']['link'] = e_SELF."?white";
+	$var['white']['text'] = BANLAN_52; // List existing whitelist entries
+	$var['white']['link'] = e_SELF . "?white";
 	$var['white']['perm'] = "4";
 
-    $var['whadd']['text'] = BANLAN_53;			// Add a new whitelist entry
-	$var['whadd']['link'] = e_SELF."?whadd";
+	$var['whadd']['text'] = BANLAN_53; // Add a new whitelist entry
+	$var['whadd']['link'] = e_SELF . "?whadd";
 	$var['whadd']['perm'] = "4";
 
 	$var['transfer']['text'] = BANLAN_35;
-	$var['transfer']['link'] = e_SELF."?transfer";
-   	$var['transfer']['perm'] = "4";
+	$var['transfer']['link'] = e_SELF . "?transfer";
+	$var['transfer']['perm'] = "4";
 
 	if(getperms("0"))
 	{
-	  $var['times']['text'] = BANLAN_15;
-	  $var['times']['link'] = e_SELF."?times";
-   	  $var['times']['perm'] = "0";
+		$var['times']['text'] = BANLAN_15;
+		$var['times']['link'] = e_SELF . "?times";
+		$var['times']['perm'] = "0";
 
-	  $var['options']['text'] = BANLAN_62;
-	  $var['options']['link'] = e_SELF."?options";
-   	  $var['options']['perm'] = "0";
-    }
-	show_admin_menu(BANLAN_16, $action, $var);
+		$var['options']['text'] = BANLAN_62;
+		$var['options']['link'] = e_SELF . "?options";
+		$var['options']['perm'] = "0";
+	}
+	e_admin_menu(BANLAN_16, $action, $var);
 }
-
-
 
 // Parse the date string used by the import/export - YYYYMMDD_HHMMSS
 function parse_date($instr)
 {
-  if (strlen($instr) != 15) return 0;
-  return mktime(substr($instr,9,2),substr($instr,11,2),substr($instr,13,2),substr($instr,4,2),substr($instr,6,2),substr($instr,0,4));
+	if(strlen($instr) != 15)
+		return 0;
+	return mktime(substr($instr, 9, 2), substr($instr, 11, 2), substr($instr, 13, 2), substr($instr, 4, 2), substr($instr, 6, 2), substr($instr, 0, 4));
 }
-
 
 // Process the imported CSV file, update the database, delete the file.
 // Return a message
 function process_csv($filename, $override_imports, $override_expiry, $separator = ',', $quote = '"')
 {
-  global $sql, $pref, $e107;
-//  echo "Read CSV: {$filename} separator: {$separator}, quote: {$quote}  override imports: {$override_imports}  override expiry: {$override_expiry}<br />";
-  // Renumber imported bans
-  if ($override_imports) $sql->db_Update('banlist', "`banlist_bantype`=".BAN_TYPE_TEMPORARY." WHERE `banlist_bantype` = ".BAN_TYPE_IMPORTED);
-  $temp = file($filename);
-  $line_num = 0;
-  foreach ($temp as $line)
-  {  // Process one entry
-    $line = trim($line);
-	$line_num++;
-	if ($line)
-	{
-	  $fields = explode($separator,$line);
-	  $field_num = 0;
-	  $field_list = array('banlist_bantype' => BAN_TYPE_IMPORTED);
-	  foreach ($fields as $f)
-	  {
-	    $f = trim($f);
-	    if (substr($f,0,1) == $quote)
+	global $sql, $pref, $e107;
+	//  echo "Read CSV: {$filename} separator: {$separator}, quote: {$quote}  override imports: {$override_imports}  override expiry: {$override_expiry}<br />";
+	// Renumber imported bans
+	if($override_imports)
+		$sql->db_Update('banlist', "`banlist_bantype`=" . BAN_TYPE_TEMPORARY . " WHERE `banlist_bantype` = " . BAN_TYPE_IMPORTED);
+	$temp = file($filename);
+	$line_num = 0;
+	foreach($temp as $line)
+	{ // Process one entry
+		$line = trim($line);
+		$line_num ++;
+		if($line)
 		{
-		  if (substr($f,-1,1) == $quote)
-		  {  // Strip quotes
-		    $f = substr($f,1,-1);		// Strip off the quotes
-		  }
-		  else
-		  {
-		    return BANLAN_49.$line_num;
-		  }
-		}
-		// Now handle the field
-		$field_num++;
-		switch ($field_num)
-		{
-		  case 1 :		// IP address
-			$field_list['banlist_ip'] = $e107->ipEncode($f);
-		    break;
-		  case 2 :		// Original date of ban
-			$field_list['banlist_datestamp'] = parse_date($f);
-			break;
-		  case 3 :		// Expiry of ban - depends on $override_expiry
-		    if ($override_expiry)
+			$fields = explode($separator, $line);
+			$field_num = 0;
+			$field_list = array('banlist_bantype' => BAN_TYPE_IMPORTED);
+			foreach($fields as $f)
 			{
-			$field_list['banlist_banexpires'] = parse_date($f);
+				$f = trim($f);
+				if(substr($f, 0, 1) == $quote)
+				{
+					if(substr($f, - 1, 1) == $quote)
+					{ // Strip quotes
+						$f = substr($f, 1, - 1); // Strip off the quotes
+					}
+					else
+					{
+						return BANLAN_49 . $line_num;
+					}
+				}
+				// Now handle the field
+				$field_num ++;
+				switch($field_num)
+				{
+					case 1: // IP address
+						$field_list['banlist_ip'] = $e107->ipEncode($f);
+						break;
+					case 2: // Original date of ban
+						$field_list['banlist_datestamp'] = parse_date($f);
+						break;
+					case 3: // Expiry of ban - depends on $override_expiry
+						if($override_expiry)
+						{
+							$field_list['banlist_banexpires'] = parse_date($f);
+						}
+						else
+						{ // Use default ban time from now
+							$field_list['banlist_banexpires'] = $pref['ban_durations'][BAN_TYPE_IMPORTED] ? time() + (60 * 60 * $pref['ban_durations'][BAN_TYPE_IMPORTED]) : 0;
+						}
+						break;
+					case 4: // Original ban type - we always ignore this and force to 'imported'
+						break;
+					case 5: // Ban reason originally generated by E107
+						$field_list['banlist_reason'] = $f;
+						break;
+					case 6: // Any user notes added
+						$field_list['banlist_notes'] = $f;
+						break;
+					default: // Just ignore any others
+				}
 			}
-			else
-			{	// Use default ban time from now
-			  $field_list['banlist_banexpires'] = $pref['ban_durations'][BAN_TYPE_IMPORTED] ? time() + (60*60*$pref['ban_durations'][BAN_TYPE_IMPORTED]) : 0;
+			$qry = "REPLACE INTO `#banlist` (" . implode(',', array_keys($field_list)) . ") values ('" . implode("', '", $field_list) . "')";
+			//	  echo count($field_list)." elements, query: ".$qry."<br />";
+			if(! $sql->db_Select_gen($qry))
+			{
+				return BANLAN_50 . $line_num;
 			}
-			break;
-		  case 4 :		// Original ban type - we always ignore this and force to 'imported'
-			break;
-		  case 5 :		// Ban reason originally generated by E107
-			$field_list['banlist_reason'] = $f;
-			break;
-		  case 6 :		// Any user notes added
-			$field_list['banlist_notes'] = $f;
-			break;
-		  default :		// Just ignore any others
 		}
-	  }
-	  $qry = "REPLACE INTO `#banlist` (".implode(',',array_keys($field_list)).") values ('".implode("', '",$field_list)."')";
-//	  echo count($field_list)." elements, query: ".$qry."<br />";
-	  if (!$sql->db_Select_gen($qry))
-	  {
-	    return BANLAN_50.$line_num;
-	  }
 	}
-  }
-  // Success here - may need to delete old imported bans
-  if ($override_imports) $sql->db_Delete('banlist', "`banlist_bantype` = ".BAN_TYPE_TEMPORARY);
-  @unlink($filename);			// Delete file once done
-  return str_replace('--NUM--',$line_num, BANLAN_51).$filename;
+	// Success here - may need to delete old imported bans
+	if($override_imports)
+		$sql->db_Delete('banlist', "`banlist_bantype` = " . BAN_TYPE_TEMPORARY);
+	@unlink($filename); // Delete file once done
+	return str_replace('--NUM--', $line_num, BANLAN_51) . $filename;
 }
 
-
 // Log event to admin log
-function banlist_adminlog($msg_num='00', $woffle='')
+function banlist_adminlog($msg_num = '00', $woffle = '')
 {
-  global $pref, $admin_log;
-//  if (!varset($pref['admin_log_log']['admin_banlist'],0)) return;
-//  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'BANLIST_'.$msg_num);
-  $admin_log->log_event('BANLIST_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
+	global $pref, $admin_log;
+	//  if (!varset($pref['admin_log_log']['admin_banlist'],0)) return;
+	//  $admin_log->log_event($title,$woffle,E_LOG_INFORMATIVE,'BANLIST_'.$msg_num);
+	$admin_log->log_event('BANLIST_' . $msg_num, $woffle, E_LOG_INFORMATIVE, '');
 }
 
 ?>

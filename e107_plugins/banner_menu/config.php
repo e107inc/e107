@@ -1,23 +1,29 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/banner_menu/config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-08 22:23:53 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Banner Menu Configuration (OLD - redirects to e107_admin/banner.php)
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/banner_menu/config.php,v $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-22 16:50:07 $
+ * $Author: secretr $
+ *
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
+
+/*
+ * The same, cleaned up code is already part of banner.php
+ * FIXME - we should be able to combine all core menus in a nice way... somehow
+ */
+header('Location:'.e_ADMIN_ABS.'banner.php?menu');
+exit;
+
 if (!getperms("1")) 		// Access to those who can change prefs, theme etc
 {
 	header("location:".e_BASE."index.php");
@@ -26,11 +32,11 @@ if (!getperms("1")) 		// Access to those who can change prefs, theme etc
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
-	
+
 @include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
-	
-if (e_QUERY) 
+
+if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
@@ -38,29 +44,29 @@ if (e_QUERY)
 	$id = $tmp[2];
 	unset($tmp);
 }
-	
-if (isset($_POST['update_menu'])) 
+
+if (isset($_POST['update_menu']))
 {
 	unset($temp);
-	foreach($_POST as $k => $v) 
+	foreach($_POST as $k => $v)
 	{
-		if (strpos($k, "banner_") === 0) 
+		if (strpos($k, "banner_") === 0)
 		{
 			$temp[$k] = $v;
 		}
 	}
-	 
-	if (isset($_POST['catid'])) 
+
+	if (isset($_POST['catid']))
 	{
 		$array_cat = explode("-", $_POST['catid']);
-		for($i = 0; $i < count($array_cat); $i++) 
+		for($i = 0; $i < count($array_cat); $i++)
 		{
 			$cat .= $array_cat[$i]."|";
 		}
 		$cat = substr($cat, 0, -1);
 		$temp['banner_campaign'] = $cat;
 	}
-	 
+
 
 	if ($admin_log->logArrayDiffs($temp, $menu_pref, 'BANNER_05'))
 	{
@@ -73,25 +79,25 @@ if (isset($_POST['update_menu']))
 	}
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-	
-if (!$menu_pref['banner_caption']) 
+
+if (!$menu_pref['banner_caption'])
 {
 	$menu_pref['banner2_caption'] = BANNER_MENU_L1;
 }
-	
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' name='menu_conf_form'>
 	<table style='width:85%' class='fborder' >
-	 
+
 	<tr>
 	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L3.": </td>
 	<td style='width:60%' class='forumheader3'>
 	<input class='tbox' type='text' name='banner_caption' size='20' value='".$menu_pref['banner_caption']."' maxlength='100' />
 	</td>
 	</tr>";
-	
+
 $array_cat_in = explode("|", $menu_pref['banner_campaign']);
-	
+
 $c = 0;
  $d = 0;
 $sql2 = new db;
@@ -106,12 +112,12 @@ while ($row = $sql2->db_Fetch()) {
 		$d++;
 	}
 }
-	
+
 $text .= "
 	<tr>
 	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L6."</td>
 	<td style='width:60%' class='forumheader3'>
-	 
+
 	<table style='width:90%'>
 	<tr>
 	<td style='width:45%; vertical-align:top'>".BANNER_MENU_L7."<br />
@@ -134,10 +140,10 @@ $text .= "</select><br /><br />
 	</td>
 	</tr>
 	</table>
-	 
+
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L10."</td>
 	<td style='width:60%' class='forumheader3'>
@@ -149,7 +155,7 @@ $text .= "</select><br /><br />
 	".$rs->form_select_close()."
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:40%' class='forumheader3'>".BANNER_MENU_L15."<br /><span class='smalltext' style='font-style:italic;'>".BANNER_MENU_L16."</span></td>
 	<td style='width:60%' class='forumheader3'>
@@ -161,32 +167,32 @@ for($b = 1; $b < 6; $b++) {
 $text .= $rs->form_select_close()."
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='update_menu' value='".BANNER_MENU_L18."' /></td>
 	</tr>
-	 
+
 	</table>
 	</form>
 	</div>";
-	
+
 $ns->tablerender(BANNER_MENU_L5, $text);
-	
-	
+
+
 require_once(e_ADMIN."footer.php");
-	
+
 function headerjs() {
-	 
+
 	$script_js = "<script type=\"text/javascript\">
 		//<!--
 		//<!-- Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com) -->
-		 
+
 		function moveOver(){
 		var boxLength = document.getElementById('catin').length;
 		var selectedItem = document.getElementById('catout').selectedIndex;
 		var selectedText = document.getElementById('catout').options[selectedItem].text;
 		var selectedValue = document.getElementById('catout').options[selectedItem].value;
-		 
+
 		var i;
 		var isNew = true;
 		if (boxLength != 0) {
@@ -204,10 +210,10 @@ function headerjs() {
 		document.getElementById('catout').options[selectedItem].text = '';
 		}
 		document.getElementById('catout').selectedIndex=-1;
-		 
+
 		saveMe();
 		}
-		 
+
 		function removeMe() {
 		var boxLength = document.getElementById('catin').length;
 		var boxLength2 = document.getElementById('catout').length;
@@ -234,14 +240,14 @@ function headerjs() {
 		}
 		boxLength = document.getElementById('catin').length;
 		}
-		 
+
 		saveMe();
 		}
-		 
+
 		//function clearMe(clid){
 		// location.href = document.location + \"?clear.\" + clid;
 		//}
-		 
+
 		function saveMe(clid) {
 		var strValues = \"\";
 		var boxLength = document.getElementById('catin').length;
@@ -265,10 +271,10 @@ function headerjs() {
 		document.getElementById('catid').value = strValues;
 		}
 		}
-		 
+
 		// -->
 		</script>\n";
 	return $script_js;
 }
-	
+
 ?>
