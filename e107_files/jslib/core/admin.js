@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.9 $
- * $Date: 2008-12-22 16:50:07 $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-23 11:14:46 $
  * $Author: secretr $
  * 
 */
@@ -40,11 +40,13 @@ e107Admin.Helper = {
 		this.toggleCheckedHandler = this.toggleChecked.bindAsEventListener(this);
 		this.allCheckedEventHandler = this.allChecked.bindAsEventListener(this);
 		this.allUncheckedEventHandler = this.allUnchecked.bindAsEventListener(this);
+		this.allToggleCheckedEventHandler = this.allToggleChecked.bindAsEventListener(this);
 		element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
 		
 		element.select('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
-		element.select('button.action[name=check_all]').invoke('observe', 'click', this.allCheckedEventHandler);
+		element.select('button.action[name=check_all]', 'input.toggle_all[type=checkbox]').invoke('observe', 'click', this.allCheckedEventHandler);
 		element.select('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
+		element.select('input.toggle-all[type=checkbox]').invoke('observe', 'click', this.allToggleCheckedEventHandler);
 		element.select('button.delete', 'input.delete[type=image]', 'a.delete').invoke('observe', 'click', function(e) {
 			var el = e.findElement('a.delete'); 
 			if(!el) el = e.element();
@@ -98,8 +100,32 @@ e107Admin.Helper = {
 	
 	/**
 	 * Event listener
+	 * Toggle all checkboxes in the current form, having name attribute value starting with 'multitoggle' 
+	 * by default or any value set by checkbox value (special command 'jstarget:start_with_selector')
+	 * This method is auto-attached (if init() method is executed) to every checkbox having class toggle-all
+	 * 
+	 * Example of valid button being auto-observed: 
+	 * <input type='checkbox' class='toggle-all' name='not_important' value='multitoggle'>
+	 * 
+	 * Demo: e107_admin/fla.php
+	 * 
+	 */
+	allToggleChecked: function(event) {
+		//event.stop();
+		var form = event.element().up('form'), selector = 'multitoggle';
+		if(event.element().readAttribute('value').startsWith('jstarget:')) {
+			selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
+		}
+		
+		if(form) {
+			form.toggleChecked(event.element().checked, 'name^=' + selector);
+		}
+	},
+	
+	/**
+	 * Event listener
 	 * Check all checkboxes in the current form, having name attribute value starting with 'multiaction' 
-	 * by default or any value set by button's value(special command 'jstarget:')
+	 * by default or any value set by button's value(special command 'jstarget:start_with_selector')
 	 * This method is auto-attached to every button having name=check_all if init() method is executed
 	 * 
 	 * Examples of valid inputbox markup: 
@@ -134,7 +160,7 @@ e107Admin.Helper = {
 	/**
 	 * Event listener
 	 * Uncheck all checkboxes in the current form, having name attribute value starting with 'multiaction' 
-	 * by default or any value set by button's value(special command 'jstarget:')
+	 * by default or any value set by button's value(special command 'jstarget:start_with_selector')
 	 * This method is auto-attached to every button having name=uncheck_all if init() method is executed
 	 * 
 	 * Examples of valid inputbox markup: 
