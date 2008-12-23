@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.9 $
- * $Date: 2008-12-20 15:23:48 $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-23 16:25:06 $
  * $Author: secretr $
  *
 */
@@ -91,6 +91,8 @@ class eMessage
 	 */
 	function add($message, $type = E_MESSAGE_INFO, $session = false)
 	{
+		if(empty($message)) return $this;
+
 		if(!$session)
 		{
 			if($this->isType($type)) $this->_sysmsg[$type][] = $message;
@@ -108,6 +110,8 @@ class eMessage
 	 */
 	function addSession($message, $type = E_MESSAGE_INFO)
 	{
+		if(empty($message)) return $this;
+
 		if($this->isType($type)) $_SESSION['e107_system_messages'][$type][] = $message;
 		return $this;
 	}
