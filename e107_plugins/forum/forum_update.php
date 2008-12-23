@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-20 23:59:00 $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-23 20:48:24 $
  * $Author: mcfly_e107 $
  *
 */
@@ -129,9 +129,9 @@ function step2()
 
 	require_once(e_HANDLER.'db_table_admin_class.php');
 	$db = new db_table_admin;
-	
+
 	$tabList = array('forum' => 'forum_new', 'forum_thread' => '', 'forum_post' => '', 'forum_track' => '');
-	$ret = '';	
+	$ret = '';
 	$failed = false;
 	$text = '';
 	foreach($tabList as $name => $rename)
@@ -223,7 +223,7 @@ function step3()
 			";
 	}
 	$e107->ns->tablerender($stepCaption, $text);
-	
+
 }
 
 function step4()
@@ -255,7 +255,7 @@ function step4()
 	{
 		require_once(e_HANDLER.'user_extended_class.php');
 		$ue = new e107_user_extended;
-		
+
 		while($row = $db->db_Fetch(MYSQL_ASSOC))
 		{
 			$result['usercount']++;
@@ -265,8 +265,8 @@ function step4()
 			$viewed = trim($viewed, '.');
 			$tmp = preg_split('#\.+#', $viewed);
 			$viewed = implode(',', $tmp);
-			
-			
+
+
 			$realm = $row['user_realm'];
 			$realm - str_replace('USERREALM', '', $realm);
 			$realm = trim($realm, '-.');
@@ -284,7 +284,7 @@ function step4()
 				$ue->user_extended_setvalue($userId, 'plugin_forum_viewed', mysql_real_escape_string($viewed));
 				$result['viewcount']++;
 			}
-			
+
 			if(is_array($trackList) && count($trackList))
 			{
 				foreach($trackList as $threadId)
@@ -298,14 +298,14 @@ function step4()
 						$tmp['track_thread'] = $threadId;
 						$tmp['_FIELD_TYPES']['track_userid'] = 'int';
 						$tmp['_FIELD_TYPES']['track_thread'] = 'int';
-						
-						$e107->sql->db_Insert('forum_track', $tmp); 
+
+						$e107->sql->db_Insert('forum_track', $tmp);
 					}
 				}
 			}
 		}
 	}
-	
+
 	$text .= "
 	User data move results:<br />
 	Number of users processed: {$result['usercount']} <br />
@@ -318,7 +318,7 @@ function step4()
 	";
 
 	$e107->ns->tablerender($stepCaption, $text);
-	
+
 }
 
 function step5()
@@ -353,7 +353,7 @@ function step5()
 	$ftypes['_FIELD_TYPES']['forum_threadclass'] = 'int';
 
 	$counts = array('parens' => 0, 'forums' => 0, 'subs' => 0);
-	
+
 	if($e107->sql->db_Select('forum'))
 	{
 		$forumList = $e107->sql->db_getList();
@@ -362,7 +362,7 @@ function step5()
 			if($forum['forum_parent'] == 0)
 			{
 				$counts['parents']++;
-			} 
+			}
 			elseif($forum['forum_sub'] != 0)
 			{
 				$counts['subs']++;
@@ -371,14 +371,14 @@ function step5()
 			{
 				$counts['forums']++;
 			}
-				
+
 			$tmp = $forum;
 			$tmp['forum_threadclass'] = $tmp['forum_postclass'];
 			$tmp['forum_options'] = '_NULL_';
 			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
 			$e107->sql->db_Insert('forum_new', $tmp);
 		}
-		
+
 		$text = "
 		Forum data move results:<br />
 		Number of forum parents processed: {$counts['parents']} <br />
@@ -390,20 +390,20 @@ function step5()
 		$result = $e107->sql->db_Select_gen('RENAME TABLE `#forum`  TO `#forum_old` ');
 		$text .= "Rename forum to forum_old -> ".($result ? 'Passed' : 'Failed!');
 		$text .= '<br />';
-		
+
 		$result = $e107->sql->db_Select_gen('RENAME TABLE `#forum_new`  TO `#forum` ');
 		$text .= "Rename forum_new to forum -> ".($result ? 'Passed' : 'Failed!');
 		$text .= '<br />';
-		
+
 		$text .= "
 		<br /><br />
 		<form method='post'>
 		<input class='button' type='submit' name='nextStep[6]' value='Proceed to step 6' />
 		</form>
 		";
-	
+
 		$e107->ns->tablerender($stepCaption, $text);
-		
+
 	}
 }
 
@@ -412,13 +412,13 @@ function step6()
 	global $f;
 	$e107 = e107::getInstance();
 	$stepCaption = 'Step 6: Thread and post data';
-	$threadLimit = 300;
+	$threadLimit = 5000;
 	$lastThread = varset($f->updateInfo['lastThread'], 0);
 
 	if(!isset($_POST['move_thread_data']))
 	{
 		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$lastThread}");
-		
+
 		$text = "
 		This step will copy all of your existing forum threads and posts into the new `forum_thread` and `forum_post` tables.<br /><br />
 		Depending on your forum size and speed of server, this could take some time.  This routine will attempt to do it in steps in order to
@@ -442,7 +442,7 @@ function step6()
 	}
 
 	$qry = "
-	SELECT thread_id FROM `#forum_t` 
+	SELECT thread_id FROM `#forum_t`
 	WHERE thread_parent = 0
 	AND thread_id > {$lastThread}
 	ORDER BY thread_id ASC
@@ -455,6 +455,7 @@ function step6()
 		$text = '';
 		foreach($threadList as $t)
 		{
+			set_time_limit(30);
 			$id = (int)$t['thread_id'];
 			$result = $f->migrateThread($id);
 			if($result === false)
@@ -483,23 +484,59 @@ function step6()
 			";
 			$e107->ns->tablerender($stepCaption, $text);
 		}
-		else
-		{
-			$text .= "
-			Thread migration is complete!!
-			<br /><br />
-			<form method='post'>
-			<input class='button' type='submit' name='nextStep[7]' value='Proceed to step 7' />
-			</form>
-			";
-		
+	}
+	else
+	{
+		$text .= "
+		Thread migration is complete!!
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='nextStep[7]' value='Proceed to step 7' />
+		</form>
+		";
 			$e107->ns->tablerender($stepCaption, $text);
-		}
-		
+	}
+
+}
 
 
-	}	
-	
+function step7()
+{
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 7: Calculate user post counts';
+	if(!isset($_POST['calculate_usercounts']))
+	{
+		$text = "
+		This step will calculate post count information for all users
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='calculate_usercounts' value='Proceed with post count calculation' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+
+	global $forum;
+	require_once(e_HANDLER.'user_extended_class.php');
+	$ue = new e107_user_extended;
+
+	$counts = $forum->getUserCounts();
+	foreach($counts as $uid => $count)
+	{
+		$ue->user_extended_setvalue($uid, 'user_plugin_forum_posts', $count, 'int');
+	}
+
+//	var_dump($counts);
+
+	$text .= "
+	Successfully recalculated forum posts for ".count($counts)." users.
+	<br /><br />
+	<form method='post'>
+	<input class='button' type='submit' name='nextStep[8]' value='Proceed to step 8' />
+	</form>
+	";
+	$e107->ns->tablerender($stepCaption, $text);
 }
 
 
@@ -520,7 +557,7 @@ class forumUpgrade
 		e_PLUGIN.'forum/attachments/',
 		e_PLUGIN.'forum/attachments/thumb'
 		);
-		
+
 		foreach($dirs as $dir)
 		{
 			if(!file_exists($dir))
@@ -563,14 +600,14 @@ class forumUpgrade
 		$qry = "UPDATE `#generic` Set gen_chardata = '{$info}' WHERE gen_type = 'forumUpgrade'";
 		$e107->sql->db_Select_gen($qry);
 	}
-	
+
 	function setNewVersion()
 	{
 		$e107 = e107::getInstance();
 		$e107->sql->db_Update('plugin',"plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
 		return "Forum Version updated to version: {$this->newVersion} <br />";
-	}	
-	
+	}
+
 	function migrateThread($threadId)
 	{
 		global $forum;
@@ -598,7 +635,7 @@ class forumUpgrade
 		}
 		return false;
 	}
-	
+
 	function addThread(&$post)
 	{
 		global $forum;
@@ -614,12 +651,20 @@ class forumUpgrade
 		$userInfo = $this->getUserInfo($post['thread_user']);
 		$thread['thread_user'] = $userInfo['user_id'];
 		$thread['thread_user_anon'] = $userInfo['anon_name'];
+		//  If thread marked as 'tracked by starter', we must convert to using forum_track table
+		if($thread['thread_active'] == 99 && $thread['thread_user'] > 0)
+		{
+			$forum->track('add', $thread['thread_user'], $thread['thread_id'], true);
+			$thread['thread_active'] = 1;
+		}
+
 		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
 		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent double entities
+
 		return $e107->sql->db_Insert('forum_thread', $thread);
 //		print_a($thread);
 	}
-	
+
 	function addPost(&$post)
 	{
 		global $forum;
@@ -636,13 +681,13 @@ class forumUpgrade
 		$newPost['post_user'] = $userInfo['user_id'];
 		$newPost['post_user_anon'] = $userInfo['anon_name'];
 		$newPost['post_ip'] = $userInfo['user_ip'];
-		
+
 		$newPost['_FIELD_TYPES'] = $forum->fieldTypes['forum_post'];
 		$newPost['_FIELD_TYPES']['post_entry'] = 'escape'; //use escape to prevent double entities
 //		print_a($newPost);
 		return $e107->sql->db_Insert('forum_post', $newPost);
 	}
-	
+
 	function getUserInfo(&$info)
 	{
 		$e107 = e107::getInstance();
@@ -652,7 +697,7 @@ class forumUpgrade
 		'user_ip' => '_NULL_',
 		'anon_name' => '_NULL_'
 		);
-		
+
 		if(count($tmp) == 2)
 		{
 			$id = (int)$tmp[0];
@@ -672,12 +717,19 @@ class forumUpgrade
 		}
 		else
 		{
-			$ret['anon_name'] = 'Unknown';
+			if(is_numeric($info) && $info > 0)
+			{
+				$ret['user_id'] = $info;
+			}
+			else
+			{
+				$ret['anon_name'] = 'Unknown';
+			}
 		}
 		return $ret;
 	}
-	
-	
+
+
 }
 
 
@@ -685,7 +737,7 @@ class forumUpgrade
 function forum_update_adminmenu()
 {
 		global $currentStep;
-		
+
 		$var[1]['text'] = '1 - Permissions';
 		$var[1]['link'] = '#';
 
@@ -713,11 +765,8 @@ function forum_update_adminmenu()
 		$var[9]['text'] = '9 - Migrate any attachments';
 		$var[9]['link'] = '#';
 
-		$var[10]['text'] = '10 - Migrate any attachments';
+		$var[10]['text'] = '10 - Delete old forum data';
 		$var[10]['link'] = '#';
-
-		$var[11]['text'] = '11 - Delete old forum data';
-		$var[11]['link'] = '#';
 
 
 		for($i=1; $i < $currentStep; $i++)

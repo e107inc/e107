@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
- * $Revision: 1.33 $
- * $Date: 2008-12-20 23:59:00 $
+ * $Revision: 1.34 $
+ * $Date: 2008-12-23 20:48:24 $
  * $Author: mcfly_e107 $
  *
 */
@@ -118,9 +118,9 @@ class e107forum
 		$e107 = e107::getInstance();
 		if(!$this->userViewed)
 		{
-			if(isset($e107->currentUser['user_plugin_forum_views']))
+			if(isset($e107->currentUser['user_plugin_forum_viewed']))
 			{
-				$this->userViewed = explode('.', $e107->currentUser['user_plugin_forum_viewed']);
+				$this->userViewed = explode(',', $e107->currentUser['user_plugin_forum_viewed']);
 			}
 		}
 		return (is_array($this->userViewed) && in_array($threadId, $this->userViewed));
@@ -549,7 +549,7 @@ class e107forum
 			$extra = " AND thread_forum_id IN($forumList)";
 		}
 		$qry = 'thread_lastpost > '.USERLV.$extra;
-		
+
 		if ($e107->sql->db_Select('forum_thread', 'thread_id', $qry))
 		{
 			while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
@@ -613,7 +613,7 @@ class e107forum
 
 	function forumGetForumList()
 	{
-		$e107 = e107::getInstance(); 
+		$e107 = e107::getInstance();
 		$qry = '
 		SELECT f.*, u.user_name FROM `#forum` AS f
 		LEFT JOIN `#user` AS u ON f.forum_lastpost_user IS NOT NULL AND u.user_id = f.forum_lastpost_user
@@ -743,7 +743,7 @@ class e107forum
 			return false;
 		}
 	}
-	
+
 	function thread_user($post_info)
 	{
 		if($post_info['user_name'])
@@ -757,12 +757,12 @@ class e107forum
 		}
 	}
 
-	function track($which, $uid, $threadId)
+	function track($which, $uid, $threadId, $force=false)
 	{
 		$e107 = e107::getInstance();
 		global $pref;
 
-		if (!varsettrue($pref['forum_track'])) { return false; }
+		if (!varsettrue($pref['forum_track']) && !$force) { return false; }
 
 		$threadId = (int)$threadId;
 		$uid = (int)$uid;
@@ -951,15 +951,15 @@ class e107forum
 		AND f.forum_class IN (".USERCLASS_LIST.")
 		{$viewed}
 		ORDER BY ft.thread_datestamp DESC LIMIT 0, ".intval($count);
-		
+
 		$qry = "
 		SELECT t.*, u.user_name FROM `#forum_thread` AS t
 		LEFT JOIN `#user` AS u ON u.user_id = t.thread_lastuser
 		WHERE t.thread_lastpost > ".USERLV. "
 		{$viewed}
 		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
-		
-		
+
+
 		if($e107->sql->db_Select_gen($qry))
 		{
 			$ret = $e107->sql->db_getList();
@@ -1031,7 +1031,7 @@ class e107forum
 			}
 		}
 	}
-	
+
 	function getUserCounts()
 	{
 		global $sql;
@@ -1131,8 +1131,8 @@ class e107forum
 		}
 		$BACKLINK = $BREADCRUMB;
 	}
-	
-	
+
+
 	function threadDelete($threadId, $updateForumLastpost = true)
 	{
 		$e107 = e107::getInstance();
@@ -1140,7 +1140,7 @@ class e107forum
 		{
 			// delete poll if there is one
 			$e107->sql->db_Delete('poll', 'poll_datestamp='.$threadId);
-	
+
 			//decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
 			{
@@ -1149,7 +1149,7 @@ class e107forum
 					$e107->sql->db_Update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-'.$v.',0) WHERE user_id='.$k);
 				}
 			}
-	
+
 			// delete all posts
 			$qry = 'SELECT post_id FROM `#forum_post` WHERE post_thread = '.$threadId;
 			if($e107->sql->db_Select_gen($qry))
@@ -1164,16 +1164,16 @@ class e107forum
 					$this->postDelete($postId, false);
 				}
 			}
-	
+
 			// delete the thread itself
 			$e107->sql->db_Delete('forum_thread', 'thread_id='.$threadId);
-	
+
 			//Delete any thread tracking
 			$e107->sql->db_Delete('forum_track', 'track_thread='.$threadId);
-	
+
 			// update forum with correct thread/reply counts
 			$e107->sql->db_Update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
-	
+
 			if($updateForumLastpost)
 			{
 				// update lastpost info
@@ -1182,7 +1182,7 @@ class e107forum
 			return $threadInfo['thread_total_replies'];
 		}
 	}
-	
+
 	function postDelete($postId, $updateCounts = true)
 	{
 		$postId = (int)$postId;
@@ -1192,16 +1192,16 @@ class e107forum
 			echo 'NOT FOUND!'; return;
 		}
 		$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
-	
+
 		//delete attachments if they exist
 		if($row['post_attachments'])
 		{
 			$this->postDeleteAttachments('post', $postId);
 		}
-	
+
 		// delete post
 		$e107->sql->db_Delete('forum_post', 'post_id='.$postId);
-	
+
 		if($updateCounts)
 		{
 			//decrement user post counts
@@ -1212,19 +1212,19 @@ class e107forum
 
 			// update thread with correct reply counts
 			$e107->sql->db_Update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$row['post_thread']);
-		
+
 			// update forum with correct thread/reply counts
 			$e107->sql->db_Update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$row['post_forum']);
-		
+
 			// update thread lastpost info
 			$this->forumUpdateLastpost('thread', $row['post_thread']);
-		
+
 			// update forum lastpost info
 			$this->forumUpdateLastpost('forum', $row['post_forum']);
 		}
 		return $threadInfo['thread_total_replies'];
 	}
-	
+
 }
 
 
