@@ -15,6 +15,8 @@ define("LDAPLAN_13", 'Update settings');
 define('LDAPLAN_14', 'OU for AD (e.g. ou=itdept)');
 
 
+define('SHOW_COPY_HELP', TRUE);
+define('SHOW_CONVERSION_HELP', TRUE);
 define('LAN_AUTHENTICATE_HELP','This method can be used to authenticate against most LDAP servers, including Novell\'s eDirectory and Microsoft\'s Active Directory. Refer to the wiki for further information.');
 
 

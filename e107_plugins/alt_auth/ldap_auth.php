@@ -11,12 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_auth.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-09 20:40:54 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-23 20:31:30 $
 |     $Author: e107steved $
-
-To do:
-	1. Sort out a method of just checking the connection on login (needed for test)
 +----------------------------------------------------------------------------+
 */
 
@@ -37,10 +34,12 @@ class auth_login
 	var $Available;
 	var $filter;
 	var $copyAttribs; // Any attributes which are to be copied on successful login
+	var $copyMethods;
 
 	function auth_login()
 	{
 		$this->copyAttribs = array();
+		$this->copyMethods = array();
 		$sql = new db;
 		$sql->db_Select("alt_auth", "*", "auth_type = 'ldap' ");
 		while ($row = $sql->db_Fetch())
@@ -48,15 +47,18 @@ class auth_login
 			$ldap[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
 			if ((strpos($row['auth_parmname'], 'ldap_xf_') === 0) && $ldap[$row['auth_parmname']]) // Attribute to copy on successful login
 			{
-//				$this->copyAttribs[$ldap[$row['auth_parmname']]] = substr($row['auth_parmname'], strlen('ldap_xf_')); // Key = LDAP attribute. Value = e107 field name
 				$this->copyAttribs[substr($row['auth_parmname'], strlen('ldap_xf_'))] = $ldap[$row['auth_parmname']]; // Key = LDAP attribute. Value = e107 field name
-				unset($row['auth_parmname']);
 			}
+			elseif ((strpos($row['auth_parmname'], 'ldap_pm_') === 0) && $ldap[$row['auth_parmname']] && ($ldap[$row['auth_parmname']] != 'none')) // Method to use to copy parameter
+			{	// Any fields with non-null 'copy' methods
+				$this->copyMethods[substr($row['auth_parmname'], strlen('ldap_pm_'))] = $ldap[$row['auth_parmname']]; // Key = e107 field name. Value = copy method
+			}
+			unset($row['auth_parmname']);
 		}
 		$this->server = explode(",", $ldap['ldap_server']);
 		$this->serverType = $ldap['ldap_servertype'];
 		$this->dn = $ldap['ldap_basedn'];
-		$this->ou = $ldap['ldap_ou']; // added by Father Barry Keal
+		$this->ou = $ldap['ldap_ou'];
 		$this->usr = $ldap['ldap_user'];
 		$this->pwd = $ldap['ldap_passwd'];
 		$this->ldapVersion = $ldap['ldap_version'];
@@ -218,11 +220,9 @@ class auth_login
 						{
 							foreach ($tempKeys as $tk)		// Single LDAP attribute may be mapped to several fields
 							{
-								$newvals[$tk] = $this->translate($tlv[0]); // Just grab the first value
+//								$newvals[$tk] = $this->translate($tlv[0]); // Just grab the first value
+								$newvals[$tk] = $tlv[0]; // Just grab the first value
 							}
-							// echo $j.":Key: {$k} (Values: {$tlv['count']})";
-							// for ($i = 0; $i < $tlv['count']; $i++) { echo '  '.$tlv[$i]; }
-							// echo "<br />";
 						}
 						else
 						{
@@ -268,18 +268,6 @@ class auth_login
 			// return error code as if it never connected, maybe change that in the future
 			return AUTH_NOCONNECT;
 		}
-	}
-
-	// Function to decode some special values
-	function translate($word)
-	{
-		global $tp;
-		switch ($tp->uStrToUpper($word))
-		{
-			case 'TRUE' : return TRUE;
-			case 'FALSE' : return FALSE;
-		}
-		return $word;
 	}
 }
 
