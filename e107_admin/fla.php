@@ -1,23 +1,21 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-11-29 13:24:17 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Manage/View failed login attempts
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-23 16:25:06 $
+ * $Author: secretr $
+ *
 */
 require_once("../class2.php");
-if (!getperms("4")) 
+if (!getperms("4"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -25,6 +23,12 @@ if (!getperms("4"))
 
 $e_sub_cat = 'failed_login';
 require_once("auth.php");
+
+require_once(e_HANDLER."form_handler.php");
+$frm = new e_form();
+
+require_once(e_HANDLER."message_handler.php");
+$emessage = &eMessage::getInstance();
 
 $tmp = (e_QUERY) ? explode(".", e_QUERY) : "";
 $from = intval(varset($tmp[0], 0));
@@ -59,7 +63,9 @@ function deleteBan($banID, $banIP = '')
 	return TRUE;
 }
 
-
+/*
+ * FIXME - refine messages (strange messages on delete all & reload)
+ */
 if(isset($_POST['delbanSubmit']))
 {
 	$message = '';
@@ -67,140 +73,173 @@ if(isset($_POST['delbanSubmit']))
 	$spacer = '';
 	foreach($_POST['fladelete'] as $delete)
 	{
-	  $delcount ++;
-	  $sql -> db_Delete("generic", "gen_id='{$delete}' ");
+		$delcount++;
+		$sql->db_Delete("generic", "gen_id='{$delete}' ");
 	}
 	if ($delcount)
 	{
-	  $message .= FLALAN_3.": ".$delcount;
-	  $spacer = '<br />';
+		$emessage->add(FLALAN_3.": ".$delcount, E_MESSAGE_SUCCESS);
 	}
 
 	$bancount = 0;
 	foreach($_POST['flaban'] as $ban)
 	{
-	  if($sql -> db_Select("generic", "*", "gen_id={$ban}"))
-	  {
-		$at = $sql -> db_Fetch();
-		if (!$e107->add_ban(4,FLALAN_4,$at['gen_ip'],ADMINID))
-		{  // IP on whitelist (although possibly we shouldn't get to this stage, but check anyway
-		  $message .= $spacer.str_replace(FLALAN_18,'--IP--',$at['gen_ip']);
-		  $spacer = '<br />';
+		if($sql->db_Select("generic", "*", "gen_id={$ban}"))
+		{
+			$at = $sql->db_Fetch();
+			if (!$e107->add_ban(4, FLALAN_4, $at['gen_ip'], ADMINID))
+			{  // IP on whitelist (although possibly we shouldn't get to this stage, but check anyway
+				$emessage->add(str_replace(FLALAN_18,'--IP--',$at['gen_ip']), E_MESSAGE_WARNING);
+			}
+			else $bancount++;
+			$banlist_ip = $at['gen_ip'];
+			//XXX - why inserting it twice?
+			//$sql->db_Insert("banlist", "'$banlist_ip', '".ADMINID."', '".FLALAN_4."' ");
+			$sql->db_Delete("generic", "gen_id='{$ban}' ");
 		}
-//		$banlist_ip = $at['gen_ip'];
-//			$sql->db_Insert("banlist", "'$banlist_ip', '".ADMINID."', '".FLALAN_4."' ");
-		$sql -> db_Delete("generic", "gen_id='{$ban}' ");
-		$bancount ++;
-	  }
 	}
-	$message .= $spacer.FLALAN_5.": ".$bancount;
+	$emessage->add(FLALAN_5.": ".$bancount, $bancount ? E_MESSAGE_SUCCESS : E_MESSAGE_INFO);
 }
 
 
 if(e_QUERY == "dabl")
 {
-	$sql -> db_Select("generic", 'gen_ip,gen_id',"gen_type='auto_banned' ");
+	$sql->db_Select("generic", 'gen_ip,gen_id',"gen_type='auto_banned' ");
 	while ($row = $sql->db_Fetch())
 	{
 		if (deleteBan($row['gen_id'],$row['gen_ip']))
 		{
-			$delcount ++;
+			$delcount++;
 		}
 	}
-	$message = FLALAN_17;
+	//XXX - add delcount to the message
+	$emessage->add(FLALAN_17, E_MESSAGE_SUCCESS);
 }
 
 
 // Now display any outstanding auto-banned IP addresses
-if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC "))
+if($sql->db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC "))
 {
-	$abArray = $sql -> db_getList();
+	$abArray = $sql->db_getList();
 	$message = FLALAN_15;
 	foreach($abArray as $ab)
 	{
 		$message .= " - ".$ab['gen_ip'];
 	}
 
-	$message .= "<div style='text-align: right;'>( <a href='".e_SELF."?dabl'>".FLALAN_16."</a> )</div>";
+	$message .= "<div class='right'>( <a href='".e_SELF."?dabl'>".FLALAN_16."</a> )</div>";
+	$emessage->add($message);
 
-}
-
-if (isset($message)) 
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $gen = new convert;
 $fla_total = $sql->db_Count("generic", "(*)", "WHERE gen_type='failed_login'");
-if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT {$from},{$amount}"))
+if(!$sql->db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT {$from},{$amount}"))
 {
-	$text = "<div style='text-align: center;'>".FLALAN_2."</div>";
+	$text = $emessage->render()."<div class='center'>".FLALAN_2."</div>";
 }
 else
 {
 
-	$faArray = $sql -> db_getList('ALL', FALSE, FALSE);
+	$faArray = $sql->db_getList('ALL', FALSE, FALSE);
 
 	$text = "
-	<form method='post' action='".e_SELF."' id='flaform' >
-	<table class='fborder' style='width:99%;'>
-	<tr>
-	<td style='width: 20%;' class='forumheader'>".FLALAN_6."</td>
-	<td style='width: 50%;' class='forumheader'>".FLALAN_7."</td>
-	<td style='width: 20%;' class='forumheader'>".FLALAN_8."</td>
-	<td style='width: 10%; text-align: center;' class='forumheader'>".FLALAN_9."</td>
-	</tr>
+		<form method='post' action='".e_SELF."' id='flaform' >
+			<fieldset id='core-fla'>
+				<legend class='e-hideme'>".FLALAN_1."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+					<colgroup span='5'>
+						<col style='width: 20%'></col>
+						<col style='width: 40%'></col>
+						<col style='width: 20%'></col>
+						<col style='width: 10%'></col>
+						<col style='width: 10%'></col>
+					</colgroup>
+					<thead>
+						<tr>
+							<th>".FLALAN_6."</th>
+							<th>".FLALAN_7."</th>
+							<th>".FLALAN_8."</th>
+							<th class='center last'>
+								".LAN_DELETE."<br/>
+								".$frm->checkbox('check_all_del', 'jstarget:fladelete', false, array('id'=>false,'class'=>'checkbox toggle-all'))."
+							</th>
+							<th class='center last'>
+								".LAN_BAN."<br/>
+								".$frm->checkbox('check_all_ban', 'jstarget:flaban', false, array('id'=>false,'class'=>'checkbox toggle-all'))."
+							</th>
+						</tr>
+					</thead>
+					<tbody>
 	";
 
 	foreach($faArray as $fa)
 	{
-		extract($fa);
+		extract($fa);//FIXME kill extract()
 
 		$host = $e107->get_host_name(getenv($gen_ip));
-		$text .= "<tr>
-		<td style='width: 20%;' class='forumheader3'>".$gen->convert_date($gen_datestamp, "forum")."</td>
-		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", htmlentities($gen_chardata, ENT_QUOTES, CHARSET))."</td>
-		<td style='width: 20%;' class='forumheader'>".$fa['gen_ip']."<br />{$host}</td>
-		<td style='width: 10%; text-align: left;' class='forumheader3'>
-		<input type='checkbox' name='fladelete[]' value='{$gen_id}' /> ".LAN_DELETE."<br />
-		<input type='checkbox' name='flaban[]' value='{$gen_id}' /> ".LAN_BAN."
-		</td>
-		</tr>
+		$text .= "
+						<tr>
+							<td>".$gen->convert_date($gen_datestamp, "forum")."</td>
+							<td>".str_replace(":::", "<br />", htmlentities($gen_chardata, ENT_QUOTES, CHARSET))."</td>
+							<td>".$e107->ipDecode($fa['gen_ip'])."<br />{$host}</td>
+							<td class='center middle autocheck e-pointer'>
+								".$frm->checkbox('fladelete[]', $gen_id)."
+							</td>
+							<td class='center middle autocheck e-pointer'>
+								".$frm->checkbox('flaban[]', $gen_id)."
+							</td>
+						</tr>
 		";
 	}
 
 	$text .= "
-	<tr>
-	<td colspan='4' class='forumheader' style='text-align: right;'>
-
-	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('flaform', true, 'fladelete[]'); return false;\">".FLALAN_11."</a> -
-	<a href='".e_SELF."' onclick=\"setCheckboxes('flaform', false, 'fladelete[]'); return false;\">".FLALAN_12."</a>
-	<br />
-	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('flaform', true, 'flaban[]'); return false;\">".FLALAN_13."</a> -
-	<a href='".e_SELF."' onclick=\"setCheckboxes('flaform', false, 'flaban[]'); return false;\">".FLALAN_14."</a>
-
-	</td>
-	</tr>
-
-	<tr>
-	<td colspan='4' class='forumheader' style='text-align: center;'><input class='button' type='submit' name='delbanSubmit' value='".FLALAN_10."' /></td>
-	</tr>
-	</table>
-	</form>
-    <div style='text-align:center'><br />
+					</tbody>
+				</table>
+				<div class='buttons-bar center'>
+					".$frm->admin_button('delbanSubmit', FLALAN_10, 'delete',FLALAN_10,'title=')."
+				</div>
+			</fieldset>
+		</form>
 	";
 
 	$parms = $fla_total.",".$amount.",".$from.",".e_SELF.'?'."[FROM].".$amount;
-	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	if ($nextprev) $text .= "<div class='nextprev-bar'>".$nextprev."</div>";
 
-    $text .= "</div>";
 
 
 
 }
 
-$ns->tablerender(FLALAN_1, $text);
+$e107->ns->tablerender(FLALAN_1, $emessage->render().$text);
 
 require_once("footer.php");
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			//add required core lan - delete confirm message
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
+			if(typeof e107Admin == 'undefined') var e107Admin = {}
 
+			/**
+			 * OnLoad Init Control
+			 */
+			e107Admin.initRules = {
+				'Helper': true,
+				'AdminMenu': false
+			}
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
+}
 ?>
