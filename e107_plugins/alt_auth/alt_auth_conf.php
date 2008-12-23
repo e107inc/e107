@@ -11,14 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_conf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-09 20:40:54 $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-23 20:31:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
 require_once('../../class2.php');
-if(!getperms("P")){header('location:'.e_BASE.'index.php'); exit; }
+if(!getperms("P") || !plugInstalled('alt_auth'))
+{
+	header('location:'.e_BASE.'index.php'); 
+	exit(); 
+}
 require_once(e_HANDLER.'form_handler.php');
 require_once(e_ADMIN.'auth.php');
 include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/ldap_conf.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-09 20:40:54 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-23 20:31:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -58,6 +58,7 @@ while($row = $sql->db_Fetch())
 {
   $ldap[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));		// Encoding is new for 0.8
 }
+//print_a($ldap);
 
 $current_filter = "(&(cn=[USERNAME]){$ldap['ldap_edirfilter']})";
 

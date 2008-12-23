@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/languages/English/admin_alt_auth.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-09 20:40:54 $
+|     $Revision: 1.2 $
+|     $Date: 2008-12-23 20:31:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -88,7 +88,13 @@ define('LAN_ALT_66', 'This plugin allows for alternate authentication methods.')
 define('LAN_ALT_67', 'Configure Alt auth');
 define('LAN_ALT_68', 'Alt auth service is now set up.  You will now need to configure your preferred method.');
 define('LAN_ALT_69', '');
-define('LAN_ALT_70', '');
+define('LAN_ALT_70', 'None');
+define('LAN_ALT_71', 'TRUE/FALSE');
+define('LAN_ALT_72', 'Upper case');
+define('LAN_ALT_73', 'Lower case');
+define('LAN_ALT_74', 'Upper first');
+define('LAN_ALT_75', 'Upper words');
+
 
 define('LAN_ALT_FALLBACK', 'Use e107 user table');
 define('LAN_ALT_FAIL', 'Failed login');
@@ -99,8 +105,19 @@ define('LAN_ALT_AUTH_HELP', 'These are the settings common to all authentication
 	The Extended User Field selection determines which <i>may</i> be added/updated when a user logs in - further configuration is required
 	for the specific authentication method.');
 define('LAN_ALT_VALIDATE_HELP', 'You can check the settings by using the \'Test Database Access\' section to try and validate a user - this uses exactly 
-	the same process as when a user tries to log in, and confirms whether your settings are correct
+	the same process as when a user tries to log in, and confirms whether your settings are correct.<br />
+	If you have configured some parameters to be copied to the user table on successful login, these are also listed.
 	');
-
+define('LAN_ALT_COPY_HELP', 'You can select fields to copy from the remote database into the user database by entering the appropriate names.<br /><br />
+	');
+define('LAN_ALT_CONVERSION_HELP', 'For some fields, the drop-down box to the right of the field entry box selects a conversion which may be applied to the value
+	read from the remote database; if \'none\' is selected, the value is copied as received. Conversions are:<br />
+	<b>TRUE/FALSE</b> - the words \'TRUE\' and \'FALSE\' (and their lower/mixed case equivalents) are converted to the Booleans 1 and zero.<br />
+	<b>Upper case</b> - All letters are converted to upper case<br />
+	<b>Lower case</b> - All letters are converted to lower case<br />
+	<b>Upper first</b> - the first character is converted to upper case<br />
+	<b>Upper words</b> - the first letter of each word is converted to upper case<br />
+	<br />
+	<br />');
 
 ?>

@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-09 20:40:54 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-23 20:31:30 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define('AA_DEBUG',FALSE);
+define('AA_DEBUG1',FALSE);
 
 class alt_login
 {
@@ -51,6 +52,19 @@ class alt_login
 			$uh = new UserHandler;
 			$db_vals = array('user_password' => $aa_sql->escape($uh->HashPassword($userpass,$username)));
 			$xFields = array();					// Possible extended user fields
+			
+			// See if any of the fields need processing before save
+			if (isset($_login->copyMethods) && count($_login->copyMethods))
+			{
+				foreach ($newvals as $k => $v)
+				{
+					if (isset($_login->copyMethods[$k]))
+					{
+						$newvals[$k] = $this->translate($_login->copyMethods[$k], $v);
+						if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth convert",$k.': '.$v.'=>'.$newvals[$k],FALSE,LOG_TO_ROLLING);
+					}
+				}
+			}
 			foreach ($newvals as $k => $v)
 			{
 				if (strpos($k,'x_') === 0)
@@ -66,8 +80,7 @@ class alt_login
 			}
 			if (count($xFields))
 			{
-//				$qry = "SELECT u.*, ue.* FROM `#user` AS u
-				$qry = "SELECT u.user_id,u.".implode(',u.',array_keys($db_vals)).", ue.".implode(',ue.',array_keys($xFields))." FROM `#user` AS u
+				$qry = "SELECT u.user_id,u.".implode(',u.',array_keys($db_vals)).", ue.user_extended_id, ue.".implode(',ue.',array_keys($xFields))." FROM `#user` AS u
 						LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id
 						WHERE u.user_loginname='{$username}' ";
 				if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Query: {$qry}[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
@@ -76,8 +89,6 @@ class alt_login
 			{
 				$qry = "SELECT * FROM `#user` WHERE `user_loginname`='{$username}'";
 			}
-//			echo "Query: {$qry}<br />";
-//			if($aa_sql -> db_Select("user","*","user_loginname='{$username}' "))
 			if($aa_sql -> db_Select_gen($qry))
 			{ // Existing user - get current data, see if any changes
 				$row = $aa_sql->db_Fetch(MYSQL_ASSOC);
@@ -88,17 +99,19 @@ class alt_login
 				if (count($db_vals)) 
 				{
 					$aa_sql->db_UpdateArray('user',$db_vals," WHERE `user_id`=".$row['user_id']);
+					if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data update: ".print_r($db_vals,TRUE),FALSE,LOG_TO_ROLLING);
 				}
 				foreach ($xFields as $k => $v)
 				{
 					if ($row[$k] == $v) unset($xFields[$k]);
 				}
 				if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data read: ".print_r($row,TRUE)."[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
+				if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User xtnd read: ".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 				if (count($xFields))
 				{
 					if ($row['user_extended_id'])
 					{
-						if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Update existing extended record",FALSE,LOG_TO_ROLLING);
+						if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User xtnd update: ".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 						$aa_sql->db_UpdateArray('user_extended',$xFields," WHERE `user_extended_id`=".intval($row['user_id']));
 					}
 					else
@@ -154,5 +167,33 @@ class alt_login
 		}
 		return LOGIN_ABORT;			// catch-all just in case
 	}
+
+	
+	// Function to implement copy methods
+	function translate($method, $word)
+	{
+		global $tp;
+		switch ($method)
+		{
+			case 'bool1' :
+				switch ($tp->uStrToUpper($word))
+				{
+					case 'TRUE' : return TRUE;
+					case 'FALSE' : return FALSE;
+				}
+				return $word;
+			case 'ucase' :
+				return $tp->uStrToUpper($word);
+			case 'lcase' :
+				return $tp->uStrToLower($word);
+			case 'ucfirst' :
+				return ucfirst($word);						// TODO: Needs changing to utf-8 function
+			case 'ucwords' :
+				return ucwords($word);						// TODO: Needs changing to utf-8 function
+			case 'none' :
+				return $word;
+		}
+	}
+
 }
 ?>

@@ -26,6 +26,8 @@ define("IMPORTDB_LAN_8", 'E107 salted (option 0.8 on)');
 define("IMPORTDB_LAN_12", 'PHPBB2/PHPBB3 salted');
 
 
+define('SHOW_COPY_HELP', TRUE);
+define('SHOW_CONVERSION_HELP', TRUE);
 define('LAN_AUTHENTICATE_HELP','This authentication method is used to validate against a non-E107 database. The password must be stored in one of the supported formats.');
 
 

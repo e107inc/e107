@@ -1,5 +1,15 @@
 <?php
 
+
+
+/*
+TODO: 
+	1. Header
+	2. Support array of defaults for table
+*/
+
+if (!defined('e107_INIT')) { exit; }
+
 if (!is_object($euf))
 {
 	require_once(e_HANDLER.'user_extended_class.php');
@@ -30,11 +40,11 @@ function alt_auth_get_authlist()
 }
 
 
-
+/*
 // All user fields which might, just possibly, be transferred. The option name must be the corresponding field in the E107 user database, prefixed with 'xf_'
 $alt_auth_user_fields = array(
   'user_email' 		=> array('prompt' => LAN_ALT_12, 'optname' => 'xf_user_email', 'default' => 'user_email', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'mail'),
-  'user_hideemail' 	=> array('prompt' => LAN_ALT_13, 'optname' => 'xf_user_hideemail', 'default' => 'user_hideemail', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
+  'user_hideemail' 	=> array('prompt' => LAN_ALT_13, 'optname' => 'xf_user_hideemail', 'default' => 'user_hideemail', 'optional' =>  TRUE, 'otherdb' => TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => '', method => 'bool1'),
   'user_name' 		=> array('prompt' => LAN_ALT_14, 'optname' => 'xf_user_name', 'default' => 'user_name', 'optional' => TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
   'user_login'		=> array('prompt' => LAN_ALT_15, 'optname' => 'xf_user_login', 'default' => 'user_login', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'sn'),
   'user_customtitle'=> array('prompt' => LAN_ALT_16, 'optname' => 'xf_user_customtitle', 'default' => 'user_customtitle', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
@@ -47,62 +57,95 @@ $alt_auth_user_fields = array(
   'user_xup' 		=> array('prompt' => LAN_ALT_23, 'optname' => 'xf_user_xup', 'default' => 'user_xup', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE)
 );
 
+*/
+// All user fields which might, just possibly, be transferred. The array key is the corresponding field in the E107 user database; code prefixes it with 'xf_' to get the parameter
+// 'default' may be a single value to set the same for all connect methods, or an array to set different defaults.
+$alt_auth_user_fields = array(
+  'user_email' 		=> array('prompt' => LAN_ALT_12, 'default' => 'user_email', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'mail'),
+  'user_hideemail' 	=> array('prompt' => LAN_ALT_13, 'default' => 'user_hideemail', 'optional' =>  TRUE, 'otherdb' => TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => '', method => 'bool1'),
+  'user_name' 		=> array('prompt' => LAN_ALT_14, 'default' => 'user_name', 'optional' => TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
+  'user_login'		=> array('prompt' => LAN_ALT_15, 'default' => 'user_login', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'sn'),
+  'user_customtitle'=> array('prompt' => LAN_ALT_16, 'default' => 'user_customtitle', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
+  'user_signature' 	=> array('prompt' => LAN_ALT_17, 'default' => 'user_signature', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
+  'user_image' 		=> array('prompt' => LAN_ALT_18, 'default' => 'user_image', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
+  'user_sess' 		=> array('prompt' => LAN_ALT_19, 'default' => 'user_sess', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
+  'user_join' 		=> array('prompt' => LAN_ALT_20, 'default' => 'user_join', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
+  'user_ban'		=> array('prompt' => LAN_ALT_21, 'default' => 'user_ban', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
+  'user_class'		=> array('prompt' => LAN_ALT_22, 'default' => 'user_class', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
+  'user_xup' 		=> array('prompt' => LAN_ALT_23, 'default' => 'user_xup', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE)
+);
+
 
 // Returns a block of table rows with user DB fields and either checkboxes or entry boxes
 // $tableType is the prefix used, without the following underscore
+// $frm is the form object to use to create the text
+// $parm is the array of options for the current auth type as read from the DB
 function alt_auth_get_field_list($tableType, $frm, $parm, $asCheckboxes = FALSE)
 {
-  global $alt_auth_user_fields;
-  $ret = '';
-  foreach ($alt_auth_user_fields as $f => $v)
-  {
-    if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
+	global $alt_auth_user_fields;
+	$ret = '';
+	foreach ($alt_auth_user_fields as $f => $v)
 	{
-	  $ret .= "<tr><td class='forumheader3'>";
-	  if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
-	  $ret .= $v['prompt'].':';
-	  if (isset($v['help']))
-	  {
-		$ret .= "<br /><span class='smalltext'>".$v['help']."</span>";
-	  }
-	  $ret .= "</td><td class='forumheader3'>";
-	  $fieldname = $tableType.'_'.$v['optname'];
-	  $value = varset($v['default'],'');
-	  if (isset($v[$tableType.'_field'])) $value = $v[$tableType.'_field'];
-	  if (isset($parm[$fieldname])) $value = $parm[$fieldname];
-//	  echo "Field: {$fieldname} => {$value}<br />";
-	  if ($asCheckboxes)
-	  {
-		$ret .= $frm -> form_checkbox($fieldname, 1, $value);
-	  }
-	  else
-	  {
-		$ret .= $frm -> form_text($fieldname, 35, $value, 120);
-	  }
-	  $ret .= "</td></tr>\n";
+		if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
+		{
+			$ret .= "<tr><td class='forumheader3'>";
+			if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
+			$ret .= $v['prompt'].':';
+			if (isset($v['help']))
+			{
+				$ret .= "<br /><span class='smalltext'>".$v['help']."</span>";
+			}
+			$ret .= "</td><td class='forumheader3'>";
+//			$fieldname = $tableType.'_'.$v['optname'];
+			$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
+			$value = varset($v['default'],'');
+			if (is_array($value))
+			{
+				$value = varset($value[$tableType],'');
+			}
+			if (isset($v[$tableType.'_field'])) $value = $v[$tableType.'_field'];
+			if (isset($parm[$fieldname])) $value = $parm[$fieldname];
+//	  		echo "Field: {$fieldname} => {$value}<br />";
+			if ($asCheckboxes)
+			{
+				$ret .= $frm -> form_checkbox($fieldname, 1, $value);
+			}
+			else
+			{
+				$ret .= $frm -> form_text($fieldname, 35, $value, 120);
+				if (isset($v['method']) && $v['method'])
+				{
+					$fieldMethod = $tableType.'_pm_'.$f;			// Processing method ID code
+					$method = varset($parm[$fieldMethod],'');
+					$ret .= '&nbsp;&nbsp;'.alt_auth_processing($fieldMethod,$v['method'], $method);
+				}
+			}
+			$ret .= "</td></tr>\n";
+		}
 	}
-  }
-  return $ret;
+	return $ret;
 }
 
 
 // Returns a list of all the user-related fields allowed as an array, whhere the key is the field name
 function alt_auth_get_allowed_fields($tableType)
 {
-  global $alt_auth_user_fields;
-  $ret = array();
-  foreach ($alt_auth_user_fields as $f => $v)
-  {
-    if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
+	global $alt_auth_user_fields;
+	$ret = array();
+	foreach ($alt_auth_user_fields as $f => $v)
 	{
-	  $fieldname = $tableType.'_'.$v['optname'];
-	  $ret[$fieldname] = '1';
+		if (varsettrue($v['showAll']) || varsettrue($v[$tableType]))
+		{
+//	  $fieldname = $tableType.'_'.$v['optname'];
+			$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
+			$ret[$fieldname] = '1';
+		}
 	}
-  }
-  return $ret;
+	return $ret;
 }
 
 
+// Routine adds the extended user fields which may be involved into the table of field definitions, so that they're displayed
 function add_extended_fields()
 {
 	global $alt_auth_user_fields, $euf, $pref;
@@ -118,10 +161,11 @@ function add_extended_fields()
 		if (isset($xFields[$f]))
 		{
 			$alt_auth_user_fields['x_'.$f] = array('prompt' => varset($xFields[$f]['user_extended_struct_text'],'').' ('.$f.')', 
-													'optname' => 'xf_x_'.$f, 
 													'default' => varset($xFields[$f]['default'],''),
 													'optional' => TRUE,
-													'showAll' => TRUE );
+													'showAll' => TRUE,			// Show for all methods - in principle, its likely to be wanted for all
+													'method'  => '*' 			// Specify all convert methods - have little idea what may be around
+													);			
 		}
 	}
 	$fieldsAdded = TRUE;
@@ -139,6 +183,7 @@ $common_fields = array(
   'pwfield'=> array('fieldname' => 'password_field','size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_38, 'help' => ''),
   'salt'   => array('fieldname' => 'password_salt','size' => 35, 'max_size' => 120,  'prompt' => LAN_ALT_24, 'help' => LAN_ALT_25)
 );
+
 
 function alt_auth_get_db_fields($prefix, $frm, $parm, $fields = 'server|uname|pwd|db|table|ufield|pwfield')
 {
@@ -164,37 +209,37 @@ function alt_auth_get_db_fields($prefix, $frm, $parm, $fields = 'server|uname|pw
 // Write all the options to the DB. $prefix must NOT have trailing underscore
 function alt_auth_post_options($prefix)
 {
-  global $common_fields, $sql, $admin_log;
-  $lprefix = $prefix.'_';
+	global $common_fields, $sql, $admin_log;
+	$lprefix = $prefix.'_';
 
-  $user_fields = alt_auth_get_allowed_fields($prefix);		// Need this list in case checkboxes for parameters
-  foreach ($user_fields as $k => $v)
-  {
-    if (!isset($_POST[$k]))
+	$user_fields = alt_auth_get_allowed_fields($prefix);		// Need this list in case checkboxes for parameters
+	foreach ($user_fields as $k => $v)
 	{
-	  $_POST[$k] = '0';
+		if (!isset($_POST[$k]))
+		{
+			$_POST[$k] = '0';
+		}
 	}
-  }
 
 
-  // Now we can post everything
-  foreach($_POST as $k => $v)
-  {
-	if (strpos($k,$lprefix) === 0)
+	// Now we can post everything
+	foreach($_POST as $k => $v)
 	{
-	  $v = base64_encode(base64_encode($v));
-	  if($sql -> db_Select("alt_auth", "*", "auth_type='{$prefix}' AND auth_parmname='{$k}' "))
-	  {
-		$sql -> db_Update("alt_auth", "auth_parmval='{$v}' WHERE  auth_type='{$prefix}' AND auth_parmname='{$k}' ");
-	  }
-	  else
-	  {
-		$sql -> db_Insert("alt_auth", "'{$prefix}','{$k}','{$v}' ");
-	  }
-    }
-  }
-  $admin_log->log_event('AUTH_03',$prefix,E_LOG_INFORMATIVE,'');
-  return LAN_ALT_UPDATED;
+		if (strpos($k,$lprefix) === 0)
+		{
+			$v = base64_encode(base64_encode($v));
+			if($sql -> db_Select("alt_auth", "*", "auth_type='{$prefix}' AND auth_parmname='{$k}' "))
+			{
+				$sql -> db_Update("alt_auth", "auth_parmval='{$v}' WHERE  auth_type='{$prefix}' AND auth_parmname='{$k}' ");
+			}
+			else
+			{
+				$sql -> db_Insert("alt_auth", "'{$prefix}','{$k}','{$v}' ");
+			}
+		}
+	}
+	$admin_log->log_event('AUTH_03',$prefix,E_LOG_INFORMATIVE,'');
+	return LAN_ALT_UPDATED;
 }
 
 
@@ -284,6 +329,48 @@ function alt_auth_test_form($prefix,$frm)
   return $text;
 }
 
+
+
+//-----------------------------------------------
+//			VALUE COPY METHOD SELECTION
+//-----------------------------------------------
+
+$procListOpts = array(
+				'none' => LAN_ALT_70,
+				'bool1' => LAN_ALT_71,
+				'ucase' => LAN_ALT_72,
+				'lcase' => LAN_ALT_73,
+				'ucfirst' => LAN_ALT_74,
+				'ucwords' => LAN_ALT_75				
+				);
+
+// Return a 'select' box for available processing methods
+function alt_auth_processing($selName, $allowed='*', $curVal='')
+{
+	global $procListOpts;
+	if (($allowed == 'none') || ($allowed == '')) return '';
+	if ($allowed == '*')
+	{
+		$valid = $procListOpts;		// We just want all the array keys to exist!
+	}
+	else
+	{
+		$valid = array_flip(explode(',',$allowed));
+		$valid['none'] = '1';		// Make sure this key exists - value doesn't matter
+	}
+	$ret = "<select class='tbox' name='{$selName}' id='{$selName}'>\n";
+	foreach ($procListOpts as $k => $v)
+	{
+		if (isset($valid[$k]))
+		{
+			$s = ($curVal == $k) ? " selected='selected'" : '';
+			$ret .= "<option value='{$k}'{$s}>{$v}</option>\n";
+		}
+	}
+	$ret .= "</select>\n";
+//	$ret .= $selName.':'.$curVal;
+	return $ret;
+}
 
 
 function alt_auth_adminmenu()
