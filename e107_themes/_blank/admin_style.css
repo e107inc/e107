@@ -18,6 +18,7 @@
 .clear-l	{ clear: right }
 .clear-r	{ clear: left }
 .smalltext	{ font-size: 11px; }
+.nowrap 	{ white-space:nowrap; }
 
 /* Core Icons */
 img.icon		{ border: 0 }
@@ -119,6 +120,11 @@ input.radio { margin-right: 3px; }
 label { cursor: pointer; }
 .checkbox { margin-right: 5px; }
 
+
+.field-help { width: 280px; line-height: 1.4em; padding-top: 3px; color:#333333; font-size: 11px; }
+.label-note { font-style: italic; }
+.form-note { font-style: italic; }
+
 /* Related JS functionality - .autocheck together with .auto-toggle-area (see admin/image.php) */
 .auto-toggle-area { width: 280px; cursor: pointer; }
 	
@@ -143,8 +149,6 @@ label { cursor: pointer; }
 .adminform td.label { }
 .adminform td.control { }
 
-.field-help { width: 280px; line-height: 1.4em; padding-top: 3px; color:#333333; font-size: 11px; }
-.label-note { font-style: italic; }
 
 /* form used for content edit */
 .adminedit  { width:100%;  border:1px solid #ddd;}

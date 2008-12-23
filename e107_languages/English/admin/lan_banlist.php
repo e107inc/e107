@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_banlist.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-01-13 10:51:42 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-23 15:18:31 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("BANLAN_1", "Ban removed.");
@@ -55,7 +55,7 @@ define('BANLAN_44','Use expiry date/time from import');
 define('BANLAN_45','Import');
 define('BANLAN_46','Import File');
 define('BANLAN_47','File upload error');
-define('BANLAN_48','Error importing file');
+//define('BANLAN_48','Error importing file');
 define('BANLAN_49','CSV import: Unbalanced quotes in line ');
 define('BANLAN_50','CSV import: Error writing banlist record at line ');
 define('BANLAN_51','CSV import: Success, --NUM-- lines imported from file ');
@@ -84,12 +84,12 @@ define('BANLAN_73','This will restart the ban period if a banned user accesses t
 define('BANLAN_74','Banlist Maintenance');
 define('BANLAN_75','Remove expired bans from list');
 define('BANLAN_76','Execute');
-define('BANLAN_77','');
+define('BANLAN_77','Messages/Ban Periods');
 define('BANLAN_78','');
 define('BANLAN_79','');
 define('BANLAN_80','');
 
-// Ban types - block reserved 100-109 
+// Ban types - block reserved 100-109
 define('BANLAN_100', 'Unknown');
 define('BANLAN_101','Manual');
 define('BANLAN_102','Flood');
@@ -102,7 +102,7 @@ define('BANLAN_108', 'Unknown');
 define('BANLAN_109', 'Old');
 
 // Detailed explanations for ban types - block reserved 110-119
-define('BANLAN_110', 'Most likely a ban that was imposed before E107 was upgraded to 0.8');
+define('BANLAN_110', 'Most likely a ban that was imposed before e107 was upgraded to 0.8');
 define('BANLAN_111', 'Entered by an admin');
 define('BANLAN_112', 'Attempts to update the site too fast');
 define('BANLAN_113', 'Attempts to access the site too frequently from the same address');
