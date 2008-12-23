@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.25 $
-|   $Date: 2008-12-20 10:39:14 $
+|   $Revision: 1.26 $
+|   $Date: 2008-12-23 15:18:31 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -596,7 +596,7 @@ function admin_update($update, $type = 'update', $success = false, $failed = fal
 	$emessage = &eMessage::getInstance();
 
 	if (($type == 'update' && $update) || ($type == 'insert' && $update !== false)) {
-		$emessage->add(($success ? $success : LAN_UPDATED), E_MESSAGE_SUCCESS);
+		$emessage->add(($success ? $success : ($type == 'update' ? LAN_UPDATED : LAN_CREATED)), E_MESSAGE_SUCCESS);
 	}
 	elseif ($type == 'delete' && $update)
 	{
@@ -615,7 +615,19 @@ function admin_update($update, $type = 'update', $success = false, $failed = fal
 	}
 	else
 	{
-		$text = ($failed ? $failed : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+		switch ($type) {
+			case 'insert':
+				$msg = LAN_CREATED_FAILED;
+			break;
+			case 'delete':
+				$msg = LAN_DELETED_FAILED;
+			break;
+			default:
+				$msg = LAN_UPDATED_FAILED;
+			break;
+		}
+
+		$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
 		$emessage->add($text, E_MESSAGE_ERROR);
 	}
 

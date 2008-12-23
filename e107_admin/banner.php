@@ -9,8 +9,8 @@
  * Banner Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-22 16:50:07 $
+ * $Revision: 1.9 $
+ * $Date: 2008-12-23 15:18:31 $
  * $Author: secretr $
  *
 */
@@ -26,7 +26,6 @@ $e_sub_cat = 'banner';
 
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
-$rs = new form;
 $frm = new e_form();
 
 require_once(e_HANDLER."userclass_class.php");
@@ -244,7 +243,7 @@ if (!$action) {
 						<tr>
 							<td class='center'>".$banner_row['banner_id']."</td>
 							<td class='e-pointer' onclick=\"e107Helper.toggle('banner-infocell-{$banner_row['banner_id']}')\">
-								<a href='#banner-infocell-{$banner_row['banner_id']}' class='e-expandit f-right' title='".BNRLAN_65."'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
+								<a href='#banner-infocell-{$banner_row['banner_id']}' class='action e-expandit f-right' title='".BNRLAN_65."'><img class='action info S16' src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
 								".($banner_row['banner_clientname'] ? $banner_row['banner_clientname'] : BNRLAN_66)."
 								<div class='e-hideme clear' id='banner-infocell-{$banner_row['banner_id']}'>
 									<div class='indent'>
