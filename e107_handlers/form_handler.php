@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-19 14:01:07 $
+ * $Revision: 1.12 $
+ * $Date: 2008-12-23 08:28:42 $
  * $Author: secretr $
  *
 */
@@ -82,7 +82,7 @@ class e_form
 	{
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
-		return "<input type='text' name='{$name}'".$this->get_attributes($options, $name)." />";
+		return "<input type='file' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
 
 
