@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
- * $Revision: 1.9 $
- * $Date: 2008-12-23 20:48:24 $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-24 04:51:27 $
  * $Author: mcfly_e107 $
  *
 */
@@ -507,7 +507,7 @@ function step7()
 	if(!isset($_POST['calculate_usercounts']))
 	{
 		$text = "
-		This step will calculate post count information for all users
+		This step will calculate post count information for all users, as well as recount all for thread and reply counts.
 		<br /><br />
 		<form method='post'>
 		<input class='button' type='submit' name='calculate_usercounts' value='Proceed with post count calculation' />
@@ -526,6 +526,8 @@ function step7()
 	{
 		$ue->user_extended_setvalue($uid, 'user_plugin_forum_posts', $count, 'int');
 	}
+	$forum->forumUpdateCounts('all', true);
+
 
 //	var_dump($counts);
 
@@ -534,6 +536,211 @@ function step7()
 	<br /><br />
 	<form method='post'>
 	<input class='button' type='submit' name='nextStep[8]' value='Proceed to step 8' />
+	</form>
+	";
+	$e107->ns->tablerender($stepCaption, $text);
+}
+
+function step8()
+{
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 8: Calculate last post information';
+	if(!isset($_POST['calculate_lastpost']))
+	{
+		$text = "
+		This step will recalculate all thread and forum lastpost information
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='calculate_lastpost' value='Proceed with lastpost calculation' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+
+	global $forum;
+
+	$forum->forumUpdateLastpost('forum', 'all', true);
+
+
+//	$forum->forumUpdateLastpost('thread', 84867);
+
+
+	$text .= "
+	Successfully recalculated lastpost information for all forums and threads.
+	<br /><br />
+	<form method='post'>
+	<input class='button' type='submit' name='nextStep[9]' value='Proceed to step 9' />
+	</form>
+	";
+	$e107->ns->tablerender($stepCaption, $text);
+}
+
+function step9()
+{
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 9: Migrate poll information';
+	if(!isset($_POST['migrate_polls']))
+	{
+		$text = "
+		This step will recalculate all poll information that has been entered in the forums.
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='migrate_polls' value='Proceed with poll migration' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+
+	$qry = "
+	SELECT t.thread_id, p.poll_id FROM `#polls` AS p
+	LEFT JOIN `#forum_thread` AS t ON t.thread_id =  p.poll_datestamp
+	WHERE t.thread_id IS NOT NULL
+	";
+	if($e107->sql->db_Select_gen($qry))
+	{
+		while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+		{
+			$threadList[] = $row['thread_id'];
+		}
+		foreach($threadList as $threadId)
+		{
+			if($e107->sql->db_Select('forum_thread', 'thread_options', 'thread_id = '.$threadId, 'default', true))
+			{
+				$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
+				if($row['thread_options'])
+				{
+					$opts = unserialize($row['thread_options']);
+					$opts['poll'] = 1;
+				}
+				else
+				{
+					$opts = array('poll' => 1);
+				}
+				$tmp = array();
+				$tmp['thread_options'] = serialize($opts);
+				$tmp['WHERE'] = 'thread_id = '.$threadId;
+				$tmp['_FIELD_TYPES']['thread_options'] = 'escape';
+				$e107->sql->db_Update('forum_thread', $tmp);
+			}
+		}
+	}
+	else
+	{
+		$text = 'No threads found! <br />';
+	}
+
+	$text .= "
+	Successfully migrated forum poll information for ".count($threadList)." thread poll(s).
+	<br /><br />
+	<form method='post'>
+	<input class='button' type='submit' name='nextStep[10]' value='Proceed to step 10' />
+	</form>
+	";
+	$e107->ns->tablerender($stepCaption, $text);
+}
+
+function step10()
+{
+	$e107 = e107::getInstance();
+	$stepCaption = 'Step 9: Migrate forum attachments';
+	if(!isset($_POST['migrate_attachments']))
+	{
+		$text = "
+		This step will migrate all forum attachment information.<br />
+		All files will be moved from the e107_files/public directory into the e107_plugins/forum/attachment directory and related posts will be updated accordingly.
+		<br /><br />
+		<form method='post'>
+		<input class='button' type='submit' name='migrate_attachments' value='Proceed with attachment migration' />
+		</form>
+		";
+		$e107->ns->tablerender($stepCaption, $text);
+		return;
+	}
+
+	$qry = "
+	SELECT thread_id, thread_thread FROM `#forum_t`
+	WHERE thread_thread REGEXP '_[[:digit:]]+_FT'
+	";
+	if($e107->sql->db_Select_gen($qry))
+	{
+		while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+		{
+			$postList[] = $row;
+		}
+		$attachments = array();
+		foreach($postList as $post)
+		{
+			//<div class=&#039;spacer&#039;>[img:width=604&height=453]{e_FILE}public/1229562306_1_FT0_julia.jpg[/img]</div>
+			//Check for attached full-size images
+			if(preg_match_all('#<div.*?>\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]</div>#ms', $post['thread_thread'], $matches, PREG_SET_ORDER))
+			{
+				foreach($matches as $match)
+				{
+//					print_a($matches);
+					$att = array();
+					$att['thread_id'] = $post['thread_id'];
+					$att['type'] = 'img';
+					$att['html'] = $match[0];
+					$att['name'] = $match[1];
+					$att['thumb'] = '';
+					$attachments[] = $att;
+				}
+			}
+
+			//[link={e_FILE}public/1230091080_1_FT0_julia.jpg][img:width=60&height=45]{e_FILE}public/1230091080_1_FT0_julia_.jpg[/img][/link][br]
+			//Check for images with thumbnails linking to full size
+			if(preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms', $post['thread_thread'], $matches, PREG_SET_ORDER))
+			{
+				foreach($matches as $match)
+				{
+//					print_a($matches);
+					$att = array();
+					$att['thread_id'] = $post['thread_id'];
+					$att['type'] = 'img';
+					$att['html'] = $match[0];
+					$att['name'] = $match[1];
+					$att['thumb'] = $match[2];
+					$attachments[] = $att;
+				}
+			}
+
+			//[file={e_FILE}public/1230090820_1_FT0_julia.zip]julia.zip[/file]
+			//Check for attached file (non-images)
+			if(preg_match_all('#\[file=({e_FILE}.*?)\](.*?)\[/file\]#ms', $post['thread_thread'], $matches, PREG_SET_ORDER))
+			{
+				foreach($matches as $match)
+				{
+//					print_a($matches);
+					$att = array();
+					$att['thread_id'] = $post['thread_id'];
+					$att['type'] = 'file';
+					$att['html'] = $match[0];
+					$att['name'] = $match[1];
+					$att['thumb'] = '';
+					$attachments[] = $att;
+				}
+			}
+		}
+		if(count($attachments))
+		{
+			print_a($attachments);
+		}
+		
+	}
+	else
+	{
+		$text = 'No forum attachments found! <br />';
+	}
+
+//	$forum->forumUpdateLastpost('thread', 84867);
+
+	$text .= "
+	Successfully migrated forum attachment information for ".count($postList)." post(s).
+	<br /><br />
+	<form method='post'>
+	<input class='button' type='submit' name='nextStep[11]' value='Proceed to step 11' />
 	</form>
 	";
 	$e107->ns->tablerender($stepCaption, $text);
@@ -756,17 +963,20 @@ function forum_update_adminmenu()
 		$var[6]['text'] = '6 - Migrate threads/replies';
 		$var[6]['link'] = '#';
 
-		$var[7]['text'] = '7 - Calc counts/lastpost data';
+		$var[7]['text'] = '7 - Recalc all counts';
 		$var[7]['link'] = '#';
 
-		$var[8]['text'] = '8 - Migrate any poll data';
+		$var[8]['text'] = '8 - Calc lastpost data';
 		$var[8]['link'] = '#';
 
-		$var[9]['text'] = '9 - Migrate any attachments';
+		$var[9]['text'] = '9 - Migrate any poll data';
 		$var[9]['link'] = '#';
 
-		$var[10]['text'] = '10 - Delete old forum data';
+		$var[10]['text'] = '10 - Migrate any attachments';
 		$var[10]['link'] = '#';
+
+		$var[11]['text'] = '11 - Delete old forum data';
+		$var[11]['link'] = '#';
 
 
 		for($i=1; $i < $currentStep; $i++)
