@@ -11,12 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2008-12-21 03:57:03 $
+|     $Revision: 1.106 $
+|     $Date: 2008-12-24 19:59:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-
 require_once("class2.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."user_extended_class.php");
@@ -50,13 +49,35 @@ include_once(e_FILE."shortcode/batch/usersettings_shortcodes.php");
 
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
-$_uid = is_numeric(e_QUERY) ? intval(e_QUERY) : "";
 $sesschange = '';						// Notice removal
 $photo_to_delete = '';
 $avatar_to_delete = '';
 
-require_once(HEADERF);
+$inp = USERID;
+$_uid = false;
+if(is_numeric(e_QUERY))
+{
+	if(ADMIN)
+	{
+		$inp = (int)e_QUERY;
+		$_uid = $inp;
+		$info = get_user_data($inp);
+		//Only site admin is able to change setting for other admins
+		if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || ADMINPERMS !== '0')))
+		{
+			header('location:'.e_BASE.'index.php');
+  		exit;
+		}
+	}
+	else
+	{
+		//Non admin attempting to edit another user's ID
+		header('location:'.e_BASE.'index.php');
+	  exit;
+	}
+}
 
+require_once(HEADERF);
 
 // Given an array of user data, return a comma separated string which includes public, admin, member classes etc as appropriate.
 function addCommonClasses($udata)
@@ -95,6 +116,7 @@ if (isset($_POST['updatesettings']))
 		$_POST['password2'] = '';
 	}
 
+/*
 	if ($_uid && ADMIN)
 	{	// Admin logged in and editing another user's settings - so editing a different ID
 	  $inp = $_uid;
@@ -104,6 +126,9 @@ if (isset($_POST['updatesettings']))
 	{	// Current user logged in - use their ID
 	  $inp = USERID;
 	}
+*/
+
+	echo "inp = $inp <br />";
 	$udata = get_user_data($inp);				// Get all the user data, including any extended fields
 	$peer = ($inp == USERID ? false : true);
 	$udata['user_classlist'] = addCommonClasses($udata);
@@ -227,7 +252,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	// Check Email address against banlist.
 	$wc = make_email_query($_POST['email']);
 	if ($wc) $wc = ' OR '.$wc;
-	
+
 	if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
 	{
 	  $error .= LAN_106."\\n";
@@ -336,7 +361,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
     // Validate Extended User Fields.
 	if($_POST['ue'])
 	{
-	  if($sql->db_Select('user_extended_struct'))	
+	  if($sql->db_Select('user_extended_struct'))
 	  {
 		while($row = $sql->db_Fetch())
 		{
@@ -378,8 +403,8 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	{
 	  unset($_POST['password1']);
 	  unset($_POST['password2']);
-	  
-	  
+
+
       $_POST['user_id'] = intval($inp);
 
 
@@ -484,7 +509,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 			$cur_classes = explode(",", $udata['user_class']);			// Current class membership
 			$newclist = array_flip($cur_classes);						// Array keys are now the class IDs
 
-			// Update class list - we must take care to only change those classes a user can edit themselves 
+			// Update class list - we must take care to only change those classes a user can edit themselves
 			foreach ($ucList as $c)
 			{
 			  $cid = $c['userclass_id'];
@@ -516,14 +541,14 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 		$e_event->trigger("postuserset", $_POST);
 
 
-		if(e_QUERY == "update") 
+		if(e_QUERY == "update")
 		{
           header("Location: index.php");
 		}
 		$message = "<div style='text-align:center'>".LAN_150."</div>";
 		$caption = LAN_151;
-	  } 
-	  else 
+	  }
+	  else
 	  {	// Invalid data
 		$message = "<div style='text-align:center'>".$ret."</div>";
 		$caption = LAN_151;
@@ -617,12 +642,12 @@ function delete_file($fname, $dir = 'avatars/')
 {
   global $sql;
   if (!$fname) return FALSE;
-  
-  if (preg_match("#Binary (.*?)/#", $fname, $match)) 
+
+  if (preg_match("#Binary (.*?)/#", $fname, $match))
   {
 	return $sql -> db_Delete("rbinary", "binary_id='".$tp -> toDB($match[1])."'");
   }
-  elseif (file_exists(e_FILE."public/".$dir.$fname)) 
+  elseif (file_exists(e_FILE."public/".$dir.$fname))
   {
 	unlink(e_FILE."public/".$dir.$fname);
 	return TRUE;
