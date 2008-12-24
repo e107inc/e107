@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
- * $Revision: 1.34 $
- * $Date: 2008-12-23 20:48:24 $
+ * $Revision: 1.35 $
+ * $Date: 2008-12-24 04:51:27 $
  * $Author: mcfly_e107 $
  *
 */
@@ -455,7 +455,7 @@ class e107forum
 		return $e107->sql->db_Count('forum_post', '(*)', "WHERE post_id <= {$postId} AND post_thread = {$threadId} ORDER BY post_id ASC");
 	}
 
-	function forumUpdateLastpost($type, $id, $update_threads = FALSE)
+	function forumUpdateLastpost($type, $id, $updateThreads = false)
 	{
 		global $sql, $tp;
 		$sql2 = new db;
@@ -472,15 +472,17 @@ class e107forum
 			else
 			{
 				$tmp['thread_lastuser'] = 0;
-				$tmp['thread_lastuser_anon'] = $lpInfo['post_user_anon'];
+				$tmp['thread_lastuser_anon'] = ($lpInfo['post_user_anon'] ? $lpInfo['post_user_anon'] : 'Anonymous');
 			}
 			$tmp['thread_lastpost'] = $lpInfo['post_datestamp'];
 			$tmp['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+			$tmp['WHERE'] = 'thread_id = '.$id;
 			$sql->db_Update('forum_thread', $tmp);
 
 			return $lpInfo;
 		}
-		if ($type == 'forum') {
+		if ($type == 'forum')
+		{
 			if ($id == 'all')
 			{
 				if ($sql->db_Select('forum', 'forum_id', 'forum_parent != 0'))
@@ -491,7 +493,8 @@ class e107forum
 					}
 					foreach($parentList as $id)
 					{
-						$this->forumUpdateLastpost('forum', $id, $update_threads);
+						set_time_limit(60);
+						$this->forumUpdateLastpost('forum', $id, $updateThreads);
 					}
 				}
 			}
@@ -500,13 +503,14 @@ class e107forum
 				$id = (int)$id;
 				$lp_info = '';
 				$lp_user = 'NULL';
-				if($update_threads == true)
+				if($updateThreads == true)
 				{
 					if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
 					{
 						while ($row = $sql2->db_Fetch(MYSQL_ASSOC))
 						{
-							$this->update_lastpost('thread', $row['thread_id']);
+							set_time_limit(60);
+							$this->forumUpdateLastpost('thread', $row['thread_id']);
 						}
 					}
 				}
@@ -1011,7 +1015,8 @@ class e107forum
 			$flist = $e107->sql->db_getList();
 			foreach($flist as $f)
 			{
-				$this->forumUpdateCounts($f['forum_id']);
+				set_time_limit(60);
+				$this->forumUpdateCounts($f['forum_id'], $recalcThreads);
 			}
 			return;
 		}
@@ -1019,8 +1024,9 @@ class e107forum
 		$threads = $e107->sql->db_Count('forum_thread', '(*)', 'WHERE thread_forum_id='.$forumId);
 		$replies = $e107->sql->db_Count('forum_post', '(*)', 'WHERE post_forum='.$forumId);
 		$e107->sql->db_Update('forum', "forum_threads={$threads}, forum_replies={$replies} WHERE forum_id={$forumId}");
-		if($recalc_threads == true)
+		if($recalcThreads == true)
 		{
+			set_time_limit(60);
 			$e107->sql->db_Select('forum_post', 'post_thread, count(post_thread) AS replies', "post_forum={$forumId} GROUP BY post_thread");
 			$tlist = $e107->sql->db_getList();
 			foreach($tlist as $t)
