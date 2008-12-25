@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2008-12-14 03:52:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.106 $
+|     $Date: 2008-12-25 19:28:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -886,11 +886,11 @@ class download
 			<br />".DOWLAN_66."
 			<input class='tbox' type='text' name='download_filesize_external' size='12' value='{$download_filesize}' maxlength='10' />
       <select class='tbox' name='download_filesize_unit'>
-      <option value='B'{$b_sel}>B</option>
-      <option value='KB'{$kb_sel}>KB</option>
-      <option value='MB'>MB</option>
-      <option value='GB'>GB</option>
-      <option value='TB'>TB</option>
+      <option value='B'{$b_sel}>".CORE_LAN_B."</option>
+      <option value='KB'{$kb_sel}>".CORE_LAN_KB."</option>
+      <option value='MB'>".CORE_LAN_MB."</option>
+      <option value='GB'>".CORE_LAN_GB."</option>
+      <option value='TB'>".CORE_LAN_TB."</option>
       </div>
 
 			</td>
