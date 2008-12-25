@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2008-12-24 19:59:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.107 $
+|     $Date: 2008-12-25 11:12:15 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -128,7 +128,7 @@ if (isset($_POST['updatesettings']))
 	}
 */
 
-	echo "inp = $inp <br />";
+//	echo "inp = $inp <br />";
 	$udata = get_user_data($inp);				// Get all the user data, including any extended fields
 	$peer = ($inp == USERID ? false : true);
 	$udata['user_classlist'] = addCommonClasses($udata);
