@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.124 $
-|     $Date: 2008-12-15 22:53:41 $
+|     $Revision: 1.125 $
+|     $Date: 2008-12-25 14:13:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -325,7 +325,7 @@ if (e_QUERY)
 
 if (isset($_POST['register']))
 {
-  $_POST['xupexist'] = trim(varset($_POST['xupexist'],''));
+	$_POST['xupexist'] = trim(varset($_POST['xupexist'],''));
 	$e107cache->clear("online_menu_totals");
 	$error_message = "";
 	require_once(e_HANDLER."message_handler.php");
@@ -553,32 +553,35 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	// Email address checks
 	//--------------------------------------
 	// Email syntax validation.
-	if ($do_email_validate && (!$_POST['email'] || !check_email($_POST['email'])))
+	if ($do_email_validate)
 	{
-	  $error_message .= LAN_106."\\n";
-	  $error = TRUE;
-	  $email_address_OK = FALSE;
-	}
-	else
-	{
-		// Check Email against banlist.
-		$wc = make_email_query($_POST['email']);
-		if ($wc) $wc = ' OR '.$wc;
-
-		if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
+		if (!$_POST['email'] || !check_email($_POST['email']))
 		{
-			$email_address_OK = FALSE;
-			$brow = $sql -> db_Fetch();
+			$error_message .= LAN_106."\\n";
 			$error = TRUE;
-			if($brow['banlist_reason'])
+			$email_address_OK = FALSE;
+		}
+		else
+		{
+			// Check Email against banlist.
+			$wc = make_email_query($_POST['email']);
+			if ($wc) $wc = ' OR '.$wc;
+	
+			if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
 			{
-				$repl = array("\n","\r","<br />");
-				$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak, defs"))."\\n";
-				$email = "";
-			}
-			else
-			{
-				exit;
+				$email_address_OK = FALSE;
+				$brow = $sql -> db_Fetch();
+				$error = TRUE;
+				if($brow['banlist_reason'])
+				{
+					$repl = array("\n","\r","<br />");
+					$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak, defs"))."\\n";
+					$email = "";
+				}
+				else
+				{
+					exit;
+				}
 			}
 		}
 	}
@@ -668,8 +671,9 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 
 	if($error_message)
 	{
-	  message_handler("P_ALERT", $error_message);
-	  $error_message = '';
+		require_once(HEADERF);
+		message_handler("P_ALERT", $error_message);
+		$error_message = '';
 	}
 
 	// ========== End of verification.. ====================================================
