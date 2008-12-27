@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-24 04:51:27 $
+ * $Revision: 1.11 $
+ * $Date: 2008-12-27 04:35:41 $
  * $Author: mcfly_e107 $
  *
 */
@@ -644,6 +644,7 @@ function step9()
 function step10()
 {
 	$e107 = e107::getInstance();
+	global $f;
 	$stepCaption = 'Step 9: Migrate forum attachments';
 	if(!isset($_POST['migrate_attachments']))
 	{
@@ -660,25 +661,25 @@ function step10()
 	}
 
 	$qry = "
-	SELECT thread_id, thread_thread FROM `#forum_t`
-	WHERE thread_thread REGEXP '_[[:digit:]]+_FT'
+	SELECT post_id, post_entry FROM `#forum_post`
+	WHERE post_entry REGEXP '_[[:digit:]]+_FT'
 	";
-	if($e107->sql->db_Select_gen($qry))
+	if($e107->sql->db_Select_gen($qry, true))
 	{
 		while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
 		{
 			$postList[] = $row;
 		}
-		$attachments = array();
 		foreach($postList as $post)
 		{
+			$attachments = array();
 			//<div class=&#039;spacer&#039;>[img:width=604&height=453]{e_FILE}public/1229562306_1_FT0_julia.jpg[/img]</div>
 			//Check for attached full-size images
-			if(preg_match_all('#<div.*?>\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]</div>#ms', $post['thread_thread'], $matches, PREG_SET_ORDER))
+			if(preg_match_all('#<div.*?>\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]</div>#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach($matches as $match)
 				{
-//					print_a($matches);
+					print_a($matches);
 					$att = array();
 					$att['thread_id'] = $post['thread_id'];
 					$att['type'] = 'img';
@@ -691,7 +692,7 @@ function step10()
 
 			//[link={e_FILE}public/1230091080_1_FT0_julia.jpg][img:width=60&height=45]{e_FILE}public/1230091080_1_FT0_julia_.jpg[/img][/link][br]
 			//Check for images with thumbnails linking to full size
-			if(preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms', $post['thread_thread'], $matches, PREG_SET_ORDER))
+			if(preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach($matches as $match)
 				{
@@ -708,7 +709,7 @@ function step10()
 
 			//[file={e_FILE}public/1230090820_1_FT0_julia.zip]julia.zip[/file]
 			//Check for attached file (non-images)
-			if(preg_match_all('#\[file=({e_FILE}.*?)\](.*?)\[/file\]#ms', $post['thread_thread'], $matches, PREG_SET_ORDER))
+			if(preg_match_all('#\[file=({e_FILE}.*?)\](.*?)\[/file\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach($matches as $match)
 				{
@@ -722,12 +723,47 @@ function step10()
 					$attachments[] = $att;
 				}
 			}
+			if(count($attachments))
+			{
+				$newValues = array();
+				$info = array();
+				foreach($attachments as $attachment)
+				{
+					$error = '';
+					if($f->moveAttachment($attachment, $error))
+					{
+						$_file = split('/', $attachment['name']);
+						$tmp = split('_', $_file[1], 4);
+						$newval = $attachment['type'].'*'.$_file[1].'*'.$tmp[3];
+						if($attachment['thumb'])
+						{
+							$_file = split('/', $attachment['thumb']);
+							$newval .= '*'.$_file[1];
+						}
+						$newValues[] = $newval;
+						$info['post_entry'] = str_replace($attachment['html'], '', $post['post_entry']);
+					}
+					else
+					{
+						$errorText .= "Failure processing post {$post['post_id']} - file {$attachment['name']}<br />{$error}<br />";
+					}
+				}
+				
+				// Did we make any changes at all?
+				if(count($newValues))
+				{
+					$info['WHERE'] = 'post_id = '.$post['post_id'];
+					$infot['post_attachments'] = implode(',', $newValues);
+					$info['_FILE_TYPES']['post_attachments'] = 'escape';
+					$info['_FILE_TYPES']['post_entry'] = 'escape';
+					print_a($info);
+				}
+				echo $post['thread_thread']."<br />";
+//				print_a($newValues);
+				echo $info['newpost']."<br />--------------------------------------<br />";
+//			Update db values now
+			}
 		}
-		if(count($attachments))
-		{
-			print_a($attachments);
-		}
-		
 	}
 	else
 	{
@@ -745,6 +781,7 @@ function step10()
 	";
 	$e107->ns->tablerender($stepCaption, $text);
 }
+
 
 
 class forumUpgrade
@@ -934,6 +971,75 @@ class forumUpgrade
 			}
 		}
 		return $ret;
+	}
+	
+	function moveAttachment($attachment, &$error)
+	{
+		$tmp = split('/', $attachment['name']);
+		$old = str_replace('{e_FILE}', e_FILE, $attachment['name']);
+		$new = e_PLUGIN.'forum/attachments/'.$tmp[1];
+		if(!file_exists($new))
+		{
+//			$r = copy($old, $new);
+			$r = true;
+		}
+		else
+		{
+			//File already exists, show some sort of error
+			$error = 'Attachment file already exists';
+			return false;
+		}
+		if(!$r)
+		{
+			//File copy failed!
+			$error = 'Copy of attachments failed';
+			return false;
+		}
+
+		$oldThumb = '';
+		if($attachment['thumb'])
+		{
+			$tmp = split('/', $attachment['thumb']);
+			$oldThumb = str_replace('{e_FILE}', e_FILE, $attachments['thumb']).$tmp[1];
+			$newThumb = e_PLUGIN.'forum/attachments/thumb/'.$tmp[1];
+			if(!file_exists($new))
+			{
+//				$r = copy($oldThumb, $newThumb);
+				$r = true;
+			}
+			else
+			{
+				//File already exists, show some sort of error
+				$error = 'Thumb file already exists';
+				return false;
+			}
+			if(!$r)
+			{
+				//File copy failed
+				$error = 'Copy of thumb failed';
+				return false;
+			}
+		}
+		
+		//Copy was successful, let's delete the original files now.
+			$r = true;
+//		$r = unlink($old);
+		if(!$r)
+		{ 
+			$error = 'Was unable to delete old attachment: '.$old;
+			return false;
+		}
+		if($oldThumb)
+		{
+			$r = true;
+//			$r = unlink($oldThumb);
+			if(!$r)
+			{ 
+				$error = 'Was unable to delete old thumb: '.$oldThumb;
+				return false;
+			}
+		}
+		return true;
 	}
 
 
