@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-01-15 21:57:53 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-28 22:37:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,14 +24,14 @@ global $usersettings_shortcodes, $pref;
 
 $sc_style['CUSTOMTITLE']['pre'] = "
 <tr>
-<td style='width:40%' class='forumheader3'>".LAN_CUSTOMTITLE.":</td>
+<td style='width:40%' class='forumheader3'>".LAN_USER_04.":</td>
 <td style='width:60%' class='forumheader2'>
 ";
 $sc_style['CUSTOMTITLE']['post'] = "</td></tr>";
 
 $sc_style['PASSWORD1']['pre'] = "
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_152."<br /><span class='smalltext'>".LAN_401."</span></td>
+	<td style='width:40%' class='forumheader3'>".LAN_USET_24."<br /><span class='smalltext'>".LAN_USET_23."</span></td>
 	<td style='width:60%' class='forumheader2'>
 ";
 
@@ -40,7 +40,7 @@ $sc_style['PASSWORD2']['pre'] = "
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_153."<br /><span class='smalltext'>".LAN_401."</span></td>
+	<td style='width:40%' class='forumheader3'>".LAN_USET_25."<br /><span class='smalltext'>".LAN_USET_23."</span></td>
 	<td style='width:60%' class='forumheader2'>
 ";
 $sc_style['PASSWORD2']['post'] = "
@@ -48,29 +48,29 @@ $sc_style['PASSWORD2']['post'] = "
 	</tr>
 ";
 
-$sc_style['PASSWORD_LEN']['pre'] = "<br /><span class='smalltext'>  (".LAN_SIGNUP_1." ";
-$sc_style['PASSWORD_LEN']['post'] = " ".LAN_SIGNUP_2.")</span>";
+$sc_style['PASSWORD_LEN']['pre'] = "<br /><span class='smalltext'>  (".LAN_USER_78." ";
+$sc_style['PASSWORD_LEN']['post'] = " ".LAN_USER_79.")</span>";
 
 $sc_style['USERCLASSES']['pre'] = "<tr>
-<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USET_5.":".req($pref['signup_option_class'])."
-<br /><span class='smalltext'>".LAN_USET_6."</span>
+<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_76.":".req($pref['signup_option_class'])."
+<br /><span class='smalltext'>".LAN_USER_73."</span>
 </td>
 <td style='width:60%' class='forumheader2'>";
 $sc_style['USERCLASSES']['post'] = "</td></tr>";
 
 $sc_style['AVATAR_UPLOAD']['pre'] = "<tr>
-<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_415."<br /></td>
+<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USET_26."<br /></td>
 <td style='width:60%' class='forumheader2'>
 ";
 $sc_style['AVATAR_UPLOAD']['post'] = "</td></tr>";
 
 $sc_style['PHOTO_UPLOAD']['pre'] = "
 <tr>
-<td colspan='2' class='forumheader'>".LAN_425."</td>
+<td colspan='2' class='forumheader'>".LAN_USER_06."</td>
 </tr>
 
 <tr>
-<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_414."<br /><span class='smalltext'>".LAN_426."</span></td>
+<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USET_27."<br /><span class='smalltext'>".LAN_USET_28."</span></td>
 <td style='width:60%' class='forumheader2'><span class='smalltext'>
 ";
 $sc_style['PHOTO_UPLOAD']['post'] = "</span></td></tr>";
@@ -78,10 +78,10 @@ $sc_style['PHOTO_UPLOAD']['post'] = "</span></td></tr>";
 
 $sc_style['XUP']['pre'] = "
 <tr>
-<td colspan='2' class='forumheader'>".LAN_435."</td>
+<td colspan='2' class='forumheader'>".LAN_USER_11."</td>
 </tr>
 <tr>
-<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_433."<br /><span class='smalltext'><a href='http://e107.org/generate_xup.php' rel='external'>".LAN_434."</a></span></td>
+<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_USET_29."<br /><span class='smalltext'><a href='http://e107.org/generate_xup.php' rel='external'>".LAN_USET_30."</a></span></td>
 <td style='width:80%' class='forumheader2'>
 ";
 $sc_style['XUP']['post'] = "</td></tr>";
@@ -104,25 +104,25 @@ $USERSETTINGS_EDIT = "
 	<table style='".USER_WIDTH."' class='fborder'>
 
 	<tr>
-	<td colspan='2' class='forumheader'>".LAN_418."</td>
+	<td colspan='2' class='forumheader'>".LAN_USET_31."</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_7."<br /><span class='smalltext'>".LAN_8."</span></td>
+	<td style='width:40%' class='forumheader3'>".LAN_USER_01."<br /><span class='smalltext'>".LAN_USER_80."</span></td>
 	<td style='width:60%' class='forumheader2'>
 	{USERNAME}
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_9."<br /><span class='smalltext'>".LAN_10."</span></td>
+	<td style='width:40%' class='forumheader3'>".LAN_USER_81."<br /><span class='smalltext'>".LAN_USER_82."</span></td>
 	<td style='width:60%' class='forumheader2'>
 	{LOGINNAME}
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_308.req($pref['signup_option_realname'])."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_USER_63.req($pref['signup_option_realname'])."</td>
 	<td style='width:60%' class='forumheader2'>
 	{REALNAME}
 	</td>
@@ -135,14 +135,14 @@ $USERSETTINGS_EDIT = "
 	{PASSWORD2}
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_112.req(!$pref['disable_emailcheck'])."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</td>
 	<td style='width:60%' class='forumheader2'>
 	{EMAIL}
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_113."<br /><span class='smalltext'>".LAN_114."</span></td>
+	<td style='width:40%' class='forumheader3'>".LAN_USER_83."<br /><span class='smalltext'>".LAN_USER_84."</span></td>
 	<td style='width:60%' class='forumheader2'><span class='defaulttext'>
 	{HIDEEMAIL=radio}
 	</span>
@@ -154,7 +154,7 @@ $USERSETTINGS_EDIT = "
 
 	<tr><td colspan='2' class='forumheader'>".LAN_USET_8."</td></tr>
 	<tr>
-	<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_120.req($pref['signup_option_signature'])."</td>
+	<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_71.req($pref['signup_option_signature'])."</td>
 	<td style='width:60%' class='forumheader2'>
 	{SIGNATURE=cols=58&rows=4}
 	<br />
@@ -163,22 +163,22 @@ $USERSETTINGS_EDIT = "
 	</tr>
 
 	<tr>
-	<td colspan='2' class='forumheader'>".LAN_420."</td>
+	<td colspan='2' class='forumheader'>".LAN_USER_07."</td>
 	</tr>
 
 	<tr>
-	<td colspan='2' class='forumheader3' style='text-align:center'>".LAN_404.($pref['im_width'] || $pref['im_height'] ? "<br />".($pref['im_width'] ? MAX_AVWIDTH.$pref['im_width']." pixels. " : "").($pref['im_height'] ? MAX_AVHEIGHT.$pref['im_height']." pixels." : "") : "")."</td>
+	<td colspan='2' class='forumheader3' style='text-align:center'>".LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "<br />".str_replace(array('--WIDTH--','--HEIGHT--'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "")."</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_422.req($pref['signup_option_image'])."<br /><span class='smalltext'>".LAN_423."</span></td>
+	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USET_34.req($pref['signup_option_image'])."<br /><span class='smalltext'>".LAN_USET_35."</span></td>
 	<td style='width:60%' class='forumheader2'>
 	{AVATAR_REMOTE}
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_421."<br /><span class='smalltext'>".LAN_424."</span></td>
+	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USET_33."<br /><span class='smalltext'>".LAN_USET_36."</span></td>
 	<td style='width:60%' class='forumheader2'>
 	{AVATAR_CHOOSE}
 	</td>
@@ -189,7 +189,7 @@ $USERSETTINGS_EDIT = "
 	{XUP}
 
 	<tr style='vertical-align:top'>
-	<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='updatesettings' value='".LAN_154."' /></td>
+	<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='updatesettings' value='".LAN_USET_37."' /></td>
 	</tr>
 	</table>
 	</div>

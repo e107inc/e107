@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.90 $
-* $Date: 2008-12-22 03:15:04 $
-* $Author: mcfly_e107 $
+* $Revision: 1.91 $
+* $Date: 2008-12-28 22:37:42 $
+* $Author: e107steved $
 *
 */
 //
@@ -1282,6 +1282,7 @@ function get_user_data($uid, $extra = '')
 	}
 
 	//===========================================================
+	$var['user_baseclasslist'] = $var['user_class'];			// Keep track of which base classes are in DB
 	// Now look up the 'inherited' user classes
 	$var['user_class'] = $e107->user_class->get_all_user_classes($var['user_class']);
 

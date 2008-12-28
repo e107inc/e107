@@ -9,8 +9,8 @@
  * Language file - user-related (many generic definitions)
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_user.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-21 22:17:05 $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-28 22:37:43 $
  * $Author: e107steved $
  *
 */
@@ -36,7 +36,7 @@ define('LAN_USER_02','Login Name');
 define('LAN_USER_03','Real Name');
 define('LAN_USER_04','Custom title');
 define('LAN_USER_05','Password');
-define('LAN_USER_06','Photo');
+define('LAN_USER_06','Photograph');
 define('LAN_USER_07','Avatar');
 define('LAN_USER_08','Email address');
 define('LAN_USER_09','Signature');
@@ -87,10 +87,10 @@ define('LAN_USER_56', 'Registered members: ');					// LAN_138
 define('LAN_USER_57', 'Order: ');								// LAN_139
 define('LAN_USER_58', 'Member');								// LAN_142
 define('LAN_USER_59', 'Joined');								// LAN_145
-define('LAN_USER_60', 'Email Address');							// LAN_112
+define('LAN_USER_60', 'Email Address: ');						// LAN_112
 define('LAN_USER_61', 'Rating');								// LAN_406
 define('LAN_USER_62', 'Send Private Message');					// LAN_425
-define('LAN_USER_63', 'Real Name');								// LAN_308
+define('LAN_USER_63', 'Real Name: ');							// LAN_308
 define('LAN_USER_64', 'Site Stats');							// LAN_403
 define('LAN_USER_65', 'Last visit');							// LAN_404
 define('LAN_USER_66', 'Visits to site since registration');		// LAN_146
@@ -98,8 +98,22 @@ define('LAN_USER_67', 'Chatbox posts');							// LAN_147
 define('LAN_USER_68', 'Comments posted');						// LAN_148
 define('LAN_USER_69', 'Forum posts');							// LAN_149
 define('LAN_USER_70', 'Show');									// LAN_419
-define('LAN_USER_71', 'Signature');								// LAN_120
+define('LAN_USER_71', 'Signature: ');							// LAN_120
 define('LAN_USER_72', 'Avatar: ');								// LAN_121
+define('LAN_USER_73', 'choice of Content/Mail-lists');
+define('LAN_USER_74', 'Custom Title');
+define('LAN_USER_75', 'Your --SOMETHING-- is required');		// Replaces LAN_SIGNUP_6, LAN_SIGNUP_7 combination
+define('LAN_USER_76', 'Subscribed to');							// LAN_USET_5
+define('LAN_USER_77', 'Your password must be at least --COUNT-- characters long.');	// Replaces LAN_SIGNUP_4, LAN_SIGNUP_5 combination
+define('LAN_USER_78', 'Min.');									// LAN_SIGNUP_1
+define('LAN_USER_79', 'chars.');								// LAN_SIGNUP_2
+define('LAN_USER_80', 'the name displayed on site');			// LAN_8
+define('LAN_USER_81', 'Username: ');							// LAN_9
+define('LAN_USER_82', 'the name you use to login to the site');	// LAN_10
+define('LAN_USER_83', 'Hide email address?: ');					// LAN_113
+define('LAN_USER_84', 'This will prevent your email address from being displayed on site');	// LAN_114
+define('LAN_USER_85', 'If you want to change your user name, you must ask a site administrator');
+define('LAN_USER_86', 'Maximum avatar size is --WIDTH-- x --HEIGHT-- pixels');
 
 
 // Error messages for when user data is missing. Done this way so that other code can override the default messages
@@ -122,7 +136,9 @@ if (!defined('USER_ERR_16')) { define('USER_ERR_16','Software error');  }
 if (!defined('USER_ERR_17')) { define('USER_ERR_17','Value too low');  }
 if (!defined('USER_ERR_18')) { define('USER_ERR_18','Value too high');  }
 if (!defined('USER_ERR_19')) { define('USER_ERR_19','General error');  }
-if (!defined('USER_ERR_20')) { define('USER_ERR_20','Unspecified error');  }
+if (!defined('USER_ERR_20')) { define('USER_ERR_20','Image too wide');  }
+if (!defined('USER_ERR_21')) { define('USER_ERR_21','Image too high');  }
+if (!defined('USER_ERR_22')) { define('USER_ERR_22','Unspecified error');  }
 
 
 ?>

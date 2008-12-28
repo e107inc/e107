@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-21 22:17:05 $
+ * $Revision: 1.5 $
+ * $Date: 2008-12-28 22:37:43 $
  * $Author: e107steved $
  *
 */
@@ -74,7 +74,11 @@ class UserHandler
 	Index is the destination field name. If the source index name is different, specify 'srcName' in the array.
 	
 	Possible processing options:
-		'doToDB'		- passes final value through $tp->toDB()
+		'dbClean'		- 'sanitising' method for final value:
+							- 'toDB' - passes final value through $tp->toDB()
+							- 'intval' - converts to an integer
+							- 'image'  - checks image for size
+							- 'avatar' - checks an image in the avatars directory
 		'stripTags'		- strips HTML tags from the value (not an error if there are some)
 		'minLength'		- minimum length (in utf-8 characters) for the string
 		'maxLength'		- minimum length (in utf-8 characters) for the string
@@ -86,9 +90,9 @@ class UserHandler
 		'user_loginname' => array('niceName'=> LAN_USER_02, 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
 		'user_login' => array('niceName'=> LAN_USER_03, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'realname', 'dbClean' => 'toDB'),				// Real name (no real vetting)
 		'user_customtitle' => array('niceName'=> LAN_USER_04, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'customtitle', 'dbClean' => 'toDB', 'enablePref' => 'signup_option_customtitle'),		// No real vetting
-		'user_password' => array('niceName'=> LAN_USER_05, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'minLength' => varset($pref['signup_pass_len'],1)),
-		'user_sess' => array('niceName'=> LAN_USER_06, 'vetMethod' => '0', 'vetParam' => '', 'dbClean' => 'toDB'),				// Photo
-		'user_image' => array('niceName'=> LAN_USER_07, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'image', 'dbClean' => 'toDB'),				// Avatar
+		'user_password' => array('niceName'=> LAN_USER_05, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'dataType' => 2, 'minLength' => varset($pref['signup_pass_len'],1)),
+		'user_sess' => array('niceName'=> LAN_USER_06, 'vetMethod' => '0', 'vetParam' => '', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'image', 'imagePath' => e_FILE.'public/avatars/', 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Photo
+		'user_image' => array('niceName'=> LAN_USER_07, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'image', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'avatar', 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Avatar
 		'user_email' => array('niceName'=> LAN_USER_08, 'vetMethod' => '1,3', 'vetParam' => '', 'srcName' => 'email', 'dbClean' => 'toDB'),
 		'user_signature' => array('niceName'=> LAN_USER_09, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
 		'user_hideemail' => array('niceName'=> LAN_USER_10, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
@@ -335,18 +339,18 @@ class UserHandler
 		$cookieval = $lode['user_id'].".".md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
 		if ($pref['user_tracking'] == "session")
 		{
-		  $_SESSION[$pref['cookie_name']] = $cookieval;
+			$_SESSION[$pref['cookie_name']] = $cookieval;
 		} 
 		else 
 		{
-		  if ($autologin == 1) 
-		  {	// Cookie valid for up to 30 days
-			cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
-		  } 
-		  else 
-		  {
-			cookie($pref['cookie_name'], $cookieval);
-		  }
+			if ($autologin == 1) 
+			{	// Cookie valid for up to 30 days
+				cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
+			} 
+			else 
+			{
+				cookie($pref['cookie_name'], $cookieval);
+			}
 		}
 	}
 
@@ -528,8 +532,8 @@ Following fields auto-filled in code as required:
 		global $pref, $sql;
 		if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 		{
-			$threshold=(time() - ($pref['del_unv'] * 60));
-			$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
+			$threshold= intval(time() - ($pref['del_unv'] * 60));
+			$sql->db_Delete('user', 'user_ban = 2 AND user_join < '.$threshold);
 		}
 	}
 }

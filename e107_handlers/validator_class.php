@@ -9,8 +9,8 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-21 22:17:05 $
+ * $Revision: 1.3 $
+ * $Date: 2008-12-28 22:37:43 $
  * $Author: e107steved $
  *
 */
@@ -35,6 +35,8 @@ define('ERR_CODE_ERROR', '16');
 define('ERR_TOO_LOW', '17');
 define('ERR_TOO_HIGH', '18');
 define('ERR_GENERIC', '19');				// This requires coder-defined error text
+define('ERR_IMAGE_TOO_WIDE', '20');
+define('ERR_IMAGE_TOO_HIGH', '21');
 
 
 /*
@@ -45,8 +47,10 @@ The validator functions use an array of parameters for each variable to be valid
 	Possible processing options:
 		'srcname'		- specifies the array index of the source data, where its different to the destination index
 		'dbClean'		- method for preparing the value to write to the DB (done as final step before returning). Options are:
-							- 'toDB'		- passes final value through $tp->toDB()
-							- 'intval'		- makes an integer
+							- 'toDB' 	- passes final value through $tp->toDB()
+							- 'intval' 	- converts to an integer
+							- 'image'  	- checks image for size
+							- 'avatar' 	- checks an image in the avatars directory
 		'stripTags'		- strips HTML tags from the value (not an error if there are some)
 		'minLength'		- minimum length (in utf-8 characters) for the string
 		'maxLength'		- minimum length (in utf-8 characters) for the string
@@ -94,7 +98,7 @@ class validatorClass
 				$value = $sourceFields[$src];
 				if (!$errNum && isset($defs['enablePref']))
 				{	// Only process this field if a specified pref enables it
-					if (!varsettrue($pref[$options['enablePref']]))
+					if (!varsettrue($pref[$defs['enablePref']]))
 					{
 						continue;			// Just loop to the next field - ignore this one.
 					}
@@ -113,11 +117,12 @@ class validatorClass
 					$newValue = trim(preg_replace($defs['stripChars'], "", $value));
 					if ($newValue <> $value)
 					{
+						echo "Invalid: {$newValue} :: {$value}<br />";
 						$errNum = ERR_INVALID_CHARS;
 					}
 					$value = $newValue;
 				}
-				if (!$errNum && isset($defs['minLength']) && $tp->uStrLen($value) < $defs['minLength'])
+				if (!$errNum && isset($defs['minLength']) && ($tp->uStrLen($value) < $defs['minLength']))
 				{
 					if ($value == '')
 					{
@@ -179,6 +184,13 @@ class validatorClass
 								$errNum = ERR_ARRAY_EXPECTED;
 							}
 							break;
+						case 2 :		// Assumes we're processing a dual password field - array name for second value is one more than for first
+							$src2 = substr($src,0,-1).(substr($src,-1,1) + 1);
+							if (!isset($sourceFields[$src2]) || ($sourceFields[$src2] != $value))
+							{
+								$errNum = ERR_PASSWORDS_DIFFERENT;
+							}
+							break;
 						default :
 							$errNum = ERR_CODE_ERROR;		// Pick up bad values
 					}
@@ -195,6 +207,43 @@ class validatorClass
 							case 'intval' :
 								$value = intval($value);
 								break;
+							case 'avatar' :			// Special case of an image - may be found in the avatars directory
+								if (preg_match('#[0-9\._]#', $value))
+								{
+									if (strpos('-upload-', $value) === 0)
+									{
+										$img = e_FILE.'public/avatars/'.$value;		// Its a server-stored image
+									}
+									else
+									{
+										$img = $value;			// Its a remote image
+									}
+								}
+												// Deliberately fall through into normal image processing
+							case 'image' :			// File is an image name.  $img may be set if we fall through from 'avatar' option - its the 'true' path to the image
+								if (!isset($img) && isset($defs['imagePath']))
+								{
+									$img = $defs['imagePath'].$value;
+								}
+								$img = varset($img,$value);
+								if ($size = getimagesize($img))
+								{
+									// echo "Image {$img} size: {$size[0]} x {$size[1]}<br />";
+									if (isset($defs['maxWidth']) && $size[0] > $defs['maxWidth'])
+									{		// Image too wide
+										$errNum = ERR_IMAGE_TOO_WIDE;
+									}
+									if (isset($defs['maxHeight']) && $size[1] > $defs['maxHeight'])
+									{		// Image too high
+										$errNum = ERR_IMAGE_TOO_HIGH;
+									}
+								}
+								else
+								{
+									// echo "Image {$img} not found or cannot size - original value {$value}<br />";
+								}
+								unset($img);
+								break;
 							default :
 								echo "Invalid dbClean method: {$defs['dbClean']}<br />";	// Debug message
 						}
@@ -205,7 +254,14 @@ class validatorClass
 			if ($errNum)
 			{  // error to report
 				$ret['errors'][$dest] = $errNum;
-				$ret['failed'][$dest] = $sourceFields[$src];		// Save value with error
+				if ($defs['dataType'] == 2)
+				{
+					$ret['failed'][$dest] = str_repeat('*',strlen($sourceFields[$src]));		// Save value with error - obfuscated
+				}
+				else
+				{
+					$ret['failed'][$dest] = $sourceFields[$src];		// Save value with error
+				}
 			}
 		}
 		return $ret;
@@ -384,7 +440,7 @@ class validatorClass
 			{
 				$curLine = str_replace('%t', constant($constPrefix.$n), $curLine);		// Standard messages
 			}
-			$curLine = str_replace('%v', $vars['failed'][$f],$curLine);			// Possibly this should have some protection added
+			$curLine = str_replace('%v', htmlentities($vars['failed'][$f]),$curLine);
 			$curLine = str_replace('%f', $f, $curLine);
 			if ($checkNice & isset($niceNames[$f]['niceName']))
 			{

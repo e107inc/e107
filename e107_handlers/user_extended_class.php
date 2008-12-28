@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-12-21 11:07:58 $
+|     $Revision: 1.21 $
+|     $Date: 2008-12-28 22:37:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,7 @@ class e107_user_extended
 		'sess', 'email', 'signature', 'image', 'hideemail',
 		'join', 'lastvisit', 'currentvisit', 'chats',
 		'comments', 'forums', 'ip', 'ban', 'prefs', 'viewed',
-		'visits', 'admin', 'login', 'class', 'perms', 'pwchange',
+		'visits', 'admin', 'login', 'class', 'baseclasslist', 'perms', 'pwchange',
 		'xup'
 		);
 
@@ -94,31 +94,77 @@ class e107_user_extended
 	}
 
 
+	// Validate a single extended user field
 	// $val is whatever the user entered.
 	// $params is the field definition
 	// Return FALSE if acceptable, TRUE if fail , error message on regex fail if the message is defined
 	function user_extended_validate_entry($val, $params)
 	{
-	  global $tp;
-	  $parms = explode("^,^", $params['user_extended_struct_parms']);
-	  $requiredField = $params['user_extended_struct_required'] == 1;
-	  $regex = $tp->toText($parms[1]);
-	  $regexfail = $tp->toText($parms[2]);
-      if (defined($regexfail)) { $regexfail = constant($regexfail); }
-	  if($val == '' && $requiredField) return TRUE;
-	  switch ($type)
-	  {
-		case EUF_DATE :
-		  if ($requiredField && ($val == '0000-00-00')) return TRUE;
-		  break;
-	  }
-	  if($regex != "" && $val != "")
-	  {
-		if(!preg_match($regex, $val)) return $regexfail ? $regexfail : TRUE;
-	  }
-	  return FALSE;			// Pass by default here
+		global $tp;
+		$parms = explode("^,^", $params['user_extended_struct_parms']);
+		$requiredField = $params['user_extended_struct_required'] == 1;
+		$regex = $tp->toText($parms[1]);
+		$regexfail = $tp->toText($parms[2]);
+		if (defined($regexfail)) { $regexfail = constant($regexfail); }
+		if($val == '' && $requiredField) return TRUE;
+		switch ($type)
+		{
+			case EUF_DATE :
+				if ($requiredField && ($val == '0000-00-00')) return TRUE;
+				break;
+		}
+		if($regex != "" && $val != "")
+		{
+			if(!preg_match($regex, $val)) return $regexfail ? $regexfail : TRUE;
+		}
+		return FALSE;			// Pass by default here
 	}
 
+
+	// Validate all user-modifable extended user fields which are presented.
+	// $inArray is the input data (usually from $_POST or $_POST['ue'], although doesn't have to be) - may have 'surplus' values
+	// $hideArray is a set of possible 'hide' flags
+	function userExtendedValidateAll($inArray, $hideArray)
+	{
+		global $tp;
+		$extList = $this->user_extended_get_fieldList();			// Filter this more later
+		$eufVals = array();		// 'Answer' array
+		$hideFlags = array();
+		foreach ($extList as $k => $defs)
+		{
+			$f = 'user_'.$defs['user_extended_struct_name'];
+			if (isset($inArray[$f]))
+			{	// Only allow valid keys
+				$val = $inArray[$f];
+				$err = $this->user_extended_validate_entry($val, $defs);
+				if ($err === true)
+				{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+					$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml($defs['user_extended_struct_text'],FALSE,'defs'),LAN_USER_75);
+					$eufVals['errors'][$f] = ERR_GENERIC;
+				}
+				elseif ($err)
+				{	// Specific error message returned - usually regex fail
+					$eufVals['errortext'][$f] = $err;
+					$eufVals['errors'][$f] = ERR_GENERIC;
+				}
+				elseif (!$err)
+				{
+					$eufVals['validate'][$f] = $tp->toDB($val);
+				}
+				if (isset($hideArray[$f]))
+				{
+					$hideFlags[] = $f;
+				}
+			}
+		}
+		$hidden_fields = implode("^", $hideFlags);
+		if ($hidden_fields != "")
+		{
+			$hidden_fields = "^".$hidden_fields."^";
+		}
+		$eufVals['validate']['user_hidden_fields'] = $hidden_fields;
+		return $eufVals;
+	}
 
 
 	function user_extended_get_categories($byID = TRUE)
@@ -151,7 +197,7 @@ class e107_user_extended
 		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[$row['user_extended_struct_parent']][] = $row;
 			}
@@ -166,7 +212,7 @@ class e107_user_extended
 		$more = ($cat != '') ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$ret[$row[$indexField]] = $row;
 			}
