@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-12-21 22:17:05 $
+|     $Revision: 1.12 $
+|     $Date: 2008-12-28 22:37:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -53,8 +53,8 @@ if(!defined($USERCLASS_SUBSCRIBE_START))
 {
 $USERCLASS_SUBSCRIBE_START = "
 <tr>
-<td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USET_5." ".req($pref['signup_option_class'])."
-<br /><span class='smalltext'>".LAN_USET_6."</span></td>
+<td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USER_76." ".req($pref['signup_option_class'])."
+<br /><span class='smalltext'>".LAN_USER_73."</span></td>
 <td class='forumheader3' style='width:70%'>
 <table style='".USER_WIDTH."'>
 ";
@@ -276,7 +276,7 @@ $SIGNUP_BODY = "
 </tr>
 
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_86."{SIGNUP_IS_MANDATORY=email}</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_60."{SIGNUP_IS_MANDATORY=email}</td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_EMAIL}
 </td>
@@ -290,7 +290,7 @@ $SIGNUP_BODY = "
 </tr>
 
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_87."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_83."</td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_HIDE_EMAIL}
 </td>

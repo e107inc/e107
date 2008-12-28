@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2008-11-16 19:58:42 $
+|     $Revision: 1.46 $
+|     $Date: 2008-12-28 22:37:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -313,6 +313,7 @@ class e_parse
 
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
+		$this->sch_load();
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
 	}
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-01-15 21:57:31 $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-28 22:37:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ SC_END
 
 SC_BEGIN CUSTOMTITLE
 global $rs, $curVal, $pref;
-if ($pref['signup_option_customtitle'] || ADMIN)
+if ($pref['signup_option_customtitle'])
 {
 	return $rs->form_text("customtitle", 40, $curVal['user_customtitle'], 100, "tbox");
 }
@@ -98,7 +98,7 @@ SC_BEGIN HIDEEMAIL
 global $rs, $curVal;
 if($parm == 'radio')
 {
-	return ($curVal['user_hideemail'] ? $rs->form_radio("hideemail", 1, 1)." ".LAN_416."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0)." ".LAN_417 : $rs->form_radio("hideemail", 1)." ".LAN_416."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0, 1)." ".LAN_417);
+	return ($curVal['user_hideemail'] ? $rs->form_radio("hideemail", 1, 1)." ".LAN_YES."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0)." ".LAN_NO : $rs->form_radio("hideemail", 1)." ".LAN_YES."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0, 1)." ".LAN_NO);
 }
 SC_END
 
@@ -110,7 +110,7 @@ if(ADMIN && $curVal['user_id'] != USERID)
 	return "";
 }
 if (!is_object($e_userclass)) $e_userclass = new user_class;
-$ucList = explode(',',$e_userclass->get_editable_classes());			// List of classes which this user can edit
+$ucList = $e_userclass->get_editable_classes(USERCLASS_LIST, TRUE);			// List of classes which this user can edit (as array)
 $ret = '';
 if(!count($ucList)) return;
 
@@ -120,8 +120,9 @@ if(!count($ucList)) return;
     if (check_class($cid, $curVal['user_class'])) $is_checked[$cid] = $cid;
 	if(isset($_POST['class']))
 	{
-	  $is_checked[$cid] = in_array($cid, $_POST['class']);
+//	  $is_checked[$cid] = in_array($cid, $_POST['class']);
 	}
+
   }
   $inclass = implode(',',$is_checked);
 
@@ -161,7 +162,7 @@ SC_END
 
 SC_BEGIN AVATAR_CHOOSE
 $ret = "
-<input class='button' type ='button' style=' cursor:pointer' size='30' value='".LAN_403."' onclick='expandit(this)' />
+<input class='button' type ='button' style=' cursor:pointer' size='30' value='".LAN_USET_38."' onclick='expandit(this)' />
 <div style='display:none' >";
 $avatarlist[0] = "";
 $handle = opendir(e_IMAGE."avatars/");

@@ -9,8 +9,8 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.28 $
- * $Date: 2008-12-21 22:17:05 $
+ * $Revision: 1.29 $
+ * $Date: 2008-12-28 22:37:42 $
  * $Author: e107steved $
  *
 */
@@ -21,7 +21,7 @@ $qs = explode(".", e_QUERY);
 if($qs[0] != 'activate')
 {   // multi-language fix.
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
+//	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");		Shouldn't need this now
 }
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
 
@@ -443,15 +443,15 @@ if (isset($_POST['register']))
 		else
 		{
 			$savePassword = $_POST['password1'];	// May need in plaintext later
-			unset($_POST['password1']);				// Restrict the scope of this
-			unset($_POST['password2']);
 		}
+		unset($_POST['password1']);					// Restrict the scope of this
+		unset($_POST['password2']);
 	
 		$allData['user_ip'] = $e107->getip();
 	
 	
 		// check for multiple signups from the same IP address.
-		if($ipcount = $sql->db_Select("user", "*", "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
+		if($ipcount = $sql->db_Select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
 		{
 			if($ipcount >= $pref['signup_maxip'] && trim($pref['signup_maxip']) != "")
 			{
@@ -473,83 +473,55 @@ if (isset($_POST['register']))
 	
 	
 		// Verify Custom Signup options if selected - need specific loop since the need for them is configuration-dependent
-		$signup_option_title = array(LAN_USER_63, LAN_USER_71, LAN_USER_72, LAN_SIGNUP_28);
-		$signup_option_names = array("realname", "signature", "image", "class");
+		$signup_option_title = array(LAN_USER_63, LAN_USER_71, LAN_USER_72, LAN_USER_73, LAN_USER_74);
+		$signup_option_names = array('realname', 'signature', 'image', 'class', 'customtitle');
 	
 		foreach($signup_option_names as $key => $value)
 		{
 			if ($pref['signup_option_'.$value] == 2 && !isset($alldata['validate']['user_'.$value]) && !isset($alldata['errors']['user_'.$value]))
 			{
 				$alldata['errors']['user_'.$value] = ERR_GENERIC;
-				$alldata['errortext']['user_'.$value] = LAN_SIGNUP_6.$signup_option_title[$key].LAN_SIGNUP_7;
+				$alldata['errortext']['user_'.$value] = str_replace('--SOMETHING--',$signup_option_title[$key],LAN_USER_75);
 			}
 		}
 	
 	
-		// Extended Field validation
-		$extList = $usere->user_extended_get_fieldList();
+		// Validate Extended User Fields.
 		$eufVals = array();
-	
-		foreach($extList as $ext)
+		if (isset($_POST['ue']))
 		{
-			$eufName = 'user_'.$ext['user_extended_struct_name'];
-			if(isset($_POST['ue'][$eufName]))
-			{
-				$newval = trim($_POST['ue'][$eufName]);		// use $tp->toDB()  ??
-	//			echo "Vetting field ".'user_'.$ext['user_extended_struct_name'].": {$newval} = ".trim($_POST['ue']['user_'.$ext['user_extended_struct_name']])."<br />";
-				if($ext['user_extended_struct_required'] == 1 && (($newval == "") || (($ext['user_extended_struct_type'] == 7) && ($newval == '0000-00-00')) ))
-				{	// Required field not present
-					$_ftext = (defined($ext['user_extended_struct_text']) ? constant($ext['user_extended_struct_text']) : $ext['user_extended_struct_text']);
-					$error_message .= LAN_SIGNUP_6.$_ftext.LAN_SIGNUP_7."\\n";
-					$error = TRUE;
-				}
-				else
-				{
-					$parms = explode("^,^", $ext['user_extended_struct_parms']);
-					$regex = (isset($parms[1]) ? $tp->toText($parms[1]) : "");
-					$regexfail = (isset($parms[2]) ? trim($tp->toText($parms[2])) : "");
-	
-					if($regexfail == "")
-					{
-						$regexfail = $ext['user_extended_struct_name']." ".LAN_SIGNUP_53;
-					}
-	
-					if(defined($regexfail)) {$regexfail = constant($regexfail);}
-	
-					if($regex != "" && $newval != "" && !preg_match($regex, $newval))
-					{
-						$error_message .= $regexfail."\\n";
-						$error = TRUE;
-					}
-					else
-					{
-						$eufVals[$eufName] = $newval;
-					}
-				}
-			}
+			$eufVals = $ue->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],array()));		// Validate the extended user fields
 		}
+
+
+		// Determine whether we have an error
+		$error = ((isset($allData['errors']) && count($allData['errors'])) || (isset($eufVals['errors']) && count($eufVals['errors'])));
+
 		// All validated here - handle any errors
-		if (count($allData['errors']))
+		if ($error)
 		{
 			require_once(e_HANDLER."message_handler.php");
-			$temp = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
-			message_handler('P_ALERT', $temp.'<br />'.$error_message);
-			$error = TRUE;
+			$temp = array();
+			if (count($allData['errors']))
+			{
+				$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
+			}
+			if (varsettrue($eufData['errors']))
+			{
+				$temp[] = validatorClass::makeErrorList($eufData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
+			}
+			if ($error_message) { $temp[] = $error_message; }
+			message_handler('P_ALERT', implode('<br />', $temp));
 		}
 	}		// End of data validation
 
 
-	if($error_message)
-	{
-		message_handler("P_ALERT", $error_message);
-		$error_message = '';
-	}
 
 	// ========== End of verification.. ==============
 	// If no errors, we can enter the new member in the DB
 	// At this point we have two data arrays:
 	//		$allData['validate'] - the 'core' user data
-	//		$eufVals - any extended user fields
+	//		$eufVals['validate'] - any extended user fields
 
 	if (!$error)
 	{
@@ -566,8 +538,8 @@ if (isset($_POST['register']))
 		}
 
 
-		$u_key = md5(uniqid(rand(), 1));				// Key for signup completion
-		$allData['validate']['user_sess'] = $u_key;				// Validation key
+		$u_key = md5(uniqid(rand(), 1));					// Key for signup completion
+		$allData['validate']['user_sess'] = $u_key;			// Validation key
 
 		// Work out all user classes
 		$intClasses = array();
@@ -613,10 +585,10 @@ if (isset($_POST['register']))
 
 		// Actually write data to DB
 		$nid = $sql->db_Insert("user", $allData['validate']);
-		if(count($eufVals))
+		if (isset($eufVals['validate']) && count($eufVals['validate']))
 		{
 			$sql->db_Select_gen("INSERT INTO `#user_extended` (user_extended_id) values ('{$nid}')");
-			$sql->db_UpdateArray("user_extended", $eufVals." WHERE `user_extended_id` = ".intval($nid));
+			$sql->db_UpdateArray("user_extended", $eufVals['validate']." WHERE `user_extended_id` = ".intval($nid));
 		}
 		if (SIGNUP_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['validate'],$eufVals) ,FALSE,LOG_TO_ROLLING);
 

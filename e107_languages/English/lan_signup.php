@@ -9,8 +9,8 @@
  * Language file - User signup
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
- * $Revision: 1.14 $
- * $Date: 2008-12-21 22:17:05 $
+ * $Revision: 1.15 $
+ * $Date: 2008-12-28 22:37:43 $
  * $Author: e107steved $
  *
 */
@@ -44,8 +44,8 @@ define("LAN_SIGNUP_2", "chars.");
 define("LAN_SIGNUP_3", "Code verification failed.");
 define("LAN_SIGNUP_4", "Your password must be at least ");
 define("LAN_SIGNUP_5", " characters long.");
-define("LAN_SIGNUP_6", "Your ");
-define("LAN_SIGNUP_7", " is required");
+//define("LAN_SIGNUP_6", "Your ");			See LAN_USER_75
+//define("LAN_SIGNUP_7", " is required");	See LAN_USER_75
 define("LAN_SIGNUP_8", "Thank you!");
 define("LAN_SIGNUP_9", "Unable to proceed.");
 //define("LAN_SIGNUP_10", "Yes");
@@ -66,7 +66,7 @@ define("LAN_SIGNUP_24", "Thank you for registering at");
 define("LAN_SIGNUP_25", "Upload your avatar");
 define("LAN_SIGNUP_26", "Upload your photograph");
 define("LAN_SIGNUP_27", "Show");
-define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
+//define("LAN_SIGNUP_28", "choice of Content/Mail-lists");		Now LAN_USER_73
 define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
 define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please select 'Yes' for the 'Hide email address?' option.");
 define("LAN_SIGNUP_31", "URL to your XUP file");
@@ -100,7 +100,7 @@ define("LAN_SIGNUP_59","**** If the link doesn't work, please check that part of
 define('LAN_SIGNUP_60','Signup email resend requested');
 define('LAN_SIGNUP_61','Send succeeded');
 define('LAN_SIGNUP_62','Send failed');
-define('LAN_SIGNUP_63','Password reset email resent requested');
+define('LAN_SIGNUP_63','Password reset email resend requested');
 define('LAN_SIGNUP_64','That doesn\'t appear to be valid user information');
 define('LAN_SIGNUP_65','You have been assigned the following login name');
 define('LAN_SIGNUP_66','Please make a note of it.');
@@ -123,8 +123,8 @@ define('LAN_SIGNUP_82', 'the name that you use to login');						// LAN_10
 define('LAN_SIGNUP_83', 'Password: ');											// LAN_17
 define('LAN_SIGNUP_84', 'Re-type Password: ');									// LAN_111
 define('LAN_SIGNUP_85', 'Usernames and passwords are <b>case-sensitive</b>.');	// LAN_400
-define('LAN_SIGNUP_86', 'Email Address: ');										// LAN_112
-define('LAN_SIGNUP_87', 'Hide email address?: ');								// LAN_113
+//define('LAN_SIGNUP_86', 'Email Address: ');										// LAN_112 = LAN_USER_60
+//define('LAN_SIGNUP_87', 'Hide email address?: ');								// LAN_113 = LAN_USER_83
 //define('LAN_SIGNUP_88', 'This will prevent your email address from being displayed on site');	// LAN_114
 define('LAN_SIGNUP_89', 'Display Name: ');										// LAN_7
 define('LAN_SIGNUP_90', 'the name that will be displayed on site');				// LAN_8

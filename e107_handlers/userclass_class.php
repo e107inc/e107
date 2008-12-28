@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2008-12-21 11:07:58 $
+|     $Revision: 1.25 $
+|     $Date: 2008-12-28 22:37:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -173,43 +173,91 @@ class user_class
 
 
 	// Given the list of 'base' classes a user belongs to, returns a comma separated list including ancestors. Duplicates stripped
-  function get_all_user_classes($start_list)
-  {
-    $is = array();
-    $start_array = explode(',', $start_list);
-	foreach ($start_array as $sa)
-	{	// Merge in latest values - should eliminate duplicates as it goes
-	  if (isset($this->class_tree[$sa]))
-	  {
-		$is = array_merge($is,explode(',',$this->class_tree[$sa]['userclass_accum']));
-	  }
-	}
-	return implode(',',array_unique($is));
-  }
-
-
-  // Returns a list of user classes which can be edited by the specified classlist (defaults to current user's classes)
-  function get_editable_classes($class_list = USERCLASS_LIST)
-  {
-    $ret = array();
-	$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1);
-	$possibles = array_flip(explode(',',$class_list));
-//	unset($possibles[e_UC_PUBLIC]);
-	unset($possibles[e_UC_READONLY]);
-	foreach ($this->class_tree as $uc => $uv)
+	function get_all_user_classes($start_list)
 	{
-	  if (!isset($blockers[$uc]))
-	  {
-		$ec = $this->class_tree[$uc]['userclass_editclass'];
-//	  echo "Check class: {$uc} editclass {$ec}  in array: ".(isset($possibles[$ec]) ? 'yes' : 'no').'<br />';
-		if (isset($possibles[$ec]))
-		{
-	      $ret[] = $uc;
+		$is = array();
+		$start_array = explode(',', $start_list);
+		foreach ($start_array as $sa)
+		{	// Merge in latest values - should eliminate duplicates as it goes
+			if (isset($this->class_tree[$sa]))
+			{
+				$is = array_merge($is,explode(',',$this->class_tree[$sa]['userclass_accum']));
+			}
 		}
-	  }
+		return implode(',',array_unique($is));
 	}
-	return implode(',',$ret);
-  }
+
+
+	// Returns a list of user classes which can be edited by the specified classlist (defaults to current user's classes)
+	function get_editable_classes($class_list = USERCLASS_LIST, $asArray = FALSE)
+	{
+		$ret = array();
+		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1, e_UC_NEWUSER => 1);
+		$possibles = array_flip(explode(',',$class_list));
+		unset($possibles[e_UC_READONLY]);
+		foreach ($this->class_tree as $uc => $uv)
+		{
+			if (!isset($blockers[$uc]))
+			{
+				$ec = $uv['userclass_editclass'];
+				if (isset($possibles[$ec]))
+				{
+//					echo $uc."  {$ec}  {$uv['userclass_description']}<br />";
+					$ret[] = $uc;
+				}
+			}
+		}
+		if ($asArray) { return $ret; }
+		return implode(',',$ret);
+	}
+
+
+	
+	// Combines the selected editable classes into the main class list for a user.
+	// $combined - the complete list of current class memberships
+	// $possible - the classes which are being edited
+	// $actual - the actual membership of the editable classes
+	// All classes may be passed as comma-separated lists or arrays
+	function mergeClassLists($combined, $possible, $actual, $asArray = FALSE)
+	{
+		if (!is_array($combined)) { $combined = explode(',',$combined);  }
+		if (!is_array($possible)) { $possible = explode(',',$possible);  }
+		if (!is_array($actual)) 	{ $actual = explode(',',$actual);  }
+		$combined = array_flip($combined);
+		foreach ($possible as $p)
+		{
+			if (in_array($p,$actual))
+			{	// Class must be in final array
+				$combined[$p] = 1;
+			}
+			else
+			{
+				unset($combined[$p]);
+			}
+		}
+		$combined = array_keys($combined);
+		if ($asArray) { return $combined; }
+		return implode(',', $combined);
+	}
+
+
+	function stripFixedClasses($inClasses)
+	{
+		$asArray = TRUE;
+		if (!is_array($inClasses))
+		{
+			$asArray = FALSE;
+			$inClasses = explode(',',$inClasses);
+		}
+		$inClasses = array_flip($inClasses);
+		foreach ($this->fixed_classes as $k => $v)
+		{
+			if (isset($inClasses[$k])) { unset($inClasses[$k]); }
+		}
+		$inClasses = array_keys($inClasses);
+		if ($asArray) { return ($inClasses); }
+		return implode(',',$inClasses);
+	}
 
 
   // Given a comma separated list, returns the minimum number of class memberships required to achieve this (i.e. strips classes 'above' another in the tree)
