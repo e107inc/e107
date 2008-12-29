@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-11-25 20:12:30 $
+|     $Revision: 1.14 $
+|     $Date: 2008-12-29 18:17:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -78,11 +78,12 @@ if(varset($e107_popup)!=1)
 	$db_time    = number_format($db_time,2);		// Clock time in DB render
 	$dbPercent  = number_format($dbPercent,0);	// DB as percent of clock
 	$memuse     = $e107->get_memory_usage();		// Memory at end, in B/KB/MB/GB ;)
+	$queryCount = $sql -> db_QueryCount();
 	$rinfo = '';
 	$logLine = '';
 	if ($pref['log_page_accesses'])
 	{	// Collect the first batch of data to log
-		$logLine.= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S',$now)."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$memuse."'";
+		$logLine.= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S',$now)."','".$e107->getIP()."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$queryCount."','".$memuse."'";
 	}
 
 	if ( function_exists( 'getrusage' ) ) 
@@ -121,7 +122,7 @@ if(varset($e107_popup)!=1)
 		}
 		$rinfo .= $rendertime.CORE_LAN12.$dbPercent.CORE_LAN13.'&nbsp;'; 
 	}
-	if($pref['displaysql']){ $rinfo .= CORE_LAN15.$sql -> db_QueryCount().". "; }
+	if($pref['displaysql']){ $rinfo .= CORE_LAN15.$queryCount.". "; }
 	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= CORE_LAN16.$memuse; }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 
