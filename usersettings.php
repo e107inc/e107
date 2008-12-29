@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.107 $
-|     $Date: 2008-12-25 11:12:15 $
+|     $Revision: 1.108 $
+|     $Date: 2008-12-29 22:56:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -438,7 +438,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 //			if (isset($_POST['username']) && check_class($pref['displayname_class']))
 		if (isset($_POST['username']) && check_class($pref['displayname_class'], $udata['user_classlist'], $peer))
 		{	// Allow change of display name if in right class
-		  $username = strip_tags($_POST['username']);
+		  $username = trim(strip_tags($_POST['username']));
 		  $username = $tp->toDB(substr($username, 0, $pref['displayname_maxlength']));
 		  $new_username = "user_name = '{$username}', ";
 		}
