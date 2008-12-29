@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2008-12-29 20:55:27 $
+|     $Revision: 1.62 $
+|     $Date: 2008-12-29 22:30:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -304,19 +304,19 @@ class e107plugin
 	function manage_userclass($action, $class_name, $class_description)
 	{
 		global $sql, $tp, $e107;
+		if (!$e107->user_class->isAdmin)
+		{
+			$e107->user_class = new user_class_admin;			// We need the extra methods of the admin extension
+		}
+		$class_name = strip_tags(strtoupper($class_name));
 		if ($action == 'add')
 		{
-			$class_name = strip_tags(strtoupper($class_name));
 			if ($e107->user_class->ucGetClassIDFromName($class_name) !== FALSE)
 			{	// Class already exists.
 				return TRUE;			// That's probably OK
 			}
-			$i = 1;
-			while (isset($e107->user_class->class_tree[$i]))
-			{
-				$i++;
-			}
-			if ($i < e_UC_SPECIAL_BASE)
+			$i = $e107->user_class->findNewClassID();
+			if ($i !== FALSE)
 			{
 				$tmp = array();
 				$tmp['userclass_id'] = $i;
@@ -330,7 +330,7 @@ class e107plugin
 				$tmp['_FIELD_TYPES']['userclass_visibility'] = 'int';
 				$tmp['_FIELD_TYPES']['userclass_id'] = 'int';
 				$tmp['_FIELD_TYPES']['_DEFAULT'] = 'todb';
-				return $sql->db_Insert('userclass_classes', $tmp);
+				return $e107->user_class->add_new_class($tmp);
 			}
 			else
 			{
@@ -339,31 +339,16 @@ class e107plugin
 		}
 		if ($action == 'remove')
 		{
-			if ($sql->db_Select('userclass_classes', 'userclass_id', "userclass_name = '{$class_name}'"))
+			$classID = $e107->user_class->ucGetClassIDFromName($class_name);
+			echo "Class ID: {$classID}, name: {$class_name}<br />";
+			if (($classID !== FALSE)
+				&& ($e107->user_class->deleteClassAndUsers($classID) === TRUE))
 			{
-				$row = $sql->db_Fetch();
-				$class_id = $row['userclass_id'];
-				if ($sql->db_Delete('userclass_classes', "userclass_id = {$class_id}"))
-				{
-					if ($sql->db_Select('user', 'user_id, user_class', "user_class REGEXP('^{$class_id}\.') OR user_class REGEXP('\.{$class_id}\.') OR user_class REGEXP('\.{$class_id}$')"))
-					{
-						$sql2 = new db;
-						while ($row = $sql->db_Fetch())
-						{
-							$classes = explode(".", $row['user_class']);
-							unset($classes[$class_id]);
-							foreach($classes as $k => $v)
-							{
-								if ($v = '')
-								{
-									unset($classes[$k]);
-								}
-							}
-							$newclass = '.'.implode('.', $classes).'.';
-							$sql2->db_Update('user', "user_class = '{$newclass}' WHERE user_id = {$row['user_id']}");
-						}
-					}
-				}
+				return TRUE;
+			}
+			else
+			{
+				return FALSE;
 			}
 		}
 	}
@@ -1003,26 +988,27 @@ class e107plugin
 				$attrib = $uclass['@attributes'];
 				switch($function)
 				{
-					case 'install':
-					case 'upgrade':
-					// Add all active userclasses
+					case 'install' :
+					case 'upgrade' :
+					case 'refresh' :
+					// Add all active userclasses (code checks for already installed)
 					if(!isset($attrib['active']) || $attrib['active'] == 'true')
 					{
-						$txt .= "Adding userclass ".$attrib['name']."<br />";
+						$txt .= 'Adding userclass '.$attrib['name'].'<br />';
 						$this->manage_userclass('add', $attrib['name'], $attrib['description']);
 					}
 
 					//If upgrading, removing any inactive userclass
 					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
 					{
-						$txt .= "Removing userclass ".$attrib['name']."<br />";
+						$txt .= 'Removing userclass '.$attrib['name'].'<br />';
 						$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
 					}
 					break;
 
 					//If uninstalling, remove all userclasses (active or inactive)
 					case 'uninstall':
-					$txt .= "Removing userclass ".$attrib['name']."<br />";
+					$txt .= 'Removing userclass '.$attrib['name'].'<br />';
 					$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
 					break;
 				}

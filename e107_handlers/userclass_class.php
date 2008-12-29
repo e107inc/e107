@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2008-12-29 09:31:36 $
+|     $Revision: 1.27 $
+|     $Date: 2008-12-29 22:30:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -62,6 +62,7 @@ class user_class
 	var  $text_class_link = array();	// List of 'core' user classes and the related constants
 	
 	var $sql_r;						// We'll use our own DB to avoid interactions
+	var $isAdmin;						// Set true if we're an instance of user_class_admin
 	
 	// Constructor
 	function user_class()
@@ -69,6 +70,7 @@ class user_class
 	  global $imode;
 	  
 	  $this->sql_r = new db;
+	  $this->isAdmin = FALSE;
 
 	  $this->fixed_classes = array(e_UC_PUBLIC => UC_LAN_0,
 							e_UC_GUEST => UC_LAN_1,
@@ -665,6 +667,7 @@ class user_class
 		}
 		$tmp = array_keys($tmp);
 		if ($asArray) { return $tmp; }
+		if (count($tmp) == 0) { return ''; }
 		return implode(',',$tmp);
 	}
 	
@@ -800,31 +803,32 @@ function r_userclass_radio($fieldname, $curval = '')
 
 class user_class_admin extends user_class
 {
-  var $field_list = array('userclass_name' => "varchar(100) NOT NULL default ''", 
-						'userclass_description' => "varchar(250) NOT NULL default ''", 
-						'userclass_editclass' => "tinyint(3) unsigned NOT NULL default '0'",
-						'userclass_parent' => "tinyint(3) unsigned NOT NULL default '0'",
-						'userclass_accum' => "varchar(250) NOT NULL default ''", 
-						'userclass_visibility' => "tinyint(3) unsigned NOT NULL default '0'",
-						'userclass_type'		=>"tinyint(1) unsigned NOT NULL default '0'",
-						'userclass_icon' => "varchar(250) NOT NULL default ''"
-						);		// Note - 'userclass_id' intentionally not in this list
+	var $field_list = array('userclass_name' => "varchar(100) NOT NULL default ''", 
+							'userclass_description' => "varchar(250) NOT NULL default ''", 
+							'userclass_editclass' => "tinyint(3) unsigned NOT NULL default '0'",
+							'userclass_parent' => "tinyint(3) unsigned NOT NULL default '0'",
+							'userclass_accum' => "varchar(250) NOT NULL default ''", 
+							'userclass_visibility' => "tinyint(3) unsigned NOT NULL default '0'",
+							'userclass_type'		=>"tinyint(1) unsigned NOT NULL default '0'",
+							'userclass_icon' => "varchar(250) NOT NULL default ''"
+							);		// Note - 'userclass_id' intentionally not in this list
 
 
-  // Icons to use for graphical tree display
-  // First index - no children, children
-  // Second index - not last item, last item
-  // Third index - closed tree, open tree
-  var $tree_icons  = array(	);
-  var $graph_debug = FALSE;			// Shows extra info on graphical tree when TRUE
+	// Icons to use for graphical tree display
+	// First index - no children, children
+	// Second index - not last item, last item
+	// Third index - closed tree, open tree
+	var $tree_icons  = array(	);
+	var $graph_debug = FALSE;			// Shows extra info on graphical tree when TRUE
 
 
-  function user_class_admin()
-  {
-	$this->user_class();			// Call constructor from ancestor class
+	function user_class_admin()
+	{
+		$this->user_class();			// Call constructor from ancestor class
+		$this->isAdmin = TRUE;
 	
 	// Have to initialise the images this way - PHP4 won't take a nested array assignment in the variable list
-	$this->tree_icons  = array(
+		$this->tree_icons  = array(
 						FALSE => array(			// No children
 							FALSE => array(			// Not last item
 							  FALSE => '',		// Closed tree - don't display
@@ -847,52 +851,52 @@ class user_class_admin extends user_class
 							  TRUE  => 'minusbottom.gif'
 							))
 						);
-  }
+	}
 
  
 
 	/*
 	Next three routines are used to update the database after adding/deleting a class
 	*/
-  function calc_tree()
-  {
-//    echo "Calc Tree<br />";
-    $this->readTree(TRUE);			// Make sure we have accurate data
-	foreach ($this->class_parents as $cp)
+	function calc_tree()
 	{
-	  $rights = array();
-	  $this->rebuild_tree($cp,$rights);		// increasing rights going down the tree
+//    echo "Calc Tree<br />";
+		$this->readTree(TRUE);			// Make sure we have accurate data
+		foreach ($this->class_parents as $cp)
+		{
+			$rights = array();
+			$this->rebuild_tree($cp,$rights);		// increasing rights going down the tree
+		}
 	}
-  }
   
 
 	// Internal function, called recursively to rebuild the permissions tree where rights increase going down the tree
 	// $parent is the class number being processed.
 	// $rights is the array of rights accumulated so far in the walk down the tree
-  function rebuild_tree($parent, $rights) 
-  {
-	if ($this->class_tree[$parent]['userclass_parent'] == e_UC_NOBODY)
+	function rebuild_tree($parent, $rights) 
 	{
-	  $this->topdown_tree($parent);
-	  return;
-	}
-	if ($this->class_tree[$parent]['userclass_type'] == UC_TYPE_GROUP)
-	{
-		echo "Bottom up - skip: {$parent}<br />";
-		return;			// Probably just stop here for a group class
-	}
-    $rights[]  = $parent;
-	$imp_rights = implode(',',$rights);
-	if ($this->class_tree[$parent]['userclass_accum'] != $imp_rights)
-	{
-	  $this->class_tree[$parent]['userclass_accum'] = $imp_rights;
-	  if (!isset($this->class_tree[$cp]['change_flag'])) $this->class_tree[$parent]['change_flag'] = 'UPDATE';
-	}
-    foreach ($this->class_tree[$parent]['class_children'] as $cc)
-	{
-	  $this->rebuild_tree($cc,$rights);		// Recursive call
-    }
-  } 
+		if ($this->class_tree[$parent]['userclass_parent'] == e_UC_NOBODY)
+		{
+			$this->topdown_tree($parent);
+			return;
+		}
+		if ($this->class_tree[$parent]['userclass_type'] == UC_TYPE_GROUP)
+		{
+//			echo "Bottom up - skip: {$parent}<br />";
+			return;			// Probably just stop here for a group class
+		}
+		$rights[]  = $parent;
+		$imp_rights = implode(',',$rights);
+		if ($this->class_tree[$parent]['userclass_accum'] != $imp_rights)
+		{
+			$this->class_tree[$parent]['userclass_accum'] = $imp_rights;
+			if (!isset($this->class_tree[$cp]['change_flag'])) $this->class_tree[$parent]['change_flag'] = 'UPDATE';
+		}
+		foreach ($this->class_tree[$parent]['class_children'] as $cc)
+		{
+			$this->rebuild_tree($cc,$rights);		// Recursive call
+		}
+	} 
 
 
 	// Internal function, called recursively to rebuild the permissions tree where rights increase going up the tree
@@ -1109,72 +1113,105 @@ class user_class_admin extends user_class
 	}
 
 
-  
-  function add_new_class($classrec)
-  {
-//    echo "Add new class<br />";
-	if ($classrec['userclass_type'] == UC_TYPE_GROUP)
-	{	// Need to make sure our ID is in the accumulation array
-		$temp = explode(',',$classrec['userclass_accum']);
-		if (!in_array($classrec['userclass_id'], $temp))
-		{
-			$temp[] = $classrec['userclass_id'];
-			$classrec['userclass_accum'] = implode(',',$temp);
-		}
-	}
-	$this->sql_r->db_Insert('userclass_classes',$this->copy_rec($classrec, TRUE));
-	$this->clearCache();
-  }
-  
-  
-  function save_edited_class($classrec)
-  {
-//    echo "Save edited class: ".implode(',', $classrec)."<br />";
-    if (!$classrec['userclass_id']) 
+	// Add new class. Class ID must be in the passed record.
+	// Return TRUE on success, FALSE on failure
+	function add_new_class($classrec)
 	{
-	  echo "Programming bungle on save<br />";
-	  return;
-	}
-    $qry = '';
-	$spacer = '';
-	if ($classrec['userclass_type'] == UC_TYPE_GROUP)
-	{	// Need to make sure our ID is in the accumulation array
-		$temp = explode(',',$classrec['userclass_accum']);
-		if (!in_array($classrec['userclass_id'], $temp))
+//    echo "Add new class<br />";
+		if (!isset($classrec['userclass_id']))
 		{
-			$temp[] = $classrec['userclass_id'];
-			$classrec['userclass_accum'] = implode(',',$temp);
+			return FALSE;
+		}
+		if ($classrec['userclass_type'] == UC_TYPE_GROUP)
+		{	// Need to make sure our ID is in the accumulation array
+			$temp = explode(',',$classrec['userclass_accum']);
+			if (!in_array($classrec['userclass_id'], $temp))
+			{
+				$temp[] = $classrec['userclass_id'];
+				$classrec['userclass_accum'] = implode(',',$temp);
+			}
+		}
+		if ($this->sql_r->db_Insert('userclass_classes',$this->copy_rec($classrec, TRUE)) === FALSE)
+		{
+			return FALSE;
+		}
+		$this->clearCache();
+		return TRUE;
+	}
+  
+  
+	function save_edited_class($classrec)
+	{
+//    echo "Save edited class: ".implode(',', $classrec)."<br />";
+		if (!$classrec['userclass_id']) 
+		{
+			echo "Programming bungle on save<br />";
+			return FALSE;
+		}
+		$qry = '';
+		$spacer = '';
+		if ($classrec['userclass_type'] == UC_TYPE_GROUP)
+		{	// Need to make sure our ID is in the accumulation array
+			$temp = explode(',',$classrec['userclass_accum']);
+			if (!in_array($classrec['userclass_id'], $temp))
+			{
+				$temp[] = $classrec['userclass_id'];
+				$classrec['userclass_accum'] = implode(',',$temp);
+			}
+		}
+	
+		foreach ($this->field_list as $fl => $val)
+		{
+			if (isset($classrec[$fl]))
+			{
+				$qry .= $spacer."`".$fl."` = '".$classrec[$fl]."'";
+				$spacer = ", ";
+			}
+		}
+		if ($this->sql_r->db_Update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'") === FALSE)
+		{
+			return FALSE;
+		}
+		$this->clearCache();
+		return TRUE;
+	}
+
+  
+
+	function delete_class($class_id)
+	{
+		if (isset($this->fixed_classes[$class_id])) return FALSE;			// Some classes can't be deleted
+	//	echo "Delete class {$class_id}<br />";
+		if (!isset($this->class_tree[$class_id])) return FALSE;
+		if (count($this->class_tree[$class_id]['class_children'])) return FALSE;		// Can't delete class with descendants
+		foreach ($this->class_tree as $c)
+		{
+		  if ($c['userclass_editclass'] == $class_id) return FALSE;
+		  if ($c['userclass_visibility'] == $class_id) return FALSE;
+		}
+		if ($this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$class_id}'") === FALSE) return FALSE;
+		$this->clearCache();
+		$this->readTree(TRUE);			// Re-read the class tree
+		return TRUE;
+	}
+
+
+	function deleteClassAndUsers($classID)
+	{
+		if ($this->delete_class($classID))
+		{
+			if ($this->sql_r->db_Select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
+			{
+				$sql2 = new db;
+				while ($row = $this->sql_r->db_Fetch())
+				{
+					$newClass = $this->ucRemove($classID,$row['user_class']);
+					$sql2->db_Update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']}");
+				}
+			}
 		}
 	}
 
-	foreach ($this->field_list as $fl => $val)
-	{
-	  if (isset($classrec[$fl]))
-	  {
-	    $qry .= $spacer."`".$fl."` = '".$classrec[$fl]."'";
-		$spacer = ", ";
-	  }
-	}
-	$this->sql_r->db_Update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'");
-	$this->clearCache();
-  }
-  
- 
-  function delete_class($class_id)
-  {
-    if (isset($this->fixed_classes[$class_id])) return FALSE;			// Some classes can't be deleted
-	if (!isset($this->class_tree[$class_id])) return FALSE;
-	if (count($this->class_tree[$class_id]['class_children'])) return FALSE;		// Can't delete class with descendants
-	foreach ($this->class_tree as $c)
-	{
-	  if ($c['userclass_editclass'] == $class_id) return FALSE;
-	  if ($c['userclass_visibility'] == $class_id) return FALSE;
-	}
-    if (!$this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$class_id}'")) return FALSE;
-	$this->clearCache();
-	$this->readTree(TRUE);			// Re-read the class tree
-	return TRUE;
-  }
 
 
 	// Certain fields on admin records have constraints on their values.
