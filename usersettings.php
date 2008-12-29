@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.31 $
- * $Date: 2008-12-29 09:31:36 $
+ * $Revision: 1.32 $
+ * $Date: 2008-12-29 11:00:16 $
  * $Author: e107steved $
  *
 */
@@ -384,7 +384,7 @@ if ($dataToSave && !$promptPassword)
 		}
 		else
 		{
-			if (isset($changedUserData['user_password']))
+			if (isset($changedUserData['user_password']) && !$adminEdit)
 			{
 			//	echo "Make new cookie<br />";
 				$userMethods->makeUserCookie(array('user_id' => $udata['user_id'],'user_password' => $changedUserData['user_password']), FALSE);		// Can't handle autologin ATM
