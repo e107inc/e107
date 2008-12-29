@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-22 12:54:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-29 16:11:02 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -150,6 +150,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 	$text = '';
 	if (getperms($perms)) 
 	{
+		$description = strip_tags($description);
 		if ($mode == 'adminb') 
 		{
 			$text = "<tr><td class='forumheader3'>
@@ -176,7 +177,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 			elseif ($mode == 'classis') 
 			{
 				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."' title='{$description}'>".$icon."</a><br />
-					<a href='".$link."' title='$description'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";
+					<a href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";
 			}
 			elseif ($mode == 'beginner')
 			{
