@@ -4,6 +4,11 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $content_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 
+SC_BEGIN CONTENTFORM_HOOK
+global $CONTENTFORM_HOOK;
+return $CONTENTFORM_HOOK;
+SC_END
+
 SC_BEGIN CM_AMOUNT
 global $row, $tp, $content_pref;
 if($sc_mode){
