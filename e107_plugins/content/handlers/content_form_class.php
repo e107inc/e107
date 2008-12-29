@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.21 $
-|		$Date: 2008-11-20 20:35:10 $
-|		$Author: e107steved $
+|		$Revision: 1.22 $
+|		$Date: 2008-12-29 20:53:24 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -213,7 +213,7 @@ class contentform{
 		}
 
 		function show_create_content($mode, $userid="", $username=""){
-			global $qs, $sql, $ns, $rs, $aa, $fl, $tp, $content_shortcodes, $content_pref, $plugintable, $plugindir, $pref, $eArrayStorage, $message, $row, $show, $content_author_name_value, $content_author_name_js, $content_author_email_value, $content_author_email_js, $content_author_id, $months, $ne_day, $ne_month, $ne_year, $current_year, $end_day, $end_month, $end_year, $content_tmppath_icon, $content_tmppath_file, $content_tmppath_image, $iconlist, $checkattachnumber, $filelist, $checkimagesnumber, $imagelist, $CONTENTFORM_CATEGORY, $CONTENTFORM_CUSTOM, $CONTENTFORM_CUSTOM_KEY, $CONTENTFORM_CUSTOM_VALUE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMSTART, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMTABLE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMEND, $CONTENTFORM_PRESET, $CONTENT_ADMIN_CONTENT_CREATE, $CONTENT_ADMIN_BUTTON;
+			global $qs, $sql, $ns, $rs, $aa, $fl, $tp, $content_shortcodes, $content_pref, $plugintable, $plugindir, $pref, $eArrayStorage, $message, $row, $show, $content_author_name_value, $content_author_name_js, $content_author_email_value, $content_author_email_js, $content_author_id, $months, $ne_day, $ne_month, $ne_year, $current_year, $end_day, $end_month, $end_year, $content_tmppath_icon, $content_tmppath_file, $content_tmppath_image, $iconlist, $checkattachnumber, $filelist, $checkimagesnumber, $imagelist, $CONTENTFORM_CATEGORY, $CONTENTFORM_CUSTOM, $CONTENTFORM_CUSTOM_KEY, $CONTENTFORM_CUSTOM_VALUE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMSTART, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMTABLE, $CONTENT_ADMIN_CONTENT_CREATE_CUSTOMEND, $CONTENTFORM_PRESET, $CONTENT_ADMIN_CONTENT_CREATE, $CONTENT_ADMIN_BUTTON, $e_event;
 
 			$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
@@ -785,6 +785,10 @@ class contentform{
 					}
 				}
 			}
+
+			global $CONTENTFORM_HOOK;
+			$data = array('method'=>'form', 'table'=>$plugintable, 'id'=>$row['content_id'], 'plugin'=>'content', 'function'=>'create_item');
+			$CONTENTFORM_HOOK = $e_event->triggerHook($data);
 
 			$button = ($hidden ? $hidden : "");
 			if($qs[1] == "edit" || $qs[1] == "sa" ){

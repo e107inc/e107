@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2008-10-07 19:22:20 $
-|		$Author: e107steved $
+|		$Revision: 1.11 $
+|		$Date: 2008-12-29 20:53:24 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -294,12 +294,15 @@ class contentdb{
 				$refer = "";
 			}
 			$sql -> db_Insert($plugintable, "'0', '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['content_summary']."', '".$_POST['content_text']."', '".$tp->toDB($author)."', '".$icon."', '".$totalattach."', '".$totalimages."', '".$_POST['parent']."', '".intval($_POST['content_comment'])."', '".intval($_POST['content_rate'])."', '".intval($_POST['content_pe'])."', '".$refer."', '".$starttime."', '".$endtime."', '".$_POST['content_class']."', '".$contentprefvalue."', '0', '".intval($_POST['content_score'])."', '".$_POST['content_meta']."', '".$_POST['content_layout']."' ");
-
+			$id = mysql_insert_id();
 			$e107cache->clear("$plugintable");
 
 			//trigger event for notify
 			$edata_cs = array("content_heading" => $_POST['content_heading'], "content_subheading" => $_POST['content_subheading'], "content_author" => $_POST['content_author_name']);
 			$e_event->trigger("content", $edata_cs);
+
+			$data = array('method'=>'create', 'table'=>$plugintable, 'id'=>$id, 'plugin'=>'content', 'function'=>'dbContent');
+			$message = $e_event->triggerHook($data);
 
 			if(!$type || $type == "admin"){
 				js_location(e_SELF."?".e_QUERY.".cc");
@@ -321,6 +324,10 @@ class contentdb{
 
 			$e107cache->clear("$plugintable");
 			$e107cache->clear("comment.$plugintable.{$_POST['content_id']}");
+
+			$data = array('method'=>'update', 'table'=>$plugintable, 'id'=>$_POST['content_id'], 'plugin'=>'content', 'function'=>'dbContent');
+			$message = $e_event->triggerHook($data);
+
 			if(!$type || $type == "admin"){
 				js_location(e_SELF."?".e_QUERY.".cu");
 			}elseif($type == "contentmanager"){

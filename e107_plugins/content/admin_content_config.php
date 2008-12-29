@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2007-03-13 16:51:05 $
+|		$Revision: 1.7 $
+|		$Date: 2008-12-29 20:53:24 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -108,8 +108,11 @@ if(isset($delete) && $delete == 'cat'){
 //delete content item
 if(isset($delete) && $delete == 'content'){
 	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-		$e107cache->clear($plugintable);
 		$message = CONTENT_ADMIN_ITEM_LAN_3;
+		global $e_event;
+		$data = array('method'=>'delete', 'table'=>$plugintable, 'id'=>$del_id, 'plugin'=>'content', 'function'=>'delete_content');
+		$message .= $e_event->triggerHook($data);
+		$e107cache->clear($plugintable);
 	}
 }
 
