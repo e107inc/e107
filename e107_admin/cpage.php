@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-06 16:40:32 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Custom Menus/Pages Administration
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
+ * $Revision: 1.10 $
+ * $Date: 2008-12-29 15:23:06 $
+ * $Author: secretr $
+ *
 */
 
 require_once("../class2.php");
@@ -23,137 +21,154 @@ if (!getperms("5")) { header("location:".e_BASE."index.php"); exit; }
 
 $e_sub_cat = 'custom';
 $e_wysiwyg = "data";
-$page = new page;
 
 require_once("auth.php");
-// require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER."message_handler.php");
+require_once(e_HANDLER."form_handler.php");
+$frm = new e_form(true);
+$emessage = &eMessage::getInstance();
+$page = new page;
+
 $custpage_lang = ($sql->mySQLlanguage) ? $sql->mySQLlanguage : $pref['sitelanguage'];
 
 if (e_QUERY)
 {
 	$tmp        = explode(".", e_QUERY);
 	$action     = $tmp[0];
-	$sub_action = $tmp[1];
-	$id         = intval($tmp[2]);
-	$from       = intval(varset($tmp[3],0));
+	$sub_action = varset($tmp[1]);
+	$id         = intval(varset($tmp[2], 0));
+	$from       = intval(varset($tmp[3], 0));
 }
 
 if(isset($_POST['submitPage']))
 {
-	$page -> submitPage();
+	$page->submitPage();
 }
 
 if(isset($_POST['uploadfiles']))
 {
 
-	$page -> uploadPage();
-	$id = intval(varset($_POST['pe_id'],0));
+	$page->uploadPage();
+	$id = intval(varset($_POST['pe_id'], 0));
 	$sub_action = ($_POST['pe_id']) ? "edit" : "";
-	$page -> createPage($_POST['mode']);
+	$page->createPage($_POST['mode']);
 }
 
 if(isset($_POST['submitMenu']))
 {
-	$page -> submitPage("", TRUE);
+	$page->submitPage("", TRUE);
 }
 
 if(isset($_POST['updateMenu']))
 {
-	$page -> submitPage($_POST['pe_id'], TRUE);
+	$page->submitPage($_POST['pe_id'], TRUE);
 }
 
 if(isset($_POST['updatePage']))
 {
-	$page -> submitPage($_POST['pe_id']);
+	$page->submitPage($_POST['pe_id']);
 }
 
 if(isset($_POST['delete']))
 {
 	foreach(array_keys($_POST['delete']) as $pid)
 	{
-		$page -> delete_page($pid);
+		$page->delete_page($pid);
 	}
 }
 
-if (isset($_POST['saveOptions'])) 
+if (isset($_POST['saveOptions']))
 {
-	$page -> saveSettings();
-}
-
-if($page->message)
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$page->message."</b></div>");
+	$page->saveSettings();
 }
 
 if(!e_QUERY)
 {
-	$page -> showExistingPages();
+	$page->showExistingPages();
 }
 else
 {
 	$function = $action."Page";
-	$page -> $function();
+	$page->$function();
 }
 
 require_once(e_ADMIN."footer.php");
 
 class page
 {
-	var $message;
-
 	function showExistingPages()
 	{
-		global $sql, $tp, $ns;
+		global $sql, $e107, $emessage;
 
-		$text = "<div style='text-align: center;'>";
+		$text = "
+			<form action='".e_SELF."' id='newsform' method='post'>
+				<fieldset id='core-cpage-list'>
+					<legend class='e-hideme'>".CUSLAN_5."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<colgroup span='4'>
+							<col style='width: 	5%'></col>
+							<col style='width: 60%'></col>
+							<col style='width: 15%'></col>
+							<col style='width: 20%'></col>
+						</colgroup>
+						<thead>
+							<tr>
+								<th>".ID."</th>
+								<th>".CUSLAN_1."</th>
+								<th>".CUSLAN_2."</th>
+								<th class='center last'>".CUSLAN_3."</th>
+							</tr>
+						</thead>
+						<tbody>
+		";
 
-		if(!$sql -> db_Select("page", "*", "ORDER BY page_datestamp DESC", "nowhere"))
+		if(!$sql->db_Select("page", "*", "ORDER BY page_datestamp DESC", "nowhere"))
 		{
-			$text .= CUSLAN_42;
+			$text .= "
+							<tr>
+								<td colspan='4' class='center middle'>
+									".CUSLAN_42."
+								</td>
+							</tr>
+			";
 		}
 		else
 		{
-			$pages = $sql -> db_getList('ALL', FALSE, FALSE);
-			$text .= "<form action='".e_SELF."' id='newsform' method='post'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
-			<tr>
-			<td style='width:5%; text-align: center;' class='fcaption'>ID</td>
-			<td style='width:60%' class='fcaption'>".CUSLAN_1."</td>
-			<td style='width:15%; text-align: center;' class='fcaption'>".CUSLAN_2."</td>
-			<td style='width:20%; text-align: center;' class='fcaption'>".CUSLAN_3."</td>
-			</tr>";
+			$pages = $sql->db_getList('ALL', FALSE, FALSE);
 
 			foreach($pages as $pge)
 			{
-			  $title_text = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
+				//title='".LAN_DELETE."'
+				$title_text = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
 				$text .= "
-				<tr>
-				<td style='width:5%; text-align: center;' class='forumheader3'>{$pge['page_id']}</td>
-				<td style='width:60%' class='forumheader3'><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$title_text}</a></td>
-				<td style='width:15%; text-align: center;' class='forumheader3'>".($pge['page_theme'] ? "menu" : "page")."</td>
-				<td style='width:20%; text-align: center;' class='forumheader3'>
-				<a href='".e_SELF."?".($pge['page_theme'] ? "createm": "create").".edit.{$pge['page_id']}'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete[{$pge['page_id']}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $pge[page_id] ]')\"/>
-				</td>
-				</tr>";
+						<tr>
+							<td>{$pge['page_id']}</td>
+							<td><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$title_text}</a></td>
+							<td>".($pge['page_theme'] ? "menu" : "page")."</td>
+							<td class='center'>
+								<a class='action edit' href='".e_SELF."?".($pge['page_theme'] ? "createm": "create").".edit.{$pge['page_id']}'>".ADMIN_EDIT_ICON."</a>
+								<input type='image' class='action delete' name='delete[{$pge['page_id']}]' src='".ADMIN_DELETE_ICON_PATH."' title='".CUSLAN_4." [ ID: {$pge['page_id']} ]' />
+							</td>
+						</tr>
+				";
 			}
-
-			$text .= "
-			</table>
-			</form>";
 		}
 
 		$text .= "
-		</div>";
+						</tbody>
+					</table>
+				</fieldset>
+			</form>
+		";
 
-		$ns -> tablerender(CUSLAN_5, $text);
+		$e107->ns->tablerender(CUSLAN_5, $emessage->render().$text);
 	}
 
 
 	function createmPage()
 	{
-		$this -> createPage(TRUE);
+		$this->createPage(TRUE);
 	}
 
 
@@ -170,7 +185,10 @@ class page
 	{
 		/* mode: FALSE == page, mode: TRUE == menu */
 
-		global $sql, $tp, $ns, $pref, $sub_action, $id;
+		global $sql, $tp, $e107, $sub_action, $id, $frm, $e_userclass;
+
+		$edit = ($sub_action == 'edit');
+		$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
 
 		if ($sub_action == "edit" && !isset($_POST['preview']) && !isset($_POST['submit']))
 		{
@@ -183,115 +201,142 @@ class page
 				$row                          = $sql->db_Fetch();
 				$page_class                   = $row['page_class'];
 				$page_password                = $row['page_password'];
-				$page_title                   = $tp -> toFORM($row['page_title']);
+				$page_title                   = $tp->toForm($row['page_title']);
 				$page_rating_flag             = $row['page_rating_flag'];
 				$page_comment_flag            = $row['page_comment_flag'];
 				$page_display_authordate_flag = $row['page_author'];
 				$page_link 					  = varset($row['link_name'],'');
-				$data                         = $tp -> toFORM($row['page_text']);
+				$data                         = $tp->toForm($row['page_text']);
 				$edit                         = TRUE;
-				$menu_name					  = $tp -> toFORM($row['menu_name']);
+				$menu_name					  = $tp->toForm($row['menu_name']);
 			}
-			}
+		}
 
-		$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."' id='dataform' enctype='multipart/form-data'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>";
+		$text = "
+			<form method='post' action='".e_SELF."' id='dataform' enctype='multipart/form-data'>
+				<fieldset id='core-cpage-create-general'>
+					<legend".($mode ? " class='e-hideme'" : "").">".CUSLAN_47."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminedit'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+		";
 
 		if($mode)  // menu mode.
 		{
-			$text .= "<tr>
-			<td style='width:25%' class='forumheader3'>".CUSLAN_7."</td>
-			<td style='width:75%' class='forumheader3'>
-           <input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' />
-		   	</td>
-			</tr>";
+			$text .= "
+						<tr>
+							<td class='label'>".CUSLAN_7."</td>
+							<td class='control'>
+								".$frm->text('menu_name', $menu_name, 50)."
+							</td>
+						</tr>
+			";
 		}
 
-		$text .= "<tr>
-		<td style='width:25%' class='forumheader3'>".CUSLAN_8."</td>
-		<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_title' size='50' value='".$page_title."' maxlength='250' /></td>
-		</tr>
-
-		<tr>
-		<td style='width:25%' class='forumheader3'>".CUSLAN_9."</td>
-		<td style='width:75%' class='forumheader3'>";
+		$text .= "
+						<tr>
+							<td class='label'>".CUSLAN_8."</td>
+							<td class='control'>
+								".$frm->text('page_title', $page_title, 250)."
+							</td>
+						</tr>
+						<tr>
+							<td class='label'>".CUSLAN_9."</td>
+							<td class='control'>
+		";
 
 		require_once(e_HANDLER."ren_help.php");
-		$insertjs = (!e_WYSIWYG)?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
+		$insertjs = (!e_WYSIWYG)? " rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
 		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
-		$text .= "<textarea class='tbox' id='data' name='data' cols='80'   $insertjs>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
+		$text .= "<textarea class='tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 
-		$text .= "<br />".display_help('',"cpage")."</td>
-		</tr>
+		$text .= "
+								<br />".display_help('cpage-help', 'cpage')."
+							</td>
+							</tr>
+							<tr>
+								<td class='label'>".LAN_UPLOAD_IMAGES."</td>
+								<td class='control'>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
+							</tr>
 
-		<tr>
-			<td style='width:25%' class='forumheader3'>".LAN_UPLOAD_IMAGES."</td>
-			<td style='width:75%;' class='forumheader3'>".$tp->parseTemplate("{UPLOADFILE=".e_IMAGE."custom/}")."</td>
-		</tr>";
+
+		";
 
 		if(!$mode)
 		{
 			$text .= "
+						</tbody>
+					</table>
+				</fieldset>
+				<fieldset id='core-cpage-create-options'>
+					<legend>".CUSLAN_3."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminedit options'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class='label'>".CUSLAN_10."</td>
+								<td class='control'>
+									".$frm->radio_switch('page_rating_flag', $page_rating_flag)."
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>".CUSLAN_13."</td>
+								<td class='control'>
+									".$frm->radio_switch('page_comment_flag', $page_comment_flag)."
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>".CUSLAN_41."</td>
+								<td class='control'>
+									".$frm->radio_switch('page_display_authordate_flag', $page_display_authordate_flag)."
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>".CUSLAN_14."</td>
+								<td class='control'>
+									".$frm->text('page_password', $page_password, 50)."
+									<div class='field-help'>".CUSLAN_15."</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>".CUSLAN_16."</td>
+								<td class='control'>
+									".$frm->text('page_link', $page_link, 50)."
+									<div class='field-help'>".CUSLAN_17."</div>
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>".CUSLAN_18."</td>
 
-
-			<tr>
-			<td style='width:25%' class='forumheader3'>".CUSLAN_10."</td>
-			<td style='width:75%;' class='forumheader3'>
-			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-			<input type='radio' name='page_rating_flag' value='0'".($page_rating_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
-			</td>
-			</tr>
-
-			<tr>
-			<td style='width:25%' class='forumheader3'>".CUSLAN_13."</td>
-			<td style='width:75%;' class='forumheader3'>
-			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-			<input type='radio' name='page_comment_flag' value='0'".($page_comment_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
-			</td>
-			</tr>
-
-			<tr>
-			<td style='width:25%' class='forumheader3'>".CUSLAN_41."</td>
-			<td style='width:75%;' class='forumheader3'>
-			<input type='radio' name='page_display_authordate_flag' value='1'".($page_display_authordate_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-			<input type='radio' name='page_display_authordate_flag' value='0'".($page_display_authordate_flag ? "" : " checked='checked'")." /> ".CUSLAN_39."
-			</td>
-			</tr>
-
-			<tr>
-			<td style='width:25%' class='forumheader3'>".CUSLAN_14."<br /><span class='smalltext'>".CUSLAN_15."</span></td>
-			<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_password' size='20' value='".$page_password."' maxlength='50' /></td>
-			</tr>
-
-			<tr>
-			<td style='width:25%' class='forumheader3'>".CUSLAN_16."<br /><span class='smalltext'>".CUSLAN_17."</span></td>
-			<td style='width:75%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='".$page_link."' maxlength='50' /></td>
-			</tr>
-
-			<tr>
-			<td style='width:25%' class='forumheader3'>".CUSLAN_18."</td>
-			<td style='width:75%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
-			</tr>";
+								<td class='control'>
+									".$e_userclass->uc_dropdown('page_class', $page_class, '', "tabindex='".$frm->getNext()."'")."
+								</td>
+							</tr>
+			";
 		}
 
-		$text .= "<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>".
+		$text .= "
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						".
+						(!$mode ?
+						($edit  ? $frm->admin_button('updatePage', CUSLAN_19, 'update')."<input type='hidden' name='pe_id' value='{$id}' />" : $frm->admin_button('submitPage', CUSLAN_20, 'create')) :
+						($edit  ? $frm->admin_button('updateMenu', CUSLAN_21, 'update')."<input type='hidden' name='pe_id' value='{$id}' />" : $frm->admin_button('submitMenu', CUSLAN_22, 'create')))
+						."
+						<input type='hidden' name='mode' value='{$mode}' />
+					</div>
+				</fieldset>
+			</form>
+		";
 
-		(!$mode ?
-		($edit  ? "<input class='button' type='submit' name='updatePage' value='".CUSLAN_19."' /><input type='hidden' name='pe_id' value='{$id}' />" : "<input class='button' type='submit' name='submitPage' value='".CUSLAN_20."' />") :
-		($edit  ? "<input class='button' type='submit' name='updateMenu' value='".CUSLAN_21."' /><input type='hidden' name='pe_id' value='{$id}' />" : "<input class='button' type='submit' name='submitMenu' value='".CUSLAN_22."' />"))
-
-		."<input type='hidden' name='mode' value='$mode' />
-		</td>
-		</tr>
-
-		</table>
-		</form>
-		</div>";
-
-		$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
-		$ns -> tablerender($caption, $text);
+		$e107->ns->tablerender($caption, $text);
 	}
 
 
@@ -302,67 +347,67 @@ class page
 	{
 		global $sql, $tp, $e107cache, $admin_log;
 
-		$page_title = $tp -> toDB($_POST['page_title']);
-		$page_text = $tp -> toDB($_POST['data']);
+		$page_title = $tp->toDB($_POST['page_title']);
+		$page_text = $tp->toDB($_POST['data']);
 		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0);
 
 
 		if ($mode)
 		{	// Don't think $_POST['page_ip_restrict'] is ever set.
-			$update = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."' WHERE page_id='{$mode}'");
+			$update = $sql->db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."' WHERE page_id='{$mode}'");
 			$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
 
 			if($type)
 			{
-				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
-				$sql -> db_Update("menus", "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ");
+				$menu_name = $tp->toDB($_POST['menu_name']); // not to be confused with menu-caption.
+				$sql->db_Update("menus", "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ");
 				$update++;
 			}
 
 			if ($_POST['page_link'])
 			{
-				if ($sql -> db_Select("links", "link_id", "link_url='page.php?".$mode."' && link_name!='".$tp -> toDB($_POST['page_link'])."'"))
+				if ($sql->db_Select("links", "link_id", "link_url='page.php?".$mode."' && link_name!='".$tp->toDB($_POST['page_link'])."'"))
 				{
-					$sql -> db_Update("links", "link_name='".$tp -> toDB($_POST['page_link'])."' WHERE link_url='page.php?".$mode."'");
+					$sql->db_Update("links", "link_name='".$tp->toDB($_POST['page_link'])."' WHERE link_url='page.php?".$mode."'");
 					$update++;
 					$e107cache->clear("sitelinks");
 				}
-				else if (!$sql -> db_Select("links", "link_id", "link_url='page.php?".$mode."'"))
+				else if (!$sql->db_Select("links", "link_id", "link_url='page.php?".$mode."'"))
 				{
-					$sql -> db_Insert("links", "0, '".$tp -> toDB($_POST['page_link'])."', 'page.php?".$mode."', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
+					$sql->db_Insert("links", "0, '".$tp->toDB($_POST['page_link'])."', 'page.php?".$mode."', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
 					$update++;
 					$e107cache->clear("sitelinks");
 				}
 			} else {
-				if ($sql -> db_Select("links", "link_id", "link_url='page.php?".$mode."'"))
+				if ($sql->db_Select("links", "link_id", "link_url='page.php?".$mode."'"))
 				{
-					$sql -> db_Delete("links", "link_url='page.php?".$mode."'");
+					$sql->db_Delete("links", "link_url='page.php?".$mode."'");
 					$update++;
 					$e107cache->clear("sitelinks");
 				}
 			}
-			admin_update($update, 'update', LAN_UPDATED);
+			admin_update($update, 'update', LAN_UPDATED, false, false);
 		}
 		else
 		{	// New page/menu
-			$menuname = ($type ? $tp -> toDB($_POST['menu_name']) : "");
+			$menuname = ($type ? $tp->toDB($_POST['menu_name']) : "");
 
-			admin_update($sql -> db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27);
+			admin_update($sql->db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
 			$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 
 			if($type)
 			{
-				$sql -> db_Insert("menus", "0, '$menuname', '0', '0', '0', '', '".mysql_insert_id()."' ");
+				$sql->db_Insert("menus", "0, '$menuname', '0', '0', '0', '', '".mysql_insert_id()."' ");
 			}
 
 			if($_POST['page_link'])
 			{
 				$link = "page.php?".mysql_insert_id();
-				if (!$sql->db_Select("links", "link_id", "link_name='".$tp -> toDB($_POST['page_link'])."'"))
+				if (!$sql->db_Select("links", "link_id", "link_name='".$tp->toDB($_POST['page_link'])."'"))
 				{
-					$linkname = $tp -> toDB($_POST['page_link']);
+					$linkname = $tp->toDB($_POST['page_link']);
 					$sql->db_Insert("links", "0, '{$linkname}', '{$link}', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
 					$e107cache->clear("sitelinks");
 				}
@@ -373,67 +418,72 @@ class page
 	function delete_page($del_id)
 	{
 		global $sql, $e107cache, $admin_log;
-		admin_update($sql -> db_Delete("page", "page_id='{$del_id}' "), 'delete', CUSLAN_28);
-		$sql -> db_Delete("menus", "menu_path='$del_id' ");
+		admin_update($sql->db_Delete("page", "page_id='{$del_id}' "), 'delete', CUSLAN_28, false, false);
+		$sql->db_Delete("menus", "menu_path='$del_id' ");
 		$admin_log->log_event('CPAGE_03','ID: '.$del_id,E_LOG_INFORMATIVE,'');
-		if ($sql -> db_Select("links", "link_id", "link_url='page.php?".$del_id."'"))
+		if ($sql->db_Select("links", "link_id", "link_url='page.php?".$del_id."'"))
 		{
-			$sql -> db_Delete("links", "link_url='page.php?".$del_id."'");
+			$sql->db_Delete("links", "link_url='page.php?".$del_id."'");
 			$e107cache->clear("sitelinks");
 		}
 	}
 
 	function optionsPage()
 	{
-		global $ns, $pref;
+		global $e107, $pref, $frm, $emessage;
 
 		if(!isset($pref['pageCookieExpire'])) $pref['pageCookieExpire'] = 84600;
 
-		$text = "<div style='text-align: center; margin-left:auto; margin-right: auto;'>
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		//XXX Lan - Options
+		$text = "
+			<form method='post' action='".e_SELF."?".e_QUERY."'>
+				<fieldset id='core-cpage-options'>
+					<legend class='e-hideme'>".CUSLAN_3."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminform'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class='label'>".CUSLAN_29."</td>
+								<td class='control'>
+									".$frm->radio_switch('listPages', $pref['listPages'])."
+								</td>
+							</tr>
 
-		<tr>
-		<td style='width:50%' class='forumheader3'>".CUSLAN_29."</td>
-		<td style='width:50%; text-align: right;' class='forumheader3'>
-		<input type='radio' name='listPages' value='1'".($pref['listPages'] ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-		<input type='radio' name='listPages' value='0'".($pref['listPages'] ? "" : " checked='checked'")." /> ".CUSLAN_39."
-		</td>
-		</tr>
+							<tr>
+								<td class='label'>".CUSLAN_30."</td>
+								<td class='control'>
+									".$frm->text('pageCookieExpire', $pref['pageCookieExpire'], 10)."
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						".$frm->admin_button('saveOptions', CUSLAN_40, 'submit')."
+					</div>
+				</fieldset>
+			</form>
+		";
 
-		<tr>
-		<td style='width:50%' class='forumheader3'>".CUSLAN_30."</td>
-		<td style='width:50%; text-align: right;' class='forumheader3'>
-		<input class='tbox' type='text' name='pageCookieExpire' size='15' value='".$pref['pageCookieExpire']."' maxlength='10' />
-		</td>
-		</tr>
-
-		<tr>
-		<td colspan='2'  style='text-align:center' class='forumheader'>
-		<input class='button' type='submit' name='saveOptions' value='".CUSLAN_40."' />
-		</td>
-		</tr>
-		</table>
-		</form>
-		</div>";
-
-		$ns->tablerender("Options", $text);
+		$e107->ns->tablerender(CUSLAN_3, $emessage->render().$text);
 	}
 
 
 	function saveSettings()
 	{
-		global $pref, $admin_log;
+		global $pref, $admin_log, $emessage;
 		$temp['listPages'] = $_POST['listPages'];
 		$temp['pageCookieExpire'] = $_POST['pageCookieExpire'];
 		if ($admin_log->logArrayDiffs($temp, $pref, 'CPAGE_04'))
 		{
 			save_prefs();		// Only save if changes
-			$this -> message = CUSLAN_45;
+			$emessage->add(CUSLAN_45, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-			$this -> message = CUSLAN_46;
+			$emessage->add(CUSLAN_46);
 		}
 	}
 
@@ -456,16 +506,40 @@ class page
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
 
-
-		show_admin_menu(CUSLAN_33, $action, $var);
+		e_admin_menu(CUSLAN_33, $action, $var);
 	}
 }
 
-function cpage_adminmenu() 
+function cpage_adminmenu()
 {
 	global $page;
 	global $action;
-	$page -> show_options($action);
+	$page->show_options($action);
 }
 
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			if(typeof e107Admin == 'undefined') var e107Admin = {}
+
+			/**
+			 * OnLoad Init Control
+			 */
+			e107Admin.initRules = {
+				'Helper': true,
+				'AdminMenu': false
+			}
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
+}
 ?>

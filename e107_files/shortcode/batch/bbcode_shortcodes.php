@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-06-02 18:55:32 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-29 15:23:06 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -25,7 +25,7 @@ $bbcode_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 
 /*
 SC_BEGIN BB
-
+//FIXME - cachevars/getcachedvars!
 global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb, $imode;
 
 if(e_WYSIWYG){ return; }
@@ -137,9 +137,11 @@ SC_END
 SC_BEGIN BB_HELP
 	if(e_WYSIWYG){	return;	}
 	global $bbcode_helpactive,$bbcode_helptag;
-	$bbcode_helptag = ($parm) ? $parm : "helpb";
+	if($parm) $bbcode_helptag = $parm;
+	elseif(!varset($bbcode_helptag))  $bbcode_helptag = 'helpb';
 	$bbcode_helpactive = TRUE;
-	return "<input id='{$bbcode_helptag}' class='helpbox' type='text' name='{$bbcode_helptag}' size='90' maxlength='100' />\n";
+	//FIXME - better bb help
+	return "<input id='{$bbcode_helptag}' class='helpbox' type='text' name='{$bbcode_helptag}' size='90' readonly='readonly' />\n";
 SC_END
 
 
