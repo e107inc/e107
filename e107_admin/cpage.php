@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-29 15:23:06 $
- * $Author: secretr $
+ * $Revision: 1.11 $
+ * $Date: 2008-12-29 20:50:41 $
+ * $Author: lisa_ $
  *
 */
 
@@ -185,7 +185,7 @@ class page
 	{
 		/* mode: FALSE == page, mode: TRUE == menu */
 
-		global $sql, $tp, $e107, $sub_action, $id, $frm, $e_userclass;
+		global $sql, $tp, $e107, $sub_action, $id, $frm, $e_userclass, $e_event;
 
 		$edit = ($sub_action == 'edit');
 		$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
@@ -319,6 +319,37 @@ class page
 								</td>
 							</tr>
 			";
+
+			//triggerHook
+			$data = array('method'=>'form', 'table'=>'page', 'id'=>$id, 'plugin'=>'page', 'function'=>'createPage');
+			$hooks = $e_event->triggerHook($data);
+			if(!empty($hooks))
+			{
+				$text .= "
+				</tbody>
+					</table>
+				</fieldset>
+				<fieldset id='core-cpage-create-hooks'>
+					<legend>".LAN_HOOKS."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminedit options'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>";
+				foreach($hooks as $hook)
+				{
+					if(!empty($hook))
+					{
+						$text .= "
+						<tr>
+							<td class='label'>".$hook['caption']."</td>
+							<td class='control'>".$hook['text']."</td>
+						</tr>";
+					}
+				}
+			}
+			
 		}
 
 		$text .= "
@@ -345,7 +376,7 @@ class page
 	// $type = FALSE for page, TRUE for menu
 	function submitPage($mode = FALSE, $type=FALSE)
 	{
-		global $sql, $tp, $e107cache, $admin_log;
+		global $sql, $tp, $e107cache, $admin_log, $e_event;
 
 		$page_title = $tp->toDB($_POST['page_title']);
 		$page_text = $tp->toDB($_POST['data']);
@@ -358,6 +389,9 @@ class page
 			$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
+
+			$data = array('method'=>'update', 'table'=>'page', 'id'=>$mode, 'plugin'=>'page', 'function'=>'submitPage');
+			$this->message = $e_event->triggerHook($data);
 
 			if($type)
 			{
@@ -395,11 +429,12 @@ class page
 			$menuname = ($type ? $tp->toDB($_POST['menu_name']) : "");
 
 			admin_update($sql->db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
+			$pid = mysql_insert_id();
 			$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 
 			if($type)
 			{
-				$sql->db_Insert("menus", "0, '$menuname', '0', '0', '0', '', '".mysql_insert_id()."' ");
+				$sql->db_Insert("menus", "0, '$menuname', '0', '0', '0', '', '".$pid."' ");
 			}
 
 			if($_POST['page_link'])
@@ -412,12 +447,15 @@ class page
 					$e107cache->clear("sitelinks");
 				}
 			}
+
+			$data = array('method'=>'create', 'table'=>'page', 'id'=>$pid, 'plugin'=>'page', 'function'=>'submitPage');
+			$this->message = $e_event->triggerHook($data);
 		}
 	}
 
 	function delete_page($del_id)
 	{
-		global $sql, $e107cache, $admin_log;
+		global $sql, $e107cache, $admin_log, $e_event;
 		admin_update($sql->db_Delete("page", "page_id='{$del_id}' "), 'delete', CUSLAN_28, false, false);
 		$sql->db_Delete("menus", "menu_path='$del_id' ");
 		$admin_log->log_event('CPAGE_03','ID: '.$del_id,E_LOG_INFORMATIVE,'');
@@ -426,6 +464,9 @@ class page
 			$sql->db_Delete("links", "link_url='page.php?".$del_id."'");
 			$e107cache->clear("sitelinks");
 		}
+
+		$data = array('method'=>'delete', 'table'=>'page', 'id'=>$del_id, 'plugin'=>'page', 'function'=>'delete_page');
+		$this->message = $e_event->triggerHook($data);
 	}
 
 	function optionsPage()

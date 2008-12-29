@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-03-20 20:49:02 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-29 20:51:07 $
+|     $Author: lisa_ $
 |
 +----------------------------------------------------------------------------+
 */
@@ -128,6 +128,11 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 	  {
 		$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".$ev_allday."', '".$recurring."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$ev_email."', '".$ev_category."', '".$ev_thread."', '".intval($rec_m)."', '".intval($rec_y)."' ";
         $sql->db_Insert("event", $qry);
+
+		$id = mysql_insert_id();
+		$data = array('method'=>'create', 'table'=>'event', 'id'=>$id, 'plugin'=>'calendar_menu', 'function'=>'dbCalendarCreate');
+		$e_event->triggerHook($data);
+
 		$ecal_class->cal_log(1,'db_Insert',$qry, $ev_start);
 		$report_msg = '.m4';
 	  }
@@ -137,6 +142,10 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 	{  // Bits specific to updating an existing event
 		$qry = "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".$ev_allday."', event_recurring='".$recurring."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$ev_email."', event_category='".$ev_category."', event_thread='".$ev_thread."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id='".intval($_POST['id'])."' ";
         $sql->db_Update("event", $qry);
+
+		$data = array('method'=>'update', 'table'=>'event', 'id'=>intval($_POST['id']), 'plugin'=>'calendar_menu', 'function'=>'dbCalendarUpdate');
+		$e_event->triggerHook($data);
+
 		$ecal_class->cal_log(2,'db_Update',$qry, $ev_start);
         $qs = preg_replace("/ed./i", "", $_POST['qs']);
 		$report_msg = '.m5';
@@ -278,6 +287,10 @@ if ($cal_super || check_class($pref['eventpost_admin']))
     if ($sql->db_Delete("event", $qry))
     {
         $message = EC_LAN_51; //Event Deleted
+
+		$data = array('method'=>'delete', 'table'=>'event', 'id'=>$_POST['existing'], 'plugin'=>'calendar_menu', 'function'=>'dbEventDelete');
+		$message .= $e_event->triggerHook($data);
+
 		$ecal_class->cal_log(3,'db_Delete',$qry,$ev_start);
     }
     else
@@ -648,7 +661,29 @@ if ($action == "ne" || $action == "ed")
         $text .= "
 		<tr><td class='forumheader3'>".EC_LAN_59." </td><td class='forumheader3'>
 		<input class='tbox' type='text' name='ne_email' size='60' value='$ne_email' maxlength='150' style='width:95%' />
-		</td></tr>
+		</td></tr>";
+
+		//triggerHook
+		$hid = ($action=='ed' ? intval($qs[1]) : '');
+		$data = array('method'=>'form', 'table'=>'event', 'id'=>$hid, 'plugin'=>'calendar_menu', 'function'=>'CalendarCreate');
+		$hooks = $e_event->triggerHook($data);
+		if(!empty($hooks))
+		{
+			$text .= "<tr><td class='forumheader3' colspan='2' >".LAN_HOOKS." </td></tr>";
+			foreach($hooks as $hook)
+			{
+				if(!empty($hook))
+				{
+					$text .= "
+					<tr>
+					<td class='forumheader3'>".$hook['caption']."</td>
+					<td class='forumheader3'>".$hook['text']."</td>
+					</tr>";
+				}
+			}
+		}
+
+		$text .= "
 		<tr>
 		<td class='forumheader3' colspan='2' >".EC_LAN_105." </td>
 		</tr>

@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.2 $
-|    $Date: 2008-12-13 16:06:11 $
-|    $Author: e107steved $
+|    $Revision: 1.3 $
+|    $Date: 2008-12-29 20:51:07 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -131,8 +131,11 @@ if (isset($delete) && ($delete == 'main') && $del_id)
 	}
 	if ($sql->db_Delete("links_page", "link_id=".$del_id)) 
 	{
+		$msg = LCLAN_ADMIN_10." #".$del_id." ".LCLAN_ADMIN_11;
+		$data = array('method'=>'delete', 'table'=>'links_page', 'id'=>$del_id, 'plugin'=>'links_page', 'function'=>'delete');
+		$msg .= $e_event->triggerHook($data);
 		$admin_log->log_event('LINKS_02','ID: '.$del_id,E_LOG_INFORMATIVE,'');
-		$lc->show_message(LCLAN_ADMIN_10." #".$del_id." ".LCLAN_ADMIN_11);
+		$lc->show_message($msg);
 	}
 }
 
