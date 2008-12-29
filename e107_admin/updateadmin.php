@@ -9,9 +9,9 @@
  * Administration Area - Update Admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/updateadmin.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-15 21:53:17 $
- * $Author: secretr $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-29 11:00:16 $
+ * $Author: e107steved $
  *
 */
 
@@ -19,32 +19,35 @@ require_once('../class2.php');
 $e_sub_cat = 'admin_pass';
 
 require_once(e_ADMIN.'auth.php');
-require_once(e_HANDLER."message_handler.php");
-require_once(e_HANDLER."user_handler.php");
-$user_info = new UserHandler;
+require_once(e_HANDLER.'message_handler.php');
+require_once(e_HANDLER.'user_handler.php');
+$userMethods = new UserHandler;
 $emessage = &eMessage::getInstance();
 
 if (isset($_POST['update_settings'])) 
 {
 	if ($_POST['ac'] == md5(ADMINPWCHANGE)) 
 	{
-		if ($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])) 
+		$userData = array();
+		if ($_POST['a_password'] != '' && $_POST['a_password2'] != '' && ($_POST['a_password'] == $_POST['a_password2'])) 
 		{
-			$newPassword = $sql->escape($user_info->HashPassword($_POST['a_password'], $currentUser['user_loginname']), FALSE);
-			$newPrefs = '';
+			$userData['user_password'] = $sql->escape($userMethods->HashPassword($_POST['a_password'], $currentUser['user_loginname']), FALSE);
 			unset($_POST['a_password']);
 			unset($_POST['a_password2']);
 			if (varsettrue($pref['allowEmailLogin']))
 			{
 				$user_prefs = unserialize($currentUser['user_prefs']);
-				$user_prefs['email_password'] = $user_info->HashPassword($new_pass, $email);
-				$newPrefs = "user_prefs='".serialize($user_prefs)."', ";
+				$user_prefs['email_password'] = $userMethods->HashPassword($new_pass, $email);
+				$userData['user_prefs'] = serialize($user_prefs);
 			}
-			
-			$check = $sql -> db_Update("user", "user_password='".$newPassword."', ".$newPrefs."user_pwchange='".time()."' WHERE user_id=".USERID);
+
+			$userData['user_pwchange'] =time();
+	
+			$check = $sql -> db_UpdateArray('user',$userData,' WHERE user_id='.USERID);
 			if ($check) 
 			{
 				$admin_log->log_event('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
+				$userMethods->makeUserCookie(array('user_id' => USERID,'user_password' => $userData['user_password']), FALSE);		// Can't handle autologin ATM
 				$emessage->add(UDALAN_3." ".ADMINNAME, E_MESSAGE_SUCCESS);
 				$e_event -> trigger('adpword');
 				$ns->tablerender(UDALAN_2, $emessage->render());
