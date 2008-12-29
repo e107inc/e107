@@ -1,24 +1,22 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2008-12-07 16:37:37 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration Area - User classes
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
+ * $Revision: 1.19 $
+ * $Date: 2008-12-29 16:11:02 $
+ * $Author: secretr $
+ *
 */
 
 require_once("../class2.php");
-if (!getperms("4")) 
+if (!getperms("4"))
 {
   header("location:".e_BASE."index.php");
   exit;
@@ -35,33 +33,32 @@ $message = '';
 
 function check_allowed($class_id, $redirect = true)
 {
-  global $sql;
-  if (!$sql->db_Select('userclass_classes', '*', "userclass_id = {$class_id}"))
-  {
-	if(!$redirect) return false;
-    header("location:".SITEURL);
-	exit;
-  }
-  $row = $sql->db_Fetch();
-  if (!getperms('0') && !check_class($row['userclass_editclass']))
-  {
-	if(!$redirect) return false;
-	header("location:".SITEURL);
-	exit;
-  }
-  return true;
+	global $e107;
+	if (!isset($e107->user_class->class_tree[$class_id]))
+	{
+		if(!$redirect) return false;
+		header("location:".SITEURL);
+		exit;
+	}
+	if (!getperms('0') && !check_class($e107->user_class->class_tree[$class_id]['userclass_editclass']))
+	{
+		if(!$redirect) return false;
+		header("location:".SITEURL);
+		exit;
+	}
+	return true;
 }
 
-if (e_QUERY) 
+if (e_QUERY)
 {
   $uc_qs = explode(".", e_QUERY);
 }
 $action = varset($uc_qs[0],'config');
 $params = varset($uc_qs[1],'');
 
-//AJAX request check is already  made by the API 
-if(e_AJAX_REQUEST) 
-{ 
+//AJAX request check is already  made by the API
+if(e_AJAX_REQUEST)
+{
     $class_num = intval(varset($uc_qs[2],0));
 	if(!$class_num && isset($_POST['edit']))
 	{
@@ -73,25 +70,25 @@ if(e_AJAX_REQUEST)
 	{
 	    require_once(e_HANDLER.'js_helper.php');
 	    $jshelper = new e_jshelper();
-	    if(!check_allowed($class_num, false)) 
+	    if(!check_allowed($class_num, false))
 		{
 			//This will raise an error
-			//'Access denied' is the message which will be thrown 
+			//'Access denied' is the message which will be thrown
 			//by the JS AJAX handler
 			e_jshelper::sendAjaxError('403', 'Access denied. Form update failed!');
 		}
 		$sql->db_Select('userclass_classes', '*', "userclass_id='".$class_num."' ");
 		$row = $sql->db_Fetch(MYSQL_ASSOC);
-		
+
 		//Response action - reset all group checkboxes
 		$jshelper->addResponseAction('reset-checked', array('group_classes_select' => '0'));
-		
+
 		//it's grouped userclass
 		if ($row['userclass_type'] == UC_TYPE_GROUP)
-		{	
+		{
 			//Response action - show group, hide standard
 			$jshelper->addResponseAction('element-invoke-by-id', array('show' => 'userclass_type_groups', 'hide' => 'userclass_type_standard'));
-			
+
 			//fill in the classes array
 			$tmp = explode(',',$row['userclass_accum']);
 			foreach ($tmp as $uid) {
@@ -105,11 +102,11 @@ if(e_AJAX_REQUEST)
 		$row['createclass'] = UCSLAN_14; //update the submit button value
 		$row['existing'] = $class_num; //required when user tree is clicked
 		//icon
-		$row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif"; 
+		$row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif";
 		$row['uc_icon_select'] = $row['userclass_icon']; //icons select box
 
 		//Send the prefered response type
-		//echo $jshelper->sendJSONResponse('fill-form', $row);  
+		//echo $jshelper->sendJSONResponse('fill-form', $row);
 		echo $jshelper->sendXMLResponse('fill-form', $row);
 		exit;
 	}
@@ -117,7 +114,7 @@ if(e_AJAX_REQUEST)
 
 /*
  * Authorization should be done a bit later!
- * FIXME - should we call auth.php and header.php separate? 
+ * FIXME - should we call auth.php and header.php separate?
  * Definitely yes if AJAX is in the game.
  */
 require_once("auth.php");
@@ -157,7 +154,7 @@ if (isset($_POST['delete']))
 	{
 	  $message = UCSLAN_29;
 	}
-	elseif ($_POST['confirm']) 
+	elseif ($_POST['confirm'])
 	{
 	  if ($e_userclass->delete_class($class_id) !== FALSE)
 	  {
@@ -195,7 +192,7 @@ if (isset($_POST['delete']))
 //		Add/Edit class information
 //---------------------------------------------------
 if (($action == 'config') && isset($_POST['createclass']))		// Add or edit
-{ 
+{
 	$class_record = array(
 		'userclass_name' 		=> varset($tp->toDB($_POST['userclass_name']),''),
 		'userclass_description' => varset($tp->toDB($_POST['userclass_description']),''),
@@ -239,12 +236,12 @@ if (($action == 'config') && isset($_POST['createclass']))		// Add or edit
 			userclass2_adminlog("03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
 			$do_tree = TRUE;
 			$message .= UCSLAN_5;
-		} 
+		}
 		else
 		{	// Creating new class
 			if($class_record['userclass_name'])
 			{
-				if (getperms("0") || ($class_record['userclass_editclass'] && check_class($class_record['userclass_editclass']))) 
+				if (getperms("0") || ($class_record['userclass_editclass'] && check_class($class_record['userclass_editclass'])))
 				{
 					$i = $e_userclass->findNewClassID();
 					if ($i === FALSE)
@@ -291,9 +288,9 @@ if ($message)
 
 switch ($action)
 {
-//-----------------------------------	
+//-----------------------------------
 //		Class management
-//-----------------------------------	
+//-----------------------------------
   case 'config' :
 	if(isset($_POST['edit']))
 	{
@@ -363,11 +360,11 @@ switch ($action)
 	else
 	{
 	  $text .= "<span class='defaulttext'>".UCSLAN_8.":</span>";
-	  $text .= "<select name='existing' class='tbox'>".$e_userclass->vetted_tree('existing',array($e_userclass,'select'), $userclass_id,"main,admin,classes,matchclass").'</select>';
+	  $text .= "<select name='existing' class='tbox'>".$e_userclass->vetted_tree('existing',array($e_userclass,'select'), $userclass_id,"main,admin,new,classes,matchclass").'</select>';
 	  $text .= "
 		<input class='button' type='submit' id='edit' name='edit' value='".LAN_EDIT."' />
 		<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
-		<input type='checkbox' name='confirm' id='confirm' value='1' /><label for='confirm' class='smalltext'> ".UCSLAN_11."</span>
+		<input type='checkbox' name='confirm' id='confirm' value='1' /><label for='confirm' class='smalltext'> ".UCSLAN_11."</label>
 		</td>
 		</tr>";
 	}
@@ -395,7 +392,7 @@ switch ($action)
 		  <table style='text-align:left; width:100%;'>
 		  <tr><td style='width:20%; padding-right:10px;'>";
         $selectjs = " onchange=\"document.getElementById('userclass_icon').value=this.options[this.selectedIndex].value;
-					if(this.options[this.selectedIndex].value!=''){document.getElementById('iconview').src='".$iconpath."'+this.options[this.selectedIndex].value; 
+					if(this.options[this.selectedIndex].value!=''){document.getElementById('iconview').src='".$iconpath."'+this.options[this.selectedIndex].value;
 					document.getElementById('iconview').style.display='block';}else{document.getElementById('iconview').src='';
 					document.getElementById('iconview').style.display='none';}\"";
         $text  .= "<select name='uc_icon_select' class='tbox' {$selectjs}>\n";
@@ -511,7 +508,7 @@ $ns->tablerender(UCSLAN_21, $text);
 
 
 
-//-----------------------------------	
+//-----------------------------------
 //		Initial User class(es)
 //-----------------------------------
   case 'initial' :
@@ -522,7 +519,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	{
 	  if (trim($i)) $icn[] = $e_userclass->uc_get_classname($i);
 	}
-	
+
 //	$class_text = $e_userclass->uc_checkboxes('init_classes', $initial_classes, 'classes, force', TRUE);
 	$class_text = $e_userclass->vetted_tree('init_classes',array($e_userclass,'checkbox_desc'), $initial_classes, 'classes, force');
 
@@ -559,18 +556,18 @@ $ns->tablerender(UCSLAN_21, $text);
 	}
 	$text .= "</td></tr></table></form></div>";
 	$ns->tablerender(UCSLAN_40, $text);
-	
+
     break;				// End of 'initial'
 
 
-//-----------------------------------	
+//-----------------------------------
 //		Debug aids
-//-----------------------------------	
+//-----------------------------------
   case 'debug' :
 //    if (!check_class(e_UC_MAINADMIN)) break;				// Let ordinary admins see this if they know enough to specify the URL
 	$text .= $e_userclass->show_graphical_tree(TRUE);			// Print with debug options
 	$ns->tablerender(UCSLAN_21, $text);
-	
+
 	$text = "<table cellpadding='5' cellspacing='0' border='1'><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
 	<tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td><td>Editable classes</td></tr>";
 	$sql->db_Select('user','user_id,user_name,user_class',"ORDER BY user_id LIMIT 0,20",'no_where');
@@ -588,9 +585,9 @@ $ns->tablerender(UCSLAN_21, $text);
     break;				// End of 'debug'
 
 
-//-----------------------------------	
+//-----------------------------------
 //		Configuration options
-//-----------------------------------	
+//-----------------------------------
   case 'options' :
     if (!check_class(e_UC_MAINADMIN)) break;
 
@@ -610,7 +607,7 @@ $ns->tablerender(UCSLAN_21, $text);
 		$e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
 		$message .= UCSLAN_64;
 	}
-	
+
 	if (isset($_POST['flatten_class_tree']))
 	{	// Remove the default tree
 	  $message = UCSLAN_65;
@@ -659,7 +656,7 @@ $ns->tablerender(UCSLAN_21, $text);
 		</td>
 		</tr></table></form>";
 	$ns->tablerender(UCSLAN_61, $text);
-	
+
 
 	$text = "<form method='post' action='".e_SELF."?options' id='maintainForm'>
 		<table class='fborder' style='text-align:center; ".ADMIN_WIDTH."'>
@@ -673,13 +670,13 @@ $ns->tablerender(UCSLAN_21, $text);
 		</td>
 		</tr></table></form>";
 	$ns->tablerender(UCSLAN_71, $text);
-	
+
     break;				// End of 'options'
 
 
-//-----------------------------------	
+//-----------------------------------
 //		Test options
-//-----------------------------------	
+//-----------------------------------
   case 'test' :
     if (!check_class(e_UC_MAINADMIN)) break;
 	if (isset($_POST['add_db_fields']))
@@ -688,14 +685,14 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $e_userclass->update_db(FALSE);
 	  $message .= "Completed";
 	}
-	
+
 	if (isset($_POST['remove_db_fields']))
 	{	// Remove the DB fields
 	  $message = "Remove DB fields: ";
 	  $sql->db_Select_gen("ALTER TABLE #userclass_classes DROP `userclass_parent`, DROP `userclass_accum`, DROP `userclass_visibility`");
 	  $message .= "Completed";
 	}
-	
+
 	if (isset($_POST['add_class_tree']))
 	{	// Create a default tree
 	  $message = "Create default class tree: ";
@@ -710,7 +707,7 @@ $ns->tablerender(UCSLAN_21, $text);
 		$message .= "Completed";
 	  }
 	}
-	
+
 	if (isset($_POST['remove_class_tree']))
 	{	// Remove the default tree
 	  $message = "Remove default class tree: ";
@@ -718,7 +715,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $e_userclass->read_tree(TRUE);		// Need to re-read the tree to show correct info
 	  $message .= "completed";
 	}
-	
+
 	if (isset($_POST['rebuild_tree']))
 	{
 	  $message = 'Rebuilding tree: ';
@@ -726,7 +723,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $e_userclass->save_tree();
 	  $message .= " completed";
 	}
-	
+
 	if ($message)
 	{
 	  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -755,9 +752,9 @@ $ns->tablerender(UCSLAN_21, $text);
 	$ns->tablerender('User classes - test features', $text);
 	break;				// End of temporary test options
 
-//-----------------------------------	
+//-----------------------------------
 //		Edit class membership
-//-----------------------------------	
+//-----------------------------------
   case 'membs' :
 	if ($params == 'clear')
 	{
@@ -817,7 +814,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $row = $sql->db_Fetch();
 	  extract($row);
 	}
-	
+
 	$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
 
 	$text = "<div style='text-align:center'>
@@ -926,9 +923,9 @@ if(isset($_POST['class_members_edit']))
     break;				// End of 'membs' (class membership) option
 
 
-//-----------------------------------	
+//-----------------------------------
 //		Special fooling around
-//-----------------------------------	
+//-----------------------------------
   case 'special' :
     if (!check_class(e_UC_MAINADMIN)) break;				// Let ordinary admins see this if they know enough to specify the URL
 
@@ -980,7 +977,7 @@ function userclass2_adminlog($msg_num='00', $woffle='')
 
 function userclass2_adminmenu()
 {
-  if (e_QUERY) 
+  if (e_QUERY)
   {
 	$tmp = explode(".", e_QUERY);
 //	$action = $tmp[0];
@@ -1012,7 +1009,7 @@ function userclass2_adminmenu()
 		$var['specials']['text'] = 'Special tests';
 		$var['specials']['link'] ="userclass2.php?special";
 	}
-  }	
+  }
   show_admin_menu(UCSLAN_51, $action, $var);
 }
 
@@ -1023,9 +1020,9 @@ require_once("footer.php");
 function headerjs()
 {
    /*
-	* e107Ajax.fillForm demonstration 
+	* e107Ajax.fillForm demonstration
 	* Open Firebug console for Ajax transaction details
-	* 
+	*
 	*/
 	$script_js = "<script type=\"text/javascript\">
 		//<![CDATA[
@@ -1035,20 +1032,20 @@ function headerjs()
                 var target = (event.findElement('a.userclass_edit') || event.findElement('input#edit'));
                 if (target) {
                     event.stop();
-                    
+
                     //show cancel button in edit mod only
                     \$('updatecancel').show();
-					
+
                     //If link is clicked use it's href as a target
     				$('classForm').fillForm($(document.body), { handler: target.readAttribute('href') });
                 }
             }));
-            
+
             //run on e107 init finished (dom is loaded)
     		e107.runOnLoad( function() {
-				\$('updatecancel').hide(); //hide cancel button onload	
+				\$('updatecancel').hide(); //hide cancel button onload
 			});
-    		
+
     		//Observe fillForm errors
     		e107Event.register('ajax_fillForm_error', function(transport) {
     			//memo.error object contains the error message
@@ -1073,7 +1070,7 @@ function setGroupStatus(dropdown)
 		temp2.style.display = '';
 		temp1.style.display = 'none';
 	}
-}    		
+}
 
 	//]]>
 	</script>\n";
@@ -1085,7 +1082,7 @@ function setGroupStatus(dropdown)
 
 	$script_js .= "<script type=\"text/javascript\">
 		//<![CDATA[
-// Inspiration (and some of the code) from a script by Sean Geraty -  Web Site:  http://www.freewebs.com/sean_geraty/ 
+// Inspiration (and some of the code) from a script by Sean Geraty -  Web Site:  http://www.freewebs.com/sean_geraty/
 // Script from: The JavaScript Source!! http://javascript.internet.com
 
 // Control flags for list selection and sort sequence
@@ -1098,7 +1095,7 @@ var sortPick = true;  // Will order the picklist in sort sequence
 
 
 // Initialise - invoked on load
-function initIt() 
+function initIt()
 {
   var selectList = document.getElementById(\"assignclass1\");
   var pickList   = document.getElementById(\"assignclass2\");
@@ -1111,7 +1108,7 @@ function initIt()
 
 // Adds a selected item into the picklist
 
-function addIt() 
+function addIt()
 {
   var selectList = document.getElementById(\"assignclass1\");
   var selectIndex = selectList.selectedIndex;
@@ -1122,23 +1119,23 @@ function addIt()
   var pickOLength = pickOptions.length;
 
   // An item must be selected
-  if (selectIndex > -1) 
+  if (selectIndex > -1)
   {
     pickOptions[pickOLength] = new Option(selectList[selectIndex].text);
     pickOptions[pickOLength].value = selectList[selectIndex].value;
     // If single selection, remove the item from the select list
-    if (singleSelect) 
+    if (singleSelect)
 	{
       selectOptions[selectIndex] = null;
     }
 
-    if (sortPick) 
+    if (sortPick)
 	{
       var tempText;
       var tempValue;
       // Sort the pick list
-//      while (pickOLength > 0 && pickOptions[pickOLength].text < pickOptions[pickOLength-1].text) 
-      while (pickOLength > 0 && pickOptions[pickOLength].text.toLowerCase() < pickOptions[pickOLength-1].text.toLowerCase()) 
+//      while (pickOLength > 0 && pickOptions[pickOLength].text < pickOptions[pickOLength-1].text)
+      while (pickOLength > 0 && pickOptions[pickOLength].text.toLowerCase() < pickOptions[pickOLength-1].text.toLowerCase())
 	  {
         tempText = pickOptions[pickOLength-1].text;
         tempValue = pickOptions[pickOLength-1].value;
@@ -1156,7 +1153,7 @@ function addIt()
 
 // Deletes an item from the picklist
 
-function delIt() 
+function delIt()
 {
   var selectList = document.getElementById(\"assignclass1\");
   var selectOptions = selectList.options;
@@ -1166,23 +1163,23 @@ function delIt()
   var pickIndex = pickList.selectedIndex;
   var pickOptions = pickList.options;
 
-  if (pickIndex > -1) 
+  if (pickIndex > -1)
   {
     // If single selection, replace the item in the select list
-    if (singleSelect) 
+    if (singleSelect)
 	{
       selectOptions[selectOLength] = new Option(pickList[pickIndex].text);
       selectOptions[selectOLength].value = pickList[pickIndex].value;
     }
     pickOptions[pickIndex] = null;
-    if (singleSelect && sortSelect) 
+    if (singleSelect && sortSelect)
 	{
       var tempText;
       var tempValue;
       // Re-sort the select list - start from the bottom, swapping pairs, until the moved element is in the right place
 // Commented out line sorts upper case first, then lower case. 'Active' line does case-insensitive sort
-//      while (selectOLength > 0 && selectOptions[selectOLength].text < selectOptions[selectOLength-1].text) 
-      while (selectOLength > 0 && selectOptions[selectOLength].text.toLowerCase() < selectOptions[selectOLength-1].text.toLowerCase()) 
+//      while (selectOLength > 0 && selectOptions[selectOLength].text < selectOptions[selectOLength-1].text)
+      while (selectOLength > 0 && selectOptions[selectOLength].text.toLowerCase() < selectOptions[selectOLength-1].text.toLowerCase())
 	  {
         tempText = selectOptions[selectOLength-1].text;
         tempValue = selectOptions[selectOLength-1].value;
@@ -1196,37 +1193,37 @@ function delIt()
   }
 }
 
-function clearMe(clid) 
+function clearMe(clid)
 {
   location.href = document.location + \".clear.\" + clid;
 }
 
 
-function saveMe(clid) 
+function saveMe(clid)
 {
   var strValues = \"\";
   var boxLength = document.getElementById('assignclass2').length;
   var count = 0;
-  if (boxLength != 0) 
+  if (boxLength != 0)
   {
-	for (i = 0; i < boxLength; i++) 
+	for (i = 0; i < boxLength; i++)
 	{
-	  if (count == 0) 
+	  if (count == 0)
 	  {
 		strValues = document.getElementById('assignclass2').options[i].value;
-	  } 
-	  else 
+	  }
+	  else
 	  {
 		strValues = strValues + \",\" + document.getElementById('assignclass2').options[i].value;
 	  }
 	  count++;
 	}
   }
-  if (strValues.length == 0) 
+  if (strValues.length == 0)
   {
 	//alert(\"You have not made any selections\");
   }
-  else 
+  else
   {
 	location.href = document.location + \".\" + clid + \"-\" + strValues;
   }
