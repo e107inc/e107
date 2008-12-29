@@ -9,8 +9,8 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.29 $
- * $Date: 2008-12-28 22:37:42 $
+ * $Revision: 1.30 $
+ * $Date: 2008-12-29 09:31:36 $
  * $Author: e107steved $
  *
 */
@@ -28,7 +28,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related 
 define('SIGNUP_DEBUG', FALSE);
 
 include_once(e_HANDLER.'user_extended_class.php');
-$usere = new e107_user_extended;
+$ue = new e107_user_extended;
 require_once(e_HANDLER.'calendar/calendar_class.php');
 $cal = new DHTML_Calendar(true);
 require_once(e_HANDLER.'validator_class.php');
@@ -49,6 +49,8 @@ include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
 
 $signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 $text = '';
+$extraErrors = array();
+$error = FALSE;
 
 
 //-------------------------------
@@ -358,20 +360,19 @@ if (isset($_POST['register']))
 	$_POST['user_xup'] = trim(varset($_POST['user_xup'],''));
 	$readXUP = varsettrue($pref['xup_enabled']) && varsettrue($_POST['user_xup']);
 	$e107cache->clear("online_menu_totals");
-	$error_message = "";
 	require_once(e_HANDLER."message_handler.php");
 	if (isset($_POST['rand_num']) && $signup_imagecode && !$readXUP )
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
-			$error_message .= LAN_SIGNUP_3."\\n";
+			$extraErrors[] = LAN_SIGNUP_3."\\n";
 			$error = TRUE;
 		}
 	}
 
 	if($invalid = $e_event->trigger("usersup_veri", $_POST))
 	{
-    	$error_message .= $invalid."\\n";
+    	$extraErrors[] = $invalid."\\n";
         $error = TRUE;
 	}
 
@@ -381,7 +382,7 @@ if (isset($_POST['register']))
 		$xml = new parseXml;
 		if(!$rawData = $xml -> getRemoteXmlFile($_POST['user_xup']))
 		{
-			$error_message .= LAN_SIGNUP_68."\\n";
+			$extraErrors[] = LAN_SIGNUP_68."\\n";
 			$error = TRUE;
 		}
 		else
@@ -436,13 +437,10 @@ if (isset($_POST['register']))
 		validatorClass::checkMandatory('user_name,user_loginname', $allData);						// Check for missing fields (email done in userValidation() )
 		validatorClass::dbValidateArray($allData, $userMethods->userVettingInfo, 'user', 0);		// Do basic DB-related checks
 		$userMethods->userValidation($allData);														// Do user-specific DB checks
-		if (($_POST['password1'] != $_POST['password2']) && !isset($allData['errors']['user_password']))
-		{
-			$allData['errors']['user_password'] = ERR_PASSWORDS_DIFFERENT;
-		}
-		else
-		{
-			$savePassword = $_POST['password1'];	// May need in plaintext later
+		if (!isset($allData['errors']['user_password']))
+		{	// No errors in password - keep it outside the main data array
+			$savePassword = $allData['validate']['user_password'];
+			unset($allData['validate']['user_password']);						// Delete the password value in the output array
 		}
 		unset($_POST['password1']);					// Restrict the scope of this
 		unset($_POST['password2']);
@@ -495,13 +493,17 @@ if (isset($_POST['register']))
 
 
 		// Determine whether we have an error
-		$error = ((isset($allData['errors']) && count($allData['errors'])) || (isset($eufVals['errors']) && count($eufVals['errors'])));
+		$error = ((isset($allData['errors']) && count($allData['errors'])) || (isset($eufVals['errors']) && count($eufVals['errors'])) || count($extraErrors));
 
 		// All validated here - handle any errors
 		if ($error)
 		{
 			require_once(e_HANDLER."message_handler.php");
 			$temp = array();
+			if (count($extraErrors))
+			{
+				$temp[] = implode('<br />', $extraErrors);
+			}
 			if (count($allData['errors']))
 			{
 				$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
@@ -510,7 +512,6 @@ if (isset($_POST['register']))
 			{
 				$temp[] = validatorClass::makeErrorList($eufData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 			}
-			if ($error_message) { $temp[] = $error_message; }
 			message_handler('P_ALERT', implode('<br />', $temp));
 		}
 	}		// End of data validation
@@ -525,6 +526,7 @@ if (isset($_POST['register']))
 
 	if (!$error)
 	{
+		$error_message = '';
 		$fp = new floodprotect;
 		if ($fp->flood("user", "user_join") == FALSE)
 		{

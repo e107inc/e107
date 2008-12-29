@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.30 $
- * $Date: 2008-12-28 22:37:42 $
+ * $Revision: 1.31 $
+ * $Date: 2008-12-29 09:31:36 $
  * $Author: e107steved $
  *
 */
@@ -521,20 +521,20 @@ if (!$error && !$promptPassword) { unset($_POST); }
 if ($error)
 {
 	require_once (e_HANDLER.'message_handler.php');
-	$temp = '';
+	$temp = array();
 	if (count($extraErrors))
 	{
-		$temp .= implode('<br />', $extraErrors);
+		$temp[] = implode('<br />', $extraErrors);
 	}
 	if (count($allData['errors']))
 	{
-		$temp .= validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
+		$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 	}
 	if (varsettrue($eufData['errors']))
 	{
-		$temp .= '<br />'.validatorClass::makeErrorList($eufData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
+		$temp[] = '<br />'.validatorClass::makeErrorList($eufData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 	}
-	message_handler('P_ALERT', $temp);
+	message_handler('P_ALERT', implode('<br />', $temp));
 //	$adref = $_POST['adminreturn'];
 }
 
