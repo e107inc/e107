@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_cpage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-06 16:40:37 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2008-12-29 15:23:06 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("CUSLAN_1", "Title");
 define("CUSLAN_2", "Type");
 define("CUSLAN_3", "Options");
-define("CUSLAN_4", "Delete this page?");
+define("CUSLAN_4", "Delete this item?");
 define("CUSLAN_5", "Existing Pages");
 define("CUSLAN_7", "Menu Name");
 define("CUSLAN_8", "Title / Caption");
@@ -55,5 +55,5 @@ define('CUSLAN_43', 'untitled menu: ');
 define('CUSLAN_44', 'untitled page');
 define('CUSLAN_45', 'Settings saved');
 define('CUSLAN_46', 'Nothing changed - not saved');
-
+define('CUSLAN_47', 'General Information');
 ?>

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.26 $
-|   $Date: 2008-12-23 15:18:31 $
+|   $Revision: 1.27 $
+|   $Date: 2008-12-29 15:23:06 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -280,6 +280,18 @@ $body_onload = "";
 //
 // J: Send end of <head> and start of <body>
 //
+
+
+/*
+ * Admin LAN
+ */
+require_once(e_HANDLER.'js_helper.php');
+echo "
+<script type='text/javascript'>
+	(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
+	(".e_jshelper::toString(LAN_DELETE).").addModLan('core', 'delete');
+</script>
+";
 
 
 /*

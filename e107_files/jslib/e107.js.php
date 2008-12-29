@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.16 $
- * $Date: 2008-12-18 16:55:45 $
+ * $Revision: 1.17 $
+ * $Date: 2008-12-29 15:23:06 $
  * $Author: secretr $
  *
 */
@@ -1169,8 +1169,8 @@ e107Helper.BB = {
 	help_old: function(help, tagid, nohtml){
 		if(nohtml) { help = help.escapeHTML(); }
 		if($(tagid)) { $(tagid).value = help; }
-		else if(varset(helpb)) { 
-			$('dataform').helpb.value = help;
+		else if($('helpb')) { 
+			$('helpb').value = help;
 		}
 	},
 	
@@ -1179,10 +1179,10 @@ e107Helper.BB = {
 		if(nohtml) { help = help.escapeHTML(); }
 		if(!$(tagid)) return;
 		if(help) {
-			var wrapper = new Element('div', {'style': 'position: absolute'}).update(help);
-			$(tagid).update(wrapper).fxToggle();//TODO - fx
+			var wrapper = new Element('div', {'style': 'position: relative'}).update(help);
+			$(tagid).update(wrapper).fxToggle();
 		} else {
-			$(tagid).update('').fxToggle();//TODO - fx
+			$(tagid).update('').fxToggle();
 		}
 	}
 };
