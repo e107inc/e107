@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-12-28 22:37:43 $
+|     $Revision: 1.26 $
+|     $Date: 2008-12-29 09:31:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -663,6 +663,17 @@ class user_class
 		{
 			unset($tmp[$classID]);
 		}
+		$tmp = array_keys($tmp);
+		if ($asArray) { return $tmp; }
+		return implode(',',$tmp);
+	}
+	
+	
+	// Utility to add a specified class ID to the default comma-separated list
+	function ucAdd($classID, $to, $asArray = FALSE)
+	{
+		$tmp = array_flip(explode(',',$to));
+		$tmp[$classID] = 1;
 		$tmp = array_keys($tmp);
 		if ($asArray) { return $tmp; }
 		return implode(',',$tmp);

@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.22 $
-* $Date: 2008-12-22 14:06:17 $
-* $Author: mcfly_e107 $
+* $Revision: 1.23 $
+* $Date: 2008-12-29 09:31:36 $
+* $Author: e107steved $
 *
 */
 require_once('../class2.php');
@@ -51,8 +51,10 @@ require_once('auth.php');
 require_once(e_HANDLER.'form_handler.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'user_handler.php');
+include_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'validator_class.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
+$ue = new e107_user_extended;
 $userMethods = new UserHandler;
 $user_data = array();
 
@@ -220,10 +222,13 @@ if (isset($_POST['adduser']))
 	validatorClass::checkMandatory('user_name,user_loginname', $allData);						// Check for missing fields (email done in userValidation() )
 	validatorClass::dbValidateArray($allData, $userMethods->userVettingInfo, 'user', 0);		// Do basic DB-related checks
 	$userMethods->userValidation($allData);														// Do user-specific DB checks
-	if (($_POST['password1'] != $_POST['password2']) && !isset($allData['errors']['user_password']))
-	{
-		$allData['errors']['user_password'] = ERR_PASSWORDS_DIFFERENT;
+	if (!isset($allData['errors']['user_password']))
+	{	// No errors in password - keep it outside the main data array
+		$savePassword = $allData['validate']['user_password'];
+		unset($allData['validate']['user_password']);						// Delete the password value in the output array
 	}
+	unset($_POST['password1']);					// Restrict the scope of this
+	unset($_POST['password2']);
 	if (!check_class($pref['displayname_class'], $allData['validate']['user_class']))
 	{
 		if ($allData['validate']['user_name'] != $allData['validate']['user_loginname'])
@@ -246,11 +251,15 @@ if (isset($_POST['adduser']))
 	if (!$error)
 	{
 		$message = '';
-		$user_data['user_password'] = $userMethods->HashPassword($_POST['password1'],$loginname);
+		$user_data['user_password'] = $userMethods->HashPassword($savePassword,$loginname);
 		$user_data['user_join'] = time();
 		if ($userMethods->needEmailPassword())
 		{	// Save separate password encryption for use with email address
-			$user_data['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($_POST['password1'], $user_data['user_email'])));
+			$user_data['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $user_data['user_email'])));
+		}
+		if (varsettrue($pref['user_new_period']))
+		{
+			$user_data['user_class'] = user_class::ucAdd(e_UC_NEWUSER, $user_data['user_class']);		// Probationary user class
 		}
 		$userMethods->addNonDefaulted($user_data);
 		if (admin_update($sql -> db_Insert("user", $user_data), 'insert', USRLAN_70))
@@ -262,7 +271,7 @@ if (isset($_POST['adduser']))
 			if (isset($_POST['sendconfemail']))
 			{  // Send confirmation email to user
 				require_once(e_HANDLER.'mail.php');
-				$e_message = str_replace(array('--SITE--','--LOGIN--','--PASSWORD--'),array(SITEURL,$loginname,$_POST['password1']),USRLAN_185).USRLAN_186;
+				$e_message = str_replace(array('--SITE--','--LOGIN--','--PASSWORD--'),array(SITEURL,$loginname,$savePassword),USRLAN_185).USRLAN_186;
 				if (sendemail($user_data['user_email'],USRLAN_187.SITEURL,$e_message,$user_data['user_login'],'',''))
 				{
 					$message = USRLAN_188.'<br /><br />';
@@ -274,7 +283,7 @@ if (isset($_POST['adduser']))
 			}
 			$message .= str_replace('--NAME--',$user_data['user_name'], USRLAN_174) ;
 			if (isset($_POST['generateloginname'])) $message .= '<br /><br />'.USRLAN_173.': '.$loginname;
-			if (isset($_POST['generatepassword'])) $message .= '<br /><br />'.USRLAN_172.': '.$_POST['password1'];
+			if (isset($_POST['generatepassword'])) $message .= '<br /><br />'.USRLAN_172.': '.$savePassword;
 
 			unset($user_data);		// Don't recycle the data once the user's been accepted without error
 		}
