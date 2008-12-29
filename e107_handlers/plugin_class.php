@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2008-12-21 01:57:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.61 $
+|     $Date: 2008-12-29 20:55:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -303,22 +303,29 @@ class e107plugin
 
 	function manage_userclass($action, $class_name, $class_description)
 	{
-		global $sql, $tp;
+		global $sql, $tp, $e107;
 		if ($action == 'add')
 		{
+			$class_name = strip_tags(strtoupper($class_name));
+			if ($e107->user_class->ucGetClassIDFromName($class_name) !== FALSE)
+			{	// Class already exists.
+				return TRUE;			// That's probably OK
+			}
 			$i = 1;
-			while ($sql->db_Select('userclass_classes', '*', "userclass_id={$i} ") && $i < e_UC_READONLY)
+			while (isset($e107->user_class->class_tree[$i]))
 			{
 				$i++;
 			}
-			if ($i < e_UC_READONLY)
+			if ($i < e_UC_SPECIAL_BASE)
 			{
 				$tmp = array();
 				$tmp['userclass_id'] = $i;
-				$tmp['userclass_name'] = strip_tags(strtoupper($class_name));
+				$tmp['userclass_name'] = $class_name;
 				$tmp['userclass_description'] = $class_description;
 				$tmp['userclass_editclass'] = e_UC_ADMIN;
 				$tmp['userclass_visibility'] = e_UC_ADMIN;
+				$tmp['userclass_type'] = UC_TYPE_STD;
+				$tmp['userclass_parent'] = e_UC_NOBODY;
 				$tmp['_FIELD_TYPES']['userclass_editclass'] = 'int';
 				$tmp['_FIELD_TYPES']['userclass_visibility'] = 'int';
 				$tmp['_FIELD_TYPES']['userclass_id'] = 'int';
