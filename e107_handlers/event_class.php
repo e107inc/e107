@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-03 17:21:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2008-12-29 20:41:10 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -61,6 +61,7 @@ class e107_event
 		}
 		return (isset($ret) ? $ret : false);
 	}
+
 	function triggerAdminEvent($type, $parms=array())
 	{
 		global $pref;
@@ -95,6 +96,62 @@ class e107_event
 				}
 			}
 		}
+	}
+
+	/*
+	* triggerHook trigger a hooked in element
+	*   four methods are allowed hooks: form, create, update, delete
+	*   form : return array('caption'=>'', 'text'=>'');
+	*   create, update, delete : return string message
+	* @param array $data array containing
+	* @param string $method form,insert,update,delete
+	* @param string $table the table name of the calling plugin
+	* @param int $id item id of the record
+	* @param string $plugin identifier for the calling plugin
+	* @param string $function identifier for the calling function
+	* @return string $text string of rendered html, or message from db handler
+	*/
+	function triggerHook($data='')
+	{
+		global $pref;
+
+		$text = '';
+		if(isset($pref['e_event_list']) && is_array($pref['e_event_list']))
+		{
+			foreach($pref['e_event_list'] as $hook)
+			{
+				if(is_readable(e_PLUGIN.$hook."/e_event.php"))
+				{
+					require_once(e_PLUGIN.$hook."/e_event.php");
+					$name = "e_event_{$hook}";
+					if(class_exists($name))
+					{
+						$class = new $name();
+						
+						switch($data['method'])
+						{
+							//returns array('caption'=>'', 'text'=>'');
+							case 'form':
+								if(method_exists($class, "event_{$data['method']}"))
+								{
+									$text[] = $class->event_form($data);
+								}
+								break;
+							//returns string message
+							case 'create':
+							case 'update':
+							case 'delete':
+								if(method_exists($class, "event_{$data['method']}"))
+								{
+									$text .= call_user_func(array($class, "event_{$data['method']}"), $data);
+								}
+								break;
+						}
+					}
+				}
+			}
+		}
+		return $text;
 	}
 }
 
