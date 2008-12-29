@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/English.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-28 22:37:43 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2008-12-29 20:50:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 setlocale(LC_ALL, 'en');
@@ -53,5 +53,6 @@ define('LAN_NO', 'No');
 define('LAN_OK', 'OK');
 define('LAN_CONTINUE', 'Continue');
 define('LAN_ENTER', 'Enter');
+define('LAN_HOOKS', 'Hooks');
 
 ?>

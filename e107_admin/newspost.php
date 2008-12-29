@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.18 $
- * $Date: 2008-12-07 13:08:41 $
- * $Author: e107steved $
+ * $Revision: 1.19 $
+ * $Date: 2008-12-29 20:50:41 $
+ * $Author: lisa_ $
 */
 require_once("../class2.php");
 
@@ -104,6 +104,9 @@ if ($delete == "main" && $del_id)
 			$e107cache->clear("news.php");
 			$e107cache->clear("othernews");
 			$e107cache->clear("othernews2");
+
+			$data = array('method'=>'delete', 'table'=>'news', 'id'=>$del_id, 'plugin'=>'news', 'function'=>'delete');
+			$message = $e_event->triggerHook($data);
 
 			admin_purge_related("news", $del_id);
 		}
@@ -456,7 +459,7 @@ class newspost
 	{
 	  global $cal;
 	  // ##### Display creation form
-	  global $sql, $rs, $ns, $pref, $tp, $pst, $e107;
+	  global $sql, $rs, $ns, $pref, $tp, $pst, $e107, $e_event;
 
 	  if ($sub_action == "sn" && !$_POST['preview'])
 	  {
@@ -839,6 +842,24 @@ class newspost
 			</tr>\n";
 		}
 
+		//triggerHook
+		$data = array('method'=>'form', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'create_item');
+		$hooks = $e_event->triggerHook($data);
+		if(!empty($hooks))
+		{
+			$text .= "<tr><td class='forumheader3' colspan='2' >".LAN_HOOKS." </td></tr>";
+			foreach($hooks as $hook)
+			{
+				if(!empty($hook))
+				{
+					$text .= "
+					<tr>
+					<td class='forumheader3'>".$hook['caption']."</td>
+					<td class='forumheader3'>".$hook['text']."</td>
+					</tr>";
+				}
+			}
+		}
 
 		$text .= "<tr style='vertical-align: top;'>
 		<td colspan='2'  style='text-align:center' class='forumheader'>".

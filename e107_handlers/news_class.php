@@ -9,9 +9,9 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2008-12-07 13:08:41 $
- * $Author: e107steved $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-29 20:50:41 $
+ * $Author: lisa_ $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -47,6 +47,8 @@ class news {
 			{
 				$message = "<strong>".(!mysql_errno() ? LAN_NEWS_46 : LAN_NEWS_5)."</strong>";
 			}
+			$data = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
+			$message .= $e_event->triggerHook($data);
 		} 
 		else 
 		{	// Adding item
@@ -56,6 +58,9 @@ class news {
 				$e_event -> trigger('newspost', $news);
 				$message = LAN_NEWS_6;
 				$e107cache -> clear('news.php');
+				$id = mysql_insert_id();
+				$data = array('method'=>'create', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
+				$message .= $e_event->triggerHook($data);
 			} 
 			else 
 			{

@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.10 $
-|    $Date: 2008-12-13 16:06:11 $
-|    $Author: e107steved $
+|    $Revision: 1.11 $
+|    $Date: 2008-12-29 20:51:07 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -606,9 +606,12 @@ class linkclass
 
 				$edata_ls['link_datestamp'] = $time;
                 $sql->db_UpdateArray("links_page",   $edata_ls, " WHERE link_id='".intval($qs[2])."'");
-				$admin_log->logArrayAll('LINKS_14',$edata_ls);
+				$msg = LCLAN_ADMIN_3;
+				$data = array('method'=>'update', 'table'=>'links_page', 'id'=>$qs[2], 'plugin'=>'links_page', 'function'=>'dbLinkCreate');
+				$msg .= $e_event->triggerHook($data);
+                $admin_log->logArrayAll('LINKS_14',$edata_ls);
                 $e107cache->clear("sitelinks");
-                $this->show_message(LCLAN_ADMIN_3);
+				$this->show_message($msg);
             //create link
 			} 
 			else 
@@ -616,9 +619,13 @@ class linkclass
 				$edata_ls['link_datestamp'] = time();
 				$edata_ls['link_order'] = $link_t+1;
                 $sql->db_Insert("links_page", $edata_ls);
+				$msg = LCLAN_ADMIN_2;
+				$id = mysql_insert_id();
+				$data = array('method'=>'create', 'table'=>'links_page', 'id'=>$id, 'plugin'=>'links_page', 'function'=>'dbLinkCreate');
+				$msg .= $e_event->triggerHook($data);
 				$admin_log->logArrayAll('LINKS_13',$edata_ls);
                 $e107cache->clear("sitelinks");
-                $this->show_message(LCLAN_ADMIN_2);
+                $this->show_message($msg);
             }
             //delete from tmp table after approval
 			if (is_numeric($qs[2]) && $qs[1] == "sn") 
@@ -630,7 +637,7 @@ class linkclass
 
     function show_link_create() 
 	{
-        global $sql, $rs, $qs, $ns, $fl, $linkspage_pref;
+        global $sql, $rs, $qs, $ns, $fl, $linkspage_pref, $e_event;
 
         $row['link_category']       = "";
         $row['link_name']           = "";
@@ -780,7 +787,28 @@ class linkclass
         <td style='width:70%' class='forumheader3'>
             ".r_userclass("link_class", $row['link_class'], "off", "public,guest,nobody,member,admin,classes")."
         </td>
-        </tr>
+        </tr>";
+
+		//triggerHook
+		$data = array('method'=>'form', 'table'=>'links_page', 'id'=>$row['link_id'], 'plugin'=>'links_page', 'function'=>'show_link_create');
+		$hooks = $e_event->triggerHook($data);
+		if(!empty($hooks))
+		{
+			$text .= "<tr><td class='fcaption' colspan='2' >".LAN_HOOKS." </td></tr>";
+			foreach($hooks as $hook)
+			{
+				if(!empty($hook))
+				{
+					$text .= "
+					<tr>
+					<td style='width:30%; vertical-align:top;' class='forumheader3'>".$hook['caption']."</td>
+					<td style='width:70%' class='forumheader3'>".$hook['text']."</td>
+					</tr>";
+				}
+			}
+		}
+
+		$text .= "
         <tr style='vertical-align:top'>
         <td colspan='2' style='text-align:center' class='forumheader'>";
         if (isset($qs[2]) && $qs[2] && $qs[1] == "edit") {
