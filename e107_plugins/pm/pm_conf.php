@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-04 15:37:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-30 16:35:05 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 $retrieve_prefs[] = 'pm_prefs';
@@ -176,7 +176,7 @@ function show_options()
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_23."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[pm_class]', $pm_prefs['pm_class'], 'off', 'members, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[pm_class]', $pm_prefs['pm_class'], 'off', 'member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_24."</td>
@@ -184,15 +184,15 @@ function show_options()
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_25."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[notify_class]', $pm_prefs['notify_class'], 'off', 'nobody, members, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[notify_class]', $pm_prefs['notify_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_26."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[receipt_class]', $pm_prefs['receipt_class'], 'off', 'nobody, members, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[receipt_class]', $pm_prefs['receipt_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_27."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[attach_class]', $pm_prefs['attach_class'], 'off', 'nobody, members, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[attach_class]', $pm_prefs['attach_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_28."</td>
@@ -200,11 +200,11 @@ function show_options()
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_29."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[sendall_class]', $pm_prefs['sendall_class'], 'off', 'nobody, members, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[sendall_class]', $pm_prefs['sendall_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_30."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[multi_class]', $pm_prefs['multi_class'], 'off', 'nobody, members, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[multi_class]', $pm_prefs['multi_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_31."</td>
@@ -324,7 +324,7 @@ function add_limit()
 
 	$txt .= "
 	<tr>
-	<td class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
+	<td class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest,member,admin,classes,language")."</td>
 	<td class='forumheader3'>
 		".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> 
 		".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='new_outbox_count' value='' /> 
