@@ -9,8 +9,8 @@
  * Manage/View failed login attempts
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-23 16:25:06 $
+ * $Revision: 1.7 $
+ * $Date: 2008-12-30 13:51:41 $
  * $Author: secretr $
  *
 */
@@ -166,7 +166,7 @@ else
 							</th>
 							<th class='center last'>
 								".LAN_BAN."<br/>
-								".$frm->checkbox('check_all_ban', 'jstarget:flaban', false, array('id'=>false,'class'=>'checkbox toggle-all'))."
+								".$frm->checkbox_toggle('check-all-ban', 'flaban')."
 							</th>
 						</tr>
 					</thead>
@@ -225,8 +225,6 @@ function headerjs()
 	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
 		<script type='text/javascript'>
-			//add required core lan - delete confirm message
-			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 			if(typeof e107Admin == 'undefined') var e107Admin = {}
 
 			/**

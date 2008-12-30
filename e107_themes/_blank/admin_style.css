@@ -79,6 +79,16 @@ ul,ol       { list-style:none; }
 .no-bg      { background:none !important; }
 .clear		{ clear: both; }
 
+pre {
+	overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	/* width: 99%; */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
 /*******************************************************************************************************************/
 
 /* E107 CORE ADMIN CSS *********************************************************************************************/
@@ -87,7 +97,7 @@ ul,ol       { list-style:none; }
 /******** Decorate JS */
 /* Admin List Table */ 
 .adminlist { width:100%;  border:1px solid #ddd;}
-.adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold; white-space:nowrap; }
+.adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold }
 .adminlist td { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; }
 .adminlist th.last,
 .adminlist td.last { border-right: 0px solid;}
@@ -197,6 +207,7 @@ label { cursor: pointer; }
 #s-message div.info,
 #s-message div.error,
 #s-message div.success,
+#s-message div.debug,
 #s-message div.warning { padding: 5px; margin-bottom: 10px; }
 
 
@@ -204,6 +215,7 @@ label { cursor: pointer; }
 #s-message div.error 	{ background-color:#FFCECE; border: 1px solid #CC0000; }
 #s-message div.success  { background-color:#DFFFDF; border: 1px solid #009900; }
 #s-message div.warning 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
+#s-message div.debug 	{ background-color:#FFFFFF; border: 1px solid #EAEAEA; }
 
 .message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; font-size: 14px; font-weight: bold; line-height: 32px; }
 
@@ -211,6 +223,7 @@ label { cursor: pointer; }
 #s-message div.error 	.message-title 	{ background-image: url(images/messagebox_critical.png); } 
 #s-message div.success 	.message-title 	{ background-image: url(images/ok.png); }
 #s-message div.warning 	.message-title	{ background-image: url(images/messagebox_warning.png); }
+#s-message div.debug 	.message-title	{ background-image: url(images/messagebox_info.png); }
 
 .message-body { padding-left: 42px; }
 .message-item ()

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2008-12-28 22:37:43 $
-|     $Author: e107steved $
+|     $Revision: 1.47 $
+|     $Date: 2008-12-30 13:51:41 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -34,7 +34,7 @@ class e_parse
 	var $e_highlighting;		// Set to TRUE or FALSE once it has been calculated
 	var $e_query;			// Highlight query
 
-		// toHTML Action defaults. For now these match existing convention. 
+		// toHTML Action defaults. For now these match existing convention.
 		// Let's reverse the logic on the first set ASAP; too confusing!
 	var	$e_optDefault = array(
 		'context' 		=> 'olddefault',	// default context: all "opt-out" conversions :(
@@ -48,12 +48,12 @@ class e_parse
 
 		'no_make_clickable' => FALSE,		// URLs etc are clickable - TRUE disables
 		'no_replace' 	=> FALSE,			// Replace clickable links - TRUE disables (only if no_make_clickable not set)
-		  
+
 	  	'emotes_off' 	=> FALSE,			// Convert emoticons to graphical icons - TRUE disables conversion
 		'emotes_on'  	=> FALSE,			// FORCE conversion to emotes, even if syspref is disabled
 
 		'no_hook' 		=> FALSE,			// Hooked parsers (TRUE disables completely) (deprecated)
-			
+
 		// Disabled by Default
 		'defs' 			=> FALSE,			// Convert defines(constants) within text.
 		'constants' 	=> FALSE,			// replace all {e_XXX} constants with their e107 value
@@ -61,7 +61,7 @@ class e_parse
 		'parse_sc' 		=> FALSE,			// Parse shortcodes - TRUE enables parsing
 		'no_tags' 		=> FALSE			// remove HTML tags.
 		);
-		
+
 		// Super modifiers adjust default option values
 		// First line of adjustments change default-ON options
 		// Second line changes default-OFF options
@@ -166,7 +166,7 @@ class e_parse
 			case 1 : return mb_strtolower($str);
 		}
 		// Default case shouldn't happen often
-		
+
 		return utf8_strtolower($str);
 	}
 
@@ -178,7 +178,7 @@ class e_parse
 			case 1 : return mb_strtoupper($str);
 		}
 		// Default case shouldn't happen often
-		
+
 		return utf8_strtoupper($str);
 	}
 
@@ -204,14 +204,14 @@ class e_parse
 	}
 
 
-	// May be subtle differences in return values dependent on which routine is used. 
+	// May be subtle differences in return values dependent on which routine is used.
 	//   native substr() routine can return FALSE. mb_substr and utf8_substr just return an empty string.
 	function uSubStr($str, $start, $length = NULL)
 	{
 		switch ($this->utfAction)
 		{
 			case 0 : return strrpos($str, $start, $length);
-			case 1 : 
+			case 1 :
 				if (is_null($length))
 				{
 					return mb_strrpos($haystack, $needle);
@@ -233,17 +233,17 @@ class e_parse
 	  {
 		require_once(e_HANDLER."shortcode_handler.php");
 		$this->e_sc = new e_shortcode;
-	  } 
+	  }
 	}
 
 
-	
+
 	function toDB($data, $nostrip = false, $no_encode = false, $mod = false, $original_author = false)
 	{
 		/**
 		* $nostrip: toDB() assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless you indicate otherwise by setting this var to true.
 		* If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
-		* $no_encode: This var should nearly always be false. It is used by the save_prefs() function to preserve html content within prefs even when 
+		* $no_encode: This var should nearly always be false. It is used by the save_prefs() function to preserve html content within prefs even when
 		* the save_prefs() function has been called by a non admin user / user without html posting permissions.
 		* $mod: the 'no_html' and 'no_php' modifiers blanket prevent html and php posting regardless of posting permissions. (used in logging)
 		*/
@@ -356,7 +356,7 @@ class e_parse
 		// 0x205f	0xe2	0x81	0x9f
 		// 0x3000	0xe3	0x80	0x80
 		$utf8 = 'u';
-		$whiteSpace = '#([\x20|\x0c]|[\xe1][\x9a][\x80]|[\xe1][\xa0][\x8e]|[\xe2][\x80][\x80-\x8a,\xa8]|[\xe2][\x81][\x9f]|[\xe3][\x80][\x80]+)#';	
+		$whiteSpace = '#([\x20|\x0c]|[\xe1][\x9a][\x80]|[\xe1][\xa0][\x8e]|[\xe2][\x80][\x80-\x8a,\xa8]|[\xe2][\x81][\x9f]|[\xe3][\x80][\x80]+)#';
 		// Have to explicitly enumerate the whitespace chars, and use non-utf-8 mode, otherwise regex fails on badly formed utf-8
 	}
 	else
@@ -364,7 +364,7 @@ class e_parse
 		$utf8 = '';
 		$whiteSpace = '#(\s+)#';		// For non-utf-8, can use a simple match string
 	}
-	
+
 
 // Start of the serious stuff - split into HTML tags and text between
 	  $content = preg_split('#(<.*?>)#mis', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
@@ -377,22 +377,22 @@ class e_parse
 		  if ($lvalue)
 		  {	// Tag of non-zero length
 			// If the first character is not a / then this is an opening tag
-            if ($lvalue[0] != "/") 
-			{            // Collect the tag name   
+            if ($lvalue[0] != "/")
+			{            // Collect the tag name
               preg_match("/^(\w*?)(\s|$)/", $lvalue, $t);
 
               // If this is a protected element, activate the associated protection flag
               if (in_array($t[1], $nobreak)) array_unshift($innbk, $t[1]);
             }
-		    else 
+		    else
 		    {  // Otherwise this is a closing tag
               // If this is a closing tag for a protected element, unset the flag
-              if (in_array(substr($lvalue, 1), $nobreak)) 
+              if (in_array(substr($lvalue, 1), $nobreak))
 			  {
                 reset($innbk);
-                while (list($key, $tag) = each($innbk)) 
+                while (list($key, $tag) = each($innbk))
 				{
-                  if (substr($lvalue, 1) == $tag) 
+                  if (substr($lvalue, 1) == $tag)
 				  {
                     unset($innbk[$key]);
                     break;
@@ -407,10 +407,10 @@ class e_parse
 		    $value = '';		// Eliminate any empty tags altogether
 		  }
         // Else if we're outside any tags, and with non-zero length string...
-        } 
-		elseif ($value) 
+        }
+		elseif ($value)
 		{    // If unprotected...
-          if (!count($innbk)) 
+          if (!count($innbk))
 		  {
             // Use the ACK (006) ASCII symbol to replace all HTML entities temporarily
             $value = str_replace("\x06", "", $value);
@@ -488,7 +488,7 @@ class e_parse
 			}
             // Put captured HTML entities back into the string
             foreach ($ents[0] as $ent) $value = preg_replace("/\x06/", $ent, $value, 1);
-          } 
+          }
         }
         // Send the modified segment down the drain
         $drain .= $value;
@@ -520,7 +520,7 @@ class e_parse
 				$tmp_pos = $pos-1;
 				$pos++;
 				break;
-				
+
 				case ">" :
 				if($text{$pos-1} == "/")
 				{
@@ -534,7 +534,7 @@ class e_parse
 				$intag = FALSE;
 				$pos++;
 				break;
-				
+
 				case "&" :
 				if($text{$pos+1} == "#")
 				{
@@ -569,7 +569,7 @@ class e_parse
 
 	// Truncate a string to a maximum length $len - append the string $more if it was truncated
 	// Uses current CHARSET - for utf-8, returns $len characters rather than $len bytes
-	function text_truncate($text, $len = 200, $more = "[more]") 
+	function text_truncate($text, $len = 200, $more = "[more]")
 	{
 	  if (strlen($text) <= $len) return $text; 		// Always valid
 	  if (strtolower(CHARSET) !== 'utf-8')
@@ -596,7 +596,7 @@ class e_parse
 	function textclean ($text, $wrap=100)
 	{
 		$text = str_replace ("\n\n\n", "\n\n", $text);
-		$text = $this -> htmlwrap($text, $wrap);
+		$text = $this->htmlwrap($text, $wrap);
 		$text = str_replace (array ("<br /> ", " <br />", " <br /> "), "<br />", $text);
 		/* we can remove any linebreaks added by htmlwrap function as any \n's will be converted later anyway */
 		return $text;
@@ -633,20 +633,20 @@ class e_parse
 	}
 
 
-	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE) 
+	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE)
 	{
 	  if ($text == '') return $text;
 
 	  global $pref, $fromadmin;
-		
+
 	  // Set default modifiers to start
 	  $opts = $this->e_optDefault;
 
 	  // Now process any modifiers that are specified
-	  if (strlen($modifiers)) 
+	  if (strlen($modifiers))
 	  {
 	    $aMods = explode( ',',$modifiers);
-		
+
 		// If there's a supermodifier, it must be first, and in uppercase
 		$psm = trim($aMods[0]);
 		if (isset($this->e_SuperMods[$psm]))
@@ -709,7 +709,7 @@ class e_parse
 	  foreach ($content as $full_text)
 	  {
 		$proc_funcs = TRUE;
-		
+
 		// We may have 'captured' a bbcode word - strip it if so
 		if ($last_bbcode == $full_text)
 		{
@@ -778,10 +778,10 @@ class e_parse
 		{  // Do the 'normal' processing - in principle, as previously - but think about the order.
 
 		  // Split out and ignore any scripts and style blocks. With just two choices we can match the closing tag in the regex
-		  $subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE ); 
+		  $subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 		  foreach ($subcon as $sub_blk)
 		  {
-//			if (preg_match('#^<(script|style)[^>]+>#',$sub_blk))		// 
+//			if (preg_match('#^<(script|style)[^>]+>#',$sub_blk))		//
 			if ((substr($sub_blk,0,7) == '<script') || (substr($sub_blk,0,6) == '<style'))
 			{  // Its a script/style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
 			  if (DB_INF_SHOW) echo "Processing script: {$sub_blk}<br />";
@@ -843,7 +843,7 @@ class e_parse
 				// Convert emoticons to graphical icons, unless modifiers override
 			  if (!$opts['emotes_off'] && ($pref['smiley_activate'] || $opts['emotes_on']))
 			  {
-				if (!is_object($this->e_emote)) 
+				if (!is_object($this->e_emote))
 				{
 				  require_once(e_HANDLER.'emote_filter.php');
 				  $this->e_emote = new e_emoteFilter;
@@ -878,7 +878,7 @@ class e_parse
 				// Start parse [bb][/bb] codes
 			  if ($parseBB !== FALSE)
 			  {
-				if (!is_object($this->e_bb)) 
+				if (!is_object($this->e_bb))
 				{
 				  require_once(e_HANDLER.'bbcode_handler.php');
 				  $this->e_bb = new e_bbcode;
@@ -910,9 +910,9 @@ class e_parse
 
 
 				// profanity filter
-			  if ($pref['profanity_filter']) 
+			  if ($pref['profanity_filter'])
 			  {
-				if (!is_object($this->e_pf)) 
+				if (!is_object($this->e_pf))
 				{
 				  require_once(e_HANDLER."profanity_filter.php");
 				  $this->e_pf = new e_profanityFilter;
@@ -946,7 +946,7 @@ class e_parse
 						$sub_blk = $this->e_hook[$hook]->$hook($sub_blk,$opts['context']);
 					}
 				}
-   
+
 				if(isset($pref['e_tohtml_list']) && is_array($pref['e_tohtml_list']))
 				{
 				  foreach($pref['e_tohtml_list'] as $hook)
@@ -999,7 +999,7 @@ class e_parse
 			  $ret_parser .= $sub_blk;
 			}	// End of 'normal' processing for a block of text
 
-		  }		// End of 'foreach() on each block of non-script text  
+		  }		// End of 'foreach() on each block of non-script text
 
 
  		}		// End of 'normal' parsing (non-script text)
@@ -1015,7 +1015,7 @@ class e_parse
 	function toAttribute($text) {
 		$text = str_replace("&amp;","&",$text); // URLs posted without HTML access may have an &amp; in them.
 		$text = htmlspecialchars($text, ENT_QUOTES, CHARSET); // Xhtml compliance.
-		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text)) 
+		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text))
 		{
 		  $text = $this->replaceConstants($text);
 		  return $text;

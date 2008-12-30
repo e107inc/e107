@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_db_verify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-05-29 18:53:07 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2008-12-30 13:51:41 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("DBLAN_1", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/admin/sql</b> directory.");
@@ -31,4 +31,6 @@ define("DBLAN_19", "Attempt to Fix");
 define("DBLAN_20", "Attempting to fix tables");
 define("DBLAN_21", "Fix Selected Items");
 define("DBLAN_22", " is not readable");
+define("DBLAN_23", "Database Utilities");
+define("DBLAN_24", "Please select action.");
 ?>

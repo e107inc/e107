@@ -1,13 +1,10 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_cpage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-29 15:23:06 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_cpage.php,v 1.5 2008-12-30 13:51:41 secretr Exp $
+ *
+ * Admin Language File
+ *
 */
 define("CUSLAN_1", "Title");
 define("CUSLAN_2", "Type");
