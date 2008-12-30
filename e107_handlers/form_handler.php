@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-23 08:28:42 $
+ * $Revision: 1.13 $
+ * $Date: 2008-12-30 13:51:41 $
  * $Author: secretr $
  *
 */
@@ -106,6 +106,12 @@ class e_form
 		$options = $this->format_options('checkbox', $name, $options);
 		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 
+	}
+
+	function checkbox_toggle($name, $selector = 'multitoggle')
+	{
+		$selector = 'jstarget:'.$selector;
+		return $this->checkbox($name, $selector, false, array('id'=>false,'class'=>'checkbox toggle-all'));
 	}
 
 	function radio($name, $value, $checked = false, $options = array())

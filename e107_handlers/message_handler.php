@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-23 16:25:06 $
+ * $Revision: 1.11 $
+ * $Date: 2008-12-30 13:51:41 $
  * $Author: secretr $
  *
 */
@@ -317,7 +317,8 @@ class eMessage
 			E_MESSAGE_ERROR 	=> array(),
 			E_MESSAGE_WARNING 	=> array(),
 			E_MESSAGE_SUCCESS 	=> array(),
-			E_MESSAGE_INFO 		=> array()
+			E_MESSAGE_INFO 		=> array(),
+			E_MESSAGE_DEBUG		=> array()
 		);
 	}
 

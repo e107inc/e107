@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-29 15:23:06 $
+ * $Revision: 1.12 $
+ * $Date: 2008-12-30 13:51:41 $
  * $Author: secretr $
  * 
 */
@@ -111,10 +111,12 @@ e107Admin.Helper = {
 	 * by default or any value set by checkbox value (special command 'jstarget:start_with_selector')
 	 * This method is auto-attached (if init() method is executed) to every checkbox having class toggle-all
 	 * 
-	 * Example of valid button being auto-observed: 
-	 * <input type='checkbox' class='toggle-all' name='not_important' value='multitoggle'>
+	 * Example of valid checkbox being auto-observed: 
+	 * <input type='checkbox' class='toggle-all' name='not_important' value='jstarget:your_selector'>
 	 * 
-	 * Demo: e107_admin/fla.php
+	 * Demo: e107_admin/fla.php, e107_admin/db_verify.php
+	 * Note: You could use e_form::checkbox_toggle() method (e107_handlers/form_handler.php), 
+	 * which produces multi-toggle checkbox observer in very convenient way 
 	 * 
 	 */
 	allToggleChecked: function(event) {
