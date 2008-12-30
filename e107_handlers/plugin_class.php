@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2008-12-30 09:44:17 $
+|     $Revision: 1.64 $
+|     $Date: 2008-12-30 19:01:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -340,7 +340,6 @@ class e107plugin
 		if ($action == 'remove')
 		{
 			$classID = $e107->user_class->ucGetClassIDFromName($class_name);
-			echo "Class ID: {$classID}, name: {$class_name}<br />";
 			if (($classID !== FALSE)
 				&& ($e107->user_class->deleteClassAndUsers($classID) === TRUE))
 			{
@@ -722,7 +721,11 @@ class e107plugin
 	//		'upgrade'
 	//		'uninstall'
 	// 		'refresh' 	- adds things that are missing, but doesn't change any existing settings
-	function manage_plugin_xml($id, $function='')
+	// $options is an array of possible options - ATM used only for uninstall:
+	//		'del_userclasses' - to delete userclasses created
+	//		'del_tables' - to delete DB tables
+	//		'del_extended' - to delete extended fields
+	function manage_plugin_xml($id, $function='', $options = FALSE)
 	{
 		global $sql, $pref;
 
@@ -877,8 +880,15 @@ class e107plugin
 						case 'refresh' :		// Leave things alone
 							break;
 						case 'uninstall' :
-							$txt .= "Removing table {$ct[1]} <br />";
-							$this->manage_tables('remove', array($ct[1]));				// Delete the table
+							if (varsettrue($options['del_tables'], FALSE))
+							{
+								$txt .= "Removing table {$ct[1]} <br />";
+								$this->manage_tables('remove', array($ct[1]));				// Delete the table
+							}
+							else
+							{
+								$txt .= "Table {$ct[1]} left in place<br />";
+							}
 							break;
 					}
 				}
@@ -1008,8 +1018,15 @@ class e107plugin
 
 					//If uninstalling, remove all userclasses (active or inactive)
 					case 'uninstall':
-					$txt .= 'Removing userclass '.$attrib['name'].'<br />';
-					$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
+						if (varsettrue($options['del_userclasses'], FALSE))
+						{
+							$txt .= 'Removing userclass '.$attrib['name'].'<br />';
+							$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
+						}
+						else
+						{
+							$txt .= 'userclass '.$attrib['name'].' left in place<br />';
+						}
 					break;
 				}
 			}
@@ -1049,11 +1066,17 @@ class e107plugin
 
 					//If uninstalling, remove all extended fields (active or inactive)
 					case 'uninstall':
-						$txt .= 'Removing extended field: '.$attrib['name'].' ... ';
-						$result = $this->manage_extended_field('remove', $attrib['name'], $source);
-						$txt .= ($result ? LAN_DELETED : LAN_DELETED_FAILED).'<br />';
-
-					break;
+						if (varsettrue($options['del_extended'], FALSE))
+						{
+							$txt .= 'Removing extended field: '.$attrib['name'].' ... ';
+							$result = $this->manage_extended_field('remove', $attrib['name'], $source);
+							$txt .= ($result ? LAN_DELETED : LAN_DELETED_FAILED).'<br />';
+						}
+						else
+						{
+							$txt .= 'Extended field: '.$attrib['name'].' left in place<br />';
+						}
+						break;
 				}
 			}
 		}
