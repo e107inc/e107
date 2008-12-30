@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-12-10 22:39:43 $
+|     $Revision: 1.23 $
+|     $Date: 2008-12-30 19:01:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -141,12 +141,11 @@ if (isset($_POST['upload']))
 if ($action == 'uninstall')
 {
 	if(!isset($_POST['uninstall_confirm']))
-	{
-		show_uninstall_confirm();
+	{	// $id is already an integer
+		show_uninstall_confirm($id);
 		exit;
 	}
 
-	$id = intval($id);
 	$plug = $plugin->getinfo($id);
 	$text = '';
 	//Uninstall Plugin
@@ -155,7 +154,12 @@ if ($action == 'uninstall')
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 		if(file_exists($_path.'plugin.xml'))
 		{
-			$text .= $plugin->manage_plugin_xml($id, 'uninstall');
+			$options = array(
+				'del_tables' => varset($_POST['delete_tables'],FALSE), 
+				'del_userclasses' => varset($_POST['delete_userclasses'],FALSE), 
+				'del_extended' => varset($_POST['delete_xfields'],FALSE)
+				);
+			$text .= $plugin->manage_plugin_xml($id, 'uninstall', $options);
 		}
 		else
 		{
@@ -623,18 +627,54 @@ $ns->tablerender(EPL_ADLAN_16, $text);
 require_once("footer.php");
 exit;
 
-function show_uninstall_confirm()
+function show_uninstall_confirm($id)
 {
-	global $plugin, $tp, $id, $ns;
-	$id = intval($id);
+	global $plugin, $tp, $ns;
 	$plug = $plugin->getinfo($id);
-//	$_path = e_PLUGIN.$plug['plugin_path'];
 
 	if ($plug['plugin_installflag'] == true )
 	{
 		if($plugin->parse_plugin($plug['plugin_path']))
 		{
 			$plug_vars = $plugin->plug_vars;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	else
+	{
+		return FALSE;
+	}
+	$userclasses = '';
+	$eufields = '';
+	if (isset($plug_vars['userclass']))
+	{
+		if (isset($plug_vars['userclass']['@attributes']))
+		{
+			$plug_vars['userclass'][0]['@attributes'] = $plug_vars['userclass']['@attributes'];
+			unset($plug_vars['userclass']['@attributes']);
+		}
+		$spacer = '';
+		foreach ($plug_vars['userclass'] as $uc)
+		{
+			$userclasses .= $spacer.$uc['@attributes']['name'].' - '.$uc['@attributes']['description'];
+			$spacer = '<br />';
+		}
+	}
+	if (isset($plug_vars['extendedField']))
+	{
+		if (isset($plug_vars['extendedField']['@attributes']))
+		{
+			$plug_vars['extendedField'][0]['@attributes'] = $plug_vars['extendedField']['@attributes'];
+			unset($plug_vars['extendedField']['@attributes']);
+		}
+		$spacer = '';
+		foreach ($plug_vars['extendedField'] as $eu)
+		{
+			$eufields .= $spacer.'plugin_'.$plug_vars['folder'].'_'.$eu['@attributes']['name'];
+			$spacer = '<br />';
 		}
 	}
 
@@ -658,6 +698,10 @@ function show_uninstall_confirm()
 	$text = "
 	<form action='".e_SELF."?".e_QUERY."' method='post'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<colgroup>
+	<col style='width:75%' />
+	<col style='width:25%' />
+	</colgroup>
 	<tr>
 	<td colspan='2' class='forumheader'>".EPL_ADLAN_54." ".$tp->toHtml($plug_vars['name'], "", "defs,emotes_off, no_make_clickable")."</td>
 	</tr>
@@ -666,7 +710,7 @@ function show_uninstall_confirm()
 	<td class='forumheader3'>".LAN_YES."</td>
 	</tr>
 	<tr>
-	<td class='forumheader3' style='width:75%'>
+	<td class='forumheader3'>
 	".EPL_ADLAN_57."<div class='smalltext'>".EPL_ADLAN_58."</div>
 	</td>
 	<td class='forumheader3'>
@@ -675,8 +719,39 @@ function show_uninstall_confirm()
 	<option value='0'>".LAN_NO."</option>
 	</select>
 	</td>
-	</tr>
-	<tr>
+	</tr>";
+	
+	if ($userclasses)
+	{
+		$text .= "	<tr>
+		<td class='forumheader3'>
+		".EPL_ADLAN_78."<div class='indent'>".$userclasses."</div><div class='smalltext'>".EPL_ADLAN_79."</div>
+		</td>
+		<td class='forumheader3'>
+			<select class='tbox' name='delete_userclasses'>
+			<option value='1'>".LAN_YES."</option>
+			<option value='0'>".LAN_NO."</option>
+			</select>
+		</td>
+		</tr>";
+	}
+
+	if ($eufields)
+	{
+		$text .= "	<tr>
+		<td class='forumheader3'>
+		".EPL_ADLAN_80."<div class='indent'>".$eufields."</div><div class='smalltext'>".EPL_ADLAN_79."</div>
+		</td>
+		<td class='forumheader3'>
+			<select class='tbox' name='delete_xfields'>
+			<option value='1'>".LAN_YES."</option>
+			<option value='0'>".LAN_NO."</option>
+			</select>
+		</td>
+		</tr>";
+	}
+
+	$text .="<tr>
 	<td class='forumheader3'>".EPL_ADLAN_59."<div class='smalltext'>".EPL_ADLAN_60."</div></td>
 	<td class='forumheader3'>{$del_text}</td>
 	</tr>

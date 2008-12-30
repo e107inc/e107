@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-11-23 20:47:55 $
+|     $Revision: 1.8 $
+|     $Date: 2008-12-30 19:01:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -74,7 +74,7 @@ define("EPL_UPGRADE", "Upgrade");
 define("EPL_ADLAN_50", "Comments successfully deleted");
 
 define("EPL_ADLAN_53", "Directory not writable");
-define("EPL_ADLAN_54", "Please select the option for uninstalling the plugin:");
+define("EPL_ADLAN_54", "Please select the options for uninstalling the plugin:");
 define("EPL_ADLAN_55", "Uninstall plugin");
 
 define("EPL_ADLAN_57", "Delete plugin tables");
@@ -94,9 +94,14 @@ define ('EPL_ADLAN_74','Newer PHP version required: ');
 define ('EPL_ADLAN_75','Newer MySQL version required: ');
 define ('EPL_ADLAN_76','Error in plugin.xml');
 define ('EPL_ADLAN_77','Cannot find plugin.xml');
-define ('EPL_ADLAN_78','');
-define ('EPL_ADLAN_79','');
-define ('EPL_ADLAN_80','');
+define ('EPL_ADLAN_78','Delete User Classes created by plugin:');
+define ('EPL_ADLAN_79','Only delete these if you have not used them for other purposes.');
+define ('EPL_ADLAN_80','Delete extended user fields created by plugin:');
+define ('EPL_ADLAN_81','');
+define ('EPL_ADLAN_82','');
+define ('EPL_ADLAN_83','');
+define ('EPL_ADLAN_84','');
+define ('EPL_ADLAN_85','');
 
 
 define('LAN_UPGRADE_SUCCESSFUL', 'Upgrade Successful');
