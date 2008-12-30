@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.7 $
- * $Date: 2008-12-30 13:51:41 $
+ * $Revision: 1.8 $
+ * $Date: 2008-12-30 15:56:12 $
  * $Author: secretr $
  *
 */
@@ -121,7 +121,7 @@ $text = "
 		<fieldset id='core-db-plugin-scan'>
 		<legend class='e-hideme'>".DBLAN_10."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminlist'>
-			<colgroup span='4'>
+			<colgroup span='2'>
 				<col style='width: 60%'></col>
 				<col style='width: 40%'></col>
 			</colgroup>

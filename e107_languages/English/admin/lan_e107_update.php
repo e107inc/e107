@@ -1,13 +1,10 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_e107_update.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-17 21:02:30 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: lan_e107_update.php,v 1.8 2008-12-30 15:56:12 secretr Exp $
+ *
+ * Administration Language File
+ *
 */
 
 define("LAN_UPDATE_2", "Action");
@@ -59,11 +56,14 @@ define('LAN_UPDATE_51', 'Update plugin table definition: ');
 define('LAN_UPDATE_52', 'Update downloads table');
 define('LAN_UPDATE_53', 'Update download mirror table');
 define('LAN_UPDATE_54', 'Missing table --TABLE-- - cannot add index --INDEX--');
-define('LAN_UPDATE_55', '');
-define('LAN_UPDATE_56', '');
+define('LAN_UPDATE_55', 'Description');
+define('LAN_UPDATE_56', 'System Update');
 define('LAN_UPDATE_57', '');
 define('LAN_UPDATE_58', '');
 define('LAN_UPDATE_59', '');
 define('LAN_UPDATE_60', '');
+
+define('LAN_UPDATE_CAPTION_PLUGIN', 'Plugin Updates');
+define('LAN_UPDATE_CAPTION_CORE', 'Core Updates');
 
 ?>

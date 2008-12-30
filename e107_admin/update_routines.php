@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2008-12-17 21:02:25 $
-|     $Author: e107steved $
+|     $Revision: 1.36 $
+|     $Date: 2008-12-30 15:56:12 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -64,7 +64,7 @@ if ($dont_check_update === TRUE)
   if ($tempData = $e107cache->retrieve_sys("nq_admin_updatecheck",3600, TRUE))
   {	// See when we last checked for an admin update
     list($last_time, $dont_check_update,$last_ver) = explode(',',$tempData);
-	if ($last_ver != $e107info['e107_version']) 
+	if ($last_ver != $e107info['e107_version'])
 	{
 	  $dont_check_update = FALSE;	// Do proper check on version change
 	}
@@ -72,12 +72,12 @@ if ($dont_check_update === TRUE)
 }
 
 if (!$dont_check_update)
-{ 
-if ($sql->db_Select("plugin", "plugin_version, plugin_path", "plugin_installflag='1' ")) 
+{
+if ($sql->db_Select("plugin", "plugin_version, plugin_path", "plugin_installflag='1' "))
 {
   while ($row = $sql->db_Fetch())
   {  // Mark plugins for update which have a specific update file, or a plugin.php file to check
-	if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php')) 
+	if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php'))
 	{
 	  $dbupdateplugs[$row['plugin_path']] = $row['plugin_version'];
 	}
@@ -104,23 +104,23 @@ $dbupdate["70x_to_706"] = LAN_UPDATE_8." .70x ".LAN_UPDATE_9." .706";
 }		// End if (!$dont_check_update)
 
 
-function update_check() 
+function update_check()
 {
   global $ns, $dont_check_update, $e107info;
-  
+
   $update_needed = FALSE;
-  
+
   if ($dont_check_update === FALSE)
   {
 	global $dbupdate, $dbupdatep, $e107cache;
 
 	// See which core functions need update
-	foreach($dbupdate as $func => $rmks) 
+	foreach($dbupdate as $func => $rmks)
 	{
 //	  echo "Core Check {$func}=>{$rmks}<br />";
-	  if (function_exists("update_".$func)) 
+	  if (function_exists("update_".$func))
 	  {
-		if (!call_user_func("update_".$func, FALSE)) 
+		if (!call_user_func("update_".$func, FALSE))
 		{
 		  $update_needed = TRUE;
 		  continue;
@@ -129,12 +129,12 @@ function update_check()
 	}
 
 	// Now check plugins
-	foreach($dbupdatep as $func => $rmks) 
+	foreach($dbupdatep as $func => $rmks)
 	{
 //	  echo "Plugin Check {$func}=>{$rmks}<br />";
-	  if (function_exists("update_".$func)) 
+	  if (function_exists("update_".$func))
 	  {
-		if (!call_user_func("update_".$func, FALSE)) 
+		if (!call_user_func("update_".$func, FALSE))
 		{
 		  $update_needed = TRUE;
 		  continue;
@@ -143,19 +143,30 @@ function update_check()
 	}
   	$e107cache->set_sys("nq_admin_updatecheck", time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
   }
-  else  
+  else
   {
     $update_needed = ($dont_check_update == '2');
   }
 
 
-  if ($update_needed === TRUE) 
+  if ($update_needed === TRUE)
   {
-	$txt = "<div style='text-align:center;'>".ADLAN_120;
-	$txt .= "<br /><form method='post' action='".e_ADMIN."e107_update.php'>
-		<input class='button' type='submit' value='".LAN_UPDATE."' />
-		</form></div>";
-	$ns->tablerender(LAN_UPDATE, $txt);
+	require_once (e_HANDLER."form_handler.php");
+	$frm = new e_form();
+	$txt = "
+
+	<form method='post' action='".e_ADMIN_ABS."e107_update.php'>
+	<div>
+		".ADLAN_120."
+		".$frm->admin_button('e107_system_update', LAN_UPDATE, 'update')."
+	</div>
+	</form>
+	";
+
+	require_once (e_HANDLER."message_handler.php");
+	$emessage = &eMessage::getInstance();
+	$emessage->add($txt);
+
   }
 }
 
@@ -181,9 +192,9 @@ function update_core_prefs($type='')
 	  $do_save = TRUE;
 	}
   }
-  if ($do_save) 
-  { 
-	save_prefs();  
+  if ($do_save)
+  {
+	save_prefs();
 	$admin_log->log_event('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
   }
   return $just_check;
@@ -195,14 +206,14 @@ if (defined('TEST_UPDATE'))
 //--------------------------------------------
 //	Test routine - to activate, define TEST_UPDATE
 //--------------------------------------------
-  function update_test_code($type='') 
+  function update_test_code($type='')
   {
 	global $sql,$ns, $pref;
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
 	//--------------**************---------------
 	// Add your test code in here
 	//--------------**************---------------
-	
+
 	//--------------**************---------------
 	// End of test code
 	//--------------**************---------------
@@ -213,10 +224,10 @@ if (defined('TEST_UPDATE'))
 //--------------------------------------------
 //	Upgrade later versions of 0.7.x to 0.8
 //--------------------------------------------
-function update_706_to_800($type='') 
+function update_706_to_800($type='')
 {
 	global $sql,$ns, $pref, $admin_log, $e107info;
-	
+
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
 						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone',
@@ -225,25 +236,25 @@ function update_706_to_800($type='')
 
 	// List of DB tables not required (includes a few from 0.6xx)
 	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last');
-	
-	
+
+
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
 	$new_tables = array('admin_log','audit_log', 'dblog');
 
 
-	// List of changed DB tables (defined in core_sql.php) 
+	// List of changed DB tables (defined in core_sql.php)
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
 	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist');
 
-	
+
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
 	// key = plugin directory nane. Data = comma-separated list of tables to check
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
 	$pluginChangedTables = array('linkwords' => 'linkwords');
 
-	
+
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
-	$ip_upgrade = array('comments' => 'comment_ip', 
+	$ip_upgrade = array('comments' => 'comment_ip',
 						'download_requests' => 'download_request_ip',
 						'online' => 'online_ip',
 						'submitnews' => 'submitnews_ip',
@@ -298,7 +309,7 @@ function update_706_to_800($type='')
 		else
 		{
 			$updateMessages[] = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);		// Log success
-		} 
+		}
 	}
 
 
@@ -381,7 +392,7 @@ function update_706_to_800($type='')
 	  if ($just_check) return update_needed();
 
 	  $row=$sql->db_Fetch();
-	
+
 	  //if online_extended is activated, we need to activate the new 'online' menu, and delete this record
 	  if($row['menu_location']!=0)
 	  {
@@ -415,7 +426,7 @@ function update_706_to_800($type='')
       if ($just_check) return update_needed('Comment table author field update');
 		$commentMessage = LAN_UPDATE_33;
 	  if ((!$sql->db_Field("comments","comment_author_id"))		// Check to see whether new fields already added - maybe data copy failed part way through
-		&& (!$sql->db_Select_gen("ALTER TABLE `#comments` 
+		&& (!$sql->db_Select_gen("ALTER TABLE `#comments`
 			ADD COLUMN comment_author_id int(10) unsigned NOT NULL default '0' AFTER `comment_author`,
 			ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
 	  {
@@ -483,7 +494,7 @@ function update_706_to_800($type='')
 
 	if (mysql_table_exists('newsfeed'))
 	{	// Need to extend field newsfeed_url varchar(250) NOT NULL default ''
-	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'")) 
+	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'"))
 	  {
 		$row = $sql -> db_Fetch();
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
@@ -499,7 +510,7 @@ function update_706_to_800($type='')
 
 	if (mysql_table_exists('download'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
-	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download LIKE 'download_url'")) 
+	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download LIKE 'download_url'"))
 	  {
 		$row = $sql -> db_Fetch();
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
@@ -514,7 +525,7 @@ function update_706_to_800($type='')
 
 	if (mysql_table_exists('download_mirror'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
-	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'")) 
+	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
 	  {
 		$row = $sql -> db_Fetch();
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
@@ -603,12 +614,12 @@ function update_706_to_800($type='')
 //		echo $db_parser->make_table_list($actual_defs);
 		$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
 		if (E107_DBG_FILLIN8) echo "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
-  
+
 		$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
 		if (count($diffs[0]))
 		{  // Changes needed
 		  if ($just_check) return update_needed("Field changes rqd; table: ".$ct);
-		// Do the changes here 
+		// Do the changes here
 		  if (E107_DBG_FILLIN8) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
 		  $qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
 		  if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
@@ -648,13 +659,13 @@ function update_706_to_800($type='')
 //					echo $db_parser->make_table_list($actual_defs);
 					$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
 					if (E107_DBG_FILLIN8) echo "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
-  
+
 					$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
 					if (count($diffs[0]))
 					{  // Changes needed
 						if (E107_DBG_FILLIN8) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
 						if ($just_check) return update_needed("Field changes rqd; plugin table: ".$ct);
-						// Do the changes here 
+						// Do the changes here
 						$qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
 						if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
 						mysql_query($qry);
@@ -669,20 +680,20 @@ function update_706_to_800($type='')
 	// Obsolete tables (list at top)
 	foreach ($obs_tables as $ot)
 	{
-		if (mysql_table_exists($ot)) 
+		if (mysql_table_exists($ot))
 		{
 			if ($just_check) return update_needed("Delete table: ".$ot);
 			mysql_query('DROP TABLE `'.MPREFIX.$ot.'`');
 			$updateMessages[] = LAN_UPDATE_48.$ot;
 		}
 	}
-	
-	
+
+
 	// Tables where IP address field needs updating to accommodate IPV6
 	// Set to varchar(45) - just in case something uses the IPV4 subnet (see http://en.wikipedia.org/wiki/IPV6#Notation)
 	foreach ($ip_upgrade as $t => $f)
 	{
-	  if (mysql_table_exists($t)) 
+	  if (mysql_table_exists($t))
 	  {		// Check for table - might add some core plugin tables in here
 	    if ($field_info = ($sql->db_Field($t, $f, '', TRUE)))
 	    {
@@ -716,12 +727,12 @@ function update_706_to_800($type='')
 	}
 
 
-	if ($do_save) 
+	if ($do_save)
 	{
 		save_prefs();
 		$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum);
 	}
-	
+
 	if ($just_check) return TRUE;
 	$admin_log->log_event('UPDATE_01',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode('[!br!]',$updateMessages),E_LOG_INFORMATIVE,'');	// Log result of actual update
 	return $just_check;
@@ -729,9 +740,9 @@ function update_706_to_800($type='')
 
 
 
-function update_70x_to_706($type='') 
+function update_70x_to_706($type='')
 {
-	global $sql,$ns, $pref, $e107info, $admin_log;
+	global $sql,$ns, $pref, $e107info, $admin_log, $emessage;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;
 	if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one.
@@ -740,7 +751,7 @@ function update_70x_to_706($type='')
       mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
 	  catch_error();
 	}
-	
+
 	//rename plugin_rss field
 	if($sql->db_Field("plugin",5) == "plugin_rss")
 	{
@@ -764,8 +775,9 @@ function update_70x_to_706($type='')
       if ($just_check) return update_needed();
       if(!mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);"))
 	  {
-		$mes = "<div style='text-align:center'>".LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.</div>";
-        $ns -> tablerender(LAN_ERROR,$mes);
+		$mes = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.";
+        //$ns -> tablerender(LAN_ERROR,$mes);
+        $emessage->add($mes, E_MESSAGE_ERROR);
        	catch_error();
 	  }
 	}
@@ -776,11 +788,11 @@ function update_70x_to_706($type='')
 	  mysql_query("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
 	  catch_error();
 	}
-		
-	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."tmp")) 
+
+	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."tmp"))
 	{
 	  $row = $sql -> db_Fetch();
-	  if (!in_array('tmp_ip', $row)) 
+	  if (!in_array('tmp_ip', $row))
 	  {
 		if ($just_check) return update_needed();
 		mysql_query("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
@@ -804,7 +816,7 @@ function update_70x_to_706($type='')
 	  $pref['displayname_maxlength'] = 15;
 	  save_prefs();
 	}
-	
+
 	// If we get to here, in checking mode no updates are required. In update mode, all done.
 	if ($just_check) return TRUE;
 	$admin_log->log_event('UPDATE_02',LAN_UPDATE_14.$e107info['e107_version'],E_LOG_INFORMATIVE,'');	// Log result of actual update
@@ -843,11 +855,15 @@ function copy_user_timezone()
 function update_needed($message='')
 {
 	global $ns, $update_debug;
-	if ($update_debug) echo "Update: ".$message."<br />";
+	require_once (e_HANDLER."message_handler.php");
+	$emessage = &eMessage::getInstance();
+
+	if ($update_debug) $emessage->add("Update: ".$message, E_MESSAGE_DEBUG);
 	if(E107_DEBUG_LEVEL)
 	{
 		$tmp = debug_backtrace();
-		$ns->tablerender("", "<div style='text-align:center'>Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']."</div>");
+		//$ns->tablerender("", "<div style='text-align:center'>Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']."</div>");
+		$emessage->add("Update required in ".basename(__FILE__)." on line ".$tmp[0]['line'], E_MESSAGE_DEBUG);
 	}
 	return FALSE;
 }
@@ -874,12 +890,12 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_54);
 		return !$just_check;		// No point carrying on - return 'nothing to do'
 	}
-	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX.$target)) 
+	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX.$target))
 	{
 		$found = FALSE;
 		while ($row = $sql -> db_Fetch())
 		{		// One index per field
-			if (in_array($indexSpec, $row)) 
+			if (in_array($indexSpec, $row))
 			{
 				return !$just_check;		// Found - nothing to do
 			}
@@ -898,7 +914,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 
 function catch_error()
 {
-  if (mysql_error()!='' && E107_DEBUG_LEVEL != 0) 
+  if (mysql_error()!='' && E107_DEBUG_LEVEL != 0)
   {
 	$tmp2 = debug_backtrace();
 	$tmp = mysql_error();
