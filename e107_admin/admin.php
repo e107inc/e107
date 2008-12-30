@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-29 16:11:02 $
+|     $Revision: 1.9 $
+|     $Date: 2008-12-30 15:56:12 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -22,18 +22,22 @@ require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 require_once(e_HANDLER.'upload_handler.php');
 
+require_once (e_HANDLER."message_handler.php");
+$emessage = &eMessage::getInstance();
+
 if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'classis';		// Shouldn't be needed - but just in case
 
 
 // --- check for htmlarea.
-if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea')) 
+if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 {
-	$text = ADLAN_ERR_2."<br /><br />
+	/*$text = ADLAN_ERR_2."<br /><br />
 	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
-	$ns -> tablerender(ADLAN_ERR_1, $text);
+	$ns -> tablerender(ADLAN_ERR_1, $text);*/
+	$emessage->add($HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/", E_MESSAGE_WARNING);
 }
 
-/* Not used in 0.8	
+/* Not used in 0.8
 // check for old modules.
 if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Field("plugin",5) == "plugin_addons")
 {
@@ -67,33 +71,35 @@ if(getperms('0') && isset($pref['modules']) && $pref['modules'] && $sql->db_Fiel
 $allowed_types = get_filetypes();			// Get allowed types according to filetypes.xml or filetypes.php
 if (count($allowed_types) == 0)
 {
-	echo "Setting default filetypes<br />";
 	$allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1);
+	$emessage->add("Setting default filetypes: ".implode(', ',array_keys($allowed_types)), E_MESSAGE_INFO);
+
 }
+
 //echo "Allowed filetypes = ".implode(', ',array_keys($allowed_types)).'<br />';
 // avatar check.
 $public = array(e_FILE.'public', e_FILE.'public/avatars');
-foreach ($public as $dir) 
+foreach ($public as $dir)
 {
-	if (is_dir($dir)) 
+	if (is_dir($dir))
 	{
-		if ($dh = opendir($dir)) 
+		if ($dh = opendir($dir))
 		{
-			while (($file = readdir($dh)) !== false) 
+			while (($file = readdir($dh)) !== false)
 			{
-				if (is_dir($dir."/".$file) == FALSE && $file != '.' && $file != '..' && $file != '/' && $file != 'CVS' && $file != 'avatars' && $file != 'Thumbs.db' && $file !=".htaccess" && $file !="php.ini") 
+				if (is_dir($dir."/".$file) == FALSE && $file != '.' && $file != '..' && $file != '/' && $file != 'CVS' && $file != 'avatars' && $file != 'Thumbs.db' && $file !=".htaccess" && $file !="php.ini")
 				{
 					$fext = substr(strrchr($file, "."), 1);
-					if (!array_key_exists(strtolower($fext),$allowed_types) ) 
+					if (!array_key_exists(strtolower($fext),$allowed_types) )
 					{
-						if ($file == 'index.html' || $file == "null.txt") 
+						if ($file == 'index.html' || $file == "null.txt")
 						{
-							if (filesize($dir.'/'.$file)) 
+							if (filesize($dir.'/'.$file))
 							{
 								$potential[] = str_replace('../', '', $dir).'/'.$file;
 							}
-						} 
-						else 
+						}
+						else
 						{
 							$potential[] = str_replace('../', '', $dir).'/'.$file;
 						}
@@ -105,16 +111,17 @@ foreach ($public as $dir)
 	}
 }
 
-if (isset($potential)) 
+if (isset($potential))
 {
-	$text = ADLAN_ERR_3."<br /><br />";
-
-	foreach ($potential as $p_file) 
+	//$text = ADLAN_ERR_3."<br /><br />";
+	$emessage->add(ADLAN_ERR_3, E_MESSAGE_WARNING);
+	$text = '<ul>';
+	foreach ($potential as $p_file)
 	{
-		$text .= $p_file.'<br />';
+		$text .= '<li>'.$p_file.'</li>';
 	}
-
-	$ns -> tablerender(ADLAN_ERR_1, $text);
+	$emessage->add($text, E_MESSAGE_WARNING);
+	//$ns -> tablerender(ADLAN_ERR_1, $text);
 }
 
 
@@ -123,7 +130,7 @@ if (isset($potential))
 
 
 // auto db update
-if ('0' == ADMINPERMS) 
+if ('0' == ADMINPERMS)
 {
 	require_once(e_ADMIN.'update_routines.php');
 	update_check();
@@ -131,7 +138,7 @@ if ('0' == ADMINPERMS)
 // end auto db update
 
 /*
-if (e_QUERY == 'purge' && getperms('0')) 
+if (e_QUERY == 'purge' && getperms('0'))
 {
 	$admin_log->purge_log_events(false);
 }
@@ -144,37 +151,37 @@ if(!defined("ADLINK_COLS"))
 }
 
 
-function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE) 
+function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE)
 {
 	global $td,$tp;
 	$text = '';
-	if (getperms($perms)) 
+	if (getperms($perms))
 	{
 		$description = strip_tags($description);
-		if ($mode == 'adminb') 
+		if ($mode == 'adminb')
 		{
 			$text = "<tr><td class='forumheader3'>
 				<div class='td' style='text-align:left; vertical-align:top; width:100%'
 				onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">
 				".$icon." <b>".$title."</b> ".($description ? "[ <span class='smalltext'>".$description."</span> ]" : "")."</div></td></tr>";
-		} 
-		else 
+		}
+		else
 		{
-			if ($td == (ADLINK_COLS+1)) 
+			if ($td == (ADLINK_COLS+1))
 			{
 				$text .= '</tr>';
 				$td = 1;
 			}
-			if ($td == 1) 
+			if ($td == 1)
 			{
 				$text .= '<tr>';
 			}
-			if ($mode == 'default') 
+			if ($mode == 'default')
 			{
 				$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap'
 					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$tp->toHTML($title,FALSE,"defs, emotes_off")."</td>";
 			}
-			elseif ($mode == 'classis') 
+			elseif ($mode == 'classis')
 			{
 				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."' title='{$description}'>".$icon."</a><br />
 					<a href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";
@@ -192,7 +199,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 }
 
 
-function render_clean() 
+function render_clean()
 {
 	global $td;
 	while ($td <= ADLINK_COLS) {
@@ -210,7 +217,7 @@ $newarray = asortbyindex($array_functions, 1);
 
 require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
 
-function admin_info() 
+function admin_info()
 {
 	global $tp;
 
@@ -239,7 +246,7 @@ function admin_info()
 	return $tp->parseTemplate($ADMIN_INFO_TEMPLATE);
 }
 
-function status_request() 
+function status_request()
 {
 	global $pref;
 	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade' || $pref['adminstyle'] == 'beginner') {
@@ -250,7 +257,7 @@ function status_request()
 }
 
 
-function latest_request() 
+function latest_request()
 {
 	global $pref;
 	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade' || $pref['adminstyle'] == 'beginner') {
@@ -260,7 +267,7 @@ function latest_request()
 	}
 }
 
-function log_request() 
+function log_request()
 {
 	global $pref;
 	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade'|| $pref['adminstyle'] == 'beginner') {
@@ -283,9 +290,9 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
 	$xml->filter = array('@attributes' => FALSE,'description'=>FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
 
-	if ($sql->db_Select("plugin", "*", "plugin_installflag=1")) 
+	if ($sql->db_Select("plugin", "*", "plugin_installflag=1"))
 	{
-		while ($row = $sql->db_Fetch()) 
+		while ($row = $sql->db_Fetch())
 		{
 			extract($row);		//  plugin_id int(10) unsigned NOT NULL auto_increment,
 								//	plugin_name varchar(100) NOT NULL default '',
@@ -293,7 +300,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 								//	plugin_path varchar(100) NOT NULL default '',
 								//	plugin_installflag tinyint(1) unsigned NOT NULL default '0',
 								//	plugin_addons text NOT NULL,
- 
+
 			if (is_readable(e_PLUGIN.$plugin_path."/plugin.xml"))
 			{
 				$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
@@ -315,7 +322,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 			{
 				include(e_PLUGIN.$plugin_path."/plugin.php");
 			}
-			if ($eplug_conffile) 
+			if ($eplug_conffile)
 			{
 				$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
 				if ($iconSize == E_16_PLUGMANAGER)
@@ -333,7 +340,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	}
 
 	ksort($plugin_array, SORT_STRING);
-	foreach ($plugin_array as $plug_key => $plug_value) 
+	foreach ($plugin_array as $plug_key => $plug_value)
 	{
 		$text .= render_links($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $plug_value['icon'], $linkStyle);
 	}
