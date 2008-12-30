@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2008-12-29 22:30:16 $
+|     $Revision: 1.63 $
+|     $Date: 2008-12-30 09:44:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -748,25 +748,25 @@ class e107plugin
 
 		if(!file_exists($path.'plugin.xml') || $function == '')
 		{
-		  $error[] = EPL_ADLAN_77;
-		  $canContinue = FALSE;
+			$error[] = EPL_ADLAN_77;
+			$canContinue = FALSE;
 		}
 
 
 		if($canContinue && $this->parse_plugin_xml($plug['plugin_path']))
 		{
-		  $plug_vars = $this->plug_vars;
+			$plug_vars = $this->plug_vars;
 		}
 		else
 		{
-		  $error[] = EPL_ADLAN_76;
-		  $canContinue = FALSE;
+			$error[] = EPL_ADLAN_76;
+			$canContinue = FALSE;
 		}
 
 		// First of all, see if there's a language file specific to install
 		if (isset($plug_vars['installLanguageFile']) && isset($plug_vars['installLanguageFile']['@attributes']['filename']))
 		{
-		  include_lan($path.$plug_vars['installLanguageFile']['@attributes']['filename']);
+			include_lan($path.str_replace('--LAN--',e_LANGUAGE, $plug_vars['installLanguageFile']['@attributes']['filename']));
 		}
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
