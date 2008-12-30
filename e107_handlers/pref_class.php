@@ -10,6 +10,11 @@
 |
 | Released under the terms and conditions of the
 | GNU General Public License (http://gnu.org).
+|
+|		$Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
+|		$Revision: 1.2 $
+|		$Date: 2008-12-30 16:51:07 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -30,14 +35,21 @@ if (!defined('e107_INIT')) { exit; }
 //  Just to be safe I have changed a number of menu_pref edits to use setArray().
 //
 
-class prefs {
+class prefs 
+{
 	var $prefVals;
 	var $prefArrays;
 
-	// List of rows that shouldn't be automatically extracted (delimeted by '|')
+	// Default prefs to load
 	var $DefaultRows = "e107_name='e107' OR e107_name='menu_pref' OR e107_name='notify_prefs'";
 
-	function ExtractPrefs($RowList = "", $use_default = FALSE) {
+	// Read prefs from DB - get as many rows as are required with a single query.
+	// $RowList is an array of pref entries to retrieve.
+	// If $use_default is TRUE, $RowList entries are added to the default array. Otherwise only $RowList is used.
+	// Returns TRUE on success (measured as getting at least one row of data); false on error.
+	// Any data read is buffered (in serialised form) here - retrieve using get()
+	function ExtractPrefs($RowList = "", $use_default = FALSE) 
+	{
 		global $sql;
 		$Args = '';
 		if($use_default)
@@ -51,36 +63,50 @@ class prefs {
 				$Args .= ($Args ? " OR e107_name='{$v}'" : "e107_name='{$v}'");
 			}
 		}
-		$sql->db_Select('core', '*', $Args, 'default');
+		if (!$sql->db_Select('core', '*', $Args, 'default'))
+		{
+			return FALSE;
+		}
 		while ($row = $sql->db_Fetch())
 		{
 			$this->prefVals['core'][$row['e107_name']] = $row['e107_value'];
 		}
+		return TRUE;
 	}
+
 
 	/**
 	* Return current pref string $name from $table (only core for now)
 	*
 	* - @param  string $name -- name of pref row
 	* - @param  string $table -- "core"
-	* - @return  string pref value, slashes already stripped
+	* - @return  string pref value, slashes already stripped. FALSE on error
 	* - @access  public
 	*/
-	function get($Name) {
-		if(isset($this->prefVals['core'][$Name])){
-			if($this->prefVals['core'][$Name] != '### ROW CACHE FALSE ###'){
-				return $this->prefVals['core'][$Name];
-			} else {
+	function get($Name) 
+	{
+		if(isset($this->prefVals['core'][$Name]))
+		{
+			if($this->prefVals['core'][$Name] != '### ROW CACHE FALSE ###')
+			{
+				return $this->prefVals['core'][$Name];		// Dava from cache
+			} 
+			else 
+			{
 				return false;
 			}
 		}
 
+		// Data not in cache - retrieve from DB
 		$get_sql = new db; // required so sql loops don't break using $tp->toHTML(). 
-		if($get_sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default')) {
+		if($get_sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default')) 
+		{
 			$row = $get_sql->db_Fetch();
 			$this->prefVals['core'][$Name] = $row['e107_value'];
 			return $this->prefVals['core'][$Name];
-		} else {
+		} 
+		else 
+		{	// Data not in DB - put a 'doesn't exist' entry in cache to save another DB access
 			$this->prefVals['core'][$Name] = '### ROW CACHE FALSE ###';
 			return false;
 		}
