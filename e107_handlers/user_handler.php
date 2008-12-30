@@ -9,9 +9,9 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-28 22:37:43 $
- * $Author: e107steved $
+ * $Revision: 1.6 $
+ * $Date: 2008-12-30 14:05:44 $
+ * $Author: secretr $
  *
 */
 
@@ -70,9 +70,9 @@ class UserHandler
 		0 - Null method
 		1 - Check for duplicates
 		2 - Check against $pref['signup_disallow_text']
-		
+
 	Index is the destination field name. If the source index name is different, specify 'srcName' in the array.
-	
+
 	Possible processing options:
 		'dbClean'		- 'sanitising' method for final value:
 							- 'toDB' - passes final value through $tp->toDB()
@@ -141,7 +141,7 @@ class UserHandler
 	  {
 		case PASSWORD_E107_MD5 :
 		  return md5($password);
-		  
+
 		case PASSWORD_E107_SALT :
 		  return PASSWORD_E107_ID.md5(md5($password).$login_name);
 		  break;
@@ -220,7 +220,7 @@ class UserHandler
 		return FALSE;
 	}
 
-	
+
 	// Checks whether the password value can be converted to the current default
 	// Returns TRUE if conversion possible.
 	// Returns FALSE if conversion not possible, or not needed
@@ -340,14 +340,14 @@ class UserHandler
 		if ($pref['user_tracking'] == "session")
 		{
 			$_SESSION[$pref['cookie_name']] = $cookieval;
-		} 
-		else 
+		}
+		else
 		{
-			if ($autologin == 1) 
+			if ($autologin == 1)
 			{	// Cookie valid for up to 30 days
 				cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
-			} 
-			else 
+			}
+			else
 			{
 				cookie($pref['cookie_name'], $cookieval);
 			}
@@ -364,7 +364,7 @@ class UserHandler
 		{
 			$classList = array();
 			global $e_userclass;
-			if (!isset($e_userclass) && !is_object($e_userclass)) 
+			if (!isset($e_userclass) && !is_object($e_userclass))
 			{
 				require_once(e_HANDLER."userclass_class.php");
 				$e_userclass = new user_class;
@@ -432,7 +432,7 @@ class UserHandler
   user_login		realname		realname		realname		User Real name
   user_xup			xupexist$		user_xup		-				XUP file link
   user_class		class			class			userclass		User class (array on form)
- 
+
 user_loginname may be auto-generated
 * avatar (user_image) and photo (user_sess) may be uploaded files
 $changed to match the majority vote
@@ -507,7 +507,7 @@ Following fields auto-filled in code as required:
 		return $ret;
 	}
 
-	// Given an array of user data intended to be written to the DB, adds empty strings (or other default value) for any field which doesn't have a default in the SQL definition. 
+	// Given an array of user data intended to be written to the DB, adds empty strings (or other default value) for any field which doesn't have a default in the SQL definition.
 	// (Avoids problems with MySQL in STRICT mode.).
 	// Returns TRUE if additions made, FALSE if no change.
 	function addNonDefaulted(&$userInfo)
@@ -524,8 +524,8 @@ Following fields auto-filled in code as required:
 		}
 		return $ret;
 	}
-	
-	
+
+
 	// Delete time-expired partial registrations from the user DB
 	function deleteExpired()
 	{

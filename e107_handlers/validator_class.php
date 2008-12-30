@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-28 22:37:43 $
- * $Author: e107steved $
+ * $Revision: 1.4 $
+ * $Date: 2008-12-30 14:05:44 $
+ * $Author: secretr $
  *
 */
 
@@ -43,7 +43,7 @@ define('ERR_IMAGE_TOO_HIGH', '21');
 The validator functions use an array of parameters for each variable to be validated.
 
 	The index of the parameter array is the destination field name.
-	
+
 	Possible processing options:
 		'srcname'		- specifies the array index of the source data, where its different to the destination index
 		'dbClean'		- method for preparing the value to write to the DB (done as final step before returning). Options are:
@@ -61,7 +61,7 @@ The validator functions use an array of parameters for each variable to be valid
 		'dataType'		- selects special processing methods:
 							1 - array of numerics (e.g. class membership)
 
-	In general, only define an option if its to be used 
+	In general, only define an option if its to be used
 */
 
 
@@ -102,7 +102,7 @@ class validatorClass
 					{
 						continue;			// Just loop to the next field - ignore this one.
 					}
-				} 
+				}
 				if (!$errNum && isset($defs['stripTags']))
 				{
 					$newValue = trim(strip_tags($value));
@@ -111,7 +111,7 @@ class validatorClass
 						$errNum = ERR_INVALID_CHARS;
 					}
 					$value = $newValue;
-				} 
+				}
 				if (!$errNum && isset($defs['stripChars']))
 				{
 					$newValue = trim(preg_replace($defs['stripChars'], "", $value));
@@ -167,7 +167,7 @@ class validatorClass
 				}
 				if (!$errNum && isset($defs['dataType']))
 				{
-					switch ($defs['dataType'])	
+					switch ($defs['dataType'])
 					{
 						case 1 :		// Assumes we're passed an array variable to be turned into a comma-separated list of integers
 							if (is_array($value))
@@ -289,7 +289,7 @@ class validatorClass
 		1 - Check for duplicates - field name in table must be the same as array index unless 'dbFieldName' specifies otherwise
 		2 - Check against the comma-separated wordlist in the $pref named in vetParam['signup_disallow_text']
 		3 - Check email address against remote server, only if option enabled
-		
+
 */
 	function dbValidateArray(&$targetData, &$definitions, $targetTable, $userID = 0)
 	{
@@ -313,7 +313,7 @@ class validatorClass
 						{
 							case 0 :		// Shouldn't get this - just do nothing if we do
 								break;
-							case 1 :		// Check for duplicates. 
+							case 1 :		// Check for duplicates.
 								if ($v == '')
 								{
 									$errMsg = ERR_MISSING_VALUE;
@@ -393,8 +393,8 @@ class validatorClass
 		}
 		return $allOK;
 	}
-	
-	
+
+
 	// Given two arrays, returns an array of those elements in $input which are different from the corresponding element in $refs.
 	// If $addMissing == TRUE, includes any element in $input for which there isn't a corresponding element in $refs
 	function findChanges(&$input, &$refs, $addMissing = FALSE)
