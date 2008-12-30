@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-07 14:22:32 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2008-12-30 16:33:18 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("6")) 
+if (!getperms("6"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -25,7 +25,12 @@ if (!getperms("6"))
 $e_sub_cat = 'filemanage';
 require_once("auth.php");
 require_once(e_HANDLER.'upload_handler.php');
+require_once(e_HANDLER."form_handler.php");
+$frm = new e_form();
 
+require_once (e_HANDLER."message_handler.php");
+$emessage = &eMessage::getInstance();
+//FIXME - messages
 
 $pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")) ? TRUE : FALSE;
 
@@ -43,7 +48,7 @@ $imagedir = e_IMAGE."packs/".$imode."/filemanager/";
 
 
 $path = str_replace("../", "", e_QUERY);
-if (!$path) 
+if (!$path)
 {
 	$path = str_replace("../", "", $adchoice[0]);
 }
@@ -58,26 +63,26 @@ if($path == "/")
 // ===============================================
 
 
-if (isset($_POST['deleteconfirm'])) 
+if (isset($_POST['deleteconfirm']))
 {
 	$deleteList = array();
 	$moveList = array();
 	foreach($_POST['deleteconfirm'] as $key=>$delfile)
 	{
 		// check for delete.
-		if (isset($_POST['selectedfile'][$key]) && isset($_POST['deletefiles'])) 
+		if (isset($_POST['selectedfile'][$key]) && isset($_POST['deletefiles']))
 		{
-			if (!$_POST['ac'] == md5(ADMINPWCHANGE)) 
+			if (!$_POST['ac'] == md5(ADMINPWCHANGE))
 			{
 				exit;
 			}
 			$destination_file = e_BASE.$delfile;
-			if (@unlink($destination_file)) 
+			if (@unlink($destination_file))
 			{
 				$message .= FMLAN_26." '".$destination_file."' ".FMLAN_27.".<br />";
 				$deleteList[] = $destination_file;
-			} 
-			else 
+			}
+			else
 			{
 				$message .= FMLAN_28." '".$destination_file."'.<br />";
 			}
@@ -96,8 +101,8 @@ if (isset($_POST['deleteconfirm']))
 				{
 					$message .= FMLAN_38." ".$newpath.$newfile."<br />";
 					$moveList[] = e_BASE.$delfile.'=>'.$newpath.$newfile;
-				} 
-				else 
+				}
+				else
 				{
 					$message .= FMLAN_39." ".$newpath.$newfile."<br />";
 					$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
@@ -117,9 +122,9 @@ if (isset($_POST['deleteconfirm']))
 
 
 
-if (isset($_POST['upload'])) 
+if (isset($_POST['upload']))
 {
-	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) 
+	if (!$_POST['ac'] == md5(ADMINPWCHANGE))
 	{
 		exit;
 	}
@@ -127,9 +132,9 @@ if (isset($_POST['upload']))
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
 	$files = $_FILES['file_userfile'];
-	foreach($files['name'] as $key => $name) 
+	foreach($files['name'] as $key => $name)
 	{
-		if ($files['size'][$key]) 
+		if ($files['size'][$key])
 		{
 			$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
 			$uploadList[] = $_POST['upload_dir'][$key].$uploaded[0]['name'];
@@ -143,7 +148,7 @@ if (isset($_POST['upload']))
 
 
 
-if (isset($message)) 
+if (isset($message))
 {
 	$ns->tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
@@ -152,12 +157,16 @@ if (isset($message))
 
 if (strpos(e_QUERY, ".") && !is_dir(realpath(e_BASE.$path)))
 {
-	echo "<iframe style=\"width:100%\" src=\"".e_BASE.e_QUERY."\" height=\"300\" scrolling=\"yes\"></iframe><br /><br />";
-	if (!strpos(e_QUERY, "/")) 
+	echo "
+	<div>
+		<iframe style='width:99%' src='".e_BASE.e_QUERY."' height='300' scrolling='yes'>asdas</iframe>
+	</div>
+	";
+	if (!strpos(e_QUERY, "/"))
 	{
 		$path = "";
-	} 
-	else 
+	}
+	else
 	{
 		$path = substr($path, 0, strrpos(substr($path, 0, -1), "/"))."/";
 	}
@@ -172,7 +181,7 @@ $path = $path[0];
 $path = explode(".. ", $path);
 $path = $path[0];
 
-if ($handle = opendir(e_BASE.$path)) 
+if ($handle = opendir(e_BASE.$path))
 {
 	while (false !== ($file = readdir($handle))) {
 		if ($file != "." && $file != "..") {
@@ -216,97 +225,94 @@ if (count($dirs) == 1) {
 
 $pathd = $path;
 
-$text = "<div style='text-align:center'>\n
-	<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-	<table style='".ADMIN_WIDTH."' class='fborder'>\n
-	<tr>\n\n
-
-	<td style='width:70%' class='forumheader3'>\n
+$text = "
+	<form method='post' action='".e_SELF."?".e_QUERY."'>
+	<div class='buttons-bar left'>
 	".FMLAN_32."
-	</td>\n
-	<td class='forumheader3' style='text-align:center; width:30%'>\n
-	<select name='admin_choice' class='tbox' onchange=\"location.href=this.options[selectedIndex].value\">\n";
+	<select name='admin_choice' class='tbox' onchange=\"location.href=this.options[selectedIndex].value\">";
 
 
 	foreach($dir_options as $key=>$opt){
 		$select = (str_replace("../","",$adchoice[$key]) == e_QUERY) ? "selected='selected'" : "";
-		$text .= "<option value='".e_SELF."?".str_replace("../","",$adchoice[$key])."' $select>".$opt."</option>\n";
+		$text .= "<option value='".e_SELF."?".str_replace("../","",$adchoice[$key])."' $select>".$opt."</option>";
 	}
 
-$text .= "</select>\n
-	</td>\n
-	</tr>\n\n
-
-	<tr style='vertical-align:top'>\n
-	<td colspan='2'  style='text-align:center' class='forumheader'>\n
-	<input class='button' type='submit' name='updateoptions' value='".FMLAN_33."' />\n
-	</td>\n
-	</tr>\n\n
-
-	</table>\n
-	</form>\n
-	</div>";
-$ns->tablerender(FMLAN_34, $text);
+$text .= "</select>
+	</div>
+	</form>
+";
+// $ns->tablerender(FMLAN_34, $text);
 
 
 // Get largest allowable file upload
 $max_file_size = get_user_max_upload();
 
-
-$text = "<form enctype=\"multipart/form-data\" action=\"".e_SELF.(e_QUERY ? "?".e_QUERY : "")."\" method=\"post\">
-	<div style=\"text-align:center\">
-	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"{$max_file_size}\" />
-	<table class='fborder' style=\"".ADMIN_WIDTH."\">";
-
-$text .= "<tr>
-	<td style=\"width:5%\" class=\"fcaption\">&nbsp;</td>
-	<td style=\"width:30%\" class=\"fcaption\"><b>".FMLAN_17."</b></td>
-	<td class=\"fcaption\"><b>".FMLAN_18."</b></td>
-	<td style=\"width:30%\" class=\"fcaption\"><b>".FMLAN_19."</b></td>
-	<td class=\"fcaption\"><b>".LAN_OPTIONS."</b></td>
-	</tr>";
-
 if ($path != e_FILE) {
 	if (substr_count($path, "/") == 1) {
-		$pathup = e_SELF;
+		//$pathup = e_SELF;
+		$pathup = '';
 	} else {
-		$pathup = e_SELF."?".substr($path, 0, strrpos(substr($path, 0, -1), "/"))."/";
+
+		$pathup = "<a class='action' href='".e_SELF."?".substr($path, 0, strrpos(substr($path, 0, -1), "/"))."/'><img class='icon S24' src='".$imagedir."updir.png' alt='".FMLAN_30."' /></a>";
 	}
-	$text .= "<tr><td colspan=\"5\" class=\"forumheader3\"><a href=\"".$pathup."\"><img src=\"".$imagedir."updir.png\" alt=\"".FMLAN_30."\" style=\"border:0\" /></a> 
-		<a href=\"filemanager.php\"><img src=\"".$imagedir."home.png\" alt=\"".FMLAN_16."\" style=\"border:0\" /></a>
-		</td>
-		</tr>";
 }
+
+
+$text .= "
+	<form enctype='multipart/form-data' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' method='post'>
+		<fieldset id='core-filemanager'>
+			<legend class='e-hideme'>XX</legend>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='4'>
+					<col style='width:  5%'></col>
+					<col style='width: 40%'></col>
+					<col style='width: 20%'></col>
+					<col style='width: 15%'></col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th class='center'>
+							".$pathup."
+						<!-- <a href='filemanager.php'><img src='".$imagedir."home.png' alt='".FMLAN_16."' /></a> -->
+							<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
+						</th>
+						<th class='center'>".FMLAN_17."</th>
+						<th class='center'>".FMLAN_18."</th>
+						<th class='center'>".FMLAN_19."</th>
+					</tr>
+				</thead>
+				<tbody>
+";
+
+
+
 
 $c = 0;
 while ($dirs[$c]) {
 	$dirsize = dirsize($path.$dirs[$c]);
-	$text .= "<tr>
-		<td class=\"forumheader3\" style=\"vertical-align:middle; text-align:center; width:5%\">
-		<a href=\"".e_SELF."?".$path.$dirs[$c]."/\"><img src=\"".$imagedir."folder.png\" alt=\"".$dirs[$c]." ".FMLAN_31."\" style=\"border:0\" /></a>
-		</td>
-		<td style=\"width:30%\" class=\"forumheader3\">
-		<a href=\"".e_SELF."?".$path.$dirs[$c]."/\">".$dirs[$c]."</a>
-		</td>
-		<td class=\"forumheader3\">".$dirsize."
-		</td>
-		<td class=\"forumheader3\">&nbsp;</td>
-		<td class=\"forumheader3\">";
+	$el_id = str_replace(array('/','_',' ','\\'),'-',$path.$dirs[$c]);
+
 	if (FILE_UPLOADS && is_writable(e_BASE.$path.$dirs[$c])) {
-		$text .= "<input class=\"button\" type=\"button\" name=\"erquest\" value=\"".FMLAN_21."\" onclick=\"expandit(this)\" />
-			<div style=\"display:none;\">
-			<input class=\"tbox\" type=\"file\" name=\"file_userfile[]\" size=\"50\" />
-			<input class=\"button\" type=\"submit\" name=\"upload\" value=\"".FMLAN_22."\" />
-			<input type=\"hidden\" name=\"upload_dir[]\" value=\"".$path.$dirs[$c]."\" />
-			</div>";
+		$up_button = $frm->admin_button('erquest', FMLAN_21, 'action', '', array('id'=>false, 'other'=>"onclick='e107Helper.toggle(\"{$el_id}\")'"));
 	} else {
-		$text .= "&nbsp;";
+		$up_button = "&nbsp;leave_32.png";
 	}
-	$text .= "</td>
-		</tr>
-
-
-		";
+	//FIXME - upload link not working, raplace with image
+	$text .= "
+					<tr>
+						<td class='center middle'><a href='#{$el_id}' class='e-expandit'>upload</a></td>
+						<td>
+							<a class='action' href='".e_SELF."?".$path.$dirs[$c]."/'><img class='icon action S16' src='".$imagedir."folder.png' alt='".$dirs[$c]." ".FMLAN_31."' style='border:0' /></a>
+							<a href='".e_SELF."?".$path.$dirs[$c]."/'>".$dirs[$c]."</a>
+							<div class='e-hideme' id='{$el_id}'>
+								<div class='field-spacer'>".$frm->file('file_userfile[]', array('id'=>false, 'size'=>'20')).$frm->admin_button('upload', FMLAN_22, '', '', array('id'=>false))."</div>
+								<input type='hidden' name='upload_dir[]' value='".$path.$dirs[$c]."' />
+							</div>
+						</td>
+						<td class='right'>".$dirsize."</td>
+						<td class='right'>&nbsp;</td>
+					</tr>
+	";
 	$c++;
 }
 
@@ -317,28 +323,33 @@ while ($files[$c]) {
 		$img = "def";
 	}
 	$size = $e107->parseMemorySize(filesize(e_BASE.$path."/".$files[$c]));
-	$text .= "<tr>
-		<td class=\"forumheader3\" style=\"vertical-align:middle; text-align:center; width:5%\">
-		<img src=\"".$imagedir.$img.".png\" alt=\"".$files[$c]."\" style=\"border:0\" />
-		</td>
-		<td style=\"width:30%\" class=\"forumheader3\">
-		<a href=\"".e_SELF."?".$path.$files[$c]."\">".$files[$c]."</a>
-		</td>";
 	$gen = new convert;
 	$filedate = $gen -> convert_date(filemtime(e_BASE.$path."/".$files[$c]), "forum");
-	$text .= "<td style=\"width:10%\" class=\"forumheader3\">".$size."</td>
-		<td style=\"width:30%\" class=\"forumheader3\">".$filedate."</td>
-		<td class=\"forumheader3\">";
 
-	$text .= "<input  type=\"checkbox\" name=\"selectedfile[$c]\" value=\"1\" />";
-	$text .="<input type=\"hidden\" name=\"deleteconfirm[$c]\" value=\"".$path.$files[$c]."\" />";
-
-	$text .="</td>
-		</tr>";
+	$text .= "
+					<tr>
+						<td class='center middle autocheck'>
+							".$frm->checkbox("selectedfile[$c]", 1, false, array('id'=>false))."
+							<input type='hidden' name='deleteconfirm[$c]' value='".$path.$files[$c]."' />
+						</td>
+						<td>
+							<img class='icon' src='".$imagedir.$img.".png' alt='".$files[$c]."' />
+							<a href='".e_SELF."?".$path.$files[$c]."'>".$files[$c]."</a>
+						</td>
+						<td class='right'>".$size."</td>
+						<td class='right'>".$filedate."</td>
+					</tr>
+	";
 	$c++;
 }
 
-	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:right'>";
+	$text .= "
+				</tbody>
+			</table>
+			<div class='buttons-bar left'>
+				".$frm->admin_button('check_all', 'jstarget:selectedfile', 'action', LAN_CHECKALL, array('id'=>false))."
+				".$frm->admin_button('uncheck_all', 'jstarget:selectedfile', 'action', LAN_UNCHECKALL, array('id'=>false))."
+	";
 
 	if ($pubfolder || e_QUERY == ""){
         require_once(e_HANDLER."file_class.php");
@@ -369,26 +380,26 @@ while ($files[$c]) {
 
 
 
-
+		//FIXME - form elements
         $text .= FMLAN_48."&nbsp;<select class='tbox' name='movepath'>\n";
         foreach($movechoice as $paths){
         	$text .= "<option value='$paths'>".str_replace("../","",$paths)."</option>\n";
 		}
-		$text .= "</select>&nbsp;";
-		$text .="<input class=\"button\" type=\"submit\" name=\"movetodls\" value=\"".FMLAN_50."\" onclick=\"return jsconfirm('".$tp->toJS(FMLAN_49)."') \" />
-		";
+		$text .= "</select>".$frm->admin_button('movetodls', FMLAN_50, 'move', '', array('other' => "onclick=\"return e107Helper.confirm('".$tp->toJS(FMLAN_49)."') \""));
 	}
 
-	$text .= "<input class=\"button\" type=\"submit\" name=\"deletefiles\" value=\"".FMLAN_43."\" onclick=\"return jsconfirm('".$tp->toJS(FMLAN_46)."') \" />
-		</td></tr></table>
-		<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-		</div>
-		</form>";
+	$text .= "
+				".$frm->admin_button('deletefiles', FMLAN_43, 'delete', '', array('title' => $tp->toJS(FMLAN_46)))."
+				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+			</div>
+		</fieldset>
+	</form>
+	";
 
 $ns->tablerender(FMLAN_29.": <b>root/".$pathd."</b>&nbsp;&nbsp;[ ".count($dirs)." ".$dstr.", ".count($files)." ".$cstr." ]", $text);
 
 
-function dirsize($dir) 
+function dirsize($dir)
 {
 	global $e107;
 	$_SERVER["DOCUMENT_ROOT"].e_HTTP.$dir;
@@ -410,4 +421,31 @@ function dirsize($dir)
 
 
 require_once("footer.php");
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			//add required core lan - delete confirm message
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
+			if(typeof e107Admin == 'undefined') var e107Admin = {}
+
+			/**
+			 * OnLoad Init Control
+			 */
+			e107Admin.initRules = {
+				'Helper': true,
+				'AdminMenu': false
+			}
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
+}
 ?>

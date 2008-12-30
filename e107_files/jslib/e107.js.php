@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.17 $
- * $Date: 2008-12-29 15:23:06 $
+ * $Revision: 1.18 $
+ * $Date: 2008-12-30 16:33:18 $
  * $Author: secretr $
  *
 */
@@ -779,12 +779,12 @@ Object.extend(e107Helper, {
 		 * This method will be rewritten after the core is cleaned up. After this point
 		 * the target element will be auto-hidden (no need of class="e-hideme")
 		 */
-
-        if(false === Object.isString(el) || ( 
+		
+        if(false === Object.isString(el) || (  
         	($(el) && $(el).nodeName.toLowerCase() == 'a' && $(el).readAttribute('href'))
         		|| 
         	($(el) && $(el).readAttribute('type') && $(el).readAttribute('type').toLowerCase() == 'input') /* deprecated */
-        )) {
+        )) { 
         	eltoggle = (function(el) {
 	    		return Try.these(
 	    		    function() { var ret = $(el.readAttribute('href').hash.substr(1)); if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
@@ -796,7 +796,7 @@ Object.extend(e107Helper, {
         } else {
             var eltoggle = $(el);
         }
-
+		
         if(!eltoggle) return false;
         
 		var fx = varset(arguments[1], null);
@@ -823,7 +823,7 @@ Object.extend(e107Helper, {
 	 * @see e107Core#addOnLoad
 	 */
     toggleObserver: function(event) {
-    	var expandthem = event.memo.element ? $(event.memo.element) : $$('body')[0];
+    	var expandthem = event.memo.element ? $(event.memo.element) : $$('body')[0]; 
         expandthem.select('.e-expandit').invoke('observe', 'click', function(e) {
             var element = e.findElement('a');
             if(!element) element = e.element();
