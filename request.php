@@ -12,57 +12,73 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/request.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-07-04 20:23:13 $
+|     $Revision: 1.6 $
+|     $Date: 2008-12-30 16:51:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
+// ********************************** SEE HIGHLIGHTED AND NUMBERED QUERIES *****************************
+
 require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
 
-if (!e_QUERY || isset($_POST['userlogin'])) {
+if (!e_QUERY || isset($_POST['userlogin'])) 
+{
 	header("location: {$e107->base_path}");
 	exit();
 }
 
 $id = FALSE;
-if (!is_numeric(e_QUERY)) {
-	if ($sql->db_Select("download", "download_id", "download_url='".$tp -> toDB(e_QUERY)."'")) {
+if (!is_numeric(e_QUERY)) 
+{
+	if ($sql->db_Select('download', 'download_id', "download_url='".$tp -> toDB(e_QUERY)."'")) 
+	{
 		$row = $sql->db_Fetch();
-		$type = "file";
+		$type = 'file';
 		$id = $row['download_id'];
-	} else if(strstr(e_QUERY, "http://") || strstr(e_QUERY, "ftp://" || strstr(e_QUERY, "https://"))) {
+	} 
+	elseif((strpos(e_QUERY, "http://") === 0) || (strpos(e_QUERY, "ftp://") === 0) || (strpos(e_QUERY, "https://") === 0)) 
+	{
 		header("location: ".e_QUERY);
 		exit();
-	} else if(file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) {
+	} 
+	elseif(file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) 		// 1 - should we allow this?
+	{
 		send_file($DOWNLOADS_DIRECTORY.e_QUERY);
 		exit();
 	}
 }
 
-if(strstr(e_QUERY, "mirror")) {
+
+if(strstr(e_QUERY, "mirror")) 
+{	// Download from mirror
 	list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
 	$download_id = intval($download_id);
 	$mirror_id = intval($mirror_id);
 	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_category WHERE d.download_id = {$download_id}";
-	if ($sql->db_Select_gen($qry)) {
+	if ($sql->db_Select_gen($qry)) 
+	{
 		$row = $sql->db_Fetch();
 		extract($row);
 		if (check_class($download_category_class) && check_class($download_class)) 
 		{
-			if($pref['download_limits'] && $download_active == 1) {
+			if($pref['download_limits'] && $download_active == 1) 
+			{
 				check_download_limits();
 			}
 			$mirrorList = explode(chr(1), $download_mirror);
 			$mstr = "";
-			foreach($mirrorList as $mirror) {
-				if($mirror) {
+			foreach($mirrorList as $mirror) 
+			{
+				if($mirror) 
+				{
 					$tmp = explode(",", $mirror);
 					$mid = intval($tmp[0]);
 					$address = $tmp[1];
 					$requests = $tmp[2];
-					if($tmp[0] == $mirror_id) {
+					if($tmp[0] == $mirror_id) 
+					{
 						$gaddress = trim($address);
 						$requests ++;
 					}
@@ -80,16 +96,21 @@ if(strstr(e_QUERY, "mirror")) {
 }
 
 $tmp = explode(".", e_QUERY);
-if (!$tmp[1] || strstr(e_QUERY, "pub_")) {
+if (!$tmp[1] || strstr(e_QUERY, "pub_")) 
+{
 	$id = intval($tmp[0]);
 	$type = "file";
-} else {
+} 
+else 
+{
 	$table = preg_replace("#\W#", "", $tp -> toDB($tmp[0], true));
 	$id = intval($tmp[1]);
 	$type = "image";
 }
 
-if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
+
+if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) 
+{
 	if(strstr(e_QUERY, "pub_"))
 	{
 		$bid = str_replace("pub_", "", e_QUERY);
@@ -99,7 +120,8 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
 			exit();
 		}
 	}
-	if (file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) {
+	if (file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) 
+	{
 		send_file($DOWNLOADS_DIRECTORY.e_QUERY);
 		exit();
 	}
@@ -115,24 +137,27 @@ if ($type == "file")
 	if ($sql->db_Select_gen($qry)) 
 	{
 		$row = $sql->db_Fetch();
-	  if (check_class($row['download_category_class']) && check_class($row['download_class'])) 
-	  {
-		if ($row['download_active'] == 0)
-		{  // Inactive download - don't allow
-		  require_once(HEADERF);
-		  $ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".str_replace('--LINK--',"<a href='".e_HTTP.'download.php'."'>",LAN_dl_78).'</div>');
-		  require_once(FOOTERF);
-		  exit();
-		}
+		if (check_class($row['download_category_class']) && check_class($row['download_class'])) 
+		{
+			if ($row['download_active'] == 0)
+			{  // Inactive download - don't allow
+				require_once(HEADERF);
+				$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".str_replace('--LINK--',"<a href='".e_HTTP.'download.php'."'>",LAN_dl_78).'</div>');
+				require_once(FOOTERF);
+				exit();
+			}
 
-			if($pref['download_limits'] && $row['download_active'] == 1) {
+			if($pref['download_limits'] && $row['download_active'] == 1) 
+			{
 				check_download_limits();
 			}
 			extract($row);
-			if($download_mirror) {
+			if($download_mirror) 
+			{
 				$array = explode(chr(1), $download_mirror);
 				$c = (count($array)-1);
-				for ($i=1; $i < $c; $i++) {
+				for ($i=1; $i < $c; $i++) 
+				{
 					$d = mt_rand(0, $i);
 					$tmp = $array[$i];
 					$array[$i] = $array[$d];
@@ -141,16 +166,18 @@ if ($type == "file")
 				$tmp = explode(",", $array[0]);
 				$mirror_id = $tmp[0];
 				$mstr = "";
-				foreach($array as $mirror) {
-					if($mirror) {
+				foreach($array as $mirror) 
+				{
+					if($mirror) 
+					{
 						$tmp = explode(",", $mirror);
 						$mid = $tmp[0];
 						$address = $tmp[1];
 						$requests = $tmp[2];
 						if($tmp[0] == $mirror_id) 
 						{
-						  $gaddress = trim($address);
-						  $requests ++;
+							$gaddress = trim($address);
+							$requests ++;
 						}
 					  $mstr .= $mid.",".$address.",".$requests.chr(1);
 					}
@@ -169,7 +196,8 @@ if ($type == "file")
 			$request_data = "'0', '{$user_id}', '{$ip}', '{$id}', '".time()."'";
 			//add request info to db
 			$sql->db_Insert("download_requests", $request_data, FALSE);
-			if (preg_match("/Binary\s(.*?)\/.*/", $download_url, $result)) {
+			if (preg_match("/Binary\s(.*?)\/.*/", $download_url, $result)) 
+			{
 				$bid = $result[1];
 				$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '{$bid}'");
 				$binary_data = @mysql_result($result, 0, "binary_data");
@@ -185,11 +213,16 @@ if ($type == "file")
 			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://")) {
 				header("Location: {$download_url}");
 				exit();
-			} else {
-				if (file_exists($DOWNLOADS_DIRECTORY.$download_url)) {
+			} 
+			else 
+			{
+				if (file_exists($DOWNLOADS_DIRECTORY.$download_url)) 
+				{
 					send_file($DOWNLOADS_DIRECTORY.$download_url);
 					exit();
-				} else if(file_exists(e_FILE."public/{$download_url}")) {
+				} 
+				elseif(file_exists(e_FILE."public/{$download_url}")) 
+				{
 					send_file(e_FILE."public/{$download_url}");
 					exit();
 				}
@@ -197,26 +230,21 @@ if ($type == "file")
 		} 
 		else 
 		{	// Download Access Denied.
-		  if((!strpos($pref['download_denied'],".php") &&
-			!strpos($pref['download_denied'],".htm") &&
-			!strpos($pref['download_denied'],".html") &&
-			!strpos($pref['download_denied'],".shtml") ||
-			(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
-			))
-		  {
-			header("Location: ".e_BASE."download.php?error.{$id}.1");
-			exit;
-/*				require_once(HEADERF);
-				$denied_message = ($pref['download_denied'] && !strpos($pref['download_denied'],"signup.php")) ? $tp->toHTML($pref['download_denied'],"","defs") : LAN_dl_63;
-				$ns -> tablerender(LAN_dl_61, $denied_message);
-				require_once(FOOTERF);  
-				exit();  */
-		  }
-		  else
-		  {
-			header("Location: ".trim($pref['download_denied']));
-			exit;
-		  }
+			if((!strpos($pref['download_denied'],".php") &&
+				!strpos($pref['download_denied'],".htm") &&
+				!strpos($pref['download_denied'],".html") &&
+				!strpos($pref['download_denied'],".shtml") ||
+				(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
+				))
+			{
+				header("Location: ".e_BASE."download.php?error.{$id}.1");
+				exit();
+			}
+			else
+			{
+				header("Location: ".trim($pref['download_denied']));
+				exit();
+			}
 		}
 	}
 	else if(strstr(e_QUERY, "pub_"))
@@ -247,7 +275,8 @@ $sql->db_Select($table, "*", "{$table}_id = '{$id}'");
 $row = $sql->db_Fetch();
 extract($row);
 $image = ($table == "upload" ? $upload_ss : $download_image);
-if (preg_match("/Binary\s(.*?)\/.*/", $image, $result)) {
+if (preg_match("/Binary\s(.*?)\/.*/", $image, $result)) 
+{
 	$bid = $result[1];
 	$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '{$bid}'");
 	$binary_data = @mysql_result($result, 0, "binary_data");
@@ -259,32 +288,47 @@ if (preg_match("/Binary\s(.*?)\/.*/", $image, $result)) {
 	exit();
 }
 
+
 $image = ($table == "upload" ? $upload_ss : $download_image);
 
-if (strpos($image, "http") !== FALSE) {
+if (strpos($image, "http") !== FALSE) 
+{
 	header("Location: {$image}");
 	exit();
-} else {
-	if ($table == "download") {
+} 
+else 
+{
+	if ($table == "download") 
+	{
 		require_once(HEADERF);
-		if (file_exists(e_FILE."download/{$image}")) {
+		if (file_exists(e_FILE."download/{$image}")) 
+		{
 			$disp = "<div style='text-align:center'><img src='".e_FILE."download/{$image}' alt='' /></div>";
 		}
-		else if(file_exists(e_FILE."downloadimages/{$image}")) {
+		else if(file_exists(e_FILE."downloadimages/{$image}")) 
+		{
 			$disp = "<div style='text-align:center'><img src='".e_FILE."downloadimages/{$image}' alt='' /></div>";
-		} else {
+		} 
+		else 
+		{
 			$disp = "<div style='text-align:center'><img src='".e_FILE."public/{$image}' alt='' /></div>";
 		}
 		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>";
 		$ns->tablerender($image, $disp);
 
 		require_once(FOOTERF);
-	} else {
-		if (is_file(e_FILE."public/{$image}")) {
+	} else 
+	{
+		if (is_file(e_FILE."public/{$image}")) 
+		{
 			echo "<img src='".e_FILE."public/{$image}' alt='' />";
-		} elseif(is_file(e_FILE."downloadimages/{$image}")) {
+		} 
+		elseif(is_file(e_FILE."downloadimages/{$image}")) 
+		{
 			echo "<img src='".e_FILE."downloadimages/{$image}' alt='' />";
-		} else {
+		} 
+		else 
+		{
 			require_once(HEADERF);
 			$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
 			require_once(FOOTERF);
@@ -294,8 +338,11 @@ if (strpos($image, "http") !== FALSE) {
 	}
 }
 
+
+
 // File retrieval function. by Cam.
-function send_file($file) {
+function send_file($file) 
+{
 	global $pref, $DOWNLOADS_DIRECTORY,$FILES_DIRECTORY, $e107;
 	if (!$pref['download_php'])
 	{
@@ -310,17 +357,24 @@ function send_file($file) {
 	$path = realpath($filename);
 	$path_downloads = realpath($DOWNLOADS_DIRECTORY);
 	$path_public = realpath($FILES_DIRECTORY."public/");
-	if(!strstr($path, $path_downloads) && !strstr($path,$path_public)) {
-        if(E107_DEBUG_LEVEL > 0 && ADMIN){
+	if(!strstr($path, $path_downloads) && !strstr($path,$path_public)) 
+	{
+        if(E107_DEBUG_LEVEL > 0 && ADMIN)
+		{
 			echo "Failed to Download <b>".$file."</b><br />";
 			echo "The file-path <b>".$path."<b> didn't match with either <b>{$path_downloads}</b> or <b>{$path_public}</b><br />";
 			exit();
-        }else{
+        }
+		else
+		{
 			header("location: {$e107->base_path}");
 			exit();
 		}
-	} else {
-		if (is_file($filename) && is_readable($filename) && connection_status() == 0) {
+	} 
+	else 
+	{
+		if (is_file($filename) && is_readable($filename) && connection_status() == 0) 
+		{
 			if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
 			{
 				$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
@@ -359,19 +413,25 @@ function send_file($file) {
 				$data_len -= $bufsize;
 			}
 			fclose($res);
-		} else {
-
-            if(E107_DEBUG_LEVEL > 0 && ADMIN){
+		} 
+		else 
+		{
+            if(E107_DEBUG_LEVEL > 0 && ADMIN)
+			{
               	echo "file failed =".$file."<br />";
 				echo "path =".$path."<br />";
                 exit();
-			}else{
+			}
+			else
+			{
 			  	header("location: ".e_BASE."index.php");
 				exit();
 			}
 		}
 	}
 }
+
+
 function check_download_limits() 
 {
 	global $pref, $sql, $ns, $HEADER, $e107, $tp;
