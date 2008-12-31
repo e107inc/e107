@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.22 $
- * $Date: 2008-12-20 14:36:09 $
+ * $Revision: 1.23 $
+ * $Date: 2008-12-31 17:08:14 $
  * $Author: e107steved $
  *
 */
@@ -69,6 +69,8 @@ if(isset($_POST['updateprefs']))
 
 	// Table of range checking values - min and max for numerics. Only do the important ones
 	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30), 'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15), 'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10));
+
+	$pref['post_html'] = intval($_POST['post_html']);			// This ensures the setting is reflected in set text
 
 	$prefChanges = array();
 	foreach($_POST as $key => $value)
