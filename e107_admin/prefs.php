@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2008-12-20 14:36:37 $
+|     $Revision: 1.106 $
+|     $Date: 2008-12-31 17:08:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -63,6 +63,8 @@ if (isset($_POST['updateprefs']))
 	  'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15),
 	  'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10)
 	);
+
+	$pref['post_html'] = intval($_POST['post_html']);			// This ensures the setting is reflected in set text
 
 	foreach($_POST as $key => $value)
 	{
