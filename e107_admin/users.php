@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.23 $
-* $Date: 2008-12-29 09:31:36 $
+* $Revision: 1.24 $
+* $Date: 2009-01-02 20:04:07 $
 * $Author: e107steved $
 *
 */
@@ -1095,14 +1095,14 @@ class users
 		<tr>
 		<td style='width:30%' class='forumheader3'>".USRLAN_61."</td>
 		<td style='width:70%' class='forumheader3'>
-		".$rs->form_text('username', 40, varset($user_data['user_name'],""), 30)."
+		".$rs->form_text('username', 40, varset($user_data['user_name'],""), varset($pref['displayname_maxlength'],15))."
 		</td>
 		</tr>
 
 		<tr>
 		<td style='width:30%' class='forumheader3'>".USRLAN_128."</td>
 		<td style='width:70%' class='forumheader3'>
-		".$rs->form_text('loginname', 40, varset($user_data['user_loginname'],""), 30)."&nbsp;&nbsp;
+		".$rs->form_text('loginname', 40, varset($user_data['user_loginname'],""), varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
 		".$rs->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],FALSE)).USRLAN_170."
 		</td>
 		</tr>
