@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.96 $
-|     $Date: 2008-12-18 21:19:28 $
+|     $Revision: 1.97 $
+|     $Date: 2009-01-02 20:03:55 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -996,20 +996,20 @@ class users
 	}
 
 	function add_user() {
-		global $rs, $ns;
+		global $rs, $ns, $pref;
 		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF.'?create', "adduserform")."
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_61."</td>
 			<td style='width:70%' class='forumheader3'>
-			".$rs->form_text("name", 40, "", 30)."
+			".$rs->form_text("name", 40, "", varset($pref['displayname_maxlength'],15))."
 			</td>
 			</tr>
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_128."</td>
 			<td style='width:70%' class='forumheader3'>
-			".$rs->form_text("loginname", 40, "", 30)."
+			".$rs->form_text("loginname", 40, "", varset($pref['loginname_maxlength'],30))."
 			</td>
 			</tr>
 

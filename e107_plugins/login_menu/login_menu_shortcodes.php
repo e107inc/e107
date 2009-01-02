@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-03-25 09:22:17 $
-|     $Author: lisa_ $
+|     $Revision: 1.12 $
+|     $Date: 2009-01-02 20:04:01 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -22,11 +22,14 @@ $login_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 
 /*
 SC_BEGIN LM_USERNAME_INPUT
-return "<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n";
+global $pref;
+return "<input class='tbox login user' type='text' name='username' id='username' size='15' value='' maxlength='".varset($pref['loginname_maxlength'],30)."' />\n";
 SC_END
 
 SC_BEGIN LM_PASSWORD_INPUT
-return "<input class='tbox login pass' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n";
+global $pref;
+$t_password = "<input class='tbox login pass' type='password' name='userpass' id='userpass' size='15' value='' maxlength='30' />\n";
+return $t_password;
 SC_END
 
 SC_BEGIN LM_IMAGECODE
