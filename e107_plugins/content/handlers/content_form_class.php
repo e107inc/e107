@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.22 $
-|		$Date: 2008-12-29 20:53:24 $
+|		$Revision: 1.23 $
+|		$Date: 2009-01-03 09:17:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -786,9 +786,23 @@ class contentform{
 				}
 			}
 
-			global $CONTENTFORM_HOOK;
+			global $CONTENTFORM_HOOK, $CONTENT_ADMIN_CONTENT_CREATE_HOOKSTART, $CONTENT_ADMIN_CONTENT_CREATE_HOOKITEM;
 			$data = array('method'=>'form', 'table'=>$plugintable, 'id'=>$row['content_id'], 'plugin'=>'content', 'function'=>'create_item');
-			$CONTENTFORM_HOOK = $e_event->triggerHook($data);
+			$hooks = $e_event->triggerHook($data);
+			$CONTENTFORM_HOOK='';
+			if(!empty($hooks))
+			{
+				$CONTENTFORM_HOOK .= $CONTENT_ADMIN_CONTENT_CREATE_HOOKSTART;
+				foreach($hooks as $hook)
+				{
+					if(!empty($hook))
+					{
+						$HOOKCAPTION = $hook['caption'];
+						$HOOKTEXT = $hook['text'];
+						$CONTENTFORM_HOOK .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_ADMIN_CONTENT_CREATE_HOOKITEM);
+					}
+				}
+			}
 
 			$button = ($hidden ? $hidden : "");
 			if($qs[1] == "edit" || $qs[1] == "sa" ){

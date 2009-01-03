@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/templates/content_admin_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-04-10 14:34:39 $
+|     $Revision: 1.5 $
+|     $Date: 2009-01-03 09:17:05 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -718,12 +718,26 @@ if(!isset($CONTENT_ADMIN_CONTENT_CREATE)){
 	{CONTENTFORM_LAYOUT}
 	{CONTENTFORM_CUSTOM}
 	{CONTENTFORM_PRESET}
+	{CONTENTFORM_HOOK}
 	<tr><td class='forumheader' style='text-align:center' colspan='2'>{CONTENT_ADMIN_BUTTON}</td></tr>
 	</table>
 	</form>
 	</div>";
 }
 
+//hooks
+if(!isset($CONTENT_ADMIN_CONTENT_CREATE_HOOKSTART))
+{
+	$CONTENT_ADMIN_CONTENT_CREATE_HOOKSTART = "<tr><td class='fcaption' colspan='2' >".LAN_HOOKS." </td></tr>";
+}
+if(!isset($CONTENT_ADMIN_CONTENT_CREATE_HOOKITEM))
+{
+	$CONTENT_ADMIN_CONTENT_CREATE_HOOKITEM = "
+	<tr>
+	<td style='width:30%; vertical-align:top;' class='forumheader3'>{HOOKCAPTION}</td>
+	<td style='width:70%' class='forumheader3'>{HOOKTEXT}</td>
+	</tr>";
+}
 
 //custom tags
 if(!isset($CONTENT_ADMIN_CONTENT_CREATE_CUSTOMSTART)){
