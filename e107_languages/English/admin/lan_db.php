@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_db.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-02-14 21:17:42 $
+|     $Revision: 1.8 $
+|     $Date: 2009-01-04 09:35:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,8 @@ define("DBLAN_31", "Pass");
 define("DBLAN_32", "Error");
 define("DBLAN_33", "Inaccessible");
 define("DBLAN_34", "Not checked");
+define('DBLAN_35', 'Click button to check validity of user table');
+define('DBLAN_36', 'Check user table');
 
 
 ?>

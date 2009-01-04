@@ -11,25 +11,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2007-10-26 09:43:03 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2009-01-04 09:35:12 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
-if (!getperms('0')) {
+if (!getperms('0')) 
+{
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
 $e_sub_cat = 'database';
 
-if (isset($_POST['db_update'])) {
+if (isset($_POST['db_update'])) 
+{
 	header("location: ".e_ADMIN."e107_update.php");
 	exit;
 }
 
-if (isset($_POST['verify_sql'])) {
+if (isset($_POST['check_user'])) 
+{
+	header("location: ".e_ADMIN."check_user.php");
+	exit;
+}
+
+if (isset($_POST['verify_sql'])) 
+{
 	header("location: ".e_ADMIN."db_verify.php");
 	exit;
 }
@@ -52,14 +61,16 @@ if(isset($_POST['pref_editor']) || isset($_POST['delpref']) || isset($_POST['del
 }
 
 
-if (isset($_POST['optimize_sql'])) {
+if (isset($_POST['optimize_sql'])) 
+{
 	optimizesql($mySQLdefaultdb);
 	require_once("footer.php");
 	exit;
 }
 
 
-if (isset($_POST['backup_core'])) {
+if (isset($_POST['backup_core'])) 
+{
 	backup_core();
 	message_handler("MESSAGE", DBLAN_1);
 }
@@ -70,7 +81,8 @@ if(isset($_POST['delplug']))
 
 }
 
-if (isset($_POST['plugin_scan']) || e_QUERY == "plugin" || $_POST['delplug']) {
+if (isset($_POST['plugin_scan']) || e_QUERY == "plugin" || $_POST['delplug']) 
+{
 	plugin_viewscan();
 	require_once("footer.php");
 	exit;
@@ -112,9 +124,14 @@ $text = "<div style='text-align:center'>
 	</tr>
 
 	<tr>
+	<td style='width:70%' class='forumheader3'>".DBLAN_35."</td>
+	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='check_user' value='".DBLAN_36."' /></td>
+	</tr>
+
+	<tr>
 	<td style='width:70%' class='forumheader3'>".DBLAN_8."</td>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='backup_core' value='".DBLAN_9."' />
-	<input type='hidden' name='sqltext' value='$sqltext' />
+	<input type='hidden' name='sqltext' value='{$sqltext}' />
 	</td></tr>
 	</table>
 	</form>
