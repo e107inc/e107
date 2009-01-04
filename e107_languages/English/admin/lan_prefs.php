@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2008-12-19 14:01:07 $
-|     $Author: secretr $
+|     $Revision: 1.16 $
+|     $Date: 2009-01-04 16:00:19 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -180,18 +180,18 @@ define("PRFLAN_168", "Site Contact Person(s)");
 define("PRFLAN_169", "If the chosen group contains more than one person, the user will be asked to select a person from the group.");
 //define("PRFLAN_170", "Use reverse DNS to allow host banning");
 //define("PRFLAN_171", "Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts");
-define("PRFLAN_172", "Login Name maximum length (10..100)");
-define("PRFLAN_173", "Check at SourceForge for e107 updates once/day");
-define("PRFLAN_174", "Name for responses to emails from site");
-define("PRFLAN_175", "This will appear in the 'From' field of registration and other emails from this site");
-define("PRFLAN_176", "Email address for emails from site");
-define("PRFLAN_177", "Address specified for replies to emails from this site.");
-define("PRFLAN_178", "Password transmission method");
-define("PRFLAN_179", "(Only supported if using sessions for user tracking.)");
-define("PRFLAN_180", "Plaintext");
-define("PRFLAN_181", "CHAP, plaintext fallback");
-define("PRFLAN_182", "CHAP only");
-define("PRFLAN_183", " CHAP requires JS enabled in user's browser");
+define('PRFLAN_172', 'Login Name maximum length (10..100)');
+define('PRFLAN_173', 'Check at SourceForge for e107 updates once/day');
+define('PRFLAN_174', 'Name for responses to emails from site');
+define('PRFLAN_175', 'This will appear in the \'From\' field of registration and other emails from this site');
+define('PRFLAN_176', 'Email address for emails from site');
+define('PRFLAN_177', 'Address specified for replies to emails from this site.');
+define('PRFLAN_178', 'Password transmission method');
+define('PRFLAN_179', '(Only supported if using sessions for user tracking.)');
+define('PRFLAN_180', 'Plaintext');
+define('PRFLAN_181', 'CHAP, plaintext fallback');
+define('PRFLAN_182', 'CHAP only');
+define('PRFLAN_183', ' CHAP requires JS enabled in user\'s browser');
 define('PRFLAN_184', 'Allow login by email address');
 define('PRFLAN_185', '(as well as login name)');
 define('PRFLAN_186', 'Yes');
@@ -205,7 +205,9 @@ define('PRFLAN_193', 'To allow users to set their own login names, leave blank')
 define('PRFLAN_194', '# - alpha<br />. - numeric<br />* - alphanumeric<br />Other chars used as entered.');
 define('PRFLAN_195', 'Changed values:');
 define('PRFLAN_196', 'Log all page accesses');
-//define('PRFLAN_197', '');
+define('PRFLAN_197', 'Auto-login new user after clicking on signup link');
+define('PRFLAN_198', 'If disabled, user has to explicitly log in after signup');
+//define('PRFLAN_199', '');
 
 //0.8
 define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");

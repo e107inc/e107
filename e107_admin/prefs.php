@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.23 $
- * $Date: 2008-12-31 17:08:14 $
+ * $Revision: 1.24 $
+ * $Date: 2009-01-04 16:00:19 $
  * $Author: e107steved $
  *
 */
@@ -842,6 +842,13 @@ $text .= "
 						<td class='label'>".PRFLAN_92.": </td>
 						<td class='control'>
 							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'])."
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".PRFLAN_197.": </td>
+						<td class='control'>
+							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'])."
+							<div class='smalltext field-help'>".PRFLAN_198."</div>
 						</td>
 					</tr>
 					<tr>
