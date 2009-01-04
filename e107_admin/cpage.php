@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-29 20:50:41 $
- * $Author: lisa_ $
+ * $Revision: 1.12 $
+ * $Date: 2009-01-04 22:24:58 $
+ * $Author: e107steved $
  *
 */
 
@@ -428,18 +428,17 @@ class page
 		{	// New page/menu
 			$menuname = ($type ? $tp->toDB($_POST['menu_name']) : "");
 
-			admin_update($sql->db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
-			$pid = mysql_insert_id();
+			$pid = admin_update($sql->db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
 			$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 
 			if($type)
 			{
-				$sql->db_Insert("menus", "0, '$menuname', '0', '0', '0', '', '".$pid."' ");
+				$sql->db_Insert("menus", "0, '{$menuname}', '0', '0', '0', '', '".$pid."' ");
 			}
 
 			if($_POST['page_link'])
 			{
-				$link = "page.php?".mysql_insert_id();
+				$link = "page.php?".$pid;
 				if (!$sql->db_Select("links", "link_id", "link_name='".$tp->toDB($_POST['page_link'])."'"))
 				{
 					$linkname = $tp->toDB($_POST['page_link']);
