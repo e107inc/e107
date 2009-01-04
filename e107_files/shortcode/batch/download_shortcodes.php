@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-12-08 21:15:57 $
+|     $Revision: 1.17 $
+|     $Date: 2009-01-04 12:52:45 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -23,21 +23,21 @@ $download_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 SC_BEGIN DOWNLOAD_LIST_NAME
 global $row,$tp,$pref;
 if($parm == "nolink"){
-	return $tp->toHTML($row['download_name'],TRUE,"no_hook");
+	return $tp->toHTML($row['download_name'],TRUE,'LINKTEXT');
 }
 if($parm == "request"){
 
-	$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"));
+	$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'));
 	if($row['download_mirror_type']){
 		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' title='".LAN_dl_32."'>");
 	}else{
 		$text = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$row['download_id']."' title='".LAN_dl_32."'>");
 	}
-	$text .= $tp->toHTML($row['download_name'])."</a>";
+	$text .= $tp->toHTML($row['download_name'], FALSE, 'USER_TITLE')."</a>";
 	return $text;
 }
 
-return  "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'],TRUE,"no_hook")."</a>";
+return  "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'],TRUE,'LINKTEXT')."</a>";
 SC_END
 
 
@@ -115,7 +115,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_LIST_LINK
 global $tp,$row,$pref;
-$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"));
+$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'));
 	if($row['download_mirror_type']){
 		return ($pref['agree_flag'] ? "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."download.php?mirror.".$row['download_id']."' >");
 	}else{
@@ -159,7 +159,7 @@ SC_END
 
 SC_BEGIN DOWNLOAD_CATEGORY_DESCRIPTION
 global $tp,$dl;
-$text = $tp -> toHTML($dl['download_category_description'], TRUE,'description');
+$text = $tp -> toHTML($dl['download_category_description'], TRUE,'DESCRIPTION');
 if($parm){
 	return substr($text,0,$parm);
 }else{
@@ -181,7 +181,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_NAME_LINKED
 global $pref,$dl,$tp;
 if ($pref['agree_flag'] == 1) {
-	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
 } else {
 	return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
 }
@@ -195,12 +195,12 @@ SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_AUTHOREMAIL
 global $tp,$dl;
-return ($dl['download_author_email']) ? $tp -> toHTML($dl['download_author_email'], TRUE) : "";
+return ($dl['download_author_email']) ? $tp -> toHTML($dl['download_author_email'], TRUE, 'LINKTEXT') : "";
 SC_END
 
 SC_BEGIN DOWNLOAD_VIEW_AUTHORWEBSITE
 global $tp,$dl;
-return ($dl['download_author_website']) ? $tp -> toHTML($dl['download_author_website'], TRUE) : "";
+return ($dl['download_author_website']) ? $tp -> toHTML($dl['download_author_website'], TRUE,'LINKTEXT') : "";
 SC_END
 
 
@@ -208,7 +208,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_DESCRIPTION
 global $tp, $dl;
 $maxlen = ($parm ? intval($parm) : 0);
-$text = ($dl['download_description'] ?  $tp->toHTML($dl['download_description'], TRUE, 'description') : "");
+$text = ($dl['download_description'] ?  $tp->toHTML($dl['download_description'], TRUE, 'DESCRIPTION') : "");
 if($maxlen){
 	return substr($text, 0, $maxlen);
 }else{
@@ -258,7 +258,7 @@ SC_END
 SC_BEGIN DOWNLOAD_VIEW_LINK
 global $pref,$dl,$tp;
 if ($pref['agree_flag'] == 1) {
-	$dnld_link = "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,"parse_sc, defs"))."');\">";
+	$dnld_link = "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."');\">";
 } else {
 	$dnld_link = "<a href='".e_BASE."request.php?".$dl['download_id']."'>";
 }
