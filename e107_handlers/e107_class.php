@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2008-11-25 16:26:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2009-01-04 20:55:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -395,19 +395,20 @@ class e107
 	}
 
 
+
 	// Encode an IP address to internal representation. Returns string if successful; FALSE on error
 	// Default separates fields with ':'; set $div='' to produce a 32-char packed hex string
 	function ipEncode($ip, $div=':')
 	{
 		$ret = '';
 		$divider = '';
-		if (strstr($ip,':'))
+		if (strpos($ip,':') !== FALSE)
 		{   // Its IPV6 (could have an IP4 'tail')
-			if (strstr($ip,'.'))
+			if (strpos($ip,'.') !== FALSE)
 			{  // IPV4 'tail' to deal with
 				$temp = strrpos($ip,':') +1;
-				$ip4 = substr($ip,$temp);
-				$ip = substr($ip,0, $temp).$this->ip4_encode($ip4);
+				$ipa = explode('.',substr($ip,$temp));
+				$ip = substr($ip,0, $temp).sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
 			}
 			// Now 'normalise' the address
 			$temp = explode(':',$ip);
@@ -432,7 +433,7 @@ class e107
 			}
 			return $ret;
 		}
-		if (strstr($ip,'.'))
+		if (strpos($ip,'.') !== FALSE)
 		{  // Its IPV4
 			$ipa = explode('.', $ip);
 			$temp = sprintf('%02x%02x%s%02x%02x', $ipa[0], $ipa[1], $div, $ipa[2], $ipa[3]);
