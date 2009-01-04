@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.91 $
-* $Date: 2008-12-28 22:37:42 $
+* $Revision: 1.92 $
+* $Date: 2009-01-04 16:00:19 $
 * $Author: e107steved $
 *
 */
@@ -856,7 +856,9 @@ if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, 'admin.php') 
 	exit();
 }
 
+
 $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
+
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 {
@@ -864,22 +866,23 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }
 
+
 if ((e_QUERY == 'logout') || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser)))
-//if (e_QUERY == 'logout')
 {
-  if (USER)
-  {
-	if (check_class(varset($pref['user_audit_class'],'')))
-	{  // Need to note in user audit trail
-	  $admin_log->user_audit(USER_AUDIT_LOGOUT, '');
+	if (USER)
+	{
+		if (check_class(varset($pref['user_audit_class'],'')))
+		{  // Need to note in user audit trail
+			$admin_log->user_audit(USER_AUDIT_LOGOUT, '');
+		}
 	}
-  }
 
 	$ip = $e107->getip();
 	$udata = (USER === true ? USERID.'.'.USERNAME : '0');
 	$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
 
-	if ($pref['user_tracking'] == 'session') {
+	if ($pref['user_tracking'] == 'session') 
+	{
 		session_destroy();
 		$_SESSION[e_COOKIE]='';
 	}

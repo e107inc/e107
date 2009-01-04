@@ -9,8 +9,8 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.30 $
- * $Date: 2008-12-29 09:31:36 $
+ * $Revision: 1.31 $
+ * $Date: 2009-01-04 16:00:19 $
  * $Author: e107steved $
  *
 */
@@ -28,7 +28,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related 
 define('SIGNUP_DEBUG', FALSE);
 
 include_once(e_HANDLER.'user_extended_class.php');
-$ue = new e107_user_extended;
+$usere = new e107_user_extended;
 require_once(e_HANDLER.'calendar/calendar_class.php');
 $cal = new DHTML_Calendar(true);
 require_once(e_HANDLER.'validator_class.php');
@@ -336,6 +336,11 @@ if (e_QUERY)
 				$admin_log->user_audit(USER_AUDIT_EMAILACK,$row);
 				
 				$e_event->trigger("userveri", $row);
+				if (varset($pref['autologinpostsignup']))
+				{
+					require_once(e_HANDLER.'login.php');
+					$usr = new userlogin($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
+				}
 				require_once(HEADERF);
 				$text = LAN_SIGNUP_74." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
 				$ns->tablerender(LAN_SIGNUP_75, $text);
@@ -488,7 +493,7 @@ if (isset($_POST['register']))
 		$eufVals = array();
 		if (isset($_POST['ue']))
 		{
-			$eufVals = $ue->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],array()));		// Validate the extended user fields
+			$eufVals = $usere->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],array()));		// Validate the extended user fields
 		}
 
 
