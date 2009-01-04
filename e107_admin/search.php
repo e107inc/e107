@@ -9,9 +9,9 @@
  * Search Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/search.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-21 11:39:34 $
- * $Author: secretr $
+ * $Revision: 1.5 $
+ * $Date: 2009-01-04 22:31:57 $
+ * $Author: e107steved $
  *
 */
 
@@ -102,7 +102,7 @@ if (isset($_POST['update_main']))
 	if($check)
 	{
 		$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
-		$admin_log->log_event('SEARCH_05', $handler_type.', '.$query[2], E_LOG_INFORMATIVE, '');
+		$admin_log->log_event('SEARCH_04','',E_LOG_INFORMATIVE,'');
 	}
 	elseif(0 === $check) $emessage->add(LAN_NO_CHANGE); //info
 	else
@@ -110,8 +110,6 @@ if (isset($_POST['update_main']))
 		$emessage->add(LAN_UPDATED_FAILED, E_MESSAGE_ERROR);
 		$emessage->add(LAN_ERROR." ".mysql_errno().": ".mysql_error(), E_MESSAGE_ERROR);
 	}
-
-	$admin_log->log_event('SEARCH_04','',E_LOG_INFORMATIVE,'');
 }
 
 
