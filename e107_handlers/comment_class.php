@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2008-10-22 21:31:02 $
+|     $Revision: 1.79 $
+|     $Date: 2009-01-05 22:01:43 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -300,8 +300,7 @@ class comment {
 			  }
 			}
 		}		// End (nested comment handling)
-		//echo $text;
-		return stripslashes($text);
+		return $text;
 	}
 
 	/**
