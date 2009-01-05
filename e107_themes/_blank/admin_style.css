@@ -328,11 +328,29 @@ input.action.edit {}
 /********** Element Loading Status default style */
 .element-loading-mask { background-repeat: no-repeat; background-position: 50% 50%; background-color: #f5f5f5; }
 
+/********** Docs */
+#docs-list 			{ padding: 10px; margin-bottom: 15px; border: 1px solid #f5f5f5; }
+#docs-list .qitem	{ margin: 3px 0; padding-left: 10px; }
+.docs-item 			{ padding: 10px; margin: 15px 0; border: 1px solid #f5f5f5; }
+
+.docs-item .qitem,
+.docs-item .aitem,
+.docs-item .gotop   { margin: 3px 0; padding-left: 10px; }
+
+.docs-item .qitem	{ font-weight: bold; }
+.docs-item .aitem	{ margin-bottom: 10px; }
+
+.docs-item h4,
+#docs-list h4		{ margin-bottom: 8px; }
+
+#docs-bottom-nav 	{ height: 800px; }
+
 /********** Misc */
 .e-pointer { cursor: pointer; } /* Pointer Hand */
 .expand-container { padding: 10px; } /* Block with expandable items */
 .nextprev-bar { clear: both; padding: 5px; font-size: 14px; margin: 5px; border:1px solid #ddd; } /* Page NextPrev nabigation block */
 .imgselector-container { clear: both; } /* ImageSelector.sc */
+
 
 /*******************************************************************************************************************/
 
@@ -479,6 +497,16 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 #dataform							{} /* Form tag ID - Default front page - old core definition */
 #core-meta-settings					{} /* General meta settings - Default front page */
 
+/* newspost.php */
+#core-newspost-list					{}
+#core-newspost-edit					{}
+#core-newspost-edit-options			{}
+#core-newspost-cat-edit				{}
+#core-newspost-cat-list				{}
+#core-newspost-settings				{}
+#core-newspost-sn-list				{}
+
+
 /* prefs.php */
 #core-prefs							{} /* Main continer - contains all block lemenst from bewlow */
 #core-prefs-main					{} /* Settings section - Site Information */
@@ -498,4 +526,18 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 #core-search-edit					{} /* Edit search settings for specific area */
 #core-search-settings				{} /* General search settings */
 
+/* ugflag.php */
+#core-ugflag 						{}
 
+/* updateadmin.php */
+#core-updateadmin					{}
+
+/* upload.php */
+#core-upload-filetypes				{}
+#core-upload-options				{}
+#core-upload-list					{}
+
+/* wmessage.php */
+#core-wmessage-list					{}
+#core-wmessage-create				{}
+#core-wmessage-settings				{}
