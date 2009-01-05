@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.18 $
- * $Date: 2008-12-30 16:33:18 $
+ * $Revision: 1.19 $
+ * $Date: 2009-01-05 12:01:04 $
  * $Author: secretr $
  *
 */
@@ -787,7 +787,7 @@ Object.extend(e107Helper, {
         )) { 
         	eltoggle = (function(el) {
 	    		return Try.these(
-	    		    function() { var ret = $(el.readAttribute('href').hash.substr(1)); if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
+	    		    function() { var ret = $(el.readAttribute('href').substr(1));  if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
                     function() { var ret = el.next('.e-expandme'); if(ret) { return ret; } throw 'Error';},// maybe this too?
                     function() { var ret = el.next('div'); if(ret) { return ret; } throw 'Error'; }, //backward compatibality - DEPRECATED
                     function() { return null; } //break
