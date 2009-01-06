@@ -11,26 +11,33 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2006-11-11 15:29:16 $
-|		$Author: lisa_ $
+|		$Revision: 1.13 $
+|		$Date: 2009-01-06 21:30:37 $
+|		$Author: e107steved $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
-$listplugindir = e_PLUGIN."list_new/";
-//get language file
-$lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
 
-if(!$sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_installflag = '1' ")){
+$listplugindir = e_PLUGIN."list_new/";
+
+//get language file
+include_lan($listplugindir."languages/".e_LANGUAGE.".php");
+
+if(!isset($pref['plug_installed']['list_new']))
+{
 	require_once(HEADERF);
 	$ns -> tablerender("", LIST_PLUGIN_6);
 	require_once(FOOTERF);
 	exit;
 }
+
 require_once($listplugindir."list_shortcodes.php");
-require_once($listplugindir."list_class.php");
-$rc = new listclass;
+if (!is_object($rc))
+{
+    require_once($listplugindir . "list_class.php");
+    $rc = new listclass;
+}
+
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
@@ -40,28 +47,38 @@ unset($text);
 
 require_once(HEADERF);
 
-global $tp;
+global $tp,$list_pref;
 
 // check query
-if(e_QUERY){
+if(e_QUERY)
+{
 	$qs = explode(".", e_QUERY);
-	if($qs[0] == "new"){
+	if($qs[0] == "new")
+	{
 		$mode = $qs[0];
 	}
 }
-if(isset($mode) && $mode == "new"){
+
+if(isset($mode) && $mode == "new")
+{
 	$mode = "new_page";
-}else{
+}
+else
+{
 	$mode = "recent_page";	//default to 'page'
 }
 
-$list_pref	= $rc -> getListPrefs();
+if(!isset($list_pref))
+{
+	$list_pref = $rc->getListPrefs();
+}
 $sections	= $rc -> prepareSection($mode);
 $arr		= $rc -> prepareSectionArray($mode, $sections);
 
 $text = "";
 $timelapse = 0;
-if(isset($qs[0]) && $qs[0] == "new"){
+if(isset($qs[0]) && $qs[0] == "new")
+{
 	if(isset($list_pref['new_page_timelapse']) && $list_pref['new_page_timelapse']){
 		if(isset($list_pref['new_page_timelapse_days']) && is_numeric($list_pref['new_page_timelapse_days'])){
 			$days = $list_pref['new_page_timelapse_days'];
@@ -92,18 +109,22 @@ $LIST_COL_COLS = $list_pref[$mode."_colomn"];
 $LIST_COL_CELLWIDTH = round((100/$list_pref[$mode."_colomn"]),0);
 $text .= $LIST_COL_START;
 
-if($list_pref[$mode."_welcometext"]){
+if($list_pref[$mode."_welcometext"])
+{
 	$LIST_COL_WELCOMETEXT = $tp -> toHTML($list_pref[$mode."_welcometext"]);
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $LIST_COL_WELCOME);
 }
 $k=0;
-for($i=0;$i<count($arr);$i++){
+for($i=0;$i<count($arr);$i++)
+{
 	unset($rowswitch);
-	if($arr[$i][1] == "1"){
-				
+	if($arr[$i][1] == "1")
+	{
 		$sectiontext = $rc -> show_section_list($arr[$i], $mode);
-		if($sectiontext != ""){
-			if( intval($k/$list_pref[$mode."_colomn"]) == $k/$list_pref[$mode."_colomn"] ){
+		if($sectiontext != "")
+		{
+			if( intval($k/$list_pref[$mode."_colomn"]) == $k/$list_pref[$mode."_colomn"] )
+			{
 				$rowswitch = $LIST_COL_ROWSWITCH;
 			}
 			$text .= (isset($rowswitch) ? $rowswitch : "");

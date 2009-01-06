@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_recent_menu.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2007-08-08 19:34:51 $
+|		$Revision: 1.8 $
+|		$Date: 2009-01-06 21:30:37 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -22,20 +22,26 @@ if (!defined('e107_INIT')) { exit; }
 if (!isset($pref['plug_installed']['list_new'])) return;
 
 
-
-global $sysprefs, $tp, $eArrayStorage;
+global $sysprefs, $tp, $eArrayStorage, $list_pref, $rc;
 $listplugindir = e_PLUGIN."list_new/";
 unset($text);
 require_once($listplugindir."list_shortcodes.php");
 
 //get language file
-$lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
+include_lan($listplugindir."languages/".e_LANGUAGE.".php");
 
-require_once($listplugindir."list_class.php");
-$rc = new listclass;
 
-$list_pref	= $rc -> getListPrefs();
+if (!is_object($rc))
+{
+    require_once($listplugindir . "list_class.php");
+    $rc = new listclass;
+}
+
+if(!isset($list_pref))
+{
+	$list_pref = $rc->getListPrefs();
+}
+
 $mode		= "recent_menu";
 $sections	= $rc -> prepareSection($mode);
 $arr		= $rc -> prepareSectionArray($mode, $sections);
