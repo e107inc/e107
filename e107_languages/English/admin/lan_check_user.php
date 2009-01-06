@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_check_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-01-04 16:15:50 $
+|     $Revision: 1.2 $
+|     $Date: 2009-01-06 20:58:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,11 @@ define('LAN_CKUSER_11','Display Name');
 define('LAN_CKUSER_12','Check for duplicate email addresses');
 define('LAN_CKUSER_13','Duplicate email addresses found');
 define('LAN_CKUSER_14','Email address');
-define('LAN_CKUSER_15','');
+define('LAN_CKUSER_15','No duplicates found');
+define('LAN_CKUSER_16','Find entries where user name is someone else\'s login name');
+define('LAN_CKUSER_17','Conflicting user name and login name');
+define('LAN_CKUSER_18','User A');
+define('LAN_CKUSER_19','User B');
+define('LAN_CKUSER_20','');
 
 ?>
