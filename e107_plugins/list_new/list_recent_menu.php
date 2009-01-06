@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_recent_menu.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2008-12-11 22:38:06 $
+|		$Revision: 1.4 $
+|		$Date: 2009-01-06 21:30:28 $
 |		$Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -25,19 +25,26 @@ if (!plugInstalled('list_new'))
 }
 
 
-global $sysprefs, $tp, $eArrayStorage;
+global $sysprefs, $tp, $eArrayStorage, $list_pref, $rc;
 $listplugindir = e_PLUGIN."list_new/";
 unset($text);
 require_once($listplugindir."list_shortcodes.php");
 
 //get language file
-$lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
+include_lan($listplugindir."languages/".e_LANGUAGE.".php");
 
-require_once($listplugindir."list_class.php");
-$rc = new listclass;
 
-$list_pref	= $rc -> getListPrefs();
+if (!is_object($rc))
+{
+    require_once($listplugindir . "list_class.php");
+    $rc = new listclass;
+}
+
+if(!isset($list_pref))
+{
+	$list_pref = $rc->getListPrefs();
+}
+
 $mode		= "recent_menu";
 $sections	= $rc -> prepareSection($mode);
 $arr		= $rc -> prepareSectionArray($mode, $sections);
