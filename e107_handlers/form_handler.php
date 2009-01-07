@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.13 $
- * $Date: 2008-12-30 13:51:41 $
+ * $Revision: 1.14 $
+ * $Date: 2009-01-07 15:40:06 $
  * $Author: secretr $
  *
 */
@@ -98,6 +98,28 @@ class e_form
 		$options = $this->format_options('textarea', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>";
+	}
+
+	function bbarea($name, $value, $help_mod = '', $help_tagid='')
+	{
+		$options = array('class' => 'tbox large');
+		if(!defsettrue('e_WYSIWYG'))
+		{
+			require_once(e_HANDLER."ren_help.php");
+			$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
+			$bbbar = display_help($help_tagid, $help_mod);
+		}
+
+		$ret = "
+		<div class='bbarea'>
+			<div class='field-spacer'>
+				".$this->textarea($name, $value, 15, 50, $options)."
+			</div>
+			{$bbbar}
+		</div>
+		";
+
+		return $ret;
 	}
 
 	function checkbox($name, $value, $checked = false, $options = array())
