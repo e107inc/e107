@@ -12,20 +12,28 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.14 $
-| $Date: 2008-10-30 20:21:55 $
-| $Author: e107steved $
+| $Revision: 1.15 $
+| $Date: 2009-01-07 19:57:09 $
+| $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-function register_shortcode($code, $filename, $function, $force=false)
+function register_shortcode($class, $codes, $path='', $force=false)
 {
 	global $e_shortcodes;
-	if(!array_key_exists($code, $e_shortcodes) || $force == true)
+	if(!is_array($codes))
 	{
-		$e_shortcodes[$code] = array('file' => $filename, 'function' => $function);
+		$codes = array($codes);
+	}
+	foreach($codes as $code)
+	{
+		$code = strtoupper($code);
+		if(!array_key_exists($code, $e_shortcodes) || $force == true)
+		{
+			$e_shortcodes[$code] = array('path' => $path, 'class' => $class, 'function' => $function);
+		}
 	}
 }
 
@@ -35,6 +43,7 @@ class e_shortcode
 	var $parseSCFiles;				// True if individual shortcode files are to be used
 	var $addedCodes;				// Apparently not used
 	var $registered_codes;			// Shortcodes added by plugins
+	var $scClasses;						//Batch shortcode classes
 
 	function e_shortcode()
 	{
@@ -132,10 +141,19 @@ class e_shortcode
 		/* Check for shortcode registered with $e_shortcodes */
 		if (is_array($e_shortcodes) && (array_key_exists($code, $e_shortcodes)))
 		{
-			include_once($e_shortcodes[$code]['file']);
-			if(function_exists($e_shortcodes[$code]['function']))
+			$_class = $e_shortcodes[$code]['class'];
+			$_method = 'get_'.strtolower($code);
+			if(!isset($this->scClasses[$_class]))
 			{
-				$ret = call_user_func($e_shortcodes[$code]['function'], $parm);
+				if(!class_exists($_class) && $e_shortcodes[$code]['path'])
+				{
+					include_once($e_shortcodes[$code]['path'].$_class.'.php');
+				}
+				$this->scClasses[$_class] = new $_class;
+			}
+			if(is_callable(array($_class, $_method)))
+			{
+				$ret = $this->scClasses[$_class]->$_method($parm);
 			}
 		}
 		else
@@ -170,7 +188,7 @@ class e_shortcode
 					{
 						$scFile = e_FILE."shortcode/".strtolower($code).".sc";
 					}
-			if (file_exists($scFile)) 
+			if (file_exists($scFile))
 					{
 						$shortcode = file_get_contents($scFile);
 						$this->scList[$code] = $shortcode;

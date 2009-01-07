@@ -9,16 +9,16 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-29 20:50:41 $
- * $Author: lisa_ $
+ * $Revision: 1.9 $
+ * $Date: 2009-01-07 19:57:09 $
+ * $Author: mcfly_e107 $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 class news {
 
-	function submit_item($news) 
+	function submit_item($news)
 	{
 		global $sql, $tp, $e107cache, $e_event, $pref, $admin_log;
 		if (!is_object($tp)) $tp = new e_parse;
@@ -33,26 +33,26 @@ class news {
 		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "news_author = '".intval($news['news_author'])."', ";
         $news['news_author'] = ($news['news_author']) ? $news['news_author'] : USERID;
 
-		if ($news['news_id']) 
+		if ($news['news_id'])
 		{	// Updating existing item
 			$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
-			if ($sql -> db_Update('news', $vals)) 
+			if ($sql -> db_Update('news', $vals))
 			{
 				$admin_log->logArrayAll('NEWS_09', $news);
 				$e_event -> trigger('newsupd', $news);
 				$message = LAN_NEWS_21;
 				$e107cache -> clear('news.php');
-			} 
-			else 
+			}
+			else
 			{
 				$message = "<strong>".(!mysql_errno() ? LAN_NEWS_46 : LAN_NEWS_5)."</strong>";
 			}
 			$data = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
 			$message .= $e_event->triggerHook($data);
-		} 
-		else 
+		}
+		else
 		{	// Adding item
-			if ($news['news_id'] = $sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".intval($news['news_author']).", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' ")) 
+			if ($news['news_id'] = $sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".intval($news['news_author']).", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' "))
 			{
 				$admin_log->logArrayAll('NEWS_08', $news);
 				$e_event -> trigger('newspost', $news);
@@ -61,8 +61,8 @@ class news {
 				$id = mysql_insert_id();
 				$data = array('method'=>'create', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
 				$message .= $e_event->triggerHook($data);
-			} 
-			else 
+			}
+			else
 			{
 				$message = "<strong>".LAN_NEWS_7."</strong>";
 			}
@@ -120,19 +120,19 @@ class news {
 		return $message;
 	}
 
-	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='') 
+	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='')
 	{
-		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid, $imode;
+		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid, $imode, $newsItemBegin;
 		if ($override_newsitem = $override -> override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
-			if ($result == 'return') 
+			if ($result == 'return')
 			{
 				return;
 			}
 		}
 		if (!is_object($e107->tp)) $e107->tp = new e_parse;
 
-		if ($n_restrict == 'userclass') 
+		if ($n_restrict == 'userclass')
 		{
 			$news['news_id'] = 0;
 			$news['news_title'] = LAN_NEWS_1;
@@ -212,20 +212,21 @@ class news {
 		$loop_uid = $news['news_author'];
 
 		require_once(e_FILE.'shortcode/batch/news_shortcodes.php');
+		$newsItemBegin = true;
 		$text = $e107->tp -> parseTemplate($NEWS_PARSE, TRUE, $news_shortcodes);
 
-		if ($mode == 'return') 
+		if ($mode == 'return')
 		{
 			return $text;
-		} 
-		else 
+		}
+		else
 		{
 			echo $text;
 			return TRUE;
 		}
 	}
 
-	function make_xml_compatible($original) 
+	function make_xml_compatible($original)
 	{
 		global $e107;
 		if (!is_object($e107->tp)) $e107->tp = new e_parse;
