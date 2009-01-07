@@ -123,6 +123,7 @@ select, .tbox, .helpbox {
 }
 option { padding-right: 10px;}
 input.input-text, textarea, .tbox, .helpbox { padding:2px; }
+.tbox.large { width: 95% !important; }
 select.tbox  { min-height:17px; padding: 0px; /* setting the height of empty selects */ }
 .select.order { width: 40px !important; }
 .select.time-offset { width: 60px !important; }
@@ -169,6 +170,7 @@ label { cursor: pointer; }
 .adminedit .select { width: 280px; }
 .adminedit .input-text { width: 274px;}
 .adminedit td.control textarea { width: 274px;}
+.adminedit td.control textarea.large { width: 400px; }
 
 .adminedit td.label {}
 .adminedit td.control {}

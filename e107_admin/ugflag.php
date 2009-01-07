@@ -1,31 +1,34 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/ugflag.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-11-01 23:01:05 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration - Site Maintenance
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/ugflag.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-07 15:40:06 $
+ * $Author: secretr $
+ *
 */
 require_once("../class2.php");
-if (!getperms("9")) 
+if (!getperms("9"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
 }
 
-require_once(e_HANDLER."ren_help.php");
+require_once(e_HANDLER."form_handler.php");
+require_once (e_HANDLER."message_handler.php");
+$emessage = &eMessage::getInstance();
+$emessage_method = e_AJAX_REQUEST ? 'add' : 'addSession';
 
-if (isset($_POST['updatesettings'])) 
+$frm = new e_form(true);
+
+if (isset($_POST['updatesettings']))
 {
 	$changed = FALSE;
 	$temp = intval($_POST['maintainance_flag']);
@@ -44,54 +47,99 @@ if (isset($_POST['updatesettings']))
 	{
 		$admin_log->log_event(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01',$pref['maintainance_text'],E_LOG_INFORMATIVE,'');
 		save_prefs();
+		$emessage->$emessage_method(UGFLAN_1, E_MESSAGE_SUCCESS);
 	}
-	header("location:".e_SELF."?u");
-	exit;
+	else $emessage->$emessage_method(UGFLAN_7);
+
+	if(!e_AJAX_REQUEST)
+	{
+		header("location:".e_SELF);
+		exit;
+	}
 }
 
 require_once("auth.php");
 
-if (e_QUERY == "u") {
-	$ns->tablerender("", "<div style='text-align:center'><b>".UGFLAN_1.".</b></div>");
-}
-
-$maintainance_flag = $pref['maintainance_flag'];
-
-$text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."' id='dataform'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
-	<tr>
-	<td style='width:30%' class='forumheader3'>".UGFLAN_2.": </td>
-	<td style='width:70%' class='forumheader3'>";
-
-
-if ($maintainance_flag == 1) {
-	$text .= "<input type='checkbox' name='maintainance_flag' value='1'  checked='checked' />";
-} else {
-	$text .= "<input type='checkbox' name='maintainance_flag' value='1' />";
-}
-
-$text .= "</td>
-	</tr>
-
-	<tr>
-	<td style='width:30%' class='forumheader3'>".UGFLAN_5."<br /><span class='smalltext'>".UGFLAN_6."</span></td>
-	<td style='width:70%' class='forumheader3'>
-	<textarea id='maintainance_text' class='tbox' name='maintainance_text' cols='63' style='max-width:80%' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$pref['maintainance_text']."</textarea>
-	<br />".display_help("","maintenance")."  </td>
-	</tr>
-
-
-	<tr style='vertical-align:top'>
-	<td colspan='2'  style='text-align:center' class='forumheader'>
-	<input class='button' type='submit' name='updatesettings' value='".UGFLAN_3."' />
-	</td>
-	</tr>
-	</table>
+$text = "
+	<form method='post' action='".e_SELF."' id='core-ugflag-form'>
+		<fieldset id='core-ugflag'>
+			<legend class='e-hideme'>".UGFLAN_4."</legend>
+			<table cellpadding='0' cellspacing='0' class='adminform'>
+				<colgroup span='2'>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td class='label'>".UGFLAN_2.": </td>
+						<td class='control'>
+							<div class='auto-toggle-area autocheck'>
+								".$frm->checkbox('maintainance_flag', '1', $pref['maintainance_flag'])."
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".UGFLAN_5."
+							<div class='field-help'>".UGFLAN_6."</div>
+						</td>
+						<td class='control'>
+							".$frm->bbarea('maintainance_text', $pref['maintainance_text'], 'maintenance', 'maintenance_bbhelp')."
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('updatesettings', UGFLAN_3, 'update')."
+			</div>
+		</fieldset>
 	</form>
-	</div>";
 
-$ns->tablerender(UGFLAN_4, $text);
-require_once("footer.php");
+";
 
+//Ajax Support
+if(!e_AJAX_REQUEST)
+{
+	echo "<div id='ajax-container'>\n";
+	$e107->ns->tablerender(UGFLAN_4, $emessage->render().$text, 'core-ugflag');
+	echo "\n</div>";
+	require_once(e_ADMIN."footer.php");
+	exit;
+}
+
+$e107->ns->tablerender(UGFLAN_4, $emessage->render().$text, 'core-ugflag');
+
+/**
+ * Handle page DOM within the page header
+ *
+ * @return string JS source
+ */
+function headerjs()
+{
+	$ret = "
+		<script type='text/javascript'>
+			//Ajax Support
+			var CoreUgflagAjaxPage = function(e_event) {
+				\$('updatesettings').observe('click', function(event) {
+					var form = \$('core-ugflag-form');
+					if(form) {
+						event.stop();
+						form.submitForm('ajax-container', { overlayPage: 'core-ugflag', parameters: { updatesettings: 1 } });
+					}
+				});
+			}
+			e107.runOnLoad(CoreUgflagAjaxPage, 'ajax-container', true);
+
+			//Admin JS Init Rules
+			var e107Admin = {}
+			e107Admin.initRules = {
+				'Helper': true,
+				'AdminMenu': false
+			}
+
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
+}
 ?>

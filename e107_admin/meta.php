@@ -9,8 +9,8 @@
  * Administration Area - Meta Tags
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-21 12:53:11 $
+ * $Revision: 1.6 $
+ * $Date: 2009-01-07 15:40:06 $
  * $Author: secretr $
  *
 */
@@ -142,10 +142,8 @@ require_once("footer.php");
  */
 function headerjs()
 {
-	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
 		<script type='text/javascript'>
-			//add required core lan - delete confirm message
 			var e107Admin = {}
 			e107Admin.initRules = {
 				'Helper': true,

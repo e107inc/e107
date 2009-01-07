@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-11-20 20:34:44 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2009-01-07 15:40:06 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
-    if(e_WYSIWYG){ return; }
+    if(defsettrue('e_WYSIWYG')) { return; }
 	global $tp, $pref, $eplug_bb, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag;
 
 	$bbcode_func = $addtextfunc;
@@ -68,7 +68,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	}
 
     $temp['news'] 		= $BBCODE_TEMPLATE_NEWSPOST;
-	$temp['submitnews']	= $BBCODE_TEMPLATE_SUBMITNEWS; 
+	$temp['submitnews']	= $BBCODE_TEMPLATE_SUBMITNEWS;
 	$temp['extended']	= $BBCODE_TEMPLATE_NEWSPOST;
 	$temp['admin']		= $BBCODE_TEMPLATE_ADMIN;
 	$temp['mailout']	= $BBCODE_TEMPLATE_ADMIN."{BB=shortcode}";

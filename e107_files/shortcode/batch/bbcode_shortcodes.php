@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-29 15:23:06 $
+|     $Revision: 1.9 $
+|     $Date: 2009-01-07 15:40:06 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ SC_BEGIN BB
 //FIXME - cachevars/getcachedvars!
 global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb, $imode;
 
-if(e_WYSIWYG){ return; }
+if(defsettrue('e_WYSIWYG')){ return; }
 
 $bbcode_func = ($bbcode_func) ? $bbcode_func : "addtext";
 $bbcode_help  = ($bbcode_help) ? $bbcode_help : "help";
@@ -39,7 +39,7 @@ $imagedir_display = str_replace("../","",$bbcode_imagedir);
 
 if($parm == "emotes")
 {
-  if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !e_WYSIWYG)
+  if ($pref['comments_emoticons'] && $pref['smiley_activate'] && !defsettrue('e_WYSIWYG'))
   {
 	$bbcode['emotes'] = array("expandit","emoticon_selector_".$rand, LANHELP_44, "emotes.png", "Emoticon_Select", "emoticon_selector_".$rand);
   }
@@ -72,7 +72,7 @@ $bbcode['prefile'] = array("expandit","prefile_selector_".$rand, LANHELP_39,"pre
 
 if(!isset($iconpath[$parm]))
 {
-	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."packs/".$imode."/bbcode/");
+	$iconpath[$parm] =  (file_exists(THEME."bbcode/bold.png") ? THEME_ABS."bbcode/" : e_IMAGE_ABS."bbcode/");
     $iconpath[$parm] .= $bbcode[$parm][3];
 }
 
@@ -135,19 +135,19 @@ SC_END
 
 
 SC_BEGIN BB_HELP
-	if(e_WYSIWYG){	return;	}
+	if(defsettrue('e_WYSIWYG')) { return; }
 	global $bbcode_helpactive,$bbcode_helptag;
 	if($parm) $bbcode_helptag = $parm;
 	elseif(!varset($bbcode_helptag))  $bbcode_helptag = 'helpb';
 	$bbcode_helpactive = TRUE;
 	//FIXME - better bb help
-	return "<input id='{$bbcode_helptag}' class='helpbox' type='text' name='{$bbcode_helptag}' size='90' readonly='readonly' />\n";
+	return "<input id='{$bbcode_helptag}' class='tbox large helpbox' type='text' name='{$bbcode_helptag}' size='90' readonly='readonly' />";
 SC_END
 
 
 
 SC_BEGIN BB_PREIMAGEDIR
-	if(e_WYSIWYG){	return;	}
+	if(defsettrue('e_WYSIWYG')) { return; }
 	global $bbcode_imagedir;
 	$bbcode_imagedir = $parm;
 	return;
