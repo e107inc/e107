@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.15 2009-01-07 19:57:09 mcfly_e107 Exp $
+* $Id: news_shortcodes.php,v 1.16 2009-01-07 21:21:12 mcfly_e107 Exp $
 *
 * News shortcode batch
 */
@@ -273,12 +273,10 @@ class news_shortcodes
 		return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
-	function get_adminbody()
+	function get_adminbody($parm)
 	{
-		global $tp, $news_shortcodes;
-		$news_item = getcachedvars('current_news_item');
-		$param = getcachedvars('current_news_param');
-		$news_body = $tp->parseTemplate('{NEWSBODY}', FALSE, $news_shortcodes);
+		$this->load_news_item();
+		$news_body = $this->get_newsbody($parm);
 		return "<div class='".(defined(ADMINNAME) ? ADMINNAME : 'null')."'>".$news_body.'</div>';
 	}
 
