@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-30 13:51:41 $
+ * $Revision: 1.13 $
+ * $Date: 2009-01-07 15:34:00 $
  * $Author: secretr $
  * 
 */
@@ -41,7 +41,7 @@ e107Admin.Helper = {
 		this.allCheckedEventHandler = this.allChecked.bindAsEventListener(this);
 		this.allUncheckedEventHandler = this.allUnchecked.bindAsEventListener(this);
 		this.allToggleCheckedEventHandler = this.allToggleChecked.bindAsEventListener(this);
-		element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+		element = event.element() != document ? event.element() : $$('body')[0];
 		
 		element.select('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
 		element.select('button.action[name=check_all]', 'input.toggle_all[type=checkbox]').invoke('observe', 'click', this.allCheckedEventHandler);
@@ -122,11 +122,11 @@ e107Admin.Helper = {
 	allToggleChecked: function(event) {
 		//event.stop();
 		var form = event.element().up('form'), selector = 'multitoggle';
-		if(event.element().readAttribute('value').startsWith('jstarget:')) {
-			selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
-		}
 		
 		if(form) {
+			if(event.element().readAttribute('value').startsWith('jstarget:')) {
+				selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
+			}
 			form.toggleChecked(event.element().checked, 'name^=' + selector);
 		}
 	},
@@ -157,11 +157,11 @@ e107Admin.Helper = {
 	allChecked: function(event) {
 		event.stop();
 		var form = event.element().up('form'), selector = 'multiaction';
-		if(event.element().readAttribute('value').startsWith('jstarget:')) {
-			selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
-		}
 
 		if(form) {
+			if(event.element().readAttribute('value').startsWith('jstarget:')) {
+				selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
+			}
 			form.toggleChecked(true, 'name^=' + selector);
 		}
 	},

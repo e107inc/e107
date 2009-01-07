@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-01-05 12:01:04 $
+ * $Revision: 1.20 $
+ * $Date: 2009-01-07 15:34:00 $
  * $Author: secretr $
  *
 */
@@ -186,9 +186,9 @@ var echo = Prototype.emptyFunction, print_a = Prototype.emptyFunction, var_dump 
  */
 var e107Event = {
 		
-    fire: function(eventName, memo, element) {
+    fire: function(eventName, memo, element) { 
     	element = $(element) || document; 
-    	memo = memo || {};
+    	memo = memo || {}; 
     	return element.fire('e107:' + eventName, memo);
     },	
     
@@ -823,8 +823,7 @@ Object.extend(e107Helper, {
 	 * @see e107Core#addOnLoad
 	 */
     toggleObserver: function(event) {
-    	var expandthem = event.memo.element ? $(event.memo.element) : $$('body')[0]; 
-        expandthem.select('.e-expandit').invoke('observe', 'click', function(e) {
+        Element.select(event.element(), '.e-expandit').invoke('observe', 'click', function(e) {
             var element = e.findElement('a');
             if(!element) element = e.element();
             if(this.toggle(element, {})) e.stop();
@@ -836,8 +835,7 @@ Object.extend(e107Helper, {
      * on all <a href='#something" class="scroll-to"> elements
      */
     scrollToObserver: function(event) {
-    	var scrollto = event.memo.element ? $(event.memo.element) : $$('body')[0]; 
-		scrollto.select('a[href^=#].scroll-to:not([href=#])').invoke('observe', 'click', function(e) {
+		Element.select(event.element(), 'a[href^=#].scroll-to:not([href=#])').invoke('observe', 'click', function(e) {
 			new Effect.ScrollTo(e.element().hash.substr(1));
 			e.stop();
 		});
@@ -861,7 +859,7 @@ Object.extend(e107Helper, {
     
     //event listener
     autoHide: function(event) {
-    	var hideunder = event.memo.element ? $(event.memo.element) : $$('body')[0];
+    	var hideunder = event.element() != document ? event.element() : $$('body')[0];
         if(hideunder) hideunder.downHide();
     },
     
@@ -884,7 +882,7 @@ Object.extend(e107Helper, {
     
     //event listener
     autoNoHistory: function(event) {
-    	var down = event.memo.element ? $(event.memo.element) : $$('body')[0];
+    	var down = event.element() != document ? event.element() : $$('body')[0];
         if(down) down.downNoHistory();
     },
     
@@ -906,7 +904,7 @@ Object.extend(e107Helper, {
     
     //event listener
 	autoExternalLinks: function (event) {
-		var down = event.memo.element ? $(event.memo.element) : $$('body')[0];
+		var down = event.element() != document ? event.element() : $$('body')[0];
 	    if(down) down.downExternalLinks();
 	}, 
 
@@ -2157,26 +2155,27 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 
 		var e_responder = {
 				onCreate: function(request) {
-					if(request.options.updateElement) {
+					if(request.options['updateElement']) {
 						e107Event.trigger('ajax_update_before', request.options, request.options.updateElement);
 					}
-					if(request.options.overlayPage){
+					if(request.options['overlayPage']){
 						e107Event.trigger('ajax_loading_start', request.options);
-					} else if(request.options.overlayElement) { 
+					} else if(request.options['overlayElement']) { 
 						e107Event.trigger('ajax_loading_element_start', request.options);
 					}
 				},
 				
 				onComplete: function(request) { 
-					if(request.options.updateElement) {
-						e107Event.trigger('ajax_update_after', request.options, request.options.updateElement);
-					}
 					/*Ajax.activeRequestCount == 0 && */
-					if(request.options.overlayPage) {
+					if(request.options['overlayPage']) {
 						e107Event.trigger('ajax_loading_end', request.options);						
-					} else if(request.options.overlayElement) { 
+					} else if(request.options['overlayElement']) { 
 						e107Event.trigger('ajax_loading_element_end', request.options);
-					}		
+					}
+					
+					if(request.options['updateElement']) {
+						e107Event.trigger('ajax_update_after', request.options, request.options.updateElement); 
+					}
 				},
 				
 				onException: function(request, e) {
@@ -2346,7 +2345,7 @@ e107Ajax.Request = Class.create({
         Object.extend(this.options, options || {});
         if(!this.options['parameters'] || !this.options.parameters['ajax_used'])
 			Object.extend(this.options['parameters'], { 'ajax_used': 1 });
-            
+         
         // only if required
         if(this.options.history) {
             var tmpOpt = Object.clone(e107Ajax.ObjectMap);
@@ -2569,6 +2568,6 @@ function sendInfo(handler, container, form) {
  * Core Auto-load
  */
 $w('autoExternalLinks autoNoHistory autoHide toggleObserver scrollToObserver').each( function(f) {
-	e107.runOnLoad(e107Helper[f], document, true); 
+	e107.runOnLoad(e107Helper[f].bindAsEventListener(e107Helper), null, true); 
 });
 
