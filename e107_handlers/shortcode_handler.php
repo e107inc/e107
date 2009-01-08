@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.16 $
-| $Date: 2009-01-08 17:23:13 $
+| $Revision: 1.17 $
+| $Date: 2009-01-08 20:16:47 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -175,11 +175,16 @@ class e_shortcode
 			{
 				if (array_key_exists($code, $this->registered_codes))
 				{
-					//shortcode is registered in some manner, let's parse the type
+					//shortcode is registered, let's proceed.
+					if(isset($this->registered_codes[$code]['perms']))
+					{
+						if(!check_class($this->registered_codes[$code]['perms'])) { return ''; }
+					}
+
 					switch($this->registered_codes[$code]['type'])
 					{
 						case 'class':
-							//If class is set, it's a batch shortcode.  Load the class and call the method
+							//It is batch shortcode.  Load the class and call the method
 							$_class = $this->registered_codes[$code]['class'];
 							$_method = 'get_'.strtolower($code);
 							if(!isset($this->scClasses[$_class]))
