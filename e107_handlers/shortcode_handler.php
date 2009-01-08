@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.17 $
-| $Date: 2009-01-08 20:16:47 $
+| $Revision: 1.18 $
+| $Date: 2009-01-08 21:47:44 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ class e_shortcode
 	var $registered_codes = array();	// Shortcodes added by plugins
 	var $scClasses = array();					// Batch shortcode classes
 
-	function e_shortcode()
+	function e_shortcode($noload=false)
 	{
 		global $pref, $register_sc;
 
@@ -96,6 +96,16 @@ class e_shortcode
 					}
 				}
 			}
+		}
+
+	}
+
+	function loadCoreShortcodes()
+	{
+		$coreBatchList = array('siteinfo_shortcodes.php');
+		foreach($coreBatchList as $cb)
+		{
+			include_once(e_FILE.'shortcode/batch/'.$cb);
 		}
 	}
 

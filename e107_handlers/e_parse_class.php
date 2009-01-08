@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.48 $
-* $Date: 2009-01-03 22:32:54 $
-* $Author: e107steved $
+* $Revision: 1.49 $
+* $Date: 2009-01-08 21:47:44 $
+* $Author: mcfly_e107 $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -107,10 +107,10 @@ class e_parse
 
 	// Individual modifiers change the current context
 	var $e_Modifiers = array(
-				'emotes_off'	=> array('emotes_on' => FALSE),	
-				'emotes_on'		=> array('emotes_on' => TRUE),	
-				'no_hook'		=> array('hook' => FALSE),	
-				'do_hook'		=> array('hook' => TRUE),	
+				'emotes_off'	=> array('emotes_on' => FALSE),
+				'emotes_on'		=> array('emotes_on' => TRUE),
+				'no_hook'		=> array('hook' => FALSE),
+				'do_hook'		=> array('hook' => TRUE),
 				'scripts_off'	=> array('scripts' => FALSE),			// New for 0.8
 				'scripts_on'	=> array('scripts' => TRUE),			// New for 0.8
 				'no_make_clickable' => array('link_click' => FALSE),
@@ -131,7 +131,7 @@ class e_parse
 				'defs_off'		=> array('defs' => FALSE),				// Decode constant if exists
 				'defs_on'		=> array('defs' => TRUE),
 
-				'dobreak'		=> array('nobreak' => TRUE),	
+				'dobreak'		=> array('nobreak' => TRUE),
 				'nobreak'		=> array('nobreak' => FALSE),
 				'lb_nl'			=> array('retain_nl' => TRUE),				// Line break using \n
 				'lb_br'			=> array('retain_nl' => FALSE),				// Line break using <br />
@@ -270,12 +270,16 @@ class e_parse
 
 
 	// Initialise the shortcode handler - has to be done when $prefs valid, so can't be done in constructor ATM
-	function sch_load()
+	function sch_load($noCore=false)
 	{
 		if (!is_object($this->e_sc))
 		{
 			require_once(e_HANDLER."shortcode_handler.php");
 			$this->e_sc = new e_shortcode;
+			if(!$noCore)
+			{
+				$this->e_sc->loadCoreShortcodes();
+			}
 		}
 	}
 
@@ -291,16 +295,16 @@ class e_parse
 		* $mod: the 'no_html' and 'no_php' modifiers blanket prevent html and php posting regardless of posting permissions. (used in logging)
 		*/
 		global $pref;
-		if (is_array($data)) 
+		if (is_array($data))
 		{
-			foreach ($data as $key => $var) 
+			foreach ($data as $key => $var)
 			{
 				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode, $mod, $original_author);
 			}
-		} 
-		else 
+		}
+		else
 		{
-			if (MAGIC_QUOTES_GPC == true && $nostrip == false) 
+			if (MAGIC_QUOTES_GPC == true && $nostrip == false)
 			{
 				$data = stripslashes($data);
 			}
@@ -317,8 +321,8 @@ class e_parse
 				$search = array('$', '"', "'", '\\', '<?');
 				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt;?');
 				$ret = str_replace($search, $replace, $data);
-			} 
-			else 
+			}
+			else
 			{
 				$data = htmlspecialchars($data, ENT_QUOTES, CHARSET);
 				$data = str_replace('\\', '&#092;', $data);
@@ -347,9 +351,9 @@ class e_parse
 	}
 
 
-	function post_toForm($text) 
+	function post_toForm($text)
 	{
-		if (MAGIC_QUOTES_GPC == true) 
+		if (MAGIC_QUOTES_GPC == true)
 		{
 			$text = stripslashes($text);
 		}
@@ -357,14 +361,14 @@ class e_parse
 	}
 
 
-	function post_toHTML($text, $original_author = false, $extra = '', $mod = false) 
+	function post_toHTML($text, $original_author = false, $extra = '', $mod = false)
 	{
 		$text = $this -> toDB($text, false, false, $mod, $original_author);
 		return $this -> toHTML($text, true, $extra);
 	}
 
 
-	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") 
+	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "")
 	{
 		$this->sch_load();
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
@@ -385,19 +389,19 @@ class e_parse
 
 		if (!ctype_digit($width)) return $str;		// Don't wrap if non-numeric width
 		if ($width < 6) return $str;					// Trap stupid wrap counts, as well
-	
+
 		// Transform protected element lists into arrays
 		$nobreak = explode(" ", strtolower($nobreak));
-	
+
 		// Variable setup
 		$intag = false;
 		$innbk = array();
 		$drain = "";
-	
+
 		// List of characters it is "safe" to insert line-breaks at
 		// It is not necessary to add < and > as they are automatically implied
 		$lbrks = "/?!%)-}]\\\"':;&";
-	
+
 		// Is $str a UTF8 string?
 		if ($utf || strtolower(CHARSET) == 'utf-8')
 		{	// 0x1680, 0x180e, 0x2000-0x200a, 0x2028, 0x205f, 0x3000 are 'non-ASCII' Unicode UCS-4 codepoints - see http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
@@ -419,8 +423,8 @@ class e_parse
 			$utf8 = '';
 			$whiteSpace = '#(\s+)#';		// For non-utf-8, can use a simple match string
 		}
-	
-	
+
+
 		// Start of the serious stuff - split into HTML tags and text between
 		$content = preg_split('#(<.*?>)#mis', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 		foreach($content as $value)
@@ -435,7 +439,7 @@ class e_parse
 				if ($lvalue[0] != "/")
 				{            // Collect the tag name
 				  preg_match("/^(\w*?)(\s|$)/", $lvalue, $t);
-	
+
 				  // If this is a protected element, activate the associated protection flag
 				  if (in_array($t[1], $nobreak)) array_unshift($innbk, $t[1]);
 				}
@@ -549,7 +553,7 @@ class e_parse
 			$drain .= $value;
 		}
 		// Return contents of the drain
-		return $drain; 
+		return $drain;
 	}
 
 
@@ -846,7 +850,7 @@ class e_parse
 
 			if ($proc_funcs)
 			{  // Do the 'normal' processing - in principle, as previously - but think about the order.
-	
+
 				// Split out and ignore any scripts and style blocks. With just two choices we can match the closing tag in the regex
 				$subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 				foreach ($subcon as $sub_blk)
@@ -866,18 +870,18 @@ class e_parse
 					else
 					{
 						// Do 'normal' processing on a chunk
-	
-	
+
+
 						// Could put tag stripping in here
-	
+
 /*
 						//	Line break compression - filter white space after HTML tags
 						if (!$opts['nobreak'])
 						{
 							$sub_blk = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $sub_blk);
 						}
-*/	
-	
+*/
+
 						//	Link substitution
 						// Convert URL's to clickable links, unless modifiers or prefs override
 						if ($opts['link_click'])
@@ -904,8 +908,8 @@ class e_parse
 								$sub_blk = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".LAN_EMAIL_SUBS."</a>", $sub_blk);
 							}
 						}
-		
-		
+
+
 						// Convert emoticons to graphical icons, if enabled
 						if ($opts['emotes'])
 						{
@@ -924,9 +928,9 @@ class e_parse
 						{
 							$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);
 						}
-		
-		
-		
+
+
+
 						//	Entity conversion
 						// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
 						if ($opts['value'])
@@ -970,9 +974,9 @@ class e_parse
 						{
 							$sub_blk = $this->replaceConstants($sub_blk, ($opts['constants'] == 'abs' ? 'full' : ''));
 						}
-		
-		
-		
+
+
+
 						// profanity filter
 						if ($pref['profanity_filter'])
 						{
@@ -983,15 +987,15 @@ class e_parse
 							}
 							$sub_blk = $this->e_pf->filterProfanities($sub_blk);
 						}
-		
-		
+
+
 						//	Shortcodes
 						// Optional short-code conversion
 						if ($opts['parse_sc'])
 						{
 							$sub_blk = $this->parseTemplate($sub_blk, TRUE);
 						}
-	
+
 
 
 					  //Run any hooked in parsers
@@ -1010,7 +1014,7 @@ class e_parse
 									$sub_blk = $this->e_hook[$hook]->$hook($sub_blk,$opts['context']);
 								}
 							}
-			
+
 							if(isset($pref['e_tohtml_list']) && is_array($pref['e_tohtml_list']))
 							{
 								foreach($pref['e_tohtml_list'] as $hook)
@@ -1033,8 +1037,8 @@ class e_parse
 							$sub_blk = $this -> textclean($sub_blk, $wrap);
 						}
 
-		
-		
+
+
 						//	Search highlighting
 						if ($opts['emotes'])			// Why??
 						{
@@ -1043,7 +1047,7 @@ class e_parse
 								$sub_blk = $this -> e_highlight($sub_blk, $this -> e_query);
 							}
 						}
-		
+
 
 						$nl_replace = '<br />';			// Default replaces all \n with <br /> for HTML display
 						if ($opts['nobreak'])
@@ -1056,7 +1060,7 @@ class e_parse
 						}
 						$sub_blk = str_replace(E_NL, $nl_replace, $sub_blk);
 
-	
+
 						$ret_parser .= $sub_blk;
 					}	// End of 'normal' processing for a block of text
 
@@ -1073,7 +1077,7 @@ class e_parse
 
 
 
-	function toAttribute($text) 
+	function toAttribute($text)
 	{
 		$text = str_replace("&amp;","&",$text); // URLs posted without HTML access may have an &amp; in them.
 		$text = htmlspecialchars($text, ENT_QUOTES, CHARSET); // Xhtml compliance.
@@ -1081,8 +1085,8 @@ class e_parse
 		{
 			$text = $this->replaceConstants($text);
 			return $text;
-		} 
-		else 
+		}
+		else
 		{
 			return '';
 		}
@@ -1090,7 +1094,7 @@ class e_parse
 
 
 	// Convert text blocks which are to be embedded within JS
-	function toJS($stringarray) 
+	function toJS($stringarray)
 	{
 		$search = array("\r\n","\r","<br />","'");
 		$replace = array("\\n","","\\n","\'");
@@ -1169,13 +1173,13 @@ class e_parse
 									SITEURL.$THEMES_DIRECTORY,
 									SITEURL.$DOWNLOADS_DIRECTORY);
 			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOAD}");
-			if (ADMIN) 
+			if (ADMIN)
 			{
 				$replace_relative[] = $ADMIN_DIRECTORY;
 				$replace_absolute[] = SITEURL.$ADMIN_DIRECTORY;
 				$search[] = "{e_ADMIN}";
 			}
-			if ($all) 
+			if ($all)
 			{
 				if (USER)
 				{  // Can only replace with valid number for logged in users
@@ -1249,12 +1253,12 @@ class e_parse
     }
 
 
-	function e_highlight($text, $match) 
+	function e_highlight($text, $match)
 	{
 		preg_match_all("#<[^>]+>#", $text, $tags);
 		$text = preg_replace("#<[^>]+>#", "<|>", $text);
 		$text = preg_replace("#(\b".$match."\b)#i", "<span class='searchhighlight'>\\1</span>", $text);
-		foreach ($tags[0] as $tag) 
+		foreach ($tags[0] as $tag)
 		{
 			$text = preg_replace("#<\|>#", $tag, $text, 1);
 		}
