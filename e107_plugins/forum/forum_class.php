@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
- * $Revision: 1.35 $
- * $Date: 2008-12-24 04:51:27 $
+ * $Revision: 1.36 $
+ * $Date: 2009-01-09 16:22:08 $
  * $Author: mcfly_e107 $
  *
 */
@@ -149,12 +149,14 @@ class e107forum
 	*/
 	function postAdd($postInfo, $updateThread = true, $updateForum = true)
 	{
+//		var_dump($postInfo);
 		//Future option, will just set to true here
 		$addUserPostCount = true;
 		$result = false;
 
 		$e107 = e107::getInstance();
-		$postId = $e107->sql->db_Insert('forum_post', $postInfo);
+		$info['data'] = $postInfo;
+		$postId = $e107->sql->db_Insert('forum_post', $info);
 		$forumInfo = array();
 
 		if($postId && $updateThread)
@@ -176,11 +178,14 @@ class e107forum
 			}
 			$threadInfo['thread_lastpost'] = $postInfo['post_datestamp'];
 			$threadInfo['thread_total_replies'] = 'thread_total_replies + 1';
-			$threadInfo['WHERE'] = 'thread_id = '.$postInfo['post_thread'];
 
-			$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-			$threadInfo['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
-			$result = $e107->sql->db_Update('forum_thread', $threadInfo);
+			$info = array();
+			$info['data'] = $threadInfo;
+			$info['WHERE'] = 'thread_id = '.$postInfo['post_thread'];
+			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
+
+			$result = $e107->sql->db_Update('forum_thread', $info);
 
 		}
 
@@ -197,21 +202,23 @@ class e107forum
 				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_user_anon'];
 			}
 
+			$info = array();
 			//If we update the thread, then we assume it was a reply, otherwise we've added a reply only.
-			$forumInfo['_FIELD_TYPES'] = $this->fieldTypes['forum'];
+			$info['_FIELD_TYPES'] = $this->fieldTypes['forum'];
 			if($updateThread)
 			{
 				$forumInfo['forum_replies'] = 'forum_replies+1';
-				$forumInfo['_FIELD_TYPES']['forum_replies'] = 'cmd';
+				$info['_FIELD_TYPES']['forum_replies'] = 'cmd';
 			}
 			else
 			{
 				$forumInfo['forum_threads'] = 'forum_threads+1';
-				$forumInfo['_FIELD_TYPES']['forum_threads'] = 'cmd';
+				$info['_FIELD_TYPES']['forum_threads'] = 'cmd';
 			}
-			$forumInfo['forum_lastpost_info'] = $postInfo['post_datestamp'].'.'.$postInfo['post_thread'];
-			$forumInfo['WHERE'] = 'forum_id = '.$postInfo['post_forum'];
-			$result = $e107->sql->db_Update('forum', $forumInfo);
+			$info['data'] = $forumInfo;
+			$info['data']['forum_lastpost_info'] = $postInfo['post_datestamp'].'.'.$postInfo['post_thread'];
+			$info['WHERE'] = 'forum_id = '.$postInfo['post_forum'];
+			$result = $e107->sql->db_Update('forum', $info);
 		}
 
 		if($result && USER && $addUserPostCount)
@@ -229,11 +236,15 @@ class e107forum
 	function threadAdd($threadInfo, $postInfo)
 	{
 		$e107 = e107::getInstance();
-		$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-		if($newThreadId = $e107->sql->db_Insert('forum_thread', $threadInfo))
+		$info = array();
+		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+		$info['data'] = $threadInfo;
+		if($newThreadId = $e107->sql->db_Insert('forum_thread', $info))
 		{
-			$postInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
-			$postInfo['post_thread'] = $newThreadId;
+			$info = array();
+			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
+			$info['data'] = $postInfo;
+			$info['data']['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
 			$this->threadMarkAsRead($newThreadId);
 			return array('postid' => $newPostId, 'threadid' => $newThreadId);
@@ -244,19 +255,21 @@ class e107forum
 	function threadUpdate($threadId, $threadInfo)
 	{
 		$e107 = e107::getInstance();
-		$threadInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-		$threadInfo['WHERE'] = 'thread_id = '.(int)$threadId;
-		$e107->sql->db_Update('forum_thread', $threadInfo);
+		$info = array();
+		$info['data'] = $threadInfo;
+		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+		$info['WHERE'] = 'thread_id = '.(int)$threadId;
+		$e107->sql->db_Update('forum_thread', $info);
 	}
 
 	function postUpdate($postId, $postInfo)
 	{
 		$e107 = e107::getInstance();
-		$postInfo['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
-		$postInfo['WHERE'] = 'post_id = '.(int)$postId;
-//		var_dump($postInfo);
-//		exit;
-		$e107->sql->db_Update('forum_post', $postInfo);
+		$info = array();
+		$info['data'] = $postInfo;
+		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
+		$info['WHERE'] = 'post_id = '.(int)$postId;
+		$e107->sql->db_Update('forum_post', $info);
 	}
 
 	function threadGet($id, $joinForum = true, $uid = USERID)
@@ -437,9 +450,11 @@ class e107forum
 			{
 				$tmp['post_attachments'] = '_NULL_';
 			}
-			$tmp['_FILE_TYPES']['post_attachments'] = 'escape';
-			$tmp['WHERE'] = 'post_id = '.$id;
-			$e107->sql->db_update('forum_post', $tmp);
+			$info = array();
+			$info['data'] = $tmp;
+			$info['_FILE_TYPES']['post_attachments'] = 'escape';
+			$info['WHERE'] = 'post_id = '.$id;
+			$e107->sql->db_update('forum_post', $info);
 		}
 	}
 
@@ -475,9 +490,11 @@ class e107forum
 				$tmp['thread_lastuser_anon'] = ($lpInfo['post_user_anon'] ? $lpInfo['post_user_anon'] : 'Anonymous');
 			}
 			$tmp['thread_lastpost'] = $lpInfo['post_datestamp'];
-			$tmp['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-			$tmp['WHERE'] = 'thread_id = '.$id;
-			$sql->db_Update('forum_thread', $tmp);
+			$info = array();
+			$info['data'] = $tmp;
+			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
+			$info['WHERE'] = 'thread_id = '.$id;
+			$sql->db_Update('forum_thread', $info);
 
 			return $lpInfo;
 		}
@@ -775,8 +792,8 @@ class e107forum
 		{
 			case 'add':
 				$tmp = array();
-				$tmp['track_userid'] = $uid;
-				$tmp['track_thread'] = $threadId;
+				$tmp['data']['track_userid'] = $uid;
+				$tmp['data']['track_thread'] = $threadId;
 				$result = $e107->sql->db_Insert('forum_track', $tmp);
 				unset($tmp);
 				break;
