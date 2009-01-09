@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.27 $
-|   $Date: 2008-12-29 15:23:06 $
+|   $Revision: 1.28 $
+|   $Date: 2009-01-09 17:25:50 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -344,10 +344,13 @@ $e107_var = array();
  * $e107_vars structure:
  * $e107_vars['action']['text'] -> link title
  * $e107_vars['action']['link'] -> if empty '#action' will be added as href attribute
+ * $e107_vars['action']['image'] -> (new) image tag
  * $e107_vars['action']['perm'] -> permissions
  * $e107_vars['action']['include'] -> additional <a> tag attributes
  * $e107_vars['action']['sub'] -> (new) array, exactly the same as $e107_vars' first level e.g. $e107_vars['action']['sub']['action2']['link']...
  * $e107_vars['action']['sort'] -> (new) used only if found in 'sub' array - passed as last parameter (recursive call)
+ * $e107_vars['action']['link_class'] -> (new) additional link class
+ * $e107_vars['action']['sub_class'] -> (new) additional class used only when sublinks are being parsed
  *
  * @param string $title
  * @param string $active_page
@@ -357,7 +360,7 @@ $e107_var = array();
  * @param bool $sortlist
  * @return string parsed admin menu (or empty string if title is empty)
  */
-function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = array(), $sortlist = false)
+function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
 {
 	global $E_ADMIN_MENU, $e107;
 	if(!$tmpl) $tmpl = $E_ADMIN_MENU;
@@ -419,6 +422,7 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 	$search[6] = '/\{SUB_ID\}(.*?)/si';
 	$search[7] = '/\{LINK_CLASS\}(.*?)/si';
 	$search[8] = '/\{SUB_CLASS\}(.*?)/si';
+	$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
 	foreach (array_keys($e107_vars) as $act)
 	{
 		$replace = array();
@@ -445,14 +449,15 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 		$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
 		$replace[5] = $id ? " id='eplug-nav-{$rid}'" : '';
 		$replace[6] = '';
-		$replace[7] = '';
+		$replace[7] = varset($e107_vars[$act]['link_class']);
 		$replace[8] = '';
+		$replace[9] = $e107_vars[$act]['image'];
 
 		if(varsettrue($e107_vars[$act]['sub']))
 		{
 			$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
-			$replace[7] = ' e-expandit';
-			$replace[8] = ' e-hideme e-expandme';
+			$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
+			$replace[8] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
 			$replace[4] = preg_replace($search, $replace, $tmpl['start_sub']);
 			$replace[4] .= e_admin_menu(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
 			$replace[4] .= $tmpl['end_sub'];

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-01-04 16:00:19 $
-|     $Author: e107steved $
+|     $Revision: 1.17 $
+|     $Date: 2009-01-09 17:25:50 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -108,7 +108,7 @@ define("PRFLAN_94", "here");
 define("PRFLAN_95", "Display plugins info:");
 define("PRFLAN_96", "Will display info on all admin pages for each plugin supporting this type of feature");
 define("PRFLAN_97", "Unique 'Plugins info' menu:");
-define("PRFLAN_98", "If unchecked, each plugin will display its own info in an individual menu. If checked all info will be displayed in one menu.");
+define("PRFLAN_98", "If disabled, each plugin will display its own info in an individual menu. If enabled all info will be displayed in one menu.");
 define("PRFLAN_101", "Text rendering");
 define("PRFLAN_102", "Replace clickable URLs");
 define("PRFLAN_103", "If ticked, and 'Make Clickable' (above) is also ticked, posted URLs are displayed as a hyperlink using text from the textbox below. This keeps very long URLs from breaking layout.");
@@ -212,4 +212,7 @@ define('PRFLAN_198', 'If disabled, user has to explicitly log in after signup');
 //0.8
 define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");
 define('PRFLAN_196a', 'Log directory:');
+
+define("PRFLAN_199", "Show Admin Sub-links");
+define("PRFLAN_200", "If enabled, Admin slide down navigation menu (if supported by the current theme) will render sub-links when needed (e.g. News - Create news item).");
 ?>

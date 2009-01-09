@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-01-04 16:00:19 $
- * $Author: e107steved $
+ * $Revision: 1.25 $
+ * $Date: 2009-01-09 17:25:50 $
+ * $Author: secretr $
  *
 */
 require_once ("../class2.php");
@@ -363,6 +363,13 @@ $text .= "
 						<td class='control'>
 							".$frm->radio_switch('admin_alerts_uniquemenu', $pref['admin_alerts_uniquemenu'])."
 							<div class='smalltext field-help'>".PRFLAN_98."</div>
+						</td>
+					</tr>
+					<tr>
+						<td class='label'>".PRFLAN_199."</td>
+						<td class='control'>
+							".$frm->radio_switch('admin_slidedown_subs', $pref['admin_slidedown_subs'])."
+							<div class='smalltext field-help'>".PRFLAN_200."</div>
 						</td>
 					</tr>
 				</tbody>

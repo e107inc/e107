@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.19 $
- * $Date: 2008-12-29 15:23:06 $
+ * $Revision: 1.20 $
+ * $Date: 2009-01-09 17:25:50 $
  * $Author: secretr $
  *
 */
@@ -260,7 +260,7 @@ if (isset($_POST['show_avatars']))
 			if(is_dir(e_FILE."public/avatars/".$image_name))
 			{
 				//File info
-				$users = "<a class='e-tooltip' href='#' title='".IMALAN_69.": {$image_name}'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".IMALAN_66.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
+				$users = "<a class='e-tooltip' href='#' title='".IMALAN_69.": {$image_name}'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
 
 				//Friendly UI - click text to select a form element
 				$img_src =  '<span class="error">'.IMALAN_70.'</span>';
@@ -269,7 +269,7 @@ if (isset($_POST['show_avatars']))
 			else
 			{
 				//File info
-				$users = "<a class='e-tooltip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
+				$users = "<a class='e-tooltip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
 
 				// Control over the image size (design)
 				$image_size = getimagesize(e_FILE."public/avatars/".$image_name);

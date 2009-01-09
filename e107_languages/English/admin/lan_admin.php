@@ -1,14 +1,15 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.15 2008-12-22 16:50:07 secretr Exp $
+ * $Id: lan_admin.php,v 1.16 2009-01-09 17:25:50 secretr Exp $
  *
  * Admin Language File
 */
 define("ADLAN_0", "News");
-define("ADLAN_1", "Add/edit/delete news items");
-//define("ADLAN_2", "News Categories");
-//define("ADLAN_3", "Add/edit/delete news categories");
+define("ADLAN_1", "Manage news items");
+define("ADLAN_2", "Create news item");
+define("ADLAN_3", "News items List");
+define("ADLAN_3a", "News Settings");
 define("ADLAN_4", "Preferences");
 define("ADLAN_5", "Edit Site Preferences");
 define("ADLAN_6", "Menus");
@@ -17,8 +18,8 @@ define("ADLAN_8", "Administrators");
 define("ADLAN_9", "Add/delete site administrators");
 define("ADLAN_10", "Admin password");
 define("ADLAN_11", "Change your password");
-//define("ADLAN_12", "Forums");
-//define("ADLAN_13", "Add/Edit Forums");
+define("ADLAN_12", "Docs");
+define("ADLAN_13", "System documentation");
 //define("ADLAN_14", "Articles");
 //define("ADLAN_15", "Add new/edit/delete articles");
 //define("ADLAN_16", "Content");
@@ -187,7 +188,7 @@ define('ADLAN_CL_4', 'Coms');
 define('ADLAN_CL_5', 'Files');
 define('ADLAN_CL_6', 'Tools');
 define('ADLAN_CL_7', 'Plugins');
-define('ADLAN_CL_8', 'Docs');
+define('ADLAN_CL_8', 'About');
 
 define("ADLAN_LAT_1", "Latest");
 
@@ -211,6 +212,7 @@ define("ADLAN_ERR_6", "Then, click here to re-scan your plugin folders.");
 define("LAN_EDIT","Edit");
 define("LAN_DELETE","Delete");
 define("LAN_CREATE","Create");
+define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
 define("LAN_SAVE","Save");
 define("LAN_SAVED","Saved");
