@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.18 $
-| $Date: 2009-01-08 21:47:44 $
+| $Revision: 1.19 $
+| $Date: 2009-01-09 01:12:18 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -97,12 +97,11 @@ class e_shortcode
 				}
 			}
 		}
-
 	}
 
 	function loadCoreShortcodes()
 	{
-		$coreBatchList = array('siteinfo_shortcodes.php');
+		$coreBatchList = array('siteinfo_shortcodes.php', 'admin_shortcodes.php');
 		foreach($coreBatchList as $cb)
 		{
 			include_once(e_FILE.'shortcode/batch/'.$cb);
@@ -201,7 +200,7 @@ class e_shortcode
 							{
 								if(!class_exists($_class) && $this->registered_codes[$code]['path'])
 								{
-									include_once($this->registered_codes[$code]['path'].$_class.'.php');
+									include_once($this->registered_codes[$code]['path']);
 								}
 								$this->scClasses[$_class] = new $_class;
 							}
@@ -261,7 +260,7 @@ class e_shortcode
 
 			if (!isset($scCode))
 			{
-				if(E107_DBG_BBSC) trigger_error('shortcode not found:{'.$code.'}', E_USER_ERROR);
+				if(E107_DBG_BBSC) { trigger_error('shortcode not found:{'.$code.'}', E_USER_ERROR); }
 				return $matches[0];
 			}
 
