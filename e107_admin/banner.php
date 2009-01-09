@@ -9,8 +9,8 @@
  * Banner Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
- * $Revision: 1.9 $
- * $Date: 2008-12-23 15:18:31 $
+ * $Revision: 1.10 $
+ * $Date: 2009-01-09 17:25:50 $
  * $Author: secretr $
  *
 */
@@ -243,7 +243,7 @@ if (!$action) {
 						<tr>
 							<td class='center'>".$banner_row['banner_id']."</td>
 							<td class='e-pointer' onclick=\"e107Helper.toggle('banner-infocell-{$banner_row['banner_id']}')\">
-								<a href='#banner-infocell-{$banner_row['banner_id']}' class='action e-expandit f-right' title='".BNRLAN_65."'><img class='action info S16' src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a>
+								<a href='#banner-infocell-{$banner_row['banner_id']}' class='action e-expandit f-right' title='".BNRLAN_65."'><img class='action info S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' /></a>
 								".($banner_row['banner_clientname'] ? $banner_row['banner_clientname'] : BNRLAN_66)."
 								<div class='e-hideme clear' id='banner-infocell-{$banner_row['banner_id']}'>
 									<div class='indent'>

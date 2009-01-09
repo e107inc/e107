@@ -9,8 +9,8 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.13 $
- * $Date: 2008-12-23 15:18:31 $
+ * $Revision: 1.14 $
+ * $Date: 2009-01-09 17:25:50 $
  * $Author: secretr $
  *
 */
@@ -725,7 +725,7 @@ switch($action)
 							$val = ($banlist_datestamp ? strftime(BAN_TIME_FORMAT, $banlist_datestamp) : BANLAN_22);
 							break;
 						case 'banlist_bantype':
-							$val = "<div class='nowrap' title='".constant('BANLAN_11'.$banlist_bantype)."'>".constant('BANLAN_10'.$banlist_bantype)." <a href='#' title='".constant('BANLAN_11'.$banlist_bantype)."' onclick='return false;'><img class='action info S16' src='".e_IMAGE_ABS."admin_images/docs_16.png' alt='' /></a></div>";
+							$val = "<div class='nowrap' title='".constant('BANLAN_11'.$banlist_bantype)."'>".constant('BANLAN_10'.$banlist_bantype)." <a href='#' title='".constant('BANLAN_11'.$banlist_bantype)."' onclick='return false;'><img class='action info S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' /></a></div>";
 							break;
 						case 'ip_reason':
 							$val = $e107->ipDecode($banlist_ip)."<br />".$fv.": ".$banlist_reason;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2009-01-04 20:55:37 $
-|     $Author: e107steved $
+|     $Revision: 1.27 $
+|     $Date: 2009-01-09 17:25:50 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,6 +34,9 @@ class e107
 	var $relative_base_path;
 	var $_ip_cache;
 	var $_host_name_cache;
+	var $sql;
+	var $tp;
+	var $url;
 
 	/**
 	 * e107 class constructor
@@ -42,9 +45,9 @@ class e107
 	 * @param string $e107_root_path
 	 * @return e107
 	 */
-	function e107()
+	function e107($php4_check)
 	{
-		if(defined('e107_php4_check') && constant('e107_php4_check'))
+		if($php4_check !== 'e107_class_php4_very_long_hard_to_remember_check')
 		{
 			echo ('Fatal error! You are not allowed to direct instantinate an object for singleton class! Please use e107::getInstance()');
 			exit();
@@ -58,22 +61,21 @@ class e107
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
 	}
 
-  /**
-   * Get instance - php4 singleton implementation
-   *
-   * @return singleton object
-   */
-  function &getInstance()
-  {
-    static $instance = array();//it's array because of an odd PHP 4 bug
+	/**
+	 * Get instance - php4 singleton implementation
+	 *
+	 * @return singleton object
+	 */
+	function &getInstance()
+	{
+		static $instance = array();//it's array because of an odd PHP 4 bug
 
-    if(!$instance)
-    {
-        $instance[0] = new e107();
-        define('e107_php4_check', true);
-    }
-    return $instance[0];
-  }
+		if(!$instance)
+		{
+		    $instance[0] = new e107('e107_class_php4_very_long_hard_to_remember_check');
+		}
+	  	return $instance[0];
+	}
 
 	function set_base_path()
 	{

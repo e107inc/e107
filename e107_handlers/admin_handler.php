@@ -19,7 +19,7 @@ if (!function_exists('asortbyindex')) {
 		return ($sortarray);
 	}
 }
-	
+
 if (!function_exists('comesafter')) {
 	function comesafter($s1, $s2) {
 		$order = 1;
@@ -35,5 +35,32 @@ if (!function_exists('comesafter')) {
 			}
 		return ($order);
 	}
+}
+
+if (!function_exists('multiarray_sort')) {
+    function multiarray_sort(&$array, $key, $order = 'asc', $natsort = true, $case = true)
+    {
+        if(!is_array($array)) return $array;
+
+        $order = strtolower($order);
+        foreach ($array as $i => $arr)
+        {
+           $sort_values[$i] = $arr[$key];
+        }
+
+        if(!$natsort) ($order=='asc')? asort($sort_values) : arsort($sort_values);
+        else
+        {
+             $case ? natsort($sort_values) : natcasesort($sort_values);
+             if($order != 'asc') $sort_values = array_reverse($sort_values, true);
+        }
+        reset ($sort_values);
+
+        while (list ($arr_key, $arr_val) = each ($sort_values))
+        {
+             $sorted_arr[] = $array[$arr_key];
+        }
+        return $sorted_arr;
+    }
 }
 ?>

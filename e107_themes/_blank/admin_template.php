@@ -9,8 +9,8 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.9 $
- * $Date: 2008-12-19 14:01:07 $
+ * $Revision: 1.10 $
+ * $Date: 2009-01-09 17:25:50 $
  * $Author: secretr $
  *
 */
@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 define("ADLINK_COLS",5);
 include_lan(THEME."languages/".e_LANGUAGE.".php");
 
-
+//{FS_ADMIN_ALT_NAV}
 $ADMIN_HEADER = "
 <div class='admin-wrapper'>
 	<div class='admin-header'>
@@ -30,10 +30,11 @@ $ADMIN_HEADER = "
 			{ADMIN_LOGGED}
 			{ADMIN_SEL_LAN}
 			{ADMIN_USERLAN}
+
 		</div>
 		<div style='height: 20px;'><!-- --></div>
 		<div class='admin-navigation'>
-			{FS_ADMIN_ALT_NAV}
+			<div id='nav'>{ADMIN_NAVIGATION}</div>
 			<div class='clear'><!-- --></div>
 		</div>
 	</div>
@@ -93,10 +94,8 @@ $ADMIN_FOOTER = "
 ";
 
 /* NEW ADMIN MENU TEMPLATE
-
  * see function e_admin_menu() in e107_admin/header.php
-
-*/
+ */
 $E_ADMIN_MENU['start'] = '
 <ul class="plugin-navigation">
 ';
@@ -138,45 +137,50 @@ $E_ADMIN_MENU['end_sub'] = '
 $E_ADMIN_MENU['end'] = '
 </ul>
 ';
-/*
-$BUTTONS_START = '
-<ul class="plugin-navigation">
-';
-$BUTTON = '
-	<li>
-		<a class="link" href="{LINK_URL}"{ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
-		{SUB_LINK}
-	</li>
-';
-$BUTTON_OVER = '
-	<li>
-		<a class="link-active" href="{LINK_URL}"{ONCLICK}>&raquo;&nbsp;{LINK_TEXT}</a>
-	</li>
-';
-$SUB_BUTTONS_START = '
-<ul class="plugin-navigation">
-	<li>
-		<a class="link" href="{LINK_URL}" onclick="expandit(\'{SUB_HEAD_ID}\');" >&raquo;&nbsp;{SUB_HEAD}</a>
-		<ul class="plugin-navigation-sub" id="{SUB_HEAD_ID}" style="display: none">
-';
-$SUB_BUTTON = '
-			<li>
-				<a class="link" href="{LINK_URL}">&raquo;&nbsp;{LINK_TEXT}</a>
-			</li>
-';
-$SUB_BUTTON_OVER = '
-			<li>
-				<a class="link-active" href="{LINK_URL}">&raquo;&nbsp;{LINK_TEXT}</a>
-			</li>
-';
-$SUB_BUTTONS_END = '
-		</ul>
-	</li>
-</ul>
-';
-$BUTTONS_END = '
-</ul>
-';
-*/
 
+/* NEW ADMIN SLIDE DOWN MENU TEMPLATE
+ * see function admin_navigation() in e107_files/shortcodes/admin_navigation.php
+ * TODO move it together with menu.css/menu.js to the theme templates/e107_files folder (default menu render)
+ */
+$E_ADMIN_NAVIGATION['start'] = '
+<ul id="nav-links">
+';
+
+$E_ADMIN_NAVIGATION['button'] = '
+	<li>
+		<a class="menuButton" href="{LINK_URL}"{ONCLICK}>{LINK_IMAGE}{LINK_TEXT}</a>
+		{SUB_MENU}
+	</li>
+';
+$E_ADMIN_NAVIGATION['button_active'] = '
+	<li>
+		<a class="menuButton active" href="{LINK_URL}"{ONCLICK}>{LINK_IMAGE}{LINK_TEXT}</a>
+		{SUB_MENU}
+	</li>
+';
+
+$E_ADMIN_NAVIGATION['start_sub'] = '
+		<ul class="menu"{SUB_ID}>
+';
+
+$E_ADMIN_NAVIGATION['button_sub'] = '
+			<li>
+				<a class="menuItem{SUB_CLASS}" href="{LINK_URL}"{ONCLICK}>{LINK_IMAGE}{LINK_TEXT}</a>
+				{SUB_MENU}
+			</li>
+';
+$E_ADMIN_NAVIGATION['button_active_sub'] = '
+			<li>
+				<a class="menuItem{SUB_CLASS}" href="{LINK_URL}"{ONCLICK}>{LINK_IMAGE}{LINK_TEXT}</a>
+				{SUB_MENU}
+			</li>
+';
+
+$E_ADMIN_NAVIGATION['end_sub'] = '
+		</ul>
+';
+
+$E_ADMIN_NAVIGATION['end'] = '
+</ul>
+';
 ?>

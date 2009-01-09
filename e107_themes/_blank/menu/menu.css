@@ -1,5 +1,3 @@
-#nav li.fs-linkSep { width: 2px; margin: 0px; height: 38px; background: url(../images/a01_bar-Sep.png) 0 0 no-repeat; }
-
 #nav, #nav ul { /* all lists */
 	padding: 0px;
 	margin: 0px;
@@ -10,7 +8,7 @@
 
 
 #nav a {
-	padding: 0px 15px 0px 36px;
+	padding: 0px 10px 0px 10px;
 	vertical-align: middle;
 	display: block;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -36,6 +34,7 @@
 
 #nav li { /* all list items */
 	float: left;
+	line-height: 36px;
 	/* width: 158px;  width needed or else Opera goes nuts */
 }
 ul.sub {border-top: 1px solid #DDDDDD;}
@@ -43,7 +42,7 @@ ul.sub {border-top: 1px solid #DDDDDD;}
 #nav li ul { /* second-level lists */
 	position: absolute;
 	z-index: 10;
-	width: 180px;
+	width: 190px;
 	
 	left: -9999px; /* using left instead of display to hide menus because display: none isn't read by screen readers */
 }
@@ -62,22 +61,24 @@ ul.sub {border-top: 1px solid #DDDDDD;}
 	border-left: 1px solid #DDDDDD;
 	border-right: 1px solid #DDDDDD;
 	border-bottom: 1px solid #DDDDDD;
-	width: 188px;
-	w\idth : 188px;
+	width: 190px;
+	w\idth : 178px;
 	text-transform: none;
 	color: #13394E;
 }
 
-#nav .menuItem img { width: 16px; height: 16px; padding: 6px 0px; margin-right: 10px; }
+#nav .menuButton img { padding: 10px 0px; margin-right: 10px; }
+
+#nav .menuItem img { padding: 6px 0px; margin-right: 10px; }
 #nav li li a.sub,
 #nav li:hover li a.sub,
 #nav li.sfhover li a.sub {
-	/* background-image: url(../images/1008-links_sub.gif) !important ; background-repeat: no-repeat; background-position:95% 50%; */
+	background-image: url(../images/links_sub.gif) !important ; background-repeat: no-repeat; background-position:95% 50%;
 }
 #nav li li a.sub:hover,
 #nav li:hover li a.sub:hover,
 #nav li.sfhover li a.sub:hover {
-	/* background-image: url(../images/0708_link_sub_over.png) !important ; background-repeat: no-repeat; background-position: 100% 50%; */
+	/*background-image: url(../images/link_sub_over.png) !important ; background-repeat: no-repeat; background-position: 100% 50%;*/
 }
 
 
@@ -89,7 +90,8 @@ ul.sub {border-top: 1px solid #DDDDDD;}
 
 
 #nav li ul ul { /* third-and-above-level lists */
-	margin: -29px 0 0 180px;
+	margin: -25px 0 0 120px;
+	border-top: 1px solid #ddd;
 }
 
 #nav li:hover ul ul, 

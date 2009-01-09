@@ -1,10 +1,10 @@
 /*
 * e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: fs_admin_alt_nav.sc,v 1.3 2008-12-10 22:39:43 e107steved Exp $
+* $Id: fs_admin_alt_nav.sc,v 1.4 2009-01-09 17:25:50 secretr Exp $
 */
 
-if (ADMIN) 
-{
+if (!ADMIN) return '';
+
 	global $sql, $pref, $tp;
 	parse_str($parm);
 	require(e_ADMIN.'ad_links.php');
@@ -42,7 +42,7 @@ if (ADMIN)
 	<tr><td>
 	<div class='menuBar' style='width: 100%'>";
 */
-	
+
 	$text .= '
 		<div id="nav">
 	';
@@ -50,8 +50,8 @@ if (ADMIN)
 		$text .= '<ul style="float: right"><li>'.adnav_cat_fs(ADLAN_53, e_BASE.'index.php', E_16_NAV_LEAV).'</li>';
 		$text .= '<li>'.adnav_cat_fs(ADLAN_46, e_ADMIN.'admin.php?logout', E_16_NAV_LGOT).'</li></ul>';
 	}
-	
-	$text .= '	
+
+	$text .= '
 			<ul class="level1" id="nav-links">
 	';
 
@@ -88,7 +88,7 @@ if (ADMIN)
 			}
 		}
 		$ad_texti .= '</ul>';
-		if ($ad_tmpi == 1) 
+		if ($ad_tmpi == 1)
 		{
 			$text .= $nav_main;
 			$text .= $ad_texti;
@@ -131,13 +131,13 @@ if (ADMIN)
 		}
 		ksort($plugin_array, SORT_STRING);
 		$plugs_text = '';
-		foreach ($plugin_array as $plugin_compile) 
+		foreach ($plugin_array as $plugin_compile)
 		{
 			$plugs_text .= $plugin_compile;
 		}
 	}
 
-	if (getperms('Z')) 
+	if (getperms('Z'))
 	{
 		$pclass_extended = $active_plugs ? 'header' : '';
 		$plugin_text = adnav_main_fs(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, $pclass_extended);
@@ -145,12 +145,12 @@ if (ADMIN)
 	}
 
 	if ($render_plugins) {
-		
+
 		if (defined('FS_ADMIN_LINK_SEPARATOR')) {
 			$text .= "
 			<li class='fs-linkSep'>".FS_ADMIN_LINK_SEPARATOR."</li>";
 		}
-		
+
 		$text .= '<li>';
 		$text .= adnav_cat_fs(ADLAN_CL_7, '', E_16_CAT_PLUG, 'plugMenu');
 		$text .= "<ul id='plugMenu' class='menu'>";
@@ -167,14 +167,14 @@ if (ADMIN)
 	$text .= '<li>';
 	$text .= adnav_cat_fs(ADLAN_CL_8, '', E_16_NAV_DOCS, 'docsMenu');
 	$text .= "<ul id='docsMenu' class='menu'>";
-	if (!$handle=opendir(e_DOCS.e_LANGUAGE."/")) 
+	if (!$handle=opendir(e_DOCS.e_LANGUAGE."/"))
 	{
 		$handle=opendir(e_DOCS."English/");
 	}
 	$i=1;
-	while ($file = readdir($handle)) 
+	while ($file = readdir($handle))
 	{
-		if ($file != "." && $file != ".." && $file != "CVS") 
+		if ($file != "." && $file != ".." && $file != "CVS")
 		{
 			$text .= '<li>'.adnav_main_fs(str_replace("_", " ", $file), e_ADMIN."docs.php?".$i, E_16_DOCS).'</li>';
 			$i++;
@@ -191,4 +191,3 @@ if (ADMIN)
 	';
 
 	return $text;
-}

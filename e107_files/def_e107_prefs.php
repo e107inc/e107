@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-01-04 16:00:19 $
-|     $Author: e107steved $
+|     $Revision: 1.21 $
+|     $Date: 2009-01-09 17:25:50 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,7 +71,7 @@ City, State, Country
   'displayname_class' => 255,
   'displayname_maxlength' => 15,
   'loginname_maxlength' => 30,
-  
+
   'profanity_filter' => '0',
   'profanity_replace' => '[censored]',
   'smiley_activate' => '',
@@ -138,6 +138,7 @@ City, State, Country
   'post_html' => '254',
   'redirectsiteurl' => '0',
   'admin_alerts_uniquemenu' => '0',
+  'admin_slidedown_subs' => '1',
   'null' => '',
   'links_new_window' => '1',
   'main_wordwrap' => '',
