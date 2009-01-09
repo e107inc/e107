@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/level_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-06-27 13:27:25 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2009-01-09 21:18:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref, $fmod = "")
 {
-	 
+
 	global $tp, $imode;
 
 	if (!$user_id) {
@@ -47,9 +47,9 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	}
 	$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."</span><br />";
 	$data['userid'] = "<span class='smalltext'>".LAN_195." #".$user_id."</span><br />";
- 
+
 	$level_thresholds = ($pref['forum_thresholds'] ? explode(",", $pref['forum_thresholds']) : array(20, 100, 250, 410, 580, 760, 950, 1150, 1370, 1600));
- 
+
 	$level_images = explode(",", $pref['forum_images']);
 	$level_names = explode(",", $pref['forum_levels']);
 	if(!$pref['forum_images'])
@@ -63,7 +63,7 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	$daysregged = max(1, round((time() - $user_join) / 86400))."days";
 	$level = ceil((($user_forums * 5) + ($user_comments * 5) + ($user_chats * 2) + $user_visits)/4);
 	$ltmp = $level;
-	 
+
 	if ($level <= $level_thresholds[0]) {
 		$rank = 0;
 	}
@@ -113,7 +113,150 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	if($data['special']) { $data[0] = $data['special'];}
 	return ($data);
 }
-	
-	
-	
+
+class e017UserRank
+{
+
+	var $ranks = array();
+
+	function e107UserRank()
+	{
+		$this->_loadRankData();
+	}
+
+	function getRankData()
+	{
+		return $this->ranks;
+	}
+
+	function _loadRankData($force=false)
+	{
+		$e107 = e107::getInstance();
+		//Check to see if we can get it from cache
+		if($force = false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
+		{
+			$this->ranks = $ranks;
+		}
+		else
+		{
+			//force is true, or cache doesn't exist, or system cache disabled, let's get it from table
+			$this->ranks = array();
+			if($e107->sql->db_Select('generic', '*', "gen_type = 'user_rank_data' ORDER BY gen_intdata ASC"))
+			{
+				$i=0;
+				while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+				{
+					$tmp = array();
+					$tmp['name'] = $row['gen_ip'];
+					$tmp['thresh'] = $row['gen_intdata'];
+					$tmp['lan_pfx'] = (int)$row['gen_ip'];
+					$tmp['image'] = $row['gen_chardata'];
+					if($row['gen_datestamp'])
+					{
+						$this->ranks['special'][$row['get_datestamp']] = $tmp;
+					}
+					else
+					{
+						$this->ranks['data'][$i++] = $tmp;
+					}
+				}
+			}
+			if($e107->sql->db_Select('generic', '*', "gen_type = 'user_rank_config'"))
+			{
+				if($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+				{
+					$this->ranks['config'] = unserialize($row['gen_chardata']);
+				}
+			}
+			$e107->ecache->set_sys('nomd5_user_ranks', $this->ranks);
+		}
+	}
+
+	function _getImage($info)
+	{
+		if($info['lan_pfx'])
+		{
+			$_tmp = explode('_', $info['image'], 2);
+			return e_LANGUAGE.'_'.$tmp[1];
+		}
+		return $info['image'];
+	}
+
+	function getRanks($userId)
+	{
+		$e107 = e107::getInstance();
+		if(!$userId && USER) { $userId = USERID; }
+		if($ret = getcachedvars('userRankInfo_'.$userId)) { return $ret; }
+
+		$ret = array();
+		$userData = get_user_data($userId);
+		if($userData['user_admin'])
+		{
+			if($userData['user_perms'] == '0')
+			{
+				//Main Site Admin
+				$ret['special'] = "<img src='".$this->_getImage($this->ranks['special'][1]['image'])."' /><br />";
+			}
+			else
+			{
+				//Site Admin
+				$ret['special'] = "<img src='".$this->_getImage($this->ranks['special'][2]['image'])."' /><br />";
+			}
+		}
+
+		$userData['daysregged'] = max(1, round((time() - $userData['user_join']) / 86400));
+		$level = $this->_calcLevel($userData);
+
+		$lastRank = count($this->ranks['data']) - 1;
+		$rank = false;
+		if($level <= $this->ranks['data'][0]['thresh'])
+		{
+			$rank = 0;
+		}
+		elseif($level >= $this->ranks['data'][$lastRank]['thresh'])
+		{
+			$rank = 9;
+		}
+		else
+		{
+			for($i=0; $i < $lastRank; $i++)
+			{
+				if($level >= $this->ranks['data'][$i]['thresh'] && $level < $this->ranks['data'][($i+1)]['thresh'])
+				{
+					$rank = $i;
+					break;
+				}
+			}
+		}
+		if($rank !== false)
+		{
+			$data['name'] = '[ '.$e107->tp->toHTML($this->ranks['data'][$rank]['name'], FALSE, 'defs').' ]';
+			$img_title = ($this->ranks['data'][$rank]['name'] ? "title='".$this->ranks['data'][$rank]['name']."'" : '');
+			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank]['image'])."' /><br />";
+
+			cachevars('userRankInfo_'.$userId, $data);
+			return $data;
+		}
+	}
+
+	function _calcLevel(&$userData)
+	{
+		var_dump($this->ranks['config']);
+		$value = 0;
+		$calc = $this->ranks['config']['calc'];
+		$search = array();
+		$replace = array();
+		foreach($this->ranks['config']['fields'] as $f)
+		{
+			$search[] = $f['name'];
+			$replace[] = $userData[$f['name']];
+		}
+		$calc = str_replace($search, $replace, $calc);
+		$value = eval($calc);
+		return $value;
+	}
+
+}
+
+
 ?>
