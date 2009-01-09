@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.34 $
- * $Date: 2008-12-13 22:35:13 $
+ * $Revision: 1.35 $
+ * $Date: 2009-01-09 16:22:08 $
  * $Author: mcfly_e107 $
 */
 
@@ -44,7 +44,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.34 $
+* @version $Revision: 1.35 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -319,15 +319,26 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
+	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	{
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
 		if(is_array($arg))
 		{
+			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+			{
+		   	//Convert data if not using 'new' format
+				$_tmp = array();
+				$_tmp['data'] = $arg;
+				$arg = $_tmp;
+				unset($_tmp);
+			}
+	   	if(!isset($arg['data'])) { return false; }
+
 			$fieldTypes = $this->_getTypes($arg);
-			$keyList= "`".implode("`,`", array_keys($arg))."`";
+			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
 			$tmp = array();
-			foreach($arg as $fk => $fv)
+			foreach($arg['data'] as $fk => $fv)
 			{
 				$tmp[] = $this->_getFieldValue($fk, $fv, $fieldTypes);
 			}
@@ -343,9 +354,8 @@ class db {
 		if(!$this->mySQLaccess)
 		{
 			global $db_ConnectionID;
-        	$this->mySQLaccess = $db_ConnectionID;
+     	$this->mySQLaccess = $db_ConnectionID;
 		}
-
 
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark ))
 		{
@@ -377,28 +387,43 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Update($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
+	function db_Update($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	{
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
 
 		if(!$this->mySQLaccess)
 		{
 			global $db_ConnectionID;
-        	$this->mySQLaccess = $db_ConnectionID;
+     	$this->mySQLaccess = $db_ConnectionID;
 		}
 
-	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
-	  	{
+  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
+  	{
 	   	$new_data = '';
-			$the_where = $arg['WHERE'];
-			unset($arg['WHERE']);
+			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+	   	{
+		   	//Convert data if not using 'new' format (is this needed?)
+	   		$_tmp = array();
+	   		if(isset($arg['WHERE']))
+	   		{
+	   			$_tmp['WHERE'] = $arg['WHERE'];
+	   			unset($arg['WHERE']);
+	   		}
+	   		$_tmp['data'] = $arg;
+	   		$arg = $_tmp;
+	   		unset($_tmp);
+	   	}
+	   	if(!isset($arg['data'])) { return false; }
+	   	var_dump($arg);
+
 			$fieldTypes = $this->_getTypes($arg);
-			foreach ($arg as $fn => $fv)
+			foreach ($arg['data'] as $fn => $fv)
 			{
 				$new_data .= ($new_data ? ', ' : '');
 				$new_data .= "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
 			}
-			$arg = $new_data .' WHERE '. $the_where;
+			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
 		}
 
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark))
