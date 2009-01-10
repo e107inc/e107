@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.16 2008-12-15 00:29:20 mcfly_e107 Exp $ -->
+<!-- $Id: plugin.xml,v 1.17 2009-01-10 11:42:19 secretr Exp $ -->
 <e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true">
 	<author name="e107dev" url="http://e107.org"/>
 	<description>This plugin is a fully featured Forum system</description>
 	<folder>forum</folder>
 	<administration>
 		<configFile>forum_admin.php</configFile>
+		<subMenuItem title="Front Page" description="Forum Front Page" link="forum_admin.php" icon="manage" />
+		<subMenuItem title="Create Parents" description="Create Forum Parents" link="forum_admin.php?cat" icon="add" />
+		<subMenuItem title="Create Forums" description="Create Forums" link="forum_admin.php?create" icon="images/forums_16.png" />
+		<subMenuItem title="Preferences" description="Forum Preferences" link="forum_admin.php?cat" icon="settings" perm="0" />
 		<icon>images/forums_32.png</icon>
 		<iconSmall>images/forums_16.png</iconSmall>
 		<caption>Configure Forum</caption>

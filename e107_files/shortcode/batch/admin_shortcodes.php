@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes.php,v 1.1 2009-01-09 01:12:17 mcfly_e107 Exp $
+* $Id: admin_shortcodes.php,v 1.2 2009-01-10 11:42:19 secretr Exp $
 *
 * Admin shortcode batch - registration
 */
@@ -21,6 +21,7 @@ $codes = array(
 'admin_menu',
 'admin_msg',
 'admin_nav',
+'admin_navigation',
 'admin_plugins',
 'admin_preset',
 'admin_pword',
