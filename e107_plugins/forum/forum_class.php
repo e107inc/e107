@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-01-09 16:22:08 $
+ * $Revision: 1.37 $
+ * $Date: 2009-01-10 04:39:54 $
  * $Author: mcfly_e107 $
  *
 */
@@ -155,6 +155,8 @@ class e107forum
 		$result = false;
 
 		$e107 = e107::getInstance();
+		$info = array();
+		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['data'] = $postInfo;
 		$postId = $e107->sql->db_Insert('forum_post', $info);
 		$forumInfo = array();
@@ -241,10 +243,7 @@ class e107forum
 		$info['data'] = $threadInfo;
 		if($newThreadId = $e107->sql->db_Insert('forum_thread', $info))
 		{
-			$info = array();
-			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
-			$info['data'] = $postInfo;
-			$info['data']['post_thread'] = $newThreadId;
+			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
 			$this->threadMarkAsRead($newThreadId);
 			return array('postid' => $newPostId, 'threadid' => $newThreadId);

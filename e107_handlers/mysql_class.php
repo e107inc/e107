@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-01-09 16:22:08 $
+ * $Revision: 1.36 $
+ * $Date: 2009-01-10 04:39:54 $
  * $Author: mcfly_e107 $
 */
 
@@ -44,7 +44,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.35 $
+* @version $Revision: 1.36 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -415,7 +415,6 @@ class db {
 	   		unset($_tmp);
 	   	}
 	   	if(!isset($arg['data'])) { return false; }
-	   	var_dump($arg);
 
 			$fieldTypes = $this->_getTypes($arg);
 			foreach ($arg['data'] as $fn => $fv)
