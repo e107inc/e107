@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2008-12-28 22:37:43 $
+|     $Revision: 1.22 $
+|     $Date: 2009-01-11 21:06:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -20,17 +20,15 @@
 if (!defined('e107_INIT')) { exit; }
 
 /*
-
-User_extended rewrite for version 0.7
-
-this code uses two tables,
-user_extended
-user_extended_struct
-to store its data and structural information.
+Code uses two tables:
+	user_extended_struct - individual field definitions, one record per field
+	user_extended - actual field data, one record per user
+	
+//TODO: Should user_extended_validate_entry() ckech DB for DB-type fields?
 
 */
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
 
 class e107_user_extended
 {
@@ -38,20 +36,22 @@ class e107_user_extended
 	var $extended_xml;
 	var $typeArray;
 	var $reserved_names;
+	var	$fieldDefinitions;			// Array initialised from DB by constructor
+	var $nameIndex;					// Array for field name lookup - initialised by constructor
 
 	function e107_user_extended()
 	{
-	  define('EUF_TEXT',1);
-	  define('EUF_RADIO',2);
-	  define('EUF_DROPDOWN',3);
-	  define('EUF_DB_FIELD',4);
-	  define('EUF_TEXTAREA',5);
-	  define('EUF_INTEGER',6);
-	  define('EUF_DATE',7);
-	  define('EUF_LANGUAGE',8);
-	  define('EUF_PREDEFINED',9);
+		define('EUF_TEXT',1);
+		define('EUF_RADIO',2);
+		define('EUF_DROPDOWN',3);
+		define('EUF_DB_FIELD',4);
+		define('EUF_TEXTAREA',5);
+		define('EUF_INTEGER',6);
+		define('EUF_DATE',7);
+		define('EUF_LANGUAGE',8);
+		define('EUF_PREDEFINED',9);
 
-	  $this->typeArray = array(
+		$this->typeArray = array(
 			'text' => 1,
 			'radio' => 2,
 			'dropdown' => 3,
@@ -61,19 +61,19 @@ class e107_user_extended
 			'date' => 7,
 			'language' => 8,
 			'list' => 9
-	  );
+		);
 
-	  $this->user_extended_types = array(
-		1 => UE_LAN_1,
-		2 => UE_LAN_2,
-		3 => UE_LAN_3,
-		4 => UE_LAN_4,
-		5 => UE_LAN_5,
-		6 => UE_LAN_6,
-		7 => UE_LAN_7,
-		8 => UE_LAN_8,
-		9 => UE_LAN_9
-	  );
+		$this->user_extended_types = array(
+			1 => UE_LAN_1,
+			2 => UE_LAN_2,
+			3 => UE_LAN_3,
+			4 => UE_LAN_4,
+			5 => UE_LAN_5,
+			6 => UE_LAN_6,
+			7 => UE_LAN_7,
+			8 => UE_LAN_8,
+			9 => UE_LAN_9
+		);
 
 		//load array with field names from main user table, so we can disallow these
 		// user_new, user_timezone deleted for 0.8
@@ -86,12 +86,81 @@ class e107_user_extended
 		'xup'
 		);
 
+		$this->fieldDefinitions = $this->user_extended_get_fieldList();			// Assume that we'll need these if an object has been instantiated
+		$this->nameIndex = array();
+		foreach ($this->fieldDefinitions as $k => $v)
+		{
+			$this->nameIndex['user_'.$v['user_extended_struct_name']] = $k;			// Create name to ID index
+		}
 	}
 
 	function user_extended_reserved($name)
 	{
 	  return (in_array($name, $this->reserved_names));
 	}
+
+
+	// Adds the _FIELD_TYPES array to the data, ready for saving in the DB.
+	function addFieldTypes(&$target)
+	{
+		$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
+		foreach ($target['data'] as $k => $v)
+		{
+			if (isset($this->nameIndex[$k]))
+			{
+				switch ($this->fieldDefinitions[$this->nameIndex[$k]]['user_extended_struct_type'])
+				{
+					case EUF_TEXT :
+					case EUF_DB_FIELD :
+					case EUF_TEXTAREA :
+					case EUF_DROPDOWN :
+					case EUF_DATE :
+					case EUF_LANGUAGE :
+					case EUF_PREDEFINED :
+						$target['_FIELD_TYPES'][$k] = 'todb';
+						break;
+					case EUF_RADIO :
+					case EUF_INTEGER :
+						$target['_FIELD_TYPES'][$k] = 'int';
+						break;
+				}
+			}
+		}
+	}
+
+
+	// For all UEFs not in the target array, adds the default value
+	// Also updates the _FIELD_TYPES array, so call this last thing before writing to the DB
+	function addDefaultFields(&$target)
+	{
+		$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
+		foreach ($this->fieldDefinitions as $k => $defs)
+		{
+			$f = 'user_'.$defs['user_extended_struct_name'];
+			if (!isset($target['data'][$f]))
+			{
+				switch ($this->fieldDefinitions[$k]['user_extended_struct_type'])
+				{
+					case EUF_TEXT :
+					case EUF_DB_FIELD :
+					case EUF_TEXTAREA :
+					case EUF_DROPDOWN :
+					case EUF_DATE :
+					case EUF_LANGUAGE :
+					case EUF_PREDEFINED :
+						$target['data'][$f] = $this->fieldDefinitions[$k]['user_extended_struct_default'];
+						$target['_FIELD_TYPES'][$f] = 'todb';
+						break;
+					case EUF_RADIO :
+					case EUF_INTEGER :
+						$target['data'][$f] = $this->fieldDefinitions[$k]['user_extended_struct_default'];
+						$target['_FIELD_TYPES'][$f] = 'int';
+						break;
+				}
+			}
+		}
+	}
+
 
 
 	// Validate a single extended user field
@@ -101,7 +170,7 @@ class e107_user_extended
 	function user_extended_validate_entry($val, $params)
 	{
 		global $tp;
-		$parms = explode("^,^", $params['user_extended_struct_parms']);
+		$parms = explode('^,^', $params['user_extended_struct_parms']);
 		$requiredField = $params['user_extended_struct_required'] == 1;
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
@@ -127,10 +196,9 @@ class e107_user_extended
 	function userExtendedValidateAll($inArray, $hideArray)
 	{
 		global $tp;
-		$extList = $this->user_extended_get_fieldList();			// Filter this more later
 		$eufVals = array();		// 'Answer' array
 		$hideFlags = array();
-		foreach ($extList as $k => $defs)
+		foreach ($this->fieldDefinitions as $k => $defs)
 		{
 			$f = 'user_'.$defs['user_extended_struct_name'];
 			if (isset($inArray[$f]))
@@ -149,7 +217,7 @@ class e107_user_extended
 				}
 				elseif (!$err)
 				{
-					$eufVals['validate'][$f] = $tp->toDB($val);
+					$eufVals['data'][$f] = $tp->toDB($val);
 				}
 				if (isset($hideArray[$f]))
 				{
@@ -162,7 +230,7 @@ class e107_user_extended
 		{
 			$hidden_fields = "^".$hidden_fields."^";
 		}
-		$eufVals['validate']['user_hidden_fields'] = $hidden_fields;
+		$eufVals['data']['user_hidden_fields'] = $hidden_fields;
 		return $eufVals;
 	}
 
@@ -205,7 +273,7 @@ class e107_user_extended
 		return $ret;
 	}
 
-	// Get the definition of all fields, or those in a specific category, indexed by field ID
+	// Get the definition of all fields, or those in a specific category, indexed by field ID (or some other field by specifying $indexField)
 	function user_extended_get_fieldList($cat = "", $indexField = 'user_extended_struct_id')
 	{
 		global $sql;
@@ -221,6 +289,7 @@ class e107_user_extended
 	}
 
 
+	// Return the field creation text for a definition
 	function user_extended_type_text($type, $default)
 	{
 	  global $tp;
@@ -393,17 +462,6 @@ class e107_user_extended
 	  }
 
 
-/*
-	  define('EUF_TEXT',1);
-	  define('EUF_RADIO',2);
-	  define('EUF_DROPDOWN',3);
-	  define('EUF_DB_FIELD',4);
-	  define('EUF_TEXTAREA',5);
-	  define('EUF_INTEGER',6);
-	  define('EUF_DATE',7);
-	  define('EUF_LANGUAGE',8);
-	  define('EUF_PREDEFINED',9);
-*/
 	  switch($struct['user_extended_struct_type'])
 	  {
 		case EUF_TEXT :  //textbox
@@ -562,19 +620,19 @@ class e107_user_extended
 				$item['include_text'] = '';
 			}
 			$info = array(
-								"name" 			=> $item['@attributes']['name'],
-								"text" 			=> "UE_LAN_".strtoupper($item['@attributes']['name']),
-								"type" 			=> $item['type'],
-								"values" 		=> $item['values'],
-								"default" 		=> $item['default'],
-								"required" 		=> $item['required'],
-								"read" 			=> $item['read'],
-								"write" 			=> $item['write'],
-								"applicable" 	=> $item['applicable'],
-								"include_text"	=> $item['include_text'],
-								"parms"			=> $item['include_text'],
-								"regex" 			=> $item['regex']
-							 );
+						"name" 			=> $item['@attributes']['name'],
+						"text" 			=> "UE_LAN_".strtoupper($item['@attributes']['name']),
+						"type" 			=> $item['type'],
+						"values" 		=> $item['values'],
+						"default" 		=> $item['default'],
+						"required" 		=> $item['required'],
+						"read" 			=> $item['read'],
+						"write"			=> $item['write'],
+						"applicable" 	=> $item['applicable'],
+						"include_text"	=> $item['include_text'],
+						"parms"			=> $item['include_text'],
+						"regex" 		=> $item['regex']
+					);
 			if(is_array($item['default']) && $item['default'] == '')
 			{
 				$info['default'] = 0;

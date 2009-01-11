@@ -9,8 +9,8 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-01-04 16:00:19 $
+ * $Revision: 1.32 $
+ * $Date: 2009-01-11 21:06:46 $
  * $Author: e107steved $
  *
 */
@@ -444,8 +444,8 @@ if (isset($_POST['register']))
 		$userMethods->userValidation($allData);														// Do user-specific DB checks
 		if (!isset($allData['errors']['user_password']))
 		{	// No errors in password - keep it outside the main data array
-			$savePassword = $allData['validate']['user_password'];
-			unset($allData['validate']['user_password']);						// Delete the password value in the output array
+			$savePassword = $allData['data']['user_password'];
+			unset($allData['data']['user_password']);						// Delete the password value in the output array
 		}
 		unset($_POST['password1']);					// Restrict the scope of this
 		unset($_POST['password2']);
@@ -470,7 +470,7 @@ if (isset($_POST['register']))
 			{
 				$allData['errors']['user_email'] = ERR_GENERIC;
 				$allData['errortext']['user_email'] =  LAN_SIGNUP_38;
-				unset($allData['validate']['user_email']);
+				unset($allData['data']['user_email']);
 			}
 		}
 	
@@ -481,7 +481,7 @@ if (isset($_POST['register']))
 	
 		foreach($signup_option_names as $key => $value)
 		{
-			if ($pref['signup_option_'.$value] == 2 && !isset($alldata['validate']['user_'.$value]) && !isset($alldata['errors']['user_'.$value]))
+			if ($pref['signup_option_'.$value] == 2 && !isset($alldata['data']['user_'.$value]) && !isset($alldata['errors']['user_'.$value]))
 			{
 				$alldata['errors']['user_'.$value] = ERR_GENERIC;
 				$alldata['errortext']['user_'.$value] = str_replace('--SOMETHING--',$signup_option_title[$key],LAN_USER_75);
@@ -526,8 +526,8 @@ if (isset($_POST['register']))
 	// ========== End of verification.. ==============
 	// If no errors, we can enter the new member in the DB
 	// At this point we have two data arrays:
-	//		$allData['validate'] - the 'core' user data
-	//		$eufVals['validate'] - any extended user fields
+	//		$allData['data'] - the 'core' user data
+	//		$eufVals['data'] - any extended user fields
 
 	if (!$error)
 	{
@@ -546,13 +546,13 @@ if (isset($_POST['register']))
 
 
 		$u_key = md5(uniqid(rand(), 1));					// Key for signup completion
-		$allData['validate']['user_sess'] = $u_key;			// Validation key
+		$allData['data']['user_sess'] = $u_key;			// Validation key
 
 		// Work out all user classes
 		$intClasses = array();
 		if (isset($pref['initial_user_classes'])) { $initClasses = explode(',',$pref['initial_user_classes']); }	 // Any initial user classes to be set at some stage
 		$classList = array();
-		if (isset($allData['validate']['user_class'])) { $classList = explode(',',$allData['validate']['user_class']); }	// Classes entered by user during signup
+		if (isset($allData['data']['user_class'])) { $classList = explode(',',$allData['data']['user_class']); }	// Classes entered by user during signup
 		if (varsettrue($pref['user_new_period']))
 		{
 			$classList[] = e_UC_NEWUSER;		// Probationary user class
@@ -564,40 +564,44 @@ if (isset($_POST['register']))
 		$classList = array_unique($classList);
 		if (count($classList))
 		{
-			$allData['validate']['user_class'] = implode(',',$classList);
+			$allData['data']['user_class'] = implode(',',$classList);
 		}
 
 		if ($pref['user_reg_veri'])
 		{
-			$allData['validate']['user_ban'] = USER_REGISTERED_NOT_VALIDATED;
+			$allData['data']['user_ban'] = USER_REGISTERED_NOT_VALIDATED;
 		}
 		else
 		{
-			$allData['validate']['user_ban'] = USER_VALIDATED;
+			$allData['data']['user_ban'] = USER_VALIDATED;
 		}
 		// Work out data to be written to user audit trail
 		$signup_data = array('user_name', 'user_loginname', 'user_email', 'user_ip');
 		foreach (array() as $f)
 		{
-			$signup_data[$f] = $allData['validate'][$f];		// Just copy across selected fields
+			$signup_data[$f] = $allData['data'][$f];		// Just copy across selected fields
 		}
 
-		$allData['validate']['user_password'] = $userMethods->HashPassword($savePassword,$allData['validate']['user_loginname']);
+		$allData['data']['user_password'] = $userMethods->HashPassword($savePassword,$allData['data']['user_loginname']);
 		if (varsettrue($pref['allowEmailLogin']))
 		{  // Need to create separate password for email login
-			$allData['validate']['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $allData['validate']['user_email'])));
+			$allData['data']['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $allData['data']['user_email'])));
 		}
 
-		$allData['validate']['user_join'] = time();
+		$allData['data']['user_join'] = time();
 
 		// Actually write data to DB
-		$nid = $sql->db_Insert("user", $allData['validate']);
-		if (isset($eufVals['validate']) && count($eufVals['validate']))
+		validatorClass::addFieldTypes($userMethods->userVettingInfo,$allData);
+		$nid = $sql->db_Insert('user', $allData);
+		if (isset($eufVals['data']) && count($eufVals['data']))
 		{
+			$usere->addFieldTypes($eufVals);		// Add in the data types for storage
+			$eufVals['WHERE'] = '`user_extended_id` = '.intval($nid);
+			//$usere->addDefaultFields($eufVals);		// Add in defaults for anything not explicitly set (commented out for now - will slightly modify behaviour)
 			$sql->db_Select_gen("INSERT INTO `#user_extended` (user_extended_id) values ('{$nid}')");
-			$sql->db_UpdateArray("user_extended", $eufVals['validate']." WHERE `user_extended_id` = ".intval($nid));
+			$sql->db_Update('user_extended', $eufVals);
 		}
-		if (SIGNUP_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['validate'],$eufVals) ,FALSE,LOG_TO_ROLLING);
+		if (SIGNUP_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
 
 		// Log to user audit log if enabled
 		$signup_data['user_id'] = $nid;
@@ -616,7 +620,7 @@ if (isset($_POST['register']))
 		$adviseLoginName = '';
 		if (varsettrue($pref['predefinedLoginName']))
 		{
-			$adviseLoginName = LAN_SIGNUP_65.': '.$allData['validate']['user_loginname'].'<br />'.LAN_SIGNUP_66.'<br />';
+			$adviseLoginName = LAN_SIGNUP_65.': '.$allData['data']['user_loginname'].'<br />'.LAN_SIGNUP_66.'<br />';
 		}
 
 
@@ -624,11 +628,11 @@ if (isset($_POST['register']))
 		{	// Verification required (may be by email or by admin)
 
 			// ========== Send Email =========>
-			if (($pref['user_reg_veri'] != 2) && $allData['validate']['user_email'])		// Don't send if email address blank - means that its not compulsory
+			if (($pref['user_reg_veri'] != 2) && $allData['data']['user_email'])		// Don't send if email address blank - means that its not compulsory
 			{
-				$allData['validate']['user_id'] = $nid;					// User ID
-				$allData['validate']['user_password'] = $savePassword;	// Might need to send plaintext password in the email
-                $eml = render_email($allData['validate']);
+				$allData['data']['user_id'] = $nid;					// User ID
+				$allData['data']['user_password'] = $savePassword;	// Might need to send plaintext password in the email
+                $eml = render_email($allData['data']);
 				$mailheader_e107id = $eml['userid'];
 				require_once(e_HANDLER."mail.php");
 
@@ -643,7 +647,7 @@ if (isset($_POST['register']))
 			require_once(HEADERF);
 			if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 			{
-				$text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $allData['validate']['user_loginname'], $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
+				$text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $allData['data']['user_loginname'], $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
 			}
 			else
 			{
@@ -668,7 +672,7 @@ if (isset($_POST['register']))
 		{	// User can be signed up immediately
 			require_once(HEADERF);
 
-			if(!$sql -> db_Select("user", "user_id", "user_loginname='".$allData['validate']['user_loginname']."' AND user_password='".$allData['validate']['user_password']."'"))
+			if(!$sql -> db_Select("user", "user_id", "user_loginname='".$allData['data']['user_loginname']."' AND user_password='".$allData['data']['user_password']."'"))
 			{	// Error looking up newly created user
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
@@ -694,7 +698,7 @@ if (isset($_POST['register']))
 	{	// 'Recirculate' selected values so they are retained on the form when an error occurs
 		foreach (array('user_class') as $a)
 		{
-			$signupData[$a] = $tp->toForm(varset($allData['validate'][$a],''));
+			$signupData[$a] = $tp->toForm(varset($allData['data'][$a],''));
 		}
 	}
 }

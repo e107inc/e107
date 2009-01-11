@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.32 $
- * $Date: 2008-12-29 11:00:16 $
+ * $Revision: 1.33 $
+ * $Date: 2009-01-11 21:06:46 $
  * $Author: e107steved $
  *
 */
@@ -167,8 +167,8 @@ if (isset($_POST['updatesettings']))
 	{	// Need to validate new password here
 		if (!isset($allData['errors']['user_password']))
 		{	// No errors in password yet - may be valid
-			$savePassword = $allData['validate']['user_password'];
-			unset($allData['validate']['user_password']);		// Delete the password value in the output array
+			$savePassword = $allData['data']['user_password'];
+			unset($allData['data']['user_password']);		// Delete the password value in the output array
 		}
 	}
 	else
@@ -180,7 +180,7 @@ if (isset($_POST['updatesettings']))
 	unset($_POST['password2']);
 
 
-	$changedUserData = validatorClass::findChanges($allData['validate'], $udata,FALSE);
+	$changedUserData = validatorClass::findChanges($allData['data'], $udata,FALSE);
 
 
 	// Login Name checks - only admin can change login name
@@ -223,7 +223,7 @@ if (isset($_POST['updatesettings']))
 	if (isset($_POST['ue']))
 	{
 		$eufVals = $ue->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],array()));		// Validate the extended user fields
-		$changedEUFData = validatorClass::findChanges($eufVals['validate'], $udata,FALSE);
+		$changedEUFData['data'] = validatorClass::findChanges($eufVals['data'], $udata,FALSE);
 	}
 
 	// Determine whether we have an error
@@ -231,7 +231,7 @@ if (isset($_POST['updatesettings']))
 
 
 	// Update Userclass - only if its the user changing their own data (admins can do it another way)
-	if (isset($allData['validate']['user_class']))
+	if (isset($allData['data']['user_class']))
 	{
 		unset($changedUserData['user_class']);		// We always recalculate this
 		if (FALSE === $adminEdit)
@@ -243,10 +243,10 @@ if (isset($_POST['updatesettings']))
 			$ucList = $e_userclass->get_editable_classes(USERCLASS_LIST,TRUE);	 // List of classes which this user can edit
 			if (count($ucList))
 			{
-				$nid = $e_userclass->mergeClassLists($udata['user_class'], $ucList, $allData['validate']['user_class'], TRUE);
+				$nid = $e_userclass->mergeClassLists($udata['user_class'], $ucList, $allData['data']['user_class'], TRUE);
 				$nid = $e_userclass->stripFixedClasses($nid);
 				$nid = implode(',',$nid);
-				//	echo "Userclass data - new: {$nid}, old: {$udata['user_baseclasslist']}, editable: ".implode(',',$ucList).", entered: {$allData['validate']['user_class']}<br />";
+				//	echo "Userclass data - new: {$nid}, old: {$udata['user_baseclasslist']}, editable: ".implode(',',$ucList).", entered: {$allData['data']['user_class']}<br />";
 				if ($nid != $udata['user_baseclasslist'])
 				{
 					if (US_DEBUG)
@@ -335,7 +335,7 @@ unset($_POST['SaveValidatedInfo']);
 // At this point we know the error status.
 // $changedUserData has an array of core changed data, except password, which is in $savePassword if changed (or entered as confirmation).
 // $eufData has extended user field data
-$dataToSave = !$error && (isset($changedUserData) && count($changedUserData)) || (isset($changedEUFData) && count($changedEUFData)) || $savePassword;
+$dataToSave = !$error && (isset($changedUserData) && count($changedUserData)) || (isset($changedEUFData['data']) && count($changedEUFData['data'])) || $savePassword;
 
 if ($dataToSave)
 {
@@ -377,8 +377,12 @@ if ($dataToSave && !$promptPassword)
 	if (US_DEBUG) { $admin_log->e_log_event(10, debug_backtrace(), "DEBUG", "Usersettings test", "Changed data:<br /> ".var_export($changedUserData, true), false, LOG_TO_ROLLING); }
 	if (isset($changedUserData) && count($changedUserData))
 	{
-		//print_a($changedUserData);
-		if (FALSE === $sql->db_UpdateArray('user', $changedUserData, ' WHERE user_id='.intval($inp)))
+		$changedData['data'] = $changedUserData;
+		$changedData['WHERE'] = 'user_id='.intval($inp);
+		validatorClass::addFieldTypes($userMethods->userVettingInfo,$changedData);
+
+		//print_a($changedData);
+		if (FALSE === $sql->db_Update('user', $changedData))
 		{
 			$message .= '<br />Error updating user data';
 		}
@@ -393,11 +397,15 @@ if ($dataToSave && !$promptPassword)
 	}
 
 	// Save extended field values
-	if (isset($changedEUFData) && count($changedEUFData))
+	if (isset($changedEUFData['data']) && count($changedEUFData['data']))
 	{
+		$ue->addFieldTypes($changedEUFData);				// Add in the data types for storage
+		$changedEUFData['WHERE'] = '`user_extended_id` = '.intval($inp);
+
+		//print_a($changedEUFData);
 		// ***** Next line creates a record which presumably should be there anyway, so could generate an error
 		$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".intval($inp)."', '')");
-		if (!$sql->db_UpdateArray('user_extended', $changedEUFData,' WHERE user_extended_id = '.$inp))
+		if (!$sql->db_Update('user_extended', $changedEUFData))
 		{
 			$message .= '<br />Error updating EUF';
 		}

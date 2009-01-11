@@ -9,9 +9,9 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.13 $
- * $Date: 2008-12-22 03:15:04 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.14 $
+ * $Date: 2009-01-11 21:06:52 $
+ * $Author: e107steved $
  *
 */
 define("USRLAN_1", "Options Saved.");
@@ -80,7 +80,7 @@ define("USRLAN_66", "That display name already exists in the database, please ch
 define("USRLAN_67", "The two passwords do not match");
 define("USRLAN_68", "You left required field(s) blank");
 define("USRLAN_69", "That doesn't appear to be a valid email address");
-define("USRLAN_70", "User created");
+//define("USRLAN_70", "User created");
 define("USRLAN_71", "Users Front Page");
 define("USRLAN_72", "Quick Add User");
 define("USRLAN_73", "Prune Users");
