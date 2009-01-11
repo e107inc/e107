@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.26 $
-* $Date: 2009-01-11 21:06:46 $
+* $Revision: 1.27 $
+* $Date: 2009-01-11 22:11:19 $
 * $Author: e107steved $
 *
 */
@@ -43,7 +43,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 	exit;
 }
 
-var_dump($_POST);
+//var_dump($_POST);
 if(isset($_POST['updateRanks']))
 {
 	updateRanks();

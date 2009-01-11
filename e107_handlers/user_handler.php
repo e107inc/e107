@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-01-11 21:06:46 $
+ * $Revision: 1.8 $
+ * $Date: 2009-01-11 22:11:19 $
  * $Author: e107steved $
  *
 */
@@ -113,6 +113,19 @@ class UserHandler
 			'user_perms'		=> LAN_USER_23,
 			'user_pwchange'		=> LAN_USER_24
 //			user_chats int(10) unsigned NOT NULL default '0',
+			);
+		$this->otherFieldTypes = array(
+			'user_join'			=> 'int',
+			'user_lastvisit'	=> 'int',
+			'user_currentvisit'	=> 'int',
+			'user_comments'		=> 'int',
+			'user_ip'			=> 'string',
+			'user_ban'			=> 'int',
+			'user_prefs'		=> 'string',
+			'user_visits'		=> 'int',
+			'user_admin'		=> 'int',
+			'user_perms'		=> 'string',
+			'user_pwchange'		=> 'int'
 			);
 
 	  $this->passwordOpts = varset($pref['passwordEncoding'],0);
