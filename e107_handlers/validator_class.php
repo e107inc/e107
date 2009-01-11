@@ -9,8 +9,8 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-01-11 21:06:46 $
+ * $Revision: 1.6 $
+ * $Date: 2009-01-11 22:11:19 $
  * $Author: e107steved $
  *
 */
@@ -397,7 +397,7 @@ class validatorClass
 
 	// Adds the _FIELD_TYPES array to the data, ready for saving in the DB.
 	// $fieldList is the standard definition array
-	function addFieldTypes($fieldList, &$target)
+	function addFieldTypes($fieldList, &$target, $auxList=FALSE)
 	{
 		$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
 		foreach ($target['data'] as $k => $v)
@@ -405,6 +405,10 @@ class validatorClass
 			if (isset($fieldList[$k]) && isset($fieldList[$k]['fieldType']))
 			{
 				$target['_FIELD_TYPES'][$k] = $fieldList[$k]['fieldType'];
+			}
+			elseif (is_array($auxList) && isset($auxList[$k]))
+			{
+				$target['_FIELD_TYPES'][$k] = $auxList[$k];
 			}
 		}
 	}
