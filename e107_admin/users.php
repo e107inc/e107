@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.24 $
-* $Date: 2009-01-02 20:04:07 $
-* $Author: e107steved $
+* $Revision: 1.25 $
+* $Date: 2009-01-11 04:13:01 $
+* $Author: mcfly_e107 $
 *
 */
 require_once('../class2.php');
@@ -43,6 +43,11 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 	exit;
 }
 
+var_dump($_POST);
+if(isset($_POST['updateRanks']))
+{
+	updateRanks();
+}
 
 $e_sub_cat = 'users';
 $user = new users;
@@ -1437,12 +1442,33 @@ function users_adminmenu()
 	$user->show_options($action);
 }
 
+function updateRanks()
+{
+	$config = array();
+	$config['calc'] = '';
+	foreach($_POST['op'] as $f => $o)
+	{
+		$config['config'][$f]['op'] = $o;
+		$config['config'][$f]['val'] = varset($_POST['val'][$f], '');
+		
+		if($_POST['val'][$f])
+		{
+			$config['fields'][] = $f;
+			$config['calc'] .= ($config['calc'] ? ' + ' : '');
+			$config['calc'] .= '({'.$f.'} '." $o {$_POST['val'][$f]}".' )';
+		}
+	}
+	var_dump($config);	
+}
+
 function show_ranks()
 {
 	$e107 = e107::getInstance();
 	include_once(e_HANDLER.'file_class.php');
 	$f = new e_file;
 	$imageList = $f->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
+	include_once(e_HANDLER.'level_handler.php');
+	$ranks = new e017UserRank;
 	
 	$fieldList = array('core' => array(), 'extended' => array());
 
@@ -1462,6 +1488,7 @@ function show_ranks()
 	}
 
 	$text .= "
+	<form method='post'>
 	<table style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='label'>Source</td>
@@ -1477,14 +1504,13 @@ function show_ranks()
 		<td class='label'>Core</td>
 		<td class='label'>{$f}</td>
 		<td class='control'>
-			<select name='op_{$k}' class='tbox'>
+			<select name='op[{$k}]' class='tbox'>
 			<option value='*'>*</option>
-			<option value='/'>/</option>
 			<option value='+'>+</option>
 			<option value='-'>-</option>
 			</select>
 		</td>
-		<td class='control'><input type='text' class='tbox' name='val_{$f}' size='3' maxlength='3'></td>
+		<td class='control'><input type='text' class='tbox' name='val[{$k}]' size='3' maxlength='3'></td>
 		</tr>
 		";
 	}
@@ -1500,14 +1526,13 @@ function show_ranks()
 			<td class='label'>Plugin</td>
 			<td class='label'>{$f}</td>
 			<td class='control'>
-				<select name='op_{$f}' class='tbox'>
+				<select name='op[{$f}]' class='tbox'>
 				<option value='*'>*</option>
-				<option value='/'>/</option>
 				<option value='+'>+</option>
 				<option value='-'>-</option>
 				</select>
 		</td>
-			<td class='control'><input type='text' class='tbox' name='val_{$f}' size='3' maxlength='3'></td>
+			<td class='control'><input type='text' class='tbox' name='val[{$f}]' size='3' maxlength='3' value=''></td>
 			</tr>
 			";
 		}
@@ -1527,35 +1552,56 @@ function show_ranks()
 	
 	<tr>
 		<td class='control'>Main Site Admin</td>
-		<td class='control'><input class='tbox' type='text' name='main_admin' value='Main Site Admin'></td>
+		<td class='control'><input class='tbox' type='text' name='main_admin[name]' value='Main Site Admin'></td>
 		<td class='control'>N/A</td>
-		<td class='control'><input type='checkbox' name='main_admin_pfx' value='1'></td>
-		<td class='control'>".RankImageDropdown($imageList, 'main_admin_img')."</td>
+		<td class='control'><input type='checkbox' name='main_admin[pfx]' value='1'></td>
+		<td class='control'>".RankImageDropdown($imageList, 'main_admin[img]')."</td>
 	</tr>
 	
 	<tr>
 		<td class='control'>Site Admin</td>
-		<td class='control'><input class='tbox' type='text' name='admin' value='Main Site Admin'></td>
+		<td class='control'><input class='tbox' type='text' name='admin[name]' value='Main Site Admin'></td>
 		<td class='control'>N/A</td>
-		<td class='control'><input type='checkbox' name='admin_pfx' value='1'></td>
-		<td class='control'>".RankImageDropdown($imageList, 'admin_img')."</td>
+		<td class='control'><input type='checkbox' name='admin[pfx]' value='1'></td>
+		<td class='control'>".RankImageDropdown($imageList, 'admin[img]')."</td>
 	</tr>
 	<tr>
 		<td colspan='5'>&nbsp;</td>
 	</tr>
 	";
 	
+	foreach($ranks->ranks['data'] as $k => $r)
+	{
+		$pfx_checked = ($r['lan_pfx'] ? "selected='selected'" : '');
+		$text .= "
+		<tr>
+			<td class='control'>User Rank</td>
+			<td class='control'><input class='tbox' type='text' name='calc_name[$k]' value='{$r['name']}'></td>
+			<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}'></td>
+			<td class='control'><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked}></td>
+			<td class='control'>".RankImageDropdown($imageList, 'calc_img[$k]', $r['image'])."</td>
+		</tr>
+		";
+	}
+	
+
 	$text .= "
 	<tr>
-		<td class='control'>Calculated Rank</td>
-		<td class='control'><input class='tbox' type='text' name='calc_name[0]' value=''></td>
-		<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[0]' value=''></td>
-		<td class='control'><input type='checkbox' name='calc_pfx[0]' value='1'></td>
-		<td class='control'>".RankImageDropdown($imageList, 'calc_img[0]')."</td>
+		<td class='control'>Add new Rank</td>
+		<td class='control'><input class='tbox' type='text' name='new_calc_name' value=''></td>
+		<td class='control'><input class='tbox' type='text' size='5' name='new_calc_lower' value=''></td>
+		<td class='control'><input type='checkbox' name='new_calc_pfx' value='1'></td>
+		<td class='control'>".RankImageDropdown($imageList, 'new_calc_img')."</td>
+	</tr>
+	<tr>
+		<td colspan='5' style='text-align:center'>
+			<br />
+			<input type='submit' name='updateRanks' value='Update Ranks' />
+		</td>
 	</tr>
 	";	
 
-	$text .= "</table>";
+	$text .= '</table></form>';
 	$e107->ns->tablerender('Ranks', $text);
 
 
@@ -1566,7 +1612,10 @@ function show_ranks()
 
 function RankImageDropdown(&$imgList, $field, $curVal='')
 {
-	$ret = "<select class='tbox' name='{$field}'>";
+	$ret = "
+	<select class='tbox' name='{$field}'>
+	<option value=''>--select image--</option>
+	";
 	foreach($imgList as $img)
 	{
 		$sel = ($img['fname'] == $curVal ? "selected='selected'" : '');
