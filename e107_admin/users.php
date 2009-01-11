@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.25 $
-* $Date: 2009-01-11 04:13:01 $
-* $Author: mcfly_e107 $
+* $Revision: 1.26 $
+* $Date: 2009-01-11 21:06:46 $
+* $Author: e107steved $
 *
 */
 require_once('../class2.php');
@@ -229,14 +229,14 @@ if (isset($_POST['adduser']))
 	$userMethods->userValidation($allData);														// Do user-specific DB checks
 	if (!isset($allData['errors']['user_password']))
 	{	// No errors in password - keep it outside the main data array
-		$savePassword = $allData['validate']['user_password'];
-		unset($allData['validate']['user_password']);						// Delete the password value in the output array
+		$savePassword = $allData['data']['user_password'];
+		unset($allData['data']['user_password']);						// Delete the password value in the output array
 	}
 	unset($_POST['password1']);					// Restrict the scope of this
 	unset($_POST['password2']);
-	if (!check_class($pref['displayname_class'], $allData['validate']['user_class']))
+	if (!check_class($pref['displayname_class'], $allData['data']['user_class']))
 	{
-		if ($allData['validate']['user_name'] != $allData['validate']['user_loginname'])
+		if ($allData['data']['user_name'] != $allData['data']['user_loginname'])
 		{
 			$allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
 		}
@@ -251,7 +251,7 @@ if (isset($_POST['adduser']))
 	}
 
 	// Always save some of the entered data - then we can redisplay on error
-	$user_data = $allData['validate'];
+	$user_data = &$allData['data'];
 
 	if (!$error)
 	{
@@ -267,7 +267,8 @@ if (isset($_POST['adduser']))
 			$user_data['user_class'] = user_class::ucAdd(e_UC_NEWUSER, $user_data['user_class']);		// Probationary user class
 		}
 		$userMethods->addNonDefaulted($user_data);
-		if (admin_update($sql -> db_Insert("user", $user_data), 'insert', USRLAN_70))
+		validatorClass::addFieldTypes($userMethods->userVettingInfo,$allData);
+		if ($sql -> db_Insert('user', $allData))
 		{
 			// Add to admin log
 			$admin_log->log_event('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}",E_LOG_INFORMATIVE);

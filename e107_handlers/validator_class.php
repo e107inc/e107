@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-30 14:05:44 $
- * $Author: secretr $
+ * $Revision: 1.5 $
+ * $Date: 2009-01-11 21:06:46 $
+ * $Author: e107steved $
  *
 */
 
@@ -74,7 +74,7 @@ class validatorClass
 	function validateFields(&$sourceFields, &$definitions, $addDefaults = FALSE)
 	{
 		global $tp, $pref;
-		$ret = array('validate' => array(), 'failed' => array(), 'errors' => array());
+		$ret = array('data' => array(), 'failed' => array(), 'errors' => array());
 		foreach ($definitions as $dest => $defs)
 		{
 			$errNum = 0;			// Start with no error
@@ -85,7 +85,7 @@ class validatorClass
 				{
 					if (isset($defs['default']))
 					{
-						$ret['validate'] = $defs['default'];		// Set default value if one is specified
+						$ret['data'] = $defs['default'];		// Set default value if one is specified
 					} //...otherwise don't add the value at all
 				}
 				else
@@ -175,7 +175,7 @@ class validatorClass
 								$temp = array();
 								foreach ($value as $v)
 								{
-									$temp[] = intval($v);
+									if (ctype_digit(trim($v))) { $temp[] = intval($v); }
 								}
 								$value = implode(',',array_unique($temp));
 							}
@@ -248,7 +248,7 @@ class validatorClass
 								echo "Invalid dbClean method: {$defs['dbClean']}<br />";	// Debug message
 						}
 					}
-					$ret['validate'][$dest] = $value;			// Success!!
+					$ret['data'][$dest] = $value;			// Success!!
 				}
 			}
 			if ($errNum)
@@ -272,7 +272,7 @@ class validatorClass
 	// Validate data against a DB table
 	//  Inspects the passed array of user data (not necessarily containing all possible fields) and validates against the DB where appropriate.
 	//  Just skips over fields for which we don't have a validation routine without an error
-	//	The target array is as returned from validateFields(), so has 'validate', 'failed' and 'errors' first-level sub-arrays
+	//	The target array is as returned from validateFields(), so has 'data', 'failed' and 'errors' first-level sub-arrays
 	//  All the 'vetting methods' begin 'vet', and don't overlap with validateFields(), so the same definition array may be used for both
 	//	Similarly, error numbers don't overlap with validateFields()
 	//	Typically checks for unacceptable duplicates, banned users etc
@@ -298,7 +298,7 @@ class validatorClass
 		$allOK = TRUE;
 		$userID = intval($userID);			// Precautionary
 		if (!$targetTable) return FALSE;
-		foreach ($targetData['validate'] as $f => $v)
+		foreach ($targetData['data'] as $f => $v)
 		{
 			$errMsg = '';
 			if (isset($definitions[$f]))
@@ -369,7 +369,7 @@ class validatorClass
 			{	// Update the error
 				$targetData['errors'][$f] = $errMsg;
 				$targetData['failed'][$f] = $v;
-				unset($targetData['validate'][$f]);			// Remove the valid entry
+				unset($targetData['data'][$f]);			// Remove the valid entry
 				$allOK = FALSE;
 			}
 		}
@@ -385,7 +385,7 @@ class validatorClass
 		$allOK = TRUE;
 		foreach ($fields as $f)
 		{
-			if (!isset($target['validate'][$f]) && !isset($target['errors'][$f]))
+			if (!isset($target['data'][$f]) && !isset($target['errors'][$f]))
 			{
 				$allOK = FALSE;
 				$targetData['errors'][$f] = ERR_MISSING_VALUE;
@@ -393,6 +393,22 @@ class validatorClass
 		}
 		return $allOK;
 	}
+
+
+	// Adds the _FIELD_TYPES array to the data, ready for saving in the DB.
+	// $fieldList is the standard definition array
+	function addFieldTypes($fieldList, &$target)
+	{
+		$target['_FIELD_TYPES'] = array();		// We should always want to recreate the array, even if it exists
+		foreach ($target['data'] as $k => $v)
+		{
+			if (isset($fieldList[$k]) && isset($fieldList[$k]['fieldType']))
+			{
+				$target['_FIELD_TYPES'][$k] = $fieldList[$k]['fieldType'];
+			}
+		}
+	}
+
 
 
 	// Given two arrays, returns an array of those elements in $input which are different from the corresponding element in $refs.

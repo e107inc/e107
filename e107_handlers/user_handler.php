@@ -9,9 +9,9 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-30 14:05:44 $
- * $Author: secretr $
+ * $Revision: 1.7 $
+ * $Date: 2009-01-11 21:06:46 $
+ * $Author: e107steved $
  *
 */
 
@@ -86,18 +86,18 @@ class UserHandler
 		'enablePref'	- value is processed only if the named $pref evaluates to true; otherwise any input is discarded without error
 */
 	$this->userVettingInfo = array(
-		'user_name' => array('niceName'=> LAN_USER_01, 'vetMethod' => '1,2', 'vetParam' => 'signup_disallow_text', 'srcName' => 'username', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', fixedBlock => 'anonymous', 'minLength' => 2, 'maxLength' => varset($pref['displayname_maxlength'],15)),				// Display name
-		'user_loginname' => array('niceName'=> LAN_USER_02, 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
-		'user_login' => array('niceName'=> LAN_USER_03, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'realname', 'dbClean' => 'toDB'),				// Real name (no real vetting)
-		'user_customtitle' => array('niceName'=> LAN_USER_04, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'customtitle', 'dbClean' => 'toDB', 'enablePref' => 'signup_option_customtitle'),		// No real vetting
-		'user_password' => array('niceName'=> LAN_USER_05, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'dataType' => 2, 'minLength' => varset($pref['signup_pass_len'],1)),
-		'user_sess' => array('niceName'=> LAN_USER_06, 'vetMethod' => '0', 'vetParam' => '', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'image', 'imagePath' => e_FILE.'public/avatars/', 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Photo
-		'user_image' => array('niceName'=> LAN_USER_07, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'image', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'avatar', 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Avatar
-		'user_email' => array('niceName'=> LAN_USER_08, 'vetMethod' => '1,3', 'vetParam' => '', 'srcName' => 'email', 'dbClean' => 'toDB'),
-		'user_signature' => array('niceName'=> LAN_USER_09, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
-		'user_hideemail' => array('niceName'=> LAN_USER_10, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
-		'user_xup' => array('niceName'=> LAN_USER_11, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
-		'user_class' => array('niceName'=> LAN_USER_12, 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'class', 'dataType' => '1')
+		'user_name' => array('niceName'=> LAN_USER_01, 'fieldType' => 'string', 'vetMethod' => '1,2', 'vetParam' => 'signup_disallow_text', 'srcName' => 'username', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', fixedBlock => 'anonymous', 'minLength' => 2, 'maxLength' => varset($pref['displayname_maxlength'],15)),				// Display name
+		'user_loginname' => array('niceName'=> LAN_USER_02, 'fieldType' => 'string', 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
+		'user_login' => array('niceName'=> LAN_USER_03, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'realname', 'dbClean' => 'toDB'),				// Real name (no real vetting)
+		'user_customtitle' => array('niceName'=> LAN_USER_04, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'customtitle', 'dbClean' => 'toDB', 'enablePref' => 'signup_option_customtitle'),		// No real vetting
+		'user_password' => array('niceName'=> LAN_USER_05, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'dataType' => 2, 'minLength' => varset($pref['signup_pass_len'],1)),
+		'user_sess' => array('niceName'=> LAN_USER_06, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'image', 'imagePath' => e_FILE.'public/avatars/', 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Photo
+		'user_image' => array('niceName'=> LAN_USER_07, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'image', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'avatar', 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Avatar
+		'user_email' => array('niceName'=> LAN_USER_08, 'fieldType' => 'string', 'vetMethod' => '1,3', 'vetParam' => '', 'srcName' => 'email', 'dbClean' => 'toDB'),
+		'user_signature' => array('niceName'=> LAN_USER_09, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
+		'user_hideemail' => array('niceName'=> LAN_USER_10, 'fieldType' => 'int', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
+		'user_xup' => array('niceName'=> LAN_USER_11, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
+		'user_class' => array('niceName'=> LAN_USER_12, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'class', 'dataType' => '1')
 	);
 
 		$this->otherFields = array(
@@ -461,9 +461,9 @@ Following fields auto-filled in code as required:
 		global $e107, $pref;
 		$u_sql = new db;
 		$ret = TRUE;
-		if (isset($targetData['validate']['user_email']))
+		if (isset($targetData['data']['user_email']))
 		{
-			$v = trim($targetData['validate']['user_email']);		// Always check email address if its entered
+			$v = trim($targetData['data']['user_email']);		// Always check email address if its entered
 			if ($v == '')
 			{
 				$errMsg = ERR_MISSING_VALUE;
@@ -488,7 +488,7 @@ Following fields auto-filled in code as required:
 			}
 			if ($errMsg)
 			{
-				unset($targetData['validate']['user_email']);			// Remove the valid entry
+				unset($targetData['data']['user_email']);			// Remove the valid entry
 			}
 		}
 		else
