@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-01-07 15:34:00 $
+ * $Revision: 1.21 $
+ * $Date: 2009-01-12 12:05:55 $
  * $Author: secretr $
  *
 */
@@ -823,7 +823,8 @@ Object.extend(e107Helper, {
 	 * @see e107Core#addOnLoad
 	 */
     toggleObserver: function(event) {
-        Element.select(event.element(), '.e-expandit').invoke('observe', 'click', function(e) {
+    	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+        Element.select(element, '.e-expandit').invoke('observe', 'click', function(e) {
             var element = e.findElement('a');
             if(!element) element = e.element();
             if(this.toggle(element, {})) e.stop();
@@ -835,7 +836,8 @@ Object.extend(e107Helper, {
      * on all <a href='#something" class="scroll-to"> elements
      */
     scrollToObserver: function(event) {
-		Element.select(event.element(), 'a[href^=#].scroll-to:not([href=#])').invoke('observe', 'click', function(e) {
+    	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+		Element.select(element, 'a[href^=#].scroll-to:not([href=#])').invoke('observe', 'click', function(e) {
 			new Effect.ScrollTo(e.element().hash.substr(1));
 			e.stop();
 		});
@@ -859,7 +861,7 @@ Object.extend(e107Helper, {
     
     //event listener
     autoHide: function(event) {
-    	var hideunder = event.element() != document ? event.element() : $$('body')[0];
+    	var hideunder = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
         if(hideunder) hideunder.downHide();
     },
     
@@ -882,7 +884,7 @@ Object.extend(e107Helper, {
     
     //event listener
     autoNoHistory: function(event) {
-    	var down = event.element() != document ? event.element() : $$('body')[0];
+    	var down = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
         if(down) down.downNoHistory();
     },
     
@@ -904,7 +906,7 @@ Object.extend(e107Helper, {
     
     //event listener
 	autoExternalLinks: function (event) {
-		var down = event.element() != document ? event.element() : $$('body')[0];
+		var down = event.memo['element'] ? $(event.memo.element) : $$('body')[0]; 
 	    if(down) down.downExternalLinks();
 	}, 
 
@@ -2156,6 +2158,7 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 		var e_responder = {
 				onCreate: function(request) {
 					if(request.options['updateElement']) {
+						request.options.element = request.options.updateElement;
 						e107Event.trigger('ajax_update_before', request.options, request.options.updateElement);
 					}
 					if(request.options['overlayPage']){
@@ -2173,7 +2176,8 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 						e107Event.trigger('ajax_loading_element_end', request.options);
 					}
 					
-					if(request.options['updateElement']) {
+					if(request.options['updateElement']) { 
+						request.options.element = request.options.updateElement;
 						e107Event.trigger('ajax_update_after', request.options, request.options.updateElement); 
 					}
 				},
@@ -2568,6 +2572,6 @@ function sendInfo(handler, container, form) {
  * Core Auto-load
  */
 $w('autoExternalLinks autoNoHistory autoHide toggleObserver scrollToObserver').each( function(f) {
-	e107.runOnLoad(e107Helper[f].bindAsEventListener(e107Helper), null, true); 
+	e107.runOnLoad(e107Helper[f], null, true); 
 });
 

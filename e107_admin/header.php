@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.28 $
-|   $Date: 2009-01-09 17:25:50 $
+|   $Revision: 1.29 $
+|   $Date: 2009-01-12 12:05:55 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -300,7 +300,7 @@ echo "
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
 echo "document.observe('dom:loaded', function () {\n";
-echo "e107Event.trigger('loaded', {element: null}, document);\n";
+echo "e107Event.trigger('loaded', null, document);\n";
 echo "});\n";
 echo "// -->\n";
 echo "</script>\n";
