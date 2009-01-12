@@ -28,7 +28,7 @@ function theme_head() {
     	* TODO: add 'adminlist' class to all list core tables, allow theme decorate.
     	*/
         e107.runOnLoad( function(event) {
-        	var element = event.element() != document ? event.element() : $$('body')[0];
+        	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
 
             element.select('table.adminlist:not(.no-decorate)').each(function(element) {
             	e107Utils.Decorate.table(element, {tr_td: 'first last'});

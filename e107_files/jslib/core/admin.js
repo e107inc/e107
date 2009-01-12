@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.13 $
- * $Date: 2009-01-07 15:34:00 $
+ * $Revision: 1.14 $
+ * $Date: 2009-01-12 12:05:55 $
  * $Author: secretr $
  * 
 */
@@ -41,7 +41,7 @@ e107Admin.Helper = {
 		this.allCheckedEventHandler = this.allChecked.bindAsEventListener(this);
 		this.allUncheckedEventHandler = this.allUnchecked.bindAsEventListener(this);
 		this.allToggleCheckedEventHandler = this.allToggleChecked.bindAsEventListener(this);
-		element = event.element() != document ? event.element() : $$('body')[0];
+		element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
 		
 		element.select('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
 		element.select('button.action[name=check_all]', 'input.toggle_all[type=checkbox]').invoke('observe', 'click', this.allCheckedEventHandler);
