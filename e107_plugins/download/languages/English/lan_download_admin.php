@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/lan_download_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-01-11 02:59:10 $
+|     $Revision: 1.2 $
+|     $Date: 2009-01-13 00:46:23 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -109,7 +109,7 @@ define("DOWLAN_128", "Mirrors");
 define("DOWLAN_129", "leave blank if not using mirrors");
 define("DOWLAN_130", "Add another mirror");
 define("DOWLAN_131", "Select local file");
-define("DOWLAN_132", "Please enter mirror to use, then address to download");
+define("DOWLAN_132", "Please enter mirror to use, then address to download and filesize");
 
 define("DOWLAN_133", "Mirror updated in database");
 define("DOWLAN_134", "Mirror saved in database");
