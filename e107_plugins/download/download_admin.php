@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-01-11 02:59:10 $
+|     $Revision: 1.2 $
+|     $Date: 2009-01-13 00:43:54 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -21,10 +21,10 @@ $eplug_admin = true;
 define('DOWNLOAD_DEBUG',FALSE);
 
 require_once("../../class2.php");
-if (!getperms("R"))
+if (!getperms("P") || !plugInstalled('download'))
 {
 	header("location:".e_BASE."index.php");
-	exit;
+	exit() ;
 }
 
 include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/lan_download.php');
@@ -768,8 +768,8 @@ class download
 			{
 				if ($mirror)
 				{
-					list($mid, $murl, $mreq) = explode(",", $mirror);
-					$ret[$byID ? $mid : $count] = array('id' => $mid, 'url' => $murl, 'requests' => $mreq);
+					list($mid, $murl, $mreq, $msize) = explode(",", $mirror);
+					$ret[$byID ? $mid : $count] = array('id' => $mid, 'url' => $murl, 'requests' => $mreq, 'filesize' => $msize);
 					$count++;
 				}
 			}
@@ -785,7 +785,7 @@ class download
 		$inter = array();
 		foreach ($source as $s)
 		{
-			$inter[] = $s['id'].','.$s['url'].','.$s['requests'];
+			$inter[] = $s['id'].','.$s['url'].','.$s['requests'].','.$s['filesize'];
 		}
 		return implode(chr(1),$inter);
 	}
@@ -951,7 +951,8 @@ class download
 				}
 
 				$text .= "</select>
-				<input  class='tbox' type='text' name='download_mirror[]' style='width: 75%;' value=\"".$mirrorArray[($count-1)]['url']."\" maxlength='200' />";
+				<input  class='tbox' type='text' name='download_mirror[]' style='width: 60%;' value=\"".$mirrorArray[($count-1)]['url']."\" maxlength='200' />
+				<input  class='tbox' type='text' name='download_mirror_size[]' style='width: 15%;' value=\"".$mirrorArray[($count-1)]['filesize']."\" maxlength='10' />";
 				if (DOWNLOAD_DEBUG)
 				{
 					if ($id)
@@ -1341,9 +1342,10 @@ class download
 			{
 				$mid = trim($_POST['download_mirror_name'][$a]);
 				$murl = trim($_POST['download_mirror'][$a]);
+				$msize = trim($_POST['download_mirror_size'][$a]);
 				if ($mid && $murl)
 				{
-					$newMirrorArray[$mid] = array('id' => $mid, 'url' => $murl, 'requests' => 0);
+					$newMirrorArray[$mid] = array('id' => $mid, 'url' => $murl, 'requests' => 0, 'filesize' => $msize);
 					if (DOWNLOAD_DEBUG && !$id)
 					{
 						$newMirrorArray[$mid]['requests'] = intval($_POST['download_mirror_requests'][$a]);
