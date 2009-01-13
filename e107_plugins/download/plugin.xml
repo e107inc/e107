@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.1 2009-01-11 02:59:10 bugrain Exp $ -->
+<!-- $Id: plugin.xml,v 1.2 2009-01-13 00:37:25 bugrain Exp $ -->
 <e107Plugin name="Download" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107dev" url="http://e107.org"/>
 	<description>This plugin is a fully featured Download system</description>
@@ -8,10 +8,10 @@
 		<configFile>download_admin.php</configFile>
 		<subMenuItem title="DOWLAN_29" description="" link="download_admin.php" icon="manage" />
 		<subMenuItem title="DOWLAN_30" description="" link="download_admin.php?create" icon="add" />
-		<subMenuItem title="DOWLAN_31" description="" link="download_admin.php?cat" icon="cat_settings" />
+		<subMenuItem title="DOWLAN_31" description="" link="download_admin.php?cat" icon="images/downloads_32.png" />
 		<subMenuItem title="DOWLAN_32" description="" link="download_admin.php?opt" icon="settings" />
-		<subMenuItem title="DOWLAN_112" description="" link="download_admin.php?limits" icon="downloads" />
-		<subMenuItem title="DOWLAN_128" description="" link="download_admin.php?mirror" icon="downloads" />
+		<subMenuItem title="DOWLAN_112" description="" link="download_admin.php?limits" icon="images/downloads_32.png" />
+		<subMenuItem title="DOWLAN_128" description="" link="download_admin.php?mirror" icon="images/downloads_32.png" />
 		<icon>images/downloads_32.png</icon>
 		<iconSmall>images/downloads_16.png</iconSmall>
 		<caption>Configure Download</caption>
