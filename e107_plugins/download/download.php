@@ -11,17 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-01-11 02:56:30 $
+|     $Revision: 1.2 $
+|     $Date: 2009-01-13 00:42:54 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
+if (!plugInstalled('download')) { exit(); }
 include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/lan_download.php');
-require_once(e_HANDLER."comment_class.php");
-require_once(e_FILE."shortcode/batch/download_shortcodes.php");
+require_once(e_PLUGIN.'download/download_shortcodes.php');
+require_once(e_HANDLER.'comment_class.php');
 
 $cobj = new comment;
 global $tp;
@@ -520,7 +521,7 @@ if ($action == "report" && check_class($pref['download_reportbroken']))
 			<tr>
 			<td  style='width:50%' >
 			".LAN_dl_32.": ".$download_name."<br />
-			<a href='".e_SELF."?view.{$download_id}'>
+			<a href='".e_PLUGIN."download/download?view.{$download_id}'>
 			<span class='smalltext'>".LAN_dl_53."</span>
 			</a>
 			</td>
@@ -610,8 +611,8 @@ if($action == "mirror")
 function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 {
 
-	global $DOWNLOAD_MIRROR;
-	list($mirrorHost_id, $mirrorHost_url, $mirrorRequests) = explode(",", $mirrorstring);
+	global $DOWNLOAD_MIRROR, $e107;
+	list($mirrorHost_id, $mirrorHost_url, $mirrorRequests, $mirrorFilesize) = explode(",", $mirrorstring);
 
 	extract($mirrorList[$mirrorHost_id]);
 
@@ -620,8 +621,8 @@ function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 	$DOWNLOAD_MIRROR_LOCATION = ($mirror_location ? $mirror_location : "");
 	$DOWNLOAD_MIRROR_DESCRIPTION = ($mirror_description ? $mirror_description : "");
 
-	$DOWNLOAD_MIRROR_FILESIZE = $e107->parseMemorySize($row['download_filesize']);
-	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.{$row['download_id']}.{$mirrorHost_id}' title='".LAN_dl_32."'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
+	$DOWNLOAD_MIRROR_FILESIZE = $e107->parseMemorySize($mirrorFilesize);
+	$DOWNLOAD_MIRROR_LINK = "<a href='".e_PLUGIN."download/download.php?mirror.{$row['download_id']}.{$mirrorHost_id}' title='".LAN_dl_32."'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 
 	$DOWNLOAD_MIRROR_REQUESTS = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
 	$DOWNLOAD_TOTAL_MIRROR_REQUESTS = (ADMIN ? LAN_dl_74.$mirror_count : "");
