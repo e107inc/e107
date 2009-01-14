@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/lan_download_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-01-13 00:46:23 $
+|     $Revision: 1.3 $
+|     $Date: 2009-01-14 22:53:38 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -145,5 +145,10 @@ define("DOWLAN_157", "use random mirror - no user choice");
 
 define("DOWLAN_158", "Show sub-sub-categories on main download page");
 define("DOWLAN_159", "Include sub-sub-category counts in subcategory counts");
+
+define("DOWLAN_160", "Mirror list order");
+define("DOWLAN_161", "Random");
+define("DOWLAN_162", "ID");
+define("DOWLAN_163", "Name");
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-01-13 00:43:54 $
+|     $Revision: 1.3 $
+|     $Date: 2009-01-14 22:53:38 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -167,6 +167,7 @@ if (isset($_POST['updateoptions']))
 	$temp['download_view'] = $_POST['download_view'];
 	$temp['download_sort'] = $_POST['download_sort'];
 	$temp['download_order'] = $_POST['download_order'];
+	$temp['mirror_order'] = $_POST['mirror_order'];
 	$temp['agree_flag'] = $_POST['agree_flag'];
 	$temp['download_email'] = $_POST['download_email'];
 	$temp['agree_text'] = $tp->toDB($_POST['agree_text']);
@@ -389,8 +390,19 @@ if ($action == "opt")
 		<tr><td class='forumheader3'>
 		".LAN_ORDER."
 		</td>
-		<td class='forumheader3' text-align:left'>
+		<td class='forumheader3' style='text-align:left'>
 		<select name='download_sort' class='tbox'>". ($pref['download_sort'] == "ASC" ? "<option value='ASC' selected='selected'>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>"). ($pref['download_sort'] == "DESC" ? "<option value='DESC' selected='selected'>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
+		</select>
+		</td>
+		</tr>
+
+		<tr>
+		<td class='forumheader3'>".DOWLAN_160."</td>
+		<td class='forumheader3' style='text-align:left'>
+		<select name='mirror_order' class='tbox'>".
+		   ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
+		   ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".DOWLAN_162."</option>" : "<option value='1'>".DOWLAN_162."</option>").
+		   ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_163."</option>")."
 		</select>
 		</td>
 		</tr>
