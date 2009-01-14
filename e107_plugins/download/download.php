@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-01-13 08:05:08 $
+|     $Revision: 1.4 $
+|     $Date: 2009-01-14 22:53:38 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -57,7 +57,7 @@ $template_load_core = '
   }
 ';
 
-$order_options = array('download_id','download_datestamp','download_requested','download_name','download_author');
+$order_options = array('download_id','download_datestamp','download_requested','download_name','download_author','download_requested');
 $sort_options = array('ASC', 'DESC');
 
 
@@ -567,15 +567,26 @@ if($action == "mirror")
 
 		extract($row);
 		$array = explode(chr(1), $download_mirror);
-
-		// Shuffle the mirror list into a random order
-		$c = count($array) -1;		// Will always be an empty entry at the end
-		for ($i=1; $i<$c; $i++)
-		{
-		  $d = mt_rand(0, $i);
-		  $tmp = $array[$i];
-		  $array[$i] = $array[$d];
-		  $array[$d] = $tmp;
+      if (2 == varset($pref['mirror_order']))
+      {
+         // Order by name, sort array manually
+         usort($array, "sort_download_mirror_order");
+      }
+      //elseif (1 == varset($pref['mirror_order']))
+      //{
+      //   // Order by ID  - do nothing order is as stored in DB
+      //}
+      elseif (0 == varset($pref['mirror_order'], 0))
+      {
+		   // Shuffle the mirror list into a random order
+		   $c = count($array);
+		   for ($i=1; $i<$c; $i++)
+		   {
+		     $d = mt_rand(0, $i);
+		     $tmp = $array[$i];
+		     $array[$i] = $array[$d];
+		     $array[$d] = $tmp;
+		   }
 		}
 
 		$download_mirror = "";
@@ -606,6 +617,16 @@ if($action == "mirror")
 
 		require_once(FOOTERF);
 	}
+}
+
+function sort_download_mirror_order($a, $b)
+{
+   $a = explode(",", $a);
+   $b = explode(",", $b);
+   if ($a[1] == $b[1]) {
+      return 0;
+   }
+   return ($a[1] < $b[1]) ? -1 : 1;
 }
 
 function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
