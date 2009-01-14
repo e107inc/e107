@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-01-14 22:53:38 $
+|     $Revision: 1.4 $
+|     $Date: 2009-01-14 23:45:33 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -168,6 +168,7 @@ if (isset($_POST['updateoptions']))
 	$temp['download_sort'] = $_POST['download_sort'];
 	$temp['download_order'] = $_POST['download_order'];
 	$temp['mirror_order'] = $_POST['mirror_order'];
+	$temp['recent_download_days'] = $_POST['recent_download_days'];
 	$temp['agree_flag'] = $_POST['agree_flag'];
 	$temp['download_email'] = $_POST['download_email'];
 	$temp['agree_text'] = $tp->toDB($_POST['agree_text']);
@@ -404,6 +405,15 @@ if ($action == "opt")
 		   ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".DOWLAN_162."</option>" : "<option value='1'>".DOWLAN_162."</option>").
 		   ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_163."</option>")."
 		</select>
+		</td>
+		</tr>
+
+		<tr>
+		<td class='forumheader3'>
+		".DOWLAN_164."
+		</td>
+		<td class='forumheader3' style='text-align:left'>
+		<input name='recent_download_days' class='tbox' value='".$pref['recent_download_days']."' size='3' maxlength='3'/>
 		</td>
 		</tr>
 

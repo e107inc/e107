@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/lan_download_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-01-14 22:53:38 $
+|     $Revision: 1.4 $
+|     $Date: 2009-01-14 23:45:33 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -150,5 +150,7 @@ define("DOWLAN_160", "Mirror list order");
 define("DOWLAN_161", "Random");
 define("DOWLAN_162", "ID");
 define("DOWLAN_163", "Name");
+
+define("DOWLAN_164", "Recent downloads age (in days)");
 
 ?>

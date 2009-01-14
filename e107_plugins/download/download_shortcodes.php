@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_shortcodes.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-01-13 00:47:13 $
+|     $Revision: 1.2 $
+|     $Date: 2009-01-14 23:45:33 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -70,6 +70,11 @@ global $row;
 return (USER && $row['download_datestamp'] > USERLV ? "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />" : "");
 SC_END
 
+SC_BEGIN DOWNLOAD_LIST_RECENTICON
+global $row, $pref;
+// convert "recent_download_days" to seconds
+return ($row['download_datestamp'] > time()-($pref['recent_download_days']*86400) ? '<img src="'.IMAGE_NEW.'" alt="" style="vertical-align:middle" />' : '');
+SC_END
 
 SC_BEGIN DOWNLOAD_LIST_FILESIZE
 global $row, $e107;
