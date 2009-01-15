@@ -9,8 +9,8 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-01-09 17:25:50 $
+ * $Revision: 1.11 $
+ * $Date: 2009-01-15 15:42:24 $
  * $Author: secretr $
  *
 */
@@ -88,7 +88,7 @@ $ADMIN_FOOTER = "
 		</table>
 	</div>
 	<div class='admin-footer'>
-		{ADMIN_CREDITS}
+		<!-- -->
 	</div>
 </div>
 ";

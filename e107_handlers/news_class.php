@@ -9,20 +9,22 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-01-07 19:57:09 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.10 $
+ * $Date: 2009-01-15 15:42:24 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 class news {
 
-	function submit_item($news)
+	function submit_item($news, $smessages = false)
 	{
 		global $sql, $tp, $e107cache, $e_event, $pref, $admin_log;
 		if (!is_object($tp)) $tp = new e_parse;
 		if (!is_object($sql)) $sql = new db;
+		require_once (e_HANDLER."message_handler.php");
+		$emessage = &eMessage::getInstance();
 
 		$news['news_title'] = $tp->toDB($news['news_title']);
 		$news['news_body'] = $tp->toDB($news['data']);
@@ -41,14 +43,22 @@ class news {
 				$admin_log->logArrayAll('NEWS_09', $news);
 				$e_event -> trigger('newsupd', $news);
 				$message = LAN_NEWS_21;
+				$emessage->add(LAN_NEWS_21, E_MESSAGE_SUCCESS, $smessages);
 				$e107cache -> clear('news.php');
 			}
 			else
 			{
 				$message = "<strong>".(!mysql_errno() ? LAN_NEWS_46 : LAN_NEWS_5)."</strong>";
+				if(mysql_errno())
+					$emessage->add(LAN_NEWS_5, E_MESSAGE_ERROR, $smessages);
+				else
+					$emessage->add(LAN_NEWS_46, E_MESSAGE_INFO, $smessages);
+
 			}
+
 			$data = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
-			$message .= $e_event->triggerHook($data);
+			//$message .= $e_event->triggerHook($data);
+			$emessage->add($e_event->triggerHook($data), E_MESSAGE_INFO, $smessages);
 		}
 		else
 		{	// Adding item
@@ -57,14 +67,17 @@ class news {
 				$admin_log->logArrayAll('NEWS_08', $news);
 				$e_event -> trigger('newspost', $news);
 				$message = LAN_NEWS_6;
+				$emessage->add(LAN_NEWS_6, E_MESSAGE_SUCCESS, $smessages);
 				$e107cache -> clear('news.php');
 				$id = mysql_insert_id();
 				$data = array('method'=>'create', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
-				$message .= $e_event->triggerHook($data);
+				//$message .= $e_event->triggerHook($data);
+				$emessage->add($e_event->triggerHook($data), E_MESSAGE_INFO, $smessages);
 			}
 			else
 			{
 				$message = "<strong>".LAN_NEWS_7."</strong>";
+				$emessage->add(LAN_NEWS_7, E_MESSAGE_ERROR, $smessages);
 			}
 		}
 
@@ -85,8 +98,10 @@ class news {
 					if(!$error = $trackback -> sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
 					{
 						$message .= "<br />successfully pinged {$pingurl}.";
+						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
 					} else {
 						$message .= "<br />was unable to ping {$pingurl}<br />[ Error message returned was : '{$error}'. ]";
+						$emessage->add("was unable to ping {$pingurl}<br />[ Error message returned was : '{$error}'. ]", E_MESSAGE_ERROR, $smessages);
 					}
 				}
 			}
@@ -101,16 +116,19 @@ class news {
 						if ($trackback -> sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
 						{
 	 						$message .= "<br />successfully pinged {$pingurl}.";
+	 						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
 						}
 						else
 						{
 							$message .= "Pingback to {$pingurl} failed ...";
+							$emessage->add("Pingback to {$pingurl} failed ...", E_MESSAGE_ERROR, $smessages);
 						}
 					}
 				}
 				else
 				{
 					$message .= "<br />No pingback addresses were discovered";
+					$emessage->add("No pingback addresses were discovered", E_MESSAGE_INFO, $smessages);
 				}
 			}
 		}

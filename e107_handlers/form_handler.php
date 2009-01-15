@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-01-07 15:40:06 $
+ * $Revision: 1.15 $
+ * $Date: 2009-01-15 15:42:24 $
  * $Author: secretr $
  *
 */
@@ -80,7 +80,7 @@ class e_form
 
 	function file($name, $options = array())
 	{
-		$options = $this->format_options('text', $name, $options);
+		$options = $this->format_options('file', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='file' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
@@ -151,7 +151,7 @@ class e_form
 
 	}
 
-	function radio_multi($name, $elements, $checked)
+	function radio_multi($name, $elements, $checked, $multi_line = false)
 	{
 		$text = array();
 		if(is_string($elements)) parse_str($elements, $elements);
@@ -160,8 +160,10 @@ class e_form
 		{
 			$text[] = $this->radio($name, $value, $checked == $value)."".$this->label($label, $name, $value);
 		}
+		if(!$multi_line)
+			return implode("&nbsp;&nbsp;", $text);
 
-		return implode("&nbsp;&nbsp;\n", $text);
+		return "<div class='field-spacer'>".implode("</div><div class='field-spacer'>", $text)."</div>";
 
 	}
 
@@ -390,6 +392,11 @@ class e_form
 
 			case 'text':
 				$def_options['class'] = 'tbox input-text';
+				unset($def_options['selected'], $def_options['checked']);
+				break;
+
+			case 'file':
+				$def_options['class'] = 'tbox file';
 				unset($def_options['selected'], $def_options['checked']);
 				break;
 

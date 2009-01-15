@@ -97,4 +97,43 @@ function tablestyle($caption, $text, $mod) {
 $HEADER = '';
 $FOOTER = '';
 
+define('ICONMAIL', 'email_16.png');
+define('ICONPRINT', 'print_16.png');
+define('ICONSTYLE', 'border: 0px');
+define('COMMENTLINK', LAN_THEME_2);
+define('COMMENTOFFSTRING', LAN_THEME_1);
+define('PRE_EXTENDEDSTRING', '<br /><br />');
+define('EXTENDEDSTRING', LAN_THEME_3);
+define('POST_EXTENDEDSTRING', '<br />');
+define('TRACKBACKSTRING', LAN_THEME_4);
+define('TRACKBACKBEFORESTRING', '&nbsp;|&nbsp;');
+
+$sc_style['NEWSIMAGE']['pre'] = '<div style="float: left; margin-right: 15px">';
+$sc_style['NEWSIMAGE']['post'] = '</div>';
+$sc_style['NEWSICON']['pre'] = '<div style="float: left; margin-right: 15px">';
+$sc_style['NEWSICON']['post'] = '</div>';
+
+$NEWSSTYLE = '
+<div class="newsItem clear">
+	<h4>{NEWSTITLE}</h4>
+	<span class="newsAuthor">{NEWSAUTHOR}</span>
+	<span class="newsDate">{NEWSDATE}</span>
+	<div style="clear: both; margin-bottom: 5px;"><!-- --></div>
+	{NEWSIMAGE}
+	{NEWSBODY}
+	{EXTENDED}
+	{TRACKBACK}
+	<div style="clear: both; margin-bottom: 5px;"><!-- --></div>
+	<table class="newsComments" cellpadding="0" cellspacing="0" style="border: 0px none; width: 100%" >
+		<tr>
+			<td valign="middle" style="text-align: left">
+				{NEWSCOMMENTS}
+			</td>
+			<td valign="middle" style="text-align: right">
+				{ADMINOPTIONS}{EMAILICON}{PRINTICON}{PDFICON}
+			</td>
+		</tr>
+	</table>
+</div>
+';
 ?>
