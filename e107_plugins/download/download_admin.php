@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-01-14 23:45:33 $
+|     $Revision: 1.5 $
+|     $Date: 2009-01-15 00:02:12 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -1005,6 +1005,8 @@ class download
 			</tr>";
 		}		// End of mirror-related stuff
 
+         $download_author = $download_author == "" ? USERNAME : $download_author;
+         $download_author_email = $download_author_email == "" ? USEREMAIL : $download_author_email;
 			$text .= "<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_15.":</td>
 			<td style='width:80%' class='forumheader3'>
