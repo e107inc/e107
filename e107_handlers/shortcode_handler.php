@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.20 $
-| $Date: 2009-01-15 18:57:02 $
+| $Revision: 1.21 $
+| $Date: 2009-01-15 20:18:46 $
 | $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -206,7 +206,7 @@ class e_shortcode
 							}
 							if(is_callable(array($_class, $_method)))
 							{
-								$ret = $this->scClasses[$_class]->$_method($parm);
+								$ret = $this->scClasses[$_class]->$_method($parm, $sc_mode);
 							}
 							break;
 
@@ -219,7 +219,7 @@ class e_shortcode
 							}
 							if(function_exists($_function))
 							{
-								$ret = call_user_func($_function, $parm);
+								$ret = call_user_func($_function, $parm, $sc_mode);
 							}
 							break;
 
