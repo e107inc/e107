@@ -131,6 +131,18 @@ input.radio { margin-right: 3px; }
 label { cursor: pointer; }
 .checkbox { margin-right: 5px; }
 
+.check-block { /* see administration newspost.php */
+	padding: 2px 0px;
+    border-width:1px;
+    border-style:solid;
+    border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
+    background:#fff;
+    font:12px arial, helvetica, sans-serif;
+	overflow:auto 
+}
+.check-block .checkbox { margin-left: 2px }
+.check-block .separator { clear: both; border-bottom: 1px solid #aaa; margin-bottom: 4px; height: 4px }
+
 
 .field-help { width: 280px; line-height: 1.4em; padding-top: 3px; color:#333333; font-size: 11px; }
 .label-note { font-style: italic; }
@@ -153,6 +165,8 @@ label { cursor: pointer; }
 .adminform td div.field-spacer { margin-bottom: 3px; } /* multi-fields per row separator */
 .adminform td div.field-section { clear: both; margin-bottom: 10px; } /* multi-field sections per row - wrapper */
 
+.adminform td .check-block { width:95%; height:60px; }
+
 .adminform .select { width: 280px;}
 .adminform .input-text { width: 274px;}
 .adminform td.control textarea { width: 274px;}
@@ -172,6 +186,8 @@ label { cursor: pointer; }
 .adminedit td.control textarea { width: 274px;}
 .adminedit td.control textarea.large { width: 400px; }
 
+.adminedit td .check-block { width:95%; height:60px; }
+
 .adminedit td.label {}
 .adminedit td.control {}
 
@@ -180,8 +196,6 @@ label { cursor: pointer; }
 .admininfo  { width:100%;  border:1px solid #ddd;}
 .admininfo td { padding: 1px 5px; text-align: left}
 
-.admininfo td.label { border-right:1px solid #ddd; }
-.admininfo td.control {}
 
 .info-bar { padding: 5px 0px; }
 

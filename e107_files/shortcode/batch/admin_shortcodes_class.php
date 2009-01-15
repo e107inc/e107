@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.2 2009-01-10 11:42:19 secretr Exp $
+* $Id: admin_shortcodes_class.php,v 1.3 2009-01-15 15:42:24 secretr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -651,6 +651,7 @@ class admin_shortcodes
 		if(ADMIN && getperms('0'))
 		{
 			global $sql,$pst,$ns,$tp,$e_wysiwyg,$pref;
+
 			if(isset($pst) && $pst->form && $pst->page)
 			{
 				$thispage = urlencode(e_SELF.'?'.e_QUERY);
@@ -919,7 +920,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.2 2009-01-10 11:42:19 secretr Exp $
+		* $Id: admin_shortcodes_class.php,v 1.3 2009-01-15 15:42:24 secretr Exp $
 		*/
 
 		if (ADMIN)

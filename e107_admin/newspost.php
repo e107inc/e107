@@ -9,20 +9,28 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-01-13 17:09:30 $
+ * $Revision: 1.21 $
+ * $Date: 2009-01-15 15:42:24 $
  * $Author: secretr $
 */
 require_once("../class2.php");
 
 if (!getperms("H"))
 {
-	header("location:".e_BASE."index.php");
+	header("Location:".e_BASE."index.php");
 	exit;
 }
 
 
-$newspost = new admin_newspost(e_QUERY);
+// -------- Presets. ------------  // always load before auth.php
+require_once(e_HANDLER."preset_class.php");
+$pst = new e_preset();
+$pst->form = "core-newspost-create-form"; // form id of the form that will have it's values saved.
+$pst->page = "newspost.php?create"; // display preset options on which page(s).
+$pst->id = "admin_newspost";
+// ------------------------------
+
+$newspost = new admin_newspost(e_QUERY, $pst);
 function headerjs()
 {
   	global $newspost;
@@ -49,148 +57,30 @@ function headerjs()
 $e_sub_cat = 'news';
 $e_wysiwyg = "data,news_extended";
 
-// -------- Presets. ------------  // always load before auth.php
-require_once(e_HANDLER."preset_class.php");
-$pst = new e_preset;
-$pst->form = "dataform"; // form id of the form that will have it's values saved.
-$pst->page = "newspost.php?create"; // display preset options on which page(s).
-$pst->id = "admin_newspost";
-// ------------------------------
-
-
 require_once("auth.php");
-$pst->save_preset('news_datestamp'); // save and render result using unique name. Don't save item datestamp
-
-require_once(e_HANDLER."userclass_class.php");
-
-require_once(e_HANDLER."ren_help.php");
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."file_class.php");
 require_once (e_HANDLER."message_handler.php");
-
-$fl = new e_file;
-$rs = new form();
-$frm = new e_form(true); //enable inner tabindex counter
-$emessage = &eMessage::getInstance();
-
-
-
-if (e_QUERY)
-{
-  $tmp = explode(".", e_QUERY);
-  $action = $tmp[0];
-  $sub_action = varset($tmp[1],'');
-  $id = intval(varset($tmp[2],0));
-  $sort_order = varset($tmp[2],'desc');
-  $from = intval(varset($tmp[3],0));
-  unset($tmp);
-}
-
-$from = ($from ? $from : 0);
-
-
-// ##### Main loop -----------------------------------------------------------------------------------------------------------------------
-
-if(isset($_POST['news_userclass']))
-{
-	unset($temp);
-	foreach ($_POST['news_userclass'] as $k => $v)
-	{
-		$temp[] = intval($k);
-	}
-	$_POST['news_class'] = implode(",", $temp);
-	unset($temp);
-	unset($_POST['news_userclass']);
-}
-
 
 /*
  * Observe for delete action
  */
 $newspost->observer();
 
+/*
+ * Show requested page
+ */
+$newspost->show_page();
 
 
 
-// required.
-if (isset($_POST['preview']))
-{
-	$_POST['news_title'] = $tp->toDB($_POST['news_title']);
-	$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
-	$newspost->preview_item($id);
-}
-
-
-
-
-
-if (!e_QUERY || $action == "main")
-{
-  $newspost->show_existing_items();
-}
-
-
-if ($action == "create")
-{
-  $preset = $pst->read_preset("admin_newspost");  //only works here because $_POST is used.
-
-  if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit_news'])
-  {
-	if ($sql->db_Select("news", "*", "news_id='{$id}' "))
-	{
-		$row = $sql->db_Fetch();
-		extract($row);
-		$_POST['news_title'] = $news_title;
-		$_POST['data'] = $news_body;
-		$_POST['news_author'] = $row['news_author'];
-		$_POST['news_extended'] = $news_extended;
-		$_POST['news_allow_comments'] = $news_allow_comments;
-		$_POST['news_class'] = $news_class;
-		$_POST['news_summary'] = $news_summary;
-		$_POST['news_sticky'] = $news_sticky;
-		$_POST['news_datestamp'] = ($_POST['news_datestamp']) ? $_POST['news_datestamp'] : $news_datestamp;
-
-		$_POST['cat_id'] = $news_category;
-		$_POST['news_start'] = $news_start;
-		$_POST['news_end'] = $news_end;
-		$_POST['comment_total'] = $sql->db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
-		$_POST['news_rendertype'] = $news_render_type;
-		$_POST['news_thumbnail'] = $news_thumbnail;
-	}
-  }
-
-  $newspost->create_item($sub_action, $id);
-}
-
-
-
-if ($action == "cat")
-{
-  $newspost->show_categories($sub_action, $id);
-}
-
-
-
-if ($action == "sn")
-{
-  $newspost->submitted_news($sub_action, $id);
-}
-
-
-
-if ($action == "pref")
-{
-  $newspost->show_news_prefs($sub_action, $id);
-}
-
-
+/* OLD JS? Can't find references to this func
 echo "
 <script type=\"text/javascript\">
 function fclear() {
-	document.getElementById('dataform').data.value = \"\";
-	document.getElementById('dataform').news_extended.value = \"\";
+	document.getElementById('core-newspost-create-form').data.value = \"\";
+	document.getElementById('core-newspost-create-form').news_extended.value = \"\";
 }
 </script>\n";
+*/
 
 require_once("footer.php");
 exit;
@@ -203,15 +93,16 @@ class admin_newspost
 {
 	var $_request = array();
 	var $_cal = array();
-	var $_frm = array();
+	var $_pst;
 
-	function admin_newspost($qry)
+	function admin_newspost($qry, $pstobj)
 	{
-
 		$this->parseRequest($qry);
 
 		require_once(e_HANDLER."calendar/calendar_class.php");
 		$this->_cal = new DHTML_Calendar(true);
+
+		$this->_pst = &$pstobj;
 
 	}
 
@@ -263,6 +154,13 @@ class admin_newspost
 
 	function observer()
 	{
+		//Required on create & savepreset action triggers
+		if(isset($_POST['news_userclass']) && is_array($_POST['news_userclass']))
+		{
+			$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
+			unset($_POST['news_userclass']);
+		}
+
 		if(isset($_POST['delete']) && is_array($_POST['delete']))
 		{
 			$this->_observe_delete();
@@ -286,6 +184,39 @@ class admin_newspost
 		elseif(isset($_POST['submitupload']))
 		{
 			$this->_observe_upload();
+		}
+	}
+
+	function show_page()
+	{
+		switch ($this->getAction()) {
+			case 'savepreset':
+			case 'clr_preset':
+				$this->_pst->save_preset('news_datestamp', false); // save and render result using unique name. Don't save item datestamp
+				$_POST = array();
+				$this->parseRequest('');
+				$this->show_existing_items();
+			break;
+			case 'create':
+				$this->_pst->read_preset('admin_newspost');  //only works here because $_POST is used.
+				$this->show_create_item();
+			break;
+
+			case 'cat':
+				$this->show_categories();
+			break;
+
+			case 'sn':
+				$this->show_submitted_news();
+			break;
+
+			case 'pref':
+				$this->show_news_prefs();
+			break;
+
+			default:
+				$this->show_existing_items();
+			break;
 		}
 	}
 
@@ -313,7 +244,7 @@ class admin_newspost
 						$this->clear_cache();
 
 						$data = array('method'=>'delete', 'table'=>'news', 'id'=>$del_id, 'plugin'=>'news', 'function'=>'delete');
-						$this->show_message($e107->e_event->triggerHook($data), E_MESSAGE_ERROR);
+						$this->show_message($e107->e_event->triggerHook($data), E_MESSAGE_WARNING);
 
 						admin_purge_related("news", $del_id);
 					}
@@ -404,11 +335,17 @@ class admin_newspost
 			$_POST['cat_id'] = 1;
 		}
 
-        list($_POST['news_author'], $empty) = explode(chr(35), $_POST['news_author']);
+        $tmp = explode(chr(35), $_POST['news_author']);
+        $_POST['news_author'] = $tmp[0];
 
-		$this->show_message($ix->submit_item($_POST));
-		unset($_POST['news_title'], $_POST['cat_id'], $_POST['data'], $_POST['news_extended'], $_POST['news_allow_comments'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['news_id'], $_POST['news_class']);
-		$this->clear_cache();
+		//$this->show_message($ix->submit_item($_POST), E_MESSAGE_SUCCESS, true);
+		//unset($_POST['news_title'], $_POST['cat_id'], $_POST['data'], $_POST['news_extended'], $_POST['news_allow_comments'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['news_id'], $_POST['news_class']);
+		$ix->submit_item($_POST, true);
+        $this->clear_cache();
+
+		session_write_close();
+		header('Location:'.e_SELF);
+		exit;
 	}
 
 	function _observe_create_category()
@@ -595,7 +532,7 @@ class admin_newspost
 		}
 		else
 		{
-			$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
+			$text .= "<div class='center'>".NWSLAN_43."</div>";
 		}
 
 		$newsposts = $e107->sql->db_Count('news');
@@ -621,14 +558,52 @@ class admin_newspost
 	}
 
 
+	function _pre_create()
+	{
 
+		if($this->getSubAction() == "edit" && !$_POST['preview'] && !$_POST['submit_news'])
+		{
+			$e107 = &e107::getInstance();
+			if($e107->sql->db_Select("news", "*", "news_id='".$this->getId()."'"))
+			{
+				$row = $e107->sql->db_Fetch();
 
-	function create_item($sub_action, $id)
+				$_POST['news_title'] = $row['news_title'];
+				$_POST['data'] = $row['news_body'];
+				$_POST['news_author'] = $row['news_author'];
+				$_POST['news_extended'] = $row['news_extended'];
+				$_POST['news_allow_comments'] = $row['news_allow_comments'];
+				$_POST['news_class'] = $row['news_class'];
+				$_POST['news_summary'] = $row['news_summary'];
+				$_POST['news_sticky'] = $row['news_sticky'];
+				$_POST['news_datestamp'] = ($_POST['news_datestamp']) ? $_POST['news_datestamp'] : $row['news_datestamp'];
+
+				$_POST['cat_id'] = $row['news_category'];
+				$_POST['news_start'] = $row['news_start'];
+				$_POST['news_end'] = $row['news_end'];
+				$_POST['comment_total'] = $e107->sql->db_Count("comments", "(*)", " WHERE comment_item_id={$row['news_id']} AND comment_type='0'");
+				$_POST['news_rendertype'] = $row['news_render_type'];
+				$_POST['news_thumbnail'] = $row['news_thumbnail'];
+			}
+		}
+	}
+
+	function show_create_item()
 	{
 		global $pref;
-		// ##### Display creation form
+
+		$this->_pre_create();
+
+		require_once(e_HANDLER."userclass_class.php");
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
+
+		$text = '';
+		if (isset($_POST['preview']))
+		{
+			$text = $this->preview_item($this->getId());
+		}
+
 
 		$sub_action = $this->getSubAction();
 		$id = $this->getId();
@@ -645,7 +620,7 @@ class admin_newspost
 				$_POST['data'] = $row['submitnews_item'];
 				$_POST['cat_id'] = $row['submitnews_category'];
 
-				if (e_WYSIWYG)
+				if (defsettrue('e_WYSIWYG'))
 				{
 				  if (substr($_POST['data'],-7,7) == '[/html]') $_POST['data'] = substr($_POST['data'],0,-7);
 				  if (substr($_POST['data'],0,6) == '[html]') $_POST['data'] = substr($_POST['data'],6);
@@ -675,9 +650,9 @@ class admin_newspost
 			}
 		}
 
-		$text = "
-			<form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
-				<fieldset id='core-newspost-edit'>
+		$text .= "
+			<form method='post' action='".e_SELF."?".e_QUERY."' id='core-newspost-create-form' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
+				<fieldset id='core-newspost-create'>
 					<legend>".LAN_NEWS_52."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminedit'>
 						<colgroup span='2'>
@@ -803,8 +778,8 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_14.":</td>
 								<td class='control'>
-									<a href='#news_extended' class='e-expandit' onclick=\"$ff_expand\">".NWSLAN_83."</a>
-									<div class='e-hideme'>
+									<a href='#news-extended-cont' class='e-expandit' onclick=\"$ff_expand\">".NWSLAN_83."</a>
+									<div class='e-hideme' id='news-extended-cont'>
 										".$frm->bbarea('news_extended', $val, 'extended', 'helpc')."
 									</div>
 								</td>
@@ -812,8 +787,8 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_66.":</td>
 								<td class='control'>
-									<a class='e-pointer' onclick='expandit(this);'>".NWSLAN_69."</a>
-									<div class='e-hideme'>
+									<a href='#news-upload-cont' class='e-expandit'>".NWSLAN_69."</a>
+									<div class='e-hideme' id='news-upload-cont'>
 		";
 
 		if (!FILE_UPLOADS)
@@ -835,8 +810,11 @@ class admin_newspost
 			$up_value = array("resize", "image", "thumb", "file");
 
 			$text .= "
-										<div id='up_container' >
-											<span id='upline' class='nowrap'>
+										<div class='field-spacer'>
+											".$frm->admin_button('dupfield', LAN_NEWS_26, 'action', '', array('other' => 'onclick="duplicateHTML(\'upline\',\'up_container\');"'))."
+										</div>
+										<div id='up_container' class='field-spacer'>
+											<div id='upline' class='left nowrap'>
 												".$frm->file('file_userfile[]')."
 												".$frm->select_open('uploadtype[]')."
 			";
@@ -847,15 +825,14 @@ class admin_newspost
 			//FIXME - upload shortcode, flexible enough to be used everywhere
 			$text .= "
 												</select>
-											</span>
+											</div>
 										</div>
-										<table style='width:100%'>
-											<tr>
-												<td>".$frm->admin_button('dupfield', LAN_NEWS_26, 'action', '', array('other' => 'onclick="duplicateHTML(\'upline\',\'up_container\');"'))."</td>
-												<td><span class='smalltext'>".LAN_NEWS_25."</span>&nbsp;>".$frm->text('resize_value', ($_POST['resize_value'] ? $_POST['resize_value'] : '100'), 4, 'size=3&class=tbox')."&nbsp;px</td>
-												<td>".$frm->admin_button('submitupload', NWSLAN_66, 'upload')."</td>
-											</tr>
-										</table>
+										<div class='field-spacer'>
+											<span class='smalltext'>".LAN_NEWS_25."</span>&nbsp;".$frm->text('resize_value', ($_POST['resize_value'] ? $_POST['resize_value'] : '100'), 4, 'size=3&class=tbox')."&nbsp;px
+										</div>
+										<div class='field-spacer'>
+											".$frm->admin_button('submitupload', NWSLAN_66, 'upload')."
+										</div>
 			";
 
 		}
@@ -866,23 +843,25 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_67.":</td>
 								<td class='control'>
-									<a class='e-pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
-									<div class='e-hideme'>
+									<a href='#news-images-cont' class='e-expandit'>".LAN_NEWS_23."</a>
+									<div class='e-hideme' id='news-images-cont'>
 		";
 
 		$parms = "name=news_thumbnail";
 		$parms .= "&path=".e_IMAGE."newspost_images/";
-		$parms .= "&default=".$_POST['news_thumbnail'];
-		$parms .= "&width=100px";
-		$parms .= "&height=100px";
-		$parms .= "&multiple=TRUE";
+		$parms .= "&filter=0";
+		$parms .= "&fullpath=1";
+		$parms .= "&default=".urlencode('{e_IMAGE}newspost_images/'.$_POST['news_thumbnail']);
+		$parms .= "&multiple=FALSE";
 		$parms .= "&label=-- ".LAN_NEWS_48." --";
-		$parms .= "&click_target=data";
-		$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
-		$parms .= "&click_postfix=[/img]";
+		$parms .= "&subdirs=0";
+		$parms .= "&tabindex=".$frm->getNext();
+		//$parms .= "&click_target=data";
+		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
+		//$parms .= "&click_postfix=[/img]";
 
-
-		$text .= $e107->tp->parseTemplate("{IMAGESELECTOR={$parms}}");
+		$text .= "<div class='field-section'>".$e107->tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
+		$text .= "<div class='field-spacer'>".$e107->tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 		$text .= "
 									</div>
@@ -896,7 +875,7 @@ class admin_newspost
 		//Begin Options block
 		$text .= "
 				<fieldset id='core-newspost-edit-options'>
-					<legend>".LAN_OPTIONS."</legend>
+					<legend>".LAN_NEWS_53."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminedit'>
 						<colgroup span='2'>
 							<col class='col-label' />
@@ -906,17 +885,15 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_15.":</td>
 								<td class='control'>
-									<a class='e-pointer' onclick='expandit(this);'>".NWSLAN_18."</a>
-									<div class='e-hideme'>
-										". ($_POST['news_allow_comments'] ? "<input name='news_allow_comments' type='radio' value='0' />".LAN_ENABLED."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' checked='checked' />".LAN_DISABLED : "<input name='news_allow_comments' type='radio' value='0' checked='checked' />".LAN_ENABLED."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' />".LAN_DISABLED)."
+									".$frm->radio_switch('news_allow_comments', $_POST['news_allow_comments'])."
+									<div class='field-help'>
+										".NWSLAN_18."
 									</div>
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_73.":</td>
 								<td class='control'>
-									<a class='e-pointer' onclick='expandit(this);'>".NWSLAN_74."</a>
-									<div class='e-hideme'>
 
 		";
 		$ren_type = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
@@ -933,16 +910,16 @@ class admin_newspost
 
 		$text .= "
 										".$frm->radio_multi('news_rendertype', $r_array, $_POST['news_rendertype'], true)."
-									</div>
+										<div class='field-help'>
+											".NWSLAN_74."
+										</div>
 									</td>
 								</tr>
 								<tr>
 									<td class='label'>".NWSLAN_19.":</td>
 									<td class='control'>
-									<a class='e-pointer' onclick='expandit(this);'>".NWSLAN_72."</a>
-										<div class='e-hideme'>
-											<div class='field-spacer'>".NWSLAN_21.":</div>
-											<div class='field-spacer'>
+										<div class='field-spacer'>".NWSLAN_21.":</div>
+										<div class='field-spacer'>
 		";
 
 		$_startdate = ($_POST['news_start'] > 0) ? date("d/m/Y", $_POST['news_start']) : "";
@@ -955,6 +932,7 @@ class admin_newspost
 		$cal_attrib['size'] = "10";
 		$cal_attrib['name'] = "news_start";
 		$cal_attrib['value'] = $_startdate;
+		$cal_attrib['tabindex'] = $frm->getNext();
 		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
 
 		$text .= " - ";
@@ -971,19 +949,20 @@ class admin_newspost
 		$cal_attrib['size'] = "10";
 		$cal_attrib['name'] = "news_end";
 		$cal_attrib['value'] = $_enddate;
+		$cal_attrib['tabindex'] = $frm->getNext();
 		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
 
 		$text .= "
-											</div>
+										</div>
+										<div class='field-help'>
+											".NWSLAN_72."
 										</div>
 									</td>
 								</tr>
 								<tr>
 									<td class='label'>".LAN_NEWS_32.":</td>
 									<td class='control'>
-										<a class='e-pointer' onclick='expandit(this);'>".LAN_NEWS_33."</a>
-										<div class='e-hideme'>
-											<div class='field-spacer'>
+										<div class='field-spacer'>
 		";
 
 		$_update_datestamp = ($_POST['news_datestamp'] > 0 && !strpos($_POST['news_datestamp'],"/")) ? date("d/m/Y H:i:s", $_POST['news_datestamp']) : trim($_POST['news_datestamp']);
@@ -1000,10 +979,12 @@ class admin_newspost
 		$text .= $this->_cal->make_input_field($cal_options, $cal_attrib);
 
 		$text .= "
-											</div>
-											<div class='field-spacer'>
-												".$frm->checkbox('update_datestamp', '1', $_POST['update_datestamp']).$frm->label(NWSLAN_105, 'update_datestamp', '1')."
-											</div>
+										</div>
+										<div class='field-spacer'>
+											".$frm->checkbox('update_datestamp', '1', $_POST['update_datestamp']).$frm->label(NWSLAN_105, 'update_datestamp', '1')."
+										</div>
+										<div class='field-help'>
+											".LAN_NEWS_33."
 										</div>
 									</td>
 								</tr>
@@ -1018,19 +999,18 @@ class admin_newspost
 								<tr>
 									<td class='label'>".NWSLAN_22.":</td>
 									<td class='control'>
-										<a class='e-pointer' onclick='expandit(this);'>".NWSLAN_84."</a>
-										<div class='e-hideme'>
-											".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,classes,language")."
+										".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,classes,language")."
+										<div class='field-help'>
+											".NWSLAN_84."
 										</div>
 									</td>
 								</tr>
 								<tr>
 									<td class='label'>".LAN_NEWS_28.":</td>
 									<td class='control'>
-										<a class='e-pointer' onclick='expandit(this);'>".LAN_NEWS_29."</a>
-										<div class='e-hideme'>
-											".$frm->checkbox('news_sticky', '1', $_POST['news_sticky']).$frm->label(LAN_NEWS_30, 'news_sticky', '1')."
-
+										".$frm->checkbox('news_sticky', '1', $_POST['news_sticky']).$frm->label(LAN_NEWS_30, 'news_sticky', '1')."
+										<div class='field-help'>
+											".LAN_NEWS_29."
 										</div>
 									</td>
 								</tr>
@@ -1091,15 +1071,22 @@ class admin_newspost
 
 
 		";
-			$emessage = &eMessage::getInstance();
+
+		$emessage = &eMessage::getInstance();
 		$e107->ns->tablerender(NWSLAN_29, $emessage->render().$text);
 	}
 
 
 	function preview_item($id)
 	{
-		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
-		global $tp, $sql, $ix, $IMAGES_DIRECTORY;
+
+		require_once(e_HANDLER."news_class.php");
+		$ix = new news;
+
+		$e107 = &e107::getInstance();
+
+		$_POST['news_title'] = $e107->tp->toDB($_POST['news_title']);
+		$_POST['news_summary'] = $e107->tp->toDB($_POST['news_summary']);
 
 		$_POST['news_id'] = $id;
 
@@ -1123,6 +1110,7 @@ class admin_newspost
 			$_POST['news_end'] = 0;
 		}
 
+		$matches = array();
 		if(preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['news_datestamp'], $matches))
 		{
 			$_POST['news_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
@@ -1137,33 +1125,46 @@ class admin_newspost
 			$_POST['news_datestamp'] = time();
 		}
 
-		$sql->db_Select("news_category", "*", "category_id='".$_POST['cat_id']."' ");
-		list($_POST['category_id'], $_POST['category_name'], $_POST['category_icon']) = $sql->db_Fetch();
-	  //	$_POST['user_id'] = USERID;
-	   //	$_POST['user_name'] = USERNAME."blabla";
-	   	list($_POST['user_id'],$_POST['user_name']) = explode(chr(35),$_POST['news_author']);
+		$e107->sql->db_Select("news_category", "*", "category_id='".intval($_POST['cat_id'])."'");
+		list($_POST['category_id'], $_POST['category_name'], $_POST['category_icon']) = $e107->sql->db_Fetch();
+
+	   	list($_POST['user_id'],$_POST['user_name']) = explode(chr(35), $_POST['news_author']);
 		$_POST['news_author'] = $_POST['user_id'];
-		$_POST['comment_total'] = $comment_total;
+		$_POST['comment_total'] = $this->getId() ? $e107->sql->db_Count("comments", "(*)", " WHERE comment_item_id=".$this->getId()." AND comment_type='0'") : 0;
 		$_PR = $_POST;
 
-		$_PR['news_body'] = $tp->post_toHTML($_PR['data'],FALSE);
-		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title'],FALSE,"emotes_off, no_make_clickable");
-		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
-		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);
+		$_PR['news_body'] = $e107->tp->post_toHTML($_PR['data'],FALSE);
+		$_PR['news_title'] = $e107->tp->post_toHTML($_PR['news_title'],FALSE,"emotes_off, no_make_clickable");
+		$_PR['news_summary'] = $e107->tp->post_toHTML($_PR['news_summary']);
+		$_PR['news_extended'] = $e107->tp->post_toHTML($_PR['news_extended']);
 		$_PR['news_file'] = $_POST['news_file'];
 		$_PR['news_image'] = $_POST['news_image'];
 
-		$ix -> render_newsitem($_PR);
-		echo $tp -> parseTemplate('{NEWSINFO}', FALSE, $news_shortcodes);
+		//$ix->render_newsitem($_PR);
+
+		return "
+				<fieldset id='core-newspost-preview'>
+					<legend>".NWSLAN_27."</legend>
+					<table cellpadding='0' cellspacing='0' class='admininfo'>
+					<tbody>
+						<tr>
+							<td class='label' colspan='2'>
+								".$e107->tp->parseTemplate('{NEWSINFO}').$ix->render_newsitem($_PR, 'return')."
+							</td>
+						</tr>
+					</tbody>
+					</table>
+				</fieldset>
+		";
 	}
 
-	function show_message($message, $type = '')
+	function show_message($message, $type = E_MESSAGE_INFO, $session = false)
 	{
 		// ##### Display comfort ---------------------------------------------------------------------------------------------------------
 		//global $ns;
 		//$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 		$emessage = &eMessage::getInstance();
-		$emessage->add($message, $type OR E_MESSAGE_INFO);
+		$emessage->add($message, $type, $session);
 	}
 
 	function show_categories($sub_action, $id)
@@ -1185,8 +1186,8 @@ class admin_newspost
 		}
 
 		$text = "
-			<form method='post' action='".e_SELF."?cat' id='dataform'>
-				<fieldset id='core-newspost-cat-edit'>
+			<form method='post' action='".e_SELF."?cat' id='core-newspost-cat-create'>
+				<fieldset id='core-newspost-cat-create'>
 					<legend>".NWSLAN_56."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminform'>
 						<colgroup span='2'>
@@ -1312,7 +1313,7 @@ class admin_newspost
 		global $sql, $rs, $ns, $pref, $frm;
 
 		$text = "
-			<form method='post' action='".e_SELF."?pref' id='dataform'>
+			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
 				<fieldset id='core-newspost-settings'>
 					<legend class='e-hideme'>".NWSLAN_90."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminform'>
@@ -1445,10 +1446,13 @@ class admin_newspost
 
 
 	//XXX Lan - many many lans
-	function submitted_news($sub_action, $id)
+	function show_submitted_news()
 	{
 		global $rs, $ns, $tp, $frm, $e107;
 		$sql2 = new db;
+		$sub_action = $this->getSubAction();
+		$id = $this->getId();
+
 		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
 		{
 			$text .= "

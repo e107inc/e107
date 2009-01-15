@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.16 2009-01-07 21:21:12 mcfly_e107 Exp $
+* $Id: news_shortcodes.php,v 1.17 2009-01-15 15:42:24 secretr Exp $
 *
 * News shortcode batch
 */
@@ -342,7 +342,8 @@ class news_shortcodes
 		$info .= '<br />'.($news_item['news_allow_comments'] ? LAN_NEWS_13 : LAN_NEWS_12);
 		$info .= LAN_NEWS_14.$news_item['news_start'].$news_item['news_end'].'<br />';
 		$info .= LAN_NEWS_15.strlen($news_item['news_body']).LAN_NEWS_16.strlen($news_item['news_extended']).LAN_NEWS_17."<br /><br />";
-		return $this->e107->ns->tablerender(LAN_NEWS_18, $info);
+		//return $this->e107->ns->tablerender(LAN_NEWS_18, $info);
+		return $info;
 	}
 
 

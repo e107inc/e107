@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-01-09 17:25:50 $
+ * $Revision: 1.26 $
+ * $Date: 2009-01-15 15:42:24 $
  * $Author: secretr $
  *
 */
@@ -215,8 +215,8 @@ $parms .= "&label=-- No Image --";
 $parms .= "&subdirs=1";
 $parms .= "&tabindex=".$frm->getNext();
 
-$text .= $tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}");
-$text .= "<div class='field-help'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
+$text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
+$text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 $text .= "
 						</td>

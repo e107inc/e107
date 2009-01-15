@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-01-13 17:09:30 $
+|     $Revision: 1.5 $
+|     $Date: 2009-01-15 15:42:24 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -171,4 +171,5 @@ define("LAN_NEWS_50", "Author");
 define("LAN_NEWS_51", "Modification of the news-item author can be done by:");
 
 define("LAN_NEWS_52", "General Information");
+define("LAN_NEWS_53", "News Item Options");
 ?>
