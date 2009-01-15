@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.21 $
-| $Date: 2009-01-15 20:18:46 $
+| $Revision: 1.22 $
+| $Date: 2009-01-15 22:04:45 $
 | $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,16 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 		{
 			$sc->registered_codes[$codes] = array('type' => 'func', 'path' => $path, 'function' => $classFunc);
 		}
+	}
+}
+
+function initShortcodeClass($class)
+{
+	$e107 = e107::getInstance();
+	$sc = &$e107->tp->e_sc;
+	if(class_exists($class))
+	{
+		$sc->scClasses[$class] = new $class;
 	}
 }
 
