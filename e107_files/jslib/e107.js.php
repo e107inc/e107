@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-01-16 00:54:33 $
+ * $Revision: 1.23 $
+ * $Date: 2009-01-16 17:57:57 $
  * $Author: secretr $
  *
 */
@@ -2446,6 +2446,7 @@ Object.extend(e107Ajax, {
 			
 		if(!opt.parameters) opt.parameters = {};
 		Object.extend(opt.parameters, parm || {});
+		opt.method = 'post';
 		
 		if ($(form).hasAttribute('method') && !opt.method)
 		      opt.method = $(form).method;
@@ -2462,6 +2463,39 @@ Object.extend(e107Ajax, {
 	submitFormSC: function(form, sc, scfile, container) {
 		var handler = ('#{e_FILE}e_ajax.php'), parm = { 'ajax_sc': sc, 'ajax_scfile': scfile };
 		return this.submitForm(form, varsettrue(container, sc), { parameters: parm, overlayElement: varsettrue(container, sc) }, handler);
+	},
+	
+	toggleUpdate: function(toggle, container, url, cacheid, options) {
+		container = $(container);
+		toggle = $(toggle);
+		opt = Object.clone(options || {});
+		opt.method = 'post';
+		
+		if(!toggle) return;
+		
+		if(!toggle.visible())
+		{
+			
+			if(cacheid && $(cacheid)) return toggle.fxToggle();
+			
+			opt.onComplete = function() { toggle.fxToggle() };
+			if(url.startsWith('sc:')) 
+			{
+				return e107Ajax.scUpdate(url.substring(3), container, opt);
+			} 
+			return new e107Ajax.Updater(container, url, opt);
+		}
+		
+		return toggle.fxToggle();
+	},
+	
+	scUpdate: function(sc, container, options) {
+		var handler = ('#{e_FILE}e_ajax.php').parsePath(), parm = { 'ajax_sc': sc };
+		opt = Object.clone(options || {});
+		opt.method = 'post';
+		if(!opt.parameters) opt.parameters = {};
+		Object.extend(opt.parameters, parm || {});
+		return new e107Ajax.Updater(container, handler, opt);
 	}
 });
 

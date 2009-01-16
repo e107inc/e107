@@ -1,5 +1,5 @@
 
-// $Id: imageselector.sc,v 1.8 2008-12-17 17:27:07 secretr Exp $
+// $Id: imageselector.sc,v 1.9 2009-01-16 17:57:56 secretr Exp $
 //FIXME - full rewrite, backward compatible
 global $sql,$parm,$tp;
 
@@ -36,13 +36,10 @@ if($scaction == 'select' || $scaction == 'all')
 
 	foreach($paths as $pths)
 	{
-		$imagelist += $fl->get_files($pths,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG', 'standard', $recurse);
+		$imagelist[$tp->createConstants($pths, 1)]= $fl->get_files($pths,'\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG', 'standard', $recurse);
 	}
 
-	if($imagelist)
-	{
-		sort($imagelist);
-	}
+
 
 	if(!$fullpath && (count($paths) > 1))
 	{
@@ -54,21 +51,35 @@ if($scaction == 'select' || $scaction == 'all')
 	$height = ($height) ? $height : "0";
 	$label = ($label) ? $label : " -- -- ";
 	$tabindex = varset($tabindex) ? " tabindex='{$tabindex}'" : '';
-	$class = varset($class) ? " class='{$class}'" : " class='tbox'";
+	$class = varset($class) ? " class='{$class}'" : " class='tbox imgselector'";
 
 	$text .= "<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name}_prev'); \">
 	<option value=''>".$label."</option>\n";
-	foreach($imagelist as $icon)
+
+	require_once(e_HANDLER.'admin_handler.php');
+	foreach($imagelist as $imagedirlabel => $icons)
 	{
-		$dir = str_replace($paths,"",$icon['path']);
 
-		if(!$filter || ($filter && ereg($filter,$dir.$icon['fname'])))
+		$text .= "<optgroup label='".$tp->replaceConstants($imagedirlabel, TRUE)."'>";
+		if(empty($icons))  $text .= "<option value=''>Empty</option>\n";
+		else
 		{
-			$pth = ($fullpath) ? $tp->createConstants($icon['path'],1) : $dir;
-			$selected = ($default == $pth.$icon['fname']) ? " selected='selected'" : "";
-			$text .= "<option value='{$pth}{$icon['fname']}'{$selected}>{$dir}{$icon['fname']}</option>\n";
-		}
+			$icons = multiarray_sort($icons, 'fname');
 
+			foreach($icons as $icon)
+			{
+				$dir = str_replace($paths,"",$icon['path']);
+
+				if(!$filter || ($filter && ereg($filter,$dir.$icon['fname'])))
+				{
+
+					$pth = ($fullpath) ? $tp->createConstants($icon['path'],1) : $dir;
+					$selected = ($default == $pth.$icon['fname'] || $pth.$default == $pth.$icon['fname']) ? " selected='selected'" : "";
+					$text .= "<option value='{$pth}{$icon['fname']}'{$selected}>&nbsp;&nbsp;&nbsp;{$dir}{$icon['fname']}</option>\n";
+				}
+			}
+		}
+		$text .= '</optgroup>';
 	}
 	$text .= "</select>";
 

@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-01-15 15:42:24 $
+ * $Revision: 1.27 $
+ * $Date: 2009-01-16 17:57:56 $
  * $Author: secretr $
  *
 */
@@ -1152,10 +1152,6 @@ function headerjs()
 {
 	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
-		<script type='text/javascript'>
-			//add required core lan - delete confirm message
-			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
-		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 	";
 

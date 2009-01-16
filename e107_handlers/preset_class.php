@@ -11,8 +11,8 @@
 |		GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_handlers/preset_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2009-01-15 15:42:24 $
+|		$Revision: 1.4 $
+|		$Date: 2009-01-16 17:57:56 $
 |		$Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -94,7 +94,7 @@ class e_preset
 			$del = $_POST['del_id'];
 			$check = $sql->db_Delete("preset", "preset_name ='".$unique_id[$del]."' ");
 
-			if(!$output)
+			if($output)
 			{
 				$ns->tablerender(LAN_SAVED, $check ? LAN_PRESET_DELETED : LAN_DELETED_FAILED);
 				return;
