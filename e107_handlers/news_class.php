@@ -9,9 +9,9 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-01-15 15:42:24 $
- * $Author: secretr $
+ * $Revision: 1.11 $
+ * $Date: 2009-01-16 01:02:41 $
+ * $Author: mcfly_e107 $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -140,7 +140,7 @@ class news {
 
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='')
 	{
-		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid, $imode, $newsItemBegin;
+		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid, $imode;
 		if ($override_newsitem = $override -> override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return')
@@ -230,8 +230,9 @@ class news {
 		$loop_uid = $news['news_author'];
 
 		require_once(e_FILE.'shortcode/batch/news_shortcodes.php');
-		$newsItemBegin = true;
-		$text = $e107->tp -> parseTemplate($NEWS_PARSE, TRUE, $news_shortcodes);
+		$e107->tp->e_sc->scClasses['news_shortcodes']->news_item = $news;
+		$e107->tp->e_sc->scClasses['news_shortcodes']->param = $param;
+		$text = $e107->tp->parseTemplate($NEWS_PARSE, true);
 
 		if ($mode == 'return')
 		{

@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.22 $
-| $Date: 2009-01-15 22:04:45 $
-| $Author: lisa_ $
+| $Revision: 1.23 $
+| $Date: 2009-01-16 01:02:41 $
+| $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 		foreach($codes as $code)
 		{
 			$code = strtoupper($code);
-			if(!$sc->isRegistered($code) || $force == true)
+			if((!$sc->isRegistered($code) || $force == true) && !$sc->isOverride($code))
 			{
 				$sc->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
 			}
@@ -41,7 +41,7 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 	else
 	{
 		$codes = strtoupper($codes);
-		if(!$sc->isRegistered($code) || $force == true)
+		if((!$sc->isRegistered($code) || $force == true) && !$sc->isOverride($code))
 		{
 			$sc->registered_codes[$codes] = array('type' => 'func', 'path' => $path, 'function' => $classFunc);
 		}
@@ -65,6 +65,7 @@ class e_shortcode
 	var $addedCodes;									// Apparently not used
 	var $registered_codes = array();	// Shortcodes added by plugins
 	var $scClasses = array();					// Batch shortcode classes
+	var $scOverride = array();				// Array of codes found in override/ dir
 
 	function e_shortcode($noload=false)
 	{
@@ -72,14 +73,29 @@ class e_shortcode
 
 		$this->parseSCFiles = true;			// Default probably never used, but make sure its defined.
 
+		//Register any shortcode from the shortcode/override/ directory
+		if($pref['sc_override'])
+		{
+			$tmp = explode(',', $pref['sc_override']);
+			foreach($tmp as $code)
+			{
+				$code = strtoupper(trim($code));
+				$this->registered_codes[$code]['type'] = 'override';
+				$this->scOverride[] = $code;
+			}
+		}
+
 		// Register any shortcodes that were registered by the theme
 		// $register_sc[] = 'MY_THEME_CODE'
 		if(isset($register_sc) && is_array($register_sc))
 		{
 			foreach($register_sc as $code)
 			{
-				$code = strtoupper($code);
-				$this->registered_codes[$code]['type'] = 'theme';
+				if(!$this->isRegistered($code))
+				{
+					$code = strtoupper($code);
+					$this->registered_codes[$code]['type'] = 'theme';
+				}
 			}
 		}
 
@@ -121,6 +137,11 @@ class e_shortcode
 	function isRegistered($code)
 	{
 		return in_array($code, $this->registered_codes);
+	}
+
+	function isOverride($code)
+	{
+		return in_array($code, $this->scOverride);
 	}
 
 	function parseCodes($text, $useSCFiles = true, $extraCodes = '')
@@ -235,6 +256,10 @@ class e_shortcode
 
 						case 'plugin':
 							$scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
+							break;
+
+						case 'override':
+							$scFile = e_FILE.'shortcode/override/'.strtolower($code).'.sc';
 							break;
 
 						case 'theme':

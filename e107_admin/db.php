@@ -9,9 +9,9 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-30 15:56:12 $
- * $Author: secretr $
+ * $Revision: 1.9 $
+ * $Date: 2009-01-16 01:02:41 $
+ * $Author: mcfly_e107 $
  *
 */
 
@@ -84,6 +84,11 @@ if(isset($_POST['pref_editor']) || isset($_POST['delpref']) || isset($_POST['del
 if(isset($_POST['optimize_sql']))
 {
 	optimizesql($mySQLdefaultdb);
+}
+
+if(isset($_POST['sc_override_scan']))
+{
+	scan_override();
 }
 
 if(isset($_POST['backup_core']))
@@ -190,6 +195,15 @@ $text = "
 					</td>
 				</tr>
 
+				<!-- SCAN SC OVERRIDE -->
+				<tr>
+					<td>".DBLAN_55."</td>
+					<td>
+						".$frm->radio('db_execute', 'sc_override_scan').$frm->label(DBLAN_56, 'db_execute', 'sc_override_scan')."
+						<!-- <input class='button' style='width: 100%' type='submit' name='sc_override_scan' value='".DBLAN_36."' /> -->
+					</td>
+				</tr>
+
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
@@ -221,6 +235,30 @@ function optimizesql($mySQLdefaultdb)
 	}
 
 	$emessage->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
+}
+
+function scan_override()
+{
+	global $pref, $emessage;
+	
+	require_once(e_HANDLER.'file_class.php');
+	$f = new e_file;
+	
+	$scList = '';
+	$fList = $f->get_files(e_FILE.'shortcode/override', '\.sc$');
+	if(count($fList))
+	{
+		$tmp = array();
+		foreach($fList as $file)
+		{
+			$tmp[] = strtoupper(substr($file['fname'], 0, -3));
+		}
+		$scList = implode(',', $tmp);
+		unset($tmp);
+	}
+	$pref['sc_override'] = $scList;
+	save_prefs();
+	$emessage->add(DBLAN_57.':<br />'.$pref['sc_override'], E_MESSAGE_SUCCESS);
 }
 
 function plugin_viewscan()

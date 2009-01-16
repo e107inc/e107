@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_db.php,v 1.4 2008-12-30 13:51:41 secretr Exp $
+ * $Id: lan_db.php,v 1.5 2009-01-16 01:02:41 mcfly_e107 Exp $
  *
  * Admin Language File
  *
@@ -62,4 +62,7 @@ define("DBLAN_51", "Execute Selected");
 define("DBLAN_52", "Delete Duplicate"); //plugin scan
 define("DBLAN_53", "Please select action.");
 define("DBLAN_54", "No Validation errors found.");
+define('DBLAN_55', 'Select to scan shortcode/override directory for new shortcodes');
+define('DBLAN_56', 'Scan override directory');
+define('DBLAN_57', 'Shortcode Override list set to');
 ?>
