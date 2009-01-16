@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-01-12 12:05:55 $
+ * $Revision: 1.22 $
+ * $Date: 2009-01-16 00:54:33 $
  * $Author: secretr $
  *
 */
@@ -187,7 +187,12 @@ var echo = Prototype.emptyFunction, print_a = Prototype.emptyFunction, var_dump 
 var e107Event = {
 		
     fire: function(eventName, memo, element) { 
-    	element = $(element) || document; 
+    	if ((!element || element == document) && !document.createEvent)
+    	{
+    		element = $(document.documentElement); 
+    	}
+    	else 
+    		element = $(element) || document; 
     	memo = memo || {}; 
     	return element.fire('e107:' + eventName, memo);
     },	
@@ -906,7 +911,10 @@ Object.extend(e107Helper, {
     
     //event listener
 	autoExternalLinks: function (event) {
-		var down = event.memo['element'] ? $(event.memo.element) : $$('body')[0]; 
+		//event.element() works for IE now!
+		//TODO - remove memo.element references
+		//event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+		var down = event.element() != document ? event.element() : $$('body')[0]; 
 	    if(down) down.downExternalLinks();
 	}, 
 
@@ -2162,18 +2170,18 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 						e107Event.trigger('ajax_update_before', request.options, request.options.updateElement);
 					}
 					if(request.options['overlayPage']){
-						e107Event.trigger('ajax_loading_start', request.options);
+						e107Event.trigger('ajax_loading_start', request.options, request.options.overlayPage);
 					} else if(request.options['overlayElement']) { 
-						e107Event.trigger('ajax_loading_element_start', request.options);
+						e107Event.trigger('ajax_loading_element_start', request.options, request.options.overlayElement);
 					}
 				},
 				
 				onComplete: function(request) { 
 					/*Ajax.activeRequestCount == 0 && */
 					if(request.options['overlayPage']) {
-						e107Event.trigger('ajax_loading_end', request.options);						
+						e107Event.trigger('ajax_loading_end', request.options, request.options.overlayPage);						
 					} else if(request.options['overlayElement']) { 
-						e107Event.trigger('ajax_loading_element_end', request.options);
+						e107Event.trigger('ajax_loading_element_end', request.options, request.options.overlayElement);
 					}
 					
 					if(request.options['updateElement']) { 
