@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-01-15 15:42:24 $
+ * $Revision: 1.22 $
+ * $Date: 2009-01-16 17:57:56 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -47,6 +47,18 @@ function headerjs()
 				'Helper': true,
 				'AdminMenu': false
 			}
+
+			//fix form action if needed
+			document.observe('dom:loaded', function() {
+				if($('core-newspost-create-form')) {
+					$('core-newspost-create-form').observe('submit', function(event) {
+						var form = event.element();
+						action = form.readAttribute('action') + document.location.hash;
+						if($('create-edit-stay-1') && $('create-edit-stay-1').checked)
+							form.writeAttribute('action', action);
+					});
+				}
+			});
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 	";
@@ -335,17 +347,24 @@ class admin_newspost
 			$_POST['cat_id'] = 1;
 		}
 
+		if(isset($_POST['news_thumbnail']))
+		{
+			$_POST['news_thumbnail'] = urldecode(basename($_POST['news_thumbnail']));
+		}
+
         $tmp = explode(chr(35), $_POST['news_author']);
         $_POST['news_author'] = $tmp[0];
 
-		//$this->show_message($ix->submit_item($_POST), E_MESSAGE_SUCCESS, true);
-		//unset($_POST['news_title'], $_POST['cat_id'], $_POST['data'], $_POST['news_extended'], $_POST['news_allow_comments'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['news_id'], $_POST['news_class']);
-		$ix->submit_item($_POST, true);
+        $sess = !(isset($_POST['create_edit_stay']) && !empty($_POST['create_edit_stay']));
+		$ix->submit_item($_POST, $sess);
         $this->clear_cache();
 
-		session_write_close();
-		header('Location:'.e_SELF);
-		exit;
+        if($sess)
+        {
+			session_write_close();
+			header('Location:'.e_SELF);
+			exit;
+        }
 	}
 
 	function _observe_create_category()
@@ -512,7 +531,7 @@ class admin_newspost
 					$sicon = (file_exists(THEME_ABS."images/sticky.png") ? THEME_ABS."images/sticky.png" : e_IMAGE_ABS."generic/sticky.png");
 					$text .= " <img src='".$sicon."' alt='' />";
 				}
-				//TODO - remove onclick events
+
 				$text .= "
 									</td>
 									<td class='center'>
@@ -651,6 +670,11 @@ class admin_newspost
 		}
 
 		$text .= "
+		<div class='admintabs' id='tab-container'>
+			<ul class='e-tabs e-hideme' id='core-emote-tabs'>
+				<li id='tab-general'><a href='#core-newspost-create'>".LAN_NEWS_52."</a></li>
+				<li id='tab-advanced'><a href='#core-newspost-edit-options'>".LAN_NEWS_53."</a></li>
+			</ul>
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='core-newspost-create-form' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
 				<fieldset id='core-newspost-create'>
 					<legend>".LAN_NEWS_52."</legend>
@@ -851,7 +875,7 @@ class admin_newspost
 		$parms .= "&path=".e_IMAGE."newspost_images/";
 		$parms .= "&filter=0";
 		$parms .= "&fullpath=1";
-		$parms .= "&default=".urlencode('{e_IMAGE}newspost_images/'.$_POST['news_thumbnail']);
+		$parms .= "&default=".urlencode(basename($_POST['news_thumbnail']));
 		$parms .= "&multiple=FALSE";
 		$parms .= "&label=-- ".LAN_NEWS_48." --";
 		$parms .= "&subdirs=0";
@@ -1065,10 +1089,11 @@ class admin_newspost
 				<div class='buttons-bar center'>
 					".$frm->admin_button('preview', isset($_POST['preview']) ? NWSLAN_24 : NWSLAN_27 , 'submit')."
 					".$frm->admin_button('submit_news', ($id && $sub_action != "sn" && $sub_action != "upload") ? NWSLAN_25 : NWSLAN_26 , 'update')."
+					".$frm->checkbox('create_edit_stay', 1, isset($_POST['create_edit_stay'])).$frm->label(LAN_NEWS_54, 'create_edit_stay', 1)."
 					<input type='hidden' name='news_id' value='{$id}' />
 				</div>
 			</form>
-
+		</div>
 
 		";
 
@@ -1138,7 +1163,7 @@ class admin_newspost
 		$_PR['news_summary'] = $e107->tp->post_toHTML($_PR['news_summary']);
 		$_PR['news_extended'] = $e107->tp->post_toHTML($_PR['news_extended']);
 		$_PR['news_file'] = $_POST['news_file'];
-		$_PR['news_image'] = $_POST['news_image'];
+		$_PR['news_thumbnail'] = basename($_POST['news_thumbnail']);
 
 		//$ix->render_newsitem($_PR);
 
@@ -1167,26 +1192,23 @@ class admin_newspost
 		$emessage->add($message, $type, $session);
 	}
 
-	function show_categories($sub_action, $id)
+	function show_categories()
 	{
-		global $sql, $rs, $ns, $tp, $frm;
-		$handle = opendir(e_IMAGE."icons");
-		while ($file = readdir($handle)) {
-			if ($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS") {
-				$iconlist[] = $file;
-			}
-		}
-		closedir($handle);
+		require_once(e_HANDLER."userclass_class.php");
+		require_once(e_HANDLER."form_handler.php");
+		$frm = new e_form(true); //enable inner tabindex counter
 
-		if ($sub_action == "edit") {
-			if ($sql->db_Select("news_category", "*", "category_id='$id' ")) {
-				$row = $sql->db_Fetch();
-				extract($row);
+		$e107 = &e107::getInstance();
+
+		$category = array();
+		if ($this->getSubAction() == "edit") {
+			if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId())) {
+				$category = $e107->sql->db_Fetch();
 			}
 		}
 
 		$text = "
-			<form method='post' action='".e_SELF."?cat' id='core-newspost-cat-create'>
+			<form method='post' action='".e_SELF."?cat' id='core-newspost-cat-create-form'>
 				<fieldset id='core-newspost-cat-create'>
 					<legend>".NWSLAN_56."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminform'>
@@ -1198,42 +1220,29 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_52."</td>
 								<td class='control'>
-									".$frm->text('category_name', $category_name, 200)."
+									".$frm->text('category_name', $category['category_name'], 200)."
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_53."</td>
 								<td class='control'>
-									<div class='field-spacer'>
-										".$frm->text('category_button', $category_icon, 100)."
-									</div>
-									<div class='field-spacer'>
-										".$frm->admin_button('view_images', NWSLAN_54, 'action', NWSLAN_54, array('other'=>"onclick='e107Helper.toggle(\"caticn\")'"))."
-									</div>
-									<div id='caticn' class='e-hideme'>
-		";
-
-		while (list($key, $icon) = each($iconlist)) {
-			$text .= "
-										<a href=\"javascript:insertext('$icon','category_button','caticn')\"><img src='".e_IMAGE."icons/".$icon."' alt='' /></a>
-			";
-		}
-
-		$text .= "
-									</div>
+									".$frm->iconpicker('category_button', $category['category_icon'], NWSLAN_54)."
 								</td>
 							</tr>
 						</tbody>
 					</table>
 					<div class='buttons-bar center'>
 		";
-		if ($id) {
+		if($category)
+		{
 			$text .= "
 				".$frm->admin_button('update_category', NWSLAN_55, 'update')."
-				".$frm->admin_button('category_clear', NWSLAN_79)."
-				".$frm->hidden("category_id", $id)."
+				".$frm->admin_button('category_clear', LAN_CANCEL, 'cancel')."
+				".$frm->hidden("category_id", $this->getId())."
 			";
-			} else {
+		}
+		else
+		{
 			$text .= "
 				".$frm->admin_button('create_category', NWSLAN_56, 'create')."
 			";
@@ -1245,9 +1254,6 @@ class admin_newspost
 			</form>
 		";
 
-		//$ns->tablerender(NWSLAN_56, $text);
-
-		unset($category_name, $category_icon);
 		//XXX LAN - Icon
 		$text .= "
 			<form action='".e_SELF."?cat' id='newscatform' method='post'>
@@ -1270,22 +1276,22 @@ class admin_newspost
 						</thead>
 						<tbody>
 		";
-		if ($category_total = $sql->db_Select("news_category")) {
-			while ($row = $sql->db_Fetch()) {
-				extract($row);
+		if ($category_total = $e107->sql->db_Select("news_category")) {
+			while ($category = $e107->sql->db_Fetch()) {
 
-				if ($category_icon) {
-					$icon = (strstr($category_icon, "images/") ? THEME."$category_icon" : e_IMAGE."icons/$category_icon");
+				if ($category['category_icon']) {
+					$icon = (strstr($category['category_icon'], "images/") ? THEME_ABS.$category['category_icon'] : e_IMAGE_ABS."icons/".$category['category_icon']);
 				}
 
 				$text .= "
 							<tr>
-								<td class='center'>{$category_id}</td>
-								<td class='center'><img src='$icon' alt='' style='vertical-align:middle' /></td>
-								<td>$category_name</td>
+								<td class='center'>{$category['category_id']}</td>
+								<td class='center'><img class='icon action' src='{$icon}' alt='' /></td>
+								<td>{$category['category_name']}</td>
 								<td class='center'>
-									<a href='".e_SELF."?cat.edit.{$category_id}'>".ADMIN_EDIT_ICON."</a>
-									<input type='image' title='".LAN_DELETE."' name='delete[category_{$category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NWSLAN_37." [ID: $category_id ]")."') \"/>
+									<a href='".e_SELF."?cat.edit.{$category['category_id']}'>".ADMIN_EDIT_ICON."</a>
+									".$frm->submit_image("delete[category_{$category['category_id']}]", $category['category_id'], 'delete', $e107->tp->toJS(NWSLAN_37." [ID: {$category['category_id']} ]"))."
+
 								</td>
 							</tr>
 				";
@@ -1304,7 +1310,7 @@ class admin_newspost
 		</form>
 		";
 
-		$ns->tablerender(NWSLAN_46, $text);
+		$e107->ns->tablerender(NWSLAN_46, $text);
 	}
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/e_ajax.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-11-09 20:33:24 $
+|     $Revision: 1.6 $
+|     $Date: 2009-01-16 17:57:57 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ ob_implicit_flush(0);
 	if($_POST['ajax_sc'] && $_POST['ajax_used'])
 	{
 		list($fld,$parm) = explode("=",$_POST['ajax_sc']);
-		$prm = ($parm) ? "=".$parm : "";
+		$prm = ($parm) ? "=".urldecode($parm) : "";
 		echo $tp->parseTemplate("{".strtoupper($fld).$prm."}",TRUE,$shortcodes);
 		exit;
 	}

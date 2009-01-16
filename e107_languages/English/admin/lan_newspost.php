@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-01-15 15:42:24 $
+|     $Revision: 1.6 $
+|     $Date: 2009-01-16 17:57:56 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,7 @@ define("NWSLAN_76", "Title only - post to front page");
 define("NWSLAN_77", "Post to other news menu");
 
 // define("NWSLAN_78", "This option is disabled as file uploading is not enabled on your server");  // deprecated see lan_admin.php
-define("NWSLAN_79","Clear Form");
+//define("NWSLAN_79","Clear Form");
 
 define("NWSLAN_83","Extended news post");
 define("NWSLAN_84","Choose which visitors will see news item");
@@ -171,5 +171,6 @@ define("LAN_NEWS_50", "Author");
 define("LAN_NEWS_51", "Modification of the news-item author can be done by:");
 
 define("LAN_NEWS_52", "General Information");
-define("LAN_NEWS_53", "News Item Options");
+define("LAN_NEWS_53", "Advanced Options");
+define("LAN_NEWS_54", "stay in edit mode");
 ?>

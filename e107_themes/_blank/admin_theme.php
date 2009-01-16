@@ -34,7 +34,15 @@ function theme_head() {
             	e107Utils.Decorate.table(element, {tr_td: 'first last'});
             });
 			element.select('div.admintabs').each(function(element) {
+				//show tab navaigation
+				element.select('ul.e-tabs').each( function(el){
+					el.show();
+					el.removeClassName('e-hideme');//prevent hideme re-register (e.g. ajax load)
+				});
+				//init tabs
             	new e107Widgets.Tabs(element);
+            	//hide legends if any
+            	element.select('legend').invoke('hide');
             });
 
         }, document, true);

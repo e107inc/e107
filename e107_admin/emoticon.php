@@ -9,8 +9,8 @@
  * Administration Area - Emotions Settings & Packs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-18 16:55:45 $
+ * $Revision: 1.13 $
+ * $Date: 2009-01-16 17:57:56 $
  * $Author: secretr $
  *
 */
@@ -136,13 +136,13 @@ class emotec
 
 		$text = "
 	<div class='admintabs' id='tab-container'>
-		<ul class='e-tabs' id='core-emote-tabs'>
+		<ul class='e-tabs e-hideme' id='core-emote-tabs'>
 			<li id='tab-activate'><a href='#emoticon-activate'>".EMOLAN_1."</a></li>
 			<li id='tab-packages'><a href='#emoticon-packages'>".EMOLAN_13."</a></li>
 		</ul>
 		<form method='post' action='".e_SELF."'>
 			<fieldset id='emoticon-activate'>
-				<legend class='e-hideme'>".EMOLAN_1."</legend>
+				<legend'>".EMOLAN_1."</legend>
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 					<colgroup span='2'>
 						<col style='width:30%' />
@@ -171,7 +171,7 @@ class emotec
 		$text .= "
 			<form method='post' action='".e_SELF."#etabTabContainer=emoticon-packages'>
 				<fieldset id='emoticon-packages'>
-					<legend class='e-hideme'>".EMOLAN_13."</legend>
+					<legend>".EMOLAN_13."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminlist'>
 						<colgroup span='4'>
 							<col style='width:15%' />

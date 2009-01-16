@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.19 $
- * $Date: 2008-12-21 12:53:11 $
+ * $Revision: 1.20 $
+ * $Date: 2009-01-16 17:57:56 $
  * $Author: secretr $
  *
 */
@@ -189,29 +189,30 @@ if(isset($_POST['add_link']))
 
 $linkArray = $linkpost->getLinks();
 
-if($action == 'create')
-{
-	$linkpost->create_link($sub_action, $id);
-}
+switch ($action) {
+	case 'create':
+		$linkpost->create_link($sub_action, $id);
+	break;
 
-if(!e_QUERY || $action == 'main')
-{
-	$linkpost->show_existing_items();
-}
+	case 'debug':
+		$linkpost->show_existing_items(TRUE);
+	break;
 
-if($action == 'debug')
-{
-	$linkpost->show_existing_items(TRUE);
-}
+	case 'opt':
+		$linkpost->show_pref_options();
+	break;
 
-if($action == 'opt')
-{
-	$linkpost->show_pref_options();
-}
+	case 'sublinks':
+		$linkpost->show_sublink_generator();
+	break;
 
-if($action == "sublinks")
-{
-	$linkpost->show_sublink_generator();
+	case 'savepreset':
+	case 'clr_preset':
+	default: //handles preset urls as well
+		$action = 'main';
+		$sub_action = $id = '';
+		$linkpost->show_existing_items();
+	break;
 }
 
 require_once ('footer.php');
@@ -488,6 +489,9 @@ class links
 	function create_link($sub_action, $id)
 	{
 		global $sql, $e107, $pst, $tp, $emessage;
+
+		$frm = new e_form();
+
 		$preset = $pst->read_preset("admin_links");
 		extract($preset);
 
@@ -560,34 +564,14 @@ class links
 							<tr>
 								<td class='label'>".LCLAN_18.": </td>
 								<td class='control'>
-									<input class='tbox input-text' type='text' id='link_button' name='link_button' size='42' value='{$link_button}' maxlength='100' />
-									<button class='submit' type='button' value='".LCLAN_39."' onclick='e107Helper.toggle(\"linkicn\")'><span>".LCLAN_39."</span></button>
-									<div id='linkicn' class='e-hideme'>
-										<div class='expand-container'>
+
 			";
-		//SecretR - more nice view
-		$tmp = array('_16', '_32', '_48', '_64', '_128');
-		$tmp1 = array();
-		foreach($iconlist as $icon)
-		{
 
-			$filepath = str_replace(e_IMAGE."icons/", "", $icon['path'].$icon['fname']);
-			$str = "<a href='#' onclick=\"e107Helper.insertText('".$filepath."','link_button','linkicn'); return false; \"><img class='icon list' src='".$icon['path'].$icon['fname']."' alt='' /></a>";
-
-			foreach ($tmp as $isize)
-			{
-				if(strpos($filepath, $isize) !== false)
-				{
-					$tmp1[$isize] = varset($tmp1[$isize]).$str;
-					continue 2;
-				}
-			}
-			$tmp1['other'] = varset($tmp1['other']).$str;//other
-		}
-		$text .= $tmp1 ? '<div class="clear">'.implode('</div><div class="clear">', $tmp1).'</div>' : '';
-		unset($tmp, $tmp1);
-		//End view
-
+		//SecretR - more nice view now handled by e_form (inner use of new sc {ICONPICKER})
+		//Example sc opts (4th func argument)
+		//$opts = 'path='.e_IMAGE.'icons/|'.e_IMAGE.'generic/';
+		//$opts .= '&path_omit='.e_IMAGE.'icons/';
+		$text .= $frm->iconpicker('link_button', $link_button, LCLAN_39);
 
 		// 1 = _blank
 		// 2 = _parent   not in use.
@@ -599,8 +583,7 @@ class links
 
 
 		$text .= "
-										</div>
-									</div>
+
 								</td>
 							</tr>
 							<tr>

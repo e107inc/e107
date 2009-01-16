@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-01-15 15:42:24 $
+ * $Revision: 1.16 $
+ * $Date: 2009-01-16 17:57:56 $
  * $Author: secretr $
  *
 */
@@ -76,6 +76,24 @@ class e_form
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
+	}
+
+	function iconpicker($name, $default, $label, $sc_parameters = '', $ajax = true)
+	{
+		$e107 = &e107::getInstance();
+		$id = $this->name2id($name);
+		$sc_parameters .= '&id='.$id;
+		$jsfunc = $ajax ? "e107Ajax.toggleUpdate('{$id}-iconpicker', '{$id}-iconpicker-cn', 'sc:iconpicker=".urlencode($sc_parameters)."', '{$id}-iconpicker-ajax', { overlayElement: '{$id}-iconpicker-button' })" : "e107Helper.toggle('{$id}-iconpicker')";
+		$ret = $this->text($name, $default).$this->admin_button($name.'-iconpicker-button', $label, 'action', '', array('other' => "onclick=\"{$jsfunc}\""));
+		$ret .= "
+			<div id='{$id}-iconpicker' class='e-hideme'>
+				<div class='expand-container' id='{$id}-iconpicker-cn'>
+					".(!$ajax ? $e107->tp->parseTemplate('{ICONPICKER='.$sc_parameters.'}') : '')."
+				</div>
+			</div>
+		";
+
+		return $ret;
 	}
 
 	function file($name, $options = array())
@@ -320,14 +338,14 @@ class e_form
 	 * @param string $id_value value for attribute id passed with the option array
 	 * @param string $name the name attribute passed to that field
 	 * @param unknown_type $value the value attribute passed to that field
-	 * @return unknown
+	 * @return string formatted id attribute
 	 */
 	function _format_id($id_value, $name, $value = '', $return_attribute = 'id')
 	{
 		if($id_value === false) return '';
 
 		//format data first
-		$name = rtrim(str_replace(array('[]', '[', ']', '_'), array('-', '-', '', '-'), $name), '-');
+		$name = $this->name2id($name);
 		$value = trim(preg_replace('#[^a-z0-9\-]/i#','-', $value), '-');
 
 		if(!$id_value && is_numeric($value)) $id_value = $value;
@@ -335,6 +353,11 @@ class e_form
 		if(empty($id_value) ) return " {$return_attribute}='{$name}".($value ? "-{$value}" : '')."'";// also useful when name is e.g. name='my_name[some_id]'
 		elseif(is_numeric($id_value) && $name) return " {$return_attribute}='{$name}-{$id_value}'";// also useful when name is e.g. name='my_name[]'
 		else return " {$return_attribute}='{$id_value}'";
+	}
+
+	function name2id($name)
+	{
+		return rtrim(str_replace(array('[]', '[', ']', '_'), array('-', '-', '', '-'), $name), '-');
 	}
 
 
