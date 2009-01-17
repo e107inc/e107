@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-29 20:51:07 $
-|     $Author: lisa_ $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Tagwords Class
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_class.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-01-17 22:46:37 $
+ * $Author: lisa_ $
+ *
 */
 
 if(!defined("TAG_TEXTAREA_COLS")){ define("TAG_TEXTAREA_COLS", "70"); }
@@ -41,15 +39,15 @@ class tagwords
 	*/
 	function tagwords()
 	{
-		global $pref, $tp, $TEMPLATE_TAGWORDS, $tagwords_shortcodes;
+		global $pref, $TEMPLATE_TAGWORDS, $tagwords_shortcodes;
 
-		$this->tp = $tp;
+		$this->e107 = e107::getInstance();
 
 		//language
 		include_lan(e_PLUGIN."tagwords/languages/".e_LANGUAGE.".php");
 		
 		//shortcodes
-		require_once(e_PLUGIN.'tagwords/tagwords_shortcodes.php');
+		require_once(e_PLUGIN.'tagwords/tagwords_shortcodes_class.php');
 		$this->shortcodes = $tagwords_shortcodes;
 
 		//template
@@ -159,10 +157,10 @@ class tagwords
 		$this->word = false;
 		if( $ret = $this->getRecords($tag_type, $tag_itemid) )
 		{
-			$this->word = $this->tp->toForm($ret);
+			$this->word = $this->e107->tp->toForm($ret);
 		}
-		$caption = $this->tp->parseTemplate($this->template['caption'], FALSE, $this->shortcodes);
-		$text = $this->tp->parseTemplate($this->template['form'], FALSE, $this->shortcodes);
+		$caption = $this->e107->tp->parseTemplate($this->template['caption'], true, $this->shortcodes);
+		$text = $this->e107->tp->parseTemplate($this->template['form'], true, $this->shortcodes);
 		return array('caption'=>$caption, 'text'=>$text);
 	}
 
@@ -174,13 +172,13 @@ class tagwords
 	* @param boolean $link return hyperlink to taglist on words
 	* @return array $ret array of tagwords
 	*/
-	function getRecords($tag_type='', $tag_itemid='', $returnwordsonly=FALSE, $link=TRUE)
+	function getRecords($tag_type='', $tag_itemid='', $returnwordsonly=false, $link=true)
 	{
 		$sqlgr = new db;
 	
 		$qry = "
 		SELECT tag_word FROM #".$this->table." 
-		WHERE tag_type='".$this->tp->toDB($tag_type)."' 
+		WHERE tag_type='".$this->e107->tp->toDB($tag_type)."' 
 		AND tag_itemid='".intval($tag_itemid)."' 
 		ORDER BY tag_word ";
 
@@ -196,7 +194,7 @@ class tagwords
 				$arr = array();
 				foreach($ret as $word)
 				{
-					$word = $this->tp->toHTML($word,TRUE,'no_hook, emotes_off');
+					$word = $this->e107->tp->toHTML($word,true,'no_hook, emotes_off');
 					$arr[] = ($link ? trim($this->createTagWordLink($word)) : $word);
 				}
 				return implode($this->pref['tagwords_word_seperator'], $arr);
@@ -272,9 +270,9 @@ class tagwords
 	function createTagWordLink($word, $class='')
 	{
 		$word = trim($word);
-		$qry = $this->tp->toDB($word);
+		$qry = $this->e107->tp->toDB($word);
 		$qry = str_replace(' ', '+', $qry);
-		$word = $this->tp->toHTML($word,TRUE,'no_hook, emotes_off');
+		$word = $this->e107->tp->toHTML($word,true,'no_hook, emotes_off');
 		$class = ($class ? "class='tag".intval($class)."'" : "");
 		return "<a href='".e_PLUGIN."tagwords/tagwords.php?q=".$qry."' ".$class." title=''>".$word."</a> ";
 	}
@@ -288,14 +286,12 @@ class tagwords
 	*/
 	function dbTagWords($tag_type='', $tag_itemid='', $tag_word='')
 	{
-		global $sql;
-
 		//prepare data
-		$tag_type = $this->tp->toDB($tag_type);
+		$tag_type = $this->e107->tp->toDB($tag_type);
 		$tag_itemid = intval($tag_itemid);
 
 		//get existing word records
-		$existing_array = $this->getRecords($tag_type, $tag_itemid, FALSE);
+		$existing_array = $this->getRecords($tag_type, $tag_itemid, false);
 		$existing = explode("\n", $existing_array);
 
 		//create array of new posted words
@@ -306,8 +302,8 @@ class tagwords
 		foreach($delete_diff as $word)
 		{
 			$word = trim($word);
-			$word = $this->tp->toDB($word);
-			$sql->db_Delete($this->table, "tag_type='".$tag_type."' AND tag_itemid='".$tag_itemid."' AND tag_word='".$word."'");
+			$word = $this->e107->tp->toDB($word);
+			$this->e107->sql->db_Delete($this->table, "tag_type='".$tag_type."' AND tag_itemid='".$tag_itemid."' AND tag_word='".$word."'");
 		}
 
 		//insert the differences (insert what has been added)
@@ -315,8 +311,13 @@ class tagwords
 		foreach($insert_diff as $word)
 		{
 			$word = trim($word);
-			$word = $this->tp->toDB($word);
-			$sql->db_Insert($this->table, "'0', '".$tag_type."', '".$tag_itemid."', '".$word."' ");
+			$word = $this->e107->tp->toDB($word);
+			$args = array();
+			$args['tag_id'] = 0;
+			$args['tag_type'] = $tag_type;
+			$args['tag_itemid'] = $tag_itemid;
+			$args['tag_word'] = $word;
+			$this->e107->sql->db_Insert($this->table, $args);
 		}
 		return "<br />".LAN_TAG_3;
 	}
@@ -327,9 +328,8 @@ class tagwords
 	* @param string $tag_itemid itemid
 	*/
 	function dbDelete($tag_type='', $tag_itemid='')
-	{	
-		global $sql;
-		$sql->db_Delete($this->table, "tag_type='".$tag_type."' AND tag_itemid='".$tag_itemid."' ");
+	{
+		$this->e107->sql->db_Delete($this->table, "tag_type='".$tag_type."' AND tag_itemid='".$tag_itemid."' ");
 	}
 
 	/*
@@ -339,8 +339,6 @@ class tagwords
 	*/
 	function getAllTagWords($tagarea='')
 	{
-		global $sql;
-
 		$tag_type='';
 
 		$allowed = $this->getAllowedAreas();
@@ -383,13 +381,13 @@ class tagwords
 		WHERE tag_word!='' ".$typeqry."
 		GROUP BY tag_word HAVING COUNT(tag_word)>=".intval($this->pref['tagwords_min'])." ".$menuqry." ";
  
-		if($sql->db_Select_gen($qry))
+		if($this->e107->sql->db_Select_gen($qry))
 		{
 			$ret=array();
-			while($row=$sql->db_Fetch())
+			while($row=$this->e107->sql->db_Fetch())
 			{
 				$word = trim($row['tag_word']);
-				$word = $this->tp->toHTML($word,TRUE,'no_hook, emotes_off');
+				$word = $this->e107->tp->toHTML($word,true,'no_hook, emotes_off');
 				$ret[$word] = $row['number'];
 			}
 			return $ret;
@@ -504,8 +502,7 @@ class tagwords
 				break;
 			case 'ns':
 			default:
-				global $ns;
-				$ns->tablerender($caption, "<div style='text-align:center'><b>".$message."</b></div>");
+				$this->e107->ns->tablerender($caption, "<div style='text-align:center'><b>".$message."</b></div>");
 				break;
 		}
 	}
@@ -517,9 +514,7 @@ class tagwords
 	*/
 	function TagRender()
 	{
-		global $ns;
-
-		$type = FALSE;
+		$type = false;
 
 		//decide whether to show the taglist or the tagcloud
 		
@@ -549,13 +544,13 @@ class tagwords
 		//show the taglist or tagcloud
 		if($type=='list')
 		{
-			$text = $this->tp->parseTemplate($this->template['cloudlist'], FALSE, $this->shortcodes);
-			$ns->tablerender(LAN_TAG_17, $text);
+			$text = $this->e107->tp->parseTemplate($this->template['cloudlist'], true, $this->shortcodes);
+			$this->e107->ns->tablerender(LAN_TAG_17, $text);
 		}
 		else
 		{
-			$text = $this->tp->parseTemplate($this->template['cloud'], FALSE, $this->shortcodes);
-			$ns->tablerender(LAN_TAG_16, $text);
+			$text = $this->e107->tp->parseTemplate($this->template['cloud'], true, $this->shortcodes);
+			$this->e107->ns->tablerender(LAN_TAG_16, $text);
 		}
 		return;
 	}
@@ -568,17 +563,16 @@ class tagwords
 	*/
 	function getRecordsByTag($word='')
 	{
-		global $sql;
 		$typeqry = '';
 		$allowed = $this->getAllowedAreas();
 		if(count($allowed)>0)
 		{
 			$typeqry = " AND tag_type IN ('".implode("','", $allowed)."') ";
 		}
-		if($sql->db_Select_gen("SELECT tag_type, tag_itemid FROM #".$this->table." WHERE tag_word REGEXP('".$this->tp->toDB($word)."') ".$typeqry." "))
+		if($this->e107->sql->db_Select_gen("SELECT tag_type, tag_itemid FROM #".$this->table." WHERE tag_word REGEXP('".$this->e107->tp->toDB($word)."') ".$typeqry." "))
 		{
 			$ret = array();
-			while($row=$sql->db_Fetch())
+			while($row=$this->e107->sql->db_Fetch())
 			{
 				$ret[$row['tag_type']][] = $row['tag_itemid'];
 			}
@@ -593,7 +587,7 @@ class tagwords
 	*/
 	function TagSearchResults()
 	{
-		global $sql, $ns, $row;
+		global $row;
 
 		//the full search query + every single word in the query will be used to search
 		$_GET['q'] = str_replace('+', ' ', $_GET['q']);
@@ -635,7 +629,7 @@ class tagwords
 
 		$this->num = count($records, 1) - count($records);
 
-		$text = $this->tp->parseTemplate($this->template['intro'], FALSE, $this->shortcodes);
+		$text = $this->e107->tp->parseTemplate($this->template['intro'], true, $this->shortcodes);
 
 		foreach($records as $type=>$ids)
 		{
@@ -646,7 +640,7 @@ class tagwords
 				$this->area = $this->$ins;
 
 				//area (news, content, ...)
-				$text .= $this->tp->parseTemplate($this->template['area'], FALSE, $this->shortcodes);
+				$text .= $this->e107->tp->parseTemplate($this->template['area'], true, $this->shortcodes);
 
 				//records for found related tagword
 				$text .= $this->template['link_start'];
@@ -656,13 +650,13 @@ class tagwords
 					if(method_exists($this->area, 'getRecord'))
 					{
 						$this->area->getRecord($this->id);
-						$text .= $this->tp->parseTemplate($this->template['link_item'], FALSE, $this->shortcodes);
+						$text .= $this->e107->tp->parseTemplate($this->template['link_item'], true, $this->shortcodes);
 					}
 				}
 				$text .= $this->template['link_end'];
 			}
 		}
-		$ns->tablerender(LAN_TAG_1, $text);
+		$this->e107->ns->tablerender(LAN_TAG_1, $text);
 
 		return;
 	}
@@ -673,8 +667,6 @@ class tagwords
 	*/
 	function TagCloud($mode='')
 	{
-		global $sql;
-
 		if($mode=='menu')
 		{
 			$t_start = $this->template['menu_cloud_start'];
@@ -722,7 +714,7 @@ class tagwords
 			$class = ceil($min_size + (($value - $min_qty) * $step));
 			$this->word = $this->createTagWordLink($key, $class);
 			$this->number = $value;
-			$text .= $this->tp->parseTemplate($t_item, FALSE, $this->shortcodes);
+			$text .= $this->e107->tp->parseTemplate($t_item, true, $this->shortcodes);
 		}
 		$text .= $t_end;
 		return $text;
@@ -734,8 +726,6 @@ class tagwords
 	*/
 	function TagCloudList()
 	{
-		global $sql;
-
 		$tags = $this->getAllTagWords();
 		$tags = $this->TagSort($tags);
 		if(!is_array($tags))
@@ -744,11 +734,11 @@ class tagwords
 		}
 
 		$text = $this->template['cloudlist_start'];
-		foreach ($tags as $key => $value)
+		foreach($tags as $key => $value)
 		{
 			$this->word = $this->createTagWordLink($key);
 			$this->number = $value;
-			$text .= $this->tp->parseTemplate($this->template['cloudlist_item'], FALSE, $this->shortcodes);
+			$text .= $this->e107->tp->parseTemplate($this->template['cloudlist_item'], true, $this->shortcodes);
 		}
 		$text .= $this->template['cloudlist_end'];
 		return $text;
@@ -794,18 +784,16 @@ class tagwords
 	*/
 	function get_prefs()
 	{
-		global $sql, $eArrayStorage;
-
-		$num_rows = $sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='".$this->table."' ");
+		$num_rows = $this->e107->sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='".$this->table."' ");
 		if($num_rows == 0)
 		{
 			$p = $this->default_prefs();
-			$tmp = $eArrayStorage->WriteArray($p);
-			$sql->db_Insert("core", "'".$this->table."', '{$tmp}' ");
-			$sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='".$this->table."' ");
+			$tmp = $this->e107->arrayStorage->WriteArray($p);
+			$this->e107->sql->db_Insert("core", "'".$this->table."', '{$tmp}' ");
+			$this->e107->sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='".$this->table."' ");
 		}
-		$row = $sql->db_Fetch();
-		$p = $eArrayStorage->ReadArray($row['e107_value']);
+		$row = $this->e107->sql->db_Fetch();
+		$p = $this->e107->arrayStorage->ReadArray($row['e107_value']);
 		
 		//validation
 		if(!array_key_exists('tagwords_activeareas', $p))
@@ -821,33 +809,31 @@ class tagwords
 	*/
 	function update_prefs()
 	{
-		global $sql, $eArrayStorage;
-
-		$num_rows = $sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='".$this->table."' ");
+		$num_rows = $this->e107->sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='".$this->table."' ");
 		if ($num_rows == 0)
 		{
 			$p = $this->default_prefs();
-			$tmp = $eArrayStorage->WriteArray($p);
-			$sql->db_Insert("core", "'".$this->table."', '{$tmp}' ");
+			$tmp = $this->e107->arrayStorage->WriteArray($p);
+			$this->e107->sql->db_Insert("core", "'".$this->table."', '{$tmp}' ");
 		}
 		else
 		{
-			$row = $sql->db_Fetch();
+			$row = $this->e107->sql->db_Fetch();
 
 			//assign new preferences
 			foreach($_POST as $k => $v)
 			{
 				if(preg_match("#^tagwords_#",$k))
 				{
-					$tagwords_pref[$k] = $this->tp->toDB($v);
+					$tagwords_pref[$k] = $this->e107->tp->toDB($v);
 				}
 			}
 			$this->pref = $tagwords_pref;
 
 			//create new array of preferences
-			$tmp = $eArrayStorage->WriteArray($tagwords_pref);
+			$tmp = $this->e107->arrayStorage->WriteArray($tagwords_pref);
 
-			$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = '".$this->table."' ");
+			$this->e107->sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = '".$this->table."' ");
 		}
 		return;
 	}
@@ -858,11 +844,11 @@ class tagwords
 	*/
 	function validate()
 	{
-		global $sql, $sql2;
+		global $sql2;
 
-		if($sql->db_Select_gen("SELECT * FROM #".$this->table." GROUP BY tag_type, tag_itemid ORDER BY tag_id"))
+		if($this->e107->sql->db_Select_gen("SELECT * FROM #".$this->table." GROUP BY tag_type, tag_itemid ORDER BY tag_id"))
 		{
-			while($row=$sql->db_Fetch())
+			while($row=$this->e107->sql->db_Fetch())
 			{
 				if(array_key_exists($row['tag_type'], $this->mapper))
 				{
@@ -882,12 +868,10 @@ class tagwords
 	*/
 	function tagwords_options()
 	{
-		global $ns;
-
 		$this->validate();
 
-		$text = $this->tp->parseTemplate($this->template['admin_options'], FALSE, $this->shortcodes);
-		$ns->tablerender(LAN_TAG_OPT_1, $text);
+		$text = $this->e107->tp->parseTemplate($this->template['admin_options'], true, $this->shortcodes);
+		$this->e107->ns->tablerender(LAN_TAG_OPT_1, $text);
 	}
 
 } //end class
