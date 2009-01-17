@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2009-01-09 17:25:50 $
-|     $Author: secretr $
+|     $Revision: 1.28 $
+|     $Date: 2009-01-17 20:59:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -286,46 +286,46 @@ class e107
 	// If return permitted, will never display a message for a banned user; otherwise will display any message then exit
 	function check_ban($query,$show_error=TRUE, $do_return = FALSE)
 	{
-	  global $sql, $tp, $pref, $admin_log, $e107;
-//	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
-	  if ($sql->db_Select('banlist','*',$query.' ORDER BY `banlist_bantype` DESC'))
-	  {
-		// Any whitelist entries will be first - so we can answer based on the first DB record read
-		define('BAN_TYPE_WHITELIST',100);			// Entry for whitelist
-		$row = $sql->db_Fetch();
-		if ($row['banlist_bantype'] >= BAN_TYPE_WHITELIST)
+		global $sql, $tp, $pref, $admin_log, $e107;
+//	  	$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
+		if ($sql->db_Select('banlist','*',$query.' ORDER BY `banlist_bantype` DESC'))
 		{
-//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
-		  return TRUE;
+			// Any whitelist entries will be first - so we can answer based on the first DB record read
+			define('BAN_TYPE_WHITELIST',100);			// Entry for whitelist
+			$row = $sql->db_Fetch();
+			if ($row['banlist_bantype'] >= BAN_TYPE_WHITELIST)
+			{
+	//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
+				return TRUE;
+			}
+	
+			// Found banlist entry in table here
+			if (($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
+			{	// Ban has expired - delete from DB
+				$sql->db_Delete('banlist', $query);
+				return TRUE;
+			}
+	
+			if (varsettrue($pref['ban_retrigger']) && varsettrue($pref['ban_durations'][$row['banlist_bantype']]))
+			{	// May need to retrigger ban period
+				$sql->db_Update('banlist',
+					"`banlist_banexpires`=".intval(time() + ($pref['ban_durations'][$row['banlist_bantype']]*60*60)),
+					"WHERE `banlist_ip`='{$row['banlist_ip']}'");
+	//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
+			}
+	//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
+			if ($show_error) header("HTTP/1.1 403 Forbidden", true);
+			if (isset($pref['ban_messages']))
+			{  // May want to display a message
+			  // Ban still current here
+				if ($do_return) return FALSE;
+				echo $tp->toHTML(varsettrue($pref['ban_messages'][$row['banlist_bantype']]));		// Show message if one set
+			}
+			$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,'BAN_03','LAN_AUDIT_LOG_003',$query,FALSE,LOG_TO_ROLLING);
+			exit();
 		}
-
-		// Found banlist entry in table here
-		if (($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
-		{	// Ban has expired - delete from DB
-		  $sql->db_Delete('banlist', $query);
-		  return TRUE;
-		}
-
-		if (varsettrue($pref['ban_retrigger']) && varsettrue($pref['ban_durations'][$row['banlist_bantype']]))
-		{	// May need to retrigger ban period
-		  $sql->db_UpdateArray('banlist',
-			"`banlist_banexpires`=".intval(time() + ($pref['ban_durations'][$row['banlist_bantype']]*60*60)),
-			"WHERE `banlist_ip`='{$row['banlist_ip']}'");
-//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
-		}
-//	    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
-		if ($show_error) header("HTTP/1.1 403 Forbidden", true);
-		if (isset($pref['ban_messages']))
-		{  // May want to display a message
-		  // Ban still current here
-		  if ($do_return) return FALSE;
-		  echo $tp->toHTML(varsettrue($pref['ban_messages'][$row['banlist_bantype']]));		// Show message if one set
-		}
-		$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,'BAN_03','LAN_AUDIT_LOG_003',$query,FALSE,LOG_TO_ROLLING);
-		exit();
-	  }
-//	  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
-	  return TRUE;			// Email address OK
+//	  	$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
+		return TRUE;			// Email address OK
 	}
 
 
