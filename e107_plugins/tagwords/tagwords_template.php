@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-29 20:51:07 $
-|     $Author: lisa_ $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Tagwords Template
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_template.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-01-17 22:46:37 $
+ * $Author: lisa_ $
+ *
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -200,17 +198,5 @@ $TEMPLATE_TAGWORDS['admin_options'] = "
 </tr>
 </table>
 </form>";
-/*
-<tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_26."</td>
-	<td class='forumheader3'>
-		{TAG_OPT_VIEW_SORT} ".LAN_TAG_OPT_12."<br />
-		{TAG_OPT_VIEW_STYLE} ".LAN_TAG_OPT_13."<br />
-		{TAG_OPT_VIEW_AREA} ".LAN_TAG_OPT_14."<br />
-		{TAG_OPT_VIEW_SEARCH} ".LAN_TAG_OPT_19."<br />
-		{TAG_OPT_VIEW_FREQ} ".LAN_TAG_OPT_20."<br />
-	</td>
-</tr>
-*/
 
 ?>
