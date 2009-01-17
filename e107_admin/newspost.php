@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-01-16 17:57:56 $
+ * $Revision: 1.23 $
+ * $Date: 2009-01-17 01:30:35 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -480,13 +480,13 @@ class admin_newspost
 
 		$e107 = &e107::getInstance();
 
-		if (isset($_POST['searchquery']))
+		if (varsettrue($_POST['searchquery']))
 		{
-		$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
+			$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
 		}
 		else
 		{
-		$query = "ORDER BY ".($this->getSubAction() ? $this->getSubAction() : "news_datestamp")." ".strtoupper($sort_order)."  LIMIT ".$this->getFrom().", {$amount}";
+			$query = "ORDER BY ".($this->getSubAction() ? $this->getSubAction() : "news_datestamp")." ".strtoupper($sort_order)."  LIMIT ".$this->getFrom().", {$amount}";
 		}
 
 		if ($e107->sql->db_Select('news', '*', $query, ($_POST['searchquery'] ? 0 : "nowhere")))
@@ -551,7 +551,7 @@ class admin_newspost
 		}
 		else
 		{
-			$text .= "<div class='center'>".NWSLAN_43."</div>";
+			$text .= "<div class='center'>".isset($_POST['searchquery']) ? sprintf(NWSLAN_121, '<em>&quot;'.$_POST['searchquery'])."&quot;</em> <a href='".e_SELF."'>&laquo; ".LAN_BACK."</a>" : NWSLAN_43."</div>";
 		}
 
 		$newsposts = $e107->sql->db_Count('news');
@@ -842,10 +842,11 @@ class admin_newspost
 												".$frm->file('file_userfile[]')."
 												".$frm->select_open('uploadtype[]')."
 			";
+			
 			for ($i=0; $i<count($up_value); $i++)
 			{
 				$text .= $frm->option($up_name[$i], $up_value[$i], varset($_POST['uploadtype']) == $up_value[$i]);
-			};
+			}
 			//FIXME - upload shortcode, flexible enough to be used everywhere
 			$text .= "
 												</select>
@@ -1098,7 +1099,7 @@ class admin_newspost
 		";
 
 		$emessage = &eMessage::getInstance();
-		$e107->ns->tablerender(NWSLAN_29, $emessage->render().$text);
+		$e107->ns->tablerender($this->getSubAction() == 'edit' ? NWSLAN_29a : NWSLAN_29, $emessage->render().$text);
 	}
 
 
