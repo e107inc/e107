@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-01-17 01:30:35 $
+ * $Revision: 1.24 $
+ * $Date: 2009-01-17 22:48:14 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -31,6 +31,10 @@ $pst->id = "admin_newspost";
 // ------------------------------
 
 $newspost = new admin_newspost(e_QUERY, $pst);
+
+//Handle Ajax Calls
+if($newspost->ajax_observer()) exit;
+
 function headerjs()
 {
   	global $newspost;
@@ -62,6 +66,41 @@ function headerjs()
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 	";
+	
+	if($newspost->getAction() == 'cat')
+	{
+		$ret .= "
+		<script type='text/javascript'>
+			//Click observer
+            document.observe('dom:loaded', function(){
+            	\$\$('a.action[id^=core-news-catedit-]').each(function(element) { 
+					element.observe('click', function(event) {
+						event.stop();
+						var el = event.findElement('a');
+						$('core-newspost-cat-create-form').fillForm(\$\$('body')[0], { handler: el.readAttribute('href') });
+					});
+				});
+            });
+
+    	</script>
+		";
+	}
+	elseif ($newspost->getAction() == 'pref')
+	{
+		$ret .= "
+			<script type='text/javascript'>
+				document.observe('dom:loaded', function(){ 
+					\$('newsposts').observe('change', function(event) { console.log(event.element().readAttribute('tabindex'));
+						new e107Ajax.Updater(
+							'newsposts-archive-cont', 
+							'".e_SELF."?pref_archnum.' + (event.element().selectedIndex + 1) + '.' + event.element().readAttribute('tabindex'), 
+							{ overlayElement: 'newsposts-archive-cont' }
+						);
+					});
+				});
+			</script>
+			";
+	}
 	$ret .= $newspost->_cal->load_files();
 
    	return $ret;
@@ -162,6 +201,17 @@ class admin_newspost
 		$e107->ecache->clear("news.php");
 		$e107->ecache->clear("othernews");
 		$e107->ecache->clear("othernews2");
+	}
+	
+	function ajax_observer()
+	{
+		$method = 'ajax_exec_'.$this->getAction();
+		if(e_AJAX_REQUEST && method_exists($this, $method))
+		{
+			$this->$method();
+			return true;
+		}
+		return false;
 	}
 
 	function observer()
@@ -387,9 +437,9 @@ class admin_newspost
 			}
 			else
 			{
-				$_POST['category_button'] = $tp->toDB($_POST['category_button']);
+				$_POST['category_button'] = $e107->tp->toDB($_POST['category_button']);
 			}
-			$_POST['category_name'] = $tp->toDB($_POST['category_name']);
+			$_POST['category_name'] = $e107->tp->toDB($_POST['category_name']);
 			$e107->sql->db_Insert('news_category', "'0', '{$_POST['category_name']}', '{$_POST['category_button']}'");
 			$admin_log->log_event('NEWS_04',$_POST['category_name'].', '.$_POST['category_button'],E_LOG_INFORMATIVE,'');
 			$this->show_message(NWSLAN_35, E_MESSAGE_SUCCESS);
@@ -414,17 +464,20 @@ class admin_newspost
 	function _observe_save_prefs()
 	{
 		global $pref, $admin_log;
+		
+		$e107 = e107::getInstance();
+		
 		$temp = array();
 		$temp['newsposts'] 				= intval($_POST['newsposts']);
 	   	$temp['newsposts_archive'] 		= intval($_POST['newsposts_archive']);
-		$temp['newsposts_archive_title'] = $tp->toDB($_POST['newsposts_archive_title']);
+		$temp['newsposts_archive_title'] = $e107->tp->toDB($_POST['newsposts_archive_title']);
 		$temp['news_cats'] 				= intval($_POST['news_cats']);
 		$temp['nbr_cols'] 				= intval($_POST['nbr_cols']);
 		$temp['subnews_attach'] 		= intval($_POST['subnews_attach']);
 		$temp['subnews_resize'] 		= intval($_POST['subnews_resize']);
 		$temp['subnews_class'] 			= intval($_POST['subnews_class']);
 		$temp['subnews_htmlarea'] 		= intval($_POST['subnews_htmlarea']);
-		$temp['news_subheader'] 		= $tp->toDB($_POST['news_subheader']);
+		$temp['news_subheader'] 		= $e107->tp->toDB($_POST['news_subheader']);
 		$temp['news_newdateheader'] 	= intval($_POST['news_newdateheader']);
 		$temp['news_unstemplate'] 		= intval($_POST['news_unstemplate']);
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
@@ -1183,27 +1236,49 @@ class admin_newspost
 				</fieldset>
 		";
 	}
-
-	function show_message($message, $type = E_MESSAGE_INFO, $session = false)
+	
+	function ajax_exec_cat()
 	{
-		// ##### Display comfort ---------------------------------------------------------------------------------------------------------
-		//global $ns;
-		//$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-		$emessage = &eMessage::getInstance();
-		$emessage->add($message, $type, $session);
+		require_once (e_HANDLER.'js_helper.php');
+		$e107 = &e107::getInstance();
+		
+		$category = array();
+		if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId())) 
+		{
+			$category = $e107->sql->db_Fetch();
+		}
+
+		if(empty($category))
+		{
+			e_jshelper::sendAjaxError(404, 'Page not found!', 'Requested news category was not found in the DB.', true);
+		}
+		$jshelper = new e_jshelper();
+		
+		//show cancel and update, hide create buttons; disable create button (just in case)
+		$jshelper->addResponseAction('element-invoke-by-id', array(
+			'show' => 		'category-clear,update-category',
+			'disabled,1' => 'create-category',
+			'hide' => 		'create-category'
+		));
+
+		//category icon alias
+		$category['category-button'] = $category['category_icon'];
+		//Send the prefered response type
+		echo $jshelper->sendXMLResponse('fill-form', $category);
 	}
 
 	function show_categories()
 	{
-		require_once(e_HANDLER."userclass_class.php");
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
 
 		$e107 = &e107::getInstance();
-
+		
 		$category = array();
-		if ($this->getSubAction() == "edit") {
-			if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId())) {
+		if ($this->getSubAction() == "edit") 
+		{
+			if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId())) 
+			{
 				$category = $e107->sql->db_Fetch();
 			}
 		}
@@ -1246,6 +1321,9 @@ class admin_newspost
 		{
 			$text .= "
 				".$frm->admin_button('create_category', NWSLAN_56, 'create')."
+				".$frm->admin_button('update_category', NWSLAN_55, 'update', '', 'other=style="display:none"')."
+				".$frm->admin_button('category_clear', LAN_CANCEL, 'cancel', '', 'other=style="display:none"')."
+				".$frm->hidden("category_id", 0)."
 			";
 		}
 
@@ -1257,7 +1335,7 @@ class admin_newspost
 
 		//XXX LAN - Icon
 		$text .= "
-			<form action='".e_SELF."?cat' id='newscatform' method='post'>
+			<form action='".e_SELF."?cat' id='core-newspost-cat-list-form' method='post'>
 				<fieldset id='core-newspost-cat-list'>
 					<legend>".NWSLAN_51."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminlist'>
@@ -1270,7 +1348,7 @@ class admin_newspost
 						<thead>
 							<tr>
 								<th class='center'>".LAN_NEWS_45."</th>
-								<th class='center'>Icon</th>
+								<th class='center'>".NWSLAN_122."</th>
 								<th>".NWSLAN_6."</th>
 								<th class='center last'>".LAN_OPTIONS."</th>
 							</tr>
@@ -1286,11 +1364,11 @@ class admin_newspost
 
 				$text .= "
 							<tr>
-								<td class='center'>{$category['category_id']}</td>
-								<td class='center'><img class='icon action' src='{$icon}' alt='' /></td>
-								<td>{$category['category_name']}</td>
-								<td class='center'>
-									<a href='".e_SELF."?cat.edit.{$category['category_id']}'>".ADMIN_EDIT_ICON."</a>
+								<td class='center middle'>{$category['category_id']}</td>
+								<td class='center middle'><img class='icon action' src='{$icon}' alt='' /></td>
+								<td class='middle'>{$category['category_name']}</td>
+								<td class='center middle'>
+									<a class='action' id='core-news-catedit-{$category['category_id']}' href='".e_SELF."?cat.edit.{$category['category_id']}' tabindex='".$frm->getNext()."'>".ADMIN_EDIT_ICON."</a>
 									".$frm->submit_image("delete[category_{$category['category_id']}]", $category['category_id'], 'delete', $e107->tp->toJS(NWSLAN_37." [ID: {$category['category_id']} ]"))."
 
 								</td>
@@ -1311,14 +1389,36 @@ class admin_newspost
 		</form>
 		";
 
-		$e107->ns->tablerender(NWSLAN_46, $text);
+		$e107->ns->tablerender(NWSLAN_46a, $text);
 	}
 
+	function _optrange($num , $zero = true)
+	{
+		$tmp = range(0, $num < 0 ? 0 : $num);
+		if(!$zero) unset($tmp[0]);
 
+		return $tmp;
+	}
+	
+	function ajax_exec_pref_archnum()
+	{
+		global $pref;
+		
+		require_once(e_HANDLER."form_handler.php");
+		$frm = new e_form();
+		
+		echo $frm->selectbox('newsposts_archive', $this->_optrange(intval($this->getSubAction()) - 1), intval($pref['newsposts_archive']), 'class=tbox&tabindex='.intval($this->getId()));
+	}
+	
 	function show_news_prefs()
 	{
-		global $sql, $rs, $ns, $pref, $frm;
+		global $pref, $e_userclass;
+		
+		require_once(e_HANDLER."form_handler.php");
+		$frm = new e_form(true); //enable inner tabindex counter
 
+		$e107 = &e107::getInstance();
+		
 		$text = "
 			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
 				<fieldset id='core-newspost-settings'>
@@ -1332,26 +1432,19 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_86."</td>
 								<td class='control'>
-									".$frm->checkbox('news_cats', '1', ($pref['news_cats'] == 1))."
+									".$frm->checkbox_switch('news_cats', 1, $pref['news_cats'])."
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_87."</td>
 								<td class='control'>
-									<select class='tbox' name='nbr_cols'>
-										<option value='1' ".($pref['nbr_cols'] == 1 ? "selected='selected'>" : "").">1</option>
-										<option value='2' ".($pref['nbr_cols'] == 2 ? "selected='selected'>" : "").">2</option>
-										<option value='3' ".($pref['nbr_cols'] == 3 ? "selected='selected'>" : "").">3</option>
-										<option value='4' ".($pref['nbr_cols'] == 4 ? "selected='selected'>" : "").">4</option>
-										<option value='5' ".($pref['nbr_cols'] == 5 ? "selected='selected'>" : "").">5</option>
-										<option value='6' ".($pref['nbr_cols'] == 6 ? "selected='selected'>" : "").">6</option>
-									</select>
+									".$frm->selectbox('nbr_cols', $this->_optrange(6, false), $pref['nbr_cols'], 'class=tbox')."
 								</td>
 							</tr>
 							<tr>
 							<td class='label'>".NWSLAN_88."</td>
 							<td class='control'>
-								".$frm->text('newsposts', $pref['newsposts'])."
+								".$frm->selectbox('newsposts', $this->_optrange(50, false), $pref['newsposts'], 'class=tbox')."
 							</td>
 							</tr>
 		";
@@ -1360,17 +1453,12 @@ class admin_newspost
 		// ##### ADDED FOR NEWS ARCHIVE --------------------------------------------------------------------
 		// the possible archive values are from "0" to "< $pref['newsposts']"
 		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
+		//SecretR - Done
 		$text .= "
 							<tr>
 								<td class='label'>".NWSLAN_115."</td>
 								<td class='control'>
-									<select class='tbox' name='newsposts_archive'>
-		";
-		for($i = 0; $i < $pref['newsposts']; $i++) {
-			$text .= ($i == $pref['newsposts_archive'] ? "<option value='".$i."' selected='selected'>".$i."</option>" : " <option value='".$i."'>".$i."</option>");
-		}
-		$text .= "
-									</select>
+									<div id='newsposts-archive-cont'>".$frm->selectbox('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']), 'class=tbox')."</div>
 									<div class='field-help'>".NWSLAN_116."</div>
 								</td>
 							</tr>
@@ -1383,59 +1471,60 @@ class admin_newspost
 		";
 		// ##### END --------------------------------------------------------------------------------------
 
-
-		require_once(e_HANDLER."userclass_class.php");
-
 		$text .= "
 							<tr>
 								<td class='label'>".LAN_NEWS_51."</td>
 								<td class='control'>
-									".r_userclass("news_editauthor", $pref['news_editauthor'],"off","nobody,mainadmin,admin,classes")."
+									".$e107->user_class->uc_dropdown('news_editauthor', $pref['news_editauthor'], 'nobody,main,admin,classes', "tabindex='".$frm->getNext()."'")."
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_106."</td>
 								<td class='control'>
-									".r_userclass("subnews_class", $pref['subnews_class'],"off","nobody,public,guest,member,admin,classes")."
+									".$e107->user_class->uc_dropdown('subnews_class', $pref['subnews_class'], 'nobody,public,guest,member,admin,classes', "tabindex='".$frm->getNext()."'")."
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_107."</td>
 								<td class='control'>
-									".$frm->checkbox('subnews_htmlarea', '1', $pref['subnews_htmlarea'])."
+									".$frm->checkbox_switch('subnews_htmlarea', '1', $pref['subnews_htmlarea'])."
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_100."</td>
 								<td class='control'>
-									".$frm->checkbox('subnews_attach', '1', $pref['subnews_attach'])."
+									".$frm->checkbox_switch('subnews_attach', '1', $pref['subnews_attach'])."
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_101."</td>
 								<td class='control'>
-									<input class='tbox' type='text' style='width:50px' name='subnews_resize' value='".$pref['subnews_resize']."' />
-									".NWSLAN_102."
+									".$frm->text('subnews_resize', $pref['subnews_resize'], 5, 'size=6&class=tbox')."
+									<div class='field-help'>".NWSLAN_102."</div>
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_111."</td>
 								<td class='control'>
-									".$frm->checkbox('news_newdateheader', '1', ($pref['news_newdateheader'] == 1))."
-									<div class='field-help'>".NWSLAN_112."</div>
+									<div class='auto-toggle-area autocheck'>
+										".$frm->checkbox_switch('news_newdateheader', '1', $pref['news_newdateheader'])."
+										<div class='field-help'>".NWSLAN_112."</div>
+									</div>
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_113."</td>
 								<td class='control'>
-									".$frm->checkbox('news_unstemplate', '1', ($pref['news_unstemplate'] == 1))."
-									<div class='field-help'>".NWSLAN_114."</div>
+									<div class='auto-toggle-area autocheck'>
+										".$frm->checkbox_switch('news_unstemplate', '1', $pref['news_unstemplate'])."
+										<div class='field-help'>".NWSLAN_114."</div>
+									</div>
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_120."</td>
 								<td class='control'>
-									<textarea name='news_subheader' style='width:95%;' rows='6' cols='80' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' class='tbox'>".stripcslashes($pref['news_subheader'])." </textarea><br />" . display_help('helpb', 2) . "
+									".$frm->bbarea('news_subheader', stripcslashes($pref['news_subheader']), 2, 'helpb')."
 								</td>
 							</tr>
 						</tbody>
@@ -1447,7 +1536,7 @@ class admin_newspost
 			</form>
 		";
 
-		$ns->tablerender(NWSLAN_90, $text);
+		$e107->ns->tablerender(NWSLAN_90, $text);
 	}
 
 
@@ -1524,6 +1613,14 @@ class admin_newspost
 
 		$ns->tablerender(NWSLAN_47, $text);
 	}
+	
+
+	function show_message($message, $type = E_MESSAGE_INFO, $session = false)
+	{
+		// ##### Display comfort ---------
+		$emessage = &eMessage::getInstance();
+		$emessage->add($message, $type, $session);
+	}
 
 	function show_options()
 	{
@@ -1558,6 +1655,4 @@ function newspost_adminmenu()
 	global $newspost;
 	$newspost->show_options();
 }
-
-
 ?>
