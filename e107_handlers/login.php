@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-01-04 16:00:19 $
+|     $Revision: 1.21 $
+|     $Date: 2009-01-17 21:42:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,9 @@ define ('LOGIN_CHAP_FAIL', -11);	// CHAP login failed
 
 class userlogin 
 {
+	var $userMethods;			// Pointer to user handler
+
+
 	function userlogin($username, $userpass, $autologin, $response = '') 
 	{
 		/* Constructor
@@ -137,7 +140,7 @@ class userlogin
 		}
 
 		// Now check password
-		$user_info = new UserHandler();
+		$this->userMethods = new UserHandler;
 		if ($forceLogin)
 		{
 			if (md5($lode['user_name'].$lode['user_password'].$lode['user_join']) != $userpass)
@@ -150,7 +153,7 @@ class userlogin
 			if ((($pref['password_CHAP'] > 0) && ($response && isset($_SESSION['challenge'])) && ($response != $_SESSION['challenge'])) || ($pref['password_CHAP'] == 2))
 			{  // Verify using CHAP
 	//		  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login","U: {$username}, P: {$userpass}, C: {$_SESSION['challenge']} R:{$response} S: {$lode['user_password']}",FALSE,LOG_TO_ROLLING);
-				if (($pass_result = $user_info->CheckCHAP($_SESSION['challenge'], $response, $username, $requiredPassword)) === PASSWORD_INVALID)
+				if (($pass_result = $this->userMethods->CheckCHAP($_SESSION['challenge'], $response, $username, $requiredPassword)) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_CHAP_FAIL,$fip);
 				}
@@ -158,7 +161,7 @@ class userlogin
 			else
 			{	// Plaintext password
 	//		  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Plaintext login","U: {$username}, P: {$userpass}, C: {$_SESSION['challenge']} R:{$response} S: {$lode['user_password']}",FALSE,LOG_TO_ROLLING);
-				if (($pass_result = $user_info->CheckPassword($userpass,($lookemail ? $lode['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
+				if (($pass_result = $this->userMethods->CheckPassword($userpass,($lookemail ? $lode['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_BAD_PW,$fip);
 				}
@@ -221,12 +224,12 @@ class userlogin
 		}
 
 
-		$cookieval = $user_info->makeUserCookie($lode,$autologin);
+		$cookieval = $this->userMethods->makeUserCookie($lode,$autologin);
 
 
 		// Calculate class membership - needed for a couple of things
 		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
-		$class_list = $user_info->addCommonClasses($lode, TRUE);
+		$class_list = $this->userMethods->addCommonClasses($lode, TRUE);
 
 		$user_logging_opts = array_flip(explode(',',varset($pref['user_audit_opts'],'')));
 		if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'],''),$class_list))
@@ -248,7 +251,7 @@ class userlogin
 			{	// 'New user' probationary period expired - we can take them out of the class
 				$lode['user_class'] = $e107->user_class->ucRemove(e_UC_NEWUSER, $lode['user_class']);
 //				$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$lode['user_class'],FALSE,FALSE);
-				$sql->db_UpdateArray('user',array('user_class' => $lode['user_class']), 'WHERE `user_id`='.$lode['user_id']);
+				$sql->db_Update('user',"`user_class` = '".$lode['user_class']."'", 'WHERE `user_id`='.$lode['user_id']);
 				unset($class_list[e_UC_NEWUSER]);
 				$edata_li = array('user_id' => $user_id, 'user_name' => $username, 'class_list' => implode(',',$class_list));
 				$e_event->trigger('userNotNew', $edata_li);
@@ -392,73 +395,80 @@ class userlogin
 	// $user_xup has the new file name
 	function update_xup($user_id, $user_xup = "") 
 	{
-	  global $sql, $tp;
-	  if($user_xup) 
-	  {
-		require_once(e_HANDLER."xml_class.php");
-		$xml = new xmlClass;
-		if($rawData = $xml -> getRemoteFile($user_xup)) 
+		global $sql, $tp;
+		$user_id = intval($user_id);		// Should already be an integer - but just in case...
+		if($user_xup) 
 		{
-		  preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
-		  $count = 0;
-		  foreach($match[1] as $value) 
-		  {
-			$$value = $tp -> toDB($match[2][$count]);
-			$count++;
-		  }
-
-		  // List of fields in main user record, and their corresponding XUP fields
-		  $main_fields = array('user_realname' => 'FN',
-							'user_hideemail'=>'EMAILHIDE', 
-							'user_signature'=>'SIG', 
-							'user_sess'=>'PHOTO', 
-							'user_image'=>'AV');
-				
-		  $new_values = array();
-		  foreach ($main_fields as $f => $v)
-		  {
-			if (isset($$v) && $$v)
+			require_once(e_HANDLER.'xml_class.php');
+			$xml = new xmlClass;
+			$xupData = array();
+			if($rawData = $xml -> getRemoteFile($user_xup)) 
 			{
-			  $new_values[$f] = $$v;
-			}
-		  }
+				preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
+				$count = 0;
+				foreach($match[1] as $value) 
+				{	// Process all the data into an array
+					$xupData[$value] = $tp -> toDB($match[2][$count]);
+					$count++;
+				}
+	
+				// List of fields in main user record, and their corresponding XUP fields
+				$main_fields = array('user_realname' => 'FN',
+									'user_hideemail'=>'EMAILHIDE', 
+									'user_signature'=>'SIG', 
+									'user_sess'=>'PHOTO', 
+									'user_image'=>'AV');
+					
+				$new_values = array();
+				foreach ($main_fields as $f => $v)
+				{
+					if (isset($xupData[$v]) && $xupData[$v])
+					{
+						$new_values['data'][$f] = $xupData[$v];
+					}
+				}
+	
+				if (count($new_values['data']))
+				{
+					if (!is_object($this->userMethods))
+					{
+						$this->userMethods = new userHandler;
+					}
+					require_once(e_HANDLER.'validator_class.php');
+					$this->userMethods($new_values);
+					$new_values['WHERE'] = 'user_id='.$user_id;
+					validatorClass::addFieldTypes($this->userMethods->userVettingInfo,$new_values);
+					$sql -> db_Update('user', $new_values);
+				}
 
-		  // Use of db_updateArray() ensures only non-empty fields are changed
-		  $sql -> db_UpdateArray("user", $new_values, "WHERE user_id='".intval($user_id)."'");
-//				$sql -> db_Update("user", "user_realname='{$FN}', user_hideemail='{$EMAILHIDE}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='".intval($user_id)."'");
-
-		  $ue_fields = "";
-		  $fields = array("URL" => "homepage",
-					"ICQ" => "icq",
-					"AIM" => "aim",
-					"MSN" => "msn",
-					"YAHOO" => "yahoo",
-					"GEO" => "location",
-					"TZ" => 'timezone',
-					"BDAY" => "birthday");
-		  include_once(e_HANDLER."user_extended_class.php");
-		  $usere = new e107_user_extended;
-		  $extList = $usere->user_extended_get_fieldList();
-		  $extName = array();
-		  foreach($extList as $ext)
-		  {
-			$extName[] = $ext['user_extended_struct_name'];
-		  }
-		  foreach($fields as $keyxup => $keydb)
-		  {
-			if (in_array($keydb, $extName))
-			{
-			  $key = "user_".$keydb;
-			  $key = $tp->toDB($key);
-			  $val = $tp->toDB($$keyxup);
-			  $ue_fields .= ($ue_fields) ? ", " : "";
-			  $ue_fields .= $key."='".$val."'";
+				$ueList = array();
+				$fields = array('URL' => 'user_homepage',
+							'ICQ' 	=> 'user_icq',
+							'AIM' 	=> 'user_aim',
+							'MSN' 	=> 'user_msn',
+							'YAHOO' => 'user_yahoo',
+							'GEO' 	=> 'user_location',
+							'TZ' 	=> 'user_timezone',
+							'BDAY' 	=> 'user_birthday');
+				include_once(e_HANDLER.'user_extended_class.php');
+				$usere = new e107_user_extended;
+				$extName = array();
+				foreach ($fields as $keyxup => $keydb)
+				{
+					if (in_array($keydb, $usere->nameIndex) && in_array($keyxup,$xupData))
+					{
+						$ueList['data'][$keydb] = $tp->toDB($xupData[$keyxup]);
+					}
+				}
+				if (count($ueList['data']))
+				{
+					$usere->addFieldTypes($ueList);
+					$ueList['WHERE'] = 'user_extended_id = '.$user_id;
+					$sql -> db_Select_gen('INSERT INTO #user_extended (user_extended_id) values ('.$user_id.')');
+					$sql -> db_Update('user_extended', $ueList);
+				}
 			}
-		  }
-		  $sql -> db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('".intval($user_id)."')");
-		  $sql -> db_Update("user_extended", $ue_fields." WHERE user_extended_id = '".intval($user_id)."'");
 		}
-	  }
 	}
 }
 
