@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/level_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-01-09 21:18:54 $
+|     $Revision: 1.6 $
+|     $Date: 2009-01-17 03:27:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -114,7 +114,7 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	return ($data);
 }
 
-class e017UserRank
+class e107UserRank
 {
 
 	var $ranks = array();
@@ -133,7 +133,7 @@ class e017UserRank
 	{
 		$e107 = e107::getInstance();
 		//Check to see if we can get it from cache
-		if($force = false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
+		if($force == false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
 		{
 			$this->ranks = $ranks;
 		}
@@ -149,23 +149,16 @@ class e017UserRank
 					$tmp = array();
 					$tmp['name'] = $row['gen_ip'];
 					$tmp['thresh'] = $row['gen_intdata'];
-					$tmp['lan_pfx'] = (int)$row['gen_ip'];
+					$tmp['lan_pfx'] = $row['gen_user_id'];
 					$tmp['image'] = $row['gen_chardata'];
 					if($row['gen_datestamp'])
 					{
-						$this->ranks['special'][$row['get_datestamp']] = $tmp;
+						$this->ranks['special'][$row['gen_datestamp']] = $tmp;
 					}
 					else
 					{
 						$this->ranks['data'][$i++] = $tmp;
 					}
-				}
-			}
-			if($e107->sql->db_Select('generic', '*', "gen_type = 'user_rank_config'"))
-			{
-				if($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
-				{
-					$this->ranks['config'] = unserialize($row['gen_chardata']);
 				}
 			}
 			$e107->ecache->set_sys('nomd5_user_ranks', $this->ranks);
