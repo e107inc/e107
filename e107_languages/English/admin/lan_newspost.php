@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-01-17 01:30:35 $
+|     $Revision: 1.8 $
+|     $Date: 2009-01-17 22:48:14 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -55,6 +55,7 @@ define("NWSLAN_43", "No news items");
 define("NWSLAN_44", "News Front Page");
 define("NWSLAN_45", "Create News Item");
 define("NWSLAN_46", "Categories");
+define("NWSLAN_46a", "News - Categories");
 define("NWSLAN_47", "Submitted News");
 define("NWSLAN_48", "News Options");
 define("NWSLAN_49", "Submitted by");
@@ -99,7 +100,7 @@ define("NWSLAN_89", "Save News Preferences");
 define("NWSLAN_90", "News Preferences");
 define("NWSLAN_100", "Enable Image uploading on Submit News page");
 define("NWSLAN_101", "Automatic resizing of submitted image");
-define("NWSLAN_102", "width in pixels<br /> or leave blank to disable.");
+define("NWSLAN_102", "width in pixels or leave blank to disable.");
 define("NWSLAN_103", "re-post");
 define("NWSLAN_104", "by");
 define("NWSLAN_105", "Check box to update date stamp of news item to current time");
@@ -115,11 +116,12 @@ define("NWSLAN_114", "if the theme you're using has a news layout template, use 
 
 define("NWSLAN_115", "News posts to display in archive ?");
 define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the news archive preference. (0 is un-activated)");
-define("NWSLAN_117", "set the title for the news archive");
+define("NWSLAN_117", "Set the title for the news archive");
 // define("NWSLAN_118", "View Images"); already defined above.
 define("NWSLAN_119", "Settings Saved");
 define("NWSLAN_120", "Text to show at the top of Submit News");
 define("NWSLAN_121", "Nothing found for %s");
+define("NWSLAN_122", "Icon");
 
 define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
 define("LAN_NEWS_6", "News entered into database.");

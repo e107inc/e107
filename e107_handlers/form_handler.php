@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-01-16 17:57:56 $
+ * $Revision: 1.17 $
+ * $Date: 2009-01-17 22:48:14 $
  * $Author: secretr $
  *
 */
@@ -147,6 +147,11 @@ class e_form
 		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 
 	}
+	
+	function checkbox_switch($name, $value, $checked = false, $label = '')
+	{
+		return $this->checkbox($name, $value, $checked).$this->label($label ? $label : LAN_ENABLED, $name, $value);
+	}
 
 	function checkbox_toggle($name, $selector = 'multitoggle')
 	{
@@ -196,6 +201,11 @@ class e_form
 		$options = $this->format_options('select', $name, $options);
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
+	
+	function selectbox($name, $option_array, $selected = false, $options = array())
+	{
+		return $this->select_open($name, $options)."\n".$this->option_multi($option_array, $selected)."\n".$this->select_close();
+	}
 
 	function optgroup_open($label, $disabled)
 	{
@@ -208,6 +218,19 @@ class e_form
 		$options['selected'] = $selected; //comes as separate argument just for convenience
 		$options = $this->format_options('option', '', $options);
 		return "<option value='{$value}'".$this->get_attributes($options).">{$option_name}</option>";
+	}
+	
+	function option_multi($option_array, $selected = false, $options = array())
+	{
+		if(is_string($option_array)) parse_str($option_array, $option_array);
+
+		$text = '';
+		foreach ($option_array as $value => $label)
+		{
+			$text .= $this->option($label, $value, $selected == $value, $options)."\n";
+		}
+
+		return $text;
 	}
 
 	function optgroup_close()
@@ -272,9 +295,15 @@ class e_form
 		return $this->_tabindex_counter;
 	}
 
-	function resetTabindex()
+	function getCurrent()
 	{
-		$this->_tabindex_counter = 0;
+		if(!$this->_tabindex_enabled) return 0;
+		return $this->_tabindex_counter;
+	}
+	
+	function resetTabindex($reset = 0)
+	{
+		$this->_tabindex_counter = $reset;
 	}
 
 	function get_attributes($options, $name = '', $value = '')
@@ -302,9 +331,13 @@ class e_form
 					break;
 
 				case 'tabindex':
-					if(false === $optval || !$this->_tabindex_enabled) break;
-					$this->_tabindex_counter += 1;
-					$ret .= " tabindex='".($optval ? $optval : $this->_tabindex_counter)."'";
+					if($optval) $ret .= " tabindex='{$optval}'";
+					elseif(false === $optval || !$this->_tabindex_enabled) break;
+					else
+					{
+						$this->_tabindex_counter += 1;
+						$ret .= " tabindex='".$this->_tabindex_counter."'";
+					}
 					break;
 
 				case 'readonly':

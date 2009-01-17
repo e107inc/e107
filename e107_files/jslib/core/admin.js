@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.14 $
- * $Date: 2009-01-12 12:05:55 $
+ * $Revision: 1.15 $
+ * $Date: 2009-01-17 22:48:14 $
  * $Author: secretr $
  * 
 */
@@ -92,7 +92,16 @@ e107Admin.Helper = {
 	toggleChecked: function(event) {
 		//do nothing if checkbox/form element or link is clicked
 		var tmp = event.element().nodeName.toLowerCase(); 
-		if(tmp == 'input' || tmp == 'a' || tmp == 'select' || tmp == 'textarea' || tmp == 'radio') return;
+		switch (tmp) {
+			case 'input':
+			case 'a':
+			case 'select':
+			case 'textarea':
+			case 'radio':
+			case 'label':
+				return;	
+			break;
+		}
 		
 		//checkbox container element
 		var element = event.findElement('.autocheck'), check = null;

@@ -9,8 +9,8 @@
  * Javascript Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_helper.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-10 16:59:19 $
+ * $Revision: 1.5 $
+ * $Date: 2009-01-17 22:48:14 $
  * $Author: secretr $
  *
 */
@@ -43,12 +43,35 @@ class e_jshelper
 
     function addResponseAction($action, $data_array)
     {
-        if(!$action) $action = 'auto';
         if(!isset($this->_response_actions[$action]))
         {
             $this->_response_actions[$action] = array();
         }
         $this->_response_actions[$action] = array_merge($this->_response_actions[$action], $data_array);
+
+        return $this;
+    }
+    
+    function addResponseItem($action, $subaction, $data)
+    {
+        if(!isset($this->_response_actions[$action]))
+        {
+            $this->_response_actions[$action] = array();
+        }
+        if(!isset($this->_response_actions[$action][$subaction]))
+        {
+            $this->_response_actions[$action][$subaction] = array();
+        }
+        
+        if(is_array($data))
+        {
+        	$this->_response_actions[$action][$subaction] = array_merge($this->_response_actions[$action][$subaction], $data);
+        }
+        else
+        {
+        	$this->_response_actions[$action][$subaction][] = $data;
+        }
+        
 
         return $this;
     }
@@ -89,11 +112,27 @@ class e_jshelper
 	            //associative arrays only - no numeric keys!
 	            //to speed this up use $sql->db_Fetch(MYSQL_ASSOC);
 	            //when passing large data from the DB
-	            if (is_numeric($field))
-	                continue;
-	            $transport_value = $value;
-	            if(!is_numeric($value) && !is_bool($value)) { $transport_value = "<![CDATA[{$value}]]>"; }
-	            $ret .= "\t\t<item type='".gettype($value)."' name='{$field}'>{$transport_value}</item>\n";
+	            if (is_numeric($field) || empty($field)) continue;
+
+	            switch (gettype($value)) {
+	            	case 'array':
+	            		foreach ($value as $v)
+	            		{
+	            			if(is_string($v)) { $v = "<![CDATA[{$v}]]>"; }
+	            			$ret .= "\t\t<item type='".gettype($v)."' name='{$field}'>{$v}</item>\n";;
+	            		}
+	            	break;
+	            	
+	            	case 'string':
+	            		$value = "<![CDATA[{$value}]]>";
+	            		$ret .= "\t\t<item type='".gettype($value)."' name='{$field}'>{$value}</item>\n";
+	            	break;
+	            	
+	            	case 'boolean':
+	            	case 'numeric':
+	            		$ret .= "\t\t<item type='".gettype($value)."' name='{$field}'>{$value}</item>\n";
+	            	break;
+	            }
 	        }
 	        $ret .= "\t</e107action>\n";
         }

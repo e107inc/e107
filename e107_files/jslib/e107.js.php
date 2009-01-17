@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-01-16 17:57:57 $
+ * $Revision: 1.24 $
+ * $Date: 2009-01-17 22:48:14 $
  * $Author: secretr $
  *
 */
@@ -1486,7 +1486,7 @@ e107Event.register('ajax_loading_element_start', function(event) {
 	if(element) element.startLoading();
 });
 
-e107Event.register('ajax_loading_element_end', function(event) {
+e107Event.register('ajax_loading_element_end', function(event) { 
 	var element = $(event.memo.overlayElement);
 	if(element)  window.setTimeout( function(){ element.stopLoading() }.bind(element), 50);
 });
@@ -2234,8 +2234,14 @@ var e107AjaxAbstract = Class.create ({
 					if(field.getAttribute('name')) {
 						var type = field.getAttribute('type'), //not used yet
 							name = field.getAttribute('name'), 
-							eldata = field.firstChild;
-						parsed[action][name] = eldata ? eldata.data : '';
+							eldata = field.firstChild
+							val = eldata ? eldata.data : '';
+						if(parsed[action][name] && Object.isArray(parsed[action][name]))
+							parsed[action][name].push(val);
+						else if(parsed[action][name] && Object.isString(parsed[action][name]))
+							parsed[action][name] = [parsed[action][name], val];
+						else
+							parsed[action][name]= val;
 					}
 					
 				}
@@ -2291,6 +2297,8 @@ var e107AjaxAbstract = Class.create ({
 	 * Examples:
 	 * {'show': 'id1,id2,id3'} -> show elements with id id1,id2 and id3
 	 * {'writeAttribute,rel,external': 'id1,id2,id3'} -> invoke writeAttribute('rel', 'external') on elements with id id1,id2 and id3
+	 * {'disabled,1': 'button-el,other-button-el'} -> set disabled property of elements with id button-el,other-button-el to true
+	 * 
 	 */
 	_processResponseElementInvokeById: function(response) {
 		//response.key is comma separated list representing method -> args to be invoked on every element
@@ -2298,11 +2306,16 @@ var e107AjaxAbstract = Class.create ({
 			var tmp = $A(key.split(',')), 
 				method = tmp[0], 
 				args = tmp.slice(1);
-			//response.value is comma separated element id list
-			$A(response[key].split(',')).each( function(el) {
+			//response.value is comma separated element id list or array of element ids
+			var els = Object.isArray(response[key]) ? response[key] : response[key].split(',');
+			$A(els).each( function(el) {
 				el = $(el.strip());
-				if(el)
-					el[method].apply(el, args)
+				if(el) {
+					if(Object.isFunction(el[method]))
+						el[method].apply(el, args);
+					else 
+						el[method] = (args[0] ? true : false);
+				}
 			});
 		});
 	},
@@ -2426,7 +2439,7 @@ e107Ajax.Updater = Class.create({
             // Set current version value for container
             e107History.set(id, version);
             
-        } else {
+        } else { 
             return new Ajax.Updater(container, url, this.options);
         }
     }
