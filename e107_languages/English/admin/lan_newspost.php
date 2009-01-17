@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-01-16 17:57:56 $
+|     $Revision: 1.7 $
+|     $Date: 2009-01-17 01:30:35 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
 define("NWSLAN_2", "Please tick the confirm box to delete this news item.");
 define("NWSLAN_3", "No news items yet.");
-define("NWSLAN_4", "Existing News");
+define("NWSLAN_4", "News - Existing News");
 define("NWSLAN_5", "Open HTML Editor");
 define("NWSLAN_6", "Category");
 
@@ -36,7 +36,8 @@ define("NWSLAN_25", "Update news in database");
 define("NWSLAN_26", "Post news to database");
 define("NWSLAN_27", "Preview");
 
-define("NWSLAN_29", "News Post");
+define("NWSLAN_29", "News - Add New Item");
+define("NWSLAN_29a", "News - Update Existing Item");
 
 define("NWSLAN_31", "News item");
 define("NWSLAN_32", "deleted");
@@ -118,6 +119,7 @@ define("NWSLAN_117", "set the title for the news archive");
 // define("NWSLAN_118", "View Images"); already defined above.
 define("NWSLAN_119", "Settings Saved");
 define("NWSLAN_120", "Text to show at the top of Submit News");
+define("NWSLAN_121", "Nothing found for %s");
 
 define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
 define("LAN_NEWS_6", "News entered into database.");
@@ -139,7 +141,7 @@ define("LAN_NEWS_22", "Thumbnail");
 define("LAN_NEWS_23", "Choose an image for this news item");
 define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 define("LAN_NEWS_25", "Auto-Thumbnail size");
-define("LAN_NEWS_26", "add new upload");
+define("LAN_NEWS_26", "add new upload field");
 define("LAN_NEWS_27", "Summary");
 
 define("LAN_NEWS_28", "Sticky");
@@ -173,4 +175,6 @@ define("LAN_NEWS_51", "Modification of the news-item author can be done by:");
 define("LAN_NEWS_52", "General Information");
 define("LAN_NEWS_53", "Advanced Options");
 define("LAN_NEWS_54", "stay in edit mode");
+
+
 ?>
