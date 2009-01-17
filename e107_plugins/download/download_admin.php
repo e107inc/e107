@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-01-15 00:02:12 $
+|     $Revision: 1.6 $
+|     $Date: 2009-01-17 19:17:56 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -30,6 +30,7 @@ if (!getperms("P") || !plugInstalled('download'))
 include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/lan_download.php');
 include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/lan_download_admin.php');
 require_once(e_HANDLER."calendar/calendar_class.php");
+require_once(e_HANDLER."ren_help.php");
 $cal = new DHTML_Calendar(true);
 function headerjs()
 {
@@ -818,7 +819,9 @@ class download
 	{
 		global $cal,$tp, $sql, $fl, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
 		require_once(e_FILE."shortcode/batch/download_shortcodes.php");
+      require_once(e_HANDLER."form_handler.php");
 
+      $eform = new e_form();
 		$mirrorArray = array();
 
 		$download_status[0] = DOWLAN_122;
@@ -1031,8 +1034,9 @@ class download
 			<tr>
 			<td style='width:20%' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_18."</span>: </td>
 			<td style='width:80%' class='forumheader3'>
-			<textarea class='tbox' name='download_description' cols='50' rows='5' style='width:90%'>$download_description</textarea>
-			</td>
+			";
+         $text .= $eform->bbarea('download_description',$download_description);
+			$text .= "</td>
 			</tr>
 
 			<tr>
@@ -1445,6 +1449,9 @@ class download
 	{
 		global $sql, $rs, $ns, $tp, $pst;
 
+      require_once(e_HANDLER."form_handler.php");
+      $eform = new e_form();
+
 		if (!is_object($sql2)) {
 			$sql2 = new db;
 		}
@@ -1642,9 +1649,9 @@ class download
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".DOWLAN_18.": </td>
-			<td style='width:70%' class='forumheader3'>
-			<textarea class='tbox' name='download_category_description' cols='59' rows='3'>$download_category_description</textarea>
-			</td>
+			<td style='width:70%' class='forumheader3'>";
+         $text .= $eform->bbarea('download_category_description',$download_category_description);
+         $text .= "</td>
 			</tr>
 
 			<tr>
@@ -1745,6 +1752,8 @@ class download
 
 		global $sql, $ns, $tp, $sub_action, $id, $delete, $del_id, $admin_log;
 
+      require_once(e_HANDLER."form_handler.php");
+      $eform = new e_form();
 		if($delete == "mirror")
 		{
 			admin_update($sql -> db_Delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
@@ -1858,9 +1867,9 @@ class download
 
 		<tr>
 		<td style='width: 30%;' class='forumheader3'>".DOWLAN_18."</td>
-		<td style='width: 70%;' class='forumheader3'>
-		<textarea class='tbox' name=' mirror_description' cols='70' rows='6'>$mirror_description</textarea>
-		</td>
+		<td style='width: 70%;' class='forumheader3'>";
+      $text .= $eform->bbarea('mirror_description',$mirror_description);
+      $text .= "</td>
 		</tr>
 
 		<tr>
