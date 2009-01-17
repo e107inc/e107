@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.27 $
-* $Date: 2009-01-11 22:11:19 $
-* $Author: e107steved $
+* $Revision: 1.28 $
+* $Date: 2009-01-17 03:27:16 $
+* $Author: mcfly_e107 $
 *
 */
 require_once('../class2.php');
@@ -1445,34 +1445,95 @@ function users_adminmenu()
 
 function updateRanks()
 {
+	global $pref;
+	$e107 = e107::getInstance();
 	$config = array();
-	$config['calc'] = '';
+	$ranks_calc = '';
+	$ranks_flist = '';
 	foreach($_POST['op'] as $f => $o)
 	{
-		$config['config'][$f]['op'] = $o;
-		$config['config'][$f]['val'] = varset($_POST['val'][$f], '');
+		$config[$f]['op'] = $o;
+		$config[$f]['val'] = varset($_POST['val'][$f], '');
 		
 		if($_POST['val'][$f])
 		{
-			$config['fields'][] = $f;
-			$config['calc'] .= ($config['calc'] ? ' + ' : '');
-			$config['calc'] .= '({'.$f.'} '." $o {$_POST['val'][$f]}".' )';
+			$ranks_calc .= ($ranks_calc ? ' + ' : '').'({'.$f.'} '." $o {$_POST['val'][$f]}".' )';
+			$ranks_flist .= ($ranks_flist ? ',' : '').$f;
 		}
 	}
-	var_dump($config);	
+
+	$e107->sql->db_Delete('generic', "gen_type = 'user_rank_config'");
+	$tmp = array();
+	$tmp['data']['gen_type'] = 'user_rank_config';
+	$tmp['data']['gen_chardata'] = serialize($config);
+	$tmp['_FIELD_TYPES']['gen_type'] = 'string';
+	$tmp['_FIELD_TYPES']['gen_chardata'] = 'escape';
+	$e107->sql->db_Insert('generic', $tmp);
+
+	$pref['ranks_cals'] = $ranks_calc;
+	$pref['ranks_flist'] = $ranks_flist;
+	save_prefs();
+	
+	//Delete existing rank data
+	$e107->sql->db_Delete('generic', "gen_type = 'user_rank_data'");
+
+	//Add main site admin info
+	$tmp = array();
+	$tmp['_FIELD_TYPES']['gen_datestamp'] = 'int';
+	$tmp['_FIELD_TYPES']['gen_ip'] = 'todb';
+	$tmp['_FIELD_TYPES']['gen_user_id'] = 'int';
+	$tmp['_FIELD_TYPES']['gen_chardata'] = 'todb';
+	$tmp['_FIELD_TYPES']['gen_intdata'] = 'int';
+
+	$tmp['data']['gen_datestamp'] = 1;
+	$tmp['data']['gen_type'] = 'user_rank_data';
+	$tmp['data']['gen_ip'] = 	$_POST['calc_name']['main_admin'];
+	$tmp['data']['gen_user_id'] =	varset($_POST['calc_pfx']['main_admin'], 0);
+	$tmp['data']['gen_chardata'] = 	$_POST['calc_img']['main_admin'];
+	$e107->sql->db_Insert('generic', $tmp);
+
+	//Add site admin info
+	unset($tmp['data']);
+	$tmp['data']['gen_type'] = 'user_rank_data';
+	$tmp['data']['gen_datestamp'] = 2;
+	$tmp['data']['gen_ip'] = 	$_POST['calc_name']['admin'];
+	$tmp['data']['gen_user_id'] =	varset($_POST['calc_pfx']['admin'], 0);
+	$tmp['data']['gen_chardata'] = 	$_POST['calc_img']['admin'];
+	$e107->sql->db_Insert('generic', $tmp);
+
+	if(varset($_POST['new_calc_lower']))
+	{
+		unset($tmp['data']);
+		$tmp['data']['gen_type'] = 'user_rank_data';
+		$tmp['data']['gen_datestamp'] = 0;
+		$tmp['data']['gen_ip'] = 	varset($_POST['new_calc_name']);
+		$tmp['data']['gen_user_id'] =	varset($_POST['new_calc_pfx'], 0);
+		$tmp['data']['gen_chardata'] = 	varset($_POST['new_calc_img']);
+		$tmp['data']['gen_intdata'] =	varset($_POST['new_calc_lower']);
+		$e107->sql->db_Insert('generic', $tmp);
+	}
+
 }
 
 function show_ranks()
 {
+	global $pref;
 	$e107 = e107::getInstance();
 	include_once(e_HANDLER.'file_class.php');
-	$f = new e_file;
-	$imageList = $f->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
 	include_once(e_HANDLER.'level_handler.php');
-	$ranks = new e017UserRank;
+	$f = new e_file;
+	$ranks = new e107UserRank;
+
+	$imageList = $f->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
+	$config = array();
+
+	if($e107->sql->db_Select('generic', 'gen_chardata', "gen_type='user_rank_config'", 'default'))
+	{
+		$row = $e107->sql->db_Fetch(MYSQL_ASSOC);
+		$config = unserialize($row['gen_chardata']);
+	}
 	
 	$fieldList = array('core' => array(), 'extended' => array());
-
 
 	$fieldList['core'] = array(
 	'comments' => 'Number of comments',
@@ -1487,6 +1548,8 @@ function show_ranks()
 			$fieldList['extended'][] = substr($field['Field'], 5);
 		}
 	}
+	
+	$opArray = array('*', '+', '-');
 
 	$text .= "
 	<form method='post'>
@@ -1506,12 +1569,16 @@ function show_ranks()
 		<td class='label'>{$f}</td>
 		<td class='control'>
 			<select name='op[{$k}]' class='tbox'>
-			<option value='*'>*</option>
-			<option value='+'>+</option>
-			<option value='-'>-</option>
+		";
+		foreach($opArray as $op)
+		{
+			$sel = (varset($config[$k]['op']) == $op ? "selected='selected'" : '');
+			$text .= "<option value='{$op}' {$sel}>{$op}</option>";
+		}
+		$text .= "
 			</select>
 		</td>
-		<td class='control'><input type='text' class='tbox' name='val[{$k}]' size='3' maxlength='3'></td>
+		<td class='control'><input type='text' class='tbox' name='val[{$k}]' value='".varset($config[$k]['val'])."' size='3' maxlength='3'></td>
 		</tr>
 		";
 	}
@@ -1528,12 +1595,16 @@ function show_ranks()
 			<td class='label'>{$f}</td>
 			<td class='control'>
 				<select name='op[{$f}]' class='tbox'>
-				<option value='*'>*</option>
-				<option value='+'>+</option>
-				<option value='-'>-</option>
+			";
+			foreach($opArray as $op)
+			{
+				$sel = (varset($config[$f]['op']) == $op ? "selected='selected'" : '');
+				$text .= "<option value='{$op}' {$sel}>{$op}</option>";
+			}
+			$text .= "
 				</select>
-		</td>
-			<td class='control'><input type='text' class='tbox' name='val[{$f}]' size='3' maxlength='3' value=''></td>
+			</td>
+			<td class='control'><input type='text' class='tbox' name='val[{$f}]' value='".varset($config[$f]['val'])."' size='3' maxlength='3' value=''></td>
 			</tr>
 			";
 		}
@@ -1550,21 +1621,35 @@ function show_ranks()
 		<td class='label'>Lang prefix?</td>
 		<td class='label'>Rank Image</td>
 	</tr>
+	";
+	$info = $ranks->ranks['special'][1];
+	$val = $e107->tp->toForm($info['name']);
+	$pfx = ($info['lan_pfx'] ? "checked='checked'" : '');
 	
+	$text .= "
 	<tr>
 		<td class='control'>Main Site Admin</td>
-		<td class='control'><input class='tbox' type='text' name='main_admin[name]' value='Main Site Admin'></td>
+		<td class='control'>
+			<input class='tbox' type='text' name='calc_name[main_admin]' value='{$val}'>
+		</td>
 		<td class='control'>N/A</td>
-		<td class='control'><input type='checkbox' name='main_admin[pfx]' value='1'></td>
-		<td class='control'>".RankImageDropdown($imageList, 'main_admin[img]')."</td>
+		<td class='control'><input type='checkbox' name='calc_pfx[main_admin]' {$pfx} value='1'></td>
+		<td class='control'>".RankImageDropdown($imageList, 'calc_img[main_admin]', $info['image'])."</td>
 	</tr>
-	
+	";
+
+	$info = $ranks->ranks['special'][2];
+	$val = $e107->tp->toForm($info['name']);
+	$pfx = ($info['lan_pfx'] ? "checked='checked'" : '');
+	$text .= "	
 	<tr>
 		<td class='control'>Site Admin</td>
-		<td class='control'><input class='tbox' type='text' name='admin[name]' value='Main Site Admin'></td>
+		<td class='control'>
+			<input class='tbox' type='text' name='calc_name[admin]' value='{$val}'>
+		</td>
 		<td class='control'>N/A</td>
-		<td class='control'><input type='checkbox' name='admin[pfx]' value='1'></td>
-		<td class='control'>".RankImageDropdown($imageList, 'admin[img]')."</td>
+		<td class='control'><input type='checkbox' name='calc_pfx[admin]' {$pfx} value='1'></td>
+		<td class='control'>".RankImageDropdown($imageList, 'calc_img[admin]', $info['image'])."</td>
 	</tr>
 	<tr>
 		<td colspan='5'>&nbsp;</td>
@@ -1577,14 +1662,16 @@ function show_ranks()
 		$text .= "
 		<tr>
 			<td class='control'>User Rank</td>
-			<td class='control'><input class='tbox' type='text' name='calc_name[$k]' value='{$r['name']}'></td>
+			<td class='control'>
+				<input type='hidden' name='field_id[{$k}]' value='1' />
+				<input class='tbox' type='text' calc_name='name[$k]' value='{$r['name']}'>
+			</td>
 			<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}'></td>
 			<td class='control'><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked}></td>
 			<td class='control'>".RankImageDropdown($imageList, 'calc_img[$k]', $r['image'])."</td>
 		</tr>
 		";
 	}
-	
 
 	$text .= "
 	<tr>
