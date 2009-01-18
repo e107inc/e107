@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-01-17 22:48:14 $
+ * $Revision: 1.25 $
+ * $Date: 2009-01-18 00:27:10 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -58,7 +58,7 @@ function headerjs()
 					$('core-newspost-create-form').observe('submit', function(event) {
 						var form = event.element();
 						action = form.readAttribute('action') + document.location.hash;
-						if($('create-edit-stay-1') && $('create-edit-stay-1').checked)
+						//if($('create-edit-stay-1') && $('create-edit-stay-1').checked)
 							form.writeAttribute('action', action);
 					});
 				}
@@ -161,7 +161,7 @@ class admin_newspost
 	{
 		$tmp = explode(".", $qry);
 		$action = varsettrue($tmp[0], 'main');
-		$sub_action = varset($tmp[1],'');
+		$sub_action = varset($tmp[1], '');
 		$id = isset($tmp[2]) && is_numeric($tmp[2]) ? intval($tmp[2]) : 0;
 		$sort_order = isset($tmp[2]) && !is_numeric($tmp[2]) ? $tmp[2] : 'desc';
 		$from = intval(varset($tmp[3],0));
@@ -405,13 +405,22 @@ class admin_newspost
         $tmp = explode(chr(35), $_POST['news_author']);
         $_POST['news_author'] = $tmp[0];
 
-        $sess = !(isset($_POST['create_edit_stay']) && !empty($_POST['create_edit_stay']));
-		$ix->submit_item($_POST, $sess);
-        $this->clear_cache();
-
-        if($sess)
+        $ret = $ix->submit_item($_POST, true);
+		$this->clear_cache();
+		
+        if(isset($_POST['create_edit_stay']) && !empty($_POST['create_edit_stay']))
         {
-			session_write_close();
+			if($this->getSubAction() != 'edit')
+			{
+	        	session_write_close();
+				$rurl = e_SELF.(varsettrue($ret['id']) ? "?create.edit.".$ret['id'] : '');
+				header('Location:'.($rurl ? $rurl : e_SELF));
+				exit;
+			}
+        }
+        else
+        {
+        	session_write_close();
 			header('Location:'.e_SELF);
 			exit;
         }
@@ -611,7 +620,7 @@ class admin_newspost
 
 		if (!varset($_POST['searchquery']))
 		{
-			$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?".$this->getAction().'.'.$this->getSubAction().'.'.$sort_order."[FROM]";
+			$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?".$this->getAction().'.'.($this->getSubAction() ? $this->getSubAction() : 0).'.'.$sort_order.".[FROM]";
 			$nextprev = $e107->tp->parseTemplate("{NEXTPREV={$parms}}");
 			if ($nextprev) $text .= "<div class='nextprev-bar'>".$nextprev."</div>";
 
@@ -684,7 +693,7 @@ class admin_newspost
 
 		if ($sub_action == "sn" && !varset($_POST['preview']))
 		{
-			if ($sql->db_Select("submitnews", "*", "submitnews_id={$id}", TRUE))
+			if ($e107->sql->db_Select("submitnews", "*", "submitnews_id={$id}", TRUE))
 			{
 				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
 				$row = $e107->sql->db_Fetch();
@@ -1333,7 +1342,6 @@ class admin_newspost
 			</form>
 		";
 
-		//XXX LAN - Icon
 		$text .= "
 			<form action='".e_SELF."?cat' id='core-newspost-cat-list-form' method='post'>
 				<fieldset id='core-newspost-cat-list'>
@@ -1546,8 +1554,11 @@ class admin_newspost
 	{
 		global $rs, $ns, $tp, $frm, $e107;
 		$sql2 = new db;
-		$sub_action = $this->getSubAction();
-		$id = $this->getId();
+		//FIXME - work in progress
+		$e107 = &e107::getInstance();
+		
+		require_once(e_HANDLER."form_handler.php");
+		$frm = new e_form(true); //enable inner tabindex counter
 
 		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
 		{
