@@ -9,8 +9,8 @@
  * Tagwords Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_class.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-17 22:46:37 $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-18 10:11:12 $
  * $Author: lisa_ $
  *
 */
@@ -47,7 +47,7 @@ class tagwords
 		include_lan(e_PLUGIN."tagwords/languages/".e_LANGUAGE.".php");
 		
 		//shortcodes
-		require_once(e_PLUGIN.'tagwords/tagwords_shortcodes_class.php');
+		require_once(e_PLUGIN.'tagwords/tagwords_shortcodes.php');
 		$this->shortcodes = $tagwords_shortcodes;
 
 		//template
