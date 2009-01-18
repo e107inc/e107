@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-01-18 19:02:07 $
- * $Author: secretr $
+ * $Revision: 1.27 $
+ * $Date: 2009-01-18 20:31:14 $
+ * $Author: e107steved $
 */
 require_once("../class2.php");
 
@@ -406,8 +406,8 @@ class admin_newspost
         $_POST['news_author'] = $tmp[0];
 
         $ret = $ix->submit_item($_POST, true);
-		$this->clear_cache();
-		
+        $this->clear_cache();
+
         if(isset($_POST['create_edit_stay']) && !empty($_POST['create_edit_stay']))
         {
 			if($this->getSubAction() != 'edit')
@@ -420,7 +420,7 @@ class admin_newspost
         }
         else
         {
-        	session_write_close();
+			session_write_close();
 			header('Location:'.e_SELF);
 			exit;
         }
@@ -1080,8 +1080,8 @@ class admin_newspost
 		$text .= "
 								<tr>
 									<td class='label'>".NWSLAN_22.":</td>
-									<td class='control'>
-										".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,classes,language")."
+									<td class='control'><div class='check-block'>
+										".$e107->user_class->vetted_tree("news_userclass", array($e107->user_class,'checkbox'), $_POST['news_class'], "nobody,public,guest,member,admin,classes,language")."</div>
 										<div class='field-help'>
 											".NWSLAN_84."
 										</div>
@@ -1479,13 +1479,17 @@ class admin_newspost
 							<tr>
 								<td class='label'>".LAN_NEWS_51."</td>
 								<td class='control'>
-									".$e107->user_class->uc_dropdown('news_editauthor', $pref['news_editauthor'], 'nobody,main,admin,classes', "tabindex='".$frm->getNext()."'")."
+								<select class='tbox select' name='news_editauthor' tabindex='".$frm->getNext()."'>\n
+								".$e107->user_class->vetted_tree('news_editauthor', array($e107->user_class,'select'), $pref['news_editauthor'], 'nobody,main,admin,classes')."</div>
+								</select>\n
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_106."</td>
 								<td class='control'>
-									".$e107->user_class->uc_dropdown('subnews_class', $pref['subnews_class'], 'nobody,public,guest,member,admin,classes', "tabindex='".$frm->getNext()."'")."
+								<select class='tbox select' name='news_editauthor' tabindex='".$frm->getNext()."'>\n
+								".$e107->user_class->vetted_tree('subnews_class', array($e107->user_class,'select'), $pref['subnews_class'], 'nobody,public,guest,member,admin,classes')."</div>
+								</select>\n
 								</td>
 							</tr>
 							<tr>
@@ -1547,7 +1551,7 @@ class admin_newspost
 	{
 
 		$e107 = &e107::getInstance();
-		
+
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
 
