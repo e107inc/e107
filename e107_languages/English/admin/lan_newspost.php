@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-01-17 22:48:14 $
+|     $Revision: 1.9 $
+|     $Date: 2009-01-18 19:02:07 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -122,6 +122,12 @@ define("NWSLAN_119", "Settings Saved");
 define("NWSLAN_120", "Text to show at the top of Submit News");
 define("NWSLAN_121", "Nothing found for %s");
 define("NWSLAN_122", "Icon");
+
+//sn
+define("NWSLAN_123", "Posted");
+define("NWSLAN_124", "User");
+define("NWSLAN_125", "Email");
+define("NWSLAN_126", "IP");
 
 define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
 define("LAN_NEWS_6", "News entered into database.");

@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-01-17 22:48:14 $
+ * $Revision: 1.25 $
+ * $Date: 2009-01-18 19:02:07 $
  * $Author: secretr $
  *
 */
@@ -2629,4 +2629,3 @@ function sendInfo(handler, container, form) {
 $w('autoExternalLinks autoNoHistory autoHide toggleObserver scrollToObserver').each( function(f) {
 	e107.runOnLoad(e107Helper[f], null, true); 
 });
-

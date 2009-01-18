@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-01-18 00:27:10 $
+ * $Revision: 1.26 $
+ * $Date: 2009-01-18 19:02:07 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -687,13 +687,13 @@ class admin_newspost
 
 
 		$sub_action = $this->getSubAction();
-		$id = $this->getId();
+		$id = $this->getSubAction() != 'sn' && $this->getSubAction() != 'upload' ? $this->getId() : 0;
 
 		$e107 = &e107::getInstance();
 
 		if ($sub_action == "sn" && !varset($_POST['preview']))
 		{
-			if ($e107->sql->db_Select("submitnews", "*", "submitnews_id={$id}", TRUE))
+			if ($e107->sql->db_Select("submitnews", "*", "submitnews_id=".$this->getId(), TRUE))
 			{
 				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
 				$row = $e107->sql->db_Fetch();
@@ -719,15 +719,15 @@ class admin_newspost
 
 		if ($sub_action == "upload" && !varset($_POST['preview']))
 		{
-			if ($e107->sql->db_Select('upload', '*', "upload_id={$id}")) {
-				$row = $sql->db_Fetch();
+			if ($e107->sql->db_Select('upload', '*', "upload_id=".$this->getId())) {
+				$row = $e107->sql->db_Fetch();
 				$post_author_id = substr($row['upload_poster'], 0, strpos($row['upload_poster'], "."));
 				$post_author_name = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1));
 				$match = array();
 				//XXX DB UPLOADS STILL SUPPORTED?
 				$upload_file = "pub_" . (preg_match('#Binary\s(.*?)\/#', $row['upload_file'], $match) ? $match[1] : $row['upload_file']);
 				$_POST['news_title'] = LAN_UPLOAD.": ".$row['upload_name'];
-				$_POST['data'] = $row['upload_description']."\n[b]".NWSLAN_49." <a href='user.php?id.".$e107->url->getUrl('core:user', 'main', 'id='.$post_author_id)."'>".$post_author_name."</a>[/b]\n\n[file=request.php?".$upload_file."]{$row['upload_name']}[/file]\n";
+				$_POST['data'] = $row['upload_description']."\n[b]".NWSLAN_49." [link=".$e107->url->getUrl('core:user', 'main', 'id='.$post_author_id)."]".$post_author_name."[/link][/b]\n\n[file=request.php?".$upload_file."]{$row['upload_name']}[/file]\n";
 			}
 		}
 
@@ -987,11 +987,6 @@ class admin_newspost
 		$r_array = array();
 		foreach($ren_type as $key=>$value) {
 			$r_array[$key] = $value;
-			/*
-			$checked = ($_POST['news_rendertype'] == $key) ? "checked='checked'" : "";
-			$text .= "<input name='news_rendertype' type='radio' value='$key' $checked />";
-			$text .= $value."<br />";
-			*/
 		}
 
 
@@ -1218,7 +1213,7 @@ class admin_newspost
 
 	   	list($_POST['user_id'],$_POST['user_name']) = explode(chr(35), $_POST['news_author']);
 		$_POST['news_author'] = $_POST['user_id'];
-		$_POST['comment_total'] = $this->getId() ? $e107->sql->db_Count("comments", "(*)", " WHERE comment_item_id=".$this->getId()." AND comment_type='0'") : 0;
+		$_POST['comment_total'] = $id ? $e107->sql->db_Count("comments", "(*)", " WHERE comment_item_id={$id} AND comment_type='0'") : 0;
 		$_PR = $_POST;
 
 		$_PR['news_body'] = $e107->tp->post_toHTML($_PR['data'],FALSE);
@@ -1272,8 +1267,9 @@ class admin_newspost
 
 		//category icon alias
 		$category['category-button'] = $category['category_icon'];
+		
 		//Send the prefered response type
-		echo $jshelper->sendXMLResponse('fill-form', $category);
+		$jshelper->sendResponse('fill-form', $category);
 	}
 
 	function show_categories()
@@ -1420,7 +1416,7 @@ class admin_newspost
 	
 	function show_news_prefs()
 	{
-		global $pref, $e_userclass;
+		global $pref;
 		
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
@@ -1547,20 +1543,15 @@ class admin_newspost
 		$e107->ns->tablerender(NWSLAN_90, $text);
 	}
 
-
-
-	//XXX Lan - many many lans
 	function show_submitted_news()
 	{
-		global $rs, $ns, $tp, $frm, $e107;
-		$sql2 = new db;
-		//FIXME - work in progress
+
 		$e107 = &e107::getInstance();
 		
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
 
-		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
+		if ($e107->sql->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC"))
 		{
 			$text .= "
 			<form action='".e_SELF."?sn' method='post'>
@@ -1581,30 +1572,29 @@ class admin_newspost
 						</thead>
 						<tbody>
 			";
-			while ($row = $sql2->db_Fetch())
+			while ($row = $e107->sql->db_Fetch())
 			{
-				extract($row);
-				$buttext = ($submitnews_auth == 0)? NWSLAN_58 :	NWSLAN_103;
+				$buttext = ($row['submitnews_auth'] == 0)? NWSLAN_58 :	NWSLAN_103;
 
-				if (substr($submitnews_item,-7,7) == '[/html]') $submitnews_item = substr($submitnews_item,0,-7);
-				if (substr($submitnews_item,0,6) == '[html]') $submitnews_item = substr($submitnews_item,6);
+				if (substr($row['submitnews_item'], -7, 7) == '[/html]') $row['submitnews_item'] = substr($row['submitnews_item'], 0, -7);
+				if (substr($row['submitnews_item'],0 , 6) == '[html]') $row['submitnews_item'] = substr($row['submitnews_item'], 6);
 
 				$text .= "
 					<tr>
-						<td class='center'>{$submitnews_id}</td>
+						<td class='center'>{$row['submitnews_id']}</td>
 						<td>
-							<strong>".$tp->toHTML($submitnews_title,FALSE,"emotes_off, no_make_clickable")."</strong><br/>".$tp->toHTML($submitnews_item)."
+							<strong>".$e107->tp->toHTML($row['submitnews_title'], FALSE, "TITLE")."</strong><br/>".$e107->tp->toHTML($row['submitnews_item'])."
 						</td>
 						<td>
-							<div class='field-spacer'><strong>Posted:</strong> ".(($submitnews_auth == 0) ? "No" : "Yes")."</div>
-							<div class='field-spacer'><strong>Date:</strong> ".date("D dS M y, g:ia", $submitnews_datestamp)."</div>
-							<div class='field-spacer'><strong>User:</strong> ".$submitnews_name."</div>
-							<div class='field-spacer'><strong>Email:</strong> ".$submitnews_email."</div>
-							<div class='field-spacer'><strong>IP:</strong> ".$e107->ipDecode($submitnews_ip)."</div>
+							<div class='field-spacer'><strong>".NWSLAN_123.":</strong> ".(($row['submitnews_auth'] == 0) ? LAN_NO : LAN_YES)."</div>
+							<div class='field-spacer'><strong>".LAN_DATE.":</strong> ".date("D dS M y, g:ia", $row['submitnews_datestamp'])."</div>
+							<div class='field-spacer'><strong>".NWSLAN_124.":</strong> {$row['submitnews_name']}</div>
+							<div class='field-spacer'><strong>".NWSLAN_125.":</strong> {$row['submitnews_email']}</div>
+							<div class='field-spacer'><strong>".NWSLAN_126.":</strong> ".$e107->ipDecode($row['submitnews_ip'])."</div>
 							<br/>
 							<div class='field-spacer center'>
-								".$frm->admin_button("category_edit_{$submitnews_id}", $buttext, 'action', '', array('id'=>false, 'other'=>"onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\""))."
-								".$frm->admin_button("delete[sn_{$submitnews_id}]", LAN_DELETE, 'delete', '', array('id'=>false, 'title'=>$tp->toJS(NWSLAN_38." [ID: {$submitnews_id} ]")))."
+								".$frm->admin_button("category_edit_{$row['submitnews_id']}", $buttext, 'action', '', array('id'=>false, 'other'=>"onclick=\"document.location='".e_SELF."?create.sn.{$row['submitnews_id']}'\""))."
+								".$frm->admin_button("delete[sn_{$row['submitnews_id']}]", LAN_DELETE, 'delete', '', array('id'=>false, 'title'=>$e107->tp->toJS(NWSLAN_38." [".LAN_NEWS_45.": {$row['submitnews_id']} ]")))."
 							</div>
 						</td>
 					</tr>
@@ -1619,10 +1609,10 @@ class admin_newspost
 		}
 		else
 		{
-			$text .= "<div style='text-align:center'>".NWSLAN_59."</div>";
+			$text .= "<div class='center'>".NWSLAN_59."</div>";
 		}
 
-		$ns->tablerender(NWSLAN_47, $text);
+		$e107->ns->tablerender(NWSLAN_47, $text);
 	}
 	
 
@@ -1650,8 +1640,10 @@ class admin_newspost
 		$var['pref']['text'] = NWSLAN_90;
 		$var['pref']['link'] = e_SELF."?pref";
 		$var['pref']['perm'] = "N";
-		if ($e107->sql->db_Select('submitnews', '*', "submitnews_auth=0")) {
-			$var['sn']['text'] = NWSLAN_47;
+		
+		$c = $e107->sql->db_Count('submitnews');
+		if ($c) {
+			$var['sn']['text'] = NWSLAN_47." ({$c})";
 			$var['sn']['link'] = e_SELF."?sn";
 			$var['sn']['perm'] = "N";
 		}
