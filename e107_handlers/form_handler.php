@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-01-18 21:50:04 $
+ * $Revision: 1.19 $
+ * $Date: 2009-01-18 22:26:35 $
  * $Author: secretr $
  *
 */
@@ -159,38 +159,6 @@ class e_form
 		return $this->checkbox($name, $selector, false, array('id'=>false,'class'=>'checkbox toggle-all'));
 	}
 	
-	function uc_select($name, $default, $uc_options, $frm_options)
-	{
-		$e107 = e107::getInstance();
-		$e107->user_class->vetted_tree($name, array($this, '_uc_select_cb'), $default, $uc_options, $frm_options);
-	}
-		
-	// Callback for vetted_tree - Creates the option list for a selection box
-	function _uc_select_cb($treename, $classnum, $current_value, $nest_level)
-	{
-		if($classnum == e_UC_BLANK)
-			return $this->option('&nbsp;', '');
-			
-		$e107 = e107::getInstance();
-		$tmp = explode(',', $current_value);
-		if($nest_level == 0)
-		{
-			$prefix = '';
-			$style = "font-weight:bold; font-style: italic;";
-		} 
-		elseif($nest_level == 1)
-		{
-			$prefix = '&nbsp;&nbsp;';
-			$style = "font-weight:bold";
-		} 
-		else
-		{
-			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
-			$style = '';
-		}
-		return $this->option($prefix.$e107->user_class->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}");
-	}
-  
 	function radio($name, $value, $checked = false, $options = array())
 	{
 		$options['checked'] = $checked; //comes as separate argument just for convenience
@@ -238,6 +206,41 @@ class e_form
 	{
 		return $this->select_open($name, $options)."\n".$this->option_multi($option_array, $selected)."\n".$this->select_close();
 	}
+	
+	//UNDER CONSTRUCTION
+	function uc_select($name, $default, $uc_options, $select_options = array(), $opt_options = array())
+	{
+		$e107 = e107::getInstance();
+		$ret = $e107->user_class->vetted_tree($name, array($this, '_uc_select_cb'), $default, $uc_options, $opt_options);
+		return $this->select_open($name, $select_options).$ret.$this->select_close();
+	}
+		
+	// Callback for vetted_tree - Creates the option list for a selection box
+	function _uc_select_cb($treename, $classnum, $current_value, $nest_level)
+	{
+		if($classnum == e_UC_BLANK)
+			return $this->option('&nbsp;', '');
+			
+		$e107 = e107::getInstance();
+		$tmp = explode(',', $current_value);
+		if($nest_level == 0)
+		{
+			$prefix = '';
+			$style = "font-weight:bold; font-style: italic;";
+		} 
+		elseif($nest_level == 1)
+		{
+			$prefix = '&nbsp;&nbsp;';
+			$style = "font-weight:bold";
+		} 
+		else
+		{
+			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
+			$style = '';
+		}
+		return $this->option($prefix.$e107->user_class->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}");
+	}
+	//UNDER CONSTRUCTION END
 
 	function optgroup_open($label, $disabled)
 	{
