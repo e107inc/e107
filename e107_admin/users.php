@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.29 $
-* $Date: 2009-01-18 01:39:20 $
+* $Revision: 1.30 $
+* $Date: 2009-01-18 16:47:41 $
 * $Author: mcfly_e107 $
 *
 */
@@ -1465,6 +1465,7 @@ function deleteRank($rankId)
 	$e107 = e107::getInstance();
 	
 	$rankId = (int)$rankId;
+	$e107->ecache->clear_sys('nomd5_user_ranks');
 	if($e107->sql->db_Delete('generic', "gen_id='{$rankId}'"))
 	{
 		$emessage->add(USRLAN_218, E_MESSAGE_SUCCESS);
@@ -1562,6 +1563,7 @@ function updateRanks()
 		$tmp['data']['gen_intdata'] =	varset($_POST['new_calc_lower']);
 		$e107->sql->db_Insert('generic', $tmp);
 	}
+	$e107->ecache->clear_sys('nomd5_user_ranks');
 	$emessage->add(USRLAN_217, E_MESSAGE_SUCCESS);
 }
 
