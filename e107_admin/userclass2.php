@@ -9,8 +9,8 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.19 $
- * $Date: 2008-12-29 16:11:02 $
+ * $Revision: 1.20 $
+ * $Date: 2009-01-18 19:02:07 $
  * $Author: secretr $
  *
 */
@@ -106,8 +106,8 @@ if(e_AJAX_REQUEST)
 		$row['uc_icon_select'] = $row['userclass_icon']; //icons select box
 
 		//Send the prefered response type
-		//echo $jshelper->sendJSONResponse('fill-form', $row);
-		echo $jshelper->sendXMLResponse('fill-form', $row);
+		//$jshelper->sendJSONResponse('fill-form', $row);
+		$jshelper->sendResponse('fill-form', $row);
 		exit;
 	}
 }

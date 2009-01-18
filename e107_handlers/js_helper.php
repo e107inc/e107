@@ -9,8 +9,8 @@
  * Javascript Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_helper.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-01-17 22:48:14 $
+ * $Revision: 1.6 $
+ * $Date: 2009-01-18 19:02:07 $
  * $Author: secretr $
  *
 */
@@ -41,6 +41,14 @@ class e_jshelper
      */
     var $_response_actions = array();
 
+    /**
+     * Add response action & action instructions
+     * 'action' equals to e107Ajax JS method (see JS API)
+     *
+     * @param string $action
+     * @param array $data_array item data for the action
+     * @return object e_jshelper
+     */
     function addResponseAction($action, $data_array)
     {
         if(!isset($this->_response_actions[$action]))
@@ -52,6 +60,15 @@ class e_jshelper
         return $this;
     }
     
+    /**
+     * Attach response Items array to an action
+     * Example: addResponseItem('element-invoke-by-id', 'show', array('category-clear','update-category'));
+     * will add  array('category-clear','update-category') to ['element-invoke-by-id']['show'] stack
+     *
+     * @param string $action
+     * @param array $data_array item data for the action
+     * @return object e_jshelper
+     */
     function addResponseItem($action, $subaction, $data)
     {
         if(!isset($this->_response_actions[$action]))
@@ -181,6 +198,28 @@ class e_jshelper
     	    $this->addResponseAction($action, $data_array);
     	}
     	echo $this->buildJSONResponse();
+    }
+    
+    /**
+     * Send Server Response
+     * Sends the response based on the system
+     * prefered response type (could be system preference in the future)
+     *
+     * @param string $action optional Action
+     * @param array $data_array optional action array
+     * @return boolean success
+     */
+    function sendResponse($action = '', $data_array = array())
+    {
+    	$prefered_response_type = 'XML'; //TODO - pref?
+    	$method = "send{$prefered_response_type}Response";
+    	if(method_exists($this, $method))
+    	{
+    		$this->$method($action, $data_array);
+    		return true;
+    	}
+    	
+    	return false;
     }
 
     /**
