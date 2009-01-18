@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/level_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-01-18 01:39:20 $
+|     $Revision: 1.8 $
+|     $Date: 2009-01-18 16:47:41 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -135,7 +135,7 @@ class e107UserRank
 		//Check to see if we can get it from cache
 		if($force == false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
 		{
-			$this->ranks = $ranks;
+			$this->ranks = $e107->arrayStorage->ReadArray($ranks);
 		}
 		else
 		{
@@ -162,7 +162,7 @@ class e107UserRank
 					}
 				}
 			}
-			$e107->ecache->set_sys('nomd5_user_ranks', $this->ranks);
+			$e107->ecache->set_sys('nomd5_user_ranks', $e107->arrayStorage->WriteArray($this->ranks, false));
 		}
 	}
 
