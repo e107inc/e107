@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-01-10 04:39:54 $
+ * $Revision: 1.37 $
+ * $Date: 2009-01-18 17:05:08 $
  * $Author: mcfly_e107 $
 */
 
@@ -44,7 +44,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.36 $
+* @version $Revision: 1.37 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -549,10 +549,10 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Fetch($type = MYSQL_BOTH) {
+	function db_Fetch($type = MYSQL_ASSOC) {
 		global $eTraffic;
 		if (!(is_int($type))) {
-			$type=MYSQL_BOTH;
+			$type=MYSQL_ASSOC;
 		}
 		$b = microtime();
 		$row = @mysql_fetch_array($this->mySQLresult,$type);
