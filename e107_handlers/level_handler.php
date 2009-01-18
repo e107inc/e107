@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/level_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-01-17 03:27:17 $
+|     $Revision: 1.7 $
+|     $Date: 2009-01-18 01:39:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -151,6 +151,7 @@ class e107UserRank
 					$tmp['thresh'] = $row['gen_intdata'];
 					$tmp['lan_pfx'] = $row['gen_user_id'];
 					$tmp['image'] = $row['gen_chardata'];
+					$tmp['id'] = $row['gen_id'];
 					if($row['gen_datestamp'])
 					{
 						$this->ranks['special'][$row['gen_datestamp']] = $tmp;

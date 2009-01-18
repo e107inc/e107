@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.28 $
-* $Date: 2009-01-17 03:27:16 $
+* $Revision: 1.29 $
+* $Date: 2009-01-18 01:39:20 $
 * $Author: mcfly_e107 $
 *
 */
@@ -43,7 +43,23 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass')
 	exit;
 }
 
-//var_dump($_POST);
+function headerjs()
+{
+	require_once(e_HANDLER.'js_helper.php');
+	return "<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>";
+}
+
+require_once(e_HANDLER.'message_handler.php');
+$emessage = &eMessage::getInstance();
+
+if(isset($_POST['delete_rank']))
+{
+	foreach($_POST['delete_rank'] as $k => $v)
+	{
+		deleteRank($k);
+	}
+}
+
 if(isset($_POST['updateRanks']))
 {
 	updateRanks();
@@ -58,7 +74,7 @@ require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'user_handler.php');
 include_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'validator_class.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
+//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 $ue = new e107_user_extended;
 $userMethods = new UserHandler;
 $user_data = array();
@@ -1443,13 +1459,30 @@ function users_adminmenu()
 	$user->show_options($action);
 }
 
+function deleteRank($rankId)
+{
+	global $emessage;
+	$e107 = e107::getInstance();
+	
+	$rankId = (int)$rankId;
+	if($e107->sql->db_Delete('generic', "gen_id='{$rankId}'"))
+	{
+		$emessage->add(USRLAN_218, E_MESSAGE_SUCCESS);
+	}
+	else
+	{
+		$emessage->add(USRLAN_218, E_MESSAGE_FAIL);
+	}
+}
+
 function updateRanks()
 {
-	global $pref;
+	global $pref, $emessage;
 	$e107 = e107::getInstance();
 	$config = array();
 	$ranks_calc = '';
 	$ranks_flist = '';
+	
 	foreach($_POST['op'] as $f => $o)
 	{
 		$config[$f]['op'] = $o;
@@ -1470,7 +1503,7 @@ function updateRanks()
 	$tmp['_FIELD_TYPES']['gen_chardata'] = 'escape';
 	$e107->sql->db_Insert('generic', $tmp);
 
-	$pref['ranks_cals'] = $ranks_calc;
+	$pref['ranks_calc'] = $ranks_calc;
 	$pref['ranks_flist'] = $ranks_flist;
 	save_prefs();
 	
@@ -1501,6 +1534,23 @@ function updateRanks()
 	$tmp['data']['gen_chardata'] = 	$_POST['calc_img']['admin'];
 	$e107->sql->db_Insert('generic', $tmp);
 
+
+	//Add all current site defined ranks
+	if(isset($_POST['field_id']))
+	{
+		foreach($_POST['field_id'] as $fid => $x)
+		{
+			unset($tmp['data']);
+			$tmp['data']['gen_type'] = 'user_rank_data';
+			$tmp['data']['gen_ip'] = varset($_POST['calc_name'][$fid], '');
+			$tmp['data']['gen_user_id'] = varset($_POST['calc_pfx'][$fid], 0);
+			$tmp['data']['gen_chardata'] = varset($_POST['calc_img'][$fid], '');
+			$tmp['data']['gen_intdata'] = varset($_POST['calc_lower'][$fid], '_NULL_');
+			$e107->sql->db_Insert('generic', $tmp);
+		}
+	}
+
+	//Add new rank, if posted
 	if(varset($_POST['new_calc_lower']))
 	{
 		unset($tmp['data']);
@@ -1512,15 +1562,19 @@ function updateRanks()
 		$tmp['data']['gen_intdata'] =	varset($_POST['new_calc_lower']);
 		$e107->sql->db_Insert('generic', $tmp);
 	}
-
+	$emessage->add(USRLAN_217, E_MESSAGE_SUCCESS);
 }
 
 function show_ranks()
 {
-	global $pref;
+	global $pref, $emessage;
 	$e107 = e107::getInstance();
 	include_once(e_HANDLER.'file_class.php');
 	include_once(e_HANDLER.'level_handler.php');
+	require_once(e_HANDLER.'message_handler.php');
+	require_once(e_HANDLER."form_handler.php");
+	$frm = new e_form(true); //enable inner tabindex counter
+
 	$f = new e_file;
 	$ranks = new e107UserRank;
 
@@ -1536,9 +1590,9 @@ function show_ranks()
 	$fieldList = array('core' => array(), 'extended' => array());
 
 	$fieldList['core'] = array(
-	'comments' => 'Number of comments',
-	'visits' => 'Number of site visits',
-	'days' => 'Number of days member' 
+	'comments' => USRLAN_201,
+	'visits' => USRLAN_202,
+	'days' => USRLAN_203 
 	);
 
 	foreach($e107->extended_struct as $field)
@@ -1555,17 +1609,17 @@ function show_ranks()
 	<form method='post'>
 	<table style='".ADMIN_WIDTH."'>
 	<tr>
-	<td class='label'>Source</td>
-	<td class='label'>Field Name</td>
-	<td class='control'>Operation</td>
-	<td class='control'>Value</td>
+	<td class='label'>".USRLAN_197."</td>
+	<td class='label'>".USRLAN_198."</td>
+	<td class='control'>".USRLAN_199."</td>
+	<td class='control'>".USRLAN_200."</td>
 	</tr>
 	";
 	foreach($fieldList['core'] as $k => $f)
 	{
 		$text .= "
 		<tr>
-		<td class='label'>Core</td>
+		<td class='label'>".USRLAN_204."</td>
 		<td class='label'>{$f}</td>
 		<td class='control'>
 			<select name='op[{$k}]' class='tbox'>
@@ -1591,7 +1645,7 @@ function show_ranks()
 				<td colspan='4'>&nbsp;</td>
 			</tr>
 			<tr>
-			<td class='label'>Plugin</td>
+			<td class='label'>".USRLAN_205."</td>
 			<td class='label'>{$f}</td>
 			<td class='control'>
 				<select name='op[{$f}]' class='tbox'>
@@ -1609,17 +1663,25 @@ function show_ranks()
 			";
 		}
 	}
+	if(isset($pref['ranks_calc']))
+	{
+		$text .= "<tr>
+								<td class='label' colspan='4'><br />".USRLAN_206.": {$pref['ranks_calc']}</td>
+							</tr>
+							";
+	}
 	$text .= '</table>';
+	$e107->ns->tablerender('', $emessage->render());
 	$e107->ns->tablerender('Rank Calculation fields', $text);
 
 	$text = "
 	<table style='".ADMIN_WIDTH."'>
 	<tr>
-		<td class='label'>Type</td>
-		<td class='label'>Rank Name</td>
-		<td class='label'>Lower Threshold</td>
-		<td class='label'>Lang prefix?</td>
-		<td class='label'>Rank Image</td>
+		<td class='label'>".USRLAN_207."</td>
+		<td class='label'>".USRLAN_208."</td>
+		<td class='label'>".USRLAN_209."</td>
+		<td class='label'>".USRLAN_210."</td>
+		<td class='label'>".USRLAN_211."</td>
 	</tr>
 	";
 	$info = $ranks->ranks['special'][1];
@@ -1628,7 +1690,7 @@ function show_ranks()
 	
 	$text .= "
 	<tr>
-		<td class='control'>Main Site Admin</td>
+		<td class='control'>".LAN_MAINADMIN."</td>
 		<td class='control'>
 			<input class='tbox' type='text' name='calc_name[main_admin]' value='{$val}'>
 		</td>
@@ -1643,7 +1705,7 @@ function show_ranks()
 	$pfx = ($info['lan_pfx'] ? "checked='checked'" : '');
 	$text .= "	
 	<tr>
-		<td class='control'>Site Admin</td>
+		<td class='control'>".LAN_ADMIN."</td>
 		<td class='control'>
 			<input class='tbox' type='text' name='calc_name[admin]' value='{$val}'>
 		</td>
@@ -1658,24 +1720,31 @@ function show_ranks()
 	
 	foreach($ranks->ranks['data'] as $k => $r)
 	{
-		$pfx_checked = ($r['lan_pfx'] ? "selected='selected'" : '');
+		$pfx_checked = ($r['lan_pfx'] ? "checked='checked'" : '');
 		$text .= "
 		<tr>
-			<td class='control'>User Rank</td>
+			<td class='control'>".USRLAN_212."</td>
 			<td class='control'>
 				<input type='hidden' name='field_id[{$k}]' value='1' />
-				<input class='tbox' type='text' calc_name='name[$k]' value='{$r['name']}'>
+				<input class='tbox' type='text' name='calc_name[$k]' value='{$r['name']}'>
 			</td>
 			<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}'></td>
 			<td class='control'><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked}></td>
-			<td class='control'>".RankImageDropdown($imageList, 'calc_img[$k]', $r['image'])."</td>
+			<td class='control'>".
+				RankImageDropdown($imageList, "calc_img[$k]", $r['image'])."&nbsp;".
+				$frm->submit_image("delete_rank[{$r['id']}]", LAN_DELETE, 'delete', USRLAN_213.": [{$r['name']}]?")."
+			</td>
 		</tr>
 		";
 	}
 
 	$text .= "
+
 	<tr>
-		<td class='control'>Add new Rank</td>
+		<td class='control' colspan='5'>&nbsp;</td>
+	</tr>
+	<tr>
+		<td class='control'>".USRLAN_214."</td>
 		<td class='control'><input class='tbox' type='text' name='new_calc_name' value=''></td>
 		<td class='control'><input class='tbox' type='text' size='5' name='new_calc_lower' value=''></td>
 		<td class='control'><input type='checkbox' name='new_calc_pfx' value='1'></td>
@@ -1684,16 +1753,13 @@ function show_ranks()
 	<tr>
 		<td colspan='5' style='text-align:center'>
 			<br />
-			<input type='submit' name='updateRanks' value='Update Ranks' />
+			<input type='submit' name='updateRanks' value='".USRLAN_215."' />
 		</td>
 	</tr>
 	";	
 
 	$text .= '</table></form>';
 	$e107->ns->tablerender('Ranks', $text);
-
-
-	//	var_dump($fieldList);
 	include(e_ADMIN.'footer.php');
 	exit;
 }
@@ -1702,14 +1768,14 @@ function RankImageDropdown(&$imgList, $field, $curVal='')
 {
 	$ret = "
 	<select class='tbox' name='{$field}'>
-	<option value=''>--select image--</option>
+	<option value=''>".USRLAN_216."</option>
 	";
 	foreach($imgList as $img)
 	{
 		$sel = ($img['fname'] == $curVal ? "selected='selected'" : '');
 		$ret .= "\n<option {$sel}>{$img['fname']}</option>";
 	}
-	$ret .= '</option>';
+	$ret .= '</select>';
 	return $ret;
 }
 

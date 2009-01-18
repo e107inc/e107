@@ -9,9 +9,9 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-01-11 21:06:52 $
- * $Author: e107steved $
+ * $Revision: 1.15 $
+ * $Date: 2009-01-18 01:39:20 $
+ * $Author: mcfly_e107 $
  *
 */
 define("USRLAN_1", "Options Saved.");
@@ -199,11 +199,32 @@ define('USRLAN_193', 'Nothing changed - not saved');
 define('USRLAN_194', '');
 define('USRLAN_195', '');
 
+//User Ranks phrases
 define('USRLAN_196', 'User ranks');
-
+define('USRLAN_197', 'Source');
+define('USRLAN_198', 'Field Name');
+define('USRLAN_199', 'Operation');
+define('USRLAN_200', 'Value');
+define('USRLAN_201', 'Number of comments');
+define('USRLAN_202', 'Number of site visits');
+define('USRLAN_203', 'Number of days member');
+define('USRLAN_204', 'Core');
+define('USRLAN_205', 'Plugin');
+define('USRLAN_206', 'Current Calculation');
+define('USRLAN_207', 'Type');
+define('USRLAN_208', 'Rank Name');
+define('USRLAN_209', 'Lower Threshold');
+define('USRLAN_210', 'Lang Prefix');
+define('USRLAN_211', 'Rank Image');
+define('USRLAN_212', 'User Rank');
+define('USRLAN_213', 'Are you sure you want to delete this rank');
+define('USRLAN_214', 'Add New Rank');
+define('USRLAN_215', 'Update Ranks');
+define('USRLAN_216', '--select image--');
+define('USRLAN_217', 'User Ranks Updated');
+define('USRLAN_218', 'Deletion of User Rank');
 
 define('LAN_MAINADMIN','Main Admin');
-define('LAN_ADMIN','Admin');
 define('LAN_NOTVERIFIED','Not Verified');
 define('LAN_BANNED','Banned');
 define('LAN_BOUNCED','Bounced');
