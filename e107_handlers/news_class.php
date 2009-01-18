@@ -9,9 +9,9 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-01-16 01:02:41 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.12 $
+ * $Date: 2009-01-18 00:27:10 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -35,6 +35,7 @@ class news {
 		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "news_author = '".intval($news['news_author'])."', ";
         $news['news_author'] = ($news['news_author']) ? $news['news_author'] : USERID;
 
+        $data = array();
 		if ($news['news_id'])
 		{	// Updating existing item
 			$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
@@ -64,14 +65,17 @@ class news {
 		{	// Adding item
 			if ($news['news_id'] = $sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".intval($news['news_author']).", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' "))
 			{
-				$admin_log->logArrayAll('NEWS_08', $news);
-				$e_event -> trigger('newspost', $news);
+
 				$message = LAN_NEWS_6;
 				$emessage->add(LAN_NEWS_6, E_MESSAGE_SUCCESS, $smessages);
 				$e107cache -> clear('news.php');
 				$id = mysql_insert_id();
 				$data = array('method'=>'create', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
-				//$message .= $e_event->triggerHook($data);
+				
+				//moved down - prevent wrong mysql_insert_id
+				$admin_log->logArrayAll('NEWS_08', $news);
+				$e_event -> trigger('newspost', $news);
+				
 				$emessage->add($e_event->triggerHook($data), E_MESSAGE_INFO, $smessages);
 			}
 			else
@@ -135,7 +139,9 @@ class news {
 
 		/* end trackback */
 
-		return $message;
+		//return $message;
+		$data['message'] = $message;
+		return $data;
 	}
 
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='')
