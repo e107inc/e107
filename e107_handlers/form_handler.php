@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-01-18 22:26:35 $
+ * $Revision: 1.20 $
+ * $Date: 2009-01-20 20:46:26 $
  * $Author: secretr $
  *
 */
@@ -65,10 +65,13 @@ class e_form
 	var $_tabindex_counter = 0;
 	var $_tabindex_enabled = true;
 	var $_cached_attributes = array();
+	var $_uc;
 
 	function e_form($enable_tabindex = false)
 	{
 		$this->_tabindex_enabled = $enable_tabindex;
+		$e107 = &e107::getInstance();
+		$this->uc = &$e107->user_class;
 	}
 
 	function text($name, $value, $maxlength = 200, $options = array())
@@ -210,8 +213,7 @@ class e_form
 	//UNDER CONSTRUCTION
 	function uc_select($name, $default, $uc_options, $select_options = array(), $opt_options = array())
 	{
-		$e107 = e107::getInstance();
-		$ret = $e107->user_class->vetted_tree($name, array($this, '_uc_select_cb'), $default, $uc_options, $opt_options);
+		$ret = $this->uc->vetted_tree($name, array($this, '_uc_select_cb'), $default, $uc_options, $opt_options);
 		return $this->select_open($name, $select_options).$ret.$this->select_close();
 	}
 		
@@ -220,8 +222,7 @@ class e_form
 	{
 		if($classnum == e_UC_BLANK)
 			return $this->option('&nbsp;', '');
-			
-		$e107 = e107::getInstance();
+
 		$tmp = explode(',', $current_value);
 		if($nest_level == 0)
 		{
@@ -238,7 +239,7 @@ class e_form
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
 			$style = '';
 		}
-		return $this->option($prefix.$e107->user_class->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}");
+		return $this->option($prefix.$this->uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}");
 	}
 	//UNDER CONSTRUCTION END
 
