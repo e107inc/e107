@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-01-20 20:46:26 $
+ * $Revision: 1.21 $
+ * $Date: 2009-01-20 22:37:49 $
  * $Author: secretr $
  *
 */
@@ -71,7 +71,7 @@ class e_form
 	{
 		$this->_tabindex_enabled = $enable_tabindex;
 		$e107 = &e107::getInstance();
-		$this->uc = &$e107->user_class;
+		$this->_uc = &$e107->user_class;
 	}
 
 	function text($name, $value, $maxlength = 200, $options = array())
@@ -162,6 +162,37 @@ class e_form
 		return $this->checkbox($name, $selector, false, array('id'=>false,'class'=>'checkbox toggle-all'));
 	}
 	
+	function uc_checkbox($name, $current_value, $uc_options, $field_options = array())
+	{
+		if(!is_array($field_options)) parse_str($field_options, $field_options); 
+		return '
+			<div class="check-block">
+				'.$this->_uc->vetted_tree($name, array($this, '_uc_checkbox_cb'), $current_value, $uc_options, $field_options).'
+			</div>
+		';
+	}
+	
+	function _uc_checkbox_cb($treename, $classnum, $current_value, $nest_level, $field_options)
+	{
+		if($classnum == e_UC_BLANK)
+			return '';
+
+		$tmp = explode(',', $current_value);
+
+		$class = $style = '';
+		if($nest_level == 0)
+		{
+			$class = " strong";
+		} 
+		else
+		{
+			$style = " style='text-indent:" . (1.2 * $nest_level) . "em'";
+		}
+		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->uc_get_classdescription($classnum).')</span>' : '';
+		
+		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum), $treename.'[]', $classnum).$descr."</div>\n";
+	}
+	
 	function radio($name, $value, $checked = false, $options = array())
 	{
 		$options['checked'] = $checked; //comes as separate argument just for convenience
@@ -209,12 +240,10 @@ class e_form
 	{
 		return $this->select_open($name, $options)."\n".$this->option_multi($option_array, $selected)."\n".$this->select_close();
 	}
-	
-	//UNDER CONSTRUCTION
-	function uc_select($name, $default, $uc_options, $select_options = array(), $opt_options = array())
+
+	function uc_select($name, $current_value, $uc_options, $select_options = array(), $opt_options = array())
 	{
-		$ret = $this->uc->vetted_tree($name, array($this, '_uc_select_cb'), $default, $uc_options, $opt_options);
-		return $this->select_open($name, $select_options).$ret.$this->select_close();
+		return $this->select_open($name, $select_options).$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options).$this->select_close();
 	}
 		
 	// Callback for vetted_tree - Creates the option list for a selection box
@@ -238,10 +267,9 @@ class e_form
 		{
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
 			$style = '';
-		}
-		return $this->option($prefix.$this->uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}");
+		} 
+		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}");
 	}
-	//UNDER CONSTRUCTION END
 
 	function optgroup_open($label, $disabled)
 	{

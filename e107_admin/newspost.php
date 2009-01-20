@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-01-20 21:29:23 $
+ * $Revision: 1.29 $
+ * $Date: 2009-01-20 22:37:49 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -1080,8 +1080,8 @@ class admin_newspost
 		$text .= "
 								<tr>
 									<td class='label'>".NWSLAN_22.":</td>
-									<td class='control'><div class='check-block'>
-										".$e107->user_class->vetted_tree("news_userclass", array($e107->user_class,'checkbox'), $_POST['news_class'], "nobody,public,guest,member,admin,classes,language")."</div>
+									<td class='control'>
+										".$frm->uc_checkbox('news_userclass', $_POST['news_class'], 'nobody,public,guest,member,admin,classes,language', 'description=1')."
 										<div class='field-help'>
 											".NWSLAN_84."
 										</div>
@@ -1479,13 +1479,13 @@ class admin_newspost
 							<tr>
 								<td class='label'>".LAN_NEWS_51."</td>
 								<td class='control'>
-									".$frm->uc_select('news_editauthor', $pref['news_editauthor'], 'nobody,main,admin,classes', 'tabindex='.$frm->getNext())."
+									".$frm->uc_select('news_editauthor', $pref['news_editauthor'], 'nobody,main,admin,classes')."
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_106."</td>
 								<td class='control'>
-									".$frm->uc_select('subnews_class', $pref['subnews_class'], 'nobody,public,guest,member,admin,classes', 'tabindex='.$frm->getNext())."
+									".$frm->uc_select('subnews_class', $pref['subnews_class'], 'nobody,public,guest,member,admin,classes')."
 								</td>
 							</tr>
 							<tr>
