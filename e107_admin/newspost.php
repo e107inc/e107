@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-01-18 20:31:14 $
- * $Author: e107steved $
+ * $Revision: 1.28 $
+ * $Date: 2009-01-20 21:29:23 $
+ * $Author: secretr $
 */
 require_once("../class2.php");
 
@@ -1392,8 +1392,8 @@ class admin_newspost
 			</fieldset>
 		</form>
 		";
-
-		$e107->ns->tablerender(NWSLAN_46a, $text);
+		$emessage = &eMessage::getInstance();
+		$e107->ns->tablerender(NWSLAN_46a, $emessage->render().$text);
 	}
 
 	function _optrange($num , $zero = true)
@@ -1479,17 +1479,13 @@ class admin_newspost
 							<tr>
 								<td class='label'>".LAN_NEWS_51."</td>
 								<td class='control'>
-								<select class='tbox select' name='news_editauthor' tabindex='".$frm->getNext()."'>\n
-								".$e107->user_class->vetted_tree('news_editauthor', array($e107->user_class,'select'), $pref['news_editauthor'], 'nobody,main,admin,classes')."</div>
-								</select>\n
+									".$frm->uc_select('news_editauthor', $pref['news_editauthor'], 'nobody,main,admin,classes', 'tabindex='.$frm->getNext())."
 								</td>
 							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_106."</td>
 								<td class='control'>
-								<select class='tbox select' name='news_editauthor' tabindex='".$frm->getNext()."'>\n
-								".$e107->user_class->vetted_tree('subnews_class', array($e107->user_class,'select'), $pref['subnews_class'], 'nobody,public,guest,member,admin,classes')."</div>
-								</select>\n
+									".$frm->uc_select('subnews_class', $pref['subnews_class'], 'nobody,public,guest,member,admin,classes', 'tabindex='.$frm->getNext())."
 								</td>
 							</tr>
 							<tr>
@@ -1543,8 +1539,8 @@ class admin_newspost
 				</fieldset>
 			</form>
 		";
-
-		$e107->ns->tablerender(NWSLAN_90, $text);
+		$emessage = &eMessage::getInstance();
+		$e107->ns->tablerender(NWSLAN_90, $emessage->render().$text);
 	}
 
 	function show_submitted_news()
@@ -1615,8 +1611,8 @@ class admin_newspost
 		{
 			$text .= "<div class='center'>".NWSLAN_59."</div>";
 		}
-
-		$e107->ns->tablerender(NWSLAN_47, $text);
+		$emessage = &eMessage::getInstance();
+		$e107->ns->tablerender(NWSLAN_47, $emessage->render().$text);
 	}
 	
 
