@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.18 2009-01-16 01:02:41 mcfly_e107 Exp $
+* $Id: news_shortcodes.php,v 1.19 2009-01-20 23:40:38 bugrain Exp $
 *
 * News shortcode batch
 */
@@ -22,7 +22,7 @@ $codes = array();
 $tmp = get_class_methods('news_shortcodes');
 foreach($tmp as $c)
 {
-	if(strpos($c, 'get_') === 0) 
+	if(strpos($c, 'get_') === 0)
 	{
 		$codes[] = substr($c, 4);
 	}
@@ -154,7 +154,7 @@ class news_shortcodes
 	function get_newscategory($parm)
 	{
 		$category_name = $this->e107->tp->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".$e107->url->getUrl('core:news', 'main', 'action=cat&value='.$this->news_item['news_category'])."'>".$category_name."</a>";
+		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".$this->e107->url->getUrl('core:news', 'main', 'action=cat&value='.$this->news_item['news_category'])."'>".$category_name."</a>";
 	}
 
 	function get_newsdate($parm)
