@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-01-20 22:37:49 $
+ * $Revision: 1.22 $
+ * $Date: 2009-01-20 22:59:39 $
  * $Author: secretr $
  *
 */
@@ -190,7 +190,7 @@ class e_form
 		}
 		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->uc_get_classdescription($classnum).')</span>' : '';
 		
-		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum), $treename.'[]', $classnum).$descr."</div>\n";
+		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum).$descr, $treename.'[]', $classnum)."</div>\n";
 	}
 	
 	function radio($name, $value, $checked = false, $options = array())
@@ -243,7 +243,7 @@ class e_form
 
 	function uc_select($name, $current_value, $uc_options, $select_options = array(), $opt_options = array())
 	{
-		return $this->select_open($name, $select_options).$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options).$this->select_close();
+		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n".$this->select_close();
 	}
 		
 	// Callback for vetted_tree - Creates the option list for a selection box
@@ -268,7 +268,7 @@ class e_form
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
 			$style = '';
 		} 
-		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}");
+		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}")."\n";
 	}
 
 	function optgroup_open($label, $disabled)
