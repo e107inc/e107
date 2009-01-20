@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/lamb/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-03 19:59:37 $
+|     $Revision: 1.3 $
+|     $Date: 2009-01-20 20:33:01 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@ define("LAN_THEME_2", "Comments are turned off for this item");
 define("LAN_THEME_3", "comment: ");
 define("LAN_THEME_4", "Read the rest ...");
 define("LAN_THEME_5", "Trackbacks: ");
+define("LAN_THEME_6", 'on');
 
 
 ?>

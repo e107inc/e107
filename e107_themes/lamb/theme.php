@@ -9,6 +9,11 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.8/e107_themes/lamb/theme.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2009-01-20 20:33:01 $
+|     $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -96,7 +101,7 @@ $NEWSSTYLE = "
 </div>
 <div style='text-align:right' class='smalltext'>
 {NEWSAUTHOR}
-on
+".LAN_THEME_6."
 {NEWSDATE}
 <br />
 <img src='".e_IMAGE_ABS."admin_images/userclass_16.png' alt='' style='vertical-align: middle;' />
