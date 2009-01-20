@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2009-01-20 22:22:01 $
-|     $Author: e107steved $
+|     $Revision: 1.30 $
+|     $Date: 2009-01-20 22:37:49 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -482,7 +482,7 @@ class user_class
 	$current_value is a single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
 	$optlist works the same as for other class displays
 	*/
-	function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms)
+	function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms, $opt_options)
 	{
 		$ret = '';
 		$nest_level++;
@@ -491,9 +491,9 @@ class user_class
 			// Looks like we don't need to differentiate between function and class calls
 			if (isset($perms[$p]))
 			{
-				$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level);
+				$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level, $opt_options);
 			}
-			$ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms);
+			$ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms, $opt_options);
 		}
 		return $ret;
 	}
@@ -514,9 +514,9 @@ class user_class
 		{
 			if (isset($perms[$p]))
 			{
-				$ret .= call_user_func($callback,$treename, $p,$current_value,0);
+				$ret .= call_user_func($callback,$treename, $p,$current_value,0, $opt_options);
 			}
-			$ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms. $opt_options);
+			$ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms, $opt_options);
 		}
 		return $ret;
 	}

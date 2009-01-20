@@ -147,6 +147,7 @@ label { cursor: pointer; }
 .field-help { width: 280px; line-height: 1.4em; padding-top: 3px; color:#333333; font-size: 11px; }
 .label-note { font-style: italic; }
 .form-note { font-style: italic; }
+.field-spacer.strong { font-weight: bold }
 
 /* Related JS functionality - .autocheck together with .auto-toggle-area (see admin/image.php) */
 .auto-toggle-area { width: 280px; cursor: pointer; }
