@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2009-01-15 15:42:24 $
-|     $Author: secretr $
+|     $Revision: 1.29 $
+|     $Date: 2009-01-20 22:22:01 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -499,7 +499,7 @@ class user_class
 	}
 
 
-	function vetted_tree($treename, $callback='', $current_value='', $optlist = '')
+	function vetted_tree($treename, $callback='', $current_value='', $optlist = '',$opt_options = '')
 	{
 		$ret = '';
 		if (!$callback) $callback=array($this,'select');
@@ -508,7 +508,7 @@ class user_class
 		$perms = $this->uc_required_class_list($optlist,TRUE);				// List of classes which we can display
 		if (isset($perms[e_UC_BLANK]))
 		{
-			$ret .= call_user_func($callback,$treename, e_UC_BLANK, $current_value,0);
+			$ret .= call_user_func($callback,$treename, e_UC_BLANK, $current_value,0, $opt_options);
 		}
 		foreach ($this->class_parents as $p)
 		{
@@ -516,7 +516,7 @@ class user_class
 			{
 				$ret .= call_user_func($callback,$treename, $p,$current_value,0);
 			}
-			$ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms);
+			$ret .= $this->vetted_sub_tree($treename, $callback,$p,0, $current_value, $perms. $opt_options);
 		}
 		return $ret;
 	}
