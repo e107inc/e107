@@ -4,14 +4,14 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2008-05-31 17:55:18 $
+|     $Revision: 1.37 $
+|     $Date: 2009-01-21 20:34:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
-function wysiwyg($formids){
-define("ADMIN","");
+function wysiwyg($formids)
+{
 global $pref,$HANDLERS_DIRECTORY,$PLUGINS_DIRECTORY,$IMAGES_DIRECTORY;
 $lang = e_LANGUAGE;
 $tinylang = array(
