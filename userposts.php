@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/userposts.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-10 21:00:48 $
+|     $Revision: 1.9 $
+|     $Date: 2009-01-22 01:58:29 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -81,8 +81,8 @@ if ($action == "comments")
 	{
 		$ccaption = UP_LAN_1.$user_name;
 		$sql->db_Select("user", "user_comments", "user_id=".$id);
-		list($user_comments) = $sql->db_Fetch();
-		$ctotal = $user_comments;
+		$row = $sql->db_Fetch();
+		$ctotal = $row['user_comments'];
 		$data = $cobj->getCommentData($amount='10', $from, "comment_author = '".$user_id."'");
 	}
 	else

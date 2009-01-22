@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/online.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-08-01 19:23:35 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2009-01-22 01:58:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -158,7 +158,7 @@ Think these are no longer used
 		$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 		if ($tmp[0] == "article") {
 			$sql->db_Select("content", "content_heading, content_class", "content_id='".intval($tmp[1])."'");
-			list($content['content_heading'], $content['content_class']) = $sql->db_Fetch();
+			$content = $sql->db_Fetch();
 			$online_location_page = ARTICLE.": ".$content['content_heading'];
 			$online_location = str_replace("php.", "php?", $online_location);
 			if (!check_class($content['content_class'])) {
@@ -167,7 +167,7 @@ Think these are no longer used
 			}
 		} elseif($tmp[0] == "review") {
 			$sql->db_Select("content", "content_heading, content_class", "content_id='".intval($tmp[1])."'");
-			list($content['content_heading'], $content['content_class']) = $sql->db_Fetch();
+			$content = $sql->db_Fetch();
 			$online_location_page = REVIEW.": ".$content['content_heading'];
 			$online_location = str_replace("php.", "php?", $online_location);
 			if (!check_class($content['content_class'])) {
@@ -176,7 +176,7 @@ Think these are no longer used
 			}
 		} elseif($tmp[0] == "content") {
 			$sql->db_Select("content", "content_heading, content_class", "content_id='".intval($tmp[1])."'");
-			list($content['content_heading'], $content['content_class']) = $sql->db_Fetch();
+			$content = $sql->db_Fetch();
 			$online_location_page = CONTENT.": ".$content['content_heading'];
 			$online_location = str_replace("php.", "php?", $online_location);
 			if (!check_class($content['content_class'])) {
@@ -193,7 +193,7 @@ Think these are no longer used
 		if ($tmp[1] == "news") {
 			$id = ($tmp[0] == "reply" ? $tmp[3] : $tmp[2]);
 			$sql->db_Select("news", "news_title, news_class", "news_id=".intval($id));
-			list($news['news_title'], $news['news_class']) = $sql->db_Fetch();
+			$news = $sql->db_Fetch();
 			$online_location_page = ($tmp[0] == "reply" ? COMMENT.": ".ONLINE_EL12." > ".$news['news_title'] : COMMENT.": ".$news['news_title']);
 			$online_location = "comment.php?comment.news.$id";
 			if (!check_class($news['news_class'])) {
@@ -203,7 +203,7 @@ Think these are no longer used
 		} elseif($tmp[1] == "poll") {
 			$id = ($tmp[0] == "reply" ? $tmp[3] : $tmp[2]);
 			$sql->db_Select("poll", "poll_title", "poll_id=".intval($id));
-			list($poll['poll_title']) = $sql->db_Fetch();
+			$poll = $sql->db_Fetch();
 			$online_location_page = POLLCOMMENT.": ".$poll['poll_title'];
 			$online_location = "comment.php?comment.poll.$id";
 		} else {
@@ -237,7 +237,7 @@ Think these are no longer used
 			}
 		} elseif(strstr($online_location, "_viewforum")) {
 			$sql->db_Select("forum", "forum_name, forum_class", "forum_id=".intval($tmp[0]));
-			list($forum['forum_name'], $forum['forum_class']) = $sql->db_Fetch();
+			$forum = $sql->db_Fetch();
 			$online_location_page = ONLINE_EL13." .:. ".$forum['forum_name'];
 			$online_location = str_replace("php.", "php?", $online_location);
 			if (!check_class($forum['forum_class'])) {
@@ -246,9 +246,9 @@ Think these are no longer used
 			}
 		} elseif(strstr($online_location, "_post")) {
 			$sql->db_Select("forum_t", "thread_name, thread_forum_id", "thread_forum_id=".intval($tmp[0])." AND thread_parent=0");
-			list($forum_t['thread_name'], $forum_t['thread_forum_id']) = $sql->db_Fetch();
+			$forum_t = $sql->db_Fetch();
 			$sql->db_Select("forum", "forum_name", "forum_id=".$forum_t['thread_forum_id']);
-			list($forum['forum_name']) = $sql->db_Fetch();
+			$forum = $sql->db_Fetch();
 			$online_location_page = ONLINE_EL12.": ".ONLINE_EL13." .:. ".$forum['forum_name']."->".ONLINE_EL14." .:. ".$forum_t['thread_name'];
 			$online_location = e_PLUGIN."forum/forum_viewtopic.php?$tmp[0].$tmp[1]";
 		}
