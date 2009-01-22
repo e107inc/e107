@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-01-18 19:02:07 $
+ * $Revision: 1.26 $
+ * $Date: 2009-01-22 12:33:28 $
  * $Author: secretr $
  *
 */
@@ -1608,7 +1608,7 @@ var preview_image = function(src_val,img_path, not_found) {
 }
 
 var externalLinks = function () {
-    e107Helper.externalLinks();
+    //already event listener
 };
 // ###### END DEPRECATED ######
 
