@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-29 20:41:10 $
+|     $Revision: 1.6 $
+|     $Date: 2009-01-22 23:14:48 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -120,32 +120,35 @@ class e107_event
 		{
 			foreach($pref['e_event_list'] as $hook)
 			{
-				if(is_readable(e_PLUGIN.$hook."/e_event.php"))
+				if(plugInstalled($hook))
 				{
-					require_once(e_PLUGIN.$hook."/e_event.php");
-					$name = "e_event_{$hook}";
-					if(class_exists($name))
+					if(is_readable(e_PLUGIN.$hook."/e_event.php"))
 					{
-						$class = new $name();
-						
-						switch($data['method'])
+						require_once(e_PLUGIN.$hook."/e_event.php");
+						$name = "e_event_{$hook}";
+						if(class_exists($name))
 						{
-							//returns array('caption'=>'', 'text'=>'');
-							case 'form':
-								if(method_exists($class, "event_{$data['method']}"))
-								{
-									$text[] = $class->event_form($data);
-								}
-								break;
-							//returns string message
-							case 'create':
-							case 'update':
-							case 'delete':
-								if(method_exists($class, "event_{$data['method']}"))
-								{
-									$text .= call_user_func(array($class, "event_{$data['method']}"), $data);
-								}
-								break;
+							$class = new $name();
+							
+							switch($data['method'])
+							{
+								//returns array('caption'=>'', 'text'=>'');
+								case 'form':
+									if(method_exists($class, "event_{$data['method']}"))
+									{
+										$text[] = $class->event_form($data);
+									}
+									break;
+								//returns string message
+								case 'create':
+								case 'update':
+								case 'delete':
+									if(method_exists($class, "event_{$data['method']}"))
+									{
+										$text .= call_user_func(array($class, "event_{$data['method']}"), $data);
+									}
+									break;
+							}
 						}
 					}
 				}
