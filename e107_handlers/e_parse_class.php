@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.49 $
-* $Date: 2009-01-08 21:47:44 $
-* $Author: mcfly_e107 $
+* $Revision: 1.50 $
+* $Date: 2009-01-23 21:18:37 $
+* $Author: e107steved $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -874,13 +874,11 @@ class e_parse
 
 						// Could put tag stripping in here
 
-/*
-						//	Line break compression - filter white space after HTML tags
+						//	Line break compression - filter white space after HTML tags - among other things, ensures HTML tables display properly
 						if (!$opts['nobreak'])
 						{
 							$sub_blk = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $sub_blk);
 						}
-*/
 
 						//	Link substitution
 						// Convert URL's to clickable links, unless modifiers or prefs override
