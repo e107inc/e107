@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2008-12-18 14:08:33 $
+|     $Revision: 1.35 $
+|     $Date: 2009-01-25 19:19:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -78,16 +78,16 @@ if (!$forum->checkPerm($forumId, 'post'))
 	require_once(FOOTERF);
 	exit;
 }
-
-define("MODERATOR", check_class($forum_info['forum_moderators']));
+define('MODERATOR', USER && $forum->isModerator(USERID));
 //require_once(e_HANDLER.'forum_include.php');
-require_once(e_PLUGIN."forum/forum_post_shortcodes.php");
-require_once(e_PLUGIN."forum/forum_shortcodes.php");
-require_once(e_HANDLER."ren_help.php");
+require_once(e_PLUGIN.'forum/forum_post_shortcodes.php');
+require_once(e_PLUGIN.'forum/forum_shortcodes.php');
+require_once(e_HANDLER.'ren_help.php');
+setScVar('forum_post_shortcodes', 'forum', $forum);
+setScVar('forum_post_shortcodes', 'threadInfo', $threadInfo);
 $gen = new convert;
 $fp = new floodprotect;
 $e107 = e107::getInstance();
-
 
 //if thread is not active and not new thread, show warning
 if ($action != 'nt' && !$threadInfo['thread_active'] && !MODERATOR)
@@ -520,7 +520,9 @@ if($action == 'rp')
 {
 	$FORUMPOST = $FORUMPOST_REPLY;
 }
-$text = $tp->parseTemplate($FORUMPOST, FALSE, $forum_post_shortcodes);
+$text = $tp->parseTemplate($FORUMPOST, true);
+//$text = $tp->parseTemplate($FORUMPOST, FALSE, $forum_post_shortcodes);
+
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
