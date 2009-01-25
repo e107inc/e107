@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/install_.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-01-04 16:39:14 $
+|     $Revision: 1.17 $
+|     $Date: 2009-01-25 12:32:35 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1145,7 +1145,7 @@ h1 {
 	color : #23598C;
 }
 body{
-	background : #123454 url(images/01_bg.gif) top repeat-x;
+	background-color : #123454;
 	color : #4C4C4C;
 	font-family : Trebuchet MS, \"Lucida Sans Unicode\", Arial, Lucida Sans, Tahoma, Sans-Serif;
 	font-size : 13px;
