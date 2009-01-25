@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.30 $
-* $Date: 2009-01-18 16:47:41 $
+* $Revision: 1.31 $
+* $Date: 2009-01-25 17:44:12 $
 * $Author: mcfly_e107 $
 *
 */
@@ -1594,7 +1594,7 @@ function show_ranks()
 	$fieldList['core'] = array(
 	'comments' => USRLAN_201,
 	'visits' => USRLAN_202,
-	'days' => USRLAN_203 
+	'daysregged' => USRLAN_203 
 	);
 
 	foreach($e107->extended_struct as $field)

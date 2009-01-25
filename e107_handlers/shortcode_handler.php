@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.23 $
-| $Date: 2009-01-16 01:02:41 $
+| $Revision: 1.24 $
+| $Date: 2009-01-25 17:44:13 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,21 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 {
 	$e107 = e107::getInstance();
 	$sc = &$e107->tp->e_sc;
+
+	//If codes is set to true, let's go get a list of shortcode methods
+	if(is_bool($codes) && $codes === true)
+	{
+		$codes = array();
+		$tmp = get_class_methods($classFunc);
+		foreach($tmp as $c)
+		{
+			if(strpos($c, 'get_') === 0) 
+			{
+				$codes[] = substr($c, 4);
+			}
+		}
+		unset($tmp);
+	}
 
 	//We only register these shortcodes if they have not already been registered in some manner
 	//ie theme or other plugin .sc files
@@ -46,6 +61,12 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 			$sc->registered_codes[$codes] = array('type' => 'func', 'path' => $path, 'function' => $classFunc);
 		}
 	}
+}
+
+function setScVar($scName, $scVar, &$value)
+{
+	$e107 = e107::getInstance();
+	$e107->tp->e_sc->scClasses[$scName]->$scVar = $value;
 }
 
 function initShortcodeClass($class)
@@ -235,10 +256,16 @@ class e_shortcode
 								}
 								$this->scClasses[$_class] = new $_class;
 							}
-							if(is_callable(array($_class, $_method)))
+							if(method_exists($this->scClasses[$_class], $_method))
 							{
+								
 								$ret = $this->scClasses[$_class]->$_method($parm, $sc_mode);
 							}
+							else
+							{
+								echo $_class.'::'.$_method.' NOT FOUND!<br />';
+							}
+								
 							break;
 
 						case 'func':

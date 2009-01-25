@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
- * $Revision: 1.19 $
- * $Date: 2008-12-20 23:59:00 $
+ * $Revision: 1.20 $
+ * $Date: 2009-01-25 17:44:13 $
  * $Author: mcfly_e107 $
  *
 */
@@ -59,20 +59,23 @@ if(isset($_GET['f']))
 	if($_GET['f'] != 'last') { $thread->init(); }
 }
 
+require_once (e_HANDLER . 'level_handler.php');
+if (!is_object($e107->userRank)) { $e107->userRank = new e107UserRank; }
 require_once (e_PLUGIN . 'forum/forum_shortcodes.php');
+setScVar('forum_shortcodes', 'thread', $thread);
 
 $pm_installed = plugInstalled('pm');
 
-
 //Only increment thread views if not being viewed by thread starter
-if (USER && (USERID != $threadInfo['thread_user'] || $threadInfo['thread_total_replies'] > 0) || !$thread->noInc)
+if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo['thread_total_replies'] > 0) || !$thread->noInc)
 {
 	$forum->threadIncview($threadId);
 }
 
 define('e_PAGETITLE', LAN_01 . ' / ' . $e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off') . " / " . $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off'));
-$modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
-define('MODERATOR', (USER && is_array($modArray) && in_array(USERID, array_keys($modArray))));
+$forum->modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
+define('MODERATOR', (USER && $forum->isModerator(USERID)));
+setScVar('forum_shortcodes', 'forum', $forum);
 
 if (MODERATOR && isset($_POST['mod']))
 {
@@ -83,7 +86,6 @@ if (MODERATOR && isset($_POST['mod']))
 
 $postList = $forum->PostGet($thread->threadId, $thread->page * $thread->perPage, $thread->perPage);
 
-require_once (e_HANDLER . 'level_handler.php');
 $gen = new convert;
 if ($thread->message)
 {
@@ -155,7 +157,7 @@ if ($pref['forum_track'] && USER)
 	";
 }
 
-$MODERATORS = LAN_321 . implode(', ', $modArray);
+$MODERATORS = LAN_321 . implode(', ', $forum->modArray);
 
 $THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_66 : '');
 
@@ -186,7 +188,6 @@ if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
 $alt = false;
 
 $i = $thread->page;
-global $postInfo;
 foreach ($postList as $postInfo)
 {
 	if($postInfo['post_options'])
@@ -214,11 +215,13 @@ foreach ($postList as $postInfo)
 		{
 			$_style = (isset($FORUMREPLYSTYLE_ALT) && $alt ? $FORUMREPLYSTYLE_ALT : $FORUMREPLYSTYLE);
 		}
+		setScVar('forum_shortcodes', 'postInfo', $postInfo);
 		$forrep .= $e107->tp->parseTemplate($_style, true, $forum_shortcodes) . "\n";
 	}
 	else
 	{
 		$postInfo['thread_start'] = true;
+		setScVar('forum_shortcodes', 'postInfo', $postInfo);
 		$forthr = $e107->tp->parseTemplate($FORUMTHREADSTYLE, true, $forum_shortcodes) . "\n";
 	}
 }
@@ -440,7 +443,7 @@ function rpg($user_join, $user_forums)
 class e107ForumThread
 {
 
-	var $message, $threadId, $threadInfo, $forumId, $perPage, $noInc, $pages;
+	var $message, $threadId, $forumId, $perPage, $noInc, $pages;
 
 	function init()
 	{
