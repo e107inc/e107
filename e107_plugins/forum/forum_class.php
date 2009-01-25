@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-01-10 04:39:54 $
+ * $Revision: 1.38 $
+ * $Date: 2009-01-25 17:44:13 $
  * $Author: mcfly_e107 $
  *
 */
@@ -22,6 +22,8 @@ class e107forum
 	var $permList = array();
 	var $fieldTypes = array();
 	var $userViewed = array();
+	var $modArray = array();
+	var $e107;
 
 	function e107forum()
 	{
@@ -47,7 +49,7 @@ class e107forum
 		$this->fieldTypes['forum_thread']['thread_options'] 	= 'escape';
 
 		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
-
+		$this->e107 = e107::getInstance();
 	}
 
 	function loadPermList()
@@ -613,22 +615,30 @@ class e107forum
 		return FALSE;
 	}
 
-	function forumGetMods($uclass = e_UC_ADMIN)
+	function forumGetMods($uclass = e_UC_ADMIN, $force=false)
 	{
-		$e107 = e107::getInstance();
+		if(count($this->modArray) && !$force)
+		{
+			return $this->modArray;
+		}
 		if($uclass == e_UC_ADMIN || trim($uclass) == '')
 		{
-			$e107->sql->db_Select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
-			while($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			$this->e107->sql->db_Select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
+			while($row = $this->e107->sql->db_Fetch(MYSQL_ASSOC))
 			{
-				$ret[$row['user_id']] = $row['user_name'];
+				$this->modArray[$row['user_id']] = $row['user_name'];
 			}
 		}
 		else
 		{
-			$ret = $e107->user_class->get_users_in_class($uclass, 'user_name', true);
+			$this->modArray = $this->e107->user_class->get_users_in_class($uclass, 'user_name', true);
 		}
-		return $ret;
+		return $this->modArray;
+	}
+	
+	function isModerator($uid)
+	{
+		return ($uid && in_array($uid, array_keys($this->modArray)));
 	}
 
 	function forumGetForumList()

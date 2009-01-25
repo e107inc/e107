@@ -9,9 +9,9 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-01-18 00:27:10 $
- * $Author: secretr $
+ * $Revision: 1.13 $
+ * $Date: 2009-01-25 17:44:13 $
+ * $Author: mcfly_e107 $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -236,8 +236,8 @@ class news {
 		$loop_uid = $news['news_author'];
 
 		require_once(e_FILE.'shortcode/batch/news_shortcodes.php');
-		$e107->tp->e_sc->scClasses['news_shortcodes']->news_item = $news;
-		$e107->tp->e_sc->scClasses['news_shortcodes']->param = $param;
+		setScVar('news_shortcodes', 'news_item', $news);
+		setScVar('news_shortcodes', 'param', $param);
 		$text = $e107->tp->parseTemplate($NEWS_PARSE, true);
 
 		if ($mode == 'return')

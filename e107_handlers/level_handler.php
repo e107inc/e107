@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/level_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-01-18 16:47:41 $
+|     $Revision: 1.9 $
+|     $Date: 2009-01-25 17:44:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -118,6 +118,7 @@ class e107UserRank
 {
 
 	var $ranks = array();
+	var $userRanks = array();
 
 	function e107UserRank()
 	{
@@ -166,22 +167,26 @@ class e107UserRank
 		}
 	}
 
-	function _getImage($info)
+	function _getImage(&$info)
 	{
-		if($info['lan_pfx'])
+		$img = $info['image'];
+		if($info['lan_pfx'] && strpos('_', $info['image']))
 		{
 			$_tmp = explode('_', $info['image'], 2);
-			return e_LANGUAGE.'_'.$tmp[1];
+			$img = e_LANGUAGE.'_'.$_tmp[1];
 		}
-		return $info['image'];
+		return e_IMAGE_ABS.'ranks/'.$img;
 	}
 
 	function getRanks($userId)
 	{
 		$e107 = e107::getInstance();
 		if(!$userId && USER) { $userId = USERID; }
-		if($ret = getcachedvars('userRankInfo_'.$userId)) { return $ret; }
-
+		if(isset($this->userRanks[$userId]))
+		{
+			return $this->userRanks[$userId];
+		}
+	
 		$ret = array();
 		$userData = get_user_data($userId);
 		if($userData['user_admin'])
@@ -189,16 +194,16 @@ class e107UserRank
 			if($userData['user_perms'] == '0')
 			{
 				//Main Site Admin
-				$ret['special'] = "<img src='".$this->_getImage($this->ranks['special'][1]['image'])."' /><br />";
+				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][1])."' /><br />";
 			}
 			else
 			{
 				//Site Admin
-				$ret['special'] = "<img src='".$this->_getImage($this->ranks['special'][2]['image'])."' /><br />";
+				$data['special'] = "<img src='".$this->_getImage($this->ranks['special'][2])."' /><br />";
 			}
 		}
 
-		$userData['daysregged'] = max(1, round((time() - $userData['user_join']) / 86400));
+		$userData['user_daysregged'] = max(1, round((time() - $userData['user_join']) / 86400));
 		$level = $this->_calcLevel($userData);
 
 		$lastRank = count($this->ranks['data']) - 1;
@@ -209,7 +214,7 @@ class e107UserRank
 		}
 		elseif($level >= $this->ranks['data'][$lastRank]['thresh'])
 		{
-			$rank = 9;
+			$rank = $lastRank;
 		}
 		else
 		{
@@ -226,28 +231,27 @@ class e107UserRank
 		{
 			$data['name'] = '[ '.$e107->tp->toHTML($this->ranks['data'][$rank]['name'], FALSE, 'defs').' ]';
 			$img_title = ($this->ranks['data'][$rank]['name'] ? "title='".$this->ranks['data'][$rank]['name']."'" : '');
-			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank]['image'])."' /><br />";
-
-			cachevars('userRankInfo_'.$userId, $data);
-			return $data;
+			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank])."' /><br />";
 		}
+		$this->userRanks[$userId] = $data;
+		return $data;
 	}
 
 	function _calcLevel(&$userData)
 	{
-		var_dump($this->ranks['config']);
+		global $pref;
 		$value = 0;
-		$calc = $this->ranks['config']['calc'];
+		$calc = $pref['ranks_calc'];
 		$search = array();
 		$replace = array();
-		foreach($this->ranks['config']['fields'] as $f)
+		foreach(explode(',', $pref['ranks_flist']) as $f)
 		{
-			$search[] = $f['name'];
-			$replace[] = $userData[$f['name']];
+			$search[] = '{'.$f.'}';
+			$replace[] = $userData['user_'.$f];
 		}
-		$calc = str_replace($search, $replace, $calc);
+		$calc = '$userLevelValue = '.str_replace($search, $replace, $calc).';';
 		$value = eval($calc);
-		return $value;
+		return $userLevelValue;
 	}
 
 }
