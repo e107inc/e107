@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-01-20 22:37:49 $
- * $Author: secretr $
+ * $Revision: 1.30 $
+ * $Date: 2009-01-26 08:01:05 $
+ * $Author: e107coders $
 */
 require_once("../class2.php");
 
@@ -514,18 +514,18 @@ class admin_newspost
 		{
 			if($uploadtype == "thumb")
 			{
-				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_IMAGE."newspost_images/thumb_".$uploaded[$key]['name']);
+				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_NEWSIMAGE."thumb_".$uploaded[$key]['name']);
 			}
 
 			if($uploadtype == "file")
 			{
-				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_FILE."downloads/".$uploaded[$key]['name']);
+				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_DOWNLOAD.$uploaded[$key]['name']);
 			}
 
 			if ($uploadtype == "resize" && $_POST['resize_value'])
 			{
 				require_once(e_HANDLER."resize_handler.php");
-				resize_image(e_IMAGE."newspost_images/".$uploaded[$key]['name'], e_IMAGE."newspost_images/".$uploaded[$key]['name'], $_POST['resize_value'], "copy");
+				resize_image(e_IMAGE."newspost_images/".$uploaded[$key]['name'], e_NEWSIMAGE.$uploaded[$key]['name'], $_POST['resize_value'], "copy");
 			}
 		}
 	}
@@ -706,12 +706,12 @@ class admin_newspost
 				  if (substr($_POST['data'],-7,7) == '[/html]') $_POST['data'] = substr($_POST['data'],0,-7);
 				  if (substr($_POST['data'],0,6) == '[html]') $_POST['data'] = substr($_POST['data'],6);
 					$_POST['data'] .= "<br /><b>".NWSLAN_49." {$row['submitnews_name']}</b>";
-					$_POST['data'] .= ($row['submitnews_file'])? "<br /><br /><img src='{e_IMAGE}newspost_images/{$row['submitnews_file']}' class='f-right' />": '';
+					$_POST['data'] .= ($row['submitnews_file'])? "<br /><br /><img src='{e_NEWSIMAGE}{$row['submitnews_file']}' class='f-right' />": '';
 				}
 				else
 				{
 					$_POST['data'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
-					$_POST['data'] .= ($row['submitnews_file'])?"\n\n[img]{e_IMAGE}newspost_images/{$row['submitnews_file']}[/img]": "";
+					$_POST['data'] .= ($row['submitnews_file'])?"\n\n[img]{e_NEWSIMAGE}{$row['submitnews_file']}[/img]": "";
 				}
 
 			}
@@ -883,13 +883,13 @@ class admin_newspost
 		}
 		else
 		{
-			if (!is_writable(e_FILE."downloads"))
+			if (!is_writable(e_DOWNLOAD))
 			{
-				$text .= LAN_UPLOAD_777."<b>".str_replace("../","",e_FILE."downloads/")."</b><br /><br />";
+				$text .= LAN_UPLOAD_777."<b>".str_replace("../","",e_DOWNLOAD)."</b><br /><br />";
 			}
-			if (!is_writable(e_IMAGE."newspost_images"))
+			if (!is_writable(e_NEWSIMAGE))
 			{
-				$text .= LAN_UPLOAD_777."<b>".str_replace("../","",e_IMAGE."newspost_images/")."</b><br /><br />";
+				$text .= LAN_UPLOAD_777."<b>".str_replace("../","",e_NEWSIMAGE)."</b><br /><br />";
 			}
 
 			$up_name = array(LAN_NEWS_24, NWSLAN_67, LAN_NEWS_22, NWSLAN_68);
@@ -910,6 +910,8 @@ class admin_newspost
 				$text .= $frm->option($up_name[$i], $up_value[$i], varset($_POST['uploadtype']) == $up_value[$i]);
 			}
 			//FIXME - upload shortcode, flexible enough to be used everywhere
+			// Note from Cameron: should include iframe and use ajax as to not require a full refresh of the page.
+			
 			$text .= "
 												</select>
 											</div>
@@ -935,7 +937,7 @@ class admin_newspost
 		";
 
 		$parms = "name=news_thumbnail";
-		$parms .= "&path=".e_IMAGE."newspost_images/";
+		$parms .= "&path=".e_NEWSIMAGE;
 		$parms .= "&filter=0";
 		$parms .= "&fullpath=1";
 		$parms .= "&default=".urlencode(basename($_POST['news_thumbnail']));
