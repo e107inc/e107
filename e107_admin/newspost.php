@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-01-26 08:01:05 $
+ * $Revision: 1.31 $
+ * $Date: 2009-01-26 08:19:44 $
  * $Author: e107coders $
 */
 require_once("../class2.php");
@@ -508,24 +508,24 @@ class admin_newspost
 		//$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php");
 
-		$uploaded = file_upload(e_IMAGE."newspost_images/");
+		$uploaded = file_upload(e_NEWSIMAGE);
 
 		foreach($_POST['uploadtype'] as $key=>$uploadtype)
 		{
 			if($uploadtype == "thumb")
 			{
-				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_NEWSIMAGE."thumb_".$uploaded[$key]['name']);
+				rename(e_NEWSIMAGE.$uploaded[$key]['name'],e_NEWSIMAGE."thumb_".$uploaded[$key]['name']);
 			}
 
 			if($uploadtype == "file")
 			{
-				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_DOWNLOAD.$uploaded[$key]['name']);
+				rename(e_NEWSIMAGE.$uploaded[$key]['name'],e_DOWNLOAD.$uploaded[$key]['name']);
 			}
 
 			if ($uploadtype == "resize" && $_POST['resize_value'])
 			{
 				require_once(e_HANDLER."resize_handler.php");
-				resize_image(e_IMAGE."newspost_images/".$uploaded[$key]['name'], e_NEWSIMAGE.$uploaded[$key]['name'], $_POST['resize_value'], "copy");
+				resize_image(e_NEWSIMAGE.$uploaded[$key]['name'], e_NEWSIMAGE.$uploaded[$key]['name'], $_POST['resize_value'], "copy");
 			}
 		}
 	}
