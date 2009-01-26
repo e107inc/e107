@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-01-22 12:33:28 $
+ * $Revision: 1.27 $
+ * $Date: 2009-01-26 14:26:01 $
  * $Author: secretr $
  *
 */
@@ -2292,29 +2292,39 @@ var e107AjaxAbstract = Class.create ({
 	},
 	
 	/**
-	 * Invoke methods on element or element collections by id
+	 * Invoke methods/set properties on element or element collections by id
 	 * 
 	 * Examples:
 	 * {'show': 'id1,id2,id3'} -> show elements with id id1,id2 and id3
 	 * {'writeAttribute,rel,external': 'id1,id2,id3'} -> invoke writeAttribute('rel', 'external') on elements with id id1,id2 and id3
-	 * {'disabled,1': 'button-el,other-button-el'} -> set disabled property of elements with id button-el,other-button-el to true
+	 * {'disabled,true': 'button-el,other-button-el'} -> set disabled property of elements with id button-el,other-button-el to true
 	 * 
 	 */
 	_processResponseElementInvokeById: function(response) {
 		//response.key is comma separated list representing method -> args to be invoked on every element
 		Object.keys(response).each(function(key) {
-			var tmp = $A(key.split(',')), 
-				method = tmp[0], 
+			var tmp = $A(key.split(',')),
+				method = tmp[0],
 				args = tmp.slice(1);
-			//response.value is comma separated element id list or array of element ids
-			var els = Object.isArray(response[key]) ? response[key] : response[key].split(',');
-			$A(els).each( function(el) {
-				el = $(el.strip());
-				if(el) {
-					if(Object.isFunction(el[method]))
-						el[method].apply(el, args);
-					else 
-						el[method] = (args[0] ? true : false);
+
+			//search for boolean type
+			$A(args).each( function(arg, i) {
+				switch(arg) {
+					case 'false': args[i] = false; break;
+					case 'true': args[i] = true; break;
+					case 'null': args[i] = null; break;
+				}
+			});
+			//response.value is comma separated element id list
+			$A(response[key].split(',')).each( function(el) {
+				el = el ? $(el.strip()) : null;
+				if(!el) return;
+
+				if(Object.isFunction(el[method]))
+					el[method].apply(el, args);
+				else if(typeof el[method] !== 'undefined') {
+					//XXX - should we allow adding values to undefined yet properties? At this time not allowed
+					el[method] = varset(args[0], null);
 				}
 			});
 		});
