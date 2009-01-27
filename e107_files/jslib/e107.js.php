@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-01-26 14:26:01 $
+ * $Revision: 1.28 $
+ * $Date: 2009-01-27 14:58:51 $
  * $Author: secretr $
  *
 */
@@ -2378,8 +2378,10 @@ e107Ajax.Request = Class.create({
     
         this.options = {};
         Object.extend(this.options, options || {});
-        if(!this.options['parameters'] || !this.options.parameters['ajax_used'])
-			Object.extend(this.options['parameters'], { 'ajax_used': 1 });
+        if(!this.options['parameters'])
+        	this.options['parameters'] = { 'ajax_used': 1 }
+        else if(!this.options.parameters['ajax_used'])
+        	this.options['parameters']['ajax_used'] = 1;
          
         // only if required
         if(this.options.history) {
