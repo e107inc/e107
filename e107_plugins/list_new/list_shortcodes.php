@@ -9,8 +9,8 @@
  * List Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_shortcodes.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-27 21:33:52 $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-27 23:46:12 $
  * $Author: lisa_ $
  *
 */
@@ -43,37 +43,37 @@ class list_shortcodes
 
 	function get_list_date()
 	{
-		return $this->row['date'];
+		return $this->e107->tp->toHTML($this->row['date'], true, "TITLE");
 	}
 
 	function get_list_icon()
 	{
-		return $this->row['icon'];
+		return $this->e107->tp->toHTML($this->row['icon'], true, "TITLE");
 	}
 
 	function get_list_heading()
 	{
-		return $this->row['heading'];
+		return $this->e107->tp->toHTML($this->row['heading'], true, "TITLE");
 	}
 
 	function get_list_author()
 	{
-		return $this->row['author'];
+		return $this->e107->tp->toHTML($this->row['author'], true, "");
 	}
 
 	function get_list_category()
 	{
-		return $this->row['category'];
+		return $this->e107->tp->toHTML($this->row['category'], true, "");
 	}
 
 	function get_list_info()
 	{
-		return $this->row['info'];
+		return $this->e107->tp->toHTML($this->row['info'], true, "");
 	}
 
 	function get_list_caption()
 	{
-		return $this->rc->data['caption'];
+		return $this->e107->tp->toHTML($this->rc->data['caption'], true, "");
 	}
 
 	function get_list_displaystyle()
@@ -89,7 +89,7 @@ class list_shortcodes
 
 	function get_list_col_welcometext()
 	{
-		return $this->e107->tp->toHTML($this->list_pref[$this->rc->mode."_welcometext"]);
+		return $this->e107->tp->toHTML($this->list_pref[$this->rc->mode."_welcometext"], true, "");
 	}
 
 	function get_list_col_cellwidth()

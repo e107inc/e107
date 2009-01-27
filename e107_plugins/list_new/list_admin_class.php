@@ -9,8 +9,8 @@
  * List Admin Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_admin_class.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-01-27 21:33:52 $
+ * $Revision: 1.2 $
+ * $Date: 2009-01-27 23:46:12 $
  * $Author: lisa_ $
  *
 */
@@ -41,7 +41,7 @@ class list_admin
 		$this->e107 = e107::getInstance();
 		$this->parent = $parent;
 
-		$this->styletable = "style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0' ";
+		
 	}
 
 	/**
@@ -83,18 +83,14 @@ class list_admin
 	{
 		global $rs;
 
-		$text = "
-		<div style='text-align:center'>
-		".$rs->form_open("post", e_SELF, "menu_conf_form", "", "class='admin-menu' enctype='multipart/form-data'")."\n";
+		$text = $this->parseTemplate('ADMIN_START');
 
 		$text .= $this->parse_menu_options("recent_menu");
 		$text .= $this->parse_menu_options("new_menu");
 		$text .= $this->parse_page_options("recent_page");
 		$text .= $this->parse_page_options("new_page");
 
-		$text .= "
-		</form>
-		</div>";
+		$text .= $this->parseTemplate('ADMIN_END');
 
 		return $text;
 	}
@@ -177,26 +173,22 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_SECT_23;
 		$this->row['HELP'] = LIST_ADMIN_SECT_24;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-icon";
-		$this->row['FIELD'] = "<table $this->styletable>";
+		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
 		$iconlist = $fl->get_files($this->parent->plugin_dir."images/");
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= "
-			<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$this->parent->titles[$i]."</td>
-			<td class='forumheader3'>
-				".$rs->form_text($this->parent->sections[$i]."_".$type."_icon", 15, $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"], 100)."
+			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
+			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_icon", 15, $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"], 100)."
 				<input class='button' type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onclick=\"e107Helper.toggle('div_".$this->parent->sections[$i]."_".$type."_icon'); return false;\" />
 				<div id='div_".$this->parent->sections[$i]."_".$type."_icon' style='display:none;'>";
 				foreach($iconlist as $icon)
 				{
-					$this->row['FIELD'] .= "<a href=\"javascript:insertext('".$icon['fname']."','".$this->parent->sections[$i]."_".$type."_icon','div_".$this->parent->sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
+					$this->row['FIELD_ITEM'] .= "<a href=\"javascript:insertext('".$icon['fname']."','".$this->parent->sections[$i]."_".$type."_icon','div_".$this->parent->sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
 				}
-				$this->row['FIELD'] .= "</div>
-			</td>
-			</tr>";
+				$this->row['FIELD_ITEM'] .= "</div>";
+			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
-		$this->row['FIELD'] .= "</table>";
+		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//amount
@@ -205,23 +197,19 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_SECT_17;
 		$this->row['HELP'] = LIST_ADMIN_SECT_18;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-amount";
-		$this->row['FIELD'] = "<table $this->styletable>";
+		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= "
-			<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$this->parent->titles[$i]."</td>
-			<td class='forumheader3'>
-				".$rs->form_select_open($this->parent->sections[$i]."_".$type."_amount");
-				for($a=1; $a<=$maxitems_amount; $a++)
-				{
-					$this->row['FIELD'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_amount"] == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
-				}
-				$this->row['FIELD'] .= $rs->form_select_close()."
-			</td>
-			</tr>";
+			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
+			$this->row['FIELD_ITEM'] = $rs->form_select_open($this->parent->sections[$i]."_".$type."_amount");
+			for($a=1; $a<=$maxitems_amount; $a++)
+			{
+				$this->row['FIELD_ITEM'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_amount"] == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
+			}
+			$this->row['FIELD_ITEM'] .= $rs->form_select_close();
+			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
-		$this->row['FIELD'] .= "</table>";
+		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//order
@@ -230,23 +218,19 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_SECT_20;
 		$this->row['HELP'] = LIST_ADMIN_SECT_21;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-order";
-		$this->row['FIELD'] = "<table $this->styletable>";
+		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= "
-			<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$this->parent->titles[$i]."</td>
-			<td class='forumheader3'>
-			".$rs->form_select_open($this->parent->sections[$i]."_".$type."_order");
+			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
+			$this->row['FIELD_ITEM'] = $rs->form_select_open($this->parent->sections[$i]."_".$type."_order");
 			for($a=1; $a<=$max; $a++)
 			{
-				$this->row['FIELD'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_order"] == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
+				$this->row['FIELD_ITEM'] .= ($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_order"] == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
 			}
-			$this->row['FIELD'] .= $rs->form_select_close()."
-			</td>
-			</tr>";
+			$this->row['FIELD_ITEM'] .= $rs->form_select_close();
+			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
-		$this->row['FIELD'] .= "</table>";
+		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		//caption
@@ -254,18 +238,14 @@ class list_admin
 		$this->row['HEADING'] = LIST_ADMIN_SECT_26;
 		$this->row['HELP'] = LIST_ADMIN_SECT_27;
 		$this->row['CONTID'] = "list-new-{$type}-expandable-caption";
-		$this->row['FIELD'] = "<table $this->styletable>";
+		$this->row['FIELD'] = $this->parseTemplate('FIELD_TABLE_START');
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= "
-			<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$this->parent->titles[$i]."</td>
-			<td class='forumheader3'>
-				".$rs->form_text($this->parent->sections[$i]."_".$type."_caption", 30, $this->e107->tp->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox")."
-			</td>
-			</tr>";
+			$this->row['FIELD_TITLE'] = $this->parent->titles[$i];
+			$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_caption", 30, $this->e107->tp->toHTML($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox");
+			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');
 		}
-		$this->row['FIELD'] .= "</table>";
+		$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE_END');
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
 		$text .= $this->parseTemplate('TOPIC_ROW_SPACER');
@@ -284,12 +264,9 @@ class list_admin
 	{
 		global $rs;
 
-		$text = "
-		<div id='list-new-".str_replace('_', '-', $type)."' class='e-hideme center'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>";
-
-		$title = ($type == "new_menu" ? LIST_ADMIN_OPT_5 : LIST_ADMIN_OPT_3);
-		$text .= "<tr><td colspan='4' class='forumheader'>".$title."</td></tr>";
+		$this->row['ID'] = "list-new-".str_replace('_', '-', $type);
+		$this->row['TITLE'] = ($type == "new_menu" ? LIST_ADMIN_OPT_5 : LIST_ADMIN_OPT_3);
+		$text = $this->parseTemplate('OPTIONS_HEADER');
 
 		$text .= $this->parse_global_options($type);
 
@@ -396,12 +373,9 @@ class list_admin
 
 		$display = ($type == "recent_page" ? "display:none;" : '');
 
-		$text = "
-		<div id='list-new-".str_replace('_', '-', $type)."' class='e-hideme center'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>";
-
-		$title = ($type == "new_page" ? LIST_ADMIN_OPT_4 : LIST_ADMIN_OPT_2);
-		$text .= "<tr><td colspan='4' class='forumheader'>".$title."</td></tr>";
+		$this->row['ID'] = "list-new-".str_replace('_', '-', $type);
+		$this->row['TITLE'] = ($type == "new_page" ? LIST_ADMIN_OPT_4 : LIST_ADMIN_OPT_2);
+		$text = $this->parseTemplate('OPTIONS_HEADER');
 
 		$text .= $this->parse_global_options($type);
 

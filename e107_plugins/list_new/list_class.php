@@ -9,8 +9,8 @@
  * List Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-01-27 21:33:52 $
+ * $Revision: 1.8 $
+ * $Date: 2009-01-27 23:46:12 $
  * $Author: lisa_ $
  *
 */
@@ -625,7 +625,7 @@ class listclass
 			{
 				if(is_readable($this->plugin_dir."images/".$icon))
 				{
-					$bullet = "<img src='".$this->plugin_dir."images/".$icon."' style='width:".$icon_width."px; height:".$icon_height."px; border:0; vertical-align:middle;' alt='' />";
+					$bullet = "<img src='".$this->plugin_dir."images/".$icon."' alt='' />";
 				}
 			}
 		}
