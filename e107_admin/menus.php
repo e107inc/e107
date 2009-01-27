@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-01-21 22:04:36 $
-|     $Author: bugrain $
+|     $Revision: 1.14 $
+|     $Date: 2009-01-27 12:00:56 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -311,7 +311,8 @@ if ($menu_act == "inc")
 if (strpos(e_QUERY, 'configure') === FALSE)
 {  // Scan plugin directories to see if menus to add
 	$efile = new e_file;
-	$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',1);
+	$efile->dirFilter = array('/', 'CVS', '.svn', 'languages');
+	$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
 	foreach($fileList as $file)
 	{
 	  list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
