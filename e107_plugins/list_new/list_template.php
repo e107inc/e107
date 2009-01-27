@@ -9,8 +9,8 @@
  * List Template
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_template.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-27 21:33:52 $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-27 23:46:12 $
  * $Author: lisa_ $
  *
 */
@@ -99,6 +99,15 @@ $TEMPLATE_LIST_NEW['TIMELAPSE_TABLE'] = "<div class='forumheader3' style='margin
 
 //##### ADMIN
 
+$TEMPLATE_LIST_NEW['ADMIN_START'] = "
+<div style='text-align:center'>
+<form action='".e_SELF."' method='post' name='menu_conf_form' id='menu_conf_form' class='admin-menu' enctype='multipart/form-data'>";
+
+$TEMPLATE_LIST_NEW['ADMIN_END'] = "
+</form>
+</div>";
+
+
 //define some variables
 //$stylespacer = "style='border:0; height:20px;'";
 
@@ -121,6 +130,23 @@ $TEMPLATE_LIST_NEW['TOPIC_ROW'] = "
 		</div>
 	</td>
 </tr>";
+
+//field containing a table
+$TEMPLATE_LIST_NEW['FIELD_TABLE_START'] = "<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+
+$TEMPLATE_LIST_NEW['FIELD_TABLE'] = "
+<tr>
+	<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>{FIELD_TITLE}</td>
+	<td class='forumheader3'>{FIELD_ITEM}</td>
+</tr>";
+
+$TEMPLATE_LIST_NEW['FIELD_TABLE_END'] = "</table>";
+
+//header for options page
+$TEMPLATE_LIST_NEW['OPTIONS_HEADER'] = "
+<div id='{ID}' class='e-hideme center'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
+<tr><td colspan='4' class='forumheader'>{TITLE}</td></tr>";
 
 //template for spacer row
 $TEMPLATE_LIST_NEW['TOPIC_ROW_SPACER'] = "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";
