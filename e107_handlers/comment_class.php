@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-01-05 22:01:37 $
-|     $Author: e107steved $
+|     $Revision: 1.18 $
+|     $Date: 2009-01-27 07:37:22 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -775,8 +775,8 @@ class comment {
 			$ret['comment_datestamp'] = $row['comment_datestamp'];
 
 			//author - no ned to split now
-			$comment_author_id = $ret['comment_author_id'];
-			$comment_author_name = $ret['comment_author_name'];
+			$comment_author_id = $row['comment_author_id'];
+			$comment_author_name = $row['comment_author_name'];
 			$ret['comment_author'] = (USERID ? "<a href='".e_BASE."user.php?id.".$comment_author_id."'>".$comment_author_name."</a>" : $comment_author_name);
 
 			//comment text
