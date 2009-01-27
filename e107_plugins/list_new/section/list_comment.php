@@ -1,43 +1,99 @@
 <?php
-
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Comment e_list Handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_comment.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-01-27 21:34:02 $
+ * $Author: lisa_ $
+ *
+*/
 if (!defined('e107_INIT')) { exit; }
-require_once(e_HANDLER."comment_class.php");
-$cobj = new comment;
 
-$LIST_CAPTION = $arr[0];
-$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
-
-$bullet = $this -> getBullet($arr[6], $mode);
-
-$qry = '';
-if($mode == "new_page" || $mode == "new_menu" ){
-	$lvisit = $this -> getlvisit();
-	$qry = "comment_datestamp>".$lvisit;
+global $tp, $cobj;
+if(!is_object($cobj))
+{
+	require_once(e_HANDLER."comment_class.php");
+	$cobj = new comment;
 }
 
-$data = $cobj->getCommentData(intval($arr[7]), '0', $qry);
+class list_comment
+{
+	function list_comment($parent)
+	{
+		$this->parent = $parent;
+	}
 
-foreach($data as $row){
-	$rowheading	= $this -> parse_heading($row['comment_title'], $mode);
-	if($row['comment_url']){
-		$HEADING	= "<a href='".$row['comment_url']."' title='".$row['comment_title']."'>".$tp -> toHTML($rowheading, TRUE)."</a>";
-	}else{
-		$HEADING	= $tp -> toHTML($rowheading, TRUE);
-	}
-	$CATEGORY = '';
-	if($arr[4]){
-		if($row['comment_category_url']){
-			$CATEGORY = "<a href='".$row['comment_category_url']."'>".$row['comment_category_heading']."</a>";
-		}else{
-			$CATEGORY = $row['comment_category_heading'];
+	function getListData()
+	{
+		global $tp, $cobj;
+
+		$list_caption = $this->parent->settings['caption'];
+		$list_display = ($this->parent->settings['open'] ? "" : "none");
+
+		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
+
+		$qry = '';
+		if($this->parent->mode == "new_page" || $this->parent->mode == "new_menu" )
+		{
+			$qry = "comment_datestamp>".$this->parent->getlvisit();
 		}
+
+		$data = $cobj->getCommentData(intval($this->parent->settings['amount']), '0', $qry);
+
+		if(empty($data))
+		{
+			$list_data = LIST_COMMENT_2;
+		}
+		else
+		{
+			$list_data = array();
+			foreach($data as $row)
+			{
+				$record = array();
+				$rowheading = $this->parent->parse_heading($row['comment_title']);
+				$record['icon'] = $bullet;
+				if($row['comment_url'])
+				{
+					$record['heading'] = "<a href='".$row['comment_url']."' title='".$row['comment_title']."'>".$this->parent->e107->tp->toHTML($rowheading, TRUE)."</a>";
+				}
+				else
+				{
+					$record['heading'] = $this->parent->e107->tp->toHTML($rowheading, TRUE);
+				}
+				$category = '';
+				if(varsettrue($this->parent->settings['category']))
+				{
+					if($row['comment_category_url'])
+					{
+						$record['category'] = "<a href='".$row['comment_category_url']."'>".$row['comment_category_heading']."</a>";
+					}
+					else
+					{
+						$record['category'] = $row['comment_category_heading'];
+					}
+				}
+				$record['author'] = (varsettrue($this->parent->settings['author']) ? $row['comment_author'] : '');
+				$record['date'] = (varsettrue($this->parent->settings['date']) ? $this->parent->getListDate($row['comment_datestamp']) : "");
+				$record['icon'] = $bullet;
+				$record['info'] = '';
+				
+				$list_data[] = $record;
+			}
+		}
+		//return array with 'records', (global)'caption', 'display'
+		return array(
+			'records'=>$list_data, 
+			'caption'=>$list_caption, 
+			'display'=>$list_display
+		);
 	}
-	$AUTHOR		= ($arr[3] ? $row['comment_author'] : '');
-	$DATE		= ($arr[5] ? $this -> getListDate($row['comment_datestamp'], $mode) : "");
-	$ICON		= $bullet;
-	$INFO		= '';
-	
-	$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
 }
 
 ?>

@@ -1,20 +1,18 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|       e107 website system
-|
-|       ©Steve Dunstan 2001-2002
-|       http://e107.org
-|       jalist@e107.org
-|
-|       Released under the terms and conditions of the
-|       GNU General Public License (http://gnu.org).
-|
-|		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_recent_menu.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2009-01-06 21:30:28 $
-|		$Author: e107steved $
-+---------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * List Menu Recent
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_recent_menu.php,v $
+ * $Revision: 1.5 $
+ * $Date: 2009-01-27 21:33:52 $
+ * $Author: lisa_ $
+ *
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -24,47 +22,23 @@ if (!plugInstalled('list_new'))
 	return;
 }
 
-
-global $sysprefs, $tp, $eArrayStorage, $list_pref, $rc;
-$listplugindir = e_PLUGIN."list_new/";
 unset($text);
-require_once($listplugindir."list_shortcodes.php");
 
-//get language file
-include_lan($listplugindir."languages/".e_LANGUAGE.".php");
-
-
+global $rc;
 if (!is_object($rc))
 {
-    require_once($listplugindir . "list_class.php");
+    require_once(e_PLUGIN."list_new/list_class.php");
     $rc = new listclass;
 }
 
-if(!isset($list_pref))
-{
-	$list_pref = $rc->getListPrefs();
-}
+//set mode
+$rc->mode = "recent_menu";
 
-$mode		= "recent_menu";
-$sections	= $rc -> prepareSection($mode);
-$arr		= $rc -> prepareSectionArray($mode, $sections);
+//parse menu
+$text = $rc->displayMenu();
 
-//display the sections
-$text = "";
-for($i=0;$i<count($arr);$i++)
-{
-	if($arr[$i][1] == "1")
-	{
-		$sectiontext = $rc -> show_section_list($arr[$i], $mode);
-		if($sectiontext != "")
-		{
-			$text .= $sectiontext;
-		}
-	}
-}
-
-$caption = (isset($list_pref[$mode."_caption"]) && $list_pref[$mode."_caption"] ? $list_pref[$mode."_caption"] : LIST_MENU_1);
-$ns -> tablerender($caption, $text, 'list_recent');
+$caption = varsettrue($rc->list_pref[$rc->mode."_caption"], LIST_MENU_1);
+$rc->e107->ns->tablerender($caption, $text, 'list_recent');
 unset($text);
 
 ?>

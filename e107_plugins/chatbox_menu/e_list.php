@@ -1,41 +1,74 @@
 <?php
-
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Chatbox e_list Handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/e_list.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-01-27 21:33:52 $
+ * $Author: lisa_ $
+ *
+*/
 if (!defined('e107_INIT')) { exit; }
 
-	if(!$chatbox_install = $sql -> db_Select("plugin", "*", "plugin_path = 'chatbox_menu' AND plugin_installflag = '1' ")){
-		return;
+class list_chatbox_menu
+{
+	function list_chatbox_menu($parent)
+	{
+		$this->parent = $parent;
 	}
 
-	$LIST_CAPTION = $arr[0];
-	$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
+	function getListData()
+	{
+		$list_caption = $this->parent->settings['caption'];
+		$list_display = ($this->parent->settings['open'] ? "" : "none");
 
-	if($mode == "new_page" || $mode == "new_menu" ){
-		$lvisit = $this -> getlvisit();
-		$qry = "cb_datestamp>".$lvisit;
-	}else{
-		$qry = "cb_id != '0' ";
-	}
-	$qry .= " ORDER BY cb_datestamp DESC LIMIT 0,".intval($arr[7]);
-
-	$bullet = $this -> getBullet($arr[6], $mode);
-
-	if(!$chatbox_posts = $sql -> db_Select("chatbox", "*", $qry)){ 
-		$LIST_DATA = LIST_CHATBOX_2;
-	}else{
-		while($row = $sql -> db_Fetch()) {
-
-			$cb_id		= substr($row['cb_nick'] , 0, strpos($row['cb_nick'] , "."));
-			$cb_nick	= substr($row['cb_nick'] , (strpos($row['cb_nick'] , ".")+1));
-			$cb_message	= ($row['cb_blocked'] ? CHATBOX_L6 : str_replace("<br />", " ", $tp -> toHTML($row['cb_message'])));
-			$rowheading	= $this -> parse_heading($cb_message, $mode);
-			$ICON		= $bullet;
-			$HEADING	= $rowheading;
-			$AUTHOR		= ($arr[3] ? ($cb_id != 0 ? "<a href='".e_BASE."user.php?id.$cb_id'>".$cb_nick."</a>" : $cb_nick) : "");
-			$CATEGORY	= "";
-			$DATE		= ($arr[5] ? ($row['cb_datestamp'] ? $this -> getListDate($row['cb_datestamp'], $mode) : "") : "");
-			$INFO		= "";
-			$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
+		if($this->parent->mode == "new_page" || $this->parent->mode == "new_menu" )
+		{
+			$lvisit = $this->parent->getlvisit();
+			$qry = "cb_datestamp>".$lvisit;
 		}
+		else
+		{
+			$qry = "cb_id != '0' ";
+		}
+		$qry .= " ORDER BY cb_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount']);
+
+		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
+
+		if(!$chatbox_posts = $this->parent->e107->sql->db_Select_gen("SELECT * FROM #chatbox WHERE ".$qry))
+		{ 
+			$list_data = LIST_CHATBOX_2;
+		}
+		else
+		{
+			while($row = $this->parent->e107->sql->db_Fetch())
+			{
+				$cb_id = substr($row['cb_nick'] , 0, strpos($row['cb_nick'] , "."));
+				$cb_nick = substr($row['cb_nick'] , (strpos($row['cb_nick'] , ".")+1));
+				$cb_message = ($row['cb_blocked'] ? CHATBOX_L6 : str_replace("<br />", " ", $tp->toHTML($row['cb_message'])));
+				$rowheading = $this->parent->parse_heading($cb_message);
+				$record['icon'] = $bullet;
+				$record['heading'] = $rowheading;
+				$record['author'] = ($this->parent->settings['author'] ? ($cb_id != 0 ? "<a href='".e_BASE."user.php?id.$cb_id'>".$cb_nick."</a>" : $cb_nick) : "");
+				$record['category'] = "";
+				$record['date'] = ($this->parent->settings['date'] ? ($row['cb_datestamp'] ? $this->parent->getListDate($row['cb_datestamp']) : "") : "");
+				$record['info'] = "";
+
+				$list_data[] = $record;
+		}
+		//return array with 'records', (global)'caption', 'display'
+		return array(
+			'records'=>$list_data, 
+			'caption'=>$list_caption, 
+			'display'=>$list_display
+		);
 	}
+}
 
 ?>
