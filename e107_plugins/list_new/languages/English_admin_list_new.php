@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * List Language Admin
+ *
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/languages/English_admin_list_new.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-11 22:38:06 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+|     $Revision: 1.2 $
+|     $Date: 2009-01-27 21:34:02 $
+|     $Author: lisa_ $
+ *
 */
 
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "List New Items"); }
@@ -42,6 +40,7 @@ define("LIST_ADMIN_13", "Welcome to the Recent page of ".SITENAME." ! This page 
 define("LIST_ADMIN_14", "recent additions");
 define("LIST_ADMIN_15", "new since your last visit");
 define("LIST_ADMIN_16", "Welcome to the New page of ".SITENAME." ! This page shows, for the most common sections of this site, a list of the additions in these sections since your last visit.");
+define("LIST_ADMIN_17", 'Nothing changed - not updated');
 
 define("LIST_ADMIN_SECT_1", "sections");
 define("LIST_ADMIN_SECT_2", "choose which sections to show");
@@ -141,7 +140,7 @@ define("LIST_ADMIN_LAN_38", "");
 
 define("LIST_ADMIN_LAN_39", "open if records exist");
 define("LIST_ADMIN_LAN_40", "should sections that contain records be opened by default?");
-define("LIST_ADMIN_LAN_41", 'Nothing changed - not updated');
+define("LIST_ADMIN_LAN_41", '');
 
 // Admin log messages
 //-------------------

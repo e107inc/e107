@@ -1,45 +1,80 @@
 <?php
-
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Download e_list Handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_download.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-27 21:34:02 $
+ * $Author: lisa_ $
+ *
+*/
 if (!defined('e107_INIT')) { exit; }
 
-	$LIST_CAPTION = $arr[0];
-	$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
-
-	if($mode == "new_page" || $mode == "new_menu" ){
-		$lvisit = $this -> getlvisit();
-		$qry = " AND download_datestamp>".$lvisit;
-	}else{
-		$qry = " ";
-	}
-
-	$bullet = $this -> getBullet($arr[6], $mode);
-
-	$qry = "SELECT d.download_id, d.download_name, d.download_author, d.download_datestamp, 
-	   dc.download_category_id, dc.download_category_name, dc.download_category_class 
-	   FROM #download AS d
-	   LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id
-	   WHERE dc.download_category_class REGEXP '".e_CLASS_REGEXP."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' AND d.download_active != '0' ".$qry." 
-	   ORDER BY download_datestamp DESC LIMIT 0,".intval($arr[7])." ";
-
-	$downloads = $sql -> db_Select_gen($qry);
-	if($downloads == 0) 
+class list_download
+{
+	function list_download($parent)
 	{
-	  $LIST_DATA = LIST_DOWNLOAD_2;
+		$this->parent = $parent;
 	}
-	else
-	{
-	  while($row = $sql -> db_Fetch())
-	  {
 
-		$rowheading	= $this -> parse_heading($row['download_name'], $mode);
-		$ICON		= $bullet;
-		$HEADING	= "<a href='".e_BASE."download.php?view.".$row['download_id']."' title='".$row['download_name']."'>".$rowheading."</a>";
-		$AUTHOR		= ($arr[3] ? $row['download_author'] : "");
-		$CATEGORY	= ($arr[4] ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : "");
-		$DATE		= ($arr[5] ? $this -> getListDate($row['download_datestamp'], $mode) : "");
-		$INFO		= "";
-		$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
-	  }
+	function getListData()
+	{
+		$list_caption = $this->parent->settings['caption'];
+		$list_display = ($this->parent->settings['open'] ? "" : "none");
+
+		if($this->parent->mode == "new_page" || $this->parent->mode == "new_menu" )
+		{
+			$qry = " AND download_datestamp>".$this->parent->getlvisit();
+		}
+		else
+		{
+			$qry = '';
+		}
+
+		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
+
+		$qry = "SELECT d.download_id, d.download_name, d.download_author, d.download_datestamp, 
+		   dc.download_category_id, dc.download_category_name, dc.download_category_class 
+		   FROM #download AS d
+		   LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id
+		   WHERE dc.download_category_class REGEXP '".e_CLASS_REGEXP."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' AND d.download_active != '0' ".$qry." 
+		   ORDER BY download_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount'])." ";
+
+		$downloads = $this->parent->e107->sql->db_Select_gen($qry);
+		if($downloads == 0) 
+		{
+			$list_data = LIST_DOWNLOAD_2;
+		}
+		else
+		{
+			$list_data = array();
+			while($row = $this->parent->e107->sql->db_Fetch())
+			{
+				$record = array();
+				$rowheading = $this->parent->parse_heading($row['download_name']);
+				$record['icon'] = $bullet;
+				$record['heading'] = "<a href='".e_BASE."download.php?view.".$row['download_id']."' title='".$row['download_name']."'>".$rowheading."</a>";
+				$record['author'] = (varsettrue($this->parent->settings['author']) ? $row['download_author'] : "");
+				$record['category'] = (varsettrue($this->parent->settings['category']) ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : "");
+				$record['date'] = (varsettrue($this->parent->settings['date']) ? $this->parent->getListDate($row['download_datestamp']) : "");
+				$record['info'] = "";
+
+				$list_data[] = $record;
+			}
+		}
+		//return array with 'records', (global)'caption', 'display'
+		return array(
+			'records'=>$list_data, 
+			'caption'=>$list_caption, 
+			'display'=>$list_display
+		);
 	}
+}
 
 ?>

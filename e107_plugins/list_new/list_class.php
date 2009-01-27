@@ -1,517 +1,664 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|       e107 website system
-|
-|       ©Steve Dunstan 2001-2002
-|       http://e107.org
-|       jalist@e107.org
-|
-|       Released under the terms and conditions of the
-|       GNU General Public License (http://gnu.org).
-|
-|		$Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2008-10-21 19:10:35 $
-|		$Author: e107steved $
-+---------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * List Class
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
+ * $Revision: 1.7 $
+ * $Date: 2009-01-27 21:33:52 $
+ * $Author: lisa_ $
+ *
 */
 if (!defined('e107_INIT')) { exit; }
 
-global $sql, $rc, $list_pref, $sc_style, $tp, $list_shortcodes, $defaultarray;
+/**
+ * e107 List New Plugin
+ * @package list_new
+ */
+/**
+ * class listclass
+ * The base class
+ * @package list_new
+ */
+class listclass
+{
+	var $defaultArray;
+	var $sections;
+	var $titles;
+	var $content_types;
+	var $content_name;
+	var $list_pref;
+	var $mode;
 
-global $LIST_PAGE_NEW, $LIST_PAGE_RECENT, $LIST_MENU_NEW, $LIST_MENU_RECENT, $LIST_PAGE_NEW_START, $LIST_PAGE_RECENT_START, $LIST_MENU_NEW_START, $LIST_MENU_RECENT_START, $LIST_PAGE_NEW_END, $LIST_PAGE_RECENT_END, $LIST_MENU_NEW_END, $LIST_MENU_RECENT_END;
-global $LIST_ICON, $LIST_DATE, $LIST_HEADING, $LIST_AUTHOR, $LIST_CATEGORY, $LIST_INFO;
-global $LIST_DISPLAYSTYLE, $LIST_CAPTION, $LIST_STYLE_CAPTION, $LIST_STYLE_BODY;
-
-$listplugindir = e_PLUGIN."list_new/";
-
-//default sections (present in this list plugin)
-$defaultarray = array("news", "comment", "download", "members");
-
-//get language file
-$lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
-
-if (file_exists(THEME."list_template.php")) {
-	require_once(THEME."list_template.php");
-} else {
-	require_once($listplugindir."list_template.php");
-}
-
-
-class listclass {
-
-	function getListPrefs()
+	/**
+	 * constructor
+	 * 
+	 * @param string $mode the mode of the caller (default, admin)
+	 * @return void
+	 * 
+	 */
+	function listclass($mode='')
 	{
-		global $sql,$eArrayStorage;
+		global $TEMPLATE_LIST_NEW, $list_shortcodes;
 
-		//check preferences from database
-		if (!is_object($sql)){ $sql = new db; }  
-		$num_rows = $sql -> db_Select("core", "*", "e107_name='list' ");
-		$row = $sql -> db_Fetch();
+		$this->plugin_dir = e_PLUGIN."list_new/";
+		$this->e107 = e107::getInstance();
 
-		//insert default preferences
-		if (empty($row['e107_value'])) {
+		//language
+		@include_lan($this->plugin_dir."languages/".e_LANGUAGE.".php");
+		
+		//template
+		if (is_readable(THEME."list_template.php"))
+		{
+			require_once(THEME."list_template.php");
+		}
+		else 
+		{
+			require_once($this->plugin_dir."list_template.php");
+		}
+		$this->template = $TEMPLATE_LIST_NEW;
 
-			$this -> getSections();
-			$list_pref = $this -> getDefaultPrefs();
-			$tmp = $eArrayStorage->WriteArray($list_pref);
+		//shortcodes
+		require_once($this->plugin_dir."list_shortcodes.php");
+		$this->shortcodes = $list_shortcodes;
 
-			$sql -> db_Insert("core", "'list', '$tmp' ");
-			$sql -> db_Select("core", "*", "e107_name='list' ");
+		if($mode=='admin')
+		{
+			require_once($this->plugin_dir."list_admin_class.php");
+			$this->admin = new list_admin($this);
 		}
 
-		$list_pref = $eArrayStorage->ReadArray($row['e107_value']);
-		return $list_pref;
+		//default sections (present in this list plugin)
+		$this->defaultArray = array("news", "comment", "download", "members");
 	}
 
-	function prepareSection($mode){
-		global $list_pref;
+	/**
+	 * helper method, parse the template
+	 * 
+	 * @param string $template the template to parse
+	 * @return string
+	 * 
+	 */
+	function parseTemplate($template)
+	{
+		//for each call to the template, provide the correct data set through load_globals
+		list_shortcodes::load_globals();
+		return $this->e107->tp->parseTemplate($this->template[$template], true, $this->shortcodes);
+	}
 
+	/**
+	 * get preferences, retrieve all preferences from core table
+	 * 
+	 * @return array
+	 * 
+	 */
+	function getListPrefs()
+	{
+		//check preferences from database
+		$num_rows = $this->e107->sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='list' ");
+		$row = $this->e107->sql->db_Fetch();
+
+		//insert default preferences
+		if (empty($row['e107_value']))
+		{
+			$this->getSections();
+			$this->list_pref = $this->getDefaultPrefs();
+			$tmp = $this->e107->arrayStorage->WriteArray($this->list_pref);
+
+			$this->e107->sql->db_Insert("core", "'list', '$tmp' ");
+			$this->e107->sql->db_Select_gen("SELECT * FROM #core WHERE e107_name='list' ");
+		}
+
+		$this->list_pref = $this->e107->arrayStorage->ReadArray($row['e107_value']);
+		return $this->list_pref;
+	}
+
+	/**
+	 * prepareSection checks if the sections should be displayed
+	 * 
+	 * @param string $mode the mode of the area (menu/page - new/recent)
+	 * @return array
+	 * 
+	 */
+	function prepareSection($mode)
+	{
 		$len = strlen($mode) + 9;
+		$sections = array();
+
 		//get all sections to use
-		foreach ($list_pref as $key => $value) {
-			if(substr($key,-$len) == "_{$mode}_display" && $value == "1"){
+		foreach($this->list_pref as $key=>$value)
+		{
+			if(substr($key,-$len) == "_{$mode}_display" && $value == "1")
+			{
 				$sections[] = substr($key,0,-$len);
 			}
 		}
-
 		return $sections;
 	}
 
-	function prepareSectionArray($mode, $sections){
-		global $list_pref;
-
+	/**
+	 * prepareSectionArray parses the preferences for each section
+	 * 
+	 * @param string $mode the mode of the area (menu/page - new/recent)
+	 * @return array
+	 * 
+	 */
+	function prepareSectionArray($mode)
+	{
 		//section reference
-		for($i=0;$i<count($sections);$i++){
-			if(isset($list_pref[$sections[$i]."_".$mode."_display"]) && $list_pref[$sections[$i]."_".$mode."_display"] == "1"){
-				$arr[$sections[$i]][0] = (isset($list_pref[$sections[$i]."_".$mode."_caption"]) ? $list_pref[$sections[$i]."_".$mode."_caption"] : "");
-				$arr[$sections[$i]][1] = (isset($list_pref[$sections[$i]."_".$mode."_display"]) ? $list_pref[$sections[$i]."_".$mode."_display"] : "");
-				$arr[$sections[$i]][2] = (isset($list_pref[$sections[$i]."_".$mode."_open"]) ? $list_pref[$sections[$i]."_".$mode."_open"] : "");
-				$arr[$sections[$i]][3] = (isset($list_pref[$sections[$i]."_".$mode."_author"]) ? $list_pref[$sections[$i]."_".$mode."_author"] : "");
-				$arr[$sections[$i]][4] = (isset($list_pref[$sections[$i]."_".$mode."_category"]) ? $list_pref[$sections[$i]."_".$mode."_category"] : "");
-				$arr[$sections[$i]][5] = (isset($list_pref[$sections[$i]."_".$mode."_date"]) ? $list_pref[$sections[$i]."_".$mode."_date"] : "");
-				$arr[$sections[$i]][6] = (isset($list_pref[$sections[$i]."_".$mode."_icon"]) ? $list_pref[$sections[$i]."_".$mode."_icon"] : "");
-				$arr[$sections[$i]][7] = (isset($list_pref[$sections[$i]."_".$mode."_amount"]) ? $list_pref[$sections[$i]."_".$mode."_amount"] : "");
-				$arr[$sections[$i]][8] = (isset($list_pref[$sections[$i]."_".$mode."_order"]) ? $list_pref[$sections[$i]."_".$mode."_order"] : "");
-				$arr[$sections[$i]][9] = $sections[$i];
+		for($i=0;$i<count($this->sections);$i++)
+		{
+			$s = $this->sections[$i];
+			if(varsettrue($this->list_pref[$s."_".$mode."_display"]) == '1')
+			{
+				$arr[$s]['caption'] = varsettrue($this->list_pref[$s."_".$mode."_caption"]);
+				$arr[$s]['display'] = varsettrue($this->list_pref[$s."_".$mode."_display"]);
+				$arr[$s]['open'] = varsettrue($this->list_pref[$s."_".$mode."_open"]);
+				$arr[$s]['author'] = varsettrue($this->list_pref[$s."_".$mode."_author"]);
+				$arr[$s]['category'] = varsettrue($this->list_pref[$s."_".$mode."_category"]);
+				$arr[$s]['date'] = varsettrue($this->list_pref[$s."_".$mode."_date"]);
+				$arr[$s]['icon'] = varsettrue($this->list_pref[$s."_".$mode."_icon"]);
+				$arr[$s]['amount'] = varsettrue($this->list_pref[$s."_".$mode."_amount"]);
+				$arr[$s]['order'] = varsettrue($this->list_pref[$s."_".$mode."_order"]);
+				$arr[$s]['section'] = $s;
 			}
 		}
 		//sort array on order values set in preferences
-		usort($arr, create_function('$e,$f','return $e[8]==$f[8]?0:($e[8]>$f[8]?1:-1);'));
+		usort($arr, create_function('$e,$f','return $e["order"]==$f["order"]?0:($e["order"]>$f["order"]?1:-1);'));
 
 		return $arr;
 	}
 
-	function getDefaultSections(){
-		global $sql, $sections, $titles, $defaultarray;
-
+	/**
+	 * getDefaultSections loads all default 'core' sections from the constructor
+	 * 
+	 * @return void
+	 * 
+	 */
+	function getDefaultSections()
+	{
 		//default always present sections
-		for($i=0;$i<count($defaultarray);$i++){
-			$sections[] = $defaultarray[$i];
-			$titles[] = $defaultarray[$i];
+		for($i=0;$i<count($this->defaultArray);$i++)
+		{
+			$this->sections[] = $this->defaultArray[$i];
+			$this->titles[] = $this->defaultArray[$i];
 		}
 		return;
 	}
 
 	//content needs this to split each main parent into separate sections
-	function getContentSections($mode)
+	/**
+	 * getContentSections loads all top level content categories
+	 * 
+	 * @param string $mode (default, add)
+	 * @return void
+	 * 
+	 */
+	function getContentSections($mode='')
 	{
-		global $sql, $sections, $titles, $content_types, $content_name, $pref;
+		global $pref;
 
-//		if(!$content_install = $sql -> db_Select("plugin", "plugin_id", "plugin_path = 'content' AND plugin_installflag = '1' "))
 		if (!$content_install = isset($pref['plug_installed']['content']))		
 		{
-		  return;
+			return;
 		}
-		$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
-		//get main parent types
-		if($mainparents = $sql -> db_Select("pcontent", "content_id, content_heading", "content_parent = '0' ".$datequery." ORDER BY content_heading"))
+		$content_types = array();
+
+		//get top level categories
+		if($mainparents = $this->e107->sql->db_Select_gen("SELECT content_id, content_heading FROM #pcontent WHERE content_parent = '0' AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ORDER BY content_heading"))
 		{
-			while($row = $sql -> db_Fetch())
+			$content_name = 'content';
+			while($row = $this->e107->sql->db_Fetch())
 			{
 				$content_types[] = "content_".$row['content_id'];
-				$content_name = 'content';
-				if($mode == "add")
+				if(varsettrue($mode) == "add")
 				{
-					$sections[] = "content_".$row['content_id'];
-					$titles[] = $content_name." : ".$row['content_heading'];
+					$this->sections[] = "content_".$row['content_id'];
+					$this->titles[] = $content_name." : ".$row['content_heading'];
 				}
 			}
 		}
-		$content_types = array_unique($content_types);
+		$this->content_types = array_unique($content_types);
+		$this->content_name = $content_name;
 
 		return;
 	}
 
+	/**
+	 * getSections loads all sections
+	 * 
+	 * @return void
+	 * 
+	 */
 	function getSections()
 	{
-		global $sql, $sections, $titles, $pref;
+		global $pref;
 
-		$this -> getDefaultSections();
+		$this->getDefaultSections();
 
-		require_once(e_HANDLER."file_class.php");
-		$fl = new e_file;
-		$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', '.bak');
-		$iconlist = $fl->get_files(e_PLUGIN, "e_list\.php$", "standard", 1);
-		foreach($iconlist as $icon)
+		if(is_array($pref['e_list_list']))
 		{
-			$tmp = explode("/", $icon['path']);
-			$tmp = array_reverse($tmp);
-			$icon['fname'] = $tmp[1];
-
-//			if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$icon['fname']."' AND plugin_installflag = '1' "))
-			if ($plugin_installed = isset($pref['plug_installed'][$icon['fname']]))
+			foreach($pref['e_list_list'] as $file)
 			{
-				if($icon['fname'] == "content")
+				if ($plugin_installed = isset($pref['plug_installed'][$file]))
 				{
-					$this -> getContentSections("add");
-				}
-				else
-				{
-					$sections[] = $icon['fname'];
-					$titles[] = $icon['fname'];
+					if($file == "content")
+					{
+						$this->getContentSections("add");
+					}
+					else
+					{
+						$this->sections[] = $file;
+						$this->titles[] = $file;
+					}
 				}
 			}
 		}
 		return;
 	}
 
+	/**
+	 * getDefaultPrefs retrieve all default preferences (if none present)
+	 * 
+	 * @return array
+	 * 
+	 */
 	function getDefaultPrefs()
 	{
-		global $sql, $sections, $titles, $defaultarray, $content_types, $tp, $pref;
+		global $pref;
 
+		$prf = array();
 		//section preferences
-		for($i=0;$i<count($sections);$i++)
+		for($i=0;$i<count($this->sections);$i++)
 		{
-			if(!in_array($sections[$i], $defaultarray))
+			$s = $this->sections[$i];
+			if(!in_array($this->sections[$i], $this->defaultArray))
 			{
-				if(!in_array($sections[$i], $content_types))
+				if(!in_array($s, $this->content_types))
 				{
-//					if($plugin_installed = $sql -> db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($sections[$i], true)."' AND plugin_installflag = '1' "))
-					if ($plugin_installed = isset($pref['plug_installed'][$tp -> toDB($sections[$i], true)]))
+					if ($plugin_installed = isset($pref['plug_installed'][$this->e107->tp->toDB($s, true)]))
 					{
-						$list_pref["$sections[$i]_recent_menu_caption"]	= $sections[$i];
-						$list_pref["$sections[$i]_recent_page_caption"]	= $sections[$i];
-						$list_pref["$sections[$i]_new_menu_caption"]	= $sections[$i];
-						$list_pref["$sections[$i]_new_page_caption"]	= $sections[$i];
+						$prf["$s_recent_menu_caption"] = $s;
+						$prf["$s_recent_page_caption"] = $s;
+						$prf["$s_new_menu_caption"] = $s;
+						$prf["$s_new_page_caption"] = $s;
 					}
 				}
 				else
 				{
-					$list_pref["$sections[$i]_recent_menu_caption"]	= $titles[$i];
-					$list_pref["$sections[$i]_recent_page_caption"]	= $titles[$i];
-					$list_pref["$sections[$i]_new_menu_caption"]	= $titles[$i];
-					$list_pref["$sections[$i]_new_page_caption"]	= $titles[$i];
+					$prf["$s_recent_menu_caption"] = $this->titles[$i];
+					$prf["$s_recent_page_caption"] = $this->titles[$i];
+					$prf["$s_new_menu_caption"] = $this->titles[$i];
+					$prf["$s_new_page_caption"] = $this->titles[$i];
 				}
 			}
 			else
 			{
-				$list_pref["$sections[$i]_recent_menu_caption"]	= $sections[$i];
-				$list_pref["$sections[$i]_recent_page_caption"]	= $sections[$i];
-				$list_pref["$sections[$i]_new_menu_caption"]	= $sections[$i];
-				$list_pref["$sections[$i]_new_page_caption"]	= $sections[$i];
+				$prf["$s_recent_menu_caption"] = $s;
+				$prf["$s_recent_page_caption"] = $s;
+				$prf["$s_new_menu_caption"] = $s;
+				$prf["$s_new_page_caption"] = $s;
 			}
 
-			$list_pref["$sections[$i]_recent_menu_display"]		= "1";
-			$list_pref["$sections[$i]_recent_menu_open"]		= "0";
-			$list_pref["$sections[$i]_recent_menu_author"]		= "0";
-			$list_pref["$sections[$i]_recent_menu_category"]	= "0";
-			$list_pref["$sections[$i]_recent_menu_date"]		= "1";
-			$list_pref["$sections[$i]_recent_menu_amount"]		= "5";
-			$list_pref["$sections[$i]_recent_menu_order"]		= ($i+1);
-			$list_pref["$sections[$i]_recent_menu_icon"]		= "";
+			$prf["$s_recent_menu_display"] = "1";
+			$prf["$s_recent_menu_open"] = "0";
+			$prf["$s_recent_menu_author"] = "0";
+			$prf["$s_recent_menu_category"] = "0";
+			$prf["$s_recent_menu_date"] = "1";
+			$prf["$s_recent_menu_amount"] = "5";
+			$prf["$s_recent_menu_order"] = ($i+1);
+			$prf["$s_recent_menu_icon"] = '';
 
-			$list_pref["$sections[$i]_recent_page_display"]		= "1";
-			$list_pref["$sections[$i]_recent_page_open"]		= "1";
-			$list_pref["$sections[$i]_recent_page_author"]		= "1";
-			$list_pref["$sections[$i]_recent_page_category"]	= "1";
-			$list_pref["$sections[$i]_recent_page_date"]		= "1";
-			$list_pref["$sections[$i]_recent_page_amount"]		= "10";
-			$list_pref["$sections[$i]_recent_page_order"]		= ($i+1);
-			$list_pref["$sections[$i]_recent_page_icon"]		= "1";
+			$prf["$s_recent_page_display"] = "1";
+			$prf["$s_recent_page_open"] = "1";
+			$prf["$s_recent_page_author"] = "1";
+			$prf["$s_recent_page_category"] = "1";
+			$prf["$s_recent_page_date"] = "1";
+			$prf["$s_recent_page_amount"] = "10";
+			$prf["$s_recent_page_order"] = ($i+1);
+			$prf["$s_recent_page_icon"] = "1";
 
-			$list_pref["$sections[$i]_new_menu_display"]		= "1";
-			$list_pref["$sections[$i]_new_menu_open"]			= "0";
-			$list_pref["$sections[$i]_new_menu_author"]			= "0";
-			$list_pref["$sections[$i]_new_menu_category"]		= "0";
-			$list_pref["$sections[$i]_new_menu_date"]			= "1";
-			$list_pref["$sections[$i]_new_menu_amount"]			= "5";
-			$list_pref["$sections[$i]_new_menu_order"]			= ($i+1);
-			$list_pref["$sections[$i]_new_menu_icon"]			= "1";
+			$prf["$s_new_menu_display"] = "1";
+			$prf["$s_new_menu_open"] = "0";
+			$prf["$s_new_menu_author"] = "0";
+			$prf["$s_new_menu_category"] = "0";
+			$prf["$s_new_menu_date"] = "1";
+			$prf["$s_new_menu_amount"] = "5";
+			$prf["$s_new_menu_order"] = ($i+1);
+			$prf["$s_new_menu_icon"] = "1";
 
-			$list_pref["$sections[$i]_new_page_display"]		= "1";
-			$list_pref["$sections[$i]_new_page_open"]			= "1";
-			$list_pref["$sections[$i]_new_page_author"]			= "1";
-			$list_pref["$sections[$i]_new_page_category"]		= "1";
-			$list_pref["$sections[$i]_new_page_date"]			= "1";
-			$list_pref["$sections[$i]_new_page_amount"]			= "10";
-			$list_pref["$sections[$i]_new_page_order"]			= ($i+1);
-			$list_pref["$sections[$i]_new_page_icon"]			= "1";
+			$prf["$s_new_page_display"] = "1";
+			$prf["$s_new_page_open"] = "1";
+			$prf["$s_new_page_author"] = "1";
+			$prf["$s_new_page_category"] = "1";
+			$prf["$s_new_page_date"] = "1";
+			$prf["$s_new_page_amount"] = "10";
+			$prf["$s_new_page_order"] = ($i+1);
+			$prf["$s_new_page_icon"] = "1";
 		}
 
 		//new menu preferences
-		$list_pref['new_menu_caption']				= LIST_ADMIN_15;
-		$list_pref['new_menu_icon_use']				= "1";
-		$list_pref['new_menu_icon_default']			= "1";
-		$list_pref['new_menu_char_heading']			= "20";
-		$list_pref['new_menu_char_postfix']			= "...";
-		$list_pref['new_menu_datestyle']			= "%d %b";
-		$list_pref['new_menu_datestyletoday']		= "%H:%M";
-		$list_pref['new_menu_showempty']			= "1";
-		$list_pref['new_menu_openifrecords']		= "";
+		$prf['new_menu_caption'] = LIST_ADMIN_15;
+		$prf['new_menu_icon_use'] = "1";
+		$prf['new_menu_icon_default'] = "1";
+		$prf['new_menu_char_heading'] = "20";
+		$prf['new_menu_char_postfix'] = "...";
+		$prf['new_menu_datestyle'] = "%d %b";
+		$prf['new_menu_datestyletoday'] = "%H:%M";
+		$prf['new_menu_showempty'] = "1";
+		$prf['new_menu_openifrecords'] = '';
 
 		//new page preferences
-		$list_pref['new_page_caption']				= LIST_ADMIN_15;
-		$list_pref['new_page_icon_use']				= "1";
-		$list_pref['new_page_icon_default']			= "1";
-		$list_pref['new_page_char_heading']			= "";
-		$list_pref['new_page_char_postfix']			= "";
-		$list_pref['new_page_datestyle']			= "%d %b";
-		$list_pref['new_page_datestyletoday']		= "%H:%M";
-		$list_pref['new_page_showempty']			= "1";
-		$list_pref['new_page_colomn']				= "1";
-		$list_pref['new_page_welcometext']			= LIST_ADMIN_16;
-		$list_pref['new_page_timelapse']			= "1";
-		$list_pref['new_page_timelapse_days']		= "30";
-		$list_pref['new_page_openifrecords']		= "";
+		$prf['new_page_caption'] = LIST_ADMIN_15;
+		$prf['new_page_icon_use'] = "1";
+		$prf['new_page_icon_default'] = "1";
+		$prf['new_page_char_heading'] = '';
+		$prf['new_page_char_postfix'] = '';
+		$prf['new_page_datestyle'] = "%d %b";
+		$prf['new_page_datestyletoday'] = "%H:%M";
+		$prf['new_page_showempty'] = "1";
+		$prf['new_page_colomn'] = "1";
+		$prf['new_page_welcometext'] = LIST_ADMIN_16;
+		$prf['new_page_timelapse'] = "1";
+		$prf['new_page_timelapse_days'] = "30";
+		$prf['new_page_openifrecords'] = '';
 
 		//recent menu preferences
-		$list_pref['recent_menu_caption']			= LIST_ADMIN_14;
-		$list_pref['recent_menu_icon_use']			= "1";
-		$list_pref['recent_menu_icon_default']		= "1";
-		$list_pref['recent_menu_char_heading']		= "20";
-		$list_pref['recent_menu_char_postfix']		= "...";
-		$list_pref['recent_menu_datestyle']			= "%d %b";
-		$list_pref['recent_menu_datestyletoday']	= "%H:%M";
-		$list_pref['recent_menu_showempty']			= "";
-		$list_pref['recent_menu_openifrecords']		= "";
+		$prf['recent_menu_caption'] = LIST_ADMIN_14;
+		$prf['recent_menu_icon_use'] = "1";
+		$prf['recent_menu_icon_default'] = "1";
+		$prf['recent_menu_char_heading'] = "20";
+		$prf['recent_menu_char_postfix'] = "...";
+		$prf['recent_menu_datestyle'] = "%d %b";
+		$prf['recent_menu_datestyletoday'] = "%H:%M";
+		$prf['recent_menu_showempty'] = '';
+		$prf['recent_menu_openifrecords'] = '';
 
 		//recent page preferences
-		$list_pref['recent_page_caption']			= LIST_ADMIN_14;
-		$list_pref['recent_page_icon_use']			= "1";
-		$list_pref['recent_page_icon_default']		= "1";
-		$list_pref['recent_page_char_heading']		= "";
-		$list_pref['recent_page_char_postfix']		= "";
-		$list_pref['recent_page_datestyle']			= "%d %b";
-		$list_pref['recent_page_datestyletoday']	= "%H:%M";
-		$list_pref['recent_page_showempty']			= "";
-		$list_pref['recent_page_colomn']			= "1";
-		$list_pref['recent_page_welcometext']		= LIST_ADMIN_13;
-		$list_pref['recent_page_openifrecords']		= "";
+		$prf['recent_page_caption'] = LIST_ADMIN_14;
+		$prf['recent_page_icon_use'] = "1";
+		$prf['recent_page_icon_default'] = "1";
+		$prf['recent_page_char_heading'] = '';
+		$prf['recent_page_char_postfix'] = '';
+		$prf['recent_page_datestyle'] = "%d %b";
+		$prf['recent_page_datestyletoday'] = "%H:%M";
+		$prf['recent_page_showempty'] = '';
+		$prf['recent_page_colomn'] = "1";
+		$prf['recent_page_welcometext'] = LIST_ADMIN_13;
+		$prf['recent_page_openifrecords'] = '';
 
-		return $list_pref;
+		return $prf;
 	}
 
-	function show_section_list($arr, $mode, $max="")
+	/**
+	 * displaySection, prepare and render a section
+	 * 
+	 * @param array $arr the array of preferences for this section
+	 * @return string
+	 * 
+	 */
+	function displaySection($arr)
 	{
-		global $tp, $listplugindir, $list_shortcodes, $sql, $list_pref, $defaultarray, $content_types, $content_name;
-		global $LIST_ICON, $LIST_DATE, $LIST_HEADING, $LIST_AUTHOR, $LIST_CATEGORY, $LIST_INFO;
-		global $LIST_DISPLAYSTYLE, $LIST_CAPTION, $LIST_STYLE_CAPTION, $LIST_STYLE_BODY;
-		global $LIST_PAGE_NEW, $LIST_PAGE_RECENT, $LIST_MENU_NEW, $LIST_MENU_RECENT, $LIST_PAGE_NEW_START, $LIST_PAGE_RECENT_START, $LIST_MENU_NEW_START, $LIST_MENU_RECENT_START, $LIST_PAGE_NEW_END, $LIST_PAGE_RECENT_END, $LIST_MENU_NEW_END, $LIST_MENU_RECENT_END;
+		//set settings
+		$this->settings = $arr;
 
-		// Following query no longer used
-		//$menu_installed = $sql -> db_Select("menus", "menu_id", "(menu_name = 'list_new_menu' || menu_name = 'list_recent_menu') AND menu_location != '0' AND menu_class REGEXP '".e_CLASS_REGEXP."' ");
-		$LIST_DATA = "";
-		$LIST_CAPTION = "";
+		//get content sections
+		$this->getContentSections();
 
-		$this -> getContentSections("");
+		//load e_list file
+		$this->data = $this->load_elist();
+
+		//set record variables
+		$this->row = array();
+		$this->row['caption'] = '';
+		$this->row['icon'] = '';
+		$this->row['date'] = '';
+		$this->row['heading'] = '';
+		$this->row['author'] = '';
+		$this->row['category'] = '';
+		$this->row['info'] = '';
+
+		$text = '';
+
+		switch($this->mode)
+		{
+			case 'recent_menu':
+				$text .= $this->parseRecord('MENU_RECENT');
+				break;
+			case 'new_menu':
+				$text .= $this->parseRecord('MENU_NEW');
+				break;
+			case 'recent_page':
+				$text .= $this->parseRecord('PAGE_RECENT');
+				break;
+			case 'new_page':
+				$text .= $this->parseRecord('PAGE_NEW');
+				break;
+		}
+
+		return $text;
+	}
+
+	/**
+	 * parseRecord renders the items within a section
+	 * 
+	 * @param string $area the area for display
+	 * @return string
+	 * 
+	 */
+	function parseRecord($area)
+	{
+		if(!in_array($area, array('MENU_RECENT', 'MENU_NEW', 'PAGE_RECENT', 'PAGE_NEW')))
+		{
+			return;
+		}
+
+		//echo "parse: ".$area."_START<br />";
+		$text = $this->parseTemplate($area.'_START');
+		if(is_array($this->data['records']))
+		{
+			foreach($this->data['records'] as $this->row)
+			{
+				//echo "parse: ".$area."<br />";
+				$text .= $this->parseTemplate($area);
+			}
+		}
+		elseif(!is_array($this->data['records']) && $this->data['records'] != "")
+		{
+			if($this->list_pref[$this->mode."_showempty"])
+			{
+				$this->row['heading'] = $this->data['records'];
+				//echo "parse: ".$area."<br />";
+				$text .= $this->parseTemplate($area);
+			}
+		}
+		//echo "parse: ".$area."_END<br />";
+		$text .= $this->parseTemplate($area.'_END');
+		return $text;
+	}
+
+	/**
+	 * load_elist loads and checks all e_list.php files
+	 * 
+	 * @return array
+	 * 
+	 */
+	function load_elist()
+	{
+		$listArray = '';
 
 		//require is needed here instead of require_once, since both the menu and the page could be visible at the same time
-		if(is_array($content_types) && in_array($arr[9], $content_types))
+		if(is_array($this->content_types) && in_array($this->settings['section'], $this->content_types))
 		{
-			$file = $content_name;
-			if(file_exists(e_PLUGIN.$file."/e_list.php"))
+			$file = $this->content_name;
+			if(is_readable(e_PLUGIN.$file."/e_list.php"))
 			{
-				global $contentmode;
-				$contentmode = $arr[9];
-				require(e_PLUGIN.$file."/e_list.php");
+				$this->mode_content = $this->settings['section'];
+				//echo "require: ".e_PLUGIN.$file."/e_list.php<br />";
+				require_once(e_PLUGIN.$file."/e_list.php");
+				$listArray = $this->load_data($file);
 			}
 		}
 		else
 		{
-			$file = $arr[9];
-			if(in_array($file, $defaultarray))
+			$file = $this->settings['section'];
+			if(in_array($file, $this->defaultArray))
 			{
-				require($listplugindir."section/list_".$file.".php");
+				//echo "require: ".$this->plugin_dir."section/list_".$file.".php<br />";
+				require_once($this->plugin_dir."section/list_".$file.".php");
+				$listArray = $this->load_data($file);
 			}
 			else
 			{
-				if(file_exists(e_PLUGIN.$file."/e_list.php"))
+				if (plugInstalled($file))
 				{
-					require(e_PLUGIN.$file."/e_list.php");
+					if(is_readable(e_PLUGIN.$file."/e_list.php"))
+					{
+						//echo "require: ".e_PLUGIN.$file."/e_list.php<br />";
+						require_once(e_PLUGIN.$file."/e_list.php");
+						$listArray = $this->load_data($file);
+					}
 				}
 			}
 		}
-		$menutext = "";
-		$start = "";
-		$end = "";
-
-		$LIST_ICON = "";
-		$LIST_DATE = "";
-		$LIST_HEADING = "";
-		$LIST_AUTHOR = "";
-		$LIST_CATEGORY = "";
-		$LIST_INFO = "";
-		//$LIST_CAPTION = (isset($list_pref[$mode."_caption"]) && $list_pref[$mode."_caption"] ? $list_pref[$mode."_caption"] : "");
-		//$LIST_CAPTION = (isset($list_pref[$mode."_caption"]) && $list_pref[$mode."_caption"] ? $list_pref[$mode."_caption"] : "");
-		//echo $list_pref["$arr_{$mode}_caption"];
-
-		if(is_array($LIST_DATA)){			//if it is an array, data exists and data is not empty
-			for($i=0;$i<count($LIST_DATA[$mode]);$i++)
-			{
-				$LIST_ICON		= $LIST_DATA[$mode][$i][0];
-				$LIST_HEADING	= $LIST_DATA[$mode][$i][1];
-				$LIST_AUTHOR	= $LIST_DATA[$mode][$i][2];
-				$LIST_CATEGORY	= $LIST_DATA[$mode][$i][3];
-				$LIST_DATE		= $LIST_DATA[$mode][$i][4];
-				$LIST_INFO		= $LIST_DATA[$mode][$i][5];
-
-				if($mode == "recent_menu"){
-					global $sc_style;
-					$LIST_AUTHOR	= ($LIST_AUTHOR ? $sc_style['LIST_AUTHOR']['pre'].$LIST_AUTHOR.$sc_style['LIST_AUTHOR']['post'] : "");
-					$LIST_CATEGORY	= ($LIST_CATEGORY ? $sc_style['LIST_CATEGORY']['pre'].$LIST_CATEGORY.$sc_style['LIST_CATEGORY']['post'] : "");
-					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_RECENT);
-
-				}elseif($mode == "new_menu"){
-					global $sc_style;
-					$LIST_AUTHOR	= ($LIST_AUTHOR ? $sc_style['LIST_AUTHOR']['pre'].$LIST_AUTHOR.$sc_style['LIST_AUTHOR']['post'] : "");
-					$LIST_CATEGORY	= ($LIST_CATEGORY ? $sc_style['LIST_CATEGORY']['pre'].$LIST_CATEGORY.$sc_style['LIST_CATEGORY']['post'] : "");
-					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_NEW);
-
-				}elseif($mode == "recent_page"){
-					$menutext .= $tp -> parseTemplate($LIST_PAGE_RECENT, FALSE, $list_shortcodes);
-
-				}elseif($mode == "new_page"){
-					$menutext .= $tp -> parseTemplate($LIST_PAGE_NEW, FALSE, $list_shortcodes);
-				}
-			}
-		}elseif(!is_array($LIST_DATA) && $LIST_DATA != ""){
-			$LIST_HEADING = $LIST_DATA;
-			if($mode == "recent_menu"){
-				if($list_pref[$mode."_showempty"]){
-					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_RECENT);
-				}
-			}elseif($mode == "new_menu"){
-				if($list_pref[$mode."_showempty"]){
-					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_NEW);
-				}
-			}elseif($mode == "recent_page"){
-				if($list_pref[$mode."_showempty"]){
-					$menutext .= $tp -> parseTemplate($LIST_PAGE_RECENT, FALSE, $list_shortcodes);
-				}
-			}elseif($mode == "new_page"){
-				if($list_pref[$mode."_showempty"]){
-					$menutext .= $tp -> parseTemplate($LIST_PAGE_NEW, FALSE, $list_shortcodes);
-				}
-
-			}
-		}
-
-		if($LIST_DATA != ""){
-
-			//open sections if content exists ? yes if true, else use individual setting of section
-			$LIST_DISPLAYSTYLE = ($list_pref[$mode."_openifrecords"] ? "" : $LIST_DISPLAYSTYLE);
-
-			if($mode == "recent_menu"){
-				if($list_pref[$mode."_showempty"] || $menutext){
-					$start = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_RECENT_START);
-					$end = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_RECENT_END);
-				}
-
-			}elseif($mode == "new_menu"){
-				if($list_pref[$mode."_showempty"] || $menutext){
-					$start = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_NEW_START);
-					$end = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_MENU_NEW_END);
-				}
-
-			}elseif($mode == "recent_page"){
-				if($list_pref[$mode."_showempty"] || $menutext){
-					$start = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_PAGE_RECENT_START);
-					$end = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_PAGE_RECENT_END);
-				}
-
-			}elseif($mode == "new_page"){
-				if($list_pref[$mode."_showempty"] || $menutext){
-					$start = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_PAGE_NEW_START);
-					$end = preg_replace("/\{(.*?)\}/e", '$\1', $LIST_PAGE_NEW_END);
-				}
-			}
-			$text = $start.$menutext.$end;
-		}else{
-			$text = "";
-		}
-		return $text;
+		return $listArray;
 	}
 
-	function getlvisit(){
-		global $qs, $list_pref;
+	/**
+	 * load_data calls the class from the e_list file and retrieves the data
+	 * 
+	 * @param string $file the section to load (class name)
+	 * @return array
+	 * 
+	 */
+	function load_data($file)
+	{
+		$name = "list_".$file;
 
-		if(isset($qs[0]) && $qs[0] == "new"){
-			if(isset($list_pref['new_page_timelapse']) && $list_pref['new_page_timelapse']){
-				if(isset($list_pref['new_page_timelapse_days']) && is_numeric($list_pref['new_page_timelapse_days']) && $list_pref['new_page_timelapse_days']){
-					$days = $list_pref['new_page_timelapse_days'];
-				}else{
+		$listArray = '';
+
+		//instantiate the class with this as parm
+		if(!class_exists($name))
+		{
+			//echo "class $name doesn't exist<br />";
+		}
+		else
+		{
+			$class = new $name($this);
+			//call method
+			if(!method_exists($class, 'getListData'))
+			{
+				//echo "method getListData doesn't exist in class $class<br />";
+			}
+			else
+			{
+				$listArray = $class->getListData();
+			}
+		}
+		return $listArray;
+	}
+
+	/**
+	 * get datestamp last visit
+	 * 
+	 * @return int datestamp
+	 * 
+	 */
+	function getlvisit()
+	{
+		global $qs;
+
+		$lvisit = USERLV;
+		if(varsettrue($qs[0]) == "new")
+		{
+			if(varsettrue($this->list_pref['new_page_timelapse']))
+			{
+				if(varsettrue($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
+				{
+					$days = $this->list_pref['new_page_timelapse_days'];
+				}
+				else
+				{
 					$days = "30";
 				}
-				if(isset($qs[1]) && is_numeric($qs[1]) && $qs[1] <= $days){
+				if(isset($qs[1]) && is_numeric($qs[1]) && $qs[1] <= $days)
+				{
 					$lvisit = time()-$qs[1]*86400;
-				}else{
-					$lvisit = USERLV;
 				}
-			}else{
-				$lvisit = USERLV;
 			}
-		}else{
-			$lvisit = USERLV;
 		}
 		return $lvisit;
 	}
 
-	function getBullet($sectionicon, $mode)
+	/**
+	 * get bullet icon, either use the icon set in admin or the default theme bullet
+	 * 
+	 * @param string $icon the icon to use as set in admin
+	 * @return string $bullet
+	 * 
+	 */
+	function getBullet($icon)
 	{
-		global $list_pref, $listplugindir;
+		$default_bullet = '';
 
-		$default_bullet = "";
-
-		if($list_pref[$mode."_icon_default"])
+		if($this->list_pref[$this->mode."_icon_default"])
 		{
-			if(file_exists(THEME."images/bullet2.gif"))
+			if(is_readable(THEME."images/bullet2.gif"))
 			{
 				$default_bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' />";
 			}
 		}
 
-		$icon_width = "8";
-		$icon_height = "8";
-		$style_pre = "";
+		$icon_width = '8';
+		$icon_height = '8';
+		$style_pre = '';
 
-		if($list_pref[$mode."_icon_use"]){
-			if($sectionicon){
-				if(file_exists($listplugindir."images/".$sectionicon)){
-					$bullet = "<img src='".$listplugindir."images/".$sectionicon."' style='width:".$icon_width."px; height:".$icon_height."px; border:0; vertical-align:middle;' alt='' />";
+		if($this->list_pref[$this->mode."_icon_use"])
+		{
+			if($icon)
+			{
+				if(is_readable($this->plugin_dir."images/".$icon))
+				{
+					$bullet = "<img src='".$this->plugin_dir."images/".$icon."' style='width:".$icon_width."px; height:".$icon_height."px; border:0; vertical-align:middle;' alt='' />";
 				}
 			}
 		}
-		$bullet = (isset($bullet) ? $bullet : $default_bullet);
+		$bullet = varsettrue($bullet, $default_bullet);
 
 		return $bullet;
 	}
 
-	function parse_heading($heading, $mode){
-		global $list_pref;
-
-		if($list_pref[$mode."_char_heading"] && strlen($heading) > $list_pref[$mode."_char_heading"]){
-			$heading = substr($heading, 0, $list_pref[$mode."_char_heading"]).$list_pref[$mode."_char_postfix"];
+	/**
+	 * helper method, parse heading to specific length with postfix
+	 * 
+	 * @param string $heading the heading from the item record
+	 * @return string $heading the parsed heading
+	 * 
+	 */
+	function parse_heading($heading)
+	{
+		if($this->list_pref[$this->mode."_char_heading"] && strlen($heading) > $this->list_pref[$this->mode."_char_heading"])
+		{
+			$heading = substr($heading, 0, $this->list_pref[$this->mode."_char_heading"]).$this->list_pref[$this->mode."_char_postfix"];
 		}
 		return $heading;
 	}
 
-	function getListDate($datestamp, $mode){
-		global $list_pref;
-
+	/**
+	 * helper method, format the date
+	 * 
+	 * @param int $datestamp the datestamp of the item record
+	 * @return string the formatted date
+	 * 
+	 */
+	function getListDate($datestamp)
+	{
 		$datestamp += TIMEOFFSET;
 
 		$todayarray = getdate();
@@ -524,33 +671,156 @@ class listclass {
 		$thisyear = date("Y", $datestamp);
 
 		//check and use the today date style if day is today
-		if($thisyear == $current_year){
-			if($thismonth == $current_month){
-				if($thisday == $current_day){
-					$datepreftoday = $list_pref[$mode."_datestyletoday"];
-					$date = strftime($datepreftoday, $datestamp);
-					return $date;
+		if($thisyear == $current_year)
+		{
+			if($thismonth == $current_month)
+			{
+				if($thisday == $current_day)
+				{
+					$datepreftoday = $this->list_pref[$this->mode."_datestyletoday"];
+					return strftime($datepreftoday, $datestamp);
 				}
 			}
 		}
 
 		//else use default date style
-		$datepref = $list_pref[$mode."_datestyle"];
-		$date = strftime($datepref, $datestamp);
-		return $date;
+		$datepref = $this->list_pref[$this->mode."_datestyle"];
+		return strftime($datepref, $datestamp);
 	}
 
+	/**
+	 * display timelapse element (on newpage)
+	 * 
+	 * @return string the timelapse element
+	 * 
+	 */
+	function displayTimelapse()
+	{
+		global $rs;
 
-	//##### FUNCTIONS BENEATH ARE ONLY USED IN THE ADMIN PAGE
+		if(isset($this->list_pref['new_page_timelapse']) && $this->list_pref['new_page_timelapse'])
+		{
+			if(isset($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
+			{
+				$days = $this->list_pref['new_page_timelapse_days'];
+			}
+			else
+			{
+				$days = '30';
+			}
+			$timelapse = 0;
+			if(isset($qs[1]) && is_numeric($qs[1]) && $qs[1] <= $days)
+			{
+				$timelapse = $qs[1];
+			}
+			$url = $this->plugin_dir."list.php?new";
+			$selectjs = "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\"";
 
-	function parse_headerrow_title($title){
-		global $rs, $list_pref;
+			$this->row['timelapse'] = LIST_MENU_6;
+			$this->row['timelapse'] .= $rs->form_select_open("timelapse", $selectjs).$rs->form_option(LIST_MENU_5, 0, $url);
+			for($a=1; $a<=$days; $a++)
+			{
+				$this->row['timelapse'] .= $rs->form_option($a, ($timelapse == $a ? '1' : '0'), $url.".".$a);
+			}
+			$this->row['timelapse'] .= $rs->form_select_close();
 
-		$text = "<tr><td colspan='4' class='forumheader'>".$title."</td></tr>";
+			return $this->parseTemplate('TIMELAPSE_TABLE');
+		}
+		return;
+	}
 
+	/**
+	 * display the page (either recent or new)
+	 * 
+	 * @return string
+	 * 
+	 */
+	function displayPage()
+	{
+		global $qs;
+
+		//get preferences
+		if(!isset($this->list_pref))
+		{
+			$this->list_pref = $this->getListPrefs();
+		}
+		
+		//get sections
+		$this->sections = $this->prepareSection($this->mode);
+		$arr = $this->prepareSectionArray($this->mode);
+
+		//timelapse
+		if(varsettrue($qs[0]) == "new")
+		{
+			$text .= $this->displayTimelapse();
+		}
+
+		$text .= $this->parseTemplate('COL_START');
+
+		//welcometext
+		if($this->list_pref[$this->mode."_welcometext"])
+		{
+			$text .= $this->parseTemplate('COL_WELCOME');
+		}
+
+		//display the sections
+		$k=0;
+		foreach($arr as $sect)
+		{
+			if($sect['display'] == '1')
+			{
+				$sectiontext = $this->displaySection($sect);
+				if($sectiontext != '')
+				{
+					$v = $k/$this->list_pref[$this->mode."_colomn"];
+					if( intval($v) == $v )
+					{
+						$text .= $this->parseTemplate('COL_ROWSWITCH');
+					}
+					$text .= $this->parseTemplate('COL_CELL_START');
+					$text .= $sectiontext;
+					$text .= $this->parseTemplate('COL_CELL_END');
+					$k++;
+				}
+			}
+		}
+		$text .= $this->parseTemplate('COL_END');
 		return $text;
 	}
 
+	/**
+	 * display the menu (either recent or new)
+	 * 
+	 * @return string
+	 * 
+	 */
+	function displayMenu()
+	{
+		//get preferences
+		if(!isset($this->list_pref))
+		{
+			$this->list_pref = $this->getListPrefs();
+		}
+
+		//get sections
+		$this->sections = $this->prepareSection($this->mode);
+		$arr = $this->prepareSectionArray($this->mode);
+
+		//display the sections
+		$text = '';
+		foreach($arr as $sect)
+		{
+			if($sect['display'] == '1')
+			{
+				$sectiontext = $this->displaySection($sect);
+				if($sectiontext != '')
+				{
+					$text .= $sectiontext;
+				}
+			}
+		}
+		return $text;
+	}
 }
 
 ?>
