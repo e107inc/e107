@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-01-20 22:59:39 $
+ * $Revision: 1.23 $
+ * $Date: 2009-01-28 14:57:27 $
  * $Author: secretr $
  *
 */
@@ -150,7 +150,7 @@ class e_form
 		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 
 	}
-	
+
 	function checkbox_switch($name, $value, $checked = false, $label = '')
 	{
 		return $this->checkbox($name, $value, $checked).$this->label($label ? $label : LAN_ENABLED, $name, $value);
@@ -161,17 +161,17 @@ class e_form
 		$selector = 'jstarget:'.$selector;
 		return $this->checkbox($name, $selector, false, array('id'=>false,'class'=>'checkbox toggle-all'));
 	}
-	
+
 	function uc_checkbox($name, $current_value, $uc_options, $field_options = array())
 	{
-		if(!is_array($field_options)) parse_str($field_options, $field_options); 
+		if(!is_array($field_options)) parse_str($field_options, $field_options);
 		return '
 			<div class="check-block">
 				'.$this->_uc->vetted_tree($name, array($this, '_uc_checkbox_cb'), $current_value, $uc_options, $field_options).'
 			</div>
 		';
 	}
-	
+
 	function _uc_checkbox_cb($treename, $classnum, $current_value, $nest_level, $field_options)
 	{
 		if($classnum == e_UC_BLANK)
@@ -183,16 +183,16 @@ class e_form
 		if($nest_level == 0)
 		{
 			$class = " strong";
-		} 
+		}
 		else
 		{
 			$style = " style='text-indent:" . (1.2 * $nest_level) . "em'";
 		}
 		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->uc_get_classdescription($classnum).')</span>' : '';
-		
+
 		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum).$descr, $treename.'[]', $classnum)."</div>\n";
 	}
-	
+
 	function radio($name, $value, $checked = false, $options = array())
 	{
 		$options['checked'] = $checked; //comes as separate argument just for convenience
@@ -235,7 +235,7 @@ class e_form
 		$options = $this->format_options('select', $name, $options);
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
-	
+
 	function selectbox($name, $option_array, $selected = false, $options = array())
 	{
 		return $this->select_open($name, $options)."\n".$this->option_multi($option_array, $selected)."\n".$this->select_close();
@@ -245,7 +245,7 @@ class e_form
 	{
 		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n".$this->select_close();
 	}
-		
+
 	// Callback for vetted_tree - Creates the option list for a selection box
 	function _uc_select_cb($treename, $classnum, $current_value, $nest_level)
 	{
@@ -257,17 +257,17 @@ class e_form
 		{
 			$prefix = '';
 			$style = "font-weight:bold; font-style: italic;";
-		} 
+		}
 		elseif($nest_level == 1)
 		{
 			$prefix = '&nbsp;&nbsp;';
 			$style = "font-weight:bold";
-		} 
+		}
 		else
 		{
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
 			$style = '';
-		} 
+		}
 		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}")."\n";
 	}
 
@@ -283,7 +283,7 @@ class e_form
 		$options = $this->format_options('option', '', $options);
 		return "<option value='{$value}'".$this->get_attributes($options).">{$option_name}</option>";
 	}
-	
+
 	function option_multi($option_array, $selected = false, $options = array())
 	{
 		if(is_string($option_array)) parse_str($option_array, $option_array);
@@ -364,7 +364,7 @@ class e_form
 		if(!$this->_tabindex_enabled) return 0;
 		return $this->_tabindex_counter;
 	}
-	
+
 	function resetTabindex($reset = 0)
 	{
 		$this->_tabindex_counter = $reset;
@@ -507,7 +507,7 @@ class e_form
 
 		switch ($type) {
 			case 'hidden':
-				$def_options = array('disabled' => false, 'other' => '');
+				$def_options = array('id' => false, 'disabled' => false, 'other' => '');
 				break;
 
 			case 'text':
