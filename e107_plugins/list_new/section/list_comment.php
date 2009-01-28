@@ -9,8 +9,8 @@
  * Comment e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_comment.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-27 21:34:02 $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-28 08:48:14 $
  * $Author: lisa_ $
  *
 */
@@ -61,11 +61,11 @@ class list_comment
 				$record['icon'] = $bullet;
 				if($row['comment_url'])
 				{
-					$record['heading'] = "<a href='".$row['comment_url']."' title='".$row['comment_title']."'>".$this->parent->e107->tp->toHTML($rowheading, TRUE)."</a>";
+					$record['heading'] = "<a href='".$row['comment_url']."'>".$this->parent->e107->tp->toHTML($rowheading, true)."</a>";
 				}
 				else
 				{
-					$record['heading'] = $this->parent->e107->tp->toHTML($rowheading, TRUE);
+					$record['heading'] = $this->parent->e107->tp->toHTML($rowheading, true);
 				}
 				$category = '';
 				if(varsettrue($this->parent->settings['category']))

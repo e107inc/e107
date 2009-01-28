@@ -9,8 +9,8 @@
  * List Admin Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_admin_class.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-27 23:46:12 $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-28 08:47:37 $
  * $Author: lisa_ $
  *
 */
@@ -40,9 +40,35 @@ class list_admin
 	{
 		$this->e107 = e107::getInstance();
 		$this->parent = $parent;
-
-		
 	}
+
+	/*
+	function logArrayDiffs(&$new, &$old, $event)
+	{
+		$changes = array();
+		foreach ($new as $k => $v)
+		{
+			if(is_array($v) && is_array($old[$k]))
+			{
+				logArrayDiffs(&$new[$k], &$old[$k], $event);
+			}
+			else
+			{
+				if ($v != $old[$k])
+				{
+					$old[$k] = $v;
+					$changes[] = $k.'=>'.$v;
+				}
+			}
+		}
+		if (count($changes))
+		{
+			print_a($changes);
+			return TRUE;
+		}
+		return FALSE;
+	}
+	*/
 
 	/**
 	 * database update settings
@@ -59,6 +85,9 @@ class list_admin
 		{
 			if($value != LIST_ADMIN_2){ $temp[$this->e107->tp->toDB($key)] = $this->e107->tp->toDB($value); }
 		}
+		print_a($temp);
+		print_a($list_pref);
+		$this->logArrayDiffs($temp, $list_pref, 'LISTNEW_01');
 
 		if ($this->e107->admin_log->logArrayDiffs($temp, $list_pref, 'LISTNEW_01'))
 		{

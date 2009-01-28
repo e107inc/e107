@@ -9,8 +9,8 @@
  * List Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_shortcodes.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-01-27 23:46:12 $
+ * $Revision: 1.4 $
+ * $Date: 2009-01-28 08:47:37 $
  * $Author: lisa_ $
  *
 */
@@ -43,12 +43,12 @@ class list_shortcodes
 
 	function get_list_date()
 	{
-		return $this->e107->tp->toHTML($this->row['date'], true, "TITLE");
+		return $this->e107->tp->toHTML($this->row['date'], true, "");
 	}
 
 	function get_list_icon()
 	{
-		return $this->e107->tp->toHTML($this->row['icon'], true, "TITLE");
+		return $this->e107->tp->toHTML($this->row['icon'], true, "");
 	}
 
 	function get_list_heading()

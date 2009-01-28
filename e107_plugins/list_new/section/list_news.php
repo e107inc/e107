@@ -9,8 +9,8 @@
  * News e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_news.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-27 21:34:02 $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-28 08:48:14 $
  * $Author: lisa_ $
  *
 */
@@ -61,7 +61,7 @@ class list_news
 
 				$record = array();
 				$record['icon'] = $bullet;
-				$record['heading'] = "<a href='".e_BASE."news.php?item.".$row['news_id']."' title='".$rowheading."'>".$rowheading."</a>";
+				$record['heading'] = "<a href='".e_BASE."news.php?item.".$row['news_id']."'>".$rowheading."</a>";
 
 				$record['author'] = '';
 				if(varsettrue($this->parent->settings['author']))

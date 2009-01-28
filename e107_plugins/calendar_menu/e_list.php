@@ -9,8 +9,8 @@
  * Calendar e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_list.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-01-27 21:33:52 $
+ * $Revision: 1.5 $
+ * $Date: 2009-01-28 08:47:34 $
  * $Author: lisa_ $
  *
 */
@@ -81,7 +81,7 @@ class list_calendar_menu
 
 				$rowheading = $this->parent->parse_heading($row['event_title']);
 				$record['icon'] = $bullet;
-				$record['heading'] = "<a href='".e_PLUGIN."calendar_menu/event.php?".$row['event_start'].".event.".$row['event_id']."' title='".$row['event_title']."'>".$rowheading."</a>";
+				$record['heading'] = "<a href='".e_PLUGIN."calendar_menu/event.php?".$row['event_start'].".event.".$row['event_id']."'>".$rowheading."</a>";
 				$record['category'] = $row['event_cat_name'];
 				$record['date'] = ($this->parent->settings['date'] ? ($row['event_start'] ? $this->parent->getListDate($row['event_start']) : "") : "");
 				$record['info'] = '';
