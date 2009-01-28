@@ -9,8 +9,8 @@
  * linksPage e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/e_list.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-01-27 21:33:52 $
+ * $Revision: 1.4 $
+ * $Date: 2009-01-28 08:47:37 $
  * $Author: lisa_ $
  *
 */
@@ -56,7 +56,7 @@ class list_links_page
 				$record = array();
 				$rowheading = $this->parent->parse_heading($row['link_name']);
 				$record['icon'] = $bullet;
-				$record['heading'] = "<a href='".$row['link_url']."' rel='external' title='".$row['link_name']."'>".$rowheading."</a>";
+				$record['heading'] = "<a href='".$row['link_url']."' rel='external'>".$rowheading."</a>";
 				$record['author'] = "";
 				$record['category'] = ($this->parent->settings['category'] ? "<a href='".e_PLUGIN."links_page/links.php?cat.".$row['link_category_id']."'>".$row['link_category_name']."</a>" : "");
 				$record['date'] = ($this->parent->settings['date'] ? ($row['link_datestamp'] > 0 ? $this->parent->getListDate($row['link_datestamp']) : "") : "");

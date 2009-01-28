@@ -9,8 +9,8 @@
  * Forum e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/e_list.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-27 21:33:52 $
+ * $Revision: 1.3 $
+ * $Date: 2009-01-28 08:47:37 $
  * $Author: lisa_ $
  *
 */
@@ -126,7 +126,7 @@ class list_forum
 				$rowheading	= $this->parent->parse_heading($parent_name);
 				$lnk = ($parent_id ? $thread_id.".post" : $thread_id);
 
-				$record['heading'] = "<a href='".$path."forum_viewtopic.php?$lnk' title='".$parent_name."'>".$rowheading."</a>";
+				$record['heading'] = "<a href='".$path."forum_viewtopic.php?$lnk'>".$rowheading."</a>";
 				$record['author'] = ($this->parent->settings['author'] ? ($thread_anon ? $thread_user : "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>") : "");
 				$record['category'] = ($this->parent->settings['category'] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
 				$record['date'] = ($this->parent->settings['date'] ? $this->parent->getListDate($thread_datestamp) : "");

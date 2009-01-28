@@ -9,8 +9,8 @@
  * List Template
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_template.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-01-27 23:46:12 $
+ * $Revision: 1.4 $
+ * $Date: 2009-01-28 08:47:37 $
  * $Author: lisa_ $
  *
 */
@@ -98,6 +98,10 @@ $TEMPLATE_LIST_NEW['TIMELAPSE_TABLE'] = "<div class='forumheader3' style='margin
 
 
 //##### ADMIN
+
+
+$TEMPLATE_LIST_NEW['ADMIN_MESSAGE'] = "<div style='text-align:center'><b>{MESSAGE}</b></div>";
+
 
 $TEMPLATE_LIST_NEW['ADMIN_START'] = "
 <div style='text-align:center'>

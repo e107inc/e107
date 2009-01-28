@@ -9,8 +9,8 @@
  * List Admin Config
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/admin_list_config.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-01-27 21:33:52 $
+ * $Revision: 1.9 $
+ * $Date: 2009-01-28 08:47:37 $
  * $Author: lisa_ $
  *
 */
@@ -46,7 +46,9 @@ $rc->list_pref = $rc->getListPrefs();
 //render message if set
 if(isset($message))
 {
-	$rc->e107->ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$MESSAGE = $message;
+	$t = preg_replace("/\{(.*?)\}/e", '$\1', $rc->template['ADMIN_MESSAGE']);
+	$rc->e107->ns->tablerender('', $t);
 }
 
 //display admin page

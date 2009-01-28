@@ -9,8 +9,8 @@
  * Members e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_members.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-01-27 21:34:02 $
+ * $Revision: 1.5 $
+ * $Date: 2009-01-28 08:48:14 $
  * $Author: lisa_ $
  *
 */
@@ -48,7 +48,7 @@ class list_members
 				$record = array();
 				$rowheading = $this->parent->parse_heading($row['user_name']);
 				$record['icon'] = $bullet;
-				$record['heading'] = (USER ? "<a href='".e_BASE."user.php?id.".$row['user_id']."' title='".$row['user_name']."'>".$rowheading."</a>" : $rowheading);
+				$record['heading'] = (USER ? "<a href='".e_BASE."user.php?id.".$row['user_id']."'>".$rowheading."</a>" : $rowheading);
 				$record['category'] = '';
 				$record['author'] = '';
 				$record['date'] = (varsettrue($this->parent->settings['date']) ? $this->parent->getListDate($row['user_join']) : "");

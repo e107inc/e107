@@ -9,8 +9,8 @@
  * Download e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_download.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-01-27 21:34:02 $
+ * $Revision: 1.4 $
+ * $Date: 2009-01-28 08:48:14 $
  * $Author: lisa_ $
  *
 */
@@ -59,7 +59,7 @@ class list_download
 				$record = array();
 				$rowheading = $this->parent->parse_heading($row['download_name']);
 				$record['icon'] = $bullet;
-				$record['heading'] = "<a href='".e_BASE."download.php?view.".$row['download_id']."' title='".$row['download_name']."'>".$rowheading."</a>";
+				$record['heading'] = "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$rowheading."</a>";
 				$record['author'] = (varsettrue($this->parent->settings['author']) ? $row['download_author'] : "");
 				$record['category'] = (varsettrue($this->parent->settings['category']) ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : "");
 				$record['date'] = (varsettrue($this->parent->settings['date']) ? $this->parent->getListDate($row['download_datestamp']) : "");
