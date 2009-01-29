@@ -835,7 +835,12 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_RATING
 global $CONTENT_CONTENT_TABLE_RATING, $content_pref, $qs, $row, $rater, $plugintable, $mainparent;
 if(($content_pref["content_content_rating"] && $row['content_rate']) || $content_pref["content_content_rating_all"] ){
-return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
+	//return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
+	$tmp = $_SERVER['QUERY_STRING'];
+	$_SERVER['QUERY_STRING'] .= ".rated";
+	$text = $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
+	$_SERVER['QUERY_STRING'] = $tmp;
+	return $text;
 }
 SC_END
 

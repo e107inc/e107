@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.114 $
-|		$Date: 2008-06-27 21:22:19 $
-|		$Author: e107steved $
+|		$Revision: 1.115 $
+|		$Date: 2009-01-29 15:26:37 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -1152,6 +1152,26 @@ function show_content_item(){
 		global $pref, $content_pref, $content_icon_path, $content_image_path, $content_file_path, $custom, $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number, $row, $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
 		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA, $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
 		global $CONTENT_CONTENT_TABLE_PREV_PAGE, $CONTENT_CONTENT_TABLE_NEXT_PAGE;
+
+		//if we get here through the rated auto-redirect
+		//we need to delete cache and redirect to the normal item url
+		if($qs[2]=='rated' || (is_numeric($qs[2]) && $qs[3]=='rated') )
+		{
+			$e107cache->clear("$plugintable.content.$qs[1]");
+			$e107cache->clear("comment.$plugintable.$qs[1]");
+			//and reset qs[2]
+			if($qs[2]=='rated')
+			{
+				$qs[2] = '';
+				$qry = e_SELF."?content.".$qs[1];
+			}
+			else
+			{
+				$qs[3] = '';
+				$qry = e_SELF."?content.".$qs[1].".".$qs[2];
+			}
+			header("location:".$qry); exit;
+		}
 
 		$mainparent			= $aa -> getMainParent(intval($qs[1]));
 		$content_pref		= $aa -> getContentPref($mainparent);
