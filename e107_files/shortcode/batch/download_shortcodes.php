@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2008-12-08 21:15:39 $
-|     $Author: e107steved $
+|     $Revision: 1.31 $
+|     $Date: 2009-01-29 23:46:07 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -480,14 +480,28 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 	    }
 
 		// Now generate the options
-	    foreach ($catlist as $thiscat)
-	    {  // Main categories
+	   foreach ($catlist as $thiscat)
+	   {  // Main categories
 			// Could add a display class to the group, but the default looked OK
 
-            if(count($thiscat['subcats'])>0)
+         if(count($thiscat['subcats'])>0)
 			{
 				$boxinfo .= "<optgroup label='".htmlspecialchars($thiscat['download_category_name'])."'>\n";
 		  		$scprefix = '';
+	      	foreach ($thiscat['subcats'] as $sc)
+	      	{  // Sub-categories
+		    	   $sscprefix = '--> ';
+		    	   $boxinfo .= "<option value='".$sc['download_category_id']."'";
+		    	   if ($cdc == $sc['download_category_id']) { $boxinfo .= " selected='selected'"; }
+		   	   $boxinfo .= ">".$scprefix.htmlspecialchars($sc['download_category_name'])."</option>\n";
+		    	   foreach ($sc['subsubcats'] as $ssc)
+		    	   {  // Sub-sub categories
+		         		$boxinfo .= "<option value='".$ssc['download_category_id']."'";
+		         		if ($cdc == $ssc['download_category_id']) { $boxinfo .= " selected='selected'"; }
+		         		$boxinfo .= ">".htmlspecialchars($sscprefix.$ssc['download_category_name'])."</option>\n";
+		    	   }
+	      	}
+			   $boxinfo .= "</optgroup>\n";
 			}
 			else
 			{
@@ -495,21 +509,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
             	$boxinfo .= "<option value='".$thiscat['download_category_id']."' {$sel}>".htmlspecialchars($thiscat['download_category_name'])."</option>\n";
 			}
 
-	      	foreach ($thiscat['subcats'] as $sc)
-	      	{  // Sub-categories
-		    	$sscprefix = '--> ';
-		    	$boxinfo .= "<option value='".$sc['download_category_id']."'";
-		    	if ($cdc == $sc['download_category_id']) { $boxinfo .= " selected='selected'"; }
-		   		$boxinfo .= ">".$scprefix.htmlspecialchars($sc['download_category_name'])."</option>\n";
-		    	foreach ($sc['subsubcats'] as $ssc)
-		    	{  // Sub-sub categories
-		      		$boxinfo .= "<option value='".$ssc['download_category_id']."'";
-		      		if ($cdc == $ssc['download_category_id']) { $boxinfo .= " selected='selected'"; }
-		      		$boxinfo .= ">".htmlspecialchars($sscprefix.$ssc['download_category_name'])."</option>\n";
-		    	}
-	      	}
-			$boxinfo .= "</optgroup>\n";
-	    }
+	  }
 
 	  $boxinfo .= "</select>\n";
 	  return $boxinfo;
