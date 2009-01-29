@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.92 $
-* $Date: 2009-01-04 16:00:19 $
+* $Revision: 1.93 $
+* $Date: 2009-01-29 21:09:27 $
 * $Author: e107steved $
 *
 */
@@ -1478,11 +1478,20 @@ function init_session()
 
 			$user_pref = ($result['user_prefs'] ? unserialize($result['user_prefs']) : '');
 
+			if (check_class(varset($pref['allow_theme_select'],FALSE)))
+			{	// User can set own theme
 			if (isset($_POST['settheme']))
 			{
-				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? '' : $_POST['sitetheme']);
+					$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
 				save_prefs('user');
 			}
+			}
+			elseif (isset($user_pref['sitetheme']))
+			{	// User obviously no longer allowed his own theme - clear it
+				unset($user_pref['sitetheme']);
+				save_prefs('user');
+			}
+			
 
 			define('USERTHEME', (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : false));
 			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
