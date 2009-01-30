@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.46 $
-|    $Date: 2008-07-28 20:15:57 $
-|    $Author: e107steved $
+|    $Revision: 1.47 $
+|    $Date: 2009-01-30 22:02:45 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -475,6 +475,21 @@ class linkclass {
             $sql->db_Update("links_page_cat", "link_category_order=link_category_order+1 WHERE link_category_id='$linkid' ");
         }
     }
+
+	function verify_link_manage($id)
+	{
+		global $sql;
+
+		if ($sql->db_Select("links_page", "link_author", "link_id='".intval($id)."' "))
+		{
+			$row = $sql->db_Fetch();
+		}
+
+		if(varset($row['link_author']) != USERID)
+		{
+			js_location(SITEURL);
+		}
+	}
 
 	// Create a new link. If $mode == 'submit', link has to go through the approval process; else its admin entry
     function dbLinkCreate($mode='') 
