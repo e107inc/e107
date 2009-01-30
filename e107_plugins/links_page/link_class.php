@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.11 $
-|    $Date: 2008-12-29 20:51:07 $
+|    $Revision: 1.12 $
+|    $Date: 2009-01-30 22:03:13 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -550,6 +550,19 @@ class linkclass
         }
     }
 
+	function verify_link_manage($id)
+	{
+		global $sql;
+
+		if ($sql->db_Select("links_page", "link_author", "link_id='".intval($id)."' "))
+		{
+			$row = $sql->db_Fetch();
+		}
+		if(varset($row['link_author']) != USERID)
+		{
+			js_location(SITEURL);
+		}
+	}
 
 	// Create a new link. If $mode == 'submit', link has to go through the approval process; else its admin entry
     function dbLinkCreate($mode='') 
