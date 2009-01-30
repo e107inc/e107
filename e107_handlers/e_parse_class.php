@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.50 $
-* $Date: 2009-01-23 21:18:37 $
+* $Revision: 1.51 $
+* $Date: 2009-01-30 20:39:03 $
 * $Author: e107steved $
 *
 */
@@ -48,8 +48,8 @@ class e_parse
 		'no_tags' 		=> FALSE,			// remove HTML tags.
 		'value'			=> FALSE,			// Restore entity form of quotes and such to single characters - TRUE disables
 
-		'nobreak' 		=> FALSE,			// Line break compression - TRUE removes multiple line breaks
-		'retain_nl' 	=> FALSE			// Retain newlines - wraps to \n instead of <br /> if TRUE
+		'nobreak' 		=> FALSE,			// Line break compression - TRUE removes newline characters
+		'retain_nl' 	=> FALSE			// Retain newlines - wraps to \n instead of <br /> if TRUE (for non-HTML email text etc)
 		);
 
 		// Super modifiers override default option values
@@ -767,6 +767,7 @@ class e_parse
 // Now get on with the parsing
 		$ret_parser = '';
 		$last_bbcode = '';
+		$saveOpts = $opts;				// So we can change them on each loop
 		if ($parseBB == FALSE)
 		{
 			$content = array($text);
@@ -775,7 +776,7 @@ class e_parse
 		{
 			// Split each text block into bits which are either within one of the 'key' bbcodes, or outside them
 			// (Because we have to match end words, the 'extra' capturing subpattern gets added to output array. We strip it later)
-			$content = preg_split('#(\[(php|code|scode|hide).*?\[/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+			$content = preg_split('#(\[(html|php|code|scode|hide).*?\[/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 		}
 
 
@@ -783,6 +784,7 @@ class e_parse
 		foreach ($content as $full_text)
 		{
 			$proc_funcs = TRUE;
+			$convertNL = TRUE;
 
 			// We may have 'captured' a bbcode word - strip it if so
 			if ($last_bbcode == $full_text)
@@ -793,8 +795,10 @@ class e_parse
 			}
 			else
 			{
+				$opts = $saveOpts;			// Set the options for this pass
+
 				// (Have to have a good test in case a 'non-key' bbcode starts the block - so pull out the bbcode parameters while we're there
-				if (($parseBB !== FALSE) && preg_match('#(^\[(php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches ))
+				if (($parseBB !== FALSE) && preg_match('#(^\[(html|php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches ))
 				{  // It's one of the 'key' bbcodes
 					$proc_funcs = FALSE;			// Usually don't want 'normal' processing if its a 'special' bbcode
 					// $matches[0] - complete block from opening bracket of opening tag to closing bracket of closing tag
@@ -821,6 +825,10 @@ class e_parse
 							// Because we're bypassing most of the initial parser processing, we should be able to just reverse the effects of toDB() and execute the code
 							if (!$matches[3]) $bbcode = html_entity_decode($matches[4], ENT_QUOTES, CHARSET);
 							if (DB_INF_SHOW) echo "PHP after decode: ".htmlentities($bbcode)."<br /><br />";
+							break;
+						case 'html' :
+							$proc_funcs = TRUE;
+							$convertNL = FALSE;
 							break;
 						case 'hide' :
 							$proc_funcs = TRUE;
@@ -874,11 +882,14 @@ class e_parse
 
 						// Could put tag stripping in here
 
+/*
 						//	Line break compression - filter white space after HTML tags - among other things, ensures HTML tables display properly
-						if (!$opts['nobreak'])
+						// Hopefully now achieved by other means
+						if ($convertNL && !$opts['nobreak'])
 						{
 							$sub_blk = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $sub_blk);
 						}
+*/
 
 						//	Link substitution
 						// Convert URL's to clickable links, unless modifiers or prefs override
@@ -924,7 +935,14 @@ class e_parse
 						// Reduce newlines in all forms to a single newline character (finds '\n', '\r\n', '\n\r')
 						if (!$opts['nobreak'])
 						{
-							$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);
+							if ($convertNL)
+							{
+								$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);		// We may need to convert to <br /> later
+							}
+							else
+							{
+								$sub_blk = preg_replace("#[\r]*\n[\r]*#", "\n", $sub_blk);		// Not doing any more - its HTML so keep \n so HTML is formatted
+							}
 						}
 
 
@@ -1047,16 +1065,19 @@ class e_parse
 						}
 
 
-						$nl_replace = '<br />';			// Default replaces all \n with <br /> for HTML display
-						if ($opts['nobreak'])
+						if ($convertNL)
 						{
-							$nl_replace = '';
+							$nl_replace = '<br />';			// Default replaces all \n with <br /> for HTML display
+							if ($opts['nobreak'])
+							{
+								$nl_replace = '';
+							}
+							elseif ($opts['retain_nl'])
+							{
+								$nl_replace = "\n";
+							}
+							$sub_blk = str_replace(E_NL, $nl_replace, $sub_blk);
 						}
-						elseif ($opts['retain_nl'])
-						{
-							$nl_replace = "\n";
-						}
-						$sub_blk = str_replace(E_NL, $nl_replace, $sub_blk);
 
 
 						$ret_parser .= $sub_blk;
