@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-01-18 19:02:07 $
- * $Author: secretr $
+ * $Revision: 1.21 $
+ * $Date: 2009-02-01 15:18:30 $
+ * $Author: e107steved $
  *
 */
 
@@ -437,7 +437,7 @@ switch ($action)
 		<tr id='userclass_type_standard' ".(UC_TYPE_GROUP == $userclass_type ? " style='display:none'" : "").">
 		<td class='forumheader3'>".UCSLAN_24."</td>
 		<td class='forumheader3'>";
-	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,"nobody,public,main,admin,classes,matchclass,member").'</select>';
+	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,'nobody,public,main,admin,classes,matchclass,member').'</select>';
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_32."</td>
 		</tr>
@@ -459,7 +459,7 @@ switch ($action)
 		<tr>
 		<td class='forumheader3'>".UCSLAN_34."</td>
 		<td class='forumheader3'>";
-	  $text .= "<select name='userclass_visibility' class='tbox'>".$e_userclass->vetted_tree('userclass_visibility',array($e_userclass,'select'), $userclass_visibility,"main,admin,classes,matchclass,public,member,nobody").'</select>';
+	  $text .= "<select name='userclass_visibility' class='tbox'>".$e_userclass->vetted_tree('userclass_visibility',array($e_userclass,'select'), $userclass_visibility,'main,admin,classes,matchclass,public,member,nobody').'</select>';
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_33."</td>
 		</tr>
@@ -469,7 +469,7 @@ switch ($action)
 		<tr>
 		<td class='forumheader3'>".UCSLAN_35."</td>
 		<td class='forumheader3'>";
-	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,"main,admin,nobody,classes,matchclass,member").'</select>';
+	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,'main,admin,nobody,classes,matchclass,member').'</select>';
 //		.r_userclass("userclass_parent", $userclass_parent, "off", "admin,classes,matchclass,public,member").
 	$text .= "</td>
 		<td class='forumheader3'>".UCSLAN_36."</td>

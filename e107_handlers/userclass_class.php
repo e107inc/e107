@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2009-01-20 22:37:49 $
-|     $Author: secretr $
+|     $Revision: 1.31 $
+|     $Date: 2009-02-01 15:18:30 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -121,7 +121,8 @@ class user_class
 		// Add in any fixed classes that aren't already defined
 		foreach ($this->fixed_classes as $c => $d)
 		{
-			if (!isset($this->class_tree[$c]) && ($c != e_UC_PUBLIC))
+//			if (!isset($this->class_tree[$c]) && ($c != e_UC_PUBLIC))
+			if (!isset($this->class_tree[$c]))
 			{
 				switch ($c)
 				{
@@ -151,16 +152,23 @@ class user_class
 	}
 
 
-	// Now build the tree
+	// Now build the tree.
+	// There are just two top-level classes - 'Everybody' and 'Nobody'
+	$this->class_parents[e_UC_PUBLIC] = e_UC_PUBLIC;
+	$this->class_parents[e_UC_NOBODY] = e_UC_NOBODY;
 	foreach ($this->class_tree as $uc)
 	{
+/*
 		if ($uc['userclass_parent'] == e_UC_PUBLIC)
 		{	// Note parent (top level) classes
 			$this->class_parents[$uc['userclass_id']] = $uc['userclass_id'];
 		}
 		else
+*/
+		if (($uc['userclass_id'] != e_UC_PUBLIC) && ($uc['userclass_id'] != e_UC_NOBODY))
 		{
-			if (!array_key_exists($uc['userclass_parent'],$this->class_tree))
+//			if (!array_key_exists($uc['userclass_parent'],$this->class_tree))
+			if (!isset($this->class_tree[$uc['userclass_parent']]))
 			{
 				echo "Orphaned class record: ID=".$uc['userclass_id']." Name=".$uc['userclass_name']."  Parent=".$uc['userclass_parent']."<br />";
 			}
@@ -526,6 +534,7 @@ class user_class
   function select($treename, $classnum, $current_value, $nest_level)
   {
 	if ($classnum == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
+//	echo "Display: {$classnum}, {$current_value}, {$nest_level}<br />";
 	$tmp = explode(',',$current_value);
     $sel = in_array($classnum,$tmp) ? " selected='selected'" : '';
     if ($nest_level == 0)
@@ -559,7 +568,6 @@ class user_class
 	}
 	else
 	{
-//	  $style = " style='text-indent:".(12*$nest_level)."px'";
 	  $style = " style='text-indent:".(1.2*$nest_level)."em'";
 	}
     return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name']."</div>\n";
@@ -1057,22 +1065,24 @@ class user_class_admin extends user_class
 
 
 
-  function show_graphical_tree($show_debug=FALSE)
-  {
-    $this->graph_debug = $show_debug;
-    $indent_images = array();
-    $ret = "<div class='uclass_tree' style='height:16px'>
-    	<img src='".UC_ICON_DIR."topicon.png' alt='class icon' style='vertical-align: bottom' />
-    	<span style='top:3px'>".UC_LAN_0."</span>
-    </div>";		// 'Everyone' link
-	$num_parents = count($this->class_parents);
-    foreach ($this->class_parents as $p)
+	function show_graphical_tree($show_debug=FALSE)
 	{
-	  $num_parents--;
-	  $ret .= $this->show_graphical_subtree($p, $indent_images, ($num_parents == 0));
+		$this->graph_debug = $show_debug;
+		$indent_images = array();
+
+		$ret = "<div class='uclass_tree' style='height:16px'>
+			<img src='".UC_ICON_DIR."topicon.png' alt='class icon' style='vertical-align: bottom' />
+			<span style='top:3px'></span>
+		</div>";		// Just a generic icon here to provide a visual anchor
+
+		$num_parents = count($this->class_parents);
+		foreach ($this->class_parents as $p)
+		{
+			$num_parents--;
+			$ret .= $this->show_graphical_subtree($p, $indent_images, ($num_parents == 0));
+		}
+		return $ret;
 	}
-	return $ret;
-  }
 
 
 
