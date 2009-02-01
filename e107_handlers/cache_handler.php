@@ -12,19 +12,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-20 10:39:23 $
+|     $Revision: 1.11 $
+|     $Date: 2009-02-01 16:18:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+define('CACHE_PREFIX','<?phpexit;');
+
 /**
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.10 $
+* @version     $Revision: 1.11 $
 * @author      $Author: e107steved $
 */
 class ecache {
@@ -103,18 +105,29 @@ class ecache {
 	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
 	* @scope public
 	*/
-	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false) {
+	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false) 
+	{
 		global $pref, $tp;
 		if(($ForcedCheck != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
 		{
 			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
-			if (file_exists($cache_file)) {
+			if (file_exists($cache_file)) 
+			{
 				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
 					unlink($cache_file);
 					return false;
-				} else {
+				} 
+				else 
+				{
 					$ret = file_get_contents($cache_file);
-					$ret = substr($ret, 5);
+					if (substr($ret,0,strlen(CACHE_PREFIX)) == CACHE_PREFIX)
+					{
+						$ret = substr($ret, strlen(CACHE_PREFIX));
+					}
+					else
+					{
+						$ret = substr($ret, 5);		// Handle the history for now
+					}
 					return $ret;
 				}
 			} else {
@@ -153,12 +166,13 @@ class ecache {
 	* @desc Creates / overwrites the cache file for $query, $text is the data to store for $query.
 	* @scope public
 	*/
-	function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false) {
+	function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false) 
+	{
 		global $pref, $FILES_DIRECTORY, $tp;
 		if(($ForceCache != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
 		{
 			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
-			file_put_contents($cache_file, ($bRaw? $Data : '<?php'.$Data) );
+			file_put_contents($cache_file, ($bRaw? $Data : CACHE_PREFIX.$Data) );
 			@chmod($cache_file, 0755); //Cache should not be world-writeable
 			@touch($cache_file);
 		}
