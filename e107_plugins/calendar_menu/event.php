@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-29 20:51:07 $
-|     $Author: lisa_ $
+|     $Revision: 1.8 $
+|     $Date: 2009-02-01 20:54:08 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -760,13 +760,13 @@ $prevlink		= mktime(0, 0, 0, $month, 1, $py);
 $ny				= $year + 1;
 $nextlink		= mktime(0, 0, 0, $month, 1, $ny);
 
-if (is_readable(THEME."calendar_template.php")) 
+if (is_readable(THEME.'calendar_template.php')) 
 {  // Has to be require
-  require(THEME."calendar_template.php");
+  require(THEME.'calendar_template.php');
 }
 else 
 {
-  require(e_PLUGIN."calendar_menu/calendar_template.php");
+  require(e_PLUGIN.'calendar_menu/calendar_template.php');
 }
 
 $text2 = "";

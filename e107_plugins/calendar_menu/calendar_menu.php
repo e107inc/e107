@@ -11,24 +11,26 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-09-04 21:09:47 $
+|     $Revision: 1.4 $
+|     $Date: 2009-02-01 20:54:08 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
-$ecal_dir	= e_PLUGIN . "calendar_menu/";
+$ecal_dir	= e_PLUGIN.'calendar_menu/';
 require_once($ecal_dir.'ecal_class.php');
 if (!isset($ecal_class) || !is_object($ecal_class)) $ecal_class = new ecal_class;
-$cache_tag = "nq_event_cal_cal";
+$cache_tag = 'nq_event_cal_cal';
+
+global $e107;
 // See if the page is already in the cache
-	if($cacheData = $e107cache->retrieve($cache_tag, $ecal_class->max_cache_time))
-	{
-		echo $cacheData;
-		return;
-	}
-include_lan($ecal_dir."languages/".e_LANGUAGE.".php");
+if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time))
+{
+	echo $cacheData;
+	return;
+}
+include_lan($ecal_dir.'languages/'.e_LANGUAGE.'.php');
 global $ecal_dir, $tp;
 if (is_readable(THEME."calendar_template.php"))
 {
@@ -199,7 +201,7 @@ $cal_text .= $CALENDAR_MENU_END;
 ob_start();					// Set up a new output buffer
 $ns->tablerender($calendar_title, $cal_text, 'calendar_menu');
 $cache_data = ob_get_flush();			// Get the page content, and display it
-$e107cache->set($cache_tag, $cache_data);	// Save to cache
+$e107->ecache->set($cache_tag, $cache_data);	// Save to cache
 unset($ev_list);
 unset($cal_text);
 ?>
