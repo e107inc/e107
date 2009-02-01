@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/next_event_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-15 22:15:30 $
+|     $Revision: 1.5 $
+|     $Date: 2009-02-01 20:54:08 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -22,22 +22,22 @@
 if (!defined('e107_INIT')) { exit; }
 
 global $ecal_dir, $tp;
-$ecal_dir	= e_PLUGIN . "calendar_menu/";
+$ecal_dir	= e_PLUGIN.'calendar_menu/';
 
-global $ecal_class;
-require_once($ecal_dir."ecal_class.php");
+global $e107, $ecal_class, $calendar_shortcodes;
+require_once($ecal_dir.'ecal_class.php');
 if (!is_object($ecal_class)) $ecal_class = new ecal_class;
 
-	$cache_tag = "nq_event_cal_next";
+$cache_tag = 'nq_event_cal_next';
 
 // See if the page is already in the cache
-	if($cacheData = $e107cache->retrieve($cache_tag, $ecal_class->max_cache_time))
-	{
-		echo $cacheData;
-		return;
-	}
+if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time))
+{
+	echo $cacheData;
+	return;
+}
 
-include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 
 // Values defined through admin pages
 $menu_title = varset($pref['eventpost_menuheading'],EC_LAN_140);
@@ -47,14 +47,14 @@ $show_recurring = varset($pref['eventpost_checkrecur'],1);			// Zero to exclude 
 $link_in_heading = varset($pref['eventpost_linkheader'],0);			// Zero for simple heading, 1 to have clickable link
 
 
-require($ecal_dir."calendar_shortcodes.php");
-if (is_readable(THEME."calendar_template.php")) 
-{  // Needs to be require in case second
-  require(THEME."calendar_template.php");
+require($ecal_dir.'calendar_shortcodes.php');
+if (is_readable(THEME.'calendar_template.php')) 
+{  // Has to be require
+	require(THEME.'calendar_template.php');
 }
 else 
 {
-  require($ecal_dir."calendar_template.php");
+	require(e_PLUGIN.'calendar_menu/calendar_template.php');
 }
 
 $start_time = $ecal_class->cal_timedate;
@@ -88,14 +88,14 @@ else
 $calendar_title = $tp->toHTML($menu_title,FALSE,'TITLE');		// Allows multi-language title, shortcodes
 if ($link_in_heading == 1)
 {
-  $calendar_title = "<a class='forumlink' href='" . e_PLUGIN . "calendar_menu/event.php' >" . $calendar_title . "</a>";
+	$calendar_title = "<a class='forumlink' href='".e_PLUGIN_ABS."calendar_menu/event.php' >".$calendar_title."</a>";
 }
 
 // Now handle the data, cache as well
 ob_start();					// Set up a new output buffer
 $ns->tablerender($calendar_title, $cal_text, 'next_event_menu');
 $cache_data = ob_get_flush();			// Get the page content, and display it
-$e107cache->set($cache_tag, $cache_data);	// Save to cache
+$e107->ecache->set($cache_tag, $cache_data);	// Save to cache
 
 unset($ev_list);	
 

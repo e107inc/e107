@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-13 19:37:52 $
+|     $Revision: 1.3 $
+|     $Date: 2009-02-01 20:54:08 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -20,38 +20,38 @@
 
 
 require_once("../../class2.php");
-if (!isset($pref['plug_installed']['calendar_menu'])) header("Location: ".e_BASE."index.php");
-require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
+if (!isset($pref['plug_installed']['calendar_menu'])) header('Location: '.e_BASE.'index.php');
+require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
 if (isset($_POST['viewallevents']))
 {
-    Header("Location: " . e_PLUGIN . "calendar_menu/event.php?" . $_POST['enter_new_val']);
+    Header("Location: " . e_PLUGIN . 'calendar_menu/event.php?' . $_POST['enter_new_val']);
 } 
 if (isset($_POST['doit']))
 {
-    Header("Location: " . e_PLUGIN . "calendar_menu/event.php?ne." . $_POST['enter_new_val']);
+    Header("Location: " . e_PLUGIN . 'calendar_menu/event.php?ne.' . $_POST['enter_new_val']);
 }
 if (isset($_POST['subs']))
 {
-    Header("Location: " . e_PLUGIN . "calendar_menu/subscribe.php");
+    Header("Location: " . e_PLUGIN . 'calendar_menu/subscribe.php');
 } 
 if (isset($_POST['printlists']))
 {
-    Header("Location: " . e_PLUGIN . "calendar_menu/ec_pf_page.php");
+    Header("Location: " . e_PLUGIN . 'calendar_menu/ec_pf_page.php');
 } 
 
-include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 define("PAGE_NAME", EC_LAN_121);
 
 require_once('ecal_class.php');
 $ecal_class = new ecal_class;
 
-if (is_readable(THEME."calendar_template.php")) 
+if (is_readable(THEME.'calendar_template.php')) 
 {
-  require(THEME."calendar_template.php");
+	require(THEME.'calendar_template.php');
 }
 else 
 {
-  require(e_PLUGIN."calendar_menu/calendar_template.php");
+	require(e_PLUGIN.'calendar_menu/calendar_template.php');
 }
 
 
@@ -63,11 +63,11 @@ require_once(HEADERF);
 $qs = explode(".", e_QUERY);
 if(varset($qs[0],'') == "")
 {	// Show current month
-  $datearray	= $ecal_class->cal_date;
+	$datearray	= $ecal_class->cal_date;
 } 
 else
 {	// Get date from query
-  $datearray	= getdate($qs[0]);
+	$datearray	= getdate($qs[0]);
 }
 
 // Note: A lot of the following variables are used within the shortcodes
@@ -79,8 +79,8 @@ $prevmonth		= $month-1;
 $prevyear		= $year;
 if ($prevmonth == 0)
 {
-  $prevmonth	= 12;
-  $prevyear	= $year-1;
+	$prevmonth	= 12;
+	$prevyear	= $year-1;
 } 
 $previous = mktime(0, 0, 0, $prevmonth, 1, $prevyear);		// Used by nav
 
@@ -88,8 +88,8 @@ $nextmonth		= $month + 1;
 $nextyear		= $year;
 if ($nextmonth == 13)
 {
-  $nextmonth	= 1;
-  $nextyear	= $year + 1;
+	$nextmonth	= 1;
+	$nextyear	= $year + 1;
 } 
 $next			= mktime(0, 0, 0, $nextmonth, 1, $nextyear);
 $py				= $year-1;									// Number of previous year for nav
