@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-11-25 17:38:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2009-02-02 17:43:00 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -48,7 +48,7 @@ if($pm_info['from_name'])
 {
 	return "";
 }
-if($pm_prefs['allow_userclass'])
+if($pm_prefs['allow_userclass'] && check_class($pm_prefs['multi_class']))
 {
 	$ret = "<input type='checkbox' name='to_userclass' value='1' />".LAN_PM_4." ";
 	require_once(e_HANDLER."userclass_class.php");

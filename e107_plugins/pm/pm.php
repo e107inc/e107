@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-11-08 17:11:44 $
+|     $Revision: 1.9 $
+|     $Date: 2009-02-02 17:42:59 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -329,7 +329,7 @@ function post_pm()
 			{
 				return LAN_PM_15;
 			}
-			elseif(!check_class($_POST['pm_userclass']) && !ADMIN)
+			elseif((!check_class($_POST['pm_userclass']) || !check_class($pm_prefs['multi_class'])) && !ADMIN)
 			{
 				return LAN_PM_16;
 			}
