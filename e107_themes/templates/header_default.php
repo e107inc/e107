@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2008-12-04 21:05:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.27 $
+|     $Date: 2009-02-03 11:59:12 $
+|     $Author: lisa_ $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -378,6 +378,7 @@ $js_body_onload = array();//'externalLinks();'; - already registered to e107:loa
 
 // Theme JS
 if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
+$body_onload='';
 if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
 
 //
@@ -445,7 +446,7 @@ if ($e107_popup != 1) {
 //
 // M: Send top of body for custom pages and for news
 //
-	$def = $pref['theme_deflayout'];
+	$def = varset($pref['theme_deflayout']);
 	if(is_array($HEADER) && isset($HEADER[$def]) && isset($FOOTER[$def]))
 	{
 		$HEADER = $HEADER[$def];

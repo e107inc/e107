@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-13 18:04:52 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-02-03 11:59:02 $
+|     $Author: lisa_ $
 |
 | *utf - flags functions which need utf-8-aware code
 TODO:
@@ -27,7 +27,7 @@ TODO:
 if (!defined('e107_INIT')) { exit; }
 if (!plugInstalled('linkwords')) exit;
 
-define('LW_CACHE_ENABLE', TRUEE);
+define('LW_CACHE_ENABLE', TRUE);
 define('LW_CACHE_TAG', 'nomd5_linkwords');
 
 class e_tohtml_linkwords
