@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.366 $
-|     $Date: 2009-01-29 21:09:43 $
+|     $Revision: 1.367 $
+|     $Date: 2009-02-03 21:16:29 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1273,8 +1273,10 @@ class e_online {
 				$row['online_pagecount'] = 1;
 			}
 
-			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) {
-				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
+			if ($row['online_pagecount'] > $online_bancount && ($row['online_ip'] != "127.0.0.1")) 
+			{
+				include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php');
+				$sql->db_Insert('banlist', "'{$ip}', '0', '".str_replace('--HITS--',$row['online_pagecount'],BANLAN_78)."' ");
 				$e_event->trigger("flood", $ip);
 				exit;
 			}
