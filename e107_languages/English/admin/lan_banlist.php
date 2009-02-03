@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_banlist.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-23 15:18:31 $
-|     $Author: secretr $
+|     $Revision: 1.9 $
+|     $Date: 2009-02-03 21:16:15 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("BANLAN_1", "Ban removed.");
@@ -85,7 +85,7 @@ define('BANLAN_74','Banlist Maintenance');
 define('BANLAN_75','Remove expired bans from list');
 define('BANLAN_76','Execute');
 define('BANLAN_77','Messages/Ban Periods');
-define('BANLAN_78','');
+define('BANLAN_78','Hit count exceeded (--HITS-- requests within allotted time)');
 define('BANLAN_79','');
 define('BANLAN_80','');
 
