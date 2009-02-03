@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.24 $
-| $Date: 2009-01-25 17:44:13 $
-| $Author: mcfly_e107 $
+| $Revision: 1.25 $
+| $Date: 2009-02-03 11:58:36 $
+| $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -95,7 +95,7 @@ class e_shortcode
 		$this->parseSCFiles = true;			// Default probably never used, but make sure its defined.
 
 		//Register any shortcode from the shortcode/override/ directory
-		if($pref['sc_override'])
+		if(varset($pref['sc_override']))
 		{
 			$tmp = explode(',', $pref['sc_override']);
 			foreach($tmp as $code)
