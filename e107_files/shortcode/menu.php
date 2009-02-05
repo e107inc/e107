@@ -1,5 +1,5 @@
 <?php
-/* $Id: menu.php,v 1.1 2009-01-08 17:23:13 mcfly_e107 Exp $ */
+/* $Id: menu.php,v 1.2 2009-02-05 11:54:59 secretr Exp $ */
 
 function menu_shortcode($parm)
 {
@@ -24,7 +24,7 @@ function menu_shortcode($parm)
 		$show_menu = TRUE;
 		if($row['menu_pages'])
 		{
-			list($listtype, $listpages) = explode('-', $row['menu_pages']);
+			list($listtype, $listpages) = explode('-', $row['menu_pages'], 2);
 			$pagelist = explode('|',$listpages);
 			$check_url = e_SELF.(e_QUERY ? '?'.e_QUERY : '');
 
