@@ -1,4 +1,4 @@
-/* $Id: menu.sc,v 1.29 2008-06-19 22:46:12 e107coders Exp $ */
+/* $Id: menu.sc,v 1.30 2009-02-05 11:49:46 secretr Exp $ */
 global $sql;
 global $ns;
 global $eMenuList;
@@ -17,7 +17,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 {
 	$show_menu = TRUE;
 	if($row['menu_pages']) {
-		list($listtype,$listpages) = explode("-",$row['menu_pages']);
+		list($listtype,$listpages) = explode("-",$row['menu_pages'], 2);
 		$pagelist = explode("|",$listpages);
 		$check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
 
@@ -26,6 +26,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 			$show_menu = FALSE;
 			foreach($pagelist as $p)
 			{
+
 				if(substr($p, -1) == '!')
 				{
 					$p = substr($p, 0, -1);
@@ -34,7 +35,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 						$show_menu = TRUE;
 					}
 				}
-				else 
+				else
 				{
 					if(strpos($check_url,$p) !== FALSE)
 					{
@@ -55,7 +56,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 						$show_menu = FALSE;
 					}
 				}
-				else 
+				else
 				{
 					if(strpos($check_url, $p) !== FALSE)
 					{
@@ -85,9 +86,9 @@ foreach($eMenuList[$tmp[0]] as $row)
 			if(is_readable(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php")) {
 				include_once(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php");
 			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php")) {
-				include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");	
+				include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");
 			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
-				include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");	
+				include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 			} elseif (is_readable(e_LANGUAGEDIR."english/plugins/lan_{$row['menu_path']}.php")) {
 				include_once(e_LANGUAGEDIR."English/plugins/lan_{$row['menu_path']}.php");
 			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English.php")) {
@@ -95,7 +96,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English/English.php")) {
 				include_once(e_PLUGIN.$row['menu_path']."/languages/English/English.php");
 			}
-			
+
 			if(file_exists(e_PLUGIN.$row['menu_path']."/".$mname.".php"))
 			{
 				include_once(e_PLUGIN.$row['menu_path']."/".$mname.".php");
@@ -103,7 +104,7 @@ foreach($eMenuList[$tmp[0]] as $row)
 		}
 		$sql->db_Mark_Time("(After ".$mname.")");
 		if ($error_handler->debug == true) {
-			echo "\n<!-- Menu End: ".$mname." -->\n";			
+			echo "\n<!-- Menu End: ".$mname." -->\n";
 		}
 	}
 }
