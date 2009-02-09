@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.31 $
-* $Date: 2009-01-25 17:44:12 $
-* $Author: mcfly_e107 $
+* $Revision: 1.32 $
+* $Date: 2009-02-09 22:23:44 $
+* $Author: e107steved $
 *
 */
 require_once('../class2.php');
@@ -74,7 +74,7 @@ require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'user_handler.php');
 include_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'validator_class.php');
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 $ue = new e107_user_extended;
 $userMethods = new UserHandler;
 $user_data = array();
