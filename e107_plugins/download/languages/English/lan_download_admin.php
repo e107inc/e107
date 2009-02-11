@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/lan_download_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-01-14 23:45:33 $
+|     $Revision: 1.5 $
+|     $Date: 2009-02-11 21:41:54 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -51,7 +51,7 @@ define("DOWLAN_40", "None - main parent");
 define("DOWLAN_41", "Icon");
 define("DOWLAN_42", "View Images");
 define("DOWLAN_43", "Visible to");
-define("DOWLAN_44", "Ticking will make the category visible to only users in that class");
+define("DOWLAN_44", "Selection will make the category visible to only users in that class");
 define("DOWLAN_45", "Create Category");
 define("DOWLAN_46", "Update Category");
 define("DOWLAN_47", "Category created");
@@ -72,7 +72,7 @@ define("DOWLAN_62", "Ascending");
 define("DOWLAN_63", "Descending");
 define("DOWLAN_64", "Update Options");
 define("DOWLAN_65", "Options Updated");
-define("DOWLAN_66", "Enter filesize");
+define("DOWLAN_66", "Filesize");
 define("DOWLAN_67", "ID");
 define("DOWLAN_68", "File Missing!");
 define("DOWLAN_69", "Downloads handled by PHP");
@@ -104,7 +104,7 @@ define("DOWLAN_123", "Active - File is subject to download limits");
 define("DOWLAN_124", "Active - File is NOT subject to download limits");
 define("DOWLAN_125", "Download limits active");
 define("DOWLAN_126", "Activation status updated");
-define("DOWLAN_127", "Only enter filesize if the download is an external file");
+define("DOWLAN_127", "Only enter filesize if the download is an external file"); // TODO not used?
 define("DOWLAN_128", "Mirrors");
 define("DOWLAN_129", "leave blank if not using mirrors");
 define("DOWLAN_130", "Add another mirror");
@@ -130,7 +130,7 @@ define("DOWLAN_146", "Custom Download-denial message or URL");
 
 define("DOWLAN_147", "Icon for empty category");
 define("DOWLAN_148", "Check to update date stamp to current time");
-define("DOWLAN_149", "Or click here to use an external file");
+define("DOWLAN_149", "URL");
 
 define("DOWLAN_150", "Email admin when broken download reported");
 define("DOWLAN_151", "Broken-download reporting available to");
@@ -152,5 +152,39 @@ define("DOWLAN_162", "ID");
 define("DOWLAN_163", "Name");
 
 define("DOWLAN_164", "Recent downloads age (in days)");
+
+define("DOWLAN_165", "Maintenance");
+define("DOWLAN_166", "Duplicates");
+define("DOWLAN_167", "Orphans");
+define("DOWLAN_168", "Missing");
+define("DOWLAN_169", "Inactive");
+define("DOWLAN_170", "File size");
+define("DOWLAN_171", "Log");
+define("DOWLAN_172", "No entries");
+define("DOWLAN_173", "Are you sure you want to delete this file?");
+define("DOWLAN_174", "No orphaned files found");
+define("DOWLAN_175", "Local");
+define("DOWLAN_176", "External");
+define("DOWLAN_177", "Maintenance options");
+define("DOWLAN_178", "No category");
+define("DOWLAN_179", "Select an option from the Maintenance Options menu");
+define("DOWLAN_180", "File size (database/disk)");
+
+define("DOWLAN_HELP_1", "Download Help");
+define("DOWLAN_HELP_2", "<p>Create/edit a download.</p><p>Enter only one of: File, URL or Mirror.</p><p>Ensure you select a category, otherwise your download will not be visible on the downloads page.</p><p>");
+define("DOWLAN_HELP_3", "Help for cat");
+define("DOWLAN_HELP_4", "Help for opt");
+define("DOWLAN_HELP_5", "Use the maintenance pages to find duplicate downloads, find orphaned files, find missing (broken) entries, manage inactive downloads, refresh file sizes and view the downlaod log.");
+define("DOWLAN_HELP_5_1", "This page shows duplicate entries in the database - records where the same file is referenced more than once.");
+define("DOWLAN_HELP_5_2", "This page shows orphan files - files in the downloads directory that do not have a record in the database referenceing them.");
+define("DOWLAN_HELP_5_3", "This page shows missing entries in the database - records that reference a non-existing file.");
+define("DOWLAN_HELP_5_4", "This page shows all records that are marked as inactive.");
+define("DOWLAN_HELP_5_5", "This page shows records in the database that are not associated with a download category.");
+define("DOWLAN_HELP_5_6", "This page shows records in the database that have an incorrect file size when comapred to the file in the downloads folder.");
+define("DOWLAN_HELP_5_7", "This page shows the downloads log entries.");
+define("DOWLAN_HELP_6", "Help for limits");
+define("DOWLAN_HELP_7", "Help for mirror");
+define("DOWLAN_HELP_8", "Help for ");
+define("DOWLAN_HELP_9", "Help for ");
 
 ?>

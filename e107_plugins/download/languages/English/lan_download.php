@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-01-11 02:59:10 $
+|     $Revision: 1.2 $
+|     $Date: 2009-02-11 21:41:54 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -64,7 +64,7 @@ define("LAN_dl_46", "click here to download");
 define("LAN_dl_47", "Post has been reported");
 define("LAN_dl_48", "Download has been reported to administrator.<br />Thank you.");
 define("LAN_dl_49", "Click here to return to download");
-define("LAN_dl_50", "Report broken download to an administrator");
+define("LAN_dl_50", "Broken download reported");
 define("LAN_dl_51", "Reporting download: ");
 define("LAN_dl_52", "Guest");
 define("LAN_dl_53", "Click to view download");
@@ -84,7 +84,7 @@ define("LAN_dl_65", "File Not Found");
 
 define("LAN_dl_66", "Select download mirror");
 
-define("LAN_dl_67", "Please select mirror to use ...");
+define("LAN_dl_67", "Select mirror ...");
 define("LAN_dl_68", "Mirror Host");
 // define("LAN_dl_69", "Download"); // duplicate
 define("LAN_dl_70", "Location");
@@ -98,6 +98,6 @@ define("LAN_dl_75", "no image available ");
 define("LAN_dl_76", "Go to page");
 define("LAN_dl_77", "Downloads");		// Intentional duplicate - some languages need it to be different. This is for number of downloads
 
-define('LAN_dl_78', 'That download has been disabled or discontinued. Please check in the --LINK--downloads</a> area for a more recent version.'); 
+define('LAN_dl_78', 'That download has been disabled or discontinued. Please check in the --LINK--downloads</a> area for a more recent version.');
 
 ?>
