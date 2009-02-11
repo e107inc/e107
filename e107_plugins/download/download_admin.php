@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-02-11 21:41:54 $
+|     $Revision: 1.8 $
+|     $Date: 2009-02-11 22:50:43 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -441,22 +441,17 @@ if ($action == 'maint')
       {
          $title = DOWLAN_166;
          //$query = 'SELECT count(download_url), download_id, download_url FROM #download where download_url <> "" group by download_url';
-         //$query = 'SELECT count(d1.download_url) AS c,d1.download_id As d1id,d2.download_id AS d2id FROM #download AS d1
-         //   JOIN #download AS d2 ON d1.download_url=d2.download_url
-         //   WHERE (d1.download_url <> "" and d1.download_url = d2.download_url)
-         //     AND d1.download_id<d2.download_id
-         //   GROUP BY d1.download_url';
-         //$res = $sql->db_Select_gen($query,true);
-         //echo mysql_error();
-         //var_dump($res);
-         //while($row = $sql->db_Fetch()) {
-         //   var_dump($row);
-         //}
+         $query = '
+            SELECT count(d1.download_url) AS c, d1.download_id AS d1id, d2.download_id AS d2id, d1.*, dc.download_category_name
+            FROM `#download` AS d1
+            JOIN `#download` AS d2 ON d1.download_url=d2.download_url
+            LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d1.download_category
+            WHERE d1.download_url <> ""
+            AND d1.download_url = d2.download_url
+            AND d1.download_id<d2.download_id
+            GROUP BY d1.download_url
+            ';
          $text = "";
-         $query = "SELECT d.*, dc.* FROM `#download` AS d
-            LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category
-            WHERE download_url<>''
-            ORDER BY download_url ASC, download_id ASC";
          $count = $sql->db_Select_gen($query);
          $foundSome = false;
          if ($count) {
@@ -489,6 +484,24 @@ if ($action == 'maint')
 				               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \' />
 				            </td>';
                $text .= '</tr>';
+               $query = "SELECT d.*, dc.* FROM `#download` AS d
+                  LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category
+                  WHERE download_url='".$row['download_url']."'
+                  AND download_id<>".$row['download_id']."
+                  ORDER BY download_id ASC";
+               $count = $sql2->db_Select_gen($query);
+               while($row = $sql2->db_Fetch()) {
+                  $text .= '<tr>';
+                  $text .= '<td>*</td>';
+                  $text .= '<td>'.$row['download_id'].'</td>';
+                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$row['download_name'].'</a></td>';
+                  $text .= '<td>'.$row['download_category_name'].'</td>';
+                  $text .= '<td>
+                              <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.duplicates">'.ADMIN_EDIT_ICON.'</a>
+				                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \' />
+				               </td>';
+                  $text .= '</tr>';
+               }
             }
          }
          if ($foundSome) {
