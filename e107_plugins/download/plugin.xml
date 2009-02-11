@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.3 2009-01-14 22:53:38 bugrain Exp $ -->
+<!-- $Id: plugin.xml,v 1.4 2009-02-11 21:41:54 bugrain Exp $ -->
 <e107Plugin name="Download" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107dev" url="http://e107.org"/>
 	<description>This plugin is a fully featured Download system</description>
@@ -17,7 +17,7 @@
 		<caption>Configure Download</caption>
 		<installDone>Your download plugin is now installed</installDone>
 	</administration>
-	<menuLink name="Download" url="download/download.php" perm='everyone'/>
+	<menuLink name="Download" url="download/download.php" perm="everyone"/>
 	<mainPrefs>
 		<pref name="download_php" value="" />
 		<pref name="download_subsub" value="1" />
