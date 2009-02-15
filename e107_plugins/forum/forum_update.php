@@ -6,11 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Message Handler
+ * Forum upgrade routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_update.php,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-27 04:35:41 $
+ * $Revision: 1.12 $
+ * $Date: 2009-02-15 17:09:39 $
  * $Author: mcfly_e107 $
  *
 */
@@ -412,21 +412,26 @@ function step6()
 	global $f;
 	$e107 = e107::getInstance();
 	$stepCaption = 'Step 6: Thread and post data';
-	$threadLimit = 5000;
+	$threadLimit = varset($_POST['threadLimit'], 1000);
 	$lastThread = varset($f->updateInfo['lastThread'], 0);
+	$maxTime = ini_get('max_execution_time');
 
 	if(!isset($_POST['move_thread_data']))
 	{
 		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$lastThread}");
-
+		$limitDropdown = createThreadLimitDropdown($count);
 		$text = "
+		<form method='post'>
 		This step will copy all of your existing forum threads and posts into the new `forum_thread` and `forum_post` tables.<br /><br />
 		Depending on your forum size and speed of server, this could take some time.  This routine will attempt to do it in steps in order to
 		reduce the possibility of data loss and server timeouts.<br />
+		<br />
+		Your current timeout appears to be set at {$maxTime} seconds.  This routine will attempt to extend this time in order to process all threads, 
+		success will depend on your server configuration.  If you get a timeout while performing this function, return to this page and select fewer threads
+		to process.
 		<br /><br />
-		It appears there are {$count} forum threads to convert, we will be doing it in steps of {$threadLimit}
+		There are {$count} forum threads to convert, we will be doing it in steps of: {$limitDropdown}
 		<br /><br />
-		<form method='post'>
 		<input class='button' type='submit' name='move_thread_data' value='Begin thread data move' />
 		</form>
 		";
@@ -475,8 +480,9 @@ function step6()
 		$count = $e107->sql->db_Count('forum_t', '(*)', "WHERE thread_parent = 0	AND thread_id > {$f->updateInfo['lastThread']}");
 		if($count)
 		{
+			$limitDropdown = createThreadLimitDropdown($count);
 			$text .= "
-			We still have {$count} threads remaining to convert.<br />
+			We still have {$count} threads remaining to convert, do them in steps of {$limitDropdown}
 			<br /><br />
 			<form method='post'>
 			<input class='button' type='submit' name='move_thread_data' value='Continue thread data move' />
@@ -1045,6 +1051,29 @@ class forumUpgrade
 
 }
 
+function createThreadLimitDropdown($count)
+{
+	$ret = "
+	<select name='threadLimit'>
+	";
+	$last = min($count, 10000);
+	if($count < 2000) {
+		$ret .= "<option value='{$count}'>{$count}</option>";
+	}
+	else
+	{
+		for($i=2000; $i<$count; $i+=2000)
+		{
+			$ret .= "<option value='{$i}'>{$i}</option>";
+		}
+		if($count < 10000)
+		{
+			$ret .= "<option value='{$count}'>{$count}</option>";
+		}
+	}
+	$ret .= '</select>';
+	return $ret;
+}
 
 
 function forum_update_adminmenu()
