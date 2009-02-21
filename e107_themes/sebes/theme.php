@@ -95,7 +95,7 @@ define("BULLET", "arrow.png");
 
 $NEWSSTYLE = "
 <div class='captiontext'><img src='".THEME_ABS."images/marrow.png' alt='' /> {NEWSTITLE}</div>
-<div class='smalltext'>{NEWSAUTHOR} on {NEWSDATE} | {NEWSCOMMENTS}{TRACKBACK}
+<div class='smalltext'>{NEWSAUTHOR}".LAN_THEME_6."{NEWSDATE} | {NEWSCOMMENTS}{TRACKBACK}
 </div>
 {NEWSBODY}
 {EXTENDED}
