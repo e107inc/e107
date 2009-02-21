@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-12-07 14:22:32 $
+|     $Revision: 1.13 $
+|     $Date: 2009-02-21 11:55:38 $
 |     $Author: e107steved $
 |
 | Work in progress - supplementary mailer plugin
@@ -778,7 +778,7 @@ function showMailouts($sub_par,$mail_id)
 	  $text .= "<a href='".e_SELF."?mailouts.resend.{$row['gen_datestamp']}'><img src='".$images_path."mail_16.png' alt='".LAN_MAILOUT_86."' title='".LAN_MAILOUT_86."' style='border:0px' /></a>";
 	}
 	$text .= "
-		<a href='".e_SELF."?mailouts.delete.{$row['gen_datestamp']}' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row['gen_ip']."]")."') \"><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' /></a>
+		<a href='".e_SELF."?mailouts.delete.{$row['gen_datestamp']}' onclick='return jsconfirm(\"".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."\")'><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' /></a>
 		</div>
 		</td>
 		</tr>
@@ -860,7 +860,7 @@ function show_mailform($foo="")
 	}
 
 	$debug = (e_MENU == "debug") ? "?[debug]" : "";
-	$text .= "<div style='".ADMIN_WIDTH." text-align:center'>
+	$text .= "<div style='".ADMIN_WIDTH."; text-align:center'>
 	<form method='post' action='".e_SELF.$debug."' id='mailout_form'>
 	<table class='fborder' style='".ADMIN_WIDTH."'  cellpadding='0' cellspacing='0'>
 	<colgroup>
