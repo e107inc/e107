@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2008-07-28 21:33:20 $
+|     $Revision: 1.65 $
+|     $Date: 2009-02-21 11:55:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -308,7 +308,7 @@ function show_mailform($foo=""){
 	}
 
 	$debug = (e_MENU == "debug") ? "?[debug]" : "";
-	$text .= "<div style='".ADMIN_WIDTH." text-align:center'>
+	$text .= "<div style='".ADMIN_WIDTH."; text-align:center'>
 	<form method='post' action='".e_SELF.$debug."' id='mailout_form'>
 	<table class='fborder' style='".ADMIN_WIDTH."'  cellpadding='0' cellspacing='0'>
 	<tr>
@@ -549,7 +549,7 @@ $text = "
 
 
 	$smtpdisp = ($pref['mailer'] != "smtp") ? "display:none;" : "";
-	$text .= "<div id='smtp' style='$smtpdisp text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
+	$text .= "<div id='smtp' style='{$smtpdisp} text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "	<tr>
 	<td style='text-align:right' >".PRFLAN_72.":&nbsp;&nbsp;</td>
 	<td style='width:50%; text-align:right' >
@@ -595,7 +595,7 @@ $text = "
 
 
 	$senddisp = ($pref['mailer'] != "sendmail") ? "display:none;" : "";
-	$text .= "<div id='sendmail' style='$senddisp text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
+	$text .= "<div id='sendmail' style='{$senddisp} text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "
 
 	<tr>
@@ -701,16 +701,16 @@ function showList()
 				$datestamp = $gen->convert_date($row2['gen_datestamp'], "short");
 
 				$text .= "<tr>
-				<td class='forumheader3' style='; text-align: center;'>".$row2['gen_id'] ."</td>
+				<td class='forumheader3' style='text-align: center;'>".$row2['gen_id'] ."</td>
 				<td class='forumheader3'>".$row2['user_name']."</td>
 				<td class='forumheader3'>".$row2['gen_ip']."</td>
 
-				<td class='forumheader3' style='; text-align: center;'>".$datestamp."</td>
+				<td class='forumheader3' style='text-align: center;'>".$datestamp."</td>
 
 				<td style='width:50px;white-space:nowrap' class='forumheader3'>
 				<div>
 				<input type='image' name='edit[{$row2['gen_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-				<input type='image' name='delete[{$row2['gen_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \" src='".e_IMAGE."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				<input type='image' name='delete[{$row2['gen_id']}]' value='del' onclick='return jsconfirm(\"".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."\")'  src='".e_IMAGE."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 				</div>
 				</td>
 				</tr>
