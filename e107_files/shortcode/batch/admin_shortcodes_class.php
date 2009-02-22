@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.3 2009-01-15 15:42:24 secretr Exp $
+* $Id: admin_shortcodes_class.php,v 1.4 2009-02-22 12:34:51 e107steved Exp $
 *
 * Admin shortcode batch - class
 */
@@ -327,12 +327,12 @@ class admin_shortcodes
 					if (e_QUERY == 'logall')
 					{
 						$text .= "<div id='adminlog'>";
-						$cnt = $sql -> db_Select('dblog', '*', "ORDER BY `dblog_datestamp` DESC", 'no_where');
+						$cnt = $sql -> db_Select('admin_log', '*', "ORDER BY `dblog_datestamp` DESC", 'no_where');
 					}
 					else
 					{
 						$text .= "<div style='display: none;' id='adminlog'>";
-						$cnt = $sql -> db_Select('dblog', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
+						$cnt = $sql -> db_Select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
 					}
 					$text .= ($cnt) ? '<ul>' : '';
 					$gen = new convert;
@@ -920,7 +920,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.3 2009-01-15 15:42:24 secretr Exp $
+		* $Id: admin_shortcodes_class.php,v 1.4 2009-02-22 12:34:51 e107steved Exp $
 		*/
 
 		if (ADMIN)
