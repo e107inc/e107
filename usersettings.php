@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-01-11 21:06:46 $
+ * $Revision: 1.34 $
+ * $Date: 2009-02-22 14:21:08 $
  * $Author: e107steved $
  *
 */
@@ -426,7 +426,17 @@ if ($dataToSave && !$promptPassword)
 	{
 		if (!check_class(varset($pref['user_audit_class'], ''))) { $user_logging_opts = array(); }
 	}
-		
+
+	$triggerData = array();
+	if (count($changedUserData))
+	{
+		$triggerData = $changedUserData;		// Create record for changed user data trigger
+		$triggerData['user_id'] = $udata['user_id'];
+		$triggerData['_CHANGED_BY_UID'] = USERID;		// May be admin changing data
+		$triggerData['_CHANGED_BY_UNAME'] = USERNAME;
+		if (!isset($triggerData['user_name'])) { $triggerData['user_name'] = $udata['user_name']; }
+	}
+
 	// Now log changes if required
 	if (count($user_logging_opts))
 	{
@@ -512,7 +522,10 @@ if ($dataToSave && !$promptPassword)
 
 
 	$e_event->trigger('postuserset', $_POST);
-
+	if (count($triggerData))
+	{
+		$e_event->trigger('userdatachanged', $triggerData);
+	}
 
 	if (e_QUERY == 'update')
 	{
