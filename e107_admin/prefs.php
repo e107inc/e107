@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-01-16 17:57:56 $
- * $Author: secretr $
+ * $Revision: 1.28 $
+ * $Date: 2009-03-02 21:55:27 $
+ * $Author: e107steved $
  *
 */
 require_once ("../class2.php");
@@ -68,7 +68,11 @@ if(isset($_POST['updateprefs']))
 		$_POST['disable_emailcheck'] = 0;
 
 	// Table of range checking values - min and max for numerics. Only do the important ones
-	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30), 'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15), 'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10));
+	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30), 
+					'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15), 
+					'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10),
+					'signup_pass_len' => array('min' => 2, 'max' => 100, 'default' => 4)
+					);
 
 	$pref['post_html'] = intval($_POST['post_html']);			// This ensures the setting is reflected in set text
 
@@ -529,7 +533,6 @@ $text .= "
 						<td class='label'>".CUSTSIG_16."</td>
 						<td class='control'>
 							".$frm->text('signup_pass_len', $pref['signup_pass_len'], 2)."
-							<div class='field-help'>".PRFLAN_78."</div>
 						</td>
 					</tr>
 					<tr>

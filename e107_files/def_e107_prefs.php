@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-01-09 17:25:50 $
-|     $Author: secretr $
+|     $Revision: 1.22 $
+|     $Date: 2009-03-02 21:55:39 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,7 +56,7 @@ City, State, Country
   'user_reg_veri' => '1',
   'user_reg_secureveri' => '1',
   'autologinpostsignup' => '0',
-  'signup_pass_len' => '',
+  'signup_pass_len' => '4',
   'signup_maxip' => '3',
   'signup_disallow_text' => '',
   'disable_emailcheck' => 0,
