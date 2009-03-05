@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-18 21:10:10 $
+|     $Revision: 1.8 $
+|     $Date: 2009-03-05 22:22:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -285,6 +285,7 @@ class newsletter
 		{
 			$newsletter_title = $tp -> toFORM($edit['newsletter_title']);
 			$newsletter_text = $tp -> toFORM($edit['newsletter_text']);
+			$newsletter_issue = $tp -> toFORM($edit['newsletter_issue']);
 		}
 
 		if(!$sql -> db_Select("newsletter", "*", "newsletter_parent='0' "))
