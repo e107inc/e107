@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/login.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-06-16 19:37:44 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2009-03-06 20:09:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,10 @@ if (!USER)
 	require_once(e_HANDLER."form_handler.php");
 	$rs = new form;
 	$text = "";
+    $allowEmailLogin = varset($pref['allowEmailLogin'],0);
+    $ulabel = array(LAN_LOGIN_1,LAN_LOGIN_28,LAN_LOGIN_29);
 
+	$LOGIN_USERNAME_LABEL = $ulabel[$allowEmailLogin];
 	$LOGIN_TABLE_LOGINMESSAGE = LOGINMESSAGE;
 	$LOGIN_TABLE_USERNAME = "<input class='tbox' type='text' name='username' id='username' size='40' maxlength='100' />";
 	$LOGIN_TABLE_PASSWORD = "<input class='tbox' type='password' name='userpass' id='userpass' size='40' maxlength='100' />";

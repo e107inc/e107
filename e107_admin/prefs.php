@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-03-02 21:55:27 $
- * $Author: e107steved $
+ * $Revision: 1.29 $
+ * $Date: 2009-03-06 20:09:08 $
+ * $Author: e107coders $
  *
 */
 require_once ("../class2.php");
@@ -63,12 +63,14 @@ if(isset($_POST['updateprefs']))
 	$_POST['siteurl'] = trim($_POST['siteurl']) ? trim($_POST['siteurl']) : SITEURL;
 	$_POST['siteurl'] = substr($_POST['siteurl'], - 1) == "/" ? $_POST['siteurl'] : $_POST['siteurl']."/";
 
-	// If email verification, email address is required!
-	if($_POST['user_reg_veri'] == 1)
+	// If email verification or Email/Password Login Method - email address is required! 
+	if($_POST['user_reg_veri'] == 1 && $_POST['allowEmailLogin'] == 1)
+	{
 		$_POST['disable_emailcheck'] = 0;
+    }
 
 	// Table of range checking values - min and max for numerics. Only do the important ones
-	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30), 
+	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30),
 					'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15), 
 					'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10),
 					'signup_pass_len' => array('min' => 2, 'max' => 100, 'default' => 4)
@@ -469,31 +471,40 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_30."</div>
 						</td>
 					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_141."</td>
-						<td class='control'>
-							".$frm->radio_switch('xup_enabled', $pref['xup_enabled'])."
-						</td>
-					</tr>
+
+
 					<tr>
 						<td class='label'>".PRFLAN_154."</td>
 						<td class='control'>
 							".$frm->select_open('user_reg_veri');
+                            $veri_list = array(PRFLAN_152,PRFLAN_31,PRFLAN_153);
 
-$veri_list[0] = PRFLAN_152;
-$veri_list[1] = PRFLAN_31;
-$veri_list[2] = PRFLAN_153;
+							foreach($veri_list as $v => $v_title)
+							{
+								$text .= $frm->option($v_title, $v, ($pref['user_reg_veri'] == $v));
+							}
 
-foreach($veri_list as $v => $v_title)
-{
-	$text .= "
-								".$frm->option($v_title, $v, ($pref['user_reg_veri'] == $v))."
-	";
-}
-
-$text .= "
+					$text .= "
 							</select>
 							<div class='field-help'>".PRFLAN_154a."</div>
+						</td>
+					</tr>
+                    <tr>
+						<td class='label'>".PRFLAN_184."</td>
+						<td class='control'>".$frm->select_open('allowEmailLogin');
+                        $login_list = array(PRFLAN_201,PRFLAN_202,PRFLAN_203);
+                        foreach($login_list as $l => $l_title)
+						{
+							$text .= $frm->option($l_title, $l, ($pref['allowEmailLogin'] == $l));
+						}
+
+					$text .= "
+							</select></td>
+					</tr>
+                	<tr>
+						<td class='label'>".PRFLAN_141."</td>
+						<td class='control'>
+							".$frm->radio_switch('xup_enabled', $pref['xup_enabled'])."
 						</td>
 					</tr>
 					<tr>
@@ -508,13 +519,7 @@ $text .= "
 							".$frm->radio_switch('disable_emailcheck', $pref['disable_emailcheck'])."
 						</td>
 					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_32."</td>
-						<td class='control'>
-							".$frm->radio_switch('anon_post', $pref['anon_post'])."
-							<div class='field-help'>".PRFLAN_33."</div>
-						</td>
-					</tr>
+
 					<tr>
 						<td class='label'>".PRFLAN_45."</td>
 						<td class='control'>
@@ -529,6 +534,14 @@ $text .= "
 							<div class='field-help'>".PRFLAN_59."</div>
 						</td>
 					</tr>
+               		<tr>
+						<td class='label'>".PRFLAN_197.": </td>
+						<td class='control'>
+							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'])."
+							<div class='smalltext field-help'>".PRFLAN_198."</div>
+						</td>
+					</tr>
+
 					<tr>
 						<td class='label'>".CUSTSIG_16."</td>
 						<td class='control'>
@@ -711,6 +724,7 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_110."</div>
 						</td>
 					</tr>
+
 					<tr>
 						<td class='label'>".PRFLAN_116.":</td>
 						<td class='control'>
@@ -854,13 +868,7 @@ $text .= "
 							".$frm->radio_switch('user_reg_secureveri', $pref['user_reg_secureveri'])."
 						</td>
 					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_197.": </td>
-						<td class='control'>
-							".$frm->radio_switch('autologinpostsignup', $pref['autologinpostsignup'])."
-							<div class='smalltext field-help'>".PRFLAN_198."</div>
-						</td>
-					</tr>
+
 					<tr>
 						<td class='label'>".PRFLAN_129.":</td>
 						<td class='control'>
@@ -868,13 +876,7 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_130."</div>
 						</td>
 					</tr>
-					<tr>
-						<td class='label'>".PRFLAN_184.":</td>
-						<td class='control'>
-							".$frm->radio_switch('allowEmailLogin', $pref['allowEmailLogin'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>".PRFLAN_185."</div>
-						</td>
-					</tr>
+
 					<tr>
 						<td class='label'>".PRFLAN_48.":</td>
 						<td class='control'>
@@ -917,6 +919,7 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_41."</div>
 						</td>
 					</tr>
+
 					<tr>
 						<td class='label'>".PRFLAN_42.":</td>
 						<td class='control'>
@@ -989,6 +992,13 @@ $text .= "
 					<col class='col-control' />
 				</colgroup>
 				<tbody>
+             		<tr>
+						<td class='label'>".PRFLAN_32."</td>
+						<td class='control'>
+							".$frm->radio_switch('anon_post', $pref['anon_post'], LAN_YES, LAN_NO)."
+							<div class='field-help'>".PRFLAN_33."</div>
+						</td>
+					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_89.": </td>
 						<td class='control'>
@@ -1019,6 +1029,7 @@ $text .= "
 							".$frm->radio_switch('comments_emoticons', $pref['comments_emoticons'], LAN_YES, LAN_NO)."
 						</td>
 					</tr>
+
 				</tbody>
 			</table>
 			".pref_submit('comments')."

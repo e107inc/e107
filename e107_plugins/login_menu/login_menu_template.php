@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-10 16:37:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2009-03-06 20:09:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,9 +72,9 @@ if (!isset($LOGIN_MENU_FORM)){
 	}
 
 	$LOGIN_MENU_FORM .= "
-            ".LOGIN_MENU_L1."<br />
+            {LM_USERNAME_LABEL}<br />
             {LM_USERNAME_INPUT}<br />
-            ".LOGIN_MENU_L2."<br />
+            {LM_PASSWORD_LABEL}<br />
             {LM_PASSWORD_INPUT}<br />
             {LM_IMAGECODE_NUMBER}{LM_IMAGECODE_BOX}
             {LM_LOGINBUTTON}

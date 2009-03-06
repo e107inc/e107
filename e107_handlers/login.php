@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-01-17 21:42:54 $
-|     $Author: e107steved $
+|     $Revision: 1.22 $
+|     $Date: 2009-03-06 20:09:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -117,9 +117,15 @@ class userlogin
 			return $this->invalidLogin($username,LOGIN_BAD_USERNAME,$fip);
 		}
 
-		$lookemail = !$forceLogin && varset($pref['allowEmailLogin'],0) && (strpos($username,'@') !== FALSE);		// See if we look up against email or user name
-		// Look up user in DB - even if email addresses allowed, still look up by user name as well - user could have specified email address for their login name
-		if ($sql->db_Select('user', '*', "`user_loginname`= '".$tp -> toDB($username)."'".($lookemail ? " OR `user_email` = '".$tp -> toDB($username)."'" : '') ) !== 1) 	// Handle duplicate emails as well
+
+        $qry[0] = "`user_loginname`= '".$tp -> toDB($username)."'";  // username only  (default)
+		$qry[1] = "`user_email` = '".$tp -> toDB($username)."'";   // email only
+		$qry[2] = (strpos($username,'@') !== FALSE ) ? "`user_loginname`= '".$tp -> toDB($username)."'  OR `user_email` = '".$tp -> toDB($username)."'" : $qry[0];  //username or email
+        	// Look up user in DB - even if email addresses allowed, still look up by user name as well - user could have specified email address for their login name
+
+        $query = (!$forceLogin && varset($pref['allowEmailLogin'],0)) ? $qry[$pref['allowEmailLogin']] : $qry[0];
+
+		if ($sql->db_Select('user', '*', $query) !== 1) 	// Handle duplicate emails as well
 		{	// Invalid user
 			return $this->invalidLogin($username,LOGIN_BAD_USER,$fip);
 		}
