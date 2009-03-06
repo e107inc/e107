@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-06-13 20:20:22 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2009-03-06 20:09:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("LAN_LOGIN_1", "User name");
@@ -36,5 +36,6 @@ define("LAN_LOGIN_24", "That username/password combination is already in use.");
 define("LAN_LOGIN_25", "Banned user attempted to login");
 define("LAN_LOGIN_26", "Login fail - reason unknown");
 define('LAN_LOGIN_27', 'User attempted to log in before responding to confirmation email');
-
+define('LAN_LOGIN_28', 'Email');
+define('LAN_LOGIN_29', 'Username or Email');
 ?>

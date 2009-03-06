@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-06-13 20:20:22 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2009-03-06 20:09:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -21,9 +21,23 @@ global $tp;
 $login_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN LM_USERNAME_INPUT
-global $pref;
-return "<input class='tbox login user' type='text' name='username' id='username' size='15' value='' maxlength='".varset($pref['loginname_maxlength'],30)."' />\n";
+	global $pref;
+	return "<input class='tbox login user' type='text' name='username' id='username' size='15' value='' maxlength='".varset($pref['loginname_maxlength'],30)."' />\n";
 SC_END
+
+SC_BEGIN LM_USERNAME_LABEL
+	if($pref['allowEmailLogin']==1)
+	{
+		return LOGIN_MENU_L49;
+	}
+
+	if($pref['allowEmailLogin']==2)
+	{
+		return LOGIN_MENU_L50;
+	}
+	return LOGIN_MENU_L1;
+SC_END
+
 
 SC_BEGIN LM_PASSWORD_INPUT
 global $pref;
@@ -31,6 +45,11 @@ $t_password = "<input class='tbox login pass' type='password' name='userpass' id
 if (!USER && isset($_SESSION['challenge']) && varset($pref['password_CHAP'],0)) $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='{$_SESSION['challenge']}' />\n\n";
 return $t_password;
 SC_END
+
+SC_BEGIN LM_PASSWORD_LABEL
+return LOGIN_MENU_L2;
+SC_END
+
 
 SC_BEGIN LM_IMAGECODE
 global $use_imagecode, $sec_img;

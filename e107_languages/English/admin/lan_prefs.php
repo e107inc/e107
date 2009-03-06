@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-01-09 17:25:50 $
-|     $Author: secretr $
+|     $Revision: 1.18 $
+|     $Date: 2009-03-06 20:09:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,14 +36,14 @@ define("PRFLAN_15", "Display render time?");
 define("PRFLAN_16", "Display sql queries?");
 define("PRFLAN_17", "Compress Site Output Using gzip");
 define("PRFLAN_19", "Signup Page Options");
-define("PRFLAN_21", "Date display options");
+define("PRFLAN_21", "Date Display options");
 define("PRFLAN_22", "Short date format");
 define("PRFLAN_23", "Long date format");
 define("PRFLAN_24", "Forum date format");
 define("PRFLAN_25", "For more information on date formats see the");
 define("PRFLAN_26", "Time offset");
 define("PRFLAN_27", "Example, if you set this to +2, all times on your site will have two hours added to them");
-define("PRFLAN_28", "User registration/posting");
+define("PRFLAN_28", "User Registration/Login");
 define("PRFLAN_29", "Activate user registration system?");
 define("PRFLAN_30", "allow users to register as members on your site");
 //define("PRFLAN_31", "Use email verification for signups?");
@@ -78,7 +78,7 @@ define("PRFLAN_78", "Leave blank to disable");
 define("PRFLAN_80", "Click here to view");
 define("PRFLAN_81", "Enable Image-code verification during login");
 define("PRFLAN_83", "example");
-define("PRFLAN_87", "Comments");
+define("PRFLAN_87", "Comments/Posting");
 define("PRFLAN_88", "Turn on nested comments");
 define("PRFLAN_89", "Display new comment icon");
 define("PRFLAN_90", "Allow posters to edit their comments");
@@ -109,7 +109,7 @@ define("PRFLAN_95", "Display plugins info:");
 define("PRFLAN_96", "Will display info on all admin pages for each plugin supporting this type of feature");
 define("PRFLAN_97", "Unique 'Plugins info' menu:");
 define("PRFLAN_98", "If disabled, each plugin will display its own info in an individual menu. If enabled all info will be displayed in one menu.");
-define("PRFLAN_101", "Text rendering");
+define("PRFLAN_101", "Text Rendering");
 define("PRFLAN_102", "Replace clickable URLs");
 define("PRFLAN_103", "If ticked, and 'Make Clickable' (above) is also ticked, posted URLs are displayed as a hyperlink using text from the textbox below. This keeps very long URLs from breaking layout.");
 define("PRFLAN_104", "URL replacement text");
@@ -192,7 +192,7 @@ define('PRFLAN_180', 'Plaintext');
 define('PRFLAN_181', 'CHAP, plaintext fallback');
 define('PRFLAN_182', 'CHAP only');
 define('PRFLAN_183', ' CHAP requires JS enabled in user\'s browser');
-define('PRFLAN_184', 'Allow login by email address');
+define('PRFLAN_184', 'User login method');
 define('PRFLAN_185', '(as well as login name)');
 define('PRFLAN_186', 'Yes');
 define('PRFLAN_187', 'No');
@@ -215,4 +215,7 @@ define('PRFLAN_196a', 'Log directory:');
 
 define("PRFLAN_199", "Show Admin Sub-links");
 define("PRFLAN_200", "If enabled, Admin slide down navigation menu (if supported by the current theme) will render sub-links when needed (e.g. News - Create news item).");
+define("PRFLAN_201", "Username and Password");
+define("PRFLAN_202", "Email and Password");
+define("PRFLAN_203", "Username/Email and Password");
 ?>

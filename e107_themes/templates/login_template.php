@@ -1,5 +1,5 @@
 <?php
-// $Id: login_template.php,v 1.5 2008-06-13 20:20:23 e107steved Exp $
+// $Id: login_template.php,v 1.6 2009-03-06 20:09:08 e107coders Exp $
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -42,12 +42,12 @@ if(!isset($LOGIN_TABLE))
   }
   
   $LOGIN_TABLE .= 
-		"<table class='fborder' style='width:60%' >\n
+		"<table class='fborder' style='width:60%;margin-right:auto;margin-left:auto' >\n
 		<tr>\n
 		  <td class='forumheader' style='text-align:center;' colspan='3'>".LAN_LOGIN_4."</td>\n
 		</tr>\n
 		<tr>\n
-		  <td class='forumheader3' style='width:40%'>".LAN_LOGIN_1."</td>\n
+		  <td class='forumheader3' style='width:40%'>{LOGIN_USERNAME_LABEL}</td>\n
 		  <td class='forumheader3' style='width:40%'>{LOGIN_TABLE_USERNAME}</td>\n
 		  <td class='forumheader3' rowspan='".($LOGIN_TABLE_SECIMG_SECIMG ? 3 : 2)."' style='width:20%; vertical-align: middle; margin-left: auto; margin-right: auto; text-align: center;'>".(file_exists(THEME."images/password.png") ? "<img src='".THEME_ABS."images/password.png' alt='' />\n" : "<img src='".e_IMAGE."packs/".$imode."/generic/password.png' alt='' />\n" )."</td>\n</tr>\n
 		  <tr>\n<td class='forumheader3'>".LAN_LOGIN_2."</td>\n<td class='forumheader3'>{LOGIN_TABLE_PASSWORD}
