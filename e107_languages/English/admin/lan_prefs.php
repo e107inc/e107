@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-03-06 20:09:08 $
+|     $Revision: 1.19 $
+|     $Date: 2009-03-08 18:48:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -111,7 +111,7 @@ define("PRFLAN_97", "Unique 'Plugins info' menu:");
 define("PRFLAN_98", "If disabled, each plugin will display its own info in an individual menu. If enabled all info will be displayed in one menu.");
 define("PRFLAN_101", "Text Rendering");
 define("PRFLAN_102", "Replace clickable URLs");
-define("PRFLAN_103", "If ticked, and 'Make Clickable' (above) is also ticked, posted URLs are displayed as a hyperlink using text from the textbox below. This keeps very long URLs from breaking layout.");
+define("PRFLAN_103", "If ticked, and 'Make Clickable' (above) is also ticked, posted URLs or Email addresses are displayed as a hyperlink using text from the textboxes below. This keeps very long URLs/Emails from breaking layout.");
 define("PRFLAN_104", "URL replacement text");
 define("PRFLAN_105", "Replacement visible text for clickable URLs. Image can be used by using &lt;img&gt; tag, with full path to image");
 define("PRFLAN_106", "Core preferences saved to database.");
@@ -134,7 +134,7 @@ define("PRFLAN_124", "Use 'classic' nextprev look");
 define("PRFLAN_125", "Turning this on will show the nextprev pages as 1 2 3 ... 21 22 23, instead of the new look with the dropdown.");
 define("PRFLAN_126", "Text to display on signup page");
 define("PRFLAN_127", "Make URLs clickable");
-define("PRFLAN_128", "Turning this on will convert posted URLs to hyperlinks");
+define("PRFLAN_128", "Turning this on will convert posted URLs or Email addresses to hyperlinks");
 define("PRFLAN_129", "Disallow multiple logins");
 define("PRFLAN_130", "Activating this will prevent more than one person logging in with the same username/password (login detail sharing)");
 define("PRFLAN_131", "Activate use of [php] bbcode");
