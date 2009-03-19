@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.99 $ 
-|     $Date: 2009-01-03 09:40:25 $
-|     $Author: e107steved $
+|     $Revision: 1.100 $
+|     $Date: 2009-03-19 22:07:02 $
+|     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,7 @@ else
 	switch ($action)
 	{
 		case 'list' :	// Category-based listing
-			if (isset($_POST['view'])) 
+			if (isset($_POST['view']))
 			{
 				$view = intval($_POST['view']);
 				$sort = varset($_POST['sort'],'DESC');
@@ -128,10 +128,14 @@ else
 			require_once(HEADERF);
 			switch ($errnum)
 			{
-				case 1 : 
-					$errmsg = LAN_dl_63;			// No permissions
+				case 1 :
+	            if (strlen($pref['download_denied']) > 0) {
+	   	         $errmsg = $tp->toHTML($pref['download_denied'],true);
+	   	      } else {
+	   	         $errmsg = LAN_dl_63;
+	   	      }
 					break;
-				case 2 : 
+				case 2 :
 					$errmsg = LAN_dl_62;			// Quota exceeded
 					break;
 				default:
@@ -206,7 +210,7 @@ switch ($action)
 		</form>";
 
 	$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
-	$dl_text = $download_cat_table_start.$download_cat_table_string.$download_cat_table_end; 
+	$dl_text = $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
 
 	ob_start();
 
@@ -214,7 +218,7 @@ switch ($action)
 	{
 	  echo $dl_text;
 	}
-	else 
+	else
 	{
 	  $ns->tablerender(LAN_dl_18, $dl_text);
 	}
@@ -254,7 +258,7 @@ if (isset($_POST['commentsubmit']))
 //====================================================
 //				LIST
 //====================================================
-if ($action == "list") 
+if ($action == "list")
 {
 	$total_downloads = $sql->db_Count("download", "(*)", "WHERE download_category = '{$id}' AND download_active > 0 AND download_visible REGEXP '".e_CLASS_REGEXP."'");
 
@@ -337,11 +341,11 @@ if ($action == "list")
 	$tdownloads = 0;
 
 	// $dl_from - first entry to show  (note - can get reset due to reuse of query, even if values overridden this time)
-	// $view - number of entries per page  
+	// $view - number of entries per page
 	// $total_downloads - total number of entries matching search criteria
 	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$dl_from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
-	while ($row = $sql->db_Fetch()) 
+	while ($row = $sql->db_Fetch())
 	{
 		extract($row);
 		$download_list_table_string .= parse_download_list_table($row);
@@ -358,11 +362,11 @@ if ($action == "list")
 
 	if ($filetotal)
 	{  // Only show list if some files in it
-		if($DOWNLOAD_LIST_TABLE_RENDERPLAIN) 
+		if($DOWNLOAD_LIST_TABLE_RENDERPLAIN)
 		{
 			echo $text;
-		} 
-			else 
+		}
+			else
 		{
 			$ns->tablerender($type, $text);
 		}
@@ -390,7 +394,7 @@ if ($action == "list")
 //====================================================
 //				VIEW
 //====================================================
-if ($action == "view") 
+if ($action == "view")
 {
 	$gen = new convert;
 
@@ -478,7 +482,7 @@ $comment_edit_query = 'comment.download.'.$id;
 //====================================================
 //				REPORT BROKEN LINKS
 //====================================================
-if ($action == "report" && check_class($pref['download_reportbroken'])) 
+if ($action == "report" && check_class($pref['download_reportbroken']))
 {
 	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0")) {
 		require_once(HEADERF);
@@ -568,7 +572,7 @@ if($action == "mirror")
 
 		// Shuffle the mirror list into a random order
 		$c = count($array) -1;		// Will always be an empty entry at the end
-		for ($i=1; $i<$c; $i++) 
+		for ($i=1; $i<$c; $i++)
 		{
 			$d = mt_rand(0, $i);
 			$tmp = $array[$i];
@@ -661,7 +665,7 @@ function parsesize($size) {
 
 
 
-function parse_download_cat_parent_table($row) 
+function parse_download_cat_parent_table($row)
 {
 	global $tp,$current_row,$DOWNLOAD_CAT_PARENT_TABLE;
 	extract($row);
@@ -672,8 +676,8 @@ function parse_download_cat_parent_table($row)
 	$DOWNLOAD_CAT_MAIN_ICON = '';
 	$DOWNLOAD_CAT_MAIN_NAME = '';
 	$DOWNLOAD_CAT_MAIN_DESCRIPTION = '';
-	
-	if (check_class($download_category_class)) 
+
+	if (check_class($download_category_class))
 	{
 		if(strstr($download_category_icon, chr(1)))
 		{
@@ -694,7 +698,7 @@ function parse_download_cat_parent_table($row)
 	    if (!$ret[FALSE]) $ret[FALSE] = $ret[TRUE];
 		return 	"<img src='".e_IMAGE."icons/{$ret[($count!=0)]}' alt='' style='float: left' />";
 	  }
-	
+
 	  function check_new_download($last_val)
 	  {
 		if(USER && ($last_val > USERLV))
@@ -714,7 +718,7 @@ function parse_download_cat_child_table($row)
 
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
 	$template = ($current_row == 1) ? $DOWNLOAD_CAT_CHILD_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_CHILD_TABLE);
-	
+
 	$DOWNLOAD_CAT_SUB_ICON = get_cat_icons($row['download_category_icon'],$row['d_count']);
 	$DOWNLOAD_CAT_SUB_NEW_ICON = check_new_download($row['d_last_subs']);
 	$dcatname=$tp->toHTML($row['download_category_name'],FALSE,"emotes_off, no_make_clickable");
@@ -743,7 +747,7 @@ function parse_download_cat_child_table($row)
 }
 
 
-function parse_download_list_table($row) 
+function parse_download_list_table($row)
 {
 // ***** $agreetext may not need to be global
 	global $download_shortcodes,$tp,$current_row,$DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
@@ -766,7 +770,7 @@ class down_cat_handler
   var $cat_tree;			// Initialised with all categories in a tree structure
   var $cat_count;			// Count visible subcats and subsubcats
   var $down_count;			// Counts total downloads
-  
+
   function down_cat_handler($nest_level = 1, $load_class = USERCLASS_LIST, $main_cat_load = '', $accum = FALSE)
   {  // Constructor - make a copy of the tree for re-use
      // $nest_level = 0 merges subsubcats with subcats. >0 creates full tree.
@@ -776,8 +780,8 @@ class down_cat_handler
 	define("SUBSUB_PREFIX","---->");		// Added in front of sub-sub categories
     $this->cat_tree = $this->down_cat_tree($nest_level,$load_class, $main_cat_load, $accum);
   }
-  
-  
+
+
 // Function returns a 'tree' of download categories, subcategories, and sub-sub-categories.
 // Returns empty array if nothing defined
 // Within the 'main category' level of the nesting, array 'subcats' has the next level's info
@@ -798,25 +802,25 @@ class down_cat_handler
 		$temp1 = " WHERE dc.download_category_class IN ({$load_cat_class}) ";
 		$temp2 = "AND d.download_visible IN ({$load_cat_class}) ";
 	  }
-	  
+
 	  $qry = "
-	  SELECT dc.*, 
+	  SELECT dc.*,
 	  dc1.download_category_parent AS d_parent1, dc1.download_category_order,
-	  SUM(d.download_filesize) AS d_size, 
+	  SUM(d.download_filesize) AS d_size,
 	  COUNT(d.download_id) AS d_count,
 	  MAX(d.download_datestamp) as d_last,
 	  SUM(d.download_requested) as d_requests
-	  FROM #download_category as dc 
-	  LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent 
-	  LEFT JOIN #download_category as dc2 ON dc2.download_category_id=dc1.download_category_parent 
+	  FROM #download_category as dc
+	  LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent
+	  LEFT JOIN #download_category as dc2 ON dc2.download_category_id=dc1.download_category_parent
 	  LEFT JOIN #download AS d on d.download_category = dc.download_category_id AND d.download_active > 0 {$temp2}
 	  {$temp1}
 	  GROUP by dc.download_category_id
 	  ORDER by dc2.download_category_order, dc1.download_category_order, dc.download_category_order";   // This puts main categories first, then sub-cats, then sub-sub cats
 
   	  if (!$sql2->db_Select_gen($qry)) return $catlist;
-	  
-	  while ($row = $sql2->db_Fetch()) 
+
+	  while ($row = $sql2->db_Fetch())
 	  {
 	    $tmp = $row['download_category_parent'];
 	    if ($tmp == '0')
@@ -835,7 +839,7 @@ class down_cat_handler
 			$this->down_count += $row['d_count'];
 		    $catlist[$tmp]['subcats'][$row['download_category_id']] = $row;
 		    $catlist[$tmp]['subcats'][$row['download_category_id']]['subsubcats'] = array();
-		    $catlist[$tmp]['subcats'][$row['download_category_id']]['d_last_subs'] = 
+		    $catlist[$tmp]['subcats'][$row['download_category_id']]['d_last_subs'] =
 					$catlist[$tmp]['subcats'][$row['download_category_id']]['d_last'];
 		  }
 		  else
@@ -869,8 +873,8 @@ class down_cat_handler
 	  return $catlist;
 	}
 
-	
-// Rest of the class isn't actually used normally, but print_tree() might help with debug	
+
+// Rest of the class isn't actually used normally, but print_tree() might help with debug
 
     function print_cat($cat, $prefix,$postfix)
 	{
@@ -882,7 +886,7 @@ class down_cat_handler
 	}
 
 	function print_tree()
-	{ 
+	{
 	  echo "<table><tr><th>ID</th><th>Parent</th><th>Name</th><th>Bytes</th><th>Files</th><th>Requests</th><th>Last Download</th><tr>";
 	  foreach ($this->cat_tree as $thiscat)
 	  {  // Main categories
@@ -901,7 +905,7 @@ class down_cat_handler
 	  echo "</table>";
 	return;
     }
-	
+
 }
 
 
