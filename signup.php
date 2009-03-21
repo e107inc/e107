@@ -9,9 +9,9 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-01-11 21:06:46 $
- * $Author: e107steved $
+ * $Revision: 1.33 $
+ * $Date: 2009-03-21 22:59:29 $
+ * $Author: e107coders $
  *
 */
 
@@ -212,15 +212,15 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 		}
 		else
 		{
-			if ($pref['user_reg_veri'] == 2)
-			{
-				$text = LAN_SIGNUP_37;
-			}
-			else
-			{
-				$text = LAN_SIGNUP_72;
-			}
+			$text = ($pref['user_reg_veri'] == 2) ? LAN_SIGNUP_37 : LAN_SIGNUP_72;  // Admin Approval / Email Approval
 		}
+
+		$caption_arr = array();
+		$caption_arr[0] = LAN_406; // Thank you!  (No Approval).
+		$caption_arr[1] = LAN_SIGNUP_98; // Confirm Email (Email Confirmation)
+		$caption_arr[2] = LAN_SIGNUP_100; // Approval Pending (Admin Approval)
+	    $caption = $caption_arr[$pref['user_reg_veri']];
+
 		$ns->tablerender(LAN_SIGNUP_73, $text);
 		require_once(FOOTERF);
 		exit;
@@ -651,20 +651,24 @@ if (isset($_POST['register']))
 			}
 			else
 			{
-				if ($pref['user_reg_veri'] == 2)
-				{
-					$text = LAN_SIGNUP_37.'<br /><br />'.$adviseLoginName;
-				}
-				else
-				{
-					$text = LAN_SIGNUP_72.'<br /><br />'.$adviseLoginName;
-				}
+				$text = ($pref['user_reg_veri'] == 2) ?  LAN_SIGNUP_37 : LAN_SIGNUP_72;
+				$text .= "<br /><br />".$adviseLoginName;
 			}
-			if ($error_message)
+
+			$caption_arr = array();
+			$caption_arr[0] = LAN_SIGNUP_73; // Thank you!  (No Approval).
+			$caption_arr[1] = LAN_SIGNUP_98; // Confirm Email (Email Confirmation)
+			$caption_arr[2] = LAN_SIGNUP_100; // Approval Pending (Admin Approval)
+
+            $caption = $caption_arr[$pref['user_reg_veri']];
+
+			if($error_message)
 			{
-				$text = "<br /><b>".$error_message."</b><br />";		// Just display error message
+				$text = "<br /><b>".$error_message."</b><br />";	// Just display the error message
+                $caption = LAN_SIGNUP_99; // Problem Detected
 			}
-			$ns->tablerender(LAN_SIGNUP_73, $text);
+
+			$ns->tablerender($caption, $text);
 			require_once(FOOTERF);
 			exit;
 		}
