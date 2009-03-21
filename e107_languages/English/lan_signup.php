@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-03-21 22:24:31 $
+|     $Revision: 1.32 $
+|     $Date: 2009-03-21 23:01:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -120,9 +120,10 @@ define("LAN_SIGNUP_57", "That login name is too long. Please choose another");
 define("LAN_SIGNUP_58", "Signup Preview");
 define("LAN_SIGNUP_59","**** If the link doesn't work, please check that part of it has not overflowed onto the next line. ****");
 
-define("LAN_SIGNUP_60", "Confirm Email");
-define("LAN_SIGNUP_61", "Problem Encountered");
-define("LAN_SIGNUP_62", "Admin Approval Pending");
+// 0.7.16
+define("LAN_SIGNUP_98", "Confirm Email");
+define("LAN_SIGNUP_99", "Problem Encountered");
+define("LAN_SIGNUP_100", "Admin Approval Pending");
 
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.126 $
-|     $Date: 2009-03-21 22:24:08 $
+|     $Revision: 1.127 $
+|     $Date: 2009-03-21 23:01:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -206,8 +206,8 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 
 		$caption_arr = array();
 		$caption_arr[0] = LAN_406; // Thank you!  (No Approval).
-		$caption_arr[1] = defined("LAN_SIGNUP_60") ? LAN_SIGNUP_60 : LAN_406; // Confirm Email (Email Confirmation)
-		$caption_arr[2] = defined("LAN_SIGNUP_62") ? LAN_SIGNUP_62 : LAN_406; // Approval Pending (Admin Approval)
+		$caption_arr[1] = defined("LAN_SIGNUP_98") ? LAN_SIGNUP_98 : LAN_406; // Confirm Email (Email Confirmation)
+		$caption_arr[2] = defined("LAN_SIGNUP_100") ? LAN_SIGNUP_100 : LAN_406; // Approval Pending (Admin Approval)
         $caption = $caption_arr[$pref['user_reg_veri']];
 
 		$ns->tablerender($caption, $text);
@@ -770,15 +770,15 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 
 			$caption_arr = array();
 			$caption_arr[0] = LAN_406; // Thank you!  (No Approval).
-			$caption_arr[1] = defined("LAN_SIGNUP_60") ? LAN_SIGNUP_60 : LAN_406; // Confirm Email (Email Confirmation)
-			$caption_arr[2] = defined("LAN_SIGNUP_62") ? LAN_SIGNUP_62 : LAN_406; // Approval Pending (Admin Approval)
+			$caption_arr[1] = defined("LAN_SIGNUP_98") ? LAN_SIGNUP_98 : LAN_406; // Confirm Email (Email Confirmation)
+			$caption_arr[2] = defined("LAN_SIGNUP_100") ? LAN_SIGNUP_100 : LAN_406; // Approval Pending (Admin Approval)
 
             $caption = $caption_arr[$pref['user_reg_veri']];
 
 			if($error_message)
 			{
 				$text = "<br /><b>".$error_message."</b><br />";	// Just display the error message
-                $caption = LAN_SIGNUP_61; // Problem Detected
+                $caption = defined("LAN_SIGNUP_99") ? LAN_SIGNUP_99 : LAN_406; // Problem Detected  // Default for backwards compat.
 			}
 
 			$ns->tablerender($caption, $text);
