@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.125 $
-|     $Date: 2008-12-25 14:13:54 $
-|     $Author: e107steved $
+|     $Revision: 1.126 $
+|     $Date: 2009-03-21 22:24:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -201,16 +201,16 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 		}
 		else
 		{
-			if ($pref['user_reg_veri'] == 2)
-			{
-				$text = LAN_SIGNUP_37;
-			}
-			else
-			{
-				$text = LAN_405;
-			}
+			$text = ($pref['user_reg_veri'] == 2) ? LAN_SIGNUP_37 : LAN_405;  // Admin Approval / Email Approval
 		}
-		$ns->tablerender(LAN_406, $text);
+
+		$caption_arr = array();
+		$caption_arr[0] = LAN_406; // Thank you!  (No Approval).
+		$caption_arr[1] = defined("LAN_SIGNUP_60") ? LAN_SIGNUP_60 : LAN_406; // Confirm Email (Email Confirmation)
+		$caption_arr[2] = defined("LAN_SIGNUP_62") ? LAN_SIGNUP_62 : LAN_406; // Approval Pending (Admin Approval)
+        $caption = $caption_arr[$pref['user_reg_veri']];
+
+		$ns->tablerender($caption, $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -765,20 +765,23 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 			}
 			else
 			{
-				if ($pref['user_reg_veri'] == 2)
-				{
-					$text = LAN_SIGNUP_37;
-				}
-				else
-				{
-					$text = LAN_405;
-				}
+				$text = ($pref['user_reg_veri'] == 2) ? LAN_SIGNUP_37 : LAN_405;  // Admin Approval / Email Approval
 			}
+
+			$caption_arr = array();
+			$caption_arr[0] = LAN_406; // Thank you!  (No Approval).
+			$caption_arr[1] = defined("LAN_SIGNUP_60") ? LAN_SIGNUP_60 : LAN_406; // Confirm Email (Email Confirmation)
+			$caption_arr[2] = defined("LAN_SIGNUP_62") ? LAN_SIGNUP_62 : LAN_406; // Approval Pending (Admin Approval)
+
+            $caption = $caption_arr[$pref['user_reg_veri']];
+
 			if($error_message)
 			{
 				$text = "<br /><b>".$error_message."</b><br />";	// Just display the error message
+                $caption = LAN_SIGNUP_61; // Problem Detected
 			}
-			$ns->tablerender(LAN_406, $text);
+
+			$ns->tablerender($caption, $text);
 			require_once(FOOTERF);
 			exit;
 		}
