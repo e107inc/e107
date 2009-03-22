@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-03-03 19:41:17 $
+|     $Revision: 1.15 $
+|     $Date: 2009-03-22 20:16:28 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -130,6 +130,12 @@ $text = "<table class='fborder' style='".USER_WIDTH."'>
 <td class='fcaption' style='width: 15%;'>".POLLAN_35."</td>
 <td class='fcaption' style='width: 30%;'>".POLLAN_36."</td>
 </tr>\n";
+
+if (!is_object($tp->e_bb)) 
+{
+	require_once(e_HANDLER.'bbcode_handler.php');
+	$tp->e_bb = new e_bbcode;
+}
 
 foreach($oldpollArray as $oldpoll)
 {
