@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_icons_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2007-03-04 16:59:25 $
+|     $Revision: 1.11 $
+|     $Date: 2009-03-22 20:25:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ define("IMAGE_report", "<img src='".img_path('report.png')."' alt='".LAN_413."' 
 	
 define("IMAGE_admin_delete", "src='".img_path('admin_delete.png')."' alt='".LAN_435."' title='".LAN_435."' style='border:0' ");
 define("IMAGE_admin_unstick", "src='".img_path('admin_unstick.png')."' alt='".LAN_398."' title='".LAN_398."' style='border:0' ");
-define("IMAGE_admin_stick", "src='".img_path('sticky_small.png')."' alt='".LAN_401."' title='".LAN_401."' style='border:0' ");
+define("IMAGE_admin_stick", "src='".img_path('admin_stick.png')."' alt='".LAN_401."' title='".LAN_401."' style='border:0' ");
 define("IMAGE_admin_lock", "src='".img_path('admin_lock.png')."' alt='".LAN_399."' title='".LAN_399."' style='border:0' ");
 define("IMAGE_admin_unlock", "src='".img_path('admin_unlock.png')."' alt='".LAN_400."' title='".LAN_400."' style='border:0' ");
 	
