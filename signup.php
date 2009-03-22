@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.128 $
-|     $Date: 2009-03-22 21:16:22 $
+|     $Revision: 1.129 $
+|     $Date: 2009-03-22 21:27:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -200,7 +200,7 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 
 		if(trim($pref['signup_text_after']))
 		{
-			$text = $tp->toHTML(str_replace($srch,$repl,$pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
+			$text = str_replace($srch,$repl,$tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs'))."<br />"; 
 		}
 		else
 		{
@@ -769,7 +769,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 
 			if(trim($pref['signup_text_after']))
 			{
-				$text = $tp->toHTML(str_replace($srch,$repl,$pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
+				$text = str_replace($srch,$repl,$tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs'))."<br />";
 			}
 			else
 			{
