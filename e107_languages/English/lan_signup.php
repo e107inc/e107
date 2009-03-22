@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2009-03-21 23:01:15 $
+|     $Revision: 1.33 $
+|     $Date: 2009-03-22 21:16:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -121,7 +121,10 @@ define("LAN_SIGNUP_58", "Signup Preview");
 define("LAN_SIGNUP_59","**** If the link doesn't work, please check that part of it has not overflowed onto the next line. ****");
 
 // 0.7.16
-define("LAN_SIGNUP_98", "Confirm Email");
+
+define("LAN_SIGNUP_72", "Thanks for signing up on [sitename]! We just sent you a confirmation email to [email]. Please click on the confirmation link in the email to complete your sign up and activate your account.");  	// LAN_405
+
+define("LAN_SIGNUP_98", "Confirm Your Email Address");
 define("LAN_SIGNUP_99", "Problem Encountered");
 define("LAN_SIGNUP_100", "Admin Approval Pending");
 

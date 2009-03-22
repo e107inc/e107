@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.127 $
-|     $Date: 2009-03-21 23:01:15 $
+|     $Revision: 1.128 $
+|     $Date: 2009-03-22 21:16:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -195,13 +195,17 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 	if(e_QUERY == "preview.aftersignup")
 	{
 		require_once(HEADERF);
+		$srch = array("[sitename]","[email]");
+		$repl = array(SITENAME,"<b>example@email.com</b>");
+
 		if(trim($pref['signup_text_after']))
 		{
-			$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
+			$text = $tp->toHTML(str_replace($srch,$repl,$pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
 		}
 		else
 		{
-			$text = ($pref['user_reg_veri'] == 2) ? LAN_SIGNUP_37 : LAN_405;  // Admin Approval / Email Approval
+            $LAN_AFTERSIGNUP = defined("LAN_SIGNUP_72") ? LAN_SIGNUP_72 : LAN_405;
+			$text = ($pref['user_reg_veri'] == 2) ? LAN_SIGNUP_37 : str_replace($srch,$repl,$LAN_AFTERSIGNUP);  // Admin Approval / Email Approval
 		}
 
 		$caption_arr = array();
@@ -759,21 +763,25 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			require_once(HEADERF);
-			if($pref['signup_text_after'])
+
+            $srch = array("[sitename]","[email]");
+			$repl = array(SITENAME,"<b>".$_POST['email']."</b>");
+
+			if(trim($pref['signup_text_after']))
 			{
-				$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
+				$text = $tp->toHTML(str_replace($srch,$repl,$pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
 			}
 			else
 			{
-				$text = ($pref['user_reg_veri'] == 2) ? LAN_SIGNUP_37 : LAN_405;  // Admin Approval / Email Approval
+	            $LAN_AFTERSIGNUP = defined("LAN_SIGNUP_72") ? LAN_SIGNUP_72 : LAN_405;
+				$text = ($pref['user_reg_veri'] == 2) ? LAN_SIGNUP_37 : str_replace($srch,$repl,$LAN_AFTERSIGNUP);  // Admin Approval / Email Approval
 			}
 
 			$caption_arr = array();
 			$caption_arr[0] = LAN_406; // Thank you!  (No Approval).
 			$caption_arr[1] = defined("LAN_SIGNUP_98") ? LAN_SIGNUP_98 : LAN_406; // Confirm Email (Email Confirmation)
 			$caption_arr[2] = defined("LAN_SIGNUP_100") ? LAN_SIGNUP_100 : LAN_406; // Approval Pending (Admin Approval)
-
-            $caption = $caption_arr[$pref['user_reg_veri']];
+	        $caption = $caption_arr[$pref['user_reg_veri']];
 
 			if($error_message)
 			{
