@@ -9,8 +9,8 @@
  * Language file - User signup
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-03-21 22:59:29 $
+ * $Revision: 1.17 $
+ * $Date: 2009-03-22 21:07:33 $
  * $Author: e107coders $
  *
 */
@@ -109,7 +109,7 @@ define('LAN_SIGNUP_68','Error: Unable to open remote XUP file');
 define('LAN_SIGNUP_69','');
 define('LAN_SIGNUP_70','');
 define('LAN_SIGNUP_71', 'You have reached the site limit for account registrations. Please login using one of your other accounts.');		// LAN_202
-define('LAN_SIGNUP_72', "This stage of registration is complete. You will receive a confirmation email containing your login details. Please follow the link in the email to complete the signup process and activate your account.");	// LAN_405
+define("LAN_SIGNUP_72", "Thanks for signing up on [sitename]! We just sent you a confirmation email to [email]. Please click on the confirmation link in the email to complete your sign up and activate your account.");  	// LAN_405
 define('LAN_SIGNUP_73', 'Thank you!');											// LAN_406
 define('LAN_SIGNUP_74', 'Your account has now been activated, please');			// LAN_401
 define('LAN_SIGNUP_75', 'Registration activated');								// LAN_402
@@ -134,8 +134,9 @@ define('LAN_SIGNUP_93', 'Signature: ');											// LAN_120
 define('LAN_SIGNUP_94', 'Avatar: ');											// LAN_121
 define('LAN_SIGNUP_95', 'Enter code visible in the image');						// LAN_410
 define('LAN_SIGNUP_96', 'Registration details for');							// LAN_404 (used in email)
-define('LAN_SIGNUP_97', 'Welcome to');											// LAN_403 (used in email)
-define("LAN_SIGNUP_98", "Confirm Email");
+define('LAN_SIGNUP_97', 'Welcome to');  										// LAN_403 (used in email)
+
+define("LAN_SIGNUP_98", "Confirm Your Email Address");
 define("LAN_SIGNUP_99", "Problem Encountered");
 define("LAN_SIGNUP_100", "Admin Approval Pending");
 

@@ -9,8 +9,8 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-03-21 22:59:29 $
+ * $Revision: 1.34 $
+ * $Date: 2009-03-22 21:07:33 $
  * $Author: e107coders $
  *
 */
@@ -206,22 +206,13 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 	if(e_QUERY == "preview.aftersignup")
 	{
 		require_once(HEADERF);
-		if(trim($pref['signup_text_after']))
-		{
-			$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
-		}
-		else
-		{
-			$text = ($pref['user_reg_veri'] == 2) ? LAN_SIGNUP_37 : LAN_SIGNUP_72;  // Admin Approval / Email Approval
-		}
 
-		$caption_arr = array();
-		$caption_arr[0] = LAN_406; // Thank you!  (No Approval).
-		$caption_arr[1] = LAN_SIGNUP_98; // Confirm Email (Email Confirmation)
-		$caption_arr[2] = LAN_SIGNUP_100; // Approval Pending (Admin Approval)
-	    $caption = $caption_arr[$pref['user_reg_veri']];
+        $allData['data']['user_email'] = "example@email.com";
+		$allData['data']['user_loginname'] = "user_loginname";
 
-		$ns->tablerender(LAN_SIGNUP_73, $text);
+	  	$after_signup = render_after_signup($error_message);
+
+		$ns->tablerender($after_signup['caption'], $after_signup['text']);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -645,30 +636,10 @@ if (isset($_POST['register']))
 			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
 
 			require_once(HEADERF);
-			if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
-			{
-				$text = $tp->toHTML(str_replace('{NEWLOGINNAME}', $allData['data']['user_loginname'], $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
-			}
-			else
-			{
-				$text = ($pref['user_reg_veri'] == 2) ?  LAN_SIGNUP_37 : LAN_SIGNUP_72;
-				$text .= "<br /><br />".$adviseLoginName;
-			}
 
-			$caption_arr = array();
-			$caption_arr[0] = LAN_SIGNUP_73; // Thank you!  (No Approval).
-			$caption_arr[1] = LAN_SIGNUP_98; // Confirm Email (Email Confirmation)
-			$caption_arr[2] = LAN_SIGNUP_100; // Approval Pending (Admin Approval)
+			$after_signup = render_after_signup($error_message);
+			$ns->tablerender($after_signup['caption'], $after_signup['text']);
 
-            $caption = $caption_arr[$pref['user_reg_veri']];
-
-			if($error_message)
-			{
-				$text = "<br /><b>".$error_message."</b><br />";	// Just display the error message
-                $caption = LAN_SIGNUP_99; // Problem Detected
-			}
-
-			$ns->tablerender($caption, $text);
 			require_once(FOOTERF);
 			exit;
 		}
@@ -891,5 +862,43 @@ function render_email($userInfo, $preview = FALSE)
 	$ret['preview'] = str_replace($path_search,$path_replace,$message);
 
 	return $ret;
+}
+
+
+function render_after_signup($error_message)
+{
+	global $pref, $allData, $adviseLoginName, $tp;
+
+	$srch = array("[sitename]","[email]","{NEWLOGINNAME}","{EMAIL}");
+	$repl = array(SITENAME,"<b>".$allData['data']['user_email']."</b>",$allData['data']['user_loginname'],$allData['data']['user_email']);
+
+	if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
+	{
+		$text = $tp->toHTML(str_replace($srch, $repl, $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
+	}
+	else
+	{
+		$text = ($pref['user_reg_veri'] == 2) ?  LAN_SIGNUP_37 : str_replace($srch,$repl, LAN_SIGNUP_72);
+		$text .= "<br /><br />".$adviseLoginName;
+	}
+
+	$caption_arr = array();
+	$caption_arr[0] = LAN_SIGNUP_73; // Thank you!  (No Approval).
+	$caption_arr[1] = LAN_SIGNUP_98; // Confirm Email (Email Confirmation)
+	$caption_arr[2] = LAN_SIGNUP_100; // Approval Pending (Admin Approval)
+
+    $caption = $caption_arr[$pref['user_reg_veri']];
+
+	if($error_message)
+	{
+		$text = "<br /><b>".$error_message."</b><br />";	// Just display the error message
+        $caption = LAN_SIGNUP_99; // Problem Detected
+	}
+
+    $ret['text'] = $text;
+    $ret['caption'] = $caption;
+	return $ret;
+
+
 }
 ?>
