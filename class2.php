@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.93 $
-* $Date: 2009-01-29 21:09:27 $
+* $Revision: 1.94 $
+* $Date: 2009-03-23 22:14:56 $
 * $Author: e107steved $
 *
 */
@@ -754,7 +754,7 @@ if (!function_exists('checkvalidtheme'))
 $sql->db_Mark_Time('Start: Misc Setup');
 
 //------------------------------------------------------------------------------------------------------------------------------------//
-if (!class_exists('e107_table'))
+if (!class_exists('e107table'))
 {
 	class e107table
 	{
