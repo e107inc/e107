@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.367 $
-|     $Date: 2009-02-03 21:16:29 $
+|     $Revision: 1.368 $
+|     $Date: 2009-03-23 22:15:39 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -666,8 +666,10 @@ if (!function_exists('checkvalidtheme'))
 $sql->db_Mark_Time('Start: Misc Setup');
 
 //------------------------------------------------------------------------------------------------------------------------------------//
-if (!class_exists('e107_table')) {
-	class e107table {
+if (!class_exists('e107table')) 
+{
+	class e107table 
+	{
 		function tablerender($caption, $text, $mode = "default", $return = false) {
 			/*
 			# Render style table
