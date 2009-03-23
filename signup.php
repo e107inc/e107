@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.129 $
-|     $Date: 2009-03-22 21:27:15 $
-|     $Author: e107coders $
+|     $Revision: 1.130 $
+|     $Date: 2009-03-23 22:13:10 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -628,6 +628,46 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 			$error = TRUE;
 		}
 	}
+
+
+	// Avatar validation (already checked if compulsory field not filled in)
+	if ((varset($pref['signup_option_image'],0) > 0) && $_POST['image'])
+	{
+		$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyway, so why allow them? (XSS Fix)
+		$avName = $tp -> toDB($_POST['image']);
+		if ($size = getimagesize($avName))
+		{
+			$avwidth = $size[0];
+			$avheight = $size[1];
+			$avmsg = "";
+	
+			$pref['im_width'] = varset($pref['im_width'], 120);
+			$pref['im_height'] = varset($pref['im_height'], 100);
+			if ($avwidth > $pref['im_width']) 
+			{
+				$avmsg .= LAN_USET_1." ({$avwidth})<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
+			}
+			if ($avheight > $pref['im_height']) 
+			{
+				$avmsg .= LAN_USET_3." ({$avheight})<br />".LAN_USET_4.": {$pref['im_height']}";
+			}
+		}
+		else
+		{
+			$avmsg = LAN_SIGNUP_60;			// Error accessing avatar
+		}
+		if ($avmsg) 
+		{
+			$_POST['image'] = "";
+			$error_message .= $avmsg;
+			$error = TRUE;
+		}
+	}
+	else
+	{
+		$_POST['image'] = "";
+	}
+
 
 	// Extended Field validation
 	$extList = $usere->user_extended_get_fieldList();
