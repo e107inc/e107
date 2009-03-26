@@ -9,9 +9,9 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.14 $
- * $Date: 2008-12-21 12:53:11 $
- * $Author: secretr $
+ * $Revision: 1.15 $
+ * $Date: 2009-03-26 21:55:37 $
+ * $Author: e107steved $
  *
 */
 
@@ -398,7 +398,8 @@ function copy_table($oldtable, $newtable, $drop = FALSE, $data = FALSE)
 	{
 		$row = $sql->db_Fetch();
 		$qry = $row[1];
-		$qry = str_replace($old, $new, $qry);
+//        $qry = str_replace($old, $new, $qry);
+		$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE `{$new}` ", $qry, 1);	// More selective search
 	}
 	$result = mysql_query($qry);
 	if(!$result)
