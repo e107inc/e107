@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2008-12-01 22:22:10 $
+|     $Revision: 1.43 $
+|     $Date: 2009-03-26 21:55:36 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -281,7 +281,8 @@ function copy_table($oldtable, $newtable, $drop = FALSE, $data = FALSE)
     {
         $row = $sql->db_Fetch();
         $qry = $row[1];
-        $qry = str_replace($old, $new, $qry);
+//        $qry = str_replace($old, $new, $qry);
+		$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE `{$new}` ", $qry, 1);	// More selective search
     }
     $result = mysql_query($qry);
     if(!$result)
