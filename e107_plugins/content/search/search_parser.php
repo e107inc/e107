@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/search/search_parser.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-09-28 19:03:00 $
+|     $Revision: 1.8 $
+|     $Date: 2009-03-26 22:18:44 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,8 @@ $results = $ps['results'];
 
 function search_content($row) 
 {
-	global $con, $sql;
+	global $con;
+	$sqlCon = new db;		// Use a separate DB to avoid interfering with main query
 	$res['link'] = e_PLUGIN."content/content.php?content.".$row['content_id'];
 	$res['pre_title'] = "";
 	$res['title'] = $row['content_heading'];
@@ -85,8 +86,8 @@ function search_content($row)
 		WHERE c.content_id = '".$row['content_id']."' ";
 	}
 	
-	$sql -> db_Select_gen($qry);
-	$cat = $sql -> db_Fetch();
+	$sqlCon -> db_Select_gen($qry);
+	$cat = $sqlCon -> db_Fetch();
 
 	$res['detail'] = LAN_SEARCH_3.$con -> convert_date($row['content_datestamp'], "long")." ".CONT_SCH_LAN_4." ".$cat['content_heading'];
 	return $res;
