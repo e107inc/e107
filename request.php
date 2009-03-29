@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/request.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-30 16:51:07 $
+|     $Revision: 1.7 $
+|     $Date: 2009-03-29 09:12:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -375,6 +375,7 @@ function send_file($file)
 	{
 		if (is_file($filename) && is_readable($filename) && connection_status() == 0) 
 		{
+			$seek = 0;
 			if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
 			{
 				$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
