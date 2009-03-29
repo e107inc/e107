@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.148 $
-|   $Date: 2008-06-15 20:20:28 $
+|   $Revision: 1.149 $
+|   $Date: 2009-03-29 21:41:15 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 
@@ -492,8 +492,8 @@ class newspost
 		<td style='width:80%;margin-left:auto' class='forumheader3'>";
 
 		$insertjs = (!e_WYSIWYG) ? "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' ";
-		$_POST['data'] = $tp->toForm($_POST['data']);
-		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:100%' $insertjs>".(strstr($tp->post_toForm($_POST['data']), "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['data'])))."</textarea>
+//		$_POST['data'] = $tp->toForm($_POST['data']);
+		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:100%' $insertjs>".(strstr($tp->post_toForm($_POST['data']), "[img]http") ? $tp->post_toForm($_POST['data']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['data'])))."</textarea>
 		";
         $text .= display_help("helpb", 'news');
 
@@ -745,7 +745,8 @@ class newspost
 	}
 
 
-	function preview_item($id) {
+	function preview_item($id) 
+	{
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
 		global $tp, $sql, $ix, $IMAGES_DIRECTORY;
 
@@ -793,14 +794,18 @@ class newspost
 		$_PR = $_POST;
 
 
-		$_PR['news_body'] = $tp->post_toHTML($_PR['data'],FALSE);
+/*		$_PR['news_body'] = $tp->post_toHTML($_PR['data'],FALSE);
 		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title'],FALSE,"emotes_off, no_make_clickable");
 		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
-		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);
+		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);  */
+		$_PR['news_body'] = $tp->toDB($_PR['data']);
+		$_PR['news_title'] = $tp->toDB($_PR['news_title']);
+		$_PR['news_summary'] = $tp->toDB($_PR['news_summary']);
+		$_PR['news_extended'] = $tp->toDB($_PR['news_extended']);
 		$_PR['news_file'] = $_POST['news_file'];
 		$_PR['news_image'] = $_POST['news_image'];
 
-		$ix -> render_newsitem($_PR);
+		$ix->render_newsitem($_PR);
 		echo $tp -> parseTemplate('{NEWSINFO}', FALSE, $news_shortcodes);
 	}
 

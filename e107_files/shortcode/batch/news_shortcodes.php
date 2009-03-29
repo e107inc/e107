@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2008-12-01 21:04:01 $
+|     $Revision: 1.40 $
+|     $Date: 2009-03-29 21:41:15 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -33,7 +33,8 @@ global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
-if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != "noextend") {
+if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != "noextend") 
+{
     $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
     $news_body .= "<br /><br />".$news_extended;
 }
@@ -143,7 +144,9 @@ else
 {
 	$NEWIMAGE = $param['image_nonew_small'];
 }
-return ($news_item['news_allow_comments'] ? $param['commentoffstring'] : ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>');
+return ($news_item['news_allow_comments'] ? $param['commentoffstring'] 
+:
+ ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>');
 SC_END
 
 SC_BEGIN NEWSCOMMENTLINK
@@ -199,21 +202,30 @@ if (ADMIN && getperms("H")) {
 SC_END
 
 SC_BEGIN EXTENDED
+global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-if ($news_item['news_extended'] && (strpos(e_QUERY, 'extend') === FALSE || $parm == "force")) {
-	if (defined("PRE_EXTENDEDSTRING")) {
+if ($news_item['news_extended'] && (strpos(e_QUERY, 'extend') === FALSE || $parm == "force")) 
+{
+	if (defined("PRE_EXTENDEDSTRING")) 
+	{
 		$es1 = PRE_EXTENDEDSTRING;
 	}
-	if (defined("POST_EXTENDEDSTRING")) {
+	if (defined("POST_EXTENDEDSTRING")) 
+	{
 		$es2 = POST_EXTENDEDSTRING;
 	}
-	if (isset($_POST['preview'])) {
-		return $es1.EXTENDEDSTRING.$es2."<br />".$news_item['news_extended'];
-	} else {
+	if (isset($_POST['preview'])) 
+	{
+		return $es1.EXTENDEDSTRING.$es2."<br />".$tp->toHTML($news_item['news_extended'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
+	} 
+	else 
+	{
 		return $es1."<a class='".$GLOBALS['NEWS_CSSMODE']."_extendstring' href='".e_HTTP."news.php?extend.".$news_item['news_id']."'>".EXTENDEDSTRING."</a>".$es2;
 	}
-} else {
+} 
+else 
+{
 	return "";
 }
 SC_END
