@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-01-26 08:19:44 $
- * $Author: e107coders $
+ * $Revision: 1.32 $
+ * $Date: 2009-03-29 21:40:36 $
+ * $Author: e107steved $
 */
 require_once("../class2.php");
 
@@ -850,7 +850,7 @@ class admin_newspost
 								<td class='label'>".NWSLAN_13.":<br /></td>
 								<td class='control'>";
 
-		$val = (strstr($e107->tp->post_toForm($_POST['data']), "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $e107->tp->post_toForm($_POST['data'])));
+		$val = (strstr($e107->tp->post_toForm($_POST['data']), "[img]http") ? $e107->tp->post_toForm($_POST['data']) : str_replace("[img]../", "[img]", $e107->tp->post_toForm($_POST['data'])));
         $text .= $frm->bbarea('data', $val, 'news', 'helpb');
 
 		// Extended news form textarea
