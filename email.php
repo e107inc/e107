@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/email.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-01-22 01:58:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2009-04-16 10:19:50 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -123,12 +123,11 @@ if (isset($_POST['emailsubmit']))
 
 		$emailurl = $_POST['referer'];
 		$message = '';
-		if($sql->db_Select('news', 'news_title, news_body, news_extended', 'news_id='(int)$parms))
+		if($sql->db_Select('news', 'news_title, news_body, news_extended', 'news_id='.((int)$parms)))
 		{
 			$row = $sql->db_Fetch();
 			$message = "<h3 class='email_heading'>".$row['news_title']."</h3><br />".$row['news_body']."<br />".$row['news_extended']."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
 			$message = $tp->toEmail($message);
-
 		}
 
 		if($message == "")
