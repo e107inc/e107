@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2009-04-07 10:13:00 $
+|     $Revision: 1.29 $
+|     $Date: 2009-04-16 10:09:32 $
 |     $Author: secretr $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -84,10 +84,9 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 //
 // C: Send start of HTML
 //
-$tmp = defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "");
 echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 <head>
-<title>".$tmp.SITENAME."</title>\n\n";
+<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
 
 // Wysiwyg JS support on or off.
