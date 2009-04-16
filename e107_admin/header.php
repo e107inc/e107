@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.29 $
-|   $Date: 2009-01-12 12:05:55 $
+|   $Revision: 1.30 $
+|   $Date: 2009-04-16 10:07:13 $
 |   $Author: secretr $
 +---------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ if (!defined('ADMIN_DELETE_ICON'))
 
 echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 	<head>
-	<title>".SITENAME." : ".LAN_head_4."</title>\n";
+	<title>".SITENAME." : ".LAN_head_4.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 
 //
 // D: Send JS
