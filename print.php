@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/print.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-01-22 01:58:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2009-04-16 10:02:03 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -31,7 +31,6 @@ if ($qs[0] == "") {
 $source = $qs[0];
 $parms = varset($qs[1],'');
 unset($qs);
-
 
 if(strpos($source,'plugin:') !== FALSE)
 {
@@ -101,12 +100,20 @@ if(defined("TEXTDIRECTION") && TEXTDIRECTION == "rtl"){
 // Header down here to give us a chance to set a page title
 require_once(HEADERF);
 
-echo "
-<div style='background-color:white'>
-<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
-<div style='text-align:".$align."'>".$print_text."</div><br /><br />
-<form action=''><div style='text-align:center'><input type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
-
+//temporary solution - object of future cahges
+if(is_readable(THEME.'print_template.php'))
+{
+	include_once(THEME.'print_template.php');
+	echo $tp->parseTemplate($PRINT_TEMPLATE);
+}
+else 
+{
+	echo "
+		<div style='background-color:white'>
+		<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
+		<div style='text-align:".$align."'>".$print_text."</div><br /><br />
+		<form action=''><div style='text-align:center'><input type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
+}
 require_once(FOOTERF);
 
 ?>
