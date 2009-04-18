@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-11-11 23:45:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2009-04-18 20:42:32 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -110,7 +110,7 @@ function forum_delete_thread($thread_id)
 			// delete the post itself
 			$sql->db_Delete("forum_t", "thread_id=".$thread_id);
 			// update thread/reply counts
-			$sql->db_Update("forum", "forum_threads = CAST(GREATEST(CAST(forum_threads AS SIGNED) - 1, 0) AS UNSIGNED), forum_threads = CAST(GREATEST(CAST(forum_replies AS SIGNED) - {$count}, 0) AS UNSIGNED) WHERE forum_id=".$row['thread_forum_id']);
+			$sql->db_Update("forum", "forum_threads = CAST(GREATEST(CAST(forum_threads AS SIGNED) - 1, 0) AS UNSIGNED), forum_replies = CAST(GREATEST(CAST(forum_replies AS SIGNED) - {$count}, 0) AS UNSIGNED) WHERE forum_id=".$row['thread_forum_id']);
 
 			// update lastpost info
 			$f->update_lastpost('forum', $row['thread_forum_id']);
