@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-04-16 20:50:49 $
+|     $Revision: 1.20 $
+|     $Date: 2009-04-19 20:54:19 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -32,45 +32,30 @@ $id		= intval($tmp[1]);
 $editid	= intval($tmp[2]);
 $type	= $cobj -> getCommentType($table);
 
-if (isset($_POST['moderate'])) 
-{
-	if (isset($_POST['comment_comment'])) 
-	{
-		$sql->db_Update('comments', "comment_comment='".$tp -> todb($_POST['comment_comment'])."' WHERE comment_id=".$editid);
-		header("location: ".e_ADMIN."modcomment.php?{$table}.{$id}"); 
-		exit;
+if (isset($_POST['moderate'])) {
+	if (isset($_POST['comment_comment'])) {
+		$sql->db_Update("comments", "comment_comment='".$tp -> todb($_POST['comment_comment'])."' WHERE comment_id='$editid' ");
+		header("location: ".e_ADMIN."modcomment.php?{$table}.{$id}"); exit;
 	}
-
-	if (isset($_POST['comment_lock']) && $_POST['comment_lock'] == "1" && $_POST['comment_lock'] != $_POST['current_lock']) 
-	{
-		$sql->db_Update('comments', "comment_lock='1' WHERE `comment_item_id`=".$id." AND `comment_type`='".$tp -> toDB($type, true)."' ");
+	if (isset($_POST['comment_lock']) && $_POST['comment_lock'] == "1" && $_POST['comment_lock'] != $_POST['current_lock']) {
+		$sql->db_Update("comments", "comment_lock='1' WHERE comment_item_id='$id' ");
 	}
-
-	if ((!isset($_POST['comment_lock']) || $_POST['comment_lock'] == "0") && $_POST['comment_lock'] != $_POST['current_lock']) 
-	{
-		$sql->db_Update('comments', "comment_lock='0' WHERE `comment_item_id`=".$id." AND `comment_type`='".$tp -> toDB($type, true)."' ");
+	if ((!isset($_POST['comment_lock']) || $_POST['comment_lock'] == "0") && $_POST['comment_lock'] != $_POST['current_lock']) {
+		$sql->db_Update("comments", "comment_lock='0' WHERE comment_item_id='$id' ");
 	}
-
-	if (is_array($_POST['comment_blocked'])) 
-	{
-		while (list ($key, $cid) = each ($_POST['comment_blocked'])) 
-		{
-			$sql->db_Update('comments', "comment_blocked='1' WHERE `comment_id`=".$cid);
+	if (is_array($_POST['comment_blocked'])) {
+		while (list ($key, $cid) = each ($_POST['comment_blocked'])) {
+			$sql->db_Update("comments", "comment_blocked='1' WHERE comment_id='$cid' ");
 		}
 	}
-	if (is_array($_POST['comment_unblocked'])) 
-	{
-		while (list ($key, $cid) = each ($_POST['comment_unblocked'])) 
-		{
-			$sql->db_Update('comments', "comment_blocked='0' WHERE `comment_id`=".$cid);
+	if (is_array($_POST['comment_unblocked'])) {
+		while (list ($key, $cid) = each ($_POST['comment_unblocked'])) {
+			$sql->db_Update("comments", "comment_blocked='0' WHERE comment_id='$cid' ");
 		}
 	}
-	if (is_array($_POST['comment_delete'])) 
-	{
-		while (list ($key, $cid) = each ($_POST['comment_delete'])) 
-		{
-			if ($sql->db_Select('comments', "*", "comment_id='$cid' ")) 
-			{
+	if (is_array($_POST['comment_delete'])) {
+		while (list ($key, $cid) = each ($_POST['comment_delete'])) {
+			if ($sql->db_Select("comments", "*", "comment_id='$cid' ")) {
 				$row = $sql->db_Fetch();
 				delete_children($row, $cid);
 			}
@@ -172,24 +157,32 @@ $ns->tablerender(MDCLAN_8, $text);
 
 require_once("footer.php");
 
-function delete_children($row, $cid) {
+
+
+function delete_children($row, $cid) 
+{
 	global $sql, $sql2, $table;
 
 	$tmp = explode(".", $row['comment_author']);
-	$u_id = $tmp[0];
-	if ($u_id >= 1) {
-		$sql->db_Update("user", "user_comments=user_comments-1 WHERE user_id='$u_id'");
+	$u_id = intval($tmp[0]);
+	if ($u_id >= 1) 
+	{
+		$sql->db_Update("user", "user_comments=user_comments-1 WHERE user_id=".$u_id);
 	}
-	if($table == "news"){
+	if (($table == "news") || ($table == '0'))
+	{
 		$sql->db_Update("news", "news_comment_total=news_comment_total-1 WHERE news_id='".$row['comment_item_id']."'");
 	}
-	if ($sql2->db_Select("comments", "*", "comment_pid='".$row['comment_id']."'")) {
-		while ($row2 = $sql2->db_Fetch()) {
+	if ($sql2->db_Select("comments", "*", "comment_pid='".$row['comment_id']."'")) 
+	{
+		while ($row2 = $sql2->db_Fetch()) 
+		{
 			delete_children($row2, $row2['comment_id']);
 		}
 	}
 	$c_del[] = $cid;
-	while (list ($key, $cid) = each ($c_del)) {
+	while (list ($key, $cid) = each ($c_del)) 
+	{
 		$sql->db_Delete("comments", "comment_id='$cid'");
 	}
 }

@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.149 $
-|   $Date: 2009-03-29 21:41:15 $
+|   $Revision: 1.150 $
+|   $Date: 2009-04-19 20:54:19 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 
@@ -59,13 +59,13 @@ $ix = new news;
 
 if (e_QUERY) 
 {
-  $tmp = explode(".", e_QUERY);
-  $action = $tmp[0];
-  $sub_action = varset($tmp[1],'');
-  $id = intval(varset($tmp[2],0));
-  $sort_order = varset($tmp[2],'desc');
-  $from = intval(varset($tmp[3],0));
-  unset($tmp);
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0];
+	$sub_action = varset($tmp[1],'');
+	$id = intval(varset($tmp[2],0));
+	$sort_order = varset($tmp[2],'desc');
+	$from = intval(varset($tmp[3],0));
+	unset($tmp);
 }
 
 $from = ($from ? $from : 0);
@@ -77,6 +77,28 @@ if(isset($_POST['news_userclass']))
 {
 	$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
 }
+
+
+
+if (isset($_POST['news_comments_recalc']))
+{
+$qry = "SELECT 
+		COUNT(`comment_id`) AS c_count,
+		`comment_item_id`
+		FROM `#comments`
+		WHERE (`comment_type`='0') OR (`comment_type`='news')
+		GROUP BY `comment_item_id`";
+		
+	if ($sql->db_Select_gen($qry))
+	{
+		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+		{
+			$sql2->db_Update('news', 'news_comment_total = '.$row['c_count'].' WHERE news_id='.$row['comment_item_id']);
+		}
+	}
+	$newspost->show_message(LAN_NEWS_53);
+}
+
 
 
 if(isset($_POST['delete']))
@@ -266,6 +288,13 @@ if ($action == "cat")
 
 
 
+if ($action == 'maint') 
+{
+	$newspost->show_maintenance($sub_action, $id);
+}
+
+
+
 if ($action == "sn") 
 {
 	$newspost->submitted_news($sub_action, $id);
@@ -378,7 +407,8 @@ class newspost
 	}
 
 
-	function show_options($action) {
+	function show_options($action) 
+	{
 		global $sql;
 
 		if ($action == "") {
@@ -397,10 +427,17 @@ class newspost
 		$var['pref']['text'] = NWSLAN_90;
 		$var['pref']['link'] = e_SELF."?pref";
 		$var['pref']['perm'] = "N";
-		if ($sql->db_Select("submitnews", "*", "submitnews_auth ='0' ")) {
+		if ($sql->db_Select("submitnews", "*", "submitnews_auth ='0' ")) 
+		{
 			$var['sn']['text'] = NWSLAN_47;
 			$var['sn']['link'] = e_SELF."?sn";
 			$var['sn']['perm'] = "N";
+		}
+		if (getperms('0'))
+		{
+		$var['maint']['text'] = LAN_NEWS_50;
+		$var['maint']['link'] = e_SELF."?maint";
+		$var['maint']['perm'] = "N";
 		}
 
 		show_admin_menu(NWSLAN_48, $action, $var);
@@ -872,6 +909,7 @@ class newspost
 		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 	}
 
+
 	function show_categories($sub_action, $id) {
 		global $sql, $rs, $ns, $tp;
 		$handle = opendir(e_IMAGE."icons");
@@ -961,7 +999,10 @@ class newspost
 		$ns->tablerender(NWSLAN_51, $text);
 	}
 
-	function show_news_prefs() {
+
+
+	function show_news_prefs() 
+	{
 		global $sql, $rs, $ns, $pref;
 
 		$text = "<div style='text-align:center'>
@@ -1099,6 +1140,27 @@ class newspost
 
 
 
+	function show_maintenance() 
+	{
+		global $sql, $rs, $ns, $pref;
+
+		$text = "<div style='text-align:center'>
+		".$rs->form_open("post", e_SELF."?maint", "dataform")."
+		<table class='fborder' style='".ADMIN_WIDTH."'>
+
+		<tr><td class='forumheader3'>".LAN_NEWS_51."</td><td style='text-align:center' class='forumheader3'>";
+		$text .= "<input class='button' type='submit' name='news_comments_recalc' value='".LAN_NEWS_52."' /></td></tr>";
+
+		$text .= "</table>
+		".$rs->form_close()."
+		</div>";
+
+		$ns->tablerender(LAN_NEWS_54, $text);
+	}
+
+
+
+
 	function submitted_news($sub_action, $id) 
 	{
 		global $rs, $ns, $tp;
@@ -1143,7 +1205,8 @@ class newspost
 
 }
 
-function newspost_adminmenu() {
+function newspost_adminmenu() 
+{
 	global $newspost;
 	global $action;
 	$newspost->show_options($action);
