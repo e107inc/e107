@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-30 13:51:41 $
+ * $Revision: 1.12 $
+ * $Date: 2009-04-20 15:07:00 $
  * $Author: secretr $
  *
 */
@@ -189,9 +189,9 @@ class eMessage
 		if($reset) $this->reset(false);
 		if(true === $raw || empty($ret)) return ($raw ? $ret : '');
 
-		//XXX keep it id (once per page) instead class for now, ask for feedback
+		//changed to class
 		return "
-			<div id='s-message'>
+			<div class='s-message'>
 				".implode("\n", $ret)."
 			</div>
 		";
@@ -211,12 +211,12 @@ class eMessage
 		if (empty($message)) return '';
 		elseif (is_array($message))
 		{
-			$message = "<div class='message-item'>".implode("</div>\n<div class='message-item'>", $message)."</div>";
+			$message = "<div class='s-message-item'>".implode("</div>\n<div class='s-message-item'>", $message)."</div>";
 		}
 		return "
 			<div class='{$type}'>
-				<div class='message-title'>".eMessage::getTitle($type)."</div>
-				<div class='message-body'>
+				<div class='s-message-title'>".eMessage::getTitle($type)."</div>
+				<div class='s-message-body'>
 					{$message}
 				</div>
 			</div>
