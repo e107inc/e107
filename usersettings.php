@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2008-12-29 22:56:39 $
+|     $Revision: 1.109 $
+|     $Date: 2009-04-21 20:16:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -359,17 +359,17 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 
 
     // Validate Extended User Fields.
+	$ue_fields = "";
 	if($_POST['ue'])
 	{
-	  if($sql->db_Select('user_extended_struct'))
-	  {
-		while($row = $sql->db_Fetch())
+		if($sql->db_Select('user_extended_struct'))
 		{
-		  $extList["user_".$row['user_extended_struct_name']] = $row;
+			while($row = $sql->db_Fetch())
+			{
+			  $extList["user_".$row['user_extended_struct_name']] = $row;
+			}
 		}
-	  }
 
-		$ue_fields = "";
 		foreach($_POST['ue'] as $key => $val)
 		{
 			if (isset($extList[$key]))
@@ -390,6 +390,14 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 					$ue_fields .= ($ue_fields) ? ", " : "";
 					$ue_fields .= $key."='".$val."'";
 				}
+			}
+		}
+
+		foreach (array_keys($_POST['hide']) as $key)
+		{
+			if (!isset($extList[$key]))
+			{
+				unset($_POST['hide'][$key]);
 			}
 		}
     }
