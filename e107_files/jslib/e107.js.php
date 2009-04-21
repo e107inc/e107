@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-01-27 14:58:51 $
+ * $Revision: 1.29 $
+ * $Date: 2009-04-21 14:51:32 $
  * $Author: secretr $
  *
 */
@@ -93,6 +93,9 @@ var e107Registry = {
     //System Path
     Path: {
         e_IMAGE:    '<?php echo e_IMAGE_ABS; ?>',
+        SITEURL:    '<?php echo SITEURL; ?>',
+        SITEURLBASE:    '<?php echo SITEURLBASE; ?>',
+        e_HTTP:    '<?php echo e_HTTP; ?>',
         e_IMAGE_PACK:    '<?php echo e_IMAGE_ABS; ?>',
         e_PLUGIN:   '<?php echo e_PLUGIN_ABS; ?>',
         e_FILE:     '<?php echo e_FILE_ABS; ?>',
