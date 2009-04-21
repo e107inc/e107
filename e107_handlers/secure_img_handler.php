@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/secure_img_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-11-05 20:12:28 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-04-21 08:22:21 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -59,7 +59,7 @@ class secure_image {
 		if ($sql->db_Select("tmp", "tmp_info", "tmp_ip = '".$tp -> toDB($rec_num)."'")) {
 			$row = $sql->db_Fetch();
 			$sql->db_Delete("tmp", "tmp_ip = '".$tp -> toDB($rec_num)."'");
-			list($code, $path) = explode(",", $row[0]);
+			list($code, $path) = explode(",", $row['tmp_info']);
 			return ($checkstr == $code);
 		}
 		return FALSE;
@@ -68,7 +68,7 @@ class secure_image {
 	function r_image() {
 		global $HANDLERS_DIRECTORY;
 		$code = $this->create_code();
-		return "<img src='".e_BASE.$HANDLERS_DIRECTORY."secure_img_render.php?{$code}' alt='' />";
+		return "<img src='".e_HTTP.$HANDLERS_DIRECTORY."secure_img_render.php?{$code}' class='icon secure-image' alt='' />";
 	}
 }
 ?>
