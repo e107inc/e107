@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-04-21 14:51:32 $
+ * $Revision: 1.30 $
+ * $Date: 2009-04-22 17:34:47 $
  * $Author: secretr $
  *
 */
@@ -123,7 +123,7 @@ var e107Registry = {
 								'<p id="loading-mask-loader" class="loader">' +
 									'<img src="#{e_IMAGE_PACK}generic/loading_32.gif" alt="#{JSLAN_CORE_LOADING_ALT}" />' +
 									'<br /> <span class="loading-text">#{JSLAN_CORE_LOADING_TEXT}</span>' +
-								'<p>' +
+								'</p>' +
 							'</div>'
     	}
     },
