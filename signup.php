@@ -9,9 +9,9 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-03-22 21:07:33 $
- * $Author: e107coders $
+ * $Revision: 1.35 $
+ * $Date: 2009-04-23 19:13:18 $
+ * $Author: e107steved $
  *
 */
 
@@ -484,7 +484,7 @@ if (isset($_POST['register']))
 		$eufVals = array();
 		if (isset($_POST['ue']))
 		{
-			$eufVals = $usere->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],array()));		// Validate the extended user fields
+			$eufVals = $usere->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],array()), TRUE);		// Validate the extended user fields
 		}
 
 
