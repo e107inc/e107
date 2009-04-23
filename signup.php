@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.130 $
-|     $Date: 2009-03-23 22:13:10 $
+|     $Revision: 1.131 $
+|     $Date: 2009-04-23 19:12:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -676,9 +676,9 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	foreach($extList as $ext)
 	{
 		$eufName = 'user_'.$ext['user_extended_struct_name'];
-		if(isset($_POST['ue'][$eufName]))
+		if(isset($_POST['ue'][$eufName]) || ($ext['user_extended_struct_required'] == 1))
 		{
-			$newval = trim($_POST['ue'][$eufName]);
+			$newval = trim(varset($_POST['ue'][$eufName],''));
 //			echo "Vetting field ".'user_'.$ext['user_extended_struct_name'].": {$newval} = ".trim($_POST['ue']['user_'.$ext['user_extended_struct_name']])."<br />";
 			if($ext['user_extended_struct_required'] == 1 && (($newval == "") || (($ext['user_extended_struct_type'] == 7) && ($newval == '0000-00-00')) ))
 			{	// Required field not present
