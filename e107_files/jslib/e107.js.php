@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-04-22 17:34:47 $
+ * $Revision: 1.31 $
+ * $Date: 2009-04-23 10:16:35 $
  * $Author: secretr $
  *
 */
@@ -1262,6 +1262,14 @@ e107Utils.IframeShim = Class.create({
 ('Loading')				   .addModLan('core-loading', 'alt');
 ('Loading, please wait...').addModLan('core-loading', 'text');
 
+/**
+ * Global Prefs
+ */
+e107Base.setPrefs('core-loading', {
+	opacity: 0.8
+	//TODO - more to come!
+});
+
 e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 
 	initialize: function(dest_element, options) {
@@ -1272,8 +1280,7 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 		this.loading_mask = $('loading-mask');
 		this.iframeShim = this.getModCache(this.cacheStr + '-iframe');
 		this.destElement = ($(dest_element) || $$('body')[0]);
-		
-		//this.addModLan('loading_text', 'Loading, please wait...').addModLan('loading_alt', 'Loading');
+
 		this.re_center = this.recenter.bindAsEventListener(this);
 
 		this.create();
@@ -1308,9 +1315,8 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 			objBody.insert({
 				bottom: this.loading_mask
 			});
-			this.loading_mask.setStyle( { 'opacity': 0.8, zIndex: 9000 } );
 		}
-		
+		this.loading_mask.setStyle( { 'opacity': this.options.opacity, zIndex: 9000 } );
 		this.loading_mask_loader = this.loading_mask.down('#loading-mask-loader');
 		this.loading_mask_loader.setStyle( { /*'position': 'fixed', */zIndex: 9100 } );
 		//Create iframeShim if required
