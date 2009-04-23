@@ -1,7 +1,7 @@
 global $pref;
 $e107 = e107::getInstance();
 
-include_lan(e_LANGUAGEDIR.'English/lan_np.php');
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_np.php');
 $parm_count = substr_count($parm, ',');
 
 while($parm_count < 5)
@@ -20,6 +20,8 @@ $caption = trim($p[4]);
 $pagetitle = explode('|',trim($p[5]));
 
 if($total_items < $perpage) {	return ''; }
+
+
 
 $caption = (!$caption || $caption == 'off') ? NP_3.'&nbsp;' : $caption;
 
