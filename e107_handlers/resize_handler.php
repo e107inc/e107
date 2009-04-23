@@ -11,14 +11,31 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-10-03 20:28:54 $
+|     $Revision: 1.10 $
+|     $Date: 2009-04-23 20:23:42 $
 |     $Author: e107steved $
 |
 |
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
+
+// Given an image file name, return the mime type string. Returns FALSE if invalid
+function mimeFromFilename($fileName)
+{
+	$fileExt = strtolower(substr(strrchr($fileName, "."), 1));
+	$mimeTypes = array(
+		'jpg' 	=> 'jpeg',
+		'gif' 	=> 'gif',
+		'png'	=> 'png',
+		'jpeg'	=> 'jpeg',
+		'pjpeg' => 'jpeg',
+		'bmp'	=> 'bmp'
+		);
+	if (!isset($mimeTypes[$fileExt])) {	return FALSE;  }		// only allow image files  }
+	return "Content-type: image/".$mimeTypes[$fileExt];
+}
+
 
 function resize_image($source_file, $destination_file, $type = "upload", $model = "") 
 {
@@ -41,43 +58,43 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 //			 FALSE - essentially, if there is not a valid output file available - usually, that resizing failed, or some other error.
 
 	global $pref;
-	 
+
 	$new_height = 0;
 	$mode = ($pref['resize_method'] ? $pref['resize_method'] : "gd2");
 	if ($type == "upload") 
 	{
-	  $new_size = varset($pref['im_width'],400);
+		$new_size = varset($pref['im_width'],400);
 	}
 	elseif(is_numeric($type)) 
 	{
-	  $new_size = $type;
+		$new_size = $type;
 	} 
 	else 
 	{	// Use preferences or failing that hard-coded defaults for new size
-	  $new_size = varset($pref['im_width'], 120);
-	  $new_height = varset($pref['im_height'], 100);
+		$new_size = varset($pref['im_width'], 120);
+		$new_height = varset($pref['im_height'], 100);
 	}
-	 
+
 
 	$im_quality = varset($pref['im_quality'], 99);
 
-	 
+
 	$image_stats = getimagesize($source_file);
 	if ($image_stats == null) 
 	{
 //	  echo "<b>DEBUG</b> image_stats are null<br />";
-	  return false;
+		return false;
 	}
 	if (($image_stats[0] == 0) || ($image_stats[1] == 0))
 	{
-	  return FALSE;				// Zero sized image - shouldn't happen
+		return FALSE;				// Zero sized image - shouldn't happen
 	}
 	 
 	// Check the image type. '1'=GIF, '2'=jpeg, '3' = PNG
 	if ($image_stats[2] != 1 && $image_stats[2] != 2 && $image_stats[2] != 3 && ($mode == 'gd1' || $mode == 'gd2')) 
 	{
-	  echo "<b>DEBUG</b> Wrong image type<br />";
-	  return FALSE;
+		echo "<b>DEBUG</b> Wrong image type<br />";
+		return FALSE;
 	}
 	
 	$imagewidth = $image_stats[0];		// Width of existing image
@@ -96,17 +113,8 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 			case 'noscale' :	// No scaling of small images- just want destination to be the same as source
 				if ($destination_file == 'stdout')
 				{
-					$fileExt = strtolower(substr(strrchr($source_file, "."), 1));
-					$mimeTypes = array(
-						'jpg' 	=> 'jpeg',
-						'gif' 	=> 'gif',
-						'png'	=> 'png',
-						'jpeg'	=> 'jpeg',
-						'pjpeg' => 'jpeg',
-						'bmp'	=> 'bmp'
-						);
-					if (!isset($mimeTypes[$fileExt])) {	return FALSE;  }		// only allow image files  }
-					header("Content-type: image/".$mimeTypes[$fileExt]);
+					if (($result = mimeFromFilename($source_file)) === FALSE) { return FALSE; }
+					header($result);
 					if (@readfile($source_file) === FALSE) { return FALSE; }
 				}
 				else
@@ -159,13 +167,16 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		{
 		  case IMAGETYPE_PNG : // 3 - PNG
 			$src_img = @imagecreatefrompng($source_file);
+			$fileExt = 'png';
 			break;
 		  case IMAGETYPE_GIF : // 1 - GIF
 		    if (!function_exists('imagecreatefromgif')) return FALSE;		// Some versions of GD library don't support GIF
 			$src_img = @imagecreatefromgif($source_file);
+			$fileExt = 'gif';
 			break;
 		  case IMAGETYPE_JPEG :	// 2 - Jpeg
 		    $src_img = @imagecreatefromjpeg($source_file);
+			$fileExt = 'jpg';
 			break;
 		  default :
 			return FALSE; // Unsupported image type
@@ -179,34 +190,66 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		{
 			$dst_img = imagecreate($new_size, $new_imageheight);		// Create blank image of correct size as target
 			if (!imagecopyresized($dst_img, $src_img, 0, 0, 0, 0, $new_size, $new_imageheight, $imagewidth, $imageheight))  { $returnError = -4; }
-		} 
-		else 
+		}
+		else
 		{
 			$dst_img = imagecreatetruecolor($new_size, $new_imageheight);
 			if (!imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $new_size, $new_imageheight, $imagewidth, $imageheight)) { $returnError = -5; }
 		}
 		if ($returnError)
 		{
-			echo "Resizing error: {$returnError}<br />";
-		  return FALSE;
+			echo "Resizing error (1): {$returnError}<br />";
+			return FALSE;
 		}
-		 
+
+		// Now output or save the resized file
+
+		$destName = $destination_file;
 		if ($destination_file == "stdout") 
 		{
-		  header("Content-type: image/jpeg");
-		  if (!imagejpeg($dst_img, '', $im_quality)) $returnError = -1;
+			$destName = '';
+			if (($result = mimeFromFilename($source_file)) === FALSE) 
+			{ 
+				$returnError = -6; 
+			}
+			else
+			{
+				header($result);
+			}
 		} 
-		else 
+		else
 		{
-			if (!imagejpeg($dst_img, $destination_file, $im_quality)) { $returnError = -1; }
+			$fileExt = strtolower(substr(strrchr($destination_file, "."), 1));
 		}
+
+		if ($returnError == 0)
+		{	// We can output the image, or save it to a file
+			switch ($fileExt)
+			{
+				case 'png' :
+					if (!imagepng($dst_img, $destName, 6)) { $returnError = -1; }		// Fix the quality for now
+					break;
+				case 'gif' :
+					if (!imagegif($dst_img, $destName)) { $returnError = -1; }
+					$outputFunc = 'imagegif';
+					break;
+				case 'jpg' :
+				case 'jpeg' :
+					if (!imagejpeg($dst_img, $destName, $im_quality)) { $returnError = -1; }
+					$outputFunc = 'imagejpeg';
+					break;
+				default :
+					$returnError = -7;			// Invalid output extensiot
+			}
+		}
+
 		if (!imagedestroy($src_img)) { $returnError = -2; }
 		if (!imagedestroy($dst_img)) { $returnError = -3; }
 		if ($returnError)
 		{
-			echo "Resizing error: {$returnError}<br />";
+			echo "Resizing error (2): {$returnError}<br />";
 			return FALSE;
-		}
+		}  
 		break;
 		default :
 			echo "Invalid resize function: {$mode}<br />";
@@ -216,6 +259,10 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	if ($destination_file == "stdout") return TRUE;		// Can't do anything more if file sent to stdout - assume success
 	 
 	@chmod($destination_file, 0644);
+	if ($pref['image_owner']) 
+	{
+	  @chown($destination_file, $pref['image_owner']);
+	}
 	 
 	$image_stats = getimagesize($destination_file);
 	if ($image_stats == null) 
@@ -225,6 +272,6 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	else 
 	{
 	  return TRUE;
-	}
+	} 
 }
 ?>
