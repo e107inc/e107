@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-01-11 21:06:46 $
+|     $Revision: 1.23 $
+|     $Date: 2009-04-23 19:13:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -193,7 +193,8 @@ class e107_user_extended
 	// Validate all user-modifable extended user fields which are presented.
 	// $inArray is the input data (usually from $_POST or $_POST['ue'], although doesn't have to be) - may have 'surplus' values
 	// $hideArray is a set of possible 'hide' flags
-	function userExtendedValidateAll($inArray, $hideArray)
+	// $isSignup TRUE causes required fields to be specifically checked, else only data passed is checked
+	function userExtendedValidateAll($inArray, $hideArray, $isSignup=FALSE)
 	{
 		global $tp;
 		$eufVals = array();		// 'Answer' array
@@ -201,9 +202,9 @@ class e107_user_extended
 		foreach ($this->fieldDefinitions as $k => $defs)
 		{
 			$f = 'user_'.$defs['user_extended_struct_name'];
-			if (isset($inArray[$f]))
+			if (isset($inArray[$f]) || ($isSignup && ($defs['user_extended_struct_required'] == 1)))
 			{	// Only allow valid keys
-				$val = $inArray[$f];
+				$val = varset($inArray[$f], FALSE);
 				$err = $this->user_extended_validate_entry($val, $defs);
 				if ($err === true)
 				{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
