@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-01-11 22:11:19 $
+ * $Revision: 1.9 $
+ * $Date: 2009-04-23 19:58:28 $
  * $Author: e107steved $
  *
 */
@@ -539,16 +539,24 @@ Following fields auto-filled in code as required:
 	}
 
 
-	// Delete time-expired partial registrations from the user DB
-	function deleteExpired()
+	// Delete time-expired partial registrations from the user DB, clean up user_extended table
+	function deleteExpired($force = FALSE)
 	{
 		global $pref, $sql;
+		$temp1 = 0;
 		if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
 		{
 			$threshold= intval(time() - ($pref['del_unv'] * 60));
-			$sql->db_Delete('user', 'user_ban = 2 AND user_join < '.$threshold);
+			if (($temp1 = $sql->db_Delete('user', 'user_ban = 2 AND user_join < '.$threshold)) > 0) { $force = TRUE; }
 		}
+		if ($force)
+		{	// Remove 'orphaned' extended user field records
+			$sql->db_Select_gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id`=`#user`.`user_id`
+					WHERE `#user`.`user_id` IS NULL");
+		}
+		return $temp1;
 	}
+
 }
 
 
