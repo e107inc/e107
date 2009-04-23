@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.109 $
-|     $Date: 2009-04-21 20:16:32 $
+|     $Revision: 1.110 $
+|     $Date: 2009-04-23 19:58:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -626,7 +626,31 @@ $text .= "
 	";
 
 $ns->tablerender(LAN_155, $text);
+
+deleteExpired(ADMIN);			// This will clean up the user and user_extended databases
+
 require_once(FOOTERF);
+
+
+
+// Delete 'expired' user records, clean up user_extended DB
+function deleteExpired($force = FALSE)
+{
+	global $pref, $sql;
+	$temp1 = 0;
+	if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
+	{
+		$threshold= intval(time() - ($pref['del_unv'] * 60));
+		if (($temp1 = $sql->db_Delete('user', 'user_ban = 2 AND user_join < '.$threshold)) > 0) { $force = TRUE; }
+	}
+	if ($force)
+	{	// Remove 'orphaned' extended user field records
+		$sql->db_Select_gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id`=`#user`.`user_id`
+				WHERE `#user`.`user_id` IS NULL");
+	}
+	return $temp1;
+}
+
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
