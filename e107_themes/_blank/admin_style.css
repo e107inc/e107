@@ -235,7 +235,7 @@ label { cursor: pointer; }
 .s-message div.warning 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
 .s-message div.debug 	{ background-color:#FFFFFF; border: 1px solid #EAEAEA; }
 
-.s-message s-message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; font-size: 14px; font-weight: bold; line-height: 32px; }
+.s-message .s-message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; font-size: 14px; font-weight: bold; line-height: 32px; }
 
 .s-message div.info 		.s-message-title 	{ background-image: url(images/messagebox_info.png); }
 .s-message div.error 	.s-message-title 	{ background-image: url(images/messagebox_critical.png); } 
