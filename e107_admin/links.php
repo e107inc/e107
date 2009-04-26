@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2008-09-23 19:37:30 $
+|     $Revision: 1.74 $
+|     $Date: 2009-04-26 19:24:47 $
 |     $Author: e107steved $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
@@ -390,7 +390,7 @@ class links
 		$text .= "<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;";
 		$text .= "<input type='image' title='".LAN_DELETE."' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."') \" />";
 		$text .= "</td>";
-		$text .= "<td style='text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
+		$text .= "<td style='text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,main,member,admin,classes")."</td>";
 		$text .= "<td style='text-align:center; white-space: nowrap' class='forumheader3'>";
 		$name_suffix = URL_SEPARATOR.$link_id.URL_SEPARATOR.$link_order;
 		$text .= "<input name='inc".$name_suffix."' type='image' src='".e_IMAGE."admin_images/up.png' title='".LCLAN_30."' />";
@@ -533,7 +533,7 @@ class links
 			</tr>
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_25.":<br /><span class='smalltext'>(".LCLAN_26.")</span></td>
-			<td style='width:70%' class='forumheader3'>".r_userclass("link_class", $link_class, "off", "public,guest,nobody,member,admin,classes")."
+			<td style='width:70%' class='forumheader3'>".r_userclass("link_class", $link_class, "off", "public,guest,nobody,member,main,admin,classes")."
 			</td></tr>
 
 			<tr style='vertical-align:top'>
