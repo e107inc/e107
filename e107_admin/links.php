@@ -9,9 +9,9 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-01-16 17:57:56 $
- * $Author: secretr $
+ * $Revision: 1.21 $
+ * $Date: 2009-04-26 19:24:42 $
+ * $Author: e107steved $
  *
 */
 
@@ -458,7 +458,7 @@ class links
 					<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;
 					<input class='action delete' type='image' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' title='".$tp->toJS(LCLAN_58." [ $link_name ]")."' />
 				</td>
-				<td>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>
+				<td>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,main,admin,classes")."</td>
 				<td class='center'>
 		";
 		$name_suffix = URL_SEPARATOR.$link_id.URL_SEPARATOR.$link_order;
@@ -624,7 +624,7 @@ class links
 
 								</td>
 								<td class='control'>
-									".r_userclass("link_class", $link_class, "off", "public,guest,nobody,member,admin,classes")."
+									".r_userclass("link_class", $link_class, "off", "public,guest,nobody,member,main,admin,classes")."
 									<div class='smalltext field-help'>(".LCLAN_26.")</div>
 								</td>
 							</tr>
