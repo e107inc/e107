@@ -9,8 +9,8 @@
  * Administrators Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-20 15:23:48 $
+ * $Revision: 1.11 $
+ * $Date: 2009-04-27 08:11:04 $
  * $Author: secretr $
  *
 */
@@ -67,7 +67,7 @@ if (isset($_POST['update_admin']))
 		if ($value == "0")
 		{
 			if (!getperms('0')) { $value = ""; break; }
-			$perm = "0."; break;
+			$perm = "0"; break;
 		}
 
 		if ($value)
