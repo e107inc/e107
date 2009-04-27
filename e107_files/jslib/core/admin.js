@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.15 $
- * $Date: 2009-01-17 22:48:14 $
+ * $Revision: 1.16 $
+ * $Date: 2009-04-27 10:47:06 $
  * $Author: secretr $
  * 
 */
@@ -266,21 +266,24 @@ e107Admin.AdminMenu = {
 		show = $(show); 
 		if(!show) return false;
 		if(this.activeTab && this.activeTab.identify() != show.identify()) {
-			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link') });
+			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
 			this.activeTab.hide();
 			this.activeTab = show;
 			this.activeTab.removeClassName('e-hideme').show();
 			if(bar) this.activeBar = bar;
 			this.activeBar.removeClassName('link').addClassName('link-active');
+			this.activeBar.up().addClassName('active');
 			return true;
 		} else if(!this.activeTab) { //init
-			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link') });
+			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
 			this.activeTab = show.removeClassName('e-hideme').show(); 
 			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
+			this.activeBar.up().addClassName('active');
 			return true;
 		} else if(!this.activeBar && this.activeTab) {//only bar is unknown
-			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link') });
+			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
 			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
+			this.activeBar.up().addClassName('active');
 			return true;
 		}
 		return false;
