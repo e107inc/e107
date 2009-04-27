@@ -10,8 +10,8 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.6 $
+|     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/admin_theme.php,v $
+|     $Revision: 1.1 $
 |     $Date: 2009-04-27 10:52:42 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
@@ -40,6 +40,44 @@ define("IMODE", "lite");
 // [dont render core style sheet link]
 	$no_core_css = TRUE;
 
+/**
+ * JSLIB instructions (could be chaged in the near future)
+ */
+$THEME_CORE_JSLIB = array(
+	'jslib/core/decorate.js' => 'all',
+	'jslib/core/tabs.js' => 'admin'
+);
+
+function theme_head() 
+{
+    return "
+    <script type='text/javascript'>
+       /**
+    	* Decorate all tables having e-list class
+    	* TODO: add 'adminlist' class to all list core tables, allow theme decorate.
+    	*/
+        e107.runOnLoad( function(event) {
+        	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+
+            element.select('table.adminlist:not(.no-decorate)').each(function(element) {
+            	e107Utils.Decorate.table(element, {tr_td: 'first last'});
+            });
+			element.select('div.admintabs').each(function(element) {
+				//show tab navaigation
+				element.select('ul.e-tabs').each( function(el){
+					el.show();
+					el.removeClassName('e-hideme');//prevent hideme re-register (e.g. ajax load)
+				});
+				//init tabs
+            	new e107Widgets.Tabs(element);
+            	//hide legends if any
+            	element.select('legend').invoke('hide');
+            });
+
+        }, document, true);
+
+    </script>";
+}
 // [layout]
 
 $layout = "_default";

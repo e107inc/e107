@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-03 19:59:20 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-04-27 10:52:42 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,5 +23,11 @@ define("LAN_THEME_3", "Read the rest...");
 define("LAN_THEME_4", "Trackbacks: ");
 define("LAN_THEME_5", "Posted by ");
 define("LAN_THEME_6", "on ");
+
+define("EMESSLAN_TITLE_INFO", "System Information");
+define("EMESSLAN_TITLE_ERROR", "Error");
+define("EMESSLAN_TITLE_SUCCESS", "Success");
+define("EMESSLAN_TITLE_WARNING", "Warning");
+define("EMESSLAN_TITLE_DEBUG", "System Debug");
 
 ?>
