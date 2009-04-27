@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.32 $
-* $Date: 2009-02-09 22:23:44 $
-* $Author: e107steved $
+* $Revision: 1.33 $
+* $Date: 2009-04-27 10:42:14 $
+* $Author: secretr $
 *
 */
 require_once('../class2.php');
@@ -284,6 +284,8 @@ if (isset($_POST['adduser']))
 		}
 		$userMethods->addNonDefaulted($user_data);
 		validatorClass::addFieldTypes($userMethods->userVettingInfo,$allData);
+		//FIXME - (SecretR) there is a better way to fix this (missing default value, sql error in strict mod)
+		$allData['data']['user_realm'] = '';
 		if ($sql -> db_Insert('user', $allData))
 		{
 			// Add to admin log
