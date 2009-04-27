@@ -9,8 +9,8 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.25 $
- * $Date: 2008-12-21 12:53:11 $
+ * $Revision: 1.26 $
+ * $Date: 2009-04-27 10:44:09 $
  * $Author: secretr $
  *
 */
@@ -814,7 +814,7 @@ if(isset($page_title[$action]))
 	$text .= "
 			</table>
 			<div class='buttons-bar center'>
-				<button class='delete' type='submit' name='clearfilters' rel='no-confirm' value='".RL_LAN_114."'><span>".RL_LAN_114."</span></button>
+				<button class='delete no-confirm' type='submit' name='clearfilters' value='".RL_LAN_114."'><span>".RL_LAN_114."</span></button>
 				<button class='update' type='submit' name='updatefilters' value='".RL_LAN_028."'><span>".RL_LAN_028."</span></button>
 			</div>
 			</fieldset>
