@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-03-29 21:40:36 $
- * $Author: e107steved $
+ * $Revision: 1.33 $
+ * $Date: 2009-04-27 21:23:37 $
+ * $Author: bugrain $
 */
 require_once("../class2.php");
 
@@ -66,14 +66,14 @@ function headerjs()
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 	";
-	
+
 	if($newspost->getAction() == 'cat')
 	{
 		$ret .= "
 		<script type='text/javascript'>
 			//Click observer
             document.observe('dom:loaded', function(){
-            	\$\$('a.action[id^=core-news-catedit-]').each(function(element) { 
+            	\$\$('a.action[id^=core-news-catedit-]').each(function(element) {
 					element.observe('click', function(event) {
 						event.stop();
 						var el = event.findElement('a');
@@ -89,11 +89,11 @@ function headerjs()
 	{
 		$ret .= "
 			<script type='text/javascript'>
-				document.observe('dom:loaded', function(){ 
+				document.observe('dom:loaded', function(){
 					\$('newsposts').observe('change', function(event) { console.log(event.element().readAttribute('tabindex'));
 						new e107Ajax.Updater(
-							'newsposts-archive-cont', 
-							'".e_SELF."?pref_archnum.' + (event.element().selectedIndex + 1) + '.' + event.element().readAttribute('tabindex'), 
+							'newsposts-archive-cont',
+							'".e_SELF."?pref_archnum.' + (event.element().selectedIndex + 1) + '.' + event.element().readAttribute('tabindex'),
 							{ overlayElement: 'newsposts-archive-cont' }
 						);
 					});
@@ -202,7 +202,7 @@ class admin_newspost
 		$e107->ecache->clear("othernews");
 		$e107->ecache->clear("othernews2");
 	}
-	
+
 	function ajax_observer()
 	{
 		$method = 'ajax_exec_'.$this->getAction();
@@ -473,9 +473,9 @@ class admin_newspost
 	function _observe_save_prefs()
 	{
 		global $pref, $admin_log;
-		
+
 		$e107 = e107::getInstance();
-		
+
 		$temp = array();
 		$temp['newsposts'] 				= intval($_POST['newsposts']);
 	   	$temp['newsposts_archive'] 		= intval($_POST['newsposts_archive']);
@@ -808,7 +808,7 @@ class admin_newspost
         else // allow master admin to
 		{
 			$text .= $frm->select_open('news_author');
-			$qry = "SELECT user_id,user_name FROM #user WHERE user_perms = '0' OR FIND_IN_SET('H',user_perms) ";
+			$qry = "SELECT user_id,user_name FROM #user WHERE user_perms = '0' OR user_perms = '0.' OR user_perms REGEXP('(^|,)(H)(,|$)') ";
 			if($pref['subnews_class'] && $pref['subnews_class']!= e_UC_GUEST && $pref['subnews_class']!= e_UC_NOBODY)
 			{
 				if($pref['subnews_class']== e_UC_MEMBER)
@@ -904,14 +904,14 @@ class admin_newspost
 												".$frm->file('file_userfile[]')."
 												".$frm->select_open('uploadtype[]')."
 			";
-			
+
 			for ($i=0; $i<count($up_value); $i++)
 			{
 				$text .= $frm->option($up_name[$i], $up_value[$i], varset($_POST['uploadtype']) == $up_value[$i]);
 			}
 			//FIXME - upload shortcode, flexible enough to be used everywhere
 			// Note from Cameron: should include iframe and use ajax as to not require a full refresh of the page.
-			
+
 			$text .= "
 												</select>
 											</div>
@@ -1242,14 +1242,14 @@ class admin_newspost
 				</fieldset>
 		";
 	}
-	
+
 	function ajax_exec_cat()
 	{
 		require_once (e_HANDLER.'js_helper.php');
 		$e107 = &e107::getInstance();
-		
+
 		$category = array();
-		if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId())) 
+		if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId()))
 		{
 			$category = $e107->sql->db_Fetch();
 		}
@@ -1259,7 +1259,7 @@ class admin_newspost
 			e_jshelper::sendAjaxError(404, 'Page not found!', 'Requested news category was not found in the DB.', true);
 		}
 		$jshelper = new e_jshelper();
-		
+
 		//show cancel and update, hide create buttons; disable create button (just in case)
 		$jshelper->addResponseAction('element-invoke-by-id', array(
 			'show' => 		'category-clear,update-category',
@@ -1269,7 +1269,7 @@ class admin_newspost
 
 		//category icon alias
 		$category['category-button'] = $category['category_icon'];
-		
+
 		//Send the prefered response type
 		$jshelper->sendResponse('fill-form', $category);
 	}
@@ -1280,11 +1280,11 @@ class admin_newspost
 		$frm = new e_form(true); //enable inner tabindex counter
 
 		$e107 = &e107::getInstance();
-		
+
 		$category = array();
-		if ($this->getSubAction() == "edit") 
+		if ($this->getSubAction() == "edit")
 		{
-			if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId())) 
+			if ($e107->sql->db_Select("news_category", "*", "category_id=".$this->getId()))
 			{
 				$category = $e107->sql->db_Fetch();
 			}
@@ -1405,26 +1405,26 @@ class admin_newspost
 
 		return $tmp;
 	}
-	
+
 	function ajax_exec_pref_archnum()
 	{
 		global $pref;
-		
+
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form();
-		
+
 		echo $frm->selectbox('newsposts_archive', $this->_optrange(intval($this->getSubAction()) - 1), intval($pref['newsposts_archive']), 'class=tbox&tabindex='.intval($this->getId()));
 	}
-	
+
 	function show_news_prefs()
 	{
 		global $pref;
-		
+
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
 
 		$e107 = &e107::getInstance();
-		
+
 		$text = "
 			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
 				<fieldset id='core-newspost-settings'>
@@ -1616,7 +1616,7 @@ class admin_newspost
 		$emessage = &eMessage::getInstance();
 		$e107->ns->tablerender(NWSLAN_47, $emessage->render().$text);
 	}
-	
+
 
 	function show_message($message, $type = E_MESSAGE_INFO, $session = false)
 	{
@@ -1642,7 +1642,7 @@ class admin_newspost
 		$var['pref']['text'] = NWSLAN_90;
 		$var['pref']['link'] = e_SELF."?pref";
 		$var['pref']['perm'] = "N";
-		
+
 		$c = $e107->sql->db_Count('submitnews');
 		if ($c) {
 			$var['sn']['text'] = NWSLAN_47." ({$c})";
