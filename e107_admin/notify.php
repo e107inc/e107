@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-07 12:00:07 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-04-28 00:06:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -166,7 +166,7 @@ class notify_config
 			}
 			else
 			{
-            	$disp = "display:none'";
+            	$disp = "display:none";
 				$value= "";
 			}
 
