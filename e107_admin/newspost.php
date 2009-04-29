@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-04-27 21:23:37 $
+ * $Revision: 1.34 $
+ * $Date: 2009-04-29 20:55:33 $
  * $Author: bugrain $
 */
 require_once("../class2.php");
@@ -219,7 +219,7 @@ class admin_newspost
 		//Required on create & savepreset action triggers
 		if(isset($_POST['news_userclass']) && is_array($_POST['news_userclass']))
 		{
-			$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
+			$_POST['news_class'] = implode(",", $_POST['news_userclass']);
 			unset($_POST['news_userclass']);
 		}
 
@@ -1083,7 +1083,7 @@ class admin_newspost
 								<tr>
 									<td class='label'>".NWSLAN_22.":</td>
 									<td class='control'>
-										".$frm->uc_checkbox('news_userclass', $_POST['news_class'], 'nobody,public,guest,member,admin,classes,language', 'description=1')."
+										".$frm->uc_checkbox('news_userclass', $_POST['news_userclass'], 'nobody,public,guest,member,admin,classes,language', 'description=1')."
 										<div class='field-help'>
 											".NWSLAN_84."
 										</div>
