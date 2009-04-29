@@ -9,8 +9,8 @@
  * Tagwords Template
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_template.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-17 22:46:37 $
+ * $Revision: 1.3 $
+ * $Date: 2009-04-29 07:07:33 $
  * $Author: lisa_ $
  *
 */
@@ -65,11 +65,11 @@ $TEMPLATE_TAGWORDS['options'] = "
 
 //##### cloud -------------------------------------------------------
 
-$sc_style['TAG_NUMBER']['pre'] = "(";
-$sc_style['TAG_NUMBER']['post'] = ") ";
+$sc_style['TAG_NUMBER']['pre'] = "&nbsp;(";
+$sc_style['TAG_NUMBER']['post'] = ")";
 
 $TEMPLATE_TAGWORDS['cloud_start'] = "";
-$TEMPLATE_TAGWORDS['cloud_item'] = "{TAG_WORD}{TAG_NUMBER}";
+$TEMPLATE_TAGWORDS['cloud_item'] = " {TAG_WORD}{TAG_NUMBER}";
 $TEMPLATE_TAGWORDS['cloud_end'] = "";
 
 $TEMPLATE_TAGWORDS['cloud'] = "
@@ -97,20 +97,20 @@ $TEMPLATE_TAGWORDS['cloudlist'] = "
 
 //##### menu cloud --------------------------------------------------
 
-$sc_style['TAG_NUMBER|menu']['pre'] = "(";
+$sc_style['TAG_NUMBER|menu']['pre'] = "&nbsp;(";
 $sc_style['TAG_NUMBER|menu']['post'] = ") ";
 
 $sc_style['TAG_SEARCH|menu']['pre'] = "<div style='margin-bottom:5px;'>";
 $sc_style['TAG_SEARCH|menu']['post'] = "</div>";
 
 $TEMPLATE_TAGWORDS['menu_cloud_start'] = "";
-$TEMPLATE_TAGWORDS['menu_cloud_item'] = "{TAG_WORD|menu}{TAG_NUMBER|menu}";
+$TEMPLATE_TAGWORDS['menu_cloud_item'] = " {TAG_WORD|menu}{TAG_NUMBER|menu}";
 $TEMPLATE_TAGWORDS['menu_cloud_end'] = "";
 
 $TEMPLATE_TAGWORDS['menu_cloud'] = "
 <div class='tagwords' style='text-align:center;'>
 	{TAG_SEARCH|menu}
-	<div style='text-align:justify; width:90%; line-height:250%; margin:0 auto;'>
+	<div style=' width:90%; line-height:250%; margin:0 auto;'>
 		{TAG_CLOUD|menu}
 	</div>
 	{TAG_LINK|menu}

@@ -9,8 +9,8 @@
  * Tagwords Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_class.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-01-18 10:11:12 $
+ * $Revision: 1.4 $
+ * $Date: 2009-04-29 07:07:33 $
  * $Author: lisa_ $
  *
 */
@@ -274,7 +274,7 @@ class tagwords
 		$qry = str_replace(' ', '+', $qry);
 		$word = $this->e107->tp->toHTML($word,true,'no_hook, emotes_off');
 		$class = ($class ? "class='tag".intval($class)."'" : "");
-		return "<a href='".e_PLUGIN."tagwords/tagwords.php?q=".$qry."' ".$class." title=''>".$word."</a> ";
+		return "<a href='".e_PLUGIN."tagwords/tagwords.php?q=".$qry."' ".$class." title=''>".$word."</a>";
 	}
 
 	/*
