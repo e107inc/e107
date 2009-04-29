@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subs_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-08-11 21:24:42 $
+|     $Revision: 1.4 $
+|     $Date: 2009-04-29 20:27:18 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -114,7 +114,7 @@ subs_log_a_line("\r\n\r\nMail subscriptions run started at ".date("D j M Y G:i:s
 
 
 // Start with the 'in advance' emails
-$cal_args = "select * from #event left join #event_cat on event_category=event_cat_id where (event_cat_subs>0 OR event_cat_force_class != '') and 
+$cal_args = "select * from #event left join #event_cat on event_category=event_cat_id where (event_cat_subs>0 OR event_cat_force_class>0) and 
 event_cat_last < " . intval($cal_starttime) . " and 
 event_cat_ahead > 0 and 
 event_start >= (" . intval($cal_starttime) . "+(86400*(event_cat_ahead))) and
@@ -126,7 +126,7 @@ ec_send_mailshot($cal_args, 'Advance',1, $calendar_shortcodes);
 
 
 // then for today
-$cal_args = "select * from #event left join #event_cat on event_category=event_cat_id where (event_cat_subs>0 OR event_cat_force_class != '') and 
+$cal_args = "select * from #event left join #event_cat on event_category=event_cat_id where (event_cat_subs>0 OR event_cat_force_class>0) and 
 event_cat_today < " . intval($cal_starttime) . " and 
 event_start >= (" . intval($cal_starttime) . ") and
 event_start <  (86400+" . intval($cal_starttime) . ") and
@@ -135,12 +135,23 @@ find_in_set(event_cat_notify,'2,3,6,7')";
 ec_send_mailshot($cal_args, 'today',2, $calendar_shortcodes);
 
 
+if ($ec_debug_level == 0)
+{
 // Finally do 'day before' emails (its an alternative to 'today' emails)
-$cal_args = "select * from #event left join #event_cat on event_category=event_cat_id where (event_cat_subs>0 OR event_cat_force_class != '') and 
+$cal_args = "select * from #event left join #event_cat on event_category=event_cat_id where (event_cat_subs>0 OR event_cat_force_class>0) and 
 event_cat_today < " . intval($cal_starttime) . " and 
 event_start >= (" . intval($cal_starttime) ." + 86400 ) and
 event_start <  (" . intval($cal_starttime) ." + 172800) and
 find_in_set(event_cat_notify,'4,5,6,7')";
+}
+else
+{
+// Finally do 'day before' emails (its an alternative to 'today' emails)
+$cal_args = "select * from #event left join #event_cat on event_category=event_cat_id where (event_cat_subs>0 OR event_cat_force_class>0) and 
+event_start >= (" . intval($cal_starttime) ." + 86400 ) and
+event_start <  (" . intval($cal_starttime) ." + 172800) and
+find_in_set(event_cat_notify,'4,5,6,7')";
+}
 
 ec_send_mailshot($cal_args, 'tomorrow',2, $calendar_shortcodes);
 
@@ -234,52 +245,53 @@ function ec_send_mailshot($cal_query, $shot_type, $msg_num, $calendar_shortcodes
 	  // Best to strip entities here rather than at entry - handles old events as well
 	  $cal_title = html_entity_decode($tp -> parseTemplate($pref['eventpost_mailsubject'], FALSE, $calendar_shortcodes),ENT_QUOTES,CHARSET);
 	  $cal_msg = html_entity_decode($tp -> parseTemplate($cal_msg, FALSE, $calendar_shortcodes),ENT_QUOTES,CHARSET);
-//	  $cal_msg = str_replace("\r","\n",$cal_msg);
+		//	  $cal_msg = str_replace("\r","\n",$cal_msg);
 	  
-// Four cases for the query:
-//	1. No forced mailshots - based on event_subs table only									Need INNER JOIN
-//	2. Forced mailshot to members - send to all users (don't care about subscriptions)		Don't need JOIN
-// 	3. Forced mailshot to group of members - based on user table only						Don't need JOIN
-//	4. Forced mailshot to group, plus optional subscriptions - use the lot!    				Need LEFT JOIN
-// (Always block sent to banned members)
+			// Four cases for the query:
+			//	1. No forced mailshots - based on event_subs table only									Need INNER JOIN
+			//	2. Forced mailshot to members - send to all users (don't care about subscriptions)		Don't need JOIN
+			// 	3. Forced mailshot to group of members - based on user table only						Don't need JOIN
+			//	4. Forced mailshot to group, plus optional subscriptions - use the lot!    				Need LEFT JOIN
+			// (Always block sent to banned members)
 	  $manual_subs = (isset($pref['eventpost_asubs']) && ($pref['eventpost_asubs'] == '1'));
 	  $subs_fields = '';
 	  $subs_join = '';
-	  $where_clause = '';
+			$whereClause = '';
 	  $group_clause = '';
-	  
 	  
 	  if ($event_cat_force_class != e_UC_MEMBER)
 	  {  // Cases 1, 3, 4 (basic query does for case 2)
-	  
 	    if ((!$event_cat_force_class) || ($manual_subs))
 	    {  // Cases 1 & 4 - need to join with event_subs database
 	      $subs_fields = ", es.* ";
 		  if ($event_cat_force_class) $subs_join = "LEFT"; else $subs_join = "INNER";
 	      $subs_join   .= " join #event_subs AS es on u.user_id=es.event_userid ";
-		  $where_clause = " es.event_cat='".intval($event_category)."' ";
+					$whereClause = " es.event_cat='".intval($event_category)."' ";
 		  $group_clause = " GROUP BY u.user_id";
 	    }
 
 	    if ($event_cat_force_class)
 		{  // cases 3 and 4 - ... and check for involuntary subscribers
-		    if ($where_clause) $where_clause .= " OR ";
+					if ($whereClause) $whereClause .= " OR ";
 		    if ($event_cat_force_class == e_UC_ADMIN)
 		    {
-		      $where_clause .= "(u.user_admin = '1' )";
+						$whereClause .= "(u.user_admin = 1 )";
 		    }
 		    else
 		    {
-	          $where_clause .= "find_in_set('".intval($event_cat_force_class)."', u.user_class)";
+						$whereClause .= "find_in_set('".intval($event_cat_force_class)."', u.user_class)";
+//						$forced_regexp = "'(^|,)(".intval($event_cat_force_class).")(,|$)'";
+//						$whereClause .= " (u.user_class REGEXP '".$forced_regexp."') ";
+						$group_clause = " GROUP BY u.user_id";
 		    }
 		}
 
-	    if ($where_clause) $where_clause = ' AND ('.$where_clause.' ) ';
+				if ($whereClause) $whereClause = ' AND ('.$whereClause.' ) ';
 	  }   // End of cases 1, 3, 4
 	  
 	  $cal_emilargs = "SELECT u.user_id, u.user_class, u.user_email, u.user_name, u.user_ban, u.user_admin{$subs_fields}
 		  from #user AS u {$subs_join}
-		  WHERE u.user_ban = '0' {$where_clause} {$group_clause}";
+			  WHERE u.user_ban = '0' {$whereClause} {$group_clause}";
 		  
 
         if ($ec_debug_level >= 2)
@@ -299,7 +311,7 @@ function ec_send_mailshot($cal_query, $shot_type, $msg_num, $calendar_shortcodes
 			    $send_result = " **DEBUG**";
 			  if ($ec_log_requirement > 1)
 			  {
-			    subs_log_a_line("      Send to: ".$user_email." Name: ".$user_name." Result = ".$send_result."\r\n",FALSE,TRUE);
+						subs_log_a_line("      Send to ".$user_id.':'.$user_email." Name: ".$user_name." Result = ".$send_result."\r\n",FALSE,TRUE);
 			  }
             } 
         } 

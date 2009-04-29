@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ecal_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-09-28 20:35:05 $
+|     $Revision: 1.9 $
+|     $Date: 2009-04-29 20:27:18 $
 |     $Author: e107steved $
 |
 | Event calendar class:
@@ -501,7 +501,7 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 // Read a list of events between start and end dates
 // If $start_only is TRUE, only searches based on the start date/time
 // Potential option to hook in other routines later
-	function get_events($start_time, $end_time, $start_only=FALSE, $cat_filter='*', $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
+	function get_events($start_time, $end_time, $start_only=FALSE, $cat_filter=0, $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
 	{
 	  global $sql;
 	  
@@ -520,12 +520,12 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	  }
 
 	  if ($cat_filter && ($cat_filter != '*')) $category_filter = " AND find_in_set(e.event_category, '".$cat_filter."') ";
-	  if ($inc_recur) $extra = " OR (e.event_recurring >'0' AND (e.event_start <= ".intval($end_time)." AND e.event_end >= ".intval($start_time).")) ";
+	  if ($inc_recur) $extra = " OR (e.event_recurring >'0' AND (e.event_start < ".intval($end_time)." AND e.event_end >= ".intval($start_time).")) ";
 	  
 	  $so = $start_only ? 'start' : 'end';
 	  $qry = "SELECT {$event_fields}{$cat_fields} FROM #event as e {$cat_lj}
 		WHERE (
-		(e.event_recurring = '0' AND ((e.event_{$so} >= ".intval($start_time)." AND e.event_start <= ".intval($end_time).")))
+		(e.event_recurring = '0' AND ((e.event_{$so} >= ".intval($start_time)." AND e.event_start < ".intval($end_time).")))
 		{$extra})
 		{$category_filter} 
 		{$this->extra_query} 

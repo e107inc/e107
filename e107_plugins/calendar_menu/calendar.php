@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-02-01 20:54:08 $
+|     $Revision: 1.4 $
+|     $Date: 2009-04-29 20:27:18 $
 |     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
@@ -146,7 +146,7 @@ $events = array();
 	  else
 	  {  // Its a 'normal' event
 		$tmp	= date('j',$row['event_start']);		// Day of month for start
-		$tmp2	= date('j',$row['event_end']);			// Day of month for end
+		$tmp2	= date('j',$row['event_end']-1);			// Day of month for end - knock off a second to allow for BST and suchlike
 
 		if(($row['event_start']>=$monthstart) && ($row['event_start']<=$monthend))
 		{	// Start within month
