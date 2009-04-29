@@ -9,9 +9,9 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-04-26 19:24:42 $
- * $Author: e107steved $
+ * $Revision: 1.22 $
+ * $Date: 2009-04-29 01:51:12 $
+ * $Author: bugrain $
  *
 */
 
@@ -449,7 +449,7 @@ class links
 		$text .= "
 				</td>
 				<td title='".$link_description."'".$subspacer.">
-					".$subimage." ".$link_name."
+					".$subimage." <a href='".$tp->replaceConstants(e_BASE.$row2['link_url'], true, true)."'>".$link_name."</a>
 				</td>
 		";
 		$text .= "
