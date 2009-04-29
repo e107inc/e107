@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-21 11:07:58 $
+|     $Revision: 1.8 $
+|     $Date: 2009-04-29 21:15:57 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ define("UCSLAN_32", 'Users in this class can add/remove themselves from the clas
 define("UCSLAN_33", 'Determines which users can see this class in drop-down lists');
 define("UCSLAN_34", 'Class visibility');
 define("UCSLAN_35", 'Class parent');
-define("UCSLAN_36", 'Members inherit the access rights of all parents');
+define("UCSLAN_36", 'If the top of the tree is \'No One\', permissions increase towards the top of the tree<br />If the top of the tree is \'Everyone\', permissions increase as you go down the tree');
 define("UCSLAN_37", 'You must enter a name for the class');
 define("UCSLAN_38", 'Initial User Class');
 define("UCSLAN_39", 'No classes which can be set');
