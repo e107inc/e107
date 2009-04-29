@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2009-04-26 19:24:47 $
-|     $Author: e107steved $
+|     $Revision: 1.75 $
+|     $Date: 2009-04-29 02:06:10 $
+|     $Author: bugrain $
 |
 | links.php?debug shows stored data for each link after name (before constant conversion)
 +----------------------------------------------------------------------------+
 */
 
 require_once('../class2.php');
-if (!getperms('I')) 
+if (!getperms('I'))
 {
   header('location:'.e_BASE.'index.php');
   exit;
@@ -47,7 +47,7 @@ $rs = new form;
 $linkpost = new links;
 
 $action = '';
-if (e_QUERY) 
+if (e_QUERY)
 {
   $tmp = explode('.', e_QUERY);
   $action = $tmp[0];
@@ -111,25 +111,25 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 	}
 }
 
-if ($incdec_action == 'inc') 
+if ($incdec_action == 'inc')
 {
   $sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order-1)."'");
   $sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".intval($linkid)."'");
 }
-elseif ($incdec_action =='dec') 
+elseif ($incdec_action =='dec')
 {
   $sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order+1)."'");
   $sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".intval($linkid)."'");
 }
 
-if (isset($_POST['update'])) 
+if (isset($_POST['update']))
 {
-	foreach ($_POST['link_order'] as $loid) 
+	foreach ($_POST['link_order'] as $loid)
 	{
 	  $tmp = explode(".", $loid);
 	  $sql->db_Update("links", "link_order=".intval($tmp[1])." WHERE link_id=".intval($tmp[0]));
 	}
-	foreach ($_POST['link_class'] as $lckey => $lcid) 
+	foreach ($_POST['link_class'] as $lckey => $lcid)
 	{
 	 	$sql->db_Update("links", "link_class='".$lcid."' WHERE link_id=".intval($lckey));
 	}
@@ -176,7 +176,7 @@ if (!e_QUERY || $action == 'main') {
 	$linkpost->show_existing_items();
 }
 
-if ($action == 'debug') 
+if ($action == 'debug')
 {
   $linkpost->show_existing_items(TRUE);
 }
@@ -292,7 +292,7 @@ class links
 	{
 		global $sql, $rs, $ns, $tp, $linkArray;
 		$this->debug_dis = $dbg_display;
-		
+
 		if (count($linkArray))
 		{
 
@@ -338,7 +338,7 @@ class links
 		$this->aIdOptPrep = $this->prepOpts($this->aIdOptData);
 	}
 
-	function display_row($row2, $indent = FALSE) 
+	function display_row($row2, $indent = FALSE)
 	{
 		global $sql, $rs, $ns, $tp, $linkArray, $previous_cat;
 		extract($row2);
@@ -361,13 +361,13 @@ class links
 		{
 			$link_name = $this->linkName( $link_name );
 		}
-		
+
 		if ($this->debug_dis)
 		{
 		  $link_name.= ' ['.$link_url.']';
 		}
 
-		if ($indent) 
+		if ($indent)
 		{
 		  $subimage = "<img src='".e_IMAGE."admin_images/sublink.png' alt='' />";
 		  $subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
@@ -381,7 +381,7 @@ class links
 				<table cellspacing='0' cellpadding='0' border='0' style='width: 100%'>
 				<tr>
 			".$subindent."
-				<td style='".($indent ? "" : "font-weight:bold;")."width: 100%'>".$link_name."</td>
+				<td style='".($indent ? "" : "font-weight:bold;")."width: 100%'><a href='".$tp->replaceConstants(e_BASE.$row2['link_url'], true, true)."'>".$link_name."</a></td>
 				</tr>
 				</table>
 				</td>";
@@ -553,10 +553,10 @@ class links
 	}
 
 
-	function submit_link($sub_action, $id) 
+	function submit_link($sub_action, $id)
 	{
 		global $sql, $e107cache, $tp;
-		if(!is_object($tp)) 
+		if(!is_object($tp))
 		{
 		  $tp=new e_parse;
 		}
@@ -575,15 +575,15 @@ class links
 		$link_class = $tp->toDB($_POST['link_class']);
 
 		$link_t = $sql->db_Count("links", "(*)");
-		if ($id) 
+		if ($id)
 		{
 		  $sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'");
 			//rename all sublinks to eliminate old embedded 'submenu' etc hierarchy.
 		    // this is for upgrade compatibility only. Current hierarchy uses link_parent.
 		  $e107cache->clear("sitelinks");
 		  $this->show_message(LCLAN_3);
-		} 
-		else 
+		}
+		else
 		{
 		  $sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t+1).", ".$parent_id.", ".$link_open.", ".$link_class);
 		  $e107cache->clear("sitelinks");
@@ -634,7 +634,7 @@ class links
 
 	// Delete link
 	// We need to update the 'order' number of other links with the same parentage - may be top level or a sub-level
-	function delete_link($linkInfo)	
+	function delete_link($linkInfo)
 	{
 		global $sql;
 
@@ -663,7 +663,7 @@ class links
 
 // -------------------------- Sub links generator ------------->
 
-function show_sublink_generator() 
+function show_sublink_generator()
 {
 	global $ns,$sql;
 
@@ -736,17 +736,17 @@ function sublink_list($name="")
 	$sublink_type['downloads']['fieldicon'] = "download_category_icon";
 
 
-	if ($sql -> db_Select("plugin", "plugin_path", "plugin_installflag = '1'")) 
+	if ($sql -> db_Select("plugin", "plugin_path", "plugin_installflag = '1'"))
 	{
-		while ($row = $sql -> db_Fetch()) 
+		while ($row = $sql -> db_Fetch())
 		{
 			$sublink_plugs[] = $row['plugin_path'];
 		}
 	}
 
-	foreach ($sublink_plugs as $plugin_id) 
+	foreach ($sublink_plugs as $plugin_id)
 	{
-		if (is_readable(e_PLUGIN.$plugin_id.'/e_linkgen.php')) 
+		if (is_readable(e_PLUGIN.$plugin_id.'/e_linkgen.php'))
 		{
 		  	require_once(e_PLUGIN.$plugin_id.'/e_linkgen.php');
 		}
@@ -787,7 +787,7 @@ function prepOpts($aData)
 		$aPrep[$i++] = $sOut;
 		$sTxtPrev = $sTxt;
 	}
-	if ($i) 
+	if ($i)
 	{  // terminate final option
 		$aPrep[$i] = '>'.$sTxtPrev.'</option>';
 	}
@@ -821,10 +821,10 @@ function genOpts($aPrep, $aTest,$sSelected, $sId)
 
 }
 
-function links_adminmenu() 
+function links_adminmenu()
 {
 	global $action;
-	if ($action == "") 
+	if ($action == "")
 	{
 		$action = "main";
 	}
