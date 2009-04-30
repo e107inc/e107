@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-02-01 15:18:30 $
+|     $Revision: 1.32 $
+|     $Date: 2009-04-30 20:10:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -888,6 +888,7 @@ class user_class_admin extends user_class
 			$this->topdown_tree($parent);
 			return;
 		}
+//		echo "Bottom up: {$parent}<br />";
 		if ($this->class_tree[$parent]['userclass_type'] == UC_TYPE_GROUP)
 		{
 //			echo "Bottom up - skip: {$parent}<br />";
@@ -911,9 +912,10 @@ class user_class_admin extends user_class
 	// Returns an array
   function topdown_tree($our_class)
   {
+//	echo "Top down: {$our_class}, Children: ".implode(',',$this->class_tree[$our_class]['class_children'])."<br />";
     $rights  = array($our_class);				// Accumulator always has rights to its own class
 
-	if ($this->class_tree[$cc] = UC_TYPE_GROUP) return $rights;					// Stop rights accumulation at a group
+	if ($this->class_tree[$our_class]['userclass_type'] == UC_TYPE_GROUP) return array_merge($rights, explode(',',$this->class_tree[$our_class]['userclass_accum']));					// Stop rights accumulation at a group
 
     foreach ($this->class_tree[$our_class]['class_children'] as $cc)
 	{
@@ -921,10 +923,11 @@ class user_class_admin extends user_class
     }
 	$rights = array_unique($rights);
 	$imp_rights = implode(',',$rights);
+//	echo "Class: {$our_class}  Rights: {$imp_rights}<br />";
 	if ($this->class_tree[$our_class]['userclass_accum'] != $imp_rights)
 	{
-	  $this->class_tree[$our_class]['userclass_accum'] = $imp_rights;
-	  $this->class_tree[$our_class]['change_flag'] = 'UPDATE';
+		$this->class_tree[$our_class]['userclass_accum'] = $imp_rights;
+		$this->class_tree[$our_class]['change_flag'] = 'UPDATE';
 	}
 	return $rights;
   }
@@ -1026,7 +1029,7 @@ class user_class_admin extends user_class
 	{
 		$name_line .= $this->class_tree[$listnum]['userclass_name'];
 	}
-	if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum'];
+	if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum']." Children: ".implode(',',$this->class_tree[$listnum]['class_children']);
 	// Next (commented out) line gives a 'conventional' link
     $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
 //    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a></div>";
