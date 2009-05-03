@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-02-11 21:41:54 $
+|     $Revision: 1.6 $
+|     $Date: 2009-05-03 21:16:15 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -78,6 +78,7 @@ else
 	   $id = intval($tmp[1]);
 	   $errnum = intval(varset($tmp[2],0));
    }
+
    switch ($action)
    {
       case 'list' :	// Category-based listing
@@ -122,11 +123,15 @@ else
 	      require_once(HEADERF);
 	      switch ($errnum)
 	      {
-	         case 1 :
-	   	      $errmsg = LAN_dl_63;			// No permissions
+	         case 1 :			// No permissions
+	            if (strlen($pref['download_denied']) > 0) {
+	   	         $errmsg = $tp->toHTML($pref['download_denied'],true);
+	   	      } else {
+	   	         $errmsg = LAN_dl_63;
+	   	      }
 	   	      break;
-	   	   case 2 :
-	   	      $errmsg = LAN_dl_62;			// Quota exceeded
+	   	   case 2 :			// Quota exceeded
+	   	      $errmsg = LAN_dl_62;
 	   	      break;
 	   	   default:
 	   	     $errmsg = LAN_dl_61." ".$errnum;		// Generic error - shouldn't happen
