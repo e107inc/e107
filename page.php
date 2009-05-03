@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2008-04-07 20:18:25 $
-|     $Author: secretr $
+|     $Revision: 1.49 $
+|     $Date: 2009-05-03 22:15:55 $
+|     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
 */
@@ -60,7 +60,7 @@ else
 		if ($e107_core_custom_pages['cachecontrol'] == TRUE)
 		{
 			ob_start();
-			$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text']);
+			$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
 			$cache_data = ob_get_flush();
 			$e107cache->set($cacheString, $cache_data);
 			$e107cache->set($cachePageTitle, $e107_core_custom_pages['title']."^".$e107_core_custom_pages['comment_flag']);
