@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-02-11 21:41:54 $
+|     $Revision: 1.4 $
+|     $Date: 2009-05-03 21:16:15 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -279,7 +279,7 @@ class download_shortcodes
    {
       global $pref,$dl,$tp;
       if ($pref['agree_flag'] == 1) {
-      	return "<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
+      	return "xxx<a href='".e_BASE."request.php?".$dl['download_id']."' onclick= \"return confirm('".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."');\" title='".LAN_dl_46."'>".$dl['download_name']."</a>";
       } else {
       	return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
       }
@@ -352,7 +352,7 @@ class download_shortcodes
       global $pref,$dlrow,$tp;
       $click = "";
       if ($pref['agree_flag'] == 1) {
-      	$click = " onclick='return confirm(\"".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."\")'";
+      	$click = " onclick='return confirm(\"".$tp->toJS($tp->toHTML($pref['agree_text'],true,'emotes, no_tags'))."\")'";
       }
      	$dnld_link = "<a href='".e_BASE."request.php?".$dlrow['download_id']."'{$click}>";
       if ($dlrow['download_mirror'])
@@ -368,7 +368,7 @@ class download_shortcodes
       }
       else
       {
-      	return $dnld_link." <img src='".IMAGE_DOWNLOAD."' alt='*' style='border:0' /></a>";
+      	return $dnld_link." xxx<img src='".IMAGE_DOWNLOAD."' alt='*' style='border:0' /></a>";
       }
    }
    function get_download_view_filesize()

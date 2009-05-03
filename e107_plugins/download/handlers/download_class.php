@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/download_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-02-11 21:41:54 $
+|     $Revision: 1.2 $
+|     $Date: 2009-05-03 21:16:15 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -22,8 +22,10 @@ if (!plugInstalled('download')) { exit(); }
 
 class download
 {
+   var $e107;
    function download()
    {
+		$this->e107 = e107::getInstance();
    }
    function displayCategoryList() {
    }
@@ -46,7 +48,7 @@ class download
       $dlbreadcrumb['fieldlist'] = implode(",", array_keys($dlbreadcrumb));
       return $dlbreadcrumb;
    }
-   function getCategorySelectList($currentID=0, $blankText="", $incSubSub=true, $groupOnMain=true)
+   function getCategorySelectList($currentID=0, $incSubSub=true, $groupOnMain=true, $blankText="&nbsp;", $name="download_category")
    {
       global $sql,$parm;
      	$boxinfo = "\n";
@@ -63,7 +65,7 @@ class download
         	return "Error reading categories<br />";
         	exit;
       }
-      $boxinfo .= "<select name='download_category' id='download_category' class='tbox'>
+      $boxinfo .= "<select name='{$name}' id='download_category' class='tbox'>
       	<option value=''>{$blankText}</option>\n";
       // Its a structured display option - need a 2-step process to create a tree
       $catlist = array();
