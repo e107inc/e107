@@ -9,15 +9,15 @@
  * Admin Navigation
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-01-09 17:25:50 $
- * $Author: secretr $
+ * $Revision: 1.9 $
+ * $Date: 2009-05-03 19:13:32 $
+ * $Author: bugrain $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if (file_exists(THEME.'admin_imagesadmin_images.php')) {
-	e107_require_once(THEME.'admin_imagesadmin_images.php');
+if (file_exists(THEME.'admin_images/admin_images.php')) {
+	e107_require_once(THEME.'admin_images/admin_images.php');
 }
 
 // Small Category Images
