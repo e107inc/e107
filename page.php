@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2008-11-16 09:11:59 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2009-05-03 22:16:20 $
+|     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@ else
 		if ($e107_core_custom_pages['cachecontrol'] == TRUE)
 		{
 		ob_start();
-		$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text']);
+		$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
 		$cache_data = ob_get_flush();
 		$e107cache->set($cacheString, $cache_data);
 		$e107cache->set($cachePageTitle, $e107_core_custom_pages['title']."^".$e107_core_custom_pages['comment_flag']);
@@ -195,7 +195,7 @@ class pageClass
 
 		$text = '';    // Notice removal
         $ptitle = "";
-		
+
 		if($page_author)
 		{
             $text .= "<div class='smalltext cpage_author' style='text-align:right'>".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</div><br />";
@@ -234,7 +234,7 @@ class pageClass
 			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE, 'BODY');
 			return;
 		}
-		
+
 		foreach($pt[0] as $title)
 		{
 			$this -> pageTitles[] = $title;
