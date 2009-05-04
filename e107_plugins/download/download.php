@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-05-03 21:16:15 $
+|     $Revision: 1.7 $
+|     $Date: 2009-05-04 20:09:45 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 if (!plugInstalled('download')) { exit(); }
-include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/lan_download.php');
+include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php');
 require_once(e_PLUGIN.'download/handlers/download_class.php');
 require_once(e_PLUGIN.'download/handlers/category_class.php');
 require_once(e_PLUGIN.'download/download_shortcodes.php');
