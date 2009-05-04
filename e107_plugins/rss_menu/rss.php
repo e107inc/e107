@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2008-11-02 22:28:03 $
+|     $Revision: 1.65 $
+|     $Date: 2009-05-04 13:00:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -185,19 +185,23 @@ class rssCreate {
 		switch ($content_type) {
 			case 'news' :
 			case 1:
-				if($topic_id && is_numeric($topic_id)){
+				if($topic_id && is_numeric($topic_id))
+				{
 					$topic = " AND news_category = ".intval($topic_id);
-				}else{
+				}
+				else
+				{
 					$topic = '';
 				}
 				$path='';
 				$render = ($pref['rss_othernews'] != 1) ? "AND n.news_render_type < 2" : "";
+				$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 
 				$this -> rssQuery = "
 				SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY news_datestamp DESC LIMIT 0,".$this -> limit;
+				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY news_datestamp DESC LIMIT 0,".$this -> limit;
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
