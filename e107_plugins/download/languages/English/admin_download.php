@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/lan_download_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-05-03 21:16:15 $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009-05-04 20:09:45 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -191,5 +191,9 @@ define("DOWLAN_HELP_6", "Help for limits");
 define("DOWLAN_HELP_7", "Help for mirror");
 define("DOWLAN_HELP_8", "Help for ");
 define("DOWLAN_HELP_9", "Help for ");
+
+define("DOWLAN_INSTALL_DONE", "Your download plugin is now installed");
+define("DOWLAN_DESCRIPTION", "This plugin is a fully featured Download system");
+define("DOWLAN_CAPTION", "Configure Download");
 
 ?>

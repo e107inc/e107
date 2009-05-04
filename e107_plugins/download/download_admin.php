@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_admin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-05-03 21:16:15 $
+|     $Revision: 1.10 $
+|     $Date: 2009-05-04 20:09:45 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -27,8 +27,8 @@ if (!getperms("P") || !plugInstalled('download'))
 	exit() ;
 }
 
-include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/lan_download.php');
-include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/lan_download_admin.php');
+include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php');
+include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/admin_download.php');
 require_once(e_PLUGIN.'download/handlers/adminDownload_class.php');
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."ren_help.php");
