@@ -9,9 +9,9 @@
  * List Language
  *
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-01-27 21:34:02 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2009-05-04 19:57:48 $
+|     $Author: bugrain $
  *
 */
 
@@ -48,11 +48,8 @@ define("LIST_COMMENT_5", "poll");
 define("LIST_COMMENT_6", "docs");
 define("LIST_COMMENT_7", "bugtrack");
 define("LIST_COMMENT_8", "content");
-define("LIST_COMMENT_9", "download");
+define("LIST_COMMENT_9", "");
 define("LIST_COMMENT_10", "ideas");
-
-define("LIST_DOWNLOAD_1", "downloads");
-define("LIST_DOWNLOAD_2", "no downloads");
 
 define("LIST_MEMBER_1", "members");
 define("LIST_MEMBER_2", "no members");

@@ -1,18 +1,21 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Download e_list Handler
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/section/list_download.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-01-28 08:48:14 $
- * $Author: lisa_ $
- *
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/e_list.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009-05-04 19:57:23 $
+|     $Author: bugrain $
+|
++----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
@@ -39,15 +42,15 @@ class list_download
 
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
-		$qry = "SELECT d.download_id, d.download_name, d.download_author, d.download_datestamp, 
-		   dc.download_category_id, dc.download_category_name, dc.download_category_class 
+		$qry = "SELECT d.download_id, d.download_name, d.download_author, d.download_datestamp,
+		   dc.download_category_id, dc.download_category_name, dc.download_category_class
 		   FROM #download AS d
 		   LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id
-		   WHERE dc.download_category_class REGEXP '".e_CLASS_REGEXP."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' AND d.download_active != '0' ".$qry." 
+		   WHERE dc.download_category_class REGEXP '".e_CLASS_REGEXP."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' AND d.download_active != '0' ".$qry."
 		   ORDER BY download_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount'])." ";
 
 		$downloads = $this->parent->e107->sql->db_Select_gen($qry);
-		if($downloads == 0) 
+		if($downloads == 0)
 		{
 			$list_data = LIST_DOWNLOAD_2;
 		}
@@ -70,11 +73,10 @@ class list_download
 		}
 		//return array with 'records', (global)'caption', 'display'
 		return array(
-			'records'=>$list_data, 
-			'caption'=>$list_caption, 
+			'records'=>$list_data,
+			'caption'=>$list_caption,
 			'display'=>$list_display
 		);
 	}
 }
-
 ?>

@@ -9,9 +9,9 @@
  * List Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-01-27 23:46:12 $
- * $Author: lisa_ $
+ * $Revision: 1.9 $
+ * $Date: 2009-05-04 19:57:48 $
+ * $Author: bugrain $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -37,10 +37,10 @@ class listclass
 
 	/**
 	 * constructor
-	 * 
+	 *
 	 * @param string $mode the mode of the caller (default, admin)
 	 * @return void
-	 * 
+	 *
 	 */
 	function listclass($mode='')
 	{
@@ -51,13 +51,13 @@ class listclass
 
 		//language
 		@include_lan($this->plugin_dir."languages/".e_LANGUAGE.".php");
-		
+
 		//template
 		if (is_readable(THEME."list_template.php"))
 		{
 			require_once(THEME."list_template.php");
 		}
-		else 
+		else
 		{
 			require_once($this->plugin_dir."list_template.php");
 		}
@@ -74,15 +74,15 @@ class listclass
 		}
 
 		//default sections (present in this list plugin)
-		$this->defaultArray = array("news", "comment", "download", "members");
+		$this->defaultArray = array("news", "comment", "members");
 	}
 
 	/**
 	 * helper method, parse the template
-	 * 
+	 *
 	 * @param string $template the template to parse
 	 * @return string
-	 * 
+	 *
 	 */
 	function parseTemplate($template)
 	{
@@ -93,9 +93,9 @@ class listclass
 
 	/**
 	 * get preferences, retrieve all preferences from core table
-	 * 
+	 *
 	 * @return array
-	 * 
+	 *
 	 */
 	function getListPrefs()
 	{
@@ -120,10 +120,10 @@ class listclass
 
 	/**
 	 * prepareSection checks if the sections should be displayed
-	 * 
+	 *
 	 * @param string $mode the mode of the area (menu/page - new/recent)
 	 * @return array
-	 * 
+	 *
 	 */
 	function prepareSection($mode)
 	{
@@ -143,10 +143,10 @@ class listclass
 
 	/**
 	 * prepareSectionArray parses the preferences for each section
-	 * 
+	 *
 	 * @param string $mode the mode of the area (menu/page - new/recent)
 	 * @return array
-	 * 
+	 *
 	 */
 	function prepareSectionArray($mode)
 	{
@@ -176,9 +176,9 @@ class listclass
 
 	/**
 	 * getDefaultSections loads all default 'core' sections from the constructor
-	 * 
+	 *
 	 * @return void
-	 * 
+	 *
 	 */
 	function getDefaultSections()
 	{
@@ -194,16 +194,16 @@ class listclass
 	//content needs this to split each main parent into separate sections
 	/**
 	 * getContentSections loads all top level content categories
-	 * 
+	 *
 	 * @param string $mode (default, add)
 	 * @return void
-	 * 
+	 *
 	 */
 	function getContentSections($mode='')
 	{
 		global $pref;
 
-		if (!$content_install = isset($pref['plug_installed']['content']))		
+		if (!$content_install = isset($pref['plug_installed']['content']))
 		{
 			return;
 		}
@@ -232,9 +232,9 @@ class listclass
 
 	/**
 	 * getSections loads all sections
-	 * 
+	 *
 	 * @return void
-	 * 
+	 *
 	 */
 	function getSections()
 	{
@@ -265,9 +265,9 @@ class listclass
 
 	/**
 	 * getDefaultPrefs retrieve all default preferences (if none present)
-	 * 
+	 *
 	 * @return array
-	 * 
+	 *
 	 */
 	function getDefaultPrefs()
 	{
@@ -398,10 +398,10 @@ class listclass
 
 	/**
 	 * displaySection, prepare and render a section
-	 * 
+	 *
 	 * @param array $arr the array of preferences for this section
 	 * @return string
-	 * 
+	 *
 	 */
 	function displaySection($arr)
 	{
@@ -447,10 +447,10 @@ class listclass
 
 	/**
 	 * parseRecord renders the items within a section
-	 * 
+	 *
 	 * @param string $area the area for display
 	 * @return string
-	 * 
+	 *
 	 */
 	function parseRecord($area)
 	{
@@ -485,9 +485,9 @@ class listclass
 
 	/**
 	 * load_elist loads and checks all e_list.php files
-	 * 
+	 *
 	 * @return array
-	 * 
+	 *
 	 */
 	function load_elist()
 	{
@@ -532,10 +532,10 @@ class listclass
 
 	/**
 	 * load_data calls the class from the e_list file and retrieves the data
-	 * 
+	 *
 	 * @param string $file the section to load (class name)
 	 * @return array
-	 * 
+	 *
 	 */
 	function load_data($file)
 	{
@@ -566,9 +566,9 @@ class listclass
 
 	/**
 	 * get datestamp last visit
-	 * 
+	 *
 	 * @return int datestamp
-	 * 
+	 *
 	 */
 	function getlvisit()
 	{
@@ -598,10 +598,10 @@ class listclass
 
 	/**
 	 * get bullet icon, either use the icon set in admin or the default theme bullet
-	 * 
+	 *
 	 * @param string $icon the icon to use as set in admin
 	 * @return string $bullet
-	 * 
+	 *
 	 */
 	function getBullet($icon)
 	{
@@ -636,10 +636,10 @@ class listclass
 
 	/**
 	 * helper method, parse heading to specific length with postfix
-	 * 
+	 *
 	 * @param string $heading the heading from the item record
 	 * @return string $heading the parsed heading
-	 * 
+	 *
 	 */
 	function parse_heading($heading)
 	{
@@ -652,10 +652,10 @@ class listclass
 
 	/**
 	 * helper method, format the date
-	 * 
+	 *
 	 * @param int $datestamp the datestamp of the item record
 	 * @return string the formatted date
-	 * 
+	 *
 	 */
 	function getListDate($datestamp)
 	{
@@ -690,9 +690,9 @@ class listclass
 
 	/**
 	 * display timelapse element (on newpage)
-	 * 
+	 *
 	 * @return string the timelapse element
-	 * 
+	 *
 	 */
 	function displayTimelapse()
 	{
@@ -731,9 +731,9 @@ class listclass
 
 	/**
 	 * display the page (either recent or new)
-	 * 
+	 *
 	 * @return string
-	 * 
+	 *
 	 */
 	function displayPage()
 	{
@@ -744,7 +744,7 @@ class listclass
 		{
 			$this->list_pref = $this->getListPrefs();
 		}
-		
+
 		//get sections
 		$this->sections = $this->prepareSection($this->mode);
 		$arr = $this->prepareSectionArray($this->mode);
@@ -790,9 +790,9 @@ class listclass
 
 	/**
 	 * display the menu (either recent or new)
-	 * 
+	 *
 	 * @return string
-	 * 
+	 *
 	 */
 	function displayMenu()
 	{
