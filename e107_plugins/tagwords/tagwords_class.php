@@ -9,9 +9,9 @@
  * Tagwords Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-04-29 07:07:33 $
- * $Author: lisa_ $
+ * $Revision: 1.5 $
+ * $Date: 2009-05-04 13:39:37 $
+ * $Author: bugrain $
  *
 */
 
@@ -26,9 +26,9 @@ if(!defined("TAG_TEXTAREA_ROWS")){ define("TAG_TEXTAREA_ROWS", "4"); }
 
 class tagwords
 {
-	var $tagwords = array(); 
+	var $tagwords = array();
 	var $mapper = array();
-	var $core = array('download', 'news', 'page');
+	var $core = array('news', 'page');
 	var $table = 'tagwords';
 	var $pref;
 	var $template;
@@ -45,7 +45,7 @@ class tagwords
 
 		//language
 		include_lan(e_PLUGIN."tagwords/languages/".e_LANGUAGE.".php");
-		
+
 		//shortcodes
 		require_once(e_PLUGIN.'tagwords/tagwords_shortcodes.php');
 		$this->shortcodes = $tagwords_shortcodes;
@@ -60,7 +60,7 @@ class tagwords
 			require_once(e_PLUGIN."tagwords/tagwords_template.php");
 		}
 		$this->template = $TEMPLATE_TAGWORDS;
-		
+
 		$this->pref = $this->get_prefs();
 
 		//load plugin and core tagword areas
@@ -153,7 +153,7 @@ class tagwords
 				return;
 			}
 		}
-		
+
 		$this->word = false;
 		if( $ret = $this->getRecords($tag_type, $tag_itemid) )
 		{
@@ -175,11 +175,11 @@ class tagwords
 	function getRecords($tag_type='', $tag_itemid='', $returnwordsonly=false, $link=true)
 	{
 		$sqlgr = new db;
-	
+
 		$qry = "
-		SELECT tag_word FROM #".$this->table." 
-		WHERE tag_type='".$this->e107->tp->toDB($tag_type)."' 
-		AND tag_itemid='".intval($tag_itemid)."' 
+		SELECT tag_word FROM #".$this->table."
+		WHERE tag_type='".$this->e107->tp->toDB($tag_type)."'
+		AND tag_itemid='".intval($tag_itemid)."'
 		ORDER BY tag_word ";
 
 		if($sqlgr->db_Select_gen($qry))
@@ -256,7 +256,7 @@ class tagwords
 			{
 				unset($combined[$ntype]);
 			}
-			
+
 		}
 		return $combined;
 	}
@@ -346,7 +346,7 @@ class tagwords
 		{
 			$typeqry = " AND tag_type IN ('".implode("','", $this->getAllowedAreas())."') ";
 		}
-		
+
 		if($tagarea!='menu')
 		{
 			//if user is able to manually set a area
@@ -380,7 +380,7 @@ class tagwords
 		FROM #".$this->table."
 		WHERE tag_word!='' ".$typeqry."
 		GROUP BY tag_word HAVING COUNT(tag_word)>=".intval($this->pref['tagwords_min'])." ".$menuqry." ";
- 
+
 		if($this->e107->sql->db_Select_gen($qry))
 		{
 			$ret=array();
@@ -517,7 +517,7 @@ class tagwords
 		$type = false;
 
 		//decide whether to show the taglist or the tagcloud
-		
+
 		//user can set own tag style
 		if(varsettrue($this->pref['tagwords_view_style'])=='1')
 		{
@@ -540,7 +540,7 @@ class tagwords
 			//user cannot set tag style, so use default tag style value
 			$type = (varsettrue($this->pref['tagwords_default_style'])=='1' ? 'cloud' : 'list');
 		}
-		
+
 		//show the taglist or tagcloud
 		if($type=='list')
 		{
@@ -699,7 +699,7 @@ class tagwords
 		// find the range of values
 		$spread = $max_qty - $min_qty;
 		// we don't want to divide by zero
-		if(0 == $spread) 
+		if(0 == $spread)
 		{
 			$spread = 1;
 		}
@@ -794,13 +794,13 @@ class tagwords
 		}
 		$row = $this->e107->sql->db_Fetch();
 		$p = $this->e107->arrayStorage->ReadArray($row['e107_value']);
-		
+
 		//validation
 		if(!array_key_exists('tagwords_activeareas', $p))
 		{
 			$p['tagwords_activeareas'] = array();
 		}
-		
+
 		return $p;
 	}
 
@@ -854,7 +854,7 @@ class tagwords
 				{
 					$name = "e_tagwords_{$this->mapper[$row['tag_type']]}";
 					if(!$sql2->db_Select_gen("SELECT * FROM #".$row['tag_type']." WHERE ".$this->$name->settings['db_id']." = '".$row['tag_itemid']."' "))
-					{	
+					{
 						$sql2->db_Delete($this->table, "tag_type='".$row['tag_type']."' AND tag_itemid='".$row['tag_itemid']."' ");
 					}
 				}
@@ -876,4 +876,4 @@ class tagwords
 
 } //end class
 
-?>  
+?>
