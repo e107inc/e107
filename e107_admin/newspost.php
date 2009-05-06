@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-04-29 21:46:16 $
+ * $Revision: 1.36 $
+ * $Date: 2009-05-06 20:40:16 $
  * $Author: bugrain $
 */
 require_once("../class2.php");
@@ -561,7 +561,8 @@ class admin_newspost
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
 							<colgroup span='4'>
 								<col style='width:  5%'></col>
-								<col style='width: 55%'></col>
+								<col style='width: 35%'></col>
+								<col style='width: 20%'></col>
 								<col style='width: 15%'></col>
 								<col style='width: 15%'></col>
 							</colgroup>
@@ -569,6 +570,7 @@ class admin_newspost
 								<tr>
 									<th class='center'><a href='".e_SELF."?main.news_id.{$sort_link}.".$this->getFrom()."'>".LAN_NEWS_45."</a></th>
 									<th><a href='".e_SELF."?main.news_title.{$sort_link}.".$this->getFrom()."'>".NWSLAN_40."</a></th>
+									<th>".LAN_NEWS_50."</th>
 									<th class='center'>".LAN_NEWS_49."</th>
 									<th class='center last'>".LAN_OPTIONS."</th>
 								</tr>
@@ -578,13 +580,14 @@ class admin_newspost
 			$ren_type = array("default","title","other-news","other-news 2");
 			foreach($newsarray as $row)
 			{
-
+			   $author = get_user_data($row['news_author']);
 				// Note: To fix the alignment bug. Put both buttons inside the Form.
 				// But make EDIT a 'button' and DELETE 'submit'
 				$text .= "
 								<tr>
 									<td class='center'>{$row['news_id']}</td>
 									<td><a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$row['news_id']}&value2={$row['news_category']}")."'>".($row['news_title'] ? $e107->tp->toHTML($row['news_title'], false,"TITLE") : "[".NWSLAN_42."]")."</a></td>
+									<td>{$author['user_name']}</td>
 									<td class='center'>
 				";
 				$text .= $ren_type[$row['news_render_type']];
@@ -974,7 +977,10 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_15.":</td>
 								<td class='control'>
-									".$frm->radio_switch('news_allow_comments', $_POST['news_allow_comments'])."
+									".
+		                     $frm->radio('news_allow_comments', 0, $_POST['news_allow_comments'])."".$frm->label(LAN_ENABLED, 'news_allow_comments', 1)."&nbsp;&nbsp;".
+		                     $frm->radio('news_allow_comments', 1, $_POST['news_allow_comments'])."".$frm->label(LAN_DISABLED, 'news_allow_comments', 1)
+									."
 									<div class='field-help'>
 										".NWSLAN_18."
 									</div>
