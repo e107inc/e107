@@ -9,8 +9,8 @@
  * Tagwords Event Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/e_event.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-17 22:46:37 $
+ * $Revision: 1.3 $
+ * $Date: 2009-05-06 21:54:33 $
  * $Author: lisa_ $
  *
 */
@@ -58,7 +58,7 @@ class e_event_tagwords
 	*/
 	function event_create($data)
 	{
-		if(isset($_POST['tagwords']) && trim($_POST['tagwords'])!='')
+		if(isset($_POST['tagwords']))
 		{
 			return $this->tag->dbTagWords($data['table'], intval($data['id']), $_POST['tagwords']);
 		}
@@ -70,7 +70,7 @@ class e_event_tagwords
 	*/
 	function event_update($data)
 	{
-		if(isset($_POST['tagwords']) && trim($_POST['tagwords'])!='')
+		if(isset($_POST['tagwords']))
 		{
 			return $this->tag->dbTagWords($data['table'], intval($data['id']), $_POST['tagwords']);
 		}
