@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2009-01-05 22:01:43 $
+|     $Revision: 1.80 $
+|     $Date: 2009-05-07 20:48:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -80,9 +80,9 @@ class comment {
 				$eaction = 'edit';
 				$id = $_GET['comment_id'];
 			}
-		  elseif (strstr(e_QUERY, "edit"))
+			elseif (strpos(e_QUERY, 'edit.') !== FALSE)
 			{
-				$eaction = "edit";
+				$eaction = 'edit';
 				$tmp = explode(".", e_QUERY);
 				$count = 0;
 
