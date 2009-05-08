@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-01-18 19:02:07 $
-|     $Author: secretr $
+|     $Revision: 1.10 $
+|     $Date: 2009-05-08 21:50:19 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -183,6 +183,13 @@ define("LAN_NEWS_51", "Modification of the news-item author can be done by:");
 define("LAN_NEWS_52", "General Information");
 define("LAN_NEWS_53", "Advanced Options");
 define("LAN_NEWS_54", "stay in edit mode");
+
+
+define('LAN_NEWS_55', 'Maintenance');				// Was LAN_NEWS_50 in 0.7
+define('LAN_NEWS_56', 'Recalculate comment counts');
+define('LAN_NEWS_57', 'Proceed');
+define('LAN_NEWS_58', 'Update complete');
+define('LAN_NEWS_59', 'News Maintenance');
 
 
 ?>
