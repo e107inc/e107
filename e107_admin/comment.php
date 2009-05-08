@@ -11,36 +11,53 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-05-08 21:50:19 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("B")) {
+if (!getperms("B")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
 	
-if (e_QUERY) {
+if (e_QUERY) 
+{
 	$temp = explode("-", e_QUERY);
 	$action = $temp[0];
 	$id = intval($temp[1]);
 	$item = $temp[2];
 	$c_item = $temp[3];
-	if ($action == "block") {
-		$sql->db_Update("comments", "comment_blocked='1' WHERE comment_id='$id' ");
+	if ($sql->select('comments','*', 'comment_id='.$id))
+	{
+		$comment = $sql->db_Fetch();
+		if ($action == "block") 
+		{
+			$sql->db_Update("comments", "comment_blocked='1' WHERE comment_id=".$id);
 	}
-	if ($action == "unblock") {
-		$sql->db_Update("comments", "comment_blocked='0' WHERE comment_id='$id' ");
+		if ($action == "unblock") 
+		{
+			$sql->db_Update("comments", "comment_blocked='0' WHERE comment_id=".$id);
+		}
+		if ($action == "delete") 
+		{
+			$sql->db_Delete("comments", "comment_id=".$id);
+			switch ($comment['comment_type'])
+			{
+				case '0' :
+				case 'news' :		// Need to update count in news record as well
+					$sql2->db_Update('news', 'news_comment_total = CAST(GREATEST(CAST(news_comment_total AS SIGNED) - 1, 0) AS UNSIGNED) WHERE news_id='.$comment['comment_item_id']);
+					break;
 	}
-	if ($action == "delete") {
-		$sql->db_Delete("comments", "comment_id='$id' ");
 	}
-	if (!$e107cache->clear($item)) {
+		if (!$e107cache->clear($item)) 
+		{
 		$tmp = explode("?", $item);
 		$item = $tmp[0]."?news.".$c_item;
 		$e107cache->clear($item);
+		}
 	}
 }
 echo "<script type='text/javascript'>window.history.go(-1);</script>\n";

@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-05-06 20:40:16 $
- * $Author: bugrain $
+ * $Revision: 1.37 $
+ * $Date: 2009-05-08 21:50:19 $
+ * $Author: e107steved $
 */
 require_once("../class2.php");
 
@@ -106,10 +106,10 @@ function headerjs()
    	return $ret;
 }
 $e_sub_cat = 'news';
-$e_wysiwyg = "data,news_extended";
+$e_wysiwyg = 'data,news_extended';
 
-require_once("auth.php");
-require_once (e_HANDLER."message_handler.php");
+require_once('auth.php');
+require_once (e_HANDLER.'message_handler.php');
 
 /*
  * Observe for delete action
@@ -247,6 +247,10 @@ class admin_newspost
 		{
 			$this->_observe_upload();
 		}
+		elseif(isset($_POST['news_comments_recalc']))
+		{
+			$this->_observe_newsCommentsRecalc();
+		}
 	}
 
 	function show_page()
@@ -275,6 +279,10 @@ class admin_newspost
 			case 'pref':
 				$this->show_news_prefs();
 			break;
+
+			case 'maint' :
+				$this->showMaintenance();
+				break;
 
 			default:
 				$this->show_existing_items();
@@ -1421,6 +1429,7 @@ class admin_newspost
 
 		echo $frm->selectbox('newsposts_archive', $this->_optrange(intval($this->getSubAction()) - 1), intval($pref['newsposts_archive']), 'class=tbox&tabindex='.intval($this->getId()));
 	}
+	
 
 	function show_news_prefs()
 	{
@@ -1551,6 +1560,7 @@ class admin_newspost
 		$e107->ns->tablerender(NWSLAN_90, $emessage->render().$text);
 	}
 
+
 	function show_submitted_news()
 	{
 
@@ -1624,6 +1634,54 @@ class admin_newspost
 	}
 
 
+
+	function showMaintenance() 
+	{
+		require_once(e_HANDLER."form_handler.php");
+		$frm = new e_form(true); //enable inner tabindex counter
+
+		$e107 = &e107::getInstance();
+
+		$text = "
+			<form method='post' action='".e_SELF."?maint' id='core-newspost-maintenance-form'>
+			<div style='text-align:center'>
+		<table class='fborder' style='".ADMIN_WIDTH."'>
+
+		<tr><td class='forumheader3'>".LAN_NEWS_56."</td><td style='text-align:center' class='forumheader3'>";
+		$text .= "<input class='button' type='submit' name='news_comments_recalc' value='".LAN_NEWS_57."' /></td></tr>";
+
+		$text .= "</table></div>
+		</form>";
+
+		$emessage = &eMessage::getInstance();
+		$e107->ns->tablerender(LAN_NEWS_59, $emessage->render().$text);
+	}
+
+
+	function _observe_newsCommentsRecalc()
+	{
+		global $sql2;
+
+		$e107 = &e107::getInstance();
+		$qry = "SELECT 
+			COUNT(`comment_id`) AS c_count,
+			`comment_item_id`
+			FROM `#comments`
+			WHERE (`comment_type`='0') OR (`comment_type`='news')
+			GROUP BY `comment_item_id`";
+			
+		if ($e107->sql->db_Select_gen($qry))
+		{
+			while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+			{
+				$sql2->db_Update('news', 'news_comment_total = '.$row['c_count'].' WHERE news_id='.$row['comment_item_id']);
+			}
+		}
+		$this->show_message(LAN_NEWS_58, E_MESSAGE_SUCCESS);
+	}
+
+
+
 	function show_message($message, $type = E_MESSAGE_INFO, $session = false)
 	{
 		// ##### Display comfort ---------
@@ -1654,6 +1712,13 @@ class admin_newspost
 			$var['sn']['text'] = NWSLAN_47." ({$c})";
 			$var['sn']['link'] = e_SELF."?sn";
 			$var['sn']['perm'] = "N";
+		}
+
+		if (getperms('0'))
+		{
+			$var['maint']['text'] = LAN_NEWS_55;
+			$var['maint']['link'] = e_SELF."?maint";
+			$var['maint']['perm'] = "N";
 		}
 
 		e_admin_menu(NWSLAN_48, $this->getAction(), $var);
