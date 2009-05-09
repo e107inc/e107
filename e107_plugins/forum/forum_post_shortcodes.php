@@ -41,7 +41,7 @@ class forum_post_shortcodes
 		return $this->e107->tp->parseTemplate($THREADTOPIC_REPLY, true);
 	}
 
-	function get_forumstart()
+	function get_formstart()
 	{
 		return "<form enctype='multipart/form-data' method='post' action='".e_SELF.'?'.e_QUERY."' id='dataform'>";
 	}
