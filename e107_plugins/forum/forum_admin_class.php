@@ -9,9 +9,9 @@
 * Forum admin functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin_class.php,v $
-* $Revision: 1.12 $
-* $Date: 2008-12-18 18:32:54 $
-* $Author: mcfly_e107 $
+* $Revision: 1.13 $
+* $Date: 2009-05-09 19:54:18 $
+* $Author: e107steved $
 *
 */
 class forumAdmin
@@ -502,7 +502,7 @@ class forumAdmin
 
 		$e107->sql->db_Select('forum', '*', 'forum_parent=0');
 		$text .= "<select name='forum_parent' class='tbox'>\n";
-		while (list($fid, $fname) = $e107->sql->db_Fetch())
+		while (list($fid, $fname) = $e107->sql->db_Fetch(MYSQL_NUM))
 		{
 			$sel = ($fid == $fInfor['forum_parent'] ? "selected='selected'" : '');
 			$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";
