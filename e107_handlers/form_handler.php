@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-01-28 14:57:27 $
+ * $Revision: 1.24 $
+ * $Date: 2009-05-10 17:31:51 $
  * $Author: secretr $
  *
 */
@@ -65,6 +65,10 @@ class e_form
 	var $_tabindex_counter = 0;
 	var $_tabindex_enabled = true;
 	var $_cached_attributes = array();
+	
+	/**
+	 * @var user_class
+	 */
 	var $_uc;
 
 	function e_form($enable_tabindex = false)
@@ -251,7 +255,7 @@ class e_form
 	{
 		if($classnum == e_UC_BLANK)
 			return $this->option('&nbsp;', '');
-
+		
 		$tmp = explode(',', $current_value);
 		if($nest_level == 0)
 		{
@@ -279,8 +283,8 @@ class e_form
 	function option($option_name, $value, $selected = false, $options = array())
 	{
 		if(false === $value) $value = '';
-		$options['selected'] = $selected; //comes as separate argument just for convenience
 		$options = $this->format_options('option', '', $options);
+		$options['selected'] = $selected; //comes as separate argument just for convenience
 		return "<option value='{$value}'".$this->get_attributes($options).">{$option_name}</option>";
 	}
 

@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-05-08 21:50:19 $
- * $Author: e107steved $
+ * $Revision: 1.38 $
+ * $Date: 2009-05-10 17:31:50 $
+ * $Author: secretr $
 */
 require_once("../class2.php");
 
@@ -498,7 +498,7 @@ class admin_newspost
 		$temp['news_newdateheader'] 	= intval($_POST['news_newdateheader']);
 		$temp['news_unstemplate'] 		= intval($_POST['news_unstemplate']);
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
-
+		
 		if ($admin_log->logArrayDiffs($temp, $pref, 'NEWS_06'))
 		{
 			save_prefs();		// Only save if changes
@@ -985,10 +985,8 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_15.":</td>
 								<td class='control'>
-									".
-		                     $frm->radio('news_allow_comments', 0, $_POST['news_allow_comments'])."".$frm->label(LAN_ENABLED, 'news_allow_comments', 1)."&nbsp;&nbsp;".
-		                     $frm->radio('news_allow_comments', 1, $_POST['news_allow_comments'])."".$frm->label(LAN_DISABLED, 'news_allow_comments', 1)
-									."
+									".$frm->radio('news_allow_comments', 0, $_POST['news_allow_comments'])."".$frm->label(LAN_ENABLED, 'news_allow_comments', 0)."&nbsp;&nbsp;
+									".$frm->radio('news_allow_comments', 1, $_POST['news_allow_comments'])."".$frm->label(LAN_DISABLED, 'news_allow_comments', 1)."
 									<div class='field-help'>
 										".NWSLAN_18."
 									</div>
@@ -1644,14 +1642,25 @@ class admin_newspost
 
 		$text = "
 			<form method='post' action='".e_SELF."?maint' id='core-newspost-maintenance-form'>
-			<div style='text-align:center'>
-		<table class='fborder' style='".ADMIN_WIDTH."'>
-
-		<tr><td class='forumheader3'>".LAN_NEWS_56."</td><td style='text-align:center' class='forumheader3'>";
-		$text .= "<input class='button' type='submit' name='news_comments_recalc' value='".LAN_NEWS_57."' /></td></tr>";
-
-		$text .= "</table></div>
-		</form>";
+				<fieldset id='core-newspost-maintenance'>
+					<legend class='e-hideme'>".LAN_NEWS_59."</legend>
+					<table class='adminform' cellpadding='0' cellspacing='0'>
+					<colgroup span='2'>
+						<col class='col-label'>
+						<col class='col-control'>
+					</colgroup>	
+					<tbody>
+						<tr>
+							<td class='label'>".LAN_NEWS_56."</td>
+							<td class='control'>
+								".$frm->admin_button('news_comments_recalc', LAN_NEWS_57, 'update')."
+							</td>
+						</tr>
+					</tbody>
+					</table>
+				</fieldset>
+			</form>
+		";
 
 		$emessage = &eMessage::getInstance();
 		$e107->ns->tablerender(LAN_NEWS_59, $emessage->render().$text);
