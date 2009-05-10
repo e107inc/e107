@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-05-10 17:31:50 $
+ * $Revision: 1.39 $
+ * $Date: 2009-05-10 17:52:13 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -1646,8 +1646,8 @@ class admin_newspost
 					<legend class='e-hideme'>".LAN_NEWS_59."</legend>
 					<table class='adminform' cellpadding='0' cellspacing='0'>
 					<colgroup span='2'>
-						<col class='col-label'>
-						<col class='col-control'>
+						<col class='col-label'></col>
+						<col class='col-control'></col>
 					</colgroup>	
 					<tbody>
 						<tr>
