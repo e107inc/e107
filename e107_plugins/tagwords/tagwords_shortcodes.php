@@ -9,9 +9,9 @@
  * Tagwords Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_shortcodes.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-17 22:46:37 $
- * $Author: lisa_ $
+ * $Revision: 1.3 $
+ * $Date: 2009-05-10 10:50:28 $
+ * $Author: bugrain $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -26,7 +26,7 @@ $codes = array();
 $tmp = get_class_methods('tagwords_shortcodes');
 foreach($tmp as $c)
 {
-	if(strpos($c, 'get_') === 0) 
+	if(strpos($c, 'get_') === 0)
 	{
 		$codes[] = substr($c, 4);
 	}
@@ -57,14 +57,16 @@ class tagwords_shortcodes
 					return;
 				}
 				$id = 'tagwords_searchform_menu';
-				
+
 				return "
-				<form id='".$id."' name='".$id."' method='get' action='".e_PLUGIN."tagwords/tagwords.php'>
+				<form id='".$id."' method='get' action='".e_PLUGIN."tagwords/tagwords.php'>
+				<div>
 				<input class='tbox' style='width:100px;' type='text'  name='q' size='35' value='".$value."' maxlength='50' />
 				<input class='button' type='submit' name='se' value='".LAN_TAG_SEARCH_2."' />
+				</div>
 				</form>";
 				break;
-			
+
 			case 'search':
 				if(varsettrue($tag->pref['tagwords_view_search'])!=1)
 				{
@@ -72,12 +74,14 @@ class tagwords_shortcodes
 				}
 				$id = 'tagwords_searchform';
 				return "
-				<form id='".$id."' name='".$id."' method='get' action='".e_PLUGIN."tagwords/tagwords.php'>
+				<form id='".$id."' method='get' action='".e_PLUGIN."tagwords/tagwords.php'>
+				<div>
 				<input class='tbox' style='width:100px;' type='text'  name='q' size='35' value='".$value."' maxlength='50' />
 				<input class='button' type='submit' name='s' value='".LAN_TAG_SEARCH_2."' />
+				</div>
 				</form>";
 				break;
-			
+
 			default:
 				if(varsettrue($tag->pref['tagwords_view_search'])!=1)
 				{
