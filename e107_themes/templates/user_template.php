@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-20 20:26:28 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2009-05-18 21:37:50 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 
@@ -144,7 +144,7 @@ $USER_FULL_TEMPLATE = "
 
 <tr>
 	<td  {$main_colspan} class='forumheader3'>
-		<div class='f-left'>".LAN_USER_61.":</div>
+		<div class='f-left'>".LAN_USER_54.":</div>
 		<div class='f-right right'>{USER_LEVEL}</div>
 	</td>
 </tr>
