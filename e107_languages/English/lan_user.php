@@ -9,9 +9,9 @@
  * Language file - user-related (many generic definitions)
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_user.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-28 22:37:43 $
- * $Author: e107steved $
+ * $Revision: 1.5 $
+ * $Date: 2009-05-18 21:37:22 $
+ * $Author: bugrain $
  *
 */
 /*
@@ -81,7 +81,7 @@ define('LAN_USER_50', 'Member Profile');						// LAN_402
 define('LAN_USER_51', 'That is not a valid user.');				// LAN_400
 define('LAN_USER_52', 'Registered members');					// LAN_140
 define('LAN_USER_53', 'No registered members yet.');			// LAN_141
-define('LAN_USER_54', 'Peer Rating');							// USERLAN_1 (apparently not used)
+define('LAN_USER_54', 'Level');							     // USERLAN_1
 define('LAN_USER_55', 'You do not have access to view this page.');	// USERLAN_2
 define('LAN_USER_56', 'Registered members: ');					// LAN_138
 define('LAN_USER_57', 'Order: ');								// LAN_139
