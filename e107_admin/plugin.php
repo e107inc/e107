@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2008-04-05 07:58:28 $
+|     $Revision: 1.75 $
+|     $Date: 2009-05-19 21:24:18 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
-if (!getperms("Z")) {
+if (!getperms("Z")) 
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -32,17 +33,22 @@ $tmp = explode('.', e_QUERY);
 $action = $tmp[0];
 $id = intval($tmp[1]);
 
-if (isset($_POST['upload'])) {
-	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
+if (isset($_POST['upload'])) 
+{
+	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) 
+	{
 		exit;
 	}
 
 	extract($_FILES);
 	/* check if e_PLUGIN dir is writable ... */
-	if(!is_writable(e_PLUGIN)) {
+	if(!is_writable(e_PLUGIN))
+	{
 		/* still not writable - spawn error message */
 		$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_39);
-	} else {
+	}
+	else
+	{
 		/* e_PLUGIN is writable - continue */
 		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php");
@@ -50,18 +56,24 @@ if (isset($_POST['upload'])) {
 		$fileSize = $file_userfile['size'][0];
 		$fileType = $file_userfile['type'][0];
 
-		if(strstr($file_userfile['type'][0], "gzip")) {
+		if(strstr($file_userfile['type'][0], "gzip"))
+		{
 			$fileType = "tar";
-		} else if (strstr($file_userfile['type'][0], "zip")) {
+		}
+		else if (strstr($file_userfile['type'][0], "zip"))
+		{
 			$fileType = "zip";
-		} else {
+		}
+		else
+		{
 			/* not zip or tar - spawn error message */
 			$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_41);
 			require_once("footer.php");
 			exit;
 		}
 
-		if ($fileSize) {
+		if ($fileSize)
+		{
 
 			$opref = $pref['upload_storagetype'];
 			$pref['upload_storagetype'] = 1;		/* temporarily set upload type pref to flatfile */
@@ -72,20 +84,27 @@ if (isset($_POST['upload'])) {
 
 			/* attempt to unarchive ... */
 
-			if($fileType == "zip") {
+			if($fileType == "zip")
+			{
 				require_once(e_HANDLER."pclzip.lib.php");
 				$archive = new PclZip(e_PLUGIN.$archiveName);
 				$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN, PCLZIP_OPT_SET_CHMOD, 0666));
-			} else {
+			}
+			else
+			{
 				require_once(e_HANDLER."pcltar.lib.php");
 				$unarc = ($fileList = PclTarExtract($archiveName, e_PLUGIN));
 			}
 
-			if(!$unarc) {
+			if(!$unarc)
+			{
 				/* unarc failed ... */
-				if($fileType == "zip") {
+				if($fileType == "zip")
+				{
 					$error = EPL_ADLAN_46." '".$archive -> errorName(TRUE)."'";
-				} else {
+				}
+				else
+				{
 					$error = EPL_ADLAN_47.PclErrorString().", ".EPL_ADLAN_48.intval(PclErrorCode());
 				}
 				$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_42." ".$archiveName." ".$error);
@@ -101,7 +120,9 @@ if (isset($_POST['upload'])) {
 			if(file_exists(e_PLUGIN.$folderName."/plugin.php")) {
 				/* upload is a plugin */
 				$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
-			} else {
+			}
+			else
+			{
 				/* upload is a menu */
 				$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_45);
 			}
@@ -129,7 +150,8 @@ if ($action == 'uninstall')
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 		$func = $eplug_folder.'_uninstall';
-		if (function_exists($func)) {
+			if (function_exists($func))
+			{
 			$text .= call_user_func($func);
 		}
 
@@ -153,25 +175,29 @@ if ($action == 'uninstall')
 			$text .= EPL_ADLAN_49."<br />";
 		}
 
-		if (is_array($eplug_prefs)) {
+			if (is_array($eplug_prefs))
+			{
 			$plugin->manage_prefs('remove', $eplug_prefs);
 			$text .= EPL_ADLAN_29."<br />";
 		}
 
-		if (is_array($eplug_comment_ids)) {
+			if (is_array($eplug_comment_ids))
+			{
 			$text .= ($plugin->manage_comments('remove', $eplug_comment_ids)) ? EPL_ADLAN_50."<br />" : "";
 		}
 
 
-		if ($eplug_module) {
+		if ($eplug_module) 
+		{
 			$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
 		}
-
-		if ($eplug_status) {
+			if ($eplug_status)
+			{
 			$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
 		}
 
-		if ($eplug_latest) {
+			if ($eplug_latest)
+			{
 			$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
 		}
 
@@ -217,11 +243,13 @@ if ($action == 'uninstall')
 			$sql->db_Delete('menus', "menu_name='$eplug_menu_name' ");
 		}
 
-		if ($eplug_link) {
+			if ($eplug_link)
+			{
 			$plugin->manage_link('remove', $eplug_link_url, $eplug_link_name);
 		}
 
-		if ($eplug_userclass) {
+			if ($eplug_userclass)
+			{
 			$plugin->manage_userclass('remove', $eplug_userclass);
 		}
 
@@ -259,39 +287,54 @@ if ($action == 'install') {
 	$plugin ->save_addon_prefs();
 }
 
-if ($action == 'upgrade') {
+if ($action == 'upgrade')
+{
 	$plug = $plugin->getinfo($id);
 	include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 	$func = $eplug_folder.'_upgrade';
-	if (function_exists($func)) {
+		if (function_exists($func))
+		{
 		$text .= call_user_func($func);
 	}
 
-	if (is_array($upgrade_alter_tables)) {
+		if (is_array($upgrade_alter_tables))
+		{
 		$result = $plugin->manage_tables('upgrade', $upgrade_alter_tables);
-		if (!$result) {
+			if (!$result)
+			{
 			$text .= EPL_ADLAN_9.'<br />';
-		} else {
+			}
+			else
+			{
 			$text .= EPL_ADLAN_7."<br />";
 		}
 	}
 
-	if ($eplug_module) {
+	if ($eplug_module) 
+	{
 		$plugin->manage_plugin_prefs('add', 'modules', $eplug_folder);
-	} else {
+		}
+		else
+		{
 		$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
 	}
 
-	if ($eplug_status) {
+		if ($eplug_status)
+		{
 		$plugin->manage_plugin_prefs('add', 'plug_status', $eplug_folder);
-	} else {
+		}
+		else
+		{
 		$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
 	}
 
-	if ($eplug_latest) {
+		if ($eplug_latest)
+		{
 		$plugin->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
-	} else {
+		}
+		else
+		{
 		$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
 	}
 
@@ -315,12 +358,14 @@ if ($action == 'upgrade') {
 		$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
 	}
 
-	if (is_array($upgrade_add_prefs)) {
+	if (is_array($upgrade_add_prefs)) 
+	{
 		$plugin->manage_prefs('add', $upgrade_add_prefs);
 		$text .= EPL_ADLAN_8.'<br />';
 	}
 
-	if (is_array($upgrade_remove_prefs)) {
+		if (is_array($upgrade_remove_prefs))
+		{
 		$plugin->manage_prefs('remove', $upgrade_remove_prefs);
 	}
 
@@ -395,9 +440,12 @@ $plugin->update_plugins_table();
 
 /* plugin upload form */
 
-if(!is_writable(e_PLUGIN)) {
+if(!is_writable(e_PLUGIN))
+{
 	$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_44);
-} else {
+} 
+else 
+{
 	$text = "<div style='text-align:center'>
 	<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -435,7 +483,8 @@ function render_plugs($pluginList)
 
 	if (empty($pluginList)) return '';
 
-	foreach($pluginList as $plug) {
+	foreach($pluginList as $plug) 
+	{
 	//Unset any possible eplug_ variables set by last plugin.php
 		$defined_vars = array_keys(get_defined_vars());
 		foreach($defined_vars as $varname) {
@@ -497,14 +546,20 @@ function render_plugs($pluginList)
 
 		$text .= "</table></td>";
 		$text .= "<td class='forumheader3' style='width:70px;text-align:center'>";
-    	if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
+    	if ($eplug_conffile || $eplug_module || $eplug_link || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
 			$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' /> " : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
-		} else {
-	   		if ($eplug_menu_name) {
+		} 
+		else 
+		{
+	   		if ($eplug_menu_name) 
+			{
 				$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
-			} else {
+			} 
+			else 
+			{
 				$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
-				if($plug['plugin_installflag'] == FALSE){
+				if($plug['plugin_installflag'] == FALSE)
+				{
 					global $sql;
 					$sql->db_Delete('plugin', "plugin_installflag=0 AND (plugin_path='{$plug['plugin_path']}' OR plugin_path='{$plug['plugin_path']}/' )  ");
 				}
