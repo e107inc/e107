@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-01-18 17:05:08 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.38 $
+ * $Date: 2009-05-24 15:34:37 $
+ * $Author: e107steved $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -44,8 +44,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.37 $
-* @author $Author: mcfly_e107 $
+* @version $Revision: 1.38 $
+* @author $Author: e107steved $
 */
 class db {
 
@@ -57,7 +57,9 @@ class db {
 	var $mySQLaccess;
 	var $mySQLresult;
 	var $mySQLrows;
-	var $mySQLerror;
+	var $mySQLerror;			// Error reporting mode - TRUE shows messages
+	var	$mySQLlastErrNum;		// Number of last error
+	var	$mySQLlastErrText;		// Text of last error (empty string if no error)
 	var $mySQLcurTable;
 	var $mySQLlanguage;
 	var $mySQLinfo;
@@ -72,20 +74,20 @@ class db {
 	*/
 	function db()
 	{
-	  global $pref, $eTraffic, $db_defaultPrefix;
-	  $eTraffic->BumpWho('Create db object', 1);
-	  $this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
-	  $langid = 'e107language_'.$pref['cookie_name'];
-	  if ($pref['user_tracking'] == 'session')
-	  {
-		if (!isset($_SESSION[$langid])) { return; }
-		$this->mySQLlanguage = $_SESSION[$langid];
-	  }
-	  else
-	  {
-		if (!isset($_COOKIE[$langid])) { return; }
-		$this->mySQLlanguage = $_COOKIE[$langid];
-	  }
+		global $pref, $eTraffic, $db_defaultPrefix;
+		$eTraffic->BumpWho('Create db object', 1);
+		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
+		$langid = 'e107language_'.$pref['cookie_name'];
+		if ($pref['user_tracking'] == 'session')
+		{
+			if (!isset($_SESSION[$langid])) { return; }
+			$this->mySQLlanguage = $_SESSION[$langid];
+		}
+		else
+		{
+			if (!isset($_COOKIE[$langid])) { return; }
+			$this->mySQLlanguage = $_COOKIE[$langid];
+		}
 	}
 
 	/**
@@ -154,28 +156,32 @@ class db {
 	*/
 	function db_Mark_Time($sMarker)
 	{
-	  if (E107_DEBUG_LEVEL > 0)
-	  {
-		global $db_debug;
-		$db_debug->Mark_Time($sMarker);
-	  }
+		if (E107_DEBUG_LEVEL > 0)
+		{
+			global $db_debug;
+			$db_debug->Mark_Time($sMarker);
+		}
 	}
+
 
 	/**
 	* @return void
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Show_Performance() {
+	function db_Show_Performance() 
+	{
 		return $db_debug->Show_Performance();
 	}
+
 
 	/**
 	* @return void
 	* @desc add query to dblog table
 	* @access private
 	*/
-	function db_Write_log($log_type = '', $log_remark = '', $log_query = '') {
+	function db_Write_log($log_type = '', $log_remark = '', $log_query = '') 
+	{
 		global $tp, $e107;
 		list($time_usec, $time_sec) = explode(" ", microtime());
 		$uid = (USER) ? USERID : '0';
@@ -185,6 +191,7 @@ class db {
 		$this->db_Insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
 	}
 
+
 	/**
 	* @return unknown
 	* @param unknown $query
@@ -193,18 +200,21 @@ class db {
 	* @access private
 	* This is the 'core' routine which handles much of the interface between other functions and the DB
 	*/
-	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') {
+	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') 
+	{
 		global $db_time,$db_mySQLQueryCount,$queryinfo, $eTraffic;
 		$db_mySQLQueryCount++;
 
-		if ($debug == 'now') {
+		if ($debug == 'now') 
+		{
 			echo "** $query<br />\n";
 		}
 		if ($debug !== FALSE || strstr(e_QUERY, 'showsql'))
 		{
 			$queryinfo[] = "<b>{$qry_from}</b>: $query";
 		}
-		if ($log_type != '') {
+		if ($log_type != '') 
+		{
 			$this->db_Write_log($log_type, $log_remark, $query);
 		}
 
@@ -225,13 +235,14 @@ class db {
 
 		if ((strpos($query,'SQL_CALC_FOUND_ROWS') !== FALSE) && (strpos($query,'SELECT') !== FALSE))
 		{	// Need to get the total record count as well. Return code is a resource identifier
-		  // Have to do this before any debug action, otherwise this bit gets messed up
-		  $fr = mysql_query("SELECT FOUND_ROWS()", $this->mySQLaccess);
-		  $rc = mysql_fetch_array($fr);
-		  $this->total_results = $rc['FOUND_ROWS()'];
+			// Have to do this before any debug action, otherwise this bit gets messed up
+			$fr = mysql_query("SELECT FOUND_ROWS()", $this->mySQLaccess);
+			$rc = mysql_fetch_array($fr);
+			$this->total_results = $rc['FOUND_ROWS()'];
 		}
 
-		if (E107_DEBUG_LEVEL) {
+		if (E107_DEBUG_LEVEL) 
+		{
 			global $db_debug;
 			$aTrace = debug_backtrace();
 			$pTable = $this->mySQLcurTable;
@@ -240,15 +251,19 @@ class db {
 			} else {
 				$this->mySQLcurTable = ''; // clear before next query
 			}
-			if(is_object($db_debug)) {
+			if(is_object($db_debug)) 
+			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
 			   	$nFields = $db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
-			} else {
+			} 
+			else 
+			{
 				echo "what happened to db_debug??!!<br />";
 			}
 		}
 		return $sQryRes;
 	}
+
 
 	/**
 	* @return int Number of rows or false on error
@@ -275,37 +290,51 @@ class db {
 	*/
 	function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-	  global $db_mySQLQueryCount;
+		global $db_mySQLQueryCount;
 
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
 		if ($arg != '' && $mode == 'default')
 		{
-			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
+			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) 
+			{
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
-			} else {
+			} 
+			else 
+			{
 				$this->dbError("db_Select (SELECT $fields FROM ".$this->mySQLPrefix."{$table} WHERE {$arg})");
 				return FALSE;
 			}
-		} elseif ($arg != '' && $mode != 'default') {
-			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
+		} 
+		elseif ($arg != '' && $mode != 'default') 
+		{
+			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) 
+			{
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
-			} else {
+			} 
+			else 
+			{
 				$this->dbError("db_Select (SELECT {$fields} FROM ".$this->mySQLPrefix."{$table} {$arg})");
 				return FALSE;
 			}
-		} else {
-			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
+		} 
+		else 
+		{
+			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table, NULL, 'db_Select', $debug, $log_type, $log_remark)) 
+			{
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
-			} else {
+			} 
+			else 
+			{
 				$this->dbError("db_Select (SELECT {$fields} FROM ".$this->mySQLPrefix."{$table})");
 				return FALSE;
 			}
 		}
 	}
+
 
 	/**
 	* @return int Last insert ID or false on error
@@ -333,7 +362,7 @@ class db {
 				$arg = $_tmp;
 				unset($_tmp);
 			}
-	   	if(!isset($arg['data'])) { return false; }
+			if(!isset($arg['data'])) { return false; }
 
 			$fieldTypes = $this->_getTypes($arg);
 			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
@@ -354,20 +383,22 @@ class db {
 		if(!$this->mySQLaccess)
 		{
 			global $db_ConnectionID;
-     	$this->mySQLaccess = $db_ConnectionID;
+			$this->mySQLaccess = $db_ConnectionID;
 		}
 
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark ))
 		{
 			$tmp = mysql_insert_id($this->mySQLaccess);
+			$this->dbError('db_Insert');
 			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
 		}
 		else
 		{
-			$this->dbError("db_Insert ($query)");
+			$this->dbError("db_Insert ({$query})");
 			return FALSE;
 		}
 	}
+
 
 	/**
 	* @return int number of affected rows, or false on error
@@ -395,13 +426,13 @@ class db {
 		if(!$this->mySQLaccess)
 		{
 			global $db_ConnectionID;
-     	$this->mySQLaccess = $db_ConnectionID;
+			$this->mySQLaccess = $db_ConnectionID;
 		}
 
   	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
   	{
 	   	$new_data = '';
-			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+		if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
 	   	{
 		   	//Convert data if not using 'new' format (is this needed?)
 	   		$_tmp = array();
@@ -428,12 +459,13 @@ class db {
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark))
 		{
 			$result = mysql_affected_rows($this->mySQLaccess);
+			$this->dbError('db_Update');
 			if ($result == -1) { return false; }	// Error return from mysql_affected_rows
 			return $result;
 		}
 		else
 		{
-			$this->dbError("db_Update ($query)");
+			$this->dbError("db_Update ({$query})");
 			return FALSE;
 		}
 	}
@@ -501,6 +533,7 @@ class db {
 		$arg is usually a 'WHERE' clause
 		The way the code is written at the moment, a call to db_Update() with just the first two parameters specified can be
 			converted simply by changing the function name - it will still work.
+		Deprecated routine - use db_Update() with array parameters
 	*/
 	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
@@ -549,18 +582,23 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Fetch($type = MYSQL_ASSOC) {
+	function db_Fetch($type = MYSQL_ASSOC) 
+	{
 		global $eTraffic;
-		if (!(is_int($type))) {
+		if (!(is_int($type))) 
+		{
 			$type=MYSQL_ASSOC;
 		}
 		$b = microtime();
 		$row = @mysql_fetch_array($this->mySQLresult,$type);
 		$eTraffic->Bump('db_Fetch', $b);
-		if ($row) {
+		if ($row) 
+		{
 			$this->dbError('db_Fetch');
 			return $row;
-		} else {
+		} 
+		else 
+		{
 			$this->dbError('db_Fetch');
 			return FALSE;
 		}
@@ -578,30 +616,41 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
+	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') 
+	{
 		$table = $this->db_IsLang($table);
 
-		if ($fields == 'generic') {
+		if ($fields == 'generic') 
+		{
 			$query=$table;
-			if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
+			if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) 
+			{
 				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
+				$this->dbError('db_Count');
 				return $rows['COUNT(*)'];
-			} else {
-				$this->dbError("dbCount ($query)");
+			} 
+			else 
+			{
+				$this->dbError("db_Count ({$query})");
 				return FALSE;
 			}
 		}
 
 		$this->mySQLcurTable = $table;
 		$query='SELECT COUNT'.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg;
-		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
+		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) 
+		{
 			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
+			$this->dbError('db_Count');
 			return $rows[0];
-		} else {
-			$this->dbError("dbCount ($query)");
+		} 
+		else 
+		{
+			$this->dbError("db_Count({$query})");
 			return FALSE;
 		}
 	}
+
 
 	/**
 	* @return void
@@ -615,7 +664,8 @@ class db {
 	*
 	* @access public
 	*/
-	function db_Close() {
+	function db_Close() 
+	{
 		global $eTraffic;
 		if(!$this->mySQLaccess)
 		{
@@ -626,6 +676,7 @@ class db {
 		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
 		$this->dbError('dbClose');
 	}
+
 
 	/**
 	* @return int number of affected rows, or false on error
@@ -638,7 +689,8 @@ class db {
 	* <br />
 	* @access public
 	*/
-	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
+	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') 
+	{
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
 
@@ -649,49 +701,48 @@ class db {
 		}
 
 
-		if (!$arg) {
-			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table, NULL, 'db_Delete', $debug, $log_type, $log_remark)) {
+		if (!$arg) 
+		{
+			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table, NULL, 'db_Delete', $debug, $log_type, $log_remark)) 
+			{
+				$this->dbError('db_Delete');
 				return $result;
-			} else {
-				$this->dbError("db_Delete ($arg)");
+			} 
+			else 
+			{
+				$this->dbError("db_Delete({$arg})");
 				return FALSE;
 			}
-		} else {
-			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Delete', $debug, $log_type, $log_remark)) {
+		} 
+		else 
+		{
+			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Delete', $debug, $log_type, $log_remark)) 
+			{
 				$tmp = mysql_affected_rows($this->mySQLaccess);
+				$this->dbError('db_Delete');
 				return $tmp;
-			} else {
+			} 
+			else 
+			{
 				$this->dbError('db_Delete ('.$arg.')');
 				return FALSE;
 			}
 		}
 	}
 
+
 	/**
 	* @return unknown
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Rows() {
+	function db_Rows() 
+	{
 		$rows = $this->mySQLrows = @mysql_num_rows($this->mySQLresult);
 		$this->dbError('db_Rows');
 		return $rows;
 	}
 
-	/**
-	* @return unknown
-	* @param unknown $from
-	* @desc Enter description here...
-	* @access private
-	*/
-	function dbError($from) {
-		if ($error_message = @mysql_error()) {
-			if ($this->mySQLerror == TRUE) {
-				message_handler('ADMIN_MESSAGE', '<b>mySQL Error!</b> Function: '.$from.'. ['.@mysql_errno().' - '.$error_message.']', __LINE__, __FILE__);
-				return $error_message;
-			}
-		}
-	}
 
 	/**
 	* @return void
@@ -699,7 +750,8 @@ class db {
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_SetErrorReporting($mode) {
+	function db_SetErrorReporting($mode) 
+	{
 		$this->mySQLerror = $mode;
 	}
 
@@ -712,37 +764,30 @@ class db {
 	*/
 	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
-		/*
-		changes by jalist 19/01/05:
-		added string replace on table prefix to tidy up long database queries
-		usage: instead of sending "SELECT * FROM ".$this->mySQLPrefix."table", do "SELECT * FROM #table"
-		Returns result compatible with mysql_query - may be TRUE for some results, resource ID for others
-		*/
-
 		$this->tabset = FALSE;
 		if(strpos($query,'`#') !== FALSE)
 		{
 			$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
 		}
 		elseif(strpos($query,'#') !== FALSE)
-	  {
+		{
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
-	  }
+		}
 
 		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE)
 		{	// Successful query which doesn't return a row count
-		  $this->dbError('db_Select_gen');
-		  return TRUE;
+			$this->dbError('db_Select_gen');
+			return TRUE;
 		}
 		elseif ($this->mySQLresult === FALSE)
 		{	// Failed query
-		  $this->dbError('dbQuery ('.$query.')');
-		  return FALSE;
+			$this->dbError('db_Select_gen('.$query.')');
+			return FALSE;
 		}
 		else
 		{	// Successful query which does return a row count - get the count and return it
-		  $this->dbError('db_Select_gen');
-		  return $this->db_Rows();
+			$this->dbError('db_Select_gen');
+			return $this->db_Rows();
 		}
 	}
 
@@ -764,27 +809,32 @@ class db {
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Fieldname($offset) {
+	function db_Fieldname($offset) 
+	{
 		$result = @mysql_field_name($this->mySQLresult, $offset);
 		return $result;
 	}
 
-	/**
-	* @return unknown
-	* @desc Enter description here...
-	* @access private
-	*/
-	function db_Field_info() {
-		$result = @mysql_fetch_field($this->mySQLresult);
-		return $result;
-	}
 
 	/**
 	* @return unknown
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Num_fields() {
+	function db_Field_info() 
+	{
+		$result = @mysql_fetch_field($this->mySQLresult);
+		return $result;
+	}
+
+
+	/**
+	* @return unknown
+	* @desc Enter description here...
+	* @access private
+	*/
+	function db_Num_fields() 
+	{
 		$result = @mysql_num_fields($this->mySQLresult);
 		return $result;
 	}
@@ -795,9 +845,11 @@ class db {
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_IsLang($table,$multiple=FALSE) {
+	function db_IsLang($table,$multiple=FALSE) 
+	{
 		global $pref, $mySQLtablelist;
-		if ((!$this->mySQLlanguage || !$pref['multilanguage']) && $multiple==FALSE) {
+		if ((!$this->mySQLlanguage || !$pref['multilanguage']) && $multiple==FALSE) 
+		{
 		  	return $table;
 		}
 
@@ -807,9 +859,11 @@ class db {
         	$this->mySQLaccess = $db_ConnectionID;
 		}
 
-		if (!$mySQLtablelist) {
+		if (!$mySQLtablelist) 
+		{
 			$tablist = mysql_list_tables($this->mySQLdefaultdb,$this->mySQLaccess);
-			while (list($temp) = mysql_fetch_array($tablist)) {
+			while (list($temp) = mysql_fetch_array($tablist)) 
+			{
 				$mySQLtablelist[] = $temp;
 			}
 		}
@@ -818,17 +872,23 @@ class db {
 
 	// ---- Find all multi-language tables.
 
-		if($multiple == TRUE){ // return an array of all matching language tables. eg [french]->e107_lan_news
-			if(!is_array($table)){
+		if($multiple == TRUE)
+		{ // return an array of all matching language tables. eg [french]->e107_lan_news
+			if(!is_array($table))
+			{
 				$table = array($table);
 			}
 
-			foreach($mySQLtablelist as $tab){
- 				if(stristr($tab, $this->mySQLPrefix."lan_") !== FALSE){
+			foreach($mySQLtablelist as $tab)
+			{
+ 				if(stristr($tab, $this->mySQLPrefix."lan_") !== FALSE)
+				{
 					$tmp = explode("_",str_replace($this->mySQLPrefix."lan_","",$tab));
 			   		$lng = $tmp[0];
-                    foreach($table as $t){
-                    	if(eregi($t."$",$tab)){
+                    foreach($table as $t)
+					{
+                    	if(eregi($t."$",$tab))
+						{
 							$lanlist[$lng][$this->mySQLPrefix.$t] = $tab;
 						}
 					}
@@ -838,7 +898,8 @@ class db {
 		}
 	// -------------------------
 
-		if (in_array($this->mySQLPrefix.$mltable, $mySQLtablelist)) {
+		if (in_array($this->mySQLPrefix.$mltable, $mySQLtablelist)) 
+		{
 			return $mltable;
 		}
 	 	return $table;
@@ -850,14 +911,18 @@ class db {
 	* @desc returns fields as structured array
 	* @access public
 	*/
-	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE) {
+	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE) 
+	{
 		$list = array();
 		$counter = 1;
-		while ($row = $this->db_Fetch()) {
-			foreach($row as $key => $value) {
-				if (is_string($key)) {
-					if (strtoupper($fields) == 'ALL' || in_array ($key, $fields)) {
-
+		while ($row = $this->db_Fetch()) 
+		{
+			foreach($row as $key => $value) 
+			{
+				if (is_string($key)) 
+				{
+					if (strtoupper($fields) == 'ALL' || in_array ($key, $fields)) 
+					{
 						if(!$ordermode)
 						{
 							$list[$counter][$key] = $value;
@@ -869,7 +934,8 @@ class db {
 					}
 				}
 			}
-			if ($amount && $amount == $counter || ($maximum && $counter > $maximum)) {
+			if ($amount && $amount == $counter || ($maximum && $counter > $maximum)) 
+			{
 				break;
 			}
 			$counter++;
@@ -882,7 +948,8 @@ class db {
 	* @desc returns total number of queries made so far
 	* @access public
 	*/
-	function db_QueryCount() {
+	function db_QueryCount() 
+	{
 		global $db_mySQLQueryCount;
 		return $db_mySQLQueryCount;
 	}
@@ -891,36 +958,42 @@ class db {
     /*
     	Multi-language Query Function.
 	*/
-
-
-	function db_Query_all($query,$debug=""){
+	function db_Query_all($query,$debug="")
+	{
         $error = "";
 
 		$query = str_replace("#",$this->mySQLPrefix,$query);
 
-        if(!$this->db_Query($query)){  // run query on the default language first.
+        if(!$this->db_Query($query))
+		{  // run query on the default language first.
         	$error .= $query. " failed";
 		}
 
         $tmp = explode(" ",$query);
-      	foreach($tmp as $val){
-   			if(strpos($val,$this->mySQLPrefix) !== FALSE){
+      	foreach($tmp as $val)
+		{
+   			if(strpos($val,$this->mySQLPrefix) !== FALSE)
+			{
     			$table[] = str_replace($this->mySQLPrefix,"",$val);
 				$search[] = $val;
 			}
 		}
 
      // Loop thru relevant language tables and replace each tablename within the query.
-        if($tablist = $this->db_IsLang($table,TRUE)){
-			foreach($tablist as $key=>$tab){
+        if($tablist = $this->db_IsLang($table,TRUE))
+		{
+			foreach($tablist as $key=>$tab)
+			{
 				$querylan = $query;
-                foreach($search as $find){
+                foreach($search as $find)
+				{
                     $lang = $key;
 					$replace = ($tab[$find] !="") ? $tab[$find] : $find;
                	  	$querylan = str_replace($find,$replace,$querylan);
 				}
 
-				if(!$this->db_Query($querylan)){ // run query on other language tables.
+				if(!$this->db_Query($querylan))
+				{ // run query on other language tables.
 					$error .= $querylan." failed for language";
 				}
 			 	if($debug){ echo "<br />** lang= ".$querylan; }
@@ -931,51 +1004,53 @@ class db {
 		return ($error)? FALSE : TRUE;
 	}
 
+
 	// Determines if a plugin field (and key) exist. OR if fieldid is numeric - return the field name in that position.
 	// If $retinfo is true, returns complete array of field data; FALSE if not found
     function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
 	{
-	  if(!$this->mySQLdefaultdb)
-	  {
-		global $mySQLdefaultdb;
-		$this->mySQLdefaultdb = $mySQLdefaultdb;
-	  }
-      $convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
-      $key = ($convert[$key]) ? $convert[$key] : "OFF";
+		if(!$this->mySQLdefaultdb)
+		{
+			global $mySQLdefaultdb;
+			$this->mySQLdefaultdb = $mySQLdefaultdb;
+		}
+		$convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
+		$key = ($convert[$key]) ? $convert[$key] : "OFF";
 
-	  if(!$this->mySQLaccess)
-	  {
-		global $db_ConnectionID;
-        $this->mySQLaccess = $db_ConnectionID;
-	  }
+		if(!$this->mySQLaccess)
+		{
+			global $db_ConnectionID;
+			$this->mySQLaccess = $db_ConnectionID;
+		}
 
         $result = mysql_query("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table,$this->mySQLaccess);
         if (mysql_num_rows($result) > 0)
 		{
-          $c=0;
-   		  while ($row = mysql_fetch_assoc($result))
-		  {
-			if(is_numeric($fieldid))
+			$c=0;
+			while ($row = mysql_fetch_assoc($result))
 			{
-              if($c == $fieldid)
-			  {
-			    if ($retinfo) return $row;
-                return $row['Field']; // field number matches.
-			  }
+				if(is_numeric($fieldid))
+				{
+					if($c == $fieldid)
+					{
+						if ($retinfo) return $row;
+						return $row['Field']; // field number matches.
+					}
+				}
+				else
+				{	// Check for match of key name - and allow that key might not be used
+					if(($fieldid == $row['Field']) && (($key == "OFF") || ($key == $row['Key'])))
+					{
+						if ($retinfo) return $row;
+						return TRUE;
+					}
+				}
+				$c++;
 			}
-            else
-			{	// Check for match of key name - and allow that key might not be used
-			  if(($fieldid == $row['Field']) && (($key == "OFF") || ($key == $row['Key'])))
-			  {
-			    if ($retinfo) return $row;
-                return TRUE;
-			  }
- 			}
-			$c++;
-          }
 		}
 		return FALSE;
 	}
+
 
 	/**
 	 * A pointer to mysql_real_escape_string() - see http://www.php.net/mysql_real_escape_string
@@ -999,6 +1074,7 @@ class db {
 		return mysql_real_escape_string($data,$this->mySQLaccess);
 	}
 
+
 	/*
 	 * Verify whether a table exists, without causing an error
 	 *
@@ -1008,13 +1084,48 @@ class db {
 	 * NOTES: the 'official' way to do this uses SHOW TABLE STATUS, but that is 20x slower!
 	 *        LIMIT 0 is 3x slower than LIMIT 1
 	 */
-	function db_Table_exists($table){
+	function db_Table_exists($table)
+	{
 		$res = $this->db_Query("SELECT 1 FROM ".$this->mySQLPrefix.$table." LIMIT 1"); // error if not there
 		if ($res) return TRUE;
 		return FALSE;
 	}
 
 
+	/**
+	* @return text string relating to error (empty string if no error)
+	* @param unknown $from
+	* @desc Calling method from within this class
+	* @access private
+	*/
+	function dbError($from) 
+	{
+		$this->mySQLlastErrNum = mysql_errno();
+		$this->mySQLlastErrText = '';
+		if ($this->mySQLlastErrNum == 0)
+		{
+			return '';
+		}
+		$this->mySQLlastErrText = mysql_error();		// Get the error text.
+		if ($this->mySQLerror == TRUE) 
+		{
+			message_handler('ADMIN_MESSAGE', '<b>mySQL Error!</b> Function: '.$from.'. ['.$this->mySQLlastErrNum.' - '.$this->mySQLlastErrText.']', __LINE__, __FILE__);
+		}
+		return $this->mySQLlastErrText;
+	}
+
+
+	// Return error number for last operation
+	function getLastErrorNumber()
+	{
+		return $this->mySQLlastErrNum;		// Number of last error
+	}
+
+	// Return error text for last operation
+	function getLastErrorText()
+	{
+		return $this->mySQLlastErrText;		// Text of last error (empty string if no error)
+	}
 }
 
 ?>
