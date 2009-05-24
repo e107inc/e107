@@ -9,9 +9,9 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-01-25 17:44:13 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.14 $
+ * $Date: 2009-05-24 15:34:37 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -49,11 +49,16 @@ class news {
 			}
 			else
 			{
-				$message = "<strong>".(!mysql_errno() ? LAN_NEWS_46 : LAN_NEWS_5)."</strong>";
-				if(mysql_errno())
+				if($sql->getLastErrorNumber())
+				{
 					$emessage->add(LAN_NEWS_5, E_MESSAGE_ERROR, $smessages);
+					$message = "<strong>".LAN_NEWS_5."</strong>";
+				}
 				else
+				{
 					$emessage->add(LAN_NEWS_46, E_MESSAGE_INFO, $smessages);
+					$message = "<strong>".LAN_NEWS_46."</strong>";
+				}
 
 			}
 
@@ -69,8 +74,8 @@ class news {
 				$message = LAN_NEWS_6;
 				$emessage->add(LAN_NEWS_6, E_MESSAGE_SUCCESS, $smessages);
 				$e107cache -> clear('news.php');
-				$id = mysql_insert_id();
-				$data = array('method'=>'create', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'submit_item');
+//				$id = mysql_insert_id();
+				$data = array('method'=>'create', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
 				
 				//moved down - prevent wrong mysql_insert_id
 				$admin_log->logArrayAll('NEWS_08', $news);
@@ -89,8 +94,8 @@ class news {
 		if($pref['trackbackEnabled'])
 		{
 			$excerpt = substr($news['news_body'], 0, 100)."...";
-			$id=mysql_insert_id();
-			$permLink = $e107->base_path."comment.php?comment.news.{$id}";
+//			$id=mysql_insert_id();
+			$permLink = $e107->base_path."comment.php?comment.news.{$news['news_id']}";
 
 			require_once(e_PLUGIN."trackback/trackbackClass.php");
 			$trackback = new trackbackClass();
@@ -98,12 +103,15 @@ class news {
 			if($_POST['trackback_urls'])
 			{
 				$urlArray = explode("\n", $_POST['trackback_urls']);
-				foreach($urlArray as $pingurl) {
+				foreach($urlArray as $pingurl) 
+				{
 					if(!$error = $trackback -> sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
 					{
 						$message .= "<br />successfully pinged {$pingurl}.";
 						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
-					} else {
+					} 
+					else 
+					{
 						$message .= "<br />was unable to ping {$pingurl}<br />[ Error message returned was : '{$error}'. ]";
 						$emessage->add("was unable to ping {$pingurl}<br />[ Error message returned was : '{$error}'. ]", E_MESSAGE_ERROR, $smessages);
 					}

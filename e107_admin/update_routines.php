@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2008-12-30 15:56:12 $
-|     $Author: secretr $
+|     $Revision: 1.37 $
+|     $Date: 2009-05-24 15:34:36 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -492,7 +492,7 @@ function update_706_to_800($type='')
 	}
 
 
-	if (mysql_table_exists('newsfeed'))
+	if ($sql->db_Table_exists('newsfeed'))
 	{	// Need to extend field newsfeed_url varchar(250) NOT NULL default ''
 	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'"))
 	  {
@@ -500,7 +500,7 @@ function update_706_to_800($type='')
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
 		{
 			if ($just_check) return update_needed('Update newsfeed field definition');
-			mysql_query("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ");
+			$sql->db_Select_gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ");
 			$updateMessages[] = LAN_UPDATE_40;
 			catch_error();
 		}
@@ -508,7 +508,7 @@ function update_706_to_800($type='')
 	}
 
 
-	if (mysql_table_exists('download'))
+	if ($sql->db_Table_exists('download'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
 	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download LIKE 'download_url'"))
 	  {
@@ -516,22 +516,22 @@ function update_706_to_800($type='')
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
 		{
 			if ($just_check) return update_needed('Update download table field definition');
-			mysql_query("ALTER TABLE `".MPREFIX."download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
+			$sql->db_Select_gen("ALTER TABLE `".MPREFIX."download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
 			$updateMessages[] = LAN_UPDATE_52;
 			catch_error();
 		}
 	  }
 	}
 
-	if (mysql_table_exists('download_mirror'))
+	if ($sql->db_Table_exists('download_mirror'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
-	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
+	  if ($sql->db_Select_gen("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
 	  {
 		$row = $sql -> db_Fetch();
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
 		{
 			if ($just_check) return update_needed('Update download mirror table field definition');
-			mysql_query("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
+			$sql->db_Select_gen("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
 			$updateMessages[] = LAN_UPDATE_53;
 			catch_error();
 		}
@@ -557,7 +557,7 @@ function update_706_to_800($type='')
 
 	// Tables defined in core_sql.php
 	//---------------------------------
-	if (mysql_table_exists('dblog') && !mysql_table_exists('admin_log'))
+	if ($sql->db_Table_exists('dblog') && !$sql->db_Table_exists('admin_log'))
 	{
 		if ($just_check) return update_needed('Rename dblog to admin_log');
 		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
@@ -566,7 +566,7 @@ function update_706_to_800($type='')
 	}
 
 	// Next bit will be needed only by the brave souls who used an early CVS - probably delete before release
-	if (mysql_table_exists('rl_history') && !mysql_table_exists('dblog'))
+	if ($sql->db_Table_exists('rl_history') && !$sql->db_Table_exists('dblog'))
 	{
 		if ($just_check) return update_needed('Rename rl_history to dblog');
 		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
@@ -578,7 +578,7 @@ function update_706_to_800($type='')
 	// New tables required (list at top. Definitions in core_sql.php)
 	foreach ($new_tables as $nt)
 	{
-	  if (!mysql_table_exists($nt))
+	  if (!$sql->db_Table_exists($nt))
 	  {
 	    if ($just_check) return update_needed("Add table: ".$nt);
 		// Get the definition
@@ -623,7 +623,7 @@ function update_706_to_800($type='')
 		  if (E107_DBG_FILLIN8) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
 		  $qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
 		  if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
-		  mysql_query($qry);
+		  $sql->db_Select_gen($qry);
 			$updateMessages[] = LAN_UPDATE_47.$ct;
 		  catch_error();
 		}
@@ -668,7 +668,7 @@ function update_706_to_800($type='')
 						// Do the changes here
 						$qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
 						if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
-						mysql_query($qry);
+						$sql->db_Select_gen($qry);
 						$updateMessages[] = LAN_UPDATE_51.$ct;
 						catch_error();
 					}
@@ -680,10 +680,10 @@ function update_706_to_800($type='')
 	// Obsolete tables (list at top)
 	foreach ($obs_tables as $ot)
 	{
-		if (mysql_table_exists($ot))
+		if ($sql->db_Table_exists($ot))
 		{
 			if ($just_check) return update_needed("Delete table: ".$ot);
-			mysql_query('DROP TABLE `'.MPREFIX.$ot.'`');
+			$sql->db_Select_gen('DROP TABLE `'.MPREFIX.$ot.'`');
 			$updateMessages[] = LAN_UPDATE_48.$ot;
 		}
 	}
@@ -693,14 +693,14 @@ function update_706_to_800($type='')
 	// Set to varchar(45) - just in case something uses the IPV4 subnet (see http://en.wikipedia.org/wiki/IPV6#Notation)
 	foreach ($ip_upgrade as $t => $f)
 	{
-	  if (mysql_table_exists($t))
+	  if ($sql->db_Table_exists($t))
 	  {		// Check for table - might add some core plugin tables in here
 	    if ($field_info = ($sql->db_Field($t, $f, '', TRUE)))
 	    {
 		  if (strtolower($field_info['Type']) != 'varchar(45)')
 		  {
             if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
-			mysql_query("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';");
+			$sql->db_Select_gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';");
 			$updateMessages[] = LAN_UPDATE_49.$t.' - '.$f;
 			catch_error();
 		  }
@@ -748,7 +748,7 @@ function update_70x_to_706($type='')
 	if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one.
 	{
 	  if ($just_check) return update_needed();
-      mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
+      $sql->db_Select_gen("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
 	  catch_error();
 	}
 
@@ -756,7 +756,7 @@ function update_70x_to_706($type='')
 	if($sql->db_Field("plugin",5) == "plugin_rss")
 	{
 	  if ($just_check) return update_needed();
-	  mysql_query("ALTER TABLE `".MPREFIX."plugin` CHANGE `plugin_rss` `plugin_addons` TEXT NOT NULL;");
+	  $sql->db_Select_gen("ALTER TABLE `".MPREFIX."plugin` CHANGE `plugin_rss` `plugin_addons` TEXT NOT NULL;");
 	  catch_error();
 	}
 
@@ -764,16 +764,16 @@ function update_70x_to_706($type='')
 	if($sql->db_Field("dblog",5) == "dblog_query")
 	{
       if ($just_check) return update_needed();
-	  mysql_query("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_query` `dblog_title` VARCHAR( 255 ) NOT NULL DEFAULT '';");
-	  catch_error();
-	  mysql_query("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_remarks` `dblog_remarks` TEXT NOT NULL;");
-	  catch_error();
+	  $sql->db_Select_gen("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_query` `dblog_title` VARCHAR( 255 ) NOT NULL DEFAULT '';");
+	  catch_error($sql);
+	  $sql->db_Select_gen("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_remarks` `dblog_remarks` TEXT NOT NULL;");
+	  catch_error($sql);
 	}
 
 	if(!$sql->db_Field("plugin","plugin_path","UNIQUE"))
 	{
       if ($just_check) return update_needed();
-      if(!mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);"))
+      if(!$sql->db_Select_gen("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);"))
 	  {
 		$mes = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.";
         //$ns -> tablerender(LAN_ERROR,$mes);
@@ -785,7 +785,7 @@ function update_70x_to_706($type='')
 	if(!$sql->db_Field("online",6)) // online_active field
 	{
 	  if ($just_check) return update_needed();
-	  mysql_query("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
+	  $sql->db_Select_gen("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
 	  catch_error();
 	}
 
@@ -795,9 +795,9 @@ function update_70x_to_706($type='')
 	  if (!in_array('tmp_ip', $row))
 	  {
 		if ($just_check) return update_needed();
-		mysql_query("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
-		mysql_query("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
-		mysql_query("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
+		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
+		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
+		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
 	  }
 	}
 
@@ -869,19 +869,21 @@ function update_needed($message='')
 }
 
 
+/*
 function mysql_table_exists($table)
 {
   $exists = mysql_query("SELECT 1 FROM ".MPREFIX."$table LIMIT 0");
   if ($exists) return TRUE;
   return FALSE;
 }
+*/
 
 
 // Add index to a table. Returns FALSE if not required. Returns a message if required and just checking
 function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $optionalTable=FALSE)
 {
 	global $sql;
-	if (!mysql_table_exists($target))
+	if (!$sql->db_Table_exists($target))
 	{
 		if ($optionalTable)
 		{
@@ -890,7 +892,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_54);
 		return !$just_check;		// No point carrying on - return 'nothing to do'
 	}
-	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX.$target))
+	if ($sql->db_Select_gen("SHOW INDEX FROM ".MPREFIX.$target))
 	{
 		$found = FALSE;
 		while ($row = $sql -> db_Fetch())
@@ -905,22 +907,22 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 		{
 			return 'Required to add index to '.$target;
 		}
-		mysql_query("ALTER TABLE `".MPREFIX.$target."` ADD INDEX `".$indexSpec."` (`".$indexSpec."`);");
+		$sql->db_Select_gen("ALTER TABLE `".MPREFIX.$target."` ADD INDEX `".$indexSpec."` (`".$indexSpec."`);");
 		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_37);
 	}
 	return FALSE;
 }
 
 
-function catch_error()
+function catch_error(&$target)
 {
-  if (mysql_error()!='' && E107_DEBUG_LEVEL != 0)
-  {
-	$tmp2 = debug_backtrace();
-	$tmp = mysql_error();
-	echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
-  }
-  return;
+	if ($target->getLastErrorText() != '' && E107_DEBUG_LEVEL != 0)
+	{
+		$tmp2 = debug_backtrace();
+		$tmp = $target->getLastErrorText();
+		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
+	}
+	return;
 }
 
 
