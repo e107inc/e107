@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.368 $
-|     $Date: 2009-03-23 22:15:39 $
+|     $Revision: 1.369 $
+|     $Date: 2009-05-26 20:18:07 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -742,20 +742,22 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x'])) {
 	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
 
-if (e_QUERY == 'logout') {
+if (e_QUERY == 'logout') 
+{
 	$ip = $e107->getip();
 	$udata=(USER === TRUE) ? USERID.".".USERNAME : "0";
 	$sql->db_Update("online", "online_user_id = '0', online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
 
-	if ($pref['user_tracking'] == "session") {
+	if ($pref['user_tracking'] == 'session') 
+	{
 		session_destroy();
-		$_SESSION[$pref['cookie_name']]="";
+		$_SESSION[$pref['cookie_name']]='';
 	}
 
-	cookie($pref['cookie_name'], "", (time() - 2592000));
-	$e_event->trigger("logout");
-	echo "<script type='text/javascript'>document.location.href = '".SITEURL."index.php'</script>\n";
-	exit;
+	cookie($pref['cookie_name'], '', (time() - 2592000));
+	$e_event->trigger('logout');
+	header('location:'.e_BASE.'index.php');      
+	exit();
 }
 
 
