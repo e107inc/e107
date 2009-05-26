@@ -11,14 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/login.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-03-06 20:09:08 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2009-05-26 20:14:14 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
-$HEADER = "";
+if (USER)
+{
+	header('location:'.e_BASE.'index.php');      
+	exit();
+}
+
+$HEADER = '';
 $FOOTER='';				// Avoids strange displays when debug enabled! (But doesn't completely maintain XHTML formatting)
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
@@ -77,13 +83,7 @@ if (!USER)
 	{
 		$LOGIN_TABLE_FOOTER_USERREG = "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
 	}
-		echo preg_replace("/\{([^ ]*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_FOOTER);
-
-}
-else
-{
-	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
-	exit;
+	echo preg_replace("/\{([^ ]*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_FOOTER);
 }
 
 echo "</body></html>";
