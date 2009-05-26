@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2008-01-18 21:08:06 $
+|     $Revision: 1.88 $
+|     $Date: 2009-05-26 20:08:55 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -551,7 +551,7 @@ function loginf() {
 		<br />
 		<input type='checkbox' name='autologin' value='1' /> ".LAN_11."
 		<br /><br />
-		[ <a href='".e_BASE."signup.php'>".LAN_174."</a> ]<br />[ <a href='fpw.php'>".LAN_212."</a> ]
+		[ <a href='".e_SIGNUP."'>".LAN_174."</a> ]<br />[ <a href='".e_BASE."fpw.php'>".LAN_212."</a> ]
 		</p>
 		</form>
 		</div>";
