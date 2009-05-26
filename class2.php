@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.94 $
-* $Date: 2009-03-23 22:14:56 $
+* $Revision: 1.95 $
+* $Date: 2009-05-26 20:17:57 $
 * $Author: e107steved $
 *
 */
@@ -888,9 +888,9 @@ if ((e_QUERY == 'logout') || (($pref['user_tracking'] == 'session') && isset($_S
 	}
 
 	cookie(e_COOKIE, '', (time() - 2592000));
-	$e_event->trigger("logout");
-	echo "<script type='text/javascript'>document.location.href = '".SITEURL."index.php'</script>\n";
-	exit;
+	$e_event->trigger('logout');
+	header('location:'.e_BASE.'index.php');      
+	exit();
 }
 
 
