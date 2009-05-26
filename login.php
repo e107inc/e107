@@ -11,22 +11,30 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-08-20 12:34:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2009-05-26 20:14:29 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
+if (USER)
+{
+	header('location:'.e_BASE.'index.php');      
+	exit();
+}
+
 $HEADER = "";
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
-if ($use_imagecode) {
+if ($use_imagecode) 
+{
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
 }
 
-if (!USER) {
+if (!USER) 
+{
 	require_once(e_HANDLER."form_handler.php");
 	$rs = new form;
 	$text = "";
@@ -67,13 +75,7 @@ if (!USER) {
 	{
 		$LOGIN_TABLE_FOOTER_USERREG = "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
 	}
-		echo preg_replace("/\{([^ ]*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_FOOTER);
-
-}
-else
-{
-	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
-	exit;
+	echo preg_replace("/\{([^ ]*?)\}/e", 'varset($\1,"\1")', $LOGIN_TABLE_FOOTER);
 }
 
 echo "</body></html>";
