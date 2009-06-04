@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/error.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-11-16 09:11:59 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2009-06-04 20:03:43 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -73,9 +73,8 @@ switch($errorNumber)
 	}
 	else
 	{
-	  echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
-	  header("location: ".e_HTTP."index.php");
-	  exit;
+		header("location: ".e_HTTP."index.php");
+		exit;
 	}
     break;
 
