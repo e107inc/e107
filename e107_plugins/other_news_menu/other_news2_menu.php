@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/other_news_menu/other_news2_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-06-06 17:03:25 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -117,7 +117,7 @@ if ($sql->db_Select_gen($query)) {
 
 	while ($t % $nbr_cols != 0){
 		$text .= "<td style='width:$wid'>&nbsp;</td>\n";
-		$text .= (($t+1) % nbr_cols == 0) ? "</tr>" : "";
+		$text .= (($t+1) % $nbr_cols == 0) ? "</tr>" : "";
 		$t++;
 
 	}
