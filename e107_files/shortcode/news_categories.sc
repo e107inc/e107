@@ -1,6 +1,6 @@
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: news_categories.sc,v 1.3 2008-12-03 12:38:08 secretr Exp $
+ * $Id: news_categories.sc,v 1.4 2009-06-06 17:03:25 e107steved Exp $
  *
  * News Categories shortcode
 */
@@ -121,7 +121,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 
 	while ($t % $nbr_cols != 0){
 		$text3 .= "<td style='".NEWSCAT_CELL.";width:{$wid}%'>&nbsp;</td>\n";
-		$text3 .= (($t+1) % nbr_cols == 0) ? "</tr>" : "";
+		$text3 .= (($t+1) % $nbr_cols == 0) ? "</tr>" : "";
 		$t++;
 	}
 
