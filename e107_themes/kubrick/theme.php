@@ -10,8 +10,8 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.4 $
-|   $Date: 2009-06-11 19:15:19 $
+|   $Revision: 1.5 $
+|   $Date: 2009-06-11 19:21:43 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -91,7 +91,7 @@ $CUSTOMPAGES = "forum.php forum_post.php forum_viewforum.php forum_viewtopic.php
 
 $NEWSSTYLE = "
 <h2>{NEWSTITLE}</h2>
-<small>on {NEWSDATE} | by {NEWSAUTHOR}</small>
+<small>".LAN_THEME_6." {NEWSDATE} | ".LAN_THEME_7." {NEWSAUTHOR}</small>
 <div class='entry' style='text-align:left'>
 {NEWSBODY}
 {EXTENDED}
