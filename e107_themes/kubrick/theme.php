@@ -10,8 +10,8 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.3 $
-|   $Date: 2007-06-04 19:42:45 $
+|   $Revision: 1.4 $
+|   $Date: 2009-06-11 19:15:19 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -20,8 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
 
-@include_once(e_THEME."kubrick/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."kubrick/languages/English.php");
+include_lan(e_THEME."kubrick/languages/".e_LANGUAGE.".php");
 
 // [theme]
 $themename = "kubrick";
@@ -38,8 +37,6 @@ define("IMODE", "lite");
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
 if(!defined("e_THEME")){ exit; }
-$page=substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
-define("e_PAGE", $page);
 
 $register_sc[]= "UL";  // register shortcode ul.sc for inclusion.
 
