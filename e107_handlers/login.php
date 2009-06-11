@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2009-03-30 20:46:01 $
+|     $Revision: 1.42 $
+|     $Date: 2009-06-11 19:11:32 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -182,7 +182,7 @@ class userlogin {
 					$count++;
 				}
 
-				$sql -> db_Update("user", "user_login='{$FN}', user_hideemail='{EMAILHIDE}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='".intval($user_id)."'");
+				$sql -> db_Update("user", "user_login='{$FN}', user_hideemail='{$EMAILHIDE}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='".intval($user_id)."'");
 
 				$ue_fields = "";
 				$fields = array("URL" => "homepage",
