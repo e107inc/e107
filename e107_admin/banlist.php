@@ -9,9 +9,9 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-01-09 17:25:50 $
- * $Author: secretr $
+ * $Revision: 1.15 $
+ * $Date: 2009-06-11 20:42:32 $
+ * $Author: e107steved $
  *
 */
 
@@ -359,56 +359,49 @@ switch($action)
 			$pref['ban_durations'] = array_fill(0, BAN_REASON_COUNT - 1, 0);
 		}
 
-		if(!$ban_total = $sql->db_Select("banlist", "*", "ORDER BY banlist_ip", "nowhere"))
-		{
-			$text .= "<div class='center'>".BANLAN_2."</div>";
-		}
-		else
+		$text .= "
+			<form method='post' action='".e_SELF.'?'.e_QUERY."' id='ban_options'>
+				<fieldset id='core-banlist-times'>
+					<legend class='e-hideme'>".BANLAN_77."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<colgroup span='3'>
+							<col style='width: 20%'></col>
+							<col style='width: 65%'></col>
+							<col style='width: 15%'></col>
+						</colgroup>
+						<thead>
+							<tr>
+								<th>".BANLAN_28."</th>
+								<th>".BANLAN_29."<br />".BANLAN_31."</th>
+								<th class='center last'>".BANLAN_30."</th>
+							</tr>
+						</thead>
+						<tbody>
+		";
+		for($i = 0; $i < BAN_REASON_COUNT; $i ++)
 		{
 			$text .= "
-				<form method='post' action='".e_SELF.'?'.e_QUERY."' id='ban_options'>
-					<fieldset id='core-banlist-times'>
-						<legend class='e-hideme'>".BANLAN_77."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='3'>
-								<col style='width: 20%'></col>
-								<col style='width: 65%'></col>
-								<col style='width: 15%'></col>
-							</colgroup>
-							<thead>
 								<tr>
-									<th>".BANLAN_28."</th>
-									<th>".BANLAN_29."<br />".BANLAN_31."</th>
-									<th class='center last'>".BANLAN_30."</th>
+									<td>
+										<strong>".constant('BANLAN_10'.$i)."</strong>
+										<div class='field-help'>".constant('BANLAN_11'.$i)."</div>
+									</td>
+									<td class='center'>
+										".$frm->textarea('ban_text[]', $pref['ban_messages'][$i], 4, 15)."
+									</td>
+									<td class='center'>".ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$i], 'ban_time[]')."</td>
 								</tr>
-							</thead>
-							<tbody>
-			";
-			for($i = 0; $i < BAN_REASON_COUNT; $i ++)
-			{
-				$text .= "
-									<tr>
-										<td>
-											<strong>".constant('BANLAN_10'.$i)."</strong>
-											<div class='field-help'>".constant('BANLAN_11'.$i)."</div>
-										</td>
-										<td class='center'>
-											".$frm->textarea('ban_text[]', $pref['ban_messages'][$i], 4, 15)."
-										</td>
-										<td class='center'>".ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$i], 'ban_time[]')."</td>
-									</tr>
-					";
-			}
-			$text .= "
-							</tbody>
-						</table>
-						<div class='buttons-bar center'>
-							".$frm->admin_button('update_ban_prefs', LAN_UPDATE, 'update')."
-						</div>
-					</fieldset>
-				</form>
-			";
+				";
 		}
+		$text .= "
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						".$frm->admin_button('update_ban_prefs', LAN_UPDATE, 'update')."
+					</div>
+				</fieldset>
+			</form>
+			";
 
 		$e107->ns->tablerender(BANLAN_77, $emessage->render().$text);
 		break;
