@@ -11,8 +11,8 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/theme.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2007-05-28 16:52:49 $
+|     $Revision: 1.20 $
+|     $Date: 2009-06-11 19:17:17 $
 |     $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -45,7 +45,6 @@ define("IMODE", "lite");
 define("THEME_DISCLAIMER", "<br /><i>".$themeinfo."</i>");
 
 // [page defines used for css controll on per page basis]
-define("e_PAGE", substr(strrchr($_SERVER['PHP_SELF'], "/"), 1));
 define("e_PAGECLASS", str_replace(substr(strrchr(e_PAGE, "."), 0), "", e_PAGE));
 
 // [navigation]
