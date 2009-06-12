@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-03-06 20:09:08 $
- * $Author: e107coders $
+ * $Revision: 1.30 $
+ * $Date: 2009-06-12 20:41:34 $
+ * $Author: e107steved $
  *
 */
 require_once ("../class2.php");
@@ -134,7 +134,7 @@ if(isset($_POST['updateprefs']))
 	}
 }
 
-if($e107->sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' AND plugin_path='alt_auth'"))
+if (plugInstalled('alt_auth'))
 {
 	$authlist[] = "e107";
 	$handle = opendir(e_PLUGIN."alt_auth");
@@ -1071,13 +1071,12 @@ $text .= "
 $auth_dropdown = '';
 if($authlist)
 {
-	$auth_dropdown = $frm->select_open('auth_method');
+	$auth_dropdown = "\n".$frm->select_open('auth_method')."\n";
 	foreach($authlist as $a)
 	{
-		$s = ($pref['auth_method'] == $a ? " selected='selected' " : "");
-		$auth_dropdown .= $frm->option($a, $s, ($pref['auth_method'] == $a));
+		$auth_dropdown .= $frm->option($a, $a, ($pref['auth_method'] == $a))."\n";
 	}
-	$auth_dropdown .= "</select>";
+	$auth_dropdown .= "</select>\n";
 }
 else
 {

@@ -40,24 +40,6 @@ function alt_auth_get_authlist()
 }
 
 
-/*
-// All user fields which might, just possibly, be transferred. The option name must be the corresponding field in the E107 user database, prefixed with 'xf_'
-$alt_auth_user_fields = array(
-  'user_email' 		=> array('prompt' => LAN_ALT_12, 'optname' => 'xf_user_email', 'default' => 'user_email', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'mail'),
-  'user_hideemail' 	=> array('prompt' => LAN_ALT_13, 'optname' => 'xf_user_hideemail', 'default' => 'user_hideemail', 'optional' =>  TRUE, 'otherdb' => TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => '', method => 'bool1'),
-  'user_name' 		=> array('prompt' => LAN_ALT_14, 'optname' => 'xf_user_name', 'default' => 'user_name', 'optional' => TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
-  'user_login'		=> array('prompt' => LAN_ALT_15, 'optname' => 'xf_user_login', 'default' => 'user_login', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => 'sn'),
-  'user_customtitle'=> array('prompt' => LAN_ALT_16, 'optname' => 'xf_user_customtitle', 'default' => 'user_customtitle', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
-  'user_signature' 	=> array('prompt' => LAN_ALT_17, 'optname' => 'xf_user_signature', 'default' => 'user_signature', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
-  'user_image' 		=> array('prompt' => LAN_ALT_18, 'optname' => 'xf_user_image', 'default' => 'user_image', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
-  'user_sess' 		=> array('prompt' => LAN_ALT_19, 'optname' => 'xf_user_sess', 'default' => 'user_sess', 'optional' =>  TRUE, 'otherdb' =>  TRUE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
-  'user_join' 		=> array('prompt' => LAN_ALT_20, 'optname' => 'xf_user_join', 'default' => 'user_join', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => TRUE, 'ldap_field' => ''),
-  'user_ban'		=> array('prompt' => LAN_ALT_21, 'optname' => 'xf_user_ban', 'default' => 'user_ban', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
-  'user_class'		=> array('prompt' => LAN_ALT_22, 'optname' => 'xf_user_class', 'default' => 'user_class', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE),
-  'user_xup' 		=> array('prompt' => LAN_ALT_23, 'optname' => 'xf_user_xup', 'default' => 'user_xup', 'optional' =>  TRUE, 'otherdb' => FALSE, 'e107db' => TRUE, 'importdb' => FALSE, 'ldap' => FALSE)
-);
-
-*/
 // All user fields which might, just possibly, be transferred. The array key is the corresponding field in the E107 user database; code prefixes it with 'xf_' to get the parameter
 // 'default' may be a single value to set the same for all connect methods, or an array to set different defaults.
 $alt_auth_user_fields = array(

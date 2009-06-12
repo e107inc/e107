@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-04-23 19:58:28 $
+ * $Revision: 1.10 $
+ * $Date: 2009-06-12 20:41:34 $
  * $Author: e107steved $
  *
 */
@@ -525,7 +525,8 @@ Following fields auto-filled in code as required:
 	// Returns TRUE if additions made, FALSE if no change.
 	function addNonDefaulted(&$userInfo)
 	{
-		$nonDefaulted = array('user_signature' => '', 'user_prefs' => '', 'user_class' => '', 'user_perms' => '');
+//		$nonDefaulted = array('user_signature' => '', 'user_prefs' => '', 'user_class' => '', 'user_perms' => '');
+		$nonDefaulted = array('user_signature' => '', 'user_prefs' => '', 'user_class' => '', 'user_perms' => '', 'user_realm' => '');	// Delete when McFly finished
 		$ret = FALSE;
 		foreach ($nonDefaulted as $k => $v)
 		{
@@ -557,7 +558,58 @@ Following fields auto-filled in code as required:
 		return $temp1;
 	}
 
+
+	// Called to update initial user classes, probationary user class etc
+	function userClassUpdate(&$user, $event='userveri')
+	{
+		global $pref, $tp;
+
+		$initClasses = array();
+		$doClasses = FALSE;
+		$doProbation = FALSE;
+		$ret = FALSE;
+		switch ($event)
+		{
+			case 'userall' :
+				$doClasses = TRUE;
+				$doProbation = TRUE;
+				break;
+			case 'userfull' :		// A 'fully fledged' user
+				if (!$pref['user_reg_veri'] || ($pref['init_class_stage'] == '2'))
+				{
+					$doClasses = TRUE;
+				}
+				$doProbation = TRUE;
+				break;
+			case 'userpartial' :
+				if ($pref['init_class_stage'] == '1')
+				{	// Set initial classes if to be done on partial signup, or if selected to add them now
+					$doClasses = TRUE;
+				}
+				$doProbation = TRUE;
+				break;
+		}
+		if ($doClasses)
+		{
+			if (isset($pref['initial_user_classes'])) { $initClasses = explode(',',$pref['initial_user_classes']); }	 // Any initial user classes to be set at some stage
+			if ($doProbation && (varset($pref['user_new_period'], 0) > 0))
+			{
+				$initClasses[] = e_UC_NEWUSER;		// Probationary user class
+			}
+			if (count($initClasses))
+			{	// Update the user classes
+				if ($user['user_class'])
+				{
+					$initClasses = array_unique(array_merge($initClasses, explode(',',$user['user_class'])));
+				}
+				$user['user_class'] = $tp->toDB(implode(',',$initClasses));
+				$ret = TRUE;
+			}
+		}
+
+	}
 }
+
 
 
 ?>
