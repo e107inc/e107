@@ -9,8 +9,8 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-01-11 22:11:19 $
+ * $Revision: 1.7 $
+ * $Date: 2009-06-12 20:41:34 $
  * $Author: e107steved $
  *
 */
@@ -422,7 +422,7 @@ class validatorClass
 		$ret = array();
 		foreach ($input as $k => $v)
 		{
-			if (isset($refs[$k]))
+			if (array_key_exists($k, $refs))
 			{
 				if ($refs[$k] != $v) { $ret[$k] = $v; }
 			}

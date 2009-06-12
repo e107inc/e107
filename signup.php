@@ -9,8 +9,8 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-04-23 19:13:18 $
+ * $Revision: 1.36 $
+ * $Date: 2009-06-12 20:41:35 $
  * $Author: e107steved $
  *
 */
@@ -310,23 +310,32 @@ if (e_QUERY)
 		{
 			if ($row = $sql->db_Fetch())
 			{
+				$dbData = array();
+				$dbData['WHERE'] = " user_sess='".$tp -> toDB($qs[2], true)."' ";
+				$dbData['data'] = array('user_ban'=>'0', 'user_sess'=>'');
 				// Set initial classes, and any which the user can opt to join
-				$init_classes = '';
-				if ($pref['init_class_stage'] == '2')
+				if ($userMethods->userClassUpdate($row, 'userveri'))
 				{
-					$init_classes = explode(',',varset($pref['initial_user_classes'],''));
-					if ($init_classes)
-					{	// Update the user classes
-						$row['user_class'] = $tp->toDB(implode(',',array_unique(array_merge($init_classes, explode(',',$row['user_class'])))));
-						$init_classes = ", user_class='".$row['user_class']."' ";
-					}
+					$dbData['data']['user_class'] = $row['user_class'];
 				}
-				$sql->db_Update("user", "user_ban='0', user_sess=''{$init_classes} WHERE user_sess='".$tp -> toDB($qs[2], true)."' ");
+				$userMethods->addNonDefaulted($dbData);
+				validatorClass::addFieldTypes($userMethods->userVettingInfo,$dbData);
+				$newID = $sql->db_Update('user',$dbData);
+				if ($newID === FALSE)
+				{
+					$admin_log->e_log_event(10,debug_backtrace(),'USER','Verification Fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
+					require_once(HEADERF);
+					$ns->tablerender(LAN_SIGNUP_75, LAN_SIGNUP_101);
+					require_once(FOOTERF);
+					exit;
+				}
+
 
 				// Log to user audit log if enabled
 				$admin_log->user_audit(USER_AUDIT_EMAILACK,$row);
-				
-				$e_event->trigger("userveri", $row);
+
+				$e_event->trigger('userveri', $row);			// Legacy event
+				$e_event->trigger('userfull', $row);			// 'New' event
 				if (varset($pref['autologinpostsignup']))
 				{
 					require_once(e_HANDLER.'login.php');
@@ -539,24 +548,7 @@ if (isset($_POST['register']))
 		$u_key = md5(uniqid(rand(), 1));					// Key for signup completion
 		$allData['data']['user_sess'] = $u_key;			// Validation key
 
-		// Work out all user classes
-		$intClasses = array();
-		if (isset($pref['initial_user_classes'])) { $initClasses = explode(',',$pref['initial_user_classes']); }	 // Any initial user classes to be set at some stage
-		$classList = array();
-		if (isset($allData['data']['user_class'])) { $classList = explode(',',$allData['data']['user_class']); }	// Classes entered by user during signup
-		if (varsettrue($pref['user_new_period']))
-		{
-			$classList[] = e_UC_NEWUSER;		// Probationary user class
-		}
-		if (!$pref['user_reg_veri'] || ($pref['init_class_stage'] == '1'))
-		{	// Set initial classes if no verification required, or if selected to add them now
-			$classList = array_merge($classList, $initClasses);
-		}
-		$classList = array_unique($classList);
-		if (count($classList))
-		{
-			$allData['data']['user_class'] = implode(',',$classList);
-		}
+		$userMethods->userClassUpdate($allData['data'], 'usersup');
 
 		if ($pref['user_reg_veri'])
 		{
@@ -633,7 +625,8 @@ if (isset($_POST['register']))
 					$error_message = LAN_SIGNUP_42; // There was a problem, the registration mail was not sent, please contact the website administrator.
 				}
 			}
-			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
+			$e_event->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
+			$e_event->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
 
 			require_once(HEADERF);
 
@@ -654,7 +647,8 @@ if (isset($_POST['register']))
 				exit;
 			}
 
-			$e_event->trigger("usersup", $_POST);  // send everything in the template, including extended fields.
+			$e_event->trigger('usersup', $_POST);  // send everything in the template, including extended fields.
+			$e_event->trigger('userfull', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
 
 			if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 			{

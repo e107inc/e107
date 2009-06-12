@@ -9,9 +9,9 @@
  * Language file - User signup
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-03-22 21:07:33 $
- * $Author: e107coders $
+ * $Revision: 1.18 $
+ * $Date: 2009-06-12 20:41:34 $
+ * $Author: e107steved $
  *
 */
 define("PAGE_NAME", "Register");
@@ -139,6 +139,7 @@ define('LAN_SIGNUP_97', 'Welcome to');  										// LAN_403 (used in email)
 define("LAN_SIGNUP_98", "Confirm Your Email Address");
 define("LAN_SIGNUP_99", "Problem Encountered");
 define("LAN_SIGNUP_100", "Admin Approval Pending");
+define('LAN_SIGNUP_101', 'Update of records failed - please contact the site administrator');
 
 
 define("LAN_LOGINNAME", "Username");

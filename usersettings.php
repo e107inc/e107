@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-02-22 14:21:08 $
+ * $Revision: 1.35 $
+ * $Date: 2009-06-12 20:41:35 $
  * $Author: e107steved $
  *
 */
@@ -226,6 +226,7 @@ if (isset($_POST['updatesettings']))
 		$changedEUFData['data'] = validatorClass::findChanges($eufVals['data'], $udata,FALSE);
 	}
 
+
 	// Determine whether we have an error
 	$error = ((isset($allData['errors']) && count($allData['errors'])) || (isset($eufVals['errors']) && count($eufVals['errors'])) || count($extraErrors));
 
@@ -335,6 +336,7 @@ unset($_POST['SaveValidatedInfo']);
 // At this point we know the error status.
 // $changedUserData has an array of core changed data, except password, which is in $savePassword if changed (or entered as confirmation).
 // $eufData has extended user field data
+// $changedEUFData has any changes in extended user field data
 $dataToSave = !$error && (isset($changedUserData) && count($changedUserData)) || (isset($changedEUFData['data']) && count($changedEUFData['data'])) || $savePassword;
 
 if ($dataToSave)
@@ -395,6 +397,8 @@ if ($dataToSave && !$promptPassword)
 			}
 		}
 	}
+
+		print_a($changedEUFData);
 
 	// Save extended field values
 	if (isset($changedEUFData['data']) && count($changedEUFData['data']))
@@ -551,9 +555,9 @@ if ($error)
 	{
 		$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 	}
-	if (varsettrue($eufData['errors']))
+	if (varsettrue($eufVals['errors']))
 	{
-		$temp[] = '<br />'.validatorClass::makeErrorList($eufData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
+		$temp[] = '<br />'.validatorClass::makeErrorList($eufVals,'USER_ERR_','%n - %x - %t: %v', '<br />', NULL);
 	}
 	message_handler('P_ALERT', implode('<br />', $temp));
 //	$adref = $_POST['adminreturn'];

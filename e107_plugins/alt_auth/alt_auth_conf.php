@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_conf.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-23 20:31:30 $
+|     $Revision: 1.4 $
+|     $Date: 2009-06-12 20:41:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -142,10 +142,13 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 $ns -> tablerender("<div style='text-align:center'>".LAN_ALT_3."</div>", $text);
 
 
-$extendedFields = $euf->user_extended_get_fields();
+//$extendedFields = $euf->user_extended_get_fields();
+//$extendedFields = &$euf->fieldDefinitions;
 //print_a($extendedFields);
-if (count($extendedFields))
+if (count($euf->fieldDefinitions))
 {
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
+	$fl = &$euf->fieldDefinitions;
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
 		<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
@@ -156,8 +159,6 @@ if (count($extendedFields))
 		<col style='width:20%' />
 		</colgroup>\n";
 
-	foreach ($extendedFields as $p => $fl )
-	{
 		$text .= "<tr>
 			<td class='forumheader2'>".LAN_ALT_61."</td>
 			<td class='forumheader2'>".LAN_ALT_62."</td>
@@ -170,10 +171,9 @@ if (count($extendedFields))
 			$text .= "<tr>
 			<td class='forumheader3'><input type='checkbox' name='auth_euf_include[]' value='{$f['user_extended_struct_name']}'{$checked} /></td>
 			<td class='forumheader3'>{$f['user_extended_struct_name']}</td>
-			<td class='forumheader3'>{$f['user_extended_struct_text']}</td>
+			<td class='forumheader3'>".$tp->toHTML($f['user_extended_struct_text'],FALSE,'TITLE')."</td>
 			<td class='forumheader3'>{$euf->user_extended_types[$f['user_extended_struct_type']]}</td></tr>\n";
 		}
-	}
 	$text .= "<tr style='vertical-align:top'> 
 <td colspan='4' class='forumheader3' style='text-align:center'>
 <input class='button' type='submit' name='updateeufs' value='".LAN_ALT_2."' />

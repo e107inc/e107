@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.33 $
-* $Date: 2009-04-27 10:42:14 $
-* $Author: secretr $
+* $Revision: 1.34 $
+* $Date: 2009-06-12 20:41:34 $
+* $Author: e107steved $
 *
 */
 require_once('../class2.php');
@@ -278,13 +278,10 @@ if (isset($_POST['adduser']))
 		{	// Save separate password encryption for use with email address
 			$user_data['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $user_data['user_email'])));
 		}
-		if (varsettrue($pref['user_new_period']))
-		{
-			$user_data['user_class'] = user_class::ucAdd(e_UC_NEWUSER, $user_data['user_class']);		// Probationary user class
-		}
+		$userMethods->userClassUpdate($allData['data'], 'userall');			// Set any initial classes
 		$userMethods->addNonDefaulted($user_data);
 		validatorClass::addFieldTypes($userMethods->userVettingInfo,$allData);
-		//FIXME - (SecretR) there is a better way to fix this (missing default value, sql error in strict mod)
+		//FIXME - (SecretR) there is a better way to fix this (missing default value, sql error in strict mode - user_realm is to be deleted from DB later)
 		$allData['data']['user_realm'] = '';
 		if ($sql -> db_Insert('user', $allData))
 		{
@@ -292,6 +289,7 @@ if (isset($_POST['adduser']))
 			$admin_log->log_event('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}",E_LOG_INFORMATIVE);
 			// Add to user audit trail
 			$admin_log->user_audit(USER_AUDIT_ADD_ADMIN,$user_data, 0,$user_data['user_loginname']);
+			$e_event->trigger('userfull', $user_data);  // send everything available for user data - bit sparse compared with user-generated signup
 			if (isset($_POST['sendconfemail']))
 			{  // Send confirmation email to user
 				require_once(e_HANDLER.'mail.php');
@@ -440,10 +438,12 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser')
 {
 	if ($_POST['confirm'])
 	{
-		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0' AND user_perms != '0.'"))
+		$uid = intval($_POST['userid']);
+		if ($sql->db_Delete("user", "user_id=".$uid." AND user_perms != '0' AND user_perms != '0.'"))
 		{
-			$sql->db_Delete("user_extended", "user_extended_id='".$_POST['userid']."' ");
-			$admin_log->log_event('USET_07',str_replace('--UID--',$_POST['userid'],USRLAN_163),E_LOG_INFORMATIVE);
+			$sql->db_Delete("user_extended", "user_extended_id='".$uid."' ");
+			$admin_log->log_event('USET_07',str_replace('--UID--',$uid,USRLAN_163),E_LOG_INFORMATIVE);
+			$e_event->trigger('userdelete', $temp = array('user_id' => $uid));
 			$user->show_message(USRLAN_10);
 		}
 		if(!$sub_action){ $sub_action = "user_id"; }
@@ -525,20 +525,19 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 	{
 		if ($row = $sql->db_Fetch())
 		{
-			// Add in the initial classes, if this is the time
-			$init_classes = '';
-			if ($pref['init_class_stage'] == '2')
+			$dbData = array();
+			$dbData['WHERE'] = "user_id=".$uid;
+			$dbData['data'] = array('user_ban'=>'0', 'user_sess'=>'');
+			// Add in the initial classes as necessary
+			if ($userMethods->userClassUpdate($row, 'userall'))
 			{
-				$init_classes = explode(',',varset($pref['initial_user_classes'],''));
-				if ($init_classes)
-				{	// Update the user classes
-					$row['user_class'] = $tp->toDB(implode(',',array_unique(array_merge($init_classes, explode(',',$row['user_class'])))));
-					$init_classes = ", user_class='".$row['user_class']."' ";
-				}
+				$dbData['data']['user_class'] = $row['user_class'];
 			}
-			$sql->db_Update("user", "user_ban='0'{$init_classes} WHERE user_id='".$uid."' ");
+			$userMethods->addNonDefaulted($dbData);
+			validatorClass::addFieldTypes($userMethods->userVettingInfo,$dbData);
+			$sql->db_Update('user',$dbData);
 			$admin_log->log_event('USET_10',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_166),E_LOG_INFORMATIVE);
-			//		$e_event->trigger("userveri", $row);		// We do this from signup.php - should we do it here?
+			$e_event->trigger('userfull', $row);			// 'New' event
 
 			$user->show_message(USRLAN_86);
 			if(!$action){ $action = "main"; }
