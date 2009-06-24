@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-05-04 20:09:45 $
-|     $Author: bugrain $
+|     $Revision: 1.2 $
+|     $Date: 2009-06-24 22:19:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -176,7 +176,7 @@ define("DOWLAN_183", "Filter options");
 define("DOWLAN_184", "Batch options");
 
 define("DOWLAN_HELP_1", "Download Help");
-define("DOWLAN_HELP_2", "<p>Create/edit a download.</p><p>Enter only one of: File, URL or Mirror.</p><p>Ensure you select a category, otherwise your download will not be visible on the downloads page.</p><p>");
+define("DOWLAN_HELP_2", "<p>Create/edit a download.</p><p>Enter only one of: File, URL or Mirror.</p><p>Ensure you select a category, otherwise your download will not be visible on the downloads page.</p>");
 define("DOWLAN_HELP_3", "Help for cat");
 define("DOWLAN_HELP_4", "Help for opt");
 define("DOWLAN_HELP_5", "Use the maintenance pages to find duplicate downloads, find orphaned files, find missing (broken) entries, manage inactive downloads, refresh file sizes and view the downlaod log.");
