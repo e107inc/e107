@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-06-24 22:04:37 $
+|     $Revision: 1.3 $
+|     $Date: 2009-06-24 22:19:27 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -164,7 +164,7 @@ class adminDownload extends download
       {
          $checked = (in_array($fcol,$filterColumns)) ? "checked='checked'" : "";
          $text .= "<div style='float:left;width:20%;'>";
-         $text .= "<label for'filter_".$fcol."'><input type='checkbox' name='filter_columns[]' value='".$fcol."' id='filter_".$fcol."' $checked/>".str_replace($replacechar," ",$fcol)."</label>";
+         $text .= "<label for='filter_".$fcol."'><input type='checkbox' name='filter_columns[]' value='".$fcol."' id='filter_".$fcol."' $checked/>".str_replace($replacechar," ",$fcol)."</label>";
          $text .= "</div>\n";
       }
 
