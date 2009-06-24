@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2008-12-18 21:19:34 $
-|     $Author: e107steved $
+|     $Revision: 1.36 $
+|     $Date: 2009-06-24 20:10:11 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -201,5 +201,7 @@ define("DUSRLAN_34", "Perms");
 define("DUSRLAN_35", "Tracked threads");
 define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
+
+define('USRLAN_219', 'Older than 30 days');     
 
 ?>

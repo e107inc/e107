@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2009-01-02 20:03:55 $
-|     $Author: e107steved $
+|     $Revision: 1.98 $
+|     $Date: 2009-06-24 20:10:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -159,14 +159,19 @@ if (isset($_POST['prune']))
 	$e107cache->clear("online_menu_totals");
 	$text = USRLAN_56." ";
 	$bantype = $_POST['prune_type'];
-	if ($sql->db_Select("user", "user_id, user_name", "user_ban= {$bantype}"))
+	if($bantype == 30) // older than 30 days.
+	{
+    	$bantype = 2;
+		$ins = " AND user_join < ".strtotime("-30 days");
+	}
+	if ($sql->db_Select("user", "user_id, user_name", "user_ban= {$bantype}".$ins))
 	{
 		$uList = $sql->db_getList();
 		foreach($uList as $u)
 		{
 			$text .= $u['user_name']." ";
 			$sql->db_Delete("user", "user_id='{$u['user_id']}' ");
-			$sql->db_Delete("user_extended", "user_extended_id='{$u['user_id']}' ");
+		 	$sql->db_Delete("user_extended", "user_extended_id='{$u['user_id']}' ");
 		}
 	}
 	$ns->tablerender(USRLAN_57, "<div style='text-align:center'><b>".$text."</b></div>");
@@ -850,15 +855,15 @@ class users
 
 
 
-	function show_options($action) 
+	function show_options($action)
 	{
 		global $unverified;
-		// ##### Display options 
-		if ($action == "") 
+		// ##### Display options
+		if ($action == "")
 		{
 			$action = "main";
 		}
-		// ##### Display options 
+		// ##### Display options
 		$var['main']['text'] = USRLAN_71;
 		$var['main']['link'] = e_SELF;
 
@@ -971,14 +976,19 @@ class users
 
 		$unactive = $sql->db_Select("user", "*", "user_ban=2");
 		$bounced = $sql->db_Select("user", "*", "user_ban=3");
+		$older30 = $sql->db_Count("user", "(*)", "WHERE user_ban=2 AND (user_join < ".strtotime("-30 days").")");
+
 		$text = "<div style='text-align:center'><br /><br />
 			<form method='post' action='".e_SELF."'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td class='forumheader3' style='text-align:center'><br />".LAN_DELETE.":&nbsp;
 			<select class='tbox' name='prune_type'>";
-            $prune_type = array(2=>USRLAN_138." [".$unactive."]",3=>USRLAN_145." [".$bounced."]");
-			foreach($prune_type as $key=>$val){
+
+			$prune_type = array(2=>USRLAN_138." [".$unactive."]",'30'=>USRLAN_138." (".USRLAN_219.") [".$older30."]", 3=>USRLAN_145." [".$bounced."]");
+
+			foreach($prune_type as $key=>$val)
+			{
             	$text .= "<option value='$key'>{$val}</option>\n";
 			}
 
