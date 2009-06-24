@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.34 $
-* $Date: 2009-06-12 20:41:34 $
-* $Author: e107steved $
+* $Revision: 1.35 $
+* $Date: 2009-06-24 20:10:32 $
+* $Author: e107coders $
 *
 */
 require_once('../class2.php');
@@ -199,7 +199,13 @@ if (isset($_POST['prune']))
 	$e107cache->clear('online_menu_member_newest');
 	$text = USRLAN_56.' ';
 	$bantype = $_POST['prune_type'];
-	if ($sql->db_Select("user", "user_id, user_name", "user_ban= {$bantype}"))
+    if($bantype == 30) // older than 30 days.
+	{
+    	$bantype = 2;
+		$ins = " AND user_join < ".strtotime("-30 days");
+	}
+
+	if ($sql->db_Select("user", "user_id, user_name", "user_ban= {$bantype}".$ins))
 	{
 		$uList = $sql->db_getList();
 		foreach($uList as $u)
@@ -1082,13 +1088,17 @@ class users
 
 		$unactive = $sql->db_Count("user", "(*)", "WHERE user_ban=2");
 		$bounced = $sql->db_Count("user", "(*)", "WHERE user_ban=3");
+	   	$older30 = $sql->db_Count("user", "(*)", "WHERE user_ban=2 AND (user_join < ".strtotime("-30 days").")");
+
 		$text = "<div style='text-align:center'><br /><br />
 		<form method='post' action='".e_SELF."'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
 		<td class='forumheader3' style='text-align:center'><br />".LAN_DELETE.":&nbsp;
 		<select class='tbox' name='prune_type'>";
-		$prune_type = array(2=>USRLAN_138." [".$unactive."]",3=>USRLAN_145." [".$bounced."]");
+
+		 $prune_type = array(2=>USRLAN_138." [".$unactive."]",'30'=>USRLAN_138." (".USRLAN_219.") [".$older30."]", 3=>USRLAN_145." [".$bounced."]");
+
 		foreach($prune_type as $key=>$val){
 			$text .= "<option value='$key'>{$val}</option>\n";
 		}

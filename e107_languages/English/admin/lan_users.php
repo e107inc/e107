@@ -9,9 +9,9 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-01-18 01:39:20 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.16 $
+ * $Date: 2009-06-24 20:10:34 $
+ * $Author: e107coders $
  *
 */
 define("USRLAN_1", "Options Saved.");
@@ -223,6 +223,8 @@ define('USRLAN_215', 'Update Ranks');
 define('USRLAN_216', '--select image--');
 define('USRLAN_217', 'User Ranks Updated');
 define('USRLAN_218', 'Deletion of User Rank');
+
+define('USRLAN_219', 'Older than 30 days');
 
 define('LAN_MAINADMIN','Main Admin');
 define('LAN_NOTVERIFIED','Not Verified');
