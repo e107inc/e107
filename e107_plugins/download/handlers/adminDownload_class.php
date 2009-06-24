@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-05-03 21:16:15 $
-|     $Author: bugrain $
+|     $Revision: 1.2 $
+|     $Date: 2009-06-24 22:04:37 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -64,6 +64,15 @@ class adminDownload extends download
       global $mySQLdefaultdb, $pref;
       $eform = new e_form();
 
+	  /* ************************************************************
+
+      This whole form needs a rework. We need to incorporate ajax usage extensively.
+	  Displaying all filter fields at once should be avoided.
+
+	  ******************************************************************* */
+
+
+
       $filterColumns = ($pref['admin_download_disp'] ? explode("|",$pref['admin_download_disp']) : array("download_name","download_class"));
 
       // Filter fields
@@ -102,7 +111,7 @@ class adminDownload extends download
                <td>
          ";
       $text .= $this->_getConditionList('download_filter[date_condition]', $this->filterFields['date_condition']);
-      $text .= $eform->datepicker('download_filter[date]', $this->filterFields['date']);
+ //     $text .= $eform->datepicker('download_filter[date]', $this->filterFields['date']);
       $text .= "
                </td>
                <td>Status</td>
@@ -250,8 +259,10 @@ class adminDownload extends download
         if ($dl_count = $sql->db_Select_gen($query))
       {
          $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
-            <table style='width:100%'>
-            <tr>
+            <table class='adminlist' style='width:100%'>
+            <thead>
+
+            <tr class='first last'>
             <th>".DOWLAN_67."</th>
             ";
 
@@ -269,11 +280,16 @@ class adminDownload extends download
              }
          }
 
-         $text .="<th>".LAN_OPTIONS."</th></tr>";
+         $text .="<th class='center'>".LAN_OPTIONS."</th></tr>
+		 </thead>
+		 <tbody>";
+
+         $rowStyle = "even";
 
          while ($row = $sql->db_Fetch())
          {
-            $text .= "<tr><td>".$row['download_id']."</td>";
+		 	$rowStyle = ($rowStyle == "odd") ? "even" : "odd";
+            $text .= "<tr class='{$rowStyle}'><td>".$row['download_id']."</td>";
 
             // Display Chosen options
             foreach($filterColumns as $disp)
@@ -331,13 +347,13 @@ class adminDownload extends download
             }
 
             $text .= "
-                  <td>
+                  <td class='center'>
                      <a href='".e_SELF."?create.edit.".$row['download_id']."'>".ADMIN_EDIT_ICON."</a>
                      <input type='image' title='".LAN_DELETE."' name='delete[main_".$row['download_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: ".$row['download_id']." ]")."') \"/>
                   </td>
                   </tr>";
          }
-         $text .= "</table></form>";
+         $text .= "</tbody></table></form>";
       }
       else
       {   // 'No downloads yet'
