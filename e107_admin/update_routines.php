@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2009-05-24 15:34:36 $
+|     $Revision: 1.38 $
+|     $Date: 2009-06-29 21:26:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -607,7 +607,7 @@ function update_706_to_800($type='')
 
 	  if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
 	  {
-//	    echo "Couldn't get table structure: {$ct}<br />";
+	    echo "Couldn't get table structure: {$ct}<br />";
 	  }
 	  else
 	  {
@@ -916,10 +916,10 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 
 function catch_error(&$target)
 {
-	if ($target->getLastErrorText() != '' && E107_DEBUG_LEVEL != 0)
+	if ($target->mySQLlastErrText() != '' && E107_DEBUG_LEVEL != 0)
 	{
 		$tmp2 = debug_backtrace();
-		$tmp = $target->getLastErrorText();
+		$tmp = $target->mySQLlastErrText();
 		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
 	}
 	return;

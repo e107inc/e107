@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2009-04-30 20:10:10 $
+|     $Revision: 1.33 $
+|     $Date: 2009-06-29 21:26:58 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,7 @@ define('e_UC_ADMINMOD',249);
 define('e_UC_MODS',248);
 define('e_UC_NEWUSER',247);					// Users in 'probationary' period
 define('e_UC_SPECIAL_BASE',245);			// Assign class IDs 245 and above for fixed/special purposes
+define('e_UC_SPECIAL_END',255);				// Highest 'special' class
 
 define('UC_CLASS_ICON_DIR','userclasses/');		// Directory for userclass icons
 define('UC_ICON_DIR',e_IMAGE.'generic/');		// Directory for the icons used in the admin tree displays
@@ -1122,6 +1123,12 @@ class user_class_admin extends user_class
 		{
 			if (!isset($this->class_tree[$i])) return $i;
 		}
+		// Big system!! Assign a class in the 0.8-only block above 255
+		for ($i = e_UC_SPECIAL_END+1; ($i < 32767); $i++)
+		{
+			if (!isset($this->class_tree[$i])) return $i;
+		}
+
 		return FALSE;			// Just in case all classes assigned!
 	}
 
@@ -1233,10 +1240,10 @@ class user_class_admin extends user_class
 	function checkAdminInfo(&$data, $id)
 	{
 		$ret = TRUE;
-		if ($id < e_UC_SPECIAL_BASE) return TRUE;
+		if (($id < e_UC_SPECIAL_BASE) || ($id > e_UC_SPECIAL_END)) return TRUE;
 		if (isset($data['userclass_parent']))
 		{
-			if ($data['userclass_parent'] < e_UC_SPECIAL_BASE)
+			if (($data['userclass_parent'] < e_UC_SPECIAL_BASE) || ($data['userclass_parent'] > e_UC_SPECIAL_END))
 			{
 				$data['userclass_parent'] = e_UC_NOBODY;
 				$ret = FALSE;
@@ -1252,7 +1259,7 @@ class user_class_admin extends user_class
 					$ret = FALSE;
 				}
 			}
-			elseif ($data['userclass_editclass'] < e_UC_SPECIAL_BASE)
+			elseif (($data['userclass_editclass'] < e_UC_SPECIAL_BASE) || ($data['userclass_editclass'] > e_UC_SPECIAL_END))
 			{
 				$data['userclass_editclass'] = e_UC_MAINADMIN;
 				$ret = FALSE;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-20 00:55:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2009-06-29 21:26:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -45,7 +45,7 @@ class db_table_admin
 		$sql->db_Select_gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `'.$prefix.$table_name."`";
 		if (!($z = $sql->db_Select_gen($qry))) { return FALSE; }
-		$row = $sql->db_Fetch();
+		$row = $sql->db_Fetch(MYSQL_NUM);
 		$tmp = str_replace("`", "", stripslashes($row[1])).';';		// Add semicolon to work with our parser
 		$count = preg_match_all("#CREATE\s+?TABLE\s+?`{0,1}({$prefix}{$table_name})`{0,1}\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is",$tmp,$matches,PREG_SET_ORDER);
 		if ($count === FALSE) { return "Error occurred";}
