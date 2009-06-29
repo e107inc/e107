@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-12-17 20:03:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2009-06-29 21:26:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -546,7 +546,7 @@ CREATE TABLE user (
 # Table structure for table `userclass_classes`
 #
 CREATE TABLE userclass_classes (
-  userclass_id tinyint(3) unsigned NOT NULL default '0',
+  userclass_id smallint(5) unsigned NOT NULL default '0',
   userclass_name varchar(100) NOT NULL default '',
   userclass_description varchar(250) NOT NULL default '',
   userclass_editclass tinyint(3) unsigned NOT NULL default '0',
