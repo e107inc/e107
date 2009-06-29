@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-05-04 09:24:36 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-06-29 06:30:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -460,32 +460,38 @@ class rssCreate {
 
 				echo "<language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</language>
 				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
-				<managingEditor>".$pref['siteadmin']." - ".$this->nospam($pref['siteadminemail'])."</managingEditor>
-				<webMaster>".$this->nospam($pref['siteadminemail'])."</webMaster>
+				<managingEditor>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</managingEditor>
+				<webMaster>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</webMaster>
 				<pubDate>".date("r",($time + $this -> offset))."</pubDate>
 				<lastBuildDate>".date("r",($time + $this -> offset))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
 				<ttl>60</ttl>";
+
 				if (trim(SITEBUTTON))
 				{
-				echo "
-				<image>
-				<title>".$tp->toRss($rss_title)."</title>
-				<url>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</url>
-				<link>".$pref['siteurl']."</link>
-				<width>88</width>
-				<height>31</height>
-				<description>".$tp->toRss($pref['sitedescription'])."</description>
-				</image>";
+					echo "
+					<image>
+					<title>".$tp->toRss($rss_title)."</title>
+					<url>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</url>
+					<link>".$pref['siteurl']."</link>
+					<width>88</width>
+					<height>31</height>
+					<description>".$tp->toRss($pref['sitedescription'])."</description>
+					</image>";
 				}
-				echo "
+
+				// Generally Ignored by 99% of readers.
+               /*
+			   	echo "
 				<textInput>
 				<title>Search</title>
 				<description>Search ".$tp->toRss($pref['sitename'])."</description>
 				<name>query</name>
 				<link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
 				</textInput>";
+				*/
+
 				foreach($this -> rssItems as $value)
 				{
                     // Multi-language rss links.
@@ -512,7 +518,7 @@ class rssCreate {
 					}
 
 					if($value['author']){
-						echo "<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>\n";
+						echo "<author>".$this->nospam($value['author_email'])." (".$value['author'].")</author>\n";
 					}
 
 					// enclosure support for podcasting etc.
@@ -528,6 +534,7 @@ class rssCreate {
 
 					echo "</item>";
 				}
+		   //		echo "<atom:link href=\"".e_SELF."?".($this -> contentType).".4.".$this -> topicId ."\" rel=\"self\" type=\"application/rss+xml\" />";
 				echo "
 				</channel>
 				</rss>";
