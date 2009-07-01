@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-01 02:52:08 $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-01 04:19:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -45,9 +45,9 @@ $thescript = (strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip")) ? "tiny_mce_gzip.p
 $text = "<script type='text/javascript' src='".e_PLUGIN."tinymce/".$thescript."'></script>\n";
 
 $text .= "<script type='text/javascript'>\n
-   //<![CDATA[
 
-
+function start_tinyMce() {
+    //<![CDATA[
 	tinyMCE.init({\n";
 
 $text .= "language : '".$tinylang[$lang]."',\n";
@@ -128,7 +128,13 @@ if($pref['tinymce']['customjs'])
 
 $text .= "
 
-	});
+	}
+
+	);
+
+}
+
+	start_tinyMce();
 
 function tinymce_html_bbcode_control(type, source) {
 
@@ -197,6 +203,9 @@ function triggerSave()
 {
   tinyMCE.triggerSave();
 }
+
+
+
 
 </script>\n
 ";
