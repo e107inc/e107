@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-01-21 20:34:34 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-01 02:52:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,20 +44,30 @@ $thescript = (strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip")) ? "tiny_mce_gzip.p
 
 $text = "<script type='text/javascript' src='".e_PLUGIN."tinymce/".$thescript."'></script>\n";
 
-$text .= "<script type='text/javascript'>\n	tinyMCE.init({\n";
+$text .= "<script type='text/javascript'>\n
+   //<![CDATA[
+
+
+	tinyMCE.init({\n";
 
 $text .= "language : '".$tinylang[$lang]."',\n";
 $text .= "mode : 'exact',\n";
 $text .= "elements : '".$formids."',\n";
 $text .= "theme : 'advanced'\n";
-$text .= ",plugins : 'table,contextmenu";
+// $text .= ",plugins : 'table,contextmenu";
 
-$text .= ($pref['smiley_activate']) ? ",emoticons" : "";
-$text .= (ADMIN) ? ",ibrowser" : ",image";
-$text .= ",iespell,zoom,media";
-$text .= "'\n"; // end of plugins list.
 
-$text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste'";
+$text  .= ",plugins : '".implode(",",$pref['tinymce']['plugins'])."'\n";
+// $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
+// $text .= (ADMIN) ? ",ibrowser" : ",image";
+
+
+
+// $text .= ",iespell,zoom,media";
+// $text .= "'\n"; // end of plugins list.
+
+/*
+ $text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste'";
 
 $text .= ",theme_advanced_buttons2   : 'tablecontrols,separator,undo,redo,separator,link,unlink";
 $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
@@ -67,6 +77,20 @@ $text .= (ADMIN) ? ",code" : "";
 $text .= "'"; // end of buttons 2
 
 $text .= ",theme_advanced_buttons3 : ''";
+
+*/
+
+$text .= ",
+theme_advanced_buttons1 : '".$pref['tinymce']['theme_advanced_buttons1']."',
+theme_advanced_buttons2 : '".$pref['tinymce']['theme_advanced_buttons2']."',
+theme_advanced_buttons3 : '".$pref['tinymce']['theme_advanced_buttons3']."',
+theme_advanced_buttons4 : '".$pref['tinymce']['theme_advanced_buttons4']."',
+theme_advanced_toolbar_location : \"top\",
+theme_advanced_toolbar_align : \"left\",
+theme_advanced_statusbar_location : \"bottom\",
+theme_advanced_resizing : true\n";
+
+
 $text .= ",theme_advanced_toolbar_location : 'top'";
 $text .= ",extended_valid_elements : 'p[style],a[name|href|target|rel|title|style|class],img[class|src|style|alt|title|name],hr[class],span[align|class|style],div[align|class|style|height|width] ,table[class|style|cellpadding|cellspacing|background|height|width],td[background|style|class|valign|align|height|width]'";
 $text .= ",invalid_elements: 'p,font,align,script,applet,iframe'\n";
@@ -83,10 +107,24 @@ $text .= ",remove_script_host : true\n";
 $text .= ",relative_urls: true\n";
 $text .= ",document_base_url: '".SITEURL."'\n";
 $text .= ",theme_advanced_styles: 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3'\n";
-$text .= ",popup_css: '".THEME."style.css'\n";
+// $text .= ",popup_css: '".THEME."style.css'\n";
 $text .= ",verify_css_classes : false\n";
 $text .= ",cleanup_callback : \"tinymce_html_bbcode_control\" \n";
-$text .= (ADMIN) ? "\n, external_link_list_url: '../".$HANDLERS_DIRECTORY."tiny_mce/filelist.php'\n" : "";
+$text .= (ADMIN) ? "\n, external_link_list_url: '../".e_PLUGIN_ABS."tiny_mce/filelist.php'\n" : "";
+
+if($pref['tinymce']['customjs'])
+{
+	$text .= "\n,
+
+	// Start Custom TinyMce JS  -----
+
+	".$pref['tinymce']['customjs']."
+
+	// End Custom TinyMce JS ---
+
+	";
+
+}
 
 $text .= "
 
@@ -154,7 +192,7 @@ function tinymce_html_bbcode_control(type, source) {
     return source;
 }
 
-
+ // ]]>
 function triggerSave()
 {
   tinyMCE.triggerSave();

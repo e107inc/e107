@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/e_meta.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-09 06:58:46 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-01 02:52:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if(e_WYSIWYG)
+if(e_WYSIWYG || strpos(e_SELF,"tinymce/admin_config.php"))
 {
   	require_once(e_PLUGIN."tinymce/wysiwyg.php");
   	echo wysiwyg($e_wysiwyg);
