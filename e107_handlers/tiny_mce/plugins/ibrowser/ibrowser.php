@@ -9,12 +9,12 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.10 $Date: 2004/10/04
+// $Revision: 1.11 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.10 $
-// $Date: 2009-07-01 23:34:15 $
+// $Revision: 1.11 $
+// $Date: 2009-07-01 23:36:41 $
 // $Author: e107coders $
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
@@ -68,8 +68,14 @@ $img = isset($_POST['imglist'])? $_POST['imglist']:'';
 $preview = e_IMAGE."generic/blank.gif";
 
 $errors = array();
-
-include_once("langs/".e_LANGUAGE.".php");
+if(is_readable("langs/".e_LANGUAGE.".php"))
+{
+	include_once("langs/".e_LANGUAGE.".php");
+}
+else
+{
+	include_once("langs/English.php");
+}
 echo "
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 
