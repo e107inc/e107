@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-07-01 02:52:08 $
+ * $Revision: 1.2 $
+ * $Date: 2009-07-01 04:19:55 $
  * $Author: e107coders $
  *
 */
@@ -22,11 +22,10 @@ if(!getperms("P") || !plugInstalled('tinymce'))
 }
 
 $e_wysiwyg = 'content';
-require_once(e_ADMIN."auth.php");
 require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage::getInstance();
 
-if($_POST['save_settings'])
+if($_POST['save_settings'])   // Needs to be saved before e_meta.php is loaded by auth.php.
 {
     $pref['tinymce']['customjs'] = $_POST['customjs'];
     $pref['tinymce']['theme_advanced_buttons1'] = $_POST['theme_advanced_buttons1'];
@@ -36,11 +35,17 @@ if($_POST['save_settings'])
 	$pref['tinymce']['plugins'] = $_POST['mce_plugins'];
 
 	save_prefs();
-
-    $emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
-	$e107->ns->tablerender(LAN_UPDATED, $emessage->render());
-
 }
+
+require_once(e_ADMIN."auth.php");
+
+
+if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage doesn't return TRUE.
+{
+	$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
+	$e107->ns->tablerender(LAN_UPDATED, $emessage->render());
+}
+
 
     require_once(e_HANDLER."file_class.php");
     $fl = new e_file;
@@ -62,7 +67,7 @@ if($_POST['save_settings'])
 
 	if(!$pref['tinymce']['theme_advanced_buttons3'])
 	{
-		$pref['tinymce']['theme_advanced_buttons3'] = "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen";
+		$pref['tinymce']['theme_advanced_buttons3'] = "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen,emoticons";
 	}
 
 	if(!$pref['tinymce']['theme_advanced_buttons4'])
@@ -77,7 +82,7 @@ if($_POST['save_settings'])
     <table style='".ADMIN_WIDTH."' class='fborder'>
 
     <tr>
-    <td style='width:20%' class='forumheader3'>Preview</td>
+    <td style='width:20%' class='forumheader3'>Preview<br /><br />[<a href='javascript:start_tinyMce();'>Refresh Preview</a>]</td>
     <td style='width:80%' class='forumheader3'>
     <textarea id='content' rows='10' cols='10' name='name3' class='tbox' style='width:80%'>     </textarea>
     </td>

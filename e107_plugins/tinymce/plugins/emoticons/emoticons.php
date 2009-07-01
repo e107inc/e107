@@ -8,7 +8,7 @@ require_once(HEADERF);
 
 
 	$emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
-	$str = "<div class='spacer' style='white-space:wrap;width:130px;text-align:center'>";
+	$str = "<div style='text-align:center'><div class='spacer' style='white-space:wrap;width:130px;text-align:center'>";
     foreach($emotes as $key => $value){
 		$key = str_replace("!", ".", $key);
 		$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
@@ -17,7 +17,8 @@ require_once(HEADERF);
 		$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$key')\"><img src=\"".e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 	}
 
-	$str .= "</div>";
+	$str .= "</div>
+	</div>";
 
  echo $str;
 
