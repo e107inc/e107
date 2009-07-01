@@ -1,10 +1,10 @@
 /**
- * $Id: editable_selects.js,v 1.1 2006-12-22 18:45:32 e107coders Exp $
+ * $Id: editable_selects.js,v 1.2 2009-07-01 02:52:08 e107coders Exp $
  *
  * Makes select boxes editable.
  *
  * @author Moxiecode
- * @copyright Copyright © 2004-2006, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
  */
 
 var TinyMCE_EditableSelects = {
@@ -20,13 +20,13 @@ var TinyMCE_EditableSelects = {
 				o.className = 'mceAddSelectValue';
 
 				nl[i].options[nl[i].options.length] = o;
-				nl[i].setAttribute('onchange', 'TinyMCE_EditableSelects.onChangeEditableSelect(this);');
+				nl[i].onchange = TinyMCE_EditableSelects.onChangeEditableSelect;
 			}
 		}
 	},
 
-	onChangeEditableSelect : function(se) {
-		var d = document, ne;
+	onChangeEditableSelect : function(e) {
+		var d = document, ne, se = window.event ? window.event.srcElement : e.target;
 
 		if (se.options[se.selectedIndex].value == '__mce_add_custom__') {
 			ne = d.createElement("input");
@@ -34,11 +34,12 @@ var TinyMCE_EditableSelects = {
 			ne.name = se.name + "_custom";
 			ne.type = "text";
 
-			ne.style.width = se.clientWidth;
+			ne.style.width = se.offsetWidth + 'px';
 			se.parentNode.insertBefore(ne, se);
 			se.style.display = 'none';
 			ne.focus();
 			ne.onblur = TinyMCE_EditableSelects.onBlurEditableSelectInput;
+			ne.onkeydown = TinyMCE_EditableSelects.onKeyDown;
 			TinyMCE_EditableSelects.editSelectElm = se;
 		}
 	},
@@ -57,5 +58,12 @@ var TinyMCE_EditableSelects = {
 			se.parentNode.removeChild(se.previousSibling);
 			TinyMCE_EditableSelects.editSelectElm = null;
 		}
+	},
+
+	onKeyDown : function(e) {
+		e = e || window.event;
+
+		if (e.keyCode == 13)
+			TinyMCE_EditableSelects.onBlurEditableSelectInput();
 	}
 };
