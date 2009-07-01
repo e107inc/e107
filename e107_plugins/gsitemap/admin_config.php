@@ -9,9 +9,9 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-20 21:48:06 $
- * $Author: e107steved $
+ * $Revision: 1.5 $
+ * $Date: 2009-07-01 05:10:23 $
+ * $Author: e107coders $
  *
 */
 require_once("../../class2.php");
@@ -121,33 +121,45 @@ class gsitemap
 			$text .= "
 
 			<form action='".e_SELF."' id='display' method='post'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
-
-			<tr>
-			<td style='width:5%; text-align: center;' class='fcaption'>Id</td>
-			<td style='width:10%' class='fcaption'>".GSLAN_25."</td>
-			<td style='width:40%' class='fcaption'>".GSLAN_26."</td>
-			<td style='width:20%; text-align: center;' class='fcaption'>".GSLAN_27."</td>
-			<td style='width:10%; text-align: center;' class='fcaption'>".GSLAN_28."</td>
-			<td style='width:10%; text-align: center;' class='fcaption'>".GSLAN_9."</td>
-			<td style='width:5%; text-align: center;' class='fcaption'>".LAN_OPTIONS."</td>
-			</tr>
+			<table class='adminlist' cellspacing='0' cellpadding='0'>
+            	<colgroup span='2'>
+					<col style='width:5%' />
+					<col style='width:10%' />
+					<col style='width:40%' />
+					<col style='width:20%' />
+					<col style='width:10%' />
+					<col style='width:10%' />
+					<col style='width:5%' />
+				</colgroup>
+                <thead>
+				<tr class='first last' >
+				<th style='text-align: center;'>Id</th>
+				<th>".GSLAN_25."</th>
+				<th>".GSLAN_26."</th>
+				<th style='text-align: center'>".GSLAN_27."</th>
+				<th style='text-align: center' >".GSLAN_28."</th>
+				<th style='text-align: center' >".GSLAN_9."</th>
+				<th style='text-align: center'>".LAN_OPTIONS."</th>
+				</tr>
+				</thead>
+				<tbody>
 			";
 
 			$glArray = $sql -> db_getList();
 			foreach($glArray as $row2)
 			{
 				$datestamp = $gen->convert_date($row2['gsitemap_lastmod'], "short");
+				$rowStyle = ($rowStyle == "odd") ? "even" : "odd";
 
-				$text .= "<tr>
-				<td class='forumheader3' style='; text-align: center;'>".$row2['gsitemap_id'] ."</td>
-				<td class='forumheader3'>".$tp->toHTML($row2['gsitemap_name'],"","defs")."</td>
-				<td class='forumheader3'>".$row2['gsitemap_url']."</td>
-				<td class='forumheader3' style='; text-align: center;'>".$datestamp."</td>
-				<td class='forumheader3' style='; text-align: center;'>".$this->freq_list[($row2['gsitemap_freq'])]."</td>
-				<td class='forumheader3' style='; text-align: center;'>".$row2['gsitemap_priority'] ."</td>
+				$text .= "<tr class='{$rowStyle}'>
+				<td style='; text-align: center;'>".$row2['gsitemap_id'] ."</td>
+				<td>".$tp->toHTML($row2['gsitemap_name'],"","defs")."</td>
+				<td>".$row2['gsitemap_url']."</td>
+				<td style='; text-align: center;'>".$datestamp."</td>
+				<td style='; text-align: center;'>".$this->freq_list[($row2['gsitemap_freq'])]."</td>
+				<td style='; text-align: center;'>".$row2['gsitemap_priority'] ."</td>
 
-				<td style='width:50px;white-space:nowrap' class='forumheader3'>
+				<td class='center' style='white-space:nowrap'>
 				<div>
 				<input type='image' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".e_IMAGE."packs/".$imode."/admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
 				<input type='image' name='delete[{$row2['gsitemap_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."') \" src='".e_IMAGE."packs/".$imode."/admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
@@ -158,7 +170,7 @@ class gsitemap
 			}
 		}
 
-		$text .= "</table>\n</form><br /><br /><br /></div>";
+		$text .= "</tbody></table>\n</form><br /><br /><br /></div>";
 		$ns -> tablerender("<div style='text-align:center'>".GSLAN_24."</div>", $text);
 	}
 
