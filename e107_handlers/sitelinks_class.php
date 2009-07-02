@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.119 $
-|     $Date: 2008-05-30 20:57:20 $
+|     $Revision: 1.120 $
+|     $Date: 2009-07-02 20:40:43 $
 |     $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -171,7 +171,7 @@ class sitelinks
                 $text .= $ns->tablerender($k, $mnu, 'sitelinks_sub', TRUE);
             }
         }
-        $text .= "\n\n\n<!--- end Site Links -->\n\n\n";
+        $text .= "\n\n\n<!-- end Site Links -->\n\n\n";
         if($usecache)
         {
             $e107cache->set('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY), $text);
