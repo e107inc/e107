@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-01 04:19:55 $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-02 00:13:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -56,8 +56,27 @@ $text .= "elements : '".$formids."',\n";
 $text .= "theme : 'advanced'\n";
 // $text .= ",plugins : 'table,contextmenu";
 
+$admin_only = array("ibrowser","code");
 
-$text  .= ",plugins : '".implode(",",$pref['tinymce']['plugins'])."'\n";
+foreach($pref['tinymce']['plugins'] as $val)
+{
+	if(in_array($val,$admin_only) && !ADMIN)
+	{
+    	continue;
+	}
+
+	if(!$pref['smiley_activate'] && ($val=="emoticons"))
+	{
+    	continue;
+	}
+
+	$tinymce_plugins[] = $val;
+}
+
+
+
+
+$text  .= ",plugins : '".implode(",",$tinymce_plugins)."'\n";
 // $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
 // $text .= (ADMIN) ? ",ibrowser" : ",image";
 
@@ -137,6 +156,14 @@ $text .= "
 	start_tinyMce();
 
 function tinymce_html_bbcode_control(type, source) {
+
+	";
+    if(in_array("bbcode",$pref['tinymce']['plugins']))
+	{
+    	$text .= " return source; ";
+	}
+
+	$text .= "
 
     switch (type) {
 

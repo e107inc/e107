@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-07-01 04:19:55 $
+ * $Revision: 1.3 $
+ * $Date: 2009-07-02 00:13:11 $
  * $Author: e107coders $
  *
 */
@@ -67,7 +67,7 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
 
 	if(!$pref['tinymce']['theme_advanced_buttons3'])
 	{
-		$pref['tinymce']['theme_advanced_buttons3'] = "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen,emoticons";
+		$pref['tinymce']['theme_advanced_buttons3'] = "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen,emoticons,ibrowser";
 	}
 
 	if(!$pref['tinymce']['theme_advanced_buttons4'])
@@ -82,7 +82,10 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
     <table style='".ADMIN_WIDTH."' class='fborder'>
 
     <tr>
-    <td style='width:20%' class='forumheader3'>Preview<br /><br />[<a href='javascript:start_tinyMce();'>Refresh Preview</a>]</td>
+    <td style='width:20%' class='forumheader3'>Preview<div style='padding:20px'>[<a href='javascript:start_tinyMce();'>Refresh Preview</a>]
+	<br /><br />[<a href='#' onclick=\"tinyMCE.execCommand('mceToggleEditor',false,'content');\">Toggle WYSIWYG</a>]
+	</div>
+	</td>
     <td style='width:80%' class='forumheader3'>
     <textarea id='content' rows='10' cols='10' name='name3' class='tbox' style='width:80%'>     </textarea>
     </td>
