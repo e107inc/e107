@@ -1,92 +1,81 @@
-// Import theme specific language pack
-// $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/plugins/ibrowser/editor_plugin.js,v $
-// $Revision: 1.1 $
-// $Date: 2006-12-22 18:45:26 $
-// $Author: e107coders $
+/**
+ * $Id: editor_plugin.js,v 1.2 2009-07-02 00:13:12 e107coders Exp $
+ *
+ * @author Moxiecode
+ * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
+ */
 
-tinyMCE.importPluginLanguagePack('ibrowser', 'en,es,da,de,fr,nl,pl,sv,ru');
+(function() {
+	// Load plugin specific language pack
+	tinymce.PluginManager.requireLangPack('ibrowser');
 
-// Returns the HTML contents of the ibrowser control.
+	tinymce.create('tinymce.plugins.ibrowserPlugin', {
+		/**
+		 * Initializes the plugin, this will be executed after the plugin has been created.
+		 * This call is done before the editor instance has finished it's initialization so use the onInit event
+		 * of the editor instance to intercept that event.
+		 *
+		 * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
+		 * @param {string} url Absolute URL to where the plugin is located.
+		 */
+		init : function(ed, url) {
+			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceibrowser');
+			ed.addCommand('mceibrowser', function() {
+				ed.windowManager.open({
+					file : url + '/ibrowser.php',
+					width : 520 + parseInt(ed.getLang('ibrowser.delta_width', 0)),
+					height : 770 + parseInt(ed.getLang('ibrowser.delta_height', 0)),
+					inline : 1
+				}, {
+					plugin_url : url, // Plugin absolute URL
+					some_custom_arg : 'custom arg' // Custom argument
+				});
+			});
 
-var TinyMCE_ibrowserPlugin = {
-	getInfo : function() {
-		return {
-			longname : 'ibrowser',
-			author : 'Your name',
-			authorurl : '',
-			infourl : '',
-			version : "1.1"
-		};
-	},
+			// Register ibrowser button
+			ed.addButton('ibrowser', {
+				title : 'ibrowser.desc',
+				cmd : 'mceibrowser',
+				image : url + '/images/ibrowser.gif'
+			});
 
-	getControlHTML : function(cn) {
-		switch (cn) {
-			case "ibrowser":
-				return tinyMCE.getButtonHTML(cn, 'lang_ibrowser_desc', '{$pluginurl}/images/ibrowser.gif', 'mceBrowseImage', true);
+			// Add a node change handler, selects the button in the UI when a image is selected
+			ed.onNodeChange.add(function(ed, cm, n) {
+				cm.setActive('ibrowser', n.nodeName == 'IMG');
+			});
+		},
+
+		/**
+		 * Creates control instances based in the incomming name. This method is normally not
+		 * needed since the addButton method of the tinymce.Editor class is a more easy way of adding buttons
+		 * but you sometimes need to create more complex controls like listboxes, split buttons etc then this
+		 * method can be used to create those.
+		 *
+		 * @param {String} n Name of the control to create.
+		 * @param {tinymce.ControlManager} cm Control manager to use inorder to create new control.
+		 * @return {tinymce.ui.Control} New control instance or null if no control was created.
+		 */
+		createControl : function(n, cm) {
+			return null;
+		},
+
+		/**
+		 * Returns information about the plugin as a name/value array.
+		 * The current keys are longname, author, authorurl, infourl and version.
+		 *
+		 * @return {Object} Name/value array containing information about the plugin.
+		 */
+		getInfo : function() {
+			return {
+				longname : 'ibrowser plugin',
+				author : 'Some author',
+				authorurl : 'http://tinymce.moxiecode.com',
+				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/ibrowser',
+				version : "1.0"
+			};
 		}
+	});
 
-		return "";
-	},
-
-
-	execCommand : function(editor_id, element, command, user_interface, value) {
-		// Handle commands
-		switch (command) {
-		case "mceBrowseImage":
-			var template = new Array();
-
-			template['file'] = '../../plugins/ibrowser/ibrowser.php'; // Relative to theme location
-			template['width'] = 480;
-			template['height'] = 670;
-
-			var src = "", alt = "", border = "", hspace = "", vspace = "", width = "", height = "", align = "";
-            var margin_left = "";
-			var margin_right = "";
-			var margin_top = "";
-			var margin_bottom = "";
-
-			if (tinyMCE.selectedElement != null && tinyMCE.selectedElement.nodeName.toLowerCase() == "img")
-				tinyMCE.imgElement = tinyMCE.selectedElement;
-
-            if (tinyMCE.imgElement) {
-                src = tinyMCE.imgElement.getAttribute('src') ? tinyMCE.imgElement.getAttribute('src') : "";
-                alt = tinyMCE.imgElement.getAttribute('alt') ? tinyMCE.imgElement.getAttribute('alt') : "";
-			}
-            /*
-
-                border = tinyMCE.imgElement.style.border ? tinyMCE.imgElement.style.border : "";
-                hspace = tinyMCE.imgElement.getAttribute('hspace') ? tinyMCE.imgElement.getAttribute('hspace') : "";
-                vspace = tinyMCE.imgElement.getAttribute('vspace') ? tinyMCE.imgElement.getAttribute('vspace') : "";
-                width = tinyMCE.imgElement.style.width ? tinyMCE.imgElement.style.width.replace('px','') : "";
-                height = tinyMCE.imgElement.style.height ? tinyMCE.imgElement.style.height.replace('px','') : "";
-                align = tinyMCE.imgElement.getAttribute('align') ? tinyMCE.imgElement.getAttribute('align') : "";
-
-                margin_left = tinyMCE.imgElement.style.marginLeft ? tinyMCE.imgElement.style.marginLeft.replace('px','') : "";
-                margin_right = tinyMCE.imgElement.style.marginRight ? tinyMCE.imgElement.style.marginRight.replace('px','') : "";
-                margin_top = tinyMCE.imgElement.style.marginTop ? tinyMCE.imgElement.style.marginTop.replace('px','') : "";
-                margin_bottom = tinyMCE.imgElement.style.marginBottom ? tinyMCE.imgElement.style.marginBottom.replace('px','') : "";
-
-                // Fix for drag-drop/copy paste bug in Mozilla
-                mceRealSrc = tinyMCE.imgElement.getAttribute('mce_real_src') ? tinyMCE.imgElement.getAttribute('mce_real_src') : "";
-                if (mceRealSrc != "")
-                    src = mceRealSrc;
-
-           //       src = eval(tinyMCE.settings['urlconvertor_callback'] + "(src, tinyMCE.imgElement, true);");
-            }
-*/
-				tinyMCE.openWindow(template, {editor_id : editor_id, src : src, alt : alt, border : border, hspace : hspace, vspace : vspace, width : width, height : height, align : align});
-				return true;
-	}
-
-   		// Pass to next handler in chain
-		return false;
-	}
-
-};
-
-
-tinyMCE.addPlugin("ibrowser", TinyMCE_ibrowserPlugin);
-
-
-
-
+	// Register plugin
+	tinymce.PluginManager.add('ibrowser', tinymce.plugins.ibrowserPlugin);
+})();
