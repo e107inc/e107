@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-07-03 02:27:03 $
+ * $Revision: 1.41 $
+ * $Date: 2009-07-03 06:48:43 $
  * $Author: e107coders $
 */
 require_once("../class2.php");
@@ -29,7 +29,7 @@ $pst->form = "core-newspost-create-form"; // form id of the form that will have 
 $pst->page = "newspost.php?create"; // display preset options on which page(s).
 $pst->id = "admin_newspost";
 // ------------------------------
-
+require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php"); // maybe this should be put in class2.php when 'admin' is detected.
 $newspost = new admin_newspost(e_QUERY, $pst);
 $gen = new convert();
 
@@ -41,7 +41,22 @@ function headerjs()
   	global $newspost;
 
 	require_once(e_HANDLER.'js_helper.php');
-	$ret = "
+
+    $ret .= "<script type='text/javascript'>
+
+    function UpdateForm(id)
+	{
+        new e107Ajax.Updater('filterValue', '".e_SELF."?searchValue', {
+            method: 'post',
+			evalScripts: true,
+            parameters: {filtertype: id}
+		});
+   }
+
+   </script>";
+
+
+	$ret .= "
 		<script type='text/javascript'>
 			if(typeof e107Admin == 'undefined') var e107Admin = {}
 
@@ -66,7 +81,7 @@ function headerjs()
 			});
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-		<script type='text/javascript' src='".e_FILE_ABS."tablesort.js'></script>
+
 	";
 
 	if($newspost->getAction() == 'cat')
@@ -147,6 +162,7 @@ class admin_newspost
 	var $_request = array();
 	var $_cal = array();
 	var $_pst;
+	var $_fields;
 
 	function admin_newspost($qry, $pstobj)
 	{
@@ -156,6 +172,22 @@ class admin_newspost
 		$this->_cal = new DHTML_Calendar(true);
 
 		$this->_pst = &$pstobj;
+
+		$this->_fields = array(
+				"news_id"			=> array("title" => LAN_NEWS_45, "type"=>"number", "width" => "5%", "thclass" => "center", "url" => e_SELF."?main.news_id.{$sort_link}.".$this->getFrom()),
+ 				"news_title"		=> array("title" => NWSLAN_40, "type"=>"text", "width" => "30%", "thclass" => "", "url" => e_SELF."?main.news_title.{$sort_link}.".$this->getFrom()),
+    			"news_author"		=> array("title" => LAN_NEWS_50, "type"=>"user", "width" => "10%", "thclass" => "", "url" => ""),
+				"news_datestamp"	=> array("title" => LAN_NEWS_32, "type"=>"datestamp", "width" => "15%", "thclass" => "", "url" => ""),
+                "news_category"		=> array("title" => NWSLAN_6, "type"=>"dropdown", "width" => "auto", "thclass" => "", "url" => ""),
+  				"news_class"		=> array("title" => NWSLAN_22, "type"=>"userclass", "width" => "auto", "thclass" => "", "url" => ""),
+				"news_render_type"	=> array("title" => LAN_NEWS_49, "type"=>"dropdown", "width" => "auto", "thclass" => "center", "url" => ""),
+			   	"news_thumbnail"	=> array("title" => LAN_NEWS_22, "width" => "auto", "thclass" => "", "url" => ""),
+		  		"news_sticky"		=> array("title" => LAN_NEWS_28, "type"=>"boolean", "width" => "auto", "thclass" => "", "url" => ""),
+                "news_allow_comments" => array("title" => NWSLAN_15, "type"=>"boolean", "width" => "auto", "thclass" => "", "url" => ""),
+                "news_comment_total" => array("title" => LAN_NEWS_60, "type"=>"number", "width" => "auto", "thclass" => "", "url" => ""),
+				"options"			=> array("title" => LAN_OPTIONS, "width" => "300px", "thclass" => "center last", "url" => "")
+
+		);
 
 	}
 
@@ -208,6 +240,7 @@ class admin_newspost
 	function ajax_observer()
 	{
 		$method = 'ajax_exec_'.$this->getAction();
+
 		if(e_AJAX_REQUEST && method_exists($this, $method))
 		{
 			$this->$method();
@@ -564,6 +597,12 @@ class admin_newspost
 		$sort_link = $sort_order == 'asc' ? 'desc' : 'asc';		// Effectively toggle setting for headings
 		$amount = 10;//TODO - pref
 
+
+
+		$field_columns = $this->_fields;
+
+		$field_count = count($field_columns);
+
 		$e107 = &e107::getInstance();
 
 		// Grab news Category Names;
@@ -575,7 +614,31 @@ class admin_newspost
 			{
 	        	$news_category[$val['category_id']] = $val['category_name'];
 			}
-        // -------------------------------
+
+
+        // ------ Search Filter ------
+
+        $text .= "
+			<form method='post' action='".e_SELF."'>
+			<div class='center' style='padding:20px'>
+			<table style='width:auto' cellspacing='2'>
+			<tr>
+            <td class='left'>".
+				$frm->admin_button('dupfield', "Add Filter", 'action', '', array('other' => 'onclick="duplicateHTML(\'filterline\',\'srch_container\');"'))
+			."</td>
+			<td>
+				<div id='srch_container' class='nowrap'><span id='filterline' >".$frm->filterType($field_columns)."<span id='filterValue'>".$frm->filterValue()."</span></span></div>
+		  	</td>
+			<td>".
+				$frm->admin_button('searchsubmit', NWSLAN_63, 'search')."
+			</td>
+
+		  </tr>
+		  </table>
+			</div></form>
+		";
+
+        // --------------------------------------------
 
 
 		if (varsettrue($_POST['searchquery']))
@@ -591,25 +654,7 @@ class admin_newspost
 		{
 			$newsarray = $e107->sql->db_getList();
 
-            $field_columns = array(
-				"news_id"			=> array("title" => LAN_NEWS_45, "width" => "5%", "thclass" => "sortable center", "url" => e_SELF."?main.news_id.{$sort_link}.".$this->getFrom()),
- 				"news_title"		=> array("title" => NWSLAN_40, "width" => "30%", "thclass" => "sortable", "url" => e_SELF."?main.news_title.{$sort_link}.".$this->getFrom()),
-    			"news_author"		=> array("title" => LAN_NEWS_50, "width" => "10%", "thclass" => "sortable", "url" => ""),
-				"news_datestamp"	=> array("title" => LAN_NEWS_32, "width" => "15%", "thclass" => "sortable", "url" => ""),
-                "news_category"		=> array("title" => NWSLAN_6, "width" => "auto", "thclass" => "sortable", "url" => ""),
-  				"news_class"		=> array("title" => NWSLAN_22, "width" => "auto", "thclass" => "sortable", "url" => ""),
-				"news_render_type"	=> array("title" => LAN_NEWS_49, "width" => "auto", "thclass" => "sortable center", "url" => ""),
-			   	"news_thumbnail"	=> array("title" => LAN_NEWS_22, "width" => "auto", "thclass" => "sortable", "url" => ""),
-		  		"news_sticky"		=> array("title" => LAN_NEWS_28, "width" => "auto", "thclass" => "", "url" => ""),
-                "news_allow_comments" => array("title" => NWSLAN_15, "width" => "auto", "thclass" => "", "url" => ""),
-                "news_comment_total" => array("title" => LAN_NEWS_60, "width" => "auto", "thclass" => "", "url" => ""),
-				"options"			=> array("title" => LAN_OPTIONS, "width" => "300px", "thclass" => "center last", "url" => "")
-
-			);
-
-            $field_count = count($field_columns) - 1;
-
-			$text = "
+			$text .= "
 				<form action='".e_SELF."' id='newsform' method='post'>
 					<fieldset id='core-newspost-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
@@ -630,7 +675,6 @@ class admin_newspost
                 $sticky = ($row['news_sticky'] == 1) ? ADMIN_TRUE_ICON : "&nbsp;";
                 $comments = ($row['news_allow_comments'] == 1) ? ADMIN_TRUE_ICON : "&nbsp;";
 
-
 				$text .= "<tr>\n";
 
 				// Below must be in the same order as the field_columns above.
@@ -638,15 +682,14 @@ class admin_newspost
 				$text .= (in_array("news_id",$pref['admin_news_columns'])) ? "<td class='center'>".$row['news_id']."</td>\n" : "";
                 $text .= (in_array("news_title",$pref['admin_news_columns'])) ? "<td><a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$row['news_id']}&value2={$row['news_category']}")."'>".($row['news_title'] ? $e107->tp->toHTML($row['news_title'], false,"TITLE") : "[".NWSLAN_42."]")."</a></td> \n" : "";
                 $text .= (in_array("news_author",$pref['admin_news_columns'])) ? "<td>".$author['user_name']."</td>\n" : "";
-				$text .= (in_array("news_datestamp",$pref['admin_news_columns'])) ? "<td >".$gen->convert_date($row['news_datestamp'],'short')." </td>\n" : "";
-				$text .= (in_array("news_category",$pref['admin_news_columns'])) ? "<td >".$news_category[$row['news_category']]." </td>\n" : "";
+				$text .= (in_array("news_datestamp",$pref['admin_news_columns'])) ? "<td>".$gen->convert_date($row['news_datestamp'],'short')." </td>\n" : "";
+				$text .= (in_array("news_category",$pref['admin_news_columns'])) ? "<td>".$news_category[$row['news_category']]." </td>\n" : "";
 				$text .= (in_array("news_class",$pref['admin_news_columns'])) ? "<td class='nowrap'>".r_userclass_name($row['news_class'])." </td>\n" : "";
                 $text .= (in_array("news_render_type",$pref['admin_news_columns'])) ? "<td class='center nowrap'>".$ren_type[$row['news_render_type']]."</td>\n" : "";
 				$text .= (in_array("news_thumbnail",$pref['admin_news_columns'])) ? "<td class='center nowrap'>".$thumbnail."</td>\n" : "";
                 $text .= (in_array("news_sticky",$pref['admin_news_columns'])) ? "<td class='center'>".$sticky."</td>\n" : "";
                 $text .= (in_array("news_allow_comments",$pref['admin_news_columns'])) ? "<td class='center'>".$comments."</td>\n" : "";
                 $text .= (in_array("news_comment_total",$pref['admin_news_columns'])) ? "<td class='center'>".$row['news_comment_total']."</td>\n" : "";
-
 
 				$text .= "
 					<td class='center'>
@@ -679,14 +722,6 @@ class admin_newspost
 
 		}
 
-
-		$text .= "
-			<form method='post' action='".e_SELF."'>
-				<div class='buttons-bar center'>
-					".$frm->text('searchquery', '', 50).$frm->admin_button('searchsubmit', NWSLAN_63, 'search')."
-				</div>
-			</form>
-		";
 		$emessage = &eMessage::getInstance();
 		$e107->ns->tablerender(NWSLAN_4, $emessage->render().$text);
 	}
@@ -1468,6 +1503,14 @@ class admin_newspost
 		$frm = new e_form();
 
 		echo $frm->selectbox('newsposts_archive', $this->_optrange(intval($this->getSubAction()) - 1), intval($pref['newsposts_archive']), 'class=tbox&tabindex='.intval($this->getId()));
+	}
+
+
+    function ajax_exec_searchValue()
+	{
+		require_once(e_HANDLER."form_handler.php");
+		$frm = new e_form(true);
+		echo $frm->filterValue($_POST['filtertype'],$this->_fields);
 	}
 	
 
