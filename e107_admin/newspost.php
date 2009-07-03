@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-05-10 17:52:13 $
- * $Author: secretr $
+ * $Revision: 1.40 $
+ * $Date: 2009-07-03 02:27:03 $
+ * $Author: e107coders $
 */
 require_once("../class2.php");
 
@@ -31,6 +31,7 @@ $pst->id = "admin_newspost";
 // ------------------------------
 
 $newspost = new admin_newspost(e_QUERY, $pst);
+$gen = new convert();
 
 //Handle Ajax Calls
 if($newspost->ajax_observer()) exit;
@@ -65,6 +66,7 @@ function headerjs()
 			});
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+		<script type='text/javascript' src='".e_FILE_ABS."tablesort.js'></script>
 	";
 
 	if($newspost->getAction() == 'cat')
@@ -250,6 +252,10 @@ class admin_newspost
 		elseif(isset($_POST['news_comments_recalc']))
 		{
 			$this->_observe_newsCommentsRecalc();
+		}
+		elseif(isset($_POST['submit-e-columns']))
+		{
+        	$this->_observe_saveColumns();
 		}
 	}
 
@@ -538,8 +544,18 @@ class admin_newspost
 		}
 	}
 
+
+	function _observe_saveColumns()
+	{
+		global $pref,$admin_log;
+		$pref['admin_news_columns'] = $_POST['e-columns'];
+         save_prefs();
+	}
+
 	function show_existing_items()
 	{
+		global $pref,$gen;
+
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
 
@@ -549,6 +565,18 @@ class admin_newspost
 		$amount = 10;//TODO - pref
 
 		$e107 = &e107::getInstance();
+
+		// Grab news Category Names;
+			$e107->sql->db_Select('news_category', '*');
+	        $newscatarray = $e107->sql->db_getList();
+			$news_category = array();
+
+	        foreach($newscatarray as $val)
+			{
+	        	$news_category[$val['category_id']] = $val['category_name'];
+			}
+        // -------------------------------
+
 
 		if (varsettrue($_POST['searchquery']))
 		{
@@ -562,56 +590,70 @@ class admin_newspost
 		if ($e107->sql->db_Select('news', '*', $query, ($_POST['searchquery'] ? 0 : "nowhere")))
 		{
 			$newsarray = $e107->sql->db_getList();
+
+            $field_columns = array(
+				"news_id"			=> array("title" => LAN_NEWS_45, "width" => "5%", "thclass" => "sortable center", "url" => e_SELF."?main.news_id.{$sort_link}.".$this->getFrom()),
+ 				"news_title"		=> array("title" => NWSLAN_40, "width" => "30%", "thclass" => "sortable", "url" => e_SELF."?main.news_title.{$sort_link}.".$this->getFrom()),
+    			"news_author"		=> array("title" => LAN_NEWS_50, "width" => "10%", "thclass" => "sortable", "url" => ""),
+				"news_datestamp"	=> array("title" => LAN_NEWS_32, "width" => "15%", "thclass" => "sortable", "url" => ""),
+                "news_category"		=> array("title" => NWSLAN_6, "width" => "auto", "thclass" => "sortable", "url" => ""),
+  				"news_class"		=> array("title" => NWSLAN_22, "width" => "auto", "thclass" => "sortable", "url" => ""),
+				"news_render_type"	=> array("title" => LAN_NEWS_49, "width" => "auto", "thclass" => "sortable center", "url" => ""),
+			   	"news_thumbnail"	=> array("title" => LAN_NEWS_22, "width" => "auto", "thclass" => "sortable", "url" => ""),
+		  		"news_sticky"		=> array("title" => LAN_NEWS_28, "width" => "auto", "thclass" => "", "url" => ""),
+                "news_allow_comments" => array("title" => NWSLAN_15, "width" => "auto", "thclass" => "", "url" => ""),
+                "news_comment_total" => array("title" => LAN_NEWS_60, "width" => "auto", "thclass" => "", "url" => ""),
+				"options"			=> array("title" => LAN_OPTIONS, "width" => "300px", "thclass" => "center last", "url" => "")
+
+			);
+
+            $field_count = count($field_columns) - 1;
+
 			$text = "
 				<form action='".e_SELF."' id='newsform' method='post'>
 					<fieldset id='core-newspost-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='4'>
-								<col style='width:  5%'></col>
-								<col style='width: 35%'></col>
-								<col style='width: 20%'></col>
-								<col style='width: 15%'></col>
-								<col style='width: 15%'></col>
-							</colgroup>
+							<colgroup span='".$field_count."'>".$frm->colGroup($field_columns,"admin_news_columns")."</colgroup>
 							<thead>
-								<tr>
-									<th class='center'><a href='".e_SELF."?main.news_id.{$sort_link}.".$this->getFrom()."'>".LAN_NEWS_45."</a></th>
-									<th><a href='".e_SELF."?main.news_title.{$sort_link}.".$this->getFrom()."'>".NWSLAN_40."</a></th>
-									<th>".LAN_NEWS_50."</th>
-									<th class='center'>".LAN_NEWS_49."</th>
-									<th class='center last'>".LAN_OPTIONS."</th>
-								</tr>
+								<tr>".$frm->thead($field_columns,"admin_news_columns")."</tr>
 							</thead>
 							<tbody>
 			";
+
 			$ren_type = array("default","title","other-news","other-news 2");
-			foreach($newsarray as $row)
+
+			foreach($newsarray as $field=>$row)
 			{
-			   $author = get_user_data($row['news_author']);
-				// Note: To fix the alignment bug. Put both buttons inside the Form.
-				// But make EDIT a 'button' and DELETE 'submit'
-				$text .= "
-								<tr>
-									<td class='center'>{$row['news_id']}</td>
-									<td><a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$row['news_id']}&value2={$row['news_category']}")."'>".($row['news_title'] ? $e107->tp->toHTML($row['news_title'], false,"TITLE") : "[".NWSLAN_42."]")."</a></td>
-									<td>{$author['user_name']}</td>
-									<td class='center'>
-				";
-				$text .= $ren_type[$row['news_render_type']];
-				if($row['news_sticky'])
-				{
-					$sicon = (file_exists(THEME_ABS."images/sticky.png") ? THEME_ABS."images/sticky.png" : e_IMAGE_ABS."generic/sticky.png");
-					$text .= " <img src='".$sicon."' alt='' />";
-				}
+			   	$author = get_user_data($row['news_author']);
+				$thumbnail = ($row['news_thumbnail'] && is_readable(e_NEWSIMAGE.$row['news_thumbnail'])) ? "<img src='".e_NEWSIMAGE.$row['news_thumbnail']."' alt='' />" : "";
+                $sticky = ($row['news_sticky'] == 1) ? ADMIN_TRUE_ICON : "&nbsp;";
+                $comments = ($row['news_allow_comments'] == 1) ? ADMIN_TRUE_ICON : "&nbsp;";
+
+
+				$text .= "<tr>\n";
+
+				// Below must be in the same order as the field_columns above.
+
+				$text .= (in_array("news_id",$pref['admin_news_columns'])) ? "<td class='center'>".$row['news_id']."</td>\n" : "";
+                $text .= (in_array("news_title",$pref['admin_news_columns'])) ? "<td><a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$row['news_id']}&value2={$row['news_category']}")."'>".($row['news_title'] ? $e107->tp->toHTML($row['news_title'], false,"TITLE") : "[".NWSLAN_42."]")."</a></td> \n" : "";
+                $text .= (in_array("news_author",$pref['admin_news_columns'])) ? "<td>".$author['user_name']."</td>\n" : "";
+				$text .= (in_array("news_datestamp",$pref['admin_news_columns'])) ? "<td >".$gen->convert_date($row['news_datestamp'],'short')." </td>\n" : "";
+				$text .= (in_array("news_category",$pref['admin_news_columns'])) ? "<td >".$news_category[$row['news_category']]." </td>\n" : "";
+				$text .= (in_array("news_class",$pref['admin_news_columns'])) ? "<td class='nowrap'>".r_userclass_name($row['news_class'])." </td>\n" : "";
+                $text .= (in_array("news_render_type",$pref['admin_news_columns'])) ? "<td class='center nowrap'>".$ren_type[$row['news_render_type']]."</td>\n" : "";
+				$text .= (in_array("news_thumbnail",$pref['admin_news_columns'])) ? "<td class='center nowrap'>".$thumbnail."</td>\n" : "";
+                $text .= (in_array("news_sticky",$pref['admin_news_columns'])) ? "<td class='center'>".$sticky."</td>\n" : "";
+                $text .= (in_array("news_allow_comments",$pref['admin_news_columns'])) ? "<td class='center'>".$comments."</td>\n" : "";
+                $text .= (in_array("news_comment_total",$pref['admin_news_columns'])) ? "<td class='center'>".$row['news_comment_total']."</td>\n" : "";
+
 
 				$text .= "
-									</td>
-									<td class='center'>
-										<a class='action' href='".e_SELF."?create.edit.{$row['news_id']}' tabindex='".$frm->getNext()."'>".ADMIN_EDIT_ICON."</a>
-										".$frm->submit_image("delete[main_{$row['news_id']}]", LAN_DELETE, 'delete', NWSLAN_39." [ID: {$row['news_id']}]")."
-									</td>
-								</tr>
+					<td class='center'>
+						<a class='action' href='".e_SELF."?create.edit.{$row['news_id']}' tabindex='".$frm->getNext()."'>".ADMIN_EDIT_ICON."</a>
+						".$frm->submit_image("delete[main_{$row['news_id']}]", LAN_DELETE, 'delete', NWSLAN_39." [ID: {$row['news_id']}]")."
+		  			</td>
+					</tr>
 				";
 			}
 

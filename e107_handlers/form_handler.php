@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-05-10 17:31:51 $
- * $Author: secretr $
+ * $Revision: 1.25 $
+ * $Date: 2009-07-03 02:27:03 $
+ * $Author: e107coders $
  *
 */
 
@@ -566,6 +566,68 @@ class e_form
 
 		$this->_cached_attributes[$type] = $def_options;
 		return $def_options;
+	}
+
+
+
+
+
+	function columnSelector($columnsArray,$columnsDefault='',$id='column_options')
+	{
+        $text .= "<div style='position:relative;float:right;'>
+		<a href='#".$id."' class='e-expandit' style='height:16px' title='Click to select columns to display'>
+		<img src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' /></a>
+
+		<div id='".$id."' class='e-hideme col-selection'>\n";
+        unset($columnsArray['options']);
+
+		foreach($columnsArray as $key=>$fld)
+		{
+			$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
+			$text .= $this->checkbox('e-columns[]', $key, $checked). $fld['title']."<br />";
+		}
+
+        $text .= "<div id='button' style='text-align:right'>";  // has issues with the checkboxes.
+	 	$text .= $this->admin_button('submit-e-columns','Save','Save');
+
+   	 	$text .= "</div>";
+		$text .= "</div></div>";
+		return $text;
+	}
+
+	function colGroup($fieldarray,$columnPref='')
+	{
+		global $pref;
+		foreach($fieldarray as $key=>$val)
+		{
+			if(in_array($key,$pref[$columnPref]))
+			{
+				$text .= "\n<col style='width: ".$val['width']."'></col>";
+			}
+		}
+		return $text;
+	}
+
+	function thead($fieldarray,$columnPref='')
+	{
+        global $pref;
+		foreach($fieldarray as $key=>$val)
+		{
+     		if(in_array($key,$pref[$columnPref]) || $key == "options")
+			{
+				$cl = ($val['thclass']) ? "class='".$val['thclass']."'" : "";
+				$text .= "\n\t<th {$cl}>";
+				$text .= ($val['url']) ? "<a href='".$val['url']."'>" : "";
+	            $text .= $val['title'];
+	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$pref[$columnPref]) : "";
+
+				$text .= ($val['url']) ? "</a>" : "";
+	 			$text .= "</th>";
+			}
+		}
+
+      return $text;
+
 	}
 }
 
