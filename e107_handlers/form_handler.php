@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-07-03 02:27:03 $
+ * $Revision: 1.26 $
+ * $Date: 2009-07-03 06:48:43 $
  * $Author: e107coders $
  *
 */
@@ -616,7 +616,7 @@ class e_form
      		if(in_array($key,$pref[$columnPref]) || $key == "options")
 			{
 				$cl = ($val['thclass']) ? "class='".$val['thclass']."'" : "";
-				$text .= "\n\t<th {$cl}>";
+				$text .= "\n\t<th id='$key' {$cl}>";
 				$text .= ($val['url']) ? "<a href='".$val['url']."'>" : "";
 	            $text .= $val['title'];
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$pref[$columnPref]) : "";
@@ -628,6 +628,55 @@ class e_form
 
       return $text;
 
+	}
+
+	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
+	function filterType($fieldarray)
+	{
+		define("e_AJAX_REQUEST",TRUE);
+    	$text .= "<select name='search_filter[]' style='margin:2px' onchange='UpdateForm(this.options[selectedIndex].value)'>";
+		foreach($fieldarray as $key=>$val)
+		{
+        	$text .= ($val['type']) ? "<option value='$key'>".$val['title']."</option>\n" : "";
+
+		}
+		$text .= "</select>";
+		return $text;
+	}
+
+	function filterValue($type,$fields)
+	{
+		if($type)
+		{
+
+			switch ($fields[$type]['type']) {
+				case "datestamp":
+					return "[date field]";
+               	break;
+
+				case "boolean":
+
+					return "<select name='searchquery'><option value='1'>".LAN_YES."</option>\n
+				  	<option value='0'>".LAN_NO."</option>
+				  	</select>";
+               	break;
+
+			   	case "user":
+ 			   		return "<select name='searchquery'><option value='1'>User One</option><option value='2'>User Two</option></select>";
+				break;
+
+
+              default :
+
+			  return $this->text('searchquery', '', 50);
+
+            }
+		}
+		else
+		{
+    		return $this->text('searchquery', '', 50);
+		}
+		// This needs to be dynamic for the various form types, and be loaded via ajax.
 	}
 }
 
