@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-05-08 21:50:19 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-03 02:27:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -190,6 +190,8 @@ define('LAN_NEWS_56', 'Recalculate comment counts');
 define('LAN_NEWS_57', 'Proceed');
 define('LAN_NEWS_58', 'Update complete');
 define('LAN_NEWS_59', 'News Maintenance');
+
+define("LAN_NEWS_60", "Comment Total");
 
 
 ?>

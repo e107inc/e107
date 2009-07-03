@@ -401,9 +401,9 @@ img.S128		{ width: 128px; height: 128px }
 /*******************************************************************************************************************/
 
 /******** Decorate JS */
-/* Admin List Table */ 
+/* Admin List Table */
 .adminlist { width:100%;  border:1px solid #ddd;}
-.adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold }
+.adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold; }
 .adminlist td { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; }
 .adminlist th.last,
 .adminlist td.last { border-right: 0px solid;}
@@ -461,6 +461,9 @@ label { cursor: pointer; }
 /* form used for settings */
 .col-label { width: 250px; }
 .col-control {}
+.col-selection { padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
+
+
 
 .adminform  { width:100%;  border:1px solid #ddd;}
 
