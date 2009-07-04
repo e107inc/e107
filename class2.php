@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.95 $
-* $Date: 2009-05-26 20:17:57 $
-* $Author: e107steved $
+* $Revision: 1.96 $
+* $Date: 2009-07-04 13:36:14 $
+* $Author: e107coders $
 *
 */
 //
@@ -1323,8 +1323,10 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
   }
   else
   {
-		$_user_pref = $tp -> toDB($user_pref);
-		$tmp=addslashes(serialize($_user_pref));
+	 //	$_user_pref = $tp -> toDB($user_pref);
+	 //	$tmp=addslashes(serialize($_user_pref));
+	 	$_user_pref = $tp->toDB($user_pref, true, true);
+	 	$tmp = $eArrayStorage->WriteArray($_user_pref);
 		$sql->db_Update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
 		return $tmp;
   }
@@ -1383,7 +1385,7 @@ function init_session()
 	# - return boolean
 	# - scope public
 	*/
-	global $sql, $pref, $user_pref, $tp, $currentUser, $e107, $_E107;
+	global $sql, $pref, $user_pref, $tp, $currentUser, $e107, $_E107, $eArrayStorage;
 
 	define('USERIP', $e107->getip());
 
@@ -1476,20 +1478,26 @@ function init_session()
 			  exit;
 			}
 
-			$user_pref = ($result['user_prefs'] ? unserialize($result['user_prefs']) : '');
-
-			if (check_class(varset($pref['allow_theme_select'],FALSE)))
-			{	// User can set own theme
-			if (isset($_POST['settheme']))
+			if($result['user_prefs'])
 			{
+               $user_pref =	(substr($result['user_prefs'],0,5) == "array") ? $eArrayStorage->ReadArray($result['user_prefs']) : unserialize($result['user_prefs']);
+			}
+
+
+
+
+   			if (check_class(varset($pref['allow_theme_select'],FALSE)))  // This check doesn't work, because it relies on the definitions for USER, ADMIN, USERCLASS_LIST etc that haven't been defined yet..
+			{	// User can set own theme
+ 				if (isset($_POST['settheme']))
+				{
 					$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
-				save_prefs('user');
-			}
-			}
-			elseif (isset($user_pref['sitetheme']))
-			{	// User obviously no longer allowed his own theme - clear it
-				unset($user_pref['sitetheme']);
-				save_prefs('user');
+					save_prefs('user');
+				}
+   			}
+   			elseif (isset($user_pref['sitetheme']))
+   			{	// User obviously no longer allowed his own theme - clear it
+   				unset($user_pref['sitetheme']);
+   				save_prefs('user');
 			}
 			
 
@@ -1520,7 +1528,7 @@ function init_session()
 		}
 	}
 
-	define('USERCLASS_LIST', class_list());
+    define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', '(^|,)('.str_replace(',', '|', USERCLASS_LIST).')(,|$)');
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 }

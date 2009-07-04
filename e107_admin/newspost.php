@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-07-03 06:48:43 $
+ * $Revision: 1.42 $
+ * $Date: 2009-07-04 13:36:15 $
  * $Author: e107coders $
 */
 require_once("../class2.php");
@@ -580,14 +580,14 @@ class admin_newspost
 
 	function _observe_saveColumns()
 	{
-		global $pref,$admin_log;
-		$pref['admin_news_columns'] = $_POST['e-columns'];
-         save_prefs();
+		global $user_pref,$admin_log;
+		$user_pref['admin_news_columns'] = $_POST['e-columns'];
+		save_prefs('user');
 	}
 
 	function show_existing_items()
 	{
-		global $pref,$gen;
+		global $user_pref,$gen;
 
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
@@ -597,6 +597,10 @@ class admin_newspost
 		$sort_link = $sort_order == 'asc' ? 'desc' : 'asc';		// Effectively toggle setting for headings
 		$amount = 10;//TODO - pref
 
+		if(!is_array($user_pref['admin_news_columns']))
+		{
+        	$user_pref['admin_news_columns'] = array("news_id","news_title","news_author","news_render_type");
+		}
 
 
 		$field_columns = $this->_fields;
@@ -659,9 +663,9 @@ class admin_newspost
 					<fieldset id='core-newspost-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='".$field_count."'>".$frm->colGroup($field_columns,"admin_news_columns")."</colgroup>
+							<colgroup span='".$field_count."'>".$frm->colGroup($this->_fields,$user_pref['admin_news_columns'])."</colgroup>
 							<thead>
-								<tr>".$frm->thead($field_columns,"admin_news_columns")."</tr>
+								<tr>".$frm->thead($this->_fields,$user_pref['admin_news_columns'])."</tr>
 							</thead>
 							<tbody>
 			";
@@ -679,17 +683,17 @@ class admin_newspost
 
 				// Below must be in the same order as the field_columns above.
 
-				$text .= (in_array("news_id",$pref['admin_news_columns'])) ? "<td class='center'>".$row['news_id']."</td>\n" : "";
-                $text .= (in_array("news_title",$pref['admin_news_columns'])) ? "<td><a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$row['news_id']}&value2={$row['news_category']}")."'>".($row['news_title'] ? $e107->tp->toHTML($row['news_title'], false,"TITLE") : "[".NWSLAN_42."]")."</a></td> \n" : "";
-                $text .= (in_array("news_author",$pref['admin_news_columns'])) ? "<td>".$author['user_name']."</td>\n" : "";
-				$text .= (in_array("news_datestamp",$pref['admin_news_columns'])) ? "<td>".$gen->convert_date($row['news_datestamp'],'short')." </td>\n" : "";
-				$text .= (in_array("news_category",$pref['admin_news_columns'])) ? "<td>".$news_category[$row['news_category']]." </td>\n" : "";
-				$text .= (in_array("news_class",$pref['admin_news_columns'])) ? "<td class='nowrap'>".r_userclass_name($row['news_class'])." </td>\n" : "";
-                $text .= (in_array("news_render_type",$pref['admin_news_columns'])) ? "<td class='center nowrap'>".$ren_type[$row['news_render_type']]."</td>\n" : "";
-				$text .= (in_array("news_thumbnail",$pref['admin_news_columns'])) ? "<td class='center nowrap'>".$thumbnail."</td>\n" : "";
-                $text .= (in_array("news_sticky",$pref['admin_news_columns'])) ? "<td class='center'>".$sticky."</td>\n" : "";
-                $text .= (in_array("news_allow_comments",$pref['admin_news_columns'])) ? "<td class='center'>".$comments."</td>\n" : "";
-                $text .= (in_array("news_comment_total",$pref['admin_news_columns'])) ? "<td class='center'>".$row['news_comment_total']."</td>\n" : "";
+				$text .= (in_array("news_id",$user_pref['admin_news_columns'])) ? "<td class='center'>".$row['news_id']."</td>\n" : "";
+                $text .= (in_array("news_title",$user_pref['admin_news_columns'])) ? "<td><a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$row['news_id']}&value2={$row['news_category']}")."'>".($row['news_title'] ? $e107->tp->toHTML($row['news_title'], false,"TITLE") : "[".NWSLAN_42."]")."</a></td> \n" : "";
+                $text .= (in_array("news_author",$user_pref['admin_news_columns'])) ? "<td>".$author['user_name']."</td>\n" : "";
+				$text .= (in_array("news_datestamp",$user_pref['admin_news_columns'])) ? "<td>".$gen->convert_date($row['news_datestamp'],'short')." </td>\n" : "";
+				$text .= (in_array("news_category",$user_pref['admin_news_columns'])) ? "<td>".$news_category[$row['news_category']]." </td>\n" : "";
+				$text .= (in_array("news_class",$user_pref['admin_news_columns'])) ? "<td class='nowrap'>".r_userclass_name($row['news_class'])." </td>\n" : "";
+                $text .= (in_array("news_render_type",$user_pref['admin_news_columns'])) ? "<td class='center nowrap'>".$ren_type[$row['news_render_type']]."</td>\n" : "";
+				$text .= (in_array("news_thumbnail",$user_pref['admin_news_columns'])) ? "<td class='center nowrap'>".$thumbnail."</td>\n" : "";
+                $text .= (in_array("news_sticky",$user_pref['admin_news_columns'])) ? "<td class='center'>".$sticky."</td>\n" : "";
+                $text .= (in_array("news_allow_comments",$user_pref['admin_news_columns'])) ? "<td class='center'>".$comments."</td>\n" : "";
+                $text .= (in_array("news_comment_total",$user_pref['admin_news_columns'])) ? "<td class='center'>".$row['news_comment_total']."</td>\n" : "";
 
 				$text .= "
 					<td class='center'>
