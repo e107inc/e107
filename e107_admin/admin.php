@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-04 03:08:03 $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-04 13:36:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -223,6 +223,26 @@ function render_clean()
 
 
 $newarray = asortbyindex($array_functions, 1);
+$array_functions_assoc = convert_core_icons($newarray);
+
+
+
+function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
+{
+    foreach($newarray as $val)
+	{
+		$key = "e-".basename($val[0],".php");
+		$val['icon'] = $val[5];
+		$val['icon_32'] = $val[6];
+		$val['title'] = $val[1];
+		$val['link'] = $val[0];
+		$val['caption'] = $val['2'];
+		$val['perms'] = $val['4'];
+		$array_functions_assoc[$key] = $val;
+	}
+    return $array_functions_assoc;
+}
+
 
 
 require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
@@ -335,21 +355,16 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 			if ($eplug_conffile)
 			{
 				$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
-				if ($iconSize == E_16_PLUGMANAGER)
-				{
-					$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
-				}
-				else
-				{
-					$plugin_icon = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" : E_32_PLUGIN;
-				}
-				$plugin_array[$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
+				$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
+				$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" : E_32_PLUGIN;
+
+				$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
 			}
 			unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
 		}
 	}
 
-	ksort($plugin_array, SORT_STRING);
+	ksort($plugin_array, SORT_STRING);  // To FIX, without changing the current key format, sort by 'title'
 
 	if($linkStyle == "array")
 	{
@@ -358,7 +373,8 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 
 	foreach ($plugin_array as $plug_key => $plug_value)
 	{
-		$text .= render_links($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $plug_value['icon'], $linkStyle);
+		$the_icon =  ($iconSize == E_16_PLUGMANAGER) ?  $plug_value['icon'] : $plug_value['icon_32'];
+		$text .= render_links($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $the_icon, $linkStyle);
 	}
 	return $text;
 }

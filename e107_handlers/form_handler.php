@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-07-03 06:48:43 $
+ * $Revision: 1.27 $
+ * $Date: 2009-07-04 13:36:15 $
  * $Author: e107coders $
  *
 */
@@ -597,10 +597,10 @@ class e_form
 
 	function colGroup($fieldarray,$columnPref='')
 	{
-		global $pref;
+
 		foreach($fieldarray as $key=>$val)
 		{
-			if(in_array($key,$pref[$columnPref]))
+			if(in_array($key,$columnPref))
 			{
 				$text .= "\n<col style='width: ".$val['width']."'></col>";
 			}
@@ -610,16 +610,16 @@ class e_form
 
 	function thead($fieldarray,$columnPref='')
 	{
-        global $pref;
+
 		foreach($fieldarray as $key=>$val)
 		{
-     		if(in_array($key,$pref[$columnPref]) || $key == "options")
+     		if(in_array($key,$columnPref) || $key == "options")
 			{
 				$cl = ($val['thclass']) ? "class='".$val['thclass']."'" : "";
 				$text .= "\n\t<th id='$key' {$cl}>";
 				$text .= ($val['url']) ? "<a href='".$val['url']."'>" : "";
 	            $text .= $val['title'];
-	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$pref[$columnPref]) : "";
+	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
 
 				$text .= ($val['url']) ? "</a>" : "";
 	 			$text .= "</th>";

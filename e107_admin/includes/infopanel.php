@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-04 03:08:03 $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-04 13:36:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,13 @@ require_once(e_HANDLER."message_handler.php");
 $emessage = &eMessage::getInstance();
 require_once(e_HANDLER."form_handler.php");
 $frm = new e_form(true); //enable inner tabindex counter
+
+if(isset($_POST['submit-mye107']))
+{
+ 	$user_pref['core-infopanel-mye107'] = $_POST['e-mye107'];
+    save_prefs('user');
+}
+
 
 $text = "<div style='text-align:center'>
 	   	<div class='admintabs' id='tab-container'>
@@ -54,16 +61,16 @@ attribute 5 = category
 attribute 6 = 16 x 16 image
 attribute 7 = 32 x 32 image
 */
-            $buts = "";
+  /*          $buts = "";
 
- 		    while (list($key, $funcinfo) = each($newarray))
+ 		    while (list($key, $funcinfo) = each($array_functions_assoc))
 			{
-				$iconlist[] = array("title"=>$funcinfo[1],"icon"=>$funcinfo[5]); // , $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], "classis");
+				$iconlist[$key] = array("title"=>$funcinfo[1],"icon"=>$funcinfo[5]); // , $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], "classis");
                 $buts .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], "classis");
-			}
+			}*/
 
+			$iconlist = array_merge($array_functions_assoc,getPluginLinks(E_16_PLUGMANAGER, "array"));
 
-			$pluglist = getPluginLinks(E_16_PLUGMANAGER, "array");
 
 	$text .= "
 
@@ -80,7 +87,15 @@ attribute 7 = 32 x 32 image
 
 			<div class='left' style='padding:25px'>";
 
-				$text .= getPluginLinks(E_32_PLUGMANAGER, "div");
+              // Rendering the saved configuration.
+
+              foreach($iconlist as $key=>$val)
+			  {
+			  		if(in_array($key,$user_pref['core-infopanel-mye107']))
+					{
+              			$text .= render_links($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
+					}
+			  }
 
 	 			$text .="<div class='clear'>&nbsp;</div>
              </div>
@@ -182,24 +197,24 @@ $text .= "
 // Customizer   ------------------------------------------
 
 $text .= "
-	<form method='post' action='".e_SELF."'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>
 	<div id='core-infopanel_customize' class='adminedit' >
 	<div style='border:1px solid silver;margin:10px'>
 	<div class='main_caption bevel left'><b>Customize your Admin Panel</b></div>
 	<div class='block-text'>";
+
    					foreach($iconlist as $key=>$icon)
 					{
-						$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
+						$checked = (in_array($key,$user_pref['core-infopanel-mye107'])) ?  TRUE : FALSE;
 						$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
-                        ".$icon['icon'].$frm->checkbox('e-columns[]', $key, $checked). $icon['title']."</div>";
+                        ".$icon['icon'].$frm->checkbox('e-mye107[]',$key, $checked). $icon['title']."</div>";
 					}
 
 					foreach($pluglist as $key=>$icon)
 					{
-						$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
+						$checked = (in_array('p-'.$key,$user_pref['core-infopanel-mye107'])) ?  TRUE : FALSE;
 						$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
-                         ".$icon['icon'].$frm->checkbox('e-columns[]', $key, $checked). $icon['title']."</div>";
-
+                         ".$icon['icon'].$frm->checkbox('e-mye107[]', $key, $checked). $icon['title']."</div>";
 					}
 
 
@@ -208,7 +223,7 @@ $text .= "
    </div>";
    $text .= "<div id='button' class='buttons-bar center'>";  // has issues with the checkboxes.
 	 				$text .= $frm->admin_button('submit-mye107','Save','Save');
-    	 				$text .= " (TO-DO)</div>
+    	 				$text .= "</div>
 
 	</div>
 	</form>

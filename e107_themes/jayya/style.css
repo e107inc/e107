@@ -731,7 +731,7 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 
 /***** Admin Main Panel Buttons **/
 
-.core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block }
+.core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
 .core-mainpanel-link-text { font-weight:bold; text-decoration: none; padding:3px }
 
 
