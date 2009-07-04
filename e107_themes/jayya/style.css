@@ -391,7 +391,7 @@ ul,ol       { list-style:none; }
 .nowrap 	{ white-space:nowrap; }
 
 /* Core Icons */
-img.icon		{ border: 0 }
+img.icon		{ border: 0px }
 img.icon.list	{ margin: 0px 5px 5px 0px }
 img.icon.action { vertical-align: middle }
 img.S16		{ width: 16px; height: 16px }
@@ -526,6 +526,9 @@ label { cursor: pointer; }
 .admintabs fieldset { clear: both ; border: 1px solid #DDDDDD; padding: 10px; border-top: 0px none; }
 .admintabs fieldset legend { border: 1px solid #DDDDDD; }
 .admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
+ a.e-tabs {
+   text-decoration: none;
+ }
 
 /******** SyS Messages / Message text formatting */
 /* message boxes */
@@ -725,6 +728,13 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 .block h2.caption, .block h4.caption { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
 .page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
 .page-info p { padding: 10px; }
+
+/***** Admin Main Panel Buttons **/
+
+.core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block }
+.core-mainpanel-link-text { font-weight:bold; text-decoration: none; padding:3px }
+
+
 
 #core-banlist-times .textarea { width: 98%; }
 

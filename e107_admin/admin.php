@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-30 15:56:12 $
-|     $Author: secretr $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-04 03:08:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -167,14 +167,18 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 		}
 		else
 		{
-			if ($td == (ADLINK_COLS+1))
+
+			if($mode != "div")
 			{
-				$text .= '</tr>';
-				$td = 1;
-			}
-			if ($td == 1)
-			{
-				$text .= '<tr>';
+				if ($td == (ADLINK_COLS+1))
+				{
+					$text .= '</tr>';
+					$td = 1;
+				}
+				if ($td == 1)
+				{
+					$text .= '<tr>';
+				}
 			}
 			if ($mode == 'default')
 			{
@@ -183,14 +187,20 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 			}
 			elseif ($mode == 'classis')
 			{
-				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."' title='{$description}'>".$icon."</a><br />
-					<a href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";
+				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a class='core-mainpanel-link-icon' href='".$link."' title='{$description}'>".$icon."</a><br />
+					<a class='core-mainpanel-link-text' href='".$link."' title='{$description}'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a><br /><br /></td>";
 			}
 			elseif ($mode == 'beginner')
 			{
-                $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a href='".$link."' >".$icon."</a>
+                $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a class='core-mainpanel-link-icon' href='".$link."' >".$icon."</a>
 					<div style='padding:5px'>
-					<a href='".$link."' title='".$description."' style='text-decoration:none'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a></div><br /><br /><br /></td>";
+					<a class='core-mainpanel-link-text' href='".$link."' title='".$description."'><b>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</b></a></div><br /><br /><br /></td>";
+			}
+			elseif($mode == "div")
+			{
+                $text .= "<div class='core-mainpanel-block'><a class='core-mainpanel-link-icon' href='".$link."' title='{$description}'>".$icon."</a><br />
+					<a class='core-mainpanel-link-text' href='".$link."' title='{$description}'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</a>
+					</div>";
 			}
 			$td++;
 		}
@@ -249,7 +259,7 @@ function admin_info()
 function status_request()
 {
 	global $pref;
-	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade' || $pref['adminstyle'] == 'beginner') {
+	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade' || $pref['adminstyle'] == 'beginner' || $pref['adminstyle'] == 'tabbed') {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -260,7 +270,7 @@ function status_request()
 function latest_request()
 {
 	global $pref;
-	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade' || $pref['adminstyle'] == 'beginner') {
+	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade' || $pref['adminstyle'] == 'beginner' || $pref['adminstyle'] == 'tabbed') {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -270,7 +280,7 @@ function latest_request()
 function log_request()
 {
 	global $pref;
-	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade'|| $pref['adminstyle'] == 'beginner') {
+	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade'|| $pref['adminstyle'] == 'beginner' || $pref['adminstyle'] == 'tabbed') {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -327,19 +337,25 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 				$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
 				if ($iconSize == E_16_PLUGMANAGER)
 				{
-					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
+					$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
 				}
 				else
 				{
-					$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />" : E_32_PLUGIN;
+					$plugin_icon = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" : E_32_PLUGIN;
 				}
-				$plugin_array[ucfirst($eplug_name)] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
+				$plugin_array[$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
 			}
 			unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
 		}
 	}
 
 	ksort($plugin_array, SORT_STRING);
+
+	if($linkStyle == "array")
+	{
+       	return $plugin_array;
+	}
+
 	foreach ($plugin_array as $plug_key => $plug_value)
 	{
 		$text .= render_links($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $plug_value['icon'], $linkStyle);
