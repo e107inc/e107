@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/e107db_auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-09-02 19:39:12 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-05 18:47:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -83,46 +83,65 @@ class auth_login
 		  $sel_fields[] = substr($k,strlen('e107db_xf_'));
 		}
 	  }
-	  $sel_fields[] = 'user_password';
-	  $user_field = 'user_loginname';
+
+		$filterClass = intval(varset($this->conf['e107db_filter_class'], e_UC_PUBLIC));
+		if (($filterClass != e_UC_PUBLIC) && (!in_array('user_class',$sel_fields)))
+		{
+			$sel_fields[] = 'user_class';
+		}
+
+		$sel_fields[] = 'user_password';
+		$user_field = 'user_loginname';
 
 
-	  //Get record containing supplied login name
-	  $qry = "SELECT ".implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}'";
+		//Get record containing supplied login name
+		$qry = "SELECT ".implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}'";
 //	  echo "Query: {$qry}<br />";
-	  if(!$r1 = mysql_query($qry))
-	  {
-		mysql_close($res);
-		$this->makeErrorText('Lookup query failed');
-		return AUTH_NOCONNECT;
-	  }
-	  if(!$row = mysql_fetch_array($r1))
-	  {
-		mysql_close($res);
-		$this->makeErrorText('User not found');
-		return AUTH_NOUSER;
-	  }
-		
-	  mysql_close($res);				// Finished with 'foreign' DB now
+		if(!$r1 = mysql_query($qry))
+		{
+			mysql_close($res);
+			$this->makeErrorText('Lookup query failed');
+			return AUTH_NOCONNECT;
+		}
+		if(!$row = mysql_fetch_array($r1))
+		{
+			mysql_close($res);
+			$this->makeErrorText('User not found');
+			return AUTH_NOUSER;
+		}
 
-	  // Got something from the DB - see whether password valid
-	  require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
-	  $pass_check = new ExtendedPasswordHandler();
+		mysql_close($res);				// Finished with 'foreign' DB now
 
-	  $passMethod = $pass_check->passwordMapping($this->conf['e107db_password_method']);
-	  if ($passMethod === FALSE) 
-	  {
-		$this->makeErrorText('Password error - invalid method');
-		return AUTH_BADPASSWORD;
-	  }
+		// Got something from the DB - see whether password valid
+		require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
+		$pass_check = new ExtendedPasswordHandler();
 
-	  $pwFromDB = $row['user_password'];					// Password stored in DB
+		$passMethod = $pass_check->passwordMapping($this->conf['e107db_password_method']);
+		if ($passMethod === FALSE) 
+		{
+			$this->makeErrorText('Password error - invalid method');
+			return AUTH_BADPASSWORD;
+		}
 
-	  if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
-	  {
-		$this->makeErrorText('Password incorrect');
-		return AUTH_BADPASSWORD;
-	  }
+		$pwFromDB = $row['user_password'];					// Password stored in DB
+
+		if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
+		{
+			$this->makeErrorText('Password incorrect');
+			return AUTH_BADPASSWORD;
+		}
+
+		// Valid user - check he's in an appropriate class
+		if ($filterClass != e_UC_PUBLIC)
+		{
+			$tmp = explode(',', $row['user_class']);
+			if (!in_array($filterClass, $tmp))
+			{
+				$this->makeErrorText('Userc not found');
+				return AUTH_NOUSER;			// Treat as non-existent user
+			}
+			unset($tmp);
+		}
 
 	  // Now copy across any values we have selected
 	  foreach($this->conf as $k => $v)

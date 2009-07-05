@@ -57,7 +57,7 @@ function show_e107db_form()
 	$text .= E107DB_LAN_1;
 	$text .= "</td></tr>";
 
-	$text .= alt_auth_get_db_fields('e107db', $frm, $parm, 'server|uname|pwd|db|prefix');
+	$text .= alt_auth_get_db_fields('e107db', $frm, $parm, 'server|uname|pwd|db|prefix|classfilt');
 
 	$text .= "<tr><td class='forumheader3'>".E107DB_LAN_9."</td><td class='forumheader3'>";
 	$text .= $frm -> form_select_open("e107db_password_method");

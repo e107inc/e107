@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-06-12 20:41:34 $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-05 18:47:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -152,14 +152,22 @@ class alt_login
 				$userMethods->addNonDefaulted($newUser);
 				validatorClass::addFieldTypes($userMethods->userVettingInfo,$newUser);
 				$newID = $aa_sql->db_Insert('user',$newUser);
-				if (($newID !== FALSE) && count($xFields))
+				if ($newID !== FALSE)
 				{
-					$xFields['user_extended_id'] = $newID;
-					$xArray = array();
-					$xArray['data'] = $xFields;
-					$ue->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
-					$result = $aa_sql->db_Insert('user_extended',$xArray);
-					if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Add extended: UID={$newID}  result={$result}",FALSE,LOG_TO_ROLLING);
+					if (count($xFields))
+					{
+						$xFields['user_extended_id'] = $newID;
+						$xArray = array();
+						$xArray['data'] = $xFields;
+						$ue->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
+						$result = $aa_sql->db_Insert('user_extended',$xArray);
+						if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),'DEBUG','Alt auth login',"Add extended: UID={$newID}  result={$result}",FALSE,LOG_TO_ROLLING);
+					}
+				}
+				else
+				{	// Error adding user to database - possibly a conflict on unique fields
+					$admin_log->e_log_event(10,__FILE__.'|'.__FUNCTION__.'@'.__LINE__,'ALT_AUTH','Alt auth login','Add user fail: DB Error '.$aa_sql->mySQLlastErrText."[!br!]".print_r($db_vals,TRUE),FALSE,LOG_TO_ROLLING);
+					return LOGIN_DB_ERROR;
 				}
 			}
 			return LOGIN_CONTINUE;

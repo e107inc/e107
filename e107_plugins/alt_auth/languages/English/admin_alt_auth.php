@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/languages/English/admin_alt_auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-23 20:31:30 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-05 18:47:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -94,6 +94,8 @@ define('LAN_ALT_72', 'Upper case');
 define('LAN_ALT_73', 'Lower case');
 define('LAN_ALT_74', 'Upper first');
 define('LAN_ALT_75', 'Upper words');
+define('LAN_ALT_76', 'User class restriction (a numeric value - zero or blank for everyone)');
+define('LAN_ALT_77', 'Only users in this class (on the database set above) are permitted access');
 
 
 define('LAN_ALT_FALLBACK', 'Use e107 user table');
