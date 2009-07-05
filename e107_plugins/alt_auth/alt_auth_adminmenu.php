@@ -163,7 +163,8 @@ $common_fields = array(
   'prefix' => array('fieldname' => 'prefix',	'size' => 35, 'max_size' =>  35, 'prompt' => LAN_ALT_39, 'help' => ''),
   'ufield' => array('fieldname' => 'user_field','size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_37, 'help' => ''),
   'pwfield'=> array('fieldname' => 'password_field','size' => 35, 'max_size' => 120, 'prompt' => LAN_ALT_38, 'help' => ''),
-  'salt'   => array('fieldname' => 'password_salt','size' => 35, 'max_size' => 120,  'prompt' => LAN_ALT_24, 'help' => LAN_ALT_25)
+  'salt'   => array('fieldname' => 'password_salt','size' => 35, 'max_size' => 120,  'prompt' => LAN_ALT_24, 'help' => LAN_ALT_25),
+  'classfilt' => array('fieldname' => 'filter_class', 'size' => 10, 'max_size' =>  8, 'prompt' => LAN_ALT_76, 'help' => LAN_ALT_77)
 );
 
 

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-03-06 20:09:08 $
-|     $Author: e107coders $
+|     $Revision: 1.23 $
+|     $Date: 2009-07-05 18:47:51 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -39,6 +39,7 @@ define ('LOGIN_BLANK_FIELD', -8);	// Username or password blank
 define ('LOGIN_BAD_TRIGGER', -9);	// Rejected by trigger event
 define ('LOGIN_BANNED', -10);		// Banned user attempting login
 define ('LOGIN_CHAP_FAIL', -11);	// CHAP login failed
+define ('LOGIN_DB_ERROR', -12);		// Error adding user to main DB
 
 
 class userlogin 
@@ -91,9 +92,12 @@ class userlogin
 			{
 				require_once(e_PLUGIN."alt_auth/alt_auth_login_class.php");
 				$result = new alt_login($pref['auth_method'], $username, $userpass);
-				if ($result == LOGIN_ABORT)
-				{	// Invalid user
-					return $this->invalidLogin($username,LOGIN_ABORT,$fip);
+				switch ($result)
+				{
+					case LOGIN_ABORT :
+						return $this->invalidLogin($username,LOGIN_ABORT,$fip);
+					case LOGIN_DB_ERROR :
+						return $this->invalidLogin($username,LOGIN_DB_ERROR,$fip);
 				}
 			}
 		}
@@ -312,6 +316,12 @@ class userlogin
 			  $this->logNote('LAN_ROLL_LOG_04','Alt_Auth: '.$username);
 			  $doCheck = TRUE;
 			  break;
+			case LOGIN_DB_ERROR :	// alt_auth couldn't add valid user
+				define("LOGINMESSAGE", LAN_LOGIN_31."<br /><br />");
+				$this->genNote($fip,$username,'Alt_auth: '.LAN_LOGIN_30);
+//				$this->logNote('LAN_ROLL_LOG_04','Alt_Auth: '.$username);	// Added in alt_auth login
+				$doCheck = TRUE;
+				break;
 			case LOGIN_BAD_PW :
 			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
 			  $this->logNote('LAN_ROLL_LOG_03',$username);
