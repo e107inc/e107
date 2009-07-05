@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2009-04-16 10:09:32 $
-|     $Author: secretr $
+|     $Revision: 1.30 $
+|     $Date: 2009-07-05 21:20:30 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -445,7 +445,7 @@ if ($e107_popup != 1) {
 //
 // M: Send top of body for custom pages and for news
 //
-	$def = varset($pref['theme_deflayout']);
+	$def = varset($pref['sitetheme_deflayout']);
 	if(is_array($HEADER) && isset($HEADER[$def]) && isset($FOOTER[$def]))
 	{
 		$HEADER = $HEADER[$def];
