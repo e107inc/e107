@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.96 $
-* $Date: 2009-07-04 13:36:14 $
+* $Revision: 1.97 $
+* $Date: 2009-07-05 11:25:10 $
 * $Author: e107coders $
 *
 */
@@ -420,7 +420,7 @@ else
 $e107->set_base_path();
 
 // extract menu prefs
-$menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));
+$menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref'))); 
 
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
@@ -992,7 +992,7 @@ if(!defined('THEME'))
 	  }  */
 	  checkvalidtheme($pref['admintheme']);
 	}
-	elseif (USERTHEME !== false && USERTHEME != 'USERTHEME')
+	elseif (USERTHEME !== false && USERTHEME != 'USERTHEME' && !$inAdminDir)
 	{
 	  checkvalidtheme(USERTHEME);
 	}
