@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-12-07 21:41:04 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2009-07-05 11:57:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -347,13 +347,14 @@ class themeHandler{
 				<tr>";
 				if($mode == 1)
 				{
-					if(!$pref['theme_deflayout'])
+					if(!$pref['sitetheme_deflayout'])
 					{
-						$pref['theme_deflayout'] = ($val['@attributes']['default']) ? $key : "";
+						$pref['sitetheme_deflayout'] = ($val['@attributes']['default']=='true') ? $key : "";
+					  //	echo "------------- NODEFAULT";
 					}
 					$itext .= "
 	                <td style='vertical-align:top width:auto;text-align:center'>
-						<input type='radio' name='layout_default' value='{$key}' ".($pref['theme_deflayout']==$key ? " checked='checked'" : "")." />
+						<input type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout']==$key ? " checked='checked'" : "")." />
 					</td>";
 				}
 
@@ -361,7 +362,7 @@ class themeHandler{
 				$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
 				$itext .= $val['@attributes']['title'];
 				$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
-                $itext .= ($pref['theme_deflayout'] == $key) ? " (default)" : "";
+                $itext .= ($pref['sitetheme_deflayout'] == $key) ? " (default)" : "";
 				$itext .= "</td>
 					<td style='vertical-align:top'>".$val['@attributes']['requiredPlugins']."&nbsp;</td>
                     <td style='vertical-align:top;text-align:center'>";
@@ -481,12 +482,34 @@ class themeHandler{
 	{
 		global $pref, $e107cache, $ns;
 		$themeArray = $this -> getThemes("id");
+
 		$pref['sitetheme'] = $themeArray[$this -> id];
 		$pref['themecss'] ='style.css';
+        $pref['sitetheme_deflayout'] = $this->findDefault($themeArray[$this -> id]);
+		$pref['sitetheme_layouts'] = is_array($this->themeArray[$pref['sitetheme']]['layouts']) ? $this->themeArray[$pref['sitetheme']]['layouts'] : array();
+
 		$e107cache->clear_sys();
-		save_prefs();
+	 	save_prefs();
+
 		$this->theme_adminlog('01',$pref['sitetheme'].', '.$pref['themecss']);
 		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
+	}
+
+	function findDefault($theme)
+	{
+		if(varset($_POST['layout_default']))
+		{
+        	return $_POST['layout_default'];
+		}
+
+    	$l = $this->themeArray[$theme];
+		foreach($l['layouts'] as $key=>$val)
+		{
+        	if(isset($val['@attributes']['default']) && ($val['@attributes']['default'] == "true"))
+			{
+            	return $key;
+			}
+		}
 	}
 
 	function setAdminTheme()
@@ -506,7 +529,8 @@ class themeHandler{
 		global $pref, $e107cache, $ns;
 		$pref['themecss'] = $_POST['themecss'];
 		$pref['image_preload'] = $_POST['image_preload'];
-		$pref['theme_deflayout'] = $_POST['layout_default'];
+		$pref['sitetheme_deflayout'] = $_POST['layout_default'];
+
 		$e107cache->clear_sys();
 		save_prefs();
 		$this->theme_adminlog('03',$pref['image_preload'].', '.$pref['themecss']);
