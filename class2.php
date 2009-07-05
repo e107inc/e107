@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.369 $
-|     $Date: 2009-05-26 20:18:07 $
-|     $Author: e107steved $
+|     $Revision: 1.370 $
+|     $Date: 2009-07-05 07:59:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -841,19 +841,19 @@ if(!defined("THEME"))
 {
 	if ($inAdminDir && varsettrue($pref['admintheme'])&& (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE))
 	{
-/*	  if (strpos(e_SELF, "newspost.php") !== FALSE) 
+/*	  if (strpos(e_SELF, "newspost.php") !== FALSE)
 	  {
 		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");		MAINTHEME no longer used in core distribution
 	  }  */
-	  checkvalidtheme($pref['admintheme']);
+		checkvalidtheme($pref['admintheme']);
 	} 
-	elseif (USERTHEME !== FALSE && USERTHEME != "USERTHEME") 
+	elseif (USERTHEME !== FALSE && USERTHEME != "USERTHEME" && !$inAdminDir)
 	{
-	  checkvalidtheme(USERTHEME);
+		checkvalidtheme(USERTHEME);
 	} 
 	else 
 	{
-	  checkvalidtheme($pref['sitetheme']);
+		checkvalidtheme($pref['sitetheme']);
 	}
 }
 
