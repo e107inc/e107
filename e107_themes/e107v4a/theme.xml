@@ -17,6 +17,16 @@
 				</area>
 			</menuPresets>
 		</layout>
-		<layout name='2_column' title='2 Columns' preview='preview.jpg' previewFull='preview_full.png' />
+		<layout name='2_column' title='2 Columns' preview='preview.jpg' previewFull='preview_full.png' >
+        		<menuPresets>
+				<area id='1' >
+                	<menu name='login' />
+					<menu name='online' />
+				</area>
+				<area id='2'>
+    
+				</area>
+			</menuPresets>
+        </layout>
 	</layouts>
 </e107Theme>

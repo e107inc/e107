@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_menus.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-05 11:57:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("MENLAN_1", "Visible to all");
@@ -51,6 +51,13 @@ define("MENLAN_35", "Configure Menus");
 define("MENLAN_36", "Choose the menu(s) to activate");
 define("MENLAN_37", "and where to activate them.");
 define("MENLAN_38", "Hold down CTRL to select multiple menus.");
+
+// --
+
+define("MENLAN_39", "Preset Area");
+define("MENLAN_40", "Use Menu Presets");
+define("MENLAN_41", "The position of all your menus for this layout will be lost. Do you still wish to continue?");
+define("MENLAN_42", "Custom");
 
 
 ?>
