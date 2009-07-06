@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-07-06 08:45:19 $
+|     $Revision: 1.21 $
+|     $Date: 2009-07-06 08:54:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -498,7 +498,7 @@ class themeHandler{
 				</tr>";
 		}
 
-        if($theme['layouts'])  // New in 0.8   ----
+        if($theme['layouts'] && $mode==1)  // New in 0.8   ----
 		{
             $itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
@@ -764,6 +764,7 @@ class themeHandler{
 		global $pref, $e107cache, $ns;
 		$pref['admincss'] = $_POST['admincss'];
 		$pref['adminstyle'] = $_POST['adminstyle'];
+   
 
 		$e107cache->clear_sys();
 		save_prefs();
