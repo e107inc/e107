@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.77 $
-| $Date: 2007-12-20 20:47:55 $
-| $Author: e107steved $
+| $Revision: 1.78 $
+| $Date: 2009-07-06 05:58:17 $
+| $Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -207,7 +207,7 @@ class news {
 	}
 
 	function make_xml_compatible($original) {
-		global $tp, $ml;
+		global $tp;
 		if (!is_object($tp)) $tp = new e_parse;
 		$original = $tp->toHTML($original, TRUE);
 		$original = str_replace('&pound', '&amp;#163;', $original);

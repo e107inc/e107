@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_news/alt_news.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-06-02 13:59:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-06 05:58:18 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 require_once(e_HANDLER."news_class.php");
 
 function alt_news($news_category) {
-	global $ml, $sql, $aj, $ns;
+	global $sql, $aj, $ns;
 	$ix = new news;
 	if (strstr(e_QUERY, "cat")) {
 		$category = $news_category;
