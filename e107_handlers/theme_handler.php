@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-07-06 06:42:04 $
+|     $Revision: 1.19 $
+|     $Date: 2009-07-06 06:46:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -398,7 +398,7 @@ class themeHandler{
 	            	$var = call_user_func($this->id."_config");
                     foreach($var as $val)
 					{
-	                	$text .= "<tr><td><b>".$val['caption']."</b>:</td><td>".$val['html']."</td></tr>";
+	                	$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
 					}
 					return $text;
 				}
