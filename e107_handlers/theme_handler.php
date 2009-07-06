@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-07-06 08:54:25 $
+|     $Revision: 1.22 $
+|     $Date: 2009-07-06 09:17:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -470,20 +470,21 @@ class themeHandler{
 
 		$text = "<div style='text-align:center;margin-left:auto;margin-right:auto'>
 		<table class='adminlist'>
+
 		<tr><td colspan='2'><h1>".$theme['name']."</h1></td></tr>
 		<tr><td><b>".TPVLAN_11."</b></td><td>".$theme['version']."</td>
 		<td class='first last' rowspan='6' style='text-align:center;width:25%'>$newpreview </td></tr>";
 
-		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
-		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>";
-		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>";
-        $text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_49."</b>:</td>
+		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
+		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>";
+		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>";
+        $text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td>
 			<td style='vertical-align:top'>XHTML ";
         $text .= ($theme['xhtmlcompliant']) ? ADMIN_TRUE_ICON : "X";
 		$text .= "  &nbsp;&nbsp;  CSS ";
 		$text .= ($theme['csscompliant']) ? ADMIN_TRUE_ICON : "X";
 		$text .= "</td></tr>";
-		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>
+		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>
 		";
 
 		if($mode == 1)
@@ -507,8 +508,8 @@ class themeHandler{
 						<tr>";
                         $itext .= ($mode == 1) ? "<td class='fcaption' style='width:15%;text-align:center;vertical-align:top;'>".TPVLAN_55."</td>" : "";
 						$itext .= "
-							<td class='fcaption' style='width:30%'>".TPVLAN_52."</td>
-							<td class='fcaption' style='width:30%'>".TPVLAN_53."</td>
+							<td class='fcaption' style='width:20%'>".TPVLAN_52."</td>
+							<td class='fcaption' style='width:35%'>".TPVLAN_53."</td>
 							<td class='fcaption' style='text-align:center;width:100px'>".TPVLAN_54."</td>
 						</tr>\n";
 
@@ -559,7 +560,7 @@ class themeHandler{
 				<table class='adminlist' style='width:100%' >
 				<tr>
                 	<td class='fcaption center' style='width:15%'>".TPVLAN_55."</td>
-			  		<td class='fcaption' style='width:30%'>".TPVLAN_52."</td>
+			  		<td class='fcaption' style='width:20%'>".TPVLAN_52."</td>
 					<td class='fcaption left'>".TPVLAN_7."</td>
 				</tr>\n";
 
@@ -675,7 +676,7 @@ class themeHandler{
 			{
                $text .= ADMIN_FALSE_ICON."<a href='".e_ADMIN."plugin.php'>".$plug."</a>";
 			}
-
+            $text .= "&nbsp;";
 		}
 
         return $text;
@@ -764,7 +765,7 @@ class themeHandler{
 		global $pref, $e107cache, $ns;
 		$pref['admincss'] = $_POST['admincss'];
 		$pref['adminstyle'] = $_POST['adminstyle'];
-   
+
 
 		$e107cache->clear_sys();
 		save_prefs();

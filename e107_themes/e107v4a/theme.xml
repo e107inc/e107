@@ -4,14 +4,15 @@
 	<description>Classic e107 theme</description>
 	<compliance xhtml="true" css="true"/>
 	<layouts>
-		<layout name='3_column' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' requiredPlugins='chatbox' default='true' >
+		<layout name='3_column' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' requiredPlugins='chatbox_menu,poll' default='true' >
 		<menuPresets>
 				<area id='1' >
                 	<menu name='login' />
 					<menu name='compliance' />
+					<menu name='online' userclass='E_UC_MEMBER' />
 				</area>
 				<area id='2'>
-					<menu name='online' userclass='E_UC_ADMIN' />
+					<menu name='poll' />
 					<menu name='powered_by' />
 					<menu name='sitebutton' />
 				</area>
@@ -24,7 +25,7 @@
 					<menu name='online' />
 				</area>
 				<area id='2'>
-    
+                	<menu name='powered_by' /> 
 				</area>
 			</menuPresets>
         </layout>
