@@ -6,9 +6,8 @@ exit;
 $HEADER = "";
 require_once(HEADERF);
 
-
 	$emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
-	$str = "<div class='spacer' style='white-space:wrap;width:130px;text-align:center'>";
+	$str = "<div class='spacer' style='padding:10px;white-space:wrap;width:180px;text-align:center'>";
     foreach($emotes as $key => $value){
 		$key = str_replace("!", ".", $key);
 		$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
