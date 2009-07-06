@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_theme.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-06 06:33:29 $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-06 09:28:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ define("TPVLAN_49", "Compliance");
 define("TPVLAN_50", "Layouts");
 define("TPVLAN_51", "Change Theme");
 define("TPVLAN_52", "Name");
-define("TPVLAN_53", "Requirements");
+define("TPVLAN_53", "Suggested Plugins");
 define("TPVLAN_54", "Menu Preset");
 define("TPVLAN_55", "Default");
 
