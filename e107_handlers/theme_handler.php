@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-07-06 06:33:29 $
+|     $Revision: 1.18 $
+|     $Date: 2009-07-06 06:42:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -627,7 +627,7 @@ class themeHandler{
                   if($mode == 2) // admin
 				  {
 				  	$mainid = "selectmain[".$theme['id']."]";
-				  	$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
+				  	$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
 					$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'submit');
 
 				  }
@@ -732,6 +732,7 @@ class themeHandler{
 		global $pref, $e107cache, $ns;
 		$pref['admincss'] = $_POST['admincss'];
 		$pref['adminstyle'] = $_POST['adminstyle'];
+
 		$e107cache->clear_sys();
 		save_prefs();
 		$this->theme_adminlog('04',$pref['adminstyle'].', '.$pref['admincss']);
