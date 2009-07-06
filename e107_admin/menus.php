@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-07-05 11:57:40 $
+|     $Revision: 1.16 $
+|     $Date: 2009-07-06 05:59:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -262,6 +262,12 @@ if ($menu_act == 'config')
 
 if ($menu_act == "adv")
 {
+	showVisibility();
+}
+
+function showVisibility()
+{
+	global $sql,$ns;
 	require_once(e_HANDLER."userclass_class.php");
 	$sql->db_Select("menus", "*", "menu_id=".$id);
 	$row = $sql->db_Fetch();
@@ -295,7 +301,11 @@ if ($menu_act == "adv")
 	</div>";
 	$caption = MENLAN_7." ".$row['menu_name'];
 	$ns->tablerender($caption, $text);
+
+
+
 }
+
 
 unset($message);
 
