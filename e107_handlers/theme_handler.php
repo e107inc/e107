@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-07-05 11:57:40 $
+|     $Revision: 1.16 $
+|     $Date: 2009-07-06 05:59:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,10 +24,14 @@ class themeHandler{
 	var $themeArray;
 	var $action;
 	var $id;
+	var $frm;
 
 	/* constructor */
 
 	function themeHandler() {
+
+   		require_once(e_HANDLER."form_handler.php");
+		$this->frm = new e_form(); //enable inner tabindex counter
 
 		if (isset($_POST['upload'])) {
 			$this -> themeUpload();
@@ -39,30 +43,35 @@ class themeHandler{
 		{
 			if(strstr($key,"preview"))
 			{
-				$this -> id = str_replace("preview_", "", $key);
+			 //	$this -> id = str_replace("preview_", "", $key);
+				$this -> id = key($post);
 				$this -> themePreview();
 			}
 			if(strstr($key,"selectmain"))
 			{
-				$this -> id = str_replace("selectmain_", "", $key);
+			//	$this -> id = str_replace("selectmain_", "", $key);
+				$this -> id = key($post);
 				$this -> setTheme();
 			}
 
 			if(strstr($key,"selectadmin"))
 			{
-				$this -> id = str_replace("selectadmin_", "", $key);
+				$this -> id = key($post);
 				$this -> setAdminTheme();
 			}
 		}
 
 		if(isset($_POST['submit_adminstyle']))
 		{
+ 			$this -> id = $_POST['curTheme'];
 			$this -> setAdminStyle();
 		}
 
 		if(isset($_POST['submit_style']))
 		{
+			$this -> id = $_POST['curTheme'];
 			$this -> setStyle();
+
 		}
 
 	}
@@ -70,7 +79,7 @@ class themeHandler{
 	function getThemes($mode=FALSE)
 	{
 		$themeArray = array();
-	  	$themeArray[0] = "";   // Fix for 'preview theme'.
+
 		$tloop = 1;
 		$handle = opendir(e_THEME);
 		while (false !== ($file = readdir($handle)))
@@ -208,131 +217,123 @@ class themeHandler{
 		}
 	}
 
-	function showThemes()
+	function showThemes($mode='main')
 	{
 		global $ns, $pref;
+
 		echo "<div class='center'>
-		<form enctype='multipart/form-data' method='post' action='".e_SELF."'>\n";
+		<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
 
-		foreach($this -> themeArray as $key => $theme)
+
+        if($mode == "main" || !$mode)  // Show Main Configuration
 		{
-			if($key == $pref['sitetheme'])
+			foreach($this -> themeArray as $key => $theme)
 			{
-				$text = $this -> renderTheme(1, $theme);
+				if($key == $pref['sitetheme'])
+				{
+					$text = $this -> renderTheme(1, $theme);
+				}
 			}
+
+	   		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_33, $text);
+        }
+
+        if($mode == "admin")  // Show Admin Configuration
+		{
+
+			foreach($this -> themeArray as $key => $theme)
+			{
+				if($key == $pref['admintheme'])
+				{
+					$text = $this -> renderTheme(2, $theme);
+				}
+			}
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_34, $text);
+        }
+
+
+        if($mode == "upload")  // Show Upload Form
+		{
+			if(!is_writable(e_THEME)) {
+				$ns->tablerender(TPVLAN_16, TPVLAN_15);
+				$text = "";
+			}
+			else
+			{
+			  require_once(e_HANDLER.'upload_handler.php');
+			  $max_file_size = get_user_max_upload();
+
+			  $text = "<div style='text-align:center'>
+				<table style='".ADMIN_WIDTH."' class='fborder'>
+				<tr>
+				<td class='forumheader3' style='width: 50%;'>".TPVLAN_13."</td>
+				<td class='forumheader3' style='width: 50%;'>
+				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
+				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+				<input class='tbox' type='file' name='file_userfile[]' size='50' />
+				</td>
+				</tr>
+				<tr>
+				<td colspan='2' style='text-align:center' class='forumheader'>";
+
+                $text .= $this->frm->admin_button('upload', TPVLAN_14, 'submit');
+				$text .= "
+ 				</td>
+				</tr>
+				</table>
+				<br /></div>\n";
+			}
+
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $text);
 		}
 
-		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_33, $text);
 
-		foreach($this -> themeArray as $key => $theme)
+        if($mode == "choose")  // Show All Themes
 		{
-			if($key == $pref['admintheme'])
-			{
-				$text = $this -> renderTheme(2, $theme);
-			}
-		}
-		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_34, $text);
-
-
-		if(!is_writable(e_THEME)) {
-			$ns->tablerender(TPVLAN_16, TPVLAN_15);
 			$text = "";
-		}
-		else
-		{
-		  require_once(e_HANDLER.'upload_handler.php');
-		  $max_file_size = get_user_max_upload();
-
-		  $text = "<div style='text-align:center'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
-			<tr>
-			<td class='forumheader3' style='width: 50%;'>".TPVLAN_13."</td>
-			<td class='forumheader3' style='width: 50%;'>
-			<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
-			<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-			<input class='tbox' type='file' name='file_userfile[]' size='50' />
-			</td>
-			</tr>
-			<tr>
-			<td colspan='2' style='text-align:center' class='forumheader'>
-			<input class='button' type='submit' name='upload' value='".TPVLAN_14."' />
-			</td>
-			</tr>
-			</table>
-			<br /></div>\n";
-		}
-
-		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $text);
-		$text = "";
-		foreach($this -> themeArray as $key => $theme)
-		{
-			if($key != $pref['admintheme'] && $key != $pref['sitetheme'])
+			foreach($this -> themeArray as $key => $theme)
 			{
-				$text .= $this -> renderTheme(FALSE, $theme);
+			  //	if($key != $pref['admintheme'] && $key != $pref['sitetheme'])
+			  //	{
+					$text .= $this -> renderTheme(FALSE, $theme);
+			  //	}
 			}
+
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $text);
 		}
 
 
-
-		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $text);
 		echo "</form>\n</div>\n";
 	}
 
-
-
-
-	function renderTheme($mode=FALSE, $theme)
+    function renderThemeInfo($theme)
 	{
 
-		/*
-		mode = 0 :: normal
-		mode = 1 :: selected site theme
-		mode = 2 :: selected admin theme
-		*/
+		// TO-DO : This SHOULD be loaded by ajax before release.
 
-		define("IMAGE_CHECK","<img src='".e_IMAGE_ABS."generic/check.png' style='border:0px;vertical-align:middle'  alt='' />");
-
-		global $ns, $pref, $imode;
-
+        global $pref;
 		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 		$preview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' style='border:0px' title='".TPVLAN_12."' alt='' />")."</a>";
-		$selectmainbutton = ($mode != 1 ? "<input class='button' type='submit' name='selectmain_".$theme['id']."' value='".TPVLAN_10."' />" : "");
-		$selectadminbutton = ($mode != 2 ? "<input class='button' type='submit' name='selectadmin_".$theme['id']."' value='".TPVLAN_32."' />" : "");
-		$previewbutton = (!$mode ? "<input class='button' type='submit' name='preview_".$theme['id']."' value='".TPVLAN_9."' /> " : "");
 
-		$text = "<div style='text-align:center;margin-left:auto;margin-right:auto'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr>
-		<td class='forumheader3' style='width:202px; text-align:center; vertical-align:top'>$preview
-		<br />
-		<br />
-		<b><span class='mediumtext'>".$theme['name']."</span></b><br />".TPVLAN_11." ".$theme['version']."
-		<br />
-		</td>
-		<td class='forumheader3' style='vertical-align:top'>";
 
-		$itext = $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
-		$itext .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
-		$itext .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
-        $itext .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_49."</b>:</td>
+    	$text = "<div style='font-weight:bold;margin-bottom:10px'>".TPVLAN_7."</div>
+			<table class='adminlist' cellpadding='4'>";
+        $text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
+		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
+		$text .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
+        $text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_49."</b>:</td>
 			<td style='vertical-align:top'>XHTML ";
-        $itext .= ($theme['xhtmlcompliant']) ? IMAGE_CHECK : "X";
-		$itext .= "  &nbsp;&nbsp;  CSS ";
-		$itext .= ($theme['csscompliant']) ? IMAGE_CHECK : "X";
-		$itext .= "</td></tr>";
-        if($theme['xhtmlcompliant'] || $theme['xhtmlcompliant'])
-
-
-
-
-		$itext .= $theme['info'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>" : "";
+        $text .= ($theme['xhtmlcompliant']) ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
+		$text .= "  &nbsp;&nbsp;  CSS ";
+		$text .= ($theme['csscompliant']) ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
+		$text .= "</td></tr>";
 
         if($theme['layouts'])  // New in 0.8    WORK IN PROGRESS ----
 		{
             $itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
-					<td style='vertical-align:top'><table class='fborder' style='margin-left:0px;margin-right:auto;width:400px' >
+					<td style='vertical-align:top'><table class='fborder' style='margin-left:0px;margin-right:auto' >
 						<tr>";
                         $itext .= ($mode == 1) ? "<td class='fcaption' style='text-align:center;vertical-align:top;'>Default</td>" : "";
 						$itext .= "
@@ -366,7 +367,7 @@ class themeHandler{
 				$itext .= "</td>
 					<td style='vertical-align:top'>".$val['@attributes']['requiredPlugins']."&nbsp;</td>
                     <td style='vertical-align:top;text-align:center'>";
-                    $itext .= ($val['menuPresets']) ? IMAGE_CHECK : "&nbsp;";
+                    $itext .= ($val['menuPresets']) ? ADMIN_TRUE_ICON: "&nbsp;";
 					$itext .= "</td>
 				</tr>";
 			}
@@ -374,66 +375,220 @@ class themeHandler{
 			$itext .= "</table></td></tr>";
 		}
 
+        $text .= "<tr><td><b>".TPVLAN_22.": </b></td><td colspan='2'>";
+		foreach($theme['css'] as $val)
+		{
+        	$text .= $val['name']."<br />";
+		}
+		$text .= "</td></tr>";
 
-		$itext .= !$mode ? "<tr><td style='vertical-align:top;width:24%'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>".$previewbutton.$selectmainbutton.$selectadminbutton."</td></tr>" : "";
+        $text .= $itext."</table>";
+        $text .= "<div class='right'><a href='#themeInfo_".$theme['id']."' class='e-expandit'>Close</a></div>";
+        return $text;
+	}
+
+	function renderThemeConfig()  // process custom theme configuration - TODO.
+	{
+   			$confile = e_THEME.$this->id."/".$this->id."_config.php";
+	       	if(is_readable($confile))
+		   	{
+	       		include_once($confile);
+				if(function_exists($this->id."_config"))
+				{
+	            	$var = call_user_func($this->id."_config");
+                    foreach($var as $val)
+					{
+	                	$text .= "<tr><td><b>".$val['caption']."</b>:</td><td>".$val['html']."</td></tr>";
+					}
+					return $text;
+				}
+	  	   	}
+	}
+
+	function setThemeConfig()
+	{
+		$confile = e_THEME.$this->id."/".$this->id."_config.php";
+
+      	include($confile);
+		if(function_exists($this->id."_process"))
+		{
+        	$text = call_user_func($this->id."_process");
+	 	}
+
+		return $text;
+	}
+
+	function renderTheme($mode=FALSE, $theme)
+	{
+
+		/*
+		mode = 0 :: normal
+		mode = 1 :: selected site theme
+		mode = 2 :: selected admin theme
+		*/
+
+		global $ns, $pref;
 
 
-		if ($itext) {
-			$text .= "<table cellspacing='3' style='width:97%'>".$itext."</table>";
+
+		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
+		$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
+		$preview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' style='border:0px' title='".TPVLAN_12."' alt='' />")."</a>";
+
+		$previewbutton = (!$mode ? "<input class='button' type='submit' name='preview_".$theme['id']."' value='".TPVLAN_9."' /> " : "");
+
+		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<input style='vertical-align:middle;'  type='image' src='".e_IMAGE_ABS."admin_images/main_16.png'  name='selectmain[".$theme['id']."]' alt='' title=\"".TPVLAN_10."\" />\n" : ADMIN_TRUE_ICON;
+     	$info_icon 		= "<a href='#themeInfo_".$theme['id']."' class='e-expandit' style='height:16px' title='Click to select columns to display'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' title=\"".TPVLAN_7."\" style='border:0px; vertical-align:middle;' /></a>\n";
+        $preview_icon 	= "<input style='vertical-align:middle;' type='image' src='".e_IMAGE_ABS."admin_images/search_16.png'  name=\"preview[".$theme['id']."]\" title='".TPVLAN_9." #".$theme['id']."' />\n";
+        $admin_icon 	= ($pref['admintheme'] != $theme['path']) ? "<input style='vertical-align:middle;' type='image' src='".e_IMAGE_ABS."e107_icon_16.png'  name='selectadmin[".$theme['id']."]' alt='' title=\"".TPVLAN_32."\" />\n" : ADMIN_TRUE_ICON;
+
+        $newpreview 	= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 0px;width:200px;height:160px;' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;border:0px' title='".TPVLAN_12."' alt='' />")."</a>";
+
+
+		if(!$mode) // Choose a Theme to Install.
+		{
+			// styles NEED to be put into style.css
+
+			$borderStyle = (($pref['sitetheme'] == $theme['path']) || ($pref['admintheme'] == $theme['path'])) ? "border:1px solid black" : "border:1px dotted silver;background-color:#DDDDDD";
+        	$text = "<div class='block-text' style='margin:5px;".$borderStyle.";float:left;width:202px;height:160px'>
+                     <div style='height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px'>".$newpreview."</div>
+                     <div class='mediumtext' style='width:60%;float:left;font-weight:bold'>".$theme['name']." ".$theme['version']."</div>
+					 <div style='text-align:right;float:right;width:40%;height:16px'>\n\n\n".$main_icon.$admin_icon.$info_icon.$preview_icon."\n\n</div>
+                     <div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='position:relative;top:30px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>
+
+			</div>";
+            return $text;
 		}
 
-		if(array_key_exists("multipleStylesheets", $theme))
+        	$this->id = $theme['path'];
+
+		$text = "<div style='text-align:center;margin-left:auto;margin-right:auto'>
+		<table class='adminlist'>
+		<tr><td colspan='2'><h1>".$theme['name']."</h1></td></tr>
+		<tr><td><b>".TPVLAN_11."</b></td><td>".$theme['version']."</td>
+		<td class='first last' rowspan='6' style='text-align:center;width:25%'>$newpreview </td></tr>";
+
+		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
+		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>";
+		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>";
+        $text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_49."</b>:</td>
+			<td style='vertical-align:top'>XHTML ";
+        $text .= ($theme['xhtmlcompliant']) ? ADMIN_TRUE_ICON : "X";
+		$text .= "  &nbsp;&nbsp;  CSS ";
+		$text .= ($theme['csscompliant']) ? ADMIN_TRUE_ICON : "X";
+		$text .= "</td></tr>";
+		$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>
+		";
+
+		if($mode == 1)
 		{
-			if($mode)
-			{
-				$text .= "<table cellspacing='3' style='width:97%'>
-				<tr><td style='vertical-align:top; width:50%;'><b>".TPVLAN_27.":</b></td><td style='vertical-align:top width:50%;'>\n";
+                $text .= "
+				<tr>
+					<td style='vertical-align:top; width:24%;'><b>".TPVLAN_30."</b></td>
+					<td colspan='2' style='vertical-align:top width:auto;'>
+					<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
+					<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
+					</td>
+				</tr>";
+		}
+
+
+        if($theme['layouts'])  // New in 0.8    WORK IN PROGRESS ----
+		{
+            $itext .= "<tr>
+					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
+					<td colspan='2' style='vertical-align:top'>
+					<table class='adminlist' style='auto;width:100%' >
+						<tr>";
+                        $itext .= ($mode == 1) ? "<td class='fcaption' style='width:15%;text-align:center;vertical-align:top;'>Default</td>" : "";
+						$itext .= "
+							<td class='fcaption' style='width:30%'>Title</td>
+							<td class='fcaption' style='width:30%'>Requirements</td>
+							<td class='fcaption' style='text-align:center;width:100px'>Menu Preset</td>
+						</tr>\n";
+
+						foreach($theme['layouts'] as $key=>$val)
+					 	{
+			                $itext .= "
+							<tr>";
+							if($mode == 1)
+							{
+								if(!$pref['sitetheme_deflayout'])
+								{
+									$pref['sitetheme_deflayout'] = ($val['@attributes']['default']=='true') ? $key : "";
+								  //	echo "------------- NODEFAULT";
+								}
+								$itext .= "
+				                <td style='vertical-align:top width:auto;text-align:center'>
+									<input type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout']==$key ? " checked='checked'" : "")." />
+								</td>";
+							}
+
+							$itext .= "<td style='vertical-align:top'>";
+							$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
+							$itext .= $val['@attributes']['title'];
+							$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
+			                $itext .= ($pref['sitetheme_deflayout'] == $key) ? " (default)" : "";
+							$itext .= "</td>
+								<td style='vertical-align:top'>".$val['@attributes']['requiredPlugins']."&nbsp;</td>
+			                    <td style='vertical-align:top;text-align:center'>";
+			                    $itext .= ($val['menuPresets']) ? ADMIN_TRUE_ICON : "&nbsp;";
+								$itext .= "</td>
+							</tr>";
+						}
+
+		   $itext .=  "</table></td></tr>";
+		}
+
+
+  //		$itext .= !$mode ? "<tr><td style='vertical-align:top;width:24%'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>".$previewbutton.$selectmainbutton.$selectadminbutton."</td></tr>" : "";
+
+
+        $text .= $itext;
+
+		if(array_key_exists("multipleStylesheets", $theme) && $mode)
+		{
+			$text .= "
+				<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td><td colspan='2' style='vertical-align:top'>
+				<table class='adminlist' style='width:100%' >
+				<tr>
+                	<td class='fcaption center' style='width:15%'>Default</td>
+			  		<td class='fcaption' style='width:30%'>Title</td>
+					<td class='fcaption' style='text-align:center'>Description</td>
+				</tr>\n";
+
 				foreach($theme['css'] as $css)
 				{
-
+                    $text .= "<tr>\n";
 					if($mode == 2)
 					{
 						if (!$css['nonadmin']) {
 							$text .= "
-							<input type='radio' name='admincss' value='".$css['name']."' ".($pref['admincss'] == $css['name'] || (!$pref['admincss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." /><b>".$css['name'].":</b><br />".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."<br />\n";
+							<td class='center'>
+							<input type='radio' name='admincss' value='".$css['name']."' ".($pref['admincss'] == $css['name'] || (!$pref['admincss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
+							</td>
+							<td>".$css['name']."</td>
+							<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
 						}
 					}
 
 					if($mode == 1)
 					{
 						$text .= "
-						<input type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." /><b>".$css['name'].":</b><br />".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."<br />\n";
+						<td class='center'>
+						<input type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
+						</td>
+						<td>".$css['name']."
+						</td>
+						<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
 					}
+					$text .= "</tr>";
 				}
-				$text .= "</td></tr></table>";
 
-			}
-			else
-			{
-				$text .= "<br /><table style='width:97%' cellspacing='3'><tr><td colspan='2'><b>".TPVLAN_22.": </b></td></tr>";
-				foreach($theme['css'] as $css)
-				{
-					$text .= "<tr><td style='width:24%;vertical-align:top'><b>".$css['name'].":</b></td><td> ".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td></tr>\n";
-				}
-				$text .= "</table><br />\n";
-			}
+				$text .= "</table></td></tr>";
 		}
 
-			if($mode == 1)
-			{
-				$text .= "<table cellspacing='3' style='width:97%'>
 
-				<tr>
-				<td style='vertical-align:top; width:24%;'><b>".TPVLAN_30."</b></td><td style='vertical-align:top width:auto;'>
-				<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
-				<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
-				</td>
-				</tr>
-				<tr>
-				<td colspan='2' class='center'>
-				<input class='button' type='submit' name='submit_style' value='".TPVLAN_35."' /> ".$selectadminbutton."
-				</td></tr></table>";
-			}
 
 		if($mode == 2)
 		{
@@ -444,29 +599,60 @@ class themeHandler{
 
 			$adminstyles = $file -> get_files(e_ADMIN."includes");
 
-			$astext = "\n<select id='mode2' name='adminstyle' class='tbox'>\n";
+				$astext = "\n<select id='mode2' name='adminstyle' class='tbox'>\n";
 
-			foreach($adminstyles as $as)
-			{
-				$style = str_replace(".php", "", $as['fname']);
-				$astext .= "<option value='{$style}'".($pref['adminstyle'] == $style ? " selected='selected'" : "").">".$style."</option>\n";
-			}
-			$astext .= "</select>";
+				foreach($adminstyles as $as)
+				{
+					$style = str_replace(".php", "", $as['fname']);
+					$astext .= "<option value='{$style}'".($pref['adminstyle'] == $style ? " selected='selected'" : "").">".$style."</option>\n";
+				}
+				$astext .= "</select>";
 
-			$text .= "<br /><br /><table cellspacing='3' style='width:97%'>
-			<tr><td style='vertical-align:top; width:50%;'><b>".TPVLAN_41.":</b></td><td style='vertical-align:top width:50%;'>$astext</td></tr>
-			<tr><td colspan='2' class='center'>
-			<input class='button' type='submit' name='submit_adminstyle' value='".TPVLAN_42."' /> ".$selectmainbutton."
-			</td></tr></table>\n";
+			$text .= "
+			<tr>
+				<td style='vertical-align:top'><b>".TPVLAN_41.":</b></td>
+				<td style='vertical-align:top'>".$astext."</td>
+			</tr>
+			\n";
 		}
 
-		$text .= "</td></tr></table></div>\n";
+        $text .= $this->renderThemeConfig();
+
+
+        $text .= "</table>
+
+
+		   		<div class='center buttons-bar'>";
+
+                  if($mode == 2) // admin
+				  {
+				  	$mainid = "selectmain[".$theme['id']."]";
+				  	$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
+					$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'submit');
+
+				  }
+				  else   // main
+				  {
+				  	$adminid = "selectadmin[".$theme['id']."]";
+				  	$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
+                    $text .= $this->frm->admin_button($adminid, TPVLAN_32, 'submit');
+				  }
+
+				  $text .= "<input type='hidden' name='curTheme' value='".$theme['path']."' />";
+
+   		$text .= "
+				</div>
+
+
+
+		</div>\n";
+
 		return $text;
 	}
 
 	function themePreview()
 	{
-		echo "<script type='text/javascript'>document.location.href='".e_BASE."news.php?themepreview.".$this -> id."'</script>\n";
+		echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php?themepreview.".$this -> id."'</script>\n";
 		exit;
 	}
 
@@ -487,6 +673,8 @@ class themeHandler{
 		$pref['themecss'] ='style.css';
         $pref['sitetheme_deflayout'] = $this->findDefault($themeArray[$this -> id]);
 		$pref['sitetheme_layouts'] = is_array($this->themeArray[$pref['sitetheme']]['layouts']) ? $this->themeArray[$pref['sitetheme']]['layouts'] : array();
+
+
 
 		$e107cache->clear_sys();
 	 	save_prefs();
@@ -522,6 +710,7 @@ class themeHandler{
 		save_prefs();
 		$this->theme_adminlog('02',$pref['admintheme'].', '.$pref['admincss']);
 		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
+      //  $this->showThemes('admin');
 	}
 
 	function setStyle()
@@ -533,8 +722,9 @@ class themeHandler{
 
 		$e107cache->clear_sys();
 		save_prefs();
+        $custom_message = $this -> setThemeConfig();
 		$this->theme_adminlog('03',$pref['image_preload'].', '.$pref['themecss']);
-		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_37.".</div><br />");
+		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_37.".<br />".$custom_message."</div><br />");
 	}
 
 	function setAdminStyle()
@@ -590,6 +780,8 @@ class themeHandler{
 		{
 			unset($themeArray);
 		}
+		$themeArray['path'] = $path;
+
     	return $themeArray;
 	}
 
@@ -631,8 +823,9 @@ class themeHandler{
 				$lays[$name] = $val;
 			}
 		}
-		$vars['layouts'] = $lays;
 
+		$vars['layouts'] = $lays;
+        $vars['path'] = $path;
 	  	return $vars;
 	}
 

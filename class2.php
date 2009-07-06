@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.97 $
-* $Date: 2009-07-05 11:25:10 $
+* $Revision: 1.98 $
+* $Date: 2009-07-06 05:59:42 $
 * $Author: e107coders $
 *
 */
@@ -417,10 +417,11 @@ else
 	$pref = $eArrayStorage->ReadArray($PrefCache);
 }
 
+
 $e107->set_base_path();
 
 // extract menu prefs
-$menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref'))); 
+$menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));
 
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
@@ -703,8 +704,9 @@ if (!function_exists('checkvalidtheme'))
 		if (ADMIN && strpos(e_QUERY, 'themepreview') !== false)
 		{
 			list($action, $id) = explode('.', e_QUERY);
-			require_once(e_HANDLER.'theme_handler.php');
+	   		require_once(e_HANDLER.'theme_handler.php');
 			$themeArray = themeHandler :: getThemes('id');
+
 			define('PREVIEWTHEME', e_THEME.$themeArray[$id].'/');
 			define('PREVIEWTHEMENAME', $themeArray[$id]);
 			define('THEME', e_THEME.$themeArray[$id].'/');
@@ -947,6 +949,7 @@ if(!isset($_E107['no_menus']))
 		$menu_data['menu_active'] = $eMenuActive;
 		$menu_data = $eArrayStorage->WriteArray($menu_data, false);
 		$e107cache->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE), $menu_data);
+
 		unset($menu_data);
 	}
 	else
@@ -1000,9 +1003,11 @@ if(!defined('THEME'))
 	{
 	  checkvalidtheme($pref['sitetheme']);
 	}
+
+
 }
 
-
+$theme_pref = varset($pref['sitetheme_pref']);
 // --------------------------------------------------------------
 
 
@@ -1299,7 +1304,7 @@ function get_user_data($uid, $extra = '')
 
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
-  global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
+  global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref;
   if ($table == 'core')
   {
 		if ($row_val == '')
@@ -1320,6 +1325,11 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
             	return false;
 			}
 		}
+  }
+  elseif($table == "theme")
+  {
+  		$pref['sitetheme_pref'] = $theme_pref;
+		save_prefs();
   }
   else
   {

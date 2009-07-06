@@ -444,7 +444,7 @@ label { cursor: pointer; }
     border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
     background:#fff;
     font:12px arial, helvetica, sans-serif;
-	overflow:auto 
+	overflow:auto
 }
 .check-block .checkbox { margin-left: 2px }
 .check-block .separator { clear: both; border-bottom: 1px solid #aaa; margin-bottom: 4px; height: 4px }
@@ -639,6 +639,7 @@ button.cancel span			{}
 button.cancel:hover span,
 button.cancel:focus span 		{} 
 button.cancel:active span		{}
+
 
 
 .buttons-bar { padding: 10px 0px; }

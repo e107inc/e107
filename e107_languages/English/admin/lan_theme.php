@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-11-17 07:17:23 $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-06 05:59:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -33,7 +33,7 @@ define("TPVLAN_20", "Auto theme upload and extraction is disabled as your themes
 
 define("TPVLAN_21", "This is the currently selected site theme");
 
-define("TPVLAN_22", "This theme has multiple stylesheets");
+define("TPVLAN_22", "Stylesheets");
 define("TPVLAN_23", "default stylesheet");
 define("TPVLAN_24", "no information");
 define("TPVLAN_25", "To choose which stylesheet to use, please go to <a href='".e_ADMIN."prefs.php'>preferences</a> and click on 'Theme'.");
@@ -47,8 +47,8 @@ define("TPVLAN_30", "Preload Theme Images:");
 define("TPVLAN_31", "This is the currently selected admin theme");
 define("TPVLAN_32", "Set As Admin Theme");
 
-define("TPVLAN_33", "Current Site Theme");
-define("TPVLAN_34", "Current Admin Theme");
+define("TPVLAN_33", "Site Theme Configuration");
+define("TPVLAN_34", "Admin Theme Configuration");
 define("TPVLAN_35", "Save options");
 define("TPVLAN_36", "Admin Message");
 define("TPVLAN_37", "Theme options saved");
@@ -66,6 +66,7 @@ define("TPVLAN_48", "code:");
 
 define("TPVLAN_49", "Compliance");
 define("TPVLAN_50", "Layouts");
+define("TPVLAN_51", "Change Theme");
 
 
 

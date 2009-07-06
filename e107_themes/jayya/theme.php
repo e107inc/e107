@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-04-27 10:52:42 $
-|     $Author: secretr $
+|     $Revision: 1.7 $
+|     $Date: 2009-07-06 05:59:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,13 +29,14 @@ include_lan(e_THEME."jayya/languages/".e_LANGUAGE.".php");
 
 $themename = "Jayya";
 $themeversion = "1.0";
-$themeauthor = "";
+$themeauthor = "e107devs";
 $themedate = "";
 $themeinfo = "";
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
 define("THEME_DISCLAIMER", "");
 define("IMODE", "lite");
+define("STANDARDS_MODE", TRUE);
 
 // [dont render core style sheet link]
 	$no_core_css = TRUE;
