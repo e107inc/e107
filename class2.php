@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.98 $
-* $Date: 2009-07-06 05:59:42 $
+* $Revision: 1.99 $
+* $Date: 2009-07-06 08:45:19 $
 * $Author: e107coders $
 *
 */
@@ -1047,21 +1047,6 @@ elseif (!in_array('lan_'.e_PAGE,$exclude_lan) && !$isPluginDir)
 {
   e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
   e107_include_once(e_LANGUAGEDIR.'English/lan_'.e_PAGE);
-}
-
-if(!defined('IMODE')) { define('IMODE', 'lite'); }
-
-if (IMODE == 'lite')
-{
-	$imode = 'nuvola_light';
-}
-else if (IMODE == 'dark')
-{
-	$imode = 'nuvola_dark';
-}
-else
-{
-	$imode = IMODE;
 }
 
 if ($pref['anon_post'] ? define('ANON', true) : define('ANON', false));
