@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-07-06 09:17:27 $
+|     $Revision: 1.23 $
+|     $Date: 2009-07-06 09:28:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -371,7 +371,7 @@ class themeHandler{
 				$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
                 $itext .= ($pref['sitetheme_deflayout'] == $key) ? " (default)" : "";
 				$itext .= "</td>
-					<td style='vertical-align:top'>".$val['@attributes']['requiredPlugins']."&nbsp;</td>
+					<td style='vertical-align:top'>".$val['@attributes']['plugins']."&nbsp;</td>
                     <td style='vertical-align:top;text-align:center'>";
                     $itext .= ($val['menuPresets']) ? ADMIN_TRUE_ICON: "&nbsp;";
 					$itext .= "</td>
@@ -537,7 +537,7 @@ class themeHandler{
 							$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
 			                $itext .= ($pref['sitetheme_deflayout'] == $key) ? " (default)" : "";
 							$itext .= "</td>
-								<td style='vertical-align:top'>".$this->renderRequiredPlugins($val['@attributes']['requiredPlugins'])."&nbsp;</td>
+								<td style='vertical-align:top'>".$this->renderPlugins($val['@attributes']['plugins'])."&nbsp;</td>
 			                    <td style='vertical-align:top;text-align:center'>";
 			                    $itext .= ($val['menuPresets']) ? ADMIN_TRUE_ICON : "&nbsp;";
 								$itext .= "</td>
@@ -660,7 +660,7 @@ class themeHandler{
 		return $text;
 	}
 
-    function renderRequiredPlugins($val)
+    function renderPlugins($val)
 	{
 		$tmp = explode(",",$val);
 		$tmp = array_filter($tmp);
