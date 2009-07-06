@@ -9,9 +9,9 @@
  * Alternate News
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_news/alt_news.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-07 13:08:54 $
- * $Author: e107steved $
+ * $Revision: 1.4 $
+ * $Date: 2009-07-06 07:14:47 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -19,7 +19,7 @@ if (!defined('e107_INIT')) { exit; }
 require_once(e_HANDLER."news_class.php");
 
 function alt_news($news_category) {
-	global $ml, $sql, $aj, $ns;
+	global $sql, $aj, $ns;
 	$ix = new news;
 	if (strstr(e_QUERY, "cat")) {
 		$category = $news_category;
