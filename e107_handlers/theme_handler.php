@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-07-06 05:59:42 $
+|     $Revision: 1.17 $
+|     $Date: 2009-07-06 06:33:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -493,18 +493,18 @@ class themeHandler{
 		}
 
 
-        if($theme['layouts'])  // New in 0.8    WORK IN PROGRESS ----
+        if($theme['layouts'])  // New in 0.8   ----
 		{
             $itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 					<td colspan='2' style='vertical-align:top'>
 					<table class='adminlist' style='auto;width:100%' >
 						<tr>";
-                        $itext .= ($mode == 1) ? "<td class='fcaption' style='width:15%;text-align:center;vertical-align:top;'>Default</td>" : "";
+                        $itext .= ($mode == 1) ? "<td class='fcaption' style='width:15%;text-align:center;vertical-align:top;'>".TPVLAN_55."</td>" : "";
 						$itext .= "
-							<td class='fcaption' style='width:30%'>Title</td>
-							<td class='fcaption' style='width:30%'>Requirements</td>
-							<td class='fcaption' style='text-align:center;width:100px'>Menu Preset</td>
+							<td class='fcaption' style='width:30%'>".TPVLAN_52."</td>
+							<td class='fcaption' style='width:30%'>".TPVLAN_53."</td>
+							<td class='fcaption' style='text-align:center;width:100px'>".TPVLAN_54."</td>
 						</tr>\n";
 
 						foreach($theme['layouts'] as $key=>$val)
@@ -552,9 +552,9 @@ class themeHandler{
 				<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td><td colspan='2' style='vertical-align:top'>
 				<table class='adminlist' style='width:100%' >
 				<tr>
-                	<td class='fcaption center' style='width:15%'>Default</td>
-			  		<td class='fcaption' style='width:30%'>Title</td>
-					<td class='fcaption' style='text-align:center'>Description</td>
+                	<td class='fcaption center' style='width:15%'>".TPVLAN_55."</td>
+			  		<td class='fcaption' style='width:30%'>".TPVLAN_52."</td>
+					<td class='fcaption left'>".TPVLAN_7."</td>
 				</tr>\n";
 
 				foreach($theme['css'] as $css)

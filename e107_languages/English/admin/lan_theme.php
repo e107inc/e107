@@ -4,11 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_theme.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-06 05:59:42 $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-06 06:33:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
+
+
 define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
 define("TPVLAN_2", "Theme Preview");
 define("TPVLAN_3", "Main site theme set to");
@@ -67,6 +69,11 @@ define("TPVLAN_48", "code:");
 define("TPVLAN_49", "Compliance");
 define("TPVLAN_50", "Layouts");
 define("TPVLAN_51", "Change Theme");
+define("TPVLAN_52", "Name");
+define("TPVLAN_53", "Requirements");
+define("TPVLAN_54", "Menu Preset");
+define("TPVLAN_55", "Default");
+
 
 
 
