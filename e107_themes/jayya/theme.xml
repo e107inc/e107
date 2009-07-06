@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="Jayya" version="2.0" date="2009-06-11" compatibility="0.8">
+	<author name ="e107Developers" email="security@e107.org" url="http://e107.org"/>
+	<description>Classic e107 theme</description>
+	<compliance xhtml="true" css="true"/>
+ 	<layouts>
+		<layout name='3_column' title='3 Columns' preview='preview.jpg' default='true' >
+		</layout>
+        <layout name='2_column' title='2 Columns' preview='preview.jpg' >
+		</layout>
+	</layouts>
+</e107Theme>

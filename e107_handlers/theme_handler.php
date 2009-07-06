@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-07-06 06:46:12 $
+|     $Revision: 1.20 $
+|     $Date: 2009-07-06 08:45:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -135,21 +135,27 @@ class themeHandler{
 					// Load Theme information and merge with existing array. theme.xml (0.8 themes) is given priority over theme.php (0.7).
 					if(in_array("theme.xml",$themeArray[$file]['files']) )
 					{
-		 	        	$themeArray[$file] = array_merge($themeArray[$file], $this->parse_theme_xml($file));
+		 	         	$themeArray[$file] = array_merge($themeArray[$file], $this->parse_theme_xml($file));
 		    		}
 					elseif(in_array("theme.php",$themeArray[$file]['files']))
 					{
 						$themeArray[$file] =  array_merge($themeArray[$file], $this->parse_theme_php($file));
-		         }
+		         	}
 				}
 		  	}
 		}
 		closedir($handle);
-
-        /*echo "<pre>";
+/*
+    echo "<table><tr><td>";
+     echo "<pre>";
+		print_r($themeArray['jayya']);
+		echo "</pre>";
+    echo "</td><td>";
+      echo "<pre>";
 		print_r($themeArray['e107v4a']);
 		echo "</pre>";
-*/
+
+	echo "</td></tr></table>";*/
 
 		return $themeArray;
 	}
@@ -492,7 +498,6 @@ class themeHandler{
 				</tr>";
 		}
 
-
         if($theme['layouts'])  // New in 0.8   ----
 		{
             $itext .= "<tr>
@@ -506,6 +511,7 @@ class themeHandler{
 							<td class='fcaption' style='width:30%'>".TPVLAN_53."</td>
 							<td class='fcaption' style='text-align:center;width:100px'>".TPVLAN_54."</td>
 						</tr>\n";
+
 
 						foreach($theme['layouts'] as $key=>$val)
 					 	{
@@ -530,7 +536,7 @@ class themeHandler{
 							$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
 			                $itext .= ($pref['sitetheme_deflayout'] == $key) ? " (default)" : "";
 							$itext .= "</td>
-								<td style='vertical-align:top'>".$val['@attributes']['requiredPlugins']."&nbsp;</td>
+								<td style='vertical-align:top'>".$this->renderRequiredPlugins($val['@attributes']['requiredPlugins'])."&nbsp;</td>
 			                    <td style='vertical-align:top;text-align:center'>";
 			                    $itext .= ($val['menuPresets']) ? ADMIN_TRUE_ICON : "&nbsp;";
 								$itext .= "</td>
@@ -616,8 +622,11 @@ class themeHandler{
 			\n";
 		}
 
-        $text .= $this->renderThemeConfig();
 
+        if($mode == 1)
+		{
+        	$text .= $this->renderThemeConfig();
+        }
 
         $text .= "</table>
 
@@ -649,6 +658,29 @@ class themeHandler{
 
 		return $text;
 	}
+
+    function renderRequiredPlugins($val)
+	{
+		$tmp = explode(",",$val);
+		$tmp = array_filter($tmp);
+
+		foreach($tmp as $plug)
+		{
+			$plug = trim($plug);
+         	if(plugInstalled($plug))
+			{
+            	$text .= ADMIN_TRUE_ICON.$plug;
+			}
+			else
+			{
+               $text .= ADMIN_FALSE_ICON."<a href='".e_ADMIN."plugin.php'>".$plug."</a>";
+			}
+
+		}
+
+        return $text;
+	}
+
 
 	function themePreview()
 	{
@@ -815,17 +847,28 @@ class themeHandler{
 		unset($vars['authorEmail'],$vars['authorUrl'],$vars['xhtmlCompliant'],$vars['cssCompliant'],$vars['description']);
 
 		// Compile layout information into a more usable format.
+
 		foreach($vars['layouts'] as $layout)
 		{
-			foreach($layout as $key=>$val)
+			if(is_array($layout[0]))
 			{
-				$name = $val['@attributes']['name'];
-				unset($val['@attributes']['name']);
-				$lays[$name] = $val;
-			}
-		}
+				foreach($layout as $key=>$val)
+				{
 
-		$vars['layouts'] = $lays;
+					$name = $val['@attributes']['name'];
+					unset($val['@attributes']['name']);
+					$lays[$name] = $val;
+				}
+			}
+			else
+			{
+                $name = $layout['@attributes']['name'];
+			 	unset($layout['@attributes']['name']);
+			  	$lays[$name] = $layout;
+			}
+        }
+
+        $vars['layouts'] = $lays;
         $vars['path'] = $path;
 	  	return $vars;
 	}

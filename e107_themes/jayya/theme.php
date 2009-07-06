@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-07-06 05:59:42 $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-06 08:45:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,15 +27,7 @@ include_lan(e_THEME."jayya/languages/".e_LANGUAGE.".php");
 
 // [theme]
 
-$themename = "Jayya";
-$themeversion = "1.0";
-$themeauthor = "e107devs";
-$themedate = "";
-$themeinfo = "";
-$xhtmlcompliant = TRUE;
-$csscompliant = TRUE;
 define("THEME_DISCLAIMER", "");
-define("IMODE", "lite");
 define("STANDARDS_MODE", TRUE);
 
 // [dont render core style sheet link]
@@ -45,7 +37,7 @@ define("STANDARDS_MODE", TRUE);
 
 $layout = "_default";
 
-$HEADER = "<table class='page_container'>
+$HEADER['3_column'] = "<table class='page_container'>
 <tr>
 <td>
 
@@ -87,7 +79,7 @@ $HEADER = "<table class='page_container'>
 {WMESSAGE}
 ";
 
-$FOOTER = "<br />
+$FOOTER['3_column'] = "<br />
 </td>
 
 <td class='right_menu'>
@@ -108,7 +100,61 @@ $FOOTER = "<br />
 </table>
 ";
 
+$HEADER['2_column'] = "<table class='page_container'>
+<tr>
+<td>
 
+<table class='top_section'>
+<tr>
+<td class='top_section_left' style='width: 190px; padding-left: 5px; padding-right: 5px'>
+{LOGO}
+</td>
+<td class='top_section_mid'>
+{BANNER}
+</td>
+
+<td class='top_section_right' style='padding: 0px; white-space: nowrap; width: 170px'>
+{CUSTOM=search+default}
+</td>
+</tr>
+</table>
+
+<div>
+{SITELINKS_ALT=".THEME_ABS."images/arrow.png+noclick}
+</div>
+
+<table class='main_section'>
+<colgroup>
+<col style='width: 170px' />
+<col style='width: auto' />
+</colgroup>
+
+<tr>
+<td class='left_menu'>
+<table class='menus_container'><tr><td>
+{SETSTYLE=leftmenu}
+{MENU=1}
+{MENU=2}
+</td></tr></table>
+</td>
+<td class='default_menu'>
+{SETSTYLE=default}
+{WMESSAGE}
+";
+
+$FOOTER['2_column'] = "<br />
+</td>
+</tr>
+</table>
+<div style='text-align:center'>
+<br />
+{SITEDISCLAIMER}
+<br /><br />
+</div>
+</td>
+</tr>
+</table>
+";
 // [linkstyle]
 
 define('PRELINK', '');
