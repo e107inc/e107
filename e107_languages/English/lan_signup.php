@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2009-03-23 22:13:09 $
-|     $Author: e107steved $
+|     $Revision: 1.35 $
+|     $Date: 2009-07-06 07:49:12 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
@@ -66,10 +66,10 @@ define("LAN_SIGNUP_14", "here");
 define("LAN_SIGNUP_15", "Please contact the main site admin");
 define("LAN_SIGNUP_16", "if you require assistance.");
 define("LAN_SIGNUP_17", "Please certify you are 13 or over the age of 13.");
-define("LAN_SIGNUP_18", "Your registration has been received and created with the following login information ...");
-define("LAN_SIGNUP_19", "Username:");
-define("LAN_SIGNUP_20", "Password:");
-define("LAN_SIGNUP_21", "Your account is currently marked as being inactive, to activate your account please go to the following link ...");
+define("LAN_SIGNUP_18", "Your registration has been received and created with the following login information:");
+//define("LAN_SIGNUP_19", "Username:"); // now LAN_LOGINNAME
+//define("LAN_SIGNUP_20", "Password:"); // now LAN_PASSWORD
+define("LAN_SIGNUP_21", "Your account is currently marked as being inactive. To activate your account please go to the following link:");
 define("LAN_SIGNUP_22", "click here");
 define("LAN_SIGNUP_23", "to login.");
 define("LAN_SIGNUP_24", "Thank you for registering at");

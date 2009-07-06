@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.98 $
-|     $Date: 2009-06-24 20:10:08 $
-|     $Author: e107coders $
+|     $Revision: 1.99 $
+|     $Date: 2009-07-06 07:49:12 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -1100,7 +1100,7 @@ class users
 
 		$return_address = (substr(SITEURL, -1) == "/") ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key;
 
-		$message = LAN_EMAIL_01." ".$name."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."...\n\n";
+		$message = LAN_EMAIL_01." ".$name."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
 		$message .= $return_address . "\n\n".SITENAME."\n".SITEURL;
 
         $mailheader_e107id = $id;
