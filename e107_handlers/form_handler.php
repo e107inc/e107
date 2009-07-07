@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-07-04 13:36:15 $
+ * $Revision: 1.28 $
+ * $Date: 2009-07-07 02:43:14 $
  * $Author: e107coders $
  *
 */
@@ -576,7 +576,7 @@ class e_form
 	{
         $text .= "<div style='position:relative;float:right;'>
 		<a href='#".$id."' class='e-expandit' style='height:16px' title='Click to select columns to display'>
-		<img src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' /></a>
+		<img class='middle' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' /></a>
 
 		<div id='".$id."' class='e-hideme col-selection'>\n";
         unset($columnsArray['options']);
