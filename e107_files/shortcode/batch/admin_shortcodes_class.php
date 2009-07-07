@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.4 2009-02-22 12:34:51 e107steved Exp $
+* $Id: admin_shortcodes_class.php,v 1.5 2009-07-07 07:25:26 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -804,7 +804,7 @@ class admin_shortcodes
 			{
 				function admin_status()
 				{
-					global $sql, $ns, $pref, $imode;
+					global $sql, $ns, $pref;
 					$members = $sql -> db_Count('user');
 					$unverified = $sql -> db_Count('user', '(*)', 'WHERE user_ban=2');
 					$banned = $sql -> db_Count('user', '(*)', 'WHERE user_ban=1');
@@ -826,7 +826,7 @@ class admin_shortcodes
 
 					if($flo = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
-						$text .= "<img src='".e_IMAGE."packs/".$imode."/admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
+						$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
 					}
 					return $ns -> tablerender(ADLAN_134, $text, '', TRUE);
 				}
@@ -920,7 +920,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.4 2009-02-22 12:34:51 e107steved Exp $
+		* $Id: admin_shortcodes_class.php,v 1.5 2009-07-07 07:25:26 e107coders Exp $
 		*/
 
 		if (ADMIN)

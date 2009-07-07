@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2009-06-29 21:26:58 $
-|     $Author: e107steved $
+|     $Revision: 1.34 $
+|     $Date: 2009-07-07 07:25:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -68,7 +68,6 @@ class user_class
 	// Constructor
 	function user_class()
 	{
-	  global $imode;
 
 	  $this->sql_r = new db;
 	  $this->isAdmin = FALSE;
