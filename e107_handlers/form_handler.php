@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-07-07 02:43:14 $
+ * $Revision: 1.29 $
+ * $Date: 2009-07-07 06:26:50 $
  * $Author: e107coders $
  *
 */
@@ -583,14 +583,17 @@ class e_form
 
 		foreach($columnsArray as $key=>$fld)
 		{
-			$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
-			$text .= $this->checkbox('e-columns[]', $key, $checked). $fld['title']."<br />";
+			if($fld['forced'] !== TRUE)
+			{
+				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
+				$text .= $this->checkbox('e-columns[]', $key, $checked). $fld['title']."<br />\n";
+			}
 		}
 
-        $text .= "<div id='button' style='text-align:right'>";  // has issues with the checkboxes.
+        $text .= "<div id='button' style='text-align:right'>\n";  // has issues with the checkboxes.
 	 	$text .= $this->admin_button('submit-e-columns','Save','Save');
 
-   	 	$text .= "</div>";
+   	 	$text .= "</div>\n";
 		$text .= "</div></div>";
 		return $text;
 	}
@@ -600,9 +603,9 @@ class e_form
 
 		foreach($fieldarray as $key=>$val)
 		{
-			if(in_array($key,$columnPref))
+			if(in_array($key,$columnPref) || $key=='options' || $val['forced']==TRUE)
 			{
-				$text .= "\n<col style='width: ".$val['width']."'></col>";
+				$text .= "\n<col style='width: ".$val['width'].";'></col>";
 			}
 		}
 		return $text;
@@ -613,11 +616,11 @@ class e_form
 
 		foreach($fieldarray as $key=>$val)
 		{
-     		if(in_array($key,$columnPref) || $key == "options")
+     		if(in_array($key,$columnPref) || $key == "options" || ($val['forced']==TRUE))
 			{
 				$cl = ($val['thclass']) ? "class='".$val['thclass']."'" : "";
 				$text .= "\n\t<th id='$key' {$cl}>";
-				$text .= ($val['url']) ? "<a href='".$val['url']."'>" : "";
+				$text .= ($val['url']) ? "<a href='".$val['url']."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
 	            $text .= $val['title'];
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
 
