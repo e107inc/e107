@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-01-07 20:04:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-07 07:32:59 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -29,7 +29,7 @@ class bbcode_shortcodes
 	function get_bb($parm)
 	{
 		//FIXME - cachevars/getcachedvars!
-		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb, $imode;
+		global $pref, $eplug_bb, $bbcode_func, $bbcode_help, $bbcode_filedir, $bbcode_imagedir, $bbcode_helpactive, $bbcode_helptag, $register_bb;
 
 		if(defsettrue('e_WYSIWYG')){ return; }
 
