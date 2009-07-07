@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.18 2009-01-10 13:17:44 secretr Exp $ -->
-<e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true">
+<!-- $Id: plugin.xml,v 1.19 2009-07-07 02:22:57 e107coders Exp $ -->
+<e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true" xhtmlcompliant="true" >
 	<author name="e107dev" url="http://e107.org"/>
 	<description>This plugin is a fully featured Forum system</description>
 	<folder>forum</folder>

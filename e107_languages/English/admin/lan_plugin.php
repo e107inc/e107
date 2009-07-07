@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-30 19:01:17 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-07 02:22:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");
@@ -84,7 +84,7 @@ define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
 // define("EPL_ADLAN_61", "Confirm uninstall"); // duplicated. can be deleted.
 define("EPL_ADLAN_62", "Cancel uninstall");
 define("EPL_ADLAN_63", "Uninstall:");
-define("EPL_ADLAN_64", "Folder:");
+define("EPL_ADLAN_64", "Folder");
 
 define ('EPL_ADLAN_70','Required plugin not installed: ');
 define ('EPL_ADLAN_71','Newer plugin version required: ');
@@ -97,9 +97,9 @@ define ('EPL_ADLAN_77','Cannot find plugin.xml');
 define ('EPL_ADLAN_78','Delete User Classes created by plugin:');
 define ('EPL_ADLAN_79','Only delete these if you have not used them for other purposes.');
 define ('EPL_ADLAN_80','Delete extended user fields created by plugin:');
-define ('EPL_ADLAN_81','');
-define ('EPL_ADLAN_82','');
-define ('EPL_ADLAN_83','');
+define ('EPL_ADLAN_81','Xhtml');
+define ('EPL_ADLAN_82','Icon');
+define ('EPL_ADLAN_83','Notes');
 define ('EPL_ADLAN_84','');
 define ('EPL_ADLAN_85','');
 
