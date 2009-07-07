@@ -9,9 +9,9 @@
  * Admin Language File
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_administrator.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-20 15:23:48 $
- * $Author: secretr $
+ * $Revision: 1.7 $
+ * $Date: 2009-07-07 22:55:13 $
+ * $Author: e107coders $
 */
 //define("ADMSLAN_0", "New user/admin entry created for"); - no references found
 //define("ADMSLAN_1", "now has admin status."); - no references found
@@ -90,6 +90,7 @@ define('ADMSLAN_73', 'Admin ID: --ID-- name: --NAME--');
 
 define('ADMSLAN_74', 'General');
 define('ADMSLAN_75', '');
+define("ADMSLAN_76", "Language Configuration");
 
 define("ADMSLAN_2", "Site Administrator <strong>%s</strong> updated in database.");
 ?>
