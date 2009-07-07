@@ -95,8 +95,7 @@ return $ONLINE_MEMBERS_LIST_EXTENDED;
 SC_END
 
 SC_BEGIN ONLINE_MEMBER_IMAGE
-global $imode;
-return "<img src='".e_IMAGE."packs/".$imode."/admin_images/users_16.png' alt='' style='vertical-align:middle' />";
+return "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='vertical-align:middle' />";
 SC_END
 
 SC_BEGIN ONLINE_MEMBER_USER

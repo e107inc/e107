@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.20 2009-04-29 20:27:32 bugrain Exp $
+* $Id: news_shortcodes.php,v 1.21 2009-07-07 07:25:27 e107coders Exp $
 *
 * News shortcode batch
 */
@@ -217,10 +217,9 @@ class news_shortcodes
 
 	function get_adminoptions()
 	{
-		global $imode;
 		if (ADMIN && getperms('H'))
 		{
-			$adop_icon = (file_exists(THEME."images/newsedit.png") ? THEME_ABS."images/newsedit.png" : e_IMAGE_ABS."packs/".$imode."/generic/newsedit.png");
+			$adop_icon = (file_exists(THEME."images/newsedit.png") ? THEME_ABS."images/newsedit.png" : e_IMAGE_ABS."generic/newsedit.png");
 			return " <a href='".e_ADMIN_ABS."newspost.php?create.edit.".$this->news_item['news_id']."'><img src='".$adop_icon."' alt='' style='border:0' /></a>\n";
 		}
 		else

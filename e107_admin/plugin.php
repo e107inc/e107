@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2009-07-07 06:26:50 $
+|     $Revision: 1.27 $
+|     $Date: 2009-07-07 07:25:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -705,7 +705,7 @@ class pluginManager{
 
 	function pluginRenderPlugin($pluginList)
 	{
-			global $tp, $imode, $plugin, $frm;
+			global $tp, $plugin, $frm;
 
 			if (empty($pluginList)) return '';
 

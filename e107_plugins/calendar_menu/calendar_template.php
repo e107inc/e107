@@ -11,20 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-07-28 20:16:10 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-07 07:25:27 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:auto"); }
 
-global $imode;
+
 if (varsettrue($imode))
 {  // Its 0.8
-  $ec_images_path = e_IMAGE.'packs/'.$imode.'/';
-  $ec_images_path_abs = e_IMAGE_ABS.'packs/'.$imode.'/';
+  $ec_images_path = e_IMAGE;
+  $ec_images_path_abs = e_IMAGE_ABS;
   if (!defined('EC_RECENT_ICON')) 
   {
 	define('EC_RECENT_ICON',$ec_images_path.'generic/new.png'); 
@@ -37,8 +37,8 @@ else
   $ec_images_path_abs = e_IMAGE_ABS;
   if (!defined('EC_RECENT_ICON')) 
   {
-	define('EC_RECENT_ICON',e_IMAGE.'generic/'.IMODE.'/new.png'); 
-	define('EC_RECENT_ICON_ABS',e_IMAGE_ABS.'generic/'.IMODE.'/new.png'); 
+	define('EC_RECENT_ICON',e_IMAGE.'generic/new.png');
+	define('EC_RECENT_ICON_ABS',e_IMAGE_ABS.'generic/new.png');
   }		// Filename of icon used to flag recent events
 }
 

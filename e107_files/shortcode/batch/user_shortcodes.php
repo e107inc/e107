@@ -9,9 +9,9 @@
  * User information - shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
- * $Revision: 1.13 $
- * $Date: 2008-12-20 20:18:54 $
- * $Author: e107steved $
+ * $Revision: 1.14 $
+ * $Date: 2009-07-07 07:25:27 $
+ * $Author: e107coders $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -157,7 +157,7 @@ return $gen -> computeLapse($user['user_join'])." ".LAN_USER_34;
 SC_END
 
 SC_BEGIN USER_REALNAME_ICON
-global $imode;
+
 if(defined("USER_REALNAME_ICON"))
 {
 	return USER_REALNAME_ICON;
@@ -166,7 +166,7 @@ if(file_exists(THEME."images/user_realname.png"))
 {
 	return "<img src='".THEME_ABS."images/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."user_icons/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_REALNAME
@@ -175,7 +175,7 @@ return $user['user_login'] ? $user['user_login'] : "<i>".LAN_USER_33."</i>";
 SC_END
 
 SC_BEGIN USER_EMAIL_ICON
-global $imode;
+
 if(defined("USER_EMAIL_ICON"))
 {
 	return USER_EMAIL_ICON;
@@ -184,7 +184,7 @@ if(file_exists(THEME."images/email.png"))
 {
 	return "<img src='".THEME_ABS."images/email.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/email.png' alt='' style='vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."generic/email.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_EMAIL_LINK
@@ -198,7 +198,6 @@ return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_USER_35."</i>" : $tp->toH
 SC_END
 
 SC_BEGIN USER_ICON
-global $imode;
 if(defined("USER_ICON"))
 {
 	return USER_ICON;
@@ -207,11 +206,11 @@ if(file_exists(THEME."images/user.png"))
 {
 	return "<img src='".THEME_ABS."images/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_ICON_LINK
-global $user, $imode;
+global $user;
 if(defined("USER_ICON"))
 {
 	$icon = USER_ICON;
@@ -222,7 +221,7 @@ else if(file_exists(THEME."images/user.png"))
 }
 else
 {
-	$icon = "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	$icon = "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
 SC_END
@@ -250,7 +249,7 @@ if(ADMIN && getperms("4")) {
 SC_END
 
 SC_BEGIN USER_BIRTHDAY_ICON
-global $imode;
+
 if(defined("USER_BIRTHDAY_ICON"))
 {
 	return USER_BIRTHDAY_ICON;
@@ -259,7 +258,7 @@ if(file_exists(THEME."images/user_birthday.png"))
 {
 	return "<img src='".THEME_ABS."images/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."user_icons/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_BIRTHDAY
@@ -298,7 +297,7 @@ if(isset($pref['plug_installed']['pm']) && ($user['user_id'] > 0))
 SC_END
 
 SC_BEGIN USER_RATING
-global $pref, $user, $imode;
+global $pref, $user;
 if($pref['profile_rate'] && USER)
 {
 	include_once(e_HANDLER."rate_class.php");
@@ -309,7 +308,7 @@ if($pref['profile_rate'] && USER)
 		$num = $rating[1];
 		for($i=1; $i<= $num; $i++)
 		{
-			$ret .= "<img src='".e_IMAGE_ABS."packs/".$imode."/user_icons/user_star.png' style='border:0' alt='' />";
+			$ret .= "<img src='".e_IMAGE_ABS."user_icons/user_star.png' style='border:0' alt='' />";
 		}
 	}
 	if(!$rater->checkrated('user', $user['user_id']))

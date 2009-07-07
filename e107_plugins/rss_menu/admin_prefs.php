@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-13 12:34:53 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-07 07:25:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -38,7 +38,7 @@ if(!getperms("P") || !plugInstalled('rss_menu'))
 
 require_once(e_ADMIN."auth.php");
 
-$imagedir = e_IMAGE."packs/".$imode."/admin_images/";
+$imagedir = e_IMAGE."admin_images/";
 require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
 $rss = new rss;
 
