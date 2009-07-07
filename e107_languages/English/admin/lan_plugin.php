@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-07 02:22:57 $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-07 06:26:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -100,8 +100,8 @@ define ('EPL_ADLAN_80','Delete extended user fields created by plugin:');
 define ('EPL_ADLAN_81','Xhtml');
 define ('EPL_ADLAN_82','Icon');
 define ('EPL_ADLAN_83','Notes');
-define ('EPL_ADLAN_84','');
-define ('EPL_ADLAN_85','');
+define ('EPL_ADLAN_84','Install Selected');
+define ('EPL_ADLAN_85','Uninstall Selected');
 
 
 define('LAN_UPGRADE_SUCCESSFUL', 'Upgrade Successful');

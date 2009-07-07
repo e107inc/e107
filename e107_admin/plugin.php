@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2009-07-07 02:43:14 $
+|     $Revision: 1.26 $
+|     $Date: 2009-07-07 06:26:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -33,6 +33,7 @@ require_once("auth.php");
 require_once(e_HANDLER.'plugin_class.php');
 require_once(e_HANDLER.'file_class.php');
 require_once(e_HANDLER."form_handler.php");
+require_once (e_HANDLER.'message_handler.php');
 
 
 $plugin = new e107plugin;
@@ -53,14 +54,16 @@ class pluginManager{
 
 	function pluginManager()
 	{
-        global $user_pref,$admin_log;
+        global $user_pref,$admin_log,$ns;
 
         $tmp = explode('.', e_QUERY);
 	  	$this -> action = $tmp[0];
 		$this -> id = intval($tmp[1]);
 
+
 		$this-> fields = array(
-		   //		"plugin_status"			=> array("title" => "Status", "type"=>"image", "width" => "5%", "thclass" => "center", "url" => ""),
+
+		   		"plugin_checkboxes"		=> array("title" => "", "forced"=>TRUE, "width"=>"3%"),
 				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"image", "width" => "5%", "thclass" => "middle center", "url" => ""),
 				"plugin_name"			=> array("title" => EPL_ADLAN_10, "type"=>"text", "width" => "30", "thclass" => "middle", "url" => ""),
  				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "middle", "url" => ""),
@@ -85,33 +88,52 @@ class pluginManager{
 			save_prefs('user');
 		}
 
-		$this -> fieldpref = (is_array($user_pref['admin_pluginmanager_columns'])) ? $user_pref['admin_pluginmanager_columns'] : array("plugin_icon","plugin_name","plugin_version","plugin_description","plugin_author","plugin_website","plugin_notes");
+        $this -> fieldpref = (is_array($user_pref['admin_pluginmanager_columns'])) ? $user_pref['admin_pluginmanager_columns'] : array("plugin_icon","plugin_name","plugin_version","plugin_description","plugin_author","plugin_website","plugin_notes");
 
-       	if($this->action == "" || $this->action == "installed" || $this->action == "avail")
+		if(isset($_POST['install-selected']))
 		{
+        	foreach($_POST['plugin_checkbox'] as $val)
+			{
+            	$this -> id = intval($val);
+                $this -> pluginInstall();
+			}
+      		$this -> action = "installed";
+		}
+
+/*		if(isset($_POST['uninstall-selected']))
+		{
+        	foreach($_POST['plugin_checkbox'] as $val)
+			{
+            	$this -> id = intval($val);
+                $this -> pluginUninstall();
+			}
+      		$this -> action = "installed";
 			$this -> pluginRenderList();
-        }
+			return;
+
+			// Complicated, as each uninstall system is different.
+		}*/
 
 
 		if($this->action == "uninstall")
 		{
+
         	$this -> pluginUninstall();
             $this -> action = "installed";
-			$this -> pluginRenderList();
 		}
 
         if($this->action == "install")
 		{
         	$this -> pluginInstall();
     		$this -> action = "installed";
-			$this -> pluginRenderList();
 		}
+
+
 
 		if($this->action == "upgrade")
 		{
         	$this -> pluginUpgrade();
       		$this -> action = "installed";
-			$this -> pluginRenderList();
 		}
 
 		if($this->action == "refresh")
@@ -122,6 +144,23 @@ class pluginManager{
 		{
         	$this -> pluginUpload();
 		}
+
+		if($emessage->hasMessage)  // Would prefer a method like this, but it doesn't work.
+		{
+			$emessage = &eMessage::getInstance();
+			$ns->tablerender(NWSLAN_4, $emessage->render());
+		}
+
+        if($this->action != 'avail')
+		{
+			unset($this-> fields['plugin_checkboxes']);
+		}
+
+		if($this->action !='upload')
+		{
+			$this -> pluginRenderList();
+		}
+
     }
 
 
@@ -269,7 +308,9 @@ class pluginManager{
 			}
 
 			$plugin->save_addon_prefs();
-			$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
+
+			$this->show_message($text, E_MESSAGE_SUCCESS);
+		 //	$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
 			$text = '';
 
    }
@@ -386,14 +427,16 @@ class pluginManager{
 			$text = $plugin->install_plugin($this->id);
 			if ($text === FALSE)
 			{ // Tidy this up
-				$ns->tablerender(LAN_INSTALL_FAIL, "Error messages above this line");
+				$this->show_message("Error messages above this line", E_MESSAGE_ERROR);
+			  //	$ns->tablerender(LAN_INSTALL_FAIL, );
 			}
 			else
 			{
 				$plugin ->save_addon_prefs();
 		//	if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".LAN_CONFIGURE."]</a>"; }
 				$admin_log->log_event('PLUGMAN_01', $this->id.':'.$eplug_folder, E_LOG_INFORMATIVE, '');
-				$ns->tablerender(EPL_ADLAN_33, $text);
+				$this->show_message($text, E_MESSAGE_SUCCESS);
+			   //	$ns->tablerender(EPL_ADLAN_33, $text);
 			}
 
    }
@@ -626,22 +669,35 @@ class pluginManager{
 			$installed = $plugin->getall(1);
 		    $caption = EPL_ADLAN_22;
 			$text .= $this->pluginRenderPlugin($installed);
+			$button_mode = "uninstall-selected";
+			$button_caption = EPL_ADLAN_85;
+			$button_action = "delete";
 		}
 		if($this->action == "avail")
 		{
 			$uninstalled = $plugin->getall(0);
 		    $caption = EPL_ADLAN_23;
 			$text .= $this->pluginRenderPlugin($uninstalled);
+			$button_mode = "install-selected";
+			$button_caption = EPL_ADLAN_84;
+			$button_action = "update";
 		}
 
         $text .= "
 				  	</tbody>
-					</table>
+					</table>";
+
+		if($this->action == "avail")
+		{
+			$text .= "<div class='buttons-bar left'>".$frm->admin_button($button_mode, $button_caption, $button_action)."</div>";
+		}
+		$text .= "
 					</fieldset>
 					</form>
 		";
 
-		$ns->tablerender(EPL_ADLAN_16." : ".$caption, $text);
+        $emessage = &eMessage::getInstance();
+		$ns->tablerender(EPL_ADLAN_16." : ".$caption,$emessage->render(). $text);
 	}
 
 
@@ -649,7 +705,7 @@ class pluginManager{
 
 	function pluginRenderPlugin($pluginList)
 	{
-			global $tp, $imode, $plugin;
+			global $tp, $imode, $plugin, $frm;
 
 			if (empty($pluginList)) return '';
 
@@ -699,6 +755,13 @@ class pluginManager{
 					}
 
 					$text .= "<tr>";
+
+					if(is_array($this-> fields['plugin_checkboxes']))
+					{
+                 		$rowid = "plugin_checkbox[".$plug['plugin_id']."]";
+                		$text .= "<td class='center middle'>".$frm->checkbox($rowid, $plug['plugin_id'])."</td>\n";
+					}
+
 				//	$text .= (in_array("plugin_status",$this->fieldpref)) ? "<td class='center'>".$img."</td>" : "";
                     $text .= (in_array("plugin_icon",$this->fieldpref)) ? "<td class='center middle'>".$plugin_icon."</td>" : "";
                     $text .= (in_array("plugin_name",$this->fieldpref)) ? "<td class='middle'>".$plugName."</td>" : "";
@@ -900,7 +963,14 @@ class pluginManager{
 			<td class='forumheader3'>{$del_text}</td>
 			</tr>
 			<tr>
-			<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='uninstall_confirm' value=\"".EPL_ADLAN_3."\" />&nbsp;&nbsp;<input class='button' type='submit' name='uninstall_cancel' value='".EPL_ADLAN_62."' onclick=\"location.href='".e_SELF."'; return false;\"/></td>
+			<td colspan='2' class='forumheader' style='text-align:center'>";
+
+			$text .= "<input class='button' type='submit' name='uninstall_confirm' value=\"".EPL_ADLAN_3."\" />&nbsp;&nbsp;
+			<input class='button' type='submit' name='uninstall_cancel' value='".EPL_ADLAN_62."' onclick=\"location.href='".e_SELF."'; return false;\"/>";
+
+             //   $frm->admin_button($name, $value, $action = 'submit', $label = '', $options = array());
+
+			$text .= "</td>
 			</tr>
 			</table>
 			</form>
@@ -910,7 +980,12 @@ class pluginManager{
 			exit;
 		}
 
-
+        function show_message($message, $type = E_MESSAGE_INFO, $session = false)
+		{
+		// ##### Display comfort ---------
+			$emessage = &eMessage::getInstance();
+			$emessage->add($message, $type, $session);
+		}
 } // end of Class.
 
 
