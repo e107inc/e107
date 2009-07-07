@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2009-01-21 20:34:25 $
-|     $Author: e107steved $
+|     $Revision: 1.38 $
+|     $Date: 2009-07-07 23:17:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -54,7 +54,7 @@ $text .= ",plugins : 'table,contextmenu";
 
 $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
 $text .= (ADMIN) ? ",ibrowser" : ",image";
-$text .= ",iespell,zoom,media";
+$text .= ",iespell,zoom,media,compat2x";
 $text .= "'\n"; // end of plugins list.
 
 $text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste'";
