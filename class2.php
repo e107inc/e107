@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.101 $
-* $Date: 2009-07-07 21:39:18 $
-* $Author: e107steved $
+* $Revision: 1.102 $
+* $Date: 2009-07-07 22:56:10 $
+* $Author: e107coders $
 *
 */
 //
@@ -930,16 +930,17 @@ define('TIMEOFFSET', $e_deltaTime);
 if(!defined("THEME_LAYOUT"))
 {
     $def = "";   // no custom pages found yet.
+    $cusPagePref = (is_array($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : $pref['sitetheme_custompages'];
 
-	if(is_array($pref['sitetheme_custompages']))  // check if we match a page in layout custompages.
+	if(is_array($cusPagePref))  // check if we match a page in layout custompages.
 	{
-    	foreach($pref['sitetheme_custompages'] as $layout=>$cusPageArray)
+    	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
    			foreach($cusPageArray as $kpage)
 			{
 				if ($kpage && (strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)))
 				{
-            		$def = ($layout) ? $layout : "no_array";
+            		$def = ($lyout) ? $lyout : "no_array";
 					break;
 				}
 			}
@@ -952,9 +953,11 @@ if(!defined("THEME_LAYOUT"))
 	}
 	else // default layout.
 	{
-		define("THEME_LAYOUT",varset($pref['sitetheme_deflayout']));  // default layout.
+		$deflayout = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
+		define("THEME_LAYOUT",$deflayout);  // default layout.
 	}
-    unset($def);
+    unset($def,$lyout,$cusPagePref);
+
 }
 
 // -----------------------------------------------------------------------
@@ -1516,19 +1519,32 @@ function init_session()
 			}
 
 
-
-
    			if (check_class(varset($pref['allow_theme_select'],FALSE)))  // This check doesn't work, because it relies on the definitions for USER, ADMIN, USERCLASS_LIST etc that haven't been defined yet..
 			{	// User can set own theme
  				if (isset($_POST['settheme']))
 				{
-					$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
+					if($pref['sitetheme'] != $_POST['sitetheme'])
+					{
+                		require_once(e_HANDLER."theme_handler.php");
+						$utheme = new themeHandler;
+	                    $ut = $utheme->themeArray[$_POST['sitetheme']];
+
+                     	$user_pref['sitetheme'] 			= $_POST['sitetheme'];
+						$user_pref['sitetheme_custompages'] = $ut['custompages'];
+						$user_pref['sitetheme_deflayout'] 	= $utheme->findDefault($_POST['sitetheme']);
+					}
+					else
+					{
+                    	unset($user_pref['sitetheme'],$user_pref['sitetheme_custompages'],$user_pref['sitetheme_deflayout']);
+					}
+
 					save_prefs('user');
+					unset($ut);
 				}
    			}
    			elseif (isset($user_pref['sitetheme']))
    			{	// User obviously no longer allowed his own theme - clear it
-   				unset($user_pref['sitetheme']);
+   				unset($user_pref['sitetheme'],$user_pref['sitetheme_custompages'],$user_pref['sitetheme_deflayout']);
    				save_prefs('user');
 			}
 			

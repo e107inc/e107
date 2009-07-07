@@ -11,16 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/usertheme_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-10-02 21:10:02 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-07 22:56:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+global $pref, $eArrayStorage;
 
 if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 {
+
 	$allThemes = TRUE;
 	if (isset($pref['allowed_themes']))
 	{
@@ -50,7 +52,8 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
  
 		while ($row = $sql->db_Fetch()) 
 		{
-			$up = unserialize($row['user_prefs']);
+            $up = (substr($row['user_prefs'],0,5) == "array") ? $eArrayStorage->ReadArray($row['user_prefs']) : unserialize($row['user_prefs']);
+
 			if (isset($themecount[$up['sitetheme']])) { $themecount[$up['sitetheme']]++; }
 		}
  
