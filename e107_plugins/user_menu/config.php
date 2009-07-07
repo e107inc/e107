@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-10-02 21:10:02 $
-|     $Author: e107steved $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-07 22:56:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
@@ -78,15 +78,21 @@ if (isset($pref['allowed_themes']))
 $themeeditclass = varset($pref['allow_theme_select'],e_UC_NOBODY);
 
 $text = "
-	<form method='post' action='".e_SELF."' name='menu_conf_form'>
-	<table style='".ADMIN_WIDTH."' class='fborder' >
-	<colgroup>
+	<form method='post' action='".e_SELF."' id='menu_conf_form'>
+	<fieldset id='core-user_menu-usertheme'>
+	<legend class='e-hideme'>".LAN_UMENU_THEME_6."</legend>
+	<table cellpadding='0' cellspacing='0' class='adminlist'>
+
+	<colgroup span='2'>
 	<col style='width: 50%' />
 	<col style='width: 50%' />
 	</colgroup>
+    <thead>
 	<tr>
-	<td colspan='2' class='forumheader2'>".LAN_UMENU_THEME_4."</td>
-	</tr>";
+	<th colspan='2' class='forumheader2'>".LAN_UMENU_THEME_4."</th>
+	</tr>
+	</thead>
+	<tbody>";
 
 	foreach ($themeOptions as $th)
 	{
@@ -108,11 +114,20 @@ $text .= "
 	<tr>
 	<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='update_theme' value='".LAN_UMENU_THEME_5."' /></td>
 	</tr>
-	</table>
+    	</tbody>
+		</table>
+	</fieldset>
 	</form>
-	</div>";
+	";
 $ns->tablerender(LAN_UMENU_THEME_6, $text);
 	
 require_once(e_ADMIN."footer.php");
+
+function headerjs()
+{
+	return "<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>";
+
+
+}
 
 ?>

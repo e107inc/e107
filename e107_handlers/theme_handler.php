@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2009-07-07 16:04:45 $
+|     $Revision: 1.26 $
+|     $Date: 2009-07-07 22:56:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -726,7 +726,6 @@ class themeHandler{
 
 	function findDefault($theme)
 	{
-
 		if(varset($_POST['layout_default']))
 		{
         	return $_POST['layout_default'];

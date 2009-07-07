@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-07-07 16:04:42 $
+|     $Revision: 1.19 $
+|     $Date: 2009-07-07 22:56:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -247,20 +247,18 @@ if(isset($_POST['menuUsePreset']) && $_POST['curLayout'])
 		{
 			$row=$sql->db_Fetch();
 
-        	if(!$sql->db_Update('menus', "menu_order='{$val['menu_order']}', menu_location = ".$val['menu_location'].", menu_class= ".$val['menu_class']." WHERE menu_name='".$val['menu_name']."' AND menu_layout = '$layout' LIMIT 1 ",TRUE))
+        	if(!$sql->db_Update('menus', "menu_order='{$val['menu_order']}', menu_location = ".$val['menu_location'].", menu_class= ".$val['menu_class']." WHERE menu_name='".$val['menu_name']."' AND menu_layout = '$layout' LIMIT 1 "))
 			{
  				$qry = "
 				INSERT into #menus
 				(`menu_name`, `menu_location`, `menu_order`, `menu_pages`,`menu_class`, `menu_path`, `menu_layout`)
 				VALUES ('{$val['menu_name']}', {$val['menu_location']}, {$val['menu_order']}, '', '{$val['menu_class']}',  '{$row['menu_path']}', '{$layout}')
 				";
-				$sql->db_Select_gen($qry,TRUE);
+				$sql->db_Select_gen($qry);
 			  	$admin_log->log_event('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 
 			}
          }
-
-
 	}
 
 
