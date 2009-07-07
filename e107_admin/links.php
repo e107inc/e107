@@ -9,9 +9,9 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-04-29 01:51:12 $
- * $Author: bugrain $
+ * $Revision: 1.23 $
+ * $Date: 2009-07-07 06:50:55 $
+ * $Author: e107coders $
  *
 */
 
@@ -390,7 +390,7 @@ class links
 
 	function display_row($row2, $indent = FALSE)
 	{
-		global $sql, $rs, $tp, $linkArray, $previous_cat, $imode;
+		global $sql, $rs, $tp, $linkArray, $previous_cat;
 		extract($row2);
 
 		if($link_category > 1 && $link_category != $previous_cat)

@@ -9,9 +9,9 @@
  * Administration Area Authorization
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-01-07 15:40:06 $
- * $Author: secretr $
+ * $Revision: 1.8 $
+ * $Date: 2009-07-07 06:50:55 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -135,7 +135,7 @@ class auth
 		# - scope		public
 		*/
 
-		global $use_imagecode, $sec_img,$imode, $pref;
+		global $use_imagecode, $sec_img, $pref;
 
         $text = "<div style='padding:20px;text-align:center'>
 			<form method='post' action='".e_SELF."'";

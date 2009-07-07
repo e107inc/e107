@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-10-19 11:35:00 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2009-07-07 06:50:55 $
+|     $Author: e107coders $
 
 Includes standalone function - needs finishing
 +----------------------------------------------------------------------------+
@@ -64,7 +64,7 @@ Standalone file scan - checks for a valid set of E107 files<br />";
 	  echo "Using directory structure from e107_config.php<br />";
 	}
 
-  $imode = 'nuvola_light';
+//  $imode = 'nuvola_light';
   $fi = new file_inspector(TRUE);
 
 // Needed to make everything work
@@ -433,7 +433,7 @@ class file_inspector {
 	//	&$parent_expand
 	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand) 
 	{
-	  global $coredir, $imode;
+	  global $coredir;
 
 	  unset ($childOut);
 	  $parent_expand = false;
@@ -460,9 +460,9 @@ class file_inspector {
 		  if ((($dir == $this->BASE_PLUGIN_DIR) || ($dir == $this->BASE_THEMES_DIR)) && !is_readable($path))
 		  {  // Its one of the plugin or theme directories which doesn't exist - that could be OK
 //		    echo "Plugin or theme folder missing: {$path}<br />";
-			$icon = "<img src='".e_IMAGE."packs/".$imode."/fileinspector/folder_missing.png' class='i' alt='' />";
+			$icon = "<img src='".e_IMAGE."fileinspector/folder_missing.png' class='i' alt='' />";
 			$text = "<div class='d' style='margin-left: ".(($level+1) * 8)."px'>";
-			$text .= "<img src='".e_IMAGE."packs/".$imode."/fileinspector/contract.png' class='e' alt='' />&nbsp;".$icon."&nbsp;".$key."&nbsp;-&nbsp;".FR_LAN_31;
+			$text .= "<img src='".e_IMAGE."fileinspector/contract.png' class='e' alt='' />&nbsp;".$icon."&nbsp;".$key."&nbsp;-&nbsp;".FR_LAN_31;
 			$text .= "</div>";
 			$sub_text .= $text;
 			$sub_id = dechex(crc32($path));
@@ -681,10 +681,10 @@ class file_inspector {
 		}
 		
 		$dir_icon = $dir_icon ? $dir_icon : 'folder.png';
-		$icon = "<img src='".e_IMAGE."packs/".$imode."/fileinspector/".$dir_icon."' class='i' alt='' />";
+		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' class='i' alt='' />";
 		$hide = ($last_expand && $dir_icon != 'folder_core.png') ? "" : "style='display: none'";
 		$text = "<div class='d' style='margin-left: ".($level * 8)."px'>";
-		$text .= $tree_end ? "<img src='".e_IMAGE."packs/".$imode."/fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"ec('".$dir_id."')\"><img src='".e_IMAGE."packs/".$imode."/fileinspector/".($hide ? 'expand.png' : 'contract.png')."' class='e' alt='' id='e_".$dir_id."' /></span>";
+		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"ec('".$dir_id."')\"><img src='".e_IMAGE."fileinspector/".($hide ? 'expand.png' : 'contract.png')."' class='e' alt='' id='e_".$dir_id."' /></span>";
 		$text .= "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
 		$text .= $tree_end ? "" : "<div ".$hide." id='d_".$dir_id."'>".$sub_text."</div>";
 		$text .= "</div>";
@@ -696,7 +696,7 @@ class file_inspector {
 
 	function scan_results() 
 	{
-		global $ns, $rs, $core_image, $deprecated_image, $imode, $tp, $e107;
+		global $ns, $rs, $core_image, $deprecated_image, $tp, $e107;
 		$scan_text = $this -> inspect($core_image, $deprecated_image, 0, $this -> root_dir);
 
 //		if ($_POST['type'] == 'tree') 
@@ -736,46 +736,46 @@ class file_inspector {
 		if ($this->dotree)
 		{
 			$text .= "<tr><td class='f' style='padding-left: 4px'>
-			<img src='".e_IMAGE."packs/".$imode."/fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
+			<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
 			<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this -> root_dir))."')\">
-			<img src='".e_IMAGE."packs/".$imode."/fileinspector/forward.png' class='i' alt='' /></td></tr>";
+			<img src='".e_IMAGE."fileinspector/forward.png' class='i' alt='' /></td></tr>";
 		} 
 		else 
 		{
 			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
-			<img src='".e_IMAGE."packs/".$imode."/fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
+			<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
 			</tr>";
 		}
 
 		if ($_POST['core'] != 'none') {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_core.png' class='i' alt='' />&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['core']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_core.png' class='i' alt='' />&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['core']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['missing']) {
-			$text .= "<tr><td class='f' colspan='2'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_missing.png' class='i' alt='' />&nbsp;".FR_LAN_22.":&nbsp;".($this -> count['missing']['num'] ? $this -> count['missing']['num'] : FR_LAN_21)."&nbsp;</td></tr>";
+			$text .= "<tr><td class='f' colspan='2'><img src='".e_IMAGE."fileinspector/file_missing.png' class='i' alt='' />&nbsp;".FR_LAN_22.":&nbsp;".($this -> count['missing']['num'] ? $this -> count['missing']['num'] : FR_LAN_21)."&nbsp;</td></tr>";
 		}
 		if ($_POST['noncore']) {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_unknown.png' class='i' alt='' />&nbsp;".FR_LAN_5.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['unknown']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_unknown.png' class='i' alt='' />&nbsp;".FR_LAN_5.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['unknown']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['oldcore']) {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_old.png' class='i' alt='' />&nbsp;".FR_LAN_24.":&nbsp;".($this -> count['deprecated']['num'] ? $this -> count['deprecated']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['deprecated']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_old.png' class='i' alt='' />&nbsp;".FR_LAN_24.":&nbsp;".($this -> count['deprecated']['num'] ? $this -> count['deprecated']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['core'] == 'all') {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'] + $this -> count['deprecated']['num'])."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['core']['size'] + $this -> count['unknown']['size'] + $this -> count['deprecated']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'] + $this -> count['deprecated']['num'])."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['core']['size'] + $this -> count['unknown']['size'] + $this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['regex']) {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_29.":&nbsp;".($this -> results)."&nbsp;</td><td class='s'>&nbsp;</td></tr>";
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_30.":&nbsp;".($this -> line_results)."&nbsp;</td><td class='s'>&nbsp;</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_29.":&nbsp;".($this -> results)."&nbsp;</td><td class='s'>&nbsp;</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_30.":&nbsp;".($this -> line_results)."&nbsp;</td><td class='s'>&nbsp;</td></tr>";
 		}
 		
 		
 		if ($this -> count['warning']['num']) {
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 			$text .= "<tr><td style='padding-left: 4px' colspan='2'>
-			<img src='".e_IMAGE."packs/".$imode."/fileinspector/warning.png' class='i' alt='' />&nbsp;<b>".FR_LAN_26."</b></td></tr>";
+			<img src='".e_IMAGE."fileinspector/warning.png' class='i' alt='' />&nbsp;<b>".FR_LAN_26."</b></td></tr>";
 		
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_warning.png' class='i' alt='' />&nbsp;".FR_LAN_28.":&nbsp;".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['warning']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_warning.png' class='i' alt='' />&nbsp;".FR_LAN_28.":&nbsp;".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['warning']['size'], 2)."</td></tr>";
 			
-			$text .= "<tr><td class='w' colspan='2'><img src='".e_IMAGE."packs/".$imode."/fileinspector/info.png' class='i' alt='' />&nbsp;".FR_LAN_27."</td></tr>";
+			$text .= "<tr><td class='w' colspan='2'><img src='".e_IMAGE."fileinspector/info.png' class='i' alt='' />&nbsp;".FR_LAN_27."</td></tr>";
 
 		}
 		if ($_POST['integrity'] && $_POST['core'] != 'none') {
@@ -783,15 +783,15 @@ class file_inspector {
 			$integrity_text = $this -> count['fail']['num'] ? '( '.$this -> count['fail']['num'].' '.FR_LAN_19.' )' : '( '.FR_LAN_20.' )';
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
-			<img src='".e_IMAGE."packs/".$imode."/fileinspector/".$integrity_icon."' class='i' alt='' />&nbsp;<b>".FR_LAN_7."</b> ".$integrity_text."</td></tr>";
+			<img src='".e_IMAGE."fileinspector/".$integrity_icon."' class='i' alt='' />&nbsp;<b>".FR_LAN_7."</b> ".$integrity_text."</td></tr>";
 		
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['pass']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_fail.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['fail']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/file_uncalc.png' class='i' alt='' />&nbsp;".FR_LAN_25.":&nbsp;".($this -> count['uncalculable']['num'] ? $this -> count['uncalculable']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['uncalculable']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['pass']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_fail.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['fail']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_uncalc.png' class='i' alt='' />&nbsp;".FR_LAN_25.":&nbsp;".($this -> count['uncalculable']['num'] ? $this -> count['uncalculable']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$e107->parseMemorySize($this -> count['uncalculable']['size'], 2)."</td></tr>";
 		
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 
-			$text .= "<tr><td class='f' colspan='2'><img src='".e_IMAGE."packs/".$imode."/fileinspector/info.png' class='i' alt='' />&nbsp;".FR_LAN_10.":&nbsp;</td></tr>";
+			$text .= "<tr><td class='f' colspan='2'><img src='".e_IMAGE."fileinspector/info.png' class='i' alt='' />&nbsp;".FR_LAN_10.":&nbsp;</td></tr>";
 
 			$text .= "<tr><td style='padding-right: 4px' colspan='2'>
 			<ul><li>
@@ -849,8 +849,8 @@ class file_inspector {
 //					if ($_POST['type'] == 'tree') 
 					{
 						$text .= "<tr><td class='f' style='padding-left: 4px' ".($stext['level'] ? "onclick=\"sh('f_".$stext['parent']."')\"" : "").">
-						<img src='".e_IMAGE."packs/".$imode."/fileinspector/".($stext['level'] ? "folder_up.png" : "folder_root.png")."' class='i' alt='' />".($stext['level'] ? "&nbsp;.." : "")."</td>
-						<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('initial')\"><img src='".e_IMAGE."packs/".$imode."/fileinspector/close.png' class='i' alt='' /></td></tr>";
+						<img src='".e_IMAGE."fileinspector/".($stext['level'] ? "folder_up.png" : "folder_root.png")."' class='i' alt='' />".($stext['level'] ? "&nbsp;.." : "")."</td>
+						<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('initial')\"><img src='".e_IMAGE."fileinspector/close.png' class='i' alt='' /></td></tr>";
 					}
 				} 
 				else 
@@ -861,7 +861,7 @@ class file_inspector {
 						$stext['file'] = str_replace($this -> root_dir."/", "", $stext['file']);
 					}
 					$text .= "<tr>
-					<td class='f'><img src='".e_IMAGE."packs/".$imode."/fileinspector/".$stext['icon']."' class='i' alt='' />&nbsp;".$stext['file']."&nbsp;";
+					<td class='f'><img src='".e_IMAGE."fileinspector/".$stext['icon']."' class='i' alt='' />&nbsp;".$stext['file']."&nbsp;";
 					if ($_POST['regex']) 
 					{
 						if ($_POST['num'] || $_POST['line']) {
@@ -949,9 +949,9 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.13 $\n";
-			$data .= "|     \$Date: 2008-10-19 11:35:00 $\n";
-			$data .= "|     \$Author: e107steved $\n";
+			$data .= "|     \$Revision: 1.14 $\n";
+			$data .= "|     \$Date: 2009-07-07 06:50:55 $\n";
+			$data .= "|     \$Author: e107coders $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";
 		}
@@ -1091,11 +1091,11 @@ class file_inspector {
 require_once('footer.php');
 
 function headerjs() {
-global $e107, $imode;
+global $e107;
 $text = "<script type='text/javascript'>
 <!--
-c = new Image(); c = '".SITEURLBASE.e_IMAGE_ABS."packs/".$imode."/fileinspector/contract.png';
-e = '".SITEURLBASE.e_IMAGE_ABS."packs/".$imode."/fileinspector/expand.png';
+c = new Image(); c = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/contract.png';
+e = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/expand.png';
 function ec(ecid) {
 	icon = document.getElementById('e_' + ecid).src;
 	if (icon == e) {

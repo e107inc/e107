@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/rate_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-01-10 21:31:12 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-07 06:50:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -176,19 +176,18 @@ class rater {
 		//userid	: used to calculate a users given rating
 		//nojump	: boolean, if present no urljump will be used (needed in comment_rating system)
 
-		global $imode;
 		$rate = "";
 		if($ratearray = $this -> getrating($table, $id, $userid)){
 			if($ratearray[1] > 0){
 				for($c=1; $c<= $ratearray[1]; $c++){
-					$rate .= "<img src='".e_IMAGE."packs/".$imode."/rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
+					$rate .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
 				}
 				if($ratearray[1] < 10){
 					for($c=9; $c>=$ratearray[1]; $c--){
-						$rate .= "<img src='".e_IMAGE."packs/".$imode."/rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
+						$rate .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
 					}
 				}
-				$rate .= "<img src='".e_IMAGE."packs/".$imode."/rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
+				$rate .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
 				if($ratearray[2] == ""){ $ratearray[2] = 0; }
 				$rate .= "&nbsp;".$ratearray[1].".".$ratearray[2];
 				if(!$userid){

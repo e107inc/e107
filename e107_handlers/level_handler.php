@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/level_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-01-25 17:44:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-07 06:50:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref, $fmod = "")
 {
 
-	global $tp, $imode;
+	global $tp;
 
 	if (!$user_id) {
 		return FALSE;
@@ -95,7 +95,7 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 		$rank = 9;
 	}
 
-	$data['pic'] = (file_exists(THEME."forum/".$level_images[$rank]) ? THEME."forum/".$level_images[$rank] : e_IMAGE."packs/".$imode."/rate/".$level_images[$rank]);
+	$data['pic'] = (file_exists(THEME."forum/".$level_images[$rank]) ? THEME."forum/".$level_images[$rank] : e_IMAGE."rate/".$level_images[$rank]);
 	$data['name'] = "[ ".$tp->toHTML($level_names[$rank], FALSE, 'defs')." ]";
 
 	if($level_names[$rank])
