@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-07-07 12:54:44 $
+|     $Revision: 1.18 $
+|     $Date: 2009-07-07 16:04:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -147,7 +147,7 @@ function menuActivate()
 	global $sql, $admin_log, $pref;
 
 	$location = key($_POST['menuActivate']);
-	echo "LAYOUT= ".$_POST['curLayout'] ;
+
     $layout = ($_POST['curLayout'] != $pref['sitetheme_deflayout']) ? $_POST['curLayout'] : "";
 
 	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location=".$location." AND menu_layout = '$layout' ");
@@ -160,14 +160,14 @@ function menuActivate()
 			$row=$sql->db_Fetch();
 			//If menu is not already activated in that area, add the record.
 
-			if(!$sql->db_Update('menus', "menu_order='{$menu_count}', menu_location = ".$location." WHERE menu_name='".$row['menu_name']."' AND menu_layout = '$layout' LIMIT 1 ",TRUE))
+			if(!$sql->db_Update('menus', "menu_order='{$menu_count}', menu_location = ".$location." WHERE menu_name='".$row['menu_name']."' AND menu_layout = '$layout' LIMIT 1 "))
 			{
 				$qry = "
 				INSERT into #menus
 				(`menu_name`, `menu_location`, `menu_order`, `menu_pages`, `menu_path`, `menu_layout`)
 				VALUES ('{$row['menu_name']}', {$location}, {$menu_count}, '', '{$row['menu_path']}', '{$layout}')
 				";
-				$sql->db_Select_gen($qry,TRUE);
+				$sql->db_Select_gen($qry);
 				$admin_log->log_event('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 				$menu_count++;
 			}
@@ -179,7 +179,7 @@ function menuSetCustomPages($array)
 {
 	global $pref;
 	$key = key($array);
-	$pref['sitetheme_custompages'][$key] = $array[$key];
+	$pref['sitetheme_custompages'][$key] = array_filter(explode(" ",$array[$key]));
 	save_prefs();
 }
 
@@ -656,7 +656,7 @@ function layout_list()
 	if($curLayout && ($curLayout != $pref['sitetheme_deflayout']))
 	{
 
-		if(!$pref['sitetheme_custompages'][$curLayout])
+		if(!isset($pref['sitetheme_custompages'][$curLayout]))
 		{
         	if(isset($pref['sitetheme_layouts'][$curLayout]['customPages']))
 			{
@@ -679,7 +679,7 @@ function layout_list()
         	$custPages = $pref['sitetheme_custompages'][$curLayout];
 		}
 
-    	$text .= "<div style='padding:10px'>Displays on these pages: <input type='text' style='width:80%;color:black;background-color:white' name='custompages[".$curLayout."]' value=\"".$custPages."\" />
+    	$text .= "<div style='padding:10px'>Displays on these pages: <input type='text' style='width:80%;color:black;background-color:white' name='custompages[".$curLayout."]' value=\"".implode(" ",$custPages)."\" />
         <input type='submit' name='menuSetCustomPages' value='".LAN_SAVE."' />
 		</div>";
 	}

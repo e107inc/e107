@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.99 $
-* $Date: 2009-07-06 08:45:19 $
+* $Revision: 1.100 $
+* $Date: 2009-07-07 16:04:39 $
 * $Author: e107coders $
 *
 */
@@ -924,6 +924,40 @@ if (isset($_COOKIE['e107_tzOffset']))
 }
 
 define('TIMEOFFSET', $e_deltaTime);
+
+// ----------------------------------------------------------------------------
+
+if(!defined("THEME_LAYOUT"))
+{
+    $def = "";   // no custom pages found yet.
+
+	if(is_array($pref['sitetheme_custompages']))  // check if we match a page in layout custompages.
+	{
+    	foreach($pref['sitetheme_custompages'] as $layout=>$cusPageArray)
+		{
+   			foreach($cusPageArray as $kpage)
+			{
+				if ($kpage && (strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)))
+				{
+            		$def = ($layout) ? $layout : "no_array";
+					break;
+				}
+			}
+		}
+	}
+
+    if($def) // custom-page layout.
+	{
+    	define("THEME_LAYOUT",$def);
+	}
+	else // default layout.
+	{
+		define("THEME_LAYOUT",varset($pref['sitetheme_deflayout']));  // default layout.
+	}
+    unset($def);
+}
+
+// -----------------------------------------------------------------------
 
 $sql->db_Mark_Time('Start: Get menus');
 if(!isset($_E107['no_menus']))

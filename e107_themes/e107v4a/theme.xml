@@ -9,7 +9,7 @@
 				<area id='1' >
                 	<menu name='login' />
 					<menu name='compliance' />
-					<menu name='online' userclass='E_UC_MEMBER' />
+					<menu name='online' userclass='e_UC_MEMBER' />
 				</area>
 				<area id='2'>
 					<menu name='poll' />
@@ -28,6 +28,7 @@
                 	<menu name='powered_by' />
 				</area>
 			</menuPresets>
+			<customPages>news.php usersettings.php</customPages>
         </layout>
 	</layouts>
 </e107Theme>

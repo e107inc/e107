@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-07-07 12:54:47 $
+|     $Revision: 1.32 $
+|     $Date: 2009-07-07 16:04:51 $
 |     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -447,56 +447,28 @@ if ($e107_popup != 1) {
 //
 
 // ---------- New in 0.8 -------------------------------------------------------
-    $def = "";   // no custom pages found yet.
 
-	function checkCustomPages($urlBits) // Function for checking URL matches.
+    $def = THEME_LAYOUT;
+
+   //	echo "DEF = ".$def;
+
+	if(($def == 'no_array') && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
 	{
-		if(is_array($urlBits)) return FALSE;
-
-		$tpages = explode(" ",$urlBits);
-		foreach($tpages as $kpage)
-		{
-			if ($kpage && (strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)))
-			{
-				return TRUE;
-			}
-		}
-	}
-
-	if(is_array($pref['sitetheme_custompages']))  // check if we match a page in layout custompages.
-	{
-    	foreach($pref['sitetheme_custompages'] as $layout=>$cusPages)
-		{
-        	if(checkCustomPages($cusPages))
-			{
-            	$def = ($layout) ? $layout : "no_array";
-				break;
-			}
-		}
-	}
-
-	if(!$def) // no custompage match, so load the default.
-	{
-		$def = varset($pref['sitetheme_deflayout']);  // default layout.
-	}
-
-	// The Above should be put into Class2, so it can interact with the menu loading.
-
-
-	if($def && is_array($HEADER) && isset($HEADER[$def]) && isset($FOOTER[$def])) // 0.8 themes - we always use $HEADER and $FOOTER.
-	{
-		$HEADER = $HEADER[$def];
-		$FOOTER = $FOOTER[$def];
+	 //	echo " MODE 0.6";
+		$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
+		$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
 	}
 	elseif($def && $def != "no_array" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMHEADER[$def]))) // 0.7 themes
 	{
+	  //	echo " MODE 0.7";
 		$HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
 		$FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
 	}
-	elseif($def && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
+    elseif($def && isset($HEADER[$def]) && isset($FOOTER[$def])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
 	{
-		$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
-		$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
+	  //	echo " MODE 0.8";
+		$HEADER = $HEADER[$def];
+		$FOOTER = $FOOTER[$def];
 	}
 
 	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
@@ -507,7 +479,6 @@ if ($e107_popup != 1) {
 	{
     	parseheader($HEADER);
 	}
-
 
 	unset($def);
 
