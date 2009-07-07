@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.370 $
-|     $Date: 2009-07-05 07:59:35 $
-|     $Author: e107coders $
+|     $Revision: 1.371 $
+|     $Date: 2009-07-07 21:39:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1375,6 +1375,7 @@ function init_session() {
 		define("ADMIN", FALSE);
 		define("GUEST", TRUE);
 		define('USERCLASS', '');
+		define('USERCLASS_LIST', class_list());
 		define('USEREMAIL', '');
 	} 
 	else 
@@ -1390,6 +1391,7 @@ function init_session() {
 			define("USER", FALSE);
 			define('USERID', 0);
 			define("USERCLASS", "");
+			define('USERCLASS_LIST', class_list());
 			define("LOGINMESSAGE",CORE_LAN10."<br /><br />");
 			return (FALSE);
 		}
@@ -1404,6 +1406,7 @@ function init_session() {
 			define("USEREMAIL", $result['user_email']);
 			define("USER", TRUE);
 			define("USERCLASS", $result['user_class']);
+			define('USERCLASS_LIST', class_list());
 			define("USERREALM", $result['user_realm']);
 			define("USERVIEWED", $result['user_viewed']);
 			define("USERIMAGE", $result['user_image']);
@@ -1467,10 +1470,10 @@ function init_session() {
 			define("ADMIN", FALSE);
 			define("CORRUPT_COOKIE", TRUE);
 			define("USERCLASS", "");
+			define('USERCLASS_LIST', class_list());
 		}
 	}
 
-	define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
 }
 
