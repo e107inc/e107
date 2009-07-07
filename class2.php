@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.100 $
-* $Date: 2009-07-07 16:04:39 $
-* $Author: e107coders $
+* $Revision: 1.101 $
+* $Date: 2009-07-07 21:39:18 $
+* $Author: e107steved $
 *
 */
 //
@@ -1439,6 +1439,7 @@ function init_session()
 		define('ADMIN', false);
 		define('GUEST', true);
 		define('USERCLASS', '');
+		define('USERCLASS_LIST', class_list());
 		define('USEREMAIL', '');
 	}
 	else
@@ -1461,6 +1462,7 @@ function init_session()
 			define('USER', false);
 			define('USERID', 0);
 			define('USERCLASS', '');
+			define('USERCLASS_LIST', class_list());
 			define('LOGINMESSAGE', CORE_LAN10.'<br /><br />');
 			return (false);
 		}
@@ -1475,6 +1477,7 @@ function init_session()
 			define('USEREMAIL', $result['user_email']);
 			define('USER', true);
 			define('USERCLASS', $result['user_class']);
+			define('USERCLASS_LIST', class_list());
 			define('USERVIEWED', $result['user_viewed']);
 			define('USERIMAGE', $result['user_image']);
 			define('USERPHOTO', $result['user_sess']);
@@ -1554,10 +1557,10 @@ function init_session()
 			define('ADMIN', false);
 			define('CORRUPT_COOKIE', true);
 			define('USERCLASS', '');
+			define('USERCLASS_LIST', class_list());
 		}
 	}
 
-    define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', '(^|,)('.str_replace(',', '|', USERCLASS_LIST).')(,|$)');
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 }
