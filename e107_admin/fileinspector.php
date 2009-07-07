@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-07-07 06:50:55 $
+|     $Revision: 1.15 $
+|     $Date: 2009-07-07 07:32:59 $
 |     $Author: e107coders $
 
 Includes standalone function - needs finishing
@@ -64,7 +64,7 @@ Standalone file scan - checks for a valid set of E107 files<br />";
 	  echo "Using directory structure from e107_config.php<br />";
 	}
 
-//  $imode = 'nuvola_light';
+
   $fi = new file_inspector(TRUE);
 
 // Needed to make everything work
@@ -949,8 +949,8 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.14 $\n";
-			$data .= "|     \$Date: 2009-07-07 06:50:55 $\n";
+			$data .= "|     \$Revision: 1.15 $\n";
+			$data .= "|     \$Date: 2009-07-07 07:32:59 $\n";
 			$data .= "|     \$Author: e107coders $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";

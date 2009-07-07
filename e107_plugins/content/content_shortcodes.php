@@ -327,7 +327,7 @@ if($sc_mode){
 SC_END
 
 SC_BEGIN CM_RATING
-global $row, $imode, $tp, $rater, $content_pref, $plugintable;
+global $row, $tp, $rater, $content_pref, $plugintable;
 if($sc_mode){
 	if($sc_mode=='content'){
 			if(($content_pref["content_content_rating"] && $row['content_rate']) || $content_pref["content_content_rating_all"] ){
@@ -346,14 +346,14 @@ if($sc_mode){
 			$rating = "";
 			$rating .= $row['rate_avg']." ";
 			for($c=1; $c<=$tmp[0]; $c++){
-				$rating .= "<img src='".e_IMAGE."packs/".$imode."/rate/box.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
+				$rating .= "<img src='".e_IMAGE."rate/box.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
 			}
 			if($tmp[0] < 10){
 				for($c=9; $c>=$tmp[0]; $c--){
-					$rating .= "<img src='".e_IMAGE."packs/".$imode."/rate/empty.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
+					$rating .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
 				}
 			}
-			$rating .= "<img src='".e_IMAGE."packs/".$imode."/rate/boxend.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
+			$rating .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='border:0; height:8px; vertical-align:middle' />";
 			return $rating;
 
 	}elseif($sc_mode=='cat'){
