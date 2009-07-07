@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2009-07-05 21:20:30 $
+|     $Revision: 1.31 $
+|     $Date: 2009-07-07 12:54:47 $
 |     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -445,55 +445,73 @@ if ($e107_popup != 1) {
 //
 // M: Send top of body for custom pages and for news
 //
-	$def = varset($pref['sitetheme_deflayout']);
-	if(is_array($HEADER) && isset($HEADER[$def]) && isset($FOOTER[$def]))
+
+// ---------- New in 0.8 -------------------------------------------------------
+    $def = "";   // no custom pages found yet.
+
+	function checkCustomPages($urlBits) // Function for checking URL matches.
+	{
+		if(is_array($urlBits)) return FALSE;
+
+		$tpages = explode(" ",$urlBits);
+		foreach($tpages as $kpage)
+		{
+			if ($kpage && (strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)))
+			{
+				return TRUE;
+			}
+		}
+	}
+
+	if(is_array($pref['sitetheme_custompages']))  // check if we match a page in layout custompages.
+	{
+    	foreach($pref['sitetheme_custompages'] as $layout=>$cusPages)
+		{
+        	if(checkCustomPages($cusPages))
+			{
+            	$def = ($layout) ? $layout : "no_array";
+				break;
+			}
+		}
+	}
+
+	if(!$def) // no custompage match, so load the default.
+	{
+		$def = varset($pref['sitetheme_deflayout']);  // default layout.
+	}
+
+	// The Above should be put into Class2, so it can interact with the menu loading.
+
+
+	if($def && is_array($HEADER) && isset($HEADER[$def]) && isset($FOOTER[$def])) // 0.8 themes - we always use $HEADER and $FOOTER.
 	{
 		$HEADER = $HEADER[$def];
 		$FOOTER = $FOOTER[$def];
 	}
-
-	if(isset($CUSTOMPAGES))
+	elseif($def && $def != "no_array" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMHEADER[$def]))) // 0.7 themes
 	{
-		if (is_array($CUSTOMPAGES))
-		{
-			foreach ($CUSTOMPAGES as $cust_key => $cust_value)
-			{
-				$custompage[$cust_key] = explode(' ', $cust_value);
-			}
-		}
-		else
-		{
-			$custompage['no_array'] = explode(' ', $CUSTOMPAGES);
-		}
+		$HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
+		$FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
+	}
+	elseif($def && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
+	{
+		$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
+		$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
+	}
+
+	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
+	{
+		parseheader($NEWSHEADER);
 	}
 	else
 	{
-		$custompage['no_array'] = array();
+    	parseheader($HEADER);
 	}
 
-	$ph = FALSE;
-	if (e_PAGE == 'news.php' && isset($NEWSHEADER)) {
-		parseheader($NEWSHEADER);
-	} else {
-		$full_query = e_SELF."?".e_QUERY."!";
-		foreach ($custompage as $key_extract => $cust_extract) {
-			foreach ($cust_extract as $key => $kpage) {
-				if ($kpage && (strstr(e_SELF, $kpage) || strstr($full_query,$kpage))) {
-					$ph = TRUE;
-					if ($key_extract=='no_array') {
-						$cust_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
-						$cust_footer = $CUSTOMFOOTER ? $CUSTOMFOOTER : $FOOTER;
-					} else {
-						$cust_header = $CUSTOMHEADER[$key_extract] ? $CUSTOMHEADER[$key_extract] : $HEADER;
-						$cust_footer = $CUSTOMFOOTER[$key_extract] ? $CUSTOMFOOTER[$key_extract] : $FOOTER;
-					}
-					break;
-				}
-			}
-		}
-		parseheader(($ph ? $cust_header : $HEADER));
-	}
 
+	unset($def);
+
+// -----------------------------------------------------------------------------
 
 //
 // N: Send other top-of-body HTML
