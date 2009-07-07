@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-07-07 02:25:05 $
+|     $Revision: 1.25 $
+|     $Date: 2009-07-07 16:04:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -525,10 +525,10 @@ class themeHandler{
 								if(!$pref['sitetheme_deflayout'])
 								{
 									$pref['sitetheme_deflayout'] = ($val['@attributes']['default']=='true') ? $key : "";
-								  //	echo "------------- NODEFAULT";
-								}
+						 		}
+								$itext .= "<td style='vertical-align:top width:auto;text-align:center'>\n";
+
 								$itext .= "
-				                <td style='vertical-align:top width:auto;text-align:center'>
 									<input type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout']==$key ? " checked='checked'" : "")." />
 								</td>";
 							}
@@ -706,15 +706,16 @@ class themeHandler{
 
 	function setTheme()
 	{
-		global $pref, $e107cache, $ns;
+		global $pref, $e107cache, $ns, $sql;
 		$themeArray = $this -> getThemes("id");
 
 		$pref['sitetheme'] = $themeArray[$this -> id];
 		$pref['themecss'] ='style.css';
         $pref['sitetheme_deflayout'] = $this->findDefault($themeArray[$this -> id]);
 		$pref['sitetheme_layouts'] = is_array($this->themeArray[$pref['sitetheme']]['layouts']) ? $this->themeArray[$pref['sitetheme']]['layouts'] : array();
+        $pref['sitetheme_custompages'] = $this->themeArray[$pref['sitetheme']]['custompages'];
 
-
+        $sql -> db_Delete("menus", "menu_layout !='' ");
 
 		$e107cache->clear_sys();
 	 	save_prefs();
@@ -725,12 +726,14 @@ class themeHandler{
 
 	function findDefault($theme)
 	{
+
 		if(varset($_POST['layout_default']))
 		{
         	return $_POST['layout_default'];
 		}
 
     	$l = $this->themeArray[$theme];
+
 		foreach($l['layouts'] as $key=>$val)
 		{
         	if(isset($val['@attributes']['default']) && ($val['@attributes']['default'] == "true"))
@@ -755,7 +758,7 @@ class themeHandler{
 
 	function setStyle()
 	{
-		global $pref, $e107cache, $ns;
+		global $pref, $e107cache, $ns, $sql;
 		$pref['themecss'] = $_POST['themecss'];
 		$pref['image_preload'] = $_POST['image_preload'];
 		$pref['sitetheme_deflayout'] = $_POST['layout_default'];
@@ -818,10 +821,36 @@ class themeHandler{
 		$css = strtolower($match[2]);
 		$themeArray['csscompliant'] = ($css == "true" ? true : false);
 
+/*        preg_match('/CUSTOMPAGES(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		$themeArray['custompages'] = array_filter(explode(" ",$match[3]));*/
+
+        $themeContentsArray = explode("\n",$themeContents);
+
   		if (!$themeArray['name'])
 		{
 			unset($themeArray);
 		}
+  //      echo " <hr>".$path."<hr>";
+
+		foreach($themeContentsArray as $line)
+		{
+        	if(strstr($line,"CUSTOMPAGES"))
+			{
+				eval(str_replace("$","\\$",$line));
+			}
+		}
+        if(is_array($CUSTOMPAGES))
+		{
+             foreach($CUSTOMPAGES as $key=>$val)
+			 {
+             	$themeArray['custompages'][$key] = explode(" ",$val);
+			 }
+		}
+		elseif($CUSTOMPAGES)
+		{
+        	$themeArray['custompages']['no_array'] = explode(" ",$CUSTOMPAGES);
+		}
+
 		$themeArray['path'] = $path;
 
     	return $themeArray;
@@ -867,6 +896,10 @@ class themeHandler{
 					$name = $val['@attributes']['name'];
 					unset($val['@attributes']['name']);
 					$lays[$name] = $val;
+					if(isset($val['customPages']))
+					{
+						$custom[$name] =  array_filter(explode(" ",$val['customPages']));
+					}
 				}
 			}
 			else
@@ -874,11 +907,17 @@ class themeHandler{
                 $name = $layout['@attributes']['name'];
 			 	unset($layout['@attributes']['name']);
 			  	$lays[$name] = $layout;
+                if(isset($val['customPages']))
+		  		{
+					$custom[$name] =  array_filter(explode(" ",$layout['customPages']));
+				}
 			}
         }
 
         $vars['layouts'] = $lays;
         $vars['path'] = $path;
+		$vars['custompages'] = $custom;
+
 	  	return $vars;
 	}
 
