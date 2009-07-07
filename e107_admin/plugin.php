@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-07-07 02:22:57 $
+|     $Revision: 1.25 $
+|     $Date: 2009-07-07 02:43:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -61,17 +61,17 @@ class pluginManager{
 
 		$this-> fields = array(
 		   //		"plugin_status"			=> array("title" => "Status", "type"=>"image", "width" => "5%", "thclass" => "center", "url" => ""),
-				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"image", "width" => "5%", "thclass" => "center", "url" => ""),
-				"plugin_name"			=> array("title" => EPL_ADLAN_10, "type"=>"text", "width" => "30", "thclass" => "", "url" => ""),
- 				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "", "url" => ""),
-    			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "", "url" => ""),
-                "plugin_author"			=> array("title" => EPL_ADLAN_12, "type"=>"text", "width" => "auto", "thclass" => "", "url" => ""),
-  				"plugin_website"		=> array("title" => EPL_WEBSITE, "type"=>"url", "width" => "5%", "thclass" => "center", "url" => ""),
-				"plugin_notes"			=> array("title" => EPL_ADLAN_83, "type"=>"url", "width" => "5%", "thclass" => "center", "url" => ""),
-				"plugin_description"	=> array("title" => EPL_ADLAN_14, "type"=>"text", "width" => "auto", "thclass" => "center", "url" => ""),
-			   	"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "auto", "thclass" => "", "url" => ""),
-				"plugin_compliant"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "center", "url" => ""),
-				"options"				=> array("title" => LAN_OPTIONS, "width" => "15%", "thclass" => "center last", "url" => "")
+				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"image", "width" => "5%", "thclass" => "middle center", "url" => ""),
+				"plugin_name"			=> array("title" => EPL_ADLAN_10, "type"=>"text", "width" => "30", "thclass" => "middle", "url" => ""),
+ 				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "middle", "url" => ""),
+    			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle", "url" => ""),
+                "plugin_author"			=> array("title" => EPL_ADLAN_12, "type"=>"text", "width" => "auto", "thclass" => "middle", "url" => ""),
+  				"plugin_website"		=> array("title" => EPL_WEBSITE, "type"=>"url", "width" => "5%", "thclass" => "middle center", "url" => ""),
+				"plugin_notes"			=> array("title" => EPL_ADLAN_83, "type"=>"url", "width" => "5%", "thclass" => "middle center", "url" => ""),
+				"plugin_description"	=> array("title" => EPL_ADLAN_14, "type"=>"text", "width" => "auto", "thclass" => "middle center", "url" => ""),
+			   	"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "auto", "thclass" => "middle", "url" => ""),
+				"plugin_compliant"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
+				"options"				=> array("title" => LAN_OPTIONS, "width" => "15%", "thclass" => "middle center last", "url" => "")
 		);
 
  		if (isset($_POST['upload']))
@@ -667,18 +667,28 @@ class pluginManager{
 
 					$icon_src = (isset($plug_vars['plugin_php']) ? e_PLUGIN : $_path).$plug_vars['administration']['icon'];
 					$plugin_icon = $plug_vars['administration']['icon'] ? "<img src='{$icon_src}' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
+                    $conf_file = "#";
+					$conf_title = "";
 
 					if ($plug_vars['administration']['configFile'] && $plug['plugin_installflag'] == true)
 					{
+						$conf_file = e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile'];
 						$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
-						$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile']."' >".$plugin_icon.'</a>';
+						$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon.'</a>';
 					}
 
 					$plugEmail = varset($plug_vars['author']['@attributes']['email'],'');
 					$plugAuthor = varset($plug_vars['author']['@attributes']['name'],'');
 					$plugURL = varset($plug_vars['author']['@attributes']['url'],'');
                     $plugReadme = "";
-
+					if($plug['plugin_installflag'])
+					{
+						$plugName = "<a title='{$conf_title}' href='{$conf_file}' >".$tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable")."</a>";
+                    }
+                    else
+					{
+                    	$plugName = $tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable");
+					}
 					if($plug_vars['readme'])   // 0.7 plugin.php
 					{
                     	$plugReadme = $plug_vars['readme'];
@@ -691,7 +701,7 @@ class pluginManager{
 					$text .= "<tr>";
 				//	$text .= (in_array("plugin_status",$this->fieldpref)) ? "<td class='center'>".$img."</td>" : "";
                     $text .= (in_array("plugin_icon",$this->fieldpref)) ? "<td class='center middle'>".$plugin_icon."</td>" : "";
-                    $text .= (in_array("plugin_name",$this->fieldpref)) ? "<td class='middle'>".$tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable")."</td>" : "";
+                    $text .= (in_array("plugin_name",$this->fieldpref)) ? "<td class='middle'>".$plugName."</td>" : "";
                     $text .= (in_array("plugin_version",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_version']."</td>" : "";
 					$text .= (in_array("plugin_folder",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_path']."</td>" : "";
                     $text .= (in_array("plugin_author",$this->fieldpref)) ? "<td class='middle'><a href='mailto:".$plugEmail."' title='".$plugEmail."'>".$plugAuthor."</a>&nbsp;</td>" : "";
