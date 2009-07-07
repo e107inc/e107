@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2009-07-06 09:28:02 $
+|     $Revision: 1.24 $
+|     $Date: 2009-07-07 02:25:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,6 +58,7 @@ class themeHandler{
 			{
 				$this -> id = key($post);
 				$this -> setAdminTheme();
+				$this -> refreshPage('admin');
 			}
 		}
 
@@ -65,6 +66,7 @@ class themeHandler{
 		{
  			$this -> id = $_POST['curTheme'];
 			$this -> setAdminStyle();
+
 		}
 
 		if(isset($_POST['submit_style']))
@@ -682,6 +684,11 @@ class themeHandler{
         return $text;
 	}
 
+	function refreshPage($page=e_QUERY)
+	{
+           header("Location: ".e_SELF."?".$page);
+		   exit;
+	}
 
 	function themePreview()
 	{
