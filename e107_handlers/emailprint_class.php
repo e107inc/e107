@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-09-04 20:07:27 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-07 06:50:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,8 +32,7 @@ class emailprint
 		// $look = 1  --->display email icon only
 		// $look = 2  --->display print icon only
 		
-		global $imode;
-		
+
 		$text_emailprint = "";
 
 		//new method emailprint_class : (only news is core, rest is plugin: searched for e_emailprint.php which should hold $email and $print values)
@@ -64,12 +63,12 @@ class emailprint
 
 		if ($look == 0 || $look == 1) 
 		{
-			$ico_mail = (file_exists(THEME."images/".ICONMAIL) ? THEME_ABS."images/".ICONMAIL : e_IMAGE_ABS."packs/".$imode."/generic/email.png");
+			$ico_mail = (file_exists(THEME."images/".ICONMAIL) ? THEME_ABS."images/".ICONMAIL : e_IMAGE_ABS."generic/email.png");
 			$text_emailprint .= "<a href='".e_HTTP."email.php?".$email.".".$id."'><img src='".$ico_mail."' style='border:0' alt='".LAN_EMAIL_7."' title='".LAN_EMAIL_7."' /></a> ";
 		}
 		if ($look == 0 || $look == 2) 
 		{
-			$ico_print = (file_exists(THEME."images/".ICONPRINT) ? THEME_ABS."images/".ICONPRINT : e_IMAGE_ABS."packs/".$imode."/generic/printer.png");
+			$ico_print = (file_exists(THEME."images/".ICONPRINT) ? THEME_ABS."images/".ICONPRINT : e_IMAGE_ABS."generic/printer.png");
 			$text_emailprint .= "<a href='".e_HTTP."print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='".LAN_PRINT_1."' title='".LAN_PRINT_1."' /></a>";
 		}
 		return $text_emailprint;

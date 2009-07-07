@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-07-01 05:10:23 $
+ * $Revision: 1.6 $
+ * $Date: 2009-07-07 06:50:55 $
  * $Author: e107coders $
  *
 */
@@ -97,7 +97,7 @@ class gsitemap
 
 	function showList()
 	{
-		global $sql, $ns, $tp, $imode;
+		global $sql, $ns, $tp;
 		$gen = new convert;
 		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
 
@@ -161,8 +161,8 @@ class gsitemap
 
 				<td class='center' style='white-space:nowrap'>
 				<div>
-				<input type='image' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".e_IMAGE."packs/".$imode."/admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-				<input type='image' name='delete[{$row2['gsitemap_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."') \" src='".e_IMAGE."packs/".$imode."/admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				<input type='image' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+				<input type='image' name='delete[{$row2['gsitemap_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."') \" src='".e_IMAGE."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 				</div>
 				</td>
 				</tr>

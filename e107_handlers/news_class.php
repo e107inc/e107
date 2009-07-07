@@ -9,9 +9,9 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-05-24 15:34:37 $
- * $Author: e107steved $
+ * $Revision: 1.15 $
+ * $Date: 2009-07-07 06:50:55 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -154,7 +154,7 @@ class news {
 
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='')
 	{
-		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid, $imode;
+		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid;
 		if ($override_newsitem = $override -> override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return')
@@ -196,7 +196,7 @@ class news {
 		{
 		  if (!defined("IMAGE_nonew_small"))
 		  {
-			define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/nonew_comments.png' alt=''  />"));
+			define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/nonew_comments.png' alt=''  />"));
 		  }
 		  $param['image_nonew_small'] = IMAGE_nonew_small;
 		}
@@ -205,7 +205,7 @@ class news {
 		{
 		  if (!defined("IMAGE_new_small"))
 		  {
-			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/new_comments.png' alt=''  /> "));
+			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/new_comments.png' alt=''  /> "));
 		  }
 		  $param['image_new_small'] = IMAGE_new_small;
 		}
@@ -214,7 +214,7 @@ class news {
 		{
 		  if (!defined("IMAGE_sticky"))
 		  {
-			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."packs/".$imode."/generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
+			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
 		  }
 		  $param['image_sticky'] = IMAGE_sticky;
 		}
