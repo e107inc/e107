@@ -1,14 +1,14 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_cpage.php,v 1.5 2008-12-30 13:51:41 secretr Exp $
+ * $Id: lan_cpage.php,v 1.6 2009-07-08 10:31:53 e107coders Exp $
  *
  * Admin Language File
  *
 */
 define("CUSLAN_1", "Title");
 define("CUSLAN_2", "Type");
-define("CUSLAN_3", "Options");
+// define("CUSLAN_3", "Options");
 define("CUSLAN_4", "Delete this item?");
 define("CUSLAN_5", "Existing Pages");
 define("CUSLAN_7", "Menu Name");

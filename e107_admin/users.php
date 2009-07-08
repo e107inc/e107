@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.38 $
-* $Date: 2009-07-08 07:00:26 $
+* $Revision: 1.39 $
+* $Date: 2009-07-08 10:31:52 $
 * $Author: e107coders $
 *
 */
@@ -37,6 +37,8 @@ if(varset($_POST['useraction']))
 		}
 	}
 }
+
+
 
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'userinfo')
 {
@@ -101,6 +103,7 @@ $userMethods = new UserHandler;
 $user_data = array();
 
 $frm = new e_form;
+$rs = new form;
 
 if (e_QUERY)
 {
@@ -766,15 +769,13 @@ class users
 		// $user_total = db_Count($table, $fields = '(*)',
 		$qry_insert = 'SELECT u.*, ue.* FROM `#user` AS u	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id ';
 
-		$field_count = count($this->fieldpref);
-
 		if ($user_total = $sql->db_Select_gen($qry_insert. $query))
 		{
 			$text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-users-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='".$field_count."'>".$frm->colGroup($this->fields,$this->fieldpref)."</colgroup>
+							<colgroup span='".count($this->fieldpref)."'>".$frm->colGroup($this->fields,$this->fieldpref)."</colgroup>
 							<thead>
 								<tr>".$frm->thead($this->fields,$this->fieldpref)."</tr>
 							</thead>
@@ -1221,49 +1222,49 @@ class users
 	// Add a new user - may be passed existing data if there was an entry error on first pass
 	function add_user($user_data)
 	{
-		global $frm, $ns, $pref, $e_userclass;
+		global $rs, $ns, $pref, $e_userclass;
 		if (!is_object($e_userclass)) $e_userclass = new user_class;
-		$text = "<div style='text-align:center'>". $frm->form_open("post", e_SELF.(e_QUERY ? '?'.e_QUERY : ''), "adduserform")."
+		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF.(e_QUERY ? '?'.e_QUERY : ''), "adduserform")."
 		<table class='adminlist'>
 		<tr>
 		<td style='width:30%'>".USRLAN_61."</td>
 		<td style='width:70%'>
-		".$frm->form_text('username', 40, varset($user_data['user_name'],""), varset($pref['displayname_maxlength'],15))."
+		".$rs->form_text('username', 40, varset($user_data['user_name'],""), varset($pref['displayname_maxlength'],15))."
 		</td>
 		</tr>
 
 		<tr>
 		<td style='width:30%'>".USRLAN_128."</td>
 		<td style='width:70%'>
-		".$frm->form_text('loginname', 40, varset($user_data['user_loginname'],""), varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
-		".$frm->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],FALSE)).USRLAN_170."
+		".$rs->form_text('loginname', 40, varset($user_data['user_loginname'],""), varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
+		".$rs->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],FALSE)).USRLAN_170."
 		</td>
 		</tr>
 
 		<tr>
 		<td style='width:30%'>".USRLAN_129."</td>
 		<td style='width:70%'>
-		".$frm->form_text("realname", 40, varset($user_data['user_login'],""), 30)."
+		".$rs->form_text("realname", 40, varset($user_data['user_login'],""), 30)."
 		</td>
 		</tr>
 
 		<tr>
 		<td style='width:30%'>".USRLAN_62."</td>
 		<td style='width:70%'>
-		".$frm->form_password("password1", 40, "", 20)."&nbsp;&nbsp;
-		".$frm->form_checkbox('generatepassword',1,FALSE).USRLAN_171."
+		".$rs->form_password("password1", 40, "", 20)."&nbsp;&nbsp;
+		".$rs->form_checkbox('generatepassword',1,FALSE).USRLAN_171."
 		</td>
 		</tr>
 		<tr>
 		<td style='width:30%'>".USRLAN_63."</td>
 		<td style='width:70%'>
-		".$frm->form_password("password2", 40, "", 20)."
+		".$rs->form_password("password2", 40, "", 20)."
 		</td>
 		</tr>
 		<tr>
 		<td style='width:30%'>".USRLAN_64."</td>
 		<td style='width:70%'>
-		".$frm->form_text("email", 60, varset($user_data['user_email'],""), 100)."
+		".$rs->form_text("email", 60, varset($user_data['user_email'],""), 100)."
 		</td>
 		</tr>\n";
 
