@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-07-07 22:56:11 $
+|     $Revision: 1.20 $
+|     $Date: 2009-07-08 01:28:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -160,7 +160,7 @@ function menuActivate()
 			$row=$sql->db_Fetch();
 			//If menu is not already activated in that area, add the record.
 
-			if(!$sql->db_Update('menus', "menu_order='{$menu_count}', menu_location = ".$location." WHERE menu_name='".$row['menu_name']."' AND menu_layout = '$layout' LIMIT 1 "))
+			if(!$sql->db_Select('menus', 'menu_name,menu_path', " menu_name='".$row['menu_name']."' AND menu_layout = '$layout' AND menu_location = ".$location." LIMIT 1 "))
 			{
 				$qry = "
 				INSERT into #menus

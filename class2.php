@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.102 $
-* $Date: 2009-07-07 22:56:10 $
+* $Revision: 1.103 $
+* $Date: 2009-07-08 01:28:55 $
 * $Author: e107coders $
 *
 */
@@ -965,14 +965,17 @@ if(!defined("THEME_LAYOUT"))
 $sql->db_Mark_Time('Start: Get menus');
 if(!isset($_E107['no_menus']))
 {
-  	$menu_data = $e107cache->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE));
+	$menu_layout_field = (THEME_LAYOUT != $pref['sitetheme_deflayout']) ? THEME_LAYOUT : "";
+  	$menu_data = $e107cache->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
  	$menu_data = $eArrayStorage->ReadArray($menu_data);
 	$eMenuList		= array();
 	$eMenuActive	= array();
 	$eMenuArea		= array();
 	if(!is_array($menu_data))
 	{
-		if ($sql->db_Select('menus', '*', 'menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') ORDER BY menu_order'))
+
+		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_order';
+		if ($sql->db_Select_gen($menu_qry))
 		{
 			while ($row = $sql->db_Fetch())
 			{
@@ -987,7 +990,7 @@ if(!isset($_E107['no_menus']))
 		$menu_data = $eArrayStorage->WriteArray($menu_data, false);
 		$e107cache->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE), $menu_data);
 
-		unset($menu_data);
+		unset($menu_data,$menu_layout_field,$menu_qry);
 	}
 	else
 	{
@@ -996,6 +999,7 @@ if(!isset($_E107['no_menus']))
 		$eMenuActive = $menu_data['menu_active'];
 		unset($menu_data);
 	}
+
 }
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 

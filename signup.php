@@ -9,9 +9,9 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-06-12 20:41:35 $
- * $Author: e107steved $
+ * $Revision: 1.37 $
+ * $Date: 2009-07-08 01:28:55 $
+ * $Author: e107coders $
  *
 */
 
@@ -868,7 +868,8 @@ function render_after_signup($error_message)
 
 	if (isset($pref['signup_text_after']) && (strlen($pref['signup_text_after']) > 2))
 	{
-		$text = $tp->toHTML(str_replace($srch, $repl, $pref['signup_text_after']), TRUE, 'parse_sc,defs')."<br />";
+		$text = str_replace($srch, $repl, $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs'))."<br />";
+		// keep str_replace() outside of toHTML to allow for search/replace of dynamic terms within 'defs'.
 	}
 	else
 	{
