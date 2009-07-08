@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.37 $
-* $Date: 2009-07-08 06:58:00 $
+* $Revision: 1.38 $
+* $Date: 2009-07-08 07:00:26 $
 * $Author: e107coders $
 *
 */
@@ -24,17 +24,19 @@ if (!getperms('4'))
 }
 
 
-foreach($_POST['useraction'] as $key=>$val)
+if(varset($_POST['useraction']))
 {
-	if($val)
+	foreach($_POST['useraction'] as $key=>$val)
 	{
-    	$_POST['useraction'] = $val;
-		$_POST['userip'] 	= $_POST['userip'][$key];
-        $_POST['userid'] 	= $key;
-		break;
+		if($val)
+		{
+	    	$_POST['useraction'] = $val;
+			$_POST['userip'] 	= $_POST['userip'][$key];
+	        $_POST['userid'] 	= $key;
+			break;
+		}
 	}
 }
-
 
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'userinfo')
 {
