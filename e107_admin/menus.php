@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-07-08 01:28:55 $
+|     $Revision: 1.21 $
+|     $Date: 2009-07-08 06:58:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -200,11 +200,12 @@ function getMenuPreset($layout)
 		$iD = $val['@attributes']['id'];
 		foreach($val['menu'] as $k=>$v)
 		{
+			$uclass = (defined(trim($v['@attributes']['userclass']))) ? constant(trim($v['@attributes']['userclass'])) : 0;
 			$menuArea[] = array(
 				'menu_location' => $iD,
 				'menu_order'	=> $k,
 				'menu_name'		=> $v['@attributes']['name']."_menu",
-				'menu_class'	=> intval(constant(trim($v['@attributes']['userclass'])))
+				'menu_class'	=> intval($uclass)
 			);
 		}
 	}

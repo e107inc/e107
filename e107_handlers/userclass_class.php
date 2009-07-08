@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2009-07-07 07:25:27 $
+|     $Revision: 1.35 $
+|     $Date: 2009-07-08 06:58:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -494,14 +494,17 @@ class user_class
 	{
 		$ret = '';
 		$nest_level++;
-		foreach ($this->class_tree[$listnum]['class_children'] as $p)
+		if(isset($this->class_tree[$listnum]['class_children']))
 		{
-			// Looks like we don't need to differentiate between function and class calls
-			if (isset($perms[$p]))
+			foreach ($this->class_tree[$listnum]['class_children'] as $p)
 			{
-				$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level, $opt_options);
+				// Looks like we don't need to differentiate between function and class calls
+				if (isset($perms[$p]))
+				{
+					$ret .= call_user_func($callback,$treename, $p,$current_value,$nest_level, $opt_options);
+				}
+				$ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms, $opt_options);
 			}
-			$ret .= $this->vetted_sub_tree($treename, $callback,$p,$nest_level,$current_value, $perms, $opt_options);
 		}
 		return $ret;
 	}

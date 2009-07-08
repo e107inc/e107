@@ -9,17 +9,30 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.36 $
-* $Date: 2009-07-06 07:50:44 $
-* $Author: marj_nl_fr $
+* $Revision: 1.37 $
+* $Date: 2009-07-08 06:58:00 $
+* $Author: e107coders $
 *
 */
 require_once('../class2.php');
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 
 if (!getperms('4'))
 {
 	header('location:'.$e107->url->getUrl('core:core', 'main', 'action=index'));
 	exit;
+}
+
+
+foreach($_POST['useraction'] as $key=>$val)
+{
+	if($val)
+	{
+    	$_POST['useraction'] = $val;
+		$_POST['userip'] 	= $_POST['userip'][$key];
+        $_POST['userid'] 	= $key;
+		break;
+	}
 }
 
 
@@ -66,20 +79,26 @@ if(isset($_POST['updateRanks']))
 }
 
 $e_sub_cat = 'users';
-$user = new users;
-require_once('auth.php');
 
+require_once('auth.php');
+$user = new users;
 require_once(e_HANDLER.'form_handler.php');
 require_once(e_HANDLER.'userclass_class.php');
-require_once(e_HANDLER.'user_handler.php');
+
 include_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'validator_class.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
+
+
+
+	require_once(e_HANDLER.'user_handler.php');
+  //      $userMethods = new UserHandler;
+//    	$colList = $userMethods->getNiceNames(TRUE);
+
 $ue = new e107_user_extended;
 $userMethods = new UserHandler;
 $user_data = array();
 
-$rs = new form;
+$frm = new e_form;
 
 if (e_QUERY)
 {
@@ -632,25 +651,85 @@ require_once("footer.php");
 class users
 {
 
-	function show_existing_users($action, $sub_action, $id, $from, $amount)
+	var $fields = array();
+	var $fieldpref = array();
+
+
+	function users()
 	{
-		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref,$unverified, $userMethods;
-		$e107 = e107::getInstance();
-		// save the display choices.
-		if(isset($_POST['searchdisp']))
+
+        global $pref, $user_pref, $sql, $tp;
+
+
+        if(isset($pref['admin_user_disp']))
 		{
-			$pref['admin_user_disp'] = implode("|",$_POST['searchdisp']);
-			save_prefs();
+        	$user_pref['admin_users_columns'] = ($pref['admin_user_disp']) ? explode("|",$pref['admin_user_disp']) : array('user_name', 'user_class');
+            save_prefs('user');
+			unset($pref['admin_user_disp']);
+			save_prefs;
+		}
+        $this->usersSaveColumnPref();
+
+		$this->fieldpref = (!$user_pref['admin_users_columns']) ? array('user_name', 'user_class') : $user_pref['admin_users_columns'];
+
+		$this->fields = array(
+			'user_id'			=> array('title'=> 'Id', 'width'=>'5%', 'forced'=> TRUE),
+            'user_status'	   	=> array('title'=> ADLAN_134, 'forced'=> TRUE),
+         	'user_name' 		=> array('title'=> LAN_USER_01, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first'), // Display name
+			'user_loginname' 	=> array('title'=> LAN_USER_02, 'type' => 'text', 'width' => 'auto'),	// User name
+			'user_login' 		=> array('title'=> LAN_USER_03, 'type' => 'text', 'width' => 'auto'),	 // Real name (no real vetting)
+			'user_customtitle' 	=> array('title'=> LAN_USER_04, 'type' => 'text', 'width' => 'auto'),	 // No real vetting
+			'user_password' 	=> array('title'=> LAN_USER_05, 'type' => 'text', 'width' => 'auto'),
+			'user_sess' 		=> array('title'=> LAN_USER_06, 'type' => 'text', 'width' => 'auto'),	 	// Photo
+			'user_image' 		=> array('title'=> LAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
+			'user_email' 		=> array('title'=> LAN_USER_08, 'type' => 'text', 'width' => 'auto'),
+			'user_signature' 	=> array('title'=> LAN_USER_09, 'type' => 'text', 'width' => 'auto'),
+			'user_hideemail' 	=> array('title'=> LAN_USER_10, 'type' => 'int', 'width' => 'auto'),
+			'user_xup' 			=> array('title'=> LAN_USER_11, 'type' => 'text', 'width' => 'auto'),
+			'user_class' 		=> array('title'=> LAN_USER_12, 'type' => 'class'),
+ 			'user_join'			=> array('title' => LAN_USER_14, 'width'=> 'auto'),
+			'user_lastvisit'	=> array('title' => LAN_USER_15, 'width'=> 'auto'),
+			'user_currentvisit'	=> array('title' => LAN_USER_16, 'width'=> 'auto'),
+			'user_comments'		=> array('title' => LAN_USER_17, 'width'=> 'auto'),
+			'user_ip'			=> array('title' => LAN_USER_18, 'width'=> 'auto'),
+			'user_ban'			=> array('title' => LAN_USER_19, 'width'=> 'auto'),
+			'user_prefs'		=> array('title' => LAN_USER_20, 'width'=> 'auto'),
+			'user_visits'		=> array('title' => LAN_USER_21, 'width'=> 'auto'),
+			'user_admin'		=> array('title' => LAN_USER_22, 'width'=> 'auto'),
+			'user_perms'		=> array('title' => LAN_USER_23, 'width'=> 'auto'),
+			'user_pwchange'		=> array('title' => LAN_USER_24, 'width'=> 'auto')
+
+		);
+
+
+		$sql -> db_Select("user_extended_struct");
+		while($row = $sql-> db_Fetch())
+		{
+			$field = "user_".$row['user_extended_struct_name'];
+			$title = ucfirst(str_replace("user_","",$field));
+
+			$this->fields[$field] = array('title'=>$title,'width'=>'auto');
 		}
 
-		if(!$pref['admin_user_disp'])
+        $this->fields['options'] = array('title' => LAN_OPTIONS, 'width'=>'10%', "thclass" => "center last");
+
+	}
+
+    function usersSaveColumnPref()
+	{
+		global $pref,$user_pref, $admin_log;
+		if(isset($_POST['submit-e-columns']))
 		{
-			$search_display = array('user_name', 'user_class');
+			$user_pref['admin_users_columns'] = $_POST['e-columns'];
+			save_prefs('user');
 		}
-		else
-		{
-			$search_display = explode('|', $pref['admin_user_disp']);
-		}
+	}
+
+
+	function show_existing_users($action, $sub_action, $id, $from, $amount)
+	{
+		global $sql, $frm, $ns, $tp, $mySQLdefaultdb,$pref,$unverified, $userMethods;
+		$e107 = e107::getInstance();
 
 		$text = "<div style='text-align:center'>";
 
@@ -660,7 +739,7 @@ class users
 			$query = 'WHERE '.
 			$query .= (strpos($_POST['searchquery'], "@") !== FALSE) ? "user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (strpos($_POST['searchquery'], ".") !== FALSE) ? "user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
-			foreach($search_display as $disp)
+			foreach($this->fieldpref as $disp)
 			{
 				$query .= $disp." REGEXP('".$_POST['searchquery']."') OR ";
 			}
@@ -685,39 +764,54 @@ class users
 		// $user_total = db_Count($table, $fields = '(*)',
 		$qry_insert = 'SELECT u.*, ue.* FROM `#user` AS u	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id ';
 
+		$field_count = count($this->fieldpref);
+
 		if ($user_total = $sql->db_Select_gen($qry_insert. $query))
 		{
-			$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
+			$text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
+                        <fieldset id='core-users-list'>
+						<legend class='e-hideme'>".NWSLAN_4."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminlist'>
+							<colgroup span='".$field_count."'>".$frm->colGroup($this->fields,$this->fieldpref)."</colgroup>
+							<thead>
+								<tr>".$frm->thead($this->fields,$this->fieldpref)."</tr>
+							</thead>
+							<tbody>";
+
+
+
+         /*	<thead>
 			<tr>
-			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
-			<td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>";
+			<th style='width:5%'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></th>
+			<th style='width:10%'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></th>";
 
 
 			// Search Display Column header.
 			$display_lan = $userMethods->getNiceNames(TRUE);		// List of field names and descriptive names
-			foreach($search_display as $disp)
+			foreach($this->fieldpref as $disp)
 			{
 				if (isset($display_lan[$disp]))
 				{
-					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".$display_lan[$disp]."</a></td>";
+					$text .= "<th style='width:15%'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".$display_lan[$disp]."</a></th>";
 				}
 				else
 				{
-					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></td>";
+					$text .= "<th style='width:15%'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></th>";
 				}
 			}
 
 			// ------------------------------
 
-			$text .= " 	<td style='width:30%' class='fcaption'>".LAN_OPTIONS."</td>
-			</tr>";
+			$text .= "<th style='width:30%'>".LAN_OPTIONS."</th>
+			</tr>
+			</thead><tbody>";*/
 
 			while ($row = $sql->db_Fetch())
 			{
 				extract($row);
 				$text .= "<tr>
-				<td style='width:5%; text-align:center' class='forumheader3'>{$user_id}</td>
-				<td style='width:10%' class='forumheader3'>";
+				<td style='width:5%; text-align:center' >{$user_id}</td>
+				<td style='width:10%'>";
 
 				if ($user_perms == "0") {
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_MAINADMIN."</div>";
@@ -746,9 +840,9 @@ class users
 				$datefields = array("user_lastpost","user_lastvisit","user_join","user_currentvisit");
 				$boleanfields = array("user_admin","user_hideemail","user_ban");
 
-				foreach($search_display as $disp)
+				foreach($this->fieldpref as $disp)
 				{
-					$text .= "<td style='white-space:nowrap' class='forumheader3'>";
+					$text .= "<td style='white-space:nowrap'>";
 					if($disp == 'user_class')
 					{
 						if ($user_class)
@@ -795,13 +889,13 @@ class users
 				// -------------------------------------------------------------
 				$qry = (e_QUERY) ?  "?".e_QUERY : "";
 				$text .= "
-				<td style='width:30%;text-align:center' class='forumheader3'>
-				<form method='post' action='".e_SELF.$qry."'>
+				<td style='width:30%' class='center'>
+
 				<div>
 
-				<input type='hidden' name='userid' value='{$user_id}' />
-				<input type='hidden' name='userip' value='{$user_ip}' />
-				<select name='useraction' onchange='this.form.submit()' class='tbox' style='width:75%'>
+				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
+				<input type='hidden' name='userip[{$user_id}]' value='{$user_ip}' />
+				<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='tbox' style='width:75%'>
 				<option selected='selected' value=''>&nbsp;</option>";
 
 				if ($user_perms != "0")
@@ -853,9 +947,12 @@ class users
 					$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
 				}
 				$text .= "</select></div>";
-				$text .= "</form></td></tr>";
+				$text .= "</td></tr>";
 			}
-			$text .= "</table>";
+			$text .= "</tbody></table></fieldset> ";
+
+
+
 		}
 
 		if($action == "unverified")
@@ -881,24 +978,22 @@ class users
 			$text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 
-		// Search - display options etc. .
+		// Search etc. .
 
-		$text .= "<br /><form method='post' action='".e_SELF."?".e_QUERY."'>\n";
+		$text .= "</form>
+
+
+
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<div>\n";
 		$text .= "<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n
 		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
 		<br /><br /></p>\n";
-
+     /*
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div  id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
 		<table class='forumheader3' style='width:95%'>";
-		/*
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
-		$columns = mysql_num_fields($fields);
-		for ($i = 0; $i < $columns; $i++)
-		{
-		$fname[] = mysql_field_name($fields, $i);
-		}
-		*/
+
 		$fname = array_keys($display_lan);
 		// include extended fields in the list.
 		$sql -> db_Select("user_extended_struct");
@@ -913,7 +1008,7 @@ class users
 			{
 				$text .= "<tr>";
 			}
-			$checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
+			$checked = (in_array($fcol,$this->fieldpref)) ? "checked='checked'" : "";
 			$text .= "<td style='text-align:left; padding:0px'>";
 			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace("user_","",$fcol) . "</td>\n";
 			$m++;
@@ -923,8 +1018,11 @@ class users
 				$m = 0;
 			}
 		}
+     */
 
-		$text .= "</table></div>
+
+		$text .= "</div>
+
 		</form>\n
 		</div>";
 
@@ -984,72 +1082,72 @@ class users
 		$pref['memberlist_access'] = varset($pref['memberlist_access'], e_UC_MEMBER);
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<table class='adminlist'>
 		<colgroup>
 		<col style='width:60%' />
 		<col style='width:40%' />
 		</colgroup>
 
 		<tr>
-		<td class='forumheader3'>".USRLAN_44.":</td>
-		<td class='forumheader3'>". ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' />".LAN_NO : "<input name='avatar_upload' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked='checked' />".LAN_NO). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
+		<td>".USRLAN_44.":</td>
+		<td>". ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' />".LAN_NO : "<input name='avatar_upload' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked='checked' />".LAN_NO). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
 		</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".USRLAN_53.":</td>
-		<td class='forumheader3'>". ($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' />".LAN_NO : "<input name='photo_upload' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked='checked' />".LAN_NO). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
+		<td>".USRLAN_53.":</td>
+		<td>". ($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' />".LAN_NO : "<input name='photo_upload' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked='checked' />".LAN_NO). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
 		</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".USRLAN_47.":</td>
-		<td class='forumheader3'>
+		<td>".USRLAN_47.":</td>
+		<td>
 		<input class='tbox' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
 		</td></tr>
 
 		<tr>
-		<td class='forumheader3'>".USRLAN_49.":</td>
-		<td class='forumheader3'>
+		<td>".USRLAN_49.":</td>
+		<td>
 		<input class='tbox' type='text' name='im_height' size='10' value='".$pref['im_height']."' maxlength='5' /> (".USRLAN_50.")
 		</td></tr>
 
 		<tr>
-		<td class='forumheader3'>".USRLAN_126.":</td>
-		<td style='vertical-align:top' class='forumheader3'>". ($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".LAN_NO : "<input name='profile_rate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".LAN_NO)."
+		<td>".USRLAN_126.":</td>
+		<td style='vertical-align:top'>". ($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".LAN_NO : "<input name='profile_rate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".LAN_NO)."
 		</td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3'>".USRLAN_127.":</td>
-		<td style='vertical-align:top' class='forumheader3'>". ($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".LAN_NO : "<input name='profile_comments' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".LAN_NO)."
+		<td>".USRLAN_127.":</td>
+		<td style='vertical-align:top'>". ($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".LAN_NO : "<input name='profile_comments' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".LAN_NO)."
 		</td>
 		</tr>
 
 		<tr>
-		<td style='vertical-align:top' class='forumheader3'>".USRLAN_133.":<br /><span class='smalltext'>".USRLAN_134."</span></td>
-		<td style='vertical-align:top' class='forumheader3'>". ($pref['force_userupdate'] ? "<input name='force_userupdate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' />".LAN_NO : "<input name='force_userupdate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' checked='checked' />".LAN_NO)."
+		<td style='vertical-align:top'>".USRLAN_133.":<br /><span class='smalltext'>".USRLAN_134."</span></td>
+		<td style='vertical-align:top'>". ($pref['force_userupdate'] ? "<input name='force_userupdate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' />".LAN_NO : "<input name='force_userupdate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' checked='checked' />".LAN_NO)."
 		</td>
 		</tr>
 
 
 		<tr>
-		<td style='vertical-align:top' class='forumheader3'>".USRLAN_93."<br /><span class='smalltext'>".USRLAN_94."</span></td>
-		<td class='forumheader3'>
+		<td style='vertical-align:top'>".USRLAN_93."<br /><span class='smalltext'>".USRLAN_94."</span></td>
+		<td>
 		<input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
 		</td></tr>
 
 		<tr>
-		<td class='forumheader3'>".USRLAN_130."<br /><span class='smalltext'>".USRLAN_131."</span></td>
-		<td class='forumheader3'>&nbsp;
+		<td>".USRLAN_130."<br /><span class='smalltext'>".USRLAN_131."</span></td>
+		<td>&nbsp;
 		<input type='checkbox' name='track_online' value='1'".($pref['track_online'] ? " checked='checked'" : "")." /> ".USRLAN_132."&nbsp;&nbsp;
 		</td>
 		</tr>
 
 
 		<tr>
-		<td class='forumheader3'>".USRLAN_146.":</td>
-		<td class='forumheader3'><select name='memberlist_access' class='tbox'>\n";
+		<td>".USRLAN_146.":</td>
+		<td><select name='memberlist_access' class='tbox'>\n";
 		$text .= $e_userclass->vetted_tree('memberlist_access',array($e_userclass,'select'), $pref['memberlist_access'], "public,member,guest,admin,main,classes,nobody");
 		$text .= "</select>
 		</td>
@@ -1057,13 +1155,13 @@ class users
 
 
 		<tr>
-		<td style='vertical-align:top' class='forumheader3'>".USRLAN_190."<br /><span class='smalltext'>".USRLAN_191."</span></td>
-		<td class='forumheader3'>
+		<td style='vertical-align:top'>".USRLAN_190."<br /><span class='smalltext'>".USRLAN_191."</span></td>
+		<td>
 		<input class='tbox' type='text' name='user_new_period' size='10' value='".varset($pref['user_new_period'],0)."' maxlength='5' /> ".USRLAN_192."
 		</td></tr>
 
 		<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>
+		<td colspan='2' class='center button-bar'>
 		<input class='button' type='submit' name='update_options' value='".USRLAN_51."' />
 		</td></tr>
 
@@ -1121,49 +1219,49 @@ class users
 	// Add a new user - may be passed existing data if there was an entry error on first pass
 	function add_user($user_data)
 	{
-		global $rs, $ns, $pref, $e_userclass;
+		global $frm, $ns, $pref, $e_userclass;
 		if (!is_object($e_userclass)) $e_userclass = new user_class;
-		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF.(e_QUERY ? '?'.e_QUERY : ''), "adduserform")."
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		$text = "<div style='text-align:center'>". $frm->form_open("post", e_SELF.(e_QUERY ? '?'.e_QUERY : ''), "adduserform")."
+		<table class='adminlist'>
 		<tr>
-		<td style='width:30%' class='forumheader3'>".USRLAN_61."</td>
-		<td style='width:70%' class='forumheader3'>
-		".$rs->form_text('username', 40, varset($user_data['user_name'],""), varset($pref['displayname_maxlength'],15))."
+		<td style='width:30%'>".USRLAN_61."</td>
+		<td style='width:70%'>
+		".$frm->form_text('username', 40, varset($user_data['user_name'],""), varset($pref['displayname_maxlength'],15))."
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>".USRLAN_128."</td>
-		<td style='width:70%' class='forumheader3'>
-		".$rs->form_text('loginname', 40, varset($user_data['user_loginname'],""), varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
-		".$rs->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],FALSE)).USRLAN_170."
+		<td style='width:30%'>".USRLAN_128."</td>
+		<td style='width:70%'>
+		".$frm->form_text('loginname', 40, varset($user_data['user_loginname'],""), varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
+		".$frm->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],FALSE)).USRLAN_170."
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>".USRLAN_129."</td>
-		<td style='width:70%' class='forumheader3'>
-		".$rs->form_text("realname", 40, varset($user_data['user_login'],""), 30)."
+		<td style='width:30%'>".USRLAN_129."</td>
+		<td style='width:70%'>
+		".$frm->form_text("realname", 40, varset($user_data['user_login'],""), 30)."
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>".USRLAN_62."</td>
-		<td style='width:70%' class='forumheader3'>
-		".$rs->form_password("password1", 40, "", 20)."&nbsp;&nbsp;
-		".$rs->form_checkbox('generatepassword',1,FALSE).USRLAN_171."
+		<td style='width:30%'>".USRLAN_62."</td>
+		<td style='width:70%'>
+		".$frm->form_password("password1", 40, "", 20)."&nbsp;&nbsp;
+		".$frm->form_checkbox('generatepassword',1,FALSE).USRLAN_171."
 		</td>
 		</tr>
 		<tr>
-		<td style='width:30%' class='forumheader3'>".USRLAN_63."</td>
-		<td style='width:70%' class='forumheader3'>
-		".$rs->form_password("password2", 40, "", 20)."
+		<td style='width:30%'>".USRLAN_63."</td>
+		<td style='width:70%'>
+		".$frm->form_password("password2", 40, "", 20)."
 		</td>
 		</tr>
 		<tr>
-		<td style='width:30%' class='forumheader3'>".USRLAN_64."</td>
-		<td style='width:70%' class='forumheader3'>
-		".$rs->form_text("email", 60, varset($user_data['user_email'],""), 100)."
+		<td style='width:30%'>".USRLAN_64."</td>
+		<td style='width:70%'>
+		".$frm->form_text("email", 60, varset($user_data['user_email'],""), 100)."
 		</td>
 		</tr>\n";
 
@@ -1175,21 +1273,22 @@ class users
 		if ($temp)
 		{
 			$text .= "<tr style='vertical-align:top'>
-			<td class='forumheader3'>
+			<td>
 			".USRLAN_120."
-			</td><td class='forumheader3'>{$temp}</td>
+			</td><td>{$temp}</td>
 			</tr>\n";
 		}
 		$text .= "
 		<tr style='vertical-align:top'>
-		<td colspan='2' style='text-align:center' class='forumheader'>
-		<input class='button' type='checkbox' name='sendconfemail' value='1' />".USRLAN_181."
-		</td></tr>
+			<td colspan='2' class='center'>
+			<input class='button' type='checkbox' name='sendconfemail' value='1' />".USRLAN_181."
+			</td>
+		</tr>
 		<tr style='vertical-align:top'>
-		<td colspan='2' style='text-align:center' class='forumheader'>
-		<input class='button' type='submit' name='adduser' value='".USRLAN_60."' />
-		<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-		</td>
+			<td colspan='2' class='center button-bar'>
+			<input class='button' type='submit' name='adduser' value='".USRLAN_60."' />
+			<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+			</td>
 		</tr>
 		</table>
 		</form>
