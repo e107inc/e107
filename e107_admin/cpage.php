@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-03-22 21:17:41 $
- * $Author: e107steved $
+ * $Revision: 1.14 $
+ * $Date: 2009-07-08 10:31:52 $
+ * $Author: e107coders $
  *
 */
 
@@ -97,11 +97,47 @@ require_once(e_ADMIN."footer.php");
 
 class page
 {
+	var $fields;
+
+
+	function page()
+	{
+
+ 		global $pref,$user_pref, $admin_log;
+		if(isset($_POST['submit-e-columns']))
+		{
+			$user_pref['admin_cpage_columns'] = $_POST['e-columns'];
+			save_prefs('user');
+		}
+        $this->fieldpref = (varset($user_pref['admin_cpage_columns'])) ? $user_pref['admin_cpage_columns'] : array("page_id","page_title","page_theme"); ;
+
+    	$this->fields = array(
+			'page_id'			=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE),
+            'page_title'	   	=> array('title'=> CUSLAN_1, 'width'=>'auto'),
+			'page_theme' 		=> array('title'=> CUSLAN_2, 'type' => 'text', 'width' => 'auto'),
+         	'page_author' 		=> array('title'=> LAN_AUTHOR, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first'), // Display name
+			'page_datestamp' 	=> array('title'=> LAN_DATE, 'type' => 'text', 'width' => 'auto'),	// User name
+            'page_class' 		=> array('title'=> LAN_USERCLASS, 'type' => 'text', 'width' => 'auto'),	 	// Photo
+			'page_rating_flag' 		=> array('title'=> LAN_RATING, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+			'page_comment_flag' 	=> array('title'=> ADLAN_114, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // No real vetting
+		//	'page_password' 	=> array('title'=> LAN_USER_05, 'type' => 'text', 'width' => 'auto'),
+
+	   //	'page_ip_restrict' 		=> array('title'=> LAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
+
+			'options' 	=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
+		);
+
+       // $this->fieldpref = array("page_id","page_title","page_author","page_class");
+	}
+
+
+// --------------------------------------------------------------------------
+
 	function showExistingPages()
 	{
-		global $sql, $e107, $emessage;
+		global $sql, $e107, $emessage, $frm, $pref;
 
-		$text = "
+/*		$text = "
 			<form action='".e_SELF."' id='newsform' method='post'>
 				<fieldset id='core-cpage-list'>
 					<legend class='e-hideme'>".CUSLAN_5."</legend>
@@ -121,7 +157,17 @@ class page
 							</tr>
 						</thead>
 						<tbody>
-		";
+		";*/
+
+        $text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
+                        <fieldset id='core-cpage-list'>
+						<legend class='e-hideme'>".CUSLAN_5."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminlist'>
+							<colgroup span='".count($this->fieldpref)."'>".$frm->colGroup($this->fields,$this->fieldpref)."</colgroup>
+							<thead>
+								<tr>".$frm->thead($this->fields,$this->fieldpref)."</tr>
+							</thead>
+							<tbody>";
 
 		if(!$sql->db_Select("page", "*", "ORDER BY page_datestamp DESC", "nowhere"))
 		{
@@ -141,12 +187,22 @@ class page
 			{
 				//title='".LAN_DELETE."'
 				$title_text = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
+				$author = get_user_data($pge['page_author']);
+
+
 				$text .= "
 						<tr>
-							<td>{$pge['page_id']}</td>
-							<td><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$title_text}</a></td>
-							<td>".($pge['page_theme'] ? "menu" : "page")."</td>
-							<td class='center'>
+							<td>{$pge['page_id']}</td>";
+
+				$text .= (in_array("page_title",$this->fieldpref)) ? "<td><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$title_text}</a></td>" : "";
+                $text .= (in_array("page_theme",$this->fieldpref)) ? "<td>".($pge['page_theme'] ? "menu" : "page")."</td>" : "";
+                $text .= (in_array("page_author",$this->fieldpref)) ? "<td>".($author['user_name'])."</td>" : "";
+				$text .= (in_array("page_datestamp",$this->fieldpref)) ? "<td>".strftime($pref['shortdate'],$pge['page_datestamp'])."</td>" : "";
+				$text .= (in_array("page_class",$this->fieldpref)) ? "<td>".(r_userclass_name($pge['page_class']))."</td>" : "";
+				$text .= (in_array("page_rating_flag",$this->fieldpref)) ? "<td class='center'>".($pge['page_rating_flag'] ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
+				$text .= (in_array("page_comment_flag",$this->fieldpref)) ? "<td class='center'>".($pge['page_comment_flag'] ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
+
+				$text .= "<td class='center'>
 								<a class='action edit' href='".e_SELF."?".($pge['page_theme'] ? "createm": "create").".edit.{$pge['page_id']}'>".ADMIN_EDIT_ICON."</a>
 								<input type='image' class='action delete' name='delete[{$pge['page_id']}]' src='".ADMIN_DELETE_ICON_PATH."' title='".CUSLAN_4." [ ID: {$pge['page_id']} ]' />
 							</td>
