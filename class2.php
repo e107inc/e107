@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.371 $
-|     $Date: 2009-07-07 21:39:09 $
+|     $Revision: 1.372 $
+|     $Date: 2009-07-08 21:36:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1375,7 +1375,6 @@ function init_session() {
 		define("ADMIN", FALSE);
 		define("GUEST", TRUE);
 		define('USERCLASS', '');
-		define('USERCLASS_LIST', class_list());
 		define('USEREMAIL', '');
 	} 
 	else 
@@ -1399,14 +1398,12 @@ function init_session() {
 		$result = get_user_data($uid);
 		if(is_array($result) && md5($result['user_password']) == $upw)
 		{
-
 			define("USERID", $result['user_id']);
 			define("USERNAME", $result['user_name']);
 			define("USERURL", (isset($result['user_homepage']) ? $result['user_homepage'] : false));
 			define("USEREMAIL", $result['user_email']);
 			define("USER", TRUE);
 			define("USERCLASS", $result['user_class']);
-			define('USERCLASS_LIST', class_list());
 			define("USERREALM", $result['user_realm']);
 			define("USERVIEWED", $result['user_viewed']);
 			define("USERIMAGE", $result['user_image']);
@@ -1432,9 +1429,24 @@ function init_session() {
 
 			if ($result['user_ban'] == 1) { exit; }
 
+			if ($result['user_admin']) 
+			{
+				define('ADMIN', TRUE);
+				define('ADMINID', $result['user_id']);
+				define('ADMINNAME', $result['user_name']);
+				define('ADMINPERMS', $result['user_perms']);
+				define('ADMINEMAIL', $result['user_email']);
+				define('ADMINPWCHANGE', $result['user_pwchange']);
+			} 
+			else 
+			{
+				define('ADMIN', FALSE);
+			}
+
 			$user_pref = unserialize($result['user_prefs']);
 
-			if (check_class(varset($pref['allow_theme_select'],FALSE)))
+			$tempClasses = class_list();
+			if (check_class(varset($pref['allow_theme_select'],FALSE), $tempClasses))
 			{	// User can set own theme
 				if (isset($_POST['settheme'])) 
 				{
@@ -1450,17 +1462,7 @@ function init_session() {
 			
 
 			define("USERTHEME", (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
-			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
-			if ($result['user_admin']) {
-				define("ADMIN", TRUE);
-				define("ADMINID", $result['user_id']);
-				define("ADMINNAME", $result['user_name']);
-				define("ADMINPERMS", $result['user_perms']);
-				define("ADMINEMAIL", $result['user_email']);
-				define("ADMINPWCHANGE", $result['user_pwchange']);
-			} else {
-				define("ADMIN", FALSE);
-			}
+//			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;   Don't look very necessary
 		} 
 		else 
 		{
@@ -1470,10 +1472,10 @@ function init_session() {
 			define("ADMIN", FALSE);
 			define("CORRUPT_COOKIE", TRUE);
 			define("USERCLASS", "");
-			define('USERCLASS_LIST', class_list());
 		}
 	}
 
+	define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
 }
 
