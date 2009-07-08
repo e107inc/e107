@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-04-28 00:06:17 $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-08 06:58:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ if (isset($_POST['update']))
 $nc -> config();
 
 
-class notify_config 
+class notify_config
 {
 	var $notify_prefs;
 	var $changeList = array();
@@ -88,13 +88,14 @@ class notify_config
 
 		$text = "<div style='text-align: center'>
 		<form action='".e_SELF."?results' method='post' id='scanform'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<table class='adminlist'>
+		<thead>
 		<tr>
-		<td class='fcaption' colspan='2'>".NT_LAN_2.":</td>
+		<th colspan='2'>".NT_LAN_2.":</th>
 		</tr>";
 
-		$text .= "<tr>
-		<td colspan='2' class='forumheader'>".NU_LAN_1."</td>
+		$text .= "</thead><tbody><tr>
+		<td colspan='2'>".NU_LAN_1."</td>
 		</tr>";
 
 		$text .= $this -> render_event('usersup', NU_LAN_2);
@@ -103,14 +104,14 @@ class notify_config
 		$text .= $this -> render_event('logout', NU_LAN_5);
 
 		$text .= "<tr>
-		<td colspan='2' class='forumheader'>".NS_LAN_1."</td>
+		<td colspan='2'>".NS_LAN_1."</td>
 		</tr>";
 
 		$text .= $this -> render_event('flood', NS_LAN_2);
 
 
 		$text .= "<tr>
-		<td colspan='2' class='forumheader'>".NN_LAN_1."</td>
+		<td colspan='2'>".NN_LAN_1."</td>
 		</tr>";
 
 		$text .= $this -> render_event('subnews', NN_LAN_2);
@@ -119,7 +120,7 @@ class notify_config
 		$text .= $this -> render_event('newsdel', NN_LAN_5);
 
 		$text .= "<tr>
-		<td colspan='2' class='forumheader'>".NF_LAN_1."</td>
+		<td colspan='2'>".NF_LAN_1."</td>
 		</tr>";
 
 		$text .= $this -> render_event('fileupload', NF_LAN_2);
@@ -130,7 +131,7 @@ class notify_config
 			{
 				require(e_PLUGIN.$plugin_id.'/e_notify.php');
 				$text .= "<tr>
-				<td colspan='2' class='forumheader'>".$config_category."</td>
+				<td colspan='2'>".$config_category."</td>
 				</tr>";
 				foreach ($config_events as $event_id => $event_text)
 				{
@@ -140,8 +141,9 @@ class notify_config
 		}
 
 		$text .= "<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'update', LAN_UPDATE)."</td>
+		<td colspan='2' class='center button-bar'>".$rs -> form_button('submit', 'update', LAN_UPDATE)."</td>
 		</tr>
+		</tbody>
 		</table>
 		</form>
 		</div>";
@@ -155,8 +157,8 @@ class notify_config
 		global $rs, $tp, $uc;
 		$text .= "
 			<tr>
-				<td class='forumheader3' style='width: 40%'>".$description.":	</td>
-				<td class='forumheader3' style='width: 60%; white-space: nowrap'>
+				<td style='width: 40%'>".$description.":	</td>
+				<td style='width: 60%; white-space: nowrap'>
 				".$uc->uc_dropdown('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'],"nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
 			if($this -> notify_prefs['event'][$id]['class'] == 'email')

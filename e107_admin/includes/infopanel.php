@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-08 01:29:53 $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-08 06:58:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -115,7 +115,14 @@ $text .= "
 	<div id='core-infopanel_news' class='adminedit' >
 	<div style='border:1px solid silver;margin:10px'>
 	<div class='main_caption bevel left'><b>e107 News</b></div>
-	<div class='left block-text'>
+	<div class='left block-text'>";
+    /*
+	require_once(e_HANDLER.'xml_class.php');
+	$xml = new xmlClass;
+	$vars = $xml->loadXMLfile('http://www.e107.org/e107_plugins/rss_menu/rss.php?1.2', true, true);
+	$text .= print_r($vars,TRUE);*/
+
+	$text .= "
     RSS News feed from e107.org goes here.
 	</div>
 	</div>

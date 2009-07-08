@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-07-07 06:26:50 $
+ * $Revision: 1.30 $
+ * $Date: 2009-07-08 06:58:00 $
  * $Author: e107coders $
  *
 */
@@ -649,6 +649,8 @@ class e_form
 
 	function filterValue($type,$fields)
 	{
+
+
 		if($type)
 		{
 

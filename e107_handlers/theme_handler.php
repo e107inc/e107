@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2009-07-07 22:56:12 $
+|     $Revision: 1.27 $
+|     $Date: 2009-07-08 06:58:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -733,11 +733,14 @@ class themeHandler{
 
     	$l = $this->themeArray[$theme];
 
-		foreach($l['layouts'] as $key=>$val)
+		if($l['layouts'])
 		{
-        	if(isset($val['@attributes']['default']) && ($val['@attributes']['default'] == "true"))
+			foreach($l['layouts'] as $key=>$val)
 			{
-            	return $key;
+	        	if(isset($val['@attributes']['default']) && ($val['@attributes']['default'] == "true"))
+				{
+	            	return $key;
+				}
 			}
 		}
 	}
@@ -831,11 +834,13 @@ class themeHandler{
 		}
   //      echo " <hr>".$path."<hr>";
 
+
+
 		foreach($themeContentsArray as $line)
 		{
         	if(strstr($line,"CUSTOMPAGES"))
 			{
-				eval(str_replace("$","\\$",$line));
+				eval(str_replace("$","\$",$line));
 			}
 		}
         if(is_array($CUSTOMPAGES))
