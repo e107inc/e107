@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-04 13:36:15 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-08 01:29:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -210,11 +210,14 @@ $text .= "
                         ".$icon['icon'].$frm->checkbox('e-mye107[]',$key, $checked). $icon['title']."</div>";
 					}
 
-					foreach($pluglist as $key=>$icon)
+					if(is_array($pluglist))
 					{
-						$checked = (in_array('p-'.$key,$user_pref['core-infopanel-mye107'])) ?  TRUE : FALSE;
-						$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
-                         ".$icon['icon'].$frm->checkbox('e-mye107[]', $key, $checked). $icon['title']."</div>";
+						foreach($pluglist as $key=>$icon)
+						{
+							$checked = (in_array('p-'.$key,$user_pref['core-infopanel-mye107'])) ?  TRUE : FALSE;
+							$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+	                         ".$icon['icon'].$frm->checkbox('e-mye107[]', $key, $checked). $icon['title']."</div>";
+						}
 					}
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-07 06:50:55 $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-08 01:29:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -63,12 +63,12 @@ class emailprint
 
 		if ($look == 0 || $look == 1) 
 		{
-			$ico_mail = (file_exists(THEME."images/".ICONMAIL) ? THEME_ABS."images/".ICONMAIL : e_IMAGE_ABS."generic/email.png");
+			$ico_mail = (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL) ? THEME_ABS."images/".ICONMAIL : e_IMAGE_ABS."generic/email.png");
 			$text_emailprint .= "<a href='".e_HTTP."email.php?".$email.".".$id."'><img src='".$ico_mail."' style='border:0' alt='".LAN_EMAIL_7."' title='".LAN_EMAIL_7."' /></a> ";
 		}
 		if ($look == 0 || $look == 2) 
 		{
-			$ico_print = (file_exists(THEME."images/".ICONPRINT) ? THEME_ABS."images/".ICONPRINT : e_IMAGE_ABS."generic/printer.png");
+			$ico_print = (defined("ICONPRINT") && file_exists(THEME."images/".ICONPRINT) ? THEME_ABS."images/".ICONPRINT : e_IMAGE_ABS."generic/printer.png");
 			$text_emailprint .= "<a href='".e_HTTP."print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='".LAN_PRINT_1."' title='".LAN_PRINT_1."' /></a>";
 		}
 		return $text_emailprint;
