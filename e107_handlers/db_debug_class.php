@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-07-20 17:08:24 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-08 01:29:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -476,16 +476,16 @@ class e107_db_debug {
 			<tr>
 			<td class='forumheader3'>\n";
 
-		ob_start();
-		echo "<pre>"; print_r($e107); echo "</pre>";
-		$text .= ob_get_contents();
-		ob_end_clean();
-
 		$text .= "e_HTTP: '".e_HTTP."'<br />";
 		$text .= "e_BASE: '".e_BASE."'<br />";
 		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
 		$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
 		$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
+
+
+  	  	$text .= "<pre>";
+        $text .= htmlspecialchars(print_r($e107,TRUE));
+	  	$text .= "</pre>";
 
 		$text .= "</td></tr></table>";
 		return $text;
