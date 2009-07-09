@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2009-07-09 02:47:12 $
+|     $Revision: 1.66 $
+|     $Date: 2009-07-09 22:12:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -188,7 +188,7 @@ class e107plugin
 					{
 						 // print_a($plug_info);
                      	$pluginDBList[$plugin_path]['status'] = 'update';
-						$pluginDBList[$plugin_path]['plugin_category'] = (isset($plug_info['category'])) ? $plug_info['category'] : "misc";
+						$pluginDBList[$plugin_path]['plugin_category'] = (varsettrue($plug_info['category']) ) ? $plug_info['category'] : "misc";
 					}
 
 
