@@ -9,7 +9,13 @@ $THEME_CORE_JSLIB = array(
 $register_sc[]='FS_ADMIN_ALT_NAV';
 $no_core_css = TRUE;
 
+define("STANDARDS_MODE",TRUE);
+
+
 function theme_head() {
+
+	global $theme_pref;
+
 	$ret = '';
 	$ret .= '
 		<link rel="stylesheet" href="'.THEME_ABS.'menu/menu.css" type="text/css" media="all" />
@@ -38,6 +44,18 @@ function theme_head() {
         }, document, true);
 
     </script>";
+
+    if(THEME_LAYOUT == "alternate") // as matched by $HEADER['alternate'];
+	{
+        $ret .= "<!-- Include Something --> ";
+	}
+
+	if($theme_pref['_blank_example'] == 3)  // Pref from admin -> thememanager.
+	{
+        $ret .= "<!-- Include Something Else --> ";
+	}
+
+
 	return $ret;
 }
 
@@ -91,7 +109,19 @@ function tablestyle($caption, $text, $mod) {
 	}
 }
 
-$HEADER = '';
-$FOOTER = '';
+$HEADER['default'] = '';
+$FOOTER['default'] = '';
+
+$HEADER['alternate'] = '';
+$FOOTER['alternate'] = '';
+
+/*
+
+	$CUSTOMHEADER, CUSTOMFOOTER and $CUSTOMPAGES are deprecated.
+	Default custom-pages can be assigned in theme.xml
+
+ */
+
+
 
 ?>

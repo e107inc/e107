@@ -4,7 +4,7 @@
 	<description>Blank e107 admin theme</description>
 	<compliance xhtml="true" css="true"/>
 	<layouts>
-		<layout name='3_column' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' requiredPlugins='chatbox' default='true' >
+		<layout name='default' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' requiredPlugins='chatbox' default='true' >
 		<menuPresets>
 				<area id='1' >
                 	<menu name='login' />
@@ -17,6 +17,8 @@
 				</area>
 			</menuPresets>
 		</layout>
-		<layout name='2_column' title='2 Columns' preview='preview.jpg' previewFull='preview_full.png' />
+		<layout name='alternate' title='2 Columns' preview='preview.jpg' previewFull='preview_full.png' >
+		<custompages>usersettings.php</custompages>
+		</layout>
 	</layouts>
 </e107Theme>

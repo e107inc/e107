@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2009-07-09 11:37:36 $
+|     $Revision: 1.31 $
+|     $Date: 2009-07-09 20:51:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -431,7 +431,6 @@ class themeHandler{
 
 	function renderThemeHelp()
 	{
-
 		if(function_exists($this->id."_help"))
 		{
    			return call_user_func($this->id."_help");
@@ -444,7 +443,7 @@ class themeHandler{
 	{
 		global $theme_pref;
         $this -> loadThemeConfig();
-		
+
 		$confile = e_THEME.$this->id."/".$this->id."_config.php";
 
 		if(function_exists($this->id."_process"))
@@ -515,7 +514,7 @@ class themeHandler{
 		<h2 class='caption'>".$theme['name']."</h2>
         <div class='admintabs' id='tab-container'>";
 
-        if(function_exists($theme['name']."_help"))
+        if(function_exists($this->id."_help"))
 		{
 			$text .= "
 				<ul class='e-tabs e-hideme' id='core-thememanager-tabs'>
