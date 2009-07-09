@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-06 05:59:42 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-09 11:37:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ require_once("auth.php");
 require_once(e_HANDLER."theme_handler.php");
 $themec = new themeHandler;
 
-$mode = e_QUERY;
+$mode = (e_QUERY) ? e_QUERY :"main" ;
 
 if($_POST['selectadmin'])
 {
@@ -44,8 +44,11 @@ if($_POST['selectmain'])
 $themec -> showThemes($mode);
 
 
+require_once("footer.php");
+
 function theme_adminmenu()
 {
+	global $mode;
    	$e107 = &e107::getInstance();
 
 		$var['main']['text'] = TPVLAN_33;
@@ -63,10 +66,10 @@ function theme_adminmenu()
         $selected = (e_QUERY) ? e_QUERY : "main";
 
 
-		e_admin_menu(TPVLAN_26, $selected, $var);
+		e_admin_menu(TPVLAN_26, $mode, $var);
 }
 
-require_once("footer.php");
+
 
 
 
