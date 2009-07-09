@@ -726,11 +726,13 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 /******** Block Elements */
 .block { border: 1px solid #DDDDDD; margin-bottom: 10px;}
 .block-text { padding: 10px 10px 10px; }
-.block h2.caption, .block h4.caption { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
+.block h2.caption, .block h4.caption { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD;  }
 .page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
 .page-info p { padding: 10px; }
 
 /***** Admin Info Panel Buttons **/
+
+h2.caption {  font-size: 200%; font-weight:bold; }
 
 .core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
 .core-mainpanel-link-text { font-weight:bold; text-decoration: none; padding:3px }

@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.6 2009-07-09 02:47:12 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.7 2009-07-09 08:31:37 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -923,7 +923,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.6 2009-07-09 02:47:12 e107coders Exp $
+		* $Id: admin_shortcodes_class.php,v 1.7 2009-07-09 08:31:37 e107coders Exp $
 		*/
 
 		if (ADMIN)
@@ -1258,6 +1258,25 @@ class admin_shortcodes
 
        //     print_a($menu_vars);
 		// ------------------------------------------------------------------
+
+		$menu_vars['home']['text'] = ADLAN_53;
+		$menu_vars['home']['link'] = e_BASE.'index.php';
+		$menu_vars['home']['image'] = "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+		$menu_vars['home']['image_src'] = ADLAN_151;
+		$menu_vars['home']['perm'] = '';
+
+		$menu_vars['logout']['text'] = ADLAN_46;
+		$menu_vars['logout']['link'] = e_ADMIN_ABS.'admin.php?logout';
+		$menu_vars['logout']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+		$menu_vars['logout']['image_src'] = ADLAN_46;
+		$menu_vars['logout']['perm'] = '';
+
+        	 //	$text .= adnav_cat(ADLAN_53, e_BASE.'index.php', E_16_NAV_LEAV);
+			//	$text .= adnav_cat(ADLAN_46, e_ADMIN.'admin.php?logout', E_16_NAV_LGOT);
+
+
+
+
 
 		return e_admin_menu('', '', $menu_vars, $$tmpl, false, false);
 	}
