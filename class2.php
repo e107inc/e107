@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.104 $
-* $Date: 2009-07-09 08:31:36 $
-* $Author: e107coders $
+* $Revision: 1.105 $
+* $Date: 2009-07-09 21:22:52 $
+* $Author: e107steved $
 *
 */
 //
@@ -1455,7 +1455,6 @@ function init_session()
 		define('ADMIN', false);
 		define('GUEST', true);
 		define('USERCLASS', '');
-		define('USERCLASS_LIST', class_list());
 		define('USEREMAIL', '');
 	}
 	else
@@ -1493,7 +1492,6 @@ function init_session()
 			define('USEREMAIL', $result['user_email']);
 			define('USER', true);
 			define('USERCLASS', $result['user_class']);
-			define('USERCLASS_LIST', class_list());
 			define('USERVIEWED', $result['user_viewed']);
 			define('USERIMAGE', $result['user_image']);
 			define('USERPHOTO', $result['user_sess']);
@@ -1526,13 +1524,30 @@ function init_session()
 			  exit;
 			}
 
+			if ($result['user_admin']) 
+			{
+				define('ADMIN', TRUE);
+				define('ADMINID', $result['user_id']);
+				define('ADMINNAME', $result['user_name']);
+				define('ADMINPERMS', $result['user_perms']);
+				define('ADMINEMAIL', $result['user_email']);
+				define('ADMINPWCHANGE', $result['user_pwchange']);
+			} 
+			else 
+			{
+				define('ADMIN', FALSE);
+			}
+
 			if($result['user_prefs'])
 			{
                $user_pref =	(substr($result['user_prefs'],0,5) == "array") ? $eArrayStorage->ReadArray($result['user_prefs']) : unserialize($result['user_prefs']);
 			}
 
 
-   			if (check_class(varset($pref['allow_theme_select'],FALSE)))  // This check doesn't work, because it relies on the definitions for USER, ADMIN, USERCLASS_LIST etc that haven't been defined yet..
+
+
+			$tempClasses = class_list();
+			if (check_class(varset($pref['allow_theme_select'],FALSE), $tempClasses))
 			{	// User can set own theme
  				if (isset($_POST['settheme']))
 				{
@@ -1563,20 +1578,7 @@ function init_session()
 			
 
 			define('USERTHEME', (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : false));
-			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
-			if ($result['user_admin'])
-			{
-				define('ADMIN', true);
-				define('ADMINID', $result['user_id']);
-				define('ADMINNAME', $result['user_name']);
-				define('ADMINPERMS', $result['user_perms']);
-				define('ADMINEMAIL', $result['user_email']);
-				define('ADMINPWCHANGE', $result['user_pwchange']);
-			}
-			else
-			{
-				define('ADMIN', false);
-			}
+//			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
 		}
 		else
 		{
@@ -1586,10 +1588,10 @@ function init_session()
 			define('ADMIN', false);
 			define('CORRUPT_COOKIE', true);
 			define('USERCLASS', '');
-			define('USERCLASS_LIST', class_list());
 		}
 	}
 
+	define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', '(^|,)('.str_replace(',', '|', USERCLASS_LIST).')(,|$)');
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 }
