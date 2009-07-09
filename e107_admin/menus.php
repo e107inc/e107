@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-07-09 08:31:37 $
+|     $Revision: 1.23 $
+|     $Date: 2009-07-09 11:37:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -35,49 +35,18 @@ if($_POST)
 	$e107cache->clear_sys("menus_");
 }
 
-$menus_equery = explode('.', e_QUERY);
-$curLayout = $menus_equery[1];
+	$tmp = explode('.', e_QUERY);
+	$curLayout = ($tmp[1]) ? $tmp[1] : $pref['sitetheme_deflayout'] ;
 
-if (isset($_POST['custom_select']))
-{
-	$curLayout = $_POST['custom_select'];
-	//header("location:".e_SELF."?".$_POST['custom_select']);
-	//exit;
-}
- else if (!isset($curLayout))
-{
-	$curLayout = $pref['sitetheme_deflayout'];
-}
+  if(isset($_POST['custom_select']))
+  {
+	$curLayout =  $_POST['custom_select'];
+  }
 
 
-/*if ($curLayout == '' || $curLayout == 'default_layout')
-{
-	$menus_header = is_array($HEADER) ? $HEADER[$pref['sitetheme_deflayout']] : $HEADER;
-	$menus_footer = is_array($FOOTER) ? $FOOTER[$pref['sitetheme_deflayout']] : $FOOTER;
-}
-else if ($curLayout == 'legacyCustom')
-{
-	$menus_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
-	$menus_footer = $CUSTOMFOOTER ? $CUSTOMFOOTER : $FOOTER;
-}
-else if ($curLayout == 'newsheader_layout')
-{
-	$menus_header = $NEWSHEADER ? $NEWSHEADER : $HEADER;
-	$menus_footer = $FOOTER;
-}
-elseif(is_array($HEADER) || is_array($FOOTER))   // 0.8 themes
-{
-	$menus_header = (is_array($HEADER) && isset($HEADER[$curLayout])) ? $HEADER[$curLayout] : $HEADER;
-	$menus_footer = (is_array($FOOTER) && isset($FOOTER[$curLayout])) ? $FOOTER[$curLayout] : $FOOTER;
+   // Almost the same code as found in templates/header_default.php  ---------
 
-}
-else
-{
-	$menus_header = $CUSTOMHEADER[$curLayout] ? $CUSTOMHEADER[$curLayout] :	$HEADER;
-	$menus_footer = $CUSTOMFOOTER[$curLayout] ? $CUSTOMFOOTER[$curLayout] : $FOOTER;
-}
-*/
-   // Almost the same code as found in templates/header_default.php
+
 	if(($curLayout == 'legacyCustom' || $curLayout=='legacyDefault') && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
 	{
 	 	if($curLayout == 'legacyCustom')
@@ -99,60 +68,161 @@ else
 		$FOOTER = $FOOTER[$curLayout];
 	}
 
-	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
+    // ------------------------------------------------------------------------
+
+
+	$layouts_str = $HEADER.$FOOTER;
+
+
+	if ($NEWSHEADER)
 	{
-	   //	parseheader($NEWSHEADER);
+		$layouts_str .= $NEWSHEADER;
 	}
-	else
+
+	$menu_array = parseheader($layouts_str, 'check');
+
+
+	sort($menu_array, SORT_NUMERIC);
+	$menu_check = 'set';
+	foreach ($menu_array as $menu_value)
 	{
-      //	parseheader($HEADER);
+		if ($menu_value != $menu_check)
+		{
+			$menu_areas[] = $menu_value;
+		}
+		$menu_check = $menu_value;
 	}
 
-
- $layouts_str = $HEADER.$FOOTER;
- $menus_header = $HEADER;
- $menus_footer = $FOOTER;
-
-
-if ($NEWSHEADER)
-{
-	$layouts_str .= $NEWSHEADER;
-}
-
-$menu_array = parseheader($layouts_str, 'check');
-
-
-sort($menu_array, SORT_NUMERIC);
-$menu_check = 'set';
-foreach ($menu_array as $menu_value)
-{
-	if ($menu_value != $menu_check)
+	// Cams Bit ----------- Activate Multiple Menus ---
+	if($_POST['menuActivate'])
 	{
-		$menu_areas[] = $menu_value;
+		menuActivate();
+
 	}
-	$menu_check = $menu_value;
-}
 
-// Cams Bit ----------- Activate Multiple Menus ---
-if($_POST['menuActivate'])
+	if($_POST['menuSetCustomPages'])
+	{
+		menuSetCustomPages($_POST['custompages']);
+	}
+
+	if(isset($_POST['menuUsePreset']) && $_POST['curLayout'])
+	{
+
+		menuSetPreset();
+	}
+
+
+	if (isset($_POST['menuAct']))
+	{
+	  foreach ($_POST['menuAct'] as $k => $v)
+	  {
+		if (trim($v))
+		{
+		  $id = $k;
+		  list($menu_act, $location, $position, $newloc) = explode(".", $_POST['menuAct'][$k]);
+		}
+	  }
+	}
+
+	if ($menu_act == 'config')
+	{
+		if($newloc)
+		{
+			$newloc = ".".$newloc;
+		}
+		$newurl = $PLUGINS_DIRECTORY.$location."/{$position}{$newloc}.php";
+		$newurl = SITEURL.str_replace("//", "/", $newurl);
+		echo "<script type='text/javascript'>	top.location.href = '{$newurl}'; </script> ";
+		exit;
+	}
+
+	if ($menu_act == "adv")
+	{
+		menuVisibilityOptions();
+	}
+
+
+
+	unset($message);
+
+	if ($menu_act == "sv")
+	{
+		menuSaveVisibility();
+
+	}
+
+	if ($menu_act == "move")
+	{
+	 	menuMove();
+	}
+
+	if ($menu_act == "deac")
+	{
+	 	menuDeactivate();
+	}
+
+	if ($menu_act == "bot")
+	{
+		$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='{$location}' AND menu_layout = '$curLayout'  ");
+		$sql->db_Update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='{$position}' AND menu_location='{$location}' AND menu_layout = '$curLayout'  ");
+		$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout = '$curLayout' ");
+		$admin_log->log_event('MENU_06',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
+	}
+
+	if ($menu_act == "top")
+	{
+		$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_location='{$location}' AND menu_order < {$position} AND menu_layout = '$curLayout' ");
+		$sql->db_Update("menus", "menu_order=1 WHERE menu_id='{$id}' ");
+		$admin_log->log_event('MENU_05',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
+	}
+
+	if ($menu_act == "dec")
+	{
+		$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='{$location}' AND menu_layout = '$curLayout' ");
+		$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='{$id}' AND menu_location='{$location}' AND menu_layout = '$curLayout' ");
+		$admin_log->log_event('MENU_08',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
+	}
+
+	if ($menu_act == "inc")
+	{
+		$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='{$location}' AND menu_layout = '$curLayout' ");
+		$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='{$id}' AND menu_location='{$location}' AND menu_layout = '$curLayout' ");
+		$admin_log->log_event('MENU_07',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
+	}
+
+	if (strpos(e_QUERY, 'configure') === FALSE)
+	{  // Scan plugin directories to see if menus to add
+	    menuScanMenus();
+	}
+
+	if ($message != "")
+	{
+		echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
+	}
+
+
+	if (strpos(e_QUERY, 'configure') === FALSE)
+	{
+		$cnt = $sql->db_Select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
+		$text = "<iframe id='menu_iframe' src='".e_SELF."?configure.$curLayout' width='100%' style='width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
+	   	$ns -> tablerender(MENLAN_35, $text, 'menus_config');
+	}
+	else // Within the IFrame.
+	{
+
+	    echo menuSelectLayout();
+		menuRenderPage();
+
+	}
+
+
+
+
+// ----------------------------------------------------------------------------
+
+function menuSetPreset()
 {
-	menuActivate();
-
-}
-
-if($_POST['menuSetCustomPages'])
-{
-	menuSetCustomPages($_POST['custompages']);
-}
-
-
-
-
-
-
-if(isset($_POST['menuUsePreset']) && $_POST['curLayout'])
-{
-	global $pref;
+	global $pref,$sql,$location,$admin_log;
 	$layout = ($_POST['curLayout'] != $pref['sitetheme_deflayout']) ? $_POST['curLayout'] : "";
     $menuAreas = getMenuPreset($_POST['curLayout']);
 
@@ -178,187 +248,86 @@ if(isset($_POST['menuUsePreset']) && $_POST['curLayout'])
          }
 	}
 
-
-
 }
 
-// =============
 
-if (isset($_POST['menuAct']))
+// ----------------------------------------------------------------------------
+
+function menuScanMenus()
 {
-  foreach ($_POST['menuAct'] as $k => $v)
-  {
-	if (trim($v))
-	{
-	  $id = $k;
-	  list($menu_act, $location, $position, $newloc) = explode(".", $_POST['menuAct'][$k]);
-	}
-  }
-}
+	global $sql, $sql2, $menu_areas;
 
-if ($menu_act == 'config')
-{
-	if($newloc)
-	{
-		$newloc = ".".$newloc;
-	}
-	$newurl = $PLUGINS_DIRECTORY.$location."/{$position}{$newloc}.php";
-	$newurl = SITEURL.str_replace("//", "/", $newurl);
-	echo "<script type='text/javascript'>	top.location.href = '{$newurl}'; </script> ";
-	exit;
-}
-
-if ($menu_act == "adv")
-{
-	menuVisibilityOptions();
-}
-
-
-
-unset($message);
-
-if ($menu_act == "sv")
-{
-	menuSaveVisibility();
-
-}
-
-
-
-
-if ($menu_act == "move")
-{
- 	menuMove();
-}
-
-if ($menu_act == "deac")
-{
- 	menuDeactivate();
-}
-
-if ($menu_act == "bot")
-{
-	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='{$location}' AND menu_layout = '$curLayout'  ");
-	$sql->db_Update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='{$position}' AND menu_location='{$location}' AND menu_layout = '$curLayout'  ");
-	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout = '$curLayout' ");
-	$admin_log->log_event('MENU_06',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
-}
-
-if ($menu_act == "top")
-{
-	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_location='{$location}' AND menu_order < {$position} AND menu_layout = '$curLayout' ");
-	$sql->db_Update("menus", "menu_order=1 WHERE menu_id='{$id}' ");
-	$admin_log->log_event('MENU_05',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
-}
-
-if ($menu_act == "dec")
-{
-	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='{$location}' AND menu_layout = '$curLayout' ");
-	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='{$id}' AND menu_location='{$location}' AND menu_layout = '$curLayout' ");
-	$admin_log->log_event('MENU_08',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
-}
-
-if ($menu_act == "inc")
-{
-	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='{$location}' AND menu_layout = '$curLayout' ");
-	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='{$id}' AND menu_location='{$location}' AND menu_layout = '$curLayout' ");
-	$admin_log->log_event('MENU_07',$location.'[!br!]'.$position.'[!br!]'.$id,E_LOG_INFORMATIVE,'');
-}
-
-if (strpos(e_QUERY, 'configure') === FALSE)
-{  // Scan plugin directories to see if menus to add
-	$efile = new e_file;
-	$efile->dirFilter = array('/', 'CVS', '.svn', 'languages');
-	$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
-	foreach($fileList as $file)
-	{
-	  list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
-	  $file['path'] = str_replace(e_PLUGIN,"",$file['path']);
-	  $file['fname'] = str_replace(".php","",$file['fname']);
-	  $valid_menu = FALSE;
-	  $existing_menu = $sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
-	  if (file_exists(e_PLUGIN.$parent_dir."/plugin.xml") ||
-		file_exists(e_PLUGIN.$parent_dir."/plugin.php"))
-	  {
-//		include(e_PLUGIN.$parent_dir."/plugin.php");
-		if (isset($pref['plug_installed'][$parent_dir]))
-//		if ($sql->db_Select("plugin", "*", "plugin_path='".$eplug_folder."' AND plugin_installflag='1' "))
-		{  // Its a 'new style' plugin with a plugin.php file, or an even newer one with plugin.xml file - only include if plugin installed
-		  $valid_menu = TRUE;		// Whether new or existing, include in list
-		}
-	  }
-	  else
-	  {  // Just add the menu anyway
-		  $valid_menu = TRUE;
-	  }
-	  if ($valid_menu)
-	  {
-	    $menustr .= "&".str_replace(".php", "", $file['fname']);
-		if (!$existing_menu)
-		{  // New menu to add to list
-			  if($sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}', ''"))
-			  {
-			  		// Could do admin logging here - but probably not needed
-			  	$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
-			  }
-		}
-	  }
-	}
-
-	//Reorder all menus into 1...x order
-	if (!is_object($sql2)) $sql2 = new db;		// Shouldn't be needed
-	foreach ($menu_areas as $menu_act)
-	{
-		if ($sql->db_Select("menus", "menu_id", "menu_location={$menu_act} ORDER BY menu_order ASC"))
+		$efile = new e_file;
+		$efile->dirFilter = array('/', 'CVS', '.svn', 'languages');
+		$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
+		foreach($fileList as $file)
 		{
-			$c = 1;
-			while ($row = $sql->db_Fetch())
+		  list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
+		  $file['path'] = str_replace(e_PLUGIN,"",$file['path']);
+		  $file['fname'] = str_replace(".php","",$file['fname']);
+		  $valid_menu = FALSE;
+		  $existing_menu = $sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
+		  if (file_exists(e_PLUGIN.$parent_dir."/plugin.xml") ||
+			file_exists(e_PLUGIN.$parent_dir."/plugin.php"))
+		  {
+	//		include(e_PLUGIN.$parent_dir."/plugin.php");
+			if (isset($pref['plug_installed'][$parent_dir]))
+	//		if ($sql->db_Select("plugin", "*", "plugin_path='".$eplug_folder."' AND plugin_installflag='1' "))
+			{  // Its a 'new style' plugin with a plugin.php file, or an even newer one with plugin.xml file - only include if plugin installed
+			  $valid_menu = TRUE;		// Whether new or existing, include in list
+			}
+		  }
+		  else
+		  {  // Just add the menu anyway
+			  $valid_menu = TRUE;
+		  }
+		  if ($valid_menu)
+		  {
+		    $menustr .= "&".str_replace(".php", "", $file['fname']);
+			if (!$existing_menu)
+			{  // New menu to add to list
+				  if($sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}', ''"))
+				  {
+				  		// Could do admin logging here - but probably not needed
+				  	$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
+				  }
+			}
+		  }
+		}
+
+		//Reorder all menus into 1...x order
+		if (!is_object($sql2)) $sql2 = new db;		// Shouldn't be needed
+		foreach ($menu_areas as $menu_act)
+		{
+			if ($sql->db_Select("menus", "menu_id", "menu_location={$menu_act} ORDER BY menu_order ASC"))
 			{
-				$sql2->db_Update("menus", "menu_order={$c} WHERE menu_id=".$row['menu_id']);
-				$c++;
+				$c = 1;
+				while ($row = $sql->db_Fetch())
+				{
+					$sql2->db_Update("menus", "menu_order={$c} WHERE menu_id=".$row['menu_id']);
+					$c++;
+				}
 			}
 		}
-	}
 
-	$sql->db_Select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
-	while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch(MYSQL_NUM))
-	{
-		if (stristr($menustr, $menu_name) === FALSE)
+		$sql->db_Select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
+		while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch(MYSQL_NUM))
 		{
-			$sql2->db_Delete("menus", "menu_name='$menu_name'");
-			$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
+			if (stristr($menustr, $menu_name) === FALSE)
+			{
+				$sql2->db_Delete("menus", "menu_name='$menu_name'");
+				$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
+			}
 		}
-	}
+
+		echo $message;
 }
-
-if ($message != "")
-{
-	echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
-}
-
-
-if (strpos(e_QUERY, 'configure') === FALSE)
-{
-	$cnt = $sql->db_Select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
-    $text .= "COUNT = ".$cnt;
-
-	$text = "<iframe id='menu_iframe' src='".e_SELF."?configure.$curLayout' width='100%' style='width: 100%; height: ".(($cnt*80)+600)."px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
-	echo $ns -> tablerender(MENLAN_35, $text, 'menus_config');
-}
-else // Within the IFrame.
-{
-
-    echo menuSelectLayout();
-	menuRenderPage();
-
-}
-
 
 // ---------------------------------------------------------------------------
 
 function menuVisibilityOptions()
 {
-	global $sql,$ns,$id;
+	global $sql,$ns,$id,$curLayout;
 	require_once(e_HANDLER."userclass_class.php");
 	$sql->db_Select("menus", "*", "menu_id=".$id);
 	$row = $sql->db_Fetch();
@@ -393,10 +362,12 @@ function menuVisibilityOptions()
 	</div>";
 	$caption = MENLAN_7." ".$row['menu_name'];
 	$ns->tablerender($caption, $text);
-
-
-
 }
+
+
+
+// -----------------------------------------------------------------------------
+
 
 function menuActivate()
 {
@@ -431,6 +402,11 @@ function menuActivate()
 	}
 }
 
+
+
+// -----------------------------------------------------------------------------
+
+
 function menuSetCustomPages($array)
 {
 	global $pref;
@@ -438,6 +414,9 @@ function menuSetCustomPages($array)
 	$pref['sitetheme_custompages'][$key] = array_filter(explode(" ",$array[$key]));
 	save_prefs();
 }
+
+
+// ------------------------------------------------------------------------------
 
 function getMenuPreset($layout)
 {
@@ -470,6 +449,9 @@ function getMenuPreset($layout)
 
 }
 
+
+// ------------------------------------------------------------------------------
+
 function checkMenuPreset($array,$name)
 {
 	if(!is_array($array))
@@ -486,10 +468,6 @@ function checkMenuPreset($array,$name)
 
     return FALSE;
 }
-
-
-
-
 
 
 
@@ -584,9 +562,9 @@ function menuMove()
 
 function menuRenderPage()
 {
-	global $sql, $ns, $menus_header, $menus_footer, $frm, $curLayout, $pref, $tp, $menu_areas;
+	global $sql, $ns, $HEADER, $FOOTER, $frm, $curLayout, $pref, $tp, $menu_areas;
 
-	parseheader($menus_header);  // $layouts_str;
+	parseheader($HEADER);  // $layouts_str;
 
 	$layout = ($curLayout) ? $curLayout : $pref['sitetheme_deflayout'];
 	$menuPreset = getMenuPreset($layout);
@@ -653,7 +631,7 @@ function menuRenderPage()
 	echo $frm->form_close();
 	echo "</div>";
 
-	parseheader($menus_footer);
+	parseheader($FOOTER);
 }
 
 
@@ -663,10 +641,10 @@ function menuRenderPage()
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function menuSelectLayout()
 {
-	global $frm, $curLayout, $menus_equery, $pref, $HEADER,  $CUSTOMHEADER, $CUSTOMFOOTER, $CUSTOMPAGES;
+	global $frm, $curLayout, $pref, $HEADER,  $CUSTOMHEADER, $CUSTOMFOOTER, $CUSTOMPAGES;
 
 	$text .= "<form  method='post' action='".e_SELF."?configure.".$curLayout."'>";
-	$text .= "<div style='color:white;background-color:black;width:99%;left:0px;position:relative;display:block;padding:15px;text-align:center'>".MENLAN_30." ";
+	$text .= "<div style='color:white;background-color:black;width:98%;display:block;padding:15px;text-align:center'>".MENLAN_30." ";
     $text .= "<select style='color:black' name='custom_select' onchange=\"this.form.submit()\">\n";
 
     $search = array("_","legacyDefault","legacyCustom");
@@ -805,7 +783,7 @@ function parseheader($LAYOUT, $check = FALSE)
 
 function checklayout($str,$curLayout)
 {	// Displays a basic representation of the theme
-	global $pref, $menu_areas, $ns, $PLUGINS_DIRECTORY, $frm, $sc_style, $tp, $menu_order, $menus_equery;
+	global $pref, $menu_areas, $ns, $PLUGINS_DIRECTORY, $frm, $sc_style, $tp, $menu_order;
 
     $menuLayout = ($curLayout != $pref['sitetheme_deflayout']) ? $curLayout : "";
 

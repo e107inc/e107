@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2009-07-09 08:31:38 $
+|     $Revision: 1.30 $
+|     $Date: 2009-07-09 11:37:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -33,11 +33,15 @@ class themeHandler{
    		require_once(e_HANDLER."form_handler.php");
 		$this->frm = new e_form(); //enable inner tabindex counter
 
+
+
 		if (isset($_POST['upload'])) {
 			$this -> themeUpload();
 		}
 
 		$this -> themeArray = $this -> getThemes();
+
+
 
 		foreach($_POST as $key => $post)
 		{
@@ -62,6 +66,7 @@ class themeHandler{
 			}
 		}
 
+
 		if(isset($_POST['submit_adminstyle']))
 		{
  			$this -> id = $_POST['curTheme'];
@@ -73,7 +78,7 @@ class themeHandler{
 		{
 			$this -> id = $_POST['curTheme'];
 			$this -> setStyle();
-			$this -> SetCustomPages($_POST['custompages']);
+		 	$this -> SetCustomPages($_POST['custompages']);
 
 		}
 
@@ -395,36 +400,59 @@ class themeHandler{
         return $text;
 	}
 
-	function renderThemeConfig()  // process custom theme configuration - TODO.
-	{
-			global $frm;
-   			$confile = e_THEME.$this->id."/".$this->id."_config.php";
-	       	if(is_readable($confile))
-		   	{
-	       		include_once($confile);
-				if(function_exists($this->id."_config"))
-				{
-	            	$var = call_user_func($this->id."_config");
-                    foreach($var as $val)
-					{
-	                	$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
-					}
-					return $text;
-				}
-	  	   	}
-	}
-
-	function setThemeConfig()
+    function loadThemeConfig()
 	{
 		$confile = e_THEME.$this->id."/".$this->id."_config.php";
 
-      	include($confile);
+		if(is_readable($confile) && !function_exists($this->id."_config"))
+		{
+			include($confile);
+        }
+	}
+
+
+
+	function renderThemeConfig()  // process custom theme configuration - TODO.
+	{
+			global $frm;
+
+			if(function_exists($this->id."_config"))
+			{
+	        	$var = call_user_func($this->id."_config");
+                foreach($var as $val)
+				{
+	            	$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
+				}
+				return $text;
+			}
+
+	}
+
+
+	function renderThemeHelp()
+	{
+
+		if(function_exists($this->id."_help"))
+		{
+   			return call_user_func($this->id."_help");
+		}
+	}
+
+
+
+	function setThemeConfig()
+	{
+		global $theme_pref;
+        $this -> loadThemeConfig();
+		
+		$confile = e_THEME.$this->id."/".$this->id."_config.php";
+
 		if(function_exists($this->id."_process"))
 		{
-        	$text = call_user_func($this->id."_process");
+        	$text  = call_user_func($this->id."_process");
 	 	}
 
-		return $text;
+	  	return $text;
 	}
 
 	function renderTheme($mode=FALSE, $theme)
@@ -470,6 +498,9 @@ class themeHandler{
 		}
 
     	$this->id = $theme['path'];
+
+		$this->loadThemeConfig();   // load customn theme configuration fieldss.
+
 		$menuPresetCount = 0;
   		foreach($theme['layouts'] as $key=>$val)
 		{
@@ -480,8 +511,21 @@ class themeHandler{
 		}
 
 
-		$text = "<div class='block' >
+		$text = "
 		<h2 class='caption'>".$theme['name']."</h2>
+        <div class='admintabs' id='tab-container'>";
+
+        if(function_exists($theme['name']."_help"))
+		{
+			$text .= "
+				<ul class='e-tabs e-hideme' id='core-thememanager-tabs'>
+				<li id='tab-thememanager-configure'><a href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>
+				<li id='tab-thememanager-help'><a href='#core-thememanager-help'>".LAN_HELP."</a></li>
+			</ul>";
+		}
+
+		$text .= "
+		<div id='core-thememanager-configure'>
 		<table class='adminlist'>
 		<tr><td colspan='3'></td></tr>
 		<tr><td><b>".TPVLAN_11."</b></td><td>".$theme['version']."</td>
@@ -538,12 +582,8 @@ class themeHandler{
 
 
 
-        if($theme['layouts'] && $mode==1)  // New in 0.8   ----
+        if(count($theme['layouts'])>1 && $mode==1)  // New in 0.8   ----
 		{
-
-
-
-
 
             $itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
@@ -699,7 +739,13 @@ class themeHandler{
 
 
 
-		</div>\n";
+		</div>
+
+
+			<div id='core-thememanager-help'  >".$this->renderThemeHelp()."</div>
+
+        </div>
+		\n";
 
 		return $text;
 	}
@@ -718,7 +764,7 @@ class themeHandler{
 			}
 			else
 			{
-               $text .= "<a href='".e_ADMIN."plugin.php'>".$plug."</a> ".ADMIN_FALSE_ICON;
+               $text .= "<a href='".e_ADMIN."plugin.php?avail'>".$plug."</a> ".ADMIN_FALSE_ICON;
 			}
             $text .= "&nbsp;&nbsp;";
 		}
@@ -809,9 +855,9 @@ class themeHandler{
 
 		$e107cache->clear_sys();
 		save_prefs();
-        $custom_message = $this -> setThemeConfig();
+        $this -> setThemeConfig();
 		$this->theme_adminlog('03',$pref['image_preload'].', '.$pref['themecss']);
-		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_37.".<br />".$custom_message."</div><br />");
+		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_37.".<br /></div><br />");
 	}
 
 	function setAdminStyle()

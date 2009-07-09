@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.18 2009-07-09 02:47:12 e107coders Exp $
+ * $Id: lan_admin.php,v 1.19 2009-07-09 11:37:36 e107coders Exp $
  *
  * Admin Language File
 */
@@ -12,7 +12,7 @@ define("ADLAN_3", "News items List");
 define("ADLAN_3a", "News Settings");
 define("ADLAN_4", "Preferences");
 define("ADLAN_5", "Edit Site Preferences");
-define("ADLAN_6", "Menus");
+define("ADLAN_6", "Menu Manager");
 define("ADLAN_7", "Alter the order of your menus");
 define("ADLAN_8", "Administrators");
 define("ADLAN_9", "Add/delete site administrators");
@@ -291,6 +291,8 @@ define("LAN_UNCHECKALL", 'Uncheck All');
 define("LAN_USERCLASS", "Userclass");
 define("LAN_AUTHOR",	"Author");
 define("LAN_CATEGORY", "Category");
+
+define("LAN_HELP", "Help");
 
 
 ?>
