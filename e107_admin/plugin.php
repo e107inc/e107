@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2009-07-07 07:25:26 $
+|     $Revision: 1.28 $
+|     $Date: 2009-07-09 02:47:10 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -57,7 +57,7 @@ class pluginManager{
         global $user_pref,$admin_log,$ns;
 
         $tmp = explode('.', e_QUERY);
-	  	$this -> action = $tmp[0];
+	  	$this -> action = ($tmp[0]) ? $tmp[0] : "installed";
 		$this -> id = intval($tmp[1]);
 
 
@@ -68,6 +68,7 @@ class pluginManager{
 				"plugin_name"			=> array("title" => EPL_ADLAN_10, "type"=>"text", "width" => "30", "thclass" => "middle", "url" => ""),
  				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "middle", "url" => ""),
     			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle", "url" => ""),
+				"plugin_category"		=> array("title" => LAN_CATEGORY, "type"=>"text", "width" => "15%", "thclass" => "middle", "url" => ""),
                 "plugin_author"			=> array("title" => EPL_ADLAN_12, "type"=>"text", "width" => "auto", "thclass" => "middle", "url" => ""),
   				"plugin_website"		=> array("title" => EPL_WEBSITE, "type"=>"url", "width" => "5%", "thclass" => "middle center", "url" => ""),
 				"plugin_notes"			=> array("title" => EPL_ADLAN_83, "type"=>"url", "width" => "5%", "thclass" => "middle center", "url" => ""),
@@ -88,17 +89,9 @@ class pluginManager{
 			save_prefs('user');
 		}
 
-        $this -> fieldpref = (is_array($user_pref['admin_pluginmanager_columns'])) ? $user_pref['admin_pluginmanager_columns'] : array("plugin_icon","plugin_name","plugin_version","plugin_description","plugin_author","plugin_website","plugin_notes");
+        $this -> fieldpref = (is_array($user_pref['admin_pluginmanager_columns'])) ? $user_pref['admin_pluginmanager_columns'] : array("plugin_icon","plugin_name","plugin_version","plugin_description","plugin_category","plugin_author","plugin_website","plugin_notes");
 
-		if(isset($_POST['install-selected']))
-		{
-        	foreach($_POST['plugin_checkbox'] as $val)
-			{
-            	$this -> id = intval($val);
-                $this -> pluginInstall();
-			}
-      		$this -> action = "installed";
-		}
+
 
 /*		if(isset($_POST['uninstall-selected']))
 		{
@@ -115,11 +108,20 @@ class pluginManager{
 		}*/
 
 
+       /*
+        if($this->action == 'avail' || $this->action == 'installed')   // Plugin Check is done during upgrade_routine.
+		{
+			$this -> pluginCheck();
+		}
+		*/
+
+
 		if($this->action == "uninstall")
 		{
 
         	$this -> pluginUninstall();
-            $this -> action = "installed";
+
+
 		}
 
         if($this->action == "install")
@@ -151,15 +153,27 @@ class pluginManager{
 			$ns->tablerender(NWSLAN_4, $emessage->render());
 		}
 
+		if(isset($_POST['install-selected']))
+		{
+        	foreach($_POST['plugin_checkbox'] as $val)
+			{
+            	$this -> id = intval($val);
+                $this -> pluginInstall();
+			}
+      		$this -> action = "installed";
+		}
+
         if($this->action != 'avail')
 		{
 			unset($this-> fields['plugin_checkboxes']);
 		}
 
-		if($this->action !='upload')
+		if($this->action !='upload' && $this->action !='uninstall')
 		{
 			$this -> pluginRenderList();
 		}
+
+
 
     }
 
@@ -172,7 +186,7 @@ class pluginManager{
 			if(!isset($_POST['uninstall_confirm']))
 			{	// $id is already an integer
 				$this->pluginConfirmUninstall($this->id);
-				exit;
+   				return;
 			}
 
 			$plug = $plugin->getinfo($this->id);
@@ -312,6 +326,8 @@ class pluginManager{
 			$this->show_message($text, E_MESSAGE_SUCCESS);
 		 //	$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
 			$text = '';
+			$this->action = "installed";
+			return;
 
    }
 
@@ -767,6 +783,7 @@ class pluginManager{
                     $text .= (in_array("plugin_name",$this->fieldpref)) ? "<td class='middle'>".$plugName."</td>" : "";
                     $text .= (in_array("plugin_version",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_version']."</td>" : "";
 					$text .= (in_array("plugin_folder",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_path']."</td>" : "";
+					$text .= (in_array("plugin_category",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_category']."</td>" : "";
                     $text .= (in_array("plugin_author",$this->fieldpref)) ? "<td class='middle'><a href='mailto:".$plugEmail."' title='".$plugEmail."'>".$plugAuthor."</a>&nbsp;</td>" : "";
                     $text .= (in_array("plugin_website",$this->fieldpref)) ? "<td class='center middle'>".($plugURL ? "<a href='{$plugURL}' title='{$plugURL}' ><img src='".e_IMAGE_ABS."admin_images/forums_16.png' alt='' style='border:0px' /></a>" : "")."</td>" : "";
                     $text .= (in_array("plugin_notes",$this->fieldpref)) ? "<td class='center middle'>".($plugReadme ? "<a href='".e_PLUGIN.$plug['plugin_path']."/".$plugReadme."' title='".$plugReadme."'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' style='border:0px' /></a>" : "&nbsp;")."</td>" : "";
@@ -976,8 +993,7 @@ class pluginManager{
 			</form>
 			";
 			$ns->tablerender(EPL_ADLAN_63." ".$tp->toHtml($plug_vars['name'], "", "defs,emotes_off, no_make_clickable"), $text);
-			require_once(e_ADMIN."footer.php");
-			exit;
+
 		}
 
         function show_message($message, $type = E_MESSAGE_INFO, $session = false)
@@ -986,30 +1002,37 @@ class pluginManager{
 			$emessage = &eMessage::getInstance();
 			$emessage->add($message, $type, $session);
 		}
+
+        function pluginOptions()
+		{
+		   //	$e107 = &e107::getInstance();
+
+				$var['installed']['text'] = EPL_ADLAN_22;
+				$var['installed']['link'] = e_SELF;
+
+				$var['avail']['text'] = EPL_ADLAN_23;
+				$var['avail']['link'] = e_SELF."?avail";
+
+				$var['upload']['text'] = EPL_ADLAN_38;
+				$var['upload']['link'] = e_SELF."?upload";
+
+				$keys = array_keys($var);
+
+				$action = (in_array($this->action,$keys)) ? $this->action : "installed";
+
+				e_admin_menu(ADLAN_98, $action, $var);
+		}
+
+
+
 } // end of Class.
 
 
 
 function plugin_adminmenu()
 {
-   //	$e107 = &e107::getInstance();
-
-		$var['installed']['text'] = EPL_ADLAN_22;
-		$var['installed']['link'] = e_SELF;
-
-		$var['avail']['text'] = EPL_ADLAN_23;
-		$var['avail']['link'] = e_SELF."?avail";
-
-/*		$var['choose']['text'] = TPVLAN_51;
-		$var['choose']['link'] = e_SELF."?choose";*/
-
-		$var['upload']['text'] = EPL_ADLAN_38;
-		$var['upload']['link'] = e_SELF."?upload";
-
-        $selected = (e_QUERY) ? e_QUERY : "installed";
-
-
-		e_admin_menu(ADLAN_98, $selected, $var);
+	global $pman;
+	$pman -> pluginOptions();
 }
 
 ?>

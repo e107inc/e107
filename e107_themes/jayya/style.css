@@ -730,7 +730,7 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 .page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
 .page-info p { padding: 10px; }
 
-/***** Admin Main Panel Buttons **/
+/***** Admin Info Panel Buttons **/
 
 .core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
 .core-mainpanel-link-text { font-weight:bold; text-decoration: none; padding:3px }

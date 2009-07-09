@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-03-08 18:48:12 $
+|     $Revision: 1.20 $
+|     $Date: 2009-07-09 02:47:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -218,4 +218,7 @@ define("PRFLAN_200", "If enabled, Admin slide down navigation menu (if supported
 define("PRFLAN_201", "Username and Password");
 define("PRFLAN_202", "Email and Password");
 define("PRFLAN_203", "Username/Email and Password");
+define("PRFLAN_204", "Separate plugins into their own menu.");
+define("PRFLAN_205", "If enabled, plugins will be displayed in their own navigation menu, similar to e107 v0.7 and before.");
+
 ?>

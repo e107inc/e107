@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.3 2008-12-04 12:49:30 mcfly_e107 Exp $ -->
+<!-- $Id: plugin.xml,v 1.4 2009-07-09 02:47:15 e107coders Exp $ -->
 <e107Plugin name="{ADLAN_PM}" version="3.0" compatibility="0.8" installRequired="true">
 	<author name="McFly" email="mcfly@e107.org"/>
 	<description>{ADLAN_PM_57}</description>
 	<folder>pm</folder>
+	<category>users</category>  
 	<administration>
 		<configFile>pm_conf.php</configFile>
 		<icon>images/pvt_message_32.png</icon>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/plugin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-09 02:47:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,6 +31,7 @@ $eplug_email = "jalist@e107.org";
 $eplug_description = NLLAN_02;
 $eplug_compatible = "e107v0.7+";
 $eplug_readme = "";
+$eplug_category = "content";  
 
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "newsletter";

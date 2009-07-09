@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.1 2008-12-29 20:51:07 lisa_ Exp $ -->
+<!-- $Id: plugin.xml,v 1.2 2009-07-09 02:47:16 e107coders Exp $ -->
 <e107Plugin name="Tagwords" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107dev" url="http://e107.org/" />
 	<description>A fully featured Tagword system</description>
 	<folder>tagwords</folder>
+	<category>misc</category> 
 	<administration>
 		<configFile>admin_tagwords_config.php</configFile>
 		<icon>images/tagwords_32.png</icon>

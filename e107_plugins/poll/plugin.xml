@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- $Id: plugin.xml,v 1.5 2008-12-13 10:30:24 e107steved Exp $ -->
+<!-- $Id: plugin.xml,v 1.6 2009-07-09 02:47:16 e107coders Exp $ -->
 <e107Plugin name="POLL_ADLAN01" version="2.0" compatibility="0.8" installRequired="true" >
 	<author name="Steve Dunstan (jalist)" url="http://e107.org" />
 	<description>POLL_ADLAN02</description>
 	<folder>poll</folder>
+	<category>content</category>  
 	<logLanguageFile filename="languages/--LAN--_admin_poll.php" />
 	<commentID>poll</commentID>
 	<administration>
