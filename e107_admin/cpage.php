@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2009-03-22 21:17:32 $
-|     $Author: e107steved $
+|     $Revision: 1.44 $
+|     $Date: 2009-07-09 22:01:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -306,11 +306,17 @@ class page
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
 
-			if($type)
+			if($type)  // it's a menu.
 			{
 				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
-				$sql -> db_Update("menus", "menu_name='$menu_name' WHERE menu_path='$mode' ");
-				$update++;
+				if($sql -> db_Update("menus", "menu_name='$menu_name' WHERE menu_path='$mode' "))
+				{
+				  	$update++;
+				}
+				else
+				{
+                  	$sql -> db_Insert("menus", "0, '$menu_name', '0', '0', '0', '', '".$mode."' ");
+				}
 			}
 
 			if ($_POST['page_link'])
