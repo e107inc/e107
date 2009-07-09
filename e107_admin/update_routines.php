@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2009-07-09 02:47:11 $
-|     $Author: e107coders $
+|     $Revision: 1.41 $
+|     $Date: 2009-07-09 21:39:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -331,17 +331,6 @@ function update_706_to_800($type='')
 		$updateMessages[] = LAN_UPDATE_23;
 		catch_error();
 	}
-
-	if($sql->db_Select("plugin", "plugin_category", "plugin_category = ''"))
-	{
-		if ($just_check) return update_needed();
-		require_once(e_HANDLER."plugin_class.php");
-		$ep = new e107plugin;
-		$ep -> update_plugins_table();
-		$updateMessages[] = LAN_UPDATE_24;
-	 //	catch_error();
-	}
-
 
 	//change menu_path for userlanguage_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu' || menu_path='userlanguage_menu/'"))
@@ -688,6 +677,18 @@ function update_706_to_800($type='')
 		}
 	}
 
+	// This has to be done after the table is upgraded
+	if($sql->db_Select("plugin", "plugin_category", "plugin_category = ''"))
+	{
+		if ($just_check) return update_needed();
+		require_once(e_HANDLER."plugin_class.php");
+		$ep = new e107plugin;
+		$ep -> update_plugins_table();
+		$updateMessages[] = LAN_UPDATE_24;
+	 //	catch_error();
+	}
+
+
 	// Obsolete tables (list at top)
 	foreach ($obs_tables as $ot)
 	{
@@ -927,10 +928,10 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 
 function catch_error(&$target)
 {
-	if ($target->mySQLlastErrText() != '' && E107_DEBUG_LEVEL != 0)
+	if ($target->mySQLlastErrText != '' && E107_DEBUG_LEVEL != 0)
 	{
 		$tmp2 = debug_backtrace();
-		$tmp = $target->mySQLlastErrText();
+		$tmp = $target->mySQLlastErrText;
 		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
 	}
 	return;
