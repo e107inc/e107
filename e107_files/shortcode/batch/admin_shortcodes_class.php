@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.5 2009-07-07 07:25:26 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.6 2009-07-09 02:47:12 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -272,13 +272,16 @@ class admin_shortcodes
 					$text = "<div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?sn'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
 					$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a>" : ' '.ADLAN_LAT_7.': '.$active_uploads).'</div>';
 
-					foreach($pref['e_latest_list'] as $val)
+					if(isset($pref['e_latest_list']))
 					{
-						if (is_readable(e_PLUGIN.$val.'/e_latest.php'))
+						foreach($pref['e_latest_list'] as $val)
 						{
-							include_once(e_PLUGIN.$val.'/e_latest.php');
+							if (is_readable(e_PLUGIN.$val.'/e_latest.php'))
+							{
+								include_once(e_PLUGIN.$val.'/e_latest.php');
+							}
 						}
-					}
+                    }
 
 					$messageTypes = array('Broken Download', 'Dev Team Message');
 					$queryString = '';
@@ -920,7 +923,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.5 2009-07-07 07:25:26 e107coders Exp $
+		* $Id: admin_shortcodes_class.php,v 1.6 2009-07-09 02:47:12 e107coders Exp $
 		*/
 
 		if (ADMIN)
@@ -971,8 +974,9 @@ class admin_shortcodes
 
 			$text .= adnav_cat(ADLAN_151, e_ADMIN.'admin.php', E_16_NAV_MAIN);
 
-			for ($i = 1; $i < 5; $i++)
-			{
+	   		for ($i = 1; $i < 6; $i++)
+	   		{
+
 				$ad_tmpi = 0;
 				$ad_links_array = asortbyindex($array_functions, 1);
 				$nav_main = adnav_cat($admin_cat['title'][$i], '', $admin_cat['img'][$i], $admin_cat['id'][$i]);
@@ -1028,13 +1032,13 @@ class admin_shortcodes
 					$plugs_text .= $plugin_compile;
 				}
 			}
-
+            /*
 			if (getperms('Z'))
 			{
 				$pclass_extended = $active_plugs ? 'header' : '';
 				$plugin_text = adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, $pclass_extended);
 				$render_plugins = TRUE;
-			}
+			}*/
 
 			if ($render_plugins)
 			{
@@ -1104,7 +1108,6 @@ class admin_shortcodes
 
 
 
-
 		// MAIN LINK
 		$menu_vars = array();
 		$menu_vars['main']['text'] = ADLAN_151;
@@ -1114,8 +1117,8 @@ class admin_shortcodes
 		$menu_vars['main']['perm'] = '';
 
 		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
-		$cnt = count($admin_cat['id']);
-		for ($i = 1; $i <= $cnt; $i++)
+
+  		foreach($admin_cat['id'] as $i => $cat)
 		{
 			$id = $admin_cat['id'][$i];
 			$menu_vars[$id]['text'] = $admin_cat['title'][$i];
@@ -1171,7 +1174,7 @@ class admin_shortcodes
 		$plug = new e107plugin;
 		$tmp = array();
 
-		if($sql->db_Select("plugin", "*", "plugin_installflag=1 ORDER BY plugin_path"))
+   		if($sql->db_Select("plugin", "*", "plugin_installflag=1 ORDER BY plugin_path"))
 		{
 			while($row = $sql->db_Fetch())
 			{
@@ -1187,7 +1190,8 @@ class admin_shortcodes
 						$id = 'plugnav-'.$row['plugin_path'];
 
 
-						$tmp[$id]['text'] = $e107->tp->toHTML($plug_vars['@attributes']['name'], FALSE, "defs");
+
+           				$tmp[$id]['text'] = $e107->tp->toHTML($plug_vars['@attributes']['name'], FALSE, "defs");
 						$tmp[$id]['description'] = $plug_vars['description'];
 						$tmp[$id]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plug_vars['administration']['configFile'];
 						$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt='{$tmp['text']}' class='icon S16' />" : E_16_PLUGIN;
@@ -1196,7 +1200,9 @@ class admin_shortcodes
 						$tmp[$id]['image_large_src'] = $icon_src_lrg;
 						$tmp[$id]['perm'] = 'P'.$row['plugin_id'];
 						$tmp[$id]['sub_class'] = '';
-						$tmp[$id]['sort'] = false;
+						$tmp[$id]['sort'] = 2;
+						$tmp[$id]['category'] = $row['plugin_category'];
+
 
 						if($pref['admin_slidedown_subs'] && varsettrue($plug_vars['administration']['subMenuItem']))
 						{
@@ -1222,8 +1228,36 @@ class admin_shortcodes
 					}
 				}
 			}
-			$menu_vars['plugMenu']['sub'] += multiarray_sort($tmp, 'text');
+
+			$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
 		}
+
+
+		// ---------------- Cameron's Bit ---------------------------------
+
+			if(!varsettrue($pref['admin_separate_plugins']))
+			{
+            	// Convert Plugin Categories to Core Categories.
+				$convert = array(
+					'settings' 	=> array(1,'setMenu'),
+					'users'		=> array(2,'userMenu'),
+					'content'	=> array(3,'contMenu'),
+					'tools'		=> array(4,'toolMenu'),
+					'manage'	=> array(6,'managMenu'),
+					'misc'		=> array(7,'miscMenu'),
+					'help'		=> array(20,'helpMenu')
+				);
+
+	             foreach($tmp as $pg)
+				 {
+				 	$id = $convert[$pg['category']][1];
+	             	$menu_vars[$id]['sub'][] = $pg;
+				 }
+			   	 unset($menu_vars['plugMenu']);
+			}
+
+       //     print_a($menu_vars);
+		// ------------------------------------------------------------------
 
 		return e_admin_menu('', '', $menu_vars, $$tmpl, false, false);
 	}

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2009-07-07 12:54:46 $
+|     $Revision: 1.40 $
+|     $Date: 2009-07-09 02:47:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -244,7 +244,7 @@ function update_706_to_800($type='')
 
 	// List of changed DB tables (defined in core_sql.php)
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus');
+	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus', 'plugin');
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
@@ -331,6 +331,17 @@ function update_706_to_800($type='')
 		$updateMessages[] = LAN_UPDATE_23;
 		catch_error();
 	}
+
+	if($sql->db_Select("plugin", "plugin_category", "plugin_category = ''"))
+	{
+		if ($just_check) return update_needed();
+		require_once(e_HANDLER."plugin_class.php");
+		$ep = new e107plugin;
+		$ep -> update_plugins_table();
+		$updateMessages[] = LAN_UPDATE_24;
+	 //	catch_error();
+	}
+
 
 	//change menu_path for userlanguage_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu' || menu_path='userlanguage_menu/'"))

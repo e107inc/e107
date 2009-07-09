@@ -30,6 +30,7 @@ $eplug_compatible = "e107v0.7+";
 $eplug_readme = "";        // leave blank if no readme file
 $eplug_latest = TRUE; //Show reported threads in admin (use latest.php)
 $eplug_status = TRUE; //Show post count in admin (use status.php)
+$eplug_category = "content";
 
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "content";

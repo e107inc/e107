@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2009-07-08 06:58:00 $
+|     $Revision: 1.28 $
+|     $Date: 2009-07-09 02:47:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -301,12 +301,9 @@ class themeHandler{
 			$text = "";
 			foreach($this -> themeArray as $key => $theme)
 			{
-			  //	if($key != $pref['admintheme'] && $key != $pref['sitetheme'])
-			  //	{
-					$text .= $this -> renderTheme(FALSE, $theme);
-			  //	}
+				$text .= $this -> renderTheme(FALSE, $theme);
 			}
-
+            $text .= "<div class='clear'>&nbsp;</div>";
 			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $text);
 		}
 
@@ -470,10 +467,10 @@ class themeHandler{
 
         	$this->id = $theme['path'];
 
-		$text = "<div style='text-align:center;margin-left:auto;margin-right:auto'>
+		$text = "<div class='block' >
+		<h2 class='caption'>".$theme['name']."</h2>
 		<table class='adminlist'>
-
-		<tr><td colspan='2'><h1>".$theme['name']."</h1></td></tr>
+		<tr><td colspan='3'></td></tr>
 		<tr><td><b>".TPVLAN_11."</b></td><td>".$theme['version']."</td>
 		<td class='first last' rowspan='6' style='text-align:center;width:25%'>$newpreview </td></tr>";
 

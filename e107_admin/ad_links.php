@@ -9,9 +9,9 @@
  * Admin Navigation
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-05-03 19:13:32 $
- * $Author: bugrain $
+ * $Revision: 1.10 $
+ * $Date: 2009-07-09 02:47:09 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -39,6 +39,12 @@ if (!defined('E_16_CAT_TOOL')) {
 if (!defined('E_16_CAT_PLUG')) {
 	define('E_16_CAT_PLUG', e_IMAGE.'admin_images/cat_plugins_16.png');
 }
+if (!defined('E_16_CAT_MANAGE')) {
+	define('E_16_CAT_MANAGE', e_IMAGE.'admin_images/manage_16.png');
+}
+if (!defined('E_16_CAT_MISC')) {
+	define('E_16_CAT_MISC', e_IMAGE.'admin_images/settings_16.png');
+}
 if (!defined('E_16_CAT_ABOUT')) {
 	define('E_16_CAT_ABOUT', e_IMAGE.'admin_images/info_16.png');
 }
@@ -61,6 +67,12 @@ if (!defined('E_32_CAT_TOOL')) {
 }
 if (!defined('E_32_CAT_PLUG')) {
 	define('E_32_CAT_PLUG', "<img class='icon S32' src='".e_IMAGE."admin_images/cat_plugins_32.png' alt='' />");
+}
+if (!defined('E_32_CAT_MANAGE')) {
+	define('E_32_CAT_MANAGE', "<img class='icon S32' src='".e_IMAGE."admin_images/manage_32.png' alt='' />");
+}
+if (!defined('E_32_CAT_MISC')) {
+	define('E_32_CAT_MISC', "<img class='icon S32' src='".e_IMAGE."admin_images/settings_32.png' alt='' />");
 }
 if (!defined('E_32_CAT_ABOUT')) {
 	define('E_32_CAT_ABOUT', "<img class='icon S32' src='".e_IMAGE."admin_images/info_32.png' alt='' />");
@@ -467,18 +479,37 @@ $admin_cat['img'][4] = E_16_CAT_TOOL;
 $admin_cat['lrg_img'][4] = E_32_CAT_TOOL;
 $admin_cat['sort'][4] = true;
 
-$admin_cat['title'][5] = ADLAN_CL_7;
-$admin_cat['id'][5] = 'plugMenu';
-$admin_cat['img'][5] = E_16_CAT_PLUG;
-$admin_cat['lrg_img'][5] = E_32_CAT_PLUG;
-$admin_cat['sort'][5] = false;
+// Manage
+$admin_cat['title'][5] = LAN_MANAGE;
+$admin_cat['id'][5] = 'managMenu';
+$admin_cat['img'][5] = E_16_CAT_MANAGE;
+$admin_cat['lrg_img'][5] = E_32_CAT_MANAGE;
+$admin_cat['sort'][5] = TRUE;
 
-//About menu
-$admin_cat['title'][6] = ADLAN_CL_8;
-$admin_cat['id'][6] = 'aboutMenu';
-$admin_cat['img'][6] = E_16_CAT_ABOUT;//E_16_NAV_DOCS
-$admin_cat['lrg_img'][6] = E_32_CAT_ABOUT;
-$admin_cat['sort'][6] = false;
+if(varsettrue($pref['admin_separate_plugins']))
+{
+	$admin_cat['title'][6] = ADLAN_CL_7;
+	$admin_cat['id'][6] = 'plugMenu';
+	$admin_cat['img'][6] = E_16_CAT_PLUG;
+	$admin_cat['lrg_img'][6] = E_32_CAT_PLUG;
+	$admin_cat['sort'][6] = false;
+}
+else
+{
+	// Misc.
+	$admin_cat['title'][6] = ADLAN_CL_8;
+	$admin_cat['id'][6] = 'miscMenu';
+	$admin_cat['img'][6] = E_16_CAT_MISC;
+	$admin_cat['lrg_img'][6] = E_32_CAT_MISC;
+	$admin_cat['sort'][6] = TRUE;
+}
+
+//About menu    - No 20 -  leave space for user-categories.
+$admin_cat['title'][20] = ADLAN_CL_20;
+$admin_cat['id'][20] = 'aboutMenu';
+$admin_cat['img'][20] = E_16_CAT_ABOUT;//E_16_NAV_DOCS
+$admin_cat['lrg_img'][20] = E_32_CAT_ABOUT;
+$admin_cat['sort'][20] = false;
 
 // Info about attributes
 /*
@@ -490,15 +521,23 @@ attribute 5 = category
 	1 - settings
 	2 - users
 	3 - content
-	4 - tools
-	5 - plugins
-	6 - about
+	4 - tools   (maintenance)
+	5 - plugins/misc
+ 	6 - manage
+
+	7 - user-category
+	8 - user-category etc.
+
+	20 - help
+
 attribute 6 = 16 x 16 image
 attribute 7 = 32 x 32 image
 */
 
 //FIXME array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
 //TODO find out where is used $array_functions elsewhere, refactor it
+
+
 $array_functions = array(
 	0 => array(e_ADMIN.'administrator.php', ADLAN_8, ADLAN_9, '3', 2, E_16_ADMIN, E_32_ADMIN),
 	1 => array(e_ADMIN.'updateadmin.php', ADLAN_10, ADLAN_11, '', 2, E_16_ADPASS, E_32_ADPASS),
@@ -509,7 +548,7 @@ $array_functions = array(
 	6 => array(e_ADMIN.'db.php', ADLAN_44, ADLAN_45, '0', 4, E_16_DATAB, E_32_DATAB),
 	7 => array(e_ADMIN.'download.php', ADLAN_24, ADLAN_25, 'R', 3, E_16_DOWNL, E_32_DOWNL),
 	8 => array(e_ADMIN.'emoticon.php', ADLAN_58, ADLAN_59, 'F', 1, E_16_EMOTE, E_32_EMOTE),
-	9 => array(e_ADMIN.'filemanager.php', ADLAN_30, ADLAN_31, '6', 4, E_16_FILE, E_32_FILE),
+	9 => array(e_ADMIN.'filemanager.php', ADLAN_30, ADLAN_31, '6', 5, E_16_FILE, E_32_FILE),
 	10 => array(e_ADMIN.'frontpage.php', ADLAN_60, ADLAN_61, 'G', 1, E_16_FRONT, E_32_FRONT),
 	11 => array(e_ADMIN.'image.php', ADLAN_105, ADLAN_106, 'A', 1, E_16_IMAGES, E_32_IMAGES),
 	12 => array(e_ADMIN.'links.php', ADLAN_138, ADLAN_139, 'I', 1, E_16_LINKS, E_32_LINKS),
@@ -518,11 +557,11 @@ $array_functions = array(
 	15 => array(e_ADMIN.'menus.php', ADLAN_6, ADLAN_7, '2', 3, E_16_MENUS, E_32_MENUS),
 	16 => array(e_ADMIN.'meta.php', ADLAN_66, ADLAN_67, 'T', 1, E_16_META, E_32_META),
 	17 => array(e_ADMIN.'newspost.php', ADLAN_0, ADLAN_1, 'H', 3, E_16_NEWS, E_32_NEWS),
-	18 => array(e_ADMIN.'phpinfo.php', ADLAN_68, ADLAN_69, '0', 4, E_16_PHP, E_32_PHP),
+	18 => array(e_ADMIN.'phpinfo.php', ADLAN_68, ADLAN_69, '0', 20, E_16_PHP, E_32_PHP),
 	19 => array(e_ADMIN.'prefs.php', ADLAN_4, ADLAN_5, '1', 1, E_16_PREFS, E_32_PREFS),
 	20 => array(e_ADMIN.'search.php', ADLAN_142, ADLAN_143, 'X', 1, E_16_SEARCH, E_32_SEARCH),
 	21 => array(e_ADMIN.'admin_log.php', ADLAN_155, ADLAN_156, 'S', 4, E_16_ADMINLOG, E_32_ADMINLOG),
-	22 => array(e_ADMIN.'theme.php', ADLAN_140, ADLAN_141, '1', 4, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
+	22 => array(e_ADMIN.'theme.php', ADLAN_140, ADLAN_141, '1', 5, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
 	23 => array(e_ADMIN.'upload.php', ADLAN_72, ADLAN_73, 'V', 3, E_16_UPLOADS, E_32_UPLOADS),
 	24 => array(e_ADMIN.'users.php', ADLAN_36, ADLAN_37, '4', 2, E_16_USER, E_32_USER),
 	25 => array(e_ADMIN.'userclass2.php', ADLAN_38, ADLAN_39, '4', 2, E_16_USERCLASS, E_32_USERCLASS),
@@ -533,10 +572,10 @@ $array_functions = array(
 	30 => array(e_ADMIN.'notify.php', ADLAN_149, ADLAN_150, 'O', 4, E_16_NOTIFY, E_32_NOTIFY),
 	31 => array(e_ADMIN.'cron.php', ADLAN_157, ADLAN_158, 'U', 4, E_16_CRON, E_32_CRON),
 	32 => array(e_ADMIN.'eurl.php', ADLAN_159, ADLAN_160, 'L', 1, E_16_EURL, E_32_EURL),
-	33 => array(e_ADMIN.'plugin.php', ADLAN_98, ADLAN_99, 'Z', 5, E_16_PLUGMANAGER, E_32_PLUGMANAGER),
-	34 => array(e_ADMIN.'docs.php', ADLAN_12, ADLAN_13, '', 6, E_16_DOCS, E_32_DOCS),
-	35 => array('#TODO', 'System Info', 'System Information', '', 6, '', ''),
-	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 6, '', '')
+	33 => array(e_ADMIN.'plugin.php', ADLAN_98, ADLAN_99, 'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
+	34 => array(e_ADMIN.'docs.php', ADLAN_12, ADLAN_13, '', 20, E_16_DOCS, E_32_DOCS),
+	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
+	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, '', '')
 );
 
 //FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php

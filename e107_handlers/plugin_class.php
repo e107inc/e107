@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2008-12-30 19:01:09 $
-|     $Author: e107steved $
+|     $Revision: 1.65 $
+|     $Date: 2009-07-09 02:47:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,7 +80,8 @@ class e107plugin
 	'plugin_version',			// Version - arbitrary text field
 	'plugin_path',				// Name of the directory off e_PLUGIN - unique
 	'plugin_installflag',		// '0' = not installed, '1' = installed
-	'plugin_addons'				// List of any extras associated with plugin - bbcodes, e_XXX files...
+	'plugin_addons',				// List of any extras associated with plugin - bbcodes, e_XXX files...
+	'plugin_category'				// Plugin Category: settings, users, content, management, tools, misc
 	);
 
 	var $plug_vars;
@@ -173,12 +174,24 @@ class e107plugin
 			$eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
 			//		  $eplug_addons = $this->getAddons($plugin_path,'check');		// Checks opening/closing tags on addon files
 
+
+
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml
 			if ($plugin_path == $plug_info['folder'])
 			{
 				if(array_key_exists($plugin_path, $pluginDBList))
 				{  // Update the addons needed by the plugin
 					$pluginDBList[$plugin_path]['status'] = 'exists';
+
+                   // Check for missing plugin_category in plugin table.
+                    if ($pluginDBList[$plugin_path]['plugin_category'] == '')
+					{
+						 // print_a($plug_info);
+                     	$pluginDBList[$plugin_path]['status'] = 'update';
+						$pluginDBList[$plugin_path]['plugin_category'] = (isset($plug_info['category'])) ? $plug_info['category'] : "misc";
+					}
+
+
 					// If plugin not installed, and version number of files changed, update version as well
 					if (($pluginDBList[$plugin_path]['plugin_installflag'] == 0) && ($pluginDBList[$plugin_path]['plugin_version'] != $plug_info['@attributes']['version']))
 					{  // Update stored version
@@ -219,7 +232,7 @@ class e107plugin
 						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1 );
-						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}' ");
+						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".$plug_info['category']."' ");
 					}
 				}
 			}
@@ -227,6 +240,8 @@ class e107plugin
 			{  // May be useful that we ignore what will usually be copies/backups of plugins - but don't normally say anything
 //						    echo "Plugin copied to wrong directory. Is in: {$plugin_path} Should be: {$plug_info['folder']}<br /><br />";
 			}
+
+		   ///	print_a($plug_info);
 		}
 
 		// Now scan the table, updating the DB where needed
@@ -1568,6 +1583,7 @@ class e107plugin
 		$ret['@attributes']['name'] = varset($eplug_name);
 		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
 		$ret['folder'] = varset($eplug_folder);
+		$ret['category'] = varset($eplug_category);
 		$ret['description'] = varset($eplug_description);
 		$ret['author']['@attributes']['name'] = varset($eplug_author);
 		$ret['author']['@attributes']['url'] = varset($eplug_url);
@@ -1575,6 +1591,7 @@ class e107plugin
 		$ret['readme'] = varset($eplug_readme);
 		$ret['compliant'] = varset($eplug_compliant);
 		$ret['menuName'] = varset($eplug_menu_name);
+
 
 		$ret['administration']['icon'] = varset($eplug_icon);
 		$ret['administration']['caption'] = varset($eplug_caption);

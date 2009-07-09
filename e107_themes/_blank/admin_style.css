@@ -155,6 +155,9 @@ label { cursor: pointer; }
 /* form used for settings */
 .col-label { width: 250px; }
 .col-control {}
+.col-selection { padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
+
+
 
 .adminform  { width:100%;  border:1px solid #ddd;}
 
@@ -415,6 +418,15 @@ ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
 .block h2.caption, .block h4.caption { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
 .page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
 .page-info p { padding: 10px; }
+
+
+
+/***** Admin Info Panel Buttons **/
+
+.core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
+.core-mainpanel-link-text { font-weight:bold; text-decoration: none; padding:3px }
+
+/*****************************/ 
 
 #core-banlist-times .textarea { width: 98%; }
 
