@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2009-07-07 16:04:51 $
+|     $Revision: 1.33 $
+|     $Date: 2009-07-09 08:31:38 $
 |     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -448,17 +448,19 @@ if ($e107_popup != 1) {
 
 // ---------- New in 0.8 -------------------------------------------------------
 
-    $def = THEME_LAYOUT;
+    $def = THEME_LAYOUT;  // The active layout based on custompage matches.
 
-   //	echo "DEF = ".$def;
+  //  echo "DEF = ".$def."<br />";
 
-	if(($def == 'no_array') && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
+	if(($def == 'legacyCustom' || $def=='legacyDefault') && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
 	{
-	 //	echo " MODE 0.6";
-		$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
-		$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
+	 	if($def == 'legacyCustom')
+		{
+			$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;
+			$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
+		}
 	}
-	elseif($def && $def != "no_array" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMHEADER[$def]))) // 0.7 themes
+	elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMHEADER[$def]))) // 0.7 themes
 	{
 	  //	echo " MODE 0.7";
 		$HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;

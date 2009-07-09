@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.103 $
-* $Date: 2009-07-08 01:28:55 $
+* $Revision: 1.104 $
+* $Date: 2009-07-09 08:31:36 $
 * $Author: e107coders $
 *
 */
@@ -940,11 +940,19 @@ if(!defined("THEME_LAYOUT"))
 			{
 				if ($kpage && (strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)))
 				{
-            		$def = ($lyout) ? $lyout : "no_array";
+            	 //	$def = ($lyout) ? $lyout : "legacyCustom";
+					$def =  $lyout;
 					break;
 				}
 			}
 		}
+	}
+
+
+	if(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY. 'menus.php?configure')!==FALSE)
+	{
+		$menus_equery = explode('.', e_QUERY);
+		$def = $menus_equery[1];
 	}
 
     if($def) // custom-page layout.
@@ -953,10 +961,11 @@ if(!defined("THEME_LAYOUT"))
 	}
 	else // default layout.
 	{
-		$deflayout = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
+    	$deflayout = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
 		define("THEME_LAYOUT",$deflayout);  // default layout.
 	}
-    unset($def,$lyout,$cusPagePref);
+
+    unset($def,$lyout,$cusPagePref,$menus_equery,$deflayout);
 
 }
 
