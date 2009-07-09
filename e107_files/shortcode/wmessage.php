@@ -1,9 +1,10 @@
 <?php
 
-// $Id: wmessage.php,v 1.1 2009-01-08 19:28:11 mcfly_e107 Exp $
+// $Id: wmessage.php,v 1.2 2009-07-09 20:51:57 e107coders Exp $
 
 function wmessage_shortcode($parm)
 {
+
 	global $e107, $e107cache, $pref;
 	$prefwmsc = varset($pref['wmessage_sc'], FALSE);
 	if (($prefwmsc && $parm == 'header') || (!$prefwmsc && ($parm !='header')) )
@@ -43,16 +44,17 @@ function wmessage_shortcode($parm)
 
 		if (!defined('WMFLAG'))
 		{
+
 			$qry = "
 			SELECT * FROM #generic
 			WHERE gen_type ='wmessage' AND gen_intdata IN (".USERCLASS_LIST.')';
-			$wmessage = '';
+			$wmessage = array();
 			$wmcaption = '';
 			if($e107->sql->db_Select_gen($qry))
 			{
 				while ($row = $e107->sql->db_Fetch())
 				{
-					$wmessage .= $e107->tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin').'<br />';
+					$wmessage[] = $e107->tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin');
 					if(!$wmcaption)
 					{
 						$wmcaption = $e107->tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
@@ -65,12 +67,12 @@ function wmessage_shortcode($parm)
 				ob_start();
 				if ($pref['wm_enclose'])
 				{
-					$ns->tablerender($wmcaption, $wmessage, 'wm');
+				 //	$ns->tablerender($wmcaption, $wmessage, 'wm');
 				}
 				else
 				{
-					echo ($wmcaption) ? $wmcaption.'<br />' : '';
-					echo $wmessage;
+				  	echo ($wmcaption) ? $wmcaption.'<br />' : '';
+					echo implode('<br />',$wmessage);
 				}
 
 				$cache_data = ob_get_flush();
