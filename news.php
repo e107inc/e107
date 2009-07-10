@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.126 $
-|     $Date: 2008-11-29 15:35:23 $
+|     $Revision: 1.127 $
+|     $Date: 2009-07-10 20:30:01 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ if (isset($NEWSHEADER))
   exit;
 }
 
-$cacheString = 'news.php_'.e_QUERY;
+$cacheString = 'news.php_default_';
 $action = '';
 $sub_action = '';
 $order = "news_datestamp";
@@ -46,6 +46,7 @@ if (e_QUERY)
   $sub_action = varset($tmp[1],'');			// Usually a numeric category, but don't presume yet
   $id = varset($tmp[2],'');					// ID of specific news item where required
   $newsfrom = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
+  $cacheString = 'news.php_'.e_QUERY;
 }
 
 //$newsfrom = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
@@ -330,8 +331,10 @@ switch ($action)
 		AND n.news_render_type<2 AND n.news_datestamp > {$startdate} AND n.news_datestamp < {$enddate}");
 	break;
 
+  case 'default' :
   default :
     $action = '';
+	$cacheString = 'news.php_default_';		// Make sure its sensible
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type<2" );
 
 	if(!isset($pref['newsposts_archive']))
