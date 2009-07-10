@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-07-10 14:27:30 $
+|     $Revision: 1.25 $
+|     $Date: 2009-07-10 14:58:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ require_once(e_HANDLER."form_handler.php");
 
 
 	$frm = new form;
-	$men = new menuManager(1);   // use 1 for dragdrop.
-	$menu->debug = FALSE;
+	$men = new menuManager();   // use 1 for dragdrop.
+
 
 
 
@@ -72,13 +72,14 @@ if($_POST)
 		}
 		else // Within the IFrame.
 		{
-
+            if($menu->debug)
+			{
         		echo "<div>
                 e_QUERY = ".e_QUERY."<br />
 				curLayout = ".$men->curLayout."<br />
 				dbLayout   = ".$men->dbLayout."<br />
 				</div>";
-
+            }
 
 		    echo $men->menuSelectLayout();
 		  	$men->menuRenderPage();
@@ -102,8 +103,10 @@ class menuManager{
 		function menuManager($dragdrop=FALSE)
 		{
         		global $pref, $HEADER,$FOOTER, $NEWSHEADER;
-
+                $this->debug = FALSE;
                 $this->dragDrop = $dragdrop;
+
+				
 				if($this->dragDrop)
 				{
                 	$this->debug = TRUE;
@@ -591,7 +594,6 @@ class menuManager{
 	{	// Get current menu name
 		global $sql,$admin_log;
 
-		echo "ID = ".$this->menuId;
 		if($sql->db_Select('menus', 'menu_name', 'menu_id='.$this->menuId, 'default'))
 		{
 
@@ -741,8 +743,10 @@ class menuManager{
 
 
 		$this->parseheader($FOOTER);
+		if($this->debug)
+		{
 	    	echo "<div id='debug' style='margin-left:0px;border:1px solid silver; overflow:scroll;height:250px'> &nbsp;</div>";
-
+        }
 		echo "</div>";
 	}
 
@@ -757,7 +761,7 @@ class menuManager{
 
 		$text .= "<form  method='post' action='".e_SELF."?configure.".$this->curLayout."'>";
 		$text .= "<div style='color:white;background-color:black;width:98%;display:block;padding:15px;text-align:center'>".MENLAN_30." ";
-	    $text .= "<select style='color:black' name='custom_select' onchange='urljump(this.options[selectedIndex].value)'>\n";
+	    $text .= "<select style='color:black' name='custom_select' onchange=\"this.form.submit();\">\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
 
 	    $search = array("_","legacyDefault","legacyCustom");
 		$replace = array(" ",MENLAN_31,MENLAN_33);
@@ -768,7 +772,9 @@ class menuManager{
 			$layoutName = str_replace($search,$replace,$key);
 			$layoutName .=($key==$pref['sitetheme_deflayout']) ? " (".MENLAN_31.")" : "";
 			$selected = ($this->curLayout == $key || ($key==$pref['sitetheme_deflayout'] && $this->curLayout=='')) ? "selected='selected'" : FALSE;
-	    	$text .= "<option value='".e_SELF."?configure.".$key."' {$selected}>".$layoutName."</option>";
+
+         //   $val = ".e_SELF."?configure.".";
+			$text .= "<option value='$key' {$selected}>".$layoutName."</option>";
 		}
 
 	    $text .= "</select>
