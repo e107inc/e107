@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-12-06 20:56:40 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2009-07-10 14:25:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -308,24 +308,27 @@ class users_ext
 		{	// Show existing fields
 		$mode = 'show';
 			$text = "<div style='text-align:center'>";
-			$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
-			<tr>
-			<td class='fcaption'>".EXTLAN_1."</td>
-			<td class='fcaption'>".EXTLAN_2."</td>";
-			$text .="<td class='fcaption'>".EXTLAN_4."</td>
-			<td class='fcaption'>".EXTLAN_5."</td>
-			<td class='fcaption'>".EXTLAN_6."</td>
-			<td class='fcaption'>".EXTLAN_7."</td>
-			<td class='fcaption'>&nbsp;</td>
-			<td class='fcaption'>".EXTLAN_8."</td>
-			</tr>
+			$text .= "<table class='adminlist' cellpadding='0' cellspacing='0'>
+			<thead>
+				<tr>
+				<th>".EXTLAN_1."</th>
+				<th>".EXTLAN_2."</th>
+				<th>".EXTLAN_4."</th>
+				<th>".EXTLAN_5."</th>
+				<th>".EXTLAN_6."</th>
+				<th>".EXTLAN_7."</th>
+				<th>&nbsp;</th>
+				<th>".EXTLAN_8."</th>
+				</tr>
+			</thead>
+			<tbody>
 			";
 
 			foreach($catNums as $cn)
 			{
 				$text .= "
 				<tr>
-				<td class='forumheader' colspan='9' style='text-align:center'>{$catList[$cn][0]['user_extended_struct_name']}</td>
+				<td colspan='9' style='text-align:center'>{$catList[$cn][0]['user_extended_struct_name']}</td>
 				</tr>
 				";
 
@@ -338,13 +341,13 @@ class users_ext
 			  $uVal = str_replace(chr(1), "", $ext['user_extended_struct_default']);		// Is this right?
 						$text .= "
 						<tr>
-						<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."]</td>
-						<td class='forumheader3'>".$ue->user_extended_edit($ext,$uVal)."</td>
-						<td class='forumheader3'>".($ext['user_extended_struct_required'] == 1 ? LAN_YES : LAN_NO)."</td>
-						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
-						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
-						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
-						<td class='forumheader3' style='width:5px'>
+						<td>{$ext['user_extended_struct_name']}<br />[".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."]</td>
+						<td>".$ue->user_extended_edit($ext,$uVal)."</td>
+						<td>".($ext['user_extended_struct_required'] == 1 ? LAN_YES : LAN_NO)."</td>
+						<td>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
+						<td>".r_userclass_name($ext['user_extended_struct_read'])."</td>
+						<td>".r_userclass_name($ext['user_extended_struct_write'])."</td>
+						<td>
 						<form method='post' action='".e_SELF."'>
 						<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 						";
@@ -384,7 +387,7 @@ class users_ext
 				}
 			}
 			//Show add/edit form
-			$text .= "
+			$text .= "</tbody>
 			</table>";
 		}
 		else
@@ -406,12 +409,17 @@ class users_ext
 
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
-			";
-			$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>  ";
+			<fieldset id='core-user-extended-create'>";
+
 			$text .= "
+            <table cellpadding='0' cellspacing='0' class='adminform'>
+            	<colgroup span='2'>
+            		<col class='col-label' />
+            		<col class='col-control' />
+            	</colgroup>
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_10.":</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>user_";
+			<td>".EXTLAN_10.":</td>
+			<td>user_";
 			if(is_array($current) && $current['user_extended_struct_name'])
 			{
 				$text .= $current['user_extended_struct_name']."
@@ -430,8 +438,8 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_12.":</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td>".EXTLAN_12.":</td>
+			<td colspan='3'>
 			<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='50' /><br />
 			<span class='smalltext'>".EXTLAN_13."</span>
 			</td>
@@ -439,7 +447,7 @@ class users_ext
 			";
 
 			$text .= "<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_14."</td>
+			<td >".EXTLAN_14."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<select onchange='changeHelp(this.value)' class='tbox' name='user_type' id='user_type'>";
 			foreach($ue->user_extended_types as $key => $val)
@@ -460,8 +468,8 @@ class users_ext
 
 			$text .= "
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_3."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>";
+			<td>".EXTLAN_3."</td>
+			<td colspan='3'>";
   // Start of Values ---------------------------------
 
       		$val_hide = ($current['user_extended_struct_type'] != 4) ? "visible" : "none";
@@ -548,40 +556,40 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_16."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td>".EXTLAN_16."</td>
+			<td colspan='3'>
 			<input class='tbox' type='text' name='user_default' size='40' value='{$current['user_extended_struct_default']}' />
 			</td>
 			</tr>
 
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_15."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td>".EXTLAN_15."</td>
+			<td colspan='3'>
 			<textarea class='tbox' name='user_include' cols='60' rows='2'>{$current_include}</textarea><br />
 			<span class='smalltext'>".EXTLAN_51."</span><br />
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_52."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td>".EXTLAN_52."</td>
+			<td colspan='3'>
 			<input class='tbox' type='text' name='user_regex' size='30' value='{$current_regex}' /><br />
 			<span class='smalltext'>".EXTLAN_53."</span><br />
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_54."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td >".EXTLAN_54."</td>
+			<td colspan='3'>
 			<input class='tbox' type='text' name='user_regexfail' size='40' value='{$current_regexfail}' /><br />
 			<span class='smalltext'>".EXTLAN_55."</span><br />
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_44."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td>".EXTLAN_44."</td>
+			<td colspan='3'>
 			<select class='tbox' name='user_parent'>";
 			foreach($catNums as $k)
 			{
@@ -594,8 +602,8 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_18."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td>".EXTLAN_18."</td>
+			<td colspan='3'>
 			<select class='tbox' name='user_required'>
 			";
 			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
@@ -613,30 +621,30 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_5."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td >".EXTLAN_5."</td>
+			<td colspan='3'>
 			".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes, nobody')."<br /><span class='smalltext'>".EXTLAN_20."</span>
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_6."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td>".EXTLAN_6."</td>
+			<td colspan='3'>
 			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, readonly, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_7."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td>".EXTLAN_7."</td>
+			<td colspan='3'>
 			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_21."</span>
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_49."
+			<td>".EXTLAN_49."
 			</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td colspan='3'>
 			<select class='tbox' name='user_hide'>
 			";
 			if($current_hide)
@@ -659,7 +667,9 @@ class users_ext
 			";
 
 			$text .= "<tr>
-			<td colspan='4' style='text-align:center' class='forumheader'>";
+			</table>
+			<div class='buttons-bar center'>
+			";
 
 //			if ((!is_array($current) || $action == "continue") && $sub_action == "")
 			if ((($mode == 'new') || $action == "continue") && $sub_action == "")
@@ -675,11 +685,10 @@ class users_ext
 				<input class='button' type='submit' name='cancel' value='".EXTLAN_33."' />
 				";
 			}
-			// ======= end added by Cam.
-			$text .= "</td>
-			</tr>
 
-			</table></form>
+
+			$text .= "</div>
+			</fieldset></form>
 			";
 		}
 		//		$text .= "</div>";
@@ -771,30 +780,30 @@ class users_ext
 		$text .= "
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_38.":</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
+		<td>".EXTLAN_38.":</td>
+		<td colspan='3'>
 		<input class='tbox' type='text' name='user_field' size='40' value='".$current['user_extended_struct_name']."' maxlength='50' />
 		<br /><span class='smalltext'>".EXTLAN_11."</span>
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_5."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
+		<td>".EXTLAN_5."</td>
+		<td colspan='3'>
 		".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_20."</span>
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_6."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
+		<td>".EXTLAN_6."</td>
+		<td colspan='3'>
 		".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, classes, readonly')."<br /><span class='smalltext'>".EXTLAN_22."</span>
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_7."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
+		<td >".EXTLAN_7."</td>
+		<td colspan='3'>
 		".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_21."</span>
 		</td>
 		</tr>";
@@ -1081,13 +1090,14 @@ function headerjs()
 	<script type='text/javascript'>
 
 	function changeHelp(type) {
+	 //<![CDATA[
 		var ftype;
 		var helptext;
 		";
 		for($i=1; $i<=9; $i++)
 		{
 			$type_const = "UE_LAN_{$i}";
-			$help_const = "EXTLAN_HELP_{$i}";
+			$help_const = "\"".str_replace("/","\/","EXTLAN_HELP_{$i}")."\"";
 			$text .= "
 			if(type == \"{$i}\")
 			{
@@ -1106,6 +1116,7 @@ function headerjs()
             document.getElementById('values').style.display = '';
 			document.getElementById('db_mode').style.display = 'none';
 		}
+		   // ]]>
 	}
 
 

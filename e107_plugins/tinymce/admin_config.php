@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-07-02 00:13:11 $
+ * $Revision: 1.4 $
+ * $Date: 2009-07-10 14:25:23 $
  * $Author: e107coders $
  *
 */
@@ -78,22 +78,26 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
 
 
  $text = "<div style='text-align:center'>
-    <form method='post' action='".e_SELF."' id='linkform'>
-    <table style='".ADMIN_WIDTH."' class='fborder'>
-
+    <form method='post' action='".e_SELF."'>
+	<fieldset id='plugin-tinymce-config'>
+     <table cellpadding='0' cellspacing='0' class='adminform'>
+     	<colgroup span='2'>
+     		<col class='col-label' />
+     		<col class='col-control' />
+     	</colgroup>
     <tr>
-    <td style='width:20%' class='forumheader3'>Preview<div style='padding:20px'>[<a href='javascript:start_tinyMce();'>Refresh Preview</a>]
+    <td>Preview<div style='padding:20px'>[<a href='javascript:start_tinyMce();'>Refresh Preview</a>]
 	<br /><br />[<a href='#' onclick=\"tinyMCE.execCommand('mceToggleEditor',false,'content');\">Toggle WYSIWYG</a>]
 	</div>
 	</td>
-    <td style='width:80%' class='forumheader3'>
+    <td>
     <textarea id='content' rows='10' cols='10' name='name3' class='tbox' style='width:80%'>     </textarea>
     </td>
     </tr>
 
     <tr>
-    <td style='width:20%' class='forumheader3'>Installed Plugins</td>
-    <td style='width:80%' class='forumheader3'><div style='width:80%'>
+    <td>Installed Plugins</td>
+    <td><div style='width:80%'>
     ";
 
     foreach($plug_array as $mce_plg)
@@ -109,7 +113,7 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
     </tr>
 
 	<tr>
-    <td class='forumheader3' style='width:20%' >Button Layout</td>
+    <td>Button Layout</td>
     <td style='width:80%' class='forumheader3'>";
     for ($i=1; $i<=4; $i++)
 	{
@@ -122,20 +126,17 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
 	</tr>
 
 	<tr>
-    <td style='width:20%' class='forumheader3'>Custom TinyMce Javascript</td>
-    <td style='width:80%' class='forumheader3'>
+    <td>Custom TinyMce Javascript</td>
+    <td>
     <textarea rows='5' cols='10' name='customjs' class='tbox' style='width:80%'>".$pref['tinymce']['customjs']."</textarea>
     </td>
     </tr>
-
-
-
-    <tr style='vertical-align:top'>
-    <td colspan='2' style='text-align:center' class='forumheader'>";
+	</table>
+	<div class='buttons-bar center'>";
     $text .= "<input class='button' type='submit' name='save_settings' value='".LAN_SAVE."' />";
-    $text .= "</td>
-    </tr>
-    </table>
+    $text .= "
+    </div>
+	</fieldset>
     </form>
     </div>";
 

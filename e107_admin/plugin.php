@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2009-07-09 02:47:10 $
+|     $Revision: 1.29 $
+|     $Date: 2009-07-10 14:25:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -637,25 +637,29 @@ class pluginManager{
 
 			  $text = "
 				<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
-				<table class='adminlist' cellpadding='0' cellspacing='0'>
+                <table cellpadding='0' cellspacing='0' class='adminform'>
+                	<colgroup span='2'>
+                		<col class='col-label' />
+                		<col class='col-control' />
+                	</colgroup>
 				<tr>
-				<td style='width: 50%;'>".EPL_ADLAN_37."</td>
-				<td style='width: 50%;'>
+				<td>".EPL_ADLAN_37."</td>
+				<td>
 				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
 				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 				<input class='tbox' type='file' name='file_userfile[]' size='50' />
 				</td>
 				</tr>
-				<tr>
-				<td colspan='2' class='center buttons-bar'>";
+                </tr>
+				</table>
+
+				<div class='center buttons-bar'>";
                 $text .= $frm->admin_button('upload', EPL_ADLAN_38, 'submit', EPL_ADLAN_38);
 
 				$text .= "
-				</td>
-				</tr>
-				</table>
-				</form>
-				<br />\n";
+				</div>
+
+				</form>\n";
 			}
 
          $ns->tablerender(EPL_ADLAN_16, $text);
@@ -921,23 +925,22 @@ class pluginManager{
 
 			$text = "
 			<form action='".e_SELF."?".e_QUERY."' method='post'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
-			<colgroup>
-			<col style='width:75%' />
-			<col style='width:25%' />
-			</colgroup>
-			<tr>
-			<td colspan='2' class='forumheader'>".EPL_ADLAN_54." ".$tp->toHtml($plug_vars['name'], "", "defs,emotes_off, no_make_clickable")."</td>
+			<fieldset id='core-plugin-confirmUninstall'>
+			<legend>".EPL_ADLAN_54." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable")."</legend>
+            <table cellpadding='0' cellspacing='0' class='adminform'>
+            	<colgroup span='2'>
+            		<col class='col-label' />
+            		<col class='col-control' />
+            	</colgroup>
+ 			<tr>
+			<td>".EPL_ADLAN_55."</td>
+			<td>".LAN_YES."</td>
 			</tr>
 			<tr>
-			<td class='forumheader3'>".EPL_ADLAN_55."</td>
-			<td class='forumheader3'>".LAN_YES."</td>
-			</tr>
-			<tr>
-			<td class='forumheader3'>
+			<td>
 			".EPL_ADLAN_57."<div class='smalltext'>".EPL_ADLAN_58."</div>
 			</td>
-			<td class='forumheader3'>
+			<td>
 			<select class='tbox' name='delete_tables'>
 			<option value='1'>".LAN_YES."</option>
 			<option value='0'>".LAN_NO."</option>
@@ -948,10 +951,10 @@ class pluginManager{
 			if ($userclasses)
 			{
 				$text .= "	<tr>
-				<td class='forumheader3'>
+				<td>
 				".EPL_ADLAN_78."<div class='indent'>".$userclasses."</div><div class='smalltext'>".EPL_ADLAN_79."</div>
 				</td>
-				<td class='forumheader3'>
+				<td>
 					<select class='tbox' name='delete_userclasses'>
 					<option value='1'>".LAN_YES."</option>
 					<option value='0'>".LAN_NO."</option>
@@ -963,10 +966,10 @@ class pluginManager{
 			if ($eufields)
 			{
 				$text .= "	<tr>
-				<td class='forumheader3'>
+				<td>
 				".EPL_ADLAN_80."<div class='indent'>".$eufields."</div><div class='smalltext'>".EPL_ADLAN_79."</div>
 				</td>
-				<td class='forumheader3'>
+				<td>
 					<select class='tbox' name='delete_xfields'>
 					<option value='1'>".LAN_YES."</option>
 					<option value='0'>".LAN_NO."</option>
@@ -976,23 +979,22 @@ class pluginManager{
 			}
 
 			$text .="<tr>
-			<td class='forumheader3'>".EPL_ADLAN_59."<div class='smalltext'>".EPL_ADLAN_60."</div></td>
-			<td class='forumheader3'>{$del_text}</td>
+			<td>".EPL_ADLAN_59."<div class='smalltext'>".EPL_ADLAN_60."</div></td>
+			<td>{$del_text}</td>
 			</tr>
-			<tr>
-			<td colspan='2' class='forumheader' style='text-align:center'>";
+			</table>
+			<div class='buttons-bar center'>";
 
 			$text .= "<input class='button' type='submit' name='uninstall_confirm' value=\"".EPL_ADLAN_3."\" />&nbsp;&nbsp;
 			<input class='button' type='submit' name='uninstall_cancel' value='".EPL_ADLAN_62."' onclick=\"location.href='".e_SELF."'; return false;\"/>";
 
              //   $frm->admin_button($name, $value, $action = 'submit', $label = '', $options = array());
 
-			$text .= "</td>
-			</tr>
-			</table>
+			$text .= "</div>
+			</fieldset>
 			</form>
 			";
-			$ns->tablerender(EPL_ADLAN_63." ".$tp->toHtml($plug_vars['name'], "", "defs,emotes_off, no_make_clickable"), $text);
+			$ns->tablerender(EPL_ADLAN_63." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"), $text);
 
 		}
 

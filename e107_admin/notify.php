@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-08 06:58:00 $
+|     $Revision: 1.7 $
+|     $Date: 2009-07-10 14:25:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,11 @@ require_once('auth.php');
 
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
+
+$emessage = &eMessage::getInstance();
+
 $rs = new form;
+$frm = new e_form;
 $nc = new notify_config;
 $uc = new user_class;
 
@@ -38,8 +42,19 @@ $uc->text_class_link['email'] = 'email';
 
 if (isset($_POST['update']))
 {
-	$message = ($nc -> update()) ? LAN_UPDATED : LAN_UPDATED_FAILED;
-	$ns -> tablerender($message,"<div style='text-align:center'>".$message."</div>");
+	if($nc -> update())
+	{
+    	$message = LAN_UPDATED;
+        $style = E_MESSAGE_SUCCESS;
+	}
+	else
+	{
+    	$message = LAN_UPDATED_FAILED;
+		$style = E_MESSAGE_FAILED;
+	}
+	$emessage->add($message, $style);
+
+ //	$ns -> tablerender($message,"<div style='text-align:center'>".$message."</div>");
 }
 $nc -> config();
 
@@ -82,21 +97,27 @@ class notify_config
 		}
 	}
 
-	function config() 
+	function config()
 	{
-		global $ns, $rs;
+		global $ns, $rs, $frm, $emessage;
 
 		$text = "<div style='text-align: center'>
 		<form action='".e_SELF."?results' method='post' id='scanform'>
-		<table class='adminlist'>
+		<fieldset id='core-notify-config'>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+        	<colgroup span='2'>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>
 		<thead>
 		<tr>
 		<th colspan='2'>".NT_LAN_2.":</th>
-		</tr>";
+		</tr>
+		</thead>";
 
-		$text .= "</thead><tbody><tr>
-		<td colspan='2'>".NU_LAN_1."</td>
-		</tr>";
+		$text .= "<tbody>
+  		<tr><td colspan='2'>".NU_LAN_1."</td></tr>
+		";
 
 		$text .= $this -> render_event('usersup', NU_LAN_2);
 		$text .= $this -> render_event('userveri', NU_LAN_3);
@@ -140,15 +161,19 @@ class notify_config
 			}
 		}
 
-		$text .= "<tr>
-		<td colspan='2' class='center button-bar'>".$rs -> form_button('submit', 'update', LAN_UPDATE)."</td>
-		</tr>
+		$text .= "		</tr>
 		</tbody>
 		</table>
+
+		<div class='buttons-bar center'>";
+        $text .= $frm->admin_button('update', LAN_UPDATE,'update');
+		$text .= "
+		</div>
+		</fieldset>
 		</form>
 		</div>";
 
-		$ns -> tablerender(NT_LAN_1, $text);
+		$ns -> tablerender(NT_LAN_1,$emessage->render(). $text);
 	}
 
 
@@ -157,8 +182,8 @@ class notify_config
 		global $rs, $tp, $uc;
 		$text .= "
 			<tr>
-				<td style='width: 40%'>".$description.":	</td>
-				<td style='width: 60%; white-space: nowrap'>
+				<td >".$description.":	</td>
+				<td  class='nowrap'>
 				".$uc->uc_dropdown('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'],"nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
 			if($this -> notify_prefs['event'][$id]['class'] == 'email')
