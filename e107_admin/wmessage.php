@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/wmessage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-11-02 12:23:51 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-10 14:25:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,6 +38,7 @@ require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER."ren_help.php");
 
 $rs = new form;
+$frm = new e_form;
 
 $action == '';
 if (e_QUERY) 
@@ -111,21 +112,21 @@ if ($action == "main" || $action == "")
 		$wmList = $sql->db_getList();
 		$text = $rs->form_open("post", e_SELF, "myform_{$gen_id}", "", "");
 		$text .= "<div style='text-align:center'>
-			<table class='fborder' style='".ADMIN_WIDTH."'>
+			<table class='adminlist'>
 			<tr>
-			<td class='fcaption' style='width:5%'>ID</td>
-			<td class='fcaption' style='width:70%'>".WMLAN_02."</td>
-			<td class='fcaption' style='width:20%'>".WMLAN_03."</td>
-			<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
+			<td style='width:5%'>ID</td>
+			<td style='width:70%'>".WMLAN_02."</td>
+			<td style='width:20%'>".WMLAN_03."</td>
+			<td style='width:15%'>".LAN_OPTIONS."</td>
 			</tr>";
 		foreach($wmList as $row) 
 		{
 			$text .= "
 			<tr>
-				<td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
-				<td style='width:70%' class='forumheader3'>".strip_tags($tp->toHTML($row['gen_ip']))."</td>
-				<td style='width:70%' class='forumheader3'>".r_userclass_name($row['gen_intdata'])."</td>
-            	<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>
+				<td style='width:5%; text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
+				<td style='width:70%'>".strip_tags($tp->toHTML($row['gen_ip']))."</td>
+				<td style='width:70%'>".r_userclass_name($row['gen_intdata'])."</td>
+            	<td style='width:15%; text-align:center; white-space: nowrap'>
 					<a href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
 					<input type='image' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]')\"/>
 				</td>
@@ -159,20 +160,25 @@ if ($action == "create" || $action == "edit")
 	$text = "
 		<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'  id='wmform'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<fieldset id='code-wmessage-create'>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+		<colgroup span='2'>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>
 		";
 
 	$text .= "
 		<tr>
-		<td style='width:20%' class='forumheader3'>".WMLAN_10."</td>
-		<td style='width:60%' class='forumheader3'>
+		<td>".WMLAN_10."</td>
+		<td>
 		<input type='text' class='tbox' id='wm_caption' name='wm_caption' maxlength='80' style='width:95%' value=\"".$tp->toForm($row['gen_ip'])."\" />
 		</td>
 		</tr>";
 
 	$text .= "<tr>
-		<td style='width:20%' class='forumheader3'>".WMLAN_04."</td>
-		<td style='width:60%' class='forumheader3'>
+		<td>".WMLAN_04."</td>
+		<td>
 		<textarea class='tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($row['gen_chardata'])."</textarea>
 		<br />";
 
@@ -182,19 +188,25 @@ if ($action == "create" || $action == "edit")
 	$text .= "
 		</td>
 		</tr>
-		<tr><td class='forumheader3'>".WMLAN_03."</td>
-		<td class='forumheader3'>".r_userclass("wm_active", $row['gen_intdata'], "off", "public,guest,nobody,member,admin,classes")."</td></tr>";
+		<tr><td>".WMLAN_03."</td>
+		<td>".r_userclass("wm_active", $row['gen_intdata'], "off", "public,guest,nobody,member,admin,classes")."</td></tr>
+		</table>";
 
 	$text .= "
-		<tr style='vertical-align:top'>
-		<td colspan='2' class='forumheader' style='text-align:center'>";
+		<div class='buttons-bar center'>";
 
-	$text .= ($sub_action == "edit") ? "<input class='button' type='submit' name='wm_update' value='".LAN_UPDATE."' />" :
-	 "<input class='button' type='submit' name='wm_insert' value='".LAN_CREATE."' />" ;
+	if($sub_action == "edit")
+	{
+    	$text .= $frm->admin_button('wm_update', LAN_UPDATE, 'update');
+	}
+	else
+	{
+    	$text .= $frm->admin_button('wm_insert', LAN_CREATE);
+	}
+
 	$text .= "<input type='hidden' name='wm_id' value='".$id."' />";
-	$text .= "</td>
-		</tr>
-		</table>
+	$text .= "</div>
+		</fieldset>
 		</form>
 		</div>";
 	$ns->tablerender(WMLAN_01, $text);
@@ -205,32 +217,37 @@ if ($action == "opt") {
 	global $pref, $ns;
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+		<fieldset id='code-wmessage-options'>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+		<colgroup span='2'>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>
 		<tr>
 
-		<td style='width:70%' class='forumheader3'>
+		<td>
 		".WMLAN_05."<br />
 		<span class='smalltext'>".WMLAN_06."</span>
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['wm_enclose'] ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
+		<td>". ($pref['wm_enclose'] ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
 		</td>
 		</tr>
 		<tr>
 
-		<td style='width:70%' class='forumheader3'>
+		<td>
 		".WMLAN_07."
 		</td>
-		<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['wmessage_sc'] ? "<input type='checkbox' name='wmessage_sc' value='1' checked='checked' />" : "<input type='checkbox' name='wmessage_sc' value='1' />")."
+		<td>". ($pref['wmessage_sc'] ? "<input type='checkbox' name='wmessage_sc' value='1' checked='checked' />" : "<input type='checkbox' name='wmessage_sc' value='1' />")."
 		</td>
 		</tr>
-
-		<tr style='vertical-align:top'>
-		<td colspan='2'  style='text-align:center' class='forumheader'>
-		<input class='button' type='submit' name='updateoptions' value='".LAN_SAVE."' />
-		</td>
-		</tr>
-
 		</table>
+
+		<div class='buttons-bar center'>";
+
+		$text .= $frm->admin_button('updateoptions', LAN_SAVE);
+        $text .= "
+		</div>
+		</fieldset>
 		</form>
 		</div>";
 

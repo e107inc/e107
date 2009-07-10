@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-07-08 10:31:52 $
+ * $Revision: 1.15 $
+ * $Date: 2009-07-10 14:25:21 $
  * $Author: e107coders $
  *
 */
@@ -328,7 +328,7 @@ class page
 					</table>
 				</fieldset>
 				<fieldset id='core-cpage-create-options'>
-					<legend>".CUSLAN_3."</legend>
+					<legend>".LAN_OPTIONS."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminedit options'>
 						<colgroup span='2'>
 							<col class='col-label' />
@@ -451,9 +451,16 @@ class page
 
 			if($type)
 			{
-				$menu_name = $tp->toDB($_POST['menu_name']); // not to be confused with menu-caption.
-				$sql->db_Update("menus", "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ");
-				$update++;
+				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
+
+				if($sql -> db_Update("menus", "menu_name='{$menu_name}' WHERE menu_path='{$mode}' "))
+				{
+				  	$update++;
+				}
+				else
+				{
+                  	$sql -> db_Insert("menus", "0, '$menu_name', '0', '0', '0', '', '".$mode."' ");
+				}
 			}
 
 			if ($_POST['page_link'])
@@ -534,7 +541,7 @@ class page
 		$text = "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 				<fieldset id='core-cpage-options'>
-					<legend class='e-hideme'>".CUSLAN_3."</legend>
+					<legend class='e-hideme'>".LAN_OPTIONS."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminform'>
 						<colgroup span='2'>
 							<col class='col-label' />
@@ -563,7 +570,7 @@ class page
 			</form>
 		";
 
-		$e107->ns->tablerender(CUSLAN_3, $emessage->render().$text);
+		$e107->ns->tablerender(LAN_OPTIONS, $emessage->render().$text);
 	}
 
 

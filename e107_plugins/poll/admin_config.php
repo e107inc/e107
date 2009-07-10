@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-11 21:13:48 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-10 14:25:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -139,24 +139,33 @@ $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH
 
 if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) 
 {
-	$text .= "<table class='fborder' style='width:99%'>
+	$text .= "<table class='adminlist' cellpadding='0' cellspacing='0'>
+        	<colgroup span='3'>
+        		<col style='width:5%' />
+        		<col style='width:75%' />
+				<col style='width:20%' />
+        	</colgroup>
+			<thead>
+
 		<tr>
-		<td style='width:5%' class='fcaption'>ID
+		<th>ID
 		<input type='hidden' name='del_poll_confirm' id='del_poll_confirm' value='1' />
-		</td>
-		<td style='width:75%' class='fcaption'>".POLLAN_3."</td>
-		<td style='width:20%' class='fcaption'>".POLLAN_4."</td>
-		</tr>";
+		</th>
+		<th>".POLLAN_3."</th>
+		<th class='center'>".POLLAN_4."</th>
+		</tr>
+		</thead>
+		<tbody>";
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
 		$text .= "<tr>
-			<td style='width:5%' class='forumheader3'>$poll_id</td>
+			<td style='width:5%' >$poll_id</td>
 			<td style='width:75%' class='forumheader3'>".$tp -> toHTML($poll_title, TRUE,"no_hook, emotes_off, defs")."</td>
 			<td style='width:20%; text-align:center' class='forumheader3'><div>". $rs->form_button("button", "main_edit_{$poll_id}", POLLAN_5, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\""). $rs->form_button("submit", "main_delete_{$poll_id}", POLLAN_6, "onclick=\"confirm_($poll_id)\"")."
 			</div></td>
 			</tr>";
 	}
-	$text .= "</table>";
+	$text .= "</tbody></table>";
 }
 else 
 {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-07-09 20:51:59 $
+|     $Revision: 1.32 $
+|     $Date: 2009-07-10 14:25:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -270,37 +270,7 @@ class themeHandler{
 
         if($mode == "upload")  // Show Upload Form
 		{
-			if(!is_writable(e_THEME)) {
-				$ns->tablerender(TPVLAN_16, TPVLAN_15);
-				$text = "";
-			}
-			else
-			{
-			  require_once(e_HANDLER.'upload_handler.php');
-			  $max_file_size = get_user_max_upload();
-
-			  $text = "<div style='text-align:center'>
-				<table style='".ADMIN_WIDTH."' class='fborder'>
-				<tr>
-				<td class='forumheader3' style='width: 50%;'>".TPVLAN_13."</td>
-				<td class='forumheader3' style='width: 50%;'>
-				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
-				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-				<input class='tbox' type='file' name='file_userfile[]' size='50' />
-				</td>
-				</tr>
-				<tr>
-				<td colspan='2' style='text-align:center' class='forumheader'>";
-
-                $text .= $this->frm->admin_button('upload', TPVLAN_14, 'submit');
-				$text .= "
- 				</td>
-				</tr>
-				</table>
-				<br /></div>\n";
-			}
-
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $text);
+        	$this -> renderUploadForm();
 		}
 
 
@@ -319,6 +289,53 @@ class themeHandler{
 		echo "</form>\n</div>\n";
 	}
 
+
+    function renderUploadForm()
+	{
+    	global $sql,$ns;
+
+    	if(!is_writable(e_THEME)) {
+				$ns->tablerender(TPVLAN_16, TPVLAN_15);
+				$text = "";
+			}
+			else
+			{
+			  require_once(e_HANDLER.'upload_handler.php');
+			  $max_file_size = get_user_max_upload();
+
+			  $text = "
+			  	<div style='text-align:center'>
+				<table cellpadding='0' cellspacing='0' class='adminform'>
+					<colgroup span='2'>
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+				<tr>
+				<td>".TPVLAN_13."</td>
+				<td>
+				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
+				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+				<input class='tbox' type='file' name='file_userfile[]' size='50' />
+				</td>
+				</tr>
+				</table>
+				<div class='buttons-bar center'>";
+
+				$text .= $this->frm->admin_button('upload', TPVLAN_14, 'submit');
+
+                $text .= "
+				</div>
+				</div>\n";
+			}
+
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $text);
+	}
+
+
+
+
+
+
     function renderThemeInfo($theme)
 	{
 
@@ -331,7 +348,7 @@ class themeHandler{
 
 
     	$text = "<div style='font-weight:bold;margin-bottom:10px'>".TPVLAN_7."</div>
-			<table class='adminlist' cellpadding='4'>";
+			<table class='adminlist' cellpadding='0' cellspacing='0'>";
         $text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
 		$text .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
@@ -525,10 +542,16 @@ class themeHandler{
 
 		$text .= "
 		<div id='core-thememanager-configure'>
-		<table class='adminlist'>
-		<tr><td colspan='3'></td></tr>
-		<tr><td><b>".TPVLAN_11."</b></td><td>".$theme['version']."</td>
-		<td class='first last' rowspan='6' style='text-align:center;width:25%'>$newpreview </td></tr>";
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+        	<colgroup span='2'>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>
+		<tr>
+			<td><b>".TPVLAN_11."</b></td>
+			<td>".$theme['version']."</td>
+			<td class='first last' rowspan='6' style='text-align:center;width:25%'>$newpreview </td>
+			</tr>";
 
 		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
 		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>";
