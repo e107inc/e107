@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2009-07-10 14:58:17 $
+|     $Revision: 1.26 $
+|     $Date: 2009-07-11 01:48:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,13 +27,11 @@ $e_sub_cat = 'menus';
 
 require_once(e_HANDLER."file_class.php");
 require_once(e_HANDLER."form_handler.php");
+require_once (e_HANDLER.'message_handler.php');
 
-
-	$frm = new form;
+	$rs = new form;
+	$frm = new e_form();
 	$men = new menuManager();   // use 1 for dragdrop.
-
-
-
 
 
   if(isset($_GET['ajax']))
@@ -66,22 +64,28 @@ if($_POST)
 
 		if (strpos(e_QUERY, 'configure') === FALSE)
 		{
-			$cnt = $sql->db_Select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
-			$text = "<iframe id='menu_iframe' src='".e_SELF."?configure.$curLayout' width='100%' style='width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
-		   	$ns -> tablerender(MENLAN_35, $text, 'menus_config');
+            $text .= $men->menuRenderMessage();
+            $text .= $men->menuSelectLayout();
+			$text .= $men->menuVisibilityOptions();
+            $text .= $men->menuRenderIframe();
+            $ns -> tablerender(MENLAN_35, $text, 'menus_config');
+		  //	$text .= "<iframe name='menu_iframe' id='menu_iframe' src='".e_SELF."?configure.$curLayout' width='100%' style='width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
+
 		}
 		else // Within the IFrame.
 		{
-            if($menu->debug)
-			{
-        		echo "<div>
+
+/*        		echo "<div>
                 e_QUERY = ".e_QUERY."<br />
 				curLayout = ".$men->curLayout."<br />
-				dbLayout   = ".$men->dbLayout."<br />
-				</div>";
-            }
+				dbLayout   = ".$men->dbLayout."<br />";
 
-		    echo $men->menuSelectLayout();
+				print_a($_POST);
+				echo "
+				</div>";*/
+
+
+
 		  	$men->menuRenderPage();
 
 		}
@@ -99,11 +103,16 @@ class menuManager{
 		var $menuActivateLoc;
         var $menuActivateIds;
 		var $debug;
+		var $menuMessage;
 
 		function menuManager($dragdrop=FALSE)
 		{
         		global $pref, $HEADER,$FOOTER, $NEWSHEADER;
+
+
                 $this->debug = FALSE;
+
+
                 $this->dragDrop = $dragdrop;
 
 				
@@ -122,6 +131,10 @@ class menuManager{
 				{
 					$this->curLayout =  $_POST['custom_select'];
 				}
+				elseif($_GET['lay'])
+				{
+                	$this->curLayout =  $_GET['lay'];
+				}
 				else
 				{
                     $tmp = explode('.', e_QUERY);
@@ -130,10 +143,27 @@ class menuManager{
 
 				$this->dbLayout = ($this->curLayout !=$pref['sitetheme_deflayout']) ? $this->curLayout : "";  //menu_layout is left blank when it's default.
 
+				if(isset($_POST['menu_id']) || $_GET['id'])
+				{
+                	$this->menuId = (isset($_POST['menu_id'])) ? intval($_POST['menu_id']) : $_GET['id'];
+				}
 
+				if ($menu_act == "sv" || isset($_POST['class_submit']))
+				{
 
+					$this->menuSaveVisibility();
 
+				}
 
+                if ($_GET['mode'] == "deac")
+				{
+				 	$this->menuDeactivate();
+				}
+
+				if ($_GET['mode'] == "conf")
+				{
+				 	$this->menuGoConfig();
+				}
 
 				$this->menuGrabLayout();
 
@@ -174,6 +204,42 @@ class menuManager{
 
 		}
 
+// -------------------------------------------------------------------------
+
+	function menuRenderIframe($url='')
+	{
+        global $ns,$sql;
+        if(!$url)
+		{
+        	$url = e_SELF."?configure.".$this->curLayout;
+		}
+
+		$cnt = $sql->db_Select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
+
+		$text .= "<object type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
+
+		return $text;
+	}
+
+
+	function menuRenderMessage()
+	{
+	  //	return $this->menuMessage;
+	  	$emessage = &eMessage::getInstance();
+
+		$text = $emessage->render($message);
+	  //	$text .= "ID = ".$this->menuId;
+		return $text;
+
+	}
+
+
+	function menuAddMessage($message, $type = E_MESSAGE_INFO, $session = false)
+	{
+		$emessage = &eMessage::getInstance();
+ 		$emessage->add($message, $type, $session);
+	}
+
     // -------------------------------------------------------------------------
 
     function menuGrabLayout()
@@ -190,22 +256,50 @@ class menuManager{
 				}
 				elseif($this->curLayout && $this->curLayout != "legacyCustom" && (isset($CUSTOMHEADER[$this->curLayout]) || isset($CUSTOMHEADER[$this->curLayout]))) // 0.7 themes
 				{
-				 // 	echo " MODE 0.7";
+				 // 	echo " MODE 0.7 ".$this->curLayout;
 					$HEADER = ($CUSTOMHEADER[$this->curLayout]) ? $CUSTOMHEADER[$this->curLayout] : $HEADER;
 					$FOOTER = ($CUSTOMFOOTER[$this->curLayout]) ? $CUSTOMFOOTER[$this->curLayout] : $FOOTER;
 				}
-			    elseif($this->curLayout && isset($HEADER[$this->curLayout]) && isset($FOOTER[$this->curLayout])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
+			    elseif($this->curLayout && is_array($HEADER) && isset($HEADER[$this->curLayout]) && isset($FOOTER[$this->curLayout])) // 0.8 themes - we use only $HEADER and $FOOTER arrays.
 				{
-				//  echo " MODE 0.8";
+				//  echo " MODE 0.8 ".$this->curLayout;
+
 					$HEADER = $HEADER[$this->curLayout];
 					$FOOTER = $FOOTER[$this->curLayout];
+
 				}
 
             // Almost the same code as found in templates/header_default.php  ---------
 
 	}
 
+    function menuGoConfig()
+	{
+		if(!$_GET['path'] || ($_GET['mode'] != "conf"))
+		{
+			return;
+		}
 
+		$file = urldecode($_GET['path']).".php";
+		$newurl = e_PLUGIN_ABS.$file;
+
+     /*
+
+
+
+	  return "<object type='text/html' id='menu_iframe' data='".$newurl."' width='100%' style='overflow:auto;width: 100%; border: 0px' ></object>";
+
+*/
+		header("Location: ".$newurl);
+		exit;
+	 //	echo "URL = ".$newurl;
+	  //	$newurl = $PLUGINS_DIRECTORY.$location."/{$position}{$this->menuNewLoc}.php";
+	  //	$newurl = SITEURL.str_replace("//", "/", $newurl);
+	  //	echo "<script type='text/javascript'>alert($newurl);	top.location.href = '{$newurl}'; </script> ";
+	//	exit;
+
+
+	}
 
 	// -----------------------------------------------------------------------------
 
@@ -227,29 +321,18 @@ class menuManager{
 
 			if ($menu_act == 'config')
 			{
-					if($this->menuNewLoc)
-					{
-						$this->menuNewLoc = ".".$this->menuNewLoc;
-					}
-					$newurl = $PLUGINS_DIRECTORY.$location."/{$position}{$this->menuNewLoc}.php";
-					$newurl = SITEURL.str_replace("//", "/", $newurl);
-					echo "<script type='text/javascript'>	top.location.href = '{$newurl}'; </script> ";
-					exit;
-			}
-
-
-
-
-
-			if ($menu_act == "sv")
-			{
-				$this->menuSaveVisibility();
 
 			}
+
+
+
+
+
+
 
 			if ($menu_act == "adv")
 			{
-				$this->menuVisibilityOptions();
+			  //	$this->menuVisibilityOptions();
 			}
 
 			if ($menu_act == "move")
@@ -257,10 +340,7 @@ class menuManager{
 			 	$this->menuMove();
 			}
 
-			if ($menu_act == "deac")
-			{
-			 	$this->menuDeactivate();
-			}
+
 
 			if ($menu_act == "bot")
 			{
@@ -411,17 +491,30 @@ class menuManager{
 
 	function menuVisibilityOptions()
 	{
-		global $sql,$ns;
+		if(!$_GET['vis']) return;
+
+		global $sql,$ns,$frm;
 		require_once(e_HANDLER."userclass_class.php");
-		$sql->db_Select("menus", "*", "menu_id=".$this->menuId);
+		if(!$sql->db_Select("menus", "*", "menu_id=".intval($_GET['vis'])))
+		{
+        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
+            return;
+		};
 		$row = $sql->db_Fetch();
 		$listtype = substr($row['menu_pages'], 0, 1);
 		$menu_pages = substr($row['menu_pages'], 2);
 		$menu_pages = str_replace("|", "\n", $menu_pages);
 
 		$text = "<div style='text-align:center;'>
-		<form  method='post' action='".e_SELF."?configure.".$this->curLayout."'>
-		<table style='width:40%'>
+		<form  method='post' action='".e_SELF."?lay=".$this->curLayout."'>
+        <fieldset id='core-menus-visibilityform'>
+		<legend>". MENLAN_7." ".$row['menu_name']."</legend>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+
+        	<colgroup span='2'>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>
 		<tr>
 		<td>
 		<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />
@@ -435,15 +528,18 @@ class menuManager{
 		$checked = ($listtype == 2) ? " checked='checked' " : "";
 		$text .= "<input type='radio' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br /><br />".MENLAN_28."<br />";
 		$text .= "<textarea name='pagelist' cols='60' rows='10' class='tbox'>$menu_pages</textarea>";
-		$text .= "
-		<tr>
-		<td style='text-align:center'><br />
-		<input class='button' type='submit' name='class_submit' value='".MENLAN_6."' />
-		</td>
-		</tr>
+		$text .= "</td></tr>
 		</table>
+		<div class='buttons-bar center'>";
+		//	<input class='button' type='submit' name='class_submit' value='".MENLAN_6."' />
+        $text .= $frm->admin_button('class_submit', MENLAN_6, 'update');
+
+		$text .= "<input type='hidden' name='menu_id' value='".intval($_GET['vis'])."' />
+		</div>
+		</fieldset>
 		</form>
 		</div>";
+		return $text;
 		$caption = MENLAN_7." ".$row['menu_name'];
 		$ns->tablerender($caption, $text);
 	}
@@ -575,14 +671,13 @@ class menuManager{
 		{
 			$admin_log->log_event('MENU_02',$_POST['menu_class'].'[!br!]'.$pageparms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			$message = "<br />".MENLAN_8."<br />";
+			$this->menuAddMessage($message,E_MESSAGE_SUCCESS);
 		}
 		else
 		{
 	     	$message = "the update failed";
-
+            $this->menuAddMessage($message,E_MESSAGE_ERROR);
 		}
-
-	    echo $message;
 
 	}
 
@@ -648,7 +743,7 @@ class menuManager{
 
 	function menuRenderPage()
 	{
-		global $sql, $ns, $HEADER, $FOOTER, $frm, $pref, $tp;
+		global $sql, $ns, $HEADER, $FOOTER, $rs, $pref, $tp;
 
 		echo "<div id='portal'>";
 		$this->parseheader($HEADER);  // $layouts_str;
@@ -658,7 +753,7 @@ class menuManager{
 
 
 		echo "<div style='text-align:center'>";
-		echo $frm->form_open("post", e_SELF."?configure.".$this->curLayout, "menuActivation");
+		echo $rs->form_open("post", e_SELF."?configure.".$this->curLayout, "menuActivation");
 		$text = "<table style='width:80%;margin-left:auto;margin-right:auto'>";
 
 
@@ -705,7 +800,7 @@ class menuManager{
 	        }
 			else
 			{
-	            $text .= "<div class='block block-archive' id='block-archive-".$row['menu_id']."' style='border:1px outset black;text-align:left;color:black'>
+	            $text .= "<div class='block block-archive' id='block-archive-".$row['menu_id']."--".$this->dbLayout."' style='border:1px outset black;text-align:left;color:black'>
 
 				<div class='block-toggle'><input type='checkbox' name='menuselect[]' value='{$row['menu_id']}' />".$row['menu_name']."  $pdeta</div>
 	            <div class='content'>";
@@ -737,7 +832,7 @@ class menuManager{
 
 		$text .= "</tr></table>";
 		$ns -> tablerender(MENLAN_22, $text);
-        echo $frm->form_close();
+        echo $rs->form_close();
 		echo "</div>";
 
 
@@ -757,11 +852,17 @@ class menuManager{
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function menuSelectLayout()
 	{
-		global $frm, $pref;
+		global $rs, $pref;
 
 		$text .= "<form  method='post' action='".e_SELF."?configure.".$this->curLayout."'>";
-		$text .= "<div style='color:white;background-color:black;width:98%;display:block;padding:15px;text-align:center'>".MENLAN_30." ";
-	    $text .= "<select style='color:black' name='custom_select' onchange=\"this.form.submit();\">\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
+		// color:white;background-color:black;width:98%;display:block;padding:15px;text-align:center
+		$text .= "<div class='buttons-bar center'>".MENLAN_30." ";
+	//    $text .= "<select style='color:black' name='custom_select' onchange=\"this.form.submit();\">\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
+
+    //    $text .= "<select style='color:black' name='custom_select' onchange=\"document.getElementById('menu_iframe').data=this.options[selectedIndex].value;\">\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
+
+         $text .= "<select name='custom_select' onchange=\"urljump(this.options[selectedIndex].value);\">\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
+
 
 	    $search = array("_","legacyDefault","legacyCustom");
 		$replace = array(" ",MENLAN_31,MENLAN_33);
@@ -769,12 +870,14 @@ class menuManager{
 
 	    foreach($pref['sitetheme_layouts'] as $key=>$val)
 		{
+			$url = "";
 			$layoutName = str_replace($search,$replace,$key);
 			$layoutName .=($key==$pref['sitetheme_deflayout']) ? " (".MENLAN_31.")" : "";
 			$selected = ($this->curLayout == $key || ($key==$pref['sitetheme_deflayout'] && $this->curLayout=='')) ? "selected='selected'" : FALSE;
 
-         //   $val = ".e_SELF."?configure.".";
-			$text .= "<option value='$key' {$selected}>".$layoutName."</option>";
+            $url = e_SELF."?lay=";
+		 	$url .= $key;
+			$text .= "<option value='$url' {$selected}>".$layoutName."</option>";
 		}
 
 	    $text .= "</select>
@@ -820,7 +923,7 @@ class menuManager{
 
 	function checklayout($str)
 	{	// Displays a basic representation of the theme
-		global $pref, $ns, $PLUGINS_DIRECTORY, $frm, $sc_style, $tp, $menu_order;
+		global $pref, $ns, $PLUGINS_DIRECTORY, $rs, $sc_style, $tp, $menu_order;
 
 	    $menuLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";
 
@@ -887,7 +990,7 @@ class menuManager{
 			if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '".$this->dbLayout."' "))
 			{
 				unset($text);
-				echo $frm->form_open("post", e_SELF."?configure.".$this->curLayout, "frm_menu_".intval($menu));
+				echo $rs->form_open("post", e_SELF."?configure.".$this->curLayout, "frm_menu_".intval($menu));
 
 	            $MODE = 1;
 
@@ -896,7 +999,7 @@ class menuManager{
 				while ($row = $sql9->db_Fetch(MYSQL_ASSOC))
 				{
 	                    	echo "\n\n\n <!-- Menu Start -->\n\n
-					<div class='block' id='block-".$row['menu_id']."'>
+					<div class='block' id='block-".$row['menu_id']."--".$this->dbLayout."'>
 
 					<div class='content'>";
 
@@ -909,7 +1012,7 @@ class menuManager{
 
 				}
 
-				echo $frm->form_close();
+				echo $rs->form_close();
 			}
 			echo "</div>";
 			if(isset($sc_style['MENU']['post']) && strpos($str, 'ret') !== false) {
@@ -928,7 +1031,7 @@ class menuManager{
 
 	function menuRenderMenu($row,$menu_count )
 	{
-		global $ns,$frm,$menu,$menu_info,$menu_act;
+		global $ns,$rs,$menu,$menu_info,$menu_act;
 	                              //      $menu_count is empty in here
 		extract($row);
 		if(!$menu_id){ return; }
@@ -940,40 +1043,57 @@ class menuManager{
 
 					$text = "";
 					$conf = '';
-					if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}_menu_config.php"))
+					if (file_exists(e_PLUGIN."{$menu_path}{$menu_name}_menu_config.php"))
 					{
-					  $conf = "config.{$menu_path}.{$menu_name}_menu_config";
+					  $conf = "{$menu_path}.{$menu_name}_menu_config";
 					}
 
-					if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
+					if($conf == '' && file_exists(e_PLUGIN."{$menu_path}config.php"))
 					{
-					  $conf = "config.{$menu_path}.config";
+					  $conf = "{$menu_path}config";
 					}
 
 					$text .= "<select id='menuAct_".$menu_id."' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
-					$text .= $frm->form_option(MENLAN_25, TRUE, " ");
-					$text .= $frm->form_option(MENLAN_15, "", "deac.{$menu_info}");
+					$text .= $rs->form_option(MENLAN_25, TRUE, " ");
+					$text .= $rs->form_option(MENLAN_15, "", "deac.{$menu_info}");
 
 					if ($conf) {
-						$text .= $frm->form_option(MENLAN_16, "", $conf);
+						$text .= $rs->form_option(MENLAN_16, "", $conf);
 					}
 
 					if ($menu_order != 1) {
-						$text .= $frm->form_option(MENLAN_17, "", "inc.{$menu_info}");
-						$text .= $frm->form_option(MENLAN_24, "", "top.{$menu_info}");
+						$text .= $rs->form_option(MENLAN_17, "", "inc.{$menu_info}");
+						$text .= $rs->form_option(MENLAN_24, "", "top.{$menu_info}");
 					}
 					if ($menu_count != $menu_order) {
-						$text .= $frm->form_option(MENLAN_18, "", "dec.{$menu_info}");
-						$text .= $frm->form_option(MENLAN_23, "", "bot.{$menu_info}");
+						$text .= $rs->form_option(MENLAN_18, "", "dec.{$menu_info}");
+						$text .= $rs->form_option(MENLAN_23, "", "bot.{$menu_info}");
 					}
 					foreach ($this->menu_areas as $menu_act) {
 						if ($menu != $menu_act) {
-							$text .= $frm->form_option(MENLAN_19." ".$menu_act, "", "move.{$menu_info}.".$menu_act);
+							$text .= $rs->form_option(MENLAN_19." ".$menu_act, "", "move.{$menu_info}.".$menu_act);
 						}
 					}
 
-					$text .= $frm->form_option(MENLAN_20, "", "adv.{$menu_info}");
-					$text .= $frm->form_select_close();
+					$text .= $rs->form_option(MENLAN_20, "", "adv.{$menu_info}");
+					$text .= $rs->form_select_close();
+
+					$text .= "<div style='width:80px;float:right;display:block;text-align:right'>
+					<a href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;vis=".$menu_id."'; \">
+						<img src='".e_IMAGE_ABS."admin_images/search_16.png' alt='visibility' style='border:0px' />
+					</a>";
+
+					if($conf)
+					{
+	                    $text .= "<a href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;mode=conf&amp;path=".urlencode($conf)."'; \">
+							<img src='".e_IMAGE_ABS."admin_images/cat_tools_16.png' alt='configure' style='border:0px' />
+						</a>";
+					}
+
+                    $text .= "<a href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;mode=deac&amp;id=".$menu_id."'; \">
+						<img src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='deactivate' style='border:0px' />
+					</a>
+					</div>";
 
 					if($this->dragDrop)
 					{
@@ -1004,18 +1124,42 @@ class menuManager{
         if(!$this->dragDrop){ return; }
 
 	    global $sql;
-	    $query = explode(':', $_POST['value']);
-		$loc = intval(str_replace('portal-column-','',$query[0]));
 
-		$srch = array('block-archive-','block-');
+
+
+	    list($area,$blockList) = explode(':', $_POST['value']);
+		$loc = intval(str_replace('portal-column-','',$area));
+
+	 //	list($e_block,$e_layout) = explode("--",$_POST['value']);
+	 	$blockArray = explode(",",$blockList);
+
+     	$srch = array('block-archive-','block-');
 		$repl = array('','');
-		$blocks = str_replace($srch,$repl,$query[1]);
 
-	    $tmp = explode(',',$blocks);
+		foreach($blockArray as $val)
+		{
+			list($b,$layout) = explode("--",$val);
 
-		$this->menuActivateLoc = $loc;  // location
-		$this->menuActivateIds = $tmp;  // array of ids, in order.
-		$this->menuActivate();
+			if(strpos($b,"block-archive")!==FALSE)
+			{
+        		$insert[] = str_replace($srch,$repl,$b);
+			}
+			else
+			{
+            	$update[] = str_replace($srch,$repl,$b);  // not really accurate.
+			}
+		}
+
+		// Would be good if the ajax sent a query specific to 'moves'.
+
+		$this -> dbLayout = $layout;
+
+	 	$this->menuActivateLoc = $loc;  // location
+		$this->menuActivateIds = $insert;  // array of ids, in order.
+		$this->menuActivate(); // Activate will not deal with menu Moving - need a way to determine if a move has occurred.
+
+
+		// same for delete etc.
 
 		echo "<hr />";
 
@@ -1036,9 +1180,15 @@ function headerjs()
     	return;
 	}
 
-
-    $tmp = explode('.', e_QUERY);
-	$curLayout = ($tmp[1]) ? $tmp[1] : $pref['sitetheme_deflayout'];
+     if(isset($_POST['custom_select']))
+	{
+		$curLayout =  $_POST['custom_select'];
+	}
+	else
+	{
+    	$tmp = explode('.', e_QUERY);
+		$curLayout = ($tmp[1]) ? $tmp[1] : $pref['sitetheme_deflayout'];
+	}
 	$dbLayout = ($curLayout !=$pref['sitetheme_deflayout']) ? $curLayout : "";
 
 
@@ -1067,16 +1217,17 @@ function headerjs()
 
 
                      //   ," menu_location !=0 AND menu_layout = '{$curLayout}' ORDER BY menu_location,menu_order"
-            $sql -> db_Select("menus", "*"," menu_location !=0 AND menu_layout = '".$dbLayout."' ORDER BY menu_location,menu_order");
+			$qry = "SELECT * FROM #menus WHERE menu_location !=0 AND menu_layout = '".$dbLayout."' ORDER BY menu_location,menu_order";
+            $sql -> db_Select_gen($qry);
             while($row = $sql-> db_Fetch())
             {
 
-				$portal[$row['menu_location']][] = "'block-".$row['menu_id']."'";
+				$portal[$row['menu_location']][] = "'block-".$row['menu_id']."--".$dbLayout."'";
         	}
 
 			 foreach($portal as $col=>$val)
 			 {
-             	$ret .= "\t\n'portal-column-".$col."':[".implode(",",$val)."],";
+             	$ret .= "                  \n'portal-column-".$col."':[".implode(",",$val)."],";
 			 }
 
       	$ret .= "
