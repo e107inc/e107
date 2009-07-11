@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.105 $
-* $Date: 2009-07-09 21:22:52 $
-* $Author: e107steved $
+* $Revision: 1.106 $
+* $Date: 2009-07-11 01:48:40 $
+* $Author: e107coders $
 *
 */
 //
@@ -1064,7 +1064,7 @@ $theme_pref = varset($pref['sitetheme_pref']);
 // here we USE the theme
 if ($inAdminDir)
 {
-  if (file_exists(THEME.'admin_theme.php'))
+  if (file_exists(THEME.'admin_theme.php') && (strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY. 'menus.php?configure')===FALSE)) // no admin theme when previewing. 
   {
 	require_once(THEME.'admin_theme.php');
   }
