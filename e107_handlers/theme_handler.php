@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2009-07-10 14:25:22 $
+|     $Revision: 1.33 $
+|     $Date: 2009-07-12 10:11:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -644,7 +644,7 @@ class themeHandler{
 
 							$itext .= "</td>
 								<td style='vertical-align:top'>";
-                              	$itext .= ($pref['sitetheme_deflayout'] != $key) ? "<input type='text' style='width:97%' name='custompages[".$key."]' value=\"".implode(" ",$pref['sitetheme_custompages'][$key])."\" />\n" : TPVLAN_55;  // Default
+                              	$itext .= ($pref['sitetheme_deflayout'] != $key) ? "<input type='text' style='width:97%' name='custompages[".$key."]' value=\"".(isset($pref['sitetheme_custompages'][$key]) ? implode(" ",$pref['sitetheme_custompages'][$key]) : "")."\" />\n" : TPVLAN_55;  // Default
 
 							$itext .= "</td>
 							</tr>";

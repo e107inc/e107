@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2009-07-11 01:48:40 $
+|     $Revision: 1.27 $
+|     $Date: 2009-07-12 10:11:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -115,6 +115,7 @@ class menuManager{
 
                 $this->dragDrop = $dragdrop;
 
+
 				
 				if($this->dragDrop)
 				{
@@ -169,17 +170,19 @@ class menuManager{
 
 	        	$menu_array = $this->parseheader($HEADER.$FOOTER, 'check');
 
-				sort($menu_array, SORT_NUMERIC);
-				$menu_check = 'set';
-				foreach ($menu_array as $menu_value)
+				if($menu_array)
 				{
-					if ($menu_value != $menu_check)
+					sort($menu_array, SORT_NUMERIC);
+					$menu_check = 'set';
+					foreach ($menu_array as $menu_value)
 					{
-				   		$this->menu_areas[] = $menu_value;
+						if ($menu_value != $menu_check)
+						{
+					   		$this->menu_areas[] = $menu_value;
+						}
+						$menu_check = $menu_value;
 					}
-					$menu_check = $menu_value;
-				}
-
+                }
 
 				$this->menuModify();
 
@@ -201,6 +204,8 @@ class menuManager{
 
 					$this->menuSetPreset();
 				}
+
+				$this->menuSetConfigList(); // Update Active MenuConfig List.
 
 		}
 
@@ -1165,6 +1170,51 @@ class menuManager{
 
 
 	}
+
+
+    function menuSetConfigList()
+	{
+        	global $sql,$pref;
+
+			$sql -> db_Select("menus", "*", "menu_location != 0 ORDER BY menu_path");
+			while($row = $sql-> db_Fetch())
+			{
+				$link = "";
+
+	  			extract($row);
+				$id = substr($menu_path,0,-1);
+
+				if (file_exists(e_PLUGIN."{$menu_path}{$menu_name}_menu_config.php"))
+				{
+				    $link = "{$menu_path}{$menu_name}_menu_config.php";
+				}
+
+				if(file_exists(e_PLUGIN."{$menu_path}config.php"))
+				{
+					 $link = "{$menu_path}config.php";
+				}
+
+				if($link)
+				{
+         			$tmp[$id]['name'] = ucwords(str_replace("_menu","",$menu_name));
+					if($prev == $id)
+					{
+	                	$tmp[$id]['name'] .= ":".$prev_name;
+					}
+
+					$tmp[$id]['link'] = $link;
+					$prev = $id;
+					$prev_name = $tmp[$id]['name'];
+				}
+			}
+
+           $pref['menuconfig_list'] = $tmp;
+		   save_prefs();
+
+	}
+
+
+
 }  // end of Class.
 
 require_once("footer.php");
@@ -1271,6 +1321,14 @@ function headerjs()
 */
 
 	return $ret;
+}
+
+
+function menus_adminmenu()
+{
+
+
 
 }
+
 ?>
