@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.25 $
-| $Date: 2009-02-03 11:58:36 $
-| $Author: lisa_ $
+| $Revision: 1.26 $
+| $Date: 2009-07-12 02:29:24 $
+| $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -210,16 +210,22 @@ class e_shortcode
 		$parm = trim($parm);
 		$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
 
-		if (E107_DBG_BBSC)
+		if (E107_DBG_BBSC || E107_DBG_SC)
 		{
 			global $db_debug;
 			$sql->db_Mark_Time("SC $code");
 			$db_debug->logCode(2, $code, $parm, "");
 		}
 
-		if(E107_DBG_BBSC)
+		if(E107_DBG_SC)
 		{
-			trigger_error('starting shortcode {'.$code.'}', E_USER_ERROR);
+			echo "<strong>";
+            echo '{';
+			echo $code;
+			echo ($parm) ? '='.htmlentities($parm) : "";
+			echo '}';
+			echo "</strong>";
+		   //	trigger_error('starting shortcode {'.$code.'}', E_USER_ERROR);    // no longer useful - use ?[debug=bbsc]
 		}
 
 		$scCode = '';
@@ -328,8 +334,8 @@ class e_shortcode
 
 			if(E107_DBG_SC && $scFile)
 			{
-				echo (isset($scFile)) ? "<br />sc_file= ".str_replace(e_FILE.'shortcode/', '', $scFile).'<br />' : '';
-				echo "<br />sc= <b>$code</b>";
+			  //	echo (isset($scFile)) ? "<br />sc_file= ".str_replace(e_FILE.'shortcode/', '', $scFile).'<br />' : '';
+			  //	echo "<br />sc= <b>$code</b>";
 			}
 		}
 

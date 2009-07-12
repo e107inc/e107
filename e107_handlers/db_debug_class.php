@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-08 01:29:54 $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-12 02:29:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -155,7 +155,7 @@ class e107_db_debug {
 		if ($bExplained) 
 		{
 		  $bRowHeaders=FALSE;
-		  while ($row = @mysql_fetch_assoc($sQryRes)) 
+		  while ($row = @mysql_fetch_assoc($sQryRes))
 		  {
 			if (!$bRowHeaders) 
 			{
@@ -193,6 +193,12 @@ class e107_db_debug {
 		//
 		// Show stats from aSQLdetails array
 		//
+		if (!E107_DBG_SQLQUERIES && !E107_DBG_SQLDETAILS)
+		{
+			return FALSE;
+		}
+
+
 		$text='';
 		$nQueries=$sql->db_QueryCount();
 
@@ -431,7 +437,7 @@ class e107_db_debug {
 		}
 		$this -> scbbcodes[$this -> scbcount]['type'] = $type;
 		$this -> scbbcodes[$this -> scbcount]['code'] = $code;
-		$this -> scbbcodes[$this -> scbcount]['parm'] = $parm;
+		$this -> scbbcodes[$this -> scbcount]['parm'] = htmlentities($parm);
 		$this -> scbbcodes[$this -> scbcount]['postID'] = $postID;
 		$this -> scbcount ++;
 	}
@@ -442,6 +448,8 @@ class e107_db_debug {
 		{
 			return FALSE;
 		}
+
+
 		$text = "<table class='fborder' style='width: 100%'>
 			<tr><td class='fcaption' colspan='4'><b>Shortcode / BBCode</b></td></tr>
 			<tr>
@@ -451,7 +459,7 @@ class e107_db_debug {
 			<td class='fcaption' style='width: 10%;'>Post ID</td>
 			</tr>\n";
 
-		foreach($this -> scbbcodes as $codes)
+ 		foreach($this -> scbbcodes as $codes)
 		{
 			$text .= "<tr>
 				<td class='forumheader3' style='width: 10%;'>".($codes['type'] == 1 ? "BBCode" : "Shortcode")."</td>

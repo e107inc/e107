@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2007-11-13 07:38:55 $
+|     $Revision: 1.14 $
+|     $Date: 2009-07-12 02:29:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -290,10 +290,8 @@ class e_bbcode
 			}
 		}
 		global $e107_debug;
-		if(E107_DBG_BBSC)
-		{
-			trigger_error("starting bbcode [$code]", E_USER_ERROR);
-		}
+
+
 		ob_start();
 		$bbcode_return = eval($bbcode);
 		$bbcode_output = ob_get_contents();
