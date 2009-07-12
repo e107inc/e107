@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2006-12-04 13:32:10 $
-|     $Author: mrpete $
+|     $Revision: 1.22 $
+|     $Date: 2009-07-12 03:28:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -75,7 +75,9 @@ define('E107_DBG_BBSC',     	(E107_DEBUG_LEVEL &  2048));    // Show BBCode/ Sho
 define('E107_DBG_SC',       	(E107_DEBUG_LEVEL &  4096));    // Dump (inline) SC filenames as used
 define('E107_DBG_ERRBACKTRACE',	(E107_DEBUG_LEVEL &  8192));    // show backtrace for php errors
 define('E107_DBG_DEPRECATED', (E107_DEBUG_LEVEL & 16384));    // Show use of deprecated functions
-define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));   // show ALL php errors (including notices), not just fatal issues
+define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));    // show ALL php errors (including notices), not just fatal issues
+define('E107_DBG_INCLUDES',   (E107_DEBUG_LEVEL & 65536));    // show included file list
+define('E107_DBG_NOTICES',   (E107_DEBUG_LEVEL & 32768));    // show included file list
 
 class e107_debug {
 
@@ -91,16 +93,18 @@ class e107_debug {
 		'showsql'		=> 2,       // sql basics
 		'counts'		=> 4,       // traffic counters
 
-		'detail'		=> 32767,   // all details
-		'd' 			  => 32767,   // all details
-		'time' 			=> 257,     // time details and php errors
-		'sql' 			=> 513,     // sql details and php errors
+		'detail'		=> 16740351,   // (0+0xfffff-32768-4096) all details, except notice and inline sc
+		'd' 			  => 16740351,   // all details, except notice and inline sc
+		'time' 			=> 256,     // time details and php errors
+		'sql' 			=> 512,     // sql details and php errors
 		'paths' 		=> 1024,		// dump path strings
 		'bbsc' 			=> 2048,		// show bb and sc details
 		'sc'			  => 4096,   		// Shortcode paths dumped inline
 		'backtrace' => 8192,		// show backtrace when PHP has errors
 		'deprecated'	=> 16384,   // show if code is using deprecated functions
-		'notice'		=> 32768,   // you REALLY don't want all this, do you?
+		'notice'		=> 32768,   // detailed notice error messages?
+		'inc'       =>  65536,  // include files
+
 		'everything'=> 61439,   //(65535-4096) everything we know, and the rumors too
 		                        // (but shortcode paths removed: inline debug breaks pages!
 	);

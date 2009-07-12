@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.372 $
-|     $Date: 2009-07-08 21:36:05 $
-|     $Author: e107steved $
+|     $Revision: 1.373 $
+|     $Date: 2009-07-12 03:28:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1726,7 +1726,7 @@ class error_handler {
 
 	function return_errors() {
 		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
-		$ret = "<table class='fborder'>\n";
+		$ret = "" ;
 		if (E107_DBG_ERRBACKTRACE)
 		{
 			foreach ($this->errors as $key => $value) {
@@ -1740,8 +1740,8 @@ class error_handler {
 				$ret .= "<tr class='forumheader3'><td>{$value['short']}</td></tr>\n";
 			}
 		}
-		$ret .= "</table>";
-		return $ret;
+
+		return ($ret) ? "<table class='fborder'>\n".$ret."</table>" : "";
 	}
 
 	function trigger_error($information, $level) {

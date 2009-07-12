@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2007-08-13 19:56:35 $
-|     $Author: e107steved $
+|     $Revision: 1.54 $
+|     $Date: 2009-07-12 03:28:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -145,10 +145,10 @@ if ($pref['developer']) {
 	}
 }
 
-if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
+if((ADMIN == true || $pref['developer']) && count($error_handler->errors) && $error_handler->debug == true) 
+{
 	echo "
-	<br /><br />
-	<div>
+	<div class='e107_debug php_err block-text'>
 		<h3>PHP Errors:</h3><br />
 		".$error_handler->return_errors()."
 	</div>
@@ -160,7 +160,7 @@ if((ADMIN == true || $pref['developer']) && $error_handler->debug == true) {
 //
 if (function_exists('theme_foot'))
 {
-	echo theme_foot();
+   	echo theme_foot();
 }
 
 //

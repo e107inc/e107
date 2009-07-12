@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.46 $
-| $Date: 2008-10-29 20:30:30 $
-| $Author: e107steved $
+| $Revision: 1.47 $
+| $Date: 2009-07-12 03:28:21 $
+| $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -104,7 +104,7 @@ class e_shortcode
 		}
 		$parm = trim($parm);
 
-		if (E107_DBG_BBSC)
+		if (E107_DBG_BBSC || E107_DBG_SC)
 		{
 			global $db_debug;
 			$sql->db_Mark_Time("SC $code");
@@ -157,14 +157,20 @@ class e_shortcode
 
         if(E107_DBG_SC)
 		{
-		  	echo ($scFile) ? "<br />sc_file= ".str_replace(e_FILE."shortcode/","",$scFile)."<br />" : "";
-			echo "<br />sc= <b>$code</b>";
+           	echo "<strong>";
+            echo '{';
+			echo $code;
+			echo ($parm) ? '='.htmlentities($parm) : "";
+			echo '}';
+			echo "</strong>";
 		}
 
 		if(E107_DBG_BBSC)
 		{
-		  trigger_error("starting shortcode {".$code."}", E_USER_ERROR);
+		//   trigger_error("starting shortcode {".$code."}", E_USER_ERROR);   // not useful.
 		}
+
+
 		$ret = eval($shortcode);
 
 		if($ret != '' || is_numeric($ret))

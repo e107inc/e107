@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2008-07-20 17:08:29 $
-|     $Author: e107steved $
+|     $Revision: 1.21 $
+|     $Date: 2009-07-12 03:28:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -65,6 +65,7 @@ class e107_db_debug {
 		$this->ShowIf('Shortcodes / BBCode',$this->Show_SC_BB());
 		$this->ShowIf('Paths', $this->Show_PATH());
 		$this->ShowIf('Deprecated Function Usage', $this->Show_DEPRECATED());
+		$this->ShowIf('Included Files', $this->Show_Includes());
 	}
 	
 	function ShowIf($title,$str)
@@ -176,6 +177,12 @@ class e107_db_debug {
 		//
 		// Show stats from aSQLdetails array
 		//
+		if (!E107_DBG_SQLQUERIES && !E107_DBG_SQLDETAILS)
+		{
+			return FALSE;
+		}
+
+
 		$text='';
 		$nQueries=$sql->db_QueryCount();
 
@@ -408,7 +415,7 @@ class e107_db_debug {
 		}
 		$this -> scbbcodes[$this -> scbcount]['type'] = $type;
 		$this -> scbbcodes[$this -> scbcount]['code'] = $code;
-		$this -> scbbcodes[$this -> scbcount]['parm'] = $parm;
+		$this -> scbbcodes[$this -> scbcount]['parm'] = htmlentities($parm);
 		$this -> scbbcodes[$this -> scbcount]['postID'] = $postID;
 		$this -> scbcount ++;
 	}
@@ -428,7 +435,7 @@ class e107_db_debug {
 			<td class='fcaption' style='width: 10%;'>Post ID</td>
 			</tr>\n";
 
-		foreach($this -> scbbcodes as $codes)
+ 		foreach($this -> scbbcodes as $codes)
 		{
 			$text .= "<tr>
 				<td class='forumheader3' style='width: 10%;'>".($codes['type'] == 1 ? "BBCode" : "Shortcode")."</td>
@@ -453,16 +460,16 @@ class e107_db_debug {
 			<tr>
 			<td class='forumheader3'>\n";
 
-		ob_start();
-		echo "<pre>"; print_r($e107); echo "</pre>";
-		$text .= ob_get_contents();
-		ob_end_clean();
-
 		$text .= "e_HTTP: '".e_HTTP."'<br />";
 		$text .= "e_BASE: '".e_BASE."'<br />";
 		$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
 		$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
 		$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
+
+
+  	  	$text .= "<pre>";
+        $text .= htmlspecialchars(print_r($e107,TRUE));
+	  	$text .= "</pre>";
 
 		$text .= "</td></tr></table>";
 		return $text;
@@ -547,6 +554,19 @@ class e107_db_debug {
 
 		$text .= "</table><br />\n";
 
+		return $text;
+	}
+	
+	function Show_Includes()
+	{
+		if (!E107_DBG_INCLUDES) return FALSE;
+
+		$aIncList = get_included_files();
+		$text = "<table class='fborder'>\n";
+		$text .= "<tr><td class='forumheader3'>".
+							implode("&nbsp;</td></tr>\n<tr><td class='forumheader3'>", $aIncList).
+							"&nbsp;</td></tr>\n";
+		$text .= "</table>\n";
 		return $text;
 	}
 }
