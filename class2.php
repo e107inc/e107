@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.106 $
-* $Date: 2009-07-11 01:48:40 $
+* $Revision: 1.107 $
+* $Date: 2009-07-12 14:44:56 $
 * $Author: e107coders $
 *
 */
@@ -696,6 +696,7 @@ $sql->db_Mark_Time('Start: Load Theme');
 //###########  Module redefinable functions ###############
 if (!function_exists('checkvalidtheme'))
 {
+
 	function checkvalidtheme($theme_check)
 	{
 		// arg1 = theme to check
@@ -704,8 +705,13 @@ if (!function_exists('checkvalidtheme'))
 		if (ADMIN && strpos(e_QUERY, 'themepreview') !== false)
 		{
 			list($action, $id) = explode('.', e_QUERY);
+
 	   		require_once(e_HANDLER.'theme_handler.php');
-			$themeArray = themeHandler :: getThemes('id');
+			$themeobj = new themeHandler;
+            $themeArray = $themeobj->getThemes('id');
+ 			$themeDef = $themeobj->findDefault($themeArray[$id]);
+
+            define('THEME_LAYOUT',$themeDef);
 
 			define('PREVIEWTHEME', e_THEME.$themeArray[$id].'/');
 			define('PREVIEWTHEMENAME', $themeArray[$id]);
@@ -926,6 +932,56 @@ if (isset($_COOKIE['e107_tzOffset']))
 define('TIMEOFFSET', $e_deltaTime);
 
 // ----------------------------------------------------------------------------
+$sql->db_Mark_Time('(Start: Find/Load Theme)');
+
+
+// Work out which theme to use
+//----------------------------
+// The following files are assumed to use admin theme:
+//	  1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
+// 	  2. any plugin file starting with 'admin_'
+// 	  3. any plugin file in a folder called admin/
+// 	  4. any file that specifies $eplug_admin = TRUE;
+//
+// e_SELF has the full HTML path
+$inAdminDir = FALSE;
+$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
+$e107Path = str_replace($e107->base_path, '', e_SELF);				// Knock off the initial bits
+if	(
+	 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
+	  || ($isPluginDir && (strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== false)) // Plugin admin file or directory
+	  || (varsettrue($eplug_admin))																	// Admin forced
+	)
+{
+  $inAdminDir = true;
+}
+
+
+if(!defined('THEME'))
+{
+	if ($inAdminDir && varsettrue($pref['admintheme'])&& (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === false))
+	{
+/*	  if (strpos(e_SELF, "newspost.php") !== FALSE)
+	  {
+		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");		MAINTHEME no longer used in core distribution
+	  }  */
+	  checkvalidtheme($pref['admintheme']);
+	}
+	elseif (USERTHEME !== false && USERTHEME != 'USERTHEME' && !$inAdminDir)
+	{
+	  checkvalidtheme(USERTHEME);
+	}
+	else
+	{
+	  checkvalidtheme($pref['sitetheme']);
+	}
+
+
+}
+
+$theme_pref = varset($pref['sitetheme_pref']);
+// --------------------------------------------------------------
+$sql->db_Mark_Time('(Start: Find/Load Theme-Layout)'); // needs to run after checkvalidtheme() (for theme previewing).
 
 if(!defined("THEME_LAYOUT"))
 {
@@ -934,6 +990,8 @@ if(!defined("THEME_LAYOUT"))
 
 	if(is_array($cusPagePref))  // check if we match a page in layout custompages.
 	{
+   //		print_r($cusPagePref);
+
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
    			foreach($cusPageArray as $kpage)
@@ -1010,61 +1068,13 @@ if(!isset($_E107['no_menus']))
 	}
 
 }
-$sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-
-// Work out which theme to use
-//----------------------------
-// The following files are assumed to use admin theme:
-//	  1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
-// 	  2. any plugin file starting with 'admin_'
-// 	  3. any plugin file in a folder called admin/
-// 	  4. any file that specifies $eplug_admin = TRUE;
-//
-// e_SELF has the full HTML path
-$inAdminDir = FALSE;
-$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
-$e107Path = str_replace($e107->base_path, '', e_SELF);				// Knock off the initial bits
-if	(
-	 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
-	  || ($isPluginDir && (strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== false)) // Plugin admin file or directory
-	  || (varsettrue($eplug_admin))																	// Admin forced
-	)
-{
-  $inAdminDir = true;
-}
-
-
-if(!defined('THEME'))
-{
-	if ($inAdminDir && varsettrue($pref['admintheme'])&& (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === false))
-	{
-/*	  if (strpos(e_SELF, "newspost.php") !== FALSE)
-	  {
-		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");		MAINTHEME no longer used in core distribution
-	  }  */
-	  checkvalidtheme($pref['admintheme']);
-	}
-	elseif (USERTHEME !== false && USERTHEME != 'USERTHEME' && !$inAdminDir)
-	{
-	  checkvalidtheme(USERTHEME);
-	}
-	else
-	{
-	  checkvalidtheme($pref['sitetheme']);
-	}
-
-
-}
-
-$theme_pref = varset($pref['sitetheme_pref']);
-// --------------------------------------------------------------
 
 
 // here we USE the theme
 if ($inAdminDir)
 {
-  if (file_exists(THEME.'admin_theme.php') && (strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY. 'menus.php?configure')===FALSE)) // no admin theme when previewing. 
+  if (file_exists(THEME.'admin_theme.php') && (strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY. 'menus.php?configure')===FALSE)) // no admin theme when previewing.
   {
 	require_once(THEME.'admin_theme.php');
   }

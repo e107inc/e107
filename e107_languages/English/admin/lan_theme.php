@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_theme.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-07-09 08:31:38 $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-12 14:44:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 
-define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
+define("TPVLAN_1", "You are looking at a preview of the <b>'".PREVIEWTHEMENAME."'</b> theme. It has not been set as the main theme for your site, it has been activated to provide a preview of how the theme looks.<br />To set this theme as your site theme, <a href='".e_ADMIN."theme.php?choose'>return to your theme manager</a> and select 'Set As Site Theme'.<br />To preview more themes please <a href='".e_ADMIN."theme.php'>click here</a>");
 define("TPVLAN_2", "Theme Preview");
 define("TPVLAN_3", "Main site theme set to");
 define("TPVLAN_4", "Author");
@@ -73,7 +73,7 @@ define("TPVLAN_52", "Name");
 define("TPVLAN_53", "Suggested Plugins");
 define("TPVLAN_54", "Menu Presets");
 define("TPVLAN_55", "Default");
-define("TPVLAN_56", "Visibility Filter"); 
+define("TPVLAN_56", "Visibility Filter");
 
 
 

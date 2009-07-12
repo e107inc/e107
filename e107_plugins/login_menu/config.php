@@ -9,15 +9,15 @@
  * Plugin Administration - Login menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/config.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-21 12:53:48 $
- * $Author: e107steved $
+ * $Revision: 1.6 $
+ * $Date: 2009-07-12 14:44:57 $
+ * $Author: e107coders $
  *
 */
 
 $eplug_admin = TRUE;
 
-require_once("../../class2.php");
+require_once("../../class2.php"); 
 if (!getperms("4")) 
 { 
 	header("location:".e_BASE."index.php"); 
