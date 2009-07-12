@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-01-19 13:17:02 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-12 02:29:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -82,6 +82,7 @@ define('E107_DBG_ERRBACKTRACE',	(E107_DEBUG_LEVEL &  8192));    // show backtrac
 define('E107_DBG_DEPRECATED', (E107_DEBUG_LEVEL & 16384));    // Show use of deprecated functions
 define('E107_DBG_ALLERRORS',	(E107_DEBUG_LEVEL & 32768));    // show ALL php errors (including notices), not just fatal issues
 define('E107_DBG_INCLUDES',   (E107_DEBUG_LEVEL & 65536));    // show included file list
+define('E107_DBG_NOTICES',   (E107_DEBUG_LEVEL & 32768));    // show included file list
 
 class e107_debug {
 
@@ -99,8 +100,8 @@ class e107_debug {
 
 		'detail'		=> 16740351,   // (0+0xfffff-32768-4096) all details, except notice and inline sc
 		'd' 			  => 16740351,   // all details, except notice and inline sc
-		'time' 			=> 257,     // time details and php errors
-		'sql' 			=> 513,     // sql details and php errors
+		'time' 			=> 256,     // time details and php errors
+		'sql' 			=> 512,     // sql details and php errors
 		'paths' 		=> 1024,		// dump path strings
 		'bbsc' 			=> 2048,		// show bb and sc details
 		'sc'			  => 4096,   		// Shortcode paths dumped inline
@@ -122,7 +123,7 @@ class e107_debug {
 		{
 		  $dVals = substr($_COOKIE['e107_debug_level'],6);
 		}
-		if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU)) 
+		if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU))
 		{
 		  $dVals = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
 		}

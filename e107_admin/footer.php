@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-04-06 21:38:02 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-12 02:29:23 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -215,8 +215,7 @@ if ($pref['developer']) {
 if((ADMIN == true || $pref['developer']) && count($error_handler->errors) && $error_handler->debug == true) 
 {
 	echo "
-	<br /><br />
-	<div class='e107_debug php_err'>
+	<div class='e107_debug php_err block-text'>
 		<h3>PHP Errors:</h3><br />
 		".$error_handler->return_errors()."
 	</div>
