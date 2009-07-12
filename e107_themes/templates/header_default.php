@@ -6,8 +6,8 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2009-07-09 08:31:38 $
+|     $Revision: 1.34 $
+|     $Date: 2009-07-12 14:44:57 $
 |     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
@@ -340,8 +340,10 @@ if(function_exists('theme_head')){
 // FIXME H: Generate JS for image preloads
 //
 
-if ($pref['image_preload']) {
+if ($pref['image_preload'] && is_dir(THEME.'images'))
+{
 	$ejs_listpics = '';
+
 	$handle=opendir(THEME.'images');
 	while ($file = readdir($handle)) {
 		if(preg_match("#(jpg|jpeg|gif|bmp|png)$#i", $file)) {
@@ -452,8 +454,9 @@ if ($e107_popup != 1) {
 
   //  echo "DEF = ".$def."<br />";
 
-	if(($def == 'legacyCustom' || $def=='legacyDefault') && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
+	if($def == 'legacyCustom' || $def=='legacyDefault' )  // 0.6 themes.
 	{
+	  //	echo "MODE 0.6";
 	 	if($def == 'legacyCustom')
 		{
 			$HEADER = ($CUSTOMHEADER) ? $CUSTOMHEADER : $HEADER;

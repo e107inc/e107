@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2009-07-12 10:11:35 $
+|     $Revision: 1.34 $
+|     $Date: 2009-07-12 14:44:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ class themeHandler{
 	var $action;
 	var $id;
 	var $frm;
+	var $fl;
 
 	/* constructor */
 
@@ -33,6 +34,8 @@ class themeHandler{
    		require_once(e_HANDLER."form_handler.php");
 		$this->frm = new e_form(); //enable inner tabindex counter
 
+		require_once(e_HANDLER."file_class.php");
+        $this->fl = new e_file;
 
 
 		if (isset($_POST['upload'])) {
@@ -92,6 +95,7 @@ class themeHandler{
 
 		$tloop = 1;
 		$handle = opendir(e_THEME);
+
 		while (false !== ($file = readdir($handle)))
 		{
 		  	if ($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && is_readable(e_THEME.$file."/theme.php") )
@@ -102,45 +106,82 @@ class themeHandler{
 				}
 				else
 				{
+					$themeArray[$file] = $this->getThemeInfo($file);
 					$themeArray[$file]['id'] = $tloop;
 				}
 				$tloop++;
-				$STYLESHEET = FALSE;
-				if(!$mode)
-				{
-					$handle2 = opendir(e_THEME.$file."/");
-					while (false !== ($file2 = readdir($handle2))) // Read files in theme directory
-				  	{
-						if ($file2 != "." && $file2 != ".." && $file != "CVS" && !is_dir(e_THEME.$file."/".$file2))
-						{
+		  	}
+		}
+	 	closedir($handle);
+
+  /*
+
+		 	echo "<pre>";
+       print_r($themeArray);
+   	 echo "</pre>";*/
+
+		return $themeArray;
+	}
+
+
+
+    function getThemeInfo($file)
+	{
+    	$STYLESHEET = FALSE;
+
+     	$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*','e_*');
+                  	$handle2 = $this->fl->get_files(e_THEME.$file."/", ".php|.css|.xml|preview.jpg|preview.png",$reject,1);
+                    foreach($handle2 as $fln)
+		   	   		{
+                        $file2 = str_replace(e_THEME.$file."/","",$fln['path']).$fln['fname'];
+
+
+               //     $handle2 = opendir(e_THEME.$file."/");
+			   //		while (false !== ($file2 = readdir($handle2))) // Read files in theme directory
+			 // 	  	{
+
+					//	echo $file." = ".$file2."<br />";
+
 					  		$themeArray[$file]['files'][] = $file2;
 					  		if(strstr($file2, "preview."))
 					  		{
 								$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
 					  		}
+
+
+                             // ----------------  get information string for css file
+
 						  	if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0 && strpos($file2, "admin_") !== 0)
 						  	{
-								/* get information string for css file */
-								$fp=fopen(e_THEME.$file."/".$file2, "r");
-								$cssContents = fread ($fp, filesize(e_THEME.$file."/".$file2));
-								fclose($fp);
-								$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
-								preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
-								$match[1]=varset($match[1],'');
-								$themeArray[$file]['css'][] = array("name" => $file2, "info" => $match[1], "nonadmin" => $nonadmin);
-								if($STYLESHEET)
+
+								if($fp=fopen(e_THEME.$file."/".$file2, "r"))
 								{
-								  $themeArray[$file]['multipleStylesheets'] = TRUE;
-								}
-								else
-								{
-								  $STYLESHEET = TRUE;
+									$cssContents = fread ($fp, filesize(e_THEME.$file."/".$file2));
+									fclose($fp);
+									$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
+									preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
+									$match[1]=varset($match[1],'');
+									$themeArray[$file]['css'][] = array("name" => $file2, "info" => $match[1], "nonadmin" => $nonadmin);
+									if($STYLESHEET)
+									{
+									  $themeArray[$file]['multipleStylesheets'] = TRUE;
+									}
+									else
+									{
+									  $STYLESHEET = TRUE;
+									}
 								}
 						  	}
- 						}
-	 				} // end while..
 
-				  	closedir($handle2);
+
+
+
+
+	 				}    // end while..
+
+
+                 //   echo "<hr />";
+			   //	  	closedir($handle2);
 
 					// Load Theme information and merge with existing array. theme.xml (0.8 themes) is given priority over theme.php (0.7).
 					if(in_array("theme.xml",$themeArray[$file]['files']) )
@@ -151,24 +192,19 @@ class themeHandler{
 					{
 						$themeArray[$file] =  array_merge($themeArray[$file], $this->parse_theme_php($file));
 		         	}
-				}
-		  	}
-		}
-		closedir($handle);
-/*
-    echo "<table><tr><td>";
-     echo "<pre>";
-		print_r($themeArray['jayya']);
-		echo "</pre>";
-    echo "</td><td>";
-      echo "<pre>";
-		print_r($themeArray['e107v4a']);
-		echo "</pre>";
 
-	echo "</td></tr></table>";*/
 
-		return $themeArray;
+
+
+          return $themeArray[$file];
+
+
 	}
+
+
+
+
+
 
 	function themeUpload()
 	{
@@ -604,7 +640,7 @@ class themeHandler{
 
 
 
-        if(count($theme['layouts'])>1 && $mode==1)  // New in 0.8   ----
+        if($mode==1)  // New in 0.8   ----
 		{
 
             $itext .= "<tr>
@@ -630,7 +666,7 @@ class themeHandler{
 								{
 									$pref['sitetheme_deflayout'] = ($val['@attributes']['default']=='true') ? $key : "";
 						 		}
-								$itext .= "<td style='vertical-align:top width:auto;text-align:center'>\n";
+								$itext .= "<td class='center'>\n";
 
 								$itext .= "
 									<input type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout']==$key ? " checked='checked'" : "")." />
@@ -843,15 +879,25 @@ class themeHandler{
 
     	$l = $this->themeArray[$theme];
 
+		if(!$l)
+		{
+           $l = $this->getThemeInfo($theme);
+		}
+
+
 		if($l['layouts'])
 		{
 			foreach($l['layouts'] as $key=>$val)
 			{
 	        	if(isset($val['@attributes']['default']) && ($val['@attributes']['default'] == "true"))
 				{
-	            	return $key;
+	              return $key;
 				}
 			}
+		}
+		else
+		{
+           	return "";
 		}
 	}
 
@@ -897,8 +943,11 @@ class themeHandler{
 
     function SetCustomPages($array)
 	{
+		if(!is_array($array)){ return; }
+
 		global $pref;
 		$key = key($array);
+
 		$pref['sitetheme_custompages'][$key] = array_filter(explode(" ",$array[$key]));
 
 		if($pref['sitetheme_deflayout'] == 'legacyCustom')
@@ -955,28 +1004,31 @@ class themeHandler{
 		{
 			unset($themeArray);
 		}
-  //      echo " <hr>".$path."<hr>";
+
 
         $lays['legacyDefault']['@attributes'] = array('title'=>'Default','preview'=>'','previewFull'=>'','plugins'=>'', 'default'=>'true');
 
-		foreach($themeContentsArray as $line)
+        if(!file_exists(e_THEME.$path."theme.xml"))  // load custompages from theme.php only when theme.xml doesn't exist.
 		{
-        	if(strstr($line,"CUSTOMPAGES"))
+			foreach($themeContentsArray as $line)
 			{
-				eval(str_replace("$","\$",$line));
+	        	if(strstr($line,"CUSTOMPAGES"))
+				{
+					eval(str_replace("$","\$",$line));
+				}
 			}
-		}
-        if(is_array($CUSTOMPAGES))
-		{
-             foreach($CUSTOMPAGES as $key=>$val)
-			 {
-             	$themeArray['custompages'][$key] = explode(" ",$val);
-			 }
-		}
-		elseif($CUSTOMPAGES)
-		{
-        	$themeArray['custompages']['legacyCustom'] = explode(" ",$CUSTOMPAGES);
-			$lays['legacyCustom']['@attributes'] = array('title'=>'Custom','preview'=>'','previewFull'=>'','plugins'=>'');
+	        if(is_array($CUSTOMPAGES))
+			{
+	             foreach($CUSTOMPAGES as $key=>$val)
+				 {
+	             	$themeArray['custompages'][$key] = explode(" ",$val);
+				 }
+			}
+			elseif($CUSTOMPAGES)
+			{
+	        	$themeArray['custompages']['legacyCustom'] = explode(" ",$CUSTOMPAGES);
+				$lays['legacyCustom']['@attributes'] = array('title'=>'Custom','preview'=>'','previewFull'=>'','plugins'=>'');
+			}
 		}
 
 		$themeArray['path'] = $path;
@@ -1024,6 +1076,7 @@ class themeHandler{
 
 					$name = $val['@attributes']['name'];
 					unset($val['@attributes']['name']);
+
 					$lays[$name] = $val;
 					if(isset($val['customPages']))
 					{
