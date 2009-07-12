@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes.php,v 1.2 2009-01-10 11:42:19 secretr Exp $
+* $Id: admin_shortcodes.php,v 1.3 2009-07-12 10:11:35 e107coders Exp $
 *
 * Admin shortcode batch - registration
 */
@@ -30,6 +30,7 @@ $codes = array(
 'admin_status',
 'admin_update',
 'admin_userlan',
+'admin_menumanager',  
 );
 
 register_shortcode('admin_shortcodes', $codes, e_FILE.'shortcode/batch/admin_shortcodes_class.php');

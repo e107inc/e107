@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.7 2009-07-09 08:31:37 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.8 2009-07-12 10:11:35 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -436,9 +436,11 @@ class admin_shortcodes
 		if (ADMIN)
 		{
 			global $ns, $pref;
+
 			ob_start();
 			//Show upper_right menu if the function exists
 			$tmp = explode('.',e_PAGE);
+
 			$adminmenu_func = $tmp[0].'_adminmenu';
 			if(function_exists($adminmenu_func))
 			{
@@ -923,7 +925,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.7 2009-07-09 08:31:37 e107coders Exp $
+		* $Id: admin_shortcodes_class.php,v 1.8 2009-07-12 10:11:35 e107coders Exp $
 		*/
 
 		if (ADMIN)
@@ -1279,6 +1281,40 @@ class admin_shortcodes
 
 
 		return e_admin_menu('', '', $menu_vars, $$tmpl, false, false);
+	}
+
+	function get_admin_menumanager()  // List all menu-configs for easy-navigation
+	{
+    	global $pref;
+
+        $var['menumanager']['text'] = ADLAN_151; // Main
+		$var['menumanager']['link'] = e_ADMIN_ABS."menus.php";
+
+        foreach($pref['menuconfig_list'] as $name=>$val)
+		{
+           	$var[$name]['text'] = str_replace(":"," / ",$val['name']);
+ 			$var[$name]['link'] = e_PLUGIN_ABS.$val['link'];
+
+		}
+
+ 		foreach($var as $key=>$link)
+		{
+        	if(strpos(e_SELF,$link['link']))
+			{
+            	$action = $key;
+
+			}
+		}
+
+		if(!$action)
+		{
+        	return;
+		}
+   //		$keys = array_keys($var);
+	//	$action = (in_array($this->action,$keys)) ? $this->action : "installed";
+
+		e_admin_menu(ADLAN_6, $action, $var);
+
 	}
 
 }

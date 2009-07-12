@@ -9,9 +9,9 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-01-15 15:42:24 $
- * $Author: secretr $
+ * $Revision: 1.12 $
+ * $Date: 2009-07-12 10:11:35 $
+ * $Author: e107coders $
  *
 */
 
@@ -69,6 +69,7 @@ $ADMIN_FOOTER = "
 
 						{SETSTYLE=admin_menu}
 						{ADMIN_MENU}
+						{ADMIN_MENUMANAGER} 
 						{ADMIN_PRESET}
 
 						{SETSTYLE=none}
@@ -81,7 +82,9 @@ $ADMIN_FOOTER = "
 						{ADMIN_UPDATE}
 
 						{SETSTYLE=site_info}
+
 						{ADMIN_HELP}
+
 					</div>
 				</td>
 			</tr>

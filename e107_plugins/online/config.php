@@ -9,9 +9,9 @@
  * Plugin Administration - Online menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/online/config.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-21 12:53:48 $
- * $Author: e107steved $
+ * $Revision: 1.3 $
+ * $Date: 2009-07-12 10:11:35 $
+ * $Author: e107coders $
  *
 */
 $eplug_admin = TRUE;
@@ -53,54 +53,71 @@ function defaultpref(){
 }
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' name='menu_form'>
-<table style='".ADMIN_WIDTH."' class='fborder' >
+<form method='post' action='".e_SELF."' id='menu_form'>
+<fieldset id='core-menu-config-lastseen'>
+<legend>".LAN_ONLINE_ADMIN_1."</legend>
 
+<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
+	</colgroup>
 <tr><td class='fcaption' colspan='2'>".LAN_ONLINE_ADMIN_1."</td></tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>".LAN_ONLINE_ADMIN_2."</td>
-<td style='width:60%' class='forumheader3'>
+<td >".LAN_ONLINE_ADMIN_2."</td>
+<td class='forumheader3'>
 <input class='tbox' type='text' name='online_ls_caption' size='30' value='".$tp->toHTML($menu_pref['online_ls_caption'],"","defs")."' maxlength='200' />
 </td>
 </tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>".LAN_ONLINE_ADMIN_3."</td>
-<td style='width:60%' class='forumheader3'>
+<td>".LAN_ONLINE_ADMIN_3."</td>
+<td>
 <input class='tbox' type='text' name='online_ls_amount' size='3' value='".intval($menu_pref['online_ls_amount'])."' maxlength='3' />
 </td>
 </tr>
+</table>
+</fieldset>
 
+<fieldset id='core-menu-config-online'>
+<legend>".LAN_ONLINE_ADMIN_4."</legend>
+<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
+	</colgroup>
 <tr><td class='fcaption' colspan='2'>".LAN_ONLINE_ADMIN_4."</td></tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>".LAN_ONLINE_ADMIN_5."</td>
-<td style='width:60%' class='forumheader3'>
+<td>".LAN_ONLINE_ADMIN_5."</td>
+<td>
 <input class='tbox' type='text' name='online_caption' size='30' value='".$tp->toHTML($menu_pref['online_caption'],"","defs")."' maxlength='200' />
 </td>
 </tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>".LAN_ONLINE_ADMIN_6."</td>
-<td style='width:60%' class='forumheader3'>
+<td>".LAN_ONLINE_ADMIN_6."</td>
+<td>
 <input type='radio' value='1' id='online_show_memberlist1' name='online_show_memberlist' ".(varsettrue($menu_pref['online_show_memberlist']) ? "checked='checked'" : "")." /> ".LAN_ONLINE_ADMIN_ENABLED."
 <input type='radio' value='0' id='online_show_memberlist0' name='online_show_memberlist' ".(varsettrue($menu_pref['online_show_memberlist']) ? "" : "checked='checked'")." /> ".LAN_ONLINE_ADMIN_DISABLED."
 </td>
 </tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>".LAN_ONLINE_ADMIN_7."</td>
-<td style='width:60%' class='forumheader3'>
+<td>".LAN_ONLINE_ADMIN_7."</td>
+<td>
 <input type='radio' value='1' id='online_show_memberlist_extended1' name='online_show_memberlist_extended' ".(varsettrue($menu_pref['online_show_memberlist_extended']) ? "checked='checked'" : "")." /> ".LAN_ONLINE_ADMIN_ENABLED."
 <input type='radio' value='0' id='online_show_memberlist_extended0' name='online_show_memberlist_extended' ".(varsettrue($menu_pref['online_show_memberlist_extended']) ? "" : "checked='checked'")." /> ".LAN_ONLINE_ADMIN_DISABLED."
 </td>
 </tr>
-
-<tr>
-<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='update_menu' value='".LAN_UPDATE."' /></td>
-</tr>
 </table>
+
+<div class='buttons-bar center'>
+	<input class='button' type='submit' name='update_menu' value='".LAN_UPDATE."' />
+</div>
+
+</fieldset>
 </form>
 </div>";
 
