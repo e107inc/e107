@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.111 $
-|     $Date: 2008-08-26 21:24:15 $
-|     $Author: e107steved $
+|     $Revision: 1.112 $
+|     $Date: 2009-07-13 10:17:41 $
+|     $Author: marj_nl_fr $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -83,10 +83,14 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 //
 // C: Send start of HTML
 //
-
 echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 <head>
-<title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
+<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+<meta http-equiv='content-style-type' content='text/css' />
+";
+echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+echo "<title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
+
 
 //
 // D: Send JS
@@ -214,13 +218,6 @@ if(function_exists('core_head')){ echo core_head(); }
 // F: Send Meta Tags and Icon links
 //
 echo "<!-- *META* -->\n";
-
-// Multi-Language meta-tags with merge and override option.
-
-echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
-<meta http-equiv='content-style-type' content='text/css' />\n";
-
-echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
 
 // --- Load plugin Meta files and eplug_ before others --------
 if (is_array($pref['e_meta_list']))
