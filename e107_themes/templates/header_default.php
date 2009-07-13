@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2009-07-12 14:44:57 $
-|     $Author: e107coders $
+|     $Revision: 1.35 $
+|     $Date: 2009-07-13 10:17:09 $
+|     $Author: marj_nl_fr $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -86,7 +86,11 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 //
 echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 <head>
-<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+<meta http-equiv='content-style-type' content='text/css' />
+";
+echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
 
 // Wysiwyg JS support on or off.
@@ -268,13 +272,6 @@ if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == tru
 //
 // F: Send Meta Tags, Icon links, headerjs()
 //
-
-// Multi-Language meta-tags with merge and override option.
-
-echo "\n<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
-<meta http-equiv='content-style-type' content='text/css' />\n";
-
-echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n\n" : "";
 
 // --- Load plugin Meta files and eplug_ before others --------
 if (is_array($pref['e_meta_list']))

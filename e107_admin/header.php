@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.30 $
-|   $Date: 2009-04-16 10:07:13 $
-|   $Author: secretr $
+|   $Revision: 1.31 $
+|   $Date: 2009-07-13 10:17:09 $
+|   $Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -124,8 +124,12 @@ if (!defined('ADMIN_DELETE_ICON'))
 //
 
 echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
-	<head>
-	<title>".SITENAME." : ".LAN_head_4.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
+<head>
+<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+<meta http-equiv='content-style-type' content='text/css' />
+";
+echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
+echo "<title>".SITENAME." : ".LAN_head_4.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 
 //
 // D: Send JS
@@ -228,11 +232,6 @@ if (!isset($no_core_css) || !$no_core_css) {
 // F: Send Meta Tags and Icon links
 //
 echo "<!-- *META* -->\n";
-
-// Multi-Language meta-tags with merge and override option.
-
-echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
-<meta http-equiv='content-style-type' content='text/css' />\n";
 
 // --- Load plugin Meta files and eplug_ before others --------
 if (is_array($pref['e_meta_list']))
