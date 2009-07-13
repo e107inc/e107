@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2009-07-10 14:25:22 $
+|     $Revision: 1.30 $
+|     $Date: 2009-07-13 09:31:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -108,12 +108,12 @@ class pluginManager{
 		}*/
 
 
-       /*
+
         if($this->action == 'avail' || $this->action == 'installed')   // Plugin Check is done during upgrade_routine.
 		{
 			$this -> pluginCheck();
 		}
-		*/
+
 
 
 		if($this->action == "uninstall")
@@ -181,7 +181,7 @@ class pluginManager{
 
 	function pluginUninstall()
 	{
-         global $plugin,$ns,$admin_log,$pref,$tp;
+         global $plugin,$ns,$admin_log,$pref,$tp,$sql;
 
 			if(!isset($_POST['uninstall_confirm']))
 			{	// $id is already an integer
