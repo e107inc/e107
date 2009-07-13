@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2009-06-11 19:11:32 $
-|     $Author: e107steved $
+|     $Revision: 1.43 $
+|     $Date: 2009-07-13 10:50:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -94,7 +94,7 @@ class userlogin {
 		if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) 
 		{
 			define("LOGINMESSAGE", LAN_300."<br /><br />");
-			$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
+			$sql->db_Insert('generic', "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".$tp->toDB(LAN_LOGIN_14.' ::: '.LAN_LOGIN_1.': '.$username)."' ");
 			$this->checkibr($fip);
 			return FALSE;
 		}
@@ -104,7 +104,7 @@ class userlogin {
 		}
 		else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 			define("LOGINMESSAGE", LAN_302."<br /><br />");
-               	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
+               	$sql->db_Insert('generic', "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".$tp->toDB(LAN_LOGIN_15.' ::: '.LAN_LOGIN_1.': '.$username)."' ");
 				$this -> checkibr($fip);
 			return FALSE;
 		} else {
@@ -122,7 +122,7 @@ class userlogin {
 				if($pref['disallowMultiLogin']) {
 					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
 						define("LOGINMESSAGE", LAN_304."<br /><br />");
-						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+						$sql->db_Insert('generic', "0, 'failed_login', '".time()."', 0, '{$fip}', '$user_id', '".$tp->toDB(LAN_LOGIN_16.' ::: '.LAN_LOGIN_1.': '.$username.', '.LAN_LOGIN_17.': ').md5($ouserpass)."' ");
 						$this -> checkibr($fip);
 						return FALSE;
 					}
@@ -164,7 +164,7 @@ class userlogin {
 			if($fails > 10) 
 			{
 				$sql -> db_Insert("banlist", "'$fip', '1', '".LAN_LOGIN_18."' ");
-		   		$sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+		   		$sql->db_Insert('generic', "0, 'auto_banned', '".time()."', 0, '{$fip}', 0, '".$tp->toDB(LAN_LOGIN_20.': '.$username.', '.LAN_LOGIN_17.': ').md5($ouserpass)."' ");
 			}
 		}
 	}
