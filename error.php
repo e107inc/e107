@@ -3,17 +3,17 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Copyright (C) 2001-2009 e107 Inc 
 |     http://e107.org
-|     jalist@e107.org
+|
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/error.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-06-04 20:03:43 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-14 05:31:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 

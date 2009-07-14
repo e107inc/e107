@@ -3,17 +3,17 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ?Steve Dunstan 2001-2002
+|     ?e107 Inc 2001-2009
 |     http://e107.org
-|     jalist@e107.org
+|
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/email.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-04-16 10:19:50 $
-|     $Author: secretr $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-14 05:31:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
