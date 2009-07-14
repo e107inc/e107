@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.7 2009-07-09 02:47:14 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.8 2009-07-14 03:50:55 e107coders Exp $ -->
 <e107Plugin name="Download" version="1.0" compatibility="0.8" installRequired="true">
-	<author name="e107devs" url="http://e107.org"/>
+	<author name="e107 Inc." url="http://e107.org"/>
 	<description>DOWLAN_DESCRIPTION</description>
 	<folder>download</folder>
-	<category>content</category> 
+	<category>content</category>
 	<installLanguageFile filename="languages/--LAN--/admin_download.php" />
 	<administration>
 		<configFile>download_admin.php</configFile>
