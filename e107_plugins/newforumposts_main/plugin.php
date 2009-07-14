@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newforumposts_main/plugin.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-14 03:50:56 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "New Forum Posts";
 $eplug_version = "1";
-$eplug_author = "jalist";
+$eplug_author = "e107 Inc.";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
 $eplug_description = "This plugin displays a list of new forum posts on your front page";

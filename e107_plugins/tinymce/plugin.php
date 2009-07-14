@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-12-22 18:49:44 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-14 03:50:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "TinyMce";
 $eplug_version = "1.0";
-$eplug_author = "CaMer0n";
+$eplug_author = "e107 Inc.";
 $eplug_url = "http://e107.org";
 $eplug_email = "";
 $eplug_description = "A Wysiwyg editor for e107";
