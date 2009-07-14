@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-09 02:47:15 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-14 03:57:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,13 +25,13 @@ if (!defined('e107_INIT')) { exit; }
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "NLLAN_01";
 $eplug_version = "1.0";
-$eplug_author = "Steve Dunstan (jalist)";
+$eplug_author = "e107 Inc.";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
 $eplug_description = NLLAN_02;
 $eplug_compatible = "e107v0.7+";
 $eplug_readme = "";
-$eplug_category = "content";  
+$eplug_category = "content";
 
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "newsletter";
