@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2009-01-25 12:32:02 $
-|     $Author: e107steved $
+|     $Revision: 1.67 $
+|     $Date: 2009-07-14 12:30:32 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -961,7 +961,7 @@ function template_data() {
       <div class=\"contentbody\">
         <h3>{stage_pre}{stage_num} - {stage_title}</h3>
 		<br />
-        <p>{stage_content}</p>
+        {stage_content}
 		{debug_info}
       </div>
     </div>
