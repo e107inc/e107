@@ -4,14 +4,15 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-02 00:13:12 $
+|     $Revision: 1.12 $
+|     $Date: 2009-07-14 11:05:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 function wysiwyg($formids)
 {
+
 global $pref,$HANDLERS_DIRECTORY,$PLUGINS_DIRECTORY,$IMAGES_DIRECTORY;
 $lang = e_LANGUAGE;
 $tinylang = array(
@@ -51,9 +52,12 @@ function start_tinyMce() {
 	tinyMCE.init({\n";
 
 $text .= "language : '".$tinylang[$lang]."',\n";
-$text .= "mode : 'exact',\n";
-$text .= "elements : '".$formids."',\n";
+$text .= "mode : 'textareas',\n";
+// $text .= "elements : '".$formids."',\n";
+$text .= "editor_selector : 'e-wysiwyg',\n";
+$text .= "editor_deselector : 'e-wysiwyg-off',\n";
 $text .= "theme : 'advanced'\n";
+
 // $text .= ",plugins : 'table,contextmenu";
 
 $admin_only = array("ibrowser","code");
@@ -104,13 +108,11 @@ theme_advanced_buttons1 : '".$pref['tinymce']['theme_advanced_buttons1']."',
 theme_advanced_buttons2 : '".$pref['tinymce']['theme_advanced_buttons2']."',
 theme_advanced_buttons3 : '".$pref['tinymce']['theme_advanced_buttons3']."',
 theme_advanced_buttons4 : '".$pref['tinymce']['theme_advanced_buttons4']."',
-theme_advanced_toolbar_location : \"top\",
+theme_advanced_toolbar_location : \"bottom\",
 theme_advanced_toolbar_align : \"left\",
 theme_advanced_statusbar_location : \"bottom\",
 theme_advanced_resizing : true\n";
 
-
-$text .= ",theme_advanced_toolbar_location : 'top'";
 $text .= ",extended_valid_elements : 'p[style],a[name|href|target|rel|title|style|class],img[class|src|style|alt|title|name],hr[class],span[align|class|style],div[align|class|style|height|width] ,table[class|style|cellpadding|cellspacing|background|height|width],td[background|style|class|valign|align|height|width]'";
 $text .= ",invalid_elements: 'p,font,align,script,applet,iframe'\n";
 $text .= ",auto_cleanup_word: true\n";
@@ -160,7 +162,7 @@ function tinymce_html_bbcode_control(type, source) {
 	";
     if(in_array("bbcode",$pref['tinymce']['plugins']))
 	{
-    	$text .= " return source; ";
+      //	$text .= " return source; ";
 	}
 
 	$text .= "

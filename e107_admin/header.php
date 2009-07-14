@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.32 $
-|   $Date: 2009-07-14 03:16:16 $
+|   $Revision: 1.33 $
+|   $Date: 2009-07-14 11:05:49 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -138,7 +138,7 @@ echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
 // your code should run off e_WYSIWYG
-if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "") {
+if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html'])) {
 	define("e_WYSIWYG",TRUE);
 }else{
 	define("e_WYSIWYG",FALSE);

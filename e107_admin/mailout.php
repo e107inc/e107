@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-02-21 11:55:38 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2009-07-14 11:05:49 $
+|     $Author: e107coders $
 |
 | Work in progress - supplementary mailer plugin
 |
@@ -52,10 +52,7 @@ Each mailout task is implemented as a class, which must include a number of mand
 
 require_once("../class2.php");
 $e_sub_cat = 'mail';
-if (!isset($_POST['submit'])) 
-{
-	$e_wysiwyg = "email_body";
-}
+
 set_time_limit(180);
 session_write_close();
 require_once(e_ADMIN."auth.php");
@@ -961,7 +958,7 @@ function show_mailform($foo="")
 
 	<tr>
 	<td colspan='2'  class='forumheader3'>
-	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$email_body."</textarea>
+	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='e-wysiwyg tbox' style='width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$email_body."</textarea>
 	</td>
 	</tr>";
 

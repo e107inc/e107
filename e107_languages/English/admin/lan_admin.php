@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.19 2009-07-09 11:37:36 e107coders Exp $
+ * $Id: lan_admin.php,v 1.20 2009-07-14 11:05:52 e107coders Exp $
  *
  * Admin Language File
 */
@@ -235,7 +235,7 @@ define("LAN_TRY_AGAIN","Please try again.");
 
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
-define("LAN_OK","OK");
+// define("LAN_OK","OK");     // defined in e107_languages/English/English.php    
 
 define("LAN_PRESET","Preset");
 define("LAN_PRESET_SAVED","Preset saved successfully");
@@ -245,8 +245,8 @@ define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
 define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the file or folder first.");
 define("LAN_DATE","Date");
 define("LAN_TIME","Time");
-define("LAN_YES","Yes");
-define("LAN_NO","No");
+// define("LAN_YES","Yes");
+// define("LAN_NO","No");   // defined in e107_languages/English/English.php
 define("LAN_EMPTY","There are no entries in the database yet");
 define("LAN_EXISTING","Existing Entries");
 

@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-07-10 14:25:23 $
+ * $Revision: 1.5 $
+ * $Date: 2009-07-14 11:05:54 $
  * $Author: e107coders $
  *
 */
@@ -21,7 +21,7 @@ if(!getperms("P") || !plugInstalled('tinymce'))
 	exit();
 }
 
-$e_wysiwyg = 'content';
+
 require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage::getInstance();
 
@@ -91,7 +91,7 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
 	</div>
 	</td>
     <td>
-    <textarea id='content' rows='10' cols='10' name='name3' class='tbox' style='width:80%'>     </textarea>
+    <textarea id='content' class='e-wysiwyg tbox' rows='10' cols='10' name='name3'  style='width:80%'>     </textarea>
     </td>
     </tr>
 

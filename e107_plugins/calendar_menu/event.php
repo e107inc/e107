@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-02-01 20:54:08 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-14 11:05:52 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ if ($cat_filter == -1) $cat_filter = '*';
 $mult_count = 0;
 
 
-$e_wysiwyg = $pref['eventpost_editmode'] == 2 ? 'ne_event' : '';
+// $e_wysiwyg = $pref['eventpost_editmode'] == 2 ? 'ne_event' : '';
 
 
 // Array links db field names to internal variables

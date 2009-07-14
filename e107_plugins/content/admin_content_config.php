@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2008-12-29 20:53:24 $
-|		$Author: lisa_ $
+|		$Revision: 1.8 $
+|		$Date: 2009-07-14 11:05:53 $
+|		$Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -22,7 +22,7 @@ require_once("../../class2.php");
 
 if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
-$e_wysiwyg = "content_text,cat_text";
+
 $plugindir = e_PLUGIN."content/";
 require_once($plugindir."content_shortcodes.php");
 

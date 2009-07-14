@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-07-10 14:25:21 $
+ * $Revision: 1.16 $
+ * $Date: 2009-07-14 11:05:48 $
  * $Author: e107coders $
  *
 */
@@ -20,7 +20,6 @@ require_once("../class2.php");
 if (!getperms("5")) { header("location:".e_BASE."index.php"); exit; }
 
 $e_sub_cat = 'custom';
-$e_wysiwyg = "data";
 
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -307,7 +306,7 @@ class page
 		require_once(e_HANDLER."ren_help.php");
 		$insertjs = (!e_WYSIWYG)? " rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
 		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
-		$text .= "<textarea class='tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
+		$text .= "<textarea class='e-wysiwyg tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
 
 		$text .= "
 								<br />".display_help('cpage-help', 'cpage')."

@@ -78,7 +78,7 @@ class forum_post_shortcodes
 	{
 		global $post, $pref;
 		$rows = (e_WYSIWYG) ? 15 : 10;
-		$ret = "<textarea class='tbox' id='post' name='post' cols='70' rows='{$rows}' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
+		$ret = "<textarea class='e-wysiwyg tbox' id='post' name='post' cols='70' rows='{$rows}' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
 		if(!e_WYSIWYG)
 		{
 			$ret .= display_help('helpb', 'forum');

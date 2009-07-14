@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-14 05:31:57 $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-14 11:05:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
-$e_wysiwyg = varsettrue($pref['subnews_htmlarea']) ? "submitnews_item" : "";
+
 require_once(HEADERF);
 
 if (!isset($pref['subnews_class']))
@@ -201,7 +201,7 @@ $text .= "
 <tr>
   <td style='width:20%' class='forumheader3'>".LAN_135."</td>
 	<td style='width:80%' class='forumheader3'>
-    <textarea class='tbox' id='submitnews_item' name='submitnews_item' cols='80' style='max-width:95%' {$insertjs}>".$tp->toHTML($_POST['submitnews_item'],TRUE,'USER_BODY')."</textarea><br />";
+    <textarea class='e-wysiwyg tbox' id='submitnews_item' name='submitnews_item' cols='80' style='max-width:95%' {$insertjs}>".$tp->toHTML($_POST['submitnews_item'],TRUE,'USER_BODY')."</textarea><br />";
 
 if (!e_WYSIWYG)
 {
