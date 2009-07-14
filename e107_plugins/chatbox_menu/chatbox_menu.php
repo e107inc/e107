@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-12-11 21:13:48 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2009-07-14 11:05:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -147,7 +147,7 @@ else
 		$oc = "";
 	}
 	$texta .= "
-	<textarea class='tbox chatbox' id='cmessage' name='cmessage' cols='20' rows='5' style='".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+	<textarea class='e-wysiwyg tbox chatbox' id='cmessage' name='cmessage' cols='20' rows='5' style='".($cb_width ? "width:".$cb_width.";" : '')." overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
 	<input class='button' type='submit' id='chat_submit' name='chat_submit' value='".CHATBOX_L4."' {$oc}/>
 	<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2008-10-07 19:22:20 $
-|		$Author: e107steved $
+|		$Revision: 1.9 $
+|		$Date: 2009-07-14 11:05:53 $
+|		$Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -63,8 +63,6 @@ if (!USER)
 // define e_pagetitle
 $aa -> setPageTitle();
 
-//these have to be set for the tinymce wysiwyg
-$e_wysiwyg	= "content_text";
 
 // ##### DB ---------------------------------------------------------------------------------------
 

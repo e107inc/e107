@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-07-04 13:36:15 $
+ * $Revision: 1.43 $
+ * $Date: 2009-07-14 11:05:50 $
  * $Author: e107coders $
 */
 require_once("../class2.php");
@@ -123,7 +123,6 @@ function headerjs()
    	return $ret;
 }
 $e_sub_cat = 'news';
-$e_wysiwyg = 'data,news_extended';
 
 require_once('auth.php');
 require_once (e_HANDLER.'message_handler.php');
@@ -163,6 +162,8 @@ class admin_newspost
 	var $_cal = array();
 	var $_pst;
 	var $_fields;
+	var $_sort_order;
+	var $_sort_link;
 
 	function admin_newspost($qry, $pstobj)
 	{
@@ -174,8 +175,9 @@ class admin_newspost
 		$this->_pst = &$pstobj;
 
 		$this->_fields = array(
-				"news_id"			=> array("title" => LAN_NEWS_45, "type"=>"number", "width" => "5%", "thclass" => "center", "url" => e_SELF."?main.news_id.{$sort_link}.".$this->getFrom()),
- 				"news_title"		=> array("title" => NWSLAN_40, "type"=>"text", "width" => "30%", "thclass" => "", "url" => e_SELF."?main.news_title.{$sort_link}.".$this->getFrom()),
+				"checkboxes"	   	=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "url" => ""),
+				"news_id"			=> array("title" => LAN_NEWS_45, "type"=>"number", "width" => "5%", "thclass" => "center", "url" => e_SELF."?main.news_id.".$this->_sort_link.".".$this->getFrom()),
+ 				"news_title"		=> array("title" => NWSLAN_40, "type"=>"text", "width" => "30%", "thclass" => "", "url" => e_SELF."?main.news_title.".$this->_sort_link.".".$this->getFrom()),
     			"news_author"		=> array("title" => LAN_NEWS_50, "type"=>"user", "width" => "10%", "thclass" => "", "url" => ""),
 				"news_datestamp"	=> array("title" => LAN_NEWS_32, "type"=>"datestamp", "width" => "15%", "thclass" => "", "url" => ""),
                 "news_category"		=> array("title" => NWSLAN_6, "type"=>"dropdown", "width" => "auto", "thclass" => "", "url" => ""),
@@ -197,9 +199,12 @@ class admin_newspost
 		$action = varsettrue($tmp[0], 'main');
 		$sub_action = varset($tmp[1], '');
 		$id = isset($tmp[2]) && is_numeric($tmp[2]) ? intval($tmp[2]) : 0;
-		$sort_order = isset($tmp[2]) && !is_numeric($tmp[2]) ? $tmp[2] : 'desc';
+		$this->_sort_order = isset($tmp[2]) && !is_numeric($tmp[2]) ? $tmp[2] : 'desc';
 		$from = intval(varset($tmp[3],0));
 		unset($tmp);
+
+        if ($this->_sort_order != 'asc') $this->_sort_order = 'desc';
+		$this->_sort_link = ($this->_sort_order) == 'asc' ? 'desc' : 'asc';
 
 		$this->_request = array($action, $sub_action, $id, $sort_order, $from);
 	}
@@ -592,9 +597,9 @@ class admin_newspost
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
 
-		$sort_order = $this->getSortOrder();
-		if ($sort_order != 'asc') $sort_order = 'desc';
-		$sort_link = $sort_order == 'asc' ? 'desc' : 'asc';		// Effectively toggle setting for headings
+	   	// Effectively toggle setting for headings
+
+
 		$amount = 10;//TODO - pref
 
 		if(!is_array($user_pref['admin_news_columns']))
@@ -651,7 +656,7 @@ class admin_newspost
 		}
 		else
 		{
-			$query = "ORDER BY ".($this->getSubAction() ? $this->getSubAction() : "news_datestamp")." ".strtoupper($sort_order)."  LIMIT ".$this->getFrom().", {$amount}";
+			$query = "ORDER BY ".($this->getSubAction() ? $this->getSubAction() : "news_datestamp")." ".strtoupper($this->_sort_order)."  LIMIT ".$this->getFrom().", {$amount}";
 		}
 
 		if ($e107->sql->db_Select('news', '*', $query, ($_POST['searchquery'] ? 0 : "nowhere")))
@@ -682,6 +687,9 @@ class admin_newspost
 				$text .= "<tr>\n";
 
 				// Below must be in the same order as the field_columns above.
+
+		        $rowid = "news_selected[".$row["news_id"]."]";
+                $text .= "<td class='center'>".$frm->checkbox($rowid, $row['news_id'])."</td>\n";
 
 				$text .= (in_array("news_id",$user_pref['admin_news_columns'])) ? "<td class='center'>".$row['news_id']."</td>\n" : "";
                 $text .= (in_array("news_title",$user_pref['admin_news_columns'])) ? "<td><a href='".$e107->url->getUrl('core:news', 'main', "action=item&value1={$row['news_id']}&value2={$row['news_category']}")."'>".($row['news_title'] ? $e107->tp->toHTML($row['news_title'], false,"TITLE") : "[".NWSLAN_42."]")."</a></td> \n" : "";
@@ -720,7 +728,7 @@ class admin_newspost
 
 		if (!varset($_POST['searchquery']))
 		{
-			$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?".$this->getAction().'.'.($this->getSubAction() ? $this->getSubAction() : 0).'.'.$sort_order.".[FROM]";
+			$parms = $newsposts.",".$amount.",".$this->getFrom().",".e_SELF."?".$this->getAction().'.'.($this->getSubAction() ? $this->getSubAction() : 0).'.'.$this->_sort_order.".[FROM]";
 			$nextprev = $e107->tp->parseTemplate("{NEXTPREV={$parms}}");
 			if ($nextprev) $text .= "<div class='nextprev-bar'>".$nextprev."</div>";
 
@@ -948,7 +956,7 @@ class admin_newspost
 		// Extended news form textarea
 		// Fixes Firefox issue with hidden wysiwyg textarea.
 		// XXX - WYSIWYG is already plugin, this should go
-		if(defsettrue('e_WYSIWYG')) $ff_expand = "tinyMCE.execCommand('mceResetDesignMode')";
+  //		if(defsettrue('e_WYSIWYG')) $ff_expand = "tinyMCE.execCommand('mceResetDesignMode')";
 		$val = (strstr($e107->tp->post_toForm($_POST['news_extended']), "[img]http") ? $e107->tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $e107->tp->post_toForm($_POST['news_extended'])));
 		$text .= "
 								</td>

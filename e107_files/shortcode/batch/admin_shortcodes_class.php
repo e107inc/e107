@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.9 2009-07-14 09:53:12 marj_nl_fr Exp $
+* $Id: admin_shortcodes_class.php,v 1.10 2009-07-14 11:05:51 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -655,7 +655,7 @@ class admin_shortcodes
 	{
 		if(ADMIN && getperms('0'))
 		{
-			global $sql,$pst,$ns,$tp,$e_wysiwyg,$pref;
+			global $sql,$pst,$ns,$tp,$pref;
 
 			if(isset($pst) && $pst->form && $pst->page)
 			{
@@ -680,7 +680,7 @@ class admin_shortcodes
 				}
 
 				$existing = is_array($pst->id) ? $pst->id[$pid] : $pst->id;
-				$trigger = ($e_wysiwyg && $pref['wysiwyg']) ? 'tinyMCE.triggerSave();' : '';
+			//	$trigger = ($e_wysiwyg && $pref['wysiwyg']) ? 'tinyMCE.triggerSave();' : '';
 
 				if (strpos($thispage, $query) !== false)
 				{
@@ -915,7 +915,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.9 2009-07-14 09:53:12 marj_nl_fr Exp $
+		* $Id: admin_shortcodes_class.php,v 1.10 2009-07-14 11:05:51 e107coders Exp $
 		*/
 
 		if (ADMIN)
@@ -1182,8 +1182,7 @@ class admin_shortcodes
 						$id = 'plugnav-'.$row['plugin_path'];
 
 
-
-           				$tmp[$id]['text'] = $e107->tp->toHTML($plug_vars['@attributes']['name'], FALSE, "defs");
+           	  			$tmp[$id]['text'] = $e107->tp->toHTML($plug_vars['@attributes']['name'], FALSE, "defs");
 						$tmp[$id]['description'] = $plug_vars['description'];
 						$tmp[$id]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plug_vars['administration']['configFile'];
 						$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt='{$tmp['text']}' class='icon S16' />" : E_16_PLUGIN;

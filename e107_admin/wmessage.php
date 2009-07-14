@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/wmessage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-10 14:25:22 $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-14 11:05:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,6 @@ if (!getperms("M"))
 	 exit;
 }
 $e_sub_cat = 'wmessage';
-$e_wysiwyg = "data";
 
 require_once(e_HANDLER."preset_class.php");
 $pst = new e_preset;
@@ -179,7 +178,7 @@ if ($action == "create" || $action == "edit")
 	$text .= "<tr>
 		<td>".WMLAN_04."</td>
 		<td>
-		<textarea class='tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($row['gen_chardata'])."</textarea>
+		<textarea class='e-wysiwyg tbox' id='data' name='data' cols='70' rows='15' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($row['gen_chardata'])."</textarea>
 		<br />";
 
 		$text .= display_help("helpb", "admin");

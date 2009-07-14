@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2009-07-12 10:11:34 $
+|     $Revision: 1.28 $
+|     $Date: 2009-07-14 11:05:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -312,6 +312,8 @@ class menuManager{
 		{
 			global $pref,$sql,$admin_log,$ns;
 
+			$menu_act = "";
+
 	        if (isset($_POST['menuAct']))
 			{
 				  foreach ($_POST['menuAct'] as $k => $v)
@@ -324,21 +326,6 @@ class menuManager{
 				  }
 			}
 
-			if ($menu_act == 'config')
-			{
-
-			}
-
-
-
-
-
-
-
-			if ($menu_act == "adv")
-			{
-			  //	$this->menuVisibilityOptions();
-			}
 
 			if ($menu_act == "move")
 			{
@@ -778,7 +765,7 @@ class menuManager{
         	$text .= "<div class='portal-column' id='portal-column-block-list' style='border:1px solid silver'>\n";
 		}
 
-
+        $color = "";
 		while ($row = $sql->db_Fetch())
 		{
 			$pdeta = "";

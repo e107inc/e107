@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2009-07-13 10:17:09 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.36 $
+|     $Date: 2009-07-14 11:05:54 $
+|     $Author: e107coders $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -94,7 +94,7 @@ echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME
 
 
 // Wysiwyg JS support on or off.
-if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']) && varset($e_wysiwyg) != "")
+if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html']))
 {
 	define("e_WYSIWYG",TRUE);
 }

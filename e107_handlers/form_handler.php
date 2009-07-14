@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-07-14 03:18:16 $
+ * $Revision: 1.32 $
+ * $Date: 2009-07-14 11:05:52 $
  * $Author: e107coders $
  *
 */
@@ -127,7 +127,7 @@ class e_form
 
 	function bbarea($name, $value, $help_mod = '', $help_tagid='')
 	{
-		$options = array('class' => 'tbox large');
+	   	$options = array('class' => 'tbox large e-wysiwyg');
 		if(!defsettrue('e_WYSIWYG'))
 		{
 			require_once(e_HANDLER."ren_help.php");
