@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-06-24 22:19:27 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-14 23:14:41 $
+|     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
 */
@@ -111,7 +111,8 @@ class adminDownload extends download
                <td>
          ";
       $text .= $this->_getConditionList('download_filter[date_condition]', $this->filterFields['date_condition']);
- //     $text .= $eform->datepicker('download_filter[date]', $this->filterFields['date']);
+//TODO      $text .= $eform->datepicker('download_filter[date]', $this->filterFields['date']);
+      $text .= "//TODO";
       $text .= "
                </td>
                <td>Status</td>
@@ -288,7 +289,7 @@ class adminDownload extends download
 
          while ($row = $sql->db_Fetch())
          {
-		 	$rowStyle = ($rowStyle == "odd") ? "even" : "odd";
+		 	   $rowStyle = ($rowStyle == "odd") ? "even" : "odd";
             $text .= "<tr class='{$rowStyle}'><td>".$row['download_id']."</td>";
 
             // Display Chosen options
@@ -671,6 +672,14 @@ class adminDownload extends download
       ";
       $text .= $eform->bbarea('download_description',$download_description);
       $text .= "     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                        Activation between
+                     </td>
+                     <td>
+                         // TODO
+                     </td>
                   </tr>
                   <tr>
                      <td style='width:20%'>".DOWLAN_19."</td>
@@ -1271,9 +1280,9 @@ class adminDownload extends download
       $preset = $pst->read_preset("admin_dl_cat");  // read preset values into array
       extract($preset);
 
-      $frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
+      $eform_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
       $text = "<div style='text-align:center'>
-         <form method='post' action='{$frm_action}' id='dlform'>
+         <form method='post' action='{$eform_action}' id='dlform'>
          <table style='".ADMIN_WIDTH."' class='fborder'>
          <colgroup>
             <col style='width:30%'/>
@@ -1349,6 +1358,155 @@ class adminDownload extends download
          </form>
          </div>";
       $ns->tablerender(DOWLAN_39, $text);
+   }
+
+   function show_options() {
+   	global $pref, $ns;
+
+		require_once(e_HANDLER."form_handler.php");
+		$eform = new e_form(true); //enable inner tabindex counter
+
+   	$agree_flag = $pref['agree_flag'];
+   	$agree_text = $pref['agree_text'];
+      $c = $pref['download_php'] ? " checked = 'checked' " : "";
+      $sacc = (varset($pref['download_incinfo'],0) == '1') ? " checked = 'checked' " : "";
+      $order_options = array(
+         "download_id"        => "Id No.",
+         "download_datestamp" => LAN_DATE,
+         "download_requested" => ADLAN_24,
+         "download_name"      => DOWLAN_59,
+         "download_author"    => DOWLAN_15
+      );
+      $sort_options = array(
+         "ASC"    => DOWLAN_62,
+         "DESC"   => DOWLAN_63
+      );
+
+   	$text = "
+		   <div class='admintabs' id='tab-container'>
+			   <ul class='e-tabs e-hideme' id='download-option-tabs'>
+				   <li id='tab-download'><a href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
+				   <li id='tab-download'><a href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
+				   <li id='tab-download'><a href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
+				   <li id='tab-upload'><a href='#core-download-upload'>".LAN_DL_UPLOAD."</a></li>
+			   </ul>
+
+        		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
+   				<fieldset id='core-download-download1'>
+            	   <div style='text-align:center'>
+            		   <table style='".ADMIN_WIDTH."' class='fborder'>
+            		      <colgroup>
+            		         <col style='width:30%'/>
+            		         <col style='width:70%'/>
+            		      </colgroup>
+            		      <tr>
+            		         <td>".LAN_DL_USE_PHP."</td>
+            		         <td>"
+            		            .$eform->checkbox('download_subsub', '1', $pref['download_php'])
+            		            .$eform->label(LAN_DL_USE_PHP_INFO, 'download_php', '1')
+            		         ."</td>
+            		      </tr>
+            		      <tr>
+            		         <td>".LAN_DL_SUBSUB_CAT."</td>
+            		         <td>"
+            		            .$eform->checkbox('download_subsub', '1', $pref['download_subsub'])
+            		            .$eform->label(LAN_DL_SUBSUB_CAT_INFO, 'download_subsub', '1')
+            		         ."</td>
+            		      </tr>
+            		      <tr>
+            		         <td>".LAN_DL_SUBSUB_COUNT."</td>
+            		         <td>"
+            		            .$eform->checkbox('download_incinfo', '1', $pref['download_incinfo'])
+            		            .$eform->label(LAN_DL_SUBSUB_COUNT_INFO, 'download_incinfo', '1')
+            		         ."</td>
+            		      </tr>
+            		      <tr>
+               		      <td>".DOWLAN_55."</td>
+            		         <td>".$eform->text('download_view', $pref['download_view'], '4', array('size'=>'4'))."</td>
+            		      </tr>
+            		      <tr>
+            		         <td>".DOWLAN_56."</td>
+            		         <td>".$eform->selectbox('download_order', $order_options, $pref['download_order'])."</td>
+            		      </tr>
+            		      <tr>
+            		         <td>".LAN_ORDER."</td>
+               		         <td>".$eform->selectbox('download_sort', $sort_options, $pref['download_sort'])."</td>
+            		         </td>
+            		      </tr>
+            		      <tr>
+               		      <td>".DOWLAN_160."</td>
+               		      <td>
+                  		      <select name='mirror_order' class='tbox'>".
+                  		         ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
+            	   	            ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".DOWLAN_162."</option>" : "<option value='1'>".DOWLAN_162."</option>").
+            		               ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_163."</option>")."
+            		            </select>
+               		      </td>
+            		      </tr>
+            		      <tr>
+            		         <td>".DOWLAN_164."</td>
+            		         <td><input name='recent_download_days' class='tbox' value='".$pref['recent_download_days']."' size='3' maxlength='3'/>
+            		         </td>
+            		      </tr>
+            		   </table>
+            		</div>
+		   		</fieldset>
+   				<fieldset id='core-download-download2'>
+            	   <div style='text-align:center'>
+            		   <table style='".ADMIN_WIDTH."' class='fborder'>
+            		      <colgroup>
+            		         <col style='width:30%'/>
+            		         <col style='width:70%'/>
+            		      </colgroup>
+            		      <tr>
+               		      <td>".DOWLAN_151."</td>
+               		      <td>". r_userclass("download_reportbroken", $pref['download_reportbroken'])."</td>
+            		      </tr>
+            		      <tr>
+               		      <td>".DOWLAN_150."</td>
+               		      <td>". ($pref['download_email'] ? "<input type='checkbox' name='download_email' value='1' checked='checked'/>" : "<input type='checkbox' name='download_email' value='1'/>")."</td>
+            		      </tr>
+            		   </table>
+            		</div>
+		   		</fieldset>
+   				<fieldset id='core-download-download3'>
+            	   <div style='text-align:center'>
+            		   <table style='".ADMIN_WIDTH."' class='fborder'>
+            		      <colgroup>
+            		         <col style='width:30%'/>
+            		         <col style='width:70%'/>
+            		      </colgroup>
+            		      <tr>
+               		      <td>".DOWLAN_100."</td>
+               		      <td>". ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked'/>" : "<input type='checkbox' name='agree_flag' value='1'/>")."</td>
+            		      </tr>
+            		      <tr>
+            		         <td>".DOWLAN_101."</td>
+               	   	   <td>".$eform->bbarea('agree_text',$agree_text)."</td>
+            		      </tr>
+            		      <tr>
+            		         <td>".DOWLAN_146."</td>
+            		         <td>".$eform->bbarea('download_denied',$pref['download_denied'])."</td>
+            		      </tr>
+            		   </table>
+            		</div>
+		   		</fieldset>
+   				<fieldset id='core-download-upload'>
+            	   <div style='text-align:center'>
+            		   <table style='".ADMIN_WIDTH."' class='fborder'>
+            		      <colgroup>
+            		         <col style='width:30%'/>
+            		         <col style='width:70%'/>
+            		      </colgroup>
+            		   </table>
+            		</div>
+		   		</fieldset>
+				   <div class='buttons-bar center'>
+            	   <input class='button' type='submit' name='updateoptions' value='".DOWLAN_64."'/>
+               </div>
+        		</form>
+      ";
+   	$ns->tablerender(LAN_DL_OPTIONS, $text);
    }
 
    function create_category($subAction, $id)

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-05-04 20:09:45 $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-14 23:19:22 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -268,11 +268,11 @@ if ($action == "list")
          $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
 	   }
 	   $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
-      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $type));
-	   $dl_title .= $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
+      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $type, DOWLAN_54));
+	   $dl_title = $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
 		$ns->tablerender($dl_title, $dl_text);
-		$text = "";		// If other files, show in a separate block
-		$type = "";   	// Cancel title once displayed
+		$text = "";		   // If other files, show in a separate block
+		$dl_title = "";   // Cancel title once displayed
 	}  // End of subcategory display
 
    // Now display individual downloads

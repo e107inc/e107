@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.8 2009-07-14 03:50:55 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.9 2009-07-14 23:18:22 bugrain Exp $ -->
 <e107Plugin name="Download" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org"/>
 	<description>DOWLAN_DESCRIPTION</description>
@@ -7,7 +7,7 @@
 	<category>content</category>
 	<installLanguageFile filename="languages/--LAN--/admin_download.php" />
 	<administration>
-		<configFile>download_admin.php</configFile>
+		<configFile>admin_download.php</configFile>
 		<subMenuItem title="DOWLAN_29" description="" link="download_admin.php" icon="manage" />
 		<subMenuItem title="DOWLAN_30" description="" link="download_admin.php?create" icon="add" />
 		<subMenuItem title="DOWLAN_31" description="" link="download_admin.php?cat" icon="images/downloads_32.png" />
