@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2008-07-09 20:37:22 $
+|     $Revision: 1.24 $
+|     $Date: 2009-07-14 19:26:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -85,10 +85,11 @@ elseif(e_QUERY)
 
 if (isset($_POST['delete']))
 {
-	$class_id = $_POST['existing'];
+	$class_id = intval($_POST['existing']);
 	check_allowed($class_id);
-	if ($_POST['confirm']) {
-		$sql->db_Delete('userclass_classes', "userclass_id='".$_POST['existing']."' ");
+	if ($_POST['confirm']) 
+	{
+		$sql->db_Delete('userclass_classes', "userclass_id=".$class_id);
 		if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
 		{
 			while ($row = $sql->db_Fetch())
@@ -112,18 +113,20 @@ if (isset($_POST['delete']))
 
 if(isset($_POST['edit']))
 {
-	check_allowed($_POST['existing']);
-	$sql->db_Select('userclass_classes', '*', "userclass_id='".$_POST['existing']."' ");
+	$class_id = intval($_POST['existing']);
+	check_allowed($class_id);
+	$sql->db_Select('userclass_classes', '*', "userclass_id=".$class_id);
 	$row = $sql->db_Fetch();
 	extract($row);
 }
 
 if (isset($_POST['updateclass']))
 {
-	check_allowed($_POST['userclass_id']);
+	$class_id = intval($_POST['userclass_id']);
+	check_allowed($class_id);
 	$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name']);
 	$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description']);
-	$sql->db_Update('userclass_classes', "userclass_editclass={$_POST['userclass_editclass']}, userclass_name='".$_POST['userclass_name']."', userclass_description='".$_POST['userclass_description']."' WHERE userclass_id='".$_POST['userclass_id']."' ");
+	$sql->db_Update('userclass_classes', "userclass_editclass={$_POST['userclass_editclass']}, userclass_name='".$_POST['userclass_name']."', userclass_description='".$_POST['userclass_description']."' WHERE userclass_id=".$class_id);
 	$message = UCSLAN_5;
 }
 
@@ -134,14 +137,15 @@ if (isset($_POST['createclass']))
 		$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name']);
 		$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description']);
 
-		if (getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']) {
-			$editclass = $_POST['userclass_editclass'];
+		$editclass = intval(varset($_POST['userclass_editclass'], 0));
+		if ($editclass && (getperms('0') || check_class($editclass))) 
+		{
 			$i = 1;
 			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
 			{
 				$i++;
 			}
-			if ($i < 255)
+			if ($i < 245)
 			{
 				$sql->db_Insert("userclass_classes", $i.", '".strip_tags($_POST['userclass_name'])."', '".$_POST['userclass_description']."',{$editclass} ");
 			}

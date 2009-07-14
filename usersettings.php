@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.110 $
-|     $Date: 2009-04-23 19:58:17 $
+|     $Revision: 1.111 $
+|     $Date: 2009-07-14 19:26:24 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -393,11 +393,12 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 			}
 		}
 
+		$ueHide = array();
 		foreach (array_keys($_POST['hide']) as $key)
 		{
-			if (!isset($extList[$key]))
+			if (isset($extList[$key]))
 			{
-				unset($_POST['hide'][$key]);
+				$ueHide[] = $tp->toDB($key);
 			}
 		}
     }
@@ -458,19 +459,19 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 		$new_customtitle = "";
 		if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
 		{
-		  $new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
+			$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
 		}
 
 
 		// Extended fields - handle any hidden fields
 		if($ue_fields)
 		{
-		  $hidden_fields = implode("^", array_keys($_POST['hide']));
-		  if($hidden_fields != "")
-		  {
-			$hidden_fields = "^".$hidden_fields."^";
-		  }
-		  $ue_fields .= ", user_hidden_fields = '".$hidden_fields."'";
+			$hiddenFields = implode("^", $ueHide);
+			if($hiddenFields != "")
+			{
+				$hiddenFields = "^".$hiddenFields."^";
+			}
+			$ue_fields .= ", user_hidden_fields = '".$hiddenFields."'";
 		}
 
 
