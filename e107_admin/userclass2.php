@@ -9,8 +9,8 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-02-01 15:18:30 $
+ * $Revision: 1.22 $
+ * $Date: 2009-07-14 19:26:01 $
  * $Author: e107steved $
  *
 */
@@ -124,22 +124,27 @@ require_once("auth.php");
 //---------------------------------------------------
 if (isset($_POST['set_initial_classes']))
 {
-  $changed = $pref['init_class_stage'] != intval($_POST['init_class_stage']);
-  $pref['init_class_stage'] = intval($_POST['init_class_stage']);
-  $temp = varset($pref['initial_user_classes'],'');
-  $newval = implode(',',$_POST['init_classes']);
-  if ($temp != $newval) $changed = TRUE;
-  if ($changed)
-  {
-    $pref['initial_user_classes'] = $newval;
-    save_prefs();
-    userclass2_adminlog("05","New: {$newval}, Old: {$temp}, Stage: ".$pref['init_class_stage']);
-    $message = UCSLAN_41;
-  }
-  else
-  {
-    $message = UCSLAN_42;
-  }
+	$changed = $pref['init_class_stage'] != intval($_POST['init_class_stage']);
+	$pref['init_class_stage'] = intval($_POST['init_class_stage']);
+	$temp = array();
+	foreach ($_POST['init_classes'] as $ic)
+	{
+		$temp[] = intval($ic);
+	}
+	$newval = implode(',', $temp);
+	$temp = varset($pref['initial_user_classes'],'');
+	if ($temp != $newval) $changed = TRUE;
+	if ($changed)
+	{
+		$pref['initial_user_classes'] = $newval;
+		save_prefs();
+		userclass2_adminlog("05","New: {$newval}, Old: {$temp}, Stage: ".$pref['init_class_stage']);
+		$message = UCSLAN_41;
+	}
+	else
+	{
+		$message = UCSLAN_42;
+	}
 }
 
 
@@ -150,39 +155,38 @@ if (isset($_POST['delete']))
 {
 	$class_id = intval($_POST['existing']);
 	check_allowed($class_id);
-	if ($class_id > 247)		// Crude check, but good enough for now
+	if (($class_id >= e_UC_SPECIAL_BASE) && ($class_id <= e_UC_SPECIAL_END))
 	{
 	  $message = UCSLAN_29;
 	}
 	elseif ($_POST['confirm'])
 	{
-	  if ($e_userclass->delete_class($class_id) !== FALSE)
-	  {
-//		$sql->db_Delete('userclass_classes', "userclass_id='".$class_id."' ");
-		userclass2_adminlog("02","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
-		if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
-		{	// Delete existing users from class
-			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
-			{
-			  $uidList[$row['user_id']] = $row['user_class'];
-			}
-			$uclass->class_remove($class_id, $uidList);
-		}
-		if (isset($pref['frontpage'][$class_id]))
+		if ($e_userclass->delete_class($class_id) !== FALSE)
 		{
-		  unset($pref['frontpage'][$class_id]);		// (Should work with both 0.7 and 0.8 front page methods)
-		  save_prefs();
+			userclass2_adminlog("02","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
+			if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
+			{	// Delete existing users from class
+				while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+				{
+					$uidList[$row['user_id']] = $row['user_class'];
+				}
+				$uclass->class_remove($class_id, $uidList);
+			}
+			if (isset($pref['frontpage'][$class_id]))
+			{
+				unset($pref['frontpage'][$class_id]);		// (Should work with both 0.7 and 0.8 front page methods)
+				save_prefs();
+			}
+			$message = UCSLAN_3;
 		}
-		$message = UCSLAN_3;
-	  }
-	  else
-	  {
-		$message = UCSLAN_10;
-	  }
+		else
+		{
+			$message = UCSLAN_10;
+		}
 	}
 	else
 	{
-	  $message = UCSLAN_4;
+		$message = UCSLAN_4;
 	}
 }
 
@@ -199,7 +203,7 @@ if (($action == 'config') && isset($_POST['createclass']))		// Add or edit
 		'userclass_editclass' 	=> intval(varset($_POST['userclass_editclass'],0)),
 		'userclass_parent'		=> intval(varset($_POST['userclass_parent'],0)),
 		'userclass_visibility'	=> intval(varset($_POST['userclass_visibility'],0)),
-		'userclass_icon' 		=> varset($tp->toDB($_POST['userclass_icon']),''),
+		'userclass_icon' 		=> $tp->toDB(varset($_POST['userclass_icon'],'')),
 		'userclass_type'		=> intval(varset($_POST['userclass_type'],UC_TYPE_STD))
 		);
 	if ($class_record['userclass_type'] == UC_TYPE_GROUP)
@@ -230,7 +234,7 @@ if (($action == 'config') && isset($_POST['createclass']))		// Add or edit
 	{
 		if ($tempID > 0)
 		{		// Editing existing class here
-			check_allowed($_POST['userclass_id']);
+			check_allowed($tempID);
 			$class_record['userclass_id'] = $tempID;
 			$e_userclass->save_edited_class($class_record);
 			userclass2_adminlog("03","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
@@ -808,11 +812,11 @@ $ns->tablerender(UCSLAN_21, $text);
 	// If we're editing a class, get the info on the class
 	if(isset($_POST['class_members_edit']))
 	{
-	  $uc_edit_class = varset($_POST['class_to_edit'],0);
-	  check_allowed($uc_edit_class);
-	  $sql->db_Select('userclass_classes', '*', "userclass_id='".$_POST['class_to_edit']."' ");
-	  $row = $sql->db_Fetch();
-	  extract($row);
+		$uc_edit_class = varset($_POST['class_to_edit'],0);
+		check_allowed($uc_edit_class);
+		$sql->db_Select('userclass_classes', '*', "userclass_id=".$uc_edit_class);
+		$row = $sql->db_Fetch();
+		extract($row);
 	}
 
 	$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
@@ -927,7 +931,7 @@ if(isset($_POST['class_members_edit']))
 //		Special fooling around
 //-----------------------------------
   case 'special' :
-    if (!check_class(e_UC_MAINADMIN)) break;				// Let ordinary admins see this if they know enough to specify the URL
+    if (!check_class(e_UC_MAINADMIN)) break;				// Let main admins see this if they know enough to specify the URL
 
   $text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?special' id='specialclassForm'>";
