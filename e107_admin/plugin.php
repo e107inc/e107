@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2009-07-13 09:31:19 $
+|     $Revision: 1.31 $
+|     $Date: 2009-07-14 03:18:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ class pluginManager{
 
         $tmp = explode('.', e_QUERY);
 	  	$this -> action = ($tmp[0]) ? $tmp[0] : "installed";
-		$this -> id = intval($tmp[1]);
+		$this -> id = varset($tmp[1]) ? intval($tmp[1]) : "";
 
 
 		$this-> fields = array(
@@ -145,12 +145,6 @@ class pluginManager{
 		if($this->action == "upload")
 		{
         	$this -> pluginUpload();
-		}
-
-		if($emessage->hasMessage)  // Would prefer a method like this, but it doesn't work.
-		{
-			$emessage = &eMessage::getInstance();
-			$ns->tablerender(NWSLAN_4, $emessage->render());
 		}
 
 		if(isset($_POST['install-selected']))
@@ -672,7 +666,7 @@ class pluginManager{
 
         global $plugin,$ns,$frm;
 
-		$text .= "
+		$text = "
 			<form action='".e_SELF."?".e_QUERY."' id='pluginmanager_list' method='post'>
 		  		<fieldset id='core-newspost-list'>
 		 			<legend class='e-hideme'>".NWSLAN_4."</legend>
@@ -729,6 +723,8 @@ class pluginManager{
 
 			if (empty($pluginList)) return '';
 
+			$text = "";
+
 			foreach($pluginList as $plug)
 			{
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
@@ -757,7 +753,7 @@ class pluginManager{
 					$plugAuthor = varset($plug_vars['author']['@attributes']['name'],'');
 					$plugURL = varset($plug_vars['author']['@attributes']['url'],'');
                     $plugReadme = "";
-					if($plug['plugin_installflag'])
+					if(varset($plug['plugin_installflag']))
 					{
 						$plugName = "<a title='{$conf_title}' href='{$conf_file}' >".$tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable")."</a>";
                     }
@@ -765,18 +761,18 @@ class pluginManager{
 					{
                     	$plugName = $tp->toHTML($plug['plugin_name'], false, "defs,emotes_off, no_make_clickable");
 					}
-					if($plug_vars['readme'])   // 0.7 plugin.php
+					if(varset($plug_vars['readme']))   // 0.7 plugin.php
 					{
                     	$plugReadme = $plug_vars['readme'];
 					}
-					if($plug_vars['readMe']) // 0.8 plugin.xml
+					if(varset($plug_vars['readMe'])) // 0.8 plugin.xml
 					{
                     	$plugReadme = $plug_vars['readMe'];
 					}
 
 					$text .= "<tr>";
 
-					if(is_array($this-> fields['plugin_checkboxes']))
+					if(varset($this-> fields['plugin_checkboxes']))
 					{
                  		$rowid = "plugin_checkbox[".$plug['plugin_id']."]";
                 		$text .= "<td class='center middle'>".$frm->checkbox($rowid, $plug['plugin_id'])."</td>\n";
@@ -793,7 +789,7 @@ class pluginManager{
                     $text .= (in_array("plugin_notes",$this->fieldpref)) ? "<td class='center middle'>".($plugReadme ? "<a href='".e_PLUGIN.$plug['plugin_path']."/".$plugReadme."' title='".$plugReadme."'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' style='border:0px' /></a>" : "&nbsp;")."</td>" : "";
 					$text .= (in_array("plugin_description",$this->fieldpref)) ? "<td class='middle'>".$tp->toHTML($plug_vars['description'], false, "defs,emotes_off, no_make_clickable")."</td>" : "";
                     $text .= (in_array("plugin_compatible",$this->fieldpref)) ? "<td class='center middle'>".varset($plug_vars['@attributes']['compatibility'],'')."</td>" : "";
-					$text .= (in_array("plugin_compliant",$this->fieldpref)) ? "<td class='center middle'>".(($plug_vars['compliant'] || $plug_vars['@attributes']['xhtmlcompliant']=="true") ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
+					$text .= (in_array("plugin_compliant",$this->fieldpref)) ? "<td class='center middle'>".((varset($plug_vars['compliant']) || varsettrue($plug_vars['@attributes']['xhtmlcompliant'])) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
 
 
                 	// Plugin options Column --------------

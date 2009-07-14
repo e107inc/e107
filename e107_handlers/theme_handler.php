@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2009-07-12 14:44:56 $
+|     $Revision: 1.35 $
+|     $Date: 2009-07-14 03:18:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,6 +30,8 @@ class themeHandler{
 	/* constructor */
 
 	function themeHandler() {
+
+		global $emessage;
 
    		require_once(e_HANDLER."form_handler.php");
 		$this->frm = new e_form(); //enable inner tabindex counter
@@ -85,6 +87,17 @@ class themeHandler{
 
 		}
 
+		if(isset($_POST['installplugin']))
+		{
+			$key = key($_POST['installplugin']);
+
+			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
+        	require_once(e_HANDLER."plugin_class.php");
+
+			$eplug = new e107plugin;
+            $message = $eplug->install_plugin($key);
+		    $emessage->add($message, E_MESSAGE_SUCCESS);
+		}
 
 
 	}
@@ -211,7 +224,7 @@ class themeHandler{
 		if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 			exit;
 		}
-		global $ns;
+		global $ns, $emessage;
 		extract($_FILES);
 		if(!is_writable(e_THEME))
 		{
@@ -229,9 +242,10 @@ class themeHandler{
 			} else if (strstr($file_userfile['type'][0], "zip")) {
 				$fileType = "zip";
 			} else {
-				$ns->tablerender(TPVLAN_16, TPVLAN_17);
-				require_once("footer.php");
-				exit;
+				$emessage->add(TPVLAN_17, E_MESSAGE_ERROR);
+			//	$ns->tablerender(TPVLAN_16, TPVLAN_17);
+			 //	require_once("footer.php");
+				return;
 			}
 
 			if ($fileSize) {
@@ -256,9 +270,10 @@ class themeHandler{
 				} else {
 					$error = TPVLAN_47.PclErrorString().", ".TPVLAN_48.intval(PclErrorCode());
 					}
-					$ns->tablerender(TPVLAN_16, TPVLAN_18." ".$archiveName." ".$error);
-					require_once("footer.php");
-					exit;
+
+					$emessage->add(TPVLAN_18." ".$archiveName." ".$error, E_MESSAGE_ERROR);
+				  //	$ns->tablerender(TPVLAN_16, TPVLAN_18." ".$archiveName." ".$error);
+					return;
 				}
 
 				$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
@@ -271,9 +286,9 @@ class themeHandler{
 
 	function showThemes($mode='main')
 	{
-		global $ns, $pref;
+		global $ns, $pref, $emessage;
 
-		echo "<div class='center'>
+		echo "<div>
 		<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
 
 
@@ -287,7 +302,7 @@ class themeHandler{
 				}
 			}
 
-	   		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_33, $text);
+	   		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_33, $emessage->render(). $text);
         }
 
         if($mode == "admin")  // Show Admin Configuration
@@ -300,7 +315,7 @@ class themeHandler{
 					$text = $this -> renderTheme(2, $theme);
 				}
 			}
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_34, $text);
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_34, $emessage->render(). $text);
         }
 
 
@@ -318,7 +333,7 @@ class themeHandler{
 				$text .= $this -> renderTheme(FALSE, $theme);
 			}
             $text .= "<div class='clear'>&nbsp;</div>";
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $text);
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $emessage->render().$text);
 		}
 
 
@@ -328,9 +343,9 @@ class themeHandler{
 
     function renderUploadForm()
 	{
-    	global $sql,$ns;
+    	global $sql,$ns, $emessage;
 
-    	if(!is_writable(e_THEME)) {
+    		if(!is_writable(e_THEME)) {
 				$ns->tablerender(TPVLAN_16, TPVLAN_15);
 				$text = "";
 			}
@@ -364,7 +379,7 @@ class themeHandler{
 				</div>\n";
 			}
 
-			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $text);
+			$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38,$emessage->render(). $text);
 	}
 
 
@@ -553,7 +568,7 @@ class themeHandler{
 
 		$this->loadThemeConfig();   // load customn theme configuration fieldss.
 
-		$menuPresetCount = 0;
+ 		$menuPresetCount = 0;
   		foreach($theme['layouts'] as $key=>$val)
 		{
 			if($val['menuPresets'])
@@ -611,9 +626,9 @@ class themeHandler{
                     <td style='vertical-align:top; width:24%;'><b>".TPVLAN_53."</b></td>
 					<td colspan='2' style='vertical-align:top width:auto;'>";
 
-					foreach($theme['layouts'] as $key=>$val)
+					foreach($theme['pluginOptions'] as $key=>$val)
 					{
-                  		$text .= $this->renderPlugins($val['@attributes']['plugins']);
+                  		$text .= $this->renderPlugins($theme['pluginOptions']);
 						$text .= "&nbsp;";
 					}
 
@@ -648,7 +663,7 @@ class themeHandler{
 					<td colspan='2' style='vertical-align:top'>
 					<table class='adminlist' style='auto;width:100%' >
 						<tr>";
-                        $itext .= ($mode == 1) ? "<td style='width:15%;text-align:center;vertical-align:top;'>".TPVLAN_55."</td>" : "";
+                        $itext .= ($mode == 1) ? "<td style='width:15%;vertical-align:top;'>".TPVLAN_55."</td>" : "";
 						$itext .= "
 							<td style='width:20%'>".TPVLAN_52."</td>
 							<td style='width:65%'>".TPVLAN_56."</td>
@@ -808,23 +823,36 @@ class themeHandler{
 		return $text;
 	}
 
-    function renderPlugins($val)
+    function renderPlugins($tmp)
 	{
-		$tmp = explode(",",$val);
-		$tmp = array_filter($tmp);
+		global $frm,$sql;
+	 //	$tmp = explode(",",$val);
+	 //	$tmp = array_filter($tmp);
 
-		foreach($tmp as $plug)
+		foreach($tmp['plugin'] as $p)
 		{
-			$plug = trim($plug);
+			$plug = trim($p['@attributes']['name']);
+
          	if(plugInstalled($plug))
 			{
             	$text .= $plug." ".ADMIN_TRUE_ICON;
 			}
 			else
 			{
-               $text .= "<a href='".e_ADMIN."plugin.php?avail'>".$plug."</a> ".ADMIN_FALSE_ICON;
+				if($sql -> db_Select("plugin", "plugin_id", " plugin_path = '".$plug."' LIMIT 1 "))
+	 			{
+					$row = $sql -> db_Fetch(MYSQL_ASSOC);
+					$name = "installplugin[".$row['plugin_id']."]";
+                	$text .=  $this->frm->admin_button($name, ADLAN_121." ".$plug."",'delete');
+				}
+				else
+				{
+					$text .= (isset($p['@attributes']['url']) && ($p['@attributes']['url']!='core')) ?  "<a rel='external' href='".$p['@attributes']['url']."'>".$plug."</a> " :  "<i>".$plug."</i>";
+					$text .= ADMIN_FALSE_ICON;
+				}
+
 			}
-            $text .= "&nbsp;&nbsp;";
+            $text .= "&nbsp;&nbsp;&nbsp;";
 		}
 
         return $text;
@@ -852,7 +880,7 @@ class themeHandler{
 
 	function setTheme()
 	{
-		global $pref, $e107cache, $ns, $sql;
+		global $pref, $e107cache, $ns, $sql, $emessage;
 		$themeArray = $this -> getThemes("id");
 
 		$pref['sitetheme'] = $themeArray[$this -> id];
@@ -864,10 +892,18 @@ class themeHandler{
         $sql -> db_Delete("menus", "menu_layout !='' ");
 
 		$e107cache->clear_sys();
-	 	save_prefs();
+	 	if(save_prefs())
+		{
+        	$emessage->add(TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>", E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+      		$emessage->add(TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>", E_MESSAGE_ERROR);
+		}
 
 		$this->theme_adminlog('01',$pref['sitetheme'].', '.$pref['themecss']);
-		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
+
+	  // 	$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
 	}
 
 	function findDefault($theme)
@@ -903,42 +939,58 @@ class themeHandler{
 
 	function setAdminTheme()
 	{
-		global $pref, $e107cache, $ns;
+		global $pref, $e107cache, $ns, $emessage;
 		$themeArray = $this -> getThemes("id");
 		$pref['admintheme'] = $themeArray[$this -> id];
 		$pref['admincss'] = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
 		$e107cache->clear_sys();
-		save_prefs();
-		$this->theme_adminlog('02',$pref['admintheme'].', '.$pref['admincss']);
-		$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
+		if(save_prefs())
+		{
+        	$emessage->add(TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>", E_MESSAGE_SUCCESS); // Default Message
+			$this->theme_adminlog('02',$pref['admintheme'].', '.$pref['admincss']);
+		}
+
+	  //	$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
       //  $this->showThemes('admin');
 	}
 
 	function setStyle()
 	{
-		global $pref, $e107cache, $ns, $sql;
+		global $pref, $e107cache, $ns, $sql, $emessage;
 		$pref['themecss'] = $_POST['themecss'];
 		$pref['image_preload'] = $_POST['image_preload'];
 		$pref['sitetheme_deflayout'] = $_POST['layout_default'];
 
 		$e107cache->clear_sys();
-		save_prefs();
-        $this -> setThemeConfig();
-		$this->theme_adminlog('03',$pref['image_preload'].', '.$pref['themecss']);
-		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_37.".<br /></div><br />");
+		if(save_prefs())
+		{
+        	$emessage->add(TPVLAN_37, E_MESSAGE_SUCCESS); // Default Message
+			$emessage->add($this -> setThemeConfig(),E_MESSAGE_SUCCESS); // Custom Message from theme config.
+			$this->theme_adminlog('03',$pref['image_preload'].', '.$pref['themecss']);
+		}
+		else
+		{
+        	$emessage->add(TPVLAN_43, E_MESSAGE_ERROR);
+		}
 	}
 
 	function setAdminStyle()
 	{
-		global $pref, $e107cache, $ns;
+		global $pref, $e107cache, $ns, $emessage;
 		$pref['admincss'] = $_POST['admincss'];
 		$pref['adminstyle'] = $_POST['adminstyle'];
 
 
 		$e107cache->clear_sys();
-		save_prefs();
-		$this->theme_adminlog('04',$pref['adminstyle'].', '.$pref['admincss']);
-		$ns->tablerender(TPVLAN_36, "<br /><div style='text-align:center;'>".TPVLAN_43.".</div><br />");
+		if(save_prefs())
+		{
+        	$emessage->add(TPVLAN_43, E_MESSAGE_SUCCESS);
+			$this->theme_adminlog('04',$pref['adminstyle'].', '.$pref['admincss']);
+		}
+		else
+		{
+        	$emessage->add(TPVLAN_43, E_MESSAGE_ERROR);
+		}
 	}
 
     function SetCustomPages($array)
