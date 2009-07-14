@@ -10,9 +10,9 @@
  * With code from Izydor and Lolo.
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision: 1.12 $
- * $Date: 2008-12-21 12:53:11 $
- * $Author: secretr $
+ * $Revision: 1.13 $
+ * $Date: 2009-07-14 12:19:40 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -184,15 +184,15 @@ if($f != ""){
 // ===========================================================================
 
 $core_plugins = array(
-	"alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
-	"clock_menu","comment_menu","content","featurebox","forum","gsitemap",
-	"links_page","linkwords","list_new","log","login_menu","newforumposts_main",
-	"newsfeed","newsletter","online","other_news_menu","pdf","pm","poll",
-	"rss_menu","search_menu","siteinfo_menu","trackback","tree_menu","user_menu"
+	"alt_auth", "banner_menu", "blogcalendar_menu", "calendar_menu", "chatbox_menu",
+	"clock_menu", "comment_menu", "content", 'download', "featurebox", "forum",
+	"gsitemap", "links_page", "linkwords", "list_new", "log", "login_menu",
+	"newforumposts_main", "newsfeed", "newsletter", "online", "other_news_menu",
+	"pdf", "pm", "poll", "rss_menu", "search_menu", "siteinfo_menu", "trackback",
+	"tree_menu", "user_menu"
 );
 
-$core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
-"khatru","kubrick","lamb","leaf","reline","sebes","vekna_blue","_blank");
+$core_themes = array("_blank", "e107v4a", "jayya", "khatru", "leaf", "vekna_blue");
 
 
 if(isset($_POST['language_sel']) && isset($_POST['language']))
