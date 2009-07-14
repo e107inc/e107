@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-07-08 06:58:00 $
+ * $Revision: 1.31 $
+ * $Date: 2009-07-14 03:18:16 $
  * $Author: e107coders $
  *
 */
@@ -583,7 +583,7 @@ class e_form
 
 		foreach($columnsArray as $key=>$fld)
 		{
-			if($fld['forced'] !== TRUE)
+			if(!varset($fld['forced']))
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
 				$text .= $this->checkbox('e-columns[]', $key, $checked). $fld['title']."<br />\n";
@@ -600,10 +600,11 @@ class e_form
 
 	function colGroup($fieldarray,$columnPref='')
 	{
+        $text = "";
 
 		foreach($fieldarray as $key=>$val)
 		{
-			if(in_array($key,$columnPref) || $key=='options' || $val['forced']==TRUE)
+			if(in_array($key,$columnPref) || $key=='options' || varsettrue($val['forced']))
 			{
 				$text .= "\n<col style='width: ".$val['width'].";'></col>";
 			}
@@ -613,14 +614,14 @@ class e_form
 
 	function thead($fieldarray,$columnPref='')
 	{
-
+        $text = "";
 		foreach($fieldarray as $key=>$val)
 		{
-     		if(in_array($key,$columnPref) || $key == "options" || ($val['forced']==TRUE))
+     		if(in_array($key,$columnPref) || $key == "options" || (varsettrue($val['forced'])))
 			{
-				$cl = ($val['thclass']) ? "class='".$val['thclass']."'" : "";
+				$cl = (varset($val['thclass'])) ? "class='".$val['thclass']."'" : "";
 				$text .= "\n\t<th id='$key' {$cl}>";
-				$text .= ($val['url']) ? "<a href='".$val['url']."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
+				$text .= (varset($val['url'])) ? "<a href='".$val['url']."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
 	            $text .= $val['title'];
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
 

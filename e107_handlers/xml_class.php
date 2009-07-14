@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-20 20:18:59 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-14 03:18:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -192,7 +192,7 @@ class xmlClass
 		}
 		$xml = false;
 
-		if(strpos($filename, '://') !== false)
+		if(strpos($fname, '://') !== false)
 		{
 			$this->getRemoteFile($fname);
 		}

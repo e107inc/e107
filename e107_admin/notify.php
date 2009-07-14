@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-07-10 14:25:22 $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-14 03:18:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -71,21 +71,24 @@ class notify_config
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 
 		// load every e_notify.php file.
-        foreach($pref['e_notify_list'] as $val)
+		if($pref['e_notify_list'])
 		{
-				if (!isset($this -> notify_prefs['plugins'][$val]))
-				{
-					$this -> notify_prefs['plugins'][$val] = TRUE;
-					if (is_readable(e_PLUGIN.$val."/e_notify.php"))
+	        foreach($pref['e_notify_list'] as $val)
+			{
+					if (!isset($this -> notify_prefs['plugins'][$val]))
 					{
-						require_once(e_PLUGIN.$val.'/e_notify.php');
-						foreach ($config_events as $event_id => $event_text)
-				   		{
-							$this -> notify_prefs['event'][$event_id] = array('class' => '255', 'email' => '');
+						$this -> notify_prefs['plugins'][$val] = TRUE;
+						if (is_readable(e_PLUGIN.$val."/e_notify.php"))
+						{
+							require_once(e_PLUGIN.$val.'/e_notify.php');
+							foreach ($config_events as $event_id => $event_text)
+					   		{
+								$this -> notify_prefs['event'][$event_id] = array('class' => '255', 'email' => '');
+							}
+							$recalibrate = true;
 						}
-						$recalibrate = true;
 					}
-				}
+			}
 		}
 
 
@@ -102,21 +105,15 @@ class notify_config
 		global $ns, $rs, $frm, $emessage;
 
 		$text = "<div style='text-align: center'>
+		<div>".NT_LAN_2.":</div>
 		<form action='".e_SELF."?results' method='post' id='scanform'>
 		<fieldset id='core-notify-config'>
+		<legend>".NU_LAN_1."</legend>
         <table cellpadding='0' cellspacing='0' class='adminform'>
         	<colgroup span='2'>
         		<col class='col-label' />
         		<col class='col-control' />
         	</colgroup>
-		<thead>
-		<tr>
-		<th colspan='2'>".NT_LAN_2.":</th>
-		</tr>
-		</thead>";
-
-		$text .= "<tbody>
-  		<tr><td colspan='2'>".NU_LAN_1."</td></tr>
 		";
 
 		$text .= $this -> render_event('usersup', NU_LAN_2);
@@ -124,47 +121,67 @@ class notify_config
 		$text .= $this -> render_event('login', NU_LAN_4);
 		$text .= $this -> render_event('logout', NU_LAN_5);
 
-		$text .= "<tr>
-		<td colspan='2'>".NS_LAN_1."</td>
-		</tr>";
+		$text .= "</table></fieldset>
+		<fieldset id='core-notify-2'>
+        <legend>".NS_LAN_1."</legend>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+        	<colgroup span='2'>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>";
 
 		$text .= $this -> render_event('flood', NS_LAN_2);
 
 
-		$text .= "<tr>
-		<td colspan='2'>".NN_LAN_1."</td>
-		</tr>";
+		$text .= "</table></fieldset>
+		<fieldset id='core-notify-3'>
+        <legend>".NN_LAN_1."</legend>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+        	<colgroup span='2'>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>";
 
 		$text .= $this -> render_event('subnews', NN_LAN_2);
 		$text .= $this -> render_event('newspost', NN_LAN_3);
 		$text .= $this -> render_event('newsupd', NN_LAN_4);
 		$text .= $this -> render_event('newsdel', NN_LAN_5);
 
-		$text .= "<tr>
-		<td colspan='2'>".NF_LAN_1."</td>
-		</tr>";
+		$text .= "</table></fieldset>
+		<fieldset id='core-notify-4'>
+        <legend>".NF_LAN_1."</legend>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+        	<colgroup span='2'>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>";
 
 		$text .= $this -> render_event('fileupload', NF_LAN_2);
+
+		$text .= "</table>";
 
 		foreach ($this -> notify_prefs['plugins'] as $plugin_id => $plugin_settings)
 		{
             if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
 			{
 				require(e_PLUGIN.$plugin_id.'/e_notify.php');
-				$text .= "<tr>
-				<td colspan='2'>".$config_category."</td>
-				</tr>";
+				$text .= "</fieldset>
+				<fieldset id='core-notify-".str_replace(" ","_",$config_category)."'>
+		        <legend>".$config_category."</legend>
+		        <table cellpadding='0' cellspacing='0' class='adminform'>
+		        	<colgroup span='2'>
+		        		<col class='col-label' />
+		        		<col class='col-control' />
+		        	</colgroup>";
 				foreach ($config_events as $event_id => $event_text)
 				{
 					$text .= $this -> render_event($event_id, $event_text);
 				}
+				$text .= "</table> ";
 			}
 		}
 
-		$text .= "		</tr>
-		</tbody>
-		</table>
-
+		$text .= "
 		<div class='buttons-bar center'>";
         $text .= $frm->admin_button('update', LAN_UPDATE,'update');
 		$text .= "

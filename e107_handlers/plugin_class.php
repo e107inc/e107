@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2009-07-09 22:12:21 $
+|     $Revision: 1.67 $
+|     $Date: 2009-07-14 03:18:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1216,27 +1216,30 @@ class e107plugin
 		{
 			$pref_array = array($pref_array);
 		}
-		foreach($pref_array as $k => $p)
+		if(is_array($pref_array))
 		{
-			$attrib = $p['@attributes'];
-			if(isset($attrib['type']) && $attrib['type'] == 'array')
+			foreach($pref_array as $k => $p)
 			{
-				$name = $attrib['name'];
-				$tmp = $this->parse_prefs($pref_array[$k]['key']);
-				$ret['all'][$name] = $tmp['all'];
-				$ret['active'][$name] = $tmp['active'];
-				$ret['inactive'][$name] = $tmp['inactive'];
-			}
-			else
-			{
-				$ret['all'][$attrib['name']] = $attrib['value'];
-				if(!isset($attrib['active']) || $attrib['active'] == 'true')
+				$attrib = $p['@attributes'];
+				if(isset($attrib['type']) && $attrib['type'] == 'array')
 				{
-					$ret['active'][$attrib['name']] = $attrib['value'];
+					$name = $attrib['name'];
+					$tmp = $this->parse_prefs($pref_array[$k]['key']);
+					$ret['all'][$name] = $tmp['all'];
+					$ret['active'][$name] = $tmp['active'];
+					$ret['inactive'][$name] = $tmp['inactive'];
 				}
 				else
 				{
-					$ret['inactive'][$attrib['name']] = $attrib['value'];
+					$ret['all'][$attrib['name']] = $attrib['value'];
+					if(!isset($attrib['active']) || $attrib['active'] == 'true')
+					{
+						$ret['active'][$attrib['name']] = $attrib['value'];
+					}
+					else
+					{
+						$ret['inactive'][$attrib['name']] = $attrib['value'];
+					}
 				}
 			}
 		}
@@ -1253,7 +1256,7 @@ class e107plugin
 		$plug['plug_action'] = 'install';
 
 		//	$plug_vars = $this->parse_plugin_php($plug['plugin_path']);
-		include_once($_path.'plugin.php');
+		include($_path.'plugin.php');
 
 		$func = $eplug_folder.'_install';
 		if (function_exists($func))
@@ -1275,6 +1278,7 @@ class e107plugin
 				//fail
 			}
 		}
+
 
 		if (is_array($eplug_prefs))
 		{
@@ -1339,6 +1343,8 @@ class e107plugin
 		// install plugin ...
 		$id = (int)$id;
 		$plug = $this->getinfo($id);
+
+
 		$plug['plug_action'] = 'install';
 
 		if ($plug['plugin_installflag'] == FALSE)
