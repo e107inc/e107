@@ -4,11 +4,23 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-06-24 22:19:27 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-14 23:59:57 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
+define("LAN_DL_OPTIONS",               "Options");
+define("LAN_DL_DOWNLOAD_OPT_GENERAL",  "General");
+define("LAN_DL_DOWNLOAD_OPT_BROKEN",   "Reporting");
+define("LAN_DL_DOWNLOAD_OPT_AGREE",    "Agreements");
+define("LAN_DL_UPLOAD",                "Upload");
+define("LAN_DL_USE_PHP",               "Use PHP");
+define("LAN_DL_USE_PHP_INFO",          "Checking this will send all download requests through PHP");
+define("LAN_DL_SUBSUB_CAT",            "Show sub-sub-categories");
+define("LAN_DL_SUBSUB_CAT_INFO",       "Checking this will show the sub-sub-categories on the main download page");
+define("LAN_DL_SUBSUB_COUNT",          "Combine category counts");
+define("LAN_DL_SUBSUB_COUNT_INFO",     "Include sub-sub-category counts in sub-category counts");
+
 define("DOWLAN_1", "Download added to database.");
 define("DOWLAN_2", "Download updated in database.");
 define("DOWLAN_3", "Download deleted.");
@@ -61,7 +73,7 @@ define("DOWLAN_49", "Download Category");
 define("DOWLAN_51", "Search/Refresh downloads");
 define("DOWLAN_52", "Files");
 define("DOWLAN_53", "Subcategory");
-define("DOWLAN_54", "Download Options");
+define("DOWLAN_54", "Subcategories");
 define("DOWLAN_55", "Number of downloads to display per page");
 define("DOWLAN_56", "Sort by ");
 define("DOWLAN_57", "Clear filters");
@@ -154,7 +166,7 @@ define("DOWLAN_163", "Name");
 
 define("DOWLAN_164", "Recent downloads age (in days)");
 
-define("DOWLAN_165", "Maintenance");
+define("DOWLAN_165", "Download Maintenance - ");
 define("DOWLAN_166", "Duplicates");
 define("DOWLAN_167", "Orphans");
 define("DOWLAN_168", "Missing");
@@ -174,19 +186,21 @@ define("DOWLAN_181", "Not readable");
 define("DOWLAN_182", "Timestamp");
 define("DOWLAN_183", "Filter options");
 define("DOWLAN_184", "Batch options");
+define("DOWLAN_185", "Files referenced multiple times in the database");
+define("DOWLAN_186", "Files not referenced in the database");
+define("DOWLAN_187", "Database entries referencing non-existent files");
+define("DOWLAN_188", "Database entries marked as inactive");
+define("DOWLAN_189", "Database entires not associated with a category");
+define("DOWLAN_190", "Size differences between database entry and the file itself");
+define("DOWLAN_191", "Downloads log entries");
+define("DOWLAN_192", "Execute selected option");
+define("DOWLAN_193", "Select option");
 
 define("DOWLAN_HELP_1", "Download Help");
 define("DOWLAN_HELP_2", "<p>Create/edit a download.</p><p>Enter only one of: File, URL or Mirror.</p><p>Ensure you select a category, otherwise your download will not be visible on the downloads page.</p>");
 define("DOWLAN_HELP_3", "Help for cat");
 define("DOWLAN_HELP_4", "Help for opt");
 define("DOWLAN_HELP_5", "Use the maintenance pages to find duplicate downloads, find orphaned files, find missing (broken) entries, manage inactive downloads, refresh file sizes and view the downlaod log.");
-define("DOWLAN_HELP_5_1", "This page shows duplicate entries in the database - records where the same file is referenced more than once.");
-define("DOWLAN_HELP_5_2", "This page shows orphan files - files in the downloads directory that do not have a record in the database referenceing them.");
-define("DOWLAN_HELP_5_3", "This page shows missing entries in the database - records that reference a non-existing file.");
-define("DOWLAN_HELP_5_4", "This page shows all records that are marked as inactive.");
-define("DOWLAN_HELP_5_5", "This page shows records in the database that are not associated with a download category.");
-define("DOWLAN_HELP_5_6", "This page shows records in the database that have an incorrect file size when comapred to the file in the downloads folder.");
-define("DOWLAN_HELP_5_7", "This page shows the downloads log entries.");
 define("DOWLAN_HELP_6", "Help for limits");
 define("DOWLAN_HELP_7", "Help for mirror");
 define("DOWLAN_HELP_8", "Help for ");
