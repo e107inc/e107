@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-05-15 19:30:03 $
-|     $Author: e107steved $
+|     $Revision: 1.25 $
+|     $Date: 2009-07-14 12:19:40 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,7 @@ $pref = array (
 City, State, Country
 [b]Phone:[/b] 555-555-5555
 [b]Email:[/b] sales@mydomain.com',
-  'sitetheme' => 'reline',
+  'sitetheme' => 'jayya',
   'themecss' => 'style.css',
   'image_preload' => '0',
   'admintheme' => 'jayya',
