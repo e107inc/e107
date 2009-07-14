@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.8 2009-07-12 10:11:35 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.9 2009-07-14 09:53:12 marj_nl_fr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -735,17 +735,7 @@ class admin_shortcodes
 	{
 		if (ADMIN)
 		{
-			global $sql, $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
-
-			if (!isset($pref['install_date']))
-			{
-				$sql -> db_Select('core', '*', "e107_name='e107' ");
-				$row = $sql -> db_Fetch();
-				$coreinfo = unserialize($row['e107_value']);
-				$pref['install_date'] = $coreinfo['e107_datestamp'];
-				save_prefs();
-				$sql -> db_Delete('core', "e107_name='e107'");
-			}
+			global $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
 
 			if (file_exists(e_ADMIN.'ver.php'))
 			{
@@ -925,7 +915,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.8 2009-07-12 10:11:35 e107coders Exp $
+		* $Id: admin_shortcodes_class.php,v 1.9 2009-07-14 09:53:12 marj_nl_fr Exp $
 		*/
 
 		if (ADMIN)
