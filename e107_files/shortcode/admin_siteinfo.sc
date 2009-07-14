@@ -1,15 +1,6 @@
-if (ADMIN) {
-	global $sql, $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
-
-	if (!isset($pref['install_date'])) {
-		$sql -> db_Select("core", "*", "e107_name='e107' ");
-		$row = $sql -> db_Fetch();
-		$coreinfo = unserialize($row['e107_value']);
-		$pref['install_date'] = $coreinfo['e107_datestamp'];
-   		save_prefs();
-   		$sql -> db_Delete("core", "e107_name='e107'");
-	}
-	
+if (ADMIN) 
+{
+	global $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
 
 	if (file_exists(e_ADMIN."ver.php"))
 	{ 
