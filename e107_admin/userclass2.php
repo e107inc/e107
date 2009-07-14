@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-07-14 19:26:24 $
+|     $Revision: 1.25 $
+|     $Date: 2009-07-14 20:59:42 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -126,6 +126,7 @@ if (isset($_POST['updateclass']))
 	check_allowed($class_id);
 	$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name']);
 	$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description']);
+	$_POST['userclass_editclass'] = intval($_POST['userclass_editclass']);
 	$sql->db_Update('userclass_classes', "userclass_editclass={$_POST['userclass_editclass']}, userclass_name='".$_POST['userclass_name']."', userclass_description='".$_POST['userclass_description']."' WHERE userclass_id=".$class_id);
 	$message = UCSLAN_5;
 }
