@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2009-07-14 03:18:16 $
+|     $Revision: 1.36 $
+|     $Date: 2009-07-14 03:38:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -486,6 +486,7 @@ class themeHandler{
 
 			if(function_exists($this->id."_config"))
 			{
+				$text = "";
 	        	$var = call_user_func($this->id."_config");
                 foreach($var as $val)
 				{
@@ -658,7 +659,7 @@ class themeHandler{
         if($mode==1)  // New in 0.8   ----
 		{
 
-            $itext .= "<tr>
+            $itext = "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 					<td colspan='2' style='vertical-align:top'>
 					<table class='adminlist' style='auto;width:100%' >
@@ -823,13 +824,14 @@ class themeHandler{
 		return $text;
 	}
 
-    function renderPlugins($tmp)
+    function renderPlugins($pluginOptions)
 	{
 		global $frm,$sql;
-	 //	$tmp = explode(",",$val);
-	 //	$tmp = array_filter($tmp);
 
-		foreach($tmp['plugin'] as $p)
+     	$tmp = (varset($pluginOptions['plugin'][1])) ? $pluginOptions['plugin'] :  $pluginOptions;   // if there is 1 entry, then it's not the same array.
+        $text = "";
+
+		foreach($tmp as $p)
 		{
 			$plug = trim($p['@attributes']['name']);
 
@@ -839,6 +841,7 @@ class themeHandler{
 			}
 			else
 			{
+				echo $plug;
 				if($sql -> db_Select("plugin", "plugin_id", " plugin_path = '".$plug."' LIMIT 1 "))
 	 			{
 					$row = $sql -> db_Fetch(MYSQL_ASSOC);
@@ -847,7 +850,7 @@ class themeHandler{
 				}
 				else
 				{
-					$text .= (isset($p['@attributes']['url']) && ($p['@attributes']['url']!='core')) ?  "<a rel='external' href='".$p['@attributes']['url']."'>".$plug."</a> " :  "<i>".$plug."</i>";
+					$text .= (varset($p['@attributes']['url']) && ($p['@attributes']['url']!='core')) ?  "<a rel='external' href='".$p['@attributes']['url']."'>".$plug."</a> " :  "<i>".$plug."</i>";
 					$text .= ADMIN_FALSE_ICON;
 				}
 
