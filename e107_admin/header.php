@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.31 $
-|   $Date: 2009-07-13 10:17:09 $
-|   $Author: marj_nl_fr $
+|   $Revision: 1.32 $
+|   $Date: 2009-07-14 03:16:16 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -89,7 +89,7 @@ if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php')) {
 	@include_once(e_LANGUAGEDIR.'English/admin/lan_footer.php');
 }
 if (!defined('ADMIN_WIDTH')) {
-	define('ADMIN_WIDTH', 'width: 95%');
+	define('ADMIN_WIDTH', "width: 95%' class='adminlist");
 }
 
 if (!defined('ADMIN_TRUE_ICON'))
@@ -688,5 +688,11 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_HEADER);
 }
 $sql->db_Mark_Time('(End: Parse Admin Header)');
+}
+
+if(!is_object($emessage))
+{
+	require_once(e_HANDLER."message_handler.php");
+	$emessage = &eMessage::getInstance();
 }
 ?>
