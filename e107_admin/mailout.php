@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-07-14 11:05:49 $
+|     $Revision: 1.15 $
+|     $Date: 2009-07-15 09:37:59 $
 |     $Author: e107coders $
 |
 | Work in progress - supplementary mailer plugin
@@ -386,14 +386,14 @@ Table data:
 // --------------
 	$text .= "
 	<div>
-	<table class='fborder'>
-	<colgroup>
-	<col style='width:25%' />
-	<col style='width:75%' />
-	</colgroup>
+    <table cellpadding='0' cellspacing='0' class='adminform'>
+    	<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 		<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_01." / ".LAN_MAILOUT_02."</td>
-			<td class='forumheader3'>".$_POST['email_from_name']." &lt;".$_POST['email_from_email']."&gt;</td>
+			<td>".LAN_MAILOUT_01." / ".LAN_MAILOUT_02."</td>
+			<td>".$_POST['email_from_name']." &lt;".$_POST['email_from_email']."&gt;</td>
 		</tr>";
 
 
@@ -402,7 +402,7 @@ Table data:
 	{
 	  if ($m->mailer_enabled)
 	  {
-		$text .= "<tr><td class='forumheader3'>".$m->mailer_name."</td><td class='forumheader3'>".$m->show_select(FALSE)."</td></tr>";
+		$text .= "<tr><td>".$m->mailer_name."</td><td>".$m->show_select(FALSE)."</td></tr>";
 	  }
 	}
 
@@ -410,20 +410,20 @@ Table data:
 // Support 'cc' and 'bcc' as standard mailout addresses
 	$text .= ($_POST['email_cc']) ? "
 		<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_04."</td>
-			<td class='forumheader3'>".$_POST['email_cc']."&nbsp;</td>
+			<td>".LAN_MAILOUT_04."</td>
+			<td>".$_POST['email_cc']."&nbsp;</td>
 		</tr>": "";
 
 	$text .= ($_POST['email_bcc']) ? "
 		<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_05."</td>
-			<td class='forumheader3'>".$_POST['email_bcc']."&nbsp;</td>
+			<td>".LAN_MAILOUT_05."</td>
+			<td>".$_POST['email_bcc']."&nbsp;</td>
 		</tr>": "";
 
 	$text .= "
 		<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_51."</td>
-			<td class='forumheader3'>".$_POST['email_subject']."&nbsp;</td>
+			<td>".LAN_MAILOUT_51."</td>
+			<td>".$_POST['email_subject']."&nbsp;</td>
 		</tr>";
 
 	// Attachment
@@ -431,21 +431,21 @@ Table data:
 	{
 	$text .= "
 		<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_07."</td>
-			<td class='forumheader3'>".$email_data['attach']."&nbsp;</td>
+			<td>".LAN_MAILOUT_07."</td>
+			<td>".$email_data['attach']."&nbsp;</td>
 		</tr>";
 	}
 
 	// Figures - number of emails to send, number of duplicates stripped
 	$text .= "
 		  <tr>
-			<td class='forumheader3'>".LAN_MAILOUT_71."</td>
-			<td class='forumheader3'> ".$c." ".LAN_MAILOUT_69.$dups.LAN_MAILOUT_70."</td>
+			<td>".LAN_MAILOUT_71."</td>
+			<td> ".$c." ".LAN_MAILOUT_69.$dups.LAN_MAILOUT_70."</td>
 		  </tr>";
 
 	// Email text
 	$text .="<tr>
-			<td class='forumheader3' colspan='2'>".stripslashes($tp->toHTML($_POST['email_body'],TRUE))."</td>
+			<td colspan='2'>".stripslashes($tp->toHTML($_POST['email_body'],TRUE))."</td>
 		</tr>
 
 	</table>
@@ -601,16 +601,16 @@ function showMailouts($sub_par,$mail_id)
 			<col style='width:75%' />
 			</colgroup>\n
 			<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_51."</td>
-			<td class='forumheader3'>".$mail['email_subject']."</td>
+			<td>".LAN_MAILOUT_51."</td>
+			<td>".$mail['email_subject']."</td>
 			</tr>\n
 			<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_103."</td>
-			<td class='forumheader3'>".(isset($mail['send_results']) ? implode('<br />',$mail['send_results']) : LAN_MAILOUT_104)."</td>
+			<td>".LAN_MAILOUT_103."</td>
+			<td>".(isset($mail['send_results']) ? implode('<br />',$mail['send_results']) : LAN_MAILOUT_104)."</td>
 			</tr>\n";
 		  if ($sql->db_Select('generic','gen_id,gen_datestamp,gen_chardata',"`gen_datestamp`={$mail_id} AND `gen_type`='sendmail'"))
 		  {
-		    $text .= "<tr><td class='forumheader3'>".LAN_MAILOUT_105."</td><td class='forumheader3'>";
+		    $text .= "<tr><td>".LAN_MAILOUT_105."</td><td>";
 			$spacer = '';
 			$i = 0;
 			while (($row = $sql->db_Fetch()) && ($i < 10))
@@ -668,12 +668,12 @@ function showMailouts($sub_par,$mail_id)
 			<col style='width:75%' />
 			</colgroup>\n
 			<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_51."</td>
-			<td class='forumheader3'>".$mail['email_subject']."</td>
+			<td>".LAN_MAILOUT_51."</td>
+			<td>".$mail['email_subject']."</td>
 			</tr>\n
 			<tr>
-			<td class='forumheader3'>".LAN_MAILOUT_100."</td>
-			<td class='forumheader3'>".$mail['email_body']."</td>
+			<td>".LAN_MAILOUT_100."</td>
+			<td>".$mail['email_body']."</td>
 			</tr>\n
 			</table>
 		  ";
@@ -761,13 +761,13 @@ function showMailouts($sub_par,$mail_id)
 
 	if ($row['pending']) $emails_found[$row['gen_datestamp']] = $row['pending'];				// Log the mailshot in a list if any emails to go
 	$text .= "<tr>
-		<td class='forumheader3' >".$row['gen_datestamp'] ."</td>
-		<td class='forumheader3'>".$datestamp."</td>
-		<td class='forumheader3'>".$row['user_name']."</td>
-		<td class='forumheader3'>".$row['gen_ip']."</td>
-		<td class='forumheader3'>".$row['gen_intdata']."</td>
-		<td class='forumheader3'>".$row['pending']."</td>
-		<td style='width:50px;white-space:nowrap' class='forumheader3'>
+		<td >".$row['gen_datestamp'] ."</td>
+		<td>".$datestamp."</td>
+		<td>".$row['user_name']."</td>
+		<td>".$row['gen_ip']."</td>
+		<td>".$row['gen_intdata']."</td>
+		<td>".$row['pending']."</td>
+		<td style='width:50px;white-space:nowrap'>
 		<div>";
 	$text .= "<a href='".e_SELF."?mailouts.detail.{$row['gen_datestamp']}'><img src='".$images_path."search_16.png' alt='".LAN_MAILOUT_109."' title='".LAN_MAILOUT_109."' style='border:0px' /></a>";
 	if ($row['pending'])
@@ -816,9 +816,9 @@ function showMailouts($sub_par,$mail_id)
 	  if (!isset($emails_found[$row['gen_datestamp']]))
 	  {
 		$text .= "<tr>
-			<td class='forumheader3' >".$row['gen_datestamp'] ."</td>
-			<td class='forumheader3'>".$row['pending']."</td>
-			<td style='white-space:nowrap' class='forumheader3'>
+			<td >".$row['gen_datestamp'] ."</td>
+			<td>".$row['pending']."</td>
+			<td style='white-space:nowrap'>
 			<div>
 			<a href='".e_SELF."?mailouts.orphans.{$row['gen_datestamp']}' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row['gen_datestamp']."]")."') \"><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' /></a>
 			</div>
@@ -857,16 +857,16 @@ function show_mailform($foo="")
 	}
 
 	$debug = (e_MENU == "debug") ? "?[debug]" : "";
-	$text .= "<div style='".ADMIN_WIDTH."; text-align:center'>
+	$text .= "<div>
 	<form method='post' action='".e_SELF.$debug."' id='mailout_form'>
-	<table class='fborder' style='".ADMIN_WIDTH."'  cellpadding='0' cellspacing='0'>
-	<colgroup>
-	<col style='width:25%' />
-	<col style='width:75%' />
+	<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
 	</colgroup>
 	<tr>
-	<td class='forumheader3'>".LAN_MAILOUT_01.": </td>
-	<td class='forumheader3'>
+	<td>".LAN_MAILOUT_01.": </td>
+	<td>
 	<input type='text' name='email_from_name' class='tbox' style='width:80%' size='10' value=\"".varset($_POST['email_from_name'],USERNAME)."\" />
 	</td>
 	</tr>";
@@ -874,8 +874,8 @@ function show_mailform($foo="")
 
 	$text .="
 	<tr>
-	<td class='forumheader3'>".LAN_MAILOUT_02.": </td>
-	<td  class='forumheader3'>
+	<td>".LAN_MAILOUT_02.": </td>
+	<td >
 	<input type='text' name='email_from_email' class='tbox' style='width:80%' value=\"".varset($_POST['email_from_email'],USEREMAIL)."\" />
 	</td>
 	</tr>";
@@ -886,7 +886,7 @@ function show_mailform($foo="")
 	{
 	  if ($m->mailer_enabled)
 	  {
-		$text .= "<tr><td class='forumheader3'>".$m->mailer_name."</td><td class='forumheader3'>".$m->show_select(TRUE)."</td></tr>";
+		$text .= "<tr><td>".$m->mailer_name."</td><td>".$m->show_select(TRUE)."</td></tr>";
 	  }
 	}
 
@@ -895,15 +895,15 @@ function show_mailform($foo="")
 // CC, BCC
 	$text .= "
 	<tr>
-	<td class='forumheader3'>".LAN_MAILOUT_04.": </td>
-	<td  class='forumheader3'>
+	<td>".LAN_MAILOUT_04.": </td>
+	<td >
 	<input type='text' name='email_cc' class='tbox' style='width:80%' value=\"".$_POST['email_cc']."\" />
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3'>".LAN_MAILOUT_05.": </td>
-	<td  class='forumheader3'>
+	<td>".LAN_MAILOUT_05.": </td>
+	<td >
 	<input type='text' name='email_bcc' class='tbox' style='width:80%' value='{$email_bcc}' />
 	</td>
 	</tr>";
@@ -912,17 +912,17 @@ function show_mailform($foo="")
 
 // Close one table, open another - to give a boundary between addressees and content
 	$text .= "</table>
-	<table class='fborder' style='".ADMIN_WIDTH."'  cellpadding='0' cellspacing='0'>
-	<colgroup>
-	<col style='width:25%' />
-	<col style='width:75%' />
+<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
 	</colgroup>";
 
 // Subject
 	$text .= "
 	<tr>
-	<td class='forumheader3'>".LAN_MAILOUT_51.": </td>
-	<td class='forumheader3'>
+	<td>".LAN_MAILOUT_51.": </td>
+	<td>
 	<input type='text' name='email_subject' class='tbox' style='width:80%' value='{$email_subject}' />
 	</td>
 	</tr>";
@@ -930,8 +930,8 @@ function show_mailform($foo="")
 
 // Attachment.
 	$text .= "<tr>
-	<td class='forumheader3'>".LAN_MAILOUT_07.": </td>
-	<td  class='forumheader3'>";
+	<td>".LAN_MAILOUT_07.": </td>
+	<td >";
 	$text .= "<select class='tbox' name='email_attachment' >
 	<option value=''>&nbsp;</option>\n";
 	$sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name");
@@ -950,22 +950,22 @@ function show_mailform($foo="")
 
 	$text .= "
 	<tr>
-	<td class='forumheader3'>".LAN_MAILOUT_09.": </td>
-	<td  class='forumheader3'>
+	<td>".LAN_MAILOUT_09.": </td>
+	<td >
 	<input type='checkbox' name='use_theme' value='1' />
 	</td>
 	</tr>
 
 	<tr>
-	<td colspan='2'  class='forumheader3'>
-	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='e-wysiwyg tbox' style='width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$email_body."</textarea>
+	<td colspan='2' >
+	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='e-wysiwyg tbox' style='width:80%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$email_body."</textarea>
 	</td>
 	</tr>";
 
 	$text .="
 	<tr>
-	<td style='width:100%' class='forumheader3' colspan='2'>
-	<div style='width:100%;text-align:center;vertical-align: middle;' >";
+	<td colspan='2'>
+	<div>";
 
     global $eplug_bb;
 
@@ -990,11 +990,11 @@ function show_mailform($foo="")
 
  	$text .="
 	</div></td>
-	</tr>";
+	</tr>
+		</table> ";
 
 
-	$text .= "<tr style='vertical-align:top'>
-	<td colspan='2' style='text-align:center' class='forumheader'>";
+	$text .= "<div class='buttons-bar center'>";
 	if(isset($_POST['edit'])){
 		$text .= "<input type='hidden' name='update_id' value='".$email_id."' />";
 		$text .= "<input class='button' type='submit' name='update_email' value=\"".LAN_UPDATE."\" />";
@@ -1004,9 +1004,8 @@ function show_mailform($foo="")
 
 	$text .="&nbsp;<input class='button' type='submit' name='submit' value=\"".LAN_MAILOUT_08."\" />
 
-	</td>
-	</tr>
-	</table>
+	</div>
+
 	</form>
 	</div>";
 
@@ -1023,22 +1022,22 @@ function show_prefs()
 	global $pref,$ns;
 $text = "
 	<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
-	<div id='mail' style='text-align:center;'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
-	<colgroup>
-	<col style='width:30%' />
-	<col style='width:70%' />
+	<div id='mail'>
+	<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
 	</colgroup>
 	<tr>
-	<td class='forumheader3'>".LAN_MAILOUT_110."<br /></td>
-	<td class='forumheader3' style='text-align:right'><input class='button' type='submit' name='testemail' value=\"".LAN_MAILOUT_112."\" />&nbsp;
+	<td>".LAN_MAILOUT_110."<br /></td>
+	<td style='text-align:right'><input class='button' type='submit' name='testemail' value=\"".LAN_MAILOUT_112."\" />&nbsp;
 	<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".SITEADMINEMAIL."\" />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='vertical-align:top' class='forumheader3'>".LAN_MAILOUT_115."<br /><span class='smalltext'>".LAN_MAILOUT_116."</span></td>
-	<td style='text-align:right' class='forumheader3'>
+	<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /><span class='smalltext'>".LAN_MAILOUT_116."</span></td>
+	<td style='text-align:right'>
 	<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
 	$mailers = array("php","smtp","sendmail");
 	foreach($mailers as $opt)
@@ -1125,8 +1124,8 @@ $text = "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".LAN_MAILOUT_25."</td>
-		<td class='forumheader3' style='text-align: right;'> ".LAN_MAILOUT_26."
+		<td>".LAN_MAILOUT_25."</td>
+		<td style='text-align: right;'> ".LAN_MAILOUT_26."
 		<input class='tbox' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> ".LAN_MAILOUT_27.
 		"<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".LAN_MAILOUT_29.".<br />
 		<span class='smalltext'>".LAN_MAILOUT_30."</span>
@@ -1134,8 +1133,8 @@ $text = "
 	</tr>\n
 
 	<tr>
-	<td style='vertical-align:top' class='forumheader3'>".LAN_MAILOUT_31."</td>
-	<td style=' text-align:right' class='forumheader3'>
+	<td style='vertical-align:top'>".LAN_MAILOUT_31."</td>
+	<td style=' text-align:right'>
 		".LAN_MAILOUT_32.": <input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /><br />
 		".LAN_MAILOUT_33.":  <input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /><br />
 		".LAN_MAILOUT_34.":  <input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /><br />
@@ -1158,8 +1157,8 @@ $text = "
 	if (isset($pref['mailout_sources']))
 	{  // Allow selection of email address sources
 	  $text .= "<tr>
-		<td class='forumheader3'>".LAN_MAILOUT_77."</td>
-		<td class='forumheader3' style='text-align:right'> 
+		<td>".LAN_MAILOUT_77."</td>
+		<td style='text-align:right'> 
 	  ";
 	  $mail_enable = explode(',',$pref['mailout_enabled']);
 	  foreach (explode(',',$pref['mailout_sources']) as $mailer)
@@ -1173,8 +1172,8 @@ $text = "
 	list($mail_log_option,$mail_log_email) = explode(',',varset($pref['mail_log_options'],'0,0'));
 	$check = ($mail_log_email == 1) ? " checked='checked'" : "";
 	$text .= "<tr>
-		<td class='forumheader3'>".LAN_MAILOUT_72."</td>
-		<td class='forumheader3' style='text-align:right'> 
+		<td>".LAN_MAILOUT_72."</td>
+		<td style='text-align:right'> 
 		<select class='tbox' name='mail_log_option'>\n
 		<option value='0'".(($mail_log_option==0) ? " selected='selected'" : "").">".LAN_MAILOUT_73."</option>\n
 		<option value='1'".(($mail_log_option==1) ? " selected='selected'" : "").">".LAN_MAILOUT_74."</option>\n
@@ -1185,14 +1184,12 @@ $text = "
 		"</td>
 	</tr>\n";
 
-	$text .= "
-	<tr>
-	<td style='text-align:center' colspan='2' class='forumheader'>
+	$text .= "</table>
+	<div class='buttons-bar center'>
 	<input class='button' type='submit' name='updateprefs' value=\"".LAN_MAILOUT_28."\" />
-	</td>
-	</tr>\n
+	</div>
 
-	</table></div></form>";
+	</div></form>";
 
 	$caption = LAN_PREFS;
 	$ns->tablerender($caption, $text);
@@ -1248,11 +1245,11 @@ function showList($type='massmail')
 	$datestamp = $gen->convert_date($row2['gen_datestamp'], "short");
 
 	$text .= "<tr>
-		<td class='forumheader3' >".$row2['gen_id'] ."</td>
-		<td class='forumheader3'>".$row2['user_name']."</td>
-		<td class='forumheader3'>".$row2['gen_ip']."</td>
-		<td class='forumheader3'>".$datestamp."</td>
-		<td style='width:50px;white-space:nowrap' class='forumheader3'>
+		<td >".$row2['gen_id'] ."</td>
+		<td>".$row2['user_name']."</td>
+		<td>".$row2['gen_ip']."</td>
+		<td>".$datestamp."</td>
+		<td style='width:50px;white-space:nowrap'>
 		<div>";
 	$text .= "<a href='".e_SELF."?savedmail.edit.{$row2['gen_id']}'><img src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' /></a>";
 //		<input type='image' name='edit[{$row2['gen_id']}]' value='edit' src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
@@ -1333,7 +1330,7 @@ function sc_Select($container='sc_selector')
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$container}'>
 	<div style='position:absolute; bottom:30px; right:125px'>
 	<table class='fborder' style='background-color: #fff'>
-	<tr><td class='forumheader3'>
+	<tr><td>
 	<select class='tbox' name='sc_sel' onchange=\"addtext(this.value); this.selectedIndex= 0; expandit('{$container}')\">
 	<option value=''> -- </option>\n";
 

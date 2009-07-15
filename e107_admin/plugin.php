@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-07-14 03:18:16 $
+|     $Revision: 1.32 $
+|     $Date: 2009-07-15 09:38:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -729,6 +729,7 @@ class pluginManager{
 			{
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
 				$plug_vars = false;
+				$plugin_config_icon = "";
 
 				if($plugin->parse_plugin($plug['plugin_path']))
 				{
@@ -746,7 +747,8 @@ class pluginManager{
 					{
 						$conf_file = e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile'];
 						$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
-						$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon.'</a>';
+						$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
+						$plugin_config_icon = "<a title='{$conf_title}' href='{$conf_file}' ><img class='icon action S16' src='".e_IMAGE_ABS."admin_images/cat_tools_16.png' alt='' style='border:0px' /></a>";
 					}
 
 					$plugEmail = varset($plug_vars['author']['@attributes']['email'],'');
@@ -794,7 +796,8 @@ class pluginManager{
 
                 	// Plugin options Column --------------
 
-   					$text .= "<td class='center middle'>";
+   					$text .= "<td class='center middle'>".$plugin_config_icon;
+
 
 						if ($plug_vars['@attributes']['installRequired'])
 						{

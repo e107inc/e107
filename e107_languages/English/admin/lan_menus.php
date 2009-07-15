@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_menus.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-05 11:57:40 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-15 09:38:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("MENLAN_12", "Activate: choose area");
 define("MENLAN_13", "Activate in Area");
 define("MENLAN_14", "Area");
 define("MENLAN_15", "Deactivate");
-define("MENLAN_16", "Configure");
+// define("MENLAN_16", "Configure");    // now in lan_admin.php
 define("MENLAN_17", "Move Up");
 define("MENLAN_18", "Move Down");
 define("MENLAN_19", "Move to Area");
@@ -47,7 +47,7 @@ define("MENLAN_31", "Default Layout");
 define("MENLAN_32", "Newsheader Layout");
 define("MENLAN_33", "Custom Layout");
 define("MENLAN_34", "Embedded");
-define("MENLAN_35", "Configure Menus");
+// define("MENLAN_35", "Configure Menus");    now in lan_admin.php
 define("MENLAN_36", "Choose the menu(s) to activate");
 define("MENLAN_37", "and where to activate them.");
 define("MENLAN_38", "Hold down CTRL to select multiple menus.");

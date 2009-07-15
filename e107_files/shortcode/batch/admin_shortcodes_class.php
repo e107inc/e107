@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.10 2009-07-14 11:05:51 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.11 2009-07-15 09:38:00 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -128,9 +128,10 @@ class admin_shortcodes
 
 	function get_admin_lang($parm)
 	{
+		global $e107, $sql, $pref;
+
 		if (!ADMIN || !$pref['multilanguage']) { return ''; }
 
-		global $e107, $sql, $pref;
 		include_lan(e_PLUGIN.'user_menu/languages/English.php');
 		$params = array();
 		parse_str($parm, $params);
@@ -168,6 +169,8 @@ class admin_shortcodes
 			}
 		}
 
+		if(varset($GLOBALS['mySQLtablelist']))
+		{
 		foreach($GLOBALS['mySQLtablelist'] as $tabs)
 		{
 			$clang = strtolower($sql->mySQLlanguage);
@@ -176,7 +179,7 @@ class admin_shortcodes
 				$aff[] = str_replace(MPREFIX."lan_".$clang."_","",$tabs);
 			}
 		}
-
+        }
 
 		$text .= "<div><img src='".e_IMAGE_ABS."admin_images/language_16.png' alt='' />&nbsp;";
 		if(isset($aff))
@@ -440,13 +443,14 @@ class admin_shortcodes
 			ob_start();
 			//Show upper_right menu if the function exists
 			$tmp = explode('.',e_PAGE);
+            $adminmenu_parms = "";
 
 			$adminmenu_func = $tmp[0].'_adminmenu';
 			if(function_exists($adminmenu_func))
 			{
 				if (!$parm)
 				{
-					call_user_func($adminmenu_func,$adminmenu_parms);
+					call_user_func($adminmenu_func,$adminmenu_parms);   // ? not sure why there's an adminmenu_parms;
 				}
 				else
 				{
@@ -706,6 +710,7 @@ class admin_shortcodes
 
 	function get_admin_pword()
 	{
+		global $pref;
 		if (ADMIN && ADMINPERMS == '0')
 		{
 			global $ns;
@@ -719,6 +724,7 @@ class admin_shortcodes
 
 	function get_admin_sel_lan()
 	{
+		global $pref;
 		if (ADMIN)
 		{
 			if ($pref['multilanguage'])
@@ -915,7 +921,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.10 2009-07-14 11:05:51 e107coders Exp $
+		* $Id: admin_shortcodes_class.php,v 1.11 2009-07-15 09:38:00 e107coders Exp $
 		*/
 
 		if (ADMIN)
@@ -1275,8 +1281,9 @@ class admin_shortcodes
 	function get_admin_menumanager()  // List all menu-configs for easy-navigation
 	{
     	global $pref;
+        $action = "";
 
-        $var['menumanager']['text'] = ADLAN_151; // Main
+        $var['menumanager']['text'] = LAN_MENULAYOUT;
 		$var['menumanager']['link'] = e_ADMIN_ABS."menus.php";
 
         foreach($pref['menuconfig_list'] as $name=>$val)
@@ -1302,7 +1309,7 @@ class admin_shortcodes
    //		$keys = array_keys($var);
 	//	$action = (in_array($this->action,$keys)) ? $this->action : "installed";
 
-		e_admin_menu(ADLAN_6, $action, $var);
+	  e_admin_menu(ADLAN_6,$action, $var);
 
 	}
 
