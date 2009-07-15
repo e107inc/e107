@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-15 00:15:01 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-15 00:48:09 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -340,7 +340,7 @@ if ($action == 'maint')
                while($row = $sql->db_Fetch()) {
                   if (!$foundSome) {
    		            $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                     $text .= '<table class="fborder" style="width:100%">';
+                     $text .= '<table class="adminlist" style="width:100%">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_13.'</th>';
                      $text .= '<th>'.DOWLAN_67.'</th>';
@@ -358,14 +358,14 @@ if ($action == 'maint')
                   while($row = $sql2->db_Fetch()) {
                      $text .= '<tr>';
                      if ($currentURL != $row['download_url']) {
-                        $text .= '<td>'.$row['download_url'].'</td>';
+                        $text .= '<td>'.$e107->tp->toHTML($row['download_url']).'</td>';
                         $currentURL = $row['download_url'];
                      } else {
                         $text .= '<td>*</td>';
                      }
                      $text .= '<td>'.$row['download_id'].'</td>';
-                     $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$row['download_name'].'</a></td>';
-                     $text .= '<td>'.$row['download_category_name'].'</td>';
+                     $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+                     $text .= '<td>'.$e107->tp->toHTML($row['download_category_name']).'</td>';
                      $text .= '<td>
                                  <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.duplicates">'.ADMIN_EDIT_ICON.'</a>
    				                  <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
@@ -395,7 +395,7 @@ if ($action == 'maint')
                if (0 == $sql->db_Count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
                   if (!$foundSome) {
    		            $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                     $text .= '<table class="fborder" style="width:100%">';
+                     $text .= '<table class="adminlist" style="width:100%">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_13.'</th>';
                      $text .= '<th>'.DOWLAN_182.'</th>';
@@ -407,14 +407,14 @@ if ($action == 'maint')
                   $filesize = (is_readable(e_DOWNLOAD.$row['download_url']) ? $e107->parseMemorySize(filesize(e_DOWNLOAD.$file['fname'])) : DOWLAN_181);
                   $filets   = (is_readable(e_DOWNLOAD.$row['download_url']) ? $gen->convert_date(filectime(e_DOWNLOAD.$file['fname']), "long") : DOWLAN_181);
                   $text .= '<tr>';
-                  $text .= '<td>'.$file['fname'].'</td>';
+                  $text .= '<td>'.$e107->tp->toHTML($file['fname']).'</td>';
                   $text .= '<td>'.$filets.'</td>';
                   $text .= '<td>'.$filesize.'</td>';
    //TODO               $text .= '<td>
    //TODO                           <a href="'.e_SELF.'?create.add.'. urlencode($file["fname"]).'">'.E_16_CREATE.'</a>
    //TODO					            <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$file["fname"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_173.' [ '.$file["fname"].' ]').'") \'/>
    //TODO					         </td>';
-   //TODO               $text .= '</tr>';
+                  $text .= '</tr>';
                }
             }
             if ($foundSome) {
@@ -438,7 +438,7 @@ if ($action == 'maint')
                   if (!is_readable(e_DOWNLOAD.$row['download_url'])) {
                      if (!$foundSome) {
    		               $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                        $text .= '<table class="fborder" style="width:100%">';
+                        $text .= '<table class="adminlist" style="width:100%">';
                         $text .= '<tr>';
                         $text .= '<th>'.DOWLAN_67.'</th>';
                         $text .= '<th>'.DOWLAN_27.'</th>';
@@ -450,9 +450,9 @@ if ($action == 'maint')
                      }
                      $text .= '<tr>';
                      $text .= '<td>'.$row['download_id'].'</td>';
-                     $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$row['download_name'].'</a></td>';
-                     $text .= '<td>'.$row['download_category_name'].'</td>';
-                     $text .= '<td>'.$row['download_url'].'</td>';
+                     $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+                     $text .= '<td>'.$e107->tp->toHTML($row['download_category_name']).'</td>';
+                     $text .= '<td>'.$e107->tp->toHTML($row['download_url']).'</td>';
                      $text .= '<td>
                                  <a href="'.e_SELF.'?create.edit.'.$row["download_id"].'.maint.missing">'.ADMIN_EDIT_ICON.'</a>
    					               <input type="image" title="'.LAN_DELETE.'" name="delete[main_'.$row["download_id"].']" src="'.ADMIN_DELETE_ICON_PATH.'" onclick=\'return jsconfirm("'.$tp->toJS(DOWLAN_33.' [ID: '.$row["download_id"].' ]').'") \'/>
@@ -481,7 +481,7 @@ if ($action == 'maint')
                while($row = $sql->db_Fetch()) {
                   if (!$foundSome) {
    		            $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                     $text .= '<table class="fborder" style="width:100%">';
+                     $text .= '<table class="adminlist" style="width:100%">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_67.'</th>';
                      $text .= '<th>'.DOWLAN_27.'</th>';
@@ -493,8 +493,8 @@ if ($action == 'maint')
                   }
                   $text .= '<tr>';
                   $text .= '<td>'.$row['download_id'].'</td>';
-                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$row['download_name'].'</a></td>';
-                  $text .= '<td>'.$row['download_category_name'].'</td>';
+                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+                  $text .= '<td>'.$e107->tp->toHTML($row['download_category_name']).'</td>';
                   if (strlen($row['download_url']) > 0) {
                      $text .= '<td>'.$row['download_url'].'</td>';
                   } else {
@@ -532,7 +532,7 @@ if ($action == 'maint')
                while($row = $sql->db_Fetch()) {
                   if (!$foundSome) {
    		            $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                     $text .= '<table class="fborder" style="width:100%">';
+                     $text .= '<table class="adminlist">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_67.'</th>';
                      $text .= '<th>'.DOWLAN_27.'</th>';
@@ -543,9 +543,9 @@ if ($action == 'maint')
                   }
                   $text .= '<tr>';
                   $text .= '<td>'.$row['download_id'].'</td>';
-                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$row['download_name'].'</a></td>';
+                  $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
                   if (strlen($row['download_url']) > 0) {
-                     $text .= '<td>'.$row['download_url'].'</td>';
+                     $text .= '<td>'.$e107->tp->toHTML($row['download_url']).'</td>';
                   } else {
    					   $mirrorArray = download::makeMirrorArray($row['download_mirror'], TRUE);
                      $text .= '<td>';
@@ -584,7 +584,7 @@ if ($action == 'maint')
                      if ($filesize <> $row['download_filesize']) {
                         if (!$foundSome) {
    		                  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                           $text .= '<table class="fborder" style="width:100%">';
+                           $text .= '<table class="adminlist" style="width:100%">';
                            $text .= '<tr>';
                            $text .= '<th>'.DOWLAN_67.'</th>';
                            $text .= '<th>'.DOWLAN_27.'</th>';
@@ -597,9 +597,9 @@ if ($action == 'maint')
                         }
                         $text .= '<tr>';
                         $text .= '<td>'.$row['download_id'].'</td>';
-                        $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$row['download_name'].'</a></td>';
-                        $text .= '<td>'.$row['download_category_name'].'</td>';
-                        $text .= '<td>'.$row['download_url'].'</td>';
+                        $text .= "<td><a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$e107->tp->toHTML($row['download_name']).'</a></td>';
+                        $text .= '<td>'.$e107->tp->toHTML($row['download_category_name']).'</td>';
+                        $text .= '<td>'.$e107->tp->toHTML($row['download_url']).'</td>';
                         $text .= '<td>'.$row['download_filesize'].' / ';
                         $text .= $filesize;
                         $text .= '</td>';
