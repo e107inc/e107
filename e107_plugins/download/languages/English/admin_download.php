@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-14 23:59:57 $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-15 23:28:46 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ define("DOWLAN_47", "Category created");
 define("DOWLAN_48", "Category Updated");
 define("DOWLAN_49", "Download Category");
 
-define("DOWLAN_51", "Search/Refresh downloads");
+define("DOWLAN_51", "Search downloads");
 define("DOWLAN_52", "Files");
 define("DOWLAN_53", "Subcategory");
 define("DOWLAN_54", "Subcategories");
@@ -184,7 +184,7 @@ define("DOWLAN_179", "Select an option from the Maintenance Options menu");
 define("DOWLAN_180", "File size (database/disk)");
 define("DOWLAN_181", "Not readable");
 define("DOWLAN_182", "Timestamp");
-define("DOWLAN_183", "Filter options");
+define("DOWLAN_183", "Advanced search");
 define("DOWLAN_184", "Batch options");
 define("DOWLAN_185", "Files referenced multiple times in the database");
 define("DOWLAN_186", "Files not referenced in the database");
@@ -195,6 +195,7 @@ define("DOWLAN_190", "Size differences between database entry and the file itsel
 define("DOWLAN_191", "Downloads log entries");
 define("DOWLAN_192", "Execute selected option");
 define("DOWLAN_193", "Select option");
+define("DOWLAN_194", "Search");
 
 define("DOWLAN_HELP_1", "Download Help");
 define("DOWLAN_HELP_2", "<p>Create/edit a download.</p><p>Enter only one of: File, URL or Mirror.</p><p>Ensure you select a category, otherwise your download will not be visible on the downloads page.</p>");

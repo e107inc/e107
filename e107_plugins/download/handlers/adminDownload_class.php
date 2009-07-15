@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-14 23:14:41 $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-15 23:28:46 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -23,8 +23,8 @@ require_once(e_PLUGIN.'download/handlers/download_class.php');
 
 class adminDownload extends download
 {
-   var $filterCookieName;
-   var $filterFields;
+   var $searchField;
+   var $advancedSearchFields;
    var $userclassOptions;
 
    function adminDownload()
@@ -32,31 +32,17 @@ class adminDownload extends download
       global $pref;
       parent::download();
       $this->userclassOptions = 'blank,nobody,guest,public,main,admin,member,classes';
-      $this->filterCookieName = $pref['cookie_name']."_download_filter_admin";
-      if (isset($_COOKIE[$this->filterCookieName])) {
-         $this->filterFields = unserialize($_COOKIE[$this->filterCookieName]);
+
+      // Save basic search string
+      if (isset($_POST['download_search_submit']))
+      {
+         $this->searchField = $_POST['download_search'];
       }
 
-      // Delete filter selection
-      if (isset($_POST['download_filter_delete']))
+      // Save advanced search criteria
+      if (isset($_POST['download_advanced_search_submit']))
       {
-         $this->filterFields = array();
-      }
-
-      // Save filter selection
-      if (isset($_POST['download_filter_submit']))
-      {
-         // Store filter fields in a cookie
-         $this->filterFields = $_POST['download_filter'];
-         // Convert date if input
-         //TODO need a core way of doing this - e_form validation? convert class?
-         $tmp = split("/", $this->filterFields['date']);
-         $this->filterFields['date'] = mktime(0,0,0,$tmp[1],$tmp[0],$tmp[2]);
-         cookie($this->filterCookieName, serialize($this->filterFields), 0); // Use session cookie
-
-         // Columns to display saved in prefs
-         $pref['admin_download_disp'] = implode("|",$_POST['filter_columns']);
-         save_prefs();
+         $this->advancedSearchFields = $_POST['download_advanced_search'];
       }
    }
    function show_filter_form($action, $subAction, $id, $from, $amount)
@@ -64,45 +50,68 @@ class adminDownload extends download
       global $mySQLdefaultdb, $pref;
       $eform = new e_form();
 
-	  /* ************************************************************
-
-      This whole form needs a rework. We need to incorporate ajax usage extensively.
-	  Displaying all filter fields at once should be avoided.
-
-	  ******************************************************************* */
-
-
-
       $filterColumns = ($pref['admin_download_disp'] ? explode("|",$pref['admin_download_disp']) : array("download_name","download_class"));
-
-      // Filter fields
-      $text .= '<fieldset id="download_filter"><legend>'.DOWLAN_183.'</legend>';
-      $text .= "<form method='post' action='".e_SELF."'>
-         <table style='width:100%'>
-            <colgroup>
-               <col style='width:8%;'/>
-               <col style='width:20%;'/>
-               <col style='width:8%;'/>
-               <col style='width:36%;'/>
-               <col style='width:8%;'/>
-               <col style='width:20%;'/>
-            </colgroup>
-            <tr>
-               <td>Name</td><td><input class='tbox' type='text' name='download_filter[name]' size='20' value='{$this->filterFields['name']}' maxlength='50'/></td>
-               <td>Category</td><td>
+      print_r($this->advancedSearchFields);
+      if ($this->advancedSearchFields)
+      {
+         $showBasicSearch = " style='display:none'";
+         $showAdvancedSearch = "";
+      }
+      else
+      {
+         $showBasicSearch = "";
+         $showAdvancedSearch = " style='display:none'";
+      }
+      // Search field
+      $text .= "
+         <form method='post' action='".e_SELF."'>
+            <fieldset id='download_search'{$showBasicSearch}>
+               <legend class='e-hideme'>".DOWLAN_194."</legend>
+               <table class='adminform'>
+                  <tr>
+                     <td>
+                        <input class='tbox' type='text' name='download_search' size='50' value='{$this->searchField}' maxlength='50'/>
+                     </td>
+                  </tr>
+               </table>
+            <div class='buttons-bar center'>
+               <button type='submit' class='update' name='download_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
+               <br/>
+               <a href='#' onclick='$(\"download_search\").hide();$(\"download_advanced_search\").show();return false;'>Advanced search</a>
+            </div>
+            </fieldset>
+         </form>
          ";
-        $text .= $this->getCategorySelectList($this->filterFields['category'], true, false, '&nbsp;', 'download_filter[category]');
+      // Advanced search fields
+      $text .= "
+         <form method='post' action='".e_SELF."'>
+            <fieldset id='download_advanced_search'{$showAdvancedSearch}>
+            <legend class='e-hideme'>".DOWLAN_183."</legend>
+            <table class='adminform'>
+               <colgroup>
+                  <col style='width:8%;'/>
+                  <col style='width:20%;'/>
+                  <col style='width:8%;'/>
+                  <col style='width:36%;'/>
+                  <col style='width:8%;'/>
+                  <col style='width:20%;'/>
+               </colgroup>
+               <tr>
+                  <td>Name</td><td><input class='tbox' type='text' name='download_advanced_search[name]' size='20' value='{$this->advancedSearchFields['name']}' maxlength='50'/></td>
+                  <td>Category</td><td>
+         ";
+      $text .= $this->getCategorySelectList($this->advancedSearchFields['category'], true, false, '&nbsp;', 'download_advanced_search[category]');
       $text .= "</td>
                <td>Filesize</td>
                <td>
          ";
-      $text .= $this->_getConditionList('download_filter[filesize_condition]', $this->filterFields['filesize_condition']);
+      $text .= $this->_getConditionList('download_advanced_search[filesize_condition]', $this->advancedSearchFields['filesize_condition']);
       $text .= "
-                  <input class='tbox' type='text' name='download_filter[filesize]' size='10' value='{$this->filterFields['filesize']}'/>
-                  <select name='download_filter[filesize_units]' class='tbox'>
-                     <option value='1' ".($this->filterFields['filesize_units'] == '' ? " selected='selected' " : "")." >b</option>
-                     <option value='1024' ".($this->filterFields['filesize_units'] == '1024' ? " selected='selected' " : "")." >Kb</option>
-                     <option value='1048576' ".($this->filterFields['filesize_units'] == '1048576' ? " selected='selected' " : "")." >Mb</option>
+                  <input class='tbox' type='text' name='download_advanced_search[filesize]' size='10' value='{$this->advancedSearchFields['filesize']}'/>
+                  <select name='download_advanced_search[filesize_units]' class='tbox'>
+                     <option value='1' ".($this->advancedSearchFields['filesize_units'] == '' ? " selected='selected' " : "")." >b</option>
+                     <option value='1024' ".($this->advancedSearchFields['filesize_units'] == '1024' ? " selected='selected' " : "")." >Kb</option>
+                     <option value='1048576' ".($this->advancedSearchFields['filesize_units'] == '1048576' ? " selected='selected' " : "")." >Mb</option>
                   </select>
                   </td>
             </tr>
@@ -110,140 +119,151 @@ class adminDownload extends download
                <td>Date</td>
                <td>
          ";
-      $text .= $this->_getConditionList('download_filter[date_condition]', $this->filterFields['date_condition']);
-//TODO      $text .= $eform->datepicker('download_filter[date]', $this->filterFields['date']);
+      $text .= $this->_getConditionList('download_advanced_search[date_condition]', $this->advancedSearchFields['date_condition']);
+//TODO      $text .= $eform->datepicker('download_advanced_search[date]', $this->advancedSearchFields['date']);
       $text .= "//TODO";
       $text .= "
                </td>
                <td>Status</td>
                <td>
-                  <select name='download_filter[status]' class='tbox'>";
-      $text .= $this->_getStatusList('download_filter[status]', $this->filterFields['status']);
+                  <select name='download_advanced_search[status]' class='tbox'>";
+      $text .= $this->_getStatusList('download_advanced_search[status]', $this->advancedSearchFields['status']);
       $text .= "  </select>
                </td>
                <td>Requested</td>
                <td>
          ";
-      $text .= $this->_getConditionList('download_filter[requested_condition]', $this->filterFields['requested_condition']);
-      $text .= "  <input class='tbox' type='text' name='download_filter[requested]' size='6' value='{$this->filterFields['requested']}' maxlength='6'/> times
+      $text .= $this->_getConditionList('download_advanced_search[requested_condition]', $this->advancedSearchFields['requested_condition']);
+      $text .= "  <input class='tbox' type='text' name='download_advanced_search[requested]' size='6' value='{$this->advancedSearchFields['requested']}' maxlength='6'/> times
                </td>
             </tr>
             <tr>
                <td>Visibility</td>
                <td>
                   ";
-      $text .= $eform->uc_select('download_filter[visible]', $this->filterFields['visible'], $this->userclassOptions);
+      $text .= $eform->uc_select('download_advanced_search[visible]', $this->advancedSearchFields['visible'], $this->userclassOptions);
+//TODO language file stuff
       $text .= "
                </td>
-               <td>URL</td><td><input class='tbox' type='text' name='download_filter[url]' size='50' value='{$this->filterFields['url']}' maxlength='50'/></td>
-               <td>Author</td><td><input class='tbox' type='text' name='download_filter[author]' size='20' value='{$this->filterFields['author']}' maxlength='50'/></td>
+               <td>URL</td><td><input class='tbox' type='text' name='download_advanced_search[url]' size='50' value='{$this->advancedSearchFields['url']}' maxlength='50'/></td>
+               <td>Author</td><td><input class='tbox' type='text' name='download_advanced_search[author]' size='20' value='{$this->advancedSearchFields['author']}' maxlength='50'/></td>
             </tr>
             <tr>
                <td>Class</td>
                <td>
                   ";
-      $text .= $eform->uc_select('download_filter[class]', $this->filterFields['class'], $this->userclassOptions);
+      $text .= $eform->uc_select('download_advanced_search[class]', $this->advancedSearchFields['class'], $this->userclassOptions);
       $text .= "
                </td>
-               <td>Description</td><td><input class='tbox' type='text' name='download_filter[description]' size='50' value='{$this->filterFields['description']}' maxlength='50'/></td>
+               <td>Description</td><td><input class='tbox' type='text' name='download_advanced_search[description]' size='50' value='{$this->advancedSearchFields['description']}' maxlength='50'/></td>
                <td>&nbsp;</td>
                <td>&nbsp;</td>
             </tr>
-         </table>
-         <p>Fields to show</p>
-         ";
-
-      // Fields to display list - these are just columns form the download table
-      $fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
-      $columns = mysql_num_fields($fields);
-      for ($i = 0; $i < $columns; $i++) {
-         $fname[] = mysql_field_name($fields, $i);
-      }
-      $replacechar = array("download_","_");
-      $text .= "<div>";
-      foreach($fname as $fcol)
-      {
-         $checked = (in_array($fcol,$filterColumns)) ? "checked='checked'" : "";
-         $text .= "<div style='float:left;width:20%;'>";
-         $text .= "<label for='filter_".$fcol."'><input type='checkbox' name='filter_columns[]' value='".$fcol."' id='filter_".$fcol."' $checked/>".str_replace($replacechar," ",$fcol)."</label>";
-         $text .= "</div>\n";
-      }
-
-      $text .= "
-            <div class='buttons-bar center' style='clear:both;'>
-               <button type='submit' class='update' name='download_filter_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
-               <button type='submit' class='delete' name='download_filter_delete' value='".DOWLAN_57."'><span>".DOWLAN_57."</span></button>
+            </table>
+            <div class='buttons-bar center'>
+               <button type='submit' class='update' name='download_advanced_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
+               <br/>
+               <a href='#' onclick='$(\"download_search\").show();$(\"download_advanced_search\").hide();return false;'>Basic search</a>
             </div>
-         </div></form></fieldset>";
+            </fieldset>
+         </form>";
+
       return $text;
    }
 
    function show_existing_items($action, $subAction, $id, $from, $amount)
    {
-      global $sql, $rs, $ns, $tp, $mySQLdefaultdb, $pref;
-      $sortorder = ($pref['download_order']) ? $pref['download_order'] : "download_datestamp";
-      $sortdirection = ($pref['download_sort']) ? strtolower($pref['download_sort']) : "desc";
-      if ($sortdirection != 'desc') $sortdirection = 'asc';
+      global $sql, $rs, $ns, $tp, $mySQLdefaultdb, $pref, $user_pref;
+      $eform = new e_form();
+      $sortorder = $subAction ? $subAction : $pref['download_order'];
+      $sortdirection = $id=="asc" ? "asc" : "desc";
+		$sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
+		$columnInfo = array(
+         "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_id.{$sort_link}.{$from}", "forced"=>true),
+         "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_name.{$sort_link}.{$from}"),
+         "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_url.{$sort_link}.{$from}"),
+         "download_author"          => array("title"=>DOWLAN_15,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author.{$sort_link}.{$from}"),
+         "download_author_email"    => array("title"=>DOWLAN_16,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author_email.{$sort_link}.{$from}"),
+         "download_author_website"  => array("title"=>DOWLAN_17,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author_website.{$sort_link}.{$from}"),
+         "download_description"     => array("title"=>DOWLAN_18,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_description.{$sort_link}.{$from}"),
+         "download_filesize"        => array("title"=>DOWLAN_66,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_filesize.{$sort_link}.{$from}"),
+         "download_requested"       => array("title"=>DOWLAN_29,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_requested.{$sort_link}.{$from}"),
+         "download_category"        => array("title"=>DOWLAN_11,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_category.{$sort_link}.{$from}"),
+         "download_active"          => array("title"=>DOWLAN_21,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_active.{$sort_link}.{$from}"),
+         "download_datestamp"       => array("title"=>DOWLAN_182, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_datestamp.{$sort_link}.{$from}"),
+         "download_thumb"           => array("title"=>DOWLAN_20,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_thumb.{$sort_link}.{$from}"),
+         "download_image"           => array("title"=>DOWLAN_19,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_image.{$sort_link}.{$from}"),
+         "download_comment"         => array("title"=>DOWLAN_,    "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_comment.{$sort_link}.{$from}"),
+         "download_class"           => array("title"=>DOWLAN_113, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_class.{$sort_link}.{$from}"),
+         "download_mirror"          => array("title"=>DOWLAN_128, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_mirror.{$sort_link}.{$from}"),
+         "download_mirror_type"     => array("title"=>DOWLAN_,    "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_mirror_type.{$sort_link}.{$from}"),
+         "download_visible"         => array("title"=>DOWLAN_43,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_visible.{$sort_link}.{$from}"),
+			"options"			         => array("title"=>LAN_OPTIONS,            "width"=>"auto", "thclass"=>"center last", "url"=>"", "forced"=>true)
+		);
 
-      if (!$pref['admin_download_disp'])
-      {
-         $filterColumns = array("download_name","download_class");
-      }
-      else
-      {
-         $filterColumns = explode("|",$pref['admin_download_disp']);
-      }
+      $filterColumns = ($user_pref['admin_download_disp']) ? $user_pref['admin_download_disp'] : array("download_id","download_name","download_class","options");
       $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc. download_category_id=d.download_category";
-      if ($this->filterFields) {
+
+      if ($this->searchField) {
          $where = array();
-         if (strlen($this->filterFields['name']) > 0) {
-            array_push($where, "download_name REGEXP('".$this->filterFields['name']."')");
+         array_push($where, "download_name REGEXP('".$this->searchField."')");
+         array_push($where, "download_description REGEXP('".$this->searchField."')");
+         array_push($where, "download_author REGEXP('".$this->searchField."')");
+         array_push($where, "download_author_email REGEXP('".$this->searchField."')");
+         array_push($where, "download_author_website REGEXP('".$this->searchField."')");
+         $where = " WHERE ".implode(" OR ", $where);
+         $query .= "$where ORDER BY {$sortorder} {$sortdirection}";
+      }
+      else if ($this->advancedSearchFields) {
+         $where = array();
+         if (strlen($this->advancedSearchFields['name']) > 0) {
+            array_push($where, "download_name REGEXP('".$this->advancedSearchFields['name']."')");
          }
-         if (strlen($this->filterFields['url']) > 0) {
-            array_push($where, "download_url REGEXP('".$this->filterFields['url']."')");
+         if (strlen($this->advancedSearchFields['url']) > 0) {
+            array_push($where, "download_url REGEXP('".$this->advancedSearchFields['url']."')");
          }
-         if (strlen($this->filterFields['author']) > 0) {
-            array_push($where, "download_author REGEXP('".$this->filterFields['author']."')");
+         if (strlen($this->advancedSearchFields['author']) > 0) {
+            array_push($where, "download_author REGEXP('".$this->advancedSearchFields['author']."')");
          }
-         if (strlen($this->filterFields['description']) > 0) {
-            array_push($where, "download_description REGEXP('".$this->filterFields['description']."')");
+         if (strlen($this->advancedSearchFields['description']) > 0) {
+            array_push($where, "download_description REGEXP('".$this->advancedSearchFields['description']."')");
          }
-         if (strlen($this->filterFields['category']) != 0) {
-            array_push($where, "download_category=".$this->filterFields['category']);
+         if (strlen($this->advancedSearchFields['category']) != 0) {
+            array_push($where, "download_category=".$this->advancedSearchFields['category']);
          }
-         if (strlen($this->filterFields['filesize']) > 0) {
-            array_push($where, "download_filesize".$this->filterFields['filesize_condition'].($this->filterFields['filesize']*$this->filterFields['filesize_units']));
+         if (strlen($this->advancedSearchFields['filesize']) > 0) {
+            array_push($where, "download_filesize".$this->advancedSearchFields['filesize_condition'].($this->advancedSearchFields['filesize']*$this->advancedSearchFields['filesize_units']));
          }
-         if ($this->filterFields['status'] != 99) {
-            array_push($where, "download_active=".$this->filterFields['status']);
+         if ($this->advancedSearchFields['status'] != 99) {
+            array_push($where, "download_active=".$this->advancedSearchFields['status']);
          }
-         if (strlen($this->filterFields['date']) > 0) {
-            switch ($this->filterFields['date_condition']) {
+         if (strlen($this->advancedSearchFields['date']) > 0) {
+            switch ($this->advancedSearchFields['date_condition']) {
                case "<=" :
                {
-                  array_push($where, "download_datestamp".$this->filterFields['date_condition'].($this->filterFields['date']+86400));
+                  array_push($where, "download_datestamp".$this->advancedSearchFields['date_condition'].($this->advancedSearchFields['date']+86400));
                   break;
                }
                case "=" :
                {
-                  array_push($where, "(download_datestamp>=".$this->filterFields['date']." AND download_datestamp<=".($this->filterFields['date']+86399).")");
+                  array_push($where, "(download_datestamp>=".$this->advancedSearchFields['date']." AND download_datestamp<=".($this->advancedSearchFields['date']+86399).")");
                   break;
                }
                case ">=" :
                {
-                  array_push($where, "download_datestamp".$this->filterFields['date_condition'].$this->filterFields['date']);
+                  array_push($where, "download_datestamp".$this->advancedSearchFields['date_condition'].$this->advancedSearchFields['date']);
                   break;
                }
             }
          }
-         if (strlen($this->filterFields['requested']) > 0) {
-            array_push($where, "download_requested".$this->filterFields['requested_condition'].$this->filterFields['requested']);
+         if (strlen($this->advancedSearchFields['requested']) > 0) {
+            array_push($where, "download_requested".$this->advancedSearchFields['requested_condition'].$this->advancedSearchFields['requested']);
          }
-         if ($this->filterFields['visible']) {
-            array_push($where, "download_visible=".$this->filterFields['visible']);
+         if ($this->advancedSearchFields['visible']) {
+            array_push($where, "download_visible=".$this->advancedSearchFields['visible']);
          }
-         if ($this->filterFields['class']) {
-            array_push($where, "download_class=".$this->filterFields['class']);
+         if ($this->advancedSearchFields['class']) {
+            array_push($where, "download_class=".$this->advancedSearchFields['class']);
          }
          $where = (count($where) > 0 ? " WHERE ".implode(" AND ", $where) : "");
 
@@ -254,36 +274,17 @@ class adminDownload extends download
          $query .= " ORDER BY ".($subAction ? $subAction : $sortorder)." ".($id ? $id : $sortdirection)."  LIMIT $from, $amount";
       }
 
-      $text .= '<fieldset id="downloads-list">
-         <legend>'.DOWLAN_7.'</legend>';
-      $text .= "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
-        if ($dl_count = $sql->db_Select_gen($query))
+      $text .= "<fieldset id='downloads-list'><legend class='e-hideme'>".DOWLAN_7."</legend>";
+      if ($dl_count = $sql->db_Select_gen($query))
       {
          $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
             <table class='adminlist' style='width:100%'>
-            <thead>
-
-            <tr class='first last'>
-            <th>".DOWLAN_67."</th>
+				   <colgroup span='".count($filterColumns)."'>".$eform->colGroup($columnInfo,$filterColumns)."</colgroup>
+               <thead>
+					   <tr>".$eform->thead($columnInfo,$filterColumns)."</tr>
+					</thead>
+		               <tbody>
             ";
-
-         // Search Display Column header.----------
-         foreach($filterColumns as $disp)
-         {
-             if ($disp == "download_name")
-             {  // Toggle direction
-               $text .= "<th><a href='".e_SELF."?main.download_name.".($id == "desc" ? "asc" : "desc").".$from'>".DOWLAN_12."</a></th>";
-             }
-             else
-             {
-               $repl = array("download_","_");
-               $text .= "<th><a href='".e_SELF."?main.{$disp}.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace($repl," ",$disp))."</a></th>";
-             }
-         }
-
-         $text .="<th class='center'>".LAN_OPTIONS."</th></tr>
-		 </thead>
-		 <tbody>";
 
          $rowStyle = "even";
 
@@ -360,18 +361,16 @@ class adminDownload extends download
       {   // 'No downloads yet'
         $text .= "<div style='text-align:center'>".DOWLAN_6."</div>";
       }
-      $text .= "</div>";
 
       // Next-Previous.
       $downloads = $sql->db_Count("download");
-      if ($downloads > $amount && !$_POST['searchquery'])
+      if ($downloads > $amount && !$this->searchFields && !$this->advancedSearchFields)
       {
          $parms = "{$downloads},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$subAction.$id." : "main.{$sortorder}.{$sortdirection}.")."[FROM]";
          $text .= "<br/>".$tp->parseTemplate("{NEXTPREV={$parms}}");
       }
 
-      $text .= "</div>
-      </fieldset>";
+      $text .= "</fieldset>";
       return $text;
    }
 
@@ -1768,5 +1767,54 @@ class adminDownload extends download
       }
       return $text;
    }
+
+	function observer()
+	{
+		//Required on create & savepreset action triggers
+//		if(isset($_POST['news_userclass']) && is_array($_POST['news_userclass']))
+//		{
+//			$_POST['news_class'] = implode(",", $_POST['news_userclass']);
+//			unset($_POST['news_userclass']);
+//		}
+//
+//		if(isset($_POST['delete']) && is_array($_POST['delete']))
+//		{
+//			$this->_observe_delete();
+//		}
+//		elseif(isset($_POST['submit_news']))
+//		{
+//			$this->_observe_submit_item($this->getSubAction(), $this->getId());
+//		}
+//		elseif(isset($_POST['create_category']))
+//		{
+//			$this->_observe_create_category();
+//		}
+//		elseif(isset($_POST['update_category']))
+//		{
+//			$this->_observe_update_category();
+//		}
+//		elseif(isset($_POST['save_prefs']))
+//		{
+//			$this->_observe_save_prefs();
+//		}
+//		elseif(isset($_POST['submitupload']))
+//		{
+//			$this->_observe_upload();
+//		}
+//		elseif(isset($_POST['news_comments_recalc']))
+//		{
+//			$this->_observe_newsCommentsRecalc();
+//		}
+		if(isset($_POST['submit-e-columns']))
+		{
+        	$this->_observe_saveColumns();
+		}
+	}
+	function _observe_saveColumns()
+	{
+		global $user_pref,$admin_log;
+		$user_pref['admin_download_disp'] = $_POST['e-columns'];
+		save_prefs('user');
+	}
 }
 ?>
