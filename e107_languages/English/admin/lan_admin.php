@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.20 2009-07-14 11:05:52 e107coders Exp $
+ * $Id: lan_admin.php,v 1.21 2009-07-15 09:38:00 e107coders Exp $
  *
  * Admin Language File
 */
@@ -99,7 +99,7 @@ define("ADLAN_95", "Plugin Management");
 //define("ADLAN_97", "Click here for FAQ");
 define("ADLAN_98", "Plugin Manager");
 define("ADLAN_99", "Install/upgrade etc. plugins");
-//define("ADLAN_100", "Theme Layout");
+// define("ADLAN_100", "Theme Layout"); // required
 //define("ADLAN_101", "Template Creator");
 define("ADLAN_102", "It has been more than 30 days since you changed the main administrator password - ");
 define("ADLAN_103", "Click here to change it now");
@@ -235,7 +235,7 @@ define("LAN_TRY_AGAIN","Please try again.");
 
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
-// define("LAN_OK","OK");     // defined in e107_languages/English/English.php    
+// define("LAN_OK","OK");     // defined in e107_languages/English/English.php
 
 define("LAN_PRESET","Preset");
 define("LAN_PRESET_SAVED","Preset saved successfully");
@@ -293,6 +293,7 @@ define("LAN_AUTHOR",	"Author");
 define("LAN_CATEGORY", "Category");
 
 define("LAN_HELP", "Help");
+define("LAN_MENULAYOUT", "Menu Layout");
 
 
 ?>

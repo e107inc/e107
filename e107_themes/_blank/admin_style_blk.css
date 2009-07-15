@@ -1,0 +1,586 @@
+/* E107 CORE CSS *********************************************************************************************/
+.searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
+
+/*
+ * e107 v0.800 - new class definitions
+ */
+ 
+/* Core Formatting */
+.left		{ text-align: left }
+.right		{ text-align: right }
+.center		{ text-align: center }
+.f-left		{ float: left }
+.f-right	{ float: right }
+.top		{ vertical-align: top }
+.middle		{ vertical-align: middle }
+.bottom		{ vertical-align: bottom }
+.clear		{ clear: both }
+.clear-l	{ clear: right }
+.clear-r	{ clear: left }
+.smalltext	{ font-size: 11px; }
+.nowrap 	{ white-space:nowrap; }
+
+/* Core Icons */
+img.icon		{ border: 0 }
+img.icon.list	{ margin: 0px 5px 5px 0px }
+img.icon.action { vertical-align: middle }
+img.S16		{ width: 16px; height: 16px }
+img.S32		{ width: 32px; height: 32px }
+img.S64		{ width: 64px; height: 64px }
+img.S128		{ width: 128px; height: 128px }
+/*******************************************************************************************************************/
+
+/* RESET CSS *********************************************************************************************/
+/* Global */
+* 			{ margin:0; padding:0; }
+body		{ font:12px/1.5em Arial, Helvetica, sans-serif; color:white; background-color:black; }
+
+
+img         { border:0; vertical-align:top; }
+a			{ text-decoration:underline; color: #13394E; }
+a:hover		{ text-decoration:underline; color: #CB0000; }
+a img		{ border:0; }
+:focus		{ outline:0; }
+
+/* Headings */
+h1          { font-size:20px; font-weight:normal; line-height:1.3; }
+h2          { font-size:18px; font-weight:normal; line-height:1.34; }
+h3          { font-size:16px; font-weight:bold; line-height:1.375; }
+h4          { font-size:14px; font-weight:bold; }
+h5          { font-size:12px; font-weight:bold; }
+h6          { font-size:11px; font-weight:bold; }
+
+/* Forms */
+form        { display:inline; }
+fieldset    { border: 0; margin-bottom: 10px; }
+input, select{ vertical-align:middle; }
+textarea	{ overflow:auto; }
+
+/* Table */
+table       { border:0; border-spacing:0; empty-cells:show; font-size:100%; width: 100%; }
+th          { vertical-align:top; text-align:left; font-weight:normal; }
+td          { vertical-align:top; }
+
+/* Content */
+address     { font-style:normal; }
+cite        { font-style:normal; }
+q,
+blockquote  { quotes:none; }
+q:before, 
+q:after     { content:''; }
+small,big   { font-size:1em; }
+sup         { font-size:1em; vertical-align:top; }
+
+/* Lists */
+ul,ol       { list-style:none; }
+
+/* Tools */
+.no-display { display:none; }
+.no-margin  { margin:0 !important; }
+.no-padding { padding:0 !important; }
+.no-bg      { background:none !important; }
+.clear		{ clear: both; }
+
+pre {
+	overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	/* width: 99%; */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+/*******************************************************************************************************************/
+
+/* E107 CORE ADMIN CSS *********************************************************************************************/
+
+
+/******** Decorate JS */
+/* Admin List Table */ 
+.adminlist { width:100%;  border:1px solid #ddd;}
+.adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold }
+.adminlist td { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; }
+.adminlist th.last,
+.adminlist td.last { border-right: 0px solid;}
+.adminlist tr.last td{ border-bottom: 0px solid;}
+.adminlist thead { background-color:#f2f2f2; }
+
+.adminlist tbody {}
+.adminlist tfoot {}
+.adminlist tr.first {}
+.adminlist tr.last {}
+.adminlist tr.odd {}
+.adminlist tr.even { background-color:#f6f6f6; }
+
+/* Form elements */ 
+input.input-text,
+textarea,
+select, .tbox, .helpbox {
+    border-width:1px;
+    border-style:solid;
+    border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
+    background:#fff;
+    font:12px arial, helvetica, sans-serif;
+}
+option { padding-right: 10px;}
+input.input-text, textarea, .tbox, .helpbox { padding:2px; }
+.tbox.large { width: 95% !important; }
+select.tbox  { min-height:17px; padding: 0px; /* setting the height of empty selects */ }
+.select.order { width: 40px !important; }
+.select.time-offset { width: 60px !important; }
+input.radio { margin-right: 3px; }
+label { cursor: pointer; }
+.checkbox { margin-right: 5px; }
+
+.check-block { /* see administration newspost.php */
+	padding: 2px 0px;
+    border-width:1px;
+    border-style:solid;
+    border-color:#aaa #c8c8c8 #c8c8c8 #aaa;
+    background:#fff;
+    font:12px arial, helvetica, sans-serif;
+	overflow:auto 
+}
+.check-block .checkbox { margin-left: 2px }
+.check-block .separator { clear: both; border-bottom: 1px solid #aaa; margin-bottom: 4px; height: 4px }
+
+
+.field-help { width: 280px; line-height: 1.4em; padding-top: 3px; color:#333333; font-size: 11px; }
+.label-note { font-style: italic; }
+.form-note { font-style: italic; }
+.field-spacer.strong { font-weight: bold }
+
+/* Related JS functionality - .autocheck together with .auto-toggle-area (see admin/image.php) */
+.auto-toggle-area { width: 280px; cursor: pointer; }
+
+/* form used for settings */
+.col-label { width: 250px; background-color:#696969 }
+.col-control {background-color: #C0C0C0}
+.col-selection { padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
+
+
+
+.adminform  { width:100%;  border:1px solid #ddd;}
+
+.adminform th { padding: 5px; font-weight: bold; white-space:nowrap; }
+.adminform td { padding: 5px; }
+
+
+.adminform td { padding: 5px; text-align: left}
+.adminform td div.field-spacer { margin-bottom: 3px; } /* multi-fields per row separator */
+.adminform td div.field-section { clear: both; margin-bottom: 10px; } /* multi-field sections per row - wrapper */
+
+.adminform td .check-block { width:95%; height:60px; }
+
+.adminform .select { width: 280px;}
+.adminform .input-text { width: 274px;}
+.adminform td.control textarea { width: 274px;}
+
+.adminform td.label { }
+.adminform td.control { }
+
+
+/* form used for content edit */
+.adminedit  { width:100%;  border:1px solid #ddd;}
+.adminedit.options { } /* form used for content item options */
+.adminedit td { padding: 5px; text-align: left}
+.adminedit td div.field-spacer { clear: both; margin-bottom: 3px; } /* multi-fields per row - wrapper */
+.adminedit td div.field-section { clear: both; margin-bottom: 10px; } /* multi-field sections per row - wrapper */
+.adminedit .select { width: 280px; }
+.adminedit .input-text { width: 274px;}
+.adminedit td.control textarea { width: 274px;}
+.adminedit td.control textarea.large { width: 400px; }
+
+.adminedit td .check-block { width:95%; height:60px; }
+
+.adminedit td.label {}
+.adminedit td.control {}
+
+
+/* Admin Info Table */ 
+.admininfo  { width:100%;  border:1px solid #ddd;}
+.admininfo td { padding: 1px 5px; text-align: left}
+
+
+.info-bar { padding: 5px 0px; }
+
+/* Images and avatars */
+.image-box {border:1px solid #ddd; margin-right: 10px;  position: relative; margin-bottom: 10px; }
+.image-box .spacer { }
+.image-box .image-name { padding: 5px; }
+.image-box .image-delete { position: absolute ; bottom: 10px; text-align: center; width: 100%}
+.image-box .image-users {padding: 5px;}
+.image-box .image-preview {padding: 5px;}
+
+/******** Prepare for Image Preview JS */
+.image-preview {}
+
+/******** Tabs JS */
+.admintabs ul.e-tabs { border-bottom: 1px solid #DDDDDD; height: 31px; }
+.admintabs ul.e-tabs li { border: 1px solid #DDDDDD; display: block; float: left; line-height: 30px; padding: 0px 7px; margin-right: 3px; background-color: #F9F9F9 }
+.admintabs fieldset { clear: both ; border: 1px solid #DDDDDD; padding: 10px; border-top: 0px none; }
+.admintabs fieldset legend { border: 1px solid #DDDDDD; }
+.admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
+
+/******** SyS Messages / Message text formatting */
+/* message boxes */
+.s-message { }
+
+.s-message div.info,
+.s-message div.error,
+.s-message div.success,
+.s-message div.debug,
+.s-message div.warning { padding: 5px; margin-bottom: 10px; }
+
+
+.s-message div.info 	{ background-color:#C1E0FF; border: 1px solid #3399FF; }
+.s-message div.error 	{ background-color:#FFCECE; border: 1px solid #CC0000; }
+.s-message div.success  { background-color:#DFFFDF; border: 1px solid #009900; }
+.s-message div.warning 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
+.s-message div.debug 	{ background-color:#FFFFFF; border: 1px solid #EAEAEA; }
+
+.s-message .s-message-title { height: 32px; background: 0 50% no-repeat; padding-left: 42px; font-size: 14px; font-weight: bold; line-height: 32px; }
+
+.s-message div.info 		.s-message-title 	{ background-image: url(images/messagebox_info.png); }
+.s-message div.error 	.s-message-title 	{ background-image: url(images/messagebox_critical.png); } 
+.s-message div.success 	.s-message-title 	{ background-image: url(images/ok.png); }
+.s-message div.warning 	.s-message-title	{ background-image: url(images/messagebox_warning.png); }
+.s-message div.debug 	.s-message-title	{ background-image: url(images/messagebox_info.png); }
+
+.s-message-body { padding-left: 42px; }
+.s-message-item {}
+
+/* validate result inline message */
+.validate-result {}
+
+/* message text (overall) */
+.warning { color: #FF6600 }
+.success { color: green; }
+.error { color: #FF0000 }
+.info {}
+
+/******** Tooltip info */
+.e-info {}
+
+/******** Admin Buttons */
+button { 
+  border:0; 
+  cursor:pointer; 
+  font:bold 12px arial, helvetica, sans-serif;  
+  padding:0 10px 0 0; 
+  text-align:center;
+  color:#0b333c; 
+}
+button span { 
+  position:relative; 
+  display:block; 
+  white-space:nowrap; 
+  padding:0 0 0 13px; 
+  height:22px; line-height:22px;  color:#0b333c;
+}
+
+/*blue buttons*/
+button 					{ background:url(images/btn_right.gif) right no-repeat;  }
+button span 			{ background:url(images/btn_left.gif) left no-repeat;  }
+
+button:hover,
+button:focus 			{ background:url(images/btn_over_right.gif) right no-repeat; }
+button:hover span, 
+button:focus span 		{ background:url(images/btn_over_left.gif) left no-repeat; } 
+
+
+button:active			{ background:url(images/btn_active_right.gif) right no-repeat; }
+button:active	span	{ background:url(images/btn_active_left.gif) left no-repeat; }
+
+button::-moz-focus-inner { border: none; } /*To all who have a problem with 1px spans offset in firefox, the following sentence will solve this problem: */
+
+button.delete span			{ padding-left: 30px; }
+button.delete span			{ background-image:url(images/btn_remove_left.gif); }
+button.delete:hover span,
+button.delete:focus span 	{ background-image:url(images/btn_remove_over_left.gif) } 
+button.delete:active span	{ background-image:url(images/btn_remove_active_left.gif)}
+
+/*default submit*/
+button.submit span			{}
+button.submit span			{}
+button.submit:hover span,
+button.submit:focus span 	{} 
+button.submit:active span	{}
+
+
+button.update span			{ padding-left: 30px; }
+button.update span			{ background-image:url(images/btn_update_left.gif); }
+button.update:hover span,
+button.update:focus span 	{ background-image:url(images/btn_update_over_left.gif)}
+button.update:active span	{ background-image:url(images/btn_update_active_left.gif)}
+
+button.create span			{ padding-left: 30px; }
+button.create span			{}
+button.create:hover span,
+button.create:focus span 	{} 
+button.create:active span	{}
+
+button.edit span			{ padding-left: 30px; }
+button.edit span			{}
+button.edit:hover span,
+button.edit:focus span 		{} 
+button.edit:active span		{}
+
+button.cancel span			{}
+button.cancel span			{}
+button.cancel:hover span,
+button.cancel:focus span 		{} 
+button.cancel:active span		{}
+
+
+.buttons-bar { padding: 10px 0px;  }
+.buttons-bar button { margin-right: 10px; }
+.buttons-bar button.f-right { margin-right: 0px; }
+
+div.buttons-bar {
+  background-color:#DCDCDC;
+}
+
+
+legend {
+  background-color:black;color:white;
+}
+
+
+
+/* Actions (adminlist) - input type image */
+input.action { vertical-align: middle; } /* default */
+input.action.delete {}
+input.action.edit {}
+
+/********** Page Loading Status default style */
+#loading-mask { color: #556B2F; font-size: 1.2em; font-weight:bold; position:absolute; text-align: center; padding: 0; margin: 0; background-color: transparent; }
+#loading-mask .loader { position: fixed; top: 40%; left: 50%; width: 200px;  text-align: center; background: #F0F9E3 none repeat scroll 0 0; border: 2px solid #556B2F; font-weight: bold; padding: 10px 5px; margin-left: -100px; margin-top: 0; }
+#loading-mask img { margin: 10px auto; }
+
+/********** Element Loading Status default style */
+.element-loading-mask { background-repeat: no-repeat; background-position: 50% 50%; background-color: #f5f5f5; }
+
+/********** Docs */
+#docs-list 			{ padding: 10px; margin-bottom: 15px; border: 1px solid #f5f5f5; }
+#docs-list .qitem	{ margin: 3px 0; padding-left: 10px; }
+.docs-item 			{ padding: 10px; margin: 15px 0; border: 1px solid #f5f5f5; }
+
+.docs-item .qitem,
+.docs-item .aitem,
+.docs-item .gotop   { margin: 3px 0; padding-left: 10px; }
+
+.docs-item .qitem	{ font-weight: bold; }
+.docs-item .aitem	{ margin-bottom: 10px; }
+
+.docs-item h4,
+#docs-list h4		{ margin-bottom: 8px; }
+
+#docs-bottom-nav 	{ height: 800px; }
+
+/********** Misc */
+.e-pointer { cursor: pointer; } /* Pointer Hand */
+.expand-container { padding: 10px; } /* Block with expandable items */
+.nextprev-bar { clear: both; padding: 5px; font-size: 14px; margin: 5px; border:1px solid #ddd; } /* Page NextPrev nabigation block */
+.imgselector-container { clear: both; } /* ImageSelector.sc */
+
+
+/*******************************************************************************************************************/
+
+
+/* THEME SPECIFIC CSS *********************************************************************************************/
+/******** Page Base */
+.admin-wrapper { width: 100%; }
+.admin-header { padding: 20px 15px 0; }
+.admin-header-content { border: 1px solid #DDDDDD; }
+.admin-page-body { padding: 20px 15px 0; }
+.admin-footer {}
+legend { font-size: 14px; font-weight: bold; padding: 5px; }
+
+/******** Layout */
+.main-table { width: 100%; border: 0 none; }
+.col-left { width: 220px;}
+.col-right { width: 220px;}
+.col-main { padding: 0 15px 0 0;}
+.inner-wrapper { }
+
+/******** Horizontal navigation ADMIN_NAV_ALT */
+.admin-navigation { border: 1px solid #DDDDDD;}
+
+/******** Side Navigation 
+	- Admin Navigation
+	- Plugin Navigation
+*/
+ul.plugin-navigation { }
+ul.plugin-navigation a { text-decoration: none; }
+
+ul.plugin-navigation li { padding: 0px 10px 0px; }
+ul.plugin-navigation a.link {}
+ul.plugin-navigation a.link-active {font-weight: bold;}
+
+ul.plugin-navigation ul.plugin-navigation-sub {}
+ul.plugin-navigation ul.plugin-navigation-sub li { padding: 0px 10px 0px; }
+ul.plugin-navigation ul.plugin-navigation-sub a.link {}
+ul.plugin-navigation ul.plugin-navigation-sub a.link-active {font-weight: bold;}
+
+
+/******** Block Elements */
+.block { border: 1px solid #DDDDDD; margin-bottom: 10px;}
+.block-text { padding: 10px 10px 10px; }
+.block h2.caption, .block h4.caption { padding: 5px 10px 5px; border-bottom: 1px solid #DDDDDD; }
+.page-info { border: 1px solid #DDDDDD; margin-bottom: 10px; }
+.page-info p { padding: 10px; }
+
+
+
+/***** Admin Info Panel Buttons **/
+
+.core-mainpanel-block { text-align:center; width:100px; float:left; height:48px; display:block;margin:15px; }
+.core-mainpanel-link-text { font-weight:bold; text-decoration: none; padding:3px }
+
+/*****************************/
+
+#core-banlist-times .textarea { width: 98%; }
+
+#core-emoticon-configure input.input-text { width: 300px; }
+#core-links-edit textarea { width: 390px !important; }
+#core-links-edit .helpbox { width: 390px !important; margin: 5px 0px; }
+#core-links-edit .field-help { width: 390px; }
+
+#core-admin-log-config legend { font-weight: bold; }
+
+#core-admin-log-maintenance .select { width: 60px; }
+#core-admin-log-maintenance button { margin-left: 10px; }
+
+#core-frontpage-edit-home			{ width: 50%; float: left; } 
+#core-frontpage-edit-post-login		{ width: 50%; float: left; }
+#core-frontpage-edit-home .adminlist { width: 99%; }
+#core-frontpage-edit-post-login .adminlist { width: 99%; float: right; }
+#core-frontpage-edit .tbox { width: 80%;} 
+#core-frontpage-edit select.tbox { width: 50%;} 
+#core-frontpage-edit .buttons-bar select.tbox { width: 140px; }
+#core-frontpage-edit .buttons-bar 	{ clear: both; }
+
+/******** Core Block IDs */
+/* admin_log.php */
+#core-admin-log-config				{}
+#core-admin-log-options				{}
+#core-admin-log-maintenance			{}
+#core-admin-log-filter				{}
+#core-admin-log-list				{}
+#core-admin-log-confirm-delete		{}
+
+/* administrator.php */
+#core-administrator-list			{} /* List current administrators - Default front page */
+#core-administrator-edit			{} /* Edit administrators permissions */
+
+/* banlist.php */
+#core-banlist-options				{}
+#core-banlist-options-ban			{}
+#core-banlist-times					{}
+#core-banlist-edit					{}
+#core-banlist-transfer-export		{}
+#core-banlist-transfer-import		{}
+
+/* banner.php */
+#core-banner-list					{}
+#core-banner-edit					{}
+#core-banner-menu					{}
+
+/* cache.php */
+#core-cache-settings				{} /* General cache settings - Default front page */
+
+/* cpage */
+#core-cpage-list					{}
+#core-cpage-create					{}
+#core-cpage-create-general			{}
+#core-cpage-create-options			{}
+#core-cpage-options					{}
+
+/* emoticon.php */
+#core-emoticon-activate				{} /* Emote activation - Default front page */
+#core-emoticon-packages				{} /* Installed packs - Default front page */
+#core-emoticon-configure			{} /* Configure an individual emote pack */
+
+/* eurl.php */
+#core-eurl-core						{}
+#core-eurl-plugin					{}
+
+/* frontpage.php */
+#core-frontpage-settings			{} /* Display list of current settings - Default front page */
+#core-frontpage-edit				{} /* Add / Edit existing rule - form */
+#core-frontpage-edit-home			{} /* Add / Edit existing rule for home page */
+#core-frontpage-edit-post-login		{} /* Add / Edit existing rule for post-login page */
+
+/* image.php */
+#core-image-check-avatar			{} /* Check avatar sizes table */
+#core-image-settings				{} /* General image settings - Default front page */
+
+/* lancheck.php */
+#core-lancheck-edit					{} /* Edid language file */
+
+/* language.php */
+#core-language-settings				{} /* Language Preferences - Default front page */
+#core-language-list					{} /* Multi-language DB tables list */
+#core-language-edit					{} /* Edit Multi-language DB tables */
+#core-language-lancheck 			{} /* Language Tools - Verify/Edit Language Files */
+#core-language-package 				{} /* Language Tools - Create Language-Pack (zip) */
+
+/* links.php */
+#core-links-list-1					{} /* Display list of current links - Links Front Page */
+#core-links-list-2					{} /* Display list of current links - Links Front Page */
+#core-links-list-3					{} /* Display list of current links - Links Front Page */
+#core-links-list-4					{} /* Display list of current links - Links Front Page */
+#core-links-create					{} /* Create or edit link - Create New Link*/
+#core-links-options					{} /* Links general settins - Options */
+#core-links-generator				{} /* Sublink Generator */
+
+/* meta.php */
+#dataform							{} /* Form tag ID - Default front page - old core definition */
+#core-meta-settings					{} /* General meta settings - Default front page */
+
+/* newspost.php */
+#core-newspost-list					{}
+#core-newspost-edit					{}
+#core-newspost-edit-options			{}
+#core-newspost-cat-edit				{}
+#core-newspost-cat-list				{}
+#core-newspost-settings				{}
+#core-newspost-sn-list				{}
+
+
+/* prefs.php */
+#core-prefs							{} /* Main continer - contains all block lemenst from bewlow */
+#core-prefs-main					{} /* Settings section - Site Information */
+#core-prefs-display					{} /* Settings section - Display Information */
+#core-prefs-admindisp				{} /* Settings section - Admin Display Options */
+#core-prefs-date					{} /* Settings section - Date display options */
+#core-prefs-registration			{} /* Settings section - User registration-posting */
+#core-prefs-signup					{} /* Settings section - Signup Page Options */
+#core-prefs-textpost				{} /* Settings section - Text rendering */
+#core-prefs-security				{} /* Settings section - Security & Protection */
+#core-prefs-comments				{} /* Settings section - Comments */
+#core-prefs-advanced				{} /* Settings section - Advanced Features */
+
+/* search.php */
+#core-search-configuration-main		{} /* Search Configuration for Searchable Areas - Default front page */
+#core-search-configuration-comm		{} /* Search Configuration for Searchable Comments Areas - Default front page */
+#core-search-edit					{} /* Edit search settings for specific area */
+#core-search-settings				{} /* General search settings */
+
+/* ugflag.php */
+#core-ugflag 						{}
+
+/* updateadmin.php */
+#core-updateadmin					{}
+
+/* upload.php */
+#core-upload-filetypes				{}
+#core-upload-options				{}
+#core-upload-list					{}
+
+/* wmessage.php */
+#core-wmessage-list					{}
+#core-wmessage-create				{}
+#core-wmessage-settings				{}

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2009-07-14 03:38:12 $
+|     $Revision: 1.37 $
+|     $Date: 2009-07-15 09:38:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -148,13 +148,6 @@ class themeHandler{
 		   	   		{
                         $file2 = str_replace(e_THEME.$file."/","",$fln['path']).$fln['fname'];
 
-
-               //     $handle2 = opendir(e_THEME.$file."/");
-			   //		while (false !== ($file2 = readdir($handle2))) // Read files in theme directory
-			 // 	  	{
-
-					//	echo $file." = ".$file2."<br />";
-
 					  		$themeArray[$file]['files'][] = $file2;
 					  		if(strstr($file2, "preview."))
 					  		{
@@ -164,7 +157,8 @@ class themeHandler{
 
                              // ----------------  get information string for css file
 
-						  	if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0 && strpos($file2, "admin_") !== 0)
+
+						  	if(strstr($file2, "css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0)
 						  	{
 
 								if($fp=fopen(e_THEME.$file."/".$file2, "r"))
@@ -627,13 +621,16 @@ class themeHandler{
                     <td style='vertical-align:top; width:24%;'><b>".TPVLAN_53."</b></td>
 					<td colspan='2' style='vertical-align:top width:auto;'>";
 
-					foreach($theme['pluginOptions'] as $key=>$val)
+					if(varset($theme['pluginOptions']))
 					{
-                  		$text .= $this->renderPlugins($theme['pluginOptions']);
-						$text .= "&nbsp;";
+						foreach($theme['pluginOptions'] as $key=>$val)
+						{
+	                  		$text .= $this->renderPlugins($theme['pluginOptions']);
+							$text .= "&nbsp;";
+						}
 					}
 
-					$text .= "</td>
+					$text .= "&nbsp;</td>
 				</tr>";
 
                  $text .= "
@@ -650,8 +647,6 @@ class themeHandler{
 					<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
 					</td>
 				</tr>";
-
-
 		}
 
 
@@ -722,8 +717,15 @@ class themeHandler{
 					<td class='left'>".TPVLAN_7."</td>
 				</tr>\n";
 
+
 				foreach($theme['css'] as $css)
 				{
+                	if($mode == 1 && substr($css['name'],0,6)=="admin_")
+					{
+                    	continue;
+					}
+
+
                     $text .= "<tr>\n";
 					if($mode == 2)
 					{
@@ -739,6 +741,8 @@ class themeHandler{
 
 					if($mode == 1)
 					{
+
+
 						$text .= "
 						<td class='center'>
 						<input type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
@@ -775,8 +779,8 @@ class themeHandler{
 
 			$text .= "
 			<tr>
-				<td style='vertical-align:top'><b>".TPVLAN_41.":</b></td>
-				<td style='vertical-align:top'>".$astext."</td>
+				<td><b>".TPVLAN_41.":</b></td>
+				<td colspan='2'>".$astext."</td>
 			</tr>
 			\n";
 		}
@@ -841,7 +845,7 @@ class themeHandler{
 			}
 			else
 			{
-				echo $plug;
+			 //	echo $plug;
 				if($sql -> db_Select("plugin", "plugin_id", " plugin_path = '".$plug."' LIMIT 1 "))
 	 			{
 					$row = $sql -> db_Fetch(MYSQL_ASSOC);
@@ -945,7 +949,7 @@ class themeHandler{
 		global $pref, $e107cache, $ns, $emessage;
 		$themeArray = $this -> getThemes("id");
 		$pref['admintheme'] = $themeArray[$this -> id];
-		$pref['admincss'] = file_exists(THEME.'admin_style.css') ? 'admin_style.css' : 'style.css';
+		$pref['admincss'] = file_exists(e_THEME.$pref['admintheme'].'/admin_style.css') ? 'admin_style.css' : 'style.css';
 		$e107cache->clear_sys();
 		if(save_prefs())
 		{
@@ -1023,6 +1027,8 @@ class themeHandler{
 
 	function parse_theme_php($path)
 	{
+    	$CUSTOMPAGES = "";
+
 		$fp=fopen(e_THEME.$path."/theme.php", "r");
 		$themeContents = fread ($fp, filesize(e_THEME.$path."/theme.php"));
 		fclose($fp);
@@ -1103,24 +1109,20 @@ class themeHandler{
 		$vars['name']					= varset($vars['@attributes']['name']);
 		$vars['version']				= varset($vars['@attributes']['version']);
 		$vars['date']					= varset($vars['@attributes']['date']);
-		$vars['compatibility']		= varset($vars['@attributes']['compatibility']);
-
-
+		$vars['compatibility']			= varset($vars['@attributes']['compatibility']);
 		$vars['email']	 				= varset($vars['author']['@attributes']['email']);
-      $vars['website'] 				= varset($vars['author']['@attributes']['url']);
-		$tmp								= varset($vars['author']['@attributes']['name']);
-		$vars['author'] = $tmp;
-
-
+      	$vars['website'] 				= varset($vars['author']['@attributes']['url']);
+		$vars['author']				   	= varset($vars['author']['@attributes']['name']);
 		$vars['info'] 					= $vars['description'];
-		$vars['xhtmlcompliant'] 	= (strtolower($vars['compliance']['@attributes']['xhtml']) == 'true' ? 1 : 0);
-		$vars['csscompliant'] 		= (strtolower($vars['compliance']['@attributes']['css']) == 'true' ? 1 : 0);
+		$vars['xhtmlcompliant'] 		= (strtolower($vars['compliance']['@attributes']['xhtml']) == 'true' ? 1 : 0);
+		$vars['csscompliant'] 			= (strtolower($vars['compliance']['@attributes']['css']) == 'true' ? 1 : 0);
 		$vars['path']					= $path;
 		$vars['@attributes']['default'] = (strtolower($vars['@attributes']['default'])=='true') ? 1 : 0;
 
 		unset($vars['authorEmail'],$vars['authorUrl'],$vars['xhtmlCompliant'],$vars['cssCompliant'],$vars['description']);
 
 		// Compile layout information into a more usable format.
+        $custom = array();
 
 		foreach($vars['layouts'] as $layout)
 		{

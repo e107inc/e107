@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2009-07-14 11:05:49 $
+|     $Revision: 1.29 $
+|     $Date: 2009-07-15 09:38:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,7 @@ if($_POST)
             $text .= $men->menuSelectLayout();
 			$text .= $men->menuVisibilityOptions();
             $text .= $men->menuRenderIframe();
-            $ns -> tablerender(MENLAN_35, $text, 'menus_config');
+            $ns -> tablerender(ADLAN_6." :: ".LAN_MENULAYOUT, $text, 'menus_config');
 		  //	$text .= "<iframe name='menu_iframe' id='menu_iframe' src='".e_SELF."?configure.$curLayout' width='100%' style='width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
 
 		}
@@ -959,7 +959,7 @@ class menuManager{
 			  $link = e_PLUGIN.$plug."/config.php";
 			}
 
-			$plugtext = ($link) ? "(".MENLAN_34.":<a href='$link' title='".MENLAN_16."'>".MENLAN_16."</a>)" : "(".MENLAN_34.")" ;
+			$plugtext = ($link) ? "(".MENLAN_34.":<a href='$link' title='".LAN_CONFIGURE."'>".LAN_CONFIGURE."</a>)" : "(".MENLAN_34.")" ;
 			echo "<br />";
 			$ns -> tablerender($plug, $plugtext);
 		}
@@ -1050,7 +1050,7 @@ class menuManager{
 					$text .= $rs->form_option(MENLAN_15, "", "deac.{$menu_info}");
 
 					if ($conf) {
-						$text .= $rs->form_option(MENLAN_16, "", $conf);
+						$text .= $rs->form_option(LAN_CONFIGURE, "", $conf);
 					}
 
 					if ($menu_order != 1) {
@@ -1163,7 +1163,7 @@ class menuManager{
 	{
         	global $sql,$pref;
 
-			$sql -> db_Select("menus", "*", "menu_location != 0 ORDER BY menu_path");
+			$sql -> db_Select("menus", "*", "menu_location != 0 ORDER BY menu_path,menu_name");
 			while($row = $sql-> db_Fetch())
 			{
 				$link = "";
@@ -1184,7 +1184,7 @@ class menuManager{
 				if($link)
 				{
          			$tmp[$id]['name'] = ucwords(str_replace("_menu","",$menu_name));
-					if($prev == $id)
+					if($prev == $id && ($tmp[$id]['name']!=$prev_name))
 					{
 	                	$tmp[$id]['name'] .= ":".$prev_name;
 					}
@@ -1314,7 +1314,8 @@ function headerjs()
 function menus_adminmenu()
 {
 
-
+	// See admin_shortcodes_class.php - get_admin_menumanager()
+	// required there so it can be shared by plugins.
 
 }
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-11 21:13:48 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-15 09:38:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -93,12 +93,16 @@ if (isset($message))
 
 $chatbox_posts = $pref['chatbox_posts'];
 
-$text = "<div style='text-align:center'>
+$text = "<div>
 	<form method='post' action='".e_SELF."' id='cbform'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
+    <table cellpadding='0' cellspacing='0' class='adminform'>
+    	<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 	<tr>
-	<td class='forumheader3' style='width:40%'>".CHBLAN_11.":  <div class='smalltext'>".CHBLAN_12."</div></td>
-	<td class='forumheader3' style='width:60%'>
+	<td>".CHBLAN_11.":  <div class='smalltext'>".CHBLAN_12."</div></td>
+	<td>
 	<select name='chatbox_posts' class='tbox'>";
 if ($chatbox_posts == 5) {
 	$text .= "<option selected='selected'>5</option>\n";
@@ -135,13 +139,13 @@ $text .= "</select>
 	</td>
 	</tr>
 
-	<tr><td class='forumheader3' style='width:40%'>".CHBLAN_32.": </td>
-	<td class='forumheader3' style='width:60%'>". r_userclass("cb_mod", $pref['cb_mod'], 'off', "admin, classes")."
+	<tr><td>".CHBLAN_32.": </td>
+	<td>". r_userclass("cb_mod", $pref['cb_mod'], 'off', "admin, classes")."
 	</td>
 	</tr>
 
-	<tr><td class='forumheader3' style='width:40%'>".CHBLAN_36."</td>
-	<td class='forumheader3' style='width:60%'>".
+	<tr><td>".CHBLAN_36."</td>
+	<td>".
 	($pref['cb_layer'] == 0 ? "<input type='radio' name='cb_layer' value='0' checked='checked' />" : "<input type='radio' name='cb_layer' value='0' />")."&nbsp;&nbsp;". CHBLAN_37."<br />".
 	($pref['cb_layer'] == 1 ? "<input type='radio' name='cb_layer' value='1' checked='checked' />" : "<input type='radio' name='cb_layer' value='1' />")."&nbsp;".CHBLAN_29."&nbsp;--&nbsp;". CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' value='".$pref['cb_layer_height']."' maxlength='3' /><br />".
 	($pref['cb_layer'] == 2 ? "<input type='radio' name='cb_layer' value='2' checked='checked' />" : "<input type='radio' name='cb_layer' value='2' />")."&nbsp;&nbsp;". CHBLAN_38."
@@ -151,16 +155,16 @@ $text .= "</select>
 
 	if($pref['smiley_activate'])
 	{
-		$text .= "<tr><td class='forumheader3' style='width:40%'>".CHBLAN_31."?: </td>
-		<td class='forumheader3' style='width:60%'>". ($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked='checked' />" : "<input type='checkbox' name='cb_emote' value='1' />")."
+		$text .= "<tr><td>".CHBLAN_31."?: </td>
+		<td>". ($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked='checked' />" : "<input type='checkbox' name='cb_emote' value='1' />")."
 		</td>
 		</tr>
 		";
 	}
 
 	$text .= "<tr>
-	<td class='forumheader3' style='width:40%'>".CHBLAN_21.": <div class='smalltext'>".CHBLAN_22."</div></td>
-	<td class='forumheader3' style='width:60%'>
+	<td>".CHBLAN_21.": <div class='smalltext'>".CHBLAN_22."</div></td>
+	<td>
 	".CHBLAN_23." <select name='chatbox_prune' class='tbox'>
 	<option></option>
 	<option value='86400'>".CHBLAN_24."</option>
@@ -174,18 +178,16 @@ $text .= "</select>
 
 
 	$text .= "<tr>
-	<td class='forumheader3' style='width:40%'>".CHBLAN_34.":</td>
-	<td class='forumheader3' style='width:60%'>
+	<td>".CHBLAN_34.":</td>
+	<td>
 	<input class='button' type='submit' name='recalculate' value='".CHBLAN_35."' />
 	</td>
-	</tr>";
-
-	$text .= "<tr>
-	<td  class='forumheader' colspan='3' style='text-align:center'>
-	<input class='button' type='submit' name='updatesettings' value='".CHBLAN_19."' />
-	</td>
 	</tr>
-	</table>
+	</table>";
+
+	$text .= "<div class='buttons-bar center'>
+	<input class='button' type='submit' name='updatesettings' value='".CHBLAN_19."' />
+	</div>
 	</form>
 	</div>";
 
