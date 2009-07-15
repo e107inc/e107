@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-15 00:48:09 $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-15 23:28:46 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -76,12 +76,13 @@ if (e_QUERY)
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
 	$subAction = varset($tmp[1],'');
-	$id = intval(varset($tmp[2],''));
+	$id = varset($tmp[2],'');
 	$from = varset($tmp[3], 0);
 	$maintPage = varset($tmp[4], '');
 	unset($tmp);
 }
 
+   $adminDownload->observer();
 
 if (isset($_POST['delete']))
 {
@@ -92,7 +93,7 @@ if (isset($_POST['delete']))
 }
 
 $from = ($from ? $from : 0);
-$amount = 50;
+$amount = varset($pref['download_view'], 50);
 
 if (isset($_POST))
 {
