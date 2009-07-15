@@ -9,8 +9,8 @@
  * Admin Navigation
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-07-09 08:31:37 $
+ * $Revision: 1.12 $
+ * $Date: 2009-07-15 09:50:05 $
  * $Author: e107coders $
 */
 
@@ -137,7 +137,7 @@ if (!defined('E_16_CACHE')) {
 	define('E_16_CACHE', "<img class='icon S16' src='".e_IMAGE."admin_images/cache_16.png' alt='' />");
 }
 if (!defined('E_16_CREDITS')) {
-	define('E_16_CREDITS', "<img class='icon S16' src='".e_IMAGE."admin_images/credits_16.png' alt='' />");
+	define('E_16_CREDITS', "<img class='icon S16' src='".e_IMAGE."e107_icon_16.png' alt='' />");
 }
 if (!defined('E_16_CRON')) {
 	define('E_16_CRON', "<img class='icon S16' src='".e_IMAGE."admin_images/cron_16.png' alt='' />");
@@ -264,6 +264,10 @@ if (!defined('E_16_SETTINGS')) {
 	define('E_16_SETTINGS', "<img class='icon S16' src='".e_IMAGE."admin_images/settings_16.png' alt='' />");
 }
 
+if (!defined('E_16_SYSINFO')) {
+	define('E_16_SYSINFO', "<img class='icon S16' src='".e_IMAGE."admin_images/sysinfo_16.png' alt='' />");
+}
+
 
 // Large Admin Main Link Images
 if (!defined('E_32_ADMIN')) {
@@ -282,7 +286,7 @@ if (!defined('E_32_CACHE')) {
 	define('E_32_CACHE', "<img class='icon S32' src='".e_IMAGE."admin_images/cache_32.png' alt='' />");
 }
 if (!defined('E_32_CREDITS')) {
-	define('E_32_CREDITS', "<img class='icon S32' src='".e_IMAGE."admin_images/credits_32.png' alt='' />");
+	define('E_32_CREDITS', "<img class='icon S32' src='".e_IMAGE."e107_icon_32.png' alt='' />");
 }
 if (!defined('E_32_CRON')) {
 	define('E_32_CRON', "<img class='icon S32' src='".e_IMAGE."admin_images/cron_32.png' alt='' />");
@@ -411,6 +415,9 @@ if (!defined('E_32_CREATE')) {
 }
 if (!defined('E_32_SETTINGS')) {
 	define('E_32_SETTINGS', "<img class='icon S32' src='".e_IMAGE."admin_images/settings_32.png' alt='' />");
+}
+if (!defined('E_32_SYSINFO')) {
+	define('E_32_SYSINFO', "<img class='icon S32' src='".e_IMAGE."admin_images/sysinfo_32.png' alt='' />");
 }
 
 $e_icon_array = array(
@@ -574,8 +581,8 @@ $array_functions = array(
 	32 => array(e_ADMIN.'eurl.php', ADLAN_159, ADLAN_160, 'L', 1, E_16_EURL, E_32_EURL),
 	33 => array(e_ADMIN.'plugin.php', ADLAN_98, ADLAN_99, 'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
 	34 => array(e_ADMIN.'docs.php', ADLAN_12, ADLAN_13, '', 20, E_16_DOCS, E_32_DOCS),
-	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
-	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, '', '')
+	35 => array('#TODO', 'System Info', 'System Information', '', 20, E_16_SYSINFO, E_32_SYSINFO),
+	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_CREDITS, E_32_CREDITS)
 );
 
 //FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
