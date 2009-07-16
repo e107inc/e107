@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_menus.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-15 09:38:00 $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-16 02:55:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,6 +58,8 @@ define("MENLAN_39", "Preset Area");
 define("MENLAN_40", "Use Menu Presets");
 define("MENLAN_41", "The position of all your menus for this layout will be lost. Do you still wish to continue?");
 define("MENLAN_42", "Custom");
+define("MENLAN_43", "Menu Preset Activated");
+
 
 
 ?>
