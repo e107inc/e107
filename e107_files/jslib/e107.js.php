@@ -8,9 +8,9 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-04-23 10:16:35 $
- * $Author: secretr $
+ * $Revision: 1.32 $
+ * $Date: 2009-07-16 23:16:29 $
+ * $Author: bugrain $
  *
 */
 
@@ -89,7 +89,7 @@ function SyncWithServerTime(serverTime)
  * Main registry object
  */
 var e107Registry = {
-    
+
     //System Path
     Path: {
         e_IMAGE:    '<?php echo e_IMAGE_ABS; ?>',
@@ -103,7 +103,7 @@ var e107Registry = {
         e_THEME:    '<?php echo e_THEME_ABS; ?>',
         THEME:      '<?php echo THEME_ABS; ?>'
     },
-    
+
     //Language Constants
     Lan: {},
 
@@ -116,7 +116,7 @@ var e107Registry = {
                            		'<a href="#" id="#{removeId}"><img src="#{e_IMAGE_PACK}admin_images/delete_16.png" class="icon action" style="vertical-align: middle" /></a>' +
                            	'</div>'
     	},
-    	
+
     	//e107Helper#LoadingStatus class
     	CoreLoading:   {
     		template: 		'<div id="loading-mask">' +
@@ -127,13 +127,13 @@ var e107Registry = {
 							'</div>'
     	}
     },
-    
+
     //Cache
     Cache: new Hash,
-    
+
     //Cached vars
     CachedVars: new Hash,
-    
+
     //Global Preferences
     Pref: {
     	Core: {
@@ -170,7 +170,7 @@ var cachevars = function(varname, data) {
 }
 
 var getcachedvars = function(varname, destroy) {
-	if(destroy) 
+	if(destroy)
 		return clearcachedvars(varname);
     return e107Registry.CachedVars.get(varname);
 }
@@ -188,39 +188,39 @@ var echo = Prototype.emptyFunction, print_a = Prototype.emptyFunction, var_dump 
  * e107 custom events
  */
 var e107Event = {
-		
-    fire: function(eventName, memo, element) { 
+
+    fire: function(eventName, memo, element) {
     	if ((!element || element == document) && !document.createEvent)
     	{
-    		element = $(document.documentElement); 
+    		element = $(document.documentElement);
     	}
-    	else 
-    		element = $(element) || document; 
-    	memo = memo || {}; 
+    	else
+    		element = $(element) || document;
+    	memo = memo || {};
     	return element.fire('e107:' + eventName, memo);
-    },	
-    
+    },
+
     observe: function(eventName, handler, element) {
-    	element = $(element) || document; 
+    	element = $(element) || document;
     	element.observe('e107:' + eventName, handler);
     	return this;
-    },	
-    
+    },
+
     stopObserving: function(eventName, handler, element) {
-    	element = $(element) || document; 
+    	element = $(element) || document;
     	element.stopObserving('e107:' + eventName, handler);
     	return this;
     },
-    
+
     //Server side - e107_event aliases
     trigger: function(eventName, memo, element) {
     	this.fire(eventName, memo, element);
     },
-    
+
     register: function(eventName, handler, element) {
     	this.observe(eventName, handler, element);
     },
-    
+
     unregister:  function(eventName, handler, element) {
     	this.stopObserving(eventName, handler, element);
     }
@@ -231,11 +231,11 @@ var e107Event = {
 /**
  * EventManager
  * Prototype Xtensions http://www.prototypextensions.com
- * 
+ *
  * @desc Create custom events on your own class
  */
 var e107EventManager = Class.create({
-        
+
     /**
      * Initialize
      *
@@ -245,7 +245,7 @@ var e107EventManager = Class.create({
         this.scope  = scope;
         this.events = new Hash();
     },
-    
+
     /**
      * addListener
      *
@@ -254,7 +254,7 @@ var e107EventManager = Class.create({
     addObserver: function(name) {
         return this.events.set(name, new Hash());
     },
-    
+
     /**
      * observe
      *
@@ -262,21 +262,21 @@ var e107EventManager = Class.create({
      */
     observe: function(name, callback) {
         var observers = this.events.get(name);
-        
+
         if(!observers) observers = this.addObserver(name);
-        
+
         if(!Object.isFunction(callback)) {
             //throw('e107EventManager.observe : callback must be an js function');
-            //surpess error 
+            //surpess error
             return this;
         }
-        
+
         var i = this.events.get(name).keys().length;
         observers.set(i, callback.bind(this.scope));
-        
+
         return this;
     },
-    
+
     /**
      * stopObserving (class improvements)
      *
@@ -284,7 +284,7 @@ var e107EventManager = Class.create({
      */
     stopObserving: function(name, callback) {
         var observers = this.events.get(name);
-        
+
         if(!observers) return this;
         observers.each( function(pair) {
         	if(pair.value == callback) {
@@ -294,7 +294,7 @@ var e107EventManager = Class.create({
         });
         return this;
     },
-    
+
     /**
      * notify
      *
@@ -303,20 +303,20 @@ var e107EventManager = Class.create({
     notify: function(name) {
         var observers = this.events.get(name);
         //console.log('notifying ' + name);
-        if(observers) { 
-            var args = $A(arguments).slice(1); 
+        if(observers) {
+            var args = $A(arguments).slice(1);
             //Fix - preserve order
             observers.keys().sort().each( function(key) {
             	var callback = observers.get(key);
-                if(Object.isFunction(callback)) { 
+                if(Object.isFunction(callback)) {
                     callback.apply(this.scope, args);
                 }
             });
         }
-        
+
         return this;
     }
-    
+
 });
 
 // -------------------------------------------------------------------
@@ -326,19 +326,19 @@ var e107EventManager = Class.create({
  * Base e107 Object - interacts with the registry object
  */
 var e107Base = {
-    
+
     setPath: function(path_object) {
         e107Registry.Path = Object.extend( this.getPathVars(), path_object || {});
         return this;
     },
-    
+
     addPath: function(path_var, path) {
     	//don't allow overwrite
-        if(!e107Registry.Path[path_var]) e107Registry.Path[path_var] = path; 
+        if(!e107Registry.Path[path_var]) e107Registry.Path[path_var] = path;
         return this;
     },
 
-    getPathVars: function() { 
+    getPathVars: function() {
         return e107Registry.Path;
     },
 
@@ -350,11 +350,11 @@ var e107Base = {
         e107Registry.Lan[lan_name] = lan_value;
         return this;
     },
-    
+
     _getLan: function(lan_name) {
         return varsettrue(e107Registry.Lan[lan_name], lan_name);
     },
-    
+
     setLan: function(lan_object) {
     	if(!arguments[1]) {
 	        Object.keys(lan_object).each(function(key) {
@@ -365,19 +365,19 @@ var e107Base = {
         Object.extend(e107Registry.Lan, (lan_object || {}));
         return this;
     },
-    
+
     addLan: function(lan_name, lan_value) {
         this._addLan(this.toLanName(lan_name), lan_value);
         return this;
     },
-    
+
     setModLan: function(mod, lan_object) {
     	Object.keys(lan_object).each( function(key) {
     		this.addModLan(mod, key, lan_object[key]);
     	}, this);
     	return this;
     },
-    
+
     addModLan: function(mod, lan_name, lan_value) {
         return this._addLan(this.toModLanName(mod, lan_name), lan_value);
     },
@@ -385,7 +385,7 @@ var e107Base = {
     getLan: function(lan_name) {
         return this._getLan(this.toLanName(lan_name));
     },
-    
+
     getModLan: function(mod, lan_name) {
     	return this._getLan(this.toModLanName(mod, lan_name));
     },
@@ -393,11 +393,11 @@ var e107Base = {
     getLanVars: function() {
         return e107Registry.Lan;
     },
-    
+
     getModLanVars: function(mod) {
     	return this.getLanFilter(this.toModLanName(mod));
     },
-    
+
     //Example e107.getLanRange('lan1 lan2 ...'); -- { LAN1: 'lan value1', LAN2: 'lan value2', ... }
     getLanRange: function(lan_keys) {
         var ret = {};
@@ -406,7 +406,7 @@ var e107Base = {
         }, ret);
         return ret;
     },
-    
+
     //Example e107.getLanFilter('lan_myplug'); -- { LAN_MYPLUG_1: 'lan value1', LAN_MYPLUG_2: 'lan value2', ... }
     getLanFilter: function(filter) {
         var ret = {};
@@ -416,64 +416,64 @@ var e107Base = {
                 this[key] = e107Registry.Lan[key];
             }
         }, ret);
-        
+
         return ret;
     },
-    
+
     setTemplate: function(mod, tmpl_object) {
         mod = this.toModName(mod);
         if(!varset(e107Registry.Template[mod])) {
             e107Registry.Template[mod] = {};
         }
         Object.extend(e107Registry.Template[mod], (tmpl_object || {}));
-        
+
         return this;
     },
-    
+
     addTemplate: function(mod, name, tmpl_string) {
         mod = this.toModName(mod);
         if(!varset(e107Registry.Template[mod])) {
             e107Registry.Template[mod] = {};
         }
         e107Registry.Template[mod][name] = tmpl_string;
-        
+
         return this;
     },
-    
+
     getTemplates: function(mod) {
         return varsettrue(e107Registry.Template[this.toModName(mod)], {});
     },
 
     getTemplate: function(mod, name) {
         mod = this.toModName(mod);
-        
+
         if(varset(e107Registry.Template[mod])) {
             return varsettrue(e107Registry.Template[mod][name], '');
         }
-        
+
         return '';
     },
 
-    setPrefs: function(mod, pref_object) { 
+    setPrefs: function(mod, pref_object) {
         mod = this.toModName(mod);
         if(!varset(e107Registry.Pref[mod])) {
             e107Registry.Pref[mod] = {};
         }
         Object.extend(e107Registry.Pref[mod], (pref_object || {}));
-        
+
         return this;
     },
-    
+
     addPref: function(mod, pref_name, pref_value) {
         mod = this.toModName(mod);
         if(!varset(e107Registry.Pref[mod])) {
             e107Registry.Pref[mod] = {};
         }
         e107Registry.Pref[mod][pref_name] = pref_value;
-        
+
         return this;
     },
-    
+
     getPrefs: function(mod) {
         return varsettrue(e107Registry.Pref[this.toModName(mod)], {});
     },
@@ -485,17 +485,17 @@ var e107Base = {
         }
         return varset(def, null);
     },
-    
+
     setCache: function(cache_str, cache_item) {
-    	this.clearCache(cache_str); 
+    	this.clearCache(cache_str);
         e107Registry.Cache['cache-' + cache_str] = cache_item;
         return this;
     },
-    
-    getCache: function(cache_str, def) {  
+
+    getCache: function(cache_str, def) {
         return varset(e107Registry.Cache['cache-' + cache_str], def);
     },
-    
+
     clearCache: function(cache_str, nodestroy) {
     	var cached = this.getCache(cache_str);
     	if(!nodestroy && cached && Object.isFunction(cached['destroy'])) cached.destroy();
@@ -505,14 +505,14 @@ var e107Base = {
     },
 
     parseTemplate: function(mod, name, data) {
-        var cacheStr = mod + '_' + name; 
+        var cacheStr = mod + '_' + name;
         var cached = this.getCache(cacheStr);
         if(null === cached) {
             var tmp = this.getTemplate(mod, name);
             cached = new Template(tmp);
             this.setCache(cacheStr, cached);
         }
-        
+
         if(varsettrue(arguments[3])) {
             data = this.getParseData(Object.clone(data || {}));
         }
@@ -523,31 +523,31 @@ var e107Base = {
             return '';
         }
     },
-    
+
     getParseData: function (data) {
-        Object.extend(data || {}, 
+        Object.extend(data || {},
           Object.extend(this.getLanVars(), this.getPathVars())
         );
-        
+
         return data;
     },
-    
-    parseLan: function(str) { 
+
+    parseLan: function(str) {
         return String(str).interpolate(this.getLanVars());
     },
-    
+
     parsePath: function(str) {
         return String(str).interpolate(this.getPathVars());
     },
-    
+
     toModName: function(mod, raw) {
     	return raw ? mod.dasherize() : mod.dasherize().camelize().ucfirst();
     },
-    
+
     toLanName: function(lan) {
     	return 'JSLAN_' + lan.underscore().toUpperCase();
     },
-    
+
     toModLanName: function(raw_mod, lan) {
     	return this.toLanName(raw_mod + '_' + varset(lan, ''));
     }
@@ -557,26 +557,26 @@ var e107Base = {
 
 /**
  * String Extensions
- * 
+ *
  * Methods used later in the core + e107base shorthands
  */
 Object.extend(String.prototype, {
-	
+
 	//php like
     ucfirst: function() {
         return this.charAt(0).toUpperCase() + this.substring(1);
     },
-    
+
 	//Create element from string - Prototype UI
 	createElement: function() {
 	    var wrapper = new Element('div'); wrapper.innerHTML = this;
 	    return wrapper.down();
 	},
-	
+
 	parseToElement: function(data) {
 		return this.parseTemplate(data).createElement();
 	},
-	
+
 	parseTemplate: function(data) {
 		return this.interpolate(e107Base.getParseData(data || {}));
 	},
@@ -588,23 +588,23 @@ Object.extend(String.prototype, {
 	parseLan: function() {
 		return e107Base.parseLan(this);
 	},
-	
+
     addLan: function(lan_name) {
     	if(lan_name)
         	e107Base.addLan(lan_name, this);
         return e107Base.toLanName(lan_name);
     },
-    
+
     addModLan: function(mod, lan_name) {
     	if(mod && lan_name)
         	e107Base.addModLan(mod, lan_name, this);
         return e107Base.toModLanName(mod, lan_name);
     },
-    
+
     getLan: function() {
         return e107Base.getLan(this);
     },
-    
+
     getModLan: function(mod) {
     	if(mod)
     		return e107Base.getModLan(mod, this);
@@ -619,7 +619,7 @@ Object.extend(String.prototype, {
  */
 var e107WidgetAbstract = Class.create(e107Base);
 var e107WidgetAbstract = Class.create(e107WidgetAbstract, {
-    
+
     initMod: function(modId, options, inherit) {
 
         this.mod = e107Base.toModName(modId, true);
@@ -629,7 +629,7 @@ var e107WidgetAbstract = Class.create(e107WidgetAbstract, {
 
 		var methods = 'setTemplate addTemplate getTemplate parseTemplate setPrefs addPref getPref getPrefs getLan getLanVars addLan setLan';
 		var that = this;
-		
+
 		//Some magic
 		$w(methods).each(function(method){
 			var mod_method = method.gsub(/^(set|get|add|parse)(.*)$/, function(match){
@@ -638,49 +638,49 @@ var e107WidgetAbstract = Class.create(e107WidgetAbstract, {
 			var parent_method = !e107Base[mod_method] ? method : mod_method;
 			this[mod_method] = e107Base[parent_method].bind(this, this.mod);
 		}.bind(that));
-		
+
 		Object.extend(that, {
 			getModName: function(raw) {
 				return raw ? this.mod : e107Base.toModName(this.mod);
 			},
-		    
+
 		    parseModLan: function(str) {
 		        return String(str).interpolate(e107Base.getModLan(this.mod));
 		    },
-		    
+
 		    setModCache: function(cache_str, cache_item) {
 		    	e107Base.setCache(this.getModName(true) + varsettrue(cache_str, ''), cache_item);
 		    	return this;
 		    },
-		    
+
 		    getModCache: function(cache_str) {
 		    	return e107Base.getCache(this.getModName(true) + varsettrue(cache_str, ''));
 		    },
-		    
+
 		    clearModCache: function(cache_str) {
 		    	e107Base.clearCache(this.getModName(true) + varsettrue(cache_str, ''));
 		    	return this;
 		    }
 		});
-		
-        //Merge option object (recursive) 
+
+        //Merge option object (recursive)
         this.setOptions(options, inherit);
-        
+
         return this;
     },
-    
+
 
     setOptions: function(options, inherit) {
         this.options = {};
 
         var c = this.constructor;
-        
+
         if (c.superclass && inherit) {
             var chain = [], klass = c;
-            
-            while (klass = klass.superclass) 
+
+            while (klass = klass.superclass)
                 chain.push(klass);
-             
+
             chain = chain.reverse();
             for (var i = 0, len = chain.length; i < len; i++) {
                 if(!chain[i].getModPrefs) chain[i].getModPrefs = Prototype.emptyFunction;
@@ -691,11 +691,11 @@ var e107WidgetAbstract = Class.create(e107WidgetAbstract, {
 
         //global options if available
         if(!this.getModPrefs) { this.getModPrefs = Prototype.emptyFunction; }
-        
+
         Object.extend(this.options, this.getModPrefs() || {});
         return Object.extend(this.options, options || {});
     }
-    
+
 });
 
 // -------------------------------------------------------------------
@@ -713,12 +713,12 @@ var e107Core = Class.create(e107WidgetAbstract, {
      */
     runOnLoad: function(handler, element, reload) {
     	e107Event.register('loaded', handler, element || document);
-    	if(reload) 
+    	if(reload)
     		this.runOnReload(handler, element);
-    	
+
     	return this;
     },
-    
+
     /**
      * Ajax after update Event observer
      */
@@ -729,7 +729,7 @@ var e107Core = Class.create(e107WidgetAbstract, {
 
 });
 
-//e107Core instance 
+//e107Core instance
 var e107 = new e107Core();
 
 // -------------------------------------------------------------------
@@ -774,12 +774,12 @@ Element.addMethods( {
  * Backward compatibility
  */
 Object.extend(e107Helper, {
-	
+
 	toggle: function(el) {
-		var eltoggle; 
+		var eltoggle;
 		/**
 		 * (SecretR) Notice
-		 * 
+		 *
 		 * Logic mismatch!
 		 * Passed element/string should be always the target element (which will be toggled)
 		 *  OR
@@ -787,12 +787,12 @@ Object.extend(e107Helper, {
 		 * This method will be rewritten after the core is cleaned up. After this point
 		 * the target element will be auto-hidden (no need of class="e-hideme")
 		 */
-		
-        if(false === Object.isString(el) || (  
+
+        if(false === Object.isString(el) || (
         	($(el) && $(el).nodeName.toLowerCase() == 'a' && $(el).readAttribute('href'))
-        		|| 
+        		||
         	($(el) && $(el).readAttribute('type') && $(el).readAttribute('type').toLowerCase() == 'input') /* deprecated */
-        )) { 
+        )) {
         	eltoggle = (function(el) {
 	    		return Try.these(
 	    		    function() { var ret = $(el.readAttribute('href').substr(1));  if(ret) { return ret; } throw 'Error';}, //This will be the only valid case in the near future
@@ -804,19 +804,19 @@ Object.extend(e107Helper, {
         } else {
             var eltoggle = $(el);
         }
-		
+
         if(!eltoggle) return false;
-        
+
 		var fx = varset(arguments[1], null);
-		
+
 		if(false !== fx)
 		    this.fxToggle(eltoggle, fx || {});
-		else 
+		else
 		    $(eltoggle).toggle();
-		    
+
 		return true;
 	},
-	
+
     /**
      * added as Element method below
      * No toggle effects!
@@ -825,7 +825,7 @@ Object.extend(e107Helper, {
     	$(element).select(varsettrue(selector, '.e-expandme')).invoke('toggle');
     	return element;
     },
-	
+
 	/**
 	 * Event listener - e107:loaded|e107:ajax_update_after
 	 * @see e107Core#addOnLoad
@@ -838,7 +838,29 @@ Object.extend(e107Helper, {
             if(this.toggle(element, {})) e.stop();
         }.bindAsEventListener(e107Helper));
     },
-    
+
+	/**
+	 * Event listener - e107:loaded|e107:ajax_update_after
+	 * Runs fxToggle against multiple elements. The trigger element is an anchor tag, IDs of the elements to be toggled are defined in
+	 * the 'href' attribute separated by a hash character (including a leading hash), e.g. href='#id1#id2#id3'
+	 * @see e107Core#addOnLoad
+	 */
+    toggleManyObserver: function(event) {
+    	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+        Element.select(element, '.e-swapit').invoke('observe', 'click', function(e) {
+            var element = e.findElement('a');
+            var els = element.readAttribute('href').split('#').without('');
+            els.each(function(el) {
+               if ($(el)) {
+                  $(el).fxToggle({
+                     options: { duration: 0.5, queue: { position: 'end', scope: 'toggleManyObserver'} }
+                  });
+               }
+            });
+            e.stop();
+        }.bindAsEventListener(e107Helper));
+    },
+
     /**
      * Add fx scroll on click event
      * on all <a href='#something" class="scroll-to"> elements
@@ -850,7 +872,7 @@ Object.extend(e107Helper, {
 			e.stop();
 		});
     },
-    
+
     /**
      * added as Element method below
      */
@@ -858,7 +880,7 @@ Object.extend(e107Helper, {
     	$(element).select(varsettrue(selector, '.e-hideme')).invoke('hide');
     	return element;
     },
-    
+
     /**
      * added as Element method below
      */
@@ -866,13 +888,13 @@ Object.extend(e107Helper, {
     	$(element).select(varsettrue(selector, '.e-hideme')).invoke('show');
     	return element;
     },
-    
+
     //event listener
     autoHide: function(event) {
     	var hideunder = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
         if(hideunder) hideunder.downHide();
     },
-    
+
     /**
      * added as Element method below
      * autocomplete="off" - all major browsers except Opera(?!)
@@ -889,21 +911,21 @@ Object.extend(e107Helper, {
     	$(element).select(varsettrue(selector, 'input.e-nohistory')).invoke('noHistory');
     	return element;
     },
-    
+
     //event listener
     autoNoHistory: function(event) {
     	var down = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
         if(down) down.downNoHistory();
     },
-    
+
     /**
      * added as Element method below
      */
 	externalLink: function (element) {
 	    $(element).writeAttribute('target', '_blank');
 	    return element;
-	}, 
-	
+	},
+
     /**
      * added as Element method below
      */
@@ -911,29 +933,29 @@ Object.extend(e107Helper, {
     	$(element).select('a[rel~=external]').invoke('externalLink');
     	return element;
     },
-    
+
     //event listener
 	autoExternalLinks: function (event) {
 		//event.element() works for IE now!
 		//TODO - remove memo.element references
 		//event.memo['element'] ? $(event.memo.element) : $$('body')[0];
-		var down = event.element() != document ? event.element() : $$('body')[0]; 
+		var down = event.element() != document ? event.element() : $$('body')[0];
 	    if(down) down.downExternalLinks();
-	}, 
+	},
 
 	urlJump: function(url) {
 	    top.window.location = url;
 	},
-	
+
 	//TODO Widget - e107Window#confirm;
     confirm: function(thetext) {
     	return confirm(thetext);
     },
-    
+
     autoConfirm: function(event) {
-    	
+
     },
-	
+
 	imagePreload: function(ejs_path, ejs_imageString) {
 	    var ejs_imageArray = ejs_imageString.split(',');
 	    for(var ejs_loadall = 0, len = ejs_imageArray.length; ejs_loadall < len; ejs_loadall++){
@@ -941,13 +963,13 @@ Object.extend(e107Helper, {
 	        ejs_LoadedImage.src=ejs_path + ejs_imageArray[ejs_loadall];
 	    }
 	},
-	
+
 	toggleChecked: function(form, state, selector, byId) {
-		form = $(form); if(!form) { return; } 
-		if(byId) selector = 'id^=' + selector; 
+		form = $(form); if(!form) { return; }
+		if(byId) selector = 'id^=' + selector;
 		$A(form.select('input[type=checkbox][' + selector + ']')).each(function(element) { if(!element.disabled) element.checked=state });
 	},
-	
+
 	//This will be replaced later with upload_ui.php own JS method
 	//and moved to a separate class
     __dupCounter: 1,
@@ -956,9 +978,9 @@ Object.extend(e107Helper, {
 	duplicateHTML: function(copy, paste, baseid) {
         if(!$(copy) || !$(paste)) { return; }
         this.__dupCounter++;
-        var source = $($(copy).cloneNode(true)), newentry, newid, containerId, clearB; 
-        
-        source.writeAttribute('id', source.readAttribute('id') + this.__dupCounter); 
+        var source = $($(copy).cloneNode(true)), newentry, newid, containerId, clearB;
+
+        source.writeAttribute('id', source.readAttribute('id') + this.__dupCounter);
         newid = (baseid || 'duplicated') + '-' + this.__dupCounter;
 
         var tmpl = this.getDuplicateTemplate();
@@ -976,26 +998,26 @@ Object.extend(e107Helper, {
         	//see clear, clearL and clearR CSS definitions
         	clearB = new Element('input', { 'class': 'button', 'value': 'x', 'type': 'button', 'id': 'remove-' + newid }); //backward compat. - subject of removal
         	source.insert({
-        		top: new Element('div', {'class': 'clear'}),  
+        		top: new Element('div', {'class': 'clear'}),
         		bottom: clearB
         	}).hide();
         }
         if(baseid) {
             source.innerHTML = source.innerHTML.replace(new RegExp(baseid, 'g'), newid);
         }
-        var containerId = source.identify(); 
+        var containerId = source.identify();
         $(paste).insert(source);
         //Again - the EVIL IE6
         if(!clearB) { clearB = $('remove-' + newid); }
-        
+
         clearB.observe('click', function(e) {
         	e.stop();
         	var el = e.element().up('#'+containerId);
 	        el.fxToggle({
 	            effect: 'appear',
-	            options: { 
-	            	duration: 0.4, 
-	                afterFinish: function(o) { o.element.remove(); } 
+	            options: {
+	            	duration: 0.4,
+	                afterFinish: function(o) { o.element.remove(); }
 	            }
 	        });
         }.bind(this));
@@ -1005,7 +1027,7 @@ Object.extend(e107Helper, {
         	options: { duration: 0.5 }
         });
 	},
-	
+
     getDuplicateTemplate: function() {
     	if(this.__dupTmpTemplate) {
     		var tmpl = this.__dupTmpTemplate;
@@ -1014,36 +1036,36 @@ Object.extend(e107Helper, {
     	}
     	return e107.getModTemplate('duplicateHTML');
     },
-    
+
     setDuplicateTemplate: function(tmpl) {
         return this.__dupTmpTemplate = tmpl;
     },
-    
+
 	previewImage: function(src_val, img_path, not_found) {
 	   $(src_val + '_prev').src = $(src_val).value ? img_path + $(src_val).value : not_found;
 	    return;
 	},
-	
+
 	insertText: function(str, tagid, display) {
 	    $(tagid).value = str.escapeHTML();
 	    if($(display)) {
 	        $(display).fxToggle();
 	    }
 	},
-	
+
 	appendText: function(str, tagid, display) {
 	    $(tagid).focus().value += str.escapeHTML();
 	    if($(display)) {
 	        $(display).fxToggle();
 	    }
 	},
-	
+
 	//by Lokesh Dhakar - http://www.lokeshdhakar.com
     getPageSize: function() {
-	        
+
 	     var xScroll, yScroll;
-		
-		if (window.innerHeight && window.scrollMaxY) {	
+
+		if (window.innerHeight && window.scrollMaxY) {
 			xScroll = window.innerWidth + window.scrollMaxX;
 			yScroll = window.innerHeight + window.scrollMaxY;
 		} else if (document.body.scrollHeight > document.body.offsetHeight){ // all but Explorer Mac
@@ -1053,12 +1075,12 @@ Object.extend(e107Helper, {
 			xScroll = document.body.offsetWidth;
 			yScroll = document.body.offsetHeight;
 		}
-		
+
 		var windowWidth, windowHeight;
-		
+
 		if (self.innerHeight) {	// all except Explorer
 			if(document.documentElement.clientWidth){
-				windowWidth = document.documentElement.clientWidth; 
+				windowWidth = document.documentElement.clientWidth;
 			} else {
 				windowWidth = self.innerWidth;
 			}
@@ -1069,18 +1091,18 @@ Object.extend(e107Helper, {
 		} else if (document.body) { // other Explorers
 			windowWidth = document.body.clientWidth;
 			windowHeight = document.body.clientHeight;
-		}	
-		
+		}
+
 		// for small pages with total height less then height of the viewport
 		if(yScroll < windowHeight){
 			pageHeight = windowHeight;
-		} else { 
+		} else {
 			pageHeight = yScroll;
 		}
-	
+
 		// for small pages with total width less then width of the viewport
-		if(xScroll < windowWidth){	
-			pageWidth = xScroll;		
+		if(xScroll < windowWidth){
+			pageWidth = xScroll;
 		} else {
 			pageWidth = windowWidth;
 		}
@@ -1121,24 +1143,24 @@ Element.addMethods('FORM', {
  * e107BB helper
  */
 e107Helper.BB = {
-	
+
 	__selectedInputArea: null,
-	
+
 	store: function(textAr){
 	    this.__selectedInputArea = $(textAr);
 	},
-	
+
 	/**
 	 * New improved version - fixed scroll to top behaviour when inserting BBcodes
 	 * @TODO - improve it further
 	 */
 	insert: function(text, emote) {
-	    if (!this.__selectedInputArea) { 
-	    	return; //[SecretR] TODO - alert the user 
+	    if (!this.__selectedInputArea) {
+	    	return; //[SecretR] TODO - alert the user
 	    }
-	    var eField = this.__selectedInputArea, tags = this.parse(text, emote); 
+	    var eField = this.__selectedInputArea, tags = this.parse(text, emote);
         if(this.insertIE(eField, text, tags)) return;
-	    
+
 	    var scrollPos = eField.scrollTop, sel = (eField.value).substring(eField.selectionStart, eField.selectionEnd);
 	    if (eField.selectionEnd <= 2 && typeof(eField.textLength) != 'undefined') {
 	        eField.selectionEnd = eField.textLength;
@@ -1146,14 +1168,14 @@ e107Helper.BB = {
 
 	    var newStart = eField.selectionStart + tags.start.length + sel.length + tags.end.length;
 	    eField.value = (eField.value).substring(0, eField.selectionStart) + tags.start + sel + tags.end + (eField.value).substring(eField.selectionEnd, eField.textLength);
-	
+
 	    eField.focus(); eField.selectionStart = newStart; eField.selectionEnd = newStart; eField.scrollTop = scrollPos;
 	    return;
-	
+
 	},
-	
+
 	insertIE: function(area, text, tags) {
-        // IE fix  
+        // IE fix
         if (!document.selection) return false;
         var eSelection = document.selection.createRange().text;
         area.focus();
@@ -1165,9 +1187,9 @@ e107Helper.BB = {
         eSelection = ''; area.blur(); area.focus();
         return true;
 	},
-	
+
 	parse: function(text, isEmote) {
-		var tOpen = text, tClose = '';    
+		var tOpen = text, tClose = '';
         if (isEmote != true) {  // Split if its a paired bbcode
             var tmp = text.split('][', 2);
             tOpen = varset(tmp[1]) ? tmp[0] + ']' : text;
@@ -1175,17 +1197,17 @@ e107Helper.BB = {
         }
         return { start: tOpen, end: tClose };
 	},
-	
-	//TODO VERY BAD - make it right ASAP! 
+
+	//TODO VERY BAD - make it right ASAP!
 	help_old: function(help, tagid, nohtml){
 		if(nohtml) { help = help.escapeHTML(); }
 		if($(tagid)) { $(tagid).value = help; }
-		else if($('helpb')) { 
+		else if($('helpb')) {
 			$('helpb').value = help;
 		}
 	},
-	
-	//FIXME - The new BB help system 
+
+	//FIXME - The new BB help system
 	help: function(help, tagid, nohtml){
 		if(nohtml) { help = help.escapeHTML(); }
 		if(!$(tagid)) return;
@@ -1204,7 +1226,7 @@ e107Utils.IframeShim = Class.create({
 		this.element = new Element('iframe',{
 			style: 'position:absolute;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);display:none;',
 			src: 'javascript:void(0);',
-			frameborder: 0 
+			frameborder: 0
 		});
 		$(document.body).insert(this.element);
 	},
@@ -1220,7 +1242,7 @@ e107Utils.IframeShim = Class.create({
 		var element = $(element);
 		var offset = element.cumulativeOffset();
 		var dimensions = element.getDimensions();
-		
+
 		this.element.setStyle({
 			left: offset[0] + 'px',
 			top: offset[1] + 'px',
@@ -1248,7 +1270,7 @@ e107Utils.IframeShim = Class.create({
 
 /**
  * Show Page/Element loading status (during AJAX call)
- * 
+ *
  * @class e107Utils.LoadingStatus
  * @widget: core-loading
  * @version 1.0
@@ -1275,7 +1297,7 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 	initialize: function(dest_element, options) {
 		this.initMod('core-loading', options);
 		this.cacheStr = 'instance-loading-status';
-		
+
 		this.loading_mask_loader = false;
 		this.loading_mask = $('loading-mask');
 		this.iframeShim = this.getModCache(this.cacheStr + '-iframe');
@@ -1284,29 +1306,29 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 		this.re_center = this.recenter.bindAsEventListener(this);
 
 		this.create();
-	    if(this.options.show_auto) 
+	    if(this.options.show_auto)
 	    	this.show();
 	},
-	
+
 	startObserving: function() {
 		Event.observe(window,"resize", this.re_center);
     	if(e107API.Browser.IE && e107API.Browser.IE <= 7)
     		Event.observe(window,"scroll", this.re_center);
     	return this;
 	},
-	
+
 	stopObserving:  function() {
 		Event.stopObserving(window, "resize", this.re_center);
     	if(e107API.Browser.IE && e107API.Browser.IE <= 7)
     		Event.stopObserving(window, "scroll", this.re_center);
     	return this;
 	},
-	
+
 	set_destination: function(dest_element) {
 		this.destElement = $(dest_element) || $$('body')[0];
 		return this;
 	},
-	
+
 	create: function() {
 		if(!this.loading_mask) {
 			var objBody = $$('body')[0];
@@ -1324,30 +1346,30 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 		return this;
  	},
 
-	show: function () { 
+	show: function () {
 		if(this.loading_mask.visible()) return;
 		this.startObserving();
 		this.center();
 		this.loading_mask.show();
 		return this;
 	},
-	
+
 	hide: function () {
 		this.loading_mask.hide();
 		this.stopObserving().positionShim(true);
 		return this;
 	},
-	
+
 	center: function() {
 		//Evil IE6
-		if(!this.iecenter()) { 
+		if(!this.iecenter()) {
 			Element.clonePosition(this.loading_mask, this.destElement);
-			this.fixBody().positionShim(false);  
+			this.fixBody().positionShim(false);
 		}
 		return this;
-		
+
 	},
-	
+
 	recenter: function() {
 		if(!this.iecenter()) {
 			Element.clonePosition(this.loading_mask, this.destElement);
@@ -1355,22 +1377,22 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 		}
 		return this;
 	},
-	
-	iecenter: function() { 
+
+	iecenter: function() {
 		//TODO - actually ie7 should work without this - investigate
 		if(e107API.Browser.IE && e107API.Browser.IE <= 7) {
 			//The 'freezing' problem solved (opacity = 1 ?!)
 			this.loading_mask.show();
 			var offset = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop;
 			var destdim = document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;
-			
+
 			if(!this.lmh) this.lmh = this.loading_mask_loader.getHeight();
 			var eldim = this.lmh;
 			var toph = parseInt(destdim/2 - eldim/2 + offset );
-			this.loading_mask.setStyle({top: 0, left: 0, 'opacity': 1}); 
+			this.loading_mask.setStyle({top: 0, left: 0, 'opacity': 1});
 			this.fixBody(true);
-			this.loading_mask_loader.setStyle( { 
-				'position': 'absolute', 
+			this.loading_mask_loader.setStyle( {
+				'position': 'absolute',
 				'top': toph + 'px',
 				'opacity': 1
 			});
@@ -1384,20 +1406,20 @@ e107Utils.LoadingStatus = Class.create(e107WidgetAbstract, {
 	fixBody: function(force) {
 		if(force || this.destElement.nodeName.toLowerCase() == 'body') {
 			var ps = e107Helper.getPageSize();
-			this.loading_mask.setStyle({ 'width': parseInt(ps[0]) + 'px', 'height': parseInt(ps[1]) + 'px' });	
+			this.loading_mask.setStyle({ 'width': parseInt(ps[0]) + 'px', 'height': parseInt(ps[1]) + 'px' });
 		}
 		return this;
 	},
-	
+
 	createShim: function() {
 		if(e107API.Browser.IE && e107API.Browser.IE <= 7 && !this.iframeShim) {
 			this.iframeShim = new e107Utils.IframeShim().hide();
 			this.setModCache(this.cacheStr +'-iframe', this.iframeShim);
 		}
-		
+
 		return this;
 	},
-	
+
 	positionShim: function(hide) {
 		if(!e107API.Browser.IE || e107API.Browser.IE > 6) return this;
 		if(hide) {
@@ -1444,13 +1466,13 @@ e107Utils.LoadingElement = {
 		if(!options) options = {};
 		Object.extend(options, e107Base.getPrefs('core-loading-element') || {});
 		element = $(element);
-			
+
 		var zindex = parseInt(e107.getModPref('zIndex')) + parseInt(options.zIndex);
 		var cacheStr = 'core-loading-element-' + $(element).identify();
 		element._waiting = true;
 		//can't use element._eloading for storing objects because of IE6 memory leak
 		var _eloading = e107Base.getCache(cacheStr);
-		
+
 		if (!_eloading) {
 			_eloading = new Element('div', { 'class': options.className }).setStyle({
 				position: 'absolute',
@@ -1458,8 +1480,8 @@ e107Utils.LoadingElement = {
 				zIndex: zindex
 				//backgroundImage: 'url(' + options.backgroundImage.parsePath() + ')'
 			});
-			
-			$$('body')[0].insert({ bottom: _eloading }); 
+
+			$$('body')[0].insert({ bottom: _eloading });
 			var imgcheck = _eloading.getStyle('background-image');
 			//console.log(options.backgroundImage.parsePath());
 			if(!imgcheck || imgcheck == 'none') //only if not specified by CSS
@@ -1472,9 +1494,9 @@ e107Utils.LoadingElement = {
 				_eloading.show();
 			}
 		}).bind(element), options.overlayDelay);
-		
+
 	},
-	
+
 	stopLoading: function(element) {
 		if (element._waiting) {
 			element._waiting = false;
@@ -1495,7 +1517,7 @@ e107Event.register('ajax_loading_element_start', function(event) {
 	if(element) element.startLoading();
 });
 
-e107Event.register('ajax_loading_element_end', function(event) { 
+e107Event.register('ajax_loading_element_end', function(event) {
 	var element = $(event.memo.overlayElement);
 	if(element)  window.setTimeout( function(){ element.stopLoading() }.bind(element), 50);
 });
@@ -1507,7 +1529,7 @@ e107Event.register('ajax_loading_element_end', function(event) {
 //@see e107Helper#toggle, e107Helper#autoToggle
 var expandit = function(curobj, hide) {
 	e107Helper.toggle(curobj, {});
-	
+
     if(hide) { //don't use it - will be removed
         hide.replace(/[\s]?,[\s]?/, ' ').strip();
         $w(hide).each(function(h) {
@@ -1574,7 +1596,7 @@ var textCounter = function(field,cntfield) {
     cntfield.value = field.value.length;
 }
 
-//Not used anymore - seek & remove 
+//Not used anymore - seek & remove
 /*
 function openwindow() {
     opener = window.open("htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");
@@ -1634,7 +1656,7 @@ var e107History = {
     __previousHash: null,
     __iframe: false,
     __title: false,
-    
+
     /**
      * init()
      * @desc Initialize the hash. Call this method in first
@@ -1647,7 +1669,7 @@ var e107History = {
         this.__previousHash = hash;
 
         this.__title = document.title;
-        
+
         if(e107API.Browser.IE && e107API.Browser.IE < 8) {
             document.observe('dom:loaded', function(e) {
                 if(!$('e107-px-historyframe')) {
@@ -1661,15 +1683,15 @@ var e107History = {
                             visibility: 'hidden'
                         }
                     });
-                    
+
                     document.body.appendChild(e107History.__iframe);
-                    
+
                     e107History.setHashOnIframe(inst.hash.toQueryString());
                 }
             });
         }
     },
-    
+
     /**
      * set( string name, string value )
      *
@@ -1680,7 +1702,7 @@ var e107History = {
         this.hash.set(name, value);
         this.apply();
     },
-    
+
     /**
      * get( string $name )
      *
@@ -1689,7 +1711,7 @@ var e107History = {
     get: function(name) {
         return this.hash.get(name);
     },
-    
+
     /**
      * unset( string $name )
      *
@@ -1699,7 +1721,7 @@ var e107History = {
         this.hash.unset(name);
         this.apply();
     },
-    
+
     /**
      * update()
      *
@@ -1712,7 +1734,7 @@ var e107History = {
         // If IE, look in the iframe if the hash is updated
         if(e107API.Browser.IE && e107API.Browser.IE < 8 && this.__iframe) {
             var hashInFrame = this.getHashOnIframe();
-            
+
             if(hashInFrame != hash) {
                 hash = hashInFrame;
             }
@@ -1721,7 +1743,7 @@ var e107History = {
         this.hash = $H(hash.toQueryParams());
         this.__currentHash = hash;
     },
-    
+
     /**
      * apply()
      *
@@ -1732,16 +1754,16 @@ var e107History = {
 
         // set new hash
         window.location.hash = newHash;
-        
-        // If IE, apply new hash to frame for history    
+
+        // If IE, apply new hash to frame for history
         if(e107API.Browser.IE && e107API.Browser.IE < 8 && this.__iframe) {
-            if(this.__currentHash != newHash) 
+            if(this.__currentHash != newHash)
             {
-                this.setHashOnIframe(newHash);   
+                this.setHashOnIframe(newHash);
             }
-            else if(newHash != this.getHashOnIframe()) 
+            else if(newHash != this.getHashOnIframe())
             {
-                this.setHashOnIframe(newHash);    
+                this.setHashOnIframe(newHash);
             }
         }
     },
@@ -1760,7 +1782,7 @@ var e107History = {
 
         return (e107History.__currentHash != e107History.__previousHash);
     },
-    
+
     /**
      * setHashOnIframe()
      *
@@ -1775,7 +1797,7 @@ var e107History = {
             doc.close();
         } catch(e) {}
     },
-    
+
     /**
      * getHashOnIframe()
      *
@@ -1790,7 +1812,7 @@ var e107History = {
             return this.hash.toQueryString();
         }
     },
-    
+
     /**
      * setTitle()
      *
@@ -1801,7 +1823,7 @@ var e107History = {
             document.title = title;
         }
     },
-    
+
     /**
      * getTitle()
      *
@@ -1813,52 +1835,52 @@ var e107History = {
 };
 
 e107History.init();
- 
+
 /**
  * History.Registry
  * Prototype Xtensions http://www.prototypextensions.com/
  *
  * @desc Used to register a callback for a parameter
  */
-e107History.Registry = 
+e107History.Registry =
 {
     /**
      * @desc Hash
      */
     hash : new Hash(),
-    
+
     /**
      * set( string $config )
      *
      * @desc Set new value historyId for parameter config
      */
     set: function(config) {
-    
+
         if(typeof(config) != 'object') {
             throw('e107History.Registry.set : config must be an javascript object');
-        } 
-        
+        }
+
         // id
         if(!config.id || !Object.isString(config.id)) {
             throw('e107History.Registry.set : config.id must be an string');
-        } 
-        
+        }
+
         // onChange
         if(!config.onStateChange || !Object.isFunction(config.onStateChange)) {
             throw('e107History.Registry.set : config.onStateChange '
                 + 'must be an javascript callback function');
         }
-    
+
         // defaultValue
         if(!config.defaultValue || !Object.isString(config.defaultValue)) {
             config.defaultValue = '';
         }
-                
+
         this.hash.set(config.id, config);
     },
-    
+
     /**
-     * flat version of set method 
+     * flat version of set method
      *
      * @desc Register callback function for historyId
      */
@@ -1870,7 +1892,7 @@ e107History.Registry =
         };
         this.set(config);
     },
-    
+
     /**
      * get( string $id )
      *
@@ -1879,7 +1901,7 @@ e107History.Registry =
     get: function(id) {
         return this.hash.get(id);
     },
-    
+
     /**
      * unset( string $id )
      *
@@ -1893,8 +1915,8 @@ e107History.Registry =
 /**
  * History.Observer
  * Prototype Xtensions http://www.prototypextensions.com/
- * 
- * @desc Used to perform actions defined in the registry, 
+ *
+ * @desc Used to perform actions defined in the registry,
  * according to the hash of the url.
  */
 e107History.Observer = {
@@ -1903,17 +1925,17 @@ e107History.Observer = {
      * @desc Interval delay in seconds
      */
     delay : 0.4,
-    
+
     /**
      * @desc Interval timer instance
      */
     interval : null,
-    
+
     /**
      * @desc If interval is started : true, else false
      */
     started : false,
-    
+
     /**
      * start()
      *
@@ -1924,7 +1946,7 @@ e107History.Observer = {
         this.interval = new PeriodicalExecuter(e107History.Observer.dispatch, this.delay);
         this.started = true;
     },
-    
+
     /**
      * stop()
      *
@@ -1935,12 +1957,12 @@ e107History.Observer = {
         this.interval.stop();
         this.started = false;
     },
-    
+
     /**
      * dispatch()
      *
-     * @desc This method is called each time interval, 
-     * the dispatch of the registry is implemented only if 
+     * @desc This method is called each time interval,
+     * the dispatch of the registry is implemented only if
      * the hash has been amended (optimisiation)
      */
     dispatch: function() {
@@ -1965,15 +1987,15 @@ e107History.Observer = {
 // -------------------------------------------------------------------
 
 /*
- * AJAX related 
+ * AJAX related
  */
 var e107Ajax = {};
 
 /**
  * Ajax.History
  * Prototype Xtensions http://www.prototypextensions.com/
- * 
- * @desc Provides core methods to easily manage browsing history 
+ *
+ * @desc Provides core methods to easily manage browsing history
  * with Ajax.History.Request / Updater.
  */
 e107Ajax.History = {
@@ -1982,98 +2004,98 @@ e107Ajax.History = {
      * @desc Allowed Ajax.History prefix (for validation)
      */
     types : ['Request', 'Updater'],
-    
+
     cacheString: 'ajax-history-',
-    
+
     /**
      * observe( string type, string id, string url, object options )
      *
      * @desc This method helps manage the browsing history
      */
     observe: function(type, id, url, options) {
-    
+
         var getter         = e107.getModCache(this.cacheString + id);
         var currentVersion = 0;
         var output         = false;
-        
-        // Type validation   
+
+        // Type validation
         if(this.types.indexOf(type) == -1) {
             throw('e107Ajax.History.observer: type ' + type + ' is invalid !');
-        }      
+        }
 
         // Registry management
         if(!getter) {
-            currentVersion = (options.history.state) ? options.history.state : 0;  
+            currentVersion = (options.history.state) ? options.history.state : 0;
             var hash = new Hash();
             hash.set(currentVersion, options);
             e107.setModCache(this.cacheString + id, hash);
             //console.log(id,  e107.getModCache(this.cacheString + id));
         } else {
-            currentVersion = (options.history.state) 
+            currentVersion = (options.history.state)
                 ? options.history.state : this.getCurrentVersion(id);
             getter.set(currentVersion, options);
         }
-            
+
         // add handler on registry
         this.addCallback(type, id);
 
         return currentVersion;
     },
-    
+
     /**
      * addCallback( string type, string id )
      *
      * @desc This method adds a state for request on History.Registry
      */
     addCallback: function(type, id) {
-        
+
         e107History.Observer.start();
         // Set history altered state to true : force dispatch
         e107History.__altered = id;
-        
+
         // Return void if registry is already set
-        if(!Object.isUndefined(e107History.Registry.get(id))) return; 
+        if(!Object.isUndefined(e107History.Registry.get(id))) return;
 
         // Add this id to history registry
         var cacheS = this.cacheString + id;
-        e107History.Registry.set({ 
+        e107History.Registry.set({
             id: id,
-            onStateChange: function(state) { 
-                var options = e107.getModCache(cacheS).get(state.toString()); 
+            onStateChange: function(state) {
+                var options = e107.getModCache(cacheS).get(state.toString());
                 var request = null;
 
                 if(Object.isUndefined(options)) return;
-				                	
-                if(options.history.cache == true && options.history.__request) { 
+
+                if(options.history.cache == true && options.history.__request) {
                     new Ajax.Cache(options.history.__request);
                 } else {
-                	
+
                 	//make a request
                     if(type == 'Request') {
                         request = new Ajax.Request(options.history.__url, options);
                     } else if(type == 'Updater') {
                         request = new Ajax.Updater(options.container, options.history.__url, options);
                     }
-                    options.history.__request = request; 
+                    options.history.__request = request;
                 }
-                
+
                 e107History.__altered = false;
-                
+
                 if (Object.isFunction(options.history.onStateChange)) {
                     options.history.onStateChange(state);
                 }
-            } 
-        }); 
+            }
+        });
     },
-    
+
     /**
      * getCurrentVersion( string id )
      *
-     * @desc This method returns the current state in history 
+     * @desc This method returns the current state in history
      * (if the state is not defined)
      */
     getCurrentVersion: function(id) {
-        var getter = e107.getModCache(this.cacheString + id);        
+        var getter = e107.getModCache(this.cacheString + id);
         return Object.isUndefined(getter) ? 0 : getter.keys().length;
     }
 };
@@ -2081,7 +2103,7 @@ e107Ajax.History = {
 e107Ajax.ObjectMap = {
     id              : null,    // set custom history value for this instance
     state           : false,   // set custom state value for this instance
-    cache           : false,   // enable/disable history cache 
+    cache           : false,   // enable/disable history cache
     onStateChange   : null,    // handler called on history change
     __url           : null,
     __request       : null
@@ -2090,9 +2112,9 @@ e107Ajax.ObjectMap = {
 /**
  * Ajax.Cache
  * Prototype Xtensions http://www.prototypextensions.com/
- * 
- * @desc Ajax.Cache can "simulate" an Ajax request from an 
- * Ajax.Request/Updater made beforehand. 
+ *
+ * @desc Ajax.Cache can "simulate" an Ajax request from an
+ * Ajax.Request/Updater made beforehand.
  */
 Ajax.Cache = Class.create(Ajax.Base, {
     _complete: false,
@@ -2103,20 +2125,20 @@ Ajax.Cache = Class.create(Ajax.Base, {
         this.request(request.url);
         return this;
     },
-    
+
     request: function(url) {
         this.url = url;
         this.method = this.options.method;
         var params = Object.clone(this.options.parameters);
-        
+
         try {
             var response = new Ajax.Response(this);
 
             if (this.options.onCreate) this.options.onCreate(response);
             Ajax.Responders.dispatch('onCreate', this, response);
-                        
+
             if (this.options.asynchronous) this.respondToReadyState.bind(this).defer(1);
-            
+
             this.onStateChange();
         }
         catch (e) {
@@ -2139,7 +2161,7 @@ Object.extend(Ajax.Cache.prototype, {
 /**
  * Ajax.Request Extended
  * Prototype Xtensions http://www.prototypextensions.com/
- * 
+ *
  * @desc Just a small change: now Ajax.Request return self scope.
  * It is required by Ajax.Cache
  */
@@ -2156,7 +2178,7 @@ Ajax.Request.Events =
 /**
  * Ajax.Updater Extended
  * Prototype Xtensions http://www.prototypextensions.com/
- * 
+ *
  * @desc Just a small change: now Ajax.Updater return self scope
  * It is required by Ajax.Cache
  */
@@ -2164,7 +2186,7 @@ Ajax.Updater = Class.create(Ajax.Updater, {
     initialize: function($super, container, url, options) {
         $super(container, url, options);
         return this;
-    } 
+    }
 });
 
 
@@ -2180,32 +2202,32 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 					}
 					if(request.options['overlayPage']){
 						e107Event.trigger('ajax_loading_start', request.options, request.options.overlayPage);
-					} else if(request.options['overlayElement']) { 
+					} else if(request.options['overlayElement']) {
 						e107Event.trigger('ajax_loading_element_start', request.options, request.options.overlayElement);
 					}
 				},
-				
-				onComplete: function(request) { 
+
+				onComplete: function(request) {
 					/*Ajax.activeRequestCount == 0 && */
 					if(request.options['overlayPage']) {
-						e107Event.trigger('ajax_loading_end', request.options, request.options.overlayPage);						
-					} else if(request.options['overlayElement']) { 
+						e107Event.trigger('ajax_loading_end', request.options, request.options.overlayPage);
+					} else if(request.options['overlayElement']) {
 						e107Event.trigger('ajax_loading_element_end', request.options, request.options.overlayElement);
 					}
-					
-					if(request.options['updateElement']) { 
+
+					if(request.options['updateElement']) {
 						request.options.element = request.options.updateElement;
-						e107Event.trigger('ajax_update_after', request.options, request.options.updateElement); 
+						e107Event.trigger('ajax_update_after', request.options, request.options.updateElement);
 					}
 				},
-				
+
 				onException: function(request, e) {
 					//TODO handle exceptions
 					alert('e107Ajax Exception: ' + e);
 				}
 		}
-		
-		Ajax.Responders.register(e_responder);	
+
+		Ajax.Responders.register(e_responder);
 })();
 
 /**
@@ -2213,36 +2235,36 @@ Ajax.Updater = Class.create(Ajax.Updater, {
  */
 var e107AjaxAbstract = Class.create ({
 	_processResponse: function(transport) {
-		if(null !== transport.responseXML) { 
+		if(null !== transport.responseXML) {
 			this._handleXMLResponse(transport.responseXML);
 		} else if(null !== transport.responseJSON) {
 			this._handleJSONResponse(transport.responseJSON);
 		} else {
 			this._handleTextResponse(transport.responseText);
 		}
-		
+
 	},
 
 	_handleXMLResponse: function (response) {
 		var xfields = $A(response.getElementsByTagName('e107response')[0].childNodes);
-		var parsed = {};  
-		xfields.each( function(el) { 
+		var parsed = {};
+		xfields.each( function(el) {
 			if (el.nodeType == 1 && el.nodeName == 'e107action' && el.getAttribute('name') && el.childNodes) {
-				
+
 				var action = el.getAttribute('name'), items = el.childNodes;
 				if(!varsettrue(parsed[action])) {
 					parsed[action] = {};
 				}
-				
+
 				for(var i=0, len=items.length; i<len; i++) {
 					var field = items[i];
-					
+
 					if(field.nodeType!=1)
 						continue;
-					
+
 					if(field.getAttribute('name')) {
 						var type = field.getAttribute('type'), //not used yet
-							name = field.getAttribute('name'), 
+							name = field.getAttribute('name'),
 							eldata = field.firstChild
 							val = eldata ? eldata.data : '';
 						if(parsed[action][name] && Object.isArray(parsed[action][name]))
@@ -2252,23 +2274,23 @@ var e107AjaxAbstract = Class.create ({
 						else
 							parsed[action][name]= val;
 					}
-					
+
 				}
 			}
-		}.bind(this)); 
+		}.bind(this));
 		this._handleResponse(parsed);
 	},
-	
+
 	_handleJSONResponse: function (response) {
 		this._handleResponse(response);
 	},
-	
+
 	_handleTextResponse: function (response) {
 		this._handleResponse({ 'auto': response} );
 	},
-	
+
 	_handleResponse: function(parsed) {
-		
+
 		Object.keys(parsed).each(function(method) {
 			try{
 				this['_processResponse' + ('-' + method).camelize()](parsed[method]);
@@ -2278,36 +2300,36 @@ var e107AjaxAbstract = Class.create ({
 		}.bind(this));
 
 	},
-	
+
 	_processResponseAuto: function(response) {
 		//find by keys as IDs & update
 		Object.keys(response).each(function(key) {
 			this._updateElement(key, response[key]);
 		}.bind(this));
 	},
-	
+
 	/**
 	 * Reset checked property of form elements by selector name attribute (checkbox, radio)
 	 */
 	_processResponseResetChecked: function(response) {
-		Object.keys(response).each(function(key) { 
+		Object.keys(response).each(function(key) {
 			var checked = parseInt(response[key]) ? true : false;
 			$$('input[name^=' + key + ']').each( function(felement) {
-				var itype = String(felement.type); 
+				var itype = String(felement.type);
 				if(itype && 'checkbox radio'.include(itype.toLowerCase()))
 					felement.checked = checked;
 			});
 		}.bind(this));
 	},
-	
+
 	/**
 	 * Invoke methods/set properties on element or element collections by id
-	 * 
+	 *
 	 * Examples:
 	 * {'show': 'id1,id2,id3'} -> show elements with id id1,id2 and id3
 	 * {'writeAttribute,rel,external': 'id1,id2,id3'} -> invoke writeAttribute('rel', 'external') on elements with id id1,id2 and id3
 	 * {'disabled,true': 'button-el,other-button-el'} -> set disabled property of elements with id button-el,other-button-el to true
-	 * 
+	 *
 	 */
 	_processResponseElementInvokeById: function(response) {
 		//response.key is comma separated list representing method -> args to be invoked on every element
@@ -2343,24 +2365,24 @@ var e107AjaxAbstract = Class.create ({
 	 * Update element by type
 	 */
 	_updateElement: function(el, data) {
-		el = $(el); if(!el) return; 
-		var type = el.nodeName.toLowerCase(), itype = el.type; 
+		el = $(el); if(!el) return;
+		var type = el.nodeName.toLowerCase(), itype = el.type;
         if(type == 'input' || type == 'textarea') {
         	if(itype) itype = itype.toLowerCase();
         	switch (itype) {
         		case 'checkbox':
-        		case 'radio': 
+        		case 'radio':
         			el.checked = (el.value == data);
         			break;
-        		default: 
+        		default:
         			el.value = data.unescapeHTML(); //browsers doesn't unescape entities on JS update, why?!
         			break;
         	}
-            
+
         } else if(type == 'select') {
             if(el.options) {
                 var opt = $A(el.options).find( function(op, ind) {
-                    return op.value == data; 
+                    return op.value == data;
                 });
                 if(opt)
                 	el.selectedIndex = opt.index;
@@ -2378,39 +2400,39 @@ var e107AjaxAbstract = Class.create ({
 /**
  * e107Ajax.Request
  * Prototype Xtensions http://www.prototypextensions.com/
- * 
- * @desc @desc e107Ajax.Update wrapper, used to execute an Ajax.Request by integrating 
+ *
+ * @desc @desc e107Ajax.Update wrapper, used to execute an Ajax.Request by integrating
  * the management of browsing history
  */
 e107Ajax.Request = Class.create({
     initialize: function(url, options) {
-    
+
         this.options = {};
         Object.extend(this.options, options || {});
         if(!this.options['parameters'])
         	this.options['parameters'] = { 'ajax_used': 1 }
         else if(!this.options.parameters['ajax_used'])
         	this.options['parameters']['ajax_used'] = 1;
-         
+
         // only if required
         if(this.options.history) {
             var tmpOpt = Object.clone(e107Ajax.ObjectMap);
-            Object.extend(tmpOpt, this.options.history);  
+            Object.extend(tmpOpt, this.options.history);
             this.options.history = tmpOpt;
             this.options.history.__url = url;
-            
+
             // History id
             if(Object.isUndefined(options.history.id))
                 throw('e107Ajax.Request error : you must define historyId');
-                
+
             var id = this.options.history.id;
-            
+
             // Enable history observer
             var version = e107Ajax.History.observe('Request', id, url, this.options);
-            
+
             // Set current version value for container
             e107History.set(id, version);
-            
+
         } else {
             return new Ajax.Request(url, this.options);
         }
@@ -2419,31 +2441,31 @@ e107Ajax.Request = Class.create({
 
 /**
  * e107Ajax.Updater
- * 
- * @desc e107Ajax.Updater wrapper, used to execute an Ajax.Updater by integrating 
+ *
+ * @desc e107Ajax.Updater wrapper, used to execute an Ajax.Updater by integrating
  * the management of browsing history
  */
 e107Ajax.Updater = Class.create({
     initialize: function(container, url, options) {
-        
+
         this.options = {};
-        
+
         Object.extend(this.options, options || {});
         if(!this.options['parameters'])
         	this.options['parameters'] = { 'ajax_used': 1 }
         else if(!this.options.parameters['ajax_used'])
         	this.options['parameters']['ajax_used'] = 1;
-		
+
 		//required for ajax_update event trigger
 		this.options.updateElement = container;
-		
+
         // only if required
         if(this.options.history) {
             var tmpOpt = Object.clone(e107Ajax.ObjectMap);
-            Object.extend(tmpOpt, this.options.history);  
+            Object.extend(tmpOpt, this.options.history);
             this.options.history = tmpOpt;
             this.options.history.__url = url;
-                
+
             // History id
             if(Object.isUndefined(options.history.id)) {
                 var id = (Object.isString(container)) ? container : container.identify();
@@ -2456,41 +2478,41 @@ e107Ajax.Updater = Class.create({
 
             // Enable history observer
             var version = e107Ajax.History.observe('Updater', id, url, this.options);
-            
+
             // Set current version value for container
             e107History.set(id, version);
-            
-        } else { 
+
+        } else {
             return new Ajax.Updater(container, url, this.options);
         }
     }
 });
 
 Object.extend(e107Ajax, {
-	
+
 	/**
 	 * Ajax Submit Form method
-	 * 
+	 *
 	 * @descr e107 analog to Prototpye native Form.request method
 	 */
 	submitForm: function(form, container, options, handler) {
 		var parm = $(form).serialize(true),
 			opt = Object.clone(options || {}),
 			url = !handler ? $(form).readAttribute('action') : String(handler).parsePath();
-			
+
 		if(!opt.parameters) opt.parameters = {};
 		Object.extend(opt.parameters, parm || {});
 		opt.method = 'post';
-		
+
 		if ($(form).hasAttribute('method') && !opt.method)
 		      opt.method = $(form).method;
-		
+
 		if(container)
 			return new e107Ajax.Updater(container, url, opt);
-		
+
 		return new e107Ajax.Request(url, opt);
 	},
-	
+
 	/**
 	 * Ajax Submit Form method and auto-replace SC method
 	 */
@@ -2498,31 +2520,31 @@ Object.extend(e107Ajax, {
 		var handler = ('#{e_FILE}e_ajax.php'), parm = { 'ajax_sc': sc, 'ajax_scfile': scfile };
 		return this.submitForm(form, varsettrue(container, sc), { parameters: parm, overlayElement: varsettrue(container, sc) }, handler);
 	},
-	
+
 	toggleUpdate: function(toggle, container, url, cacheid, options) {
 		container = $(container);
 		toggle = $(toggle);
 		opt = Object.clone(options || {});
 		opt.method = 'post';
-		
+
 		if(!toggle) return;
-		
+
 		if(!toggle.visible())
 		{
-			
+
 			if(cacheid && $(cacheid)) return toggle.fxToggle();
-			
+
 			opt.onComplete = function() { toggle.fxToggle() };
-			if(url.startsWith('sc:')) 
+			if(url.startsWith('sc:'))
 			{
 				return e107Ajax.scUpdate(url.substring(3), container, opt);
-			} 
+			}
 			return new e107Ajax.Updater(container, url, opt);
 		}
-		
+
 		return toggle.fxToggle();
 	},
-	
+
 	scUpdate: function(sc, container, options) {
 		var handler = ('#{e_FILE}e_ajax.php').parsePath(), parm = { 'ajax_sc': sc };
 		opt = Object.clone(options || {});
@@ -2535,35 +2557,35 @@ Object.extend(e107Ajax, {
 
 /**
  * e107Ajax.fillForm
- * 
- * @desc 
+ *
+ * @desc
  */
 e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
-	
+
 	initialize: function(form, overlay_dest, options) {
 		//TODO - options
 		this.options = Object.extend({
 			start: true
 		}, options || {});
-		
+
 		this.form = $(form);
 		if(!this.form) return;
-		
+
 		if(this.options['start'])
 			this.start(overlay_dest);
 	},
-	
-	start: function(overlay_dest) {		
+
+	start: function(overlay_dest) {
 		e107Event.trigger("ajax_fillForm_start", {form: this.form});
-		var destEl = $(overlay_dest) || false; 
+		var destEl = $(overlay_dest) || false;
 		var C = this;
-		
+
 		//Ajax history is NOT supported (and shouldn't be)
 		var options = {
 			overlayPage: destEl,
-			
+
 			history: false,
-			
+
 			onSuccess: function(transport) {
 				try {
 					this._processResponse(transport);
@@ -2572,10 +2594,10 @@ e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
 					e107Event.trigger("ajax_fillForm_error", {form: this.form, error: err_obj});
 				}
 			}.bind(C),
-			
-			onFailure: function(transport) { 
+
+			onFailure: function(transport) {
 				//We don't use transport.statusText only because of Safari!!!
-				var err = transport.getHeader('e107ErrorMessage') || ''; 
+				var err = transport.getHeader('e107ErrorMessage') || '';
 				//TODO - move error messages to the ajax responder object, convert it to an 'error' object (message, extended, code)
 				//Add Ajax option e.g. printErrors (true|false)
 				var err_obj = { message: err, extended: transport.responseText, code: transport.status }
@@ -2583,31 +2605,31 @@ e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
 			}.bind(C)
 		}
 		Object.extend(options, this.options.request || {}); //update - allow passing request options
-		
+
 		this.form.submitForm(null, options, this.options.handler);
 	},
-	
+
 	_processResponseFillForm: function(response) {
-		if(!response || !this.form) return; 
-		var C = this, left_response = Object.clone(response); 
-		this.form.getElements().each(function(el) { 
+		if(!response || !this.form) return;
+		var C = this, left_response = Object.clone(response);
+		this.form.getElements().each(function(el) {
 			var elid = el.identify(), elname = el.readAttribute('name'), data, elnameid = String(elname).gsub(/[\[\]\_]/, '-');
 
 			if(isset(response[elname])) {
-				data = response[elname]; 
+				data = response[elname];
 				if(left_response[elname]) delete left_response[elname];
 			} else if(isset(response[elnameid])) {
-				data = response[elnameid]; 
+				data = response[elnameid];
 				if(left_response[elnameid]) delete left_response[elnameid];
 			} else if(isset(response[elid])) {
-				data = response[elid]; 
+				data = response[elid];
 				if(left_response[elid]) delete left_response[elid];
 			} else {
 				return;
 			}
             this._updateElement(el, data);
 		}.bind(C));
-		
+
 		if(left_response) { //update non-form elements (by id)
 			Object.keys(left_response).each( function(el) {
 				this._updateElement(el, left_response[el]);
@@ -2620,11 +2642,11 @@ e107Ajax.fillForm = Class.create(e107AjaxAbstract, {
 });
 
 Element.addMethods('FORM', {
-	
+
 	submitForm: e107Ajax.submitForm.bind(e107Ajax),
-	
+
 	submitFormSC: e107Ajax.submitFormSC.bind(e107Ajax),
-	
+
 	fillForm: function(form, overlay_element, options) {
 		new e107Ajax.fillForm(form, overlay_element, options);
 	}
@@ -2647,6 +2669,6 @@ function sendInfo(handler, container, form) {
 /*
  * Core Auto-load
  */
-$w('autoExternalLinks autoNoHistory autoHide toggleObserver scrollToObserver').each( function(f) {
-	e107.runOnLoad(e107Helper[f], null, true); 
+$w('autoExternalLinks autoNoHistory autoHide toggleObserver toggleManyObserver scrollToObserver').each( function(f) {
+	e107.runOnLoad(e107Helper[f], null, true);
 });
