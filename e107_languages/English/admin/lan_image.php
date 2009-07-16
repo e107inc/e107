@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_image.php,v 1.8 2008-12-14 21:01:59 secretr Exp $
+ * $Id: lan_image.php,v 1.9 2009-07-16 08:15:35 e107coders Exp $
  *
  * Admin Language File
  * 
@@ -24,12 +24,12 @@ define("IMALAN_14", "Show image URL");
 define("IMALAN_15", "Show nothing");
 define("IMALAN_16", "Show uploaded avatars");
 define("IMALAN_17", "Click here");
-define("IMALAN_18", "Uploaded images");
+define("IMALAN_18", "Uploaded Avatar Images");
 define("IMALAN_19", "Show 'disabled' message");
 define('IMALAN_20', 'Nothing changed');
 define("IMALAN_21", "Used by");
 define("IMALAN_22", "Image not in use");
-define("IMALAN_23", "Avatar");
+define("IMALAN_23", "Avatars");
 define("IMALAN_24", "Photograph");
 define("IMALAN_25", "Click here to delete all unused images");
 define("IMALAN_26", "image(s) deleted");
@@ -76,7 +76,7 @@ define('IMALAN_60', 'Uncheck All');
 
 
 //avatar check
-define('IMALAN_61', 'Options');
+// define('IMALAN_61', 'Options');
 define('IMALAN_62', 'Reason');
 define('IMALAN_63', 'URL');
 define('IMALAN_64', 'User');
@@ -87,4 +87,9 @@ define('IMALAN_67', 'Are you sure?');
 define('IMALAN_68', 'Close');
 define('IMALAN_69', 'Folder');
 define('IMALAN_70', 'Non-system folder is found!');
+
+define("IMALAN_71", "Icon Pool");
+define("IMALAN_72", "Icons");
+
+
 ?>

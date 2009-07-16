@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.21 2009-07-15 09:38:00 e107coders Exp $
+ * $Id: lan_admin.php,v 1.22 2009-07-16 08:15:35 e107coders Exp $
  *
  * Admin Language File
 */
@@ -287,6 +287,7 @@ define("LAN_NEWVERSION","New Version Available");
 
 define("LAN_CHECKALL", 'Check All');
 define("LAN_UNCHECKALL", 'Uncheck All');
+define("LAN_DELCHECKED", "Delete Checked");
 
 define("LAN_USERCLASS", "Userclass");
 define("LAN_AUTHOR",	"Author");
@@ -294,6 +295,6 @@ define("LAN_CATEGORY", "Category");
 
 define("LAN_HELP", "Help");
 define("LAN_MENULAYOUT", "Menu Layout");
-
+define("LAN_IMAGEMANAGER", "Image Manager");
 
 ?>

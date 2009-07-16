@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2009-07-16 02:55:19 $
+|     $Revision: 1.69 $
+|     $Date: 2009-07-16 08:15:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -268,7 +268,7 @@ class e107plugin
 
     function manage_icons($plugin='')
 	{
-		global $sql,$tp, $iconpool;
+		global $sql,$tp, $iconpool,$pref;
 
          $query = "SELECT * FROM #plugin WHERE plugin_installflag =0 ORDER BY plugin_path ASC";
 		$sql->db_Select_gen($query);
@@ -285,7 +285,7 @@ class e107plugin
         require_once(e_HANDLER."file_class.php");
 		$fl = new e_file;
 
-        $filesrch = implode("|",array("_16.png","_16.PNG","_32.png","_32.PNG","_48.png","_48.PNG","_64.png","_64.PNG","_128.png","_128.png"));
+        $filesrch = implode("|",array("/images(*.)_16.png","_16.PNG","_32.png","_32.PNG","_48.png","_48.PNG","_64.png","_64.PNG","_128.png","_128.png"));
 
         if($plugin_icons = $fl->get_files(e_PLUGIN,$filesrch,$reject_plugin,2))
         {
@@ -295,6 +295,11 @@ class e107plugin
 		if($core_icons = $fl->get_files(e_IMAGE."icons/",$filesrch,$reject_core,2))
         {
         	sort($core_icons);
+        }
+
+		if($theme_icons = $fl->get_files(e_THEME.$pref['sitetheme']."/images/",$filesrch,$reject_core,2))
+        {
+        	sort($theme_icons);
         }
 
 		$srch = array(e_IMAGE,"/");
@@ -309,8 +314,8 @@ class e107plugin
        		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
 		}
 
- 		$srch = array(e_PLUGIN,"/images/");
-		$repl = array("","");
+ 		$srch = array(e_PLUGIN,"/images/","/icons/");
+		$repl = array("","","");
 
 		foreach($plugin_icons as $file)
 		{
@@ -318,6 +323,14 @@ class e107plugin
 			$key = "plugin-".$path;
        		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
 		}
+
+		foreach($theme_icons as $file)
+		{
+			$path = str_replace($srch,$repl,$file['path']);
+			$key = "theme-".$path;
+       		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
+		}
+
 
 
         return (save_prefs("iconpool")) ?  TRUE : FALSE;

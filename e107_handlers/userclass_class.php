@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2009-07-08 06:58:00 $
+|     $Revision: 1.36 $
+|     $Date: 2009-07-16 08:15:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ define('e_UC_NEWUSER',247);					// Users in 'probationary' period
 define('e_UC_SPECIAL_BASE',245);			// Assign class IDs 245 and above for fixed/special purposes
 define('e_UC_SPECIAL_END',255);				// Highest 'special' class
 
-define('UC_CLASS_ICON_DIR','userclasses/');		// Directory for userclass icons
+// define('UC_CLASS_ICON_DIR','userclasses/');		// Directory for userclass icons  -  deprecated - the icon will be saved with the full path. {e_IMAGE} or {e_PLUGIN} / images/ etc.
 define('UC_ICON_DIR',e_IMAGE.'generic/');		// Directory for the icons used in the admin tree displays
 
 define('e_UC_BLANK','-1');
