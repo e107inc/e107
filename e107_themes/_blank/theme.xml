@@ -3,8 +3,9 @@
 	<author name ="Desislav Yosifov [SonicE]" email="support@free-source.net" url="http://free-source.net"/>
 	<description>Blank e107 admin theme</description>
 	<compliance xhtml="true" css="true"/>
+
 	<layouts>
-		<layout name='default' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' requiredPlugins='chatbox' default='true' >
+		<layout name='default' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' default='true' >
 		<menuPresets>
 				<area id='1' >
                 	<menu name='login' />
@@ -21,4 +22,7 @@
 		<custompages>usersettings.php</custompages>
 		</layout>
 	</layouts>
+    <pluginOptions>
+		<plugin name='chatbox_menu' url='core' />
+	</pluginOptions>
 </e107Theme>
