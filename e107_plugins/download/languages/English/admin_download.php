@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-15 23:28:46 $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-16 23:07:31 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -196,6 +196,9 @@ define("DOWLAN_191", "Downloads log entries");
 define("DOWLAN_192", "Execute selected option");
 define("DOWLAN_193", "Select option");
 define("DOWLAN_194", "Search");
+define("DOWLAN_195", "Mirror type");
+define("DOWLAN_196", "list");
+define("DOWLAN_197", "random");
 
 define("DOWLAN_HELP_1", "Download Help");
 define("DOWLAN_HELP_2", "<p>Create/edit a download.</p><p>Enter only one of: File, URL or Mirror.</p><p>Ensure you select a category, otherwise your download will not be visible on the downloads page.</p>");

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-15 23:28:46 $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-16 23:07:30 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -51,7 +51,6 @@ class adminDownload extends download
       $eform = new e_form();
 
       $filterColumns = ($pref['admin_download_disp'] ? explode("|",$pref['admin_download_disp']) : array("download_name","download_class"));
-      print_r($this->advancedSearchFields);
       if ($this->advancedSearchFields)
       {
          $showBasicSearch = " style='display:none'";
@@ -65,7 +64,8 @@ class adminDownload extends download
       // Search field
       $text .= "
          <form method='post' action='".e_SELF."'>
-            <fieldset id='download_search'{$showBasicSearch}>
+            <div id='download_search'{$showBasicSearch}>
+            <fieldset>
                <legend class='e-hideme'>".DOWLAN_194."</legend>
                <table class='adminform'>
                   <tr>
@@ -77,95 +77,110 @@ class adminDownload extends download
             <div class='buttons-bar center'>
                <button type='submit' class='update' name='download_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
                <br/>
-               <a href='#' onclick='$(\"download_search\").hide();$(\"download_advanced_search\").show();return false;'>Advanced search</a>
+               <a href='#download_search#download_advanced_search' class='e-swapit'>Advanced search</a>
             </div>
             </fieldset>
+            </div>
          </form>
          ";
       // Advanced search fields
       $text .= "
          <form method='post' action='".e_SELF."'>
-            <fieldset id='download_advanced_search'{$showAdvancedSearch}>
+            <div id='download_advanced_search'{$showAdvancedSearch}>
+            <fieldset>
             <legend class='e-hideme'>".DOWLAN_183."</legend>
             <table class='adminform'>
                <colgroup>
-                  <col style='width:8%;'/>
-                  <col style='width:20%;'/>
-                  <col style='width:8%;'/>
-                  <col style='width:36%;'/>
-                  <col style='width:8%;'/>
-                  <col style='width:20%;'/>
+                  <col style='width:15%;'/>
+                  <col style='width:35%;'/>
+                  <col style='width:15%;'/>
+                  <col style='width:35%;'/>
                </colgroup>
                <tr>
-                  <td>Name</td><td><input class='tbox' type='text' name='download_advanced_search[name]' size='20' value='{$this->advancedSearchFields['name']}' maxlength='50'/></td>
-                  <td>Category</td><td>
+                  <td>".DOWLAN_12."</td>
+                  <td><input class='tbox' type='text' name='download_advanced_search[name]' size='30' value='{$this->advancedSearchFields['name']}' maxlength='50'/></td>
+                  <td>".DOWLAN_18."</td>
+                  <td><input class='tbox' type='text' name='download_advanced_search[description]' size='50' value='{$this->advancedSearchFields['description']}' maxlength='50'/></td>
+               </tr>
+               <tr>
+                  <td>".DOWLAN_11."</td>
+                  <td>
          ";
       $text .= $this->getCategorySelectList($this->advancedSearchFields['category'], true, false, '&nbsp;', 'download_advanced_search[category]');
-      $text .= "</td>
-               <td>Filesize</td>
-               <td>
-         ";
-      $text .= $this->_getConditionList('download_advanced_search[filesize_condition]', $this->advancedSearchFields['filesize_condition']);
-      $text .= "
-                  <input class='tbox' type='text' name='download_advanced_search[filesize]' size='10' value='{$this->advancedSearchFields['filesize']}'/>
-                  <select name='download_advanced_search[filesize_units]' class='tbox'>
-                     <option value='1' ".($this->advancedSearchFields['filesize_units'] == '' ? " selected='selected' " : "")." >b</option>
-                     <option value='1024' ".($this->advancedSearchFields['filesize_units'] == '1024' ? " selected='selected' " : "")." >Kb</option>
-                     <option value='1048576' ".($this->advancedSearchFields['filesize_units'] == '1048576' ? " selected='selected' " : "")." >Mb</option>
-                  </select>
-                  </td>
-            </tr>
-            <tr>
-               <td>Date</td>
-               <td>
+      $text .= "  </td>
+                  <td>".DOWLAN_149."</td>
+                  <td><input class='tbox' type='text' name='download_advanced_search[url]' size='50' value='{$this->advancedSearchFields['url']}' maxlength='50'/></td>
+               </tr>
+               <tr>
+                  <td>".DOWLAN_182."</td>
+                  <td>
          ";
       $text .= $this->_getConditionList('download_advanced_search[date_condition]', $this->advancedSearchFields['date_condition']);
 //TODO      $text .= $eform->datepicker('download_advanced_search[date]', $this->advancedSearchFields['date']);
       $text .= "//TODO";
       $text .= "
-               </td>
-               <td>Status</td>
-               <td>
-                  <select name='download_advanced_search[status]' class='tbox'>";
+                  </td>
+                  <td>".DOWLAN_21."</td>
+                  <td>
+                     <select name='download_advanced_search[status]' class='tbox'>";
       $text .= $this->_getStatusList('download_advanced_search[status]', $this->advancedSearchFields['status']);
-      $text .= "  </select>
-               </td>
-               <td>Requested</td>
-               <td>
+      $text .= "     </select>
+                  </td>
+               </tr>
+               <tr>
+                  <td>".DOWLAN_66."</td>
+                  <td>
          ";
-      $text .= $this->_getConditionList('download_advanced_search[requested_condition]', $this->advancedSearchFields['requested_condition']);
-      $text .= "  <input class='tbox' type='text' name='download_advanced_search[requested]' size='6' value='{$this->advancedSearchFields['requested']}' maxlength='6'/> times
-               </td>
-            </tr>
-            <tr>
-               <td>Visibility</td>
-               <td>
+      $text .= $this->_getConditionList('download_advanced_search[filesize_condition]', $this->advancedSearchFields['filesize_condition']);
+      $text .= "
+                     <input class='tbox' type='text' name='download_advanced_search[filesize]' size='10' value='{$this->advancedSearchFields['filesize']}'/>
+                     <select name='download_advanced_search[filesize_units]' class='tbox'>
+                        <option value='1' ".($this->advancedSearchFields['filesize_units'] == '' ? " selected='selected' " : "")." >b</option>
+                        <option value='1024' ".($this->advancedSearchFields['filesize_units'] == '1024' ? " selected='selected' " : "")." >Kb</option>
+                        <option value='1048576' ".($this->advancedSearchFields['filesize_units'] == '1048576' ? " selected='selected' " : "")." >Mb</option>
+                     </select>
+                  </td>
+                  <td>".DOWLAN_43."</td>
+                  <td>
                   ";
       $text .= $eform->uc_select('download_advanced_search[visible]', $this->advancedSearchFields['visible'], $this->userclassOptions);
-//TODO language file stuff
       $text .= "
-               </td>
-               <td>URL</td><td><input class='tbox' type='text' name='download_advanced_search[url]' size='50' value='{$this->advancedSearchFields['url']}' maxlength='50'/></td>
-               <td>Author</td><td><input class='tbox' type='text' name='download_advanced_search[author]' size='20' value='{$this->advancedSearchFields['author']}' maxlength='50'/></td>
-            </tr>
-            <tr>
-               <td>Class</td>
-               <td>
+                  </td>
+               </tr>
+               <tr>
+                  <td>".DOWLAN_29."</td>
+                  <td>
+         ";
+      $text .= $this->_getConditionList('download_advanced_search[requested_condition]', $this->advancedSearchFields['requested_condition']);
+      $text .= "     <input class='tbox' type='text' name='download_advanced_search[requested]' size='6' value='{$this->advancedSearchFields['requested']}' maxlength='6'/> times
+                  </td>
+                  <td>".DOWLAN_113."</td>
+                  <td>
                   ";
       $text .= $eform->uc_select('download_advanced_search[class]', $this->advancedSearchFields['class'], $this->userclassOptions);
       $text .= "
-               </td>
-               <td>Description</td><td><input class='tbox' type='text' name='download_advanced_search[description]' size='50' value='{$this->advancedSearchFields['description']}' maxlength='50'/></td>
-               <td>&nbsp;</td>
-               <td>&nbsp;</td>
-            </tr>
+                  </td>
+               </tr>
+               <tr>
+                  <td>".DOWLAN_15."</td>
+                  <td><input class='tbox' type='text' name='download_advanced_search[author]' size='30' value='{$this->advancedSearchFields['author']}' maxlength='50'/></td>
+                  <td>".DOWLAN_16."</td>
+                  <td><input class='tbox' type='text' name='download_advanced_search[author_email]' size='30' value='{$this->advancedSearchFields['author']}' maxlength='50'/></td>
+               </tr>
+               <tr>
+                  <td>".DOWLAN_17."</td>
+                  <td><input class='tbox' type='text' name='download_advanced_search[author_website]' size='30' value='{$this->advancedSearchFields['author']}' maxlength='50'/></td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+               </tr>
             </table>
             <div class='buttons-bar center'>
                <button type='submit' class='update' name='download_advanced_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
                <br/>
-               <a href='#' onclick='$(\"download_search\").show();$(\"download_advanced_search\").hide();return false;'>Basic search</a>
+               <a href='#download_advanced_search#download_search' class='e-swapit'>Advanced search</a>
             </div>
             </fieldset>
+            </div>
          </form>";
 
       return $text;
@@ -179,24 +194,24 @@ class adminDownload extends download
       $sortdirection = $id=="asc" ? "asc" : "desc";
 		$sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
 		$columnInfo = array(
-         "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_id.{$sort_link}.{$from}", "forced"=>true),
+         "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"center first", "url"=>e_SELF."?main.download_id.{$sort_link}.{$from}", "forced"=>true),
          "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_name.{$sort_link}.{$from}"),
          "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_url.{$sort_link}.{$from}"),
          "download_author"          => array("title"=>DOWLAN_15,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author.{$sort_link}.{$from}"),
          "download_author_email"    => array("title"=>DOWLAN_16,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author_email.{$sort_link}.{$from}"),
          "download_author_website"  => array("title"=>DOWLAN_17,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author_website.{$sort_link}.{$from}"),
          "download_description"     => array("title"=>DOWLAN_18,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_description.{$sort_link}.{$from}"),
-         "download_filesize"        => array("title"=>DOWLAN_66,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_filesize.{$sort_link}.{$from}"),
-         "download_requested"       => array("title"=>DOWLAN_29,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_requested.{$sort_link}.{$from}"),
+         "download_filesize"        => array("title"=>DOWLAN_66,  "type"=>"", "width"=>"auto", "thclass"=>"right", "url"=>e_SELF."?main.download_filesize.{$sort_link}.{$from}"),
+         "download_requested"       => array("title"=>DOWLAN_29,  "type"=>"", "width"=>"auto", "thclass"=>"center", "url"=>e_SELF."?main.download_requested.{$sort_link}.{$from}"),
          "download_category"        => array("title"=>DOWLAN_11,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_category.{$sort_link}.{$from}"),
-         "download_active"          => array("title"=>DOWLAN_21,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_active.{$sort_link}.{$from}"),
+         "download_active"          => array("title"=>DOWLAN_21,  "type"=>"", "width"=>"auto", "thclass"=>"center", "url"=>e_SELF."?main.download_active.{$sort_link}.{$from}"),
          "download_datestamp"       => array("title"=>DOWLAN_182, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_datestamp.{$sort_link}.{$from}"),
-         "download_thumb"           => array("title"=>DOWLAN_20,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_thumb.{$sort_link}.{$from}"),
+         "download_thumb"           => array("title"=>DOWLAN_20,  "type"=>"", "width"=>"auto", "thclass"=>"center", "url"=>e_SELF."?main.download_thumb.{$sort_link}.{$from}"),
          "download_image"           => array("title"=>DOWLAN_19,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_image.{$sort_link}.{$from}"),
-         "download_comment"         => array("title"=>DOWLAN_,    "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_comment.{$sort_link}.{$from}"),
+         "download_comment"         => array("title"=>DOWLAN_102, "type"=>"", "width"=>"auto", "thclass"=>"center", "url"=>e_SELF."?main.download_comment.{$sort_link}.{$from}"),
          "download_class"           => array("title"=>DOWLAN_113, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_class.{$sort_link}.{$from}"),
          "download_mirror"          => array("title"=>DOWLAN_128, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_mirror.{$sort_link}.{$from}"),
-         "download_mirror_type"     => array("title"=>DOWLAN_,    "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_mirror_type.{$sort_link}.{$from}"),
+         "download_mirror_type"     => array("title"=>DOWLAN_195, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_mirror_type.{$sort_link}.{$from}"),
          "download_visible"         => array("title"=>DOWLAN_43,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_visible.{$sort_link}.{$from}"),
 			"options"			         => array("title"=>LAN_OPTIONS,            "width"=>"auto", "thclass"=>"center last", "url"=>"", "forced"=>true)
 		);
@@ -283,56 +298,66 @@ class adminDownload extends download
                <thead>
 					   <tr>".$eform->thead($columnInfo,$filterColumns)."</tr>
 					</thead>
-		               <tbody>
+               <tbody>
             ";
 
          $rowStyle = "even";
 
          while ($row = $sql->db_Fetch())
          {
+            $mirror = strlen($row['download_mirror']) > 0;
 		 	   $rowStyle = ($rowStyle == "odd") ? "even" : "odd";
             $text .= "<tr class='{$rowStyle}'><td>".$row['download_id']."</td>";
 
             // Display Chosen options
             foreach($filterColumns as $disp)
             {
-               $text .= "<td>";
                switch ($disp)
                {
                   case "download_name" :
-                       $text .= "<a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'])."</a>";
+                     $text .= "<td>";
+                     $text .= "<a href='".e_PLUGIN."download/download.php?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'])."</a>";
                      break;
                   case "download_category" :
+                     $text .= "<td>";
                      $text .= $tp->toHTML($row['download_category_name']);
                      break;
                   case "download_datestamp" :
-                  global $gen;
+                     global $gen;
+                     $text .= "<td>";
                      $text .= ($row[$disp]) ? $gen->convert_date($row[$disp],'short') : "";
                      break;
                   case "download_class" :
                   case "download_visible" :
+                     $text .= "<td>";
                      $text .= r_userclass_name($row[$disp])."&nbsp;";
                      break;
                   case "download_filesize" :
-                     $text .= ($row[$disp]) ? $this->e107->parseMemorySize(($row[$disp])) : "";
+                     $text .= "<td class='right'>";
+                     //$text .= ($row[$disp]) ? $this->e107->parseMemorySize(($row[$disp])) : "";
+                     $text .= ($row[$disp]) ? (intval($row[$disp])) : "";
                      break;
                   case "download_thumb" :
+                     $text .= "<td>";
                      $text .= ($row[$disp]) ? "<img src='".e_FILE."downloadthumbs/".$row[$disp]."' alt=''/>" : "";
                      break;
                   case "download_image" :
+                     $text .= "<td>";
                      $text .= "<a rel='external' href='".e_FILE."downloadimages/".$row[$disp]."' >".$row[$disp]."</a>";
                      break;
                   case "download_description" :
+                     $text .= "<td>";
                      $text .= $tp->toHTML($row[$disp],TRUE);
                      break;
                   case "download_active" :
+                     $text .= "<td class='center'>";
                      if ($row[$disp]== 1)
                      {
                         $text .= "<img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_123."' alt='' style='cursor:help'/>";
                      }
                      elseif ($row[$disp]== 2)
                      {
-                        $text .= "<img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help'/><img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help'/>";
+                        $text .= "<img src='".ADMIN_WARNING_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help'/>";
                      }
                      else
                      {
@@ -340,9 +365,41 @@ class adminDownload extends download
                      }
                      break;
                   case "download_comment" :
+                     $text .= "<td class='center'>";
                      $text .= ($row[$disp]) ? ADMIN_TRUE_ICON : "";
                      break;
+                  case "download_mirror" :
+                     $text .= "<td>";
+                     $mirrorArray = $this->makeMirrorArray($row[$disp], TRUE);
+                     foreach($mirrorArray as $mirror) {
+                        $title = DOWLAN_66." ".$mirror['filesize']."; ".DOWLAN_29." ".$mirror['requests'];
+                        $text .= "<img src='".ADMIN_INFO_ICON_PATH."' title='".$title."' alt='' style='cursor:help'/> ";
+                        $text .= $tp->toHTML($mirror['url']).'<br/>';
+                     }
+                     break;
+                  case "download_mirror_type" :
+                     $text .= "<td class='center'>";
+                     if ($mirror)
+                     {
+                        switch ($row[$disp])
+                        {
+                           case 1:
+                              $text .= DOWLAN_196;
+                              break;
+                           default:
+                              $text .= DOWLAN_197;
+                        }
+                     }
+                     break;
+                  case "download_requested" :
+                  case "download_active" :
+                  case "download_thumb" :
+                  case "download_comment" :
+                     $text .= "<td class='center'>";
+                     $text .= $tp->toHTML($row[$disp]);
+                     break;
                   default :
+                     $text .= "<td>";
                      $text .= $tp->toHTML($row[$disp]);
                }
                $text .= "</td>";
@@ -355,7 +412,8 @@ class adminDownload extends download
                   </td>
                   </tr>";
          }
-         $text .= "</tbody></table></form>";
+         $text .= "</tbody></table>";
+         $text .= "</form>";
       }
       else
       {   // 'No downloads yet'
