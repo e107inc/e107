@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.34 $
-|   $Date: 2009-07-15 09:37:59 $
-|   $Author: e107coders $
+|   $Revision: 1.35 $
+|   $Date: 2009-07-16 23:09:40 $
+|   $Author: bugrain $
 +---------------------------------------------------------------+
 */
 
@@ -117,6 +117,18 @@ if (!defined('ADMIN_DELETE_ICON'))
 {
 	define("ADMIN_DELETE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' />");
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
+}
+
+if (!defined('ADMIN_WARNING_ICON'))
+{
+	define("ADMIN_WARNING_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/warning.png' alt='' />");
+	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."fileinspector/warning.png");
+}
+
+if (!defined('ADMIN_INFO_ICON'))
+{
+	define("ADMIN_INFO_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/info.png' alt='' />");
+	define("ADMIN_INFO_ICON_PATH", e_IMAGE."fileinspector/info.png");
 }
 
 //
