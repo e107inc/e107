@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-16 02:55:19 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-16 19:19:07 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -349,37 +349,36 @@ class menuManager{
 			$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
 			foreach($fileList as $file)
 			{
-			  list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
-			  $file['path'] = str_replace(e_PLUGIN,"",$file['path']);
-			  $file['fname'] = str_replace(".php","",$file['fname']);
-			  $valid_menu = FALSE;
-			  $existing_menu = $sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
-			  if (file_exists(e_PLUGIN.$parent_dir."/plugin.xml") ||
-				file_exists(e_PLUGIN.$parent_dir."/plugin.php"))
-			  {
-		//		include(e_PLUGIN.$parent_dir."/plugin.php");
-				if (isset($pref['plug_installed'][$parent_dir]))
-		//		if ($sql->db_Select("plugin", "*", "plugin_path='".$eplug_folder."' AND plugin_installflag='1' "))
-				{  // Its a 'new style' plugin with a plugin.php file, or an even newer one with plugin.xml file - only include if plugin installed
-				  $valid_menu = TRUE;		// Whether new or existing, include in list
+				list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
+				$file['path'] = str_replace(e_PLUGIN,"",$file['path']);
+				$file['fname'] = str_replace(".php","",$file['fname']);
+				$valid_menu = FALSE;
+				$existing_menu = $sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
+				if (file_exists(e_PLUGIN.$parent_dir.'/plugin.xml') || file_exists(e_PLUGIN.$parent_dir.'/plugin.php'))
+				{
+					if (plugInstalled($parent_dir))
+					{  // Its a 'new style' plugin with a plugin.php file, or an even newer one with plugin.xml file - only include if plugin installed
+						$valid_menu = TRUE;		// Whether new or existing, include in list
+//						echo "Include {$parent_dir}:{$file['fname']}<br />";
+					}
 				}
-			  }
-			  else
-			  {  // Just add the menu anyway
-				  $valid_menu = TRUE;
-			  }
-			  if ($valid_menu)
-			  {
-			    $menustr .= "&".str_replace(".php", "", $file['fname']);
-				if (!$existing_menu)
-				{  // New menu to add to list
-					  if($sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}', ''"))
-					  {
+				else
+				{  // Just add the menu anyway
+					$valid_menu = TRUE;
+//					echo "Default Include {$parent_dir}:{$file['fname']}<br />";
+				}
+				if ($valid_menu)
+				{
+					$menustr .= "&".str_replace(".php", "", $file['fname']);
+					if (!$existing_menu)
+					{  // New menu to add to list
+						if($sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}', ''"))
+						{
 					  		// Could do admin logging here - but probably not needed
-					  	$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
-					  }
+							$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
+						}
+					}
 				}
-			  }
 			}
 
 			//Reorder all menus into 1...x order
@@ -696,7 +695,7 @@ class menuManager{
 		$text .= "<tr><td style='width:50%;text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
 		$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
 
-	 	$sql->db_Select("menus", "menu_name, menu_id, menu_pages", "1 GROUP BY menu_name ORDER BY menu_name ASC");
+	 	$sql->db_Select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
 
 		if(!$this->dragDrop)
 		{
@@ -721,7 +720,7 @@ class menuManager{
 			else
 			{
 				$row['menu_name'] = preg_replace("#_menu$#i", "", $row['menu_name']);
-	            if($pnum = $this->checkMenuPreset($menuPreset,$row['menu_name']."_menu"))
+	            if($pnum = $this->checkMenuPreset($menuPreset,$row['menu_name'].'_menu'))
 				{
 		        	$pdeta = MENLAN_39." {$pnum}";
 				}
@@ -729,8 +728,9 @@ class menuManager{
 
 	        if(!$this->dragDrop)
 			{
+				$menuInf = (strlen($row['menu_path']) > 1) ? ' ('.substr($row['menu_path'],0,-1).')' : '';
 	    		$text .= "<tr style='background-color:$color;color:black'>
-				<td style='text-align:left; color:black;'><input type='checkbox' name='menuselect[]' value='{$row['menu_id']}' />".$row['menu_name']."</td>
+				<td style='text-align:left; color:black;'><input type='checkbox' name='menuselect[]' value='{$row['menu_id']}' />".$row['menu_name'].$menuInf."</td>
 	            <td style='color:black'> ".$pdeta."&nbsp;</td>
 				</tr>\n";
 	        }
@@ -738,7 +738,7 @@ class menuManager{
 			{
 	            $text .= "<div class='block block-archive' id='block-archive-".$row['menu_id']."--".$this->dbLayout."' style='border:1px outset black;text-align:left;color:black'>
 
-				<div class='block-toggle'><input type='checkbox' name='menuselect[]' value='{$row['menu_id']}' />".$row['menu_name']."  $pdeta</div>
+				<div class='block-toggle'><input type='checkbox' name='menuselect[]' value='{$row['menu_id']}' />".$row['menu_name']."  {$pdeta}</div>
 	            <div class='content'>";
 			 	$text .= $this->menuRenderMenu($row,$menu_count);
 	  			$text .= "</div></div>\n";
