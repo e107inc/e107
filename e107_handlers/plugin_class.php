@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2009-07-16 08:15:35 $
+|     $Revision: 1.70 $
+|     $Date: 2009-07-16 08:46:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -285,7 +285,7 @@ class e107plugin
         require_once(e_HANDLER."file_class.php");
 		$fl = new e_file;
 
-        $filesrch = implode("|",array("/images(*.)_16.png","_16.PNG","_32.png","_32.PNG","_48.png","_48.PNG","_64.png","_64.PNG","_128.png","_128.png"));
+        $filesrch = implode("|",array("_16.png","_16.PNG","_32.png","_32.PNG","_48.png","_48.PNG","_64.png","_64.PNG","_128.png","_128.png"));
 
         if($plugin_icons = $fl->get_files(e_PLUGIN,$filesrch,$reject_plugin,2))
         {
