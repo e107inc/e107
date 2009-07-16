@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.9 2009-07-14 23:18:22 bugrain Exp $ -->
+<!-- $Id: plugin.xml,v 1.10 2009-07-16 23:25:16 bugrain Exp $ -->
 <e107Plugin name="Download" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org"/>
 	<description>DOWLAN_DESCRIPTION</description>
@@ -8,12 +8,12 @@
 	<installLanguageFile filename="languages/--LAN--/admin_download.php" />
 	<administration>
 		<configFile>admin_download.php</configFile>
-		<subMenuItem title="DOWLAN_29" description="" link="download_admin.php" icon="manage" />
-		<subMenuItem title="DOWLAN_30" description="" link="download_admin.php?create" icon="add" />
-		<subMenuItem title="DOWLAN_31" description="" link="download_admin.php?cat" icon="images/downloads_32.png" />
-		<subMenuItem title="DOWLAN_32" description="" link="download_admin.php?opt" icon="settings" />
-		<subMenuItem title="DOWLAN_112" description="" link="download_admin.php?limits" icon="images/downloads_32.png" />
-		<subMenuItem title="DOWLAN_128" description="" link="download_admin.php?mirror" icon="images/downloads_32.png" />
+		<subMenuItem title="DOWLAN_29" description="" link="admin_download.php" icon="manage" />
+		<subMenuItem title="DOWLAN_30" description="" link="admin_download.php?create" icon="add" />
+		<subMenuItem title="DOWLAN_31" description="" link="admin_download.php?cat" icon="images/downloads_32.png" />
+		<subMenuItem title="DOWLAN_32" description="" link="admin_download.php?opt" icon="settings" />
+		<subMenuItem title="DOWLAN_112" description="" link="admin_download.php?limits" icon="images/downloads_32.png" />
+		<subMenuItem title="DOWLAN_128" description="" link="admin_download.php?mirror" icon="images/downloads_32.png" />
 		<icon>images/downloads_32.png</icon>
 		<iconSmall>images/downloads_16.png</iconSmall>
 		<caption>DOWLAN_CAPTION</caption>
