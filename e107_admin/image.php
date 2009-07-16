@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-01-09 17:25:50 $
- * $Author: secretr $
+ * $Revision: 1.21 $
+ * $Date: 2009-07-16 08:15:35 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -39,9 +39,34 @@ if(isset($_POST['submit_cancel_show']))
 	exit();
 }
 
+$action = e_QUERY;
+
+
+if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
+{
+	del_pref_val();
+}
+
+if($action == "icons")
+{
+	icon_editor();
+}
+
+if($action == "avatars")
+{
+	show_avatars();
+}
+
+if($action !='avatars' && $action !='icons')
+{
+	main_config();
+}
 /*
  * DELETE CHECKED AVATARS - SHOW AVATAR SCREEN
  */
+
+
+
 if (isset($_POST['submit_show_delete_multi']))
 {
 	if(varset($_POST['multiaction']))
@@ -214,8 +239,10 @@ if (isset($_POST['update_options']))
 /*
  * SHOW AVATARS SCREEN
  */
-if (isset($_POST['show_avatars']))
+function show_avatars()
 {
+	global $ns, $sql, $frm, $tp, $emessage, $e107, $pref;
+
 	$handle = opendir(e_FILE."public/avatars/");
 	$dirlist = array();
 	while ($file = readdir($handle))
@@ -236,7 +263,7 @@ if (isset($_POST['show_avatars']))
 	else
 	{
 		$text = "
-			<form method='post' action='".e_SELF."' id='core-iamge-show-avatars-form'>
+			<form method='post' action='".e_SELF."?avatars' id='core-iamge-show-avatars-form'>
 			<fieldset id='core-iamge-show-avatars'>
 		";
 
@@ -252,7 +279,9 @@ if (isset($_POST['show_avatars']))
 				$row = $sql->db_Fetch();
 				if($row['user_image'] == '-upload-'.$image_name) $image_pre = '-upload-';
 				$users .= "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a> <span class='smalltext'>(".($row['user_sess'] == $image_name ? IMALAN_24 : IMALAN_23).")</span>";
-			} else {
+			}
+			else
+			{
 				$users = '<span class="warning">'.IMALAN_22.'</span>';
 			}
 
@@ -317,7 +346,7 @@ if (isset($_POST['show_avatars']))
 	}
 
 
-	$ns->tablerender(IMALAN_18, $emessage->render().$text);
+	$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_18, $emessage->render().$text);
 }
 
 /*
@@ -347,7 +376,7 @@ if (isset($_POST['check_avatar_sizes']))
 				</colgroup>
 				<thead>
 					<tr>
-						<th class='center'>".IMALAN_61."</th>
+						<th class='center'>".LAN_OPTIONS."</th>
 						<th class='center'>".IMALAN_64."</th>
 						<th class='center'>".IMALAN_62."</th>
 						<th class='center last'>".IMALAN_63."</th>
@@ -453,39 +482,40 @@ if (isset($_POST['check_avatar_sizes']))
 		</fieldset>
 	</form>
 
-	<table cellpadding='0' cellspacing='0' class='admininfo'>
-		<colgroup span='2'>
-			<col style='width:20%'></col>
-			<col style='width:80%'></col>
+	<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
+	</colgroup>
 		</colgroup>
 		<tbody>
 			<tr>
-				<td class='label'>".IMALAN_38."</td>
-				<td class='control'>{$allowedWidth}</td>
+				<td>".IMALAN_38."</td>
+				<td>{$allowedWidth}</td>
 			</tr>
 			<tr>
-				<td class='label'>".IMALAN_39."</td>
-				<td class='control'>{$allowedHeight}</td>
+				<td>".IMALAN_39."</td>
+				<td>{$allowedHeight}</td>
 			</tr>
 			<tr>
-				<td class='label'>".IMALAN_45."</td>
-				<td class='control'>{$iAVnotfound}</td>
+				<td>".IMALAN_45."</td>
+				<td>{$iAVnotfound}</td>
 			</tr>
 			<tr>
-				<td class='label'>".IMALAN_46."</td>
-				<td class='control'>{$iAVtoobig}</td>
+				<td>".IMALAN_46."</td>
+				<td>{$iAVtoobig}</td>
 			</tr>
 			<tr>
-				<td class='label'>".IMALAN_47."</td>
-				<td class='control'>{$iAVinternal}</td>
+				<td>".IMALAN_47."</td>
+				<td>{$iAVinternal}</td>
 			</tr>
 			<tr>
-				<td class='label'>".IMALAN_48."</td>
-				<td class='control'>{$iAVexternal}</td>
+				<td>".IMALAN_48."</td>
+				<td>{$iAVexternal}</td>
 			</tr>
 			<tr>
-				<td class='label'>".IMALAN_49."</td>
-				<td class='control'>".($iAVexternal+$iAVinternal)." (".(int)(100.0*(($iAVexternal+$iAVinternal)/$iUserCount)).'%, '.$iUserCount." ".IMALAN_50.")</td>
+				<td>".IMALAN_49."</td>
+				<td>".($iAVexternal+$iAVinternal)." (".(int)(100.0*(($iAVexternal+$iAVinternal)/$iUserCount)).'%, '.$iUserCount." ".IMALAN_50.")</td>
 			</tr>
 		</tbody>
 	</table>
@@ -497,135 +527,282 @@ if (isset($_POST['check_avatar_sizes']))
 /*
  * MAIN CONFIG SCREEN
  */
-if(function_exists('gd_info'))
-{
-	$gd_info = gd_info();
-	$gd_version = $gd_info['GD Version'];
-}
-else
-{
-	$gd_version = "<span class='error'> ".IMALAN_55."</span>";
-}
-
-$IM_NOTE = "";
-if($pref['im_path'] != "")
-{
-  $im_file = $pref['im_path'].'convert';
-	if(!file_exists($im_file))
+ function main_config()
+ {
+ 	global $pref, $frm, $tp, $sql, $ns, $emessage;
+	if(function_exists('gd_info'))
 	{
-		$IM_NOTE = "<span class='error'>".IMALAN_52."</span>";
+		$gd_info = gd_info();
+		$gd_version = $gd_info['GD Version'];
 	}
 	else
 	{
-		$cmd = "{$im_file} -version";
-		$tmp = `$cmd`;
-		if(strpos($tmp, "ImageMagick") === FALSE)
+		$gd_version = "<span class='error'> ".IMALAN_55."</span>";
+	}
+
+	$IM_NOTE = "";
+	if($pref['im_path'] != "")
+	{
+	  $im_file = $pref['im_path'].'convert';
+		if(!file_exists($im_file))
 		{
-			$IM_NOTE = "<span class='error'>".IMALAN_53."</span>";
+			$IM_NOTE = "<span class='error'>".IMALAN_52."</span>";
+		}
+		else
+		{
+			$cmd = "{$im_file} -version";
+			$tmp = `$cmd`;
+			if(strpos($tmp, "ImageMagick") === FALSE)
+			{
+				$IM_NOTE = "<span class='error'>".IMALAN_53."</span>";
+			}
 		}
 	}
+
+	$text = "
+		<form method='post' action='".e_SELF."'>
+			<fieldset id='core-image-settings'>
+				<legend class='e-hideme'>".IMALAN_7."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminform'>
+					<colgroup span='2'>
+						<col class='col-label'></col>
+						<col class='col-control'></col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<td class='label'>
+								".IMALAN_1."
+							</td>
+							<td class='control'>
+								<div class='auto-toggle-area autocheck'>
+									".$frm->checkbox('image_post', 1, $pref['image_post'])."
+									<div class='smalltext field-help'>".IMALAN_2."</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class='label'>
+								".IMALAN_10."
+							</td>
+							<td class='control'>
+								".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
+								<div class='smalltext field-help'>".IMALAN_11."</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td class='label'>
+								".IMALAN_12."
+							</td>
+							<td class='control'>
+								".$frm->select_open('image_post_disabled_method')."
+									".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
+									".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
+								".$frm->select_close()."
+								<div class='smalltext field-help'>".IMALAN_13."</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
+							<td class='control'>
+								".$frm->select_open('resize_method')."
+									".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
+									".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
+									".$frm->option('ImageMagick', 'ImageMagick', ($pref['resize_method'] == "ImageMagick"))."
+								".$frm->select_close()."
+								<div class='smalltext field-help'>".IMALAN_4."</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
+							<td class='control'>
+								".$frm->text('im_path', $pref['im_path'])."
+								<div class='smalltext field-help'>".IMALAN_6."</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td class='label'>".IMALAN_34."
+							</td>
+							<td class='control'>
+								<div class='auto-toggle-area autocheck'>
+									".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
+									<div class='smalltext field-help'>".IMALAN_35."</div>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td class='label'>".IMALAN_36."</td>
+							<td class='control'>
+								".$frm->admin_button('check_avatar_sizes', IMALAN_17)."
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class='buttons-bar center'>
+					".$frm->admin_button('update_options', IMALAN_8, 'update')."
+				</div>
+			</fieldset>
+		</form>";
+
+		$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_7, $emessage->render().$text);
 }
-
-$text = "
-	<form method='post' action='".e_SELF."'>
-		<fieldset id='core-image-settings'>
-			<legend class='e-hideme'>".IMALAN_7."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminform'>
-				<colgroup span='2'>
-					<col class='col-label'></col>
-					<col class='col-control'></col>
-				</colgroup>
-				<tbody>
-					<tr>
-						<td class='label'>
-							".IMALAN_1."
-						</td>
-						<td class='control'>
-							<div class='auto-toggle-area autocheck'>
-								".$frm->checkbox('image_post', 1, $pref['image_post'])."
-								<div class='smalltext field-help'>".IMALAN_2."</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td class='label'>
-							".IMALAN_10."
-						</td>
-						<td class='control'>
-							".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
-							<div class='smalltext field-help'>".IMALAN_11."</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td class='label'>
-							".IMALAN_12."
-						</td>
-						<td class='control'>
-							".$frm->select_open('image_post_disabled_method')."
-								".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
-								".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
-							".$frm->select_close()."
-							<div class='smalltext field-help'>".IMALAN_13."</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td class='label'>".IMALAN_3."<div class='label-note'>".IMALAN_54." {$gd_version}</div></td>
-						<td class='control'>
-							".$frm->select_open('resize_method')."
-								".$frm->option('gd1', 'gd1', ($pref['resize_method'] == "gd1"))."
-								".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
-								".$frm->option('ImageMagick', 'ImageMagick', ($pref['resize_method'] == "ImageMagick"))."
-							".$frm->select_close()."
-							<div class='smalltext field-help'>".IMALAN_4."</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
-						<td class='control'>
-							".$frm->text('im_path', $pref['im_path'])."
-							<div class='smalltext field-help'>".IMALAN_6."</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td class='label'>".IMALAN_34."
-						</td>
-						<td class='control'>
-							<div class='auto-toggle-area autocheck'>
-								".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
-								<div class='smalltext field-help'>".IMALAN_35."</div>
-							</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td class='label'>".IMALAN_16."</td>
-						<td class='control'>
-							".$frm->admin_button('show_avatars', IMALAN_17)."
-						</td>
-					</tr>
-
-					<tr>
-						<td class='label'>".IMALAN_36."</td>
-						<td class='control'>
-							".$frm->admin_button('check_avatar_sizes', IMALAN_17)."
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<div class='buttons-bar center'>
-				".$frm->admin_button('update_options', IMALAN_8, 'update')."
-			</div>
-		</fieldset>
-	</form>";
-
-$ns->tablerender(IMALAN_7, $emessage->render().$text);
-
 //Just in case...
 if(!e_AJAX_REQUEST) require_once("footer.php");
+
+
+
+
+function icon_editor()
+{
+	global $iconpool, $e107, $emessage, $frm, $tp;
+	ksort($iconpool);
+
+	$text = "
+			<form method='post' action='".e_SELF."?icons' id='icon_edit'>
+				<fieldset id='core-imagemanager-icons'>
+					<legend class='e-hideme'>".DBLAN_20."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						<colgroup span='4'>
+							<col style='width: 5%'></col>
+							<col style='width: 20%'></col>
+							<col style='width: 70%'></col>
+							<col style='width: 5%'></col>
+						</colgroup>
+						<thead>
+							<tr>
+								<th class='center'>".LAN_DELETE."</th>
+								<th>".LAN_CATEGORY."</th>
+								<th>".IMALAN_72."</th>
+								<th class='center last'>".LAN_OPTIONS."</th>
+							</tr>
+						</thead>
+						<tbody>
+		";
+    $tmp = array(16, 32, 48, 64, 128);
+
+	foreach($iconpool as $key => $val)
+	{
+			$tmp1 = array();
+            foreach($val as $icon)
+			{
+	            $filepath = $icon;
+		 		$filepath_abs = $tp->replaceConstants($icon);
+				$icon_file = basename($filepath_abs);
+
+				$str = "<img class='icon picker list%%size%%' src='{$filepath_abs}' alt='{$icon_file}' />";
+				foreach ($tmp as $isize)
+				{
+					if(strpos($icon_file, '_'.$isize.'.') !== false)
+					{
+						$tmp1[$isize] = varset($tmp1[$isize]).str_replace('%%size%%', ' S'.$isize, $str);
+						continue 2;
+					}
+				}
+			   	$tmp1['other'] = varset($tmp1['other']).$str;//other
+            }
+
+			$ptext = "<div class='field-spacer iconeditor'>".str_replace('%%size%%', '', implode('</div><div class="field-spacer iconeditor">', $tmp1))."</div>";
+
+   //	$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, CHARSET);
+   //		$ptext = $e107->tp->textclean($ptext, 80);
+
+		$text .= "
+							<tr>
+								<td class='center autocheck e-pointer'>".$frm->checkbox("delpref2[$key]", 1)."</td>
+								<td>{$key}</td>
+								<td>{$ptext}</td>
+								<td class='center'>".$frm->submit_image("delpref[$key]", LAN_DELETE, 'delete', LAN_CONFIRMDEL." [$key]")."</td>
+							</tr>
+			";
+	}
+
+	$text .= "
+						</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						".$frm->admin_button('delpref_checked', LAN_DELCHECKED, 'delete')."
+					</div>
+				</fieldset>
+			</form>
+
+
+		";
+	//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
+	$e107->ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_71, $emessage->render().$text);
+
+	return $text;
+}
+
+function del_pref_val()
+{
+	global $iconpool, $e107cache, $emessage;
+	$del = array_keys($_POST['delpref']);
+	$delpref = key($_POST['delpref']);
+
+	if($delpref)
+	{
+		unset($iconpool[$delpref]);
+		$deleted_list .= "<li>".$delpref."</li>";
+	}
+
+	if($_POST['delpref2'])
+	{
+
+		foreach($_POST['delpref2'] as $k => $v)
+		{
+			$deleted_list .= "<li>".$k."</li>";
+			unset($iconpool[$k]);
+		}
+	}
+
+	if(save_prefs('iconpool'))
+	{
+		$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
+		$e107cache->clear();
+	}
+	//$e107->ns->tablerender(LAN_DELETED,$message);
+
+
+}
+
+
+function image_adminmenu()
+{
+	global $action;
+	if($action == "")
+	{
+		$action = "main";
+	}
+	$var['main']['text'] = IMALAN_7;
+	$var['main']['link'] = e_SELF;
+
+	$var['icons']['text'] = IMALAN_71;
+	$var['icons']['link'] = e_SELF."?icons";
+
+	$var['avatars']['text'] = IMALAN_23;
+	$var['avatars']['link'] = e_SELF."?avatars";
+
+
+	$var['editor']['text'] = "Image Manipulation (future release)";
+	$var['editor']['link'] = e_SELF."?editor";
+
+
+	e_admin_menu(LAN_IMAGEMANAGER, $action, $var);
+}
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Handle page DOM within the page header

@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-07-15 09:38:00 $
+ * $Revision: 1.34 $
+ * $Date: 2009-07-16 08:15:35 $
  * $Author: e107coders $
  *
 */
@@ -87,6 +87,11 @@ class e_form
 
 	function iconpicker($name, $default, $label, $sc_parameters = '', $ajax = true)
 	{
+    	// TODO - Hide the <input type='text'> element, and display the icon itself after it has been chosen.
+		// eg. <img id='iconview' src='".$img."' style='border:0; ".$blank_display."' alt='' />
+		// The button itself could be replaced with an icon just for this purpose.
+
+
 		$e107 = &e107::getInstance();
 		$id = $this->name2id($name);
 		$sc_parameters .= '&id='.$id;

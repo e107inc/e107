@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-07-14 19:26:01 $
- * $Author: e107steved $
+ * $Revision: 1.23 $
+ * $Date: 2009-07-16 08:15:35 $
+ * $Author: e107coders $
  *
 */
 
@@ -27,7 +27,8 @@ $e_sub_cat = 'userclass';
 require_once(e_HANDLER."userclass_class.php");		// Modified class handler
 $uclass = new e_userclass;							// Class management functions - legacy stuff from 0.7
 $e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
-
+require_once (e_HANDLER.'form_handler.php');
+$frm = new e_form();
 
 $message = '';
 
@@ -348,12 +349,12 @@ switch ($action)
 
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."' id='classForm'>
-		<table class='fborder' style='".ADMIN_WIDTH."'>
-		<colgroup>
-		<col style='width:30%' />
-		<col style='width:40%' />
-		<col style='width:30%' />
-		</colgroup>
+ 	<table cellpadding='0' cellspacing='0' class='adminform'>
+ 	<colgroup span='2'>
+ 		<col class='col-label' />
+ 		<col class='col-control' />
+		<col class='col-else' />
+ 	</colgroup>
 		<tr>
 		<td class='fcaption' style='text-align:center' colspan='3'>";
 
@@ -390,36 +391,8 @@ switch ($action)
 		$text .= "
 		<tr>
 		<td class='forumheader3'>".UCSLAN_68."</td>
-		<td class='forumheader3'>
-		  <input class='tbox' type='text' size='60' maxlength='85' name='userclass_icon' id='userclass_icon' value='{$userclass_icon}' /><br />
-          <div id='linkbut' style='display:block; vertical-align:top;'>
-		  <table style='text-align:left; width:100%;'>
-		  <tr><td style='width:20%; padding-right:10px;'>";
-        $selectjs = " onchange=\"document.getElementById('userclass_icon').value=this.options[this.selectedIndex].value;
-					if(this.options[this.selectedIndex].value!=''){document.getElementById('iconview').src='".$iconpath."'+this.options[this.selectedIndex].value;
-					document.getElementById('iconview').style.display='block';}else{document.getElementById('iconview').src='';
-					document.getElementById('iconview').style.display='none';}\"";
-        $text  .= "<select name='uc_icon_select' class='tbox' {$selectjs}>\n";
-        $text  .= "<option value=''".($userclass_icon ? '' : " selected='selected'").">".UCSLAN_9."</option>\n";
-        foreach($iconlist as $icon)
-		{
-          $text   .= "<option value='{$icon['fname']}'".($icon['fname'] == $userclass_icon ? " selected='selected'" : "").">{$icon['fname']}</option>\n";
-        }
-		$text .= "</select>\n";
-        if($userclass_icon)
-		{
-          $img = $iconpath.$userclass_icon;
-        }
-		else
-		{
-          $blank_display = 'display: none';
-          $img = e_IMAGE_ABS."generic/blank.gif";
-        }
-        $text .= "</td><td><img id='iconview' src='".$img."' style='border:0; ".$blank_display."' alt='' />
-		</td></tr></table>
-        </div>
-		</td>
-		<td class='forumheader3'>".UCSLAN_69.$IMAGES_DIRECTORY.UC_CLASS_ICON_DIR."</td>
+		<td class='forumheader3'>".$frm->iconpicker('userclass_icon', $userclass_icon, LAN_CHOOSE)."</td>
+		<td class='forumheader3'>".UCSLAN_69."</td>
 		</tr>
 		";
 
