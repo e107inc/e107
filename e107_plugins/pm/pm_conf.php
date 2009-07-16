@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-12-30 16:35:05 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-16 08:22:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $retrieve_prefs[] = 'pm_prefs';
@@ -50,7 +50,7 @@ if(!is_array($pm_prefs))
 }
 
 $lan_file = e_PLUGIN."pm/languages/admin/".e_LANGUAGE.".php";
-include_once(is_readable($lan_file) ? $lan_file : e_PLUGIN."pm/languages/admin/English.php");
+// include_once(is_readable($lan_file) ? $lan_file : e_PLUGIN."pm/languages/admin/English.php");
 	
 if (isset($_POST['update_prefs'])) 
 {
