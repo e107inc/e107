@@ -1,23 +1,22 @@
 <?php
+
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2009-07-14 12:19:40 $
-|     $Author: marj_nl_fr $
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (C) 2001-2008 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Default preferences
+*
+* $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
+* $Revision: 1.26 $
+* $Date: 2009-07-16 10:12:26 $
+* $Author: marj_nl_fr $
+*
 */
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 
 $pref = array (
   'install_date' => time(),
@@ -35,6 +34,34 @@ City, State, Country
 [b]Email:[/b] sales@mydomain.com',
   'sitetheme' => 'jayya',
   'themecss' => 'style.css',
+
+  // Add some new needed prefs to test the install
+  // @TODO: clean me up
+  'sitetheme_deflayout' => '3_column',
+  'sitetheme_pref' => '',
+  'admin_separate_plugins' => '',
+  'sitetheme_layouts' =>
+  array (
+    '3_column' =>
+    array ( '@attributes' => array ( 'title' => '3 Columns',
+        'preview' => 'preview.jpg',
+        'default' => 'true',
+      ),
+      0 => '',
+    ),
+    '2_column' =>
+    array ( '@attributes' =>
+      array ( 'title' => '2 Columns',
+        'preview' => 'preview.jpg',
+      ),
+      0 => '',
+    ),
+  ),
+  'sitetheme_custompages' => '',
+  // add login_menu in the list
+  'menuconfig_list' => array('login_menu' => array('name' => 'Login', 'link' => 'login_menu/config.php')),
+	// end of temporary prefs
+
   'image_preload' => '0',
   'admintheme' => 'jayya',
   'admincss' => 'style.css',
