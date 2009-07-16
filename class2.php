@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.107 $
-* $Date: 2009-07-12 14:44:56 $
+* $Revision: 1.108 $
+* $Date: 2009-07-16 02:55:18 $
 * $Author: e107coders $
 *
 */
@@ -422,6 +422,20 @@ $e107->set_base_path();
 
 // extract menu prefs
 $menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));
+
+// extract iconpool
+if($tmp = ecache::retrieve_sys('IconPool', 24 * 60, true))
+{
+    $iconpool = $tmp;
+}
+else
+{
+	if($iconData= $sysprefs->get('IconPool'))
+	{
+		ecache::set_sys('IconPool', $iconData);
+		$iconpool = $eArrayStorage->ReadArray($iconData);
+	}
+}
 
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
@@ -1349,7 +1363,7 @@ function get_user_data($uid, $extra = '')
 
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
-  global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref;
+  global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref, $iconpool;
   if ($table == 'core')
   {
 		if ($row_val == '')
@@ -1369,6 +1383,21 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 			{
             	return false;
 			}
+		}
+  }
+  elseif($table == "iconpool")
+  {
+  	  //	$sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('IconPool_Backup', '".addslashes($PrefCache)."') ");
+	  	$_iconpool = $tp->toDB($iconpool, true, true);
+
+  		if($sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('IconPool', '".$eArrayStorage->WriteArray($_iconpool)."') "))
+		{
+	  		ecache::clear_sys('IconPool');
+			return true;
+		}
+		else
+		{
+           	return false;
 		}
   }
   elseif($table == "theme")

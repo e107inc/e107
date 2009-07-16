@@ -3,16 +3,15 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Copyright (c) e107 Inc. 2001-2009
 |     http://e107.org
-|     jalist@e107.org
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2009-07-15 09:38:00 $
+|     $Revision: 1.38 $
+|     $Date: 2009-07-16 02:55:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +30,7 @@ class themeHandler{
 
 	function themeHandler() {
 
-		global $emessage;
+		global $emessage, $e107cache, $pref;
 
    		require_once(e_HANDLER."form_handler.php");
 		$this->frm = new e_form(); //enable inner tabindex counter
@@ -97,6 +96,31 @@ class themeHandler{
 			$eplug = new e107plugin;
             $message = $eplug->install_plugin($key);
 		    $emessage->add($message, E_MESSAGE_SUCCESS);
+		}
+
+		if(isset($_POST['setMenuPreset']))
+		{
+        	$key = key($_POST['setMenuPreset']);
+           	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
+        	require_once(e_HANDLER."menu_class.php");
+			$men = new menuManager();
+			$men->curLayout = $key;
+			$men->dbLayout = ($men->curLayout !=$pref['sitetheme_deflayout']) ? $men->curLayout : "";  //menu_layout is left blank when it's default.
+
+			if($areas = $men->menuSetPreset())
+			{
+            	foreach($areas as $val)
+				{
+                 	$ar[$val['menu_location']][] = $val['menu_name'];
+				}
+				foreach($ar as $k=>$v)
+				{
+                	$message .= MENLAN_14." ".$k." : ".implode(", ",$v)."<br />";
+				}
+
+				$emessage->add(MENLAN_43." : ".$key."<br />".$message, E_MESSAGE_SUCCESS);
+			}
+
 		}
 
 
@@ -526,7 +550,7 @@ class themeHandler{
 		mode = 2 :: selected admin theme
 		*/
 
-		global $ns, $pref;
+		global $ns, $pref, $frm;
 
 
 
@@ -562,16 +586,6 @@ class themeHandler{
     	$this->id = $theme['path'];
 
 		$this->loadThemeConfig();   // load customn theme configuration fieldss.
-
- 		$menuPresetCount = 0;
-  		foreach($theme['layouts'] as $key=>$val)
-		{
-			if($val['menuPresets'])
-			{
-				$menuPresetCount++;
-			}
-		}
-
 
 		$text = "
 		<h2 class='caption'>".$theme['name']."</h2>
@@ -635,12 +649,6 @@ class themeHandler{
 
                  $text .= "
 				<tr>
-                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_54."</b></td>
-					<td colspan='2' style='vertical-align:top width:auto;'>".$menuPresetCount."</td>
-				</tr>";
-
-                 $text .= "
-				<tr>
                     <td style='vertical-align:top; width:24%;'><b>".TPVLAN_30."</b></td>
 					<td colspan='2' style='vertical-align:top width:auto;'>
 					<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
@@ -657,12 +665,19 @@ class themeHandler{
             $itext = "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 					<td colspan='2' style='vertical-align:top'>
-					<table class='adminlist' style='auto;width:100%' >
+                    <table cellpadding='0' cellspacing='0' class='adminlist'>
+                      	<colgroup span='2'>
+                      		<col class='col-tm-layout-default' style='width:10%' />
+                      		<col class='col-tm-layout-name' style='width:20%' />
+							<col class='col-tm-layout-visibility' style='width:35%' />
+							<col class='col-tm-layout-preset' style='width:35%' />
+                      	</colgroup>
 						<tr>";
-                        $itext .= ($mode == 1) ? "<td style='width:15%;vertical-align:top;'>".TPVLAN_55."</td>" : "";
+                        $itext .= ($mode == 1) ? "<td class='center top'>".TPVLAN_55."</td>" : "";
 						$itext .= "
-							<td style='width:20%'>".TPVLAN_52."</td>
-							<td style='width:65%'>".TPVLAN_56."</td>
+							<td>".TPVLAN_52."</td>
+							<td>".TPVLAN_56."</td>
+							<td>".TPVLAN_54."</td>
 
 						</tr>\n";
 
@@ -689,11 +704,18 @@ class themeHandler{
 							$itext .= $val['@attributes']['title'];
 							$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
 
+							$custompage_count = (isset($pref['sitetheme_custompages'][$key])) ? " [".count($pref['sitetheme_custompages'][$key])."]" : "";
 							$itext .= "</td>
 								<td style='vertical-align:top'>";
-                              	$itext .= ($pref['sitetheme_deflayout'] != $key) ? "<input type='text' style='width:97%' name='custompages[".$key."]' value=\"".(isset($pref['sitetheme_custompages'][$key]) ? implode(" ",$pref['sitetheme_custompages'][$key]) : "")."\" />\n" : TPVLAN_55;  // Default
+                              	$itext .= ($pref['sitetheme_deflayout'] != $key) ? "<a href='#element-to-be-shown' class='e-expandit'>".ADMIN_EDIT_ICON."</a>".$custompage_count."<div class='e-hideme' id='element-to-be-shown'><textarea style='width:97%' rows='6' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n",$pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;  // Default
 
+							$itext .= "</td>";
+
+                            $itext .= "<td>";
+
+                            $itext .= (varset($val['menuPresets'])) ? $this->frm->admin_button("setMenuPreset[".$key."]", "Use Preset") : "";
 							$itext .= "</td>
+
 							</tr>";
 						}
 
@@ -712,7 +734,7 @@ class themeHandler{
 				<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td><td colspan='2' style='vertical-align:top'>
 				<table class='adminlist' style='width:100%' >
 				<tr>
-                	<td class='center' style='width:15%'>".TPVLAN_55."</td>
+                	<td class='center' style='width:10%'>".TPVLAN_55."</td>
 			  		<td style='width:20%'>".TPVLAN_52."</td>
 					<td class='left'>".TPVLAN_7."</td>
 				</tr>\n";
@@ -1007,7 +1029,7 @@ class themeHandler{
 		global $pref;
 		$key = key($array);
 
-		$pref['sitetheme_custompages'][$key] = array_filter(explode(" ",$array[$key]));
+		$pref['sitetheme_custompages'][$key] = array_filter(explode("\n",trim($array[$key])));
 
 		if($pref['sitetheme_deflayout'] == 'legacyCustom')
 		{

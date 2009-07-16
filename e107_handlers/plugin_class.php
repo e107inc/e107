@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2009-07-14 03:18:16 $
+|     $Revision: 1.68 $
+|     $Date: 2009-07-16 02:55:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -81,7 +81,7 @@ class e107plugin
 	'plugin_path',				// Name of the directory off e_PLUGIN - unique
 	'plugin_installflag',		// '0' = not installed, '1' = installed
 	'plugin_addons',				// List of any extras associated with plugin - bbcodes, e_XXX files...
-	'plugin_category'				// Plugin Category: settings, users, content, management, tools, misc
+	'plugin_category'				// Plugin Category: settings, users, content, management, tools, misc, about
 	);
 
 	var $plug_vars;
@@ -266,7 +266,63 @@ class e107plugin
 		if ($sp) { save_prefs(); }
 	}
 
+    function manage_icons($plugin='')
+	{
+		global $sql,$tp, $iconpool;
 
+         $query = "SELECT * FROM #plugin WHERE plugin_installflag =0 ORDER BY plugin_path ASC";
+		$sql->db_Select_gen($query);
+		$list = $sql->db_getList();
+
+
+		$reject_core = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
+		$reject_plugin = $reject_core;
+		foreach($list as $val) // reject uninstalled plugin folders.
+		{
+        	$reject_plugin[] = $val['plugin_path']."/images";
+ 		}
+
+        require_once(e_HANDLER."file_class.php");
+		$fl = new e_file;
+
+        $filesrch = implode("|",array("_16.png","_16.PNG","_32.png","_32.PNG","_48.png","_48.PNG","_64.png","_64.PNG","_128.png","_128.png"));
+
+        if($plugin_icons = $fl->get_files(e_PLUGIN,$filesrch,$reject_plugin,2))
+        {
+        	sort($plugin_icons);
+        }
+
+		if($core_icons = $fl->get_files(e_IMAGE."icons/",$filesrch,$reject_core,2))
+        {
+        	sort($core_icons);
+        }
+
+		$srch = array(e_IMAGE,"/");
+		$repl = array("","-");
+
+		$iconpool = array();
+
+		foreach($core_icons as $file)
+		{
+			$path = str_replace($srch,$repl,$file['path']);
+			$key = substr("core-".$path,0,-1);
+       		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
+		}
+
+ 		$srch = array(e_PLUGIN,"/images/");
+		$repl = array("","");
+
+		foreach($plugin_icons as $file)
+		{
+			$path = str_replace($srch,$repl,$file['path']);
+			$key = "plugin-".$path;
+       		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
+		}
+
+
+        return (save_prefs("iconpool")) ?  TRUE : FALSE;
+
+	}
 
 	/**
 	* Returns details of a plugin from the plugin table from it's ID
@@ -1456,6 +1512,15 @@ class e107plugin
 		}
 
 		save_prefs();
+
+		if($this->manage_icons())
+		{
+           // 	echo 'IT WORKED';
+		}
+		else
+		{
+        	// echo "didn't work!";
+		}
 		return;
 	}
 
