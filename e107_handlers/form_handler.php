@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-07-17 03:53:14 $
+ * $Revision: 1.36 $
+ * $Date: 2009-07-17 07:53:13 $
  * $Author: e107coders $
  *
 */
@@ -606,36 +606,78 @@ class e_form
 	function colGroup($fieldarray,$columnPref='')
 	{
         $text = "";
-
+        $count = 0;
 		foreach($fieldarray as $key=>$val)
 		{
 			if(in_array($key,$columnPref) || $key=='options' || varsettrue($val['forced']))
 			{
 				$text .= "\n<col style='width: ".$val['width'].";'></col>";
+				$count++;
 			}
 		}
-		return $text;
+
+		return "<colgroup span='".$count."'>\n".$text."\n</colgroup>\n";
 	}
 
-	function thead($fieldarray,$columnPref='')
+	function thead($fieldarray,$columnPref='',$querypattern = '')
 	{
         $text = "";
+
+        $tmp = explode(".",e_QUERY);
+
+		$etmp = explode(".",$querypattern);
+
+		// Note: this function should probably be adapted to ALSO deal with $_GET. eg. ?mode=main&field=user_name&asc=desc&from=100
+		// or as a pattern: ?mode=main&field=[FIELD]&asc=[ASC]&from=[FROM]
+
+		foreach($etmp as $key=>$val)    // I'm sure there's a more efficient way to do this, but too tired to see it right now!.
+		{
+
+        	if($val == "[FIELD]")
+			{
+            	$field = $tmp[$key];
+			}
+
+			if($val == "[ASC]")
+			{
+            	$ascdesc = $tmp[$key];
+			}
+			if($val == "[FROM]")
+			{
+            	$fromval = $tmp[$key];
+			}
+		}
+
+		if(!$fromval){ $fromval = 0; }
+
+        $ascdesc = ($ascdesc == 'desc') ? 'asc' : 'desc';
+
 		foreach($fieldarray as $key=>$val)
 		{
      		if(in_array($key,$columnPref) || $key == "options" || (varsettrue($val['forced'])))
 			{
 				$cl = (varset($val['thclass'])) ? "class='".$val['thclass']."'" : "";
-				$text .= "\n\t<th id='$key' {$cl}>";
+				$text .= "\n\t<th id='e-column-".$key."' {$cl}>";
+
+                if($querypattern!="" && !varsettrue($val['nosort']) && $key != "options")
+				{
+					$from = ($key == $field) ? $fromval : 0;
+					$srch = array("[FIELD]","[ASC]","[FROM]");
+					$repl = array($key,$ascdesc,$from);
+                	$val['url'] = e_SELF."?".str_replace($srch,$repl,$querypattern);
+				}
+
 				$text .= (varset($val['url'])) ? "<a href='".$val['url']."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
 	            $text .= $val['title'];
+				$text .= ($val['url']) ? "</a>" : "";
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
 
-				$text .= ($val['url']) ? "</a>" : "";
+
 	 			$text .= "</th>";
 			}
 		}
 
-      return $text;
+      return "<thead>\n<tr>\n".$text."\n</tr>\n</thead>\n\n";
 
 	}
 

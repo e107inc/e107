@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-07-14 11:05:50 $
+ * $Revision: 1.44 $
+ * $Date: 2009-07-17 07:53:13 $
  * $Author: e107coders $
 */
 require_once("../class2.php");
@@ -164,15 +164,19 @@ class admin_newspost
 	var $_fields;
 	var $_sort_order;
 	var $_sort_link;
+	var $fieldpref;
 
 	function admin_newspost($qry, $pstobj)
 	{
+		global $user_pref;
 		$this->parseRequest($qry);
 
 		require_once(e_HANDLER."calendar/calendar_class.php");
 		$this->_cal = new DHTML_Calendar(true);
 
 		$this->_pst = &$pstobj;
+
+		$this->fieldpref = $user_pref['admin_news_columns'];
 
 		$this->_fields = array(
 				"checkboxes"	   	=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "url" => ""),
@@ -187,7 +191,7 @@ class admin_newspost
 		  		"news_sticky"		=> array("title" => LAN_NEWS_28, "type"=>"boolean", "width" => "auto", "thclass" => "", "url" => ""),
                 "news_allow_comments" => array("title" => NWSLAN_15, "type"=>"boolean", "width" => "auto", "thclass" => "", "url" => ""),
                 "news_comment_total" => array("title" => LAN_NEWS_60, "type"=>"number", "width" => "auto", "thclass" => "", "url" => ""),
-				"options"			=> array("title" => LAN_OPTIONS, "width" => "300px", "thclass" => "center last", "url" => "")
+				"options"			=> array("title" => LAN_OPTIONS, "width" => "10%", "thclass" => "center last", "url" => "", 'forced'=>TRUE)
 
 		);
 
@@ -588,6 +592,7 @@ class admin_newspost
 		global $user_pref,$admin_log;
 		$user_pref['admin_news_columns'] = $_POST['e-columns'];
 		save_prefs('user');
+		$this->fieldpref = $user_pref['admin_news_columns'];
 	}
 
 	function show_existing_items()
@@ -609,8 +614,6 @@ class admin_newspost
 
 
 		$field_columns = $this->_fields;
-
-		$field_count = count($field_columns);
 
 		$e107 = &e107::getInstance();
 
@@ -668,12 +671,9 @@ class admin_newspost
 					<fieldset id='core-newspost-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='".$field_count."'>".$frm->colGroup($this->_fields,$user_pref['admin_news_columns'])."</colgroup>
-							<thead>
-								<tr>".$frm->thead($this->_fields,$user_pref['admin_news_columns'])."</tr>
-							</thead>
-							<tbody>
-			";
+							".$frm->colGroup($this->_fields,$this->fieldpref).
+                             $frm->thead($this->_fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]")."
+							<tbody>";
 
 			$ren_type = array("default","title","other-news","other-news 2");
 

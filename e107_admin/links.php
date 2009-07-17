@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-07-17 03:53:14 $
+ * $Revision: 1.25 $
+ * $Date: 2009-07-17 07:53:13 $
  * $Author: e107coders $
  *
 */
@@ -341,18 +341,19 @@ class links
 						<col style='width:  5%' />
 						<col style='width: 60%' />
 						<col style='width: 15%' />
+
+						<col style='width:  5%' />
+						<col style='width:  5%' />
 						<col style='width: 10%' />
-						<col style='width:  5%' />
-						<col style='width:  5%' />
 					</colgroup>
 					<thead>
 						<tr>
 							<th class='center'>".LCLAN_89."</th>
 							<th>".LCLAN_15."</th>
-							<th class='center'>".LAN_OPTIONS."</th>
-							<th class='center'>".LCLAN_95."</th>
+                   							<th class='center'>".LCLAN_95."</th>
 							<th class='center'>".LCLAN_91."</th>
 							<th class='center last'>".LAN_ORDER."</th>
+							<th class='center'>".LAN_OPTIONS."</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -406,7 +407,7 @@ class links
 				<col style='width:  5%' />
 				<col style='width: 60%' />
 				<col style='width: 15%' />
-				<col style='width: 10%' />
+                <col style='width: 10%' />
 				<col style='width:  5%' />
 				<col style='width:  5%' />
 			</colgroup>
@@ -414,7 +415,7 @@ class links
 				<tr>
 					<th class='center'>".LCLAN_89."</th>
 					<th>".LCLAN_15." (".LCLAN_12.": ".$link_category.")</th>
-					<th class='center'>".LAN_OPTIONS."</th>
+                    <th class='center'>".LAN_OPTIONS." hihihi</th>
 					<th class='center'>".LCLAN_95."</th>
 					<th class='center'>".LCLAN_91."</th>
 					<th class='center last'>".LAN_ORDER."</th>
@@ -437,7 +438,7 @@ class links
 
 		if($indent)
 		{
-			$subimage = "<img class='icon S16' src='".e_IMAGE_ABS."admin_images/sublink.png' alt='' />";
+			$subimage = "<img src='".e_IMAGE."generic/branchbottom.gif' alt='' />";
 			$subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
 		}
 
@@ -453,11 +454,7 @@ class links
 				</td>
 		";
 		$text .= "
-				<td class='center'>
-					<a href='".e_SELF."?create.sub.{$link_id}'><img class='icon action S16' src='".e_IMAGE_ABS."admin_images/sublink_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;
-					<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;
-					<input class='action delete' type='image' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' title='".$tp->toJS(LCLAN_58." [ $link_name ]")."' />
-				</td>
+
 				<td>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,main,admin,classes")."</td>
 				<td class='center'>
 		";
@@ -472,6 +469,11 @@ class links
 		$text .= $this->genOpts($this->aIdOptPrep, $this->aIdOptTest, $link_order, $link_id);
 		$text .= "
 					</select>
+				</td>
+                <td class='center'>
+					<a href='".e_SELF."?create.sub.{$link_id}' title='".LINKLAN_10."'>".ADMIN_ADD_ICON."</a>&nbsp;
+					<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;
+					<input class='action delete' type='image' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' title='".$tp->toJS(LCLAN_58." [ $link_name ]")."' />
 				</td>
 			</tr>
 		";
