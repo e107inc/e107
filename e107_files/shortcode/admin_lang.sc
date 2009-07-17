@@ -37,7 +37,7 @@ if (ADMIN) {
 			}
 			else
 			{
-				setcookie('e107language_'.$pref['cookie_name'], $lanperms[0], time() + 86400);
+				setcookie('e107language_'.$pref['cookie_name'], $lanperms[0], time() + 86400, '/');
 				$_COOKIE['e107language_'.$pref['cookie_name']]= $lanperms[0];
 			}
 		}
