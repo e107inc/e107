@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.37 $
-|   $Date: 2009-07-17 07:53:13 $
+|   $Revision: 1.38 $
+|   $Date: 2009-07-17 23:23:36 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -87,16 +87,6 @@ if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php')) {
 	@include_once(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php');
 } else {
 	@include_once(e_LANGUAGEDIR.'English/admin/lan_footer.php');
-}
-
-
-
-if (file_exists(THEME.'admin_template.php'))  // load template before icon definitions.
-{
-  	require_once(THEME.'admin_template.php');
-}
- else {
-  	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
 }
 
 
@@ -657,6 +647,11 @@ if (!function_exists('show_admin_menu')) {
 	}
 }
 
+if (file_exists(THEME.'admin_template.php')) {
+  	require_once(THEME.'admin_template.php');
+} else {
+  	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
+}
 
 if (!function_exists("parse_admin")) {
 	function parse_admin($ADMINLAYOUT) {
