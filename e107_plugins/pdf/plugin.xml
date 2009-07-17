@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.1 2008-12-21 12:03:28 e107steved Exp $ -->
+<!-- $Id: plugin.xml,v 1.2 2009-07-17 14:41:54 marj_nl_fr Exp $ -->
 
 	<e107Plugin name="PDF_PLUGIN_LAN_1" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="Eric Vanderfeesten (lisa)" url="http://eindhovenseschool.net" email="lisa@eindhovenseschool.net" />

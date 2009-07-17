@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.2 2009-07-14 03:50:56 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.3 2009-07-17 14:41:54 marj_nl_fr Exp $ -->
 
 <e107Plugin name="GSLAN_19" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107coders.org" email="cameron@e107coders.org" />
