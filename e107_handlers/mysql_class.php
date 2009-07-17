@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2007-10-15 10:29:13 $
-|     $Author: e107coders $
+|     $Revision: 1.84 $
+|     $Date: 2009-07-17 14:20:00 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ $db_ConnectionID = NULL;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.83 $
-* @author $Author: e107coders $
+* @version $Revision: 1.84 $
+* @author $Author: marj_nl_fr $
 */
 class db {
 
@@ -47,44 +47,59 @@ class db {
 	var $mySQLlanguage;
 	var $mySQLinfo;
 	var $tabset;
+	
+	/**
+	 * @public  MySQL Charset
+	 **/
+	var $mySQLcharset;
 
 	/**
-	* @return db
-	* @desc db constructor gets language options from the cookie or session
-	* @access public
-	*/
-	function db() {
+	 * db constructor gets language options from the cookie or session
+	 * @access public
+	 * @return void
+	 */
+	function db()
+	{
 		global $pref, $eTraffic;
 		$eTraffic->BumpWho('Create db object', 1);
 		$langid = 'e107language_'.$pref['cookie_name'];
-		if ($pref['user_tracking'] == 'session') {
-			if (!isset($_SESSION[$langid])) { return; }
+		if ($pref['user_tracking'] == 'session')
+		{
+			if (!isset($_SESSION[$langid]))
+			{
+				return;
+			}
 			$this->mySQLlanguage = $_SESSION[$langid];
-		} else {
-			if (!isset($_COOKIE[$langid])) { return; }
+		}
+		else
+		{
+			if (!isset($_COOKIE[$langid]))
+			{
+				return;
+			}
 			$this->mySQLlanguage = $_COOKIE[$langid];
 		}
 	}
 
 	/**
-	* @return null or string error code
-	* @param string $mySQLserver IP Or hostname of the MySQL server
-	* @param string $mySQLuser MySQL username
-	* @param string $mySQLpassword MySQL Password
-	* @param string $mySQLdefaultdb The database schema to connect to
-	* @desc Connects to mySQL server and selects database - generally not required if your table is in the main DB.<br />
-	* <br />
-	* Example using e107 database with variables defined in config.php:<br />
-	* <code>$sql = new db;
-	* $sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);</code>
-	* <br />
-	* OR to connect an other database:<br />
-	* <code>$sql = new db;
-	* $sql->db_Connect('url_server_database', 'user_database', 'password_database', 'name_of_database');</code>
-	*
-	* @access public
-	*/
-	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) 
+	 * @access public
+	 * Connects to mySQL server and selects database - generally not required if your table is in the main DB.<br />
+	 * <br />
+	 * Example using e107 database with variables defined in e107_config.php:<br />
+	 * <code>$sql = new db;
+	 * $sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);</code>
+	 * <br />
+	 * OR to connect an other database:<br />
+	 * <code>$sql = new db;
+	 * $sql->db_Connect('url_server_database', 'user_database', 'password_database', 'name_of_database');</code>
+	 *
+	 * @param string $mySQLserver IP Or hostname of the MySQL server
+	 * @param string $mySQLuser MySQL username
+	 * @param string $mySQLpassword MySQL Password
+	 * @param string $mySQLdefaultdb The database schema to connect to
+	 * @return null|string error code
+	 */
+	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb)
 	{
 		global $eTraffic, $db_ConnectionID;
 		$eTraffic->BumpWho('db Connect', 1);
@@ -96,29 +111,50 @@ class db {
 
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;
-		if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == true){
-			if (!$this->mySQLaccess = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
+		if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == TRUE)
+		{
+			if ( ! $this->mySQLaccess = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword))
+			{
 				return 'e1';
-			} else {
-				if (!@mysql_select_db($this->mySQLdefaultdb,$this->mySQLaccess)) {
-					return 'e2';
-				} else {
-					$this->dbError('dbConnect/SelectDB');
-				}
 			}
-		} else {
-			
-			if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
-				return 'e1';
-			} else {
-				if (!@mysql_select_db($this->mySQLdefaultdb,$this->mySQLaccess)) {
+			else
+			{
+				if ( ! @mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
+				{
 					return 'e2';
-				} else {
+				}
+				else
+				{
 					$this->dbError('dbConnect/SelectDB');
 				}
 			}
 		}
-	  if ($db_ConnectionID == NULL) $db_ConnectionID = $this->mySQLaccess;		// Save the connection resource
+		else
+		{
+
+			if ( ! $this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword))
+			{
+				return 'e1';
+			}
+			else
+			{
+				if ( ! @mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
+				{
+					return 'e2';
+				}
+				else
+				{
+					$this->dbError('dbConnect/SelectDB');
+				}
+			}
+		}
+		// Set utf8 connection?
+		//@TODO: simplify when yet undiscovered side-effects will be fixed
+		$this->db_Set_Charset();
+
+		// Save the connection resource
+		if ($db_ConnectionID == NULL)
+			$db_ConnectionID = $this->mySQLaccess;
 	}
 
 
@@ -810,6 +846,57 @@ class db {
 
 		return mysql_real_escape_string($data,$this->mySQLaccess);
 	}
+	
+	/**
+	 * Check if MySQL version is utf8 compatible and may be used as it accordingly to the user choice
+	 *
+	 * @access public
+	 * @param string    MySQL charset may be forced in special occasion.
+	 *                  UTF-8 encoding and decoding is left to the progammer
+	 * @param bool      TRUE enter debug mode. default FALSE
+	 * @return string   hardcoded error message
+	 */
+	function db_Set_Charset($charset = '', $debug = FALSE)
+	{
+		// Get the default user choice
+		global $mySQLcharset;
+		if (varset($mySQLcharset) != 'utf8')
+		{
+			// Only utf8 is accepted
+			$mySQLcharset = '';
+		}
+		$charset = ($charset ? $charset : $mySQLcharset);
+		$message = (( ! $charset && $debug) ? 'Empty charset!' : '');
+		if($charset)
+		{
+			if ( ! $debug)
+			{
+			    @mysql_query("SET NAMES `$charset`");
+			}
+			else
+			{
+				// Check if MySQL version is utf8 compatible
+				preg_match('/^(.*?)($|-)/', mysql_get_server_info(), $mysql_version);
+				if (version_compare($mysql_version[1], '4.1.2', '<'))
+				{
+					// reset utf8
+					//@TODO reset globally? $mySQLcharset = '';
+					$charset      = '';
+					$message      = 'MySQL version is not utf8 compatible!';
+				}
+				else
+				{
+					// Use db_Query() debug handler
+					$this->db_Query("SET NAMES `$charset`", NULL, '', $debug);
+				}
+			}
+		}
+
+		// Save mySQLcharset for further uses within this connection
+		$this->mySQLcharset = $charset;
+		return $message;
+	}
+	
 }
 
 ?>

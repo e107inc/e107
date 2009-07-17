@@ -151,4 +151,9 @@ define("LANINS_106", 'WARNING - E107 cannot write to the directories and/or file
 define("LANINS_107", '');
 define("LANINS_108", '');
 
+// for v0.7.16+ only
+define('LANINS_DB_UTF8_CAPTION', 'MySQL Charset:');
+define('LANINS_DB_UTF8_LABEL',   'Force UTF-8 Database?');
+define('LANINS_DB_UTF8_TOOLTIP', 'If set, the installation script will make the database UTF-8 compatible if possible. UTF-8 Database are required for the next major e107 version.');
+
 ?>
