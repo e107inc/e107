@@ -5,6 +5,8 @@ body {
 	font: 10px verdana, arial, sans-serif
 }
 
+img         { border:0; vertical-align:top; }
+
 #logo {
 	background-image: url(images/logo4.jpg);
 	border: 1px solid #999;
