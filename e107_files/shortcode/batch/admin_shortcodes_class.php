@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.11 2009-07-15 09:38:00 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.12 2009-07-17 14:49:13 marj_nl_fr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -164,7 +164,7 @@ class admin_shortcodes
 			}
 			else
 			{
-				setcookie('e107language_'.$pref['cookie_name'], $lanperms[0], time() + 86400);
+				setcookie('e107language_'.$pref['cookie_name'], $lanperms[0], time() + 86400, '/');
 				$_COOKIE['e107language_'.$pref['cookie_name']]= $lanperms[0];
 			}
 		}
@@ -921,7 +921,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.11 2009-07-15 09:38:00 e107coders Exp $
+		* $Id: admin_shortcodes_class.php,v 1.12 2009-07-17 14:49:13 marj_nl_fr Exp $
 		*/
 
 		if (ADMIN)
