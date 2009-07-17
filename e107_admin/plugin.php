@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2009-07-15 09:38:00 $
+|     $Revision: 1.33 $
+|     $Date: 2009-07-17 03:53:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -748,7 +748,7 @@ class pluginManager{
 						$conf_file = e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile'];
 						$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
 						$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
-						$plugin_config_icon = "<a title='{$conf_title}' href='{$conf_file}' ><img class='icon action S16' src='".e_IMAGE_ABS."admin_images/cat_tools_16.png' alt='' style='border:0px' /></a>";
+						$plugin_config_icon = "<a title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
 					}
 
 					$plugEmail = varset($plug_vars['author']['@attributes']['email'],'');
@@ -787,8 +787,8 @@ class pluginManager{
 					$text .= (in_array("plugin_folder",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_path']."</td>" : "";
 					$text .= (in_array("plugin_category",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_category']."</td>" : "";
                     $text .= (in_array("plugin_author",$this->fieldpref)) ? "<td class='middle'><a href='mailto:".$plugEmail."' title='".$plugEmail."'>".$plugAuthor."</a>&nbsp;</td>" : "";
-                    $text .= (in_array("plugin_website",$this->fieldpref)) ? "<td class='center middle'>".($plugURL ? "<a href='{$plugURL}' title='{$plugURL}' ><img src='".e_IMAGE_ABS."admin_images/forums_16.png' alt='' style='border:0px' /></a>" : "")."</td>" : "";
-                    $text .= (in_array("plugin_notes",$this->fieldpref)) ? "<td class='center middle'>".($plugReadme ? "<a href='".e_PLUGIN.$plug['plugin_path']."/".$plugReadme."' title='".$plugReadme."'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' style='border:0px' /></a>" : "&nbsp;")."</td>" : "";
+                    $text .= (in_array("plugin_website",$this->fieldpref)) ? "<td class='center middle'>".($plugURL ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "")."</td>" : "";
+                    $text .= (in_array("plugin_notes",$this->fieldpref)) ? "<td class='center middle'>".($plugReadme ? "<a href='".e_PLUGIN.$plug['plugin_path']."/".$plugReadme."' title='".$plugReadme."'>".ADMIN_INFO_ICON."</a>" : "&nbsp;")."</td>" : "";
 					$text .= (in_array("plugin_description",$this->fieldpref)) ? "<td class='middle'>".$tp->toHTML($plug_vars['description'], false, "defs,emotes_off, no_make_clickable")."</td>" : "";
                     $text .= (in_array("plugin_compatible",$this->fieldpref)) ? "<td class='center middle'>".varset($plug_vars['@attributes']['compatibility'],'')."</td>" : "";
 					$text .= (in_array("plugin_compliant",$this->fieldpref)) ? "<td class='center middle'>".((varset($plug_vars['compliant']) || varsettrue($plug_vars['@attributes']['xhtmlcompliant'])) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
@@ -803,7 +803,7 @@ class pluginManager{
 						{
 							if ($plug['plugin_installflag'])
 							{
-						  		$text .= ($plug['plugin_installflag'] ? "<a href=\"".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."'  >".ADMIN_DELETE_ICON."</a>" : "<a href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' ><img class='middle' src='".e_IMAGE_ABS."admin_images/plugins_16.png' alt=\"".EPL_ADLAN_0."\" style='border:0px' /></a>");
+						  		$text .= ($plug['plugin_installflag'] ? "<a href=\"".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
 
                              //   $text .= ($plug['plugin_installflag'] ? "<button type='button' class='delete' value='".EPL_ADLAN_1."' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_1."</span></button>" : "<button type='button' class='update' value='".EPL_ADLAN_0."' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>");
 								if (PLUGIN_SHOW_REFRESH && !varsettrue($plug_vars['plugin_php']))
@@ -815,7 +815,7 @@ class pluginManager{
 							{
 							  //	$text .=  "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />";
 							  //	$text .= "<button type='button' class='update' value='".EPL_ADLAN_0."' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>";
-                            	$text .= "<a href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' ><img class='middle' src='".e_IMAGE_ABS."admin_images/plugins_16.png' alt=\"".EPL_ADLAN_0."\" style='border:0px' /></a>";
+                            	$text .= "<a href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>";
 							}
 						}
 						else
@@ -838,7 +838,7 @@ class pluginManager{
 						if ($plug['plugin_version'] != $plug_vars['@attributes']['version'] && $plug['plugin_installflag'])
 						{
 						  //	$text .= "<br /><input type='button' class='button' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-							$text .= "<a href='".e_SELF."?upgrade.{$plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$plug_vars['@attributes']['version']."\" ><img class='middle' src='".e_IMAGE_ABS."admin_images/up_16.png' alt=\"".EPL_UPGRADE."\" style='border:0px' /></a>";
+							$text .= "<a href='".e_SELF."?upgrade.{$plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
 						}
 
 					$text .="</td>";

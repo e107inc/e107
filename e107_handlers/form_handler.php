@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-07-16 08:15:35 $
+ * $Revision: 1.35 $
+ * $Date: 2009-07-17 03:53:14 $
  * $Author: e107coders $
  *
 */
@@ -333,12 +333,12 @@ class e_form
 		$options = $this->format_options('submit_image', $name, $options);
 		switch ($image) {
 			case 'edit':
-				$image = e_IMAGE_ABS.'admin_images/edit_16.png';
+				$image = ADMIN_EDIT_ICON_PATH;
 				$options['class'] = 'action edit';
 			break;
 
 			case 'delete':
-				$image = e_IMAGE_ABS.'admin_images/delete_16.png';
+				$image = ADMIN_DELETE_ICON_PATH;
 				$options['class'] = 'action delete';
 			break;
 		}

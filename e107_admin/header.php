@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.35 $
-|   $Date: 2009-07-16 23:09:40 $
-|   $Author: bugrain $
+|   $Revision: 1.36 $
+|   $Date: 2009-07-17 03:53:14 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -88,22 +88,36 @@ if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php')) {
 } else {
 	@include_once(e_LANGUAGEDIR.'English/admin/lan_footer.php');
 }
+
+
+
+if (file_exists(THEME.'admin_template.php'))  // load template before icon definitions.
+{
+  	require_once(THEME.'admin_template.php');
+}
+ else {
+  	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
+}
+
+
+
+
+
 if (!defined('ADMIN_WIDTH')) {
 	define('ADMIN_WIDTH', "width: 95%");
 }
 
 if (!defined('ADMIN_TRUE_ICON'))
 {
-	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/integrity_pass.png' alt='' />");
-	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."fileinspector/integrity_pass.png");
+	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/true_16.png' alt='' />");
+	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."admin_images/true_16.png");
 }
 
 if (!defined('ADMIN_FALSE_ICON'))
 {
-	define("ADMIN_FALSE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/integrity_fail.png' alt='' />");
-	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."fileinspector/integrity_fail.png");
+	define("ADMIN_FALSE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/false_16.png' alt='' />");
+	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."admin_images/false_16.png");
 }
-
 
 if (!defined('ADMIN_EDIT_ICON'))
 {
@@ -111,25 +125,74 @@ if (!defined('ADMIN_EDIT_ICON'))
 	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
 }
 
-
-
 if (!defined('ADMIN_DELETE_ICON'))
 {
 	define("ADMIN_DELETE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' />");
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
 }
 
+if (!defined('ADMIN_UP_ICON'))
+{
+	define("ADMIN_UP_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' title='".LAN_DELETE."' />");
+	define("ADMIN_UP_ICON_PATH", e_IMAGE."admin_images/up_16.png");
+}
+
+if (!defined('ADMIN_DOWN_ICON'))
+{
+	define("ADMIN_DOWN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/down_16.png' alt='' title='".LAN_DELETE."' />");
+	define("ADMIN_DOWN_ICON_PATH", e_IMAGE."admin_images/down_16.png");
+}
+
 if (!defined('ADMIN_WARNING_ICON'))
 {
-	define("ADMIN_WARNING_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/warning.png' alt='' />");
-	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."fileinspector/warning.png");
+	define("ADMIN_WARNING_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/warning_16.png' alt='' />");
+	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."admin_images/warning_16.png");
 }
 
 if (!defined('ADMIN_INFO_ICON'))
 {
-	define("ADMIN_INFO_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/info.png' alt='' />");
-	define("ADMIN_INFO_ICON_PATH", e_IMAGE."fileinspector/info.png");
+	define("ADMIN_INFO_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' />");
+	define("ADMIN_INFO_ICON_PATH", e_IMAGE."admin_images/info_16.png");
 }
+
+if (!defined('ADMIN_CONFIGURE_ICON'))
+{
+	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/cat_tools_16.png' alt='' />");
+	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/cat_tools_16.png");
+}
+
+if (!defined('ADMIN_VIEW_ICON'))
+{
+	define("ADMIN_VIEW_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/search_16.png' alt='' />");
+	define("ADMIN_VIEW_ICON_PATH", e_IMAGE."admin_images/admin_images/search_16.png");
+}
+
+if (!defined('ADMIN_URL_ICON'))
+{
+	define("ADMIN_URL_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/forums_16.png' alt='' />");
+	define("ADMIN_URL_ICON_PATH", e_IMAGE."admin_images/forums_16.png");
+}
+
+if (!defined('ADMIN_INSTALLPLUGIN_ICON'))
+{
+	define("ADMIN_INSTALLPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/plugin_install_16.png' alt='' />");
+	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_install_16.png");
+}
+
+if (!defined('ADMIN_UNINSTALLPLUGIN_ICON'))
+{
+	define("ADMIN_UNINSTALLPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/plugin_uninstall_16.png' alt='' />");
+	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_unstall_16.png");
+}
+
+if (!defined('ADMIN_UPGRADEPLUGIN_ICON'))
+{
+	define("ADMIN_UPGRADEPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' />");
+	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE."admin_images/up_16.png");
+}
+
+
+
 
 //
 // C: Send start of HTML
@@ -588,11 +651,6 @@ if (!function_exists('show_admin_menu')) {
 	}
 }
 
-if (file_exists(THEME.'admin_template.php')) {
-  	require_once(THEME.'admin_template.php');
-} else {
-  	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
-}
 
 if (!function_exists("parse_admin")) {
 	function parse_admin($ADMINLAYOUT) {

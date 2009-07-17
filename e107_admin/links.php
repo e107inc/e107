@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-07-07 06:50:55 $
+ * $Revision: 1.24 $
+ * $Date: 2009-07-17 03:53:14 $
  * $Author: e107coders $
  *
 */
@@ -463,8 +463,8 @@ class links
 		";
 		$name_suffix = URL_SEPARATOR.$link_id.URL_SEPARATOR.$link_order;
 		$text .= "
-					<input name='inc".$name_suffix."' type='image' src='".e_IMAGE."admin_images/up.png' title='".LCLAN_30."' />
-					<input name='dec".$name_suffix."' type='image' src='".e_IMAGE."admin_images/down.png' title='".LCLAN_31."' />
+					<input name='inc".$name_suffix."' type='image' src='".ADMIN_UP_ICON_PATH."' title='".LCLAN_30."' />
+					<input name='dec".$name_suffix."' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".LCLAN_31."' />
 				</td>
 				<td>
 					<select name='link_order[]' class='tbox select order'>\n

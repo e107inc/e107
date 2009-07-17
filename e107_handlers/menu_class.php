@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-17 02:28:49 $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-17 03:53:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1016,19 +1016,19 @@ class menuManager{
 					$text .= $rs->form_select_close();
 
 					$text .= "<div style='width:80px;float:right;display:block;text-align:right'>
-					<a href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;vis=".$menu_id."'; \">
-						<img src='".e_IMAGE_ABS."admin_images/search_16.png' alt='visibility' style='border:0px' />
+					<a href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;vis=".$menu_id."'; \" title='visibility'>
+						".ADMIN_VIEW_ICON."
 					</a>";
 
 					if($conf)
 					{
-	                    $text .= "<a href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;mode=conf&amp;path=".urlencode($conf)."'; \">
-							<img src='".e_IMAGE_ABS."admin_images/cat_tools_16.png' alt='configure' style='border:0px' />
+	                    $text .= "<a title='configure' href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;mode=conf&amp;path=".urlencode($conf)."'; \">
+							".ADMIN_CONFIGURE_ICON."
 						</a>";
 					}
 
-                    $text .= "<a href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;mode=deac&amp;id=".$menu_id."'; \">
-						<img src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='deactivate' style='border:0px' />
+                    $text .= "<a href='#' title='deactivate' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;mode=deac&amp;id=".$menu_id."'; \">
+						".ADMIN_DELETE_ICON."
 					</a>
 					</div>";
 
