@@ -9,9 +9,9 @@
  * Administration Area - Emotions Settings & Packs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-01-16 17:57:56 $
- * $Author: secretr $
+ * $Revision: 1.14 $
+ * $Date: 2009-07-17 23:23:36 $
+ * $Author: e107coders $
  *
 */
 
@@ -142,7 +142,7 @@ class emotec
 		</ul>
 		<form method='post' action='".e_SELF."'>
 			<fieldset id='emoticon-activate'>
-				<legend'>".EMOLAN_1."</legend>
+				<legend>".EMOLAN_1."</legend>
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 					<colgroup span='2'>
 						<col style='width:30%' />
