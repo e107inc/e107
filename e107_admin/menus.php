@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2009-07-16 02:55:18 $
+|     $Revision: 1.31 $
+|     $Date: 2009-07-17 02:28:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -65,6 +65,7 @@ if($_POST)
 
 		if (strpos(e_QUERY, 'configure') === FALSE)
 		{
+			$men->menuScanMenus();
             $text .= $men->menuRenderMessage();
             $text .= $men->menuSelectLayout();
 			$text .= $men->menuVisibilityOptions();

@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.52 $
-* $Date: 2009-03-08 18:48:12 $
+* $Revision: 1.53 $
+* $Date: 2009-07-17 02:28:49 $
 * $Author: e107coders $
 *
 */
@@ -1164,9 +1164,9 @@ class e_parse
 //
 // only an ADMIN user can convert {e_ADMIN}
 //
-	function replaceConstants($text, $nonrelative = "", $all = false)
+	function replaceConstants($text, $mode = "", $all = false)
 	{
-		if($nonrelative != "")
+		if($mode != "")
 		{
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY;
 			$replace_relative = array("",
@@ -1177,7 +1177,22 @@ class e_parse
 									$FILES_DIRECTORY,
 									$THEMES_DIRECTORY,
 									$DOWNLOADS_DIRECTORY);
-			$replace_absolute = array(SITEURL,
+
+			if($mode == "abs")
+			{
+            	$replace_absolute = array("/",
+									e_IMAGE_ABS,
+									e_THEME_ABS,
+									e_IMAGE_ABS,
+									e_PLUGIN_ABS,
+									e_FILE_ABS,
+									e_THEME_ABS,
+									e_DOWNLOAD_ABS
+									);
+			}
+			elseif($mode == "full")
+			{
+				$replace_absolute = array(SITEURL,
 									SITEURL.$IMAGES_DIRECTORY,
 									SITEURL.$THEMES_DIRECTORY,
 									SITEURL.$IMAGES_DIRECTORY,
@@ -1185,13 +1200,17 @@ class e_parse
 									SITEURL.$FILES_DIRECTORY,
 									SITEURL.$THEMES_DIRECTORY,
 									SITEURL.$DOWNLOADS_DIRECTORY);
+			}
+
 			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOAD}");
+
 			if (ADMIN)
 			{
 				$replace_relative[] = $ADMIN_DIRECTORY;
 				$replace_absolute[] = SITEURL.$ADMIN_DIRECTORY;
 				$search[] = "{e_ADMIN}";
 			}
+
 			if ($all)
 			{
 				if (USER)
@@ -1206,9 +1225,11 @@ class e_parse
 				}
 				$search[] = "{USERID}";
 			}
-			$replace = ((string)$nonrelative == "full" ) ? $replace_absolute : $replace_relative;
+
+			$replace = ((string)$mode == "full" || (string)$mode=='abs' ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
 		}
+
 //		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
 		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*(?:_ABS){0,1})\}#s");
 	 	$text = preg_replace_callback($pattern, array($this, 'doReplace'), $text);
