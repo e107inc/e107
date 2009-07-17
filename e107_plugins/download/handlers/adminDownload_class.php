@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-16 23:07:30 $
-|     $Author: bugrain $
+|     $Revision: 1.7 $
+|     $Date: 2009-07-17 02:28:49 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -51,42 +51,39 @@ class adminDownload extends download
       $eform = new e_form();
 
       $filterColumns = ($pref['admin_download_disp'] ? explode("|",$pref['admin_download_disp']) : array("download_name","download_class"));
-      if ($this->advancedSearchFields)
-      {
-         $showBasicSearch = " style='display:none'";
-         $showAdvancedSearch = "";
-      }
-      else
-      {
-         $showBasicSearch = "";
-         $showAdvancedSearch = " style='display:none'";
-      }
+
       // Search field
       $text .= "
          <form method='post' action='".e_SELF."'>
-            <div id='download_search'{$showBasicSearch}>
+            <div id='download_search'>
             <fieldset>
                <legend class='e-hideme'>".DOWLAN_194."</legend>
                <table class='adminform'>
                   <tr>
                      <td>
-                        <input class='tbox' type='text' name='download_search' size='50' value='{$this->searchField}' maxlength='50'/>
+                        Filter <input class='tbox' type='text' name='download_search' size='50' value='{$this->searchField}' maxlength='50'/> <a href='#download_search#download_advanced_search' class='e-swapit'>Advanced search</a>
                      </td>
                   </tr>
-               </table>
+               </table>";
+
+			// Filter should use ajax to filter the results automatically after typing.
+
+/*			   $text .= "
             <div class='buttons-bar center'>
                <button type='submit' class='update' name='download_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
                <br/>
-               <a href='#download_search#download_advanced_search' class='e-swapit'>Advanced search</a>
-            </div>
+
+            </div>";*/
+
+			$text.= "
             </fieldset>
             </div>
          </form>
          ";
-      // Advanced search fields
+      // Advanced search fields       {$showAdvancedSearch}
       $text .= "
          <form method='post' action='".e_SELF."'>
-            <div id='download_advanced_search'{$showAdvancedSearch}>
+            <div id='download_advanced_search' class='e-hideme' >
             <fieldset>
             <legend class='e-hideme'>".DOWLAN_183."</legend>
             <table class='adminform'>
@@ -104,9 +101,7 @@ class adminDownload extends download
                </tr>
                <tr>
                   <td>".DOWLAN_11."</td>
-                  <td>
-         ";
-      $text .= $this->getCategorySelectList($this->advancedSearchFields['category'], true, false, '&nbsp;', 'download_advanced_search[category]');
+                  <td>".$this->getCategorySelectList($this->advancedSearchFields['category'], true, false, '&nbsp;', 'download_advanced_search[category]');
       $text .= "  </td>
                   <td>".DOWLAN_149."</td>
                   <td><input class='tbox' type='text' name='download_advanced_search[url]' size='50' value='{$this->advancedSearchFields['url']}' maxlength='50'/></td>
@@ -141,11 +136,7 @@ class adminDownload extends download
                      </select>
                   </td>
                   <td>".DOWLAN_43."</td>
-                  <td>
-                  ";
-      $text .= $eform->uc_select('download_advanced_search[visible]', $this->advancedSearchFields['visible'], $this->userclassOptions);
-      $text .= "
-                  </td>
+                  <td>".$eform->uc_select('download_advanced_search[visible]', $this->advancedSearchFields['visible'], $this->userclassOptions)."</td>
                </tr>
                <tr>
                   <td>".DOWLAN_29."</td>
@@ -175,12 +166,13 @@ class adminDownload extends download
                </tr>
             </table>
             <div class='buttons-bar center'>
+			<span class='f-left'><a href='#download_advanced_search#download_search' class='e-swapit'>Simple search</a></span>
                <button type='submit' class='update' name='download_advanced_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
-               <br/>
-               <a href='#download_advanced_search#download_search' class='e-swapit'>Advanced search</a>
+
+
             </div>
             </fieldset>
-            </div>
+			</div>
          </form>";
 
       return $text;
@@ -192,7 +184,14 @@ class adminDownload extends download
       $eform = new e_form();
       $sortorder = $subAction ? $subAction : $pref['download_order'];
       $sortdirection = $id=="asc" ? "asc" : "desc";
-		$sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
+	  $amount = 10;
+	  if(!$sortorder)
+	  {
+      	$sortorder = "download_id";
+	  }
+
+	  $sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
+
 		$columnInfo = array(
          "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"center first", "url"=>e_SELF."?main.download_id.{$sort_link}.{$from}", "forced"=>true),
          "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_name.{$sort_link}.{$from}"),
@@ -216,7 +215,7 @@ class adminDownload extends download
 			"options"			         => array("title"=>LAN_OPTIONS,            "width"=>"auto", "thclass"=>"center last", "url"=>"", "forced"=>true)
 		);
 
-      $filterColumns = ($user_pref['admin_download_disp']) ? $user_pref['admin_download_disp'] : array("download_id","download_name","download_class","options");
+      $filterColumns = ($user_pref['admin_download_disp']) ? $user_pref['admin_download_disp'] : array("download_name","download_class");
       $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc. download_category_id=d.download_category";
 
       if ($this->searchField) {
@@ -306,12 +305,14 @@ class adminDownload extends download
          while ($row = $sql->db_Fetch())
          {
             $mirror = strlen($row['download_mirror']) > 0;
-		 	   $rowStyle = ($rowStyle == "odd") ? "even" : "odd";
-            $text .= "<tr class='{$rowStyle}'><td>".$row['download_id']."</td>";
+
+            $text .= "<tr>\n<td>".$row['download_id']."</td>\n";
 
             // Display Chosen options
+
             foreach($filterColumns as $disp)
             {
+
                switch ($disp)
                {
                   case "download_name" :
@@ -1148,7 +1149,7 @@ class adminDownload extends download
       global $download, $sql, $sql2, $rs, $ns, $tp, $pst;
 
       require_once(e_HANDLER."form_handler.php");
-      $eform = new e_form();
+      $frm = new e_form();
 
       $text = $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
       $text .= "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
@@ -1167,7 +1168,7 @@ class adminDownload extends download
             $cat_array[$cat['download_category_parent']][] = $cat;
          }
          $text .= "
-         <table class='fborder' style='width:100%'>
+         <table class='adminlist' id='core-admin-categories'>
             <colgroup>
                <col style='width:5%;'/>
                <col style='width:55%;'/>
@@ -1175,12 +1176,15 @@ class adminDownload extends download
                <col style='width:10%;'/>
                <col style='width:20%;'/>
             </colgroup>
-            <tr>
-               <td class='fcaption' colspan='2'>".DOWLAN_11."</td>
-               <td class='fcaption'>".DOWLAN_52."</td>
-               <td class='fcaption'>".LAN_ORDER."</td>
-               <td class='fcaption'>".LAN_OPTIONS."</td>
-            </tr>";
+            <thead>
+				<tr>
+               <th colspan='2'>".DOWLAN_11."</th>
+               <th>".DOWLAN_52."</th>
+               <th>".LAN_ORDER."</th>
+               <th>".LAN_OPTIONS."</th>
+			   </tr>
+            </thead>
+			<tbody>";
 
 
          //Start displaying parent categories
@@ -1296,7 +1300,7 @@ class adminDownload extends download
 
          }
 
-         $text .= "</table></div>";
+         $text .= "</tbody></table></div>";
          $text .= "<div style='text-align:center'>
             <input class='button' type='submit' name='update_catorder' value='".LAN_UPDATE."'/>
             </div>";
@@ -1337,83 +1341,60 @@ class adminDownload extends download
       $preset = $pst->read_preset("admin_dl_cat");  // read preset values into array
       extract($preset);
 
-      $eform_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
+      $frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
       $text = "<div style='text-align:center'>
-         <form method='post' action='{$eform_action}' id='dlform'>
-         <table style='".ADMIN_WIDTH."' class='fborder'>
-         <colgroup>
-            <col style='width:30%'/>
-            <col style='width:70%'/>
-         </colgroup>
+         <form method='post' action='{$frm_action}' id='dlform'>
+ 		<table cellpadding='0' cellspacing='0' class='adminform'>
+	 		<colgroup span='2'>
+	 			<col class='col-label' />
+	 			<col class='col-control' />
+	 		</colgroup>
          <tbody>
          <tr>
-         <td>".DOWLAN_37.": </td>
-         <td>";
+         	<td>".DOWLAN_37.": </td>
+         	<td>". $this->getCategorySelectList($main_category_parent, false, false, DOWLAN_40)."</td>
+		 </tr>
 
-      $text .= $this->getCategorySelectList($main_category_parent, false, false, DOWLAN_40);
-      $text .= "</td></tr><tr>
-         <td>".DOWLAN_12.": </td>
-         <td>
-         <input class='tbox' type='text' name='download_category_name' size='40' value='$download_category_name' maxlength='100'/>
-         </td>
+		 <tr>
+         	<td>".DOWLAN_12.": </td>
+         	<td><input class='tbox' type='text' name='download_category_name' size='40' value='$download_category_name' maxlength='100'/></td>
          </tr>
 
          <tr>
-         <td>".DOWLAN_18.": </td>
-         <td>";
-         $text .= $eform->bbarea('download_category_description',$download_category_description);
-         $text .= "</td>
+         	<td>".DOWLAN_18.": </td>
+         	<td>".$frm->bbarea('download_category_description',$download_category_description)."</td>
          </tr>
 
          <tr>
-         <td>".DOWLAN_41.": </td>
-         <td>
-         <input class='tbox' type='text' id='download_category_icon' name='download_category_icon' size='60' value='$download_category_icon' maxlength='100'/>
-         <input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
-         <div id='cat_icn' style='display:none;{head}' >";
-
-      while (list($key, $icon) = each($iconlist)) {
-         $text .= "<a href=\"javascript:insertext('$icon','download_category_icon','cat_icn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt=''/></a> ";
-      }
-
-      reset($iconlist);
-      $text .= "
-         </div></td>
+        	 <td>".DOWLAN_41.": </td>
+         	<td>".$frm->iconpicker('download_category_icon', $download_category_icon, DOWLAN_42) ."</td>
          </tr>
 
          <tr>
-         <td>".DOWLAN_147.": </td>
-         <td>
-         <input class='tbox' type='text' id='download_category_icon_empty' name='download_category_icon_empty' size='60' value='$download_category_icon_empty' maxlength='100'/>
-         <input class='button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
-         <div id='cat_icn_empty' style='display:none;{head}' >";
+         	<td>".DOWLAN_147.": </td>
+         	<td>".$frm->iconpicker('download_category_icon_empty', $download_category_icon_empty, DOWLAN_42) ."</td>
+		 </tr>
 
-      while (list($key, $icon) = each($iconlist)) {
-         $text .= "<a href=\"javascript:insertext('$icon','download_category_icon_empty','cat_icn_empty')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt=''/></a> ";
-      }
-
-      $text .= "
-         </div></td>
-         </tr>
          <tr>
-         <td>".DOWLAN_43.":<br/><span class='smalltext'>(".DOWLAN_44.")</span></td>
-         <td>".r_userclass("download_category_class", $download_category_class, 'off', 'public, nobody, member, admin, classes, language')."
-         </td></tr>";
+         	<td>".DOWLAN_43.":<br/><span class='smalltext'>(".DOWLAN_44.")</span></td>
+         	<td>".r_userclass("download_category_class", $download_category_class, 'off', 'public, nobody, member, admin, classes, language')."</td>
+		 </tr>
 
-      $text .= "
-         <tr style=''>
-         <td colspan='2' style='text-align:center' class='forumheader'>";
-      if ($id && $subAction == "edit" && !isset($_POST['add_category'])) {
-         $text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_46."'/> ";
-      } else {
-         $text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_45."'/>";
-      }
-      $text .= "</td>
-         </tr>
-         </tbody>
+		 </tbody>
          </table>
+
+         <div class='buttons-bar center'>";
+
+	      if ($id && $subAction == "edit" && !isset($_POST['add_category'])) {
+	         $text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_46."'/> ";
+	      } else {
+	         $text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_45."'/>";
+	      }
+
+      $text .= "</div>
          </form>
          </div>";
+
       $ns->tablerender(DOWLAN_39, $text);
    }
 

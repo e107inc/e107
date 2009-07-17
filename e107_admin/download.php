@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-12-14 10:38:52 $
-|     $Author: e107steved $
+|     $Revision: 1.17 $
+|     $Date: 2009-07-17 02:28:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,7 +50,11 @@ $pst->page = array("download.php?create","download.php?cat"); // display preset 
 $pst->id = array("admin_downloads","admin_dl_cat");
 // -------------------------------
 
+
+$rs = new form;
+$frm = new e_form;
 $download = new download;
+
 require_once("auth.php");
 $pst->save_preset();  // unique name(s) for the presets - comma separated.
 
@@ -61,7 +65,8 @@ $pst->page = "download.php?create"; // display preset options on which page.
 $pst->save_preset("admin_downloads");  // unique name for the preset
 */
 
-$rs = new form;
+
+
 $sub_action = '';
 if (e_QUERY) 
 {
@@ -538,7 +543,7 @@ exit;
 
 
 
-class download 
+class download
 {
 	function show_existing_items($action, $sub_action, $id, $from, $amount) 
 	{
@@ -1680,9 +1685,9 @@ class download
 		$ns->tablerender(DOWLAN_39, $text);
 	}
 
-	function create_category($sub_action, $id) 
+	function create_category($sub_action, $id)
 	{
-		global $sql, $tp, $admin_log;
+		global $sql, $tp, $admin_log, $frm;
 		$download_category_name = $tp->toDB($_POST['download_category_name']);
 		$download_category_description = $tp->toDB($_POST['download_category_description']);
 	  	$download_category_icon = $tp->toDB($_POST['download_category_icon']);

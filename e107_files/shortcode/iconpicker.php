@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: iconpicker.php,v 1.3 2009-07-16 08:15:35 e107coders Exp $
+ * $Id: iconpicker.php,v 1.4 2009-07-17 02:28:49 e107coders Exp $
  *
  * Image picker shortcode
  *
@@ -55,7 +55,7 @@ function iconpicker_shortcode($parm)
      	foreach($folder as $icon)
 		{
 			$filepath = $icon;
-	 		$filepath_abs = $tp->replaceConstants($icon);
+	 		$filepath_abs = $tp->replaceConstants($icon,"abs");
 			$icon_file = basename($filepath_abs);
 
 			$str = "<a href='#{$filepath}' title='{$filepath}' onclick=\"e107Helper.insertText('{$filepath}','{$name}','{$name}-iconpicker'); return false; \"><img class='icon picker list%%size%%' src='{$filepath_abs}' alt='{$icon_file}' /></a>";

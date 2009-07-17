@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-16 19:19:07 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-17 02:28:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -375,7 +375,7 @@ class menuManager{
 						if($sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}', ''"))
 						{
 					  		// Could do admin logging here - but probably not needed
-							$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
+							$message .= MENLAN_10." - ".$file['fname']."<br />";
 						}
 					}
 				}
@@ -402,11 +402,12 @@ class menuManager{
 				if (stristr($menustr, $menu_name) === FALSE)
 				{
 					$sql2->db_Delete("menus", "menu_name='$menu_name'");
-					$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
+					$message .= MENLAN_11." - ".$menu_name."<br />";
 				}
 			}
 
-			echo $message;
+			$this->menuAddMessage($message, E_MESSAGE_INFO);
+
 	}
 
 	// ---------------------------------------------------------------------------
