@@ -21,7 +21,7 @@ define("LANINS_015", "PHP Version");
 define("LANINS_016", "MySQL");
 define("LANINS_017", "PASS");
 define("LANINS_018", "Ensure all the listed files exist and are writable by the server. This normally involves CHMODing them 777, but environments vary - contact your host if you have any problems.");
-define("LANINS_019", "The version of PHP installed on your server isn't capable of running e107. e107 requires a PHP version of at least 4.3.0 to run correctly. Either upgrade your PHP version, or contact your host for an upgrade.");
+define("LANINS_019", "The version of PHP installed on your server isn't capable of running e107. e107 requires a PHP version of at least ".MIN_PHP_VERSION." to run correctly. Either upgrade your PHP version, or contact your host for an upgrade.");
 define("LANINS_020", "Continue Installation");
 define("LANINS_021", "2");
 define("LANINS_022", "MySQL Server Details");
