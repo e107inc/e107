@@ -9,9 +9,9 @@
  * Administration Area - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision: 1.10 $
- * $Date: 2008-12-21 11:47:29 $
- * $Author: secretr $
+ * $Revision: 1.11 $
+ * $Date: 2009-07-17 07:53:13 $
+ * $Author: e107coders $
  *
 */
 
@@ -317,8 +317,8 @@ class frontpage
 						<td>".$this->lookup_path($current_value['page'])."</td>
 						<td>".$this->lookup_path($current_value['force'])."</td>
 						<td class='center'>
-							<input class='image' type='image' src='".e_IMAGE_ABS."admin_images/up.png' title='".FRTLAN_47."' value='".$order."' name='fp_inc' />
-							<input class='image' type='image' src='".e_IMAGE_ABS."admin_images/down.png' title='".FRTLAN_48."' value='".$order."' name='fp_dec' />
+							<input class='image' type='image' src='".ADMIN_UP_ICON_PATH."' title='".FRTLAN_47."' value='".$order."' name='fp_inc' />
+							<input class='image' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".FRTLAN_48."' value='".$order."' name='fp_dec' />
 							<input class='image edit' type='image' title='".LAN_EDIT."' name='fp_edit_rule[".$order."]' src='".ADMIN_EDIT_ICON_PATH."' />
 							<input class='image delete' type='image' title='".LAN_DELETE."' name='fp_delete_rule[".$order."]' src='".ADMIN_DELETE_ICON_PATH."' />
 						</td>

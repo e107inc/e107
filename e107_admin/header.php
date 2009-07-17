@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.36 $
-|   $Date: 2009-07-17 03:53:14 $
+|   $Revision: 1.37 $
+|   $Date: 2009-07-17 07:53:13 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -157,8 +157,14 @@ if (!defined('ADMIN_INFO_ICON'))
 
 if (!defined('ADMIN_CONFIGURE_ICON'))
 {
-	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/cat_tools_16.png' alt='' />");
-	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/cat_tools_16.png");
+	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/configure_16.png' alt='' />");
+	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/configure_16.png");
+}
+
+if (!defined('ADMIN_ADD_ICON'))
+{
+	define("ADMIN_ADD_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/add_16.png' alt='' />");
+	define("ADMIN_ADD_ICON_PATH", e_IMAGE."admin_images/add_16.png");
 }
 
 if (!defined('ADMIN_VIEW_ICON'))

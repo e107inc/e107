@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/admin_config.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-07-07 06:50:55 $
+ * $Revision: 1.7 $
+ * $Date: 2009-07-17 07:53:13 $
  * $Author: e107coders $
  *
 */
@@ -125,11 +125,11 @@ class gsitemap
             	<colgroup span='2'>
 					<col style='width:5%' />
 					<col style='width:10%' />
-					<col style='width:40%' />
+					<col style='width:35%' />
 					<col style='width:20%' />
 					<col style='width:10%' />
 					<col style='width:10%' />
-					<col style='width:5%' />
+					<col style='width:10%' />
 				</colgroup>
                 <thead>
 				<tr class='first last' >
@@ -161,8 +161,8 @@ class gsitemap
 
 				<td class='center' style='white-space:nowrap'>
 				<div>
-				<input type='image' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-				<input type='image' name='delete[{$row2['gsitemap_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."') \" src='".e_IMAGE."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				<input type='image' name='edit[{$row2['gsitemap_id']}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+				<input type='image' name='delete[{$row2['gsitemap_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."') \" src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 				</div>
 				</td>
 				</tr>

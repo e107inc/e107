@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-07-17 02:28:49 $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-17 07:53:13 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -193,26 +193,26 @@ class adminDownload extends download
 	  $sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
 
 		$columnInfo = array(
-         "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"center first", "url"=>e_SELF."?main.download_id.{$sort_link}.{$from}", "forced"=>true),
-         "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_name.{$sort_link}.{$from}"),
-         "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_url.{$sort_link}.{$from}"),
-         "download_author"          => array("title"=>DOWLAN_15,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author.{$sort_link}.{$from}"),
-         "download_author_email"    => array("title"=>DOWLAN_16,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author_email.{$sort_link}.{$from}"),
-         "download_author_website"  => array("title"=>DOWLAN_17,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_author_website.{$sort_link}.{$from}"),
-         "download_description"     => array("title"=>DOWLAN_18,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_description.{$sort_link}.{$from}"),
-         "download_filesize"        => array("title"=>DOWLAN_66,  "type"=>"", "width"=>"auto", "thclass"=>"right", "url"=>e_SELF."?main.download_filesize.{$sort_link}.{$from}"),
-         "download_requested"       => array("title"=>DOWLAN_29,  "type"=>"", "width"=>"auto", "thclass"=>"center", "url"=>e_SELF."?main.download_requested.{$sort_link}.{$from}"),
-         "download_category"        => array("title"=>DOWLAN_11,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_category.{$sort_link}.{$from}"),
-         "download_active"          => array("title"=>DOWLAN_21,  "type"=>"", "width"=>"auto", "thclass"=>"center", "url"=>e_SELF."?main.download_active.{$sort_link}.{$from}"),
-         "download_datestamp"       => array("title"=>DOWLAN_182, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_datestamp.{$sort_link}.{$from}"),
-         "download_thumb"           => array("title"=>DOWLAN_20,  "type"=>"", "width"=>"auto", "thclass"=>"center", "url"=>e_SELF."?main.download_thumb.{$sort_link}.{$from}"),
-         "download_image"           => array("title"=>DOWLAN_19,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_image.{$sort_link}.{$from}"),
-         "download_comment"         => array("title"=>DOWLAN_102, "type"=>"", "width"=>"auto", "thclass"=>"center", "url"=>e_SELF."?main.download_comment.{$sort_link}.{$from}"),
-         "download_class"           => array("title"=>DOWLAN_113, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_class.{$sort_link}.{$from}"),
-         "download_mirror"          => array("title"=>DOWLAN_128, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_mirror.{$sort_link}.{$from}"),
-         "download_mirror_type"     => array("title"=>DOWLAN_195, "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_mirror_type.{$sort_link}.{$from}"),
-         "download_visible"         => array("title"=>DOWLAN_43,  "type"=>"", "width"=>"auto", "thclass"=>"", "url"=>e_SELF."?main.download_visible.{$sort_link}.{$from}"),
-			"options"			         => array("title"=>LAN_OPTIONS,            "width"=>"auto", "thclass"=>"center last", "url"=>"", "forced"=>true)
+         "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"center first", "forced"=>true),
+         "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_author"          => array("title"=>DOWLAN_15,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_author_email"    => array("title"=>DOWLAN_16,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_author_website"  => array("title"=>DOWLAN_17,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_description"     => array("title"=>DOWLAN_18,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_filesize"        => array("title"=>DOWLAN_66,  "type"=>"", "width"=>"auto", "thclass"=>"right"),
+         "download_requested"       => array("title"=>DOWLAN_29,  "type"=>"", "width"=>"auto", "thclass"=>"center"),
+         "download_category"        => array("title"=>DOWLAN_11,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_active"          => array("title"=>DOWLAN_21,  "type"=>"", "width"=>"auto", "thclass"=>"center"),
+         "download_datestamp"       => array("title"=>DOWLAN_182, "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_thumb"           => array("title"=>DOWLAN_20,  "type"=>"", "width"=>"auto", "thclass"=>"center"),
+         "download_image"           => array("title"=>DOWLAN_19,  "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_comment"         => array("title"=>DOWLAN_102, "type"=>"", "width"=>"auto", "thclass"=>"center"),
+         "download_class"           => array("title"=>DOWLAN_113, "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_mirror"          => array("title"=>DOWLAN_128, "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_mirror_type"     => array("title"=>DOWLAN_195, "type"=>"", "width"=>"auto", "thclass"=>""),
+         "download_visible"         => array("title"=>DOWLAN_43,  "type"=>"", "width"=>"auto", "thclass"=>""),
+		 "options"			        => array("title"=>LAN_OPTIONS, "width"=>"10%", "thclass"=>"center last", "forced"=>true)
 		);
 
       $filterColumns = ($user_pref['admin_download_disp']) ? $user_pref['admin_download_disp'] : array("download_name","download_class");
@@ -292,11 +292,9 @@ class adminDownload extends download
       if ($dl_count = $sql->db_Select_gen($query))
       {
          $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
-            <table class='adminlist' style='width:100%'>
-				   <colgroup span='".count($filterColumns)."'>".$eform->colGroup($columnInfo,$filterColumns)."</colgroup>
-               <thead>
-					   <tr>".$eform->thead($columnInfo,$filterColumns)."</tr>
-					</thead>
+            <table class='adminlist'>
+				   ".$eform->colGroup($columnInfo,$filterColumns)
+				   .$eform->thead($columnInfo,$filterColumns,"main.[FIELD].[ASC].[FROM]")."
                <tbody>
             ";
 

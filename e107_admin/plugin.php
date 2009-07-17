@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2009-07-17 03:53:14 $
+|     $Revision: 1.34 $
+|     $Date: 2009-07-17 07:53:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -671,10 +671,8 @@ class pluginManager{
 		  		<fieldset id='core-newspost-list'>
 		 			<legend class='e-hideme'>".NWSLAN_4."</legend>
 		   			<table cellpadding='0' cellspacing='0' class='adminlist'>
-			  			<colgroup span='".count($this->fieldpref)."'>".$frm->colGroup($this->fields,$this->fieldpref)."</colgroup>
-		  					<thead>
-						   		<tr>".$frm->thead($this->fields,$this->fieldpref)."</tr>
-							</thead>
+			  			".$frm->colGroup($this->fields,$this->fieldpref).
+		  				   $frm->thead($this->fields,$this->fieldpref)."
 							<tbody>
 		";
 

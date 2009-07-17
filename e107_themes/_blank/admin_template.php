@@ -9,8 +9,8 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-07-17 03:53:14 $
+ * $Revision: 1.14 $
+ * $Date: 2009-07-17 07:53:13 $
  * $Author: e107coders $
  *
 */
@@ -50,6 +50,12 @@ if (!defined('ADMIN_WARNING_ICON'))
 	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."admin_images/warning_32.png");
 }
 
+if (!defined('ADMIN_ADD_ICON'))
+{
+	define("ADMIN_ADD_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/add_32.png' alt='' />");
+	define("ADMIN_ADD_ICON_PATH", e_IMAGE."admin_images/add_32.png");
+}
+
 if (!defined('ADMIN_INFO_ICON'))
 {
 	define("ADMIN_INFO_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' />");
@@ -58,8 +64,8 @@ if (!defined('ADMIN_INFO_ICON'))
 
 if (!defined('ADMIN_CONFIGURE_ICON'))
 {
-	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/cat_tools_32.png' alt='' />");
-	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/cat_tools_32.png");
+	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S32' src='".e_IMAGE_ABS."admin_images/configure_32.png' alt='' />");
+	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/configure_32.png");
 }
 
 if (!defined('ADMIN_VIEW_ICON'))

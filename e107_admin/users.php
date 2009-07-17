@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.39 $
-* $Date: 2009-07-08 10:31:52 $
+* $Revision: 1.40 $
+* $Date: 2009-07-17 07:53:13 $
 * $Author: e107coders $
 *
 */
@@ -658,6 +658,10 @@ class users
 
 	var $fields = array();
 	var $fieldpref = array();
+	var $sortorder = "asc";
+	var $sortorderrev = "desc";
+	var $sortfield = "user_id";
+	var $from = 0;
 
 
 	function users()
@@ -668,19 +672,39 @@ class users
 
         if(isset($pref['admin_user_disp']))
 		{
-        	$user_pref['admin_users_columns'] = ($pref['admin_user_disp']) ? explode("|",$pref['admin_user_disp']) : array('user_name', 'user_class');
+        	$user_pref['admin_users_columns'] = ($pref['admin_user_disp']) ? explode("|",$pref['admin_user_disp']) : array('user_status', 'user_name', 'user_class');
             save_prefs('user');
 			unset($pref['admin_user_disp']);
-			save_prefs;
+			save_prefs();
 		}
         $this->usersSaveColumnPref();
 
 		$this->fieldpref = (!$user_pref['admin_users_columns']) ? array('user_name', 'user_class') : $user_pref['admin_users_columns'];
 
+/*        if (e_QUERY)
+		{
+			$tmp = explode('.', e_QUERY);
+			$action = $tmp[0];    // main
+			$sub_action = varset($tmp[1],'');
+			$id = varset($tmp[2],0);
+			$from = varset($tmp[3],0);
+			unset($tmp);
+		}*/
+
+		global $sub_action, $id, $from;
+
+         if($from)
+		 {
+  			$this->sortfield = $sub_action;
+			$this->sortorder = $id;
+			$this->sortorderrev = ($this->sortorder == 'asc') ? 'desc' : 'asc';
+			$this->from = $from;
+		}
+
 		$this->fields = array(
 			'user_id'			=> array('title'=> 'Id', 'width'=>'5%', 'forced'=> TRUE),
-            'user_status'	   	=> array('title'=> ADLAN_134, 'forced'=> TRUE),
-         	'user_name' 		=> array('title'=> LAN_USER_01, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first'), // Display name
+            'user_status'	   	=> array('title'=> ADLAN_134, 'width'=>'auto'),
+         	'user_name' 		=> array('title'=> LAN_USER_01, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first' ), // Display name
 			'user_loginname' 	=> array('title'=> LAN_USER_02, 'type' => 'text', 'width' => 'auto'),	// User name
 			'user_login' 		=> array('title'=> LAN_USER_03, 'type' => 'text', 'width' => 'auto'),	 // Real name (no real vetting)
 			'user_customtitle' 	=> array('title'=> LAN_USER_04, 'type' => 'text', 'width' => 'auto'),	 // No real vetting
@@ -702,8 +726,7 @@ class users
 			'user_visits'		=> array('title' => LAN_USER_21, 'width'=> 'auto'),
 			'user_admin'		=> array('title' => LAN_USER_22, 'width'=> 'auto'),
 			'user_perms'		=> array('title' => LAN_USER_23, 'width'=> 'auto'),
-			'user_pwchange'		=> array('title' => LAN_USER_24, 'width'=> 'auto')
-
+			'user_pwchange'		=> array('title' => LAN_USER_24, 'width'=> 'auto'),
 		);
 
 
@@ -716,7 +739,7 @@ class users
 			$this->fields[$field] = array('title'=>$title,'width'=>'auto');
 		}
 
-        $this->fields['options'] = array('title' => LAN_OPTIONS, 'width'=>'10%', "thclass" => "center last");
+        $this->fields['options'] = array('title' => LAN_OPTIONS, 'width'=>'10%', "thclass" => "center last", 'forced'=>TRUE);
 
 	}
 
@@ -730,171 +753,33 @@ class users
 		}
 	}
 
-
-	function show_existing_users($action, $sub_action, $id, $from, $amount)
+	function showUserStatus($row)
 	{
-		global $sql, $frm, $ns, $tp, $mySQLdefaultdb,$pref,$unverified, $userMethods;
-		$e107 = e107::getInstance();
-
-		$text = "<div style='text-align:center'>";
-
-		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "")
-		{
-			$_POST['searchquery'] = $tp->toDB(trim($_POST['searchquery']));
-			$query = 'WHERE '.
-			$query .= (strpos($_POST['searchquery'], "@") !== FALSE) ? "user_email REGEXP('".$_POST['searchquery']."') OR ": "";
-			$query .= (strpos($_POST['searchquery'], ".") !== FALSE) ? "user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
-			foreach($this->fieldpref as $disp)
-			{
-				$query .= $disp." REGEXP('".$_POST['searchquery']."') OR ";
-			}
-			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
-			$query .= "user_name REGEXP('".$_POST['searchquery']."') ";
-			if($action == 'unverified')
-			{
-				$query .= ' AND user_ban = 2 ';
-			}
-			$query .= ' ORDER BY user_id';
-		}
-		else
-		{
-			$query = '';
-			if($action == 'unverified')
-			{
-				$query = 'WHERE user_ban = 2 ';
-			}
-			$query .= 'ORDER BY '.($sub_action ? $sub_action : 'user_id').' '.($id ? $id : 'DESC')."  LIMIT $from, $amount";
-		}
-
-		// $user_total = db_Count($table, $fields = '(*)',
-		$qry_insert = 'SELECT u.*, ue.* FROM `#user` AS u	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id ';
-
-		if ($user_total = $sql->db_Select_gen($qry_insert. $query))
-		{
-			$text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
-                        <fieldset id='core-users-list'>
-						<legend class='e-hideme'>".NWSLAN_4."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='".count($this->fieldpref)."'>".$frm->colGroup($this->fields,$this->fieldpref)."</colgroup>
-							<thead>
-								<tr>".$frm->thead($this->fields,$this->fieldpref)."</tr>
-							</thead>
-							<tbody>";
-
-
-
-         /*	<thead>
-			<tr>
-			<th style='width:5%'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></th>
-			<th style='width:10%'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></th>";
-
-
-			// Search Display Column header.
-			$display_lan = $userMethods->getNiceNames(TRUE);		// List of field names and descriptive names
-			foreach($this->fieldpref as $disp)
-			{
-				if (isset($display_lan[$disp]))
-				{
-					$text .= "<th style='width:15%'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".$display_lan[$disp]."</a></th>";
-				}
-				else
-				{
-					$text .= "<th style='width:15%'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></th>";
-				}
-			}
-
-			// ------------------------------
-
-			$text .= "<th style='width:30%'>".LAN_OPTIONS."</th>
-			</tr>
-			</thead><tbody>";*/
-
-			while ($row = $sql->db_Fetch())
-			{
-				extract($row);
-				$text .= "<tr>
-				<td style='width:5%; text-align:center' >{$user_id}</td>
-				<td style='width:10%'>";
-
-				if ($user_perms == "0") {
+        	if ($row['user_perms'] == "0") {
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_MAINADMIN."</div>";
 				}
-				else if($user_admin) {
+				else if($row['user_admin']) {
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;;text-align:center'><a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'>".LAN_ADMIN."</a></div>";
 				}
-				else if($user_ban == 1) {
+				else if($row['user_ban'] == 1) {
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'>".LAN_BANNED."</a></div>";
 				}
-				else if($user_ban == 2) {
+				else if($row['user_ban'] == 2) {
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
 				}
-				else if($user_ban == 3) {
+				else if($row['user_ban'] == 3) {
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_BOUNCED."</div>";
 				}  else {
 					$text .= "&nbsp;";
 				}
+        return $text;
 
-				$text .= "</td>";
+	}
 
-
-
-				// Display Chosen options
-
-				$datefields = array("user_lastpost","user_lastvisit","user_join","user_currentvisit");
-				$boleanfields = array("user_admin","user_hideemail","user_ban");
-
-				foreach($this->fieldpref as $disp)
-				{
-					$text .= "<td style='white-space:nowrap'>";
-					if($disp == 'user_class')
-					{
-						if ($user_class)
-						{
-							$tmp = explode(",", $user_class);
-							while (list($key, $class_id) = each($tmp))
-							{
-								$text .= $e107->user_class->uc_get_classname($class_id)."<br />\n";
-							}
-						}
-						else
-						{
-							$text .= "&nbsp;";
-						}
-					}
-					elseif($disp == 'user_ip')
-					{
-						$text .= $e107->ipDecode($user_ip);
-					}
-					elseif (in_array($disp,$boleanfields))
-					{
-						$text .= ($row[$disp]) ? ADMIN_TRUE_ICON : '';
-					}
-					elseif(in_array($disp,$datefields))
-					{
-						$text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp]).'&nbsp;' : '&nbsp';
-					}
-					elseif($disp == 'user_name')
-					{
-						$text .= "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a>";
-					}
-					else
-					{
-						$text .= $row[$disp].'&nbsp;';
-					}
-					if(!in_array($disp,$boleanfields) && isset($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != "")
-					{ // show matches
-						$text .= " <b>*</b>";
-					}
-
-					$text .= "</td>";
-					$prev[$disp] = $row[$disp];
-				}
-				// -------------------------------------------------------------
-				$qry = (e_QUERY) ?  "?".e_QUERY : "";
-				$text .= "
-				<td style='width:30%' class='center'>
-
-				<div>
+	function showUserOptions($row)
+	{
+		extract($row);
+		$text .= "<div>
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
 				<input type='hidden' name='userip[{$user_id}]' value='{$user_ip}' />
@@ -950,7 +835,153 @@ class users
 					$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
 				}
 				$text .= "</select></div>";
-				$text .= "</td></tr>";
+
+		return $text;
+	}
+
+
+	function show_existing_users($action, $sub_action, $id, $from, $amount)
+	{
+		global $sql, $frm, $ns, $tp, $mySQLdefaultdb,$pref,$unverified, $userMethods;
+		$e107 = e107::getInstance();
+
+		$text = "<div style='text-align:center'>";
+
+		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "")
+		{
+			$_POST['searchquery'] = $tp->toDB(trim($_POST['searchquery']));
+			$query = 'WHERE '.
+			$query .= (strpos($_POST['searchquery'], "@") !== FALSE) ? "user_email REGEXP('".$_POST['searchquery']."') OR ": "";
+			$query .= (strpos($_POST['searchquery'], ".") !== FALSE) ? "user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
+			foreach($this->fieldpref as $disp)
+			{
+				$query .= $disp." REGEXP('".$_POST['searchquery']."') OR ";
+			}
+			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
+			$query .= "user_name REGEXP('".$_POST['searchquery']."') ";
+			if($action == 'unverified')
+			{
+				$query .= ' AND user_ban = 2 ';
+			}
+			$query .= ' ORDER BY user_id';
+		}
+		else
+		{
+			$query = '';
+			if($action == 'unverified')
+			{
+				$query = 'WHERE user_ban = 2 ';
+			}
+			$query .= 'ORDER BY '.($sub_action ? $sub_action : 'user_id').' '.($id ? $id : 'DESC')."  LIMIT $from, $amount";
+		}
+
+		// $user_total = db_Count($table, $fields = '(*)',
+		$qry_insert = 'SELECT u.*, ue.* FROM `#user` AS u	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id ';
+
+		if ($user_total = $sql->db_Select_gen($qry_insert. $query))
+		{
+
+			$text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
+                        <fieldset id='core-users-list'>
+						<legend class='e-hideme'>".NWSLAN_4."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+							$frm->colGroup($this->fields,$this->fieldpref).
+							$frm->thead($this->fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]").
+							"<tbody>";
+
+
+
+         /*	<thead>
+			<tr>
+			<th style='width:5%'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></th>
+			<th style='width:10%'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></th>";
+
+
+			// Search Display Column header.
+			$display_lan = $userMethods->getNiceNames(TRUE);		// List of field names and descriptive names
+			foreach($this->fieldpref as $disp)
+			{
+				if (isset($display_lan[$disp]))
+				{
+					$text .= "<th style='width:15%'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".$display_lan[$disp]."</a></th>";
+				}
+				else
+				{
+					$text .= "<th style='width:15%'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></th>";
+				}
+			}
+
+			// ------------------------------
+
+			$text .= "<th style='width:30%'>".LAN_OPTIONS."</th>
+			</tr>
+			</thead><tbody>";*/
+
+			while ($row = $sql->db_Fetch())
+			{
+				extract($row);
+				$text .= "<tr>
+				<td style='width:5%; text-align:center' >{$user_id}</td>";
+
+				// Display Chosen options
+
+				$datefields = array("user_lastpost","user_lastvisit","user_join","user_currentvisit");
+				$boleanfields = array("user_admin","user_hideemail","user_ban");
+
+				foreach($this->fieldpref as $disp)
+				{
+					$text .= "<td style='white-space:nowrap'>";
+					if($disp == 'user_class')
+					{
+						if ($user_class)
+						{
+							$tmp = explode(",", $user_class);
+							while (list($key, $class_id) = each($tmp))
+							{
+								$text .= $e107->user_class->uc_get_classname($class_id)."<br />\n";
+							}
+						}
+						else
+						{
+							$text .= "&nbsp;";
+						}
+					}
+					elseif($disp == 'user_ip')
+					{
+						$text .= $e107->ipDecode($user_ip);
+					}
+					elseif (in_array($disp,$boleanfields))
+					{
+						$text .= ($row[$disp]) ? ADMIN_TRUE_ICON : '';
+					}
+					elseif(in_array($disp,$datefields))
+					{
+						$text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp]).'&nbsp;' : '&nbsp';
+					}
+					elseif($disp == 'user_name')
+					{
+						$text .= "<a href='".$e107->url->getUrl('core:user', 'main', 'func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a>";
+					}
+					elseif($disp == "user_status")
+					{
+                    	$text .= $this->showUserStatus($row);
+					}
+					else
+					{
+					   	$text .= $row[$disp].'&nbsp;';
+					}
+					if(!in_array($disp,$boleanfields) && isset($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != "")
+					{ // show matches
+						$text .= " <b>*</b>";
+					}
+
+					$text .= "</td>";
+					$prev[$disp] = $row[$disp];
+				}
+				// -------------------------------------------------------------
+				$qry = (e_QUERY) ?  "?".e_QUERY : "";
+				$text .= "
+				<td style='width:30%' class='center'>".$this->showUserOptions($row)."</td></tr>";
 			}
 			$text .= "</tbody></table></fieldset> ";
 

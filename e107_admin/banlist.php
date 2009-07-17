@@ -9,9 +9,9 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-06-11 20:42:32 $
- * $Author: e107steved $
+ * $Revision: 1.16 $
+ * $Date: 2009-07-17 07:53:13 $
+ * $Author: e107coders $
  *
 */
 
@@ -729,8 +729,8 @@ switch($action)
 						case 'ban_options':
 							$row_class = ' class="center"';
 							$val = "
-							<a class='action edit' href='".e_SELF."?{$edit_action}-{$banlist_ip}'><img class='icon action S16' src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' /></a>
-<input class='action delete no-confirm' name='delete_ban_entry' value='".e_SELF."?{$del_action}-{$banlist_ip}' type='image' src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".$tp->toJS(LAN_CONFIRMDEL." [".$e107->ipDecode($banlist_ip)."]")."' />";
+							<a class='action edit' href='".e_SELF."?{$edit_action}-{$banlist_ip}'>".ADMIN_EDIT_ICON."</a>
+<input class='action delete no-confirm' name='delete_ban_entry' value='".e_SELF."?{$del_action}-{$banlist_ip}' type='image' src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' title='".$tp->toJS(LAN_CONFIRMDEL." [".$e107->ipDecode($banlist_ip)."]")."' />";
 							break;
 						case 'banlist_notes':
 						default:

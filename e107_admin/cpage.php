@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-07-14 11:05:48 $
+ * $Revision: 1.17 $
+ * $Date: 2009-07-17 07:53:13 $
  * $Author: e107coders $
  *
 */
@@ -161,12 +161,11 @@ class page
         $text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-cpage-list'>
 						<legend class='e-hideme'>".CUSLAN_5."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							<colgroup span='".count($this->fieldpref)."'>".$frm->colGroup($this->fields,$this->fieldpref)."</colgroup>
-							<thead>
-								<tr>".$frm->thead($this->fields,$this->fieldpref)."</tr>
-							</thead>
-							<tbody>";
+						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+							$frm->colGroup($this->fields,$this->fieldpref).
+							$frm->thead($this->fields,$this->fieldpref).
+
+							"<tbody>";
 
 		if(!$sql->db_Select("page", "*", "ORDER BY page_datestamp DESC", "nowhere"))
 		{

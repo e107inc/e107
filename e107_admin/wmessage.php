@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/wmessage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-14 11:05:51 $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-17 07:53:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -111,28 +111,38 @@ if ($action == "main" || $action == "")
 		$wmList = $sql->db_getList();
 		$text = $rs->form_open("post", e_SELF, "myform_{$gen_id}", "", "");
 		$text .= "<div style='text-align:center'>
-			<table class='adminlist'>
+            <table cellpadding='0' cellspacing='0' class='adminlist'>
+			<colgroup span='4'>
+				<col style='width:5%' />
+				<col style='width:60%' />
+				<col style='width:20%' />
+				<col style='width:10%' />
+   			</colgroup>
+			<thead>
 			<tr>
-			<td style='width:5%'>ID</td>
-			<td style='width:70%'>".WMLAN_02."</td>
-			<td style='width:20%'>".WMLAN_03."</td>
-			<td style='width:15%'>".LAN_OPTIONS."</td>
-			</tr>";
+				<th>ID</th>
+				<th>".WMLAN_02."</th>
+				<th class='center'>".WMLAN_03."</th>
+				<th class='center'>".LAN_OPTIONS."</th>
+			</tr>
+			</thead>
+			<tbody>";
+
 		foreach($wmList as $row) 
 		{
 			$text .= "
 			<tr>
-				<td style='width:5%; text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
-				<td style='width:70%'>".strip_tags($tp->toHTML($row['gen_ip']))."</td>
-				<td style='width:70%'>".r_userclass_name($row['gen_intdata'])."</td>
-            	<td style='width:15%; text-align:center; white-space: nowrap'>
+				<td class='center' style='text-align: center; vertical-align: middle'>".$row['gen_id']."</td>
+				<td>".strip_tags($tp->toHTML($row['gen_ip']))."</td>
+				<td>".r_userclass_name($row['gen_intdata'])."</td>
+            	<td class='center nowrap'>
 					<a href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
 					<input type='image' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]')\"/>
 				</td>
 			</tr>";
 		}
 
-		$text .= "</table></div>";
+		$text .= "</tbody></table></div>";
 		$text .= $rs->form_close();
 	} else {
 		$text .= "<div style='text-align:center'>".WMLAN_09."</div>";
