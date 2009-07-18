@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/English.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-29 20:50:52 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-18 15:53:10 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 setlocale(LC_ALL, 'en');
@@ -15,8 +15,8 @@ define('CORE_LC2', 'gb');
 // define("TEXTDIRECTION","rtl");
 define('CHARSET', 'utf-8');  // for a true multi-language site. :)
 define('CORE_LAN1',"Error : theme is missing.\\n\\nChange the used themes in your preferences (admin area) or upload files for the current theme to the server.");
-define('CORE_LAN2'," \\1 wrote:");// "\\1" represents the username.
-define('CORE_LAN3', 'file attachment disabled');				// Not used in 0.8
+//obsolete define('CORE_LAN2'," \\1 wrote:");// "\\1" represents the username.
+//obsolete define('CORE_LAN3', 'file attachment disabled');				// Not used in 0.8
 define('CORE_LAN4', 'Please delete install.php from your server');
 define('CORE_LAN5', 'if you do not there is a potential security risk to your website');
 define('CORE_LAN6', 'The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.');
@@ -55,4 +55,3 @@ define('LAN_CONTINUE', 'Continue');
 define('LAN_ENTER', 'Enter');
 define('LAN_HOOKS', 'Hooks');
 
-?>
