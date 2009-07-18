@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-07-07 07:32:59 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2009-07-18 15:14:38 $
+|     $Author: marj_nl_fr $
 
 Includes standalone function - needs finishing
 +----------------------------------------------------------------------------+
 */
-
 if ($_SERVER['QUERY_STRING'] == 'alone')
 {
+//@TODO make multi-language if possible
 // Standalone file inspector - requires suitably edited authorisation file, otherwise it just exits with blank screen. This bit is intended to facilitate the
 // checking of a totally dead installation.
 
@@ -949,9 +949,9 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.15 $\n";
-			$data .= "|     \$Date: 2009-07-07 07:32:59 $\n";
-			$data .= "|     \$Author: e107coders $\n";
+			$data .= "|     \$Revision: 1.16 $\n";
+			$data .= "|     \$Date: 2009-07-18 15:14:38 $\n";
+			$data .= "|     \$Author: marj_nl_fr $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";
 		}
