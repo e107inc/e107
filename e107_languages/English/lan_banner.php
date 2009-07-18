@@ -1,19 +1,24 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_banner.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:38 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * 
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_banner.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-07-18 17:03:39 $
+ * $Author: marj_nl_fr $
+ */
+ 
 define("PAGE_NAME", "Banner");
 
 define("BANNERLAN_16", "Username: ");
 define("BANNERLAN_17", "Password: ");
-define("BANNERLAN_18", "Continue");
+//define("BANNERLAN_18", "Continue"); // English LAN_CONTINUE
 define("BANNERLAN_19", "Please enter your client login and password to continue");
 define("BANNERLAN_20", "Sorry, unable to find those details in the database. Please contact the site administrator for details.");
 define("BANNERLAN_21", "Banners Statistics");
@@ -27,12 +32,10 @@ define("BANNERLAN_28", "Impressions Left");
 define("BANNERLAN_29", "No banners");
 define("BANNERLAN_30", "Unlimited");
 define("BANNERLAN_31", "Not applicable");
-define("BANNERLAN_32", "Yes");
-define("BANNERLAN_33", "No");
+//define("BANNERLAN_32", "Yes"); // English LAN_YES
+//define("BANNERLAN_33", "No"); // English LAN_NO
 define("BANNERLAN_34", "Ends:");
 define("BANNERLAN_35", "Clickthrough IP addresses");
 define("BANNERLAN_36", "Active:");
 define("BANNERLAN_37", "Starts:");
-define("BANNERLAN_38", "Error");
-
-?>
+//define("BANNERLAN_38", "Error"); // English LAN_ERROR
