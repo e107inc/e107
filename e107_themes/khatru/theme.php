@@ -14,8 +14,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-@include_once(THEME."languages/".e_LANGUAGE.".php");
-@include_once(THEME."languages/English.php");
+include_lan(e_THEME."khatru/languages/".e_LANGUAGE.".php");
 
 // [theme]
 $themename = "khatru";
