@@ -1,21 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2001-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/banner.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-14 05:31:57 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * 
+ *
+ * $Source: /cvs_backup/e107_0.8/banner.php,v $
+ * $Revision: 1.5 $
+ * $Date: 2009-07-18 17:03:39 $
+ * $Author: marj_nl_fr $
+ */
+
 require_once("class2.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -39,7 +37,7 @@ if (isset($_POST['clientsubmit'])) {
 	$clean_password = $tp -> toDB($_POST['clientpassword']);
 	
 	if (!$sql->db_Select("banner", "*", "`banner_clientlogin` = '{$clean_login}' AND `banner_clientpassword` = '{$clean_password}'")) {
-		$ns->tablerender(BANNERLAN_38, "<br /><div style='text-align:center'>".BANNERLAN_20."</div><br />");
+		$ns->tablerender(LAN_ERROR, "<br /><div style='text-align:center'>".BANNERLAN_20."</div><br />");
 		require_once(FOOTERF);
 		exit;
 	}
@@ -48,7 +46,7 @@ if (isset($_POST['clientsubmit'])) {
 	$banner_total = $sql->db_Select("banner", "*", "`banner_clientname` = '{$row['banner_clientname']}'");
 	 
 	if (!$banner_total) {
-		$ns->tablerender(BANNERLAN_38, "<br /><div style='text-align:center'>".BANNERLAN_29."</div><br />");
+		$ns->tablerender(LAN_ERROR, "<br /><div style='text-align:center'>".BANNERLAN_29."</div><br />");
 		require_once(FOOTERF);
 		exit;
 	} else {
@@ -64,7 +62,7 @@ if (isset($_POST['clientsubmit'])) {
 			$BANNER_TABLE_BANNER_ID = $row['banner_id'];
 			$BANNER_TABLE_BANNER_CLICKS = $row['banner_clicks'];
 			$BANNER_TABLE_BANNER_IMPRESSIONS = $row['banner_impressions'];
-			$BANNER_TABLE_ACTIVE = BANNERLAN_36.($row['banner_active'] != "255" ? BANNERLAN_32 : "<b>".BANNERLAN_33."</b>");
+			$BANNER_TABLE_ACTIVE = BANNERLAN_36.($row['banner_active'] != "255" ? LAN_YES : "<b>".LAN_NO."</b>");
 			$BANNER_TABLE_STARTDATE = BANNERLAN_37." ".$start_date;
 			$BANNER_TABLE_ENDDATE = BANNERLAN_34." ".$end_date;
 			
@@ -110,7 +108,7 @@ if (isset($_POST['clientsubmit'])) {
 	
 $BANNER_LOGIN_TABLE_LOGIN = $rs->form_text("clientlogin", 30, $id, 20, "tbox");
 $BANNER_LOGIN_TABLE_PASSW = $rs->form_password("clientpassword", 30, "", 20, "tbox");
-$BANNER_LOGIN_TABLE_SUBMIT = $rs->form_button("submit", "clientsubmit", BANNERLAN_18);
+$BANNER_LOGIN_TABLE_SUBMIT = $rs->form_button("submit", "clientsubmit", LAN_CONTINUE);
 	
 if (!$BANNER_LOGIN_TABLE) {
 	if (file_exists(THEME."banner_template.php")) {
@@ -125,4 +123,3 @@ $ns->tablerender(BANNERLAN_19, $text);
 	
 require_once(FOOTERF);
 	
-?>
