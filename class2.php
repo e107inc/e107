@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.374 $
-|     $Date: 2009-07-18 10:17:25 $
+|     $Revision: 1.375 $
+|     $Date: 2009-07-18 15:53:42 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -519,6 +519,7 @@ $language = preg_replace("#\W#", "", $language);
 define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)    || (    (strpos(e_SELF, $ADMIN_DIRECTORY) == FALSE) && (strpos(e_SELF, $PLUGINS_DIRECTORY) == FALSE) && file_exists(e_LANGUAGEDIR.$user_language."/".$user_language.".php")  )   ) ? $user_language : FALSE));
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
+//@TODO
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
@@ -885,6 +886,7 @@ else
 
 $exclude_lan = array("lan_signup.php");  // required for multi-language.
 
+// @TODO remove autoload
 if ($inAdminDir)
 {
   e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
@@ -1284,11 +1286,11 @@ class e_online {
 				include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php');
 				$sql->db_Insert('banlist', "'{$ip}', '0', '".str_replace('--HITS--',$row['online_pagecount'],BANLAN_78)."' ");
 				$e_event->trigger("flood", $ip);
-				exit;
+				exit();
 			}
 			if ($row['online_pagecount'] >= $online_warncount && $row['online_ip'] != "127.0.0.1") {
 				echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>".LAN_WARNING."</b><br /><br />".CORE_LAN6."<br /></div>";
-				exit;
+				exit();
 			}
 
 			$sql->db_Delete("online", "`online_timestamp` < ".(time() - $online_timeout));

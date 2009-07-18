@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2009-07-06 07:49:12 $
+|     $Revision: 1.100 $
+|     $Date: 2009-07-18 15:53:42 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -1082,7 +1082,7 @@ class users
 	function resend($id,$key,$name,$email,$lfile=''){
         global $sql,$mailheader_e107id;
 
-
+        //@FIXME multilanguage
     	// Check for a Language field, and if present, send the email in the user's language.
         if($lfile == ""){
 			if($sql -> db_Select("user_extended", "user_language", "user_extended_id = '$id'")){
@@ -1094,7 +1094,7 @@ class users
 			require_once($lfile);
 		}else{
 			$row['user_language'] = e_LANGUAGE;
-    		require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+    		@require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
 		}
 
 

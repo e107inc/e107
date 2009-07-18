@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/English.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-10-19 11:33:43 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2009-07-18 15:53:42 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 setlocale(LC_ALL, 'en');
@@ -17,8 +17,8 @@ define("CHARSET", "utf-8");  // for a true multi-language site. :)
 define("CORE_LAN1","Error : theme is missing.\\n\\nChange the used themes in your preferences (admin area) or upload files of the current theme on the server.");
 
 //v.616
-define("CORE_LAN2"," \\1 wrote:");// "\\1" represents the username.
-define("CORE_LAN3","file attachment disabled");
+//obsolete define("CORE_LAN2"," \\1 wrote:");// "\\1" represents the username.
+//obsolete define("CORE_LAN3","file attachment disabled");
 
 //v0.7+
 define("CORE_LAN4", "Please delete install.php from your server");

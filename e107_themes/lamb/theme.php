@@ -11,17 +11,16 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/theme.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2009-01-20 20:32:50 $
-|     $Author: e107steved $
+|     $Revision: 1.38 $
+|     $Date: 2009-07-18 15:53:42 $
+|     $Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-@include_once(e_THEME."lamb/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."lamb/languages/English.php");
+include_lan(e_THEME."lamb/languages/".e_LANGUAGE.".php");
 
 // [theme]
 $themename = "lamb";

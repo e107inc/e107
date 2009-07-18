@@ -11,17 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/interfectus/theme.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-03-18 11:20:30 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-07-18 15:53:42 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-@include_once(e_THEME."interfectus/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."interfectus/languages/English.php");
+include_lan(e_THEME."interfectus/languages/".e_LANGUAGE.".php");
 
 // [theme]
 $themename = "interfectus";

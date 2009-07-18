@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2008-07-18 19:50:52 $
-|     $Author: e107coders $
+|     $Revision: 1.42 $
+|     $Date: 2009-07-18 15:53:42 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -22,10 +22,11 @@ require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 
 // --- check for htmlarea.
-if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea')) {
+if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
+{
 	$text = ADLAN_ERR_2."<br /><br />
 	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
-	$ns -> tablerender(ADLAN_ERR_1, $text);
+	$ns -> tablerender(LAN_WARNING, $text);
 }
 
 // check for old modules.
@@ -92,14 +93,16 @@ foreach ($public as $dir) {
 	}
 }
 
-if (isset($potential)) {
+if (isset($potential))
+{
 	$text = ADLAN_ERR_3."<br /><br />";
 
-	foreach ($potential as $p_file) {
+	foreach ($potential as $p_file)
+	{
 		$text .= $p_file.'<br />';
 	}
 
-	$ns -> tablerender(ADLAN_ERR_1, $text);
+	$ns -> tablerender(LAN_WARNING, $text);
 }
 
 // update users using old layout names to their new names

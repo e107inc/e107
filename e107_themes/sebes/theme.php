@@ -14,8 +14,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-@include_once(e_THEME."sebes/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."sebes/languages/English.php");
+include_lan(e_THEME."sebes/languages/".e_LANGUAGE.".php");
 
 // [theme]
 $themename = "sebes";

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.63 $
-|   $Date: 2009-07-13 10:17:41 $
+|   $Revision: 1.64 $
+|   $Date: 2009-07-18 15:53:42 $
 |   $Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
@@ -72,17 +72,11 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 // B.2: Include admin LAN defines
 //
 
-if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_header.php')) {
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
-} else {
-	@include_once(e_LANGUAGEDIR."English/admin/lan_header.php");
-}
-if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php')) {
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php');
-} else {
-	@include_once(e_LANGUAGEDIR.'English/admin/lan_footer.php');
-}
-if (!defined('ADMIN_WIDTH')) {
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php');
+
+if (!defined('ADMIN_WIDTH'))
+{
 	define('ADMIN_WIDTH', 'width: 95%');
 }
 

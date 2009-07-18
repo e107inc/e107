@@ -11,17 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-07-20 17:08:44 $
-|     $Author: e107steved $
+|     $Revision: 1.14 $
+|     $Date: 2009-07-18 15:53:42 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-@include_once(e_THEME."human_condition/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."human_condition/languages/English.php");
+include_lan(e_THEME."human_condition/languages/".e_LANGUAGE.".php");
 
 // [theme]
 $themename = "human condition";

@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.131 $
-|     $Date: 2009-04-23 19:12:54 $
-|     $Author: e107steved $
+|     $Revision: 1.132 $
+|     $Date: 2009-07-18 15:53:42 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 $qs = explode(".", e_QUERY);
+//@TODO what fix?
 if($qs[0] != "activate"){   // multi-language fix.
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
 	e107_include_once(e_LANGUAGEDIR."English/lan_signup.php");

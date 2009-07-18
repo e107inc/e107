@@ -11,17 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/crahan/theme.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-18 15:53:42 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-@include_once(e_THEME."crahan/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."crahan/languages/English.php");
+include_lan(e_THEME."crahan/languages/".e_LANGUAGE.".php");
 
 // [theme]
 $themename = "CraHan";

@@ -5,6 +5,7 @@ if (!ADMIN) return '';
 
   if(strpos(e_SELF, e_ADMIN_ABS) !== FALSE)
   {
+	//@TODO better way to do this?
 	if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".e_PAGE)) 
 	{
 	  $helpfile = e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".e_PAGE;
