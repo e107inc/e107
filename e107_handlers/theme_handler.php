@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2009-07-16 02:55:19 $
+|     $Revision: 1.39 $
+|     $Date: 2009-07-18 03:41:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,13 +39,14 @@ class themeHandler{
         $this->fl = new e_file;
 
 
-		if (isset($_POST['upload'])) {
+		if (isset($_POST['upload']))
+		{
 			$this -> themeUpload();
 		}
 
 		$this -> themeArray = $this -> getThemes();
 
-
+   //     print_a($this -> themeArray);
 
 		foreach($_POST as $key => $post)
 		{
@@ -246,7 +247,9 @@ class themeHandler{
 		extract($_FILES);
 		if(!is_writable(e_THEME))
 		{
-			$ns->tablerender(TPVLAN_16, TPVLAN_20);
+		 //	$ns->tablerender(TPVLAN_16, TPVLAN_20);
+		    $emessage->add(TPVLAN_20, E_MESSAGE_INFO);
+			return FALSE;
 		}
 		else
 		{
@@ -263,7 +266,7 @@ class themeHandler{
 				$emessage->add(TPVLAN_17, E_MESSAGE_ERROR);
 			//	$ns->tablerender(TPVLAN_16, TPVLAN_17);
 			 //	require_once("footer.php");
-				return;
+				return FALSE;
 			}
 
 			if ($fileSize) {
@@ -282,20 +285,34 @@ class themeHandler{
 					$unarc = ($fileList = PclTarExtract($archiveName, e_THEME));
 				}
 
-				if(!$unarc) {
-					if($fileType == "zip") {
-					$error = TPVLAN_46." '".$archive -> errorName(TRUE)."'";
-				} else {
-					$error = TPVLAN_47.PclErrorString().", ".TPVLAN_48.intval(PclErrorCode());
+				if(!$unarc)
+				{
+					if($fileType == "zip")
+					{
+						$error = TPVLAN_46." '".$archive -> errorName(TRUE)."'";
+					}
+					else
+					{
+						$error = TPVLAN_47.PclErrorString().", ".TPVLAN_48.intval(PclErrorCode());
 					}
 
 					$emessage->add(TPVLAN_18." ".$archiveName." ".$error, E_MESSAGE_ERROR);
 				  //	$ns->tablerender(TPVLAN_16, TPVLAN_18." ".$archiveName." ".$error);
-					return;
+					return FALSE;
 				}
 
 				$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
-				$ns->tablerender(TPVLAN_16, "<div class='center'>".TPVLAN_19."</div>");
+				$emessage->add(TPVLAN_19, E_MESSAGE_SUCCESS);
+
+				if(varset($_POST['setUploadTheme']))
+				{
+					$themeArray = $this->getThemes();
+					$this->id = $themeArray[$folderName]['id'];
+   				   	$this->setTheme();
+
+				}
+
+		 //		$ns->tablerender(TPVLAN_16, "<div class='center'>".TPVLAN_19."</div>");
 
 				@unlink(e_THEME.$archiveName);
 			}
@@ -385,6 +402,12 @@ class themeHandler{
 				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
 				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 				<input class='tbox' type='file' name='file_userfile[]' size='50' />
+				</td>
+				</tr>
+                <tr>
+				<td>".TPVLAN_10."</td>
+				<td>
+                <input type='checkbox' name='setUploadTheme' value='1' />
 				</td>
 				</tr>
 				</table>

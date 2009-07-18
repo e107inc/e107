@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-09 11:37:36 $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-18 03:41:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,12 @@ if($_POST['selectadmin'])
 	$mode = "admin";
 }
 
-if($_POST['selectmain'])
+if($_POST['upload'])
+{
+	$mode = "choose";
+}
+
+if($_POST['selectmain'] || varset($_POST['setUploadTheme']))
 {
 	$mode = "main";
 }
