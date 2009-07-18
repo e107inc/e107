@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.23 $
-* $Date: 2009-07-17 14:20:26 $
+* $Revision: 1.24 $
+* $Date: 2009-07-18 11:41:44 $
 * $Author: marj_nl_fr $
 *
 */
@@ -857,7 +857,7 @@ class e_install
 		$datestamp = time();
 
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}news VALUES (0, '".LANINS_063."', '".LANINS_062."', '', '{$datestamp}', '0', '1', 1, 0, 0, 0, 0, '0', '', 'welcome.png', 0) ");
-		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}news_category VALUES (0, '".LANINS_087."', 'icon26.png') ");
+		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}news_category VALUES (0, '".LANINS_087."', 'news_16.png') ");
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}links VALUES (0, '".LANINS_088."', 'index.php', '', '', 1, 1, 0, 0, 0) ");
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}links VALUES (0, '".LANINS_089."', 'download.php', '', '', 1, 2, 0, 0, 0) ");
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}links VALUES (0, '".LANINS_090."', 'user.php', '', '', 1, 3, 0, 0, 0) ");
