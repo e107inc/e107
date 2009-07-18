@@ -11,17 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/admin_menu/admin_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-11-23 09:46:33 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2009-07-18 10:17:26 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 global $tp;
-if (ADMIN == TRUE) {
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
-	@include_once(e_LANGUAGEDIR."English/admin/lan_admin.php");
+if (ADMIN == TRUE)
+{
+	// We're not in admin - load generic admin phrases
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 
 	require_once(e_HANDLER."userclass_class.php");
 	require_once(e_ADMIN."ad_links.php");
@@ -53,8 +54,10 @@ if (ADMIN == TRUE) {
 	$ns->tablerender(LAN_ADMIN, $amtext, 'admin_menu');
 }
 
-function render_admin_links($link, $title, $perms) {
-	if (getperms($perms)) {
+function render_admin_links($link, $title, $perms)
+{
+	if (getperms($perms))
+	{
 		return "<option value='".$link."'>".$title."</option>";
 	}
 }

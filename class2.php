@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.373 $
-|     $Date: 2009-07-12 03:28:20 $
-|     $Author: e107coders $
+|     $Revision: 1.374 $
+|     $Date: 2009-07-18 10:17:25 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 //
@@ -833,7 +833,9 @@ if	(
 	  || (varsettrue($eplug_admin))																	// Admin forced
 	)
 {
-  $inAdminDir = TRUE;
+	$inAdminDir = TRUE;
+	// Load admin phrases ASAP
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 }
 
 

@@ -11,19 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2008-07-17 21:53:44 $
-|     $Author: e107steved $
+|     $Revision: 1.17 $
+|     $Date: 2009-07-18 10:17:26 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+/* done in class2
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 @include_once(e_LANGUAGEDIR."English/admin/lan_admin.php");
+*/
 if (ADMIN)
 {
-    define("ADMIN_PAGE", true);
+    define("ADMIN_PAGE", TRUE);
     require_once(e_ADMIN."header.php");
 }
 else
