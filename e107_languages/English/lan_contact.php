@@ -4,11 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_contact.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-08-11 16:50:41 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-18 17:00:49 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
+
+define('PAGE_NAME',     'Contact Us');
 
 define("LANCONTACT_01", "Contact Details");
 define("LANCONTACT_02", "Contact Form");
