@@ -9,9 +9,9 @@
  * Manage/View failed login attempts
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
- * $Revision: 1.7 $
- * $Date: 2008-12-30 13:51:41 $
- * $Author: secretr $
+ * $Revision: 1.8 $
+ * $Date: 2009-07-18 13:08:37 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -127,7 +127,7 @@ if($sql->db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestam
 		$message .= " - ".$ab['gen_ip'];
 	}
 
-	$message .= "<div class='right'>( <a href='".e_SELF."?dabl'>".FLALAN_16."</a> )</div>";
+	$message .= "<div class='right'>(<a href='".e_SELF."?dabl'>".FLALAN_16."</a>)</div>";
 	$emessage->add($message);
 
 }
@@ -176,12 +176,13 @@ else
 	foreach($faArray as $fa)
 	{
 		extract($fa);//FIXME kill extract()
-
+		
+		$gen_chardata = str_replace(":::", "<br />", $e107->tp->toHTML($gen_chardata));
 		$host = $e107->get_host_name(getenv($gen_ip));
 		$text .= "
 						<tr>
 							<td>".$gen->convert_date($gen_datestamp, "forum")."</td>
-							<td>".str_replace(":::", "<br />", htmlentities($gen_chardata, ENT_QUOTES, CHARSET))."</td>
+							<td>".$gen_chardata."</td>
 							<td>".$e107->ipDecode($fa['gen_ip'])."<br />{$host}</td>
 							<td class='center middle autocheck e-pointer'>
 								".$frm->checkbox('fladelete[]', $gen_id)."
@@ -197,7 +198,7 @@ else
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>
-					".$frm->admin_button('delbanSubmit', FLALAN_10, 'delete',FLALAN_10,'title=')."
+					".$frm->admin_button('delbanSubmit', FLALAN_10, 'delete', FLALAN_10, 'title=')."
 				</div>
 			</fieldset>
 		</form>
@@ -205,7 +206,8 @@ else
 
 	$parms = $fla_total.",".$amount.",".$from.",".e_SELF.'?'."[FROM].".$amount;
 	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-	if ($nextprev) $text .= "<div class='nextprev-bar'>".$nextprev."</div>";
+	if ($nextprev)
+		$text .= "<div class='nextprev-bar'>".$nextprev."</div>";
 
 
 
@@ -240,4 +242,3 @@ function headerjs()
 
 	return $ret;
 }
-?>
