@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2009-07-17 14:20:01 $
+|     $Revision: 1.69 $
+|     $Date: 2009-07-18 18:37:45 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -462,7 +462,7 @@ class e_install
 			$perms_pass = FALSE;
 			foreach ($not_writable as $file) 
 			{
-				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."...<br /><b>{$file}</b><br />\n";
+				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
 			}
 			$perms_notes = LANINS_018;
 		} 
@@ -471,7 +471,7 @@ class e_install
 			$perms_pass = TRUE;
 			foreach ($opt_writable as $file) 
 			{
-				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."...<br /><b>{$file}</b><br />\n";
+				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
 			}
 			$perms_notes = LANINS_106;
 		}
@@ -546,7 +546,7 @@ class e_install
 			  <tr>
 			    <td>".LANINS_050."</td>
 			    <td>".($xml_installed ? LANINS_051 : LANINS_052)."</td>
-			    <td>".($xml_installed ? LANINS_017 : LANINS_053."<a href='http://php.net/manual/en/ref.xml.php' target='_blank'>php.net</a>".LANINS_054)."</td>
+			    <td>".($xml_installed ? LANINS_017 : LANINS_053)."</td>
 			  </tr>
 			</table>\n<br /><br />\n\n";
 		$this->finish_form();
