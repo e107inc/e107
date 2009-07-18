@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.12 2009-07-17 14:49:13 marj_nl_fr Exp $
+* $Id: admin_shortcodes_class.php,v 1.13 2009-07-18 11:51:44 marj_nl_fr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -921,7 +921,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.12 2009-07-17 14:49:13 marj_nl_fr Exp $
+		* $Id: admin_shortcodes_class.php,v 1.13 2009-07-18 11:51:44 marj_nl_fr Exp $
 		*/
 
 		if (ADMIN)
@@ -1046,7 +1046,7 @@ class admin_shortcodes
 				$text .= "</div>";
 			}
 
-			$text .= adnav_cat(ADLAN_CL_8, '', E_16_NAV_DOCS, 'docsMenu');
+			$text .= adnav_cat(ADLAN_CL_8, '', E_16_CAT_ABOUT, 'docsMenu'); //E_16_NAV_DOCS
 			$text .= "<div id='docsMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
 			if (!$handle=opendir(e_DOCS.e_LANGUAGE."/"))
 			{
