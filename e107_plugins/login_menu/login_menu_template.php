@@ -1,24 +1,21 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-03-06 20:09:08 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Login menu template
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_template.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2009-07-18 18:23:44 $
+ * $Author: marj_nl_fr $
+ */
 
-
-if (!isset($LOGIN_MENU_FORM)){
+if ( ! isset($LOGIN_MENU_FORM))
+{
 
 /*
     NEW SHORTCODES/PARAMETERS:
@@ -87,11 +84,13 @@ if (!isset($LOGIN_MENU_FORM)){
 }
 
 
-if (!isset($LOGIN_MENU_MESSAGE)){
+if ( ! isset($LOGIN_MENU_MESSAGE))
+{
 	$LOGIN_MENU_MESSAGE = '<div class="login-menu-message">{LM_MESSAGE_TEXT}</div>';
 }
 
-if (!isset($LOGIN_MENU_LOGGED)){
+if ( ! isset($LOGIN_MENU_LOGGED))
+{
 
 /*
     NEW SHORTCODES and/or PARAMETERS:
@@ -145,10 +144,10 @@ if (!isset($LOGIN_MENU_LOGGED)){
 
 	$LOGIN_MENU_LOGGED = '
 		{LM_MAINTENANCE}
-		{LM_ADMINLINK_BULLET} {LM_ADMIN_CONFIGURE}
 		{LM_ADMINLINK_BULLET} {LM_ADMINLINK}
 		{LM_BULLET} {LM_USERSETTINGS}<br />
 		{LM_BULLET}	{LM_PROFILE}<br />
+		{LM_ADMINLINK_BULLET} {LM_ADMIN_CONFIGURE}
 		{LM_EXTERNAL_LINKS}
 		{LM_BULLET} {LM_LOGOUT}
 		{LM_STATS}
@@ -156,13 +155,15 @@ if (!isset($LOGIN_MENU_LOGGED)){
 	';
 }
 
-if (!isset($LOGIN_MENU_EXTERNAL_LINK)){
+if ( ! isset($LOGIN_MENU_EXTERNAL_LINK))
+{
 	$LOGIN_MENU_EXTERNAL_LINK = '
 		{LM_BULLET} {LM_EXTERNAL_LINK}<br />
 	';
 }
 
-if (!isset($LOGIN_MENU_STATS)){
+if ( ! isset($LOGIN_MENU_STATS))
+{
     $sc_style['LM_NEW_NEWS']['pre'] = '';
 	$sc_style['LM_NEW_NEWS']['post'] = '<br />';
 
@@ -187,11 +188,10 @@ if (!isset($LOGIN_MENU_STATS)){
 }
 
 $LM_STATITEM_SEPARATOR = '<br />';
-if (!isset($LOGIN_MENU_STATITEM)){
+if (!isset($LOGIN_MENU_STATITEM))
+{
 
 	$LOGIN_MENU_STATITEM = '
         {LM_STAT_NEW} {LM_STAT_LABEL}{LM_STAT_EMPTY}
     ';
 }
-
-?>
