@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2009-03-05 22:19:27 $
-|     $Author: e107steved $
+|     $Revision: 1.69 $
+|     $Date: 2009-07-18 18:33:15 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -86,6 +86,7 @@ City, State, Country
   'email_notify' => '0',
   'resize_method' => 'gd2',
   'image_post' => '1',
+  'image_post_class' => '0',
   'im_path' => '/usr/X11R6/bin/',
   'im_quality' => '80',
   'im_width' => '120',
