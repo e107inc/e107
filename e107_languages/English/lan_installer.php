@@ -1,4 +1,18 @@
 <?php
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_installer.php,v $
+ * $Revision: 1.13 $
+ * $Date: 2009-07-18 18:37:00 $
+ * $Author: marj_nl_fr $
+ */
 
 define("LANINS_001", "e107 Installation");
 
@@ -37,7 +51,7 @@ define("LANINS_026", "MySQL Password:");
 define("LANINS_027", "MySQL Database:");
 define("LANINS_028", "Create Database?");
 define("LANINS_029", "Table prefix:");
-define("LANINS_030", "The MySQL server you would like e107 to use. It can also include a port number. e.g. \"hostname:port\" or a path to a local socket e.g. \":/path/to/socket\" for the localhost.");
+define("LANINS_030", "The MySQL server you would like e107 to use. It can also include a port number. e.g. “hostname:port” or a path to a local socket e.g. \":/path/to/socket\" for the localhost.");
 define("LANINS_031", "The username you wish e107 to use for connecting to your MySQL server");
 define("LANINS_032", "The Password for the user you just entered");
 define("LANINS_033", "The MySQL database you wish e107 to reside in, sometimes referred to as a schema. If the user has database create permissions you can opt to create the database automatically if it doesn't already exist.");
@@ -60,8 +74,8 @@ define("LANINS_049", "The two passwords you entered are not the same. Please go 
 define("LANINS_050", "XML Extension");
 define("LANINS_051", "Installed");
 define("LANINS_052", "Not Installed");
-define("LANINS_053", "e107 0.8.x requires the PHP XML Extension to be installed. Please contact your host or read the information at ");
-define("LANINS_054", " before continuing");
+define("LANINS_053", "e107 0.8.x requires the PHP XML Extension to be installed. Please contact your host or read the information at <a href='http://php.net/manual/en/ref.xml.php' target='_blank'>php.net</a> before continuing");
+//not used: define("LANINS_054", " before continuing");
 define("LANINS_055", "Install Confirmation");
 define("LANINS_056", "6");
 define("LANINS_057", " e107 now has all the information it needs to complete the installation.
@@ -136,18 +150,14 @@ define("LANINS_095", "Integrity Check");
 
 define("LANINS_096", 'Latest Comments');
 define("LANINS_097", '[more ...]');
-define("LANINS_098", 'Articles');
-define("LANINS_099", 'Articles Front Page ...');
+//define("LANINS_098", 'Articles');
+//define("LANINS_099", 'Articles Front Page ...');
 define("LANINS_100", 'Latest Forum Posts');
 define("LANINS_101", 'Update menu Settings');
 define("LANINS_102", 'Date / Time');
-define("LANINS_103", 'Reviews');
-define("LANINS_104", 'Review Front Page ...');
+//define("LANINS_103", 'Reviews');
+//define("LANINS_104", 'Review Front Page ...');
 
-define("LANINS_105", 'A database name or prefix beginning with some digits followed by \'e\' or \'E\' is not acceptable');
+define("LANINS_105", 'A database name or prefix beginning with some digits followed by “e” or “E” is not acceptable');
 define("LANINS_106", 'WARNING - E107 cannot write to the directories and/or files listed. While this will not stop E107 installing, it will mean that certain features are not available. 
 				You will need to change the file permissions to use these features');
-define("LANINS_107", '');
-define("LANINS_108", '');
-
-?>
