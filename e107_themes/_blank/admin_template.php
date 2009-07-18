@@ -9,13 +9,13 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-07-17 23:23:36 $
- * $Author: e107coders $
+ * $Revision: 1.16 $
+ * $Date: 2009-07-18 15:04:01 $
+ * $Author: marj_nl_fr $
  *
 */
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 
 define("ADLINK_COLS",5);
 
@@ -23,7 +23,7 @@ define("ADLINK_COLS",5);
 
 
 
-include_lan(THEME."languages/".e_LANGUAGE.".php");
+include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
 //{FS_ADMIN_ALT_NAV}
 $ADMIN_HEADER = "

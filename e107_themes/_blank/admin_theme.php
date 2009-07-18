@@ -1,5 +1,6 @@
 <?php
-include_lan(THEME."languages/".e_LANGUAGE.".php");
+if ( ! defined('e107_INIT')) { exit(); }
+include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
 $THEME_CORE_JSLIB = array(
 	'jslib/core/decorate.js' => 'all',
