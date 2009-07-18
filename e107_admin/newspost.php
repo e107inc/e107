@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-07-17 07:53:13 $
- * $Author: e107coders $
+ * $Revision: 1.45 $
+ * $Date: 2009-07-18 10:17:56 $
+ * $Author: marj_nl_fr $
 */
 require_once("../class2.php");
 
@@ -29,7 +29,7 @@ $pst->form = "core-newspost-create-form"; // form id of the form that will have 
 $pst->page = "newspost.php?create"; // display preset options on which page(s).
 $pst->id = "admin_newspost";
 // ------------------------------
-require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php"); // maybe this should be put in class2.php when 'admin' is detected.
+// done in class2: require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php"); // maybe this should be put in class2.php when 'admin' is detected.
 $newspost = new admin_newspost(e_QUERY, $pst);
 $gen = new convert();
 
@@ -546,7 +546,7 @@ class admin_newspost
 		$temp['news_newdateheader'] 	= intval($_POST['news_newdateheader']);
 		$temp['news_unstemplate'] 		= intval($_POST['news_unstemplate']);
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
-		
+
 		if ($admin_log->logArrayDiffs($temp, $pref, 'NEWS_06'))
 		{
 			save_prefs();		// Only save if changes
@@ -1524,7 +1524,7 @@ class admin_newspost
 		$frm = new e_form(true);
 		echo $frm->filterValue($_POST['filtertype'],$this->_fields);
 	}
-	
+
 
 	function show_news_prefs()
 	{
@@ -1730,7 +1730,7 @@ class admin_newspost
 
 
 
-	function showMaintenance() 
+	function showMaintenance()
 	{
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
@@ -1745,7 +1745,7 @@ class admin_newspost
 					<colgroup span='2'>
 						<col class='col-label'></col>
 						<col class='col-control'></col>
-					</colgroup>	
+					</colgroup>
 					<tbody>
 						<tr>
 							<td class='label'>".LAN_NEWS_56."</td>
@@ -1769,13 +1769,13 @@ class admin_newspost
 		global $sql2;
 
 		$e107 = &e107::getInstance();
-		$qry = "SELECT 
+		$qry = "SELECT
 			COUNT(`comment_id`) AS c_count,
 			`comment_item_id`
 			FROM `#comments`
 			WHERE (`comment_type`='0') OR (`comment_type`='news')
 			GROUP BY `comment_item_id`";
-			
+
 		if ($e107->sql->db_Select_gen($qry))
 		{
 			while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
@@ -1837,4 +1837,3 @@ function newspost_adminmenu()
 	global $newspost;
 	$newspost->show_options();
 }
-?>

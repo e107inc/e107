@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-07-09 02:47:11 $
- * $Author: e107coders $
+ * $Revision: 1.32 $
+ * $Date: 2009-07-18 10:17:56 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once ("../class2.php");
@@ -63,7 +63,7 @@ if(isset($_POST['updateprefs']))
 	$_POST['siteurl'] = trim($_POST['siteurl']) ? trim($_POST['siteurl']) : SITEURL;
 	$_POST['siteurl'] = substr($_POST['siteurl'], - 1) == "/" ? $_POST['siteurl'] : $_POST['siteurl']."/";
 
-	// If email verification or Email/Password Login Method - email address is required! 
+	// If email verification or Email/Password Login Method - email address is required!
 	if($_POST['user_reg_veri'] == 1 && $_POST['allowEmailLogin'] == 1)
 	{
 		$_POST['disable_emailcheck'] = 0;
@@ -71,7 +71,7 @@ if(isset($_POST['updateprefs']))
 
 	// Table of range checking values - min and max for numerics. Only do the important ones
 	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30),
-					'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15), 
+					'displayname_maxlength' => array('min' => 5, 'max' => 30, 'default' => 15),
 					'antiflood_timeout' => array('min' => 3, 'max' => 300, 'default' => 10),
 					'signup_pass_len' => array('min' => 2, 'max' => 100, 'default' => 4)
 					);
@@ -129,7 +129,7 @@ if(isset($_POST['updateprefs']))
 	}
 	else
 	{
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+// done in class2:		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		$emessage->add(LAN_NO_CHANGE);
 	}
 }
@@ -1176,4 +1176,3 @@ function headerjs()
 
 	return $ret;
 }
-?>

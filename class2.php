@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.108 $
-* $Date: 2009-07-16 02:55:18 $
-* $Author: e107coders $
+* $Revision: 1.109 $
+* $Date: 2009-07-18 10:17:56 $
+* $Author: marj_nl_fr $
 *
 */
 //
@@ -963,31 +963,33 @@ $isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we'r
 $e107Path = str_replace($e107->base_path, '', e_SELF);				// Knock off the initial bits
 if	(
 	 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
-	  || ($isPluginDir && (strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== false)) // Plugin admin file or directory
+	  || ($isPluginDir && (strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
 	  || (varsettrue($eplug_admin))																	// Admin forced
 	)
 {
-  $inAdminDir = true;
+	$inAdminDir = TRUE;
+	// Load admin phrases ASAP
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 }
 
 
 if(!defined('THEME'))
 {
-	if ($inAdminDir && varsettrue($pref['admintheme'])&& (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === false))
+	if ($inAdminDir && varsettrue($pref['admintheme'])&& (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE))
 	{
 /*	  if (strpos(e_SELF, "newspost.php") !== FALSE)
 	  {
 		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");		MAINTHEME no longer used in core distribution
 	  }  */
-	  checkvalidtheme($pref['admintheme']);
+		checkvalidtheme($pref['admintheme']);
 	}
 	elseif (USERTHEME !== false && USERTHEME != 'USERTHEME' && !$inAdminDir)
 	{
-	  checkvalidtheme(USERTHEME);
+		checkvalidtheme(USERTHEME);
 	}
 	else
 	{
-	  checkvalidtheme($pref['sitetheme']);
+		checkvalidtheme($pref['sitetheme']);
 	}
 
 
