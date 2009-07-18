@@ -1,15 +1,20 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_contact.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-02-18 20:52:29 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Contact language file
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_contact.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2009-07-18 17:01:18 $
+ * $Author: marj_nl_fr $
+ */
 
+define('PAGE_NAME',     'Contact Us');
 define("LANCONTACT_01", "Contact Details");
 define("LANCONTACT_02", "Contact Form");
 define("LANCONTACT_03", "Enter your name:");
@@ -27,9 +32,3 @@ define("LANCONTACT_13", "Please include a subject.");
 define("LANCONTACT_14", "Send message to:");
 define("LANCONTACT_15", "Incorrect code entered");
 define("LANCONTACT_16", "Enter Code");
-
-
-
-
-
-?>
