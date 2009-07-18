@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2009-07-05 18:47:51 $
-|     $Author: e107steved $
+|     $Revision: 1.24 $
+|     $Date: 2009-07-18 13:08:37 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,12 +42,12 @@ define ('LOGIN_CHAP_FAIL', -11);	// CHAP login failed
 define ('LOGIN_DB_ERROR', -12);		// Error adding user to main DB
 
 
-class userlogin 
+class userlogin
 {
 	var $userMethods;			// Pointer to user handler
 
 
-	function userlogin($username, $userpass, $autologin, $response = '') 
+	function userlogin($username, $userpass, $autologin, $response = '')
 	{
 		/* Constructor
 		# Class called when user attempts to log in
@@ -85,10 +85,10 @@ class userlogin
 		$forceLogin = ($autologin == 'signup');
 		$autologin = intval($autologin);		// Will decode to zero if forced login
 
-		if ($pref['auth_method'] && $pref['auth_method'] != 'e107' && !$forceLogin) 
+		if ($pref['auth_method'] && $pref['auth_method'] != 'e107' && !$forceLogin)
 		{
 			$auth_file = e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
-			if (file_exists($auth_file)) 
+			if (file_exists($auth_file))
 			{
 				require_once(e_PLUGIN."alt_auth/alt_auth_login_class.php");
 				$result = new alt_login($pref['auth_method'], $username, $userpass);
@@ -105,11 +105,11 @@ class userlogin
 		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 
 		// Check secure image
-		if (!$forceLogin && $pref['logcode'] && extension_loaded("gd")) 
+		if (!$forceLogin && $pref['logcode'] && extension_loaded("gd"))
 		{
 			require_once(e_HANDLER."secure_img_handler.php");
 			$sec_img = new secure_image;
-			if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) 
+			if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 			{	// Invalid code
 				return $this->invalidLogin($username,LOGIN_BAD_CODE,$fip);
 			}
@@ -181,7 +181,7 @@ class userlogin
 		// Check user status
 		switch ($lode['user_ban'])
 		{
-		  case USER_REGISTERED_NOT_VALIDATED : // User not fully signed up - hasn't activated account. 
+		  case USER_REGISTERED_NOT_VALIDATED : // User not fully signed up - hasn't activated account.
 			return $this->invalidLogin($username,LOGIN_NOT_ACTIVATED,$fip);
 		  case USER_BANNED :		// User banned
 			return $this->invalidLogin($username,LOGIN_BANNED,$fip,$lode['user_id']);
@@ -201,13 +201,13 @@ class userlogin
 
 
 		$userpass = '';				// Finished with any plaintext password - can get rid of it
-	
+
 
 		$ret = $e_event->trigger("preuserlogin", $username);
-		if ($ret != '') 
+		if ($ret != '')
 		{
 			return $this->invalidLogin($username,LOGIN_BAD_TRIGGER,$fip,$ret);
-		} 
+		}
 
 
 		// Trigger events happy as well
@@ -216,9 +216,9 @@ class userlogin
 		$user_xup = $lode['user_xup'];
 
 		/* restrict more than one person logging in using same us/pw */
-		if($pref['disallowMultiLogin']) 
+		if($pref['disallowMultiLogin'])
 		{
-			if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) 
+			if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 			{
 				return $this->invalidLogin($username,LOGIN_MULTIPLE,$fip,$user_id);
 			}
@@ -228,7 +228,7 @@ class userlogin
 		// User login definitely accepted here
 
 
-		if($user_xup) 
+		if($user_xup)
 		{
 			$this->update_xup($user_id, $user_xup);
 		}
@@ -270,7 +270,7 @@ class userlogin
 
 		$redir = e_SELF;
 		if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
-		if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force'])) 
+		if (isset($pref['frontpage_force']) && is_array($pref['frontpage_force']))
 		{	// See if we're to force a page immediately following login - assumes $pref['frontpage_force'] is an ordered list of rules
 //		  $log_info = "New user: ".$lode['user_name']."  Class: ".$lode['user_class']."  Admin: ".$lode['user_admin']."  Perms: ".$lode['user_perms'];
 //		  $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login Start",$log_info,FALSE,FALSE);
@@ -290,12 +290,12 @@ class userlogin
 
 
 
-		if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) 
+		if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache"))
 		{
 			header("Location: ".$redir);
 			exit();
-		} 
-		else 
+		}
+		else
 		{
 			echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
 		}
@@ -303,76 +303,76 @@ class userlogin
 
 
 	// Function called to log the reason for a failed login. Currently always returns false - could return some other value
-	function invalidLogin($username,$reason, $fip = '?', $extra_text = '')
+	function invalidLogin($username, $reason, $fip = '?', $extra_text = '')
 	{
 		global $sql, $pref, $tp, $e107;
-	  
+
 		$doCheck = FALSE;			// Flag set if need to ban check
 		switch ($reason)
 		{
 			case LOGIN_ABORT :		// alt_auth reject
 			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
-			  $this->genNote($fip,$username,'Alt_auth: '.LAN_LOGIN_14);
-			  $this->logNote('LAN_ROLL_LOG_04','Alt_Auth: '.$username);
+			  $this->genNote($fip,$username, 'Alt_auth: '.LAN_LOGIN_14);
+			  $this->logNote('LAN_ROLL_LOG_04', 'Alt_Auth: '.$username);
 			  $doCheck = TRUE;
 			  break;
 			case LOGIN_DB_ERROR :	// alt_auth couldn't add valid user
 				define("LOGINMESSAGE", LAN_LOGIN_31."<br /><br />");
-				$this->genNote($fip,$username,'Alt_auth: '.LAN_LOGIN_30);
-//				$this->logNote('LAN_ROLL_LOG_04','Alt_Auth: '.$username);	// Added in alt_auth login
+				$this->genNote($fip,$username, 'Alt_auth: '.LAN_LOGIN_30);
+//				$this->logNote('LAN_ROLL_LOG_04', 'Alt_Auth: '.$username);	// Added in alt_auth login
 				$doCheck = TRUE;
 				break;
 			case LOGIN_BAD_PW :
 			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
-			  $this->logNote('LAN_ROLL_LOG_03',$username);
+			  $this->logNote('LAN_ROLL_LOG_03', $username);
 			  break;
 			case LOGIN_CHAP_FAIL :
 			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
-			  $this->logNote('LAN_ROLL_LOG_03','CHAP: '.$username);
+			  $this->logNote('LAN_ROLL_LOG_03', 'CHAP: '.$username);
 			  break;
 			case LOGIN_BAD_USER :
 			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
-			  $this->genNote($fip,$username,LAN_LOGIN_14);
-			  $this->logNote('LAN_ROLL_LOG_04',$username);
+			  $this->genNote($fip,$username, LAN_LOGIN_14);
+			  $this->logNote('LAN_ROLL_LOG_04', $username);
 			  $doCheck = TRUE;
 			  break;
 			case LOGIN_BAD_USERNAME :
 			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");
-			  $this->logNote('LAN_ROLL_LOG_08',$username);
+			  $this->logNote('LAN_ROLL_LOG_08', $username);
 			  break;
 			case LOGIN_MULTIPLE :
 			  define("LOGINMESSAGE", LAN_LOGIN_24."<br /><br />");
-			  $this->logNote('LAN_ROLL_LOG_07',"U: {$username} IP: {$fip}");
-			  $this->genNote($fip,$username,LAN_LOGIN_16);
+			  $this->logNote('LAN_ROLL_LOG_07', "U: {$username} IP: {$fip}");
+			  $this->genNote($fip, $username, LAN_LOGIN_16);
 			  $doCheck = TRUE;
 			  break;
 			case LOGIN_BAD_CODE :
 			  define("LOGINMESSAGE", LAN_LOGIN_23."<br /><br />");
-			  $this->logNote('LAN_ROLL_LOG_02',$username);
+			  $this->logNote('LAN_ROLL_LOG_02', $username);
 			  break;
 			case LOGIN_NOT_ACTIVATED :
 			  define("LOGINMESSAGE", LAN_LOGIN_22."<br /><br />");
-			  $this->logNote('LAN_ROLL_LOG_05',$username);
-			  $this->genNote($fip,$username,LAN_LOGIN_27);
+			  $this->logNote('LAN_ROLL_LOG_05', $username);
+			  $this->genNote($fip, $username, LAN_LOGIN_27);
 			  $doCheck = TRUE;
 			  break;
 			case LOGIN_BLANK_FIELD :
 			  define("LOGINMESSAGE", LAN_LOGIN_20."<br /><br />");
-			  $this->logNote('LAN_ROLL_LOG_01',$username);
+			  $this->logNote('LAN_ROLL_LOG_01', $username);
 			  break;
 			case LOGIN_BAD_TRIGGER :
 			  define("LOGINMESSAGE", $extra_text."<br /><br />");
-			  $this->logNote('LAN_ROLL_LOG_06',$username);
+			  $this->logNote('LAN_ROLL_LOG_06', $username);
 			  break;
 			case LOGIN_BANNED :
 			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");		// Just give 'incorrect login' message
-			  $this->genNote($fip,$username,LAN_LOGIN_25);
-			  $this->logNote('LAN_ROLL_LOG_09',$username);
+			  $this->genNote($fip, $username, LAN_LOGIN_25);
+			  $this->logNote('LAN_ROLL_LOG_09', $username);
 			  break;
 			default :		// Something's gone wrong!
 			  define("LOGINMESSAGE", LAN_LOGIN_21."<br /><br />");		// Just give 'incorrect login' message
-			  $this->genNote($fip,$username,LAN_LOGIN_26);
-			  $this->logNote('LAN_ROLL_LOG_10',$username);
+			  $this->genNote($fip,$username, LAN_LOGIN_26);
+			  $this->logNote('LAN_ROLL_LOG_10', $username);
 		}
 
 		if ($doCheck)
@@ -380,7 +380,7 @@ class userlogin
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3)
 			{ // Flood + Login or Login Only.
 				$fails = $sql -> db_Count("generic", "(*)", "WHERE gen_ip='{$fip}' AND gen_type='failed_login' ");
-				if($fails > 10) 
+				if($fails > 10)
 				{
 					$e107->add_ban(4,LAN_LOGIN_18,$fip,1);
 					$sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '{$fip}', '{$extra_text}', '".LAN_LOGIN_20.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
@@ -392,49 +392,54 @@ class userlogin
 
 
 	// Make a note of an event in the rolling log
-	function logNote($title,$text)
+	function logNote($title, $text)
 	{
 		global $admin_log;
-		$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"LOGIN",$title,$text,FALSE,LOG_TO_ROLLING);
+		$e107 = &e107::getInstance();
+		$title = $e107->tp->toDB($title);
+		$text  = $e107->tp->toDB($text);
+		$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
 	}
 
 
 	// Make a note of an event in the 'generic' table
-	function genNote($fip,$username,$msg1)
+	function genNote($fip, $username, $msg1)
 	{
-		global $sql, $tp;
-		$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".$msg1." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
+		//global $sql, $tp;
+		$e107 = &e107::getInstance();
+		$message = $e107->tp->toDB($msg1." ::: ".LAN_LOGIN_1.": ".$username);
+		$e107->sql->db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '{$message}'");
 	}
 
 
 	// This is called to update user settings from a XUP file - usually because the file name has changed.
 	// $user_xup has the new file name
-	function update_xup($user_id, $user_xup = "") 
+	function update_xup($user_id, $user_xup = "")
 	{
 		global $sql, $tp;
 		$user_id = intval($user_id);		// Should already be an integer - but just in case...
-		if($user_xup) 
+		if($user_xup)
 		{
 			require_once(e_HANDLER.'xml_class.php');
 			$xml = new xmlClass;
 			$xupData = array();
-			if($rawData = $xml -> getRemoteFile($user_xup)) 
+			if($rawData = $xml -> getRemoteFile($user_xup))
 			{
 				preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
 				$count = 0;
-				foreach($match[1] as $value) 
+				foreach($match[1] as $value)
 				{	// Process all the data into an array
 					$xupData[$value] = $tp -> toDB($match[2][$count]);
 					$count++;
 				}
-	
+
 				// List of fields in main user record, and their corresponding XUP fields
 				$main_fields = array('user_realname' => 'FN',
-									'user_hideemail'=>'EMAILHIDE', 
-									'user_signature'=>'SIG', 
-									'user_sess'=>'PHOTO', 
+									'user_hideemail'=>'EMAILHIDE',
+									'user_signature'=>'SIG',
+									'user_sess'=>'PHOTO',
 									'user_image'=>'AV');
-					
+
 				$new_values = array();
 				foreach ($main_fields as $f => $v)
 				{
@@ -443,7 +448,7 @@ class userlogin
 						$new_values['data'][$f] = $xupData[$v];
 					}
 				}
-	
+
 				if (count($new_values['data']))
 				{
 					if (!is_object($this->userMethods))
@@ -487,5 +492,3 @@ class userlogin
 		}
 	}
 }
-
-?>
