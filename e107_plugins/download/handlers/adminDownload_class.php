@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-17 07:53:13 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-18 19:04:04 $
+|     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
 */
@@ -34,9 +34,9 @@ class adminDownload extends download
       $this->userclassOptions = 'blank,nobody,guest,public,main,admin,member,classes';
 
       // Save basic search string
-      if (isset($_POST['download_search_submit']))
+      if (isset($_POST['download-search-text']))
       {
-         $this->searchField = $_POST['download_search'];
+         $this->searchField = $_POST['download-search-text'];
       }
 
       // Save advanced search criteria
@@ -47,24 +47,57 @@ class adminDownload extends download
    }
    function show_filter_form($action, $subAction, $id, $from, $amount)
    {
-      global $mySQLdefaultdb, $pref;
-      $eform = new e_form();
+      global $e107, $mySQLdefaultdb, $pref;
+      $frm = new e_form();
 
       $filterColumns = ($pref['admin_download_disp'] ? explode("|",$pref['admin_download_disp']) : array("download_name","download_class"));
+      $jsfunc = $ajax
+         ? "e107Ajax.toggleUpdate('{$id}-iconpicker', '{$id}-iconpicker-cn', 'sc:iconpicker=".urlencode($sc_parameters)."', '{$id}-iconpicker-ajax', { overlayElement: '{$id}-iconpicker-button' })"
+         : "e107Helper.toggle('{$id}-iconpicker')";
+	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => 123));
+	$url = "admin_download.php";
 
       // Search field
       $text .= "
+		<script type='text/javascript'>
+		e107.runOnLoad(function(){
+		   var el = $('download-search-text');
+		   el.e107PreviousValue = el.getValue();
+			el.observe('keyup', function(e) {
+			   var el = e.element();
+				e.stop();
+				if (el.getValue() != el.e107PreviousValue) {
+				   if (el.e107Timeout) {
+				      window.clearTimeout(el.e107Timeout);
+				   }
+      		   el.e107PreviousValue = el.getValue();
+      		   el.e107Timeout = window.setTimeout(function () {
+      				new e107Ajax.Updater('downloads-list', '{$url}', {
+      					method: 'post',
+      					parameters: { //send query parameters here
+      						'download_filter_list': 1,
+      						'download-search-text': el.getValue()
+      					},
+      					overlayPage: $(document.body)
+      				});
+      	      }, 500);
+   		   }
+			});
+		}, document, false);
+		</script>
          <form method='post' action='".e_SELF."'>
             <div id='download_search'>
             <fieldset>
                <legend class='e-hideme'>".DOWLAN_194."</legend>
                <table class='adminform'>
                   <tr>
-                     <td>
-                        Filter <input class='tbox' type='text' name='download_search' size='50' value='{$this->searchField}' maxlength='50'/> <a href='#download_search#download_advanced_search' class='e-swapit'>Advanced search</a>
-                     </td>
+                     <td>".DOWLAN_198." ".$frm->text('download-search-text', $this->searchField, 50, array('size'=>50, 'other' => "onkeyup=\"{$jsfunc}\""))."</td>
                   </tr>
-               </table>";
+               </table>
+               <div class='buttons-bar center'>
+   			      <span class='f-left'><a href='#download_search#download_advanced_search' class='e-swapit'>Advanced search</a></span>
+               </div>
+               ";
 
 			// Filter should use ajax to filter the results automatically after typing.
 
@@ -80,10 +113,10 @@ class adminDownload extends download
             </div>
          </form>
          ";
-      // Advanced search fields       {$showAdvancedSearch}
+      // Advanced search fields
       $text .= "
          <form method='post' action='".e_SELF."'>
-            <div id='download_advanced_search' class='e-hideme' >
+            <div id='download_advanced_search' class='e-hideme'>
             <fieldset>
             <legend class='e-hideme'>".DOWLAN_183."</legend>
             <table class='adminform'>
@@ -111,7 +144,7 @@ class adminDownload extends download
                   <td>
          ";
       $text .= $this->_getConditionList('download_advanced_search[date_condition]', $this->advancedSearchFields['date_condition']);
-//TODO      $text .= $eform->datepicker('download_advanced_search[date]', $this->advancedSearchFields['date']);
+//TODO      $text .= $frm->datepicker('download_advanced_search[date]', $this->advancedSearchFields['date']);
       $text .= "//TODO";
       $text .= "
                   </td>
@@ -136,7 +169,7 @@ class adminDownload extends download
                      </select>
                   </td>
                   <td>".DOWLAN_43."</td>
-                  <td>".$eform->uc_select('download_advanced_search[visible]', $this->advancedSearchFields['visible'], $this->userclassOptions)."</td>
+                  <td>".$frm->uc_select('download_advanced_search[visible]', $this->advancedSearchFields['visible'], $this->userclassOptions)."</td>
                </tr>
                <tr>
                   <td>".DOWLAN_29."</td>
@@ -148,7 +181,7 @@ class adminDownload extends download
                   <td>".DOWLAN_113."</td>
                   <td>
                   ";
-      $text .= $eform->uc_select('download_advanced_search[class]', $this->advancedSearchFields['class'], $this->userclassOptions);
+      $text .= $frm->uc_select('download_advanced_search[class]', $this->advancedSearchFields['class'], $this->userclassOptions);
       $text .= "
                   </td>
                </tr>
@@ -166,10 +199,8 @@ class adminDownload extends download
                </tr>
             </table>
             <div class='buttons-bar center'>
-			<span class='f-left'><a href='#download_advanced_search#download_search' class='e-swapit'>Simple search</a></span>
+			      <span class='f-left'><a href='#download_advanced_search#download_search' class='e-swapit'>Simple search</a></span>
                <button type='submit' class='update' name='download_advanced_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
-
-
             </div>
             </fieldset>
 			</div>
@@ -181,16 +212,16 @@ class adminDownload extends download
    function show_existing_items($action, $subAction, $id, $from, $amount)
    {
       global $sql, $rs, $ns, $tp, $mySQLdefaultdb, $pref, $user_pref;
-      $eform = new e_form();
+      $frm = new e_form();
       $sortorder = $subAction ? $subAction : $pref['download_order'];
       $sortdirection = $id=="asc" ? "asc" : "desc";
-	  $amount = 10;
-	  if(!$sortorder)
-	  {
+	   $amount = 10;
+	   if(!$sortorder)
+	   {
       	$sortorder = "download_id";
-	  }
+	   }
 
-	  $sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
+	   $sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
 
 		$columnInfo = array(
          "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"center first", "forced"=>true),
@@ -293,8 +324,8 @@ class adminDownload extends download
       {
          $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
             <table class='adminlist'>
-				   ".$eform->colGroup($columnInfo,$filterColumns)
-				   .$eform->thead($columnInfo,$filterColumns,"main.[FIELD].[ASC].[FROM]")."
+				   ".$frm->colGroup($columnInfo,$filterColumns)
+				   .$frm->thead($columnInfo,$filterColumns,"main.[FIELD].[ASC].[FROM]")."
                <tbody>
             ";
 
@@ -506,7 +537,7 @@ class adminDownload extends download
          sort($thumb_array);
       }
 
-      $eform = new e_form();
+      $frm = new e_form();
       $mirrorArray = array();
 
       $download_status[0] = DOWLAN_122;
@@ -726,7 +757,7 @@ class adminDownload extends download
                      <td style='width:20%'>".DOWLAN_18."</td>
                      <td style='width:80%'>
       ";
-      $text .= $eform->bbarea('download_description',$download_description);
+      $text .= $frm->bbarea('download_description',$download_description);
       $text .= "     </td>
                   </tr>
                   <tr>
@@ -1400,7 +1431,7 @@ class adminDownload extends download
    	global $pref, $ns;
 
 		require_once(e_HANDLER."form_handler.php");
-		$eform = new e_form(true); //enable inner tabindex counter
+		$frm = new e_form(true); //enable inner tabindex counter
 
    	$agree_flag = $pref['agree_flag'];
    	$agree_text = $pref['agree_text'];
@@ -1438,35 +1469,35 @@ class adminDownload extends download
             		      <tr>
             		         <td>".LAN_DL_USE_PHP."</td>
             		         <td>"
-            		            .$eform->checkbox('download_subsub', '1', $pref['download_php'])
-            		            .$eform->label(LAN_DL_USE_PHP_INFO, 'download_php', '1')
+            		            .$frm->checkbox('download_subsub', '1', $pref['download_php'])
+            		            .$frm->label(LAN_DL_USE_PHP_INFO, 'download_php', '1')
             		         ."</td>
             		      </tr>
             		      <tr>
             		         <td>".LAN_DL_SUBSUB_CAT."</td>
             		         <td>"
-            		            .$eform->checkbox('download_subsub', '1', $pref['download_subsub'])
-            		            .$eform->label(LAN_DL_SUBSUB_CAT_INFO, 'download_subsub', '1')
+            		            .$frm->checkbox('download_subsub', '1', $pref['download_subsub'])
+            		            .$frm->label(LAN_DL_SUBSUB_CAT_INFO, 'download_subsub', '1')
             		         ."</td>
             		      </tr>
             		      <tr>
             		         <td>".LAN_DL_SUBSUB_COUNT."</td>
             		         <td>"
-            		            .$eform->checkbox('download_incinfo', '1', $pref['download_incinfo'])
-            		            .$eform->label(LAN_DL_SUBSUB_COUNT_INFO, 'download_incinfo', '1')
+            		            .$frm->checkbox('download_incinfo', '1', $pref['download_incinfo'])
+            		            .$frm->label(LAN_DL_SUBSUB_COUNT_INFO, 'download_incinfo', '1')
             		         ."</td>
             		      </tr>
             		      <tr>
                		      <td>".DOWLAN_55."</td>
-            		         <td>".$eform->text('download_view', $pref['download_view'], '4', array('size'=>'4'))."</td>
+            		         <td>".$frm->text('download_view', $pref['download_view'], '4', array('size'=>'4'))."</td>
             		      </tr>
             		      <tr>
             		         <td>".DOWLAN_56."</td>
-            		         <td>".$eform->selectbox('download_order', $order_options, $pref['download_order'])."</td>
+            		         <td>".$frm->selectbox('download_order', $order_options, $pref['download_order'])."</td>
             		      </tr>
             		      <tr>
             		         <td>".LAN_ORDER."</td>
-               		         <td>".$eform->selectbox('download_sort', $sort_options, $pref['download_sort'])."</td>
+               		         <td>".$frm->selectbox('download_sort', $sort_options, $pref['download_sort'])."</td>
             		         </td>
             		      </tr>
             		      <tr>
@@ -1518,11 +1549,11 @@ class adminDownload extends download
             		      </tr>
             		      <tr>
             		         <td>".DOWLAN_101."</td>
-               	   	   <td>".$eform->bbarea('agree_text',$agree_text)."</td>
+               	   	   <td>".$frm->bbarea('agree_text',$agree_text)."</td>
             		      </tr>
             		      <tr>
             		         <td>".DOWLAN_146."</td>
-            		         <td>".$eform->bbarea('download_denied',$pref['download_denied'])."</td>
+            		         <td>".$frm->bbarea('download_denied',$pref['download_denied'])."</td>
             		      </tr>
             		   </table>
             		</div>
@@ -1580,7 +1611,7 @@ class adminDownload extends download
       global $sql, $ns, $tp, $subAction, $id, $delete, $del_id, $admin_log;
 
       require_once(e_HANDLER."form_handler.php");
-      $eform = new e_form();
+      $frm = new e_form();
       if ($delete == "mirror")
       {
          admin_update($sql -> db_Delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
@@ -1694,7 +1725,7 @@ class adminDownload extends download
       <tr>
       <td style='width: 30%;'>".DOWLAN_18."</td>
       <td style='width: 70%;'>";
-      $text .= $eform->bbarea('mirror_description',$mirror_description);
+      $text .= $frm->bbarea('mirror_description',$mirror_description);
       $text .= "</td>
       </tr>
 

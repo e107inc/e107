@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-15 23:28:46 $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-18 19:04:04 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,13 @@ if (e_QUERY)
 	unset($tmp);
 }
 
-   $adminDownload->observer();
+$adminDownload->observer();
+
+if(isset($_POST['download_filter_list']))
+{
+	echo $adminDownload->show_existing_items($action, $subAction, $id, 0, 10);
+	exit;
+}
 
 if (isset($_POST['delete']))
 {
