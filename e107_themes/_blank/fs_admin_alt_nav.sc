@@ -1,6 +1,6 @@
 /*
 * e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: fs_admin_alt_nav.sc,v 1.4 2009-01-09 17:25:50 secretr Exp $
+* $Id: fs_admin_alt_nav.sc,v 1.5 2009-07-18 11:47:50 marj_nl_fr Exp $
 */
 
 if (!ADMIN) return '';
@@ -165,7 +165,7 @@ if (!ADMIN) return '';
 	}
 
 	$text .= '<li>';
-	$text .= adnav_cat_fs(ADLAN_CL_8, '', E_16_NAV_DOCS, 'docsMenu');
+	$text .= adnav_cat_fs(ADLAN_CL_8, '', E_16_CAT_ABOUT, 'docsMenu'); //E_16_NAV_DOCS
 	$text .= "<ul id='docsMenu' class='menu'>";
 	if (!$handle=opendir(e_DOCS.e_LANGUAGE."/"))
 	{
