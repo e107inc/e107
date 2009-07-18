@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.40 $
-* $Date: 2009-07-17 07:53:13 $
-* $Author: e107coders $
+* $Revision: 1.41 $
+* $Date: 2009-07-18 15:14:38 $
+* $Author: marj_nl_fr $
 *
 */
 require_once('../class2.php');
@@ -1354,6 +1354,7 @@ class users
 		else
 		{
 			$row['user_language'] = e_LANGUAGE;
+			//@FIXME use array
 			require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
 		}
 

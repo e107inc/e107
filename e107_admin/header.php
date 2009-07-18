@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.38 $
-|   $Date: 2009-07-17 23:23:36 $
-|   $Author: e107coders $
+|   $Revision: 1.39 $
+|   $Date: 2009-07-18 15:14:38 $
+|   $Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -78,16 +78,8 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 // B.2: Include admin LAN defines
 //
 
-if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_header.php')) {
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
-} else {
-	@include_once(e_LANGUAGEDIR."English/admin/lan_header.php");
-}
-if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php')) {
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php');
-} else {
-	@include_once(e_LANGUAGEDIR.'English/admin/lan_footer.php');
-}
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_footer.php');
 
 
 
