@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-11-29 13:24:09 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2009-07-18 13:08:12 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -113,7 +113,7 @@ if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datest
 		$message .= " - ".$ab['gen_ip'];
 	}
 
-	$message .= "<div style='text-align: right;'>( <a href='".e_SELF."?dabl'>".FLALAN_16."</a> )</div>";
+	$message .= "<div style='text-align: right;'>(<a href='".e_SELF."?dabl'>".FLALAN_16."</a>)</div>";
 
 }
 
@@ -154,8 +154,8 @@ else
 		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", htmlentities($gen_chardata, ENT_QUOTES, CHARSET))."</td>
 		<td style='width: 20%;' class='forumheader'>".$fa['gen_ip']."<br />{$host}</td>
 		<td style='width: 10%; text-align: left;' class='forumheader3'>
-		<input type='checkbox' name='fladelete[]' value='{$gen_id}' /> ".LAN_DELETE."<br />
-		<input type='checkbox' name='flaban[]' value='{$gen_id}' /> ".LAN_BAN."
+		<label><input type='checkbox' name='fladelete[]' value='{$gen_id}' /> ".LAN_DELETE."</label><br />
+		<label><input type='checkbox' name='flaban[]' value='{$gen_id}' /> ".LAN_BAN."</label>
 		</td>
 		</tr>
 		";
