@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.9 2009-07-17 14:41:54 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.10 2009-07-19 14:48:01 marj_nl_fr Exp $ -->
 <e107Plugin name="ADLAN_PM" version="3.0" compatibility="0.8" installRequired="true">
-	<author name="e107 Inc." email="mcfly@e107.org"/>
+	<author name="e107 Inc." email="mcfly@e107.org" />
 	<description>ADLAN_PM_57</description>
 	<folder>pm</folder>
 	<category>users</category>
