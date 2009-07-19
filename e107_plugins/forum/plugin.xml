@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.21 2009-07-17 14:41:54 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.22 2009-07-19 14:48:00 marj_nl_fr Exp $ -->
 <e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true" xhtmlcompliant="true" >
-	<author name="e107dev" url="http://e107.org"/>
+	<author name="e107dev" url="http://e107.org" />
 	<description>This plugin is a fully featured Forum system</description>
 	<folder>forum</folder>
 	<category>content</category> 
@@ -16,7 +16,7 @@
 		<caption>Configure Forum</caption>
 		<installDone>Your forum is now installed</installDone>
 	</administration>
-	<menuLink name="Forum" url="forum/forum.php" perm='everyone'/>
+	<menuLink name="Forum" url="forum/forum.php" perm='everyone' />
 	<mainPrefs>
 		<pref name="forum_show_topics" value="1" />
 		<pref name="forum_postfix" value="[more...]" />
