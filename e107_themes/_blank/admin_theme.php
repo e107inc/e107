@@ -1,5 +1,8 @@
 <?php
 if ( ! defined('e107_INIT')) { exit(); }
+
+define('STANDARDS_MODE', TRUE);
+
 include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
 $THEME_CORE_JSLIB = array(

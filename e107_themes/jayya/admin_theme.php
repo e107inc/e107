@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/admin_theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-04-27 10:52:42 $
-|     $Author: secretr $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-19 19:42:13 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 // Protect the file from direct access
 if (!defined('e107_INIT')) { exit; }
 
+define('STANDARDS_MODE', TRUE);
 
 // Get language definition files for this theme
 include_lan(e_THEME."jayya/languages/".e_LANGUAGE.".php");
