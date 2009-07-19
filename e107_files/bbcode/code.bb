@@ -25,7 +25,7 @@ if(isset($pref['useGeshi']) && $pref['useGeshi'] && file_exists(e_PLUGIN."geshi/
 			$geshi = new GeSHi($code_text, ($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : 'php'), e_PLUGIN."geshi/geshi/");
 		}
 		$geshi->line_style1 = "font-family: 'Courier New', Courier, monospace; font-weight: normal; font-style: normal;";
-		$geshi->set_encoding(CHARSET);
+		$geshi->set_encoding('utf-8');
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 		$geshi->set_header_type(GESHI_HEADER_DIV);
 		$CodeCache = $geshi->parse_code();
@@ -35,7 +35,7 @@ if(isset($pref['useGeshi']) && $pref['useGeshi'] && file_exists(e_PLUGIN."geshi/
 }
 else
 {
-	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
+	$code_text = html_entity_decode($code_text, ENT_QUOTES, 'utf-8');
 	$highlighted_text = highlight_string($code_text, TRUE);
 	$divClass = ($parm) ? $parm : 'code_highlight';
 	$ret = "<div class='".$tp -> toAttribute($divClass)." code-box' style='unicode-bidi: embed; direction: ltr'>{$highlighted_text}</div>";

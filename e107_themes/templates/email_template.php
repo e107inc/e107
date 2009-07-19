@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-06 07:50:44 $
+|     $Revision: 1.7 $
+|     $Date: 2009-07-19 11:44:29 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -39,10 +39,10 @@ $EMAIL_FROM_NAME = ""; // Admin
 
 
 
-$EMAIL_HEADER = "
-<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+$EMAIL_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml' >
-<head><meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+<head>
+<meta http-equiv='content-type' content='text/html; charset=utf-8' />
 {STYLESHEET}
 </head>
 <body>

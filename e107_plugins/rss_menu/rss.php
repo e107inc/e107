@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-06-29 06:30:05 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2009-07-19 11:44:29 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -415,7 +415,7 @@ class rssCreate {
 		$time = time();
 		switch ($this -> rssType) {
 			case 1:		// Rss 1.0
-				echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\" ?>
+				echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
 						<!-- generator=\"e107\" -->
 						<!-- content type=\"".$this -> contentType."\" -->
 						<rss version=\"0.92\">
@@ -447,7 +447,7 @@ class rssCreate {
 
 			case 2: // rss 2.0
 				$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
-				echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\"?>
+				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rss {$rss_namespace} version=\"2.0\">
@@ -541,7 +541,7 @@ class rssCreate {
 			break;
 
 			case 3: // rdf
-				echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\" ?>
+				echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rdf:RDF xmlns=\"http://purl.org/rss/1.0/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\" xmlns:admin=\"http://webns.net/mvcb/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
@@ -599,7 +599,7 @@ class rssCreate {
 
 			//new feed for atom - still in development, and not yet tested
 			case 4:
-				echo "<?xml version='1.0' encoding='".CHARSET."'?>\n
+				echo "<?xml version='1.0' encoding='utf-8'?>\n
 				<feed xmlns='http://www.w3.org/2005/Atom'>\n";
 				/*
 				<feed version='0.3'

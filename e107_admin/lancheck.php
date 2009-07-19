@@ -10,8 +10,8 @@
  * With code from Izydor and Lolo.
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-07-14 12:19:40 $
+ * $Revision: 1.14 $
+ * $Date: 2009-07-19 11:44:28 $
  * $Author: marj_nl_fr $
  *
 */
@@ -765,7 +765,8 @@ function is_utf8($str) {
 	/*
 	* @see http://hsivonen.iki.fi/php-utf8/   validation.php
 	*/
-	if(strtolower(CHARSET) != "utf-8" || $str == "")
+//@TODO: always TRUE
+//	if(strtolower(CHARSET) != "utf-8" || $str == "")
 	{
 		return TRUE;
 	}

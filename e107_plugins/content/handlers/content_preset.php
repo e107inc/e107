@@ -109,12 +109,11 @@ if(isset($_POST['addpreset'])){
 }
 
 
-$text .= "
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>\n
+$text = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>\n
 <html>\n
 <head>\n
 <title>".CONTENT_PRESET_LAN_7."</title>\n
-<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />\n
+<meta http-equiv='content-type' content='text/html; charset=utf-8' />\n
 <script type='text/javascript' src='../../../e107_files/e107.js'></script>
 ".$js."
 <style type='text/css'>\n
