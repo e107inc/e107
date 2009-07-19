@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-18 19:04:04 $
-|     $Author: bugrain $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-19 20:25:03 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -47,10 +47,10 @@ class adminDownload extends download
    }
    function show_filter_form($action, $subAction, $id, $from, $amount)
    {
-      global $e107, $mySQLdefaultdb, $pref;
+      global $e107, $mySQLdefaultdb, $pref, $user_pref;
       $frm = new e_form();
 
-      $filterColumns = ($pref['admin_download_disp'] ? explode("|",$pref['admin_download_disp']) : array("download_name","download_class"));
+      $filterColumns = ($user_pref['admin_download_disp'] ? $user_pref['admin_download_disp'] : array("download_name","download_class"));
       $jsfunc = $ajax
          ? "e107Ajax.toggleUpdate('{$id}-iconpicker', '{$id}-iconpicker-cn', 'sc:iconpicker=".urlencode($sc_parameters)."', '{$id}-iconpicker-ajax', { overlayElement: '{$id}-iconpicker-button' })"
          : "e107Helper.toggle('{$id}-iconpicker')";
@@ -91,12 +91,10 @@ class adminDownload extends download
                <legend class='e-hideme'>".DOWLAN_194."</legend>
                <table class='adminform'>
                   <tr>
-                     <td>".DOWLAN_198." ".$frm->text('download-search-text', $this->searchField, 50, array('size'=>50, 'other' => "onkeyup=\"{$jsfunc}\""))."</td>
+                     <td>".DOWLAN_198." ".$frm->text('download-search-text', $this->searchField, 50, array('size'=>50, 'other' => "onkeyup=\"{$jsfunc}\""))."&nbsp;<a href='#download_search#download_advanced_search' class='e-swapit'>Switch to Advanced-Search</a></td>
                   </tr>
                </table>
-               <div class='buttons-bar center'>
-   			      <span class='f-left'><a href='#download_search#download_advanced_search' class='e-swapit'>Advanced search</a></span>
-               </div>
+
                ";
 
 			// Filter should use ajax to filter the results automatically after typing.
@@ -224,7 +222,8 @@ class adminDownload extends download
 	   $sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
 
 		$columnInfo = array(
-         "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"center first", "forced"=>true),
+		 "checkboxes"	   			=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "url" => ""),
+         "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
          "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "download_author"          => array("title"=>DOWLAN_15,  "type"=>"", "width"=>"auto", "thclass"=>""),
@@ -334,8 +333,9 @@ class adminDownload extends download
          while ($row = $sql->db_Fetch())
          {
             $mirror = strlen($row['download_mirror']) > 0;
-
-            $text .= "<tr>\n<td>".$row['download_id']."</td>\n";
+            $text .= "<tr>\n
+           	<td class='center'>".$frm->checkbox("dl_selected[".$row["download_id"]."]", $row['download_id'])."</td>
+			<td>".$row['download_id']."</td>\n";
 
             // Display Chosen options
 
@@ -455,7 +455,8 @@ class adminDownload extends download
       if ($downloads > $amount && !$this->searchFields && !$this->advancedSearchFields)
       {
          $parms = "{$downloads},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$subAction.$id." : "main.{$sortorder}.{$sortdirection}.")."[FROM]";
-         $text .= "<br/>".$tp->parseTemplate("{NEXTPREV={$parms}}");
+         $text .= "<div class='buttons-bar center nextprev'>".$this->batch_options().
+		 $tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
       }
 
       $text .= "</fieldset>";
@@ -463,7 +464,23 @@ class adminDownload extends download
    }
 
 // ---------------------------------------------------------------------------
+    function batch_options()
+	{
+    	$text = "<span class='f-left' style='padding-left:15px'><img src='".e_IMAGE."generic/branchbottom.gif' alt='' />
+			<select class='tbox'>
+			<option value='delete'>".LAN_DELETE."</option>
+				<optgroup label='Move to..'>
+				<option value='cat_1'>Category 1</option>
+				<option value='cat_2'>Category 2</option>
+				<option value='cat_3'>Category 3</option>
+			</optgroup>
+				<optgroup label='Change Userclass to..'>
+				<option value='0'>Everyone</option>
+			</optgroup>
+			</select></span>";
 
+		return $text;
+	}
 
    // Given the string which is stored in the DB, turns it into an array of mirror entries
    // If $byID is true, the array index is the mirror ID. Otherwise its a simple array
