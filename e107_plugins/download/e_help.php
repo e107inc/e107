@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/help.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-16 23:07:31 $
-|     $Author: bugrain $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/e_help.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009-07-19 09:31:05 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
