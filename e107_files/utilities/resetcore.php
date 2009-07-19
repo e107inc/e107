@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/utilities/resetcore.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-10-14 20:24:29 $
-|     $Author: e107steved $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-19 11:44:28 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,12 +28,9 @@ If you don't, the script will not be usable.
 When you have finished with resetcore you should swap true for false so it can't be used by
 people it shouldn't be used by.
 
-If your site uses a different charset than utf-8, change the CHARSET to reflect the correct encoding.
-
 */
 
 define("ACTIVE", false);
-define("CHARSET", 'utf-8');
 
 /* #################################################### */
 
@@ -64,14 +61,13 @@ define("e107_INIT", TRUE);
 require_once('../../'.$HANDLERS_DIRECTORY.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
-echo "<?xml version='1.0' encoding='".CHARSET."' ?>\n";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title><e107 resetcore></title>
 <link rel="stylesheet" href="style.css" />
-<meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="content-style-type" content="text/css" />
 </head>
 <body>

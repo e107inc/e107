@@ -9,9 +9,9 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-01-16 01:02:41 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.10 $
+ * $Date: 2009-07-19 11:44:27 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -396,7 +396,7 @@ function pref_editor()
 
 	foreach($pref as $key => $val)
 	{
-		$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, CHARSET);
+		$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
 		$ptext = $e107->tp->textclean($ptext, 80);
 
 		$text .= "

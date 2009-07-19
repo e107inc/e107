@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/e_meta.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-13 12:34:53 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-19 11:44:29 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -30,7 +30,7 @@ global $tp,$PLUGINS_DIRECTORY;
 		  		$url = SITEURL.$PLUGINS_DIRECTORY."rss_menu/rss.php?".$tp->toHTML($row['rss_url'], TRUE, 'constants, no_hook, emotes_off').".2";
 				$url .= ($row['rss_topicid']) ? ".".$row['rss_topicid'] : "";
 		  		$name = $tp->toHTML($row['rss_name'], TRUE, 'no_hook, emotes_off');
-		   		echo "<link rel='alternate' type='application/rss+xml' title='".htmlspecialchars(SITENAME, ENT_QUOTES, CHARSET)." ".htmlspecialchars($name, ENT_QUOTES, CHARSET)."' href='".$url."' />\n";
+		   		echo "<link rel='alternate' type='application/rss+xml' title='".htmlspecialchars(SITENAME, ENT_QUOTES, 'utf-8')." ".htmlspecialchars($name, ENT_QUOTES, 'utf-8')."' href='".$url."' />\n";
 			}
 		}
 	}

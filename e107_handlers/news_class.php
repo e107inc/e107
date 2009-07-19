@@ -9,9 +9,9 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-07-07 06:50:55 $
- * $Author: e107coders $
+ * $Revision: 1.16 $
+ * $Date: 2009-07-19 11:44:28 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -259,6 +259,7 @@ class news {
 		}
 	}
 
+	//@TDODO deprecated?
 	function make_xml_compatible($original)
 	{
 		global $e107;

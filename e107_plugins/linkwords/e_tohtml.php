@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-02-03 11:59:02 $
-|     $Author: lisa_ $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-19 11:44:28 $
+|     $Author: marj_nl_fr $
 |
 | *utf - flags functions which need utf-8-aware code
 TODO:
@@ -130,6 +130,7 @@ class e_tohtml_linkwords
 			}
 		}
 	  $this->area_opts = $pref['lw_context_visibility'];
+	  //@TODO utfMode probably obsolete
 	  $this->utfMode = (strtolower(CHARSET) == 'utf-8') ? 'u' : '';		// Flag to enable utf-8 on regex
 	  $this->lwAjaxEnabled = varset($pref['lw_ajax_enable'],0);
 	}

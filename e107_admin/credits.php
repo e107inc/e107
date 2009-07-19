@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/credits.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-04-01 20:08:38 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-19 11:44:27 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -98,11 +98,11 @@ $contentA = array(
 	"<h1>Pete Holzmann<\/h1>[ MrPete ]<br /><br /><br />".CRELAN_28
 );
 
-echo "<?xml version='1.0' encoding='".CHARSET."' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
 <title>".PAGE_NAME."</title>
-<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+<meta http-equiv='content-type' content='text/html; charset=utf-8' />
 <meta http-equiv='content-style-type' content='text/css' />
 <link rel='stylesheet' href='".THEME."style.css' type='text/css' />
 </head>
@@ -253,5 +253,3 @@ echo "
 </body>
 </html>
 ";
-
-?>

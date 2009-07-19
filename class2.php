@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.109 $
-* $Date: 2009-07-18 10:17:56 $
+* $Revision: 1.110 $
+* $Date: 2009-07-19 11:44:26 $
 * $Author: marj_nl_fr $
 *
 */
@@ -208,6 +208,11 @@ if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
 		}
 	}
 }
+
+/**
+ * set CHARSET for backward compatibility 
+ */
+define('CHARSET', 'utf-8');
 
 //
 // G: Retrieve Query data from URI
@@ -1918,23 +1923,18 @@ function loadLanFiles($unitName, $type='runtime')
 
 if(!function_exists('print_a'))
 {
-  function print_a($var, $return = false)
-  {
-	$charset = 'utf-8';
-	if(defined('CHARSET'))
+	function print_a($var, $return = FALSE)
 	{
-	  $charset = CHARSET;
+		if( ! $return)
+		{
+			echo '<pre>'.htmlspecialchars(print_r($var, TRUE), ENT_QUOTES, 'utf-8').'</pre>';
+			return TRUE;
+		}
+		else
+		{
+			return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, 'utf-8').'</pre>';
+		}
 	}
-	if(!$return)
-	{
-	  echo '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
-	  return true;
-	}
-	else
-	{
-	  return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, $charset).'</pre>';
-	}
-  }
 }
 
 

@@ -9,13 +9,13 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.5 $Date: 2004/10/04
+// $Revision: 1.6 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.5 $
-// $Date: 2009-07-02 03:24:14 $
-// $Author: e107coders $
+// $Revision: 1.6 $
+// $Date: 2009-07-19 11:44:29 $
+// $Author: marj_nl_fr $
 // +----------------------------------------------------------------------------+
 // Major Re-work by CaMer0n
 
@@ -81,15 +81,14 @@ else
 	$d = @dir(e_BASE.$imglib);
 
 
-echo "
-<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 
 <html>
 <head>
 <title>".$lang_ibrowser_title."</title>
 <script type=\"text/javascript\" src=\"../../tiny_mce_popup.js\"></script>
 <meta http-equiv=\"Pragma\" content=\"no-cache\" />
-<meta http-equiv=\"Content-Type\" content=\"text/html; charset=". CHARSET."\" />
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
 <script type=\"text/javascript\">
 
    //<![CDATA[

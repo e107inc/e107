@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.53 $
-* $Date: 2009-07-17 02:28:49 $
-* $Author: e107coders $
+* $Revision: 1.54 $
+* $Date: 2009-07-19 11:44:28 $
+* $Author: marj_nl_fr $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -158,6 +158,7 @@ class e_parse
 
 
 	// This has to be a separate function - can't be called until CHARSET known
+	//@TODO deprecated
 	function initCharset()
 	{
 		// Start by working out what, if anything, we do about utf-8 handling.

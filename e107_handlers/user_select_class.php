@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-07 07:25:27 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-19 11:44:28 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -155,8 +155,8 @@ class user_select {
 		}
 		
 		// send the charset to the browser - overrides spurious server settings with the lan pack settings.
-		header("Content-type: text/html; charset=".CHARSET, true);
-		echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+		header("Content-type: text/html; charset=utf-8", TRUE);
+		echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 		echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 		<head>
 		<title>".SITENAME."</title>\n";
