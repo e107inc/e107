@@ -9,8 +9,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.41 $
-* $Date: 2009-07-18 15:14:38 $
+* $Revision: 1.42 $
+* $Date: 2009-07-19 14:59:06 $
 * $Author: marj_nl_fr $
 *
 */
@@ -492,7 +492,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser')
 			<br /><br />
 			<input type='submit' class='button' name='confirm' value='".USRLAN_17."' />
 			&nbsp;&nbsp;
-			<input type='button' class='button' name='cancel' value='".LAN_CANCEL."' onclick=\"location.href='".e_SELF.$qry."' \"/>
+			<input type='button' class='button' name='cancel' value='".LAN_CANCEL."' onclick=\"location.href='".e_SELF.$qry."' \" />
 			</div>
 			</form>
 			";
@@ -1753,7 +1753,7 @@ function show_ranks()
 	$opArray = array('*', '+', '-');
 
 	$text .= "
-	<form method='post'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>
 	<table style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='label'>".USRLAN_197."</td>
@@ -1779,7 +1779,7 @@ function show_ranks()
 		$text .= "
 			</select>
 		</td>
-		<td class='control'><input type='text' class='tbox' name='val[{$k}]' value='".varset($config[$k]['val'])."' size='3' maxlength='3'></td>
+		<td class='control'><input type='text' class='tbox' name='val[{$k}]' value='".varset($config[$k]['val'])."' size='3' maxlength='3' /></td>
 		</tr>
 		";
 	}
@@ -1805,7 +1805,9 @@ function show_ranks()
 			$text .= "
 				</select>
 			</td>
-			<td class='control'><input type='text' class='tbox' name='val[{$f}]' value='".varset($config[$f]['val'])."' size='3' maxlength='3' value=''></td>
+			<td class='control'>
+			<input type='text' class='tbox' name='val[{$f}]' value='".varset($config[$f]['val'])."' size='3' maxlength='3' value='' />
+			</td>
 			</tr>
 			";
 		}
@@ -1839,10 +1841,10 @@ function show_ranks()
 	<tr>
 		<td class='control'>".LAN_MAINADMIN."</td>
 		<td class='control'>
-			<input class='tbox' type='text' name='calc_name[main_admin]' value='{$val}'>
+			<input class='tbox' type='text' name='calc_name[main_admin]' value='{$val}' />
 		</td>
 		<td class='control'>N/A</td>
-		<td class='control'><input type='checkbox' name='calc_pfx[main_admin]' {$pfx} value='1'></td>
+		<td class='control'><input type='checkbox' name='calc_pfx[main_admin]' {$pfx} value='1' /></td>
 		<td class='control'>".RankImageDropdown($imageList, 'calc_img[main_admin]', $info['image'])."</td>
 	</tr>
 	";
@@ -1854,10 +1856,10 @@ function show_ranks()
 	<tr>
 		<td class='control'>".LAN_ADMIN."</td>
 		<td class='control'>
-			<input class='tbox' type='text' name='calc_name[admin]' value='{$val}'>
+			<input class='tbox' type='text' name='calc_name[admin]' value='{$val}' />
 		</td>
 		<td class='control'>N/A</td>
-		<td class='control'><input type='checkbox' name='calc_pfx[admin]' {$pfx} value='1'></td>
+		<td class='control'><input type='checkbox' name='calc_pfx[admin]' {$pfx} value='1' /></td>
 		<td class='control'>".RankImageDropdown($imageList, 'calc_img[admin]', $info['image'])."</td>
 	</tr>
 	<tr>
@@ -1873,10 +1875,10 @@ function show_ranks()
 			<td class='control'>".USRLAN_212."</td>
 			<td class='control'>
 				<input type='hidden' name='field_id[{$k}]' value='1' />
-				<input class='tbox' type='text' name='calc_name[$k]' value='{$r['name']}'>
+				<input class='tbox' type='text' name='calc_name[$k]' value='{$r['name']}' />
 			</td>
-			<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}'></td>
-			<td class='control'><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked}></td>
+			<td class='control'><input class='tbox' type='text' size='5' name='calc_lower[$k]' value='{$r['thresh']}' /></td>
+			<td class='control'><input type='checkbox' name='calc_pfx[$k]' value='1' {$pfx_checked} /></td>
 			<td class='control'>".
 				RankImageDropdown($imageList, "calc_img[$k]", $r['image'])."&nbsp;".
 				$frm->submit_image("delete_rank[{$r['id']}]", LAN_DELETE, 'delete', USRLAN_213.": [{$r['name']}]?")."
@@ -1892,9 +1894,9 @@ function show_ranks()
 	</tr>
 	<tr>
 		<td class='control'>".USRLAN_214."</td>
-		<td class='control'><input class='tbox' type='text' name='new_calc_name' value=''></td>
-		<td class='control'><input class='tbox' type='text' size='5' name='new_calc_lower' value=''></td>
-		<td class='control'><input type='checkbox' name='new_calc_pfx' value='1'></td>
+		<td class='control'><input class='tbox' type='text' name='new_calc_name' value='' /></td>
+		<td class='control'><input class='tbox' type='text' size='5' name='new_calc_lower' value='' /></td>
+		<td class='control'><input type='checkbox' name='new_calc_pfx' value='1' /></td>
 		<td class='control'>".RankImageDropdown($imageList, 'new_calc_img')."</td>
 	</tr>
 	<tr>
