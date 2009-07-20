@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/import/phpbb2_import_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-20 15:24:34 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-20 21:18:09 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,14 @@ class phpbb2_import extends base_import_class
 	if ($this->copyUserInfo) $target['user_id'] = $source['user_id'];
 	$target['user_name'] = $source['username'];
 	$target['user_loginname'] = $source['username'];
+	if ((substr($source['user_password']) == '$H$') && (strlen($source['user_password']) == 34))
+	{ // Convert salted password to E107 style (they use the same basic coding)
+	  $target['user_password'] = substr_replace($source['user_password'], '$E$',0,3);
+	}
+	else
+	{  // Probably an old md5 password
 	$target['user_password'] = $source['user_password'];
+	}
 	$target['user_email'] = $source['user_email'];
 	$target['user_signature'] = $this->proc_bb($source['user_sig'],'phpbb,bblower');
 	$target['user_hideemail'] = $source['user_viewemail'];
@@ -375,7 +382,9 @@ while($topic = mysql_fetch_array($phpbb_res))
 
 		//echo "PARENT: $parent_id, TOPIC: $topic_id<br />"; 
 
-		$query = "SELECT * FROM {$phpbb2Prefix}posts LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id) WHERE topic_id='{$topic_id}' AND post_subject = '' ORDER BY post_time DESC";
+// Not checking post_subject might work better
+		$query = "SELECT * FROM {$phpbb2Prefix}posts LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id) WHERE topic_id='{$topic_id}' ORDER BY post_time DESC";
+//		$query = "SELECT * FROM {$phpbb2Prefix}posts LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id) WHERE topic_id='{$topic_id}' AND post_subject = '' ORDER BY post_time DESC";
 		$phpbb_res2 = mysql_query($query, $phpbbConnection);
 		if(!$phpbb_res2)
 		{
