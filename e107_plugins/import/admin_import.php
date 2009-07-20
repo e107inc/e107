@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/import/admin_import.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-20 15:24:34 $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-20 23:24:41 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -506,7 +506,7 @@ function showImportOptions($mode='csv')
 		</tr>
 		<tr>
 		<td >$importType ".LAN_CONVERT_20."</td>
-		<td ><input class='tbox' type='text' name='dbParamUsername' size='30' value='".$_POST['dbParamUsername']."'' maxlength='100' /></td>
+		<td ><input class='tbox' type='text' name='dbParamUsername' size='30' value='".$_POST['dbParamUsername']."' maxlength='100' /></td>
 		</tr>
 		<tr>
 		<td >$importType ".LAN_CONVERT_21."</td>
