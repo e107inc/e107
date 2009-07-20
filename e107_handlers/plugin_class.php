@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2009-07-16 08:46:11 $
+|     $Revision: 1.71 $
+|     $Date: 2009-07-20 15:24:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -164,7 +164,10 @@ class e107plugin
 			if(!$this->parse_plugin($p['path']))
 			{
 				//parsing of plugin.php/plugin.xml failed.
-			  echo "Parsing failed - file format error: {$p['path']}<br />";
+			  require_once(e_HANDLER."message_handler.php");
+			  $emessage = &eMessage::getInstance();
+			  $emessage->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
+			 // echo <br />";
 			  continue;		// Carry on and do any others that are OK
 			}
 			$plug_info = $this->plug_vars;
@@ -1700,8 +1703,10 @@ class e107plugin
 		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', true, true);
 		if ($this->plug_vars === FALSE)
 		{
-			echo "Error reading {$plugName}/plugin.xml<br />";
-			return FALSE;
+            require_once(e_HANDLER."message_handler.php");
+			$emessage = &eMessage::getInstance();
+			$emessage->add("Error reading {$plugName}/plugin.xml", E_MESSAGE_ERROR);
+ 			return FALSE;
 		}
 //		print_a($this->plug_vars);
 		return true;
