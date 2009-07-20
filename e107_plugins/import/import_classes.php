@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/import/import_classes.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-20 15:24:34 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-20 21:18:09 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -54,6 +54,27 @@ class base_import_class
     return FALSE;
   }
 
+
+  function saveData($dataRecord)
+  {
+	switch($this->currentTask)
+	{
+	  case 'users' :
+	    return $this->saveUserData($dataRecord);
+	    break;
+	  case 'forumdefs' :
+	    return $this->saveForumData($dataRecord);
+	    return FALSE;
+	  case 'forumposts' :
+	    return $this->savePostData($dataRecord);
+	    return FALSE;
+	  case 'polls' :
+	    return FALSE;
+	  case 'news' :
+	    return FALSE;
+	}
+    return FALSE;
+  }
 
 
   // Return the next record as an array. All data has been converted to the appropriate E107 formats
