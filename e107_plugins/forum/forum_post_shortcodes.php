@@ -14,7 +14,7 @@ class forum_post_shortcodes
 		$this->e107 = e107::getInstance();
 	}
 	
-	function get_latestposts($parm)
+	function sc_latestposts($parm)
 	{
 		$parm = ($parm ? $parm : 10);
 		global $LATESTPOSTS_START, $LATESTPOSTS_END, $LATESTPOSTS_POST;
@@ -33,7 +33,7 @@ class forum_post_shortcodes
 		return $txt;
 	}
 
-	function get_threadtopic()
+	function sc_threadtopic()
 	{
 		global $THREADTOPIC_REPLY;
 		$tmp = $this->forum->postGet($this->threadInfo['thread_id'], 0, 1);
@@ -41,40 +41,40 @@ class forum_post_shortcodes
 		return $this->e107->tp->parseTemplate($THREADTOPIC_REPLY, true);
 	}
 
-	function get_formstart()
+	function sc_formstart()
 	{
 		return "<form enctype='multipart/form-data' method='post' action='".e_SELF.'?'.e_QUERY."' id='dataform'>";
 	}
 	
-	function get_formend()
+	function sc_formend()
 	{
 	return '</form>';
 	}
 
-	function get_forumjump()
+	function sc_forumjump()
 	{
 		return forumjump();
 	}
 	
-	function get_userbox()
+	function sc_userbox()
 	{
 		global $userbox;
 		return (USER == false ? $userbox : '');
 	}
 	
-	function get_subjectbox()
+	function sc_subjectbox()
 	{
 		global $subjectbox, $action;
 		return ($action == 'nt' ? $subjectbox : '');
 	}
 	
-	function get_posttype()
+	function sc_posttype()
 	{
 		global $action;
 		return ($action == 'nt' ? LAN_63 : LAN_73);
 	}
 	
-	function get_postbox()
+	function sc_postbox()
 	{
 		global $post, $pref;
 		$rows = (e_WYSIWYG) ? 15 : 10;
@@ -86,7 +86,7 @@ class forum_post_shortcodes
 		return $ret;
 	}
 	
-	function get_buttons()
+	function sc_buttons()
 	{
 		global $action, $eaction;
 		$ret = "<input class='button' type='submit' name='fpreview' value='".LAN_323."' /> ";
@@ -101,7 +101,7 @@ class forum_post_shortcodes
 		return $ret;
 	}
 	
-	function get_fileattach()
+	function sc_fileattach()
 	{
 		global $pref, $fileattach, $fileattach_alert;
 
@@ -126,7 +126,7 @@ class forum_post_shortcodes
 		}
 	}
 	
-	function get_postthreadas()
+	function sc_postthreadas()
 	{
 		global $action, $thread_info;
 		if (MODERATOR && $action == "nt")
@@ -137,20 +137,20 @@ class forum_post_shortcodes
 		return '';
 	}
 	
-	function get_backlink()
+	function sc_backlink()
 	{
 		global $forum, $thread_info,$eaction, $action,$BREADCRUMB;
 		$forum->set_crumb(TRUE,($action == "nt" ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406." ".$thread_info['head']['thread_name'])));
 		return $BREADCRUMB;
 	}
 	
-	function get_noemotes()
+	function sc_noemotes()
 	{
 		if($eaction == true) { return ; }
 		return "<input type='checkbox' name='no_emote' value='1' />&nbsp;<span class='defaulttext'>".LAN_FORUMPOST_EMOTES.'</span>';
 	}
 	
-	function get_emailnotify()
+	function sc_emailnotify()
 	{
 		global $pref, $thread_info, $action, $eaction;
 		if($eaction == true) { return ; }
@@ -176,7 +176,7 @@ class forum_post_shortcodes
 		return '';
 	}
 	
-	function get_poll()
+	function sc_poll()
 	{
 		global $poll_form, $action, $pref;
 		if ($action == 'nt' && check_class($pref['forum_poll']) && strpos(e_QUERY, 'edit') === false)

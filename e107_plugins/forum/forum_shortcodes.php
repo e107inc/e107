@@ -18,12 +18,12 @@ class forum_shortcodes
 		$this->postInfo = array();
 	}
 
-	function get_top()
+	function sc_top()
 	{
 		return "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_10.'</a>';
 	}
 
-	function get_joined()
+	function sc_joined()
 	{
 		global $gen;
 		if ($this->postInfo['post_user'])
@@ -32,19 +32,19 @@ class forum_shortcodes
 		}
 	}
 
-	function get_threaddatestamp()
+	function sc_threaddatestamp()
 	{
 		global $gen;
 		return "<a id='post_{$this->post_info['post_id']}' href='".$this->e107->url->getUrl('forum', 'thread', array('func' => 'post', 'id' => $this->postInfo['post_id']))."'>".IMAGE_post."</a> ".$gen->convert_date($this->postInfo['post_datestamp'], 'forum');
 	}
 
-	function get_post()
+	function sc_post()
 	{
 		$emote = (isset($this->postInfo['post_options']['no_emote']) ? ',emotes_off' : '');
 		return $this->e107->tp->toHTML($this->postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$this->postInfo['user_class']);
 	}
 
-	function get_postdeleted()
+	function sc_postdeleted()
 	{
 		if($this->postInfo['post_status'])
 		{
@@ -57,7 +57,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_attachments()
+	function sc_attachments()
 	{
 		if($this->postInfo['post_attachments'])
 		{
@@ -89,7 +89,7 @@ class forum_shortcodes
 
 	}
 
-	function get_privmessage()
+	function sc_privmessage()
 	{
 		if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
 		{
@@ -97,7 +97,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_avatar()
+	function sc_avatar()
 	{
 		if ($this->postInfo['post_user'])
 		{
@@ -120,7 +120,7 @@ class forum_shortcodes
 
 	}
 
-	function get_anon_ip()
+	function sc_anon_ip()
 	{
 		if($this->postInfo['post_user_anon'] && (ADMIN || MODERATOR))
 		{
@@ -128,7 +128,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_ip()
+	function sc_ip()
 	{
 		if((ADMIN || MODERATOR) && !$this->postInfo['user_admin'])
 		{
@@ -137,7 +137,7 @@ class forum_shortcodes
 
 	}
 
-	function get_poster()
+	function sc_poster()
 	{
 		if($this->postInfo['user_name'])
 		{
@@ -150,7 +150,7 @@ class forum_shortcodes
 
 	}
 
-	function get_emailimg()
+	function sc_emailimg()
 	{
 		if($this->postInfo['user_name'])
 		{
@@ -160,7 +160,7 @@ class forum_shortcodes
 
 	}
 
-	function get_emailitem()
+	function sc_emailitem()
 	{
 		if($this->postInfo['thread_start'])
 		{
@@ -168,7 +168,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_printitem()
+	function sc_printitem()
 	{
 		if($this->postInfo['thread_start'])
 		{
@@ -176,7 +176,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_signature()
+	function sc_signature()
 	{
 		if(!USER) { return ''; }
 		global $pref;
@@ -191,7 +191,7 @@ class forum_shortcodes
 
 	}
 
-	function get_profileimg()
+	function sc_profileimg()
 	{
 		if (USER && $this->postInfo['user_name'])
 		{
@@ -199,7 +199,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_posts()
+	function sc_posts()
 	{
 		if ($this->postInfo['post_user'])
 		{
@@ -207,7 +207,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_visits()
+	function sc_visits()
 	{
 		if ($this->postInfo['user_name'])
 		{
@@ -215,7 +215,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_customtitle()
+	function sc_customtitle()
 	{
 		if ($this->postInfo['user_customtitle'])
 		{
@@ -223,14 +223,14 @@ class forum_shortcodes
 		}
 	}
 
-	function get_website()
+	function sc_website()
 	{
 		if ($this->postInfo['user_homepage']) {
 			return LAN_08.': '.$this->postInfo['user_homepage'].'<br />';
 		}
 	}
 
-	function get_websiteimg()
+	function sc_websiteimg()
 	{
 		if ($this->postInfo['user_homepage'] && $this->postInfo['user_homepage'] != 'http://')
 		{
@@ -238,7 +238,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_editimg()
+	function sc_editimg()
 	{
 		if (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active'])
 		{
@@ -246,7 +246,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_quoteimg()
+	function sc_quoteimg()
 	{
 		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 		{
@@ -254,7 +254,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_reportimg()
+	function sc_reportimg()
 	{
 		global $page;
 		if (USER) {
@@ -262,18 +262,18 @@ class forum_shortcodes
 		}
 	}
 
-	function get_rpg()
+	function sc_rpg()
 	{
 		return rpg($this->postInfo['user_join'], $this->postInfo['user_plugin_forum_posts']);
 	}
 
-	function get_memberid()
+	function sc_memberid()
 	{
 		if (!$this->postInfo['post_user']) { return FALSE; }
 		return "<span class='smalltext'>".LAN_195.' #'.$this->postInfo['post_user'].'</span>';
 	}
 
-	function get_level($parm)
+	function sc_level($parm)
 	{
 		global $pref;
 		if (!$this->postInfo['post_user']) { return ''; }
@@ -285,7 +285,7 @@ class forum_shortcodes
 		{
 			
 			case 'userid' :
-				return $this->get_memberid();
+				return $this->sc_memberid();
 				break;
 				
 			case 'special':
@@ -303,7 +303,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_modoptions()
+	function sc_modoptions()
 	{
 		if (MODERATOR)
 		{
@@ -311,7 +311,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_lastedit()
+	function sc_lastedit()
 	{
 		global $gen;
 		if ($this->postInfo['post_edit_datestamp'])
@@ -320,7 +320,7 @@ class forum_shortcodes
 		}
 	}
 
-	function get_lasteditby()
+	function sc_lasteditby()
 	{
 		if(isset($this->postInfo['edit_name']))
 		{
@@ -334,13 +334,13 @@ class forum_shortcodes
 		}
 	}
 
-	function get_poll()
+	function sc_poll()
 	{
 		global $pollstr;
 		return $pollstr;
 	}
 
-	function get_newflag()
+	function sc_newflag()
 	{
 		// Defined in case an indicator is required
 		return '';

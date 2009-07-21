@@ -9,9 +9,9 @@
  * List Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_shortcodes.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-01-28 08:47:37 $
- * $Author: lisa_ $
+ * $Revision: 1.5 $
+ * $Date: 2009-07-21 07:10:24 $
+ * $Author: e107coders $
  *
 */
 
@@ -41,63 +41,63 @@ class list_shortcodes
 		$e107->tp->e_sc->scClasses['list_shortcodes']->list_pref = $rc->list_pref;
 	}
 
-	function get_list_date()
+	function sc_list_date()
 	{
 		return $this->e107->tp->toHTML($this->row['date'], true, "");
 	}
 
-	function get_list_icon()
+	function sc_list_icon()
 	{
 		return $this->e107->tp->toHTML($this->row['icon'], true, "");
 	}
 
-	function get_list_heading()
+	function sc_list_heading()
 	{
 		return $this->e107->tp->toHTML($this->row['heading'], true, "TITLE");
 	}
 
-	function get_list_author()
+	function sc_list_author()
 	{
 		return $this->e107->tp->toHTML($this->row['author'], true, "");
 	}
 
-	function get_list_category()
+	function sc_list_category()
 	{
 		return $this->e107->tp->toHTML($this->row['category'], true, "");
 	}
 
-	function get_list_info()
+	function sc_list_info()
 	{
 		return $this->e107->tp->toHTML($this->row['info'], true, "");
 	}
 
-	function get_list_caption()
+	function sc_list_caption()
 	{
 		return $this->e107->tp->toHTML($this->rc->data['caption'], true, "");
 	}
 
-	function get_list_displaystyle()
+	function sc_list_displaystyle()
 	{
 		//open sections if content exists ? yes if true, else use individual setting of section
 		return (varsettrue($this->list_pref[$this->rc->mode."_openifrecords"]) && is_array($this->rc->data['records']) ? "" : $this->rc->data['display']);
 	}
 
-	function get_list_col_cols()
+	function sc_list_col_cols()
 	{
 		return $this->list_pref[$this->rc->mode."_colomn"];
 	}
 
-	function get_list_col_welcometext()
+	function sc_list_col_welcometext()
 	{
 		return $this->e107->tp->toHTML($this->list_pref[$this->rc->mode."_welcometext"], true, "");
 	}
 
-	function get_list_col_cellwidth()
+	function sc_list_col_cellwidth()
 	{
 		return round((100/$this->list_pref[$this->rc->mode."_colomn"]),0);
 	}
 
-	function get_list_timelapse()
+	function sc_list_timelapse()
 	{
 		return $this->row['timelapse'];
 	}
