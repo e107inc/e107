@@ -54,7 +54,11 @@ function show_importdb_form()
 
 	$frm = new form;
 	$text = $frm -> form_open("post", e_SELF);
-	$text .= "<table style='width:96%' class='fborder'>";
+	$text .= "<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
+	</colgroup>";
 
 
 	$text .= "<tr><td colspan='2' class='forumheader3'>".IMPORTDB_LAN_11."</td></tr>";
@@ -67,7 +71,7 @@ function show_importdb_form()
 	$text .= $frm -> form_select_close();
 	$text .= "</td></tr>";
 */
-	$text .= "<tr><td class='forumheader3'>".IMPORTDB_LAN_9."</td><td class='forumheader3'>";
+	$text .= "<tr><td>".IMPORTDB_LAN_9."</td><td>";
 	$text .= $frm -> form_select_open("importdb_password_method");
 	foreach($password_methods as $k => $v)
 	{
@@ -77,11 +81,9 @@ function show_importdb_form()
 	$text .= $frm -> form_select_close();
 	$text .= "</td></tr>";
 
-	$text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
+	$text .= "</table><div class='buttons-bar center'>";
 	$text .= $frm -> form_button("submit", "update", LAN_ALT_UPDATESET);
-	$text .= "</td></tr>";
-
-	$text .= "</table>";
+	$text .= "</div>";
 	$text .= $frm -> form_close();
 
 	$ns -> tablerender(IMPORTDB_LAN_10, $text);

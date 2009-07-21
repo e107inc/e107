@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_conf.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-06-12 20:41:34 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-21 19:49:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
@@ -89,57 +89,56 @@ if(isset($message))
 }
 
 $text = "
-<div style='text-align:center'>
+<div>
 <form method='post' action='".e_SELF."'>
-<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
-
+<table cellpadding='0' cellspacing='0' class='adminform'>
+    	<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 <tr>
-<td style='width:70%' class='forumheader3'>".LAN_ALT_1.": </td>
-<td style='width:30%; text-align:right;' class='forumheader3'>".
+<td>".LAN_ALT_1.": </td>
+<td>".
 $auth_dropdown."
 </td>
 </tr>
 
 <tr>
-<td style='width:70%' class='forumheader3'>".LAN_ALT_6.":<br />
-<div class='smalltext'>".LAN_ALT_7."</div>
+<td>".LAN_ALT_6.":<br />
+
 </td>
-<td style='width:30%; text-align:right;' class='forumheader3'>
+<td>
 <select class='tbox' name='auth_noconn'>";
 $sel = (isset($pref['auth_noconn']) && $pref['auth_noconn'] ? "" : " selected = 'selected' ");
 $text .= "<option value='0' {$sel} >".LAN_ALT_FAIL."</option>";
 $sel = (isset($pref['auth_noconn']) && $pref['auth_noconn'] ? " selected = 'selected' " : "");
 $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
-</select>
+</select><div class='smalltext field-help'>".LAN_ALT_7."</div>
 </td>
 </tr>
 
 <tr>
-<td style='width:70%' class='forumheader3'>".LAN_ALT_8.":<br />
-<div class='smalltext'>".LAN_ALT_9."</div>
+<td>".LAN_ALT_8.":<br />
+
 </td>
-<td style='width:30%; text-align:right;' class='forumheader3'>
+<td>
 <select class='tbox' name='auth_nouser'>";
 $sel = (isset($pref['auth_nouser']) && $pref['auth_nouser'] ? "" : " selected = 'selected' ");
 $text .= "<option value='0' {$sel} >".LAN_ALT_FAIL."</option>";
 $sel = (isset($pref['auth_nouser']) && $pref['auth_nouser'] ? " selected = 'selected' " : "");
 $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
-</select>
+</select><div class='smalltext field-help'>".LAN_ALT_9."</div>
 </td>
 </tr>
-
-<tr style='vertical-align:top'> 
-<td colspan='2' style='text-align:center' class='forumheader3'>
-<br />
-<input class='button' type='submit' name='updateprefs' value='".LAN_ALT_2."' />
-</td>
-</tr>
-
 </table>
+
+<div class='buttons-bar center'>
+<input class='button' type='submit' name='updateprefs' value='".LAN_ALT_2."' />
+</div>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".LAN_ALT_3."</div>", $text);
+$ns -> tablerender(LAN_ALT_3, $text);
 
 
 //$extendedFields = $euf->user_extended_get_fields();
@@ -149,9 +148,9 @@ if (count($euf->fieldDefinitions))
 {
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
 	$fl = &$euf->fieldDefinitions;
-	$text = "<div style='text-align:center'>
+	$text = "<div>
 		<form method='post' action='".e_SELF."'>
-		<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+		<table class='adminlist' cellspacing='1' cellpadding='0'>
 		<colgroup>
 		<col style='width:10%' />
 		<col style='width:30%' />
@@ -159,30 +158,31 @@ if (count($euf->fieldDefinitions))
 		<col style='width:20%' />
 		</colgroup>\n";
 
-		$text .= "<tr>
-			<td class='forumheader2'>".LAN_ALT_61."</td>
-			<td class='forumheader2'>".LAN_ALT_62."</td>
-			<td class='forumheader2'>".LAN_ALT_63."</td>
-			<td class='forumheader2'>".LAN_ALT_64."</td>
-			</tr>";
+		$text .= "<thead><tr>
+			<th class='center'>".LAN_ALT_61."</th>
+			<th>".LAN_ALT_62."</th>
+			<th>".LAN_ALT_63."</th>
+			<th>".LAN_ALT_64."</th>
+			</tr>
+			</thead>
+			<tbody>";
 		foreach ($fl as $f)
 		{
 			$checked = (in_array($f['user_extended_struct_name'], $authExtended) ? " checked='checked'" : '');
 			$text .= "<tr>
-			<td class='forumheader3'><input type='checkbox' name='auth_euf_include[]' value='{$f['user_extended_struct_name']}'{$checked} /></td>
-			<td class='forumheader3'>{$f['user_extended_struct_name']}</td>
-			<td class='forumheader3'>".$tp->toHTML($f['user_extended_struct_text'],FALSE,'TITLE')."</td>
-			<td class='forumheader3'>{$euf->user_extended_types[$f['user_extended_struct_type']]}</td></tr>\n";
+			<td class='center'><input type='checkbox' name='auth_euf_include[]' value='{$f['user_extended_struct_name']}'{$checked} /></td>
+			<td>{$f['user_extended_struct_name']}</td>
+			<td>".$tp->toHTML($f['user_extended_struct_text'],FALSE,'TITLE')."</td>
+			<td>{$euf->user_extended_types[$f['user_extended_struct_type']]}</td></tr>\n";
 		}
-	$text .= "<tr style='vertical-align:top'> 
-<td colspan='4' class='forumheader3' style='text-align:center'>
+	$text .= "</tbody>
+</table><div class='buttons-bar center'>
 <input class='button' type='submit' name='updateeufs' value='".LAN_ALT_2."' />
-</td>
-</tr>
-</table>
+</div>
+
 </form>
 </div>";
-$ns -> tablerender("<div style='text-align:center'>".LAN_ALT_60."</div>", $text);
+$ns -> tablerender(LAN_ALT_60, $text);
 
 
 }
