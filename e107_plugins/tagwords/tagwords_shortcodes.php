@@ -9,9 +9,9 @@
  * Tagwords Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_shortcodes.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-07-21 08:27:23 $
- * $Author: e107coders $
+ * $Revision: 1.6 $
+ * $Date: 2009-07-21 10:21:20 $
+ * $Author: marj_nl_fr $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -23,6 +23,7 @@ $codes = array(
 */
 
 $codes = array();
+/*
 $tmp = get_class_methods('tagwords_shortcodes');
 foreach($tmp as $c)
 {
@@ -31,7 +32,8 @@ foreach($tmp as $c)
 		$codes[] = substr($c, 3);
 	}
 }
-register_shortcode('tagwords_shortcodes', $codes);
+*/
+register_shortcode('tagwords_shortcodes', TRUE);
 
 initShortcodeClass('tagwords_shortcodes');
 

@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.22 2009-07-21 06:31:23 e107coders Exp $
+* $Id: news_shortcodes.php,v 1.23 2009-07-21 10:21:20 marj_nl_fr Exp $
 *
 * News shortcode batch
 */
@@ -19,6 +19,7 @@ $codes = array(
 */
 
 $codes = array();
+/*
 $tmp = get_class_methods('news_shortcodes');
 foreach($tmp as $c)
 {
@@ -28,8 +29,8 @@ foreach($tmp as $c)
 	}
 }
 unset($tmp);
-
-register_shortcode('news_shortcodes', $codes);
+*/
+register_shortcode('news_shortcodes', TRUE);
 initShortcodeClass('news_shortcodes');
 
 class news_shortcodes
