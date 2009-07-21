@@ -9,9 +9,9 @@
  * Cache Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-16 17:23:25 $
- * $Author: secretr $
+ * $Revision: 1.9 $
+ * $Date: 2009-07-21 07:13:41 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -110,7 +110,7 @@ $text = "
 					<tr>
 						<td>
 							<strong>".CACLAN_11."</strong>: {$nonsys_count}
-							<div class='smalltext'>".CACLAN_13."</div>
+							<div class='field-help'>".CACLAN_13."</div>
 						</td>
 						<td class='center middle'>
 							".$frm->radio('cachestatus', 1, ($pref['cachestatus']))."
@@ -122,7 +122,7 @@ $text = "
 					<tr>
 						<td>
 							<strong>".CACLAN_12."</strong>: {$sys_count}
-							<div class='smalltext'>".CACLAN_14."</div>
+							<div class='field-help'>".CACLAN_14."</div>
 						</td>
 						<td class='center middle'>
 							".$frm->radio('syscachestatus', 1, ($pref['syscachestatus']))."
