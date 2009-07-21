@@ -9,9 +9,9 @@
  * Tagwords Template
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_template.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-04-29 07:07:33 $
- * $Author: lisa_ $
+ * $Revision: 1.4 $
+ * $Date: 2009-07-21 08:27:23 $
+ * $Author: e107coders $
  *
 */
 
@@ -120,36 +120,36 @@ $TEMPLATE_TAGWORDS['menu_cloud'] = "
 
 $TEMPLATE_TAGWORDS['admin_options'] = "
 <form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>
-<table style='width:98%' class='fborder'>
-<colgroup>
-	<col width='40%'/>
-	<col width='60%'/>
-</colgroup>
+<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
+	</colgroup>
 <tr>
 	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_25."</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_2."</td>
-	<td class='forumheader3'>{TAG_OPT_MIN}</td>
+	<td>".LAN_TAG_OPT_2."</td>
+	<td>{TAG_OPT_MIN}</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_3."</td>
-	<td class='forumheader3'>{TAG_OPT_CLASS}</td>
+	<td>".LAN_TAG_OPT_3."</td>
+	<td>{TAG_OPT_CLASS}</td>
 </tr>
 <tr>
 	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_16."</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_4."</td>
-	<td class='forumheader3'>{TAG_OPT_DEFAULT_SORT}</td>
+	<td>".LAN_TAG_OPT_4."</td>
+	<td>{TAG_OPT_DEFAULT_SORT}</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_7."</td>
-	<td class='forumheader3'>{TAG_OPT_DEFAULT_STYLE}</td>
+	<td>".LAN_TAG_OPT_7."</td>
+	<td>{TAG_OPT_DEFAULT_STYLE}</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_26."</td>
-	<td class='forumheader3'>
+	<td>".LAN_TAG_OPT_26."</td>
+	<td>
 		{TAG_OPT_VIEW_SORT}<br />
 		{TAG_OPT_VIEW_STYLE}<br />
 		{TAG_OPT_VIEW_AREA}<br />
@@ -161,20 +161,20 @@ $TEMPLATE_TAGWORDS['admin_options'] = "
 	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_17."</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_18."</td>
-	<td class='forumheader3'>{TAG_OPT_CAPTION|menu}</td>
+	<td>".LAN_TAG_OPT_18."</td>
+	<td>{TAG_OPT_CAPTION|menu}</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_15."</td>
-	<td class='forumheader3'>{TAG_OPT_MIN|menu}</td>
+	<td>".LAN_TAG_OPT_15."</td>
+	<td>{TAG_OPT_MIN|menu}</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_4."</td>
-	<td class='forumheader3'>{TAG_OPT_DEFAULT_SORT|menu}</td>
+	<td>".LAN_TAG_OPT_4."</td>
+	<td>{TAG_OPT_DEFAULT_SORT|menu}</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_26."</td>
-	<td class='forumheader3'>
+	<td>".LAN_TAG_OPT_26."</td>
+	<td>
 		{TAG_OPT_VIEW_SEARCH|menu}<br />
 		{TAG_OPT_VIEW_FREQ|menu}<br />
 	</td>
@@ -183,15 +183,15 @@ $TEMPLATE_TAGWORDS['admin_options'] = "
 	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_21."</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_22."</td>
-	<td class='forumheader3'>{TAG_OPT_SEPERATOR}</td>
+	<td>".LAN_TAG_OPT_22."</td>
+	<td>{TAG_OPT_SEPERATOR}</td>
 </tr>
 <tr>
 	<td class='fcaption' colspan='2'>".LAN_TAG_OPT_23."</td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_TAG_OPT_24."</td>
-	<td class='forumheader3'>{TAG_OPT_ACTIVEAREAS}</td>
+	<td>".LAN_TAG_OPT_24."</td>
+	<td>{TAG_OPT_ACTIVEAREAS}</td>
 </tr>
 <tr>
 	<td class='forumheader' colspan='2' style='text-align:center'>{TAG_OPT_BUTTON}</td>
