@@ -8,9 +8,9 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-07-16 23:16:29 $
- * $Author: bugrain $
+ * $Revision: 1.33 $
+ * $Date: 2009-07-21 10:27:26 $
+ * $Author: secretr $
  *
 */
 
@@ -1158,17 +1158,18 @@ e107Helper.BB = {
 	    if (!this.__selectedInputArea) {
 	    	return; //[SecretR] TODO - alert the user
 	    }
-	    var eField = this.__selectedInputArea, tags = this.parse(text, emote);
+	    var eField = this.__selectedInputArea, 
+	    	tags = this.parse(text, emote),
+	    	scrollPos, sel, newStart;
         if(this.insertIE(eField, text, tags)) return;
 
-	    var scrollPos = eField.scrollTop, sel = (eField.value).substring(eField.selectionStart, eField.selectionEnd);
+	    scrollPos = eField.scrollTop, sel = (eField.value).substring(eField.selectionStart, eField.selectionEnd);
 	    if (eField.selectionEnd <= 2 && typeof(eField.textLength) != 'undefined') {
 	        eField.selectionEnd = eField.textLength;
 	    }
 
-	    var newStart = eField.selectionStart + tags.start.length + sel.length + tags.end.length;
-	    eField.value = (eField.value).substring(0, eField.selectionStart) + tags.start + sel + tags.end + (eField.value).substring(eField.selectionEnd, eField.textLength);
-
+	    newStart = eField.selectionStart + tags.start.length + sel.length + tags.end.length;
+	    eField.value = (eField.value).substring(0, eField.selectionStart) + tags.start + sel + tags.end + ( eField.selectionStart ? (eField.value).substring(eField.selectionEnd, eField.textLength) : eField.value );
 	    eField.focus(); eField.selectionStart = newStart; eField.selectionEnd = newStart; eField.scrollTop = scrollPos;
 	    return;
 
