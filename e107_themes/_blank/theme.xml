@@ -12,7 +12,7 @@
 					<menu name='compliance' />
 				</area>
 				<area id='2'>
-					<menu name='online' userclass='E_UC_ADMIN' />
+					<menu name='online' perm='admin' />
 					<menu name='powered_by' />
 					<menu name='sitebutton' />
 				</area>

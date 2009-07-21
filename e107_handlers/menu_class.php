@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-17 03:53:14 $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-21 07:41:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -311,6 +311,7 @@ class menuManager{
         	return FALSE;
 		}
 
+
 	    $sql->db_Update("menus", "menu_location='0' WHERE menu_layout = '".$this->dbLayout."' "); // Clear All existing.
 		foreach($menuAreas as $val)
 		{
@@ -411,6 +412,26 @@ class menuManager{
 	}
 
 	// ---------------------------------------------------------------------------
+
+
+    function menuPresetPerms($val)
+	{
+		$link_class = strtolower(trim($val));
+   		$menu_perm['everyone'] = e_UC_PUBLIC;
+		$menu_perm['guest'] = e_UC_GUEST;
+	  	$menu_perm['member'] = e_UC_MEMBER;
+		$menu_perm['mainadmin'] = e_UC_MAINADMIN;
+		$menu_perm['admin'] = e_UC_ADMIN;
+		$menu_perm['nobody'] = e_UC_NOBODY;
+		$link_class = ($menu_perm[$link_class]) ? $menu_perm[$link_class] : e_UC_PUBLIC;
+
+		return $link_class;
+	}
+
+
+
+
+
 
 	function menuVisibilityOptions()
 	{
@@ -541,23 +562,23 @@ class menuManager{
 			{
 				foreach($val['menu'] as $k=>$v)
 				{
-					$uclass = (defined(trim($v['@attributes']['userclass']))) ? constant(trim($v['@attributes']['userclass'])) : 0;
+				   //	$uclass = (defined(trim($v['@attributes']['perm']))) ? constant(trim($v['@attributes']['userclass'])) : 0;
 					$menuArea[] = array(
 						'menu_location' => $iD,
 						'menu_order'	=> $k,
 						'menu_name'		=> $v['@attributes']['name']."_menu",
-						'menu_class'	=> intval($uclass)
+						'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
 					);
 				}
 			}
 			else  // Only one menu item under <area> in theme.xml.
 			{
-				$uclass = (defined(trim($val['menu']['@attributes']['userclass']))) ? constant(trim($val['menu']['@attributes']['userclass'])) : 0;
+			  //	$uclass = (defined(trim($val['menu']['@attributes']['userclass']))) ? constant(trim($val['menu']['@attributes']['userclass'])) : 0;
                 $menuArea[] = array(
 						'menu_location' => $iD,
 						'menu_order'	=> 0,
 						'menu_name'		=> $val['menu']['@attributes']['name']."_menu",
-						'menu_class'	=> intval($uclass)
+						'menu_class'	=> $this->menuPresetPerms($v['@attributes']['perm'])
 					);
 			}
 		}
