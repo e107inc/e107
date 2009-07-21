@@ -11,14 +11,24 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-02-02 17:42:59 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-21 14:44:11 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 $retrieve_prefs[] = 'pm_prefs';
 require_once("../../class2.php");
+
+	if($_POST['keyword'])
+	{
+		pm_user_lookup();
+	}
+
+
+
+
+
 require_once(e_PLUGIN."pm/pm_class.php");
 require_once(e_PLUGIN."pm/pm_func.php");
 $lan_file = e_PLUGIN."pm/languages/".e_LANGUAGE.".php";
@@ -128,6 +138,12 @@ if("get" == $action)
 	$pm->send_file($pm_proc_id, intval($qs[2]));
 	exit;
 }
+
+$eplug_js[] = e_FILE."jslib/prototype/prototype.js";
+$eplug_js[] = e_PLUGIN."pm/textboxlist.js";
+$eplug_js[] = e_PLUGIN."pm/test.js";
+$eplug_css[] = e_PLUGIN."pm/test.css";
+// test.
 
 require_once(HEADERF);
 
@@ -436,5 +452,53 @@ function post_pm()
 		$_POST['from_id'] = USERID;
 		return $msg.$pm->add($_POST);
 	}
+}
+
+
+function pm_user_lookup()
+{
+	global $sql;
+
+
+		$query = "SELECT * FROM #user WHERE user_name REGEXP '^".$_POST['keyword']."' ";
+	  	if($sql -> db_Select_gen($query))
+	  	{
+			echo "[";
+	        while($row = $sql-> db_Fetch())
+	        {
+	              $u[] =  "{\"caption\":\"".$row['user_name']."\",\"value\":".$row['user_id']."}";
+	         }
+
+			echo implode(",",$u);
+	        echo "]";
+
+	  //	echo "[{\"caption\":\"Manuel Mujica Lainez\",\"value\":4},{\"caption\":\"Gustavo Nielsen\",\"value\":3},{\"caption\":\"Silvina Ocampo\",\"value\":3},{\"caption\":\"Victoria Ocampo\", \"value\":3},{\"caption\":\"Hector German Oesterheld\", \"value\":3},{\"caption\":\"Olga Orozco\", \"value\":3},{\"caption\":\"Juan L. Ortiz\", \"value\":3},{\"caption\":\"Alicia Partnoy\", \"value\":3},{\"caption\":\"Roberto Payro\", \"value\":3},{\"caption\":\"Ricardo Piglia\", \"value\":3},{\"caption\":\"Felipe Pigna\", \"value\":3},{\"caption\":\"Alejandra Pizarnik\", \"value\":3},{\"caption\":\"Antonio Porchia\", \"value\":3},{\"caption\":\"Juan Carlos Portantiero\", \"value\":3},{\"caption\":\"Manuel Puig\", \"value\":3},{\"caption\":\"Andres Rivera\", \"value\":3},{\"caption\":\"Mario Rodriguez Cobos\", \"value\":3},{\"caption\":\"Arturo Andres Roig\", \"value\":3},{\"caption\":\"Ricardo Rojas\", \"value\":3}]";
+		}
+
+    	exit;
+}
+
+function headerjs()
+{
+return " <script type='text/javascript'>
+        document.observe('dom:loaded', function() {
+
+
+          // init
+          tlist2 = new FacebookList('facebook-demo', 'facebook-auto',{fetchFile:'".e_SELF."'});
+
+          // fetch and feed
+          new Ajax.Request('".e_SELF."', {
+            onSuccess: function(transport) {
+                transport.responseText.evalJSON(true).each(function(t){tlist2.autoFeed(t)});
+            }
+          });
+        });
+    </script>";
+
+
+
+
+
 }
 ?>
