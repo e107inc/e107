@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.25 $
-* $Date: 2009-07-18 18:37:00 $
-* $Author: marj_nl_fr $
+* $Revision: 1.26 $
+* $Date: 2009-07-21 18:29:45 $
+* $Author: secretr $
 *
 */
 
@@ -139,7 +139,7 @@ include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
 
 $e107 = e107::getInstance();
-$e107->_init($e107_paths, realpath(dirname(__FILE__)));
+$e107->init($e107_paths, realpath(dirname(__FILE__)));
 unset($e107_paths);
 
 //obsolete $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
