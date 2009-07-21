@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-05 18:47:52 $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-21 19:21:26 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -105,10 +105,10 @@ class alt_login
 				{
 					$newUser = array();
 					$newUser['data'] = $db_vals;
-					validatorClass::addFieldTypes($userMethods->userVettingInfo,$allData);
+					validatorClass::addFieldTypes($userMethods->userVettingInfo,$newUser);
 					$newUser['WHERE'] = '`user_id`='.$row['user_id'];
-					$aa_sql->db_Update('user',$db_vals);
-					if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data update: ".print_r($db_vals,TRUE),FALSE,LOG_TO_ROLLING);
+					$aa_sql->db_Update('user',$newUser);
+					if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data update: ".print_r($newUser,TRUE),FALSE,LOG_TO_ROLLING);
 				}
 				foreach ($xFields as $k => $v)
 				{

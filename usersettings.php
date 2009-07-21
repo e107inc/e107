@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-06-12 20:41:35 $
+ * $Revision: 1.36 $
+ * $Date: 2009-07-21 19:21:27 $
  * $Author: e107steved $
  *
 */
@@ -398,7 +398,6 @@ if ($dataToSave && !$promptPassword)
 		}
 	}
 
-		print_a($changedEUFData);
 
 	// Save extended field values
 	if (isset($changedEUFData['data']) && count($changedEUFData['data']))

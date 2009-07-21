@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/extended_password_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-07-25 19:33:03 $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-21 19:21:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -46,10 +46,12 @@ require_once(e_HANDLER.'user_handler.php');
   define('PASSWORD_GENERAL_MD5',5);
   define('PASSWORD_PLAINTEXT',6);
   define('PASSWORD_GENERAL_SHA1',7);
+  define('PASSWORD_WORDPRESS_SALT', 8);
 
   // Supported formats:
   define('PASSWORD_PHPBB_ID','$H$');			// PHPBB salted
-  define('PASSWORD_ORIG_ID','$P$');			// 'Original' code
+  define('PASSWORD_ORIG_ID','$P$');				// 'Original' code
+  define('PASSWORD_WORDPRESS_ID', '$P$');		// WordPress 2.8
 
 
 class ExtendedPasswordHandler extends UserHandler
@@ -111,33 +113,48 @@ class ExtendedPasswordHandler extends UserHandler
 
 
 
-  // Method for PHPBB3-style salted passwords, which begin '$H$'
+  // Method for PHPBB3-style salted passwords, which begin '$H$', and WordPress-style salted passwords, which begin '$P$'
   // Given a plaintext password and the complete password/hash function (which includes any salt), calculate hash
   // Returns FALSE on error
-  function crypt_private($password, $stored_password)
-  {
-	  $output = '*0';
-	  if (substr($stored_password, 0, 2) == $output)
+	function crypt_private($password, $stored_password, $password_type = PASSWORD_PHPBB_SALT)
+	{
+		$output = '*0';
+		if (substr($stored_password, 0, 2) == $output)
+		{
 			$output = '*1';
+		}
 
-	  switch (substr($stored_password, 0, 3))
-	  {
-		case PASSWORD_PHPBB_ID :		// PHPBB3 encoding
-		case PASSWORD_ORIG_ID :			// Original algorithm's encoding
-		  break;
-		default :
-		  return $output;
-	  }
+		$prefix = '';
+		switch ($password_type)
+		{
+			case PASSWORD_PHPBB_SALT :
+				$prefix = PASSWORD_PHPBB_ID;
+				break;
+			case PASSWORD_WORDPRESS_SALT :
+				$prefix = PASSWORD_WORDPRESS_ID;
+				break;
+			default :
+				$prefix = '';
+		}
 
-	  $count_log2 = strpos($this->itoa64, $stored_password[3]);			// 4th character indicates hash depth count
-	  if ($count_log2 < 7 || $count_log2 > 30)
+		if ($prefix != substr($stored_password, 0, 3))
+		{
 			return $output;
+		}
 
-	  $count = 1 << $count_log2;
-
-	  $salt = substr($stored_password, 4, 8);						// Salt is characters 5..12
-	  if (strlen($salt) != 8)
+		$count_log2 = strpos($this->itoa64, $stored_password[3]);			// 4th character indicates hash depth count
+		if ($count_log2 < 7 || $count_log2 > 30)
+		{
 			return $output;
+		}
+
+		$count = 1 << $count_log2;
+
+		$salt = substr($stored_password, 4, 8);						// Salt is characters 5..12
+		if (strlen($salt) != 8)
+		{
+			return $output;
+		}
 
 		# We're kind of forced to use MD5 here since it's the only
 		# cryptographic primitive available in all versions of PHP
@@ -145,120 +162,119 @@ class ExtendedPasswordHandler extends UserHandler
 		# in PHP would result in much worse performance and
 		# consequently in lower iteration counts and hashes that are
 		# quicker to crack (by non-PHP code).
-		if (PHP_VERSION >= '5') 
-		{ // Get raw binary output (always 16 bytes)
-		  $hash = md5($salt . $password, TRUE);
-		  do 
-		  {
-			$hash = md5($hash . $password, TRUE);
-		  } while (--$count);
-		} 
-		else 
-		{  // Use 'pack' to create 16 bytes from the hex string
-		  $hash = pack('H*', md5($salt . $password));
-		  do 
-		  {
-			$hash = pack('H*', md5($hash . $password));
-		  } while (--$count);
-		}
+		// Get raw binary output (always 16 bytes) - we assume PHP5 here
+		$hash = md5($salt.$password, TRUE);
+		do 
+		{
+			$hash = md5($hash.$password, TRUE);
+		} while (--$count);
 
 		$output = substr($setting, 0, 12);		// Identifier, shift count and salt - total 12 chars
 		$output .= $this->encode64($hash, 16);	// Returns 22-character string
 
 		return $output;
-  }
-
-
-  // Return array of supported password types - key is used internally, text is displayed
-  function getPasswordTypes($include_core = FALSE)
-  {
-    $vals = array();
-	if ($include_core)
-	{
-	  $vals = array('md5' => IMPORTDB_LAN_7,'e107_salt' => IMPORTDB_LAN_8);		// Methods supported in core
 	}
-	if (is_bool($include_core))
+
+
+	// Return array of supported password types - key is used internally, text is displayed
+	function getPasswordTypes($include_core = FALSE)
 	{
-	$vals = array_merge($vals,array( 
-		'plaintext' 	=> IMPORTDB_LAN_2, 
-		'joomla_salt'	=> IMPORTDB_LAN_3, 
-		'mambo_salt'	=> IMPORTDB_LAN_4,
-		'smf_sha1'		=> IMPORTDB_LAN_5,
-		'sha1'			=> IMPORTDB_LAN_6,
-		'phpbb3_salt'	=> IMPORTDB_LAN_12
-		));
-	}
-	return $vals;
-  }
-
-
-  // Return password type which relates to a specific foreign system
-  function passwordMapping($ptype)
-  {
-	$maps = array( 
-			'plaintext' 	=> PASSWORD_PLAINTEXT, 
-			'joomla_salt' 	=> PASSWORD_JOOMLA_SALT, 
-			'mambo_salt' 	=> PASSWORD_MAMBO_SALT,
-			'smf_sha1' 		=> PASSWORD_GENERAL_SHA1,
-			'sha1' 			=> PASSWORD_GENERAL_SHA1,
-			'mambo' 		=> PASSWORD_GENERAL_MD5,
-			'phpbb2'		=> PASSWORD_GENERAL_MD5,
-			'e107'			=> PASSWORD_GENERAL_MD5,
-			'md5'			=> PASSWORD_GENERAL_MD5,
-			'e107_salt'		=> PASSWORD_E107_SALT,
-			'phpbb2_salt'	=> PASSWORD_PHPBB_SALT
-			);
-	if (isset($maps[$ptype])) return $maps[$ptype];
-	return FALSE;
-  }
-
-
-  // Extension of password validation - 
-  function CheckPassword($pword, $login_name, $stored_hash, $password_type = PASSWORD_DEFAULT_TYPE)
-  {
-	switch ($password_type)
-	{
-	  case PASSWORD_GENERAL_MD5 :
-	  case PASSWORD_E107_MD5 :
-	    $pwHash = md5($pword);
-		break;
-
-	  case PASSWORD_GENERAL_SHA1 :
-		if (strlen($stored_hash) != 40) return PASSWORD_INVALID;
-		$pwHash = sha1($pword);
-		break;
-
-	  case PASSWORD_JOOMLA_SALT :
-	  case PASSWORD_MAMBO_SALT :
-		if ((strpos($row['user_password'], ':') === false) || (strlen($row[0]) < 40))
+		$vals = array();
+		if ($include_core)
 		{
-		  return PASSWORD_INVALID;
+		  $vals = array('md5' => IMPORTDB_LAN_7,'e107_salt' => IMPORTDB_LAN_8);		// Methods supported in core
 		}
-		// Mambo/Joomla salted hash - should be 32-character md5 hash, ':', 16-character salt (but could be 8-char salt, maybe)
-		list($hash, $salt) = explode(':', $stored_hash);
-		$pwHash = md5($pword.$salt);
-		$stored_hash = $hash;
-		break;
-
-	  case PASSWORD_E107_SALT :
-	    return UserHandler::CheckPassword($password, $login_name, $stored_hash);
-	    break;
-
-	  case PASSWORD_PHPBB_SALT :
-		if (strlen($stored_hash) != 34) return PASSWORD_INVALID;
-		$pwHash = $this->HashPassword($pword, PASSWORD_PHPBB_SALT);
-	    break;
-
-	  case PASSWORD_PLAINTEXT :
-	    $pwHash = $pword;
-		break;
-
-	  default :
-		return PASSWORD_INVALID;
+		if (is_bool($include_core))
+		{
+		$vals = array_merge($vals,array( 
+			'plaintext' 	=> IMPORTDB_LAN_2, 
+			'joomla_salt'	=> IMPORTDB_LAN_3, 
+			'mambo_salt'	=> IMPORTDB_LAN_4,
+			'smf_sha1'		=> IMPORTDB_LAN_5,
+			'sha1'			=> IMPORTDB_LAN_6,
+			'phpbb3_salt'	=> IMPORTDB_LAN_12,
+			'wordpress_salt'	=> IMPORTDB_LAN_13
+			));
+		}
+		return $vals;
 	}
-	if ($stored_hash != $pwHash) return PASSWORD_INVALID;
-	return PASSWORD_VALID;
-  }
+
+
+	// Return password type which relates to a specific foreign system
+	function passwordMapping($ptype)
+	{
+		$maps = array( 
+				'plaintext' 	=> PASSWORD_PLAINTEXT, 
+				'joomla_salt' 	=> PASSWORD_JOOMLA_SALT, 
+				'mambo_salt' 	=> PASSWORD_MAMBO_SALT,
+				'smf_sha1' 		=> PASSWORD_GENERAL_SHA1,
+				'sha1' 			=> PASSWORD_GENERAL_SHA1,
+				'mambo' 		=> PASSWORD_GENERAL_MD5,
+				'phpbb2'		=> PASSWORD_GENERAL_MD5,
+				'e107'			=> PASSWORD_GENERAL_MD5,
+				'md5'			=> PASSWORD_GENERAL_MD5,
+				'e107_salt'		=> PASSWORD_E107_SALT,
+				'phpbb2_salt'	=> PASSWORD_PHPBB_SALT,
+				'phpbb3_salt'	=> PASSWORD_PHPBB_SALT,
+				'wordpress_salt'	=> PASSWORD_WORDPRESS_SALT
+				);
+		if (isset($maps[$ptype])) return $maps[$ptype];
+		return FALSE;
+	}
+
+
+	// Extension of password validation - 
+	function CheckPassword($pword, $login_name, $stored_hash, $password_type = PASSWORD_DEFAULT_TYPE)
+	{
+		switch ($password_type)
+		{
+			case PASSWORD_GENERAL_MD5 :
+			case PASSWORD_E107_MD5 :
+				$pwHash = md5($pword);
+				break;
+
+			case PASSWORD_GENERAL_SHA1 :
+				if (strlen($stored_hash) != 40) return PASSWORD_INVALID;
+				$pwHash = sha1($pword);
+				break;
+
+			case PASSWORD_JOOMLA_SALT :
+			case PASSWORD_MAMBO_SALT :
+				if ((strpos($row['user_password'], ':') === false) || (strlen($row[0]) < 40))
+				{
+					return PASSWORD_INVALID;
+				}
+				// Mambo/Joomla salted hash - should be 32-character md5 hash, ':', 16-character salt (but could be 8-char salt, maybe)
+				list($hash, $salt) = explode(':', $stored_hash);
+				$pwHash = md5($pword.$salt);
+				$stored_hash = $hash;
+				break;
+
+			case PASSWORD_E107_SALT :
+				return UserHandler::CheckPassword($password, $login_name, $stored_hash);
+				break;
+
+			case PASSWORD_PHPBB_SALT :
+			case PASSWORD_WORDPRESS_SALT :
+				if (strlen($stored_hash) != 34) return PASSWORD_INVALID;
+				$pwHash = $this->crypt_private($pword, $stored_hash, $password_type);
+				if ($pwHash[0] == '*')
+				{
+					return PASSWORD_INVALID;
+				}
+				$stored_hash = substr($stored_hash,12);
+				break;
+
+			case PASSWORD_PLAINTEXT :
+				$pwHash = $pword;
+				break;
+
+			default :
+				return PASSWORD_INVALID;
+		}
+		if ($stored_hash != $pwHash) return PASSWORD_INVALID;
+		return PASSWORD_VALID;
+	}
 
 }
 

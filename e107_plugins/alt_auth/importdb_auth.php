@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/importdb_auth.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-09-02 19:39:12 $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-21 19:21:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ class auth_login
 	
 	function auth_login()
 	{
-	  global $sql;
+		global $sql;
 		$this->ErrorText = '';
 		$this->conf = array();
 		if (!$sql -> db_Select("alt_auth", "*", "auth_type = 'importdb' ")) return AUTH_NOCONNECT;	// We should get at least one value
@@ -54,42 +54,42 @@ class auth_login
 
 	function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
-	  if ($connect_only) return AUTH_SUCCESS;			// Big problem if can't connect to our own DB!
+		if ($connect_only) return AUTH_SUCCESS;			// Big problem if can't connect to our own DB!
 
-	  // See if the user's in the E107 database - otherwise they can go away
-	  global $sql, $tp;
-	  if (!$sql->db_Select("user", "user_loginname, user_password", "user_loginname = '".$tp -> toDB($uname)."'")) 
-	  {	// Invalid user
-		$this->makeErrorText('User not found');
-		return AUTH_NOUSER;
-	  }
+		// See if the user's in the E107 database - otherwise they can go away
+		global $sql, $tp;
+		if (!$sql->db_Select('user', 'user_loginname, user_password', "user_loginname = '".$tp -> toDB($uname)."'")) 
+		{	// Invalid user
+			$this->makeErrorText('User not found');
+			return AUTH_NOUSER;
+		}
 
-	  // Now look at their password - we always need to verify it, even if its a core E107 format.
-	  // Higher levels will always convert an authorised password to E107 format and save it for us.
-	  if (!$row = $sql->db_Fetch())
-	  {
-		$this->makeErrorText('Error reading DB');
-	    return AUTH_NOCONNECT;			// Debateable return code - really a DB error. But consistent with other handler
-	  }
+		// Now look at their password - we always need to verify it, even if its a core E107 format.
+		// Higher levels will always convert an authorised password to E107 format and save it for us.
+		if (!$row = $sql->db_Fetch())
+		{
+			$this->makeErrorText('Error reading DB');
+			return AUTH_NOCONNECT;			// Debateable return code - really a DB error. But consistent with other handler
+		}
 
-	  require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
-	  $pass_check = new ExtendedPasswordHandler();
+		require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
+		$pass_check = new ExtendedPasswordHandler();
 
-	  $passMethod = $pass_check->passwordMapping($this->conf['importdb_password_method']);
-	  if ($passMethod === FALSE) 
-	  {
-		$this->makeErrorText('Password error - invalid method');
-		return AUTH_BADPASSWORD;
-	  }
+		$passMethod = $pass_check->passwordMapping($this->conf['importdb_password_method']);
+		if ($passMethod === FALSE) 
+		{
+			$this->makeErrorText('Password error - invalid method');
+			return AUTH_BADPASSWORD;
+		}
 
-	  $pwFromDB = $row['user_password'];					// Password stored in DB
-	  if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
-	  {
-		$this->makeErrorText('Password incorrect');
-		return AUTH_BADPASSWORD;
-	  }
+		$pwFromDB = $row['user_password'];					// Password stored in DB
+		if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
+		{
+			$this->makeErrorText('Password incorrect');
+			return LOGIN_CONTINUE;		// Could have already changed password to E107 format
+		}
 		$this->makeErrorText('');
-	  return AUTH_SUCCESS;
+		return AUTH_SUCCESS;
 	}
 }
 
