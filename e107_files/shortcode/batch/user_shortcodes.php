@@ -9,8 +9,8 @@
  * User information - shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-07-07 07:25:27 $
+ * $Revision: 1.15 $
+ * $Date: 2009-07-21 06:31:23 $
  * $Author: e107coders $
  *
 */
@@ -423,7 +423,8 @@ require_once(e_HANDLER."user_extended_class.php");
 
 $ue = new e107_user_extended;
 $ueCatList = $ue->user_extended_get_categories();
-$ueFieldList = $ue->user_extended_get_fields();
+$ueFieldList = $ue->user_extended_get_
+fields();
 $ueCatList[0][0] = array('user_extended_struct_name' => LAN_USER_44);
 $ret = "";
 foreach($ueCatList as $catnum => $cat)

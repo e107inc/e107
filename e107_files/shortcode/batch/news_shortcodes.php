@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.21 2009-07-07 07:25:27 e107coders Exp $
+* $Id: news_shortcodes.php,v 1.22 2009-07-21 06:31:23 e107coders Exp $
 *
 * News shortcode batch
 */
@@ -22,9 +22,9 @@ $codes = array();
 $tmp = get_class_methods('news_shortcodes');
 foreach($tmp as $c)
 {
-	if(strpos($c, 'get_') === 0)
+	if(strpos($c, 'sc_') === 0)
 	{
-		$codes[] = substr($c, 4);
+		$codes[] = substr($c, 3);
 	}
 }
 unset($tmp);
@@ -48,12 +48,12 @@ class news_shortcodes
 		$e107->tp->e_sc->scClasses['news_shortcodes']->param = getcachedvars('current_news_param');
 	}
 
-	function get_newstitle()
+	function sc_newstitle()
 	{
 		return $this->e107->tp->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
 	}
 
-	function get_newsbody($parm)
+	function sc_newsbody($parm)
 	{
 		$news_body = $this->e107->tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		if($this->news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != 'noextend')
@@ -64,7 +64,7 @@ class news_shortcodes
 		return $news_body;
 	}
 
-	function get_newsicon($parm)
+	function sc_newsicon($parm)
 	{
 		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
 		if ($category_icon && strstr('images', $category_icon))
@@ -80,7 +80,7 @@ class news_shortcodes
 		return "<a href='".$this->e107->url->getUrl('core:news', 'main', 'action=cat&value='.$this->news_item['news_category'])."'><img style='".$this->param['caticon']."'  src='".$category_icon."' alt='' /></a>";
 	}
 
-	function get_newsauthor($parm)
+	function sc_newsauthor($parm)
 	{
 		if($this->news_item['user_id'])
 		{
@@ -96,7 +96,7 @@ class news_shortcodes
 		return "<a href='http://e107.org'>e107</a>";
 	}
 
-	function get_newscomments($parm)
+	function sc_newscomments($parm)
 	{
 		global $pref, $sql;
 		if($pref['comments_disabled'] == 1)
@@ -132,14 +132,14 @@ class news_shortcodes
 		return ($news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>' : $param['commentoffstring']);
 	}
 
-	function get_trackback($parm)
+	function sc_trackback($parm)
 	{
 		global $pref;
 		if(!varsettrue($pref['trackbackEnabled'])) { return ''; }
 		return ($this->param['trackbackbeforestring'] ? $this->param['trackbackbeforestring'] : '')."<a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."#track'>".$this->param['trackbackstring'].$this->news_item['tb_count'].'</a>'.($this->param['trackbackafterstring'] ? $this->param['trackbackafterstring'] : '');
 	}
 
-	function get_newsheader($parm)
+	function sc_newsheader($parm)
 	{
 		$category_icon = str_replace("../", "", trim($this->news_item['category_icon']));
 		if (!$category_icon) return '';
@@ -151,13 +151,13 @@ class news_shortcodes
 	}
 
 
-	function get_newscategory($parm)
+	function sc_newscategory($parm)
 	{
 		$category_name = $this->e107->tp->toHTML($this->news_item['category_name'], FALSE ,'defs');
 		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".$this->e107->url->getUrl('core:news', 'main', 'action=cat&value='.$this->news_item['news_category'])."'>".$category_name."</a>";
 	}
 
-	function get_newsdate($parm)
+	function sc_newsdate($parm)
 	{
 		$con = new convert;
 		if($parm == '')
@@ -181,41 +181,41 @@ class news_shortcodes
 		}
 	}
 
-	function get_newscommentlink($parm)
+	function sc_newscommentlink($parm)
 	{
 		return ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : " <a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."'>".$this->param['commentlink'].'</a>');
 	}
 
-	function get_newscommentcount($parm)
+	function sc_newscommentcount($parm)
 	{
 		return $this->news_item['news_comment_total'];
 	}
 
-	function get_emailicon($parm)
+	function sc_emailicon($parm)
 	{
 		require_once(e_HANDLER.'emailprint_class.php');
 		return emailprint::render_emailprint('news', $this->news_item['news_id'], 1);
 	}
 
-	function get_printicon()
+	function sc_printicon()
 	{
 		require_once(e_HANDLER.'emailprint_class.php');
 		return emailprint::render_emailprint('news', $this->news_item['news_id'], 2);
 	}
 
-	function get_pdficon()
+	function sc_pdficon()
 	{
 		global $pref;
 		if (!$pref['plug_installed']['pdf']) { return ''; }
 		return $this->e107->tp->parseTemplate('{PDF='.LAN_NEWS_24.'^news.'.$this->news_item['news_id'].'}');
 	}
 
-	function get_newsid()
+	function sc_newsid()
 	{
 		return $this->news_item['news_id'];
 	}
 
-	function get_adminoptions()
+	function sc_adminoptions()
 	{
 		if (ADMIN && getperms('H'))
 		{
@@ -228,7 +228,7 @@ class news_shortcodes
 		}
 	}
 
-	function get_extended($parm)
+	function sc_extended($parm)
 	{
 		if ($this->news_item['news_extended'] && (strpos(e_QUERY, 'extend') === FALSE || $parm == 'force'))
 		{
@@ -252,50 +252,50 @@ class news_shortcodes
 		return '';
 	}
 
-	function get_captionclass()
+	function sc_captionclass()
 	{
 		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
 		return "<div class='category".$this->news_item['news_category']."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
-	function get_admincaption()
+	function sc_admincaption()
 	{
 		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
 		return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
-	function get_adminbody($parm)
+	function sc_adminbody($parm)
 	{
-		$news_body = $this->get_newsbody($parm);
+		$news_body = $this->sc_newsbody($parm);
 		return "<div class='".(defined(ADMINNAME) ? ADMINNAME : 'null')."'>".$news_body.'</div>';
 	}
 
-	function get_newssummary()
+	function sc_newssummary()
 	{
 		return ($this->news_item['news_summary']) ? $this->news_item['news_summary'].'<br />' : '';
 	}
 
-	function get_newsthumbnail()
+	function sc_newsthumbnail()
 	{
 		return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail']) ? "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=item&value1={$this->news_item['news_id']}&value2={$this->news_item['news_category']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' /></a>" : '';
 	}
 
-	function get_newsimage()
+	function sc_newsimage()
 	{
 		return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail']) ? "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=item&value1={$this->news_item['news_id']}&value2={$this->news_item['news_category']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' /></a>" : '';
 	}
 
-	function get_sticky_icon()
+	function sc_sticky_icon()
 	{
 		return $this->news_item['news_sticky'] ? $this->param['image_sticky'] : '';
 	}
 
-	function get_newstitlelink()
+	function sc_newstitlelink()
 	{
 		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='".$this->e107->url->getUrl('core:news', 'main', "action=item&value1={$this->news_item['news_id']}&value2={$this->news_item['news_category']}")."'>".$this->news_item['news_title'].'</a>';
 	}
 
-	function get_newscaticon()
+	function sc_newscaticon()
 	{
 		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
 		if (!$category_icon) { return ''; }
@@ -312,7 +312,7 @@ class news_shortcodes
 		return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=cat&value={$this->news_item['news_category']}")."'><img style='".$this->param['caticon']."' src='".$category_icon."' alt='' /></a>";
 	}
 
-	function get_newsinfo()
+	function sc_newsinfo()
 	{
 		$news_item = $this->news_item;
 		$param = $this->param;
