@@ -9,15 +9,15 @@
  * Plugin Administration - Login menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/config.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-07-12 14:44:57 $
+ * $Revision: 1.7 $
+ * $Date: 2009-07-21 07:10:25 $
  * $Author: e107coders $
  *
 */
 
 $eplug_admin = TRUE;
 
-require_once("../../class2.php"); 
+require_once("../../class2.php");
 if (!getperms("4")) 
 { 
 	header("location:".e_BASE."index.php"); 
@@ -84,7 +84,7 @@ if ($_POST['update_menu'])
 $text = '
 	<div style="text-align:center">
 	<form action="'.e_SELF.'" method="post">
-	<table style="width:85%;" class="fborder" >
+	<table class="fborder" >
 	
     '.login_menu_class::render_config_links().'
     

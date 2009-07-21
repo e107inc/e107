@@ -9,9 +9,9 @@
  * Tagwords Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_shortcodes.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-05-10 10:50:28 $
- * $Author: bugrain $
+ * $Revision: 1.4 $
+ * $Date: 2009-07-21 07:10:25 $
+ * $Author: e107coders $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -26,9 +26,9 @@ $codes = array();
 $tmp = get_class_methods('tagwords_shortcodes');
 foreach($tmp as $c)
 {
-	if(strpos($c, 'get_') === 0)
+	if(strpos($c, 'ax_') === 0)
 	{
-		$codes[] = substr($c, 4);
+		$codes[] = substr($c, 3);
 	}
 }
 register_shortcode('tagwords_shortcodes', $codes);
@@ -44,7 +44,7 @@ class tagwords_shortcodes
 		$this->e107 = e107::getInstance();
 	}
 
-	function get_tag_search($parm, $sc_mode)
+	function sc_tag_search($parm, $sc_mode)
 	{
 		global $tag;
 
@@ -94,13 +94,13 @@ class tagwords_shortcodes
 		}
 	}
 
-	function get_tag_area_heading()
+	function sc_tag_area_heading()
 	{
 		global $tag;
 		return varsettrue($tag->area->settings['caption']);
 	}
 
-	function get_tag_link($parm, $sc_mode)
+	function sc_tag_link($parm, $sc_mode)
 	{
 		global $tag;
 		switch($sc_mode)
@@ -120,7 +120,7 @@ class tagwords_shortcodes
 		}
 	}
 
-	function get_tag_cloud($parm, $sc_mode)
+	function sc_tag_cloud($parm, $sc_mode)
 	{
 		global $tag;
 		switch($sc_mode)
@@ -137,7 +137,7 @@ class tagwords_shortcodes
 		}
 	}
 
-	function get_tag_word($parm, $sc_mode)
+	function sc_tag_word($parm, $sc_mode)
 	{
 		global $tag;
 		switch($sc_mode)
@@ -152,7 +152,7 @@ class tagwords_shortcodes
 		}
 	}
 
-	function get_tag_number($parm, $sc_mode)
+	function sc_tag_number($parm, $sc_mode)
 	{
 		global $tag;
 		switch($sc_mode)
@@ -175,7 +175,7 @@ class tagwords_shortcodes
 		}
 	}
 
-	function get_tag_sort()
+	function sc_tag_sort()
 	{
 		global $tag;
 
@@ -206,7 +206,7 @@ class tagwords_shortcodes
 		return;
 	}
 
-	function get_tag_type()
+	function sc_tag_type()
 	{
 		global $tag;
 
@@ -237,7 +237,7 @@ class tagwords_shortcodes
 		return;
 	}
 
-	function get_tag_area()
+	function sc_tag_area()
 	{
 		global $tag;
 		if(varsettrue($tag->pref['tagwords_view_area'])==1)
@@ -261,12 +261,12 @@ class tagwords_shortcodes
 		return;
 	}
 
-	function get_tag_button()
+	function sc_tag_button()
 	{
 		return "<input class='button' type='submit' name='so' value='".LAN_TAG_SEARCH_3."' />";
 	}
 
-	function get_tag_options()
+	function sc_tag_options()
 	{
 		global $tag;
 		if( varsettrue($tag->pref['tagwords_view_search'])==1 || varsettrue($tag->pref['tagwords_view_sort'])==1 || varsettrue($tag->pref['tagwords_view_style'])==1 || varsettrue($tag->pref['tagwords_view_area'])==1 )
@@ -277,21 +277,21 @@ class tagwords_shortcodes
 
 	//##### ADMIN OPTIONS -------------------------
 
-	function get_tag_opt_min($parm, $sc_mode)
+	function sc_tag_opt_min($parm, $sc_mode)
 	{
 		global $tag;
 		$id = ($sc_mode=='menu' ? 'tagwords_menu_min' : 'tagwords_min');
 		return "<input class='tbox' type='text' id='".$id."' name='".$id."' value='".$tag->pref[$id]."' size='3' maxlength='3' />";
 	}
 
-	function get_tag_opt_class()
+	function sc_tag_opt_class()
 	{
 		global $tag;
 		$id = 'tagwords_class';
 		return r_userclass($id,$tag->pref[$id],"","admin,public,guest,nobody,member,classes");
 	}
 
-	function get_tag_opt_default_sort($parm, $sc_mode)
+	function sc_tag_opt_default_sort($parm, $sc_mode)
 	{
 		global $tag;
 		$id = ($sc_mode=='menu' ? 'tagwords_menu_default_sort' : 'tagwords_default_sort');
@@ -299,7 +299,7 @@ class tagwords_shortcodes
 		<label><input type='radio' name='".$id."' value='0' ".($tag->pref[$id] ? "" : "checked='checked'")." /> ".LAN_TAG_OPT_6."</label>";
 	}
 
-	function get_tag_opt_default_style()
+	function sc_tag_opt_default_style()
 	{
 		global $tag;
 		$id = 'tagwords_default_style';
@@ -307,7 +307,7 @@ class tagwords_shortcodes
 		<label><input type='radio' name='".$id."' value='0' ".($tag->pref[$id] ? "" : "checked='checked'")." /> ".LAN_TAG_OPT_9."</label>";
 	}
 
-	function get_tag_opt_view_sort()
+	function sc_tag_opt_view_sort()
 	{
 		global $tag;
 		$id = 'tagwords_view_sort';
@@ -318,7 +318,7 @@ class tagwords_shortcodes
 		</label>";
 	}
 
-	function get_tag_opt_view_style()
+	function sc_tag_opt_view_style()
 	{
 		global $tag;
 		$id = 'tagwords_view_style';
@@ -329,7 +329,7 @@ class tagwords_shortcodes
 		</label>";
 	}
 
-	function get_tag_opt_view_area()
+	function sc_tag_opt_view_area()
 	{
 		global $tag;
 		$id = 'tagwords_view_area';
@@ -340,7 +340,7 @@ class tagwords_shortcodes
 		</label>";
 	}
 
-	function get_tag_opt_view_search($parm, $sc_mode)
+	function sc_tag_opt_view_search($parm, $sc_mode)
 	{
 		global $tag;
 		$id = ($sc_mode=='menu' ? 'tagwords_menu_view_search' : 'tagwords_view_search');
@@ -351,7 +351,7 @@ class tagwords_shortcodes
 		</label>";
 	}
 
-	function get_tag_opt_view_freq($parm, $sc_mode)
+	function sc_tag_opt_view_freq($parm, $sc_mode)
 	{
 		global $tag;
 		if($sc_mode=='menu')
@@ -369,21 +369,21 @@ class tagwords_shortcodes
 		</label>";
 	}
 
-	function get_tag_opt_caption()
+	function sc_tag_opt_caption()
 	{
 		global $tag;
 		$id = 'tagwords_menu_caption';
 		return "<input class='tbox' type='text' id='".$id."' name='".$id."' value='".$this->e107->tp->toForm($tag->pref[$id],"","defs")."' size='30' maxlength='100' />";
 	}
 
-	function get_tag_opt_seperator()
+	function sc_tag_opt_seperator()
 	{
 		global $tag;
 		$id = 'tagwords_word_seperator';
 		return "<input class='tbox' type='text' id='".$id."' name='".$id."' value='".$this->e107->tp->toForm($tag->pref[$id])."' size='3' maxlength='10' />";
 	}
 
-	function get_tag_opt_activeareas()
+	function sc_tag_opt_activeareas()
 	{
 		global $tag;
 		$id = 'tagwords_activeareas';
@@ -403,7 +403,7 @@ class tagwords_shortcodes
 		return $text;
 	}
 
-	function get_tag_opt_button()
+	function sc_tag_opt_button()
 	{
 		return "<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />";
 	}

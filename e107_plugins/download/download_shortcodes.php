@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-07 07:33:00 $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-21 07:10:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -37,21 +37,21 @@ class download_shortcodes
 		$this->postInfo = array();
 	}
 	// Category ************************************************************************************
-   function get_download_cat_main_name() {
+   function sc_download_cat_main_name() {
       global $tp, $dlrow;
       return $tp->toHTML($dlrow['download_category_name'], FALSE, 'USER_TITLE');
    }
-   function get_download_cat_main_description() {
+   function sc_download_cat_main_description() {
       global $tp, $dlrow;
       return $tp->toHTML($dlrow['download_category_description'], TRUE, 'DESCRIPTION');
    }
-   function get_download_cat_main_icon() {
+   function sc_download_cat_main_icon() {
       global $dlrow;
       // Pass count as 1 to force non-empty icon
-      return $this->_get_cat_icons($dlrow['download_category_icon'], 1, $dlrow['download_category_name']);
+      return $this->_sc_cat_icons($dlrow['download_category_icon'], 1, $dlrow['download_category_name']);
    }
 	// Sub-Category ********************************************************************************
-   function get_download_cat_sub_name() {
+   function sc_download_cat_sub_name() {
       global $tp, $dlsubrow;
       if ($dlsubrow['d_count'])
       {
@@ -62,32 +62,32 @@ class download_shortcodes
          return $tp->toHTML($dlsubrow['download_category_name'], FALSE, 'USER_TITLE');
       }
    }
-   function get_download_cat_sub_description() {
+   function sc_download_cat_sub_description() {
       global $tp, $dlsubrow;
       return $tp->toHTML($dlsubrow['download_category_description'], TRUE, 'DESCRIPTION');
    }
-   function get_download_cat_sub_icon() {
+   function sc_download_cat_sub_icon() {
       global $dlsubrow;
-      return $this->_get_cat_icons($dlsubrow['download_category_icon'], $dlsubrow['d_count'], $dlsubrow['download_category_name']);
+      return $this->_sc_cat_icons($dlsubrow['download_category_icon'], $dlsubrow['d_count'], $dlsubrow['download_category_name']);
    }
-   function get_download_cat_sub_new_icon() {
+   function sc_download_cat_sub_new_icon() {
       global $dlsubrow;
       return $this->_check_new_download($dlsubrow['d_last_subs']);
    }
-   function get_download_cat_sub_count() {
+   function sc_download_cat_sub_count() {
       global $dlsubrow;
       return $dlsubrow['d_count'];
    }
-   function get_download_cat_sub_size() {
+   function sc_download_cat_sub_size() {
       global $e107, $dlsubrow;
       return $this->e107->parseMemorySize($dlsubrow['d_size']);
    }
-   function get_download_cat_sub_downloaded() {
+   function sc_download_cat_sub_downloaded() {
       global $dlsubrow;
       return intval($dlsubrow['d_requests']);
    }
 	// Sub-Sub-Category ****************************************************************************
-   function get_download_cat_subsub_name() {
+   function sc_download_cat_subsub_name() {
       global $tp, $dlsubsubrow;
       if ($dlsubsubrow['d_count'])
       {
@@ -98,28 +98,28 @@ class download_shortcodes
          return $tp->toHTML($dlsubsubrow['download_category_name'], FALSE, 'USER_TITLE');
       }
    }
-   function get_download_cat_subsub_description() {
+   function sc_download_cat_subsub_description() {
       global $tp, $dlsubsubrow;
       return $tp->toHTML($dlsubsubrow['download_category_description'], TRUE, 'DESCRIPTION');
    }
-   function get_download_cat_subsub_icon() {
+   function sc_download_cat_subsub_icon() {
       global $dlsubsubrow;
-      return $this->_get_cat_icons($dlsubsubrow['download_category_icon'], $dlsubsubrow['d_count'], $dlsubsubrow['download_category_name']);
+      return $this->_sc_cat_icons($dlsubsubrow['download_category_icon'], $dlsubsubrow['d_count'], $dlsubsubrow['download_category_name']);
    }
-   function get_download_cat_subsub_count() {
+   function sc_download_cat_subsub_count() {
       global $dlsubsubrow;
       return $dlsubsubrow['d_count'];
    }
-   function get_download_cat_subsub_size() {
+   function sc_download_cat_subsub_size() {
       global $e107, $dlsubsubrow;
       return $this->e107->parseMemorySize($dlsubsubrow['d_size']);
    }
-   function get_download_cat_subsub_downloaded() {
+   function sc_download_cat_subsub_downloaded() {
       global $dlsubsubrow;
       return intval($dlsubsubrow['d_requests']);
    }
 	// List ****************************************************************************************
-   function get_download_list_name()
+   function sc_download_list_name()
    {
       global $dlrow,$tp,$pref,$parm;
       if ($parm == "nolink"){
@@ -137,39 +137,39 @@ class download_shortcodes
       }
       return  "<a href='".e_PLUGIN."download/download.php?view.".$dlrow['download_id']."'>".$tp->toHTML($dlrow['download_name'],TRUE,'LINKTEXT')."</a>";
    }
-   function get_download_list_author()
+   function sc_download_list_author()
    {
       global $dlrow;
       return $dlrow['download_author'];
    }
-   function get_download_list_requested()
+   function sc_download_list_requested()
    {
       global $dlrow;
       return $dlrow['download_requested'];
    }
-   function get_download_list_newicon()
+   function sc_download_list_newicon()
    {
       global $dlrow;
       return (USER && $dlrow['download_datestamp'] > USERLV ? "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' />" : "");
    }
-   function get_download_list_recenticon()
+   function sc_download_list_recenticon()
    {
       global $dlrow, $pref;
       // convert "recent_download_days" to seconds
       return ($dlrow['download_datestamp'] > time()-($pref['recent_download_days']*86400) ? '<img src="'.IMAGE_NEW.'" alt="" style="vertical-align:middle" />' : '');
    }
-   function get_download_list_filesize()
+   function sc_download_list_filesize()
    {
       global $dlrow, $e107;
       return $e107->parseMemorySize($dlrow['download_filesize']);
    }
-   function get_download_list_datestamp()
+   function sc_download_list_datestamp()
    {
       global $dlrow;
       $gen = new convert;
       return $gen->convert_date($dlrow['download_datestamp'], "short");
    }
-   function get_download_list_thumb()
+   function sc_download_list_thumb()
    {
       global $dlrow,$parm;
       $img = ($dlrow['download_thumb']) ? "<img src='".e_FILE."downloadthumbs/".$dlrow['download_thumb']."' alt='*' style='".DL_IMAGESTYLE."' />" : "";
@@ -181,12 +181,12 @@ class download_shortcodes
       	return $img;
       }
    }
-   function get_download_list_id()
+   function sc_download_list_id()
    {
       global $dlrow;
       return $dlrow['download_id'];
    }
-   function get_download_list_rating()
+   function sc_download_list_rating()
    {
       global $dlrow;
       $rater = new rater();
@@ -199,7 +199,7 @@ class download_shortcodes
      		return ($ratearray[2] ? "{$ratearray[1]}.{$ratearray[2]}/{$ratearray[0]}" : "{$ratearray[1]}/{$ratearray[0]}");
      	}
    }
-   function get_download_list_link()
+   function sc_download_list_link()
    {
       global $tp, $dlrow, $pref, $parm;
       $agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'));
@@ -214,7 +214,7 @@ class download_shortcodes
      		return ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$dlrow['download_id']."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a href='".e_BASE."request.php?".$dlrow['download_id']."' >{$img}</a>");
      	}
    }
-   function get_download_list_icon()
+   function sc_download_list_icon()
    {
       global $dlrow,$parm;
       if ($parm == "link"){
@@ -226,36 +226,36 @@ class download_shortcodes
       }
       return;
    }
-   function get_download_list_nextprev()
+   function sc_download_list_nextprev()
    {
      	global $nextprev_parms,$tp;
      	return $tp->parseTemplate("{NEXTPREV={$nextprev_parms}}");
    }
-   function get_download_list_total_amount() {
+   function sc_download_list_total_amount() {
       global $dltdownloads;
       return $dltdownloads." ".LAN_dl_16;
    }
-   function get_download_list_total_files() {
+   function sc_download_list_total_files() {
       global $dlft;
       return $dlft." ".LAN_dl_17;
    }
 	// View ****************************************************************************************
-   function get_download_view_id()
+   function sc_download_view_id()
    {
       global $dlrow;
       return $dlrow['download_id'];
    }
-   function get_download_admin_edit()
+   function sc_download_admin_edit()
    {
       global $dlrow;
       return (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.".$dlrow['download_id']."' title='edit'><img src='".e_IMAGE."generic/lite/edit.png' alt='*' style='padding:0px;border:0px' /></a>" : "";
    }
-   function get_download_category()
+   function sc_download_category()
    {
       global $dlrow;
       return $dlrow['download_category_name'];
    }
-   function get_download_category_description()
+   function sc_download_category_description()
    {
       global $tp,$dl,$parm;
       $text = $tp -> toHTML($dl['download_category_description'], TRUE,'DESCRIPTION');
@@ -265,7 +265,7 @@ class download_shortcodes
       	return $text;
       }
    }
-   function get_download_view_name()
+   function sc_download_view_name()
    {
       global $dlrow,$parm;
       $link['view'] = "<a href='".e_PLUGIN."download/download.php?view.".$dlrow['download_id']."'>".$dlrow['download_name']."</a>";
@@ -275,7 +275,7 @@ class download_shortcodes
       }
       return $dlrow['download_name'];
    }
-   function get_download_view_name_linked()
+   function sc_download_view_name_linked()
    {
       global $pref,$dl,$tp;
       if ($pref['agree_flag'] == 1) {
@@ -284,22 +284,22 @@ class download_shortcodes
       	return "<a href='".e_BASE."request.php?".$dl['download_id']."' title='".LAN_dl_46."'>".$dl['download_name']."</a>";
       }
    }
-   function get_download_view_author()
+   function sc_download_view_author()
    {
       global $dlrow;
       return ($dlrow['download_author'] ? $dlrow['download_author'] : "");
    }
-   function get_download_view_authoremail()
+   function sc_download_view_authoremail()
    {
       global $tp,$dlrow;
       return ($dlrow['download_author_email']) ? $tp -> toHTML($dlrow['download_author_email'], TRUE, 'LINKTEXT') : "";
    }
-   function get_download_view_authorwebsite()
+   function sc_download_view_authorwebsite()
    {
       global $tp,$dlrow;
       return ($dlrow['download_author_website']) ? $tp -> toHTML($dlrow['download_author_website'], TRUE,'LINKTEXT') : "";
    }
-   function get_download_view_description()
+   function sc_download_view_description()
    {
       global $tp,$dlrow,$parm;
       $maxlen = ($parm ? intval($parm) : 0);
@@ -311,24 +311,24 @@ class download_shortcodes
       }
       return $text;
    }
-   function get_download_view_date()
+   function sc_download_view_date()
    {
       global $gen,$dlrow,$parm;
       return ($dlrow['download_datestamp']) ? $gen->convert_date($dlrow['download_datestamp'], $parm) : "";
    }
-   function get_download_view_date_short()
+   function sc_download_view_date_short()
    {
       // deprecated: DOWNLOAD_VIEW_DATE should be used instead.
       global $gen,$dlrow;
       return ($dlrow['download_datestamp']) ? $gen->convert_date($dlrow['download_datestamp'], "short") : "";
    }
-   function get_download_view_date_long()
+   function sc_download_view_date_long()
    {
       // deprecated: DOWNLOAD_VIEW_DATE should be used instead.
       global $gen,$dlrow;
       return ($dlrow['download_datestamp']) ? $gen->convert_date($dlrow['download_datestamp'], "long") : "";
    }
-   function get_download_view_image()
+   function sc_download_view_image()
    {
       global $dlrow;
       if ($dlrow['download_thumb']) {
@@ -342,12 +342,12 @@ class download_shortcodes
       	return LAN_dl_75;
       }
    }
-   function get_download_view_imagefull()
+   function sc_download_view_imagefull()
    {
       global $dlrow;
       return ($dlrow['download_image']) ? "<img class='dl_image' src='".e_FILE."downloadimages/".$dlrow['download_image']."' alt='*' style='".DL_IMAGESTYLE."' />" : "";
    }
-   function get_download_view_link()
+   function sc_download_view_link()
    {
       global $pref,$dlrow,$tp;
       $click = "";
@@ -371,12 +371,12 @@ class download_shortcodes
       	return $dnld_link." xxx<img src='".IMAGE_DOWNLOAD."' alt='*' style='border:0' /></a>";
       }
    }
-   function get_download_view_filesize()
+   function sc_download_view_filesize()
    {
       global $dlrow, $e107;
       return ($dlrow['download_filesize']) ? $e107->parseMemorySize($dlrow['download_filesize']) : "";
    }
-   function get_download_view_rating()
+   function sc_download_view_rating()
    {
       	require_once(e_HANDLER."rate_class.php");
       	$rater = new rater;
@@ -412,12 +412,12 @@ class download_shortcodes
       	$text .= "</td></tr></table>";
       return $text;
    }
-   function get_download_report_link()
+   function sc_download_report_link()
    {
       global $dlrow,$pref;
       return (check_class($pref['download_reportbroken'])) ? "<a href='".e_PLUGIN."download/download.php?report.".$dlrow['download_id']."'>".LAN_dl_45."</a>" : "";
    }
-   function get_download_view_caption()
+   function sc_download_view_caption()
    {
       global $dlrow;
      	$text = $dlrow['download_category_name'];
@@ -425,100 +425,100 @@ class download_shortcodes
       return $text;
    }
 	// Mirror **************************************************************************************
-	function get_download_mirror_request() {
+	function sc_download_mirror_request() {
 	   global $dlrow;
 	   return $dlrow['download_name'];
 	}
-	function get_download_mirror_request_icon() {
+	function sc_download_mirror_request_icon() {
 	   global $dlrow;
       return ($dlrow['download_thumb'] ? "<img src='".e_FILE."downloadthumbs/".$dlrow['download_thumb']."' alt='*'/>" : "");
 	}
-	function get_download_mirror_name() {
+	function sc_download_mirror_name() {
 	   global $dlmirror;
       return "<a href='{$dlmirror['mirror_url']}' rel='external'>".$dlmirror['mirror_name']."</a>";
 	}
-	function get_download_mirror_image() {
+	function sc_download_mirror_image() {
 	   global $dlrow, $dlmirror;
       return ($dlmirror['mirror_image'] ? "<a href='{$dlmirror['mirror_url']}' rel='external'><img src='".e_FILE."downloadimages/".$dlmirror['mirror_image']."' alt='*'/></a>" : "");
 	}
-	function get_download_mirror_location() {
+	function sc_download_mirror_location() {
 	   global $dlmirror;
       return ($dlmirror['mirror_location'] ? $dlmirror['mirror_location'] : "");
 	}
-	function get_download_mirror_description() {
+	function sc_download_mirror_description() {
 	   global $dlmirror,$tp;
       return ($dlmirror['mirror_description'] ? $tp->toHTML($dlmirror['mirror_description'], TRUE) : "");
 	}
-	function get_download_mirror_filesize() {
+	function sc_download_mirror_filesize() {
 	   global $e107, $dlmirrorfile;
       return $e107->parseMemorySize($dlmirrorfile[3]);
 	}
-	function get_download_mirror_link() {
+	function sc_download_mirror_link() {
 	   global $dlrow, $dlmirrorfile, $tp, $pref;
     	$click = " onclick='return confirm(\"".$tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'))."\")'";
       return "<a href='".e_PLUGIN."download/download.php?mirror.{$dlrow['download_id']}.{$dlmirrorfile[0]}' title='".LAN_dl_32."'{$click}>
               <img src='".IMAGE_DOWNLOAD."' alt='*' title='".LAN_dl_32."' /></a>";
 	}
-	function get_download_mirror_requests() {
+	function sc_download_mirror_requests() {
 	   global $dlmirrorfile;
       return (ADMIN ? LAN_dl_73.$dlmirrorfile[2] : "");
 	}
-	function get_download_total_mirror_requests() {
+	function sc_download_total_mirror_requests() {
 	   global $dlmirror;
 	   return (ADMIN ? LAN_dl_74.$dlmirror['mirror_count'] : "");
 	}
    // --------- Download View Lans -----------------------------
-   function get_download_view_author_lan()
+   function sc_download_view_author_lan()
    {
       global $dlrow;
       return ($dlrow['download_author']) ? LAN_dl_24 : "";
    }
-   function get_download_view_authoremail_lan()
+   function sc_download_view_authoremail_lan()
    {
       global $dlrow;
       return ($dlrow['download_author_email']) ? LAN_dl_30 : "";
    }
-   function get_download_view_authorwebsite_lan()
+   function sc_download_view_authorwebsite_lan()
    {
       global $dlrow;
       return ($dlrow['download_author_website']) ? LAN_dl_31 : "";
    }
-   function get_download_view_date_lan()
+   function sc_download_view_date_lan()
    {
       global $dlrow;
       return ($dlrow['download_datestamp']) ? LAN_dl_22 : "";
    }
-   function get_download_view_image_lan()
+   function sc_download_view_image_lan()
    {
       return LAN_dl_11;
    }
-   function get_download_view_requested()
+   function sc_download_view_requested()
    {
       global $dlrow;
       return $dlrow['download_requested'];
    }
-   function get_download_view_rating_lan()
+   function sc_download_view_rating_lan()
    {
       return LAN_dl_12;
    }
-   function get_download_view_filesize_lan()
+   function sc_download_view_filesize_lan()
    {
       return LAN_dl_10;
    }
-   function get_download_view_description_lan()
+   function sc_download_view_description_lan()
    {
       return LAN_dl_7;
    }
-   function get_download_view_requested_lan()
+   function sc_download_view_requested_lan()
    {
       return LAN_dl_77;
    }
-   function get_download_view_link_lan()
+   function sc_download_view_link_lan()
    {
       return LAN_dl_32;
    }
       //  -----------  Download View : Previous and Next  ---------------
-   function get_download_view_prev()
+   function sc_download_view_prev()
    {
       global $dlrow,$sql;
       	$dlrow_id = intval($dlrow['download_id']);
@@ -529,7 +529,7 @@ class download_shortcodes
       		return "&nbsp;";
       	}
    }
-   function get_download_view_next()
+   function sc_download_view_next()
    {
       global $dlrow,$sql;
       $dlrow_id = intval($dlrow['download_id']);
@@ -541,21 +541,21 @@ class download_shortcodes
       		return "&nbsp;";
       	}
    }
-   function get_download_back_to_list()
+   function sc_download_back_to_list()
    {
       global $dlrow;
       return "<a href='".e_PLUGIN."download/download.php?list.".$dlrow['download_category']."'>".LAN_dl_35."</a>";
    }
-   function get_download_back_to_category_list()
+   function sc_download_back_to_category_list()
    {
       	return "<a href='".e_SELF."'>".LAN_dl_9."</a>";
    }
    // Misc stuff ---------------------------------------------------------------------------------
-   function get_download_cat_newdownload_text()
+   function sc_download_cat_newdownload_text()
    {
       return "<img src='".IMAGE_NEW."' alt='*' style='vertical-align:middle' /> ".LAN_dl_36;
    }
-   function get_download_cat_search()
+   function sc_download_cat_search()
    {
       return "<form method='get' action='".e_BASE."search.php'>
       		  <p>
@@ -568,7 +568,7 @@ class download_shortcodes
 	/**
 	 * @private
 	 */
-	function _get_cat_icons($source, $count, $alt)
+	function _sc_cat_icons($source, $count, $alt)
 	{
 	   if (!$source) return "&nbsp;";
 	   list($ret[TRUE],$ret[FALSE]) = explode(chr(1), $source.chr(1));
