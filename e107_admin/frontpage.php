@@ -9,8 +9,8 @@
  * Administration Area - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-07-17 07:53:13 $
+ * $Revision: 1.12 $
+ * $Date: 2009-07-21 07:41:54 $
  * $Author: e107coders $
  *
 */
@@ -45,11 +45,14 @@ if($sql->db_Select("page", "*", "page_theme=''"))
 }
 
 // Now let any plugins add to the options - must append to the $front_page array as above
-foreach($pref['e_frontpage_list'] as $val)
+if(varset($pref['e_frontpage_list']))
 {
-	if(is_readable(e_PLUGIN.$val."/e_frontpage.php"))
+	foreach($pref['e_frontpage_list'] as $val)
 	{
-		require_once (e_PLUGIN.$val."/e_frontpage.php");
+		if(is_readable(e_PLUGIN.$val."/e_frontpage.php"))
+		{
+			require_once (e_PLUGIN.$val."/e_frontpage.php");
+		}
 	}
 }
 

@@ -13,7 +13,7 @@
 				<area id='1' >
                 	<menu name='login' />
 					<menu name='compliance' />
-					<menu name='online' userclass='e_UC_MEMBER' />
+					<menu name='online' perm='member' />
 				</area>
 				<area id='2'>
 					<menu name='poll' />
