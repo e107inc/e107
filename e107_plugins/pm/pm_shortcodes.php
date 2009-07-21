@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-02-02 17:43:00 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-21 14:44:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -31,6 +31,27 @@ if($pm_info['from_name'])
 require_once(e_HANDLER."user_select_class.php");
 $us = new user_select;
 $type = ($pm_prefs['dropdown'] == TRUE ? 'list' : 'popup');
+
+
+$ret = "<ol>
+
+        <li id=\"facebook-list\" class=\"input-text\">
+            <input type=\"text\" value=\"\" id=\"facebook-demo\" />
+          <div id=\"facebook-auto\">
+
+            <div class=\"default\">Type the name of a user</div>
+            <ul class=\"feed\">
+
+            </ul>
+
+          </div>
+        </li>
+      </ol>";
+
+return $ret;
+
+
+
 if(check_class($pm_prefs['multi_class']))
 {
 	$ret = $us->select_form($type, 'textarea.pm_to');
