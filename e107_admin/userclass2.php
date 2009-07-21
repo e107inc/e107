@@ -9,8 +9,8 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-07-16 08:15:35 $
+ * $Revision: 1.24 $
+ * $Date: 2009-07-21 07:13:42 $
  * $Author: e107coders $
  *
 */
@@ -338,13 +338,6 @@ switch ($action)
 		}
 	}
 
-	// Get the userclass icons
-	require_once(e_HANDLER.'file_class.php');
-	$fl = new e_file;
-    $iconpath = e_IMAGE.UC_CLASS_ICON_DIR;
-    $iconlist = $fl->get_files($iconpath);
-
-
 	$class_total = $sql->db_Count('userclass_classes', '(*)');
 
 	$text = "<div style='text-align:center'>
@@ -353,7 +346,7 @@ switch ($action)
  	<colgroup span='2'>
  		<col class='col-label' />
  		<col class='col-control' />
-		<col class='col-else' />
+
  	</colgroup>
 		<tr>
 		<td class='fcaption' style='text-align:center' colspan='3'>";
@@ -376,90 +369,90 @@ switch ($action)
 
 	$text .= "
 		<tr>
-		<td class='forumheader3'>".UCSLAN_12."</td>
-		<td class='forumheader3'>
-		<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='{$userclass_name}' /></td>
-		<td class='forumheader3'>".UCSLAN_30."</td>
+		<td>".UCSLAN_12."</td>
+		<td>
+		<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='{$userclass_name}' />
+		<div class='field-help'>".UCSLAN_30."</div></td>
+
 		</tr>
 		<tr>
-		<td class='forumheader3'>".UCSLAN_13."</td>
-		<td class='forumheader3'><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='{$userclass_description}' /></td>
-		<td class='forumheader3'>".UCSLAN_31."</td>
+		<td>".UCSLAN_13."</td>
+		<td><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='{$userclass_description}' />
+		<div class='field-help'>".UCSLAN_31."</div></td>
 		</tr>";
 
 // Userclass icon
 		$text .= "
 		<tr>
-		<td class='forumheader3'>".UCSLAN_68."</td>
-		<td class='forumheader3'>".$frm->iconpicker('userclass_icon', $userclass_icon, LAN_CHOOSE)."</td>
-		<td class='forumheader3'>".UCSLAN_69."</td>
-		</tr>
+		<td>".UCSLAN_68."</td>
+		<td>".$frm->iconpicker('userclass_icon', $userclass_icon, LAN_CHOOSE)."
+		<div class='field-help'>".UCSLAN_69."</div></td>
+  		</tr>
 		";
 
 	$text .= "
 		<tr>
-		<td class='forumheader3'>".UCSLAN_79."</td>
-		<td class='forumheader3'>\n
+		<td>".UCSLAN_79."</td>
+		<td>\n
 		<select name='userclass_type' class='tbox' onchange='setGroupStatus(this)'>
 		<option value='".UC_TYPE_STD."'".(UC_TYPE_STD == $userclass_type ? " selected='selected'" : "").">".UCSLAN_80."</option>\n
 		<option value='".UC_TYPE_GROUP."'".(UC_TYPE_GROUP == $userclass_type ? " selected='selected'" : "").">".UCSLAN_81."</option>\n
 		</select>\n
-		</td>
-		<td class='forumheader3'>".UCSLAN_82."</td>
-		</tr>
+		<div class='field-help'>".UCSLAN_82."</div></td>
+	  	</tr>
 	";
 
 	// Who can manage class
 	$text .= "
 		<tr id='userclass_type_standard' ".(UC_TYPE_GROUP == $userclass_type ? " style='display:none'" : "").">
-		<td class='forumheader3'>".UCSLAN_24."</td>
-		<td class='forumheader3'>";
+		<td>".UCSLAN_24."</td>
+		<td>";
 	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,'nobody,public,main,admin,classes,matchclass,member').'</select>';
-	$text .= "</td>
-		<td class='forumheader3'>".UCSLAN_32."</td>
-		</tr>
+	$text .= "<div class='field-help'>".UCSLAN_32."</div></td>
+	   	</tr>
 		";
 
 	// List of class checkboxes for grouping
 	$text .= "
 		<tr id='userclass_type_groups'".(UC_TYPE_STD == $userclass_type ? " style='display:none'" : "").">
-		<td class='forumheader3'>".UCSLAN_83."</td>
-		<td class='forumheader3'>";
+		<td>".UCSLAN_83."</td>
+		<td>";
 	  $text .= $e_userclass->vetted_tree('group_classes_select',array($e_userclass,'checkbox'),  $userclass_groupclass,"classes,matchclass");
-	$text .= "</td>
-		<td class='forumheader3'>".UCSLAN_32."</td>
-		</tr>
+	$text .= "<div class='field-help'>".UCSLAN_32."</div></td>
+	  	</tr>
 		";
 
 
 	$text .= "
 		<tr>
-		<td class='forumheader3'>".UCSLAN_34."</td>
-		<td class='forumheader3'>";
+		<td>".UCSLAN_34."</td>
+		<td>";
 	  $text .= "<select name='userclass_visibility' class='tbox'>".$e_userclass->vetted_tree('userclass_visibility',array($e_userclass,'select'), $userclass_visibility,'main,admin,classes,matchclass,public,member,nobody').'</select>';
-	$text .= "</td>
-		<td class='forumheader3'>".UCSLAN_33."</td>
-		</tr>
+	$text .= "<div class='field-help'>".UCSLAN_33."</div></td>
+	 	</tr>
 		";
 
 	$text .= "
 		<tr>
-		<td class='forumheader3'>".UCSLAN_35."</td>
-		<td class='forumheader3'>";
+		<td>".UCSLAN_35."</td>
+		<td>";
 	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,'main,admin,nobody,classes,matchclass,member').'</select>';
 //		.r_userclass("userclass_parent", $userclass_parent, "off", "admin,classes,matchclass,public,member").
-	$text .= "</td>
-		<td class='forumheader3'>".UCSLAN_36."</td>
-		</tr>
+	$text .= "<div class='field-help'>".UCSLAN_36."</div></td>
+		</tr></table>
 		";
 
 
 	$text .= "
-		<tr><td colspan='3' style='text-align:center' class='forumheader'>";
+		<div class='buttons-bar center'>";
 
 if($params == 'edit')
 {
-	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_14."' />&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />
+   	$text .= $frm->admin_button('createclass', UCSLAN_14, 'create');
+	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'create');
+ //	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_14."' />";
+ //	$text .= "&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
+	$text .= "
 		<input type='hidden' name='userclass_id' value='{$userclass_id}' />
 	    <script type='text/javascript'>
 	        //just in case...
@@ -469,11 +462,15 @@ if($params == 'edit')
 }
 else
 {
-	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_15."' />&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />
+	$text .= $frm->admin_button('createclass', UCSLAN_15, 'create');
+	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'create');
+ //	$text .= "<input class='button' type='submit' id='createclass' name='createclass' value='".UCSLAN_15."' />
+  //	&nbsp;&nbsp;<input class='button' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
+	$text .= "
 	    <input type='hidden' name='userclass_id' value='0' />";
 }
 
-$text .= "</td></tr></table>";
+$text .= "</div>";
 $text .= "</form></div><br /><br />";
 	$text .= $e_userclass->show_graphical_tree();
 
@@ -502,7 +499,7 @@ $ns->tablerender(UCSLAN_21, $text);
 
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?initial' id='initialForm'>
-		<table class='fborder' style='".ADMIN_WIDTH."'><tr><td class='forumheader3'>";
+		<table class='fborder' style='".ADMIN_WIDTH."'><tr><td>";
 	$text .= UCSLAN_43;
 	if (count($icn) > 0)
 	{
@@ -513,11 +510,11 @@ $ns->tablerender(UCSLAN_21, $text);
 	  $text .= UCSLAN_44;
 	}
 	$text .= "</td></tr>
-	<tr><td class='forumheader3'>".UCSLAN_49."</td></tr><tr><td class='forumheader3'>";
+	<tr><td>".UCSLAN_49."</td></tr><tr><td>";
 
 	if ($class_text)
 	{
-	  $text .= $class_text."</td></tr><tr><td class='forumheader3'>";
+	  $text .= $class_text."</td></tr><tr><td>";
 	  $sel_stage = varset($pref['init_class_stage'],2);
 	  $text .= "<table><tr><td>".UCSLAN_45."<br /><span class='smalltext'>".UCSLAN_46."</span></td><td>
 	  <select class='tbox' name='init_class_stage'>\n
@@ -525,7 +522,7 @@ $ns->tablerender(UCSLAN_21, $text);
 	  <option value='2'".($sel_stage==2 ? " selected='selected'" : "").">".UCSLAN_48."</option>
 	  </select>\n";
 	  $text .= "</td></tr></table></td></tr>
-	  <tr><td class='forumheader3' style='text-align:center'><input class='button' type='submit' name='set_initial_classes' value='".UCSLAN_UPDATE."' />";
+	  <tr><td style='text-align:center'><input class='button' type='submit' name='set_initial_classes' value='".UCSLAN_UPDATE."' />";
 	}
 	else
 	{
@@ -610,9 +607,9 @@ $ns->tablerender(UCSLAN_21, $text);
 
 	$text = "<form method='post' action='".e_SELF."?options' id='optionsForm'>
 		<table class='fborder' style='".ADMIN_WIDTH."'>
-		<tr><td class='forumheader3'>".UCSLAN_59."</td><td class='forumheader3'>
+		<tr><td>".UCSLAN_59."</td><td>
 		<input type='checkbox' name='admin_log_userclass' value='1'".(varset($pref['admin_log_log']['admin_userclass'],0) ? " checked='checked'" : '')."/></td></tr>
-		<tr><td class='forumheader3' style='text-align:center' colspan='2'>
+		<tr><td style='text-align:center' colspan='2'>
 		<input class='button' type='submit' name='set_admin_options' value='".UCSLAN_UPDATE."' />
 		</td>
 		</tr></table></form>";
@@ -625,10 +622,10 @@ $ns->tablerender(UCSLAN_21, $text);
 		<col style='width:50%' />
 		<col style='width:50%' />
 		</colgroup>
-		<tr><td class='forumheader3' style='text-align:center' colspan='2'>".UCSLAN_52."<br />".UCSLAN_53."</td></tr>
-		<tr><td class='forumheader3' style='text-align:center'>".UCSLAN_54."<br /><span class='smalltext'>".UCSLAN_57."</span><br />
+		<tr><td style='text-align:center' colspan='2'>".UCSLAN_52."<br />".UCSLAN_53."</td></tr>
+		<tr><td style='text-align:center'>".UCSLAN_54."<br /><span class='smalltext'>".UCSLAN_57."</span><br />
 		<input class='button' type='submit' name='add_class_tree' value='".UCSLAN_58."' onclick=\"return jsconfirm('".UCSLAN_67."')\" />
-		</td><td class='forumheader3' style='text-align:center'>".UCSLAN_55."<br /><span class='smalltext'>".UCSLAN_56."</span><br />
+		</td><td style='text-align:center'>".UCSLAN_55."<br /><span class='smalltext'>".UCSLAN_56."</span><br />
 		<input class='button' type='submit' name='flatten_class_tree' value='".UCSLAN_58."' onclick=\"return jsconfirm('".UCSLAN_66."')\" />
 		</td>
 		</tr></table></form>";
@@ -641,8 +638,8 @@ $ns->tablerender(UCSLAN_21, $text);
 		<col style='width:50%' />
 		<col style='width:50%' />
 		</colgroup>
-		<tr><td class='forumheader3' style='text-align:center'>".UCSLAN_72."<br /><span class='smalltext'>".UCSLAN_73."</span></td>
-		<td class='forumheader3' style='text-align:center'>
+		<tr><td style='text-align:center'>".UCSLAN_72."<br /><span class='smalltext'>".UCSLAN_73."</span></td>
+		<td style='text-align:center'>
 		<input class='button' type='submit' name='rebuild_tree' value='".UCSLAN_58."' />
 		</td>
 		</tr></table></form>";
@@ -712,15 +709,15 @@ $ns->tablerender(UCSLAN_21, $text);
 		<form method='post' action='".e_SELF."?test' id='testForm'>
 		<table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr><td class='fcaption' style='text-align:center' colspan='2'>Test Functions and Information</td></tr>";
-	$text .= "<tr><td class='forumheader3' style='text-align:center' colspan='2'>DB Status: ".$db_status."</td></tr>";
-	$text .= "<tr><td class='forumheader3'><input class='button' type='submit' name='add_db_fields' value='Add new DB fields' />First required step</td>";
-	$text .= "<td class='forumheader3'><input class='button' type='submit' name='remove_db_fields' value='Remove new DB fields' />Reverse the process</td></tr>";
-	$text .= "<tr><td class='forumheader3'><input class='button' type='submit' name='add_class_tree' value='Add class tree' />Optional default tree</td>";
-	$text .= "<td class='forumheader3'><input class='button' type='submit' name='remove_class_tree' value='Remove class tree' />Deletes the 'core' class entries</td></tr>";
-	$text .= "<tr><td class='forumheader3'><input class='button' type='submit' name='rebuild_tree' value='Rebuild class tree' />Sets up all the structures</td>";
-	$text .= "<td class='forumheader3'><input class='button' type='submit' name='' value='Spare' />Spare</td></tr>";
-	$text .= "<tr><td class='forumheader3' colspan='2'>&nbsp;</td></tr>";
-	$text .= "<tr><td class='forumheader3' colspan='2'>".$e_userclass->show_tree(TRUE)."</td></tr>";
+	$text .= "<tr><td style='text-align:center' colspan='2'>DB Status: ".$db_status."</td></tr>";
+	$text .= "<tr><td><input class='button' type='submit' name='add_db_fields' value='Add new DB fields' />First required step</td>";
+	$text .= "<td><input class='button' type='submit' name='remove_db_fields' value='Remove new DB fields' />Reverse the process</td></tr>";
+	$text .= "<tr><td><input class='button' type='submit' name='add_class_tree' value='Add class tree' />Optional default tree</td>";
+	$text .= "<td><input class='button' type='submit' name='remove_class_tree' value='Remove class tree' />Deletes the 'core' class entries</td></tr>";
+	$text .= "<tr><td><input class='button' type='submit' name='rebuild_tree' value='Rebuild class tree' />Sets up all the structures</td>";
+	$text .= "<td><input class='button' type='submit' name='' value='Spare' />Spare</td></tr>";
+	$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
+	$text .= "<tr><td colspan='2'>".$e_userclass->show_tree(TRUE)."</td></tr>";
 
 	$text .= "</table>";
 
@@ -851,7 +848,7 @@ if(isset($_POST['class_members_edit']))
 		<tr>
 		<td class='fcaption' style='text-align:center;width:30%'>".UCSLAN_16." ".$userclass_name."</td></tr>
 		<tr>
-		<td class='forumheader3' style='width:70%; text-align:center'>
+		<td style='width:70%; text-align:center'>
 
 		<table style='width:90%'>
 		<tr>
