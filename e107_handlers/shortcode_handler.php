@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.26 $
-| $Date: 2009-07-12 02:29:24 $
+| $Revision: 1.27 $
+| $Date: 2009-07-21 06:31:23 $
 | $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -32,9 +32,9 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 		$tmp = get_class_methods($classFunc);
 		foreach($tmp as $c)
 		{
-			if(strpos($c, 'get_') === 0) 
+			if(strpos($c, 'sc_') === 0)
 			{
-				$codes[] = substr($c, 4);
+				$codes[] = substr($c, 3);
 			}
 		}
 		unset($tmp);
@@ -253,7 +253,7 @@ class e_shortcode
 						case 'class':
 							//It is batch shortcode.  Load the class and call the method
 							$_class = $this->registered_codes[$code]['class'];
-							$_method = 'get_'.strtolower($code);
+							$_method = 'sc_'.strtolower($code);
 							if(!isset($this->scClasses[$_class]))
 							{
 								if(!class_exists($_class) && $this->registered_codes[$code]['path'])

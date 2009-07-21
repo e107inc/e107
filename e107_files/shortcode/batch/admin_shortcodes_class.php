@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.14 2009-07-19 11:44:28 marj_nl_fr Exp $
+* $Id: admin_shortcodes_class.php,v 1.15 2009-07-21 06:31:23 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -9,7 +9,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class admin_shortcodes
 {
-	function get_admin_credits()
+	function sc_admin_credits()
 	{
 		if (!ADMIN) { return ''; }
 		return "<div style='text-align: center'>
@@ -17,7 +17,7 @@ class admin_shortcodes
 		</div>";
 	}
 
-	function get_admin_docs()
+	function sc_admin_docs()
 	{
 		if (!ADMIN) { return ''; }
 		global $ns;
@@ -47,7 +47,7 @@ class admin_shortcodes
 		return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
 	}
 
-	function get_admin_help()
+	function sc_admin_help()
 	{
 		if (!ADMIN) { return ''; }
 
@@ -87,7 +87,7 @@ class admin_shortcodes
 		return $help_text;
 	}
 
-	function get_admin_icon()
+	function sc_admin_icon()
 	{
 		if (ADMIN)
 		{
@@ -126,7 +126,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_lang($parm)
+	function sc_admin_lang($parm)
 	{
 		global $e107, $sql, $pref;
 
@@ -260,7 +260,7 @@ class admin_shortcodes
 
 	}
 
-	function get_admin_latest($parm)
+	function sc_admin_latest($parm)
 	{
 		if (ADMIN) {
 			if (!function_exists('admin_latest'))
@@ -320,7 +320,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_log($parm)
+	function sc_admin_log($parm)
 	{
 		if (getperms('0'))
 		{
@@ -376,7 +376,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_logged()
+	function sc_admin_logged()
 	{
 		if (ADMIN)
 		{
@@ -396,7 +396,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_logo($parm)
+	function sc_admin_logo($parm)
 	{
 		parse_str($parm);
 
@@ -434,7 +434,7 @@ class admin_shortcodes
 		return $image;
 	}
 
-	function get_admin_menu($parm)
+	function sc_admin_menu($parm)
 	{
 		if (ADMIN)
 		{
@@ -478,7 +478,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_msg($parm)
+	function sc_admin_msg($parm)
 	{
 		if (ADMIN)
 		{
@@ -499,7 +499,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_nav($parm)
+	function sc_admin_nav($parm)
 	{
 		if (ADMIN)
 		{
@@ -591,7 +591,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_plugins($parm)
+	function sc_admin_plugins($parm)
 	{
 		if (ADMIN)
 		{
@@ -655,7 +655,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_preset($parm)
+	function sc_admin_preset($parm)
 	{
 		if(ADMIN && getperms('0'))
 		{
@@ -708,7 +708,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_pword()
+	function sc_admin_pword()
 	{
 		global $pref;
 		if (ADMIN && ADMINPERMS == '0')
@@ -722,7 +722,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_sel_lan()
+	function sc_admin_sel_lan()
 	{
 		global $pref;
 		if (ADMIN)
@@ -737,7 +737,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_siteinfo()
+	function sc_admin_siteinfo()
 	{
 		if (ADMIN)
 		{
@@ -797,7 +797,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_status($parm)
+	function sc_admin_status($parm)
 	{
 		if (getperms('0') || getperms('4'))
 		{
@@ -850,7 +850,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_update()
+	function sc_admin_update()
 	{
 		if (!ADMIN) { return ''; }
 
@@ -909,7 +909,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_userlan()
+	function sc_admin_userlan()
 	{
 		if (isset($_COOKIE['userlan']) && $_COOKIE['userlan'])
 		{
@@ -917,11 +917,11 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_alt_nav($parm)
+	function sc_admin_alt_nav($parm)
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.14 2009-07-19 11:44:28 marj_nl_fr Exp $
+		* $Id: admin_shortcodes_class.php,v 1.15 2009-07-21 06:31:23 e107coders Exp $
 		*/
 
 		if (ADMIN)
@@ -1088,7 +1088,7 @@ class admin_shortcodes
 		}
 	}
 
-	function get_admin_navigation($parm)
+	function sc_admin_navigation($parm)
 	{
 
 		if (!ADMIN) return '';
@@ -1278,7 +1278,7 @@ class admin_shortcodes
 		return e_admin_menu('', '', $menu_vars, $$tmpl, false, false);
 	}
 
-	function get_admin_menumanager()  // List all menu-configs for easy-navigation
+	function sc_admin_menumanager()  // List all menu-configs for easy-navigation
 	{
     	global $pref;
         $action = "";
