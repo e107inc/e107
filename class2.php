@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.110 $
-* $Date: 2009-07-19 11:44:26 $
-* $Author: marj_nl_fr $
+* $Revision: 1.111 $
+* $Date: 2009-07-21 14:20:12 $
+* $Author: e107coders $
 *
 */
 //
@@ -1999,10 +1999,10 @@ class error_handler
 			return;
 		}
 
-		if ((isset($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], 'debug=') !== FALSE) || isset($_COOKIE['e107_debug_level']))
+		if ((isset($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], 'debug=') !== FALSE) || isset($_COOKIE['e107_debug_level']) && strpos($_SERVER['QUERY_STRING'], 'debug=-') !== TRUE )
 		{
-			$this->debug = true;
-			error_reporting(E_ALL);
+		   	$this->debug = true;
+		  	error_reporting(E_ALL);
 		}
 		else
 		{
@@ -2054,7 +2054,8 @@ class error_handler
 	function return_errors()
 	{
 		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
-		$ret = "<table class='fborder'>\n";
+        $ret = "";
+
 		if (E107_DBG_ERRBACKTRACE)
 		{
 			foreach ($this->errors as $key => $value)
@@ -2071,8 +2072,8 @@ class error_handler
 				$ret .= "<tr class='forumheader3'><td>{$value['short']}</td></tr>\n";
 			}
 		}
-		$ret .= '</table>';
-		return $ret;
+
+		return ($ret) ? "<table class='fborder'>\n".$ret."</table>" : FALSE;
 	}
 
 	function trigger_error($information, $level)
