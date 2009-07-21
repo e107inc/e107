@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.111 $
-* $Date: 2009-07-21 14:20:12 $
-* $Author: e107coders $
+* $Revision: 1.112 $
+* $Date: 2009-07-21 16:11:02 $
+* $Author: secretr $
 *
 */
 //
@@ -195,7 +195,7 @@ if(!isset($ADMIN_DIRECTORY))
 e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = e107::getInstance();
-$e107->_init($e107_paths, realpath(dirname(__FILE__)));
+$e107->init($e107_paths, realpath(dirname(__FILE__)));
 
 $inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
 if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
