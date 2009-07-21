@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/import/wordpress_import_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-20 15:24:34 $
+|     $Revision: 1.2 $
+|     $Date: 2009-07-21 07:53:10 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -59,6 +59,18 @@ class wordpress_import extends base_import_class
 	    $result = $this->ourDB->db_Select_gen($query);
 
 		if ($result === FALSE) return FALSE;
+		break;
+
+		case 'userclass' :
+
+  /*       For reference: (stored in usermeta -> wp_capabilities
+  		    *  Administrator - Somebody who has access to all the administration features
+    		* Editor - Somebody who can publish posts, manage posts as well as manage other people's posts, etc.
+    		* Author - Somebody who can publish and manage their own posts
+    		* Contributor - Somebody who can write and manage their posts but not publish posts
+    		* Subscriber - Somebody who can read comments/comment/receive news letters, etc.
+  */
+
 		break;
 
 
