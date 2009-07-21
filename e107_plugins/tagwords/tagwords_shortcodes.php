@@ -9,8 +9,8 @@
  * Tagwords Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_shortcodes.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-07-21 07:10:25 $
+ * $Revision: 1.5 $
+ * $Date: 2009-07-21 08:27:23 $
  * $Author: e107coders $
  *
 */
@@ -26,7 +26,7 @@ $codes = array();
 $tmp = get_class_methods('tagwords_shortcodes');
 foreach($tmp as $c)
 {
-	if(strpos($c, 'ax_') === 0)
+	if(strpos($c, 'sc_') === 0)
 	{
 		$codes[] = substr($c, 3);
 	}
