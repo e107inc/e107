@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-19 20:25:03 $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-21 16:05:11 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -222,7 +222,7 @@ class adminDownload extends download
 	   $sort_link = $sortdirection == 'asc' ? 'desc' : 'asc';
 
 		$columnInfo = array(
-		 "checkboxes"	   			=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "url" => ""),
+		 "checkboxes"	   			=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "toggle" => "dl_selected"),
          "download_id"              => array("title"=>DOWLAN_67,  "type"=>"", "width"=>"auto", "thclass"=>"", "forced"=>true),
          "download_name"            => array("title"=>DOWLAN_12,  "type"=>"", "width"=>"auto", "thclass"=>""),
          "download_url"             => array("title"=>DOWLAN_13,  "type"=>"", "width"=>"auto", "thclass"=>""),

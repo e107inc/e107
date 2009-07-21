@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-07-17 07:53:13 $
+ * $Revision: 1.37 $
+ * $Date: 2009-07-21 16:05:10 $
  * $Author: e107coders $
  *
 */
@@ -671,6 +671,7 @@ class e_form
 	            $text .= $val['title'];
 				$text .= ($val['url']) ? "</a>" : "";
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
+				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle',$val['toggle']) : "";
 
 
 	 			$text .= "</th>";
