@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-12 02:29:24 $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-21 14:20:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -625,13 +625,21 @@ global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
 	while (ob_get_level() > 0) {
 		ob_end_flush();
 	}
-	if (isset($error_handler))
-	{		
-		echo "<br /><div 'e107_debug php_err'><h3>PHP Errors:</h3><br />".$error_handler->return_errors()."</div>\n";
-	} else {
-		echo "<b>e107 Shutdown while no error_handler available!</b>";
+
+	if (isset($error_handler) )
+	{
+		if($error_handler->return_errors())
+		{
+	  		echo "<br /><div 'e107_debug php_err'><h3>PHP Errors:</h3><br />".$error_handler->return_errors()."</div>\n";
+			echo "</body></html>";
+		}
 	}
-	echo "</body></html>";
+	else
+	{
+   		echo "<b>e107 Shutdown while no error_handler available!</b>";
+			echo "</body></html>";       
+	}
+
 }
 
 ?>
