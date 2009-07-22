@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.113 $
-* $Date: 2009-07-22 00:49:34 $
+* $Revision: 1.114 $
+* $Date: 2009-07-22 14:32:51 $
 * $Author: secretr $
 *
 */
@@ -1823,10 +1823,11 @@ function e107_require($fname)
 	return $ret;
 }
 
-
+//DEPRECATED - use e107::getLan();
 function include_lan($path, $force = false)
 {
-	global $pref;
+	return e107::getLan($path, $force);
+	/*global $pref;
 	if (!is_readable($path))
 	{
 		if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
@@ -1836,7 +1837,7 @@ function include_lan($path, $force = false)
 		$path = str_replace(e_LANGUAGE, 'English', $path);
 	}
 	$ret = ($force) ? include($path) : include_once($path);
-	return (isset($ret)) ? $ret : "";
+	return (isset($ret)) ? $ret : "";*/
 }
 
 /*
@@ -1865,10 +1866,12 @@ function include_lan_admin($path)
 // Note - if the code knows precisely where the language file is located, use include_lan()
 
 // $pref['noLanguageSubs'] can be set TRUE to prevent searching for the English files if the files for the current site language don't exist.
-
+//DEPRECATED - use e107::loadLanFiles();
 function loadLanFiles($unitName, $type='runtime')
 {
-	global $pref;
+	return e107::loadLanFiles($unitName, $type);
+	
+	/*global $pref;
 	switch ($type)
 	{
 		case 'runtime' :
@@ -1909,7 +1912,7 @@ function loadLanFiles($unitName, $type='runtime')
 			return (isset($ret)) ? $ret : "";
 		}
 	}
-	return FALSE;		// Nothing found
+	return FALSE;		// Nothing found*/
 }
 
 
@@ -2117,11 +2120,13 @@ function e107_ini_set($var, $value)
 }
 
 // Return true if specified plugin installed, false if not
+//DEPRECATED - use e107::isInstalled();
 function plugInstalled($plugname)
 {
-	global $pref;
+	return e107::isInstalled($plugname);
+	/*global $pref;
 	// Could add more checks here later if appropriate
-	return isset($pref['plug_installed'][$plugname]);
+	return isset($pref['plug_installed'][$plugname]);*/
 }
 
 

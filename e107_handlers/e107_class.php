@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-07-22 00:49:35 $
+ * $Revision: 1.31 $
+ * $Date: 2009-07-22 14:32:50 $
  * $Author: secretr $
 */
 
@@ -307,6 +307,21 @@ class e107
 	}
 	
 	/**
+	 * Retrieve file handler singleton or new fresh object
+	 *
+	 * @param boolean $singleton
+	 * @return e_file
+	 */
+	public static function getFile($singleton = true)
+	{
+		if($singleton)
+		{
+			return self::getSingleton('e_file', e_HANDLER.'file_class.php');
+		}
+		return self::getObject('e_file', null, e_HANDLER.'file_class.php');
+	}
+	
+	/**
 	 * Retrieve admin log singleton object
 	 *
 	 * @return e_admin_log
@@ -324,6 +339,221 @@ class e107
 	public static function getDateConvert()
 	{
 		return self::getSingleton('convert', e_HANDLER.'date_handler.php');
+	}
+	
+	/**
+	 * Get core template. Use this method for templates, which are following the 
+	 * new template standards:
+	 * - template variables naming convetnions
+	 * - one array variable per template only
+	 * - theme override is made now by current_theme/templates/ folder
+	 * 
+	 * <br><br>Results are cached (depending on $id and $override so it's safe to use
+	 * this method e.g. in loop for retrieving a template string. If template (or template key) is not 
+	 * found, <b>null</b> is returned.<br><br>
+	 * 
+	 * Example usage: <code>e107::getCoreTemplate('user', 'short_start');</code>
+	 * Will search for:
+	 * - e107_themes/current_frontend_theme/templates/user_template.php (if $override is true)
+	 * - e107_themes/templates/user_template.php (if override not found or $override is false)
+	 * - $USER_TEMPLATE array which contains all user templates
+	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
+	 * 
+	 * @param string $id
+	 * @param string|null $key
+	 * @param boolean $override
+	 * 
+	 * @return string|array
+	 */
+	public static function getCoreTemplate($id, $key = null, $override = true)
+	{
+		global $pref;
+		$reg_path = 'core/e107/templates';
+		$override_path = $override ? e_THEME.$pref['sitetheme'].'/templates/'.$id.'_template.php' : null;
+		$default_path = e_THEME.'/templates/'.$id.'_template.php';
+		
+		return e107::_getTemplate($id, $key, $reg_path, $default_path, $override_path);
+	}
+	
+	/**
+	 * Get plugin template. Use this method for plugin templates, which are following the 
+	 * new template standards:
+	 * - template variables naming convetnions
+	 * - one array variable per template only
+	 * - theme override is made now by current_theme/templates/plugin_name/ folder
+	 * 
+	 * <br><br>Results are cached (depending on $id and $override so it's safe to use
+	 * this method e.g. in loop for retrieving a template string. If template (or template key) is not 
+	 * found, <b>null</b> is returned.<br><br>
+	 * 
+	 * Example usage: <code>e107::getTemplate('user', 'short_start');</code>
+	 * Will search for:
+	 * - e107_themes/current_frontend_theme/templates/user_template.php (if $override is true)
+	 * - e107_themes/templates/user_template.php (if override not found or $override is false)
+	 * - $USER_TEMPLATE array which contains all user templates
+	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
+	 * 
+	 * @param string $plug_name
+	 * @param string $id
+	 * @param string|null $key
+	 * @param boolean $override
+	 * 
+	 * @return string|array
+	 */
+	public static function getTemplate($plug_name, $id, $key = null, $override = true)
+	{
+		global $pref;
+		$reg_path = 'plugin/'.$plug_name.'/templates';
+		$override_path = $override ? e_THEME.$pref['sitetheme'].'/templates/'.$plug_name.'/'.$id.'_template.php' : null;
+		$default_path = e_PLUGIN.$plug_name.'/templates/'.$id.'_template.php';
+		
+		return e107::_getTemplate($id, $key, $reg_path, $default_path, $override_path);
+	}
+	
+	/**
+	 * More abstsract template loader, used
+	 * internal in {@link getTemplate()} and {@link getCoreTemplate()} methods
+	 *
+	 * @param string $id
+	 * @param string|null $key
+	 * @param string $reg_path
+	 * @param string $default_path
+	 * @param string $override_path
+	 * @return string|array
+	 */
+	public static function _getTemplate($id, $key = null, $reg_path, $default_path, $override_path = null)
+	{
+		$regPath = $reg_path.'/'.$id.($override_path ? '/ext' : '');
+		$var = strtoupper($id).'_TEMPLATE';
+		
+		if(!e107::getRegistry($regPath))
+		{
+			if($override_path)
+			{
+				$path = $override_path.$id.'_template.php';
+				if(is_readable($path))
+				{
+					include_once($path);
+					if(isset($$var))
+					{
+						e107::setRegistry($regPath, $$var);
+					}
+				}
+			}
+			
+			if(!isset($$var))
+			{
+				$path = $default_path.$id.'_template.php';
+				e107_include_once($path);
+				if(isset($$var))
+				{
+					e107::setRegistry($regPath, $$var);
+				}
+			}
+		}
+		
+		if(!$key)
+		{
+			e107::getRegistry($regPath);
+		}
+		$ret = e107::getRegistry($regPath);
+		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : $ret);
+	}
+	
+	/**
+	 * Load language file, replacement of include_lan()
+	 *
+	 * @param string $path
+	 * @param boolean $force
+	 * @return string
+	 */
+	public static function getLan($path, $force = false)
+	{
+		global $pref;
+		if (!is_readable($path))
+		{
+			if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
+			{
+				return FALSE;
+			}
+			$path = str_replace(e_LANGUAGE, 'English', $path);
+		}
+		$ret = ($force) ? include($path) : include_once($path);
+		return (isset($ret)) ? $ret : "";
+	}
+
+	/**
+	 * Routine looks in standard paths for language files associated with a plugin or 
+	 * theme - primarily for core routines, which won't know for sure where the author has put them.
+	 * $unitName is the name (directory path) of the plugin or theme
+	 * $type determines what is to be loaded:
+	 * - 'runtime' - the standard runtime language file for a plugin
+	 * - 'admin' - the standard admin language file for a plugin
+	 * - 'theme' - the standard language file for a plugin (these are usually pretty small, so one is enough)
+	 * Otherwise, $type is treated as part of a filename within the plugin's language directory, 
+	 * prefixed with the current language. 
+	 * Returns FALSE on failure (not found).
+	 * Returns the include_once error return if there is one
+	 * Otherwise returns an empty string.
+	 * Note - if the code knows precisely where the language file is located, use {@link getLan()}
+	 * $pref['noLanguageSubs'] can be set TRUE to prevent searching for the English files if 
+	 * the files for the current site language don't exist.
+	 *
+	 * @param string $unitName
+	 * @param string $type predefined types are runtime|admin|theme
+	 * @return boolean|string
+	 */
+	public static function loadLanFiles($unitName, $type='runtime')
+	{
+		global $pref;
+		switch ($type)
+		{
+			case 'runtime' :
+				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_'.$unitName.'.php';
+				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.$unitName.'.php';
+				break;
+			case 'admin' :
+				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin_'.$unitName.'.php';
+				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.'admin_'.$unitName.'.php';
+				break;
+			case 'theme' :
+				$searchPath[1] = e_THEME.$unitName.'/languages/'.e_LANGUAGE.'_'.$unitName.'.php';
+				$searchPath[2] = e_THEME.$unitName.'/languages/'.e_LANGUAGE.'/'.$unitName.'.php';
+				break;
+			default :
+				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_'.$type.'.php';
+				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.$type.'.php';
+		}
+		foreach ($searchPath as $s)			// Look for files in current language first - should usually be found
+		{
+			if (is_readable($s))
+			{
+				$ret = include_once($s);
+				return (isset($ret)) ? $ret : "";
+			}
+		}
+		if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
+		{
+			return FALSE;		// No point looking for the English files twice
+		}
+	
+		foreach ($searchPath as $s)			// Now look for the English files
+		{
+			$s = str_replace(e_LANGUAGE, 'English', $s);
+			if (is_readable($s))
+			{
+				$ret = include_once($s);
+				return (isset($ret)) ? $ret : "";
+			}
+		}
+		return FALSE;		// Nothing found
+	}
+	
+	public static function isInstalled($plugname)
+	{
+		global $pref;
+		// Could add more checks here later if appropriate
+		return isset($pref['plug_installed'][$plugname]);
 	}
 	
 	/**
