@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.15 2009-07-21 06:31:23 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.16 2009-07-22 06:36:02 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -921,7 +921,7 @@ class admin_shortcodes
 	{
 		/*
 		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.15 2009-07-21 06:31:23 e107coders Exp $
+		* $Id: admin_shortcodes_class.php,v 1.16 2009-07-22 06:36:02 e107coders Exp $
 		*/
 
 		if (ADMIN)
@@ -1178,20 +1178,21 @@ class admin_shortcodes
 			{
 				if($plug->parse_plugin($row['plugin_path']))
 				{
+
+
 					$plug_vars = $plug->plug_vars;
 					loadLanFiles($row['plugin_path'], 'admin');
 					if($plug_vars['administration']['configFile'])
 					{
-						$plugpath = isset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/';
-						$icon_src = isset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
-						$icon_src_lrg = isset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
+						$plugpath = varset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/';
+						$icon_src = varset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
+						$icon_src_lrg = varset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$id = 'plugnav-'.$row['plugin_path'];
-
 
            	  			$tmp[$id]['text'] = $e107->tp->toHTML($plug_vars['@attributes']['name'], FALSE, "defs");
 						$tmp[$id]['description'] = $plug_vars['description'];
 						$tmp[$id]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plug_vars['administration']['configFile'];
-						$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt='{$tmp['text']}' class='icon S16' />" : E_16_PLUGIN;
+					 	$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt='{$tmp['text']}' class='icon S16' />" : E_16_PLUGIN;
 						$tmp[$id]['image_large'] = $icon_src_lrg ? "<img src='{$icon_src_lrg}' alt='{$tmp['text']}' class='icon S32' />" : $icon_src_lrg;
 						$tmp[$id]['image_src'] = $icon_src;
 						$tmp[$id]['image_large_src'] = $icon_src_lrg;
@@ -1199,7 +1200,6 @@ class admin_shortcodes
 						$tmp[$id]['sub_class'] = '';
 						$tmp[$id]['sort'] = 2;
 						$tmp[$id]['category'] = $row['plugin_category'];
-
 
 						if($pref['admin_slidedown_subs'] && varsettrue($plug_vars['administration']['subMenuItem']))
 						{
@@ -1214,19 +1214,21 @@ class admin_shortcodes
 								$tmp[$id]['sub'][$subid]['text'] = $e107->tp->toHTML($plugsub['title'], FALSE, "defs");
 								$tmp[$id]['sub'][$subid]['description'] = $plug_vars['description'];
 								$tmp[$id]['sub'][$subid]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plugsub['link'];
-								$tmp[$id]['sub'][$subid]['image'] = $icon_src ? "<img src='{$icon_src}' alt='{$tmp['text']}' class='icon S16' />" : '';
+								$tmp[$id]['sub'][$subid]['image'] = $icon_src ? "<img src='{$icon_src}' alt='{$tmp['text']}' class='icon S16' />" : "";
 								$tmp[$id]['sub'][$subid]['image_large'] = '';
 								$tmp[$id]['sub'][$subid]['image_src'] = $icon_src;
 								$tmp[$id]['sub'][$subid]['image_large_src'] = '';
 								$tmp[$id]['sub'][$subid]['perm'] = varset($plugsub['perm']) ? $plugsub['perm'] : 'P'.$row['plugin_id'];
 								$tmp[$id]['sub'][$subid]['sub_class'] = '';
+
 							}
 						}
 					}
 				}
 			}
 
-			$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
+		 	$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
+
 		}
 
 
@@ -1267,12 +1269,6 @@ class admin_shortcodes
 		$menu_vars['logout']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 		$menu_vars['logout']['image_src'] = ADLAN_46;
 		$menu_vars['logout']['perm'] = '';
-
-        	 //	$text .= adnav_cat(ADLAN_53, e_BASE.'index.php', E_16_NAV_LEAV);
-			//	$text .= adnav_cat(ADLAN_46, e_ADMIN.'admin.php?logout', E_16_NAV_LGOT);
-
-
-
 
 
 		return e_admin_menu('', '', $menu_vars, $$tmpl, false, false);
