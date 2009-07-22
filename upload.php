@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/upload.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-14 05:31:57 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-22 19:18:13 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -286,7 +286,7 @@ function headerjs()
 			var errorMessages = new Array('".LAN_UL_032."', '".LAN_UL_033."', '".LAN_UL_034."', '".LAN_UL_036."', '".LAN_UL_035."');
 			var temp;
 			var i;
-			for (i = 0; i < 4; i++)
+			for (i = 0; i < 5; i++)
 			{
 				temp = document.getElementById(testObjects[i]);
 				if (temp && (temp.value == \"\"))
