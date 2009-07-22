@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2009-07-17 07:53:13 $
-|     $Author: e107coders $
+|     $Revision: 1.35 $
+|     $Date: 2009-07-22 12:00:51 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -664,23 +664,14 @@ class pluginManager{
 	function pluginRenderList() // Uninstall and Install sorting should be fixed once and for all now !
 	{
 
-        global $plugin,$ns,$frm;
-
-		$text = "
-			<form action='".e_SELF."?".e_QUERY."' id='pluginmanager_list' method='post'>
-		  		<fieldset id='core-newspost-list'>
-		 			<legend class='e-hideme'>".NWSLAN_4."</legend>
-		   			<table cellpadding='0' cellspacing='0' class='adminlist'>
-			  			".$frm->colGroup($this->fields,$this->fieldpref).
-		  				   $frm->thead($this->fields,$this->fieldpref)."
-							<tbody>
-		";
-
+		global $plugin, $frm;
+		$e107 = &e107::getInstance();
+		
 		if($this->action == "" || $this->action == "installed")
 		{
 			$installed = $plugin->getall(1);
-		    $caption = EPL_ADLAN_22;
-			$text .= $this->pluginRenderPlugin($installed);
+			$caption = EPL_ADLAN_22;
+			$pluginRenderPlugin = $this->pluginRenderPlugin($installed);
 			$button_mode = "uninstall-selected";
 			$button_caption = EPL_ADLAN_85;
 			$button_action = "delete";
@@ -688,28 +679,41 @@ class pluginManager{
 		if($this->action == "avail")
 		{
 			$uninstalled = $plugin->getall(0);
-		    $caption = EPL_ADLAN_23;
-			$text .= $this->pluginRenderPlugin($uninstalled);
+			$caption = EPL_ADLAN_23;
+			$pluginRenderPlugin = $this->pluginRenderPlugin($uninstalled);
 			$button_mode = "install-selected";
 			$button_caption = EPL_ADLAN_84;
 			$button_action = "update";
 		}
 
-        $text .= "
-				  	</tbody>
+		$text = "
+			<form action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='post'>
+				<fieldset id='core-plugin-list'>
+					<legend class='e-hideme'>".$caption."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
+						".$frm->colGroup($this->fields,$this->fieldpref).
+						$frm->thead($this->fields,$this->fieldpref)."
+						<tbody>
+		";
+
+		$text .= $pluginRenderPlugin;
+
+		$text .= "
+						</tbody>
 					</table>";
 
 		if($this->action == "avail")
 		{
-			$text .= "<div class='buttons-bar left'>".$frm->admin_button($button_mode, $button_caption, $button_action)."</div>";
+			$text .= "
+					<div class='buttons-bar left'>".$frm->admin_button($button_mode, $button_caption, $button_action)."</div>";
 		}
 		$text .= "
-					</fieldset>
-					</form>
+				</fieldset>
+			</form>
 		";
 
-        $emessage = &eMessage::getInstance();
-		$ns->tablerender(EPL_ADLAN_16." : ".$caption,$emessage->render(). $text);
+		$emessage = &eMessage::getInstance();
+		$e107->ns->tablerender(EPL_ADLAN_16." : ".$caption, $emessage->render(). $text);
 	}
 
 
@@ -737,7 +741,7 @@ class pluginManager{
 				{
 
 					$icon_src = (isset($plug_vars['plugin_php']) ? e_PLUGIN : $_path).$plug_vars['administration']['icon'];
-					$plugin_icon = $plug_vars['administration']['icon'] ? "<img src='{$icon_src}' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
+					$plugin_icon = $plug_vars['administration']['icon'] ? "<img src='{$icon_src}' alt='' class='icon S32' />" : E_32_CAT_PLUG;
                     $conf_file = "#";
 					$conf_title = "";
 
