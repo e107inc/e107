@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.16 2009-07-22 06:36:02 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.17 2009-07-22 12:00:51 marj_nl_fr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -12,7 +12,8 @@ class admin_shortcodes
 	function sc_admin_credits()
 	{
 		if (!ADMIN) { return ''; }
-		return "<div style='text-align: center'>
+		return "
+		<div style='text-align: center'>
 		<input class='button' type='button' onclick=\"javascript: window.open('".e_ADMIN."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".LAN_CREDITS."' />
 		</div>";
 	}
@@ -112,7 +113,7 @@ class admin_shortcodes
 					$icon = E_32_CAT_PLUG;
 					return $icon;
 				}
-				$icon = ($eplug_icon && file_exists(e_PLUGIN.$eplug_icon)) ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
+				$icon = ($eplug_icon && file_exists(e_PLUGIN.$eplug_icon)) ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' class='icon S32' />" : E_32_CAT_PLUG;
 			}
 			else
 			{
@@ -132,7 +133,7 @@ class admin_shortcodes
 
 		if (!ADMIN || !$pref['multilanguage']) { return ''; }
 
-		include_lan(e_PLUGIN.'user_menu/languages/English.php');
+		include_lan(e_PLUGIN.'user_menu/languages/'.e_LANGUAGE.'.php');
 		$params = array();
 		parse_str($parm, $params);
 
@@ -181,7 +182,9 @@ class admin_shortcodes
 		}
         }
 
-		$text .= "<div><img src='".e_IMAGE_ABS."admin_images/language_16.png' alt='' />&nbsp;";
+		$text .= "
+		<div>
+		<img src='".e_IMAGE_ABS."admin_images/language_16.png' alt='' />&nbsp;";
 		if(isset($aff))
 		{
 			$text .= $sql->mySQLlanguage;
@@ -827,7 +830,7 @@ class admin_shortcodes
 
 					if($flo = $sql->db_Count('generic', '(*)', "WHERE gen_type='failed_login'"))
 					{
-						$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
+						$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' class='icon S16' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
 					}
 					return $ns -> tablerender(ADLAN_134, $text, '', TRUE);
 				}
@@ -919,11 +922,6 @@ class admin_shortcodes
 
 	function sc_admin_alt_nav($parm)
 	{
-		/*
-		* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-		* $Id: admin_shortcodes_class.php,v 1.16 2009-07-22 06:36:02 e107coders Exp $
-		*/
-
 		if (ADMIN)
 		{
 			global $sql, $pref, $tp;
@@ -1015,7 +1013,7 @@ class admin_shortcodes
 							{
 								$plug_vars['@attributes']['name'] = $tp->toHTML($plug_vars['@attributes']['name'], FALSE, "defs");
 								$icon_src = (isset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/') .$plug_vars['administration']['iconSmall'];
-								$plugin_icon = $plug_vars['administration']['iconSmall'] ? "<img src='{$icon_src}' alt='".$plug_vars['administration']['caption']."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
+								$plugin_icon = $plug_vars['administration']['iconSmall'] ? "<img src='{$icon_src}' alt='".$plug_vars['administration']['caption']."' class='icon S16' />" : E_16_PLUGIN;
 								$plugin_array[ucfirst($plug_vars['@attributes']['name'])] = adnav_main($plug_vars['@attributes']['name'], e_PLUGIN.$row['plugin_path']."/".$plug_vars['administration']['configFile'], $plugin_icon);
 							}
 							$render_plugins = TRUE;
