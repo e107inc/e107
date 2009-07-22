@@ -9,9 +9,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.42 $
-* $Date: 2009-07-19 14:59:06 $
-* $Author: marj_nl_fr $
+* $Revision: 1.43 $
+* $Date: 2009-07-22 17:04:59 $
+* $Author: e107coders $
 *
 */
 require_once('../class2.php');
@@ -150,6 +150,11 @@ if (isset($_POST['resend_mail']))
 if(isset($_POST['resend_to_all']))
 {
 	$user->resend_to_all();
+}
+
+if(isset($_POST['execute_batch']))
+{
+	$user->process_batch();
 }
 
 
@@ -358,64 +363,25 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "reqverify")
 	if(!$sub_action) {$sub_action = "user_id"; }
 }
 
+	if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
+	{
+    	$user->user_ban($_POST['userid']);
+	}
 
 
-// ------- Ban User. --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
-{
-	//	$sub_action = $_POST['userid'];
-	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
-	$row = $sql->db_Fetch();
-	if (($row['user_perms'] == "0") || ($row['user_perms'] == "0."))
-	{
-		$user->show_message(USRLAN_7);
-	}
-	else
-	{
-		if($sql->db_Update("user", "user_ban='1' WHERE user_id='".$_POST['userid']."' "))
-		{
-			$admin_log->log_event('USET_05',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_161),E_LOG_INFORMATIVE);
-			$user->show_message(USRLAN_8);
-		}
-		if(trim($row['user_ip']) == "")
-		{
-			$user->show_message(USRLAN_135);
-		}
-		else
-		{
-			if($sql->db_Count("user", "(*)", "WHERE user_ip = '{$row['user_ip']}'") > 1)
-			{	// Multiple users have same IP address
-				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_136));
-			}
-			else
-			{
-				if ($e107->add_ban(6,USRLAN_149.$row['user_name'].'/'.$row['user_loginname'],$row['user_ip'],USERID))
-				{	// Successful IP ban
-					$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_137));
-				}
-				else
-				{	// IP address on whitelist
-					$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_150));
-				}
-			}
-		}
-	}
-	$action = "main";
-	if(!$sub_action){$sub_action = "user_id"; }
-}
+
 
 
 // ------- Unban User --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == "unban")
 {
-	$sql->db_Select("user", "user_name,user_ip", "user_id='".$_POST['userid']."'");
-	$row = $sql->db_Fetch();
-	$sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ");
-	$sql -> db_Delete("banlist", " banlist_ip='{$row['user_ip']}' ");
-	$admin_log->log_event('USET_06',str_replace(array('--UID--','--NAME--'),array($_POST['userid'],$row['user_name']),USRLAN_162),E_LOG_INFORMATIVE);
-	$user->show_message(USRLAN_9);
-	$action = "main";
-	if(!$sub_action){$sub_action = "user_id"; }
+	$user->user_unban($_POST['userid']);
+}
+
+// ------- Delete User --------------
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser')
+{
+	$user->user_delete($_POST['userid'],TRUE);
 }
 
 // ------- Resend Email Confirmation. --------------
@@ -463,45 +429,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'test')
 
 
 
-// ------- Delete User --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser')
-{
-	if ($_POST['confirm'])
-	{
-		$uid = intval($_POST['userid']);
-		if ($sql->db_Delete("user", "user_id=".$uid." AND user_perms != '0' AND user_perms != '0.'"))
-		{
-			$sql->db_Delete("user_extended", "user_extended_id='".$uid."' ");
-			$admin_log->log_event('USET_07',str_replace('--UID--',$uid,USRLAN_163),E_LOG_INFORMATIVE);
-			$e_event->trigger('userdelete', $temp = array('user_id' => $uid));
-			$user->show_message(USRLAN_10);
-		}
-		if(!$sub_action){ $sub_action = "user_id"; }
-		if(!$id){ $id = "DESC"; }
-	}
-	else
-	{	// Put up confirmation
-		if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
-			$row = $sql->db_Fetch();
-			$qry = (e_QUERY) ? "?".e_QUERY : "";
-			$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
-			$text .= "<div>
-			<input type='hidden' name='useraction' value='deluser' />
-			<input type='hidden' name='userid' value='{$row['user_id']}' /></div>". USRLAN_13."
-			<br /><br /><span class='indent'>#{$row['user_id']} : {$row['user_name']}</span>
-			<br /><br />
-			<input type='submit' class='button' name='confirm' value='".USRLAN_17."' />
-			&nbsp;&nbsp;
-			<input type='button' class='button' name='cancel' value='".LAN_CANCEL."' onclick=\"location.href='".e_SELF.$qry."' \" />
-			</div>
-			</form>
-			";
-			$ns->tablerender(USRLAN_16, $text);
-			require_once("footer.php");
-			exit;
-		}
-	}
-}
+
 
 
 
@@ -549,53 +477,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms
 // ------- Approve User. --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 {
-	$uid = intval($_POST['userid']);
-
-	if ($sql->db_Select("user", "*", "user_id='".$uid."' "))
-	{
-		if ($row = $sql->db_Fetch())
-		{
-			$dbData = array();
-			$dbData['WHERE'] = "user_id=".$uid;
-			$dbData['data'] = array('user_ban'=>'0', 'user_sess'=>'');
-			// Add in the initial classes as necessary
-			if ($userMethods->userClassUpdate($row, 'userall'))
-			{
-				$dbData['data']['user_class'] = $row['user_class'];
-			}
-			$userMethods->addNonDefaulted($dbData);
-			validatorClass::addFieldTypes($userMethods->userVettingInfo,$dbData);
-			$sql->db_Update('user',$dbData);
-			$admin_log->log_event('USET_10',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_166),E_LOG_INFORMATIVE);
-			$e_event->trigger('userfull', $row);			// 'New' event
-
-			$user->show_message(USRLAN_86);
-			if(!$action){ $action = "main"; }
-			if(!$sub_action){ $sub_action = "user_id"; }
-			if(!$id){ $id = "DESC"; }
-
-			if($pref['user_reg_veri'] == 2)
-			{
-				if($sql->db_Select("user", "user_email, user_name", "user_id = '{$uid}'"))
-				{
-					$row = $sql->db_Fetch();
-					$message = USRLAN_114." ".$row['user_name'].",\n\n".USRLAN_122." ".SITENAME.".\n\n".USRLAN_123."\n\n";
-					$message .= str_replace("{SITEURL}", SITEURL, USRLAN_139);
-
-					require_once(e_HANDLER."mail.php");
-					if(sendemail($row['user_email'], USRLAN_113." ".SITENAME, $message))
-					{
-						//  echo str_replace("\n","<br>",$message);
-						$user->show_message("Email sent to: ".$row['user_name']);
-					}
-					else
-					{
-						$user->show_message("Failed to send to: ".$row['user_name']);
-					}
-				}
-			}
-		}
-	}
+	$user->user_activate($_POST['userid']);
 }
 
 if (isset($action) && $action == "uset")
@@ -639,7 +521,7 @@ switch ($action)
 
 	case "create" :
 	$userMethods->deleteExpired();			// Remove time-expired users
-	$user->add_user($user_data);
+	$user->user_add($user_data);
 	break;
 
 	default :
@@ -702,6 +584,7 @@ class users
 		}
 
 		$this->fields = array(
+			'checkboxes'		=> array('title'=>'', 'width'=>'3%', 'forced'=>TRUE, 'thclass'=>'center first'),
 			'user_id'			=> array('title'=> 'Id', 'width'=>'5%', 'forced'=> TRUE),
             'user_status'	   	=> array('title'=> ADLAN_134, 'width'=>'auto'),
          	'user_name' 		=> array('title'=> LAN_USER_01, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first' ), // Display name
@@ -740,6 +623,130 @@ class users
 		}
 
         $this->fields['options'] = array('title' => LAN_OPTIONS, 'width'=>'10%', "thclass" => "center last", 'forced'=>TRUE);
+
+	}
+
+    function process_batch()
+	{
+    	list($type,$tmp,$uclass) = explode("_",$_POST['execute_batch']);
+		$method = "user_".$type;
+	  	if(method_exists($this, $method) && isset($_POST['user_selected']))
+		{
+			foreach($_POST['user_selected'] as $userid)
+			{
+				$this->$method($userid);
+			}
+		}
+	}
+
+	function user_delete($userid,$confirm=FALSE)
+	{
+		global $sql, $admin_log, $e_event, $ns;
+
+
+        if ($_POST['confirm'] || !$confirm)
+		{
+			$uid = ($confirm) ? intval($_POST['userid']) : $userid;
+			if ($sql->db_Delete("user", "user_id=".$uid." AND user_perms != '0' AND user_perms != '0.'"))
+			{
+				$sql->db_Delete("user_extended", "user_extended_id='".$uid."' ");
+				$admin_log->log_event('USET_07',str_replace('--UID--',$uid,USRLAN_163),E_LOG_INFORMATIVE);
+				$e_event->trigger('userdelete', $temp = array('user_id' => $uid));
+				$this->show_message(USRLAN_10);
+			}
+			if(!$sub_action){ $sub_action = "user_id"; }
+			if(!$id){ $id = "DESC"; }
+		}
+		else
+		{	// Put up confirmation
+			if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' "))
+			{
+				$row = $sql->db_Fetch();
+				$qry = (e_QUERY) ? "?".e_QUERY : "";
+				$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
+				$text .= "<div>
+				<input type='hidden' name='useraction' value='deluser' />
+				<input type='hidden' name='userid' value='{$row['user_id']}' /></div>". USRLAN_13."
+				<br /><br /><span class='indent'>#{$row['user_id']} : {$row['user_name']}</span>
+				<br /><br />
+				<input type='submit' class='button' name='confirm' value='".USRLAN_17."' />
+				&nbsp;&nbsp;
+				<input type='button' class='button' name='cancel' value='".LAN_CANCEL."' onclick=\"location.href='".e_SELF.$qry."' \" />
+				</div>
+				</form>
+				";
+				$ns->tablerender(USRLAN_16, $text);
+				require_once("footer.php");
+				exit;
+			}
+		}
+	}
+
+    function user_unban($userid)
+	{
+		global $sql, $admin_log;
+    	$sql->db_Select("user", "user_name,user_ip", "user_id='".$userid."'");
+		$row = $sql->db_Fetch();
+		$sql->db_Update("user", "user_ban='0' WHERE user_id='".$userid."' ");
+		$sql -> db_Delete("banlist", " banlist_ip='{$row['user_ip']}' ");
+		$admin_log->log_event('USET_06',str_replace(array('--UID--','--NAME--'),array($userid,$row['user_name']),USRLAN_162),E_LOG_INFORMATIVE);
+		$this->show_message(USRLAN_9." (".$userid.". ".$row['user_name'].")");
+		$action = "main";
+		if(!$sub_action){$sub_action = "user_id"; }
+	}
+
+	function user_activate($userid)
+	{
+		global $sql, $e_event, $admin_log, $userMethods;
+	    $uid = intval($userid);
+
+		if ($sql->db_Select("user", "*", "user_id='".$uid."' "))
+		{
+			if ($row = $sql->db_Fetch())
+			{
+				$dbData = array();
+				$dbData['WHERE'] = "user_id=".$uid;
+				$dbData['data'] = array('user_ban'=>'0', 'user_sess'=>'');
+				// Add in the initial classes as necessary
+				if ($userMethods->userClassUpdate($row, 'userall'))
+				{
+					$dbData['data']['user_class'] = $row['user_class'];
+				}
+				$userMethods->addNonDefaulted($dbData);
+				validatorClass::addFieldTypes($userMethods->userVettingInfo,$dbData);
+				$sql->db_Update('user',$dbData);
+				$admin_log->log_event('USET_10',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_166),E_LOG_INFORMATIVE);
+				$e_event->trigger('userfull', $row);			// 'New' event
+
+				$this->show_message(USRLAN_86." (#".$userid." : ".$row['user_name'].")");
+				if(!$action){ $action = "main"; }
+				if(!$sub_action){ $sub_action = "user_id"; }
+				if(!$id){ $id = "DESC"; }
+
+				if($pref['user_reg_veri'] == 2)
+				{
+					if($sql->db_Select("user", "user_email, user_name", "user_id = '{$uid}'"))
+					{
+						$row = $sql->db_Fetch();
+						$message = USRLAN_114." ".$row['user_name'].",\n\n".USRLAN_122." ".SITENAME.".\n\n".USRLAN_123."\n\n";
+						$message .= str_replace("{SITEURL}", SITEURL, USRLAN_139);
+
+						require_once(e_HANDLER."mail.php");
+						if(sendemail($row['user_email'], USRLAN_113." ".SITENAME, $message))
+						{
+							//  echo str_replace("\n","<br>",$message);
+							$this->show_message("Email sent to: ".$row['user_name']);
+						}
+						else
+						{
+							$this->show_message("Failed to send to: ".$row['user_name'],'error');
+						}
+					}
+				}
+			}
+		}
+
+
 
 	}
 
@@ -839,13 +846,29 @@ class users
 		return $text;
 	}
 
+    function show_search_filter()
+	{
+		// TODO - This is to be replaced with a generic search-filter class element.
+    	$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<table class='adminform'>\n";
+		$text .= "<tr><td><input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n
+		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
+		\n";
+
+		$text .= "</td></tr></table>
+
+		</form>\n";
+
+		return $text;
+	}
+
 
 	function show_existing_users($action, $sub_action, $id, $from, $amount)
 	{
 		global $sql, $frm, $ns, $tp, $mySQLdefaultdb,$pref,$unverified, $userMethods;
 		$e107 = e107::getInstance();
 
-		$text = "<div style='text-align:center'>";
+		$text = "<div>".$this->show_search_filter();
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "")
 		{
@@ -889,39 +912,14 @@ class users
 							$frm->thead($this->fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]").
 							"<tbody>";
 
-
-
-         /*	<thead>
-			<tr>
-			<th style='width:5%'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></th>
-			<th style='width:10%'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></th>";
-
-
-			// Search Display Column header.
-			$display_lan = $userMethods->getNiceNames(TRUE);		// List of field names and descriptive names
-			foreach($this->fieldpref as $disp)
-			{
-				if (isset($display_lan[$disp]))
-				{
-					$text .= "<th style='width:15%'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".$display_lan[$disp]."</a></th>";
-				}
-				else
-				{
-					$text .= "<th style='width:15%'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></th>";
-				}
-			}
-
-			// ------------------------------
-
-			$text .= "<th style='width:30%'>".LAN_OPTIONS."</th>
-			</tr>
-			</thead><tbody>";*/
-
 			while ($row = $sql->db_Fetch())
 			{
 				extract($row);
 				$text .= "<tr>
-				<td style='width:5%; text-align:center' >{$user_id}</td>";
+
+
+				<td class='center' >".$frm->checkbox('user_selected[]',$user_id)."</td>
+				<td class='center' style='width:5%; text-align:center' >{$user_id}</td>";
 
 				// Display Chosen options
 
@@ -952,7 +950,7 @@ class users
 					}
 					elseif (in_array($disp,$boleanfields))
 					{
-						$text .= ($row[$disp]) ? ADMIN_TRUE_ICON : '';
+						$text .= ($row[$disp]==1) ? ADMIN_TRUE_ICON : '';
 					}
 					elseif(in_array($disp,$datefields))
 					{
@@ -983,93 +981,71 @@ class users
 				$text .= "
 				<td style='width:30%' class='center'>".$this->showUserOptions($row)."</td></tr>";
 			}
-			$text .= "</tbody></table></fieldset> ";
+			$text .= "</tbody>
+			</table>
+			<div class='buttons-bar center'>".$this->show_batch_options();
+            $users = (e_QUERY != "unverified") ? $sql->db_Count("user"): $unverified;
 
-
-
-		}
-
-		if($action == "unverified")
-		{
-			$text .= "
-			<div style='text-align:center'>
-			<br />
-			<form method='post' action='".e_SELF.$qry."'>";
-			if($pref['mail_bounce_pop3']!=''){
-				$text .= "<input type='submit' class='button' name='check_bounces' value=\"".USRLAN_143."\" />\n";
-			}
-			$text .= "&nbsp;<input type='submit' class='button' name='resend_to_all' value=\"".USRLAN_144."\" />
-			</form>
-			</div>";
-		}
-
-
-		$users = (e_QUERY != "unverified") ? $sql->db_Count("user"): $unverified;
-
-		if ($users > $amount && !$_POST['searchquery'])
-		{
-			$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
-			$text .= "<br />".$tp->parseTemplate("{NEXTPREV={$parms}}");
-		}
-
-		// Search etc. .
-
-		$text .= "</form>
-
-
-
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<div>\n";
-		$text .= "<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n
-		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
-		<br /><br /></p>\n";
-     /*
-		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
-		$text .= "<div  id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
-		<table class='forumheader3' style='width:95%'>";
-
-		$fname = array_keys($display_lan);
-		// include extended fields in the list.
-		$sql -> db_Select("user_extended_struct");
-		while($row = $sql-> db_Fetch())
-		{
-			$fname[] = "user_".$row['user_extended_struct_name'];
-		}
-		$m = 0;
-		foreach($fname as $fcol)
-		{
-			if($m == 0)
+			if ($users > $amount && !$_POST['searchquery'])
 			{
-				$text .= "<tr>";
+				$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
+				$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 			}
-			$checked = (in_array($fcol,$this->fieldpref)) ? "checked='checked'" : "";
-			$text .= "<td style='text-align:left; padding:0px'>";
-			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace("user_","",$fcol) . "</td>\n";
-			$m++;
-			if($m == 5)
+
+            if($action == "unverified")
 			{
-				$text .= "</tr>";
-				$m = 0;
+				$text .= "
+				<form method='post' action='".e_SELF.$qry."'>";
+				if($pref['mail_bounce_pop3']!=''){
+					$text .= "<input type='submit' class='button' name='check_bounces' value=\"".USRLAN_143."\" />\n";
+				}
+				$text .= "&nbsp;<input type='submit' class='button' name='resend_to_all' value=\"".USRLAN_144."\" />
+				</form>";
 			}
+
+			$text .= "</div>";
+
 		}
-     */
 
+		$text .= "</fieldset></form>
 
-		$text .= "</div>
-
-		</form>\n
 		</div>";
 
 
-
+        $emessage = &eMessage::getInstance();
 		// ======================
 		$total_cap = (isset($_POST['searchquery'])) ? $user_total : $users;
 		$caption = USRLAN_77 ."&nbsp;&nbsp;   (total: $total_cap)";
-		$ns->tablerender($caption, $text);
+		$ns->tablerender($caption,$emessage->render(). $text);
 
 	}
 
+    function show_batch_options()
+	{
+			// Non-working example.
+    	$text = "<span class='f-left' style='padding-left:15px'><img src='".e_IMAGE."generic/branchbottom.gif' alt='' />
+			<select class='tbox' name='execute_batch' onchange='this.form.submit()'>
+			<option value=''>With selected...</option>
+				<option value='ban_selected'>".USRLAN_30."</option>
+				<option value='unban_selected'>".USRLAN_33."</option>
+				<option value='activate_selected'>".USRLAN_32."</option>
+				<option value='delete_selected'>".LAN_DELETE."</option>
+   			<optgroup label='Assign Userclass..(TODO)'>";
 
+            $classes = get_userclass_list();
+            foreach($classes as $key=>$val)
+			{
+				if($key < 240)
+				{
+             		$text .= "<option value='userclass_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
+                }
+			}
+			$text .= "
+			</optgroup>
+			</select></span><span class='clear'>&nbsp;</span>";
+
+		return $text;
+	}
 
 	function show_options($action)
 	{
@@ -1200,15 +1176,17 @@ class users
 		</td></tr>
 
 		</table></form></div>";
-		$ns->tablerender(USRLAN_52, $text);
+
+        $emessage = &eMessage::getInstance();
+		$ns->tablerender(USRLAN_52,$emessage->render().$text);
 	}
 
 
 
-	function show_message($message)
+	function show_message($message,$type='')
 	{
-		global $ns;
-		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+        $emessage = &eMessage::getInstance();
+       	$emessage->add($message, E_MESSAGE_SUCCESS);
 	}
 
 
@@ -1245,56 +1223,62 @@ class users
 		</table>
 		</form>
 		</div>";
-		$ns->tablerender(USRLAN_55, $text);
+
+        $emessage = &eMessage::getInstance();
+		$ns->tablerender(USRLAN_55,$emessage->render().$text);
 	}
 
 
 
 	// Add a new user - may be passed existing data if there was an entry error on first pass
-	function add_user($user_data)
+	function user_add($user_data)
 	{
 		global $rs, $ns, $pref, $e_userclass;
 		if (!is_object($e_userclass)) $e_userclass = new user_class;
-		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF.(e_QUERY ? '?'.e_QUERY : ''), "adduserform")."
-		<table class='adminlist'>
+		$text = "<div>". $rs->form_open("post", e_SELF.(e_QUERY ? '?'.e_QUERY : ''), "adduserform")."
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+		<colgroup span='2'>
+		<col class='col-label' />
+		<col class='col-control' />
+		</colgroup>
 		<tr>
-		<td style='width:30%'>".USRLAN_61."</td>
-		<td style='width:70%'>
+		<td>".USRLAN_61."</td>
+		<td>
 		".$rs->form_text('username', 40, varset($user_data['user_name'],""), varset($pref['displayname_maxlength'],15))."
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%'>".USRLAN_128."</td>
-		<td style='width:70%'>
+		<td>".USRLAN_128."</td>
+		<td>
 		".$rs->form_text('loginname', 40, varset($user_data['user_loginname'],""), varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
 		".$rs->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],FALSE)).USRLAN_170."
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%'>".USRLAN_129."</td>
-		<td style='width:70%'>
+		<td>".USRLAN_129."</td>
+		<td>
 		".$rs->form_text("realname", 40, varset($user_data['user_login'],""), 30)."
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%'>".USRLAN_62."</td>
-		<td style='width:70%'>
+		<td>".USRLAN_62."</td>
+		<td>
 		".$rs->form_password("password1", 40, "", 20)."&nbsp;&nbsp;
 		".$rs->form_checkbox('generatepassword',1,FALSE).USRLAN_171."
 		</td>
 		</tr>
 		<tr>
-		<td style='width:30%'>".USRLAN_63."</td>
-		<td style='width:70%'>
+		<td>".USRLAN_63."</td>
+		<td>
 		".$rs->form_password("password2", 40, "", 20)."
 		</td>
 		</tr>
 		<tr>
-		<td style='width:30%'>".USRLAN_64."</td>
-		<td style='width:70%'>
+		<td>".USRLAN_64."</td>
+		<td>
 		".$rs->form_text("email", 60, varset($user_data['user_email'],""), 100)."
 		</td>
 		</tr>\n";
@@ -1318,18 +1302,17 @@ class users
 			<input class='button' type='checkbox' name='sendconfemail' value='1' />".USRLAN_181."
 			</td>
 		</tr>
-		<tr style='vertical-align:top'>
-			<td colspan='2' class='center button-bar'>
+		</table>
+		<div class='buttons-bar center'>
 			<input class='button' type='submit' name='adduser' value='".USRLAN_60."' />
 			<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-			</td>
-		</tr>
-		</table>
+		</div>
 		</form>
 		</div>
 		";
 
-		$ns->tablerender(USRLAN_59, $text);
+        $emessage = &eMessage::getInstance();
+		$ns->tablerender(USRLAN_59,$emessage->render() . $text);
 	}
 
 
@@ -1379,6 +1362,51 @@ class users
 		}
 	}
 
+	    // ------- Ban User. --------------
+	function user_ban($user_id)
+	{
+		global $sql,$user,$admin_log;
+
+			//	$sub_action = $user_id;
+			$sql->db_Select("user", "*", "user_id='".$user_id."'");
+			$row = $sql->db_Fetch();
+			if (($row['user_perms'] == "0") || ($row['user_perms'] == "0."))
+			{
+				$this->show_message(USRLAN_7);
+			}
+			else
+			{
+				if($sql->db_Update("user", "user_ban='1' WHERE user_id='".$user_id."' "))
+				{
+					$admin_log->log_event('USET_05',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_161),E_LOG_INFORMATIVE);
+					$this->show_message(USRLAN_8);
+				}
+				if(trim($row['user_ip']) == "")
+				{
+					$this->show_message(USRLAN_135);
+				}
+				else
+				{
+					if($sql->db_Count("user", "(*)", "WHERE user_ip = '{$row['user_ip']}'") > 1)
+					{	// Multiple users have same IP address
+						$this->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_136));
+					}
+					else
+					{
+						if ($e107->add_ban(6,USRLAN_149.$row['user_name'].'/'.$row['user_loginname'],$row['user_ip'],USERID))
+						{	// Successful IP ban
+							$this->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_137));
+						}
+						else
+						{	// IP address on whitelist
+							$this->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_150));
+						}
+					}
+				}
+			}
+			$action = "main";
+			if(!$sub_action){$sub_action = "user_id"; }
+	}
 
 	function resend_to_all()
 	{
