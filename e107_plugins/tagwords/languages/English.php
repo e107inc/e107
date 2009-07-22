@@ -29,7 +29,7 @@ define("LAN_TAG_17", "TagList");
 define("LAN_TAG_18", "no tagwords found for this selection");
 define("LAN_TAG_19", "choose sort");
 define("LAN_TAG_20", "choose style");
-define("LAN_TAG_21", "each tag on a seperate line");
+define("LAN_TAG_21", "each tag on a separate line");
 
 define("LAN_TAG_ADMIN_1", "preferences updated");
 
@@ -47,14 +47,14 @@ define("LAN_TAG_OPT_11", "no");
 define("LAN_TAG_OPT_12", "options tag sort");
 define("LAN_TAG_OPT_13", "options tag type");
 define("LAN_TAG_OPT_14", "options tag area");
-define("LAN_TAG_OPT_15", "maximum amount of words in menu");
+define("LAN_TAG_OPT_15", "maximum number of words in menu");
 define("LAN_TAG_OPT_16", "tagwords page");
 define("LAN_TAG_OPT_17", "tagwords menu");
 define("LAN_TAG_OPT_18", "menu caption");
 define("LAN_TAG_OPT_19", "options tag search");
-define("LAN_TAG_OPT_20", "frequence behind tagword");
+define("LAN_TAG_OPT_20", "frequency after tagword");
 define("LAN_TAG_OPT_21", "shortcode");
-define("LAN_TAG_OPT_22", "word seperator");
+define("LAN_TAG_OPT_22", "word separator");
 define("LAN_TAG_OPT_23", "areas");
 define("LAN_TAG_OPT_24", "check active areas");
 define("LAN_TAG_OPT_25", "generic");
