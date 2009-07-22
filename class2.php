@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.112 $
-* $Date: 2009-07-21 16:11:02 $
+* $Revision: 1.113 $
+* $Date: 2009-07-22 00:49:34 $
 * $Author: secretr $
 *
 */
@@ -194,8 +194,7 @@ if(!isset($ADMIN_DIRECTORY))
 //
 e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
-$e107 = e107::getInstance();
-$e107->init($e107_paths, realpath(dirname(__FILE__)));
+$e107 = e107::getInstance()->init($e107_paths, realpath(dirname(__FILE__)));
 
 $inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
 if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
@@ -242,12 +241,10 @@ else
 // Start the parser; use it to grab the full query string
 //
 
-e107_require_once(e_HANDLER.'e107Url.php');
-$e107->url = new eURL;
-
-e107_require_once(e_HANDLER.'e_parse_class.php');
-$e107->tp = new e_parse;
-$tp = &$e107->tp;
+//DEPRECATED, BC
+$e107->url = e107::getUrl(); //TODO - find & replace $e107->url
+//DEPRECATED, BC
+$tp = $e107->tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
 
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
@@ -293,30 +290,29 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
 //
 // J: MYSQL INITIALIZATION
 //
-@require_once(e_HANDLER.'traffic_class.php');
-$eTraffic=new e107_traffic; // We start traffic counting ASAP
-$eTraffic->Calibrate($eTraffic);
+$eTraffic = e107::getSingleton('e107_traffic', e_HANDLER.'traffic_class.php');
+$eTraffic->Calibrate($eTraffic); // We start traffic counting ASAP
 
 define("MPREFIX", $mySQLprefix);
 
 e107_require_once(e_HANDLER.'mysql_class.php');
 
-$e107->sql =& new db;
-$sql = &$e107->sql;
-
+$sql = $e107->sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
 $sql->db_SetErrorReporting(FALSE);
 
 $sql->db_Mark_Time('Start: SQL Connect');
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-$sql2 =& new db; // create after the initial connection.
+// create after the initial connection.
+//DEPRECATED, BC, call the method only when needed 
+$sql2 = e107::getDb('sql2');
 $sql->db_Mark_Time('Start: Prefs, misc tables');
 
 
-require_once(e_HANDLER.'admin_log_class.php');
-$e107->admin_log =& new e_admin_log;
-$admin_log = &$e107->admin_log;
+//DEPRECATED, BC, call the method only when needed
+$admin_log = $e107->admin_log = e107::getAdminLog(); //TODO - find & replace $admin_log, $e107->admin_log
 
-if ($merror === 'e1') {
+if ($merror === 'e1') 
+{
 	message_handler('CRITICAL_ERROR', 6, ': generic, ', 'class2.php');
 	exit;
 }
@@ -341,13 +337,13 @@ e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
 
 e107_require_once(e_HANDLER.'cache_handler.php');
-e107_require_once(e_HANDLER.'arraystorage_class.php');
-$e107->arrayStorage =& new ArrayData();
-$eArrayStorage = &$e107->arrayStorage;
 
-e107_require_once(e_HANDLER.'event_class.php');
-$e107->e_event = new e107_event;
-$e_event = &$e107->e_event;
+//DEPRECATED, BC, call the method only when needed
+e107_require_once(e_HANDLER.'arraystorage_class.php');
+$eArrayStorage = $e107->arrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorage, $e107->arrayStorage
+
+//DEPRECATED, BC, call the method only when needed
+$e_event = $e107->e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
 
 $PrefCache = ecache::retrieve_sys('SitePrefs', 24 * 60, true);
 if(!$PrefCache)
@@ -647,17 +643,14 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 //
 $sql -> db_Mark_Time('Start: Misc resources. Online user tracking, cache');
 
-// cache class
-$e107->ecache = new ecache;
-$e107cache = &$e107->ecache;
+//DEPRECATED, BC, call the method only when needed
+$e107cache = $e107->ecache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
 
-e107_require_once(e_HANDLER.'override_class.php');
-$e107->override = new override;
-$override = &$e107->override;
+//DEPRECATED, BC, call the method only when needed
+$override = $e107->override = e107::getSingleton('override', e_HANDLER.'override_class.php'); //TODO - find & replace $override, $e107->override
 
-e107_require_once(e_HANDLER.'userclass_class.php');
-$e107->user_class = new user_class;
-$e_userclass = &$e107->user_class;
+//DEPRECATED, BC, call the method only when needed
+$e_userclass = $e107->user_class = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
 
 if(isset($pref['notify']) && $pref['notify'] == true)
 {
@@ -794,15 +787,15 @@ if (!class_exists('e107table'))
 			# - return                                null
 			# - scope                                        public
 			*/
-			global $override;
+			$override_tablerender = e107::getSingleton('override', e_HANDLER.'override_class.php')->override_check('tablerender');
 
-			if ($override_tablerender = $override->override_check('tablerender'))
+			if ($override_tablerender)
 			{
 				$result = call_user_func($override_tablerender, $caption, $text, $mode, $return);
 
 				if ($result == 'return')
 				{
-					return;
+					return '';
 				}
 				extract($result);
 			}
@@ -818,15 +811,15 @@ if (!class_exists('e107table'))
 			else
 			{
 				tablestyle($caption, $text, $mode);
+				return '';
 			}
 		}
 	}
 }
 //#############################################################
 
-
-$e107->ns = new e107table;
-$ns = &$e107->ns;
+//DEPRECATED, BC, call the method only when needed
+$ns = $e107->ns = e107::getRender(); //TODO - find & replace $ns, $e107->ns
 
 $e107->ban();
 
@@ -849,7 +842,7 @@ if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SEL
 {
 	if(!isset($_E107['allow_guest']))
 	{
-		if($_POST['ajax_used'] || $_GET['ajax_used'] || e_PAGE == 'e_ajax.php' || e_PAGE == 'e_js.php' || e_PAGE == 'e_jslib.php')
+		if(e_AJAX_REQUEST || e_PAGE == 'e_ajax.php' || e_PAGE == 'e_js.php' || e_PAGE == 'e_jslib.php')
 		{
         	exit;
 		}
@@ -1173,6 +1166,7 @@ else
 	define('e_REFERER_SELF', FALSE);
 }
 
+//BC, DEPRECATED - use e107::getDateConvert()
 if (!class_exists('convert'))
 {
 	require_once(e_HANDLER.'date_handler.php');
@@ -1425,16 +1419,15 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//DEPRECATED - use e107::setRegistry()
 function cachevars($id, $var)
 {
-	global $cachevar;
-	$cachevar[$id]=$var;
+	e107::setRegistry('core/cachedvars/'.$id, $var);
 }
-
+//DEPRECATED - use e107::getRegistry()
 function getcachedvars($id)
 {
-	global $cachevar;
-	return (isset($cachevar[$id]) ? $cachevar[$id] : false);
+	e107::getRegistry('core/cachedvars/'.$id, false);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//

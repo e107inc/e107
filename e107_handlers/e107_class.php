@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-07-21 16:11:02 $
+ * $Revision: 1.30 $
+ * $Date: 2009-07-22 00:49:35 $
  * $Author: secretr $
 */
 
@@ -178,18 +178,19 @@ class e107
 	 *
 	 * @param string $class_name
 	 * @param string $path optional script path
+	 * @param string $regpath additional registry path
 	 * @return Object
 	 */
-	public static function getSingleton($class_name, $path = null)
+	public static function getSingleton($class_name, $path = null, $regpath = '')
 	{
-		$id = 'core/e107/singleton/'.$class_name;
+		$id = 'core/e107/singleton/'.$class_name.$regpath;
 		if(!e107::getRegistry($id))
 		{
-			if(null !== $path)
+			if(null !== $path && !class_exists($class_name))
 			{
-				require_once($path); //no existence/security checks here!
+				e107_require_once($path); //no existence/security checks here!
 			}
-			if(class_exists($class_name))
+			if(class_exists($class_name, false))
 			{
 				e107::setRegistry($id, new $class_name());
 			}
@@ -209,11 +210,11 @@ class e107
 	 */
 	public static function getObject($class_name, $arguments = null, $path = null)
 	{
-		if(null !== $path)
+		if(null !== $path && !class_exists($class_name))
 		{
-			require_once($path); //no existence/security checks here!
+			e107_require_once($path); //no existence/security checks here!
 		}
-		if(class_exists($class_name))
+		if(class_exists($class_name, false))
 		{
 			if(null !== $arguments) return $class_name($arguments);
 			return $class_name();
@@ -232,7 +233,99 @@ class e107
 	{
 		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php');
 	}
+	
+	/**
+	 * Retrieve DB singleton object based on the 
+	 * $instance_id
+	 *
+	 * @param string $instance_id
+	 * @return db
+	 */
+	public static function getDb($instance_id = '')
+	{
+		return self::getSingleton('db', e_HANDLER.'mysql_class.php', $instance_id);
+	}
+	
+	/**
+	 * Retrieve event singleton object
+	 *
+	 * @return ecache
+	 */
+	public static function getCache()
+	{
+		return self::getSingleton('ecache', e_HANDLER.'cache_handler.php');
+	}
+	
+	/**
+	 * Retrieve user class singleton object
+	 *
+	 * @return user_class
+	 */
+	public static function getUserClass()
+	{
+		return self::getSingleton('user_class', e_HANDLER.'userclass_class.php');
+	}
+	
+	/**
+	 * Retrieve render singleton object
+	 *
+	 * @return e107table
+	 */
+	public static function getRender()
+	{
+		return self::getSingleton('e107table');
+	}
+	
+	/**
+	 * Retrieve event singleton object
+	 *
+	 * @return e107_event
+	 */
+	public static function getEvent()
+	{
+		return self::getSingleton('e107_event', e_HANDLER.'event_class.php');
+	}
+	
+	/**
+	 * Retrieve array storage singleton object
+	 *
+	 * @return ArrayData
+	 */
+	public static function getArrayStorage()
+	{
+		return self::getSingleton('ArrayData', e_HANDLER.'arraystorage_class.php');
+	}
+	
+	/**
+	 * Retrieve URL singleton object
+	 *
+	 * @return eURL
+	 */
+	public static function getUrl()
+	{
+		return self::getSingleton('eURL', e_HANDLER.'e107Url.php');
+	}
+	
+	/**
+	 * Retrieve admin log singleton object
+	 *
+	 * @return e_admin_log
+	 */
+	public static function getAdminLog()
+	{
+		return self::getSingleton('e_admin_log', e_HANDLER.'admin_log_class.php');
+	}
 
+	/**
+	 * Retrieve date handler singleton object
+	 *
+	 * @return convert
+	 */
+	public static function getDateConvert()
+	{
+		return self::getSingleton('convert', e_HANDLER.'date_handler.php');
+	}
+	
 	/**
 	 * @return e107
 	 */
