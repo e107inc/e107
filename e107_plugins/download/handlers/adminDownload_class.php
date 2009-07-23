@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-07-23 15:23:19 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2009-07-23 23:03:49 $
+|     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
 */
@@ -89,7 +89,7 @@ class adminDownload extends download
             <div id='download_search'>
             <fieldset>
                <legend class='e-hideme'>".DOWLAN_194."</legend>
-               <table class='adminform'>
+               <table class='adminlist'>
                   <tr>
                      <td>".DOWLAN_198." ".$frm->text('download-search-text', $this->searchField, 50, array('size'=>50, 'other' => "onkeyup=\"{$jsfunc}\""))."&nbsp;<a href='#download_search#download_advanced_search' class='e-swapit'>Switch to Advanced-Search</a></td>
                   </tr>
@@ -660,7 +660,7 @@ class adminDownload extends download
          <div style='text-align:center'>
             <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
                <fieldset id='download-create'>
-                  <table style='".ADMIN_WIDTH."' class='fborder'>
+                  <table style='".ADMIN_WIDTH."' class='adminlist'>
                      <tr>
                         <td style='width:20%;'>".DOWLAN_13."</td>
                         <td style='width:80%'>
@@ -708,7 +708,7 @@ class adminDownload extends download
                </table>
             </fieldset>
             <fieldset id='download-edit-external'>
-               <table style='".ADMIN_WIDTH."' class='fborder'>
+               <table style='".ADMIN_WIDTH."' class='adminlist'>
                   <tr>
                        <td style='width:20%;'>".DOWLAN_149."</td>
                        <td style='width:80%;'>
@@ -724,7 +724,7 @@ class adminDownload extends download
                </table>
             </fieldset>
             <fieldset id='download-edit-mirror'>
-               <table style='".ADMIN_WIDTH."' class='fborder'>
+               <table style='".ADMIN_WIDTH."' class='adminlist'>
                   <tr>
                      <td style='width:20%'><span title='".DOWLAN_129."' style='cursor:help'>".DOWLAN_128."</span></td>
                      <td style='width:80%'>";
@@ -788,7 +788,7 @@ class adminDownload extends download
                </table>
             </fieldset>
             <fieldset id='download-edit-therest'>
-               <table style='".ADMIN_WIDTH."' class='fborder'>
+               <table style='".ADMIN_WIDTH."' class='adminlist'>
                   <tr>
                      <td style='width:20%'>".DOWLAN_11."</td>
                      <td style='width:80%'>";
@@ -1518,16 +1518,16 @@ class adminDownload extends download
    	$text = "
 		   <div class='admintabs' id='tab-container'>
 			   <ul class='e-tabs e-hideme' id='download-option-tabs'>
-				   <li id='tab-download'><a href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
-				   <li id='tab-download'><a href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
-				   <li id='tab-download'><a href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
-				   <li id='tab-upload'><a href='#core-download-upload'>".LAN_DL_UPLOAD."</a></li>
+				   <li id='tab-download1'><a href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
+				   <li id='tab-download2'><a href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
+				   <li id='tab-download3'><a href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
+				   <li id='tab-download4'><a href='#core-download-download4'>".LAN_DL_UPLOAD."</a></li>
 			   </ul>
 
         		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
    				<fieldset id='core-download-download1'>
-            	   <div style='text-align:center'>
-            		   <table style='".ADMIN_WIDTH."' class='fborder'>
+            	   <div>
+            		   <table style='".ADMIN_WIDTH."' class='adminlist'>
             		      <colgroup>
             		         <col style='width:30%'/>
             		         <col style='width:70%'/>
@@ -1535,7 +1535,7 @@ class adminDownload extends download
             		      <tr>
             		         <td>".LAN_DL_USE_PHP."</td>
             		         <td>"
-            		            .$frm->checkbox('download_subsub', '1', $pref['download_php'])
+            		            .$frm->checkbox('download_php', '1', $pref['download_php'])
             		            .$frm->label(LAN_DL_USE_PHP_INFO, 'download_php', '1')
             		         ."</td>
             		      </tr>
@@ -1563,8 +1563,7 @@ class adminDownload extends download
             		      </tr>
             		      <tr>
             		         <td>".LAN_ORDER."</td>
-               		         <td>".$frm->selectbox('download_sort', $sort_options, $pref['download_sort'])."</td>
-            		         </td>
+             		         <td>".$frm->selectbox('download_sort', $sort_options, $pref['download_sort'])."</td>
             		      </tr>
             		      <tr>
                		      <td>".DOWLAN_160."</td>
@@ -1585,8 +1584,8 @@ class adminDownload extends download
             		</div>
 		   		</fieldset>
    				<fieldset id='core-download-download2'>
-            	   <div style='text-align:center'>
-            		   <table style='".ADMIN_WIDTH."' class='fborder'>
+            	   <div>
+            		   <table style='".ADMIN_WIDTH."' class='adminlist'>
             		      <colgroup>
             		         <col style='width:30%'/>
             		         <col style='width:70%'/>
@@ -1603,8 +1602,8 @@ class adminDownload extends download
             		</div>
 		   		</fieldset>
    				<fieldset id='core-download-download3'>
-            	   <div style='text-align:center'>
-            		   <table style='".ADMIN_WIDTH."' class='fborder'>
+            	   <div>
+            		   <table style='".ADMIN_WIDTH."' class='adminlist'>
             		      <colgroup>
             		         <col style='width:30%'/>
             		         <col style='width:70%'/>
@@ -1624,13 +1623,17 @@ class adminDownload extends download
             		   </table>
             		</div>
 		   		</fieldset>
-   				<fieldset id='core-download-upload'>
-            	   <div style='text-align:center'>
-            		   <table style='".ADMIN_WIDTH."' class='fborder'>
+   				<fieldset id='core-download-download4'>
+            	   <div>
+            		   <table style='".ADMIN_WIDTH."' class='adminlist'>
             		      <colgroup>
             		         <col style='width:30%'/>
             		         <col style='width:70%'/>
             		      </colgroup>
+            		      <tr>
+            		         <td>".DOWLAN_XXX."</td>
+            		         <td>//TODO</td>
+            		      </tr>
             		   </table>
             		</div>
 		   		</fieldset>
@@ -1638,6 +1641,7 @@ class adminDownload extends download
             	   <input class='button' type='submit' name='updateoptions' value='".DOWLAN_64."'/>
                </div>
         		</form>
+        	</div>
       ";
    	$ns->tablerender(LAN_DL_OPTIONS, $text);
    }
@@ -1694,7 +1698,7 @@ class adminDownload extends download
 
          $text = "<div style='text-align:center'>
          <form method='post' action='".e_SELF."?".e_QUERY."'>
-         <table style='".ADMIN_WIDTH."' class='fborder'>
+         <table style='".ADMIN_WIDTH."' class='adminlist'>
          <tr>
          <td style='width: 10%; text-align: center;' class='forumheader'>ID</td>
          <td style='width: 30%;' class='forumheader'>".DOWLAN_12."</td>
@@ -1746,7 +1750,7 @@ class adminDownload extends download
 
       $text = "<div style='text-align:center'>
       <form method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>\n
-      <table style='".ADMIN_WIDTH."' class='fborder'>
+      <table style='".ADMIN_WIDTH."' class='adminlist'>
 
       <tr>
       <td style='width: 30%;'>".DOWLAN_12."</td>
