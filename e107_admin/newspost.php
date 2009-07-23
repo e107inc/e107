@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-07-18 10:17:56 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.46 $
+ * $Date: 2009-07-23 08:01:48 $
+ * $Author: secretr $
 */
 require_once("../class2.php");
 
@@ -107,7 +107,7 @@ function headerjs()
 		$ret .= "
 			<script type='text/javascript'>
 				document.observe('dom:loaded', function(){
-					\$('newsposts').observe('change', function(event) { console.log(event.element().readAttribute('tabindex'));
+					\$('newsposts').observe('change', function(event) { 
 						new e107Ajax.Updater(
 							'newsposts-archive-cont',
 							'".e_SELF."?pref_archnum.' + (event.element().selectedIndex + 1) + '.' + event.element().readAttribute('tabindex'),
