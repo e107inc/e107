@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.17 2009-07-22 12:00:51 marj_nl_fr Exp $
+* $Id: admin_shortcodes_class.php,v 1.18 2009-07-23 10:00:35 secretr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -561,7 +561,7 @@ class admin_shortcodes
 					if (is_readable(e_PLUGIN.$plugin_path.'/plugin.xml'))
 					{
 						$readFile = $xml->loadXMLfile(e_PLUGIN.$plugin_path.'/plugin.xml', true, true);
-						loadLanFiles($plugin_path, 'admin');
+						e107::loadLanFiles($plugin_path, 'admin');
 						$eplug_caption 	= $tp->toHTML($readFile['@attributes']['name'], FALSE, 'defs, emotes_off');
 						$eplug_conffile = $readFile['administration']['configFile'];
 					}
@@ -1179,7 +1179,7 @@ class admin_shortcodes
 
 
 					$plug_vars = $plug->plug_vars;
-					loadLanFiles($row['plugin_path'], 'admin');
+					e107::loadLanFiles($row['plugin_path'], 'admin');
 					if($plug_vars['administration']['configFile'])
 					{
 						$plugpath = varset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/';
@@ -1202,6 +1202,7 @@ class admin_shortcodes
 						if($pref['admin_slidedown_subs'] && varsettrue($plug_vars['administration']['subMenuItem']))
 						{
 							$tmp[$id]['sub_class'] = 'sub';
+							$tmp[$id]['sort'] = false;
 							foreach ($plug_vars['administration']['subMenuItem'] as $subkey => $plugsub)
 							{
 								$subid = $id.'-'.$subkey;
@@ -1256,18 +1257,21 @@ class admin_shortcodes
        //     print_a($menu_vars);
 		// ------------------------------------------------------------------
 
-		$menu_vars['home']['text'] = ADLAN_53;
-		$menu_vars['home']['link'] = e_BASE.'index.php';
-		$menu_vars['home']['image'] = "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
-		$menu_vars['home']['image_src'] = ADLAN_151;
-		$menu_vars['home']['perm'] = '';
-
-		$menu_vars['logout']['text'] = ADLAN_46;
-		$menu_vars['logout']['link'] = e_ADMIN_ABS.'admin.php?logout';
-		$menu_vars['logout']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-		$menu_vars['logout']['image_src'] = ADLAN_46;
-		$menu_vars['logout']['perm'] = '';
-
+		//added option to disable leave/logout (ll) - more flexibility for theme developers 
+		if(!varsettrue($parms['disable_ll']))
+		{
+			$menu_vars['home']['text'] = ADLAN_53;
+			$menu_vars['home']['link'] = e_BASE.'index.php';
+			$menu_vars['home']['image'] = "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['home']['image_src'] = ADLAN_151;
+			$menu_vars['home']['perm'] = '';
+	
+			$menu_vars['logout']['text'] = ADLAN_46;
+			$menu_vars['logout']['link'] = e_ADMIN_ABS.'admin.php?logout';
+			$menu_vars['logout']['image'] = "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['logout']['image_src'] = ADLAN_46;
+			$menu_vars['logout']['perm'] = '';
+		}
 
 		return e_admin_menu('', '', $menu_vars, $$tmpl, false, false);
 	}
