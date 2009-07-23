@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-07-23 23:03:49 $
+|     $Revision: 1.14 $
+|     $Date: 2009-07-23 23:40:57 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -657,7 +657,7 @@ class adminDownload extends download
             <li id='tab-external'><a href='#download-edit-external'>".DOWLAN_176."</a></li>
             <li id='tab-mirror'><a href='#download-edit-mirror'>".DOWLAN_128."</a></li>
          </ul>
-         <div style='text-align:center'>
+         <div>
             <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
                <fieldset id='download-create'>
                   <table style='".ADMIN_WIDTH."' class='adminlist'>
@@ -1437,9 +1437,9 @@ class adminDownload extends download
       extract($preset);
 
       $frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
-      $text = "<div style='text-align:center'>
+      $text = "<div>
          <form method='post' action='{$frm_action}' id='dlform'>
- 		<table cellpadding='0' cellspacing='0' class='adminform'>
+ 		<table cellpadding='0' cellspacing='0' class='adminlist'>
 	 		<colgroup span='2'>
 	 			<col class='col-label' />
 	 			<col class='col-control' />
@@ -1696,7 +1696,7 @@ class adminDownload extends download
       else
       {
 
-         $text = "<div style='text-align:center'>
+         $text = "<div>
          <form method='post' action='".e_SELF."?".e_QUERY."'>
          <table style='".ADMIN_WIDTH."' class='adminlist'>
          <tr>
@@ -1748,7 +1748,7 @@ class adminDownload extends download
          $edit = FALSE;
       }
 
-      $text = "<div style='text-align:center'>
+      $text = "<div>
       <form method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>\n
       <table style='".ADMIN_WIDTH."' class='adminlist'>
 
