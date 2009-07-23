@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.114 $
-* $Date: 2009-07-22 14:32:51 $
+* $Revision: 1.115 $
+* $Date: 2009-07-23 15:29:07 $
 * $Author: secretr $
 *
 */
@@ -241,10 +241,11 @@ else
 // Start the parser; use it to grab the full query string
 //
 
-//DEPRECATED, BC
-$e107->url = e107::getUrl(); //TODO - find & replace $e107->url
-//DEPRECATED, BC
-$tp = $e107->tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
+//DEPRECATED, BC 
+//$e107->url = e107::getUrl(); - caught by __get()
+//TODO - find & replace $e107->url
+//DEPRECATED, BC, $e107->tp caught by __get()
+$tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
 
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
@@ -297,19 +298,22 @@ define("MPREFIX", $mySQLprefix);
 
 e107_require_once(e_HANDLER.'mysql_class.php');
 
-$sql = $e107->sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
+//DEPRECATED, BC, $e107->sql caught by __get()
+$sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
 $sql->db_SetErrorReporting(FALSE);
 
 $sql->db_Mark_Time('Start: SQL Connect');
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+
 // create after the initial connection.
 //DEPRECATED, BC, call the method only when needed 
-$sql2 = e107::getDb('sql2');
+$sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
+
 $sql->db_Mark_Time('Start: Prefs, misc tables');
 
 
-//DEPRECATED, BC, call the method only when needed
-$admin_log = $e107->admin_log = e107::getAdminLog(); //TODO - find & replace $admin_log, $e107->admin_log
+//DEPRECATED, BC, call the method only when needed, $e107->admin_log caught by __get()
+$admin_log = e107::getAdminLog(); //TODO - find & replace $admin_log, $e107->admin_log
 
 if ($merror === 'e1') 
 {
@@ -338,12 +342,11 @@ $sysprefs = new prefs;
 
 e107_require_once(e_HANDLER.'cache_handler.php');
 
-//DEPRECATED, BC, call the method only when needed
-e107_require_once(e_HANDLER.'arraystorage_class.php');
-$eArrayStorage = $e107->arrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorage, $e107->arrayStorage
+//DEPRECATED, BC, call the method only when needed, $e107->arrayStorage caught by __get()
+$eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorage, $e107->arrayStorage
 
-//DEPRECATED, BC, call the method only when needed
-$e_event = $e107->e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
+//DEPRECATED, BC, call the method only when needed, $e107->e_event caught by __get()
+$e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
 
 $PrefCache = ecache::retrieve_sys('SitePrefs', 24 * 60, true);
 if(!$PrefCache)
@@ -643,15 +646,16 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 //
 $sql -> db_Mark_Time('Start: Misc resources. Online user tracking, cache');
 
-//DEPRECATED, BC, call the method only when needed
-$e107cache = $e107->ecache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
+//DEPRECATED, BC, call the method only when needed, $e107->ecache caught by __get()
+$e107cache = e107::getCache(); //TODO - find & replace $e107cache, $e107->ecache
 
-//DEPRECATED, BC, call the method only when needed
-$override = $e107->override = e107::getSingleton('override', e_HANDLER.'override_class.php'); //TODO - find & replace $override, $e107->override
+//DEPRECATED, BC, call the method only when needed, $e107->override caught by __get()
+$override = e107::getSingleton('override', e_HANDLER.'override_class.php'); //TODO - find & replace $override, $e107->override
 
-//DEPRECATED, BC, call the method only when needed
-$e_userclass = $e107->user_class = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
+//DEPRECATED, BC, call the method only when needed, $e107->user_class caught by __get()
+$e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
 
+//TODO - move the check to e107::notify()? What's the idea behind $pref['notify']?
 if(isset($pref['notify']) && $pref['notify'] == true)
 {
 	e107_require_once(e_HANDLER.'notify_class.php');
@@ -818,8 +822,8 @@ if (!class_exists('e107table'))
 }
 //#############################################################
 
-//DEPRECATED, BC, call the method only when needed
-$ns = $e107->ns = e107::getRender(); //TODO - find & replace $ns, $e107->ns
+//DEPRECATED, BC, call the method only when needed, $e107->ns caught by __get()
+$ns = e107::getRender(); //TODO - find & replace $ns, $e107->ns
 
 $e107->ban();
 
@@ -1108,7 +1112,7 @@ else
 //----------------------------
 // ********* This is probably a bodge! Work out what to do properly. Has to be done when $pref valid
 //FIXED - undefined $register_sc
-$tp->sch_load();
+//$tp->sch_load(); - will be auto-initialized by first $tp->e_sc call - see e_parse->__get()
 
 $exclude_lan = array('lan_signup.php');  // required for multi-language.
 
@@ -1639,10 +1643,7 @@ function init_session()
 $sql->db_Mark_Time('Start: Go online');
 if(!isset($_E107['no_online']) && varset($pref['track_online']))
 {
-	e107_require_once(e_HANDLER."online_class.php");
-	$e107->e_online = new e_online;
-	$e_online = &$e107->e_online;
-	$e_online->online($pref['track_online'], $pref['flood_protect']);
+	e107::getOnline()->online($pref['track_online'], $pref['flood_protect']);
 }
 
 function cookie($name, $value, $expire=0, $path = '/', $domain = '', $secure = 0)

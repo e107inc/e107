@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-07-22 14:32:50 $
+ * $Revision: 1.32 $
+ * $Date: 2009-07-23 15:29:07 $
  * $Author: secretr $
 */
 
@@ -22,15 +22,41 @@ if (!defined('e107_INIT')) { exit; }
  */
 class e107
 {
-	var $server_path;
-	var $e107_dirs;
-	var $http_path;
-	var $https_path;
-	var $base_path;
-	var $file_path;
-	var $relative_base_path;
-	var $_ip_cache;
-	var $_host_name_cache;
+	public $server_path;
+	public $e107_dirs;
+	public $http_path;
+	public $https_path;
+	public $base_path;
+	public $file_path;
+	public $relative_base_path;
+	public $_ip_cache;
+	public $_host_name_cache;
+	
+	public $site_theme;
+	
+	/**
+	 * Used for runtime caching of user extended struct
+	 *
+	 * @var array
+	 * @see get_user_data()
+	 */
+	public $extended_struct;
+	
+	/**
+	 * User login name
+	 *
+	 * @var string
+	 * @see init_session()
+	 */
+	public $currentUser = '';
+	
+	/**
+	 * Run once load core shortcodes
+	 * while initialize SC parser
+	 *
+	 * @var boolen
+	 */
+	protected static $_sc_core_loaded = false;
 	
 	/**
 	 * Singleton instance
@@ -46,10 +72,6 @@ class e107
 	 * @var array
 	 */
 	private static $_registry = array();
-	
-	var $sql;
-	var $tp;
-	var $url;
 
 	
 	/**
@@ -235,6 +257,22 @@ class e107
 	}
 	
 	/**
+	 * Retrieve sc parser singleton object
+	 *
+	 * @return e_shortcode
+	 */
+	public static function getScParser()
+	{
+		$sc = self::getSingleton('e_shortcode', e_HANDLER.'shortcode_handler.php'); 
+		if(!self::$_sc_core_loaded)
+		{
+			$sc->loadCoreShortcodes();
+			self::$_sc_core_loaded = true;
+		} 
+		return $sc;
+	}
+	
+	/**
 	 * Retrieve DB singleton object based on the 
 	 * $instance_id
 	 *
@@ -339,6 +377,26 @@ class e107
 	public static function getDateConvert()
 	{
 		return self::getSingleton('convert', e_HANDLER.'date_handler.php');
+	}
+	
+	/**
+	 * Retrieve notify handler singleton object
+	 *
+	 * @return notify
+	 */
+	public static function getNotify()
+	{
+		return self::getSingleton('notify', e_HANDLER.'notify_class.php');
+	}
+	
+	/**
+	 * Retrieve online users handler singleton object
+	 *
+	 * @return e_online
+	 */
+	public static function getOnline()
+	{
+		return self::getSingleton('e_online', e_HANDLER.'online_class.php');
 	}
 	
 	/**
@@ -1138,5 +1196,66 @@ class e107
 		return (null !== $separator ? implode($separator, $ret) : $ret);
 	}
 
+	public function __get($name)
+	{
+		switch ($name) 
+		{
+			case 'tp':
+				$ret = e107::getParser();
+			break;
+			
+			case 'sql':
+				$ret = e107::getDb();
+			break;
+			
+			case 'ecache':
+				$ret = e107::getCache();
+			break;
+			
+			case 'arrayStorage':
+				$ret = e107::getArrayStorage();
+			break;
+			
+			case 'e_event':
+				$ret = e107::getEvent();
+			break;
+			
+			case 'ns':
+				$ret = e107::getRender();
+			break;
+			
+			case 'url':
+				$ret = e107::getUrl();
+			break;
+
+			case 'admin_log':
+				$ret = e107::getAdminLog();
+			break;
+
+			case 'override':
+				$ret = e107::getSingleton('override', e_HANDLER.'override_class.php');
+			break;
+			
+			case 'notify':
+				$ret = e107::getNotify();
+			break;
+			
+			case 'e_online':
+				$ret = e107::getOnline();
+			break;
+			
+			case 'user_class':
+				$ret = e107::getUserClass();
+			break;
+			
+			default:
+				trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
+				return null; 
+			break;
+		}
+		
+		$this->$name = $ret;
+		return $ret;
+	}
 }
 ?>

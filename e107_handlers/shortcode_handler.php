@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.27 $
-| $Date: 2009-07-21 06:31:23 $
-| $Author: e107coders $
+| $Revision: 1.28 $
+| $Date: 2009-07-23 15:29:07 $
+| $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,9 +22,8 @@ if (!defined('e107_INIT')) { exit; }
 
 function register_shortcode($classFunc, $codes, $path='', $force=false)
 {
-	$e107 = e107::getInstance();
-	$sc = &$e107->tp->e_sc;
-
+	$sc = e107::getScParser();
+	
 	//If codes is set to true, let's go get a list of shortcode methods
 	if(is_bool($codes) && $codes === true)
 	{
