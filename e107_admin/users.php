@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.44 $
-* $Date: 2009-07-23 06:55:39 $
+* $Revision: 1.45 $
+* $Date: 2009-07-23 15:21:41 $
 * $Author: e107coders $
 *
 */
@@ -978,7 +978,7 @@ class users
 
 	function show_batch_options()
 	{
-	// Non-working example.
+	
 		$text = "<span class='f-left' style='padding-left:15px'><img src='".e_IMAGE."generic/branchbottom.gif' alt='' />
 			<select class='tbox' name='execute_batch' onchange='this.form.submit()'>
 			<option value=''>With selected...</option>
@@ -1360,10 +1360,9 @@ class users
 		{
 			$query = 'SELECT * FROM `#user` WHERE user_ban=2';
 		}
-		if (!is_object($sql3))
-		{
-			$sql3 = new db;
-		}
+
+		$sql3 = e107::getDb('sql3');
+
 		$sql3->db_Select_gen($query);
 		while ($row = $sql3->db_Fetch())
 		{

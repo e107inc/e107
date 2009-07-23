@@ -9,9 +9,9 @@
  * Administration Area Authorization
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-07-18 10:17:56 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.10 $
+ * $Date: 2009-07-23 15:21:41 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -200,7 +200,7 @@ class auth
 		# - scope                                        public
 		*/
 		global $tp, $pref;
-		$sql_auth = new db;
+		$sql_auth = e107::getDb('sql_auth');  
 		$reason = '';
 		$user_info = new UserHandler;
 

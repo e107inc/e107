@@ -9,9 +9,9 @@
  * Administrators Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-04-27 08:11:04 $
- * $Author: secretr $
+ * $Revision: 1.12 $
+ * $Date: 2009-07-23 15:21:41 $
+ * $Author: e107coders $
  *
 */
 
@@ -366,7 +366,7 @@ function renderperms($perm, $id)
 	{
    		return ADMSLAN_58;
 	}
-    $sql2 = new db;
+    $sql2 = e107::getDb('sql2');
 	$lanlist = explode(",",e_LANLIST);
 
 

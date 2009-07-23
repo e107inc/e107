@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-07-17 07:53:13 $
+ * $Revision: 1.26 $
+ * $Date: 2009-07-23 15:21:41 $
  * $Author: e107coders $
  *
 */
@@ -78,10 +78,8 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 {
 	$subtype = $_POST['sublink_type'];
 	$sublink = $linkpost->sublink_list($subtype);
-	if(!is_object($sql2))
-	{
-		$sql2 = new db();
-	}
+
+	$sql2 = e107::getDb('sql2');
 
 	$sql->db_Select("links", "*", "link_id = '".$_POST['sublink_parent']."'");
 	$par = $sql->db_Fetch();

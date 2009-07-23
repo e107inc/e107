@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-12 02:29:23 $
+|     $Revision: 1.12 $
+|     $Date: 2009-07-23 15:21:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -45,15 +45,19 @@ global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $myS
 // A Ensure sql and traffic objects exist
 //
 
+/*
 if(!is_object($sql)){
 	// reinstigate db connection if another connection from third-party script closed it ...
 	$sql = new db;
 	$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
-if (!is_object($eTraffic)) {
-	$eTraffic = new e107_traffic;
-	$eTraffic->Bump('Lost Traffic Counters');
-}
+*/
+
+$sql = e107::getDb();
+
+$eTraffic = e107::getSingleton('e107_traffic', e_HANDLER.'traffic_class.php');
+$eTraffic->Bump('Lost Traffic Counters');
+
 
 if(varset($e107_popup)!=1){
 	//
