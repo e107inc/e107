@@ -8,8 +8,8 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.16 $
- * $Date: 2009-04-27 10:47:06 $
+ * $Revision: 1.17 $
+ * $Date: 2009-07-23 09:02:10 $
  * $Author: secretr $
  * 
 */
@@ -56,7 +56,8 @@ e107Admin.Helper = {
 		});
 		element.select('button.delete', 'input.delete[type=image]', 'a.delete').invoke('observe', 'click', function(e) {
 			var el = e.findElement('a.delete'); 
-			if(!el) el = e.element();
+			if(!el) el = e.findElement('input.delete');
+			if(!el) el = e.findElement('button.delete');
 			if(!el) return; 
 			if(el.hasClassName('no-confirm') || (el.readAttribute('rel') &&  el.readAttribute('rel').toLowerCase() == 'no-confirm')) return;
 			var msg = el.readAttribute('delmsg') || e107.getModLan('delete_confirm');
@@ -135,7 +136,7 @@ e107Admin.Helper = {
 		if(form) {
 			if(event.element().readAttribute('value').startsWith('jstarget:')) {
 				selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
-			}
+			} 
 			form.toggleChecked(event.element().checked, 'name^=' + selector);
 		}
 	},
@@ -164,13 +165,13 @@ e107Admin.Helper = {
 	 * 
 	 */
 	allChecked: function(event) {
-		event.stop();
+		//event.stop();
 		var form = event.element().up('form'), selector = 'multiaction';
 
 		if(form) {
 			if(event.element().readAttribute('value').startsWith('jstarget:')) {
 				selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
-			}
+			} 
 			form.toggleChecked(true, 'name^=' + selector);
 		}
 	},
