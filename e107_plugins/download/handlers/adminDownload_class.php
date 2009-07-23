@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-21 16:05:11 $
+|     $Revision: 1.12 $
+|     $Date: 2009-07-23 15:23:19 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -443,7 +443,7 @@ class adminDownload extends download
                   </tr>";
          }
          $text .= "</tbody></table>";
-         $text .= "</form>";
+    //     $text .= "";
       }
       else
       {   // 'No downloads yet'
@@ -459,27 +459,76 @@ class adminDownload extends download
 		 $tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
       }
 
-      $text .= "</fieldset>";
+      $text .= "</form></fieldset>";
+
       return $text;
    }
 
 // ---------------------------------------------------------------------------
     function batch_options()
 	{
-    	$text = "<span class='f-left' style='padding-left:15px'><img src='".e_IMAGE."generic/branchbottom.gif' alt='' />
-			<select class='tbox'>
-			<option value='delete'>".LAN_DELETE."</option>
-				<optgroup label='Move to..'>
-				<option value='cat_1'>Category 1</option>
-				<option value='cat_2'>Category 2</option>
-				<option value='cat_3'>Category 3</option>
-			</optgroup>
-				<optgroup label='Change Userclass to..'>
-				<option value='0'>Everyone</option>
-			</optgroup>
-			</select></span>";
+        $text = "<span class='f-left' style='padding-left:15px'><img src='".e_IMAGE."generic/branchbottom.gif' alt='' />
+			<select class='tbox' name='execute_batch' onchange='this.form.submit()'>
+			<option value=''>With selected...</option>";
 
+			$text .= "<option value='delete_selected'>".LAN_DELETE."</option>";
+
+			$text .= "
+   			<optgroup label='Assign Userclass..'>
+			";
+		$classes = get_userclass_list();
+		foreach ($classes as $key => $val)
+		{
+			$text .= "<option value='userclass_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
+		}
+		$text .= "
+			</optgroup>
+        <optgroup label='Assign Visibility..'>
+			";
+		$classes = get_userclass_list();
+		foreach ($classes as $key => $val)
+		{
+			$text .= "<option value='visibility_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
+		}
+		$text .= "
+			</optgroup>
+
+
+			</select></span><span class='clear'>&nbsp;</span>";
 		return $text;
+	}
+
+
+	function _observe_processBatch()
+	{
+		list($type,$tmp,$uclass) = explode("_",$_POST['execute_batch']);
+		$method = "batch_".$type;
+		if ((method_exists($this,$method) || $type='visibility') && isset ($_POST['dl_selected']))
+		{
+            	if($type=='userclass' || $type=='visibility')
+				{
+					$mode = ($type=='userclass') ? 'download_class' : 'download_visible';
+                 	$this->batch_userclass($_POST['dl_selected'],$uclass,$mode);
+				}
+				else
+				{
+                	$this->$method($_POST['dl_selected']);
+				}
+		}
+	}
+
+	function batch_userclass($download_ids,$uclass,$mode='download_class')
+	{
+		$emessage = &eMessage::getInstance();
+
+        if(e107::getDb() -> db_Update("download", $mode." ='{$uclass}' WHERE download_id IN (".implode(",",$download_ids).") "))
+		{
+        	$emessage->add("It Worked", E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+        	$emessage->add("It Failed", E_MESSAGE_ERROR);
+		}
 	}
 
    // Given the string which is stored in the DB, turns it into an array of mirror entries

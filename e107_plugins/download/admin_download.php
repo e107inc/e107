@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-23 09:02:10 $
-|     $Author: secretr $
+|     $Revision: 1.7 $
+|     $Date: 2009-07-23 15:23:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -84,10 +84,18 @@ if (e_QUERY)
 
 $adminDownload->observer();
 
+$emessage = eMessage::getInstance();
+
+
 if(isset($_POST['download_filter_list']))
 {
 	echo $adminDownload->show_existing_items($action, $subAction, $id, 0, 10);
 	exit;
+}
+
+if(isset($_POST['execute_batch']))
+{
+	$adminDownload->_observe_processBatch();
 }
 
 if (isset($_POST['delete']))
@@ -311,7 +319,8 @@ if ($from === "maint" && isset($_POST['submit_download']))
 
 if (!e_QUERY || $action == "main")
 {
-	$text = $adminDownload->show_filter_form($action, $subAction, $id, $from, $amount);
+	$text = $emessage->render();
+	$text .= $adminDownload->show_filter_form($action, $subAction, $id, $from, $amount);
 	$text .= $adminDownload->show_existing_items($action, $subAction, $id, $from, $amount);
 	$ns->tablerender(DOWLAN_7, $text);
 }
