@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-19 11:44:28 $
+|     $Revision: 1.12 $
+|     $Date: 2009-07-23 08:34:20 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -200,7 +200,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
     }
 
 	if (!$mail->Send()) {
-		// echo "There has been a mail error sending to " . $row["email"] . "<br>";
+		// echo "There has been a mail error sending to " . $row["email"] . "<br />";
 		return FALSE;
 		// Clear all addresses and attachments for next loop
 		$mail->ClearAddresses();

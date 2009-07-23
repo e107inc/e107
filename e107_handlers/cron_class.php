@@ -1,4 +1,4 @@
-<?php /* $Id: cron_class.php,v 1.1 2008-06-17 05:39:22 e107coders Exp $ */
+<?php /* $Id: cron_class.php,v 1.2 2009-07-23 08:34:20 marj_nl_fr Exp $ */
 
 /**####################################################################################################**\
    Version: V1.01
@@ -30,7 +30,7 @@ $cron->calcLastRan($cron_str0);
 echo "Cron '$cron_str0' last due at: " . date('r', $cron->getLastRanUnix()) . "<p>";
 // $cron->getLastRan() returns last due time in an array
 print_r($cron->getLastRan());
-echo "Debug:<br>" . nl2br($cron->getDebug());
+echo "Debug:<br />" . nl2br($cron->getDebug());
 
 $cron_str1 = "3 12 * * *";
 if ($cron->calcLastRan($cron_str1))
@@ -42,7 +42,7 @@ else
 {
    echo "Error parsing";
 }
-echo "Debug:<br>" . nl2br($cron->getDebug());
+echo "Debug:<br />" . nl2br($cron->getDebug());
 
  *#######################################################################################################
  */

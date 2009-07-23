@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/cron.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-14 05:31:57 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-23 08:34:20 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -73,7 +73,7 @@ foreach($list as $func=>$val)
 // echo "<br />Cron '$cron_str0' last due at: " . date('r', $cron->getLastRanUnix()) . "<p>";
 // $cron->getLastRan() returns last due time in an array
 // print_a($cron->getLastRan());
-// echo "Debug:<br>" . nl2br($cron->getDebug());
+// echo "Debug:<br />" . nl2br($cron->getDebug());
  /*
 $cron_str1 = "3 12 * * *";
 if ($cron->calcLastRan($cron_str1))
@@ -85,7 +85,7 @@ else
 {
    echo "Error parsing";
 }
-echo "Debug:<br>" . nl2br($cron->getDebug());
+echo "Debug:<br />" . nl2br($cron->getDebug());
 */
 
 exit;
