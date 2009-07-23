@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.40 $
-|   $Date: 2009-07-19 11:44:28 $
+|   $Revision: 1.41 $
+|   $Date: 2009-07-23 08:14:55 $
 |   $Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
@@ -223,9 +223,8 @@ if (isset($eplug_js) && $eplug_js) {
 	echo "\n<!-- eplug_js -->\n";
 	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }
-if (isset($htmlarea_js) && $htmlarea_js) {
-	echo $htmlarea_js;
-}
+
+
 if ((strpos(e_SELF, 'fileinspector.php') === FALSE) && getperms("0"))
 {
 echo "<script type='text/javascript'>
