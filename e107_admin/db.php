@@ -9,9 +9,9 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-07-19 11:44:27 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.11 $
+ * $Date: 2009-07-23 15:21:41 $
+ * $Author: e107coders $
  *
 */
 
@@ -477,18 +477,9 @@ function verify_sql_record()
 {
 	global $emessage, $sql, $sql2, $sql3, $frm, $e107, $tp;
 
-	if(!is_object($sql))
-	{
-		$sql = new db();
-	}
-	if(!is_object($sql2))
-	{
-		$sql2 = new db();
-	}
-	if(!is_object($sql3))
-	{
-		$sql3 = new db();
-	}
+	$sql = e107::getDb();
+	$sql2 = e107::getDb('sql2');
+	$sql3 = e107::getDb('sql3');
 
 	$tables = array();
 	$tables[] = 'rate';
