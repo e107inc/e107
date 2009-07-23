@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/mambo.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-03-28 22:10:49 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-23 08:33:40 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -91,7 +91,7 @@ if(!mysql_select_db($mySQLdefaultdb, $e107Connection)){
 	goError("Error! Cound not connect to e107 database.");
 }
 
-echo "Successfully connected to Mambo and e107 databases ...<br><br />";
+echo "Successfully connected to Mambo and e107 databases ...<br /><br />";
 
 
 $phpbb_res = mysql_query("SELECT * FROM {$mamboPrefix}users", $phpbbConnection);
