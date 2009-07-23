@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.54 $
-* $Date: 2009-07-19 11:44:28 $
-* $Author: marj_nl_fr $
+* $Revision: 1.55 $
+* $Date: 2009-07-23 15:29:07 $
+* $Author: secretr $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -23,7 +23,8 @@ class e_parse
 {
 	var	$isutf8 = FALSE;	// Flag for global use indicates whether utf-8 character set
 	var	$utfAction;			// Determine how to handle utf-8.   0 = 'do nothing'    1 = 'use mb_string'    2 = emulation
-	var $e_sc;				// Shortcode processor
+	// Shortcode processor - see __get()
+	//var $e_sc;				
 	var $e_bb;				// BBCode processor
 	var $e_pf;				// Profanity filter
 	var $e_emote;			// Emote filter
@@ -271,7 +272,7 @@ class e_parse
 
 
 	// Initialise the shortcode handler - has to be done when $prefs valid, so can't be done in constructor ATM
-	function sch_load($noCore=false)
+	/*function sch_load($noCore=false)
 	{
 		if (!is_object($this->e_sc))
 		{
@@ -282,7 +283,7 @@ class e_parse
 				$this->e_sc->loadCoreShortcodes();
 			}
 		}
-	}
+	}*/
 
 
 
@@ -371,7 +372,7 @@ class e_parse
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "")
 	{
-		$this->sch_load();
+		//$this->sch_load();
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
 	}
 
@@ -1330,6 +1331,23 @@ class e_parse
 		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+".$reassembled.$subject.";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+".$reassembled."; return true;' onmouseout='window.status=\"\";return true;'>".$words.'</a>';
 	}
 
+	public function __get($name)
+	{ 
+		switch ($name) 
+		{
+			case 'e_sc':
+				$ret = e107::getScParser(); 
+			break;
+			
+			default:
+				trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
+				return null; 
+			break;
+		}
+		
+		$this->$name = $ret;
+		return $ret;
+	}
 }
 
 ?>

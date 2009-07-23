@@ -9,9 +9,9 @@
 * Forum plugin notify configuration
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-* $Revision: 1.4 $
-* $Date: 2008-12-21 18:15:04 $
-* $Author: mcfly_e107 $
+* $Revision: 1.5 $
+* $Date: 2009-07-23 15:29:07 $
+* $Author: secretr $
 *
 */
 
@@ -73,9 +73,9 @@ class notify
 }
 
 
+//DEPRECATED, BC, call the method only when needed, $e107->notify caught by __get()
 global $nt;
-$e107->notify = new notify;
-$nt = &$e107->notify;
+$nt = e107::getNotify(); //TODO - find & replace $nt, $e107->notify
 
 
 function notify_usersup($data)
