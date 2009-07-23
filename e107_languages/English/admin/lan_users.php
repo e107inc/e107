@@ -9,8 +9,8 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-06-24 20:10:34 $
+ * $Revision: 1.17 $
+ * $Date: 2009-07-23 06:55:39 $
  * $Author: e107coders $
  *
 */
@@ -230,6 +230,22 @@ define('LAN_MAINADMIN','Main Admin');
 define('LAN_NOTVERIFIED','Not Verified');
 define('LAN_BANNED','Banned');
 define('LAN_BOUNCED','Bounced');
+
+define('USRLAN_220', 'No Userclass');
+
+// These need review - there are duplicates above.
+define("UCSLAN_1", "Sending notification email to");
+define("UCSLAN_2", "Updated Privileges");
+define("UCSLAN_3", "Dear");
+define("UCSLAN_4", "Your privileges have been updated at");
+define("UCSLAN_5", "You now have access to the following area(s)");
+define("UCSLAN_6", "Set class for user");
+define("UCSLAN_7", "Set Classes");
+define("UCSLAN_8", "Notify User");
+define("UCSLAN_9", "Classes Updated.");
+define("UCSLAN_10", "Regards,");
+define('UCSLAN_11', 'Class membership for user ID --UID-- changed to --CLASSES--');
+define('UCSLAN_12', 'Member privileges only');
 
 
 ?>
