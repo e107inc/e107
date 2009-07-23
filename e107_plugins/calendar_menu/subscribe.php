@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subscribe.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2007-07-13 19:37:52 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2009-07-23 08:34:21 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ if (isset($_POST['upsubs']))
             $cal_inargs = "0,'" . USERID . "','" . $cal_row . "'";
             $cal_db->db_Insert("event_subs", $cal_inargs);
         } 
-        // print $cal_row .  $cal_subs[$cal_row] . "<br>";
+        // print $cal_row .  $cal_subs[$cal_row] . "<br />";
     } 
     $caltext = "<table class='fborder' width='97%'>
 <tr><td class='fcaption' >" . EC_LAN_130 . "</td></tr>
