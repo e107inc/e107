@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-07-23 15:23:18 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-23 23:40:57 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 
@@ -356,7 +356,7 @@ if ($action == 'maint')
                while($row = $sql->db_Fetch()) {
                   if (!$foundSome) {
    		            $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                     $text .= '<table class="adminlist" style="width:100%">';
+                     $text .= '<table class="adminlist">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_13.'</th>';
                      $text .= '<th>'.DOWLAN_67.'</th>';
@@ -411,7 +411,7 @@ if ($action == 'maint')
                if (0 == $sql->db_Count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
                   if (!$foundSome) {
    		            $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                     $text .= '<table class="adminlist" style="width:100%">';
+                     $text .= '<table class="adminlist">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_13.'</th>';
                      $text .= '<th>'.DOWLAN_182.'</th>';
@@ -454,7 +454,7 @@ if ($action == 'maint')
                   if (!is_readable(e_DOWNLOAD.$row['download_url'])) {
                      if (!$foundSome) {
    		               $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                        $text .= '<table class="adminlist" style="width:100%">';
+                        $text .= '<table class="adminlist">';
                         $text .= '<tr>';
                         $text .= '<th>'.DOWLAN_67.'</th>';
                         $text .= '<th>'.DOWLAN_27.'</th>';
@@ -497,7 +497,7 @@ if ($action == 'maint')
                while($row = $sql->db_Fetch()) {
                   if (!$foundSome) {
    		            $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                     $text .= '<table class="adminlist" style="width:100%">';
+                     $text .= '<table class="adminlist">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_67.'</th>';
                      $text .= '<th>'.DOWLAN_27.'</th>';
@@ -600,7 +600,7 @@ if ($action == 'maint')
                      if ($filesize <> $row['download_filesize']) {
                         if (!$foundSome) {
    		                  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                           $text .= '<table class="adminlist" style="width:100%">';
+                           $text .= '<table class="adminlist">';
                            $text .= '<tr>';
                            $text .= '<th>'.DOWLAN_67.'</th>';
                            $text .= '<th>'.DOWLAN_27.'</th>';
@@ -731,7 +731,7 @@ if ($action == 'limits')
 	}
 	$txt = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table class='fborder' style='width:100%'>
+		<table class='adminlist'>
 		<tr>
 			<td colspan='4' style='text-align:left'>
 		";
