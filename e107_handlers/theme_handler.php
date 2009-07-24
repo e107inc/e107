@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2009-07-18 03:41:49 $
+|     $Revision: 1.40 $
+|     $Date: 2009-07-24 12:54:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -643,10 +643,9 @@ class themeHandler{
 		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>";
 
          $text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td>
-			<td style='vertical-align:top'>XHTML ";
-        $text .= ($theme['xhtmlcompliant']) ? ADMIN_TRUE_ICON : "X";
-		$text .= "  &nbsp;&nbsp;  CSS ";
-		$text .= ($theme['csscompliant']) ? ADMIN_TRUE_ICON : "X";
+			<td style='vertical-align:top'>";
+        $text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : "Not Specified";
+		$text .= ($theme['csscompliant']) ? " &amp; CSS ".$theme['csscompliant'] : "";
 		$text .= "</td></tr>";
 
 
@@ -728,9 +727,30 @@ class themeHandler{
 							$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
 
 							$custompage_count = (isset($pref['sitetheme_custompages'][$key])) ? " [".count($pref['sitetheme_custompages'][$key])."]" : "";
+                            $custompage_diz = "";
+                            $count = 1;
+							if(isset($pref['sitetheme_custompages'][$key]) && count($pref['sitetheme_custompages'][$key]) > 0)
+							{
+                            	foreach($pref['sitetheme_custompages'][$key] as $cp)
+								{
+                                	$custompage_diz .= "<a href='#element-to-be-shown' class='e-expandit'>".trim($cp)."</a>&nbsp;";
+									if($count > 4)
+									{
+                                    	$custompage_diz .= "...";
+										break;
+									}
+									$count++;
+								}
+							}
+							else
+							{
+                            	$custompage_diz = "<a href='#element-to-be-shown' class='e-expandit'>None</a> ";
+							}
+
+
 							$itext .= "</td>
 								<td style='vertical-align:top'>";
-                              	$itext .= ($pref['sitetheme_deflayout'] != $key) ? "<a href='#element-to-be-shown' class='e-expandit'>".ADMIN_EDIT_ICON."</a>".$custompage_count."<div class='e-hideme' id='element-to-be-shown'><textarea style='width:97%' rows='6' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n",$pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;  // Default
+                              	$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown'><textarea style='width:97%' rows='6' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n",$pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;  // Default
 
 							$itext .= "</td>";
 
@@ -1095,11 +1115,11 @@ class themeHandler{
 		$themeArray['info'] = varset($match[3],'');
         preg_match('/xhtmlcompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
 		$xhtml = strtolower($match[2]);
-		$themeArray['xhtmlcompliant'] = ($xhtml == "true" ? true : false);
+		$themeArray['xhtmlcompliant'] = ($xhtml == "true" ? "1.1" : false);
 
 		preg_match('/csscompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
 		$css = strtolower($match[2]);
-		$themeArray['csscompliant'] = ($css == "true" ? true : false);
+		$themeArray['csscompliant'] = ($css == "true" ? "2.1" : false);
 
 /*        preg_match('/CUSTOMPAGES(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
 		$themeArray['custompages'] = array_filter(explode(" ",$match[3]));*/
@@ -1159,8 +1179,8 @@ class themeHandler{
       	$vars['website'] 				= varset($vars['author']['@attributes']['url']);
 		$vars['author']				   	= varset($vars['author']['@attributes']['name']);
 		$vars['info'] 					= $vars['description'];
-		$vars['xhtmlcompliant'] 		= (strtolower($vars['compliance']['@attributes']['xhtml']) == 'true' ? 1 : 0);
-		$vars['csscompliant'] 			= (strtolower($vars['compliance']['@attributes']['css']) == 'true' ? 1 : 0);
+		$vars['xhtmlcompliant'] 		= varset($vars['compliance']['@attributes']['xhtml']);
+		$vars['csscompliant'] 			= varset($vars['compliance']['@attributes']['css']);
 		$vars['path']					= $path;
 		$vars['@attributes']['default'] = (strtolower($vars['@attributes']['default'])=='true') ? 1 : 0;
 

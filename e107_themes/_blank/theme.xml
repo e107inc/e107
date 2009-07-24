@@ -2,7 +2,7 @@
 <e107Theme name="blank" version="0.1" date="2008-12-01" compatibility="0.8">
 	<author name ="Desislav Yosifov [SonicE]" email="support@free-source.net" url="http://free-source.net" />
 	<description>Blank e107 admin theme</description>
-	<compliance xhtml="true" css="true" />
+	<compliance xhtml="1.1" css="2.1" />
 
 	<layouts>
 		<layout name='default' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' default='true' >
