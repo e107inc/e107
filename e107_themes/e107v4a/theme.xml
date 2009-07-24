@@ -2,7 +2,7 @@
 <e107Theme name="e107.v4" version="3.0" date="2003-06-11" compatibility="0.8">
 	<author name ="Steve Dunstan [jalist]" email="jalist@e107.org" url="http://e107.org" />
 	<description>Classic e107 theme</description>
-	<compliance xhtml="true" css="true" />
+	<compliance xhtml="1.1" css="2.1" />
 	<pluginOptions>
 		<plugin name='chatbox_menu' url='core' />
 		<plugin name='poll' url='core' />

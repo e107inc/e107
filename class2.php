@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.115 $
-* $Date: 2009-07-23 15:29:07 $
-* $Author: secretr $
+* $Revision: 1.116 $
+* $Date: 2009-07-24 12:54:36 $
+* $Author: e107coders $
 *
 */
 //
@@ -1006,10 +1006,8 @@ if(!defined("THEME_LAYOUT"))
     $def = "";   // no custom pages found yet.
     $cusPagePref = (is_array($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : $pref['sitetheme_custompages'];
 
-	if(is_array($cusPagePref))  // check if we match a page in layout custompages.
+	if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 	{
-   //		print_r($cusPagePref);
-
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
    			foreach($cusPageArray as $kpage)
