@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2009-07-09 22:01:22 $
-|     $Author: e107coders $
+|     $Revision: 1.45 $
+|     $Date: 2009-07-24 19:18:56 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -267,7 +267,7 @@ class page
 
 			<tr>
 			<td style='width:25%' class='forumheader3'>".CUSLAN_18."</td>
-			<td style='width:75%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
+			<td style='width:75%' class='forumheader3'>".r_userclass("page_class", $page_class, "off", "public,guest,nobody,member,main,admin,classes")."</td>
 			</tr>";
 		}
 
