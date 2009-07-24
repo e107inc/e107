@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-07-17 07:53:13 $
- * $Author: e107coders $
+ * $Revision: 1.18 $
+ * $Date: 2009-07-24 19:18:50 $
+ * $Author: e107steved $
  *
 */
 
@@ -369,7 +369,7 @@ class page
 								<td class='label'>".CUSLAN_18."</td>
 
 								<td class='control'>
-									".$e_userclass->uc_dropdown('page_class', $page_class, '', "tabindex='".$frm->getNext()."'")."
+									".$e_userclass->uc_dropdown('page_class', $page_class, 'public,guest,nobody,member,main,admin,classes', "tabindex='".$frm->getNext()."'")."
 								</td>
 							</tr>
 			";
