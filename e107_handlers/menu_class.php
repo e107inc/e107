@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-21 07:41:54 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-24 15:58:38 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -991,89 +991,100 @@ class menuManager{
 	{
 		global $ns,$rs,$menu,$menu_info,$menu_act;
 	                              //      $menu_count is empty in here
+		//FIXME extract
 		extract($row);
 		if(!$menu_id){ return; }
 
-					$menu_name = preg_replace("#_menu#i", "", $menu_name);
-					$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " : "";
-					$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
-					$menu_info = "{$menu_location}.{$menu_order}";
+		$menu_name = preg_replace("#_menu#i", "", $menu_name);
+		//TODO we need a CSS class for this
+		$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " : "";
+		//DEBUG div not allowed in final tags 	$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
+		// use theme render style instead
+		$caption = $menu_name.$vis;
+		$menu_info = "{$menu_location}.{$menu_order}";
 
-					$text = "";
-					$conf = '';
-					if (file_exists(e_PLUGIN."{$menu_path}{$menu_name}_menu_config.php"))
-					{
-					  $conf = "{$menu_path}.{$menu_name}_menu_config";
-					}
+		$text = "";
+		$conf = '';
+		if (file_exists(e_PLUGIN."{$menu_path}{$menu_name}_menu_config.php"))
+		{
+			$conf = "{$menu_path}.{$menu_name}_menu_config";
+		}
 
-					if($conf == '' && file_exists(e_PLUGIN."{$menu_path}config.php"))
-					{
-					  $conf = "{$menu_path}config";
-					}
+		if($conf == '' && file_exists(e_PLUGIN."{$menu_path}config.php"))
+		{
+		  $conf = "{$menu_path}config";
+		}
 
-					$text .= "<select id='menuAct_".$menu_id."' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
-					$text .= $rs->form_option(MENLAN_25, TRUE, " ");
-					$text .= $rs->form_option(MENLAN_15, "", "deac.{$menu_info}");
+		$text .= "<select id='menuAct_".$menu_id."' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
+		$text .= $rs->form_option(MENLAN_25, TRUE, " ");
+		$text .= $rs->form_option(MENLAN_15, "", "deac.{$menu_info}");
 
-					if ($conf) {
-						$text .= $rs->form_option(LAN_CONFIGURE, "", $conf);
-					}
+		if ($conf) {
+			$text .= $rs->form_option(LAN_CONFIGURE, "", $conf);
+		}
 
-					if ($menu_order != 1) {
-						$text .= $rs->form_option(MENLAN_17, "", "inc.{$menu_info}");
-						$text .= $rs->form_option(MENLAN_24, "", "top.{$menu_info}");
-					}
-					if ($menu_count != $menu_order) {
-						$text .= $rs->form_option(MENLAN_18, "", "dec.{$menu_info}");
-						$text .= $rs->form_option(MENLAN_23, "", "bot.{$menu_info}");
-					}
-					foreach ($this->menu_areas as $menu_act) {
-						if ($menu != $menu_act) {
-							$text .= $rs->form_option(MENLAN_19." ".$menu_act, "", "move.{$menu_info}.".$menu_act);
-						}
-					}
+		if ($menu_order != 1) 
+		{
+			$text .= $rs->form_option(MENLAN_17, "", "inc.{$menu_info}");
+			$text .= $rs->form_option(MENLAN_24, "", "top.{$menu_info}");
+		}
+		if ($menu_count != $menu_order) 
+		{
+			$text .= $rs->form_option(MENLAN_18, "", "dec.{$menu_info}");
+			$text .= $rs->form_option(MENLAN_23, "", "bot.{$menu_info}");
+		}
+		foreach ($this->menu_areas as $menu_act) 
+		{
+			if ($menu != $menu_act) 
+			{
+				$text .= $rs->form_option(MENLAN_19." ".$menu_act, "", "move.{$menu_info}.".$menu_act);
+			}
+		}
 
-					$text .= $rs->form_option(MENLAN_20, "", "adv.{$menu_info}");
-					$text .= $rs->form_select_close();
+		$text .= $rs->form_option(MENLAN_20, "", "adv.{$menu_info}");
+		$text .= $rs->form_select_close();
+		//DEBUG remove inline style, switch to simple quoted string for title text value
+		//TODO hardcoded text
+		$text .= '<div class="right">
+		<a href="#" onclick=\'parent.location.href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'"; \' title="visibility">
+			'.ADMIN_VIEW_ICON.'
+		</a>';
 
-					$text .= "<div style='width:80px;float:right;display:block;text-align:right'>
-					<a href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;vis=".$menu_id."'; \" title='visibility'>
-						".ADMIN_VIEW_ICON."
-					</a>";
+		if($conf)
+		{
+			$text .= '<a title="configure" href="#" onclick=\'parent.location.href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'"; \'>
+				'.ADMIN_CONFIGURE_ICON.'
+			</a>';
+		}
 
-					if($conf)
-					{
-	                    $text .= "<a title='configure' href='#' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;mode=conf&amp;path=".urlencode($conf)."'; \">
-							".ADMIN_CONFIGURE_ICON."
-						</a>";
-					}
+		$text .= '<a href="#" title="deactivate" onclick=\'parent.location.href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'"; \'>
+			'.ADMIN_DELETE_ICON.'
+		</a>
+		</div>';
 
-                    $text .= "<a href='#' title='deactivate' onclick=\"parent.location.href='".e_SELF."?lay=".$this->curLayout."&amp;mode=deac&amp;id=".$menu_id."'; \">
-						".ADMIN_DELETE_ICON."
-					</a>
-					</div>";
+		if($this->dragDrop)
+		{
 
-					if($this->dragDrop)
-					{
+			$text .= '
+			<div class="block-controls">
+				<a class="block-remove"><span>x</span></a> <a class="block-config"><span>e</span></a>
+			</div>
+			<div class="config" style="display: none; width: 200px;">
+				<div>config-params</div>
+				<div style="float:right">
+					<a href="#" class="cancel-button">cancel</a>
+					<a href="#" class="save-button">save</a>
+				</div>
+			</div>';
+		}
 
-				 		$text .= "<div class=\"block-controls\">";
-	               		$text .= "<a class=\"block-remove\"><span>x</span></a> <a class=\"block-config\"><span>e</span></a></div>";
-	                    $text .= "	<div class=\"config\" style=\"display: none; width: 200px;\">
-							<div>config-params</div>
-							<div style='float:right'>
-								<a href=\"#\" class=\"cancel-button\">cancel</a>
-								<a href=\"#\" class=\"save-button\">save</a>
-							</div>
-						</div>";
-	                }
+		ob_start();
 
-					ob_start();
+		$ns->tablerender($caption, $text);
+		$THEX = ob_get_contents();
 
-					$ns->tablerender($caption, $text);
-					$THEX = ob_get_contents();
-
-					ob_end_clean();
-					return $THEX;
+		ob_end_clean();
+		return $THEX;
 
 	}
 
