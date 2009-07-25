@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-07-18 13:08:37 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.25 $
+|     $Date: 2009-07-25 21:18:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -289,16 +289,8 @@ class userlogin
 		}
 
 
-
-		if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache"))
-		{
-			header("Location: ".$redir);
-			exit();
-		}
-		else
-		{
-			echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
-		}
+		header("Location: ".$redir);
+		exit();
 	}
 
 
