@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-20 16:23:16 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-25 07:10:28 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -181,13 +181,17 @@ if (!$FORUM_VIEW_END) {
 		</table>
 		</div>
 		</div>
-		<div class='spacer'>
+		<div class='spacer'>";
+		/* hardcoded deprecated rss links
 		<div style='text-align:center;'>
 		<a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a>
 		<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a>
 		<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 		</div>
-		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div></div>
+		*/
+		$FORUM_VIEW_END .= "
+		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
+		</div>
 ";
 }
 
