@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/comment_menu_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-08 22:35:26 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-25 07:54:35 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -22,6 +22,7 @@ $comment_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 
 /*
 SC_BEGIN CM_ICON
+//TODO review bullet
 return (defined("BULLET") ? "<img src='".THEME_ABS."images/".BULLET."' alt='' style='border:0; vertical-align: middle;' />" : "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='border:0; vertical-align: middle;' />");
 SC_END
 

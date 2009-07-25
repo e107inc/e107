@@ -162,21 +162,24 @@ if(isset($linkspage_pref['link_cat_icon']) && $linkspage_pref['link_cat_icon']){
 			$LINK_MAIN_ICON = "<img src='".e_BASE.$rowl['link_category_icon']."' alt='' style='border:0; vertical-align:middle' />";
 			} else {
 				if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty']){
+				//TODO review bullet
 				$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
 				}
 			}
 		}else{
 			if(file_exists(e_PLUGIN."links_page/cat_images/".$rowl['link_category_icon'])){
-			$LINK_MAIN_ICON = "<img src='".e_PLUGIN_ABS."links_page/cat_images/".$rowl['link_category_icon']."' alt='' style='border:0; vertical-align:middle' />";
+			$LINK_MAIN_ICON = "<img src='".e_PLUGIN_ABS."links_page/cat_images/".$rowl['link_category_icon']."' alt='' style='vertical-align:middle' />";
 			} else {
 				if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty']){
-				$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
+				//TODO review bullet
+				$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='vertical-align:middle;' />";
 				}
 			}
 		}
 	} else {
 		if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty']){
-		$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
+		//TODO review bullet
+		$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='vertical-align:middle;' />";
 		}
 	}
 	if($rowl['total_links'] && $LINK_MAIN_ICON){
@@ -371,24 +374,24 @@ global $LINK_RATED_BUTTON, $linkspage_pref, $rowl, $LINK_RATED_NAME, $LINK_RATED
 if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 	if ($rowl['link_button']) {
 		if (strpos($rowl['link_button'], "http://") !== FALSE) {
-			$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0;' src='".$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
+			$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img src='".$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
 		} else {
 			if(strstr($rowl['link_button'], "/")){
-				$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0;' src='".e_BASE.$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
+				$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img src='".e_BASE.$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
 			}else{
-				$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0' src='".e_PLUGIN_ABS."links_page/link_images/".$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
+				$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img src='".e_PLUGIN_ABS."links_page/link_images/".$rowl['link_button']."' alt='".$LINK_RATED_NAME."' /></a>";
 			}
 		}
 	} else {
 		if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-			$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
+			$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
 		}else{
 			$LINK_RATED_BUTTON = "";
 		}
 	}
 }else{
 	if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-		$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
+		$LINK_RATED_BUTTON = $LINK_RATED_APPEND."\n<img style='width: 88px; height: 31px;' src='".e_PLUGIN_ABS."links_page/images/generic.png' alt='".$LINK_RATED_NAME."' /></a>";
 	}else{
 		$LINK_RATED_BUTTON = "";
 	}

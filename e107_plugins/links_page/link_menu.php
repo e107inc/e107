@@ -15,7 +15,8 @@ global $tp;
 
 @include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 
-$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' style='border:0;' />";
+//TODO review bullet
+$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' />";
 global $linkspage_pref;
 $linkspage_pref = $lc -> getLinksPagePref();
 

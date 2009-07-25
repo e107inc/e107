@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-18 18:32:54 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-25 07:54:35 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
@@ -37,9 +37,9 @@ require_once(e_PLUGIN.'forum/forum_admin_class.php');
 $rs = new form;
 $for = new e107forum;
 $forum = new forumAdmin;
-define('IMAGE_new', "<img src='".img_path('new.png')."' alt='' style='border:0' />");
-define('IMAGE_sub', "<img src='".e_PLUGIN."forum/images/forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' style='border:0' />");
-define('IMAGE_nosub', "<img src='".e_PLUGIN."forum/images/sub_forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' style='border:0' />");
+define('IMAGE_new', "<img src='".img_path('new.png')."' alt='' />");
+define('IMAGE_sub', "<img src='".e_PLUGIN."forum/images/forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' />");
+define('IMAGE_nosub', "<img src='".e_PLUGIN."forum/images/sub_forums_16.png' alt='".FORLAN_145."' title='".FORLAN_145."' />");
 
 $deltest = array_flip($_POST);
 if (e_QUERY)

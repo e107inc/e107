@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-07-28 20:16:10 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2009-07-25 07:54:34 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -147,6 +147,7 @@ SC_BEGIN EC_SHOWEVENT_IMAGE
 	}
 	else
 	{
+		//TODO review bullet
 		$img = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
 	}
 	return $img;
@@ -215,7 +216,7 @@ SC_BEGIN EC_CALENDAR_CALENDAR_RECENT_ICON
   $recent_icon = EC_RECENT_ICON;
   if (file_exists($recent_icon))
 	{
-	  return "<img style='border:0' src='".$recent_icon."' alt='' /> ";
+	  return "<img src='".$recent_icon."' alt='' /> ";
 	}
   return "R";
 SC_END
@@ -299,7 +300,7 @@ SC_BEGIN EC_EVENT_RECENT_ICON
   $recent_icon = EC_RECENT_ICON;
   if (file_exists($recent_icon))
   {
-	return "<img style='border:0' src='".$recent_icon."' alt='' /> ";
+	return "<img src='".$recent_icon."' alt='' /> ";
   }
   return "";
 SC_END
@@ -348,7 +349,7 @@ SC_BEGIN EC_EVENT_CAT_ICON
   global $thisevent;
   if ($thisevent['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']))
   {
-	return "<img style='border:0' src='".e_PLUGIN_ABS."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ";
+	return "<img src='".e_PLUGIN_ABS."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ";
   }
   else
   {
@@ -441,7 +442,7 @@ SC_BEGIN EC_EVENT_OPTIONS
 	global $EC_EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super, $pref, $ec_images_path;
 	if (USERNAME == $event_author_name || $cal_super || check_class($pref['eventpost_admin']))
 	{
-	  $EC_EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
+	  $EC_EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img class='icon S16' src='".e_IMAGE."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
 	}
 	return $EC_EVENT_OPTIONS;
 SC_END
@@ -512,7 +513,7 @@ SC_BEGIN EC_NEXT_EVENT_RECENT_ICON
   $recent_icon = EC_RECENT_ICON;
   if (file_exists($recent_icon))
 	{
-	  return "<img style='border:0' src='".$recent_icon."' alt='' /> ";
+	  return "<img src='".$recent_icon."' alt='' /> ";
 	}
   return "";
 SC_END

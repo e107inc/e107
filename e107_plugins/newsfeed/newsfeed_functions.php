@@ -9,9 +9,9 @@
  * Plugin - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/newsfeed_functions.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-20 10:39:29 $
- * $Author: e107steved $
+ * $Revision: 1.6 $
+ * $Date: 2009-07-25 07:54:35 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -169,7 +169,7 @@ class newsfeedClass
 					}
 					if ($newsfeed_image == 'default')
 					{
-						$temp['newsfeed_image_link'] =  "<a href='".$rss->image['link']."' rel='external'><img src='".$rss->image['url']."' alt='".$rss->image['title']."' style='border: 0; vertical-align: middle;' /></a>";
+						$temp['newsfeed_image_link'] =  "<a href='".$rss->image['link']."' rel='external'><img src='".$rss->image['url']."' alt='".$rss->image['title']."' style='vertical-align: middle;' /></a>";
 					}
 					else
 					{

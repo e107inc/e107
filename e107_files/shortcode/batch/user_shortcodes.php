@@ -9,8 +9,8 @@
  * User information - shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-07-21 10:16:24 $
+ * $Revision: 1.17 $
+ * $Date: 2009-07-25 07:54:34 $
  * $Author: marj_nl_fr $
  *
 */
@@ -164,9 +164,9 @@ if(defined("USER_REALNAME_ICON"))
 }
 if(file_exists(THEME."images/user_realname.png"))
 {
-	return "<img src='".THEME_ABS."images/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."images/user_realname.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."user_icons/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."user_icons/user_realname.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_REALNAME
@@ -204,9 +204,9 @@ if(defined("USER_ICON"))
 }
 if(file_exists(THEME."images/user.png"))
 {
-	return "<img src='".THEME_ABS."images/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."images/user.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_ICON_LINK
@@ -217,11 +217,11 @@ if(defined("USER_ICON"))
 }
 else if(file_exists(THEME."images/user.png"))
 {
-	$icon = "<img src='".THEME_ABS."images/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	$icon = "<img src='".THEME_ABS."images/user.png' alt='' style='vertical-align:middle;' /> ";
 }
 else
 {
-	$icon = "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	$icon = "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
 }
 return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
 SC_END
@@ -308,7 +308,7 @@ if($pref['profile_rate'] && USER)
 		$num = $rating[1];
 		for($i=1; $i<= $num; $i++)
 		{
-			$ret .= "<img src='".e_IMAGE_ABS."user_icons/user_star.png' style='border:0' alt='' />";
+			$ret .= "<img src='".e_IMAGE_ABS."user_icons/user_star.png' alt='' />";
 		}
 	}
 	if(!$rater->checkrated('user', $user['user_id']))

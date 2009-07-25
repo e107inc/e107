@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.12 $
-|    $Date: 2009-01-30 22:03:13 $
-|    $Author: lisa_ $
+|    $Revision: 1.13 $
+|    $Date: 2009-07-25 07:54:35 $
+|    $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -778,7 +778,7 @@ class linkclass
                 $blank_display = 'display: none';
                 $img = e_PLUGIN_ABS."links_page/images/blank.gif";
             }
-            $text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; border:0; ".$blank_display."' /><br /><br /></td></tr></table>";
+            $text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; ".$blank_display."' /><br /><br /></td></tr></table>";
             $text .= "</div>
         </td>
         </tr>";
@@ -887,17 +887,17 @@ class linkclass
 				{
                     if (strpos($row['link_button'], "http://") !== FALSE) 
 					{
-                        $img = "<img style='border:0;' src='".$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
+                        $img = "<img src='".$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
                     } 
 					else 
 					{
                         if(strstr($row['link_button'], "/"))
 						{
-                            $img = "<img style='border:0;' src='".e_BASE.$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
+                            $img = "<img src='".e_BASE.$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
                         }
 						else
 						{
-                            $img = "<img style='border:0' src='".e_PLUGIN_ABS."links_page/link_images/".$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
+                            $img = "<img src='".e_PLUGIN_ABS."links_page/link_images/".$row['link_button']."' alt='".$LINK_CAT_NAME."' />";
                         }
                     }
                 }
@@ -1011,7 +1011,7 @@ class linkclass
             ".$rs -> form_button("button", '', LCLAN_CAT_23, "onclick=\"expandit('catico')\"")."
             <div id='catico' style='{head}; display:none'>";
             foreach($iconlist as $icon){
-                $text .= "<a href=\"javascript:insertext('".$icon['fname']."','link_category_icon','catico')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
+                $text .= "<a href=\"javascript:insertext('".$icon['fname']."','link_category_icon','catico')\"><img src='".$icon['path'].$icon['fname']."' alt='' /></a> ";
             }
             $text .= "</div>
         </td>

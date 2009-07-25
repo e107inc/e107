@@ -19,7 +19,8 @@ $news_archive_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN ARCHIVE_BULLET
 global $news2;
-return "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' style='border:0px' alt='' />";
+//TODO review bullt
+return "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />";
 SC_END
 
 SC_BEGIN ARCHIVE_LINK

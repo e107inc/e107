@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-13 12:34:53 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-25 07:54:36 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -74,13 +74,11 @@ if(e_PAGE == "news.php" && $pref['rss_newscats'])
 $text = "
 <div style='text-align:center' class='smalltext'>
 ".$des.RSS_MENU_L1."<br />
-<div class='spacer'><a href='".$path."rss.php?$type.1".($topic ? ".".$topic : "")."'><img src='".$path."images/rss1.png' alt='rss1.0' style='border:0' /></a></div>
-<div class='spacer'><a href='".$path."rss.php?$type.2".($topic ? ".".$topic : "")."'><img src='".$path."images/rss2.png' alt='rss2.0' style='border:0' /></a></div>
-<div class='spacer'><a href='".$path."rss.php?$type.3".($topic ? ".".$topic : "")."'><img src='".$path."images/rss3.png' alt='rdf' style='border:0' /></a><br /></div>
+<div class='spacer'><a href='".$path."rss.php?$type.1".($topic ? ".".$topic : "")."'><img src='".$path."images/rss1.png' alt='rss1.0' /></a></div>
+<div class='spacer'><a href='".$path."rss.php?$type.2".($topic ? ".".$topic : "")."'><img src='".$path."images/rss2.png' alt='rss2.0' /></a></div>
+<div class='spacer'><a href='".$path."rss.php?$type.3".($topic ? ".".$topic : "")."'><img src='".$path."images/rss3.png' alt='rdf' /></a><br /></div>
 </div>";
 
 $caption = (file_exists(THEME."images/RSS_menu.png") ? "<img src='".THEME_ABS."images/RSS_menu.png' alt='' style='vertical-align:middle' /> ".RSS_MENU_L2 : RSS_MENU_L2);
 
 $ns->tablerender($caption, $text, 'backend');
-
-?>

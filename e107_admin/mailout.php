@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-07-15 09:37:59 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2009-07-25 07:52:16 $
+|     $Author: marj_nl_fr $
 |
 | Work in progress - supplementary mailer plugin
 |
@@ -769,13 +769,13 @@ function showMailouts($sub_par,$mail_id)
 		<td>".$row['pending']."</td>
 		<td style='width:50px;white-space:nowrap'>
 		<div>";
-	$text .= "<a href='".e_SELF."?mailouts.detail.{$row['gen_datestamp']}'><img src='".$images_path."search_16.png' alt='".LAN_MAILOUT_109."' title='".LAN_MAILOUT_109."' style='border:0px' /></a>";
+	$text .= "<a href='".e_SELF."?mailouts.detail.{$row['gen_datestamp']}'><img src='".$images_path."search_16.png' alt='".LAN_MAILOUT_109."' title='".LAN_MAILOUT_109."' class='icon S16' /></a>";
 	if ($row['pending'])
 	{
-	  $text .= "<a href='".e_SELF."?mailouts.resend.{$row['gen_datestamp']}'><img src='".$images_path."mail_16.png' alt='".LAN_MAILOUT_86."' title='".LAN_MAILOUT_86."' style='border:0px' /></a>";
+	  $text .= "<a href='".e_SELF."?mailouts.resend.{$row['gen_datestamp']}'><img src='".$images_path."mail_16.png' alt='".LAN_MAILOUT_86."' title='".LAN_MAILOUT_86."' class='icon S16' /></a>";
 	}
 	$text .= "
-		<a href='".e_SELF."?mailouts.delete.{$row['gen_datestamp']}' onclick='return jsconfirm(\"".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."\")'><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' /></a>
+		<a href='".e_SELF."?mailouts.delete.{$row['gen_datestamp']}' onclick='return jsconfirm(\"".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."\")'><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' class='icon S16' /></a>
 		</div>
 		</td>
 		</tr>
@@ -820,7 +820,7 @@ function showMailouts($sub_par,$mail_id)
 			<td>".$row['pending']."</td>
 			<td style='white-space:nowrap'>
 			<div>
-			<a href='".e_SELF."?mailouts.orphans.{$row['gen_datestamp']}' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row['gen_datestamp']."]")."') \"><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' /></a>
+			<a href='".e_SELF."?mailouts.orphans.{$row['gen_datestamp']}' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row['gen_datestamp']."]")."') \"><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' class='icon S16' /></a>
 			</div>
 			</td>
 			</tr>\n
@@ -1251,11 +1251,11 @@ function showList($type='massmail')
 		<td>".$datestamp."</td>
 		<td style='width:50px;white-space:nowrap'>
 		<div>";
-	$text .= "<a href='".e_SELF."?savedmail.edit.{$row2['gen_id']}'><img src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' /></a>";
+	$text .= "<a href='".e_SELF."?savedmail.edit.{$row2['gen_id']}'><img src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' class='icon S16' /></a>";
 //		<input type='image' name='edit[{$row2['gen_id']}]' value='edit' src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
 //		<input type='image' name='delete[{$row2['gen_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \" src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 	$text .= "
-		<a href='".e_SELF."?savedmail.delete.{$row2['gen_id']}' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \"><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' /></a>
+		<a href='".e_SELF."?savedmail.delete.{$row2['gen_id']}' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \"><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' class='icon S16' /></a>
 		</div>
 		</td>
 		</tr>

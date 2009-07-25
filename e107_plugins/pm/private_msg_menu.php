@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-11-25 17:38:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2009-07-25 07:54:36 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -25,10 +25,10 @@ if(!isset($pm_prefs['perpage']))
 require_once(e_PLUGIN."pm/pm_func.php");
 pm_getInfo('clear');
 
-define("PM_INBOX_ICON", "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' style='height:16px; width:16px; border:0px;' alt='".LAN_PM_25."' title='".LAN_PM_25."' />");
-define("PM_OUTBOX_ICON", "<img src='".e_PLUGIN_ABS."pm/images/mail_send.png' style='height:16px; width:16px; border:0px;' alt='".LAN_PM_26."' title='".LAN_PM_26."' />");
+define("PM_INBOX_ICON", "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' class='icon S16' alt='".LAN_PM_25."' title='".LAN_PM_25."' />");
+define("PM_OUTBOX_ICON", "<img src='".e_PLUGIN_ABS."pm/images/mail_send.png' class='icon S16' alt='".LAN_PM_26."' title='".LAN_PM_26."' />");
 define("PM_SEND_LINK", LAN_PM_35);
-define("NEWPM_ANIMATION", "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' style='border:0' />");
+define("NEWPM_ANIMATION", "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' />");
 
 
 $sc_style['SEND_PM_LINK']['pre'] = "<br /><br />[ ";

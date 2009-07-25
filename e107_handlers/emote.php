@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/emote.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-05-24 21:06:50 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-25 07:54:34 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -38,7 +38,8 @@ function r_emote()
 		$value2 = substr($value, 0, strpos($value, " "));
 		$value = ($value2 ? $value2 : $value);
 		$value = ($value == '&|') ? ':((' : $value;
-		$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' style='border:0; padding-top:2px;' alt='' /></a> ";
+		//TODO CSS class
+		$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
 	}
 
 	return "<div class='spacer'>".$str."</div>";

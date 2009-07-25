@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-12-07 21:41:04 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-07-25 07:54:34 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -480,7 +480,7 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 					$imagelist = $fi->get_files(e_PLUGIN."calendar_menu/images", "\.\w{3}$");
 					foreach($imagelist as $img){
 						if ($img['fname']){
-							$calendarmenu_text .= "<a href='javascript:insertext(\"{$img['fname']}\", \"caticon\", \"cat_icons\")'><img src='".e_PLUGIN."calendar_menu/images/".$img['fname']."' style='border:0px' alt='' /></a> ";
+							$calendarmenu_text .= "<a href='javascript:insertext(\"{$img['fname']}\", \"caticon\", \"cat_icons\")'><img src='".e_PLUGIN."calendar_menu/images/".$img['fname']."' alt='' /></a> ";
 						} 
 					}
 					$calendarmenu_text .= "
