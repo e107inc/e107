@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-23 23:40:57 $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-25 09:41:23 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -84,7 +84,8 @@ if (e_QUERY)
 
 $adminDownload->observer();
 
-$emessage = eMessage::getInstance();
+require_once (e_HANDLER.'message_handler.php');
+$emessage = &eMessage::getInstance();
 
 
 if(isset($_POST['download_filter_list']))
