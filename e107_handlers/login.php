@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2009-07-13 10:50:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.44 $
+|     $Date: 2009-07-25 21:17:58 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -145,12 +145,9 @@ class userlogin {
 				$edata_li = array("user_id" => $user_id, "user_name" => $username);
 				$e_event->trigger("login", $edata_li);
 				$redir = str_replace('&amp;','&',(e_QUERY ? e_SELF."?".e_QUERY : e_SELF));
-				if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) {
-					header("Location: ".$redir);
-					exit;
-				} else {
-					echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
-				}
+
+				header("Location: ".$redir);
+				exit;
 			}
 		}
 	}
