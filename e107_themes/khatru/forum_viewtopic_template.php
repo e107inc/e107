@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/khatru/forum_viewtopic_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-07-27 19:08:43 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-07-25 05:45:16 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -66,16 +66,16 @@ $FORUMEND = "
 </div>
 <div class='spacer'>
 
-<div style='text-align:center'>{QUICKREPLY}</div>
+<div style='text-align:center'>{QUICKREPLY}</div>";
 
-
+/* hardcoded deprecated rss links
 <div style='text-align:center;'>
 <a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a> 
 <a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a> 
 <a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 </div>
-
-<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
+*/
+$FORUMEND .= "<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
 ".BOXCLOSE;
 
 
