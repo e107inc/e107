@@ -9,9 +9,9 @@
  * List Admin Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_admin_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-01-28 08:49:33 $
- * $Author: lisa_ $
+ * $Revision: 1.5 $
+ * $Date: 2009-07-25 07:54:35 $
+ * $Author: marj_nl_fr $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -180,7 +180,7 @@ class list_admin
 				<div id='div_".$this->parent->sections[$i]."_".$type."_icon' style='display:none;'>";
 				foreach($iconlist as $icon)
 				{
-					$this->row['FIELD_ITEM'] .= "<a href=\"javascript:insertext('".$icon['fname']."','".$this->parent->sections[$i]."_".$type."_icon','div_".$this->parent->sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
+					$this->row['FIELD_ITEM'] .= "<a href=\"javascript:insertext('".$icon['fname']."','".$this->parent->sections[$i]."_".$type."_icon','div_".$this->parent->sections[$i]."_".$type."_icon')\"><img src='".$icon['path'].$icon['fname']."' alt='' /></a> ";
 				}
 				$this->row['FIELD_ITEM'] .= "</div>";
 			$this->row['FIELD'] .= $this->parseTemplate('FIELD_TABLE');

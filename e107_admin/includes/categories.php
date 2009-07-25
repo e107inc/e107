@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/categories.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-30 15:56:12 $
-|     $Author: secretr $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-25 07:52:16 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -86,7 +86,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 				if ($eplug_conffile)
 				{
 					$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
-					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='".$eplug_caption."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
+					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='".$eplug_caption."' class='icon S16' />" : E_16_PLUGIN;
 					$plugin_array[ucfirst($eplug_name)] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon);
 					if ($plugin_array[0])
 					{

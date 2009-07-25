@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: siteinfo_shortcodes.php,v 1.4 2009-07-21 06:31:23 e107coders Exp $
+* $Id: siteinfo_shortcodes.php,v 1.5 2009-07-25 07:54:34 marj_nl_fr Exp $
 *
 * Siteinfo shortcode batch
 */
@@ -16,7 +16,8 @@ class siteinfo_shortcodes
 	{
 		$e107 = e107::getInstance();
 		$path = ($_POST['sitebutton'] && $_POST['ajax_used']) ? $e107->tp->replaceConstants($_POST['sitebutton']) : (strstr(SITEBUTTON, 'http:') ? SITEBUTTON : e_IMAGE.SITEBUTTON);
-		return "<a href='".SITEURL."'><img src='".$path."' alt=\"".SITENAME."\" style='border: 0px; width: 88px; height: 31px' /></a>";
+		//TODO use CSS class?
+		return '<a href="'.SITEURL.'"><img src="'.$path.'" alt="'.SITENAME.'" /></a>';
 	}
 
 	function sc_sitedisclaimer()

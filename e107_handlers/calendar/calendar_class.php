@@ -49,7 +49,7 @@ class DHTML_Calendar
 		}
 		else
 		{
-			$this->calendar_img = "<img style='vertical-align:middle; border:0px' src='".e_HANDLER."calendar/cal.gif'  alt='' />";
+			$this->calendar_img = "<img style='vertical-align:middle;' src='".e_HANDLER."calendar/cal.gif'  alt='' />";
 		}
 
 		if(file_exists(THEME."calendar.css"))

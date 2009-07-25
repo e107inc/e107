@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/modcomment.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-05-08 21:50:19 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2009-07-25 07:52:16 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -139,7 +139,7 @@ else
 			<td class='forumheader3' style='width:15%;'><b>".$comment_nick."</b><br />".$comment_str."</td>
 			<td class='forumheader3' style='width:40%;'>".$row['comment_comment']."</td>
 			<td class='forumheader3' style='width:25%;'>
-				<a href='".e_ADMIN."modcomment.php?{$table}.{$id}.".$row['comment_id']."'><img src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:none' /></a>"
+				<a href='".e_ADMIN."modcomment.php?{$table}.{$id}.".$row['comment_id']."'><img src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' class='icon S16' /></a>"
 				."&nbsp;".($row['comment_blocked'] ? "<input type='checkbox' name='comment_unblocked[]' value='".$row['comment_id']."' /> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='".$row['comment_id']."' /> ".MDCLAN_6."")
 				."&nbsp;<input type='checkbox' name='comment_delete[]' value='".$row['comment_id']."' /> ".LAN_DELETE."
 			</td>

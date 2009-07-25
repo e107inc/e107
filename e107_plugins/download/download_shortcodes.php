@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_shortcodes.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-21 07:10:24 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2009-07-25 07:54:35 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -363,12 +363,12 @@ class download_shortcodes
       	}
       	else
       	{
-      		return $dnld_link."<img src='".IMAGE_DOWNLOAD."' alt='*'/></a>";
+      		return $dnld_link."<img src='".IMAGE_DOWNLOAD."' alt='*' /></a>";
       	}
       }
       else
       {
-      	return $dnld_link." xxx<img src='".IMAGE_DOWNLOAD."' alt='*' style='border:0' /></a>";
+      	return $dnld_link." xxx<img src='".IMAGE_DOWNLOAD."' alt='*' /></a>";
       }
    }
    function sc_download_view_filesize()

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-21 14:44:13 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-25 07:54:36 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -307,11 +307,11 @@ SC_BEGIN PM_BLOCK_USER
 global $pm_info, $pm_blocks;
 if(in_array($pm_info['pm_from'], $pm_blocks))
 {
-	return "<a href='".e_PLUGIN_ABS."pm/pm.php?unblock.{$pm_info['pm_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png' title='".LAN_PM_51."' alt='".LAN_PM_51."' style='width: 16px; height: 16px; border: 0px' /></a>";
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?unblock.{$pm_info['pm_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png' title='".LAN_PM_51."' alt='".LAN_PM_51."' class='icon S16' /></a>";
 }
 else
 {
-	return "<a href='".e_PLUGIN_ABS."pm/pm.php?block.{$pm_info['pm_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_block.png' title='".LAN_PM_50."' alt='".LAN_PM_50."' style='width: 16px; height: 16px; border: 0px' /></a>";
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?block.{$pm_info['pm_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_block.png' title='".LAN_PM_50."' alt='".LAN_PM_50."' class='icon S16' /></a>";
 }
 SC_END
 
@@ -325,7 +325,7 @@ else
 {
   $extra = '.'.($pm_info['pm_from'] == USERID ? 'outbox' : 'inbox');
 }
-return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$pm_info['pm_id']}{$extra}'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' style='width: 16px; height: 16px; border: 0px' /></a>";
+return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$pm_info['pm_id']}{$extra}'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
 SC_END
 
 SC_BEGIN DELETE_SELECTED

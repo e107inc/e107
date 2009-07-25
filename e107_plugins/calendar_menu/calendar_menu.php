@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-02-01 20:54:08 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-07-25 07:54:34 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -168,7 +168,7 @@ for($cal_c = 1; $cal_c <= $numberdays; $cal_c++)
             $title = " title='{$cal_event_count} " . EC_LAN_106 . "' ";
 		  }
 		}
-        if (is_file(e_PLUGIN.$cal_event_icon)) $cal_img = "<img style='border:0' src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
+        if (is_file(e_PLUGIN.$cal_event_icon)) $cal_img = "<img src='".e_PLUGIN_ABS.$cal_event_icon."' alt='' />";
 				//height='10' width='10'
 		if (isset($cal_recent[$cal_c]) && $cal_recent[$cal_c])
 		{

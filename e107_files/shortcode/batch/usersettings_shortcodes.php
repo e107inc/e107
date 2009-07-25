@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-28 22:37:42 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-25 07:54:34 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -177,7 +177,7 @@ closedir($handle);
 
 for($c = 1; $c <= (count($avatarlist)-1); $c++)
 {
-	$ret .= "<a href='javascript:addtext_us(\"$avatarlist[$c]\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' style='border:0' alt='' /></a> ";
+	$ret .= "<a href='javascript:addtext_us(\"$avatarlist[$c]\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' alt='' /></a> ";
 }
 
 $ret .= "

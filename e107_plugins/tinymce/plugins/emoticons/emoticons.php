@@ -32,7 +32,7 @@ function headerjs(){
 	}
 
 	function insertEmotion(file_name, title) {
-		var html = '<img src=\'".e_IMAGE_ABS."emotes/".$pref['emotepack']."/' + file_name + '\' style=\'border:0px\' alt=\'' + file_name + '\' />';
+		var html = '<img src=\'".e_IMAGE_ABS."emotes/".$pref['emotepack']."/' + file_name + '\' alt=\'' + file_name + '\' />';
 		tinyMCE.execCommand('mceInsertContent', false, html);
 		tinyMCEPopup.close();
 	}

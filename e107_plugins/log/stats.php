@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-11 21:13:48 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2009-07-25 07:54:35 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -803,7 +803,7 @@ class siteStats
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
 				$text .= "<tr>
 				<td class='forumheader3' >
-				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle; border: 0;' /></a> " : "")."
+				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle;' /></a> " : "")."
 				<img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
 				";
 				$text .= "</td>

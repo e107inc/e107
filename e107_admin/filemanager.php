@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-07 06:50:55 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2009-07-25 07:52:16 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -302,7 +302,7 @@ while ($dirs[$c]) {
 					<tr>
 						<td class='center middle'><a href='#{$el_id}' class='e-expandit'>upload</a></td>
 						<td>
-							<a class='action' href='".e_SELF."?".$path.$dirs[$c]."/'><img class='icon action S16' src='".$imagedir."folder.png' alt='".$dirs[$c]." ".FMLAN_31."' style='border:0' /></a>
+							<a class='action' href='".e_SELF."?".$path.$dirs[$c]."/'><img class='icon action S16' src='".$imagedir."folder.png' alt='".$dirs[$c]." ".FMLAN_31."' /></a>
 							<a href='".e_SELF."?".$path.$dirs[$c]."/'>".$dirs[$c]."</a>
 							<div class='e-hideme' id='{$el_id}'>
 								<div class='field-spacer'>".$frm->file('file_userfile[]', array('id'=>false, 'size'=>'20')).$frm->admin_button('upload', FMLAN_22, '', '', array('id'=>false))."</div>
