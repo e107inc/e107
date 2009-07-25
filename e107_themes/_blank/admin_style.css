@@ -18,7 +18,7 @@
 .clear-l	{ clear: right }
 .clear-r	{ clear: left }
 .smalltext	{ font-size: 11px; }
-.nowrap 	{ white-space:nowrap; }
+.nowrap		{ white-space:nowrap; }
 
 /* Core Icons */
 img.icon		{ border: 0 }

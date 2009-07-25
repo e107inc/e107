@@ -1,2 +1,101 @@
-/* Non-Admin CSS Document */
+/* TODO: move this info in theme.xml alternateStyleSheet */
 
+/* E107 CORE CSS *********************************************************************************************/
+.searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
+
+/*
+ * e107 v0.800 - new class definitions
+ */
+ 
+/* Core Formatting */
+.left		{ text-align: left }
+.right		{ text-align: right }
+.center		{ text-align: center }
+.f-left		{ float: left }
+.f-right	{ float: right }
+.top		{ vertical-align: top }
+.middle		{ vertical-align: middle }
+.bottom		{ vertical-align: bottom }
+.clear		{ clear: both }
+.clear-l	{ clear: right }
+.clear-r	{ clear: left }
+.smalltext	{ font-size: 11px; }
+.nowrap		{ white-space:nowrap; }
+
+/* Core Icons */
+img.icon		{ border: 0 }
+img.icon.list	{ margin: 0px 5px 5px 0px }
+img.icon.action { vertical-align: middle }
+img.S16		{ width: 16px; height: 16px }
+img.S32		{ width: 32px; height: 32px }
+img.S64		{ width: 64px; height: 64px }
+img.S128		{ width: 128px; height: 128px }
+/*******************************************************************************************************************/
+
+/* RESET CSS *********************************************************************************************/
+/* Global */
+* 			{ margin:0; padding:0; }
+body		{ font:12px/1.5em Arial, Helvetica, sans-serif;  }
+img         { border:0; vertical-align:top; }
+a			{ text-decoration:underline; color: #13394E; }
+a:hover		{ text-decoration:underline; color: #CB0000; }
+a img		{ border:0; }
+:focus		{ outline:0; }
+
+/* Headings */
+h1          { font-size:20px; font-weight:normal; line-height:1.3; }
+h2          { font-size:18px; font-weight:normal; line-height:1.34; }
+h3          { font-size:16px; font-weight:bold; line-height:1.375; }
+h4          { font-size:14px; font-weight:bold; }
+h5          { font-size:12px; font-weight:bold; }
+h6          { font-size:11px; font-weight:bold; }
+
+/* Forms */
+form        { display:inline; }
+fieldset    { border: 0; margin-bottom: 10px; }
+input, select{ vertical-align:middle; }
+textarea	{ overflow:auto; }
+
+/* Table */
+table       { border:0; border-spacing:0; empty-cells:show; font-size:100%; width: 100%; }
+th          { vertical-align:top; text-align:left; font-weight:normal; }
+td          { vertical-align:top; }
+
+/* Content */
+address     { font-style:normal; }
+cite        { font-style:normal; }
+q,
+blockquote  { quotes:none; }
+q:before, 
+q:after     { content:''; }
+small,big   { font-size:1em; }
+sup         { font-size:1em; vertical-align:top; }
+
+/* Lists */
+ul,ol       { list-style:none; }
+
+/* Tools */
+.no-display { display:none; }
+.no-margin  { margin:0 !important; }
+.no-padding { padding:0 !important; }
+.no-bg      { background:none !important; }
+.clear		{ clear: both; }
+
+pre {
+	overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	/* width: 99%; */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+
+
+
+/* message text (overall) */
+.warning { color: #FF6600 }
+.success { color: green; }
+.error { color: #FF0000 }
+.info {}
