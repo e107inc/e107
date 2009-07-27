@@ -1,19 +1,22 @@
 <?php
-// $Id: contact_template.php,v 1.9 2007-12-06 21:36:02 e107steved Exp $
+// $Id: contact_template.php,v 1.10 2009-07-27 21:18:02 marj_nl_fr Exp $
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:97%"); }
 
 if(!isset($CONTACT_INFO))
 {
-  $CONTACT_INFO = "
+	$sc_style['SITECONTACTINFO']['pre'] = "
 	<table style='".USER_WIDTH."' cellpadding='1' cellspacing='7'>
 	<tr>
-		<td>{SITECONTACTINFO}
-		<br />
+		<td>";
+
+	$CONTACT_INFO = '{SITECONTACTINFO}';
+
+	$sc_style['SITECONTACTINFO']['post'] = '<br />
 		</td>
 	</tr>
-	</table>";
+	</table>';
 }
 
 $sc_style['CONTACT_EMAIL_COPY']['pre'] = "<tr><td>";
