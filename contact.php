@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/contact.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-06-27 21:22:19 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2009-07-27 21:07:55 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -146,7 +146,7 @@ if(isset($_POST['send-contactus'])){
 
 if(SITECONTACTINFO && $CONTACT_INFO)
 {
-	$text = $tp->toHTML($CONTACT_INFO,"","parse_sc");
+	$text = $tp->parseTemplate($CONTACT_INFO, TRUE, $contact_shortcodes);
 	$ns -> tablerender(LANCONTACT_01, $text,"contact");
 }
 
