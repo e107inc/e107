@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2001-2009 e107 Inc 
+|     Copyright (C) 2001-2009 e107 Inc
 |     http://e107.org
 |
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/contact.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-14 05:31:57 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2009-07-27 21:12:42 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -146,7 +146,7 @@ if(isset($_POST['send-contactus'])){
 
 if(SITECONTACTINFO && $CONTACT_INFO)
 {
-	$text = $tp->toHTML($CONTACT_INFO,"","parse_sc");
+	$text = $tp->parseTemplate($CONTACT_INFO, TRUE, $contact_shortcodes);
 	$ns -> tablerender(LANCONTACT_01, $text,"contact");
 }
 
