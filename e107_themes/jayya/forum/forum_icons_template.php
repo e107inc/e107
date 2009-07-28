@@ -1,25 +1,24 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/forum/forum_icons_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-25 05:52:58 $
-|     $Author: marj_nl_fr $
-+----------------------------------------------------------------------------+
-*/
-	
-if (!defined('e107_INIT')) { exit; }
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Forum icons template - jayya
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_themes/jayya/forum/forum_icons_template.php,v $
+ * $Revision: 1.7 $
+ * $Date: 2009-07-28 04:50:12 $
+ * $Author: marj_nl_fr $
+ */
+
+if ( ! defined('e107_INIT')) { exit(); }
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
+
+// Thread info
 
 define('IMAGE_e', '<img src="'.img_path('e.png').'" alt="" />');
 define('IMAGE_new', '<img src="'.img_path('new.png').'" alt="'.LAN_199.'" title="'.LAN_199.'" />');
@@ -38,19 +37,30 @@ define('IMAGE_announce', '<img src="'.img_path('announce.png').'" alt="'.FORLAN_
 define('IMAGE_announce_small', '<img src="'.img_path('announce.png').'" alt="'.FORLAN_17.'" title="'.FORLAN_17.'" />');
 define('IMAGE_closed_small', '<img src="'.img_path('closed_small.png').'" alt="'.FORLAN_18.'" title="'.FORLAN_18.'" />');
 define('IMAGE_closed', '<img src="'.img_path('closed.png').'" alt="'.FORLAN_18.'" title="'.FORLAN_18.'" />');
+
+// User info
+
 define('IMAGE_profile', '<img src="'.img_path('profile.png').'" alt="'.LAN_398.'" title="'.LAN_398.'" />');
 define('IMAGE_email', '<img src="'.img_path('email.png').'" alt="'.LAN_397.'" title="'.LAN_397.'" />');
-define('IMAGE_pm', '<img src="'.img_path('pm.png').'" alt="'.LAN_399.'" title="'.LAN_399.'" />');
 define('IMAGE_website', '<img src="'.img_path('website.png').'" alt="'.LAN_396.'" title="'.LAN_396.'" />');
-define('IMAGE_edit', '<img src="'.img_path('edit.png').'" alt="'.LAN_400.'" title="'.LAN_400.'" />');
-define('IMAGE_quote', '<img src="'.img_path('quote.png').'" alt="'.LAN_401.'" title="'.LAN_401.'" />');
-define('IMAGE_admin_edit', '<img src="'.img_path('admin_edit.png').'" alt="'.LAN_406.'" title="'.LAN_406.'" />');
-define('IMAGE_admin_move', '<img src="'.img_path('admin_move.png').'" alt="'.LAN_402.'" title="'.LAN_402.'" />');
-define('IMAGE_admin_move2', '<img src="'.img_path('admin_move.png').'" alt="'.LAN_408.'" title="'.LAN_408.'" />');
-define('IMAGE_post', '<img src="'.img_path('post.png').'" alt="" />');
-define('IMAGE_post2', '<img src="'.img_path('post2.png').'" alt="" />');
-define('IMAGE_report', '<img src="'.img_path('report.png').'" alt="'.LAN_413.'" title="'.LAN_413.'" />');
-	
+
+// action
+define('IMAGE_pm', '<img src="'.img_path('pm.png').'" alt="'.LAN_399.'" title="'.LAN_399.'" class="icon S16 action" />');
+define('IMAGE_edit', '<img src="'.img_path('edit.png').'" alt="'.LAN_400.'" title="'.LAN_400.'" class="icon S16 action" />');
+define('IMAGE_quote', '<img src="'.img_path('quote.png').'" alt="'.LAN_401.'" title="'.LAN_401.'" class="icon S16 action" />');
+define('IMAGE_track', '<img src="'.img_path('track.png').'" alt="'.LAN_392.'" title="'.LAN_392.'" class="icon S16 action" />');
+define('IMAGE_untrack', '<img src="'.img_path('untrack.png').'" alt="'.LAN_391.'" title="'.LAN_391.'" class="icon S16 action" />');
+define('IMAGE_admin_edit', '<img src="'.img_path('admin_edit.png').'" alt="'.LAN_406.'" title="'.LAN_406.'" class="icon S16 action" />');
+define('IMAGE_admin_move', '<img src="'.img_path('admin_move.png').'" alt="'.LAN_402.'" title="'.LAN_402.'" class="icon S16 action" />');
+define('IMAGE_admin_split', '<img src="'.img_path('admin_split.png').'" alt="'.FORLAN_105.'" title="'.FORLAN_105.'" class="icon S16 action" />');
+define('IMAGE_admin_move2', '<img src="'.img_path('admin_move.png').'" alt="'.LAN_408.'" title="'.LAN_408.'" class="icon S16 action" />');
+
+define('IMAGE_report', '<img src="'.img_path('report.png').'" alt="'.LAN_413.'" title="'.LAN_413.'" class="icon S16 action" />');
+define('IMAGE_attachment', '<img src="'.img_path('attach.png').'" alt="" title="" class="icon S16 action" />');
+
+define('IMAGE_post', '<img src="'.img_path('post.png').'" alt="" title="" />');
+define('IMAGE_post2', '<img src="'.img_path('post2.png').'" alt="" title="" class="icon S16 action" />');
+
 // Admin <input> Icons
 	
 define('IMAGE_admin_delete', 'src="'.img_path('admin_delete.png').'" alt="'.LAN_435.'" title="'.LAN_435.'" ');
