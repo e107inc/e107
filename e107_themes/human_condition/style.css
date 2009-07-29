@@ -2,7 +2,7 @@ body, html {
 	margin: 0 auto;
 	background: #E4F2FF url(images/bg.png) repeat-y center;
 	width: 767px;
-	font-family: Lucida Grande, Lucida Sans Unicode, Lucida, Helvetica, Verdana, Arial, Sans-serif;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Lucida, Helvetica, Verdana, Arial, sans-serif;
 	text-align: center;
 }
 
@@ -98,7 +98,7 @@ ul, ol {
 
 .menubox {
 	color: #242424;
-	font-family: Lucida Grande, Lucida Sans Unicode, Lucida, Helvetica, Verdana, Arial, Sans-serif;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Lucida, Helvetica, Verdana, Arial, sans-serif;
 	font-size: 8pt;
 	margin-top: 15px;
 	padding: 5px;
