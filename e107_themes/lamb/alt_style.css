@@ -338,7 +338,7 @@ p {
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
-	background-image : url('../e107_images/forum/fcap2.png');
+/*	background-image : url('../e107_images/forum/fcap2.png'); */
 	border: 1px solid #ececf2;
 }
 
@@ -375,7 +375,8 @@ p {
 	color:#000;
 	padding: 4px;
 	border: 1px solid #C3BDBD;
-	background-image : url('../e107_images/forum/finfobar.png');font-style:normal; font-variant:normal; font-weight:normal; font-size:11px; font-family:verdana, tahoma, arial, helvetica, sans-serif
+/*	background-image : url('../e107_images/forum/finfobar.png'); */
+	font-style:normal; font-variant:normal; font-weight:normal; font-size:11px; font-family:verdana, tahoma, arial, helvetica, sans-serif
 }
 
 .helpbox {
