@@ -250,7 +250,7 @@ p {
 	color:#000;
 	padding: 4px;
 	border: #C3BDBD 1px solid;
-	background-image : url(forum/finfobar.png);
+/*FIXME	background-image : url(forum/finfobar.png); */
 }
 
 a.forumlink{
