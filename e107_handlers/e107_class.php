@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-07-23 15:29:07 $
+ * $Revision: 1.33 $
+ * $Date: 2009-07-30 16:09:30 $
  * $Author: secretr $
 */
 
@@ -72,6 +72,20 @@ class e107
 	 * @var array
 	 */
 	private static $_registry = array();
+	
+	/**
+	 * e107 core config object storage
+	 *
+	 * @var array
+	 */
+	protected static $_core_config_arr = array();
+	
+	/**
+	 * e107 plugin config object storage
+	 *
+	 * @var array
+	 */
+	protected static $_plug_config_arr = array();
 
 	
 	/**
@@ -244,6 +258,130 @@ class e107
 
 		//trigger_error("Class {$class_name} not found!", E_USER_ERROR);
 		return null;
+	}
+	
+	/**
+	 * Retrieve core config handlers.
+	 * List of allowed $name (aliases) could be found
+	 * in {@link e_core_pref} class
+	 *
+	 * @param string $name core|core_backup|emote|menu|search|notify
+	 * @return e_core_pref
+	 */
+	public static function getConfig($name = 'core')
+	{
+		if(!isset(self::$_core_config_arr[$name]))
+		{
+			e107_require_once(e_HANDLER.'pref_class.php');
+			self::$_core_config_arr[$name] = new e_core_pref($name, true);
+		}
+		
+		return self::$_core_config_arr[$name];
+	}
+	
+	/**
+	 * Retrieve core config handler preference value.
+	 * Shorthand of  self::getConfig()->get()
+	 *
+	 * @see e_core_pref::get()
+	 * @param string $pref_name
+	 * @param mixed $default default value if preference is not found
+	 * @return mixed
+	 */
+	public static function getPref($pref_name, $default = null)
+	{
+		return self::getConfig()->get($pref_name, $default);
+	}
+	
+	/**
+	 * Advanced version of self::getPref(). $pref_name is parsed,
+	 * so that $pref_name = 'x/y/z' will search for value pref_data[x][y][z]
+	 * Shorthand of  self::getConfig()->getPref()
+	 *
+	 * @see e_core_pref::getPref()
+	 * @param string $pref_name
+	 * @param mixed $default default value if preference is not found
+	 * @return mixed
+	 */
+	public static function findPref($pref_name, $default = null, $index = null)
+	{
+		return self::getConfig()->getPref($pref_name, $default, $index);
+	}
+	
+	/**
+	 * Retrieve plugin config handlers.
+	 * Multiple plugin preference DB rows are supported
+	 * Class overload is supported.
+	 * Examples:
+	 * - <code>e107::getPluginConfig('myplug');<code>
+	 * 	 will search for e107_plugins/myplug/e_pref/myplug_pref.php which
+	 * 	 should contain class 'e_plugin_myplug_pref' class (child of e_plugin_pref)
+	 * - <code>e107::getPluginConfig('myplug', 'row2');<code>
+	 * 	 will search for e107_plugins/myplug/e_pref/myplug_row2_pref.php which
+	 * 	 should contain class 'e_plugin_myplug_row2_pref' class (child of e_plugin_pref)
+	 * 
+	 * @param string $plug_name
+	 * @param string $multi_row 
+	 * @param boolean $load load from DB on startup
+	 * @return e_plugin_pref
+	 */
+	public static function getPlugConfig($plug_name, $multi_row = '', $load = true)
+	{
+		if(!isset(self::$_plug_config_arr[$plug_name.$multi_row]))
+		{
+			e107_require_once(e_HANDLER.'pref_class.php');
+			$override_id = $plug_name.($multi_row ? "_{$multi_row}_" : '');
+			
+			//check (once) for custom plugin pref handler 
+			if(is_readable(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php'))
+			{
+				require_once(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php');
+				$class_name = 'e_plugin_'.$override_id.'pref';
+				
+				//PHPVER: string parameter for is_subclass_of require PHP 5.0.3+
+				if(class_exists($class_name, false) && is_subclass_of('e_plugin_pref', $class_name)) //or e_pref ?
+				{
+					self::$_plug_config_arr[$plug_name.$multi_row] = new $class_name($load);
+					return self::$_plug_config_arr[$plug_name.$multi_row];
+				}
+			}
+			
+			self::$_plug_config_arr[$plug_name.$multi_row] = new e_plugin_pref($plug_name, $multi_row, $load);
+		}
+		
+		return self::$_plug_config_arr[$plug_name.$multi_row];
+	}
+	
+	/**
+	 * Retrieve plugin preference value.
+	 * Shorthand of  self::getPluginConfig()->get()
+	 * NOTE: Multiple plugin preference DB rows are NOT supported
+	 * This will only look for your default plugin config (empty $milti_row)
+	 *
+	 * @see e_plugin_pref::get()
+	 * @param string $plug_name
+	 * @param string $pref_name
+	 * @param mixed $default default value if preference is not found
+	 * @return mixed
+	 */
+	public static function getPlugPref($plug_name, $pref_name, $default = null)
+	{
+		return self::getPlugConfig($plug_name)->get($pref_name, $default);
+	}
+	
+	/**
+	 * Advanced version of self::getPlugPref(). $pref_name is parsed,
+	 * so that $pref_name = 'x/y/z' will search for value pref_data[x][y][z]
+	 * Shorthand of  self::getPluginConfig()->getPref()
+	 *
+	 * @see e_core_pref::getPref()
+	 * @param string $pref_name
+	 * @param mixed $default default value if preference is not found
+	 * @return mixed
+	 */
+	public static function findPlugPref($plug_name, $pref_name, $default = null, $index = null)
+	{
+		return self::getPlugConfig($plug_name)->getPref($pref_name, $default, $index);
 	}
 	
 	/**
