@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-10 21:00:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2009-07-30 10:08:05 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 require_once('../../class2.php');
 
-include_lan(e_PLUGIN.'forum/languages/English/lan_forum_stats.php');
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php');
 require_once(e_PLUGIN.'forum/forum_class.php');
 $gen = new convert;
 $forum = new e107forum;
@@ -65,8 +65,8 @@ foreach($array as $table)
 }
 
 $query = "
-SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_class, u.user_name FROM #forum_t as ft
-LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_class, u.user_name, u.user_id FROM #forum_t as ft
+LEFT JOIN #user AS u ON SUBSTRING_INDEX(ft.thread_user,'.',1) = u.user_id
 LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
 WHERE ft.thread_parent = 0
 AND ft.thread_active != 0
@@ -76,8 +76,8 @@ $sql -> db_Select_gen($query);
 $most_activeArray = $sql -> db_getList();
 
 $query = "
-SELECT ft.*, f.forum_class, user_name FROM #forum_t as ft
-LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+SELECT ft.*, f.forum_class, u.user_name, u.user_id FROM #forum_t as ft
+LEFT JOIN #user AS u ON SUBSTRING_INDEX(ft.thread_user,'.',1) = u.user_id
 LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
 WHERE ft.thread_parent=0
 AND f.forum_class IN (".USERCLASS_LIST.")
@@ -175,7 +175,7 @@ foreach($most_activeArray as $ma)
 {
 	if($ma['user_name'])
 	{
-		$uinfo = "<a href='".e_BASE."user.php?id.{$ma['thread_user']}'>{$ma['user_name']}</a>";
+		$uinfo = "<a href='".e_BASE."user.php?id.{$ma['user_id']}'>{$ma['user_name']}</a>";
 	}
 	else
 	{
@@ -183,7 +183,8 @@ foreach($most_activeArray as $ma)
 		$uinfo = $tp->toHTML($tmp[0]);
 	}
 
-	$text .= "<tr>
+	$text .= "
+	<tr>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
 	<td style='width: 40%;' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$ma['thread_id']}'>{$ma['thread_name']}</a></td>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>{$ma['thread_total_replies']}</td>
@@ -213,13 +214,23 @@ $text .= "</table>
 $count=1;
 foreach($most_viewedArray as $ma)
 {
-	extract($ma);
-	$text .= "<tr>
+	if($ma['user_name'])
+	{
+		$uinfo = "<a href='".e_BASE."user.php?id.{$ma['user_id']}'>{$ma['user_name']}</a>";
+	}
+	else
+	{
+		$tmp = explode(chr(1), $ma['thread_anon']);
+		$uinfo = $tp->toHTML($tmp[0]);
+	}
+
+	$text .= "
+	<tr>
 	<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-	<td style='width: 40%;' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_id'>$thread_name</a></td>
-	<td style='width: 10%; text-align: center;' class='forumheader3'>$thread_views</td>
-	<td style='width: 20%; text-align: center;' class='forumheader3'><a href='".e_BASE."user.php?id.$thread_user'>$user_name</a></td>
-	<td style='width: 20%; text-align: center;' class='forumheader3'>".$gen->convert_date($thread_datestamp, "forum")."</td>
+	<td style='width: 40%;' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$ma['thread_id']}'>{$ma['thread_name']}</a></td>
+	<td style='width: 10%; text-align: center;' class='forumheader3'>{$ma['thread_views']}</td>
+	<td style='width: 20%; text-align: center;' class='forumheader3'>{$uinfo}</td>
+	<td style='width: 20%; text-align: center;' class='forumheader3'>".$gen->convert_date($ma['thread_datestamp'], "forum")."</td>
 	</tr>
 	";
 	$count++;
