@@ -9,9 +9,9 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-04-27 10:44:09 $
- * $Author: secretr $
+ * $Revision: 1.27 $
+ * $Date: 2009-07-31 20:09:14 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -826,7 +826,7 @@ if(isset($page_title[$action]))
 	$text .= "
 		<form method='post' action='".e_SELF."?{$action}.{$from}'>
 			<fieldset id='core-admin-log-list'>
-				<legend class='e-hidemes'>{$page_title[$action]}</legend>
+				<legend class='e-hideme'>{$page_title[$action]}</legend>
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 					<colgroup span='4'>
 	";
