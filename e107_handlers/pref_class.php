@@ -9,171 +9,12 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-07-30 16:06:58 $
+ * $Revision: 1.4 $
+ * $Date: 2009-07-31 16:12:19 $
  * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
-
-/**
- * Handle core preferences
- * 
- * @package e107
- * @category e107_handlers
- * @version 1.0
- * @author SecretR
- * @copyright Copyright (c) 2009, e107 Inc.
- */
-final class e_core_pref extends e_pref 
-{	
-	/**
-	 * Allowed core id array
-	 *
-	 * @var array
-	 */
-	protected $alliases = array(
-		'core' 			=> 'SitePrefs', 
-		'core_backup' 	=> 'SitePrefs_Backup', 
-		'emote' 		=> 'emote', 
-		'menu' 			=> 'menu_pref', 
-		'search' 		=> 'search_prefs', 
-		'notify' 		=> 'notify_prefs'
-	);
-	
-	/**
-	 * Backward compatibility - list of prefid's which operate wit serialized data
-	 *
-	 * @var array
-	 */
-	protected $serial_bc_array = array('emote', 'menu', 'search');
-
-	/**
-	 * Constructor
-	 *
-	 * @param string $alias
-	 * @param boolean $load load DB data on startup
-	 */
-	function __construct($alias, $load = true)
-	{
-		if($this->getAlias($alias))
-		{
-			$pref_alias = $this->getAlias($alias);
-			$pref_id = $alias;
-		}
-		elseif($this->getConfigId($alias))
-		{
-			$pref_id = $this->getConfigId($alias);
-			$pref_alias = $alias;
-		}
-		else 
-		{
-			$pref_id = $pref_alias = '';
-			trigger_error('Core config ID '.$alias.' not found!', E_USER_WARNING);
-			return;
-		}
-		
-		if(in_array($pref_alias, $this->serial_bc_array))
-		{
-			$this->setOptionSerialize(true);
-		}
-		
-		if('core' === $pref_alias)
-		{
-			$this->setOptionBackup(true);
-		}
-		
-		parent::__construct($pref_id, $pref_alias);
-		if($load && $pref_id)
-		{
-			$this->load();
-		}
-	}
-	
-	/**
-	 * Get config ID
-	 * Allowed values: key or value from $alias array
-	 * If id not found this method returns false
-	 *
-	 * @param string $alias
-	 * @return string
-	 */
-	public function getConfigId($alias)
-	{
-		$alias = trim($alias);
-		if(isset($this->alliases[$alias]))
-		{
-			return $this->allias[$alias];
-		}
-		return array_search($alias, $this->alliases);
-	}
-	
-	/**
-	 * Get config ID
-	 * Allowed values: key or value from $alias array
-	 * If id not found this method returns false
-	 *
-	 * @param string $alias
-	 * @return string
-	 */
-	public function getAlias($prefid)
-	{
-		$prefid = trim($prefid);
-		return array_search($prefid, $this->alliases);
-	}
-}
-
-/**
- * Handle plugin preferences
- * 
- * @package e107
- * @category e107_handlers
- * @version 1.0
- * @author SecretR
- * @copyright Copyright (c) 2009, e107 Inc.
- */
-class e_plugin_pref extends e_pref 
-{
-	/**
-	 * Unique plugin name
-	 *
-	 * @var string
-	 */
-	protected $plugin_id;
-	
-	/**
-	 * Constructor
-	 * Note: object data will be loaded only if the plugin is installed (no matter of the passed
-	 * $load value)
-	 *
-	 * @param string $plugin_id unique plugin name
-	 * @param string $multi_row additional field identifier appended to the $prefid
-	 * @param boolean $load load on startup
-	 */
-	function __construct($plugin_id, $multi_row = '', $load = true)
-	{
-		$this->plugin_id = $plugin_id;
-		if($multi_row)
-		{
-			$plugin_id = $plugin_id.'_'.$multi_row;
-		}
-		parent::__construct($plugin_id, 'plugin_'.$plugin_id);
-		if($load && e107::findPref('plug_installed/'.$this->plugin_id))
-		{
-			$this->load();
-		}
-	}
-	
-	/**
-	 * Retrive unique plugin name
-	 *
-	 * @return string
-	 */
-	public function getPluginId()
-	{
-		return $this->plugin_id;
-	}
-}
 
 /**
  * Base preference object - shouldn't be used direct,
@@ -185,7 +26,7 @@ class e_plugin_pref extends e_pref
  * @author SecretR
  * @copyright Copyright (c) 2009, e107 Inc.
  */
-abstract class e_pref extends e_model 
+class e_pref extends e_model 
 {
 	/**
 	 * Preference ID - DB row value
@@ -265,7 +106,7 @@ abstract class e_pref extends e_model
 	 */
 	public function get($pref_name, $default = null)
 	{
-		return $this->get($pref_name, $default);
+		return parent::get($pref_name, $default);
 	}
 	
 	/**
@@ -367,7 +208,7 @@ abstract class e_pref extends e_model
 	 * @param string|array $pref_name
 	 * @param boolean $strict
 	 */
-	final protected function addData($pref_name, $value = null, $strict = false)
+	final public function addData($pref_name, $value = null, $strict = false)
 	{
 		//XXX - Move most of this to the base class?
 		if(is_array($pref_name))
@@ -400,7 +241,7 @@ abstract class e_pref extends e_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	final protected function setData($pref_name, $value, $strict)
+	final public function setData($pref_name, $value, $strict)
 	{
 		//object reset not allowed, adding new pref is not allowed
 		if(empty($pref_name) || !$this->isData($pref_name))
@@ -418,7 +259,7 @@ abstract class e_pref extends e_model
 	 *
 	 * @return e_pref
 	 */
-	final protected function removeData($pref_name)
+	final public function removeData($pref_name)
 	{
 		if(is_null($pref_name))
 		{
@@ -608,6 +449,165 @@ abstract class e_pref extends e_model
 		return $this;
 	}
 	
+}
+
+/**
+ * Handle core preferences
+ * 
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author SecretR
+ * @copyright Copyright (c) 2009, e107 Inc.
+ */
+final class e_core_pref extends e_pref 
+{	
+	/**
+	 * Allowed core id array
+	 *
+	 * @var array
+	 */
+	protected $alliases = array(
+		'core' 			=> 'SitePrefs', 
+		'core_backup' 	=> 'SitePrefs_Backup', 
+		'emote' 		=> 'emote', 
+		'menu' 			=> 'menu_pref', 
+		'search' 		=> 'search_prefs', 
+		'notify' 		=> 'notify_prefs'
+	);
+	
+	/**
+	 * Backward compatibility - list of prefid's which operate wit serialized data
+	 *
+	 * @var array
+	 */
+	protected $serial_bc_array = array('emote', 'menu', 'search');
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $alias
+	 * @param boolean $load load DB data on startup
+	 */
+	function __construct($alias, $load = true)
+	{
+		if($this->getAlias($alias))
+		{
+			$pref_alias = $this->getAlias($alias);
+			$pref_id = $alias;
+		}
+		elseif($this->getConfigId($alias))
+		{
+			$pref_id = $this->getConfigId($alias);
+			$pref_alias = $alias;
+		}
+		else 
+		{
+			$pref_id = $pref_alias = '';
+			trigger_error('Core config ID '.$alias.' not found!', E_USER_WARNING);
+			return;
+		}
+		
+		if(in_array($pref_alias, $this->serial_bc_array))
+		{
+			$this->setOptionSerialize(true);
+		}
+		
+		if('core' === $pref_alias)
+		{
+			$this->setOptionBackup(true);
+		}
+		
+		parent::__construct($pref_id, $pref_alias);
+		if($load && $pref_id)
+		{
+			$this->load();
+		}
+	}
+	
+	/**
+	 * Get config ID
+	 * Allowed values: key or value from $alias array
+	 * If id not found this method returns false
+	 *
+	 * @param string $alias
+	 * @return string
+	 */
+	public function getConfigId($alias)
+	{
+		$alias = trim($alias);
+		if(isset($this->alliases[$alias]))
+		{
+			return $this->allias[$alias];
+		}
+		return array_search($alias, $this->alliases);
+	}
+	
+	/**
+	 * Get config ID
+	 * Allowed values: key or value from $alias array
+	 * If id not found this method returns false
+	 *
+	 * @param string $alias
+	 * @return string
+	 */
+	public function getAlias($prefid)
+	{
+		$prefid = trim($prefid);
+		return array_search($prefid, $this->alliases);
+	}
+}
+
+/**
+ * Handle plugin preferences
+ * 
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author SecretR
+ * @copyright Copyright (c) 2009, e107 Inc.
+ */
+class e_plugin_pref extends e_pref 
+{
+	/**
+	 * Unique plugin name
+	 *
+	 * @var string
+	 */
+	protected $plugin_id;
+	
+	/**
+	 * Constructor
+	 * Note: object data will be loaded only if the plugin is installed (no matter of the passed
+	 * $load value)
+	 *
+	 * @param string $plugin_id unique plugin name
+	 * @param string $multi_row additional field identifier appended to the $prefid
+	 * @param boolean $load load on startup
+	 */
+	function __construct($plugin_id, $multi_row = '', $load = true)
+	{
+		$this->plugin_id = $plugin_id;
+		if($multi_row)
+		{
+			$plugin_id = $plugin_id.'_'.$multi_row;
+		}
+		parent::__construct($plugin_id, 'plugin_'.$plugin_id);
+		if($load && e107::findPref('plug_installed/'.$this->plugin_id))
+		{
+			$this->load();
+		}
+	}
+	
+	/**
+	 * Retrive unique plugin name
+	 *
+	 * @return string
+	 */
+	public function getPluginId()
+	{
+		return $this->plugin_id;
+	}
 }
 
 /**
