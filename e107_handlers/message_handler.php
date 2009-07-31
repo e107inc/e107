@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-04-20 15:07:00 $
+ * $Revision: 1.13 $
+ * $Date: 2009-07-31 16:11:35 $
  * $Author: secretr $
  *
 */
@@ -28,74 +28,104 @@ define('E_MESSAGE_DEBUG', 	'debug');
 
 //FIXME - language file! new?
 
+/**
+ * Handle system messages
+ * 
+ * @package e107
+ * @category e107_handlers
+ * @version 1.1
+ * @author SecretR
+ * @copyright Copyright (c) 2009, e107 Inc.
+ */
 class eMessage
 {
 	/**
 	 * System Message Array
+	 * in format [type][message_stack] = array(message[, ...])
 	 *
 	 * @var array
-	 * @access private
 	 */
-	var $_sysmsg = array();
-
+	protected $_sysmsg = array();
+	
+	/**
+	 * Session key for storing session messages
+	 *
+	 * @var string
+	 */
+	protected $_session_id;
+	
+	/**
+	 * Singleton instance
+	 * 
+	 * @var eMessage
+	 */
+	protected static $_instance = null;
+	
 	/**
 	 * Constructor
+	 * 
+	 * Use {@link getInstance()}, direct instantiating 
+	 * is not possible for signleton objects
 	 *
-	 * @param string $php4_check PHP4 singleton fix
-	 * @return eMessage
-	 *
-	 * @access protected
+	 * @return void
 	 */
-	function eMessage($php4_check)
+	protected function __construct()
 	{
-		if($php4_check !== 'e107_emessage_php4_very_long_hard_to_remember_check')
-		{
-			exit('Fatal error! You are not allowed to direct instantinate an object for singleton class! Please use eMessage::getInstance()');
-		}
-
 		if(!session_id()) session_start();
-
-		if(isset($_SESSION['e107_system_messages']) && is_array($_SESSION['e107_system_messages']))
-		{
-			$this->_sysmsg = $_SESSION['e107_system_messages'];
-			return $this->resetSession();
-		}
-
-		return $this->reset();
+		
+		require_once(e_HANDLER.'e107_class.php');
+		$this->_session_id = e107::getPref('cookie_name', 'e107').'_system_messages';
+		
+		$this->reset()->_mergeSession();
 	}
 
 	/**
-	 * Get singleton instance
+	 * Cloning is not allowed
 	 *
-	 * @return object eMessage instance
-	 * @access public static
 	 */
-	function &getInstance()
+	private function __clone()
 	{
-	    static $instance = array();
-
-	    if(empty($instance))
-	    {
-	    	$instance[0] = new eMessage('e107_emessage_php4_very_long_hard_to_remember_check');
-	    }
-	    return $instance[0];
+	}
+	
+	/**
+	 * Get singleton instance (php4 no more supported)
+	 *
+	 * @return e107
+	 */
+	public static function getInstance()
+	{
+		if(null == self::$_instance)
+		{
+		    self::$_instance = new self();
+		}
+	  	return self::$_instance;
 	}
 
 	/**
-	 * Add message to a type stack
+	 * Add message to a type stack and default message stack
+	 * If $message is array, $message[0] will be the message stack and
+	 * $message[1] the message itself
 	 *
-	 * @param string $message
+	 * @param string|array $message
 	 * @param string $type
-	 * @param bool $session
+	 * @param boolean $session
 	 * @return eMessage
 	 */
-	function add($message, $type = E_MESSAGE_INFO, $session = false)
+	public function add($message, $type = E_MESSAGE_INFO, $session = false)
 	{
 		if(empty($message)) return $this;
+		
+		$mstack = 'default';
+		$msg = $message;
+		if(is_array($message))
+		{
+			$mstack = $message[0];
+			$msg = $message[1];
+		}
 
 		if(!$session)
 		{
-			if($this->isType($type)) $this->_sysmsg[$type][] = $message;
+			if($this->isType($type)) $this->_sysmsg[$type][$mstack][] = $msg;
 			return $this;
 		}
 		return $this->addSession($message, $type);
@@ -103,16 +133,25 @@ class eMessage
 
 	/**
 	 * Add message to a _SESSION type stack
-	 *
-	 * @param string $message
+	 * If $message is array, $message[0] will be the message stack and
+	 * $message[1] the message itself
+	 * 
+	 * @param string|array $message
 	 * @param string $type
 	 * @return eMessage
 	 */
-	function addSession($message, $type = E_MESSAGE_INFO)
+	public function addSession($message, $type = E_MESSAGE_INFO)
 	{
 		if(empty($message)) return $this;
+		
+		$mstack = 'default';
+		if(is_array($message))
+		{
+			$mstack = $message[0];
+			$message = $message[1];
+		}
 
-		if($this->isType($type)) $_SESSION['e107_system_messages'][$type][] = $message;
+		if($this->isType($type)) $_SESSION[$this->_session_id][$type][$mstack][] = $message;
 		return $this;
 	}
 
@@ -120,12 +159,15 @@ class eMessage
 	 * Get type title (multi-language)
 	 *
 	 * @param string $type
+	 * @param string $message_stack
 	 * @return string title
-	 *
-	 * @access public static
 	 */
-	function getTitle($type)
+	public static function getTitle($type, $message_stack = 'default')
 	{
+		if($message_stack && $message_stack != 'default' && defined('EMESSLAN_TITLE_'.strtoupper($type.'_'.$message_stack)))
+		{
+			return constant('EMESSLAN_TITLE_'.strtoupper($type.'_'.$message_stack));
+		}
 		return defsettrue('EMESSLAN_TITLE_'.strtoupper($type), '');
 	}
 
@@ -133,60 +175,63 @@ class eMessage
 	 * Message getter
 	 *
 	 * @param string $type valid type
+	 * @param string $mstack message stack name
 	 * @param bool $raw force array return
 	 * @param bool $reset reset message type stack
 	 * @return string|array message
 	 */
-	function get($type, $raw = false, $reset = true)
-	{
-		$message = varsettrue($this->_sysmsg[$type], array());
-		if($reset) $this->reset($type);
+	public function get($type, $mstack = 'default', $raw = false, $reset = true)
+	{	
+		$message = isset($this->_sysmsg[$type][$mstack]) ? $this->_sysmsg[$type][$mstack] : '';
+		if($reset) $this->reset($type, $mstack, false);
 
-		return (true === $raw ? $message : eMessage::formatMessage($type, $message));
+		return (true === $raw ? $message : self::formatMessage($mstack, $type, $message));
 	}
 
 	/**
 	 * Session message getter
 	 *
 	 * @param string $type valid type
+	 * @param string $mstack message stack
 	 * @param bool $raw force array return
 	 * @param bool $reset reset session message type stack
 	 * @return string|array session message
 	 */
-	function getSession($type, $raw = false, $reset = true)
+	public function getSession($type, $mstack = 'default', $raw = false, $reset = true)
 	{
-		$message = varsettrue($_SESSION['e107_system_messages'][$type], array());
-		if($reset) $this->resetSession($type);
+		$message = isset($_SESSION[$this->_session_id][$type][$mstack]) ? $_SESSION[$this->_session_id][$type][$mstack] : '';
+		if($reset) $this->resetSession($type, $mstack);
 
-		return (true === $raw ? $message : eMessage::formatMessage($type, $message));
+		return (true === $raw ? $message : self::formatMessage($mstack, $type, $message));
 	}
 
 	/**
 	 * Output all accumulated messages
 	 *
+	 * @param string $mstack message stack name
 	 * @param bool $raw force return type array
 	 * @param bool $reset reset all messages
 	 * @param bool $session merge with session messages
 	 * @return array|string messages
 	 */
-	function render($raw = false, $reset = true, $session = false)
+	public function render($mstack = 'default', $raw = false, $reset = true, $session = false)
 	{
 		if($session)
 		{
-			$this->_merge();
+			$this->_mergeSession(true, $mstack);
 		}
 		$ret = array();
 
 		foreach ($this->_get_types() as $type)
 		{
-			$message = $this->get($type, $raw);
+			$message = $this->get($type, $mstack, $raw);
 			if(!empty($message))
 			{
 				$ret[$type] = $message;
 			}
 		}
 
-		if($reset) $this->reset(false);
+		if($reset) $this->reset(false, $mstack);
 		if(true === $raw || empty($ret)) return ($raw ? $ret : '');
 
 		//changed to class
@@ -200,13 +245,12 @@ class eMessage
 	/**
 	 * Create message block markup based on its type.
 	 *
+	 * @param string $mstack
 	 * @param string $type
 	 * @param array|string $message
-	 * @return string formated message
-	 *
-	 * @access public static
+	 * @return string
 	 */
-	function formatMessage($type, $message)
+	public static function formatMessage($mstack, $type, $message)
 	{
 		if (empty($message)) return '';
 		elseif (is_array($message))
@@ -215,7 +259,7 @@ class eMessage
 		}
 		return "
 			<div class='{$type}'>
-				<div class='s-message-title'>".eMessage::getTitle($type)."</div>
+				<div class='s-message-title'>".self::getTitle($type, $mstack)."</div>
 				<div class='s-message-body'>
 					{$message}
 				</div>
@@ -226,16 +270,43 @@ class eMessage
 	/**
 	 * Reset message array
 	 *
-	 * @param mixed $type false for reset all, or type constant
-	 * @param bool $session reset session messages as well
+	 * @param mixed $type false for reset all or type string
+	 * @param mixed $mstack false for reset all or stack name string 
+	 * @param boolean $session reset session messages as well
 	 * @return eMessage
 	 */
-	function reset($type = false, $session = false)
+	public function reset($type = false, $mstack = false, $session = false)
 	{
-		if(false === $type) $this->_sysmsg = $this->_type_map();
-		elseif(isset($this->_sysmsg[$type])) $this->_sysmsg[$type] = array();
+		if(false === $type) 
+		{
+			if(false === $mstack)
+			{
+				$this->_sysmsg = $this->_type_map();
+			}
+			elseif(is_array($this->_sysmsg))
+			{
+				foreach ($this->_sysmsg as $t => $_mstack) 
+				{
+					if(is_array($_mstack))
+					{
+						unset($this->_sysmsg[$t][$mstack]);
+					}
+				}
+			}
+		}
+		elseif(isset($this->_sysmsg[$type])) 
+		{
+			if(false === $mstack)
+			{
+				$this->_sysmsg[$type] = array();
+			}
+			elseif(is_array($this->_sysmsg[$type])) 
+			{
+				unset($this->_sysmsg[$type][$mstack]);
+			}
+		}
 
-		if($session) $this->resetSession($type);
+		if($session) $this->resetSession($type, $mstack);
 
 		return $this;
 	}
@@ -244,12 +315,39 @@ class eMessage
 	 * Reset _SESSION message array
 	 *
 	 * @param mixed $type false for reset all, or valid type constant
+	 * @param mixed $mstack false for reset all or stack name string 
 	 * @return eMessage
 	 */
-	function resetSession($type = false)
+	public function resetSession($type = false, $mstack = false)
 	{
-		if(!$type) $_SESSION['e107_system_messages'] = $this->_type_map();
-		elseif(isset($_SESSION['e107_system_messages'][$type])) $_SESSION['e107_system_messages'][$type] = array();
+		if(false === $type) 
+		{
+			if(false === $mstack)
+			{
+				$_SESSION[$this->_session_id] = $this->_type_map();
+			}
+			elseif($_SESSION[$this->_session_id])
+			{
+				foreach ($_SESSION[$this->_session_id] as $t => $_mstack) 
+				{
+					if(is_array($_mstack))
+					{
+						unset($_SESSION[$this->_session_id][$t][$mstack]);
+					}
+				}
+			}
+		}
+		elseif(isset($_SESSION[$this->_session_id][$type])) 
+		{
+			if(false === $mstack)
+			{
+				$_SESSION[$this->_session_id][$type] = array();
+			}
+			elseif(is_array($_SESSION[$this->_session_id][$type])) 
+			{
+				unset($_SESSION[$this->_session_id][$type][$mstack]);
+			}
+		}
 
 		return $this;
 	}
@@ -257,18 +355,34 @@ class eMessage
 	/**
 	 * Merge _SESSION message array with the current messages
 	 *
-	 * @param bool $reset
+	 * @param boolean $reset
 	 * @return eMessage
 	 */
-	function _merge($reset = true)
+	protected function _mergeSession($reset = true, $mstack = false)
 	{
-		foreach (array_keys($_SESSION['e107_system_messages']) as $type)
+		if(is_array($_SESSION[$this->_session_id]))
 		{
-			if(!$this->isType($type)) continue;
-			$this->_sysmsg[$type] = array_merge($this->_sysmsg[$type], $_SESSION['e107_system_messages'][$type]);
+			foreach (array_keys($_SESSION[$this->_session_id]) as $type)
+			{
+				if(!$this->isType($type)) 
+				{ 
+					unset($_SESSION[$this->_session_id][$type]);
+					continue;
+				}
+				if(false === $mstack)
+				{
+					$this->_sysmsg[$type] = array_merge_recursive($this->_sysmsg[$type], $_SESSION[$this->_session_id][$type]);
+					continue;
+				}
+				
+				if(isset($_SESSION[$this->_session_id][$type][$mstack]))
+				{
+					$this->_sysmsg[$type][$mstack] = $_SESSION[$this->_session_id][$type][$mstack];
+				}
+				
+			}
 		}
-
-		if($reset) $this->resetSession();
+		if($reset) $this->resetSession(false, $mstack);
 		return $this;
 	}
 
@@ -276,9 +390,9 @@ class eMessage
 	 * Check passed type against the type map
 	 *
 	 * @param mixed $type
-	 * @return bool
+	 * @return boolean
 	 */
-	function isType($type)
+	public function isType($type)
 	{
 		return (array_key_exists($type, $this->_type_map()));
 	}
@@ -287,22 +401,24 @@ class eMessage
 	 * Check for messages
 	 *
 	 * @param mixed $type
-	 * @param bool $session
-	 * @return bool
+	 * @param boolean $session
+	 * @return boolean
 	 */
-	function hasMessage($type = false, $session = true)
+	public function hasMessage($type = false, $mstack = false, $session = true)
 	{
+		if(!$mstack) $mstack = 'default';
+		
 		if(false === $type)
 		{
 			foreach ($this->_get_types() as $_type)
 			{
-				if($this->get($_type, true, false) || ($session && $this->getSession($_type, true, false)))
+				if($this->get($_type, $mstack, true, false) || ($session && $this->getSession($_type, $mstack, true, false)))
 				{
 					return true;
 				}
 			}
 		}
-		return ($this->get($type, true, false) || ($session && $this->getSession($type, true, false)));
+		return ($this->get($type, $mstack, true, false) || ($session && $this->getSession($type, $mstack, true, false)));
 	}
 
 	/**
@@ -310,7 +426,7 @@ class eMessage
 	 *
 	 * @return array type map
 	 */
-	function _type_map()
+	protected function _type_map()
 	{
 		//show them in this order!
 		return array(
@@ -327,7 +443,7 @@ class eMessage
 	 *
 	 * @return array valid message types
 	 */
-	function _get_types()
+	protected function _get_types()
 	{
 		return array_keys($this->_type_map());
 	}
