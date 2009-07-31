@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-06-12 20:41:34 $
- * $Author: e107steved $
+ * $Revision: 1.8 $
+ * $Date: 2009-07-31 16:14:51 $
+ * $Author: secretr $
  *
 */
 
@@ -75,9 +75,15 @@ class validatorClass
 	{
 		global $tp, $pref;
 		$ret = array('data' => array(), 'failed' => array(), 'errors' => array());
+
 		foreach ($definitions as $dest => $defs)
 		{
 			$errNum = 0;			// Start with no error
+			
+			if(!is_array($defs)) //default rule - dbClean -> toDB
+			{
+				$defs = array('dbClean', ($defs ? $defs : 'toDB'));
+			}
 			$src = varset($defs['srcName'],$dest);				// Set source field name
 			if (!isset($sourceFields[$src]))
 			{
@@ -117,7 +123,7 @@ class validatorClass
 					$newValue = trim(preg_replace($defs['stripChars'], "", $value));
 					if ($newValue <> $value)
 					{
-						echo "Invalid: {$newValue} :: {$value}<br />";
+						//echo "Invalid: {$newValue} :: {$value}<br />";
 						$errNum = ERR_INVALID_CHARS;
 					}
 					$value = $newValue;
@@ -144,11 +150,11 @@ class validatorClass
 						$errNum = ERR_TOO_LONG;
 					}
 				}
-				if (!$errnum && isset($defs['minVal']) && ($value < $defs['minVal']))
+				if (!$errNum && isset($defs['minVal']) && ($value < $defs['minVal']))
 				{
 					$errNum = ERR_TOO_LOW;
 				}
-				if (!$errnum && isset($defs['maxVal']) && ($value < $defs['maxVal']))
+				if (!$errNum && isset($defs['maxVal']) && ($value < $defs['maxVal']))
 				{
 					$errNum = ERR_TOO_HIGH;
 				}
