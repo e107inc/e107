@@ -61,29 +61,27 @@ function custom_shortcode($parm)
 			break;
 
 		case 'language':
-			require_once(e_HANDLER.'file_class.php');
-			$fl = new e_file;
-			$reject = array('.','..','/','CVS','thumbs.db','*._$');
-			$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
-			sort($lanlist);
-			$action = (e_QUERY && !$_GET['elan']) ? e_SELF.'?'.e_QUERY : e_SELF;
-			$lantext = "<form method='post' action='".$action."' id='langchange'>
-			<div><select name='sitelanguage' class='tbox' onchange=\"document.getElementById('langchange').submit()\">\n";
+				//FIXME obtrusive and may not work with session or subdomains - certainly better to use {LANGUAGELINKS} anyway
+				$languageList = explode(',', e_LANLIST);
+				sort($languageList);
+				$action = (e_QUERY && ! $_GET['elan']) ? e_SELF.'?'.e_QUERY : e_SELF;
+				$text = '
+				<form method="post" action="'.$action.'" id="langchange">
+					<select name="sitelanguage" class="tbox" onchange=\'document.getElementById("langchange").submit()\'>';
 
-			foreach($lanlist as $langval)
-			{
-				$langname = $langval;
-				$langval = ($langval == $pref['sitelanguage']) ? '' : $langval;
-				$selected = ($langval == USERLAN) ? "selected='selected'" : '';
-				$lantext .= "<option value='".$langval."' $selected>".$langname."</option>\n ";
-			}
+				foreach($languageList as $languageFolder)
+				{
+					$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
+					$text .= '
+							<option value="'.$languageFolder.'"'.$selected.'>'.$languageFolder.'</option>';
+				}
 
-			$lantext .= "</select>
-			<input type='hidden' name='setlanguage' value='1' />
-			</div></form>
-			";
-			return $lantext;
-			break;
+				$text .= '
+					</select>
+					<input type="hidden" name="setlanguage" value="1" />
+				</form>';
+				return $text;
+				break;
 
 		case 'clock':
 			$clock_flat = true;
