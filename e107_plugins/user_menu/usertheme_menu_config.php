@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-07 22:56:13 $
-|     $Author: e107coders $
+|     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/usertheme_menu_config.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2009-08-03 20:11:00 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
