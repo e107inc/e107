@@ -9,8 +9,8 @@
  * Admin template - _blank theme
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/_blank/admin_template.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-07-18 15:04:01 $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-03 19:41:17 $
  * $Author: marj_nl_fr $
  *
 */
@@ -34,7 +34,6 @@ $ADMIN_HEADER = "
 			{ADMIN_LOGO}
 			{ADMIN_LOGGED}
 			{ADMIN_SEL_LAN}
-			{ADMIN_USERLAN}
 
 		</div>
 		<div style='height: 20px;'><!-- --></div>

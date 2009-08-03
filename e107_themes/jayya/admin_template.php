@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/admin_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-04-27 10:52:42 $
-|     $Author: secretr $
+|     $Revision: 1.7 $
+|     $Date: 2009-08-03 19:41:17 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -49,7 +49,6 @@ $ADMIN_HEADER = "<table class='page_container'>
 <div style='margin-bottom: 3px;'>
 {ADMIN_LOGGED}
 {ADMIN_SEL_LAN}
-{ADMIN_USERLAN}
 </div>
 {SITELINKS=flat}
 </td>
