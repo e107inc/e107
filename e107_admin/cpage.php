@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2009-07-24 19:18:56 $
-|     $Author: e107steved $
+|     $Revision: 1.46 $
+|     $Date: 2009-08-03 18:36:04 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,7 +28,6 @@ $page = new page;
 require_once("auth.php");
 // require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."userclass_class.php");
-$custpage_lang = ($sql->mySQLlanguage) ? $sql->mySQLlanguage : $pref['sitelanguage'];
 
 if (e_QUERY)
 {

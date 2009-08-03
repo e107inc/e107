@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-03-23 21:45:51 $
-|     $Author: lisa_ $
+|     $Revision: 1.19 $
+|     $Date: 2009-08-03 18:36:04 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -24,7 +24,8 @@ if (!getperms("T")) {
 $e_sub_cat = 'meta';
 require_once("auth.php");
 
-$current_lang = ($sql->mySQLlanguage != "") ? $sql->mySQLlanguage : $pref['sitelanguage'];
+//$current_lang = ($sql->mySQLlanguage != "") ? $sql->mySQLlanguage : $pref['sitelanguage'];
+$current_lang = e_LANGUAGE;
 
 if (isset($_POST['metasubmit'])) {
 
@@ -38,11 +39,11 @@ if (isset($_POST['metasubmit'])) {
 		$meta_author[$lan] = $pref['meta_author'][$lan];
 	}
 
-	$meta_tag[$current_lang] = strip_if_magic(chop($_POST['meta']));
-	$meta_diz[$current_lang] = strip_if_magic(chop($_POST['meta_description']));
-	$meta_keywords[$current_lang] = strip_if_magic(chop($_POST['meta_keywords']));
-	$meta_copyright[$current_lang] = strip_if_magic(chop($_POST['meta_copyright']));
-	$meta_author[$current_lang] = strip_if_magic(chop($_POST['meta_author']));
+	$meta_tag[e_LANGUAGE] = strip_if_magic(chop($_POST['meta']));
+	$meta_diz[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_description']));
+	$meta_keywords[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_keywords']));
+	$meta_copyright[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_copyright']));
+	$meta_author[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_author']));
 
     $pref['meta_news_summary'] = $_POST['meta_news_summary'];
 	$pref['meta_tag'] = $meta_tag;
@@ -52,8 +53,8 @@ if (isset($_POST['metasubmit'])) {
 	$pref['meta_author'] = $meta_author;
 
    /*
-    if($pref['meta_tag'][$current_lang] == ""){
-        unset($meta_tag[$current_lang]);
+    if($pref['meta_tag'][e_LANGUAGE] == ""){
+        unset($meta_tag[e_LANGUAGE]);
     }*/
 
 	save_prefs();
@@ -61,7 +62,7 @@ if (isset($_POST['metasubmit'])) {
 }
 
 if ($message) {
-	$ns->tablerender(METLAN_4, "<div style='text-align:center'>".METLAN_1." (".$current_lang.").</div>");
+	$ns->tablerender(METLAN_4, "<div style='text-align:center'>".METLAN_1." (".e_LANGUAGE.").</div>");
 }
 
 $meta = $pref['meta_tag'];
@@ -77,28 +78,28 @@ $text = "<div style='text-align:center'>
 	<tr>
     <td style='width:25%' class='forumheader3'>".METLAN_9."</td>
     <td style='width:75%' class='forumheader3'>
-	<textarea class='tbox' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4' style='width:90%'>".$tp->toForm($meta_diz[$current_lang])."</textarea>
+	<textarea class='tbox' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4' style='width:90%'>".$tp->toForm($meta_diz[e_LANGUAGE])."</textarea>
 	</td>
 	</tr>
 
 	<tr>
 	<td style='width:25%' class='forumheader3'>".METLAN_10."</td>
     <td style='width:75%' class='forumheader3'>
-	<textarea class='tbox' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4' style='width:90%'>".$tp->toForm($meta_keywords[$current_lang])."</textarea>
+	<textarea class='tbox' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4' style='width:90%'>".$tp->toForm($meta_keywords[e_LANGUAGE])."</textarea>
 	</td>
 	</tr>
 
 	<tr>
 	<td style='width:25%' class='forumheader3'>".METLAN_11."</td>
     <td style='width:75%' class='forumheader3'>
-	<input class='tbox' style='width:90%' size='70' type='text' name='meta_copyright' value='".$meta_copyright[$current_lang]."' />
+	<input class='tbox' style='width:90%' size='70' type='text' name='meta_copyright' value='".$meta_copyright[e_LANGUAGE]."' />
 	</td>
 	</tr>
 
 	<tr>
 	<td style='width:25%' class='forumheader3'>".METLAN_13."</td>
     <td style='width:75%' class='forumheader3'>
-	<input class='tbox' style='width:90%' size='70' type='text' name='meta_author' value=\"".$meta_author[$current_lang]."\" />
+	<input class='tbox' style='width:90%' size='70' type='text' name='meta_author' value=\"".$meta_author[e_LANGUAGE]."\" />
 	</td>
 	</tr>
 
@@ -109,7 +110,7 @@ $text = "<div style='text-align:center'>
 	</td>
 	<td style='width:75%' class='forumheader3'>
 	<textarea class='tbox' title=\"eg. <meta name='author' content='your name' />\" id='meta' name='meta' cols='70'
-	rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm($meta[$current_lang]))."</textarea>
+	rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm($meta[e_LANGUAGE]))."</textarea>
 	<br />";
 $text .= "</td>
 </tr>
@@ -134,7 +135,7 @@ $text .= "</td>
 
 
 
-$ns -> tablerender(METLAN_8." (".$current_lang.")", $text);
+$ns -> tablerender(METLAN_8." (".e_LANGUAGE.")", $text);
 
 require_once("footer.php");
 
