@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.375 $
-|     $Date: 2009-07-18 15:53:42 $
+|     $Revision: 1.376 $
+|     $Date: 2009-08-03 21:12:12 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -362,9 +362,12 @@ define("SITEURL", SITEURLBASE.e_HTTP);
 
 // let the subdomain determine the language (when enabled).
 
-if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE){
+// Ensure $pref['sitelanguage'] is set if upgrading from 0.6
+$pref['sitelanguage'] = (isset($pref['sitelanguage']) ? $pref['sitelanguage'] : 'English');
 
-		$mtmp = explode("\n",$pref['multilanguage_subdomain']);
+if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "session") && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE)
+{
+		$mtmp = explode("\n", $pref['multilanguage_subdomain']);
         foreach($mtmp as $val)
 		{
         	if(e_DOMAIN == trim($val))
@@ -375,7 +378,7 @@ if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'] &
 
 		if($domain_active || ($pref['multilanguage_subdomain'] == "1"))
 		{
-			e107_ini_set("session.cookie_domain",".".e_DOMAIN);
+			e107_ini_set("session.cookie_domain", ".".e_DOMAIN);
 			require_once(e_HANDLER."language_class.php");
 			$lng = new language;
 	        if(!e_SUBDOMAIN)
@@ -396,7 +399,8 @@ if (!$pref['cookie_name']) {
 }
 
 // start a session if session based login is enabled
-if ($pref['user_tracking'] == "session") {
+if ($pref['user_tracking'] == "session")
+{
 	session_start();
 }
 
@@ -455,80 +459,123 @@ $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
 // sort out the users language selection
-if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan'])) {
-	if($_GET['elan'])  // query support, for language selection splash pages. etc
+if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan']))
+{
+	// query support, for language selection splash pages. etc
+	if($_GET['elan'])
 	{
-		$_POST['sitelanguage'] = str_replace(array(".","/","%"),"",$_GET['elan']);
+		$_POST['sitelanguage'] = str_replace(array(".", "/", "%"), "", $_GET['elan']);
 	}
 	if($GLOBALS['elan'] && !isset($_POST['sitelanguage']))
 	{
-   		$_POST['sitelanguage'] = $GLOBALS['elan'];
+		$_POST['sitelanguage'] = $GLOBALS['elan'];
 	}
 
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
-    $sql2->mySQLlanguage = $_POST['sitelanguage'];
+	$sql2->mySQLlanguage = $_POST['sitelanguage'];
 
-	if ($pref['user_tracking'] == "session") {
+	if ($pref['user_tracking'] == "session")
+	{
 		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
-	} else {
+	}
+	else
+	{
 		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 		if (strpos(e_SELF, ADMINDIR) === FALSE) 
 		{
-		  $locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF."?".e_QUERY : e_SELF;
-		  header("Location:".$locat);
-		  exit();
+			$locat = ((!$_GET['elan'] && e_QUERY) || (e_QUERY && e_LANCODE)) ? e_SELF."?".e_QUERY : e_SELF;
+			header("Location:".$locat);
+			exit();
 		}
 	}
 }
 
-$user_language='';
 // Multi-language options.
-if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 
-	if ($pref['user_tracking'] == "session") {
-		$user_language=(array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : "");
-		$sql->mySQLlanguage=($user_language) ? $user_language : "";
-		$sql2->mySQLlanguage = $sql->mySQLlanguage;
-	} else {
-		$user_language= (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : "";
-		$sql->mySQLlanguage=($user_language) ? $user_language : "";
-		$sql2->mySQLlanguage = $sql->mySQLlanguage;
-	}
-
-
-}
-
-// Get Language List for rights checking.
-if(!$tmplan = getcachedvars("language-list")){
-	$handle=opendir(e_LANGUAGEDIR);
-	while ($file = readdir($handle)) {
-		if (is_dir(e_LANGUAGEDIR.$file) && $file !="." && $file !=".." && $file !="CVS") {
-				$lanlist[] = $file;
+// Get language list for rights checking.
+if( ! $tmplan = getcachedvars('language-list'))
+{
+	$handle = opendir(e_LANGUAGEDIR);
+	while ($file = readdir($handle))
+	{
+		// add only if e_LANGUAGEDIR.e_LANGUAGE/e_LANGUAGE
+		if ($file != '.' && $file != '..' && is_readable(e_LANGUAGEDIR.$file.'/'.$file.'.php'))
+		{
+			$lanlist[] = $file;
 		}
 	}
 	closedir($handle);
-	$tmplan = implode(",",$lanlist);
-	cachevars("language-list", $tmplan);
+	$tmplan = implode(',', $lanlist);
+	cachevars('language-list', $tmplan);
 }
+// Save language flat list
+define('e_LANLIST', $tmplan);
 
-define("e_LANLIST",(isset($tmplan) ? $tmplan : ""));
+// Set $language fallback to $pref['sitelanguage'] for the time being
+$language = $pref['sitelanguage'];
 
-$language=(isset($_COOKIE['e107language_'.$pref['cookie_name']]) ? $_COOKIE['e107language_'.$pref['cookie_name']] : ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English"));
-$language = preg_replace("#\W#", "", $language);
-define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)    || (    (strpos(e_SELF, $ADMIN_DIRECTORY) == FALSE) && (strpos(e_SELF, $PLUGINS_DIRECTORY) == FALSE) && file_exists(e_LANGUAGEDIR.$user_language."/".$user_language.".php")  )   ) ? $user_language : FALSE));
-define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
+// Get user language choice
+/// Force no multilingual sites to keep there preset languages? if (varset($pref['multilanguage']))
+{
+	if ($pref['user_tracking'] == 'session')
+	{
+		$user_language = (array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : '');
+	}
+	else
+	{
+		$user_language= (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : '';
+	}
+	// Strip $user_language
+	//TODO allow [a-z][A-Z][0-9]_
+	$user_language = preg_replace('#\W#', '', $user_language);
 
-//@TODO
-e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
+	// Is user language choice available?
+	if( ! in_array($user_language, $lanlist))
+	{
+		// Reset session
+		if(array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION))
+		{
+			unset($_SESSION['e107language_'.$pref['cookie_name']]);
+		}
+		// Reset cookie
+		if(isset($_COOKIE['e107language_'.$pref['cookie_name']]))
+		{
+			unset($_COOKIE['e107language_'.$pref['cookie_name']]);
+		}
+		$user_language = '';
+	}
+	else
+	{
+		$language = $user_language;
+	}
+
+	// Ensure db got the proper language - default is empty
+	if (varset($pref['multilanguage']))
+	{
+		$sql->mySQLlanguage  = $user_language;
+		$sql2->mySQLlanguage = $user_language;
+	}
+}
+// We should have the language by now
+define('e_LANGUAGE', $language);
+
+// Keep USERLAN for backward compatibility
+define('USERLAN', e_LANGUAGE);
+
+//TODO do it only once and with the proper function
+e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
-if($pref['sitelanguage'] != e_LANGUAGE && isset($pref['multilanguage']) && $pref['multilanguage'] && !$pref['multilanguage_subdomain']){
+if($pref['sitelanguage'] != e_LANGUAGE && varset($pref['multilanguage']) && !$pref['multilanguage_subdomain'])
+{
 	list($clc) = explode("_",CORE_LC);
 	define("e_LAN", strtolower($clc));
 	define("e_LANQRY", "[".e_LAN."]");
 	unset($clc);
-}else{
+}
+else
+{
     define("e_LAN", FALSE);
 	define("e_LANQRY", FALSE);
 }
@@ -886,7 +933,7 @@ else
 
 $exclude_lan = array("lan_signup.php");  // required for multi-language.
 
-// @TODO remove autoload
+//TODO remove autoload
 if ($inAdminDir)
 {
   e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
