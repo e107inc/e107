@@ -1,4 +1,5 @@
-global $tp,$pref;
+//<? $Id: custom.sc,v 1.25 2009-08-03 21:54:02 marj_nl_fr Exp $
+global $tp, $pref;
 $ret = "";
 $custom_query = explode('+', $parm);
 switch($custom_query[0])
@@ -57,28 +58,27 @@ switch($custom_query[0])
 				return $quote;
 				break;
 
-		case "language":
+		case 'language':
+				//FIXME obtrusive and may not work with session or subdomains - certainly better to use {LANGUAGELINKS} anyway
+				$languageList = explode(',', e_LANLIST);
+				sort($languageList);
+				$action = (e_QUERY && ! $_GET['elan']) ? e_SELF.'?'.e_QUERY : e_SELF;
+				$text = '
+				<form method="post" action="'.$action.'" id="langchange">
+					<select name="sitelanguage" class="tbox" onchange=\'document.getElementById("langchange").submit()\'>';
 
-				require_once(e_HANDLER."file_class.php");
-				$fl = new e_file;
-				$reject = array('.','..','/','CVS','thumbs.db','*._$');
-				$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
-				sort($lanlist);
-				$action = (e_QUERY && !$_GET['elan']) ? e_SELF."?".e_QUERY : e_SELF;
-				$lantext = "<form method='post' action='".$action."' id='langchange'>
-				<div><select name='sitelanguage' class='tbox' onchange=\"document.getElementById('langchange').submit()\">\n";
-
-				foreach($lanlist as $langval) {
-						$langname = $langval;
-						$langval = ($langval == $pref['sitelanguage']) ? "" : $langval;
-						$selected = ($langval == USERLAN) ? "selected='selected'" : "";
-						$lantext .= "<option value='".$langval."' $selected>".$langname."</option>\n ";
+				foreach($languageList as $languageFolder)
+				{
+					$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
+					$text .= '
+							<option value="'.$languageFolder.'"'.$selected.'>'.$languageFolder.'</option>';
 				}
 
-				$lantext .= "</select>\n";
-				$lantext .= "<input type='hidden' name='setlanguage' value='1' />";
-				$lantext .= "</div></form>";
-				return $lantext;
+				$text .= '
+					</select>
+					<input type="hidden" name="setlanguage" value="1" />
+				</form>';
+				return $text;
 				break;
 
 
