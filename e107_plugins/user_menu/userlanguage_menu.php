@@ -1,63 +1,70 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/userlanguage_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-01 02:29:25 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/userlanguage_menu.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2009-08-03 19:41:17 $
+ * $Author: marj_nl_fr $
+ */
+//TODO homogenisation with languagelinks + do not force www + unobtrusive redirect
+if ( ! defined('e107_INIT')) { exit(); }
 
-if (!defined('e107_INIT')) { exit; }
-
-require_once(e_HANDLER."language_class.php");
+require_once(e_HANDLER.'language_class.php');
 $slng = new language;
-require_once(e_HANDLER."file_class.php");
-	$fl = new e_file;
-	$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
-	sort($lanlist);
 
-	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
+$languageList = explode(',', e_LANLIST);
+sort($languageList);
+
+if(varset($pref['multilanguage_subdomain']))
+{
+	$action = (e_QUERY) ? e_SELF.'?'.e_QUERY : e_SELF;
+	$text = '
+		<div style="text-align:center">
+			<select class="tbox" name="lang_select" style="width:95%" onchange="location.href=this.options[selectedIndex].value">';
+	foreach($languageList as $languageFolder)
 	{
-        	$text = "<div style='text-align:center'><select class='tbox' name='lang_select' style='width:95%' onchange=\"location.href=this.options[selectedIndex].value\">";
-			foreach($lanlist as $lng)
-			{
-				$selected = ($lng  == USERLAN || ($lng == $pref['sitelanguage'] && USERLAN == "")) ? "selected='selected'" : "";
-                $urlval = $slng->subdomainUrl($lng);
-				$text .= "<option value='".$urlval."' $selected>$lng</option>\n";
-			}
-			$text .= "</select></div>";
+		$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
+		$urlval   = $slng->subdomainUrl($languageFolder);
+		$text .= '
+				<option value="'.$urlval.'" $selected>$languageFolder</option>';
+		$text .= '
+				<option value="'.$urlval.'"'.$selected.'>'.$languageFolder.'</option>';
 	}
-	else
+	$text .= '
+			</select>
+		</div>';
+}
+else
+{
+	//FIXME may not work with session
+	$action = (e_QUERY && ! $_GET['elan']) ? e_SELF.'?'.e_QUERY : e_SELF;
+	$text = '
+	<form method="post" action="'.$action.'">
+		<div style="text-align:center">
+			<select name="sitelanguage" class="tbox">';
+	foreach($languageList as $languageFolder)
 	{
-	$action = (e_QUERY && !$_GET['elan']) ? e_SELF."?".e_QUERY : e_SELF;
-	$text = "<form method='post' action='".$action."'>
-		<div style='text-align:center'>
-		<select name='sitelanguage' class='tbox' >";
-	foreach($lanlist as $langval)
-	{
-		$selected ="";
-		if($langval == USERLAN || ($langval == $pref['sitelanguage'] && USERLAN == ""))
-		{
-			$selected = "selected='selected'";
-		}
-		$text .= "<option value='".$langval."' $selected>".$langval."</option>\n ";
+		$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
+		$text .= '
+				<option value="'.$languageFolder.'"'.$selected.'>'.$languageFolder.'</option>';
 	}
 
-	$text .= "</select>";
-	$text .= "<br /><br /><input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />";
-	$text .= "</div></form>	";
-	}
+	$text .= '
+			</select>
+			<br />
+			<br />
+			<button class="button" type="submit" name="setlanguage">'.UTHEME_MENU_L1.'</button>';
+	$text .= '
+		</div>
+	</form>';
+}
 
 $ns->tablerender(UTHEME_MENU_L2, $text, 'user_lan');
 
-?>
