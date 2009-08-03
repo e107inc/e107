@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.45 $
-* $Date: 2009-07-23 15:21:41 $
+* $Revision: 1.46 $
+* $Date: 2009-08-03 16:40:09 $
 * $Author: e107coders $
 *
 */
@@ -825,11 +825,25 @@ class users
 
 	function show_search_filter()
 	{
-	// TODO - This is to be replaced with a generic search-filter class element.
+		$e_userclass = new user_class;
+   		// TODO - The search field (not the userclass drop-down) should be replaced with a generic ajax search-filter class element.
 		$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<table class='adminform'>\n";
-		$text .= "<tr><td><input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n
-		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
+		$text .= "<tr><td><input class='tbox' type='text' name='searchquery' size='20' value=\"".$_POST['searchquery']."\" maxlength='50' />\n";
+
+        $list = $e_userclass->uc_required_class_list("public,member,admin,main,classes");
+		$ulist = $list + array('unverified'=>LAN_NOTVERIFIED,'banned'=>LAN_BANNED,'bounced'=>LAN_BOUNCED);
+
+        $text .= "<select class='tbox' name='searchclass' onchange='this.form.submit()' >\n";
+
+		foreach($ulist as $key=>$val)
+		{
+			$sel = ($_SESSION['searchclass'] == $key) ? "selected='selected'" : "";
+        	$text .= "<option value='$key' {$sel}>".$val."</option>\n";
+		}
+
+		$text .= "</select>
+		<input class='button' type='submit' name='searchsubmit' value='".ADLAN_142."' />\n
 		\n";
 		$text .= "</td></tr></table>
 
@@ -837,41 +851,88 @@ class users
 		return $text;
 	}
 
+	function get_search_query()
+	{
+		global $sql,$frm,$ns,$tp,$mySQLdefaultdb,$pref,$unverified,$userMethods,$sub_action,$id,$from, $amount;
+
+
+        if(isset($_POST['searchquery'])) // We could use $_GET, if so, would need to rework the ordering to use $_GET also.
+		{
+        	$_SESSION['searchquery'] = $_POST['searchquery'];
+		}
+
+		if(isset($_POST['searchclass']))
+		{
+        	$_SESSION['searchclass'] = $_POST['searchclass'];
+		}
+
+
+	    if (isset ($_SESSION['searchquery']) && $_SESSION['searchquery'] != "")
+		{
+			$_SESSION['searchquery'] = $tp->toDB(trim($_SESSION['searchquery']));
+			$query .= "( ";
+			$query .= (strpos($_SESSION['searchquery'],"@") !== false) ? "user_email REGEXP('".$_SESSION['searchquery']."') OR " : "";
+	  		$query .= (strpos($_SESSION['searchquery'],".") !== false) ? "user_ip REGEXP('".$_SESSION['searchquery']."') OR " : "";
+
+			$fquery = array();
+	   		foreach ($this->fieldpref as $field)
+			{
+				$fquery[] = $field." REGEXP('".$_SESSION['searchquery']."')";
+			}
+
+			$query .= implode(" OR ",$fquery);
+
+			$query .= " ) ";
+			$qry_order = ' ORDER BY user_id';
+		}
+		else
+		{
+			$query = '';
+       /*		if ($action == 'unverified')
+			{
+				$query = 'user_ban = 2 ';
+			}*/
+			$qry_order = 'ORDER BY '.($sub_action ? $sub_action : 'user_id').' '.($id ? $id : 'DESC')."  LIMIT $from, $amount";
+		}
+
+		if(varset($_SESSION['searchclass']))
+		{
+			$uqry[e_UC_ADMIN] 		= " u.user_admin = 1 ";
+			$uqry[e_UC_MEMBER]		= " u.user_ban = '0' ";
+            $uqry[e_UC_MAINADMIN]	= " u.user_perms = '0' ";
+			$uqry['unverified']		= " u.user_ban = 2 ";
+			$uqry['banned']			= " u.user_ban = 1 ";
+			$uqry['bounced']		= " u.user_ban = 3 ";
+
+            if($query)
+			{
+             	$query .= " AND ";
+			}
+
+			if(isset($uqry[$_SESSION['searchclass']]))
+			{
+            	$query .= $uqry[$_SESSION['searchclass']];
+			}
+            else
+			{
+        		$query .= " FIND_IN_SET(".$_SESSION['searchclass'].",u.user_class) ";
+			}
+		}
+			// $user_total = db_Count($table, $fields = '(*)',
+		$qry_insert = 'SELECT u.*, ue.* FROM `#user` AS u	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id ';
+
+        return ($query) ? $qry_insert." WHERE ".$query.$qry_order : $qry_insert.$qry_order;
+	}
 
 	function show_existing_users($action,$sub_action,$id,$from,$amount)
 	{
 		global $sql,$frm,$ns,$tp,$mySQLdefaultdb,$pref,$unverified,$userMethods;
 		$e107 = e107 :: getInstance();
+		$qry = $this->get_search_query();
+
 		$text = "<div>".$this->show_search_filter();
-		if (isset ($_POST['searchquery']) && $_POST['searchquery'] != "")
-		{
-			$_POST['searchquery'] = $tp->toDB(trim($_POST['searchquery']));
-			$query = 'WHERE '.$query .= (strpos($_POST['searchquery'],"@") !== false) ? "user_email REGEXP('".$_POST['searchquery']."') OR " : "";
-			$query .= (strpos($_POST['searchquery'],".") !== false) ? "user_ip REGEXP('".$_POST['searchquery']."') OR " : "";
-			foreach ($this->fieldpref as $disp)
-			{
-				$query .= $disp." REGEXP('".$_POST['searchquery']."') OR ";
-			}
-			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
-			$query .= "user_name REGEXP('".$_POST['searchquery']."') ";
-			if ($action == 'unverified')
-			{
-				$query .= ' AND user_ban = 2 ';
-			}
-			$query .= ' ORDER BY user_id';
-		}
-		else
-		{
-			$query = '';
-			if ($action == 'unverified')
-			{
-				$query = 'WHERE user_ban = 2 ';
-			}
-			$query .= 'ORDER BY '.($sub_action ? $sub_action : 'user_id').' '.($id ? $id : 'DESC')."  LIMIT $from, $amount";
-		}
-		// $user_total = db_Count($table, $fields = '(*)',
-		$qry_insert = 'SELECT u.*, ue.* FROM `#user` AS u	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id ';
-		if ($user_total = $sql->db_Select_gen($qry_insert.$query))
+
+		if ($user_total = $sql->db_Select_gen($qry))
 		{
 			$text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-users-list'>
@@ -1603,7 +1664,7 @@ class users
 		$ns->tablerender($caption,$text);
 	}
 
-
+    // Set userclass for user(s).
 	function user_userclass($userid,$uclass,$append=FALSE)
 	{
 		global $sql, $admin_log, $e_userclass;
