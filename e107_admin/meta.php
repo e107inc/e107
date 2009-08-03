@@ -9,9 +9,9 @@
  * Administration Area - Meta Tags
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-01-07 15:40:06 $
- * $Author: secretr $
+ * $Revision: 1.7 $
+ * $Date: 2009-08-03 18:36:24 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -24,7 +24,7 @@ require_once("auth.php");
 require_once(e_HANDLER."message_handler.php");
 $emessage = &eMessage::getInstance();
 
-$current_lang = ($sql->mySQLlanguage != "") ? $sql->mySQLlanguage : $pref['sitelanguage'];
+e_LANGUAGE = ($sql->mySQLlanguage != "") ? $sql->mySQLlanguage : $pref['sitelanguage'];
 
 if (isset($_POST['metasubmit']))
 {
@@ -39,11 +39,11 @@ if (isset($_POST['metasubmit']))
 		$meta_author[$lan] = $pref['meta_author'][$lan];
 	}
 
-	$meta_tag[$current_lang] = strip_if_magic(chop($_POST['meta']));
-	$meta_diz[$current_lang] = strip_if_magic(chop($_POST['meta_description']));
-	$meta_keywords[$current_lang] = strip_if_magic(chop($_POST['meta_keywords']));
-	$meta_copyright[$current_lang] = strip_if_magic(chop($_POST['meta_copyright']));
-	$meta_author[$current_lang] = strip_if_magic(chop($_POST['meta_author']));
+	$meta_tag[e_LANGUAGE] = strip_if_magic(chop($_POST['meta']));
+	$meta_diz[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_description']));
+	$meta_keywords[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_keywords']));
+	$meta_copyright[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_copyright']));
+	$meta_author[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_author']));
 
     $pref['meta_news_summary'] = intval($_POST['meta_news_summary']);
 	$pref['meta_tag'] = $meta_tag;
@@ -53,13 +53,13 @@ if (isset($_POST['metasubmit']))
 	$pref['meta_author'] = $meta_author;
 
    /*
-    if($pref['meta_tag'][$current_lang] == ""){
-        unset($meta_tag[$current_lang]);
+    if($pref['meta_tag'][e_LANGUAGE] == ""){
+        unset($meta_tag[e_LANGUAGE]);
     }*/
 
-	$admin_log->log_event('META_01','meta_news_summary=>'.$pref['meta_news_summary'].'[!br!]'.$current_lang,E_LOG_INFORMATIVE,'');
+	$admin_log->log_event('META_01', 'meta_news_summary=>'.$pref['meta_news_summary'].'[!br!]'.e_LANGUAGE, E_LOG_INFORMATIVE, '');
 	save_prefs();
-	$emessage->add(METLAN_1." ({$current_lang})", E_MESSAGE_SUCCESS);
+	$emessage->add(METLAN_1." (".e_LANGUAGE.")", E_MESSAGE_SUCCESS);
 }
 
 $meta = $pref['meta_tag'];
@@ -71,7 +71,7 @@ $meta_author = $pref['meta_author'];
 $text = "
 	<form method='post' action='".e_SELF."' id='dataform'>
 		<fieldset id='core-meta-settings'>
-			<legend class='e-hideme'>".METLAN_8." (".$current_lang.")"."</legend>
+			<legend class='e-hideme'>".METLAN_8." (".e_LANGUAGE.")"."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminform'>
 				<colgroup span='2'>
 					<col class='col-label' />
@@ -81,27 +81,27 @@ $text = "
 					<tr>
 						<td class='label'>".METLAN_9."</td>
 						<td class='control'>
-							<textarea class='tbox textarea' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm($meta_diz[$current_lang])."</textarea>
+							<textarea class='tbox textarea' title='meta_description' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm($meta_diz[e_LANGUAGE])."</textarea>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".METLAN_10."</td>
 						<td class='control'>
-							<textarea class='tbox textarea' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm($meta_keywords[$current_lang])."</textarea>
+							<textarea class='tbox textarea' title='meta_keywords' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm($meta_keywords[e_LANGUAGE])."</textarea>
 						</td>
 					</tr>
 
 					<tr>
 						<td class='label'>".METLAN_11."</td>
 						<td class='control'>
-							<input class='tbox input-text' size='70' type='text' name='meta_copyright' value='".$meta_copyright[$current_lang]."' />
+							<input class='tbox input-text' size='70' type='text' name='meta_copyright' value='".$meta_copyright[e_LANGUAGE]."' />
 						</td>
 					</tr>
 
 					<tr>
 						<td class='label'>".METLAN_13."</td>
 						<td class='control'>
-							<input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".$meta_author[$current_lang]."\" />
+							<input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".$meta_author[e_LANGUAGE]."\" />
 						</td>
 					</tr>
 
@@ -109,7 +109,7 @@ $text = "
 						<td class='label'>".METLAN_2."</td>
 						<td class='control'>
 							<textarea class='tbox textarea' title=\"eg. <meta name='author' content='your name' />\" id='meta' name='meta' cols='70'
-							rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm($meta[$current_lang]))."</textarea>
+							rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm($meta[e_LANGUAGE]))."</textarea>
 							<div class='smalltext field-help'>eg. &lt;meta name='author' content='your name' /&gt; </div>
 						</td>
 					</tr>
@@ -125,14 +125,14 @@ $text = "
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='create' type='submit' name='metasubmit' value='".METLAN_3."'><span>".METLAN_3."</span></button>
+				<button class='create' type='submit' name='metasubmit'><span>".METLAN_3."</span></button>
 			</div>
 		</fieldset>
 	</form>
 
 ";
 
-$e107->ns->tablerender(METLAN_8." (".$current_lang.")", $emessage->render().$text);
+$e107->ns->tablerender(METLAN_8." (".e_LANGUAGE.")", $emessage->render().$text);
 
 require_once("footer.php");
 /**
