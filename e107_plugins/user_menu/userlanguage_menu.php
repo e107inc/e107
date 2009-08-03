@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/userlanguage_menu.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-08-03 19:41:17 $
+ * $Revision: 1.4 $
+ * $Date: 2009-08-03 21:54:28 $
  * $Author: marj_nl_fr $
  */
 //TODO homogenisation with languagelinks + do not force www + unobtrusive redirect
@@ -47,7 +47,7 @@ else
 	$action = (e_QUERY && ! $_GET['elan']) ? e_SELF.'?'.e_QUERY : e_SELF;
 	$text = '
 	<form method="post" action="'.$action.'">
-		<div style="text-align:center">
+		<div class="center">
 			<select name="sitelanguage" class="tbox">';
 	foreach($languageList as $languageFolder)
 	{
