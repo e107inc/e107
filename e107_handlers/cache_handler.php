@@ -12,22 +12,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-02-01 16:18:08 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-03 18:21:46 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-define('CACHE_PREFIX','<?phpexit;');
+define('CACHE_PREFIX','<?php exit;');
 
 /**
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.11 $
-* @author      $Author: e107steved $
+* @version     $Revision: 1.12 $
+* @author      $Author: secretr $
 */
 class ecache {
 
@@ -57,7 +57,7 @@ class ecache {
 			// Add 'nomd5' to indicate we are not calculating an md5
 			$CheckTag = '_nomd5';
 		}
-		elseif (isset($this)) 
+		elseif (isset($this) && $this instanceof ecache) 
 		{
 			if (defined("THEME")) 
 			{
@@ -110,7 +110,7 @@ class ecache {
 		global $pref, $tp;
 		if(($ForcedCheck != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
 		{
-			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
+			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			if (file_exists($cache_file)) 
 			{
 				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
@@ -146,7 +146,7 @@ class ecache {
 	*/
 	function retrieve_sys($CacheTag, $MaximumAge = false, $ForcedCheck = false)
 	{
-		if(isset($this))
+		if(isset($this) && $this instanceof ecache)
 		{
 			return $this->retrieve($CacheTag, $MaximumAge, $ForcedCheck, true);
 		}
@@ -171,7 +171,7 @@ class ecache {
 		global $pref, $FILES_DIRECTORY, $tp;
 		if(($ForceCache != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
 		{
-			$cache_file = (isset($this) ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
+			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : ecache::cache_fname($CacheTag, $syscache));
 			file_put_contents($cache_file, ($bRaw? $Data : CACHE_PREFIX.$Data) );
 			@chmod($cache_file, 0755); //Cache should not be world-writeable
 			@touch($cache_file);
@@ -189,7 +189,7 @@ class ecache {
 	*/
 	function set_sys($CacheTag, $Data, $ForceCache = false, $bRaw=0)
 	{
-		if(isset($this))
+		if(isset($this) && $this instanceof ecache)
 		{
 			return $this->set($CacheTag, $Data, $ForceCache, $bRaw, true);
 		}
@@ -222,7 +222,7 @@ class ecache {
 	*/
 	function clear_sys($CacheTag = '')
 	{
-		if(isset($this))
+		if(isset($this) && $this instanceof ecache)
 		{
 			return $this->clear($CacheTag, true);
 		}
