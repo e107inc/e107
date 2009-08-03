@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/reline/admin_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-04-29 06:00:37 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2009-08-03 19:40:44 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,7 +52,6 @@ $ADMIN_HEADER = "<table class='container'>
 {ADMIN_ICON}
 <br />
 {ADMIN_SEL_LAN}
-{ADMIN_USERLAN}
 </td>
 </tr>
 </table>
