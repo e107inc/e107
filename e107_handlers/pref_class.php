@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-07-31 16:12:19 $
+ * $Revision: 1.5 $
+ * $Date: 2009-08-03 18:09:02 $
  * $Author: secretr $
 */
 
@@ -74,6 +74,8 @@ class e_pref extends e_model
 	 */
 	function __construct($prefid, $alias = '', $data = array())
 	{
+		require_once(e_HANDLER.'cache_handler.php');
+		
 		$this->prefid = $prefid;
 		if(empty($alias))
 		{
@@ -110,32 +112,39 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Advanced setter - $pref_name is parsed (multidimensional arrays support), alias of {@link setData()}
+	 * Advanced setter - $pref_name is parsed (multidimensional arrays support)
 	 * Object data reseting is not allowed, adding new pref is not allowed
-	 * @param string|array $key
+	 * @param string $key
 	 * @param mixed $value
 	 * @return e_pref
 	 */
 	public function setPref($pref_name, $value)
 	{
-		return $this->setData($pref_name, $value, true);
+		//object reset not allowed, adding new pref is not allowed
+		if(empty($pref_name) || !is_string($pref_name) || !$this->isData($pref_name))
+		{
+			return $this; 
+		}
+		parent::setData($pref_name, $value, true);
+		
+		return $this;
 	}
 	
 	/**
 	 * Simple setter - $pref_name is  not parsed (no multidimensional arrays support)
 	 * Adding new pref is not allowed
 	 * 
-	 * @param string|array $key
+	 * @param string $key
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function set($pref_name, $value)
+	public function set(string $pref_name, $value)
 	{
-		if(empty($pref_name) || false !== strpos($pref_name, '/') || !$this->isData($pref_name))
+		if(empty($pref_name))
 		{
 			return $this;
 		}
-		return $this->setData($pref_name, $value, true);
+		parent::set($pref_name, $value, true);
 	}
 	
 	/**
@@ -146,7 +155,7 @@ class e_pref extends e_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function add($pref_name, $value = null)
+	public function add(string $pref_name, $value = null)
 	{	
 		if(!is_string($pref_name) || strpos($pref_name, '/'))
 		{
@@ -233,23 +242,11 @@ class e_pref extends e_model
 	
 	/**
 	 * Disallow public use of setData()
-	 * Object data reseting is not allowed
-	 * Adding new preference key is not allowed
 	 * 
-	 * @see e_model::setData()
-	 * @param string|array $key
-	 * @param mixed $value
 	 * @return e_pref
 	 */
-	final public function setData($pref_name, $value, $strict)
+	final public function setData()
 	{
-		//object reset not allowed, adding new pref is not allowed
-		if(empty($pref_name) || !$this->isData($pref_name))
-		{
-			return $this; 
-		}
-		parent::setData($pref_name, $value, $strict);
-		
 		return $this;
 	}
 	
@@ -312,9 +309,9 @@ class e_pref extends e_model
 			return $this->setData($data);
 		}
 		
-		if ($this->getDb()->db_Select('core', 'e107_value', "e107_name='{$id}'"))
+		if (e107::getDb()->db_Select('core', 'e107_value', "e107_name='{$id}'"))
 		{
-			$row = $this->getDb()->db_Fetch();
+			$row = e107::getDb()->db_Fetch();
 
 			if($this->serial_bc)
 			{
@@ -467,7 +464,7 @@ final class e_core_pref extends e_pref
 	 *
 	 * @var array
 	 */
-	protected $alliases = array(
+	protected $aliases = array(
 		'core' 			=> 'SitePrefs', 
 		'core_backup' 	=> 'SitePrefs_Backup', 
 		'emote' 		=> 'emote', 
@@ -491,17 +488,10 @@ final class e_core_pref extends e_pref
 	 */
 	function __construct($alias, $load = true)
 	{
-		if($this->getAlias($alias))
-		{
-			$pref_alias = $this->getAlias($alias);
-			$pref_id = $alias;
-		}
-		elseif($this->getConfigId($alias))
-		{
-			$pref_id = $this->getConfigId($alias);
-			$pref_alias = $alias;
-		}
-		else 
+		$pref_alias = $alias;
+		$pref_id = $this->getConfigId($alias);
+		
+		if(!$pref_id) 
 		{
 			$pref_id = $pref_alias = '';
 			trigger_error('Core config ID '.$alias.' not found!', E_USER_WARNING);
@@ -536,11 +526,11 @@ final class e_core_pref extends e_pref
 	public function getConfigId($alias)
 	{
 		$alias = trim($alias);
-		if(isset($this->alliases[$alias]))
+		if(isset($this->aliases[$alias]))
 		{
-			return $this->allias[$alias];
+			return $this->aliases[$alias];
 		}
-		return array_search($alias, $this->alliases);
+		return false;
 	}
 	
 	/**
@@ -554,7 +544,7 @@ final class e_core_pref extends e_pref
 	public function getAlias($prefid)
 	{
 		$prefid = trim($prefid);
-		return array_search($prefid, $this->alliases);
+		return array_search($prefid, $this->aliases);
 	}
 }
 
@@ -730,6 +720,16 @@ class e_model
     }
     
     /**
+     * Check if $key is in the Structure array
+     *
+     * @return boolean
+     */
+    public function inStructure($key)
+    {
+    	return isset($this->_data_structure[$key]);
+    }
+    
+    /**
      * Set object data structure if $_data_structure is empty
      *
      * @param array $struct
@@ -737,11 +737,41 @@ class e_model
      */
     public function setStructure(array $struct = array())
     {
-    	if(empty($this->_data_structure) || $struct)
+	    if($struct)
+	    {
+	    	$this->_data_structure = array_unique($struct);
+	    	return $this;
+	    }
+	    
+    	if(empty($this->_data_structure))
     	{
-    		$this->_data_structure = !empty($struct) ? array_unique($struct) : array_keys($this->getData());
+    		$this->_data_structure = e_pref::array_rkeys($this->_data);
     	}
+   		
     	return $this;
+    }
+    
+    /**
+     * Recursive version of PHP built-in array_keys()
+     * Convert all keys of associative mulitdimensional array to 
+     * single (unique) numerical array
+     *
+     * @param array $array
+     * @return array
+     */
+    public static function array_rkeys(array $array)
+    {
+    	$akeys = array();
+    	foreach (array_keys($array) as $k) 
+    	{
+    		$akeys[] = $k;
+    		if(is_array($array[$k]))
+    		{
+    			$akeys = array_merge($akeys, e_pref::array_rkeys($array[$k]));
+    		}
+    	}
+    	
+    	return $akeys;
     }
     
     /**
@@ -969,7 +999,6 @@ class e_model
      */
     public function remove($key)
     {
-    	$this->data_has_changed = true;
     	return $this->_unsetDataSimple($key);
     }
     
@@ -986,7 +1015,6 @@ class e_model
      */
     public function removeData($key = null)
     {
-    	$this->data_has_changed = true;
     	return $this->_unsetData($key);
     }
     
@@ -1259,6 +1287,8 @@ class e_model
      * 
      * If $strict is true and $key is an array, data will be filtered by the 
      * object structure
+     * 
+     * If $strict is true and $key is a string, data value will be updated (set only if exist)
      *
      * @param string|array $key
      * @param mixed $value
@@ -1270,15 +1300,12 @@ class e_model
     {
         if(is_array($key)) 
         {
-            if($strict && $this->getStructure())
+            if($strict && '_data_structure' !== $data_src)
 	    	{
-	    		$struct = $this->getStructure();
-				foreach($struct as $k) 
+	    		$this->setStructure();//set default structure if empty
+				foreach(array_keys($key) as $k) 
 		        {
-		        	if(isset($key[$k]))
-		        	{
-		            	$this->_setData($k, $key[$k], $strict, $data_src);
-		        	}
+		        	$this->_setData($k, $key[$k], true, $data_src);
 		        }
 		        return $this;
 	    	}
@@ -1286,6 +1313,23 @@ class e_model
             return $this;
         } 
         
+        //multidimensional array support - strict _setData for values of type array
+    	if($strict && is_array($value))
+       	{
+			foreach($key as $k => $v)
+			{
+			    $this->_setData($key.'/'.$k, $v, true, $data_src);
+			}
+			return $this;
+       	}
+        
+        //data has changed - optimized (call _getData() only when needed)
+        if('_data' === $data_src && !$this->data_has_changed && $this->_getData($key, null, null, $data_src) != $value)
+        {
+        	$this->data_has_changed = true;
+        }
+        
+        //multidimensional array support - parse key
         $key = trim($key, '/');
         if(strpos($key,'/')) 
         {
@@ -1294,6 +1338,13 @@ class e_model
             for ($i = 0, $l = count($keyArr); $i < $l; $i++) 
             {
 	            $k = $keyArr[$i];
+            	
+	            //if strict - update only
+		        if($strict && !$this->inStructure($k))
+		        {
+		        	return $this;
+		        }
+		        
 	            if (!isset($data[$k])) 
 	            {
 	                $data[$k] = array();
@@ -1304,6 +1355,11 @@ class e_model
         }
         else 
         {
+			//if strict - update only
+	        if($strict && !$this->inStructure($key))
+	        {
+	        	return $this;
+	        }
             $this->$data_src[$key] = $value;
         }
 
@@ -1320,12 +1376,29 @@ class e_model
      * @param string $data_src
      * @return unknown
      */
-	protected function _setDataSimple($key, $value = null, $strict = false, $data_src = '_data')
+	protected function _setDataSimple(string $key, $value = null, $strict = false, $data_src = '_data')
     {
-    	if(!$strict || in_array($key, $this->getStructure()))
+    	if(!$strict)
     	{
     		$this->$data_src[$key] = $value;
+			//data has changed
+	        if('_data' === $data_src && $this->_getDataSimple($key, null, $data_src) != $value)
+	        {
+	        	$this->data_has_changed = true;
+	        }
+    		return $this;
     	}
+    	
+    	$this->setStructure();//set default structure if empty
+    	if($this->inStructure($key))
+    	{
+			if('_data' === $data_src && $this->_getDataSimple($key, null, $data_src) != $value)
+	        {
+	        	$this->data_has_changed = true;
+	        }
+	        $this->$data_src[$key] = $value;
+    	}
+
     	return $this;
     }
     
@@ -1336,35 +1409,36 @@ class e_model
      * If $strict is true, data will be filtered by the 
      * object structure. NOTE - Multidimensional arrays are not filtered.
      * 
-     * @param array $arr
+     * @param string|array $key
+     * @param mixed $value
      * @param boolean $strict
      * @param boolean $override allow override of existing data
      * @param string $data_src data source
      * @return e_model
      */
-    protected function _addData(array $arr, $strict = true, $override = true, $data_src = '_data')
+    protected function _addData($key, $value = null, $strict = false, $override = true, $data_src = '_data')
     {
-    	if($strict && $this->getStructure())
+    	if(is_array($key))
     	{
-    		$struct = $this->getStructure();
-			foreach($struct as $key => $value) 
-	        {
-	        	if(!$override && $this->isData($key))
-	        	{
-	        		continue;
-	        	}
-	        	if(isset($arr[$key]))
-	        	{
-	            	$this->_setData($key, $value, $strict, $data_src);
-	        	}
-	        }
-	        return $this;
+			foreach($key as $k => $v)
+			{
+			    $this->_addData($k, $v, $strict, $data_src);
+			}
+			return $this;
     	}
     	
-		foreach($arr as $key => $value) 
-		{
-		    $this->_setData($key, $value, $strict, $data_src);
-		}
+		if($override || $this->isData($key))
+       	{
+       		if(is_array($value))
+       		{
+				foreach($key as $k => $v)
+				{
+				    $this->_addData($key.'/'.$k, $v, $strict, $override, $data_src);
+				}
+				return $this;
+       		}
+       		$this->_setData($key, $value, $strict, $data_src);
+       	}
         return $this;
     }
     
@@ -1382,6 +1456,10 @@ class e_model
     {
         if (null === $key) 
         {
+        	if('_data' === $data_src && !empty($this->_data))
+        	{
+        		$this->data_has_changed = true;
+        	}
         	$this->$data_src = array();
             return $this;
         } 
@@ -1405,11 +1483,19 @@ class e_model
 	        }
 	        if(is_array($data))
 	        {
+				if('_data' === $data_src && isset($data[$unskey]))
+	        	{
+	        		$this->data_has_changed = true;
+	        	}
 	        	unset($data[$unskey]);
 	        }
         }
         else 
         {
+       		if('_data' === $data_src && isset($this->$data_src[$key]))
+        	{
+        		$this->data_has_changed = true;
+        	}
             unset($this->$data_src[$key]);
         }
         return $this;
@@ -1424,6 +1510,10 @@ class e_model
      */
     protected function _unsetDataSimple($key, $data_src = '_data')
     {
+		if('_data' === $data_src && isset($this->$data_src[$key]))
+       	{
+       		$this->data_has_changed = true;
+       	}
     	unset($this->$data_src[$key]);
     	return $this;
     }
@@ -1556,27 +1646,30 @@ class e_model
 	}
 	
 	/**
-	 * Wrapper of {@link __toString()}
+	 * Convert object data to a string
 	 *
 	 * @param boolean $AddSlashes
 	 * @return string
 	 */
 	public function toString($AddSlashes = true)
 	{
-		return $this->__toString($AddSlashes);
+		return (string) e107::getArrayStorage()->WriteArray($this->getData(), $AddSlashes);
+		
 	}
 	
 	/**
-	 * Magic method - convert object data to string
+	 * Magic method - convert object data to a string
 	 * NOTE: before PHP 5.2.0 the __toString method was only 
 	 * called when it was directly combined with echo() or print()
+	 * 
+	 * NOTE: PHP 5.3+ is throwing parse error if __toString has optional arguments.
 	 *
 	 * @param boolean $AddSlashes
 	 * @return string
 	 */
-	public function __toString($AddSlashes = true)
+	public function __toString()
 	{
-		return e107::getArrayStorage()->WriteArray($this->getData(), $AddSlashes);
+		return $this->toString((true === func_get_arg(0)));
 	}
 }
 
