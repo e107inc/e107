@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.116 $
-* $Date: 2009-07-24 12:54:36 $
-* $Author: e107coders $
+* $Revision: 1.117 $
+* $Date: 2009-08-03 19:51:24 $
+* $Author: e107steved $
 *
 */
 //
@@ -1176,7 +1176,7 @@ if (!class_exists('convert'))
 
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------------------------------
 function js_location($qry)
 {
 	global $error_handler;
@@ -1197,20 +1197,16 @@ function check_email($email)
 	return preg_match("/^([_a-zA-Z0-9-+]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+)(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,6})$/" , $email) ? $email : false;
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------------------------------------------
+// $var is a single class number or name, or a comma-separated list of the same.
+// If a class is prefixed with '-' this means 'exclude' - returns FALSE if the user is in this class (overrides 'includes').
+// Otherwise returns TRUE if the user is in any of the classes listed in $var.
 function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 {
-	global $tp;
-	if($var == e_LANGUAGE)
-	{
-		return TRUE;
-	}
+	$e107 = e107::getInstance();
 
-//	if (is_numeric($var) && ($var == e_UC_PUBLIC)) return TRUE;		// Accept numeric class zero - 'PUBLIC'
-
-	// userid has been supplied, go build that user's class list
 	if(is_numeric($uid) && $uid > 0)
-	{
+	{	// userid has been supplied, go build that user's class list
 		$userclass = class_list($uid);
 	}
 
@@ -1221,36 +1217,47 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 	$class_array = explode(',', $userclass);
 
-	$lans = explode(',', e_LANLIST);
 	$varList = explode(',', trim($var));
+	$latchedAccess = FALSE;
 
-	rsort($varList); // check the language first.(ie. numbers come last)
 	foreach($varList as $v)
 	{
-		if (in_array($v, $lans) && strpos($v, e_LANGUAGE) === false)
+		$invert = FALSE;
+		if(!is_numeric($v))  //value to test is a userclass name (or garbage, of course), go get the id
 		{
-			return false;
-		}
-		else
-		{
-			if(!is_numeric($v))  //value to test is a userclass name, go get the id
+			$v = trim($v);
+			if (substr($v,0,1) == '-')
 			{
-				$sql=new db;
-				$v = trim($v);
-				if($sql->db_Select('userclass_classes', 'userclass_id', "userclass_name='".$tp->toDB($v)."' "))
-				{
-					$row = $sql->db_Fetch();
-					$v = $row['userclass_id'];
-				}
+				$invert = TRUE;
+				$v = substr($v,1);
 			}
-			if (in_array($v, $class_array) || (ctype_digit($v) && ($v == 0)))
+			$v = $e107->user_class->ucGetClassIDFromName($v);
+		}
+		elseif ($v < 0)
+		{
+			$invert = TRUE;
+			$v = -$v;
+		}
+		if ($v !== FALSE)
+		{	// Ignore non-valid userclass names
+			if ((in_array($v, $class_array) || (ctype_digit($v) && ($v == 0))))
 			{
-				return true;
+				if ($invert)
+				{
+					return FALSE;
+				}
+				$latchedAccess = TRUE;
+			}
+			elseif ($invert && count($varList) == 1)
+			{
+				$latchedAccess = TRUE;		// Handle scenario where only an 'exclude' class is passed
 			}
 		}
 	}
-	return false;
+	return $latchedAccess;
 }
+
+
 
 function getperms($arg, $ap = ADMINPERMS)
 {
