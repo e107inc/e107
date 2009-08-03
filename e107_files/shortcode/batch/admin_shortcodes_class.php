@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.18 2009-07-23 10:00:35 secretr Exp $
+* $Id: admin_shortcodes_class.php,v 1.19 2009-08-03 18:45:18 marj_nl_fr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -728,15 +728,10 @@ class admin_shortcodes
 	function sc_admin_sel_lan()
 	{
 		global $pref;
-		if (ADMIN)
+		if (ADMIN && $pref['multilanguage'])
 		{
-			if ($pref['multilanguage'])
-			{
-				global $sql;
-				$ret = ' <b>'.ADLAN_132.':</b> ';
-				$ret .= ($sql->mySQLlanguage) ? $sql->mySQLlanguage : ADLAN_133;
-				return $ret;
-			}
+			$language = ($pref['sitelanguage'] == e_LANGUAGE) ? ADLAN_133 : e_LANGUAGE;
+			return ' <strong>'.ADLAN_132.'</strong> '.$language;
 		}
 	}
 
@@ -912,12 +907,15 @@ class admin_shortcodes
 		}
 	}
 
+	// Does actually the same than ADMIN_SEL_LAN
 	function sc_admin_userlan()
 	{
+		/*
 		if (isset($_COOKIE['userlan']) && $_COOKIE['userlan'])
 		{
 			return ' <b>Language:</b> '.$_COOKIE['userlan'];
 		}
+		*/
 	}
 
 	function sc_admin_alt_nav($parm)
