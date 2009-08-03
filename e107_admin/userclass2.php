@@ -9,8 +9,8 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-07-21 07:13:42 $
+ * $Revision: 1.25 $
+ * $Date: 2009-08-03 18:04:19 $
  * $Author: e107coders $
  *
 */
@@ -29,6 +29,7 @@ $uclass = new e_userclass;							// Class management functions - legacy stuff fr
 $e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
 require_once (e_HANDLER.'form_handler.php');
 $frm = new e_form();
+$uc = new uclass_manager;
 
 $message = '';
 
@@ -54,7 +55,7 @@ if (e_QUERY)
 {
   $uc_qs = explode(".", e_QUERY);
 }
-$action = varset($uc_qs[0],'config');
+$action = varset($uc_qs[0]);
 $params = varset($uc_qs[1],'');
 
 //AJAX request check is already  made by the API
@@ -196,7 +197,7 @@ if (isset($_POST['delete']))
 //---------------------------------------------------
 //		Add/Edit class information
 //---------------------------------------------------
-if (($action == 'config') && isset($_POST['createclass']))		// Add or edit
+if (isset($_POST['createclass']))		// Add or edit
 {
 	$class_record = array(
 		'userclass_name' 		=> varset($tp->toDB($_POST['userclass_name']),''),
@@ -252,6 +253,7 @@ if (($action == 'config') && isset($_POST['createclass']))		// Add or edit
 					if ($i === FALSE)
 					{
 						$message = UCSLAN_85;
+
 					}
 					else
 					{
@@ -287,9 +289,20 @@ if (($action == 'config') && isset($_POST['createclass']))		// Add or edit
 
 if ($message)
 {
-  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+  // $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$emessage = &eMessage::getInstance();
+	$emessage->add($message, E_MESSAGE_SUCCESS);
 }
 
+if(!e_QUERY || $action == "list")
+{
+	$ns->tablerender(UCSLAN_21, $emessage->render(). $uc->show_existing());
+}
+if($_GET['uc'])
+{
+	$action = "config";
+    $_POST['existing'] = $_GET['uc'];
+}
 
 switch ($action)
 {
@@ -297,7 +310,7 @@ switch ($action)
 //		Class management
 //-----------------------------------
   case 'config' :
-	if(isset($_POST['edit']))
+	if(isset($_POST['existing']))
 	{
 		$params = 'edit';
 		$class_num = intval(varset($_POST['existing'],0));
@@ -347,7 +360,9 @@ switch ($action)
  		<col class='col-label' />
  		<col class='col-control' />
 
- 	</colgroup>
+ 	</colgroup>";
+
+   /*	$text .= "
 		<tr>
 		<td class='fcaption' style='text-align:center' colspan='3'>";
 
@@ -365,7 +380,7 @@ switch ($action)
 		<input type='checkbox' name='confirm' id='confirm' value='1' /><label for='confirm' class='smalltext'> ".UCSLAN_11."</label>
 		</td>
 		</tr>";
-	}
+	}*/
 
 	$text .= "
 		<tr>
@@ -385,7 +400,7 @@ switch ($action)
 		$text .= "
 		<tr>
 		<td>".UCSLAN_68."</td>
-		<td>".$frm->iconpicker('userclass_icon', $userclass_icon, LAN_CHOOSE)."
+		<td>".$frm->iconpicker('userclass_icon', $userclass_icon, LAN_SELECT)."
 		<div class='field-help'>".UCSLAN_69."</div></td>
   		</tr>
 		";
@@ -956,16 +971,20 @@ function userclass2_adminmenu()
 	$tmp = explode(".", e_QUERY);
 //	$action = $tmp[0];
   }
-  $action = varsettrue($tmp[0],'config');
+  $action = varsettrue($tmp[0],'list');
 
-  $var['config']['text'] = UCSLAN_25;
-  $var['config']['link'] = 'userclass2.php';
+	$var['list']['text'] = LAN_MANAGE;
+	$var['list']['link'] = 'userclass2.php';
 
-  $var['membs']['text'] = UCSLAN_26;
-  $var['membs']['link'] ='userclass2.php?membs';
 
-  $var['initial']['text'] = UCSLAN_38;
-  $var['initial']['link'] ='userclass2.php?initial';
+	$var['config']['text'] = UCSLAN_25;
+	$var['config']['link'] = 'userclass2.php?config';
+
+	$var['membs']['text'] = UCSLAN_26;
+	$var['membs']['link'] ='userclass2.php?membs';
+
+	$var['initial']['text'] = UCSLAN_38;
+	$var['initial']['link'] ='userclass2.php?initial';
 
   if (check_class(e_UC_MAINADMIN))
   {
@@ -988,6 +1007,90 @@ function userclass2_adminmenu()
 }
 
 
+class uclass_manager
+{
+    function uclass_manager()
+	{
+		global $user_pref;
+    	if(isset($_POST['submit-e-columns']))
+		{
+			$user_pref['admin_userclass_columns'] = $_POST['e-columns'];
+			save_prefs('user');
+		}
+
+        $this->fieldpref = (varset($user_pref['admin_userclass_columns'])) ? $user_pref['admin_userclass_columns'] : array("userclass_id","userclass_name","userclass_description"); ;
+
+    	$this->fields = array(
+			'userclass_icon' 			=> array('title'=> UCSLAN_68, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // No real vetting
+			'userclass_id'				=> array('title'=> ID, 'width'=>'5%', 'thclass' => 'left'),
+            'userclass_name'	   		=> array('title'=> UCSLAN_12, 'width'=>'auto', 'thclass' => 'left'),
+			'userclass_description'   	=> array('title'=> UCSLAN_13, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),
+         	'userclass_editclass' 		=> array('title'=> UCSLAN_24, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'), // Display name
+			'userclass_parent' 			=> array('title'=> UCSLAN_35, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),	// User name
+            'userclass_visibility' 		=> array('title'=> UCSLAN_34, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),	 	// Photo
+			'userclass_type' 			=> array('title'=> UCSLAN_79, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+   			'options' 					=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
+		);
+
+	}
+
+
+	function show_existing()
+	{
+	    global $e_userclass, $sql, $frm, $tp;
+	 //	$text = "<div>";
+        $total = $sql->db_Select('userclass_classes', '*');
+		if ($total == "0")
+		{
+		  $text .= UCSLAN_7;
+		}
+		else
+		{
+             $text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
+                        <fieldset id='core-userclass-list'>
+						<legend class='e-hideme'>".CUSLAN_5."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+							$frm->colGroup($this->fields,$this->fieldpref).
+							$frm->thead($this->fields,$this->fieldpref).
+
+							"<tbody>";
+			$classes = $sql->db_getList('ALL', FALSE, FALSE);
+            foreach($classes as $row)
+			{
+				if(varset($row['userclass_icon']))
+				{
+                	$iconpath = $tp->replaceConstants($row['userclass_icon']);
+            		$icon = is_readable($iconpath) ? "<img src='".$iconpath."' alt='' />" : "&nbsp;";
+                }
+
+				$text .= "
+						<tr>";
+                $text .= (in_array("userclass_icon",$this->fieldpref)) ? "<td class='center'>".$icon."</td>" : "";
+				$text .= (in_array("userclass_id",$this->fieldpref)) ? "<td>".$row['userclass_id']."</td>" : "";
+                $text .= (in_array("userclass_name",$this->fieldpref)) ? "<td>".($row['userclass_name'])."</td>" : "";
+                $text .= (in_array("userclass_description",$this->fieldpref)) ? "<td>".($row['userclass_description'])."</td>" : "";
+				$text .= (in_array("userclass_editclass",$this->fieldpref)) ? "<td>".r_userclass_name($row['userclass_editclass'])."</td>" : "";
+				$text .= (in_array("userclass_parent",$this->fieldpref)) ? "<td>".(r_userclass_name($row['userclass_parent']))."</td>" : "";
+				$text .= (in_array("userclass_visibility",$this->fieldpref)) ? "<td>".(r_userclass_name($row['userclass_visibility']))."</td>" : "";
+				$text .= (in_array("userclass_type",$this->fieldpref)) ? "<td>".($row['userclass_type'])."</td>" : "";
+
+
+				$text .= "<td class='center'>
+								<a class='action edit' href='".e_SELF."?uc=".$row['userclass_id']."'>".ADMIN_EDIT_ICON."</a>
+								<input type='image' class='action delete' name='delete[{$row['userclass_id']}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$row['userclass_id']} ]' />
+							</td>
+						</tr>
+				";
+			}
+		}
+	    $text .= "</tbody></table></fieldset></form>";
+
+	    return $text;
+
+
+	}
+
+}
 require_once("footer.php");
 
 
