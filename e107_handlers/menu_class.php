@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-24 15:58:38 $
+|     $Revision: 1.7 $
+|     $Date: 2009-08-03 20:17:12 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -1005,9 +1005,9 @@ class menuManager{
 
 		$text = "";
 		$conf = '';
-		if (file_exists(e_PLUGIN."{$menu_path}{$menu_name}_menu_config.php"))
+		if (file_exists(e_PLUGIN.$menu_path.$menu_name.'_menu_config.php'))
 		{
-			$conf = "{$menu_path}.{$menu_name}_menu_config";
+			$conf = $menu_path.$menu_name.'_menu_config.php';
 		}
 
 		if($conf == '' && file_exists(e_PLUGIN."{$menu_path}config.php"))
@@ -1046,18 +1046,18 @@ class menuManager{
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
 		$text .= '<div class="right">
-		<a href="#" onclick=\'parent.location.href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'"; \' title="visibility">
+		<a href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'">
 			'.ADMIN_VIEW_ICON.'
 		</a>';
 
 		if($conf)
 		{
-			$text .= '<a title="configure" href="#" onclick=\'parent.location.href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'"; \'>
+			$text .= '<a href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'">
 				'.ADMIN_CONFIGURE_ICON.'
 			</a>';
 		}
 
-		$text .= '<a href="#" title="deactivate" onclick=\'parent.location.href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'"; \'>
+		$text .= '<a href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">
 			'.ADMIN_DELETE_ICON.'
 		</a>
 		</div>';
