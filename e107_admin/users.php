@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.46 $
-* $Date: 2009-08-03 16:40:09 $
+* $Revision: 1.47 $
+* $Date: 2009-08-03 16:43:46 $
 * $Author: e107coders $
 *
 */
@@ -825,6 +825,7 @@ class users
 
 	function show_search_filter()
 	{
+		global $frm;
 		$e_userclass = new user_class;
    		// TODO - The search field (not the userclass drop-down) should be replaced with a generic ajax search-filter class element.
 		$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
@@ -842,9 +843,11 @@ class users
         	$text .= "<option value='$key' {$sel}>".$val."</option>\n";
 		}
 
-		$text .= "</select>
-		<input class='button' type='submit' name='searchsubmit' value='".ADLAN_142."' />\n
-		\n";
+		$text .= "</select>";
+        $text .= $frm->admin_button('searchsubmit', ADLAN_142);
+
+	//	<input class='button' type='submit' name='searchsubmit' value='".ADLAN_142."' />\n
+	//	\n";
 		$text .= "</td></tr></table>
 
 		</form>\n";
