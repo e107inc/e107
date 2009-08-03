@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-07-24 19:18:50 $
- * $Author: e107steved $
+ * $Revision: 1.19 $
+ * $Date: 2009-08-03 18:36:24 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -28,8 +28,6 @@ require_once(e_HANDLER."form_handler.php");
 $frm = new e_form(true);
 $emessage = &eMessage::getInstance();
 $page = new page;
-
-$custpage_lang = ($sql->mySQLlanguage) ? $sql->mySQLlanguage : $pref['sitelanguage'];
 
 if (e_QUERY)
 {
