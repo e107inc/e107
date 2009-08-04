@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-08-03 18:09:02 $
+ * $Revision: 1.6 $
+ * $Date: 2009-08-04 16:30:48 $
  * $Author: secretr $
 */
 
@@ -83,7 +83,6 @@ class e_pref extends e_model
 		}
 		$this->alias = $alias;
 		parent::__construct($data);
-		if($data) $this->setStructure();
 	}
 	
 	/**
@@ -145,6 +144,7 @@ class e_pref extends e_model
 			return $this;
 		}
 		parent::set($pref_name, $value, true);
+		return $this;
 	}
 	
 	/**
@@ -619,12 +619,13 @@ class e_model
     protected $_data = array();
     
     /**
-     * Data structure array
-     * Needs implementation by child classes
+     * DB structure array
+     * Awaits implementation logic, 
+     * should be consistent with db::_getTypes() and db::_getFieldValue()
      *
      * @var array
      */
-    protected $_data_structure = array();
+    protected $_FIELD_TYPES = array();
     
     /**
      * Avoid DB calls if data is not changed
@@ -637,14 +638,17 @@ class e_model
     /**
      * Validation structure in format 
      * 'field_name' => rule (to be used with core validator handler)
-     * Needs implementation by child classes
+     * Awaits implementation logic, should be consistent with expected frmo the validator 
+     * structure.
      *
      * @var array
      */
     protected $_validation_rules = array();
     
     /**
-     * @var validatorClass
+     * Validator object
+     * 
+     * @var validatorClass 
      */
     protected $_validator = null;
     
@@ -658,6 +662,7 @@ class e_model
     
     /**
     * Posted data
+    * Back-end related data
     *
     * @var array
     */
@@ -665,6 +670,7 @@ class e_model
     
     /**
     * Name of object id field
+    * Required for {@link getId()()} method
     *
     * @var string
     */
@@ -709,72 +715,6 @@ class e_model
     }
     
     /**
-     * Get object data structure
-     * Used as a filter when copy/merge posted data to the object
-     *
-     * @return array
-     */
-    public function getStructure()
-    {
-    	return  $this->_data_structure;
-    }
-    
-    /**
-     * Check if $key is in the Structure array
-     *
-     * @return boolean
-     */
-    public function inStructure($key)
-    {
-    	return isset($this->_data_structure[$key]);
-    }
-    
-    /**
-     * Set object data structure if $_data_structure is empty
-     *
-     * @param array $struct
-     * @return e_model
-     */
-    public function setStructure(array $struct = array())
-    {
-	    if($struct)
-	    {
-	    	$this->_data_structure = array_unique($struct);
-	    	return $this;
-	    }
-	    
-    	if(empty($this->_data_structure))
-    	{
-    		$this->_data_structure = e_pref::array_rkeys($this->_data);
-    	}
-   		
-    	return $this;
-    }
-    
-    /**
-     * Recursive version of PHP built-in array_keys()
-     * Convert all keys of associative mulitdimensional array to 
-     * single (unique) numerical array
-     *
-     * @param array $array
-     * @return array
-     */
-    public static function array_rkeys(array $array)
-    {
-    	$akeys = array();
-    	foreach (array_keys($array) as $k) 
-    	{
-    		$akeys[] = $k;
-    		if(is_array($array[$k]))
-    		{
-    			$akeys = array_merge($akeys, e_pref::array_rkeys($array[$k]));
-    		}
-    	}
-    	
-    	return $akeys;
-    }
-    
-    /**
      * @return array
      */
     public function getValidationRules()
@@ -783,7 +723,7 @@ class e_model
     }
     
     /**
-     * Set object validation rules if $_validation_rules is empty
+     * Set object validation rules if $_validation_rules array is empty
      * 
      * @param array $vrules
      * @return e_model
@@ -820,13 +760,14 @@ class e_model
      * @param mixed $default
      * @return mixed
      */
-	public function get($key = '', $default = null)
+	public function get(string $key, $default = null)
     {
     	return $this->_getDataSimple($key, $default);
     }
     
     /**
      * Retrieves data from the object ($_data)
+     * If $key is empty, return all object data
      *
      * @see _getData()
      * @param string $key
@@ -834,7 +775,7 @@ class e_model
      * @param integer $index
      * @return mixed
      */
-	public function getData($key = '', $default = null, $index = null)
+	public function getData(string $key = '', $default = null, $index = null)
     {
     	return $this->_getData($key, $default, $index);
     }
@@ -848,21 +789,21 @@ class e_model
      * @param mixed $default
      * @return mixed
      */
-	public function getPosted($key = '', $default = null)
+	public function getPosted(string $key, $default = null)
     {
     	return $this->_getDataSimple($key, $default, '_posted_data');
     }
     
     /**
      * Retrieves data from the object ($_posted_data)
-     *
+     * If $key is empty, return all object posted data
      * @see _getData()
      * @param string $key
      * @param mixed $default
      * @param integer $index
      * @return mixed
      */
-	public function getPostedData($key = '', $default = null, $index = null)
+	public function getPostedData(string $key = '', $default = null, $index = null)
     {
     	return $this->_getData($key, $default, $index, '_posted_data');
     }
@@ -873,20 +814,20 @@ class e_model
      * - default object data
      * - empty string
      * 
-     * Useful when operating with form GUI
+     * Use this method inside forms
      *
      * @param string $key
      * @param string $default
      * @param integer $index
      * @return string
      */
-    public function getIfPosted($key, $default = '', $index = null)
+    public function getIfPosted(string $key, $default = '', $index = null)
     {
 		if(null !== $this->getPostedData($key))
 		{
 			return e107::getParser()->post_toForm($this->getPostedData($key, null, $index));
 		}
-		return $this->getData($key, $default, $index);
+		return e107::getParser()->toForm($this->getData($key, $default, $index));
     }
     
     /**
@@ -898,7 +839,7 @@ class e_model
      * @see _setData()
      * @param string $key
      * @param mixed $value
-     * @param boolean $strict
+     * @param boolean $strict update only
      * @return e_model
      */
 	public function set($key, $value = null, $strict = false)
@@ -914,12 +855,11 @@ class e_model
      * @see _setData()
      * @param string|array $key
      * @param mixed $value
-     * @param boolean $strict
+     * @param boolean $strict update only
      * @return e_model
      */
 	public function setData($key, $value = null, $strict = false)
     {
-    	$this->data_has_changed = true;
     	return $this->_setData($key, $value, $strict);
     }
     
@@ -931,7 +871,7 @@ class e_model
      * 
      * @param string $key
      * @param mixed $data
-     * @param boolean $strict
+     * @param boolean $strict update only
      * @return e_model
      */
     public function setPosted($key, $data = null, $strict = false)
@@ -940,14 +880,14 @@ class e_model
     }
     
     /**
-     * Overwrite posted data in the object for a single field
+     * Overwrite posted data in the object. Key is parsed (multidmensional array support).
      * Public proxy of {@link _setData()}
      * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite 
      * the original object data
      *
-     * @param string $key
+     * @param string|array $key
      * @param mixed $data
-     * @param boolean $strict
+     * @param boolean $strict update only
      * @return e_model
      */
     public function setPostedData($key = null, $data = null, $strict = false)
@@ -960,17 +900,16 @@ class e_model
      * Retains existing data in the object.
      * Public proxy of {@link _addData()}
      * 
-     * If $strict is true, data will be filtered by the 
-     * object structure. NOTE - Multidimensional arrays are not filtered.
+     * If $override is false, data will be updated only (check against existing data)
      * 
-     * @param array $arr
-     * @param boolean $strict
+     * @param string|array $key
+     * @param mixed $value
+     * @param boolean $override override existing data
      * @return e_model
      */
-    public function addData(array $arr, $strict = false, $override = true)
+    public function addData($key, $value = null, $override = true)
     {
-    	if($arr) $this->data_has_changed = true; //TODO - better status change check
-    	return $this->_addData($arr, $strict, $override);
+    	return $this->_addData($key, $value, $override);
     }
     
     /**
@@ -978,16 +917,16 @@ class e_model
      * Retains existing data in the object.
      * Public proxy of {@link _addData()}
      * 
-     * If $strict is true, data will be filtered by the 
-     * object structure. NOTE - Multidimensional arrays are not filtered.
+     * If $override is false, data will be updated only (check against existing data)
      * 
-     * @param array $arr
-     * @param boolean $strict
+     * @param string|array $key
+     * @param mixed $value
+     * @param boolean $override override existing data
      * @return e_model
      */
-    public function addPostedData(array $arr, $strict = false, $override = true)
+    public function addPostedData($key, $value = null, $override = true)
     {
-    	return $this->_addData($arr, $strict, $override, '_posted_data');
+    	return $this->_addData($key, $value, $override, '_posted_data');
     }
     
 	/**
@@ -1111,78 +1050,63 @@ class e_model
     
     /**
      * Merge posted data with the object data
-     * Should be used on edit/update record
-     * Copied posted data will be removed
+     * Should be used on edit/update/create record (back-end)
+     * Copied posted data will be removed (no matter if copy is successfull or not)
+     * 
+     * If $strict is true, only existing object data will be copied (update)
+     * TODO - move to admin e_model extension
      *
+     * @param boolean $strict
      * @param boolean $sanitize
+     * @param boolean $validate perform validation check
      * @return e_model
      */
-    public function mergePostedData($sanitize = true)
+    public function mergePostedData($strict = true, $sanitize = true, $validate = true)
     {
-    	if(!$this->getPostedData() || !$this->getStructure() || !$this->validate())
+    	if(!$this->getPostedData() || ($validate && !$this->validate()))
     	{
     		return $this;
     	}
     	
     	$tp = e107::getParser();
-    	foreach ($this->getStructure() as $field) 
+    	
+    	//TODO - sanitize method based on validation rules OR _FIELD_TYPES array?
+       	$data = $sanitize ? $tp->toDB($this->getPostedData()) : $this->getPostedData();
+       	
+    	foreach ($data as $field => $dt) 
     	{
-    		if(null === $this->getPostedData($field) || !$this->dataHasChangedFor($field))
-    		{
-    			$this->removePostedData($field);
-    			continue;
-    		}
-    		
-    		$this->data_has_changed = true;
-    		$data = $sanitize ? $tp->toDB($this->getPostedData($field)) : $this->getPostedData($field);
-    		$this->setData($field, $data)
+    		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
     	}
     	return $this;
     }
     
     /**
-     * Copy posted data with the object data
-     * Should be used on create/insert records
-     * Copied posted data will be removed
+     * Merge passed data array with the object data
+     * If $strict is true, only existing object data will be copied (update)
+     * TODO - move to admin e_model extension
      *
-     * @param boolean $validate
+     * @param array $src_data
      * @param boolean $sanitize
-     * @param boolean $strict filter by the object structure
+     * @param boolean $validate perform validation check
      * @return e_model
      */
-    public function copyPostedData($validate = true, $sanitize = true, $strict = true)
+    public function mergeData(array $src_data, $strict = true, $sanitize = true, $validate = true)
     {
-    	if($validate && !$this->validate())
+    	//FIXME
+    	if(!$src_data || ($validate && !$this->validate($src_data)))
     	{
     		return $this;
     	}
     	
     	$tp = e107::getParser();
-    	if(!$strict || !$this->getStructure())
-    	{
-    		$data = $sanitize ? $tp->toDB($this->getPostedData()) : $this->getPostedData();
-    		if(!empty($data))
-    		{
-    			$this->data_has_changed = true;
-	    		$this->setPostedData(null)
-	    			->setData($data);
-    		}
-    		return $this;
-    	}
-    	
-    	foreach ($this->getStructure() as $field) 
-    	{
-    		if(null === $this->getPostedData($field) || !$this->dataHasChangedFor($field))
-    		{
-    			continue;
-    		}
-
-    		$this->data_has_changed = true;
-    		$data = $sanitize ? $tp->toDB($this->getPostedData($field)) : $this->getPostedData($field);
-    		$this->setData($field, $data)
-    			->removePostedData($field);
-    	}
+   	    //TODO - sanitize method based on validation rules OR _FIELD_TYPES array?
+   		if($sanitize)
+   		{
+   			$src_data =  $tp->toDB($src_data);
+   		}
+   		
+   		$this->setData($src_data, null, $strict);
     	return $this;
     }
     
@@ -1285,10 +1209,7 @@ class e_model
      *
      * If $key is an array, it will overwrite all the data in the object.
      * 
-     * If $strict is true and $key is an array, data will be filtered by the 
-     * object structure
-     * 
-     * If $strict is true and $key is a string, data value will be updated (set only if exist)
+     * If $strict is true data will be updated only (no new data will be added)
      *
      * @param string|array $key
      * @param mixed $value
@@ -1302,7 +1223,6 @@ class e_model
         {
             if($strict && '_data_structure' !== $data_src)
 	    	{
-	    		$this->setStructure();//set default structure if empty
 				foreach(array_keys($key) as $k) 
 		        {
 		        	$this->_setData($k, $key[$k], true, $data_src);
@@ -1340,7 +1260,7 @@ class e_model
 	            $k = $keyArr[$i];
             	
 	            //if strict - update only
-		        if($strict && !$this->inStructure($k))
+		        if($strict && !$this->isData($k))
 		        {
 		        	return $this;
 		        }
@@ -1356,7 +1276,7 @@ class e_model
         else 
         {
 			//if strict - update only
-	        if($strict && !$this->inStructure($key))
+	        if($strict && !$this->isData($key))
 	        {
 	        	return $this;
 	        }
@@ -1390,7 +1310,7 @@ class e_model
     	}
     	
     	$this->setStructure();//set default structure if empty
-    	if($this->inStructure($key))
+    	if($this->isData($key))
     	{
 			if('_data' === $data_src && $this->_getDataSimple($key, null, $data_src) != $value)
 	        {
@@ -1406,38 +1326,36 @@ class e_model
      * Add data to the object.
      * Retains existing data in the object.
      * 
-     * If $strict is true, data will be filtered by the 
-     * object structure. NOTE - Multidimensional arrays are not filtered.
+     * If $override is false, only new (non-existent) data will be added
      * 
      * @param string|array $key
      * @param mixed $value
-     * @param boolean $strict
      * @param boolean $override allow override of existing data
      * @param string $data_src data source
      * @return e_model
      */
-    protected function _addData($key, $value = null, $strict = false, $override = true, $data_src = '_data')
+    protected function _addData($key, $value = null, $override = true, $data_src = '_data')
     {
     	if(is_array($key))
     	{
 			foreach($key as $k => $v)
 			{
-			    $this->_addData($k, $v, $strict, $data_src);
+			    $this->_addData($k, $v, $override, $data_src);
 			}
 			return $this;
     	}
     	
-		if($override || $this->isData($key))
+		if($override || !$this->isData($key))
        	{
        		if(is_array($value))
        		{
 				foreach($key as $k => $v)
 				{
-				    $this->_addData($key.'/'.$k, $v, $strict, $override, $data_src);
+				    $this->_addData($key.'/'.$k, $v, $override, $data_src);
 				}
 				return $this;
        		}
-       		$this->_setData($key, $value, $strict, $data_src);
+       		$this->_setData($key, $value, false, $data_src);
        	}
         return $this;
     }
@@ -1554,9 +1472,10 @@ class e_model
      * 2. add validation errors to the object if any
      * 3. return true for valid and false for non-valid data
      *
+     * @param array $data optional - data for validation, defaults to posted data
      * @return boolean
      */
-    public function validate()
+    public function validate(array $data = array())
     {
     	$this->_validation_errors = array();
     	
@@ -1565,7 +1484,7 @@ class e_model
     		return true;
     	}
     	
-    	$result = $this->getValidator()->validateFields($this->getPostedData(), $this->getValidationRules());
+    	$result = $this->getValidator()->validateFields(($data ? $data : $this->getPostedData()), $this->getValidationRules());
     	if(!empty($result['errors']))
     	{
     		$this->_validation_errors = $result['errors'];
