@@ -9,8 +9,8 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-08-03 18:04:19 $
+ * $Revision: 1.26 $
+ * $Date: 2009-08-04 15:04:18 $
  * $Author: e107coders $
  *
 */
@@ -1055,6 +1055,11 @@ class uclass_manager
 
 							"<tbody>";
 			$classes = $sql->db_getList('ALL', FALSE, FALSE);
+            $types = array(
+				UC_TYPE_STD 	=> UCSLAN_80,
+			   	UC_TYPE_GROUP	=> UCSLAN_81
+			);
+
             foreach($classes as $row)
 			{
 				if(varset($row['userclass_icon']))
@@ -1072,7 +1077,8 @@ class uclass_manager
 				$text .= (in_array("userclass_editclass",$this->fieldpref)) ? "<td>".r_userclass_name($row['userclass_editclass'])."</td>" : "";
 				$text .= (in_array("userclass_parent",$this->fieldpref)) ? "<td>".(r_userclass_name($row['userclass_parent']))."</td>" : "";
 				$text .= (in_array("userclass_visibility",$this->fieldpref)) ? "<td>".(r_userclass_name($row['userclass_visibility']))."</td>" : "";
-				$text .= (in_array("userclass_type",$this->fieldpref)) ? "<td>".($row['userclass_type'])."</td>" : "";
+				$text .= (in_array("userclass_type",$this->fieldpref)) ? "<td>".($types[$row['userclass_type']])."</td>" : "";
+
 
 
 				$text .= "<td class='center'>
