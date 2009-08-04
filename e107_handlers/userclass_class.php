@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2009-07-16 08:15:35 $
+|     $Revision: 1.37 $
+|     $Date: 2009-08-04 14:36:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -333,9 +333,24 @@ class user_class
 		else
 		{
 		  $s = ($curval == $k && $curval !== '') ?  "selected='selected'" : "";
-		  $text .= "<option  value='".$k."' ".$s.">".$v."</option>\n";
+		  $text .= "<option class='uc-select'  value='".$k."' ".$s.">".$v."</option>\n";
 		}
 	  }
+
+	  // Inverted Classes
+	  if(strpos($optlist, "no-excludes") !== TRUE)
+	  {
+		  $text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+	      foreach ($show_classes as $k => $v)
+		  {
+		  	  if($k != '0' && $k!=255 && $k !=251)  // remove everyone, nobody and readonly from list.
+			  {
+				  $s = ($curval == ('-'.$k) && $curval !== '') ?  "selected='selected'" : "";
+				  $text .= "<option class='uc-select-inverted' value='-".$k."' ".$s.">".str_replace("--CLASS--", $v, UC_LAN_INVERT)."</option>\n";
+			  }
+		  }
+		  $text .= "</optgroup>\n";
+      }
 
 	  if (strpos($optlist, "language") !== FALSE && $pref['multilanguage'])
 	  {
@@ -349,8 +364,8 @@ class user_class
 	  }
 
 	  // Only return the select box if we've ended up with some options
-	  if ($text) $text = "<select class='tbox select' name='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
-	  return $text;
+	  if ($text) $text = "\n<select class='tbox select' name='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
+	  return $text.$curVal;
 	}
 
 

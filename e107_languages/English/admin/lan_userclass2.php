@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-04-29 21:15:57 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-08-04 14:36:56 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("UCSLAN_1", "Cleared all users from class.");
@@ -32,7 +32,7 @@ define("UCSLAN_20", "class");
 define("UCSLAN_21", "User Class Settings");
 define("UCSLAN_22", "Users - click to move ...");
 define("UCSLAN_23", "Users in this class ...");
-define("UCSLAN_24", "Who can manage class");
+define("UCSLAN_24", "Class Manager");
 define("UCSLAN_25", 'Define/Edit Classes');
 define("UCSLAN_26", 'Class Membership');
 define("UCSLAN_27", 'Debug Help');
@@ -42,8 +42,8 @@ define("UCSLAN_30", 'Short name displayed in selectors');
 define("UCSLAN_31", 'Information about applicability of class');
 define("UCSLAN_32", 'Users in this class can add/remove themselves from the class being edited');
 define("UCSLAN_33", 'Determines which users can see this class in drop-down lists');
-define("UCSLAN_34", 'Class visibility');
-define("UCSLAN_35", 'Class parent');
+define("UCSLAN_34", 'Class Visibility');
+define("UCSLAN_35", 'Class Parent');
 define("UCSLAN_36", 'If the top of the tree is \'No One\', permissions increase towards the top of the tree<br />If the top of the tree is \'Everyone\', permissions increase as you go down the tree');
 define("UCSLAN_37", 'You must enter a name for the class');
 define("UCSLAN_38", 'Initial User Class');
@@ -76,7 +76,7 @@ define("UCSLAN_64", 'completed');
 define("UCSLAN_65", 'Flatten user class hierarchy: ');
 define("UCSLAN_66", 'Confirm flatten user class hierarchy');
 define("UCSLAN_67", 'Confirm set default user class hierarchy');
-define("UCSLAN_68", 'Class icon');
+define("UCSLAN_68", 'Class Icon');
 define("UCSLAN_69", 'Optional icon associated with class - directory ');
 define("UCSLAN_70", 'Rebuilding class hierarchy: ');
 define("UCSLAN_71", 'User Class Maintenance');
@@ -87,7 +87,7 @@ define('UCSLAN_75', 'Registered and logged in members');
 define('UCSLAN_76', 'Site Administrators');
 define('UCSLAN_77', 'Main site Administrators');
 define('UCSLAN_78', 'Moderators for Forums and other areas');
-define('UCSLAN_79', 'Class type');
+define('UCSLAN_79', 'Class Type');
 define('UCSLAN_80', 'Standard');
 define('UCSLAN_81', 'Group');
 define('UCSLAN_82', 'A group brings together a number of individual classes');
