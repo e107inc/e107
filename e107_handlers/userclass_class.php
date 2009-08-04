@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2009-08-04 14:36:54 $
+|     $Revision: 1.38 $
+|     $Date: 2009-08-04 15:04:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -641,6 +641,13 @@ class user_class
 	  if (isset($this->fixed_classes[$id]))
 	  {
 	    return $this->fixed_classes[$id];
+	  }
+
+	  if($id < 0)
+	  {
+	  	$val = abs($id);
+		$name = isset($this->class_tree[$val]['userclass_name']) ? $this->class_tree[$val]['userclass_name'] : $this->fixed_classes[$val];
+      	return str_replace("--CLASS--", $name, UC_LAN_INVERT);
 	  }
 	  return '';
 	}
