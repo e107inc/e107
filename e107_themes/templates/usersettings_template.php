@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-28 22:37:43 $
-|     $Author: e107steved $
+|     $Revision: 1.7 $
+|     $Date: 2009-08-05 21:47:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -101,8 +101,11 @@ $REQUIRED_FIELD = "{FIELDNAME}<span style='text-align:right;font-size:15px; colo
 
 $USERSETTINGS_EDIT = "
 <div style='text-align:center'>
-	<table style='".USER_WIDTH."' class='fborder'>
-
+	<table style='".USER_WIDTH."' class='fborder adminform'>
+    	<colgroup span='2'>
+    		<col class='col-label' />
+    		<col class='col-control' />
+    	</colgroup>
 	<tr>
 	<td colspan='2' class='forumheader'>".LAN_USET_31."</td>
 	</tr>
