@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.47 $
-* $Date: 2009-08-03 16:43:46 $
+* $Revision: 1.48 $
+* $Date: 2009-08-05 16:02:08 $
 * $Author: e107coders $
 *
 */
@@ -35,11 +35,11 @@ if (varset($_POST['useraction']))
 		}
 	}
 }
-if (isset ($_POST['useraction']) && $_POST['useraction'] == 'userinfo')
+/*if (isset ($_POST['useraction']) && $_POST['useraction'] == 'userinfo')
 {
 	header('location:'.e_ADMIN."userinfo.php?".$e107->tp->toDB($_POST['userip']));
 	exit;
-}
+}*/
 if (isset ($_POST['useraction']) && $_POST['useraction'] == 'usersettings')
 {
 	header('location:'.$e107->url->getUrl('core:user','main','func=settings&id='.(int) $_POST['userid']));
@@ -349,6 +349,13 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == "ban")
 if (isset ($_POST['useraction']) && $_POST['useraction'] == "unban")
 {
 	$user->user_unban($_POST['userid']);
+}
+
+// User Info.
+if ((isset ($_POST['useraction']) && $_POST['useraction'] == "userinfo") || $_GET['userinfo'])
+{
+	$ip = ($_POST['userip']) ? $_POST['userip'] : $_GET['userinfo'];
+	$user->user_info($ip);
 }
 
 // ------- Delete User --------------
@@ -721,6 +728,52 @@ class users
 			$user_pref['admin_users_columns'] = $_POST['e-columns'];
 			save_prefs('user');
 		}
+	}
+
+
+	function user_info($ipd)
+	{
+		global $ns,$sql,$e107;
+
+		if (isset($ipd))
+		{
+			if(!defined("BULLET")) define("BULLET", "bullet2.gif");
+            // TODO - move to e_userinfo.php
+			$obj = new convert;
+			$sql->db_Select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
+			$host = $e107->get_host_name($ipd);
+			$text = USFLAN_3." <b>".$ipd."</b> [ ".USFLAN_4.": $host ]<br />
+				<i><a href=\"banlist.php?".$ipd."\">".USFLAN_5."</a></i>
+
+				<br /><br />";
+			while (list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql->db_Fetch())
+			{
+				$datestamp = $obj->convert_date($cb_datestamp, "short");
+				$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
+				$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
+				$text .= "<img src='".THEME_ABS."images/".BULLET."' alt='bullet' />
+					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $cb_message."
+					</div><br />";
+			}
+
+			$text .= "<hr />";
+
+			$sql->db_Select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
+			while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->db_Fetch())
+			{
+				$datestamp = $obj->convert_date($comment_datestamp, "short");
+				$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
+				$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
+				$text .= "<img src='".THEME_ABS."images/".BULLET."' alt='bullet' />
+					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $comment_comment."</div><br />";
+			}
+
+		}
+
+		$ns->tablerender(USFLAN_7, $text);
+
+
+
 	}
 
 
