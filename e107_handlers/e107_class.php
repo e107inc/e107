@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-07-30 16:09:30 $
+ * $Revision: 1.34 $
+ * $Date: 2009-08-05 19:56:48 $
  * $Author: secretr $
 */
 
@@ -262,10 +262,10 @@ class e107
 	
 	/**
 	 * Retrieve core config handlers.
-	 * List of allowed $name (aliases) could be found
+	 * List of allowed $name values (aliases) could be found
 	 * in {@link e_core_pref} class
 	 *
-	 * @param string $name core|core_backup|emote|menu|search|notify
+	 * @param string $name core|core_backup|emote|menu|search|notify|ipool
 	 * @return e_core_pref
 	 */
 	public static function getConfig($name = 'core')
@@ -280,7 +280,7 @@ class e107
 	}
 	
 	/**
-	 * Retrieve core config handler preference value.
+	 * Retrieve core config handler preference value or the core preference array
 	 * Shorthand of  self::getConfig()->get()
 	 *
 	 * @see e_core_pref::get()
@@ -288,9 +288,9 @@ class e107
 	 * @param mixed $default default value if preference is not found
 	 * @return mixed
 	 */
-	public static function getPref($pref_name, $default = null)
+	public static function getPref($pref_name = '', $default = null)
 	{
-		return self::getConfig()->get($pref_name, $default);
+		return empty($pref_name) ? self::getConfig()->getPref() : self::getConfig()->get($pref_name, $default);
 	}
 	
 	/**
@@ -382,6 +382,22 @@ class e107
 	public static function findPlugPref($plug_name, $pref_name, $default = null, $index = null)
 	{
 		return self::getPlugConfig($plug_name)->getPref($pref_name, $default, $index);
+	}
+	
+	/**
+	 * Get current theme preference. $pref_name is parsed,
+	 * so that $pref_name = 'x/y/z' will search for value pref_data[x][y][z]
+	 * Shorthand of  self::getConfig()->getPref('current_theme/sitetheme_pref/pref_name')
+	 *
+	 * @see e_core_pref::getPref()
+	 * @param string $pref_name
+	 * @param mixed $default default value if preference is not found
+	 * @return mixed
+	 */
+	public static function getThemePref($pref_name, $default = null, $index = null)
+	{
+		$prefobj = e107::getConfig(); 
+		return $prefobj->getPref($prefobj->get('sitetheme').'/sitetheme_pref/'.$pref_name, $default, $index);
 	}
 	
 	/**
