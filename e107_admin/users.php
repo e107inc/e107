@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.49 $
-* $Date: 2009-08-05 22:03:23 $
+* $Revision: 1.50 $
+* $Date: 2009-08-05 22:37:16 $
 * $Author: e107coders $
 *
 */
@@ -549,19 +549,35 @@ class users
 			$this->sortorderrev = ($this->sortorder == 'asc') ? 'desc' : 'asc';
 			$this->from = $from;
 		}
-		$this->fields = array('checkboxes' => array('title' => '','width' => '3%','forced' => true,'thclass' => 'center first'),'user_id' => array('title' => 'Id','width' => '5%','forced' => true),'user_status' => array('title' => ADLAN_134,'width' => 'auto'),'user_name' => array('title' => LAN_USER_01,'type' => 'text','width' => 'auto','thclass' => 'left first'),
-		// Display name
-		'user_loginname' => array('title' => LAN_USER_02,'type' => 'text','width' => 'auto'),
-		// User name
-		'user_login' => array('title' => LAN_USER_03,'type' => 'text','width' => 'auto'),
-		// Real name (no real vetting)
-		'user_customtitle' => array('title' => LAN_USER_04,'type' => 'text','width' => 'auto'),
-		// No real vetting
-		'user_password' => array('title' => LAN_USER_05,'type' => 'text','width' => 'auto'),'user_sess' => array('title' => LAN_USER_06,'type' => 'text','width' => 'auto'),
-		// Photo
-		'user_image' => array('title' => LAN_USER_07,'type' => 'text','width' => 'auto'),
-		// Avatar
-		'user_email' => array('title' => LAN_USER_08,'type' => 'text','width' => 'auto'),'user_signature' => array('title' => LAN_USER_09,'type' => 'text','width' => 'auto'),'user_hideemail' => array('title' => LAN_USER_10,'type' => 'int','width' => 'auto'),'user_xup' => array('title' => LAN_USER_11,'type' => 'text','width' => 'auto'),'user_class' => array('title' => LAN_USER_12,'type' => 'class'),'user_join' => array('title' => LAN_USER_14,'width' => 'auto'),'user_lastvisit' => array('title' => LAN_USER_15,'width' => 'auto'),'user_currentvisit' => array('title' => LAN_USER_16,'width' => 'auto'),'user_comments' => array('title' => LAN_USER_17,'width' => 'auto'),'user_ip' => array('title' => LAN_USER_18,'width' => 'auto'),'user_ban' => array('title' => LAN_USER_19,'width' => 'auto'),'user_prefs' => array('title' => LAN_USER_20,'width' => 'auto'),'user_visits' => array('title' => LAN_USER_21,'width' => 'auto'),'user_admin' => array('title' => LAN_USER_22,'width' => 'auto'),'user_perms' => array('title' => LAN_USER_23,'width' => 'auto'),'user_pwchange' => array('title' => LAN_USER_24,'width' => 'auto'),);
+		$this->fields = array(
+			'checkboxes' 		=> array('title' => '','width' => '3%','forced' => true,'thclass' => 'center first'),
+			'user_id' 			=> array('title' => 'Id','width' => '5%','forced' => true),
+			'user_status' 		=> array('title' => ADLAN_134,'width' => 'auto', 'nosort'=>TRUE),
+			'user_name' 		=> array('title' => LAN_USER_01,'type' => 'text','width' => 'auto','thclass' => 'left first'), // Display name
+	 		'user_loginname' 	=> array('title' => LAN_USER_02,'type' => 'text','width' => 'auto'), // User name
+	 		'user_login' 		=> array('title' => LAN_USER_03,'type' => 'text','width' => 'auto'), // Real name (no real vetting)
+	 		'user_customtitle' 	=> array('title' => LAN_USER_04,'type' => 'text','width' => 'auto'), // No real vetting
+	 		'user_password' 	=> array('title' => LAN_USER_05,'type' => 'text','width' => 'auto'),
+			'user_sess' 		=> array('title' => LAN_USER_06,'type' => 'text','width' => 'auto'), // Photo
+	 		'user_image' 		=> array('title' => LAN_USER_07,'type' => 'text','width' => 'auto'), // Avatar
+	 		'user_email' 		=> array('title' => LAN_USER_08,'type' => 'text','width' => 'auto'),
+			'user_signature' 	=> array('title' => LAN_USER_09,'type' => 'text','width' => 'auto'),
+			'user_hideemail' 	=> array('title' => LAN_USER_10,'type' => 'int','width' => 'auto'),
+			'user_xup' 			=> array('title' => LAN_USER_11,'type' => 'text','width' => 'auto'),
+			'user_class' 		=> array('title' => LAN_USER_12,'type' => 'class'),
+			'user_join' 		=> array('title' => LAN_USER_14,'width' => 'auto'),
+			'user_lastvisit' 	=> array('title' => LAN_USER_15,'width' => 'auto'),
+			'user_currentvisit' => array('title' => LAN_USER_16,'width' => 'auto'),
+			'user_comments' 	=> array('title' => LAN_USER_17,'width' => 'auto'),
+			'user_ip' 			=> array('title' => LAN_USER_18,'width' => 'auto'),
+			'user_ban' 			=> array('title' => LAN_USER_19,'width' => 'auto'),
+			'user_prefs' 		=> array('title' => LAN_USER_20,'width' => 'auto'),
+			'user_visits' 		=> array('title' => LAN_USER_21,'width' => 'auto'),
+			'user_admin' 		=> array('title' => LAN_USER_22,'width' => 'auto'),
+			'user_perms' 		=> array('title' => LAN_USER_23,'width' => 'auto'),
+			'user_pwchange'		=> array('title' => LAN_USER_24,'width' => 'auto'),
+		);
+
 		$sql->db_Select("user_extended_struct");
 		while ($row = $sql->db_Fetch())
 		{
