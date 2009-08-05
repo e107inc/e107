@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.119 $
-* $Date: 2009-08-05 14:18:09 $
-* $Author: e107coders $
+* $Revision: 1.120 $
+* $Date: 2009-08-05 19:58:32 $
+* $Author: secretr $
 *
 */
 //
@@ -48,7 +48,7 @@ $oblev_before_start = ob_get_level();
 // B: Remove all output buffering
 //
 if(!isset($_E107) || !is_array($_E107)) { $_E107 = array(); }
-if(varset($_E107['cli']) && !varset($_E107['debug']) && isset($_SERVER["HTTP_USER_AGENT"]))
+if(isset($_E107['cli']) && !isset($_E107['debug']) && isset($_SERVER["HTTP_USER_AGENT"]))
 {
 	exit;
 }
@@ -192,7 +192,13 @@ if(!isset($ADMIN_DIRECTORY))
 //
 // clever stuff that figures out where the paths are on the fly.. no more need for hard-coded e_HTTP :)
 //
-e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
+$tmp = realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY);
+
+//Core functions - now API independent 
+@require_once($tmp.'/core_functions.php');
+e107_require_once($tmp.'/e107_class.php');
+unset($tmp);
+
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = e107::getInstance()->init($e107_paths, realpath(dirname(__FILE__)));
 
@@ -337,8 +343,6 @@ e107_require_once(e_HANDLER.'php_compatibility_handler.php');
 // L: Extract core prefs from the database
 //
 $sql->db_Mark_Time('Start: Extract Core Prefs');
-e107_require_once(e_HANDLER."pref_class.php");
-$sysprefs = new prefs;
 
 e107_require_once(e_HANDLER.'cache_handler.php');
 
@@ -348,6 +352,57 @@ $eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorag
 //DEPRECATED, BC, call the method only when needed, $e107->e_event caught by __get()
 $e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
 
+e107_require_once(e_HANDLER."pref_class.php");
+$sysprefs = new prefs;
+
+// Check core preferences
+//FIXME - message_handler is dying after message_handler(CRITICAL_ERROR) call
+if(!e107::getConfig()->hasData())
+{
+	// Core prefs error - admin log
+	e107::getAdminLog()->log_event('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
+	
+	// Try for the automatic backup..
+	if(e107::getConfig('core_backup')->hasData())
+	{
+		// auto backup found, use backup to restore the core
+		e107::getConfig()->loadData(e107::getConfig('core_backup')->getPref(), false)
+			->save(false, true);
+			
+		message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
+	}
+	else 
+	{
+		// No auto backup, try for the 'old' prefs system.
+		if(!e107::getConfig('core_old')->hasData())
+		{
+			// Core could not restore from automatic backup. Execution halted.
+			e107::getAdminLog()->log_event('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL); 
+			
+			message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
+			// No old system, so point in the direction of resetcore :(
+			message_handler('CRITICAL_ERROR', 4, __LINE__, __FILE__); //this will never appear till message_handler() is fixed 
+
+			exit;
+		}
+		else 
+		{
+			// resurrect core from old prefs
+			e107::getConfig()->loadData(e107::getConfig('core_old')->getPref(), false)
+				->save(false, true);
+				
+			// resurrect core_backup from old prefs
+			e107::getConfig('core_backup')->loadData(e107::getConfig('core_old')->getPref(), false)
+				->save(false, true);
+		}
+	}
+	
+}
+
+//DEPRECATED, BC, call e107::getPref() instead
+$pref = e107::getPref();
+
+/*
 $PrefCache = ecache::retrieve_sys('SitePrefs', 24 * 60, true);
 if(!$PrefCache)
 {
@@ -420,26 +475,18 @@ else
 	}
 	$pref = $eArrayStorage->ReadArray($PrefCache);
 }
+*/
 
-
+//TODO - this could be part of e107->init() method now, prefs will be auto-initialized
+//when proper called (e107::getPref())
 $e107->set_base_path();
 
-// extract menu prefs
-$menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));
+//DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
+$menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
 
-// extract iconpool
-if($tmp = ecache::retrieve_sys('IconPool', 24 * 60, true))
-{
-    $iconpool = $tmp;
-}
-else
-{
-	if($iconData= $sysprefs->get('IconPool'))
-	{
-		ecache::set_sys('IconPool', $iconData);
-		$iconpool = $eArrayStorage->ReadArray($iconData);
-	}
-}
+//DEPRECATED, BC, call e107::getConfig('ipool')->get('pref_name') only when needed
+$iconpool = e107::getConfig('ipool')->getPref(); //extract iconpool
+
 
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
@@ -1256,6 +1303,10 @@ function check_email($email)
 function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 {
 	$e107 = e107::getInstance();
+	if($var == e_LANGUAGE)
+	{
+		return TRUE;
+	}
 
 	if(is_numeric($uid) && $uid > 0)
 	{	// userid has been supplied, go build that user's class list
@@ -1736,44 +1787,6 @@ function session_set($name, $value, $expire='', $path = '/', $domain = '', $secu
 	}
 }
 
-//
-// Use these to combine isset() and use of the set value. or defined and use of a constant
-// i.e. to fix  if($pref['foo']) ==> if ( varset($pref['foo']) ) will use the pref, or ''.
-// Can set 2nd param to any other default value you like (e.g. false, 0, or whatever)
-// $testvalue adds additional test of the value (not just isset())
-// Examples:
-// $something = pref;  // Bug if pref not set         ==> $something = varset(pref);
-// $something = isset(pref) ? pref : "";              ==> $something = varset(pref);
-// $something = isset(pref) ? pref : default;         ==> $something = varset(pref,default);
-// $something = isset(pref) && pref ? pref : default; ==> use varsettrue(pref,default)
-//
-function varset(&$val, $default='')
-{
-	if (isset($val)) { return $val; }
-	return $default;
-}
-
-function defset($str, $default='')
-{
-	if (defined($str)) { return constant($str); }
-	return $default;
-}
-
-//
-// These variants are like the above, but only return the value if both set AND 'true'
-//
-function varsettrue(&$val, $default='')
-{
-	if (isset($val) && $val) { return $val; }
-	return $default;
-}
-
-function defsettrue($str,$default='')
-{
-	if (defined($str) && constant($str)) {return constant($str); }
-	return $default;
-}
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function message_handler($mode, $message, $line = 0, $file = '')
 {
@@ -1863,52 +1876,12 @@ function class_list($uid = '')
 }
 
 // ---------------------------------------------------------------------------
-function e107_include($fname)
-{
-	global $e107_debug;
-	$ret = ($e107_debug ? include($fname) : @include($fname));
-	return $ret;
-}
 
-function e107_include_once($fname)
-{
-	global $e107_debug;
-	if(is_readable($fname))
-	{
-		$ret = (!$e107_debug)? @include_once($fname) : include_once($fname);
-	}
-	return (isset($ret)) ? $ret : '';
-}
-
-function e107_require_once($fname)
-{
-	global $e107_debug;
-	$ret = ($e107_debug ? require_once($fname) : @require_once($fname));
-	return $ret;
-}
-
-function e107_require($fname)
-{
-	global $e107_debug;
-	$ret = ($e107_debug ? require($fname) : @require($fname));
-	return $ret;
-}
 
 //DEPRECATED - use e107::getLan();
 function include_lan($path, $force = false)
 {
 	return e107::getLan($path, $force);
-	/*global $pref;
-	if (!is_readable($path))
-	{
-		if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
-		{
-			return FALSE;
-		}
-		$path = str_replace(e_LANGUAGE, 'English', $path);
-	}
-	$ret = ($force) ? include($path) : include_once($path);
-	return (isset($ret)) ? $ret : "";*/
 }
 
 /*
@@ -1941,68 +1914,11 @@ function include_lan_admin($path)
 function loadLanFiles($unitName, $type='runtime')
 {
 	return e107::loadLanFiles($unitName, $type);
-	
-	/*global $pref;
-	switch ($type)
-	{
-		case 'runtime' :
-			$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_'.$unitName.'.php';
-			$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.$unitName.'.php';
-			break;
-		case 'admin' :
-			$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin_'.$unitName.'.php';
-			$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.'admin_'.$unitName.'.php';
-			break;
-		case 'theme' :
-			$searchPath[1] = e_THEME.$unitName.'/languages/'.e_LANGUAGE.'_'.$unitName.'.php';
-			$searchPath[2] = e_THEME.$unitName.'/languages/'.e_LANGUAGE.'/'.$unitName.'.php';
-			break;
-		default :
-			$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_'.$type.'.php';
-			$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.$type.'.php';
-	}
-	foreach ($searchPath as $s)			// Look for files in current language first - should usually be found
-	{
-		if (is_readable($s))
-		{
-			$ret = include_once($s);
-			return (isset($ret)) ? $ret : "";
-		}
-	}
-	if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
-	{
-		return FALSE;		// No point looking for the English files twice
-	}
-
-	foreach ($searchPath as $s)			// Now look for the English files
-	{
-		$s = str_replace(e_LANGUAGE, 'English', $s);
-		if (is_readable($s))
-		{
-			$ret = include_once($s);
-			return (isset($ret)) ? $ret : "";
-		}
-	}
-	return FALSE;		// Nothing found*/
 }
 
 
 
-if(!function_exists('print_a'))
-{
-	function print_a($var, $return = FALSE)
-	{
-		if( ! $return)
-		{
-			echo '<pre>'.htmlspecialchars(print_r($var, TRUE), ENT_QUOTES, 'utf-8').'</pre>';
-			return TRUE;
-		}
-		else
-		{
-			return '<pre>'.htmlspecialchars(print_r($var, true), ENT_QUOTES, 'utf-8').'</pre>';
-		}
-	}
-}
+
 
 
 // Check that all required user fields (including extended fields) are valid.
@@ -2149,35 +2065,6 @@ class error_handler
 	}
 }
 
-/**
- * Strips slashes from a var if magic_quotes_gqc is enabled
- *
- * @param mixed $data
- * @return mixed
- */
-function strip_if_magic($data)
-{
-	if (MAGIC_QUOTES_GPC == true)
-	{
-		return array_stripslashes($data);
-	}
-	else
-	{
-		return $data;
-	}
-}
-
-/**
- * Strips slashes from a string or an array
- *
- * @param mixed $value
- * @return mixed
- */
-function array_stripslashes($data)
-{
-	return is_array($data) ? array_map('array_stripslashes', $data) : stripslashes($data);
-}
-
 $sql->db_Mark_Time('(After class2)');
 
 
@@ -2201,43 +2088,6 @@ function plugInstalled($plugname)
 }
 
 
-function echo_gzipped_page()
-{
 
-    if(headers_sent())
-	{
-        $encoding = false;
-    }
-	elseif( strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false )
-	{
-        $encoding = 'x-gzip';
-    }
-	elseif( strpos($_SERVER["HTTP_ACCEPT_ENCODING"],'gzip') !== false )
-	{
-        $encoding = 'gzip';
-    }
-	else
-	{
-        $encoding = false;
-    }
-
-    if($encoding)
-	{
-        $contents = ob_get_contents();
-        ob_end_clean();
-        header('Content-Encoding: '.$encoding);
-        print("\x1f\x8b\x08\x00\x00\x00\x00\x00");
-        $size = strlen($contents);
-        $contents = gzcompress($contents, 9);
-        $contents = substr($contents, 0, $size);
-        print($contents);
-        exit();
-    }
-	else
-	{
-        ob_end_flush();
-        exit();
-    }
-}
 
 ?>
