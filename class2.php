@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.118 $
-* $Date: 2009-08-03 21:12:44 $
-* $Author: marj_nl_fr $
+* $Revision: 1.119 $
+* $Date: 2009-08-05 14:18:09 $
+* $Author: e107coders $
 *
 */
 //
@@ -1332,9 +1332,22 @@ function getperms($arg, $ap = ADMINPERMS)
 			$arg='P'.$row[0];
 		}
 	}
+
+
 	if (strpos($ap, '.'.$arg.'.') !== false)
 	{
 		return true;
+	}
+    elseif(strpos($arg,"|")) // check for multiple perms - separated by '|'.
+	{
+    	$tmp = explode("|",$arg);
+		foreach($tmp as $val)
+		{
+            if (strpos($ap, '.'.$val.'.') !== false)
+			{
+				return true;
+			}
+		}
 	}
 	else
 	{
