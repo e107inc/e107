@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-23 10:46:11 $
+|     $Revision: 1.6 $
+|     $Date: 2009-08-05 14:20:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,7 @@ $text .= "
 
 foreach ($iconlist as $key => $val)
 {
-	if (in_array($key,$user_pref['core-infopanel-mye107']))
+	if (!isset($user_pref['core-infopanel-mye107']) || in_array($key,$user_pref['core-infopanel-mye107']) )
 	{
 		$text .= render_links($val['link'],$val['title'],$val['caption'],$val['perms'],$val['icon_32'],"div");
 	}
@@ -117,9 +117,12 @@ $text .= "<div class='clear'>&nbsp;</div>
 
 foreach ($iconlist as $key => $icon)
 {
-	$checked = (in_array($key,$user_pref['core-infopanel-mye107'])) ? true : false;
-	$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+	if(getperms($icon['perms']))
+	{
+		$checked = (varset($user_pref['core-infopanel-mye107']) && in_array($key,$user_pref['core-infopanel-mye107'])) ? true : false;
+		$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
                         ".$icon['icon'].$frm->checkbox('e-mye107[]',$key,$checked).$icon['title']."</div>";
+	}
 }
 
 
@@ -127,9 +130,12 @@ if (is_array($pluglist))
 {
 	foreach ($pluglist as $key => $icon)
 	{
-		$checked = (in_array('p-'.$key,$user_pref['core-infopanel-mye107'])) ? true : false;
-		$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+    	if(getperms($icon['perms']))
+		{
+			$checked = (in_array('p-'.$key,$user_pref['core-infopanel-mye107'])) ? true : false;
+			$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
 	                         ".$icon['icon'].$frm->checkbox('e-mye107[]',$key,$checked).$icon['title']."</div>";
+		}
 	}
 }
 $text .= "<div class='clear'>&nbsp;</div>";

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-04 13:36:15 $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-05 14:20:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -229,7 +229,7 @@ $array_functions_assoc = convert_core_icons($newarray);
 
 function convert_core_icons($newarray)  // Put core button array in the same format as plugin button array.
 {
-    foreach($newarray as $val)
+    foreach($newarray as $key=>$val)
 	{
 		$key = "e-".basename($val[0],".php");
 		$val['icon'] = $val[5];
@@ -237,9 +237,10 @@ function convert_core_icons($newarray)  // Put core button array in the same for
 		$val['title'] = $val[1];
 		$val['link'] = $val[0];
 		$val['caption'] = $val['2'];
-		$val['perms'] = $val['4'];
+		$val['perms'] = $val['3'];
 		$array_functions_assoc[$key] = $val;
 	}
+
     return $array_functions_assoc;
 }
 
