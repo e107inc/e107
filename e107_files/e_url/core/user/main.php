@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: main.php,v 1.3 2008-12-22 03:15:04 mcfly_e107 Exp $
+* $Id: main.php,v 1.4 2009-08-05 14:16:57 e107coders Exp $
 *
 * eURL configuration script
 */
@@ -15,7 +15,7 @@ function url_user_main($parms)
 			break;
 			
 		case 'settings':
-			return e_HTTP.'usersettings.php?id.'.$parms['id'];
+			return e_HTTP.'usersettings.php?'.$parms['id'];
 			break;
 		
 	}
