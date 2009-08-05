@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/import/import_user_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-20 21:18:09 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-08-05 22:18:15 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -95,6 +95,7 @@ class user_import
   // Constructor
   function user_import()
   {
+  	global $sql;
     $this->userDB = new db;			// Have our own database object to write to the user table
 
 	// Create list of predefined extended user fields which are present
@@ -154,7 +155,7 @@ class user_import
 
   // Add a user record to the DB - pass array as parameter. 
   // Returns an error code on failure. TRUE on success
-  function saveUserData($userRecord)
+  function saveData($userRecord)
   {
     if ($this->blockMainAdmin && isset($userRecord['user_id']) && ($userRecord['user_id'] == 1)) return 1;
 	$extendedFields = array();
