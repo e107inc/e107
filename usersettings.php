@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-08-05 21:47:18 $
+ * $Revision: 1.38 $
+ * $Date: 2009-08-05 22:03:23 $
  * $Author: e107coders $
  *
 */
@@ -741,5 +741,33 @@ function headerjs()
 
 	$script .= $cal->load_files();
 	return $script;
+}
+
+function usersettings_adminmenu()
+{
+		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
+		if ($action == '')
+		{
+			$action = 'main';
+		}
+		// ##### Display options
+		$var ['main']['text'] = USRLAN_71;
+		$var ['main']['link'] = e_ADMIN.'users.php';
+		$var ['create']['text'] = USRLAN_72;
+		$var ['create']['link'] = e_ADMIN.'users.php?create';
+		$var ['prune']['text'] = USRLAN_73;
+		$var ['prune']['link'] = e_ADMIN.'users.php?prune';
+		$var ['options']['text'] = LAN_OPTIONS;
+		$var ['options']['link'] = e_ADMIN.'users.php?options';
+		if ($unverified)
+		{
+			$var ['unveri']['text'] = USRLAN_138." ($unverified)";
+			$var ['unveri']['link'] = e_ADMIN.'users.php?unverified';
+		}
+		$var ['rank']['text'] = USRLAN_196;
+		$var ['rank']['link'] = e_ADMIN.'users.php?ranks';
+		//  $var['mailing']['text']= USRLAN_121;
+		//   $var['mailing']['link']="mailout.php";
+		show_admin_menu(USRLAN_76,$action,$var);
 }
 ?>

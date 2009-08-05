@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.48 $
-* $Date: 2009-08-05 16:02:08 $
+* $Revision: 1.49 $
+* $Date: 2009-08-05 22:03:23 $
 * $Author: e107coders $
 *
 */
@@ -1122,6 +1122,9 @@ class users
 
 	function show_options($action)
 	{
+
+    	// Please duplicate any changes to this function also in /usersettings.php. (at the end of the script)
+
 		global $unverified;
 		// ##### Display options
 		if ($action == '')
@@ -1130,20 +1133,20 @@ class users
 		}
 		// ##### Display options
 		$var ['main']['text'] = USRLAN_71;
-		$var ['main']['link'] = e_SELF;
+		$var ['main']['link'] = e_ADMIN.'users.php';
 		$var ['create']['text'] = USRLAN_72;
-		$var ['create']['link'] = e_SELF.'?create';
+		$var ['create']['link'] = e_ADMIN.'users.php?create';
 		$var ['prune']['text'] = USRLAN_73;
-		$var ['prune']['link'] = e_SELF.'?prune';
+		$var ['prune']['link'] = e_ADMIN.'users.php?prune';
 		$var ['options']['text'] = LAN_OPTIONS;
-		$var ['options']['link'] = e_SELF.'?options';
+		$var ['options']['link'] = e_ADMIN.'users.php?options';
 		if ($unverified)
 		{
 			$var ['unveri']['text'] = USRLAN_138." ($unverified)";
-			$var ['unveri']['link'] = e_SELF.'?unverified';
+			$var ['unveri']['link'] = e_ADMIN.'users.php?unverified';
 		}
 		$var ['rank']['text'] = USRLAN_196;
-		$var ['rank']['link'] = e_SELF.'?ranks';
+		$var ['rank']['link'] = e_ADMIN.'users.php?ranks';
 		//  $var['mailing']['text']= USRLAN_121;
 		//   $var['mailing']['link']="mailout.php";
 		show_admin_menu(USRLAN_76,$action,$var);
