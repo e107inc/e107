@@ -9,9 +9,9 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-07-21 19:21:27 $
- * $Author: e107steved $
+ * $Revision: 1.37 $
+ * $Date: 2009-08-05 21:47:18 $
+ * $Author: e107coders $
  *
 */
 /*
@@ -21,11 +21,14 @@ Admin log events:
 USET_01 - admin changed user data
 */
 
-
+if(is_numeric($_SERVER["QUERY_STRING"]))
+{
+	$eplug_admin = TRUE;
+}
 require_once ('class2.php');
 
-//define("US_DEBUG",TRUE);
-define('US_DEBUG', false);
+define("US_DEBUG",FALSE);
+//define('US_DEBUG', false);
 
 
 if (!USER) 
@@ -41,6 +44,7 @@ if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" )
 }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_usersettings.php');
 
 require_once (e_HANDLER.'ren_help.php');
 require_once (e_HANDLER.'user_extended_class.php');
@@ -97,10 +101,17 @@ if(is_numeric(e_QUERY))
 		header('location:'.e_BASE.'index.php');
 		exit();
 	}
+
 }
-
-
-require_once (HEADERF);
+if($adminEdit) // try to stay in Admin when admin is editing.
+{
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
+	require_once (e_ADMIN."auth.php");
+}
+else
+{
+	require_once (HEADERF);
+}
 
 
 // Save user settings (changes only)
@@ -311,7 +322,14 @@ elseif (isset($_POST['SaveValidatedInfo']))
 
 		{  // Invalid password
 			echo "<br />".LAN_USET_22."<br />";
-			require_once (FOOTERF);
+			if(!$adminEdit)
+			{
+				require_once (FOOTERF);
+			}
+			else
+			{
+            	require_once(e_ADMIN."footer.php");
+			}
 			exit();
 		}
 		$changedUserData = unserialize($new_data);
@@ -607,7 +625,14 @@ if ($promptPassword)
 		</table>
 		</form>";
 	$ns->tablerender(LAN_USET_39, $text);
-	require_once (FOOTERF);
+    			if(!$adminEdit)
+			{
+				require_once (FOOTERF);
+			}
+			else
+			{
+            	require_once(e_ADMIN."footer.php");
+			}
 }
 
 
@@ -658,7 +683,14 @@ $text .= "
 	";
 
 $ns->tablerender(LAN_USET_39, $text);
-require_once (FOOTERF);
+			if(!$adminEdit)
+			{
+				require_once (FOOTERF);
+			}
+			else
+			{
+            	require_once(e_ADMIN."footer.php");
+			}
 
 
 
