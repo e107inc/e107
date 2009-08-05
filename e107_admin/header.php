@@ -4,7 +4,7 @@
 |        e107 website system
 |        /e107_admin/header.php
 |
-|        ©Steve Dunstan 2001-2002
+|        Â©Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.41 $
-|   $Date: 2009-07-23 08:14:55 $
-|   $Author: marj_nl_fr $
+|   $Revision: 1.42 $
+|   $Date: 2009-08-05 14:20:40 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -486,6 +486,13 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 	$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
 	foreach (array_keys($e107_vars) as $act)
 	{
+        if(($e107_vars[$act]['perm']!='') && !getperms($e107_vars[$act]['perm'])) // check perms first.
+		{
+          	continue;
+		}
+
+      //  print_a($e107_vars[$act]);
+
 		$replace = array();
 		if ($active_page == $act || (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act)))
 		{
@@ -531,7 +538,7 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 	if($sub_link || empty($title)) return $text;
 
 
-	$e107->ns->tablerender($title, $text, array('id' => $id, 'style' => 'button_menu'));
+  	$e107->ns->tablerender($title, $text, array('id' => $id, 'style' => 'button_menu'));
 	return '';
 }
 
