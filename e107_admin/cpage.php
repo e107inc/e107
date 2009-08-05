@@ -9,15 +9,15 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-08-03 18:36:24 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.20 $
+ * $Date: 2009-08-05 14:22:15 $
+ * $Author: e107coders $
  *
 */
 
 require_once("../class2.php");
 
-if (!getperms("5")) { header("location:".e_BASE."index.php"); exit; }
+if (!getperms("5|J")) { header("location:".e_BASE."index.php"); exit; }
 
 $e_sub_cat = 'custom';
 
@@ -82,7 +82,15 @@ if (isset($_POST['saveOptions']))
 
 if(!e_QUERY)
 {
-	$page->showExistingPages();
+	if(getperms("5"))
+	{
+		$page->showExistingPages();
+	}
+	else
+	{
+    	$page->showExistingPages('menus');
+	}
+
 }
 else
 {
@@ -130,33 +138,19 @@ class page
 
 // --------------------------------------------------------------------------
 
-	function showExistingPages()
+	function menusPage()
+	{
+		if(!getperms("J")){ return; }
+    	return $this->showExistingPages('menus');
+	}
+
+// --------------------------------------------------------------------------
+
+	function showExistingPages($mode=FALSE)
 	{
 		global $sql, $e107, $emessage, $frm, $pref;
 
-/*		$text = "
-			<form action='".e_SELF."' id='newsform' method='post'>
-				<fieldset id='core-cpage-list'>
-					<legend class='e-hideme'>".CUSLAN_5."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='4'>
-							<col style='width: 	5%'></col>
-							<col style='width: 60%'></col>
-							<col style='width: 15%'></col>
-							<col style='width: 20%'></col>
-						</colgroup>
-						<thead>
-							<tr>
-								<th>".ID."</th>
-								<th>".CUSLAN_1."</th>
-								<th>".CUSLAN_2."</th>
-								<th class='center last'>".CUSLAN_3."</th>
-							</tr>
-						</thead>
-						<tbody>
-		";*/
-
-        $text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
+        $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-cpage-list'>
 						<legend class='e-hideme'>".CUSLAN_5."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>".
@@ -165,7 +159,19 @@ class page
 
 							"<tbody>";
 
-		if(!$sql->db_Select("page", "*", "ORDER BY page_datestamp DESC", "nowhere"))
+        if($mode=='menus')
+		{
+			$qry = "page_theme !='' ";
+        	$caption = CUSLAN_50;
+		}
+		else
+		{
+			if(!getperms("5")){ return; }
+        	$qry = "page_theme ='' ";
+			$caption = CUSLAN_5;
+		}
+
+		if(!$sql->db_Select("page", "*", $qry." ORDER BY page_datestamp DESC"))
 		{
 			$text .= "
 							<tr>
@@ -214,7 +220,7 @@ class page
 			</form>
 		";
 
-		$e107->ns->tablerender(CUSLAN_5, $emessage->render().$text);
+		$e107->ns->tablerender($caption, $emessage->render().$text);
 	}
 
 
@@ -591,19 +597,27 @@ class page
 	{
 		if ($action == "")
 		{
-			$action = "main";
+			$action = (getperms('5')) ? "pages" : "menus";
 		}
-		$var['main']['text'] = CUSLAN_11;
-		$var['main']['link'] = e_SELF;
+		$var['pages']['text'] = CUSLAN_48;
+		$var['pages']['link'] = e_SELF;
+		$var['pages']['perm'] = 5;
+
+        $var['menus']['text'] = CUSLAN_49;
+		$var['menus']['link'] = e_SELF."?menus";
+		$var['menus']['perm'] = "J";
 
 		$var['create']['text'] = CUSLAN_12;
 		$var['create']['link'] = e_SELF."?create";
+		$var['create']['perm'] = 5;
 
 		$var['createm']['text'] = CUSLAN_31;
 		$var['createm']['link'] = e_SELF."?createm";
+		$var['createm']['perm'] = "J";
 
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
+		$var['options']['perm'] = "0";
 
 		e_admin_menu(CUSLAN_33, $action, $var);
 	}
