@@ -9,8 +9,8 @@
  * Administration Area - Meta Tags
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-08-03 18:36:24 $
+ * $Revision: 1.8 $
+ * $Date: 2009-08-05 06:30:24 $
  * $Author: marj_nl_fr $
  *
 */
@@ -23,8 +23,6 @@ $e_sub_cat = 'meta';
 require_once("auth.php");
 require_once(e_HANDLER."message_handler.php");
 $emessage = &eMessage::getInstance();
-
-e_LANGUAGE = ($sql->mySQLlanguage != "") ? $sql->mySQLlanguage : $pref['sitelanguage'];
 
 if (isset($_POST['metasubmit']))
 {
