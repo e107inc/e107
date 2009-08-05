@@ -9,8 +9,8 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-07-23 06:55:39 $
+ * $Revision: 1.18 $
+ * $Date: 2009-08-05 16:02:08 $
  * $Author: e107coders $
  *
 */
@@ -233,7 +233,8 @@ define('LAN_BOUNCED','Bounced');
 
 define('USRLAN_220', 'No Userclass');
 
-// These need review - there are duplicates above.
+
+// These need review - there are duplicates above - they come from admin/lan_userclass.php.
 define("UCSLAN_1", "Sending notification email to");
 define("UCSLAN_2", "Updated Privileges");
 define("UCSLAN_3", "Dear");
@@ -246,6 +247,16 @@ define("UCSLAN_9", "Classes Updated.");
 define("UCSLAN_10", "Regards,");
 define('UCSLAN_11', 'Class membership for user ID --UID-- changed to --CLASSES--');
 define('UCSLAN_12', 'Member privileges only');
+
+
+// from admin/lan_userinfo.php
+define("USFLAN_1", "Unable to find poster's IP address - no information is available.");
+// define("USFLAN_2", "Error");
+define("USFLAN_3", "Messages posted from IP address");
+define("USFLAN_4", "Host");
+define("USFLAN_5", "Click here to transfer IP address to admin ban page");
+define("USFLAN_6", "User ID");
+define("USFLAN_7", "User Information");
 
 
 ?>
