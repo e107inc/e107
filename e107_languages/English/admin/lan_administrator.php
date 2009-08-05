@@ -9,8 +9,8 @@
  * Admin Language File
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_administrator.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-07-07 22:55:13 $
+ * $Revision: 1.8 $
+ * $Date: 2009-08-05 14:22:15 $
  * $Author: e107coders $
 */
 //define("ADMSLAN_0", "New user/admin entry created for"); - no references found
@@ -31,7 +31,7 @@ define("ADMSLAN_19", "Alter site preferences");
 define("ADMSLAN_20", "Alter Menus");
 define("ADMSLAN_21", "Modify administrator permissions");
 define("ADMSLAN_22", "Moderate users/bans etc");
-define("ADMSLAN_23", "Create/edit custom pages/menus");
+define("ADMSLAN_23", "Create/edit custom pages");
 define("ADMSLAN_24", "Manage download categories");
 define("ADMSLAN_25", "Upload /manage files");
 define("ADMSLAN_26", "Oversee news categories");
@@ -49,7 +49,7 @@ define("ADMSLAN_37", "Moderate comments");
 // define("ADMSLAN_38", "Moderate/configure chatbox");
 define("ADMSLAN_39", "Post news");
 define("ADMSLAN_40", "Post links");
-//define("ADMSLAN_41", "Post articles"); - NOW PLUGIN
+define("ADMSLAN_41", "Create/edit custom menus");  
 //define("ADMSLAN_42", "Post reviews"); - NOW PLUGIN
 define("ADMSLAN_43", "Configure URLs");
 define("ADMSLAN_44", "Post downloads");

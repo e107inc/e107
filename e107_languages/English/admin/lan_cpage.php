@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_cpage.php,v 1.6 2009-07-08 10:31:53 e107coders Exp $
+ * $Id: lan_cpage.php,v 1.7 2009-08-05 14:22:15 e107coders Exp $
  *
  * Admin Language File
  *
@@ -53,4 +53,8 @@ define('CUSLAN_44', 'untitled page');
 define('CUSLAN_45', 'Settings saved');
 define('CUSLAN_46', 'Nothing changed - not saved');
 define('CUSLAN_47', 'General Information');
+define('CUSLAN_48', "Pages");
+define('CUSLAN_49', "Menus");
+define('CUSLAN_50', "Existing Menus");
+
 ?>

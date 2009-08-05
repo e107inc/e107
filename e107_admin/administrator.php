@@ -9,8 +9,8 @@
  * Administrators Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-07-23 15:21:41 $
+ * $Revision: 1.13 $
+ * $Date: 2009-08-05 14:22:15 $
  * $Author: e107coders $
  *
 */
@@ -239,7 +239,8 @@ function edit_administrator($row)
 	$text .= checkb("2", $a_perms, ADMSLAN_20);			// Alter Menus
 	$text .= checkb("3", $a_perms, ADMSLAN_21);			// Modify administrator permissions
 	$text .= checkb("4", $a_perms, ADMSLAN_22);			// Moderate users/bans etc
-	$text .= checkb("5", $a_perms, ADMSLAN_23);			// create/edit custom pages/menus
+	$text .= checkb("5", $a_perms, ADMSLAN_23);			// create/edit custom pages
+	$text .= checkb("J", $a_perms, ADMSLAN_41);			// create/edit custom menus
 	$text .= checkb("Q", $a_perms, ADMSLAN_24);			// Manage download categories
 	$text .= checkb("6", $a_perms, ADMSLAN_25);			// Upload /manage files
 	$text .= checkb("Y", $a_perms, ADMSLAN_67);			// file inspector
@@ -262,7 +263,7 @@ function edit_administrator($row)
 	$text .= checkb("B", $a_perms, ADMSLAN_37);			// Moderate comments
 	$text .= checkb("H", $a_perms, ADMSLAN_39);			// Post news
 	$text .= checkb("I", $a_perms, ADMSLAN_40);			// Post links
-//	$text .= checkb("J", $a_perms, ADMSLAN_41);					// Post articles   - NOW PLUGIN
+
 //	$text .= checkb("K", $a_perms, ADMSLAN_42);					// Post reviews    - NOW PLUGIN
 	$text .= checkb("L", $a_perms, ADMSLAN_43);			// Configure URLs
 	$text .= checkb("R", $a_perms, ADMSLAN_44);			// Post downloads
@@ -376,7 +377,9 @@ function renderperms($perm, $id)
 		$pt["2"] = ADMSLAN_20;
 		$pt["3"] = ADMSLAN_21;
 		$pt["4"] = ADMSLAN_22;	// Moderate users/bans etc
-		$pt["5"] = ADMSLAN_23;	// create/edit custom pages/menus
+		$pt["5"] = ADMSLAN_23;	// create/edit custom pages
+        $pt["J"] = ADMSLAN_41;	// create/edit custom menus
+
 		$pt["Q"] = ADMSLAN_24;	// Manage download categories
 		$pt["6"] = ADMSLAN_25;	// Upload /manage files
 		$pt["Y"] = ADMSLAN_67;	// file inspector
