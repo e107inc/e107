@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-08-04 16:30:48 $
+ * $Revision: 1.7 $
+ * $Date: 2009-08-05 19:53:05 $
  * $Author: secretr $
 */
 
@@ -37,13 +37,14 @@ class e_pref extends e_model
 	
 	/**
 	 * Preference ID alias e.g. 'core' is an alias of prefid 'SitePrefs'
+	 * Used in e.g. server cache file name
 	 * 
 	 * @var string
 	 */
 	protected $alias;
 	
 	/**
-	 * Set on first data load
+	 * Runtime cache, set on first data load
 	 *
 	 * @var string
 	 */
@@ -71,8 +72,9 @@ class e_pref extends e_model
 	 * @param string $prefid
 	 * @param string $alias
 	 * @param array $data
+	 * @param boolean $sanitize_data
 	 */
-	function __construct($prefid, $alias = '', $data = array())
+	function __construct($prefid, $alias = '', $data = array(), $sanitize_data = true)
 	{
 		require_once(e_HANDLER.'cache_handler.php');
 		
@@ -82,18 +84,19 @@ class e_pref extends e_model
 			$alias = $prefid;
 		}
 		$this->alias = $alias;
-		parent::__construct($data);
+		$this->loadData($data, $sanitize_data);
 	}
 	
 	/**
 	 * Advanced getter - $pref_name is parsed (multidimensional arrays support), alias of {@link e_model::getData()}
+	 * If $pref_name is empty, all data array will be returned
 	 *
 	 * @param string $pref_name
 	 * @param mixed $default
 	 * @param integer $index
 	 * @return mixed
 	 */
-	public function getPref($pref_name, $default = null, $index = null)
+	public function getPref($pref_name = '', $default = null, $index = null)
 	{
 		return $this->getData($pref_name, $default, $index);
 	}
@@ -113,14 +116,14 @@ class e_pref extends e_model
 	/**
 	 * Advanced setter - $pref_name is parsed (multidimensional arrays support)
 	 * Object data reseting is not allowed, adding new pref is not allowed
-	 * @param string $key
+	 * @param string|array $pref_name
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function setPref($pref_name, $value)
+	public function setPref($pref_name, $value = null)
 	{
 		//object reset not allowed, adding new pref is not allowed
-		if(empty($pref_name) || !is_string($pref_name) || !$this->isData($pref_name))
+		if(empty($pref_name))
 		{
 			return $this; 
 		}
@@ -130,10 +133,23 @@ class e_pref extends e_model
 	}
 	
 	/**
+	 * Alias of {@link setPref()}
+	 * 
+	 * @param string $pref_name
+	 * @param mixed $value
+	 * @return e_pref
+	 */
+	public function updatePref($pref_name, $value)
+	{
+		$this->setPref($pref_name, $value);
+		return $this;
+	}
+	
+	/**
 	 * Simple setter - $pref_name is  not parsed (no multidimensional arrays support)
 	 * Adding new pref is not allowed
 	 * 
-	 * @param string $key
+	 * @param string $pref_name
 	 * @param mixed $value
 	 * @return e_pref
 	 */
@@ -148,6 +164,19 @@ class e_pref extends e_model
 	}
 	
 	/**
+	 * Alias of {@link set()}
+	 * 
+	 * @param string $pref_name
+	 * @param mixed $value
+	 * @return e_pref
+	 */
+	public function update(string $pref_name, $value)
+	{
+		$this->set($pref_name, $value);
+		return $this;
+	}
+	
+	/**
 	 * Add new (single) preference (ONLY if doesn't exist)
 	 * 
 	 * @see addData()
@@ -155,14 +184,13 @@ class e_pref extends e_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function add(string $pref_name, $value = null)
+	public function add(string $pref_name, $value)
 	{	
-		if(!is_string($pref_name) || strpos($pref_name, '/'))
+		if(empty($pref_name))
 		{
 			return $this;
 		}
-		
-		$this->addData($pref_name, $value, false);
+		$this->addData($pref_name, $value);
 		return $this;
 	}
 	
@@ -176,7 +204,8 @@ class e_pref extends e_model
 	 */
 	public function addPref($pref_name, $value = null)
 	{	
-		return $this->addData($pref_name, $value, false);
+		$this->addData($pref_name, $value);
+		return $this;
 	}
 	
 	/**
@@ -186,14 +215,9 @@ class e_pref extends e_model
 	 * @param string $pref_name
 	 * @return e_pref
 	 */
-	public function remove($pref_name)
+	public function remove(string $pref_name)
 	{
 		parent::remove($pref_name);
-		
-		$struct = $this->getStructure();
-		unset($struct[$pref_name]);
-		$this->setStructure($struct);
-		
 		return $this;
 	}
 	
@@ -215,38 +239,26 @@ class e_pref extends e_model
 	 * Disallow preference override
 	 *
 	 * @param string|array $pref_name
+	 * @param mixed value
 	 * @param boolean $strict
 	 */
-	final public function addData($pref_name, $value = null, $strict = false)
+	final public function addData($pref_name, $value = null)
 	{
-		//XXX - Move most of this to the base class?
-		if(is_array($pref_name))
-		{
-			parent::addData($pref_name, $strict, false);
-			$this->setStructure($this->getStructure() + array_keys($pref_name));
-			return $this;
-		}
-		
-		if(!$this->isData($pref_name))
-		{
-			$pref_name = trim($pref_name, '/');
-			parent::setData($pref_name, $value, $strict);
-			if(!strpos($pref_name, '/'))
-			{
-				$this->setStructure($this->getStructure() + array($pref_name));
-			}
-		}
-		
+		parent::addData($pref_name, $value, false);
 		return $this;
 	}
 	
 	/**
 	 * Disallow public use of setData()
+	 * Update only possible
 	 * 
+	 * @param string|array $pref_name
+	 * @param mixed $value
 	 * @return e_pref
 	 */
-	final public function setData()
+	final public function setData($pref_name, $value = null)
 	{
+		parent::setData($pref_name, $value, true);
 		return $this;
 	}
 	
@@ -254,22 +266,32 @@ class e_pref extends e_model
 	 * Disallow public use of removeData()
 	 * Object data reseting is not allowed
 	 *
+	 * @param string $pref_name
 	 * @return e_pref
 	 */
-	final public function removeData($pref_name)
+	final public function removeData(string $pref_name)
 	{
-		if(is_null($pref_name))
-		{
-			return $this; //object reseting not allowed
-		}
 		parent::removeData($pref_name);
-		
-		$pref_name = trim($pref_name, '/');
-		if(!strpos($pref_name, '/'))
+		return $this;
+	}
+	
+	/**
+	 * Reset object data
+	 *
+	 * @param array $data
+	 * @param boolean $sanitize
+	 * @return e_pref
+	 */
+	public function loadData(array $data, $sanitize = true)
+	{
+		if(!empty($data))
 		{
-			$struct = $this->getStructure();
-			unset($struct[$pref_name]);
-			$this->setStructure($struct);
+			if($sanitize)
+			{
+				$data = e107::getParser()->toDB($data);
+			}
+			parent::setData($data, null, false);
+			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
 		}
 		return $this;
 	}
@@ -305,18 +327,20 @@ class e_pref extends e_model
 		
 		if(false !== $data)
 		{
+			//var_dump('Pref cache used: '.$this->alias); 
 			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
-			return $this->setData($data);
+			return $this->loadData($data, false);
 		}
 		
+		//var_dump('Pref cache not used: '.$this->alias);
 		if (e107::getDb()->db_Select('core', 'e107_value', "e107_name='{$id}'"))
 		{
 			$row = e107::getDb()->db_Fetch();
-
+			
 			if($this->serial_bc)
 			{
-				$data = unserialize($row['e107_value']);
-				$row['e107_value'] = e107::getArrayStorage()->WriteArray($row['e107_value'], false);
+				$data = unserialize($row['e107_value']); 
+				$row['e107_value'] = e107::getArrayStorage()->WriteArray($data, false);
 			}
 			else 
 			{
@@ -324,22 +348,23 @@ class e_pref extends e_model
 			}
 			
 			$this->pref_cache = $row['e107_value']; //runtime cache
-			$this->setPrefCache($row['e107_value']);
+			$this->setPrefCache($row['e107_value'], true);
 		}
 
 		if(empty($data)) $data = array();
 		
-		return $this->setData($data);
+		return $this->loadData($data, false);
 	}
 	
 	/**
 	 * Save object data to DB
 	 *
 	 * @param boolean $from_post merge post data
+	 * @param boolean $force
 	 * @param boolean $session_messages use session messages
-	 * @return unknown
+	 * @return boolean|integer 0 - no change, true - saved, false - error
 	 */
-	public function save($from_post = true, $session_messages = false)
+	public function save($from_post = true, $force = false, $session_messages = false)
 	{
 		if(!$this->prefid)
 		{
@@ -348,7 +373,6 @@ class e_pref extends e_model
 		
 		if($from_post)
 		{
-			$this->setStructure(); //set structure from current data
 			$this->mergePostedData(); //all posted data is sanitized and filtered vs structure array
 		}
 		
@@ -356,36 +380,62 @@ class e_pref extends e_model
 		require_once(e_HANDLER.'message_handler.php');
 		$emessage = eMessage::getInstance();
 		
-		//Save to DB
-		if($this->data_has_changed && !$this->isError())
+		if(!$this->data_has_changed && !$force)
 		{
-			if(true === $this->set_backup)
+			$emessage->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
+			return 0;
+		}
+		
+		//Save to DB
+		if(!$this->isError())
+		{
+			if($this->serial_bc)
 			{
-				if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}_Backup', '".addslashes($this->pref_cache)."') "))
+				$dbdata = serialize($this->getPref()); 
+			}
+			else 
+			{
+				$dbdata = $this->toString(false);
+			}
+			
+			if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}', '".addslashes($dbdata)."') "))
+			{
+				if(true === $this->set_backup)
 				{
-					$emessage->add('Backup successfully created.', E_MESSAGE_SUCCESS, $session_messages);
+					if($this->serial_bc)
+					{
+						$dbdata = serialize(e107::getArrayStorage()->ReadArray($this->pref_cache)); 
+					}
+					else 
+					{
+						$dbdata = $this->pref_cache;
+					}
+					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}_Backup', '".addslashes($dbdata)."') "))
+					{
+						$emessage->add('Backup successfully created.', E_MESSAGE_SUCCESS, $session_messages);
+						ecache::clear_sys('Config_'.$this->alias.'_backup');
+					}
 				}
-			}
-			if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}', '".$this->toString(true)."') "))
-			{
+				
 				$this->data_has_changed = false; //reset status
-				$this->pref_cache = $this->toString(false); //reset pref cache
-				$this->setPrefCache($this->pref_cache); //reset pref cache file
+				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
 				$emessage->add('Settings successfully saved.', E_MESSAGE_SUCCESS, $session_messages);
+				return true;
 			}
+			//TODO - DB error messages
 		}
 		
 		if($this->isError())
 		{
 			$this->setErrors(true, $session_messages); //add errors to the eMessage stack
 			$emessage->add('Settings not saved.', E_MESSAGE_ERROR, $session_messages);
+			return false;
 		}
 		else 
 		{
 			$emessage->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
+			return 0;
 		}
-		
-		return $this;
 	}
 	
 	/**
@@ -400,23 +450,34 @@ class e_pref extends e_model
 		{
 			$this->pref_cache = ecache::retrieve_sys('Config_'.$this->alias, 24 * 60, true);
 		}
+		
 		return ($toArray && $this->pref_cache ? e107::getArrayStorage()->ReadArray($this->pref_cache) : $this->pref_cache);
 	}
 	
 	/**
 	 * Store data to a server cache file
 	 * If $cache_string is an array, it'll be converted to a string
+	 * If $save is string, it'll be used for building the cache filename
 	 *
 	 * @param string|array $cache_string
+	 * @param string|boolean $save write to a file
 	 * @return e_pref
 	 */
-	protected function setPrefCache($cache_string)
+	protected function setPrefCache($cache_string, $save = false)
 	{
 		if(is_array($cache_string))
 		{
 			$cache_string = e107::getArrayStorage()->WriteArray($cache_string, false);
 		}
-		ecache::set_sys('Config_'.$this->alias, $cache_string, true);
+		if(is_bool($save))
+		{
+			$this->pref_cache = $cache_string;
+		}
+		if($save)
+		{
+			
+			ecache::set_sys('Config_'.(true !== $save ? $save : $this->alias), $cache_string, true);
+		}
 		return $this;
 	}
 	
@@ -467,10 +528,12 @@ final class e_core_pref extends e_pref
 	protected $aliases = array(
 		'core' 			=> 'SitePrefs', 
 		'core_backup' 	=> 'SitePrefs_Backup', 
+		'core_old' 		=> 'pref',
 		'emote' 		=> 'emote', 
 		'menu' 			=> 'menu_pref', 
 		'search' 		=> 'search_prefs', 
-		'notify' 		=> 'notify_prefs'
+		'notify' 		=> 'notify_prefs',
+		'ipool'			=> 'IconPool'
 	);
 	
 	/**
@@ -478,7 +541,7 @@ final class e_core_pref extends e_pref
 	 *
 	 * @var array
 	 */
-	protected $serial_bc_array = array('emote', 'menu', 'search');
+	protected $serial_bc_array = array('core_old', 'emote', 'menu', 'search');
 
 	/**
 	 * Constructor
@@ -538,7 +601,7 @@ final class e_core_pref extends e_pref
 	 * Allowed values: key or value from $alias array
 	 * If id not found this method returns false
 	 *
-	 * @param string $alias
+	 * @param string $prefid
 	 * @return string
 	 */
 	public function getAlias($prefid)
@@ -619,6 +682,21 @@ class e_model
     protected $_data = array();
     
     /**
+    * Posted data
+    * Back-end related data
+    *
+    * @var array
+    */
+    protected $_posted_data = array();
+    
+    /**
+     * Runtime cache of parsed from {@link _getData()} keys
+     *
+     * @var array
+     */
+    protected $_parsed_keys = array();
+    
+    /**
      * DB structure array
      * Awaits implementation logic, 
      * should be consistent with db::_getTypes() and db::_getFieldValue()
@@ -659,14 +737,7 @@ class e_model
      * @var array
      */
     protected $_validation_errors = array();
-    
-    /**
-    * Posted data
-    * Back-end related data
-    *
-    * @var array
-    */
-    protected $_posted_data = array();
+
     
     /**
     * Name of object id field
@@ -775,7 +846,7 @@ class e_model
      * @param integer $index
      * @return mixed
      */
-	public function getData(string $key = '', $default = null, $index = null)
+	public function getData($key = '', $default = null, $index = null)
     {
     	return $this->_getData($key, $default, $index);
     }
@@ -803,7 +874,7 @@ class e_model
      * @param integer $index
      * @return mixed
      */
-	public function getPostedData(string $key = '', $default = null, $index = null)
+	public function getPostedData($key = '', $default = null, $index = null)
     {
     	return $this->_getData($key, $default, $index, '_posted_data');
     }
@@ -1136,6 +1207,10 @@ class e_model
 
         if (strpos($key, '/'))
         {
+        	if(isset($this->_parsed_keys[$data_src.'/'.$key]))
+        	{
+        		return $this->_parsed_keys[$data_src.'/'.$key];
+        	}
             $keyArr = explode('/', $key);
             $data = $this->$data_src;
             foreach ($keyArr as $k) 
@@ -1157,18 +1232,19 @@ class e_model
                     return $default;
                 }
             }
+            $this->_parsed_keys[$data_src.'/'.$key] = $data;
             return $data;
         }
 
         //get $index
-        if (isset($this->$data_src[$key])) 
+        if (isset($this->{$data_src}[$key])) 
         {
             if (null === $index) 
             {
-                return $this->$data_src[$key];
+                return $this->{$data_src}[$key];
             }
 
-            $value = $this->$data_src[$key];
+            $value = $this->{$data_src}[$key];
             if (is_array($value)) 
             {
                 if (isset($value[$index])) 
@@ -1197,7 +1273,7 @@ class e_model
      */
     protected function _getDataSimple($key, $default = null, $data_src = '_data')
     {
-        return isset($this->$data_src[$key]) ? $this->$data_src[$key] : $default;
+        return isset($this->{$data_src}[$key]) ? $this->{$data_src}[$key] : $default;
     }
     
     /**
@@ -1207,9 +1283,9 @@ class e_model
      * If $key is string, the attribute value will be overwritten by $value
      * '/' inside the key will be treated as array path
      *
-     * If $key is an array, it will overwrite all the data in the object.
+     * If $key is an array and $strict is false, it will overwrite all the data in the object.
      * 
-     * If $strict is true data will be updated only (no new data will be added)
+     * If $strict is true and $data_src is '_data', data will be updated only (no new data will be added)
      *
      * @param string|array $key
      * @param mixed $value
@@ -1229,41 +1305,36 @@ class e_model
 		        }
 		        return $this;
 	    	}
+
             $this->$data_src = $key;
             return $this;
         } 
         
         //multidimensional array support - strict _setData for values of type array
-    	if($strict && is_array($value))
+    	if($strict && !empty($value) && is_array($value))
        	{
-			foreach($key as $k => $v)
+			foreach($value as $k => $v)
 			{
 			    $this->_setData($key.'/'.$k, $v, true, $data_src);
 			}
 			return $this;
        	}
         
-        //data has changed - optimized (call _getData() only when needed)
-        if('_data' === $data_src && !$this->data_has_changed && $this->_getData($key, null, null, $data_src) != $value)
-        {
-        	$this->data_has_changed = true;
-        }
-        
         //multidimensional array support - parse key
         $key = trim($key, '/');
         if(strpos($key,'/')) 
         {
+        	//if strict - update only
+	        if($strict && !$this->isData($key))
+	        {
+	        	return $this;
+	        }
+	        
         	$keyArr = explode('/', $key);
         	$data = &$this->$data_src;
             for ($i = 0, $l = count($keyArr); $i < $l; $i++) 
             {
 	            $k = $keyArr[$i];
-            	
-	            //if strict - update only
-		        if($strict && !$this->isData($k))
-		        {
-		        	return $this;
-		        }
 		        
 	            if (!isset($data[$k])) 
 	            {
@@ -1271,16 +1342,27 @@ class e_model
 	            }
 	            $data = &$data[$k];
 	        }
+            
+	        //data has changed - optimized
+	        if('_data' === $data_src && !$this->data_has_changed)
+	        {
+	        	$this->data_has_changed = (isset($this->_data[$key]) && $this->_data[$key] != $value);
+	        }
+	        $this->_parsed_keys[$data_src.'/'.$key] = $value;
 	        $data = $value;
         }
         else 
         {
 			//if strict - update only
-	        if($strict && !$this->isData($key))
+	        if($strict && !isset($this->_data[$key]))
 	        {
 	        	return $this;
 	        }
-            $this->$data_src[$key] = $value;
+        	if('_data' === $data_src && !$this->data_has_changed)
+	        {
+	        	$this->data_has_changed = (isset($this->_data[$key]) && $this->{$data_src}[$key] != $value);
+	        }
+            $this->{$data_src}[$key] = $value;
         }
 
         return $this;
@@ -1294,29 +1376,28 @@ class e_model
      * @param mixed $value
      * @param boolean $strict
      * @param string $data_src
-     * @return unknown
+     * @return e_model
      */
 	protected function _setDataSimple(string $key, $value = null, $strict = false, $data_src = '_data')
     {
     	if(!$strict)
     	{
-    		$this->$data_src[$key] = $value;
+    		$this->{$data_src}[$key] = $value;
 			//data has changed
-	        if('_data' === $data_src && $this->_getDataSimple($key, null, $data_src) != $value)
+	        if('_data' === $data_src && !$this->data_has_changed)
 	        {
-	        	$this->data_has_changed = true;
+	        	$this->data_has_changed = (isset($this->_data[$key]) && $this->_data[$key] != $value);
 	        }
     		return $this;
     	}
     	
-    	$this->setStructure();//set default structure if empty
     	if($this->isData($key))
     	{
-			if('_data' === $data_src && $this->_getDataSimple($key, null, $data_src) != $value)
+			if('_data' === $data_src && !$this->data_has_changed)
 	        {
-	        	$this->data_has_changed = true;
+	        	$this->data_has_changed = (isset($this->_data[$key]) && $this->_data[$key] != $value);
 	        }
-	        $this->$data_src[$key] = $value;
+	        $this->{$data_src}[$key] = $value;
     	}
 
     	return $this;
@@ -1345,7 +1426,7 @@ class e_model
 			return $this;
     	}
     	
-		if($override || !$this->isData($key))
+		if($override || !$this->_isData($key, $data_src))
        	{
        		if(is_array($value))
        		{
@@ -1405,16 +1486,16 @@ class e_model
 	        	{
 	        		$this->data_has_changed = true;
 	        	}
-	        	unset($data[$unskey]);
+	        	unset($data[$unskey], $this->_parsed_keys[$data_src.'/'.$key]);
 	        }
         }
         else 
         {
-       		if('_data' === $data_src && isset($this->$data_src[$key]))
+       		if('_data' === $data_src && isset($this->{$data_src}[$key]))
         	{
         		$this->data_has_changed = true;
         	}
-            unset($this->$data_src[$key]);
+            unset($this->{$data_src}[$key]);
         }
         return $this;
     }
@@ -1428,11 +1509,11 @@ class e_model
      */
     protected function _unsetDataSimple($key, $data_src = '_data')
     {
-		if('_data' === $data_src && isset($this->$data_src[$key]))
+		if('_data' === $data_src && isset($this->{$data_src}[$key]))
        	{
        		$this->data_has_changed = true;
        	}
-    	unset($this->$data_src[$key]);
+    	unset($this->{$data_src}[$key]);
     	return $this;
     }
 
