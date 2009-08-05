@@ -9,13 +9,13 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.46 $
- * $Date: 2009-07-23 08:01:48 $
- * $Author: secretr $
+ * $Revision: 1.47 $
+ * $Date: 2009-08-05 14:35:47 $
+ * $Author: e107coders $
 */
 require_once("../class2.php");
 
-if (!getperms("H"))
+if (!getperms("H|7|N"))
 {
 	header("Location:".e_BASE."index.php");
 	exit;
@@ -598,6 +598,11 @@ class admin_newspost
 	function show_existing_items()
 	{
 		global $user_pref,$gen;
+
+		if(!getperms('H'))
+		{
+        	return;
+		}
 
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
@@ -1801,9 +1806,11 @@ class admin_newspost
 
 		$var['main']['text'] = NWSLAN_44;
 		$var['main']['link'] = e_SELF;
+		$var['main']['perm'] = "H";
 
 		$var['create']['text'] = NWSLAN_45;
 		$var['create']['link'] = e_SELF."?create";
+		$var['create']['perm'] = "H";
 
 		$var['cat']['text'] = NWSLAN_46;
 		$var['cat']['link'] = e_SELF."?cat";

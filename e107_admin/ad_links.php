@@ -9,8 +9,8 @@
  * Admin Navigation
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-08-05 14:22:15 $
+ * $Revision: 1.14 $
+ * $Date: 2009-08-05 14:35:47 $
  * $Author: e107coders $
 */
 
@@ -563,7 +563,7 @@ $array_functions = array(
 	14 => array(e_ADMIN.'ugflag.php', ADLAN_40, ADLAN_41, '9', 4, E_16_MAINTAIN, E_32_MAINTAIN),
 	15 => array(e_ADMIN.'menus.php', ADLAN_6, ADLAN_7, '2', 5, E_16_MENUS, E_32_MENUS),
 	16 => array(e_ADMIN.'meta.php', ADLAN_66, ADLAN_67, 'T', 1, E_16_META, E_32_META),
-	17 => array(e_ADMIN.'newspost.php', ADLAN_0, ADLAN_1, 'H', 3, E_16_NEWS, E_32_NEWS),
+	17 => array(e_ADMIN.'newspost.php', ADLAN_0, ADLAN_1, 'H|N|7', 3, E_16_NEWS, E_32_NEWS),
 	18 => array(e_ADMIN.'phpinfo.php', ADLAN_68, ADLAN_69, '0', 20, E_16_PHP, E_32_PHP),
 	19 => array(e_ADMIN.'prefs.php', ADLAN_4, ADLAN_5, '1', 1, E_16_PREFS, E_32_PREFS),
 	20 => array(e_ADMIN.'search.php', ADLAN_142, ADLAN_143, 'X', 1, E_16_SEARCH, E_32_SEARCH),
