@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-07-10 14:25:22 $
+|     $Revision: 1.16 $
+|     $Date: 2009-08-06 21:26:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -342,7 +342,7 @@ class users_ext
 						$text .= "
 						<tr>
 						<td>{$ext['user_extended_struct_name']}<br />[".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."]</td>
-						<td>".$ue->user_extended_edit($ext,$uVal)."</td>
+						<td class='left'>".$ue->user_extended_edit($ext,$uVal)."</td>
 						<td>".($ext['user_extended_struct_required'] == 1 ? LAN_YES : LAN_NO)."</td>
 						<td>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
 						<td>".r_userclass_name($ext['user_extended_struct_read'])."</td>
@@ -354,17 +354,17 @@ class users_ext
 			  if($i > 0)
 			  {
 							$text .= "
-							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
+							<input type='image' alt='' title='".EXTLAN_26."' src='".ADMIN_UP_ICON_PATH."' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 							";
 						}
 						if($i <= count($extendedList[$cn])-2)
 						{
-							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".ADMIN_DOWN_ICON_PATH."' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
 						}
 						$text .= "
 						</form>
 						</td>
-						<td class='forumheader3' style='width:50px;text-align:center;'>
+						<td class='forumheader3' style='width:10%;text-align:center;'>
 						<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".EXTLAN_27."\")'>
 						<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
 						<input type='hidden' name='eu_action' value='delext' />
