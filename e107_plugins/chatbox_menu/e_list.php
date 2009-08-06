@@ -9,9 +9,9 @@
  * Chatbox e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/e_list.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-27 21:33:52 $
- * $Author: lisa_ $
+ * $Revision: 1.3 $
+ * $Date: 2009-08-06 22:30:23 $
+ * $Author: secretr $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -61,6 +61,7 @@ class list_chatbox_menu
 				$record['info'] = "";
 
 				$list_data[] = $record;
+			}
 		}
 		//return array with 'records', (global)'caption', 'display'
 		return array(
