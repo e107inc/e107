@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2009-07-19 11:44:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.38 $
+|     $Date: 2009-08-06 22:41:35 $
+|     $Author: bugrain $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -112,6 +112,7 @@ if (!defined("PREVIEWTHEME") && (!isset($no_core_css) || !$no_core_css)) {
 
 	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 }
+require_once(e_FILE."/e_css.php");
 
 //Plugin specific CSS
 if (isset($eplug_css) && $eplug_css)

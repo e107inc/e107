@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-07-23 23:40:57 $
+|     $Revision: 1.15 $
+|     $Date: 2009-08-06 22:41:34 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -59,33 +59,33 @@ class adminDownload extends download
 
       // Search field
       $text .= "
-		<script type='text/javascript'>
-		e107.runOnLoad(function(){
-		   var el = $('download-search-text');
-		   el.e107PreviousValue = el.getValue();
-			el.observe('keyup', function(e) {
-			   var el = e.element();
-				e.stop();
-				if (el.getValue() != el.e107PreviousValue) {
-				   if (el.e107Timeout) {
-				      window.clearTimeout(el.e107Timeout);
-				   }
-      		   el.e107PreviousValue = el.getValue();
-      		   el.e107Timeout = window.setTimeout(function () {
-      				new e107Ajax.Updater('downloads-list', '{$url}', {
-      					method: 'post',
-      					parameters: { //send query parameters here
-      						'download_filter_list': 1,
-      						'download-search-text': el.getValue()
-      					},
-      					overlayPage: $(document.body)
-      				});
-      	      }, 500);
-   		   }
-			});
-		}, document, false);
-		</script>
-         <form method='post' action='".e_SELF."'>
+		   <script type='text/javascript'>
+		   e107.runOnLoad(function(){
+		      var el = $('download-search-text');
+		      el.e107PreviousValue = el.getValue();
+		   	el.observe('keyup', function(e) {
+		   	   var el = e.element();
+		   		e.stop();
+		   		if (el.getValue() != el.e107PreviousValue) {
+		   		   if (el.e107Timeout) {
+		   		      window.clearTimeout(el.e107Timeout);
+		   		   }
+         		   el.e107PreviousValue = el.getValue();
+         		   el.e107Timeout = window.setTimeout(function () {
+         				new e107Ajax.Updater('downloads-list', '{$url}', {
+         					method: 'post',
+         					parameters: { //send query parameters here
+         						'download_filter_list': 1,
+         						'download-search-text': el.getValue()
+         					},
+         					overlayPage: $(document.body)
+         				});
+         	      }, 500);
+   	   	   }
+		   	});
+		   }, document, false);
+		   </script>
+         <form method='post' action='".e_SELF."' class='e-show-if-js'>
             <div id='download_search'>
             <fieldset>
                <legend class='e-hideme'>".DOWLAN_194."</legend>
@@ -197,7 +197,7 @@ class adminDownload extends download
                </tr>
             </table>
             <div class='buttons-bar center'>
-			      <span class='f-left'><a href='#download_advanced_search#download_search' class='e-swapit'>Simple search</a></span>
+			      <span  class='e-show-if-js f-left'><a href='#download_advanced_search#download_search' class='e-swapit'>Simple search</a></span>
                <button type='submit' class='update' name='download_advanced_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
             </div>
             </fieldset>
@@ -403,8 +403,8 @@ class adminDownload extends download
                      $mirrorArray = $this->makeMirrorArray($row[$disp], TRUE);
                      foreach($mirrorArray as $mirror) {
                         $title = DOWLAN_66." ".$mirror['filesize']."; ".DOWLAN_29." ".$mirror['requests'];
-                        $text .= "<img src='".ADMIN_INFO_ICON_PATH."' title='".$title."' alt='' style='cursor:help'/> ";
-                        $text .= $tp->toHTML($mirror['url']).'<br/>';
+                        $text .= "<div><img src='".ADMIN_INFO_ICON_PATH."' title='".$title."' alt='' style='cursor:help'/> ";
+                        $text .= $tp->toHTML($mirror['url']).'</div>';
                      }
                      break;
                   case "download_mirror_type" :

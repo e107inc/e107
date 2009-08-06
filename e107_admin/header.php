@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.42 $
-|   $Date: 2009-08-05 14:20:40 $
-|   $Author: e107coders $
+|   $Revision: 1.43 $
+|   $Date: 2009-08-06 22:41:34 $
+|   $Author: bugrain $
 +---------------------------------------------------------------+
 */
 
@@ -263,6 +263,8 @@ if (function_exists('headerjs')){echo headerjs();  }
 // E: Send CSS
 //
 echo "<!-- *CSS* -->\n";
+
+require_once(e_FILE."/e_css.php");
 
 if (isset($eplug_css) && $eplug_css) {
 	echo "\n<!-- eplug_css -->\n";
