@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-07-25 07:54:35 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.8 $
+|     $Date: 2009-08-06 22:34:59 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
+require_once(e_HANDLER.'shortcode_handler.php');
 register_shortcode('download_shortcodes', true);
 initShortcodeClass('download_shortcodes');
 
