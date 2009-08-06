@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2009-04-23 19:13:18 $
-|     $Author: e107steved $
+|     $Revision: 1.24 $
+|     $Date: 2009-08-06 20:29:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,6 +50,7 @@ class e107_user_extended
 		define('EUF_DATE',7);
 		define('EUF_LANGUAGE',8);
 		define('EUF_PREDEFINED',9);
+		define('EUF_CHECKBOX',10);
 
 		$this->typeArray = array(
 			'text' => 1,
@@ -60,7 +61,8 @@ class e107_user_extended
 			'integer' => 6,
 			'date' => 7,
 			'language' => 8,
-			'list' => 9
+			'list' => 9,
+			'checkbox'	=> 10
 		);
 
 		$this->user_extended_types = array(
@@ -72,7 +74,8 @@ class e107_user_extended
 			6 => UE_LAN_6,
 			7 => UE_LAN_7,
 			8 => UE_LAN_8,
-			9 => UE_LAN_9
+			9 => UE_LAN_9,
+			10=> UE_LAN_10
 		);
 
 		//load array with field names from main user table, so we can disallow these
@@ -117,6 +120,7 @@ class e107_user_extended
 					case EUF_DATE :
 					case EUF_LANGUAGE :
 					case EUF_PREDEFINED :
+					case EUF_CHECKBOX :
 						$target['_FIELD_TYPES'][$k] = 'todb';
 						break;
 					case EUF_RADIO :
@@ -148,6 +152,7 @@ class e107_user_extended
 					case EUF_DATE :
 					case EUF_LANGUAGE :
 					case EUF_PREDEFINED :
+
 						$target['data'][$f] = $this->fieldDefinitions[$k]['user_extended_struct_default'];
 						$target['_FIELD_TYPES'][$f] = 'todb';
 						break;
@@ -155,6 +160,10 @@ class e107_user_extended
 					case EUF_INTEGER :
 						$target['data'][$f] = $this->fieldDefinitions[$k]['user_extended_struct_default'];
 						$target['_FIELD_TYPES'][$f] = 'int';
+						break;
+					case EUF_CHECKBOX :
+                    	$target['data'][$f] = $this->fieldDefinitions[$k]['user_extended_struct_default'];
+						$target['_FIELD_TYPES'][$f] = 'array';
 						break;
 				}
 			}
@@ -205,7 +214,7 @@ class e107_user_extended
 			if (isset($inArray[$f]) || ($isSignup && ($defs['user_extended_struct_required'] == 1)))
 			{	// Only allow valid keys
 				$val = varset($inArray[$f], FALSE);
-				$err = $this->user_extended_validate_entry($val, $defs);
+		   		$err = $this->user_extended_validate_entry($val, $defs);
 				if ($err === true)
 				{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
 					$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml($defs['user_extended_struct_text'],FALSE,'defs'),LAN_USER_75);
@@ -213,8 +222,8 @@ class e107_user_extended
 				}
 				elseif ($err)
 				{	// Specific error message returned - usually regex fail
-					$eufVals['errortext'][$f] = $err;
-					$eufVals['errors'][$f] = ERR_GENERIC;
+			   		$eufVals['errortext'][$f] = $err;
+			   		$eufVals['errors'][$f] = ERR_GENERIC;
 				}
 				elseif (!$err)
 				{
@@ -232,6 +241,7 @@ class e107_user_extended
 			$hidden_fields = "^".$hidden_fields."^";
 		}
 		$eufVals['data']['user_hidden_fields'] = $hidden_fields;
+
 		return $eufVals;
 	}
 
@@ -314,6 +324,7 @@ class e107_user_extended
 		case EUF_DB_FIELD :
 		case EUF_LANGUAGE :
 		case EUF_PREDEFINED :
+		case EUF_CHECKBOX :
 		  $db_type = 'VARCHAR(255)';
 		  break;
 
@@ -477,6 +488,25 @@ class e107_user_extended
 			$choice = trim($choice);
 			$chk = ($curval == $choice)? " checked='checked' " : "";
 			$ret .= "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
+		  }
+		  return $ret;
+		  break;
+
+        case EUF_CHECKBOX : //checkboxes
+		  foreach($choices as $choice)
+		  {
+			$choice = trim($choice);
+			if(strpos($choice,"|")!==FALSE)
+			{
+            	list($val,$label) = explode("|",$choice);
+			}
+			else
+			{
+            	$val = $choice;
+				$label = $choice;
+			}
+			$chk = ($curval == $val)? " checked='checked' " : "";
+			$ret .= "<input {$include} type='checkbox' name='{$fname}[]' value='{$val}' {$chk} /> {$label}<br />";
 		  }
 		  return $ret;
 		  break;
