@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2009-07-25 07:54:34 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.42 $
+|     $Date: 2009-08-06 22:27:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -626,14 +626,15 @@ class themeHandler{
 		$text .= "
 		<div id='core-thememanager-configure'>
         <table cellpadding='0' cellspacing='0' class='adminform'>
-        	<colgroup span='2'>
+        	<colgroup span='3'>
         		<col class='col-label' />
         		<col class='col-control' />
+				<col class='col-control' />
         	</colgroup>
 		<tr>
 			<td><b>".TPVLAN_11."</b></td>
 			<td>".$theme['version']."</td>
-			<td class='first last' rowspan='6' style='text-align:center;width:25%'>$newpreview </td>
+			<td class='center middle' rowspan='6' style='text-align:center; vertical-align:middle;width:25%'>".$newpreview."</td>
 			</tr>";
 
 		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
@@ -649,7 +650,7 @@ class themeHandler{
 		$text .= "</td></tr>";
 
 
-		if($mode == 1)
+		if($mode == 1)    // site theme..
 		{
 
              	$text .= "
@@ -681,7 +682,7 @@ class themeHandler{
 
 
 
-        if($mode==1)  // New in 0.8   ----
+        if($mode==1)  // New in 0.8   ----   site theme.
 		{
 
             $itext = "<tr>
@@ -783,19 +784,20 @@ class themeHandler{
 				</tr>\n";
 
 
+
 				foreach($theme['css'] as $css)
 				{
+					$text2 = "";
+
                 	if($mode == 1 && substr($css['name'],0,6)=="admin_")
 					{
                     	continue;
 					}
 
-
-                    $text .= "<tr>\n";
 					if($mode == 2)
 					{
 						if (!$css['nonadmin']) {
-							$text .= "
+							$text2 = "
 							<td class='center'>
 							<input type='radio' name='admincss' value='".$css['name']."' ".($pref['admincss'] == $css['name'] || (!$pref['admincss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
 							</td>
@@ -808,7 +810,7 @@ class themeHandler{
 					{
 
 
-						$text .= "
+						$text2 = "
 						<td class='center'>
 						<input type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
 						</td>
@@ -816,7 +818,9 @@ class themeHandler{
 						</td>
 						<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
 					}
-					$text .= "</tr>";
+
+					$text .= ($text2) ? "<tr>".$text2."</tr>" : "";
+
 				}
 
 				$text .= "</table></td></tr>";
