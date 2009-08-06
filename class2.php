@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.120 $
-* $Date: 2009-08-05 19:58:32 $
+* $Revision: 1.121 $
+* $Date: 2009-08-06 22:39:36 $
 * $Author: secretr $
 *
 */
@@ -672,21 +672,22 @@ $language = $pref['sitelanguage'];
 
 // Get user language choice
 /// Force no multilingual sites to keep there preset languages? if (varset($pref['multilanguage']))
-{
+//{
 	if ($pref['user_tracking'] == 'session')
 	{
 		$user_language = (array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION) ? $_SESSION['e107language_'.$pref['cookie_name']] : '');
 	}
 	else
 	{
-		$user_language= (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : '';
+		$_SESSION = array(); //remove PHP notice
+		$user_language = (isset($_COOKIE['e107language_'.$pref['cookie_name']])) ? $_COOKIE['e107language_'.$pref['cookie_name']] : '';
 	}
 	// Strip $user_language
-	//TODO allow [a-z][A-Z][0-9]_
-	$user_language = preg_replace('#\W#', '', $user_language);
+	//allow [a-z][A-Z][0-9]_
+	$user_language = preg_replace('#[^\w]#', '', $user_language);
 
 	// Is user language choice available?
-	if( ! in_array($user_language, $lanlist))
+	if( !in_array($user_language, $lanlist))
 	{
 		// Reset session
 		if(array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION))
@@ -711,7 +712,7 @@ $language = $pref['sitelanguage'];
 		$sql->mySQLlanguage  = $user_language;
 		$sql2->mySQLlanguage = $user_language;
 	}
-}
+//}
 
 // We should have the language by now
 define('e_LANGUAGE', $language);
@@ -1552,7 +1553,7 @@ function cachevars($id, $var)
 //DEPRECATED - use e107::getRegistry()
 function getcachedvars($id)
 {
-	e107::getRegistry('core/cachedvars/'.$id, false);
+	return e107::getRegistry('core/cachedvars/'.$id, false);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1656,7 +1657,7 @@ function init_session()
 			define('USEREMAIL', $result['user_email']);
 			define('USER', true);
 			define('USERCLASS', $result['user_class']);
-			define('USERVIEWED', $result['user_viewed']);
+			//define('USERVIEWED', $result['user_viewed']);  - removed from the DB
 			define('USERIMAGE', $result['user_image']);
 			define('USERPHOTO', $result['user_sess']);
 
