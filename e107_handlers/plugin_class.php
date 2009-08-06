@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2009-07-20 15:24:34 $
+|     $Revision: 1.72 $
+|     $Date: 2009-08-06 22:29:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,8 @@ class e107plugin
 		"e_comment",
 		"e_sql",
 		"e_userprofile",
-		"e_header"
+		"e_header",
+		"e_userinfo"
 		);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
