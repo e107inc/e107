@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-08-05 19:53:05 $
+ * $Revision: 1.8 $
+ * $Date: 2009-08-06 22:19:47 $
  * $Author: secretr $
 */
 
@@ -78,12 +78,12 @@ class e_pref extends e_model
 	{
 		require_once(e_HANDLER.'cache_handler.php');
 		
-		$this->prefid = $prefid;
+		$this->prefid = preg_replace('/[^\w\-]/', '', $prefid);
 		if(empty($alias))
 		{
 			$alias = $prefid;
 		}
-		$this->alias = $alias;
+		$this->alias = preg_replace('/[^\w\-]/', '', $alias);
 		$this->loadData($data, $sanitize_data);
 	}
 	
@@ -322,7 +322,7 @@ class e_pref extends e_model
 	 */
 	protected function _load($force = false)
 	{
-		$id = e107::getParser()->toDB($this->prefid);
+		$id = $this->prefid;
 		$data = $force ? false : $this->getPrefCache(true); 
 		
 		if(false !== $data)
