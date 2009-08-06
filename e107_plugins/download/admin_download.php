@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-25 09:41:23 $
+|     $Revision: 1.10 $
+|     $Date: 2009-08-06 22:36:17 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ $gen = new convert();
 function headerjs()
 {
    global $cal;
-	return $cal->load_files()."\n\n<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>";
+	return $cal->load_files()."<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>\n";
 }
 
 $e_sub_cat = 'download';
