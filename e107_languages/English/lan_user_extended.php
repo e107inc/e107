@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_user_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-15 21:57:46 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2009-08-07 13:47:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // The LAN numbers correspond directly to the field types
@@ -19,6 +19,7 @@ define("UE_LAN_6", "Integer");
 define("UE_LAN_7", "Date");
 define("UE_LAN_8", "Language");
 define('UE_LAN_9', 'Predefined list');
+define('UE_LAN_10', 'Checkboxes');
 // Leave a gap to allow for more field types
 define("UE_LAN_21", "Name");
 define("UE_LAN_22", "Type");

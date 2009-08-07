@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-08-06 21:26:48 $
+|     $Revision: 1.17 $
+|     $Date: 2009-08-07 13:47:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -41,6 +41,9 @@ $cal = new DHTML_Calendar(true);
 require_once("auth.php");
 require_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'userclass_class.php');
+
+require_once(e_HANDLER.'form_handler.php');
+$frm = new e_form;
 
 $ue = new e107_user_extended;
 $message = '';
@@ -122,7 +125,7 @@ if (isset($_POST['add_field']))
 		{
 			$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 		}
-		$new_values = make_delimited($_POST['user_values']);
+		$new_values = $user->make_delimited($_POST['user_values']);
 		$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	
 // Check to see if its a reserved field name before adding to database
@@ -156,7 +159,7 @@ if (isset($_POST['update_field']))
 	{
     	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 	}
-	$upd_values = make_delimited($_POST['user_values']);
+	$upd_values = $user->make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	admin_update($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29);
 	$admin_log->log_event('EUF_06',$tp->toDB($_POST['user_field']).'[!br!]'.$tp->toDB($_POST['user_text']).'[!br!]'.intval($_POST['user_type']),E_LOG_INFORMATIVE,'');
@@ -206,12 +209,12 @@ if (varset($_POST['eu_action'],'') == "delcat")
 
 if(isset($_POST['activate']))
 {
-	$message .= field_activate();
+	$message .= $user->field_activate();
 }
 
 if(isset($_POST['deactivate']))
 {
-	$message .= field_deactivate();
+	$message .= $user->field_deactivate();
 }
 
 
@@ -237,7 +240,9 @@ if($sql->db_Select("user_extended_struct","DISTINCT(user_extended_struct_parent)
 
 if($message)
 {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+    $emessage = eMessage::getInstance();
+	$emessage->add($message, E_MESSAGE_SUCCESS);
+  //	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 
@@ -274,7 +279,7 @@ if ($action == "editext")
 
 if($action == 'pre')
 {
-	show_predefined();
+	$user->show_predefined();
 }
 
 if($action == 'cat')
@@ -296,7 +301,7 @@ class users_ext
 
 	function show_extended($current = '')
 	{
-		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action;
+		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action,$frm;
 
 		$catList = $ue->user_extended_get_categories();
 		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
@@ -312,6 +317,8 @@ class users_ext
 			<thead>
 				<tr>
 				<th>".EXTLAN_1."</th>
+                <th>".EXTLAN_79."</th>
+
 				<th>".EXTLAN_2."</th>
 				<th>".EXTLAN_4."</th>
 				<th>".EXTLAN_5."</th>
@@ -337,11 +344,12 @@ class users_ext
 				{  //	Show current extended fields
 			foreach($extendedList[$cn] as $ext)	
 			{
-					$fname = "user_".$ext['user_extended_struct_name'];
-			  $uVal = str_replace(chr(1), "", $ext['user_extended_struct_default']);		// Is this right?
+				$fname = "user_".$ext['user_extended_struct_name'];
+				$uVal = str_replace(chr(1), "", $ext['user_extended_struct_default']);		// Is this right?
 						$text .= "
 						<tr>
-						<td>{$ext['user_extended_struct_name']}<br />[".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."]</td>
+						<td>{$ext['user_extended_struct_name']}</td>
+						<td>".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."</td>
 						<td class='left'>".$ue->user_extended_edit($ext,$uVal)."</td>
 						<td>".($ext['user_extended_struct_required'] == 1 ? LAN_YES : LAN_NO)."</td>
 						<td>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
@@ -433,7 +441,7 @@ class users_ext
 				";
 			}
 			$text .= "
-			<br /><span class='smalltext'>".EXTLAN_11."</span>
+			<br /><span class='field-help'>".EXTLAN_11."</span>
 			</td>
 			</tr>
 
@@ -441,7 +449,7 @@ class users_ext
 			<td>".EXTLAN_12.":</td>
 			<td colspan='3'>
 			<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='50' /><br />
-			<span class='smalltext'>".EXTLAN_13."</span>
+			<span class='field-help'>".EXTLAN_13."</span>
 			</td>
 			</tr>
 			";
@@ -491,7 +499,7 @@ class users_ext
 			$text .= "
 			</div>
 			<input type='button' class='button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
-			<br /><span class='smalltext'>".EXTLAN_17."</span></div>";
+			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
 // End of Values. --------------------------------------
        		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
 
@@ -567,7 +575,7 @@ class users_ext
 			<td>".EXTLAN_15."</td>
 			<td colspan='3'>
 			<textarea class='tbox' name='user_include' cols='60' rows='2'>{$current_include}</textarea><br />
-			<span class='smalltext'>".EXTLAN_51."</span><br />
+			<span class='field-help'>".EXTLAN_51."</span><br />
 			</td>
 			</tr>
 
@@ -575,7 +583,7 @@ class users_ext
 			<td>".EXTLAN_52."</td>
 			<td colspan='3'>
 			<input class='tbox' type='text' name='user_regex' size='30' value='{$current_regex}' /><br />
-			<span class='smalltext'>".EXTLAN_53."</span><br />
+			<span class='field-help'>".EXTLAN_53."</span><br />
 			</td>
 			</tr>
 
@@ -583,7 +591,7 @@ class users_ext
 			<td >".EXTLAN_54."</td>
 			<td colspan='3'>
 			<input class='tbox' type='text' name='user_regexfail' size='40' value='{$current_regexfail}' /><br />
-			<span class='smalltext'>".EXTLAN_55."</span><br />
+			<span class='field-help'>".EXTLAN_55."</span><br />
 			</td>
 			</tr>
 
@@ -616,28 +624,28 @@ class users_ext
 			$text .= "
 			</select>
 			<br />
-			<span class='smalltext'>".EXTLAN_19."</span>
+			<span class='field-help'>".EXTLAN_19."</span>
 			</td>
 			</tr>
 
 			<tr>
 			<td >".EXTLAN_5."</td>
 			<td colspan='3'>
-			".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes, nobody')."<br /><span class='smalltext'>".EXTLAN_20."</span>
+			".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes, nobody')."<br /><span class='field-help'>".EXTLAN_20."</span>
 			</td>
 			</tr>
 
 			<tr>
 			<td>".EXTLAN_6."</td>
 			<td colspan='3'>
-			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, readonly, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
+			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, readonly, classes')."<br /><span class='field-help'>".EXTLAN_22."</span>
 			</td>
 			</tr>
 
 			<tr>
 			<td>".EXTLAN_7."</td>
 			<td colspan='3'>
-			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_21."</span>
+			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='field-help'>".EXTLAN_21."</span>
 			</td>
 			</tr>
 
@@ -661,12 +669,12 @@ class users_ext
 			}
 			$text .= "
 			</select>
-			<br /><span class='smalltext'>".EXTLAN_50."</span>
+			<br /><span class='field-help'>".EXTLAN_50."</span>
 			</td>
 			</tr>
 			";
 
-			$text .= "<tr>
+			$text .= "
 			</table>
 			<div class='buttons-bar center'>
 			";
@@ -674,16 +682,12 @@ class users_ext
 //			if ((!is_array($current) || $action == "continue") && $sub_action == "")
 			if ((($mode == 'new') || $action == "continue") && $sub_action == "")
 			{
-				$text .= "
-				<input class='button' type='submit' name='add_field' value='".EXTLAN_23."' />
-				";
+				$text .= $frm->admin_button('add_field', EXTLAN_23);
 			}
 			else
 			{
-				$text .= "
-				<input class='button' type='submit' name='update_field' value='".EXTLAN_24."' /> &nbsp; &nbsp;
-				<input class='button' type='submit' name='cancel' value='".EXTLAN_33."' />
-				";
+				$text .= $frm->admin_button('update_field', EXTLAN_24,'update').
+				$frm->admin_button('cancel', EXTLAN_33);
 			}
 
 
@@ -692,17 +696,19 @@ class users_ext
 			";
 		}
 		//		$text .= "</div>";
-		$ns->tablerender(EXTLAN_9, $text);
+		$emessage = eMessage::getInstance();
+		$ns->tablerender(EXTLAN_9,$emessage->render().$text);
 	}
 
 
 	function show_categories($current)
 	{
-		global $sql, $ns, $ue;
+		global $sql, $ns, $ue, $frm;
 
 		$text = "<div style='text-align:center'>";
 		$text .= "
-		<table style='".ADMIN_WIDTH."' class='fborder'>
+        <table cellpadding='0' cellspacing='0' class='adminlist'>
+
 		<tr>
 		<td class='fcaption'>".EXTLAN_1."</td>
 		<td class='fcaption'>".EXTLAN_5."</td>
@@ -776,67 +782,66 @@ class users_ext
 		</table>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		";
-		$text .= "<div><br /></div><table style='".ADMIN_WIDTH."' class='fborder'>  ";
+		$text .= "<div><br /></div>
+		<table cellpadding='0' cellspacing='0' class='adminform'>
+		<colgroup span='2'>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>";
+
 		$text .= "
 
 		<tr>
 		<td>".EXTLAN_38.":</td>
 		<td colspan='3'>
 		<input class='tbox' type='text' name='user_field' size='40' value='".$current['user_extended_struct_name']."' maxlength='50' />
-		<br /><span class='smalltext'>".EXTLAN_11."</span>
+		<br /><span class='field-help'>".EXTLAN_11."</span>
 		</td>
 		</tr>
 
 		<tr>
 		<td>".EXTLAN_5."</td>
 		<td colspan='3'>
-		".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_20."</span>
+		".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='field-help'>".EXTLAN_20."</span>
 		</td>
 		</tr>
 
 		<tr>
 		<td>".EXTLAN_6."</td>
 		<td colspan='3'>
-		".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, classes, readonly')."<br /><span class='smalltext'>".EXTLAN_22."</span>
+		".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, classes, readonly')."<br /><span class='field-help'>".EXTLAN_22."</span>
 		</td>
 		</tr>
 
 		<tr>
 		<td >".EXTLAN_7."</td>
 		<td colspan='3'>
-		".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_21."</span>
+		".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='field-help'>".EXTLAN_21."</span>
 		</td>
-		</tr>";
+		</tr>
+		</table>";
 
 
-		$text .= "<tr>
-		<td colspan='4' style='text-align:center' class='forumheader'>";
+		$text .= "<div class='buttons-bar center'>";
 
 		if (!is_array($current))
 		{
-			$text .= "
-			<input class='button' type='submit' name='add_category' value='".EXTLAN_39."' />
-			";
+			$text .= $frm->admin_button('add_category', EXTLAN_39);
 		}
 		else
 		{
-			$text .= "
-			<input class='button' type='submit' name='update_category' value='".EXTLAN_42."' /> &nbsp; &nbsp;
-			<input class='button' type='submit' name='cancel_cat' value='".EXTLAN_33."' />
-			";
+        	$text .= $frm->admin_button('update_category', EXTLAN_42,'update').
+				$frm->admin_button('cancel', EXTLAN_33);
 		}
 		// ======= end added by Cam.
-		$text .= "</td>
-		</tr>
-
-		</table></form></div>";
+		$text .= "</div></form></div>";
 		$ns->tablerender(EXTLAN_9, $text);
 	}
 
 
-	function show_options($action) 
+	function show_options($action)
 	{
-		if ($action == "") 
+		if ($action == "")
 		{
 			$action = "main";
 		}
@@ -854,234 +859,231 @@ class users_ext
 
 		show_admin_menu(EXTLAN_9, $action, $var);
 	}
-}
 
 
-function users_extended_adminmenu() {
-	global $user, $action, $ns, $curtype, $action;
-	$user->show_options($action);
-	if($action == 'editext' || $action == 'continue')
+
+
+
+
+	function make_delimited($var)
 	{
-		$ns->tablerender(EXTLAN_46." - <span id='ue_type'>&nbsp;</span>", "<div id='ue_help'>&nbsp;</div>");
-		echo "<script type='text/javascript'>changeHelp('{$curtype}');</script>";
-	}
-}
-
-
-function make_delimited($var)
-{
-	global $tp;
-	foreach($var as $k => $v)
-	{
-		$var[$k] = $tp->toDB(trim($v));
-		$var[$k] = str_replace(",", "[E_COMMA]", $var[$k]);
-		if($var[$k] == "")
+		global $tp;
+		foreach($var as $k => $v)
 		{
-			unset($var[$k]);
+			$var[$k] = $tp->toDB(trim($v));
+			$var[$k] = str_replace(",", "[E_COMMA]", $var[$k]);
+			if($var[$k] == "")
+			{
+				unset($var[$k]);
+			}
 		}
-	}
-	$ret = implode(",", $var);
-	return $ret;
-}
-
-
-function show_predefined()
-{
-	global $tp, $ns, $ue, $sql;
-
-	// Get list of current extended fields
-	$curList = $ue->user_extended_get_fieldlist();
-	foreach($curList as $c)
-	{
-		$curNames[] = $c['user_extended_struct_name'];
+		$ret = implode(",", $var);
+		return $ret;
 	}
 
-	//Get list of predefined fields, determine which are already activated.
-	$preList = $ue->parse_extended_xml('getfile');
-	ksort($preList);
-	$active = array();
-	foreach($preList as $k => $v)
+
+	function show_predefined()
 	{
-		if($k != 'version')
+		global $tp, $ns, $ue, $sql, $frm;
+
+		// Get list of current extended fields
+		$curList = $ue->user_extended_get_fieldlist();
+		foreach($curList as $c)
 		{
-		if(in_array($v['name'], $curNames))
+			$curNames[] = $c['user_extended_struct_name'];
+		}
+
+		//Get list of predefined fields.
+		$preList = $ue->parse_extended_xml('getfile');
+		ksort($preList);
+
+		$txt = "
+		<form method='post' action='".e_SELF."?pre'>
+	    <table cellpadding='0' cellspacing='0' class='adminlist'>
+		<colgroup span='6'>
+			<col  />
+			<col  />
+			<col  />
+	        <col  />
+			<col  />
+			<col  />
+		</colgroup>
+	    <thead>
+			<tr>
+			<th>".UE_LAN_21."</th>
+			<th>".EXTLAN_79."</th>
+			<th>".EXTLAN_2."</th>
+			<th>".UE_LAN_22."</th>
+			<th class='center' >".EXTLAN_57."</th>
+			<th class='center last' >".LAN_OPTIONS."</th>
+			</tr>
+			</thead>
+			<tbody>";
+
+	   	foreach($preList as $k=>$a)
 		{
-			$active[] = $v;
+			if($k !='version') // don't know why this is appearing in the array.
+			{
+		   		$active = (in_array($a['name'], $curNames)) ? TRUE : FALSE;
+				$txt .= $this->show_predefined_field($a,$active);
+			}
 		}
-		else
+
+		$txt .= "</tbody></table></form>";
+
+		$emessage = eMessage::getInstance();
+		$ns->tablerender(EXTLAN_56,$emessage->render(). $txt);
+		require_once('footer.php');
+		exit;
+	}
+
+
+	function show_predefined_field($var, $active)
+	{
+		global $tp,$ue, $frm;
+		static $head_shown;
+		$txt = "";
+
+
+		foreach($var as $key=>$val) // convert predefined xml to default array format
 		{
-			$inactive[] = $v;
+	    	$var['user_extended_struct_'.$key] = $val;
 		}
-		}
-	}
 
-	$txt = "
-	<form method='post' action='".e_SELF."?pre'>
-	<table class='fborder' style='".ADMIN_WIDTH."'>
-	<tr>
-	<td class='fcaption' colspan='4'>".EXTLAN_57."</td>
-	</tr>
-	";
-	if(count($active))
-	{
-		foreach($active as $a)
-		{
-			$txt .= show_field($a, 'deactivate');
-		}
-	}
-	else
-	{
-		$txt .= "<tr><td class='forumheader3' colspan='4'>".EXTLAN_61."</td></tr>";
-	}
+		$var['user_extended_struct_type'] = $ue->typeArray[$var['user_extended_struct_type']];
+		$var['user_extended_struct_parms'] = $var['include_text'];
 
-	$txt .= "
-	<tr>
-	<td class='fcaption' colspan='4'>".EXTLAN_58."</td>
-	</tr>
-	";
-	foreach($inactive as $a)
-	{
-		$txt .= show_field($a);
-	}
-	$txt .= "</table></form>";
-	$ns->tablerender(EXTLAN_56, $txt);
-	require_once('footer.php');
-	exit;
-}
-
-
-function show_field($var, $type='activate')
-{
-	global $tp;
-	static $head_shown;
-	$txt = "";
-//	$showlist = array('type','text', 'values', 'include_text', 'regex');
-	if($head_shown != 1)
-	{
 		$txt .= "
 		<tr>
-		<td class='forumheader'>".UE_LAN_21."</td>
-		<td class='forumheader'>".UE_LAN_22."</td>
-		<td class='forumheader'>".UE_LAN_23."</td>
-		<td class='forumheader' style='width: 5%'>&nbsp;</td>
-		</tr>
+		<td>{$var['user_extended_struct_name']}</td>
+		<td>".constant(strtoupper($var['user_extended_struct_text'])."_DESC")."</td>
+		<td>".$ue->user_extended_edit($var,$uVal)."</td>
+       	<td>".$tp->toHTML($var['type'], false, 'defs')."</td>
+		<td class='center'>".($active ? ADMIN_TRUE_ICON : "&nbsp;")."</td>
 		";
-		$head_shown = 1;
+	//	$txt .= constant("UE_LAN_".strtoupper($var['text'])."DESC")."<br />";
+	//	foreach($showlist as $f)
+	//	{
+	//		if($var[$f] != "" && $f != 'type' && $f !='text')
+	//		{
+	//			$txt .= "<strong>{$f}: </strong>".$tp->toHTML($var[$f], false, 'defs')."<br />";
+	//		}
+	//	}
+		$val = (!$active) ? EXTLAN_59 : EXTLAN_60;
+		$type = (!$active) ? 'activate' : 'deactivate';
+        ;
+		$txt .= "
+		<td class='center last'>";
+        $txt .= $frm->admin_button($type."[".$var['user_extended_struct_name']."]", $val);
+		$txt .= "</td>
+		</tr>";
+		return $txt;
 	}
-	$txt .= "
-	<tr>
-	<td class='forumheader3'>{$var['name']}</td>
-	<td class='forumheader3'>".$tp->toHTML($var['type'], false, 'defs')."</td>
-	<td class='forumheader3'>".constant(strtoupper($var['text'])."_DESC")."</td>
-	";
-//	$txt .= constant("UE_LAN_".strtoupper($var['text'])."DESC")."<br />";
-//	foreach($showlist as $f)
-//	{
-//		if($var[$f] != "" && $f != 'type' && $f !='text')
-//		{
-//			$txt .= "<strong>{$f}: </strong>".$tp->toHTML($var[$f], false, 'defs')."<br />";
-//		}
-//	}
-	$val = ('activate' == $type) ? EXTLAN_59 : EXTLAN_60;
-	$txt .= "
-	<td class='forumheader3' style='text-align: center'><input class='button' type='submit' name='{$type}[{$var['name']}]' value='{$val}' /></td>
-	</tr>";
-	return $txt;
-}
 
 
-function field_activate()
-{
-	global $ue, $ns, $tp;
-	$ret = "";
-	$preList = $ue->parse_extended_xml('getfile');
-	$tmp = $preList;
-
-	foreach(array_keys($_POST['activate']) as $f)
+	function field_activate()
 	{
+		global $ue, $ns, $tp, $admin_log;
+		$ret = "";
+		$preList = $ue->parse_extended_xml('getfile');
+		$tmp = $preList;
 
-		$tmp[$f]['parms'] = $tp->toDB($tmp[$f]['parms']);
-		if($ue->user_extended_add($tmp[$f]))
+		foreach(array_keys($_POST['activate']) as $f)
 		{
-			$ret .= EXTLAN_68." $f ".EXTLAN_69."<br />";
 
-			if ($tmp[$f]['type']=="db field")
+			$tmp[$f]['parms'] = $tp->toDB($tmp[$f]['parms']);
+			if($ue->user_extended_add($tmp[$f]))
 			{
-				if (is_readable(e_ADMIN.'sql/extended_'.$f.'.php'))
+				$ret .= EXTLAN_68." $f ".EXTLAN_69."<br />";
+
+				if ($tmp[$f]['type']=="db field")
 				{
-             	$ret .= (process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
-			}
-				else
-				{
-					$ret .= str_replace('--FILE--',e_ADMIN.'sql/extended_'.$f.'.php',EXTLAN_78);
+					if (is_readable(e_ADMIN.'sql/extended_'.$f.'.php'))
+					{
+	             	$ret .= (process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
+				}
+					else
+					{
+						$ret .= str_replace('--FILE--',e_ADMIN.'sql/extended_'.$f.'.php',EXTLAN_78);
+					}
 				}
 			}
-		}
-		else
-		{
-			$ret .= EXTLAN_70." $f ".EXTLAN_71."<br />";
-		}
-	}
-	$admin_log->log_event('EUF_11',implode(', ',$_POST['activate']),E_LOG_INFORMATIVE,'');
-	return $ret;
-}
-
-
-function field_deactivate()
-{
-	global $ue, $ns, $tp, $sql, $admin_log;
-	$ret = "";
-	foreach(array_keys($_POST['deactivate']) as $f)
-	{
-		if($ue->user_extended_remove($f, $f))
-		{
-			$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
-			if(is_readable(e_ADMIN."sql/extended_".$f.".php")){
-             	$ret .= (mysql_query("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
+			else
+			{
+				$ret .= EXTLAN_70." $f ".EXTLAN_71."<br />";
 			}
 		}
-		else
+		$admin_log->log_event('EUF_11',implode(', ',$_POST['activate']),E_LOG_INFORMATIVE,'');
+		return $ret;
+	}
+
+
+	function field_deactivate()
+	{
+		global $ue, $ns, $tp, $sql, $admin_log;
+		$ret = "";
+		foreach(array_keys($_POST['deactivate']) as $f)
 		{
-			$ret .= EXTLAN_70." $f ".EXTLAN_73."<br />";
+			if($ue->user_extended_remove($f, $f))
+			{
+				$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
+				if(is_readable(e_ADMIN."sql/extended_".$f.".php")){
+	             	$ret .= (mysql_query("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
+				}
+			}
+			else
+			{
+				$ret .= EXTLAN_70." $f ".EXTLAN_73."<br />";
+			}
 		}
-	}
-	$admin_log->log_event('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
-	return $ret;
-}
-
-
-function process_sql($f)
-{
-    global $sql;
-	$filename = e_ADMIN."sql/extended_".$f.".php";
-	$fd = fopen ($filename, "r");
-	$sql_data = fread($fd, filesize($filename));
-	fclose ($fd);
-
-	$search[0] = "CREATE TABLE ";	$replace[0] = "CREATE TABLE ".MPREFIX;
-	$search[1] = "INSERT INTO ";	$replace[1] = "INSERT INTO ".MPREFIX;
-
-    preg_match_all("/create(.*?)myisam;/si", $sql_data, $creation);
-    foreach($creation[0] as $tab){
-		$query = str_replace($search,$replace,$tab);
-      	if(!mysql_query($query)){
-        	$error = TRUE;
-		}
+		$admin_log->log_event('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
+		return $ret;
 	}
 
-    preg_match_all("/insert(.*?);/si", $sql_data, $inserts);
-	foreach($inserts[0] as $ins){
-		$qry = str_replace($search,$replace,$ins);
-		if(!mysql_query($qry)){
-		  	$error = TRUE;
+
+	function process_sql($f)
+	{
+	    global $sql;
+		$filename = e_ADMIN."sql/extended_".$f.".php";
+		$fd = fopen ($filename, "r");
+		$sql_data = fread($fd, filesize($filename));
+		fclose ($fd);
+
+		$search[0] = "CREATE TABLE ";	$replace[0] = "CREATE TABLE ".MPREFIX;
+		$search[1] = "INSERT INTO ";	$replace[1] = "INSERT INTO ".MPREFIX;
+
+	    preg_match_all("/create(.*?)myisam;/si", $sql_data, $creation);
+	    foreach($creation[0] as $tab){
+			$query = str_replace($search,$replace,$tab);
+	      	if(!mysql_query($query)){
+	        	$error = TRUE;
+			}
 		}
-    }
 
-	return ($error) ? FALSE : TRUE;
+	    preg_match_all("/insert(.*?);/si", $sql_data, $inserts);
+		foreach($inserts[0] as $ins){
+			$qry = str_replace($search,$replace,$ins);
+			if(!mysql_query($qry)){
+			  	$error = TRUE;
+			}
+	    }
 
-}
+		return ($error) ? FALSE : TRUE;
+
+	}
+}// end class
 
 
+
+	function users_extended_adminmenu() {
+		global $user, $action, $ns, $curtype, $action;
+		$user->show_options($action);
+		if($action == 'editext' || $action == 'continue')
+		{
+			$ns->tablerender(EXTLAN_46." - <span id='ue_type'>&nbsp;</span>", "<div id='ue_help'>&nbsp;</div>");
+			echo "<script type='text/javascript'>changeHelp('{$curtype}');</script>";
+		}
+	}
 
 function headerjs()
 {

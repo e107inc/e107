@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-08-30 20:22:31 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2009-08-07 13:47:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
@@ -91,6 +91,8 @@ define("EXTLAN_75", "Error adding field to database.");
 define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, '_' allowed.");
 define("EXTLAN_77", "Category not deleted - must delete fields in category first: ");
 define('EXTLAN_78', 'Cannot find file --FILE-- needed to create data table');
+
+define('EXTLAN_79', 'Label');
 
 
 //textbox
