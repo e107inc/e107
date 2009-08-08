@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.121 $
-* $Date: 2009-08-06 22:39:36 $
-* $Author: secretr $
+* $Revision: 1.122 $
+* $Date: 2009-08-08 23:09:08 $
+* $Author: marj_nl_fr $
 *
 */
 //
@@ -1316,24 +1316,25 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 	if ($userclass == '')
 	{
-		return false;
+		return FALSE;
 	}
 
 	$class_array = explode(',', $userclass);
 
-	$varList = explode(',', trim($var));
+	$varList = explode(',', $var);
 	$latchedAccess = FALSE;
 
 	foreach($varList as $v)
 	{
+		$v = trim($v);
 		$invert = FALSE;
-		if(!is_numeric($v))  //value to test is a userclass name (or garbage, of course), go get the id
+		//value to test is a userclass name (or garbage, of course), go get the id
+		if( ! is_numeric($v))
 		{
-			$v = trim($v);
-			if (substr($v,0,1) == '-')
+			if (substr($v, 0, 1) == '-')
 			{
 				$invert = TRUE;
-				$v = substr($v,1);
+				$v = substr($v, 1);
 			}
 			$v = $e107->user_class->ucGetClassIDFromName($v);
 		}
@@ -1343,8 +1344,9 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 			$v = -$v;
 		}
 		if ($v !== FALSE)
-		{	// Ignore non-valid userclass names
-			if ((in_array($v, $class_array) || (ctype_digit($v) && ($v == 0))))
+		{
+			// Ignore non-valid userclass names
+			if (in_array($v, $class_array) || ($v === '0') || ($v === 0))
 			{
 				if ($invert)
 				{
@@ -1354,7 +1356,8 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 			}
 			elseif ($invert && count($varList) == 1)
 			{
-				$latchedAccess = TRUE;		// Handle scenario where only an 'exclude' class is passed
+				// Handle scenario where only an 'exclude' class is passed
+				$latchedAccess = TRUE;
 			}
 		}
 	}

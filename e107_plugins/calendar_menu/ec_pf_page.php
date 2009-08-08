@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-26 18:30:13 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-08-08 23:09:08 $
+|     $Author: marj_nl_fr $
 |
 | Generate a printer-friendly page of calendar events
 | Query is: ec_pf_page.php?ssssss.eeeeee[[[.cat].template].output]
@@ -333,59 +333,73 @@ switch ($ec_output_type)
 }
 
 
-function decode_date($date_string,$last_day = FALSE)
+// We're assuming $date_string is a string of digits
+// Which could begin with 'now' or 'now+'
+function decode_date($date_string, $last_day = FALSE)
 {  // Decode a date string
-  if (strpos($date_string,'now') === 0)
-  {  // decode special dates
-    $today = getdate();
-    $date_string = trim(substr($date_string,3));   // Knock off the 'now'
-	if (($date_string != '') && ($date_string[0] == '+'))
+	if (strpos($date_string, 'now') === 0)
 	{
-	  $date_string = trim(substr($date_string,1));	// Knock off the '+'
-	  if (is_numeric($date_string) && ($date_string >= 0) && ($date_string <= 12))
-	  {
-	    $today['mon'] += $date_string;
-		if ($today['mon'] > 12)
+		// decode special dates
+		$today = getdate();
+		// Knock off the 'now'
+		$date_string = trim(substr($date_string, 3));
+		if (($date_string != '') && ($date_string[0] == '+'))
 		{
-		  $today['mon'] -= 12;
-		  $today['year'] += 1;
+			// Knock off the '+'
+			$date_string = trim(substr($date_string, 1));
+			if (is_numeric($date_string) && ($date_string >= 0) && ($date_string <= 12))
+			{
+				$today['mon'] += $date_string;
+				if ($today['mon'] > 12)
+				{
+					$today['mon'] -= 12;
+					$today['year'] += 1;
+				}
+			}
+			else
+			{
+				return EC_LAN_149;
+			}
 		}
-	  }
-	  else
-	  {
-	    return EC_LAN_149;
-	  }
+		$date_string = $today['year'].$today['mon'];
 	}
-	$date_string = $today['year'].$today['mon'];
-  }
-  if (ctype_digit($date_string))
-  {
-    $month = 0;
-	$day = 1;
-	if (strlen($date_string) == 5) $date_string = substr_replace($date_string,'0',-1,0);
-    if (strlen($date_string) == 8)
-    {
-      $day = substr($date_string,-2,2);
-	  if ($last_day) $day += 1;
-    }
-    elseif (strlen($date_string) == 6)
-    {
-	  if ($last_day) $month = 1;
-    }
-    else
-    {      // Error
-	  return EC_LAN_149;
-    }
-	$month += substr($date_string,4,2);
-	$year  = substr($date_string,0,4);
-	$temp  = mktime(0,0,0,$month,$day,$year);
-	if ($last_day) $temp -= 1;			// Always do this to get whole of last day
-	return $temp;
-  }
-  else
-  {    // Error
-    return EC_LAN_149;
-  }
+	
+	// Here, $date_string is a string of 5, 6 or 8 digits
+	// use preg_match()
+	if(preg_match('/^\d{5,8}$/D', $date_string))
+	{
+		$month = 0;
+		$day   = 1;
+		if (strlen($date_string) == 5)
+			$date_string = substr_replace($date_string, '0', -1, 0);
+		if (strlen($date_string) == 8)
+		{
+			$day = substr($date_string, -2, 2);
+			if ($last_day)
+				$day += 1;
+		}
+		elseif (strlen($date_string) == 6)
+		{
+			if ($last_day)
+				$month = 1;
+		}
+		else
+		{
+			// Error
+			return EC_LAN_149;
+		}
+		$month += substr($date_string, 4, 2);
+		$year   = substr($date_string, 0, 4);
+		$temp   = mktime(0, 0, 0, $month, $day, $year);
+		// Always do this to get whole of last day
+		if ($last_day)
+			$temp -= 1;
+		return $temp;
+	}
+	else
+	{    // Error
+		return EC_LAN_149;
+	}
 }
 
 

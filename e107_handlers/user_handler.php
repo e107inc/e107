@@ -9,9 +9,9 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-06-12 20:41:34 $
- * $Author: e107steved $
+ * $Revision: 1.11 $
+ * $Date: 2009-08-08 23:09:08 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -277,50 +277,83 @@ class UserHandler
 	//		* - an alphanumeric character
 	//		^ - next character from seed
 	//		alphanumerics are included 'as is'
-	function generateRandomString($pattern, $seed='')
+	function generateRandomString($pattern, $seed = '')
 	{
-	  if (strlen($pattern) < 6) $pattern = '##....';
-	  $newname = '';
-	  $seed_ptr = 0;			// Next character of seed (if used)
-	  for ($i = 0; $i < strlen($pattern); $i++)
-	  {
-		$c = $pattern[$i];
-		switch ($c)
+		if (strlen($pattern) < 6)
+			$pattern = '##....';
+
+		$newname = '';
+
+		// Create alpha [A-Z][a-z]
+		$alpha = '';
+		for($i = 65; $i < 91; $i++)
 		{
-		  case '#' :		// Alpha only (upper and lower case)
-			do
-			{
-			  $t = chr(rand(65,122));
-			} while (!ctype_alpha($t));
-			$newname .= $t;
-			break;
-		  case '.' :		// Numeric only
-			do
-			{
-			  $t = chr(rand(48,57));
-			} while (!ctype_digit($t));
-			$newname .= $t;
-			break;
-		  case '*' :		// Alphanumeric
-			do
-			{
-			  $t = chr(rand(48,122));
-			} while (!ctype_alnum($t));
-			$newname .= $t;
-			break;
-		  case '^' :		// Next character from seed
-			if ($seed_ptr < strlen($seed))
-			{
-			  $newname .= $seed[$seed_ptr];
-			  $seed_ptr++;
-			}
-			break;
-		  default :
-			if (ctype_alnum($c)) $newname .= $c;
-			// (else just ignore other characters in pattern)
+			$alpha .= chr($i).chr($i+32);
 		}
-	  }
-	  return $newname;
+		$alphaLength = strlen($alpha) - 1;
+
+		// Create digit [0-9]
+		$digit = '';
+		for($i = 48; $i < 57; $i++)
+		{
+			$digit .= chr($i);
+		}
+		$digitLength = strlen($digit) - 1;
+
+		// Create alpha numeric [A-Z][a-z]
+		$alphaNum = $alpha.$digit;
+		$alphaNumLength = strlen($alphaNum) - 1;
+
+		// Next character of seed (if used)
+		$seed_ptr = 0;
+		for ($i = 0, $patternLength = strlen($pattern); $i < $patternLength; $i++)
+		{
+			$c = $pattern[$i];
+			switch ($c)
+			{
+				// Alpha only (upper and lower case)
+				case '#' :
+					$t = rand(0, $alphaLength);
+					$newname .= $alpha[$t];
+					break;
+
+				// Numeric only - [0-9]
+				case '.' :
+					$t = rand(0, $digitLength);
+					$newname .= $digit[$t];
+					break;
+
+				// Alphanumeric
+				case '*' :
+					$t = rand(0, $alphaNumLength);
+					$newname .= $alphaNum[$t];
+					break;
+
+				// Next character from seed
+				case '^' :
+					if ($seed_ptr < strlen($seed))
+					{
+						$newname .= $seed[$seed_ptr];
+						$seed_ptr++;
+					}
+					break;
+
+				// (else just ignore other characters in pattern)
+				default :
+					if (strrpos($alphaNum, $c) !== FALSE)
+					{
+						$newname .= $c;
+					}
+/*
+					else
+					{
+						$t = rand(0, $alphaNumLength);
+						$newname .= $alphaNum[$t];
+					}
+*/
+			}
+		}
+		return $newname;
 	}
 
 

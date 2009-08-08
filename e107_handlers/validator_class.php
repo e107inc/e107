@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-07-31 16:14:51 $
- * $Author: secretr $
+ * $Revision: 1.9 $
+ * $Date: 2009-08-08 23:09:08 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -175,15 +175,19 @@ class validatorClass
 				{
 					switch ($defs['dataType'])
 					{
-						case 1 :		// Assumes we're passed an array variable to be turned into a comma-separated list of integers
+						case 1 :		// Assumes we've passed an array variable to be turned into a comma-separated list of integers
 							if (is_array($value))
 							{
 								$temp = array();
 								foreach ($value as $v)
 								{
-									if (ctype_digit(trim($v))) { $temp[] = intval($v); }
+									$v = trim($v);
+									if (is_numeric($v))
+									{
+										$temp[] = intval($v);
+									}
 								}
-								$value = implode(',',array_unique($temp));
+								$value = implode(',', array_unique($temp));
 							}
 							else
 							{
