@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.218 $
-|     $Date: 2009-03-08 18:28:07 $
-|     $Author: e107coders $
+|     $Revision: 1.219 $
+|     $Date: 2009-08-08 14:14:12 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -251,173 +251,190 @@ class e_parse
 		$nobreak is a list of tags within which word wrap is to be inactive
 		*/
 
-  if (!ctype_digit($width)) return $str;		// Don't wrap if non-numeric width
-  if ($width < 6) return $str;					// Trap stupid wrap counts, as well
+		// Don't wrap if non-numeric width
+		$width = intval($width);
+		// And trap stupid wrap counts
+		if ($width < 6)
+			return $str;
 
-  // Transform protected element lists into arrays
-  $nobreak = explode(" ", strtolower($nobreak));
+		// Transform protected element lists into arrays
+		$nobreak = explode(" ", strtolower($nobreak));
 
-  // Variable setup
-  $intag = false;
-  $innbk = array();
-  $drain = "";
+		// Variable setup
+		$intag = false;
+		$innbk = array();
+		$drain = "";
 
-  // List of characters it is "safe" to insert line-breaks at
-  // It is not necessary to add < and > as they are automatically implied
-  $lbrks = "/?!%)-}]\\\"':;&";
+		// List of characters it is "safe" to insert line-breaks at
+		// It is not necessary to add < and > as they are automatically implied
+		$lbrks = "/?!%)-}]\\\"':;&";
 
-  // Is $str a UTF8 string?
-	if ($utf || strtolower(CHARSET) == 'utf-8')
-	{	// 0x1680, 0x180e, 0x2000-0x200a, 0x2028, 0x205f, 0x3000 are 'non-ASCII' Unicode UCS-4 codepoints - see http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
-		// All convert to 3-byte utf-8 sequences:
-		// 0x1680	0xe1	0x9a	0x80
-		// 0x180e	0xe1	0xa0	0x8e
-		// 0x2000	0xe2	0x80	0x80
-		//   -
-		// 0x200a	0xe2	0x80	0x8a
-		// 0x2028	0xe2	0x80	0xa8
-		// 0x205f	0xe2	0x81	0x9f
-		// 0x3000	0xe3	0x80	0x80
-		$utf8 = 'u';
-		$whiteSpace = '#([\x20|\x0c]|[\xe1][\x9a][\x80]|[\xe1][\xa0][\x8e]|[\xe2][\x80][\x80-\x8a,\xa8]|[\xe2][\x81][\x9f]|[\xe3][\x80][\x80]+)#';	
-		// Have to explicitly enumerate the whitespace chars, and use non-utf-8 mode, otherwise regex fails on badly formed utf-8
-	}
-	else
-	{
-		$utf8 = '';
-		$whiteSpace = '#(\s+)#';		// For non-utf-8, can use a simple match string
-	}
-	
+		// Is $str a UTF8 string?
+		if ($utf || strtolower(CHARSET) == 'utf-8')
+		{
+			// 0x1680, 0x180e, 0x2000-0x200a, 0x2028, 0x205f, 0x3000 are 'non-ASCII' Unicode UCS-4 codepoints - see http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
+			// All convert to 3-byte utf-8 sequences:
+			// 0x1680	0xe1	0x9a	0x80
+			// 0x180e	0xe1	0xa0	0x8e
+			// 0x2000	0xe2	0x80	0x80
+			//   -
+			// 0x200a	0xe2	0x80	0x8a
+			// 0x2028	0xe2	0x80	0xa8
+			// 0x205f	0xe2	0x81	0x9f
+			// 0x3000	0xe3	0x80	0x80
+			$utf8 = 'u';
+			$whiteSpace = '#([\x20|\x0c]|[\xe1][\x9a][\x80]|[\xe1][\xa0][\x8e]|[\xe2][\x80][\x80-\x8a,\xa8]|[\xe2][\x81][\x9f]|[\xe3][\x80][\x80]+)#';
+			// Have to explicitly enumerate the whitespace chars, and use non-utf-8 mode, otherwise regex fails on badly formed utf-8
+		}
+		else
+		{
+			$utf8 = '';
+			// For non-utf-8, can use a simple match string
+			$whiteSpace = '#(\s+)#';
+		}
+		
 
-// Start of the serious stuff - split into HTML tags and text between
-	  $content = preg_split('#(<.*?>)#mis', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
-	  foreach($content as $value)
-	  {
-		if ($value[0] == "<")
-		{  // We are within an HTML tag
-          // Create a lowercase copy of this tag's contents
-          $lvalue = strtolower(substr($value,1,-1));
-		  if ($lvalue)
-		  {	// Tag of non-zero length
-			// If the first character is not a / then this is an opening tag
-            if ($lvalue[0] != "/") 
-			{            // Collect the tag name   
-              preg_match("/^(\w*?)(\s|$)/", $lvalue, $t);
-
-              // If this is a protected element, activate the associated protection flag
-              if (in_array($t[1], $nobreak)) array_unshift($innbk, $t[1]);
-            }
-		    else 
-		    {  // Otherwise this is a closing tag
-              // If this is a closing tag for a protected element, unset the flag
-              if (in_array(substr($lvalue, 1), $nobreak)) 
-			  {
-                reset($innbk);
-                while (list($key, $tag) = each($innbk)) 
-				{
-                  if (substr($lvalue, 1) == $tag) 
-				  {
-                    unset($innbk[$key]);
-                    break;
-                  }
-                }
-                $innbk = array_values($innbk);
-              }
-            }
-		  }
-		  else
-		  {
-		    $value = '';		// Eliminate any empty tags altogether
-		  }
-        // Else if we're outside any tags, and with non-zero length string...
-        } 
-		elseif ($value) 
-		{    // If unprotected...
-          if (!count($innbk)) 
-		  {
-            // Use the ACK (006) ASCII symbol to replace all HTML entities temporarily
-            $value = str_replace("\x06", "", $value);
-            preg_match_all("/&([a-z\d]{2,7}|#\d{2,5});/i", $value, $ents);
-            $value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5});/i", "\x06", $value);
-//			echo "Found block length ".strlen($value).': '.substr($value,20).'<br />';
-			// Split at spaces - note that this will fail if presented with invalid utf-8 when doing the regex whitespace search
-//			$split = preg_split('#(\s)#'.$utf8, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
-			$split = preg_split($whiteSpace, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
-			$value = '';
-			foreach ($split as $sp)
+		// Start of the serious stuff - split into HTML tags and text between
+		$content = preg_split('#(<.*?'.'>)#mis', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		foreach($content as $value)
+		{
+			if ($value[0] == "<")
 			{
-//			echo "Split length ".strlen($sp).': '.substr($sp,20).'<br />';
-				$loopCount = 0;
-			  while (strlen($sp) > $width)
-			  {	// Enough characters that we may need to do something.
-				$pulled = '';
-				if ($utf8)
-				{
-				  // Pull out a piece of the maximum permissible length
-				  if (preg_match('#^((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$width.'})(.{0,1}).*#s',$sp,$matches) == 0)
-				  {
-					$value .= '[!<b>invalid utf-8: '.$sp.'<b>!]';		// Make any problems obvious for now
-					$sp = '';
-				  }
-				  elseif (empty($matches[2]))
-				  {  // utf-8 length is less than specified - treat as a special case
-				    $value .= $sp;
-					$sp = '';
-				  }
-				  else
-				  {		// Need to find somewhere to break the string
-					for ($i = strlen($matches[1])-1; $i >= 0; $i--)
+				// We are within an HTML tag
+				// Create a lowercase copy of this tag's contents
+				$lvalue = strtolower(substr($value,1,-1));
+				if ($lvalue)
+				{	// Tag of non-zero length
+					// If the first character is not a / then this is an opening tag
+					if ($lvalue[0] != "/")
 					{
-					  if (strpos($lbrks,$matches[1][$i]) !== FALSE) break;
-					}
-					if ($i < 0)
-					{	// No 'special' break character found - break at the word boundary
-					  $pulled = $matches[1];
+						// Collect the tag name
+						preg_match("/^(\w*?)(\s|$)/", $lvalue, $t);
+
+						// If this is a protected element, activate the associated protection flag
+						if (in_array($t[1], $nobreak)) array_unshift($innbk, $t[1]);
 					}
 					else
-					{
-					  $pulled = substr($sp,0,$i+1);
+					{  // Otherwise this is a closing tag
+						// If this is a closing tag for a protected element, unset the flag
+						if (in_array(substr($lvalue, 1), $nobreak))
+						{
+							reset($innbk);
+							while (list($key, $tag) = each($innbk))
+							{
+								if (substr($lvalue, 1) == $tag)
+								{
+									unset($innbk[$key]);
+									break;
+								}
+							}
+							$innbk = array_values($innbk);
+						}
 					}
-				  }
-				  $loopCount++;
-				  if ($loopCount > 20)
-				  {
-					$value .= '[!<b>loop count exceeded: '.$sp.'</b>!]';		// Make any problems obvious for now
-					$sp = '';
-				  }
 				}
 				else
 				{
-					for ($i = min($width,strlen($sp)); $i > 0; $i--)
-					{
-					  if (strpos($lbrks,$sp[$i-1]) !== FALSE) break;		// No speed advantage to defining match character
-					}
-					if ($i == 0)
-					{	// No 'special' break boundary character found - break at the word boundary
-					  $pulled = substr($sp,0,$width);
-					}
-					else
-					{
-					  $pulled = substr($sp,0,$i);
-					}
+					// Eliminate any empty tags altogether
+					$value = '';
 				}
-				if ($pulled)
-				{
-				  $value .= $pulled.$break;
-				  $sp = substr($sp,strlen($pulled));			// Shorten $sp by whatever we've processed (will work even for utf-8)
-				}
-			  }
-			  $value .= $sp;		// Add in any residue
+				// Else if we're outside any tags, and with non-zero length string...
 			}
-            // Put captured HTML entities back into the string
-            foreach ($ents[0] as $ent) $value = preg_replace("/\x06/", $ent, $value, 1);
-          } 
-        }
-        // Send the modified segment down the drain
-        $drain .= $value;
-	  }
-	  // Return contents of the drain
-	  return $drain;
+			elseif ($value)
+			{
+				// If unprotected...
+				if (!count($innbk))
+				{
+					// Use the ACK (006) ASCII symbol to replace all HTML entities temporarily
+					$value = str_replace("\x06", "", $value);
+					preg_match_all("/&([a-z\d]{2,7}|#\d{2,5});/i", $value, $ents);
+					$value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5});/i", "\x06", $value);
+					//			echo "Found block length ".strlen($value).': '.substr($value,20).'<br />';
+					// Split at spaces - note that this will fail if presented with invalid utf-8 when doing the regex whitespace search
+					//			$split = preg_split('#(\s)#'.$utf8, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+					$split = preg_split($whiteSpace, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+					$value = '';
+					foreach ($split as $sp)
+					{
+						//			echo "Split length ".strlen($sp).': '.substr($sp,20).'<br />';
+						$loopCount = 0;
+						while (strlen($sp) > $width)
+						{
+							// Enough characters that we may need to do something.
+							$pulled = '';
+							if ($utf8)
+							{
+								// Pull out a piece of the maximum permissible length
+								if (preg_match('#^((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$width.'})(.{0,1}).*#s',$sp,$matches) == 0)
+								{
+									// Make any problems obvious for now
+									$value .= '[!<b>invalid utf-8: '.$sp.'<b>!]';
+									$sp = '';
+								}
+								elseif (empty($matches[2]))
+								{  // utf-8 length is less than specified - treat as a special case
+									$value .= $sp;
+									$sp = '';
+								}
+								else
+								{		// Need to find somewhere to break the string
+									for ($i = strlen($matches[1])-1; $i >= 0; $i--)
+									{
+										if (strpos($lbrks,$matches[1][$i]) !== FALSE) break;
+									}
+									if ($i < 0)
+									{	// No 'special' break character found - break at the word boundary
+										$pulled = $matches[1];
+									}
+									else
+									{
+										$pulled = substr($sp,0,$i+1);
+									}
+								}
+								$loopCount++;
+								if ($loopCount > 20)
+								{
+									// Make any problems obvious for now
+									$value .= '[!<b>loop count exceeded: '.$sp.'</b>!]';
+									$sp = '';
+								}
+							}
+							else
+							{
+								for ($i = min($width,strlen($sp)); $i > 0; $i--)
+								{
+									// No speed advantage to defining match character
+									if (strpos($lbrks,$sp[$i-1]) !== FALSE)
+										break;
+								}
+								if ($i == 0)
+								{	
+									// No 'special' break boundary character found - break at the word boundary
+									$pulled = substr($sp,0,$width);
+								}
+								else
+								{
+									$pulled = substr($sp,0,$i);
+								}
+							}
+							if ($pulled)
+							{
+								$value .= $pulled.$break;
+								// Shorten $sp by whatever we've processed (will work even for utf-8)
+								$sp = substr($sp,strlen($pulled));
+							}
+						}
+						// Add in any residue
+						$value .= $sp;
+					}
+					// Put captured HTML entities back into the string
+					foreach ($ents[0] as $ent) $value = preg_replace("/\x06/", $ent, $value, 1);
+				}
+			}
+			// Send the modified segment down the drain
+			$drain .= $value;
+		}
+		// Return contents of the drain
+		return $drain;
 	}
 
 
