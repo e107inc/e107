@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2009-08-06 22:29:34 $
-|     $Author: e107coders $
+|     $Revision: 1.73 $
+|     $Date: 2009-08-08 23:09:08 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -442,11 +442,11 @@ class e107plugin
 
 
 
-	function manage_link($action, $link_url, $link_name, $link_class=0)
+	function manage_link($action, $link_url, $link_name, $link_class = 0)
 	{
 		global $sql, $tp;
-
-		if(!ctype_digit($link_class))
+		
+		if( ! is_numeric($link_class))
 		{
 			$link_class = strtolower($link_class);
 			$plug_perm['everyone'] = e_UC_PUBLIC;
