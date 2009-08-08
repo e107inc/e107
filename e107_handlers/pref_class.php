@@ -9,9 +9,9 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-08-06 22:19:47 $
- * $Author: secretr $
+ * $Revision: 1.9 $
+ * $Date: 2009-08-08 08:11:02 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -325,7 +325,7 @@ class e_pref extends e_model
 		$id = $this->prefid;
 		$data = $force ? false : $this->getPrefCache(true); 
 		
-		if(false !== $data)
+		if($data !== false)
 		{
 			//var_dump('Pref cache used: '.$this->alias); 
 			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
@@ -351,7 +351,8 @@ class e_pref extends e_model
 			$this->setPrefCache($row['e107_value'], true);
 		}
 
-		if(empty($data)) $data = array();
+		if(empty($data))
+			$data = array();
 		
 		return $this->loadData($data, false);
 	}
@@ -400,7 +401,7 @@ class e_pref extends e_model
 			
 			if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}', '".addslashes($dbdata)."') "))
 			{
-				if(true === $this->set_backup)
+				if($this->set_backup === true)
 				{
 					if($this->serial_bc)
 					{
@@ -476,7 +477,7 @@ class e_pref extends e_model
 		if($save)
 		{
 			
-			ecache::set_sys('Config_'.(true !== $save ? $save : $this->alias), $cache_string, true);
+			ecache::set_sys('Config_'.($save !== true ? $save : $this->alias), $cache_string, true);
 		}
 		return $this;
 	}
@@ -1669,7 +1670,7 @@ class e_model
 	 */
 	public function __toString()
 	{
-		return $this->toString((true === func_get_arg(0)));
+		return $this->toString((func_get_arg(0) === true));
 	}
 }
 
