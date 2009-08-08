@@ -9,9 +9,9 @@
 * Custom forum install/uninstall/update routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_management.php,v $
-* $Revision: 1.2 $
-* $Date: 2008-11-25 19:58:32 $
-* $Author: mcfly_e107 $
+* $Revision: 1.3 $
+* $Date: 2009-08-08 07:11:50 $
+* $Author: marj_nl_fr $
 *
 */
 
@@ -30,7 +30,7 @@ class forum_management
 		$sql -> db_Update("user", "user_forums='0'");
 	}
 
-	function forum_uninstatll(&$var)
+	function forum_uninstall(&$var)
 	{
 		global $sql;
 		$sql -> db_Update("user", "user_forums='0'");
