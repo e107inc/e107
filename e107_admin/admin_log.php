@@ -9,8 +9,8 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-07-31 20:09:14 $
+ * $Revision: 1.28 $
+ * $Date: 2009-08-09 07:03:51 $
  * $Author: marj_nl_fr $
  *
 */
@@ -288,7 +288,7 @@ else
 	// Now try and get the filters from the cookie
 	if(isset($_COOKIE[$rl_cookiename]))
 		list($start_time, $start_enabled, $end_time, $end_enabled, $user_filter, $event_filter, $pri_filter_cond, $pri_filter_val, $caller_filter, $ipaddress_filter, $downloadid_filter) = explode("|", $_COOKIE[$rl_cookiename]);
-	if(isset($qs[1]) && isset($qs[2]) && ($qs[1] == 'user') && ctype_digit($qs[2]) && (intval($qs[2]) > 0))
+	if(isset($qs[1]) && isset($qs[2]) && ($qs[1] == 'user') && (intval($qs[2]) > 0))
 	{
 		$user_filter = intval($qs[2]);
 	}
