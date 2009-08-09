@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_post.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-12-17 18:48:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2009-08-09 06:19:22 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -38,7 +38,7 @@ define("LAN_62", "Subject: ");
 define("LAN_63", "Post: ");
 define("LAN_64", "Submit new thread");
 define("LAN_73", "Reply: ");
-define("LAN_74", "Reply to  thread");
+define("LAN_74", "Reply to thread");
 define("LAN_77", "Update Thread");
 define("LAN_78", "Update Reply");
 define("LAN_94", "Posted by");

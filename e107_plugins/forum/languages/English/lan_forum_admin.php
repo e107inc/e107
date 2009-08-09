@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2008-12-15 00:29:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2009-08-09 06:19:22 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -155,7 +155,7 @@ define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sec
 define("FORLAN_134", "Maximum width of uploaded image");
 define("FORLAN_135", "Leave blank to disable auto resizing of images");
 define("FORLAN_136", "Create link to full size image");
-define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image.  If disabled, original image will be discarded");
+define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image. If disabled, original image will be discarded");
 define("FORLAN_138", "Prune these forums");
 define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");
 define("FORLAN_140", "View");
@@ -200,7 +200,7 @@ define("FORLAN_176", "Report");
 define("FORLAN_177", "email notification ON by default");
 define("FORLAN_178", "Tick this to allow make the email notification checkbox be on by default");
 
-define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for sub-forums only.  The forum theme must support this option also.)");
+define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for sub-forums only. The forum theme must support this option also.)");
 define("FORLAN_180", "Confirm delete operation");
 define("FORLAN_181", "Confirm Delete");
 define("FORLAN_182", "also recalculate replies for all threads in selected forum");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/languages/English/lan_forum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-11-24 15:10:34 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-08-09 06:19:22 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Forum");
@@ -22,7 +22,7 @@ define("LAN_37", "It is now ");
 define("LAN_38", ", all times are ");
 define("LAN_41", "Newest member: ");
 define("LAN_42", "Registered members: ");
-define("LAN_44", "These forums can be used by non-registered users, but please be aware that your IP Address will be logged if you make a post.<br />To access the full features of this forum  you will need to");
+define("LAN_44", "These forums can be used by non-registered users, but please be aware that your IP Address will be logged if you make a post.<br />To access the full features of this forum you will need to");
 define("LAN_45", "These forums can only be posted to by registered and logged in members, please click");
 define("LAN_46", "Forum");
 define("LAN_47", "Threads");
