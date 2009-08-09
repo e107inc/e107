@@ -9,9 +9,9 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-07-08 01:28:55 $
- * $Author: e107coders $
+ * $Revision: 1.38 $
+ * $Date: 2009-08-09 08:39:27 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -288,8 +288,8 @@ if (e_QUERY)
 		if(isset($qs[3]) && strlen($qs[3]) == 2 )
 		{
 			require_once(e_HANDLER."language_class.php");
-			$lng = new language;
-			$the_language = $lng->convert($qs[3]);
+			$slng = new language;
+			$the_language = $slng->convert($qs[3]);
 			if(is_readable(e_LANGUAGEDIR.$the_language."/lan_signup.php"))
 			{
 				include(e_LANGUAGEDIR.$the_language."/lan_signup.php");

@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.122 $
-* $Date: 2009-08-08 23:09:08 $
+* $Revision: 1.123 $
+* $Date: 2009-08-09 08:39:26 $
 * $Author: marj_nl_fr $
 *
 */
@@ -230,9 +230,9 @@ if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERV
 	if(strlen(e_MENU) == 2) // language code ie. [fr]
 	{
         require_once(e_HANDLER."language_class.php");
-		$lng = new language;
+		$slng = new language;
 		define('e_LANCODE', true);
-		$_GET['elan'] = $lng->convert(e_MENU);
+		$_GET['elan'] = $slng->convert(e_MENU);
 	}
 
 }
@@ -519,12 +519,12 @@ if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == 'sessi
 	{
 		e107_ini_set('session.cookie_domain', '.'.e_DOMAIN);
 		require_once(e_HANDLER.'language_class.php');
-		$lng = new language;
+		$slng = new language;
 	    if(!e_SUBDOMAIN)
 		{
 			$GLOBALS['elan'] = $pref['sitelanguage'];
 		}
-		elseif($eln = $lng->convert(e_SUBDOMAIN))
+		elseif($eln = $slng->convert(e_SUBDOMAIN))
 		{
 			$GLOBALS['elan'] = $eln;
 		}
