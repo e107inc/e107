@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.376 $
-|     $Date: 2009-08-03 21:12:12 $
+|     $Revision: 1.377 $
+|     $Date: 2009-08-09 08:39:04 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -178,9 +178,9 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	if(strlen(e_MENU) == 2) // language code ie. [fr]
 	{
         require_once(e_HANDLER."language_class.php");
-		$lng = new language;
+		$slng = new language;
 		define("e_LANCODE",TRUE);
-		$_GET['elan'] = $lng->convert(e_MENU);
+		$_GET['elan'] = $slng->convert(e_MENU);
 	}
 
 }else {
@@ -380,12 +380,12 @@ if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == "sessi
 		{
 			e107_ini_set("session.cookie_domain", ".".e_DOMAIN);
 			require_once(e_HANDLER."language_class.php");
-			$lng = new language;
+			$slng = new language;
 	        if(!e_SUBDOMAIN)
 			{
 	        	$GLOBALS['elan'] = $pref['sitelanguage'];
 			}
-			elseif($eln = $lng->convert(e_SUBDOMAIN))
+			elseif($eln = $slng->convert(e_SUBDOMAIN))
 			{
 	          	$GLOBALS['elan'] = $eln;
 			}

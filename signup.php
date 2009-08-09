@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.132 $
-|     $Date: 2009-07-18 15:53:42 $
+|     $Revision: 1.133 $
+|     $Date: 2009-08-09 08:39:04 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -288,8 +288,8 @@ if (e_QUERY)
 		if($qs[3] && strlen($qs[3]) == 2 )
 		{
 			require_once(e_HANDLER."language_class.php");
-			$lng = new language;
-			$the_language = $lng->convert($qs[3]);
+			$slng = new language;
+			$the_language = $slng->convert($qs[3]);
 			if(is_readable(e_LANGUAGEDIR.$the_language."/lan_signup.php"))
 			{
 				include(e_LANGUAGEDIR.$the_language."/lan_signup.php");
