@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.50 $
-* $Date: 2009-08-05 22:37:16 $
+* $Revision: 1.51 $
+* $Date: 2009-08-10 15:34:28 $
 * $Author: e107coders $
 *
 */
@@ -597,7 +597,7 @@ class users
 		{
 			foreach ($_POST['user_selected'] as $userid)
 			{
-            	if($type=='userclass')
+            	if($type=='userclass' || $type=='remuserclass')
 				{
 					$append = ($uclass) ? 'append' : FALSE;
                 	$this->$method($userid,array($uclass),$append);
@@ -1129,7 +1129,19 @@ class users
 				$text .= "<option value='userclass_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
 			}
 		}
-		$text .= "<option value='userclass_selected_0'>".USRLAN_220."</option>
+	   $text .= "
+			</optgroup>
+            <optgroup label='Remove Userclass..'>
+			";
+		foreach ($classes as $key => $val)
+		{
+			if ($key < 240 && $key!=0)
+			{
+				$text .= "<option value='remuserclass_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
+			}
+		}
+
+        	$text .= "<option value='userclass_selected_0'>".USRLAN_220."</option>
 			</optgroup>
 			</select></span><span class='clear'>&nbsp;</span>";
 		return $text;
@@ -1739,6 +1751,21 @@ class users
 		$ns->tablerender($caption,$text);
 	}
 
+
+	function user_remuserclass($userid,$uclass)
+	{
+		global $sql,$sql2;
+        $eu = new e_userclass;
+
+		if($sql->db_Select("user","user_id,user_class","user_id={$userid} LIMIT 1"))
+		{
+			$row = $sql->db_Fetch();
+        	$eu->class_remove($uclass[0], array($row['user_id']=>$row['user_class']));
+		}
+          $emessage = &eMessage::getInstance();
+          $emessage->add(UCSLAN_9, E_MESSAGE_SUCCESS); // classes updated;
+	}
+
     // Set userclass for user(s).
 	function user_userclass($userid,$uclass,$append=FALSE)
 	{
@@ -1762,10 +1789,11 @@ class users
 				$curClass[] = $a;
 			}
 		}
+        $curClass = array_unique($curClass);
 
         $svar = is_array($curClass) ? implode(",",$curClass) : "";
 
-		if($sql->db_Update("user","user_class='".$svar."' WHERE user_id={$userid} "))
+		if($sql->db_Update("user","user_class='".$svar."' WHERE user_id={$userid} ")===TRUE)
 		{
 			$message = UCSLAN_9;
 			if ($_POST['notifyuser'])
@@ -1795,7 +1823,7 @@ class users
 		}
 		else
 		{
-        	$emessage->add("Update Failed", E_MESSAGE_ERROR);
+           //	$emessage->add("Update Failed", E_MESSAGE_ERROR);
 		}
 	}
 
