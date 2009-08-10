@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.377 $
-|     $Date: 2009-08-09 08:39:04 $
+|     $Revision: 1.378 $
+|     $Date: 2009-08-10 21:58:09 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -534,7 +534,7 @@ $language = $pref['sitelanguage'];
 	if( ! in_array($user_language, $lanlist))
 	{
 		// Reset session
-		if(array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION))
+		if(isset($_SESSION))
 		{
 			unset($_SESSION['e107language_'.$pref['cookie_name']]);
 		}
