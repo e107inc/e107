@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.123 $
-* $Date: 2009-08-09 08:39:26 $
+* $Revision: 1.124 $
+* $Date: 2009-08-10 21:59:11 $
 * $Author: marj_nl_fr $
 *
 */
@@ -687,10 +687,10 @@ $language = $pref['sitelanguage'];
 	$user_language = preg_replace('#[^\w]#', '', $user_language);
 
 	// Is user language choice available?
-	if( !in_array($user_language, $lanlist))
+	if( ! in_array($user_language, $lanlist))
 	{
 		// Reset session
-		if(array_key_exists('e107language_'.$pref['cookie_name'], $_SESSION))
+		if(isset($_SESSION))
 		{
 			unset($_SESSION['e107language_'.$pref['cookie_name']]);
 		}
