@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-08-07 13:47:31 $
+|     $Revision: 1.18 $
+|     $Date: 2009-08-10 20:51:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,9 +34,11 @@ if (isset($_POST['cancel_cat']))
 }
 
 $e_sub_cat = 'user_extended';
-$user = new users_ext;
+
 $curtype = '1';
 require_once(e_HANDLER.'calendar/calendar_class.php');
+require_once(e_HANDLER.'message_handler.php');
+
 $cal = new DHTML_Calendar(true);
 require_once("auth.php");
 require_once(e_HANDLER.'user_extended_class.php');
@@ -46,6 +48,11 @@ require_once(e_HANDLER.'form_handler.php');
 $frm = new e_form;
 
 $ue = new e107_user_extended;
+
+
+$user = new users_ext;
+
+
 $message = '';
 
 if (e_QUERY)
@@ -182,16 +189,6 @@ if (isset($_POST['add_category']))
 }
 
 
-if (varset($_POST['eu_action'],'') == "delext")
-{
-	list($_id, $_name) = explode(",",$_POST['key']);
-	if ($ue->user_extended_remove($_id, $_name))
-	{
-		$admin_log->log_event('EUF_07',$_id.', '.$_name,E_LOG_INFORMATIVE,'');
-		$message = EXTLAN_30;
-	}
-}
-
 // Delete category
 if (varset($_POST['eu_action'],'') == "delcat")
 {
@@ -258,10 +255,7 @@ if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field'])
 }
 
 
-if (!e_QUERY || $action == 'main')
-{
-	$user->show_extended();
-}
+
 
 
 if ($action == "editext")
@@ -298,122 +292,175 @@ require_once("footer.php");
 
 class users_ext
 {
+    var $catList;
+	var $catNums;
 
-	function show_extended($current = '')
+	function users_ext()
 	{
-		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action,$frm;
+        global $action,$ue;
 
-		$catList = $ue->user_extended_get_categories();
-		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
-		$catNums = array_keys($catList);
+        if (varset($_POST['eudel'],''))
+		{
+			foreach($_POST['eudel'] as $id=>$name)
+			{
+            	$this->delete_extended($id,$name);
+			}
+		}
+
+        $this->catList = $ue->user_extended_get_categories();
+		$this->catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
+		$this->catNums = array_keys($this->catList);
+
+        if (!e_QUERY || $action == 'main')
+		{
+  			$this->showExtendedList();
+		}
+
+	}
+
+
+
+
+
+	function delete_extended($_id,$_name)
+	{
+		global $ue,$admin_log;
+        $emessage = eMessage::getInstance();
+
+		if ($ue->user_extended_remove($_id, $_name))
+		{
+			$admin_log->log_event('EUF_07',$_id.', '.$_name, E_LOG_INFORMATIVE,'');
+			$emessage->add(EXTLAN_30." [".$_name."]", E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+        	$emessage->add(LAN_ERROR." [".$_name."]", E_MESSAGE_ERROR);
+		}
+	}
+
+	function showExtendedList()
+	{
+        global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action,$frm;
+
+  //		$catList = $ue->user_extended_get_categories();
+  //		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
+  //		$catNums = array_keys($catList);
 		$extendedList = $ue->user_extended_get_fields();
-	  $text = '';
 
-		if(!$current)
-		{	// Show existing fields
+        $emessage = &eMessage::getInstance();
+	  	$text = $emessage->render()  ;
+
 		$mode = 'show';
-			$text = "<div style='text-align:center'>";
-			$text .= "<table class='adminlist' cellpadding='0' cellspacing='0'>
+			$text .= "
+
+			   <form method='post' action='".e_SELF."' >
+			   <table class='adminlist' cellpadding='0' cellspacing='0'>
 			<thead>
 				<tr>
 				<th>".EXTLAN_1."</th>
                 <th>".EXTLAN_79."</th>
 
 				<th>".EXTLAN_2."</th>
+				<th>".EXTLAN_44."</th>
 				<th>".EXTLAN_4."</th>
+
 				<th>".EXTLAN_5."</th>
 				<th>".EXTLAN_6."</th>
 				<th>".EXTLAN_7."</th>
-				<th>&nbsp;</th>
-				<th>".EXTLAN_8."</th>
+				<th class='center last' colspan='2'>".EXTLAN_8."</th>
 				</tr>
 			</thead>
 			<tbody>
 			";
 
-			foreach($catNums as $cn)
+			foreach($this->catNums as $cn)
 			{
-				$text .= "
-				<tr>
-				<td colspan='9' style='text-align:center'>{$catList[$cn][0]['user_extended_struct_name']}</td>
-				</tr>
-				";
 
 				$i=0;
-				if(count($extendedList))
-				{  //	Show current extended fields
-			foreach($extendedList[$cn] as $ext)	
-			{
-				$fname = "user_".$ext['user_extended_struct_name'];
-				$uVal = str_replace(chr(1), "", $ext['user_extended_struct_default']);		// Is this right?
-						$text .= "
-						<tr>
-						<td>{$ext['user_extended_struct_name']}</td>
-						<td>".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."</td>
-						<td class='left'>".$ue->user_extended_edit($ext,$uVal)."</td>
-						<td>".($ext['user_extended_struct_required'] == 1 ? LAN_YES : LAN_NO)."</td>
-						<td>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
-						<td>".r_userclass_name($ext['user_extended_struct_read'])."</td>
-						<td>".r_userclass_name($ext['user_extended_struct_write'])."</td>
-						<td>
-						<form method='post' action='".e_SELF."'>
-						<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
-						";
-			  if($i > 0)
-			  {
+				$category_name = $this->catList[$cn][0]['user_extended_struct_name'];
+
+				if(count($extendedList))  //	Show current extended fields
+				{
+					foreach($extendedList[$cn] as $ext)
+					{
+
+						$name = $ext['user_extended_struct_name'];
+						$fname = "user_".$name;
+
+						$id = $ext['user_extended_struct_id'];
+
+						$uVal = str_replace(chr(1), "", $ext['user_extended_struct_default']);		// Is this right?
 							$text .= "
-							<input type='image' alt='' title='".EXTLAN_26."' src='".ADMIN_UP_ICON_PATH."' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
+							<tr>
+							<td>{$ext['user_extended_struct_name']}</td>
+							<td>".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."</td>
+							<td class='left'>".$ue->user_extended_edit($ext,$uVal)."</td>
+							<td class='left'>".$category_name."</td>
+							<td>".($ext['user_extended_struct_required'] == 1 ? LAN_YES : LAN_NO)."</td>
+							<td>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
+							<td>".r_userclass_name($ext['user_extended_struct_read'])."</td>
+							<td>".r_userclass_name($ext['user_extended_struct_write'])."</td>
+							<td>";
+
+						  	if($i > 0)
+						  	{
+						 		$text .= "<input type='image' alt='' title='".EXTLAN_26."' src='".ADMIN_UP_ICON_PATH."' name='up[$id]' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+							}
+							if($i <= count($extendedList[$cn])-2)
+							{
+								$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".ADMIN_DOWN_ICON_PATH."' name='down[$id]' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+							}
+							$text .= "
+						  	</td>
+							<td class='forumheader3' style='width:10%;text-align:center;'>
+
+							<a style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
+		 					<input type='image' title='".LAN_DELETE."' name='eudel[".$id."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$name."' onclick='return confirm(\"".EXTLAN_27."\")' />
+							</td>
+							</tr>
 							";
-						}
-						if($i <= count($extendedList[$cn])-2)
-						{
-							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".ADMIN_DOWN_ICON_PATH."' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
-						}
-						$text .= "
-						</form>
-						</td>
-						<td class='forumheader3' style='width:10%;text-align:center;'>
-						<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".EXTLAN_27."\")'>
-						<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
-						<input type='hidden' name='eu_action' value='delext' />
-						<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
-						<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
-						</form>
-						</td>
-						</tr>
-						";
-						$i++;
-					}
+							$i++;
+					  }
 				}
 				else
 				{
-					$text .= "
-					<tr>
-					<td colspan='8' class='forumheader3' style='text-align:center'>".EXTLAN_28."</td>
-					</tr>
-					";
+						$text .= "
+						<tr>
+						<td colspan='8' class='forumheader3' style='text-align:center'>".EXTLAN_28."</td>
+						</tr>
+						";
 				}
+
 			}
+
 			//Show add/edit form
 			$text .= "</tbody>
-			</table>";
-		}
-		else
-		{
-			if($current == 'new')
+			</table></form>";
+
+
+			$emessage = eMessage::getInstance();
+	  		$ns->tablerender(EXTLAN_9,$text);
+
+
+	}
+
+	function show_extended($current = '')  // Show existing fields List.
+	{
+        global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action,$frm;
+ 			if($current == 'new')
 			{
-			$mode = 'new';
-		  $current = array();
-		  $current_include = '';
-		  $current_regex = '';
-		  $current_regexfail = '';
-		  $current_hide = '';
+					$mode = 'new';
+				  $current = array();
+				  $current_include = '';
+				  $current_regex = '';
+				  $current_regexfail = '';
+				  $current_hide = '';
 			}
-		else
-		{	// Editing existing definition
-			$mode = 'edit';
-			list($current_include, $current_regex, $current_regexfail, $current_hide) = explode("^,^",$current['user_extended_struct_parms']);
-		}
+			else
+			{	// Editing existing definition
+				$mode = 'edit';
+				list($current_include, $current_regex, $current_regexfail, $current_hide) = explode("^,^",$current['user_extended_struct_parms']);
+			}
 
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
@@ -518,7 +565,8 @@ class users_ext
 			  }
 			}
 			$text .= " </select></td></tr>";
-     	if($_POST['table_db'] || $curVals[0]){
+     	if($_POST['table_db'] || $curVals[0])
+		{
 			// Field ID
 			$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox' name='field_id' >\n
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
@@ -599,10 +647,10 @@ class users_ext
 			<td>".EXTLAN_44."</td>
 			<td colspan='3'>
 			<select class='tbox' name='user_parent'>";
-			foreach($catNums as $k)
+			foreach($this->catNums as $k)
 			{
 				$sel = ($k == $current['user_extended_struct_parent']) ? " selected='selected' " : "";
-				$text .= "<option value='{$k}' {$sel}>{$catList[$k][0]['user_extended_struct_name']}</option>\n";
+				$text .= "<option value='{$k}' {$sel}>".$this->catList[$k][0]['user_extended_struct_name']."</option>\n";
 			}
 			$text .= "</select>
 
@@ -694,7 +742,7 @@ class users_ext
 			$text .= "</div>
 			</fieldset></form>
 			";
-		}
+
 		//		$text .= "</div>";
 		$emessage = eMessage::getInstance();
 		$ns->tablerender(EXTLAN_9,$emessage->render().$text);
