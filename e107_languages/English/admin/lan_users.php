@@ -9,8 +9,8 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-08-05 16:02:08 $
+ * $Revision: 1.19 $
+ * $Date: 2009-08-10 15:34:28 $
  * $Author: e107coders $
  *
 */
@@ -231,7 +231,7 @@ define('LAN_NOTVERIFIED','Not Verified');
 define('LAN_BANNED','Banned');
 define('LAN_BOUNCED','Bounced');
 
-define('USRLAN_220', 'No Userclass');
+define('USRLAN_220', 'All Userclasses');
 
 
 // These need review - there are duplicates above - they come from admin/lan_userclass.php.
