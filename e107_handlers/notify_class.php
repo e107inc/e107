@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-03-22 21:26:27 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2009-08-11 17:25:20 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,31 +33,39 @@ class notify {
 			}
 		}
 
-		if(defined("e_LANGUAGE") && is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php')) {
-			include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
-		} else {
-			include_once(e_LANGUAGEDIR.'English/lan_notify.php');
-		}
+		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
 	}
 
-	function send($id, $subject, $message) {
-		global $sql,$tp;
+	function send($id, $subject, $message)
+	{
+		global $sql, $tp;
 		e107_require_once(e_HANDLER.'mail.php');
 		$subject = SITENAME.': '.$subject;
-		if ($this -> notify_prefs['event'][$id]['type'] == 'main') {
+		if ($this -> notify_prefs['event'][$id]['type'] == 'main')
+		{
 			sendemail(SITEADMINEMAIL, $tp->toEmail($subject), $tp->toEmail($message));
-		} else if ($this -> notify_prefs['event'][$id]['type'] == 'class') {
-			if ($this -> notify_prefs['event'][$id]['class'] == '254') {
-				$sql -> db_Select('user', 'user_email', "user_admin = 1");
-			} else if ($this -> notify_prefs['event'][$id]['class'] == '253') {
-				$sql -> db_Select('user', 'user_email');
-			} else {
-				$sql -> db_Select('user', 'user_email', "user_class REGEXP '(^|,)(".$this -> notify_prefs['event'][$id]['class'].")(,|$)'");
+		}
+		elseif ($this -> notify_prefs['event'][$id]['type'] == 'class')
+		{
+			if ($this -> notify_prefs['event'][$id]['class'] == e_UC_ADMIN)
+			{
+				$sql -> db_Select('user', 'user_email', "user_admin = 1 AND user_ban = 0");
 			}
-			while ($email = $sql -> db_Fetch()) {
+			elseif ($this -> notify_prefs['event'][$id]['class'] == e_UC_MEMBER)
+			{
+				$sql -> db_Select('user', 'user_email', 'user_ban = 0');
+			}
+			else
+			{
+				$sql -> db_Select('user', 'user_email', "user_ban = 0 AND user_class REGEXP '(^|,)(".$this -> notify_prefs['event'][$id]['class'].")(,|$)'");
+			}
+			while ($email = $sql -> db_Fetch())
+			{
 				sendemail($email['user_email'], $tp->toEmail($subject), $tp->toEmail($message));
 			}
-		} else if ($this -> notify_prefs['event'][$id]['type'] == 'email') {
+		}
+		elseif ($this -> notify_prefs['event'][$id]['type'] == 'email')
+		{
 			sendemail($this -> notify_prefs['event'][$id]['email'], $tp->toEmail($subject), $tp->toEmail($message));
 		}
 	}
