@@ -9,9 +9,9 @@
 * Forum plugin notify configuration
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-* $Revision: 1.5 $
-* $Date: 2009-07-23 15:29:07 $
-* $Author: secretr $
+* $Revision: 1.6 $
+* $Date: 2009-08-11 17:25:48 $
+* $Author: marj_nl_fr $
 *
 */
 
@@ -39,33 +39,33 @@ class notify
 
 	function send($id, $subject, $message)
 	{
-		global $sql,$tp;
+		global $sql, $tp;
 		e107_require_once(e_HANDLER.'mail.php');
 		$subject = SITENAME.': '.$subject;
-		if ($this->notify_prefs['event'][$id]['class'] == 250)
+		if ($this->notify_prefs['event'][$id]['class'] == e_UC_MAINADMIN)
 		{
 			sendemail(SITEADMINEMAIL, $tp->toEmail($subject), $tp->toEmail($message));
 		}
-		else if (is_numeric($this -> notify_prefs['event'][$id]['class']))
+		elseif (is_numeric($this -> notify_prefs['event'][$id]['class']))
 		{
-			if ($this->notify_prefs['event'][$id]['class'] == '254')
+			if ($this->notify_prefs['event'][$id]['class'] == e_UC_ADMIN)
 			{
-				$sql->db_Select('user', 'user_email', "user_admin = 1");
+				$sql->db_Select('user', 'user_email', "user_admin = 1 AND user_ban = 0");
 			}
-			else if ($this->notify_prefs['event'][$id]['class'] == '253')
+			elseif ($this->notify_prefs['event'][$id]['class'] == e_UC_MEMBER)
 			{
-				$sql->db_Select('user', 'user_email',"user_ban= 0 ");
+				$sql->db_Select('user', 'user_email', 'user_ban = 0');
 			}
 			else
 			{
-				$sql->db_Select('user', 'user_email', "user_class REGEXP '(^|,)(".$this->notify_prefs['event'][$id]['class'].")(,|$)'");
+				$sql->db_Select('user', 'user_email', "user_ban = 0 AND user_class REGEXP '(^|,)(".$this->notify_prefs['event'][$id]['class'].")(,|$)'");
 			}
 			while ($email = $sql->db_Fetch())
 			{
 				sendemail($email['user_email'], $tp->toEmail($subject), $tp->toEmail($message));
 			}
 		}
-		else if ($this->notify_prefs['event'][$id]['class'] == 'email')
+		elseif ($this->notify_prefs['event'][$id]['class'] == 'email')
 		{
 			sendemail($this->notify_prefs['event'][$id]['email'], $tp->toEmail($subject), $tp->toEmail($message));
 		}
