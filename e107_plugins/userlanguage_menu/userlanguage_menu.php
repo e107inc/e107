@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-08-03 19:40:42 $
+|     $Revision: 1.14 $
+|     $Date: 2009-08-14 11:32:34 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -64,7 +64,7 @@ else
 			</select>
 			<br />
 			<br />
-			<button class="button" type="submit" name="setlanguage">'.UTHEME_MENU_L1.'</button>';
+			<button class="button" type="submit" name="setlanguage"><span>'.UTHEME_MENU_L1.'</span></button>';
 	$text .= '
 		</div>';
 }
