@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/userlanguage_menu.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-08-03 21:54:28 $
+ * $Revision: 1.5 $
+ * $Date: 2009-08-14 11:32:58 $
  * $Author: marj_nl_fr $
  */
 //TODO homogenisation with languagelinks + do not force www + unobtrusive redirect
@@ -60,7 +60,7 @@ else
 			</select>
 			<br />
 			<br />
-			<button class="button" type="submit" name="setlanguage">'.UTHEME_MENU_L1.'</button>';
+			<button class="button" type="submit" name="setlanguage"><span>'.UTHEME_MENU_L1.'</span></button>';
 	$text .= '
 		</div>
 	</form>';
