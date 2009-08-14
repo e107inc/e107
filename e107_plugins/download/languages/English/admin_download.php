@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-18 19:04:04 $
+|     $Revision: 1.7 $
+|     $Date: 2009-08-14 23:22:38 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -185,7 +185,7 @@ define("DOWLAN_180", "File size (database/disk)");
 define("DOWLAN_181", "Not readable");
 define("DOWLAN_182", "Timestamp");
 define("DOWLAN_183", "Advanced search");
-define("DOWLAN_184", "Batch options");
+define("DOWLAN_184", "");
 define("DOWLAN_185", "Files referenced multiple times in the database");
 define("DOWLAN_186", "Files not referenced in the database");
 define("DOWLAN_187", "Database entries referencing non-existent files");

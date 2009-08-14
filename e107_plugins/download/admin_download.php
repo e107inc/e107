@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-08-06 22:36:17 $
+|     $Revision: 1.11 $
+|     $Date: 2009-08-14 23:22:37 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -834,12 +834,5 @@ function admin_download_adminmenu($parms)
 	$var['mirror']['text'] = DOWLAN_128;
 	$var['mirror']['link'] = e_SELF."?mirror";
 	e_admin_menu(DOWLAN_32, $action, $var);
-
-   unset($var);
-	if ($action == "" || $action == "main") {
-	   $var['1']['text'] = "//TODO";
-	   $var['1']['link'] = "";
-	   e_admin_menu(DOWLAN_184, $subAction, $var);
-	}
 }
 ?>

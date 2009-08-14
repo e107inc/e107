@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-08-06 22:41:34 $
+|     $Revision: 1.16 $
+|     $Date: 2009-08-14 23:22:37 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -60,30 +60,6 @@ class adminDownload extends download
       // Search field
       $text .= "
 		   <script type='text/javascript'>
-		   e107.runOnLoad(function(){
-		      var el = $('download-search-text');
-		      el.e107PreviousValue = el.getValue();
-		   	el.observe('keyup', function(e) {
-		   	   var el = e.element();
-		   		e.stop();
-		   		if (el.getValue() != el.e107PreviousValue) {
-		   		   if (el.e107Timeout) {
-		   		      window.clearTimeout(el.e107Timeout);
-		   		   }
-         		   el.e107PreviousValue = el.getValue();
-         		   el.e107Timeout = window.setTimeout(function () {
-         				new e107Ajax.Updater('downloads-list', '{$url}', {
-         					method: 'post',
-         					parameters: { //send query parameters here
-         						'download_filter_list': 1,
-         						'download-search-text': el.getValue()
-         					},
-         					overlayPage: $(document.body)
-         				});
-         	      }, 500);
-   	   	   }
-		   	});
-		   }, document, false);
 		   </script>
          <form method='post' action='".e_SELF."' class='e-show-if-js'>
             <div id='download_search'>
@@ -456,7 +432,7 @@ class adminDownload extends download
       {
          $parms = "{$downloads},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$subAction.$id." : "main.{$sortorder}.{$sortdirection}.")."[FROM]";
          $text .= "<div class='buttons-bar center nextprev'>".$this->batch_options().
-		 $tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+		   $tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
       }
 
       $text .= "</form></fieldset>";
@@ -465,37 +441,17 @@ class adminDownload extends download
    }
 
 // ---------------------------------------------------------------------------
-    function batch_options()
+   function batch_options()
 	{
-        $text = "<span class='f-left' style='padding-left:15px'><img src='".e_IMAGE."generic/branchbottom.gif' alt='' />
-			<select class='tbox' name='execute_batch' onchange='this.form.submit()'>
-			<option value=''>With selected...</option>";
-
-			$text .= "<option value='delete_selected'>".LAN_DELETE."</option>";
-
-			$text .= "
-   			<optgroup label='Assign Userclass..'>
-			";
-		$classes = get_userclass_list();
-		foreach ($classes as $key => $val)
-		{
-			$text .= "<option value='userclass_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
-		}
-		$text .= "
-			</optgroup>
-        <optgroup label='Assign Visibility..'>
-			";
-		$classes = get_userclass_list();
-		foreach ($classes as $key => $val)
-		{
-			$text .= "<option value='visibility_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
-		}
-		$text .= "
-			</optgroup>
-
-
-			</select></span><span class='clear'>&nbsp;</span>";
-		return $text;
+	   $frm = new e_form();
+ 		$classes = get_userclass_list();
+	   return $frm->batchoptions(
+	      array('delete_selected'=>LAN_DELETE),
+	      array(
+	         'userclass' =>array('Assign userclass...',$classes),
+	         'visibility'=>array('Assign Visibility..',$classes)
+	      )
+	   );
 	}
 
 

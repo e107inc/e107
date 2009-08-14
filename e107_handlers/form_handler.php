@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-07-21 16:05:10 $
- * $Author: e107coders $
+ * $Revision: 1.38 $
+ * $Date: 2009-08-14 23:22:37 $
+ * $Author: bugrain $
  *
 */
 
@@ -65,7 +65,7 @@ class e_form
 	var $_tabindex_counter = 0;
 	var $_tabindex_enabled = true;
 	var $_cached_attributes = array();
-	
+
 	/**
 	 * @var user_class
 	 */
@@ -107,6 +107,35 @@ class e_form
 
 		return $ret;
 	}
+
+   /**
+    * Date field with popup calendar
+    * @param name => string - the name of the field
+    * @param datestamp => UNIX timestamp - default value of the field
+    **/
+   function datepicker($name, $datestamp=false)
+   {
+      global $pref;
+      //TODO can some of these values be set in an admin section somewhere so they are set per site?
+      //TODO allow time option ?
+      $cal = new DHTML_Calendar(true);
+		$cal_options['showsTime'] = false;
+		$cal_options['showOthers'] = false;
+		$cal_options['weekNumbers'] = false;
+		//TODO use $prefs values for format?
+		$cal_options['ifFormat'] = $pref['inputdate'];
+		$cal_options['timeFormat'] = "24";
+		$cal_attrib['class'] = "tbox";
+		$cal_attrib['size'] = "12";
+		$cal_attrib['name'] = $name;
+		if ($datestamp)
+		{
+   		//TODO use $prefs values for format?
+		   $cal_attrib['value'] = date("d/m/Y H:i:s", $datestamp);
+		   $cal_attrib['value'] = date("d/m/Y", $datestamp);
+		}
+		return $cal->make_input_field($cal_options, $cal_attrib);
+   }
 
 	function file($name, $options = array())
 	{
@@ -260,7 +289,7 @@ class e_form
 	{
 		if($classnum == e_UC_BLANK)
 			return $this->option('&nbsp;', '');
-		
+
 		$tmp = explode(',', $current_value);
 		if($nest_level == 0)
 		{
@@ -277,7 +306,7 @@ class e_form
 			$prefix = '&nbsp;&nbsp;'.str_repeat('--', $nest_level - 1).'&gt;';
 			$style = '';
 		}
-		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), "style={$style}")."\n";
+		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), array("style"=>"{$style}"))."\n";
 	}
 
 	function optgroup_open($label, $disabled)
@@ -492,7 +521,7 @@ class e_form
 	}
 
 	/**
-	 * Get default options array based on the filed type
+	 * Get default options array based on the field type
 	 *
 	 * @param string $type
 	 * @return array default options
@@ -580,10 +609,10 @@ class e_form
 	function columnSelector($columnsArray,$columnsDefault='',$id='column_options')
 	{
         $text = "<div style='position:relative;float:right;'>
-		<a href='#".$id."' class='e-expandit' style='height:16px' title='Click to select columns to display'>
+		<a href='#".$id."' class='e-show-if-js e-expandit' title='Click to select columns to display'>
 		<img class='middle' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' /></a>
 
-		<div id='".$id."' class='e-hideme col-selection'>\n";
+		<div id='".$id."' class='e-show-if-js e-hideme col-selection'>\n";
         unset($columnsArray['options']);
 
 		foreach($columnsArray as $key=>$fld)
@@ -731,6 +760,48 @@ class e_form
     		return $this->text('searchquery', '', 50);
 		}
 		// This needs to be dynamic for the various form types, and be loaded via ajax.
+	}
+
+   /**
+    * Generates a batch options select component
+    * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
+    * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
+    * @param options => array - associative array of option elements, keyed on the option value
+    * @param ucOptions => array - associative array of userclass option groups to display, keyed on the option value prefix
+    * @return the HTML for the form component
+    */
+	function batchoptions($options, $ucOptions=null) {
+      $text = "
+         <div class='f-left'>
+         <img src='".e_IMAGE."generic/branchbottom.gif' alt='' class='TODO' />
+			<select class='tbox e-execute-batch' name='execute_batch'>
+			<option value=''>With selected...</option>";
+
+		foreach ($options as $key => $val)
+		{
+		   $text .= "<option value='".$key."'>".$val."</option>";
+		}
+
+
+		if ($ucOptions)
+	   {
+   		foreach ($ucOptions as $ucKey => $ucVal)
+   	   {
+            $text .= "<optgroup label='".$ucVal[0]."'>";
+      		foreach ($ucVal[1] as $key => $val)
+      		{
+      			$text .= "<option value='".$ucKey."_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
+      		}
+      		$text .= "</optgroup>";
+         }
+      }
+
+		$text .= "
+			</select>
+			<button class='update e-hide-if-js' type='submit'><span>Go</span></button>
+			</div>
+			<span class='clear'>&nbsp;</span>";
+		return $text;
 	}
 }
 
