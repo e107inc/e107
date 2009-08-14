@@ -1,5 +1,5 @@
 <?php
-/* $Id: menu.php,v 1.4 2009-08-14 22:31:09 e107coders Exp $ */
+/* $Id: menu.php,v 1.5 2009-08-14 22:33:35 e107coders Exp $ */
 
 function menu_shortcode($parm)
 {
@@ -101,7 +101,7 @@ function menu_shortcode($parm)
 				$page  = $sql -> db_Fetch();
 				$caption = $e107->tp->toHTML($page['page_title'], TRUE, 'parse_sc, constants');
 				$text = $e107->tp->toHTML($page['page_text'], TRUE, 'parse_sc, constants');
-				$e107->ns->tablerender($caption, $text);
+				e107::getRender()->tablerender($caption, $text);
 			}
 			else
 			{
