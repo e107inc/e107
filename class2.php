@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.124 $
-* $Date: 2009-08-10 21:59:11 $
-* $Author: marj_nl_fr $
+* $Revision: 1.125 $
+* $Date: 2009-08-14 15:57:44 $
+* $Author: e107coders $
 *
 */
 //
@@ -882,14 +882,18 @@ if (!class_exists('e107table'))
 {
 	class e107table
 	{
+
+    	public $eMenuCount = 0;
+		public $eMenuArea;
+
 		function tablerender($caption, $text, $mode = 'default', $return = false)
 		{
 			/*
 			# Render style table
 			# - parameter #1:                string $caption, caption text
 			# - parameter #2:                string $text, body text
-			# - return                                null
-			# - scope                                        public
+			# - return                       null
+			# - scope                        public
 			*/
 			$override_tablerender = e107::getSingleton('override', e_HANDLER.'override_class.php')->override_check('tablerender');
 
@@ -906,15 +910,25 @@ if (!class_exists('e107table'))
 
 			if ($return)
 			{
+            	if(!empty($text) && $this->eMenuArea)
+				{
+					$this->eMenuCount++;
+				}
 				ob_start();
-				tablestyle($caption, $text, $mode);
+				tablestyle($caption, $text, $mode, $this->eMenuCount);
 				$ret=ob_get_contents();
 				ob_end_clean();
+
 				return $ret;
+
 			}
 			else
 			{
-				tablestyle($caption, $text, $mode);
+            	if(!empty($text) && $this->eMenuArea)
+		 		{
+	         		$this->eMenuCount++;
+			   	}
+				tablestyle($caption, $text, $mode, $this->eMenuCount);
 				return '';
 			}
 		}
@@ -1154,20 +1168,28 @@ if(!isset($_E107['no_menus']))
 	$eMenuList		= array();
 	$eMenuActive	= array();
 	$eMenuArea		= array();
+ //	$eMenuOrder		= array();
+
 	if(!is_array($menu_data))
 	{
 
-		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_order';
+		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_location,menu_order';
 		if ($sql->db_Select_gen($menu_qry))
 		{
+			$c = 1;
 			while ($row = $sql->db_Fetch())
 			{
+				$c = ($prevloc != $row['menu_location']) ? 1 : $c;
 				$eMenuList[$row['menu_location']][] = $row;
                 $eMenuArea[$row['menu_location']][$row['menu_name']] = 1;
 				$eMenuActive[$row['menu_name']]	= $row['menu_name'];
+		 //		$eMenuOrder[$row['menu_location']][$row['menu_name']] = $c;
+          //      $c++;
+		  //		$prevloc = $row['menu_location'];
 			}
 		}
 		$menu_data['menu_area'] = $eMenuArea;
+	 //	$menu_data['menu_order'] = $eMenuOrder;
 		$menu_data['menu_list'] = $eMenuList;
 		$menu_data['menu_active'] = $eMenuActive;
 		$menu_data = $eArrayStorage->WriteArray($menu_data, false);
@@ -1180,8 +1202,10 @@ if(!isset($_E107['no_menus']))
 		$eMenuArea 	= $menu_data['menu_area'];
 		$eMenuList 	= $menu_data['menu_list'];
 		$eMenuActive = $menu_data['menu_active'];
+   //		$eMenuOrder = $menu_data['menu_order'];
 		unset($menu_data);
 	}
+
 
 }
 
