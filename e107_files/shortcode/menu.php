@@ -1,5 +1,5 @@
 <?php
-/* $Id: menu.php,v 1.2 2009-02-05 11:54:59 secretr Exp $ */
+/* $Id: menu.php,v 1.3 2009-08-14 15:57:45 e107coders Exp $ */
 
 function menu_shortcode($parm)
 {
@@ -18,6 +18,8 @@ function menu_shortcode($parm)
 	{
 		ob_start();
 	}
+
+    e107::getRender()->eMenuArea = $tmp[0];
 
 	foreach($eMenuList[$tmp[0]] as $row)
 	{
@@ -120,6 +122,9 @@ function menu_shortcode($parm)
 			}
 		}
 	}
+
+         e107::getRender()->eMenuCount = 0;
+		 e107::getRender()->eMenuArea = null;
 
 	if ($buffer_output)
 	{
