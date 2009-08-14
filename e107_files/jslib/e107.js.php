@@ -8,9 +8,9 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-07-21 10:27:26 $
- * $Author: secretr $
+ * $Revision: 1.34 $
+ * $Date: 2009-08-14 23:22:36 $
+ * $Author: bugrain $
  *
 */
 
@@ -874,6 +874,21 @@ Object.extend(e107Helper, {
     },
 
     /**
+     *
+     *
+     */
+    executeBatch: function(event) {
+    	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
+		Element.select(element, 'select.e-execute-batch').invoke('observe', 'change', function(e) {
+			var frm = e.element().up('form');
+			if (frm) {
+			   frm.submit();
+			   e.stop();
+			}
+		});
+    },
+
+    /**
      * added as Element method below
      */
     downHide: function(element, selector) {
@@ -1158,7 +1173,7 @@ e107Helper.BB = {
 	    if (!this.__selectedInputArea) {
 	    	return; //[SecretR] TODO - alert the user
 	    }
-	    var eField = this.__selectedInputArea, 
+	    var eField = this.__selectedInputArea,
 	    	tags = this.parse(text, emote),
 	    	scrollPos, sel, newStart;
         if(this.insertIE(eField, text, tags)) return;
@@ -2670,6 +2685,6 @@ function sendInfo(handler, container, form) {
 /*
  * Core Auto-load
  */
-$w('autoExternalLinks autoNoHistory autoHide toggleObserver toggleManyObserver scrollToObserver').each( function(f) {
+$w('autoExternalLinks autoNoHistory autoHide toggleObserver toggleManyObserver scrollToObserver executeBatch').each( function(f) {
 	e107.runOnLoad(e107Helper[f], null, true);
 });

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_files/e_css.php,v $
-|   $Revision: 1.1 $
-|   $Date: 2009-08-06 22:41:35 $
+|   $Revision: 1.2 $
+|   $Date: 2009-08-14 23:22:36 $
 |   $Author: bugrain $
 +---------------------------------------------------------------+
 */
@@ -45,7 +45,8 @@ echo "
       display: block;
    }
    a.e-hide-if-js,
-   span.e-hide-if-js {
+   span.e-hide-if-js,
+   button.e-hide-if-js {
       display: inline;
    }
 </style>
