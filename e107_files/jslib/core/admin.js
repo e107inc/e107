@@ -8,9 +8,9 @@
  * e107 Admin Helper
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.17 $
- * $Date: 2009-07-23 09:02:10 $
- * $Author: secretr $
+ * $Revision: 1.18 $
+ * $Date: 2009-08-14 11:27:12 $
+ * $Author: marj_nl_fr $
  * 
 */
 
@@ -122,7 +122,7 @@ e107Admin.Helper = {
 	 * This method is auto-attached (if init() method is executed) to every checkbox having class toggle-all
 	 * 
 	 * Example of valid checkbox being auto-observed: 
-	 * <input type='checkbox' class='toggle-all' name='not_important' value='jstarget:your_selector'>
+	 * <input type='checkbox' class='toggle-all' name='not_important' value='jstarget:your_selector' />
 	 * 
 	 * Demo: e107_admin/fla.php, e107_admin/db_verify.php
 	 * Note: You could use e_form::checkbox_toggle() method (e107_handlers/form_handler.php), 
@@ -148,18 +148,18 @@ e107Admin.Helper = {
 	 * This method is auto-attached to every button having name=check_all if init() method is executed
 	 * 
 	 * Examples of valid inputbox markup: 
-	 * <input type='checkbox' class='checkbox' name='multiaction[]'> 
+	 * <input type='checkbox' class='checkbox' name='multiaction[]' />
 	 * OR
-	 * <input type='checkbox' class='checkbox' name='multiaction_something_else[]'>
+	 * <input type='checkbox' class='checkbox' name='multiaction_something_else[]' />
 	 * OR
-	 * <input type='checkbox' class='checkbox' name='some_checkbox_arary[]'> (see the button example below) 
+	 * <input type='checkbox' class='checkbox' name='some_checkbox_array[]' /> (see the button example below)
 	 * OR
-	 * <input type='checkbox' class='checkbox' name='some_checkbox_arary_some_more[]'> (see the button example below) 
+	 * <input type='checkbox' class='checkbox' name='some_checkbox_array_some_more[]' /> (see the button example below)
 	 * 
 	 * Example of button being auto-observed (see e107Admin.Helper#init)
 	 * <button class='action' type='button' name='check_all' value='Check All'><span>Check All</span></button> // default selector - multiaction
 	 * OR
-	 * <button class='action' type='button' name='check_all' value='jstarget:some_checkbox_arary'><span>Check All</span></button> // checkboxes names starting with - some_checkbox_arary
+	 * <button class='action' type='button' name='check_all' value='jstarget:some_checkbox_array'><span>Check All</span></button> // checkboxes names starting with - some_checkbox_array
 	 * 
 	 * Demo: e107_admin/image.php, admin_log.php
 	 * 
@@ -183,18 +183,18 @@ e107Admin.Helper = {
 	 * This method is auto-attached to every button having name=uncheck_all if init() method is executed
 	 * 
 	 * Examples of valid inputbox markup: 
-	 * <input type='checkbox' class='checkbox' name='multiaction[]'> 
+	 * <input type='checkbox' class='checkbox' name='multiaction[]' />
 	 * OR
-	 * <input type='checkbox' class='checkbox' name='multiaction_something_else[]'>
+	 * <input type='checkbox' class='checkbox' name='multiaction_something_else[]' />
 	 * OR
-	 * <input type='checkbox' class='checkbox' name='some_checkbox_arary[]'> (see the button example below) 
+	 * <input type='checkbox' class='checkbox' name='some_checkbox_array[]' /> (see the button example below)
 	 * OR
-	 * <input type='checkbox' class='checkbox' name='some_checkbox_arary_some_more[]'> (see the button example below) 
+	 * <input type='checkbox' class='checkbox' name='some_checkbox_array_some_more[]' /> (see the button example below)
 	 * 
 	 * Example of button being auto-observed (see e107Admin.Helper#init)
 	 * <button class='action' type='button' name='uncheck_all' value='Uncheck All'><span>Uncheck All</span></button> // default selector - multiaction
 	 * OR
-	 * <button class='action' type='button' name='uncheck_all' value='jstarget:some_checkbox_arary'><span>Uncheck All</span></button> // checkboxes names starting with - some_checkbox_arary
+	 * <button class='action' type='button' name='uncheck_all' value='jstarget:some_checkbox_array'><span>Uncheck All</span></button> // checkboxes names starting with - some_checkbox_array
 	 * 
 	 * Demo: e107_admin/image.php, admin_log.php
 	 * 
