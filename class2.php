@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.126 $
-* $Date: 2009-08-14 21:11:49 $
+* $Revision: 1.127 $
+* $Date: 2009-08-14 22:31:08 $
 * $Author: e107coders $
 *
 */
@@ -885,6 +885,8 @@ if (!class_exists('e107table'))
 
     	public $eMenuCount = 0;
 		public $eMenuArea;
+		public $eMenuTotal = 0;
+		public $eSetStyle;
 
 		function tablerender($caption, $text, $mode = 'default', $return = false)
 		{
@@ -915,7 +917,7 @@ if (!class_exists('e107table'))
 					$this->eMenuCount++;
 				}
 				ob_start();
-				tablestyle($caption, $text, $mode, $this->eMenuCount);
+				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>$this->eMenuTotal,'setStyle'=>$this->eSetStyle));
 				$ret=ob_get_contents();
 				ob_end_clean();
 
@@ -928,7 +930,7 @@ if (!class_exists('e107table'))
 		 		{
 	         		$this->eMenuCount++;
 			   	}
-				tablestyle($caption, $text, $mode, $this->eMenuCount);
+				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>$this->eMenuTotal,'setStyle'=>$this->eSetStyle));
 				return '';
 			}
 		}

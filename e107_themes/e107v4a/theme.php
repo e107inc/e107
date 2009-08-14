@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2008-11-17 07:17:23 $
+|     $Revision: 1.5 $
+|     $Date: 2009-08-14 22:31:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -51,6 +51,7 @@ $HEADER['3_column'] =
 <img src='".THEME_ABS."images/logo.png' alt='' /> [ {SITENAME} ]
 </td>
 <td style='text-align:right'>
+{SETSTYLE=banner}
 {BANNER}
 </td>
 </tr>
@@ -63,12 +64,17 @@ $HEADER['3_column'] =
 </tr>
 <tr>
 <td style='width:20%; vertical-align: top;'>
+{SETSTYLE=links}
 {SITELINKS=menu}
+{SETSTYLE=leftmenu}
 {MENU=1}
-</td><td style='width:60%; vertical-align: top;'>";
+</td><td style='width:60%; vertical-align: top;'>
+{SETSTYLE=content}
+";
 
 $FOOTER['3_column'] =
 "</td><td style='width:20%; vertical-align:top'>
+{SETSTYLE=rightmenu}
 {MENU=2}
 </td></tr>
 <tr>
@@ -120,6 +126,7 @@ $HEADER['2_column'] =
 <img src='".THEME_ABS."images/logo.png' alt='' /> [ {SITENAME} ]
 </td>
 <td style='text-align:right'>
+{SETSTYLE=banner}
 {BANNER}
 </td>
 </tr>
@@ -131,13 +138,17 @@ $HEADER['2_column'] =
 </tr>
 <tr>
 <td style='width:20%; vertical-align: top;'>
+{SETSTYLE=links}
 {SITELINKS=menu}
+{SETSTYLE=leftmenu}
 {MENU=1}
 </td><td style='width:60%; vertical-align: top;'>";
 
 
 $FOOTER['2_column'] =
-"</td></tr>
+"
+{SETSTYLE=content}
+</td></tr>
 <tr>
 <td colspan='2' style='text-align:center' class='smalltext'>
 
@@ -240,44 +251,45 @@ define(LINKALIGN, "left");
 
 //        [tablestyle]
 
-function tablestyle($caption, $text){
-        global $style;
+function tablestyle($caption, $text,$id, $dataArray)
+{
+  //  global $style; // Not needed - see $dataArray;
 
 
-        echo "
-<div class='spacer'>
-<table cellpadding='0' cellspacing='0'>
-<tr>
-<td class='captiontopleft'><img src='".THEME_ABS."images/blank.gif' width='24' height='3' alt='' style='display: block;' /></td>
-<td class='captiontopmiddle'><img src='".THEME_ABS."images/blank.gif' width='1' height='3' alt='' style='display: block;' /></td>
-<td class='captiontopright'><img src='".THEME_ABS."images/blank.gif' width='11' height='3' alt='' style='display: block;' /></td>
-</tr>
-</table>
-<table cellpadding='0' cellspacing='0'>
-<tr>
-<td class='captionleft'><img src='".THEME_ABS."images/blank.gif' width='24' height='18' alt='' style='display: block;' /></td>
-<td class='captionbar' style='white-space:nowrap'>".$caption."</td>
-<td class='captionend'><img src='".THEME_ABS."images/blank.gif' width='12' height='18' alt='' style='display: block;' /></td>
-<td class='captionmain'><img src='".THEME_ABS."images/blank.gif' width='1' height='18' alt='' style='display: block;' /></td>
-<td class='captionright'><img src='".THEME_ABS."images/blank.gif' width='11' height='18' alt='' style='display: block;' /></td>
-</tr>
-</table>
-<table cellpadding='0' cellspacing='0'>
-<tr>
-<td class='bodyleft'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
-<td class='bodymain'>".$text."</td>
-<td class='bodyright'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
-</tr>
-</table>
-<table cellpadding='0' cellspacing='0'>
-<tr>
-<td class='bottomleft'><img src='".THEME_ABS."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
-<td class='bottommain'><img src='".THEME_ABS."images/blank.gif' width='1' height='9' alt='' style='display: block;' /></td>
-<td class='bottomright'><img src='".THEME_ABS."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
-</tr>
-</table>
-</div>
-";
+    echo "
+	<div class='spacer'>
+	<table cellpadding='0' cellspacing='0'>
+	<tr>
+	<td class='captiontopleft'><img src='".THEME_ABS."images/blank.gif' width='24' height='3' alt='' style='display: block;' /></td>
+	<td class='captiontopmiddle'><img src='".THEME_ABS."images/blank.gif' width='1' height='3' alt='' style='display: block;' /></td>
+	<td class='captiontopright'><img src='".THEME_ABS."images/blank.gif' width='11' height='3' alt='' style='display: block;' /></td>
+	</tr>
+	</table>
+	<table cellpadding='0' cellspacing='0'>
+	<tr>
+	<td class='captionleft'><img src='".THEME_ABS."images/blank.gif' width='24' height='18' alt='' style='display: block;' /></td>
+	<td class='captionbar' style='white-space:nowrap'>".$caption."</td>
+	<td class='captionend'><img src='".THEME_ABS."images/blank.gif' width='12' height='18' alt='' style='display: block;' /></td>
+	<td class='captionmain'><img src='".THEME_ABS."images/blank.gif' width='1' height='18' alt='' style='display: block;' /></td>
+	<td class='captionright'><img src='".THEME_ABS."images/blank.gif' width='11' height='18' alt='' style='display: block;' /></td>
+	</tr>
+	</table>
+	<table cellpadding='0' cellspacing='0'>
+	<tr>
+	<td class='bodyleft'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
+	<td class='bodymain'>".$text."</td>
+	<td class='bodyright'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
+	</tr>
+	</table>
+	<table cellpadding='0' cellspacing='0'>
+	<tr>
+	<td class='bottomleft'><img src='".THEME_ABS."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
+	<td class='bottommain'><img src='".THEME_ABS."images/blank.gif' width='1' height='9' alt='' style='display: block;' /></td>
+	<td class='bottomright'><img src='".THEME_ABS."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
+	</tr>
+	</table>
+	</div>
+	";
 
 }
 

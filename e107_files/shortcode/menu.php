@@ -1,5 +1,5 @@
 <?php
-/* $Id: menu.php,v 1.3 2009-08-14 15:57:45 e107coders Exp $ */
+/* $Id: menu.php,v 1.4 2009-08-14 22:31:09 e107coders Exp $ */
 
 function menu_shortcode($parm)
 {
@@ -21,9 +21,12 @@ function menu_shortcode($parm)
 
     e107::getRender()->eMenuArea = $tmp[0];
 
+
 	foreach($eMenuList[$tmp[0]] as $row)
 	{
-		$show_menu = TRUE;
+		$pkey = str_replace("/","",$row['menu_path']);
+		$show_menu[$pkey] = $row['menu_name'];
+
 		if($row['menu_pages'])
 		{
 			list($listtype, $listpages) = explode('-', $row['menu_pages'], 2);
@@ -32,7 +35,8 @@ function menu_shortcode($parm)
 
 			if($listtype == '1')  //show menu
 			{
-				$show_menu = FALSE;
+				//$show_menu[$pkey] = FALSE;
+				unset($show_menu[$pkey]);
 				foreach($pagelist as $p)
 				{
 					if(substr($p, -1) == '!')
@@ -40,52 +44,60 @@ function menu_shortcode($parm)
 						$p = substr($p, 0, -1);
 						if(substr($check_url, strlen($p)*-1) == $p)
 						{
-							$show_menu = TRUE;
+							// $show_menu[$pkey] = TRUE;
+							$show_menu[$pkey] = $row['menu_name'];
 						}
 					}
 					else
 					{
 						if(strpos($check_url,$p) !== FALSE)
 						{
-							$show_menu = TRUE;
+							// $show_menu[$pkey] = TRUE;
+							$show_menu[$pkey] = $row['menu_name'];
 						}
 					}
 				}
 			}
 			elseif($listtype == '2') //hide menu
 			{
-				$show_menu = TRUE;
+			   //	$show_menu[$pkey] = TRUE;
+			   $show_menu[$pkey] = $row['menu_name'];
 				foreach($pagelist as $p) {
 					if(substr($p, -1) == '!')
 					{
 						$p = substr($p, 0, -1);
 						if(substr($check_url, strlen($p)*-1) == $p)
 						{
-							$show_menu = FALSE;
+							// $show_menu[$pkey] = FALSE;
+							unset($show_menu[$pkey]);
 						}
 					}
 					else
 					{
 						if(strpos($check_url, $p) !== FALSE)
 						{
-							$show_menu = FALSE;
+							// $show_menu[$pkey] = FALSE;
+							unset($show_menu[$pkey]);
 						}
 					}
 				}
 			}
 		}
+     }
 
-		if($show_menu)
-		{
-			$mname = $row['menu_name'];
+	 e107::getRender()->eMenuTotal = count($show_menu);
+
+	 foreach($show_menu as $mpath=>$mname)
+	 {
+		  //	$mname = $row['menu_name'];
 			if($error_handler->debug == true)
 			{
 				echo "\n<!-- Menu Start: ".$mname." -->\n";
 			}
-			$sql->db_Mark_Time($row['menu_name']);
-			if(is_numeric($row['menu_path']))
+			$sql->db_Mark_Time($mname);
+			if(is_numeric($mpath))
 			{
-				$sql -> db_Select("page", "*", "page_id='".$row['menu_path']."' ");
+				$sql -> db_Select("page", "*", "page_id='".$mpath."' ");
 				$page  = $sql -> db_Fetch();
 				$caption = $e107->tp->toHTML($page['page_title'], TRUE, 'parse_sc, constants');
 				$text = $e107->tp->toHTML($page['page_text'], TRUE, 'parse_sc, constants');
@@ -93,26 +105,26 @@ function menu_shortcode($parm)
 			}
 			else
 			{
-				if (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php"))
+				if (is_readable(e_PLUGIN.$mpath."/languages/".e_LANGUAGE.".php"))
 				{
-					include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");
+					include_once(e_PLUGIN.$mpath."/languages/".e_LANGUAGE.".php");
 				}
-				elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php"))
+				elseif (is_readable(e_PLUGIN.$mpath."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php"))
 				{
-					include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+					include_once(e_PLUGIN.$mpath."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 				}
-				elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English.php"))
+				elseif (is_readable(e_PLUGIN.$mpath."/languages/English.php"))
 				{
-					include_once(e_PLUGIN.$row['menu_path']."/languages/English.php");
+					include_once(e_PLUGIN.$mpath."/languages/English.php");
 				}
-				elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English/English.php"))
+				elseif (is_readable(e_PLUGIN.$mpath."/languages/English/English.php"))
 				{
-					include_once(e_PLUGIN.$row['menu_path']."/languages/English/English.php");
+					include_once(e_PLUGIN.$mpath."/languages/English/English.php");
 				}
 
-				if(file_exists(e_PLUGIN.$row['menu_path']."/".$mname.".php"))
+				if(file_exists(e_PLUGIN.$mpath."/".$mname.".php"))
 				{
-					include_once(e_PLUGIN.$row['menu_path']."/".$mname.".php");
+					include_once(e_PLUGIN.$mpath."/".$mname.".php");
 				}
 			}
 			$sql->db_Mark_Time("(After ".$mname.")");
@@ -120,11 +132,13 @@ function menu_shortcode($parm)
 			{
 				echo "\n<!-- Menu End: ".$mname." -->\n";
 			}
+            unset($caption,$text); // clear variables for proceeding menus.
 		}
-	}
+
 
          e107::getRender()->eMenuCount = 0;
 		 e107::getRender()->eMenuArea = null;
+
 
 	if ($buffer_output)
 	{
@@ -133,3 +147,6 @@ function menu_shortcode($parm)
 		return $ret;
 	}
 }
+
+
+?>
