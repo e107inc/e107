@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.125 $
-* $Date: 2009-08-14 15:57:44 $
+* $Revision: 1.126 $
+* $Date: 2009-08-14 21:11:49 $
 * $Author: e107coders $
 *
 */
@@ -1168,7 +1168,6 @@ if(!isset($_E107['no_menus']))
 	$eMenuList		= array();
 	$eMenuActive	= array();
 	$eMenuArea		= array();
- //	$eMenuOrder		= array();
 
 	if(!is_array($menu_data))
 	{
@@ -1176,20 +1175,14 @@ if(!isset($_E107['no_menus']))
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_location,menu_order';
 		if ($sql->db_Select_gen($menu_qry))
 		{
-			$c = 1;
 			while ($row = $sql->db_Fetch())
 			{
-				$c = ($prevloc != $row['menu_location']) ? 1 : $c;
 				$eMenuList[$row['menu_location']][] = $row;
                 $eMenuArea[$row['menu_location']][$row['menu_name']] = 1;
 				$eMenuActive[$row['menu_name']]	= $row['menu_name'];
-		 //		$eMenuOrder[$row['menu_location']][$row['menu_name']] = $c;
-          //      $c++;
-		  //		$prevloc = $row['menu_location'];
 			}
 		}
 		$menu_data['menu_area'] = $eMenuArea;
-	 //	$menu_data['menu_order'] = $eMenuOrder;
 		$menu_data['menu_list'] = $eMenuList;
 		$menu_data['menu_active'] = $eMenuActive;
 		$menu_data = $eArrayStorage->WriteArray($menu_data, false);
@@ -1202,7 +1195,6 @@ if(!isset($_E107['no_menus']))
 		$eMenuArea 	= $menu_data['menu_area'];
 		$eMenuList 	= $menu_data['menu_list'];
 		$eMenuActive = $menu_data['menu_active'];
-   //		$eMenuOrder = $menu_data['menu_order'];
 		unset($menu_data);
 	}
 
