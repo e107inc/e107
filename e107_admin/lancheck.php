@@ -10,8 +10,8 @@
  * With code from Izydor and Lolo.
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-08-15 15:44:37 $
+ * $Revision: 1.16 $
+ * $Date: 2009-08-15 15:53:44 $
  * $Author: marj_nl_fr $
  *
 */
@@ -649,9 +649,10 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 	//Check if directory is writable
 	if($writable)
 	{
+		//FIXME  place of LAN_SAVE
 		$text .="
 				<div class='buttons-bar center'>
-					<button class='update' type='submit' name='submit' value='".LAN_SAVE." ".str_replace($dir2,"",$root_file)."'><span>".LAN_SAVE." ".str_replace($dir2,"",$root_file)."</span></button>
+					<button class='update' type='submit' name='submit' value='sprintf'><span>".LAN_SAVE." ".str_replace($dir2, "", $root_file)."</span></button>
 					".(($root_file) ? "<input type='hidden' name='root' value='".$root_file."' />" : "")."
 				</div>
 		";
