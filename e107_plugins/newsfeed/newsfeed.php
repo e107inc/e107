@@ -9,9 +9,9 @@
  * Plugin - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/newsfeed.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-20 10:39:29 $
- * $Author: e107steved $
+ * $Revision: 1.4 $
+ * $Date: 2009-08-15 11:55:30 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once('../../class2.php');
@@ -21,7 +21,7 @@ if (!plugInstalled('newsfeed'))
 	exit;
 }
 
-@include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
+include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
 if(!class_exists('newsfeedClass'))
 {
 	require(e_PLUGIN.'newsfeed/newsfeed_functions.php');

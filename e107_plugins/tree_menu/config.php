@@ -9,15 +9,14 @@
  * Plugin Administration - Tree menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tree_menu/config.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-21 12:53:48 $
- * $Author: e107steved $
+ * $Revision: 1.3 $
+ * $Date: 2009-08-15 11:55:30 $
+ * $Author: marj_nl_fr $
  *
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
-@include_once(e_PLUGIN."tree_menu/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."tree_menu/languages/English.php");
+include_lan(e_PLUGIN."tree_menu/languages/".e_LANGUAGE.".php");
 
 if (!getperms("4")) 
 {

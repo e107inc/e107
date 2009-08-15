@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-01-30 22:03:13 $
-|     $Author: lisa_ $
+|     $Revision: 1.14 $
+|     $Date: 2009-08-15 11:55:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -56,7 +56,7 @@ if(e_QUERY){
 		$from = "0";
 	}
 }
-@include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 
 $lc -> setPageTitle();
 

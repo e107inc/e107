@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-07-10 14:25:23 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2009-08-15 11:55:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
-@include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 define("POLLCLASS", TRUE);
 define("POLL_MODE_COOKIE", 0);
 define("POLL_MODE_IP", 1);
@@ -274,8 +274,6 @@ class poll
 
 		if($type == "preview")
 		{
-			/* load lan file */
-			@include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 			$optionArray = $pollArray['poll_option'];
 			$voteArray = array();
 			$voteArray = array_pad($voteArray, count($optionArray), 0);
@@ -283,7 +281,6 @@ class poll
 		}
 		else if($type == "forum")
 		{
-			@include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 			if(isset($_POST['fpreview']))
 			{
 				$pollArray['poll_allow_multiple'] = $pollArray['multipleChoice'];

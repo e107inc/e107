@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.8 $
+|     $Revision: 1.9 $
 |
 | ***** START OF VERSION WHICH ALLOWS TOOLTIPS (also order of forms changed )
 |
-|     $Date: 2008-12-13 18:04:52 $
-|     $Author: e107steved $
+|     $Date: 2009-08-15 11:55:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -26,7 +26,7 @@ if (!getperms("P") || !plugInstalled('linkwords'))
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");
-@include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE."_admin_linkwords.php");
+include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE."_admin_linkwords.php");
 define('LW_CACHE_TAG', 'nomd5_linkwords');
 
 $lw_context_areas = array(

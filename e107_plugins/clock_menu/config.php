@@ -9,9 +9,9 @@
  * Plugin Administration - Comment menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/clock_menu/config.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-21 12:53:48 $
- * $Author: e107steved $
+ * $Revision: 1.3 $
+ * $Date: 2009-08-15 11:55:30 $
+ * $Author: marj_nl_fr $
  *
 */
 $eplug_admin = TRUE;
@@ -22,7 +22,7 @@ if (!getperms("1"))
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");
-@include_lan(e_PLUGIN."clock_menu/languages/admin/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."clock_menu/languages/admin/".e_LANGUAGE.".php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 	

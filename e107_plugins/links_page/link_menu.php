@@ -13,7 +13,7 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 global $tp;
 
-@include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 
 //TODO review bullet
 $bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' />";

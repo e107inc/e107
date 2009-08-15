@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-12-07 21:55:01 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2009-08-15 11:55:30 $
+|     $Author: marj_nl_fr $
 |
 |	This is just a stub so that systems migrated from 0.7 don't crash
 |	It auto-updates the prefs so that the newer routine is called in future.
@@ -32,7 +32,7 @@ class e_linkwords
 		global $pref, $admin_log;
 		/* constructor */
 		// Do an auto-update on the variable used to hook parsers - so we should only be called once
-		@include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE.".php");
+		include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE.".php");
 		$hooks = explode(",",$pref['tohtml_hook']);
 		if (($key=array_search('linkwords',$hooks)) !== FALSE)
 		{

@@ -12,16 +12,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-07-14 11:05:52 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2009-08-15 11:55:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
-@include_once(e_LANGUAGEDIR."English/lan_comment.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
+
 global $comment_shortcodes;
 require_once(e_FILE."shortcode/batch/comment_shortcodes.php");
 

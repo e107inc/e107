@@ -9,9 +9,9 @@
  * Plugin administration - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/admin_config.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-12-20 22:32:36 $
- * $Author: e107steved $
+ * $Revision: 1.4 $
+ * $Date: 2009-08-15 11:55:30 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../../class2.php");
@@ -21,7 +21,7 @@ if (!getperms("P") || !plugInstalled('trackback'))
 	exit() ;
 }
 
-@include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
+include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
 	
 require_once(e_ADMIN."auth.php");
 	
