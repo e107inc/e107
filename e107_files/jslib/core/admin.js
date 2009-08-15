@@ -1,17 +1,17 @@
 /*
  * e107 website system
- * 
+ *
  * Copyright (c) 2001-2008 e107 Developers (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
- * 
+ *
  * e107 Admin Helper
- * 
+ *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.18 $
- * $Date: 2009-08-14 11:27:12 $
- * $Author: marj_nl_fr $
- * 
+ * $Revision: 1.19 $
+ * $Date: 2009-08-15 00:03:05 $
+ * $Author: bugrain $
+ *
 */
 
 if(typeof e107Admin == 'undefined') var e107Admin = {}
@@ -27,14 +27,14 @@ if(!e107Admin['initRules']) {
 }
 
 e107Admin.Helper = {
-	
+
 	/**
 	 * Auto Initialize everything
-	 * 
+	 *
 	 * Use it with e107#runOnLoad
 	 * Example: e107.runOnLoad(e107Admin.Helper.init.bind(e107Admin.Helper), document, true);
 	 * Do it only ONCE per page!
-	 * 
+	 *
 	 */
 	init: function(event) {
 		this.toggleCheckedHandler = this.toggleChecked.bindAsEventListener(this);
@@ -42,7 +42,7 @@ e107Admin.Helper = {
 		this.allUncheckedEventHandler = this.allUnchecked.bindAsEventListener(this);
 		this.allToggleCheckedEventHandler = this.allToggleChecked.bindAsEventListener(this);
 		element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
-		
+
 		element.select('.autocheck').invoke('observe', 'click', this.toggleCheckedHandler);
 		element.select('button.action[name=check_all]', 'input.toggle_all[type=checkbox]').invoke('observe', 'click', this.allCheckedEventHandler);
 		element.select('button.action[name=uncheck_all]').invoke('observe', 'click', this.allUncheckedEventHandler);
@@ -55,22 +55,22 @@ e107Admin.Helper = {
 			}
 		});
 		element.select('button.delete', 'input.delete[type=image]', 'a.delete').invoke('observe', 'click', function(e) {
-			var el = e.findElement('a.delete'); 
+			var el = e.findElement('a.delete');
 			if(!el) el = e.findElement('input.delete');
 			if(!el) el = e.findElement('button.delete');
-			if(!el) return; 
+			if(!el) return;
 			if(el.hasClassName('no-confirm') || (el.readAttribute('rel') &&  el.readAttribute('rel').toLowerCase() == 'no-confirm')) return;
 			var msg = el.readAttribute('delmsg') || e107.getModLan('delete_confirm');
-			if( !e107Helper.confirm(msg) ) e.stop(); 
+			if( !e107Helper.confirm(msg) ) e.stop();
 		});
 	},
-	
+
 	/**
 	 * Event listener: Auto-toggle single checkbox on click on its container element
 	 * Usage: Just be sure to write down the proper CSS rules, no JS code required
 	 * if e107Admin.Helper#init is executed
-	 * 
-	 * Example: 
+	 *
+	 * Example:
 	 * <div class='autocheck'>
 	 * 		<input type='checkbox' class='checkbox' />
 	 * 		<div class='smalltext field-help'>Inline Help Text</div>
@@ -82,17 +82,17 @@ e107Admin.Helper = {
 	 *			<div class='smalltext field-help'>Inline Help Text</div>
 	 *		</div>
 	 * </td>
-	 * Note: The important part are classes 'autocheck' and 'checkbox'. 
+	 * Note: The important part are classes 'autocheck' and 'checkbox'.
 	 * Container tagName is not important (everything is valid)
 	 * 'auto-toggle-area' class should be defined by the admin theme
 	 * to control the e.g. width of the auto-toggle clickable area
-	 * 
+	 *
 	 * Demo: e107_admin/image.php
-	 * 
+	 *
 	 */
 	toggleChecked: function(event) {
 		//do nothing if checkbox/form element or link is clicked
-		var tmp = event.element().nodeName.toLowerCase(); 
+		var tmp = event.element().nodeName.toLowerCase();
 		switch (tmp) {
 			case 'input':
 			case 'a':
@@ -100,54 +100,54 @@ e107Admin.Helper = {
 			case 'textarea':
 			case 'radio':
 			case 'label':
-				return;	
+				return;
 			break;
 		}
-		
+
 		//checkbox container element
 		var element = event.findElement('.autocheck'), check = null;
-		if(element) { 
+		if(element) {
 			check = element.select('input.checkbox'); //search for checkbox
-		} 
+		}
 		//toggle checked property
 		if(check && check[0] && !($(check[0]).disabled)) {
 			$(check[0]).checked = !($(check[0]).checked);
 		}
 	},
-	
+
 	/**
 	 * Event listener
-	 * Toggle all checkboxes in the current form, having name attribute value starting with 'multitoggle' 
+	 * Toggle all checkboxes in the current form, having name attribute value starting with 'multitoggle'
 	 * by default or any value set by checkbox value (special command 'jstarget:start_with_selector')
 	 * This method is auto-attached (if init() method is executed) to every checkbox having class toggle-all
-	 * 
-	 * Example of valid checkbox being auto-observed: 
+	 *
+	 * Example of valid checkbox being auto-observed:
 	 * <input type='checkbox' class='toggle-all' name='not_important' value='jstarget:your_selector' />
-	 * 
+	 *
 	 * Demo: e107_admin/fla.php, e107_admin/db_verify.php
-	 * Note: You could use e_form::checkbox_toggle() method (e107_handlers/form_handler.php), 
-	 * which produces multi-toggle checkbox observer in very convenient way 
-	 * 
+	 * Note: You could use e_form::checkbox_toggle() method (e107_handlers/form_handler.php),
+	 * which produces multi-toggle checkbox observer in very convenient way
+	 *
 	 */
 	allToggleChecked: function(event) {
 		//event.stop();
 		var form = event.element().up('form'), selector = 'multitoggle';
-		
+
 		if(form) {
 			if(event.element().readAttribute('value').startsWith('jstarget:')) {
 				selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
-			} 
+			}
 			form.toggleChecked(event.element().checked, 'name^=' + selector);
 		}
 	},
-	
+
 	/**
 	 * Event listener
-	 * Check all checkboxes in the current form, having name attribute value starting with 'multiaction' 
+	 * Check all checkboxes in the current form, having name attribute value starting with 'multiaction'
 	 * by default or any value set by button's value(special command 'jstarget:start_with_selector')
 	 * This method is auto-attached to every button having name=check_all if init() method is executed
-	 * 
-	 * Examples of valid inputbox markup: 
+	 *
+	 * Examples of valid inputbox markup:
 	 * <input type='checkbox' class='checkbox' name='multiaction[]' />
 	 * OR
 	 * <input type='checkbox' class='checkbox' name='multiaction_something_else[]' />
@@ -155,14 +155,14 @@ e107Admin.Helper = {
 	 * <input type='checkbox' class='checkbox' name='some_checkbox_array[]' /> (see the button example below)
 	 * OR
 	 * <input type='checkbox' class='checkbox' name='some_checkbox_array_some_more[]' /> (see the button example below)
-	 * 
+	 *
 	 * Example of button being auto-observed (see e107Admin.Helper#init)
 	 * <button class='action' type='button' name='check_all' value='Check All'><span>Check All</span></button> // default selector - multiaction
 	 * OR
 	 * <button class='action' type='button' name='check_all' value='jstarget:some_checkbox_array'><span>Check All</span></button> // checkboxes names starting with - some_checkbox_array
-	 * 
+	 *
 	 * Demo: e107_admin/image.php, admin_log.php
-	 * 
+	 *
 	 */
 	allChecked: function(event) {
 		//event.stop();
@@ -171,18 +171,18 @@ e107Admin.Helper = {
 		if(form) {
 			if(event.element().readAttribute('value').startsWith('jstarget:')) {
 				selector = event.element().readAttribute('value').replace(/jstarget:/, '').strip();
-			} 
+			}
 			form.toggleChecked(true, 'name^=' + selector);
 		}
 	},
-	
+
 	/**
 	 * Event listener
-	 * Uncheck all checkboxes in the current form, having name attribute value starting with 'multiaction' 
+	 * Uncheck all checkboxes in the current form, having name attribute value starting with 'multiaction'
 	 * by default or any value set by button's value(special command 'jstarget:start_with_selector')
 	 * This method is auto-attached to every button having name=uncheck_all if init() method is executed
-	 * 
-	 * Examples of valid inputbox markup: 
+	 *
+	 * Examples of valid inputbox markup:
 	 * <input type='checkbox' class='checkbox' name='multiaction[]' />
 	 * OR
 	 * <input type='checkbox' class='checkbox' name='multiaction_something_else[]' />
@@ -190,14 +190,14 @@ e107Admin.Helper = {
 	 * <input type='checkbox' class='checkbox' name='some_checkbox_array[]' /> (see the button example below)
 	 * OR
 	 * <input type='checkbox' class='checkbox' name='some_checkbox_array_some_more[]' /> (see the button example below)
-	 * 
+	 *
 	 * Example of button being auto-observed (see e107Admin.Helper#init)
 	 * <button class='action' type='button' name='uncheck_all' value='Uncheck All'><span>Uncheck All</span></button> // default selector - multiaction
 	 * OR
 	 * <button class='action' type='button' name='uncheck_all' value='jstarget:some_checkbox_array'><span>Uncheck All</span></button> // checkboxes names starting with - some_checkbox_array
-	 * 
+	 *
 	 * Demo: e107_admin/image.php, admin_log.php
-	 * 
+	 *
 	 */
 	allUnchecked: function(event) {
 		event.stop();
@@ -236,14 +236,14 @@ e107Admin.AdminMenu = {
 		this.activeBar = null;
 		if(this.location) {
 			replace = new RegExp(this.id.camelize() + 'AdminMenu=');
-			this.activeTab = $(this.location.replace(replace, '')); 
+			this.activeTab = $(this.location.replace(replace, ''));
 			if(this.activeTab) {
 				this.activeTab.removeClassName('e-hideme').show();
 			}
 		}
-		
+
 		selection.each( function(element, i) {
-			var check = element.select('a[href^=#]:not([href=#])'); 
+			var check = element.select('a[href^=#]:not([href=#])');
 			if(!this.activeTab) { //no page hash, set default
 				if(check[0]) {
 					this.switchTab(check[0].hash.substr(1), check[0], element);
@@ -252,19 +252,19 @@ e107Admin.AdminMenu = {
 				var h = this.activeTab.identify();
 				var bar = check.find( function(el){
 					return h == el.hash.substr(1);
-				}); 
+				});
 				this.switchTab(this.activeTab, bar, element);
 			}
 			check.invoke('observe', 'click', this.observer.bindAsEventListener(this, element));
 		}.bind(this));
-		
+
 		//search for admin-menu forms
 		$$('form.admin-menu').invoke('observe', 'submit', function(event) { var form = event.element(); action = form.readAttribute('action') + document.location.hash; form.writeAttribute('action', action) } );
 		return true;
 	},
 
 	switchTab: function(show, bar, container) {
-		show = $(show); 
+		show = $(show);
 		if(!show) return false;
 		if(this.activeTab && this.activeTab.identify() != show.identify()) {
 			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
@@ -277,7 +277,7 @@ e107Admin.AdminMenu = {
 			return true;
 		} else if(!this.activeTab) { //init
 			if(container) $(container).select('a.link-active[href^=#])').each(function (element) { element.removeClassName('link-active').addClassName('link'); element.up().removeClassName('active'); });
-			this.activeTab = show.removeClassName('e-hideme').show(); 
+			this.activeTab = show.removeClassName('e-hideme').show();
 			if(bar) this.activeBar = bar.removeClassName('link').addClassName('link-active');
 			this.activeBar.up().addClassName('active');
 			return true;
@@ -302,3 +302,34 @@ e107Admin.AdminMenu = {
 
 if(e107Admin.initRules.AdminMenu)
 	document.observe( 'dom:loaded', function() { e107Admin.AdminMenu.init() });
+
+
+
+
+//TODO find the right place for this and make generic - wanted it out of download plugin for now
+e107.runOnLoad(function(){
+   $$('form.e-filter-form').each(function(f) {
+      var el = f.select('input')[0];
+      el.e107PreviousValue = el.getValue();
+   	el.observe('keyup', function(e) {
+   	   var el = e.element();
+   		e.stop();
+   		if (el.getValue() != el.e107PreviousValue) {
+   		   if (el.e107Timeout) {
+   		      window.clearTimeout(el.e107Timeout);
+   		   }
+   		   el.e107PreviousValue = el.getValue();
+   		   el.e107Timeout = window.setTimeout(function () {
+   				new e107Ajax.Updater('downloads-list', f.action, {
+   					method: 'post',
+   					parameters: { //send query parameters here
+   						'download_filter_list': 1,
+   						'download-search-text': el.getValue()
+   					},
+   					overlayPage: $(document.body)
+   				});
+   	      }, 500);
+   	   }
+   	});
+   });
+}, document, false);
