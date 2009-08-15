@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-25 07:54:36 $
+|     $Revision: 1.4 $
+|     $Date: 2009-08-15 11:55:30 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!plugInstalled('rss_menu'))
 
 global $FILES_DIRECTORY,$pref,$sql;
 $path = e_PLUGIN."rss_menu/";
-@include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
+include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
 
 $des = "";
 $topic = "";

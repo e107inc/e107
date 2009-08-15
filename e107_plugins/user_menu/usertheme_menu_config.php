@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/usertheme_menu_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-08-03 20:11:00 $
+|     $Revision: 1.2 $
+|     $Date: 2009-08-15 11:55:30 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
-@include_lan(e_PLUGIN."user_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."user_menu/languages/".e_LANGUAGE.".php");
+
 require_once(e_HANDLER.'userclass_class.php');
 global $e_userclass;
 if (!is_object($e_userclass)) $e_userclass = new user_class;

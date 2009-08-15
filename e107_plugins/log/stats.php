@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/log/stats.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-25 07:54:35 $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-15 11:55:30 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ if (!plugInstalled('log'))
 	exit;
 }
 
-@include_lan(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
 
 $bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
 $eplug_css[] = "<style type='text/css'>

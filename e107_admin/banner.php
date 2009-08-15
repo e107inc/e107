@@ -9,8 +9,8 @@
  * Banner Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-07-18 15:14:38 $
+ * $Revision: 1.12 $
+ * $Date: 2009-08-15 11:55:29 $
  * $Author: marj_nl_fr $
  *
 */
@@ -36,8 +36,8 @@ require_once(e_HANDLER."message_handler.php");
 $emessage = &eMessage::getInstance();
 
 //@FIXME mix up in banner language files
-@include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
-@include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
+include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
 
 
 if(e_QUERY)

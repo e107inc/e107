@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-07-19 11:44:29 $
+|     $Revision: 1.14 $
+|     $Date: 2009-08-15 11:55:30 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@ if (!is_object($tp->e_bb))
 }
 
 //get language file
-@include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
+include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
 
 //get template
 if (is_readable(THEME."rss_template.php")) 

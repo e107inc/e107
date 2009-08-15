@@ -9,9 +9,9 @@
  * List Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-05-04 19:57:48 $
- * $Author: bugrain $
+ * $Revision: 1.10 $
+ * $Date: 2009-08-15 11:55:30 $
+ * $Author: marj_nl_fr $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -50,7 +50,7 @@ class listclass
 		$this->e107 = e107::getInstance();
 
 		//language
-		@include_lan($this->plugin_dir."languages/".e_LANGUAGE.".php");
+		include_lan($this->plugin_dir."languages/".e_LANGUAGE.".php");
 
 		//template
 		if (is_readable(THEME."list_template.php"))

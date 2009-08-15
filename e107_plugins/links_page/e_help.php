@@ -1,7 +1,7 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
 
-@include_lan($plugindir."languages/".e_LANGUAGE."_admin_links_page.php");
+include_lan($plugindir."languages/".e_LANGUAGE."_admin_links_page.php");
 
 if(!e_QUERY)
 {

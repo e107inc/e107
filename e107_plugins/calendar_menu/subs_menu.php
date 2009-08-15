@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subs_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-04-29 20:27:18 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-08-15 11:55:30 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ if ($ec_run_from_menu)
   if ($cacheData = $e107cache->retrieve("nomd5_cal_subs",$ecal_class->max_cache_time, TRUE)) exit;
 }
 
-@include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");		// May be needed for mailouts
+include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");		// May be needed for mailouts
 
 if (!isset($calendar_shortcodes)) require(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
 if (is_readable(THEME."ec_mailout_template.php")) 

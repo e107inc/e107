@@ -9,9 +9,9 @@
  * Plugin - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsfeed/newsfeed_menu.php,v $
- * $Revision: 1.2 $
- * $Date: 2008-12-20 10:39:29 $
- * $Author: e107steved $
+ * $Revision: 1.3 $
+ * $Date: 2009-08-15 11:55:30 $
+ * $Author: marj_nl_fr $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -20,7 +20,7 @@ if (!plugInstalled('newsfeed'))
 	return '';
 }
 
-@include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
+include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
 
 if(!class_exists('newsfeedClass'))
 {

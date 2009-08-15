@@ -9,9 +9,9 @@
  * Banner Menu Configuration (OLD - redirects to e107_admin/banner.php)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner_menu/config.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-22 16:50:07 $
- * $Author: secretr $
+ * $Revision: 1.5 $
+ * $Date: 2009-08-15 11:55:30 $
+ * $Author: marj_nl_fr $
  *
 */
 $eplug_admin = TRUE;
@@ -33,7 +33,7 @@ require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-@include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 
 if (e_QUERY)

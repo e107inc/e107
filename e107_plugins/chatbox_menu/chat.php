@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-11 21:13:48 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-08-15 11:55:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -23,7 +23,7 @@ if (!plugInstalled('chatbox_menu'))
 	exit;
 }
 
-@include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 require_once(HEADERF);
 
 $sql->db_Select("menus", "*", "menu_name='chatbox_menu'");

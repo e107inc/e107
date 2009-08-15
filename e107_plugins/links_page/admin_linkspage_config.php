@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.3 $
-|    $Date: 2008-12-29 20:51:07 $
-|    $Author: lisa_ $
+|    $Revision: 1.4 $
+|    $Date: 2009-08-15 11:55:30 $
+|    $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,7 +36,7 @@ $eArrayStorage = new ArrayData();
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass;
 
-@include_lan($plugindir."languages/".e_LANGUAGE."_admin_links_page.php");
+include_lan($plugindir."languages/".e_LANGUAGE."_admin_links_page.php");
 
 $linkspage_pref = $lc -> getLinksPagePref();
 
