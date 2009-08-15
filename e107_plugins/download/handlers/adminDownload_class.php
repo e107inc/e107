@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-08-14 23:22:37 $
+|     $Revision: 1.17 $
+|     $Date: 2009-08-15 01:00:38 $
 |     $Author: bugrain $
 |
 +----------------------------------------------------------------------------+
@@ -51,23 +51,20 @@ class adminDownload extends download
       $frm = new e_form();
 
       $filterColumns = ($user_pref['admin_download_disp'] ? $user_pref['admin_download_disp'] : array("download_name","download_class"));
-      $jsfunc = $ajax
-         ? "e107Ajax.toggleUpdate('{$id}-iconpicker', '{$id}-iconpicker-cn', 'sc:iconpicker=".urlencode($sc_parameters)."', '{$id}-iconpicker-ajax', { overlayElement: '{$id}-iconpicker-button' })"
-         : "e107Helper.toggle('{$id}-iconpicker')";
-	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => 123));
-	$url = "admin_download.php";
+	   $url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => 123));
+	   $url = "admin_download.php";
 
       // Search field
       $text .= "
 		   <script type='text/javascript'>
 		   </script>
-         <form method='post' action='".e_SELF."' class='e-show-if-js'>
+         <form method='post' action='".e_SELF."' class='e-show-if-js e-filter-form' id='jstarget-downloads-list'>
             <div id='download_search'>
             <fieldset>
                <legend class='e-hideme'>".DOWLAN_194."</legend>
                <table class='adminlist'>
                   <tr>
-                     <td>".DOWLAN_198." ".$frm->text('download-search-text', $this->searchField, 50, array('size'=>50, 'other' => "onkeyup=\"{$jsfunc}\""))."&nbsp;<a href='#download_search#download_advanced_search' class='e-swapit'>Switch to Advanced-Search</a></td>
+                     <td>".DOWLAN_198." ".$frm->text('download-search-text', $this->searchField, 50, array('size'=>50, 'class' => 'someclass'))."&nbsp;<a href='#download_search#download_advanced_search' class='e-swapit'>Switch to Advanced-Search</a></td>
                   </tr>
                </table>
 
