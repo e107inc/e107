@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-08-15 01:00:38 $
-|     $Author: bugrain $
+|     $Revision: 1.18 $
+|     $Date: 2009-08-15 15:44:37 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -74,7 +74,7 @@ class adminDownload extends download
 
 /*			   $text .= "
             <div class='buttons-bar center'>
-               <button type='submit' class='update' name='download_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
+               <button type='submit' class='update' name='download_search_submit' value='no-value'><span>".DOWLAN_51."</span></button>
                <br/>
 
             </div>";*/
@@ -171,7 +171,7 @@ class adminDownload extends download
             </table>
             <div class='buttons-bar center'>
 			      <span  class='e-show-if-js f-left'><a href='#download_advanced_search#download_search' class='e-swapit'>Simple search</a></span>
-               <button type='submit' class='update' name='download_advanced_search_submit' value='".DOWLAN_51."'><span>".DOWLAN_51."</span></button>
+               <button type='submit' class='update' name='download_advanced_search_submit' value='no-value'><span>".DOWLAN_51."</span></button>
             </div>
             </fieldset>
 			</div>

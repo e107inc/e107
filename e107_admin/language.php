@@ -9,9 +9,9 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-03-26 21:55:37 $
- * $Author: e107steved $
+ * $Revision: 1.16 $
+ * $Date: 2009-08-15 15:44:37 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -274,7 +274,7 @@ if (isset($_POST['edit_existing']))
 			</table>
 			<div class='buttons-bar center'>
 				<input type='hidden' name='language' value='{$_POST['lang_choices']}' />
-				<button class='{$baction}' type='submit' name='create_tables' value='{$bcaption}'><span>{$bcaption}</span></button>
+				<button class='{$baction}' type='submit' name='create_tables' value='no-value'><span>{$bcaption}</span></button>
 			</div>
 		</fieldset>
 	</form>
@@ -353,7 +353,7 @@ function multilang_prefs()
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='submit_prefs' value='".LAN_SAVE."'><span>".LAN_SAVE."</span></button>
+				<button class='update' type='submit' name='submit_prefs' value='no-value'><span>".LAN_SAVE."</span></button>
 			</div>
 		</fieldset>
 	</form>
@@ -511,14 +511,14 @@ function multilang_db(){
    			if ($installed)
    			{
 				$text .= "
-								<button class='edit' type='submit' name='edit_existing' value='".LAN_EDIT."'><span>".LAN_EDIT."</span></button>
-								<button class='delete' type='submit' name='del_existing' value='".LAN_DELETE."' title='".sprintf(LANG_LAN_33, $lanlist[$i]).' '.LANG_LAN_09."'><span>".LAN_DELETE."</span></button>
+								<button class='edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
+								<button class='delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_33, $lanlist[$i]).' '.LANG_LAN_09."'><span>".LAN_DELETE."</span></button>
 				";
 			}
 			elseif($lanlist[$i] != $pref['sitelanguage'])
 			{
 				$text .= "
-								<button class='create' type='submit' name='create_edit_existing' value='".LAN_CREATE."'><span>".LAN_CREATE."</span></button>
+								<button class='create' type='submit' name='create_edit_existing' value='no-value'><span>".LAN_CREATE."</span></button>
 				";
 			}
 			$text .= "
@@ -580,7 +580,7 @@ function show_tools()
 
 	$text .= "
 								</select>
-								<button class='submit' type='submit' name='language_sel' value='".LAN_CHECK_2."'><span>".LAN_CHECK_2."</span></button>
+								<button class='submit' type='submit' name='language_sel' value='no-value'><span>".LAN_CHECK_2."</span></button>
 							</td>
 						</tr>
 					</tbody>
@@ -620,7 +620,7 @@ function show_tools()
 
 	$text .= "
 								</select>
-								<button class='submit' type='submit' name='ziplang' value='".LANG_LAN_24."'><span>".LANG_LAN_24."</span></button>
+								<button class='submit' type='submit' name='ziplang' value='no-value'><span>".LANG_LAN_24."</span></button>
 							</td>
 						</tr>
 					</tbody>

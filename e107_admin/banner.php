@@ -9,8 +9,8 @@
  * Banner Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banner.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-08-15 11:55:29 $
+ * $Revision: 1.13 $
+ * $Date: 2009-08-15 15:44:37 $
  * $Author: marj_nl_fr $
  *
 */
@@ -477,7 +477,7 @@ if ($action == "create") {
 						<td class='label'>".BNRLAN_32."</td>
 						<td class='control'>
 							<div class='field-spacer'>
-								<button class='action' type='button' value='".BNRLAN_43."' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_43."</span></button>
+								<button class='action' type='button' value='no-value' onclick='e107Helper.toggle(\"banner-repo\")'><span>".BNRLAN_43."</span></button>
 							</div>
 							<div class='e-hideme' id='banner-repo'>
 	";
@@ -611,11 +611,11 @@ if ($action == "create") {
 	if 	($sub_action == "edit" && $id) {
 		$text .= "
 				<input type='hidden' name='eid' value='".$id."' />
-				<button class='update' type='submit' name='updatebanner' value='".BNRLAN_40."'><span>".BNRLAN_40."</span></button>
+				<button class='update' type='submit' name='updatebanner' value='no-value'><span>".BNRLAN_40."</span></button>
 		";
 	} else {
 		$text .= "
-				<button class='create' type='submit' name='createbanner' value='".BNRLAN_41."'><span>".BNRLAN_41."</span></button>
+				<button class='create' type='submit' name='createbanner' value='no-value'><span>".BNRLAN_41."</span></button>
 		";
 	}
 	$text .= "
@@ -737,7 +737,7 @@ if ($action == "menu")
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>
-					<button class='update' type='submit' name='update_menu' value='".BANNER_MENU_L18."'><span>".BANNER_MENU_L18."</span></button>
+					<button class='update' type='submit' name='update_menu' value='no-value'><span>".BANNER_MENU_L18."</span></button>
 				</div>
 			</fieldset>
 		</form>

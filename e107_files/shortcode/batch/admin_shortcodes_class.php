@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.19 2009-08-03 18:45:18 marj_nl_fr Exp $
+* $Id: admin_shortcodes_class.php,v 1.20 2009-08-15 15:44:37 marj_nl_fr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -250,7 +250,7 @@ class admin_shortcodes
 				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
 				$select .= "<option value='".$langval."'{$selected}>$lng</option>\n";
 			}
-			$select .= "</select> ".(!isset($params['nobutton']) ? "<button class='update' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."'><span>".UTHEME_MENU_L1."</span></button>" : '')."
+			$select .= "</select> ".(!isset($params['nobutton']) ? "<button class='update' type='submit' name='setlanguage' value='no-value'><span>".UTHEME_MENU_L1."</span></button>" : '')."
 			</div>
 			</form>
 			";

@@ -9,9 +9,9 @@
  * Administration Area - Update Admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/updateadmin.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-01-11 22:11:19 $
- * $Author: e107steved $
+ * $Revision: 1.6 $
+ * $Date: 2009-08-15 15:44:37 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -103,7 +103,7 @@ else
 			</table>
 			<div class='buttons-bar center'>
 				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-				<button class='update' type='submit' name='update_settings' value='".UDALAN_7."'><span>".UDALAN_7."</span></button>
+				<button class='update' type='submit' name='update_settings' value='no-value'><span>".UDALAN_7."</span></button>
 			</div>
 		</fieldset>
 	</form>

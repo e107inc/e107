@@ -9,9 +9,9 @@
  * Administration Area - Emotions Settings & Packs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-07-17 23:23:36 $
- * $Author: e107coders $
+ * $Revision: 1.15 $
+ * $Date: 2009-08-15 15:44:37 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -322,8 +322,8 @@ class emotec
 			</table>
 			<div class='buttons-bar center'>
 				<input type='hidden' name='packID' value='{$packID}' />
-				<button class='update' type='submit' name='sub_conf' value='".EMOLAN_14."'><span>".EMOLAN_14."</span></button>
-				<button class='cancel' type='submit' name='cancel' value='".LAN_CANCEL."'><span>".LAN_CANCEL."</span></button>
+				<button class='update' type='submit' name='sub_conf' value='no-value'><span>".EMOLAN_14."</span></button>
+				<button class='cancel' type='submit' name='cancel' value='no-value'><span>".LAN_CANCEL."</span></button>
 			</div>
 		</fieldset>
 	</form>";
