@@ -9,14 +9,14 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-08-14 23:22:37 $
- * $Author: bugrain $
+ * $Revision: 1.39 $
+ * $Date: 2009-08-15 15:53:44 $
+ * $Author: marj_nl_fr $
  *
 */
 
 if (!defined('e107_INIT')) { exit; }
-
+//FIXME hardcoded text
 /**
  * Automate Form fields creation. Produced markup is following e107 CSS/XHTML standards
  * If options argument is omitted, default values will be used (which OK most of the time)
@@ -798,7 +798,7 @@ class e_form
 
 		$text .= "
 			</select>
-			<button class='update e-hide-if-js' type='submit'><span>Go</span></button>
+			<button class='update e-hide-if-js' type='submit' value='no-value'><span>Go</span></button>
 			</div>
 			<span class='clear'>&nbsp;</span>";
 		return $text;

@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-08-15 15:44:37 $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-15 15:53:44 $
  * $Author: marj_nl_fr $
  *
 */
@@ -510,6 +510,7 @@ function multilang_db(){
 			";
    			if ($installed)
    			{
+				//FIXME sprintf
 				$text .= "
 								<button class='edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
 								<button class='delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_33, $lanlist[$i]).' '.LANG_LAN_09."'><span>".LAN_DELETE."</span></button>

@@ -9,8 +9,8 @@
  * Administration Area - Meta Tags
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/meta.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-08-05 06:30:24 $
+ * $Revision: 1.9 $
+ * $Date: 2009-08-15 15:53:44 $
  * $Author: marj_nl_fr $
  *
 */
@@ -123,7 +123,7 @@ $text = "
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='create' type='submit' name='metasubmit'><span>".METLAN_3."</span></button>
+				<button class='create' type='submit' name='metasubmit' value='no-value'><span>".METLAN_3."</span></button>
 			</div>
 		</fieldset>
 	</form>
