@@ -8,9 +8,9 @@
  * e107 Admin Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.20 $
- * $Date: 2009-08-15 01:00:38 $
- * $Author: bugrain $
+ * $Revision: 1.21 $
+ * $Date: 2009-08-15 15:44:37 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -157,7 +157,7 @@ e107Admin.Helper = {
 	 * <input type='checkbox' class='checkbox' name='some_checkbox_array_some_more[]' /> (see the button example below)
 	 *
 	 * Example of button being auto-observed (see e107Admin.Helper#init)
-	 * <button class='action' type='button' name='check_all' value='Check All'><span>Check All</span></button> // default selector - multiaction
+	 * <button class='action' type='button' name='check_all' value='no-value'><span>Check All</span></button> // default selector - multiaction
 	 * OR
 	 * <button class='action' type='button' name='check_all' value='jstarget:some_checkbox_array'><span>Check All</span></button> // checkboxes names starting with - some_checkbox_array
 	 *
@@ -192,7 +192,7 @@ e107Admin.Helper = {
 	 * <input type='checkbox' class='checkbox' name='some_checkbox_array_some_more[]' /> (see the button example below)
 	 *
 	 * Example of button being auto-observed (see e107Admin.Helper#init)
-	 * <button class='action' type='button' name='uncheck_all' value='Uncheck All'><span>Uncheck All</span></button> // default selector - multiaction
+	 * <button class='action' type='button' name='uncheck_all' value='no-value'><span>Uncheck All</span></button> // default selector - multiaction
 	 * OR
 	 * <button class='action' type='button' name='uncheck_all' value='jstarget:some_checkbox_array'><span>Uncheck All</span></button> // checkboxes names starting with - some_checkbox_array
 	 *

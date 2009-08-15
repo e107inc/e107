@@ -9,9 +9,9 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-07-23 15:21:41 $
- * $Author: e107coders $
+ * $Revision: 1.27 $
+ * $Date: 2009-08-15 15:44:37 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -362,7 +362,7 @@ class links
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>
-					<button class='update' type='submit' name='update' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
+					<button class='update' type='submit' name='update' value='no-value'><span>".LAN_UPDATE."</span></button>
 				</div>
 			</fieldset>
 
@@ -635,13 +635,13 @@ class links
 		if($id && $sub_action == "edit")
 		{
 			$text .= "
-						<button class='update' type='submit' name='add_link' value='".LCLAN_27."'><span>".LCLAN_27."</span></button>
+						<button class='update' type='submit' name='add_link' value='no-value'><span>".LCLAN_27."</span></button>
 						<input type='hidden' name='link_id' value='{$link_id}' />
 			";
 		} else
 		{
 			$text .= "
-						<button class='create' type='submit' name='add_link' value='".LCLAN_28."'><span>".LCLAN_28."</span></button>
+						<button class='create' type='submit' name='add_link' value='no-value"'><span>".LCLAN_28."</span></button>
 			";
 		}
 		$text .= "
@@ -728,7 +728,7 @@ class links
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>
-					<button class='update' type='submit' name='updateoptions' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
+					<button class='update' type='submit' name='updateoptions' value='no-value'><span>".LAN_UPDATE."</span></button>
 				</div>
 			</fieldset>
 		</form>
@@ -822,7 +822,7 @@ class links
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>
-					<button class='create' type='submit' name='generate_sublinks' value='".LINKLAN_5."'><span>".LINKLAN_5."</span></button>
+					<button class='create' type='submit' name='generate_sublinks' value='no-value'><span>".LINKLAN_5."</span></button>
 				</div>
 			</fieldset>
 		</form>

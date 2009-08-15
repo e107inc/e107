@@ -9,9 +9,9 @@
  * Search Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/search.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-01-04 22:31:57 $
- * $Author: e107steved $
+ * $Revision: 1.6 $
+ * $Date: 2009-08-15 15:44:37 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -338,7 +338,7 @@ elseif ($query[0] == 'edit')
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_handler' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
+				<button class='update' type='submit' name='update_handler' value='no-value'><span>".LAN_UPDATE."</span></button>
 			</div>
 		</fieldset>
 	</form>
@@ -472,7 +472,7 @@ else
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='update_main' value='".LAN_UPDATE."'><span>".LAN_UPDATE."</span></button>
+				<button class='update' type='submit' name='update_main' value='no-value'><span>".LAN_UPDATE."</span></button>
 			</div>
 		</fieldset>
 		</form>

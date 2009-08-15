@@ -10,8 +10,8 @@
  * With code from Izydor and Lolo.
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-07-19 11:44:28 $
+ * $Revision: 1.15 $
+ * $Date: 2009-08-15 15:44:37 $
  * $Author: marj_nl_fr $
  *
 */
@@ -667,7 +667,7 @@ function edit_lanfiles($dir1,$dir2,$f1,$f2){
 			<div style='text-align:center'>
 				".((!$writable) ? $dir2.$f2.LAN_NOTWRITABLE : "")."
 				<br />
-				<button class='submit' type='submit' name='language_sel' value='".LAN_BACK."'><span>".LAN_BACK."</span></button>
+				<button class='submit' type='submit' name='language_sel' value='no-value'><span>".LAN_BACK."</span></button>
 				<input type='hidden' name='language' value='$lan' />
 			</div>
 		</form>

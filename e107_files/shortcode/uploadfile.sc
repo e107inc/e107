@@ -1,4 +1,4 @@
-// $Id: uploadfile.sc,v 1.2 2008-12-29 15:23:06 secretr Exp $
+// $Id: uploadfile.sc,v 1.3 2009-08-15 15:44:37 marj_nl_fr Exp $
 
 // Your <form> tag must include: enctype='multipart/form-data' - in order to work.
 // parm is the path to the upload folder.
@@ -25,8 +25,8 @@ $text .="
         <!-- Upload Shortcode -->
 		<div>
 			<div class='field-spacer'>
-				<button type='button' class='action duplicate' value=\"".LAN_UPLOAD_ADDFILE."\" onclick=\"duplicateHTML('upline','up_container');\"><span>".LAN_UPLOAD_ADDFILE."</span></button>
-				<button class='upload' type='submit' name='uploadfiles' value=\"".LAN_UPLOAD_FILES."\" onclick=\"return jsconfirm('".LAN_UPLOAD_CONFIRM."')\"><span>".LAN_UPLOAD_FILES."</span></button>
+				<button type='button' class='action duplicate' value='no-value' onclick=\"duplicateHTML('upline','up_container');\"><span>".LAN_UPLOAD_ADDFILE."</span></button>
+				<button class='upload' type='submit' name='uploadfiles' value='no-value' onclick=\"return jsconfirm('".LAN_UPLOAD_CONFIRM."')\"><span>".LAN_UPLOAD_FILES."</span></button>
 			</div>
 			<div id='up_container'>
 				<div id='upline' class='nowrap'>

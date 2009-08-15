@@ -9,8 +9,8 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-08-09 07:03:51 $
+ * $Revision: 1.29 $
+ * $Date: 2009-08-15 15:44:37 $
  * $Author: marj_nl_fr $
  *
 */
@@ -221,8 +221,8 @@ if(($action == "confdel") || ($action == "auditdel"))
 				</table>
 				<div class='buttons-bar center'>
 					<input type='hidden' name='backdeltype' value='{$action}' />
-					<button class='delete' type='submit' name='confirmdeleteold' value='".RL_LAN_049."'><span>".RL_LAN_049."</span></button>
-					<button class='cancel' type='submit' name='confirmcancelold' value='".RL_LAN_055."'><span>".RL_LAN_055."</span></button>
+					<button class='delete' type='submit' name='confirmdeleteold' value='no-value'><span>".RL_LAN_049."</span></button>
+					<button class='cancel' type='submit' name='confirmcancelold' value='no-value'><span>".RL_LAN_055."</span></button>
 				</div>
 			</fieldset>
 		</form>
@@ -454,7 +454,7 @@ if($action == "config")
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='update' type='submit' name='setoptions' value='".RL_LAN_010."'><span>".RL_LAN_010."</span></button>
+				<button class='update' type='submit' name='setoptions' value='no-value'><span>".RL_LAN_010."</span></button>
 			</div>
 		</fieldset>
 	</form>
@@ -475,7 +475,7 @@ if($action == "config")
 					<tr>
 						<td class='label'>".RL_LAN_045." </td>
 						<td class='control'>
-							".gen_log_delete('rolllog_clearadmin').RL_LAN_046."<button class='delete no-confirm' type='submit' name='deleteoldadmin' value='".RL_LAN_049."'><span>".RL_LAN_049."</span></button>
+							".gen_log_delete('rolllog_clearadmin').RL_LAN_046."<button class='delete no-confirm' type='submit' name='deleteoldadmin' value='no-value'><span>".RL_LAN_049."</span></button>
 						</td>
 					</tr>
 	";
@@ -486,7 +486,7 @@ if($action == "config")
 					<tr>
 						<td class='label'>".RL_LAN_066." </td>
 						<td class='control'>
-							".gen_log_delete('rolllog_clearaudit').RL_LAN_046."<button class='delete no-confirm' type='submit' name='deleteoldaudit' value='".RL_LAN_049."'><span>".RL_LAN_049."</span></button>
+							".gen_log_delete('rolllog_clearaudit').RL_LAN_046."<button class='delete no-confirm' type='submit' name='deleteoldaudit' value='no-value'><span>".RL_LAN_049."</span></button>
 						</td>
 					</tr>
 				</tbody>
@@ -814,8 +814,8 @@ if(isset($page_title[$action]))
 	$text .= "
 			</table>
 			<div class='buttons-bar center'>
-				<button class='delete no-confirm' type='submit' name='clearfilters' value='".RL_LAN_114."'><span>".RL_LAN_114."</span></button>
-				<button class='update' type='submit' name='updatefilters' value='".RL_LAN_028."'><span>".RL_LAN_028."</span></button>
+				<button class='delete no-confirm' type='submit' name='clearfilters' value='no-value'><span>".RL_LAN_114."</span></button>
+				<button class='update' type='submit' name='updatefilters' value='no-value'><span>".RL_LAN_028."</span></button>
 			</div>
 			</fieldset>
 		</form>
@@ -971,12 +971,12 @@ if(isset($page_title[$action]))
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<button class='submit' type='submit' name='refreshlog' value='".RL_LAN_018."'><span>".RL_LAN_018."</span></button>
+				<button class='submit' type='submit' name='refreshlog' value='no-value'><span>".RL_LAN_018."</span></button>
 	";
 	if($delete_button)
 	{
 		$text .= "
-				<button class='delete' type='submit' name='deleteitems' title='".RL_LAN_111."?' value='".RL_LAN_111."'><span>".RL_LAN_111."</span></button>
+				<button class='delete' type='submit' name='deleteitems' value='no-value'><span>".RL_LAN_111."</span></button>
 		";
 	}
 	$text .= "
