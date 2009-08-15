@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/English.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-07-19 11:44:28 $
+|     $Revision: 1.13 $
+|     $Date: 2009-08-15 13:23:10 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
-setlocale(LC_ALL, 'en');
+setlocale(LC_ALL, 'en_GB.UTF-8', 'en_GB.utf8', 'eng_eng.utf8', 'en');
 define('CORE_LC', 'en');
 define('CORE_LC2', 'gb');
 // define("TEXTDIRECTION","rtl");
