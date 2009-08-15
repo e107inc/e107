@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/plugin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-09-02 21:12:08 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN."featurebox/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."featurebox/languages/English.php");
+include_lan(e_PLUGIN."featurebox/languages/".e_LANGUAGE.".php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = 'FBLAN_01';

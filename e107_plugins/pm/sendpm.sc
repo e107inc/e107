@@ -1,5 +1,4 @@
-@include_once(e_PLUGIN."pm/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."pm/languages/English.php");
+include_lan(e_PLUGIN."pm/languages/".e_LANGUAGE.".php");
 global $sysprefs, $pm_prefs;
 $pm_prefs = $sysprefs->getArray("pm_prefs");
 if(check_class($pm_prefs['pm_class']))

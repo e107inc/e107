@@ -11,15 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2008-10-07 19:08:54 $
-|     $Author: e107steved $
+|     $Revision: 1.43 $
+|     $Date: 2009-08-15 11:54:32 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 
-@include_once(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."log/languages/English.php");
+include_lan(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
 
 function core_head() {
 	$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");

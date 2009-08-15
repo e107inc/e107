@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/sitedown.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2006-06-30 04:16:39 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2009-08-15 11:54:29 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -21,8 +21,7 @@ require_once("class2.php");
 global $pref;
 global $tp;
 
-e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
-e107_include_once(e_LANGUAGEDIR."English/lan_sitedown.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
 
 if (!$pref['maintainance_flag'] )
 {

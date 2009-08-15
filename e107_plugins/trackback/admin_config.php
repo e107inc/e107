@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2007-12-26 14:20:00 $
-|     $Author: e107steved $
+|     $Revision: 1.5 $
+|     $Date: 2009-08-15 11:54:32 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -22,8 +22,7 @@ if (!getperms("P")) {
 	 exit ;
 }
 
-@include_once(e_PLUGIN."trackback/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."trackback/languages/English.php");
+include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE.".php");
 	
 require_once(e_ADMIN."auth.php");
 	

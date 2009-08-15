@@ -17,9 +17,9 @@
 | GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/clock_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-14 19:28:43 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -35,9 +35,10 @@ foreach($indexArray as $ind)
 	}
 }
 
-$ec_dir = e_PLUGIN."clock_menu/";
-$lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
-e107_include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."clock_menu/languages/English.php");
+//$ec_dir = e_PLUGIN."clock_menu/";
+
+include_lan(e_PLUGIN."clock_menu/languages/".e_LANGUAGE.".php");
+
 if (!defined("e_HTTP")) {
 	exit;
 }

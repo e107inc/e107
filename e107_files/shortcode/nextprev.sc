@@ -1,8 +1,7 @@
 
 global $pref;
 
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
-@include_once(e_LANGUAGEDIR."English/lan_np.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
 
 $parm_count = substr_count($parm, ",");
 

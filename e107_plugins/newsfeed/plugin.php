@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-08-25 15:37:54 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2009-08-15 11:54:32 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN."newsfeed/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."newsfeed/languages/English.php");
+include_lan(e_PLUGIN."newsfeed/languages/".e_LANGUAGE.".php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "NFLAN_01";

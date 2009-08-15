@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.378 $
-|     $Date: 2009-08-10 21:58:09 $
+|     $Revision: 1.379 $
+|     $Date: 2009-08-15 11:54:29 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -564,8 +564,8 @@ define('e_LANGUAGE', $language);
 define('USERLAN', e_LANGUAGE);
 
 //TODO do it only once and with the proper function
-e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
-e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
 if($pref['sitelanguage'] != e_LANGUAGE && varset($pref['multilanguage']) && !$pref['multilanguage_subdomain'])
 {
@@ -936,13 +936,11 @@ $exclude_lan = array("lan_signup.php");  // required for multi-language.
 //TODO remove autoload
 if ($inAdminDir)
 {
-  e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
-  e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
+  include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
 } 
 elseif (!in_array("lan_".e_PAGE,$exclude_lan) && !$isPluginDir) 
 {
-  e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
-  e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
+  include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 }
 
 
@@ -1653,12 +1651,14 @@ function e107_require($fname) {
 	return $ret;
 }
 
-function include_lan($path, $force = false) {
-	if (!is_readable($path)) {
+function include_lan($path, $force = false)
+{
+	if ( ! is_readable($path))
+	{
 		$path = str_replace(e_LANGUAGE, 'English', $path);
 	}
-	$ret = ($force) ? include($path) : include_once($path);
-	return (isset($ret)) ? $ret : "";
+	$ret = ($force) ? e107_include($path) : e107_include_once($path);
+	return (isset($ret)) ? $ret : '';
 }
 
 if(!function_exists("print_a")) 

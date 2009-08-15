@@ -11,18 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-09-04 20:07:10 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2009-08-15 11:54:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_print.php");
-//@include_once(e_LANGUAGEDIR."English/lan_print.php");
-@include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
-//@include_once(e_LANGUAGEDIR."English/lan_email.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_print.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
 
 class emailprint 
 {

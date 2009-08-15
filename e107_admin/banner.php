@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2009-07-18 15:53:42 $
+|     $Revision: 1.35 $
+|     $Date: 2009-08-15 11:54:30 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -31,8 +31,8 @@ require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 
 //@FIXME mix up in banner language files
-@include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
-@include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
+include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
 
 
 if(e_QUERY)

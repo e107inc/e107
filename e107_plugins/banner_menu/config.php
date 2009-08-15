@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/config.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-08-26 19:45:33 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
@@ -27,7 +27,7 @@ require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 	
-@include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 	
 if (e_QUERY) 

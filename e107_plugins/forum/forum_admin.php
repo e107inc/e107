@@ -11,15 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2007-11-11 23:45:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.49 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
 require_once("../../class2.php");
-@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php';
-@include_once e_PLUGIN.'forum/languages/English/lan_forum_admin.php';
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
 
 if (!getperms("P"))
 {

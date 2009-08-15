@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-04-25 19:39:47 $
-|     $Author: e107steved $
+|     $Revision: 1.23 $
+|     $Date: 2009-08-15 11:54:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
-@include_once(e_LANGUAGEDIR."English/lan_userclass.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
 
 /*
 With $optlist you can now specify which classes are shown in the dropdown.

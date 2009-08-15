@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2008-06-03 21:31:19 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-15 11:54:32 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -37,8 +37,7 @@ if(!isset($poll) || !is_object($poll))
 if(!defined("POLL_1"))
 {
 	/* if menu is being called from comments, lan files have to be included manually ... */
-	@include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
-	@include_once(e_PLUGIN."poll/languages/English.php");
+	include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 }
 
 if (empty($poll_to_show))

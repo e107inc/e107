@@ -16,8 +16,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 global $PLUGINS_DIRECTORY;
-@include_once(e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_admin.php');
-@include_once(e_PLUGIN.'content/languages/English/lan_content_admin.php');
+include_lan(e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_admin.php');
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "CONTENT_PLUGIN_LAN_1";

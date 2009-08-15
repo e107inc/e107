@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/np_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-10-07 00:19:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2009-08-15 11:54:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
-@include_once(e_LANGUAGEDIR."English/lan_np.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
 
 /**
  * Next / Previous handling class

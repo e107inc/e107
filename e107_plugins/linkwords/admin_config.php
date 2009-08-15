@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2007-07-23 21:02:23 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2009-08-15 11:54:32 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -22,8 +22,7 @@ if (!getperms("P")) {
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");
-@include_once(e_PLUGIN."linkwords/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."linkwords/languages/English.php");
+include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE.".php");
 
 $lw_context_areas = array(
 			'title' => LWLAN_33,

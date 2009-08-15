@@ -11,17 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2007-01-28 13:51:57 $
-|     $Author: e107steved $
+|     $Revision: 1.22 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 
 if(!getperms("P")) { header("location:".e_BASE."index.php"); exit; }
 
-@include_once e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php";
-@include_once e_PLUGIN."chatbox_menu/languages/English/English_config.php";
+include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php");
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");

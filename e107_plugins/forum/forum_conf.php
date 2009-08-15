@@ -11,14 +11,13 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.11 $
-| $Date: 2007-09-26 19:28:41 $
-| $Author: e107steved $
+| $Revision: 1.12 $
+| $Date: 2009-08-15 11:54:31 $
+| $Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
-@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php';
-@include_once e_PLUGIN.'forum/languages/English/lan_forum_conf.php';
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
 
 $e_sub_cat = 'forum';
 	

@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_icons_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-03-22 20:25:46 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 	
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
-@include_once(e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
 
 define("IMAGE_e", "<img src='".img_path('e.png')."' alt='' title='' style='border:0' />");
 define("IMAGE_new", "<img src='".img_path('new.png')."' alt='".LAN_199."' title='".LAN_199."' style='border:0' />");

@@ -11,19 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/date_handler.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-02-18 13:10:18 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-15 11:54:30 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
-if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php")) {
-	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
-} else {
-	@include_once(e_LANGUAGEDIR."English/lan_date.php");
-}
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
 
 class convert
 {

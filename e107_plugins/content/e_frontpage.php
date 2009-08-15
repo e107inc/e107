@@ -2,8 +2,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_frontpage.php');
-@include_once(e_PLUGIN.'content/languages/English/lan_content_frontpage.php');
+include_lan(e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_frontpage.php');
 
 $sql2 = new db;
 if ($sql2 -> db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,1)='0'")) {

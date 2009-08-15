@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-01 06:40:09 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
@@ -23,8 +23,8 @@ if (!getperms("1")) {
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");
-@include_once(e_PLUGIN."clock_menu/languages/admin/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."clock_menu/languages/admin/English.php");
+include_lan(e_PLUGIN."clock_menu/languages/admin/".e_LANGUAGE.".php");
+
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 	

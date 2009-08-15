@@ -11,15 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-04-18 20:42:32 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
-@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php';
-@include_once e_PLUGIN.'forum/languages/English/lan_forum_admin.php';
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
 
 function forum_thread_moderate($p)
 {

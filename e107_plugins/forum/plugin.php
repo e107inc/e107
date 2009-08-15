@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-04-29 20:34:37 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
-@include_once(e_PLUGIN.'forum/languages/English/lan_forum_conf.php');
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = 'Forum';

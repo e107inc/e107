@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-01-10 21:30:34 $
-|     $Author: e107steved $
+|     $Revision: 1.21 $
+|     $Date: 2009-08-15 11:54:30 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
-@include_once(e_LANGUAGEDIR."English/lan_rate.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
+
 class rater {
 	function rateselect($text, $table, $id, $mode=FALSE) {
 		//$mode	: if mode is set, no urljump will be used (used in combined comments+rating system)

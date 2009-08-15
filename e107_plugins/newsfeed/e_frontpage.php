@@ -2,8 +2,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_frontpage.php');
-@include_once(e_PLUGIN.'newsfeed/languages/English_frontpage.php');
+include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_frontpage.php');
 
 $front_page['newsfeed']['title'] = NWSF_FP_1.': '.$row['content_heading'];
 $front_page['newsfeed']['page'][] = array('page' => $PLUGINS_DIRECTORY.'newsfeed/newsfeed.php', 'title' => NWSF_FP_2);

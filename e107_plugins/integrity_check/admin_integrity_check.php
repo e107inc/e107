@@ -203,7 +203,7 @@ if (e_QUERY) {
 }
 	
 //Language-definitions
-@include_once((file_exists("languages/".e_LANGUAGE.".php") ? "languages/".e_LANGUAGE.".php" : "languages/English.php"));
+include_lan(e_PLUGIN."integrity_check/languages/".e_LANGUAGE.".php");
 	
 if (file_exists($o_path."log.txt")) {
 	$_log = explode(".-.", stripslashes(file_get_contents($o_path."log.txt")));

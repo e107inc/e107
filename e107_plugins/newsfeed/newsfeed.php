@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-05-30 20:36:47 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2009-08-15 11:54:32 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 
-@include_once(e_PLUGIN."newsfeed/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."newsfeed/languages/English.php");
+include_lan(e_PLUGIN."newsfeed/languages/".e_LANGUAGE.".php");
+
 if(!function_exists("checkUpdate"))
 {
 	require(e_PLUGIN."newsfeed/newsfeed_functions.php");

@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-08-25 15:37:54 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2009-08-15 11:54:32 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-@include_once(e_PLUGIN."newsletter/languages/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."newsletter/languages/English.php");
+include_lan(e_PLUGIN."newsletter/languages/".e_LANGUAGE.".php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "NLLAN_01";

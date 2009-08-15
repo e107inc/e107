@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2008-09-17 19:56:14 $
-|     $Author: e107steved $
+|     $Revision: 1.34 $
+|     $Date: 2009-08-15 11:54:31 $
+|     $Author: marj_nl_fr $
 |
 | 09.11.06 - Started next batch of mods
 +----------------------------------------------------------------------------+
@@ -36,7 +36,7 @@ if (isset($_POST['subs']))
     Header("Location: ".e_PLUGIN."calendar_menu/subscribe.php");
 }
 
-@include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
+include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
 define("PAGE_NAME", EC_LAN_80);
 
 require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
