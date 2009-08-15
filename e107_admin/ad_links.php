@@ -9,9 +9,9 @@
  * Admin Navigation
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-08-05 20:05:48 $
- * $Author: e107coders $
+ * $Revision: 1.16 $
+ * $Date: 2009-08-15 01:00:38 $
+ * $Author: bugrain $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -144,6 +144,9 @@ if (!defined('E_16_CRON')) {
 }
 if (!defined('E_16_CUST')) {
 	define('E_16_CUST', "<img class='icon S16' src='".e_IMAGE."admin_images/custom_16.png' alt='' />");
+}
+if (!defined('E_16_CUSTOMFIELD')) {
+	define('E_16_CUSTOMFIELD', "<img class='icon S16' src='".e_IMAGE."admin_images/custom_field_16.png' alt='' />");
 }
 if (!defined('E_16_DATAB')) {
 	define('E_16_DATAB', "<img class='icon S16' src='".e_IMAGE."admin_images/database_16.png' alt='' />");
@@ -294,6 +297,9 @@ if (!defined('E_32_CRON')) {
 if (!defined('E_32_CUST')) {
 	define('E_32_CUST', "<img class='icon S32' src='".e_IMAGE."admin_images/custom_32.png' alt='' />");
 }
+if (!defined('E_32_CUSTOMFIELD')) {
+	define('E_32_CUSTOMFIELD', "<img class='icon S16' src='".e_IMAGE."admin_images/custom_field_32.png' alt='' />");
+}
 if (!defined('E_32_DATAB')) {
 	define('E_32_DATAB', "<img class='icon S32' src='".e_IMAGE."admin_images/database_32.png' alt='' />");
 }
@@ -430,6 +436,7 @@ $e_icon_array = array(
 	'credits' => E_32_CREDITS,
 	'cron'	=> E_32_CRON,
 	'custom' => E_32_CUST,
+	'custom_field' => E_32_CUSTOMFIELD,
 	'database' => E_32_DATAB,
 	'docs' => E_32_DOCS,
 	'download' => E_32_DOWNL,
@@ -581,8 +588,9 @@ $array_functions = array(
 	32 => array(e_ADMIN.'eurl.php', ADLAN_159, ADLAN_160, 'L', 1, E_16_EURL, E_32_EURL),
 	33 => array(e_ADMIN.'plugin.php', ADLAN_98, ADLAN_99, 'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
 	34 => array(e_ADMIN.'docs.php', ADLAN_12, ADLAN_13, '', 20, E_16_DOCS, E_32_DOCS),
-	35 => array('#TODO', 'System Info', 'System Information', '', 20, E_16_SYSINFO, E_32_SYSINFO),
-	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_CREDITS, E_32_CREDITS)
+	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
+	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, '', ''),
+	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD)
 );
 
 //FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php

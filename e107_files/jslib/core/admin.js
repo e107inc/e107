@@ -8,8 +8,8 @@
  * e107 Admin Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.19 $
- * $Date: 2009-08-15 00:03:05 $
+ * $Revision: 1.20 $
+ * $Date: 2009-08-15 01:00:38 $
  * $Author: bugrain $
  *
 */
@@ -307,6 +307,15 @@ if(e107Admin.initRules.AdminMenu)
 
 
 //TODO find the right place for this and make generic - wanted it out of download plugin for now
+// Current use:
+// - filter text field must be in a form
+// - form tag must have a class of e-filter-form
+// - form must have an id of jstarget-xxx where xxx is the ID of the element to be replaced by the Ajax response
+// - form action must be the URL to submit the Ajax request to
+// - ajax requests posts 3 values:
+//    - ajax_used = 1 - because of a current issue with e107Ajax.Updater
+//    - filter_list=1 - to indicate to called URL that this is a filter list request
+//    - the name/value of the st input field in the form, i.e. the one with the text to be searched for
 e107.runOnLoad(function(){
    $$('form.e-filter-form').each(function(f) {
       var el = f.select('input')[0];
@@ -320,12 +329,9 @@ e107.runOnLoad(function(){
    		   }
    		   el.e107PreviousValue = el.getValue();
    		   el.e107Timeout = window.setTimeout(function () {
-   				new e107Ajax.Updater('downloads-list', f.action, {
+   				new e107Ajax.Updater(f.id.replace(/jstarget-/, '').strip(), f.action, {
    					method: 'post',
-   					parameters: { //send query parameters here
-   						'download_filter_list': 1,
-   						'download-search-text': el.getValue()
-   					},
+   					parameters: 'ajax_used=1&filter_list=1&'+el.name+'='+el.getValue(),
    					overlayPage: $(document.body)
    				});
    	      }, 500);
