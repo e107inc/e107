@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-08-16 16:30:56 $
-|     $Author: secretr $
+|     $Revision: 1.2 $
+|     $Date: 2009-08-16 23:58:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -213,7 +213,7 @@ class e_menuManager {
 		}
 
 		$file = urldecode($_GET['path']).".php";
-		$newurl = e_PLUGIN_ABS.$file;
+		$newurl = e_PLUGIN_ABS.$file."?id=".$_GET['id'];
 
      /*
 
@@ -1053,7 +1053,7 @@ class e_menuManager {
 
 		if($conf)
 		{
-			$text .= '<a href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'">
+			$text .= '<a href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'">
 				'.ADMIN_CONFIGURE_ICON.'
 			</a>';
 		}

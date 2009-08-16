@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-07-09 02:47:12 $
+|     $Revision: 1.20 $
+|     $Date: 2009-08-16 23:58:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -293,6 +293,7 @@ CREATE TABLE menus (
   menu_pages text NOT NULL,
   menu_path varchar(100) NOT NULL default '',
   menu_layout varchar(100) NOT NULL default '',
+  menu_parms text NOT NULL,
   PRIMARY KEY  (menu_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
