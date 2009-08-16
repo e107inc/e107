@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2008-10-03 19:27:49 $
-|     $Author: e107steved $
+|     $Revision: 1.73 $
+|     $Date: 2009-08-16 15:53:00 $
+|     $Author: e107steved $	   ** Amended by Marj to re-order list line 818 - 851
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -753,7 +753,7 @@ class e107forum
 				$gen = new convert;
 				$email_name = $parent_thread[0]['user_name'];
 				$email_addy = $parent_thread[0]['user_email'];
-				$message = LAN_384.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$email_post."<br /><br />". LAN_383."<br /><br />".$mail_link;
+				$message = LAN_384.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$tp->toHTML($email_post, TRUE, 'USER_BODY')."<br /><br />". LAN_383."<br /><br />".$mail_link;
 				include_once(e_HANDLER."mail.php");
 				sendemail($email_addy, $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message, $email_name);
 			}
@@ -763,7 +763,7 @@ class e107forum
 			if ($pref['forum_track'] && $sql->db_Select("user", "user_id, user_email, user_name", "user_realm REGEXP('-".intval($thread_parent)."-') "))
 			{
 				include_once(e_HANDLER.'mail.php');
-				$message = LAN_385.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$email_post."<br /><br />". LAN_383."<br /><br />".$mail_link;
+				$message = LAN_385.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$tp->toHTML($email_post, TRUE, 'USER_BODY')."<br /><br />". LAN_383."<br /><br />".$mail_link;
 				while ($row = $sql->db_Fetch())
 				{	// Don't sent to self, nor to originator of thread if they've got 'notify' set
 					if ($row['user_email'] && ($row['user_email'] != $email_addy) && ($row['user_id'] != USERID))	// (May be wrong, but this could be faster than filtering current user in the query)
@@ -814,6 +814,41 @@ class e107forum
 		}
 		return $ret;
 	}
+	
+	//*** added by marj
+        function postGetOldestNew($count = 50, $userviewed = USERVIEWED)
+        {
+                global $sql;
+                $viewed = '';
+                if($userviewed)
+                {
+                        $viewed = preg_replace('#\.+#', '.', $userviewed);
+                        $viewed = preg_replace('#^\.#', '', $viewed);
+                        $viewed = preg_replace('#\.$#', '', $viewed);
+                        $viewed = str_replace('.', ',', $viewed);
+                }
+                if($viewed != '')
+                {
+                        $viewed = ' AND ft.thread_id NOT IN ('.$viewed.') AND  ft.thread_parent NOT IN ('.$viewed.') ';
+                }
+
+                $qry = '
+                SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class, f.forum_name
+                FROM #forum_t AS ft
+                LEFT JOIN #forum_t as fp ON fp.thread_id = ft.thread_parent
+                LEFT JOIN #user as u ON u.user_id = SUBSTRING_INDEX(ft.thread_user,".",1)
+                LEFT JOIN #forum as f ON f.forum_id = ft.thread_forum_id
+                WHERE ft.thread_datestamp > '.USERLV. '
+                AND f.forum_class IN ('.USERCLASS_LIST.')
+        '.$viewed.'
+                ORDER BY ft.thread_datestamp ASC LIMIT 0, '.intval($count);
+                if($sql->db_Select_gen($qry))
+                {
+                        $ret = $sql->db_getList();
+                }
+                return $ret;
+        }
+//*** end added by marj
 
 	function forum_prune($type, $days, $forumArray)
 	{
