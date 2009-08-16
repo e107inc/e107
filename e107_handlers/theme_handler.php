@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2009-08-06 22:27:47 $
-|     $Author: e107coders $
+|     $Revision: 1.43 $
+|     $Date: 2009-08-16 16:30:56 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -103,8 +103,8 @@ class themeHandler{
 		{
         	$key = key($_POST['setMenuPreset']);
            	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
-        	require_once(e_HANDLER."menu_class.php");
-			$men = new menuManager();
+        	require_once(e_HANDLER."menumanager_class.php");
+			$men = new e_menuManager();
 			$men->curLayout = $key;
 			$men->dbLayout = ($men->curLayout !=$pref['sitetheme_deflayout']) ? $men->curLayout : "";  //menu_layout is left blank when it's default.
 
