@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-07-31 16:11:35 $
+ * $Revision: 1.14 $
+ * $Date: 2009-08-16 15:10:38 $
  * $Author: secretr $
  *
 */
@@ -90,7 +90,7 @@ class eMessage
 	/**
 	 * Get singleton instance (php4 no more supported)
 	 *
-	 * @return e107
+	 * @return eMessage
 	 */
 	public static function getInstance()
 	{
@@ -484,6 +484,7 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 	{
 	  case "CRITICAL_ERROR" :
 		$message = $emessage[$message] ? $emessage[$message] : $message;
+		//FIXME - this breaks class2 pref check!!!
 	    if (is_readable(e_THEME.'index.html'))
 		{
 		  require_once(e_THEME.'index.html');
