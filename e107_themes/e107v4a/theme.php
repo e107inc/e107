@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-08-14 22:31:09 $
+|     $Revision: 1.6 $
+|     $Date: 2009-08-16 23:58:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -74,6 +74,7 @@ $HEADER['3_column'] =
 
 $FOOTER['3_column'] =
 "</td><td style='width:20%; vertical-align:top'>
+{PLUGIN=user_menu/usertheme_menu}
 {SETSTYLE=rightmenu}
 {MENU=2}
 </td></tr>
@@ -254,6 +255,7 @@ define(LINKALIGN, "left");
 function tablestyle($caption, $text,$id, $dataArray)
 {
   //  global $style; // Not needed - see $dataArray;
+  //  print_a($dataArray);
 
 
     echo "

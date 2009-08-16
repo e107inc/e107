@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.128 $
-* $Date: 2009-08-16 16:30:56 $
-* $Author: secretr $
+* $Revision: 1.129 $
+* $Date: 2009-08-16 23:58:30 $
+* $Author: e107coders $
 *
 */
 //
@@ -885,7 +885,7 @@ if (!class_exists('e107table'))
 
     	public $eMenuCount = 0;
 		public $eMenuArea;
-		public $eMenuTotal = 0;
+		public $eMenuTotal = array();
 		public $eSetStyle;
 
 		function tablerender($caption, $text, $mode = 'default', $return = false)
@@ -917,7 +917,7 @@ if (!class_exists('e107table'))
 					$this->eMenuCount++;
 				}
 				ob_start();
-				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>$this->eMenuTotal,'setStyle'=>$this->eSetStyle));
+				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>$this->eMenuTotal[$this->eMenuArea],'setStyle'=>$this->eSetStyle));
 				$ret=ob_get_contents();
 				ob_end_clean();
 
@@ -930,7 +930,7 @@ if (!class_exists('e107table'))
 		 		{
 	         		$this->eMenuCount++;
 			   	}
-				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>$this->eMenuTotal,'setStyle'=>$this->eSetStyle));
+				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>$this->eMenuTotal[$this->eMenuArea],'setStyle'=>$this->eSetStyle));
 				return '';
 			}
 		}
@@ -1488,7 +1488,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 		  	// Create the data to be stored
 	  		if($sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('SitePrefs', '".$eArrayStorage->WriteArray($_pref)."') "))
 			{
-		  		ecache::clear_sys('SitePrefs');
+		  		ecache::clear_sys('Config_core');
 				return true;
 			}
 			else
@@ -1504,7 +1504,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
   		if($sql->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('IconPool', '".$eArrayStorage->WriteArray($_iconpool)."') "))
 		{
-	  		ecache::clear_sys('IconPool');
+	  		ecache::clear_sys('Config_ipool');
 			return true;
 		}
 		else
