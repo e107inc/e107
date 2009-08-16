@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-07-17 02:28:49 $
-|     $Author: e107coders $
+|     $Revision: 1.32 $
+|     $Date: 2009-08-16 16:30:56 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -27,12 +27,12 @@ $e_sub_cat = 'menus';
 require_once(e_HANDLER."file_class.php");
 require_once(e_HANDLER."form_handler.php");
 require_once (e_HANDLER.'message_handler.php');
-require_once(e_HANDLER."menu_class.php");
+require_once(e_HANDLER."menumanager_class.php");
 
 
 	$rs = new form;
 	$frm = new e_form();
-	$men = new menuManager();   // use 1 for dragdrop.
+	$men = new e_menuManager();   // use 1 for dragdrop.
 
 
   if(isset($_GET['ajax']))

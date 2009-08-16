@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.127 $
-* $Date: 2009-08-14 22:31:08 $
-* $Author: e107coders $
+* $Revision: 1.128 $
+* $Date: 2009-08-16 16:30:56 $
+* $Author: secretr $
 *
 */
 //
@@ -1164,43 +1164,7 @@ if(!defined("THEME_LAYOUT"))
 $sql->db_Mark_Time('Start: Get menus');
 if(!isset($_E107['no_menus']))
 {
-	$menu_layout_field = (THEME_LAYOUT != $pref['sitetheme_deflayout']) ? THEME_LAYOUT : "";
-  	$menu_data = $e107cache->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
- 	$menu_data = $eArrayStorage->ReadArray($menu_data);
-	$eMenuList		= array();
-	$eMenuActive	= array();
-	$eMenuArea		= array();
-
-	if(!is_array($menu_data))
-	{
-
-		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.') AND menu_layout = "'.$menu_layout_field.'" ORDER BY menu_location,menu_order';
-		if ($sql->db_Select_gen($menu_qry))
-		{
-			while ($row = $sql->db_Fetch())
-			{
-				$eMenuList[$row['menu_location']][] = $row;
-                $eMenuArea[$row['menu_location']][$row['menu_name']] = 1;
-				$eMenuActive[$row['menu_name']]	= $row['menu_name'];
-			}
-		}
-		$menu_data['menu_area'] = $eMenuArea;
-		$menu_data['menu_list'] = $eMenuList;
-		$menu_data['menu_active'] = $eMenuActive;
-		$menu_data = $eArrayStorage->WriteArray($menu_data, false);
-		$e107cache->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE), $menu_data);
-
-		unset($menu_data,$menu_layout_field,$menu_qry);
-	}
-	else
-	{
-		$eMenuArea 	= $menu_data['menu_area'];
-		$eMenuList 	= $menu_data['menu_list'];
-		$eMenuActive = $menu_data['menu_active'];
-		unset($menu_data);
-	}
-
-
+	e107::getMenu()->init();
 }
 
 

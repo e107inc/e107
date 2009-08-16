@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-08-05 19:56:48 $
+ * $Revision: 1.35 $
+ * $Date: 2009-08-16 16:30:56 $
  * $Author: secretr $
 */
 
@@ -217,8 +217,12 @@ class e107
 	 * @param string $regpath additional registry path
 	 * @return Object
 	 */
-	public static function getSingleton($class_name, $path = null, $regpath = '')
+	public static function getSingleton($class_name, $path = true, $regpath = '')
 	{
+		if(true === $path)
+		{
+			//TODO All handler class names in array (lazy loading)
+		}
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
 		if(!e107::getRegistry($id))
 		{
@@ -486,6 +490,16 @@ class e107
 	public static function getArrayStorage()
 	{
 		return self::getSingleton('ArrayData', e_HANDLER.'arraystorage_class.php');
+	}
+	
+	/**
+	 * Retrieve menu handler singleton object
+	 *
+	 * @return e_menu
+	 */
+	public static function getMenu()
+	{
+		return self::getSingleton('e_menu', e_HANDLER.'menu_class.php');
 	}
 	
 	/**
