@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-08-17 14:50:44 $
+|     $Revision: 1.5 $
+|     $Date: 2009-08-17 15:23:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -323,12 +323,19 @@ class e_menuManager {
 
 	        	if(!$sql->db_Update('menus', "menu_order='{$val['menu_order']}', menu_location = ".$val['menu_location'].", menu_class= ".$val['menu_class']." WHERE menu_name='".$val['menu_name']."' AND menu_layout = '".$this->dbLayout."' LIMIT 1 "))
 				{
-	 				$qry = "
-					INSERT into #menus
-					(`menu_name`, `menu_location`, `menu_order`, `menu_pages`,`menu_class`, `menu_path`, `menu_layout`)
-					VALUES ('{$val['menu_name']}', {$val['menu_location']}, {$val['menu_order']}, '', '{$val['menu_class']}',  '{$row['menu_path']}', '".$this->dbLayout."')
-					";
-					$sql->db_Select_gen($qry,$this->debug);
+                	$insert = array(
+                        	'menu_id'	=> 0,
+							'menu_name' 	=> $val['menu_name'],
+							'menu_location'	=> $val['menu_location'],
+							'menu_order'	=> $val['menu_order'],
+							'menu_class'	=> $val['menu_class'],
+							'menu_pages'	=> '',
+                            'menu_path'		=> $row['menu_path'],
+							'menu_layout'  	=> $this->dbLayout,
+							'menu_parms'	=> ''
+						);
+
+					$sql->db_Insert("menus",$insert);
 				  	$admin_log->log_event('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 
 				}
@@ -383,6 +390,8 @@ class e_menuManager {
 							'menu_class'	=> 0,
 							'menu_pages'	=> '',
                             'menu_path'		=> $file['path'],
+							'menu_layout'  	=> '',
+							'menu_parms'	=> ''
 						);
 
    						if($sql->db_Insert("menus",$insert))
@@ -525,12 +534,21 @@ class e_menuManager {
 
 				if(!$sql->db_Select_gen($query, $this->debug))
 				{
-					$qry = "
-					INSERT into #menus
-					(`menu_name`, `menu_location`, `menu_order`, `menu_pages`, `menu_path`, `menu_layout`)
-					VALUES ('{$row['menu_name']}', {$location}, {$menu_count}, '', '{$row['menu_path']}', '".$this->dbLayout."')
-					";
-					$sql->db_Select_gen($qry,$this->debug);
+
+                   $insert = array(
+                        	'menu_id'	=> 0,
+							'menu_name' 	=> $row['menu_name'],
+							'menu_location'	=> $location,
+							'menu_order'	=> $menu_count,
+							'menu_class'	=> $val['menu_class'],
+							'menu_pages'	=> '',
+                            'menu_path'		=> $row['menu_path'],
+							'menu_layout'  	=> $this->dbLayout,
+							'menu_parms'	=> ''
+				   );
+
+					$sql->db_Insert("menus",$insert, $this->debug);
+
 					$admin_log->log_event('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 					$menu_count++;
 				}
@@ -1069,8 +1087,7 @@ class e_menuManager {
 			</a>';
 		}
 
-		$text .= '<a href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">
-			'.ADMIN_DELETE_ICON.'
+		$text .= '<a class="delete" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'
 		</a>
 		</div>';
 
