@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2009-08-17 14:40:22 $
-|     $Author: secretr $
+|     $Revision: 1.47 $
+|     $Date: 2009-08-17 16:08:11 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -1276,27 +1276,28 @@ class themeHandler{
 
 	 	if(substr($releaseUrl,-4) == ".php")
 		{
-        	$releaseUrl .= "?name=".$curTheme."&ver".$curVersion;
+        	$releaseUrl .= "?folder=".$curTheme."&ver=".$curVersion;
 		}
 
 		if($rawData = $xml -> loadXMLfile($releaseUrl, TRUE))
 		{
-	    	if(!$rawData['release'][1])
+	    	if(!$rawData['theme'][1])
 			{
-	        	$rawData['release'] = $rawData;
+	        	$rawData['theme'] = $rawData;
 			}
 
 	        $txt = "";
 
-	        foreach($rawData['release'] as $val)
+	        foreach($rawData['theme'] as $val)
 			{
-				$name 		= $val['@attributes']['foldername'];
+				$name    	= $val['@attributes']['name'];
+				$folder    	= $val['@attributes']['folder'];
 				$version 	= $val['@attributes']['version'];
 				$url 		= $val['@attributes']['url'];
 
-	            if(($name == $curTheme)  && version_compare($version,$curVersion)==1)
+	            if(($folder == $curTheme)  && version_compare($version,$curVersion)==1)
 				{
-	             	$txt .= ADLAN_161." <a href='".$url."'>".$name ." v".$version."</a><br />";
+	             	$txt .= ADLAN_162." <a href='".$url."'>".$name ." v".$version."</a><br />";
 					break;
 				}
 	        }
