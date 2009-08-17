@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2009-08-17 12:48:52 $
+|     $Revision: 1.43 $
+|     $Date: 2009-08-17 15:45:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -612,11 +612,13 @@ function update_706_to_800($type='')
 
 
 	// Tables whose definition needs changing significantly
+     $debugLevel = E107_DBG_SQLDETAILS;
+
 	foreach ($changed_tables as $ct)
 	{
 	  $req_defs = $db_parser->get_table_def($ct,e_ADMIN."sql/core_sql.php");
 	  $req_fields = $db_parser->parse_field_defs($req_defs[0][2]);					// Required definitions
-	  if (E107_DBG_FILLIN8) echo "Required table structure: <br />".$db_parser->make_field_list($req_fields);
+	  if ($debugLevel) echo "Required table structure: <br />".$db_parser->make_field_list($req_fields);
 
 	  if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
 	  {
@@ -626,16 +628,16 @@ function update_706_to_800($type='')
 	  {
 //		echo $db_parser->make_table_list($actual_defs);
 		$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
-		if (E107_DBG_FILLIN8) echo "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
+		if ($debugLevel) echo "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
 
 		$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
 		if (count($diffs[0]))
 		{  // Changes needed
 		  if ($just_check) return update_needed("Field changes rqd; table: ".$ct);
 		// Do the changes here
-		  if (E107_DBG_FILLIN8) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
+		  if ($debugLevel) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
 		  $qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
-		  if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
+		  if ($debugLevel) echo "Update Query used: ".$qry."<br />";
 		  $sql->db_Select_gen($qry);
 			$updateMessages[] = LAN_UPDATE_47.$ct;
 		  catch_error();

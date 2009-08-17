@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-21 14:20:13 $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-17 15:45:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ class e107_db_debug {
 	function Show_All() 
 	{
 		global $eTraffic;
-		
+
 		$this->ShowIf('Debug Log', $this->Show_Log());
 		$this->ShowIf('Traffic Counters', $eTraffic->Display());
 		$this->ShowIf('Time Analysis', $this->Show_Performance());
@@ -235,7 +235,7 @@ class e107_db_debug {
 		//
 		// Optionally list good queries
 		//
-		if ($okCount && E107_DBG_SQLQUERIES) {
+		if ($okCount && E107_DBG_SQLDETAILS) {
 			$text .= "\n<table class='fborder'>\n";
 			$text .= "<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
