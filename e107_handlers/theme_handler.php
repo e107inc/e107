@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2009-08-17 16:08:11 $
+|     $Revision: 1.48 $
+|     $Date: 2009-08-17 18:42:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1252,68 +1252,7 @@ class themeHandler{
 
 
 
-	function themeReleaseCheck($curTheme,$curVersion,$releaseUrl,$cache=TRUE)
-	{
-		global $e107cache;
 
-	    if(!$releaseUrl)
-		{
-	    	return;
-		}
-
-		$e107cache->CachePageMD5 = md5($curTheme.$curVersion);
-
-		if(($cache==TRUE) && ($cacheData = $e107cache->retrieve('themeUpdateCheck', 3600, TRUE)))
-		{
-	        require_once(e_HANDLER."message_handler.php");
-			$emessage = &eMessage::getInstance();
-			$emessage->add($cacheData);
-			return;
-		}
-
-	    require_once(e_HANDLER.'xml_class.php');
-		$xml = new xmlClass;
-
-	 	if(substr($releaseUrl,-4) == ".php")
-		{
-        	$releaseUrl .= "?folder=".$curTheme."&ver=".$curVersion;
-		}
-
-		if($rawData = $xml -> loadXMLfile($releaseUrl, TRUE))
-		{
-	    	if(!$rawData['theme'][1])
-			{
-	        	$rawData['theme'] = $rawData;
-			}
-
-	        $txt = "";
-
-	        foreach($rawData['theme'] as $val)
-			{
-				$name    	= $val['@attributes']['name'];
-				$folder    	= $val['@attributes']['folder'];
-				$version 	= $val['@attributes']['version'];
-				$url 		= $val['@attributes']['url'];
-
-	            if(($folder == $curTheme)  && version_compare($version,$curVersion)==1)
-				{
-	             	$txt .= ADLAN_162." <a href='".$url."'>".$name ." v".$version."</a><br />";
-					break;
-				}
-	        }
-
-			if($txt)
-			{
-	            require_once (e_HANDLER."message_handler.php");
-				$emessage = &eMessage::getInstance();
-				$emessage->add($txt);
-				if($cache==TRUE)
-				{
-					$e107cache->set('themeUpdateCheck', $txt, TRUE);
-				}
-			}
-		}
-	}
 
 }
 ?>
