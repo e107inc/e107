@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.129 $
-* $Date: 2009-08-16 23:58:30 $
-* $Author: e107coders $
+* $Revision: 1.130 $
+* $Date: 2009-08-17 14:40:23 $
+* $Author: secretr $
 *
 */
 //
@@ -1472,10 +1472,36 @@ function get_user_data($uid, $extra = '')
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
+//SO MUCH DEPRECATED - use e107::getConfig(alias)->save() instead
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
-  global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref, $iconpool;
+	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref, $iconpool;
+	
+	switch($table)
+	{
+		case 'core':
+			//brute load, force update
+			return e107::getConfig()->loadData($pref, false)->save(false, true);
+			break;
+			
+		case 'iconpool':
+			//brute load, force update
+			return e107::getConfig('ipool')->loadData($iconpool, true)->save(false, true);
+			break;
+			
+		case 'theme':
+			//brute load, force update
+			return e107::getConfig()->set('sitetheme_pref', $theme_pref)->save(false, true);
+			break;
+			
+		default:
+			$_user_pref = $tp->toDB($user_pref, true, true);
+			$tmp = $eArrayStorage->WriteArray($_user_pref);
+			$sql->db_Update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
+			return $tmp;
+			break;
+	}
+	/*
   if ($table == 'core')
   {
 		if ($row_val == '')
@@ -1526,6 +1552,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 		$sql->db_Update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
 		return $tmp;
   }
+	*/
 }
 
 
