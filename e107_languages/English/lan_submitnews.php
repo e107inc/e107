@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_submitnews.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-04-21 21:26:37 $
+|     $Revision: 1.5 $
+|     $Date: 2009-08-17 19:22:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -29,5 +29,6 @@ define("SUBNEWSLAN_4", "File too Large");
 define("SUBNEWSLAN_5", "Image File");
 define("SUBNEWSLAN_6", "(jpg, gif or png)");
 define('SUBNEWSLAN_7', 'You must give your name and email address');
+define('SUBNEWSLAN_8', 'Error uploading image');
 
 ?>
