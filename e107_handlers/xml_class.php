@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-14 03:18:16 $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-17 12:48:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -48,13 +48,15 @@ class xmlClass
 
 	  $address = str_replace(array("\r","\n", "\t"),'',$address);			// May be paranoia, but streaky thought it might be a good idea
 																			// ... and there shouldn't be unprintable characters in the URL anyway
-	  
+
 		if(function_exists('file_get_contents'))
 		{
+
 		  $old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-//		  $data = file_get_contents(urlencode($address));
-		  $data = file_get_contents(htmlspecialchars($address));	// PHP manual says to use urlencode() - but this seems to work better
+		  $data = file_get_contents(urlencode($address));
+ //		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails. 
 		  if ($old_timeout !== FALSE) { e107_ini_set('default_socket_timeout', $old_timeout); }
+
 		  if ($data)
 		  {
 			return $data;

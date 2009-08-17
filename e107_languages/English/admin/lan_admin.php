@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.23 2009-07-18 15:53:10 marj_nl_fr Exp $
+ * $Id: lan_admin.php,v 1.24 2009-08-17 12:48:52 e107coders Exp $
  *
  * Admin Language File
 */
@@ -180,6 +180,7 @@ define("ADLAN_158", "Cron Jobs and Automated Tasks");
 
 define("ADLAN_159", "URL Configuration");
 define("ADLAN_160", "Configure Site URLs");
+define("ADLAN_161", "A newer version of your site-theme is available:");
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');
@@ -296,3 +297,5 @@ define("LAN_CATEGORY", "Category");
 define("LAN_HELP", "Help");
 define("LAN_MENULAYOUT", "Menu Layout");
 define("LAN_IMAGEMANAGER", "Image Manager");
+
+define("LAN_MOREINFO","More Information...");
