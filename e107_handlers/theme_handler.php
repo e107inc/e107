@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2009-08-16 16:30:56 $
-|     $Author: secretr $
+|     $Revision: 1.44 $
+|     $Date: 2009-08-17 11:25:01 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,6 +25,7 @@ class themeHandler{
 	var $id;
 	var $frm;
 	var $fl;
+	var $themeConfigObj = null;
 
 	/* constructor */
 
@@ -513,10 +514,21 @@ class themeHandler{
 	{
 		$confile = e_THEME.$this->id."/".$this->id."_config.php";
 
-		if(is_readable($confile) && !function_exists($this->id."_config"))
+		if(($this->themeConfigObj === null) && is_readable($confile))
 		{
+
 			include($confile);
+            $className = 'theme_'.$this->id;
+			if(class_exists($className))
+			{
+				$this->themeConfigObj = new $className();
+			}
+			else
+			{
+            	$this->themeConfigObj = FALSE;
+			}
         }
+
 	}
 
 
@@ -525,10 +537,11 @@ class themeHandler{
 	{
 			global $frm;
 
-			if(function_exists($this->id."_config"))
+            $this -> loadThemeConfig();
+
+			if($this->themeConfigObj)
 			{
-				$text = "";
-	        	$var = call_user_func($this->id."_config");
+	        	$var = call_user_method("config",$this->themeConfigObj);
                 foreach($var as $val)
 				{
 	            	$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
@@ -541,9 +554,9 @@ class themeHandler{
 
 	function renderThemeHelp()
 	{
-		if(function_exists($this->id."_help"))
-		{
-   			return call_user_func($this->id."_help");
+		if($this->themeConfigObj)
+	   	{
+			return call_user_method("help",$this->themeConfigObj);
 		}
 	}
 
@@ -554,14 +567,10 @@ class themeHandler{
 		global $theme_pref;
         $this -> loadThemeConfig();
 
-		$confile = e_THEME.$this->id."/".$this->id."_config.php";
-
-		if(function_exists($this->id."_process"))
-		{
-        	$text  = call_user_func($this->id."_process");
-	 	}
-
-	  	return $text;
+        if($this->themeConfigObj)
+	   	{
+			return call_user_method("process",$this->themeConfigObj);
+		}
 	}
 
 	function renderTheme($mode=FALSE, $theme)
@@ -614,7 +623,7 @@ class themeHandler{
 		<h2 class='caption'>".$theme['name']."</h2>
         <div class='admintabs' id='tab-container'>";
 
-        if(function_exists($this->id."_help"))
+        if(call_user_method("help",$this->themeConfigObj))
 		{
 			$text .= "
 				<ul class='e-tabs e-hideme' id='core-thememanager-tabs'>
