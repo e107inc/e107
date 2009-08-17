@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-06-29 21:26:58 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-08-17 15:45:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -503,6 +503,8 @@ class db_table_admin
 	{
 		global $sql;
 		// Pull out table name
+        $debugLevel = E107_DBG_SQLDETAILS;
+
 		$tableName = $newStructure[1];
 		if (!$sql->db_Table_exists($tableName))
 		{
@@ -511,7 +513,7 @@ class db_table_admin
 			return 'Error creating new table: '.$tableName;
 		}
 		$reqFields = $this->parse_field_defs($newStructure[2]);					// Required field definitions
-		if (E107_DBG_FILLIN8) { echo "Required table structure: <br />".$this->make_field_list($reqFields); }
+	 	if ($debugLevel) { echo "Required table structure: <br />".$this->make_field_list($reqFields); }
 
 		if ((($actualDefs = $this->get_current_table($tableName)) === FALSE) || !is_array($actualDefs))			// Get actual table definition (Adds current default prefix)
 		{
@@ -521,16 +523,16 @@ class db_table_admin
 		{
 			//		echo $db_parser->make_table_list($actual_defs);
 			$actualFields = $this->parse_field_defs($actualDefs[0][2]);			// Split into field definitions
-			if (E107_DBG_FILLIN8) { echo 'Actual table structure: <br />'.$this->make_field_list($actualFields); }
+			if ($debugLevel) { echo 'Actual table structure: <br />'.$this->make_field_list($actualFields); }
 
 			$diffs = $this->compare_field_lists($reqFields,$actualFields);		// Work out any differences
 			if (count($diffs[0]))
 			{  // Changes needed
 				if ($justCheck) { return 'Field changes rqd; table: '.$tableName.'<br />'; }
 				// Do the changes here
-				if (E107_DBG_FILLIN8) { echo "List of changes found:<br />".$this->make_changes_list($diffs); }
+				if ($debugLevel) { echo "List of changes found:<br />".$this->make_changes_list($diffs); }
 				$qry = 'ALTER TABLE '.MPREFIX.$tableName.' '.implode(', ',$diffs[1]);
-				if (E107_DBG_FILLIN8) { echo 'Update Query used: '.$qry.'<br />'; }
+				if ($debugLevel) { echo 'Update Query used: '.$qry.'<br />'; }
 				if ($mlUpdate)
 				{
 					$ret = $sql->db_Query_all($qry);	// Returns TRUE = success, FALSE = fail
