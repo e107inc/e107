@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2009-08-17 11:25:01 $
+|     $Revision: 1.45 $
+|     $Date: 2009-08-17 12:48:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -973,6 +973,8 @@ class themeHandler{
         $pref['sitetheme_deflayout'] = $this->findDefault($themeArray[$this -> id]);
 		$pref['sitetheme_layouts'] = is_array($this->themeArray[$pref['sitetheme']]['layouts']) ? $this->themeArray[$pref['sitetheme']]['layouts'] : array();
         $pref['sitetheme_custompages'] = $this->themeArray[$pref['sitetheme']]['custompages'];
+        $pref['sitetheme_version'] = $this->themeArray[$pref['sitetheme']]['version'];
+		$pref['sitetheme_releaseUrl'] = $this->themeArray[$pref['sitetheme']]['releaseUrl'];
 
         $sql -> db_Delete("menus", "menu_layout !='' ");
 
@@ -1188,6 +1190,7 @@ class themeHandler{
 		$vars['version']				= varset($vars['@attributes']['version']);
 		$vars['date']					= varset($vars['@attributes']['date']);
 		$vars['compatibility']			= varset($vars['@attributes']['compatibility']);
+		$vars['releaseUrl']				= varset($vars['@attributes']['releaseUrl']);
 		$vars['email']	 				= varset($vars['author']['@attributes']['email']);
       	$vars['website'] 				= varset($vars['author']['@attributes']['url']);
 		$vars['author']				   	= varset($vars['author']['@attributes']['name']);
@@ -1236,6 +1239,70 @@ class themeHandler{
 		$vars['custompages'] = $custom;
 
 	  	return $vars;
+	}
+
+
+
+	function themeReleaseCheck($curTheme,$curVersion,$releaseUrl,$cache=TRUE)
+	{
+		global $e107cache;
+
+	    if(!$releaseUrl)
+		{
+	    	return;
+		}
+
+		$e107cache->CachePageMD5 = md5($curTheme.$curVersion);
+
+		if(($cache==TRUE) && ($cacheData = $e107cache->retrieve('themeUpdateCheck', 3600, TRUE)))
+		{
+	        require_once(e_HANDLER."message_handler.php");
+			$emessage = &eMessage::getInstance();
+			$emessage->add($cacheData);
+			return;
+		}
+
+	    require_once(e_HANDLER.'xml_class.php');
+		$xml = new xmlClass;
+
+	 	if(substr($releaseUrl,-4) == ".php")
+		{
+        	$releaseUrl .= "?name=".$curTheme."&ver".$curVersion;
+		}
+
+		if($rawData = $xml -> loadXMLfile($releaseUrl, TRUE))
+		{
+	    	if(!$rawData['release'][1])
+			{
+	        	$rawData['release'] = $rawData;
+			}
+
+	        $txt = "";
+
+	        foreach($rawData['release'] as $val)
+			{
+				$name 		= $val['@attributes']['foldername'];
+				$version 	= $val['@attributes']['version'];
+				$url 		= $val['@attributes']['url'];
+
+	            if(($name == $curTheme)  && version_compare($version,$curVersion)==1)
+				{
+	             	$txt .= ADLAN_161." <a href='".$url."'>".$name ." v".$version."</a><br />";
+					break;
+				}
+	        }
+
+			if($txt)
+			{
+	            require_once (e_HANDLER."message_handler.php");
+				$emessage = &eMessage::getInstance();
+				$emessage->add($txt);
+				if($cache==TRUE)
+				{
+					$e107cache->set('themeUpdateCheck', $txt, TRUE);
+				}
+			}
+		}
 	}
 
 }

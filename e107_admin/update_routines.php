@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2009-07-09 21:39:31 $
-|     $Author: e107steved $
+|     $Revision: 1.42 $
+|     $Date: 2009-08-17 12:48:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -108,6 +108,8 @@ function update_check()
 {
   global $ns, $dont_check_update, $e107info;
 
+
+
   $update_needed = FALSE;
 
   if ($dont_check_update === FALSE)
@@ -127,6 +129,9 @@ function update_check()
 		}
 	  }
 	}
+
+
+
 
 	// Now check plugins
 	foreach($dbupdatep as $func => $rmks)
@@ -148,7 +153,6 @@ function update_check()
     $update_needed = ($dont_check_update == '2');
   }
 
-
   if ($update_needed === TRUE)
   {
 	require_once (e_HANDLER."form_handler.php");
@@ -169,6 +173,15 @@ function update_check()
 
   }
 }
+
+    $curTheme = e107::getPref('sitetheme');
+	$curVersion = e107::getPref('sitetheme_version');
+	$curUrl = e107::getPref('sitetheme_releaseUrl');
+
+require_once(e_HANDLER."theme_handler.php");
+$thm = new themeHandler;
+$thm->themeReleaseCheck($curTheme,$curVersion,$curUrl);
+
 
 
 //--------------------------------------------
