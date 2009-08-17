@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-08-16 16:30:56 $
- * $Author: secretr $
+ * $Revision: 1.36 $
+ * $Date: 2009-08-17 11:29:41 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -400,8 +400,8 @@ class e107
 	 */
 	public static function getThemePref($pref_name, $default = null, $index = null)
 	{
-		$prefobj = e107::getConfig(); 
-		return $prefobj->getPref($prefobj->get('sitetheme').'/sitetheme_pref/'.$pref_name, $default, $index);
+		$prefobj = e107::getConfig();
+		return $prefobj->getPref('sitetheme_pref/'.$pref_name, $default, $index);
 	}
 	
 	/**
