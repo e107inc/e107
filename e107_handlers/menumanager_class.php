@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-08-17 14:47:10 $
+|     $Revision: 1.4 $
+|     $Date: 2009-08-17 14:50:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -383,8 +383,6 @@ class e_menuManager {
 							'menu_class'	=> 0,
 							'menu_pages'	=> '',
                             'menu_path'		=> $file['path'],
-							'menu_layout'	=> '',
-							'menu_parms'	=> ''
 						);
 
    						if($sql->db_Insert("menus",$insert))
