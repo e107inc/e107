@@ -4,20 +4,19 @@
 class theme__blank
 {
     var $themePref;
+    
 
 	function process()
 	{
-        $theme_pref = array();
-
 		$pref = e107::getConfig();
+		
+		$theme_pref = array();
 		$theme_pref['example'] = $_POST['_blank_example'];
 		$theme_pref['example2'] = $_POST['_blank_example2'];
 
-	// 	print_a($theme_pref);
-		$pref->add('sitetheme_pref', $theme_pref);
-		print_a($pref->get('sitetheme_pref'));
-        var_dump($pref->add('sitetheme_pref', $theme_pref)->save(FALSE));
-	   //	save_prefs($pref['sitetheme_pref']);
+		$pref->set('sitetheme_pref', $theme_pref);
+		
+		return $pref->dataHasChanged();
 	}
 
 	function config()
@@ -27,7 +26,7 @@ class theme__blank
 
 		$var[1]['caption'] = "Another Example";
 		$var[1]['html'] = "<input type='text' name='_blank_example2' value='".e107::getThemePref('example2')."' />";
-        var_dump(e107::getThemePref());
+        //var_dump(e107::getThemePref());
 		return $var;
 	}
 

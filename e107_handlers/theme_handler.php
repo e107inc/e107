@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2009-08-17 12:48:52 $
-|     $Author: e107coders $
+|     $Revision: 1.46 $
+|     $Date: 2009-08-17 14:40:22 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -76,16 +76,22 @@ class themeHandler{
 		if(isset($_POST['submit_adminstyle']))
 		{
  			$this -> id = $_POST['curTheme'];
-			$this -> setAdminStyle();
-
+			if($this -> setAdminStyle())
+			{
+				eMessage::getInstance()->add(TPVLAN_43, E_MESSAGE_SUCCESS);
+			}
+			e107::getConfig()->save(true);
 		}
 
 		if(isset($_POST['submit_style']))
 		{
 			$this -> id = $_POST['curTheme'];
-			$this -> setStyle();
+			
 		 	$this -> SetCustomPages($_POST['custompages']);
-
+		 	$this -> setStyle();
+		 	
+		 	e107::getConfig()->save(true);
+		 	
 		}
 
 		if(isset($_POST['installplugin']))
@@ -564,9 +570,7 @@ class themeHandler{
 
 	function setThemeConfig()
 	{
-		global $theme_pref;
         $this -> loadThemeConfig();
-
         if($this->themeConfigObj)
 	   	{
 			return call_user_method("process",$this->themeConfigObj);
@@ -1044,27 +1048,24 @@ class themeHandler{
 	function setStyle()
 	{
 		global $pref, $e107cache, $ns, $sql, $emessage;
-		$pref['themecss'] = $_POST['themecss'];
-		$pref['image_preload'] = $_POST['image_preload'];
-		$pref['sitetheme_deflayout'] = $_POST['layout_default'];
-
-		$e107cache->clear_sys();
-		if(save_prefs())
+		//TODO adminlog
+		e107::getConfig()->setPosted('themecss', $_POST['themecss'])
+			->setPosted('image_preload', $_POST['image_preload'])
+			->setPosted('sitetheme_deflayout', $_POST['layout_default']);
+			
+		$msg = $this->setThemeConfig();
+		if($msg)
 		{
-        	$emessage->add(TPVLAN_37, E_MESSAGE_SUCCESS); // Default Message
-			$emessage->add($this -> setThemeConfig(),E_MESSAGE_SUCCESS); // Custom Message from theme config.
-			$this->theme_adminlog('03',$pref['image_preload'].', '.$pref['themecss']);
-		}
-		else
-		{
-        	$emessage->add(TPVLAN_43, E_MESSAGE_ERROR);
+			$emessage->add(TPVLAN_37, E_MESSAGE_SUCCESS); 
+			if(is_array($msg))
+			$emessage->add($msg[0], $msg[1]);
 		}
 	}
 
 	function setAdminStyle()
 	{
 		global $pref, $e107cache, $ns, $emessage;
-		$pref['admincss'] = $_POST['admincss'];
+		/*$pref['admincss'] = $_POST['admincss'];
 		$pref['adminstyle'] = $_POST['adminstyle'];
 
 
@@ -1077,23 +1078,31 @@ class themeHandler{
 		else
 		{
         	$emessage->add(TPVLAN_43, E_MESSAGE_ERROR);
-		}
+		}*/
+		//TODO adminlog
+		e107::getConfig()->setPosted('admincss', $_POST['admincss'])
+			->setPosted('adminstyle', $_POST['adminstyle']);
+			
+		return (e107::getConfig()->dataHasChangedFor('admincss') || e107::getConfig()->dataHasChangedFor('adminstyle'));
 	}
 
     function SetCustomPages($array)
 	{
 		if(!is_array($array)){ return; }
 
-		global $pref;
+		//global $pref;
 		$key = key($array);
+		//['sitetheme_custompages']
+		$array[$key] = trim(str_replace("\r\n", "\n", $array[$key]));
+		$newprefs[$key] = array_filter(explode("\n", $array[$key]));
+		$newprefs[$key] = array_unique($newprefs[$key]);
 
-		$pref['sitetheme_custompages'][$key] = array_filter(explode("\n",trim($array[$key])));
-
-		if($pref['sitetheme_deflayout'] == 'legacyCustom')
+		if(e107::getPref('sitetheme_deflayout') == 'legacyCustom')
 		{
-			$pref['sitetheme_custompages']['legacyCustom'] = array();
+			$newprefs['legacyCustom'] = array();
 		}
-		save_prefs();
+		//setPosted couldn't be used here - sitetheme_custompages structure is not defined
+		e107::getConfig()->set('sitetheme_custompages', e107::getParser()->toDB($newprefs));
 	}
 
 

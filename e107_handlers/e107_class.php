@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-08-17 11:29:41 $
- * $Author: e107coders $
+ * $Revision: 1.37 $
+ * $Date: 2009-08-17 14:40:22 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -370,7 +370,7 @@ class e107
 	 */
 	public static function getPlugPref($plug_name, $pref_name, $default = null)
 	{
-		return self::getPlugConfig($plug_name)->get($pref_name, $default);
+		return  empty($pref_name) ? self::getPlugConfig($plug_name)->getPref() : self::getPlugConfig($plug_name)->get($pref_name, $default);
 	}
 	
 	/**
@@ -398,10 +398,9 @@ class e107
 	 * @param mixed $default default value if preference is not found
 	 * @return mixed
 	 */
-	public static function getThemePref($pref_name, $default = null, $index = null)
+	public static function getThemePref($pref_name = '', $default = null, $index = null)
 	{
-		$prefobj = e107::getConfig();
-		return $prefobj->getPref('sitetheme_pref/'.$pref_name, $default, $index);
+		return e107::getConfig()->getPref('sitetheme_pref/'.$pref_name, $default, $index);
 	}
 	
 	/**
