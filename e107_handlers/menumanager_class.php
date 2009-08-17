@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-08-16 23:58:31 $
+|     $Revision: 1.3 $
+|     $Date: 2009-08-17 14:47:10 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -351,6 +351,7 @@ class e_menuManager {
 			$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
 			foreach($fileList as $file)
 			{
+
 				list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
 				$file['path'] = str_replace(e_PLUGIN,"",$file['path']);
 				$file['fname'] = str_replace(".php","",$file['fname']);
@@ -364,17 +365,29 @@ class e_menuManager {
 //						echo "Include {$parent_dir}:{$file['fname']}<br />";
 					}
 				}
-				else
-				{  // Just add the menu anyway
+				else  // Just add the menu anyway
+				{
 					$valid_menu = TRUE;
 //					echo "Default Include {$parent_dir}:{$file['fname']}<br />";
 				}
 				if ($valid_menu)
 				{
 					$menustr .= "&".str_replace(".php", "", $file['fname']);
-					if (!$existing_menu)
-					{  // New menu to add to list
-						if($sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}', ''"))
+					if (!$existing_menu)  // New menu to add to list
+					{
+                        $insert = array(
+                        	'menu_id'	=> 0,
+							'menu_name' 	=> $file['fname'],
+							'menu_location'	=> 0,
+							'menu_order'	=> 0,
+							'menu_class'	=> 0,
+							'menu_pages'	=> '',
+                            'menu_path'		=> $file['path'],
+							'menu_layout'	=> '',
+							'menu_parms'	=> ''
+						);
+
+   						if($sql->db_Insert("menus",$insert))
 						{
 					  		// Could do admin logging here - but probably not needed
 							$message .= MENLAN_10." - ".$file['fname']."<br />";
