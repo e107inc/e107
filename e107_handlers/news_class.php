@@ -9,12 +9,238 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-07-19 11:44:28 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-17 18:47:29 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+class e_news_item extends e_model 
+{
+	protected $_loaded_once = false;
+	
+	/**
+	 * Shorthand getter for news fields
+	 *
+	 * @param string $news_field name without the leading 'news_' prefix
+	 * @param mixed $default
+	 * @return mixed data
+	 */
+	public function get($news_field, $default = null)
+	{
+		return parent::get('news_'.$news_field, $default);
+	}
+	
+	/**
+	 * Load news item by id
+	 *
+	 * @param integer $id
+	 * @param boolean $force
+	 * @return e_news_item
+	 */
+	public function load($id, $force = false)
+	{
+		if($force || !$this->_loaded_once)
+		{
+			$id = intval($id);
+			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+			
+		  	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+			LEFT JOIN #user AS u ON n.news_author = u.user_id
+			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+			WHERE n.news_id={$id} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
+			
+			if(e107::getDb()->db_Select_gen($query))
+			{
+				$this->setData(e107::getDb()->db_Fetch());
+			}
+			$this->_loaded_once = true;
+		}
+		return $this;
+	}
+}
+
+class e_news_tree extends e_model 
+{
+	/**
+	 * Current tree news category id
+	 *
+	 * @var integer
+	 */
+	protected $_current_category_id;
+	
+	/**
+	 * Constructor
+	 *
+	 * @param unknown_type $category_id
+	 */
+	public function __construct($category_id = null)
+	{
+		if(null !== $category_id)
+		{
+			$this->load($category_id);
+		}
+	}
+	
+	/**
+	 * Set current category Id
+	 *
+	 * @param integer $category_id
+	 * @return e_news_tree
+	 */
+	function setCurrentCategoryId($category_id)
+	{
+		$this->_current_category_id = intval($category_id);
+		return $this;
+	}
+	
+	/**
+	 * Get news item object from the tree
+	 * Preparing for future news SEF string (string $name)
+	 * 
+	 * @param string|integer $name
+	 * @param integer $category_id optional category Id
+	 * @return e_news_item
+	 */
+	function getNode($name, $category_id = null)
+	{
+		if(null === $category_id)
+		{
+			$category_id = $this->_current_category_id;
+		}
+		return $this->getData('__tree/'.$category_id.'/'.$name);
+	}
+	
+	/**
+	 * Set news item object
+	 *
+	 * @param string|integer $name
+	 * @param array $data
+	 * @param integer $category_id optional category Id
+	 * @return e_news_tree
+	 */
+	function setNode($name, $data, $category_id = null)
+	{
+		if(null === $category_id)
+		{
+			$category_id = $this->_current_category_id;
+		}
+		$this->setData('__tree/'.$category_id.'/'.$name, new e_news_item($data));
+		return $this;
+	}
+	
+	/**
+	 * Set new category tree
+	 *
+	 * @param array $tree
+	 * @param integer $category_id
+	 * @return e_news_tree
+	 */
+	public function setTree(array $tree, $category_id = null)
+	{
+		if(null === $category_id)
+		{
+			$category_id = $this->_current_category_id;
+		}
+		$this->setData('__tree/'.$category_id, $tree);
+		return $this;
+	}
+	
+	/**
+	 * Get tree by category id
+	 *
+	 * @param integer $category_id
+	 * @return array
+	 */
+	public function getTree($category_id = null)
+	{
+		if(null === $category_id)
+		{
+			$category_id = $this->_current_category_id;
+		}
+		return $this->getData('__tree/'.$category_id);
+	}
+	
+	/**
+	 * Load tree by category id
+	 *
+	 * @param integer $category_id
+	 * @param boolean $force
+	 * @param integer $limit_from
+	 * @param string $order
+	 * @return e_news_tree
+	 */
+	public function load($category_id = 0, $force = false, $limit_from = 0, $order = 'n.news_sticky DESC, n.news_datestamp DESC')
+	{
+		$category_id = intval($category_id);
+		$this->setCurrentCategoryId($category_id);
+		
+		//TODO - file cache $cacheString = md5($category_id.$limit_from.$order.e_CLASS_REGEXP);
+		
+		if($force || !$this->isTree())
+		{
+			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+			if($category_id)
+			{
+				$where = ' news_category='.$category_id.' AND';
+			}
+			$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+				LEFT JOIN #user AS u ON n.news_author = u.user_id
+				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+				WHERE{$where} n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+				ORDER BY ".e107::getParser()->toDB($order)." LIMIT ".intval($limit_from).",".intval(e107::getPref('newspost', 15));
+				
+			$tree = array();
+			if(e107::getDb()->db_Select_gen($query))
+			{
+				while (true)
+				{
+					$row = e107::getDb()->db_Fetch();
+					if(!$row)
+					{
+						break;
+					}
+					$tree[$row['news_id']] = new e_news_item($row);
+				}
+			}
+			$this->setTree($tree);
+			
+		}
+		
+		return $this;
+	}
+	
+	function isTree($category_id = null)
+	{
+		if(null === $category_id)
+		{
+			$category_id = $this->_current_category_id;
+		}
+		
+		return $this->isData('__tree/'.$category_id);
+	}
+	
+	function isNode($name, $category_id = null)
+	{
+		if(null === $category_id)
+		{
+			$category_id = $this->_current_category_id;
+		}
+		return $this->isData('__tree/'.$category_id.'/'.$name);
+	}
+	
+	function hasNode($name, $category_id = null)
+	{
+		if(null === $category_id)
+		{
+			$category_id = $this->_current_category_id;
+		}
+		return $this->hasData('__tree/'.$category_id.'/'.$name);
+	}
+}
 
 class news {
 

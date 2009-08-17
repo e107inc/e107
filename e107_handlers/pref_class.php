@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-08-17 14:40:23 $
+ * $Revision: 1.11 $
+ * $Date: 2009-08-17 18:47:28 $
  * $Author: secretr $
 */
 
@@ -1149,11 +1149,12 @@ class e_model
     }
     
     /**
+     * @param string $key
      * @return boolean
      */
-    public function hasData()
+    public function hasData($key = '')
     {
-    	return $this->_hasData();
+    	return $this->_hasData($key);
     }
 
     /**
