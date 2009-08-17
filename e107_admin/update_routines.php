@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2009-08-17 15:45:20 $
+|     $Revision: 1.44 $
+|     $Date: 2009-08-17 18:42:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -174,14 +174,12 @@ function update_check()
   }
 }
 
-    $curTheme = e107::getPref('sitetheme');
-	$curVersion = e107::getPref('sitetheme_version');
-	$curUrl = e107::getPref('sitetheme_releaseUrl');
 
-require_once(e_HANDLER."theme_handler.php");
-$thm = new themeHandler;
-$thm->themeReleaseCheck($curTheme,$curVersion,$curUrl);
 
+	require_once(e_HANDLER."e_upgrade_class.php");
+	$upg = new e_upgrade;
+	$upg->checkSiteTheme();
+	$upg->checkAllPlugins();
 
 
 //--------------------------------------------

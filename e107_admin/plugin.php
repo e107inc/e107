@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2009-08-15 15:44:37 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.38 $
+|     $Date: 2009-08-17 18:42:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -87,6 +87,7 @@ class pluginManager{
 				"plugin_description"	=> array("title" => EPL_ADLAN_14, "type"=>"text", "width" => "auto", "thclass" => "middle center", "url" => ""),
 			   	"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "auto", "thclass" => "middle", "url" => ""),
 				"plugin_compliant"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
+				"plugin_release"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
 				"options"				=> array("title" => LAN_OPTIONS, "width" => "15%", "thclass" => "middle center last", "url" => "")
 		);
 

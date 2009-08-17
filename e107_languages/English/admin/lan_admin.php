@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.25 2009-08-17 14:26:57 e107coders Exp $
+ * $Id: lan_admin.php,v 1.26 2009-08-17 18:42:22 e107coders Exp $
  *
  * Admin Language File
 */
@@ -182,6 +182,7 @@ define("ADLAN_159", "URL Configuration");
 define("ADLAN_160", "Configure Site URLs");
 define("ADLAN_161", "");
 define("ADLAN_162", "A newer version of your site-theme is available:");
+define("ADLAN_163", "A newer version of an installed plugin is available:");  
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');
