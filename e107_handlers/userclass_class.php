@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2009-08-19 21:33:20 $
+|     $Revision: 1.40 $
+|     $Date: 2009-08-19 21:43:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1140,8 +1140,8 @@ class user_class_admin extends user_class
 	}
 
 
-	// Return an unused class ID - FALSE if none spare. Misses the predefined classes.	**** May need to be public rather than protected
-	protected function findNewClassID()
+	// Return an unused class ID - FALSE if none spare. Misses the predefined classes.
+	public function findNewClassID()
 	{
 		$i = 1;
 		// Start by allocating a new class with a number higher than any previously allocated
