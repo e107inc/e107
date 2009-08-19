@@ -9,9 +9,9 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-08-15 15:44:37 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.28 $
+ * $Date: 2009-08-19 14:35:12 $
+ * $Author: secretr $
  *
 */
 
@@ -641,7 +641,7 @@ class links
 		} else
 		{
 			$text .= "
-						<button class='create' type='submit' name='add_link' value='no-value"'><span>".LCLAN_28."</span></button>
+						<button class='create' type='submit' name='add_link' value='no-value'><span>".LCLAN_28."</span></button>
 			";
 		}
 		$text .= "
