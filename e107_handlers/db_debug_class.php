@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-07-12 03:28:21 $
+|     $Revision: 1.22 $
+|     $Date: 2009-08-19 11:17:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -219,7 +219,7 @@ class e107_db_debug {
 		//
 		// Optionally list good queries
 		//
-		if ($okCount && E107_DBG_SQLQUERIES) {
+		if ($okCount && E107_DBG_SQLDETAILS) {
 			$text .= "\n<table class='fborder'>\n";
 			$text .= "<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
