@@ -12,15 +12,19 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.43 $
-|   $Date: 2009-08-06 22:41:34 $
-|   $Author: bugrain $
+|   $Revision: 1.44 $
+|   $Date: 2009-08-19 14:39:56 $
+|   $Author: secretr $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
-define("ADMIN_AREA",TRUE);
-define("USER_AREA",FALSE);
+if(!defined('ADMIN_AREA'))
+{
+	//avoid PHP warning
+	define("ADMIN_AREA", TRUE);
+}
+define("USER_AREA", FALSE);
 $sql->db_Mark_Time('(Header Top)');
 
 //
@@ -201,9 +205,12 @@ echo "<!-- *JS* -->\n";
 
 // Wysiwyg JS support on or off.
 // your code should run off e_WYSIWYG
-if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html'])) {
+if (varset($pref['wysiwyg'],FALSE) && check_class($pref['post_html'])) 
+{
 	define("e_WYSIWYG",TRUE);
-}else{
+}
+else
+{
 	define("e_WYSIWYG",FALSE);
 }
 
@@ -212,10 +219,10 @@ $hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).
 //echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
 echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
 
-if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
+//if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 
 	//echo "<script type='text/javascript' src='".e_FILE_ABS."e_ajax.php'></script>\n";
-}
+//}
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 
@@ -272,14 +279,16 @@ if (isset($eplug_css) && $eplug_css) {
 }
 
 echo "<!-- Theme css -->\n";
-if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
+//NEW - Iframe mod
+if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) 
+{
 	$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? THEME_ABS.'admin_'.$pref['admincss'] : THEME_ABS.$pref['admincss'];
 	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-} else if (isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
+} 
+elseif (isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
 {
 	$css_file = file_exists(THEME.'admin_'.$pref['themecss']) ? THEME_ABS.'admin_'.$pref['themecss'] : THEME_ABS.$pref['themecss'];
 	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
-
 
 }
 else
@@ -287,7 +296,8 @@ else
 	$css_file = file_exists(THEME.'admin_style.css') ? THEME_ABS.'admin_style.css' : THEME_ABS.'style.css';
 	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 }
-if (!isset($no_core_css) || !$no_core_css) {
+if (!isset($no_core_css) || !$no_core_css) 
+{
 	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 }
 
@@ -755,9 +765,14 @@ function admin_purge_related($table, $id)
 
 
 $sql->db_Mark_Time('Parse Admin Header');
-if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
+
+//NEW - Iframe mod
+if (!defsettrue('e_IFRAME')) 
+{
+	//removed  check strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE
 	parse_admin($ADMIN_HEADER);
 }
+
 $sql->db_Mark_Time('(End: Parse Admin Header)');
 }
 

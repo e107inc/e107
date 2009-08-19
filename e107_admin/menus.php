@@ -10,11 +10,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2009-08-16 16:30:56 $
+|     $Revision: 1.33 $
+|     $Date: 2009-08-19 14:39:56 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
+if(isset($_GET['configure']))
+{
+	//Switch to Front-end
+	define("USER_AREA", true);
+	//Switch to desired layout
+	define('THEME_LAYOUT', $_GET['configure']);
+}
+
 require_once("../class2.php");
 if (!getperms("2"))
 {
@@ -22,7 +30,6 @@ if (!getperms("2"))
 	exit;
 }
 $e_sub_cat = 'menus';
-
 
 require_once(e_HANDLER."file_class.php");
 require_once(e_HANDLER."form_handler.php");
@@ -35,23 +42,22 @@ require_once(e_HANDLER."menumanager_class.php");
 	$men = new e_menuManager();   // use 1 for dragdrop.
 
 
-  if(isset($_GET['ajax']))
-  {
-  	$men->menuSaveAjax();
+if(e_AJAX_REQUEST)
+{
+	$men->menuSaveAjax();
 	exit;
-  }
+}
+
+if(isset($_GET['configure']))
+{
+	//No layout parse when in iframe mod
+	define('e_IFRAME', true);
+}
 
 require_once("auth.php");
 
-
-
-
-
-
 if($_POST)
 {
- //	print_a($_POST);
-//	exit;
 	$e107cache->clear_sys("menus_");
 }
 
@@ -63,7 +69,8 @@ if($_POST)
 		}
 
 
-		if (strpos(e_QUERY, 'configure') === FALSE)
+		//BC - configure and dot delimiter deprecated
+		if (!isset($_GET['configure']))
 		{
 			$men->menuScanMenus();
             $text .= $men->menuRenderMessage();
@@ -71,23 +78,9 @@ if($_POST)
 			$text .= $men->menuVisibilityOptions();
             $text .= $men->menuRenderIframe();
             $ns -> tablerender(ADLAN_6." :: ".LAN_MENULAYOUT, $text, 'menus_config');
-		  //	$text .= "<iframe name='menu_iframe' id='menu_iframe' src='".e_SELF."?configure.$curLayout' width='100%' style='width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
-
 		}
 		else // Within the IFrame.
 		{
-
-/*        		echo "<div>
-                e_QUERY = ".e_QUERY."<br />
-				curLayout = ".$men->curLayout."<br />
-				dbLayout   = ".$men->dbLayout."<br />";
-
-				print_a($_POST);
-				echo "
-				</div>";*/
-
-
-
 		  	$men->menuRenderPage();
 
 		}
@@ -123,6 +116,7 @@ function headerjs()
     if(strpos(e_QUERY, 'configure') !== FALSE )
 	{
 
+		//FIXME - proto/scripty already loaded, create and jsmanager handler
    		$ret = "
 
 		<!-- load prototype and scriptaculous -->
@@ -161,7 +155,7 @@ function headerjs()
 			 };
 			var options = {
 			 editorEnabled : true,
-			  'saveurl' : '".e_SELF."?ajax=',
+			  'saveurl' : '".e_SELF."?ajax_used=1',
 			  hoverclass: 'block-hover'
 			 };
 

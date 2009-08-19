@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.56 $
-* $Date: 2009-08-08 14:14:39 $
-* $Author: marj_nl_fr $
+* $Revision: 1.57 $
+* $Date: 2009-08-19 14:39:57 $
+* $Author: secretr $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -1188,41 +1188,56 @@ class e_parse
 	{
 		if($mode != "")
 		{
-			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY;
-			$replace_relative = array("",
-									SITEURL.$IMAGES_DIRECTORY,
-									SITEURL.$THEMES_DIRECTORY,
-									$IMAGES_DIRECTORY,
-									$PLUGINS_DIRECTORY,
-									$FILES_DIRECTORY,
-									$THEMES_DIRECTORY,
-									$DOWNLOADS_DIRECTORY);
+			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, 
+			$THEMES_DIRECTORY, $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $HANDLERS_DIRECTORY;
+			
+			$e107 = e107::getInstance();
+			//FIXME - replace globals  like this $e107->e107_dirs['IMAGES_DIRECTORY']
+			
+			$replace_relative = array(
+				"",
+				SITEURL.$IMAGES_DIRECTORY,
+				SITEURL.$THEMES_DIRECTORY,
+				$IMAGES_DIRECTORY,
+				$PLUGINS_DIRECTORY,
+				$FILES_DIRECTORY,
+				$THEMES_DIRECTORY,
+				$DOWNLOADS_DIRECTORY,
+				$HANDLERS_DIRECTORY
+			);
 
-			if($mode == "abs")
+			switch ($mode) 
 			{
-            	$replace_absolute = array("/",
-									e_IMAGE_ABS,
-									e_THEME_ABS,
-									e_IMAGE_ABS,
-									e_PLUGIN_ABS,
-									e_FILE_ABS,
-									e_THEME_ABS,
-									e_DOWNLOAD_ABS
-									);
-			}
-			elseif($mode == "full")
-			{
-				$replace_absolute = array(SITEURL,
-									SITEURL.$IMAGES_DIRECTORY,
-									SITEURL.$THEMES_DIRECTORY,
-									SITEURL.$IMAGES_DIRECTORY,
-									SITEURL.$PLUGINS_DIRECTORY,
-									SITEURL.$FILES_DIRECTORY,
-									SITEURL.$THEMES_DIRECTORY,
-									SITEURL.$DOWNLOADS_DIRECTORY);
+				case 'abs':
+	            	$replace_absolute = array(
+	            		$e107->server_path,
+						e_IMAGE_ABS,
+						e_THEME_ABS,
+						e_IMAGE_ABS,
+						e_PLUGIN_ABS,
+						e_FILE_ABS,
+						e_THEME_ABS,
+						e_DOWNLOAD_ABS,
+						e_HANDLER_ABS
+					);
+				break;
+				
+				case 'full':
+					$replace_absolute = array(
+						SITEURL,
+						SITEURL.$IMAGES_DIRECTORY,
+						SITEURL.$THEMES_DIRECTORY,
+						SITEURL.$IMAGES_DIRECTORY,
+						SITEURL.$PLUGINS_DIRECTORY,
+						SITEURL.$FILES_DIRECTORY,
+						SITEURL.$THEMES_DIRECTORY,
+						SITEURL.$DOWNLOADS_DIRECTORY,
+						SITEURL.$HANDLERS_DIRECTORY
+					);
+				break;
 			}
 
-			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOAD}");
+			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOAD}","{e_HANDLER}");
 
 			if (ADMIN)
 			{
@@ -1270,7 +1285,8 @@ class e_parse
 	}
 
     function createConstants($url,$mode=0){
-        global $IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY,$DOWNLOADS_DIRECTORY,$ADMIN_DIRECTORY;
+        global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY, $DOWNLOADS_DIRECTORY,
+        $ADMIN_DIRECTORY, $HANDLERS_DIRECTORY;
 
         if($mode == 0) // folder name only.
 		{
@@ -1281,6 +1297,7 @@ class e_parse
 				"{"."e_THEME"."}"=>$THEMES_DIRECTORY,
 				"{"."e_DOWNLOAD"."}"=>$DOWNLOADS_DIRECTORY,
 				"{"."e_ADMIN"."}"=>$ADMIN_DIRECTORY,
+				"{"."e_HANDLER"."}"=>$HANDLERS_DIRECTORY
   			);
         }
 		elseif($mode == 1)  // relative path
@@ -1291,7 +1308,8 @@ class e_parse
 				"{"."e_FILE"."}"=>e_FILE,
 				"{"."e_THEME"."}"=>e_THEME,
 				"{"."e_DOWNLOAD"."}"=>e_DOWNLOAD,
-				"{"."e_ADMIN"."}"=>e_ADMIN
+				"{"."e_ADMIN"."}"=>e_ADMIN,
+				"{"."e_HANDLER"."}"=>e_HANDLER
 			);
 		}
 		foreach($tmp as $key=>$val)

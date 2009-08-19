@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.130 $
-* $Date: 2009-08-17 14:40:23 $
+* $Revision: 1.131 $
+* $Date: 2009-08-19 14:39:57 $
 * $Author: secretr $
 *
 */
@@ -1082,7 +1082,7 @@ $e107Path = str_replace($e107->base_path, '', e_SELF);				// Knock off the initi
 if	(
 	 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
 	  || ($isPluginDir && (strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
-	  || (varsettrue($eplug_admin))																	// Admin forced
+	  || (varsettrue($eplug_admin) || defsettrue('ADMIN_AREA'))		// Admin forced
 	)
 {
 	$inAdminDir = TRUE;
@@ -1093,15 +1093,19 @@ if	(
 
 if(!defined('THEME'))
 {
-	if ($inAdminDir && varsettrue($pref['admintheme'])&& (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE))
+	//Force USER_AREA added
+	if ($inAdminDir && varsettrue($pref['admintheme']) && !defsettrue('USER_AREA'))
 	{
+		//We have now e_IFRAME mod and USER_AREA force
+		// && (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE)
+		
 /*	  if (strpos(e_SELF, "newspost.php") !== FALSE)
 	  {
 		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");		MAINTHEME no longer used in core distribution
 	  }  */
 		checkvalidtheme($pref['admintheme']);
 	}
-	elseif (USERTHEME !== false && USERTHEME != 'USERTHEME' && !$inAdminDir)
+	elseif (USERTHEME !== false/* && USERTHEME != 'USERTHEME'*/ && !$inAdminDir)
 	{
 		checkvalidtheme(USERTHEME);
 	}
@@ -1138,13 +1142,14 @@ if(!defined("THEME_LAYOUT"))
 		}
 	}
 
-
+	/* Done via e_IFRAME and USER_AREA force combination, check moved to menu.php
 	if(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY. 'menus.php?configure')!==FALSE)
 	{
 		$menus_equery = explode('.', e_QUERY);
 		$def = $menus_equery[1];
 	}
-
+	*/
+	
     if($def) // custom-page layout.
 	{
     	define("THEME_LAYOUT",$def);
@@ -1167,23 +1172,21 @@ if(!isset($_E107['no_menus']))
 	e107::getMenu()->init();
 }
 
-
-
 // here we USE the theme
-if ($inAdminDir)
+if($inAdminDir)
 {
-  if (file_exists(THEME.'admin_theme.php') && (strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY. 'menus.php?configure')===FALSE)) // no admin theme when previewing.
-  {
-	require_once(THEME.'admin_theme.php');
-  }
-  else
-  {
-	require_once(THEME.'theme.php');
-  }
+	if(file_exists(THEME.'admin_theme.php')&&(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY.'menus.php?configure')===FALSE)) // no admin theme when previewing.
+	{
+		require_once (THEME.'admin_theme.php');
+	}
+	else
+	{
+		require_once (THEME.'theme.php');
+	}
 }
 else
 {
-  require_once(THEME.'theme.php');
+	require_once (THEME.'theme.php');
 }
 
 
@@ -1198,13 +1201,13 @@ $exclude_lan = array('lan_signup.php');  // required for multi-language.
 
 if ($inAdminDir)
 {
-  e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-  e107_include_once(e_LANGUAGEDIR.'English/admin/lan_'.e_PAGE);
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+	e107_include_once(e_LANGUAGEDIR.'English/admin/lan_'.e_PAGE);
 }
 elseif (!in_array('lan_'.e_PAGE,$exclude_lan) && !$isPluginDir)
 {
-  e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
-  e107_include_once(e_LANGUAGEDIR.'English/lan_'.e_PAGE);
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+	e107_include_once(e_LANGUAGEDIR.'English/lan_'.e_PAGE);
 }
 
 if ($pref['anon_post'] ? define('ANON', true) : define('ANON', false));
@@ -1213,8 +1216,8 @@ if (empty($pref['newsposts']) ? define('ITEMVIEW', 15) : define('ITEMVIEW', $pre
 
 if ($pref['antiflood1'] == 1)
 {
-  define('FLOODPROTECT', TRUE);
-  define('FLOODTIMEOUT', max(varset($pref['antiflood_timeout'], 10), 3));
+	define('FLOODPROTECT', TRUE);
+	define('FLOODTIMEOUT', max(varset($pref['antiflood_timeout'], 10), 3));
 }
 else
 {

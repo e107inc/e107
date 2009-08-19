@@ -9,9 +9,9 @@
  * Administration Area Authorization
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-07-23 15:21:41 $
- * $Author: e107coders $
+ * $Revision: 1.11 $
+ * $Date: 2009-08-19 14:39:56 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -24,8 +24,11 @@ if (ADMIN)
 {
 	define("ADMIN_PAGE", true);
 	//don't include it if it'a an AJAX call or not wanted
-	if(!e_AJAX_REQUEST && !defset('NO_HEADER'))
+	if(!e_AJAX_REQUEST && !defset('e_NOHEADER'))
+	{
 		require_once(e_ADMIN."header.php");
+	}
+	
 	/*
 	 * FIXME - missing $style for tablerender
 	 * The Solution: parse_admin() without sending it to the browser if it's an ajax call

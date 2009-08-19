@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-08-17 14:40:22 $
+ * $Revision: 1.38 $
+ * $Date: 2009-08-19 14:39:56 $
  * $Author: secretr $
 */
 
@@ -86,6 +86,26 @@ class e107
 	 * @var array
 	 */
 	protected static $_plug_config_arr = array();
+	
+	/**
+	 * Core handlers array
+	 * For new/missing handler add 
+	 * 'class name' => 'filename' pair
+	 * 
+	 * Used to auto-load core handlers 
+	 *
+	 * @see getSingleton()
+	 * @see getObject()
+	 * @var array
+	 */
+	protected static $_known_handlers = array(
+		'e_form' => 'form_class.php',
+		'e_upgrade' => 'form_class.php',
+		'e_jshelper' => 'js_helper.php',
+		'e_menu' => 'menu_class.php',
+		'e107plugin' => 'plugin_class.php',
+		'xmlClass' => 'xml_class.php'
+	);
 
 	
 	/**
@@ -213,7 +233,7 @@ class e107
 	 * Retrieve singleton object
 	 *
 	 * @param string $class_name
-	 * @param string $path optional script path
+	 * @param string|boolean $path optional script path
 	 * @param string $regpath additional registry path
 	 * @return Object
 	 */
@@ -221,12 +241,15 @@ class e107
 	{
 		if(true === $path)
 		{
-			//TODO All handler class names in array (lazy loading)
+			if(isset(self::$_known_handlers[$class_name]))
+			{
+				$path = self::getParser()->replaceConstants(self::$_known_handlers[$class_name]);
+			}
 		}
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
 		if(!e107::getRegistry($id))
 		{
-			if(null !== $path && !class_exists($class_name))
+			if($path && is_string($path) && !class_exists($class_name))
 			{
 				e107_require_once($path); //no existence/security checks here!
 			}
