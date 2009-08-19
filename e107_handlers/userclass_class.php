@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2009-08-04 15:04:18 $
-|     $Author: e107coders $
+|     $Revision: 1.39 $
+|     $Date: 2009-08-19 21:33:20 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -93,7 +93,7 @@ class user_class
 	  Ensure the tree of userclass data is stored in our object.
 	  Only read if its either not present, or the $force flag is set
 	*/
-  function readTree($force = FALSE)
+  protected function readTree($force = FALSE)
   {
     if (isset($this->class_tree) && count($this->class_tree) && !$force) return $this->class_tree;
 
@@ -183,7 +183,7 @@ class user_class
 
 
 	// Given the list of 'base' classes a user belongs to, returns a comma separated list including ancestors. Duplicates stripped
-	function get_all_user_classes($start_list)
+	public function get_all_user_classes($start_list)
 	{
 		$is = array();
 		$start_array = explode(',', $start_list);
@@ -199,7 +199,7 @@ class user_class
 
 
 	// Returns a list of user classes which can be edited by the specified classlist (defaults to current user's classes)
-	function get_editable_classes($class_list = USERCLASS_LIST, $asArray = FALSE)
+	public function get_editable_classes($class_list = USERCLASS_LIST, $asArray = FALSE)
 	{
 		$ret = array();
 		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1, e_UC_NEWUSER => 1);
@@ -228,7 +228,7 @@ class user_class
 	// $possible - the classes which are being edited
 	// $actual - the actual membership of the editable classes
 	// All classes may be passed as comma-separated lists or arrays
-	function mergeClassLists($combined, $possible, $actual, $asArray = FALSE)
+	public function mergeClassLists($combined, $possible, $actual, $asArray = FALSE)
 	{
 		if (!is_array($combined)) { $combined = explode(',',$combined);  }
 		if (!is_array($possible)) { $possible = explode(',',$possible);  }
@@ -251,7 +251,7 @@ class user_class
 	}
 
 
-	function stripFixedClasses($inClasses)
+	public function stripFixedClasses($inClasses)
 	{
 		$asArray = TRUE;
 		if (!is_array($inClasses))
@@ -272,7 +272,7 @@ class user_class
 
   // Given a comma separated list, returns the minimum number of class memberships required to achieve this (i.e. strips classes 'above' another in the tree)
   // Requires the class tree to have been initialised
-  function normalise_classes($class_list)
+  public function normalise_classes($class_list)
   {
     $drop_classes = array();
 	$old_classes = explode(',',$class_list);
@@ -317,55 +317,55 @@ class user_class
 
 		[ $mode parameter of r_userclass() removed - $optlist is more flexible) ]
 */
-	function uc_dropdown($fieldname, $curval = 0, $optlist = "", $extra_js = '')
+	public function uc_dropdown($fieldname, $curval = 0, $optlist = "", $extra_js = '')
 	{
 		global $pref;
 
-		$show_classes = $this->uc_required_class_list($optlist);
+		$show_classes = self::uc_required_class_list($optlist);
 
-	  $text = '';
-	  foreach ($show_classes as $k => $v)
-	  {
-		if ($k == e_UC_BLANK)
+		$text = '';
+		foreach ($show_classes as $k => $v)
 		{
-		  $text .= "<option value=''>&nbsp;</option>\n";
+			if ($k == e_UC_BLANK)
+			{
+			  $text .= "<option value=''>&nbsp;</option>\n";
+			}
+			else
+			{
+			  $s = ($curval == $k && $curval !== '') ?  "selected='selected'" : "";
+			  $text .= "<option class='uc-select'  value='".$k."' ".$s.">".$v."</option>\n";
+			}
 		}
-		else
+
+		// Inverted Classes
+		if(strpos($optlist, "no-excludes") !== TRUE)
 		{
-		  $s = ($curval == $k && $curval !== '') ?  "selected='selected'" : "";
-		  $text .= "<option class='uc-select'  value='".$k."' ".$s.">".$v."</option>\n";
+			$text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+			foreach ($show_classes as $k => $v)
+			{
+				if($k != '0' && $k!=255 && $k !=251)  // remove everyone, nobody and readonly from list.
+				{
+					$s = ($curval == ('-'.$k) && $curval !== '') ?  "selected='selected'" : "";
+					$text .= "<option class='uc-select-inverted' value='-".$k."' ".$s.">".str_replace("--CLASS--", $v, UC_LAN_INVERT)."</option>\n";
+				}
+			}
+			$text .= "</optgroup>\n";
 		}
-	  }
 
-	  // Inverted Classes
-	  if(strpos($optlist, "no-excludes") !== TRUE)
-	  {
-		  $text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
-	      foreach ($show_classes as $k => $v)
-		  {
-		  	  if($k != '0' && $k!=255 && $k !=251)  // remove everyone, nobody and readonly from list.
-			  {
-				  $s = ($curval == ('-'.$k) && $curval !== '') ?  "selected='selected'" : "";
-				  $text .= "<option class='uc-select-inverted' value='-".$k."' ".$s.">".str_replace("--CLASS--", $v, UC_LAN_INVERT)."</option>\n";
-			  }
-		  }
-		  $text .= "</optgroup>\n";
-      }
-
-	  if (strpos($optlist, "language") !== FALSE && $pref['multilanguage'])
-	  {
-		$text .= "<optgroup label=' ------ ' />\n";
-		$tmpl = explode(",",e_LANLIST);
-        foreach($tmpl as $lang)
+		if (strpos($optlist, "language") !== FALSE && $pref['multilanguage'])
 		{
-		  $s = ($curval == $lang) ?  " selected='selected'" : "";
-          $text .= "<option  value='$lang' ".$s.">".$lang."</option>\n";
+			$text .= "<optgroup label=' ------ ' />\n";
+			$tmpl = explode(",",e_LANLIST);
+			foreach($tmpl as $lang)
+			{
+				$s = ($curval == $lang) ?  " selected='selected'" : "";
+				$text .= "<option  value='$lang' ".$s.">".$lang."</option>\n";
+			}
 		}
-	  }
 
-	  // Only return the select box if we've ended up with some options
-	  if ($text) $text = "\n<select class='tbox select' name='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
-	  return $text.$curVal;
+		// Only return the select box if we've ended up with some options
+		if ($text) $text = "\n<select class='tbox select' name='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
+		return $text.$curVal;
 	}
 
 
@@ -375,7 +375,7 @@ class user_class
 	  Generate an ordered array  classid=>classname - used for dropdown and check box lists
 	  If $just_ids is TRUE, array value is just '1'
 	*/
-	function uc_required_class_list($optlist = '', $just_ids = FALSE)
+	public function uc_required_class_list($optlist = '', $just_ids = FALSE)
 	{
 	  $ret = array();
 	  if (!$optlist) $optlist = 'public,guest,nobody,member,classes';		// Set defaults to simplify ongoing processing
@@ -458,35 +458,35 @@ class user_class
 	$optlist as for uc_dropdown
 	if $showdescription is TRUE, appends the class description in brackets
 	*/
-	function uc_checkboxes($fieldname, $curval='', $optlist = '', $showdescription = FALSE)
+	public function uc_checkboxes($fieldname, $curval='', $optlist = '', $showdescription = FALSE)
 	{
-	  global $pref;
-	  $show_classes = $this->uc_required_class_list($optlist);
+		global $pref;
+		$show_classes = $this->uc_required_class_list($optlist);
 
-	  $curArray = explode(",", $curval);				// Array of current values
-	  $ret = "";
+		$curArray = explode(",", $curval);				// Array of current values
+		$ret = "";
 
-	  foreach ($show_classes as $k => $v)
-	  {
-		if ($k != e_UC_BLANK)
+		foreach ($show_classes as $k => $v)
 		{
-		  $c = (in_array($k,$curArray)) ?  " checked='checked'" : "";
-		  if ($showdescription) $v .= " (".$this->uc_get_classdescription($k).")";
-		  $ret .= "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
+			if ($k != e_UC_BLANK)
+			{
+			  $c = (in_array($k,$curArray)) ?  " checked='checked'" : "";
+			  if ($showdescription) $v .= " (".$this->uc_get_classdescription($k).")";
+			  $ret .= "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
+			}
 		}
-	  }
 
-	  if (strpos($optlist, "language") !== FALSE && $pref['multilanguage'])
-	  {
-		$ret .= "<div class='separator'><!-- --></div>\n";
-		$tmpl = explode(",",e_LANLIST);
-        foreach($tmpl as $lang)
+		if (strpos($optlist, "language") !== FALSE && $pref['multilanguage'])
 		{
-		  $c = (in_array($lang, $curArray)) ? " checked='checked' " : "";
-          $ret .= "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$lang}]' id='{$fieldname}-{$lang}'  value='1'{$c} /><label for='{$fieldname}-{$lang}'>{$lang}</label></div>";
+			$ret .= "<div class='separator'><!-- --></div>\n";
+			$tmpl = explode(",",e_LANLIST);
+			foreach($tmpl as $lang)
+			{
+			  $c = (in_array($lang, $curArray)) ? " checked='checked' " : "";
+			  $ret .= "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$lang}]' id='{$fieldname}-{$lang}'  value='1'{$c} /><label for='{$fieldname}-{$lang}'>{$lang}</label></div>";
+			}
 		}
-	  }
-	  return $ret;
+		return $ret;
 	}
 
 
@@ -505,7 +505,7 @@ class user_class
 	$current_value is a single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
 	$optlist works the same as for other class displays
 	*/
-	function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms, $opt_options)
+	protected function vetted_sub_tree($treename, $callback,$listnum,$nest_level,$current_value, $perms, $opt_options)
 	{
 		$ret = '';
 		$nest_level++;
@@ -525,7 +525,7 @@ class user_class
 	}
 
 
-	function vetted_tree($treename, $callback='', $current_value='', $optlist = '',$opt_options = '')
+	public function vetted_tree($treename, $callback='', $current_value='', $optlist = '',$opt_options = '')
 	{
 		$ret = '';
 		if (!$callback) $callback=array($this,'select');
@@ -549,65 +549,65 @@ class user_class
 
 
   // Callback for vetted_tree - Creates the option list for a selection box
-  function select($treename, $classnum, $current_value, $nest_level)
-  {
-	if ($classnum == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
-//	echo "Display: {$classnum}, {$current_value}, {$nest_level}<br />";
-	$tmp = explode(',',$current_value);
-    $sel = in_array($classnum,$tmp) ? " selected='selected'" : '';
-    if ($nest_level == 0)
+	public function select($treename, $classnum, $current_value, $nest_level)
 	{
-	  $prefix = '';
-	  $style = " style='font-weight:bold; font-style: italic;'";
+		if ($classnum == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
+	//	echo "Display: {$classnum}, {$current_value}, {$nest_level}<br />";
+		$tmp = explode(',',$current_value);
+		$sel = in_array($classnum,$tmp) ? " selected='selected'" : '';
+		if ($nest_level == 0)
+		{
+			$prefix = '';
+			$style = " style='font-weight:bold; font-style: italic;'";
+		}
+		elseif ($nest_level == 1)
+		{
+			$prefix = '&nbsp;&nbsp;';
+			$style = " style='font-weight:bold'";
+		}
+		else
+		{
+			$prefix = '&nbsp;&nbsp;'.str_repeat('--',$nest_level-1).'>';
+			$style = '';
+		}
+		return "<option value='{$classnum}'{$sel}{$style}>".$prefix.$this->class_tree[$classnum]['userclass_name']."</option>\n";
 	}
-	elseif ($nest_level == 1)
-	{
-	  $prefix = '&nbsp;&nbsp;';
-	  $style = " style='font-weight:bold'";
-	}
-	else
-	{
-	  $prefix = '&nbsp;&nbsp;'.str_repeat('--',$nest_level-1).'>';
-	  $style = '';
-	}
-    return "<option value='{$classnum}'{$sel}{$style}>".$prefix.$this->class_tree[$classnum]['userclass_name']."</option>\n";
-  }
 
 
 	// Callback for vetted_tree - displays indented checkboxes with class name only
-  function checkbox($treename, $classnum, $current_value, $nest_level)
-  {
-	if ($classnum == e_UC_BLANK)  return '';
-	$tmp = explode(',',$current_value);
-	$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
-    if ($nest_level == 0)
+	public function checkbox($treename, $classnum, $current_value, $nest_level)
 	{
-	  $style = " style='font-weight:bold'";
+		if ($classnum == e_UC_BLANK)  return '';
+		$tmp = explode(',',$current_value);
+		$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
+		if ($nest_level == 0)
+		{
+			$style = " style='font-weight:bold'";
+		}
+		else
+		{
+			$style = " style='text-indent:".(1.2*$nest_level)."em'";
+		}
+		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name']."</div>\n";
 	}
-	else
-	{
-	  $style = " style='text-indent:".(1.2*$nest_level)."em'";
-	}
-    return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name']."</div>\n";
-  }
 
 
 	// Callback for vetted_tree - displays indented checkboxes with class name, and description in brackets
-  function checkbox_desc($treename, $classnum, $current_value, $nest_level)
-  {
-	if ($classnum == e_UC_BLANK)  return '';
-	$tmp = explode(',',$current_value);
-	$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
-    if ($nest_level == 0)
+	public function checkbox_desc($treename, $classnum, $current_value, $nest_level)
 	{
-	  $style = " style='font-weight:bold'";
+		if ($classnum == e_UC_BLANK)  return '';
+		$tmp = explode(',',$current_value);
+		$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
+		if ($nest_level == 0)
+		{
+			$style = " style='font-weight:bold'";
+		}
+		else
+		{
+			$style = " style='text-indent:".(1.2*$nest_level)."em'";
+		}
+		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</div>\n";
 	}
-	else
-	{
-	  $style = " style='text-indent:".(1.2*$nest_level)."em'";
-	}
-    return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classnum}' value='{$classnum}'{$chk} />".$this->class_tree[$classnum]['userclass_name'].'  ('.$this->class_tree[$classnum]['userclass_description'].")</div>\n";
-  }
 
 
 
@@ -617,65 +617,69 @@ class user_class
 		Index field - userclass_id
 		Data fields - userclass_name, userclass_description, userclass_editclass
 	*/
-	function uc_get_classlist($filter = FALSE)
+	public function uc_get_classlist($filter = FALSE)
 	{
-	  $ret = array();
-	  $this->readTree(FALSE);				// Make sure we have data
-	  foreach ($this->class_tree as $k => $v)
-	  {
-	    if (!$filter || check_class($filter))
+		$ret = array();
+		$this->readTree(FALSE);				// Make sure we have data
+		foreach ($this->class_tree as $k => $v)
 		{
-		  $ret[$k] = array('userclass_name' => $v, 'userclass_description' => $v['userclass_description'], 'userclass_editclass' => $v['userclass_editclass']);
+			if (!$filter || check_class($filter))
+			{
+				$ret[$k] = array('userclass_name' => $v, 'userclass_description' => $v['userclass_description'], 'userclass_editclass' => $v['userclass_editclass']);
+			}
 		}
-	  }
-	  return $ret;
+		return $ret;
 	}
 
 
-	function uc_get_classname($id)
+	// Return class name for given class ID
+	public function uc_get_classname($id)
 	{
-	  if (isset($this->class_tree[$id]))
-	  {
-	    return $this->class_tree[$id]['userclass_name'];
-	  }
-	  if (isset($this->fixed_classes[$id]))
-	  {
-	    return $this->fixed_classes[$id];
-	  }
+		if (isset($this->class_tree[$id]))
+		{
+			return $this->class_tree[$id]['userclass_name'];
+		}
+		if (isset($this->fixed_classes[$id]))
+		{
+			return $this->fixed_classes[$id];
+		}
 
-	  if($id < 0)
-	  {
-	  	$val = abs($id);
-		$name = isset($this->class_tree[$val]['userclass_name']) ? $this->class_tree[$val]['userclass_name'] : $this->fixed_classes[$val];
-      	return str_replace("--CLASS--", $name, UC_LAN_INVERT);
-	  }
-	  return '';
+		if($id < 0)
+		{
+			$val = abs($id);
+			$name = isset($this->class_tree[$val]['userclass_name']) ? $this->class_tree[$val]['userclass_name'] : $this->fixed_classes[$val];
+			return str_replace("--CLASS--", $name, UC_LAN_INVERT);
+		}
+		return '';
 	}
 
 
-	function uc_get_classdescription($id)
+	public function uc_get_classdescription($id)
 	{
-	  if (isset($this->class_tree[$id]))
-	  {
-	    return $this->class_tree[$id]['userclass_description'];
-	  }
-	  if (isset($this->fixed_classes[$id]))
-	  {
-	    return $this->fixed_classes[$id];	// Name and description the same for fixed classes
-	  }
-	  return '';
+		if (isset($this->class_tree[$id]))
+		{
+			return $this->class_tree[$id]['userclass_description'];
+		}
+		if (isset($this->fixed_classes[$id]))
+		{
+			return $this->fixed_classes[$id];	// Name and description the same for fixed classes
+		}
+		return '';
 	}
 
-	function uc_get_classicon($id)
+
+	public function uc_get_classicon($id)
 	{
-	  if (isset($this->class_tree[$id]))
-	  {
-	    return $this->class_tree[$id]['userclass_icon'];
-	  }
-	  return '';
+		if (isset($this->class_tree[$id]))
+		{
+			return $this->class_tree[$id]['userclass_icon'];
+		}
+		return '';
 	}
 
-	function ucGetClassIDFromName($name)
+
+	// Given a class name, look up the ID. Return FALSE if not found
+	public function ucGetClassIDFromName($name)
 	{
 		$this->readTree();
 		// We have all the info - can just search the array
@@ -691,7 +695,7 @@ class user_class
 
 
 	// Utility to remove a specified class ID from the default comma-separated list
-	function ucRemove($classID, $from, $asArray = FALSE)
+	public function ucRemove($classID, $from, $asArray = FALSE)
 	{
 		$tmp = array_flip(explode(',',$from));
 		if (isset($tmp[$classID]))
@@ -706,13 +710,22 @@ class user_class
 
 
 	// Utility to add a specified class ID to the default comma-separated list
-	function ucAdd($classID, $to, $asArray = FALSE)
+	public function ucAdd($classID, $to, $asArray = FALSE)
 	{
 		$tmp = array_flip(explode(',',$to));
 		$tmp[$classID] = 1;
 		$tmp = array_keys($tmp);
 		if ($asArray) { return $tmp; }
 		return implode(',',$tmp);
+	}
+
+
+	// See if a class can be edited (in the sense of the class ID not being fixed) - return TRUE if permitted.
+	public function isEditableClass($classID)
+	{
+		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return FALSE;	// Don't allow deletion of fixed classes
+		if (isset($this->fixed_classes[$class_id])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
+		return TRUE;
 	}
 
 
@@ -727,20 +740,20 @@ class user_class
 
 	***** NOT SURE WHETHER THIS IS REALLY A USER OR A USER CLASS FUNCTION *****
 	*/
-	function get_users_in_class($classlist, $field_list = 'user_name, user_loginname', $include_ancestors = FALSE, $order_by = 'user_id')
+	public function get_users_in_class($classlist, $field_list = 'user_name, user_loginname', $include_ancestors = FALSE, $order_by = 'user_id')
 	{
-	  $ret = array();
-	  if ($include_ancestors) $classlist = $this->get_all_user_classes($classlist);
-	  $class_regex = "(^|,)(".str_replace(' ','',str_replace(",", "|", $classlist)).")(,|$)";
-	  $qry = "SELECT 'user_id,{$field_list}' FROM `user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$order_by}'";
-	  if ($this->sql_r->db_Select_gen($qry))
-	  {
-	    while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC))
+		$ret = array();
+		if ($include_ancestors) $classlist = $this->get_all_user_classes($classlist);
+		$class_regex = "(^|,)(".str_replace(' ','',str_replace(",", "|", $classlist)).")(,|$)";
+		$qry = "SELECT 'user_id,{$field_list}' FROM `user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$order_by}'";
+		if ($this->sql_r->db_Select_gen($qry))
 		{
-		  $ret[$row['user_id']] = $row;
+			while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC))
+			{
+				$ret[$row['user_id']] = $row;
+			}
 		}
-	  }
-	  return $ret;
+		return $ret;
 	}
 }
 
@@ -748,7 +761,9 @@ class user_class
 //========================================================================
 //			Functions from previous userclass_class handler
 //========================================================================
-// Implemented for backwards compatibility/convenience
+// Implemented for backwards compatibility/convenience. 
+
+// ************** DEPRECATED - use new class-based functions
 
 /*
 With $optlist you can now specify which classes are shown in the dropdown.
@@ -857,7 +872,7 @@ class user_class_admin extends user_class
 
 	function user_class_admin()
 	{
-		$this->user_class();			// Call constructor from ancestor class
+		parent::user_class();			// Call constructor from ancestor class
 		$this->isAdmin = TRUE;
 
 	// Have to initialise the images this way - PHP4 won't take a nested array assignment in the variable list
@@ -891,7 +906,7 @@ class user_class_admin extends user_class
 	/*
 	Next three routines are used to update the database after adding/deleting a class
 	*/
-	function calc_tree()
+	public function calc_tree()
 	{
 //    echo "Calc Tree<br />";
 		$this->readTree(TRUE);			// Make sure we have accurate data
@@ -906,7 +921,7 @@ class user_class_admin extends user_class
 	// Internal function, called recursively to rebuild the permissions tree where rights increase going down the tree
 	// $parent is the class number being processed.
 	// $rights is the array of rights accumulated so far in the walk down the tree
-	function rebuild_tree($parent, $rights)
+	protected function rebuild_tree($parent, $rights)
 	{
 		if ($this->class_tree[$parent]['userclass_parent'] == e_UC_NOBODY)
 		{
@@ -935,84 +950,82 @@ class user_class_admin extends user_class
 
 	// Internal function, called recursively to rebuild the permissions tree where rights increase going up the tree
 	// Returns an array
-  function topdown_tree($our_class)
-  {
-//	echo "Top down: {$our_class}, Children: ".implode(',',$this->class_tree[$our_class]['class_children'])."<br />";
-    $rights  = array($our_class);				// Accumulator always has rights to its own class
-
-	if ($this->class_tree[$our_class]['userclass_type'] == UC_TYPE_GROUP) return array_merge($rights, explode(',',$this->class_tree[$our_class]['userclass_accum']));					// Stop rights accumulation at a group
-
-    foreach ($this->class_tree[$our_class]['class_children'] as $cc)
+	protected function topdown_tree($our_class)
 	{
-		$rights = array_merge($rights,$this->topdown_tree($cc));				// Recursive call
-    }
-	$rights = array_unique($rights);
-	$imp_rights = implode(',',$rights);
-//	echo "Class: {$our_class}  Rights: {$imp_rights}<br />";
-	if ($this->class_tree[$our_class]['userclass_accum'] != $imp_rights)
-	{
-		$this->class_tree[$our_class]['userclass_accum'] = $imp_rights;
-		$this->class_tree[$our_class]['change_flag'] = 'UPDATE';
-	}
-	return $rights;
-  }
+		$rights  = array($our_class);				// Accumulator always has rights to its own class
 
+		if ($this->class_tree[$our_class]['userclass_type'] == UC_TYPE_GROUP) return array_merge($rights, explode(',',$this->class_tree[$our_class]['userclass_accum']));					// Stop rights accumulation at a group
 
-  function save_tree()
-  {
-//    echo "Save Tree<br />";
-    foreach ($this->class_tree as $tree)
-	{
-	  if (isset($tree['change_flag']))
-	  {
-	    switch ($tree['change_flag'])
+		foreach ($this->class_tree[$our_class]['class_children'] as $cc)
 		{
-		  case 'INSERT' :
-		    $this->add_new_class($tree);
-		    break;
-		  case 'UPDATE' :
-		    $this->save_edited_class($tree);
-		    break;
-		  default :
-		    continue;
+			$rights = array_merge($rights,$this->topdown_tree($cc));				// Recursive call
 		}
-	  }
+		$rights = array_unique($rights);
+		$imp_rights = implode(',',$rights);
+	//	echo "Class: {$our_class}  Rights: {$imp_rights}<br />";
+		if ($this->class_tree[$our_class]['userclass_accum'] != $imp_rights)
+		{
+			$this->class_tree[$our_class]['userclass_accum'] = $imp_rights;
+			$this->class_tree[$our_class]['change_flag'] = 'UPDATE';
+		}
+		return $rights;
 	}
-  }
+
+
+	public function save_tree()
+	{
+		foreach ($this->class_tree as $tree)
+		{
+			if (isset($tree['change_flag']))
+			{
+				switch ($tree['change_flag'])
+				{
+				  case 'INSERT' :
+					$this->add_new_class($tree);
+					break;
+				  case 'UPDATE' :
+					$this->save_edited_class($tree);
+					break;
+				  default :
+					continue;
+				}
+			}
+		}
+	}
 
 
 
 	/*
 	Next two routines show a text-based tree with markers to indicate the hierarchy.
 	*/
-  function show_sub_tree($listnum,$marker, $add_class = FALSE)
-  {
-    $ret = '';
-    $marker = '--'.$marker;
-	foreach ($this->class_tree[$listnum]['class_children'] as $p)
+	protected function show_sub_tree($listnum,$marker, $add_class = FALSE)
 	{
-	  $ret .= $marker.$this->class_tree[$p]['userclass_id'].':'.$this->class_tree[$p]['userclass_name'];
-	  if ($add_class) $ret .= " (".$this->class_tree[$p]['userclass_accum'].")";
-	  $ret .= "  Children: ".count($this->class_tree[$p]['class_children']);
-	  $ret .= "<br />";
-	  $ret .= $this->show_sub_tree($p,$marker, $add_class);
+		$ret = '';
+		$marker = '--'.$marker;
+		foreach ($this->class_tree[$listnum]['class_children'] as $p)
+		{
+		  $ret .= $marker.$this->class_tree[$p]['userclass_id'].':'.$this->class_tree[$p]['userclass_name'];
+		  if ($add_class) $ret .= " (".$this->class_tree[$p]['userclass_accum'].")";
+		  $ret .= "  Children: ".count($this->class_tree[$p]['class_children']);
+		  $ret .= "<br />";
+		  $ret .= $this->show_sub_tree($p,$marker, $add_class);
+		}
+		return $ret;
 	}
-	return $ret;
-  }
 
-  function show_tree($add_class = FALSE)
-  {
-    $ret = '';
-    foreach ($this->class_parents as $p)
+	public function show_tree($add_class = FALSE)
 	{
-	  $ret .= $this->class_tree[$p]['userclass_id'].':'.$this->class_tree[$p]['userclass_name'];
-	  if ($add_class) $ret .= " (".$this->class_tree[$p]['userclass_accum'].")";
-	  $ret .= "  Children: ".count($this->class_tree[$p]['class_children']);
-	  $ret .= "<br />";
-	  $ret .= $this->show_sub_tree($p,'>', $add_class);
+		$ret = '';
+		foreach ($this->class_parents as $p)
+		{
+		  $ret .= $this->class_tree[$p]['userclass_id'].':'.$this->class_tree[$p]['userclass_name'];
+		  if ($add_class) $ret .= " (".$this->class_tree[$p]['userclass_accum'].")";
+		  $ret .= "  Children: ".count($this->class_tree[$p]['class_children']);
+		  $ret .= "<br />";
+		  $ret .= $this->show_sub_tree($p,'>', $add_class);
+		}
+		return $ret;
 	}
-	return $ret;
-  }
 
 
 
@@ -1020,80 +1033,80 @@ class user_class_admin extends user_class
 	/*
 	Next two routines generate a graphical tree, including option to open/close branches
 	*/
-  function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
-  {
-    $num_children = count($this->class_tree[$listnum]['class_children']);
-	$is_open = TRUE;
-	$tag_name = 'uclass_tree_'.$listnum;
+	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
+	{
+		$num_children = count($this->class_tree[$listnum]['class_children']);
+		$is_open = TRUE;
+		$tag_name = 'uclass_tree_'.$listnum;
 
-	$ret = "<div class='uclass_tree' style='height: 20px'>\n";
+		$ret = "<div class='uclass_tree' style='height: 20px'>\n";
 
-	foreach ($indent_images as $im)
-	{
-	  $ret .= "<img src='".UC_ICON_DIR.$im."' alt='class icon' />";
-	}
-	// If this link has children, wrap the next image in a link and an expand/hide option
-	if ($num_children)
-	{
-	  $ret .= "<span onclick=\"javascript: expandit('{$tag_name}'); expandit('{$tag_name}_p'); expandit('{$tag_name}_m')\"><img src='".UC_ICON_DIR.$this->tree_icons[TRUE][$is_last][TRUE]."' alt='class icon' id='{$tag_name}_m' />";
-	  $ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[TRUE][$is_last][FALSE]."' style='display:none' id='{$tag_name}_p' alt='class icon' /></span>\n";
-	}
-	else
-	{
-	  $ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[FALSE][$is_last][$is_open]."' alt='class icon' />\n";
-	}
-	$name_line = '';
-	if ($this->graph_debug) { $name_line = $this->class_tree[$listnum]['userclass_id'].":";  }
-//	if ($this->graph_debug) { $name_line = varset($this->class_tree[$listnum]['userclass_id'], 'XXX').":";  }
-
-	if ($this->class_tree[$listnum]['userclass_type'] == UC_TYPE_GROUP)
-	{
-		$name_line .= '<b>'.$this->class_tree[$listnum]['userclass_name'].'</b> '.UCSLAN_84;	// Highlight groups
-	}
-	else
-	{
-		$name_line .= $this->class_tree[$listnum]['userclass_name'];
-	}
-	if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum']." Children: ".implode(',',$this->class_tree[$listnum]['class_children']);
-	// Next (commented out) line gives a 'conventional' link
-    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
-//    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a></div>";
-	//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
-		//<span style='cursor:pointer; vertical-align: bottom' onclick=\"javascript: document.location.href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'\">".$name_line."</span></div>";
-    // vertical-align: middle doesn't work! Nor does text-top
-
-	if ($num_children)
-	{
-	  $ret .= "<div class='uclass_tree' id='{$tag_name}'>\n";
-	  $image_level = count($indent_images);
-	  if ($is_last)
-	  {
-	    $indent_images[] = 'linebottom.gif';
-	  }
-	  else
-	  {
-	    $indent_images[] = 'line.gif';
-	  }
-	  foreach ($this->class_tree[$listnum]['class_children'] as $p)
-	  {
-		$num_children--;
-		if ($num_children)
-	    {	// Use icon indicating more below
-	      $ret .= $this->show_graphical_subtree($p, $indent_images, FALSE);
-	    }
-	    else
-		{ // else last entry on this tree
-	      $ret .= $this->show_graphical_subtree($p, $indent_images, TRUE);
+		foreach ($indent_images as $im)
+		{
+			$ret .= "<img src='".UC_ICON_DIR.$im."' alt='class icon' />";
 		}
-	  }
-	  $ret .= "</div>";
+		// If this link has children, wrap the next image in a link and an expand/hide option
+		if ($num_children)
+		{
+			$ret .= "<span onclick=\"javascript: expandit('{$tag_name}'); expandit('{$tag_name}_p'); expandit('{$tag_name}_m')\"><img src='".UC_ICON_DIR.$this->tree_icons[TRUE][$is_last][TRUE]."' alt='class icon' id='{$tag_name}_m' />";
+			$ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[TRUE][$is_last][FALSE]."' style='display:none' id='{$tag_name}_p' alt='class icon' /></span>\n";
+		}
+		else
+		{
+			$ret .= "<img src='".UC_ICON_DIR.$this->tree_icons[FALSE][$is_last][$is_open]."' alt='class icon' />\n";
+		}
+		$name_line = '';
+		if ($this->graph_debug) { $name_line = $this->class_tree[$listnum]['userclass_id'].":";  }
+	//	if ($this->graph_debug) { $name_line = varset($this->class_tree[$listnum]['userclass_id'], 'XXX').":";  }
+
+		if ($this->class_tree[$listnum]['userclass_type'] == UC_TYPE_GROUP)
+		{
+			$name_line .= '<b>'.$this->class_tree[$listnum]['userclass_name'].'</b> '.UCSLAN_84;	// Highlight groups
+		}
+		else
+		{
+			$name_line .= $this->class_tree[$listnum]['userclass_name'];
+		}
+		if ($this->graph_debug) $name_line .= "[vis:".$this->class_tree[$listnum]['userclass_visibility'].", edit:".$this->class_tree[$listnum]['userclass_editclass']."] = ".$this->class_tree[$listnum]['userclass_accum']." Children: ".implode(',',$this->class_tree[$listnum]['class_children']);
+		// Next (commented out) line gives a 'conventional' link
+		$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
+	//    $ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$this->class_tree[$listnum]['userclass_name']."</a></div>";
+		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' />
+			//<span style='cursor:pointer; vertical-align: bottom' onclick=\"javascript: document.location.href='".e_ADMIN."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'\">".$name_line."</span></div>";
+		// vertical-align: middle doesn't work! Nor does text-top
+
+		if ($num_children)
+		{
+			$ret .= "<div class='uclass_tree' id='{$tag_name}'>\n";
+			$image_level = count($indent_images);
+			if ($is_last)
+			{
+				$indent_images[] = 'linebottom.gif';
+			}
+			else
+			{
+				$indent_images[] = 'line.gif';
+			}
+			foreach ($this->class_tree[$listnum]['class_children'] as $p)
+			{
+				$num_children--;
+				if ($num_children)
+				{	// Use icon indicating more below
+				  $ret .= $this->show_graphical_subtree($p, $indent_images, FALSE);
+				}
+				else
+				{ // else last entry on this tree
+				  $ret .= $this->show_graphical_subtree($p, $indent_images, TRUE);
+				}
+			}
+			$ret .= "</div>";
+		}
+		return $ret;
 	}
-	return $ret;
-  }
 
 
 
-	function show_graphical_tree($show_debug=FALSE)
+	public function show_graphical_tree($show_debug=FALSE)
 	{
 		$this->graph_debug = $show_debug;
 		$indent_images = array();
@@ -1115,20 +1128,20 @@ class user_class_admin extends user_class
 
 
   // Creates an array which contains only DB fields (i.e. strips the added status)
-  function copy_rec($classrec, $inc_id = FALSE)
-  {
-	$ret = array();
-	if ($inc_id && isset($classrec['userclass_id'])) $ret['userclass_id'] = $classrec['userclass_id'];
-	foreach ($this->field_list as $fl => $val)
+	protected function copy_rec($classrec, $inc_id = FALSE)
 	{
-	  if (isset($classrec[$fl])) $ret[$fl] = $classrec[$fl];
+		$ret = array();
+		if ($inc_id && isset($classrec['userclass_id'])) $ret['userclass_id'] = $classrec['userclass_id'];
+		foreach ($this->field_list as $fl => $val)
+		{
+		  if (isset($classrec[$fl])) $ret[$fl] = $classrec[$fl];
+		}
+		return $ret;
 	}
-	return $ret;
-  }
 
 
-	// Return an unused class ID - FALSE if none spare. Misses the predefined classes.
-	function findNewClassID()
+	// Return an unused class ID - FALSE if none spare. Misses the predefined classes.	**** May need to be public rather than protected
+	protected function findNewClassID()
 	{
 		$i = 1;
 		// Start by allocating a new class with a number higher than any previously allocated
@@ -1159,9 +1172,8 @@ class user_class_admin extends user_class
 
 	// Add new class. Class ID must be in the passed record.
 	// Return TRUE on success, FALSE on failure
-	function add_new_class($classrec)
+	public function add_new_class($classrec)
 	{
-//    echo "Add new class<br />";
 		if (!isset($classrec['userclass_id']))
 		{
 			return FALSE;
@@ -1184,9 +1196,8 @@ class user_class_admin extends user_class
 	}
 
 
-	function save_edited_class($classrec)
+	public function save_edited_class($classrec)
 	{
-//    echo "Save edited class: ".implode(',', $classrec)."<br />";
 		if (!$classrec['userclass_id'])
 		{
 			echo "Programming bungle on save<br />";
@@ -1222,38 +1233,54 @@ class user_class_admin extends user_class
 
 
 
-	function delete_class($class_id)
+
+	public function queryCanDeleteClass($classID)
 	{
-		if (isset($this->fixed_classes[$class_id])) return FALSE;			// Some classes can't be deleted
-	//	echo "Delete class {$class_id}<br />";
+		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return FALSE;	// Don't allow deletion of fixed classes
+		if (isset($this->fixed_classes[$class_id])) return FALSE;			// This picks up classes such as e_UC_PUBLIC outside the main range which can't be deleted
 		if (!isset($this->class_tree[$class_id])) return FALSE;
 		if (count($this->class_tree[$class_id]['class_children'])) return FALSE;		// Can't delete class with descendants
 		foreach ($this->class_tree as $c)
 		{
-		  if ($c['userclass_editclass'] == $class_id) return FALSE;
-		  if ($c['userclass_visibility'] == $class_id) return FALSE;
+		  if ($c['userclass_editclass'] == $classID) return FALSE;
+		  if ($c['userclass_visibility'] == $classID) return FALSE;
 		}
-		if ($this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$class_id}'") === FALSE) return FALSE;
+		return TRUE;
+	}
+
+
+
+	// Delete a class
+	// Return TRUE on success, FALSE on error
+	public function delete_class($classID)
+	{
+		if (self::queryCanDeleteClass($classID) === FALSE) return FALSE;
+
+		if ($this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$classID}'") === FALSE) return FALSE;
 		$this->clearCache();
 		$this->readTree(TRUE);			// Re-read the class tree
 		return TRUE;
 	}
 
 
-	function deleteClassAndUsers($classID)
+	// Delete a class, and all users who are members of that class.
+	// Return TRUE on success, FALSE on error
+	public function deleteClassAndUsers($classID)
 	{
-		if ($this->delete_class($classID))
+		if (self::delete_class($classID) === TRUE)
 		{
 			if ($this->sql_r->db_Select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
 			{
 				$sql2 = new db;
 				while ($row = $this->sql_r->db_Fetch())
 				{
-					$newClass = $this->ucRemove($classID,$row['user_class']);
+					$newClass = self::ucRemove($classID,$row['user_class']);
 					$sql2->db_Update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']}");
 				}
 			}
+			return TRUE;
 		}
+		return FALSE;
 	}
 
 
@@ -1261,7 +1288,7 @@ class user_class_admin extends user_class
 	// Certain fields on admin records have constraints on their values.
 	// Checks the passed array, and updates any values which are unacceptable.
 	// Returns TRUE if nothing changed, FALSE if changes made
-	function checkAdminInfo(&$data, $id)
+	public function checkAdminInfo(&$data, $id)
 	{
 		$ret = TRUE;
 		if (($id < e_UC_SPECIAL_BASE) || ($id > e_UC_SPECIAL_END)) return TRUE;
@@ -1294,64 +1321,65 @@ class user_class_admin extends user_class
 
 
   // Set default tree structure
-  function set_default_structure()
-  {
-    // If they don't exist, we need to create class records for the 'standard' user classes
-    $init_list = array(
-					array('userclass_id' => e_UC_MEMBER, 'userclass_name' => UC_LAN_3,
-						'userclass_description' => UCSLAN_75,
-						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_PUBLIC,
-						'userclass_visibility' => e_UC_MEMBER
-						),
-					array('userclass_id' => e_UC_ADMINMOD, 'userclass_name' => UC_LAN_8,
-						'userclass_description' => UCSLAN_74,
-						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_MAINADMIN,
-						'userclass_visibility' => e_UC_MEMBER
-						),
-					array('userclass_id' => e_UC_ADMIN, 'userclass_name' => UC_LAN_5,
-						'userclass_description' => UCSLAN_76,
-						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_ADMINMOD,
-						'userclass_visibility' => e_UC_MEMBER
-						),
-					array('userclass_id' => e_UC_MAINADMIN, 'userclass_name' => UC_LAN_6,
-						'userclass_description' => UCSLAN_77,
-						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_NOBODY,
-						'userclass_visibility' => e_UC_MEMBER
-						),
-					array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7,
-						'userclass_description' => UCSLAN_78,
-						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_ADMINMOD,
-						'userclass_visibility' => e_UC_MEMBER
-						),
-					array('userclass_id' => e_UC_NEWUSER, 'userclass_name' => UC_LAN_9,
-						'userclass_description' => UCSLAN_87,
-						'userclass_editclass' => e_UC_MAINADMIN,
-						'userclass_parent' => e_UC_MEMBER,
-						'userclass_visibility' => e_UC_ADMIN
-						)
-					);
-
-	foreach ($init_list as $entry)
+	public function set_default_structure()
 	{
-	  if ($this->sql_r->db_Select('userclass_classes','*',"userclass_id='".$entry['userclass_id']."' "))
-	  {
-	    $this->sql_r->db_Update('userclass_classes', "userclass_parent='".$entry['userclass_parent']."', userclass_visibility='".$entry['userclass_visibility']."' WHERE userclass_id='".$entry['userclass_id']."'");
-	  }
-	  else
-	  {
-	    $this->add_new_class($entry);
-	  }
+		// If they don't exist, we need to create class records for the 'standard' user classes
+		$init_list = array(
+						array('userclass_id' => e_UC_MEMBER, 'userclass_name' => UC_LAN_3,
+							'userclass_description' => UCSLAN_75,
+							'userclass_editclass' => e_UC_MAINADMIN,
+							'userclass_parent' => e_UC_PUBLIC,
+							'userclass_visibility' => e_UC_MEMBER
+							),
+						array('userclass_id' => e_UC_ADMINMOD, 'userclass_name' => UC_LAN_8,
+							'userclass_description' => UCSLAN_74,
+							'userclass_editclass' => e_UC_MAINADMIN,
+							'userclass_parent' => e_UC_MAINADMIN,
+							'userclass_visibility' => e_UC_MEMBER
+							),
+						array('userclass_id' => e_UC_ADMIN, 'userclass_name' => UC_LAN_5,
+							'userclass_description' => UCSLAN_76,
+							'userclass_editclass' => e_UC_MAINADMIN,
+							'userclass_parent' => e_UC_ADMINMOD,
+							'userclass_visibility' => e_UC_MEMBER
+							),
+						array('userclass_id' => e_UC_MAINADMIN, 'userclass_name' => UC_LAN_6,
+							'userclass_description' => UCSLAN_77,
+							'userclass_editclass' => e_UC_MAINADMIN,
+							'userclass_parent' => e_UC_NOBODY,
+							'userclass_visibility' => e_UC_MEMBER
+							),
+						array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7,
+							'userclass_description' => UCSLAN_78,
+							'userclass_editclass' => e_UC_MAINADMIN,
+							'userclass_parent' => e_UC_ADMINMOD,
+							'userclass_visibility' => e_UC_MEMBER
+							),
+						array('userclass_id' => e_UC_NEWUSER, 'userclass_name' => UC_LAN_9,
+							'userclass_description' => UCSLAN_87,
+							'userclass_editclass' => e_UC_MAINADMIN,
+							'userclass_parent' => e_UC_MEMBER,
+							'userclass_visibility' => e_UC_ADMIN
+							)
+						);
+
+		foreach ($init_list as $entry)
+		{
+			if ($this->sql_r->db_Select('userclass_classes','*',"userclass_id='".$entry['userclass_id']."' "))
+			{
+				$this->sql_r->db_Update('userclass_classes', "userclass_parent='".$entry['userclass_parent']."', userclass_visibility='".$entry['userclass_visibility']."' WHERE userclass_id='".$entry['userclass_id']."'");
+			}
+			else
+			{
+				$this->add_new_class($entry);
+			}
+		}
 	}
-  }
 
-	function clearCache()
+
+	public function clearCache()
 	{
-		global $e107;
+		$e107 = e107::getInstance();
 		$e107->ecache->clear_sys(UC_CACHE_TAG);
 	}
 }
@@ -1364,8 +1392,8 @@ class user_class_admin extends user_class
 //			Legacy Admin Class handler - maybe add to admin class
 //========================================================================
 
-// class_add() - called only from userclass2.php
-// class_remove() - called only from userclass2.php
+// class_add() - called only from userclass2.php - adds a list of users to a class
+// class_remove() - called only from userclass2.php - removes a list of users from a class
 // class_create() - called only from forum update routines - could probably go
 
 

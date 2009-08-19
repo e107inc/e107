@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.52 $
-* $Date: 2009-08-14 23:22:36 $
-* $Author: bugrain $
+* $Revision: 1.53 $
+* $Date: 2009-08-19 21:33:19 $
+* $Author: e107steved $
 *
 */
 require_once ('../class2.php');
@@ -1111,12 +1111,14 @@ class users
 
 	function show_batch_options()
 	{
-	   $frm = new e_form();
-		$classes = get_userclass_list();
+		$e107 = e107::getInstance();
+		$classObj = $e107->getUserClass();
+		$frm = new e_form();
+		$classes = $classObj->uc_get_classlist();
 		$assignClasses = array(); // Userclass list of userclasses that can be assigned
 		foreach ($classes as $key => $val)
 		{
-			if ($key < 240 && $key!=0)
+			if ($classObj->isEditableClass($key))
 			{
 				$assignClasses[$key] = $classes[$key];
 			}
