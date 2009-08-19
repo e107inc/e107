@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-08-17 15:23:44 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2009-08-19 14:39:57 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -59,17 +59,16 @@ class e_menuManager {
 				{
 					$this->curLayout =  $_POST['custom_select'];
 				}
-				elseif($_GET['lay'])
+				elseif(isset($_GET['lay']))
 				{
                 	$this->curLayout =  $_GET['lay'];
 				}
 				else
 				{
-                    $tmp = explode('.', e_QUERY);
-					$this->curLayout = ($tmp[1]) ? $tmp[1] : $pref['sitetheme_deflayout'];
+					$this->curLayout = varsettrue($_GET['configure'], $pref['sitetheme_deflayout']);
 				}
 
-				$this->dbLayout = ($this->curLayout !=$pref['sitetheme_deflayout']) ? $this->curLayout : "";  //menu_layout is left blank when it's default.
+				$this->dbLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";  //menu_layout is left blank when it's default.
 
 				if(isset($_POST['menu_id']) || $_GET['id'])
 				{
@@ -143,13 +142,13 @@ class e_menuManager {
         global $ns,$sql;
         if(!$url)
 		{
-        	$url = e_SELF."?configure.".$this->curLayout;
+        	$url = e_SELF."?configure=".$this->curLayout;
 		}
 
 		$cnt = $sql->db_Select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
 
 		$text .= "<object type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
-
+		
 		return $text;
 	}
 
@@ -290,7 +289,7 @@ class e_menuManager {
 				$admin_log->log_event('MENU_07',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
-			if (strpos(e_QUERY, 'configure') === FALSE)
+			if (!isset($_GET['configure']))
 			{  // Scan plugin directories to see if menus to add
 			    $this->menuScanMenus();
 			}
@@ -521,7 +520,7 @@ class e_menuManager {
 		$location = $this->menuActivateLoc;
 
 		$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location=".$location." AND menu_layout = '".$this->dbLayout."' ");
-
+		
 		foreach($this->menuActivateIds as $sel_mens)
 		{
 			//Get info from menu being activated
@@ -529,10 +528,8 @@ class e_menuManager {
 			{
 				$row=$sql->db_Fetch();
 				//If menu is not already activated in that area, add the record.
-
-				$query = "SELECT menu_name,menu_path FROM #menus WHERE menu_name='".$row['menu_name']."' AND menu_layout = '".$this->dbLayout."' AND menu_location = ".$location." LIMIT 1 ";
-
-				if(!$sql->db_Select_gen($query, $this->debug))
+				//$query = "SELECT menu_name,menu_path FROM #menus WHERE menu_name='".$row['menu_name']."' AND menu_layout = '".$this->dbLayout."' AND menu_location = ".$location." LIMIT 1 ";
+				//if(!$sql->db_Select_gen($query, $this->debug))
 				{
 
                    $insert = array(
@@ -540,7 +537,7 @@ class e_menuManager {
 							'menu_name' 	=> $row['menu_name'],
 							'menu_location'	=> $location,
 							'menu_order'	=> $menu_count,
-							'menu_class'	=> $val['menu_class'],
+							'menu_class'	=> $row['menu_class'],
 							'menu_pages'	=> '',
                             'menu_path'		=> $row['menu_path'],
 							'menu_layout'  	=> $this->dbLayout,
@@ -732,15 +729,16 @@ class e_menuManager {
 	{
 		global $sql, $ns, $HEADER, $FOOTER, $rs, $pref, $tp;
 
+		//FIXME - XHTML cleanup, front-end standards (elist, forms etc)
 		echo "<div id='portal'>";
 		$this->parseheader($HEADER);  // $layouts_str;
-
+		
 		$layout = ($this->curLayout);
 		$menuPreset = $this->getMenuPreset($layout);
 
 
 		echo "<div style='text-align:center'>";
-		echo $rs->form_open("post", e_SELF."?configure.".$this->curLayout, "menuActivation");
+		echo $rs->form_open("post", e_SELF."?configure=".$this->curLayout, "menuActivation");
 		$text = "<table style='width:80%;margin-left:auto;margin-right:auto'>";
 
 
@@ -782,7 +780,7 @@ class e_menuManager {
 			{
 				$menuInf = (strlen($row['menu_path']) > 1) ? ' ('.substr($row['menu_path'],0,-1).')' : '';
 	    		$text .= "<tr style='background-color:$color;color:black'>
-				<td style='text-align:left; color:black;'><input type='checkbox' name='menuselect[]' value='{$row['menu_id']}' />".$row['menu_name'].$menuInf."</td>
+				<td style='text-align:left; color:black;'><input type='checkbox' id='menuselect-{$row['menu_id']}' name='menuselect[]' value='{$row['menu_id']}' /><label for='menuselect-{$row['menu_id']}'>".$row['menu_name'].$menuInf."</label></td>
 	            <td style='color:black'> ".$pdeta."&nbsp;</td>
 				</tr>\n";
 	        }
@@ -792,7 +790,7 @@ class e_menuManager {
 
 				<div class='block-toggle'><input type='checkbox' name='menuselect[]' value='{$row['menu_id']}' />".$row['menu_name']."  {$pdeta}</div>
 	            <div class='content'>";
-			 	$text .= $this->menuRenderMenu($row,$menu_count);
+			 	$text .= $this->menuRenderMenu($row, $menu_count);
 	  			$text .= "</div></div>\n";
 			}
 		}
@@ -830,7 +828,7 @@ class e_menuManager {
 		{
 	    	echo "<div id='debug' style='margin-left:0px;border:1px solid silver; overflow:scroll;height:250px'> &nbsp;</div>";
         }
-		echo "</div>";
+		echo "</div>"; 
 	}
 
 
@@ -842,7 +840,7 @@ class e_menuManager {
 	{
 		global $rs, $pref;
 
-		$text .= "<form  method='post' action='".e_SELF."?configure.".$this->curLayout."'>";
+		$text .= "<form  method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
 		// color:white;background-color:black;width:98%;display:block;padding:15px;text-align:center
 		$text .= "<div class='buttons-bar center'>".MENLAN_30." ";
 	//    $text .= "<select style='color:black' name='custom_select' onchange=\"this.form.submit();\">\n";  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
@@ -978,7 +976,7 @@ class e_menuManager {
 			if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '".$this->dbLayout."' "))
 			{
 				unset($text);
-				echo $rs->form_open("post", e_SELF."?configure.".$this->curLayout, "frm_menu_".intval($menu));
+				echo $rs->form_open("post", e_SELF."?configure=".$this->curLayout, "frm_menu_".intval($menu));
 
 	            $MODE = 1;
 
@@ -1020,7 +1018,7 @@ class e_menuManager {
 	function menuRenderMenu($row,$menu_count )
 	{
 		global $ns,$rs,$menu,$menu_info,$menu_act;
-	                              //      $menu_count is empty in here
+		//      $menu_count is empty in here
 		//FIXME extract
 		extract($row);
 		if(!$menu_id){ return; }
@@ -1076,18 +1074,18 @@ class e_menuManager {
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
 		$text .= '<div class="right">
-		<a href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'">
+		<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;vis='.$menu_id.'">
 			'.ADMIN_VIEW_ICON.'
 		</a>';
 
 		if($conf)
 		{
-			$text .= '<a href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'">
+			$text .= '<a target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'">
 				'.ADMIN_CONFIGURE_ICON.'
 			</a>';
 		}
 
-		$text .= '<a class="delete" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'
+		$text .= '<a target="_top" class="delete" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'
 		</a>
 		</div>';
 

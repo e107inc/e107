@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-07-23 15:21:41 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2009-08-19 14:39:56 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -84,7 +84,9 @@ if (ADMIN == TRUE) {
 	//
 	// B.2 Send footer template, stop timing, send simple page stats
 	//
-	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
+	//NEW - Iframe mod
+	if (!defsettrue('e_IFRAME')) 
+	{
 		parse_admin($ADMIN_FOOTER);
 	}
 
