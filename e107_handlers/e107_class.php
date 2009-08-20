@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-08-19 14:39:56 $
+ * $Revision: 1.39 $
+ * $Date: 2009-08-20 12:24:47 $
  * $Author: secretr $
 */
 
@@ -90,7 +90,7 @@ class e107
 	/**
 	 * Core handlers array
 	 * For new/missing handler add 
-	 * 'class name' => 'filename' pair
+	 * 'class name' => 'path' pair
 	 * 
 	 * Used to auto-load core handlers 
 	 *
@@ -98,13 +98,16 @@ class e107
 	 * @see getObject()
 	 * @var array
 	 */
-	protected static $_known_handlers = array(
-		'e_form' => 'form_class.php',
-		'e_upgrade' => 'form_class.php',
-		'e_jshelper' => 'js_helper.php',
-		'e_menu' => 'menu_class.php',
-		'e107plugin' => 'plugin_class.php',
-		'xmlClass' => 'xml_class.php'
+	protected static $_known_handlers = array (
+		'e_news_item' 	=> '{e_HANDLER}news_class.php',
+		'e_news_tree' 	=> '{e_HANDLER}news_class.php',
+		'news' 			=> '{e_HANDLER}news_class.php',
+		'e_form' 		=> '{e_HANDLER}form_class.php',
+		'e_upgrade' 	=> '{e_HANDLER}form_class.php',
+		'e_jshelper' 	=> '{e_HANDLER}js_helper.php',
+		'e_menu' 		=> '{e_HANDLER}menu_class.php',
+		'e107plugin' 	=> '{e_HANDLER}plugin_class.php',
+		'xmlClass' 		=> '{e_HANDLER}xml_class.php'
 	);
 
 	
@@ -230,6 +233,19 @@ class e107
 	}
 	
 	/**
+	 * Get folder name (e107_config)
+	 * Replaces all $(*)_DIRECTORY globals
+	 * Example: $e107->getFolder('images');
+	 *
+	 * @param string $for
+	 * @return string
+	 */
+	function getFolder($for)
+	{
+		return varset($this->e107_dirs[strtoupper($for).'_DIRECTORY']);
+	}
+	
+	/**
 	 * Retrieve singleton object
 	 *
 	 * @param string $class_name
@@ -268,22 +284,31 @@ class e107
 	 *
 	 * @param string $class_name
 	 * @param mxed $arguments
-	 * @param string $path optional script path
+	 * @param string|boolean $path optional script path
 	 * @return object|null
 	 */
-	public static function getObject($class_name, $arguments = null, $path = null)
+	public static function getObject($class_name, $arguments = null, $path = true)
 	{
-		if(null !== $path && !class_exists($class_name))
+		if(true === $path)
+		{
+			if(isset(self::$_known_handlers[$class_name]))
+			{
+				$path = self::getParser()->replaceConstants(self::$_known_handlers[$class_name]);
+			}
+		}
+		
+		if($path && is_string($path) && !class_exists($class_name, false))
 		{
 			e107_require_once($path); //no existence/security checks here!
 		}
+		
 		if(class_exists($class_name, false))
 		{
-			if(null !== $arguments) return $class_name($arguments);
-			return $class_name();
+			if(null !== $arguments) return  new $class_name($arguments);
+			return new $class_name();
 		}
 
-		//trigger_error("Class {$class_name} not found!", E_USER_ERROR);
+		trigger_error("Class {$class_name} not found!", E_USER_ERROR);
 		return null;
 	}
 	
