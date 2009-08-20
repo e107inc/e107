@@ -1,20 +1,26 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------------------------+
-|     e107 website system  : http://e107.org
-|     Steve Dunstan 2001-2002 : jalist@e107.org
-|     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2009-08-06 22:41:35 $
-|     $Author: bugrain $
-+-----------------------------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Default Header
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
+ * $Revision: 1.39 $
+ * $Date: 2009-08-20 09:03:02 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
-define("USER_AREA",TRUE);
-define("ADMIN_AREA",FALSE);
+if(!defined('USER_AREA'))
+{
+	//overlod is now possible, prevent warnings
+	define('USER_AREA',TRUE);
+}
+define('ADMIN_AREA',FALSE);
 $e107 = e107::getInstance();
 $e107->sql->db_Mark_Time('(Header Top)');
 
@@ -112,7 +118,6 @@ if (!defined("PREVIEWTHEME") && (!isset($no_core_css) || !$no_core_css)) {
 
 	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 }
-require_once(e_FILE."/e_css.php");
 
 //Plugin specific CSS
 if (isset($eplug_css) && $eplug_css)
@@ -188,6 +193,7 @@ if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
 // E: Send JS
 //
 
+//FIXME: js manager (prevent duplicates, disable core JS etc)
 // Send Javascript Libraries ALWAYS (for now)
 $hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).THEME.e_LANGUAGE.ADMIN).'_front';
 echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
@@ -296,8 +302,10 @@ function render_meta($type)
 {
 	global $pref,$tp;
 
-	if (!isset($pref['meta_'.$type][e_LANGUAGE])){ return;}
-	if (!$pref['meta_'.$type][e_LANGUAGE]){ return; }
+	if (!isset($pref['meta_'.$type][e_LANGUAGE]) || empty($pref['meta_'.$type][e_LANGUAGE]))
+	{ 
+		return '';
+	}
 
 	if($type == "tag")
 	{
@@ -318,24 +326,31 @@ echo render_meta('tag');
 unset($key_merge,$diz_merge);
 
 // ---------- Favicon ---------
-if (file_exists(THEME."favicon.ico")) {
+if (file_exists(THEME."favicon.ico")) 
+{
 	echo "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
-}elseif (file_exists(e_BASE."favicon.ico")) {
+}
+elseif (file_exists(e_BASE."favicon.ico")) 
+{
 	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
 }
 
 //
 // G: Send Theme Headers
 //
-
-
-if(function_exists('theme_head')){
+if(function_exists('theme_head'))
+{
 	echo theme_head();
 }
 
+//
+// Unobtrusive JS, prevent 3rd party code overload
+// FIXME: TEXTDIRECTION compatibility CSS (marj?)
+//
+require_once(e_FILE."/e_css.php");
 
 //
-// FIXME H: Generate JS for image preloads
+// FIXME H: Generate JS for image preloads (do we really need this?)
 //
 
 if ($pref['image_preload'] && is_dir(THEME.'images'))
@@ -343,8 +358,10 @@ if ($pref['image_preload'] && is_dir(THEME.'images'))
 	$ejs_listpics = '';
 
 	$handle=opendir(THEME.'images');
-	while ($file = readdir($handle)) {
-		if(preg_match("#(jpg|jpeg|gif|bmp|png)$#i", $file)) {
+	while ($file = readdir($handle)) 
+	{
+		if(preg_match("#(jpg|jpeg|gif|bmp|png)$#i", $file)) 
+		{
 			$ejs_listpics .= $file.",";
 		}
 	}
@@ -356,7 +373,8 @@ if ($pref['image_preload'] && is_dir(THEME.'images'))
 	$script_text .= "ejs_preload('".THEME_ABS."images/','".$ejs_listpics."');\n";
 }
 
-if (isset($script_text) && $script_text) {
+if (isset($script_text) && $script_text) 
+{
 	echo "<script type='text/javascript'>\n";
 	echo "<!--\n";
 	echo $script_text;
@@ -369,13 +387,15 @@ if (isset($script_text) && $script_text) {
 // FIXME - I: Calculate JS onload() functions for the BODY tag
 //
 // Fader menu
-global $eMenuActive, $eMenuArea;
-if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
+// OLD CODE REMOVAL
+//global $eMenuActive, $eMenuArea;
+//if(in_array('fader_menu', $eMenuActive)) $js_body_onload[] = 'changecontent(); ';
 
 // External links handling
 $js_body_onload = array();//'externalLinks();'; - already registered to e107:loaded Event by the new JS API
 
 // Theme JS
+// XXX DEPRECATED $body_onload and related functionality
 if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
 $body_onload='';
 if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
@@ -386,6 +406,7 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
 
 /*
  * Fire Event e107:loaded
+ * FIXME - disable core JS
  */
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";
@@ -415,7 +436,7 @@ if ($e107_popup != 1) {
 //
 
 // --------------------- REMOVE IT!!! ------------------------->
-	if (isset($pref['no_rightclick']) && $pref['no_rightclick']) {
+/*	if (isset($pref['no_rightclick']) && $pref['no_rightclick']) {
 		echo "<script language='javascript'>\n";
 		echo "<!--\n";
 		echo "var message=\"Not Allowed\";\n";
@@ -439,7 +460,7 @@ if ($e107_popup != 1) {
 		echo "document.onmousedown=click;\n";
 		echo "// -->\n";
 		echo "</script>\n";
-	}
+	}*/
 // --------------------- REMOVE END  ------------------------->
 
 //
@@ -474,6 +495,7 @@ if ($e107_popup != 1) {
 		$FOOTER = $FOOTER[$def];
 	}
 
+	//XXX - remove all page detections
 	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
 	{
 		parseheader($NEWSHEADER);
@@ -491,8 +513,9 @@ if ($e107_popup != 1) {
 // N: Send other top-of-body HTML
 //
 
-	if(ADMIN){
-		if(file_exists(e_BASE.'install.php')){ echo "<div class='installe' style='text-align:center'><br /><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div><br /><br />"; }
+	if(ADMIN)
+	{
+		if(file_exists(e_BASE.'install.php')){ echo "<div class='installer'><br /><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div><br /><br />"; }
 	}
 
 // Display Welcome Message when old method activated.
@@ -501,11 +524,12 @@ if ($e107_popup != 1) {
 
 
 
-	if(defined("PREVIEWTHEME")) {
-		themeHandler :: showPreview();
+	if(defined("PREVIEWTHEME")) 
+	{
+		themeHandler::showPreview();
 	}
 
 
 	unset($text);
 }
-?>
+//Trim whitepsaces after end of the script
