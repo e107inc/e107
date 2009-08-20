@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.57 $
-* $Date: 2009-08-19 14:39:57 $
+* $Revision: 1.58 $
+* $Date: 2009-08-20 12:27:26 $
 * $Author: secretr $
 *
 */
@@ -1184,26 +1184,22 @@ class e_parse
 //
 // only an ADMIN user can convert {e_ADMIN}
 //
-	function replaceConstants($text, $mode = "", $all = false)
+	function replaceConstants($text, $mode = '', $all = false)
 	{
 		if($mode != "")
 		{
-			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, 
-			$THEMES_DIRECTORY, $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $HANDLERS_DIRECTORY;
-			
 			$e107 = e107::getInstance();
-			//FIXME - replace globals  like this $e107->e107_dirs['IMAGES_DIRECTORY']
 			
 			$replace_relative = array(
-				"",
-				SITEURL.$IMAGES_DIRECTORY,
-				SITEURL.$THEMES_DIRECTORY,
-				$IMAGES_DIRECTORY,
-				$PLUGINS_DIRECTORY,
-				$FILES_DIRECTORY,
-				$THEMES_DIRECTORY,
-				$DOWNLOADS_DIRECTORY,
-				$HANDLERS_DIRECTORY
+				'',
+				SITEURL.$e107->getFolder('images'),
+				SITEURL.$e107->getFolder('themes'),
+				$e107->getFolder('images'),
+				$e107->getFolder('plugins'),
+				$e107->getFolder('files'),
+				$e107->getFolder('themes'),
+				$e107->getFolder('downloads'),
+				$e107->getFolder('handlers')
 			);
 
 			switch ($mode) 
@@ -1225,14 +1221,14 @@ class e_parse
 				case 'full':
 					$replace_absolute = array(
 						SITEURL,
-						SITEURL.$IMAGES_DIRECTORY,
-						SITEURL.$THEMES_DIRECTORY,
-						SITEURL.$IMAGES_DIRECTORY,
-						SITEURL.$PLUGINS_DIRECTORY,
-						SITEURL.$FILES_DIRECTORY,
-						SITEURL.$THEMES_DIRECTORY,
-						SITEURL.$DOWNLOADS_DIRECTORY,
-						SITEURL.$HANDLERS_DIRECTORY
+						SITEURL.$e107->getFolder('images'),
+						SITEURL.$e107->getFolder('themes'),
+						SITEURL.$e107->getFolder('images'),
+						SITEURL.$e107->getFolder('plugins'),
+						SITEURL.$e107->getFolder('files'),
+						SITEURL.$e107->getFolder('themes'),
+						SITEURL.$e107->getFolder('downloads'),
+						SITEURL.$e107->getFolder('handlers')
 					);
 				break;
 			}
@@ -1241,8 +1237,8 @@ class e_parse
 
 			if (ADMIN)
 			{
-				$replace_relative[] = $ADMIN_DIRECTORY;
-				$replace_absolute[] = SITEURL.$ADMIN_DIRECTORY;
+				$replace_relative[] = $e107->getFolder('admin');
+				$replace_absolute[] = SITEURL.$e107->getFolder('admin');
 				$search[] = "{e_ADMIN}";
 			}
 
@@ -1266,10 +1262,14 @@ class e_parse
 		}
 
 //		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
-		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*(?:_ABS){0,1})\}#s");
+		$pattern = ($all ? '#\{([A-Za-z_0-9]*)\}#s' : '#\{(e_[A-Z]*(?:_ABS){0,1})\}#s');
 	 	$text = preg_replace_callback($pattern, array($this, 'doReplace'), $text);
-		$theme_path = (defined("THEME")) ? constant("THEME") : "";
-		$text = str_replace("{THEME}",$theme_path,$text);
+	 	
+	 	if(!defined('THEME'))
+	 	{
+	 		//if not already parsed by doReplace
+	 		$text = str_replace(array('{THEME}', '{THEME_ABS}'), '', $text);
+	 	}
 
 		return $text;
 	}
@@ -1284,32 +1284,32 @@ class e_parse
 		return $matches[1];
 	}
 
-    function createConstants($url,$mode=0){
-        global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY, $DOWNLOADS_DIRECTORY,
-        $ADMIN_DIRECTORY, $HANDLERS_DIRECTORY;
-
+    function createConstants($url, $mode=0)
+    {
+    	//FIXME - create constants for absolute paths and site URL's
         if($mode == 0) // folder name only.
 		{
+			$e107 = e107::getInstance();
 			$tmp = array(
-				"{"."e_IMAGE"."}"=>$IMAGES_DIRECTORY,
-				"{"."e_PLUGIN"."}"=>$PLUGINS_DIRECTORY,
-				"{"."e_FILE"."}"=>$FILES_DIRECTORY,
-				"{"."e_THEME"."}"=>$THEMES_DIRECTORY,
-				"{"."e_DOWNLOAD"."}"=>$DOWNLOADS_DIRECTORY,
-				"{"."e_ADMIN"."}"=>$ADMIN_DIRECTORY,
-				"{"."e_HANDLER"."}"=>$HANDLERS_DIRECTORY
+				'{e_IMAGE}' 	=> $e107->getFolder('images'),
+				'{e_PLUGIN}'	=> $e107->getFolder('plugins'),
+				'{e_FILE}'		=> $e107->getFolder('files'),
+				'{e_THEME}'		=> $e107->getFolder('themes'),
+				'{e_DOWNLOAD}'	=> $e107->getFolder('downloads'),
+				'{e_ADMIN}'		=> $e107->getFolder('admin'),
+				'{e_HANDLER}'	=> $e107->getFolder('handlers')
   			);
         }
 		elseif($mode == 1)  // relative path
 		{
 			$tmp = array(
-				"{"."e_IMAGE"."}"=>e_IMAGE,
-				"{"."e_PLUGIN"."}"=>e_PLUGIN,
-				"{"."e_FILE"."}"=>e_FILE,
-				"{"."e_THEME"."}"=>e_THEME,
-				"{"."e_DOWNLOAD"."}"=>e_DOWNLOAD,
-				"{"."e_ADMIN"."}"=>e_ADMIN,
-				"{"."e_HANDLER"."}"=>e_HANDLER
+				'{e_IMAGE}'		=> e_IMAGE,
+				'{e_PLUGIN}'	=> e_PLUGIN,
+				'{e_FILE}'		=> e_FILE,
+				'{e_THEME}'		=> e_THEME,
+				'{e_DOWNLOAD}'	=> e_DOWNLOAD,
+				'{e_ADMIN}'		=> e_ADMIN,
+				'{e_HANDLER}'	=> e_HANDLER
 			);
 		}
 		foreach($tmp as $key=>$val)
@@ -1325,14 +1325,16 @@ class e_parse
     }
 
 
+    //FIXME - $match not used?
 	function e_highlight($text, $match)
 	{
-		preg_match_all("#<[^>]+>#", $text, $tags);
-		$text = preg_replace("#<[^>]+>#", "<|>", $text);
-		$text = preg_replace("#(\b".$match."\b)#i", "<span class='searchhighlight'>\\1</span>", $text);
+		$tags = array();
+		preg_match_all('#<[^>]+>#', $text, $tags);
+		$text = preg_replace('#<[^>]+>#', '<|>', $text);
+		$text = preg_replace('#(\b".$match."\b)#i', '<span class="searchhighlight">\\1</span>', $text);
 		foreach ($tags[0] as $tag)
 		{
-			$text = preg_replace("#<\|>#", $tag, $text, 1);
+			$text = preg_replace('#<\|>#', $tag, $text, 1);
 		}
 		return $text;
 	}
