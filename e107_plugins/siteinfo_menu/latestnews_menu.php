@@ -2,19 +2,25 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-require_once(e_HANDLER.'news_class.php');
+//require_once(e_HANDLER.'news_class.php');
 
 parse_str($parm, $parm);
+$nitem = e107::getObject('e_news_item');
+$nitem->load(1);
 
-$ret = 'Menu parameters<br />';
-$ret .= '<pre>'.var_export($parm, true).'</pre><br /><br />';
+$template = '
+{NEWS_FIELD=title|format=html&arg=0,TITLE}<br />
+<em>{NEWS_FIELD=datestamp|format=date}</em><br /><br />
+{NEWS_FIELD=body|format=html_truncate&arg=100,...}
+';
 
-$ret .= 'Render Item<br />';
-//$tmpl = e107::getCoreTemplate($parm['tmpl']);
-$nitem = new e_news_item();
-$ret .= $nitem->load(1)->get('title');
+//New way of parsing batches - pass object, all sc_* methods will be auto-registered
+$ret = e107::getParser()->parseTemplate($template, true, $nitem);
+e107::getRender()->tablerender('Latest News', $ret, 'latest_news');
+
+
 //print_a $nitem->getData();
-
+/*
 $ret .= '<br /><br />Render Tree<br />';
 $ntree = new e_news_tree();
 foreach ($ntree->load(1)->getTree() as $nitem) 
@@ -22,5 +28,4 @@ foreach ($ntree->load(1)->getTree() as $nitem)
 	$ret .= ' - '.$nitem->get('title').'<br/>';
 	//print_a $nitem->getData();
 }
-e107::getRender()->tablerender('Latest News', $ret, 'latest_news');
-
+*/
