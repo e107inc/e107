@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-07-18 10:17:56 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.33 $
+ * $Date: 2009-08-20 11:38:24 $
+ * $Author: e107coders $
  *
 */
 require_once ("../class2.php");
@@ -77,6 +77,8 @@ if(isset($_POST['updateprefs']))
 					);
 
 	$pref['post_html'] = intval($_POST['post_html']);			// This ensures the setting is reflected in set text
+	
+	$_POST['membersonly_exceptions'] = explode("\n",$_POST['membersonly_exceptions']);
 
 	$prefChanges = array();
 	foreach($_POST as $key => $value)
@@ -171,6 +173,8 @@ while($file = readdir($handle))
 	}
 }
 closedir($handle);
+
+$pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 
 $text = "
 <div id='core-prefs'>
@@ -538,6 +542,13 @@ $text .= "
 						<td class='control'>
 							".$frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'])."
 							<div class='field-help'>".PRFLAN_59."</div>
+						</td>
+					</tr>
+                    <tr>
+						<td class='label'>".PRFLAN_206."</td>
+						<td class='control'>
+							".$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1)."
+							<div class='field-help'>".PRFLAN_207."</div>
 						</td>
 					</tr>
                		<tr>
