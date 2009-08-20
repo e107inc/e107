@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.131 $
-* $Date: 2009-08-19 14:39:57 $
-* $Author: secretr $
+* $Revision: 1.132 $
+* $Date: 2009-08-20 13:54:40 $
+* $Author: e107coders $
 *
 */
 //
@@ -957,43 +957,20 @@ $sql->db_Mark_Time('Start: Signup/splash/admin');
 define('e_SIGNUP', e_BASE.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
 define('e_LOGIN', e_BASE.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
 
-// --------- Send user to Membersonly-page when not logged in ---------------.
-if ($pref['membersonly_enabled'] && !USER && e_SELF != SITEURL.e_SIGNUP && e_SELF != SITEURL.'index.php' && e_SELF != SITEURL.'fpw.php' && e_SELF != SITEURL.e_LOGIN && strpos(e_PAGE, 'admin') === FALSE && e_SELF != SITEURL.'membersonly.php' && e_SELF != SITEURL.'sitedown.php')
+if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || $pref['maintainance_flag'])
 {
-	if(!isset($_E107['allow_guest']))
-	{
-		if(e_AJAX_REQUEST || e_PAGE == 'e_ajax.php' || e_PAGE == 'e_js.php' || e_PAGE == 'e_jslib.php')
-		{
-        	exit;
-		}
-		// remember the url for after-login.
-        $afterlogin = e_COOKIE.'_afterlogin';
-		$url = (e_QUERY ? e_SELF.'?'.e_QUERY :  e_SELF);
-		session_set($afterlogin,$url,time()+300);
-	  	header('Location: '.e_HTTP.'membersonly.php');
-		exit();
-	}
+	//XXX move force_userupdate() also?
+	require_once(e_HANDLER."redirection_class.php");
+	$red = new redirection;
+	$red->checkMaintenance();
+	$red->checkMembersOnly();
 }
 
-// -----   Redirect to previously logged-in page ---------------------------.
-if(USER && $pref['membersonly_enabled'] && ($_SESSION[e_COOKIE.'_afterlogin'] || $_COOKIE[e_COOKIE.'_afterlogin']))
-{
-	$url = ($_SESSION[e_COOKIE.'_afterlogin']) ? $_SESSION[e_COOKIE.'_afterlogin'] : $_COOKIE[e_COOKIE.'_afterlogin'];
-	session_set(e_COOKIE.'_afterlogin',FALSE,-1000);
-	header('Location: '.$url);
-	exit();
-}
 // ------------------------------------------------------------------------
 
 if(!isset($_E107['no_prunetmp']))
 {
 	$sql->db_Delete('tmp', 'tmp_time < '.(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
-}
-
-if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, 'admin.php') === FALSE && strpos(e_SELF, 'sitedown.php') === false)
-{
-	header('Location: '.SITEURL.'sitedown.php');
-	exit();
 }
 
 
