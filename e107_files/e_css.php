@@ -1,21 +1,17 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /e107_admin/header.php
-|
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|   $Source: /cvs_backup/e107_0.8/e107_files/e_css.php,v $
-|   $Revision: 1.2 $
-|   $Date: 2009-08-14 23:22:36 $
-|   $Author: bugrain $
-+---------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Unobtrusive JS support 
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_files/e_css.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2009-08-20 08:38:30 $
+ * $Author: secretr $
 */
 if (!defined('e107_INIT')) { exit; }
 // No JavaScript support using CSS
@@ -31,24 +27,17 @@ if (!defined('e107_INIT')) { exit; }
 echo "
 <style type='text/css' id='e-core-css'>
    /* Used to hide elements when JavaScript is enabled */
-   .e-hide-if-js {
-      display: none;
-   }
+   .e-hide-if-js { display: none; }
 </style>
 <style type='text/css' id='e-js-css'>
    /* Used to show elements when JavaScript is disabled */
-   .e-show-if-js {
-      display: none;
-   }
+   .e-show-if-js { display: none; }
+   
    /* Used to hide elements when JavaScript is disabled */
-   .e-hide-if-js {
-      display: block;
-   }
+   .e-hide-if-js { display: block; }
    a.e-hide-if-js,
    span.e-hide-if-js,
-   button.e-hide-if-js {
-      display: inline;
-   }
+   button.e-hide-if-js { display: inline; }
 </style>
 <script type='text/javascript'>
    $('e-js-css').disabled=true;
