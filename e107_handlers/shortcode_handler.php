@@ -1,31 +1,39 @@
 <?php
-
 /*
-+ ----------------------------------------------------------------------------+
-| e107 website system
-|
-| ©Steve Dunstan 2001-2002
-| http://e107.org
-| jalist@e107.org
-|
-| Released under the terms and conditions of the
-| GNU General Public License (http://gnu.org).
-|
-| $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.28 $
-| $Date: 2009-07-23 15:29:07 $
-| $Author: secretr $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * e107 Shortcode handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
+ * $Revision: 1.29 $
+ * $Date: 2009-08-20 16:41:29 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-function register_shortcode($classFunc, $codes, $path='', $force=false)
+/**
+ * Register shortcode
+ * $classFunc could be function name, class name or object
+ * $code could be 'true' when class name/object is passed to automate the
+ * registration of shortcode methods
+ * XXX - maybe we could move this to the class?
+ *
+ * @param mixed $classFunc
+ * @param mixed $codes
+ * @param string $path
+ * @param boolean $force
+ */
+function register_shortcode($classFunc, $codes, $path='', $force = false)
 {
 	$sc = e107::getScParser();
 	
 	//If codes is set to true, let's go get a list of shortcode methods
-	if(is_bool($codes) && $codes === true)
+	if(/*is_bool($codes) && */$codes === true) //double check fix
 	{
 		$codes = array();
 		$tmp = get_class_methods($classFunc);
@@ -37,6 +45,15 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 			}
 		}
 		unset($tmp);
+	}
+	
+	//Register object feature
+	$classObj = null;
+	if(is_object($classFunc))
+	{
+		$classObj = $classFunc;
+		$classFunc = get_class($classObj);
+		
 	}
 
 	//We only register these shortcodes if they have not already been registered in some manner
@@ -51,6 +68,12 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 				$sc->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
 			}
 		}
+		
+		//register object if required
+		if(null !== $classObj && !isset($sc->scClasses[$classFunc]))
+		{
+			$sc->scClasses[$classFunc] = $classObj;
+		}
 	}
 	else
 	{
@@ -62,19 +85,34 @@ function register_shortcode($classFunc, $codes, $path='', $force=false)
 	}
 }
 
-function setScVar($scName, $scVar, &$value)
+/**
+ * Add value to already registered SC object
+ *
+ * @param string $className
+ * @param string $scVarName
+ * @param mixed $value
+ */
+function setScVar($className, $scVarName, $value)
 {
-	$e107 = e107::getInstance();
-	$e107->tp->e_sc->scClasses[$scName]->$scVar = $value;
+	$sc = e107::getScParser();
+	if(isset($sc->scClasses[$className]))
+	{
+		$sc->scClasses[$className]->$scVarName = $value;
+	}
 }
 
-function initShortcodeClass($class)
+/**
+ * Create shortcode object
+ *
+ * @param string $class
+ * @param boolean $force
+ */
+function initShortcodeClass($class, $force = false)
 {
-	$e107 = e107::getInstance();
-	$sc = &$e107->tp->e_sc;
-	if(class_exists($class))
+	$sc = e107::getScParser();
+	if(class_exists($class, false) && ($force || !isset($sc->scClasses[$class])))
 	{
-		$sc->scClasses[$class] = new $class;
+		$sc->scClasses[$class] = new $class();
 	}
 }
 
@@ -158,6 +196,11 @@ class e_shortcode
 	{
 		return in_array($code, $this->registered_codes);
 	}
+	
+	function isScClass($className)
+	{
+		return isset($this->scClasses[$className]);
+	}
 
 	function isOverride($code)
 	{
@@ -168,7 +211,13 @@ class e_shortcode
 	{
 		$saveParseSCFiles = $this->parseSCFiles;		// In case of nested call
 		$this->parseSCFiles = $useSCFiles;
-		if(is_array($extraCodes))
+		
+		//object support
+		if(is_object($extraCodes) && !$this->isScClass(get_class($extraCodes)))
+		{
+			register_shortcode($extraCodes, true);
+		}
+		elseif(is_array($extraCodes))
 		{
 			foreach($extraCodes as $sc => $code)
 			{
@@ -406,7 +455,7 @@ class e_shortcode
 				{
 					$cur_shortcodes[$cur_sc] .= $line;
 				}
-				if (preg_match("#^SC_BEGIN (\w*).*#", $line, $matches))
+				if (preg_match('#^SC_BEGIN (\w*).*#', $line, $matches))
 				{
 					$cur_sc = $matches[1];
 					$cur_shortcodes[$cur_sc] = varset($cur_shortcodes[$cur_sc],'');
