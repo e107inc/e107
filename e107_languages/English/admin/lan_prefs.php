@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-07-09 02:47:13 $
+|     $Revision: 1.21 $
+|     $Date: 2009-08-20 11:38:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -220,5 +220,8 @@ define("PRFLAN_202", "Email and Password");
 define("PRFLAN_203", "Username/Email and Password");
 define("PRFLAN_204", "Separate plugins into their own menu.");
 define("PRFLAN_205", "If enabled, plugins will be displayed in their own navigation menu, similar to e107 v0.7 and before.");
+define("PRFLAN_206", "Members-only URL exceptions");
+define("PRFLAN_207", "Membersonly-mode with be disabled for URLs that match any of the terms in this list. One per line.");
+
 
 ?>
