@@ -1,23 +1,23 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-03-22 20:16:23 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
-*/
+ + ----------------------------------------------------------------------------+
+ |     e107 website system
+ |
+ |     Â©Steve Dunstan 2001-2002
+ |     http://e107.org
+ |     jalist@e107.org
+ |
+ |     Released under the terms and conditions of the
+ |     GNU General Public License (http://gnu.org).
+ |
+ |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/oldpolls.php,v $
+ |     $Revision: 1.6 $
+ |     $Date: 2009-08-20 10:16:04 $
+ |     $Author: marj_nl_fr $
+ +----------------------------------------------------------------------------+
+ */
 require_once("../../class2.php");
-if (!plugInstalled('poll')) 
+if (!plugInstalled('poll'))
 {
 	header("Location: ".e_BASE."index.php");
 	exit;
@@ -28,10 +28,7 @@ $cobj = new comment;
 $gen = new convert;
 if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-
-@include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
-@include(e_PLUGIN."poll/languages/English.php");
-
+include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 
 if(e_QUERY)
 {
@@ -78,12 +75,17 @@ if(e_QUERY)
 
 		foreach($optionArray as $option)
 		{
-			$text .= "<tr>
+			$text .= "
+			<tr>
 			<td style='width:40%; text-align: right' class='mediumtext'><b>".$tp -> toHTML($option)."</b>&nbsp;&nbsp;</td>
 			<td class='smalltext'>
-
-
-			<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 95)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>".$percentage[$count]."% [".POLLAN_31.": ".$voteArray[$count]."]</div>
+			<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'>
+			</div>
+			<div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 95)."%; height: 14px; float: left;'>
+			</div>
+			<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'>
+			</div>
+			".$percentage[$count]."% [".POLLAN_31.": ".$voteArray[$count]."]
 			</td>
 			</tr>\n";
 			$count++;
@@ -136,7 +138,7 @@ $text = "<table class='fborder' style='".USER_WIDTH."'>
 <td class='fcaption' style='width: 30%;'>".POLLAN_36."</td>
 </tr>\n";
 
-if (!is_object($tp->e_bb)) 
+if (!is_object($tp->e_bb))
 {
 	require_once(e_HANDLER.'bbcode_handler.php');
 	$tp->e_bb = new e_bbcode;
@@ -149,7 +151,7 @@ foreach($oldpollArray as $oldpoll)
 	$to = $gen->convert_date($poll_end_datestamp, "short");
 
 	$poll_title = $tp->e_bb->parseBBCodes($poll_title, 0,TRUE,TRUE);		// Strip bbcodes
-	
+
 	$text .= "<tr>
 	<td class='forumheader3' style='width: 55%;'><a href='".e_SELF."?{$poll_id}'>{$poll_title}</a></td>
 	<td class='forumheader3' style='width: 15%;'><a href='".e_BASE."user.php?id.{$poll_admin_id}'>{$user_name}</a></td>
