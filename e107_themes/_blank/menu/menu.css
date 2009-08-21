@@ -42,8 +42,8 @@ ul.sub {border-top: 1px solid #DDDDDD;}
 #nav li ul { /* second-level lists */
 	position: absolute;
 	z-index: 10;
-	width: 190px;
-	
+	width: 200px;
+	/*white-space: nowrap;*/
 	left: -9999px; /* using left instead of display to hide menus because display: none isn't read by screen readers */
 }
 
@@ -61,10 +61,11 @@ ul.sub {border-top: 1px solid #DDDDDD;}
 	border-left: 1px solid #DDDDDD;
 	border-right: 1px solid #DDDDDD;
 	border-bottom: 1px solid #DDDDDD;
-	width: 190px;
-	w\idth : 178px;
+	width: 198px;
+	w\idth : 188px;
 	text-transform: none;
 	color: #13394E;
+	/*white-space: nowrap;*/
 }
 
 #nav .menuButton img { padding: 10px 0px; margin-right: 10px; }
