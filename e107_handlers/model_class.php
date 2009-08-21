@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-08-20 13:06:34 $
+ * $Revision: 1.2 $
+ * $Date: 2009-08-21 22:17:59 $
  * $Author: secretr $
 */
 
@@ -1010,12 +1010,21 @@ class e_model
 	 * Convert object data to a string
 	 *
 	 * @param boolean $AddSlashes
+	 * @param string $key optional, if set method will return corresponding value as a string
 	 * @return string
 	 */
-	public function toString($AddSlashes = true)
+	public function toString($AddSlashes = true, $key = null)
 	{
+		if (null !== $key)
+		{
+			$value = $this->getData($key);
+			if(is_array($value))
+			{
+				return e107::getArrayStorage()->WriteArray($value, $AddSlashes);
+			}
+			return (string) $value;
+		}
 		return (string) e107::getArrayStorage()->WriteArray($this->getData(), $AddSlashes);
-		
 	}
 	
 	/**
