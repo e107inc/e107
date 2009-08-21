@@ -9,16 +9,86 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-08-17 18:47:29 $
+ * $Revision: 1.18 $
+ * $Date: 2009-08-21 13:20:36 $
  * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
+require_once(e_HANDLER.'model_class.php');
 
 class e_news_item extends e_model 
 {
 	protected $_loaded_once = false;
+	
+	/**
+	 * Shortcodes - simple field getter (basic formatting)
+	 * THIS IS ONLY TEST, maybe useful for fields requiring simple formatting - it's a way too complicated for designers,
+	 * could be inner used inside the rest of news SCs.
+	 *
+	 * @param string $news_field name without the leading 'news_' prefix
+	 * @param mixed $default
+	 * @return string field value
+	 */
+	public function sc_news_field($parm = '')
+	{
+		$tmp = explode('|', $parm, 2);
+		$field = $tmp[0];
+		
+		if(!is_array($parm))
+		{
+			parse_str(varset($tmp[1]), $parm);
+		}
+		$val = $this->get($field, '');
+		
+		//do more with $parm array, just an example here
+		if(varsettrue($parm['format']))
+		{
+			switch ($parm['format'])
+			{
+				//USAGE: {NEWS_FIELD=body|format=html&arg=1,BODY} -> callback e107->toHTML($value, true, 'BODY');
+				case 'html': 
+					$method = 'toHTML';
+					$callback = e107::getParser();
+					$parm['arg'] = explode(',', varset($parm['arg']));
+					$parm['arg'][0] = varsettrue($parm['arg'][0]) ? true : false; //to boolean
+					$params = array($val); //value is always the first callback argument
+					$params += $parm['arg'];
+				break;
+				
+				//USAGE: {NEWS_FIELD=body|format=html_truncate&arg=200,...} -> callback e107->html_truncate($value, 200, '...');
+				case 'html_truncate':
+					$val = e107::getParser()->toHTML($val, true);
+					
+				//USAGE: {NEWS_FIELD=title|format=text_truncate&arg=100,...} -> callback e107->text_truncate($value, 200, '...');
+				case 'text_truncate':
+					$method = $parm['format'];
+					$callback = e107::getParser();
+					$params = array($val); //value is always the first callback argument
+					$params = array_merge($params, explode(',', $parm['arg']));
+				break;
+				
+				//USAGE: {NEWS_FIELD=title|format=date} -> strftime($pref[shortdate], $value);
+				//USAGE: {NEWS_FIELD=title|format=date&arg=%Y} -> strftime('%Y', $value);
+				case 'date':
+					$method = $parm['format'];
+					$callback = e107::getParser();
+					$params = array($val); //value is always the first callback argument
+					$params = array_merge($params, explode(',', $parm['arg']));
+					//should be done with date handler (awaiting for modifications)
+					return strftime(varset($parm['arg'], e107::getPref('shortdate')), $val);
+				break;
+				
+				default:
+					return $val;
+				break;
+					
+			}
+			return call_user_func_array(array($callback, $method), $params);
+		}
+
+		return $val;
+	}
 	
 	/**
 	 * Shorthand getter for news fields
