@@ -32,7 +32,7 @@ $csscompliant = TRUE;
 
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
-function theme_head() 
+function theme_head()
 {
   return "<link rel='stylesheet' href='".THEME_ABS."nav_menu.css' type='text/css' />\n";
 }
@@ -50,7 +50,7 @@ then make change to nav_menu.css (documented in that file)
 */
 
 $HEADER = "
-<table id='wrapptable' cellspacing='2' cellpadding='2' style='width: 800'> 
+<table id='wrapptable' cellspacing='2' cellpadding='2' style='width: 800'>
 <tr>
 <td colspan='2'>
 <div>{SITELINKS_ALT=no_icons}</div>
@@ -82,7 +82,7 @@ $FOOTER = "
 ";
 
 $CUSTOMHEADER = "
-<table id='wrapptable' cellspacing='2' cellpadding='2' style='width: 800'> 
+<table id='wrapptable' cellspacing='2' cellpadding='2' style='width: 800'>
 <tr>
 <td colspan='2'>
 <div>{SITELINKS_ALT=no_icons}</div>
@@ -151,17 +151,17 @@ function tablestyle($caption, $text, $mode)
 	global $style;
 	if($style == "menu")
 	{
-		echo "<div class='spacer'><div class='caption'><div class='captionpadder'><h4>{$caption}</h4></div></div><div class='menubody'><div class='menupadder'>{$text}</div></div><div class='menubottom'></div></div>";	
+		echo "<div class='spacer'><div class='caption'><div class='captionpadder'><h4>{$caption}</h4></div></div><div class='menubody'><div class='menupadder'>{$text}</div></div><div class='menubottom'></div></div>";
 	}
 	else
 	{
 		if($caption)
 		{
-			echo "<div class='spacer'>\n<div class='borderx'><div class='line2'>{$caption}</div>\n<div class='incontent'>{$text}</div>\n</div>\n";
+			echo "<div class='spacer'>\n<div class='borderx'><div class='line2'>{$caption}</div>\n<div class='incontent'>{$text}</div>\n</div>\n</div>\n";
 		}
 		else
 		{
-			echo "<div class='spacer'>\n<div class='borderx'>\n<div class='incontent'>{$text}</div>\n</div>\n";
+			echo "<div class='spacer'>\n<div class='borderx'>\n<div class='incontent'>{$text}</div>\n</div>\n</div>\n";
 		}
 	}
 }
