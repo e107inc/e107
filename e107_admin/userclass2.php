@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-08-04 15:04:18 $
- * $Author: e107coders $
+ * $Revision: 1.27 $
+ * $Date: 2009-08-22 21:27:34 $
+ * $Author: e107steved $
  *
 */
 
@@ -24,8 +24,7 @@ if (!getperms("4"))
 $e_sub_cat = 'userclass';
 //define('UC_DEBUG_OPTS',FALSE);
 
-require_once(e_HANDLER."userclass_class.php");		// Modified class handler
-$uclass = new e_userclass;							// Class management functions - legacy stuff from 0.7
+require_once(e_HANDLER.'userclass_class.php');		// Modified class handler
 $e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
 require_once (e_HANDLER.'form_handler.php');
 $frm = new e_form();
@@ -35,11 +34,11 @@ $message = '';
 
 function check_allowed($class_id, $redirect = true)
 {
-	global $e107;
+	$e107 = e107::getInstance();
 	if (!isset($e107->user_class->class_tree[$class_id]))
 	{
 		if(!$redirect) return false;
-		header("location:".SITEURL);
+		header('location:'.SITEURL);
 		exit;
 	}
 	if (!getperms('0') && !check_class($e107->user_class->class_tree[$class_id]['userclass_editclass']))
@@ -172,7 +171,7 @@ if (isset($_POST['delete']))
 				{
 					$uidList[$row['user_id']] = $row['user_class'];
 				}
-				$uclass->class_remove($class_id, $uidList);
+				$e_userclass->class_remove($class_id, $uidList);
 			}
 			if (isset($pref['frontpage'][$class_id]))
 			{
@@ -294,13 +293,13 @@ if ($message)
 	$emessage->add($message, E_MESSAGE_SUCCESS);
 }
 
-if(!e_QUERY || $action == "list")
+if(!e_QUERY || $action == 'list')
 {
 	$ns->tablerender(UCSLAN_21, $emessage->render(). $uc->show_existing());
 }
 if($_GET['uc'])
 {
-	$action = "config";
+	$action = 'config';
     $_POST['existing'] = $_GET['uc'];
 }
 
@@ -755,7 +754,7 @@ $ns->tablerender(UCSLAN_21, $text);
 		{
 		  $uidList[$row['user_id']] = $row['user_class'];
 		}
-		$uclass->class_remove($class_id, $uidList);
+		$e_userclass->class_remove($class_id, $uidList);
 		$message = UCSLAN_1;
 		userclass2_adminlog("06","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
 	  }
@@ -773,7 +772,7 @@ $ns->tablerender(UCSLAN_21, $text);
 		{
 			$uidList[$row['user_id']] = $row['user_class'];
 		}
-		$uclass->class_remove($class_id, $uidList);
+		$e_userclass->class_remove($class_id, $uidList);
 	  }
 	  unset($uidList);
 	  if ($sql->db_Select('user', 'user_id, user_class', "user_id IN({$tmp2[1]})"))
@@ -782,7 +781,7 @@ $ns->tablerender(UCSLAN_21, $text);
 		{
 			$uidList[$row['user_id']] = $row['user_class'];
 		}
-		$uclass->class_add($class_id, $uidList);
+		$e_userclass->class_add($class_id, $uidList);
 	  }
 	  userclass2_adminlog("04","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
 	}

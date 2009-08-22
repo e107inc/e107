@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.53 $
-* $Date: 2009-08-19 21:33:19 $
+* $Revision: 1.54 $
+* $Date: 2009-08-22 21:27:34 $
 * $Author: e107steved $
 *
 */
@@ -1744,32 +1744,35 @@ class users
 	}
 
 
+/*
+	Appears to be unused function
 	function user_remuserclass($userid,$uclass)
 	{
 		global $sql,$sql2;
-      $emessage = &eMessage::getInstance();
+		$emessage = &eMessage::getInstance();
 		if ($uclass[0] == 0)
 		{
-   		if($sql->db_Update("user","user_class='' WHERE user_id={$userid}")===TRUE)
-	   	{
-            $emessage->add(UCSLAN_9, E_MESSAGE_SUCCESS); // classes updated;
-	   	}
-	   	else
-	   	{
-            $emessage->add(UCSLAN_9, E_MESSAGE_SUCCESS); // classes updated;
-	   	}
+			if($sql->db_Update("user","user_class='' WHERE user_id={$userid}")===TRUE)
+			{
+				$emessage->add(UCSLAN_9, E_MESSAGE_SUCCESS); // classes updated;
+			}
+			else
+			{
+				$emessage->add(UCSLAN_9, E_MESSAGE_SUCCESS); // classes updated;
+			}
 		}
 		else
 		{
-         $eu = new e_userclass;
-		   if($sql->db_Select("user","user_id,user_class","user_id={$userid} LIMIT 1"))
-		   {
-		   	$row = $sql->db_Fetch();
-           	$eu->class_remove($uclass[0], array($row['user_id']=>$row['user_class']));
-		   }
-         $emessage->add(UCSLAN_9, E_MESSAGE_SUCCESS); // classes updated;
+			$eu = new e_userclass;
+			if($sql->db_Select("user","user_id,user_class","user_id={$userid} LIMIT 1"))
+			{
+				$row = $sql->db_Fetch();
+				$eu->class_remove($uclass[0], array($row['user_id']=>$row['user_class']));
+			}
+			$emessage->add(UCSLAN_9, E_MESSAGE_SUCCESS); // classes updated;
 		}
 	}
+*/
 
     // Set userclass for user(s).
 	function user_userclass($userid,$uclass,$append=FALSE)

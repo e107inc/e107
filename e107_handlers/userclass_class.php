@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2009-08-19 21:43:46 $
+|     $Revision: 1.41 $
+|     $Date: 2009-08-22 21:27:34 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1284,6 +1284,44 @@ class user_class_admin extends user_class
 	}
 
 
+	// Moved in from e_userclass class
+	// $uinfoArray is array(uid=>user_class)
+	// Adds all users in list to class $ci
+	public function class_add($cid, $uinfoArray)
+	{
+		$e107 = e107::getInstance();
+		$uc_sql = new db;
+		foreach($uinfoArray as $uid => $curclass)
+		{
+			if ($curclass)
+			{
+				$newarray = array_unique(array_merge(explode(',', $curclass), array($cid)));
+				$new_userclass = implode(',', $newarray);
+			}
+			else
+			{
+				$new_userclass = $cid;
+			}
+			$uc_sql->db_Update('user', "user_class='".$e107->tp->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+		}
+	}
+
+	// Moved in from e_userclass class
+	// $uinfoArray is array(uid=>user_class)
+	// Removes all users in list from class $ci
+	public function class_remove($cid, $uinfoArray)
+	{
+		$e107 = e107::getInstance();
+		$uc_sql = new db;
+		foreach($uinfoArray as $uid => $curclass)
+		{
+			$newarray = array_diff(explode(',', $curclass), array('', $cid));
+			$new_userclass = implode(',', $newarray);
+			$uc_sql->db_Update('user', "user_class='".$e107->tp->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+		}
+	}
+
+
 
 	// Certain fields on admin records have constraints on their values.
 	// Checks the passed array, and updates any values which are unacceptable.
@@ -1385,101 +1423,6 @@ class user_class_admin extends user_class
 }
 
 
-
-
-
-//========================================================================
-//			Legacy Admin Class handler - maybe add to admin class
-//========================================================================
-
-// class_add() - called only from userclass2.php - adds a list of users to a class
-// class_remove() - called only from userclass2.php - removes a list of users from a class
-// class_create() - called only from forum update routines - could probably go
-
-
-class e_userclass
-{
-	function class_add($cid, $uinfoArray)
-	{
-		global $tp;
-		$sql2 = new db;
-		foreach($uinfoArray as $uid => $curclass)
-		{
-			if ($curclass)
-			{
-				$newarray = array_unique(array_merge(explode(',', $curclass), array($cid)));
-				$new_userclass = implode(',', $newarray);
-			}
-			else
-			{
-				$new_userclass = $cid;
-			}
-			$sql2->db_Update('user', "user_class='".$tp -> toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
-		}
-	}
-
-	function class_remove($cid, $uinfoArray)
-	{
-		global $tp;
-		$sql2 = new db;
-		foreach($uinfoArray as $uid => $curclass)
-		{
-			$newarray = array_diff(explode(',', $curclass), array('', $cid));
-			$new_userclass = implode(',', $newarray);
-			$sql2->db_Update('user', "user_class='".$tp -> toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
-		}
-	}
-
-
-// Mostly for upgrades?
-// Create a new user class, with a specified prefix to the name
-// $ulist - comma separated list of user names to be added
-	function class_create($ulist, $class_prefix = "NEW_CLASS_", $num = 0)
-	{
-		global $sql;
-		$varname = "uc_".$ulist;
-		if($ret = getcachedvars($varname))
-		{
-			return $ret;
-		}
-		$ul = explode(",", $ulist);
-		array_walk($ul, array($this, 'munge'));
-		$qry = "
-		SELECT user_id, user_class from #user AS u
-		WHERE user_name = ".implode(" OR user_name = ", $ul);
-		if($sql->db_Select_gen($qry))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				$idList[$row['user_id']] = $row['user_class'];
-
-			}
-			while($sql->db_Count("userclass_classes","(*)","WHERE userclass_name = '".strtoupper($class_prefix.$num)."'"))
-			{
-				$num++;
-			}
-			$newname = strtoupper($class_prefix.$num);
-			$i = 1;
-			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".intval($i)."' ") && $i < 240)
-			{
-				$i++;
-			}
-			if ($i < 240)		// Give a bit of headroom - we're allocating 'system' classes downwards from 255
-			{
-				$sql->db_Insert("userclass_classes", "{$i}, '{$newname}', 'Auto_created_class', 254");
-				$this->class_add($i, $idList);		// Add users
-				cachevars($varname, $i);
-				return $i;
-			}
-		}
-
-	}
-
-	function munge(&$value, &$key)
-	{
-		$value = "'".trim($value)."'";
-	}
-}
 
 
 
