@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_db.php,v 1.5 2009-01-16 01:02:41 mcfly_e107 Exp $
+ * $Id: lan_db.php,v 1.6 2009-08-22 00:28:55 e107coders Exp $
  *
  * Admin Language File
  *
@@ -65,4 +65,8 @@ define("DBLAN_54", "No Validation errors found.");
 define('DBLAN_55', 'Select to scan shortcode/override directory for new shortcodes');
 define('DBLAN_56', 'Scan override directory');
 define('DBLAN_57', 'Shortcode Override list set to');
+
+define('DBLAN_58', "Export Preferences");
+define('DBLAN_59', "Import Preferences");
+
 ?>

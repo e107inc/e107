@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-07-23 15:21:41 $
+ * $Revision: 1.12 $
+ * $Date: 2009-08-22 00:28:54 $
  * $Author: e107coders $
  *
 */
@@ -62,12 +62,21 @@ if(isset($_POST['verify_sql']))
 	header("location: ".e_ADMIN."db_verify.php");
 	exit();
 }
+if(isset($_POST['export_core_prefs']))
+{
+	export_core_prefs();
+	exit();
+}
 
 require_once ("auth.php");
 require_once (e_HANDLER."form_handler.php");
 $frm = new e_form();
 $emessage = &eMessage::getInstance(); //nothing wrong with doing it twice
 
+if(isset($_POST['importCorePrefsForm']))
+{
+	importCorePrefsForm();	
+}
 
 if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
 {
@@ -117,6 +126,14 @@ if(isset($_POST['verify_sql_record']) || isset($_POST['check_verify_sql_record']
 	require_once ("footer.php");
 	exit();
 }
+
+if(isset($_POST['upload']))
+{	
+	importCorePrefs();
+	
+}
+
+
 
 //XXX - what is this for (backup core)? <input type='hidden' name='sqltext' value='{$sqltext}' />
 
@@ -194,6 +211,24 @@ $text = "
 						<!-- <input class='button' style='width: 100%' type='submit' name='verify_sql_record' value='".DBLAN_36."' /> -->
 					</td>
 				</tr>
+				
+				<!-- IMPORT PREFS -->
+				<tr>
+					<td>".DBLAN_59."</td>
+					<td>
+						".$frm->radio('db_execute', 'importCorePrefsForm').$frm->label(DBLAN_59, 'db_execute', 'importCorePrefsForm')."
+						<!-- <input class='button' style='width: 100%' type='submit' name='importCorePrefsForm' value='".DBLAN_59."' /> -->
+					</td>
+				</tr>
+				
+				<!-- EXPORT PREFS -->
+				<tr>
+					<td>".DBLAN_58."</td>
+					<td>
+						".$frm->radio('db_execute', 'export_core_prefs').$frm->label(DBLAN_58, 'db_execute', 'export_core_prefs')."
+						<!-- <input class='button' style='width: 100%' type='submit' name='export_core_prefs' value='".DBLAN_58."' /> -->
+					</td>
+				</tr>
 
 				<!-- SCAN SC OVERRIDE -->
 				<tr>
@@ -214,6 +249,109 @@ $text = "
 	";
 
 $e107->ns->tablerender(DBLAN_10, $emessage->render().$text);
+
+function export_core_prefs()
+{
+
+
+	//TODO  - Cameron - move function to own class. 
+
+	require_once(e_ADMIN."ver.php");
+	
+	$pref = e107::getPref();
+	$text = "<?xml version='1.0' encoding='utf-8' ?>\n";
+	$text .= "<e107Export version='".$e107info['e107_version']."' timestamp='".time()."' >\n";
+
+	foreach($pref as $key=>$val)
+	{
+		if(isset($val))
+		{
+			$val = is_array($val) ? e107::getArrayStorage()->WriteArray($val) : $val;
+			
+			$text .= "<corePref name='$key'><![CDATA[".$val."]]></corePref>\n";
+		}
+	}
+
+	$text .= "</e107Export>";
+	
+	header('Content-type: application/xml', TRUE);
+ 	header("Content-disposition: attachment; filename= e107_prefs_" . date("Y-m-d").".xml");
+    header("Cache-Control: max-age=30");
+	header("Pragma: public");
+	echo $text;
+	exit;			
+}
+
+function importCorePrefs()
+{
+	//TODO - Cameron - move to own class and make generic. 
+	$xml = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],TRUE);
+	
+	$data = e107::getSingleton('xmlClass')->xmlFileContents;
+	$xll = new SimpleXMLElement($data);
+	
+	print_a($xll);
+	foreach ($xll->corePref as $key=>$val)
+	{
+	//	echo "<br />". $xll->corePref['@attributes']   ." = ".$val;
+	}
+
+	
+	
+	if(isset($xml['prefs']['core']))
+	{
+		foreach($xml['prefs']['core'] as $key=>$pref);
+		{
+		//	e107::getConfig()->add($key, $pref);
+		}
+
+	}
+//	e107::getConfig()->save();
+	
+}
+
+function importCorePrefsForm()
+{
+	 // Get largest allowable file upload
+	 $frm = e107::getSingleton('e_form');
+
+	 
+			  require_once(e_HANDLER.'upload_handler.php');
+			  $max_file_size = get_user_max_upload();
+
+			  $text = "
+				<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
+                <table cellpadding='0' cellspacing='0' class='adminform'>
+                	<colgroup span='2'>
+                		<col class='col-label' />
+                		<col class='col-control' />
+                	</colgroup>
+				<tr>
+				<td>".LAN_UPLOAD."</td>
+				<td>
+				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
+				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+				<input class='tbox' type='file' name='file_userfile[]' size='50' />
+				</td>
+				</tr>
+                </tr>
+				</table>
+
+				<div class='center buttons-bar'>";
+                $text .= $frm->admin_button('upload', LAN_UPLOAD, 'submit', LAN_UPLOAD);
+
+				$text .= "
+				</div>
+
+				</form>\n";
+	
+
+         e107::getRender()->tablerender("Import e107 Preferences", $text);
+	
+	
+}
+
+
 
 function backup_core()
 {
