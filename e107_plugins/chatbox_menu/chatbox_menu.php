@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-08-15 11:55:30 $
+|     $Revision: 1.15 $
+|     $Date: 2009-08-23 10:57:50 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -209,9 +209,17 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 			$cb_message = str_replace($search, $replace, $cb_message);
 
 			global $CHATBOXSTYLE;
-			if(!$CHATBOXSTYLE)
+			if( ! $CHATBOXSTYLE)
 			{
-				$bullet = (defined("BULLET") ? "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='vertical-align: middle;' />");
+				$bullet = '';
+				if(defined('BULLET'))
+				{
+					$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+				}
+				elseif(file_exists(THEME.'images/bullet2.gif'))
+				{
+					$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+				}
 				// default chatbox style
 				$CHATBOXSTYLE = "<!-- chatbox -->\n<div class='spacer'>
 				$bullet <b>{USERNAME}</b><br /><span class='smalltext'>{TIMEDATE}</span><br /><div class='smallblacktext'>{MESSAGE}</div></div><br />\n";

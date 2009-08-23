@@ -9,8 +9,8 @@
  * List Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/list_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-08-15 11:55:30 $
+ * $Revision: 1.11 $
+ * $Date: 2009-08-23 10:57:51 $
  * $Author: marj_nl_fr $
  *
 */
@@ -609,9 +609,13 @@ class listclass
 
 		if($this->list_pref[$this->mode."_icon_default"])
 		{
-			if(is_readable(THEME."images/bullet2.gif"))
+			if(defined('BULLET'))
 			{
-				$default_bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' />";
+				$default_bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+			}
+			elseif(file_exists(THEME.'images/bullet2.gif'))
+			{
+				$default_bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
 			}
 		}
 

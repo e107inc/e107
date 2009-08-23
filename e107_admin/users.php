@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.54 $
-* $Date: 2009-08-22 21:27:34 $
-* $Author: e107steved $
+* $Revision: 1.55 $
+* $Date: 2009-08-23 10:57:51 $
+* $Author: marj_nl_fr $
 *
 */
 require_once ('../class2.php');
@@ -749,11 +749,19 @@ class users
 
 	function user_info($ipd)
 	{
-		global $ns,$sql,$e107;
+		global $ns, $sql, $e107;
 
 		if (isset($ipd))
 		{
-			if(!defined("BULLET")) define("BULLET", "bullet2.gif");
+			$bullet = '';
+			if(defined('BULLET'))
+			{
+				$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+			}
+			elseif(file_exists(THEME.'images/bullet2.gif'))
+			{
+				$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+			}
             // TODO - move to e_userinfo.php
 			$obj = new convert;
 			$sql->db_Select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
@@ -767,9 +775,14 @@ class users
 				$datestamp = $obj->convert_date($cb_datestamp, "short");
 				$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
 				$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
-				$text .= "<img src='".THEME_ABS."images/".BULLET."' alt='bullet' />
-					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $cb_message."
-					</div><br />";
+				$text .= $bullet."
+					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>
+					<div class=\"mediumtext\">
+					".$datestamp."
+					<br />
+					". $cb_message."
+					</div>
+					<br />";
 			}
 
 			$text .= "<hr />";
@@ -780,8 +793,13 @@ class users
 				$datestamp = $obj->convert_date($comment_datestamp, "short");
 				$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
 				$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
-				$text .= "<img src='".THEME_ABS."images/".BULLET."' alt='bullet' />
-					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $comment_comment."</div><br />";
+				$text .= $bullet."
+					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>
+					<div class=\"mediumtext\">
+					".$datestamp."
+					<br />". $comment_comment."
+					</div>
+					<br />";
 			}
 
 		}

@@ -9,8 +9,8 @@
  * Alternate News
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_news/alt_news.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-07-06 07:14:47 $
+ * $Revision: 1.5 $
+ * $Date: 2009-08-23 10:57:50 $
  * $Author: marj_nl_fr $
 */
 
@@ -44,9 +44,19 @@ function alt_news($news_category) {
 					$datestamp = $gen->convert_date($news_datestamp, "short");
 					$news_body = strip_tags(substr($news_body, 0, 100))." ...";
 					$comment_total = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='".intval($news_id)."' AND comment_type='0' ");
-					$text .= "<div class='mediumtext'>
-						<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' /> ";
-
+					$bullet = '';
+					if(defined('BULLET'))
+					{
+						$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+					}
+					elseif(file_exists(THEME.'images/bullet2.gif'))
+					{
+						$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+					}
+					$text .= "
+						<div class='mediumtext'>
+						".$bullet;
+						
 					if ($news_allow_comments) {
 						$text .= "<a href='news.php?extend.".$news_id."'>".$news_title."</a>";
 					} else {

@@ -16,7 +16,16 @@ global $tp;
 include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 
 //TODO review bullet
-$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' />";
+$bullet = '';
+if(defined('BULLET'))
+{
+	$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+}
+elseif(file_exists(THEME.'images/bullet2.gif'))
+{
+	$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+}
+
 global $linkspage_pref;
 $linkspage_pref = $lc -> getLinksPagePref();
 
