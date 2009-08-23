@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-07-14 05:31:57 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2009-08-23 10:57:50 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -111,18 +111,14 @@ class pageClass
 		$this -> pageID = intval($tmp[0]);
 		$this -> pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
 		$this -> pageTitles = array();
-		if(defined("BULLET"))
+		$this->bullet = '';
+		if(defined('BULLET'))
 		{
-        	$this -> bullet = "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />";
+			$this->bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
 		}
-		elseif(file_exists(THEME."images/bullet2.gif"))
+		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-        	$this -> bullet = "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />";
-
-		}
-		else
-		{
-        	$this -> bullet = "";
+			$this->bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
 		}
 
 		$this -> debug = $debug;

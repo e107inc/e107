@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-25 07:54:34 $
+|     $Revision: 1.11 $
+|     $Date: 2009-08-23 10:57:51 $
 |     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
@@ -140,15 +140,21 @@ SC_END
 
 // CALENDAR SHOWEVENT ------------------------------------------------------------
 SC_BEGIN EC_SHOWEVENT_IMAGE
+	//TODO review bullet
 	global $ev;
+
+	$img = '';
 	if($ev['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$ev['event_cat_icon']))
 	{
 	  $img = "<img style='border:0' src='".e_PLUGIN_ABS."calendar_menu/images/".$ev['event_cat_icon']."' alt='' height='".$ev['imagesize']."' width='".$ev['imagesize']."' />";
 	}
-	else
+	elseif(defined('BULLET'))
 	{
-		//TODO review bullet
-		$img = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
+		$img = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+	}
+	elseif(file_exists(THEME.'images/bullet2.gif'))
+	{
+		$img = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
 	}
 	return $img;
 SC_END
@@ -547,14 +553,18 @@ SC_BEGIN EC_NEXT_EVENT_ICON
   $fe_icon_file = "";
   if ($pref['eventpost_showcaticon'] == 1)
   {
-	if($cal_row['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$cal_row['event_cat_icon']))
-	{
-	  $fe_icon_file = e_PLUGIN_ABS."calendar_menu/images/".$cal_row['event_cat_icon'];
-	}
-	else
-	{
-	  $fe_icon_file = THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif");
-	}
+		if($cal_row['event_cat_icon'] && file_exists($ecal_dir."images/".$cal_row['event_cat_icon']))
+		{
+		  $fe_icon_file = $ecal_dir."images/".$cal_row['event_cat_icon'];
+		}
+		elseif(defined('BULLET'))
+		{
+			$img = HEME.'images/'.BULLET;
+		}
+		elseif(file_exists(THEME.'images/bullet2.gif'))
+		{
+			$img = THEME.'images/bullet2.gif';
+		}
   }
   return $fe_icon_file;
 SC_END

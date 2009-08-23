@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/userposts.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-14 05:31:57 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2009-08-23 10:57:50 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once('class2.php');
@@ -42,11 +42,6 @@ if ($action == 'exit')
 {
 	header("location:".e_BASE."index.php");
 	exit;
-}
-
-if(!defined("BULLET"))
-{
-	define("BULLET", "bullet2.gif");
 }
 
 if ($action == "comments")
@@ -221,7 +216,16 @@ function parse_userposts_comments_table($row)
 
 	$gen = new convert;
 	$datestamp = $gen->convert_date($row['comment_datestamp'], "short");
-	$USERPOSTS_COMMENTS_ICON		= "<img src='".THEME."images/".BULLET."' alt='' />";
+	$bullet = '';
+	if(defined('BULLET'))
+	{
+		$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+	}
+	elseif(file_exists(THEME.'images/bullet2.gif'))
+	{
+		$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+	}
+	$USERPOSTS_COMMENTS_ICON		= $bullet;
 	$USERPOSTS_COMMENTS_DATESTAMP	= UP_LAN_11." ".$datestamp;
 	$USERPOSTS_COMMENTS_HEADING		= $row['comment_title'];
 	$USERPOSTS_COMMENTS_COMMENT		= $row['comment_comment'];

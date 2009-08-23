@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-03-06 20:09:08 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2009-08-23 10:57:51 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -139,8 +139,9 @@ return '';
 SC_END
 
 SC_BEGIN LM_ADMINLINK_BULLET
-$data = getcachedvars('login_menu_data'); 
-if(ADMIN==TRUE){
+if(ADMIN)
+{
+	$data = getcachedvars('login_menu_data');
 	return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
 }
 return '';

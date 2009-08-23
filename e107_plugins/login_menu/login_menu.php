@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2008-06-13 20:20:22 $
-|     $Author: e107steved $
+|     $Revision: 1.11 $
+|     $Date: 2009-08-23 10:57:51 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,12 +34,12 @@ $ip = $e107->getip();
 //Bullet
 	if(defined("BULLET"))
 	{
-   		$bullet = "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />";
+   		$bullet = "<img src='".THEME_ABS."images/".BULLET."' alt='' class='icon' />";
    		$bullet_src = THEME_ABS."images/".BULLET;
 	}
 	elseif(file_exists(THEME."images/bullet2.gif"))
 	{
-		$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />";
+		$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' class='icon' />";
 		$bullet_src = THEME_ABS."images/bullet2.gif";
 	}
 	else

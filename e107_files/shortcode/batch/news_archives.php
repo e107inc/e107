@@ -18,9 +18,17 @@ $news_archive_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 		
 /*
 SC_BEGIN ARCHIVE_BULLET
-global $news2;
-//TODO review bullt
-return "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />";
+//TODO review bullet
+$bullet = '';
+if(defined('BULLET'))
+{
+	$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+}
+elseif(file_exists(THEME.'images/bullet2.gif'))
+{
+	$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+}
+return $bullet;
 SC_END
 
 SC_BEGIN ARCHIVE_LINK

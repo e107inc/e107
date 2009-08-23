@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2008-12-07 00:21:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2009-08-23 10:57:51 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -68,7 +68,8 @@ if($results = $e107->sql->db_Select_gen($qry))
 		$post = $e107->tp->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
 		$url = $e107->url->getUrl('forum', 'thread', array('func' => 'last', 'id' => $id));
-		$bullet = "<img src='".THEME_ABS.'images/'.(defined('BULLET') ? BULLET : 'bullet2.gif')."' alt='' />";
+		//TODO legacy bullet is not use here anymore
+		//$bullet = "<img src='".THEME_ABS.'images/'.(defined('BULLET') ? BULLET : 'bullet2.gif')."' alt='' />";
 		
 		
 		if ($menu_pref['newforumposts_title'])

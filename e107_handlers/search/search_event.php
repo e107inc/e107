@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/search/search_event.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-08-23 10:57:51 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 	
@@ -60,7 +60,16 @@ while (list($event_id, $event_stake, $event_ward, $event_organisation, $event_st
 	if (!$event_url_) {
 		$event_threat_ = $event_threat;
 	}
-	$text .= "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' /> <a href=\"event.php?".$event_start."\">{$event_title}</a>{$event_details}<br />";
+	$bullet = '';
+	if(defined('BULLET'))
+	{
+		$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+	}
+	elseif(file_exists(THEME.'images/bullet2.gif'))
+	{
+		$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+	}
+	$text .= $bullet." <a href=\"event.php?".$event_start."\">{$event_title}</a>{$event_details}<br />";
 }
 $qtype = LAN_911;
 ?>

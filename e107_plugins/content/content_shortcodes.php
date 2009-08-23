@@ -880,12 +880,27 @@ SC_END
 
 SC_BEGIN CM_MENU_LINKS_ICON
 global $content_pref, $bullet;
+//TODO review bullet + use switch
 	//define icon
-	if($content_pref["content_menu_links_icon"] == "0"){ $ret = "";
-	}elseif($content_pref["content_menu_links_icon"] == "1"){ $ret = $bullet;
-	}elseif($content_pref["content_menu_links_icon"] == "2"){ $ret = "&middot";
-	}elseif($content_pref["content_menu_links_icon"] == "3"){ $ret = "&ordm;";
-	}elseif($content_pref["content_menu_links_icon"] == "4"){ $ret = "&raquo;";
+	if($content_pref["content_menu_links_icon"] == "0")
+	{
+		$ret = "";
+	}
+	elseif($content_pref["content_menu_links_icon"] == "1")
+	{
+		$ret = $bullet;
+	}
+	elseif($content_pref["content_menu_links_icon"] == "2")
+	{
+		$ret = "&middot";
+	}
+	elseif($content_pref["content_menu_links_icon"] == "3")
+	{
+		$ret = "&ordm;";
+	}
+	elseif($content_pref["content_menu_links_icon"] == "4")
+	{
+		$ret = "&raquo;";
 	}
 	return $ret;
 SC_END
@@ -961,6 +976,7 @@ return ($content_pref["content_menu_cat_caption"] != "" ? $content_pref["content
 SC_END
 
 SC_BEGIN CM_MENU_CATEGORY_ICON
+//TODO legacy bullet + use switch
 global $content_pref, $row, $bullet;
 	$ret = "";
 	if($content_pref["content_menu_cat_icon"] == "0"){ $ret = "";
