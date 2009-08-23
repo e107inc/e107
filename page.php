@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2009-05-03 22:15:55 $
-|     $Author: bugrain $
+|     $Revision: 1.50 $
+|     $Date: 2009-08-23 10:39:51 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,7 @@ class pageClass
 	var $title;                         /* title of page, it if has one (as defined in [newpage=title] tag */
 
 
-	function pageClass($debug=FALSE)
+	function pageClass($debug = FALSE)
 	{
 		/* constructor */
 
@@ -106,18 +106,14 @@ class pageClass
 		$this -> pageID = intval($tmp[0]);
 		$this -> pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
 		$this -> pageTitles = array();
-		if(defined("BULLET"))
+		$this->bullet = '';
+		if(defined('BULLET'))
 		{
-			$this -> bullet = "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />";
+			$this->bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
 		}
-		elseif(file_exists(THEME."images/bullet2.gif"))
+		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-			$this -> bullet = "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />";
-
-		}
-		else
-		{
-			$this -> bullet = "";
+			$this->bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
 		}
 
 		$this -> debug = $debug;

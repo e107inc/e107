@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.111 $
-|		$Date: 2007-03-01 09:34:49 $
-|		$Author: lisa_ $
+|		$Revision: 1.112 $
+|		$Date: 2009-08-23 10:39:52 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -1301,9 +1301,18 @@ class content{
 			$data .= "\n";
 			$data .= "\$lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';\n";
 			$data .= "include_once(file_exists(\$lan_file) ? \$lan_file : e_PLUGIN.'content/languages/English/lan_content.php');\n";
-			$data .= "\n";
-			$data .= "\$bullet = (defined('BULLET') ? \"<img src='\".THEME_ABS.\"images/\".BULLET.\"' alt='' style='border:0;vertical-align: middle;' />\" : \"<img src='\".THEME_ABS.\"images/bullet2.gif' alt='bullet' style='border:0;vertical-align: middle;' />\");\n";
-			$data .= "\n";
+			$data .= '
+					$bullet = \'\';
+					if(defined(\'BULLET\'))
+					{
+						$bullet = \'<img src="\'.THEME.\'images/\'.BULLET.\'" alt="" style="vertical-align: middle;" />\';
+					}
+					elseif(file_exists(THEME.\'images/bullet2.gif\'))
+					{
+						$bullet = \'<img src="\'.THEME.\'images/bullet2.gif" alt="" style="vertical-align: middle;" />\';
+					}
+			';
+
 			$data .= "\$content_pref					= \$aa -> getContentPref(\$menutypeid);\n";
 			$data .= "\$content_icon_path				= \$tp -> replaceConstants(\$content_pref[\"content_icon_path\"]);\n";
 			$data .= "\$content_cat_icon_path_small	= \$tp -> replaceConstants(\$content_pref[\"content_cat_icon_path_small\"]);\n";

@@ -11,30 +11,43 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userinfo.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-10-28 10:09:17 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2009-08-23 10:39:52 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("4")) {
+if (!getperms("4"))
+{
 	header("location:".e_BASE."index.php");
 	 exit;
 }
 $e_sub_cat = 'users';
 require_once("auth.php");
 
-if (!e_QUERY) {
+if ( ! e_QUERY)
+{
 	$text = "<div style=\"text-align:center\">".USFLAN_1."</div>";
 	$ns->tablerender(LAN_ERROR, $text);
 	require_once("footer.php");
-	exit;
-} else {
+	exit();
+}
+else
+{
 	$ipd = e_QUERY;
 }
 
-if (isset($ipd)) {
-	if(!defined("BULLET")) define("BULLET", "bullet2.gif");
+if (isset($ipd))
+{
+	$bullet = '';
+	if(defined('BULLET'))
+	{
+		$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+	}
+	elseif(file_exists(THEME.'images/bullet2.gif'))
+	{
+		$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+	}
 
 	$obj = new convert;
 	$sql->db_Select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
@@ -43,24 +56,37 @@ if (isset($ipd)) {
 		<i><a href=\"banlist.php?".$ipd."\">".USFLAN_5."</a></i>
 
 		<br /><br />";
-	while (list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql->db_Fetch()) {
+	while (list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql->db_Fetch())
+	{
 		$datestamp = $obj->convert_date($cb_datestamp, "short");
 		$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
 		$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
-		$text .= "<img src='".THEME_ABS."images/".BULLET."' alt='bullet' />
-			<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $cb_message."
-			</div><br />";
+		$text .= $bullet."
+			<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>
+			<div class=\"mediumtext\">
+			".$datestamp."
+			<br />
+			". $cb_message."
+			</div>
+			<br />";
 	}
 
 	$text .= "<hr />";
 
 	$sql->db_Select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
-	while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->db_Fetch()) {
+	while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->db_Fetch())
+	{
 		$datestamp = $obj->convert_date($comment_datestamp, "short");
 		$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
 		$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
-		$text .= "<img src='".THEME_ABS."images/".BULLET."' alt='bullet' />
-			<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $comment_comment."</div><br />";
+		$text .= $bullet."
+			<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i>
+			</span>\n<div class=\"mediumtext\">
+			".$datestamp."
+			<br />
+			". $comment_comment."
+			</div>
+			<br />";
 	}
 
 }

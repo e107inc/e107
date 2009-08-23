@@ -8,10 +8,18 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 global $tp;
 
-$lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");
+include_lan(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 
-$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' style='border:0;' />";
+$bullet = '';
+if(defined('BULLET'))
+{
+	$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+}
+elseif(file_exists(THEME.'images/bullet2.gif'))
+{
+	$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+}
+
 global $linkspage_pref;
 $linkspage_pref = $lc -> getLinksPagePref();
 

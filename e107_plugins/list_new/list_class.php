@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2008-10-21 19:10:43 $
-|		$Author: e107steved $
+|		$Revision: 1.19 $
+|		$Date: 2009-08-23 10:39:53 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -493,9 +493,12 @@ class listclass {
 		$icon_height = "8";
 		$style_pre = "";
 
-		if($list_pref[$mode."_icon_use"]){
-			if($sectionicon){
-				if(file_exists($listplugindir."images/".$sectionicon)){
+		if($list_pref[$mode."_icon_use"])
+		{
+			if($sectionicon)
+			{
+				if(file_exists($listplugindir."images/".$sectionicon))
+				{
 					$bullet = "<img src='".$listplugindir."images/".$sectionicon."' style='width:".$icon_width."px; height:".$icon_height."px; border:0; vertical-align:middle;' alt='' />";
 				}
 			}

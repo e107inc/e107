@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-02-08 22:35:09 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-08-23 10:39:53 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -22,7 +22,16 @@ $comment_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 
 /*
 SC_BEGIN CM_ICON
-return (defined("BULLET") ? "<img src='".THEME_ABS."images/".BULLET."' alt='' style='border:0; vertical-align: middle;' />" : "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='border:0; vertical-align: middle;' />");
+$bullet = '';
+if(defined('BULLET'))
+{
+	$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+}
+elseif(file_exists(THEME.'images/bullet2.gif'))
+{
+	$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+}
+return $bullet;
 SC_END
 
 SC_BEGIN CM_DATESTAMP

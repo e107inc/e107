@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2007-05-27 18:57:44 $
-|     $Author: e107steved $
+|     $Revision: 1.54 $
+|     $Date: 2009-08-23 10:39:50 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,19 +27,6 @@ if(defined("FPW_ACTIVE"))
 global $eMenuActive, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY,$bullet;
 require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
 $ip = $e107->getip();
-
-	if(defined("BULLET"))
-	{
-   		$bullet = "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />";
-	}
-	elseif(file_exists(THEME."images/bullet2.gif"))
-	{
-		$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />";
-	}
-	else
-	{
-		$bullet = "";
-	}
 
 if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
 {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_news/alt_news.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-06 05:58:18 $
+|     $Revision: 1.12 $
+|     $Date: 2009-08-23 10:39:52 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -47,13 +47,28 @@ function alt_news($news_category) {
 					$datestamp = $gen->convert_date($news_datestamp, "short");
 					$news_body = strip_tags(substr($news_body, 0, 100))." ...";
 					$comment_total = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='".intval($news_id)."' AND comment_type='0' ");
-					$text .= "<div class='mediumtext'>
-						<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' /> ";
+					$bullet = '';
+					if(defined('BULLET'))
+					{
+						$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+					}
+					elseif(file_exists(THEME.'images/bullet2.gif'))
+					{
+						$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+					}
+					$text .= "
+						<div class='mediumtext'>
+						".$bullet;
 
-					if ($news_allow_comments) {
-						$text .= "<a href='news.php?extend.".$news_id."'>".$news_title."</a>";
-					} else {
-						$text .= "<a href='comment.php?comment.news.".$news_id."'>".$news_title."</a>";
+					if ($news_allow_comments)
+					{
+						$text .= "
+						<a href='news.php?extend.".$news_id."'>".$news_title."</a>";
+					}
+					else
+					{
+						$text .= "
+						<a href='comment.php?comment.news.".$news_id."'>".$news_title."</a>";
 					}
 					$text .= "<br />
 						".LAN_NEWS_100." ".$datestamp." (".LAN_NEWS_99.": ";

@@ -155,32 +155,59 @@ SC_END
 SC_BEGIN LINK_MAIN_ICON
 global $LINK_MAIN_ICON, $rowl, $linkspage_pref;
 $LINK_MAIN_ICON = "";
-if(isset($linkspage_pref['link_cat_icon']) && $linkspage_pref['link_cat_icon']){
-	if (isset($rowl['link_category_icon']) && $rowl['link_category_icon']) {
-		if(strstr($rowl['link_category_icon'], "/")){
-			if(file_exists(e_BASE.$rowl['link_category_icon'])){
-			$LINK_MAIN_ICON = "<img src='".e_BASE.$rowl['link_category_icon']."' alt='' style='border:0; vertical-align:middle' />";
-			} else {
-				if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty']){
-				$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
-				}
+$bullet = '';
+if(defined('BULLET'))
+{
+	$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+}
+elseif(file_exists(THEME.'images/bullet2.gif'))
+{
+	$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+}
+
+if(isset($linkspage_pref['link_cat_icon']) && $linkspage_pref['link_cat_icon'])
+{
+	if (isset($rowl['link_category_icon']) && $rowl['link_category_icon'])
+	{
+		if(strstr($rowl['link_category_icon'], "/"))
+		{
+			if(file_exists(e_BASE.$rowl['link_category_icon']))
+			{
+				$LINK_MAIN_ICON = "<img src='".e_BASE.$rowl['link_category_icon']."' alt='' style='border:0; vertical-align:middle' />";
 			}
-		}else{
-			if(file_exists(e_PLUGIN."links_page/cat_images/".$rowl['link_category_icon'])){
-			$LINK_MAIN_ICON = "<img src='".e_PLUGIN_ABS."links_page/cat_images/".$rowl['link_category_icon']."' alt='' style='border:0; vertical-align:middle' />";
-			} else {
-				if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty']){
-				$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
+			else
+			{
+				if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty'])
+				{
+					$LINK_MAIN_ICON = $bullet;
 				}
 			}
 		}
-	} else {
-		if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty']){
-		$LINK_MAIN_ICON = "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='border:0; vertical-align:middle;' />";
+		else
+		{
+			if(file_exists(e_PLUGIN."links_page/cat_images/".$rowl['link_category_icon']))
+			{
+			$LINK_MAIN_ICON = "<img src='".e_PLUGIN_ABS."links_page/cat_images/".$rowl['link_category_icon']."' alt='' style='border:0; vertical-align:middle' />";
+			}
+			else
+			{
+				if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty'])
+				{
+					$LINK_MAIN_ICON = $bullet;
+				}
+			}
 		}
 	}
-	if($rowl['total_links'] && $LINK_MAIN_ICON){
-	$LINK_MAIN_ICON = "<a href='links.php?cat.".$rowl['link_category_id']."'>".$LINK_MAIN_ICON."</a>";
+	else
+	{
+		if(isset($linkspage_pref['link_cat_icon_empty']) && $linkspage_pref['link_cat_icon_empty'])
+		{
+			$LINK_MAIN_ICON = $bullet;
+		}
+	}
+	if($rowl['total_links'] && $LINK_MAIN_ICON)
+	{
+		$LINK_MAIN_ICON = "<a href='links.php?cat.".$rowl['link_category_id']."'>".$LINK_MAIN_ICON."</a>";
 	}
 }
 return $LINK_MAIN_ICON;

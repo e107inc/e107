@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2008-07-20 17:08:36 $
-|     $Author: e107steved $
+|     $Revision: 1.23 $
+|     $Date: 2009-08-23 10:39:52 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -84,13 +84,23 @@ else
 
 		$fi['thread_thread'] = $tp->text_truncate($fi['thread_thread'], $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
 
+		$bullet = '';
+		if(defined('BULLET'))
+		{
+			$bullet = '<img src="'.THEME.'images/'.BULLET.'" alt="" style="vertical-align: middle;" />';
+		}
+		elseif(file_exists(THEME.'images/bullet2.gif'))
+		{
+			$bullet = '<img src="'.THEME.'images/bullet2.gif" alt="" style="vertical-align: middle;" />';
+		}
+
 		if ($menu_pref['newforumposts_title'])
 		{
-			$text .= "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".$topic."</a><br />".$fi['thread_thread']."<br />".NFP_11." ".$poster."<br />".$datestamp."<br /><br />";
+			$text .= $bullet." <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".$topic."</a><br />".$fi['thread_thread']."<br />".NFP_11." ".$poster."<br />".$datestamp."<br /><br />";
 		}
 		else
 		{
-			$text .= "<img src='".THEME_ABS."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".NFP_11." ".$poster."</a><br />".$fi['thread_thread']."<br />".$datestamp."<br/><br />";
+			$text .= $bullet." <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'>".NFP_11." ".$poster."</a><br />".$fi['thread_thread']."<br />".$datestamp."<br/><br />";
 		}
 	}
 }
