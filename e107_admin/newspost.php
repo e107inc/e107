@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.47 $
- * $Date: 2009-08-05 14:35:47 $
- * $Author: e107coders $
+ * $Revision: 1.48 $
+ * $Date: 2009-08-24 08:34:55 $
+ * $Author: secretr $
 */
 require_once("../class2.php");
 
@@ -176,7 +176,7 @@ class admin_newspost
 
 		$this->_pst = &$pstobj;
 
-		$this->fieldpref = $user_pref['admin_news_columns'];
+		$this->fieldpref = varset($user_pref['admin_news_columns'], array('news_id', 'news_title', 'news_author', 'news_render_type', 'options'));
 
 		$this->_fields = array(
 				"checkboxes"	   	=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "url" => ""),
@@ -461,7 +461,7 @@ class admin_newspost
         $tmp = explode(chr(35), $_POST['news_author']);
         $_POST['news_author'] = $tmp[0];
 
-        $ret = $ix->submit_item($_POST, true);
+        $ret = $ix->submit_item($_POST, !varsettrue($_POST['create_edit_stay']));
         $this->clear_cache();
 
         if(isset($_POST['create_edit_stay']) && !empty($_POST['create_edit_stay']))
@@ -1079,7 +1079,7 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_15.":</td>
 								<td class='control'>
-									".$frm->radio('news_allow_comments', 0, $_POST['news_allow_comments'])."".$frm->label(LAN_ENABLED, 'news_allow_comments', 0)."&nbsp;&nbsp;
+									".$frm->radio('news_allow_comments', 0, !$_POST['news_allow_comments'])."".$frm->label(LAN_ENABLED, 'news_allow_comments', 0)."&nbsp;&nbsp;
 									".$frm->radio('news_allow_comments', 1, $_POST['news_allow_comments'])."".$frm->label(LAN_DISABLED, 'news_allow_comments', 1)."
 									<div class='field-help'>
 										".NWSLAN_18."
