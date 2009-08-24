@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-02-02 17:43:06 $
-|     $Author: e107steved $
+|     $Revision: 1.22 $
+|     $Date: 2009-08-24 22:01:49 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -262,7 +262,7 @@ SC_END
 
 SC_BEGIN PM_SELECT
 global $pm_info;
-return "<input type='checkbox' name='selected_pm[{$pm_info['pm_id']}]' value='1' />";
+return "<input type='checkbox' name='selected_pm[{$pm_info['pm_id']}]' id='selected_pm[{$pm_info['pm_id']}]' value='1' />";
 SC_END
 
 SC_BEGIN PM_READ_ICON
@@ -297,7 +297,7 @@ SC_END
 SC_BEGIN PM_DELETE
 global $pm_info;
 if($parm != "")
-{ 
+{
   $extra = '.'.$parm;
 }
 else
@@ -375,6 +375,11 @@ SC_BEGIN PM_NEXTPREV
 global $pmlist, $tp, $pm_start, $pm_prefs, $pmlist;
 return $tp->parseTemplate("{NEXTPREV={$pmlist['total_messages']},{$pm_prefs['perpage']},{$pm_start},".e_SELF."?{$parm}.[FROM]}");
 SC_END
+
+SC_BEGIN PM_CHECK_ALL_NONE
+return "<input type='checkbox' id='pm_check_all_none' class='tbox' onclick='setCheckboxes(\"pm_list_form\", document.getElementById(\"pm_check_all_none\").checked)'/>";
+SC_END
+
 
 */
 ?>

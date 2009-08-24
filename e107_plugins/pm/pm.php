@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2009-02-02 17:43:06 $
-|     $Author: e107steved $
+|     $Revision: 1.30 $
+|     $Date: 2009-08-24 22:01:49 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 
@@ -198,7 +198,7 @@ function show_send($to_uid)
 			$pm_info['from_name'] = $row['user_name'];
 		}
 	}
-		
+
 	if($pm_outbox['outbox']['filled'] >= 100)
 	{
 		return str_replace('{PERCENT}', $pm_outbox['outbox']['filled'], LAN_PM_13);
@@ -223,7 +223,7 @@ function show_inbox($start = 0)
 	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
 	$pm_blocks = $pm->block_get();
 	$pmlist = $pm->pm_get_inbox(USERID, $pm_start, $pm_prefs['perpage']);
-	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
+	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."' id='pm_list_form'>";
 	$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true, $pm_shortcodes);
 	if($pmlist['total_messages'])
 	{
@@ -251,7 +251,7 @@ function show_outbox($start = 0)
 	$tpl_file = THEME."pm_template.php";
 	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
 	$pmlist = $pm->pm_get_outbox(USERID, $pm_start, $pm_prefs['perpage']);
-	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
+	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."' id='pm_list_form'>";
 	$txt .= $tp->parseTemplate($PM_OUTBOX_HEADER, true, $pm_shortcodes);
 	if($pmlist['total_messages'])
 	{
@@ -292,10 +292,10 @@ function show_pm($pmid)
 	}
 	$txt .= $tp->parseTemplate($PM_SHOW, true, $pm_shortcodes);
 	$ns -> tablerender(LAN_PM, $txt);
-	if($pm_info['pm_from'] == USERID) 
+	if($pm_info['pm_from'] == USERID)
 	{	// Show Outbox
 		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox($pm_proc_id), "PM");
-	} 
+	}
 	else
 	{	// Show Inbox
 		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox($pm_proc_id), "PM");
@@ -419,7 +419,7 @@ function post_pm()
 			if(check_class($pm_prefs['attach_class']))
 			{
 				require_once(e_HANDLER."upload_handler.php");
-				$randnum = rand(1000, 9999);			
+				$randnum = rand(1000, 9999);
 				$_POST['uploaded'] = file_upload(e_PLUGIN."pm/attachments", "attachment", $randnum."_");
 				if($_POST['uploaded'] == FALSE)
 				{

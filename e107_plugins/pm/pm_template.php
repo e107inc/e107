@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2008-07-28 20:15:58 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2009-08-24 22:01:49 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -55,7 +55,7 @@ $sc_style['RECEIPT']['post'] = "</td></tr>";
 $sc_style['PM_REPLY']['pre'] = "<tr>
 	<td class='forumheader' style='text-align:center' colspan='2'>
 ";
-	
+
 $sc_style['PM_REPLY']['post'] = "</td>
 	</tr>
 ";
@@ -90,7 +90,7 @@ $PM_SEND_PM = "<div style='text-align: center'>
 $PM_INBOX_HEADER = "
 <table class='fborder' style='width:95%'>
 <tr>
-	<td class='fcaption' style='width:1%'>&nbsp;</td>
+	<td class='fcaption' style='width:1%'>{PM_CHECK_ALL_NONE}</td>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
 	<td class='fcaption' style='width:38%'>".LAN_PM_5."</td>
 	<td class='fcaption' style='width:22%'>".LAN_PM_31."</td>
@@ -129,7 +129,7 @@ $PM_INBOX_FOOTER = "
 $PM_OUTBOX_HEADER = "
 <table class='fborder' style='width:95%'>
 <tr>
-	<td class='fcaption' style='width:1%'>&nbsp;</td>
+	<td class='fcaption' style='width:1%'>{PM_CHECK_ALL_NONE}</td>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
 	<td class='fcaption' style='width:38%'>".LAN_PM_5."</td>
 	<td class='fcaption' style='width:22%'>".LAN_PM_2."</td>
