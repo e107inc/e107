@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-08-22 00:28:54 $
+ * $Revision: 1.13 $
+ * $Date: 2009-08-24 00:58:32 $
  * $Author: e107coders $
  *
 */
@@ -285,12 +285,42 @@ function export_core_prefs()
 function importCorePrefs()
 {
 	//TODO - Cameron - move to own class and make generic. 
-	$xml = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],TRUE);
 	
-	$data = e107::getSingleton('xmlClass')->xmlFileContents;
-	$xll = new SimpleXMLElement($data);
+	$dummyXml = "<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version='0.8.0 (cvs)' timestamp='1250896023' >
+<prefs>
+<core name='install_date'>1165362615</core>
+<core name='sitename'>e107 Powered Website</core>
+<core name='siteurl'>/e107_0.8/</core>
+<core name='sitebutton'>{e_IMAGE}button.png</core>
+<core name='sitetag'>e107 Website System</core>
+<core name='sitedescription'></core>
+<core name='siteadmin'>admin</core>
+<core name='siteadminemail'>user@yoursite.com</core>
+</prefs>
+</e107Export>
+
+ 
+";
+
 	
-	print_a($xll);
+	echo "<h1>Example XML</h1><pre>".htmlentities($dummyXml)."</pre>";
+	
+	$data = $dummyXml;
+	
+//	$xml = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],TRUE);
+	$xml = e107::getSingleton('xmlClass')->parseXml($dummyXml);
+	echo "<h1>Core XML Class</h1><hr />";
+	print_a($xml);
+	
+//	$data = e107::getSingleton('xmlClass')->xmlFileContents;
+	
+	echo '<h1>3rd Party Class</h1><hr />';
+	$array_3rd = e107::getSingleton('xmlClass')->xml2ary($data);
+	
+	print_a($array_3rd);
+	
+
 	foreach ($xll->corePref as $key=>$val)
 	{
 	//	echo "<br />". $xll->corePref['@attributes']   ." = ".$val;
@@ -312,6 +342,10 @@ function importCorePrefs()
 
 function importCorePrefsForm()
 {
+	//TODO - Fix Core XML class - array returned is incorrect. 
+	importCorePrefs();
+	return;
+	
 	 // Get largest allowable file upload
 	 $frm = e107::getSingleton('e_form');
 
