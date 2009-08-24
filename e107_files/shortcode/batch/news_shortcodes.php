@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.24 2009-07-25 07:54:34 marj_nl_fr Exp $
+* $Id: news_shortcodes.php,v 1.25 2009-08-24 08:34:55 secretr Exp $
 *
 * News shortcode batch
 */
@@ -130,7 +130,7 @@ class news_shortcodes
 		{
 			$NEWIMAGE = $param['image_nonew_small'];
 		}
-		return ($news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>' : $param['commentoffstring']);
+		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>' : $param['commentoffstring']);
 	}
 
 	function sc_trackback($parm)
