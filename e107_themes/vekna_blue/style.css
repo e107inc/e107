@@ -85,14 +85,12 @@ a:hover {
 	border-right: #5e5d63 1px solid; border-top: #5e5d63 1px solid; font-size: 10px; background-image: url(images/button.png); border-left: #5e5d63 1px solid; color: #000; border-bottom: #5e5d63 1px solid; text-align: center
 }
 .button:hover {
-	background-image: url(images/button_hover2.png); color: #fff
+	color: #fff
 }
 .nextprev {
 	border-right: #77a 1px solid; padding-right: 1px; border-top: #77a 1px solid; padding-left: 1px; font-size: 9px; background-image: url(images/button.png); padding-bottom: 1px; border-left: #77a 1px solid; color: #000; padding-top: 1px; border-bottom: #77a 1px solid; background-color: #fcfcfc; text-align: center
 }
-.nextprev:hover {
-	background-image: url(images/button_hover.png)
-}
+
 form {
 	margin: 2px 0px 0px
 }
