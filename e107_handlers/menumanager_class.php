@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-08-19 14:39:57 $
+|     $Revision: 1.7 $
+|     $Date: 2009-08-25 08:29:47 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -1085,7 +1085,7 @@ class e_menuManager {
 			</a>';
 		}
 
-		$text .= '<a target="_top" class="delete" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'
+		$text .= '<a class="delete" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'">'.ADMIN_DELETE_ICON.'
 		</a>
 		</div>';
 
