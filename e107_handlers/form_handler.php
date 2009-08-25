@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-08-15 15:53:44 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.40 $
+ * $Date: 2009-08-25 08:41:41 $
+ * $Author: secretr $
  *
 */
 
@@ -183,8 +183,8 @@ class e_form
 
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
-		$options['checked'] = $checked; //comes as separate argument just for convenience
 		$options = $this->format_options('checkbox', $name, $options);
+		$options['checked'] = $checked; //comes as separate argument just for convenience
 		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 
 	}
@@ -233,8 +233,8 @@ class e_form
 
 	function radio($name, $value, $checked = false, $options = array())
 	{
-		$options['checked'] = $checked; //comes as separate argument just for convenience
 		$options = $this->format_options('radio', $name, $options);
+		$options['checked'] = $checked; //comes as separate argument just for convenience
 		return "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
 
 	}
