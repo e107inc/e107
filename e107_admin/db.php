@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-08-24 00:58:32 $
+ * $Revision: 1.14 $
+ * $Date: 2009-08-25 14:39:54 $
  * $Author: e107coders $
  *
 */
@@ -298,6 +298,15 @@ function importCorePrefs()
 <core name='siteadmin'>admin</core>
 <core name='siteadminemail'>user@yoursite.com</core>
 </prefs>
+<tag>tag['value']=this value</tag>
+<tag2 name='something'>[tag2][@attribute][name]='something' and [tag2][value] = this text</tag2>
+<myarray>
+<item>myarray['item'][0]['value'] equals this</item>
+</myarray>
+<otherArray>
+ <otherItem>otherArray['otherItem'][0]['value'] equals this</otherItem>
+ <otherItem>otherArray['otherItem'][1]['value'] equals this</otherItem>
+</otherArray>
 </e107Export>
 
  
