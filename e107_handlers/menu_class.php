@@ -9,8 +9,8 @@
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-08-19 14:39:57 $
+ * $Revision: 1.11 $
+ * $Date: 2009-08-25 08:34:24 $
  * $Author: secretr $
 */
 
@@ -222,7 +222,7 @@ class e_menu
 	public function renderMenu($mpath, $mname, $parm = '', $return = false)
 	{
 		global $sql; // required at the moment.
-		global $ns, $tp, $sc_style;
+		global $ns, $tp, $sc_style, $e107_debug;
 		$e107 = e107::getInstance();
 		
 		if($return)
@@ -237,7 +237,7 @@ class e_menu
 		e107::getDB()->db_Mark_Time($mname);
 		if(is_numeric($mpath))
 		{
-			$sql->db_Select("page", "*", "page_id='".$mpath."' ");
+			$sql->db_Select("page", "*", "page_id=".intval($mpath)." ");
 			$page = $sql->db_Fetch();
 			$caption = $e107->tp->toHTML($page['page_title'], true, 'parse_sc, constants');
 			$text = $e107->tp->toHTML($page['page_text'], true, 'parse_sc, constants');
@@ -245,6 +245,7 @@ class e_menu
 		}
 		else
 		{
+			//FIXME - oldy
 			if(is_readable(e_PLUGIN.$mpath."/languages/".e_LANGUAGE.".php"))
 			{
 				include_once (e_PLUGIN.$mpath."/languages/".e_LANGUAGE.".php");
@@ -261,10 +262,16 @@ class e_menu
 			{
 				include_once (e_PLUGIN.$mpath."/languages/English/English.php");
 			}
-			if(file_exists(e_PLUGIN.$mpath."/".$mname.".php"))
+			
+			//include once is not an option anymore
+			//e107_include will break many old menus (evel globals), so we'll wait for a while...
+			//e107_include(e_PLUGIN.$mpath."/".$mname.".php");
+			$e107_debug ? include(e_PLUGIN.$mpath.'/'.$mname.'.php') : @include(e_PLUGIN.$mpath.'/'.$mname.'.php');
+			
+			/*if(file_exists(e_PLUGIN.$mpath."/".$mname.".php"))
 			{
 				include_once (e_PLUGIN.$mpath."/".$mname.".php");
-			}
+			}*/
 		}
 		e107::getDB()->db_Mark_Time("(After ".$mname.")");
 		if($error_handler->debug==true)
