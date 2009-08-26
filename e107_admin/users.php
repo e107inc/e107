@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.55 $
-* $Date: 2009-08-23 10:57:51 $
-* $Author: marj_nl_fr $
+* $Revision: 1.56 $
+* $Date: 2009-08-26 21:17:20 $
+* $Author: bugrain $
 *
 */
 require_once ('../class2.php');
@@ -1081,13 +1081,7 @@ class users
 					{
 						$text .= $row[$disp].'&nbsp;';
 					}
-					if (!in_array($disp,$boleanfields) && isset ($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != "")
-					{
-					// show matches
-						$text .= " <b>*</b>";
-					}
 					$text .= "</td>";
-					$prev[$disp] = $row[$disp];
 				}
 				// -------------------------------------------------------------
 				$qry = (e_QUERY) ? "?".e_QUERY : "";
