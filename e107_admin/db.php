@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-08-27 22:19:51 $
+ * $Revision: 1.19 $
+ * $Date: 2009-08-27 23:39:43 $
  * $Author: e107coders $
  *
 */
@@ -379,16 +379,8 @@ function exportXmlFile()
 
 function importCorePrefs()
 {
-	//TODO - Cameron - move to own class and make generic. 
+	//TODO - move to own class and make generic. 
 	// SecretR - structure changes / improvements proposal
-	
-	//	$inputXml = file_get_contents($_FILES['file_userfile']['tmp_name'][0]);
-
-	//e107::getSingleton('xmlClass')->setOptForceArray(true)	//force array variable type for simple tags of first level
-		//						  ->setOptValueKey('@value') //the default is value
-		//						  ->setOptAddRoot(false);	//include root element in the returned array
-								  
-//	$xmlArray = e107::getSingleton('xmlClass')->parseXml($inputXml, false); 
 	
 	$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
 	
@@ -396,11 +388,10 @@ function importCorePrefs()
 	{
 		foreach ($xmlArray['prefs']['core'] as $val)
 		{
-			// echo $val['@attributes']['name']." = ". $val['@value']."<br />";
 			e107::getConfig()->set($val['@attributes']['name'], $val['@value']);
 		}
 	
-		e107::getConfig()->save();
+		e107::getConfig()->save(FALSE);
 	}
 	
 	
@@ -408,9 +399,8 @@ function importCorePrefs()
 
 function importTables()
 {
-	// TODO - Import of table data. 	
-	
-	
+	// TODO - Import of table data. 
+		
 }
 
 function importCorePrefsForm()
