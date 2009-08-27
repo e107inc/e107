@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-08-27 21:01:40 $
+ * $Revision: 1.18 $
+ * $Date: 2009-08-27 22:19:51 $
  * $Author: e107coders $
  *
 */
@@ -377,43 +377,40 @@ function exportXmlFile()
 	exit;			
 }
 
-function export_tables($tablename)
-{
-	
-	
-	
-	
-	
-}
-
-
 function importCorePrefs()
 {
 	//TODO - Cameron - move to own class and make generic. 
 	// SecretR - structure changes / improvements proposal
-	// to SecretR - loadXMLfile() is failing and should be able to do all of the default options below in one line of code. 
-	// eg. $xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
+	
+	//	$inputXml = file_get_contents($_FILES['file_userfile']['tmp_name'][0]);
 
-	$inputXml = file_get_contents($_FILES['file_userfile']['tmp_name'][0]);
-
-	e107::getSingleton('xmlClass')->setOptForceArray(true)	//force array variable type for simple tags of first level
-								  ->setOptValueKey('@value') //the default is value
-								  ->setOptAddRoot(false);	//include root element in the returned array
+	//e107::getSingleton('xmlClass')->setOptForceArray(true)	//force array variable type for simple tags of first level
+		//						  ->setOptValueKey('@value') //the default is value
+		//						  ->setOptAddRoot(false);	//include root element in the returned array
 								  
-	$xmlArray = e107::getSingleton('xmlClass')->parseXml($inputXml, false); 
+//	$xmlArray = e107::getSingleton('xmlClass')->parseXml($inputXml, false); 
+	
+	$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
 	
 	if(varset($xmlArray['prefs']['core'])) // Save Core Prefs
 	{
-
 		foreach ($xmlArray['prefs']['core'] as $val)
 		{
+			// echo $val['@attributes']['name']." = ". $val['@value']."<br />";
 			e107::getConfig()->set($val['@attributes']['name'], $val['@value']);
 		}
 	
 		e107::getConfig()->save();
 	}
 	
-	// TODO - Import of table data. 
+	
+}
+
+function importTables()
+{
+	// TODO - Import of table data. 	
+	
+	
 }
 
 function importCorePrefsForm()
