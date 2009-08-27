@@ -9,9 +9,9 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-08-25 14:39:54 $
- * $Author: e107coders $
+ * $Revision: 1.15 $
+ * $Date: 2009-08-27 12:54:48 $
+ * $Author: secretr $
  *
 */
 
@@ -154,7 +154,6 @@ $text = "
 					<td>".DBLAN_15."</td>
 					<td>
 						".$frm->radio('db_execute', 'db_update').$frm->label(DBLAN_16, 'db_execute', 'db_update')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='db_update' value='".DBLAN_16."' /> -->
 					</td>
 				</tr>
 
@@ -163,7 +162,6 @@ $text = "
 					<td>".DBLAN_4."</td>
 					<td>
 						".$frm->radio('db_execute', 'verify_sql').$frm->label(DBLAN_5, 'db_execute', 'verify_sql')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='verify_sql' value='".DBLAN_5."' /> -->
 					</td>
 				</tr>
 
@@ -172,7 +170,6 @@ $text = "
 					<td>".DBLAN_6."</td>
 					<td>
 						".$frm->radio('db_execute', 'optimize_sql').$frm->label(DBLAN_7, 'db_execute', 'optimize_sql')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='optimize_sql' value='".DBLAN_7."' /> -->
 					</td>
 				</tr>
 
@@ -181,7 +178,6 @@ $text = "
 					<td>".DBLAN_28."</td>
 					<td>
 						".$frm->radio('db_execute', 'plugin_scan').$frm->label(DBLAN_29, 'db_execute', 'plugin_scan')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='plugin_scan' value=\"".DBLAN_29."\" /> -->
 					</td>
 				</tr>
 
@@ -190,7 +186,6 @@ $text = "
 					<td>".DBLAN_19."</td>
 					<td>
 						".$frm->radio('db_execute', 'pref_editor').$frm->label(DBLAN_20, 'db_execute', 'pref_editor')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='pref_editor' value='".DBLAN_20."' /> -->
 					</td>
 				</tr>
 
@@ -199,7 +194,6 @@ $text = "
 					<td>".DBLAN_8."</td>
 					<td>
 						".$frm->radio('db_execute', 'backup_core').$frm->label(DBLAN_9, 'db_execute', 'backup_core')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='backup_core' value='".DBLAN_9."' /> -->
 					</td>
 				</tr>
 
@@ -208,7 +202,6 @@ $text = "
 					<td>".DBLAN_35."</td>
 					<td>
 						".$frm->radio('db_execute', 'verify_sql_record').$frm->label(DBLAN_36, 'db_execute', 'verify_sql_record')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='verify_sql_record' value='".DBLAN_36."' /> -->
 					</td>
 				</tr>
 				
@@ -217,7 +210,6 @@ $text = "
 					<td>".DBLAN_59."</td>
 					<td>
 						".$frm->radio('db_execute', 'importCorePrefsForm').$frm->label(DBLAN_59, 'db_execute', 'importCorePrefsForm')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='importCorePrefsForm' value='".DBLAN_59."' /> -->
 					</td>
 				</tr>
 				
@@ -226,7 +218,6 @@ $text = "
 					<td>".DBLAN_58."</td>
 					<td>
 						".$frm->radio('db_execute', 'export_core_prefs').$frm->label(DBLAN_58, 'db_execute', 'export_core_prefs')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='export_core_prefs' value='".DBLAN_58."' /> -->
 					</td>
 				</tr>
 
@@ -235,7 +226,6 @@ $text = "
 					<td>".DBLAN_55."</td>
 					<td>
 						".$frm->radio('db_execute', 'sc_override_scan').$frm->label(DBLAN_56, 'db_execute', 'sc_override_scan')."
-						<!-- <input class='button' style='width: 100%' type='submit' name='sc_override_scan' value='".DBLAN_36."' /> -->
 					</td>
 				</tr>
 
