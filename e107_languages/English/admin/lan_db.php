@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_db.php,v 1.6 2009-08-22 00:28:55 e107coders Exp $
+ * $Id: lan_db.php,v 1.7 2009-08-27 21:01:44 e107coders Exp $
  *
  * Admin Language File
  *
@@ -66,7 +66,7 @@ define('DBLAN_55', 'Select to scan shortcode/override directory for new shortcod
 define('DBLAN_56', 'Scan override directory');
 define('DBLAN_57', 'Shortcode Override list set to');
 
-define('DBLAN_58', "Export Preferences");
-define('DBLAN_59', "Import Preferences");
+define('DBLAN_58', "Export Site Data");
+define('DBLAN_59', "Import Site Data");
 
 ?>
