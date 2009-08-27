@@ -9,9 +9,9 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-08-27 14:34:19 $
- * $Author: secretr $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-27 21:01:40 $
+ * $Author: e107coders $
  *
 */
 
@@ -62,9 +62,10 @@ if(isset($_POST['verify_sql']))
 	header("location: ".e_ADMIN."db_verify.php");
 	exit();
 }
-if(isset($_POST['export_core_prefs']))
+
+if(isset($_POST['exportXmlFile']))
 {
-	export_core_prefs();
+	exportXmlFile();
 	exit();
 }
 
@@ -77,6 +78,13 @@ if(isset($_POST['importCorePrefsForm']))
 {
 	importCorePrefsForm();	
 }
+
+if(isset($_POST['exportForm']))
+{
+	exportXmlForm();
+	exit();
+}
+
 
 if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
 {
@@ -187,7 +195,11 @@ $text = "
 					<td>
 						".$frm->radio('db_execute', 'pref_editor').$frm->label(DBLAN_20, 'db_execute', 'pref_editor')."
 					</td>
-				</tr>
+				</tr>";
+				
+				
+				// TODO - do we still really need Backup-Core, when we have an XML export?
+				$text .= "
 
 				<!-- BACKUP CORE -->
 				<tr>
@@ -217,7 +229,7 @@ $text = "
 				<tr>
 					<td>".DBLAN_58."</td>
 					<td>
-						".$frm->radio('db_execute', 'export_core_prefs').$frm->label(DBLAN_58, 'db_execute', 'export_core_prefs')."
+						".$frm->radio('db_execute', 'exportForm').$frm->label(DBLAN_58, 'db_execute', 'exportForm')."
 					</td>
 				</tr>
 
@@ -240,132 +252,175 @@ $text = "
 
 $e107->ns->tablerender(DBLAN_10, $emessage->render().$text);
 
-function export_core_prefs()
+
+function exportXmlForm()
+{
+	
+	global $frm;
+	
+	$text = "<form method='post' action='".e_SELF."' id='core-db-export'>
+		<fieldset id='core-db-export'>
+		<legend class='e-hideme'>Export Options</legend>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+			<colgroup span='2'>
+				<col style='width: 55%'></col>
+				<col style='width: 5%'></col>
+				<col style='width: 40%'></col>
+			</colgroup>
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th class='right'>Rows</th>
+				<th>Select</th>
+			</tr>	
+			</thead>
+			<tbody>
+
+				<tr>
+					<td>Core Preferences</td>
+					<td>&nbsp;</td>
+					<td>
+						".$frm->checkbox('xml_core_prefs', '1')."
+					</td>
+				</tr>";
+				
+				$tables = table_list();
+				
+				foreach($tables as $name=>$count)
+				{				
+					$text .= "<tr>
+						<td>Table Data: ".$name." </td>
+						<td class='right'>$count</td>
+						<td>
+							".$frm->checkbox("xml_table[".$name."]", $name)."
+						</td>
+					</tr>";
+				}
+
+				$text .="
+				</tbody>
+			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('exportXmlFile', "Export File", 'exportXmlFile')."
+			</div>
+		</fieldset>
+	</form>	";
+	
+
+	e107::getRender()->tablerender("Export Options", $text);		
+	
+	
+}
+
+
+
+
+function exportXmlFile()
 {
 
-
-	//TODO  - Cameron - move function to own class. 
+	//TODO  - move export/import functions to own class. 
 
 	require_once(e_ADMIN."ver.php");
-	
-	$pref = e107::getPref();
+		
 	$text = "<?xml version='1.0' encoding='utf-8' ?>\n";
 	$text .= "<e107Export version='".$e107info['e107_version']."' timestamp='".time()."' >\n";
 
-	foreach($pref as $key=>$val)
+	if(varset($_POST['xml_core_prefs'])) // Export Core Preferences. 
 	{
-		if(isset($val))
+		$pref = e107::getPref();
+		$text .= "\t<prefs>\n";
+		foreach($pref as $key=>$val)
 		{
-			$val = is_array($val) ? e107::getArrayStorage()->WriteArray($val) : $val;
-			
-			$text .= "<corePref name='$key'><![CDATA[".$val."]]></corePref>\n";
+			if(isset($val))
+			{
+				$val = is_array($val) ? e107::getArrayStorage()->WriteArray($val) : $val;
+				
+				$text .= "\t\t<core name='$key'><![CDATA[".$val."]]></core>\n";
+			}
 		}
+		$text .= "\t</prefs>\n";
 	}
 
+	if(varset($_POST['xml_table']))
+	{
+		$text .= "\t<database>\n";
+		foreach($_POST['xml_table'] as $tbl)
+		{
+			$eTable= str_replace(MPREFIX,"",$tbl);
+			e107::getDB()->db_Select($eTable, "*");
+			$text .= "\t<dbTable name='$eTable'>\n";
+			while($row = e107::getDB()-> db_Fetch())
+			{
+				$text .= "\t\t<item>\n";
+				foreach($row as $key=>$val)
+				{
+					$text .= "\t\t\t<field name='".$key."'><![CDATA[".$val."]]></field>\n";
+				}
+				
+				$text .= "\t\t</item>\n";
+			}
+			$text .= "\t</dbTable>\n";	
+			
+		}
+		$text .= "\t</database>\n";
+	}
+	
+	
+	
 	$text .= "</e107Export>";
 	
 	header('Content-type: application/xml', TRUE);
- 	header("Content-disposition: attachment; filename= e107_prefs_" . date("Y-m-d").".xml");
-    header("Cache-Control: max-age=30");
+	header("Content-disposition: attachment; filename= e107Export_" . date("Y-m-d").".xml");
+	header("Cache-Control: max-age=30");
 	header("Pragma: public");
 	echo $text;
 	exit;			
 }
 
+function export_tables($tablename)
+{
+	
+	
+	
+	
+	
+}
+
+
 function importCorePrefs()
 {
 	//TODO - Cameron - move to own class and make generic. 
-	//SecretR - structure changes / improvements proposal
-	 
-	$dummyXml = "<?xml version='1.0' encoding='utf-8' ?>
-<e107Export version='0.8.0 (cvs)' timestamp='1250896023' >
-	<corePrefs name='core'>
-		<pref name='install_date'>1165362615</pref>
-		<pref name='sitename'><![CDATA[e107 Powered Website]]></pref>
-		<pref name='siteurl'><![CDATA[/e107_0.8/]]></pref>
-		<pref name='sitebutton'>{e_IMAGE}button.png</pref>
-		<pref name='sitetag'><![CDATA[e107 Website System]]></pref>
-		<pref name='sitedescription'><![CDATA[]]></pref>
-		<pref name='siteadmin'>admin</pref>
-		<pref name='siteadminemail'>user@yoursite.com</pref>
-	</corePrefs>
-	<corePrefs name='menu'>
-		<pref name='menu_pref1'><![CDATA[1165362615]]></pref>
-		<pref name='menu_pref2'><![CDATA[e107 Powered Website]]></pref>
-	</corePrefs>
-	<pluginPrefs name='myplug'>
-		<pref name='myplug_pref1'><![CDATA[1165362615]]></pref>
-		<pref name='myplug_pref2'><![CDATA[e107 Powered Website]]></pref>
-	</pluginPrefs>
-	<!-- Parse Tests Start -->
-	<tag>tag['value']=this value</tag>
-	<tag2 name='something'>[tag2][@attribute][name]='something' and [tag2][value] = this text</tag2>
-	<myarray>
-		<item>myarray['item'][0]['value'] equals this</item>
-	</myarray>
-	<otherArray>
-		<otherItem>otherArray['otherItem'][0]['value'] equals this</otherItem>
-		<otherItem>otherArray['otherItem'][1]['value'] equals this</otherItem>
-	</otherArray>
-	<!-- Parse Tests end -->
-</e107Export>
+	// SecretR - structure changes / improvements proposal
+	// to SecretR - loadXMLfile() is failing and should be able to do all of the default options below in one line of code. 
+	// eg. $xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
 
- 
-";
+	$inputXml = file_get_contents($_FILES['file_userfile']['tmp_name'][0]);
 
-	
-	echo "<h1>Example XML</h1><pre>".htmlentities($dummyXml)."</pre>";
-	//$data = $dummyXml;
-	
-	echo '<h2>New Core parsing method - default options</h2><hr />';
-	//NOTE - there is nothing wrong if we call e107::getObject (new instance) 
-	$xml = e107::getSingleton('xmlClass')->parseXml($dummyXml, false); //new instance
-	print_a($xml);
-	
-	echo '<h2>New Core parsing method - new options example</h2><hr />';
-	echo 'Option _optAddRoot: true<br />Option _optValueKey: &quot;myVal&quot;<br />Option _optForceArray: true<br />';
 	e107::getSingleton('xmlClass')->setOptForceArray(true)	//force array variable type for simple tags of first level
-								  ->setOptValueKey('myVal') //the default is value
-								  ->setOptAddRoot(true);	//include root element in the returned array
-	$xml = e107::getSingleton('xmlClass')->parseXml($dummyXml, false); //new instance
-	print_a($xml);
+								  ->setOptValueKey('@value') //the default is value
+								  ->setOptAddRoot(false);	//include root element in the returned array
+								  
+	$xmlArray = e107::getSingleton('xmlClass')->parseXml($inputXml, false); 
 	
-//	$xml = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],TRUE);
-	$xml = e107::getSingleton('xmlClass')->parseXml($dummyXml);
-	echo "<h2>Old Core XML Class</h2><hr />";
-	print_a($xml);
-	
-//	$data = e107::getSingleton('xmlClass')->xmlFileContents;
-	
-	//echo '<h1>3rd Party Class</h1><hr />';
-	//$array_3rd = e107::getSingleton('xmlClass')->xml2ary($data);
-	
-	//print_a($array_3rd);
-
-	foreach ($xll->corePref as $key=>$val)
+	if(varset($xmlArray['prefs']['core'])) // Save Core Prefs
 	{
-	//	echo "<br />". $xll->corePref['@attributes']   ." = ".$val;
-	}
 
-	
-	
-	if(isset($xml['prefs']['core']))
-	{
-		foreach($xml['prefs']['core'] as $key=>$pref);
+		foreach ($xmlArray['prefs']['core'] as $val)
 		{
-		//	e107::getConfig()->add($key, $pref);
+			e107::getConfig()->set($val['@attributes']['name'], $val['@value']);
 		}
-
-	}
-//	e107::getConfig()->save();
 	
+		e107::getConfig()->save();
+	}
+	
+	// TODO - Import of table data. 
 }
 
 function importCorePrefsForm()
 {
 	//TODO - Fix Core XML class - array returned is incorrect. 
-	importCorePrefs();
-	return;
+//	importCorePrefs();
+//	return;
 	
 	 // Get largest allowable file upload
 	 $frm = e107::getSingleton('e_form');
@@ -406,7 +461,66 @@ function importCorePrefsForm()
 	
 }
 
+function table_list()
+{
+	// grab default language lists.
+	//TODO - a similar function is in db_verify.php. Should probably all be moved to mysql_class.php. 
+	
+	global $mySQLdefaultdb;
+	$exclude = array();
+	$exclude[] = "rbinary";
+	$exclude[] = "parser";
+	$exclude[] = "tmp";
+	$exclude[] = "online";
+	$exclude[] = "upload";
+	$exclude[] = "user_extended_country";
+	
+	
+	/*
+	$exclude[] = "banlist";		$exclude[] = "banner";
+	$exclude[] = "cache";		$exclude[] = "core";
+			
+	$exclude[] = "plugin";		$exclude[] = "user";
+		$exclude[] = "userclass_classes";
+			$exclude[] = "session";
+	 		$exclude[] = "flood";
+	$exclude[] = "stat_info";	$exclude[] = "stat_last";
+	$exclude[] = "submit_news";	$exclude[] = "rate";
+	$exclude[] = "stat_counter";$exclude[] = "user_extended";
+	$exclude[] = "user_extended_struc";
+	
+	
+	*/
 
+	$tables = mysql_list_tables($mySQLdefaultdb);
+	while (list($temp) = mysql_fetch_array($tables))
+	{
+		
+		e107::getDB()->db_Rows();
+		$t = mysql_query("SELECT * FROM ".$temp);
+		$e107tab = str_replace(MPREFIX, "", $temp);
+		
+		$count = mysql_num_rows($t);
+		if($count && (strpos($temp,$prefix)!==TRUE) && !in_array($e107tab,$exclude))
+		{
+			$tabs[$e107tab] = mysql_num_rows($t);	
+		}
+		$prefix = MPREFIX."lan_";
+		$match = array();
+	//	if(preg_match('/^'.$prefix.'(.*)/', $temp, $match))
+		{
+			$e107tab = str_replace(MPREFIX, "", $temp);
+			$pos = strrpos($match[1],"_")+1;
+			$core = substr(str_replace("lan_","",$e107tab),$pos);
+		//	if (str_replace($exclude, "", $e107tab))
+		//	{
+			//	$tabs[$core] = $e107tab;
+		//	}
+		}
+	}
+
+	return $tabs;
+}
 
 function backup_core()
 {
