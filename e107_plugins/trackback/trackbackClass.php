@@ -9,9 +9,9 @@
  * Plugin administration - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/trackbackClass.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-20 22:32:36 $
- * $Author: e107steved $
+ * $Revision: 1.7 $
+ * $Date: 2009-08-27 12:53:46 $
+ * $Author: secretr $
  *
 */
 
@@ -58,7 +58,7 @@ class trackbackClass
 
 			$header  = 'POST ' . $trackback_url['path'] . $trackback_url['query'] . " HTTP/1.0\r\n";
 			$header .= 'Host: '.$trackback_url['host']."\r\n";
-			$header .= 'Content-Type: application/x-www-form-urlencoded'."\r\n";
+			$header .= 'Content-Type: application/x-www-form-urlencoded; charset=utf-8'."\r\n";
 			$header .= 'Content-Length: '.strlen($query_string)."\r\n";
 			$header .= "\r\n";
 			$header .= $query_string;
@@ -66,7 +66,7 @@ class trackbackClass
 			$socket = fsockopen($trackback_url["host"], $trackback_url["port"]); 
 
 			if (!is_resource($socket)) {
-				return "$trackbackClass -> sendTrackback: Unable to connect to $pingUrl.";
+				return 'trackbackClass -> sendTrackback: Unable to connect to {$trackback_url['host']}.';
 			}
 
 			fputs($socket, $header); 
@@ -85,7 +85,7 @@ class trackbackClass
 		}
 		else
 		{
-			if(preg_match("#\<message\>(.*?)\<\/message\>#", $response, $match))
+			if(preg_match('#\<message\>(.*?)\<\/message\>#', $response, $match))
 			{
 				return $match[0];
 			}
@@ -162,7 +162,7 @@ class trackbackClass
 
 		if($errorMessage)
 		{
-			echo '<?xml version="1.0" encoding="iso-8859-1"?'.">\n";
+			echo '<?xml version="1.0" encoding="utf-8"?'.">\n";
 			echo "<response>\n";
 			echo "<error>1</error>\n";
 			echo "<message>".$errorMessage."</message>\n";
@@ -170,7 +170,7 @@ class trackbackClass
 		}
 		else
 		{
-			echo '<?xml version="1.0" encoding="iso-8859-1"?'.">\n";
+			echo '<?xml version="1.0" encoding="utf-8"?'.">\n";
 			echo "<response>\n";
 			echo "<error>0</error>\n";
 			echo "</response>";
