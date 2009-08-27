@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-08-27 23:03:34 $
+ * $Revision: 1.14 $
+ * $Date: 2009-08-27 23:37:24 $
  * $Author: secretr $
 */
 
@@ -508,7 +508,12 @@ class e_pref extends e_model
 				}
 				return true;
 			}
-			//TODO - DB error messages
+			elseif(e107::getDb()->mySQLlastErrNum)
+			{
+				$emessage->add('mySQL error #'.e107::getDb()->$mySQLlastErrNum.': '.e107::getDb()->mySQLlastErrText, E_MESSAGE_ERROR, $session_messages);
+				$emessage->add('Settings not saved.', E_MESSAGE_ERROR, $session_messages);
+				return false;
+			}
 		}
 		
 		if($this->isError())
