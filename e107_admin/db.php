@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-08-27 12:54:48 $
+ * $Revision: 1.16 $
+ * $Date: 2009-08-27 14:34:19 $
  * $Author: secretr $
  *
 */
@@ -275,28 +275,39 @@ function export_core_prefs()
 function importCorePrefs()
 {
 	//TODO - Cameron - move to own class and make generic. 
-	
+	//SecretR - structure changes / improvements proposal
+	 
 	$dummyXml = "<?xml version='1.0' encoding='utf-8' ?>
 <e107Export version='0.8.0 (cvs)' timestamp='1250896023' >
-<prefs>
-<core name='install_date'>1165362615</core>
-<core name='sitename'>e107 Powered Website</core>
-<core name='siteurl'>/e107_0.8/</core>
-<core name='sitebutton'>{e_IMAGE}button.png</core>
-<core name='sitetag'>e107 Website System</core>
-<core name='sitedescription'></core>
-<core name='siteadmin'>admin</core>
-<core name='siteadminemail'>user@yoursite.com</core>
-</prefs>
-<tag>tag['value']=this value</tag>
-<tag2 name='something'>[tag2][@attribute][name]='something' and [tag2][value] = this text</tag2>
-<myarray>
-<item>myarray['item'][0]['value'] equals this</item>
-</myarray>
-<otherArray>
- <otherItem>otherArray['otherItem'][0]['value'] equals this</otherItem>
- <otherItem>otherArray['otherItem'][1]['value'] equals this</otherItem>
-</otherArray>
+	<corePrefs name='core'>
+		<pref name='install_date'>1165362615</pref>
+		<pref name='sitename'><![CDATA[e107 Powered Website]]></pref>
+		<pref name='siteurl'><![CDATA[/e107_0.8/]]></pref>
+		<pref name='sitebutton'>{e_IMAGE}button.png</pref>
+		<pref name='sitetag'><![CDATA[e107 Website System]]></pref>
+		<pref name='sitedescription'><![CDATA[]]></pref>
+		<pref name='siteadmin'>admin</pref>
+		<pref name='siteadminemail'>user@yoursite.com</pref>
+	</corePrefs>
+	<corePrefs name='menu'>
+		<pref name='menu_pref1'><![CDATA[1165362615]]></pref>
+		<pref name='menu_pref2'><![CDATA[e107 Powered Website]]></pref>
+	</corePrefs>
+	<pluginPrefs name='myplug'>
+		<pref name='myplug_pref1'><![CDATA[1165362615]]></pref>
+		<pref name='myplug_pref2'><![CDATA[e107 Powered Website]]></pref>
+	</pluginPrefs>
+	<!-- Parse Tests Start -->
+	<tag>tag['value']=this value</tag>
+	<tag2 name='something'>[tag2][@attribute][name]='something' and [tag2][value] = this text</tag2>
+	<myarray>
+		<item>myarray['item'][0]['value'] equals this</item>
+	</myarray>
+	<otherArray>
+		<otherItem>otherArray['otherItem'][0]['value'] equals this</otherItem>
+		<otherItem>otherArray['otherItem'][1]['value'] equals this</otherItem>
+	</otherArray>
+	<!-- Parse Tests end -->
 </e107Export>
 
  
@@ -304,21 +315,32 @@ function importCorePrefs()
 
 	
 	echo "<h1>Example XML</h1><pre>".htmlentities($dummyXml)."</pre>";
+	//$data = $dummyXml;
 	
-	$data = $dummyXml;
+	echo '<h2>New Core parsing method - default options</h2><hr />';
+	//NOTE - there is nothing wrong if we call e107::getObject (new instance) 
+	$xml = e107::getSingleton('xmlClass')->parseXml($dummyXml, false); //new instance
+	print_a($xml);
+	
+	echo '<h2>New Core parsing method - new options example</h2><hr />';
+	echo 'Option _optAddRoot: true<br />Option _optValueKey: &quot;myVal&quot;<br />Option _optForceArray: true<br />';
+	e107::getSingleton('xmlClass')->setOptForceArray(true)	//force array variable type for simple tags of first level
+								  ->setOptValueKey('myVal') //the default is value
+								  ->setOptAddRoot(true);	//include root element in the returned array
+	$xml = e107::getSingleton('xmlClass')->parseXml($dummyXml, false); //new instance
+	print_a($xml);
 	
 //	$xml = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],TRUE);
 	$xml = e107::getSingleton('xmlClass')->parseXml($dummyXml);
-	echo "<h1>Core XML Class</h1><hr />";
+	echo "<h2>Old Core XML Class</h2><hr />";
 	print_a($xml);
 	
 //	$data = e107::getSingleton('xmlClass')->xmlFileContents;
 	
-	echo '<h1>3rd Party Class</h1><hr />';
-	$array_3rd = e107::getSingleton('xmlClass')->xml2ary($data);
+	//echo '<h1>3rd Party Class</h1><hr />';
+	//$array_3rd = e107::getSingleton('xmlClass')->xml2ary($data);
 	
-	print_a($array_3rd);
-	
+	//print_a($array_3rd);
 
 	foreach ($xll->corePref as $key=>$val)
 	{

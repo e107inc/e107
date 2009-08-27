@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-08-27 13:58:28 $
+ * $Revision: 1.15 $
+ * $Date: 2009-08-27 14:34:20 $
  * $Author: secretr $
 */
 
@@ -305,7 +305,11 @@ class xmlClass
 	 */
 	function parseXml($xml = '', $simple = true)
 	{
-		if ($xml == '' && $this->xmlFileContents)
+		if ($xml)
+		{
+			$this->xmlFileContents = $xml;
+		}
+		elseif ($this->xmlFileContents)
 		{
 			$xml = $this->xmlFileContents;
 		}
@@ -315,10 +319,6 @@ class xmlClass
 		}
 		$xml = simplexml_load_string($xml);
 
-		if (is_object($xml))
-		{
-			$xml = (array) $xml;
-		}
 		$xml = $simple ? $this->xml_convert_to_array($xml, $this->filter, $this->stripComments) : $this->xml2array($xml);
 		return $xml;
 	}
@@ -428,6 +428,10 @@ class xmlClass
 
 	function xml_convert_to_array($xml, $localFilter = FALSE, $stripComments = TRUE)
 	{
+		if (is_object($xml))
+		{
+			$xml = (array) $xml;
+		}
 		if (is_array($xml))
 		{
 			foreach ($xml as $k=>$v)
