@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.133 $
-* $Date: 2009-08-27 12:56:23 $
-* $Author: secretr $
+* $Revision: 1.134 $
+* $Date: 2009-08-27 22:33:18 $
+* $Author: e107coders $
 *
 */
 //
@@ -715,7 +715,14 @@ $language = $pref['sitelanguage'];
 //}
 
 // We should have the language by now
-define('e_LANGUAGE', $language);
+if($language)
+{
+	define('e_LANGUAGE', $language);
+}
+else
+{
+	define('e_LANGUAGE', "English");		
+}
 
 // Keep USERLAN for backward compatibility
 define('USERLAN', e_LANGUAGE);
