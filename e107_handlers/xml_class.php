@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-08-27 14:34:20 $
+ * $Revision: 1.16 $
+ * $Date: 2009-08-27 21:50:59 $
  * $Author: secretr $
 */
 
@@ -119,7 +119,7 @@ class xmlClass
 	 * @see setOptValueKey()
 	 * @var string
 	 */
-	protected $_optValueKey = 'value';
+	protected $_optValueKey = '@value';
 
 	/**
 	 * Constructor - set defaults
@@ -145,7 +145,7 @@ class xmlClass
 		$this->filter = false;
 		$this->stripComments = true; 
 		$this->_optAddRoot = false;
-		$this->_optValueKey = 'value';
+		$this->_optValueKey = '@value';
 		$this->_optForceArray = false;
 		return $this;
 	}
@@ -348,6 +348,12 @@ class xmlClass
 		{
 			//$ret = $this->xml2array($xml, true);
 			//repeating code because of the _optForceArray functionality 
+			
+			if(!is_object($xml))
+			{
+				return array();
+			}
+			
 			$tags = array_keys($tags); 
 			foreach ($tags as $tag)
 			{
