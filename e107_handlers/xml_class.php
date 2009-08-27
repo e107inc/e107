@@ -1,50 +1,222 @@
 <?php
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     �Steve Dunstan 2001-2002
- |     http://e107.org
- |     jalist@e107.org
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- |     $Revision: 1.13 $
- |     $Date: 2009-08-24 00:58:01 $
- |     $Author: e107coders $
- +----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Simple XML Parser
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
+ * $Revision: 1.14 $
+ * $Date: 2009-08-27 13:58:28 $
+ * $Author: secretr $
+*/
+
+if (!defined('e107_INIT')) { exit; }
+
+/**
+ * Simple XML Parser
+ *
+ * @package e107
+ * @category e107_handlers
+ * @version 1.1
+ * @author McFly
+ * @copyright Copyright (c) 2009, e107 Inc.
  */
-
-
 class xmlClass
 {
-
-	var $xmlFileContents;
-
-	var $filter; // Optional filter for loaded XML
-	// Set to FALSE if not enabled (default on initialisation)
-	// Otherwise mirrors the required subset of the loaded XML - set a field FALSE to accept all
-	// ...elements lower down the tree. e.g.:
-	// $filter = array(
-	//		'name' => FALSE,
-	//		'administration' => FALSE,
-	//		'management' => array('install' => FALSE)
-	//		);
-
-	var $stripComments; // Set true to strip all mention of comments from the returned array (default); FALSE to return comment markers
-	// Constructor - set defaults
+	/**
+	 * Loaded XML string
+	 * 
+	 * @var string
+	 */
+	public $xmlFileContents = '';
 
 
-	function xmlClass()
+	/**
+	 * Set to FALSE if not enabled (default on initialisation)
+	 * Otherwise mirrors the required subset of the loaded XML - set a field FALSE to accept all
+	 * ...elements lower down the tree. e.g.:
+	 * <code>
+	 * $filter = array(
+	 * 	'name' => FALSE,
+	 * 	'administration' => FALSE,
+	 * 	'management' => array('install' => FALSE)
+	 * 	);
+	 * </code>
+	 * 
+	 * @see setOptFilter()
+	 * @see parseXml()
+	 * @see xml2array()
+	 * @var mixed
+	 */
+	public $filter = false; // Optional filter for loaded XML
+
+	/**
+	 * Set true to strip all mention of comments from the returned array (default); 
+	 * FALSE to return comment markers (object SimpleXMLElement)
+	 * 
+	 * @see setOptStripComments()
+	 * @see parseXml()
+	 * @see xml2array()
+	 * @var boolean
+	 */
+	public $stripComments = true; 
+	
+	/**
+	 * Add root element to the result array
+	 * Exmple:
+	 * <code>
+	 * <root>
+	 * <tag>some value</tag> 
+	 * </root>
+	 * </code>
+	 * 
+	 * if
+	 * <code>$_optAddRoot = true;</code>
+	 * xml2array() result is array('root' => array('tag' => 'some value'));
+	 * 
+	 * if
+	 * <code>$_optAddRoot = false;</code>
+	 * xml2array() result is array('tag' => 'some value');
+	 * 
+	 * @see xml2array()
+	 * @see setOptAddRoot()
+	 * @var boolean
+	 */
+	protected $_optAddRoot = false;
+	
+	/**
+	 * Always return array, even for single first level tag => value pair
+	 * Exmple:
+	 * <code>
+	 * <root>
+	 * <tag>some value</tag> 
+	 * </root>
+	 * </code>
+	 * 
+	 * if
+	 * <code>$_optForceArray = true;</code>
+	 * xml2array() result is array('tag' => array('value' => 'some value'));
+	 * where 'value' is the value of $_optValueKey
+	 * 
+	 * If
+	 * <code>$_optForceArray = false;</code>
+	 * xml2array() result is array('tag' => 'some value');
+	 * 
+	 * @see xml2array()
+	 * @see setOptForceArray()
+	 * @var boolean
+	 */
+	protected $_optForceArray = false;
+	
+	/**
+	 * Key name for simple tag => value pairs
+	 * 
+	 * @see xml2array()
+	 * @see setOptValueKey()
+	 * @var string
+	 */
+	protected $_optValueKey = 'value';
+
+	/**
+	 * Constructor - set defaults
+	 * 
+	 */
+	function __constructor()
 	{
-		$this->xmlFileContents = '';
-		$this->filter = FALSE;
-		$this->stripComments = TRUE; // Don't usually want comments back
+		$this->reset();
+	}
+	
+	/**
+	 * Reset object
+	 * 
+	 * @param boolean $xml_contents [optional]
+	 * @return xmlClass
+	 */
+	function reset($xml_contents = true)
+	{
+		if($xml_contents) 
+		{ 
+			$this->xmlFileContents = ''; 
+		}
+		$this->filter = false;
+		$this->stripComments = true; 
+		$this->_optAddRoot = false;
+		$this->_optValueKey = 'value';
+		$this->_optForceArray = false;
+		return $this;
 	}
 
+	/**
+	 * Set addRoot option
+	 * 
+	 * @param boolean $flag
+	 * @return xmlClass
+	 */
+	public function setOptAddRoot($flag)
+	{
+		$this->_optAddRoot = (boolean) $flag;
+		return $this;
+	}
+	
+	/**
+	 * Set forceArray option
+	 * 
+	 * @param string $flag
+	 * @return xmlClass
+	 */
+	public function setOptForceArray($flag)
+	{
+		$this->_optForceArray = (boolean) $flag;
+		return $this;
+	}
+	
+	/**
+	 * Set valueKey option
+	 * 
+	 * @param string $str
+	 * @return xmlClass
+	 */
+	public function setOptValueKey($str)
+	{
+		$this->_optValueKey = trim((string) $str);
+		return $this;
+	}
+	
+	/**
+	 * Set strpComments option
+	 * 
+	 * @param boolean $flag
+	 * @return xmlClass
+	 */
+	public function setOptStripComments($flag)
+	{
+		$this->stripComments = (boolean) $flag;
+		return $this;
+	}
+	
+	/**
+	 * Set strpComments option
+	 * 
+	 * @param array $filter
+	 * @return xmlClass
+	 */
+	public function setOptFilter($filter)
+	{
+		$this->filter = (array) $filter;
+		return $this;
+	}
 
+	/**
+	 * Get Remote file contents
+	 * 
+	 * @param string $address
+	 * @param integer $timeout [optional] seconds
+	 * @return string
+	 */
 	function getRemoteFile($address, $timeout = 10)
 	{
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
@@ -124,8 +296,14 @@ class xmlClass
 		return $this->xmlFileContents;
 	}
 
-
-	function parseXml($xml = '')
+	/**
+	 * Parse $xmlFileContents XML string to array
+	 * 
+	 * @param string $xml [optional] 
+	 * @param boolean $simple [optional] false - use xml2array(), true - use xml_convert_to_array()
+	 * @return string
+	 */
+	function parseXml($xml = '', $simple = true)
 	{
 		if ($xml == '' && $this->xmlFileContents)
 		{
@@ -136,12 +314,115 @@ class xmlClass
 			return false;
 		}
 		$xml = simplexml_load_string($xml);
+
 		if (is_object($xml))
 		{
 			$xml = (array) $xml;
 		}
-		$xml = $this->xml_convert_to_array($xml, $this->filter, $this->stripComments);
+		$xml = $simple ? $this->xml_convert_to_array($xml, $this->filter, $this->stripComments) : $this->xml2array($xml);
 		return $xml;
+	}
+	
+	/**
+	 * Advanced XML parser - handles tags with attributes and values
+	 * proper. 
+	 * TODO - filter (see xml_convert_to_array)
+	 * 
+	 * @param SimpleXMLElement $xml
+	 * @param string $rec_parent used for recursive calls only
+	 * @return 
+	 */
+	function xml2array($xml, $rec_parent = '')
+	{
+		$ret = array();
+		$tags = get_object_vars($xml);
+		
+		//remove comments
+		if($this->stripComments && isset($tags['comment']))
+		{
+			unset($tags['comment']);
+		}
+		
+		//first call
+		if(!$rec_parent)
+		{
+			//$ret = $this->xml2array($xml, true);
+			//repeating code because of the _optForceArray functionality 
+			$tags = array_keys($tags); 
+			foreach ($tags as $tag)
+			{
+				if($tag == '@attributes')
+				{
+					$tmp = (array) $xml->attributes();
+					$ret['@attributes'] = $tmp['@attributes'];
+					continue;
+				}
+
+				$count = count($xml->{$tag});
+				if($count > 1)
+				{
+					for ($i = 0; $i < $count; $i++)
+					{
+						$ret[$tag][$i] = $this->xml2array($xml->{$tag}[$i], $tag);
+					}
+					continue;
+				}
+				$ret[$tag] = $this->xml2array($xml->{$tag}, $tag);
+			}
+			
+			return ($this->_optAddRoot ? array($xml->getName() => $ret) : $ret);
+		}
+
+		//Recursive calls start here		
+		if($tags)
+		{
+			$tags = array_keys($tags);
+			$count_tags = count($tags);
+			
+			//loop through tags
+			foreach ($tags as $tag)
+			{
+				switch($tag)
+				{
+					case '@attributes':
+						$tmp = (array) $xml->attributes();
+						$ret['@attributes'] = $tmp['@attributes'];
+						
+						if($count_tags == 1) //only attributes & possible value
+						{
+							$ret[$this->_optValueKey] = trim((string) $xml);
+							return $ret;
+						}
+					break;
+					
+					case 'comment':
+						$ret[$this->_optValueKey] = trim((string) $xml);
+						$ret['comment'] = $xml->comment;
+					break;
+				
+					//more cases?
+					default:
+						$count = count($xml->{$tag});
+						if($count >= 1) //array of elements - loop
+						{
+							for ($i = 0; $i < $count; $i++)
+							{
+								$ret[$tag][$i] = $this->xml2array($xml->{$tag}[$i], $tag);
+							}
+						}
+						else //single element
+						{
+							$ret[$tag] = $this->xml2array($xml->{$tag}, $tag);
+						}
+					break;
+				}
+			}
+			return $ret;
+		}
+		
+		//parse value only
+		$ret = trim((string) $xml);
+		return ($this->_optForceArray ? array($this->_optValueKey => $ret) : $ret);
 	}
 
 
@@ -188,10 +469,20 @@ class xmlClass
 		return $xml;
 	}
 
-
-	function loadXMLfile($fname = '', $parse = false, $replace_constants = false)
+	/**
+	 * Load XML file and parse it (optional)
+	 * 
+	 * @param string $fname local or remote XML source file path
+	 * @param boolean|string $parse false - no parse; 
+	 * 								true - use  xml_convert_to_array(); 
+	 * 								in any other case  - use xml2array()
+	 * 
+	 * @param boolean $replace_constants [optional]
+	 * @return mixed
+	 */
+	function loadXMLfile($fname, $parse = false, $replace_constants = false)
 	{
-		if ($fname == '')
+		if (empty($fname))
 		{
 			return false;
 		}
@@ -211,17 +502,11 @@ class xmlClass
 		{
 			if ($replace_constants == true)
 			{
-				global $tp;
-				if (!is_object($tp))
-				{
-					require_once ('e_parse_class.php');
-					$tp = new e_parse;
-				}
-				$this->xmlFileContents = $tp->replaceConstants($this->xmlFileContents, '', true);
+				$this->xmlFileContents = e107::getParser()->replaceConstants($this->xmlFileContents, '', true);
 			}
-			if ($parse == true)
+			if ($parse)
 			{
-				return $this->parseXML('');
+				return $this->parseXML('', ($parse === true));
 			}
 			else
 			{
@@ -230,8 +515,8 @@ class xmlClass
 		}
 		return false;
 	}
-
-
+	
+	//FIXME  - TEST - remove me
 	function xml2ary(&$string)
 	{
 		$parser = xml_parser_create();
@@ -292,7 +577,7 @@ class xmlClass
 		return $mnary;
 	}
 
-
+	//FIXME  - TEST - remove me
 	function _del_p(&$ary)
 	{
 		foreach ($ary as $k=>$v)
@@ -303,9 +588,8 @@ class xmlClass
 				$this->_del_p($ary[$k]);
 		}
 	}
-	// Array to XML
 
-
+	//FIXME  - TEST - remove me
 	function ary2xml($cary, $d = 0, $forcetag = '')
 	{
 		$res = array();
@@ -336,9 +620,8 @@ class xmlClass
 		}
 		return implode('', $res);
 	}
-	// Insert element into array
 
-
+	//FIXME  - TEST - remove me
 	function ins2ary(&$ary, $element, $pos)
 	{
 		$ar1 = array_slice($ary, 0, $pos);
@@ -346,7 +629,3 @@ class xmlClass
 		$ary = array_merge($ar1, array_slice($ary, $pos));
 	}
 }
-
-
-
-?>
