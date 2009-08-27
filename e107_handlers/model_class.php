@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-08-21 22:17:59 $
+ * $Revision: 1.3 $
+ * $Date: 2009-08-27 23:37:24 $
  * $Author: secretr $
 */
 
@@ -707,7 +707,7 @@ class e_model
 	        //data has changed - optimized
 	        if('_data' === $data_src && !$this->data_has_changed)
 	        {
-	        	$this->data_has_changed = (isset($this->_data[$key]) && $this->_data[$key] != $value);
+	        	$this->data_has_changed = (!isset($this->_data[$key]) || $this->_data[$key] != $value);
 	        }
 	        $this->_parsed_keys[$data_src.'/'.$key] = $value;
 	        $data = $value;
@@ -721,7 +721,7 @@ class e_model
 	        }
         	if('_data' === $data_src && !$this->data_has_changed)
 	        {
-	        	$this->data_has_changed = (isset($this->_data[$key]) && $this->{$data_src}[$key] != $value);
+	        	$this->data_has_changed = (!isset($this->_data[$key]) || $this->{$data_src}[$key] != $value);
 	        }
             $this->{$data_src}[$key] = $value;
         }
@@ -746,7 +746,7 @@ class e_model
 			//data has changed
 	        if('_data' === $data_src && !$this->data_has_changed)
 	        {
-	        	$this->data_has_changed = (isset($this->_data[$key]) && $this->_data[$key] != $value);
+	        	$this->data_has_changed = (!isset($this->_data[$key]) || $this->_data[$key] != $value);
 	        }
 	        $this->{$data_src}[$key] = $value;
     		return $this;
@@ -756,7 +756,7 @@ class e_model
     	{
 			if('_data' === $data_src && !$this->data_has_changed)
 	        {
-	        	$this->data_has_changed = (isset($this->_data[$key]) && $this->_data[$key] != $value);
+	        	$this->data_has_changed = (!isset($this->_data[$key]) || $this->_data[$key] != $value);
 	        }
 	        $this->{$data_src}[$key] = $value;
     	}
