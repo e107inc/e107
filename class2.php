@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.132 $
-* $Date: 2009-08-20 13:54:40 $
-* $Author: e107coders $
+* $Revision: 1.133 $
+* $Date: 2009-08-27 12:56:23 $
+* $Author: secretr $
 *
 */
 //
@@ -1107,13 +1107,15 @@ if(!defined("THEME_LAYOUT"))
 	{
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
+			if(!is_array($cusPageArray)) { break; }
+			
    			foreach($cusPageArray as $kpage)
 			{
 				if ($kpage && (strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)))
 				{
             	 //	$def = ($lyout) ? $lyout : "legacyCustom";
 					$def =  $lyout;
-					break;
+					break 2;
 				}
 			}
 		}
