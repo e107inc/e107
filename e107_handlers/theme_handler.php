@@ -1,23 +1,30 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (c) e107 Inc. 2001-2009
-|     http://e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2009-08-17 18:42:21 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * e107 Admin Theme Handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
+ * $Revision: 1.49 $
+ * $Date: 2009-08-27 12:58:29 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+/**
+ * Base e107 Admin Theme Handler
+ *
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author Cameron
+ * @copyright Copyright (c) 2009, e107 Inc.
+ */
 class themeHandler{
 
 	var $themeArray;
@@ -547,7 +554,7 @@ class themeHandler{
 
 			if($this->themeConfigObj)
 			{
-	        	$var = call_user_method("config",$this->themeConfigObj);
+	        	$var = call_user_func(array(&$this->themeConfigObj, 'config'));
                 foreach($var as $val)
 				{
 	            	$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
@@ -562,7 +569,7 @@ class themeHandler{
 	{
 		if($this->themeConfigObj)
 	   	{
-			return call_user_method("help",$this->themeConfigObj);
+			return call_user_func(array(&$this->themeConfigObj, 'help'));
 		}
 	}
 
@@ -573,7 +580,7 @@ class themeHandler{
         $this -> loadThemeConfig();
         if($this->themeConfigObj)
 	   	{
-			return call_user_method("process",$this->themeConfigObj);
+			return call_user_func(array(&$this->themeConfigObj, 'process'));
 		}
 	}
 
@@ -627,7 +634,7 @@ class themeHandler{
 		<h2 class='caption'>".$theme['name']."</h2>
         <div class='admintabs' id='tab-container'>";
 
-        if(call_user_method("help",$this->themeConfigObj))
+        if(call_user_func(array(&$this->themeConfigObj, 'help')))
 		{
 			$text .= "
 				<ul class='e-tabs e-hideme' id='core-thememanager-tabs'>
@@ -1250,9 +1257,25 @@ class themeHandler{
 	  	return $vars;
 	}
 
-
-
-
-
 }
-?>
+
+interface e_theme_config
+{
+	/**
+	 * Triggered on theme settings submit
+	 * Catch and save theme configuration
+	 */
+	public function process();
+
+	/**
+	 * Theme configuration user interface
+	 * Print out config fields 
+	 */
+	public function config();
+	
+	/**
+	 * Theme help tab
+	 * Print out theme help content 
+	 */
+	public function help();
+}
