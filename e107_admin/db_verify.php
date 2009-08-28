@@ -9,9 +9,9 @@
  * Administration - DB Verify
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-08-28 16:10:53 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.7 $
+ * $Date: 2009-08-28 16:49:42 $
+ * $Author: secretr $
  *
 */
 require_once("../class2.php");
@@ -138,7 +138,7 @@ function get_current($tab, $prefix = "")
 
 function check_tables($what)
 {
-	global $tablines, $table_list, $frm;
+	global $tablines, $table_list, $frm, $emessage;
 
 	$cur = 0;
 	$table_list = "";
@@ -149,12 +149,12 @@ function check_tables($what)
 	$text = "
 		<form method='post' action='".e_SELF."'>
 			<fieldset id='core-db-verify-{$what}'>
-				<legend>".DBLAN_16." - $what ".DBLAN_18."</legend>
+				<legend id='core-db-verify-{$what}-legend'>".DBLAN_16." - $what ".DBLAN_18."</legend>
 	";
 	foreach(array_keys($table_list) as $k)
 	{	// $k is the DB table name (less prefix)
-
-		$text .= "
+		$ttcount = 0;
+		$ttext = "
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 					<colgroup span='4'>
 						<col style='width: 25%'></col>
@@ -179,6 +179,7 @@ function check_tables($what)
 		$current_tab = get_current($k, $prefix);		// Get list of fields and keys from actual table
 		unset($fields);
 		unset($xfields);
+		$xfield_errors = 0;
 
 		if ($current_tab)
 		{
@@ -189,8 +190,8 @@ function check_tables($what)
 		  		$x = str_replace('  ',' ',$x);				// Remove double spaces
 		  		$fieldnum++;
 		 		 $ffound = 0;
-		  		list($fname, $fparams) = split(" ", $x, 2);
-				if ($fname == "UNIQUE")
+		  		list($fname, $fparams) = explode(" ", $x, 2);
+				if ($fname == "UNIQUE" || $fname == 'FULLTEXT')
 				{
 					list($key, $key1, $keyname, $keyparms) = split(" ", $x, 4);
 					$fname = $key." ".$key1." ".$keyname;
@@ -212,45 +213,47 @@ function check_tables($what)
 					$cur = 1;
 				}
 
-				$text .= "
+				$head_txt = "
 							<tr>
 								<td>{$k}</td>
-								<td>{$fname}
+								<td>{$fname} 
 				";
 
 				if (strpos($fparams, "KEY") !== FALSE)
 				{
-					$text .= " $fparams";
+					$head_txt .= " $fparams aa";
 				}
 
-				$text .= "
+				$head_txt .= "
 								</td>
 				";
 
-				//$s = 0; - never used
 				$xfieldnum = -1;
+				$body_txt = '';
 
 				foreach($lines as $l)
 				{
 					$xfieldnum++;
-					list($xl, $tmp) = split("\n", $l, 2);			// $tmp should be null
+					list($xl, $tmp) = explode("\n", $l, 2);			// $tmp should be null
 
 					$xl = ltrim(rtrim(stripslashes($xl)));
-					$xl = preg_replace("/\r?\n$|\r[^\n]$/", "", $xl);
+					$xl = preg_replace('/\r?\n$|\r[^\n]$/', '', $xl);
 					$xl = str_replace('  ',' ',$xl);				// Remove double spaces
-					list($xfname, $xfparams) = split(" ", $xl, 2);	// Field name and the rest
-					if ($xfname == "UNIQUE")
+					list($xfname, $xfparams) = explode(" ", $xl, 2);	// Field name and the rest
+					
+					if ($xfname == 'UNIQUE' || $xfname == 'FULLTEXT')
 					{
-						list($key, $key1, $keyname, $keyparms) = split(" ", $xl, 4);
+						list($key, $key1, $keyname, $keyparms) = explode(" ", $xl, 4);
 						$xfname = $key." ".$key1." ".$keyname;
 						$xfparams = $keyparms;
 					}
 					elseif ($xfname == "KEY")
 					{
-						list($key, $keyname, $keyparms) = split(" ", $xl, 3);
+						list($key, $keyname, $keyparms) = explode(" ", $xl, 3);
 						$xfname = $key." ".$keyname;
 						$xfparams = $keyparms;
 					}
+					
 					if ($xfname != "CREATE" && $xfname != ")")
 					{
 						$xfields[$xfname] = 1;
@@ -295,7 +298,7 @@ function check_tables($what)
 
 						if ($fld_err)
 						{
-							$text .= "
+							$body_txt .= "
 								<td class='center middle error'>".DBLAN_8."</td>
 								<td>
 									<strong>".DBLAN_9."</strong>
@@ -306,10 +309,12 @@ function check_tables($what)
 								<td class='center middle autocheck e-pointer'>".fix_form($k, $fname, $fparams, "alter")."</td>
 							";
 							$fix_active = TRUE;
+							$xfield_errors++;
 						}
+						/* FIXME - can't stay if there is no way of fixing the field numbers (e.g. AFTER query)
 						elseif ($fieldnum != $xfieldnum)
 						{  // Field numbers different - missing field?
-							$text .= "
+							$body_txt .= "
 								<td class='center middle error'>".DBLAN_5." ".DBLAN_8."</td>
 								<td>
 									<strong>".DBLAN_9.": </strong>#{$xfieldnum}
@@ -320,36 +325,44 @@ function check_tables($what)
 
 							";
 						}
+						*/
+						
+						/* DISABLED for now (show only errors), could be page setting
 						else
 						{
-							$text .= "
+							$body_txt .= "
 								<td class='center'>OK</td>
 								<td>&nbsp;</td>
 								<td class='center middle'>&nbsp;</td>
 							";
-						/**/
 						}
+						*/
 					}
-				}		// Finished checking one field
+				}	// Finished checking one field
 
 				if ($ffound == 0)
 				{
-					$prev_fname = $fname;
-					$text .= "
+					$prev_fname = $fname; //FIXME - wrong $prev_fname!
+					$body_txt .= "
 								<td class='center middle error'>".DBLAN_11."</td>
 								<td>
 									<strong>".DBLAN_10."</strong>
 									<div class='indent'>{$fparams}</div>
 								</td>
-								<td class='center middle autocheck e-pointer'>".fix_form($k, $fname, $fparams, "insert", $prev_fname)."</td>
+								<td class='center middle autocheck e-pointer'>".fix_form($k, $fname, $fparams, "insert"/*, $prev_fname*/)."</td>
 					";
 					$fix_active = TRUE;
+					$xfield_errors++;
 				}
 
-				$text .= "
-
+				if($xfield_errors && $body_txt)
+				{
+					$ttext .= $head_txt.$body_txt."
 							</tr>
-				";
+					";
+				}
+
+
 			}
 
 			foreach(array_keys($xfields) as $tf)
@@ -357,7 +370,8 @@ function check_tables($what)
 				if (!$fields[$tf] && $k != "user_extended")
 				{
 					$fix_active = TRUE;
-					$text .= "
+					$xfield_errors++;
+					$ttext .= "
 					<tr>
 						<td>$k</td>
 						<td>$tf</td>
@@ -368,10 +382,12 @@ function check_tables($what)
 					";
 				}
 			}
+			
+			
 		}
 		else
 		{	// Table Missing.
-			$text .= "
+			$ttext .= "
 					<tr>
 						<td>{$k}</td>
 						<td>&nbsp;</td>
@@ -382,14 +398,49 @@ function check_tables($what)
 			";
 
 			$fix_active = TRUE;
+			$xfield_errors++;
 		}
-		$text .= "
+		
+		if(!$xfield_errors)
+		{
+			//no errors, so no table rows yet
+			$ttext .= "
+					<tr>
+						<td colspan='5' class='center'>Table status OK</td>
+					</tr>
+			";
+		}
+	
+		$ttext .= "
 					</tbody>
 				</table>
 				<br/>
 		";
+		
+		//FIXME - add 'show_if_ok' switch
+		if($xfield_errors || (!$xfield_errors && varsettrue($_GET['show_if_ok'])))
+		{
+			$text .= $ttext;
+			$ttcount++;
+		}
 	}
-
+	
+	if(!$fix_active)
+	{
+		//Everything should be OK
+		$emessage->add('DB successfully verified - no problems were found.', E_MESSAGE_SUCCESS);
+		
+		if(!$ttcount)
+		{
+			//very tired and sick of this page, so quick and dirty
+			$text .= "
+					<script type='text/javascript'>
+						\$('core-db-verify-{$what}-legend').hide();
+					</script>
+			";
+		}
+	}
+	
 	if($fix_active)
 	{
 		$text .= "
@@ -400,8 +451,9 @@ function check_tables($what)
 			</div>
 		";
 	}
-
-	foreach(array_keys($_POST) as $j) {
+	
+	foreach(array_keys($_POST) as $j) 
+	{
 		$match = array();
 		if (preg_match('/table_(.*)/', $j, $match))
 		{
@@ -449,42 +501,51 @@ if(isset($_POST['do_fix']))
 
 
 		$field= $key;
-
-		if($mode == "alter")
+		
+		switch($mode)
 		{
-			$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
+			case 'alter':
+				$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
+			break;
+
+			case 'insert':
+				if($after) $after = " AFTER {$after}";
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
+			break;
+			
+			case 'drop':
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
+			break;
+			
+			case 'index':
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX `$field` ($newval)";
+			break;
+			
+			case 'indexalt':
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD $field ($newval)";
+			break;
+			
+			case 'indexdrop':
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
+			break;
+			
+			case 'create':
+				$query = "CREATE TABLE ".MPREFIX.$table." ($newval) TYPE=MyISAM;";
+			break;
 		}
 
-		if($mode == "insert")
+		//FIXME - db handler!!!
+		if(mysql_query($query)) $emessage->add(LAN_UPDATED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_SUCCESS);
+		else 
 		{
-			$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval AFTER $after";
+			$emessage->add(LAN_UPDATED_FAILED.' [&nbsp;'.$query.'&nbsp;]', E_MESSAGE_WARNING);
+			if(mysql_errno())
+			{
+				$emessage->add('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SQL #'.mysql_errno().': '.mysql_error(), E_MESSAGE_WARNING);
+			}
 		}
-
-		if($mode == "drop")
-		{
-			$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
-		}
-
-		if($mode == "index")
-		{
-			$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX `$field` (`$newval`)";
-		}
-
-		if($mode == "indexdrop")
-		{
-			$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
-		}
-
-		if($mode == "create")
-		{
-			$query = "CREATE TABLE ".MPREFIX.$table." ($newval) TYPE=MyISAM;";
-		}
-
-		if(mysql_query($query)) $emessage->add(LAN_UPDATED.' ['.$query.']', E_MESSAGE_SUCCESS);
-		else $emessage->add(LAN_UPDATED_FAILED.' ['.$query.']', E_MESSAGE_WARNING);
 	}
 }
-
 
 
 // ---------------------- Main Form and Submit. ------------------------
@@ -512,7 +573,7 @@ if (varset($_POST['db_verify']) || varset($_POST['do_fix']))
 }
 
 $text = "
-	<form method='post' action='".e_SELF."' id='core-db-verify-sql-tables-form'>
+	<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 		<fieldset id='core-db-verify-sql-tables'>
 			<legend>".DBLAN_14."</legend>
 			<table cellpadding='0' cellspacing='0' class='adminlist'>
@@ -556,15 +617,25 @@ exit;
 function fix_form($table,$field, $newvalue,$mode,$after =''){
 	global $frm;
 
-	if(stristr($field, "KEY ") !== FALSE)
+	if(stristr($field, 'KEY ') !== FALSE)
 	{
-		$field = chop(str_replace("KEY ","",$field));
-		$mode = ($mode == "drop") ? "indexdrop" : "index";
-		$search = array("(",")");
-		$newvalue = str_replace($search,"",$newvalue);
+		$field = chop(str_replace('KEY ','',$field));
+		$mode = ($mode == 'drop') ? 'indexdrop' : 'index';
+		$search = array('(', ')');
+		$newvalue = str_replace($search,'',$newvalue);
+		$after = '';
+	}
+	
+	if($mode == 'index' && (stristr($field, 'FULLTEXT ') !== FALSE || stristr($field, 'UNIQUE ') !== FALSE))
+	{
+		$mode = 'indexalt';
+	}
+	elseif($mode == 'indexdrop' && (stristr($field, 'FULLTEXT ') !== FALSE || stristr($field, 'UNIQUE ') !== FALSE))
+	{
+		$field = trim(str_replace(array('FULLTEXT ', 'UNIQUE '), '', $field));
 	}
 
-	if($mode == "create")
+	if($mode == 'create')
 	{
 		$newvalue = implode("\n",$newvalue);
 	}
