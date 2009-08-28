@@ -9,9 +9,9 @@
  * Plugin administration - newsfeeds
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/trackback/trackbackClass.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-08-27 12:53:46 $
- * $Author: secretr $
+ * $Revision: 1.8 $
+ * $Date: 2009-08-28 16:32:04 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -39,7 +39,7 @@ class trackbackClass
 		}
 		else
 		{
-			
+
 			$trackback_url = parse_url($pingUrl);
 
 			if ((isset($trackback_url["query"])) && ($trackback_url["query"] != ""))
@@ -63,14 +63,15 @@ class trackbackClass
 			$header .= "\r\n";
 			$header .= $query_string;
 
-			$socket = fsockopen($trackback_url["host"], $trackback_url["port"]); 
+			$socket = fsockopen($trackback_url["host"], $trackback_url["port"]);
 
-			if (!is_resource($socket)) {
-				return 'trackbackClass -> sendTrackback: Unable to connect to {$trackback_url['host']}.';
+			if (!is_resource($socket))
+			{
+				return 'trackbackClass -> sendTrackback: Unable to connect to {$trackback_url[\'host\']}.';
 			}
 
-			fputs($socket, $header); 
-       
+			fputs($socket, $header);
+
 			$response = "";
 			while (!feof($socket)) {
 				$response .= fgets($socket, 4096);
