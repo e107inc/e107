@@ -9,19 +9,22 @@
  * Administration - DB Verify
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-30 13:51:41 $
- * $Author: secretr $
+ * $Revision: 1.6 $
+ * $Date: 2009-08-28 16:10:53 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
-$e_sub_cat = 'database';
 
 if(varset($_POST['db_tools_back']))
 {
 	header("Location:".e_ADMIN_ABS."db.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+$e_sub_cat = 'database';
 
 require_once("auth.php");
 

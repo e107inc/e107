@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-25 07:52:16 $
+|     $Revision: 1.10 $
+|     $Date: 2009-08-28 16:10:54 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,9 @@ if (!getperms("6"))
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'filemanage';
 require_once("auth.php");
 require_once(e_HANDLER.'upload_handler.php');

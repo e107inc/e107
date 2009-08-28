@@ -10,18 +10,21 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.56 $
-* $Date: 2009-08-26 21:17:20 $
-* $Author: bugrain $
+* $Revision: 1.57 $
+* $Date: 2009-08-28 16:11:01 $
+* $Author: marj_nl_fr $
 *
 */
 require_once ('../class2.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 if (!getperms('4'))
 {
 	header('location:'.$e107->url->getUrl('core:core','main','action=index'));
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
+
 if (varset($_POST['useraction']))
 {
 	foreach ($_POST['useraction'] as $key => $val)

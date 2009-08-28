@@ -9,29 +9,32 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-08-28 00:33:37 $
- * $Author: e107coders $
+ * $Revision: 1.21 $
+ * $Date: 2009-08-28 16:10:59 $
+ * $Author: marj_nl_fr $
  *
 */
 
 require_once ("../class2.php");
-
-require_once (e_HANDLER."form_handler.php");
-$frm = new e_form();
 
 if(!getperms('0'))
 {
 	header('location:'.e_BASE.'index.php');
 	exit();
 }
-$e_sub_cat = 'database';
 
 if(isset($_POST['back']))
 {
 	header("location: ".e_SELF);
 	exit();
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+$e_sub_cat = 'database';
+
+require_once (e_HANDLER."form_handler.php");
+$frm = new e_form();
 
 require_once (e_HANDLER."message_handler.php");
 $emessage = &eMessage::getInstance();

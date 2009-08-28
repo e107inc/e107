@@ -9,8 +9,8 @@
  * Search Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/search.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-08-15 15:44:37 $
+ * $Revision: 1.7 $
+ * $Date: 2009-08-28 16:10:53 $
  * $Author: marj_nl_fr $
  *
 */
@@ -21,6 +21,9 @@ if (!getperms('X'))
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'search';
 require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');

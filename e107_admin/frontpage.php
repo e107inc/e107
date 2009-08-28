@@ -9,9 +9,9 @@
  * Administration Area - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-07-21 07:41:54 $
- * $Author: e107coders $
+ * $Revision: 1.13 $
+ * $Date: 2009-08-28 16:11:00 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -21,6 +21,9 @@ if(! getperms('G'))
 	header('location:'.e_BASE.'index.php');
 	exit();
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'frontpage';
 require_once ('auth.php');
 require_once (e_HANDLER.'form_handler.php');

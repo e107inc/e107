@@ -9,9 +9,9 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-08-19 14:35:12 $
- * $Author: secretr $
+ * $Revision: 1.29 $
+ * $Date: 2009-08-28 16:10:54 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -21,6 +21,8 @@ if(!getperms('I'))
 	header('location:'.e_BASE.'index.php');
 	exit();
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'links';
 

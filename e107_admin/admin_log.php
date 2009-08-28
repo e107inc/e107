@@ -9,8 +9,8 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-08-15 15:44:37 $
+ * $Revision: 1.30 $
+ * $Date: 2009-08-28 16:10:50 $
  * $Author: marj_nl_fr $
  *
 */
@@ -33,6 +33,8 @@ if(! getperms("S"))
 	header("location:".e_BASE."index.php");
 	exit();
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 // Main language file should automatically be loaded
 // Load language files for log messages

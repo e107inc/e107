@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ugflag.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-01-07 15:40:06 $
- * $Author: secretr $
+ * $Revision: 1.4 $
+ * $Date: 2009-08-28 16:11:00 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -20,6 +20,8 @@ if (!getperms("9"))
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 require_once(e_HANDLER."form_handler.php");
 require_once (e_HANDLER."message_handler.php");

@@ -10,8 +10,8 @@
  * With code from Izydor and Lolo.
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-08-15 15:53:44 $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-28 16:11:00 $
  * $Author: marj_nl_fr $
  *
 */
@@ -20,6 +20,9 @@ if (!getperms("0")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'language';
 require_once("auth.php");
 require_once(e_HANDLER."message_handler.php");

@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-08-05 14:20:39 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2009-08-28 16:11:01 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
+// done in class2 for now: include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'main';
 require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');

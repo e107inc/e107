@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2009-08-17 18:42:19 $
-|     $Author: e107coders $
+|     $Revision: 1.39 $
+|     $Date: 2009-08-28 16:10:57 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,6 +23,9 @@ if (!getperms("Z"))
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);

@@ -9,13 +9,16 @@
  * Administration Area - Update Admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/updateadmin.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-08-15 15:44:37 $
+ * $Revision: 1.7 $
+ * $Date: 2009-08-28 16:10:56 $
  * $Author: marj_nl_fr $
  *
 */
 
 require_once('../class2.php');
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'admin_pass';
 
 require_once(e_ADMIN.'auth.php');

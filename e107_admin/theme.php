@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/theme.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-07-18 03:41:49 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2009-08-28 16:11:01 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,6 +22,9 @@ if (!getperms("1")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'theme_manage';
 
 require_once("auth.php");
