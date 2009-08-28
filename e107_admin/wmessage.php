@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/wmessage.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-17 07:53:13 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2009-08-28 16:11:00 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,6 +22,9 @@ if (!getperms("M"))
 	header("location:".e_BASE."index.php");
 	 exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'wmessage';
 
 require_once(e_HANDLER."preset_class.php");

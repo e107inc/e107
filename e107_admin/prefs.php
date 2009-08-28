@@ -9,17 +9,12 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-08-20 11:38:24 $
- * $Author: e107coders $
+ * $Revision: 1.34 $
+ * $Date: 2009-08-28 16:10:59 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once ("../class2.php");
-
-require_once (e_HANDLER."userclass_class.php");
-require_once (e_HANDLER."user_extended_class.php");
-$e_userclass = new user_class();
-$ue = new e107_user_extended();
 
 if(isset($_POST['newver']))
 {
@@ -33,7 +28,14 @@ if(! getperms("1"))
 	exit();
 }
 
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'prefs';
+require_once (e_HANDLER."userclass_class.php");
+require_once (e_HANDLER."user_extended_class.php");
+$e_userclass = new user_class();
+$ue = new e107_user_extended();
+
 if(! $pref['timezone'])
 {
 	$pref['timezone'] = "GMT";

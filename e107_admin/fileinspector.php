@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-07-18 15:14:38 $
+|     $Revision: 1.17 $
+|     $Date: 2009-08-28 16:11:00 $
 |     $Author: marj_nl_fr $
 
 Includes standalone function - needs finishing
@@ -124,6 +124,8 @@ if (!getperms('Y')) {
 	header('location:'.e_BASE.'index.php');
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'fileinspector';
 
@@ -949,8 +951,8 @@ class file_inspector {
 			$data .= "|     GNU General Public License (http://gnu.org).\n";
 			$data .= "|\n";
 			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.16 $\n";
-			$data .= "|     \$Date: 2009-07-18 15:14:38 $\n";
+			$data .= "|     \$Revision: 1.17 $\n";
+			$data .= "|     \$Date: 2009-08-28 16:11:00 $\n";
 			$data .= "|     \$Author: marj_nl_fr $\n";
 			$data .= "+----------------------------------------------------------------------------+\n";
 			$data .= "*/\n\n";

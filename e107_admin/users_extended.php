@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-08-10 20:51:59 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2009-08-28 16:10:58 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -32,6 +32,8 @@ if (isset($_POST['cancel_cat']))
 	header("location:".e_SELF."?cat");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'user_extended';
 

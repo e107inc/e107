@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-07-16 08:15:35 $
- * $Author: e107coders $
+ * $Revision: 1.22 $
+ * $Date: 2009-08-28 16:11:01 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -20,6 +20,8 @@ if (!getperms("A"))
 	header("location:".e_HTTP."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'image';
 

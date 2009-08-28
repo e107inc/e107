@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/message.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-09 13:55:21 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-08-28 16:11:00 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'message';
 require_once("auth.php");

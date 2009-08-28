@@ -9,9 +9,9 @@
  * Administrators Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-08-05 14:22:15 $
- * $Author: e107coders $
+ * $Revision: 1.14 $
+ * $Date: 2009-08-28 16:10:58 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -27,6 +27,8 @@ if(isset($_POST['go_back']))
 	header('Location:'.e_ADMIN_ABS.e_PAGE);
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'admin';
 require_once('auth.php');

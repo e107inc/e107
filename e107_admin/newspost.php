@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.48 $
- * $Date: 2009-08-24 08:34:55 $
- * $Author: secretr $
+ * $Revision: 1.49 $
+ * $Date: 2009-08-28 16:11:01 $
+ * $Author: marj_nl_fr $
 */
 require_once("../class2.php");
 
@@ -21,6 +21,7 @@ if (!getperms("H|7|N"))
 	exit;
 }
 
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 // -------- Presets. ------------  // always load before auth.php
 require_once(e_HANDLER."preset_class.php");

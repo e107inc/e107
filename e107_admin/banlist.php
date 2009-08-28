@@ -9,9 +9,9 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-07-17 07:53:13 $
- * $Author: e107coders $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-28 16:10:55 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -33,6 +33,8 @@ if(!getperms("4"))
 	header("location:".e_BASE."index.php");
 	exit();
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'banlist';
 require_once ("auth.php");

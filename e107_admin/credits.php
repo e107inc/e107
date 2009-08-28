@@ -11,13 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/credits.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-19 11:44:27 $
+|     $Revision: 1.6 $
+|     $Date: 2009-08-28 16:11:00 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'credits';
 include(e_ADMIN.'ver.php');
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-07-25 07:52:16 $
+|     $Revision: 1.17 $
+|     $Date: 2009-08-28 16:10:53 $
 |     $Author: marj_nl_fr $
 |
 | Work in progress - supplementary mailer plugin
@@ -51,17 +51,21 @@ Each mailout task is implemented as a class, which must include a number of mand
 */
 
 require_once("../class2.php");
+
+if (!getperms("W"))
+{
+	header("location:".e_BASE."index.php");
+	 exit;
+}
+//TODO multilanguage?
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'mail';
 
 set_time_limit(180);
 session_write_close();
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."ren_help.php");
-if (!getperms("W")) 
-{
-	header("location:".e_BASE."index.php");
-	 exit;
-}
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 require_once(e_HANDLER."userclass_class.php");
 

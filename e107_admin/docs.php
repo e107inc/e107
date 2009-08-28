@@ -9,9 +9,9 @@
  * Docs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/docs.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-01-05 16:08:38 $
- * $Author: secretr $
+ * $Revision: 1.5 $
+ * $Date: 2009-08-28 16:11:00 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -19,6 +19,10 @@ if (!ADMIN) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+
 $e_sub_cat = 'docs';
 require_once("auth.php");
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-12-06 23:00:19 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-08-28 16:10:51 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,6 +22,9 @@ if (!getperms("V"))
   header("location:".e_BASE."index.php");
   exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'upload';
 
 

@@ -9,12 +9,14 @@
  * Administration - e107 System Update
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/e107_update.php,v $
- * $Revision: 1.5 $
- * $Date: 2008-12-30 15:56:12 $
- * $Author: secretr $
+ * $Revision: 1.6 $
+ * $Date: 2009-08-28 16:11:00 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once ("../class2.php");
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'database';
 

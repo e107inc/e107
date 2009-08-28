@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/menus.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2009-08-19 14:39:56 $
-|     $Author: secretr $
+|     $Revision: 1.34 $
+|     $Date: 2009-08-28 16:11:02 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if(isset($_GET['configure']))
@@ -29,6 +29,9 @@ if (!getperms("2"))
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 $e_sub_cat = 'menus';
 
 require_once(e_HANDLER."file_class.php");

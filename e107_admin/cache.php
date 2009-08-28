@@ -9,9 +9,9 @@
  * Cache Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-07-21 07:13:41 $
- * $Author: e107coders $
+ * $Revision: 1.10 $
+ * $Date: 2009-08-28 16:10:54 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -20,6 +20,8 @@ if (!getperms("C"))
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'cache';
 
