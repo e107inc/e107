@@ -9,20 +9,23 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-08-09 08:39:27 $
+ * $Revision: 1.39 $
+ * $Date: 2009-08-28 15:30:25 $
  * $Author: marj_nl_fr $
  *
 */
 
 
 require_once("class2.php");
+
 $qs = explode(".", e_QUERY);
+
 if($qs[0] != 'activate')
 {   // multi-language fix.
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");		Shouldn't need this now
 }
+
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
 
 define('SIGNUP_DEBUG', FALSE);
@@ -36,11 +39,11 @@ require_once(e_HANDLER.'user_handler.php');
 $userMethods = new UserHandler;
 $userMethods->deleteExpired();				// Delete time-expired partial registrations
 
-if (is_readable(THEME."signup_template.php")) 
+if (is_readable(THEME."signup_template.php"))
 {
 	require_once(THEME."signup_template.php");
-} 
-else 
+}
+else
 {
 	require_once(e_THEME."templates/signup_template.php");
 }
@@ -54,11 +57,11 @@ $error = FALSE;
 
 
 //-------------------------------
-// Resend Activation Email 
+// Resend Activation Email
 //-------------------------------
 if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 {
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+// done above:	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 	require_once(HEADERF);
 
 	$clean_email = $tp -> toDB($_POST['resend_email']);
@@ -96,7 +99,7 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 		}
 		$row = $sql -> db_Fetch();
 		// We should have a user record here
-	
+
 		if(trim($_POST['resend_password']) !="" && $new_email)
 		{  // Need to change the email address - check password to make sure
 			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
@@ -113,7 +116,7 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 				exit;
 			}
 		}
-	
+
 		// Now send the email - got some valid info
 		$row['user_password'] = 'xxxxxxx';		// Don't know the real one
 		$eml = render_email($row);
@@ -202,7 +205,7 @@ if(!$_POST)
 
 if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.aftersignup"))
 {
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+// done above:	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 	if(e_QUERY == "preview.aftersignup")
 	{
 		require_once(HEADERF);
@@ -277,31 +280,32 @@ if(USER)
 }
 
 //----------------------------------------
-// After clicking the activation link 
+// After clicking the activation link
 //----------------------------------------
 if (e_QUERY)
 {
 	$qs = explode(".", e_QUERY);
 	if ($qs[0] == "activate" && (count($qs) == 3 || count($qs) == 4) && $qs[2])
 	{
-        // return the message in the correct language.
+		//TODO use generic multilanguage selection
+		// return the message in the correct language.
 		if(isset($qs[3]) && strlen($qs[3]) == 2 )
 		{
 			require_once(e_HANDLER."language_class.php");
 			$slng = new language;
 			$the_language = $slng->convert($qs[3]);
-			if(is_readable(e_LANGUAGEDIR.$the_language."/lan_signup.php"))
+			if(is_readable(e_LANGUAGEDIR.$the_language.'/lan_'.e_PAGE))
 			{
-				include(e_LANGUAGEDIR.$the_language."/lan_signup.php");
+				include(e_LANGUAGEDIR.$the_language.'/lan_'.e_PAGE);
 			}
 			else
 			{
-				require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
- 			}
+				include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+			}
 		}
 		else
 		{
-            include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+				include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 		}
 
 
@@ -399,7 +403,7 @@ if (isset($_POST['register']))
 				$xup[$value] = $match[2][$count];
 				$count++;
 			}
-	
+
 			$_POST['name'] = $xup['NICKNAME'];
 			$_POST['email'] = $xup['EMAIL'];
 			$_POST['email_confirm'] = $xup['EMAIL'];
@@ -407,7 +411,7 @@ if (isset($_POST['register']))
 			$_POST['hideemail'] = $xup['EMAILHIDE'];
 			$_POST['realname'] = $xup['FN'];
 			$_POST['image'] = $xup['AV'];
-	
+
 			$_POST['ue']['user_timezone'] = $xup['TZ'];
 			$_POST['ue']['user_homepage'] = $xup['URL'];
 			$_POST['ue']['user_icq'] = $xup['ICQ'];
@@ -416,7 +420,7 @@ if (isset($_POST['register']))
 			$_POST['ue']['user_yahoo'] = $xup['YAHOO'];
 			$_POST['ue']['user_location'] = $xup['GEO'];
 			$_POST['ue']['user_birthday'] = $xup['BDAY'];
-	
+
 			unset($xup);
 			if($_POST['loginnamexup']) $_POST['loginname'] = $_POST['loginnamexup'];
 			if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
@@ -430,13 +434,13 @@ if (isset($_POST['register']))
 		{
 		  $_POST['loginname'] = $userMethods->generateUserLogin($pref['predefinedLoginName']);
 		}
-	
+
 		// Use LoginName for DisplayName if restricted
 		if (!check_class($pref['displayname_class'],e_UC_PUBLIC.','.e_UC_MEMBER))
 		{
 			$_POST['username'] = $_POST['loginname'];
 		}
-	
+
 		// Now validate everything
 		$allData = validatorClass::validateFields($_POST,$userMethods->userVettingInfo, TRUE);		// Do basic validation
 		validatorClass::checkMandatory('user_name,user_loginname', $allData);						// Check for missing fields (email done in userValidation() )
@@ -449,10 +453,10 @@ if (isset($_POST['register']))
 		}
 		unset($_POST['password1']);					// Restrict the scope of this
 		unset($_POST['password2']);
-	
+
 		$allData['user_ip'] = $e107->getip();
-	
-	
+
+
 		// check for multiple signups from the same IP address.
 		if($ipcount = $sql->db_Select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
 		{
@@ -462,7 +466,7 @@ if (isset($_POST['register']))
 				$allData['errortext']['user_email'] =  LAN_SIGNUP_71;
 			}
 		}
-	
+
 		// Email address confirmation.
 		if (!isset($allData['errors']['user_email']))
 		{	// Obviously nothing wrong with the email address so far (or maybe its not required)
@@ -473,12 +477,12 @@ if (isset($_POST['register']))
 				unset($allData['data']['user_email']);
 			}
 		}
-	
-	
+
+
 		// Verify Custom Signup options if selected - need specific loop since the need for them is configuration-dependent
 		$signup_option_title = array(LAN_USER_63, LAN_USER_71, LAN_USER_72, LAN_USER_73, LAN_USER_74);
 		$signup_option_names = array('realname', 'signature', 'image', 'class', 'customtitle');
-	
+
 		foreach($signup_option_names as $key => $value)
 		{
 			if ($pref['signup_option_'.$value] == 2 && !isset($alldata['data']['user_'.$value]) && !isset($alldata['errors']['user_'.$value]))
@@ -487,8 +491,8 @@ if (isset($_POST['register']))
 				$alldata['errortext']['user_'.$value] = str_replace('--SOMETHING--',$signup_option_title[$key],LAN_USER_75);
 			}
 		}
-	
-	
+
+
 		// Validate Extended User Fields.
 		$eufVals = array();
 		if (isset($_POST['ue']))
@@ -539,7 +543,7 @@ if (isset($_POST['register']))
 			exit;
 		}
 
-		if ($_POST['email'] && $sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='".USER_BANNED."'")) 
+		if ($_POST['email'] && $sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='".USER_BANNED."'"))
 		{
 			exit;
 		}

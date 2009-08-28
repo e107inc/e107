@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/upload.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-22 19:18:13 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2009-08-28 15:30:24 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 if (!$pref['upload_enabled'] || $pref['upload_class'] == 255) 
 {

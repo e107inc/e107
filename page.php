@@ -11,14 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-08-23 10:57:50 $
+|     $Revision: 1.21 $
+|     $Date: 2009-08-28 15:30:24 $
 |     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
 $page = new pageClass();
 if(isset($_POST['enterpw']))
 {

@@ -9,9 +9,9 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-08-05 22:03:23 $
- * $Author: e107coders $
+ * $Revision: 1.39 $
+ * $Date: 2009-08-28 15:30:24 $
+ * $Author: marj_nl_fr $
  *
 */
 /*
@@ -26,6 +26,7 @@ if(is_numeric($_SERVER["QUERY_STRING"]))
 	$eplug_admin = TRUE;
 }
 require_once ('class2.php');
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 define("US_DEBUG",FALSE);
 //define('US_DEBUG', false);

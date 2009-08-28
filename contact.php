@@ -11,16 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/contact.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-07-27 21:12:42 $
-|     $Author: bugrain $
+|     $Revision: 1.8 $
+|     $Date: 2009-08-28 15:30:24 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
-    // security image may be disabled by removing the appropriate shortcodes from the template.
-	require_once(e_HANDLER."secure_img_handler.php");
-	$sec_img = new secure_image;
+// security image may be disabled by removing the appropriate shortcodes from the template.
+require_once(e_HANDLER."secure_img_handler.php");
+$sec_img = new secure_image;
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 
 require_once(HEADERF);
