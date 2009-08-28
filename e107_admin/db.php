@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-08-27 23:39:43 $
+ * $Revision: 1.20 $
+ * $Date: 2009-08-28 00:33:37 $
  * $Author: e107coders $
  *
 */
@@ -384,7 +384,7 @@ function importCorePrefs()
 	
 	$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
 	
-	if(varset($xmlArray['prefs']['core'])) // Save Core Prefs
+	if(vartrue($xmlArray['prefs']['core'])) // Save Core Prefs
 	{
 		foreach ($xmlArray['prefs']['core'] as $val)
 		{
@@ -392,9 +392,7 @@ function importCorePrefs()
 		}
 	
 		e107::getConfig()->save(FALSE);
-	}
-	
-	
+	}	
 }
 
 function importTables()
