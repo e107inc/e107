@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.135 $
-* $Date: 2009-08-28 15:21:23 $
+* $Revision: 1.136 $
+* $Date: 2009-08-28 16:15:57 $
 * $Author: marj_nl_fr $
 *
 */
@@ -1176,6 +1176,7 @@ else
 //FIXED - undefined $register_sc
 //$tp->sch_load(); - will be auto-initialized by first $tp->e_sc call - see e_parse->__get()
 
+/*
 $exclude_lan = array('lan_signup.php');  // required for multi-language.
 
 if ($inAdminDir)
@@ -1188,6 +1189,7 @@ elseif (!in_array('lan_'.e_PAGE,$exclude_lan) && !$isPluginDir)
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 	e107_include_once(e_LANGUAGEDIR.'English/lan_'.e_PAGE);
 }
+*/
 
 if ($pref['anon_post'] ? define('ANON', true) : define('ANON', false));
 
