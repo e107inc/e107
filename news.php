@@ -9,12 +9,14 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-07-10 20:30:09 $
- * $Author: e107steved $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-28 15:30:24 $
+ * $Author: marj_nl_fr $
 */
 
 require_once("class2.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;

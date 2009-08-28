@@ -11,14 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/download.php,v $
-|     $Revision: 1.28 $ 
-|     $Date: 2009-07-14 05:31:57 $
-|     $Author: e107coders $
+|     $Revision: 1.29 $ 
+|     $Date: 2009-08-28 15:30:25 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
 require_once(e_HANDLER."comment_class.php");
 require_once(e_FILE."shortcode/batch/download_shortcodes.php");
 

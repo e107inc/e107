@@ -9,14 +9,15 @@
  * User information
  *
  * $Source: /cvs_backup/e107_0.8/user.php,v $
- * $Revision: 1.8 $
- * $Date: 2008-12-20 20:18:54 $
- * $Author: e107steved $
+ * $Revision: 1.9 $
+ * $Date: 2009-08-28 15:30:24 $
+ * $Author: marj_nl_fr $
  *
 */
-define('PAGE_NAME', 'Members');
+//HCL define('PAGE_NAME', 'Members');
 
 require_once("class2.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 // Next bit is to fool PM plugin into doing things
 global $user;

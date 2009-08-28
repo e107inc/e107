@@ -9,12 +9,14 @@
  * 
  *
  * $Source: /cvs_backup/e107_0.8/banner.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-07-18 17:03:39 $
+ * $Revision: 1.6 $
+ * $Date: 2009-08-28 15:30:25 $
  * $Author: marj_nl_fr $
  */
 
 require_once("class2.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 	
