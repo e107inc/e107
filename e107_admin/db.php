@@ -9,9 +9,9 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-08-28 16:10:59 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.22 $
+ * $Date: 2009-08-28 17:56:24 $
+ * $Author: e107coders $
  *
 */
 
@@ -336,7 +336,7 @@ function exportXmlFile()
 		{
 			if(isset($val))
 			{
-				$val = is_array($val) ? e107::getArrayStorage()->WriteArray($val) : $val;
+				$val = is_array($val) ? e107::getArrayStorage()->WriteArray($val,FALSE) : $val;
 				
 				$text .= "\t\t<core name='$key'><![CDATA[".$val."]]></core>\n";
 			}
@@ -391,10 +391,12 @@ function importCorePrefs()
 	{
 		foreach ($xmlArray['prefs']['core'] as $val)
 		{
-			e107::getConfig()->set($val['@attributes']['name'], $val['@value']);
+		 	$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+		 //	print_a($val['@value']);
+		   	e107::getConfig()->set($val['@attributes']['name'], $value);
 		}
 	
-		e107::getConfig()->save(FALSE);
+	  	e107::getConfig()->save(FALSE);
 	}	
 }
 
