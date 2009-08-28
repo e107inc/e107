@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.134 $
-* $Date: 2009-08-27 22:33:18 $
-* $Author: e107coders $
+* $Revision: 1.135 $
+* $Date: 2009-08-28 15:21:23 $
+* $Author: marj_nl_fr $
 *
 */
 //
@@ -194,7 +194,7 @@ if(!isset($ADMIN_DIRECTORY))
 //
 $tmp = realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY);
 
-//Core functions - now API independent 
+//Core functions - now API independent
 @require_once($tmp.'/core_functions.php');
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
@@ -215,7 +215,7 @@ if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
 }
 
 /**
- * set CHARSET for backward compatibility 
+ * set CHARSET for backward compatibility
  */
 define('CHARSET', 'utf-8');
 
@@ -247,7 +247,7 @@ else
 // Start the parser; use it to grab the full query string
 //
 
-//DEPRECATED, BC 
+//DEPRECATED, BC
 //$e107->url = e107::getUrl(); - caught by __get()
 //TODO - find & replace $e107->url
 //DEPRECATED, BC, $e107->tp caught by __get()
@@ -312,7 +312,7 @@ $sql->db_Mark_Time('Start: SQL Connect');
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 
 // create after the initial connection.
-//DEPRECATED, BC, call the method only when needed 
+//DEPRECATED, BC, call the method only when needed
 $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
 
 $sql->db_Mark_Time('Start: Prefs, misc tables');
@@ -321,7 +321,7 @@ $sql->db_Mark_Time('Start: Prefs, misc tables');
 //DEPRECATED, BC, call the method only when needed, $e107->admin_log caught by __get()
 $admin_log = e107::getAdminLog(); //TODO - find & replace $admin_log, $e107->admin_log
 
-if ($merror === 'e1') 
+if ($merror === 'e1')
 {
 	message_handler('CRITICAL_ERROR', 6, ': generic, ', 'class2.php');
 	exit;
@@ -361,42 +361,42 @@ if(!e107::getConfig()->hasData())
 {
 	// Core prefs error - admin log
 	e107::getAdminLog()->log_event('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
-	
+
 	// Try for the automatic backup..
 	if(e107::getConfig('core_backup')->hasData())
 	{
 		// auto backup found, use backup to restore the core
 		e107::getConfig()->loadData(e107::getConfig('core_backup')->getPref(), false)
 			->save(false, true);
-			
+
 		message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
 	}
-	else 
+	else
 	{
 		// No auto backup, try for the 'old' prefs system.
 		if(!e107::getConfig('core_old')->hasData())
 		{
 			// Core could not restore from automatic backup. Execution halted.
-			e107::getAdminLog()->log_event('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL); 
-			
+			e107::getAdminLog()->log_event('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL);
+
 			message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
 			// No old system, so point in the direction of resetcore :(
-			message_handler('CRITICAL_ERROR', 4, __LINE__, __FILE__); //this will never appear till message_handler() is fixed 
+			message_handler('CRITICAL_ERROR', 4, __LINE__, __FILE__); //this will never appear till message_handler() is fixed
 
 			exit;
 		}
-		else 
+		else
 		{
 			// resurrect core from old prefs
 			e107::getConfig()->loadData(e107::getConfig('core_old')->getPref(), false)
 				->save(false, true);
-				
+
 			// resurrect core_backup from old prefs
 			e107::getConfig('core_backup')->loadData(e107::getConfig('core_old')->getPref(), false)
 				->save(false, true);
 		}
 	}
-	
+
 }
 
 //DEPRECATED, BC, call e107::getPref() instead
@@ -619,7 +619,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan
 
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
     $sql2->mySQLlanguage = $_POST['sitelanguage'];
-    
+
     session_set('e107language_'.e_COOKIE, $_POST['sitelanguage'], time() + 86400);
 	if ($pref['user_tracking'] != 'session' && (strpos(e_SELF, ADMINDIR) === false))
 	{
@@ -671,7 +671,7 @@ define('e_LANLIST', $tmplan);
 $language = $pref['sitelanguage'];
 
 // Get user language choice
-/// Force no multilingual sites to keep there preset languages? if (varset($pref['multilanguage']))
+//TODO Force no multilingual sites to keep there preset languages? if (varset($pref['multilanguage']))
 //{
 	if ($pref['user_tracking'] == 'session')
 	{
@@ -715,14 +715,7 @@ $language = $pref['sitelanguage'];
 //}
 
 // We should have the language by now
-if($language)
-{
-	define('e_LANGUAGE', $language);
-}
-else
-{
-	define('e_LANGUAGE', "English");		
-}
+define('e_LANGUAGE', $language);
 
 // Keep USERLAN for backward compatibility
 define('USERLAN', e_LANGUAGE);
@@ -1005,7 +998,7 @@ if ((e_QUERY == 'logout') || (($pref['user_tracking'] == 'session') && isset($_S
 	$udata = (USER === true ? USERID.'.'.USERNAME : '0');
 	$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
 
-	if ($pref['user_tracking'] == 'session') 
+	if ($pref['user_tracking'] == 'session')
 	{
 		session_destroy();
 		$_SESSION[e_COOKIE]='';
@@ -1013,7 +1006,7 @@ if ((e_QUERY == 'logout') || (($pref['user_tracking'] == 'session') && isset($_S
 
 	cookie(e_COOKIE, '', (time() - 2592000));
 	$e_event->trigger('logout');
-	header('location:'.e_BASE.'index.php');      
+	header('location:'.e_BASE.'index.php');
 	exit();
 }
 
@@ -1082,7 +1075,7 @@ if(!defined('THEME'))
 	{
 		//We have now e_IFRAME mod and USER_AREA force
 		// && (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE)
-		
+
 /*	  if (strpos(e_SELF, "newspost.php") !== FALSE)
 	  {
 		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");		MAINTHEME no longer used in core distribution
@@ -1115,7 +1108,7 @@ if(!defined("THEME_LAYOUT"))
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
 			if(!is_array($cusPageArray)) { break; }
-			
+
    			foreach($cusPageArray as $kpage)
 			{
 				if ($kpage && (strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)))
@@ -1135,7 +1128,7 @@ if(!defined("THEME_LAYOUT"))
 		$def = $menus_equery[1];
 	}
 	*/
-	
+
     if($def) // custom-page layout.
 	{
     	define("THEME_LAYOUT",$def);
@@ -1465,24 +1458,24 @@ function get_user_data($uid, $extra = '')
 function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 {
 	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage, $theme_pref, $iconpool;
-	
+
 	switch($table)
 	{
 		case 'core':
 			//brute load, force update
 			return e107::getConfig()->loadData($pref, false)->save(false, true);
 			break;
-			
+
 		case 'iconpool':
 			//brute load, force update
 			return e107::getConfig('ipool')->loadData($iconpool, true)->save(false, true);
 			break;
-			
+
 		case 'theme':
 			//brute load, force update
 			return e107::getConfig()->set('sitetheme_pref', $theme_pref)->save(false, true);
 			break;
-			
+
 		default:
 			$_user_pref = $tp->toDB($user_pref, true, true);
 			$tmp = $eArrayStorage->WriteArray($_user_pref);
@@ -1690,7 +1683,7 @@ function init_session()
 			  exit;
 			}
 
-			if ($result['user_admin']) 
+			if ($result['user_admin'])
 			{
 				define('ADMIN', TRUE);
 				define('ADMINID', $result['user_id']);
@@ -1698,8 +1691,8 @@ function init_session()
 				define('ADMINPERMS', $result['user_perms']);
 				define('ADMINEMAIL', $result['user_email']);
 				define('ADMINPWCHANGE', $result['user_pwchange']);
-			} 
-			else 
+			}
+			else
 			{
 				define('ADMIN', FALSE);
 			}
@@ -1741,7 +1734,7 @@ function init_session()
    				unset($user_pref['sitetheme'],$user_pref['sitetheme_custompages'],$user_pref['sitetheme_deflayout']);
    				save_prefs('user');
 			}
-			
+
 
 			define('USERTHEME', (isset($user_pref['sitetheme']) && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : false));
 //			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
