@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-08-29 15:30:41 $
+ * $Revision: 1.24 $
+ * $Date: 2009-08-29 18:07:42 $
  * $Author: e107coders $
  *
 */
@@ -125,10 +125,7 @@ class system_tools
 		
 		//TODO Merge db_verify.php into db.php 
 		
-		if(!vartrue($_GET['mode']))
-		{		
-			$this->render_options();
-		}
+
 		
 		if(isset($_POST['delplug']))
 		{
@@ -180,7 +177,10 @@ class system_tools
 			$this->plugin_viewscan();
 		}
 		
-
+		if(!vartrue($_GET['mode']))
+		{		
+			$this->render_options();
+		}
 					
 	}
 
@@ -412,6 +412,7 @@ class system_tools
 		// SecretR - structure changes / improvements proposal
 
 		$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
+		$emessage = eMessage::getInstance();
 		
 		if(vartrue($xmlArray['prefs']['core'])) // Save Core Prefs
 		{
@@ -423,6 +424,38 @@ class system_tools
 			}
 		
 		  	e107::getConfig()->save(FALSE);
+		}
+		
+		if(vartrue($xmlArray['database']))
+		{
+			foreach($xmlArray['database']['dbTable'] as $val)
+			{
+				$table = $val['@attributes']['name'];
+				
+				foreach($val['item'] as $item)
+				{
+					$insert_array = array();
+					foreach($item['field'] as $f)
+					{
+						$fieldkey = $f['@attributes']['name'];
+						$fieldval = $f['@value'];
+					
+						$insert_array[$fieldkey] = $fieldval;
+											
+					}
+					if(e107::getDB()->db_Replace($table, $insert_array)!==FALSE)
+					{					
+						$emessage->add("Inserted $table", E_MESSAGE_SUCCESS);					
+					}
+					else
+					{
+						$emessage->add("Failed to Inserted $table", E_MESSAGE_ERROR);	
+					}
+				}
+				
+				
+			}	
+			
 		}	
 	}
 	
@@ -753,7 +786,8 @@ function table_list()
 	$exclude[] = "online";
 	$exclude[] = "upload";
 	$exclude[] = "user_extended_country";
-	
+	$exclude[] = "plugin";
+
 	
 	/*
 	$exclude[] = "banlist";		$exclude[] = "banner";
