@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-08-28 17:56:24 $
+ * $Revision: 1.23 $
+ * $Date: 2009-08-29 15:30:41 $
  * $Author: e107coders $
  *
 */
@@ -54,13 +54,13 @@ if(isset($_POST['trigger_db_execute']))
 	}
 }
 
-if(isset($_POST['db_update']))
+if(isset($_POST['db_update']) || $_GET['mode']=='db_update')
 {
 	header("location: ".e_ADMIN."e107_update.php");
 	exit();
 }
 
-if(isset($_POST['verify_sql']))
+if(isset($_POST['verify_sql']) || $_GET['mode']=='verify_sql')
 {
 	header("location: ".e_ADMIN."db_verify.php");
 	exit();
@@ -77,243 +77,592 @@ require_once (e_HANDLER."form_handler.php");
 $frm = new e_form();
 $emessage = &eMessage::getInstance(); //nothing wrong with doing it twice
 
-if(isset($_POST['importCorePrefsForm']))
-{
-	importCorePrefsForm();	
-}
+/* No longer needed after XML feature added. 
 
-if(isset($_POST['exportForm']))
-{
-	exportXmlForm();
-	exit();
-}
-
-
-if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
-{
-	del_pref_val();
-}
-
-if(isset($_POST['pref_editor']) || isset($_POST['delpref']) || isset($_POST['delpref_checked']))
-{
-	pref_editor();
-	require_once ("footer.php");
-	exit();
-}
-
-if(isset($_POST['optimize_sql']))
-{
-	optimizesql($mySQLdefaultdb);
-}
-
-if(isset($_POST['sc_override_scan']))
-{
-	scan_override();
-}
-
-if(isset($_POST['backup_core']))
+if(isset($_POST['backup_core']) || $_GET['mode']=='backup_core')
 {
 	backup_core();
 	//message_handler("MESSAGE", DBLAN_1);
 	$emessage->add(DBLAN_1, E_MESSAGE_SUCCESS);
 }
 
-if(isset($_POST['delplug']))
+*/
+
+
+
+
+
+
+
+
+
+$st = new system_tools;
+
+require_once ("footer.php");
+
+class system_tools
 {
-	delete_plugin_entry();
-
-}
-
-if(isset($_POST['plugin_scan']) || e_QUERY == "plugin" || $_POST['delplug'])
-{
-	plugin_viewscan();
-	require_once ("footer.php");
-	exit();
-}
-
-if(isset($_POST['verify_sql_record']) || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
-{
-	verify_sql_record();
-	require_once ("footer.php");
-	exit();
-}
-
-if(isset($_POST['upload']))
-{	
-	importCorePrefs();
 	
+	public $_options = array();
+		
+	
+	function __construct()
+	{
+		global $mySQLdefaultdb;
+		
+		$this->_options = array(
+			"db_update"				=> array('diz'=>DBLAN_15, 'label'=>DBLAN_16),
+			"verify_sql"			=> array('diz'=>DBLAN_4, 'label'=>DBLAN_5),
+			'optimize_sql'			=> array('diz'=>DBLAN_6, 'label'=> DBLAN_7),
+			'plugin_scan'			=> array('diz'=>DBLAN_28, 'label'=> DBLAN_29),
+			'pref_editor'			=> array('diz'=>DBLAN_19, 'label'=> DBLAN_20),
+		//	'backup_core'			=> array('diz'=>DBLAN_8, 'label'=> DBLAN_9),
+			'verify_sql_record'		=> array('diz'=>DBLAN_35, 'label'=> DBLAN_36),
+			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59),
+			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
+			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56)
+		);
+		
+		//TODO Merge db_verify.php into db.php 
+		
+		if(!vartrue($_GET['mode']))
+		{		
+			$this->render_options();
+		}
+		
+		if(isset($_POST['delplug']))
+		{
+			$this->delete_plugin_entry();	
+		}
+		
+		if(isset($_POST['upload']))
+		{	
+			$this->importCorePrefs();		
+		}
+		
+		if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
+		{
+			$this->del_pref_val();
+		}
+		
+		if(isset($_POST['verify_sql_record']) || $_GET['mode']=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
+		{
+			// $this->verify_sql_record();  - currently performed in db_verify.php
+		}
+		
+		if(isset($_POST['importForm']) ||  $_GET['mode']=='importForm')
+		{
+			$this->importForm();	
+		}
+				
+		if(isset($_POST['exportForm']) ||  $_GET['mode']=='exportForm')
+		{
+			$this->exportXmlForm();		
+		}
+
+		if(isset($_POST['optimize_sql']) || $_GET['mode']=='optimize_sql')
+		{
+			$this->optimizesql($mySQLdefaultdb);
+		}
+		
+		if(isset($_POST['pref_editor']) || $_GET['mode']=='pref_editor' || isset($_POST['delpref']) || isset($_POST['delpref_checked']))
+		{
+			$this->pref_editor();
+		}
+		
+		if(isset($_POST['sc_override_scan']) || $_GET['mode']=='sc_override_scan')
+		{
+			$this->scan_override();
+		}
+		
+		if(isset($_POST['plugin_scan']) || e_QUERY == "plugin" || $_POST['delplug'] || $_GET['mode']=='plugin_scan')
+		{
+			$this->plugin_viewscan();
+		}
+		
+
+					
+	}
+
+	/**
+	 * Delete selected preferences. 
+	 * @return 
+	 */	
+	function del_pref_val()
+	{
+		global $pref, $e107cache, $emessage;
+		$del = array_keys($_POST['delpref']);
+		$delpref = $del[0];
+	
+		if($delpref)
+		{
+			unset($pref[$delpref]);
+			$deleted_list .= "<li>".$delpref."</li>";
+		}
+	
+		if($_POST['delpref2'])
+		{
+	
+			foreach($_POST['delpref2'] as $k => $v)
+			{
+				$deleted_list .= "<li>".$k."</li>";
+				unset($pref[$k]);
+			}
+		}
+	
+		save_prefs();
+		$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
+		$e107cache->clear();
+		//$e107->ns->tablerender(LAN_DELETED,$message);	
+	}
+
+	private function delete_plugin_entry()
+	{
+		global $sql, $emessage;
+	
+		$del = array_keys($_POST['delplug']);
+		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."' LIMIT 1"))
+		{
+			$emessage->add(LAN_DELETED, E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+			$emessage->add(LAN_DELETED_FAILED, E_MESSAGE_WARNING);
+		}
+	
+	}
+
+
+
+	/**
+	 * Render Options
+	 * @return 
+	 */	
+	private function render_options()
+	{
+		$frm = e107::getSingleton('e_form');
+			
+		$text = "
+		<form method='post' action='".e_SELF."' id='core-db-main-form'>
+			<fieldset id='core-db-plugin-scan'>
+			<legend class='e-hideme'>".DBLAN_10."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='2'>
+					<col style='width: 60%'></col>
+					<col style='width: 40%'></col>
+				</colgroup>
+				<tbody>";
+		
+		foreach($this->_options as $key=>$val)
+		{
+			$text .= "<tr>
+						<td>".$val['diz']."</td>
+						<td>
+							".$frm->radio('db_execute', $key).$frm->label($val['label'], 'db_execute', $key)."
+						</td>
+					</tr>\n";	
+			
+		}	
+			
+		$text .= "
+	
+				</tbody>
+				</table>
+				<div class='buttons-bar center'>
+					".$frm->admin_button('trigger_db_execute', DBLAN_51, 'execute')."
+				</div>
+			</fieldset>
+		</form>
+		";
+		
+		$emessage = eMessage::getInstance();
+		e107::getRender()->tablerender(DBLAN_10, $emessage->render().$text);		
+	}
+	
+
+	/**
+	 * Import XML Form
+	 * @return 
+	 */	
+	private function importForm()
+	{
+		 // Get largest allowable file upload
+		 
+		 $frm = e107::getSingleton('e_form');
+	
+		 
+				require_once(e_HANDLER.'upload_handler.php');
+				  $max_file_size = get_user_max_upload();
+	
+				  $text = "
+					<form enctype='multipart/form-data' method='post' action='".e_SELF."?mode=".$_GET['mode']."'>
+	                <table cellpadding='0' cellspacing='0' class='adminform'>
+			
+	                	<colgroup span='2'>
+	                		<col class='col-label' />
+	                		<col class='col-control' />
+	                	</colgroup>
+						
+					
+					<tbody>
+					<tr>
+					<td>".LAN_UPLOAD."</td>
+					<td>
+						<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
+						<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+						<input class='tbox' type='file' name='file_userfile[]' accept='text/xml' size='50' />
+					</td>
+					</tr>
+					</tbody>
+					</table>
+	
+					<div class='center buttons-bar'>";
+	                $text .= $frm->admin_button('upload', LAN_UPLOAD, 'submit', LAN_UPLOAD);
+	
+					$text .= "
+					</div>
+	
+					</form>\n";
+					
+		$emessage = eMessage::getInstance();
+		e107::getRender()->tablerender(DBLAN_59, $emessage->render().$text);	
+		
+	}
+
+	/**
+	 * Export XML Dump
+	 * @return 
+	 */	
+	private function exportXmlForm()
+	{
+		
+		$frm = e107::getSingleton('e_form');
+		
+		$text = "<form method='post' action='".e_SELF."' id='core-db-export-form'>
+			<fieldset id='core-db-export'>
+			<legend class='e-hideme'>Export Options</legend>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='2'>
+					
+					<col style='width: 80%'></col>
+					<col style='width: 20%'></col>
+				</colgroup>
+				<thead>
+				<tr>
+					<th>Name</th>
+					<th class='right'>Rows</th>
+					
+				</tr>	
+				</thead>
+				<tbody>
+	
+					<tr>
+						<td>
+							".$frm->checkbox('xml_core_prefs', '1')." ".LAN_PREFS.": Core
+						</td>
+						<td>&nbsp;</td>
+					</tr>";
+					
+					e107::getDb()->db_Select("core", "*", "e107_name NOT REGEXP('SitePrefs|SitePrefs_Backup|IconPool|emote|emote_default|notify_prefs|search_prefs|menu_pref|pref_backup') ");
+					while ($row = e107::getDb()->db_Fetch())
+					{
+						$text .= "<tr>
+						<td>
+							".$frm->checkbox("xml_prefs[".$row['e107_name']."]", '1')."
+						".LAN_PREFS.": ".$row['e107_name']."</td>
+						<td>&nbsp;</td>
+
+						</tr>";
+					}
+					
+					$tables = table_list();
+					
+					foreach($tables as $name=>$count)
+					{				
+						$text .= "<tr>					
+							<td>
+								".$frm->checkbox("xml_table[".$name."]", $name)." Table Data: ".$name." 
+							</td>
+							<td class='right'>$count</td>
+						</tr>";
+					}
+	
+					$text .="
+					</tbody>
+				</table>
+				<div class='buttons-bar center'>
+					".$frm->admin_button('exportXmlFile', "Export File", 'exportXmlFile')."
+				</div>
+			</fieldset>
+		</form>	";
+		
+	
+		e107::getRender()->tablerender("Export Options", $text);		
+		
+		
+	}
+
+	/**
+	 * Import XML Dump
+	 * @return 
+	 */
+	private function importCorePrefs()
+	{
+		//TODO - move to own class and make generic. 
+		// SecretR - structure changes / improvements proposal
+
+		$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
+		
+		if(vartrue($xmlArray['prefs']['core'])) // Save Core Prefs
+		{
+			foreach ($xmlArray['prefs']['core'] as $val)
+			{
+			 	$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+			 //	print_a($val['@value']);
+			   	e107::getConfig()->set($val['@attributes']['name'], $value);
+			}
+		
+		  	e107::getConfig()->save(FALSE);
+		}	
+	}
+	
+	/**
+	 * Optimize SQL
+	 * @return 
+	 */
+	private function optimizesql($mySQLdefaultdb)
+	{
+	//	global $emessage;
+		$result = mysql_list_tables($mySQLdefaultdb);
+		while($row = mysql_fetch_row($result))
+		{
+			mysql_query("OPTIMIZE TABLE ".$row[0]);
+		}
+	
+	//	$emessage->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
+		e107::getRender()->tablerender(DBLAN_7, DBLAN_11." $mySQLdefaultdb ".DBLAN_12);	
+	}
+	
+	/**
+	 * Preferences Editor
+	 * @return 
+	 */
+	private function pref_editor()
+	{
+		//TODO Add drop-down filter for editing plugin prefs also. 
+		
+		global $pref, $e107, $emessage, $frm;
+		ksort($pref);
+	
+		$text = "
+				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."' id='pref_edit'>
+					<fieldset id='core-db-pref-edit'>
+						<legend class='e-hideme'>".DBLAN_20."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminlist'>
+							<colgroup span='4'>
+								<col style='width: 5%'></col>
+								<col style='width: 20%'></col>
+								<col style='width: 70%'></col>
+								<col style='width: 5%'></col>
+							</colgroup>
+							<thead>
+								<tr>
+									<th class='center'>".LAN_DELETE."</th>
+									<th>".DBLAN_17."</th>
+									<th>".DBLAN_18."</th>
+									<th class='center last'>".LAN_OPTIONS."</th>
+								</tr>
+							</thead>
+							<tbody>
+			";
+	
+		foreach($pref as $key => $val)
+		{
+			$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
+			$ptext = $e107->tp->textclean($ptext, 80);
+	
+			$text .= "
+				<tr>
+					<td class='center autocheck e-pointer'>".$frm->checkbox("delpref2[$key]", 1)."</td>
+					<td>{$key}</td>
+					<td>{$ptext}</td>
+					<td class='center'>".$frm->submit_image("delpref[$key]", LAN_DELETE, 'delete', LAN_CONFIRMDEL." [$key]")."</td>
+				</tr>
+				";
+		}
+	
+		$text .= "
+							</tbody>
+						</table>
+						<div class='buttons-bar center'>
+							".$frm->admin_button('delpref_checked', DBLAN_21, 'delete')."
+							".$frm->admin_button('back', DBLAN_13, 'back')."
+						</div>
+					</fieldset>
+				</form>\n\n";
+				
+		//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
+		e107::getRender()->tablerender(DBLAN_10.' - '.DBLAN_20, $emessage->render().$text);
+	
+		return $text;
+	}
+	
+	/**
+	 * Preferences Editor
+	 * @return 
+	 */	
+	private function scan_override()
+	{
+		global $pref, $emessage;
+		
+		require_once(e_HANDLER.'file_class.php');
+		$f = new e_file;
+		
+		$scList = '';
+		$fList = $f->get_files(e_FILE.'shortcode/override', '\.sc$');
+		if(count($fList))
+		{
+			$tmp = array();
+			foreach($fList as $file)
+			{
+				$tmp[] = strtoupper(substr($file['fname'], 0, -3));
+			}
+			$scList = implode(',', $tmp);
+			unset($tmp);
+		}
+		$pref['sc_override'] = $scList;
+		save_prefs();
+	//	$emessage->add(DBLAN_57.':<br />'.$pref['sc_override'], E_MESSAGE_SUCCESS);
+		e107::getRender()->tablerender(DBLAN_56, DBLAN_57.':<br />'.$pref['sc_override']);
+	}
+
+	/**
+	 * Plugin Folder Scanner
+	 * @return 
+	 */		
+	private function plugin_viewscan()
+	{
+		$error_messages = array(0 => DBLAN_31, 1 => DBLAN_32, 2 => DBLAN_33, 3 => DBLAN_34);
+		$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
+	
+		global $sql, $e107, $emessage, $frm;
+	
+		require_once (e_HANDLER."plugin_class.php");
+		$ep = new e107plugin();
+		$ep->update_plugins_table(); // scan for e_xxx changes and save to plugin table.
+		$ep->save_addon_prefs(); // generate global e_xxx_list prefs from plugin table.
+	
+		/* we all are awaiting for PHP5 only support - method chaining...
+		$emessage->add(DBLAN_22.' - '.DBLAN_23, E_MESSAGE_SUCCESS)
+				 ->add("<a href='".e_SELF."'>".DBLAN_13."</a>", E_MESSAGE_SUCCESS)
+				 ->add(DBLAN_30);
+		*/
+	
+		$emessage->add(DBLAN_23, E_MESSAGE_SUCCESS);
+		$emessage->add("<a href='".e_SELF."'>".DBLAN_13."</a>", E_MESSAGE_SUCCESS);
+		$emessage->add(DBLAN_30);
+	
+		$text = "
+				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."' id='plug_edit'>
+					<fieldset id='core-db-plugin-scan'>
+						<legend class='e-hideme'>".ADLAN_CL_7."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminlist'>
+							<colgroup span='4'>
+								<col style='width: 20%'></col>
+								<col style='width: 20%'></col>
+								<col style='width: 35%'></col>
+								<col style='width: 25%'></col>
+							</colgroup>
+							<thead>
+								<tr>
+									<th>".DBLAN_24."</th>
+									<th>".DBLAN_25."</th>
+									<th>".DBLAN_26."</th>
+									<th class='center last'>".DBLAN_27."</th>
+								</tr>
+							</thead>
+							<tbody>
+			";
+	
+		$sql->db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
+		$previous = '';
+		while($row = $sql->db_Fetch())
+		{
+			$text .= "
+								<tr>
+									<td>".$e107->tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
+	               					<td>".$row['plugin_path']."</td>
+									<td>";
+	
+			if(trim($row['plugin_addons']))
+			{
+				//XXX - $nl_code = ''; - OLD VAR?
+				foreach(explode(',', $row['plugin_addons']) as $this_addon)
+				{
+					$ret_code = 3; // Default to 'not checked
+					if((strpos($this_addon, 'e_') === 0) && (substr($this_addon, - 4, 4) != '_sql'))
+					{
+						$ret_code = $ep->checkAddon($row['plugin_path'], $this_addon); // See whether spaces before opening tag or after closing tag
+					}
+					$text .= "<div class='clear'>";
+					$text .= "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/".$error_image[$ret_code]."' alt='".$error_messages[$ret_code]."' title='".$error_messages[$ret_code]."' />";
+					$text .= trim($this_addon); // $ret_code - 0=OK, 1=content error, 2=access error
+					$text .= "</div>";
+				}
+			}
+	
+			$text .= "
+								</td>
+								<td class='center'>
+				";
+	
+			if($previous == $row['plugin_path'])
+			{
+				$delid = $row['plugin_id'];
+				$delname = $row['plugin_name'];
+				//Admin delete button
+				$text .= $frm->admin_button("delplug[{$delid}]", DBLAN_52, 'delete', '', array('title' => LAN_CONFIRMDEL." ID:{$delid} [$delname]"));
+				//Or maybe image submit? -
+				//$text .= $frm->submit_image("delplug[{$delid}]", DBLAN_52, 'delete', LAN_CONFIRMDEL." ID:{$delid} [$delname]");
+			}
+			else
+			{
+				$text .= ($row['plugin_installflag'] == 1) ? DBLAN_27 : " "; // "Installed and not installed";
+			}
+			$text .= "
+								</td>
+							</tr>
+				";
+			$previous = $row['plugin_path'];
+		}
+	
+		$text .= "
+							</tbody>
+						</table>
+					</fieldset>
+				</form>
+			";
+	
+		e107::getRender()->tablerender(DBLAN_10.' - '.DBLAN_22, $emessage->render().$text);
+	}
 }
-
-
 
 //XXX - what is this for (backup core)? <input type='hidden' name='sqltext' value='{$sqltext}' />
 
-
-$text = "
-	<form method='post' action='".e_SELF."' id='core-db-main-form'>
-		<fieldset id='core-db-plugin-scan'>
-		<legend class='e-hideme'>".DBLAN_10."</legend>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-			<colgroup span='2'>
-				<col style='width: 60%'></col>
-				<col style='width: 40%'></col>
-			</colgroup>
-			<tbody>
-
-				<!-- CHECK FOR UPDATES -->
-				<tr>
-					<td>".DBLAN_15."</td>
-					<td>
-						".$frm->radio('db_execute', 'db_update').$frm->label(DBLAN_16, 'db_execute', 'db_update')."
-					</td>
-				</tr>
-
-				<!-- CHECK DATABASE VALIDITY -->
-				<tr>
-					<td>".DBLAN_4."</td>
-					<td>
-						".$frm->radio('db_execute', 'verify_sql').$frm->label(DBLAN_5, 'db_execute', 'verify_sql')."
-					</td>
-				</tr>
-
-				<!-- OPTIMIZE SQL DATABASE -->
-				<tr>
-					<td>".DBLAN_6."</td>
-					<td>
-						".$frm->radio('db_execute', 'optimize_sql').$frm->label(DBLAN_7, 'db_execute', 'optimize_sql')."
-					</td>
-				</tr>
-
-				<!-- SCAN PLUGIN DIRECTORIES -->
-				<tr>
-					<td>".DBLAN_28."</td>
-					<td>
-						".$frm->radio('db_execute', 'plugin_scan').$frm->label(DBLAN_29, 'db_execute', 'plugin_scan')."
-					</td>
-				</tr>
-
-				<!-- PREFERENCE EDITOR -->
-				<tr>
-					<td>".DBLAN_19."</td>
-					<td>
-						".$frm->radio('db_execute', 'pref_editor').$frm->label(DBLAN_20, 'db_execute', 'pref_editor')."
-					</td>
-				</tr>";
-				
-				
-				// TODO - do we still really need Backup-Core, when we have an XML export?
-				$text .= "
-
-				<!-- BACKUP CORE -->
-				<tr>
-					<td>".DBLAN_8."</td>
-					<td>
-						".$frm->radio('db_execute', 'backup_core').$frm->label(DBLAN_9, 'db_execute', 'backup_core')."
-					</td>
-				</tr>
-
-				<!-- VERIFY SQL -->
-				<tr>
-					<td>".DBLAN_35."</td>
-					<td>
-						".$frm->radio('db_execute', 'verify_sql_record').$frm->label(DBLAN_36, 'db_execute', 'verify_sql_record')."
-					</td>
-				</tr>
-				
-				<!-- IMPORT PREFS -->
-				<tr>
-					<td>".DBLAN_59."</td>
-					<td>
-						".$frm->radio('db_execute', 'importCorePrefsForm').$frm->label(DBLAN_59, 'db_execute', 'importCorePrefsForm')."
-					</td>
-				</tr>
-				
-				<!-- EXPORT PREFS -->
-				<tr>
-					<td>".DBLAN_58."</td>
-					<td>
-						".$frm->radio('db_execute', 'exportForm').$frm->label(DBLAN_58, 'db_execute', 'exportForm')."
-					</td>
-				</tr>
-
-				<!-- SCAN SC OVERRIDE -->
-				<tr>
-					<td>".DBLAN_55."</td>
-					<td>
-						".$frm->radio('db_execute', 'sc_override_scan').$frm->label(DBLAN_56, 'db_execute', 'sc_override_scan')."
-					</td>
-				</tr>
-
-				</tbody>
-			</table>
-			<div class='buttons-bar center'>
-				".$frm->admin_button('trigger_db_execute', DBLAN_51, 'execute')."
-			</div>
-		</fieldset>
-	</form>
-	";
-
-$e107->ns->tablerender(DBLAN_10, $emessage->render().$text);
-
-
-function exportXmlForm()
+function db_adminmenu()
 {
+	global $st;
 	
-	global $frm;
-	
-	$text = "<form method='post' action='".e_SELF."' id='core-db-export'>
-		<fieldset id='core-db-export'>
-		<legend class='e-hideme'>Export Options</legend>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>
-			<colgroup span='2'>
-				<col style='width: 55%'></col>
-				<col style='width: 5%'></col>
-				<col style='width: 40%'></col>
-			</colgroup>
-			<thead>
-			<tr>
-				<th>Name</th>
-				<th class='right'>Rows</th>
-				<th>Select</th>
-			</tr>	
-			</thead>
-			<tbody>
-
-				<tr>
-					<td>Core Preferences</td>
-					<td>&nbsp;</td>
-					<td>
-						".$frm->checkbox('xml_core_prefs', '1')."
-					</td>
-				</tr>";
-				
-				$tables = table_list();
-				
-				foreach($tables as $name=>$count)
-				{				
-					$text .= "<tr>
-						<td>Table Data: ".$name." </td>
-						<td class='right'>$count</td>
-						<td>
-							".$frm->checkbox("xml_table[".$name."]", $name)."
-						</td>
-					</tr>";
-				}
-
-				$text .="
-				</tbody>
-			</table>
-			<div class='buttons-bar center'>
-				".$frm->admin_button('exportXmlFile', "Export File", 'exportXmlFile')."
-			</div>
-		</fieldset>
-	</form>	";
-	
-
-	e107::getRender()->tablerender("Export Options", $text);		
-	
-	
+	foreach($st->_options as $key=>$val)
+	{
+		$var[$key]['text'] = $val['label'];
+		$var[$key]['link'] = e_SELF."?mode=".$key;
+	}
+			
+	e_admin_menu(DBLAN_10, $_GET['mode'], $var);	
 }
+
+
 
 
 
@@ -380,25 +729,7 @@ function exportXmlFile()
 	exit;			
 }
 
-function importCorePrefs()
-{
-	//TODO - move to own class and make generic. 
-	// SecretR - structure changes / improvements proposal
-	
-	$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
-	
-	if(vartrue($xmlArray['prefs']['core'])) // Save Core Prefs
-	{
-		foreach ($xmlArray['prefs']['core'] as $val)
-		{
-		 	$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
-		 //	print_a($val['@value']);
-		   	e107::getConfig()->set($val['@attributes']['name'], $value);
-		}
-	
-	  	e107::getConfig()->save(FALSE);
-	}	
-}
+
 
 function importTables()
 {
@@ -406,50 +737,7 @@ function importTables()
 		
 }
 
-function importCorePrefsForm()
-{
-	//TODO - Fix Core XML class - array returned is incorrect. 
-//	importCorePrefs();
-//	return;
-	
-	 // Get largest allowable file upload
-	 $frm = e107::getSingleton('e_form');
 
-	 
-			  require_once(e_HANDLER.'upload_handler.php');
-			  $max_file_size = get_user_max_upload();
-
-			  $text = "
-				<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
-                <table cellpadding='0' cellspacing='0' class='adminform'>
-                	<colgroup span='2'>
-                		<col class='col-label' />
-                		<col class='col-control' />
-                	</colgroup>
-				<tr>
-				<td>".LAN_UPLOAD."</td>
-				<td>
-				<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
-				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-				<input class='tbox' type='file' name='file_userfile[]' size='50' />
-				</td>
-				</tr>
-                </tr>
-				</table>
-
-				<div class='center buttons-bar'>";
-                $text .= $frm->admin_button('upload', LAN_UPLOAD, 'submit', LAN_UPLOAD);
-
-				$text .= "
-				</div>
-
-				</form>\n";
-	
-
-         e107::getRender()->tablerender("Import e107 Preferences", $text);
-	
-	
-}
 
 function table_list()
 {
@@ -458,6 +746,7 @@ function table_list()
 	
 	global $mySQLdefaultdb;
 	$exclude = array();
+	$exclude[] = "core";
 	$exclude[] = "rbinary";
 	$exclude[] = "parser";
 	$exclude[] = "tmp";
@@ -511,6 +800,7 @@ function table_list()
 
 	return $tabs;
 }
+/* Still needed?
 
 function backup_core()
 {
@@ -522,255 +812,10 @@ function backup_core()
 	}
 }
 
-function optimizesql($mySQLdefaultdb)
-{
-	global $emessage;
-	$result = mysql_list_tables($mySQLdefaultdb);
-	while($row = mysql_fetch_row($result))
-	{
-		mysql_query("OPTIMIZE TABLE ".$row[0]);
-	}
-
-	$emessage->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
-}
-
-function scan_override()
-{
-	global $pref, $emessage;
-	
-	require_once(e_HANDLER.'file_class.php');
-	$f = new e_file;
-	
-	$scList = '';
-	$fList = $f->get_files(e_FILE.'shortcode/override', '\.sc$');
-	if(count($fList))
-	{
-		$tmp = array();
-		foreach($fList as $file)
-		{
-			$tmp[] = strtoupper(substr($file['fname'], 0, -3));
-		}
-		$scList = implode(',', $tmp);
-		unset($tmp);
-	}
-	$pref['sc_override'] = $scList;
-	save_prefs();
-	$emessage->add(DBLAN_57.':<br />'.$pref['sc_override'], E_MESSAGE_SUCCESS);
-}
-
-function plugin_viewscan()
-{
-	$error_messages = array(0 => DBLAN_31, 1 => DBLAN_32, 2 => DBLAN_33, 3 => DBLAN_34);
-	$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
-
-	global $sql, $e107, $emessage, $frm;
-
-	require_once (e_HANDLER."plugin_class.php");
-	$ep = new e107plugin();
-	$ep->update_plugins_table(); // scan for e_xxx changes and save to plugin table.
-	$ep->save_addon_prefs(); // generate global e_xxx_list prefs from plugin table.
-
-	/* we all are awaiting for PHP5 only support - method chaining...
-	$emessage->add(DBLAN_22.' - '.DBLAN_23, E_MESSAGE_SUCCESS)
-			 ->add("<a href='".e_SELF."'>".DBLAN_13."</a>", E_MESSAGE_SUCCESS)
-			 ->add(DBLAN_30);
-	*/
-
-	$emessage->add(DBLAN_23, E_MESSAGE_SUCCESS);
-	$emessage->add("<a href='".e_SELF."'>".DBLAN_13."</a>", E_MESSAGE_SUCCESS);
-	$emessage->add(DBLAN_30);
-
-	$text = "
-			<form method='post' action='".e_ADMIN."db.php' id='plug_edit'>
-				<fieldset id='core-db-plugin-scan'>
-					<legend class='e-hideme'>".ADLAN_CL_7."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='4'>
-							<col style='width: 20%'></col>
-							<col style='width: 20%'></col>
-							<col style='width: 35%'></col>
-							<col style='width: 25%'></col>
-						</colgroup>
-						<thead>
-							<tr>
-								<th>".DBLAN_24."</th>
-								<th>".DBLAN_25."</th>
-								<th>".DBLAN_26."</th>
-								<th class='center last'>".DBLAN_27."</th>
-							</tr>
-						</thead>
-						<tbody>
-		";
-
-	$sql->db_Select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
-	$previous = '';
-	while($row = $sql->db_Fetch())
-	{
-		$text .= "
-							<tr>
-								<td>".$e107->tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
-               					<td>".$row['plugin_path']."</td>
-								<td>";
-
-		if(trim($row['plugin_addons']))
-		{
-			//XXX - $nl_code = ''; - OLD VAR?
-			foreach(explode(',', $row['plugin_addons']) as $this_addon)
-			{
-				$ret_code = 3; // Default to 'not checked
-				if((strpos($this_addon, 'e_') === 0) && (substr($this_addon, - 4, 4) != '_sql'))
-				{
-					$ret_code = $ep->checkAddon($row['plugin_path'], $this_addon); // See whether spaces before opening tag or after closing tag
-				}
-				$text .= "<div class='clear'>";
-				$text .= "<img class='icon action S16' src='".e_IMAGE_ABS."fileinspector/".$error_image[$ret_code]."' alt='".$error_messages[$ret_code]."' title='".$error_messages[$ret_code]."' />";
-				$text .= trim($this_addon); // $ret_code - 0=OK, 1=content error, 2=access error
-				$text .= "</div>";
-			}
-		}
-
-		$text .= "
-							</td>
-							<td class='center'>
-			";
-
-		if($previous == $row['plugin_path'])
-		{
-			$delid = $row['plugin_id'];
-			$delname = $row['plugin_name'];
-			//Admin delete button
-			$text .= $frm->admin_button("delplug[{$delid}]", DBLAN_52, 'delete', '', array('title' => LAN_CONFIRMDEL." ID:{$delid} [$delname]"));
-			//Or maybe image submit? -
-			//$text .= $frm->submit_image("delplug[{$delid}]", DBLAN_52, 'delete', LAN_CONFIRMDEL." ID:{$delid} [$delname]");
-		}
-		else
-		{
-			$text .= ($row['plugin_installflag'] == 1) ? DBLAN_27 : " "; // "Installed and not installed";
-		}
-		$text .= "
-							</td>
-						</tr>
-			";
-		$previous = $row['plugin_path'];
-	}
-
-	$text .= "
-						</tbody>
-					</table>
-				</fieldset>
-			</form>
-		";
-
-	$e107->ns->tablerender(DBLAN_10.' - '.DBLAN_22, $emessage->render().$text);
-}
-
-function pref_editor()
-{
-	global $pref, $e107, $emessage, $frm;
-	ksort($pref);
-
-	$text = "
-			<form method='post' action='".e_ADMIN."db.php' id='pref_edit'>
-				<fieldset id='core-db-pref-edit'>
-					<legend class='e-hideme'>".DBLAN_20."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminlist'>
-						<colgroup span='4'>
-							<col style='width: 5%'></col>
-							<col style='width: 20%'></col>
-							<col style='width: 70%'></col>
-							<col style='width: 5%'></col>
-						</colgroup>
-						<thead>
-							<tr>
-								<th class='center'>".LAN_DELETE."</th>
-								<th>".DBLAN_17."</th>
-								<th>".DBLAN_18."</th>
-								<th class='center last'>".LAN_OPTIONS."</th>
-							</tr>
-						</thead>
-						<tbody>
-		";
-
-	foreach($pref as $key => $val)
-	{
-		$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
-		$ptext = $e107->tp->textclean($ptext, 80);
-
-		$text .= "
-							<tr>
-								<td class='center autocheck e-pointer'>".$frm->checkbox("delpref2[$key]", 1)."</td>
-								<td>{$key}</td>
-								<td>{$ptext}</td>
-								<td class='center'>".$frm->submit_image("delpref[$key]", LAN_DELETE, 'delete', LAN_CONFIRMDEL." [$key]")."</td>
-							</tr>
-			";
-	}
-
-	$text .= "
-						</tbody>
-					</table>
-					<div class='buttons-bar center'>
-						".$frm->admin_button('delpref_checked', DBLAN_21, 'delete')."
-						".$frm->admin_button('back', DBLAN_13, 'back')."
-					</div>
-				</fieldset>
-			</form>
+*/
 
 
-		";
-	//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
-	$e107->ns->tablerender(DBLAN_10.' - '.DBLAN_20, $emessage->render().$text);
-
-	return $text;
-}
-
-function del_pref_val()
-{
-	global $pref, $e107cache, $emessage;
-	$del = array_keys($_POST['delpref']);
-	$delpref = $del[0];
-
-	if($delpref)
-	{
-		unset($pref[$delpref]);
-		$deleted_list .= "<li>".$delpref."</li>";
-	}
-
-	if($_POST['delpref2'])
-	{
-
-		foreach($_POST['delpref2'] as $k => $v)
-		{
-			$deleted_list .= "<li>".$k."</li>";
-			unset($pref[$k]);
-		}
-	}
-
-	save_prefs();
-	$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
-	$e107cache->clear();
-	//$e107->ns->tablerender(LAN_DELETED,$message);
-
-
-}
-
-function delete_plugin_entry()
-{
-	global $sql, $emessage;
-
-	$del = array_keys($_POST['delplug']);
-	if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."' LIMIT 1"))
-	{
-		$emessage->add(LAN_DELETED, E_MESSAGE_SUCCESS);
-	}
-	else
-	{
-		$emessage->add(LAN_DELETED_FAILED, E_MESSAGE_WARNING);
-	}
-
-}
-
-function verify_sql_record()
+function verify_sql_record() // deprecated by db_verify.php ( i think). 
 {
 	global $emessage, $sql, $sql2, $sql3, $frm, $e107, $tp;
 
@@ -1179,7 +1224,7 @@ function verify_sql_record()
 	}
 }
 
-require_once ("footer.php");
+
 
 /**
  * Handle page DOM within the page header
