@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-08-20 12:24:47 $
- * $Author: secretr $
+ * $Revision: 1.40 $
+ * $Date: 2009-08-29 02:44:39 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -268,6 +268,7 @@ class e107
 			if($path && is_string($path) && !class_exists($class_name))
 			{
 				e107_require_once($path); //no existence/security checks here!
+				// TODO - e107_require_once() should be available without class2.php. eg. in install.php
 			}
 			if(class_exists($class_name, false))
 			{
