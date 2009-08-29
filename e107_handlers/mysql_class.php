@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-07-17 14:20:26 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.40 $
+ * $Date: 2009-08-29 18:07:42 $
+ * $Author: e107coders $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -44,8 +44,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.39 $
-* @author $Author: marj_nl_fr $
+* @version $Revision: 1.40 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -353,7 +353,7 @@ class db {
 	/**
 	* @return int Last insert ID or false on error
 	* @param string $table
-	* @param string $arg
+	* @param string/array $arg
 	* @param string $debug
 	* @desc Insert a row into the table<br />
 	* <br />
@@ -368,6 +368,16 @@ class db {
 		$this->mySQLcurTable = $table;
 		if(is_array($arg))
 		{
+			if(isset($arg['_REPLACE']))
+			{
+				$REPLACE = TRUE;
+				unset($arg['_REPLACE']);							
+			}
+			else
+			{
+				$REPLACE = FALSE;	
+			}
+			
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
 			{
 		   	//Convert data if not using 'new' format
@@ -378,6 +388,7 @@ class db {
 			}
 			if(!isset($arg['data'])) { return false; }
 
+
 			$fieldTypes = $this->_getTypes($arg);
 			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
 			$tmp = array();
@@ -387,7 +398,16 @@ class db {
 			}
 			$valList= implode(', ', $tmp);
 			unset($tmp);
-			$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
+			
+			if($REPLACE === FALSE)
+			{
+				$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";	
+			}
+			else
+			{
+				$query = "REPLACE INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";		
+			}
+			
 		}
 		else
 		{
@@ -411,6 +431,24 @@ class db {
 			$this->dbError("db_Insert ({$query})");
 			return FALSE;
 		}
+	}
+
+	/**
+	* @return int Last insert ID or false on error
+	* @param string $table
+	* @param array $arg
+	* @param string $debug
+	* @desc Insert/REplace a row into the table<br />
+	* <br />
+	* Example:<br />
+	* <code>$sql->db_Replace("links", $array);</code>
+	*
+	* @access public
+	*/
+	function db_Replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
+	{
+		$arg['_REPLACE'] = TRUE;
+		$this->db_Insert($table, $arg, $debug, $log_type, $log_remark);		
 	}
 
 
