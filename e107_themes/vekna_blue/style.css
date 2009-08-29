@@ -1,8 +1,10 @@
 body {
-	background: url(images/bg.gif) #e5e5e5 fixed no-repeat left bottom; margin: 10px; text-align: left
-}
-body {
+	background: url(images/bg.gif) #e5e5e5 fixed no-repeat left bottom; margin: 10px; text-align: left;
 	font: 10px verdana, arial, sans-serif
+}
+
+img {
+	border: none;
 }
 
 #logo {
