@@ -2,6 +2,7 @@
 <e107Theme name="Jayya" version="2.0" date="2009-06-11" compatibility="0.8">
 	<author name ="e107Developers" email="security@e107.org" url="http://e107.org/" />
 	<description>Classic e107 theme</description>
+	<category>generic</category>
 	<compliance xhtml="1.1" css="2.1" />
  	<layouts>
 		<layout name='3_column' title='3 Columns' preview='preview.jpg' default='true' >

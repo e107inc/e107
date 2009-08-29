@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_installer.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-07-18 18:37:00 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.14 $
+ * $Date: 2009-08-29 02:44:39 $
+ * $Author: e107coders $
  */
 
 define("LANINS_001", "e107 Installation");
@@ -161,3 +161,17 @@ define("LANINS_102", 'Date / Time');
 define("LANINS_105", 'A database name or prefix beginning with some digits followed by “e” or “E” is not acceptable');
 define("LANINS_106", 'WARNING - E107 cannot write to the directories and/or files listed. While this will not stop E107 installing, it will mean that certain features are not available. 
 				You will need to change the file permissions to use these features');
+				
+define("LANINS_107", "Website Name");
+define("LANINS_108", "eg. 'My Blog'");
+define("LANINS_109", "Website Theme");
+define("LANINS_110", "");
+define("LANINS_111", "Pre-configure and generate content");
+define("LANINS_112", "Recommended if you wish to quickly reproduce the look of the installed theme.");
+define("LANINS_113", "Please enter a website name");
+define("LANINS_114", "Please select a theme");
+define("LANINS_115", "Theme Name");
+define("LANINS_116", "Theme Type");
+define("LANINS_117", "Website Preferences");
+
+				

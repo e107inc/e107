@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.26 $
-* $Date: 2009-07-21 18:29:45 $
-* $Author: secretr $
+* $Revision: 1.27 $
+* $Date: 2009-08-29 02:44:39 $
+* $Author: e107coders $
 *
 */
 
@@ -122,19 +122,13 @@ if($functions_ok == false)
 	die("e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some <b>important</b> security checks and <b>There is NO workaround</b>. Please contact your host for more information.");
 }
 
-if(!function_exists("print_a"))
-{
-	function print_a($var)
-	{
-		return '<pre>'.htmlentities(print_r($var, true), null, "UTF-8").'</pre>';
-	}
-}
-
 header("Content-type: text/html; charset=utf-8");
 
 //obsolete $installer_folder_name = 'e107_install';
 
+include_once("./{$HANDLERS_DIRECTORY}core_functions.php");
 include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
+
 
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
 
@@ -180,17 +174,20 @@ switch ($_POST['stage'])
 	case 7:
 		$e_install->stage_7();
 		break;
+	case 8:
+		$e_install->stage_8();
+		break;
 	default:
 		$e_install->raise_error("Install stage information from client makes no sense to me.");
 }
 
 if($_SERVER['QUERY_STRING'] == "debug")
 {
-	$e_install->template->SetTag("debug_info", print_a($e_install));
+	$e_install->template->SetTag("debug_info", print_a($e_install,TRUE));
 }
 else
 {
-	$e_install->template->SetTag("debug_info", (count($e_install->debug_info) ? print_a($e_install->debug_info)."Backtrace:<br />".print_a($e_install) : ""));
+	$e_install->template->SetTag("debug_info", (count($e_install->debug_info) ? print_a($e_install->debug_info,TRUE)."Backtrace:<br />".print_a($e_install,TRUE) : ""));
 }
 
 echo $e_install->template->ParseTemplate(template_data(), TEMPLATE_TYPE_DATA);
@@ -207,6 +204,7 @@ class e_install
 	var $previous_steps;
 	var $stage;
 	var $post_data;
+	var $required = ""; //TODO - use for highlighting required fields with css/js. 
 
 	function e_install()
 	{
@@ -223,7 +221,11 @@ class e_install
 		{
 			$this->previous_steps = array();
 		}
+		$this->get_lan_file();
 		$this->post_data = $_POST;
+		
+		$this->template->SetTag("required", "");	
+
 	}
 
 	function raise_error($details)
@@ -235,12 +237,26 @@ class e_install
 			)
 		);
 	}
+	
+	function display_required()
+	{
+		if(!$this->required)
+		{
+			return;
+		}
+		$this->required = array_filter($this->required);
+		if(vartrue($this->required))
+		{
+			$this->template->SetTag("required","<div class='message'>". implode("<br />",$this->required)."</div>");
+			$this->required = array();
+		}	
+	}
 
 	function stage_1()
 	{
 		global $e_forms;
 		$this->stage = 1;
-		$this->get_lan_file();
+
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_003);
@@ -257,7 +273,7 @@ class e_install
 		global $e_forms;
 		$this->stage = 2;
 		$this->previous_steps['language'] = $_POST['language'];
-		$this->get_lan_file();
+
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_021);
@@ -309,7 +325,7 @@ class e_install
 		global $e_forms;
 		$success = TRUE;
 		$this->stage = 3;
-		$this->get_lan_file();
+
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_036);
@@ -428,7 +444,7 @@ class e_install
 	{
 		global $e_forms;
 		$this->stage = 4;
-		$this->get_lan_file();
+
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_007);
@@ -541,13 +557,17 @@ class e_install
 		$this->template->SetTag("stage_content", $output.$e_forms->return_form());
 	}
 
+	/**
+	 * Collect Admin Login Data.
+	 * @return 
+	 */
 
-
-	function stage_5()
+	function stage_5()  
 	{
 		global $e_forms;
 		$this->stage = 5;
-		$this->get_lan_file();
+
+		$this->display_required();
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_046);
@@ -589,80 +609,206 @@ class e_install
 		$e_forms->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
 	}
-
-	function stage_6()
+	
+	/** Collect User's Website Preferences
+	 * 
+	 * @return html form. 
+	 */
+	function stage_6()  
 	{
 		global $e_forms;
-		$this->get_lan_file();
 		$this->stage = 6;
+		
 
-		$_POST['u_name'] = str_replace(array("'", '"'), "", $_POST['u_name']);
-		$_POST['d_name'] = str_replace(array("'", '"'), "", $_POST['d_name']);
 
-		$this->previous_steps['admin']['user'] = $_POST['u_name'];
-		if ($_POST['d_name'] == "")
+		// -------------------- Save Step 5 Data -------------------------
+
+		if(!vartrue($this->previous_steps['admin']['user']) || varset($_POST['u_name']))
 		{
-			$this->previous_steps['admin']['display'] = $_POST['u_name'];
+			$_POST['u_name'] = str_replace(array("'", '"'), "", $_POST['u_name']);
+			$this->previous_steps['admin']['user'] = $_POST['u_name'];
 		}
-		else
+		
+		if(!vartrue($this->previous_steps['admin']['display']) || varset($_POST['d_name']))
 		{
-			$this->previous_steps['admin']['display'] = $_POST['d_name'];
+			$_POST['d_name'] = str_replace(array("'", '"'), "", $_POST['d_name']);
+			if ($_POST['d_name'] == "")
+			{
+				$this->previous_steps['admin']['display'] = $_POST['u_name'];
+			}
+			else
+			{
+				$this->previous_steps['admin']['display'] = $_POST['d_name'];
+			}	
 		}
-		$this->previous_steps['admin']['email'] = $_POST['email'];
-		$this->previous_steps['admin']['password'] = $_POST['pass1'];
-
-		if(trim($_POST['u_name']) == "" || trim($_POST['email']) == "" || trim($_POST['pass1']) == "")
+		
+		if(!vartrue($this->previous_steps['admin']['email']) || varset($_POST['email']))
 		{
-			$this->template->SetTag("installation_heading", LANINS_001);
-			$this->template->SetTag("stage_num", LANINS_046);
-			$this->template->SetTag("stage_pre", LANINS_002);
-			$this->template->SetTag("stage_title", LANINS_047);
-			$e_forms->start_form("admin_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-			$page = LANINS_086."<br />".($_SERVER['QUERY_STRING'] == "debug" ? print_a($_POST, true) : "")."<br />";
-
-			$this->finish_form(5);
-			$e_forms->add_button("submit", LANINS_048);
+			$this->previous_steps['admin']['email'] = $_POST['email'];	
+		}		
+				
+		if(varset($_POST['pass1']) || !vartrue($this->previous_steps['admin']['password']))
+		{		
+			if($_POST['pass1'] != $_POST['pass2'])
+			{
+				$this->required['pass1'] = LANINS_049; // passwords don't match.				 
+			}
+			elseif(!vartrue($_POST['pass1']))
+			{
+				$this->required['pass1'] = LANINS_077;	
+			}
+			else
+			{
+				$this->previous_steps['admin']['password'] = $_POST['pass1'];
+			}		
 		}
-		elseif($_POST['pass1'] != $_POST['pass2'])
+		
+		
+		// -------------   Validate Step 5 Data. --------------------------
+		
+		if(!vartrue($this->previous_steps['admin']['user']) || !vartrue($this->previous_steps['admin']['password']))
 		{
-			$this->template->SetTag("installation_heading", LANINS_001);
-			$this->template->SetTag("stage_num", LANINS_046);
-			$this->template->SetTag("stage_pre", LANINS_002);
-			$this->template->SetTag("stage_title", LANINS_047);
-			$e_forms->start_form("admin_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-			$page = LANINS_049."<br />".($_SERVER['QUERY_STRING'] == "debug" ? print_a($_POST, true) : "")."<br />";
-
-			$this->finish_form(5);
-			$e_forms->add_button("submit", LANINS_048);
+			$this->required['u_name'] = LANINS_086; //
 		}
-		else
+				
+		if(vartrue($this->required['u_name']) || vartrue($this->required['pass1']))
 		{
+			return $this->stage_5();	
+		}		
 
-			$this->template->SetTag("installation_heading", LANINS_001);
-			$this->template->SetTag("stage_pre", LANINS_002);
-			$this->template->SetTag("stage_num", LANINS_056);
-			$this->template->SetTag("stage_title", LANINS_055);
+			
+		// ------------- Step 6 Form --------------------------------
 
-			$e_forms->start_form("confirmation", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-			$page = nl2br(LANINS_057);
-			$this->finish_form();
-			$e_forms->add_button("submit", LANINS_035);
-		}
-
-		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
+		$this->display_required();
+		$this->template->SetTag("installation_heading", LANINS_001);
+		$this->template->SetTag("stage_pre", LANINS_002);
+		$this->template->SetTag("stage_num", LANINS_056);
+		$this->template->SetTag("stage_title", LANINS_117); // Website Preferences;
+		
+		
+		$e_forms->start_form("pref_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		$output = "
+			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
+			<table cellspacing='0'>
+			  	<colgroup span='2'>
+      			<col class='col-label' style='width:30%' />
+      			<col class='col-control' style='width:70%' />
+      			</colgroup>
+				<tr>
+				<td class='row-border'><label for='sitename'>".LANINS_107."</label></td>
+				<td class='row-border'><input class='tbox' type='text' name='sitename' id='sitename' size='30' value='".(vartrue($_POST['sitename']) ? $_POST['sitename'] : "")."' maxlength='60' />
+				".LANINS_108."</td>
+	
+				</tr>
+				<tr>
+				<td class='row-border'><label for='sitetheme'>".LANINS_109."</label><br />".LANINS_110."</td>
+				<td class='row-border'>
+				<table style='width:100%'>
+				<tr>
+				<td class='row-border'>".LANINS_115."</td>
+				<td class='row-border'>".LANINS_116."</td>
+				</tr>";
+				
+				$themes = $this->get_themes();
+				
+				foreach($themes as $val)
+				{
+					$themeInfo 	= $this->get_theme_xml($val);
+					$title 		= vartrue($themeInfo['@attributes']['name']);
+					$category 	= vartrue($themeInfo['category']);
+					
+					$output .= "<tr>
+					<td><input type='radio' name='sitetheme' value='{$val}' /> {$title}</td>
+					<td>{$category}</td>
+					</tr>";					
+				}
+							
+				$output .= "</table></td>
+				
+				</tr>
+				<tr>
+				<td class='row-border'><label for='generate_content'>".LANINS_111."</label></td>
+				<td class='row-border'><input type='checkbox' name='generate_content' checked='checked' id='generate_content' value='1' />
+				".LANINS_112."
+				</td>
+			
+				</tr>
+			</table>
+			</div>
+			<br /><br />\n";
+		$e_forms->add_plain_html($output);
+		$this->finish_form();
+		$e_forms->add_button("submit", LANINS_035);
+		$this->template->SetTag("stage_content", $e_forms->return_form());
 	}
 
 	function stage_7()
 	{
 		global $e_forms;
-		$this->get_lan_file();
-
+		
 		$this->stage = 7;
+		
+		if(varset($_POST['sitename']))
+		{
+			$this->previous_steps['prefs']['sitename'] = $_POST['sitename'];	
+		}
+		
+		if(varset($_POST['sitetheme']))
+		{
+			$this->previous_steps['prefs']['sitetheme'] = $_POST['sitetheme'];	
+		}
+		
+		if(varset($_POST['generate_content']))
+		{
+			$this->previous_steps['prefs']['generate_content'] 	= $_POST['generate_content'];	
+		}
+		
+		// Validate. 
+		if(!vartrue($this->previous_steps['prefs']['sitename']))
+		{
+			$this->required['sitename'] = LANINS_113; // 'Please enter a website name.'; // should be used to highlight the required field. (using css for example)					
+		}
+		if(!vartrue($this->previous_steps['prefs']['sitetheme']))
+		{	
+			 $this->required['sitetheme'] = LANINS_114; // 'Please select a theme.';
+		}	
+		if(vartrue($this->required['sitetheme']) || vartrue($this->required['sitename']))
+		{
+			return $this->stage_6();	
+		}
+				
+		// Data is okay - Continue. 
+		
+		$this->previous_steps['prefs']['sitename'] 			= $_POST['sitename'];
+		$this->previous_steps['prefs']['sitetheme'] 		= $_POST['sitetheme'];
+		$this->previous_steps['prefs']['generate_content'] 	= $_POST['generate_content'];
+		
+		
+		$this->template->SetTag("installation_heading", LANINS_001);
+		$this->template->SetTag("stage_pre", LANINS_002);
+		$this->template->SetTag("stage_num", LANINS_058);
+		$this->template->SetTag("stage_title", LANINS_055);
+
+		$e_forms->start_form("confirmation", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		$page = nl2br(LANINS_057);
+		$this->finish_form();
+		$e_forms->add_button("submit", LANINS_035);
+	
+		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
+		
+	}
+
+	function stage_8()
+	{
+
+		global $e_forms;
+		$this->stage = 8;
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_058);
 		$this->template->SetTag("stage_title", LANINS_071);
+				
 
 		$config_file = "<?php
 /*
@@ -774,6 +920,37 @@ class e_install
 		closedir($handle);
 		return $lanlist;
 	}
+	
+	function get_themes()
+	{
+		$handle = opendir($this->e107->e107_dirs['THEMES_DIRECTORY']);
+		$lanlist = array();
+		while ($file = readdir($handle))
+		{
+			if (is_dir($this->e107->e107_dirs['THEMES_DIRECTORY'].$file) && $file !='_blank')
+			{
+				
+				if(is_readable("./{$this->e107->e107_dirs['THEMES_DIRECTORY']}{$file}/theme.xml"))
+				{
+					$lanlist[] = $file;
+				}
+			}
+			
+		}
+		closedir($handle);
+		return $lanlist;		
+	}
+	
+	function get_theme_xml($theme_folder)
+	{
+		require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."xml_class.php");
+		$xml = new xmlClass;
+		
+		$path = $this->e107->e107_dirs['THEMES_DIRECTORY'].$theme_folder."/theme.xml";
+		$xmlArray = $xml->loadXMLfile($path,'advanced');
+		return $xmlArray;		
+	}
+	
 
 	function finish_form($force_stage = false)
 	{
@@ -885,7 +1062,15 @@ class e_install
 		require_once("{$this->e107->e107_dirs['FILES_DIRECTORY']}def_e107_prefs.php");
 
 		include_once("{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}arraystorage_class.php");
-
+		
+		// Set User Preferences. 
+		foreach($this->previous_steps['prefs'] as $key=>$val)
+		{
+			$pref[$key] = $val;
+		}
+		
+		//TODO - Cameron - create 2 seperate methods. One for old inserts using the code below. And another using external XML files.
+		
 		$tmp = ArrayData::WriteArray($pref);
 
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}core VALUES ('SitePrefs', '{$tmp}')");
@@ -1161,6 +1346,7 @@ class SimpleTemplate
 		{
 			$TemplateData = str_replace($this->open_tag.$Tag['Tag'].$this->close_tag, $Tag['Data'], $TemplateData);
 		}
+		
 		return $TemplateData;
 	}
 }
@@ -1186,6 +1372,7 @@ function template_data()
 	<div class=\"contentbody\">
 		<h3>{stage_pre}{stage_num} - {stage_title}</h3>
 		<br />
+		{required}
 		{stage_content}
 		{debug_info}
 	</div>
@@ -1279,6 +1466,14 @@ img{
 .logoimage {
 	padding-left: 600px;
 	padding-top: 65px;
+}
+
+.message {
+	padding: 10px;
+	text-align: center;
+	margin-bottom:15px;
+	background-color:#FFCECE; 
+	border: 1px solid #CC0000;
 }
 
 td {

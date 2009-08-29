@@ -3,6 +3,7 @@
 	<author name ="Steve Dunstan [jalist]" email="jalist@e107.org" url="http://e107.org" />
 	<description>Classic e107 theme</description>
 	<compliance xhtml="1.1" css="2.1" />
+	<category>generic</category>
 	<pluginOptions>
 		<plugin name='chatbox_menu' url='core' />
 		<plugin name='poll' url='core' />
