@@ -9,9 +9,9 @@
  * Admin Navigation
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-08-15 01:00:38 $
- * $Author: bugrain $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-30 08:23:47 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -135,6 +135,9 @@ if (!defined('E_16_BANNER')) {
 }
 if (!defined('E_16_CACHE')) {
 	define('E_16_CACHE', "<img class='icon S16' src='".e_IMAGE."admin_images/cache_16.png' alt='' />");
+}
+if (!defined('E_16_COMMENT')) {
+	define('E_16_COMMENT', "<img class='icon S16' src='".e_IMAGE."admin_images/comments_16.png' alt='' />");
 }
 if (!defined('E_16_CREDITS')) {
 	define('E_16_CREDITS', "<img class='icon S16' src='".e_IMAGE."e107_icon_16.png' alt='' />");
@@ -433,6 +436,7 @@ $e_icon_array = array(
 	'banlist' => E_32_BANLIST,
 	'banner' => E_32_BANNER,
 	'cache' => E_32_CACHE,
+	'comment' => E_32_COMMENT,
 	'credits' => E_32_CREDITS,
 	'cron'	=> E_32_CRON,
 	'custom' => E_32_CUST,
@@ -590,7 +594,8 @@ $array_functions = array(
 	34 => array(e_ADMIN.'docs.php', ADLAN_12, ADLAN_13, '', 20, E_16_DOCS, E_32_DOCS),
 	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
 	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, '', ''),
-	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD)
+	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
+	38 => array(e_ADMIN.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT)
 );
 
 //FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
