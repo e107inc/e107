@@ -54,7 +54,6 @@
 		<core name='frontpage_force'><![CDATA[array (
   0 => '',
 )]]></core>
-		<core name='generate_content'>1</core>
 		<core name='im_height'>100</core>
 		<core name='im_path'>/usr/X11R6/bin/</core>
 		<core name='im_width'>120</core>
@@ -139,7 +138,7 @@ City, State, Country
 [b]Email:[/b] sales@mydomain.com</core>
 		<core name='sitecontacts'>255</core>
 		<core name='sitedescription'></core>
-		<core name='sitedisclaimer'><![CDATA[This site is powered by <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a>, which is released under the terms of the <a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> GPL License.]]></core>
+		<core name='sitedisclaimer'>(Replaced during Install)</core>
 		<core name='sitelang_init'>English</core>
 		<core name='sitelanguage'>English</core>
 		<core name='sitename'>e107 Website System</core>
@@ -169,7 +168,7 @@ City, State, Country
   ),
 )]]></core>
 		<core name='sitetheme_pref'></core>
-		<core name='siteurl'>/e107_08/</core>
+		<core name='siteurl'>/</core>
 		<core name='smiley_activate'></core>
 		<core name='ssl_enabled'>0</core>
 		<core name='subnews_attach'></core>
