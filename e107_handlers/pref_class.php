@@ -9,9 +9,9 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-08-27 23:37:24 $
- * $Author: secretr $
+ * $Revision: 1.15 $
+ * $Date: 2009-08-31 02:49:01 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -615,7 +615,7 @@ final class e_core_pref extends e_pref
 	 *
 	 * @var array
 	 */
-	protected $aliases = array(
+	public $aliases = array(
 		'core' 			=> 'SitePrefs', 
 		'core_backup' 	=> 'SitePrefs_Backup', 
 		'core_old' 		=> 'pref',
