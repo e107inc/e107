@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_installer.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-08-29 02:44:39 $
+ * $Revision: 1.15 $
+ * $Date: 2009-08-31 02:00:51 $
  * $Author: e107coders $
  */
 
@@ -166,12 +166,14 @@ define("LANINS_107", "Website Name");
 define("LANINS_108", "eg. 'My Blog'");
 define("LANINS_109", "Website Theme");
 define("LANINS_110", "");
-define("LANINS_111", "Pre-configure and generate content");
-define("LANINS_112", "Recommended if you wish to quickly reproduce the look of the installed theme.");
+define("LANINS_111", "Include Content/Configuration");
+define("LANINS_112", "Quickly reproduce the look of the theme preview or demo. (If Available)");
 define("LANINS_113", "Please enter a website name");
 define("LANINS_114", "Please select a theme");
 define("LANINS_115", "Theme Name");
 define("LANINS_116", "Theme Type");
 define("LANINS_117", "Website Preferences");
+define("LANINS_118", "Install Plugins");
+define("LANINS_119", "Install all plugins that the theme may require.");
 
 				

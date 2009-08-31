@@ -9,9 +9,9 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-08-27 21:50:59 $
- * $Author: secretr $
+ * $Revision: 1.17 $
+ * $Date: 2009-08-31 02:00:51 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -526,116 +526,161 @@ class xmlClass
 		return false;
 	}
 	
-	//FIXME  - TEST - remove me
-	function xml2ary(&$string)
+	
+	private function e107ExportValue($val)
 	{
-		$parser = xml_parser_create();
-		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
-		xml_parse_into_struct($parser, $string, $vals, $index);
-		xml_parser_free($parser);
-		$mnary = array();
-		$ary = &$mnary;
-		foreach ($vals as $r)
+		if(is_array($val))
 		{
-			$t = $r['tag'];
-			if ($r['type'] == 'open')
+			return "<![CDATA[".e107::getArrayStorage()->WriteArray($val,FALSE)."]]>";		
+		}
+		
+		if((strpos($val,"<")!==FALSE) || (strpos($val,">")!==FALSE) || (strpos($val,"&")!==FALSE))
+		{
+			return "<![CDATA[". $val."]]>";		
+		}
+		
+		return $val;	
+	}
+	
+	/**
+	 * Create an e107 Export File in XML format
+	 * @param array $prefs  - see e_core_pref $aliases (eg. core, ipool etc)
+	 * @param array $tables - table names with the prefix
+	 * @param boolean $debug [optional]
+	 * @return text / file for download
+	 */
+	public function e107Export($xmlprefs,$tables,$debug=FALSE)
+	{
+		require_once(e_ADMIN."ver.php");
+		
+		$text = "<?xml version='1.0' encoding='utf-8' ?>\n";
+		$text .= "<e107Export version='".$e107info['e107_version']."' timestamp='".time()."' >\n";
+	
+		if(varset($xmlprefs)) // Export Core Preferences. 
+		{		
+			$text .= "\t<prefs>\n";
+			foreach($xmlprefs as $type)
 			{
-				if (isset($ary[$t]))
+				$theprefs = e107::getConfig($type)->getPref();
+				$prefsorted = ksort($theprefs);
+				foreach($theprefs as $key=>$val)
 				{
-					if (isset($ary[$t][0]))
-						$ary[$t][] = array();
+					if(isset($val))
+					{
+						$text .= "\t\t<".$type." name='$key'>".$this->e107ExportValue($val)."</".$type.">\n";
+					}
+				}
+			}
+			$text .= "\t</prefs>\n";
+		}
+	
+		if(varset($tables))
+		{
+			$text .= "\t<database>\n";
+			foreach($tables as $tbl)
+			{
+				$eTable= str_replace(MPREFIX,"",$tbl);
+				e107::getDB()->db_Select($eTable, "*");
+				$text .= "\t<dbTable name='$eTable'>\n";
+				while($row = e107::getDB()-> db_Fetch())
+				{
+					$text .= "\t\t<item>\n";
+					foreach($row as $key=>$val)
+					{
+						$text .= "\t\t\t<field name='".$key."'>".$this->e107ExportValue($val)."</field>\n";
+					}
+					
+					$text .= "\t\t</item>\n";
+				}
+				$text .= "\t</dbTable>\n";	
+				
+			}
+			$text .= "\t</database>\n";
+		}
+		
+		
+		
+		$text .= "</e107Export>";
+		
+		if($debug==TRUE)
+		{		
+			echo "<pre>".htmlentities($text)."</pre>";				
+		}
+		else
+		{
+			header('Content-type: application/xml', TRUE);
+			header("Content-disposition: attachment; filename= e107Export_" . date("Y-m-d").".xml");
+			header("Cache-Control: max-age=30");
+			header("Pragma: public");
+			echo $text;
+			exit;		
+		}
+	}
+	
+	/**
+	 * Import an e107 XML file into site preferences and DB tables
+	 * @param path $file - e107 XML file path
+	 * @param string $only [optional] - prefs|database
+	 * @param boolean $debug [optional]
+	 * @return array with keys 'success' and 'failed' - DB table entry status. 
+	 */
+	public function e107Import($file,$only='',$debug=FALSE)
+	{
+
+		$xmlArray = $this->loadXMLfile($file,'advanced');
+		
+		if($debug)
+		{
+			print_a($xmlArray);
+			return;
+		}
+
+		$ret = array();
+				
+		if(vartrue($xmlArray['prefs']) && $only !='database') // Save Core Prefs
+		{
+			foreach($xmlArray['prefs'] as $type=>$array)
+			{
+				foreach ($array as $val)
+				{
+				 	$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+				   	e107::getConfig($type)->set($val['@attributes']['name'], $value);
+				}
+			
+			  	e107::getConfig($type)->save(FALSE);
+			}
+		}
+		
+		if(vartrue($xmlArray['database']) && $only !='prefs')
+		{
+			foreach($xmlArray['database']['dbTable'] as $val)
+			{
+				$table = $val['@attributes']['name'];
+				
+				foreach($val['item'] as $item)
+				{
+					$insert_array = array();
+					foreach($item['field'] as $f)
+					{
+						$fieldkey = $f['@attributes']['name'];
+						$fieldval = (isset($f['@value'])) ? $f['@value'] : "";
+					
+						$insert_array[$fieldkey] = $fieldval;											
+					}
+					if(e107::getDB()->db_Replace($table, $insert_array)!==FALSE)
+					{			
+						$ret['success'][] = $table;				
+					}
 					else
-						$ary[$t] = array($ary[$t], array());
-					$cv = &$ary[$t][count($ary[$t]) - 1];
-				}
-				else
-					$cv = &$ary[$t];
-				if (isset($r['attributes']))
-				{
-					foreach ($r['attributes'] as $k=>$v)
-						$cv['_a'][$k] = $v;
-				}
-				$cv['_c'] = array();
-				$cv['_c']['_p'] = &$ary;
-				$ary = &$cv['_c'];
-			}
-			elseif ($r['type'] == 'complete')
-			{
-				if (isset($ary[$t]))
-				{ // same as open
-					if (isset($ary[$t][0]))
-						$ary[$t][] = array();
-					else
-						$ary[$t] = array($ary[$t], array());
-					$cv = &$ary[$t][count($ary[$t]) - 1];
-				}
-				else
-					$cv = &$ary[$t];
-				if (isset($r['attributes']))
-				{
-					foreach ($r['attributes'] as $k=>$v)
-						$cv['_a'][$k] = $v;
-				}
-				$cv['_v'] = (isset($r['value']) ? $r['value'] : '');
-			}
-			elseif ($r['type'] == 'close')
-			{
-				$ary = &$ary['_p'];
-			}
+					{
+						$ret['failed'][] = $table;							
+					}
+				}				
+			}				
 		}
-		$this->_del_p($mnary);
-		return $mnary;
+		
+		return $ret;				
 	}
 
-	//FIXME  - TEST - remove me
-	function _del_p(&$ary)
-	{
-		foreach ($ary as $k=>$v)
-		{
-			if ($k === '_p')
-				unset($ary[$k]);
-			elseif (is_array($ary[$k]))
-				$this->_del_p($ary[$k]);
-		}
-	}
 
-	//FIXME  - TEST - remove me
-	function ary2xml($cary, $d = 0, $forcetag = '')
-	{
-		$res = array();
-		foreach ($cary as $tag=>$r)
-		{
-			if (isset($r[0]))
-			{
-				$res[] = $this->ary2xml($r, $d, $tag);
-			}
-			else
-			{
-				if ($forcetag)
-					$tag = $forcetag;
-				$sp = str_repeat("\t", $d);
-				$res[] = "$sp<$tag";
-				if (isset($r['_a']))
-				{
-					foreach ($r['_a'] as $at=>$av)
-						$res[] = " $at=\"$av\"";
-				}
-				$res[] = ">".((isset($r['_c'])) ? "\n" : '');
-				if (isset($r['_c']))
-					$res[] = $this->ary2xml($r['_c'], $d + 1);
-				elseif (isset($r['_v']))
-					$res[] = $r['_v'];
-				$res[] = (isset($r['_c']) ? $sp : '')."</$tag>\n";
-			}
-		}
-		return implode('', $res);
-	}
-
-	//FIXME  - TEST - remove me
-	function ins2ary(&$ary, $element, $pos)
-	{
-		$ar1 = array_slice($ary, 0, $pos);
-		$ar1[] = $element;
-		$ary = array_merge($ar1, array_slice($ary, $pos));
-	}
 }

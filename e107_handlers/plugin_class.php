@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2009-08-17 18:42:21 $
+|     $Revision: 1.75 $
+|     $Date: 2009-08-31 02:00:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -118,7 +118,10 @@ class e107plugin
 	*/
 	function update_plugins_table()
 	{
-		global $sql, $sql2, $mySQLprefix, $menu_pref, $tp, $pref;
+		$sql = e107::getDb();
+		$sql2 = e107::getDb('sql2');
+		
+		global $mySQLprefix, $menu_pref, $tp, $pref;
 
 		require_once(e_HANDLER.'file_class.php');
 
@@ -134,15 +137,15 @@ class e107plugin
 			{
 				$pluginDBList[$row['plugin_path']] = $row;
 				$pluginDBList[$row['plugin_path']]['status'] = 'read';
-				//			echo "Found plugin: ".$row['plugin_path']." in DB<br />";
+				//	echo "Found plugin: ".$row['plugin_path']." in DB<br />";
 			}
 		}
 
 		$i = 1;
 		while ( $i < count($pluginList))
 		{
-			if ($pluginList[$i-1]['path'] == $pluginList[$i]['path'])
-			{	// Must have plugin.php and plugin.xml
+			if ($pluginList[$i-1]['path'] == $pluginList[$i]['path']) // Must have plugin.php and plugin.xml
+			{	
 				if (($pluginList[$i-1]['fname'] == 'plugin.php') && ($pluginList[$i]['fname'] == 'plugin.xml'))
 				{
 //					echo "deleting: {$pluginList[$i-1]['path']}<br />";
@@ -158,6 +161,7 @@ class e107plugin
 			}
 			$i++;
 		}
+
 
 		foreach($pluginList as $p)
 		{
@@ -349,7 +353,7 @@ class e107plugin
 	*/
 	function getinfo($id, $force=false)
 	{
-		global $sql;
+		$sql = e107::getDb();
 		static $getinfo_results;
 		if(!is_array($getinfo_results)) { $getinfo_results = array(); }
 
@@ -1636,6 +1640,7 @@ class e107plugin
 	// Entry point to read plugin configuration data
 	function parse_plugin($plugName, $force=false)
 	{
+		$ret = "";
 		if(isset($this->parsed_plugin[$plugName]) && $force != true)
 		{
 			$this->plug_vars = $this->parsed_plugin[$plugName];

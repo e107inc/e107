@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-08-29 18:07:42 $
+ * $Revision: 1.25 $
+ * $Date: 2009-08-31 02:00:50 $
  * $Author: e107coders $
  *
 */
@@ -68,7 +68,7 @@ if(isset($_POST['verify_sql']) || $_GET['mode']=='verify_sql')
 
 if(isset($_POST['exportXmlFile']))
 {
-	exportXmlFile();
+	exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],TRUE);
 	exit();
 }
 
@@ -134,7 +134,7 @@ class system_tools
 		
 		if(isset($_POST['upload']))
 		{	
-			$this->importCorePrefs();		
+			$this->importXmlFile();		
 		}
 		
 		if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
@@ -337,6 +337,7 @@ class system_tools
 	{
 		
 		$frm = e107::getSingleton('e_form');
+	
 		
 		$text = "<form method='post' action='".e_SELF."' id='core-db-export-form'>
 			<fieldset id='core-db-export'>
@@ -356,23 +357,23 @@ class system_tools
 				</thead>
 				<tbody>
 	
-					<tr>
-						<td>
-							".$frm->checkbox('xml_core_prefs', '1')." ".LAN_PREFS.": Core
-						</td>
-						<td>&nbsp;</td>
-					</tr>";
+				";
+	
+					$pref_types  = e107::getConfig()->aliases;		
+					$exclusions = array('core_old','core_backup');
 					
-					e107::getDb()->db_Select("core", "*", "e107_name NOT REGEXP('SitePrefs|SitePrefs_Backup|IconPool|emote|emote_default|notify_prefs|search_prefs|menu_pref|pref_backup') ");
-					while ($row = e107::getDb()->db_Fetch())
+					foreach($pref_types as $key=>$description)
 					{
-						$text .= "<tr>
-						<td>
-							".$frm->checkbox("xml_prefs[".$row['e107_name']."]", '1')."
-						".LAN_PREFS.": ".$row['e107_name']."</td>
-						<td>&nbsp;</td>
-
-						</tr>";
+						if(!in_array($key,$exclusions))
+						{
+							$text .= "<tr>
+							<td>
+								".$frm->checkbox("xml_prefs[".$key."]", $key)."
+							".LAN_PREFS.": ".$key."</td>
+							<td>&nbsp;</td>
+	
+							</tr>";
+						}
 					}
 					
 					$tables = table_list();
@@ -381,7 +382,7 @@ class system_tools
 					{				
 						$text .= "<tr>					
 							<td>
-								".$frm->checkbox("xml_table[".$name."]", $name)." Table Data: ".$name." 
+								".$frm->checkbox("xml_tables[".$name."]", $name)." Table Data: ".$name." 
 							</td>
 							<td class='right'>$count</td>
 						</tr>";
@@ -406,57 +407,19 @@ class system_tools
 	 * Import XML Dump
 	 * @return 
 	 */
-	private function importCorePrefs()
+	private function importXmlFile()
 	{
-		//TODO - move to own class and make generic. 
-		// SecretR - structure changes / improvements proposal
+		$ret = e107::getSingleton('xmlClass')->e107Import($_FILES['file_userfile']['tmp_name'][0]);
 
-		$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile($_FILES['file_userfile']['tmp_name'][0],'advanced');
-		$emessage = eMessage::getInstance();
-		
-		if(vartrue($xmlArray['prefs']['core'])) // Save Core Prefs
+		foreach($ret['success'] as $table)
 		{
-			foreach ($xmlArray['prefs']['core'] as $val)
-			{
-			 	$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
-			 //	print_a($val['@value']);
-			   	e107::getConfig()->set($val['@attributes']['name'], $value);
-			}
-		
-		  	e107::getConfig()->save(FALSE);
+			eMessage::getInstance()->add("Inserted $table", E_MESSAGE_SUCCESS);		
 		}
 		
-		if(vartrue($xmlArray['database']))
+		foreach($ret['failed'] as $table)
 		{
-			foreach($xmlArray['database']['dbTable'] as $val)
-			{
-				$table = $val['@attributes']['name'];
-				
-				foreach($val['item'] as $item)
-				{
-					$insert_array = array();
-					foreach($item['field'] as $f)
-					{
-						$fieldkey = $f['@attributes']['name'];
-						$fieldval = $f['@value'];
-					
-						$insert_array[$fieldkey] = $fieldval;
-											
-					}
-					if(e107::getDB()->db_Replace($table, $insert_array)!==FALSE)
-					{					
-						$emessage->add("Inserted $table", E_MESSAGE_SUCCESS);					
-					}
-					else
-					{
-						$emessage->add("Failed to Inserted $table", E_MESSAGE_ERROR);	
-					}
-				}
-				
-				
-			}	
-			
-		}	
+			eMessage::getInstance()->add("Failed to Insert $table", E_MESSAGE_ERROR);		
+		}				
 	}
 	
 	/**
@@ -697,69 +660,9 @@ function db_adminmenu()
 
 
 
-
-
-
-function exportXmlFile()
+function exportXmlFile($prefs,$tables,$debug=FALSE)
 {
-
-	//TODO  - move export/import functions to own class. 
-
-	require_once(e_ADMIN."ver.php");
-		
-	$text = "<?xml version='1.0' encoding='utf-8' ?>\n";
-	$text .= "<e107Export version='".$e107info['e107_version']."' timestamp='".time()."' >\n";
-
-	if(varset($_POST['xml_core_prefs'])) // Export Core Preferences. 
-	{
-		$pref = e107::getPref();
-		$text .= "\t<prefs>\n";
-		foreach($pref as $key=>$val)
-		{
-			if(isset($val))
-			{
-				$val = is_array($val) ? e107::getArrayStorage()->WriteArray($val,FALSE) : $val;
-				
-				$text .= "\t\t<core name='$key'><![CDATA[".$val."]]></core>\n";
-			}
-		}
-		$text .= "\t</prefs>\n";
-	}
-
-	if(varset($_POST['xml_table']))
-	{
-		$text .= "\t<database>\n";
-		foreach($_POST['xml_table'] as $tbl)
-		{
-			$eTable= str_replace(MPREFIX,"",$tbl);
-			e107::getDB()->db_Select($eTable, "*");
-			$text .= "\t<dbTable name='$eTable'>\n";
-			while($row = e107::getDB()-> db_Fetch())
-			{
-				$text .= "\t\t<item>\n";
-				foreach($row as $key=>$val)
-				{
-					$text .= "\t\t\t<field name='".$key."'><![CDATA[".$val."]]></field>\n";
-				}
-				
-				$text .= "\t\t</item>\n";
-			}
-			$text .= "\t</dbTable>\n";	
-			
-		}
-		$text .= "\t</database>\n";
-	}
-	
-	
-	
-	$text .= "</e107Export>";
-	
-	header('Content-type: application/xml', TRUE);
-	header("Content-disposition: attachment; filename= e107Export_" . date("Y-m-d").".xml");
-	header("Cache-Control: max-age=30");
-	header("Pragma: public");
-	echo $text;
-	exit;			
+	e107::getSingleton('xmlClass')->e107Export($prefs,$tables,FALSE);		
 }
 
 
