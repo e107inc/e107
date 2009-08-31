@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-08-31 02:00:51 $
+ * $Revision: 1.18 $
+ * $Date: 2009-08-31 02:49:02 $
  * $Author: e107coders $
 */
 
@@ -636,7 +636,8 @@ class xmlClass
 		}
 
 		$ret = array();
-				
+		
+		//FIXME - doesn't appear to be saving other prefs - only core prefs. 		
 		if(vartrue($xmlArray['prefs']) && $only !='database') // Save Core Prefs
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)

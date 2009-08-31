@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.29 $
-* $Date: 2009-08-31 02:07:08 $
+* $Revision: 1.30 $
+* $Date: 2009-08-31 02:49:02 $
 * $Author: e107coders $
 *
 */
@@ -770,7 +770,12 @@ class e_install
 		
 		if(varset($_POST['generate_content']))
 		{
-			$this->previous_steps['prefs']['generate_content'] 	= $_POST['generate_content'];	
+			$this->previous_steps['generate_content'] = $_POST['generate_content'];	
+		}
+		
+		if(varset($_POST['install_plugins']))
+		{
+			$this->previous_steps['install_plugins'] = $_POST['install_plugins'];	
 		}
 		
 		// Validate. 
@@ -782,6 +787,7 @@ class e_install
 		{	
 			 $this->required['sitetheme'] = LANINS_114; // 'Please select a theme.';
 		}	
+		
 		if(vartrue($this->required['sitetheme']) || vartrue($this->required['sitename']))
 		{
 			return $this->stage_6();	
@@ -789,10 +795,10 @@ class e_install
 				
 		// Data is okay - Continue. 
 		
-		$this->previous_steps['prefs']['sitename'] 			= $_POST['sitename'];
-		$this->previous_steps['prefs']['sitetheme'] 		= $_POST['sitetheme'];
-		$this->previous_steps['generate_content'] 			= $_POST['generate_content'];
-		$this->previous_steps['install_plugins'] 			= $_POST['install_plugins'];
+	//	$this->previous_steps['prefs']['sitename'] 			= $_POST['sitename'];
+	//	$this->previous_steps['prefs']['sitetheme'] 		= $_POST['sitetheme'];
+	//	$this->previous_steps['generate_content'] 			= $_POST['generate_content'];
+		
 		
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);

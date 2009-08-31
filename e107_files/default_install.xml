@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<!-- $Id: default_install.xml,v 1.4 2009-08-31 02:22:00 e107coders Exp $ -->       
-<e107Export version='0.8.0 (cvs)' timestamp='1251683259' >
+<e107Export version='0.8.0 (cvs)' timestamp='1251685685' >
 	<prefs>
 		<core name='admin_alerts_ok'>1</core>
 		<core name='admin_alerts_uniquemenu'>0</core>
@@ -139,7 +138,7 @@ City, State, Country
 [b]Email:[/b] sales@mydomain.com</core>
 		<core name='sitecontacts'>255</core>
 		<core name='sitedescription'></core>
-		<core name='sitedisclaimer'>(Replaced during Install)</core>
+		<core name='sitedisclaimer'><![CDATA[This site is powered by <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a>, which is released under the terms of the <a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> GPL License.]]></core>
 		<core name='sitelang_init'>English</core>
 		<core name='sitelanguage'>English</core>
 		<core name='sitename'>e107 Website System</core>
@@ -194,6 +193,318 @@ City, State, Country
 		<core name='wmessage_sc'>0</core>
 		<core name='wysiwyg'>0</core>
 		<core name='xup_enabled'>1</core>
+		<emote name='0'><![CDATA[array (
+  '&|' => 'cry.png',
+)]]></emote>
+		<emote name='1'><![CDATA[array (
+  '&-|' => 'cry.png',
+)]]></emote>
+		<emote name='2'><![CDATA[array (
+  '&o|' => 'cry.png',
+)]]></emote>
+		<emote name='3'><![CDATA[array (
+  ':((' => 'cry.png',
+)]]></emote>
+		<emote name='4'><![CDATA[array (
+  '~:(' => 'mad.png',
+)]]></emote>
+		<emote name='5'><![CDATA[array (
+  '~:o(' => 'mad.png',
+)]]></emote>
+		<emote name='6'><![CDATA[array (
+  '~:-(' => 'mad.png',
+)]]></emote>
+		<emote name='7'><![CDATA[array (
+  ':)' => 'smile.png',
+)]]></emote>
+		<emote name='8'><![CDATA[array (
+  ':o)' => 'smile.png',
+)]]></emote>
+		<emote name='9'><![CDATA[array (
+  ':-)' => 'smile.png',
+)]]></emote>
+		<emote name='10'><![CDATA[array (
+  ':(' => 'frown.png',
+)]]></emote>
+		<emote name='11'><![CDATA[array (
+  ':o(' => 'frown.png',
+)]]></emote>
+		<emote name='12'><![CDATA[array (
+  ':-(' => 'frown.png',
+)]]></emote>
+		<emote name='13'><![CDATA[array (
+  ':D' => 'grin.png',
+)]]></emote>
+		<emote name='14'><![CDATA[array (
+  ':oD' => 'grin.png',
+)]]></emote>
+		<emote name='15'><![CDATA[array (
+  ':-D' => 'grin.png',
+)]]></emote>
+		<emote name='16'><![CDATA[array (
+  ':?' => 'confused.png',
+)]]></emote>
+		<emote name='17'><![CDATA[array (
+  ':o?' => 'confused.png',
+)]]></emote>
+		<emote name='18'><![CDATA[array (
+  ':-?' => 'confused.png',
+)]]></emote>
+		<emote name='19'><![CDATA[array (
+  '%-6' => 'special.png',
+)]]></emote>
+		<emote name='20'><![CDATA[array (
+  'x)' => 'dead.png',
+)]]></emote>
+		<emote name='21'><![CDATA[array (
+  'xo)' => 'dead.png',
+)]]></emote>
+		<emote name='22'><![CDATA[array (
+  'x-)' => 'dead.png',
+)]]></emote>
+		<emote name='23'><![CDATA[array (
+  'x(' => 'dead.png',
+)]]></emote>
+		<emote name='24'><![CDATA[array (
+  'xo(' => 'dead.png',
+)]]></emote>
+		<emote name='25'><![CDATA[array (
+  'x-(' => 'dead.png',
+)]]></emote>
+		<emote name='26'><![CDATA[array (
+  ':@' => 'gah.png',
+)]]></emote>
+		<emote name='27'><![CDATA[array (
+  ':o@' => 'gah.png',
+)]]></emote>
+		<emote name='28'><![CDATA[array (
+  ':-@' => 'gah.png',
+)]]></emote>
+		<emote name='29'><![CDATA[array (
+  ':!' => 'idea.png',
+)]]></emote>
+		<emote name='30'><![CDATA[array (
+  ':o!' => 'idea.png',
+)]]></emote>
+		<emote name='31'><![CDATA[array (
+  ':-!' => 'idea.png',
+)]]></emote>
+		<emote name='32'><![CDATA[array (
+  ':|' => 'neutral.png',
+)]]></emote>
+		<emote name='33'><![CDATA[array (
+  ':o|' => 'neutral.png',
+)]]></emote>
+		<emote name='34'><![CDATA[array (
+  ':-|' => 'neutral.png',
+)]]></emote>
+		<emote name='35'><![CDATA[array (
+  '?!' => 'question.png',
+)]]></emote>
+		<emote name='36'><![CDATA[array (
+  'B)' => 'rolleyes.png',
+)]]></emote>
+		<emote name='37'><![CDATA[array (
+  'Bo)' => 'rolleyes.png',
+)]]></emote>
+		<emote name='38'><![CDATA[array (
+  'B-)' => 'rolleyes.png',
+)]]></emote>
+		<emote name='39'><![CDATA[array (
+  '8)' => 'shades.png',
+)]]></emote>
+		<emote name='40'><![CDATA[array (
+  '8o)' => 'shades.png',
+)]]></emote>
+		<emote name='41'><![CDATA[array (
+  '8-)' => 'shades.png',
+)]]></emote>
+		<emote name='42'><![CDATA[array (
+  ':O' => 'suprised.png',
+)]]></emote>
+		<emote name='43'><![CDATA[array (
+  ':oO' => 'suprised.png',
+)]]></emote>
+		<emote name='44'><![CDATA[array (
+  ':-O' => 'suprised.png',
+)]]></emote>
+		<emote name='45'><![CDATA[array (
+  ':p' => 'tongue.png',
+)]]></emote>
+		<emote name='46'><![CDATA[array (
+  ':op' => 'tongue.png',
+)]]></emote>
+		<emote name='47'><![CDATA[array (
+  ':-p' => 'tongue.png',
+)]]></emote>
+		<emote name='48'><![CDATA[array (
+  ':P' => 'tongue.png',
+)]]></emote>
+		<emote name='49'><![CDATA[array (
+  ':oP' => 'tongue.png',
+)]]></emote>
+		<emote name='50'><![CDATA[array (
+  ':-P' => 'tongue.png',
+)]]></emote>
+		<emote name='51'><![CDATA[array (
+  ';)' => 'wink.png',
+)]]></emote>
+		<emote name='52'><![CDATA[array (
+  ';o)' => 'wink.png',
+)]]></emote>
+		<emote name='53'><![CDATA[array (
+  ';-)' => 'wink.png',
+)]]></emote>
+		<emote name='54'><![CDATA[array (
+  '!ill' => 'ill.png',
+)]]></emote>
+		<emote name='55'><![CDATA[array (
+  '!amazed' => 'amazed.png',
+)]]></emote>
+		<emote name='56'><![CDATA[array (
+  '!cry' => 'cry.png',
+)]]></emote>
+		<emote name='57'><![CDATA[array (
+  '!dodge' => 'dodge.png',
+)]]></emote>
+		<emote name='58'><![CDATA[array (
+  '!alien' => 'alien.png',
+)]]></emote>
+		<emote name='59'><![CDATA[array (
+  '!heart' => 'heart.png',
+)]]></emote>
+		<menu name='clock_caption'>Date / Time</menu>
+		<menu name='comment_caption'>Latest Comments</menu>
+		<menu name='comment_characters'>50</menu>
+		<menu name='comment_display'>10</menu>
+		<menu name='comment_postfix'>[more ...]</menu>
+		<menu name='comment_title'>0</menu>
+		<menu name='forum_no_characters'>20</menu>
+		<menu name='forum_postfix'>[more ...]</menu>
+		<menu name='forum_show_topics'>1</menu>
+		<menu name='newforumposts_caption'>Latest Forum Posts</menu>
+		<menu name='newforumposts_characters'>50</menu>
+		<menu name='newforumposts_display'>10</menu>
+		<menu name='newforumposts_postfix'>[more ...]</menu>
+		<menu name='newforumposts_title'>0</menu>
+		<menu name='update_menu'>Update menu Settings</menu>
+		<search name='comments_handlers'><![CDATA[array (
+  'news' => 
+  array (
+    'id' => 0,
+    'dir' => 'core',
+    'class' => '0',
+  ),
+  'download' => 
+  array (
+    'id' => 2,
+    'dir' => 'core',
+    'class' => '0',
+  ),
+)]]></search>
+		<search name='core_handlers'><![CDATA[array (
+  'news' => 
+  array (
+    'class' => '0',
+    'pre_title' => '0',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '1',
+  ),
+  'comments' => 
+  array (
+    'class' => '0',
+    'pre_title' => '1',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '2',
+  ),
+  'users' => 
+  array (
+    'class' => '0',
+    'pre_title' => '1',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '3',
+  ),
+  'downloads' => 
+  array (
+    'class' => '0',
+    'pre_title' => '1',
+    'pre_title_alt' => '',
+    'chars' => '150',
+    'results' => '10',
+    'order' => '4',
+  ),
+  'pages' => 
+  array (
+    'class' => '0',
+    'chars' => '150',
+    'results' => '10',
+    'pre_title' => '0',
+    'pre_title_alt' => '',
+    'order' => '5',
+  ),
+)]]></search>
+		<search name='google'>0</search>
+		<search name='multisearch'>1</search>
+		<search name='mysql_sort'>1</search>
+		<search name='php_limit'></search>
+		<search name='relevance'>0</search>
+		<search name='selector'>2</search>
+		<search name='time_restrict'>0</search>
+		<search name='time_secs'>60</search>
+		<search name='user_select'>1</search>
+		<notify name='event'><![CDATA[array (
+  'usersup' => 
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+  'userveri' => 
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+  'login' => 
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+  'logout' => 
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+  'flood' => 
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+  'subnews' => 
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+  'newspost' => 
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+  'newsupd' => 
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+  'newsdel' =>
+  array (
+    'class' => '254',
+    'email' => '',
+  ),
+)]]></notify>
 	</prefs>
 	<database>
 	<dbTable name='generic'>
