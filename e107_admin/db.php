@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-08-31 02:00:50 $
+ * $Revision: 1.26 $
+ * $Date: 2009-08-31 13:12:03 $
  * $Author: e107coders $
  *
 */
@@ -54,13 +54,13 @@ if(isset($_POST['trigger_db_execute']))
 	}
 }
 
-if(isset($_POST['db_update']) || $_GET['mode']=='db_update')
+if(isset($_POST['db_update']) || varset($_GET['mode'])=='db_update')
 {
 	header("location: ".e_ADMIN."e107_update.php");
 	exit();
 }
 
-if(isset($_POST['verify_sql']) || $_GET['mode']=='verify_sql')
+if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
 {
 	header("location: ".e_ADMIN."db_verify.php");
 	exit();
@@ -142,7 +142,7 @@ class system_tools
 			$this->del_pref_val();
 		}
 		
-		if(isset($_POST['verify_sql_record']) || $_GET['mode']=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
+		if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
 		{
 			// $this->verify_sql_record();  - currently performed in db_verify.php
 		}
@@ -663,14 +663,6 @@ function db_adminmenu()
 function exportXmlFile($prefs,$tables,$debug=FALSE)
 {
 	e107::getSingleton('xmlClass')->e107Export($prefs,$tables,FALSE);		
-}
-
-
-
-function importTables()
-{
-	// TODO - Import of table data. 
-		
 }
 
 

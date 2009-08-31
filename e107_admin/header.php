@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.44 $
-|   $Date: 2009-08-19 14:39:56 $
-|   $Author: secretr $
+|   $Revision: 1.45 $
+|   $Date: 2009-08-31 13:12:03 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -308,7 +308,7 @@ if (!isset($no_core_css) || !$no_core_css)
 echo "<!-- *META* -->\n";
 
 // --- Load plugin Meta files and eplug_ before others --------
-if (is_array($pref['e_meta_list']))
+if (vartrue($pref['e_meta_list']))
 {
 	foreach($pref['e_meta_list'] as $val)
 	{
@@ -498,7 +498,7 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 	$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
 	foreach (array_keys($e107_vars) as $act)
 	{
-        if(($e107_vars[$act]['perm']!='') && !getperms($e107_vars[$act]['perm'])) // check perms first.
+        if(vartrue($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
 		{
           	continue;
 		}
@@ -531,7 +531,7 @@ function e_admin_menu($title, $active_page, $e107_vars, $tmpl = array(), $sub_li
 		$replace[6] = '';
 		$replace[7] = varset($e107_vars[$act]['link_class']);
 		$replace[8] = '';
-		$replace[9] = $e107_vars[$act]['image'];
+		$replace[9] = varset($e107_vars[$act]['image']);
 
 		if(varsettrue($e107_vars[$act]['sub']))
 		{

@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-08-05 14:20:41 $
+|     $Revision: 1.7 $
+|     $Date: 2009-08-31 13:12:03 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -72,11 +72,13 @@ $iconlist[$key] = array("title"=>$funcinfo[1],"icon"=>$funcinfo[5]); // , $funci
 $buts .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[6], "classis");
 }*/
 
-
-
-
+if(!vartrue($user_pref['core-infopanel-mye107'])) // Set default icons. 
+{
+	$user_pref['core-infopanel-mye107'] = $pref['core-infopanel-default'];
+}
 
 $iconlist = array_merge($array_functions_assoc,getPluginLinks(E_16_PLUGMANAGER,"array"));
+
 $text .= "
 
 	<div id='core-infopanel_mye107' class='f-left' style='width:49%'>

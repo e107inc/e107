@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-08-28 16:11:01 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.14 $
+|     $Date: 2009-08-31 13:12:02 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -365,6 +365,10 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 			}
 			unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
 		}
+	}
+	else
+	{
+		$plugin_array = array();	
 	}
 
 	ksort($plugin_array, SORT_STRING);  // To FIX, without changing the current key format, sort by 'title'

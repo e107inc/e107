@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-08-31 02:49:02 $
+ * $Revision: 1.19 $
+ * $Date: 2009-08-31 13:12:03 $
  * $Author: e107coders $
 */
 
@@ -637,7 +637,7 @@ class xmlClass
 
 		$ret = array();
 		
-		//FIXME - doesn't appear to be saving other prefs - only core prefs. 		
+		//FIXME - doesn't work from install_.php. 		
 		if(vartrue($xmlArray['prefs']) && $only !='database') // Save Core Prefs
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
@@ -645,7 +645,8 @@ class xmlClass
 				foreach ($array as $val)
 				{
 				 	$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
-				   	e107::getConfig($type)->set($val['@attributes']['name'], $value);
+					e107::getConfig($type)->set($val['@attributes']['name'], $value);
+					
 				}
 			
 			  	e107::getConfig($type)->save(FALSE);
