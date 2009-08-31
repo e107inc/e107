@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-08-29 18:07:42 $
+ * $Revision: 1.41 $
+ * $Date: 2009-08-31 02:00:51 $
  * $Author: e107coders $
 */
 
@@ -30,6 +30,23 @@ if(defined('MYSQL_LIGHT'))
 	$sql = new db;
 	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
+elseif(defined('E107_INSTALL'))
+{
+	class dummyTraffic {
+		function Bump() { return; }
+		function BumpWho($val,$val) {  }
+		function TimeDelta() { return; }
+	}
+	global $eTraffic;
+	$eTraffic = new dummyTraffic;
+	define('E107_DEBUG_LEVEL', 0);
+	define('e_QUERY', '');
+	require_once("e107_config.php");
+	define('MPREFIX', $mySQLprefix);
+
+	$sql = new db;
+	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);	
+}
 else
 {
 	if (!defined('e107_INIT')) { exit; }
@@ -44,7 +61,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.40 $
+* @version $Revision: 1.41 $
 * @author $Author: e107coders $
 */
 class db {
@@ -79,8 +96,10 @@ class db {
 	*/
 	function db()
 	{
+		
 		global $pref, $eTraffic, $db_defaultPrefix;
-		$eTraffic->BumpWho('Create db object', 1);
+		$eTraffic->BumpWho('Create db object', 1);	
+		
 		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
 		$langid = 'e107language_'.$pref['cookie_name'];
 		if ($pref['user_tracking'] == 'session')
@@ -448,7 +467,7 @@ class db {
 	function db_Replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$arg['_REPLACE'] = TRUE;
-		$this->db_Insert($table, $arg, $debug, $log_type, $log_remark);		
+		return $this->db_Insert($table, $arg, $debug, $log_type, $log_remark);		
 	}
 
 

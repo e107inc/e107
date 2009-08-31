@@ -10,11 +10,13 @@
 * Default preferences
 *
 * $Source: /cvs_backup/e107_0.8/e107_files/def_e107_prefs.php,v $
-* $Revision: 1.26 $
-* $Date: 2009-07-16 10:12:26 $
-* $Author: marj_nl_fr $
+* $Revision: 1.27 $
+* $Date: 2009-08-31 02:00:51 $
+* $Author: e107coders $
 *
 */
+
+//TODO - discuss deprecating this file. 
 
 if (!defined('e107_INIT')) { exit(); }
 
@@ -25,8 +27,8 @@ $pref = array (
   'sitebutton' => 'button.png',
   'sitetag' => LAN_PREF_2,
   'sitedescription' => '',
-  'siteadmin' => $site_admin_user,
-  'siteadminemail' => $site_admin_email,
+  'siteadmin' => 'admin',
+  'siteadminemail' => 'admin@email.com',
   'sitecontactinfo' => '[b]My Company[/b]
 13 My Address St.
 City, State, Country
@@ -106,7 +108,7 @@ City, State, Country
   'longdate' => '%A %d %B %Y - %H:%M:%S',
   'shortdate' => '%d %b : %H:%M',
   'forumdate' => '%a %b %d %Y, %I:%M%p',
-  'sitelanguage' => $pref_language,
+  'sitelanguage' => 'English',
   'maintainance_flag' => '0',
   'time_offset' => '0',
   'meta_tag' => '',
@@ -130,7 +132,7 @@ City, State, Country
   'antiflood1' => '1',
   'antiflood_timeout' => '10',
   'autoban' => '1',
-  'sitelang_init' => $pref_language,
+  'sitelang_init' => 'English',
   'linkpage_screentip' => '0',
   'wmessage_sc' => '0',
   'frontpage_force' => array(e_UC_PUBLIC => ''),

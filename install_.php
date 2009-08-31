@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.27 $
-* $Date: 2009-08-29 02:44:39 $
+* $Revision: 1.28 $
+* $Date: 2009-08-31 02:00:51 $
 * $Author: e107coders $
 *
 */
@@ -145,52 +145,7 @@ $e_install->template->SetTag("installer_css_http", $_SERVER['PHP_SELF']."?object
 //obsolete $e_install->template->SetTag("installer_folder_http", e_HTTP.$installer_folder_name."/");
 $e_install->template->SetTag("files_dir_http", e_FILE_ABS);
 
-if(!isset($_POST['stage']))
-{
-	$_POST['stage'] = 1;
-}
-$_POST['stage'] = intval($_POST['stage']);
-
-switch ($_POST['stage'])
-{
-	case 1:
-		$e_install->stage_1();
-		break;
-	case 2:
-		$e_install->stage_2();
-		break;
-	case 3:
-		$e_install->stage_3();
-		break;
-	case 4:
-		$e_install->stage_4();
-		break;
-	case 5:
-		$e_install->stage_5();
-		break;
-	case 6:
-		$e_install->stage_6();
-		break;
-	case 7:
-		$e_install->stage_7();
-		break;
-	case 8:
-		$e_install->stage_8();
-		break;
-	default:
-		$e_install->raise_error("Install stage information from client makes no sense to me.");
-}
-
-if($_SERVER['QUERY_STRING'] == "debug")
-{
-	$e_install->template->SetTag("debug_info", print_a($e_install,TRUE));
-}
-else
-{
-	$e_install->template->SetTag("debug_info", (count($e_install->debug_info) ? print_a($e_install->debug_info,TRUE)."Backtrace:<br />".print_a($e_install,TRUE) : ""));
-}
-
-echo $e_install->template->ParseTemplate(template_data(), TEMPLATE_TYPE_DATA);
+$e_install->renderPage();
 
 
 
@@ -227,6 +182,56 @@ class e_install
 		$this->template->SetTag("required", "");	
 
 	}
+	
+	function renderPage()
+	{
+		if(!isset($_POST['stage']))
+		{
+			$_POST['stage'] = 1;
+		}
+		$_POST['stage'] = intval($_POST['stage']);
+		
+		switch ($_POST['stage'])
+		{
+			case 1:
+				$this->stage_1();
+				break;
+			case 2:
+				$this->stage_2();
+				break;
+			case 3:
+				$this->stage_3();
+				break;
+			case 4:
+				$this->stage_4();
+				break;
+			case 5:
+				$this->stage_5();
+				break;
+			case 6:
+				$this->stage_6();
+				break;
+			case 7:
+				$this->stage_7();
+				break;
+			case 8:
+				$this->stage_8();
+				break;
+			default:
+				$this->raise_error("Install stage information from client makes no sense to me.");
+		}
+		
+		if($_SERVER['QUERY_STRING'] == "debug")
+		{
+			$this->template->SetTag("debug_info", print_a($this,TRUE));
+		}
+		else
+		{
+			$this->template->SetTag("debug_info", (count($this->debug_info) ? print_a($this->debug_info,TRUE)."Backtrace:<br />".print_a($this,TRUE) : ""));
+		}
+		
+		echo $this->template->ParseTemplate(template_data(), TEMPLATE_TYPE_DATA);	
+	}
 
 	function raise_error($details)
 	{
@@ -252,7 +257,7 @@ class e_install
 		}	
 	}
 
-	function stage_1()
+	private function stage_1()
 	{
 		global $e_forms;
 		$this->stage = 1;
@@ -268,7 +273,7 @@ class e_install
 		$this->template->SetTag("stage_content", "<div style='text-align: center;'><label for='language'>".LANINS_005."</label>\n<br /><br /><br />\n".$e_forms->return_form()."</div>");
 	}
 
-	function stage_2()
+	private function stage_2()
 	{
 		global $e_forms;
 		$this->stage = 2;
@@ -320,7 +325,7 @@ class e_install
 	}
 
 
-	function stage_3()
+	private function stage_3()
 	{
 		global $e_forms;
 		$success = TRUE;
@@ -440,7 +445,7 @@ class e_install
 		$this->template->SetTag("stage_content", $head.$e_forms->return_form());
 	}
 
-	function stage_4()
+	private function stage_4()
 	{
 		global $e_forms;
 		$this->stage = 4;
@@ -562,7 +567,7 @@ class e_install
 	 * @return 
 	 */
 
-	function stage_5()  
+	private function stage_5()  
 	{
 		global $e_forms;
 		$this->stage = 5;
@@ -614,7 +619,7 @@ class e_install
 	 * 
 	 * @return html form. 
 	 */
-	function stage_6()  
+	private function stage_6()  
 	{
 		global $e_forms;
 		$this->stage = 6;
@@ -688,7 +693,7 @@ class e_install
 		
 		$e_forms->start_form("pref_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$output = "
-			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
+			<div style='width: 100%; padding-left: auto; padding-right: auto; margin-bottom:20px'>
 			<table cellspacing='0'>
 			  	<colgroup span='2'>
       			<col class='col-label' style='width:30%' />
@@ -727,22 +732,27 @@ class e_install
 				
 				</tr>
 				<tr>
-				<td class='row-border'><label for='generate_content'>".LANINS_111."</label></td>
-				<td class='row-border'><input type='checkbox' name='generate_content' checked='checked' id='generate_content' value='1' />
-				".LANINS_112."
-				</td>
-			
+					<td class='row-border'><label for='install_plugins'>".LANINS_118."</label></td>
+					<td class='row-border'><input type='checkbox' name='install_plugins' checked='checked' id='install_plugins' value='1' />
+					".LANINS_119."
+					</td>		
+				</tr>
+				<tr>
+					<td class='row-border'><label for='generate_content'>".LANINS_111."</label></td>
+					<td class='row-border'><input type='checkbox' name='generate_content' checked='checked' id='generate_content' value='1' />
+					".LANINS_112."
+					</td>		
 				</tr>
 			</table>
 			</div>
-			<br /><br />\n";
+			\n";
 		$e_forms->add_plain_html($output);
 		$this->finish_form();
 		$e_forms->add_button("submit", LANINS_035);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
 	}
 
-	function stage_7()
+	private function stage_7()
 	{
 		global $e_forms;
 		
@@ -781,8 +791,8 @@ class e_install
 		
 		$this->previous_steps['prefs']['sitename'] 			= $_POST['sitename'];
 		$this->previous_steps['prefs']['sitetheme'] 		= $_POST['sitetheme'];
-		$this->previous_steps['prefs']['generate_content'] 	= $_POST['generate_content'];
-		
+		$this->previous_steps['generate_content'] 			= $_POST['generate_content'];
+		$this->previous_steps['install_plugins'] 			= $_POST['install_plugins'];
 		
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -798,9 +808,9 @@ class e_install
 		
 	}
 
-	function stage_8()
+	private function stage_8()
 	{
-
+		
 		global $e_forms;
 		$this->stage = 8;
 
@@ -855,8 +865,10 @@ class e_install
 			$page = $config_result."<br />";
 		}
 		else
-		{
+		{		
 			$errors = $this->create_tables();
+			$this->import_configuration();
+			
 			if ($errors == true)
 			{
 				$page = $errors."<br />";
@@ -871,10 +883,123 @@ class e_install
 		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
 	}
 
+	/**
+	 * Import and Generate Preferences and default content.
+	 * @return 
+	 */
+	private function import_configuration()
+	{
+		define("E107_INSTALL",TRUE); //FIXME - remove the need for this - ie. make the MySQL class work without it. 
+		
+		$themeImportFile = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install.xml"; 
+		if($this->previous_steps['generate_content']==1 && is_readable($themeImportFile))
+		{
+			$XMLImportfile = $themeImportFile;	
+		}
+		else
+		{
+			$XMLImportfile = $this->e107->e107_dirs['FILES_DIRECTORY']. "default_install.xml";			
+		}
+			
+		// Insert Defaults. 
+		$udirs = "admin/|plugins/|temp";
+		$e_SELF = $_SERVER['PHP_SELF'];
+		$e_HTTP = preg_replace("#".$udirs."#i", "", substr($e_SELF, 0, strrpos($e_SELF, "/"))."/");
 
-	// Check a DB name or table prefix - anything starting with a numeric followed by 'e' causes problems.
-	// Return TRUE if acceptable, FALSE if unacceptable
-	// Empty string returns the value of $blank_ok (caller should set TRUE for prefix, FALSE for DB name)
+		$pref_language = isset($this->previous_steps['language']) ? $this->previous_steps['language'] : "English";
+
+		if (is_readable($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$pref_language."/lan_prefs.php"))
+		{
+			include_once($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$pref_language."/lan_prefs.php");
+		}
+		else
+		{
+			include_once($this->e107->e107_dirs['LANGUAGES_DIRECTORY']."English/lan_prefs.php");
+		}
+
+		require_once("{$this->e107->e107_dirs['FILES_DIRECTORY']}def_e107_prefs.php"); // could be deprecated if need be
+		include_once("{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}arraystorage_class.php");
+						
+		$tmp = ArrayData::WriteArray($pref);
+
+		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}core VALUES ('SitePrefs', '{$tmp}')");
+		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}core VALUES ('SitePrefs_Backup', '{$tmp}')");
+		
+		//Create default plugin-table entries. 
+		// e107::getSingleton('e107plugin')->update_plugins_table(); //FIXME - also relies on pref class. 
+				
+		// Install Theme-required plugins
+		if($this->previous_steps['install_plugins']==1)
+		{
+			if($themeInfo = $this->get_theme_xml($this->previous_steps['prefs']['sitetheme']))
+			{
+				foreach($themeInfo['pluginOptions']['plugin'] as $k=>$plug) //TODO refactor pluginOptions as 'plugins' in theme.xml etc
+				{
+					 $this->install_plugin($plug['@attributes']['name']);	
+				}
+			}
+		}
+						
+		// Import Site-Data from XML.	
+		//FIXME remove 'database' from the function below, once the pref handler is working. 			
+		e107::getSingleton('xmlClass')->e107Import($XMLImportfile,'database'); // includes non-core preferences
+		
+		// Set Preferences defined during install - overwriting those that may exist in the XML. 
+		
+		$this->previous_steps['prefs']['sitelanguage'] 		= $this->previous_steps['language'];
+		$this->previous_steps['prefs']['sitelang_init']		= $this->previous_steps['language'];
+		
+		$this->previous_steps['prefs']['siteadmin'] 		= $this->previous_steps['admin']['display'];
+		$this->previous_steps['prefs']['siteadminemail'] 	= $this->previous_steps['admin']['email'];
+		$this->previous_steps['prefs']['install_date']  	= time();
+		$this->previous_steps['prefs']['siteurl']			= $e_HTTP;
+		
+		$this->previous_steps['prefs']['sitetag']			= LAN_PREF_2; 		
+		$this->previous_steps['prefs']['sitedisclaimer']	= LAN_PREF_3;  
+		
+		$this->previous_steps['prefs']['replyto_name']		= $this->previous_steps['admin']['display'];
+		$this->previous_steps['prefs']['replyto_email']		= $this->previous_steps['admin']['email'];
+		    	
+		
+		foreach($this->previous_steps['prefs'] as $key=>$val)
+		{
+			// e107::getConfig('core')->set($key, $val); //FIXME - pref class issues. 
+		}
+		// e107::getConfig('core')->save(FALSE); //FIXME - pref class issues. 
+				
+		// Create the admin user - replacing any that may be been included in the XML. 
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".md5($this->previous_steps['admin']['password'])."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
+		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
+
+		mysql_close();
+		return false;
+	
+	}
+
+	/**
+	 * Install a Theme required plugin.
+	 * @param string $plugpath - plugin folder name
+	 * @return 
+	 */
+	private function install_plugin($plugpath) //FIXME - requires default plugin table entries, see above. 
+	{
+		return; // remove once fixed.
+		e107::getDb()->db_Select('plugin','plugin_id',"plugin_path='".$plugpath." LIMIT 1");
+		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC); 
+		e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
+		return;	
+	}
+
+
+	/**
+	 * Check a DB name or table prefix - anything starting with a numeric followed by 'e' causes problems.
+	 * Return TRUE if acceptable, FALSE if unacceptable
+	 * Empty string returns the value of $blank_ok (caller should set TRUE for prefix, FALSE for DB name)
+	 * @param object $str
+	 * @param object $blank_ok [optional]
+	 * @return boolean
+	 */
 	function check_name($str, $blank_ok = FALSE)
 	{
 		if ($str == '')
@@ -943,12 +1068,16 @@ class e_install
 	
 	function get_theme_xml($theme_folder)
 	{
-		require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."xml_class.php");
-		$xml = new xmlClass;
-		
 		$path = $this->e107->e107_dirs['THEMES_DIRECTORY'].$theme_folder."/theme.xml";
+		
+		if(!is_readable($path))
+		{
+			return FALSE;
+		}
+		require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."xml_class.php");
+		$xml = new xmlClass;		
 		$xmlArray = $xml->loadXMLfile($path,'advanced');
-		return $xmlArray;		
+		return (is_array($xmlArray)) ? $xmlArray : FALSE;		
 	}
 	
 
@@ -986,8 +1115,11 @@ class e_install
 		return $bad_files;
 	}
 
-
-	function create_tables()
+	/**
+	 * Create Core MySQL tables
+	 * @return 
+	 */
+	private function create_tables()
 	{
 
 		$link = mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']);
@@ -1031,6 +1163,13 @@ class e_install
 			}
 		}
 
+	return FALSE;
+	
+
+	
+	//FIXME - remove - Everything below this point should no longer be required. See import_configuration();
+	
+	/*
 		$datestamp = time();
 
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}news VALUES (0, '".LANINS_063."', '".LANINS_062."', '', '{$datestamp}', '0', '1', 1, 0, 0, 0, 0, '0', '', 'welcome.png', 0) ");
@@ -1062,15 +1201,7 @@ class e_install
 		require_once("{$this->e107->e107_dirs['FILES_DIRECTORY']}def_e107_prefs.php");
 
 		include_once("{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}arraystorage_class.php");
-		
-		// Set User Preferences. 
-		foreach($this->previous_steps['prefs'] as $key=>$val)
-		{
-			$pref[$key] = $val;
-		}
-		
-		//TODO - Cameron - create 2 seperate methods. One for old inserts using the code below. And another using external XML files.
-		
+			
 		$tmp = ArrayData::WriteArray($pref);
 
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}core VALUES ('SitePrefs', '{$tmp}')");
@@ -1139,27 +1270,27 @@ class e_install
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}banner VALUES (0, 'e107', 'e107login', 'e107password', 'banner2.png', 'http://e107.org', 0, 0, 0, 0, 0, 0, '', 'campaign_one') ");
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}banner VALUES (0, 'e107', 'e107login', 'e107password', 'banner3.png', 'http://e107.org', 0, 0, 0, 0, 0, 0, '', 'campaign_one') ");
 
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (1, 'login_menu', 1, 1, '0', '', 'login_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (3, 'online_menu', 0, 0, '0', '', 'online/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (4, 'blogcalendar_menu', 0, 0, '0', '', 'blogcalendar_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (5, 'tree_menu', 0, 0, '0', '', 'tree_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (6, 'search_menu', 0, 0, '0', '', 'search_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (7, 'compliance_menu', 0, 0, '0', '', 'siteinfo_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (8, 'userlanguage_menu', 0, 0, '0', '', 'user_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (9, 'powered_by_menu', 2, 2, '0', '', 'siteinfo_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (10, 'counter_menu', 0, 0, '0', '', 'siteinfo_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (11, 'usertheme_menu', 0, 0, '0', '', 'user_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (12, 'banner_menu', 0, 0, '0', '', 'banner_menu/', '')");
-//		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (13, 'online_extended_menu', 2, 1, '0', '', 'online_extended_menu/')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (14, 'clock_menu', 0, 0, '0', '', 'clock_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (15, 'sitebutton_menu', 0, 0, '0', '', 'siteinfo_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (16, 'comment_menu', 0, 0, '0', '', 'comment_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (17, 'lastseen_menu', 0, 0, '0', '', 'online/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (18, 'other_news_menu', 0, 0, '0', '', 'other_news_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (19, 'other_news2_menu', 0, 0, '0', '', 'other_news_menu/', '')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (20, 'admin_menu', 0, 0, '0', '', 'admin_menu/', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (1, 'login_menu', 1, 1, '0', '', 'login_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (3, 'online_menu', 0, 0, '0', '', 'online/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (4, 'blogcalendar_menu', 0, 0, '0', '', 'blogcalendar_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (5, 'tree_menu', 0, 0, '0', '', 'tree_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (6, 'search_menu', 0, 0, '0', '', 'search_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (7, 'compliance_menu', 0, 0, '0', '', 'siteinfo_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (8, 'userlanguage_menu', 0, 0, '0', '', 'user_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (9, 'powered_by_menu', 2, 2, '0', '', 'siteinfo_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (10, 'counter_menu', 0, 0, '0', '', 'siteinfo_menu/', '', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (11, 'usertheme_menu', 0, 0, '0', '', 'user_menu/', '', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (12, 'banner_menu', 0, 0, '0', '', 'banner_menu/', '', '')");
+//		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (13, 'online_extended_menu', 2, 1, '0', '', 'online_extended_menu/', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (14, 'clock_menu', 0, 0, '0', '', 'clock_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (15, 'sitebutton_menu', 0, 0, '0', '', 'siteinfo_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (16, 'comment_menu', 0, 0, '0', '', 'comment_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (17, 'lastseen_menu', 0, 0, '0', '', 'online/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (18, 'other_news_menu', 0, 0, '0', '', 'other_news_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (19, 'other_news2_menu', 0, 0, '0', '', 'other_news_menu/', '', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (20, 'admin_menu', 0, 0, '0', '', 'admin_menu/', '', '')");
 //		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (21, 'rss_menu', 5, 1, '0', '', 'rss_menu/')");
-		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (22, 'PCMag', 2, 1, '0', '', '1', '')");
+		$this->dbqry("INSERT INTO `{$this->previous_steps['mysql']['prefix']}menus` VALUES (22, 'PCMag', 2, 1, '0', '', '1', '', '')");
 
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}userclass_classes VALUES (1, 'PRIVATEMENU', '".LANINS_093."',".e_UC_ADMIN.", 0, '', 0, 0, '')");
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}userclass_classes VALUES (2, 'PRIVATEFORUM1', '".LANINS_094."',".e_UC_ADMIN.", 0, '', 0, 0, '')");
@@ -1178,6 +1309,8 @@ class e_install
 		mysql_close();
 
 		return false;
+		
+		*/
 	}
 
 	function write_config($data)
@@ -1356,7 +1489,7 @@ function template_data()
 	$data = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
-<title>{installation_heading}</title>
+<title>{installation_heading} :: {stage_pre}{stage_num} - {stage_title}</title>
 <meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" />
 <meta http-equiv=\"content-style-type\" content=\"text/css\" />
 <link rel=\"stylesheet\" href=\"{installer_css_http}\" type=\"text/css\" />
