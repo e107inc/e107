@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.30 $
-* $Date: 2009-08-31 02:49:02 $
+* $Revision: 1.31 $
+* $Date: 2009-08-31 14:37:24 $
 * $Author: e107coders $
 *
 */
@@ -939,7 +939,7 @@ class e_install
 		{
 			if($themeInfo = $this->get_theme_xml($this->previous_steps['prefs']['sitetheme']))
 			{
-				foreach($themeInfo['pluginOptions']['plugin'] as $k=>$plug) //TODO refactor pluginOptions as 'plugins' in theme.xml etc
+				foreach($themeInfo['plugins']['plugin'] as $k=>$plug) 
 				{
 					 $this->install_plugin($plug['@attributes']['name']);	
 				}

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: theme.xml,v 1.16 2009-08-31 02:22:00 e107coders Exp $ -->  
+<!-- $Id: theme.xml,v 1.17 2009-08-31 14:37:24 e107coders Exp $ -->  
 <e107Theme name="e107.v4" version="3.0" date="2003-06-11" compatibility="0.8" releaseUrl='http://www.e107.org/themeupdate.php'>
 	<author name ="Steve Dunstan [jalist]" email="jalist@e107.org" url="http://e107.org" />
 	<description>Classic e107 theme</description>
 	<compliance xhtml="1.1" css="2.1" />
 	<category>generic</category>
-	<pluginOptions>
+	<plugins>
 		<plugin name='chatbox_menu' url='core' />
 		<plugin name='poll' url='core' />
-	</pluginOptions>
+	</plugins>
 	<layouts>
 		<layout name='3_column' title='3 Columns' preview='preview.jpg' previewFull='preview_full.png' default='true' >
 		<menuPresets>
