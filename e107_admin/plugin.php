@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2009-08-28 16:10:57 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.40 $
+|     $Date: 2009-08-31 14:37:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -1028,7 +1028,7 @@ class pluginManager{
 			$emessage->add($message, $type, $session);
 		}
 
-        function pluginOptions()
+        function pluginMenuOptions()
 		{
 		   //	$e107 = &e107::getInstance();
 
@@ -1057,7 +1057,7 @@ class pluginManager{
 function plugin_adminmenu()
 {
 	global $pman;
-	$pman -> pluginOptions();
+	$pman -> pluginMenuOptions();
 }
 
 ?>

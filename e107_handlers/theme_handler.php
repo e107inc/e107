@@ -9,9 +9,9 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.49 $
- * $Date: 2009-08-27 12:58:29 $
- * $Author: secretr $
+ * $Revision: 1.50 $
+ * $Date: 2009-08-31 14:37:24 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -678,11 +678,11 @@ class themeHandler{
                     <td style='vertical-align:top; width:24%;'><b>".TPVLAN_53."</b></td>
 					<td colspan='2' style='vertical-align:top width:auto;'>";
 
-					if(varset($theme['pluginOptions']))
+					if(varset($theme['plugins']))
 					{
-						foreach($theme['pluginOptions'] as $key=>$val)
+						foreach($theme['plugins'] as $key=>$val)
 						{
-	                  		$text .= $this->renderPlugins($theme['pluginOptions']);
+	                  		$text .= $this->renderPlugins($theme['plugins']);
 							$text .= "&nbsp;";
 						}
 					}
@@ -917,11 +917,11 @@ class themeHandler{
 		return $text;
 	}
 
-    function renderPlugins($pluginOptions)
+    function renderPlugins($pluginOpts)
 	{
 		global $frm,$sql;
 
-     	$tmp = (varset($pluginOptions['plugin'][1])) ? $pluginOptions['plugin'] :  $pluginOptions;   // if there is 1 entry, then it's not the same array.
+     	$tmp = (varset($pluginOpts['plugin'][1])) ? $pluginOpts['plugin'] :  $pluginOpts;   // if there is 1 entry, then it's not the same array.
         $text = "";
 
 		foreach($tmp as $p)
