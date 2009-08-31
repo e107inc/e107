@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_installer.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-08-31 02:00:51 $
+ * $Revision: 1.16 $
+ * $Date: 2009-08-31 02:07:08 $
  * $Author: e107coders $
  */
 
@@ -175,5 +175,6 @@ define("LANINS_116", "Theme Type");
 define("LANINS_117", "Website Preferences");
 define("LANINS_118", "Install Plugins");
 define("LANINS_119", "Install all plugins that the theme may require.");
+define("LANINS_120", "8");
 
 				

@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.28 $
-* $Date: 2009-08-31 02:00:51 $
+* $Revision: 1.29 $
+* $Date: 2009-08-31 02:07:08 $
 * $Author: e107coders $
 *
 */
@@ -816,7 +816,7 @@ class e_install
 
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
-		$this->template->SetTag("stage_num", LANINS_058);
+		$this->template->SetTag("stage_num", LANINS_120);
 		$this->template->SetTag("stage_title", LANINS_071);
 				
 
