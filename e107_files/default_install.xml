@@ -7,7 +7,7 @@
 		<core name='admin_slidedown_subs'>1</core>
 		<core name='admincss'>style.css</core>
 		<core name='adminpwordchange'>0</core>
-		<core name='adminstyle'>classis</core>
+		<core name='adminstyle'>infopanel</core>
 		<core name='admintheme'>jayya</core>
 		<core name='allowCommentEdit'>0</core>
 		<core name='allowEmailLogin'>0</core>
@@ -27,6 +27,24 @@
 		<core name='compress_output'>0</core>
 		<core name='contact_emailcopy'>0</core>
 		<core name='cookie_name'>e107cookie</core>
+        <core name='core-infopanel-default'><![CDATA[array (
+  0 => 'e-administrator',
+  1 => 'e-cpage',
+  2 => 'e-filemanager',
+  3 => 'e-frontpage',
+  4 => 'e-image',
+  5 => 'e-mailout',
+  6 => 'e-menus',
+  7 => 'e-meta',
+  8 => 'e-newspost',
+  9 => 'e-plugin',
+  10 => 'e-prefs',
+  11 => 'e-links',
+  12 => 'e-theme',
+  13 => 'e-userclass2',
+  14 => 'e-users',
+  15 => 'e-wmessage',
+)]]></core>
 		<core name='developer'>0</core>
 		<core name='disable_emailcheck'>0</core>
 		<core name='disallowMultiLogin'>0</core>

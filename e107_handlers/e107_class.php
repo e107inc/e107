@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-08-29 02:44:39 $
+ * $Revision: 1.41 $
+ * $Date: 2009-08-31 13:12:03 $
  * $Author: e107coders $
 */
 
@@ -107,7 +107,8 @@ class e107
 		'e_jshelper' 	=> '{e_HANDLER}js_helper.php',
 		'e_menu' 		=> '{e_HANDLER}menu_class.php',
 		'e107plugin' 	=> '{e_HANDLER}plugin_class.php',
-		'xmlClass' 		=> '{e_HANDLER}xml_class.php'
+		'xmlClass' 		=> '{e_HANDLER}xml_class.php',
+		'eMessage' 		=> '{e_HANDLER}message_handler.php'
 	);
 
 	
