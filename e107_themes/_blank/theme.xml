@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: theme.xml,v 1.8 2009-08-31 02:22:00 e107coders Exp $ -->  
 <e107Theme name="blank" version="0.1" date="2008-12-01" compatibility="0.8">
 	<author name ="Desislav Yosifov [SonicE]" email="support@free-source.net" url="http://free-source.net" />
 	<description>Blank e107 admin theme</description>

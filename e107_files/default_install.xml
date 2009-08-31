@@ -1,4 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
+<!-- $Id: default_install.xml,v 1.4 2009-08-31 02:22:00 e107coders Exp $ -->       
 <e107Export version='0.8.0 (cvs)' timestamp='1251683259' >
 	<prefs>
 		<core name='admin_alerts_ok'>1</core>
