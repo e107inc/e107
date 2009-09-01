@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2009-09-01 02:00:55 $
+|     $Revision: 1.46 $
+|     $Date: 2009-09-01 20:09:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -252,6 +252,9 @@ function update_706_to_800($type='')
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
 	$new_tables = array('admin_log','audit_log', 'dblog');
+	
+	// List of core prefs that need to be converted from serialized to e107ArrayStorage. 
+	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'");
 
 
 	// List of changed DB tables (defined in core_sql.php)
@@ -338,6 +341,21 @@ function update_706_to_800($type='')
 		$updateMessages[] = LAN_UPDATE_22;
 		$do_save = TRUE;
 	}
+	
+	// convert all serialized core prefs to e107 ArrayStorage;
+	$serialz_qry = "SUBSTRING( e107_value,1,5)!='array' AND e107_value !='' ";
+	// $serialz_qry .= "AND e107_name IN (".implode(",",$serialized_prefs).") ";
+		if(e107::getDb()->db_Select("core", "*", $serialz_qry))
+		{
+			if ($just_check) return update_needed();
+			while ($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
+			{
+				e107::getDb('sql2')->db_Update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");	
+				$updateMessages[] = "Converted Serialized prefs [".$row['e107_name']."]"; // LAN_UPDATE_23;
+			}	
+		}	
+	
+	//TODO de-serialize the user_prefs also. 
 
 	//change menu_path for usertheme_menu
 	if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu' || menu_path='usertheme_menu/'"))
@@ -961,6 +979,12 @@ function get_default_prefs()
 	$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_FILE."default_install.xml",'advanced');
 	$pref = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
 	return $pref;
+}
+
+function convert_serialized($serializedData)
+{
+	$arrayData = unserialize($serializedData);
+	return e107::getArrayStorage()->WriteArray($arrayData,FALSE);
 }
 
 
