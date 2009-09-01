@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-08-31 02:49:01 $
+ * $Revision: 1.16 $
+ * $Date: 2009-09-01 20:09:36 $
  * $Author: e107coders $
 */
 
@@ -619,7 +619,7 @@ final class e_core_pref extends e_pref
 		'core' 			=> 'SitePrefs', 
 		'core_backup' 	=> 'SitePrefs_Backup', 
 		'core_old' 		=> 'pref',
-		'emote' 		=> 'emote', 
+		'emote' 		=> 'emote_default', //TODO include other emote packs of the user. 
 		'menu' 			=> 'menu_pref', 
 		'search' 		=> 'search_prefs', 
 		'notify' 		=> 'notify_prefs',
@@ -631,7 +631,8 @@ final class e_core_pref extends e_pref
 	 *
 	 * @var array
 	 */
-	protected $serial_bc_array = array('core_old', 'emote', 'menu', 'search');
+	// protected $serial_bc_array = array('core_old', 'emote', 'menu', 'search');
+	protected $serial_bc_array = array('core_old');
 
 	/**
 	 * Constructor
@@ -858,8 +859,10 @@ class prefs
 	* - @access     public
 	*/
 	// retrieve prefs as an array of values
-	function getArray($name) {
-		return unserialize($this->get($name));
+	function getArray($name)
+	{
+		return e107::getArrayStorage()->ReadArray($this->get($name));
+		// return unserialize($this->get($name));
 	}
 
 
@@ -945,8 +948,8 @@ class prefs
 				$$name[$key] = $tp->toDB($prefvalue);
 			}
 		}
-
-		$tmp = serialize($$name);
+		$tmp = e107::getArrayStorage()->WriteArray($$name);
+	//	$tmp = serialize($$name);
 		$this->set($tmp, $name, $table, $uid);
 	}
 }

@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-08-31 02:00:51 $
+ * $Revision: 1.42 $
+ * $Date: 2009-09-01 20:09:35 $
  * $Author: e107coders $
 */
 
@@ -30,7 +30,7 @@ if(defined('MYSQL_LIGHT'))
 	$sql = new db;
 	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
-elseif(defined('E107_INSTALL'))
+elseif(defined('E107_INSTALL')) //TODO Remove the need for this if possible
 {
 	class dummyTraffic {
 		function Bump() { return; }
@@ -61,7 +61,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.41 $
+* @version $Revision: 1.42 $
 * @author $Author: e107coders $
 */
 class db {

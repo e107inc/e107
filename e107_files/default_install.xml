@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<e107Export version='0.8.0 (cvs)' timestamp='1251685685' >
+<e107Export version='0.8.0 (cvs)' timestamp='1251834958' >
 	<prefs>
 		<core name='admin_alerts_ok'>1</core>
 		<core name='admin_alerts_uniquemenu'>0</core>
@@ -27,7 +27,7 @@
 		<core name='compress_output'>0</core>
 		<core name='contact_emailcopy'>0</core>
 		<core name='cookie_name'>e107cookie</core>
-        <core name='core-infopanel-default'><![CDATA[array (
+		<core name='core-infopanel-default'><![CDATA[array (
   0 => 'e-administrator',
   1 => 'e-cpage',
   2 => 'e-filemanager',
@@ -187,7 +187,7 @@ City, State, Country
 )]]></core>
 		<core name='sitetheme_pref'></core>
 		<core name='siteurl'>/</core>
-		<core name='smiley_activate'></core>
+		<core name='smiley_activate'>1</core>
 		<core name='ssl_enabled'>0</core>
 		<core name='subnews_attach'></core>
 		<core name='subnews_class'>0</core>
@@ -211,186 +211,34 @@ City, State, Country
 		<core name='wmessage_sc'>0</core>
 		<core name='wysiwyg'>0</core>
 		<core name='xup_enabled'>1</core>
-		<emote name='0'><![CDATA[array (
-  '&|' => 'cry.png',
-)]]></emote>
-		<emote name='1'><![CDATA[array (
-  '&-|' => 'cry.png',
-)]]></emote>
-		<emote name='2'><![CDATA[array (
-  '&o|' => 'cry.png',
-)]]></emote>
-		<emote name='3'><![CDATA[array (
-  ':((' => 'cry.png',
-)]]></emote>
-		<emote name='4'><![CDATA[array (
-  '~:(' => 'mad.png',
-)]]></emote>
-		<emote name='5'><![CDATA[array (
-  '~:o(' => 'mad.png',
-)]]></emote>
-		<emote name='6'><![CDATA[array (
-  '~:-(' => 'mad.png',
-)]]></emote>
-		<emote name='7'><![CDATA[array (
-  ':)' => 'smile.png',
-)]]></emote>
-		<emote name='8'><![CDATA[array (
-  ':o)' => 'smile.png',
-)]]></emote>
-		<emote name='9'><![CDATA[array (
-  ':-)' => 'smile.png',
-)]]></emote>
-		<emote name='10'><![CDATA[array (
-  ':(' => 'frown.png',
-)]]></emote>
-		<emote name='11'><![CDATA[array (
-  ':o(' => 'frown.png',
-)]]></emote>
-		<emote name='12'><![CDATA[array (
-  ':-(' => 'frown.png',
-)]]></emote>
-		<emote name='13'><![CDATA[array (
-  ':D' => 'grin.png',
-)]]></emote>
-		<emote name='14'><![CDATA[array (
-  ':oD' => 'grin.png',
-)]]></emote>
-		<emote name='15'><![CDATA[array (
-  ':-D' => 'grin.png',
-)]]></emote>
-		<emote name='16'><![CDATA[array (
-  ':?' => 'confused.png',
-)]]></emote>
-		<emote name='17'><![CDATA[array (
-  ':o?' => 'confused.png',
-)]]></emote>
-		<emote name='18'><![CDATA[array (
-  ':-?' => 'confused.png',
-)]]></emote>
-		<emote name='19'><![CDATA[array (
-  '%-6' => 'special.png',
-)]]></emote>
-		<emote name='20'><![CDATA[array (
-  'x)' => 'dead.png',
-)]]></emote>
-		<emote name='21'><![CDATA[array (
-  'xo)' => 'dead.png',
-)]]></emote>
-		<emote name='22'><![CDATA[array (
-  'x-)' => 'dead.png',
-)]]></emote>
-		<emote name='23'><![CDATA[array (
-  'x(' => 'dead.png',
-)]]></emote>
-		<emote name='24'><![CDATA[array (
-  'xo(' => 'dead.png',
-)]]></emote>
-		<emote name='25'><![CDATA[array (
-  'x-(' => 'dead.png',
-)]]></emote>
-		<emote name='26'><![CDATA[array (
-  ':@' => 'gah.png',
-)]]></emote>
-		<emote name='27'><![CDATA[array (
-  ':o@' => 'gah.png',
-)]]></emote>
-		<emote name='28'><![CDATA[array (
-  ':-@' => 'gah.png',
-)]]></emote>
-		<emote name='29'><![CDATA[array (
-  ':!' => 'idea.png',
-)]]></emote>
-		<emote name='30'><![CDATA[array (
-  ':o!' => 'idea.png',
-)]]></emote>
-		<emote name='31'><![CDATA[array (
-  ':-!' => 'idea.png',
-)]]></emote>
-		<emote name='32'><![CDATA[array (
-  ':|' => 'neutral.png',
-)]]></emote>
-		<emote name='33'><![CDATA[array (
-  ':o|' => 'neutral.png',
-)]]></emote>
-		<emote name='34'><![CDATA[array (
-  ':-|' => 'neutral.png',
-)]]></emote>
-		<emote name='35'><![CDATA[array (
-  '?!' => 'question.png',
-)]]></emote>
-		<emote name='36'><![CDATA[array (
-  'B)' => 'rolleyes.png',
-)]]></emote>
-		<emote name='37'><![CDATA[array (
-  'Bo)' => 'rolleyes.png',
-)]]></emote>
-		<emote name='38'><![CDATA[array (
-  'B-)' => 'rolleyes.png',
-)]]></emote>
-		<emote name='39'><![CDATA[array (
-  '8)' => 'shades.png',
-)]]></emote>
-		<emote name='40'><![CDATA[array (
-  '8o)' => 'shades.png',
-)]]></emote>
-		<emote name='41'><![CDATA[array (
-  '8-)' => 'shades.png',
-)]]></emote>
-		<emote name='42'><![CDATA[array (
-  ':O' => 'suprised.png',
-)]]></emote>
-		<emote name='43'><![CDATA[array (
-  ':oO' => 'suprised.png',
-)]]></emote>
-		<emote name='44'><![CDATA[array (
-  ':-O' => 'suprised.png',
-)]]></emote>
-		<emote name='45'><![CDATA[array (
-  ':p' => 'tongue.png',
-)]]></emote>
-		<emote name='46'><![CDATA[array (
-  ':op' => 'tongue.png',
-)]]></emote>
-		<emote name='47'><![CDATA[array (
-  ':-p' => 'tongue.png',
-)]]></emote>
-		<emote name='48'><![CDATA[array (
-  ':P' => 'tongue.png',
-)]]></emote>
-		<emote name='49'><![CDATA[array (
-  ':oP' => 'tongue.png',
-)]]></emote>
-		<emote name='50'><![CDATA[array (
-  ':-P' => 'tongue.png',
-)]]></emote>
-		<emote name='51'><![CDATA[array (
-  ';)' => 'wink.png',
-)]]></emote>
-		<emote name='52'><![CDATA[array (
-  ';o)' => 'wink.png',
-)]]></emote>
-		<emote name='53'><![CDATA[array (
-  ';-)' => 'wink.png',
-)]]></emote>
-		<emote name='54'><![CDATA[array (
-  '!ill' => 'ill.png',
-)]]></emote>
-		<emote name='55'><![CDATA[array (
-  '!amazed' => 'amazed.png',
-)]]></emote>
-		<emote name='56'><![CDATA[array (
-  '!cry' => 'cry.png',
-)]]></emote>
-		<emote name='57'><![CDATA[array (
-  '!dodge' => 'dodge.png',
-)]]></emote>
-		<emote name='58'><![CDATA[array (
-  '!alien' => 'alien.png',
-)]]></emote>
-		<emote name='59'><![CDATA[array (
-  '!heart' => 'heart.png',
-)]]></emote>
+		<emote name='alien!png'>!alien</emote>
+		<emote name='amazed!png'>!amazed</emote>
+		<emote name='angry!png'>!grr !angry</emote>
+		<emote name='biglaugh!png'>!lol</emote>
+		<emote name='cheesey!png'>:D :oD :-D</emote>
+		<emote name='confused!png'>:? :o? :-?</emote>
+		<emote name='cry!png'><![CDATA[&| &-| &o| :(( !cry]]></emote>
+		<emote name='dead!png'>x) xo) x-) x( xo( x-(</emote>
+		<emote name='dodge!png'>!dodge</emote>
+		<emote name='frown!png'>:( :o( :-(</emote>
+		<emote name='gah!png'>:@ :o@ :o@</emote>
+		<emote name='grin!png'>:D :oD :-D</emote>
+		<emote name='heart!png'>!heart</emote>
+		<emote name='idea!png'>:! :o! :-!</emote>
+		<emote name='ill!png'>!ill</emote>
+		<emote name='mad!png'>~:( ~:o( ~:-(</emote>
+		<emote name='mistrust!png'>!mistrust</emote>
+		<emote name='neutral!png'>:| :o| :-|</emote>
+		<emote name='question!png'>?!</emote>
+		<emote name='rolleyes!png'>B) Bo) B-)</emote>
+		<emote name='sad!png'>!sad</emote>
+		<emote name='shades!png'>8) 8o) 8-)</emote>
+		<emote name='shy!png'>!shy</emote>
+		<emote name='smile!png'>:) :o) :-)</emote>
+		<emote name='special!png'>%-6</emote>
+		<emote name='suprised!png'>:O :oO :-O</emote>
+		<emote name='tongue!png'>:p :op :-p :P :oP :-P</emote>
+		<emote name='wink!png'>;) ;o) ;-)</emote>
 		<menu name='clock_caption'>Date / Time</menu>
 		<menu name='comment_caption'>Latest Comments</menu>
 		<menu name='comment_characters'>50</menu>
@@ -517,7 +365,7 @@ City, State, Country
     'class' => '254',
     'email' => '',
   ),
-  'newsdel' =>
+  'newsdel' => 
   array (
     'class' => '254',
     'email' => '',
@@ -791,10 +639,10 @@ City, State, Country
 		<item>
 			<field name='news_id'>1</field>
 			<field name='news_title'>Welcome to e107</field>
-			<field name='news_body'></field>
+			<field name='news_body'>Welcome :-) :-( :-)))</field>
 			<field name='news_extended'></field>
 			<field name='news_datestamp'>1251665200</field>
-			<field name='news_author'>0</field>
+			<field name='news_author'>1</field>
 			<field name='news_category'>1</field>
 			<field name='news_allow_comments'>1</field>
 			<field name='news_start'>0</field>

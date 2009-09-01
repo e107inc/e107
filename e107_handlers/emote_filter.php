@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-25 07:54:34 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.4 $
+|     $Date: 2009-09-01 20:09:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,6 +32,8 @@ class e_emotefilter {
 			$pref['emotepack'] = "default";
 			save_prefs();
 		}
+		
+
 		$this->emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
 
 		foreach($this->emotes as $key => $value)
@@ -46,6 +48,7 @@ class e_emotefilter {
 			$key = str_replace("!", "_", $key);
 
 			  $filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
+			  
 			  $fileloc = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
 
 			  if(file_exists($filename))
