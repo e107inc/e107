@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2009-07-07 23:17:41 $
+|     $Revision: 1.39 $
+|     $Date: 2009-09-01 00:04:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,7 @@ $text .= "'"; // end of buttons 2
 
 $text .= ",theme_advanced_buttons3 : ''";
 $text .= ",theme_advanced_toolbar_location : 'top'";
-$text .= ",extended_valid_elements : 'p[style],a[name|href|target|rel|title|style|class],img[class|src|style|alt|title|name],hr[class],span[align|class|style],div[align|class|style|height|width] ,table[class|style|cellpadding|cellspacing|background|height|width],td[background|style|class|valign|align|height|width]'";
+$text .= ",extended_valid_elements : ''\n";
 $text .= ",invalid_elements: 'p,font,align,script,applet,iframe'\n";
 $text .= ",auto_cleanup_word: true\n";
 $text .= ",convert_fonts_to_spans : true\n";
