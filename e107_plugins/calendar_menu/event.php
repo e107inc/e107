@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2009-08-15 11:54:31 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.35 $
+|     $Date: 2009-09-01 19:28:34 $
+|     $Author: e107steved $
 |
 | 09.11.06 - Started next batch of mods
 +----------------------------------------------------------------------------+
@@ -69,7 +69,7 @@ if (isset($_POST['ne_cat_create']))
 }
 */
 // Event to add or update
-if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && USER == true)
+if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super || check_class($pref['eventpost_admin'])))
 {  
   if (($_POST['ne_event'] == "") || !isset($_POST['qs']))
   {	// Problem - tell user to go away
