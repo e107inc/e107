@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2009-08-17 18:42:20 $
+|     $Revision: 1.45 $
+|     $Date: 2009-09-01 02:00:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ require_once(e_HANDLER.'db_table_admin_class.php');
 // To do - how do we handle multi-language tables?
 
 // If following line uncommented, enables a test routine
-//define('TEST_UPDATE',TRUE);
+// define('TEST_UPDATE',TRUE);
 $update_debug = FALSE;			// TRUE gives extra messages in places
 //$update_debug = TRUE;			// TRUE gives extra messages in places
 if (defined('TEST_UPDATE')) $update_debug = TRUE;
@@ -178,8 +178,9 @@ function update_check()
 
 	require_once(e_HANDLER."e_upgrade_class.php");
 	$upg = new e_upgrade;
-	$upg->checkSiteTheme();
-	$upg->checkAllPlugins();
+	//TODO Enable this before release!!
+//	$upg->checkSiteTheme();
+ //	$upg->checkAllPlugins();
 
 
 //--------------------------------------------
@@ -284,28 +285,32 @@ function update_706_to_800($type='')
 	global $sysprefs, $eArrayStorage, $tp;
 	$notify_prefs = $sysprefs -> get('notify_prefs');
 	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
+
 	$nt_changed = 0;
-	foreach ($notify_prefs['event'] as $e => $d)
+	if(vartrue($notify_prefs['event']))
 	{
-		if (isset($d['type']))
+		foreach ($notify_prefs['event'] as $e => $d)
 		{
-			if ($just_check) return update_needed('Notify pref: '.$e.' outdated');
-			switch ($d['type'])
+			if (isset($d['type']))
 			{
-				case 'main' :
-					$notify_prefs['event'][$e]['class'] = e_UC_MAINADMIN;
-					break;
-				case 'class' :		// Should already have class defined
-					break;
-				case 'email' :
-					$notify_prefs['event'][$e]['class'] = 'email';
-					break;
-				case 'off' :		// Need to disable
-				default :
-					$notify_prefs['event'][$e]['class'] = e_UC_NOBODY;		// Just disable if we don't know what else to do
+				if ($just_check) return update_needed('Notify pref: '.$e.' outdated');
+				switch ($d['type'])
+				{
+					case 'main' :
+						$notify_prefs['event'][$e]['class'] = e_UC_MAINADMIN;
+						break;
+					case 'class' :		// Should already have class defined
+						break;
+					case 'email' :
+						$notify_prefs['event'][$e]['class'] = 'email';
+						break;
+					case 'off' :		// Need to disable
+					default :
+						$notify_prefs['event'][$e]['class'] = e_UC_NOBODY;		// Just disable if we don't know what else to do
+				}
+				$nt_changed++;
+				unset($notify_prefs['event'][$e]['type']);
 			}
-			$nt_changed++;
-			unset($notify_prefs['event'][$e]['type']);
 		}
 	}
 	if ($nt_changed)
@@ -953,8 +958,9 @@ function catch_error(&$target)
 
 function get_default_prefs()
 {
-  require(e_FILE."def_e107_prefs.php");
-  return $pref;
+	$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_FILE."default_install.xml",'advanced');
+	$pref = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
+	return $pref;
 }
 
 

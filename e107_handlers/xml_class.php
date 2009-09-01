@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-08-31 13:12:03 $
+ * $Revision: 1.20 $
+ * $Date: 2009-09-01 02:00:56 $
  * $Author: e107coders $
 */
 
@@ -618,6 +618,34 @@ class xmlClass
 	}
 	
 	/**
+	 * Return an Array of core preferences from e107 XML Dump data
+	 * @param object $XMLData Raw XML e107 Export Data
+	 * @param object $prefType [optional] the type of core pref: core|emote|ipool|menu etc. 
+	 * @return preference array equivalent to the old $pref global;
+	 */
+	public function e107ImportPrefs($XMLData,$prefType='core')
+	{
+		if(!vartrue($XMLData['prefs'][$prefType]))
+		{
+			return;
+		} 
+		
+		$pref = array();
+		foreach($XMLData['prefs'][$prefType] as $val)
+		{
+			$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+			$name = $val['@attributes']['name'];
+			$pref[$name] = $value;									
+		}	
+		
+		return $pref;	
+	}
+	
+	
+	
+	
+	
+	/**
 	 * Import an e107 XML file into site preferences and DB tables
 	 * @param path $file - e107 XML file path
 	 * @param string $only [optional] - prefs|database
@@ -642,14 +670,13 @@ class xmlClass
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
 			{
-				foreach ($array as $val)
+				$pArray = $this->e107ImportPrefs($xmlArray,$type);
+				e107::getConfig($type)->setPref($pArray);
+
+				if($debug == FALSE)
 				{
-				 	$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
-					e107::getConfig($type)->set($val['@attributes']['name'], $value);
-					
-				}
-			
-			  	e107::getConfig($type)->save(FALSE);
+					 e107::getConfig($type)->save(FALSE,TRUE);	
+				}			  	
 			}
 		}
 		
@@ -683,6 +710,8 @@ class xmlClass
 		
 		return $ret;				
 	}
+	
+	
 
 
 }

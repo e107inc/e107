@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.31 $
-* $Date: 2009-08-31 14:37:24 $
+* $Revision: 1.32 $
+* $Date: 2009-09-01 02:00:56 $
 * $Author: e107coders $
 *
 */
@@ -965,8 +965,10 @@ class e_install
 		
 		$this->previous_steps['prefs']['replyto_name']		= $this->previous_steps['admin']['display'];
 		$this->previous_steps['prefs']['replyto_email']		= $this->previous_steps['admin']['email'];
-		    	
 		
+		$cookiename 										= str_replace(" ","_",$this->previous_steps['prefs']['sitename']);
+		$this->previous_steps['prefs']['cookie_name']		= substr($cookiename,0,5)."cookie";
+		    			
 		foreach($this->previous_steps['prefs'] as $key=>$val)
 		{
 			// e107::getConfig('core')->set($key, $val); //FIXME - pref class issues. 
