@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-08-30 08:23:49 $
+|     $Revision: 1.4 $
+|     $Date: 2009-09-02 17:27:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -85,6 +85,8 @@ class comment_manager
 	{
         $this->fieldpref = (varset($user_pref['admin_cpage_columns'])) ? $user_pref['admin_cpage_columns'] : array("comment_id","comment_pid","comment_item_id","comment_subject","comment_comment","comment_author","comment_datestamp");
 
+		//TODO Add LANS
+
     	$this->fields = array(
 			'comment_id'			=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE),
        		'comment_item_id' 		=> array('title'=> "item id", 'type' => 'text', 'width' => 'auto'),
@@ -112,8 +114,7 @@ class comment_manager
 	{
 		global $pref;
          $sql = e107::getDb();
-         require_once(e_HANDLER."form_handler.php");
-		 $frm = new e_form(true);
+		 $frm = e107::getSingleton('e_form');
 
          $sql -> db_Select("comments", "*");
 
