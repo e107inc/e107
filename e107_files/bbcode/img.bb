@@ -80,6 +80,7 @@ if (strpos($img_file['basename'],'*') !== FALSE)
 	}
 }
 
+$pref['image_post_class'] = 0;
 
 // Check for whether we can display image down here - so we can show image name if appropriate
 if (!varsettrue($pref['image_post']) || !check_class($pref['image_post_class']))
