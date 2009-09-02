@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-08-31 13:12:03 $
+ * $Revision: 1.27 $
+ * $Date: 2009-09-02 17:27:29 $
  * $Author: e107coders $
  *
 */
@@ -337,7 +337,7 @@ class system_tools
 	{
 		
 		$frm = e107::getSingleton('e_form');
-	
+	//TODO LANs
 		
 		$text = "<form method='post' action='".e_SELF."' id='core-db-export-form'>
 			<fieldset id='core-db-export'>
@@ -347,10 +347,10 @@ class system_tools
 					
 					<col style='width: 80%'></col>
 					<col style='width: 20%'></col>
-				</colgroup>
+				</colgroup>	
 				<thead>
 				<tr>
-					<th>Name</th>
+					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." Preferences</th>
 					<th class='right'>Rows</th>
 					
 				</tr>	
@@ -375,7 +375,24 @@ class system_tools
 							</tr>";
 						}
 					}
+					$text .= "</tbody>
+				</table>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+				
+				<colgroup span='2'>
 					
+					<col style='width: 80%'></col>
+					<col style='width: 20%'></col>
+				</colgroup>	
+				<thead>
+				<tr>
+					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_tables')."Tables</th>
+					<th class='right'>Rows</th>
+					
+				</tr>	
+				</thead>
+				<tbody>\n";
+				
 					$tables = table_list();
 					
 					foreach($tables as $name=>$count)
@@ -389,8 +406,31 @@ class system_tools
 					}
 	
 					$text .="
+					
 					</tbody>
 				</table>
+				
+				<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup span='2'>
+					
+					<col style='width: 80%'></col>
+					<col style='width: 20%'></col>
+				</colgroup>	
+				<thead>
+				<tr>
+					<th colspan='2'>".LAN_OPTIONS."</th>
+				</tr>	
+				</thead>
+				<tbody>
+				<tr>
+						<td colspan='2'>
+						".$frm->checkbox("package_images",'package_images')." Convert Image-paths and package images.   
+						   Destination Path: <input type='text' name='package_path' value='' /> (not functional)
+						</td>
+					</tr>
+				</tbody>
+				</table>
+				
 				<div class='buttons-bar center'>
 					".$frm->admin_button('exportXmlFile', "Export File", 'exportXmlFile')."
 				</div>
@@ -662,7 +702,16 @@ function db_adminmenu()
 
 function exportXmlFile($prefs,$tables,$debug=FALSE)
 {
-	e107::getSingleton('xmlClass')->e107Export($prefs,$tables,FALSE);		
+	$xml = e107::getSingleton('xmlClass');
+	
+	if(vartrue($_POST['package_images']) && vartrue($_POST['package_path']))
+	{
+		// TODO Conversion of Image paths - in xml-class and e_parse_class? 
+		// $xml->convertImagePaths = TRUE;
+		// $xml->destinationPath = $_POST['package_path'];		
+	}
+	
+	$xml->e107Export($prefs,$tables,FALSE);		
 }
 
 
