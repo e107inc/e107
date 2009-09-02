@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2009-08-31 14:37:24 $
+|     $Revision: 1.41 $
+|     $Date: 2009-09-02 17:45:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -312,18 +312,18 @@ class pluginManager{
 				}
 
 				$admin_log->log_event('PLUGMAN_03', $plug['plugin_path'], E_LOG_INFORMATIVE, '');
-                print_a($pref['plug_installed']);
+    
 				if (isset($pref['plug_installed'][$plug['plugin_path']]))
 				{
-					print_a($plug);
+		
 					unset($pref['plug_installed'][$plug['plugin_path']]);
 					if(save_prefs())
 					{
-                    	echo "WORKED";
+                    	// echo "WORKED";
 					}
 					else
 					{
-                    	echo "FAILED";
+                    	// echo "FAILED";
 					}
 				}
 			}
