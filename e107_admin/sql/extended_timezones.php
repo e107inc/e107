@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/sql/extended_timezones.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-01-15 21:57:15 $
-|     $Author: e107steved $
+|     $Revision: 1.2 $
+|     $Date: 2009-09-02 16:39:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -24,6 +24,8 @@ The variable name must be 'timezones_list', and is an array of possible values, 
 The text is displayed in a drop-down; the value is returned.
 If function timezones_value() exists, it is called to create the displayed text
 */
+
+//FIXME - remove globals. 
 global $timezones_list;
 if (!is_array($timezones_list))
 {
