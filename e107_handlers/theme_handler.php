@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.50 $
- * $Date: 2009-08-31 14:37:24 $
+ * $Revision: 1.51 $
+ * $Date: 2009-09-02 02:38:50 $
  * $Author: e107coders $
 */
 
@@ -33,6 +33,21 @@ class themeHandler{
 	var $frm;
 	var $fl;
 	var $themeConfigObj = null;
+	public $allowedCategories = array(
+		'generic',
+		'adult',
+		'blog',
+		'clan',
+		'children',
+		'corporate',
+		'forum',
+		'gaming',
+		'gallery',
+		'news',
+		'social',
+		'video',
+		'multimedia'	
+	);
 
 	/* constructor */
 
@@ -247,7 +262,31 @@ class themeHandler{
 
 	}
 
-
+	/**
+	 * Validate and return the name of the category
+	 * @param object $categoryfromXML
+	 * @return 
+	 */
+	function getThemeCategory($categoryfromXML)
+	{
+		$tmp = explode(",",$categoryfromXML);
+		$category = array();
+		foreach($tmp as $cat)
+		{
+			$cat = trim($cat);
+			if(in_array($cat,$this->allowedCategories))
+			{
+				$category[] = $cat;
+			}
+			else
+			{
+				$category[] = '(invalid category)';	
+			}
+		}
+			
+		return implode(', ',$category);
+		
+	}
 
 
 
@@ -634,7 +673,7 @@ class themeHandler{
 		<h2 class='caption'>".$theme['name']."</h2>
         <div class='admintabs' id='tab-container'>";
 
-        if(call_user_func(array(&$this->themeConfigObj, 'help')))
+        if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'help')))
 		{
 			$text .= "
 				<ul class='e-tabs e-hideme' id='core-thememanager-tabs'>
@@ -662,7 +701,7 @@ class themeHandler{
 		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>";
 
 		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>";
-
+		$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_CATEGORY."</b>:</td><td style='vertical-align:top'>".$theme['category']."</td></tr>";
          $text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td>
 			<td style='vertical-align:top'>";
         $text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : "Not Specified";
@@ -1211,6 +1250,7 @@ class themeHandler{
       	$vars['website'] 				= varset($vars['author']['@attributes']['url']);
 		$vars['author']				   	= varset($vars['author']['@attributes']['name']);
 		$vars['info'] 					= $vars['description'];
+		$vars['category'] 				= $this->getThemeCategory($vars['category']);
 		$vars['xhtmlcompliant'] 		= varset($vars['compliance']['@attributes']['xhtml']);
 		$vars['csscompliant'] 			= varset($vars['compliance']['@attributes']['css']);
 		$vars['path']					= $path;
