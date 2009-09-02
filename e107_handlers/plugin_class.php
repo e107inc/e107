@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2009-08-31 02:00:51 $
+|     $Revision: 1.76 $
+|     $Date: 2009-09-02 02:05:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -322,7 +322,7 @@ class e107plugin
        		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
 		}
 
- 		$srch = array(e_PLUGIN,"/images/","/icons/");
+ 		$srch = array(e_PLUGIN,"/images/","/icons/","/icon/");
 		$repl = array("","","");
 
 		foreach($plugin_icons as $file)
@@ -331,6 +331,9 @@ class e107plugin
 			$key = "plugin-".$path;
        		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
 		}
+
+		$srch = array(e_THEME,"/images/","/icons/","/demo/");
+		$repl = array("","","");
 
 		foreach($theme_icons as $file)
 		{
