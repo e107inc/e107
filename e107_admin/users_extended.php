@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/users_extended.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-08-28 16:10:58 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.20 $
+|     $Date: 2009-09-02 16:39:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -381,7 +381,7 @@ class users_ext
 				$i=0;
 				$category_name = $this->catList[$cn][0]['user_extended_struct_name'];
 
-				if(count($extendedList))  //	Show current extended fields
+				if(count($extendedList[$cn]))  //	Show current extended fields
 				{
 					foreach($extendedList[$cn] as $ext)
 					{
@@ -414,7 +414,7 @@ class users_ext
 							}
 							$text .= "
 						  	</td>
-							<td class='forumheader3' style='width:10%;text-align:center;'>
+							<td class='center' style='width:10%'>
 
 							<a style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
 		 					<input type='image' title='".LAN_DELETE."' name='eudel[".$id."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$name."' onclick='return confirm(\"".EXTLAN_27."\")' />
@@ -428,7 +428,7 @@ class users_ext
 				{
 						$text .= "
 						<tr>
-						<td colspan='8' class='forumheader3' style='text-align:center'>".EXTLAN_28."</td>
+						<td colspan='8' class='center'>".EXTLAN_28."</td>
 						</tr>
 						";
 				}
@@ -505,7 +505,7 @@ class users_ext
 
 			$text .= "<tr>
 			<td >".EXTLAN_14."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
+			<td colspan='3'>
 			<select onchange='changeHelp(this.value)' class='tbox' name='user_type' id='user_type'>";
 			foreach($ue->user_extended_types as $key => $val)
 			{
@@ -759,14 +759,17 @@ class users_ext
 		$text .= "
         <table cellpadding='0' cellspacing='0' class='adminlist'>
 
+		<thead>
 		<tr>
-		<td class='fcaption'>".EXTLAN_1."</td>
-		<td class='fcaption'>".EXTLAN_5."</td>
-		<td class='fcaption'>".EXTLAN_6."</td>
-		<td class='fcaption'>".EXTLAN_7."</td>
-		<td class='fcaption'>&nbsp;</td>
-		<td class='fcaption'>".EXTLAN_8."</td>
+		<th>".EXTLAN_1."</th>
+		<th>".EXTLAN_5."</th>
+		<th>".EXTLAN_6."</th>
+		<th>".EXTLAN_7."</th>
+		<th>&nbsp;</td>
+		<th>".EXTLAN_8."</th>
 		</tr>
+		</thead>
+		<tbody>
 		";
 		$catList = $ue->user_extended_get_categories(FALSE);
 		if(count($catList))
@@ -783,12 +786,12 @@ class users_ext
 				}
 
 				$text .= "
-				<td class='forumheader3'>{$ext['user_extended_struct_name']}</td>
+				<td>{$ext['user_extended_struct_name']}</td>
 				</td>
-				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
-				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
-				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
-				<td class='forumheader3'>
+				<td>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
+				<td>".r_userclass_name($ext['user_extended_struct_read'])."</td>
+				<td>".r_userclass_name($ext['user_extended_struct_write'])."</td>
+				<td>
 				<form method='post' action='".e_SELF."?cat'>
 				<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}' />
 				";
@@ -805,7 +808,7 @@ class users_ext
 				$text .= "
 				</form>
 				</td>
-				<td class='forumheader3' style='text-align:center; white-space: nowrap'>
+				<td class='center' style='white-space: nowrap'>
 				<form method='post' action='".e_SELF."?cat' onsubmit='return confirm(\"".EXTLAN_27."\")'>
 				<input type='hidden' name='eu_action' value='delcat' />
 				<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
@@ -822,13 +825,13 @@ class users_ext
 		{
 			$text .= "
 			<tr>
-			<td colspan='8' class='forumheader3' style='text-align:center'>".EXTLAN_37."</td>
+			<td colspan='8' class='center'>".EXTLAN_37."</td>
 			</tr>
 			";
 		}
 
 		//Show add/edit form
-		$text .= "
+		$text .= "</tbody>
 		</table>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		";
@@ -1050,7 +1053,7 @@ class users_ext
 				{
 					if (is_readable(e_ADMIN.'sql/extended_'.$f.'.php'))
 					{
-	             	$ret .= (process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
+	             	$ret .= ($this->process_sql($f)) ? LAN_CREATED." user_extended_{$f}<br />" : LAN_CREATED_FAILED." user_extended_{$f}<br />";
 				}
 					else
 					{
@@ -1137,6 +1140,8 @@ class users_ext
 
 function headerjs()
 {
+	
+	//FIXME
 	include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 	$text = "
 	<script type='text/javascript'>

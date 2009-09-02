@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.58 $
-* $Date: 2009-08-20 12:27:26 $
-* $Author: secretr $
+* $Revision: 1.59 $
+* $Date: 2009-09-02 16:39:32 $
+* $Author: e107coders $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -1126,7 +1126,11 @@ class e_parse
 	}
 
 
-	// Convert text blocks which are to be embedded within JS
+	/**
+	 * Convert text blocks which are to be embedded within JS
+	 * @param object $stringarray
+	 * @return 
+	 */
 	function toJS($stringarray)
 	{
 		$search = array("\r\n","\r","<br />","'");
@@ -1141,7 +1145,12 @@ class e_parse
 	}
 
 
-
+	/**
+	 * Convert Text for RSS/XML use. 
+	 * @param object $text
+	 * @param object $tags [optional]
+	 * @return 
+	 */
 	function toRss($text,$tags=FALSE)
 	{
 		if($tags != TRUE)
@@ -1172,18 +1181,18 @@ class e_parse
 		return $text;
 	}
 
-//
-// $nonrelative:
-//   "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
-//   TRUE = produce truncated URL path, e.g. e107plugins/etc
-//   "" (default) = URL's get relative path e.g. ../e107_plugins/etc
-//
-// $all - if TRUE, then
-//		when $nonrelative is "full" or TRUE, USERID is also replaced...
-//		when $nonrelative is "" (default), ALL other e107 constants are replaced
-//
-// only an ADMIN user can convert {e_ADMIN}
-//
+
+	/**
+	 * Replace e107 path constants
+	 * Note: only an ADMIN user can convert {e_ADMIN}	
+	 * @param object $text
+	 * @param object $mode [optional]  	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
+	 * 									TRUE = produce truncated URL path, e.g. e107plugins/etc
+	 * 									"" (default) = URL's get relative path e.g. ../e107_plugins/etc
+	 * @param object $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
+	 * 									when $mode is "" (default), ALL other e107 constants are replaced
+	 * @return 
+	 */
 	function replaceConstants($text, $mode = '', $all = false)
 	{
 		if($mode != "")
