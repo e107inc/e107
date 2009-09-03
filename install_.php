@@ -2,15 +2,15 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2001-2008 e107 Inc (e107.org)
+* Copyright (C) 2001-2009 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.33 $
-* $Date: 2009-09-03 14:39:20 $
+* $Revision: 1.34 $
+* $Date: 2009-09-03 22:27:32 $
 * $Author: e107coders $
 *
 */
@@ -68,6 +68,8 @@ function e107_ini_set($var, $value)
 		ini_set($var, $value);
 	}
 }
+
+
 
 // setup some php options
 e107_ini_set('magic_quotes_runtime',     0);
@@ -131,6 +133,16 @@ header("Content-type: text/html; charset=utf-8");
 
 include_once("./{$HANDLERS_DIRECTORY}core_functions.php");
 include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
+
+function include_lan($path, $force = false)
+{
+	return e107::getLan($path, $force);
+}
+
+function check_class($whatever)
+{
+	return TRUE;
+}
 
 
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
@@ -892,13 +904,26 @@ class e_install
 		$this->template->SetTag("stage_content", $page.$e_forms->return_form());
 	}
 
+
+
 	/**
 	 * Import and Generate Preferences and default content.
 	 * @return 
 	 */
 	private function import_configuration()
 	{
+		// Basic stuff to get the handlers/classes to work.
+		
 		define("E107_INSTALL",TRUE); //FIXME - remove the need for this - ie. make the MySQL class work without it. 
+		$udirs = "admin/|plugins/|temp";
+		$e_SELF = $_SERVER['PHP_SELF'];
+		$e_HTTP = preg_replace("#".$udirs."#i", "", substr($e_SELF, 0, strrpos($e_SELF, "/"))."/");
+	
+		define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? true : false));
+		define("CHARSET",'utf-8');
+		define("e_LANGUAGE", $this->previous_steps['language']);
+		define('e_SELF', 'http://'.$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']);	
+
 		
 		$themeImportFile = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install.xml"; 
 		if($this->previous_steps['generate_content']==1 && is_readable($themeImportFile))
@@ -909,41 +934,22 @@ class e_install
 		{
 			$XMLImportfile = $this->e107->e107_dirs['FILES_DIRECTORY']. "default_install.xml";			
 		}
-			
-		// Insert Defaults. 
-		$udirs = "admin/|plugins/|temp";
-		$e_SELF = $_SERVER['PHP_SELF'];
-		$e_HTTP = preg_replace("#".$udirs."#i", "", substr($e_SELF, 0, strrpos($e_SELF, "/"))."/");
-
-		$pref_language = isset($this->previous_steps['language']) ? $this->previous_steps['language'] : "English";
-
-		if (is_readable($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$pref_language."/lan_prefs.php"))
-		{
-			include_once($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$pref_language."/lan_prefs.php");
-		}
-		else
-		{
-			include_once($this->e107->e107_dirs['LANGUAGES_DIRECTORY']."English/lan_prefs.php");
-		}
-
-		require_once("{$this->e107->e107_dirs['FILES_DIRECTORY']}def_e107_prefs.php"); // could be deprecated if need be
-		include_once("{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}arraystorage_class.php");
-						
-		$tmp = ArrayData::WriteArray($pref);
-
-		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}core VALUES ('SitePrefs', '{$tmp}')");
-		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}core VALUES ('SitePrefs_Backup', '{$tmp}')");
 		
+
+		$tp = e107::getParser();
+			
+		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
+			
 		//Create default plugin-table entries. 
-		e107::getSingleton('e107plugin')->update_plugins_table(); //FIXME - also relies on pref class. 
+		e107::getSingleton('e107plugin')->update_plugins_table(); 
 				
 		// Install Theme-required plugins
 		if($this->previous_steps['install_plugins']==1)
 		{
 			if($themeInfo = $this->get_theme_xml($this->previous_steps['prefs']['sitetheme']))
 			{
-				if(varset($themeInfo['plugins']['plugin']))
-				{
+				if(isset($themeInfo['plugins']['plugin']))
+				{				
 					foreach($themeInfo['plugins']['plugin'] as $k=>$plug) 
 					{
 						 $this->install_plugin($plug['@attributes']['name']);	
@@ -951,10 +957,11 @@ class e_install
 				}
 			}
 		}
-						
-		// Import Site-Data from XML.	
-		//FIXME remove 'database' from the function below, once the pref handler is working. 			
-		e107::getSingleton('xmlClass')->e107Import($XMLImportfile); // includes non-core preferences
+		
+		
+					
+		e107::getSingleton('xmlClass')->e107Import($XMLImportfile,'add'); // Add missing core pref values
+		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.			
 		
 		// Set Preferences defined during install - overwriting those that may exist in the XML. 
 		
@@ -977,9 +984,10 @@ class e_install
 		    			
 		foreach($this->previous_steps['prefs'] as $key=>$val)
 		{
-			e107::getConfig('core')->set($key, $val); //FIXME - pref class issues. 
+			e107::getConfig('core')->set($key,$val);  	
 		}
-		e107::getConfig('core')->save(FALSE); //FIXME - pref class issues. 
+		
+		e107::getConfig('core')->save(FALSE); // save preferences made during install. 
 				
 		// Create the admin user - replacing any that may be been included in the XML. 
 		$ip = $_SERVER['REMOTE_ADDR'];
@@ -998,7 +1006,7 @@ class e_install
 	 */
 	private function install_plugin($plugpath) //FIXME - requires default plugin table entries, see above. 
 	{
-		e107::getDb()->db_Select('plugin','plugin_id',"plugin_path='".$plugpath." LIMIT 1");
+		e107::getDb()->db_Select_gen("SELECT * FROM #plugin WHERE plugin_path = '".$plugpath."' LIMIT 1");
 		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC); 
 		e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
 		return;	

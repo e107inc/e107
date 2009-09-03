@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-09-01 02:00:56 $
+ * $Revision: 1.21 $
+ * $Date: 2009-09-03 22:27:32 $
  * $Author: e107coders $
 */
 
@@ -212,7 +212,7 @@ class xmlClass
 
 	/**
 	 * Get Remote file contents
-	 * 
+	 *
 	 * @param string $address
 	 * @param integer $timeout [optional] seconds
 	 * @return string
@@ -228,7 +228,7 @@ class xmlClass
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
 			$data = file_get_contents(urlencode($address));
-			echo "data=".$data;
+	
 			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
 			{
@@ -648,11 +648,11 @@ class xmlClass
 	/**
 	 * Import an e107 XML file into site preferences and DB tables
 	 * @param path $file - e107 XML file path
-	 * @param string $only [optional] - prefs|database
+	 * @param string $mode[optional] - add|replace
 	 * @param boolean $debug [optional]
 	 * @return array with keys 'success' and 'failed' - DB table entry status. 
 	 */
-	public function e107Import($file,$only='',$debug=FALSE)
+	public function e107Import($file,$mode='replace',$debug=FALSE)
 	{
 
 		$xmlArray = $this->loadXMLfile($file,'advanced');
@@ -666,12 +666,19 @@ class xmlClass
 		$ret = array();
 		
 		//FIXME - doesn't work from install_.php. 		
-		if(vartrue($xmlArray['prefs']) && $only !='database') // Save Core Prefs
+		if(vartrue($xmlArray['prefs'])) // Save Core Prefs
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
 			{
 				$pArray = $this->e107ImportPrefs($xmlArray,$type);
-				e107::getConfig($type)->setPref($pArray);
+				if($mode == 'replace')
+				{
+					e107::getConfig($type)->setPref($pArray);
+				}
+				else
+				{
+					e107::getConfig($type)->addPref($pArray);
+				}
 
 				if($debug == FALSE)
 				{
@@ -680,7 +687,7 @@ class xmlClass
 			}
 		}
 		
-		if(vartrue($xmlArray['database']) && $only !='prefs')
+		if(vartrue($xmlArray['database']))
 		{
 			foreach($xmlArray['database']['dbTable'] as $val)
 			{
@@ -696,9 +703,13 @@ class xmlClass
 					
 						$insert_array[$fieldkey] = $fieldval;											
 					}
-					if(e107::getDB()->db_Replace($table, $insert_array)!==FALSE)
+					if(($mode == "replace") && e107::getDB()->db_Replace($table, $insert_array)!==FALSE)
 					{			
 						$ret['success'][] = $table;				
+					}
+					elseif(($mode == "add") && e107::getDB()->db_Insert($table, $insert_array)!==FALSE)
+					{
+						$ret['success'][] = $table;		
 					}
 					else
 					{

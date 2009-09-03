@@ -11,13 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2009-09-03 01:27:27 $
+|     $Revision: 1.78 $
+|     $Date: 2009-09-03 22:27:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
 
 class e107plugin
 {
@@ -102,8 +104,8 @@ class e107plugin
 	*/
 	function getall($flag)
 	{
-
-		global $sql;
+		$sql = e107::getDb();
+		
 		if ($sql->db_Select("plugin","*","plugin_installflag = ".(int)$flag." ORDER BY plugin_path ASC"))
 		{
 			$ret = $sql->db_getList();
@@ -118,17 +120,19 @@ class e107plugin
 	*/
 	function update_plugins_table()
 	{
+				
 		$sql = e107::getDb();
 		$sql2 = e107::getDb('sql2');
+		$tp = e107::getParser();
 		
-		global $mySQLprefix, $menu_pref, $tp, $pref;
+		global $mySQLprefix, $menu_pref, $pref;
 
 		require_once(e_HANDLER.'file_class.php');
 
 		$fl = new e_file;
 		$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
 		$sp = FALSE;
-
+		
 		// Read all the plugin DB info into an array to save lots of accesses
 		$pluginDBList = array();
 		if ($sql->db_Select('plugin',"*"))
@@ -161,22 +165,32 @@ class e107plugin
 			}
 			$i++;
 		}
-
+		
+		$p_installed = e107::getPref('plug_installed',array()); // load preference; 
+		
 
 		foreach($pluginList as $p)
 		{
+			
 			$plug['plug_action'] = 'scan';			// Make sure plugin.php knows what we're up to
+			
+			$p['path'] = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
+			$plugin_path = $p['path'];
+			
 			if(!$this->parse_plugin($p['path']))
 			{
 				//parsing of plugin.php/plugin.xml failed.
+				
 			  require_once(e_HANDLER."message_handler.php");
 			  $emessage = &eMessage::getInstance();
 			  $emessage->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
-			 // echo <br />";
 			  continue;		// Carry on and do any others that are OK
 			}
+			
+				
+			
 			$plug_info = $this->plug_vars;
-			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
+		//	$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 
 			// scan for addons.
 			$eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
@@ -212,20 +226,19 @@ class e107plugin
 						$pluginDBList[$plugin_path]['status'] = 'update';
 					}
 
-					if ($pluginDBList[$plugin_path]['plugin_installflag'] == 0)
-					{  // Plugin not installed - make sure $pref not set
-						if (isset($pref['plug_installed'][$plugin_path]))
+					if ($pluginDBList[$plugin_path]['plugin_installflag'] == 0 ) // Plugin not installed - make sure $pref not set
+					{  
+						if(isset($p_installed[$plugin_path]))
 						{
-							unset($pref['plug_installed'][$plugin_path]);
-							//				  echo "Remove: ".$plugin_path."->".$ep_row['plugin_version']."<br />";
+							unset($p_installed[$plugin_path]);
 							$sp = TRUE;
 						}
 					}
 					else
 					{	// Plugin installed - make sure $pref is set
-						if (!isset($pref['plug_installed'][$plugin_path]) || ($pref['plug_installed'][$plugin_path] != $pluginDBList[$plugin_path]['plugin_version']))
+						if (!isset($p_installed[$plugin_path]) || ($p_installed[$plugin_path] != $pluginDBList[$plugin_path]['plugin_version']))
 						{	// Update prefs array of installed plugins
-							$pref['plug_installed'][$plugin_path] = $pluginDBList[$plugin_path]['plugin_version'];
+							$p_installed[$plugin_path] = $pluginDBList[$plugin_path]['plugin_version'];
 							//				  echo "Add: ".$plugin_path."->".$ep_row['plugin_version']."<br />";
 							$sp = TRUE;
 						}
@@ -240,7 +253,8 @@ class e107plugin
 						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1 );
-						$sql->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".$plug_info['category']."', '".varset($plug_info['@attributes']['releaseUrl'])."' ");
+						e107::getDb()->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".vartrue($plug_info['category'],'misc')."', '".varset($plug_info['@attributes']['releaseUrl'])."' ");
+
 					}
 				}
 			}
@@ -249,7 +263,7 @@ class e107plugin
 //						    echo "Plugin copied to wrong directory. Is in: {$plugin_path} Should be: {$plug_info['folder']}<br /><br />";
 			}
 
-		   ///	print_a($plug_info);
+		   	// print_a($plug_info);
 		}
 
 		// Now scan the table, updating the DB where needed
@@ -271,12 +285,19 @@ class e107plugin
 				//			echo "Updated: ".$plug_path."<br />";
 			}
 		}
-		if ($sp) { save_prefs(); }
+		if ($sp && vartrue($p_installed))
+		{
+			e107::getConfig('core')->setPref('plug_installed',$p_installed);
+			e107::getConfig('core')->save();
+		}
 	}
 
     function manage_icons($plugin='')
 	{
-		global $sql,$tp, $iconpool,$pref;
+		global $iconpool,$pref;
+	
+		$sql = e107::getDb();
+		$tp = e107::getParser();
 
          $query = "SELECT * FROM #plugin WHERE plugin_installflag =0 ORDER BY plugin_path ASC";
 		$sql->db_Select_gen($query);
@@ -342,9 +363,13 @@ class e107plugin
        		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
 		}
 
+	//	TODO Review pref-class method used below (a new function?), to simply add or update existing prefs. (without a global $pref)
+		foreach($iconpool as $key=>$val)
+		{
+			e107::getConfig('ipool')->set($key,$val); 	
+		}	 
 
-
-        return (save_prefs("iconpool")) ?  TRUE : FALSE;
+        return (e107::getConfig('ipool')->save(FALSE)) ?  TRUE : FALSE;
 
 	}
 
@@ -398,7 +423,10 @@ class e107plugin
 
 	function manage_userclass($action, $class_name, $class_description)
 	{
-		global $sql, $tp, $e107;
+		global $e107;
+		$tp = e107::getParser();
+		$sql  = e107::getDb();
+		
 		if (!$e107->user_class->isAdmin)
 		{
 			$e107->user_class = new user_class_admin;			// We need the extra methods of the admin extension
@@ -451,7 +479,9 @@ class e107plugin
 
 	function manage_link($action, $link_url, $link_name, $link_class = 0)
 	{
-		global $sql, $tp;
+		
+		$sql = e107::getDb();
+		$tp = e107::getParser();
 		
 		if( ! is_numeric($link_class))
 		{
@@ -569,7 +599,11 @@ class e107plugin
 			break;
 		}
 	  }
-	  save_prefs();
+	  
+  
+	//  e107::getConfig('core')->save(FALSE);
+	 // save_prefs(); //FIXME doesn't work from install.php
+	 e107::getConfig()->loadData($pref, false)->save(false, true);
 	}
 
 
@@ -577,7 +611,9 @@ class e107plugin
 
 	function manage_comments($action, $comment_id)
 	{
-		global $sql, $tp;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 		$tmp = array();
 		if($action == 'remove')
 		{
@@ -601,7 +637,7 @@ class e107plugin
 	//  'upgrade' and 'remove' operate on all language variants of the same table
 	function manage_tables($action, $var)
 	{
-	  global $sql;
+	  $sql = e107::getDB();
 	  if (!is_array($var)) return FALSE;			// Return if nothing to do
 
 	  switch ($action)
@@ -685,7 +721,8 @@ class e107plugin
 		{
 			$pref[$prefname] = substr($pref[$prefname], 1);
 		}
-		save_prefs();
+	//	save_prefs(); //FIXME - should be a better way to do this. 
+		e107::getConfig()->loadData($pref, false)->save(false, true);
 	}
 
 
@@ -693,8 +730,12 @@ class e107plugin
 
 	function manage_search($action, $eplug_folder)
 	{
-		global $sql, $sysprefs;
-		$search_prefs = $sysprefs -> getArray('search_prefs');
+		global $sysprefs;
+		$sql = e107::getDb();
+		
+		
+		$search_prefs = e107::getConfig('search');
+	//	$search_prefs = $sysprefs -> getArray('search_prefs');
 		$default = file_exists(e_PLUGIN.$eplug_folder.'/e_search.php') ? TRUE : FALSE;
 		$comments = file_exists(e_PLUGIN.$eplug_folder.'/search/search_comments.php') ? TRUE : FALSE;
 		if ($action == 'add')
@@ -726,20 +767,20 @@ class e107plugin
 				$install_comments = $comments ? TRUE : FALSE;
 			}
 		}
-		if ($install_default)
+		if (vartrue($install_default))
 		{
 			$search_prefs['plug_handlers'][$eplug_folder] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
 		}
-		else if ($uninstall_default)
+		else if (vartrue($uninstall_default))
 		{
 			unset($search_prefs['plug_handlers'][$eplug_folder]);
 		}
-		if ($install_comments)
+		if (vartrue($install_comments))
 		{
 			require_once(e_PLUGIN.$eplug_folder.'/search/search_comments.php');
 			$search_prefs['comments_handlers'][$eplug_folder] = array('id' => $comments_type_id, 'class' => 0, 'dir' => $eplug_folder);
 		}
-		else if ($uninstall_comments)
+		else if (vartrue($uninstall_comments))
 		{
 			unset($search_prefs['comments_handlers'][$eplug_folder]);
 		}
@@ -751,9 +792,14 @@ class e107plugin
 
 	function manage_notify($action, $eplug_folder)
 	{
-		global $sql, $sysprefs, $eArrayStorage, $tp;
-		$notify_prefs = $sysprefs -> get('notify_prefs');
-		$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
+		global $sysprefs, $eArrayStorage;
+		
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+	//	$notify_prefs = $sysprefs -> get('notify_prefs');
+	//	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
+		
+		$notify_prefs = e107::getConfig('notify');
 		$e_notify = file_exists(e_PLUGIN.$eplug_folder.'/e_notify.php') ? TRUE : FALSE;
 		if ($action == 'add')
 		{
@@ -774,7 +820,7 @@ class e107plugin
 				$install_notify = $e_notify ? TRUE : FALSE;
 			}
 		}
-		if ($install_notify)
+		if (vartrue($install_notify))
 		{
 			$notify_prefs['plugins'][$eplug_folder] = TRUE;
 			require_once(e_PLUGIN.$eplug_folder.'/e_notify.php');
@@ -783,7 +829,7 @@ class e107plugin
 				$notify_prefs['event'][$event_id] = array('class' => e_UC_NOBODY, 'email' => '');
 			}
 		}
-		else if ($uninstall_notify)
+		else if (vartrue($uninstall_notify))
 		{
 			unset($notify_prefs['plugins'][$eplug_folder]);
 			require_once(e_PLUGIN.$eplug_folder.'/e_notify.php');
@@ -793,8 +839,8 @@ class e107plugin
 			}
 		}
 		$s_prefs = $tp -> toDB($notify_prefs);
-		$s_prefs = $eArrayStorage->WriteArray($s_prefs); //TODO use preference class function instead. 
-		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
+		$s_prefs = e107::getArrayStorage()->WriteArray($s_prefs); //TODO use preference class function instead. 
+		e107::getDb() -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
 
 	function displayArray(&$array, $msg='')
@@ -824,8 +870,9 @@ class e107plugin
 	//		'del_extended' - to delete extended fields
 	function manage_plugin_xml($id, $function='', $options = FALSE)
 	{
-		global $sql, $pref;
+		global $pref;
 
+		$sql = e107::getDb();
 		$error = array();			// Array of error messages
 		$canContinue = TRUE;		// Clear flag if must abort part way through
 
@@ -1050,7 +1097,7 @@ class e107plugin
 			  switch($function)
 			  {
 				case 'install':
-					if(is_array($list['active']))
+					if(varset($list['active']) && is_array($list['active']))
 					{
 						$txt .= $this->displayArray($list['active'], "Adding '{$prefType}' prefs:");
 						$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path'], TRUE);
@@ -1058,14 +1105,14 @@ class e107plugin
 					break;
 				case 'upgrade' :
 				case 'refresh' :		// Add any defined prefs which don't already exist
-					if(is_array($list['active']))
+					if(varset($list['active']) && is_array($list['active']))
 					{
 						$txt .= $this->displayArray($list['active'], "Updating '{$prefType}' prefs:");
 						$this->manage_prefs('update', $list['active'], $prefType, $plug['plugin_path'], TRUE);		// This only adds prefs which aren't already defined
 					}
 
 					//If upgrading, removing any inactive pref
-					if(is_array($list['inactive']))
+					if(varset($list['inactive']) && is_array($list['inactive']))
 					{
 						$txt .= $this->displayArray($list['inactive'], "Removing '{$prefType}' prefs:");
 						$this->manage_prefs('remove', $list['inactive'], $prefType, $plug['plugin_path'], TRUE);
@@ -1074,7 +1121,7 @@ class e107plugin
 
 					//If uninstalling, remove all prefs (active or inactive)
 				case 'uninstall':
-					if(is_array($list['all']))
+					if(varset($list['all']) && is_array($list['all']))
 					{
 						$txt .= $this->displayArray($list['all'], "Removing '{$prefType}' prefs:");
 						$this->manage_prefs('remove', $list['all'], $prefType, $plug['plugin_path'], TRUE);
@@ -1224,7 +1271,11 @@ class e107plugin
 			  break;
 		  }
 		}
-		save_prefs();
+		
+	
+		
+//		save_prefs(); //FIXME replace with pref-class equivalent
+		e107::getConfig()->loadData($pref, false)->save(false, true);
 
 
 		if ($canContinue)
@@ -1236,19 +1287,24 @@ class e107plugin
 
 		$eplug_addons = $this->getAddons($plug['plugin_path']);
 
+		$p_installed = e107::getPref('plug_installed',array()); // load preference; 
+
 		if($function == 'install' || $function == 'upgrade')
-		{
+		{			
 			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}' WHERE plugin_id = ".$id);
-			$pref['plug_installed'][$plug['plugin_path']] = $plug_vars['@attributes']['version'];
-			save_prefs();
+			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
+	
+			e107::getConfig('core')->setPref('plug_installed',$p_installed)->save();		
 		}
 
 		if($function == 'uninstall')
 		{
 			$sql->db_Update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}' WHERE plugin_id = ".$id);
-			unset($pref['plug_installed'][$plug['plugin_path']]);
-			save_prefs();
+			unset($p_installed[$plug['plugin_path']]);
+			e107::getConfig('core')->setPref('plug_installed',$p_installed)->save();
 		}
+		
+		
 
 		if($function == 'install')
 		{
@@ -1330,7 +1386,8 @@ class e107plugin
 
 	function install_plugin_php($id)
 	{
-		global $sql;
+	
+		$sql = e107::getDb();
 
 		$plug = $this->getinfo($id);
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
@@ -1404,9 +1461,12 @@ class e107plugin
 		$eplug_addons = $this->getAddons($eplug_folder);
 
 		$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = ".(int)$id);
-		$pref['plug_installed'][$plugin_path] = $plug['plugin_version'];
-		save_prefs();
-
+		
+		$p_installed = e107::getPref('plug_installed',array()); // load preference; 
+		$p_installed[$plug['plugin_path']] = $plug['plugin_version'];
+		
+		e107::getConfig('core')->setPref('plug_installed',$p_installed)->save();
+	
 		$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
 
 		return $text;
@@ -1420,7 +1480,10 @@ class e107plugin
 	*/
 	function install_plugin($id)
 	{
-		global $sql, $ns, $sysprefs, $mySQLprefix, $tp;
+		global $ns, $sysprefs, $mySQLprefix;
+		
+		$sql = e107::getDb();
+		$tp = e107::getParser();
 
 		// install plugin ...
 		$id = (int)$id;
@@ -1448,19 +1511,15 @@ class e107plugin
 		return $text;
 	}
 
-	function save_addon_prefs()
-	{  // scan the plugin table and create path-array-prefs for each addon.
-		global $sql,$pref;
+	function save_addon_prefs() // scan the plugin table and create path-array-prefs for each addon.
+	{  	
+		$sql = e107::getDb();
+		
+		$addpref = array();
+		
 		//        $query = "SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_addons !='' ORDER BY plugin_path ASC";
 		$query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC";
-
-		// clear all addon prefs before re-creation.
-		unset($pref['shortcode_list'],$pref['bbcode_list'],$pref['e_sql_list']);
-		foreach($this->plugin_addons as $plg)
-		{
-			unset($pref[$plg."_list"]);
-		}
-
+		
 		if ($sql -> db_Select_gen($query))
 		{
 			while($row = $sql-> db_Fetch())
@@ -1475,7 +1534,7 @@ class e107plugin
 					{
 						if(strpos($val, 'e_') === 0)
 						{
-							$pref[$val."_list"][$path] = $path;
+							$addpref[$val."_list"][$path] = $path;
 						}
 					}
 				}
@@ -1507,7 +1566,7 @@ class e107plugin
 
 					if($is_installed && (substr($adds,-4) == "_sql"))
 					{
-						$pref['e_sql_list'][$path] = $adds;
+						$addpref['e_sql_list'][$path] = $adds;
 					}
 				}
 
@@ -1515,29 +1574,27 @@ class e107plugin
 				if(count($bb_array) > 0)
 				{
 					ksort($bb_array);
-					$pref['bbcode_list'][$path] = $bb_array;
+					$addpref['bbcode_list'][$path] = $bb_array;
 
-				}
-				else
-				{
-					if (isset($pref['bbcode_list'][$path])) unset($pref['bbcode_list'][$path]);
 				}
 
 				// Build shortcode list - do if uninstalled as well
 				if(count($sc_array) > 0)
 				{
 					ksort($sc_array);
-					$pref['shortcode_list'][$path] = $sc_array;
+					$addpref['shortcode_list'][$path] = $sc_array;
 				}
-				else
-				{
-					if(isset($pref['shortcode_list'][$path])) unset($pref['shortcode_list'][$path]);
-				}
-
 			}
 		}
 
-		save_prefs();
+	//	TODO Review pref-class method used below (a new function?), to simply add or update existing prefs. (without a global $pref)
+
+		foreach($addpref as $key=>$val)
+		{
+			e107::getConfig('core')->set($key,$val); 	
+		}
+		 
+		e107::getConfig('core')->save(FALSE); 
 
 		if($this->manage_icons())
 		{
@@ -1646,6 +1703,7 @@ class e107plugin
 	function parse_plugin($plugName, $force=false)
 	{
 		$ret = "";
+		
 		if(isset($this->parsed_plugin[$plugName]) && $force != true)
 		{
 			$this->plug_vars = $this->parsed_plugin[$plugName];
@@ -1707,8 +1765,8 @@ class e107plugin
 	// Called to parse the plugin.xml file if it exists
 	function parse_plugin_xml($plugName)
 	{
-		global $tp;
-		loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
+		$tp = e107::getParser();
+	//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', true, true);

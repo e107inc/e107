@@ -10,7 +10,7 @@
 		<core name='adminstyle'>infopanel</core>
 		<core name='admintheme'>jayya</core>
 		<core name='allowCommentEdit'>0</core>
-		<core name='allowEmailLogin'>1</core>
+		<core name='allowEmailLogin'>0</core>
 		<core name='anon_post'>0</core>
 		<core name='antiflood1'>1</core>
 		<core name='antiflood_timeout'>10</core>
