@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2009-09-02 02:05:51 $
+|     $Revision: 1.77 $
+|     $Date: 2009-09-03 01:27:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -743,7 +743,9 @@ class e107plugin
 		{
 			unset($search_prefs['comments_handlers'][$eplug_folder]);
 		}
-		$tmp = addslashes(serialize($search_prefs));
+		// $tmp = addslashes(serialize($search_prefs));
+		$tmp = e107::getArrayStorage()->WriteArray($search_prefs);
+		//TODO Use preference class instead of this. 
 		$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'search_prefs' ");
 	}
 
@@ -791,7 +793,7 @@ class e107plugin
 			}
 		}
 		$s_prefs = $tp -> toDB($notify_prefs);
-		$s_prefs = $eArrayStorage->WriteArray($s_prefs);
+		$s_prefs = $eArrayStorage->WriteArray($s_prefs); //TODO use preference class function instead. 
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
 
