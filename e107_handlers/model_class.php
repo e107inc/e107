@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-09-03 14:15:36 $
- * $Author: secretr $
+ * $Revision: 1.5 $
+ * $Date: 2009-09-03 22:27:32 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -792,9 +792,12 @@ class e_model
        	{
        		if(is_array($value))
        		{
-				foreach($key as $k => $v)
+				if(is_array($key))
 				{
-				    $this->_addData($key.'/'.$k, $v, $override, $data_src);
+					foreach($key as $k => $v)
+					{
+					    $this->_addData($key.'/'.$k, $v, $override, $data_src);
+					}
 				}
 				return $this;
        		}
