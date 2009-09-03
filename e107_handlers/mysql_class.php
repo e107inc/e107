@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-09-01 20:09:35 $
+ * $Revision: 1.43 $
+ * $Date: 2009-09-03 23:39:32 $
  * $Author: e107coders $
 */
 
@@ -61,7 +61,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.42 $
+* @version $Revision: 1.43 $
 * @author $Author: e107coders $
 */
 class db {
@@ -1086,7 +1086,7 @@ class db {
 			$this->mySQLdefaultdb = $mySQLdefaultdb;
 		}
 		$convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
-		$key = ($convert[$key]) ? $convert[$key] : "OFF";
+		$key = (isset($convert[$key])) ? $convert[$key] : "OFF";
 
 		if(!$this->mySQLaccess)
 		{
