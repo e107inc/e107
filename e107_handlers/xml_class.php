@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2007-01-24 21:21:20 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-09-03 13:30:01 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,55 +31,83 @@ class parseXml {
 	var $xmlFileContents;
 
 
-	function getRemoteXmlFile($address)
+    function getRemoteXmlFile($address, $timeout = 10)
 	{
-		if(function_exists("curl_init"))
+		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
+		$timeout = min($timeout, 120);
+		$timeout = max($timeout, 3);
+		$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea
+		// ... and there shouldn't be unprintable characters in the URL anyway
+		if (function_exists('file_get_contents'))
 		{
-			$cu = curl_init (); 
+			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
+			$data = file_get_contents(urlencode($address));
+
+			// $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
+			if ($old_timeout !== FALSE)
+			{
+				e107_ini_set('default_socket_timeout', $old_timeout);
+			}
+			if ($data)
+			{
+				return $data;
+			}
+		}
+		if (function_exists("curl_init"))
+		{
+			$cu = curl_init();
 			curl_setopt($cu, CURLOPT_URL, $address);
 			curl_setopt($cu, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt ($cu, CURLOPT_HEADER, 0);
-			curl_setopt ($cu, CURLOPT_TIMEOUT, 10);
-			$this -> xmlFileContents = curl_exec($cu);
+			curl_setopt($cu, CURLOPT_HEADER, 0);
+			curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
+			$this->xmlFileContents = curl_exec($cu);
 			if (curl_error($cu))
 			{
-				$this -> error =  "Error: ".curl_errno($cu).", ".curl_error($cu);
+				$this->error = "Curl error: ".curl_errno($cu).", ".curl_error($cu);
 				return FALSE;
 			}
-			curl_close ($cu);
-			return $this -> xmlFileContents;
+			curl_close($cu);
+			return $this->xmlFileContents;
 		}
-
-		if(ini_get("allow_url_fopen"))
+		if (ini_get("allow_url_fopen"))
 		{
-			if(!$remote = @fopen ($address, "r"))
+			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
+			$remote = @fopen($address, "r");
+			if (!$remote)
 			{
-				$this -> error = "Unable to open remote XML file.";
+				$this->error = "fopen: Unable to open remote XML file: ".$address;
 				return FALSE;
 			}
 		}
 		else
 		{
+			$old_timeout = $timeout;
 			$tmp = parse_url($address);
-			if(!$remote = fsockopen ($tmp['host'], 80 ,$errno, $errstr, 10))
+			if (!$remote = fsockopen($tmp['host'], 80, $errno, $errstr, $timeout))
 			{
-				$this -> error = "Unable to open remote XML file.";
+				$this->error = "Sockets: Unable to open remote XML file: ".$address;
 				return FALSE;
 			}
 			else
 			{
-				socket_set_timeout($remote, 10);
-				fputs($remote, "GET ".$headline_url." HTTP/1.0\r\n\r\n");
+				socket_set_timeout($remote, $timeout);
+				fputs($remote, "GET ".urlencode($address)." HTTP/1.0\r\n\r\n");
 			}
 		}
-
-		$this -> xmlFileContents = "";
+		$this->xmlFileContents = "";
 		while (!feof($remote))
 		{
-			$this -> xmlFileContents .= fgets ($remote, 4096);
+			$this->xmlFileContents .= fgets($remote, 4096);
 		}
-		fclose ($remote);
-		return $this -> xmlFileContents;
+		fclose($remote);
+		if ($old_timeout != $timeout)
+		{
+			if ($old_timeout !== FALSE)
+			{
+				e107_ini_set('default_socket_timeout', $old_timeout);
+			}
+		}
+		return $this->xmlFileContents;
 	}
 
 
