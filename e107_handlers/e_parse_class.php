@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.59 $
-* $Date: 2009-09-02 16:39:32 $
-* $Author: e107coders $
+* $Revision: 1.60 $
+* $Date: 2009-09-03 19:29:11 $
+* $Author: e107steved $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -637,7 +637,7 @@ class e_parse
 				break;
 			}
 		}
-		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos) : substr($text, 0, $pos));
+		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos+1) : substr($text, 0, $pos));
 		if($pos < strlen($text))
 		{
 			$ret = $ret.$more;
