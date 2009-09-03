@@ -9,11 +9,14 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.32 $
-* $Date: 2009-09-01 02:00:56 $
+* $Revision: 1.33 $
+* $Date: 2009-09-03 14:39:20 $
 * $Author: e107coders $
 *
 */
+
+// 
+session_start();
 
 define('MIN_PHP_VERSION','5.0');
 define('MIN_MYSQL_VERSION','4.1.2');
@@ -932,23 +935,26 @@ class e_install
 		$this->dbqry("INSERT INTO {$this->previous_steps['mysql']['prefix']}core VALUES ('SitePrefs_Backup', '{$tmp}')");
 		
 		//Create default plugin-table entries. 
-		// e107::getSingleton('e107plugin')->update_plugins_table(); //FIXME - also relies on pref class. 
+		e107::getSingleton('e107plugin')->update_plugins_table(); //FIXME - also relies on pref class. 
 				
 		// Install Theme-required plugins
 		if($this->previous_steps['install_plugins']==1)
 		{
 			if($themeInfo = $this->get_theme_xml($this->previous_steps['prefs']['sitetheme']))
 			{
-				foreach($themeInfo['plugins']['plugin'] as $k=>$plug) 
+				if(varset($themeInfo['plugins']['plugin']))
 				{
-					 $this->install_plugin($plug['@attributes']['name']);	
+					foreach($themeInfo['plugins']['plugin'] as $k=>$plug) 
+					{
+						 $this->install_plugin($plug['@attributes']['name']);	
+					}
 				}
 			}
 		}
 						
 		// Import Site-Data from XML.	
 		//FIXME remove 'database' from the function below, once the pref handler is working. 			
-		e107::getSingleton('xmlClass')->e107Import($XMLImportfile,'database'); // includes non-core preferences
+		e107::getSingleton('xmlClass')->e107Import($XMLImportfile); // includes non-core preferences
 		
 		// Set Preferences defined during install - overwriting those that may exist in the XML. 
 		
@@ -971,9 +977,9 @@ class e_install
 		    			
 		foreach($this->previous_steps['prefs'] as $key=>$val)
 		{
-			// e107::getConfig('core')->set($key, $val); //FIXME - pref class issues. 
+			e107::getConfig('core')->set($key, $val); //FIXME - pref class issues. 
 		}
-		// e107::getConfig('core')->save(FALSE); //FIXME - pref class issues. 
+		e107::getConfig('core')->save(FALSE); //FIXME - pref class issues. 
 				
 		// Create the admin user - replacing any that may be been included in the XML. 
 		$ip = $_SERVER['REMOTE_ADDR'];
@@ -992,7 +998,6 @@ class e_install
 	 */
 	private function install_plugin($plugpath) //FIXME - requires default plugin table entries, see above. 
 	{
-		return; // remove once fixed.
 		e107::getDb()->db_Select('plugin','plugin_id',"plugin_path='".$plugpath." LIMIT 1");
 		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC); 
 		e107::getSingleton('e107plugin')->install_plugin($row['plugin_id']);
