@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.219 $
-|     $Date: 2009-08-08 14:14:12 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.220 $
+|     $Date: 2009-09-03 19:26:40 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -498,7 +498,7 @@ class e_parse
 				break;
 			}
 		}
-		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos) : substr($text, 0, $pos));
+		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos+1) : substr($text, 0, $pos));
 		if($pos < strlen($text))
 		{
 			$ret = $ret.$more;
