@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-09-02 14:09:07 $
- * $Author: e107coders $
+ * $Revision: 1.43 $
+ * $Date: 2009-09-03 19:31:25 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1402,7 +1402,6 @@ class e107
 	      $ret[] = $this->parseMemorySize(memory_get_usage());
 		  // With PHP>=5.2.0, can show peak usage as well
 	      if (function_exists("memory_get_peak_usage")) $ret[] = $this->parseMemorySize(memory_get_peak_usage(TRUE));
-		  return $ret;
 		}
 		else
 		{
