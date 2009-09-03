@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-08-27 23:37:24 $
+ * $Revision: 1.4 $
+ * $Date: 2009-09-03 14:15:36 $
  * $Author: secretr $
 */
 
@@ -184,9 +184,9 @@ class e_model
      * @param mixed $default
      * @return mixed
      */
-	public function get(string $key, $default = null)
+	public function get($key, $default = null)
     {
-    	return $this->_getDataSimple($key, $default);
+    	return $this->_getDataSimple((string) $key, $default);
     }
     
     /**
@@ -213,9 +213,9 @@ class e_model
      * @param mixed $default
      * @return mixed
      */
-	public function getPosted(string $key, $default = null)
+	public function getPosted($key, $default = null)
     {
-    	return $this->_getDataSimple($key, $default, '_posted_data');
+    	return $this->_getDataSimple((string) $key, $default, '_posted_data');
     }
     
     /**
@@ -245,13 +245,13 @@ class e_model
      * @param integer $index
      * @return string
      */
-    public function getIfPosted(string $key, $default = '', $index = null)
+    public function getIfPosted($key, $default = '', $index = null)
     {
-		if(null !== $this->getPostedData($key))
+		if(null !== $this->getPostedData((string) $key))
 		{
-			return e107::getParser()->post_toForm($this->getPostedData($key, null, $index));
+			return e107::getParser()->post_toForm($this->getPostedData((string) $key, null, $index));
 		}
-		return e107::getParser()->toForm($this->getData($key, $default, $index));
+		return e107::getParser()->toForm($this->getData((string) $key, $default, $index));
     }
     
     /**
@@ -739,8 +739,9 @@ class e_model
      * @param string $data_src
      * @return e_model
      */
-	protected function _setDataSimple(string $key, $value = null, $strict = false, $data_src = '_data')
+	protected function _setDataSimple($key, $value = null, $strict = false, $data_src = '_data')
     {
+    	$key = $key.'';//smart toString
     	if(!$strict)
     	{
 			//data has changed

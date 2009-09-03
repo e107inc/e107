@@ -9,9 +9,9 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-09-01 20:09:36 $
- * $Author: e107coders $
+ * $Revision: 1.17 $
+ * $Date: 2009-09-03 14:15:36 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -112,7 +112,7 @@ class e_pref extends e_model
 	 */
 	public function get($pref_name, $default = null)
 	{
-		return parent::get($pref_name, $default);
+		return parent::get((string) $pref_name, $default);
 	}
 	
 	/**
@@ -173,14 +173,14 @@ class e_pref extends e_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function set(string $pref_name, $value)
+	public function set($pref_name, $value)
 	{
 		global $pref;
 		if(empty($pref_name))
 		{
 			return $this;
 		}
-		parent::set($pref_name, $value, false);
+		parent::set((string) $pref_name, $value, false);
 		
 		//BC
 		if($this->alias === 'core')
@@ -198,14 +198,14 @@ class e_pref extends e_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function update(string $pref_name, $value)
+	public function update($pref_name, $value)
 	{
 		global $pref;
 		if(empty($pref_name))
 		{
 			return $this;
 		}
-		parent::set($pref_name, $value, true);
+		parent::set((string) $pref_name, $value, true);
 		
 		//BC
 		if($this->alias === 'core')
@@ -223,13 +223,13 @@ class e_pref extends e_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function add(string $pref_name, $value)
+	public function add($pref_name, $value)
 	{	
 		if(empty($pref_name))
 		{
 			return $this;
 		}
-		$this->addData($pref_name, $value);
+		$this->addData((string) $pref_name, $value);
 		return $this;	
 	}
 	
@@ -254,10 +254,10 @@ class e_pref extends e_model
 	 * @param string $pref_name
 	 * @return e_pref
 	 */
-	public function remove(string $pref_name)
+	public function remove($pref_name)
 	{
 		global $pref;
-		parent::remove($pref_name);
+		parent::remove((string) $pref_name);
 		
 		//BC
 		if($this->alias === 'core')
@@ -328,10 +328,10 @@ class e_pref extends e_model
 	 * @param string $pref_name
 	 * @return e_pref
 	 */
-	final public function removeData(string $pref_name)
+	final public function removeData($pref_name)
 	{
 		global $pref;
-		parent::removeData($pref_name);
+		parent::removeData((string) $pref_name);
 		
 		//BC
 		if($this->alias === 'core')
