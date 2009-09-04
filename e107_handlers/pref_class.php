@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-09-03 14:15:36 $
+ * $Revision: 1.18 $
+ * $Date: 2009-09-04 15:27:28 $
  * $Author: secretr $
 */
 
@@ -130,6 +130,14 @@ class e_pref extends e_model
 		{
 			return $this; 
 		}
+
+		//Merge only allowed
+		if(is_array($pref_name))
+		{
+			$this->mergeData($pref_name, false, false, false);
+			return $this;
+		}
+		
 		parent::setData($pref_name, $value, false);
 		
 		//BC
@@ -142,12 +150,13 @@ class e_pref extends e_model
 	
 	/**
 	 * Advanced setter - $pref_name is parsed (multidimensional arrays support)
-	 * Object data reseting is not allowed, adding new pref is not allowed
+	 * Object data reseting is not allowed, adding new pref is controlled by $strict parameter
 	 * @param string|array $pref_name
 	 * @param mixed $value
+	 * @param boolean $strict true - update only, false - same as setPref()
 	 * @return e_pref
 	 */
-	public function updatePref($pref_name, $value = null)
+	public function updatePref($pref_name, $value = null, $strict = false)
 	{
 		global $pref;
 		//object reset not allowed, adding new pref is not allowed
@@ -155,7 +164,15 @@ class e_pref extends e_model
 		{
 			return $this; 
 		}
-		parent::setData($pref_name, $value, true);
+		
+		//Merge only allowed
+		if(is_array($pref_name))
+		{
+			$this->mergeData($pref_name, $strict, false, false);
+			return $this;
+		}
+		
+		parent::setData($pref_name, $value, $strict);
 		
 		//BC
 		if($this->alias === 'core')

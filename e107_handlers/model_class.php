@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-09-03 22:27:32 $
- * $Author: e107coders $
+ * $Revision: 1.6 $
+ * $Date: 2009-09-04 15:27:28 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -531,14 +531,17 @@ class e_model
     		return $this;
     	}
     	
-    	$tp = e107::getParser();
    	    //TODO - sanitize method based on validation rules OR _FIELD_TYPES array?
    		if($sanitize)
    		{
-   			$src_data =  $tp->toDB($src_data);
+   			$src_data =  e107::getParser()->toDB($src_data);
    		}
    		
-   		$this->setData($src_data, null, $strict);
+		foreach ($src_data as $key => $value)
+		{
+			$this->setData($key, $value, $strict);
+		}
+   		
     	return $this;
     }
     
@@ -1043,6 +1046,6 @@ class e_model
 	 */
 	public function __toString()
 	{
-		return $this->toString((func_get_arg(0) === true));
+		return $this->toString((@func_get_arg(0) === true));
 	}
 }
