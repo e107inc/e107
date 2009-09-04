@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-09-03 19:31:25 $
- * $Author: e107steved $
+ * $Revision: 1.44 $
+ * $Date: 2009-09-04 20:38:36 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -54,7 +54,7 @@ class e107
 	 * Run once load core shortcodes
 	 * while initialize SC parser
 	 *
-	 * @var boolen
+	 * @var boolean
 	 */
 	protected static $_sc_core_loaded = false;
 	
