@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-09-03 23:39:32 $
+ * $Revision: 1.44 $
+ * $Date: 2009-09-04 01:17:21 $
  * $Author: e107coders $
 */
 
@@ -61,7 +61,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.43 $
+* @version $Revision: 1.44 $
 * @author $Author: e107coders $
 */
 class db {

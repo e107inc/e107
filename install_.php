@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.34 $
-* $Date: 2009-09-03 22:27:32 $
+* $Revision: 1.35 $
+* $Date: 2009-09-04 01:17:22 $
 * $Author: e107coders $
 *
 */
@@ -55,11 +55,7 @@ define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 
 error_reporting(E_ALL);
-if(isset($_GET['create_tables']))
-{
-	create_tables_unattended();
-	exit;
-}
+
 
 function e107_ini_set($var, $value)
 {
@@ -127,17 +123,14 @@ if($functions_ok == false)
 	die("e107 requires the realpath() function to be enabled and your host appears to have disabled it. This function is required for some <b>important</b> security checks and <b>There is NO workaround</b>. Please contact your host for more information.");
 }
 
-header("Content-type: text/html; charset=utf-8");
+
 
 //obsolete $installer_folder_name = 'e107_install';
 
 include_once("./{$HANDLERS_DIRECTORY}core_functions.php");
 include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 
-function include_lan($path, $force = false)
-{
-	return e107::getLan($path, $force);
-}
+
 
 function check_class($whatever)
 {
@@ -151,8 +144,19 @@ $e107 = e107::getInstance();
 $e107->init($e107_paths, realpath(dirname(__FILE__)));
 unset($e107_paths);
 
+function include_lan($path, $force = false)
+{
+	return e107::getLan($path, $force);
+}
 //obsolete $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
 
+if(isset($_GET['create_tables']))
+{
+	create_tables_unattended();
+	exit;
+}
+
+header("Content-type: text/html; charset=utf-8");
 $e_install = new e_install();
 $e_forms = new e_forms();
 
@@ -910,7 +914,7 @@ class e_install
 	 * Import and Generate Preferences and default content.
 	 * @return 
 	 */
-	private function import_configuration()
+	public function import_configuration()
 	{
 		// Basic stuff to get the handlers/classes to work.
 		
@@ -1004,7 +1008,7 @@ class e_install
 	 * @param string $plugpath - plugin folder name
 	 * @return 
 	 */
-	private function install_plugin($plugpath) //FIXME - requires default plugin table entries, see above. 
+	public function install_plugin($plugpath) //FIXME - requires default plugin table entries, see above. 
 	{
 		e107::getDb()->db_Select_gen("SELECT * FROM #plugin WHERE plugin_path = '".$plugpath."' LIMIT 1");
 		$row = e107::getDb()->db_Fetch(MYSQL_ASSOC); 
@@ -1037,19 +1041,21 @@ class e_install
 		{
 			$this->previous_steps['language'] = "English";
 		}
-		$this->lan_file = "{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}{$this->previous_steps['language']}/lan_installer.php";
-		if(is_readable($this->lan_file))
+		
+		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_installer.php");
+	//	$this->lan_file = "{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}{$this->previous_steps['language']}/lan_installer.php";
+	//	if(is_readable($this->lan_file))
 		{
-			include($this->lan_file);
+	//		include($this->lan_file);
 		}
-		elseif(is_readable("{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}English/lan_installer.php"))
+	//	elseif(is_readable("{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}English/lan_installer.php"))
 		{
-			include("{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}English/lan_installer.php");
+	//		include("{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}English/lan_installer.php");
 		}
-		else
-		{
-			$this->raise_error("Fatal: Could not get valid language file for installation.");
-		}
+	//	else
+	//	{
+	//		$this->raise_error("Fatal: Could not get valid language file for installation.");
+	//	}
 	}
 
 	function get_languages()
@@ -1140,7 +1146,7 @@ class e_install
 	 * Create Core MySQL tables
 	 * @return 
 	 */
-	private function create_tables()
+	public function create_tables()
 	{
 
 		$link = mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']);
@@ -1188,7 +1194,7 @@ class e_install
 	
 
 	
-	//FIXME - remove - Everything below this point should no longer be required. See import_configuration();
+	//TODO - remove - Everything below this point should no longer be required. See import_configuration();
 	
 	/*
 		$datestamp = time();
@@ -1412,6 +1418,7 @@ class e_forms {
 
 function create_tables_unattended()
 {
+
 	//If username or password not specified, exit
 	if(!isset($_GET['username']) || !isset($_GET['password']))
 	{
@@ -1431,27 +1438,35 @@ function create_tables_unattended()
 	}
 
 	$einstall = new e_install;
-	$einstall->previous_steps['mysql']['server'] = $mySQLserver;
-	$einstall->previous_steps['mysql']['user'] = $mySQLuser;
-	$einstall->previous_steps['mysql']['password'] = $mySQLpassword;
-	$einstall->previous_steps['mysql']['db'] = $mySQLdefaultdb;
-	$einstall->previous_steps['mysql']['prefix'] = $mySQLprefix;
+	$einstall->previous_steps['mysql']['server'] 	= $mySQLserver;
+	$einstall->previous_steps['mysql']['user']		= $mySQLuser;
+	$einstall->previous_steps['mysql']['password'] 	= $mySQLpassword;
+	$einstall->previous_steps['mysql']['db'] 		= $mySQLdefaultdb;
+	$einstall->previous_steps['mysql']['prefix'] 	= $mySQLprefix;
 
-	$einstall->previous_steps['language'] = (isset($_GET['language']) ? $_GET['language'] : 'English');
+	$einstall->previous_steps['language'] 			= (isset($_GET['language']) ? $_GET['language'] : 'English');
 
-	$einstall->previous_steps['admin']['display']  = (isset($_GET['admin_display']) ? $_GET['admin_display'] : 'admin');
-	$einstall->previous_steps['admin']['user']  = (isset($_GET['admin_user']) ? $_GET['admin_user'] : 'admin');
+	$einstall->previous_steps['admin']['display']  	= (isset($_GET['admin_display']) ? $_GET['admin_display'] : 'admin');
+	$einstall->previous_steps['admin']['user']  	= (isset($_GET['admin_user']) ? $_GET['admin_user'] : 'admin');
 	$einstall->previous_steps['admin']['password']  = (isset($_GET['admin_password']) ? $_GET['admin_password'] : 'admin_password');
-	$einstall->previous_steps['admin']['email']  = (isset($_GET['admin_email']) ? $_GET['admin_email'] : 'admin_email@xxx.com');
+	$einstall->previous_steps['admin']['email']  	= (isset($_GET['admin_email']) ? $_GET['admin_email'] : 'admin_email@xxx.com');
+
+	$einstall->previous_steps['generate_content'] 	= isset($_GET['gen']) ? intval($_GET['gen']) : 1;	
+	$einstall->previous_steps['install_plugins'] 	= isset($_GET['plugins']) ? intval($_GET['plugins']) : 1;	
+	$einstall->previous_steps['prefs']['sitename'] 	= isset($_GET['sitename']) ? urldecode($_GET['sitename']) : LANINS_113;
+	$einstall->previous_steps['prefs']['sitetheme'] = isset($_GET['theme']) ? urldecode($_GET['theme']) : 'jayya';
 
 	@include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 	$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
 	$e107 = e107::getInstance();
-	$e107->_init($e107_paths, realpath(dirname(__FILE__)));
+	$e107->init($e107_paths, realpath(dirname(__FILE__)));
 
 	$einstall->e107 = &$e107;
-
+	
+	//FIXME - does not appear to work for import_configuration. ie. tables are blank except for user table.  
+	
 	$einstall->create_tables();
+	$einstall->import_configuration();
 	return true;
 
 }
