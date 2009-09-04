@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2009-09-01 20:09:35 $
+|     $Revision: 1.47 $
+|     $Date: 2009-09-04 15:24:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,7 @@
 
 require_once("../class2.php");
 require_once(e_HANDLER.'db_table_admin_class.php');
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php");
 //include_lan(e_LANGUAGE.'admin/lan_e107_update.php');
 
 // Modified update routine - combines checking and update code into one block per function
