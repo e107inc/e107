@@ -4,7 +4,7 @@
 |        e107 website system
 |        code adapted from original by Lolo Irie (lolo_irie@e107coders.org)
 |
-|        ©Steve Dunstan 2001-2002
+|        ï¿½Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -108,7 +108,7 @@ $upgrade_alter_tables = array(
 $eplug_upgrade_done = CONTENT_PLUGIN_LAN_6;
 
 //uninstall function: remove core prefs
-if(!function_exists(content_uninstall)){
+if(!function_exists('content_uninstall')){
 	function content_uninstall(){
 		global $sql;
 		if($sql->db_Select("core","*","e107_name='pcontent'")){
