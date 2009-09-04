@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-09-04 15:27:28 $
+ * $Revision: 1.7 $
+ * $Date: 2009-09-04 17:04:14 $
  * $Author: secretr $
 */
 
@@ -661,7 +661,7 @@ class e_model
     {
         if(is_array($key)) 
         {
-            if($strict && '_data_structure' !== $data_src)
+            if($strict)
 	    	{
 				foreach(array_keys($key) as $k) 
 		        {
