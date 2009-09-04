@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-09-04 15:27:28 $
+ * $Revision: 1.19 $
+ * $Date: 2009-09-04 17:04:15 $
  * $Author: secretr $
 */
 
@@ -90,7 +90,8 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Advanced getter - $pref_name is parsed (multidimensional arrays support), alias of {@link e_model::getData()}
+	 * Advanced getter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support), 
+	 * alias of {@link e_model::getData()}
 	 * If $pref_name is empty, all data array will be returned
 	 *
 	 * @param string $pref_name
@@ -105,7 +106,8 @@ class e_pref extends e_model
 	
 	/**
 	 * Simple getter - $pref_name is not parsed (no multidimensional arrays support), alias of {@link e_model::get()}
-	 *
+	 * This is the prefered (performance wise) method when simple preference is retrieved  
+	 * 
 	 * @param string $pref_name
 	 * @param mixed $default
 	 * @return mixed
@@ -116,8 +118,9 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Advanced setter - $pref_name is parsed (multidimensional arrays support)
-	 * Object data reseting is not allowed, adding new pref is allowed
+	 * Advanced setter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support)
+	 * If $pref_name is array, it'll be merged with existing preference data, non existing preferences will be added as well
+	 * 
 	 * @param string|array $pref_name
 	 * @param mixed $value
 	 * @return e_pref
@@ -149,8 +152,9 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Advanced setter - $pref_name is parsed (multidimensional arrays support)
-	 * Object data reseting is not allowed, adding new pref is controlled by $strict parameter
+	 * Advanced setter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support)
+	 * Object data reseting is not allowed, adding new preferences is controlled by $strict parameter
+	 * 
 	 * @param string|array $pref_name
 	 * @param mixed $value
 	 * @param boolean $strict true - update only, false - same as setPref()
@@ -183,7 +187,7 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Simple setter - $pref_name is  not parsed (no multidimensional arrays support)
+	 * Simple setter - $pref_name is not parsed (no multidimensional arrays support)
 	 * Adding new pref is allowed
 	 * 
 	 * @param string $pref_name
@@ -234,6 +238,7 @@ class e_pref extends e_model
 	
 	/**
 	 * Add new (single) preference (ONLY if doesn't exist)
+	 * No multidimensional arrays support
 	 * 
 	 * @see addData()
 	 * @param string $pref_name
@@ -242,16 +247,18 @@ class e_pref extends e_model
 	 */
 	public function add($pref_name, $value)
 	{	
-		if(empty($pref_name))
+		if(empty($pref_name) || !is_string($pref_name))
 		{
 			return $this;
 		}
-		$this->addData((string) $pref_name, $value);
+		
+		$this->addData($pref_name, $value);
 		return $this;	
 	}
 	
 	/**
 	 * Add new preference or preference array (ONLY if it/they doesn't exist)
+	 * $pref_name could be path in format 'pref1/pref2/pref3'
 	 * 
 	 * @see addData()
 	 * @param string|array $pref_name
@@ -266,6 +273,7 @@ class e_pref extends e_model
 	
 	/**
 	 * Remove single preference
+	 * $pref_name is not parsed as a path
 	 * 
 	 * @see e_model::remove()
 	 * @param string $pref_name
@@ -286,6 +294,7 @@ class e_pref extends e_model
 	
 	/**
 	 * Remove single preference (parse $pref_name)
+	 * $pref_name could be path in format 'pref1/pref2/pref3'
 	 * 
 	 * @see removeData()
 	 * @param string $pref_name
@@ -318,8 +327,8 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Disallow public use of setData()
-	 * Update only possible
+	 * Disallow public use of e_model::setData()
+	 * Only data merge possible
 	 * 
 	 * @param string|array $pref_name
 	 * @param mixed $value
@@ -499,7 +508,7 @@ class e_pref extends e_model
 			{
 				$this->data_has_changed = false; //reset status
 				
-				if($this->set_backup === true)
+				if($this->set_backup === true && !empty($this->pref_cache))
 				{
 					if($this->serial_bc)
 					{
@@ -563,7 +572,7 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Store data to a server cache file
+	 * Convert data to a string and store it to a server cache file
 	 * If $cache_string is an array, it'll be converted to a string
 	 * If $save is string, it'll be used for building the cache filename
 	 *
@@ -585,6 +594,20 @@ class e_pref extends e_model
 		{
 			ecache::set_sys('Config_'.($save !== true ? $save : $this->alias), $cache_string, true);
 		}
+		return $this;
+	}
+	
+	/**
+	 * Clear preferences cache
+	 * 
+	 * @param object $cache_name [optional]
+	 * @return e_pref
+	 */
+	public function clearPrefCache($cache_name = '')
+	{
+		$this->pref_cache = '';
+		ecache::clear_sys('Config_'.(!empty($cache_name) ? $cache_name : $this->alias));
+		
 		return $this;
 	}
 	
