@@ -9,9 +9,9 @@
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-08-25 08:34:24 $
- * $Author: secretr $
+ * $Revision: 1.12 $
+ * $Date: 2009-09-04 14:35:01 $
+ * $Author: e107coders $
 */
 
 if(!defined('e107_INIT'))
@@ -112,9 +112,11 @@ class e_menu
 	 */
 	protected function isVisible($row, $url = '')
 	{
-		if(isset($this->_visibility_cache[$row['id']]))
+		$iD = varset($row['id']);
+		
+		if(isset($this->_visibility_cache[$iD]))
 		{
-			return $this->_visibility_cache[$row['id']];
+			return $this->_visibility_cache[$iD];
 		}
 		
 		$show_menu = TRUE;
@@ -165,7 +167,7 @@ class e_menu
 			} //end switch
 		} //endif menu_pages
 		
-		$this->_visibility_cache[$row['id']] = $show_menu;
+		$this->_visibility_cache[$iD] = $show_menu;
 		return $show_menu;
 	}
 

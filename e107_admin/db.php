@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-09-02 17:27:29 $
+ * $Revision: 1.28 $
+ * $Date: 2009-09-04 14:35:00 $
  * $Author: e107coders $
  *
 */
@@ -732,23 +732,6 @@ function table_list()
 	$exclude[] = "user_extended_country";
 	$exclude[] = "plugin";
 
-	
-	/*
-	$exclude[] = "banlist";		$exclude[] = "banner";
-	$exclude[] = "cache";		$exclude[] = "core";
-			
-	$exclude[] = "plugin";		$exclude[] = "user";
-		$exclude[] = "userclass_classes";
-			$exclude[] = "session";
-	 		$exclude[] = "flood";
-	$exclude[] = "stat_info";	$exclude[] = "stat_last";
-	$exclude[] = "submit_news";	$exclude[] = "rate";
-	$exclude[] = "stat_counter";$exclude[] = "user_extended";
-	$exclude[] = "user_extended_struc";
-	
-	
-	*/
-
 	$tables = mysql_list_tables($mySQLdefaultdb);
 	while (list($temp) = mysql_fetch_array($tables))
 	{
@@ -766,9 +749,9 @@ function table_list()
 		$match = array();
 	//	if(preg_match('/^'.$prefix.'(.*)/', $temp, $match))
 		{
-			$e107tab = str_replace(MPREFIX, "", $temp);
-			$pos = strrpos($match[1],"_")+1;
-			$core = substr(str_replace("lan_","",$e107tab),$pos);
+//			$e107tab = str_replace(MPREFIX, "", $temp);
+//			$pos = strrpos($match[1],"_")+1;
+//			$core = substr(str_replace("lan_","",$e107tab),$pos);
 		//	if (str_replace($exclude, "", $e107tab))
 		//	{
 			//	$tabs[$core] = $e107tab;

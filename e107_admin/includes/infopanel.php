@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.8 $
- |     $Date: 2009-09-03 01:27:26 $
+ |     $Revision: 1.9 $
+ |     $Date: 2009-09-04 14:35:01 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -218,6 +218,7 @@ function render_infopanel_icons()
 {
 	$frm = e107::getSingleton('e_form');
 	global $iconlist,$pluglist;
+	$text = "";
 	foreach ($iconlist as $key=>$icon)
 	{
 		if (getperms($icon['perms']))

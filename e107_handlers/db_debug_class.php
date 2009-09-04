@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-08-17 15:45:20 $
+|     $Revision: 1.13 $
+|     $Date: 2009-09-04 14:35:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -140,8 +140,8 @@ class e107_db_debug {
 	  }
 
 		// Record Basic query info
-		$sCallingFile	= $aTrace[1]['file'];
-		$sCallingLine	= $aTrace[1]['line'];
+		$sCallingFile	= varset($aTrace[1]['file']);
+		$sCallingLine	= varset($aTrace[1]['line']);
 
 		$t 				= &$this->aSQLdetails[$sql->db_QueryCount()];
 		$t['marker']	= $this->curTimeMark;

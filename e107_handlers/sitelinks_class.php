@@ -4,7 +4,7 @@
 |     e107 website system
 |     /sitelinks_class.php
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.19 $
+|     $Date: 2009-09-04 14:35:01 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -100,7 +100,7 @@ class sitelinks
     // Sublink styles.- replacing the tree-menu.
         if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink'])){
 			foreach($style as $key=>$val){
-			  	$aSubStyle[$key] = ($style["sub".$key]) ? $style["sub".$key] : $style[$key];
+			  	$aSubStyle[$key] = vartrue($style["sub".$key]) ? $style["sub".$key] : $style[$key];
 			}
         }else{
 				$style['subindent'] = "&nbsp;&nbsp;";
