@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.60 $
-* $Date: 2009-09-03 19:29:11 $
-* $Author: e107steved $
+* $Revision: 1.61 $
+* $Date: 2009-09-04 15:24:41 $
+* $Author: e107coders $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -1207,7 +1207,7 @@ class e_parse
 				$e107->getFolder('plugins'),
 				$e107->getFolder('files'),
 				$e107->getFolder('themes'),
-				$e107->getFolder('downloads'),
+			//	$e107->getFolder('downloads'),
 				$e107->getFolder('handlers')
 			);
 
@@ -1222,7 +1222,7 @@ class e_parse
 						e_PLUGIN_ABS,
 						e_FILE_ABS,
 						e_THEME_ABS,
-						e_DOWNLOAD_ABS,
+				//		e_DOWNLOAD_ABS, //impossible when download is done via php.
 						e_HANDLER_ABS
 					);
 				break;
@@ -1236,7 +1236,7 @@ class e_parse
 						SITEURL.$e107->getFolder('plugins'),
 						SITEURL.$e107->getFolder('files'),
 						SITEURL.$e107->getFolder('themes'),
-						SITEURL.$e107->getFolder('downloads'),
+					//	SITEURL.$e107->getFolder('downloads'),
 						SITEURL.$e107->getFolder('handlers')
 					);
 				break;
