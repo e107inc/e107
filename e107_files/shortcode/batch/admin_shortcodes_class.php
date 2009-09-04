@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.20 2009-08-15 15:44:37 marj_nl_fr Exp $
+* $Id: admin_shortcodes_class.php,v 1.21 2009-09-04 14:35:01 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -612,7 +612,11 @@ class admin_shortcodes
 						while($rowplug = $sql -> db_Fetch())
 						{
 							extract($rowplug);
-							$e107_plug[$rowplug[1]] = $rowplug[3];
+							if(varset($rowplug[1]))
+							{
+								$e107_plug[$rowplug[1]] = varset($rowplug[3]);	
+							}
+							
 						}
 					}
 				}
@@ -940,6 +944,7 @@ class admin_shortcodes
 
 			function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_highlight='')
 			{
+				$exit = "";
 				$text = "<a class='menuItem ".$cat_highlight."' href='".$cat_link."' ";
 				if ($cat_id)
 				{
@@ -1038,7 +1043,7 @@ class admin_shortcodes
 			{
 				$text .= adnav_cat(ADLAN_CL_7, '', E_16_CAT_PLUG, 'plugMenu');
 				$text .= "<div id='plugMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
-				$text .= $plugin_text.$plugs_text;
+				$text .= varset($plugin_text).varset($plugs_text);
 				$text .= "</div>";
 			}
 
@@ -1064,7 +1069,7 @@ class admin_shortcodes
 			$text .= '</div>
 			</td>';
 
-			if ($exit != 'off')
+			if (varset($exit) != 'off')
 			{
 				$text .= "<td style='width: 160px; white-space: nowrap'>
 				<div class='menuBar' style='width: 100%'>";

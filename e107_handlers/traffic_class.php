@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/traffic_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-08-17 15:45:20 $
+|     $Revision: 1.3 $
+|     $Date: 2009-09-04 14:35:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -197,9 +197,12 @@ if (!isset($qTimeOn)) {
 	}
 	function eQTimeElapsed() {
 		// return elapsed time so far, as text in microseconds, or blank if zero
-		if ($GLOBALS['qTimeTotal']) {
+		if (isset($GLOBALS['qTimeTotal']))
+		{
 			return number_format($GLOBALS['qTimeTotal']*1000000.0,1);
-		} else {
+		} 
+		else
+		{
 			return '';
 		}
 	}
