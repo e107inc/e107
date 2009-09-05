@@ -1,3 +1,5 @@
+// $Id: img.bb,v 1.13 2009-09-05 08:23:55 e107steved Exp $
+
 // General purpose image bbcode. As well as the obvious insertion of a picture:
 // 	a) if filname begins with 'th_' or 'thumb_', creates link to main image opening in new window
 //	b) If filename contains '*', treats it as a wildcard, and displays a random image from all matching file names found
@@ -80,7 +82,6 @@ if (strpos($img_file['basename'],'*') !== FALSE)
 	}
 }
 
-$pref['image_post_class'] = 0;
 
 // Check for whether we can display image down here - so we can show image name if appropriate
 if (!varsettrue($pref['image_post']) || !check_class($pref['image_post_class']))
@@ -99,21 +100,21 @@ if (!varsettrue($pref['image_post']) || !check_class($pref['image_post_class']))
 // Check for link to main image if required
 if (strpos($img_file['basename'],'th_') === 0)
 {
-  $addlink = TRUE;
-  $main_name = $img_file['dirname']."/".substr($img_file['basename'],3);     // delete the 'th' prefix from file name
+	$addlink = TRUE;
+	$main_name = $img_file['dirname']."/".substr($img_file['basename'],3);     // delete the 'th' prefix from file name
 }
 elseif (strpos($img_file['basename'],'thumb_') === 0)
 {
-  $addlink = TRUE;
-  $main_name = $img_file['dirname']."/".substr($img_file['basename'],6);     // delete the 'thumb' prefix from file name
+	$addlink = TRUE;
+	$main_name = $img_file['dirname']."/".substr($img_file['basename'],6);     // delete the 'thumb' prefix from file name
 }
 
 
 if ($addlink)
 {
-  return "<a href='".$main_name."' rel='external'><img src='".$code_text."' {$parmStr} /></a>";
+	return "<a href='".$main_name."' rel='external'><img src='".$code_text."' {$parmStr} /></a>";
 }
 else
 {
-  return "<img src='".$code_text."' {$parmStr} />";
+	return "<img src='".$code_text."' {$parmStr} />";
 }
