@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-09-05 12:48:28 $
+ * $Revision: 1.46 $
+ * $Date: 2009-09-05 18:58:56 $
  * $Author: e107coders $
 */
 
@@ -61,7 +61,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.45 $
+* @version $Revision: 1.46 $
 * @author $Author: e107coders $
 */
 class db {
@@ -81,7 +81,8 @@ class db {
 	var $mySQLlanguage;
 	var $mySQLinfo;
 	var $tabset;
-	private $mySQLtableList = array();
+	private $mySQLtableList = array(); // list of all Db tables. 
+	var $mySQLtableListLanguage = array(); // Db table list for the currently selected language
 
 	/**
 	 * @public  MySQL Charset
@@ -912,14 +913,15 @@ class db {
 	}
 
 	/**
-	* @return unknown
-	* @param unknown $table
-	* @desc Enter description here...
+	* Check for the existence of a matching language table when multi-language tables are active. 
+	* @param string $table Name of table, without the prefix.
 	* @access private
+	* @return name of the language table (eg. lan_french_news)
 	*/
 	function db_IsLang($table,$multiple=FALSE) 
 	{
-		global $pref, $mySQLtablelist;
+		global $pref;
+		
 		if ((!$this->mySQLlanguage || !$pref['multilanguage']) && $multiple==FALSE) 
 		{
 		  	return $table;
@@ -930,28 +932,20 @@ class db {
 			global $db_ConnectionID;
         	$this->mySQLaccess = $db_ConnectionID;
 		}
-
-		if (!$mySQLtablelist) 
-		{
-			$tablist = mysql_list_tables($this->mySQLdefaultdb,$this->mySQLaccess);
-			while (list($temp) = mysql_fetch_array($tablist)) 
-			{
-				$mySQLtablelist[] = $temp;
-			}
+		
+		if($multiple == FALSE)
+		{	
+			$mltable = "lan_".strtolower($this->mySQLlanguage.'_'.$table);
+			return ($this->db_Table_exists($table,$this->mySQLlanguage)) ? $mltable : $table;
 		}
-
-		$mltable = "lan_".strtolower($this->mySQLlanguage.'_'.$table);
-
-	// ---- Find all multi-language tables.
-
-		if($multiple == TRUE)
-		{ // return an array of all matching language tables. eg [french]->e107_lan_news
+		else // return an array of all matching language tables. eg [french]->e107_lan_news
+		{ 
 			if(!is_array($table))
 			{
 				$table = array($table);
 			}
 
-			foreach($mySQLtablelist as $tab)
+			foreach($this->mySQLtablelist as $tab)
 			{
  				if(stristr($tab, $this->mySQLPrefix."lan_") !== FALSE)
 				{
@@ -966,15 +960,12 @@ class db {
 					}
 			  	}
 			}
+			
 			return ($lanlist) ? $lanlist : FALSE;
 		}
 	// -------------------------
 
-		if (in_array($this->mySQLPrefix.$mltable, $mySQLtablelist)) 
-		{
-			return $mltable;
-		}
-	 	return $table;
+
 	}
 
 	/**
@@ -1151,31 +1142,168 @@ class db {
 	 * Verify whether a table exists, without causing an error
 	 *
 	 * @param string $table Table name without the prefix
-	 * @return boolean TRUE if exists, FALSE if it doesn't
+	 * @param string $lanMode [optional] When set to TRUE, searches for multilanguage tables
+	 * @return boolean TRUE if exists
 	 *
 	 * NOTES: Slower (28ms) than "SELECT 1 FROM" (4-5ms), but doesn't produce MySQL errors. 
 	 * Multiple checks on a single page will only use 1 query. ie. faster on multiple calls.   
 	 */
-	function db_Table_exists($table)
+	public function db_Table_exists($table,$language='')
 	{
-		if(!$this->mySQLtableList)
+		global $pref;
+		$table = strtolower($table); // precaution for multilanguage
+		
+		if($language && ($language != $pref['sitelanguage']))
 		{
-			$res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."%' "); // error if not there
-			while($rows = $this->db_Fetch(MYSQL_BOTH))
+			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
-				$this->mySQLtableList[] = $rows[0];	
-			}				
-		}
-				
-		if(!in_array($this->mySQLPrefix.$table,$this->mySQLtableList))
-		{
-			return FALSE;	
+				$this->mySQLtableListLanguage = $this->db_mySQLtableList($language);
+			} 
+			return in_array('lan_'.strtolower($language)."_".$table,$this->mySQLtableListLanguage[$language]);		
 		}
 		else
 		{
-			return TRUE;	
-		}				
+			if(!$this->mySQLtableList)
+			{
+				$this->mySQLtableList = $this->db_mySQLtableList();	
+			}	
+			return in_array($table,$this->mySQLtableList);
+		}
+					
 	}
+
+
+	/**
+	 * Populate $this->mySQLtableList;
+	 * @return array
+	 */
+	private function db_mySQLtableList($language='')
+	{
+		if($language)
+		{
+			if(!isset($this->mySQLtableListLanguage[$language]))
+			{
+				$table = array();
+				if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."lan_".strtolower($language)."%' "))
+				{ 
+					while($rows = $this->db_Fetch(MYSQL_NUM))
+					{
+						$table[] = str_replace($this->mySQLPrefix,"",$rows[0]);	
+					}
+				}
+				$ret = array($language=>$table);
+				return $ret;			
+			}
+			else
+			{
+				return $this->mySQLtableListLanguage[$language];	
+			}	
+		}		
+		
+		if(!$this->mySQLtableList)
+		{
+			$table = array();
+			if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."%' "))
+			{ 
+				while($rows = $this->db_Fetch(MYSQL_NUM))
+				{
+					$table[] = str_replace($this->mySQLPrefix,"",$rows[0]);	
+				}
+			}
+			return $table;			
+		}
+		else
+		{
+			return $this->mySQLtableList;
+		}
+	}
+	
+	public function db_ResetTableList()
+	{
+		$this->mySQLtableList = array();
+		$this->mySQLtableListLanguage = array();
+	}
+
+	/**
+	 * Return a filtered list of DB tables. 
+	 * @param object $mode [optional] all|lan|nolan 
+	 * @return array 
+	 */
+	public function db_TableList($mode='all')
+	{
+		
+		if(!$this->mySQLtableList)
+		{
+			$this->mySQLtableList = $this->db_mySQLtableList();
+
+		}
+		
+		if($mode == 'all')
+		{
+			return $this->mySQLtableList;
+		}
+				
+		if($mode == 'lan' || $mode=='nolan')
+		{
+			$nolan = array();
+			$lan = array();
+			
+			foreach($this->mySQLtableList as $tab)
+			{
+				if(substr($tab,0,4)!='lan_')
+				{
+					$nolan[] = $tab;
+				}
+				else
+				{
+					$lan[] = $tab;	
+				}		
+			}
+			
+			return ($mode == 'lan') ? $lan : $nolan;
+		}
+
+	}
+	
+	function db_CopyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
+	{
+		$old = $this->mySQLPrefix.strtolower($oldtable);
+		$new = $this->mySQLPrefix.strtolower($newtable);
+		
+		if ($drop)
+		{
+			$this->db_Select_gen("DROP TABLE IF EXISTS {$new}");
+		}
+		
+		//Get $old table structure
+		$this->db_Select_gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+		
+		$qry = "SHOW CREATE TABLE {$old}";
+		if ($this->db_Select_gen($qry))
+		{
+			$row = $this->db_Fetch(MYSQL_NUM);
+			$qry = $row[1];
+			//        $qry = str_replace($old, $new, $qry);
+			$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE `{$new}` ", $qry, 1); // More selective search
+		}
+		else
+		{
+			return FALSE;	
+		}
+		
+		if(!$this->db_Table_exists($newtable))
+		{
+			$result = $this->db_Query($qry);
+		}
+		
+		if ($data) //We need to copy the data too
+		{
+			$qry = "INSERT INTO {$new} SELECT * FROM {$old}";
+			$result = $this->db_Select_gen($qry);
+		}
+		return $result;
+	}
+
 
 
 	/**
