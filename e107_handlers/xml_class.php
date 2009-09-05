@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-09-03 22:27:32 $
+ * $Revision: 1.22 $
+ * $Date: 2009-09-05 23:02:23 $
  * $Author: e107coders $
 */
 
@@ -27,6 +27,7 @@ if (!defined('e107_INIT')) { exit; }
  */
 class xmlClass
 {
+	
 	/**
 	 * Loaded XML string
 	 * 
@@ -64,6 +65,19 @@ class xmlClass
 	 * @var boolean
 	 */
 	public $stripComments = true; 
+	
+	/**
+	 * Log of all paths replaced.
+	 * @var
+	 */
+	public $fileConvertLog = array();
+	
+	public $convertFilePaths = FALSE;
+	
+	public $filePathDestination = FALSE;
+	
+	public $convertFileTypes = array("jpg","gif","png","jpeg");
+	
 	
 	/**
 	 * Add root element to the result array
@@ -120,6 +134,10 @@ class xmlClass
 	 * @var string
 	 */
 	protected $_optValueKey = '@value';
+
+
+
+	
 
 	/**
 	 * Constructor - set defaults
@@ -526,9 +544,26 @@ class xmlClass
 		return false;
 	}
 	
+	function replaceFilePaths($text)
+	{
+		$fullpath = e107::getParser()->replaceConstants($text[1]);
+		$this->fileConvertLog[] = $fullpath;
+		$file = basename($fullpath);
+		
+		return $this->filePathDestination.$file;
+
+	}
+	
+	
 	
 	private function e107ExportValue($val)
 	{
+		if($this->convertFilePaths)
+		{
+			$types = implode("|",$this->convertFileTypes);
+			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), $val);
+		}
+				
 		if(is_array($val))
 		{
 			return "<![CDATA[".e107::getArrayStorage()->WriteArray($val,FALSE)."]]>";		
@@ -604,17 +639,33 @@ class xmlClass
 		
 		if($debug==TRUE)
 		{		
-			echo "<pre>".htmlentities($text)."</pre>";				
+			echo "<pre>".htmlentities($text)."</pre>";
+			return TRUE;				
 		}
 		else
 		{
+			if(!$text)
+			{
+				return FALSE;
+			}
+			
+			$path = e107::getParser()->replaceConstants($this->filePathDestination);
+			if($path)
+			{
+				file_put_contents($path."install.xml",$text,FILE_TEXT);
+				return true;	
+			}
+			
 			header('Content-type: application/xml', TRUE);
 			header("Content-disposition: attachment; filename= e107Export_" . date("Y-m-d").".xml");
 			header("Cache-Control: max-age=30");
 			header("Pragma: public");
 			echo $text;
-			exit;		
+			exit;
+		
 		}
+		
+
 	}
 	
 	/**
