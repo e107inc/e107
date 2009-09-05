@@ -9,78 +9,66 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-08-28 16:11:01 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.19 $
+ * $Date: 2009-09-05 18:58:56 $
+ * $Author: e107coders $
  *
-*/
-
-require_once("../class2.php");
+ */
+require_once ("../class2.php");
 if (!getperms('0'))
 {
 	header("location:".e_BASE."index.php");
 	exit;
 }
-
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
 $e_sub_cat = 'language';
-
-require_once("auth.php");
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."message_handler.php");
-
+require_once ("auth.php");
+require_once (e_HANDLER."form_handler.php");
+require_once (e_HANDLER."message_handler.php");
 $frm = new e_form();
 $emessage = &eMessage::getInstance();
-
 $tabs = table_list(); // array("news","content","links");
-$lanlist = explode(",",e_LANLIST);
+$lanlist = explode(",", e_LANLIST);
 $message = '';
-
 if (e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
-	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
+	$action = varset($tmp[0]);
+	$sub_action = varset($tmp[1]);
+	$id = varset($tmp[2]);
 	unset($tmp);
 }
-
 if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
 {
 	unset($temp);
 	$changes = array();
-
-	$temp['multilanguage']	= $_POST['multilanguage'];
-    $temp['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
+	$temp['multilanguage'] = $_POST['multilanguage'];
+	$temp['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
 	$temp['sitelanguage'] = $_POST['mainsitelanguage'];
 	$temp['noLanguageSubs'] = $_POST['noLanguageSubs'];
-
 	if ($admin_log->logArrayDiffs($temp, $pref, 'LANG_01'))
 	{
-		save_prefs();		// Only save if changes
+		save_prefs(); // Only save if changes
 		$emessage->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
-
 	}
 	else
 	{
 		$emessage->add(LAN_NO_CHANGE);
 	}
 }
-
-
 // ----------------- delete tables ---------------------------------------------
 if (isset($_POST['del_existing']) && $_POST['lang_choices'])
 {
 	$lang = strtolower($_POST['lang_choices']);
 	foreach ($tabs as $del_table)
 	{
-		if (db_Table_exists($lang."_".$del_table))
+		if ($sql->db_Table_exists($lang."_".$del_table,TRUE))
 		{
+				echo $del_table." exists<br />";
 			$qry = "DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table;
 			if (mysql_query($qry))
 			{
-				$message .= sprintf(LANG_LAN_28, $_POST['lang_choices'].' '.$del_table).'[!br!]' ;
+				$message .= sprintf(LANG_LAN_28, $_POST['lang_choices'].' '.$del_table).'[!br!]';
 				$emessage->add(sprintf(LANG_LAN_28, $_POST['lang_choices'].' '.$del_table), E_MESSAGE_SUCCESS);
 			}
 			else
@@ -91,32 +79,30 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices'])
 		}
 	}
 	$admin_log->log_event('LANG_02', $message, E_LOG_INFORMATIVE, '');
-	global $cachevar;
-	unset($cachevar['table_list']);
-	if($action == 'modify') $action = 'db';//FIX - force db action when deleting all lan tables
+	$sql->db_ResetTableList();
+
+	if ($action == 'modify')
+		$action = 'db';//FIX - force db action when deleting all lan tables
 }
-
 // ----------create tables -----------------------------------------------------
-
 if (isset($_POST['create_tables']) && $_POST['language'])
 {
 	$table_to_copy = array();
 	$lang_to_create = array();
-
 	foreach ($tabs as $value)
 	{
 		$lang = strtolower($_POST['language']);
 		if (isset($_POST[$value]))
 		{
-            $copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
-			if (copy_table($value, "lan_".$lang."_".$value, $_POST['drop'],$copdata))
+			$copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
+			if ($sql->db_CopyTable($value, "lan_".$lang."_".$value, $_POST['drop'], $copdata))
 			{
 				$message .= sprintf(LANG_LAN_30, $_POST['language'].' '.$value).'[!br!]';
 				$emessage->add(sprintf(LANG_LAN_30, $_POST['language'].' '.$value), E_MESSAGE_SUCCESS);
 			}
 			else
 			{
-				if(!$_POST['drop'])
+				if (!$_POST['drop'])
 				{
 					$message .= sprintf(LANG_LAN_00, $_POST['language'].' '.$value).'[!br!]';
 					$emessage->add(sprintf(LANG_LAN_00, $_POST['language'].' '.$value), E_MESSAGE_WARNING);
@@ -128,12 +114,12 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 				}
 			}
 		}
-		elseif (db_Table_exists($lang."_".$value))
+		elseif ($sql->db_Table_exists($value,$_POST['language']))
 		{
 			if ($_POST['remove'])
 			{
 				// Remove table.
-				if(mysql_query("DROP TABLE ".$mySQLprefix."lan_".$lang."_".$value))
+				if (mysql_query("DROP TABLE ".$mySQLprefix."lan_".$lang."_".$value))
 				{
 					$message .= $_POST['language'].' '.$value.' '.LAN_DELETED.'[!br!]';
 					$emessage->add($_POST['language'].' '.$value.' '.LAN_DELETED, E_MESSAGE_SUCCESS);
@@ -153,52 +139,39 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 		}
 	}
 	$admin_log->log_event('LANG_03', $message, E_LOG_INFORMATIVE, '');
-    global $cachevar;
-	unset($cachevar['table_list']);
+	$sql->db_ResetTableList();
 }
-
-
 /*
-	if(isset($message) && $message)
-	{
-  		$ns->tablerender(LAN_OK, $message);
-	}
-*/
-
-
+ if(isset($message) && $message)
+ {
+ $ns->tablerender(LAN_OK, $message);
+ }
+ */
+ 
+ 
 unset($text);
-
-
-
 if (!e_QUERY || $action == 'main' && !$_POST['language'] && !$_POST['edit_existing'])
 {
 	multilang_prefs();
 }
-
-if ($action == 'db')
+if (varset($action) == 'db')
 {
 	multilang_db();
 }
-
-if($_POST['ziplang'] && $_POST['language'])
+if (varset($_POST['ziplang']) && varset($_POST['language']))
 {
- 	$text = zip_up_lang($_POST['language']);
+	$text = zip_up_lang($_POST['language']);
 	$admin_log->log_event('LANG_04', $_POST['language'], E_LOG_INFORMATIVE, '');
-    //$ns -> tablerender(LANG_LAN_25, $text);
-    $emessage->add(LANG_LAN_25.': '.$text);
+	//$ns -> tablerender(LANG_LAN_25, $text);
+	$emessage->add(LANG_LAN_25.': '.$text);
 }
-
-if($action == "tools")
+if (varset($action) == "tools")
 {
 	show_tools();
 }
-
-
-
-
 //FIX - create or edit check
-if(isset($_POST['create_edit_existing'])) $_POST['edit_existing'] = true;
-
+if (isset($_POST['create_edit_existing']))
+	$_POST['edit_existing'] = true;
 // Grab Language configuration. ---
 if (isset($_POST['edit_existing']))
 {
@@ -214,10 +187,9 @@ if (isset($_POST['edit_existing']))
 				</colgroup>
 				<tbody>
 	";
-
 	foreach ($tabs as $table_name)
 	{
-		$installed = strtolower($_POST['lang_choices'])."_".$table_name;
+		$installed = 'lan_'.strtolower($_POST['lang_choices'])."_".$table_name;
 		if (stristr($_POST['lang_choices'], $installed) === FALSE)
 		{
 			$text .= "
@@ -226,7 +198,7 @@ if (isset($_POST['edit_existing']))
 						<td class='control'>
 							<div class='auto-toggle-area f-left e-pointer'>
 			";
-			$selected = (db_Table_exists($installed)) ? " checked='checked'" : "";
+			$selected = ($sql->db_Table_exists($table_name,$_POST['lang_choices'])) ? " checked='checked'" : "";
 			$text .= "
 								<input type='checkbox' class='checkbox' id='language-action-{$table_name}' name='{$table_name}' value='1'{$selected} onclick=\"if(document.getElementById('language-action-{$table_name}').checked){document.getElementById('language-datacopy-{$table_name}').style.display = '';}\" />
 							</div>
@@ -242,11 +214,9 @@ if (isset($_POST['edit_existing']))
 			";
 		}
 	}
-
 	// ===========================================================================
-
 	// Drop tables ? isset()
-	if(varset($_POST['create_edit_existing']))
+	if (varset($_POST['create_edit_existing']))
 	{
 		$baction = 'create';
 		$bcaption = LANG_LAN_06;
@@ -256,7 +226,6 @@ if (isset($_POST['edit_existing']))
 		$baction = 'update';
 		$bcaption = LAN_UPDATE;
 	}
-
 	$text .= "
 					<tr>
 						<td class='label'><strong>".LANG_LAN_07."</strong></td>
@@ -281,17 +250,15 @@ if (isset($_POST['edit_existing']))
 		</fieldset>
 	</form>
 	";
-
 	$ns->tablerender($_POST['lang_choices'], $emessage->render().$text);
 }
-
-require_once(e_ADMIN."footer.php");
-
+require_once (e_ADMIN."footer.php");
 // ---------------------------------------------------------------------------
+
+
 function multilang_prefs()
 {
-	global $e107, $pref, $lanlist, $emessage;
-
+	global $pref,$lanlist,$emessage;
 	$text = "
 	<form method='post' action='".e_SELF."' id='linkform'>
 		<fieldset id='core-language-settings'>
@@ -305,38 +272,34 @@ function multilang_prefs()
 					<tr>
 						<td class='label'>".LANG_LAN_14.": </td>
 						<td class='control'>
-							<select name='mainsitelanguage' class='box select'>
-	";
-
-	$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
-	foreach($lanlist as $lan)
-	{
-			$sel =  ($lan == $sellan) ? " selected='selected'" : "";
-    		$text .= "
-								<option value='{$lan}'{$sel}>".$lan."</option>
-			";
-	}
-	$text .= "				</select>
+						<select name='mainsitelanguage' class='box select'>";
+						$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
+						foreach ($lanlist as $lan)
+						{
+							$sel = ($lan == $sellan) ? " selected='selected'" : "";
+							$text .= "
+													<option value='{$lan}'{$sel}>".$lan."</option>
+								";
+						}
+						$text .= "</select>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".LANG_LAN_12.": </td>
 						<td class='control'>
-							<div class='auto-toggle-area autocheck'>
-	";
-	$checked = ($pref['multilanguage'] == 1) ? " checked='checked'" : "";
-	$text .= "
-								<input class='checkbox' type='checkbox' name='multilanguage' value='1'{$checked} />
+							<div class='auto-toggle-area autocheck'>";
+						$checked = ($pref['multilanguage'] == 1) ? " checked='checked'" : "";
+						$text .= "
+													<input class='checkbox' type='checkbox' name='multilanguage' value='1'{$checked} />
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td class='label'>".LANG_LAN_26.":</td>
 						<td class='control'>
-							<div class='auto-toggle-area autocheck'>
-	";
-	$checked = ($pref['noLanguageSubs'] == 1) ? " checked='checked'" : "";
-	$text .= "
+							<div class='auto-toggle-area autocheck'>\n";
+					$checked = ($pref['noLanguageSubs'] == 1) ? " checked='checked'" : "";
+					$text .= "
 								<input class='checkbox' type='checkbox' name='noLanguageSubs' value='1'{$checked} />
 								<div class='smalltext field-help'>".LANG_LAN_27."</div>
 							</div>
@@ -358,108 +321,58 @@ function multilang_prefs()
 				<button class='update' type='submit' name='submit_prefs' value='no-value'><span>".LAN_SAVE."</span></button>
 			</div>
 		</fieldset>
-	</form>
-	";
-
-	$e107->ns->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_13, $emessage->render().$text);  // "Language Preferences";
+	</form>\n";
+	
+	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_13, $emessage->render().$text); // "Language Preferences";
 }
 
 // ----------------------------------------------------------------------------
 
-function db_Table_exists($table)
+
+function table_list()
 {
-	global $mySQLdefaultdb;
-	$tables = getcachedvars("table_list");
-	if(!$tables)
-	{
-		$tablist = mysql_list_tables($mySQLdefaultdb);
-		while($tmp = mysql_fetch_array($tablist))
-		{
-			$tables[] = $tmp[0];
-		}
-		cachevars("table_list", $tables);
-	}
-	return in_array(strtolower(MPREFIX."lan_".$table), $tables);
-}
-// ----------------------------------------------------------------------------
-
-function copy_table($oldtable, $newtable, $drop = FALSE, $data = FALSE)
-{
-	global $sql;
-	$old = MPREFIX.strtolower($oldtable);
-	$new = MPREFIX.strtolower($newtable);
-	if($drop)
-	{
-		$sql->db_Select_gen("DROP TABLE IF EXISTS {$new}");
-	}
-
-	//Get $old table structure
-	$sql->db_Select_gen('SET SQL_QUOTE_SHOW_CREATE = 1');
-	$qry = "SHOW CREATE TABLE {$old}";
-	if($sql->db_Select_gen($qry))
-	{
-		$row = $sql->db_Fetch();
-		$qry = $row[1];
-//        $qry = str_replace($old, $new, $qry);
-		$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE `{$new}` ", $qry, 1);	// More selective search
-	}
-	$result = mysql_query($qry);
-	if(!$result)
-	{
-		return FALSE;
-	}
-	if ($data)  //We need to copy the data too
-	{
-		$qry = "INSERT INTO {$new} SELECT * FROM {$old}";
-		$sql->db_Select_gen($qry);
-	}
-	return TRUE;
-}
-
-// ----------------------------------------------------------------------------
-
-function table_list() {
 	// grab default language lists.
-	global $mySQLdefaultdb;
-
-	$exclude[] = "banlist";		$exclude[] = "banner";
-	$exclude[] = "cache";		$exclude[] = "core";
-	$exclude[] = "online";		$exclude[] = "parser";
-	$exclude[] = "plugin";		$exclude[] = "user";
-	$exclude[] = "upload";		$exclude[] = "userclass_classes";
-	$exclude[] = "rbinary";		$exclude[] = "session";
-	$exclude[] = "tmp";	 		$exclude[] = "flood";
-	$exclude[] = "stat_info";	$exclude[] = "stat_last";
-	$exclude[] = "submit_news";	$exclude[] = "rate";
-	$exclude[] = "stat_counter";$exclude[] = "user_extended";
-	$exclude[] = "user_extended_struc";
+		
+	$exclude = array();
+	$exclude[] = "banlist";
+	$exclude[] = "banner";
+	$exclude[] = "cache";
+	$exclude[] = "core";
+	$exclude[] = "online";
+	$exclude[] = "parser";
+	$exclude[] = "plugin";
+	$exclude[] = "user";
+	$exclude[] = "upload";
+	$exclude[] = "userclass_classes";
+	$exclude[] = "rbinary";
+	$exclude[] = "session";
+	$exclude[] = "tmp";
+	$exclude[] = "flood";
+	$exclude[] = "stat_info";
+	$exclude[] = "stat_last";
+	$exclude[] = "submit_news";
+	$exclude[] = "rate";
+	$exclude[] = "stat_counter";
+	$exclude[] = "user_extended";
+	$exclude[] = "user_extended_struct";
 	$exclude[] = "pm_messages";
 	$exclude[] = "pm_blocks";
+	
+	$tables = e107::getDb()->db_TableList('nolan'); // db table list without language tables. 
+	return array_diff($tables,$exclude);
 
-	$tables = mysql_list_tables($mySQLdefaultdb);
-
-	while (list($temp) = mysql_fetch_array($tables))
-	{
-        if ((MPREFIX=='') ||(strpos($temp, MPREFIX) === 0))
-		{
-			$e107tab = str_replace(MPREFIX, "", $temp);
-			if (!in_array($e107tab, $exclude) && stristr($e107tab, "lan_") === FALSE)
-			{
-				$tabs[] = $e107tab;
-			}
-		}
-	}
-
-	return $tabs;
 }
-
-
 // ------------- render form ---------------------------------------------------
-function multilang_db(){
-	global $pref, $e107, $tp, $frm, $emessage, $lanlist, $tabs;
 
-	if(isset($pref['multilanguage']) && $pref['multilanguage']){
 
+function multilang_db()
+{
+	global $pref,$tp,$frm,$emessage,$lanlist,$tabs;
+	
+	$sql = e107::getDb();
+	
+	if (isset($pref['multilanguage']) && $pref['multilanguage'])
+	{
 		// Choose Language to Edit:
 		$text = "
 			<fieldset id='core-language-list'>
@@ -480,79 +393,76 @@ function multilang_db(){
 					<tbody>
 		";
 		sort($lanlist);
-		for($i = 0; $i < count($lanlist); $i++)
+		
+		foreach ($lanlist as $e_language)
 		{
-			$installed = 0;
-
-			$text .= "
-						<tr>
-							<td>{$lanlist[$i]}</td>
-							<td>
-			";
-			foreach ($tabs as $tab_name) {
-				if (db_Table_exists(strtolower($lanlist[$i])."_".$tab_name)) {
-					$text .= $tab_name.", ";
-					$installed++;
+			$installed = array();
+			
+			if(strtolower($e_language) == $pref['sitelanguage'])
+			{
+				$e_language = "";
+			}
+			$text .= "<tr><td>{$e_language}</td><td>";
+			
+			foreach ($tabs as $tab_name)
+			{
+				if ($e_language != $pref['sitelanguage'] && $sql->db_Table_exists($tab_name,$e_language))
+				{
+					$installed[] = $tab_name;
 				}
 			}
-        	if($lanlist[$i] == $pref['sitelanguage']){
-        		$text .= "
-								<span>".LANG_LAN_17."</span>
-				";
-			}else{
-				$text .= (!$installed)? "<span>".LANG_LAN_05."</span>" : "";
+			
+			$text .= implode(", ",$installed);
+			
+			if ($e_language == $pref['sitelanguage'])
+			{
+				$text .= "<span>".LANG_LAN_17."</span>";
 			}
-			$text .= "
-							</td>
-							<td>
-								<form id='core-language-form-".str_replace(" ", "-", $lanlist[$i])."' action='".e_SELF."?modify' method='post'>
-			";
+			else
+			{
+				$text .= (!count($installed)) ? "<span>".LANG_LAN_05."</span>" : "";
+			}
+			
+			$text .= "</td>\n";
+			$text .= "<td>
+				<form id='core-language-form-".str_replace(" ", "-", $e_language)."' action='".e_SELF."?modify' method='post'>\n";
 			$text .= "
 								<div>
 			";
-   			if ($installed)
-   			{
-				//FIXME sprintf
-				$text .= "
-								<button class='edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
-								<button class='delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_33, $lanlist[$i]).' '.LANG_LAN_09."'><span>".LAN_DELETE."</span></button>
-				";
-			}
-			elseif($lanlist[$i] != $pref['sitelanguage'])
+			if (count($installed))
 			{
-				$text .= "
-								<button class='create' type='submit' name='create_edit_existing' value='no-value'><span>".LAN_CREATE."</span></button>
-				";
+				//FIXME sprintf
+				$text .= "<button class='edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
+						<button class='delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_33, $e_language).' '.LANG_LAN_09."'><span>".LAN_DELETE."</span></button>";
 			}
-			$text .= "
-								<input type='hidden' name='lang_choices' value='".$lanlist[$i]."' />
+			elseif ($e_language != $pref['sitelanguage'])
+			{
+				$text .= "<button class='create' type='submit' name='create_edit_existing' value='no-value'><span>".LAN_CREATE."</span></button>";
+			}
+			$text .= "<input type='hidden' name='lang_choices' value='".$e_language."' />
 								</div>
 								</form>
 							</td>
 						</tr>
 			";
 		}
-
 		$text .= "
 					</tbody>
 				</table>
 			</fieldset>
 		";
-
-		$e107->ns->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_16, $emessage->render().$text);
+		
+		e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_16, $emessage->render().$text);
 	}
 }
-
-
 // ----------------------------------------------------------------------------
+
 
 function show_tools()
 {
-	global $e107, $emessage;
-
+	global $emessage;
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
-
-	$text .= "
+	$text = "
 		<form id='core-language-lancheck-form' method='post' action='".e_ADMIN."lancheck.php'>
 			<fieldset id='core-language-lancheck'>
 				<legend class='e-hideme'>".LAN_CHECK_1."</legend>
@@ -567,32 +477,27 @@ function show_tools()
 							<td class='control'>
 								<select name='language' class='tbox select'>
 									<option value=''>".LAN_SELECT."</option>";
-
-	$languages = explode(",",e_LANLIST);
-	sort($languages);
-
-	foreach($languages as $lang)
-	{
-		if($lang != "English")
-		{
-	   		$text .= "
-									<option value='{$lang}' >{$lang}</option>
-			";
-		}
-	}
-
-	$text .= "
-								</select>
+								$languages = explode(",", e_LANLIST);
+								sort($languages);
+								foreach ($languages as $lang)
+								{
+									if ($lang != "English")
+									{
+										$text .= "
+																<option value='{$lang}' >{$lang}</option>
+										";
+									}
+								}
+								$text .= "</select>
 								<button class='submit' type='submit' name='language_sel' value='no-value'><span>".LAN_CHECK_2."</span></button>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</fieldset>
-		</form>
-	";
-
-	$text .= "
+		</form>";
+		
+		$text .= "
 		<form id='ziplang' method='post' action='".e_SELF."?tools'>
 			<fieldset id='core-language-package'>
 				<legend class='e-hideme'>".LANG_LAN_23."</legend>
@@ -607,21 +512,18 @@ function show_tools()
 							<td class='control'>
 								<select name='language' class='tbox select'>
 									<option value=''>".LAN_SELECT."</option>";
-
-	$languages = explode(",",e_LANLIST);
-	sort($languages);
-
-	foreach($languages as $lang)
-	{
-		if($lang != "English")
-		{
-	   		$text .= "
-									<option value='{$lang}' >{$lang}</option>
-			";
-		}
-	}
-
-	$text .= "
+								$languages = explode(",", e_LANLIST);
+								sort($languages);
+								foreach ($languages as $lang)
+								{
+									if ($lang != "English")
+									{
+										$text .= "
+																<option value='{$lang}' >{$lang}</option>
+										";
+									}
+								}
+								$text .= "
 								</select>
 								<button class='submit' type='submit' name='ziplang' value='no-value'><span>".LANG_LAN_24."</span></button>
 							</td>
@@ -631,12 +533,10 @@ function show_tools()
 			</fieldset>
 		</form>
 	";
-
-	$e107->ns->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_21, $emessage->render().$text);
+	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_21, $emessage->render().$text);
 }
-
-
 // ----------------------------------------------------------------------------
+
 
 function language_adminmenu()
 {
@@ -645,114 +545,103 @@ function language_adminmenu()
 	{
 		$action = "main";
 	}
-
-	if($action == "modify")
+	if ($action == "modify")
 	{
-    	$action = "db";
+		$action = "db";
 	}
 	$var['main']['text'] = LAN_PREFS;
 	$var['main']['link'] = e_SELF;
-
-	if(isset($pref['multilanguage']) && $pref['multilanguage'])
+	if (isset($pref['multilanguage']) && $pref['multilanguage'])
 	{
 		$var['db']['text'] = LANG_LAN_03;
 		$var['db']['link'] = e_SELF."?db";
 	}
-
-	$lcnt = explode(",",e_LANLIST);
-    if(count($lcnt) > 1)
+	$lcnt = explode(",", e_LANLIST);
+	if (count($lcnt) > 1)
 	{
 		$var['tools']['text'] = ADLAN_CL_6;
 		$var['tools']['link'] = e_SELF."?tools";
-    }
-
+	}
 	e_admin_menu(ADLAN_132, $action, $var);
 }
-
-
-
 // Zip up the language pack.
-
 // ===================================================
+
+
 function zip_up_lang($language)
 {
-    if (is_readable(e_ADMIN."ver.php"))
+	if (is_readable(e_ADMIN."ver.php"))
 	{
-		include(e_ADMIN."ver.php");
+		include (e_ADMIN."ver.php");
 	}
-/*
-    $core_plugins = array(
-    "alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
-    "clock_menu","comment_menu","content","featurebox","forum","gsitemap",
-    "links_page","linkwords","list_new","log","login_menu",
-    "newforumposts_main","newsfeed","newsletter","online",
-    "other_news_menu","pdf","pm","poll","rss_menu",
-    "search_menu","siteinfo_menu","trackback","tree_menu","user_menu","userlanguage_menu",
-    "usertheme_menu"
-    );
-
-    $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
-    "khatru","kubrick","lamb","leaf","newsroom","reline","sebes","vekna_blue");
-*/
-
-	require_once(e_HANDLER.'pclzip.lib.php');
-
-	list($ver,$tmp) = explode(" ",$e107info['e107_version']);
-
+	/*
+	 $core_plugins = array(
+	 "alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
+	 "clock_menu","comment_menu","content","featurebox","forum","gsitemap",
+	 "links_page","linkwords","list_new","log","login_menu",
+	 "newforumposts_main","newsfeed","newsletter","online",
+	 "other_news_menu","pdf","pm","poll","rss_menu",
+	 "search_menu","siteinfo_menu","trackback","tree_menu","user_menu","userlanguage_menu",
+	 "usertheme_menu"
+	 );
+	 $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",
+	 "khatru","kubrick","lamb","leaf","newsroom","reline","sebes","vekna_blue");
+	 */
+	require_once (e_HANDLER.'pclzip.lib.php');
+	list($ver, $tmp) = explode(" ", $e107info['e107_version']);
 	$newfile = e_UPLOAD."e107_".$ver."_".$language."_utf8.zip";
-  	$archive = new PclZip($newfile);
-
-	$core = grab_lans(e_LANGUAGEDIR.$language."/",$language);
-    $plugs = grab_lans(e_PLUGIN,$language);
-    $theme = grab_lans(e_THEME,$language);
-
-	$file = array_merge($core,$plugs,$theme);
-	$data = implode(",",$file);
-
-  	if ($archive->create($data) == 0)
+	$archive = new PclZip($newfile);
+	$core = grab_lans(e_LANGUAGEDIR.$language."/", $language);
+	$plugs = grab_lans(e_PLUGIN, $language);
+	$theme = grab_lans(e_THEME, $language);
+	$file = array_merge($core, $plugs, $theme);
+	$data = implode(",", $file);
+	if ($archive->create($data) == 0)
 	{
-    	return $archive->errorInfo(true);
-  	}
+		return $archive->errorInfo(true);
+	}
 	else
 	{
-    	return LANG_LAN_22." (".str_replace("../","",e_UPLOAD)."<a href='".$newfile."' >".basename($newfile)."</a>).";
+		return LANG_LAN_22." (".str_replace("../", "", e_UPLOAD)."<a href='".$newfile."' >".basename($newfile)."</a>).";
 	}
-
-
 }
 
-function grab_lans($path,$language,$filter = "")
+
+function grab_lans($path, $language, $filter = "")
 {
-   	require_once(e_HANDLER."file_class.php");
-    $fl = new e_file;
-
-    if($lanlist = $fl->get_files($path,"", "standard",4)){
-    	sort($lanlist);
-    }else{
-    	return;
+	$fl = e107::getFile();
+	
+	if ($lanlist = $fl->get_files($path, "", "standard", 4))
+	{
+		sort($lanlist);
 	}
-
-    $pzip = array();
- 	foreach($lanlist as $p)
+	else
+	{
+		return;
+	}
+	$pzip = array();
+	foreach ($lanlist as $p)
 	{
 		$fullpath = $p['path'].$p['fname'];
-    	if(strpos($fullpath,$language)!== FALSE)
-	 	{
+		if (strpos($fullpath, $language) !== FALSE)
+		{
 			$pzip[] = $fullpath;
 		}
 	}
-    return $pzip;
-
+	return $pzip;
 }
-
 /**
  * Handle page DOM within the page header
  *
  * @return string JS source
  */
+
+
 function headerjs()
 {
-	require_once(e_HANDLER.'js_helper.php');
+	//FIXME breaking functionality.
+	return;
+	require_once (e_HANDLER.'js_helper.php');
 	$ret = "
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 		<script type='text/javascript'>
@@ -797,7 +686,6 @@ function headerjs()
 			});
 		</script>
 	";
-
 	return $ret;
 }
 ?>
