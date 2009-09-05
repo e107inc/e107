@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-09-04 01:17:21 $
+ * $Revision: 1.45 $
+ * $Date: 2009-09-05 12:48:28 $
  * $Author: e107coders $
 */
 
@@ -61,7 +61,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.44 $
+* @version $Revision: 1.45 $
 * @author $Author: e107coders $
 */
 class db {
@@ -81,6 +81,7 @@ class db {
 	var $mySQLlanguage;
 	var $mySQLinfo;
 	var $tabset;
+	private $mySQLtableList = array();
 
 	/**
 	 * @public  MySQL Charset
@@ -1146,20 +1147,34 @@ class db {
 	}
 
 
-	/*
+	/**
 	 * Verify whether a table exists, without causing an error
 	 *
-	 * @param string $table
-	 * @return string
+	 * @param string $table Table name without the prefix
+	 * @return boolean TRUE if exists, FALSE if it doesn't
 	 *
-	 * NOTES: the 'official' way to do this uses SHOW TABLE STATUS, but that is 20x slower!
-	 *        LIMIT 0 is 3x slower than LIMIT 1
+	 * NOTES: Slower (28ms) than "SELECT 1 FROM" (4-5ms), but doesn't produce MySQL errors. 
+	 * Multiple checks on a single page will only use 1 query. ie. faster on multiple calls.   
 	 */
 	function db_Table_exists($table)
 	{
-		$res = $this->db_Query("SELECT 1 FROM ".$this->mySQLPrefix.$table." LIMIT 1"); // error if not there
-		if ($res) return TRUE;
-		return FALSE;
+		if(!$this->mySQLtableList)
+		{
+			$res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."%' "); // error if not there
+			while($rows = $this->db_Fetch(MYSQL_BOTH))
+			{
+				$this->mySQLtableList[] = $rows[0];	
+			}				
+		}
+				
+		if(!in_array($this->mySQLPrefix.$table,$this->mySQLtableList))
+		{
+			return FALSE;	
+		}
+		else
+		{
+			return TRUE;	
+		}				
 	}
 
 
