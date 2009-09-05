@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.35 $
-* $Date: 2009-09-04 01:17:22 $
+* $Revision: 1.36 $
+* $Date: 2009-09-05 12:48:28 $
 * $Author: e107coders $
 *
 */
@@ -986,11 +986,12 @@ class e_install
 		$cookiename 										= str_replace(" ","_",$this->previous_steps['prefs']['sitename']);
 		$this->previous_steps['prefs']['cookie_name']		= substr($cookiename,0,5)."cookie";
 		    			
-		foreach($this->previous_steps['prefs'] as $key=>$val)
-		{
-			e107::getConfig('core')->set($key,$val);  	
-		}
+	//	foreach($this->previous_steps['prefs'] as $key=>$val)
+	//	{
+	//		e107::getConfig('core')->set($key,$val);  	
+	//	}
 		
+		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
 		e107::getConfig('core')->save(FALSE); // save preferences made during install. 
 				
 		// Create the admin user - replacing any that may be been included in the XML. 
