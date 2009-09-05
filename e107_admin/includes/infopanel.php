@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.9 $
- |     $Date: 2009-09-04 14:35:01 $
+ |     $Revision: 1.10 $
+ |     $Date: 2009-09-05 23:02:23 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -250,11 +250,13 @@ function render_infopanel_menu_options()
 	$frm = e107::getSingleton('e_form');
 	$text = "";
 	$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
+	$settings = varset($user_pref['core-infopanel-menus'],array());
+	
 	if (e107::getDb()->db_Select_gen($menu_qry))
 	{
 		while ($row = e107::getDb()->db_Fetch())
 		{
-			$checked = (in_array($row['menu_name'], $user_pref['core-infopanel-menus'])) ? true : false;
+			$checked = (in_array($row['menu_name'], $settings)) ? true : false;
 			$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
 			$text .= $frm->checkbox("e-mymenus[]", $row['menu_name'], $checked);
 			$text .= $row['menu_name'];

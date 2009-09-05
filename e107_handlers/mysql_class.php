@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.46 $
- * $Date: 2009-09-05 18:58:56 $
+ * $Revision: 1.47 $
+ * $Date: 2009-09-05 23:02:23 $
  * $Author: e107coders $
 */
 
@@ -61,7 +61,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.46 $
+* @version $Revision: 1.47 $
 * @author $Author: e107coders $
 */
 class db {
@@ -838,8 +838,10 @@ class db {
 	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$this->tabset = FALSE;
+		$query .= " "; // temp fix for failing regex below, when there is no space after the table name;
+		
 		if(strpos($query,'`#') !== FALSE)
-		{
+		{			
 			$query = preg_replace_callback("/\s`#([\w]*?)`\W/", array($this, 'ml_check'), $query);
 		}
 		elseif(strpos($query,'#') !== FALSE)
@@ -865,7 +867,7 @@ class db {
 	}
 
 	function ml_check($matches)
-	{
+	{	
 		$table = $this->db_IsLang($matches[1]);
 		if($this->tabset == false)
 		{

@@ -9,13 +9,15 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-09-04 14:35:00 $
+ * $Revision: 1.29 $
+ * $Date: 2009-09-05 23:02:23 $
  * $Author: e107coders $
  *
 */
 
 require_once ("../class2.php");
+$theme = e107::getPref('sitetheme');
+define("EXPORT_PATH","{e_THEME}".$theme."/install/");
 
 if(!getperms('0'))
 {
@@ -68,14 +70,18 @@ if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
 
 if(isset($_POST['exportXmlFile']))
 {
-	exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],TRUE);
-	exit();
+	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables']))
+	{
+		$emessage = eMessage::getInstance();
+		$emessage->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
+	}
+	
 }
 
 require_once ("auth.php");
 require_once (e_HANDLER."form_handler.php");
 $frm = new e_form();
-$emessage = &eMessage::getInstance(); //nothing wrong with doing it twice
+
 
 /* No longer needed after XML feature added. 
 
@@ -335,11 +341,11 @@ class system_tools
 	 */	
 	private function exportXmlForm()
 	{
-		
+		$emessage = eMessage::getInstance();
 		$frm = e107::getSingleton('e_form');
 	//TODO LANs
 		
-		$text = "<form method='post' action='".e_SELF."' id='core-db-export-form'>
+		$text = "<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-export-form'>
 			<fieldset id='core-db-export'>
 			<legend class='e-hideme'>Export Options</legend>
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
@@ -359,21 +365,23 @@ class system_tools
 	
 				";
 	
-					$pref_types  = e107::getConfig()->aliases;		
-					$exclusions = array('core_old','core_backup');
+					$pref_types  = e107::getConfig()->aliases;
+					unset($pref_types['core_old'],$pref_types['core_backup']);		
+			//		$exclusions = array('core_old'=>1,'core_backup'=>1);
+				//	$filteredprefs = array_diff($pref_types,$exclusions);
 					
 					foreach($pref_types as $key=>$description)
 					{
-						if(!in_array($key,$exclusions))
-						{
-							$text .= "<tr>
+						$checked = ($_POST['xml_prefs'][$key] == $key) ? 1: 0;	
+
+						$text .= "<tr>
 							<td>
-								".$frm->checkbox("xml_prefs[".$key."]", $key)."
+								".$frm->checkbox("xml_prefs[".$key."]", $key, $checked)."
 							".LAN_PREFS.": ".$key."</td>
 							<td>&nbsp;</td>
 	
 							</tr>";
-						}
+					
 					}
 					$text .= "</tbody>
 				</table>
@@ -396,10 +404,11 @@ class system_tools
 					$tables = table_list();
 					
 					foreach($tables as $name=>$count)
-					{				
+					{	
+						$checked = ($_POST['xml_tables'][$name] == $name) ? 1: 0;			
 						$text .= "<tr>					
 							<td>
-								".$frm->checkbox("xml_tables[".$name."]", $name)." Table Data: ".$name." 
+								".$frm->checkbox("xml_tables[".$name."]", $name, $checked)." Table Data: ".$name." 
 							</td>
 							<td class='right'>$count</td>
 						</tr>";
@@ -423,9 +432,10 @@ class system_tools
 				</thead>
 				<tbody>
 				<tr>
-						<td colspan='2'>
-						".$frm->checkbox("package_images",'package_images')." Convert Image-paths and package images.   
-						   Destination Path: <input type='text' name='package_path' value='' /> (not functional)
+						<td colspan='2'>";
+						$checked = (vartrue($_POST['package_images'])) ? 1: 0;	
+						$text .= $frm->checkbox("package_images",'package_images', $checked)." Convert paths and package images and xml into: <i>".e107::getParser()->replaceConstants(EXPORT_PATH)."</i>    
+					
 						</td>
 					</tr>
 				</tbody>
@@ -438,7 +448,7 @@ class system_tools
 		</form>	";
 		
 	
-		e107::getRender()->tablerender("Export Options", $text);		
+		e107::getRender()->tablerender("Export Options",$emessage->render(). $text);		
 		
 		
 	}
@@ -703,15 +713,47 @@ function db_adminmenu()
 function exportXmlFile($prefs,$tables,$debug=FALSE)
 {
 	$xml = e107::getSingleton('xmlClass');
+	$tp = e107::getParser();
+	$emessage = eMessage::getInstance();
 	
-	if(vartrue($_POST['package_images']) && vartrue($_POST['package_path']))
+	if(vartrue($_POST['package_images']))
 	{
-		// TODO Conversion of Image paths - in xml-class and e_parse_class? 
-		// $xml->convertImagePaths = TRUE;
-		// $xml->destinationPath = $_POST['package_path'];		
+		
+		$xml->convertFilePaths = TRUE;
+		$xml->filePathDestination = EXPORT_PATH;
+		
+		$desinationFolder = $tp->replaceConstants($xml->filePathDestination);
+	
+		if(!is_writable($desinationFolder))
+		{
+			
+			$emessage->add($desinationFolder."is not writable", E_MESSAGE_ERROR);
+			return ;
+		}
 	}
 	
-	$xml->e107Export($prefs,$tables,FALSE);		
+	//TODO LANs
+	if($xml->e107Export($prefs,$tables,$debug))
+	{
+		$emessage->add("Created: ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
+		if(varset($xml->fileConvertLog))
+		{
+			foreach($xml->fileConvertLog as $oldfile)
+			{
+				$file = basename($oldfile);
+				$newfile = $desinationFolder.$file;
+				if(copy($oldfile,$newfile))
+				{
+					$emessage->add("Copied: ".$newfile, E_MESSAGE_SUCCESS);
+				}
+				else
+				{
+					$emessage->add("Couldn't copy: ".$newfile, E_MESSAGE_ERROR);	
+				}			
+			}
+		}
+	}
+
 }
 
 
@@ -721,7 +763,6 @@ function table_list()
 	// grab default language lists.
 	//TODO - a similar function is in db_verify.php. Should probably all be moved to mysql_class.php. 
 	
-	global $mySQLdefaultdb;
 	$exclude = array();
 	$exclude[] = "core";
 	$exclude[] = "rbinary";
@@ -731,36 +772,26 @@ function table_list()
 	$exclude[] = "upload";
 	$exclude[] = "user_extended_country";
 	$exclude[] = "plugin";
+	
+	$coreTables = e107::getDb()->db_TableList('nolan');
 
-	$tables = mysql_list_tables($mySQLdefaultdb);
-	while (list($temp) = mysql_fetch_array($tables))
-	{
-		
-		e107::getDB()->db_Rows();
-		$t = mysql_query("SELECT * FROM ".$temp);
-		$e107tab = str_replace(MPREFIX, "", $temp);
-		
-		$count = mysql_num_rows($t);
-		if($count && (strpos($temp,$prefix)!==TRUE) && !in_array($e107tab,$exclude))
+	$tables = array_diff($coreTables,$exclude);
+	
+	foreach($tables as $e107tab)
+	{		
+		$count = e107::getDb()->db_Select_gen("SELECT * FROM #".$e107tab);
+			
+		if($count)
 		{
-			$tabs[$e107tab] = mysql_num_rows($t);	
-		}
-		$prefix = MPREFIX."lan_";
-		$match = array();
-	//	if(preg_match('/^'.$prefix.'(.*)/', $temp, $match))
-		{
-//			$e107tab = str_replace(MPREFIX, "", $temp);
-//			$pos = strrpos($match[1],"_")+1;
-//			$core = substr(str_replace("lan_","",$e107tab),$pos);
-		//	if (str_replace($exclude, "", $e107tab))
-		//	{
-			//	$tabs[$core] = $e107tab;
-		//	}
-		}
+			$tabs[$e107tab] = $count; // mysql_num_rows($t);	
+		}	
 	}
 
 	return $tabs;
 }
+
+
+
 /* Still needed?
 
 function backup_core()
