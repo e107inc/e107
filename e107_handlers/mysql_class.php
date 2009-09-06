@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.47 $
- * $Date: 2009-09-05 23:02:23 $
+ * $Revision: 1.48 $
+ * $Date: 2009-09-06 20:04:03 $
  * $Author: e107coders $
 */
 
@@ -61,7 +61,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.47 $
+* @version $Revision: 1.48 $
 * @author $Author: e107coders $
 */
 class db {
@@ -529,7 +529,8 @@ class db {
 			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
 		}
 
-		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark))
+		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
+		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Update', $debug, $log_type, $log_remark))
 		{
 			$result = mysql_affected_rows($this->mySQLaccess);
 			$this->dbError('db_Update');

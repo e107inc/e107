@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.36 $
-* $Date: 2009-09-05 12:48:28 $
+* $Revision: 1.37 $
+* $Date: 2009-09-06 20:04:04 $
 * $Author: e107coders $
 *
 */
@@ -302,11 +302,13 @@ class e_install
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_021);
 		$this->template->SetTag("stage_title", LANINS_022);
+		$this->template->SetTag("onload", "document.getElementById('name').focus()");
 		$page_info = nl2br(LANINS_023);
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$output = "
-			<br /><br />
+			
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
+			<br /><br />
 			<table cellspacing='0'>
 				<tr>
 				<td style='border-top: 1px solid #999;' class='row-border'><label for='server'>".LANINS_024."</label></td>
@@ -335,8 +337,9 @@ class e_install
 				<td class='row-border'>".LANINS_034."</td>
 				</tr>
 			</table>
+			<br /><br />
 			</div>
-			<br /><br />\n";
+			\n";
 		$e_forms->add_plain_html($output);
 		$this->finish_form();
 		$e_forms->add_button("submit", LANINS_035);
@@ -353,6 +356,9 @@ class e_install
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_036);
+		$this->template->SetTag("onload", "document.getElementById('name').focus()");
+		
+		
 		$this->previous_steps['mysql']['server'] = trim($_POST['server']);
 		$this->previous_steps['mysql']['user'] = trim($_POST['name']);
 		$this->previous_steps['mysql']['password'] = $_POST['password'];
@@ -367,7 +373,7 @@ class e_install
 			$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 			$head = LANINS_039."<br /><br />\n";
 			$output = "
-			<br /><br />
+			
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
 			<table cellspacing='0'>
 				<tr>
@@ -377,7 +383,7 @@ class e_install
 				</tr>
 				<tr>
 				<td class='row-border'><label for='name'>".LANINS_025."</label></td>
-				<td class='row-border'><input class='tbox' type='text' name='name' id='name' size='40' value='{$this->previous_steps['mysql']['user']}' maxlength='100' /></td>
+				<td class='row-border'><input class='tbox' type='text' name='name' id='name' size='40' value='{$this->previous_steps['mysql']['user']}' maxlength='100' onload='this.focus()'  /></td>
 				<td class='row-border'>".LANINS_031."</td>
 				</tr>
 				<tr>
@@ -402,8 +408,9 @@ class e_install
 			}
 			$output .= "
 			</table>
+			<br /><br />
 			</div>
-			<br /><br />\n";
+			\n";
 			$e_forms->add_plain_html($output);
 			$e_forms->add_button("submit", LANINS_035);
 			$this->template->SetTag("stage_title", LANINS_040);
@@ -596,6 +603,9 @@ class e_install
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_046);
 		$this->template->SetTag("stage_title", LANINS_047);
+		$this->template->SetTag("onload", "document.getElementById('u_name').focus()");
+		
+		
 		$e_forms->start_form("admin_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
@@ -626,8 +636,9 @@ class e_install
 				<td class='row-border'>".LANINS_081."</td>
 				</tr>
 			</table>
+			<br /><br />
 			</div>
-			<br /><br />\n";
+			\n";
 		$e_forms->add_plain_html($output);
 		$this->finish_form();
 		$e_forms->add_button("submit", LANINS_035);
@@ -708,6 +719,7 @@ class e_install
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_056);
 		$this->template->SetTag("stage_title", LANINS_117); // Website Preferences;
+		$this->template->SetTag("onload", "document.getElementById('sitename').focus()");
 		
 		
 		$e_forms->start_form("pref_info", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
@@ -725,7 +737,7 @@ class e_install
 	
 				</tr>
 				<tr>
-				<td class='row-border'><label for='sitetheme'>".LANINS_109."</label><br />".LANINS_110."</td>
+				<td class='row-border'><label>".LANINS_109."</label><br />".LANINS_110."</td>
 				<td class='row-border'>
 				<table style='width:100%'>
 				<tr>
@@ -928,11 +940,22 @@ class e_install
 		define("e_LANGUAGE", $this->previous_steps['language']);
 		define('e_SELF', 'http://'.$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']);	
 
+		$themeImportFile = array();
+		$themeImportFile[0] = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install.xml"; 
+		$themeImportFile[1] = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install/install.xml"; 
+		$themeImportFile[3] = $this->e107->e107_dirs['FILES_DIRECTORY']. "default_install.xml";	
 		
-		$themeImportFile = $this->e107->e107_dirs['THEMES_DIRECTORY'].$this->previous_steps['prefs']['sitetheme']."/install.xml"; 
-		if($this->previous_steps['generate_content']==1 && is_readable($themeImportFile))
+		
+		if($this->previous_steps['generate_content']==1)
 		{
-			$XMLImportfile = $themeImportFile;	
+			foreach($themeImportFile as $file)
+			{
+				if(is_readable($file))
+				{
+					$XMLImportfile = $file;	
+					break;
+				}	
+			}
 		}
 		else
 		{
@@ -985,12 +1008,7 @@ class e_install
 		
 		$cookiename 										= str_replace(" ","_",$this->previous_steps['prefs']['sitename']);
 		$this->previous_steps['prefs']['cookie_name']		= substr($cookiename,0,5)."cookie";
-		    			
-	//	foreach($this->previous_steps['prefs'] as $key=>$val)
-	//	{
-	//		e107::getConfig('core')->set($key,$val);  	
-	//	}
-		
+		    				
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
 		e107::getConfig('core')->save(FALSE); // save preferences made during install. 
 				
@@ -1531,7 +1549,7 @@ function template_data()
 <meta http-equiv=\"content-style-type\" content=\"text/css\" />
 <link rel=\"stylesheet\" href=\"{installer_css_http}\" type=\"text/css\" />
 </head>
-<body>
+<body onload=\"{onload}\">
 <!-- Installer theme is a ripped version of 'Leaf' by Que, based on the nucleus cms theme by Ivan Fong aka Stanch. -->
 <div id=\"header\">
 <h1>{installation_heading}</h1>

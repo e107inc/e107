@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2009-09-03 22:27:32 $
+|     $Revision: 1.79 $
+|     $Date: 2009-09-06 20:04:03 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -124,12 +124,10 @@ class e107plugin
 		$sql = e107::getDb();
 		$sql2 = e107::getDb('sql2');
 		$tp = e107::getParser();
+		$fl = e107::getFile();
 		
 		global $mySQLprefix, $menu_pref, $pref;
 
-		require_once(e_HANDLER.'file_class.php');
-
-		$fl = new e_file;
 		$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
 		$sp = FALSE;
 		
@@ -298,6 +296,7 @@ class e107plugin
 	
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		$fl = e107::getFile();
 
          $query = "SELECT * FROM #plugin WHERE plugin_installflag =0 ORDER BY plugin_path ASC";
 		$sql->db_Select_gen($query);
@@ -310,9 +309,6 @@ class e107plugin
 		{
         	$reject_plugin[] = $val['plugin_path']."/images";
  		}
-
-        require_once(e_HANDLER."file_class.php");
-		$fl = new e_file;
 
         $filesrch = implode("|",array("_16.png","_16.PNG","_32.png","_32.PNG","_48.png","_48.PNG","_64.png","_64.PNG","_128.png","_128.png"));
 
@@ -363,12 +359,7 @@ class e107plugin
        		$iconpool[$key][] = $tp->createConstants($file['path'],1).$file['fname'];
 		}
 
-	//	TODO Review pref-class method used below (a new function?), to simply add or update existing prefs. (without a global $pref)
-		foreach($iconpool as $key=>$val)
-		{
-			e107::getConfig('ipool')->set($key,$val); 	
-		}	 
-
+		e107::getConfig('ipool')->setPref($iconpool); 	
         return (e107::getConfig('ipool')->save(FALSE)) ?  TRUE : FALSE;
 
 	}
@@ -600,10 +591,9 @@ class e107plugin
 		}
 	  }
 	  
-  
-	//  e107::getConfig('core')->save(FALSE);
-	 // save_prefs(); //FIXME doesn't work from install.php
-	 e107::getConfig()->loadData($pref, false)->save(false, true);
+  	 e107::getConfig('core')->setPref($pref)->save();
+	 
+//	 e107::getConfig()->loadData($pref, false)->save(false, true);
 	}
 
 
@@ -682,7 +672,7 @@ class e107plugin
 	// Handle prefs from arrays (mostly 0.7 stuff, possibly apart from the special cases)
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '')
 	{  // These prefs are 'cumulative' - several plugins may contribute an array element
-		global $pref;
+	//	global $pref;
 /*
 		if ($prefname == 'plug_sc' || $prefname == 'plug_bb')
 		{  // Special cases - shortcodes and bbcodes - each plugin may contribute several elements
@@ -721,8 +711,12 @@ class e107plugin
 		{
 			$pref[$prefname] = substr($pref[$prefname], 1);
 		}
+		
+		e107::getConfig('core')->setPref($pref);
+		e107::getConfig('core')->save();
+		
 	//	save_prefs(); //FIXME - should be a better way to do this. 
-		e107::getConfig()->loadData($pref, false)->save(false, true);
+		// e107::getConfig()->loadData($pref, false)->save(false, true);
 	}
 
 
@@ -784,10 +778,9 @@ class e107plugin
 		{
 			unset($search_prefs['comments_handlers'][$eplug_folder]);
 		}
-		// $tmp = addslashes(serialize($search_prefs));
-		$tmp = e107::getArrayStorage()->WriteArray($search_prefs);
-		//TODO Use preference class instead of this. 
-		$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'search_prefs' ");
+				
+		e107::getConfig('search')->setPref($search_prefs)->save();
+		
 	}
 
 	function manage_notify($action, $eplug_folder)
@@ -1272,11 +1265,7 @@ class e107plugin
 		  }
 		}
 		
-	
-		
-//		save_prefs(); //FIXME replace with pref-class equivalent
-		e107::getConfig()->loadData($pref, false)->save(false, true);
-
+		e107::getConfig()->setPref($pref)->save(false);
 
 		if ($canContinue)
 		{	// Let's call any custom post functions defined in <management> section
@@ -1514,8 +1503,7 @@ class e107plugin
 	function save_addon_prefs() // scan the plugin table and create path-array-prefs for each addon.
 	{  	
 		$sql = e107::getDb();
-		
-		$addpref = array();
+		$core = e107::getConfig('core');
 		
 		//        $query = "SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_addons !='' ORDER BY plugin_path ASC";
 		$query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC";
@@ -1534,7 +1522,8 @@ class e107plugin
 					{
 						if(strpos($val, 'e_') === 0)
 						{
-							$addpref[$val."_list"][$path] = $path;
+							// $addpref[$val."_list"][$path] = $path;
+							$core->setPref($val.'_list/'.$path,$path);
 						}
 					}
 				}
@@ -1562,11 +1551,12 @@ class e107plugin
 					{
 						$bb_name = substr($adds, 0,-3); // remove the .bb
 						$bb_array[$bb_name] = "0"; // default userclass.
+						
 					}
 
 					if($is_installed && (substr($adds,-4) == "_sql"))
 					{
-						$addpref['e_sql_list'][$path] = $adds;
+						$core->setPref('e_sql_list/'.$path,$adds);
 					}
 				}
 
@@ -1574,27 +1564,19 @@ class e107plugin
 				if(count($bb_array) > 0)
 				{
 					ksort($bb_array);
-					$addpref['bbcode_list'][$path] = $bb_array;
-
+					$core->setPref('bbcode_list/'.$path,$sc_array);
 				}
 
 				// Build shortcode list - do if uninstalled as well
 				if(count($sc_array) > 0)
 				{
 					ksort($sc_array);
-					$addpref['shortcode_list'][$path] = $sc_array;
+					$core->setPref('shortcode_list/'.$path,$sc_array);
 				}
 			}
 		}
 
-	//	TODO Review pref-class method used below (a new function?), to simply add or update existing prefs. (without a global $pref)
-
-		foreach($addpref as $key=>$val)
-		{
-			e107::getConfig('core')->set($key,$val); 	
-		}
-		 
-		e107::getConfig('core')->save(FALSE); 
+		$core->save(FALSE); 
 
 		if($this->manage_icons())
 		{
@@ -1612,11 +1594,9 @@ class e107plugin
 	// $debug = 'check' - checks each file found for php tags - prints 'pass' or 'fail'
 	function getAddons($plugin_path, $debug=FALSE)
 	{
-		global $fl;
-		if(!is_object($fl)){
-			require_once(e_HANDLER.'file_class.php');
-			$fl = new e_file;
-		}
+		$fl = e107::getFile();
+		
+		
 		$p_addons = array();
 		$addonlist = $fl->get_files(e_PLUGIN.$plugin_path, "^e_.*\.php$", "standard", 1);
 		//		print_a($addonlist);

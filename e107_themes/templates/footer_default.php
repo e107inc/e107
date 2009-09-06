@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-07-12 02:29:24 $
+|     $Revision: 1.16 $
+|     $Date: 2009-09-06 20:04:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ if(varset($e107_popup)!=1)
 	//
 	// B.2 Send footer template, stop timing, send simple page stats
 	//
-	parseheader(($ph ? $cust_footer : $FOOTER));
+	parseheader((varset($ph) ? $cust_footer : $FOOTER));
 
 	$eTimingStop = microtime();
 	global $eTimingStart;
