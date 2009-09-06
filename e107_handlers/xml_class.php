@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-09-05 23:02:23 $
+ * $Revision: 1.23 $
+ * $Date: 2009-09-06 01:02:01 $
  * $Author: e107coders $
 */
 
@@ -544,7 +544,12 @@ class xmlClass
 		return false;
 	}
 	
-	function replaceFilePaths($text)
+	/**
+	 * Convert file path for inclusion in XML file. 
+	 * @param callback function $text - see e107ExportValue()
+	 * @return converted file path
+	 */
+	private function replaceFilePaths($text)
 	{
 		$fullpath = e107::getParser()->replaceConstants($text[1]);
 		$this->fileConvertLog[] = $fullpath;
@@ -555,7 +560,11 @@ class xmlClass
 	}
 	
 	
-	
+	/**
+	 * Process data values for XML file. If $this->convertFilePaths is TRUE, convert paths - see replaceFilePaths()
+	 * @param mixed $val
+	 * @return mixed
+	 */
 	private function e107ExportValue($val)
 	{
 		if($this->convertFilePaths)
@@ -579,13 +588,15 @@ class xmlClass
 	
 	/**
 	 * Create an e107 Export File in XML format
+	 * Note: If $this->filePathDestination has a value, then the file will be saved there. 
 	 * @param array $prefs  - see e_core_pref $aliases (eg. core, ipool etc)
-	 * @param array $tables - table names with the prefix
+	 * @param array $tables - table names without the prefix
 	 * @param boolean $debug [optional]
 	 * @return text / file for download
 	 */
 	public function e107Export($xmlprefs,$tables,$debug=FALSE)
 	{
+		
 		require_once(e_ADMIN."ver.php");
 		
 		$text = "<?xml version='1.0' encoding='utf-8' ?>\n";
