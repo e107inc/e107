@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.138 $
-* $Date: 2009-09-06 04:27:34 $
-* $Author: mcfly_e107 $
+* $Revision: 1.139 $
+* $Date: 2009-09-06 22:12:39 $
+* $Author: e107coders $
 *
 */
 //
@@ -1101,7 +1101,7 @@ $sql->db_Mark_Time('(Start: Find/Load Theme-Layout)'); // needs to run after che
 if(!defined("THEME_LAYOUT"))
 {
     $def = "";   // no custom pages found yet.
-    $cusPagePref = (is_array($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : $pref['sitetheme_custompages'];
+    $cusPagePref = (varset($user_pref['sitetheme_custompages'])) ? $user_pref['sitetheme_custompages'] : varset($pref['sitetheme_custompages']);
 
 	if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 	{
