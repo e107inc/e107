@@ -9,8 +9,8 @@
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-09-04 14:35:01 $
+ * $Revision: 1.13 $
+ * $Date: 2009-09-06 20:04:03 $
  * $Author: e107coders $
 */
 
@@ -232,7 +232,7 @@ class e_menu
 			ob_start();
 		}
 		
-		if($error_handler->debug == true)
+		if(vartrue($error_handler->debug))
 		{
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}

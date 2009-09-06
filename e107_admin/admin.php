@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-08-31 13:12:02 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-06 20:04:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -355,7 +355,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 			{
 				include(e_PLUGIN.$plugin_path."/plugin.php");
 			}
-			if ($eplug_conffile)
+			if (varset($eplug_conffile))
 			{
 				$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
 				$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
