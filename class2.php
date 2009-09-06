@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.137 $
-* $Date: 2009-09-04 14:35:00 $
-* $Author: e107coders $
+* $Revision: 1.138 $
+* $Date: 2009-09-06 04:27:34 $
+* $Author: mcfly_e107 $
 *
 */
 //
@@ -2084,7 +2084,18 @@ function plugInstalled($plugname)
 	return isset($pref['plug_installed'][$plugname]);*/
 }
 
-
-
-
-?>
+function __autoload($className) {
+	$tmp = explode('_', $className);
+	//TODO: Make it support core classes in e107_handlers
+	if('plugin' !== $tmp[0]) { return; }
+	if('plugin' == $tmp[0])
+	{
+		array_shift($tmp);
+		$filename = e_PLUGIN.implode('/', $tmp).'.php';
+	}
+	else
+	{
+		$filename = e_HANDLER.implode('/', $tmp).'.php';
+	}
+	require_once($filename);
+} // end __autoload
