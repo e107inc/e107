@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-09-05 23:02:23 $
+ * $Revision: 1.30 $
+ * $Date: 2009-09-06 01:02:01 $
  * $Author: e107coders $
  *
 */
@@ -70,7 +70,7 @@ if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
 
 if(isset($_POST['exportXmlFile']))
 {
-	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables']))
+	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['package_images']))
 	{
 		$emessage = eMessage::getInstance();
 		$emessage->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
@@ -709,14 +709,22 @@ function db_adminmenu()
 }
 
 
-
-function exportXmlFile($prefs,$tables,$debug=FALSE)
+/**
+ * Export XML File and Copy Images.
+ * @param object $prefs
+ * @param object $tables
+ * @param object $debug [optional]
+ * @return 
+ */
+function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 {
 	$xml = e107::getSingleton('xmlClass');
 	$tp = e107::getParser();
 	$emessage = eMessage::getInstance();
 	
-	if(vartrue($_POST['package_images']))
+	//TODO LANs
+	
+	if(vartrue($package))
 	{
 		
 		$xml->convertFilePaths = TRUE;
@@ -725,14 +733,13 @@ function exportXmlFile($prefs,$tables,$debug=FALSE)
 		$desinationFolder = $tp->replaceConstants($xml->filePathDestination);
 	
 		if(!is_writable($desinationFolder))
-		{
-			
-			$emessage->add($desinationFolder."is not writable", E_MESSAGE_ERROR);
+		{			
+			$emessage->add($desinationFolder." is not writable", E_MESSAGE_ERROR);
 			return ;
 		}
 	}
 	
-	//TODO LANs
+
 	if($xml->e107Export($prefs,$tables,$debug))
 	{
 		$emessage->add("Created: ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
@@ -742,7 +749,7 @@ function exportXmlFile($prefs,$tables,$debug=FALSE)
 			{
 				$file = basename($oldfile);
 				$newfile = $desinationFolder.$file;
-				if(copy($oldfile,$newfile))
+				if($oldfile == $newfile || (copy($oldfile,$newfile)))
 				{
 					$emessage->add("Copied: ".$newfile, E_MESSAGE_SUCCESS);
 				}
@@ -783,7 +790,7 @@ function table_list()
 			
 		if($count)
 		{
-			$tabs[$e107tab] = $count; // mysql_num_rows($t);	
+			$tabs[$e107tab] = $count; 
 		}	
 	}
 
