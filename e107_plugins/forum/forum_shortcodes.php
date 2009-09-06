@@ -11,7 +11,7 @@ class forum_shortcodes
 	var $postInfo;
 	var $thread;
 	var $forum;
-	
+
 	function forum_shortcodes()
 	{
 		$this->e107 = e107::getInstance();
@@ -280,14 +280,14 @@ class forum_shortcodes
 
 		$rankInfo = $this->e107->userRank->getRanks($this->postInfo['post_user']);
 		if(!$parm) { $parm = 'name'; }
-		
+
 		switch($parm)
 		{
-			
+
 			case 'userid' :
 				return $this->sc_memberid();
 				break;
-				
+
 			case 'special':
 				if(isset($rankInfo['special'])) { return $rankInfo['special']; }
 				if($this->forum->isModerator($this->postInfo['post_user']))
@@ -296,7 +296,7 @@ class forum_shortcodes
 				}
 				return '';
 				break;
-				
+
 			default:
 				return varset($rankInfo[$parm], '');
 				break;
@@ -307,7 +307,7 @@ class forum_shortcodes
 	{
 		if (MODERATOR)
 		{
-			return showmodoptions();
+			return $this->showModOptions();
 		}
 	}
 
@@ -344,6 +344,49 @@ class forum_shortcodes
 	{
 		// Defined in case an indicator is required
 		return '';
+	}
+
+	function showModOptions()
+	{
+		global $thread, $postInfo;
+
+		$e107 = e107::getInstance();
+		$forum_id = $thread->threadInfo['forum_id'];
+
+
+		if ($this->postInfo['thread_start'])
+		{
+			$type = 'Thread';
+			$ret = "<form method='post' action='" . $this->e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $this->postInfo['post_thread']))."' id='frmMod_{$this->postInfo['post_forum']}_{$this->postInfo['post_thread']}'>";
+			$delId = $postInfo['post_thread'];
+		}
+		else
+		{
+			$type = 'Post';
+			$ret = "<form method='post' action='" . e_SELF . '?' . e_QUERY . "' id='frmMod_{$this->postInfo['post_forum']}_{$this->postInfo['post_thread']}'>";
+			$delId = $this->postInfo['post_id'];
+		}
+
+		$ret .= "
+			<div>
+			<a href='" . $this->e107->url->getUrl('forum', 'thread', array('func' => 'edit', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_edit . "</a>
+			<input type='image' " . IMAGE_admin_delete . " name='delete{$type}_{$delId}' value='thread_action' onclick=\"return confirm_('{$type}', {$this->postInfo['post_forum']}, {$this->postInfo['post_thread']}, '{$this->postInfo['user_name']}')\" />
+			<input type='hidden' name='mod' value='1'/>
+			";
+		if ($type == 'Thread')
+		{
+			$ret .= "<a href='" . $this->e107->url->getUrl('forum', 'thread', array('func' => 'move', 'id' => $this->postInfo['post_id']))."'>" . IMAGE_admin_move2 . "</a>";
+		}
+		else
+		{
+			$ret .= "<a href='" . $this->e107->url->getUrl('forum', 'thread', array('func' => 'split', 'id' => $this->postInfo['post_id']))."'>" . IMAGE_admin_split . '</a>';
+
+		}
+		$ret .= "
+			</div>
+			</form>";
+		return $ret;
+
 	}
 }
 ?>

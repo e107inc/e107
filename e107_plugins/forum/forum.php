@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-12-18 14:08:33 $
+|     $Revision: 1.14 $
+|     $Date: 2009-09-06 04:30:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -23,8 +23,7 @@ if(!defined('e107_INIT'))
 
 include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 
-require_once(e_PLUGIN.'forum/forum_class.php');
-$forum = new e107forum;
+$forum = new plugin_forum_forumClass;
 
 if ($untrackId = varset($_REQUEST['untrack']))
 {
@@ -47,7 +46,7 @@ if(isset($_GET['f']))
 			header('location:'.e_SELF);
 			exit;
 			break;
-		
+
 		case 'rules':
 			include_once(HEADERF);
 			forum_rules('show');
@@ -333,7 +332,7 @@ function parse_forum($f, $restricted_string = '')
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
 		if ($f['user_name'])
 		{
-			
+
 			$lastpost_name = "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$f['forum_lastpost_user'])."'>{$f['user_name']}</a>";
 		}
 		else

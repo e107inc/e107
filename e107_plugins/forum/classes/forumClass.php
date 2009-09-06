@@ -8,8 +8,8 @@
  *
  * Message Handler
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_class.php,v $
- * $Revision: 1.39 $
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/classes/forumClass.php,v $
+ * $Revision: 1.1 $
  * $Date: 2009-09-06 04:30:46 $
  * $Author: mcfly_e107 $
  *
@@ -17,15 +17,15 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-class plugin_forum_forumClass
+class plugin_forum_classes_forumClass
 {
 	var $permList = array();
 	var $fieldTypes = array();
 	var $userViewed = array();
 	var $modArray = array();
 	var $e107;
-	private $threadList = array();
-	private $postList = array();
+
+	public $thread;
 
 	function __construct()
 	{
@@ -124,6 +124,11 @@ class plugin_forum_forumClass
 	function checkPerm($forumId, $type='view')
 	{
 		return (in_array($forumId, $this->permList[$type]));
+	}
+
+	public function threadNew($threadId=false)
+	{
+		$this->thread = new plugin_forum_classes_forumThread($threadId, $this);
 	}
 
 	/**
@@ -284,87 +289,7 @@ class plugin_forum_forumClass
 		$this->e107->sql->db_Update('forum_post', $info);
 	}
 
-	function threadGet($id, $joinForum = true, $uid = USERID)
-	{
-		$id = (int)$id;
-		$uid = (int)$uid;
 
-		if($joinForum)
-		{
-			// TODO: Fix query to get only forum and parent info needed, with correct naming
-			$qry = '
-			SELECT t.*, f.*,
-			fp.forum_id as parent_id, fp.forum_name as parent_name,
-			sp.forum_id as forum_sub, sp.forum_name as sub_parent,
-			tr.track_userid
-			FROM `#forum_thread` AS t
-			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
-			LEFT JOIN `#forum` AS fp ON fp.forum_id = f.forum_parent
-			LEFT JOIN `#forum` AS sp ON sp.forum_id = f.forum_sub
-			LEFT JOIN `#forum_track` AS tr ON tr.track_thread = t.thread_id AND tr.track_userid = '.$uid.'
-			WHERE thread_id = '.$id;
-		}
-		else
-		{
-			$qry = '
-			SELECT *
-			FROM `#forum_thread`
-			WHERE thread_id = '.$id;
-		}
-		if($this->e107->sql->db_Select_gen($qry))
-		{
-			$tmp = $this->e107->sql->db_Fetch();
-			if($tmp)
-			{
-				if(trim($tmp['thread_options']) != '')
-				{
-					$tmp['thread_options'] = unserialize($tmp['thread_options']);
-				}
-				return $tmp;
-			}
-		}
-		return false;
-	}
-
-	function postGet($id, $start, $num)
-	{
-		$id = (int)$id;
-		$ret = false;
-		if('post' === $start)
-		{
-			$qry = '
-			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, p.* FROM `#forum_post` AS p
-			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
-			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
-			WHERE p.post_id = '.$id;
-		}
-		else
-		{
-			$qry = "
-				SELECT p.*,
-				u.user_name, u.user_customtitle, u.user_hideemail, u.user_email, u.user_signature,
-				u.user_admin, u.user_image, u.user_join, ue.user_plugin_forum_posts,
-				eu.user_name AS edit_name
-				FROM `#forum_post` AS p
-				LEFT JOIN `#user` AS u ON p.post_user = u.user_id
-				LEFT JOIN `#user` AS eu ON p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id
-				LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = p.post_user
-				WHERE p.post_thread = {$id}
-				ORDER BY p.post_datestamp ASC
-				LIMIT {$start}, {$num}
-			";
-		}
-		if($this->e107->sql->db_Select_gen($qry))
-		{
-			$ret = array();
-			while($row = $this->e107->sql->db_Fetch())
-			{
-				$ret[] = $row;
-			}
-		}
-		if('post' === $start) { return $ret[0]; }
-		return $ret;
-	}
 
 
 	function threadGetUserPostcount($threadId)
@@ -949,12 +874,6 @@ class plugin_forum_forumClass
 			return false;
 	}
 
-	function threadIncView($id)
-	{
-		$e107 = e107::getInstance();
-		$id = (int)$id;
-		return $e107->sql->db_Update('forum_thread', 'thread_views=thread_views+1 WHERE thread_id='.$id);
-	}
 
 	function _forum_lp_update($lp_type, $lp_user, $lp_info, $lp_forum_id, $lp_forum_sub)
 	{
