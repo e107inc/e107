@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-08-14 11:32:34 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-07 09:59:06 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -51,6 +51,7 @@ else
 	//FIXME may not work with session
 	$action = (e_QUERY && ! $_GET['elan']) ? e_SELF.'?'.e_QUERY : e_SELF;
 	$text = '
+	<form method="post" action="'.$action.'">
 		<div style="text-align:center">
 			<select name="sitelanguage" class="tbox">';
 	foreach($languageList as $languageFolder)
@@ -66,7 +67,8 @@ else
 			<br />
 			<button class="button" type="submit" name="setlanguage"><span>'.UTHEME_MENU_L1.'</span></button>';
 	$text .= '
-		</div>';
+		</div>
+	</form>';
 }
 
 $ns->tablerender(UTHEME_MENU_L2, $text, 'user_lan');
