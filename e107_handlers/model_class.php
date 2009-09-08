@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-09-04 17:04:14 $
+ * $Revision: 1.8 $
+ * $Date: 2009-09-08 12:13:00 $
  * $Author: secretr $
 */
 
@@ -315,7 +315,7 @@ class e_model
      */
     public function setPostedData($key = null, $data = null, $strict = false)
     {
-        return $this->setData($key, $data, $strict, '_posted_data');
+        return $this->_setData($key, $data, $strict, '_posted_data');
     }
     
     /**
