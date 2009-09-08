@@ -1,20 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2009-09-08 02:00:41 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Forum Posting
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
+ * $Revision: 1.39 $
+ * $Date: 2009-09-08 02:48:48 $
+ * $Author: mcfly_e107 $
 */
 
 require_once('../../class2.php');
@@ -80,6 +77,7 @@ if (!$forum->checkPerm($forumId, 'post'))
 }
 define('MODERATOR', USER && $forum->isModerator(USERID));
 //require_once(e_HANDLER.'forum_include.php');
+e107::getScParser();
 require_once(e_PLUGIN.'forum/forum_post_shortcodes.php');
 require_once(e_PLUGIN.'forum/forum_shortcodes.php');
 require_once(e_HANDLER.'ren_help.php');
