@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-09-04 17:04:15 $
+ * $Revision: 1.20 $
+ * $Date: 2009-09-08 12:13:00 $
  * $Author: secretr $
 */
 
@@ -133,7 +133,7 @@ class e_pref extends e_model
 		{
 			return $this; 
 		}
-
+		
 		//Merge only allowed
 		if(is_array($pref_name))
 		{
@@ -307,7 +307,7 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Disallow public use of addData()
+	 * Disallow public use of e_model::addData()
 	 * Disallow preference override
 	 *
 	 * @param string|array $pref_name
@@ -337,7 +337,19 @@ class e_pref extends e_model
 	final public function setData($pref_name, $value = null)
 	{
 		global $pref;
-		parent::setData($pref_name, $value, true);
+		if(empty($pref_name))
+		{
+			return $this; 
+		}
+		
+		//Merge only allowed
+		if(is_array($pref_name))
+		{
+			$this->mergeData($pref_name, false, false, false);
+			return $this;
+		}
+		
+		parent::setData($pref_name, $value, false);
 		
 		//BC
 		if($this->alias === 'core')
@@ -348,7 +360,7 @@ class e_pref extends e_model
 	}
 	
 	/**
-	 * Disallow public use of removeData()
+	 * Disallow public use of e_model::removeData()
 	 * Object data reseting is not allowed
 	 *
 	 * @param string $pref_name
@@ -479,7 +491,7 @@ class e_pref extends e_model
 		
 		if($from_post)
 		{
-			$this->mergePostedData(); //all posted data is sanitized and filtered vs structure array
+			$this->mergePostedData(); //all posted data is sanitized and filtered vs preferences array
 		}
 		
 		//TODO - LAN
@@ -776,8 +788,8 @@ class e_plugin_pref extends e_pref
 		{
 			$plugin_id = $plugin_id.'_'.$multi_row;
 		}
-		parent::__construct($plugin_id, 'plugin_'.$plugin_id);
-		if($load && e107::findPref('plug_installed/'.$this->plugin_id))
+		parent::__construct('plugin_'.$plugin_id, $this->plugin_id);
+		if($load /*&& e107::findPref('plug_installed/'.$this->plugin_id)*/)
 		{
 			$this->load();
 		}

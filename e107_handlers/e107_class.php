@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-09-04 20:38:36 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.45 $
+ * $Date: 2009-09-08 12:13:00 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -383,13 +383,13 @@ class e107
 		if(!isset(self::$_plug_config_arr[$plug_name.$multi_row]))
 		{
 			e107_require_once(e_HANDLER.'pref_class.php');
-			$override_id = $plug_name.($multi_row ? "_{$multi_row}_" : '');
+			$override_id = $plug_name.($multi_row ? "_{$multi_row}" : '');
 			
 			//check (once) for custom plugin pref handler 
 			if(is_readable(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php'))
 			{
 				require_once(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php');
-				$class_name = 'e_plugin_'.$override_id.'pref';
+				$class_name = 'e_plugin_'.$override_id.'_pref';
 				
 				//PHPVER: string parameter for is_subclass_of require PHP 5.0.3+
 				if(class_exists($class_name, false) && is_subclass_of('e_plugin_pref', $class_name)) //or e_pref ?
@@ -417,7 +417,7 @@ class e107
 	 * @param mixed $default default value if preference is not found
 	 * @return mixed
 	 */
-	public static function getPlugPref($plug_name, $pref_name, $default = null)
+	public static function getPlugPref($plug_name, $pref_name = '', $default = null)
 	{
 		return  empty($pref_name) ? self::getPlugConfig($plug_name)->getPref() : self::getPlugConfig($plug_name)->get($pref_name, $default);
 	}
