@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-09-08 12:13:00 $
+ * $Revision: 1.21 $
+ * $Date: 2009-09-08 14:48:44 $
  * $Author: secretr $
 */
 
@@ -789,7 +789,7 @@ class e_plugin_pref extends e_pref
 			$plugin_id = $plugin_id.'_'.$multi_row;
 		}
 		parent::__construct('plugin_'.$plugin_id, $this->plugin_id);
-		if($load /*&& e107::findPref('plug_installed/'.$this->plugin_id)*/)
+		if($load && e107::findPref('plug_installed/'.$this->plugin_id))
 		{
 			$this->load();
 		}
