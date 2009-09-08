@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2009-09-06 20:04:02 $
+|     $Revision: 1.49 $
+|     $Date: 2009-09-08 23:53:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -178,10 +178,10 @@ function update_check()
 
 
 	require_once(e_HANDLER."e_upgrade_class.php");
-	$upg = new e_upgrade;
+//	$upg = new e_upgrade;
 	//TODO Enable this before release!!
 //	$upg->checkSiteTheme();
- //	$upg->checkAllPlugins();
+//	$upg->checkAllPlugins();
 
 
 //--------------------------------------------

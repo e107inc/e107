@@ -1,12 +1,12 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_lancheck.php,v 1.4 2008-12-15 21:53:17 secretr Exp $
+ * $Id: lan_lancheck.php,v 1.5 2009-09-08 23:53:13 e107coders Exp $
  *
  * Admin Language File
  * 
 */
-define("LAN_CHECK_1", "Verify/Edit Language Files"); // modified in 0.7.6
+define("LAN_CHECK_1", "Verify/Edit Language-Pack Files"); // modified in 0.7.6
 define("LAN_CHECK_2", "Begin Verify");
 define("LAN_CHECK_3", "Verification of");
 define("LAN_CHECK_4", "File missing!");
