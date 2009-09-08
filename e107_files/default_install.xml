@@ -211,6 +211,8 @@ City, State, Country
 		<core name='wmessage_sc'>0</core>
 		<core name='wysiwyg'>0</core>
 		<core name='xup_enabled'>1</core>
+		<core name='xmlfeed_languagepacks'>http://www.e107.org/themeupdate.php</core>
+		<core name='xmlfeed_security'>http://www.e107.org/themeupdate.php</core>	
 		<emote name='alien!png'>!alien</emote>
 		<emote name='amazed!png'>!amazed</emote>
 		<emote name='angry!png'>!grr !angry</emote>

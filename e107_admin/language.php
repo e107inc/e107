@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-09-05 18:58:56 $
+ * $Revision: 1.20 $
+ * $Date: 2009-09-08 23:53:12 $
  * $Author: e107coders $
  *
  */
@@ -168,6 +168,7 @@ if (varset($_POST['ziplang']) && varset($_POST['language']))
 if (varset($action) == "tools")
 {
 	show_tools();
+	e107::getRender()->tablerender(LANG_LAN_34, available_langpacks());
 }
 //FIX - create or edit check
 if (isset($_POST['create_edit_existing']))
@@ -525,7 +526,9 @@ function show_tools()
 								}
 								$text .= "
 								</select>
+								
 								<button class='submit' type='submit' name='ziplang' value='no-value'><span>".LANG_LAN_24."</span></button>
+								<input type='checkbox' name='contribute_pack' value='1' /> Check to share your language-pack with the e107 community.
 							</td>
 						</tr>
 					</tbody>
@@ -533,10 +536,82 @@ function show_tools()
 			</fieldset>
 		</form>
 	";
+	
+
+	
 	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_21, $emessage->render().$text);
 }
+
+
 // ----------------------------------------------------------------------------
 
+function available_langpacks()
+{
+	require_once(e_HANDLER.'xml_class.php');
+	$xml = new xmlClass;
+	
+	$feed = e107::getPref('xmlfeed_languagepacks');
+		
+	if($rawData = $xml -> loadXMLfile($feed, TRUE))
+	{
+		$text .= "<div class='block-text'>".LANG_LAN_35."</div>";
+		$text .= "<table cellpadding='0' cellspacing='0' class='adminlist'>";
+		foreach($rawData['language'] as $val)
+		{
+			$att = $val['@attributes'];
+			$name = $att['folder'];
+			$languages[$name] = array(
+			'name' => $att['name'],
+            'author' => $att['author'],
+            'authorURL' => $att['authorURL'],
+            'folder' => $att['folder'],
+            'version' => $att['version'],
+            'date' => $att['date'],
+            'compatibility' => $att['compatibility'],
+            'url' => $att['url']
+			);	
+		}
+
+		ksort($languages);
+		
+		//TODO LANs
+		
+		$text .= "<thead>
+		<tr>
+		<th>Name</th>
+		<th>Version</th>
+		<th>Author</th>
+		<th>Release-date</th>		
+		<th>Compatible</th>
+		<th>Download</th>
+		</tr>
+		</thead>
+		<tbody>";
+	
+		foreach($languages as $value)
+		{
+			$text .= "<tr>
+				<td>".$value['name']."</td>
+				<td>".$value['version']."</td>
+				<td><a href='".$value['authorURL']."'>".$value['author']."</a></td>
+				<td>".$value['date']."</td>
+				<td>".$value['compatibility']."</td>
+				
+				<td><a href='".$value['url']."'>Download Pack</a></td>
+				</tr>";
+		}
+		$text .= "</tbody></table>";
+		
+		return $text;
+	}
+	
+	
+	
+	
+	
+	
+		
+}
 
 function language_adminmenu()
 {
@@ -556,12 +631,12 @@ function language_adminmenu()
 		$var['db']['text'] = LANG_LAN_03;
 		$var['db']['link'] = e_SELF."?db";
 	}
-	$lcnt = explode(",", e_LANLIST);
-	if (count($lcnt) > 1)
-	{
-		$var['tools']['text'] = ADLAN_CL_6;
+//	$lcnt = explode(",", e_LANLIST);
+//	if (count($lcnt) > 1)
+//	{
+		$var['tools']['text'] = LANG_LAN_21;
 		$var['tools']['link'] = e_SELF."?tools";
-	}
+//	}
 	e_admin_menu(ADLAN_132, $action, $var);
 }
 // Zip up the language pack.
@@ -574,6 +649,9 @@ function zip_up_lang($language)
 	{
 		include (e_ADMIN."ver.php");
 	}
+	
+	$tp = e107::getParser();
+	
 	/*
 	 $core_plugins = array(
 	 "alt_auth","banner_menu","blogcalendar_menu","calendar_menu","chatbox_menu",
@@ -602,6 +680,18 @@ function zip_up_lang($language)
 	}
 	else
 	{
+		if($_POST['contribute_pack'])
+		{
+			$full_link = $tp->createConstants($newfile);
+			$email_message = "Site: ".SITENAME."
+			User: ".USERNAME."\n
+			IP:".USERIP."
+			...would like to contribute the following language pack for e107 v".$e107info['e107_version'].".
+			Please see attachment.";
+			$subject = basename($newfile);
+			//TODO - send email to languagepack@e107.org with attachment. 
+		}
+		
 		return LANG_LAN_22." (".str_replace("../", "", e_UPLOAD)."<a href='".$newfile."' >".basename($newfile)."</a>).";
 	}
 }

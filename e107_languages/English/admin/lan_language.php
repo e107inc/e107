@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_language.php,v 1.6 2008-12-15 17:03:25 secretr Exp $
+ * $Id: lan_language.php,v 1.7 2009-09-08 23:53:13 e107coders Exp $
  *
  * Admin Language File
  *
@@ -28,13 +28,13 @@ define("LANG_LAN_18", "Use Parked Subdomains with these domains to set site Lang
 define("LANG_LAN_19", "e.g. The domain fr.mydomain.com would set the language to French.");
 define("LANG_LAN_20", "Enter one domain per line. eg. mydomain.com etc. or leave blank to disable.");
 
-define("LANG_LAN_21", "Language Tools");
+define("LANG_LAN_21", "Language-Packs");
 define("LANG_LAN_22", "Language Pack created successfully.");
 define("LANG_LAN_23", "Create Language-Pack (zip)");
 define("LANG_LAN_24", "Generate");
 define("LANG_LAN_25", "Language-Pack Creation Status");
-define('LANG_LAN_26', 'Load language files only for current language');
-define('LANG_LAN_27', 'If checked, and a required language can\'t be found, there will be an error');
+define('LANG_LAN_26', "Load language files only for current language");
+define('LANG_LAN_27', "If checked, and a required language can't be found, there will be an error");
 
 //0.8
 define('LANG_LAN_PAGE_TITLE', 'Languages');
@@ -46,4 +46,8 @@ define('LANG_LAN_32', '%s was disabled but left intact.');
 define('LANG_LAN_33', 'Delete all tables in %s?');
 
 define('LANG_LAN_09', 'Are you sure?');
+define('LANG_LAN_34', 'Available Language Packs');
+define('LANG_LAN_35', "The following language packs are available for this version of e107.");
+
+
 ?>
