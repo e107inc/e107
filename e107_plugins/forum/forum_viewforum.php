@@ -9,8 +9,8 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.13 $
-* $Date: 2009-09-06 04:30:46 $
+* $Revision: 1.14 $
+* $Date: 2009-09-08 02:00:42 $
 * $Author: mcfly_e107 $
 *
 */
@@ -38,7 +38,7 @@ $page = (varset($_GET['p']) ? $_GET['p'] : 0);
 $threadFrom = $page * $view;
 
 require_once(e_PLUGIN.'forum/forum_class.php');
-$forum = new plugin_forum_forumClass;
+$forum = new e107forum;
 
 $STARTERTITLE = LAN_54;
 $THREADTITLE = LAN_53;
@@ -496,7 +496,7 @@ function parse_sub($subInfo)
 	$SUB_REPLIES = $subInfo['forum_replies'];
 	if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
 	{
-
+		
 		$NEWFLAG = "<a href='".$e107->url->getUrl('forum','forum', 'func=mfar&id='.$subInfo['forum_id'])."'>".IMAGE_new.'</a>';
 	}
 	else
