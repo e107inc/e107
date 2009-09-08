@@ -6,16 +6,17 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Forum Viewtopic
+ * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-09-06 04:30:46 $
+ * $Revision: 1.22 $
+ * $Date: 2009-09-08 02:00:44 $
  * $Author: mcfly_e107 $
  *
 */
 
 require_once ('../../class2.php');
+
 
 if (isset($_POST['fjsubmit']))
 {
@@ -30,29 +31,48 @@ if (!e_QUERY)
 	header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
 	exit;
 }
-e107::getScParser();
-include_lan(e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php');
 
-$forum = new plugin_forum_classes_forumClass;
-include_lan(e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php');
-include_lan(e_PLUGIN.'forum/templates/forum_icons_template.php');
-$forum->threadNew(varset($_GET['id']));
+include_lan(e_PLUGIN . 'forum/languages/English/lan_forum_viewtopic.php');
+include_once (e_PLUGIN . 'forum/forum_class.php');
+include_lan(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 
-require_once (e_HANDLER.'level_handler.php');
-if (!is_object($e107->userRank)) { $e107->userRank = new e107UserRank; }
+$forum = new e107forum;
+$thread = new e107ForumThread;
 
-require_once (e_PLUGIN.'forum/forum_shortcodes.php');
-setScVar('forum_shortcodes', 'thread', $forum->thread);
-
-$pm_installed = e107::isInstalled('pm');
-
-//Only increment thread views if not being viewed by thread starter
-if (USER && (USERID != $forum->thread->threadInfo['thread_user'] || $forum->thread->threadInfo['thread_total_replies'] > 0) || !$forum->thread->noInc)
+if(isset($_GET['f']) && $_GET['f'] == 'post')
 {
-	$forum->thread->IncrementViews();
+	$thread->processFunction();
 }
 
-define('e_PAGETITLE', LAN_01 . ' / ' . $e107->tp->toHTML($forum->thread->threadInfo['forum_name'], true, 'no_hook, emotes_off') . " / " . $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off'));
+$thread->init();
+
+if(isset($_POST['track_toggle']))
+{
+	$thread->toggle_track();
+	exit;
+}
+//print_a($_POST);
+
+if(isset($_GET['f']))
+{
+	$thread->processFunction();
+	if($_GET['f'] != 'last') { $thread->init(); }
+}
+
+require_once (e_HANDLER . 'level_handler.php');
+if (!is_object($e107->userRank)) { $e107->userRank = new e107UserRank; }
+require_once (e_PLUGIN . 'forum/forum_shortcodes.php');
+setScVar('forum_shortcodes', 'thread', $thread);
+
+$pm_installed = plugInstalled('pm');
+
+//Only increment thread views if not being viewed by thread starter
+if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo['thread_total_replies'] > 0) || !$thread->noInc)
+{
+	$forum->threadIncview($threadId);
+}
+
+define('e_PAGETITLE', LAN_01 . ' / ' . $e107->tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off') . " / " . $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off'));
 $forum->modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
 define('MODERATOR', (USER && $forum->isModerator(USERID)));
 setScVar('forum_shortcodes', 'forum', $forum);
@@ -60,24 +80,25 @@ setScVar('forum_shortcodes', 'forum', $forum);
 if (MODERATOR && isset($_POST['mod']))
 {
 	require_once (e_PLUGIN . 'forum/forum_mod.php');
-	$forum->thread->message = forum_thread_moderate($_POST);
+	$thread->message = forum_thread_moderate($_POST);
+	$thread->threadInfo = $forum->threadGet($thread->threadId);
 }
 
-$forum->thread->loadPosts();
+$postList = $forum->PostGet($thread->threadId, $thread->page * $thread->perPage, $thread->perPage);
 
 $gen = new convert;
-if ($forum->thread->message)
+if ($thread->message)
 {
-	$ns->tablerender('', $forum->thread->message, array('forum_viewtopic', 'msg'));
+	$ns->tablerender('', $thread->message, array('forum_viewtopic', 'msg'));
 }
 
-if (isset($forum->thread->threadInfo['thread_options']['poll']))
+if (isset($thread->threadInfo['thread_options']['poll']))
 {
 	if (!defined('POLLCLASS'))
 	{
 		include (e_PLUGIN . 'poll/poll_class.php');
 	}
-	$_qry = 'SELECT * FROM `#polls` WHERE `poll_datestamp` = ' . $forum->thread->threadId;
+	$_qry = 'SELECT * FROM `#polls` WHERE `poll_datestamp` = ' . $thread->threadId;
 	$poll = new poll;
 	$pollstr = "<div class='spacer'>" . $poll->render_poll($_qry, 'forum', 'query', true) . '</div>';
 }
@@ -106,15 +127,15 @@ if (!$FORUMSTART)
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 $forum->set_crumb(true); // Set $BREADCRUMB (and BACKLINK)
-$THREADNAME = $e107->tp->toHTML($forum->thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
+$THREADNAME = $e107->tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
 $NEXTPREV = "&lt;&lt; <a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'prev', 'id' => $thread->threadId)) . "'>" . LAN_389 . "</a>";
 $NEXTPREV .= ' | ';
 $NEXTPREV .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'next', 'id' => $thread->threadId)) . "'>" . LAN_390 . "</a> &gt;&gt;";
 
 if ($pref['forum_track'] && USER)
 {
-	$img = ($forum->thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
-	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $forum->thread->threadId));
+	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
+	$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId));
 	$TRACK .= "
 			<span id='forum-track-trigger-container'>
 			<a href='{$url}' id='forum-track-trigger'>{$img}</a>
@@ -138,32 +159,75 @@ if ($pref['forum_track'] && USER)
 
 $MODERATORS = LAN_321 . implode(', ', $forum->modArray);
 
-$THREADSTATUS = (!$forum->thread->threadInfo['thread_active'] ? LAN_66 : '');
+$THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_66 : '');
 
-if ($forum->thread->pages > 1)
+if ($thread->pages > 1)
 {
-	$parms = ($forum->thread->pages).",1,{$forum->thread->page},url::forum::thread::func=view&id={$forum->thread->threadId}&page=[FROM],off";
+	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
 	$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
 $BUTTONS = '';
-if ($forum->checkPerm($forum->thread->threadInfo['thread_forum_id'], 'post') && $forum->thread->threadInfo['thread_active'])
+if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
-	$BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'rp', 'id' => $forum->thread->threadId)) . "'>" . IMAGE_reply . "</a>";
+	$BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'rp', 'id' => $thread->threadId)) . "'>" . IMAGE_reply . "</a>";
 }
-if ($forum->checkPerm($forum->thread->threadInfo['thread_forum_id'], 'thread'))
+if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 {
-	$BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $forum->thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
+	$BUTTONS .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'nt', 'id' => $thread->threadInfo['thread_forum_id'])) . "'>" . IMAGE_newthread . "</a>";
 }
 
 $POLL = $pollstr;
+
 $FORUMJUMP = forumjump();
 
 $forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
 
-$forthread = $forum->thread->render();
+unset($forrep);
+if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
+$alt = false;
 
-if ($forum->checkPerm($forum->thread->threadInfo['thread_forum_id'], 'post') && $forum->thread->threadInfo['thread_active'])
+$i = $thread->page;
+foreach ($postList as $postInfo)
+{
+	if($postInfo['post_options'])
+	{
+		$postInfo['post_options'] = unserialize($postInfo['post_options']);
+	}
+	$loop_uid = (int)$postInfo['post_user'];
+	$i++;
+
+	//TODO: Look into fixing this, to limit to a single query per pageload
+	$e_hide_query = "SELECT post_id FROM `#forum_post` WHERE (`post_thread` = {$threadId} AND post_user= " . USERID . ' LIMIT 1';
+	$e_hide_hidden = FORLAN_HIDDEN;
+	$e_hide_allowed = USER;
+
+	if ($i > 1)
+	{
+		$postInfo['thread_start'] = false;
+		$alt = !$alt;
+
+		if($postInfo['post_status'])
+		{
+			$_style = (isset($FORUMDELETEDSTYLE_ALT) && $alt ? $FORUMDELETEDSTYLE_ALT : $FORUMDELETEDSTYLE);
+		}
+		else
+		{
+			$_style = (isset($FORUMREPLYSTYLE_ALT) && $alt ? $FORUMREPLYSTYLE_ALT : $FORUMREPLYSTYLE);
+		}
+		setScVar('forum_shortcodes', 'postInfo', $postInfo);
+		$forrep .= $e107->tp->parseTemplate($_style, true, $forum_shortcodes) . "\n";
+	}
+	else
+	{
+		$postInfo['thread_start'] = true;
+		setScVar('forum_shortcodes', 'postInfo', $postInfo);
+		$forthr = $e107->tp->parseTemplate($FORUMTHREADSTYLE, true, $forum_shortcodes) . "\n";
+	}
+}
+unset($loop_uid);
+
+if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
 	if (!$forum_quickreply)
 	{
@@ -185,13 +249,13 @@ if ($forum->checkPerm($forum->thread->threadInfo['thread_forum_id'], 'post') && 
 }
 
 $forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
-$forumstring = $forstr . $forthread . $forend;
+$forumstring = $forstr . $forthr . $forrep . $forend;
 
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
 $threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
-if ($forum->thread->threadInfo['thread_lastpost'] > USERLV && !in_array($forum->thread->threadId, $threadsViewed))
+if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->threadId, $threadsViewed))
 {
-	$tst = $forum->threadMarkAsRead($forum->thread->threadId);
+	$tst = $forum->threadMarkAsRead($thread->threadId);
 }
 
 require_once (HEADERF);
@@ -217,6 +281,46 @@ echo "<script type=\"text/javascript\">
 	}
 	</script>";
 require_once (FOOTERF);
+
+function showmodoptions()
+{
+	global $thread, $postInfo;
+
+	$e107 = e107::getInstance();
+	$forum_id = $thread->threadInfo['forum_id'];
+	if ($postInfo['thread_start'])
+	{
+		$type = 'Thread';
+		$ret = "<form method='post' action='" . $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $postInfo['post_thread']))."' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
+		$delId = $postInfo['post_thread'];
+	}
+	else
+	{
+		$type = 'Post';
+		$ret = "<form method='post' action='" . e_SELF . '?' . e_QUERY . "' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
+		$delId = $postInfo['post_id'];
+	}
+
+	$ret .= "
+		<div>
+		<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'edit', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_edit . "</a>
+		<input type='image' " . IMAGE_admin_delete . " name='delete{$type}_{$delId}' value='thread_action' onclick=\"return confirm_('{$type}', {$postInfo['post_forum']}, {$postInfo['post_thread']}, '{$postInfo['user_name']}')\" />
+		<input type='hidden' name='mod' value='1'/>
+		";
+	if ($type == 'Thread')
+	{
+		$ret .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'move', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_move2 . "</a>";
+	}
+	else
+	{
+		$ret .= "<a href='" . $e107->url->getUrl('forum', 'thread', array('func' => 'split', 'id' => $postInfo['post_id']))."'>" . IMAGE_admin_split . '</a>';
+
+	}
+	$ret .= "
+		</div>
+		</form>";
+	return $ret;
+}
 
 function forumjump()
 {
@@ -335,3 +439,167 @@ function rpg($user_join, $user_forums)
 	$rpg_info .= "</div>";
 	return $rpg_info;
 }
+
+class e107ForumThread
+{
+
+	var $message, $threadId, $forumId, $perPage, $noInc, $pages;
+
+	function init()
+	{
+		global $pref, $forum;
+		$e107 = e107::getInstance();
+		$this->threadId = (int)varset($_GET['id']);
+		$this->perPage = (varset($_GET['perpage']) ? (int)$_GET['perpage'] : $pref['forum_postspage']);
+		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 0);
+
+		//If threadId doesn't exist, or not given, redirect to main forum page
+		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
+		{
+			header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+			exit;
+		}
+
+		//If not permitted to view forum, redirect to main forum page
+		if (!$forum->checkPerm($this->threadInfo['thread_forum_id'], 'view'))
+		{
+			header('Location:' . $e107->url->getUrl('forum', 'forum', array('func' => 'main')));
+			exit;
+		}
+		$this->pages = ceil(($this->threadInfo['thread_total_replies'] + 1) / $this->perPage);
+		$this->noInc = false;
+	}
+
+	function toggle_track()
+	{
+		global $forum, $thread;
+		$e107 = e107::getInstance();
+		if (!USER || !isset($_GET['id'])) { return; }
+		if($thread->threadInfo['track_userid'])
+		{
+			$forum->track('del', USERID, $_GET['id']);
+			$img = IMAGE_untrack;
+		}
+		else
+		{
+			$forum->track('add', USERID, $_GET['id']);
+			$img = IMAGE_track;
+		}
+		if(e_AJAX_REQUEST)
+		{
+			$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $thread->threadId));
+			echo "<a href='{$url}' id='forum-track-trigger'>{$img}</a>";
+			exit();
+		}
+	}
+
+	function processFunction()
+	{
+		global $forum, $thread, $pref;
+		$e107 = e107::getInstance();
+		if (!isset($_GET['f']))
+		{
+			return;
+		}
+
+		$function = trim($_GET['f']);
+		switch ($function)
+		{
+			case 'post':
+				$postId = varset($_GET['id']);
+				$postInfo = $forum->postGet($postId,'post');
+				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
+				$postPage = ceil($postNum / $pref['forum_postspage'])-1;
+				$url = $e107->url->getUrl('forum', 'thread', "func=view&id={$postInfo['post_thread']}&page=$postPage");
+				header('location: '.$url);
+				exit;
+				break;
+
+			case 'last':
+				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);
+				$thread->page = ($pages - 1);
+				break;
+
+			case 'next':
+				$next = $forum->threadGetNextPrev('next', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
+				if ($next)
+				{
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $next));
+					header("location: {$url}");
+					exit;
+				}
+				$this->message = LAN_405;
+				break;
+
+			case 'prev':
+				$prev = $forum->threadGetNextPrev('prev', $this->threadId, $this->threadInfo['forum_id'], $this->threadInfo['thread_lastpost']);
+				if ($prev)
+				{
+					$url = $e107->url->getUrl('forum', 'thread', array('func' => 'view', 'id' => $prev));
+					header("location: {$url}");
+					exit;
+				}
+				$this->message = LAN_404;
+				break;
+
+			case 'report':
+				$postId = (int)$_GET['id'];
+				$postInfo = $forum->postGet($postId, 'post');
+
+				if (isset($_POST['report_thread']))
+				{
+					$report_add = $e107->tp->toDB($_POST['report_add']);
+					if ($pref['reported_post_email'])
+					{
+						require_once (e_HANDLER . 'mail.php');
+						$report = LAN_422 . SITENAME . " : " . (substr(SITEURL, -1) == "/" ? SITEURL : SITEURL . "/") . $PLUGINS_DIRECTORY . "forum/forum_viewtopic.php?" . $thread_id . ".post\n" . LAN_425 . USERNAME . "\n" . $report_add;
+						$subject = LAN_421 . " " . SITENAME;
+						sendemail(SITEADMINEMAIL, $subject, $report);
+					}
+					$e107->sql->db_Insert('generic', "0, 'reported_post', " . time() . ", '" . USERID . "', '{$thread_info['head']['thread_name']}', " . intval($thread_id) . ", '{$report_add}'");
+					define('e_PAGETITLE', LAN_01 . " / " . LAN_428);
+					require_once (HEADERF);
+					$text = LAN_424 . "<br /><br /><a href='forum_viewtopic.php?" . $thread_id . ".post'>" . LAN_429 . '</a>';
+					$e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
+				}
+				else
+				{
+					$thread_name = $e107->tp->toHTML($postInfo['thread_name'], true, 'no_hook, emotes_off');
+					define('e_PAGETITLE', LAN_01 . ' / ' . LAN_426 . ' ' . $thread_name);
+					require_once (HEADERF);
+					$url = $e107->url->getUrl('forum', 'thread', 'func=post&id='.$postId);
+					$actionUrl = $e107->url->getUrl('forum', 'thread', 'func=report&id='.$postId);
+					$text = "<form action='".$actionUrl."' method='post'>
+					<table style='width:100%'>
+					<tr>
+					<td  style='width:50%' >
+					" . LAN_415 . ': ' . $thread_name . " <a href='".$url."'><span class='smalltext'>" . LAN_420 . " </span>
+					</a>
+					</td>
+					<td style='text-align:center;width:50%'>
+					</td>
+					</tr>
+					<tr>
+					<td>" . LAN_417 . "<br />" . LAN_418 . "
+					</td>
+					<td style='text-align:center;'>
+					<textarea cols='40' rows='10' class='tbox' name='report_add'></textarea>
+					</td>
+					</tr>
+					<tr>
+					<td colspan='2' style='text-align:center;'><br />
+					<input class='button' type='submit' name='report_thread' value='" . LAN_419 . "' />
+					</td>
+					</tr>
+					</table>";
+					$e107->ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report2'));
+				}
+				require_once (FOOTERF);
+				exit;
+				break;
+
+		}
+	}
+}
+
+?>
