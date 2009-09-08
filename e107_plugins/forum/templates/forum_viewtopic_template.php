@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-25 07:10:28 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.7 $
+|     $Date: 2009-09-08 02:48:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -178,13 +178,6 @@ $FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>
 	</tr>
 	</table>
 	</div>
-	";
-
-/* hardcoded deprecated rss links
-	<div style='text-align:center' class='spacer'>
-	<a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a> <a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a></div>
-*/
-$FORUMEND = "
 	<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>";
 
 $FORUMREPLYSTYLE = "<tr>

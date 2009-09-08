@@ -6,11 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Message Handler
+ * Forum View Topic
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-09-08 02:00:44 $
+ * $Revision: 1.23 $
+ * $Date: 2009-09-08 02:48:48 $
  * $Author: mcfly_e107 $
  *
 */
@@ -58,7 +58,7 @@ if(isset($_GET['f']))
 	$thread->processFunction();
 	if($_GET['f'] != 'last') { $thread->init(); }
 }
-
+e107::getScParser();
 require_once (e_HANDLER . 'level_handler.php');
 if (!is_object($e107->userRank)) { $e107->userRank = new e107UserRank; }
 require_once (e_PLUGIN . 'forum/forum_shortcodes.php');
