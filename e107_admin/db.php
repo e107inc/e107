@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-09-06 01:02:01 $
+ * $Revision: 1.31 $
+ * $Date: 2009-09-10 09:49:01 $
  * $Author: e107coders $
  *
 */
@@ -729,6 +729,10 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 		
 		$xml->convertFilePaths = TRUE;
 		$xml->filePathDestination = EXPORT_PATH;
+		$xml->filePathPrepend = array(
+			'news_thumbnail'	=> "{e_IMAGE}newspost_images/"
+		);
+		
 		
 		$desinationFolder = $tp->replaceConstants($xml->filePathDestination);
 	
