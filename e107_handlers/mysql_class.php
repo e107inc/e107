@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.48 $
- * $Date: 2009-09-06 20:04:03 $
- * $Author: e107coders $
+ * $Revision: 1.49 $
+ * $Date: 2009-09-10 12:06:39 $
+ * $Author: secretr $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -58,13 +58,15 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which should be the main E107 DB - then used as default
 
 /**
-* MySQL Abstraction class
-*
-* @package e107
-* @version $Revision: 1.48 $
-* @author $Author: e107coders $
-*/
-class db {
+ * MySQL Abstraction class
+ * 
+ * @package e107
+ * @category e107_handlers
+ * @version $Revision: 1.49 $
+ * @author $Author: secretr $
+ * 
+ */
+class e_db_mysql {
 
 	var $mySQLserver;
 	var $mySQLuser;
@@ -87,16 +89,15 @@ class db {
 	/**
 	 * @public  MySQL Charset
 	 **/
-	var $mySQLcharset;
+	public $mySQLcharset;
 
 	var $total_results;			// Total number of results
 
 	/**
-	* @return db
-	* @desc db constructor gets language options from the cookie or session
+	* Constructor - gets language options from the cookie or session
 	* @access public
 	*/
-	function db()
+	public function __construct()
 	{
 		
 		global $pref, $eTraffic, $db_defaultPrefix;
@@ -117,7 +118,6 @@ class db {
 	}
 
 	/**
-	 * @access public
 	 * Connects to mySQL server and selects database - generally not required if your table is in the main DB.<br />
 	 * <br />
 	 * Example using e107 database with variables defined in e107_config.php:<br />
@@ -136,7 +136,7 @@ class db {
 	 * @param string $mySQLPrefix Tables prefix. Default to $mySQLPrefix from e107_config.php
 	 * @return null|string error code
 	 */
-	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = FALSE, $mySQLPrefix = MPREFIX)
+	public function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = FALSE, $mySQLPrefix = MPREFIX)
 	{
 		global $eTraffic, $db_ConnectionID, $db_defaultPrefix;
 		$eTraffic->BumpWho('db Connect', 1);
@@ -228,14 +228,14 @@ class db {
 
 
 	/**
-	* @return unknown
+	* @desc Enter description here...
+	* This is the 'core' routine which handles much of the interface between other functions and the DB
+	* 
 	* @param unknown $query
 	* @param unknown $rli
-	* @desc Enter description here...
-	* @access private
-	* This is the 'core' routine which handles much of the interface between other functions and the DB
+	* @return unknown
 	*/
-	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') 
+	protected function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') 
 	{
 		global $db_time,$db_mySQLQueryCount,$queryinfo, $eTraffic;
 		$db_mySQLQueryCount++;
@@ -301,16 +301,7 @@ class db {
 
 
 	/**
-	* @return int Number of rows or false on error
-	*
-	* @param string $table Table name to select data from
-	* @param string $fields Table fields to be retrieved, default * (all in table)
-	* @param string $arg Query arguments, default null
-	* @param string $mode Argument has WHERE or not, default=default (WHERE)
-	*
-	* @param bool $debug Debug mode on or off
-	*
-	* @desc Perform a mysql_query() using the arguments suplied by calling db::db_Query()<br />
+	* Perform a mysql_query() using the arguments suplied by calling db::db_Query()<br />
 	* <br />
 	* If you need more requests think to call the class.<br />
 	* <br />
@@ -321,9 +312,9 @@ class db {
 	* <code>$sql2 = new db;
 	* $sql2->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, 'no_where');</code>
 	*
-	* @access public
+	* @return integer Number of rows or false on error
 	*/
-	function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
+	public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		global $db_mySQLQueryCount;
 
@@ -1395,6 +1386,14 @@ class db {
 		$this->mySQLcharset = $charset;
 		return $message;
 	}
+}
+
+/**
+ * BC
+ */
+class db extends e_db_mysql
+{
+	
 }
 
 ?>
