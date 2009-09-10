@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2009-09-08 23:53:12 $
+|     $Revision: 1.50 $
+|     $Date: 2009-09-10 09:26:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -252,7 +252,7 @@ function update_706_to_800($type='')
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
-	$new_tables = array('admin_log','audit_log', 'dblog');
+	$new_tables = array('admin_log','audit_log', 'dblog','news_rewrite');
 	
 	// List of core prefs that need to be converted from serialized to e107ArrayStorage. 
 	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'");
@@ -260,7 +260,7 @@ function update_706_to_800($type='')
 
 	// List of changed DB tables (defined in core_sql.php)
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus', 'plugin');
+	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus', 'plugin', 'news', 'news_category');
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
@@ -345,7 +345,7 @@ function update_706_to_800($type='')
 	
 	// convert all serialized core prefs to e107 ArrayStorage;
 	$serialz_qry = "SUBSTRING( e107_value,1,5)!='array' AND e107_value !='' ";
-	// $serialz_qry .= "AND e107_name IN (".implode(",",$serialized_prefs).") ";
+    $serialz_qry .= "AND e107_name IN (".implode(",",$serialized_prefs).") ";
 		if(e107::getDb()->db_Select("core", "*", $serialz_qry))
 		{
 			if ($just_check) return update_needed();
