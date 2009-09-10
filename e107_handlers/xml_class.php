@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-09-06 01:02:01 $
+ * $Revision: 1.24 $
+ * $Date: 2009-09-10 09:49:01 $
  * $Author: e107coders $
 */
 
@@ -78,6 +78,10 @@ class xmlClass
 	
 	public $convertFileTypes = array("jpg","gif","png","jpeg");
 	
+	public $filePathPrepend = array();
+	
+	public $filePathConvKeys = array();
+	
 	
 	/**
 	 * Add root element to the result array
@@ -144,8 +148,13 @@ class xmlClass
 	 * 
 	 */
 	function __constructor()
-	{
+	{		
 		$this->reset();
+		
+		if(count($this->filePathConversions))
+		{
+			$this->filePathConvKeys = array_keys($this->filePathConversions);			
+		}
 	}
 	
 	/**
@@ -563,10 +572,16 @@ class xmlClass
 	/**
 	 * Process data values for XML file. If $this->convertFilePaths is TRUE, convert paths - see replaceFilePaths()
 	 * @param mixed $val
+	 * @param string $key key for the current value. Used for exception processing. 
 	 * @return mixed
 	 */
-	private function e107ExportValue($val)
+	private function e107ExportValue($val,$key='')
 	{
+		if($key && isset($this->filePathPrepend[$key]))
+		{
+			$val = $this->filePathPrepend[$key].$val;		
+		}
+		
 		if($this->convertFilePaths)
 		{
 			$types = implode("|",$this->convertFileTypes);
@@ -633,7 +648,7 @@ class xmlClass
 					$text .= "\t\t<item>\n";
 					foreach($row as $key=>$val)
 					{
-						$text .= "\t\t\t<field name='".$key."'>".$this->e107ExportValue($val)."</field>\n";
+						$text .= "\t\t\t<field name='".$key."'>".$this->e107ExportValue($val,$key)."</field>\n";
 					}
 					
 					$text .= "\t\t</item>\n";
