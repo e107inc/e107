@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-09-10 10:23:12 $
+ * $Revision: 1.33 $
+ * $Date: 2009-09-10 12:49:47 $
  * $Author: e107coders $
  *
 */
@@ -170,7 +170,8 @@ class system_tools
 		
 		if(isset($_POST['pref_editor']) || $_GET['mode']=='pref_editor' || isset($_POST['delpref']) || isset($_POST['delpref_checked']))
 		{
-			$this->pref_editor();
+			$type = isset($_GET['type']) ? $_GET['type'] : "core";
+			$this->pref_editor($type);
 		}
 		
 		if(isset($_POST['sc_override_scan']) || $_GET['mode']=='sc_override_scan')
@@ -194,11 +195,10 @@ class system_tools
 	 * Delete selected preferences. 
 	 * @return 
 	 */	
-	function del_pref_val()
+	private function del_pref_val()
 	{
 		global $pref, $e107cache, $emessage;
-		$del = array_keys($_POST['delpref']);
-		$delpref = $del[0];
+		$delpref = key($_POST['delpref']);
 	
 		if($delpref)
 		{
@@ -215,11 +215,21 @@ class system_tools
 				unset($pref[$k]);
 			}
 		}
+				
+
+		if($_POST['pref_type']=='core')
+		{
+			save_prefs();
+			$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
+			$e107cache->clear();	
+		}
+		else
+		{
+			//FIXME - Add Pref deletion function to pref_class for easy removal. 
+			// eg. e107::getConfig($type)->deletePref($value); where $type = core|ipool|menu etc. $value = single pref or array of prefs. 
+			$emessage->add("Deletion of pref-type: ".$_POST['pref_type']." is not yet supported.",E_MESSAGE_WARNING);	
+		}
 	
-		save_prefs();
-		$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
-		$e107cache->clear();
-		//$e107->ns->tablerender(LAN_DELETED,$message);	
 	}
 
 	private function delete_plugin_entry()
@@ -493,17 +503,30 @@ class system_tools
 	 * Preferences Editor
 	 * @return 
 	 */
-	private function pref_editor()
+	private function pref_editor($type='')
 	{
 		//TODO Add drop-down filter for editing plugin prefs also. 
 		
 		global $pref, $e107, $emessage, $frm;
-		ksort($pref);
+		
+
+		$spref = e107::getConfig($type)->getPref();
+	
+		ksort($spref);	
 	
 		$text = "
 				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."' id='pref_edit'>
 					<fieldset id='core-db-pref-edit'>
-						<legend class='e-hideme'>".DBLAN_20."</legend>
+						<legend class='e-hideme'>".DBLAN_20."</legend>";
+		
+		$text .= "<select class='tbox' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >";				
+		foreach(e107::getConfig($type)->aliases as $key=>$val)
+		{
+			$selected = (varset($_GET['type'])==$key) ? "selected='selected'" : "";
+			$text .= "<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$key."' {$selected}>".$key."</option>\n";	
+		}
+		
+		$text .= "</select></div>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
 							<colgroup span='4'>
 								<col style='width: 5%'></col>
@@ -522,7 +545,7 @@ class system_tools
 							<tbody>
 			";
 	
-		foreach($pref as $key => $val)
+		foreach($spref as $key => $val)
 		{
 			$ptext = (is_array($val)) ? "<pre>".print_r($val, TRUE)."</pre>" : htmlspecialchars($val, ENT_QUOTES, 'utf-8');
 			$ptext = $e107->tp->textclean($ptext, 80);
@@ -543,6 +566,7 @@ class system_tools
 						<div class='buttons-bar center'>
 							".$frm->admin_button('delpref_checked', DBLAN_21, 'delete')."
 							".$frm->admin_button('back', DBLAN_13, 'back')."
+							<input type='hidden' name='pref_type' value='".$_GET['type']."' />
 						</div>
 					</fieldset>
 				</form>\n\n";
