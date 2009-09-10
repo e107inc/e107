@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-08-28 16:11:00 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.4 $
+|     $Date: 2009-09-10 12:49:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -55,6 +55,12 @@ class cron
 		{
         	$this -> cronSavePrefs();
 		}
+		
+		if(isset($_POST['execute']))
+		{
+			$func = key($_POST['execute']);
+			$this -> cronExecute($func);
+		}
 
 		// Set Core Cron Options.
 
@@ -73,6 +79,22 @@ class cron
 		{
         	$this -> cronRenderPrefs();
 		}
+	}
+	
+	
+	function cronExecute($func)
+	{
+		//TODO LANs
+		$emessage = eMessage::getInstance();
+		if(!function_exists($func) || !call_user_func($func))
+		{
+	    	
+	    	$emessage->add("Error running ".$func."()", E_MESSAGE_ERROR);    
+		}
+		else
+		{
+			$emessage->add("Success running ".$func."()", E_MESSAGE_SUCCESS); 	
+		}	
 	}
 
     function cronSavePref()
@@ -160,6 +182,8 @@ class cron
 	{
     	global $pref,$ns,$frm;
     	$cronpref = $pref['e_cron_pref'];
+		
+
 
 	  //	$count = 0;
 
@@ -209,6 +233,7 @@ class cron
 			   <th>".LAN_CRON_6."</th>
 			   <th>".LAN_CRON_7."</th>
 			   <th>".LAN_CRON_8."</th>
+			   <th>Run Now</th>
 			   </tr>
 		   </thead>
 		   <tbody>";
@@ -346,10 +371,12 @@ class cron
 			    }
 				$text .= "</select>
 			</td>
-		       	<td style='text-align:center'>";
+		       	<td class='center'>";
 		        $checked = ($cronpref[$c]['active'] == 1) ? "checked='checked'" : "";
 				$text .= "<input type='checkbox' name='cron[$c][active]' value='1' $checked />
 		      	</td>
+				
+				<td class='center'>".$frm->admin_button('execute['.$c.']', 'Run Now')."</td>
 		   	</tr>";
 		}
 
