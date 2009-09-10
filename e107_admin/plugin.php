@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2009-09-02 17:45:02 $
+|     $Revision: 1.42 $
+|     $Date: 2009-09-10 15:24:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -750,8 +750,11 @@ class pluginManager{
 			$text = "";
 
 			foreach($pluginList as $plug)
-			{
+			{				
+				e107::loadLanFiles($plug['plugin_path'],'admin');
+				
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
+				
 				$plug_vars = false;
 				$plugin_config_icon = "";
 

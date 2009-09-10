@@ -9,8 +9,8 @@
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-09-06 20:04:03 $
+ * $Revision: 1.14 $
+ * $Date: 2009-09-10 15:24:57 $
  * $Author: e107coders $
 */
 
@@ -247,24 +247,8 @@ class e_menu
 		}
 		else
 		{
-			//FIXME - oldy
-			if(is_readable(e_PLUGIN.$mpath."/languages/".e_LANGUAGE.".php"))
-			{
-				include_once (e_PLUGIN.$mpath."/languages/".e_LANGUAGE.".php");
-			}
-			elseif(is_readable(e_PLUGIN.$mpath."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php"))
-			{
-				include_once (e_PLUGIN.$mpath."/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
-			}
-			elseif(is_readable(e_PLUGIN.$mpath."/languages/English.php"))
-			{
-				include_once (e_PLUGIN.$mpath."/languages/English.php");
-			}
-			elseif(is_readable(e_PLUGIN.$mpath."/languages/English/English.php"))
-			{
-				include_once (e_PLUGIN.$mpath."/languages/English/English.php");
-			}
-			
+			e107::loadLanFiles($mpath);
+
 			//include once is not an option anymore
 			//e107_include will break many old menus (evel globals), so we'll wait for a while...
 			//e107_include(e_PLUGIN.$mpath."/".$mname.".php");
