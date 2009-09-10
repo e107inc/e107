@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-09-08 12:13:00 $
+ * $Revision: 1.46 $
+ * $Date: 2009-09-10 19:10:00 $
  * $Author: secretr $
 */
 
@@ -483,7 +483,7 @@ class e107
 	 * $instance_id
 	 *
 	 * @param string $instance_id
-	 * @return db
+	 * @return e_db_mysql
 	 */
 	public static function getDb($instance_id = '')
 	{
@@ -823,11 +823,15 @@ class e107
 		return FALSE;		// Nothing found
 	}
 	
+	/**
+	 * Check if plugin is installed
+	 * @param string $plugname
+	 * @return boolean
+	 */
 	public static function isInstalled($plugname)
 	{
-		global $pref;
 		// Could add more checks here later if appropriate
-		return isset($pref['plug_installed'][$plugname]);
+		return self::getConfig()->isData('plug_installed/'.$plugname);
 	}
 	
 	/**
@@ -835,15 +839,14 @@ class e107
 	 */
 	public function set_base_path()
 	{
-		global $pref;
-		$this->base_path = ($pref['ssl_enabled'] == 1 ?  $this->https_path : $this->http_path);
+		$this->base_path = (self::getPref('ssl_enabled') == 1 ?  $this->https_path : $this->http_path);
 		return $this;
 	}
 
 
 	/**
 	 * Set all environment vars and constants
-	 *
+	 * FIXME - remove globals
 	 */
 	public function set_paths()
 	{
@@ -1115,6 +1118,7 @@ class e107
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
 		global $sql, $pref, $e107, $admin_log;
+
 		if(!$ban_message)
 		{
 			$ban_message = 'No explanation given';
