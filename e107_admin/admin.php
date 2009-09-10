@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-09-06 20:04:02 $
+|     $Revision: 1.16 $
+|     $Date: 2009-09-10 21:08:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -81,6 +81,9 @@ if (count($allowed_types) == 0)
 //echo "Allowed filetypes = ".implode(', ',array_keys($allowed_types)).'<br />';
 // avatar check.
 $public = array(e_FILE.'public', e_FILE.'public/avatars');
+$exceptions = array(".","..","/","CVS","avatars","Thumbs.db",".htaccess","php.ini",".cvsignore");
+
+//TODO use $file-class to grab list and perform this check. 
 foreach ($public as $dir)
 {
 	if (is_dir($dir))
@@ -89,7 +92,7 @@ foreach ($public as $dir)
 		{
 			while (($file = readdir($dh)) !== false)
 			{
-				if (is_dir($dir."/".$file) == FALSE && $file != '.' && $file != '..' && $file != '/' && $file != 'CVS' && $file != 'avatars' && $file != 'Thumbs.db' && $file !=".htaccess" && $file !="php.ini")
+				if (is_dir($dir."/".$file) == FALSE && !in_array($file,$exceptions))
 				{
 					$fext = substr(strrchr($file, "."), 1);
 					if (!array_key_exists(strtolower($fext),$allowed_types) )
