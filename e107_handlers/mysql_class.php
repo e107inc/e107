@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.50 $
- * $Date: 2009-09-10 15:24:57 $
- * $Author: e107coders $
+ * $Revision: 1.51 $
+ * $Date: 2009-09-10 19:13:39 $
+ * $Author: secretr $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -46,7 +46,7 @@ elseif(defined('E107_INSTALL')) //TODO Remove the need for this if possible
 	define('MPREFIX', $mySQLprefix);
 
 	$sql = new db;
-	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);	
+	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
 else
 {
@@ -63,8 +63,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.50 $
- * @author $Author: e107coders $
+ * @version $Revision: 1.51 $
+ * @author $Author: secretr $
  * 
  */
 class e_db_mysql {
@@ -88,8 +88,10 @@ class e_db_mysql {
 	var $mySQLtableListLanguage = array(); // Db table list for the currently selected language
 
 	/**
-	 * @public  MySQL Charset
-	 **/
+	 * MySQL Charset
+	 * 
+	 * @var string
+	 */
 	public $mySQLcharset;
 
 	var $total_results;			// Total number of results
@@ -493,24 +495,24 @@ class e_db_mysql {
 			global $db_ConnectionID;
 			$this->mySQLaccess = $db_ConnectionID;
 		}
-
-  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
-  	{
-	   	$new_data = '';
-		if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
-	   	{
-		   	//Convert data if not using 'new' format (is this needed?)
-	   		$_tmp = array();
-	   		if(isset($arg['WHERE']))
-	   		{
-	   			$_tmp['WHERE'] = $arg['WHERE'];
-	   			unset($arg['WHERE']);
-	   		}
-	   		$_tmp['data'] = $arg;
-	   		$arg = $_tmp;
-	   		unset($_tmp);
-	   	}
-	   	if(!isset($arg['data'])) { return false; }
+		
+	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
+	  	{
+		   	$new_data = '';
+			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+		   	{
+			   	//Convert data if not using 'new' format (is this needed?)
+		   		$_tmp = array();
+		   		if(isset($arg['WHERE']))
+		   		{
+		   			$_tmp['WHERE'] = $arg['WHERE'];
+		   			unset($arg['WHERE']);
+		   		}
+		   		$_tmp['data'] = $arg;
+		   		$arg = $_tmp;
+		   		unset($_tmp);
+		   	}
+	   		if(!isset($arg['data'])) { return false; }
 
 			$fieldTypes = $this->_getTypes($arg);
 			foreach ($arg['data'] as $fn => $fv)
@@ -570,6 +572,7 @@ class e_db_mysql {
 		switch ($type)
 		{
 			case 'int':
+			case 'integer':
 				return (int)$fieldValue;
 				break;
 
@@ -577,8 +580,13 @@ class e_db_mysql {
 				return $fieldValue;
 				break;
 
+			case 'str':
 			case 'string':
 				return "'{$fieldValue}'";
+				break;
+				
+			case 'null':
+				return ($fieldValue ? "'{$fieldValue}'" : 'NULL');
 				break;
 
 			case 'escape':
