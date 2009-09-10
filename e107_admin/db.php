@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-09-10 09:49:01 $
+ * $Revision: 1.32 $
+ * $Date: 2009-09-10 10:23:12 $
  * $Author: e107coders $
  *
 */
@@ -178,7 +178,7 @@ class system_tools
 			$this->scan_override();
 		}
 		
-		if(isset($_POST['plugin_scan']) || e_QUERY == "plugin" || $_POST['delplug'] || $_GET['mode']=='plugin_scan')
+		if(isset($_POST['plugin_scan']) || e_QUERY == "plugin" || isset($_POST['delplug']) || $_GET['mode']=='plugin_scan')
 		{
 			$this->plugin_viewscan();
 		}

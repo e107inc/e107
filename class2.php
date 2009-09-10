@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.139 $
-* $Date: 2009-09-06 22:12:39 $
+* $Revision: 1.140 $
+* $Date: 2009-09-10 10:23:12 $
 * $Author: e107coders $
 *
 */
@@ -930,7 +930,7 @@ if (!class_exists('e107table'))
 		 		{
 	         		$this->eMenuCount++;
 			   	}
-				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>$this->eMenuTotal[$this->eMenuArea],'setStyle'=>$this->eSetStyle));
+				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]),'setStyle'=>$this->eSetStyle));
 				return '';
 			}
 		}
