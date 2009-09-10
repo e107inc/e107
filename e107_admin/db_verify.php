@@ -9,8 +9,8 @@
  * Administration - DB Verify
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-08-28 16:49:42 $
+ * $Revision: 1.8 $
+ * $Date: 2009-09-10 19:15:43 $
  * $Author: secretr $
  *
 */
@@ -616,31 +616,33 @@ exit;
 // --------------------------------------------------------------
 function fix_form($table,$field, $newvalue,$mode,$after =''){
 	global $frm;
-
-	if(stristr($field, 'KEY ') !== FALSE)
-	{
-		$field = chop(str_replace('KEY ','',$field));
-		$mode = ($mode == 'drop') ? 'indexdrop' : 'index';
-		$search = array('(', ')');
-		$newvalue = str_replace($search,'',$newvalue);
-		$after = '';
-	}
 	
-	if($mode == 'index' && (stristr($field, 'FULLTEXT ') !== FALSE || stristr($field, 'UNIQUE ') !== FALSE))
-	{
-		$mode = 'indexalt';
-	}
-	elseif($mode == 'indexdrop' && (stristr($field, 'FULLTEXT ') !== FALSE || stristr($field, 'UNIQUE ') !== FALSE))
-	{
-		$field = trim(str_replace(array('FULLTEXT ', 'UNIQUE '), '', $field));
-	}
-
 	if($mode == 'create')
 	{
 		$newvalue = implode("\n",$newvalue);
 	}
+	else
+	{
+		if(stristr($field, 'KEY ') !== FALSE)
+		{
+			$field = chop(str_replace('KEY ','',$field));
+			$mode = ($mode == 'drop') ? 'indexdrop' : 'index';
+			$search = array('(', ')');
+			$newvalue = str_replace($search,'',$newvalue);
+			$after = '';
+		}
+		
+		if($mode == 'index' && (stristr($field, 'FULLTEXT ') !== FALSE || stristr($field, 'UNIQUE ') !== FALSE))
+		{
+			$mode = 'indexalt';
+		}
+		elseif($mode == 'indexdrop' && (stristr($field, 'FULLTEXT ') !== FALSE || stristr($field, 'UNIQUE ') !== FALSE))
+		{
+			$field = trim(str_replace(array('FULLTEXT ', 'UNIQUE '), '', $field));
+		}
+		$field = trim($field, '`');
+	}
 
-	$field = trim($field, '`');
 	$text .= $frm->checkbox("fix_active[$field][]", 1, false, array('id'=>false));
 	$text .= "<input type='hidden' name=\"fix_newval[$field][]\" value=\"$newvalue\" />\n";
 	$text .= "<input type='hidden'  name=\"fix_table[$field][]\" value=\"$table\" />\n";

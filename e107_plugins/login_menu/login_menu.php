@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-08-23 10:57:51 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.12 $
+|     $Date: 2009-09-10 19:15:43 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,7 @@ if(defined("FPW_ACTIVE"))
 	return;      // prevent failed login attempts when fpw.php is loaded before this menu.
 }
 
-global $eMenuActive, $pref, $e107, $tp, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR,
+global $eMenuActive, $pref, $e107, $sql, $tp, $ns, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR,
        $login_menu_shortcodes, $LOGIN_MENU_FORM, $LOGIN_MENU_LOGGED, $LOGIN_MENU_STATS, $LOGIN_MENU_EXTERNAL_LINK;
 $ip = $e107->getip();
 

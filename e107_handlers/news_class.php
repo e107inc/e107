@@ -9,8 +9,8 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-08-21 13:20:36 $
+ * $Revision: 1.19 $
+ * $Date: 2009-09-10 19:15:42 $
  * $Author: secretr $
 */
 
@@ -142,6 +142,11 @@ class e_news_tree extends e_model
 	protected $_current_category_id;
 	
 	/**
+	 * @var array
+	 */
+	protected $_tree_db_total = array();
+	
+	/**
 	 * Constructor
 	 *
 	 * @param unknown_type $category_id
@@ -234,23 +239,43 @@ class e_news_tree extends e_model
 	}
 	
 	/**
+	 * Total records found (DB)
+	 * @param integer $category_id [optional]
+	 * @return integer
+	 */
+	function getTreeTotal($category_id = null)
+	{
+		if(null === $category_id)
+		{
+			$category_id = $this->_current_category_id;
+		}
+		return (isset($this->_tree_db_total[$category_id]) ? $this->_tree_db_total[$category_id] : 0);
+	}
+	
+	/**
 	 * Load tree by category id
 	 *
 	 * @param integer $category_id
 	 * @param boolean $force
-	 * @param integer $limit_from
-	 * @param string $order
+	 * @param array $qry_data limit_from, limit_to, order, date [YYYYMMDD], day[DD], month [MM]
 	 * @return e_news_tree
 	 */
-	public function load($category_id = 0, $force = false, $limit_from = 0, $order = 'n.news_sticky DESC, n.news_datestamp DESC')
+	public function load($category_id = 0, $force = false, $qry_data = array())
 	{
 		$category_id = intval($category_id);
+		if(is_string($qry_data)) { parse_str($qry_data, $qry_data); }
+
+		$limit_from = varset($qry_data['limit_from'], 0);
+		$limit_to = varset($qry_data['limit_to'], e107::getPref('newspost', 15)); 
+		$order = varset($qry_data['order'], 'n.news_sticky DESC, n.news_datestamp DESC');
+		
 		$this->setCurrentCategoryId($category_id);
 		
 		//TODO - file cache $cacheString = md5($category_id.$limit_from.$order.e_CLASS_REGEXP);
 		
 		if($force || !$this->isTree())
 		{
+			var_dump('nocache');
 			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 			if($category_id)
 			{
@@ -259,13 +284,15 @@ class e_news_tree extends e_model
 			$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE{$where} n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
-				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-				ORDER BY ".e107::getParser()->toDB($order)." LIMIT ".intval($limit_from).",".intval(e107::getPref('newspost', 15));
+				WHERE{$where} n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+				AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+				ORDER BY ".e107::getParser()->toDB($order)." LIMIT ".intval($limit_from).",".intval($limit_to);
 				
 			$tree = array();
 			if(e107::getDb()->db_Select_gen($query))
 			{
+				$this->_tree_db_total[$category_id] = (integer) e107::getDb()->total_results;
+				
 				while (true)
 				{
 					$row = e107::getDb()->db_Fetch();
