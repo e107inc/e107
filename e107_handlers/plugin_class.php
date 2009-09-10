@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2009-09-06 20:04:03 $
+|     $Revision: 1.80 $
+|     $Date: 2009-09-10 15:24:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -137,6 +137,8 @@ class e107plugin
 		{
 			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
+
+				
 				$pluginDBList[$row['plugin_path']] = $row;
 				$pluginDBList[$row['plugin_path']]['status'] = 'read';
 				//	echo "Found plugin: ".$row['plugin_path']." in DB<br />";
@@ -165,22 +167,28 @@ class e107plugin
 		}
 		
 		$p_installed = e107::getPref('plug_installed',array()); // load preference; 
-		
+		require_once(e_HANDLER."message_handler.php");
+		$emessage = &eMessage::getInstance();
 
 		foreach($pluginList as $p)
 		{
-			
+			$p['path'] = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
+			$plugin_path = $p['path'];	
+
+			if(strpos($plugin_path,'e107_')!==FALSE)
+			{
+				$emessage->add("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.", E_MESSAGE_WARNING);
+				continue;
+			}
 			$plug['plug_action'] = 'scan';			// Make sure plugin.php knows what we're up to
 			
-			$p['path'] = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
-			$plugin_path = $p['path'];
+
 			
 			if(!$this->parse_plugin($p['path']))
 			{
 				//parsing of plugin.php/plugin.xml failed.
 				
-			  require_once(e_HANDLER."message_handler.php");
-			  $emessage = &eMessage::getInstance();
+			  
 			  $emessage->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
 			  continue;		// Carry on and do any others that are OK
 			}

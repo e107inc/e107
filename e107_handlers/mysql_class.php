@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.49 $
- * $Date: 2009-09-10 12:06:39 $
- * $Author: secretr $
+ * $Revision: 1.50 $
+ * $Date: 2009-09-10 15:24:57 $
+ * $Author: e107coders $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -34,9 +34,10 @@ elseif(defined('E107_INSTALL')) //TODO Remove the need for this if possible
 {
 	class dummyTraffic {
 		function Bump() { return; }
-		function BumpWho($val,$val) {  }
+		function BumpWho($val,$val) { return; }
 		function TimeDelta() { return; }
 	}
+
 	global $eTraffic;
 	$eTraffic = new dummyTraffic;
 	define('E107_DEBUG_LEVEL', 0);
@@ -62,8 +63,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.49 $
- * @author $Author: secretr $
+ * @version $Revision: 1.50 $
+ * @author $Author: e107coders $
  * 
  */
 class e_db_mysql {
@@ -235,7 +236,7 @@ class e_db_mysql {
 	* @param unknown $rli
 	* @return unknown
 	*/
-	protected function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') 
+	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') 
 	{
 		global $db_time,$db_mySQLQueryCount,$queryinfo, $eTraffic;
 		$db_mySQLQueryCount++;
