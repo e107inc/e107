@@ -1,21 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-08-17 18:42:21 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Core SQL
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
+ * $Revision: 1.22 $
+ * $Date: 2009-09-10 09:39:05 $
+ * $Author: e107coders $
 */
+
 header("location:../index.php");
 exit;
 ?>
@@ -307,6 +305,8 @@ CREATE TABLE news (
   news_title varchar(200) NOT NULL default '',
   news_body text NOT NULL,
   news_extended text NOT NULL,
+  news_meta_keywords  varchar(255) NOT NULL default '',
+  news_meta_description text NOT NULL,
   news_datestamp int(10) unsigned NOT NULL default '0',
   news_author int(10) unsigned NOT NULL default '0',
   news_category tinyint(3) unsigned NOT NULL default '0',
@@ -319,11 +319,14 @@ CREATE TABLE news (
   news_summary text NOT NULL,
   news_thumbnail text NOT NULL,
   news_sticky tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (news_id)
+  PRIMARY KEY  (news_id),
+  KEY news_category  (news_category),
+  KEY news_start_end (news_start,news_end),
+  KEY news_datestamp (news_datestamp),
+  KEY news_sticky  (news_sticky),
+  FULLTEXT KEY news_class (news_class),
+  KEY news_render_type  (news_render_type)
 ) TYPE=MyISAM;
-
-
-
 
 
 # --------------------------------------------------------
@@ -333,10 +336,30 @@ CREATE TABLE news (
 #
 
 CREATE TABLE news_category (
-  category_id int(10) unsigned NOT NULL auto_increment,
+  category_id tinyint(3) unsigned NOT NULL auto_increment,
   category_name varchar(200) NOT NULL default '',
+  category_meta_description text NOT NULL,
+  category_meta_keywords  varchar(255) NOT NULL default '',
+  category_manager tinyint(3) unsigned NOT NULL default '254',
   category_icon varchar(250) NOT NULL default '',
-  PRIMARY KEY  (category_id)
+  category_order tinyint(3) unsigned NOT NULL default '0',
+  PRIMARY KEY  (category_id),
+  KEY category_order (category_order)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `news_rewrite`
+#
+
+CREATE TABLE news_rewrite (
+  news_rewrite_id int(10) unsigned NOT NULL auto_increment,
+  news_rewrite_source int(10) unsigned NOT NULL,
+  news_rewrite_string varchar(255) NOT NULL default '',
+  news_rewrite_type tinyint(1) unsigned NOT NULL  default '1',
+  PRIMARY KEY  (news_rewrite_id),
+  FULLTEXT KEY news_rewrite_string (news_rewrite_string),
+  KEY news_rewrite_type (news_rewrite_type)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
