@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2009-09-10 15:24:57 $
+|     $Revision: 1.43 $
+|     $Date: 2009-09-10 15:39:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -718,7 +718,15 @@ class pluginManager{
 						<tbody>
 		";
 
-		$text .= $pluginRenderPlugin;
+		if($pluginRenderPlugin)
+		{
+			$text .= $pluginRenderPlugin;	
+		}
+		else
+		{
+			//TODO LANs
+			$text .= "<tr><td class='center' colspan='".count($this->fields)."'>No plugins Found</td></tr>";	
+		}
 
 		$text .= "
 						</tbody>
