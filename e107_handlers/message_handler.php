@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-08-16 15:10:38 $
+ * $Revision: 1.15 $
+ * $Date: 2009-09-10 19:10:32 $
  * $Author: secretr $
  *
 */
@@ -119,8 +119,8 @@ class eMessage
 		$msg = $message;
 		if(is_array($message))
 		{
-			$mstack = $message[0];
-			$msg = $message[1];
+			$mstack = $message[1];
+			$msg = $message[0];
 		}
 
 		if(!$session)
@@ -129,6 +129,21 @@ class eMessage
 			return $this;
 		}
 		return $this->addSession($message, $type);
+	}
+	
+	/**
+	 * Alias of {@link add()}
+	 * Should be used for dealing with messages with custom message stacks
+	 * 
+	 * @param object $message
+	 * @param string $mstack defaults to 'default' 
+	 * @param object $type [optional]
+	 * @param object $sesion [optional]
+	 * @return eMessage
+	 */
+	public function addStack($message, $mstack = 'default', $type = E_MESSAGE_INFO, $sesion = false)
+	{
+		return $this->add(array($mstack, $message), $type, $sesion);
 	}
 
 	/**
@@ -147,12 +162,27 @@ class eMessage
 		$mstack = 'default';
 		if(is_array($message))
 		{
-			$mstack = $message[0];
-			$message = $message[1];
+			$mstack = $message[1];
+			$message = $message[0];
 		}
 
 		if($this->isType($type)) $_SESSION[$this->_session_id][$type][$mstack][] = $message;
 		return $this;
+	}
+	
+	/**
+	 * Alias of {@link addSession()}
+	 * Should be used for dealing with messages with custom message stacks
+	 * 
+	 * @param object $message
+	 * @param string $mstack defaults to 'default' 
+	 * @param object $type [optional]
+	 * @param object $sesion [optional]
+	 * @return eMessage
+	 */
+	public function addSessionStack($message, $mstack = 'default', $type = E_MESSAGE_INFO)
+	{
+		return $this->addSession(array($mstack, $message), $type);
 	}
 
 	/**
