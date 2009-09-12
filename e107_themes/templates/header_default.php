@@ -9,9 +9,9 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-08-20 09:03:02 $
- * $Author: secretr $
+ * $Revision: 1.40 $
+ * $Date: 2009-09-12 19:27:24 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -90,7 +90,7 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."
 //
 // C: Send start of HTML
 //
-echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
+echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("XMLNS") ? " ".XMLNS." " : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
 <head>
 <meta http-equiv='content-type' content='text/html; charset=utf-8' />
 <meta http-equiv='content-style-type' content='text/css' />
