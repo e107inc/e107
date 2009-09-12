@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.61 $
-* $Date: 2009-09-04 15:24:41 $
-* $Author: e107coders $
+* $Revision: 1.62 $
+* $Date: 2009-09-12 18:20:23 $
+* $Author: secretr $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -1185,11 +1185,11 @@ class e_parse
 	/**
 	 * Replace e107 path constants
 	 * Note: only an ADMIN user can convert {e_ADMIN}	
-	 * @param object $text
-	 * @param object $mode [optional]  	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
+	 * @param string $text
+	 * @param string $mode [optional]  	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
 	 * 									TRUE = produce truncated URL path, e.g. e107plugins/etc
 	 * 									"" (default) = URL's get relative path e.g. ../e107_plugins/etc
-	 * @param object $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
+	 * @param mixed $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
 	 * 									when $mode is "" (default), ALL other e107 constants are replaced
 	 * @return 
 	 */
