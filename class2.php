@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.140 $
-* $Date: 2009-09-10 10:23:12 $
-* $Author: e107coders $
+* $Revision: 1.141 $
+* $Date: 2009-09-12 16:42:44 $
+* $Author: secretr $
 *
 */
 //
@@ -1334,17 +1334,18 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 function getperms($arg, $ap = ADMINPERMS)
 {
-	global $PLUGINS_DIRECTORY;
-	if ($ap == '0')
-	{
-		return true;
-	}
-	if ($ap == '')
+	if (trim($ap) === '')
 	{
 		return false;
 	}
+	
+	if ($ap === '0')
+	{
+		return true;
+	}
+
 	$ap='.'.$ap;
-	if ($arg == 'P' && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#", e_SELF, $matches))
+	if ($arg == 'P' && preg_match("#(.*?)/".e107::getInstance()->getFolder('plugins')."(.*?)/(.*?)#", e_SELF, $matches))
 	{
 		$psql=new db;
 		if ($psql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' "))
