@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.50 $
- * $Date: 2009-09-10 19:15:43 $
+ * $Revision: 1.51 $
+ * $Date: 2009-09-12 18:25:41 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -68,14 +68,44 @@ function headerjs()
 				'Helper': true,
 				'AdminMenu': false
 			}
+			
+            //custom expand
+			Element.addMethods( {
+				newsDescToggle: function(element) {
+					element = \$(element);
+					if(!element.visible())
+				    	element.fxToggle();
+				    	
+				    return element;
+				},
+				
+				newsScrollToMe: function(element) {
+					element = \$(element);
+					new Effect.ScrollTo(element);
+					return element;
+				},
+				
+				newsUpdateButtonSpan: function(element, str, swapClass) {
+					element = \$(element);
+					if(swapClass) {
+						var swapO = swapClass.split('::');
+						element.removeClassName(swapO[0]).addClassName(swapO[1]);
+					}
+					
+					if(element.down('span')) {
+						element.down('span').update(str);
+					}
+					return element;
+				}
+			});
 
 			//fix form action if needed
 			document.observe('dom:loaded', function() {
-				if($('core-newspost-create-form')) {
-					$('core-newspost-create-form').observe('submit', function(event) {
+				if(\$('core-newspost-create-form')) {
+					\$('core-newspost-create-form').observe('submit', function(event) {
 						var form = event.element();
 						action = form.readAttribute('action') + document.location.hash;
-						//if($('create-edit-stay-1') && $('create-edit-stay-1').checked)
+						//if(\$('create-edit-stay-1') && \$('create-edit-stay-1').checked)
 							form.writeAttribute('action', action);
 					});
 				}
@@ -89,8 +119,53 @@ function headerjs()
 	{
 		$ret .= "
 		<script type='text/javascript'>
-			//Click observer
-            document.observe('dom:loaded', function(){
+			var e_npadmin_ajaxsave = function(action, element) {
+				var id = element.name.gsub(/[^\d]/, ''),
+					cl = element.value,
+					url = '#{e_ADMIN}newspost.php?' + action + '.' + id + '.' + cl;
+					
+				element.startLoading();
+				new e107Ajax.Request(url.parsePath(), {
+					onComplete: function(transport) {
+						element.stopLoading();
+						if(transport.responseText)
+							alert(transport.responseText);//error
+					}
+				});
+			}
+		
+			//e107 onload custom event
+	        e107.runOnLoad( function(event) {
+	        	var celement = event.memo['element'] ? \$(event.memo.element) : \$\$('body')[0];
+				
+	        	//Unobtrusive AJAX category list reload
+	        	if(\$('trigger-list-refresh')) {
+	            	\$('trigger-list-refresh').observe('click', function(event) {
+						event.stop();
+						\$('core-newspost-cat-list-form').submitForm(
+							'core-newspost-cat-list-cont', 
+							{ overlayPage: \$\$('body')[0]  }, 
+							\$('core-newspost-cat-list-form').action + '_list_refresh'
+						);
+					});
+				}
+				
+				//Unobtrusive AJAX save category manage permissions
+				celement.select('select[name^=multi_category_manager]').invoke('observe', 'change', function(event) {
+					e_npadmin_ajaxsave('catmanager', event.element());
+				});
+				
+				//Category order fields - user convenience
+				celement.select('input[name^=multi_category_order]').invoke('observe', 'focus', function(event) {
+					event.element().select();
+				});
+				
+				//Unobtrusive AJAX save category order
+				celement.select('input[name^=multi_category_order]').invoke('observe', 'blur', function(event) {
+					e_npadmin_ajaxsave('catorder', event.element());
+				});
+				
+				//Fill form - click observer (Unobtrusive AJAX edit category)
             	\$\$('a.action[id^=core-news-catedit-]').each(function(element) {
 					element.observe('click', function(event) {
 						event.stop();
@@ -98,8 +173,8 @@ function headerjs()
 						$('core-newspost-cat-create-form').fillForm(\$\$('body')[0], { handler: el.readAttribute('href') });
 					});
 				});
-            });
-
+				
+			}, null, true);
     	</script>
 		";
 	}
@@ -174,6 +249,8 @@ class admin_newspost
 		global $user_pref;
 		$this->parseRequest($qry);
 
+		require_once(e_HANDLER."cache_handler.php");
+		require_once(e_HANDLER."news_class.php");
 		require_once(e_HANDLER."calendar/calendar_class.php");
 		$this->_cal = new DHTML_Calendar(true);
 
@@ -273,10 +350,26 @@ class admin_newspost
 
 	function clear_cache()
 	{
-		$e107 = &e107::getInstance();
-		$e107->ecache->clear("news.php");
-		$e107->ecache->clear("othernews");
-		$e107->ecache->clear("othernews2");
+		$ecache = e107::getCache();
+		$ecache->clear("news.php");
+		$ecache->clear("othernews");
+		$ecache->clear("othernews2");
+		return $this;
+	}
+	
+	function clear_rwcache($sefstr = '')
+	{
+		/*if($sefstr) $sefstr = md5($sefstr);
+		ecache::clear_sys("news_sefurl".$sefstr);*/
+		news::clearRewriteCache($sefstr);
+	}
+	
+	function set_rwcache($sefstr, $data)
+	{
+		/**$sefstr = md5($sefstr); 
+		if(is_array($data)) $data = e107::getArrayStorage()->WriteArray($data, false);
+		ecache::set_sys("news_sefurl".$sefstr, $data, true);*/
+		news::setRewriteCache($sefstr, $data);
 	}
 
 	function ajax_observer()
@@ -317,6 +410,10 @@ class admin_newspost
 		elseif(isset($_POST['update_category']))
 		{
 			$this->_observe_update_category();
+		}
+		elseif(isset($_POST['multi_update_category']))
+		{
+			$this->_observe_multi_create_category();
 		}
 		elseif(isset($_POST['save_prefs']))
 		{
@@ -376,20 +473,28 @@ class admin_newspost
 	function _observe_delete()
 	{
 		global $admin_log;
-
+		//FIXME - SEF URL cache
 		$tmp = array_keys($_POST['delete']);
 		list($delete, $del_id) = explode("_", $tmp[0]);
 		$del_id = intval($del_id);
 
 		if(!$del_id) return false;
 
-		$e107 = &e107::getInstance();
+		$e107 = e107::getInstance();
 
 		switch ($delete) {
 			case 'main':
+				//clear rewrite cache
+				if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id, news_rewrite_string', 'news_rewrite_source='.$del_id.' AND news_rewrite_type=1'))
+				{
+					$tmp = e107::getDb()->db_Fetch();
+					e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$tmp['news_rewrite_id']);
+					$this->clear_rwcache($tmp['news_rewrite_string']);
+					unset($tmp);
+				}
 				if ($e107->sql->db_Count('news','(*)',"WHERE news_id={$del_id}"))
 				{
-					$e107->e_event->trigger("newsdel", $del_id);
+					e107::getEvent()->trigger("newsdel", $del_id);
 					if($e107->sql->db_Delete("news", "news_id={$del_id}"))
 					{
 						$admin_log->log_event('NEWS_01',$del_id,E_LOG_INFORMATIVE,'');
@@ -405,21 +510,33 @@ class admin_newspost
 			break;
 
 			case 'category':
+				//clear rewrite cache
+				if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id, news_rewrite_string', 'news_rewrite_source='.$del_id.' AND news_rewrite_type=2'))
+				{
+					$tmp = e107::getDb()->db_Fetch();
+					e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$tmp['news_rewrite_id']);
+					$this->clear_rwcache($tmp['news_rewrite_string']);
+					unset($tmp);
+				}
+				if ($e107->sql->db_Count('news_category','(*)',"WHERE category_id={$del_id}"))
+				{
+					e107::getEvent()->trigger("newscatdel", $del_id);
 					if ($e107->sql->db_Delete("news_category", "category_id={$del_id}"))
 					{
 						$admin_log->log_event('NEWS_02',$del_id,E_LOG_INFORMATIVE,'');
 						$this->show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32, E_MESSAGE_SUCCESS);
 						$this->clear_cache();
 					}
+				}
 			break;
 
 			case 'sn':
-					if ($e107->sql->db_Delete("submitnews", "submitnews_id={$del_id}"))
-					{
-						$admin_log->log_event('NEWS_03',$del_id,E_LOG_INFORMATIVE,'');
-						$this->show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
-						$this->clear_cache();
-					}
+				if ($e107->sql->db_Delete("submitnews", "submitnews_id={$del_id}"))
+				{
+					$admin_log->log_event('NEWS_03',$del_id,E_LOG_INFORMATIVE,'');
+					$this->show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
+					$this->clear_cache();
+				}
 			break;
 
 			default:
@@ -432,11 +549,7 @@ class admin_newspost
 	function _observe_submit_item($sub_action, $id)
 	{
 		// ##### Format and submit item to DB
-		global $admin_log;
 
-		$e107 = &e107::getInstance();
-
-		require_once(e_HANDLER."news_class.php");
 		$ix = new news;
 
 		if($_POST['news_start'])
@@ -480,13 +593,14 @@ class admin_newspost
 		}
 		else
 		{
-			$e107->sql->db_Update('submitnews', "submitnews_auth=1 WHERE submitnews_id ={$id}");
-			$admin_log->log_event('NEWS_07',$id,E_LOG_INFORMATIVE,'');
+			e107::getDb()->db_Update('submitnews', "submitnews_auth=1 WHERE submitnews_id ={$id}");
+			e107::getAdminLog()->log_event('NEWS_07', $id, E_LOG_INFORMATIVE,'');
 		}
-		if (!$_POST['cat_id'])
+		if (!isset($_POST['cat_id']))
 		{
-			$_POST['cat_id'] = 1;
+			$_POST['cat_id'] = 0;
 		}
+		$_POST['news_category'] = $_POST['cat_id'];
 
 		if(isset($_POST['news_thumbnail']))
 		{
@@ -496,7 +610,13 @@ class admin_newspost
         $tmp = explode(chr(35), $_POST['news_author']);
         $_POST['news_author'] = $tmp[0];
 
-        $ret = $ix->submit_item($_POST, !varsettrue($_POST['create_edit_stay']));
+        $ret = $ix->submit_item($_POST, !vartrue($_POST['create_edit_stay']));
+		if($ret['error'])
+		{
+			eMessage::getInstance()->mergeWithSession(); //merge with session messages
+			eMessage::getInstance()->add(($id ? LAN_UPDATED_FAILED : LAN_CREATED_FAILED), E_MESSAGE_ERROR);
+			return false;
+		}
         $this->clear_cache();
 
         if(isset($_POST['create_edit_stay']) && !empty($_POST['create_edit_stay']))
@@ -537,7 +657,7 @@ class admin_newspost
 		if (!$this->error)
 		{
 			$inserta = array();
-			/* Why?
+			/* Why? Categoty Icon is not required field
 			if (empty($_POST['category_icon']))
 			{
 				$handle = opendir(e_IMAGE."icons");
@@ -570,7 +690,6 @@ class admin_newspost
 			$inserta['data']['category_manager'] = $_POST['category_manager'];
 			$inserta['_FIELD_TYPES']['category_manager'] = 'int';
 						
-			if(isset($_POST['category_order'])) $_POST['category_order'] = 0;
 			$inserta['data']['category_order'] = $_POST['category_order'];
 			$inserta['_FIELD_TYPES']['category_order'] = 'int';
 			
@@ -581,32 +700,29 @@ class admin_newspost
 				//Manage rewrite
 				if(!empty($_POST['news_rewrite_string']))
 				{
-					$rinserta = array();
-					$rinserta['data']['news_rewrite_source'] = $id;
-					$rinserta['_FIELD_TYPES']['news_rewrite_source'] = 'int';
+					$rwinserta = array();
+					$rwinserta['data']['news_rewrite_source'] = $id;
+					$rwinserta['_FIELD_TYPES']['news_rewrite_source'] = 'int';
 					
-					$rinserta['data']['news_rewrite_string'] = $_POST['news_rewrite_string'];
-					$rinserta['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
+					$rwinserta['data']['news_rewrite_string'] = $_POST['news_rewrite_string'];
+					$rwinserta['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
 					
-					$rinserta['data']['news_rewrite_type'] = 2;
-					$rinserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
+					$rwinserta['data']['news_rewrite_type'] = 2;
+					$rwinserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
 					
-					e107::getDb()->db_Insert('news_rewrite', $rinserta);
-					if(e107::getDb()->mySQLlastErrNum)
+					e107::getDb()->db_Insert('news_rewrite', $rwinserta);
+					if(e107::getDb()->getLastErrorNumber())
 					{
 						$this->error = true;
-						$this->show_message('Category friendly URL sting related problem detected!', E_MESSAGE_ERROR);
-						if(1052 == e107::getDb()->mySQLlastErrNum)
+						$this->show_message('Category friendly URL string related problem detected!', E_MESSAGE_ERROR);
+						if(1052 == e107::getDb()->getLastErrorNumber())
 						{
-							$this->show_message('Category friendly URL should be unique! ', E_MESSAGE_ERROR);
+							$this->show_message('Category friendly URL string should be unique! ', E_MESSAGE_ERROR);
 						}
-						$this->show_message('mySQL error #'.e107::getDb()->mySQLlastErrNum.': '.e107::getDb()->mySQLlastErrText, E_MESSAGE_DEBUG);
+						$this->show_message('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
 						return;
 					}
-				}
-				else
-				{
-					e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_source='.$id);
+					$this->set_rwcache($_POST['news_rewrite_string'], $rwinserta['data']);
 				}
 				
 				//admin log now supports DB array and method chaining
@@ -614,19 +730,22 @@ class admin_newspost
 				unset($inserta['data']['category_meta_description']); //too long for logging?
 				e107::getAdminLog()
 					->log_event('NEWS_04', $inserta, E_LOG_INFORMATIVE, '')
-					->log_event('NEWS_04', $rinserta, E_LOG_INFORMATIVE, ''); //XXX fix lan for SEF string log or just don't log it?
+					->log_event('NEWS_04', $rwinserta, E_LOG_INFORMATIVE, ''); //XXX fix lan for SEF string log or just don't log it?
 					 
 				$this->show_message(NWSLAN_35, E_MESSAGE_SUCCESS);
 				$this->clear_cache();
+				
+				//TODO - add to WIKI docs
+				e107::getEvent()->trigger("newscatpost", array_merge($inserta['data'], $rwinserta['data']));
 			}
 			else
 			{
 				//debug + error message
-				if(e107::getDb()->mySQLlastErrNum)
+				if(e107::getDb()->getLastErrorNumber())
 				{
 					$this->error = true;
 					$this->show_message('mySQL Error detected!', E_MESSAGE_ERROR);
-					eMessage::getInstance()->addS('mySQL error #'.e107::getDb()->mySQLlastErrNum.': '.e107::getDb()->mySQLlastErrText, E_MESSAGE_DEBUG);
+					eMessage::getInstance()->addS('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
 				}
 			}
 		}
@@ -672,81 +791,120 @@ class admin_newspost
 			
 			$updatea['data']['category_manager'] = $_POST['category_manager'];
 			$updatea['_FIELD_TYPES']['category_manager'] = 'int';
-						
-			if(isset($_POST['category_order'])) $_POST['category_order'] = 0;
+
 			$updatea['data']['category_order'] = $_POST['category_order'];
 			$updatea['_FIELD_TYPES']['category_order'] = 'int';
 
 			$updatea['WHERE'] = 'category_id='.$this->getId();
 			
-			if(e107::getDb()->db_Update("news_category", $updatea) || !e107::getDb()->mySQLlastErrNum)
+			$inserta = array();
+			$rid = isset($_POST['news_rewrite_id']) ? $_POST['news_rewrite_id'] : 0;
+			
+			$inserta['data']['news_rewrite_id'] = $rid;
+			$inserta['_FIELD_TYPES']['news_rewrite_id'] = 'int';
+			
+			$inserta['data']['news_rewrite_source'] = $this->getId();
+			$inserta['_FIELD_TYPES']['news_rewrite_source'] = 'int';
+			
+			$inserta['data']['news_rewrite_string'] = $_POST['news_rewrite_string'];
+			$inserta['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
+			
+			$inserta['data']['news_rewrite_type'] = 2;
+			$inserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
+			
+			$upcheck = e107::getDb()->db_Update("news_category", $updatea);
+			$rwupcheck = false;
+			if($upcheck || !e107::getDb()->getLastErrorNumber())
 			{
 				//Manage rewrite
 				if(!empty($_POST['news_rewrite_string']))
 				{
-					$inserta = array();
-					
-					$inserta['data']['news_rewrite_id'] = isset($_POST['news_rewrite_id']) ? $_POST['news_rewrite_id'] : 0;
-					$inserta['_FIELD_TYPES']['news_rewrite_id'] = 'int';
-					
-					$inserta['data']['news_rewrite_source'] = $this->getId();
-					$inserta['_FIELD_TYPES']['news_rewrite_source'] = 'int';
-					
-					$inserta['data']['news_rewrite_string'] = $_POST['news_rewrite_string'];
-					$inserta['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
-					
-					$inserta['data']['news_rewrite_type'] = 2;
-					$inserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
-					
-					$tmp = e107::getDb()->db_Replace('news_rewrite', $inserta);
-					if(e107::getDb()->mySQLlastErrNum)
+					if($rid)
+					{
+						$inserta['WHERE'] = 'news_rewrite_id='.intval($rid);
+						$rwupcheck = e107::getDb()->db_Update('news_rewrite', $inserta);
+					}
+					else 
+					{
+						$rwupcheck = e107::getDb()->db_Insert('news_rewrite', $inserta);
+					}
+					if(e107::getDb()->getLastErrorNumber())
 					{
 						$this->error = true;
 						$this->setSubAction('edit');
-						$this->show_message('Category friendly URL sting related problem detected!', E_MESSAGE_ERROR);
-						if(1052 == e107::getDb()->mySQLlastErrNum)
+						$this->show_message('Category friendly URL string related problem detected!', E_MESSAGE_ERROR);
+						if(1062 == e107::getDb()->getLastErrorNumber()) //detect duplicate mysql errnum
 						{
-							$this->show_message('Category friendly URL should be unique! ', E_MESSAGE_ERROR);
+							$this->show_message('Category friendly URL string should be unique! ', E_MESSAGE_ERROR);
 						}
-						$this->show_message('mySQL error #'.e107::getDb()->mySQLlastErrNum.': '.e107::getDb()->mySQLlastErrText, E_MESSAGE_DEBUG);
+						$this->show_message('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
 						return;
 					}
-					
-					if(!$tmp) $this->show_message(LAN_NO_CHANGE);
-					else $this->show_message(NWSLAN_36, E_MESSAGE_SUCCESS);
+
+					if ($upcheck || $rwupcheck) 
+					{ 
+						$this->show_message(NWSLAN_36, E_MESSAGE_SUCCESS);
+						$this->set_rwcache($_POST['news_rewrite_string'], $inserta['data']);
+						//TODO - add to WIKI docs
+						e107::getEvent()->trigger("newscatupd", array_merge($updatea['data'], $inserta['data']));
+						return;
+					}
+					$this->show_message(LAN_NO_CHANGE);
 					return;
 				}
 				else
 				{
-					e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_source='.$this->getId());
+					//remove SEF if required
+					if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id, news_rewrite_string', 'news_rewrite_source='.$this->getId().' AND news_rewrite_type=2'))
+					{
+						$tmp = e107::getDb()->db_Fetch();
+						e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$tmp['news_rewrite_id']);
+						$this->clear_rwcache($tmp['news_rewrite_string']);
+						unset($tmp);
+						$inserta = array( 'data' => array());
+						$rwupcheck = true;
+					}
+					
 				}
 				
-				//admin log now supports DB array and method chaining
-				//$_POST['category_name'].', '.$_POST['category_icon']
-				unset($updatea['data']['category_meta_description']); //too long for logging?
-				e107::getAdminLog()
-					->log_event('NEWS_04', $updatea, E_LOG_INFORMATIVE, '')
-					->log_event('NEWS_04', $rinserta, E_LOG_INFORMATIVE, ''); //XXX fix lan for SEF string log or just don't log it?
+				if ($upcheck || $rwupcheck) 
+				{ 
+					//admin log now supports DB array and method chaining
+					if($upcheck) e107::getAdminLog()->log_event('NEWS_04', $updatea['data'], E_LOG_INFORMATIVE, '');
+					if($rwupcheck) e107::getAdminLog()->log_event('NEWS_04', $inserta['data'], E_LOG_INFORMATIVE, ''); //XXX fix lan for SEF string log or just don't log it?
+						
+					$this->show_message(NWSLAN_36, E_MESSAGE_SUCCESS);
+					$this->clear_cache();
 					
-				$this->show_message(NWSLAN_36, E_MESSAGE_SUCCESS);
-				$this->clear_cache();
+					//TODO - add to WIKI docs
+					e107::getEvent()->trigger("newscatupd", array_merge($updatea['data'], $inserta['data']));
+				}
+				else 
+				{
+					$this->show_message(LAN_NO_CHANGE);
+				}
 				$this->setId(0);
 			}
 			else
 			{
-				//debug + error message
-				//if(e107::getDb()->mySQLlastErrNum)
-				//{
-					$this->error = true;
-					$this->setSubAction('edit');
-					$this->show_message('mySQL Error detected!', E_MESSAGE_ERROR);
-					$this->show_message('#'.e107::getDb()->mySQLlastErrNum.': '.e107::getDb()->mySQLlastErrText, E_MESSAGE_DEBUG);
-					return;
-				//}
-				//$this->show_message(LAN_NO_CHANGE);
-				//$this->setId(0);
+				$this->error = true;
+				$this->setSubAction('edit');
+				$this->show_message('mySQL Error detected!', E_MESSAGE_ERROR);
+				$this->show_message('#'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
+				return;
 			}
 		}
+	}
+	
+	function _observe_multi_create_category()
+	{
+		$cnt = 0;
+		foreach ($_POST['multi_category_manager'] as $cid => $val)
+		{
+			$order = $_POST['multi_category_order'][$cid];
+			$cnt += (int) e107::getDb()->db_Update('news_category', 'category_manager='.intval($val).', category_order='.intval($order).' WHERE category_id='.intval($cid));
+		}
+		if($cnt) eMessage::getInstance()->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
 	}
 
 	function _observe_save_prefs()
@@ -970,30 +1128,45 @@ class admin_newspost
 	function _pre_create()
 	{
 
-		if($this->getSubAction() == "edit" && !$_POST['preview'] && !$_POST['submit_news'])
+		if($this->getSubAction() == "edit" && !$_POST['preview'])
 		{
-			$e107 = &e107::getInstance();
-			if($e107->sql->db_Select("news", "*", "news_id='".$this->getId()."'"))
+			if(!isset($_POST['submit_news']))
 			{
-				$row = $e107->sql->db_Fetch();
-
-				$_POST['news_title'] = $row['news_title'];
-				$_POST['data'] = $row['news_body'];
-				$_POST['news_author'] = $row['news_author'];
-				$_POST['news_extended'] = $row['news_extended'];
-				$_POST['news_allow_comments'] = $row['news_allow_comments'];
-				$_POST['news_class'] = $row['news_class'];
-				$_POST['news_summary'] = $row['news_summary'];
-				$_POST['news_sticky'] = $row['news_sticky'];
-				$_POST['news_datestamp'] = ($_POST['news_datestamp']) ? $_POST['news_datestamp'] : $row['news_datestamp'];
-
-				$_POST['cat_id'] = $row['news_category'];
-				$_POST['news_start'] = $row['news_start'];
-				$_POST['news_end'] = $row['news_end'];
-				$_POST['comment_total'] = $e107->sql->db_Count("comments", "(*)", " WHERE comment_item_id={$row['news_id']} AND comment_type='0'");
-				$_POST['news_rendertype'] = $row['news_render_type'];
-				$_POST['news_thumbnail'] = $row['news_thumbnail'];
+				if(e107::getDb()->db_Select('news', '*', 'news_id='.intval($this->getId())))
+				{
+					$row = e107::getDb()->db_Fetch();
+	
+					$_POST['news_title'] = $row['news_title'];
+					$_POST['data'] = $row['news_body'];
+					$_POST['news_author'] = $row['news_author'];
+					$_POST['news_extended'] = $row['news_extended'];
+					$_POST['news_allow_comments'] = $row['news_allow_comments'];
+					$_POST['news_class'] = $row['news_class'];
+					$_POST['news_summary'] = $row['news_summary'];
+					$_POST['news_sticky'] = $row['news_sticky'];
+					$_POST['news_datestamp'] = ($_POST['news_datestamp']) ? $_POST['news_datestamp'] : $row['news_datestamp'];
+	
+					$_POST['cat_id'] = $row['news_category'];
+					$_POST['news_start'] = $row['news_start'];
+					$_POST['news_end'] = $row['news_end'];
+					$_POST['comment_total'] = e107::getDb()->db_Count("comments", "(*)", " WHERE comment_item_id={$row['news_id']} AND comment_type='0'");
+					$_POST['news_rendertype'] = $row['news_render_type'];
+					$_POST['news_thumbnail'] = $row['news_thumbnail'];
+					$_POST['news_meta_keywords'] = $row['news_meta_keywords'];
+					$_POST['news_meta_description'] = $row['news_meta_description'];
+				}
 			}
+			
+			$row = array();
+			if(e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_source='.intval($this->getId()).' AND news_rewrite_type=1'))
+			{
+				$row = e107::getDb()->db_Fetch();
+			}
+				
+			$_POST['news_rewrite_id'] = varset($row['news_rewrite_id'], 0);
+			$_POST['news_rewrite_source'] = $this->getId();
+			$_POST['news_rewrite_string'] = isset($_POST['news_rewrite_string']) ? $_POST['news_rewrite_string'] : varset($row['news_rewrite_string'], '');
+			$_POST['news_rewrite_type'] = 1;
 		}
 	}
 
@@ -1017,14 +1190,16 @@ class admin_newspost
 		$sub_action = $this->getSubAction();
 		$id = $this->getSubAction() != 'sn' && $this->getSubAction() != 'upload' ? $this->getId() : 0;
 
-		$e107 = &e107::getInstance();
+		$e107 = e107::getInstance();
+		$tp = e107::getParser();
+		$sql = e107::getDb();
 
 		if ($sub_action == "sn" && !varset($_POST['preview']))
 		{
-			if ($e107->sql->db_Select("submitnews", "*", "submitnews_id=".$this->getId(), TRUE))
+			if ($sql->db_Select("submitnews", "*", "submitnews_id=".$this->getId(), TRUE))
 			{
 				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
-				$row = $e107->sql->db_Fetch();
+				$row = $sql->db_Fetch();
 				$_POST['news_title'] = $row['submitnews_title'];
 				$_POST['data'] = $row['submitnews_item'];
 				$_POST['cat_id'] = $row['submitnews_category'];
@@ -1047,8 +1222,8 @@ class admin_newspost
 
 		if ($sub_action == "upload" && !varset($_POST['preview']))
 		{
-			if ($e107->sql->db_Select('upload', '*', "upload_id=".$this->getId())) {
-				$row = $e107->sql->db_Fetch();
+			if ($sql->db_Select('upload', '*', "upload_id=".$this->getId())) {
+				$row = $sql->db_Fetch();
 				$post_author_id = substr($row['upload_poster'], 0, strpos($row['upload_poster'], "."));
 				$post_author_name = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1));
 				$match = array();
@@ -1063,6 +1238,7 @@ class admin_newspost
 		<div class='admintabs' id='tab-container'>
 			<ul class='e-tabs e-hideme' id='core-emote-tabs'>
 				<li id='tab-general'><a href='#core-newspost-create'>".LAN_NEWS_52."</a></li>
+				<li id='tab-seo'><a href='#core-newspost-seo'>SEO</a></li>
 				<li id='tab-advanced'><a href='#core-newspost-edit-options'>".LAN_NEWS_53."</a></li>
 			</ul>
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='core-newspost-create-form' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
@@ -1079,7 +1255,7 @@ class admin_newspost
 								<td class='control'>
 		";
 
-		if (!$e107->sql->db_Select("news_category"))
+		if (!$sql->db_Select('news_category'))
 		{
 			$text .= NWSLAN_10;
 		}
@@ -1089,9 +1265,12 @@ class admin_newspost
 									".$frm->select_open('cat_id')."
 			";
 
-			while ($row = $e107->sql->db_Fetch())
+			while ($row = $sql->db_Fetch())
 			{
-				$text .= $frm->option($e107->tp->toHTML($row['category_name'], FALSE, "LINKTEXT"), $row['category_id'], varset($_POST['cat_id']) == $row['category_id']);
+				if(ADMINPERMS === '0' || check_class($row['category_manager']))
+				{
+					$text .= $frm->option($tp->toHTML($row['category_name'], FALSE, "LINKTEXT"), $row['category_id'], varset($_POST['cat_id']) == $row['category_id']);
+				}
 			}
 			$text .= "
 									</select>
@@ -1103,14 +1282,14 @@ class admin_newspost
 							<tr>
 								<td class='label'>".NWSLAN_12.":</td>
 								<td class='control'>
-									".$frm->text('news_title', $e107->tp->post_toForm($_POST['news_title']))."
+									".$frm->text('news_title', $tp->post_toForm($_POST['news_title']))."
 								</td>
 							</tr>
 
 							<tr>
 								<td class='label'>".LAN_NEWS_27.":</td>
 								<td class='control'>
-									".$frm->text('news_summary', $e107->tp->post_toForm($_POST['news_summary']), 250)."
+									".$frm->text('news_summary', $tp->post_toForm($_POST['news_summary']), 250)."
 								</td>
 							</tr>
 		";
@@ -1153,8 +1332,8 @@ class admin_newspost
 				}
 			}
 
-	        $e107->sql->db_Select_gen($qry);
-	        while($row = $e107->sql->db_Fetch())
+	        $sql->db_Select_gen($qry);
+	        while($row = $sql->db_Fetch())
 	        {
 	        	if($_POST['news_author'])
 				{
@@ -1178,14 +1357,14 @@ class admin_newspost
 								<td class='label'>".NWSLAN_13.":<br /></td>
 								<td class='control'>";
 
-		$val = (strstr($e107->tp->post_toForm($_POST['data']), "[img]http") ? $e107->tp->post_toForm($_POST['data']) : str_replace("[img]../", "[img]", $e107->tp->post_toForm($_POST['data'])));
+		$val = (strstr($tp->post_toForm($_POST['data']), "[img]http") ? $tp->post_toForm($_POST['data']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['data'])));
         $text .= $frm->bbarea('data', $val, 'news', 'helpb');
 
 		// Extended news form textarea
 		// Fixes Firefox issue with hidden wysiwyg textarea.
 		// XXX - WYSIWYG is already plugin, this should go
   //		if(defsettrue('e_WYSIWYG')) $ff_expand = "tinyMCE.execCommand('mceResetDesignMode')";
-		$val = (strstr($e107->tp->post_toForm($_POST['news_extended']), "[img]http") ? $e107->tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $e107->tp->post_toForm($_POST['news_extended'])));
+		$val = (strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])));
 		$text .= "
 								</td>
 							</tr>
@@ -1277,8 +1456,8 @@ class admin_newspost
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		//$parms .= "&click_postfix=[/img]";
 
-		$text .= "<div class='field-section'>".$e107->tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
-		$text .= "<div class='field-spacer'>".$e107->tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
+		$text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
+		$text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 		$text .= "
 									</div>
@@ -1288,8 +1467,39 @@ class admin_newspost
 					</table>
 				</fieldset>
 		";
+		
+		//BEGIN SEO block
+		$text .= "
+				<fieldset id='core-newspost-seo'>
+					<legend>SEO</legend>
+					<table cellpadding='0' cellspacing='0' class='adminedit'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class='label'>Friendly URL string: </td>
+								<td class='control'>
+									".$frm->text('news_rewrite_string', $tp->post_toForm($_POST['news_rewrite_string']), 255)."
+									".$frm->hidden('news_rewrite_id', intval($_POST['news_rewrite_id']))."
+									<div class='field-help'>To make this work, you need to enable 'SEF URLs' config profile from <a href='".e_ADMIN_ABS."eurl.php'>URL Configuration area</a></div>
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>Meta keywords: </td>
+								<td class='control'>".$frm->text('news_meta_keywords', $tp->post_toForm($_POST['news_meta_keywords']), 255)."</td>
+							</tr>
+							<tr>
+								<td class='label'>Meta description: </td>
+								<td class='control'>".$frm->textarea('news_meta_description', $tp->post_toForm($_POST['news_meta_description']), 7)."</td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+		";
 
-		//Begin Options block
+		//BEGIN Options block
 		$text .= "
 				<fieldset id='core-newspost-edit-options'>
 					<legend>".LAN_NEWS_53."</legend>
@@ -1486,15 +1696,13 @@ class admin_newspost
 
 		";
 
-		$emessage = &eMessage::getInstance();
+		$emessage = eMessage::getInstance();
 		$e107->ns->tablerender($this->getSubAction() == 'edit' ? NWSLAN_29a : NWSLAN_29, $emessage->render().$text);
 	}
 
 
 	function preview_item($id)
 	{
-
-		require_once(e_HANDLER."news_class.php");
 		$ix = new news;
 
 		$e107 = &e107::getInstance();
@@ -1589,27 +1797,58 @@ class admin_newspost
 		}
 		$jshelper = new e_jshelper();
 
+		
+		$jshelper->addResponseAction('fill-form', $category);
+		
+		//reset if required
+		$category_rewrite = array(
+			'news_rewrite_id' 		=> 0,
+			'news_rewrite_source' 	=> 0,
+			'news_rewrite_string' 	=> '',
+			'news_rewrite_type' 	=> 0
+		);
+		if ($e107->sql->db_Select('news_rewrite', '*', 'news_rewrite_source='.$this->getId().' AND news_rewrite_type=2'))
+		{
+			$category_rewrite = $e107->sql->db_Fetch(); 
+		}
+		$jshelper->addResponseAction('fill-form', $category_rewrite);
+
 		//show cancel and update, hide create buttons; disable create button (just in case)
 		$jshelper->addResponseAction('element-invoke-by-id', array(
 			'show' => 		'category-clear,update-category',
 			'disabled,1' => 'create-category',
-			'hide' => 		'create-category'
+			'hide' => 		'create-category',
+			'newsScrollToMe' => 'core-newspost-cat-create'
 		));
 		
-		$jshelper->addResponseAction('fill-form', $category);
-		
-		$category_rewrite = array();
-		if ($e107->sql->db_Select("news_rewrite", "*", "news_rewrite_source=".$this->getId()))
-		{
-			$category_rewrite = $e107->sql->db_Fetch(); 
-			$jshelper->addResponseAction('fill-form', $category_rewrite);
-		}
-
-		//category icon alias
-		//$category['category-button'] = $category['category_icon'];
 
 		//Send the prefered response type
 		$jshelper->sendResponse('fill-form');
+	}
+	
+	function ajax_exec_cat_list_refresh()
+	{
+		echo $this->show_categoriy_list();
+	}
+	
+	function ajax_exec_catorder()
+	{
+		//interactive category order
+		e107::getDb()->db_Update('news_category', 'category_order='.intval($this->getId()).' WHERE category_id='.intval($this->getSubAction()));
+		if(e107::getDb()->getLastErrorNumber())
+		{
+			echo 'mySQL Error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText();
+		}
+	}
+	
+	function ajax_exec_catmanager()
+	{
+		//interactive category manage permissions
+		e107::getDb()->db_Update('news_category', 'category_manager='.intval($this->getId()).' WHERE category_id='.intval($this->getSubAction()));
+		if(e107::getDb()->getLastErrorNumber())
+		{
+			echo 'mySQL Error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText();
+		}
 	}
 
 	function show_categories()
@@ -1732,10 +1971,25 @@ class admin_newspost
 					</div>
 				</fieldset>
 			</form>
+			<div id='core-newspost-cat-list-cont'>
+				".$this->show_categoriy_list()."
+			</div>
 		";
 
+		
+		
+		$emessage = &eMessage::getInstance();
+		$e107->ns->tablerender(NWSLAN_46a, $emessage->render().$text);
+	}
+	
+	function show_categoriy_list()
+	{
+		require_once(e_HANDLER."form_handler.php");
+		$frm = new e_form(false);
+		
 		//FIXME - lan
-		$text .= "
+		$text = "
+		
 			<form action='".e_SELF."?cat' id='core-newspost-cat-list-form' method='post'>
 				<fieldset id='core-newspost-cat-list'>
 					<legend>".NWSLAN_51."</legend>
@@ -1760,46 +2014,59 @@ class admin_newspost
 						</thead>
 						<tbody>
 		";
-		if ($category_total = e107::getDb()->db_Select_gen("SELECT ncat.*, nrewr.news_rewrite_string FROM #news_category AS ncat LEFT JOIN #news_rewrite AS nrewr ON ncat.category_id=nrewr.news_rewrite_source")) 
+		if ($category_total = e107::getDb()->db_Select_gen("SELECT ncat.*, nrewr.news_rewrite_string FROM #news_category AS ncat LEFT JOIN #news_rewrite AS nrewr ON ncat.category_id=nrewr.news_rewrite_source AND nrewr.news_rewrite_type=2 ORDER BY ncat.category_order ASC")) 
 		{
-			while ($category = $e107->sql->db_Fetch()) {
+			$tindex = 100;
+			while ($category = e107::getDb()->db_Fetch()) {
 
-				if ($category['category_icon']) {
-					$icon = (strstr($category['category_icon'], "images/") ? THEME_ABS.$category['category_icon'] : e_IMAGE_ABS."icons/".$category['category_icon']);
+				$icon = '';
+				if ($category['category_icon']) 
+				{
+					$icon = (strstr($category['category_icon'], "images/") ? THEME_ABS.$category['category_icon'] : (strpos($category['category_icon'], '{') === 0 ? e107::getParser()->replaceConstants($category['category_icon'], 'abs') : e_IMAGE_ABS."icons/".$category['category_icon']));
+					$icon = "<img class='icon action' src='{$icon}' alt='' />";
 				}
-
+				
+				$sefstr = $category['news_rewrite_string'] ? "<br />SEF: <strong>{$category['news_rewrite_string']}</strong>" : '';
+				
 				$text .= "
 							<tr>
 								<td class='center middle'>{$category['category_id']}</td>
-								<td class='center middle'><img class='icon action' src='{$icon}' alt='' /></td>
-								<td class='middle'>{$category['category_name']}<br />SEF: <strong>{$category['news_rewrite_string']}<strong></td>
-								<td class='middle'>TODO</td>
+								<td class='center middle'>{$icon}</td>
+								<td class='middle'>{$category['category_name']}{$sefstr}</td>
+								<td class='middle'>".$frm->uc_select('multi_category_manager['.$category['category_id'].']',  vartrue($category['category_manager'], e_UC_ADMIN), 'main,admin,classes')."</td>
 								<td class='center middle'>
 									<a class='action' id='core-news-catedit-{$category['category_id']}' href='".e_SELF."?cat.edit.{$category['category_id']}' tabindex='".$frm->getNext()."'>".ADMIN_EDIT_ICON."</a>
-									".$frm->submit_image("delete[category_{$category['category_id']}]", $category['category_id'], 'delete', $e107->tp->toJS(NWSLAN_37." [ID: {$category['category_id']} ]"))."
+									".$frm->submit_image("delete[category_{$category['category_id']}]", $category['category_id'], 'delete', e107::getParser()->toJS(NWSLAN_37." [ID: {$category['category_id']} ]"))."
 								</td>
-								<td class='middle'>TODO</td>
+								<td class='middle center'>".$frm->text('multi_category_order['.$category['category_id'].']', $category['category_order'], 3, 'size=2&tabindex='.$tindex)."</td>
 							</tr>
 				";
+				$tindex++;
 			}
+			
 			$text .= "
 						</tbody>
 					</table>
+					<div class='buttons-bar center'>
+						".$frm->admin_button('multi_update_category', LAN_UPDATE, 'update e-hide-if-js')."
+						".$frm->admin_button('trigger_list_refresh', 'Refresh List', 'refresh')."
+					</div>
 			";
-			} else {
-			$text .= "<div class='center'>".NWSLAN_10."</div>";
-		}
+			} 
+			else 
+			{
+				$text .= "<div class='center'>".NWSLAN_10."</div>";
+			}
 
 		$text .= "
-
-			</fieldset>
-		</form>
+				</fieldset>
+			</form>
 		";
-		$emessage = &eMessage::getInstance();
-		$e107->ns->tablerender(NWSLAN_46a, $emessage->render().$text);
+		
+		return $text;
 	}
 
-	function _optrange($num , $zero = true)
+	function _optrange($num, $zero = true)
 	{
 		$tmp = range(0, $num < 0 ? 0 : $num);
 		if(!$zero) unset($tmp[0]);
@@ -1809,12 +2076,10 @@ class admin_newspost
 
 	function ajax_exec_pref_archnum()
 	{
-		global $pref;
-
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form();
 
-		echo $frm->selectbox('newsposts_archive', $this->_optrange(intval($this->getSubAction()) - 1), intval($pref['newsposts_archive']), 'class=tbox&tabindex='.intval($this->getId()));
+		echo $frm->selectbox('newsposts_archive', $this->_optrange(intval($this->getSubAction()) - 1), intval(e107::getPref('newsposts_archive')), 'class=tbox&tabindex='.intval($this->getId()));
 	}
 
 

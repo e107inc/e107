@@ -8,9 +8,9 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-08-14 23:22:36 $
- * $Author: bugrain $
+ * $Revision: 1.35 $
+ * $Date: 2009-09-12 18:25:41 $
+ * $Author: secretr $
  *
 */
 
@@ -99,7 +99,7 @@ var e107Registry = {
         e_IMAGE_PACK:    '<?php echo e_IMAGE_ABS; ?>',
         e_PLUGIN:   '<?php echo e_PLUGIN_ABS; ?>',
         e_FILE:     '<?php echo e_FILE_ABS; ?>',
-        e_ADMIN: 	'<?php echo defsettrue(ADMIN) ? e_ADMIN_ABS : ""; ?>',
+        e_ADMIN: 	'<?php echo deftrue('ADMIN') ? e_ADMIN_ABS : ""; ?>',
         e_THEME:    '<?php echo e_THEME_ABS; ?>',
         THEME:      '<?php echo THEME_ABS; ?>'
     },
@@ -532,7 +532,7 @@ var e107Base = {
         return data;
     },
 
-    parseLan: function(str) {
+    parseLan: function(str) { 
         return String(str).interpolate(this.getLanVars());
     },
 

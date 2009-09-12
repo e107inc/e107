@@ -9,8 +9,8 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-09-10 19:15:42 $
+ * $Revision: 1.20 $
+ * $Date: 2009-09-12 18:25:41 $
  * $Author: secretr $
 */
 
@@ -341,84 +341,217 @@ class e_news_tree extends e_model
 
 class news {
 
+	//FIXME - LANs
+	//TODO - synch WIKI docs, add rewrite data to the event data
 	function submit_item($news, $smessages = false)
 	{
-		global $sql, $tp, $e107cache, $e_event, $pref, $admin_log;
-		if (!is_object($tp)) $tp = new e_parse;
-		if (!is_object($sql)) $sql = new db;
+		global $e107cache, $e_event, $pref, $admin_log;
+		
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		
 		require_once (e_HANDLER."message_handler.php");
-		$emessage = &eMessage::getInstance();
+		$emessage = eMessage::getInstance();
+		
+		$error = false;
+		if(empty($news['news_title']))
+		{
+			$error = true;
+			$emessage->add('Validation error: News title can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+		}
+		
+		if(empty($news['news_category']))
+		{
+			$error = true;
+			$emessage->add('Validation error: News category can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+		}
+		
 
-		$news['news_title'] = $tp->toDB($news['news_title']);
-		$news['news_body'] = $tp->toDB($news['data']);
-		$news['news_extended'] = $tp->toDB($news['news_extended']);
-		$news['news_summary'] = $tp->toDB($news['news_summary']);
-		$news['news_userid'] = ($news['news_userid']) ? $news['news_userid'] : USERID;
-		if(!isset($news['news_sticky'])) {$news['news_sticky'] = 0;}
-		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "news_author = '".intval($news['news_author'])."', ";
-        $news['news_author'] = ($news['news_author']) ? $news['news_author'] : USERID;
-
-        $data = array();
+		$data = array();
+		//DB Array
+		$data['data']['news_title'] = $news['news_title'];
+		$data['_FIELD_TYPES']['news_title'] = 'todb';
+		
+		$data['data']['news_body'] = $news['news_body'];
+		$data['_FIELD_TYPES']['news_body'] = 'todb';
+		
+		$data['data']['news_extended'] = $news['news_extended'];
+		$data['_FIELD_TYPES']['news_extended'] = 'todb';
+		
+		$data['data']['news_datestamp'] = $news['news_datestamp'];
+		$data['_FIELD_TYPES']['news_datestamp'] = 'int';
+		
+		$data['data']['news_author'] = $news['news_author'] ? $news['news_author'] : USERID;
+		$data['_FIELD_TYPES']['news_author'] = 'int';
+		
+		$data['data']['news_category'] = $news['news_category'];
+		$data['_FIELD_TYPES']['news_category'] = 'int';
+		
+		$data['data']['news_allow_comments'] = $news['news_allow_comments'];
+		$data['_FIELD_TYPES']['news_allow_comments'] = 'int';
+		
+		$data['data']['news_start'] = $news['news_start'];
+		$data['_FIELD_TYPES']['news_start'] = 'int';
+		
+		$data['data']['news_end'] = $news['news_end'];
+		$data['_FIELD_TYPES']['news_end'] = 'int';
+		
+		$data['data']['news_class'] = $news['news_class'];
+		$data['_FIELD_TYPES']['news_class'] = 'todb';
+		
+		$data['data']['news_render_type'] = $news['news_render_type'];
+		$data['_FIELD_TYPES']['news_render_type'] = 'int';
+		
+		$data['data']['news_render_type'] = $news['news_render_type'];
+		$data['_FIELD_TYPES']['news_render_type'] = 'int';
+		
+		//news_comment_total
+		
+		$data['data']['news_summary'] = $news['news_summary'];
+		$data['_FIELD_TYPES']['news_summary'] = 'todb';
+		
+		$data['data']['news_thumbnail'] = $news['news_thumbnail'];
+		$data['_FIELD_TYPES']['news_thumbnail'] = 'todb';
+		
+		$data['data']['news_sticky'] = $news['news_sticky'];
+		$data['_FIELD_TYPES']['news_sticky'] = 'int';
+		
+		$data['data']['news_summary'] = $news['news_summary'];
+		$data['_FIELD_TYPES']['news_summary'] = 'todb';
+		
+		$data['data']['news_thumbnail'] = $news['news_thumbnail'];
+		$data['_FIELD_TYPES']['news_thumbnail'] = 'todb';
+		
+		$data['data']['news_sticky'] = $news['news_sticky'];
+		$data['_FIELD_TYPES']['news_sticky'] = 'int';
+		
+		$data['data']['news_meta_keywords'] = $news['news_meta_keywords'];
+		$data['_FIELD_TYPES']['news_meta_keywords'] = 'todb';
+		
+		$data['data']['news_meta_description'] = strip_tags($tp->toHTML($news['news_meta_description'], true)); //handle bbcodes
+		$data['_FIELD_TYPES']['news_meta_description'] = 'todb';
+		
+		$datarw = array();
+		$datarw['data']['news_rewrite_id'] = intval($news['news_rewrite_id']);
+		$datarw['_FIELD_TYPES']['news_rewrite_id'] = 'int';
+		$datarw['data']['news_rewrite_string'] = trim($news['news_rewrite_string']);
+		$datarw['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
+		$datarw['data']['news_rewrite_type'] = 1;
+		$datarw['_FIELD_TYPES']['news_rewrite_type'] = 'int';
+		
+		if($error)
+		{
+			$data['error'] = true;
+			return $data;
+		}
+		
+		//XXX - Now hooks are executed only if no mysql error is found. Should it stay so?
 		if ($news['news_id'])
-		{	// Updating existing item
-			$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
-			if ($sql -> db_Update('news', $vals))
+		{	
+			// Updating existing item
+			$data['WHERE'] = 'news_id='.intval($news['news_id']);
+			
+			//$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
+			if ($sql->db_Update('news', $data))
 			{
-				$admin_log->logArrayAll('NEWS_09', $news);
-				$e_event -> trigger('newsupd', $news);
+				e107::getAdminLog()->logArrayAll('NEWS_09', $data['data']);
+				
+				//manage rewrites
+				$data['data']['news_id'] = $news['news_id'];
+				if('error' === $this->handleRewriteSubmit('update', $data['data'], $datarw, $smessages))
+				{
+					$error = true;
+				}
+				
+				e107::getEvent()->trigger('newsupd', $data['data']);
 				$message = LAN_NEWS_21;
 				$emessage->add(LAN_NEWS_21, E_MESSAGE_SUCCESS, $smessages);
-				$e107cache -> clear('news.php');
+				e107::getCache()->clear('news.php');
+				
+
+				
+				//FIXME - triggerHook should return array(message, message_type)
+				$evdata = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
+				$emessage->add(e107::getEvent()->triggerHook($evdata), E_MESSAGE_INFO, $smessages);
 			}
 			else
 			{
 				if($sql->getLastErrorNumber())
 				{
+					$error = true;
 					$emessage->add(LAN_NEWS_5, E_MESSAGE_ERROR, $smessages);
 					$message = "<strong>".LAN_NEWS_5."</strong>";
 				}
 				else
 				{
-					$emessage->add(LAN_NEWS_46, E_MESSAGE_INFO, $smessages);
-					$message = "<strong>".LAN_NEWS_46."</strong>";
+					$data['data']['news_id'] = $news['news_id'];
+					$check = $this->handleRewriteSubmit('update', $data['data'], $datarw, $smessages);
+					if ($check === true)
+					{
+						$message = LAN_NEWS_21;
+						$emessage->add(LAN_NEWS_21, E_MESSAGE_SUCCESS, $smessages);
+					}
+					elseif ($check === 'error')
+					{
+						$error = true;
+					}
+					else
+					{
+						$emessage->add(LAN_NEWS_46, E_MESSAGE_INFO, $smessages);
+						$message = "<strong>".LAN_NEWS_46."</strong>";
+					}
+					
+					//FIXME - triggerHook should return array(message, message_type)
+					$evdata = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
+					$emessage->add(e107::getEvent()->triggerHook($evdata), E_MESSAGE_INFO, $smessages);
 				}
 
 			}
-
-			$data = array('method'=>'update', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
-			//$message .= $e_event->triggerHook($data);
-			$emessage->add($e_event->triggerHook($data), E_MESSAGE_INFO, $smessages);
 		}
 		else
-		{	// Adding item
-			if ($news['news_id'] = $sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".intval($news['news_author']).", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' "))
+		{	
+			// Adding item
+			$data['data']['news_id'] = $sql->db_Insert('news', $data);
+			$news['news_id'] = $data['data']['news_id'];
+			//$news['news_id'] = $sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".intval($news['news_author']).", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' ")
+			if ($data['data']['news_id'])
 			{
-
+				//
 				$message = LAN_NEWS_6;
 				$emessage->add(LAN_NEWS_6, E_MESSAGE_SUCCESS, $smessages);
-				$e107cache -> clear('news.php');
-//				$id = mysql_insert_id();
-				$data = array('method'=>'create', 'table'=>'news', 'id'=>$news['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
+				e107::getCache()->clear('news.php');
 				
 				//moved down - prevent wrong mysql_insert_id
-				$admin_log->logArrayAll('NEWS_08', $news);
-				$e_event -> trigger('newspost', $news);
+				e107::getAdminLog()->logArrayAll('NEWS_08', $data['data']);
 				
-				$emessage->add($e_event->triggerHook($data), E_MESSAGE_INFO, $smessages);
+				//manage rewrites
+				if('error' === $this->handleRewriteSubmit('insert', $data['data'], $datarw, $smessages))
+				{
+					$error = true;
+				}
+				
+				e107::getEvent()->trigger('newspost', $data['data']);
+				
+				//XXX - triggetHook after trigger?
+				$evdata = array('method'=>'create', 'table'=>'news', 'id'=>$data['data']['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
+				$emessage->add($e_event->triggerHook($evdata), E_MESSAGE_INFO, $smessages);
 			}
 			else
 			{
+				$error = true;
 				$message = "<strong>".LAN_NEWS_7."</strong>";
 				$emessage->add(LAN_NEWS_7, E_MESSAGE_ERROR, $smessages);
 			}
 		}
 
-		/* trackback	*/
-		if($pref['trackbackEnabled'])
+		/* FIXME - trackback should be hooked!	*/
+		if($news['news_id'] && $pref['trackbackEnabled'])
 		{
-			$excerpt = substr($news['news_body'], 0, 100)."...";
+			
+			$excerpt = e107::getParser()->text_truncate(strip_tags(e107::getParser()->post_toHTML($news['news_body'])), 100, '...');
+			
 //			$id=mysql_insert_id();
-			$permLink = $e107->base_path."comment.php?comment.news.{$news['news_id']}";
+			$permLink = $e107->base_path."comment.php?comment.news.".intval($news['news_id']);
 
 			require_once(e_PLUGIN."trackback/trackbackClass.php");
 			$trackback = new trackbackClass();
@@ -428,22 +561,22 @@ class news {
 				$urlArray = explode("\n", $_POST['trackback_urls']);
 				foreach($urlArray as $pingurl) 
 				{
-					if(!$error = $trackback -> sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
+					if(!$terror = $trackback->sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
 					{
 						$message .= "<br />successfully pinged {$pingurl}.";
 						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
 					} 
 					else 
 					{
-						$message .= "<br />was unable to ping {$pingurl}<br />[ Error message returned was : '{$error}'. ]";
-						$emessage->add("was unable to ping {$pingurl}<br />[ Error message returned was : '{$error}'. ]", E_MESSAGE_ERROR, $smessages);
+						$message .= "<br />was unable to ping {$pingurl}<br />[ Error message returned was : '{$terror}'. ]";
+						$emessage->add("was unable to ping {$pingurl}<br />[ Error message returned was : '{$terror}'. ]", E_MESSAGE_ERROR, $smessages);
 					}
 				}
 			}
 
 			if(isset($_POST['pingback_urls']))
 			{
-				if ($urlArray = $trackback -> getPingUrls($news['news_body']))
+				if ($urlArray = $trackback->getPingUrls($news['news_body'])) //FIXME - missing method!!!
 				{
 					foreach($urlArray as $pingurl)
 					{
@@ -472,7 +605,114 @@ class news {
 
 		//return $message;
 		$data['message'] = $message;
+		$data['error'] = $error;
 		return $data;
+	}
+	
+	/**
+	 * Manage SEF URL string for current news
+	 * FIXME - news rewrites should go to different handler
+	 * 
+	 * @param string $action insert|update
+	 * @param array $news_data XXX - could be changed to news_id only (integer)
+	 * @param array $rewrite_data
+	 * @param boolean $session_message [optional] default false
+	 * @return mixed true|false for data has been[not] changed; 'error' for DB error
+	 */
+	function handleRewriteSubmit($action, $news_data, $rewrite_data, $session_message = false)
+	{
+		$rewrite_data['data']['news_rewrite_source'] = $news_data['news_id'];
+		$rewrite_data['_FIELD_TYPES']['news_rewrite_source'] = 'int';
+		
+		//Delete if required
+		if (empty($rewrite_data['data']['news_rewrite_string']))
+		{
+			if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id,news_rewrite_string', 'news_rewrite_source='.intval($rewrite_data['data']['news_rewrite_source']).' AND news_rewrite_type='.intval($rewrite_data['data']['news_rewrite_type'])))
+			{
+				$check = e107::getDb()->db_Fetch();
+				self::clearRewriteCache($check['news_rewrite_string']);
+				e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$check['news_rewrite_id']);
+				return true;
+			}
+			
+			return false;
+		}
+
+		switch($action)
+		{
+			case 'insert':
+				$rewrite_data['data']['news_rewrite_id'] = 0;
+				if($rewrite_data['data']['news_rewrite_id'] = e107::getDb()->db_Insert('news_rewrite', $rewrite_data))
+				{
+					self::setRewriteCache($rewrite_data['data']['news_rewrite_string'], $rewrite_data['data']);
+					return true;
+				}
+				eMessage::getInstance()->add('Friendly URL string related problem detected!', E_MESSAGE_ERROR, $session_message);
+				if(1062 == e107::getDb()->getLastErrorNumber()) //detect duplicate mysql errnum
+				{
+					eMessage::getInstance()->add('Friendly URL should be unique! ', E_MESSAGE_ERROR, $session_message);
+				}
+				eMessage::getInstance()->add('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG, $session_message);
+				return 'error';
+			break;
+		
+			case 'update':
+				$id = intval($rewrite_data['data']['news_rewrite_id']);
+				unset($rewrite_data['data']['news_rewrite_id']); 
+				if($id)
+				{
+					$rewrite_data['WHERE'] = 'news_rewrite_id='.$id;
+					if(e107::getDb()->db_Update('news_rewrite', $rewrite_data))
+					{
+						$rewrite_data['data']['news_rewrite_id'] = $id;
+						self::setRewriteCache($rewrite_data['data']['news_rewrite_string'], $rewrite_data['data']);
+						return true;
+					}
+					elseif (e107::getDb()->getLastErrorNumber())
+					{ 
+						eMessage::getInstance()->add('Friendly URL string related problem detected!', E_MESSAGE_ERROR, $session_message);
+						if(1062 == e107::getDb()->getLastErrorNumber()) //detect duplicate mysql errnum
+						{
+							eMessage::getInstance()->add('Friendly URL string should be unique! ', E_MESSAGE_ERROR, $session_message);
+						}
+						eMessage::getInstance()->add('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG, $session_message);
+						return 'error';
+					}
+					
+					return false;
+				}
+				
+				$rewrite_data['data']['news_rewrite_id'] = 0;
+				if($rewrite_data['data']['news_rewrite_id'] = e107::getDb()->db_Insert('news_rewrite', $rewrite_data))
+				{
+					self::setRewriteCache($rewrite_data['data']['news_rewrite_string'], $rewrite_data['data']);
+					return true;
+				}
+				
+				eMessage::getInstance()->add('Friendly URL string related problem detected!', E_MESSAGE_ERROR, $session_message);
+				if(1062 == e107::getDb()->getLastErrorNumber()) //detect duplicate mysql errnum
+				{
+					eMessage::getInstance()->add('Friendly URL string should be unique! ', E_MESSAGE_ERROR, $session_message);
+				}
+				eMessage::getInstance()->add('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG, $session_message);
+				return 'error';
+			break;
+		}
+		
+		return false;
+	}
+	
+	public static function clearRewriteCache($sefstr = '')
+	{
+		if($sefstr) $sefstr = md5($sefstr);
+		ecache::clear_sys("news_sefurl".$sefstr);
+	}
+	
+	public static function setRewriteCache($sefstr, $data)
+	{
+		$sefstr = md5($sefstr); 
+		if(is_array($data)) $data = e107::getArrayStorage()->WriteArray($data, false);
+		ecache::set_sys("news_sefurl".$sefstr, $data, true);
 	}
 
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='')

@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-09-10 19:15:43 $
+ * $Revision: 1.24 $
+ * $Date: 2009-09-12 18:25:41 $
  * $Author: secretr $
 */
 
@@ -358,7 +358,7 @@ CREATE TABLE news_rewrite (
   news_rewrite_string varchar(255) NOT NULL default '',
   news_rewrite_type tinyint(1) unsigned NOT NULL  default '1',
   PRIMARY KEY  (news_rewrite_id),
-  UNIQUE KEY news_rewrite_string_type (news_rewrite_string,news_rewrite_type),
+  UNIQUE KEY news_rewrite_string (news_rewrite_string),
   UNIQUE KEY news_rewrite_source_type (news_rewrite_source,news_rewrite_type)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
