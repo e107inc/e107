@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-09-08 23:53:12 $
+ * $Revision: 1.21 $
+ * $Date: 2009-09-12 17:10:17 $
  * $Author: e107coders $
  *
  */
@@ -44,6 +44,7 @@ if (isset($_POST['submit_prefs']) && isset($_POST['mainsitelanguage']))
 	$changes = array();
 	$temp['multilanguage'] = $_POST['multilanguage'];
 	$temp['multilanguage_subdomain'] = $_POST['multilanguage_subdomain'];
+	$temp['multilanguage_domain'] = $_POST['multilanguage_domain'];
 	$temp['sitelanguage'] = $_POST['mainsitelanguage'];
 	$temp['noLanguageSubs'] = $_POST['noLanguageSubs'];
 	if ($admin_log->logArrayDiffs($temp, $pref, 'LANG_01'))
@@ -315,7 +316,34 @@ function multilang_prefs()
 							<textarea name='multilanguage_subdomain' rows='5' cols='15'>{$pref['multilanguage_subdomain']}</textarea>
 							<div class='smalltext field-help'>".LANG_LAN_20."</div>
 						</td>
-					</tr>
+						
+					</tr>";
+					
+					
+					$opt = "";
+					$langs = explode(",",e_LANLIST);
+					foreach($langs as $val)
+					{
+						if($val != $pref['sitelanguage'])
+						{
+							$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left'><input type='text' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";	
+						}		
+					}
+					
+					if($opt)
+					{
+						//TODO LANs and class2.php check. 
+						$text .= "	
+						<tr>
+							<td class='label'>
+							Language by Domain Name
+							<div class='label-note'>Domain determines the site's language. Enter domain without the 'www.'</div>
+							</td>
+							<td class='control'><table style='margin-left:0px;width:400px'>".$opt."</table></td>
+						</tr>";
+					}
+					
+					$text .= "
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
