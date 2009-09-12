@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2009-09-10 15:24:57 $
+|     $Revision: 1.81 $
+|     $Date: 2009-09-12 13:16:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1513,10 +1513,15 @@ class e107plugin
 		$sql = e107::getDb();
 		$core = e107::getConfig('core');
 		
-		//        $query = "SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_addons !='' ORDER BY plugin_path ASC";
-		$query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC";
 		
-		if ($sql -> db_Select_gen($query))
+		foreach($this->plugin_addons as $var) // clear all existing prefs. TODO use a pref function for this. 
+		{
+			$core->setPref($var.'_list',"");	
+		}
+		
+        $query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC"; 
+		
+		if ($sql -> db_Select_gen($query,TRUE))
 		{
 			while($row = $sql-> db_Fetch())
 			{
