@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-09-10 19:10:32 $
+ * $Revision: 1.16 $
+ * $Date: 2009-09-12 18:21:54 $
  * $Author: secretr $
  *
 */
@@ -76,7 +76,7 @@ class eMessage
 		require_once(e_HANDLER.'e107_class.php');
 		$this->_session_id = e107::getPref('cookie_name', 'e107').'_system_messages';
 		
-		$this->reset()->_mergeSession();
+		$this->reset()->mergeWithSession();
 	}
 
 	/**
@@ -248,7 +248,7 @@ class eMessage
 	{
 		if($session)
 		{
-			$this->_mergeSession(true, $mstack);
+			$this->mergeWithSession(true, $mstack);
 		}
 		$ret = array();
 
@@ -388,7 +388,7 @@ class eMessage
 	 * @param boolean $reset
 	 * @return eMessage
 	 */
-	protected function _mergeSession($reset = true, $mstack = false)
+	public function mergeWithSession($reset = true, $mstack = false)
 	{
 		if(is_array($_SESSION[$this->_session_id]))
 		{
