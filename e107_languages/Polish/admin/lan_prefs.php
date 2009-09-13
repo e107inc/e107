@@ -7,8 +7,8 @@
 |     e107 Polish Team
 |     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.15 $
-|     $Date: 2009-09-13 10:26:27 $
+|     $Revision: 1.16 $
+|     $Date: 2009-09-13 10:56:38 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_prefs.php,v $
 +-----------------------------------------------------------------------------+
@@ -58,7 +58,7 @@ define("PRFLAN_43", "Filtruj wyrazy");
 define("PRFLAN_44", "wyrazy do ocenzurowania, oddziel przecinkami");
 define("PRFLAN_45", "Używać przy rejestracji standardu ochrony COPPA?");
 define("PRFLAN_46", "aby uzyskać więcej informacji o COPPA zobacz");
-define("PRFLAN_47", "Bezpieczeństwo &amp; ochrona");
+define("PRFLAN_47", "Bezpieczeństwo i ochrona");
 define("PRFLAN_48", "Metoda śledzenia użytkownika");
 define("PRFLAN_49", "Ciasteczka");
 define("PRFLAN_50", "Sesje");

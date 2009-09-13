@@ -6,8 +6,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.15 $
-|     $Date: 2009-09-13 10:26:27 $
+|     $Revision: 1.16 $
+|     $Date: 2009-09-13 10:56:38 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_image.php,v $
 +-----------------------------------------------------------------------------+
@@ -19,7 +19,7 @@ define("IMALAN_1", "Włącz wyświetlanie plików graficznych");
 define("IMALAN_2", "Opcja ta umożliwia wyświetlanie elementów graficznych na wszystkich stronach witryny (komentarze, chatbox itp.) przy wykorzystaniu znacznika bbcode [img]");
 define("IMALAN_3", "Metoda zmiany rozmiaru");
 define("IMALAN_4", "Metoda używana do zmiany rozmiaru grafik. Wybierz biblioteki GD1/2,  lub ImageMagick");
-define("IMALAN_5", "Ścieżka do ImageMagick (jeśli jest zaznaczone)");
+define("IMALAN_5", "Ścieżka do ImageMagick (jeśli zostało wybrane)");
 define("IMALAN_6", "Pełna ścieżka dostępu do narzędzia ImageMagick");
 define("IMALAN_7", "Ustawienia grafiki");
 define("IMALAN_8", "Aktualizuj ustawienia grafiki");
