@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2009-09-10 09:26:54 $
-|     $Author: e107coders $
+|     $Revision: 1.51 $
+|     $Date: 2009-09-13 20:22:39 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -264,7 +264,7 @@ function update_706_to_800($type='')
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
-	// key = plugin directory nane. Data = comma-separated list of tables to check
+	// key = plugin directory name. Data = comma-separated list of tables to check
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
 	$pluginChangedTables = array('linkwords' => 'linkwords');
 
