@@ -9,8 +9,8 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-09-13 10:29:56 $
+ * $Revision: 1.19 $
+ * $Date: 2009-09-13 16:37:18 $
  * $Author: secretr $
 */
 
@@ -38,6 +38,14 @@ if (!defined("ITEMVIEW"))
 {
   define("ITEMVIEW", varset($pref['newsposts'],15));
 }
+
+/*
+WORK IN PROGRESS
+if(isset($_GET['rewrite']))
+{
+	$query = $_GET['rewrite'];
+}
+var_dump($query);*/
 
 if (e_QUERY)
 {

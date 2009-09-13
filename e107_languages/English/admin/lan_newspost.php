@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-07-03 02:27:03 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2009-09-13 16:37:18 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -118,7 +118,7 @@ define("NWSLAN_115", "News posts to display in archive ?");
 define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the news archive preference. (0 is un-activated)");
 define("NWSLAN_117", "Set the title for the news archive");
 // define("NWSLAN_118", "View Images"); already defined above.
-define("NWSLAN_119", "Settings Saved");
+//define("NWSLAN_119", "Settings Saved"); - already done in pref handler
 define("NWSLAN_120", "Text to show at the top of Submit News");
 define("NWSLAN_121", "Nothing found for %s");
 define("NWSLAN_122", "Icon");
@@ -128,6 +128,9 @@ define("NWSLAN_123", "Posted");
 define("NWSLAN_124", "User");
 define("NWSLAN_125", "Email");
 define("NWSLAN_126", "IP");
+
+define("NWSLAN_127", "URL identifier");
+define("NWSLAN_128", "Set a string to be used in news pages URL. This will only work proper .htaccess rules and <a href='%s'>eURL config</a><br />Resolved URL based on current value: ");
 
 define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
 define("LAN_NEWS_6", "News entered into database.");

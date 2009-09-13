@@ -1,15 +1,29 @@
 <IfModule mod_rewrite.c>
-RewriteEngine On
+### enable rewrites
+	Options +FollowSymLinks 
+	RewriteEngine On
 
 ### Set this to your e107 site root
-RewriteBase /
+	RewriteBase /
 
-### NEWS ###
+### send 404 on missing files in these folders 
+	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/ 
+
+### don't rewrite for existing files, directories and links
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-l 
+	
+### NEWS SEF URLs - set 'news' to the 'URL identifier' value (news Administration area) ###
+	RewriteRule ^news/(.*)$ news.php?rewrite=$1 [L]
+
+### REMOVE ###
 RewriteRule ^news/?$ news.php
 #item, default, cat actions
-RewriteRule ^news/([a-z]+)-([0-9]+)-([0-9]+)(\.html)?$ news.php?$1.$2.$3 [L]
+#RewriteRule ^news/([a-z]+)-([0-9]+)-([0-9]+)(\.html)?$ news.php?$1.$2.$3 [L]
 #extend, cat, list actions
-RewriteRule ^news/([a-z]+)-([0-9]+)(\.html)?$ news.php?$1.$2 [L]
+#RewriteRule ^news/([a-z]+)-([0-9]+)(\.html)?$ news.php?$1.$2 [L]
+### REMOVE END ###
 </IfModule>
 
 #ErrorDocument 400 /error.php?400

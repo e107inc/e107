@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
- |     $Revision: 1.15 $
- |     $Date: 2009-09-10 19:08:36 $
+ |     $Revision: 1.16 $
+ |     $Date: 2009-09-13 16:37:18 $
  |     $Author: secretr $
  To do:
  1. Do we need to check for presence of elements of debug_backtrace() to avoid notices?
@@ -92,7 +92,6 @@ class e_admin_log
 	 */
 	function log_event($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
 	{
-		global $e107,$tp;
 		if ($event_code == '')
 		{
 			if (strlen($event_title) <= 10)
@@ -111,12 +110,13 @@ class e_admin_log
 			$tmp = array();
 			if (isset($event_detail['data']))
 			{
-				foreach ($event_detail as $v)
-				{
-					$tmp[] = $v;
-				}
+				$event_detail = $event_detail['data'];
 			}
-			$event_detail = implode(', ', $tmp);
+			foreach ($event_detail as $k => $v)
+			{
+				$tmp[] = $k.'=>'.$v;
+			}
+			$event_detail = implode("[!br!]\n", $tmp);
 			unset($tmp);
 		}
 		
@@ -388,5 +388,3 @@ class e_admin_log
 	}
 	
 }
-
-?>

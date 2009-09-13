@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.51 $
- * $Date: 2009-09-12 18:25:41 $
+ * $Revision: 1.52 $
+ * $Date: 2009-09-13 16:37:17 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -697,6 +697,7 @@ class admin_newspost
 			$id = e107::getDb()->db_Insert('news_category', $inserta);
 			if($id)
 			{
+				$inserta['data']['category_id'] = $id;
 				//Manage rewrite
 				if(!empty($_POST['news_rewrite_string']))
 				{
@@ -710,7 +711,8 @@ class admin_newspost
 					$rwinserta['data']['news_rewrite_type'] = 2;
 					$rwinserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
 					
-					e107::getDb()->db_Insert('news_rewrite', $rwinserta);
+					$rid = e107::getDb()->db_Insert('news_rewrite', $rwinserta);
+					$rwinserta['data']['news_rewrite_id'] = $rid;
 					if(e107::getDb()->getLastErrorNumber())
 					{
 						$this->error = true;
@@ -722,15 +724,14 @@ class admin_newspost
 						$this->show_message('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
 						return;
 					}
+					
 					$this->set_rwcache($_POST['news_rewrite_string'], $rwinserta['data']);
+					e107::getAdminLog()->log_event('NEWS_10', $rwinserta, E_LOG_INFORMATIVE, ''); 
 				}
 				
 				//admin log now supports DB array and method chaining
-				//$_POST['category_name'].', '.$_POST['category_icon']
-				unset($inserta['data']['category_meta_description']); //too long for logging?
-				e107::getAdminLog()
-					->log_event('NEWS_04', $inserta, E_LOG_INFORMATIVE, '')
-					->log_event('NEWS_04', $rwinserta, E_LOG_INFORMATIVE, ''); //XXX fix lan for SEF string log or just don't log it?
+				e107::getAdminLog()->log_event('NEWS_04', $inserta, E_LOG_INFORMATIVE, '');
+					
 					 
 				$this->show_message(NWSLAN_35, E_MESSAGE_SUCCESS);
 				$this->clear_cache();
@@ -812,6 +813,12 @@ class admin_newspost
 			$inserta['data']['news_rewrite_type'] = 2;
 			$inserta['_FIELD_TYPES']['news_rewrite_type'] = 'int';
 			
+			$oldsef = array();
+			//'news_rewrite_source='.intval($this->getId()).' AND news_rewrite_type=2'
+			if(e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_id='.intval($rid)))
+			{
+				$oldsef = e107::getDb()->db_Fetch();
+			}
 			$upcheck = e107::getDb()->db_Update("news_category", $updatea);
 			$rwupcheck = false;
 			if($upcheck || !e107::getDb()->getLastErrorNumber())
@@ -827,6 +834,7 @@ class admin_newspost
 					else 
 					{
 						$rwupcheck = e107::getDb()->db_Insert('news_rewrite', $inserta);
+						$inserta['data']['news_rewrite_id'] = $rwupcheck;
 					}
 					if(e107::getDb()->getLastErrorNumber())
 					{
@@ -840,27 +848,15 @@ class admin_newspost
 						$this->show_message('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_DEBUG);
 						return;
 					}
-
-					if ($upcheck || $rwupcheck) 
-					{ 
-						$this->show_message(NWSLAN_36, E_MESSAGE_SUCCESS);
-						$this->set_rwcache($_POST['news_rewrite_string'], $inserta['data']);
-						//TODO - add to WIKI docs
-						e107::getEvent()->trigger("newscatupd", array_merge($updatea['data'], $inserta['data']));
-						return;
-					}
-					$this->show_message(LAN_NO_CHANGE);
-					return;
 				}
 				else
 				{
 					//remove SEF if required
-					if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id, news_rewrite_string', 'news_rewrite_source='.$this->getId().' AND news_rewrite_type=2'))
+					if($oldsef)
 					{
-						$tmp = e107::getDb()->db_Fetch();
-						e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$tmp['news_rewrite_id']);
-						$this->clear_rwcache($tmp['news_rewrite_string']);
-						unset($tmp);
+						$this->clear_rwcache($oldsef['news_rewrite_string']);
+						e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$oldsef['news_rewrite_id']);
+						e107::getAdminLog()->log_event('NEWS_11', $oldsef, E_LOG_INFORMATIVE, '');
 						$inserta = array( 'data' => array());
 						$rwupcheck = true;
 					}
@@ -870,8 +866,9 @@ class admin_newspost
 				if ($upcheck || $rwupcheck) 
 				{ 
 					//admin log now supports DB array and method chaining
-					if($upcheck) e107::getAdminLog()->log_event('NEWS_04', $updatea['data'], E_LOG_INFORMATIVE, '');
-					if($rwupcheck) e107::getAdminLog()->log_event('NEWS_04', $inserta['data'], E_LOG_INFORMATIVE, ''); //XXX fix lan for SEF string log or just don't log it?
+					$updatea['data']['category_id'] = $this->getId();
+					if($upcheck) e107::getAdminLog()->log_event('NEWS_05', $updatea['data'], E_LOG_INFORMATIVE, '');
+					if($rwupcheck && $inserta['data']) e107::getAdminLog()->log_event('NEWS_10', $inserta['data'], E_LOG_INFORMATIVE, ''); 
 						
 					$this->show_message(NWSLAN_36, E_MESSAGE_SUCCESS);
 					$this->clear_cache();
@@ -883,6 +880,10 @@ class admin_newspost
 				{
 					$this->show_message(LAN_NO_CHANGE);
 				}
+				
+				if(varset($oldsef['news_rewrite_string'])) $this->clear_rwcache($oldsef['news_rewrite_string']);
+				if($_POST['news_rewrite_string']) $this->set_rwcache($_POST['news_rewrite_string'], $inserta['data']); 
+				
 				$this->setId(0);
 			}
 			else
@@ -909,34 +910,29 @@ class admin_newspost
 
 	function _observe_save_prefs()
 	{
-		global $pref, $admin_log;
-
-		$e107 = e107::getInstance();
-
 		$temp = array();
 		$temp['newsposts'] 				= intval($_POST['newsposts']);
 	   	$temp['newsposts_archive'] 		= intval($_POST['newsposts_archive']);
-		$temp['newsposts_archive_title'] = $e107->tp->toDB($_POST['newsposts_archive_title']);
+		$temp['newsposts_archive_title'] = e107::getParser()->toDB($_POST['newsposts_archive_title']);
 		$temp['news_cats'] 				= intval($_POST['news_cats']);
 		$temp['nbr_cols'] 				= intval($_POST['nbr_cols']);
 		$temp['subnews_attach'] 		= intval($_POST['subnews_attach']);
 		$temp['subnews_resize'] 		= intval($_POST['subnews_resize']);
 		$temp['subnews_class'] 			= intval($_POST['subnews_class']);
 		$temp['subnews_htmlarea'] 		= intval($_POST['subnews_htmlarea']);
-		$temp['news_subheader'] 		= $e107->tp->toDB($_POST['news_subheader']);
+		$temp['news_subheader'] 		= e107::getParser()->toDB($_POST['news_subheader']);
 		$temp['news_newdateheader'] 	= intval($_POST['news_newdateheader']);
 		$temp['news_unstemplate'] 		= intval($_POST['news_unstemplate']);
 		$temp['news_editauthor']		= intval($_POST['news_editauthor']);
+		$temp['news_sefbase']			= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_sefbase']);
 
-		if ($admin_log->logArrayDiffs($temp, $pref, 'NEWS_06'))
+		e107::getConfig()->updatePref($temp);
+		
+		if(e107::getConfig()->save(false))
 		{
-			save_prefs();		// Only save if changes
+			e107::getAdminLog()->logArrayDiffs($temp, e107::getPref(), 'NEWS_06');
 			$this->clear_cache();
-			$this->show_message(NWSLAN_119, E_MESSAGE_SUCCESS);
-		}
-		else
-		{
-			$this->show_message(LAN_NEWS_47);
+			//$this->show_message(NWSLAN_119, E_MESSAGE_SUCCESS);
 		}
 	}
 
@@ -1834,20 +1830,31 @@ class admin_newspost
 	function ajax_exec_catorder()
 	{
 		//interactive category order
-		e107::getDb()->db_Update('news_category', 'category_order='.intval($this->getId()).' WHERE category_id='.intval($this->getSubAction()));
+		$check = e107::getDb()->db_Update('news_category', 'category_order='.intval($this->getId()).' WHERE category_id='.intval($this->getSubAction()));
 		if(e107::getDb()->getLastErrorNumber())
 		{
 			echo 'mySQL Error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText();
+			return;
+		}
+		if($check)
+		{
+			e107::getAdminLog()->log_event('NEWS_05', 'category_id='.intval($this->getSubAction()).', category_order='.intval($this->getId()), E_LOG_INFORMATIVE, ''); 
 		}
 	}
 	
 	function ajax_exec_catmanager()
 	{
 		//interactive category manage permissions
-		e107::getDb()->db_Update('news_category', 'category_manager='.intval($this->getId()).' WHERE category_id='.intval($this->getSubAction()));
+		$check = e107::getDb()->db_Update('news_category', 'category_manager='.intval($this->getId()).' WHERE category_id='.intval($this->getSubAction()));
 		if(e107::getDb()->getLastErrorNumber())
 		{
 			echo 'mySQL Error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText();
+			retrun;
+		}
+		if($check)
+		{
+			$class_name = e107::getUserClass()->uc_get_classname($this->getId());
+			e107::getAdminLog()->log_event('NEWS_05', 'category_id='.intval($this->getSubAction()).', category_manager='.intval($this->getId()).' ('.$class_name.')', E_LOG_INFORMATIVE, ''); 
 		}
 	}
 
@@ -2098,7 +2105,7 @@ class admin_newspost
 		require_once(e_HANDLER."form_handler.php");
 		$frm = new e_form(true); //enable inner tabindex counter
 
-		$e107 = &e107::getInstance();
+		$e107 = e107::getInstance();
 
 		$text = "
 			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>
@@ -2110,6 +2117,13 @@ class admin_newspost
 							<col class='col-control' />
 						</colgroup>
 						<tbody>
+							<tr>
+								<td class='label'>".NWSLAN_127."</td>
+								<td class='control'>
+									".$frm->text('news_sefbase', $pref['news_sefbase'])."
+									<div class='field-help'>".sprintf(NWSLAN_128, e_ADMIN_ABS.'eurl.php').'<strong>'.SITEURL.($pref['news_sefbase'] ? $pref['news_sefbase'].'/' : '')."</strong></div>
+								</td>
+							</tr>
 							<tr>
 								<td class='label'>".NWSLAN_86."</td>
 								<td class='control'>

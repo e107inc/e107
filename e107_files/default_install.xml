@@ -116,6 +116,7 @@
 		<core name='newsposts'>10</core>
 		<core name='newsposts_archive'>0</core>
 		<core name='newsposts_archive_title'></core>
+		<core name='news_sefbase'>news</core>
 		<core name='noLanguageSubs'>0</core>
 		<core name='null'></core>
 		<core name='old_np'>0</core>

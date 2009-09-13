@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-08-25 08:41:41 $
+ * $Revision: 1.41 $
+ * $Date: 2009-09-13 16:37:18 $
  * $Author: secretr $
  *
 */
@@ -162,7 +162,7 @@ class e_form
 	function bbarea($name, $value, $help_mod = '', $help_tagid='')
 	{
 	   	$options = array('class' => 'tbox large e-wysiwyg');
-		if(!defsettrue('e_WYSIWYG'))
+		if(!deftrue('e_WYSIWYG'))
 		{
 			require_once(e_HANDLER."ren_help.php");
 			$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
