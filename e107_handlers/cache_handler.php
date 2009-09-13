@@ -1,21 +1,17 @@
 <?php
-
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-08-03 18:21:46 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Cache handler
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
+ * $Revision: 1.13 $
+ * $Date: 2009-09-13 10:29:56 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -23,12 +19,13 @@ if (!defined('e107_INIT')) { exit; }
 define('CACHE_PREFIX','<?php exit;');
 
 /**
-* Class to cache data as files, improving site speed and throughput.
-*
-* @package     e107
-* @version     $Revision: 1.12 $
-* @author      $Author: secretr $
-*/
+ * Class to cache data as files, improving site speed and throughput.
+ * 
+ * @package     e107
+ * @category	e107_handlers
+ * @version     $Revision: 1.13 $
+ * @author      $Author: secretr $
+ */
 class ecache {
 
 	var $CachePageMD5;

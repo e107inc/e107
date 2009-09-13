@@ -9,8 +9,8 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-09-12 18:25:41 $
+ * $Revision: 1.21 $
+ * $Date: 2009-09-13 10:29:56 $
  * $Author: secretr $
 */
 
@@ -432,7 +432,7 @@ class news {
 		$data['_FIELD_TYPES']['news_meta_description'] = 'todb';
 		
 		$datarw = array();
-		$datarw['data']['news_rewrite_id'] = intval($news['news_rewrite_id']);
+		$datarw['data']['news_rewrite_id'] = $news['news_rewrite_id'];
 		$datarw['_FIELD_TYPES']['news_rewrite_id'] = 'int';
 		$datarw['data']['news_rewrite_string'] = trim($news['news_rewrite_string']);
 		$datarw['_FIELD_TYPES']['news_rewrite_string'] = 'todb';
