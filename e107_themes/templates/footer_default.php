@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-09-06 20:04:04 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2009-09-13 10:29:56 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
 
-global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $FOOTER, $e107;
+global $error_handler, $db_time, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $FOOTER, $e107;
 
 //
 // SHUTDOWN SEQUENCE
@@ -41,22 +41,7 @@ global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $myS
 // H Final HTML (/body, /html)
 // I collect and send buffered page, along with needed headers
 //
-
-//
-// A Ensure sql and traffic objects exist
-//
-
-if(!is_object($sql))
-{
-	// reinstigate db connection if another connection from third-party script closed it ...
-	$sql = new db;
-	$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-}
-if (!is_object($eTraffic)) 
-{
-	$eTraffic = new e107_traffic;
-	$eTraffic->Bump('Lost Traffic Counters');
-}
+$sql = e107::getDb();
 
 if(varset($e107_popup)!=1)
 {
@@ -71,7 +56,7 @@ if(varset($e107_popup)!=1)
 
 	$eTimingStop = microtime();
 	global $eTimingStart;
-	$clockTime = $eTraffic->TimeDelta( $eTimingStart, $eTimingStop );
+	$clockTime = e107::getSingleton('e107_traffic')->TimeDelta( $eTimingStart, $eTimingStop );
 	$dbPercent = 100.0 * $db_time / $clockTime;
 	// Format for display or logging
 	$rendertime = number_format($clockTime, 2);	// Clock time during page render

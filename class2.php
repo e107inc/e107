@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.141 $
-* $Date: 2009-09-12 16:42:44 $
+* $Revision: 1.142 $
+* $Date: 2009-09-13 10:29:56 $
 * $Author: secretr $
 *
 */
@@ -297,8 +297,8 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
 //
 // J: MYSQL INITIALIZATION
 //
-$eTraffic = e107::getSingleton('e107_traffic', e_HANDLER.'traffic_class.php');
-$eTraffic->Calibrate($eTraffic); // We start traffic counting ASAP
+e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
+//$eTraffic->Calibrate($eTraffic); 
 
 define("MPREFIX", $mySQLprefix);
 

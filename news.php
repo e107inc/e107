@@ -9,9 +9,9 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-08-28 15:30:24 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.18 $
+ * $Date: 2009-09-13 10:29:56 $
+ * $Author: secretr $
 */
 
 require_once("class2.php");
@@ -653,7 +653,7 @@ function checkCache($cacheString){
 
 function renderCache($cache, $nfp = FALSE){
 	global $pref,$tp,$sql,$CUSTOMFOOTER, $FOOTER,$cust_footer,$ph;
-	global $db_debug,$ns,$eTraffic,$eTimingStart, $error_handler, $db_time, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb,$e107;
+	global $db_debug,$ns,$eTimingStart, $error_handler, $db_time, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb,$e107;
 	echo $cache;
 	if (isset($nfp) && isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
 		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");

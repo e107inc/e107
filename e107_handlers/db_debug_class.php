@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-09-04 14:35:01 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2009-09-13 10:29:56 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,10 +57,8 @@ class e107_db_debug {
 //
 	function Show_All() 
 	{
-		global $eTraffic;
-
 		$this->ShowIf('Debug Log', $this->Show_Log());
-		$this->ShowIf('Traffic Counters', $eTraffic->Display());
+		$this->ShowIf('Traffic Counters', e107::getSingleton('e107_traffic')->Display());
 		$this->ShowIf('Time Analysis', $this->Show_Performance());
 		$this->ShowIf('SQL Analysis', $this->Show_SQL_Details());
 		$this->ShowIf('Shortcodes / BBCode',$this->Show_SC_BB());
@@ -279,13 +277,13 @@ class e107_db_debug {
 		//
 		global $db_time;
 		global $sql;
-		global $eTimingStart, $eTimingStop, $eTraffic;
+		global $eTimingStart, $eTimingStop;
 
 		$this->Mark_Time('Stop');
 
 		if (!E107_DBG_TIMEDETAILS) return '';
 
-		$totTime=$eTraffic->TimeDelta($eTimingStart, $eTimingStop);
+		$totTime = e107::getSingleton('e107_traffic')->TimeDelta($eTimingStart, $eTimingStop);
 		$text = "\n<table class='fborder'>\n";
 		$bRowHeaders=FALSE;
 		reset($this->aTimeMarks);
@@ -335,7 +333,7 @@ class e107_db_debug {
 				$aNextT=$nextMarker['Time'];
 				$aThisT=$tMarker['Time'];
 	
-				$thisDelta=$eTraffic->TimeDelta($aThisT, $aNextT);
+				$thisDelta = e107::getSingleton('e107_traffic')->TimeDelta($aThisT, $aNextT);
 				$aSum['Time'] += $thisDelta;
 				$aSum['DB Time'] += $tMarker['DB Time'];
 				$aSum['DB Count'] += $tMarker['DB Count'];

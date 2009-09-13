@@ -9,19 +9,13 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.51 $
- * $Date: 2009-09-10 19:13:39 $
+ * $Revision: 1.52 $
+ * $Date: 2009-09-13 10:29:56 $
  * $Author: secretr $
 */
 
 if(defined('MYSQL_LIGHT'))
 {
-	class dummyTraffic {
-		function Bump() { return; }
-		function BumpWho() { return; }
-		function TimeDelta() { return; }
-	}
-	$eTraffic = new dummyTraffic;
 	define('E107_DEBUG_LEVEL', 0);
 	define('e_QUERY', '');
 	$path = (MYSQL_LIGHT !== true ? MYSQL_LIGHT : '');
@@ -32,14 +26,6 @@ if(defined('MYSQL_LIGHT'))
 }
 elseif(defined('E107_INSTALL')) //TODO Remove the need for this if possible
 {
-	class dummyTraffic {
-		function Bump() { return; }
-		function BumpWho($val,$val) { return; }
-		function TimeDelta() { return; }
-	}
-
-	global $eTraffic;
-	$eTraffic = new dummyTraffic;
 	define('E107_DEBUG_LEVEL', 0);
 	define('e_QUERY', '');
 	require_once("e107_config.php");
@@ -63,7 +49,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * @author $Author: secretr $
  * 
  */
@@ -103,8 +89,8 @@ class e_db_mysql {
 	public function __construct()
 	{
 		
-		global $pref, $eTraffic, $db_defaultPrefix;
-		$eTraffic->BumpWho('Create db object', 1);	
+		global $pref, $db_defaultPrefix;
+		e107::getSingleton('e107_traffic')->BumpWho('Create db object', 1);	
 		
 		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
 		$langid = 'e107language_'.$pref['cookie_name'];
@@ -141,8 +127,8 @@ class e_db_mysql {
 	 */
 	public function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = FALSE, $mySQLPrefix = MPREFIX)
 	{
-		global $eTraffic, $db_ConnectionID, $db_defaultPrefix;
-		$eTraffic->BumpWho('db Connect', 1);
+		global $db_ConnectionID, $db_defaultPrefix;
+		e107::getSingleton('e107_traffic')->BumpWho('db Connect', 1);
 
 		$this->mySQLserver = $mySQLserver;
 		$this->mySQLuser = $mySQLuser;
@@ -240,7 +226,7 @@ class e_db_mysql {
 	*/
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') 
 	{
-		global $db_time,$db_mySQLQueryCount,$queryinfo, $eTraffic;
+		global $db_time,$db_mySQLQueryCount,$queryinfo;
 		$db_mySQLQueryCount++;
 
 		if ($debug == 'now') 
@@ -266,8 +252,8 @@ class e_db_mysql {
 		$sQryRes = is_null($rli) ? @mysql_query($query,$this->mySQLaccess) : @mysql_query($query, $rli);
 		$e = microtime();
 
-		$eTraffic->Bump('db_Query', $b, $e);
-		$mytime = $eTraffic->TimeDelta($b,$e);
+		e107::getSingleton('e107_traffic')->Bump('db_Query', $b, $e);
+		$mytime = e107::getSingleton('e107_traffic')->TimeDelta($b,$e);
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
 
@@ -658,14 +644,13 @@ class e_db_mysql {
 	*/
 	function db_Fetch($type = MYSQL_ASSOC) 
 	{
-		global $eTraffic;
 		if (!(is_int($type))) 
 		{
 			$type=MYSQL_ASSOC;
 		}
 		$b = microtime();
 		$row = @mysql_fetch_array($this->mySQLresult,$type);
-		$eTraffic->Bump('db_Fetch', $b);
+		e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
 		if ($row) 
 		{
 			$this->dbError('db_Fetch');
@@ -740,13 +725,12 @@ class e_db_mysql {
 	*/
 	function db_Close() 
 	{
-		global $eTraffic;
 		if(!$this->mySQLaccess)
 		{
 			global $db_ConnectionID;
         	$this->mySQLaccess = $db_ConnectionID;
 		}
-		$eTraffic->BumpWho('db Close', 1);
+		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
 		$this->mySQLaccess = NULL; // correct way to do it when using shared links.
 		$this->dbError('dbClose');
 	}

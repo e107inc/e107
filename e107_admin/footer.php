@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-08-19 14:39:56 $
+|     $Revision: 1.14 $
+|     $Date: 2009-09-13 10:29:56 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
 
-global $eTraffic, $error_handler, $db_time, $sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $ADMIN_FOOTER, $e107, $pref;
+global $error_handler, $db_time, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $ADMIN_FOOTER, $e107, $pref;
 
 //
 // SHUTDOWN SEQUENCE
@@ -54,9 +54,7 @@ if(!is_object($sql)){
 */
 
 $sql = e107::getDb();
-
-$eTraffic = e107::getSingleton('e107_traffic', e_HANDLER.'traffic_class.php');
-$eTraffic->Bump('Lost Traffic Counters');
+e107::getSingleton('e107_traffic')->Bump('Lost Traffic Counters');
 
 
 if(varset($e107_popup)!=1){
@@ -92,7 +90,7 @@ if (ADMIN == TRUE) {
 
 	$eTimingStop = microtime();
 	global $eTimingStart;
-	$clockTime = $eTraffic->TimeDelta( $eTimingStart, $eTimingStop );
+	$clockTime = e107::getSingleton('e107_traffic')->TimeDelta( $eTimingStart, $eTimingStop );
 	$dbPercent = 100.0 * $db_time / $clockTime;
 	// Format for display or logging
 	$rendertime = number_format($clockTime, 2);	// Clock time during page render
