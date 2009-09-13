@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.47 $
- * $Date: 2009-09-12 12:45:29 $
- * $Author: e107coders $
+ * $Revision: 1.48 $
+ * $Date: 2009-09-13 10:31:09 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -107,8 +107,25 @@ class e107
 		'e_jshelper' 	=> '{e_HANDLER}js_helper.php',
 		'e_menu' 		=> '{e_HANDLER}menu_class.php',
 		'e107plugin' 	=> '{e_HANDLER}plugin_class.php',
-		'xmlClass' 		=> '{e_HANDLER}xml_class.php'
+		'xmlClass' 		=> '{e_HANDLER}xml_class.php',
+		'e107_traffic'	=> '{e_HANDLER}traffic_class.php'
 	);
+	
+	/**
+	 * Overload core handlers array
+	 * Format: 'core_class' => array('overload_class', 'overload_path');
+	 * 
+	 * NOTE: to overload core singleton objects, you have to add record to
+	 * $_overload_handlers before the first singleton call.
+	 * 
+	 * Example:
+	 * 'e_form' => array('e_form_myplugin' => '{e_PLUGIN}myplugin/handlers/form_handler.php');
+	 * 
+	 * Used to auto-load core handlers 
+	 * 
+	 * @var array 
+	 */
+	protected static $_overload_handlers = array();
 
 	
 	/**
@@ -246,6 +263,115 @@ class e107
 	}
 	
 	/**
+	 * Get known handler path
+	 * 
+	 * @param string $class_name
+	 * @param boolean $parse_path [optional] parse path shortcodes
+	 * @return string|null
+	 */
+	public static function getHandlerPath($class_name, $parse_path = true)
+	{
+		$ret = isset(self::$_known_handlers[$class_name]) ? self::$_known_handlers[$class_name] : null;
+		if($parse_path && $ret)
+		{
+			$ret = self::getParser()->replaceConstants($ret);
+		}
+		
+		return $ret;
+	}
+	
+	/**
+	 * Add handler to $_known_handlers array on runtime
+	 * If class name is array, method will add it (recursion) and ignore $path argument
+	 * 
+	 * @param array|string $class_name
+	 * @param string $path [optional]
+	 * @return void
+	 */
+	public static function addHandler($class_name, $path = '')
+	{
+		if(is_array($class_name))
+		{
+			foreach ($class_name as $cname => $path)
+			{
+				self::addHandler($cname, $path);
+			}
+			return;
+		}
+		if(!self::isHandler($class_name))
+		{
+			self::$_known_handlers[$class_name] = $path;
+		}
+	}
+	
+	/**
+	 * Check handler presence
+	 * 
+	 * @param string $class_name
+	 * @return boolean
+	 */
+	public static function isHandler($class_name)
+	{
+		return isset(self::$_known_handlers[$class_name]);
+	}
+	
+	/**
+	 * Get overlod class and path (if any)
+	 * 
+	 * @param object $class_name
+	 * @param object $default_handler [optional] return data from $_known_handlers if no overload data available
+	 * @param object $parse_path [optional] parse path shortcodes
+	 * @return array
+	 */
+	public static function getHandlerOverload($class_name, $default_handler = true, $parse_path = true)
+	{
+		$ret = (isset(self::$_overload_handlers[$class_name]) ? self::$_overload_handlers[$class_name] : ($default_handler ? array($class_name, self::getHandlerPath($class_name, false)) : array()));
+		if ($parse_path && isset($ret[1]))
+		{
+			$ret[1] = self::getParser()->replaceConstants($ret[1]);
+		}
+
+		return $ret;
+	}
+	
+	/**
+	 * Overload present handler.
+	 * If class name is array, method will add it (recursion) and 
+	 * ignore $overload_class_name and  $overload_path arguments
+	 * 
+	 * @param string $class_name
+	 * @param string $overload_name [optional]
+	 * @param string $overload_path [optional]
+	 * @return void
+	 */
+	public static function setHandlerOverload($class_name, $overload_class_name = '', $overload_path = '')
+	{
+		if(is_array($class_name))
+		{
+			foreach ($class_name as $cname => $overload_array)
+			{
+				self::setHandlerOverload($cname, $overload_array[0], $overload_array[1]);
+			}
+			return;
+		}
+		if(self::isHandler($class_name) && !self::isHandlerOverloaded($class_name))
+		{
+			self::$_overload_handlers[$class_name] = array($overload_class_name, $overload_path);
+		}
+	}
+	
+	/**
+	 * Check if handler is already overloaded
+	 * 
+	 * @param string $class_name
+	 * @return boolean
+	 */
+	public static function isHandlerOverloaded($class_name)
+	{
+		return isset(self::$_overload_handlers[$class_name]);
+	}
+	
+	/**
 	 * Retrieve singleton object
 	 *
 	 * @param string $class_name
@@ -255,33 +381,48 @@ class e107
 	 */
 	public static function getSingleton($class_name, $path = true, $regpath = '')
 	{
-		if(true === $path)
-		{
-			if(isset(self::$_known_handlers[$class_name]))
-			{
-				$path = self::getParser()->replaceConstants(self::$_known_handlers[$class_name]);
-			}
-		}
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
-		if(!e107::getRegistry($id))
+		
+		//singleton object found - overload not possible
+		if(self::getRegistry($id))
 		{
-			if($path && is_string($path) && !class_exists($class_name))
+			return self::getRegistry($id);
+		}
+		
+		//auto detection + overload check
+		if(is_bool($path))
+		{
+			//overload allowed
+			if(true === $path && self::isHandlerOverloaded($class_name))
 			{
-				e107_require_once($path); //no existence/security checks here!
-				// TODO - e107_require_once() should be available without class2.php. eg. in install.php
+				$tmp = self::getHandlerOverload($class_name);
+				$class_name = $tmp[0];
+				$path = $tmp[1];
 			}
-			if(class_exists($class_name, false))
+			//overload not allowed
+			else
 			{
-				e107::setRegistry($id, new $class_name());
+				$path = self::getHandlerPath($class_name);
 			}
 		}
+
+		if($path && is_string($path) && !class_exists($class_name, false))
+		{
+			e107_require_once($path); //no existence/security checks here!
+			//e107_require_once() is available without class2.php. - see core_functions.php
+		}
+		if(class_exists($class_name, false))
+		{
+			e107::setRegistry($id, new $class_name());
+		}
+
 
 		return self::getRegistry($id);
 	}
 	
 	/**
 	 * Retrieve object
-	 * We prepare for __autoload
+	 * Prepare for __autoload
 	 *
 	 * @param string $class_name
 	 * @param mxed $arguments
@@ -295,6 +436,23 @@ class e107
 			if(isset(self::$_known_handlers[$class_name]))
 			{
 				$path = self::getParser()->replaceConstants(self::$_known_handlers[$class_name]);
+			}
+		}
+		
+		//auto detection + overload check
+		if(is_bool($path))
+		{
+			//overload allowed
+			if(true === $path && self::isHandlerOverloaded($class_name))
+			{
+				$tmp = self::getHandlerOverload($class_name);
+				$class_name = $tmp[0];
+				$path = $tmp[1];
+			}
+			//overload not allowed
+			else
+			{
+				$path = self::getHandlerPath($class_name);
 			}
 		}
 		
