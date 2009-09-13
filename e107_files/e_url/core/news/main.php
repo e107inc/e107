@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: main.php,v 1.3 2008-12-03 12:38:07 secretr Exp $
+ * $Id: main.php,v 1.4 2009-09-13 16:37:17 secretr Exp $
  *
  * eURL configuration script
 */
@@ -10,24 +10,40 @@ function url_news_main($parms)
 	$base = e_HTTP.'news.php?'.$parms['action'];
 	switch ($parms['action'])
 	{
+		//Main news page
 		case 'all':
 			return $base;
+		break;
+		
+		//Category List
 		case 'cat':
-		case 'extend':
 		case 'list'://TODO - find out what are list params
-		case 'month': //TODO - find out what are month params
-		case 'day': //TODO - find out what are day params
-			return $base.'.'.varsettrue($parms['value'],'0');
+			return $base.'.'.varsettrue($parms['id'],'0').(varsettrue($parms['page']) ? '.'.$parms['page'] : '');
+		break;
+		
+		//Item page
 		case 'item':
+		case 'extend':
+			return $base.'.'.varsettrue($parms['id'],'0');
+		break;
+		
+		//Category List default (no category ID)
 		case 'default':
 			return $base.".{$parms['value1']}.".varset($parms['value2'], '0');
+		break;
+
+		//Category List by date/month
+		case 'month': //TODO - find out what are month params
+		case 'day': //TODO - find out what are day params
+			return $base.'-'.varsettrue($parms['id'],'0');
+		break;
+		
 		case 'nextprev':
 			return  e_HTTP."news.php?{$parms['to_action']}.{$parms['subaction']}.[FROM]";
 
 		default:
-			return false;
+			return  e_HTTP.'news.php';
+		break;
 	}
 
 }
-
-?>

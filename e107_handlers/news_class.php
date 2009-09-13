@@ -9,8 +9,8 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-09-13 10:29:56 $
+ * $Revision: 1.22 $
+ * $Date: 2009-09-13 16:37:18 $
  * $Author: secretr $
 */
 
@@ -624,14 +624,20 @@ class news {
 		$rewrite_data['data']['news_rewrite_source'] = $news_data['news_id'];
 		$rewrite_data['_FIELD_TYPES']['news_rewrite_source'] = 'int';
 		
+		$old_rewrite_data = array();
+		if(e107::getDb()->db_Select('news_rewrite', '*', 'news_rewrite_source='.intval($rewrite_data['data']['news_rewrite_source']).' AND news_rewrite_type='.intval($rewrite_data['data']['news_rewrite_type'])))
+		{
+			$old_rewrite_data = e107::getDb()->db_Fetch();
+		}
+		
 		//Delete if required
 		if (empty($rewrite_data['data']['news_rewrite_string']))
 		{
-			if(e107::getDb()->db_Select('news_rewrite', 'news_rewrite_id,news_rewrite_string', 'news_rewrite_source='.intval($rewrite_data['data']['news_rewrite_source']).' AND news_rewrite_type='.intval($rewrite_data['data']['news_rewrite_type'])))
+			if($old_rewrite_data)
 			{
-				$check = e107::getDb()->db_Fetch();
-				self::clearRewriteCache($check['news_rewrite_string']);
-				e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$check['news_rewrite_id']);
+				self::clearRewriteCache($old_rewrite_data['news_rewrite_string']);
+				e107::getDb()->db_Delete('news_rewrite', 'news_rewrite_id='.$old_rewrite_data['news_rewrite_id']);
+				e107::getAdminLog()->logArrayAll('NEWS_13', $old_rewrite_data);
 				return true;
 			}
 			
@@ -644,7 +650,9 @@ class news {
 				$rewrite_data['data']['news_rewrite_id'] = 0;
 				if($rewrite_data['data']['news_rewrite_id'] = e107::getDb()->db_Insert('news_rewrite', $rewrite_data))
 				{
+					if($old_rewrite_data) self::clearRewriteCache($old_rewrite_data['news_rewrite_string']);
 					self::setRewriteCache($rewrite_data['data']['news_rewrite_string'], $rewrite_data['data']);
+					e107::getAdminLog()->logArrayAll('NEWS_12', $rewrite_data['data']);
 					return true;
 				}
 				eMessage::getInstance()->add('Friendly URL string related problem detected!', E_MESSAGE_ERROR, $session_message);
@@ -665,7 +673,9 @@ class news {
 					if(e107::getDb()->db_Update('news_rewrite', $rewrite_data))
 					{
 						$rewrite_data['data']['news_rewrite_id'] = $id;
+						if($old_rewrite_data) self::clearRewriteCache($old_rewrite_data['news_rewrite_string']);
 						self::setRewriteCache($rewrite_data['data']['news_rewrite_string'], $rewrite_data['data']);
+						e107::getAdminLog()->logArrayAll('NEWS_12', $rewrite_data['data']);
 						return true;
 					}
 					elseif (e107::getDb()->getLastErrorNumber())
@@ -679,13 +689,19 @@ class news {
 						return 'error';
 					}
 					
+					$rewrite_data['data']['news_rewrite_id'] = $id;
+					if($old_rewrite_data) self::clearRewriteCache($old_rewrite_data['news_rewrite_string']);
+					self::setRewriteCache($rewrite_data['data']['news_rewrite_string'], $rewrite_data['data']);
+					
 					return false;
 				}
 				
 				$rewrite_data['data']['news_rewrite_id'] = 0;
 				if($rewrite_data['data']['news_rewrite_id'] = e107::getDb()->db_Insert('news_rewrite', $rewrite_data))
 				{
+					if($old_rewrite_data) self::clearRewriteCache($old_rewrite_data['news_rewrite_string']);
 					self::setRewriteCache($rewrite_data['data']['news_rewrite_string'], $rewrite_data['data']);
+					e107::getAdminLog()->logArrayAll('NEWS_12', $rewrite_data['data']);
 					return true;
 				}
 				

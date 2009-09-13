@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.48 $
- * $Date: 2009-09-13 10:31:09 $
+ * $Revision: 1.49 $
+ * $Date: 2009-09-13 16:37:18 $
  * $Author: secretr $
 */
 
@@ -99,6 +99,17 @@ class e107
 	 * @var array
 	 */
 	protected static $_known_handlers = array (
+		'db'			=> '{e_HANDLER}mysql_class.php',
+		'ecache'		=> '{e_HANDLER}cache_handler.php',
+		'user_class'	=> '{e_HANDLER}userclass_class.php',
+		'e107_event'	=> '{e_HANDLER}event_class.php',
+		'ArrayData'		=> '{e_HANDLER}arraystorage_class.php',
+		'eURL'			=> '{e_HANDLER}e107Url.php',
+		'e_file'		=> '{e_HANDLER}file_class.php',
+		'e_admin_log'	=> '{e_HANDLER}admin_log_class.php',
+		'notify'		=> '{e_HANDLER}notify_class.php',
+		'e_online'		=> '{e_HANDLER}online_class.php',
+		'convert'		=> '{e_HANDLER}date_handler.php',
 		'e_news_item' 	=> '{e_HANDLER}news_class.php',
 		'e_news_tree' 	=> '{e_HANDLER}news_class.php',
 		'news' 			=> '{e_HANDLER}news_class.php',
@@ -645,7 +656,7 @@ class e107
 	 */
 	public static function getDb($instance_id = '')
 	{
-		return self::getSingleton('db', e_HANDLER.'mysql_class.php', $instance_id);
+		return self::getSingleton('db', true, $instance_id);
 	}
 	
 	/**
@@ -655,7 +666,7 @@ class e107
 	 */
 	public static function getCache()
 	{
-		return self::getSingleton('ecache', e_HANDLER.'cache_handler.php');
+		return self::getSingleton('ecache', true);
 	}
 	
 	/**
@@ -665,7 +676,7 @@ class e107
 	 */
 	public static function getUserClass()
 	{
-		return self::getSingleton('user_class', e_HANDLER.'userclass_class.php');
+		return self::getSingleton('user_class', true);
 	}
 	
 	/**
@@ -685,7 +696,7 @@ class e107
 	 */
 	public static function getEvent()
 	{
-		return self::getSingleton('e107_event', e_HANDLER.'event_class.php');
+		return self::getSingleton('e107_event', true);
 	}
 	
 	/**
@@ -695,7 +706,7 @@ class e107
 	 */
 	public static function getArrayStorage()
 	{
-		return self::getSingleton('ArrayData', e_HANDLER.'arraystorage_class.php');
+		return self::getSingleton('ArrayData', true);
 	}
 	
 	/**
@@ -705,7 +716,7 @@ class e107
 	 */
 	public static function getMenu()
 	{
-		return self::getSingleton('e_menu', e_HANDLER.'menu_class.php');
+		return self::getSingleton('e_menu', true);
 	}
 	
 	/**
@@ -715,7 +726,7 @@ class e107
 	 */
 	public static function getUrl()
 	{
-		return self::getSingleton('eURL', e_HANDLER.'e107Url.php');
+		return self::getSingleton('eURL', true);
 	}
 	
 	/**
@@ -728,9 +739,9 @@ class e107
 	{
 		if($singleton)
 		{
-			return self::getSingleton('e_file', e_HANDLER.'file_class.php');
+			return self::getSingleton('e_file', true);
 		}
-		return self::getObject('e_file', null, e_HANDLER.'file_class.php');
+		return self::getObject('e_file', null, true);
 	}
 	
 	/**
@@ -740,7 +751,7 @@ class e107
 	 */
 	public static function getAdminLog()
 	{
-		return self::getSingleton('e_admin_log', e_HANDLER.'admin_log_class.php');
+		return self::getSingleton('e_admin_log', true);
 	}
 
 	/**
@@ -750,7 +761,7 @@ class e107
 	 */
 	public static function getDateConvert()
 	{
-		return self::getSingleton('convert', e_HANDLER.'date_handler.php');
+		return self::getSingleton('convert', true);
 	}
 	
 	/**
@@ -760,7 +771,7 @@ class e107
 	 */
 	public static function getNotify()
 	{
-		return self::getSingleton('notify', e_HANDLER.'notify_class.php');
+		return self::getSingleton('notify', true);
 	}
 	
 	/**
@@ -770,7 +781,7 @@ class e107
 	 */
 	public static function getOnline()
 	{
-		return self::getSingleton('e_online', e_HANDLER.'online_class.php');
+		return self::getSingleton('e_online', true);
 	}
 	
 	/**
