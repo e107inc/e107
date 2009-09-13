@@ -9,14 +9,14 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.37 $
-* $Date: 2009-09-06 20:04:04 $
+* $Revision: 1.38 $
+* $Date: 2009-09-13 12:12:23 $
 * $Author: e107coders $
 *
 */
 
 // 
-session_start();
+
 
 define('MIN_PHP_VERSION','5.0');
 define('MIN_MYSQL_VERSION','4.1.2');
@@ -73,7 +73,7 @@ e107_ini_set('magic_quotes_sybase',      0);
 e107_ini_set('arg_separator.output',     '&amp;');
 e107_ini_set('session.use_only_cookies', 1);
 e107_ini_set('session.use_trans_sid',    0);
-
+session_start();
 
 $php_version = phpversion();
 if(version_compare($php_version, MIN_PHP_VERSION, "<"))
