@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:58:01 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_credits.php,v $
 +-----------------------------------------------------------------------------+
@@ -15,13 +16,13 @@
 +-----------------------------------------------------------------------------+
 */
 
-define("PAGE_NAME", "Podziękowania e107");
+define("PAGE_NAME", "Twórcy e107");
 
-define("CRELAN_1", "Podziękowania");
-define("CRELAN_2", "Poniżej znajduje się lista współtwórców oprogramowania użytego w systemie e107. Zespół odpowiedzialny za rozwój e107 pragnie osobiście podziękować developerom, którzy wyrazili zgodę i chęć na to, aby redystrybuować napisany przez nich kod programowy wraz z systemem e107 oraz rozpowszechniać go zgodnie z licencją GPL.");
+define("CRELAN_1", "Twórcy");
+define("CRELAN_2", "Poniżej znajduje się lista oprogramowania/zasobów użytych w systemie e107. Zespół e107 pragnie osobiście podziękować następujuącym programistom za umożliwienie rozpowszechnia i udostępnienia ich oprogramowania wraz ze źródłem e107 na licencji GPL.");
 define("CRELAN_3", "wszelkie prawa zastrzeżone");
 define("CRELAN_4", "Pokaż zespół e107 Dev Team");
-define("CRELAN_5", "Pokaż listę zapożyczonych skryptów");
+define("CRELAN_5", "Pokaż listę wykorzystanych skryptów");
 define("CRELAN_6", "e107 v0.7 jest rozwijany dla Ciebie przez...");
 define("CRELAN_7", "wersja");
 define("CRELAN_8", "udzielono zezwolenia");
@@ -34,8 +35,8 @@ define("CRELAN_11", "Biblioteka PclZip oferuje funkcje kompresji i dekompresji a
 define("CRELAN_12", "Biblioteka PclTar daje możliwość archiwizacji listy plików lub katalogów z wykorzystaniem lub bez wykorzystania algorytmów kompresji. Archiwa utworzone przez bibliotekę PclTar są czytane przez większość aplikacji obsługujących format gzip/tar orz przez aplikację Windows WinZip.");
 define("CRELAN_13", "TinyMCE stanowi samodzielną platformę internetową bazującą na edytorze WYSIWYG opartym o technologie Javascript oraz HTML. TinyMCE jest rozwijany przez Moxiecode Systems AB i rozpowszechniany jako Open Source zgodnie z warunkami licencji LGPL. Podstawową funkcją edytora jest konwersja pół tekstowych (textarea) lub innych elementów języka na potrzeby edytora.");
 define("CRELAN_14", "Ikony użyte w e107");
-define("CRELAN_15", "W pełni funkcjonalna klasa dla PHP służąca do wysyłania emaili");
-define("CRELAN_16", "System menu użyty w temacie Jayya");
+define("CRELAN_15", "W pełni funkcjonalna klasa dla PHP służąca do wysyłania e-maili");
+define("CRELAN_16", "System menu użyty w motywie graficznym Jayya");
 define("CRELAN_17", "Okienkowy kalendarz w postaci widgeta");
 define("CRELAN_18", "Wsparcie PDF");
 define("CRELAN_19", "Wsparcie PDF dla kodowania UTF-8");

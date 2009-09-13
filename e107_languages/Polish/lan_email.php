@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:57:32 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_email.php,v $
 +-----------------------------------------------------------------------------+
@@ -15,29 +16,35 @@
 +-----------------------------------------------------------------------------+
 */
  
-if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Email"); }
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "E-mail"); }
 
 define("LAN_EMAIL_1", "Nadawcą jest:");
 define("LAN_EMAIL_2", "Adres IP nadawcy:");
-define("LAN_EMAIL_3", "Wiadomość email od ");
-define("LAN_EMAIL_4", "Wyślij");
-define("LAN_EMAIL_5", "Wyślij email do znajomego");
-define("LAN_EMAIL_6", "Witaj! Sądzę, że zainteresujesz się wiadomością pochodzącą ze strony -");
-define("LAN_EMAIL_7", "Wyślij emaila do znajomego");
+define("LAN_EMAIL_3", "Wiadomość e-mail od ");
+define("LAN_EMAIL_4", "Wyślij e-maila");
+define("LAN_EMAIL_5", "Powiadom znajomego");
+define("LAN_EMAIL_6", "Witaj!
+
+Sądzę, że zainteresuje Cię wiadomość znaleziona na stronie -");
+define("LAN_EMAIL_7", "Powiadom znajomego");
 define("LAN_EMAIL_8", "Komentarz");
-define("LAN_EMAIL_9", "Wyślij komentarz"); // Przepraszam - nie mogę wysłać emaila - Sorry - unable to send email
-define("LAN_EMAIL_10", "Wiadomość email została wysłana do");
-define("LAN_EMAIL_11", "Email został wysłany");
+define("LAN_EMAIL_9", "Napotkano błąd - nie można wysłać wiadomości e-mail"); // Sorry - unable to send email
+define("LAN_EMAIL_10", "Wiadomość e-mail wysłano do");
+define("LAN_EMAIL_11", "Wysłano wiadomość");
 define("LAN_EMAIL_12", "Błąd");
-define("LAN_EMAIL_13", "Wyślij artykuł przyjacielowi");
-define("LAN_EMAIL_14", "Wyślij newsa przyjacielowi");
-define("LAN_EMAIL_15", "Użytkownik: ");
-define("LAN_EMAIL_106", "Podany adres email jest błędny. Wprowadź go ponownie.");
+define("LAN_EMAIL_13", "Powiadom znajomego o tym artykule");
+define("LAN_EMAIL_14", "Powiadom znajomego o tej wiadomości");
+define("LAN_EMAIL_15", "Nick: ");
+define("LAN_EMAIL_106", "Podany adres e-mail jest niepoprawny.");
 define("LAN_EMAIL_185", "Wyślij artykuł");
-define("LAN_EMAIL_186", "Wyślij newsa");
-define("LAN_EMAIL_187", "Docelowy adres email");
-define("LAN_EMAIL_188", "Witaj! Sądzę, że zainteresujesz się tym newsem pochodzącym ze strony -");
-define("LAN_EMAIL_189", "Witaj! Sądzę, że zainteresujesz się tym artykułem pochodzącym ze strony -");
+define("LAN_EMAIL_186", "Wyślij wiadomość");
+define("LAN_EMAIL_187", "Docelowy adres e-mail");
+define("LAN_EMAIL_188", "Witaj!
+
+Sądzę, że zainteresuje Cię wiadomość znaleziona na stronie -");
+define("LAN_EMAIL_189", "Witaj!
+
+Sądzę, że zainteresuje Cię artykuł znaleziony na stronie -");
 define("LAN_EMAIL_190", "Wprowadź kod");
 
 ?>

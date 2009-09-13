@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:58:02 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_filemanager.php,v $
 +-----------------------------------------------------------------------------+
@@ -38,9 +39,9 @@ define("FMLAN_19", "Ostatnio modyfikowany");
 define("FMLAN_21", "Załaduj plik do tego katalogu");
 define("FMLAN_22", "Załaduj");
 
-define("FMLAN_26", "Usunięty");
+define("FMLAN_26", "Usunięto");
 define("FMLAN_27", "pomyślnie");
-define("FMLAN_28", "Nie mogę usunąć");
+define("FMLAN_28", "Nie można usunąć");
 define("FMLAN_29", "Ścieżka dostępu");
 define("FMLAN_30", "W górę");
 define("FMLAN_31", "folder");
@@ -50,12 +51,12 @@ define("FMLAN_33", "Wybierz");
 define("FMLAN_34", "Wybór katalogu");
 define("FMLAN_35", "Katalog plików");
 
-define("FMLAN_36", "Katalog własnych menu");
-define("FMLAN_37", "Katalog własnych stron");
+define("FMLAN_36", "Katalog kreatora menu");
+define("FMLAN_37", "Katalog kreatora podstron");
 
 define("FMLAN_38", "Plik pomyślnie przeniesiony do");
-define("FMLAN_39", "Nie mogę przenieść pliku do");
-define("FMLAN_40", "Obrazki aktualności");
+define("FMLAN_39", "Nie można przenieść pliku do");
+define("FMLAN_40", "Grafiki aktualności");
 
 
 define("FMLAN_43", "Usuń zaznaczone pliki");

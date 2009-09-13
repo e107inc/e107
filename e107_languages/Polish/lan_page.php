@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.6 $
-|     $Date: 2008-08-27 11:57:41 $
+|     $Revision: 1.7 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_page.php,v $
 +-----------------------------------------------------------------------------+
@@ -16,17 +17,17 @@
 */
  
 define("LAN_PAGE_1", "Wykaz stron jest aktualnie wyłączony");
-define("LAN_PAGE_2", "Nie ma jeszcze żadnych stron");
+define("LAN_PAGE_2", "Brak podstron");
 define("LAN_PAGE_3", "Żądana strona nie istnieje");
 define("LAN_PAGE_4", "Oceń stronę");
 define("LAN_PAGE_5", "Dziękujemy za ocenę strony");
 define("LAN_PAGE_6", "Nie masz uprawnień do przeglądania tej strony");
-define("LAN_PAGE_7", "Błąd! Niepoprawne hasło.");
+define("LAN_PAGE_7", "Niepoprawne hasło.");
 define("LAN_PAGE_8", "Strona zabezpieczona hasłem");
 define("LAN_PAGE_9", "Hasło");
 define("LAN_PAGE_10", "Wyślij");
 define("LAN_PAGE_11", "Wykaz stron");
-define("LAN_PAGE_12", "Strona nieważna"); // Invalid page
+define("LAN_PAGE_12", "Strona nieprawidłowa"); // Invalid page
 define("LAN_PAGE_13", "Strona");
 
 ?>

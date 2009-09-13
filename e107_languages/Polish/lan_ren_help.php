@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:57:43 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_ren_help.php,v $
 +-----------------------------------------------------------------------------+
@@ -40,25 +41,25 @@ define("LANHELP_20", "Ogromny");
 define("LANHELP_21", "Kliknij, aby wybrać kolor...");
 define("LANHELP_22", "Kliknij, aby wybrać rozmiar...");
 
-define("LANHELP_23", "Wstawia link: [link]http://e107.org.pl[/link] lub  [link=http://e107.org.pl]Odwiedź tą stronę[/link]");
-define("LANHELP_24", "Pogrubiony tekst: [b]Ten tekst będzie pogrubiony[/b]", "font-weight:bold; width: 20px");
-define("LANHELP_25", "Pochylony tekst: [i]Ten tekst będzie pochylony[/i]", "font-style:italic; width: 20px");
-define("LANHELP_26", "Podkreślony tekst: [u]Ten tekst będzie podkreślony[/u]", "text-decoration: underline; width: 20px");
-define("LANHELP_27", "Wstawia obraz: [img]mojobraz.jpg[/img]");
+define("LANHELP_23", "Wstaw odnośnik: [link]http://e107.org.pl[/link] lub  [link=http://e107.org.pl]Odwiedź moją stronę[/link]");
+define("LANHELP_24", "Pogrubienie: [b]Ten tekst będzie pogrubiony[/b]", "font-weight:bold; width: 20px");
+define("LANHELP_25", "Pochylenie: [i]Ten tekst będzie pochylony[/i]", "font-style:italic; width: 20px");
+define("LANHELP_26", "Podkreślenie: [u]Ten tekst będzie podkreślony[/u]", "text-decoration: underline; width: 20px");
+define("LANHELP_27", "Wstaw grafikę: [img]mojobraz.jpg[/img]");
 define("LANHELP_28", "Wyśrodkowanie: [center]Ten tekst będzie wyśrodkowany[/center]");
 define("LANHELP_29", "Wyrównanie do lewej: [left]Ten tekst będzie wyrównany do lewej[/left]");
 define("LANHELP_30", "Wyrównanie do prawej: [right]Ten tekst będzie wyrównany do prawej[/right]");
-define("LANHELP_31", "Cytuje tekst: [blockquote]Ten tekst będzie cytatem (wcięty)[/blockquote]");
+define("LANHELP_31", "Cytuj tekst: [blockquote]Ten tekst będzie cytatem (wcięty)[/blockquote]");
 define("LANHELP_32", "Kod - niesformatowany tekst: [code]\$foo = bah;[/code]");
 define("LANHELP_33", "HTML - usuwa łamanie linii z tekstu : [html]&lt;table&gt;&lt;tr&gt;&lt;td&gt; etc[/html]");
 define("LANHELP_34", "[newpage] lub [newpage=tytuł] Wstawia znacznik nowej strony, dzieli artykuł na więcej niż jedną stronę");
-define("LANHELP_35", "odnośnik URL");
+define("LANHELP_35", "odnośnik WWW");
 define("LANHELP_36", "Lista nieuporządkowana: [list]linia*linia2*linia3[/list] Lista uporządkowana: [list=typ]linia1*linia2*linia3[/list]");
 
 define("LANHELP_37", "Wstaw obrazek z katalogu e107_images/newspost_images/");
-define("LANHELP_38", "Zostanie wygenerowany link do obrazka");
+define("LANHELP_38", "Zostanie wygenerowany odnośnik do obrazka");
 
-define("LANHELP_39", "Wstaw link do pliku z działu download");
+define("LANHELP_39", "Wstaw odnośnik do pobrania pliku");
 define("LANHELP_40", "Nie ma jeszcze żadnych plików do pobrania");
 
 define("LANHELP_41", "Rozmiar czcionki...");

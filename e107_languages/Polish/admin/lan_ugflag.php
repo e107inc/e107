@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:58:06 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_ugflag.php,v $
 +-----------------------------------------------------------------------------+
@@ -15,12 +16,12 @@
 +-----------------------------------------------------------------------------+
 */
  
-define("UGFLAN_1", "Ustawienia konserwacji zostały zaktualizowane");
+define("UGFLAN_1", "Ustawienia konserwacji zaktualizowano");
 define("UGFLAN_2", "Aktywuj tryb konserwacji");
 define("UGFLAN_3", "Aktualizuj ustawienia konserwacji");
 define("UGFLAN_4", "Ustawienia konserwacji");
 
 define("UGFLAN_5", "Tekst do wyświetlenia podczas zamknięcia strony");
-define("UGFLAN_6", "Pozostaw puste, aby wyświetlić domyślną wiadomość");
+define("UGFLAN_6", "Pozostaw puste, aby wyświetlić domyślny komunikat");
 
 ?>

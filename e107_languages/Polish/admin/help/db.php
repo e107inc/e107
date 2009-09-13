@@ -1,23 +1,24 @@
 <?php
 /*
-+-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-+-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|     $Revision: 1.7 $
-|     $Date: 2008-08-27 11:57:49 $
-|     $Author: marcelis_pl $
+|     �Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/help/db.php,v $
-+-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_languages/English/admin/help/db.php rev. 1.3
-+-----------------------------------------------------------------------------+
+|     $Revision: 1.8 $
+|     $Date: 2009-09-13 10:26:27 $
+|     $Author: marcelis_pl $
++----------------------------------------------------------------------------+
 */
- 
+
 if (!defined('e107_INIT')) { exit; }
 
-$text = "Na tej stronie znajdują się narzędzia, które pozwolą Ci zarządzać bazą danych strony.";
-$ns -> tablerender("Narzędzia bazy danych", $text);
-
+$text = "These collection of tools allow you to manage your database.";
+$ns -> tablerender("Database Tools", $text);
 ?>

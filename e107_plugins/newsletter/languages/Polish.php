@@ -6,12 +6,12 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.6 $
-|     $Date: 2008-08-27 11:58:23 $
+|     $Revision: 1.7 $
+|     $Date: 2009-09-13 10:26:31 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsletter/languages/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/newsletter/languages/English.php rev. 1.4
+|     Zgodne z: /e107_plugins/newsletter/languages/English.php rev. 1.5
 +-----------------------------------------------------------------------------+
 */
  
@@ -76,5 +76,17 @@ define("NLLAN_52", "Zapisz mnie");
 define("NLLAN_53", "Czy na pewno chcesz się zapisać do tego newslettera?");
 
 define("NLLAN_54", "Wysłano"); // sprawdzić czy na pewno tak :) 
+
+define("NLLAN_55", "ID");
+define("NLLAN_56", "Numer ID newslettera niedostępny"); // WYMAGA WERYFIKACJI Newsletter ID not available 
+define("NLLAN_57", "Powróć na poprzednią stronę");
+define("NLLAN_58", "Błąd");
+define("NLLAN_59", "Nazwa");
+define("NLLAN_60", "E-mail");
+define("NLLAN_61", "Zadanie");
+define("NLLAN_62", "Użytkownik jest zbanowany! (lub nie w pełni zarejestrowany)");
+define("NLLAN_63", "Wszystkich subskrybentów");
+define("NLLAN_64", "Powróć do strony głównej newslettera");
+define("NLLAN_65", "Przegląd numerów ID subskrybentów newslettera"); // WYMAGA WERYFIKACJI Subscribers overview newsletter ID
 
 ?>

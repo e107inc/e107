@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.7 $
-|     $Date: 2008-08-27 11:58:05 $
+|     $Revision: 1.8 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_notify.php,v $
 +-----------------------------------------------------------------------------+
@@ -16,28 +17,28 @@
 */
  
 define("NT_LAN_1", "Powiadomienia");
-define("NT_LAN_2", "Dostarcz powiadomienie emailem o");
+define("NT_LAN_2", "Wysyłaj powiadomienia e-mailem o");
 define("NT_LAN_3", "Wyłącz");
 define("NT_LAN_4", "Główny administrator");
-define("NT_LAN_5", "Grupa");
-define("NT_LAN_6", "Email");
+define("NT_LAN_5", "Klasa");
+define("NT_LAN_6", "E-mail");
 
 define("NU_LAN_1", "Użytkownikach");
-define("NU_LAN_2", "Rejestracji użytkownika");
-define("NU_LAN_3", "Weryfikacji konta użytkownika");
-define("NU_LAN_4", "Logowaniu użytkownika");
-define("NU_LAN_5", "Wylogowaniu użytkownika");
+define("NU_LAN_2", "Nowej rejestracji");
+define("NU_LAN_3", "Weryfikacji konta");
+define("NU_LAN_4", "Zalogowaniu się");
+define("NU_LAN_5", "Wylogowaniu się");
 
 define("NS_LAN_1", "Bezpieczeństwie");
-define("NS_LAN_2", "Adresach IP zablokowanych w wyniku ataków typu flood"); // IP banned for flooding site
+define("NS_LAN_2", "Adresach IP zablokowanych w wyniku ataków przez przepełnienie"); // IP banned for flooding site
 
-define("NN_LAN_1", "Nowościach");
-define("NN_LAN_2", "Nowych pozycjach nadesłanych przez użytkowników");
-define("NN_LAN_3", "Nowych pozycjach dodanych przez administratorów");
-define("NN_LAN_4", "Nowych pozycjach edytowanych przez administratorów");
-define("NN_LAN_5", "Nowych pozycjach usuniętych przez administratorów");
+define("NN_LAN_1", "Aktualnościach");
+define("NN_LAN_2", "Nadesłanych przez użytkowników");
+define("NN_LAN_3", "Dodanych przez administratorów");
+define("NN_LAN_4", "Przeredagowanych przez administratorów");
+define("NN_LAN_5", "Usuniętych przez administratorów");
 
 define("NF_LAN_1", "Nowych plikach");
-define("NF_LAN_2", "Plikach załadowanych przez użytkowników");
+define("NF_LAN_2", "Załadowanych przez użytkowników");
 
 ?>

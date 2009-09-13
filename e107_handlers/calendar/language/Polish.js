@@ -5,8 +5,8 @@
 |     Spolszczenie systemu e107 v0.7
 |     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
 |
-|     $Revision: 1.7 $
-|     $Date: 2008-08-27 11:57:27 $
+|     $Revision: 1.8 $
+|     $Date: 2009-09-13 10:26:26 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/calendar/language/Polish.js,v $
 +-----------------------------------------------------------------------------+

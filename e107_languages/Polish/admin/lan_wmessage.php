@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:58:09 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_wmessage.php,v $
 +-----------------------------------------------------------------------------+
@@ -23,18 +24,18 @@
 // define("WMGLAN_6", "Aktywować?");
 // define("WMGLAN_7", "Ustawienia wiadomości powitalnej zaktualizowane.");
 
-define("WMLAN_00","Wiadomości powitalne");
-define("WMLAN_01","Dodaj nową wiadomość");
-define("WMLAN_02","Wiadomość");
+define("WMLAN_00","Komunikaty powitalne");
+define("WMLAN_01","Dodaj nowy komunikat");
+define("WMLAN_02","Komunikat");
 define("WMLAN_03","Widoczność");
-define("WMLAN_04","Treść wiadomości");
+define("WMLAN_04","Treść komunikatu");
 
 define("WMLAN_05","Otoczenie");
-define("WMLAN_06","Jeśli odznaczone, wiadomość będzie wyświetlana wewnątrz tabelki");
+define("WMLAN_06","Jeśli zaznaczone, komunikat będzie wyświetlany wewnątrz pola");
 define("WMLAN_07","Zastąp standardowy system, aby użyć shortcode {WMESSAGE}:");
 // define("WMLAN_08","Preferencje");
 
-define("WMLAN_09","Nie ma jeszcze ustawionych wiadomości powitalnych");
-define("WMLAN_10","Nagłówek wiadomości");
+define("WMLAN_09","Nie ustawiono jeszcze komunikatów powitalnych");
+define("WMLAN_10","Nagłówek komunikatu");
 
 ?>

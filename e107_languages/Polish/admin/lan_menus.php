@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:58:03 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_menus.php,v $
 +-----------------------------------------------------------------------------+
@@ -19,13 +20,13 @@ define("MENLAN_1", "Wszystkich");
 define("MENLAN_2", "Zarejestrowanych użytkowników");
 define("MENLAN_3", "Administratorów");
 define("MENLAN_4", "Widoczne dla:");
-// define("MENLAN_5", "grupa");
+// define("MENLAN_5", "klasa");
 define("MENLAN_6", "Zapisz opcje widoczności");
 define("MENLAN_7", "Konfiguracja opcji widoczności dla");
-define("MENLAN_8", "Opcje widoczności zostały zaktualizowane");
-define("MENLAN_9", "Menu użytkownika zostało zainstalowane");
-define("MENLAN_10", "Zainstalowano nowe menu");
-define("MENLAN_11", "Menu zostało usunięte");
+define("MENLAN_8", "Opcje widoczności zaktualizowano");
+define("MENLAN_9", "Nowe menu kreatora zainstalowano");
+define("MENLAN_10", "Nowe menu zainstalowano");
+define("MENLAN_11", "Menu usunięto");
 define("MENLAN_12", "Aktywacja: wybierz obszar");
 define("MENLAN_13", "Aktywuj w obszarze");
 define("MENLAN_14", "Obszar");
@@ -41,17 +42,17 @@ define("MENLAN_22", "Nieaktywne menu");
 
 define("MENLAN_23", "Przenieś na koniec");
 define("MENLAN_24", "Przenieś na początek");
-define("MENLAN_25", "Funkcje...");
+define("MENLAN_25", "Opcje...");
 
 define("MENLAN_26", "Menu będzie <strong>POKAZYWANE</strong> tylko na następujących stronach");
 define("MENLAN_27", "Menu będzie <strong>UKRYTE</strong> tylko na następujących stronach");
-define("MENLAN_28", "Wpisuj po jednej stronie w linii, wpisy adresów powinny być dostatecznie rozróżnialne i poprawne.");
+define("MENLAN_28", "Wpisuj po jednej stronie w linii, wpisy adresów powinny być dostatecznie rozróżnialne i poprawne. Jeśli potrzebujesz zakończyć lub ograniczyć zakres adresów URL w określonym miejscu, zastosuj na końcu adresu znak !<br />Przykład: <strong>page.php?1!</strong>");
 
-define("MENLAN_29", "Wybierz wygląd");
-define("MENLAN_30", "Aby zobaczyć obszary menu oraz ich lokalizacje dla własnego wyglądu, wybierz jeden z dostępnych wyglądów:");
-define("MENLAN_31", "Domyślny styl wyglądu");
-define("MENLAN_32", "Wygląd stylu nagłówka");
-define("MENLAN_33", "Własny wygląd stylu");
+define("MENLAN_29", "Wybierz układ strony");
+define("MENLAN_30", "Aby zobaczyć obszary menu oraz ich lokalizacje na niestandardowych układach strony, wybierz jeden z dostępnych układów:");
+define("MENLAN_31", "Domyślny układ");
+define("MENLAN_32", "Układ nagłówka aktualności");
+define("MENLAN_33", "Niestandardowy układ");
 define("MENLAN_34", "Osadzony");
 define("MENLAN_35", "Konfiguracja menu");
 define("MENLAN_36", "Wybierz menu do aktywacji");

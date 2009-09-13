@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.7 $
-|     $Date: 2008-08-27 11:57:42 $
+|     $Revision: 1.8 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_print.php,v $
 +-----------------------------------------------------------------------------+
@@ -15,18 +16,18 @@
 +-----------------------------------------------------------------------------+
 */
  
-if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Strona do druku"); }
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Wersja do druku"); }
 
 define("LAN_PRINT_86", "Kategoria:");
 define("LAN_PRINT_87", "przez ");
 define("LAN_PRINT_94", "Dodane przez");
-define("LAN_PRINT_135", "Tytuł wiadomości");
-define("LAN_PRINT_303", "Ta wiadomość pochodzi ze strony ");
+define("LAN_PRINT_135", "Wiadomość");
+define("LAN_PRINT_303", "Źródło: ");
 define("LAN_PRINT_304", "Tytuł: ");
 define("LAN_PRINT_305", "Podtytuł: ");
-define("LAN_PRINT_306", "Ten artykuł pochodzi ze strony: ");
+define("LAN_PRINT_306", "Źródło: ");
 define("LAN_PRINT_307", "Drukuj stronę");
 
-define("LAN_PRINT_1", "Szybkie drukowanie");
+define("LAN_PRINT_1", "Wersja do druku");
 
 ?>

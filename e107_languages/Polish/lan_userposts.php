@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:57:47 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_userposts.php,v $
 +-----------------------------------------------------------------------------+
@@ -19,11 +20,11 @@ define("PAGE_NAME", "Posty użytkownika");
 
 define("UP_LAN_0", "Wszystkie posty na forum dla ");
 define("UP_LAN_1", "Wszystkie komentarze dla ");
-define("UP_LAN_2", "Temat");
-define("UP_LAN_3", "Podgląd");
+define("UP_LAN_2", "Wątek");
+define("UP_LAN_3", "Wyświetleń");
 define("UP_LAN_4", "Posty");
 define("UP_LAN_5", "Ostatni post");
-define("UP_LAN_6", "Tematy");
+define("UP_LAN_6", "Wątki");
 define("UP_LAN_7", "Brak komentarzy");
 define("UP_LAN_8", "Brak postów");
 define("UP_LAN_9", " dnia ");

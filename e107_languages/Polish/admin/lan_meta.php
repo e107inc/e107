@@ -1,13 +1,14 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:58:04 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_meta.php,v $
 +-----------------------------------------------------------------------------+
@@ -15,7 +16,7 @@
 +-----------------------------------------------------------------------------+
 */
  
-define("METLAN_1", "Znaczniki meta zostały zaktualizowane w bazie danych");
+define("METLAN_1", "Znaczniki meta zaktualizowano w bazie danych");
 define("METLAN_2", "Dodatkowe znaczniki meta");
 define("METLAN_3", "Dodaj znaczniki meta");
 define("METLAN_4", "Zaktualizowano znaczniki");
@@ -27,7 +28,7 @@ define("METLAN_8", "Znaczniki meta");
 define("METLAN_9", "Opis");
 define("METLAN_10", "Słowa kluczowe");
 define("METLAN_11", "Prawa autorskie");
-define("METLAN_12", "Używaj tytułu oraz streszczenia aktualności jako opisu dla znacznika meta na stronie aktualności.");
+define("METLAN_12", "Używaj tytułu oraz streszczenia aktualności jako znacznika 'Opis' na stronie aktualności.");
 define("METLAN_13", "Autor");
 
 ?>

@@ -3,18 +3,19 @@
 +-----------------------------------------------------------------------------+
 |     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.14 $
-|     $Date: 2008-08-27 11:57:32 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_date.php,v $
 +-----------------------------------------------------------------------------+
 |     Zgodne z: /e107_languages/English/lan_date.php rev. 1.4
 +-----------------------------------------------------------------------------+
 */
- 
+
 define("LANDT_01", "rok");
 define("LANDT_02", "miesiąc");
 define("LANDT_03", "tydzień");

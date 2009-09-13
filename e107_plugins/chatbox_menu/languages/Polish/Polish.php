@@ -1,23 +1,24 @@
 <?php
 /*
 +-----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
 +-----------------------------------------------------------------------------+
-|     Spolszczenie systemu e107 v0.7
-|     Polskie wsparcie: http://e107.org.pl - http://e107poland.org
+|     Spolszczenie systemu e107
+|     e107 Polish Team
+|     Polskie wsparcie: http://e107pl.org
 |
-|     $Revision: 1.6 $
-|     $Date: 2008-08-27 11:58:12 $
+|     $Revision: 1.7 $
+|     $Date: 2009-09-13 10:26:27 $
 |     $Author: marcelis_pl $
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Polish/Polish.php,v $
 +-----------------------------------------------------------------------------+
-|     Zgodne z: /e107_plugins/chatbox_menu/languages/English/English.php rev. 1.7
+|     Zgodne z: /e107_plugins/chatbox_menu/languages/English/English.php rev. 1.8
 +-----------------------------------------------------------------------------+
 */
  
 define("CHATBOX_L1", "Post został odrzucony, ponieważ podana nazwa użytkownika jest już zarejestrowana - jeśli to jest Twoja nazwa użytkownika zaloguj się, aby pisać posty.");
 define("CHATBOX_L2", "Czat");
-define("CHATBOX_L3", "Musisz być zalogowany, aby wystawiać komentarze na tej stronie. Proszę się zalgować lub jeśli nie masz jeszcze konta <a href='".e_BASE."signup.php'>zarejestruj się</a>");
+define("CHATBOX_L3", "Musisz być zalogowany, aby wystawiać komentarze na tej stronie. Proszę się zalgować lub jeśli nie masz jeszcze konta <a href='".e_SIGNUP."'>zarejestruj się</a>");
 define("CHATBOX_L4", "Wyślij");
 define("CHATBOX_L5", "Wyczyść");
 define("CHATBOX_L6", "[zablokowane przez administratora]");
