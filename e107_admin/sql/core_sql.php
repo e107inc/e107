@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-09-12 18:25:41 $
+ * $Revision: 1.25 $
+ * $Date: 2009-09-14 20:21:06 $
  * $Author: secretr $
 */
 
@@ -324,8 +324,8 @@ CREATE TABLE news (
   KEY news_start_end (news_start,news_end),
   KEY news_datestamp (news_datestamp),
   KEY news_sticky  (news_sticky),
-  FULLTEXT KEY news_class (news_class),
-  KEY news_render_type  (news_render_type)
+  KEY news_render_type  (news_render_type),
+  FULLTEXT KEY news_class (news_class)
 ) TYPE=MyISAM;
 
 
