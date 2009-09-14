@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2009-09-14 11:27:45 $
+|     $Revision: 1.84 $
+|     $Date: 2009-09-14 11:57:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1059,11 +1059,7 @@ class e107plugin
 		//main menu items
 		if(isset($plug_vars['menuLink']))
 		{
-			//Ensure it is the right sort of array for use with foreach()
-			if(count($plug_vars['menuLink']) <= 1)
-			{
-				$plug_vars['menuLink'] = array($plug_vars['menuLink']);
-			}
+
 			foreach($plug_vars['menuLink'] as $link)
 			{
 				$attrib = $link['@attributes'];
