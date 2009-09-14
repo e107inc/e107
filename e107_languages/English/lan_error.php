@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_error.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-08-08 20:16:22 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2009-09-14 18:13:51 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Error");
@@ -59,5 +59,5 @@ define('LAN_ERROR_42', 'Additional error information: ');
 define('LAN_ERROR_43', 'Site unavailable temporarily');
 define('LAN_ERROR_44', 'Site logo');
 
-
+define('LAN_ERROR_45', 'What can you do now?');
 ?>
