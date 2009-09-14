@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_news.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-09-14 18:22:16 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "News");
@@ -36,6 +36,7 @@ define("LAN_NEWS_21", "News updated in database.");
 // define("LAN_NEWS_22", "Go to page: ");
 define("LAN_NEWS_23", "News Categories");
 define("LAN_NEWS_24", "create pdf of this news item");
+define("LAN_NEWS_25", "Edit");
 
 define("LAN_NEWS_82", "News - Category");
 define("LAN_NEWS_83", "No news items at the moment - please check back soon.");

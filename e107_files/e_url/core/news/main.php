@@ -1,10 +1,15 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: main.php,v 1.4 2009-09-13 16:37:17 secretr Exp $
+ * $Id: main.php,v 1.5 2009-09-14 18:22:15 secretr Exp $
  *
  * eURL configuration script
 */
+
+if (!defined('e107_INIT')) { exit; }
+
+define('NEWS_REWRITE', false);
+
 function url_news_main($parms)
 {
 	$base = e_HTTP.'news.php?'.$parms['action'];
@@ -46,4 +51,9 @@ function url_news_main($parms)
 		break;
 	}
 
+}
+
+function parse_url_news_main($request)
+{
+	return explode('.', $request);
 }

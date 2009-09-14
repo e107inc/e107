@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.142 $
-* $Date: 2009-09-13 10:29:56 $
+* $Revision: 1.143 $
+* $Date: 2009-09-14 18:22:15 $
 * $Author: secretr $
 *
 */
@@ -84,7 +84,7 @@ if($register_globals == true)
 }
 
 define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
-$_REQUEST['ajax_used'] = ''; unset($_REQUEST['ajax_used']);
+unset($_REQUEST['ajax_used']);
 
 if(isset($_E107['minimal']) || e_AJAX_REQUEST)
 {
