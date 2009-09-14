@@ -9,9 +9,9 @@
  * Administration Area - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-08-28 16:11:00 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.14 $
+ * $Date: 2009-09-14 20:59:23 $
+ * $Author: secretr $
  *
 */
 
@@ -84,9 +84,9 @@ else
 	$fp_settings[] = array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => varset($pref['frontpage'], 'news.php'), 'force' => '');
 }
 
-if(! $gotpub)
+if(!$gotpub)
 { // Need a 'default' setting - usually 'all'
-	$fp_settings[] = array('order' => $i, 'class' => e_UC_PUBLIC, 'page' => varset($pref['frontpage']['all'], 'news.php'), 'force' => '');
+	$fp_settings[] = array('order' => $i, 'class' => e_UC_PUBLIC, 'page' => (isset($pref['frontpage']['all']) ? $pref['frontpage']['all'] : 'news.php'), 'force' => '');
 }
 
 $fp_update_prefs = FALSE;
