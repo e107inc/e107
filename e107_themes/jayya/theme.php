@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-06 08:45:19 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2009-09-14 18:30:20 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -170,6 +170,10 @@ define('LINKALIGN', 'left');
 $sc_style['NEWSIMAGE']['pre'] = "<td style='padding-right: 7px; vertical-align: top'>";
 $sc_style['NEWSIMAGE']['post'] = "</td>";
 
+$sc_style['NEWSCOMMENTS']['pre'] = "<img src='".THEME_ABS."images/comments_16.png' style='width: 16px; height: 16px' alt='' />";
+$sc_style['NEWSCOMMENTS']['post'] = "";
+
+
 $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='bevel'>
 {STICKY_ICON}{NEWSTITLE}
 </div></div></div>
@@ -197,7 +201,7 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
  ".LAN_THEME_6."
 {NEWSDATE}
 </td><td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
-<img src='".THEME_ABS."images/comments_16.png' style='width: 16px; height: 16px' alt='' />
+<!-- -->
 </td>
 <td style='padding: 0px; padding-left: 2px; white-space: nowrap'>
 {NEWSCOMMENTS}
