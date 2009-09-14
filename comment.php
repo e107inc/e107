@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/comment.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-08-28 15:30:24 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.12 $
+|     $Date: 2009-09-14 18:18:36 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -29,7 +29,7 @@ if (!e_QUERY)
 	exit;
 }
 
-$cobj =& new comment;
+$cobj = new comment;
 
 $temp_query = explode(".", e_QUERY);
 $action = $temp_query[0];			// Usually says 'comment' - may say 'reply'
@@ -124,7 +124,7 @@ if (isset($_POST['replysubmit']))
 
 if ($redirectFlag)
 {	// Need to go back to original page
-
+	
 	// Check plugin e_comment.php files
 	$plugin_redir = false;
 	$e_comment = $cobj->get_e_comment();
@@ -133,7 +133,7 @@ if ($redirectFlag)
 		$plugin_redir = TRUE;
 		$reply_location = str_replace("{NID}", $redirectFlag, $e_comment[$table]['reply_location']);
 	}
-
+	
 	if ($plugin_redir)
 	{
 		echo "<script type='text/javascript'>document.location.href='{$reply_location}'</script>\n";
@@ -144,6 +144,9 @@ if ($redirectFlag)
 		switch ($table)
 		{
 			case "news" :
+				header('Location: '.e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$redirectFlag));
+				exit;
+					
 			case "poll" :
 			echo "<script type='text/javascript'>document.location.href='".e_BASE."comment.php?comment.{$table}.{$redirectFlag}'</script>\n";
 			exit;
@@ -183,7 +186,7 @@ if ($action == "reply")
 		{
 			case "news" :
 			if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' "))
-			{
+			{ 
 				header("location: ".e_BASE."index.php");
 				exit;
 			}
@@ -221,7 +224,7 @@ if ($action == "reply")
 			break;
 		}
 	}
-	define('e_PAGETITLE', $title." / ".COMLAN_99." / ".COMLAN_102.$subject."");
+	define('e_PAGETITLE', COMLAN_102.$subject.($title ? ' / '.$title : '')." / ".COMLAN_99);
 	require_once(HEADERF);
 }
 elseif ($action == 'comment')
@@ -270,7 +273,7 @@ elseif ($action == 'comment')
 			{
 				$news = $sql->db_Fetch();
 				$subject = $tp->toForm($news['news_title']);
-				define("e_PAGETITLE", COMLAN_100." / ".COMLAN_99." / {$subject}");
+				define("e_PAGETITLE", "{$subject} - ".COMLAN_100." / ".COMLAN_99);
 				require_once(HEADERF);
 				ob_start();
 				$comment_ob_start = TRUE;
@@ -290,7 +293,7 @@ elseif ($action == 'comment')
 				$row = $sql->db_Fetch();
 				$comments_poll = $row['poll_comment'];
 				$subject = $row['poll_title'];
-				define("e_PAGETITLE", COMLAN_101." / ".COMLAN_99." / ".$subject."");
+				define("e_PAGETITLE", $subject.' - '.COMLAN_101." / ".COMLAN_99);
 				$poll_to_show = $id;				// Need to pass poll number through to display routine
 				require_once(HEADERF);
 				require(e_PLUGIN."poll/poll_menu.php");
@@ -317,6 +320,7 @@ elseif ($action == 'comment')
 				exit;
 			}
 			break;
+			
 			default :		// Hope its a plugin table
 			$e_comment = $cobj->get_e_comment();
 			if ($table == $e_comment[$table]['eplug_comment_ids'])

@@ -3,7 +3,7 @@
  + ----------------------------------------------------------------------------+
  |     e107 website system
  |
- |     �Steve Dunstan 2001-2002
+ |     Steve Dunstan 2001-2002
  |     http://e107.org
  |     jalist@e107.org
  |
@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision: 1.23 $
- |     $Date: 2009-08-24 18:36:07 $
- |     $Author: e107coders $
+ |     $Revision: 1.24 $
+ |     $Date: 2009-09-14 18:18:35 $
+ |     $Author: secretr $
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))
@@ -62,7 +62,9 @@ class comment
 			{
 				$subject = COMLAN_325.' '.$subject;
 			}
-			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' >\n<table style='width:100%'>";
+			//FIXME - e_REQUEST_URI?
+			//e_SELF."?".e_QUERY
+			$text = "\n<div id='e-comment-form' style='text-align:center'><form method='post' action='".$_SERVER['REQUEST_URI']."' id='dataform' >\n<table style='width:100%'>";
 			if ($pref['nested_comments'])
 			{
 				$text .= "<tr>\n<td style='width:20%'>".COMLAN_324."</td>\n<td style='width:80%'>\n
@@ -140,7 +142,7 @@ class comment
 				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".COMLAN_16."</td>\n<td style='width:80%'>\n<input class='tbox comment author' type='text' name='author_name' size='61' value='{$author_name}' maxlength='100' />\n</td>\n</tr>";
 			}
 			$text .= $rate."<tr> \n
-			<td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='e-wysiwyg tbox comment' id='comment' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
+			<td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea class='e-wysiwyg tbox comment' id='comment' name='comment' cols='62' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".trim($comval)."</textarea>\n<br />
 			".display_help('helpb', "comment")."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n
 			<td id='commentformbutton' style='width:80%;'>\n
 			".(isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='{$id}' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='{$id}' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='{$content_type}' />" : '')."<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? COMLAN_320 : COMLAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
@@ -537,10 +539,13 @@ class comment
 			//		Query no longer used
 			//		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
 			$type = $this->getCommentType($table);
-			$query = $pref['nested_comments'] ? "SELECT c.*, u.*, ue.* FROM #comments AS c
+			$query = $pref['nested_comments'] ? 
+		"SELECT c.*, u.*, ue.* FROM #comments AS c
 		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
-		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp" : "SELECT c.*, u.*, ue.* FROM #comments AS c
+		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp" 
+			: 
+		"SELECT c.*, u.*, ue.* FROM #comments AS c
 		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
 		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' ORDER BY c.comment_datestamp";
@@ -762,7 +767,7 @@ class comment
 					//author - no ned to split now
 					$comment_author_id = $row['comment_author_id'];
 					$comment_author_name = $row['comment_author_name'];
-					$ret['comment_author'] = (USERID ? "<a href='".e_BASE."user.php?id.".$comment_author_id."'>".$comment_author_name."</a>" : $comment_author_name);
+					$ret['comment_author'] = (USERID ? "<a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$comment_author_id)."'>".$comment_author_name."</a>" : $comment_author_name);
 					//comment text
 					$comment = strip_tags(preg_replace("/\[.*\]/", "", $row['comment_comment'])); // remove bbcode
 					$ret['comment_comment'] = $tp->toHTML($comment, FALSE, "", "", $pref['main_wordwrap']);
@@ -774,11 +779,12 @@ class comment
 							if ($sql2->db_Select("news", "*", "news_id='".$row['comment_item_id']."' AND news_class REGEXP '".e_CLASS_REGEXP."' "))
 							{
 								$row2 = $sql2->db_Fetch();
+								require_once(e_HANDLER.'news_class.php');
 								$ret['comment_type'] = COMLAN_TYPE_1;
 								$ret['comment_title'] = $tp->toHTML($row2['news_title'], TRUE, 'emotes_off, no_make_clickable');
-								$ret['comment_url'] = e_HTTP."comment.php?comment.news.".$row['comment_item_id'];
+								$ret['comment_url'] = e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$row['comment_item_id']);//e_HTTP."comment.php?comment.news.".$row['comment_item_id'];
 								$ret['comment_category_heading'] = COMLAN_TYPE_1;
-								$ret['comment_category_url'] = e_HTTP."news.php";
+								$ret['comment_category_url'] = e107::getUrl()->create('core:news', 'main', '');//e_HTTP."news.php";
 							}
 							break;
 						case '1': //	article, review or content page - defunct category, but filter them out
@@ -814,7 +820,7 @@ class comment
 							{
 								$ret['comment_type'] = COMLAN_TYPE_8;
 								$ret['comment_title'] = $comment_author_name;
-								$ret['comment_url'] = e_HTTP."user.php?id.".$row['comment_item_id'];
+								$ret['comment_url'] = e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$row['comment_item_id']);//e_HTTP."user.php?id.".$row['comment_item_id'];
 							}
 							break;
 						case 'page': //	Custom Page
@@ -879,5 +885,3 @@ class comment
 				return $reta;
 			}
 		} //end class
-		
-?>
