@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-09-13 16:37:18 $
+ * $Revision: 1.42 $
+ * $Date: 2009-09-14 21:54:16 $
  * $Author: secretr $
  *
 */
@@ -187,6 +187,11 @@ class e_form
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 
+	}
+	
+	function checkbox_label($label_title, $name, $value, $checked = false, $options = array())
+	{
+		return $this->checkbox($name, $value, $checked, $options).$this->label($label_title, $name, $value);
 	}
 
 	function checkbox_switch($name, $value, $checked = false, $label = '')
