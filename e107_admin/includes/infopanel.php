@@ -3,7 +3,7 @@
  + ----------------------------------------------------------------------------+
  |     e107 website system
  |
- |     �Steve Dunstan 2001-2002
+ |     Steve Dunstan 2001-2002
  |     http://e107.org
  |     jalist@e107.org
  |
@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.10 $
- |     $Date: 2009-09-05 23:02:23 $
- |     $Author: e107coders $
+ |     $Revision: 1.11 $
+ |     $Date: 2009-09-14 21:54:16 $
+ |     $Author: secretr $
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))
@@ -217,7 +217,7 @@ function render_infopanel_options()
 function render_infopanel_icons()
 {
 	$frm = e107::getSingleton('e_form');
-	global $iconlist,$pluglist;
+	global $iconlist,$pluglist, $user_pref;
 	$text = "";
 	foreach ($iconlist as $key=>$icon)
 	{
@@ -225,7 +225,7 @@ function render_infopanel_icons()
 		{
 			$checked = (varset($user_pref['core-infopanel-mye107']) && in_array($key, $user_pref['core-infopanel-mye107'])) ? true : false;
 			$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
-	                        ".$icon['icon'].$frm->checkbox('e-mye107[]', $key, $checked).$icon['title']."</div>";
+	                        ".$icon['icon'].' '.$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 		}
 	}
 	if (is_array($pluglist))
@@ -236,7 +236,7 @@ function render_infopanel_icons()
 			{
 				$checked = (in_array('p-'.$key, $user_pref['core-infopanel-mye107'])) ? true : false;
 				$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
-		                         ".$icon['icon'].$frm->checkbox('e-mye107[]', $key, $checked).$icon['title']."</div>";
+		                         ".$icon['icon'].$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 			}
 		}
 	}
@@ -258,8 +258,7 @@ function render_infopanel_menu_options()
 		{
 			$checked = (in_array($row['menu_name'], $settings)) ? true : false;
 			$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
-			$text .= $frm->checkbox("e-mymenus[]", $row['menu_name'], $checked);
-			$text .= $row['menu_name'];
+			$text .= $frm->checkbox_label($row['menu_name'], "e-mymenus[]", $row['menu_name'], $checked);
 			$text .= "</div>";
 		}
 	}
