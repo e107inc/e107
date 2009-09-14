@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-25 07:54:34 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.10 $
+|     $Date: 2009-09-14 18:14:32 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 $comment_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
-/*
 
+/*
 SC_BEGIN SUBJECT
 global $SUBJECT, $comrow, $pref, $NEWIMAGE, $tp;
 if (isset($pref['nested_comments']) && $pref['nested_comments']) {
@@ -58,7 +58,7 @@ global $REPLY, $comrow, $action, $pref, $table, $id, $thisaction, $thistable, $t
 $REPLY = '';
 if($comrow['comment_lock'] != "1"){
 	if ($thisaction == "comment" && $pref['nested_comments']) {
-		$REPLY = "<a href='".e_BASE."comment.php?reply.".$thistable.".".$comrow['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
+		$REPLY = "<a href='".SITEURL."comment.php?reply.".$thistable.".".$comrow['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
 	}
 }
 return $REPLY;
@@ -104,14 +104,16 @@ SC_BEGIN COMMENTEDIT
 global $COMMENTEDIT, $pref, $comrow, $comment_edit_query;
 if ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && $comrow['comment_lock'] != "1")
 {
-	if (!strstr(e_QUERY, "."))
+    $adop_icon = (file_exists(THEME."images/commentedit.png") ? THEME_ABS."images/commentedit.png" : e_IMAGE_ABS."admin_images/edit_16.png");
+	//Searching for '.' is BAD!!! It breaks mod rewritten requests. Why is this needed at all?
+	if (strstr(e_QUERY, "&"))
 	{
-		return "<a href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$comrow['comment_id']."'><img src='".e_IMAGE."generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' /></a>";
+		return "<a href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$comrow['comment_id']."'><img src='".$adop_icon."' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' /></a>";
 	}
 	else
 	{
 //		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
-		return "<a href='".e_BASE."comment.php?".$comment_edit_query.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' /></a>";
+		return "<a href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$comrow['comment_id']."#e-comment-form'><img src='".$adop_icon."' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' /></a>";
 	}
 }
 else
