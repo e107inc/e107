@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.52 $
- * $Date: 2009-09-13 16:37:17 $
+ * $Revision: 1.53 $
+ * $Date: 2009-09-14 18:22:15 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -1133,7 +1133,7 @@ class admin_newspost
 					$row = e107::getDb()->db_Fetch();
 	
 					$_POST['news_title'] = $row['news_title'];
-					$_POST['data'] = $row['news_body'];
+					$_POST['news_body'] = $row['news_body'];
 					$_POST['news_author'] = $row['news_author'];
 					$_POST['news_extended'] = $row['news_extended'];
 					$_POST['news_allow_comments'] = $row['news_allow_comments'];
@@ -1194,23 +1194,23 @@ class admin_newspost
 		{
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=".$this->getId(), TRUE))
 			{
-				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
+				//list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['news_body'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
 				$row = $sql->db_Fetch();
 				$_POST['news_title'] = $row['submitnews_title'];
-				$_POST['data'] = $row['submitnews_item'];
+				$_POST['news_body'] = $row['submitnews_item'];
 				$_POST['cat_id'] = $row['submitnews_category'];
 
 				if (defsettrue('e_WYSIWYG'))
 				{
-				  if (substr($_POST['data'],-7,7) == '[/html]') $_POST['data'] = substr($_POST['data'],0,-7);
-				  if (substr($_POST['data'],0,6) == '[html]') $_POST['data'] = substr($_POST['data'],6);
-					$_POST['data'] .= "<br /><b>".NWSLAN_49." {$row['submitnews_name']}</b>";
-					$_POST['data'] .= ($row['submitnews_file'])? "<br /><br /><img src='{e_NEWSIMAGE}{$row['submitnews_file']}' class='f-right' />": '';
+				  if (substr($_POST['news_body'],-7,7) == '[/html]') $_POST['news_body'] = substr($_POST['news_body'],0,-7);
+				  if (substr($_POST['news_body'],0,6) == '[html]') $_POST['news_body'] = substr($_POST['news_body'],6);
+					$_POST['news_body'] .= "<br /><b>".NWSLAN_49." {$row['submitnews_name']}</b>";
+					$_POST['news_body'] .= ($row['submitnews_file'])? "<br /><br /><img src='{e_NEWSIMAGE}{$row['submitnews_file']}' class='f-right' />": '';
 				}
 				else
 				{
-					$_POST['data'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
-					$_POST['data'] .= ($row['submitnews_file'])?"\n\n[img]{e_NEWSIMAGE}{$row['submitnews_file']}[/img]": "";
+					$_POST['news_body'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
+					$_POST['news_body'] .= ($row['submitnews_file'])?"\n\n[img]{e_NEWSIMAGE}{$row['submitnews_file']}[/img]": "";
 				}
 
 			}
@@ -1226,7 +1226,7 @@ class admin_newspost
 				//XXX DB UPLOADS STILL SUPPORTED?
 				$upload_file = "pub_" . (preg_match('#Binary\s(.*?)\/#', $row['upload_file'], $match) ? $match[1] : $row['upload_file']);
 				$_POST['news_title'] = LAN_UPLOAD.": ".$row['upload_name'];
-				$_POST['data'] = $row['upload_description']."\n[b]".NWSLAN_49." [link=".$e107->url->getUrl('core:user', 'main', 'id='.$post_author_id)."]".$post_author_name."[/link][/b]\n\n[file=request.php?".$upload_file."]{$row['upload_name']}[/file]\n";
+				$_POST['news_body'] = $row['upload_description']."\n[b]".NWSLAN_49." [link=".$e107->url->getUrl('core:user', 'main', 'id='.$post_author_id)."]".$post_author_name."[/link][/b]\n\n[file=request.php?".$upload_file."]{$row['upload_name']}[/file]\n";
 			}
 		}
 
@@ -1353,8 +1353,8 @@ class admin_newspost
 								<td class='label'>".NWSLAN_13.":<br /></td>
 								<td class='control'>";
 
-		$val = (strstr($tp->post_toForm($_POST['data']), "[img]http") ? $tp->post_toForm($_POST['data']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['data'])));
-        $text .= $frm->bbarea('data', $val, 'news', 'helpb');
+		$val = (strstr($tp->post_toForm($_POST['news_body']), "[img]http") ? $tp->post_toForm($_POST['news_body']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_body'])));
+        $text .= $frm->bbarea('news_body', $val, 'news', 'helpb');
 
 		// Extended news form textarea
 		// Fixes Firefox issue with hidden wysiwyg textarea.
@@ -1751,7 +1751,7 @@ class admin_newspost
 		$_POST['comment_total'] = $id ? $e107->sql->db_Count("comments", "(*)", " WHERE comment_item_id={$id} AND comment_type='0'") : 0;
 		$_PR = $_POST;
 
-		$_PR['news_body'] = $e107->tp->post_toHTML($_PR['data'],FALSE);
+		$_PR['news_body'] = $e107->tp->post_toHTML($_PR['news_body'],FALSE);
 		$_PR['news_title'] = $e107->tp->post_toHTML($_PR['news_title'],FALSE,"emotes_off, no_make_clickable");
 		$_PR['news_summary'] = $e107->tp->post_toHTML($_PR['news_summary']);
 		$_PR['news_extended'] = $e107->tp->post_toHTML($_PR['news_extended']);

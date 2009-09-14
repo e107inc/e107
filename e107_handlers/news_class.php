@@ -9,8 +9,8 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-09-13 16:37:18 $
+ * $Revision: 1.23 $
+ * $Date: 2009-09-14 18:22:15 $
  * $Author: secretr $
 */
 
@@ -340,6 +340,9 @@ class e_news_tree extends e_model
 }
 
 class news {
+	
+	protected static $_rewrite_data = array();
+	protected static $_rewrite_map = null;
 
 	//FIXME - LANs
 	//TODO - synch WIKI docs, add rewrite data to the event data
@@ -718,6 +721,97 @@ class news {
 		return false;
 	}
 	
+	public static function retrieveRewriteString($news_id, $type = 1)
+	{
+		//XXX - Best way we have now, discuss
+		if(null === self::$_rewrite_map)
+		{
+			$tmp = e107::getCache()->retrieve_sys('nomd5_news_rewrite_map');
+			if(false !== $tmp && ($tmp = e107::getArrayStorage()->ReadArray($tmp)))
+			{
+				self::$_rewrite_map = $tmp;
+			}
+			else
+			{
+				self::$_rewrite_map = array();
+				if(e107::getDb()->db_Select('news_rewrite'))
+				{
+					while ($tmp = e107::getDb()->db_Fetch())
+					{
+						self::$_rewrite_map[$tmp['news_rewrite_type']][$tmp['news_rewrite_source']] = $tmp['news_rewrite_string'];
+					}
+				}
+				e107::getCache()->set_sys('nomd5_news_rewrite_map', e107::getArrayStorage()->WriteArray(self::$_rewrite_map, false));
+			}
+			unset($tmp);
+		}
+		
+		//convert type if needed
+		if(is_string($type))
+		{
+			switch($type)
+			{
+				case 'item':
+				case 'extend':
+					$type = 1;
+				break;
+			
+				default:
+					$type = 2;
+				break;
+			}
+		}
+		
+		return (isset(self::$_rewrite_map[$type][$news_id]) ? self::$_rewrite_map[$type][$news_id] : '');
+	}
+	
+	public static function retrieveRewriteData($sefstr, $force = true)
+	{
+		//check runtime cache
+		if(isset(self::$_rewrite_data[$sefstr]))
+		{
+			return self::$_rewrite_data[$sefstr];
+		}
+		
+		//check server cache if allowed
+		if(!$force && ($ret = self::getRewriteCache($sefstr, true)))
+		{
+			self::$_rewrite_data[$sefstr] = $ret;
+			return self::$_rewrite_data[$sefstr];
+		}
+		
+		//search DB
+		$ret = array();
+		if(e107::getDb()->db_Select('news_rewrite', '*', "news_rewrite_string='".e107::getParser()->toDB($sefstr)."'"))
+		{
+			$ret = e107::getDb()->db_Fetch();
+		}
+		
+		//set runtime cache
+		self::$_rewrite_data[$sefstr] = $ret;
+		
+		//set server cache
+		if($ret)
+		{
+			self::setRewriteCache($sefstr, $ret);
+		}
+		
+		return self::$_rewrite_data[$sefstr];
+	}
+	
+	public static function getRewriteCache($sefstr, $toArray = true)
+	{
+		$sefstr = md5($sefstr);
+		
+		$ret = ecache::retrieve_sys('news_sefurl'.$sefstr, false, true);
+		
+		if($ret && $toArray)
+		{
+			return e107::getArrayStorage()->ReadArray($ret);
+		}
+		return $ret;
+	}
+	
 	public static function clearRewriteCache($sefstr = '')
 	{
 		if($sefstr) $sefstr = md5($sefstr);
@@ -731,7 +825,7 @@ class news {
 		ecache::set_sys("news_sefurl".$sefstr, $data, true);
 	}
 
-	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='')
+	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param = array())
 	{
 		global $e107, $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE, $news_shortcodes, $loop_uid;
 		if ($override_newsitem = $override -> override_check('render_newsitem')) {
@@ -756,19 +850,21 @@ class news {
 			$news['comment_total'] = 0;
 		}
 
-		if (!$param)
-		{
-			$param['caticon'] = ICONSTYLE;
-			$param['commentoffstring'] = COMMENTOFFSTRING;
-			$param['commentlink'] = COMMENTLINK;
-			$param['trackbackstring'] = (defined("TRACKBACKSTRING") ? TRACKBACKSTRING : "");
-			$param['trackbackbeforestring'] = (defined("TRACKBACKBEFORESTRING") ? TRACKBACKBEFORESTRING : "");
-			$param['trackbackafterstring'] = (defined("TRACKBACKAFTERSTRING") ? TRACKBACKAFTERSTRING : "");
-			$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
-			$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
-			$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
-			$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
-		}
+		$tmp = array();
+		$tmp['caticon'] = ICONSTYLE;
+		$tmp['commentoffstring'] = COMMENTOFFSTRING;
+		$tmp['commentlink'] = COMMENTLINK;
+		$tmp['trackbackstring'] = (defined("TRACKBACKSTRING") ? TRACKBACKSTRING : "");
+		$tmp['trackbackbeforestring'] = (defined("TRACKBACKBEFORESTRING") ? TRACKBACKBEFORESTRING : "");
+		$tmp['trackbackafterstring'] = (defined("TRACKBACKAFTERSTRING") ? TRACKBACKAFTERSTRING : "");
+		$tmp['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
+		$tmp['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
+		$tmp['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
+		$tmp['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
+
+		if(!$param) $param = array();
+		$param = array_merge($tmp, $param);		
+		
 
 // Next three images aren't always defined by the caller, even if most of $param is.
 		if (!isset($param['image_nonew_small']))

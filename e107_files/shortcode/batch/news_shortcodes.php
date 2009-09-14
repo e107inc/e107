@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.26 2009-09-13 16:37:17 secretr Exp $
+* $Id: news_shortcodes.php,v 1.27 2009-09-14 18:22:15 secretr Exp $
 *
 * News shortcode batch
 */
@@ -62,6 +62,7 @@ class news_shortcodes
 			$news_extended = $this->e107->tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 			$news_body .= '<br /><br />'.$news_extended;
 		}
+
 		return $news_body;
 	}
 
@@ -107,11 +108,17 @@ class news_shortcodes
 		$news_item = $this->news_item;
 		$param = $this->param;
 
+		if($param['current_action'] == 'extend')
+		{
+			return '';
+		}
+		
 		if (varsettrue($pref['multilanguage']))
 		{	// Can have multilanguage news table, monlingual comment table. If the comment table is multilingual, it'll only count entries in the current language
-			$news_item['news_comment_total'] = $sql->db_Select("comments", "*", "comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
+			$news_item['news_comment_total'] = $sql->db_Count("comments", "(*)", "WHERE comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
 		}
-
+		
+		//XXX - ??? - another query? We should cache it in news table.
 		if ($pref['comments_icon'] && $news_item['news_comment_total'])
 		{
 			$sql->db_Select('comments', 'comment_datestamp', "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
@@ -130,7 +137,7 @@ class news_shortcodes
 		{
 			$NEWIMAGE = $param['image_nonew_small'];
 		}
-		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>' : $param['commentoffstring']);
+		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$news_item['news_id'].'&sef='.$news_item['news_rewrite_string'])."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>' : $param['commentoffstring']);
 	}
 
 	function sc_trackback($parm)
@@ -184,7 +191,7 @@ class news_shortcodes
 
 	function sc_newscommentlink($parm)
 	{
-		return ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : " <a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."'>".$this->param['commentlink'].'</a>');
+		return ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : " <a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".$this->param['commentlink'].'</a>');
 	}
 
 	function sc_newscommentcount($parm)
@@ -220,8 +227,8 @@ class news_shortcodes
 	{
 		if (ADMIN && getperms('H'))
 		{
-			$adop_icon = (file_exists(THEME."images/newsedit.png") ? THEME_ABS."images/newsedit.png" : e_IMAGE_ABS."generic/newsedit.png");
-			return " <a href='".e_ADMIN_ABS."newspost.php?create.edit.".$this->news_item['news_id']."'><img src='".$adop_icon."' alt='' class='icon' /></a>\n";
+			$adop_icon = (file_exists(THEME."images/newsedit.png") ? THEME_ABS."images/newsedit.png" : e_IMAGE_ABS."admin_images/edit_16.png");
+			return " <a href='".e_ADMIN_ABS."newspost.php?create.edit.".$this->news_item['news_id']."'><img src='".$adop_icon."' alt='".LAN_NEWS_25."' class='icon' /></a>\n";
 		}
 		else
 		{
@@ -256,19 +263,19 @@ class news_shortcodes
 	function sc_captionclass()
 	{
 		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
-		return "<div class='category".$this->news_item['news_category']."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
+		return "<div class='category".$this->news_item['news_category']."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
 	function sc_admincaption()
 	{
 		$news_title = $this->e107->tp->toHTML($this->news_item['news_title'], TRUE,'no_hook,emotes_off, no_make_clickable');
-		return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e_HTTP."comment.php?comment.news.".$this->news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
+		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('core:news', 'main', 'action=extend&id='.$this->news_item['news_id'].'&sef='.$this->news_item['news_rewrite_string'])."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
 	function sc_adminbody($parm)
 	{
 		$news_body = $this->sc_newsbody($parm);
-		return "<div class='".(defined(ADMINNAME) ? ADMINNAME : 'null')."'>".$news_body.'</div>';
+		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : 'null')."'>".$news_body.'</div>';
 	}
 
 	function sc_newssummary()
@@ -358,6 +365,26 @@ class news_shortcodes
 				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=list&id={$this->news_item['news_category']}&sef={$this->news_item['news_category_rewrite_string']}")."'><img style='".$this->param['caticon']."' src='".$category_icon."' alt='' /></a>";
 			break;
 		}
+	}
+	
+	/**
+	 * Example usage: {NEWSITEM_SCHOOK=mysc_name|my_var1=val1&myvar2=myval2}
+	 * will fire {MYSC_NAME=news_id=1&my_var1=val1&myvar2=myval2}
+	 * Inside your 'MYSC_NAME' shortcode you are also able to access current item data this way
+	 * <code>
+	 * $newsdata = e107::getRegistry('core/news/schook_data');
+	 * //returns array('data' => (array) $current_news_data, 'params' => array() $current_params)
+	 * </code>
+	 * 
+	 * @param string $parm
+	 * @return string
+	 */
+	function sc_newsitem_schook($parm)
+	{
+		$parm = explode('|', $parm, 2);
+		$parm[1] = 'news_id='.$this->news_item['news_id'].(varset($parm[1]) ? '&'.$parm[1] : '');
+		e107::setRegistry('core/news/schook_data', array('data' => $this->news_item, 'params' => $this->param));
+		return $this->e107->tp->parseTemplate('{'.strtoupper($parm[0]).'='.$parm[1].'}');
 	}
 
 	function sc_newsinfo()

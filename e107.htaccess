@@ -3,7 +3,7 @@
 	Options +FollowSymLinks 
 	RewriteEngine On
 
-### Set this to your e107 site root
+### Set this to your e107 site root, path relative to web root
 	RewriteBase /
 
 ### send 404 on missing files in these folders 
@@ -15,15 +15,18 @@
 	RewriteCond %{REQUEST_FILENAME} !-l 
 	
 ### NEWS SEF URLs - set 'news' to the 'URL identifier' value (news Administration area) ###
+	RewriteRule ^news/?$ news.php [L]
 	RewriteRule ^news/(.*)$ news.php?rewrite=$1 [L]
+	
+	## Use this on your own risk.
+	## Quick & dirty solution for news rewrite without (empty) 'URL identifier', 
+	## extremely useful for blog site owners
+	## Keep in mind it should be your last RewriteRule!
+	## You also might want to change your Front page (administration) to your site root, e.g. '/'
+	#DirectoryIndex news.php index.php index.html
+	#RewriteRule ^(.*)$ news.php?rewrite=$1 [L]
 
-### REMOVE ###
-RewriteRule ^news/?$ news.php
-#item, default, cat actions
-#RewriteRule ^news/([a-z]+)-([0-9]+)-([0-9]+)(\.html)?$ news.php?$1.$2.$3 [L]
-#extend, cat, list actions
-#RewriteRule ^news/([a-z]+)-([0-9]+)(\.html)?$ news.php?$1.$2 [L]
-### REMOVE END ###
+
 </IfModule>
 
 #ErrorDocument 400 /error.php?400
