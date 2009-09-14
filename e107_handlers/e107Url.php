@@ -9,10 +9,12 @@
  * URL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
- * $Revision: 1.11 $
- * $Date: 2008-12-02 14:21:19 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.12 $
+ * $Date: 2009-09-14 18:19:17 $
+ * $Author: secretr $
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 class eURL
 {
@@ -20,14 +22,17 @@ class eURL
 	var $_link_handlers = array();
 
 	/**
-	 * Get plugin url
-	 *
+	 * Create site url
+	 * Example: 
+	 * <code>e107::getUrl()->create('core::news', 'main', 'action=extend&id=1&sef=Item-SEF-URL');</code>
+	 * <code>e107::getUrl()->create('myplug', 'main', 'action=myaction&id=1');</code>
+	 * 
 	 * @param string $section
 	 * @param string $urlType
 	 * @param string|array $urlItems
 	 * @return string URL or '#url-not-found' on error
 	 */
-	function getUrl($section, $urlType, $urlItems = array())
+	public function create($section, $urlType, $urlItems = array())
 	{
 		if (!is_array($urlItems))
 		{
@@ -47,16 +52,28 @@ class eURL
 		}
 		return '#url-not-found';
 	}
+	
+	/**
+	 * Alias of {@link get()}
+	 * @param string $section
+	 * @param string $urlType
+	 * @param array $urlItems [optional]
+	 * @return string URL
+	 */
+	public function getUrl($section, $urlType, $urlItems = array())
+	{
+		return $this->create($section, $urlType, $urlItems);
+	}
 
 	/**
-	 * Parse Request string
+	 * Parse Request
 	 *
 	 * @param string $section
 	 * @param string $urlType
 	 * @param string $request
 	 * @return mixed parsed url
 	 */
-	function parseUrl($section, $urlType, $request = '')
+	public function parseRequest($section, $urlType, $request = '')
 	{
 		if (empty($request))
 		{
@@ -68,11 +85,11 @@ class eURL
 		{
 			$this->_link_handlers[$handlerId] = $this->_initHandler($section, $urlType);
 		}
-
+		
 		return call_user_func('parse_'.$this->_link_handlers[$handlerId], $request);
 	}
 
-	function _initHandler($section, $urlType)
+	protected function _initHandler($section, $urlType)
 	{
 		global $pref; //FIXME pref handler, $e107->prefs instance
 
