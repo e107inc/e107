@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2009-09-13 12:12:22 $
+|     $Revision: 1.83 $
+|     $Date: 2009-09-14 11:27:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -86,6 +86,8 @@ class e107plugin
 	'plugin_addons',				// List of any extras associated with plugin - bbcodes, e_XXX files...
 	'plugin_category'				// Plugin Category: settings, users, content, management, tools, misc, about
 	);
+
+	var $accepted_categories = array('settings', 'users', 'content', 'tools', 'manage', 'misc', 'about');
 
 	var $plug_vars;
 	var $current_plug;
@@ -259,7 +261,7 @@ class e107plugin
 						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1 );
-						e107::getDb()->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".vartrue($plug_info['category'],'misc')."', '".varset($plug_info['@attributes']['releaseUrl'])."' ");
+						e107::getDb()->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' ");
 
 					}
 				}
@@ -295,6 +297,19 @@ class e107plugin
 		{
 			e107::getConfig('core')->setPref('plug_installed',$p_installed);
 			e107::getConfig('core')->save();
+		}
+	}
+	
+	
+	function manage_category($cat)
+	{
+		if(vartrue($cat) && in_array($cat,$this->accepted_categories))
+		{
+			return $cat;
+		}
+		else
+		{
+			return 'misc';
 		}
 	}
 
@@ -736,7 +751,9 @@ class e107plugin
 		$sql = e107::getDb();
 		
 		
-		$search_prefs = e107::getConfig('search');
+		$search_prefs = e107::getConfig('search')->getPref();
+		
+		
 	//	$search_prefs = $sysprefs -> getArray('search_prefs');
 		$default = file_exists(e_PLUGIN.$eplug_folder.'/e_search.php') ? TRUE : FALSE;
 		$comments = file_exists(e_PLUGIN.$eplug_folder.'/search/search_comments.php') ? TRUE : FALSE;
@@ -1715,6 +1732,8 @@ class e107plugin
 		{
 			$this->parsed_plugin[$plugName] = $this->plug_vars;
 		}
+		
+		
 		return $ret;
 	}
 
@@ -1732,7 +1751,7 @@ class e107plugin
 		$ret['@attributes']['name'] = varset($eplug_name);
 		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
 		$ret['folder'] = varset($eplug_folder);
-		$ret['category'] = varset($eplug_category);
+		$ret['category'] = $this->manage_category($eplug_category);
 		$ret['description'] = varset($eplug_description);
 		$ret['author']['@attributes']['name'] = varset($eplug_author);
 		$ret['author']['@attributes']['url'] = varset($eplug_url);
@@ -1770,8 +1789,30 @@ class e107plugin
 			$emessage->add("Error reading {$plugName}/plugin.xml", E_MESSAGE_ERROR);
  			return FALSE;
 		}
-//		print_a($this->plug_vars);
-		return true;
+		
+		$this->plug_vars['category'] = $this->manage_category($this->plug_vars['category']);	
+		$this->plug_vars = $this->cleanXML($this->plug_vars);
+
+		return TRUE;
+	}
+
+	/**
+	 * Return as an array, even when a single xml tag value is found
+	 * @param object $vars
+	 * @return array
+	 */
+	private function cleanXml($vars)
+	{
+		$array_tags = array("extendedField","userclass","menuLink");
+		foreach($array_tags as $vl)
+		{
+			if(is_array($vars[$vl]) && !varset($vars[$vl][0]))
+			{
+				$vars[$vl] = array($vars[$vl]);	
+			}	
+		}
+		
+		return $vars;
 	}
 
 }
