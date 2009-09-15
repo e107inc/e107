@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2009-09-14 11:57:13 $
-|     $Author: e107coders $
+|     $Revision: 1.85 $
+|     $Date: 2009-09-15 16:10:32 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -810,9 +810,6 @@ class e107plugin
 
 	function manage_notify($action, $eplug_folder)
 	{
-		global $sysprefs, $eArrayStorage;
-		
-		$sql = e107::getDb();
 		$tp = e107::getParser();
 	//	$notify_prefs = $sysprefs -> get('notify_prefs');
 	//	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
@@ -825,11 +822,11 @@ class e107plugin
 		}
 		else if ($action == 'remove')
 		{
-			$uninstall_notify = isset($notify_prefs['plugins'][$eplug_folder]) ? TRUE : FALSE;
+			$uninstall_notify = $notify_prefs->isData('plugins/'.$eplug_folder);//isset($notify_prefs['plugins'][$eplug_folder]) ? TRUE : FALSE;
 		}
 		else if ($action == 'upgrade')
 		{
-			if (isset($notify_prefs['plugins'][$eplug_folder]))
+			if ($notify_prefs->isData('plugins/'.$eplug_folder))
 			{
 				$uninstall_notify = $e_notify ? FALSE : TRUE;
 			}
@@ -840,25 +837,30 @@ class e107plugin
 		}
 		if (vartrue($install_notify))
 		{
-			$notify_prefs['plugins'][$eplug_folder] = TRUE;
+			$notify_prefs->setPref('plugins/'.$eplug_folder, 1); //$notify_prefs['plugins'][$eplug_folder] = TRUE;
 			require_once(e_PLUGIN.$eplug_folder.'/e_notify.php');
 			foreach ($config_events as $event_id => $event_text)
 			{
-				$notify_prefs['event'][$event_id] = array('class' => e_UC_NOBODY, 'email' => '');
+				$notify_prefs->setPref('event/'.$event_id.'/class', e_UC_NOBODY)
+					->setPref('event/'.$event_id.'/email', '');
+				//$notify_prefs['event'][$event_id] = array('class' => e_UC_NOBODY, 'email' => '');
 			}
 		}
 		else if (vartrue($uninstall_notify))
 		{
-			unset($notify_prefs['plugins'][$eplug_folder]);
+			$notify_prefs->removePref('plugins/'.$eplug_folder);
+			//unset($notify_prefs['plugins'][$eplug_folder]);
 			require_once(e_PLUGIN.$eplug_folder.'/e_notify.php');
 			foreach ($config_events as $event_id => $event_text)
 			{
-				unset($notify_prefs['event'][$event_id]);
+				$notify_prefs->removePref('event/'.$event_id);
+				//unset($notify_prefs['event'][$event_id]);
 			}
 		}
-		$s_prefs = $tp -> toDB($notify_prefs);
-		$s_prefs = e107::getArrayStorage()->WriteArray($s_prefs); //TODO use preference class function instead. 
-		e107::getDb() -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
+		//$s_prefs = $tp -> toDB($notify_prefs);
+		//$s_prefs = e107::getArrayStorage()->WriteArray($s_prefs); 
+		//e107::getDb() -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
+		$notify_prefs->save(false);
 	}
 
 	function displayArray(&$array, $msg='')
