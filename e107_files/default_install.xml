@@ -157,7 +157,7 @@ City, State, Country
 [b]Email:[/b] sales@mydomain.com</core>
 		<core name='sitecontacts'>255</core>
 		<core name='sitedescription'></core>
-		<core name='sitedisclaimer'><![CDATA[This site is powered by <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a>, which is released under the terms of the <a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> GPL License.]]></core>
+		<core name='sitedisclaimer'><![CDATA[This site is powered by [link=http://e107.org/]e107[link], which is released under the terms of the [link=http://www.gnu.org/]GNU[/link] GPL License.]]></core>
 		<core name='sitelang_init'>English</core>
 		<core name='sitelanguage'>English</core>
 		<core name='sitename'>e107 Website System</core>
