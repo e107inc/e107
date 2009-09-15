@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.143 $
-* $Date: 2009-09-14 18:22:15 $
+* $Revision: 1.144 $
+* $Date: 2009-09-15 13:34:09 $
 * $Author: secretr $
 *
 */
@@ -53,7 +53,7 @@ if(isset($_E107['cli']) && !isset($_E107['debug']) && isset($_SERVER["HTTP_USER_
 	exit;
 }
 
-if(!$_E107['cli'])
+if(!isset($_E107['cli']))
 {
 	while (@ob_end_clean());  // destroy all ouput buffering
 	ob_start();             // start our own.
