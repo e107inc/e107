@@ -1,6 +1,6 @@
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: news_categories.sc,v 1.4 2009-06-06 17:03:25 e107steved Exp $
+ * $Id: news_categories.sc,v 1.5 2009-09-15 15:08:50 secretr Exp $
  *
  * News Categories shortcode
 */
@@ -70,7 +70,14 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	$param['caticon'] = NEWSCAT_CATICON;
 
 	$sql2 = new db;
-	$sql2->db_Select("news_category", "*", "category_id!='' ORDER BY category_name ASC");
+	$qry = "SELECT nc.*, ncr.news_rewrite_string AS news_category_rewrite_string, ncr.news_rewrite_id AS news_category_rewrite_id FROM #news_category AS nc
+        LEFT JOIN #news_rewrite AS ncr ON nc.category_id=ncr.news_rewrite_source AND ncr.news_rewrite_type=2
+        ORDER BY nc.category_order
+    ";
+	if(!$sql2->db_Select_gen($qry))
+	{
+        return '';
+    }
 
 	$text3 = "\n\n\n
 	<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'>
@@ -82,24 +89,35 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 		extract($row3);
 
 		$search[0] = "/\{NEWSCATICON\}(.*?)/si";
-		$replace[0] = ($category_icon) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=cat&value='.$category_id)."'><img src='".e_IMAGE_ABS."icons/".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
+		$replace[0] = ($category_icon) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."'><img src='".e_IMAGE_ABS."icons/".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
 
 		$search[1] = "/\{NEWSCATEGORY\}(.*?)/si";
-		$replace[1] = ($category_name) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=cat&value='.$category_id)."' style='".$param['catlink']."' >".$tp->toHTML($category_name,TRUE,"defs")."</a>" : "";
+		$replace[1] = ($category_name) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."' style='".$param['catlink']."' >".$tp->toHTML($category_name,TRUE,"defs")."</a>" : "";
 
 		$text3 .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 		$text3 .= "\n<td style='".NEWSCAT_CELL."; width:$wid%;'>\n";
 
 // Grab each news item.--------------
+    	$cqry = "SELECT n.*, nr.* FROM #news AS n
+            LEFT JOIN #news_rewrite AS nr ON n.news_id=nr.news_rewrite_source AND nr.news_rewrite_type=1
+            WHERE news_category='".intval($category_id)."' 
+            AND news_class IN (".USERCLASS_LIST.") 
+            AND (news_start=0 || news_start < ".time().") 
+            AND (news_end=0 || news_end>".time().")
+            ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT;
 
-		$count = $sql->db_Select("news", "*", "news_category='".intval($category_id)."' AND news_class IN (".USERCLASS_LIST.") AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT);
-		while ($row = $sql->db_Fetch()) {
-
-			$row['category_name'] = $category_name;
-			$row['category_icon'] = $category_icon;
-
-			$textbody .= $ix -> render_newsitem($row, 'return', '', $NEWSCAT_ITEM, $param);
-
+        $count = $sql->db_Select_gen($cqry);
+		//$count = $sql->db_Select("news", "*", "news_category='".intval($category_id)."' AND news_class IN (".USERCLASS_LIST.") AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT);
+		if($count)
+		{
+            while ($row = $sql->db_Fetch()) {
+    
+    			//$row['category_name'] = $category_name;
+    			//$row['category_icon'] = $category_icon;
+    			$row = array_merge($row, $row3);
+    			$textbody .= $ix -> render_newsitem($row, 'return', '', $NEWSCAT_ITEM, $param);
+    
+    		}
 		}
 // ----------------------------------
 
