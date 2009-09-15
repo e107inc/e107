@@ -11,12 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/sitedown.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-08-28 15:30:25 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.4 $
+|     $Date: 2009-09-15 15:02:35 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
+
+header("Content-type: text/html; charset=utf-8", TRUE);
+
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 /*
