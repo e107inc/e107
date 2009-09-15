@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.27 2009-09-14 18:22:15 secretr Exp $
+* $Id: news_shortcodes.php,v 1.28 2009-09-15 15:08:49 secretr Exp $
 *
 * News shortcode batch
 */
@@ -57,10 +57,9 @@ class news_shortcodes
 	function sc_newsbody($parm)
 	{
 		$news_body = $this->e107->tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
-		if($this->news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != 'noextend')
+		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && $parm != 'noextend')
 		{
-			$news_extended = $this->e107->tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
-			$news_body .= '<br /><br />'.$news_extended;
+			$news_body .= $this->e107->tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
 
 		return $news_body;
@@ -113,7 +112,7 @@ class news_shortcodes
 			return '';
 		}
 		
-		if (varsettrue($pref['multilanguage']))
+		if (vartrue($pref['multilanguage']))
 		{	// Can have multilanguage news table, monlingual comment table. If the comment table is multilingual, it'll only count entries in the current language
 			$news_item['news_comment_total'] = $sql->db_Count("comments", "(*)", "WHERE comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
 		}
@@ -238,7 +237,8 @@ class news_shortcodes
 
 	function sc_extended($parm)
 	{
-		if ($this->news_item['news_extended'] && (strpos(e_QUERY, 'extend') === FALSE || $parm == 'force'))
+		
+		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
 			if (defined('PRE_EXTENDEDSTRING'))
 			{
