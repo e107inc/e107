@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-09-10 09:49:01 $
+ * $Revision: 1.25 $
+ * $Date: 2009-09-16 13:01:19 $
  * $Author: e107coders $
 */
 
@@ -69,7 +69,7 @@ class xmlClass
 	/**
 	 * Log of all paths replaced.
 	 * @var
-	 */
+	 */	
 	public $fileConvertLog = array();
 	
 	public $convertFilePaths = FALSE;
@@ -82,6 +82,7 @@ class xmlClass
 	
 	public $filePathConvKeys = array();
 	
+	private $arrayTags = false;
 	
 	/**
 	 * Add root element to the result array
@@ -186,6 +187,17 @@ class xmlClass
 	public function setOptAddRoot($flag)
 	{
 		$this->_optAddRoot = (boolean) $flag;
+		return $this;
+	}
+	
+	/**
+	 * Set Xml tags that should always return arrays.
+	 * @param object $array
+	 * @return 
+	 */
+	public function setOptArrayTags($string)
+	{
+		$this->arrayTags = (array) explode(",",$string);
 		return $this;
 	}
 	
@@ -403,6 +415,8 @@ class xmlClass
 				$ret[$tag] = $this->xml2array($xml->{$tag}, $tag);
 			}
 			
+			$ret = $this->parseArrayTags($ret);	
+			
 			return ($this->_optAddRoot ? array($xml->getName() => $ret) : $ret);
 		}
 
@@ -450,11 +464,13 @@ class xmlClass
 					break;
 				}
 			}
+			
 			return $ret;
 		}
 		
 		//parse value only
 		$ret = trim((string) $xml);
+	
 		return ($this->_optForceArray ? array($this->_optValueKey => $ret) : $ret);
 	}
 
@@ -503,8 +519,45 @@ class xmlClass
 				$xml = $xml[0];
 			}
 		}
+		
+
+		$xml = $this->parseArrayTags($xml);	
+		
 		return $xml;
 	}
+
+
+	/**
+	 * Return as an array, even when a single xml tag value is found
+	 * Use setArrayTags() to set which tags are affected. 
+	 * @param object $vars
+	 * @return array
+	 */
+	private function parseArrayTags($vars)
+	{
+
+		if(!$this->arrayTags)
+		{
+			return $vars;
+		}
+
+		// $array_tags = array("extendedField","userclass","menuLink");
+		foreach($this->arrayTags as $vl)
+		{
+			
+			if(is_array($vars[$vl]) && !varset($vars[$vl][0]))
+			{
+
+				$vars[$vl] = array($vars[$vl]);	
+			}	
+		}
+		
+		return $vars;
+	}
+
+
+
+
 
 	/**
 	 * Load XML file and parse it (optional)

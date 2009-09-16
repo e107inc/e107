@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2009-09-15 16:10:32 $
-|     $Author: secretr $
+|     $Revision: 1.86 $
+|     $Date: 2009-09-16 13:01:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -1779,7 +1779,9 @@ class e107plugin
 	//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
+		$xml->setOptArrayTags('extendedField,userclass,menuLink'); // always arrays for these tags.
 		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', true, true);
+		
 		if ($this->plug_vars === FALSE)
 		{
             require_once(e_HANDLER."message_handler.php");
@@ -1789,29 +1791,11 @@ class e107plugin
 		}
 		
 		$this->plug_vars['category'] = $this->manage_category($this->plug_vars['category']);	
-		$this->plug_vars = $this->cleanXML($this->plug_vars);
 
 		return TRUE;
 	}
 
-	/**
-	 * Return as an array, even when a single xml tag value is found
-	 * @param object $vars
-	 * @return array
-	 */
-	private function cleanXml($vars)
-	{
-		$array_tags = array("extendedField","userclass","menuLink");
-		foreach($array_tags as $vl)
-		{
-			if(is_array($vars[$vl]) && !varset($vars[$vl][0]))
-			{
-				$vars[$vl] = array($vars[$vl]);	
-			}	
-		}
-		
-		return $vars;
-	}
+
 
 }
 
