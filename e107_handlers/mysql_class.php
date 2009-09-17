@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.52 $
- * $Date: 2009-09-13 10:29:56 $
- * $Author: secretr $
+ * $Revision: 1.53 $
+ * $Date: 2009-09-17 00:13:39 $
+ * $Author: e107coders $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -24,7 +24,7 @@ if(defined('MYSQL_LIGHT'))
 	$sql = new db;
 	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
-elseif(defined('E107_INSTALL')) //TODO Remove the need for this if possible
+elseif(defined('E107_INSTALL')) 
 {
 	define('E107_DEBUG_LEVEL', 0);
 	define('e_QUERY', '');
@@ -49,8 +49,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.52 $
- * @author $Author: secretr $
+ * @version $Revision: 1.53 $
+ * @author $Author: e107coders $
  * 
  */
 class e_db_mysql {
@@ -93,8 +93,9 @@ class e_db_mysql {
 		e107::getSingleton('e107_traffic')->BumpWho('Create db object', 1);	
 		
 		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
-		$langid = 'e107language_'.$pref['cookie_name'];
-		if ($pref['user_tracking'] == 'session')
+			
+		$langid = (isset($pref['cookie_name'])) ? 'e107language_'.$pref['cookie_name'] : 'e107language_temp';
+		if (isset($pref['user_tracking']) && ($pref['user_tracking'] == 'session'))
 		{
 			if (!isset($_SESSION[$langid])) { return; }
 			$this->mySQLlanguage = $_SESSION[$langid];

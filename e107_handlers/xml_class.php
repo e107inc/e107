@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-09-16 13:01:19 $
+ * $Revision: 1.26 $
+ * $Date: 2009-09-17 00:13:40 $
  * $Author: e107coders $
 */
 
@@ -541,11 +541,10 @@ class xmlClass
 			return $vars;
 		}
 
-		// $array_tags = array("extendedField","userclass","menuLink");
 		foreach($this->arrayTags as $vl)
 		{
 			
-			if(is_array($vars[$vl]) && !varset($vars[$vl][0]))
+			if(isset($vars[$vl]) && is_array($vars[$vl]) && !varset($vars[$vl][0]))
 			{
 
 				$vars[$vl] = array($vars[$vl]);	
@@ -762,9 +761,9 @@ class xmlClass
 		
 		$pref = array();
 		foreach($XMLData['prefs'][$prefType] as $val)
-		{
-			$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+		{	
 			$name = $val['@attributes']['name'];
+			$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
 			$pref[$name] = $value;									
 		}	
 		

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2009-08-22 21:27:34 $
-|     $Author: e107steved $
+|     $Revision: 1.42 $
+|     $Date: 2009-09-17 00:13:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -69,7 +69,7 @@ class user_class
 	function user_class()
 	{
 
-	  $this->sql_r = new db;
+	  $this->sql_r = e107::getDb('sql_r');
 	  $this->isAdmin = FALSE;
 
 	  $this->fixed_classes = array(e_UC_PUBLIC => UC_LAN_0,
