@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-09-17 00:13:40 $
+ * $Revision: 1.27 $
+ * $Date: 2009-09-17 04:30:25 $
  * $Author: e107coders $
 */
 
@@ -82,7 +82,11 @@ class xmlClass
 	
 	public $filePathConvKeys = array();
 	
+	public $errors;
+	
 	private $arrayTags = false;
+	
+	
 	
 	/**
 	 * Add root element to the result array
@@ -342,21 +346,25 @@ class xmlClass
 	 * @param boolean $simple [optional] false - use xml2array(), true - use xml_convert_to_array()
 	 * @return string
 	 */
-	function parseXml($xml = '', $simple = true)
+	function parseXml($xmlData = '', $simple = true)
 	{
-		if ($xml)
+		if ($xmlData)
 		{
-			$this->xmlFileContents = $xml;
+			$this->xmlFileContents = $xmlData;
 		}
 		elseif ($this->xmlFileContents)
 		{
-			$xml = $this->xmlFileContents;
+			$xmlData = $this->xmlFileContents;
 		}
-		if (!$xml)
+		if (!$xmlData)
 		{
-			return false;
+			return FALSE;
 		}
-		$xml = simplexml_load_string($xml);
+		if(!$xml = simplexml_load_string($xmlData))
+		{
+			$this->errors = $this->getErrors($xmlData);
+			return FALSE;	
+		};
 
 		$xml = $simple ? $this->xml_convert_to_array($xml, $this->filter, $this->stripComments) : $this->xml2array($xml);
 		return $xml;
@@ -849,6 +857,23 @@ class xmlClass
 		}
 		
 		return $ret;				
+	}
+	
+	
+	function getErrors($xml)
+	{
+		libxml_use_internal_errors(true);
+		$sxe = simplexml_load_string($xml);
+		$errors = array();
+		if (!$sxe)
+		{   
+		    foreach(libxml_get_errors() as $error)
+			{
+		        $errors[] = $error->message. "Line:".$error->line." Column:".$error->column;
+			}
+			return $errors;
+		}
+		return FALSE;	
 	}
 	
 	
