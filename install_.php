@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.39 $
-* $Date: 2009-09-17 00:13:40 $
+* $Revision: 1.40 $
+* $Date: 2009-09-17 01:47:20 $
 * $Author: e107coders $
 *
 */
@@ -420,7 +420,7 @@ class e_install
 		else
 		{
 			$this->template->SetTag("stage_title", LANINS_037.($this->previous_steps['mysql']['createdb'] == 1 ? LANINS_038 : ""));
-			if (!@mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']))
+			if (!$res = @mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password']))
 			{
 				$success = FALSE;
 				$page_content = LANINS_041.nl2br("\n\n<b>".LANINS_083."\n</b><i>".mysql_error()."</i>");
@@ -438,6 +438,11 @@ class e_install
 				}
 */
 				// Do brute force for now - Should be enough
+				
+				$DB_ALREADY_EXISTS = mysql_select_db($this->previous_steps['mysql']['db'], $res);
+				
+				//TODO Add option to continue install even if DB exists. 
+				
 				if($this->previous_steps['mysql']['createdb'] == 1)
 				{
 				    $query = 'CREATE DATABASE '.$this->previous_steps['mysql']['db'].' CHARACTER SET `utf8` ';
@@ -447,10 +452,10 @@ class e_install
 				    $query = 'ALTER DATABASE '.$this->previous_steps['mysql']['db'].' CHARACTER SET `utf8` ';
 				}
 				
-				if ( ! $this->dbqry($query))
+				if (!$this->dbqry($query))
 				{
 					$success = FALSE;
-					$page_content .= "<br /><br />".LANINS_043.nl2br("\n\n<b>".LANINS_083."\n</b><i>".mysql_error()."</i>");
+					$page_content .= "<br /><br />".LANINS_043.nl2br("\n\n<b>".LANINS_083."\n</b><i>".mysql_error()."</i>");					
 				}
 				else
 				{
@@ -476,6 +481,7 @@ class e_install
 	private function stage_4()
 	{
 		global $e_forms;
+		
 		$this->stage = 4;
 
 		$this->template->SetTag("installation_heading", LANINS_001);
@@ -906,7 +912,7 @@ class e_install
 		else
 		{		
 			$errors = $this->create_tables();
-			$this->import_configuration();
+
 			
 			if ($errors == true)
 			{
@@ -914,6 +920,7 @@ class e_install
 			}
 			else
 			{
+				$this->import_configuration();
 				$page = nl2br(LANINS_069)."<br />";
 				$e_forms->add_button("submit", LANINS_035);
 			}
@@ -966,6 +973,8 @@ class e_install
 		
 
 		$tp = e107::getParser();
+		
+		define('PREVIEWTHEMENAME',""); // Notice Removal. 
 			
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
@@ -982,6 +991,7 @@ class e_install
 				{				
 					foreach($themeInfo['plugins']['plugin'] as $k=>$plug) 
 					{
+						echo "<br />Name: ".$plug['@attributes']['name'];
 						 $this->install_plugin($plug['@attributes']['name']);	
 					}
 				}

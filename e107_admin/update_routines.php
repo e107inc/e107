@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2009-09-13 20:22:39 $
-|     $Author: secretr $
+|     $Revision: 1.52 $
+|     $Date: 2009-09-17 01:47:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -912,7 +912,7 @@ function update_needed($message='')
 	{
 		$tmp = debug_backtrace();
 		//$ns->tablerender("", "<div style='text-align:center'>Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']."</div>");
-		$emessage->add("Update required in ".basename(__FILE__)." on line ".$tmp[0]['line'], E_MESSAGE_DEBUG);
+		$emessage->add("Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']." (".$message.")", E_MESSAGE_DEBUG);
 	}
 	return FALSE;
 }
