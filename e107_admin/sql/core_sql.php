@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-09-17 01:47:19 $
+ * $Revision: 1.27 $
+ * $Date: 2009-09-17 14:25:09 $
  * $Author: e107coders $
 */
 
@@ -84,29 +84,6 @@ CREATE TABLE banlist (
   PRIMARY KEY  (banlist_ip),
   KEY banlist_datestamp (banlist_datestamp),
   KEY banlist_banexpires (banlist_banexpires)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `banner`
-#
-
-CREATE TABLE banner (
-  banner_id int(10) unsigned NOT NULL auto_increment,
-  banner_clientname varchar(100) NOT NULL default '',
-  banner_clientlogin varchar(20) NOT NULL default '',
-  banner_clientpassword varchar(50) NOT NULL default '',
-  banner_image varchar(150) NOT NULL default '',
-  banner_clickurl varchar(150) NOT NULL default '',
-  banner_impurchased int(10) unsigned NOT NULL default '0',
-  banner_startdate int(10) unsigned NOT NULL default '0',
-  banner_enddate int(10) unsigned NOT NULL default '0',
-  banner_active tinyint(3) unsigned NOT NULL default '0',
-  banner_clicks int(10) unsigned NOT NULL default '0',
-  banner_impressions int(10) unsigned NOT NULL default '0',
-  banner_ip text NOT NULL,
-  banner_campaign varchar(150) NOT NULL default '',
-  PRIMARY KEY  (banner_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 

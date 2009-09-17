@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.53 $
- * $Date: 2009-09-17 00:13:39 $
+ * $Revision: 1.54 $
+ * $Date: 2009-09-17 14:25:10 $
  * $Author: e107coders $
 */
 
@@ -49,7 +49,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * @author $Author: e107coders $
  * 
  */
@@ -159,7 +159,7 @@ class e_db_mysql {
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
 		$this->db_Set_Charset();
 
-		if ( ! @mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
+		if (!@mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
 		{
 			return 'e2';
 		}
@@ -650,8 +650,11 @@ class e_db_mysql {
 			$type=MYSQL_ASSOC;
 		}
 		$b = microtime();
-		$row = @mysql_fetch_array($this->mySQLresult,$type);
-		e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
+		if($this->mySQLresult)
+		{
+			$row = @mysql_fetch_array($this->mySQLresult,$type);
+			e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
+		}
 		if ($row) 
 		{
 			$this->dbError('db_Fetch');

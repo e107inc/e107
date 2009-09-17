@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.21 2009-09-04 14:35:01 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.22 2009-09-17 14:25:09 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -278,7 +278,7 @@ class admin_shortcodes
 					$text = "<div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?sn'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
 					$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a>" : ' '.ADLAN_LAT_7.': '.$active_uploads).'</div>';
 
-					if(isset($pref['e_latest_list']))
+					if(vartrue($pref['e_latest_list']))
 					{
 						foreach($pref['e_latest_list'] as $val)
 						{
@@ -819,11 +819,14 @@ class admin_shortcodes
 					$text .= "<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": ".$banned."</div>";
 					$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": ".$comments."</div>";
 
-					foreach($pref['e_status_list'] as $val)
+					if(vartrue($pref['e_status_list']))
 					{
-						if (is_readable(e_PLUGIN.$val.'/e_status.php'))
+						foreach($pref['e_status_list'] as $val)
 						{
-							include_once(e_PLUGIN.$val.'/e_status.php');
+							if (is_readable(e_PLUGIN.$val.'/e_status.php'))
+							{
+								include_once(e_PLUGIN.$val.'/e_status.php');
+							}
 						}
 					}
 
