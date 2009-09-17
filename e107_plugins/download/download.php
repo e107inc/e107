@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,14 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-14 23:19:22 $
-|     $Author: bugrain $
+|     $Revision: 1.9 $
+|     $Date: 2009-09-17 20:38:18 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
-require_once("../../class2.php");
-if (!plugInstalled('download')) { exit(); }
+if (!defined('e107_INIT'))
+{ 
+	require_once("../../class2.php");
+}
+
+
+if (!e107::isInstalled('download')) { exit(); }
+
 include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php');
 require_once(e_PLUGIN.'download/handlers/download_class.php');
 require_once(e_PLUGIN.'download/handlers/category_class.php');

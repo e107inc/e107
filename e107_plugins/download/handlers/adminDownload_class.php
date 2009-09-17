@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-08-15 15:44:37 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.19 $
+|     $Date: 2009-09-17 20:38:19 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
-require_once("../../class2.php");
-if (!plugInstalled('download')) { exit(); }
+if (!e107::isInstalled('download')) { exit(); }
+
 require_once(e_PLUGIN.'download/handlers/download_class.php');
 
 class adminDownload extends download
