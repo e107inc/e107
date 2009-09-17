@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2009-09-17 00:13:39 $
+|     $Revision: 1.88 $
+|     $Date: 2009-09-17 01:47:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1508,7 +1508,7 @@ class e107plugin
 
 		$plug['plug_action'] = 'install';
 
-		if ($plug['plugin_installflag'] == FALSE)
+		if (!vartrue($plug['plugin_installflag']))
 		{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
 			if(file_exists($_path.'plugin.xml'))
