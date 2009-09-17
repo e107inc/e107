@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.51 $
- * $Date: 2009-09-02 02:38:50 $
+ * $Revision: 1.52 $
+ * $Date: 2009-09-17 00:13:39 $
  * $Author: e107coders $
 */
 
@@ -33,6 +33,7 @@ class themeHandler{
 	var $frm;
 	var $fl;
 	var $themeConfigObj = null;
+	var $noLog = FALSE;
 	public $allowedCategories = array(
 		'generic',
 		'adult',
@@ -58,8 +59,7 @@ class themeHandler{
    		require_once(e_HANDLER."form_handler.php");
 		$this->frm = new e_form(); //enable inner tabindex counter
 
-		require_once(e_HANDLER."file_class.php");
-        $this->fl = new e_file;
+        $this->fl = e107::getFile();
 
 
 		if (isset($_POST['upload']))
@@ -67,7 +67,7 @@ class themeHandler{
 			$this -> themeUpload();
 		}
 
-		$this -> themeArray = $this -> getThemes();
+		$this->themeArray = (defined('E107_INSTALL')) ? $this -> getThemes('xml') : $this -> getThemes();
 
    //     print_a($this -> themeArray);
 
@@ -155,6 +155,7 @@ class themeHandler{
 
 
 	}
+		
 
 	function getThemes($mode=FALSE)
 	{
@@ -165,6 +166,11 @@ class themeHandler{
 
 		while (false !== ($file = readdir($handle)))
 		{
+			if(($mode == 'xml') && !is_readable(e_THEME.$file."/theme.xml"))
+			{
+				continue;
+			}
+			
 		  	if ($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && is_readable(e_THEME.$file."/theme.php") )
 		  	{
 				if($mode == "id")
@@ -267,8 +273,13 @@ class themeHandler{
 	 * @param object $categoryfromXML
 	 * @return 
 	 */
-	function getThemeCategory($categoryfromXML)
+	function getThemeCategory($categoryfromXML='')
 	{
+		if(!$categoryfromXML)
+		{
+			return 'generic';	
+		}
+		
 		$tmp = explode(",",$categoryfromXML);
 		$category = array();
 		foreach($tmp as $cat)
@@ -280,7 +291,7 @@ class themeHandler{
 			}
 			else
 			{
-				$category[] = '(invalid category)';	
+				$category[] = 'generic';	
 			}
 		}
 			
@@ -891,8 +902,7 @@ class themeHandler{
 		{
 
 			$astext = "";
-			require_once(e_HANDLER."file_class.php");
-			$file = new e_file;
+			$file = e107::getFile();
 
 			$adminstyles = $file -> get_files(e_ADMIN."includes");
 
@@ -1013,34 +1023,54 @@ class themeHandler{
 		$ns->tablerender(TPVLAN_2, $text);
 	}
 
-	function setTheme()
+
+	/**
+	 * Set Theme as Main Theme. 
+	 * @param object $name [optional] name (folder) of the theme to set. 
+	 * @return 
+	 */
+	function setTheme($name='')
 	{
-		global $pref, $e107cache, $ns, $sql, $emessage;
+		$core = e107::getConfig('core');
+		$sql = e107::getDb();	
+		$emessage = eMessage::getInstance();
+		
 		$themeArray = $this -> getThemes("id");
 
-		$pref['sitetheme'] = $themeArray[$this -> id];
-		$pref['themecss'] ='style.css';
-        $pref['sitetheme_deflayout'] = $this->findDefault($themeArray[$this -> id]);
-		$pref['sitetheme_layouts'] = is_array($this->themeArray[$pref['sitetheme']]['layouts']) ? $this->themeArray[$pref['sitetheme']]['layouts'] : array();
-        $pref['sitetheme_custompages'] = $this->themeArray[$pref['sitetheme']]['custompages'];
-        $pref['sitetheme_version'] = $this->themeArray[$pref['sitetheme']]['version'];
-		$pref['sitetheme_releaseUrl'] = $this->themeArray[$pref['sitetheme']]['releaseUrl'];
-
+		$name 			= ($name) ? $name : $themeArray[$this -> id];
+		$layout 		= $pref['sitetheme_layouts'] = is_array($this->themeArray[$name]['layouts']) ? $this->themeArray[$name]['layouts'] : array();
+		$deflayout 		= $this->findDefault($name);
+		$customPages 	= $this->themeArray[$name]['custompages'];
+		$version 		= $this->themeArray[$name]['version'];
+		
+		$core->set('sitetheme',$name);
+		$core->set('themecss','style.css');
+		$core->set('sitetheme_layouts',$layout);
+		$core->set('sitetheme_deflayout',$deflayout);
+		$core->set('sitetheme_custompages',$customPages);
+		$core->set('sitetheme_version',$version);
+		$core->set('sitetheme_releaseUrl',$this->themeArray[$name]['releaseUrl']);
+		
         $sql -> db_Delete("menus", "menu_layout !='' ");
 
-		$e107cache->clear_sys();
-	 	if(save_prefs())
+		ecache::clear_sys();
+		
+	 	if($core->save())
 		{
-        	$emessage->add(TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>", E_MESSAGE_SUCCESS);
+			//TODO LANs
+        	$emessage->add(TPVLAN_3." <b>'".$themeArray[$this -> id]." v".$version."'</b>", E_MESSAGE_SUCCESS);
+			$emessage->add("Default Layout: ".$deflayout,E_MESSAGE_SUCCESS);
+			$emessage->add("Custom Pages: ".$customPages,E_MESSAGE_SUCCESS);
+			
+			$this->theme_adminlog('01',$name.', style.css');
+			return TRUE;
 		}
 		else
 		{
-      		$emessage->add(TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>", E_MESSAGE_ERROR);
+      		$emessage->add(TPVLAN_3." <b>'".$name."'</b>", E_MESSAGE_ERROR);
+			return FALSE;
 		}
-
-		$this->theme_adminlog('01',$pref['sitetheme'].', '.$pref['themecss']);
-
-	  // 	$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_3." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
+		
 	}
 
 	function findDefault($theme)
@@ -1155,6 +1185,10 @@ class themeHandler{
 	// Log event to admin log
 	function theme_adminlog($msg_num='00', $woffle='')
 	{
+		if($this->noLog)
+		{
+			return;
+		}
 		global $pref, $admin_log;
 		//  if (!varset($pref['admin_log_log']['admin_banlist'],0)) return;
 		$admin_log->log_event('THEME_'.$msg_num,$woffle,E_LOG_INFORMATIVE,'');
@@ -1239,6 +1273,7 @@ class themeHandler{
 	  //	loadLanFiles($path, 'admin');					// Look for LAN files on default paths
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
+		$xml->setOptArrayTags('layout'); // layout should always be an array.
 		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
 
 		$vars['name']					= varset($vars['@attributes']['name']);
@@ -1249,43 +1284,31 @@ class themeHandler{
 		$vars['email']	 				= varset($vars['author']['@attributes']['email']);
       	$vars['website'] 				= varset($vars['author']['@attributes']['url']);
 		$vars['author']				   	= varset($vars['author']['@attributes']['name']);
-		$vars['info'] 					= $vars['description'];
-		$vars['category'] 				= $this->getThemeCategory($vars['category']);
+		$vars['info'] 					= varset($vars['description']);
+		$vars['category'] 				= $this->getThemeCategory(varset($vars['category']));
 		$vars['xhtmlcompliant'] 		= varset($vars['compliance']['@attributes']['xhtml']);
 		$vars['csscompliant'] 			= varset($vars['compliance']['@attributes']['css']);
 		$vars['path']					= $path;
-		$vars['@attributes']['default'] = (strtolower($vars['@attributes']['default'])=='true') ? 1 : 0;
+		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 
 		unset($vars['authorEmail'],$vars['authorUrl'],$vars['xhtmlCompliant'],$vars['cssCompliant'],$vars['description']);
 
 		// Compile layout information into a more usable format.
+		
+		
+
         $custom = array();
 
 		foreach($vars['layouts'] as $layout)
 		{
-			if(is_array($layout[0]))
+			foreach($layout as $key=>$val)
 			{
-				foreach($layout as $key=>$val)
+				$name = $val['@attributes']['name'];
+				unset($val['@attributes']['name']);
+				$lays[$name] = $val;
+				if(isset($val['customPages']))
 				{
-
-					$name = $val['@attributes']['name'];
-					unset($val['@attributes']['name']);
-
-					$lays[$name] = $val;
-					if(isset($val['customPages']))
-					{
-						$custom[$name] =  array_filter(explode(" ",$val['customPages']));
-					}
-				}
-			}
-			else
-			{
-                $name = $layout['@attributes']['name'];
-			 	unset($layout['@attributes']['name']);
-			  	$lays[$name] = $layout;
-                if(isset($val['customPages']))
-		  		{
-					$custom[$name] =  array_filter(explode(" ",$layout['customPages']));
+					$custom[$name] =  array_filter(explode(" ",$val['customPages']));
 				}
 			}
         }
@@ -1293,7 +1316,7 @@ class themeHandler{
         $vars['layouts'] = $lays;
         $vars['path'] = $path;
 		$vars['custompages'] = $custom;
-
+	
 	  	return $vars;
 	}
 

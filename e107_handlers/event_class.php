@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-01-22 23:14:48 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2009-09-17 00:13:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,11 +71,12 @@ class e107_event
 		}
 		if(isset($pref['e_admin_events_list']) && is_array($pref['e_admin_events_list']))
 		{
-			$called = getcachedvars('admin_events_called');
+			// $called = getcachedvars('admin_events_called');
+			$called = e107::getRegistry('core/cachedvars/admin_events_called', false);
 			if(!is_array($called)) { $called = array(); }
 			foreach($pref['e_admin_events_list'] as $plugin)
 			{
-				if(plugInstalled($plugin))
+				if(e107::isInstalled($plugin))
 				{
 					$func = 'plugin_'.$plugin.'_admin_events';
 					if(!function_exists($func))
@@ -89,7 +90,8 @@ class e107_event
 						if ($event_func && function_exists($event_func) && !in_array($event_func, $called))
 						{
 							$called[] = $event_func;
-							cachevars('admin_events_called', $called);
+							// cachevars('admin_events_called', $called);
+							e107::setRegistry('core/cachedvars/admin_events_called', $called);
 							call_user_func($event_func);
 						}
 					}
@@ -120,7 +122,7 @@ class e107_event
 		{
 			foreach($pref['e_event_list'] as $hook)
 			{
-				if(plugInstalled($hook))
+				if(e107::isInstalled($hook))
 				{
 					if(is_readable(e_PLUGIN.$hook."/e_event.php"))
 					{

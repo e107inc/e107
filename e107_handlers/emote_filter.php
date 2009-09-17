@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-09-01 20:09:35 $
+|     $Revision: 1.5 $
+|     $Date: 2009-09-17 00:13:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -35,6 +35,11 @@ class e_emotefilter {
 		
 
 		$this->emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
+		
+		if(!vartrue($this->emotes))
+		{
+			return;
+		}
 
 		foreach($this->emotes as $key => $value)
 		{

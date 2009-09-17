@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.38 $
-* $Date: 2009-09-13 12:12:23 $
+* $Revision: 1.39 $
+* $Date: 2009-09-17 00:13:40 $
 * $Author: e107coders $
 *
 */
@@ -53,6 +53,8 @@ define("e_UC_GUEST", 252);
 define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
+
+define("E107_INSTALL",TRUE); 
 
 error_reporting(E_ALL);
 
@@ -930,7 +932,7 @@ class e_install
 	{
 		// Basic stuff to get the handlers/classes to work.
 		
-		define("E107_INSTALL",TRUE); //FIXME - remove the need for this - ie. make the MySQL class work without it. 
+		
 		$udirs = "admin/|plugins/|temp";
 		$e_SELF = $_SERVER['PHP_SELF'];
 		$e_HTTP = preg_replace("#".$udirs."#i", "", substr($e_SELF, 0, strrpos($e_SELF, "/"))."/");
@@ -966,6 +968,7 @@ class e_install
 		$tp = e107::getParser();
 			
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
+		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
 			
 		//Create default plugin-table entries. 
 		e107::getSingleton('e107plugin')->update_plugins_table(); 
@@ -984,11 +987,13 @@ class e_install
 				}
 			}
 		}
-		
-		
-					
+							
 		e107::getSingleton('xmlClass')->e107Import($XMLImportfile,'add'); // Add missing core pref values
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.			
+		$tm = e107::getSingleton('themeHandler');
+		$tm->noLog = TRUE;
+		$tm->setTheme($this->previous_steps['prefs']['sitetheme']);
+		
 		
 		// Set Preferences defined during install - overwriting those that may exist in the XML. 
 		
@@ -1094,6 +1099,7 @@ class e_install
 	
 	function get_themes()
 	{
+		
 		$handle = opendir($this->e107->e107_dirs['THEMES_DIRECTORY']);
 		$lanlist = array();
 		while ($file = readdir($handle))
@@ -1114,15 +1120,22 @@ class e_install
 	
 	function get_theme_xml($theme_folder)
 	{
+		if(!defined("SITEURL"))
+		{
+			define("SITEURL","");
+		}
 		$path = $this->e107->e107_dirs['THEMES_DIRECTORY'].$theme_folder."/theme.xml";
 		
 		if(!is_readable($path))
 		{
 			return FALSE;
 		}
-		require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."xml_class.php");
-		$xml = new xmlClass;		
-		$xmlArray = $xml->loadXMLfile($path,'advanced');
+		require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."theme_handler.php");
+		$tm = new themeHandler;
+		$xmlArray = $tm->parse_theme_xml($theme_folder);
+	//	require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."xml_class.php");
+	//	$xml = new xmlClass;		
+	//	$xmlArray = $xml->loadXMLfile($path,'advanced');
 		return (is_array($xmlArray)) ? $xmlArray : FALSE;		
 	}
 	

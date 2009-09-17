@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2009-09-16 13:01:17 $
+|     $Revision: 1.87 $
+|     $Date: 2009-09-17 00:13:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1058,10 +1058,10 @@ class e107plugin
 				}
 			}
 		}
+		
 		//main menu items
 		if(isset($plug_vars['menuLink']))
 		{
-
 			foreach($plug_vars['menuLink'] as $link)
 			{
 				$attrib = $link['@attributes'];
@@ -1147,12 +1147,18 @@ class e107plugin
 			}
 		  }
 		}
-
+		
+	
+		//Plugin pref items
+		if(isset($plug_vars['pluginPrefs']))
+		{
+			//TODO plugin pref handling. 
+		}
+		
 		//Userclasses
 		//$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
 		if(isset($plug_vars['userclass']))
 		{
-			$uclass_list = (isset($plug_vars['userclass'][0]) ? $plug_vars['userclass'] : array($plug_vars['userclass']));
 			foreach($uclass_list as $uclass)
 			{
 				$attrib = $uclass['@attributes'];
@@ -1195,7 +1201,6 @@ class e107plugin
 		//Extended user fields
 		if(isset($plug_vars['extendedField']))
 		{
-			$efield_list = (isset($plug_vars['extendedField'][0]) ? $plug_vars['extendedField'] : array($plug_vars['extendedFields']));
 			foreach($efield_list as $efield)
 			{
 				$attrib = $efield['@attributes'];
@@ -1244,8 +1249,7 @@ class e107plugin
 		//If any commentIDs are configured, we need to remove all comments on uninstall
 		if($function == 'uninstall' && isset($plug_vars['commentID']))
 		{
-			$commentArray = (is_array($plug_vars['commentID']) ? $plug_vars['commentID'] : array($plug_vars['commentID']));
-			$txt .= 'Removing all plugin comments: ('.implode(', ', $commentArray).')<br />';
+			$txt .= 'Removing all plugin comments: ('.implode(', ', $plug_vars['commentID']).')<br />';
 			$this->manage_comments('remove', $commentArray);
 		}
 
@@ -1749,7 +1753,7 @@ class e107plugin
 		$ret['@attributes']['name'] = varset($eplug_name);
 		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
 		$ret['folder'] = varset($eplug_folder);
-		$ret['category'] = $this->manage_category($eplug_category);
+		$ret['category'] = varset($eplug_category) ? $this->manage_category($eplug_category) : "misc";
 		$ret['description'] = varset($eplug_description);
 		$ret['author']['@attributes']['name'] = varset($eplug_author);
 		$ret['author']['@attributes']['url'] = varset($eplug_url);
@@ -1779,7 +1783,7 @@ class e107plugin
 	//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
-		$xml->setOptArrayTags('extendedField,userclass,menuLink'); // always arrays for these tags.
+		$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', true, true);
 		
 		if ($this->plug_vars === FALSE)
@@ -1790,7 +1794,7 @@ class e107plugin
  			return FALSE;
 		}
 		
-		$this->plug_vars['category'] = $this->manage_category($this->plug_vars['category']);	
+		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";	
 
 		return TRUE;
 	}
