@@ -60,7 +60,7 @@ if (!defined('e107_INIT')) { exit; }
 				//get recent content for each main parent
 				$sqli = new db;
 				if(!$resultitem = $sqli -> db_Select("pcontent", "*", $qry)){
-					$LIST_DATA = "no items in ".$rowm['content_heading'];
+					$LIST_DATA = CONTENT_MENU_LAN_5." ".$rowm['content_heading'];
 				}else{
 					$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 

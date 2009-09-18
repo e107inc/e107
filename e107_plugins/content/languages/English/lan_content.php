@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2008-07-25 21:03:34 $
-|     $Author: e107steved $
+|     $Revision: 1.77 $
+|     $Date: 2009-09-18 22:25:36 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -197,7 +197,7 @@ define("CONTENT_MENU_LAN_1", "no content items yet");
 define("CONTENT_MENU_LAN_2", "recent items");
 define("CONTENT_MENU_LAN_3", "categories");
 define("CONTENT_MENU_LAN_4", "content links");
-define("CONTENT_MENU_LAN_5", "");
+define("CONTENT_MENU_LAN_5", "no items in");
 define("CONTENT_MENU_LAN_6", "");
 define("CONTENT_MENU_LAN_7", "");
 define("CONTENT_MENU_LAN_8", "");
