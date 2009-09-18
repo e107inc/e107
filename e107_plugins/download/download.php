@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/download.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-09-17 20:38:18 $
+|     $Revision: 1.10 $
+|     $Date: 2009-09-18 19:07:09 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -22,8 +22,10 @@ if (!defined('e107_INIT'))
 	require_once("../../class2.php");
 }
 
-
-if (!e107::isInstalled('download')) { exit(); }
+if (!e107::isInstalled('download'))
+{
+	header("location:".e_BASE."index.php"); 
+}
 
 include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php');
 require_once(e_PLUGIN.'download/handlers/download_class.php');

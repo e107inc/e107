@@ -1,21 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     �Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/download_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-09-17 20:38:20 $
-|     $Author: e107coders $
-|
-+----------------------------------------------------------------------------+
+ + ----------------------------------------------------------------------------+
+ |     e107 website system
+ |
+ |     Copyright (c) e107 Inc. 2001-2009
+ |     http://e107.org
+ |
+ |     Released under the terms and conditions of the
+ |     GNU General Public License (http://gnu.org).
+ |
+ |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/download_class.php,v $
+ |     $Revision: 1.4 $
+ |     $Date: 2009-09-18 19:07:09 $
+ |     $Author: e107coders $
+ +----------------------------------------------------------------------------+
 */
 
 if (!e107::isInstalled('download')) { exit(); }
