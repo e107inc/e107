@@ -527,18 +527,6 @@ City, State, Country
 			<field name='link_class'>0</field>
 		</item>
 		<item>
-			<field name='link_id'>2</field>
-			<field name='link_name'>Downloads</field>
-			<field name='link_url'>download.php</field>
-			<field name='link_description'></field>
-			<field name='link_button'></field>
-			<field name='link_category'>1</field>
-			<field name='link_order'>2</field>
-			<field name='link_parent'>0</field>
-			<field name='link_open'>0</field>
-			<field name='link_class'>0</field>
-		</item>
-		<item>
 			<field name='link_id'>3</field>
 			<field name='link_name'>Members</field>
 			<field name='link_url'>user.php</field>
@@ -671,7 +659,7 @@ City, State, Country
 			<field name='menu_order'>0</field>
 			<field name='menu_class'>0</field>
 			<field name='menu_pages'></field>
-			<field name='menu_path'>banner_menu/</field>
+			<field name='menu_path'>banner/</field>
 			<field name='menu_layout'></field>
 			<field name='menu_parms'></field>
 		</item>
@@ -760,17 +748,6 @@ City, State, Country
 			<field name='menu_class'>0</field>
 			<field name='menu_pages'></field>
 			<field name='menu_path'>1</field>
-			<field name='menu_layout'></field>
-			<field name='menu_parms'></field>
-		</item>
-		<item>
-			<field name='menu_id'>23</field>
-			<field name='menu_name'>debug_menu</field>
-			<field name='menu_location'>0</field>
-			<field name='menu_order'>0</field>
-			<field name='menu_class'>0</field>
-			<field name='menu_pages'></field>
-			<field name='menu_path'>debug_menu/</field>
 			<field name='menu_layout'></field>
 			<field name='menu_parms'></field>
 		</item>
