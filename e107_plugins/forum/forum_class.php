@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2009-08-16 15:53:00 $
-|     $Author: e107steved $	   ** Amended by Marj to re-order list line 818 - 851
+|     $Revision: 1.74 $
+|     $Date: 2009-09-18 22:09:29 $
+|     $Author: secretr $	   ** Amended by Marj to re-order list line 818 - 851
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -701,7 +701,7 @@ class e107forum
 			return -1;
 		}
 
-		$post_user = $thread_poster['post_userid'].".".$thread_poster['post_user_name'];
+		$post_user = $thread_poster['post_userid'].".".$tp->toDB($thread_poster['post_user_name']);
 		$thread_post_user = $post_user;
 		if($thread_poster['post_userid'] == 0)
 		{
