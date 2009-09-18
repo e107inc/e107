@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-18 19:05:50 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,7 +28,7 @@ Plugins should use an e_rss.php file in their plugin folder
 */
 
 require_once("../../class2.php");
-if (!plugInstalled('rss_menu')) 
+if (!e107::isInstalled('rss_menu')) 
 {
 	header("Location: ".e_BASE."index.php");
 	exit;
@@ -45,10 +45,10 @@ if (!is_object($tp->e_bb))
 	$tp->e_bb = new e_bbcode;
 }
 
-//get language file
+// Get language file
 include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
 
-//get template
+// Get template
 if (is_readable(THEME."rss_template.php")) 
 {
 	require_once(THEME."rss_template.php");
@@ -58,8 +58,7 @@ else
 	require_once(e_PLUGIN."rss_menu/rss_template.php");
 }
 
-
-//query handler
+// Query handler
 if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
@@ -68,7 +67,7 @@ if (e_QUERY)
 	$topic_id = $tp->toDB($tmp[2],'');
 }
 
-//list available rss feeds
+// List available rss feeds
 if (!$rss_type) 
 {
 	require_once(HEADERF);
@@ -93,23 +92,23 @@ if (!$rss_type)
 	exit;
 }
 
-//conversion table for old urls -------
+// Conversion table for old urls -------
 $conversion[1] = "news";
 $conversion[5] = "comments";
 $conversion[10] = "bugtracker";
 $conversion[12] = "download";
 //-------------------------------------
 
-//convert certain old urls so we can check the db entries ---------------------
+// Convert certain old urls so we can check the db entries ---------------------
 if($topic_id)
-{	//rss.php?1.2.14 (news, rss-2, cat=14)
+{	// Rss.php?1.2.14 (news, rss-2, cat=14)
 	if(is_numeric($content_type) && isset($conversion[$content_type]) )
 	{
 		$content_type = $conversion[$content_type];
 	}
 }
 else
-{	//rss.php?1.2 (news, rss-2) --> check = news (check conversion table)
+{	// Rss.php?1.2 (news, rss-2) --> check = news (check conversion table)
 	if(is_numeric($content_type) && isset($conversion[$content_type]) )
 	{
 		$content_type = $conversion[$content_type];
@@ -119,8 +118,7 @@ else
 $check_topic = ($topic_id ? " AND rss_topicid = '".$topic_id."' " : "");
 
 if(!$sql -> db_Select("rss", "*", "rss_class!='2' AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
-{
-	//check if wildcard present for topic_id
+{	// Check if wildcard present for topic_id
 	$check_topic = ($topic_id ? " AND rss_topicid = '".str_replace($topic_id, "*", $topic_id)."' " : "");
 	if(!$sql -> db_Select("rss", "*", "rss_class!='2' AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
 	{
@@ -139,24 +137,26 @@ else
 	$row = $sql->db_Fetch();
 }
 
-//debugging
+// Debugging
 //echo $check." - ".$content_type." - ".$rss_type." - ".$topic_id."<br />";
 //exit;
-
 // ----------------------------------------------------------------------------
 
-if($rss = new rssCreate($content_type, $rss_type, $topic_id, $row)){
+if($rss = new rssCreate($content_type, $rss_type, $topic_id, $row))
+{
 	$rss_title = ($rss->contentType ? $rss->contentType : ucfirst($content_type));
 	$rss->buildRss ($rss_title);
-}else{
+}
+else
+{
 	require_once(HEADERF);
 	$ns->tablerender(RSS_LAN_ERROR_0, RSS_LAN_ERROR_1);
 	require_once(FOOTERF);
 	exit;
 }
 
-class rssCreate {
-
+class rssCreate 
+{
 	var $contentType;
 	var $rssType;
 	var $path;
@@ -168,8 +168,8 @@ class rssCreate {
 	var $rssNamespace;
 	var $rssCustomChannel;
 
-	function rssCreate($content_type, $rss_type, $topic_id, $row) {
-		// constructor
+	function rssCreate($content_type, $rss_type, $topic_id, $row) 
+	{	// Constructor
 		$sql_rs = new db;
 		global $tp, $sql, $e107, $PLUGINS_DIRECTORY, $pref, $rssgen;
 		$this -> path = e_PLUGIN."rss_menu/";
@@ -185,10 +185,11 @@ class rssCreate {
 		if(strpos($row['rss_path'],'|')!==FALSE){
 			$tmp = explode("|", $row['rss_path']);
 			$path = e_PLUGIN.$tmp[0]."/e_rss.php";
-			$this -> parm = $tmp[1];	//parm is used in e_rss.php to define which feed you need to prepare
+			$this -> parm = $tmp[1];	// Parm is used in e_rss.php to define which feed you need to prepare
 		}
 
-		switch ($content_type) {
+		switch ($content_type) 
+		{
 			case 'news' :
 			case 1:
 				if($topic_id && is_numeric($topic_id))
@@ -199,6 +200,7 @@ class rssCreate {
 				{
 					$topic = '';
 				}
+
 				$path='';
 				$render = ($pref['rss_othernews'] != 1) ? "AND n.news_render_type < 2" : "";
 				$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
@@ -212,23 +214,30 @@ class rssCreate {
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
-				foreach($tmp as $value) {
+				foreach($tmp as $value) 
+				{
 					$this -> rssItems[$loop]['title'] = $value['news_title'];
 					$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
 					if($value['news_summary'] && $pref['rss_summarydiz'])
 					{
 						$this -> rssItems[$loop]['description'] = $value['news_summary'];
-					}else{
+					}
+					else
+					{
 						$this -> rssItems[$loop]['description'] = $value['news_body'];
 					}
 					$this -> rssItems[$loop]['author'] = $value['user_name'];
 					$this -> rssItems[$loop]['author_email'] = $value['user_email'];
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
 
-					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1){
+					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1)
+					{
 						$this -> rssItems[$loop]['comment'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['news_id'];
 					}
 					$this -> rssItems[$loop]['pubdate'] = $value['news_datestamp'];
+					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0) {
+						$this -> rssItems[$loop]['news_thumbnail'] = $value['news_thumbnail'];
+					}
 
 					$loop++;
 				}
@@ -286,7 +295,8 @@ class rssCreate {
 				break;
 
 			case 8:
-				if(!$this -> topicid) {
+				if(!$this -> topicid) 
+				{
 					return FALSE;
 				}
 				$path = e_PLUGIN."forum/e_rss.php";
@@ -301,7 +311,8 @@ class rssCreate {
 				$tmp = $sql->db_getList();
 				$this -> rssItems = array();
 				$loop=0;
-				foreach($tmp as $value) {
+				foreach($tmp as $value) 
+				{
 					$nick = preg_replace("/[0-9]+\./", "", $value['bugtrack2_bugs_poster']);
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = $value['bugtrack2_bugs_summary'];
@@ -313,7 +324,8 @@ class rssCreate {
 			*/
 
 			case 11:
-				if(!$this -> topicid) {
+				if(!$this -> topicid) 
+				{
 					return FALSE;
 				}
 				$path = e_PLUGIN."forum/e_rss.php";
@@ -321,91 +333,76 @@ class rssCreate {
 
 			case download:
 			case 12:
-				if($topic_id && is_numeric($topic_id)){
-					$topic = "d.download_category='".intval($topic_id)."' AND ";
-				}else{
-					$topic = "";
-				}
-				$path='';
-				$class_list = "0,251,252,253";
-                $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".$class_list.") ORDER BY d.download_datestamp DESC LIMIT 0,".$this -> limit;
-                $sql -> db_Select_gen($query);
-
-			 //	$sql->db_Select("download", "*", "{$topic} download_active > 0 AND download_class IN (".$class_list.") ORDER BY download_datestamp DESC LIMIT 0,".$this -> limit);
-				$tmp = $sql->db_getList();
-				$this -> rssItems = array();
-				$loop=0;
-				foreach($tmp as $value) {
-					if($value['download_author']){
-				   		$nick = preg_replace("/[0-9]+\./", "", $value['download_author']);
-						$this -> rssItems[$loop]['author'] = $nick;
-					}
-					$this -> rssItems[$loop]['author_email'] = $value['download_author_email'];
-					$this -> rssItems[$loop]['title'] = $value['download_name'];
-					$this -> rssItems[$loop]['link'] = $e107->base_path."download.php?view.".$value['download_id'];
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $value['download_description'] : $value['download_description']);
-                    $this -> rssItems[$loop]['category_name'] = $value['download_category_name'];
-                    $this -> rssItems[$loop]['category_link'] = $e107->base_path."download.php?list.".$value['download_category_id'];
-					$this -> rssItems[$loop]['enc_url'] = $e107->base_path."request.php?".$value['download_id'];
-					$this -> rssItems[$loop]['enc_leng'] = $value['download_filesize'];
-					$this -> rssItems[$loop]['enc_type'] = $this->getmime($value['download_url']);
-					$this -> rssItems[$loop]['pubdate'] = $value['download_datestamp'];
-					$loop++;
-				}
+				$path = e_PLUGIN."download/e_rss.php";
 				break;
 		}
 
-
-		if(isset($path) && $path!=''){
-
-			//new rss reader from e_rss.php in plugin folder
-			if (is_readable($path)) {
+		if(isset($path) && $path!='')
+		{	// New rss reader from e_rss.php in plugin folder
+			if (is_readable($path)) 
+			{
 				require_once($path);
-				foreach($eplug_rss_data as $key=>$rs){
-					foreach($rs as $k=>$row){
+				foreach($eplug_rss_data as $key=>$rs)
+				{
+					foreach($rs as $k=>$row)
+					{
 						$this -> rssItems[$k]['author'] = $row['author'];
 						$this -> rssItems[$k]['author_email'] = $row['author_email'];
 						$this -> rssItems[$k]['title'] = $row['title'];
-						if($row['link']){
-							if(eregi("http",$row['link'])){
+						if($row['link'])
+						{
+							if(eregi("http",$row['link']))
+							{
 								$this -> rssItems[$k]['link'] = $row['link'];
-							}else{
+							}
+							else
+							{
 								$this -> rssItems[$k]['link'] = $e107->base_path.$PLUGINS_DIRECTORY.$row['link'];
 							}
 						}
 						$this -> rssItems[$k]['description'] = $row['description'];
-						if($row['enc_url']){
+						if($row['enc_url'])
+						{
 							$this -> rssItems[$k]['enc_url'] = $e107->base_path.$PLUGINS_DIRECTORY.$enc_url.$row['item_id'];
 						}
-						if($row['enc_leng']){
+						if($row['enc_leng'])
+						{
 							$this -> rssItems[$k]['enc_leng'] = $row['enc_leng'];
 						}
 
-						if($eplug_rss['enc_type']){
+						if($eplug_rss['enc_type'])
+						{
 							$this -> rssItems[$k]['enc_type'] = $this->getmime($eplug_rss['enc_type']);
-						}elseif($row['enc_type']){
+						}
+						elseif($row['enc_type'])
+						{
 							$this -> rssItems[$k]['enc_type'] = $row['enc_type'];
 						}
 
 						$this -> rssItems[$k]['category_name'] = $row['category_name'];
-						if($row['category_link']){
-							if(eregi("http",$row['category_link'])){
+						if($row['category_link'])
+						{
+							if(eregi("http",$row['category_link']))
+							{
 								$this -> rssItems[$k]['category_link'] = $row['category_link'];
-							}else{
+							}
+							else
+							{
 								$this -> rssItems[$k]['category_link'] = $e107->base_path.$PLUGINS_DIRECTORY.$row['category_link'];
 							}
 						}
-						if($row['datestamp']){
+						if($row['datestamp'])
+						{
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];
 						}
 					}
 				}
 			}
 		}
-
 	}
 
-	function buildRss($rss_title) {
+	function buildRss($rss_title) 
+	{
 		global $sql, $pref, $tp, $e107, $PLUGINS_DIRECTORY;
 		header('Content-type: application/xml', TRUE);
 
@@ -413,8 +410,9 @@ class rssCreate {
         $rss_namespace = ($this->rssNamespace) ? "xmlns:".$this->rssNamespace : "";
         $rss_custom_channel = ($this->rssCustomChannel) ? $this->rssCustomChannel : "";
 		$time = time();
-		switch ($this -> rssType) {
-			case 1:		// Rss 1.0
+		switch ($this -> rssType) 
+		{
+			case 1:		// RSS 1.0
 				echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
 						<!-- generator=\"e107\" -->
 						<!-- content type=\"".$this -> contentType."\" -->
@@ -427,15 +425,20 @@ class rssCreate {
 						<docs>http://backend.userland.com/rss092</docs>\n";
 
 					foreach($this -> rssItems as $value)
-					{
-
-                    	// Multi-language rss links.
+					{	// Multi-language rss links.
 						$link 		= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
 
 						echo "
 							<item>
 							<title>".$tp->toRss($value['title'])."</title>
-							<description>".substr($tp->toRss($value['description']),0,150)."</description>
+							<description>".substr($tp->toRss($value['description']),0,150);
+						if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
+						{
+							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
+							echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
+							unset($news_thumbail);
+						}							
+						echo "</description>
 							<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>
 							<link>".$link."</link>
 							</item>";
@@ -445,8 +448,8 @@ class rssCreate {
 						</rss>";
 			break;
 
-			case 2: // rss 2.0
-				$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
+			case 2:	// RSS 2.0
+				$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON));
 				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
@@ -473,7 +476,7 @@ class rssCreate {
 					echo "
 					<image>
 					<title>".$tp->toRss($rss_title)."</title>
-					<url>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</url>
+					<url>".(strstr(SITEBUTTON, "http:")!==FALSE ? SITEBUTTON : SITEURL.str_replace("../", "",SITEBUTTON))."</url>
 					<link>".$pref['siteurl']."</link>
 					<width>88</width>
 					<height>31</height>
@@ -482,8 +485,8 @@ class rssCreate {
 				}
 
 				// Generally Ignored by 99% of readers.
-               /*
-			   	echo "
+				/*
+				echo "
 				<textInput>
 				<title>Search</title>
 				<description>Search ".$tp->toRss($pref['sitename'])."</description>
@@ -493,8 +496,7 @@ class rssCreate {
 				*/
 
 				foreach($this -> rssItems as $value)
-				{
-                    // Multi-language rss links.
+				{   // Multi-language rss links.
 					$link 		= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
                     $catlink	= (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['category_link']) : $value['category_link'];
 
@@ -502,45 +504,57 @@ class rssCreate {
 						<item>
 						<title>".$tp->toRss($value['title'])."</title>\n";
 
-					if($link){
+					if($link)
+					{
 						echo "<link>".$link."</link>\n";
 					}
 
-					echo "<description>".$tp->toRss($value['description'],TRUE)."</description>\n";
-
-					if($value['category_name'] && $catlink){
+					echo "<description>".$tp->toRss($value['description'],TRUE);
+					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
+					{
+						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
+						echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
+						unset($news_thumbail);
+					}					
+					echo "</description>\n";
+					
+					if($value['category_name'] && $catlink)
+					{
 						echo "<category domain='".$catlink."'>".$tp -> toRss($value['category_name'])."</category>\n";
 					}
 
-					if($value['comment']){
-						//echo "<comments>".$tp->toRss($value['comment'])."</comments>\n";
+					if($value['comment'])
+					{
 						echo "<comments>".$value['comment']."</comments>\n";
 					}
 
-					if($value['author']){
+					if($value['author'])
+					{
 						echo "<author>".$this->nospam($value['author_email'])." (".$value['author'].")</author>\n";
 					}
 
-					// enclosure support for podcasting etc.
-					if($value['enc_url'] && $value['enc_leng'] && $value['enc_type']){
+					// Enclosure support for podcasting etc.
+					if($value['enc_url'] && $value['enc_leng'] && $value['enc_type'])
+					{
 						echo "<enclosure url=\"".$value['enc_url']."\" length=\"".$value['enc_leng']."\" type=\"".$value['enc_type']."\"   />\n";
 					}
 
 					echo "<pubDate>".date("r", ($value['pubdate'] + $this -> offset))."</pubDate>\n";
 
-					if($link){
+					if($link)
+					{
 						echo "<guid isPermaLink=\"true\">".$link."</guid>\n";
 					}
 
 					echo "</item>";
 				}
-		   //		echo "<atom:link href=\"".e_SELF."?".($this -> contentType).".4.".$this -> topicId ."\" rel=\"self\" type=\"application/rss+xml\" />";
+				// echo "<atom:link href=\"".e_SELF."?".($this -> contentType).".4.".$this -> topicId ."\" rel=\"self\" type=\"application/rss+xml\" />";
 				echo "
 				</channel>
 				</rss>";
 			break;
 
-			case 3: // rdf
+			case 3: 	// RDF
 				echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
@@ -561,9 +575,7 @@ class rssCreate {
 				<rdf:Seq>";
 
 				foreach($this -> rssItems as $value)
-				{
-
-                    // Multi-language rss links.
+				{   // Multi-language rss links.
 					$link = (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
 
 					echo "
@@ -578,10 +590,8 @@ class rssCreate {
 				reset($this -> rssItems);
 				unset($link);
 				foreach($this -> rssItems as $value)
-				{
-
-                    // Multi-language rss links.
-					$link = (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link'];
+				{	
+					$link = (e_LANQRY) ? str_replace("?","?".e_LANQRY,$value['link']) : $value['link']; // Multi-language rss links.
 
 					echo "
 						<item rdf:about=\"".$link."\">
@@ -590,31 +600,37 @@ class rssCreate {
 						<dc:date>".$this->get_iso_8601_date($time + $this -> offset)."</dc:date>
 						<dc:creator>".$value['author']."</dc:creator>
 						<dc:subject>".$tp->toRss($value['category_name'])."</dc:subject>
-						<description>".$tp->toRss($value['description'])."</description>
+						<description>".$tp->toRss($value['description']);
+					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
+					{
+						$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
+						echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
+						unset($news_thumbail);
+					}							
+					echo "</description>
 						</item>";
 				}
 				echo "
 				</rdf:RDF>";
 			break;
 
-			//new feed for atom - still in development, and not yet tested
+			// Atom
 			case 4:
 				echo "<?xml version='1.0' encoding='utf-8'?>\n
 				<feed xmlns='http://www.w3.org/2005/Atom'>\n";
 				/*
 				<feed version='0.3'
-				  xmlns='http://purl.org/atom/ns#'
-				  xmlns:dc='http://purl.org/dc/elements/1.1/'
-				  xml:lang='".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."'>\n";
-				  */
-
-					//required
+				xmlns='http://purl.org/atom/ns#'
+				xmlns:dc='http://purl.org/dc/elements/1.1/'
+				xml:lang='".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."'>\n";
+				*/
+					// Required
 					echo "
 					<id>".$pref['siteurl']."</id>\n
 					<title type='text'>".$tp->toRss($rss_title)."</title>\n
 					<updated>".$this->get_iso_8601_date($time + $this -> offset)."</updated>\n";
 
-					//recommended
+					// Recommended
 					echo "
 					<author>\n
 						<name>e107</name>\n";
@@ -624,7 +640,7 @@ class rssCreate {
 					</author>\n
 					<link rel='self' href='".$e107->base_path.$PLUGINS_DIRECTORY."rss_menu/".e_PAGE."?".e_QUERY."' />\n";
 
-					//optional
+					// Optional
 					include(e_ADMIN."ver.php");
 					echo "
 					<category term='e107'/>\n
@@ -634,7 +650,7 @@ class rssCreate {
 					<generator uri='http://e107.org/' version='".$e107info['e107_version']."'>e107</generator>\n";
 					//<icon>/icon.jpg</icon>\n
 					echo "
-					<logo>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</logo>\n
+					<logo>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON))."</logo>\n
 					<rights type='html'>".$pref['siteadmin']." - ".$this->nospam($pref['siteadminemail'])."</rights>\n";
 					if($pref['sitedescription']){
 					echo "
@@ -644,13 +660,13 @@ class rssCreate {
 					echo "
 					<entry>\n";
 
-						//required
+						// Required
 						echo "
 						<id>".$value['link']."</id>\n
 						<title type='text'>".$tp->toRss($value['title'])."</title>\n
 						<updated>".$this->get_iso_8601_date($value['pubdate'] + $this -> offset)."</updated>\n";
 
-						//recommended
+						// Recommended
                         $author = ($value['author']) ? $value['author'] : "unknown";
 
 						echo "
@@ -662,9 +678,16 @@ class rssCreate {
 						//<content>complete story here</content>\n
 						echo "
 						<link rel='alternate' type='text/html' href='".$value['link']."' />\n
-						<summary type='text'>".$tp->toRss($value['description'])."</summary>\n";
-
-						//optional
+						<summary type='text'>".$tp->toRss($value['description']);
+						if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
+						{
+							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
+							echo "&lt;a href=&quot;".$value['link']."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
+							unset($news_thumbail);
+						}
+						echo "</summary>\n";
+						
+						// Optional
 						if($value['category_name']){
 							echo "<category term='".$tp -> toRss($value['category_name'])."'/>\n";
 						}
@@ -676,7 +699,7 @@ class rssCreate {
 						//	<id>http://example.org/</id>
 						//	<title>Fourty-Two</title>
 						//	<updated>2003-12-13T18:30:02Z</updated>
-						//	<rights>© 2005 Example, Inc.</rights>
+						//	<rights>ï¿½ 2005 Example, Inc.</rights>
 						//</source>
 						//<rights type='html'>&amp;copy; 2005 John Doe</rights>
 						echo "
@@ -684,19 +707,19 @@ class rssCreate {
 					}
 				echo "
 				</feed>\n";
-
 			break;
 		}
 	}
 
-	function getmime($file){
+	function getmime($file)
+	{
 		$ext = strtolower(str_replace(".","",strrchr(basename($file), ".")));
 		$mime["mp3"] = "audio/mpeg";
 		return $mime[$ext];
 	}
 
-	function get_iso_8601_date($int_date) {
-		//$int_date: current date in UNIX timestamp
+	function get_iso_8601_date($int_date) 
+	{	//$int_date: current date in UNIX timestamp
 		$date_mod = date('Y-m-d\TH:i:s', $int_date);
 		$pre_timezone = date('O', $int_date);
 		$time_zone = substr($pre_timezone, 0, 3).":".substr($pre_timezone, 3, 2);
@@ -704,11 +727,10 @@ class rssCreate {
 		return $date_mod;
 	}
 
-	function nospam($text){
+	function nospam($text)
+	{
 		$tmp = explode("@",$text);
 		return ($tmp[0] != "") ? $tmp[0].RSS_LAN_2 : RSS_LAN_3;
 	}
-
-}
-
+} // End class rssCreate
 ?>
