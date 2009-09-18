@@ -31,41 +31,46 @@ if(!isset($RSS_LIST_FOOTER))
 // Admin : rss listing
 if(!isset($RSS_ADMIN_LIST_HEADER))
 {
+		
     $RSS_ADMIN_LIST_HEADER = "
     <div style='text-align:center;'>
     <form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
-    <table class='fborder' style='".ADMIN_WIDTH."'>
+    <table cellpadding = '0' cellspacing='0' class='adminlist'>
+	<thead>
     <tr>
-        <td class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=id,RSS_LAN_ADMIN_2}</td>
-        <td class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=name,RSS_LAN_ADMIN_4}</td>
-        <td class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=path,RSS_LAN_ADMIN_3}</td>
-        <td class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=url,RSS_LAN_ADMIN_5}</td>
-        <td class='fcaption' style='white-space:nowrap;'>".RSS_LAN_ADMIN_12."</td>
-        <td class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=limit,RSS_LAN_ADMIN_7}</td>
-        <td class='fcaption' style='white-space:nowrap;'>".LAN_OPTIONS."</td>
-    </tr>";
+        <th class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=id,RSS_LAN_ADMIN_2}</th>
+        <th class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=name,RSS_LAN_ADMIN_4}</th>
+        <th class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=path,RSS_LAN_ADMIN_3}</th>
+        <th class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=url,RSS_LAN_ADMIN_5}</th>
+        <th class='fcaption' style='white-space:nowrap;'>".RSS_LAN_ADMIN_12."</th>
+        <th class='fcaption' style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=limit,RSS_LAN_ADMIN_7}</th>
+        <th class='fcaption' style='white-space:nowrap;'>".LAN_OPTIONS."</th>
+    </tr>
+	</thead>
+	<tbody>";
 }
 if(!isset($RSS_ADMIN_LIST_TABLE))
 {
 	$RSS_ADMIN_LIST_TABLE = "
 	<tr>
-		<td class='forumheader3'>{RSS_ADMIN_ID}</td>
-		<td class='forumheader3'>{RSS_ADMIN_NAME}</td>
-		<td class='forumheader3'>{RSS_ADMIN_PATH}</td>
-		<td class='forumheader3'>{RSS_ADMIN_URL}</td>
-		<td class='forumheader3'>{RSS_ADMIN_TOPICID}</td>
-		<td class='forumheader3'>{RSS_ADMIN_LIMIT}</td>
-		<td class='forumheader3' style='text-align:center'>{RSS_ADMIN_OPTIONS}</td>
+		<td>{RSS_ADMIN_ID}</td>
+		<td>{RSS_ADMIN_NAME}</td>
+		<td>{RSS_ADMIN_PATH}</td>
+		<td>{RSS_ADMIN_URL}</td>
+		<td>{RSS_ADMIN_TOPICID}</td>
+		<td>{RSS_ADMIN_LIMIT}</td>
+		<td class='center'>{RSS_ADMIN_OPTIONS}</td>
 	</tr>";
 }
 if(!isset($RSS_ADMIN_LIST_FOOTER))
 {
 	$RSS_ADMIN_LIST_FOOTER = "
 	<tr>
-		<td class='forumheader' colspan='7' style='text-align:center'>
+		<td class='buttons-bar center' colspan='7'>
 			{RSS_ADMIN_LIMITBUTTON}
 		</td>
 	</tr>
+	</tbody>
 	</table>
 	</form>
 	</div>";

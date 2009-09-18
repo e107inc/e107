@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.11 $
- |     $Date: 2009-09-14 21:54:16 $
- |     $Author: secretr $
+ |     $Revision: 1.12 $
+ |     $Date: 2009-09-18 23:14:00 $
+ |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))
@@ -219,6 +219,8 @@ function render_infopanel_icons()
 	$frm = e107::getSingleton('e_form');
 	global $iconlist,$pluglist, $user_pref;
 	$text = "";
+	
+
 	foreach ($iconlist as $key=>$icon)
 	{
 		if (getperms($icon['perms']))
@@ -256,7 +258,7 @@ function render_infopanel_menu_options()
 	{
 		while ($row = e107::getDb()->db_Fetch())
 		{
-			$checked = (in_array($row['menu_name'], $settings)) ? true : false;
+			$checked = ($settings && in_array($row['menu_name'], $settings)) ? true : false;
 			$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
 			$text .= $frm->checkbox_label($row['menu_name'], "e-mymenus[]", $row['menu_name'], $checked);
 			$text .= "</div>";

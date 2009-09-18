@@ -9,8 +9,8 @@
  * Admin Navigation
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-08-30 08:23:47 $
+ * $Revision: 1.18 $
+ * $Date: 2009-09-18 23:13:59 $
  * $Author: e107coders $
 */
 
@@ -130,9 +130,7 @@ if (!defined('E_16_ADPASS')) {
 if (!defined('E_16_BANLIST')) {
 	define('E_16_BANLIST', "<img class='icon S16' src='".e_IMAGE."admin_images/banlist_16.png' alt='' />");
 }
-if (!defined('E_16_BANNER')) {
-	define('E_16_BANNER', "<img class='icon S16' src='".e_IMAGE."admin_images/banners_16.png' alt='' />");
-}
+
 if (!defined('E_16_CACHE')) {
 	define('E_16_CACHE', "<img class='icon S16' src='".e_IMAGE."admin_images/cache_16.png' alt='' />");
 }
@@ -157,9 +155,7 @@ if (!defined('E_16_DATAB')) {
 if (!defined('E_16_DOCS')) {
 	define('E_16_DOCS', "<img class='icon S16' src='".e_IMAGE."admin_images/docs_16.png' alt='' />");
 }
-if (!defined('E_16_DOWNL')) {
-	define('E_16_DOWNL', "<img class='icon S16' src='".e_IMAGE."admin_images/downloads_16.png' alt='' />");
-}
+
 if (!defined('E_16_EMOTE')) {
 	define('E_16_EMOTE', "<img class='icon S16' src='".e_IMAGE."admin_images/emoticons_16.png' alt='' />");
 }
@@ -285,9 +281,7 @@ if (!defined('E_32_ADPASS')) {
 if (!defined('E_32_BANLIST')) {
 	define('E_32_BANLIST', "<img class='icon S32' src='".e_IMAGE."admin_images/banlist_32.png' alt='' />");
 }
-if (!defined('E_32_BANNER')) {
-	define('E_32_BANNER', "<img class='icon S32' src='".e_IMAGE."admin_images/banners_32.png' alt='' />");
-}
+
 if (!defined('E_32_CACHE')) {
 	define('E_32_CACHE', "<img class='icon S32' src='".e_IMAGE."admin_images/cache_32.png' alt='' />");
 }
@@ -300,18 +294,16 @@ if (!defined('E_32_CRON')) {
 if (!defined('E_32_CUST')) {
 	define('E_32_CUST', "<img class='icon S32' src='".e_IMAGE."admin_images/custom_32.png' alt='' />");
 }
-if (!defined('E_32_CUSTOMFIELD')) {
+/*if (!defined('E_32_CUSTOMFIELD')) {
 	define('E_32_CUSTOMFIELD', "<img class='icon S16' src='".e_IMAGE."admin_images/custom_field_32.png' alt='' />");
-}
+}*/
 if (!defined('E_32_DATAB')) {
 	define('E_32_DATAB', "<img class='icon S32' src='".e_IMAGE."admin_images/database_32.png' alt='' />");
 }
 if (!defined('E_32_DOCS')) {
 	define('E_32_DOCS', "<img class='icon S32' src='".e_IMAGE."admin_images/docs_32.png' alt='' />");
 }
-if (!defined('E_32_DOWNL')) {
-	define('E_32_DOWNL', "<img class='icon S32' src='".e_IMAGE."admin_images/downloads_32.png' alt='' />");
-}
+
 if (!defined('E_32_EMOTE')) {
 	define('E_32_EMOTE', "<img class='icon S32' src='".e_IMAGE."admin_images/emoticons_32.png' alt='' />");
 }
@@ -434,16 +426,15 @@ $e_icon_array = array(
 	'admin' => E_32_ADMIN,
 	'admin_pass' => E_32_ADPASS,
 	'banlist' => E_32_BANLIST,
-	'banner' => E_32_BANNER,
 	'cache' => E_32_CACHE,
 	'comment' => E_32_COMMENT,
 	'credits' => E_32_CREDITS,
 	'cron'	=> E_32_CRON,
 	'custom' => E_32_CUST,
-	'custom_field' => E_32_CUSTOMFIELD,
+	// 'custom_field' => E_32_CUSTOMFIELD,
 	'database' => E_32_DATAB,
 	'docs' => E_32_DOCS,
-	'download' => E_32_DOWNL,
+	//'download' => E_32_DOWNL,
 	'emoticon' => E_32_EMOTE,
 	'filemanage' => E_32_FILE,
 	'fileinspector' => E_32_INSPECT,
@@ -560,11 +551,10 @@ $array_functions = array(
 	0 => array(e_ADMIN.'administrator.php', ADLAN_8, ADLAN_9, '3', 2, E_16_ADMIN, E_32_ADMIN),
 	1 => array(e_ADMIN.'updateadmin.php', ADLAN_10, ADLAN_11, '', 2, E_16_ADPASS, E_32_ADPASS),
 	2 => array(e_ADMIN.'banlist.php', ADLAN_34, ADLAN_35, '4', 2, E_16_BANLIST, E_32_BANLIST),
-	3 => array(e_ADMIN.'banner.php', ADLAN_54, ADLAN_55, 'D', 3, E_16_BANNER, E_32_BANNER),
 	4 => array(e_ADMIN.'cache.php', ADLAN_74, ADLAN_75, 'C', 1, E_16_CACHE, E_32_CACHE),
 	5 => array(e_ADMIN.'cpage.php', ADLAN_42, ADLAN_43, '5|J', 3, E_16_CUST, E_32_CUST),
 	6 => array(e_ADMIN.'db.php', ADLAN_44, ADLAN_45, '0', 4, E_16_DATAB, E_32_DATAB),
-	7 => array(e_ADMIN.'download.php', ADLAN_24, ADLAN_25, 'R', 3, E_16_DOWNL, E_32_DOWNL),
+//	7 => array(e_ADMIN.'download.php', ADLAN_24, ADLAN_25, 'R', 3, E_16_DOWNL, E_32_DOWNL),
 	8 => array(e_ADMIN.'emoticon.php', ADLAN_58, ADLAN_59, 'F', 1, E_16_EMOTE, E_32_EMOTE),
 	9 => array(e_ADMIN.'filemanager.php', ADLAN_30, ADLAN_31, '6', 5, E_16_FILE, E_32_FILE),
 	10 => array(e_ADMIN.'frontpage.php', ADLAN_60, ADLAN_61, 'G', 1, E_16_FRONT, E_32_FRONT),
@@ -592,9 +582,10 @@ $array_functions = array(
 	32 => array(e_ADMIN.'eurl.php', ADLAN_159, ADLAN_160, 'L', 1, E_16_EURL, E_32_EURL),
 	33 => array(e_ADMIN.'plugin.php', ADLAN_98, ADLAN_99, 'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
 	34 => array(e_ADMIN.'docs.php', ADLAN_12, ADLAN_13, '', 20, E_16_DOCS, E_32_DOCS),
-	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
-	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, '', ''),
-	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
+// TODO System Info.
+//	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
+	36 => array(e_ADMIN.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_CREDITS, E_32_CREDITS),
+//	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
 	38 => array(e_ADMIN.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT)
 );
 
