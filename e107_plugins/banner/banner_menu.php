@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/banner/banner_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-23 16:43:03 $
+|     $Revision: 1.2 $
+|     $Date: 2009-09-18 22:20:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ To define your own banner to use here ...
 3. Save file
 */
 
-
+e107::getLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_menu_banner.php");
 global $THEMES_DIRECTORY;
 if (file_exists(THEME."banner_template.php")) 
 {

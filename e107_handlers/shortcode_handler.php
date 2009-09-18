@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-08-20 16:41:29 $
- * $Author: secretr $
+ * $Revision: 1.30 $
+ * $Date: 2009-09-18 22:20:39 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -116,6 +116,8 @@ function initShortcodeClass($class, $force = false)
 	}
 }
 
+	
+
 class e_shortcode
 {
 	var $scList = array();						// The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
@@ -157,6 +159,9 @@ class e_shortcode
 			}
 		}
 
+
+		$this->loadPluginShortcodes();
+		
 		// Register all .sc files found in plugin directories (via pref)
 		if(varset($pref['shortcode_list'], '') != '')
 		{
@@ -180,6 +185,45 @@ class e_shortcode
 					}
 				}
 			}
+		}
+	}
+	/**
+	 * Load Plugin Shortcode Batch files (e_shortcode.php) for use site-wide. 
+	 * Equivalent to multiple .sc files in the plugin's folder. 
+	 * @return 
+	 */
+	function loadPluginShortcodes()
+	{
+		$pref = e107::getConfig('core')->getPref();
+		
+		if(!vartrue($pref['e_shortcode_list']))
+		{
+			return;
+		}
+
+		foreach($pref['e_shortcode_list'] as $key=>$val)
+		{
+			if(!e107::isInstalled($key) || !include_once(e_PLUGIN.$key.'/e_shortcode.php'))
+			{
+				continue;
+			}
+			$path = e_PLUGIN.$key.'/e_shortcode.php';
+			$classFunc = $key.'_shortcodes';
+			$this->scClasses[$classFunc] = new $classFunc;
+			
+			$tmp = get_class_methods($classFunc);
+			foreach($tmp as $c)
+			{				
+				if(strpos($c, 'sc_') === 0)
+				{
+					$sc_func = substr($c, 3);
+					$code = strtoupper($sc_func);
+					if(!$this->isRegistered($scode))
+					{
+						$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
+					}							
+				}
+			}			
 		}
 	}
 
