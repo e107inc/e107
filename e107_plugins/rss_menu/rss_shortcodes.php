@@ -1,11 +1,10 @@
 <?php
-// $Id: rss_shortcodes.php,v 1.3 2007-11-27 21:47:24 e107steved Exp $
+// $Id: rss_shortcodes.php,v 1.4 2009-09-18 19:05:50 e107coders Exp $
 if (!defined('e107_INIT')) { exit; }   
 
 include_once(e_HANDLER.'shortcode_handler.php');
 $rss_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
-
 SC_BEGIN RSS_FEED
 global $row, $tp;
 $url2 = e_PLUGIN."rss_menu/rss.php?".e_LANQRY.$tp->toHTML($row['rss_url'], TRUE, 'constants').".2".($row['rss_topicid'] ? ".".$row['rss_topicid'] : '');
@@ -39,9 +38,7 @@ $text = "
 return $text;
 SC_END
 
-
 //##### ADMIN --------------------------------------------------
-
 SC_BEGIN RSS_ADMIN_CAPTION
 global $sort;
 list($field,$txt) = explode(",",$parm);
@@ -95,8 +92,6 @@ $options = "
 return $options;
 SC_END
 
-
-
 SC_BEGIN RSS_ADMIN_FORM_NAME
 global $row;
 return "<input class='tbox' type='text' name='rss_name' size='74' value=\"".$row['rss_name']."\" />\n";
@@ -126,7 +121,8 @@ SC_BEGIN RSS_ADMIN_FORM_CLASS
 global $row;
 $vals = array(RSS_LAN_ADMIN_21,RSS_LAN_ADMIN_22,RSS_LAN_ADMIN_23);
 $text = "<select class='tbox' name='rss_class'>";
-foreach($vals as $key=>$val){
+foreach($vals as $key=>$val)
+{
 	$sel = ($row['rss_class'] == $key) ? " selected='selected'" : "";
 	$text .= "<option value='{$key}'{$sel}>$val</option>\n";
 }
@@ -139,19 +135,21 @@ global $row;
 return "<input class='tbox' name='rss_limit' size='3' title=\"".RSS_LAN05."\" value='".intval($row['rss_limit'])."' maxlength='3' />";
 SC_END
 
+
 SC_BEGIN RSS_ADMIN_FORM_CREATEBUTTON
 global $row, $qs;
-if(isset($qs[1]) && $qs[1] == "edit" && isset($qs[2]) && is_numeric($qs[2]) ){
+if(isset($qs[1]) && $qs[1] == "edit" && isset($qs[2]) && is_numeric($qs[2]) )
+{
 	$text = "<input type='hidden' name='rss_datestamp' value='".$row['rss_datestamp']."' />
 	<input type='hidden' name='rss_id' value='".$row['rss_id']."' />
 	<input class='button' type='submit' name='update_rss' value=\"".LAN_UPDATE."\" />";
-}else{
+}
+else
+{
 	$text = "<input class='button' type='submit' name='create_rss' value=\"".LAN_CREATE."\" />";
 }
 return $text;
 SC_END
-
-
 
 SC_BEGIN RSS_ADMIN_IMPORT_CHECK
 global $feed, $rs, $tp, $i;
@@ -190,6 +188,5 @@ SC_BEGIN RSS_ADMIN_IMPORT_TOPICID
 global $feed;
 return $feed['topic_id'];
 SC_END
-
 */
 ?>

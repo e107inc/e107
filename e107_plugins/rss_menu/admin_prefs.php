@@ -1,41 +1,36 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
-+----------------------------------------------------------------------------+
+ + ----------------------------------------------------------------------------+
+ |     e107 website system
+ |
+ |     Copyright (c) e107 Inc. 2001-2009
+ |     http://e107.org
+ |
+ |     Released under the terms and conditions of the
+ |     GNU General Public License (http://gnu.org).
+ |
+ |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
+ |     $Revision: 1.7 $
+ |     $Date: 2009-09-18 19:05:49 $
+ |     $Author: e107coders $
+ +----------------------------------------------------------------------------+
 */
 /*
 Notes:
-
 - array_flip method deprecated for delete item detection.
 - using form handler is deprecated and present only for backwards compatibility.
 - using generic terms like EDIT and DELETE in Language file is deprecated, use LAN_EDIT etc. instead.
 - using terms like created, update, options etc..deprecated should use built in terms.
 - generic admin icons used. ADMIN_ICON_EDIT etc.
 - using $caption = "whatever", is unneccessary.
-
 */
-
 require_once("../../class2.php");
-if(!getperms("P") || !plugInstalled('rss_menu'))
+if(!getperms("P") || !e107::isInstalled('rss_menu'))
 { 
 	header("location:".e_BASE."index.php"); 
 }
 
 include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
-
 require_once(e_ADMIN."auth.php");
 
 $imagedir = e_IMAGE."admin_images/";
@@ -44,7 +39,7 @@ $rss = new rss;
 
 global $tp;
 
-//delete entry
+// Delete entry
 if(isset($_POST['delete']))
 {
 	$d_idt = array_keys($_POST['delete']);
@@ -53,51 +48,49 @@ if(isset($_POST['delete']))
     $e107cache->clear("rss");
 }
 
-//create rss feed
+// Create rss feed
 if(isset($_POST['create_rss']))
 {
 	$message = $rss -> dbrss("create");
 }
 
-//update rss feed
+// Update rss feed
 if(isset($_POST['update_rss']))
 {
 	$message = $rss -> dbrss("update");
 }
 
-//import rss feed
+// Import rss feed
 if(isset($_POST['import_rss']))
 {
 	$message = $rss -> dbrssimport();
 }
 
-//update_limit
+// Update_limit
 if(isset($_POST['update_limit']))
 {
 	$message = $rss -> dbrsslimit();
 }
 
-//update options
+// Update options
 if(isset($_POST['updatesettings']))
 {
 	$message = $rss->dboptions();
 }
 
-//config check
+// Config check
 if($rss->file_check())
 {
-	$message = RSS_LAN_ERROR_2; // space found in file.
+	$message = RSS_LAN_ERROR_2; // Space found in file.
 }
 
-
-//render message
+// Render message
 if(isset($message))
 {
 	$rss->show_message('', $message);
 }
 
-
-//get template
+// Get template
 if (is_readable(THEME."rss_template.php")) 
 {
 	require_once(THEME."rss_template.php");
@@ -107,8 +100,7 @@ else
 	require_once(e_PLUGIN."rss_menu/rss_template.php");
 }
 
-
-//listing
+// Listing
 if(e_QUERY)
 {
 	$qs = explode(".", e_QUERY);
@@ -117,31 +109,30 @@ $action = varset($qs[0],'list');
 $field = varset($qs[1], '');
 $feedID = intval(varset($qs[2], 0));
 
-	switch ($action)
-	{
-		case 'create' :
-			if ($_POST)
-			{	//list
-				$rss -> rssadminlist();
-			}
-			else
-			{	//create
-				$rss -> rssadmincreate($field, $feedID);
-			}
-			break;
-		case 'import' :
-			$rss -> rssadminimport();
-			break;
-		case 'options' :
-			$rss -> rssadminoptions();
-			break;
-		case 'r3' :
-			$rss->show_message('', RSS_LAN_ADMIN_31);	// Intentionally fall straight through after showing message
-		case 'list' :
-		default :
+switch ($action)
+{
+	case 'create' :
+		if ($_POST)
+		{	// List
 			$rss -> rssadminlist();
-	}
-
+		}
+		else
+		{	// Create
+			$rss -> rssadmincreate($field, $feedID);
+		}
+		break;
+	case 'import' :
+		$rss -> rssadminimport();
+		break;
+	case 'options' :
+		$rss -> rssadminoptions();
+		break;
+	case 'r3' :
+		$rss->show_message('', RSS_LAN_ADMIN_31);	// Intentionally fall straight through after showing message
+	case 'list' :
+	default :
+		$rss -> rssadminlist();
+}
 
 require_once(e_ADMIN."footer.php");
 
@@ -169,14 +160,9 @@ function admin_prefs_adminmenu()
 }
 // ##### End --------------------------------------------------------------------------------------
 
-
-
-
-
-
 class rss
 {
-	//check for config
+	// Check for config
 	function file_check()
 	{
 		$arrays = file_get_contents(e_BASE."e107_config.php");
@@ -188,8 +174,7 @@ class rss
 		return FALSE;
 	}
 
-
-	//admin : list : existing rss feeds
+	// Admin : list : existing rss feeds
 	function rssadminlist()
 	{
 		global $ns, $sql, $tp, $field, $sort, $rss_shortcodes, $row, $RSS_ADMIN_LIST_HEADER, $RSS_ADMIN_LIST_TABLE, $RSS_ADMIN_LIST_FOOTER;
@@ -214,7 +199,7 @@ class rss
 		}
 	}
 
-	//create or edit - put up a form
+	// Create or edit - put up a form
 	function rssadmincreate($action, $id=0)
 	{
 		global $ns, $sql, $tp, $rss_shortcodes, $row, $RSS_ADMIN_CREATE_TABLE;
@@ -238,8 +223,7 @@ class rss
 		$ns->tablerender(RSS_LAN_ADMIN_10, $text);
 	}
 
-
-	// import - put up the list of possible feeds to import
+	// Import - put up the list of possible feeds to import
 	function rssadminimport()
 	{
 		global $sql, $ns, $i, $tp, $rss_shortcodes, $feed, $pref;
@@ -248,17 +232,17 @@ class rss
 		$sqli = new db;
 		$feedlist = array();
 
-		//news
+		// News
 		$feed['name']		= ADLAN_0;
-		$feed['url']		= 'news';	//the identifier for the rss feed url
-		$feed['topic_id']	= '';		//the topic_id, empty on default (to select a certain category)
-		$feed['path']		= 'news';	//this is the plugin path location
+		$feed['url']		= 'news';	// The identifier for the rss feed url
+		$feed['topic_id']	= '';		// The topic_id, empty on default (to select a certain category)
+		$feed['path']		= 'news';	// This is the plugin path location
 		$feed['text']		= RSS_PLUGIN_LAN_7;
 		$feed['class']		= '0';
 		$feed['limit']		= '9';
 		$feedlist[]			= $feed;
 
-		//news categories
+		// News categories
 		if($sqli -> db_Select("news_category", "*","category_id!='' ORDER BY category_name "))
 		{
 			while($rowi = $sqli -> db_Fetch())
@@ -270,11 +254,12 @@ class rss
 				$feed['text']		= RSS_PLUGIN_LAN_10.' '.$rowi['category_name'];
 				$feed['class']		= '0';
 				$feed['limit']		= '9';
+			//	$feed['exclude_class'] = '';
 				$feedlist[]			= $feed;
 			}
 		}
 
-		//download
+/*		// Download
 		$feed['name']		= ADLAN_24;
 		$feed['url']		= 'download';
 		$feed['topic_id']	= '';
@@ -284,7 +269,7 @@ class rss
 		$feed['limit']		= '9';
 		$feedlist[]			= $feed;
 
-		//download categories
+		// Download categories
 		if($sqli -> db_Select("download_category", "*","download_category_id!='' ORDER BY download_category_order "))
 		{
 			while($rowi = $sqli -> db_Fetch())
@@ -299,8 +284,8 @@ class rss
 				$feedlist[]			= $feed;
 			}
 		}
-
-		//comments
+*/
+		// Comments
 		$feed['name']		= RSS_PLUGIN_LAN_14;
 		$feed['url']		= 'comments';
 		$feed['topic_id']	= '';
@@ -310,7 +295,7 @@ class rss
 		$feed['limit']		= '9';
 		$feedlist[]			= $feed;
 
-		//plugin rss feed, using e_rss.php in plugin folder
+		// Plugin rss feed, using e_rss.php in plugin folder
 		$plugin_feedlist = array();
 		foreach($pref['e_rss_list'] as $val)
 		{
@@ -331,7 +316,7 @@ class rss
 			$feed['topic_id']		= $tp -> toDB($feed['topic_id']);
 			$feed['url']			= $tp -> toDB($feed['url']);
 
-			//check if feed is not yet present
+			// Check if feed is not yet present
 			if(!$sql -> db_Select("rss", "*", "rss_path='".$feed['path']."' AND rss_url='".$feed['url']."' AND rss_topicid='".$feed['topic_id']."' "))
 			{
 				$render=TRUE;
@@ -351,8 +336,7 @@ class rss
 		}
 	}
 
-
-	// options - display form
+	// Options - display form
 	function rssadminoptions()
 	{
 		global $ns, $sql, $tp, $rss_shortcodes, $row, $RSS_ADMIN_OPTIONS_TABLE;
@@ -362,17 +346,14 @@ class rss
 		return;
 	}
 
-
-	//render message
+	// Render message
 	function show_message($caption='', $text='')
 	{
 		global $ns;
 		$ns -> tablerender($caption, "<div style='text-align:center'><b>$text</b></div>");
 	}
 
-
-
-	//db:create/update
+	// Db:create/update
 	function dbrss($mode='create')
 	{
 		global $sql, $ns, $tp, $e107cache, $admin_log;
@@ -387,7 +368,7 @@ class rss
 			$rssVals['rss_text']		= $tp -> toDB($_POST['rss_text']);
 			$rssVals['rss_class']		= (intval($_POST['rss_class']) ? intval($_POST['rss_class']) : '0');
 			$rssVals['rss_limit']		= intval($_POST['rss_limit']);
-
+		//	$rssVals['rss_exclude_class'] = intval($_POST['rss_exclude_class']);
 			if(isset($_POST['rss_datestamp']) && $_POST['rss_datestamp']!='')
 			{
 				$rssVals['rss_datestamp'] = intval($_POST['rss_datestamp']);
@@ -419,8 +400,7 @@ class rss
 		return $message;
 	}
 
-
-	//import rss feeds
+	// Import rss feeds
 	function dbrssimport()
 	{
 		global $sql, $tp, $admin_log;
@@ -442,7 +422,6 @@ class rss
 		}
 		$message = count($_POST['importid'])." ".RSS_LAN_ADMIN_18;
 		return $message;
-
 	}
 
 	function dbrsslimit()
@@ -461,7 +440,7 @@ class rss
 		header("location:".e_SELF."?r3");
 	}
 
-	//update options
+	// Update options
 	function dboptions()
 	{
 		global $tp, $pref, $admin_log;
@@ -469,6 +448,7 @@ class rss
 		$temp = array();
 		$temp['rss_othernews'] = $_POST['rss_othernews'];
 		$temp['rss_summarydiz'] = $_POST['rss_summarydiz'];
+		$temp['rss_shownewsimage']	= $_POST['rss_shownewsimage'];
 		if ($admin_log->logArrayDiffs($temp, $pref, 'RSS_06'))
 		{
 			save_prefs();		// Only save if changes
@@ -479,9 +459,5 @@ class rss
 			return RSS_LAN_ADMIN_28;
 		}
 	}
-
-
-} //end class
-
-
+} // End class rss
 ?>

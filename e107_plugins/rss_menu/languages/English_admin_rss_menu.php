@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/languages/English_admin_rss_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-13 12:34:53 $
-|     $Author: e107steved $
+|     $Revision: 1.2 $
+|     $Date: 2009-09-18 19:05:50 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -87,7 +87,8 @@ define("RSS_LAN_ADMIN_27", "Uncheck All");
 define('RSS_LAN_ADMIN_28', 'Nothing changed - not saved');
 
 define("RSS_LAN_ADMIN_31", 'rss entries limits updated');
-
+define("RSS_LAN_ADMIN_32", "");
+define("RSS_LAN_ADMIN_33", "Show image in News Feed?");
 
 define("RSS_LAN_0", "RSS");
 define("RSS_LAN_2", "@nospam.com");
@@ -102,6 +103,4 @@ define('LAN_AL_RSS_04','RSS feed imported');
 define('LAN_AL_RSS_05','RSS limits updated');
 define('LAN_AL_RSS_06','RSS settings updated');
 define('LAN_AL_RSS_07','');
-
-
 ?>
