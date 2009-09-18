@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2009-09-17 01:47:20 $
+|     $Revision: 1.89 $
+|     $Date: 2009-09-18 23:14:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ class e107plugin
 		"e_latest",
 		"e_status",
 		"e_search",
-		"e_sc",
+		"e_shortcode",
 		"e_module",
 		"e_comment",
 		"e_sql",
@@ -1307,7 +1307,7 @@ class e107plugin
 
 		if($function == 'install' || $function == 'upgrade')
 		{			
-			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}' WHERE plugin_id = ".$id);
+			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
 			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
 	
 			e107::getConfig('core')->setPref('plug_installed',$p_installed)->save();		
@@ -1315,7 +1315,7 @@ class e107plugin
 
 		if($function == 'uninstall')
 		{
-			$sql->db_Update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}' WHERE plugin_id = ".$id);
+			$sql->db_Update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
 			unset($p_installed[$plug['plugin_path']]);
 			e107::getConfig('core')->setPref('plug_installed',$p_installed)->save();
 		}
