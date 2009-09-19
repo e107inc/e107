@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.50 $
- * $Date: 2009-09-14 18:22:15 $
+ * $Revision: 1.51 $
+ * $Date: 2009-09-19 15:27:26 $
  * $Author: secretr $
 */
 
@@ -57,6 +57,12 @@ class e107
 	 * @var boolean
 	 */
 	protected static $_sc_core_loaded = false;
+	
+	/**
+	 * message handler included check
+	 * @var boolean
+	 */
+	protected static $_message_included = false;
 	
 	/**
 	 * Singleton instance
@@ -428,7 +434,6 @@ class e107
 			e107::setRegistry($id, new $class_name());
 		}
 
-
 		return self::getRegistry($id);
 	}
 	
@@ -786,6 +791,21 @@ class e107
 	}
 	
 	/**
+	 * Retrieve message handler singleton
+	 *
+	 * @return eMessage
+	 */
+	public static function getMessageHandler()
+	{
+		if(!self::$_message_included)
+		{
+			e107_require_once(e_HANDLER.'message_handler.php');
+			self::$_message_included = true;
+		}
+		return eMessage::getInstance();
+	}
+	
+	/**
 	 * Get core template. Use this method for templates, which are following the 
 	 * new template standards:
 	 * - template variables naming convetnions
@@ -911,7 +931,7 @@ class e107
 	 * @param boolean $force
 	 * @return string
 	 */
-	public static function getLan($path, $force = false)
+	public static function includeLan($path, $force = false)
 	{
 		global $pref;
 		if (!is_readable($path))

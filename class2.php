@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.144 $
-* $Date: 2009-09-15 13:34:09 $
+* $Revision: 1.145 $
+* $Date: 2009-09-19 15:27:26 $
 * $Author: secretr $
 *
 */
@@ -1876,10 +1876,10 @@ function class_list($uid = '')
 // ---------------------------------------------------------------------------
 
 
-//DEPRECATED - use e107::getLan();
+//DEPRECATED - use e107::includeLan();
 function include_lan($path, $force = false)
 {
-	return e107::getLan($path, $force);
+	return e107::includeLan($path, $force);
 }
 
 /*

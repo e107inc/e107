@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.41 $
-* $Date: 2009-09-17 13:52:33 $
-* $Author: e107coders $
+* $Revision: 1.42 $
+* $Date: 2009-09-19 15:27:26 $
+* $Author: secretr $
 *
 */
 
@@ -148,7 +148,7 @@ unset($e107_paths);
 
 function include_lan($path, $force = false)
 {
-	return e107::getLan($path, $force);
+	return e107::includeLan($path, $force);
 }
 //obsolete $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
 
