@@ -9,8 +9,8 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-09-18 22:20:39 $
+ * $Revision: 1.31 $
+ * $Date: 2009-09-19 17:43:19 $
  * $Author: e107coders $
 */
 
@@ -129,11 +129,25 @@ class e_shortcode
 
 	function e_shortcode($noload=false)
 	{
-		global $pref, $register_sc;
+		global $pref; 
 
-		$this->parseSCFiles = true;			// Default probably never used, but make sure its defined.
+		$this->parseSCFiles = true;	// Default probably never used, but make sure its defined.
 
-		//Register any shortcode from the shortcode/override/ directory
+		$this->loadOverrideShortcodes();
+		$this->loadThemeShortcodes();
+		$this->loadPluginShortcodes();
+		$this->loadPluginSCFiles();
+		
+	}
+	
+	/**
+	 * Register any shortcode from the shortcode/override/ directory
+	 * @return 
+	 */
+	protected function loadOverrideShortcodes()
+	{
+		$pref = e107::getConfig('core')->getPref();
+		
 		if(varset($pref['sc_override']))
 		{
 			$tmp = explode(',', $pref['sc_override']);
@@ -143,10 +157,18 @@ class e_shortcode
 				$this->registered_codes[$code]['type'] = 'override';
 				$this->scOverride[] = $code;
 			}
-		}
-
-		// Register any shortcodes that were registered by the theme
-		// $register_sc[] = 'MY_THEME_CODE'
+		}	
+	}
+	
+	/**
+	 * Register any shortcodes that were registered by the theme
+	 * $register_sc[] = 'MY_THEME_CODE'
+	 * @return 
+	 */
+	protected function loadThemeShortcodes()
+	{
+		global $register_sc;
+		
 		if(isset($register_sc) && is_array($register_sc))
 		{
 			foreach($register_sc as $code)
@@ -157,12 +179,18 @@ class e_shortcode
 					$this->registered_codes[$code]['type'] = 'theme';
 				}
 			}
-		}
-
-
-		$this->loadPluginShortcodes();
+		}	
+	}
+	
+	
+	/**
+	 * Register all .sc files found in plugin directories (via pref)
+	 * @return 
+	 */
+	protected function loadPluginSCFiles()
+	{	
+		$pref = e107::getConfig('core')->getPref();
 		
-		// Register all .sc files found in plugin directories (via pref)
 		if(varset($pref['shortcode_list'], '') != '')
 		{
 			foreach($pref['shortcode_list'] as $path => $namearray)
@@ -185,14 +213,17 @@ class e_shortcode
 					}
 				}
 			}
-		}
+		}	
 	}
+	
+	
+	
 	/**
-	 * Load Plugin Shortcode Batch files (e_shortcode.php) for use site-wide. 
+	 * Register Plugin Shortcode Batch files (e_shortcode.php) for use site-wide. 
 	 * Equivalent to multiple .sc files in the plugin's folder. 
 	 * @return 
 	 */
-	function loadPluginShortcodes()
+	protected function loadPluginShortcodes()
 	{
 		$pref = e107::getConfig('core')->getPref();
 		
@@ -203,7 +234,7 @@ class e_shortcode
 
 		foreach($pref['e_shortcode_list'] as $key=>$val)
 		{
-			if(!e107::isInstalled($key) || !include_once(e_PLUGIN.$key.'/e_shortcode.php'))
+			if(!include_once(e_PLUGIN.$key.'/e_shortcode.php'))
 			{
 				continue;
 			}
@@ -227,9 +258,13 @@ class e_shortcode
 		}
 	}
 
+	/**
+	 * Register Core Shortcode Batches. 
+	 * @return 
+	 */
 	function loadCoreShortcodes()
 	{
-		$coreBatchList = array('siteinfo_shortcodes.php', 'admin_shortcodes.php');
+		$coreBatchList = array('admin_shortcodes.php');
 		foreach($coreBatchList as $cb)
 		{
 			include_once(e_FILE.'shortcode/batch/'.$cb);

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2009-09-10 15:39:09 $
+|     $Revision: 1.44 $
+|     $Date: 2009-09-19 17:43:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -754,6 +754,7 @@ class pluginManager{
 			global $tp, $plugin, $frm;
 
 			if (empty($pluginList)) return '';
+			
 
 			$text = "";
 
@@ -770,6 +771,12 @@ class pluginManager{
 				{
 					$plug_vars = $plugin->plug_vars;
 				}
+				
+				if(varset($plug['plugin_category']) == "menu") // Hide "Menu Only" plugins. 
+				{
+					continue;
+				}
+				
 				if($plug_vars)
 				{
 
