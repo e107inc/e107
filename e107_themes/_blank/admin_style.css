@@ -123,13 +123,18 @@ select, .tbox, .helpbox {
 }
 option { padding-right: 10px;}
 input.input-text, textarea, .tbox, .helpbox { padding:2px; }
-.tbox.large { width: 95% !important; }
+
 select.tbox  { min-height:17px; padding: 0px; /* setting the height of empty selects */ }
 .select.order { width: 40px !important; }
 .select.time-offset { width: 60px !important; }
 input.radio { margin-right: 3px; }
 label { cursor: pointer; }
 .checkbox { margin-right: 5px; }
+
+/* BBcode textareas */
+div.bbarea.large, .tbox.large, .tbox.helpbox.large { width: 95% !important; }
+div.bbarea.medium, .tbox.medium, .tbox.helpbox.medium { width: 60% !important; }
+div.bbarea.small, .tbox.small, .tbox.helpbox.small { width: 250px !important; }
 
 .check-block { /* see administration newspost.php */
 	padding: 2px 0px;
