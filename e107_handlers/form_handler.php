@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-09-14 21:54:16 $
+ * $Revision: 1.43 $
+ * $Date: 2009-09-19 15:21:51 $
  * $Author: secretr $
  *
 */
@@ -159,21 +159,39 @@ class e_form
 		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>";
 	}
 
-	function bbarea($name, $value, $help_mod = '', $help_tagid='')
+	function bbarea($name, $value, $help_mod = '', $help_tagid='', $size = 'large')
 	{
-	   	$options = array('class' => 'tbox large e-wysiwyg');
+		//size - large|medium|small
+		//width should be explicit set by current admin theme
+		switch($size)
+		{			
+			case 'medium':
+				$rows = '10';
+			break;
+			
+			case 'small':
+				$rows = '7';
+			break;
+			
+			case 'large':
+			default:
+				$rows = '15';
+				$size = 'large';
+			break;
+		}
+	   	$options = array('class' => 'tbox'.($size ? ' '.$size : '').' e-wysiwyg');
+		$bbbar = '';
 		if(!deftrue('e_WYSIWYG'))
 		{
 			require_once(e_HANDLER."ren_help.php");
 			$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
-			$bbbar = display_help($help_tagid, $help_mod);
+			$bbbar = display_help($help_tagid, $help_mod, 'addtext', 'help', $size);
 		}
 
 		$ret = "
-		<div class='bbarea'>
-			<div class='field-spacer'>
-				".$this->textarea($name, $value, 15, 50, $options)."
-			</div>
+		<div class='bbarea {$size}'>
+			".$this->textarea($name, $value, $rows, 50, $options)."
+			<div class='field-spacer'><!-- --></div>
 			{$bbbar}
 		</div>
 		";
