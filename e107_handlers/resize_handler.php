@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-04-23 20:23:49 $
+|     $Revision: 1.14 $
+|     $Date: 2009-09-19 20:46:19 $
 |     $Author: e107steved $
 |
 |
@@ -228,6 +228,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 			{
 				case 'png' :
 					if (!imagepng($dst_img, $destName, 6)) { $returnError = -1; }		// Fix the quality for now
+					$outputFunc = 'imagepng';
 					break;
 				case 'gif' :
 					if (!imagegif($dst_img, $destName)) { $returnError = -1; }
@@ -239,7 +240,8 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 					$outputFunc = 'imagejpeg';
 					break;
 				default :
-					$returnError = -7;			// Invalid output extensiot
+					$returnError = -7;			// Invalid output extension
+					$outputFunc = 'none';
 			}
 		}
 
@@ -247,7 +249,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		if (!imagedestroy($dst_img)) { $returnError = -3; }
 		if ($returnError)
 		{
-			echo "Resizing error (2): {$returnError}<br />";
+			echo "Resizing error (2): {$returnError} - {$outputFunc} -> {$destName}<br />";
 			return FALSE;
 		}  
 		break;
