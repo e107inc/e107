@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-09-12 18:21:54 $
+ * $Revision: 1.17 $
+ * $Date: 2009-09-19 15:24:38 $
  * $Author: secretr $
  *
 */
@@ -132,18 +132,27 @@ class eMessage
 	}
 	
 	/**
-	 * Alias of {@link add()}
-	 * Should be used for dealing with messages with custom message stacks
+	 * Alias of {@link add()}.
+	 * Should be used for dealing with messages with custom message stacks.
+	 * Supports message arrays.
 	 * 
-	 * @param object $message
+	 * @param string $message message(s)
 	 * @param string $mstack defaults to 'default' 
-	 * @param object $type [optional]
-	 * @param object $sesion [optional]
+	 * @param string $type [optional]
+	 * @param boolean $sesion [optional]
 	 * @return eMessage
 	 */
 	public function addStack($message, $mstack = 'default', $type = E_MESSAGE_INFO, $sesion = false)
 	{
-		return $this->add(array($mstack, $message), $type, $sesion);
+		if(!is_array($message))
+		{
+			$message = array($message);
+		}
+		foreach ($message as $m)
+		{
+			return $this->add(array($mstack, $message), $type, $sesion);
+		}
+		return $this;
 	}
 
 	/**
@@ -171,18 +180,27 @@ class eMessage
 	}
 	
 	/**
-	 * Alias of {@link addSession()}
-	 * Should be used for dealing with messages with custom message stacks
+	 * Alias of {@link addSession()}.
+	 * Should be used for dealing with messages with custom message stacks.
+	 * Supports message arrays.
 	 * 
-	 * @param object $message
+	 * @param string|array $message message(s)
 	 * @param string $mstack defaults to 'default' 
-	 * @param object $type [optional]
-	 * @param object $sesion [optional]
+	 * @param string $type [optional]
+	 * @param boolean $sesion [optional]
 	 * @return eMessage
 	 */
 	public function addSessionStack($message, $mstack = 'default', $type = E_MESSAGE_INFO)
 	{
-		return $this->addSession(array($mstack, $message), $type);
+		if(!is_array($message))
+		{
+			$message = array($message);
+		}
+		foreach ($message as $m)
+		{
+			return $this->addSession(array($mstack, $message), $type);
+		}
+		return $this;
 	}
 
 	/**
@@ -239,12 +257,12 @@ class eMessage
 	 * Output all accumulated messages
 	 *
 	 * @param string $mstack message stack name
-	 * @param bool $raw force return type array
-	 * @param bool $reset reset all messages
 	 * @param bool $session merge with session messages
+	 * @param bool $reset reset all messages
+	 * @param bool $raw force return type array
 	 * @return array|string messages
 	 */
-	public function render($mstack = 'default', $raw = false, $reset = true, $session = false)
+	public function render($mstack = 'default', $session = false, $reset = true, $raw = false)
 	{
 		if($session)
 		{
