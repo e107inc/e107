@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/links_page_sql.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:35:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-09-19 19:05:16 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -45,7 +45,7 @@ CREATE TABLE links_page (
   link_order int(10) unsigned NOT NULL default '0',
   link_refer int(10) unsigned NOT NULL default '0',
   link_open tinyint(1) unsigned NOT NULL default '0',
-  link_class tinyint(3) unsigned NOT NULL default '0',
+  link_class smallint(5) unsigned NOT NULL default '0',
   link_datestamp int(10) unsigned NOT NULL default '0',
   link_author varchar(255) NOT NULL default '',
   PRIMARY KEY  (link_id)

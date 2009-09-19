@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2009-09-17 01:47:20 $
-|     $Author: e107coders $
+|     $Revision: 1.53 $
+|     $Date: 2009-09-19 19:05:16 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -266,7 +266,11 @@ function update_706_to_800($type='')
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
 	// key = plugin directory name. Data = comma-separated list of tables to check
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$pluginChangedTables = array('linkwords' => 'linkwords');
+	$pluginChangedTables = array('linkwords' => 'linkwords', 
+								'featurebox' => 'featurebox',
+								'links_page' => 'links_page',
+								'poll' => 'poll'
+								);
 
 
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
