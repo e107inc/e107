@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-07 07:25:27 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2009-09-19 15:21:50 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 // How to register your own BBcode button.
@@ -22,10 +22,9 @@
 // $register_bb['blank'] = array("", "[blank][/blank]","Blank example helper text",e_IMAGE."bbcode/template.png");
 
 $BBCODE_TEMPLATE = "
-	<div class='field-spacer'>
-		{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
-		{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
-	</div>
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	<div class='field-spacer'><!-- --></div>
 ";
 
 // $BBCODE_TEMPLATE .= "{BB=blank}";
@@ -35,54 +34,47 @@ $BBCODE_TEMPLATE = "
 // $sc_style['BB_HELP']['post'] = "</div>";
 
 $BBCODE_TEMPLATE_SUBMITNEWS = "
-	<div class='field-spacer'>
-		{BB_HELP}
-	</div>
-	<div class='field-spacer'>
-	    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
-		{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
-	</div>
+	
+	{BB_HELP}
+	<div class='field-spacer'><!-- --></div>
+    {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
+	<div class='field-spacer'><!-- --></div>
 ";
 
 
 // --------   Admin Templates ----------------------
 
 $BBCODE_TEMPLATE_ADMIN = "
-	<div class='field-spacer'>
-		{BB_HELP=admin}
-	</div>
-	<div class='field-spacer'>
-		{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
-		{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
-		{BB_PREIMAGEDIR=".e_IMAGE."}
-		{BB=preimage}{BB=prefile}{BB=flash}
-	</div>
+	{BB_HELP=admin}
+	<div class='field-spacer'><!-- --></div>
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
+	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB_PREIMAGEDIR=".e_IMAGE."}
+	{BB=preimage}{BB=prefile}{BB=flash}
+	<div class='field-spacer'><!-- --></div>
 ";
 
 // $BBCODE_TEMPLATE_ADMIN .= "{BB=blank}";
 
 $BBCODE_TEMPLATE_NEWSPOST = "
-	<div class='field-spacer'>
-		{BB_HELP=$mode}
-	</div>
-	<div class='field-spacer'>
-		{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
-		{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
-		{BB_PREIMAGEDIR=".e_IMAGE."newspost_images/}
-		{BB=preimage}{BB=prefile}{BB=flash}
-	</div>
+	{BB_HELP=$mode}
+	<div class='field-spacer'><!-- --></div>
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
+	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB_PREIMAGEDIR=".e_IMAGE."newspost_images/}
+	{BB=preimage}{BB=prefile}{BB=flash}
+	<div class='field-spacer'><!-- --></div>
 ";
 
 $BBCODE_TEMPLATE_CPAGE = "
-	<div class='field-spacer'>
-		{BB_HELP}
-	</div>
-	<div class='field-spacer'>
-		{BB=newpage}
-		{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
-		{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
-		{BB_PREIMAGEDIR=".e_IMAGE."custom/}
-		{BB=preimage}{BB=prefile}{BB=flash}
-	</div>
+	{BB_HELP}
+	<div class='field-spacer'><!-- --></div>
+	{BB=newpage}
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}{BB=right}
+	{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB_PREIMAGEDIR=".e_IMAGE."custom/}
+	{BB=preimage}{BB=prefile}{BB=flash}
+	<div class='field-spacer'><!-- --></div>
 ";
 ?>

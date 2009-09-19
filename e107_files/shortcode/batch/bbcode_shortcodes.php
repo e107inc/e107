@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-07-21 06:31:23 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2009-09-19 15:21:50 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -133,12 +133,14 @@ class bbcode_shortcodes
 	function sc_bb_help($parm)
 	{
 		if(defsettrue('e_WYSIWYG')) { return; }
-		global $bbcode_helpactive,$bbcode_helptag;
+		global $bbcode_helpactive,$bbcode_helptag, $bbcode_helpsize;
 		if($parm) $bbcode_helptag = $parm;
 		elseif(!varset($bbcode_helptag))  $bbcode_helptag = 'helpb';
+		if($bbcode_helpsize) $bbcode_helpsize = ' '.$bbcode_helpsize;
 		$bbcode_helpactive = TRUE;
+		
 		//FIXME - better bb help
-		return "<input id='{$bbcode_helptag}' class='tbox large helpbox' type='text' name='{$bbcode_helptag}' size='90' readonly='readonly' />";
+		return "<input id='{$bbcode_helptag}' class='tbox helpbox{$bbcode_helpsize}' type='text' name='{$bbcode_helptag}' size='90' readonly='readonly' />";
 	}
 
 	function sc_bb_preimagedir($parm)
