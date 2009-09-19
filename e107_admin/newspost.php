@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.53 $
- * $Date: 2009-09-14 18:22:15 $
+ * $Revision: 1.54 $
+ * $Date: 2009-09-19 15:27:25 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -2375,7 +2375,7 @@ class admin_newspost
 
 	function show_options()
 	{
-		$e107 = &e107::getInstance();
+		$e107 = e107::getInstance();
 
 		$var['main']['text'] = NWSLAN_44;
 		$var['main']['link'] = e_SELF;
