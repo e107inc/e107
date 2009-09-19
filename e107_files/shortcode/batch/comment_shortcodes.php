@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-09-14 18:14:32 $
+|     $Revision: 1.11 $
+|     $Date: 2009-09-19 15:30:47 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
-$comment_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
+$comment_shortcodes = e107::getScParser()->parse_scbatch(__FILE__);
 
 /*
 SC_BEGIN SUBJECT
