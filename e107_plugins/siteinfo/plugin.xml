@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: plugin.xml,v 1.1 2009-09-19 17:36:35 e107coders Exp $ -->
+<e107Plugin name="Siteinfo" version="1.0" compatibility="0.8" installRequired="false" >
+	<folder>siteinfo</folder>
+	<category>menu</category>
+</e107Plugin>
