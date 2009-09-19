@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-09-17 00:13:39 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2009-09-19 15:23:49 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,18 +24,38 @@ class e107_event
 	var $functions = array();
 	var $includes = array();
 
+	/**
+	 * Register event
+	 * 
+	 * @param string $eventname
+	 * @param array|string $function [class_name, method_name] or function name
+	 * @param string $include [optional] include path 
+	 * @return void
+	 */
 	function register($eventname, $function, $include='')
 	{
-		if ($include!='')
+		$this->includes[$eventname] = array();
+		if(!isset($this->functions[$eventname]) || !in_array($function, $this->functions[$eventname]))
 		{
-			$this->includes[$eventname][] = $include;
+			if (!empty($include))
+			{
+				$this->includes[$eventname][] = $include;
+			}
+			$this->functions[$eventname][] = $function;
 		}
-		$this->functions[$eventname][] = $function;
 	}
 
+	/**
+	 * Trigger event
+	 * TODO - admin log for failed callback attempts?
+	 * 
+	 * @param string $eventname
+	 * @param mixed $data
+	 * @return mixed
+	 */
 	function trigger($eventname, &$data)
 	{
-		if (isset($this -> includes[$eventname]))
+		/*if (isset($this->includes[$eventname]))
 		{
 			foreach($this->includes[$eventname] as $evt_inc)
 			{
@@ -44,19 +64,46 @@ class e107_event
 					include_once($evt_inc);
 				}
 			}
-		}
-		if (isset($this -> functions[$eventname]))
+		}*/
+		if (isset($this->functions[$eventname]))
 		{
-			foreach($this->functions[$eventname] as $evt_func)
+			foreach($this->functions[$eventname] as $i => $evt_func)
 			{
+				$location = '';
+				if(isset($this->includes[$eventname][$i])) //no checks
+				{
+					$location = $this->includes[$eventname][$i];
+					e107_include_once($location); 
+					unset($this->includes[$eventname][$i]);
+				}
+				if(is_array($evt_func)) //class, method
+				{
+					try
+					{
+						$class = $evt_func[0];
+						$method = $evt_func[1];
+						$tmp = new $class($eventname);
+						$ret = $tmp->{$method}($data, $eventname); //let callback know what event is calling it
+						unset($tmp);
+						if (!empty($ret))
+						{
+							break;
+						}
+					}
+					catch(Exception $e)
+					{
+						//TODO log errors $eventname, $location, $class, $method
+					}
+				}
 				if (function_exists($evt_func))
 				{
-					$ret = $evt_func($data);
-					if ($ret!='')
+					$ret = $evt_func($data, $eventname); //let callback know what event is calling it
+					if (!empty($ret))
 					{
 						break;
 					}
 				}
+				//TODO log errors $eventname, $location, $evt_func
 			}
 		}
 		return (isset($ret) ? $ret : false);
