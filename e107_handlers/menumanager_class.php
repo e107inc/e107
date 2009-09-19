@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-08-25 08:29:47 $
-|     $Author: secretr $
+|     $Revision: 1.8 $
+|     $Date: 2009-09-19 17:43:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -355,6 +355,7 @@ class e_menuManager {
 			$efile = new e_file;
 			$efile->dirFilter = array('/', 'CVS', '.svn', 'languages');
 			$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
+			
 			foreach($fileList as $file)
 			{
 
@@ -365,7 +366,7 @@ class e_menuManager {
 				$existing_menu = $sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'");
 				if (file_exists(e_PLUGIN.$parent_dir.'/plugin.xml') || file_exists(e_PLUGIN.$parent_dir.'/plugin.php'))
 				{
-					if (plugInstalled($parent_dir))
+					if (e107::isInstalled($parent_dir))
 					{  // Its a 'new style' plugin with a plugin.php file, or an even newer one with plugin.xml file - only include if plugin installed
 						$valid_menu = TRUE;		// Whether new or existing, include in list
 //						echo "Include {$parent_dir}:{$file['fname']}<br />";

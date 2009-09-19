@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2009-09-18 23:14:00 $
+|     $Revision: 1.90 $
+|     $Date: 2009-09-19 17:43:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,7 @@ class e107plugin
 	'plugin_category'				// Plugin Category: settings, users, content, management, tools, misc, about
 	);
 
-	var $accepted_categories = array('settings', 'users', 'content', 'tools', 'manage', 'misc', 'about');
+	var $accepted_categories = array('settings', 'users', 'content', 'tools', 'manage', 'misc', 'menu', 'about');
 
 	var $plug_vars;
 	var $current_plug;
