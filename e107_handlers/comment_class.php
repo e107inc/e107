@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision: 1.24 $
- |     $Date: 2009-09-14 18:18:35 $
+ |     $Revision: 1.25 $
+ |     $Date: 2009-09-19 15:30:47 $
  |     $Author: secretr $
  +----------------------------------------------------------------------------+
  */
@@ -64,7 +64,8 @@ class comment
 			}
 			//FIXME - e_REQUEST_URI?
 			//e_SELF."?".e_QUERY
-			$text = "\n<div id='e-comment-form' style='text-align:center'><form method='post' action='".$_SERVER['REQUEST_URI']."' id='dataform' >\n<table style='width:100%'>";
+			$text = e107::getMessageHandler()->render('postcomment', true, false, true);//temporary here
+			$text .= "\n<div id='e-comment-form' style='text-align:center'><form method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."' id='dataform' >\n<table style='width:100%'>";
 			if ($pref['nested_comments'])
 			{
 				$text .= "<tr>\n<td style='width:20%'>".COMLAN_324."</td>\n<td style='width:80%'>\n
@@ -375,6 +376,7 @@ class comment
 				{
 					$cuser_id = USERID;
 					$cuser_name = USERNAME;
+					$cuser_mail = USEREMAIL;
 				}
 				elseif ($_POST['author_name'] != '')
 				{ // See if author name is registered user
@@ -382,7 +384,11 @@ class comment
 					{
 						if ($sql2->db_Select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".$tp->toDB($ip, true)."' "))
 						{
-							list($cuser_id, $cuser_name) = $sql2->db_Fetch();
+							//list($cuser_id, $cuser_name) = $sql2->db_Fetch();
+							$tmp = $sql2->db_Fetch();
+							$cuser_id = $tmp['user_id'];
+							$cuser_name = $tmp['user_name'];
+							$cuser_mail = $tmp['user_email'];
 						}
 						else
 						{
@@ -405,15 +411,54 @@ class comment
 						$e107cache->clear("comment");
 						return;
 					}
+					
+					//FIXME - don't sanitize, pass raw data to e_event, use DB array (inner db sanitize)
 					$edata_li = array(
 						// comment_id - auto-assigned
-						'comment_pid'=>intval($pid), "comment_item_id"=>$id, "comment_subject"=>$subject, 'comment_author_id'=>$cuser_id, 'comment_author_name'=>$cuser_name,
-						//	'comment_author_email' => '',   Field not saved ATM
-						"comment_datestamp"=>$_t, "comment_comment"=>$comment, 'comment_ip'=>$ip, "comment_type"=>$tp->toDB($type, true));
-					//			  if (!$sql->db_Insert("comments", "0, '".intval($pid)."', '".intval($id)."', '$subject', '$nick', '', '".$_t."', '$comment', '0', '$ip', '".$tp -> toDB($type, true)."', '0' "))
-					if (!$sql->db_Insert("comments", $edata_li))
+						'comment_pid'			=> intval($pid), 
+						'comment_item_id'		=> $id, 
+						'comment_subject'		=> $subject, 
+						'comment_author_id'		=> $cuser_id, 
+						'comment_author_name'	=> $cuser_name,
+						'comment_author_email'	=> $tp->toDB($cuser_mail),
+						'comment_datestamp'		=> $_t, 
+						'comment_comment'		=> $comment, 
+						'comment_blocked'		=> 0, //Not blocked by default
+						'comment_ip'			=> $ip, 
+						'comment_type'			=> $tp->toDB($type, true),
+						'comment_lock'			=> 0 //Not locked by default
+					);
+					
+					//SecretR: new event 'prepostcomment' - allow plugin hooks - e.g. Spam Check
+					$edata_li_hook = array_merge($edata_li, array('comment_nick' => $cuser_id.'.'.$cuser_name, 'comment_time' => $_t));
+					if($e_event->trigger("prepostcomment", $edata_li_hook))
 					{
-						echo "<b>".COMLAN_323."</b> ".COMLAN_11;
+						return false; //3rd party code interception
+					}
+					
+					//allow 3rd party code to modify insert data
+					if(is_array($edata_li_hook))
+					{
+						foreach (array_keys($edata_li) as $k)
+						{
+							if(isset($edata_li_hook[$k])) 
+							{
+								$edata_li[$k] = $edata_li_hook[$k]; //sanitize?
+								continue;
+							}
+							if($k === 'break') 
+							{
+								$break = $edata_li_hook[$k];
+							}
+						}
+					}
+					unset($edata_li_hook);
+					
+					if (!($inserted_id = $sql->db_Insert("comments", $edata_li)))
+					{
+						//echo "<b>".COMLAN_323."</b> ".COMLAN_11;
+						e107::getMessageHandler()->addStack(COMLAN_11, 'postcomment', E_MESSAGE_ERROR);
+						
 					}
 					else
 					{
@@ -424,16 +469,28 @@ class comment
 						// Next item for backward compatibility
 						$edata_li["comment_nick"] = $cuser_id.'.'.$cuser_name;
 						$edata_li["comment_time"] = $_t;
-						unset($edata_li['comment_pid']);
+						$edata_li["comment_id"] = $inserted_id;
+						
+						//Why?
+						/*unset($edata_li['comment_pid']);
 						unset($edata_li['comment_author_email']);
-						unset($edata_li['comment_ip']);
-						//				$edata_li = array("comment_type" => $type, "comment_subject" => $subject, "comment_item_id" => $id, "comment_nick" => $nick, "comment_time" => $_t, "comment_comment" => $comment);
+						unset($edata_li['comment_ip']);*/
+						
 						$e_event->trigger("postcomment", $edata_li);
 						$e107cache->clear("comment");
+						
+						//TODO - should be handled by news
 						if (!$type || $type == "news")
 						{
 							$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
 						}
+						
+						//if rateindex is posted, enter the rating from this user
+						if ($rateindex)
+						{
+							$rater->enterrating($rateindex);
+						}
+						return true;
 					}
 				}
 			}
@@ -442,15 +499,12 @@ class comment
 		{
 			define("emessage", COMLAN_312);
 		}
-		//if rateindex is posted, enter the rating from this user
-		if ($rateindex)
-		{
-			$rater->enterrating($rateindex);
-		}
+
 		if (defined("emessage"))
 		{
 			message_handler("ALERT", emessage);
 		}
+		return false;
 	}
 	/**
 	 * Enter description here...
@@ -458,14 +512,13 @@ class comment
 	 * @param unknown_type $table
 	 * @return unknown
 	 */
-
-
 	function getCommentType($table)
 	{
 		if (is_numeric($table))
 		{
 			return $table;
 		}
+		
 		switch ($table)
 		{
 			case "news":
@@ -496,9 +549,48 @@ class comment
 				 Add your comment type here in same format as above, ie ...
 				 case "your_comment_type"; $type = your_type_id; break;
 				 ****************************************/
-			}
+		}
+		return $type;
+	}
+	
+	/**
+	 * Convert type number to (core) table string
+	 * @param integer|string $type
+	 * @return string
+	 */
+	public function getTable($type)
+	{
+		if (!is_numeric($type))
+		{
 			return $type;
 		}
+		switch ($type)
+		{
+			case '0':
+				$type = "news";
+				break;
+			case '1':
+				$type = 'content';
+				break;
+			case '2':
+				$type = 'download';
+				break;
+			case '3':
+				$type = 'faq';
+				break;
+			case '4':
+				$type = 'poll';
+				break;
+			case '5':
+				$type = 'docs';
+				break;
+			case '6':
+				$type = 'bugtrack';
+				break;
+		}
+		return $type;
+	}
+		
 		/**
 		 * Enter description here...
 		 *
@@ -531,24 +623,26 @@ class comment
 		{
 			//compose comment	: single call function will render the existing comments and show the form_comment
 			//rate				: boolean, to show/hide rating system in comment, default FALSE
-			global $pref,$sql,$ns,$e107cache,$tp,$totcc;
+			global $pref,$ns,$e107cache,$tp,$totcc;
 			if (isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 			{
 				return;
 			}
+			$sql = e107::getDb();
 			//		Query no longer used
 			//		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
 			$type = $this->getCommentType($table);
 			$query = $pref['nested_comments'] ? 
-		"SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-		LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
-		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp" 
-			: 
-		"SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-		LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
-		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' ORDER BY c.comment_datestamp";
+				"SELECT c.*, u.*, ue.* FROM #comments AS c
+				LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
+				LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
+				WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp" 
+					: 
+				"SELECT c.*, u.*, ue.* FROM #comments AS c
+				LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
+				LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
+				WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' ORDER BY c.comment_datestamp";
+			
 			$text = "";
 			$comment = '';
 			$modcomment = '';
@@ -556,8 +650,12 @@ class comment
 			$ret['comment'] = '';
 			if ($comment_total = $sql->db_Select_gen($query))
 			{
-				$width = 0;
-				while ($row = $sql->db_Fetch())
+				$width = 0;	
+				//Shortcodes could use $sql, so just grab all results
+				$rows = $sql->db_getList();
+				
+				//while ($row = $sql->db_Fetch())
+				foreach ($rows as $row)
 				{
 					$lock = $row['comment_lock'];
 					// $subject = $tp->toHTML($subject);

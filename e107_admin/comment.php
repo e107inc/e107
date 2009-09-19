@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-09-02 17:27:29 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2009-09-19 15:30:47 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -83,6 +83,7 @@ class comment_manager
 
 	function comment_manager()
 	{
+		global $user_pref;
         $this->fieldpref = (varset($user_pref['admin_cpage_columns'])) ? $user_pref['admin_cpage_columns'] : array("comment_id","comment_pid","comment_item_id","comment_subject","comment_comment","comment_author","comment_datestamp");
 
 		//TODO Add LANS
