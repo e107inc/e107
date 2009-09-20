@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-19 11:44:28 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.6 $
+|     $Date: 2009-09-20 01:03:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,7 +38,7 @@ class user_select {
 				break;
 
 			case e_UC_MEMBER:
-				$where = "1";
+				$where = "user_ban != 1";
 				break;
 				
 			case e_UC_NOBODY:
@@ -220,9 +220,11 @@ class user_select {
 		echo "\n</body>\n</html>";
 	}
 
-	function findusers($s) {
+	function findusers($s,$banned=FALSE) {
 		global $sql, $tp;
-		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%' ")) {
+		$inc = ($banned == FALSE) ? " AND user_ban != 1" : "";
+		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc)) 
+		{
 			while ($row = $sql -> db_Fetch()) {
 				$ret[strtolower($row['user_name'])] = $row['user_name'];
 			}
