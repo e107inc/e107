@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2007-05-28 11:13:08 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2009-09-20 01:03:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,7 +38,7 @@ class user_select {
 				break;
 
 			case e_UC_MEMBER:
-				$where = "1";
+				$where = "user_ban != 1";
 				break;
 
 			case e_UC_NOBODY:
@@ -222,9 +222,11 @@ class user_select {
 		echo "\n</body>\n</html>";
 	}
 
-	function findusers($s) {
+	function findusers($s,$banned=FALSE) {
 		global $sql, $tp;
-		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%' ")) {
+		$inc = ($banned == FALSE) ? " AND user_ban != 1" : "";
+		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc)) 
+		{
 			while ($row = $sql -> db_Fetch()) {
 				$ret[strtolower($row['user_name'])] = $row['user_name'];
 			}
