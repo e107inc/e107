@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.22 2009-09-17 14:25:09 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.23 2009-09-21 21:56:02 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -1290,11 +1290,14 @@ class admin_shortcodes
         $var['menumanager']['text'] = LAN_MENULAYOUT;
 		$var['menumanager']['link'] = e_ADMIN_ABS."menus.php";
 
-        foreach($pref['menuconfig_list'] as $name=>$val)
+		if(vartrue($pref['menuconfig_list']))
 		{
-           	$var[$name]['text'] = str_replace(":"," / ",$val['name']);
- 			$var[$name]['link'] = e_PLUGIN_ABS.$val['link'];
-
+	        foreach($pref['menuconfig_list'] as $name=>$val)
+			{
+	           	$var[$name]['text'] = str_replace(":"," / ",$val['name']);
+	 			$var[$name]['link'] = e_PLUGIN_ABS.$val['link'];
+	
+			}
 		}
 
  		foreach($var as $key=>$link)
