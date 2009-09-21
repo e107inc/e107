@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-07-14 11:05:54 $
+ * $Revision: 1.6 $
+ * $Date: 2009-09-21 21:54:26 $
  * $Author: e107coders $
  *
 */
@@ -20,6 +20,10 @@ if(!getperms("P") || !plugInstalled('tinymce'))
 	header("location:".e_BASE."index.php");
 	exit();
 }
+
+//TODO save prefs to separate config row. 
+// List all forms of access, and allow the user to choose between simple/advanced or 'custom' settings.
+
 
 
 require_once (e_HANDLER.'message_handler.php');
