@@ -1,5 +1,5 @@
 /**
- * $Id: form_utils.js,v 1.7 2009-07-01 00:37:14 e107coders Exp $
+ * $Id: form_utils.js,v 1.8 2009-09-21 02:32:59 e107coders Exp $
  *
  * Various form utilitiy functions.
  *
@@ -92,7 +92,7 @@ function selectByValue(form_obj, field_name, value, add_custom, ignore_case) {
 function getSelectValue(form_obj, field_name) {
 	var elm = form_obj.elements[field_name];
 
-	if (elm == null || elm.options == null)
+	if (elm == null || elm.options == null || elm.selectedIndex === -1)
 		return "";
 
 	return elm.options[elm.selectedIndex].value;

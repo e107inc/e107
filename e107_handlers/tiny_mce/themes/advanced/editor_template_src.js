@@ -1,5 +1,5 @@
 /**
- * $Id: editor_template_src.js,v 1.14 2009-07-01 00:37:14 e107coders Exp $
+ * $Id: editor_template_src.js,v 1.15 2009-09-21 02:33:37 e107coders Exp $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
