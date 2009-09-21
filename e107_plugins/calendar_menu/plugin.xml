@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.8 2009-07-17 14:41:53 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.9 2009-09-21 22:14:43 e107coders Exp $ -->
 
 <e107Plugin name="EC_ADLAN_1" version="3.70" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc. + Barry" url="http://e107.org" />
 	<description>EC_ADLAN_A206</description>
 	<readMe>readme.pdf</readMe>
-	<folder>calendar_menu</folder>
 	<category>content</category>
 	<installLanguageFile filename="languages/--LAN--_install.php" />
 	<logLanguageFile filename="languages/--LAN--_log.php" />
@@ -19,43 +18,43 @@
 	</administration>
 	<menuLink name="Calendar" url="calendar_menu/calendar.php" />
 	<mainPrefs>
-		<pref name="eventpost_admin" value="254" />
-		<pref name="eventpost_super" value="254" />
-		<pref name="eventpost_adminlog" value="0" />
-		<pref name="eventpost_menulink" value="0" />
-		<pref name="eventpost_showmouseover" value="0" />
-		<pref name="eventpost_showeventcount" value="1" />
-		<pref name="eventpost_forum" value="1" />
-		<pref name="eventpost_recentshow" value="0" />
-		<pref name="eventpost_weekstart" value="sun" />
-		<pref name="eventpost_lenday" value="1" />
-		<pref name="eventpost_dateformat" value="1" />
-		<pref name="eventpost_datedisplay" value="1" />
-		<pref name="eventpost_fivemins" value="1" />
-		<pref name="eventpost_editmode" value="1" />
-		<pref name="eventpost_caltime" value="0" />
-		<pref name="eventpost_timedisplay" value="0" />
-		<pref name="eventpost_timecustom" value="%H%M" />
-		<pref name="eventpost_dateevent" value="1" />
-		<pref name="eventpost_eventdatecustom" value="%A %d %B %Y" />
-		<pref name="eventpost_datenext" value="1" />
-		<pref name="eventpost_nextdatecustom" value="%d %b" />
-		<pref name="eventpost_printlists" value="1" />
-		<pref name="eventpost_asubs" value="1" />
-		<pref name="eventpost_mailfrom" value="e107 Web Site" />
-		<pref name="eventpost_mailsubject" value="Calendar - \{EC_MAIL_TITLE\}" />
-		<pref name="eventpost_mailaddress" value="calendar@yoursite.com" />
-		<pref name="eventpost_emaillog" value="1" />
-		<pref name="eventpost_menuheading" value="Forthcoming Events" />
-		<pref name="eventpost_daysforward" value="30" />
-		<pref name="eventpost_numevents" value="3" />
-		<pref name="eventpost_checkrecur" value="1" />
-		<pref name="eventpost_linkheader" value="0" />
-		<pref name="eventpost_fe_set" value="" />
-		<pref name="eventpost_fe_hideifnone" value="0" />
-		<pref name="eventpost_fe_showrecent" value="0" />
-		<pref name="eventpost_showcaticon" value="0" />
-		<pref name="eventpost_namelink" value="1" />
+		<pref name="eventpost_admin">254</pref>
+		<pref name="eventpost_super">254</pref>
+		<pref name="eventpost_adminlog">0</pref>
+		<pref name="eventpost_menulink">0</pref>
+		<pref name="eventpost_showmouseover">0</pref>
+		<pref name="eventpost_showeventcount">1</pref>
+		<pref name="eventpost_forum">1</pref>
+		<pref name="eventpost_recentshow">0</pref>
+		<pref name="eventpost_weekstart">sun</pref>
+		<pref name="eventpost_lenday">1</pref>
+		<pref name="eventpost_dateformat">1</pref>
+		<pref name="eventpost_datedisplay">1</pref>
+		<pref name="eventpost_fivemins">1</pref>
+		<pref name="eventpost_editmode">1</pref>
+		<pref name="eventpost_caltime">0</pref>
+		<pref name="eventpost_timedisplay">0</pref>
+		<pref name="eventpost_timecustom">%H%M</pref>
+		<pref name="eventpost_dateevent">1</pref>
+		<pref name="eventpost_eventdatecustom">%A %d %B %Y</pref>
+		<pref name="eventpost_datenext">1</pref>
+		<pref name="eventpost_nextdatecustom">%d %b</pref>
+		<pref name="eventpost_printlists">1</pref>
+		<pref name="eventpost_asubs">1</pref>
+		<pref name="eventpost_mailfrom">e107 Web Site</pref>
+		<pref name="eventpost_mailsubject">Calendar - \{EC_MAIL_TITLE\}</pref>
+		<pref name="eventpost_mailaddress">calendar@yoursite.com</pref>
+		<pref name="eventpost_emaillog">1</pref>
+		<pref name="eventpost_menuheading">Forthcoming Events</pref>
+		<pref name="eventpost_daysforward">30</pref>
+		<pref name="eventpost_numevents">3</pref>
+		<pref name="eventpost_checkrecur">1</pref>
+		<pref name="eventpost_linkheader">0</pref>
+		<pref name="eventpost_fe_set"></pref>
+		<pref name="eventpost_fe_hideifnone">0</pref>
+		<pref name="eventpost_fe_showrecent">0</pref>
+		<pref name="eventpost_showcaticon">0</pref>
+		<pref name="eventpost_namelink">0</pref>
 	</mainPrefs>
 	<management>
 		<install when="post" type="classFunction" file="calendar_install.php" class="calendarInstall" function="postInstall" />

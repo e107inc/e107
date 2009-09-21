@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.5 2009-07-17 14:41:54 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.6 2009-09-21 22:14:44 e107coders Exp $ -->
 <e107Plugin name="ADSTAT_L3" version="2.1" compatibility="0.8" installRequired="true" >
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>ADSTAT_L1</description>
-	<folder>log</folder>
 	<logLanguageFile filename="languages/--LAN--_admin_log.php" />
 	<administration>
 		<configFile>admin_config.php</configFile>
@@ -14,15 +13,15 @@
 	</administration>
 	<menuLink name="ADSTAT_L34" url="log/stats.php?1" />
 	<mainPrefs>
-		<pref name="statActivate" value="0" />
-		<pref name="statUserclass" value="" />
-		<pref name="statBrowser" value="1" />
-		<pref name="statOs" value="1" />
-		<pref name="statScreen" value="1" />
-		<pref name="statDomain" value="1" />
-		<pref name="statRefer" value="1" />
-		<pref name="statQuery" value="1" />
-		<pref name="statRecent" value="1" />
-		<pref name="statPrevMonth" value="0" />
+		<pref name="statActivate">0</pref>
+		<pref name="statUserclass"></pref>
+		<pref name="statBrowser">1</pref>
+		<pref name="statOs">1</pref>
+		<pref name="statScreen">1</pref>
+		<pref name="statDomain">1</pref>
+		<pref name="statRefer">1</pref>
+		<pref name="statQuery">1</pref>
+		<pref name="statRecent">1</pref>
+		<pref name="statPrevMonth">0</pref>
 	</mainPrefs>
 </e107Plugin>

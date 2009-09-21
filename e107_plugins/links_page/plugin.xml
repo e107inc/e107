@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.5 2009-07-17 14:41:54 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.6 2009-09-21 22:14:44 e107coders Exp $ -->
 
 	<e107Plugin name="LCLAN_PLUGIN_LAN_1" version="1.12" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>Links Page For Displaying External Web Links</description>
-	<folder>links_page</folder>
 	<category>content</category>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
 	<logLanguageFile filename="languages/--LAN--_admin_links_page.php" />
@@ -17,6 +16,6 @@
 		<installDone>Links page has successfully installed, please configure it from the Links Page link on the admin front page.</installDone>
 	</administration>
 	<menuLink name="Links" url="links_page/links.php" />
-	<mainPrefs>
-	</mainPrefs>
+	<pluginPrefs>
+	</pluginPrefs>
 </e107Plugin>

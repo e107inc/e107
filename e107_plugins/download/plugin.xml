@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.11 2009-07-19 14:48:00 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.12 2009-09-21 22:14:43 e107coders Exp $ -->
 <e107Plugin name="Download" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>DOWLAN_DESCRIPTION</description>
-	<folder>download</folder>
 	<category>content</category>
 	<installLanguageFile filename="languages/--LAN--/admin_download.php" />
 	<administration>
@@ -22,18 +21,18 @@
 	</administration>
 	<menuLink name="DOWLAN_29" url="download/download.php" perm="everyone" />
 	<mainPrefs>
-		<pref name="download_php" value="" />
-		<pref name="download_subsub" value="1" />
-		<pref name="download_incinfo" value="" />
-		<pref name="download_view" value="" />
-		<pref name="download_order" value="" />
-		<pref name="download_sort" value="" />
-		<pref name="download_reportbroken" value="0" />
-		<pref name="mirror_order" value="" />
-		<pref name="download_email" value="" />
-		<pref name="agree_flag" value="" /> <!-- needs download prefix? -->
-		<pref name="agree_text" value="" />
-		<pref name="download_denied" value="" />
+		<pref name="download_php"></pref>
+		<pref name="download_subsub">1</pref>
+		<pref name="download_incinfo"></pref>
+		<pref name="download_view"></pref>
+		<pref name="download_order"></pref>
+		<pref name="download_sort"></pref>
+		<pref name="download_reportbroken">0</pref>
+		<pref name="mirror_order"></pref>
+		<pref name="download_email"></pref>
+		<pref name="agree_flag"></pref> <!-- needs download prefix? -->
+		<pref name="agree_text"></pref>
+		<pref name="download_denied"></pref>
 	</mainPrefs>
 	<management>
 		<install when="post" type="classFunction" file="download_management.php" class="download_management" function="download_install_post" />
