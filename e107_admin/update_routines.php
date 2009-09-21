@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2009-09-19 19:05:16 $
+|     $Revision: 1.54 $
+|     $Date: 2009-09-21 19:52:38 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -269,7 +269,7 @@ function update_706_to_800($type='')
 	$pluginChangedTables = array('linkwords' => 'linkwords', 
 								'featurebox' => 'featurebox',
 								'links_page' => 'links_page',
-								'poll' => 'poll'
+								'poll' => 'polls'
 								);
 
 
