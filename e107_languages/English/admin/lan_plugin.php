@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-07-07 06:26:51 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2009-09-21 20:57:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");
@@ -82,9 +82,9 @@ define("EPL_ADLAN_58", "If the tables are not removed, the plugin can be reinsta
 define("EPL_ADLAN_59", "Delete plugin files");
 define("EPL_ADLAN_60", "e107 will attempt to remove all plugin related files.");
 // define("EPL_ADLAN_61", "Confirm uninstall"); // duplicated. can be deleted.
-define("EPL_ADLAN_62", "Cancel uninstall");
-define("EPL_ADLAN_63", "Uninstall:");
-define("EPL_ADLAN_64", "Folder");
+define('EPL_ADLAN_62', 'Cancel uninstall');
+define('EPL_ADLAN_63', 'Uninstall:');
+define('EPL_ADLAN_64', 'Folder');
 
 define ('EPL_ADLAN_70','Required plugin not installed: ');
 define ('EPL_ADLAN_71','Newer plugin version required: ');
@@ -102,6 +102,8 @@ define ('EPL_ADLAN_82','Icon');
 define ('EPL_ADLAN_83','Notes');
 define ('EPL_ADLAN_84','Install Selected');
 define ('EPL_ADLAN_85','Uninstall Selected');
+define ('EPL_ADLAN_86','All files removed from ');
+define ('EPL_ADLAN_87','File deletion failed ');
 
 
 define('LAN_UPGRADE_SUCCESSFUL', 'Upgrade Successful');
