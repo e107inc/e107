@@ -9,8 +9,8 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-09-19 17:43:19 $
+ * $Revision: 1.32 $
+ * $Date: 2009-09-21 22:25:22 $
  * $Author: e107coders $
 */
 
@@ -249,7 +249,7 @@ class e_shortcode
 				{
 					$sc_func = substr($c, 3);
 					$code = strtoupper($sc_func);
-					if(!$this->isRegistered($scode))
+					if(!$this->isRegistered($code))
 					{
 						$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
 					}							
