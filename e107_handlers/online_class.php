@@ -1,20 +1,17 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|    	Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/online_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-02-03 21:16:15 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * e107 Main
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/online_class.php,v $
+ * $Revision: 1.5 $
+ * $Date: 2009-09-21 21:43:44 $
+ * $Author: e107steved $
 */
 
 class e_online 
@@ -23,6 +20,7 @@ class e_online
 	{
 		global $sql, $pref, $e107, $e_event, $tp, $online_timeout, $online_warncount, $online_bancount;
 		global $members_online, $total_online, $member_list, $listuserson;
+
 
 		if($online_tracking == true || $flood_control == true)
 		{
