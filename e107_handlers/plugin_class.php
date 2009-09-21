@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.91 $
-|     $Date: 2009-09-21 21:53:37 $
+|     $Revision: 1.92 $
+|     $Date: 2009-09-21 22:50:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1435,7 +1435,7 @@ class e107plugin
 		if(count($vars) <= 1) { $vars = array($vars); }
 		foreach($vars as $var)
 		{
-			$attrib = $var['@attributes'];
+			$attrib = varset($var['@attributes']);
 			if(isset($attrib['when']) && $attrib['when'] == $when)
 			{
 				if(is_readable($path.$attrib['file']))
