@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2009-09-19 17:43:18 $
-|     $Author: e107coders $
+|     $Revision: 1.45 $
+|     $Date: 2009-09-21 20:57:54 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -206,6 +206,7 @@ class pluginManager{
 			if ($plug['plugin_installflag'] == TRUE )
 			{
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
+				$eplug_folder = $plug['plugin_path'];
 				if(file_exists($_path.'plugin.xml'))
 				{
 					$options = array(
@@ -216,9 +217,9 @@ class pluginManager{
 					$text .= $plugin->manage_plugin_xml($this->id, 'uninstall', $options);
 				}
 				else
-				{
+				{	// Deprecated - plugin uses plugin.php
 					include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-
+					
 					$func = $eplug_folder.'_uninstall';
 					if (function_exists($func))
 					{
@@ -256,21 +257,6 @@ class pluginManager{
 						$text .= ($plugin->manage_comments('remove', $eplug_comment_ids)) ? EPL_ADLAN_50."<br />" : "";
 					}
 
-		/* Not used in 0.8
-					if ($eplug_module)
-					{
-						$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
-					}
-					if ($eplug_status)
-					{
-						$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
-					}
-
-					if ($eplug_latest)
-					{
-						$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
-					}
-		*/
 					if (is_array($eplug_array_pref))
 					{
 						foreach($eplug_array_pref as $key => $val)
@@ -279,20 +265,9 @@ class pluginManager{
 						}
 					}
 
-		/* Not used in 0.8
-					if (is_array($eplug_sc))
-					{
-						$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
-					}
-
-					if (is_array($eplug_bb))
-					{
-						$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
-					}
-		*/
 					if ($eplug_menu_name)
 					{
-						$sql->db_Delete('menus', "menu_name='$eplug_menu_name' ");
+						$sql->db_Delete('menus', "menu_name='{$eplug_menu_name}' ");
 					}
 
 					if ($eplug_link)
@@ -330,10 +305,10 @@ class pluginManager{
 
 			if($_POST['delete_files'])
 			{
-				include_once(e_HANDLER."file_class.php");
+				include_once(e_HANDLER.'file_class.php');
 				$fi = new e_file;
 				$result = $fi->rmtree(e_PLUGIN.$eplug_folder);
-				$text .= ($result ? "<br />All files removed from ".e_PLUGIN.$eplug_folder : '<br />File deletion failed<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
+				$text .= ($result ? '<br />'.EPL_ADLAN_86.e_PLUGIN.$eplug_folder : '<br />'.EPL_ADLAN_87.'<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
 			}
 			else
 			{
@@ -345,7 +320,7 @@ class pluginManager{
 			$this->show_message($text, E_MESSAGE_SUCCESS);
 		 //	$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
 			$text = '';
-			$this->action = "installed";
+			$this->action = 'installed';
 			return;
 
    }
