@@ -1,27 +1,24 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/online/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-05-01 19:50:56 $
-|     $Author: lisa_ $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * e107 Main
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/online/languages/English.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-09-21 21:43:44 $
+ * $Author: e107steved $
 */
 
 //lastseen
 define("LAN_LASTSEEN_1", "Last Seen Menu");
 
 //online
-define("LAN_ONLINE_TRACKING_MESSAGE", "Online user tracking is currently disabled, please enable it [link=".e_ADMIN."users.php?options]here[/link][br]");
+define('LAN_ONLINE_TRACKING_MESSAGE', "Online user tracking is currently disabled, please enable it [link=".e_ADMIN."users.php?options]here[/link][br]");
 define("LAN_ONLINE_1", "Guests: ");
 define("LAN_ONLINE_2", "Members: ");
 define("LAN_ONLINE_3", "On this page: ");
