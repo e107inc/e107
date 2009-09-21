@@ -10,8 +10,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
- |     $Revision: 1.20 $
- |     $Date: 2009-09-18 19:07:09 $
+ |     $Revision: 1.21 $
+ |     $Date: 2009-09-21 21:56:09 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
 */
@@ -537,7 +537,7 @@ class adminDownload extends download
              $file_array[] = str_replace(e_FILE."public/","",$val);
          }
       }
-      if ($sql->db_Select("rbinary"))
+/*      if ($sql->db_Select("rbinary")) //TODO Remove me. 
       {
          while ($row = $sql->db_Fetch())
          {
@@ -545,6 +545,7 @@ class adminDownload extends download
             $file_array[] = "Binary ".$binary_id."/".$binary_name;
          }
       }
+*/
       if ($image_array = $fl->get_files(e_FILE.'downloadimages/', '\.gif$|\.jpg$|\.png$|\.GIF$|\.JPG$|\.PNG$','standard',2))
       {
          sort($image_array);
