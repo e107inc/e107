@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt) -->
-<!-- $Id: plugin.xml,v 1.4 2009-07-17 14:41:54 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.5 2009-09-21 22:14:44 e107coders Exp $ -->
 
 <e107Plugin name="NFLAN_01" version="2.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" email="jalist@e107.org" />
@@ -18,6 +18,6 @@
 		<installDone>NFLAN_02</installDone>
 	</administration>
 	<menuLink name="Newsfeeds" url="newsfeed/newsfeed.php" />
-	<mainPrefs>
-	</mainPrefs>
+	<pluginPrefs>
+	</pluginPrefs>
 </e107Plugin>

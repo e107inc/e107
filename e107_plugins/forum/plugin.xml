@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.23 2009-07-22 14:45:14 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.24 2009-09-21 22:14:44 e107coders Exp $ -->
 <e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true" xhtmlcompliant="true" >
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>This plugin is a fully featured Forum system</description>
-	<folder>forum</folder>
 	<category>content</category> 
 	<administration>
 		<configFile>forum_admin.php</configFile>
@@ -18,17 +17,17 @@
 	</administration>
 	<menuLink name="Forum" url="forum/forum.php" perm='everyone' />
 	<mainPrefs>
-		<pref name="forum_show_topics" value="1" />
-		<pref name="forum_postfix" value="[more...]" />
-		<pref name="forum_poll" value="255" />
-		<pref name="forum_popular" value="10" />
-		<pref name="forum_track" value="1" />
-		<pref name="forum_eprefix" value="[forum]" />
-		<pref name="forum_enclose" value="1" />
-		<pref name="forum_title" value="Forums" />
-		<pref name="forum_postspage" value="10" />
-		<pref name="forum_threadspage" value="25" />
-		<pref name="forum_hilightsticky" value="1" />
+		<pref name="forum_show_topics">1</pref>
+		<pref name="forum_postfix">[more...]</pref>
+		<pref name="forum_poll">255</pref>
+		<pref name="forum_popular">10</pref>
+		<pref name="forum_track">1</pref>
+		<pref name="forum_eprefix">[forum]</pref>
+		<pref name="forum_enclose">1</pref>
+		<pref name="forum_title">Forums</pref>
+		<pref name="forum_postspage">10</pref>
+		<pref name="forum_threadspage">25</pref>
+		<pref name="forum_hilightsticky">1</pref>
 	</mainPrefs>
 	<userclass name="forum_moderator" description="Moderator of all forums" />
 	<extendedField name="viewed" type='EUF_TEXTAREA' default='0' active="true" />

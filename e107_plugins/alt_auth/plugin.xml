@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.4 2009-07-17 14:41:53 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.5 2009-09-21 22:14:43 e107coders Exp $ -->
 
 <e107Plugin name="LAN_ALT_65" version="0.4" compatibility="0.8" installRequired="true" >
 	<author name="e107 Inc." url="e107.org" email="mcfly@e107.org" />
 	<description>LAN_ALT_66</description>
-	<folder>alt_auth</folder>
 	<category>users</category>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
 	<logLanguageFile filename="languages/--LAN--/--LAN--_log.php" />
@@ -17,8 +16,8 @@
 		<installDone>LAN_ALT_68</installDone>
 	</administration>
 	<mainPrefs>
-		<pref name="auth_noconn" value="0" />
-		<pref name="auth_nouser" value="0" />
-		<pref name="auth_extended" value="" />
+		<pref name="auth_noconn">0</pref>
+		<pref name="auth_nouser">0</pref>
+		<pref name="auth_extended"></pref>
 	</mainPrefs>
 </e107Plugin>
