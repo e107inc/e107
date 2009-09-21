@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2009-09-21 22:50:07 $
+|     $Revision: 1.93 $
+|     $Date: 2009-09-21 23:02:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
 
 class e107plugin
 {
+	// Reserved Addon names. 
 	var	$plugin_addons = array(
 		"e_rss",
 		"e_notify",
@@ -41,7 +42,8 @@ class e107plugin
 		"e_sql",
 		"e_userprofile",
 		"e_header",
-		"e_userinfo"
+		"e_userinfo",
+		"e_tagwords"
 		);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
@@ -1628,9 +1630,10 @@ class e107plugin
 		$core = e107::getConfig('core');
 		
 		
-		foreach($this->plugin_addons as $var) // clear all existing prefs. TODO use a pref function for this. 
+		foreach($this->plugin_addons as $var) // clear all existing prefs.  
 		{
-			$core->setPref($var.'_list',"");	
+			echo "clearing lisrts";
+			$core->update($var.'_list',"");	
 		}
 		
         $query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC"; 
