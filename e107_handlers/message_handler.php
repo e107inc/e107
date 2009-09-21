@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-09-19 15:24:38 $
+ * $Revision: 1.18 $
+ * $Date: 2009-09-21 12:52:52 $
  * $Author: secretr $
  *
 */
@@ -100,6 +100,17 @@ class eMessage
 		}
 	  	return self::$_instance;
 	}
+	
+	/**
+	 * Set message session id
+	 * @param string $name 
+	 * @return 
+	 */
+	public function setSessionId($name)
+	{
+		$this->_session_id = $name.'_system_messages';
+		return $this;
+	}
 
 	/**
 	 * Add message to a type stack and default message stack
@@ -128,7 +139,9 @@ class eMessage
 			if($this->isType($type)) $this->_sysmsg[$type][$mstack][] = $msg;
 			return $this;
 		}
-		return $this->addSession($message, $type);
+		
+		$this->addSession($message, $type);
+		return $this;
 	}
 	
 	/**
@@ -150,7 +163,7 @@ class eMessage
 		}
 		foreach ($message as $m)
 		{
-			return $this->add(array($mstack, $message), $type, $sesion);
+			$this->add(array($m, $mstack), $type, $sesion);
 		}
 		return $this;
 	}
@@ -198,7 +211,7 @@ class eMessage
 		}
 		foreach ($message as $m)
 		{
-			return $this->addSession(array($mstack, $message), $type);
+			$this->addSession(array($m, $mstack), $type);
 		}
 		return $this;
 	}
@@ -402,7 +415,8 @@ class eMessage
 
 	/**
 	 * Merge _SESSION message array with the current messages
-	 *
+	 * TODO - merge stacks, merge custom stack to default
+	 * 
 	 * @param boolean $reset
 	 * @return eMessage
 	 */
@@ -433,7 +447,72 @@ class eMessage
 		if($reset) $this->resetSession(false, $mstack);
 		return $this;
 	}
-
+	
+	/**
+	 * Merge messages from source stack with destination stack
+	 * and reset source stack
+	 * 
+	 * @param string $from_stack source stack
+	 * @param string $to_stack [optional] destination stack
+	 * @param string $type [optional] merge for a given type only
+	 * @param string $session [optional] merge session as well
+	 * @return eMessage
+	 */
+	public function moveStack($from_stack, $to_stack = 'default', $type = false, $session = true)
+	{
+		foreach ($this->_sysmsg as $_type => $stacks)
+		{
+			if($type && $type !== $_type)
+			{
+				continue;
+			}
+			if(isset($stacks[$from_stack]))
+			{
+				if(!isset($this->_sysmsg[$_type][$to_stack]))
+				{
+					$this->_sysmsg[$_type][$to_stack] = array();
+					array_merge($this->_sysmsg[$_type][$from_stack], $this->_sysmsg[$_type][$to_stack]);
+					unset($this->_sysmsg[$_type][$to_stack]);
+				}
+			}
+		}
+		
+		if($session) $this->moveSessionStack($from_stack, $to_stack, $type);
+		
+		return $this;
+	}
+	
+	/**
+	 * Merge session messages from source stack with destination stack
+	 * and reset source stack
+	 * 
+	 * @param string $from_stack source stack
+	 * @param string $to_stack [optional] destination stack
+	 * @param string $type [optional] merge for a given type only
+	 * @return eMessage
+	 */
+	public function moveSessionStack($from_stack, $to_stack = 'default', $type = false)
+	{
+		foreach ($_SESSION[$this->_session_id] as $_type => $stacks)
+		{
+			if($type && $type !== $_type)
+			{
+				continue;
+			}
+			if(isset($stacks[$from_stack]))
+			{
+				if(!isset($_SESSION[$this->_session_id][$_type][$to_stack]))
+				{
+					$this->_sysmsg[$_type][$to_stack] = array();
+					array_merge($_SESSION[$this->_session_id][$_type][$from_stack], $this->_sysmsg[$_type][$to_stack]);
+					unset($_SESSION[$this->_session_id][$_type][$to_stack]);
+				}
+			}
+		}
+		
+		return $this;
+	}
+	
 	/**
 	 * Check passed type against the type map
 	 *
@@ -449,6 +528,7 @@ class eMessage
 	 * Check for messages
 	 *
 	 * @param mixed $type
+	 * @param string $mstack
 	 * @param boolean $session
 	 * @return boolean
 	 */
