@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2009-09-21 23:02:47 $
+|     $Revision: 1.94 $
+|     $Date: 2009-09-21 23:07:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1632,7 +1632,6 @@ class e107plugin
 		
 		foreach($this->plugin_addons as $var) // clear all existing prefs.  
 		{
-			echo "clearing lisrts";
 			$core->update($var.'_list',"");	
 		}
 		
