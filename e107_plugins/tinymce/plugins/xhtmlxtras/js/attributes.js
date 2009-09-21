@@ -1,5 +1,5 @@
  /**
- * $Id: attributes.js,v 1.1 2009-07-01 02:52:11 e107coders Exp $
+ * $Id: attributes.js,v 1.2 2009-09-21 16:33:20 e107coders Exp $
  *
  * @author Moxiecode - based on work by Andrew Tetlaw
  * @copyright Copyright © 2004-2006, Moxiecode Systems AB, All rights reserved.
