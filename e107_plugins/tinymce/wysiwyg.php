@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-09-01 00:04:40 $
+|     $Revision: 1.14 $
+|     $Date: 2009-09-21 16:31:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -14,6 +14,7 @@ function wysiwyg($formids)
 {
 
 global $pref,$HANDLERS_DIRECTORY,$PLUGINS_DIRECTORY,$IMAGES_DIRECTORY;
+
 $lang = e_LANGUAGE;
 $tinylang = array(
 	"Arabic" 	=> "ar",
@@ -37,28 +38,10 @@ $tinylang = array(
 	"Swedish" 	=> "sv"
 );
 
-if(!$tinylang[$lang]){
+if(!$tinylang[$lang])
+{
  $tinylang[$lang] = "en";
 }
-
-$thescript = (strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip")) ? "tiny_mce_gzip.php" : "tiny_mce.js";
-
-$text = "<script type='text/javascript' src='".e_PLUGIN."tinymce/".$thescript."'></script>\n";
-
-$text .= "<script type='text/javascript'>\n
-
-function start_tinyMce() {
-    //<![CDATA[
-	tinyMCE.init({\n";
-
-$text .= "language : '".$tinylang[$lang]."',\n";
-$text .= "mode : 'textareas',\n";
-// $text .= "elements : '".$formids."',\n";
-$text .= "editor_selector : 'e-wysiwyg',\n";
-$text .= "editor_deselector : 'e-wysiwyg-off',\n";
-$text .= "theme : 'advanced'\n";
-
-// $text .= ",plugins : 'table,contextmenu";
 
 $admin_only = array("ibrowser","code");
 
@@ -79,15 +62,43 @@ foreach($pref['tinymce']['plugins'] as $val)
 
 
 
+/*
+if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip") && (ini_get("zlib.output_compression") == false) && file_exists(e_PLUGIN."tinymce/tiny_mce_gzip.php"))
+{
+	//unset($tinymce_plugins[7]); // 'zoom' causes an error with the gzip version. 
+	$text = "<script type='text/javascript' src='".e_PLUGIN_ABS."tinymce/tiny_mce_gzip.js'></script>
 
-$text  .= ",plugins : '".implode(",",$tinymce_plugins)."'\n";
-// $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
-// $text .= (ADMIN) ? ",ibrowser" : ",image";
+	<script type='text/javascript'>
+	tinyMCE_GZ.init({
+		plugins : '".implode(",",$tinymce_plugins)."',
+		themes : 'advanced',
+		languages : '".$tinylang[$lang]."',
+		disk_cache : false,
+		debug : false
+	});
+	</script>
+	";
+}
+else
+{*/
+	$text = "<script type='text/javascript' src='".e_PLUGIN_ABS."tinymce/tiny_mce.js'></script>\n";	
+//}
 
 
 
-// $text .= ",iespell,zoom,media";
-// $text .= "'\n"; // end of plugins list.
+$text .= "<script type='text/javascript'>\n
+
+function start_tinyMce() {
+    //<![CDATA[
+	tinyMCE.init({
+
+	language : '".$tinylang[$lang]."',
+	mode : 'textareas',
+	editor_selector : 'e-wysiwyg',
+	editor_deselector : 'e-wysiwyg-off',
+	theme : 'advanced',
+	plugins : '".implode(",",$tinymce_plugins)."'\n";
+	
 
 /*
  $text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste'";
