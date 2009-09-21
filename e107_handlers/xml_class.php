@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-09-17 04:30:25 $
+ * $Revision: 1.28 $
+ * $Date: 2009-09-21 21:53:38 $
  * $Author: e107coders $
 */
 
@@ -85,6 +85,8 @@ class xmlClass
 	public $errors;
 	
 	private $arrayTags = false;
+	
+	private $stringTags = false;
 	
 	
 	
@@ -202,6 +204,12 @@ class xmlClass
 	public function setOptArrayTags($string)
 	{
 		$this->arrayTags = (array) explode(",",$string);
+		return $this;
+	}
+	
+	public function setOptStringTags($string)
+	{
+		$this->stringTags = (array) explode(",",$string);
 		return $this;
 	}
 	
@@ -424,6 +432,7 @@ class xmlClass
 			}
 			
 			$ret = $this->parseArrayTags($ret);	
+			$ret = $this->parseStringTags($ret);
 			
 			return ($this->_optAddRoot ? array($xml->getName() => $ret) : $ret);
 		}
@@ -463,16 +472,19 @@ class xmlClass
 							for ($i = 0; $i < $count; $i++)
 							{
 								$ret[$tag][$i] = $this->xml2array($xml->{$tag}[$i], $tag);
+								$ret[$tag][$i] = $this->parseStringTags($ret[$tag][$i]);
+								
 							}
 						}
 						else //single element
 						{
 							$ret[$tag] = $this->xml2array($xml->{$tag}, $tag);
+							$ret[$tag] = $this->parseStringTags($ret[$tag]);
 						}
 					break;
 				}
 			}
-			
+			$ret = $this->parseStringTags($ret);
 			return $ret;
 		}
 		
@@ -525,15 +537,39 @@ class xmlClass
 			if (count($xml) == 1 && isset($xml[0]))
 			{
 				$xml = $xml[0];
+			
 			}
 		}
 		
-
 		$xml = $this->parseArrayTags($xml);	
+	//	$xml = $this->parseStringTags($xml);
 		
 		return $xml;
 	}
 
+
+	/**
+	 * Convert Array(0) to String based on specified Tags. 
+	 * @param object $vars
+	 * @return 
+	 */
+	function parseStringTags($vars)
+	{
+		if(!$this->stringTags)
+		{
+			return $vars;
+		}
+		
+		foreach($this->stringTags as $vl)
+		{		
+			if(is_array($vars[$vl]) && varset($vars[$vl][0]))
+			{
+				$vars[$vl] = $vars[$vl][0];	
+			}	
+		}
+		
+		return $vars;	
+	}
 
 	/**
 	 * Return as an array, even when a single xml tag value is found
@@ -549,6 +585,7 @@ class xmlClass
 			return $vars;
 		}
 
+
 		foreach($this->arrayTags as $vl)
 		{
 			
@@ -561,6 +598,8 @@ class xmlClass
 		
 		return $vars;
 	}
+	
+
 
 
 

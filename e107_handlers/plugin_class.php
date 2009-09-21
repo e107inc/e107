@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.90 $
-|     $Date: 2009-09-19 17:43:19 $
+|     $Revision: 1.91 $
+|     $Date: 2009-09-21 21:53:37 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -47,44 +47,44 @@ class e107plugin
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
 	// Deprecated in 0.8 (used in plugin.php only). Probably delete in 0.9
 	var $all_eplug_install_variables = array(
-	'eplug_link_url',
-	'eplug_link',
-	'eplug_prefs',
-	'eplug_array_pref',
-	'eplug_table_names',
-//	'eplug_sc',				// Not used in 0.8 (or later 0.7)
-	'eplug_userclass',
-	'eplug_module',
-//	'eplug_bb',				// Not used in 0.8 (or later 0.7)
-	'eplug_latest',
-	'eplug_status',
-	'eplug_comment_ids',
-	'eplug_conffile',
-	'eplug_menu_name'
+		'eplug_link_url',
+		'eplug_link',
+		'eplug_prefs',
+		'eplug_array_pref',
+		'eplug_table_names',
+	//	'eplug_sc',				// Not used in 0.8 (or later 0.7)
+		'eplug_userclass',
+		'eplug_module',
+	//	'eplug_bb',				// Not used in 0.8 (or later 0.7)
+		'eplug_latest',
+		'eplug_status',
+		'eplug_comment_ids',
+		'eplug_conffile',
+		'eplug_menu_name'
 	);
 
 	// List of all plugin variables involved in an update (not used ATM, but worth 'documenting')
 	// Deprecated in 0.8 (used in plugin.php only). Probably delete in 0.9
 	var $all_eplug_update_variables = array (
-	'upgrade_alter_tables',
-//	'upgrade_add_eplug_sc',				// Not used in 0.8 (or later 0.7)
-//	'upgrade_remove_eplug_sc',			// Not used in 0.8 (or later 0.7)
-//	'upgrade_add_eplug_bb',				// Not used in 0.8 (or later 0.7)
-//	'upgrade_remove_eplug_bb',			// Not used in 0.8 (or later 0.7)
-	'upgrade_add_prefs',
-	'upgrade_remove_prefs',
-	'upgrade_add_array_pref',
-	'upgrade_remove_array_pref'
+		'upgrade_alter_tables',
+	//	'upgrade_add_eplug_sc',				// Not used in 0.8 (or later 0.7)
+	//	'upgrade_remove_eplug_sc',			// Not used in 0.8 (or later 0.7)
+	//	'upgrade_add_eplug_bb',				// Not used in 0.8 (or later 0.7)
+	//	'upgrade_remove_eplug_bb',			// Not used in 0.8 (or later 0.7)
+		'upgrade_add_prefs',
+		'upgrade_remove_prefs',
+		'upgrade_add_array_pref',
+		'upgrade_remove_array_pref'
 	);
 
 	// List of all 'editable' DB fields ('plugin_id' is an arbitrary reference which is never edited)
 	var $all_editable_db_fields = array (
-	'plugin_name',				// Name of the plugin - language dependent
-	'plugin_version',			// Version - arbitrary text field
-	'plugin_path',				// Name of the directory off e_PLUGIN - unique
-	'plugin_installflag',		// '0' = not installed, '1' = installed
-	'plugin_addons',				// List of any extras associated with plugin - bbcodes, e_XXX files...
-	'plugin_category'				// Plugin Category: settings, users, content, management, tools, misc, about
+		'plugin_name',				// Name of the plugin - language dependent
+		'plugin_version',			// Version - arbitrary text field
+		'plugin_path',				// Name of the directory off e_PLUGIN - unique
+		'plugin_installflag',		// '0' = not installed, '1' = installed
+		'plugin_addons',				// List of any extras associated with plugin - bbcodes, e_XXX files...
+		'plugin_category'				// Plugin Category: settings, users, content, management, tools, misc, about
 	);
 
 	var $accepted_categories = array('settings', 'users', 'content', 'tools', 'manage', 'misc', 'menu', 'about');
@@ -130,42 +130,24 @@ class e107plugin
 		
 		global $mySQLprefix, $menu_pref, $pref;
 
-		$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
 		$sp = FALSE;
-		
-		// Read all the plugin DB info into an array to save lots of accesses
+				
 		$pluginDBList = array();
-		if ($sql->db_Select('plugin',"*"))
+		if ($sql->db_Select('plugin',"*")) // Read all the plugin DB info into an array to save lots of accesses
 		{
 			while ($row = $sql->db_Fetch(MYSQL_ASSOC))
-			{
-
-				
+			{				
 				$pluginDBList[$row['plugin_path']] = $row;
 				$pluginDBList[$row['plugin_path']]['status'] = 'read';
 				//	echo "Found plugin: ".$row['plugin_path']." in DB<br />";
 			}
 		}
 
-		$i = 1;
-		while ( $i < count($pluginList))
+		$plugList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
+		foreach($plugList as $num=>$val) // Remove Duplicates caused by having both plugin.php AND plugin.xml.  
 		{
-			if ($pluginList[$i-1]['path'] == $pluginList[$i]['path']) // Must have plugin.php and plugin.xml
-			{	
-				if (($pluginList[$i-1]['fname'] == 'plugin.php') && ($pluginList[$i]['fname'] == 'plugin.xml'))
-				{
-//					echo "deleting: {$pluginList[$i-1]['path']}<br />";
-					unset($pluginList[$i-1]);
-					$i++;
-				}
-				if (($pluginList[$i]['fname'] == 'plugin.php') && ($pluginList[$i-1]['fname'] == 'plugin.xml'))
-				{
-//					echo "deleting: {$pluginList[$i]['path']}<br />";
-					unset($pluginList[$i]);
-					$i++;
-				}
-			}
-			$i++;
+			$key = basename($val['path']);
+			$pluginList[$key] =$val;
 		}
 		
 		$p_installed = e107::getPref('plug_installed',array()); // load preference; 
@@ -188,23 +170,17 @@ class e107plugin
 			
 			if(!$this->parse_plugin($p['path']))
 			{
-				//parsing of plugin.php/plugin.xml failed.
-				
-			  
-			  $emessage->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
-			  continue;		// Carry on and do any others that are OK
+				//parsing of plugin.php/plugin.xml failed.			  
+				$emessage->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
+			  	continue;		// Carry on and do any others that are OK
 			}
-			
-				
-			
+						
 			$plug_info = $this->plug_vars;
 		//	$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 
 			// scan for addons.
 			$eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
 			//		  $eplug_addons = $this->getAddons($plugin_path,'check');		// Checks opening/closing tags on addon files
-
-
 
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml
 			if ($plugin_path == $plug_info['folder'])
@@ -262,7 +238,7 @@ class e107plugin
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1 );
 						e107::getDb()->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' ");
-
+						echo "<br />Installing: ".$plug_info['@attributes']['name'];
 					}
 				}
 			}
@@ -414,14 +390,14 @@ class e107plugin
 		return $getinfo_results[$id];
 	}
 
-	function manage_extended_field($action, $field_name, $field_type, $field_default, $field_source)
+	function manage_extended_field($action, $field_name, $field_type, $field_default='', $field_source='')
 	{
 		if(!isset($this->module['ue']))
 		{
 			include_once(e_HANDLER.'user_extended_class.php');
 			$this->module['ue'] = new e107_user_extended;
 		}
-		$type = constant($field_type);
+		$type = defined($field_type) ? constant($field_type) : $field_type;
 
 		if($action == 'add')
 		{
@@ -539,7 +515,7 @@ class e107plugin
 
 
 
-
+	// DEPRECATED - See managePrefs();
 	// Update prefs array according to $action
 	// $prefType specifies the storage type - may be 'pref', 'listPref' or 'arrayPref'
 	function manage_prefs($action, $var, $prefType = 'pref', $path = '', $unEscape = FALSE)
@@ -691,7 +667,7 @@ class e107plugin
 	}
 
 
-
+	// DEPRECATED for 0.8 xml files - See managePrefs();
 	// Handle prefs from arrays (mostly 0.7 stuff, possibly apart from the special cases)
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '')
 	{  // These prefs are 'cumulative' - several plugins may contribute an array element
@@ -1101,7 +1077,10 @@ class e107plugin
 				}
 			}
 		}
-
+		
+/*
+ 
+       // REPLACED BY managePrefs() function.. see below; 
 		//main pref items
 		if(isset($plug_vars['mainPrefs']))
 		{
@@ -1110,6 +1089,7 @@ class e107plugin
 			if(isset($plug_vars['mainPrefs'][$prefType]))
 			{
 			  $list = $this->parse_prefs($plug_vars['mainPrefs'][$prefType]);
+
 			  switch($function)
 			  {
 				case 'install':
@@ -1147,19 +1127,25 @@ class e107plugin
 			}
 		  }
 		}
-		
-	
-		//Plugin pref items
-		if(isset($plug_vars['pluginPrefs']))
+	*/
+
+		//Core pref items <mainPrefs>
+		if(varset($plug_vars['mainPrefs']))
 		{
-			//TODO plugin pref handling. 
+			$this->managePrefs('core',$function,$plug_vars['mainPrefs']);
+		}		
+	
+		//Plugin pref items <pluginPrefs>
+		if(varset($plug_vars['pluginPrefs']))
+		{
+			$this->managePrefs($plug['plugin_path'],$function,$plug_vars['pluginPrefs']);
 		}
 		
 		//Userclasses
 		//$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
 		if(isset($plug_vars['userclass']))
 		{
-			foreach($uclass_list as $uclass)
+			foreach($plug_vars['userclass'] as $uclass)
 			{
 				$attrib = $uclass['@attributes'];
 				switch($function)
@@ -1201,7 +1187,7 @@ class e107plugin
 		//Extended user fields
 		if(isset($plug_vars['extendedField']))
 		{
-			foreach($efield_list as $efield)
+			foreach($plug_vars['extendedField'] as $efield)
 			{
 				$attrib = $efield['@attributes'];
 				$attrib['default'] = varset($attrib['default']);
@@ -1333,6 +1319,114 @@ class e107plugin
 		return $txt;
 	}
 
+	/**
+	 * New Pref Management Function for 0.8. Handles Core and Plugin prefs. 
+	 * @param object $mode 'core' or the folder name of the plugin.
+	 * @param object $function install|uninstall|upgrade|refresh
+	 * @param object $prefArray XML array of prefs. eg. mainPref() or pluginPref();
+	 * @return 
+	 */
+	function managePrefs($mode='core',$function,$prefArray)
+	{
+		
+		//XXX Could also be used for theme prefs.. perhaps this function should be moved elsewhere?
+		$emessage = &eMessage::getInstance();
+		
+		if(!varset($prefArray) || !varset($prefArray))
+		{
+			return;	
+		}
+		
+		$config = ($mode == 'core') ? e107::getConfig('core') : e107::getPlugConfig($mode);
+		
+		foreach($prefArray['pref'] as $tag)
+		{
+			$key = varset($tag['@attributes']['name']);
+			$value = vartrue($tag['@value']); 
+			
+			if(varset($tag['@attributes']['value']))
+			{
+				$emessage->add("Deprecated plugin.xml spec. found. Use the following format: ".htmlentities("<pref name='name'>value</pref>"), E_MESSAGE_ERROR); 	
+			}
+			
+			switch($function)
+			{
+				case 'install':
+					$config->add($key,$value);		
+					$emessage->add("Adding Pref: ".$key, E_MESSAGE_SUCCESS); 						
+				break;
+				
+				case 'upgrade' :
+				case 'refresh' :
+					$config->update($key,$value);		
+					$emessage->add("Updating Pref: ".$key, E_MESSAGE_SUCCESS); 	
+				break;
+				
+				case 'uninstall':
+					$config->remove($key,$value);				
+					$emessage->add("Removing Pref: ".$key, E_MESSAGE_SUCCESS); 	
+				break;
+			}	
+			
+		}
+		
+		$config->save();
+		return;
+		
+		
+		
+		
+		// TODO - 'active' 'inactive' etc. needs to be reviewed in light of the new pref-handler upgrades. 
+
+/*		foreach (array('pref','listPref','arrayPref') as $prefType)
+		{
+			if(isset($plug_vars['pluginPrefs'][$prefType]))
+			{
+			  $list = $this->parse_prefs($plug_vars['pluginPrefs'][$prefType]);
+			  print_a($list);
+			  switch($function)
+			  {
+				case 'install':
+					if(varset($list['active']) && is_array($list['active']))
+					{
+						$txt .= $this->displayArray($list['active'], "Adding '{$prefType}' prefs:");
+				//		$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path'], TRUE);
+					}
+					break;
+				case 'upgrade' :
+				case 'refresh' :		// Add any defined prefs which don't already exist
+					if(varset($list['active']) && is_array($list['active']))
+					{
+						$txt .= $this->displayArray($list['active'], "Updating '{$prefType}' prefs:");
+				//		$this->manage_prefs('update', $list['active'], $prefType, $plug['plugin_path'], TRUE);		// This only adds prefs which aren't already defined
+					}
+
+					//If upgrading, removing any inactive pref
+					if(varset($list['inactive']) && is_array($list['inactive']))
+					{
+						$txt .= $this->displayArray($list['inactive'], "Removing '{$prefType}' prefs:");
+				//		$this->manage_prefs('remove', $list['inactive'], $prefType, $plug['plugin_path'], TRUE);
+					}
+					break;
+
+					//If uninstalling, remove all prefs (active or inactive)
+				case 'uninstall':
+					if(varset($list['all']) && is_array($list['all']))
+					{
+						$txt .= $this->displayArray($list['all'], "Removing '{$prefType}' prefs:");
+				//		$this->manage_prefs('remove', $list['all'], $prefType, $plug['plugin_path'], TRUE);
+					}
+					break;
+			  }
+			}
+		  }
+		  */
+	}
+
+
+
+
+
 	function execute_function($path = '', $what='', $when='')
 	{
 		if($what == '' || $when == '') { return true; }
@@ -1363,7 +1457,8 @@ class e107plugin
 		}
 	}
 
-	function parse_prefs($pref_array)
+	// DEPRECATED - See managePrefs();
+	function parse_prefs($pref_array,$mode='simple')
 	{
 		$ret = array();
 		if(!isset($pref_array[0]))
@@ -1628,21 +1723,20 @@ class e107plugin
 	{
 		$fl = e107::getFile();
 		
-		
 		$p_addons = array();
-		$addonlist = $fl->get_files(e_PLUGIN.$plugin_path, "^e_.*\.php$", "standard", 1);
-		//		print_a($addonlist);
-		foreach($addonlist as $f)
-		{
-			if(preg_match("#^(e_.*)\.php$#", $f['fname'], $matches))
-			{
-				$addon = $matches[1];
-				if(is_readable(e_PLUGIN.$plugin_path."/".$f['fname']))
+
+		foreach($this->plugin_addons as $addon) //Find exact matches only. 
+		{	
+			//	if(preg_match("#^(e_.*)\.php$#", $f['fname'], $matches)) 
+
+				$addonPHP = $addon.".php";
+								
+				if(is_readable(e_PLUGIN.$plugin_path."/".$addonPHP))
 				{
 					if ($debug === 'check')
 					{
 						$passfail = '';
-						$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$f['fname']);
+						$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$addonPHP);
 						if ((substr($file_text,0,5) != '<'.'?php') || (substr($file_text,-2,2) !='?>'))
 						{
 							$passfail = '<b>fail</b>';
@@ -1655,7 +1749,6 @@ class e107plugin
 					}
 					$p_addons[] = $addon;
 				}
-			}
 		}
 
 		// Grab List of Shortcodes & BBcodes
@@ -1752,7 +1845,7 @@ class e107plugin
 		$ret['@attributes']['version'] = varset($eplug_version);
 		$ret['@attributes']['name'] = varset($eplug_name);
 		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
-		$ret['folder'] = varset($eplug_folder);
+		$ret['folder'] = (varset($eplug_folder)) ? $eplug_folder : $plugName;
 		$ret['category'] = varset($eplug_category) ? $this->manage_category($eplug_category) : "misc";
 		$ret['description'] = varset($eplug_description);
 		$ret['author']['@attributes']['name'] = varset($eplug_author);
@@ -1784,8 +1877,10 @@ class e107plugin
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
-		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', true, true);
+		$xml->setOptStringTags('icon,iconSmall,configFile,caption,installDone,install,uninstall,upgrade'); 
 		
+	//	$plug_vars2 = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', true, true);
+		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', 'advanced');
 		if ($this->plug_vars === FALSE)
 		{
             require_once(e_HANDLER."message_handler.php");
@@ -1795,7 +1890,17 @@ class e107plugin
 		}
 		
 		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";	
-
+		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml. 
+/*		
+		if($plugName == "tinymce")
+		{
+			echo "<table><tr><td>";
+			print_a($plug_vars2);
+			echo "</td><td>";		
+			print_a($this->plug_vars);
+			echo "</table>";
+		}
+*/
 		return TRUE;
 	}
 
