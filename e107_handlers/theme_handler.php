@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.53 $
- * $Date: 2009-09-17 01:47:20 $
+ * $Revision: 1.54 $
+ * $Date: 2009-09-21 21:53:37 $
  * $Author: e107coders $
 */
 
@@ -1274,6 +1274,7 @@ class themeHandler{
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
 		$xml->setOptArrayTags('layout'); // layout should always be an array.
+		$xml->setOptStringTags('menuPresets,customPages');  
 		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
 
 		$vars['name']					= varset($vars['@attributes']['name']);
