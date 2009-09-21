@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-09-21 21:53:38 $
+ * $Revision: 1.29 $
+ * $Date: 2009-09-21 22:22:14 $
  * $Author: e107coders $
 */
 
@@ -555,14 +555,14 @@ class xmlClass
 	 */
 	function parseStringTags($vars)
 	{
-		if(!$this->stringTags)
+		if(!$this->stringTags || !is_array($vars))
 		{
 			return $vars;
 		}
 		
 		foreach($this->stringTags as $vl)
 		{		
-			if(is_array($vars[$vl]) && varset($vars[$vl][0]))
+			if(varset($vars[$vl][0]))
 			{
 				$vars[$vl] = $vars[$vl][0];	
 			}	
