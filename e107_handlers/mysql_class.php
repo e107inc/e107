@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.54 $
- * $Date: 2009-09-17 14:25:10 $
+ * $Revision: 1.55 $
+ * $Date: 2009-09-21 22:50:07 $
  * $Author: e107coders $
 */
 
@@ -49,7 +49,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * @author $Author: e107coders $
  * 
  */
@@ -70,7 +70,8 @@ class e_db_mysql {
 	var $mySQLlanguage;
 	var $mySQLinfo;
 	var $tabset;
-	private $mySQLtableList = array(); // list of all Db tables. 
+	var $mySQLtablelist = array(); // list of all Db tables. 
+
 	var $mySQLtableListLanguage = array(); // Db table list for the currently selected language
 
 	/**
@@ -952,7 +953,7 @@ class e_db_mysql {
 			  	}
 			}
 			
-			return ($lanlist) ? $lanlist : FALSE;
+			return (varset($lanlist)) ? $lanlist : FALSE;
 		}
 	// -------------------------
 
