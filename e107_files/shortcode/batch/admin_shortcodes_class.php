@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.23 2009-09-21 21:56:02 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.24 2009-09-22 15:37:46 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -1186,18 +1186,18 @@ class admin_shortcodes
 
 					$plug_vars = $plug->plug_vars;
 					e107::loadLanFiles($row['plugin_path'], 'admin');
-					if($plug_vars['administration']['configFile'])
+					if(varset($plug_vars['administration']['configFile']))
 					{
 						$plugpath = varset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/';
 						$icon_src = varset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$icon_src_lrg = varset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
 						$id = 'plugnav-'.$row['plugin_path'];
-
+					
            	  			$tmp[$id]['text'] = $e107->tp->toHTML($plug_vars['@attributes']['name'], FALSE, "defs");
 						$tmp[$id]['description'] = $plug_vars['description'];
 						$tmp[$id]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plug_vars['administration']['configFile'];
-					 	$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt='{$tmp['text']}' class='icon S16' />" : E_16_PLUGIN;
-						$tmp[$id]['image_large'] = $icon_src_lrg ? "<img src='{$icon_src_lrg}' alt='{$tmp['text']}' class='icon S32' />" : $icon_src_lrg;
+					 	$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt=\"".varset($tmp[$id]['text'])."\" class='icon S16' />" : E_16_PLUGIN;
+						$tmp[$id]['image_large'] = $icon_src_lrg ? "<img src='{$icon_src_lrg}' alt=\"".varset($tmp[$id]['text'])."\" class='icon S32' />" : $icon_src_lrg;
 						$tmp[$id]['image_src'] = $icon_src;
 						$tmp[$id]['image_large_src'] = $icon_src_lrg;
 						$tmp[$id]['perm'] = 'P'.$row['plugin_id'];
@@ -1219,7 +1219,7 @@ class admin_shortcodes
 								$tmp[$id]['sub'][$subid]['text'] = $e107->tp->toHTML($plugsub['title'], FALSE, "defs");
 								$tmp[$id]['sub'][$subid]['description'] = $plug_vars['description'];
 								$tmp[$id]['sub'][$subid]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plugsub['link'];
-								$tmp[$id]['sub'][$subid]['image'] = $icon_src ? "<img src='{$icon_src}' alt='{$tmp['text']}' class='icon S16' />" : "";
+								$tmp[$id]['sub'][$subid]['image'] = $icon_src ? "<img src='{$icon_src}' alt=\"".varset($tmp[$id]['sub'][$subid]['text'])."\" class='icon S16' />" : "";
 								$tmp[$id]['sub'][$subid]['image_large'] = '';
 								$tmp[$id]['sub'][$subid]['image_src'] = $icon_src;
 								$tmp[$id]['sub'][$subid]['image_large_src'] = '';
