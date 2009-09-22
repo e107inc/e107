@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-09-10 12:49:47 $
+ * $Revision: 1.34 $
+ * $Date: 2009-09-22 19:47:02 $
  * $Author: e107coders $
  *
 */
@@ -217,7 +217,7 @@ class system_tools
 		}
 				
 
-		if($_POST['pref_type']=='core')
+		if($_POST['pref_type']=='core' || !vartrue($_POST['pref_type']))
 		{
 			save_prefs();
 			$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
