@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-09-21 16:31:02 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-22 18:28:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -13,6 +13,8 @@
 function wysiwyg($formids)
 {
 
+	$tinyMcePrefs = e107::getPlugConfig('tinymce')->getPref(); 
+	
 global $pref,$HANDLERS_DIRECTORY,$PLUGINS_DIRECTORY,$IMAGES_DIRECTORY;
 
 $lang = e_LANGUAGE;
@@ -45,7 +47,7 @@ if(!$tinylang[$lang])
 
 $admin_only = array("ibrowser","code");
 
-foreach($pref['tinymce']['plugins'] as $val)
+foreach($tinyMcePrefs['plugins'] as $val)
 {
 	if(in_array($val,$admin_only) && !ADMIN)
 	{
@@ -115,10 +117,10 @@ $text .= ",theme_advanced_buttons3 : ''";
 */
 
 $text .= ",
-theme_advanced_buttons1 : '".$pref['tinymce']['theme_advanced_buttons1']."',
-theme_advanced_buttons2 : '".$pref['tinymce']['theme_advanced_buttons2']."',
-theme_advanced_buttons3 : '".$pref['tinymce']['theme_advanced_buttons3']."',
-theme_advanced_buttons4 : '".$pref['tinymce']['theme_advanced_buttons4']."',
+theme_advanced_buttons1 : '".$tinyMcePrefs['theme_advanced_buttons1']."',
+theme_advanced_buttons2 : '".$tinyMcePrefs['theme_advanced_buttons2']."',
+theme_advanced_buttons3 : '".$tinyMcePrefs['theme_advanced_buttons3']."',
+theme_advanced_buttons4 : '".$tinyMcePrefs['theme_advanced_buttons4']."',
 theme_advanced_toolbar_location : \"bottom\",
 theme_advanced_toolbar_align : \"left\",
 theme_advanced_statusbar_location : \"bottom\",
@@ -144,7 +146,7 @@ $text .= ",verify_css_classes : false\n";
 $text .= ",cleanup_callback : \"tinymce_html_bbcode_control\" \n";
 $text .= (ADMIN) ? "\n, external_link_list_url: '../".e_PLUGIN_ABS."tiny_mce/filelist.php'\n" : "";
 
-if($pref['tinymce']['customjs'])
+if($tinyMcePrefs['customjs'])
 {
 	$text .= "\n,
 
@@ -171,7 +173,7 @@ $text .= "
 function tinymce_html_bbcode_control(type, source) {
 
 	";
-    if(in_array("bbcode",$pref['tinymce']['plugins']))
+    if(in_array("bbcode",$tinyMcePrefs['plugins']))
 	{
       //	$text .= " return source; ";
 	}

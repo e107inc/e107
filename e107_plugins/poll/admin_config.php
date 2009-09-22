@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-10 14:25:22 $
+|     $Revision: 1.9 $
+|     $Date: 2009-09-22 18:28:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,6 @@ if(isset($_POST))
 	$_POST = strip_if_magic($_POST);
 }
 
-
 $rs = new form;
 $poll = new poll;
 
@@ -45,23 +44,15 @@ if (isset($_POST['reset']))
 	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['multipleChoice'], $_POST['showResults'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear']);
 	define("RESET", TRUE);
 } 
-elseif (e_QUERY)
-{
-	list($action, $id) = explode(".", e_QUERY);
-	define("POLLACTION", $action);
-	define("POLLID", $id);
-}
-else
-{
-	define("POLLACTION", FALSE);
-	define("POLLID", FALSE);
-}
 
 
-if ($action == "delete") 
+	$emessage = eMessage::getInstance();
+	
+if (varset($_POST['delete'])) 
 {
-	$message = $poll->delete_poll($id);
+	$message = $poll->delete_poll(key($_POST['delete']));
 	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
+	$_GET['mode']='list';
 }
 
 
@@ -69,21 +60,63 @@ if (isset($_POST['submit']))
 {
 	if($_POST['poll_title'])
 	{
-		$message = $poll -> submit_poll();
+		define("POLLID",$_POST['poll_id']);
+		$emessage->add($poll -> submit_poll(), E_MESSAGE_SUCCESS);
 		unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
 	}
 	else
 	{
-		$message = POLLAN_46;
+		$emessage->add(POLLAN_46, E_MESSAGE_SUCCESS);
 	}
+	$_GET['mode']='list';
+
+}
+
+if (isset($_POST['preview']))
+{
+	// Can't have everyone voting if tracking method is user ID
+	if (($_POST['pollUserclass'] == e_UC_PUBLIC) && ($_POST['storageMethod'] == 2)) $_POST['pollUserclass'] = e_UC_MEMBER;
+	$poll->render_poll($_POST, "preview");
+}
+
+if (varset($_POST['edit']) || varset($_GET['mode'])=='create' && !varset($_POST['submit']))
+{
+		$_GET['mode']='create';
+		if($_POST['edit'])
+		{
+			edit_poll();
+			define("POLLACTION",'edit');
+		}
+			
+		$poll_total = $sql->db_Select("polls");
+		$text = $poll -> renderPollForm();
+		$ns->tablerender(POLLAN_MENU_CAPTION." :: ".POLLAN_2, $text);
 }
 
 
-if (POLLACTION == "edit" && !$_POST['preview'] && !$_POST['submit'])
-{
 
-	if ($sql->db_Select("polls", "*", "poll_id=".POLLID)) 
+if (isset($message))
+{
+	$emessage->add($message, E_MESSAGE_SUCCESS);
+
+}
+
+if(!varset($_POST['edit']) && ($_GET['mode']=="list" || !$_GET['mode']))
+{
+	poll_list();
+}
+
+require_once(e_ADMIN."footer.php");
+
+function edit_poll()
+{
+	
+	$sql = e107::getDb();
+	$id = key($_POST['edit']);
+	
+	if ($sql->db_Select("polls", "*", "poll_id=".$id)) 
 	{
+		$_GET['mode'] = 'create';
 		$row = $sql->db_Fetch();
 		extract($row);
 
@@ -94,6 +127,7 @@ if (POLLACTION == "edit" && !$_POST['preview'] && !$_POST['submit'])
 			$_POST['poll_option'][] = $option;
 		}
 
+		$_POST['poll_id'] = $id;
 		$_POST['activate'] = $poll_active;
 		$_POST['option_count'] = count($_POST['poll_option']);
 		$_POST['poll_title'] = $poll_title;
@@ -122,80 +156,98 @@ if (POLLACTION == "edit" && !$_POST['preview'] && !$_POST['submit'])
 	}
 }
 
-if (isset($_POST['preview']))
+function poll_list()
 {
-	// Can't have everyone voting if tracking method is user ID
-	if (($_POST['pollUserclass'] == e_UC_PUBLIC) && ($_POST['storageMethod'] == 2)) $_POST['pollUserclass'] = e_UC_MEMBER;
-	$poll->render_poll($_POST, "preview");
-}
-
-if (isset($message))
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
-
-$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
-	<form action='".e_SELF."' method='post' id='del_poll'>";
-
-if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) 
-{
-	$text .= "<table class='adminlist' cellpadding='0' cellspacing='0'>
-        	<colgroup span='3'>
-        		<col style='width:5%' />
-        		<col style='width:75%' />
-				<col style='width:20%' />
-        	</colgroup>
-			<thead>
-
-		<tr>
-		<th>ID
-		<input type='hidden' name='del_poll_confirm' id='del_poll_confirm' value='1' />
-		</th>
-		<th>".POLLAN_3."</th>
-		<th class='center'>".POLLAN_4."</th>
-		</tr>
-		</thead>
-		<tbody>";
-	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		$text .= "<tr>
-			<td style='width:5%' >$poll_id</td>
-			<td style='width:75%' class='forumheader3'>".$tp -> toHTML($poll_title, TRUE,"no_hook, emotes_off, defs")."</td>
-			<td style='width:20%; text-align:center' class='forumheader3'><div>". $rs->form_button("button", "main_edit_{$poll_id}", POLLAN_5, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\""). $rs->form_button("submit", "main_delete_{$poll_id}", POLLAN_6, "onclick=\"confirm_($poll_id)\"")."
-			</div></td>
-			</tr>";
+	$sql = e107::getDb();
+	$ns = e107::getRender();
+	$tp = e107::getParser();
+	$frm = new e_form(true);
+	
+	
+	global $user_pref;
+	if(isset($_POST['submit-e-columns'])) //TODO User 
+	{
+		$user_pref['admin_poll_columns'] = $_POST['e-columns'];
+		save_prefs('user');
 	}
-	$text .= "</tbody></table>";
+	
+	$fieldpref = (varset($user_pref['admin_poll_columns'])) ? $user_pref['admin_poll_columns'] : array("poll_id","poll_title","poll_options","poll_vote_userclass"); ;
+
+	//TODO Add more column options. 
+	$fields = array(
+			'poll_id'				=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE),
+            'poll_title'	   		=> array('title'=> POLLAN_3, 'width'=>'auto'),
+			'poll_options' 			=> array('title'=> POLLAN_4, 'type' => 'text', 'width' => 'auto', 'thclass' => 'center' ),	 // No real vetting
+		//	'poll_start_datestamp' 	=> array('title'=> LAN_AUTHOR, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first'), // Display name
+		//	'poll_end_datestamp' 	=> array('title'=> LAN_DATE, 'type' => 'text', 'width' => 'auto'),	// User name
+            'poll_vote_userclass' 	=> array('title'=> LAN_USERCLASS, 'type' => 'text', 'width' => 'auto'),	 	// Photo
+			
+			'options' 				=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
+	);
+	
+	
+	
+	
+	
+	
+	
+	$text = "<div style='text-align:center'><div>
+		<form action='".e_SELF."' method='post' id='del_poll'>";
+	
+	if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) 
+	{
+		$text .= "<table class='adminlist' cellpadding='0' cellspacing='0'>";
+		$text .= $frm->colGroup($fields,$fieldpref).
+				$frm->thead($fields,$fieldpref);
+	    $text .= "<tbody>";		
+			
+		while ($row = $sql->db_Fetch())
+		{
+			extract($row);
+			
+			$text .= "<tr>
+				<td>$poll_id</td>";
+				$text .= (in_array("poll_title",$fieldpref)) ? "<td class='left'>".$tp -> toHTML($poll_title, TRUE,"no_hook, emotes_off, defs")."</td>" : "";              
+                $text .= (in_array("poll_options",$fieldpref)) ? "<td class='left'>".(str_replace(chr(1),"<br />",$poll_options))."</td>" : "";
+		 		$text .= (in_array("poll_comment",$fieldpref)) ? "<td>".($poll_comment ? LAN_YES : LAN_NO)."</td>" : "";
+				$text .= (in_array("poll_vote_userclass",$fieldpref)) ? "<td>".(r_userclass_name($poll_vote_userclass))."</td>" : "";
+				
+				$text .= "
+				<td class='center'>
+					<input type='image' name='edit[{$poll_id}]' value='edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+					<input type='image' name='delete[$poll_id]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$poll_id."]")."') \" src='".ADMIN_DELETE_ICON_PATH."' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				</td>
+				</tr>";
+		}
+		$text .= "</tbody></table>";
+	}
+	else 
+	{
+	  $text .= "<div style='text-align:center'>".POLLAN_7."</div>";
+	}
+	$text .= "</form></div></div>";
+	
+	$emessage = eMessage::getInstance();
+	
+	$ns->tablerender(POLLAN_MENU_CAPTION." :: ".POLLAN_1,$emessage->render(). $text);
 }
-else 
+
+
+
+
+
+function admin_config_adminmenu() 
 {
-  $text .= "<div style='text-align:center'>".POLLAN_7."</div>";
-}
-$text .= "</form></div></div>";
-$ns->tablerender(POLLAN_1, $text);
-
-$poll_total = $sql->db_Select("polls");
-
-$text = $poll -> renderPollForm();
-
-$ns->tablerender(POLLAN_2, $text);
-require_once(e_ADMIN."footer.php");
-
-
-function headerjs() 
-{
-	global $tp;
-	$headerjs = "<script type=\"text/javascript\">
-function confirm_(poll_id)
-{
-  var x=confirm(\"Delete this poll? [ID: \" + poll_id + \"]\");
-  if (x)
-  {
-	document.getElementById('del_poll').action='".e_SELF."?delete.' + poll_id;
-	document.getElementById('del_poll').submit();
-  }
-}
-</script>";
-	return $headerjs;
+	$action = varset($_GET['mode']) ? $_GET['mode'] : "list";
+    $var['list']['text'] = POLLAN_1;
+	$var['list']['link'] = e_SELF;
+	$var['list']['perm'] = "P";
+	$var['create']['text'] = POLLAN_2 ;
+	$var['create']['link'] = e_SELF."?mode=create";
+	$var['create']['perm'] = "P";
+/*	$var['import']['text'] = GSLAN_23;
+	$var['import']['link'] = e_SELF."?import";
+	$var['import']['perm'] = "0";*/
+	show_admin_menu(POLLAN_MENU_CAPTION, $action, $var);
 }
 ?>

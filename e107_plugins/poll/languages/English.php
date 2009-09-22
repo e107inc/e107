@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-08-16 16:25:45 $
-|     $Author: e107steved $
+|     $Revision: 1.4 $
+|     $Date: 2009-09-22 18:28:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,10 +28,10 @@
 
 define("POLLAN_MENU_CAPTION", "Poll");
 
-//define("POLLAN_1", "Existing polls");
-//define("POLLAN_2", "Create / edit polls");
-//define("POLLAN_3", "Poll question");
-//define("POLLAN_4", "Options");
+define("POLLAN_1", "Existing polls");
+define("POLLAN_2", "Create / edit polls");
+define("POLLAN_3", "Poll question");
+define("POLLAN_4", "Poll Options");
 //define("POLLAN_5", "Edit");
 //define("POLLAN_6", "Delete");
 //define("POLLAN_7", "No polls yet.");

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/languages/English_admin_poll.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-10 21:49:54 $
-|     $Author: e107steved $
+|     $Revision: 1.2 $
+|     $Date: 2009-09-22 18:28:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,12 +29,12 @@ define("POLL_ADLAN08", "Poll deleted");
 
 define("POLLAN_MENU_CAPTION", "Poll");
 
-define("POLLAN_1", "Existing polls");
-define("POLLAN_2", "Create / edit polls");
-define("POLLAN_3", "Poll question");
-define("POLLAN_4", "Options");
-define("POLLAN_5", "Edit");
-define("POLLAN_6", "Delete");
+//define("POLLAN_1", "Existing polls");
+//define("POLLAN_2", "Create / edit polls");
+//define("POLLAN_3", "Poll Question");
+//define("POLLAN_4", "Poll Options");
+//define("POLLAN_5", "Edit");
+//define("POLLAN_6", "Delete");
 define("POLLAN_7", "No polls yet.");
 /*
 define("POLLAN_8", "Add another option");
@@ -75,7 +75,7 @@ define("POLLAN_42", "This poll is restricted to administrators only");
 define("POLLAN_43", "You do not have the required permissions to vote in this poll");
 define("POLLAN_44", "Delete this poll?");
 */
-define("POLLAN_45", "Poll successfully updated");
+
 define("POLLAN_46", "Field(s) left blank");
 
 // Log messages
