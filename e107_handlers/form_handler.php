@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-09-19 15:21:51 $
- * $Author: secretr $
+ * $Revision: 1.44 $
+ * $Date: 2009-09-22 15:42:27 $
+ * $Author: e107coders $
  *
 */
 
@@ -84,6 +84,13 @@ class e_form
 		//never allow id in format name-value for text fields
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
+	
+	function iconpreview($id,$default,$width='',$height='') // FIXME
+	{		
+		$parms = $name."|".$width."|".$height."|".$id;
+		$sc_parameters .= 'mode=preview&default='.$default.'&id='.$id;
+		return e107::getParser()->parseTemplate("{ICONPICKER=".$sc_parameters."}");
+	}
 
 	function iconpicker($name, $default, $label, $sc_parameters = '', $ajax = true)
 	{
@@ -96,7 +103,9 @@ class e_form
 		$id = $this->name2id($name);
 		$sc_parameters .= '&id='.$id;
 		$jsfunc = $ajax ? "e107Ajax.toggleUpdate('{$id}-iconpicker', '{$id}-iconpicker-cn', 'sc:iconpicker=".urlencode($sc_parameters)."', '{$id}-iconpicker-ajax', { overlayElement: '{$id}-iconpicker-button' })" : "e107Helper.toggle('{$id}-iconpicker')";
-		$ret = $this->text($name, $default).$this->admin_button($name.'-iconpicker-button', $label, 'action', '', array('other' => "onclick=\"{$jsfunc}\""));
+		$ret = $this->text($name, $default);
+	//	$ret .= $this->iconpreview($id,$default); //FIXME
+		$ret .= $this->admin_button($name.'-iconpicker-button', $label, 'action', '', array('other' => "onclick=\"{$jsfunc}\""));
 		$ret .= "
 			<div id='{$id}-iconpicker' class='e-hideme'>
 				<div class='expand-container' id='{$id}-iconpicker-cn'>
@@ -643,7 +652,7 @@ class e_form
 			if(!varset($fld['forced']))
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
-				$text .= $this->checkbox('e-columns[]', $key, $checked). $fld['title']."<br />\n";
+				$text .= $this->checkbox('e-columns[]', $key, $checked). varset($fld['title'])."<br />\n";
 			}
 		}
 
@@ -700,9 +709,9 @@ class e_form
 			}
 		}
 
-		if(!$fromval){ $fromval = 0; }
+		if(!varset($fromval)){ $fromval = 0; }
 
-        $ascdesc = ($ascdesc == 'desc') ? 'asc' : 'desc';
+        $ascdesc = (varset($ascdesc) == 'desc') ? 'asc' : 'desc';
 
 		foreach($fieldarray as $key=>$val)
 		{
@@ -737,20 +746,21 @@ class e_form
 	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
 	function filterType($fieldarray)
 	{
+		return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
 		define("e_AJAX_REQUEST",TRUE);
-    	$text .= "<select name='search_filter[]' style='margin:2px' onchange='UpdateForm(this.options[selectedIndex].value)'>";
+    	$text = "<select name='search_filter[]' style='margin:2px' onchange='UpdateForm(this.options[selectedIndex].value)'>";
 		foreach($fieldarray as $key=>$val)
 		{
-        	$text .= ($val['type']) ? "<option value='$key'>".$val['title']."</option>\n" : "";
+        	$text .= varset($val['type']) ? "<option value='$key'>".$val['title']."</option>\n" : "";
 
 		}
 		$text .= "</select>";
 		return $text;
 	}
 
-	function filterValue($type,$fields)
+	function filterValue($type='',$fields='')
 	{
-
+		return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
 
 		if($type)
 		{
