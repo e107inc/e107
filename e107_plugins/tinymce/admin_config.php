@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-09-21 21:54:26 $
+ * $Revision: 1.7 $
+ * $Date: 2009-09-22 18:28:49 $
  * $Author: e107coders $
  *
 */
@@ -31,15 +31,18 @@ $emessage = &eMessage::getInstance();
 
 if($_POST['save_settings'])   // Needs to be saved before e_meta.php is loaded by auth.php.
 {
-    $pref['tinymce']['customjs'] = $_POST['customjs'];
-    $pref['tinymce']['theme_advanced_buttons1'] = $_POST['theme_advanced_buttons1'];
-    $pref['tinymce']['theme_advanced_buttons2'] = $_POST['theme_advanced_buttons2'];
-	$pref['tinymce']['theme_advanced_buttons3'] = $_POST['theme_advanced_buttons3'];
-	$pref['tinymce']['theme_advanced_buttons4'] = $_POST['theme_advanced_buttons4'];
-	$pref['tinymce']['plugins'] = $_POST['mce_plugins'];
+    $tpref['customjs'] = $_POST['customjs'];
+    $tpref['theme_advanced_buttons1'] = $_POST['theme_advanced_buttons1'];
+    $tpref['theme_advanced_buttons2'] = $_POST['theme_advanced_buttons2'];
+	$tpref['theme_advanced_buttons3'] = $_POST['theme_advanced_buttons3'];
+	$tpref['theme_advanced_buttons4'] = $_POST['theme_advanced_buttons4'];
+	$tpref['plugins'] = $_POST['mce_plugins'];
 
-	save_prefs();
+	e107::getPlugConfig('tinymce')->setPref($tpref);
+	e107::getPlugConfig('tinymce')->save(); 
 }
+
+	$tpref = e107::getPlugConfig('tinymce')->getPref(); 
 
 require_once(e_ADMIN."auth.php");
 
@@ -59,24 +62,24 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
     	sort($plug_array);
     }
 
- 	if(!$pref['tinymce']['theme_advanced_buttons1'])
+ 	if(!$tpref['theme_advanced_buttons1'])
 	{
-    	$pref['tinymce']['theme_advanced_buttons1'] = "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect";
+    	$tpref['theme_advanced_buttons1'] = "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect";
 	}
 
-	if(!$pref['tinymce']['theme_advanced_buttons2'])
+	if(!$tpref['theme_advanced_buttons2'])
 	{
-    	$pref['tinymce']['theme_advanced_buttons2'] = "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor";
+    	$tpref['theme_advanced_buttons2'] = "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor";
 	}
 
-	if(!$pref['tinymce']['theme_advanced_buttons3'])
+	if(!$tpref['theme_advanced_buttons3'])
 	{
-		$pref['tinymce']['theme_advanced_buttons3'] = "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen,emoticons,ibrowser";
+		$tpref['theme_advanced_buttons3'] = "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen,emoticons,ibrowser";
 	}
 
-	if(!$pref['tinymce']['theme_advanced_buttons4'])
+	if(!$tpref['theme_advanced_buttons4'])
 	{
-		$pref['tinymce']['theme_advanced_buttons4'] = "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,blockquote,pagebreak,|,insertfile,insertimage";
+		$tpref['theme_advanced_buttons4'] = "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,blockquote,pagebreak,|,insertfile,insertimage";
 	}
 
 
@@ -106,7 +109,7 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
 
     foreach($plug_array as $mce_plg)
 	{
-		$checked = (in_array($mce_plg,$pref['tinymce']['plugins'])) ? "checked='checked'" : "";
+		$checked = (in_array($mce_plg,$tpref['plugins'])) ? "checked='checked'" : "";
     	$text .= "<div style='width:25%;float:left'><input type='checkbox' name='mce_plugins[]' value='".$mce_plg."' $checked /> $mce_plg </div>";
 	}
 
@@ -122,7 +125,7 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
     for ($i=1; $i<=4; $i++)
 	{
 		$rowNm = "theme_advanced_buttons".$i;
-    	$text .= "\t<input class='tbox' style='width:97%' type='text' name='".$rowNm."' value='".$pref['tinymce'][$rowNm]."' />\n";
+    	$text .= "\t<input class='tbox' style='width:97%' type='text' name='".$rowNm."' value='".$tpref[$rowNm]."' />\n";
     }
 
 	$text .= "
@@ -132,7 +135,7 @@ if($_POST['save_settings']) // is there an if $emessage?   $emessage->hasMessage
 	<tr>
     <td>Custom TinyMce Javascript</td>
     <td>
-    <textarea rows='5' cols='10' name='customjs' class='tbox' style='width:80%'>".$pref['tinymce']['customjs']."</textarea>
+    <textarea rows='5' cols='10' name='customjs' class='tbox' style='width:80%'>".$tpref['customjs']."</textarea>
     </td>
     </tr>
 	</table>

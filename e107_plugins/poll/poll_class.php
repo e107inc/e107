@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.17 $
+|     $Date: 2009-09-22 18:28:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -64,12 +64,13 @@ class poll
 		$active_end = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$poll_options = "";
 
+		$_POST['poll_option'] = array_filter($_POST['poll_option']);
 		foreach($_POST['poll_option'] as $key => $value)
 		{
 			$poll_options .= $tp->toDB($value).chr(1);
 		}
 
-		if(POLLACTION == "edit")
+		if(POLLACTION == "edit" || vartrue($_POST['poll_id']))
 		{
 		  $sql -> db_Update("polls", "poll_title='{$poll_title}', 
 									  poll_options='{$poll_options}', 
@@ -463,7 +464,10 @@ class poll
 		$mode = "admin" :: called from admin_config.php
 		$mode = "forum" :: called from forum_post.php
 		*/
-		global $tp;
+		$tp = e107::getParser();
+
+		//TODO Hardcoded FORUM code needs to be moved somewhere. 
+
 		if($mode == "forum")
 		{
 			$text = "<tr>
@@ -530,9 +534,9 @@ class poll
 		<tr>
 		<td style='width:30%'><div class='normaltext'>".POLLAN_3.":</div></td>
 		<td style='width:70%'>
-		<input class='tbox' type='text' name='poll_title' size='70' value='".$tp -> post_toForm($_POST['poll_title'])."' maxlength='200' />";
+		<input class='tbox' type='text' name='poll_title' size='70' value='".$tp -> post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
 
-		$option_count = (count($_POST['poll_option']) ? count($_POST['poll_option']) : 1);
+		$option_count = (varset($_POST['poll_option']) && count($_POST['poll_option']) ? count($_POST['poll_option']) : 2);
 
 		$text .= "</td></tr><tr>
 		<td style='width:30%;vertical-align:top'>".LAN_OPTIONS." :</td>
@@ -541,10 +545,6 @@ class poll
 
 		for($count = 1; $count <= $option_count; $count++)
 		{
-			if($count != 1 && $_POST['poll_option'][($count-1)] =="")
-			{
-				break;
-			}
 			$opt = ($count==1) ? "id='pollopt'" : "";
 			$text .="<span $opt><input  class='tbox' type='text' name='poll_option[]' size='40' value=\"".$tp -> post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
 			$text .= "</span><br />";
@@ -556,55 +556,67 @@ class poll
 		<tr>
 		<td style='width:30%'>".POLLAN_9."</td>
 		<td style='width:70%'>
-		<input type='radio' name='multipleChoice' value='1'".($_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".POLLAN_10."&nbsp;&nbsp;
-		<input type='radio' name='multipleChoice' value='0'".(!$_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".POLLAN_11."
+		<input type='radio' name='multipleChoice' value='1'".(varset($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".POLLAN_10."&nbsp;&nbsp;
+		<input type='radio' name='multipleChoice' value='0'".(!varset($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".POLLAN_11."
 		</td>
 		</tr>
 
 		<tr>
 		<td style='width:30%'>".POLLAN_12."</td>
 		<td style='width:70%'>
-		<input type='radio' name='showResults' value='0'".(!$_POST['showResults'] ? " checked='checked'" : "")." /> ".POLLAN_13."<br />
-		<input type='radio' name='showResults' value='1'".($_POST['showResults'] ? " checked='checked'" : "")." /> ".POLLAN_14."
+		<input type='radio' name='showResults' value='0'".(!varset($_POST['showResults']) ? " checked='checked'" : "")." /> ".POLLAN_13."<br />
+		<input type='radio' name='showResults' value='1'".(varset($_POST['showResults']) ? " checked='checked'" : "")." /> ".POLLAN_14."
 		</td>
 		</tr>
 
 		<tr>
-		<td style='width:30%'>".POLLAN_15."</td>
-		<td>".r_userclass("pollUserclass", $_POST['pollUserclass'], 'off', "public,member,admin,classes,matchclass")."</td>
+		<td style='width:30%'>".POLLAN_15."</td>";
+		
+		$uclass = (ADMIN) ? "" : "public,member,admin,classes,matchclass";
+		
+		
+		$text .= "
+		<td>".r_userclass("pollUserclass", $_POST['pollUserclass'], 'off', $uclass)."</td>
 		</tr>
 
 		<tr>
 		<td style='width:30%'>".POLLAN_16."</td>
 		<td>
-		<input type='radio' name='storageMethod' value='0'".(!$_POST['storageMethod'] ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
-		<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] ==1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
-		<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
+		<input type='radio' name='storageMethod' value='0'".(!varset($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
+		<input type='radio' name='storageMethod' value='1'".(varset($_POST['storageMethod']) ==1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
+		<input type='radio' name='storageMethod' value='2'".(varset($_POST['storageMethod']) ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
 		</td></tr>
 
 
 
 
 		<tr>
-		<td>".POLLAN_20.": </td><td class='forumheader3'>
-		<input type='radio' name='poll_comment' value='1'".($_POST['poll_comment'] ? " checked='checked'" : "")." /> ".POLLAN_10."
-		<input type='radio' name='poll_comment' value='0'".(!$_POST['poll_comment'] ? " checked='checked'" : "")." /> ".POLLAN_11."
+		<td>".POLLAN_20.": </td><td>
+		<input type='radio' name='poll_comment' value='1'".(varset($_POST['poll_comment']) ? " checked='checked'" : "")." /> ".POLLAN_10."
+		<input type='radio' name='poll_comment' value='0'".(!varset($_POST['poll_comment']) ? " checked='checked'" : "")." /> ".POLLAN_11."
 		</td>
 		</tr>
 		</table>
 		<div class='buttons-bar center'>";
 
-		if (isset($_POST['preview'])) {
-			$text .= "<input class='button' type='submit' name='preview' value='".POLLAN_21."' /> ";
-			if (POLLACTION == "edit") {
-				$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_22."' /> ";
-			} else {
+		if (isset($_POST['preview']) || varset($_POST['edit']))
+		{
+			$text .= "<input class='button' type='submit' name='preview' value='".POLLAN_24."' /> ";
+			
+			if (POLLACTION == "edit")
+			{
+				$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_22."' />
+				<input type='hidden' name='poll_id' value='".intval($_POST['poll_id'])."' /> ";
+			}
+			else
+			{
 				$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_23."' /> ";
 			}
 		} else {
 			$text .= "<input class='button' type='submit' name='preview' value='".POLLAN_24."' /> ";
 		}
-		if (POLLID) {
+		
+		if (defset('POLLID')) {
 			$text .= "<input class='button' type='submit' name='reset' value='".POLLAN_25."' /> ";
 		}
 
