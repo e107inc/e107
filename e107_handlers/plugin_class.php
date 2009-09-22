@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2009-09-21 23:07:27 $
+|     $Revision: 1.95 $
+|     $Date: 2009-09-22 21:12:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1318,7 +1318,10 @@ class e107plugin
 				$txt .= $plug_vars['installDone'];
 			}
 		}
-		return $txt;
+		
+		$emessage = eMessage::getInstance();
+		$emessage->add($txt, E_MESSAGE_SUCCESS);
+		// return $txt;
 	}
 
 	/**
@@ -1332,6 +1335,8 @@ class e107plugin
 	{
 		
 		//XXX Could also be used for theme prefs.. perhaps this function should be moved elsewhere?
+		//TODO array support for prefs. <key>? or array() as used in xml site export? 
+		
 		$emessage = &eMessage::getInstance();
 		
 		if(!varset($prefArray) || !varset($prefArray))
@@ -1344,7 +1349,8 @@ class e107plugin
 		foreach($prefArray['pref'] as $tag)
 		{
 			$key = varset($tag['@attributes']['name']);
-			$value = vartrue($tag['@value']); 
+			$value = vartrue($tag['@value']);
+			$remove = (varset($tag['@attributes']['active'])=='false') ? TRUE : FALSE; 
 			
 			if(varset($tag['@attributes']['value']))
 			{
@@ -1360,8 +1366,17 @@ class e107plugin
 				
 				case 'upgrade' :
 				case 'refresh' :
-					$config->update($key,$value);		
-					$emessage->add("Updating Pref: ".$key, E_MESSAGE_SUCCESS); 	
+					if($remove) // remove active='false' prefs. 
+					{
+						$config->remove($key,$value);				
+						$emessage->add("Removing Pref: ".$key, E_MESSAGE_SUCCESS); 		
+					}
+					else
+					{
+						$config->update($key,$value);		
+						$emessage->add("Updating Pref: ".$key, E_MESSAGE_SUCCESS);
+					}
+					 	
 				break;
 				
 				case 'uninstall':
