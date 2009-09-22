@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.57 $
-* $Date: 2009-08-28 16:11:01 $
-* $Author: marj_nl_fr $
+* $Revision: 1.58 $
+* $Date: 2009-09-22 19:43:34 $
+* $Author: e107coders $
 *
 */
 require_once ('../class2.php');
@@ -370,7 +370,7 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == 'deluser')
 // ---- Update User's class --------------------
 if (isset ($_POST['updateclass']))
 {
-	$user->user_userclass($_POST['userid'], $_POST['userclass']);
+	$user->user_userclass($_POST['userid'], $_POST['userclass'],'clear');
 }
 
 if (isset ($_POST['useraction']) && $_POST['useraction'] == 'userclass')
@@ -596,14 +596,31 @@ class users
 	{
 		list($type,$tmp,$uclass) = explode("_",$_POST['execute_batch']);
 		$method = "user_".$type;
-		if (method_exists($this,$method) && isset ($_POST['user_selected']))
+		
+		if($method == "user_remuserclass")
+		{
+			$method = "user_userclass";	
+		}
+
+		if (method_exists($this,$method) && isset($_POST['user_selected']) )
 		{
 			foreach ($_POST['user_selected'] as $userid)
 			{
+				
             	if($type=='userclass' || $type=='remuserclass')
-				{
-					$append = ($uclass) ? 'append' : FALSE;
-                	$this->$method($userid,array($uclass),$append);
+				{													
+					switch($type)
+					{
+						case 'userclass':
+							$mode = 'append';
+						break;
+					
+						case 'remuserclass'	:
+							$mode = ($uclass != '0') ? 'remove' : 'clear';
+						break;
+					}
+					
+                	$this->$method($userid,array($uclass),$mode);
 				}
 				else
 				{
@@ -1130,6 +1147,8 @@ class users
 		$classObj = $e107->getUserClass();
 		$frm = new e_form();
 		$classes = $classObj->uc_get_classlist();
+		
+
 		$assignClasses = array(); // Userclass list of userclasses that can be assigned
 		foreach ($classes as $key => $val)
 		{
@@ -1138,6 +1157,9 @@ class users
 				$assignClasses[$key] = $classes[$key];
 			}
 		}
+		unset($assignClasses[0]);
+		
+	
 		$removeClasses = $assignClasses; // Userclass list of userclasses that can be removed
 		$removeClasses[0] = array('userclass_name'=>array('userclass_id'=>0, 'userclass_name'=>USRLAN_220));
 	   return $frm->batchoptions(
@@ -1790,28 +1812,41 @@ class users
 */
 
     // Set userclass for user(s).
-	function user_userclass($userid,$uclass,$append=FALSE)
+	function user_userclass($userid,$uclass,$mode=FALSE)
 	{
-		global $sql, $admin_log, $e_userclass;
+		global $admin_log, $e_userclass;
+		$sql = e107::getDb();
+		
 		$remuser = true;
         $emessage = &eMessage::getInstance();
 
-		if($_POST['notifyuser'] || $append!==FALSE)
+		if($_POST['notifyuser'] || $mode !=='clear')
 		{
     		$sql->db_Select("user","*","user_id={$userid} ");
 			$row = $sql->db_Fetch();
-			$curClass = varset($row['user_class']) ? explode(",",$row['user_class']) : array();
+			$curClass = varset($row['user_class']) ? explode(",",$row['user_class']) : array();			
         }
 
     	foreach ($uclass as $a)
 		{
 			$a = intval($a);
 			$this->check_allowed($a);
-			if($a !=0)
+			if($a !=0) // if 0 - then do not add. 
 			{
 				$curClass[] = $a;
 			}
 		}
+
+		if($mode == "remove") // remove selected classes
+		{
+			$curClass = array_diff($curClass,$uclass); 
+		}
+		
+		if($mode == "clear") // clear all classes
+		{
+		//	$curClass = array(); 
+		}
+
         $curClass = array_unique($curClass);
 
         $svar = is_array($curClass) ? implode(",",$curClass) : "";
