@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.24 2009-09-21 22:14:44 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.25 2009-09-23 23:18:18 e107coders Exp $ -->
 <e107Plugin name="Forum" version="2.0" compatibility="0.8" installRequired="true" xhtmlcompliant="true" >
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>This plugin is a fully featured Forum system</description>
 	<category>content</category> 
-	<administration>
-		<configFile>forum_admin.php</configFile>
-		<subMenuItem title="Front Page" description="Forum Front Page" link="forum_admin.php" icon="manage" />
-		<subMenuItem title="Create Parents" description="Create Forum Parents" link="forum_admin.php?cat" icon="add" />
-		<subMenuItem title="Create Forums" description="Create Forums" link="forum_admin.php?create" icon="images/forums_16.png" />
-		<subMenuItem title="Preferences" description="Forum Preferences" link="forum_admin.php?opt" icon="settings" perm="0" />
-		<icon>images/forums_32.png</icon>
-		<iconSmall>images/forums_16.png</iconSmall>
-		<caption>Configure Forum</caption>
-		<installDone>Your forum is now installed</installDone>
-	</administration>
-	<menuLink name="Forum" url="forum/forum.php" perm='everyone' />
+	<adminLinks>
+		<link url='forum_admin.php' description='Configure Forum' icon='images/forums_32.png' iconSmall='images/forums_16.png' primary='true' >Configure Forum</link>
+		<link url="forum_admin.php" description="Forum Front Page" icon="manage" >Front Page</link>
+		<link url="forum_admin.php?cat" description="Create Forum Parents"  icon="add" >Create Parents</link>
+		<link url="forum_admin.php?create" description="Create Forums"  icon="images/forums_16.png" >Create Forums</link>
+		<link url="forum_admin.php?opt" description="Forum Preferences"  icon="settings" perm="mainadmin" >Preferences</link>
+	</adminLinks>
+	<siteLinks>
+		<link url="forum/forum.php" perm='everyone'>Forum</link>		
+	</siteLinks>
 	<mainPrefs>
 		<pref name="forum_show_topics">1</pref>
 		<pref name="forum_postfix">[more...]</pref>
@@ -29,12 +27,17 @@
 		<pref name="forum_threadspage">25</pref>
 		<pref name="forum_hilightsticky">1</pref>
 	</mainPrefs>
-	<userclass name="forum_moderator" description="Moderator of all forums" />
-	<extendedField name="viewed" type='EUF_TEXTAREA' default='0' active="true" />
-	<extendedField name="posts" type='EUF_INTEGER' default='0' active="true" />
+	<userClasses>
+		<class name="forum_moderator" description="Moderator of all forums" />		
+	</userClasses>
+	<extendedFields>
+		<field name="viewed" type='EUF_TEXTAREA' default='0' active="true" />
+		<field name="posts" type='EUF_INTEGER' default='0' active="true" />
+	</extendedFields>		
 	<management>
 		<install when="post" type="classFunction" file="forum_management.php" class="forum_management" function="forum_install_post" />
 		<uninstall type="classFunction" file="forum_management.php" class="forum_management" function="forum_uninstall" />
 		<upgrade type="classFunction" file="forum_management.php" class="forum_management" function="forum_upgrade"  />
+		<installDone>It's finished</installDone>
 	</management>
 </e107Plugin>

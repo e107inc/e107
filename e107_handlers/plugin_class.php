@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2009-09-22 21:12:12 $
+|     $Revision: 1.96 $
+|     $Date: 2009-09-23 23:18:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -94,6 +94,8 @@ class e107plugin
 	var $plug_vars;
 	var $current_plug;
 	var $parsed_plugin;
+	var $plugFolder;
+	var $unInstallOpts;
 	var $module = array();
 
 	function e107plugin()
@@ -412,7 +414,7 @@ class e107plugin
 		}
 	}
 
-
+	
 	function manage_userclass($action, $class_name, $class_description)
 	{
 		global $e107;
@@ -475,7 +477,7 @@ class e107plugin
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
-		if( ! is_numeric($link_class))
+		if(!is_numeric($link_class))
 		{
 			$link_class = strtolower($link_class);
 			$plug_perm['everyone'] = e_UC_PUBLIC;
@@ -517,7 +519,7 @@ class e107plugin
 
 
 
-	// DEPRECATED - See managePrefs();
+	// DEPRECATED in 0.8 - See XmlPrefs(); Left for BC. 
 	// Update prefs array according to $action
 	// $prefType specifies the storage type - may be 'pref', 'listPref' or 'arrayPref'
 	function manage_prefs($action, $var, $prefType = 'pref', $path = '', $unEscape = FALSE)
@@ -669,7 +671,7 @@ class e107plugin
 	}
 
 
-	// DEPRECATED for 0.8 xml files - See managePrefs();
+	// DEPRECATED for 0.8 xml files - See XmlPrefs();
 	// Handle prefs from arrays (mostly 0.7 stuff, possibly apart from the special cases)
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '')
 	{  // These prefs are 'cumulative' - several plugins may contribute an array element
@@ -871,6 +873,8 @@ class e107plugin
 		global $pref;
 
 		$sql = e107::getDb();
+		$emessage = eMessage::getInstance();
+			
 		$error = array();			// Array of error messages
 		$canContinue = TRUE;		// Clear flag if must abort part way through
 
@@ -879,7 +883,10 @@ class e107plugin
 		$this->current_plug = $plug;
 		$txt = '';
 		$path = e_PLUGIN.$plug['plugin_path'].'/';
-
+		
+		$this->plugFolder = $plug['plugin_path'];
+		$this->unInstallOpts = $options;
+	
 
 		$addons = explode(',', $plug['plugin_addons']);
 		$sql_list = array();
@@ -915,78 +922,28 @@ class e107plugin
 		}
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
-		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['depends']))
+		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
 		{
-		  foreach ($plug_vars['depends'] as $dt => $dv)
-		  {
-			if (isset($dv['@attributes']) && isset($dv['@attributes']['name']))
-			{
-//			  echo "Check {$dt} dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
-			  switch ($dt)
-			  {
-				case 'plugin' :
-				  if (!isset($pref['plug_installed'][$dv['@attributes']['name']]))
-				  { // Plugin not installed
-					$canContinue = FALSE;
-					$error[] = EPL_ADLAN_70.$dv['@attributes']['name'];
-				  }
-				  elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],$pref['plug_installed'][$dv['@attributes']['name']],'<=') === FALSE))
-				  {
-					$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
-					$canContinue = FALSE;
-				  }
-				  break;
-				case 'extension' :
-				  if (!extension_loaded($dv['@attributes']['name']))
-				  {
-					$canContinue = FALSE;
-					$error[] = EPL_ADLAN_73.$dv['@attributes']['name'];
-				  }
-				  elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],phpversion($dv['@attributes']['name']),'<=') === FALSE))
-				  {
-					$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
-					$canContinue = FALSE;
-				  }
-				  break;
-				case 'PHP' :
-				  if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],phpversion(),'<=') === FALSE))
-				  {
-					$error[] = EPL_ADLAN_74.$dv['@attributes']['min_version'];
-					$canContinue = FALSE;
-				  }
-				  break;
-				case 'MySQL' :
-				  if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],mysql_get_server_info(),'<=') === FALSE))
-				  {
-					$error[] = EPL_ADLAN_75.$dv['@attributes']['min_version'];
-					$canContinue = FALSE;
-				  }
-				  break;
-				default :
-				  echo "Unknown dependency: {$dt}<br />";
-			  }
-			}
-		  }
+			$canContinue = $this->XmlDependencies($plug_vars['dependencies']);
 		}
 
-		// Temporary error handling - need to do something with this
 		if (!$canContinue)
 		{
-		  echo '<b>'.LAN_INSTALL_FAIL.'</b><br />'.implode('<br />',$error);
-		  return false;
+			return FALSE;
 		}
-
 
 		// All the dependencies are OK - can start the install now
 
 		if ($canContinue)
-		{	// Let's call any custom pre functions defined in <management> section
+		{	
 			$ret = $this->execute_function($path, $function, 'pre');
 			if (!is_bool($ret)) $txt .= $ret;
 		}
 
-		if ($canContinue && count($sql_list))
+		if ($canContinue && count($sql_list)) // TODO - move to it's own function. 
 		{	// Handle tables
+		
+		
 			require_once(e_HANDLER.'db_table_admin_class.php');
 			$dbHandler = new db_table_admin;
 			foreach($sql_list as $sqlFile)
@@ -1035,205 +992,39 @@ class e107plugin
 					}
 				}
 			}
-		}
+		}	
 		
-		//main menu items
-		if(isset($plug_vars['menuLink']))
+		if(varset($plug_vars['siteLinks']))
 		{
-			foreach($plug_vars['menuLink'] as $link)
-			{
-				$attrib = $link['@attributes'];
-				$linkName = $attrib['name'];
-				if (defined($linkName))
-				{
-					$linkName = constant($linkName);
-				}
-				switch($function)
-				{
-					case 'upgrade':
-					case 'install':
-						// Add any active link
-						if(!isset($attrib['active']) || $attrib['active'] == 'true')
-						{
-							$addlink = e_PLUGIN.$attrib['url'];
-							$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
-							$txt .= "Adding link {$linkName} with url [{$addlink}] and perm {$perm} <br />";
-							$this->manage_link('add', $addlink, $linkName, $perm);
-						}
-						//remove inactive links on upgrade
-						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
-						{
-							$txt .= "Removing link {$linkName} with url [{$attrib['url']}] <br />";
-							$this->manage_link('remove', $attrib['url'], $linkName);
-						}
-						break;
-
-					case 'refresh' :		// Probably best to leave well alone
-						break;
-
-					case 'uninstall':
-						//remove all links
-						$txt .= "Removing link {$linkName} with url [{$attrib['url']}] <br />";
-						$this->manage_link('remove', $attrib['url'], $linkName);
-						break;
-				}
-			}
+			$this->XmlSiteLinks($function,$plug_vars['siteLinks']);	
 		}
-		
-/*
- 
-       // REPLACED BY managePrefs() function.. see below; 
-		//main pref items
-		if(isset($plug_vars['mainPrefs']))
+				
+		if(varset($plug_vars['mainPrefs'])) //Core pref items <mainPrefs>
 		{
-		  foreach (array('pref','listPref','arrayPref') as $prefType)
-		  {
-			if(isset($plug_vars['mainPrefs'][$prefType]))
-			{
-			  $list = $this->parse_prefs($plug_vars['mainPrefs'][$prefType]);
-
-			  switch($function)
-			  {
-				case 'install':
-					if(varset($list['active']) && is_array($list['active']))
-					{
-						$txt .= $this->displayArray($list['active'], "Adding '{$prefType}' prefs:");
-						$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path'], TRUE);
-					}
-					break;
-				case 'upgrade' :
-				case 'refresh' :		// Add any defined prefs which don't already exist
-					if(varset($list['active']) && is_array($list['active']))
-					{
-						$txt .= $this->displayArray($list['active'], "Updating '{$prefType}' prefs:");
-						$this->manage_prefs('update', $list['active'], $prefType, $plug['plugin_path'], TRUE);		// This only adds prefs which aren't already defined
-					}
-
-					//If upgrading, removing any inactive pref
-					if(varset($list['inactive']) && is_array($list['inactive']))
-					{
-						$txt .= $this->displayArray($list['inactive'], "Removing '{$prefType}' prefs:");
-						$this->manage_prefs('remove', $list['inactive'], $prefType, $plug['plugin_path'], TRUE);
-					}
-					break;
-
-					//If uninstalling, remove all prefs (active or inactive)
-				case 'uninstall':
-					if(varset($list['all']) && is_array($list['all']))
-					{
-						$txt .= $this->displayArray($list['all'], "Removing '{$prefType}' prefs:");
-						$this->manage_prefs('remove', $list['all'], $prefType, $plug['plugin_path'], TRUE);
-					}
-					break;
-			  }
-			}
-		  }
-		}
-	*/
-
-		//Core pref items <mainPrefs>
-		if(varset($plug_vars['mainPrefs']))
-		{
-			$this->managePrefs('core',$function,$plug_vars['mainPrefs']);
+			$this->XmlPrefs('core',$function,$plug_vars['mainPrefs']);
 		}		
-	
-		//Plugin pref items <pluginPrefs>
-		if(varset($plug_vars['pluginPrefs']))
+			
+		if(varset($plug_vars['pluginPrefs'])) //Plugin pref items <pluginPrefs>
 		{
-			$this->managePrefs($plug['plugin_path'],$function,$plug_vars['pluginPrefs']);
+			$this->XmlPrefs($plug['plugin_path'],$function,$plug_vars['pluginPrefs']);
 		}
 		
-		//Userclasses
-		//$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
-		if(isset($plug_vars['userclass']))
+		if(varset($plug_vars['userClasses']))
 		{
-			foreach($plug_vars['userclass'] as $uclass)
-			{
-				$attrib = $uclass['@attributes'];
-				switch($function)
-				{
-					case 'install' :
-					case 'upgrade' :
-					case 'refresh' :
-					// Add all active userclasses (code checks for already installed)
-					if(!isset($attrib['active']) || $attrib['active'] == 'true')
-					{
-						$txt .= 'Adding userclass '.$attrib['name'].'<br />';
-						$this->manage_userclass('add', $attrib['name'], $attrib['description']);
-					}
-
-					//If upgrading, removing any inactive userclass
-					if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
-					{
-						$txt .= 'Removing userclass '.$attrib['name'].'<br />';
-						$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
-					}
-					break;
-
-					//If uninstalling, remove all userclasses (active or inactive)
-					case 'uninstall':
-						if (varsettrue($options['del_userclasses'], FALSE))
-						{
-							$txt .= 'Removing userclass '.$attrib['name'].'<br />';
-							$this->manage_userclass('remove', $attrib['name'], $attrib['description']);
-						}
-						else
-						{
-							$txt .= 'userclass '.$attrib['name'].' left in place<br />';
-						}
-					break;
-				}
-			}
+			$this->XmlUserClasses($function,$plug_vars['userClasses']);
 		}
-
-		//Extended user fields
-		if(isset($plug_vars['extendedField']))
+		
+		if(varset($plug_vars['extendedFields']))
 		{
-			foreach($plug_vars['extendedField'] as $efield)
-			{
-				$attrib = $efield['@attributes'];
-				$attrib['default'] = varset($attrib['default']);
-				$attrib['name'] = 'plugin_'.$plug_vars['folder'].'_'.$attrib['name'];
-				$source = 'plugin_'.$plug_vars['folder'];
-
-				switch($function)
-				{
-					case 'install':
-					case 'upgrade':
-						// Add all active extended fields
-						if(!isset($attrib['active']) || $attrib['active'] == 'true')
-						{
-							$txt .= 'Adding extended field: '.$attrib['name'].' ... ';
-							$result = $this->manage_extended_field('add', $attrib['name'], $attrib['type'], $attrib['default'], $source);
-							$txt .= ($result ? LAN_CREATED : LAN_CREATED_FAILED).'<br />';
-						}
-
-						//If upgrading, removing any inactive extended fields
-						if($function == 'upgrade' && isset($attrib['active']) && $attrib['active'] == 'false')
-						{
-							$txt .= 'Removing extended field: '.$attrib['name'].' ... ';
-							$result = $this->manage_extended_field('remove', $attrib['name'], $source);
-							$txt .= ($result ? LAN_DELETED : LAN_DELETED_FAILED).'<br />';
-						}
-						break;
-
-					//If uninstalling, remove all extended fields (active or inactive)
-					case 'uninstall':
-						if (varsettrue($options['del_extended'], FALSE))
-						{
-							$txt .= 'Removing extended field: '.$attrib['name'].' ... ';
-							$result = $this->manage_extended_field('remove', $attrib['name'], $source);
-							$txt .= ($result ? LAN_DELETED : LAN_DELETED_FAILED).'<br />';
-						}
-						else
-						{
-							$txt .= 'Extended field: '.$attrib['name'].' left in place<br />';
-						}
-						break;
-				}
-			}
+			$this->XmlExtendedFields($function,$plug_vars['extendedFields']);
 		}
-
+		
+		if(varset($plug_vars['logLanguageFile']))
+		{
+			$this->XmlLogLanguageFile($function,$plug_vars['logLanguageFile']);
+		}
+		
+		//FIXME 
 		//If any commentIDs are configured, we need to remove all comments on uninstall
 		if($function == 'uninstall' && isset($plug_vars['commentID']))
 		{
@@ -1243,44 +1034,6 @@ class e107plugin
 
 		$this->manage_search($function, $plug_vars['folder']);
 		$this->manage_notify($function, $plug_vars['folder']);
-
-
-		// Now any 'custom' values for update, language file definitions etc
-		if (isset($plug_vars['management']['upgradeCheck']))
-		{
-		  $tmp = $plug_vars['management']['upgradeCheck'];
-		  switch ($function)
-		  {
-		    case 'install' :
-			case 'upgrade' :
-			case 'refresh' :
-			  $pref['upgradeCheck'][$plug['plugin_path']]['url'] = $tmp['@attributes']['url'];
-			  $pref['upgradeCheck'][$plug['plugin_path']]['method'] = varset($tmp['@attributes']['method'],'sf_news');
-			  $pref['upgradeCheck'][$plug['plugin_path']]['id'] = varset($tmp['@attributes']['id'],$plug['plugin_path']);
-			  break;
-			case 'uninstall' :
-			  unset($pref['upgradeCheck'][$plug['plugin_path']]);
-			  break;
-		  }
-		  unset($tmp);
-		}
-
-		if (isset($plug_vars['logLanguageFile']))
-		{
-		  switch ($function)
-		  {
-		    case 'install' :
-			case 'upgrade' :
-			case 'refresh' :
-			  $pref['logLanguageFile'][$plug['plugin_path']] = $plug_vars['logLanguageFile']['@attributes']['filename'];
-			  break;
-			case 'uninstall' :
-			  if (isset($pref['logLanguageFile'][$plug['plugin_path']])) unset($pref['logLanguageFile'][$plug['plugin_path']]);
-			  break;
-		  }
-		}
-		
-		e107::getConfig()->setPref($pref)->save(false);
 
 		if ($canContinue)
 		{	// Let's call any custom post functions defined in <management> section
@@ -1298,40 +1051,311 @@ class e107plugin
 			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
 			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
 	
-			e107::getConfig('core')->setPref('plug_installed',$p_installed)->save();		
+			e107::getConfig('core')->setPref('plug_installed',$p_installed);
+			e107::getConfig('core')->save();		
 		}
 
 		if($function == 'uninstall')
 		{
 			$sql->db_Update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."', plugin_releaseUrl= '".varset($plug_vars['@attributes']['releaseUrl'])."' WHERE plugin_id = ".$id);
 			unset($p_installed[$plug['plugin_path']]);
-			e107::getConfig('core')->setPref('plug_installed',$p_installed)->save();
+			e107::getConfig('core')->setPref('plug_installed',$p_installed);
+			
 		}
 		
 		
+		e107::getConfig('core')->save();	
 
 		if($function == 'install')
 		{
 			$txt .= LAN_INSTALL_SUCCESSFUL."<br />";
-			if(isset($plug_vars['installDone']))
+			if(isset($plug_vars['management']['installDone'][0]))
 			{
-				$txt .= $plug_vars['installDone'];
+				$emessage->add($plug_vars['management']['installDone'][0], E_MESSAGE_SUCCESS);
+			}
+		}
+				
+		// return $txt;
+	}
+	
+	/**
+	 * Process XML Tag <dependencies> (deprecated 'depend' which is a brand of adult diapers)
+	 * @param array $tag
+	 * @return boolean
+	 */
+	function XmlDependencies($tag)
+	{
+		$canContinue = TRUE;
+		$emessage = eMessage::getInstance();
+		$error = array();
+		
+		foreach ($tag as $dt => $dv)
+		{
+			if (isset($dv['@attributes']) && isset($dv['@attributes']['name']))
+			{
+//			  echo "Check {$dt} dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
+			  switch ($dt)
+			  {
+				case 'plugin' :
+				  if (!isset($pref['plug_installed'][$dv['@attributes']['name']]))
+				  { // Plugin not installed
+					$canContinue = FALSE;
+					$error[] = EPL_ADLAN_70.$dv['@attributes']['name'];
+				  }
+				  elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],$pref['plug_installed'][$dv['@attributes']['name']],'<=') === FALSE))
+				  {
+					$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
+					$canContinue = FALSE;
+				  }
+				  break;
+				case 'extension' :
+				  if (!extension_loaded($dv['@attributes']['name']))
+				  {
+					$canContinue = FALSE;
+					$error[] = EPL_ADLAN_73.$dv['@attributes']['name'];
+				  }
+				  elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],phpversion($dv['@attributes']['name']),'<=') === FALSE))
+				  {
+					$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
+					$canContinue = FALSE;
+				  }
+				  break;
+				case 'php' : // all should be lowercase
+				  if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],phpversion(),'<=') === FALSE))
+				  {
+					$error[] = EPL_ADLAN_74.$dv['@attributes']['min_version'];
+					$canContinue = FALSE;
+				  }
+				  break;
+				case 'mysql' : // all should be lowercase
+				  if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'],mysql_get_server_info(),'<=') === FALSE))
+				  {
+					$error[] = EPL_ADLAN_75.$dv['@attributes']['min_version'];
+					$canContinue = FALSE;
+				  }
+				  break;
+				default :
+				  echo "Unknown dependency: {$dt}<br />";
+			  }
 			}
 		}
 		
-		$emessage = eMessage::getInstance();
-		$emessage->add($txt, E_MESSAGE_SUCCESS);
-		// return $txt;
+		if(count($error))
+		{
+			$text = '<b>'.LAN_INSTALL_FAIL.'</b><br />'.implode('<br />',$error);
+			$emessage->add($text, E_MESSAGE_ERROR); 	
+		}
+		
+		return $canContinue;
+	}
+	
+	
+	
+	
+	/**
+	 * Process XML Tag <logLanguageFile>
+	 * @param object $function
+	 * @param object $tag
+	 * @return 
+	 */
+	function XmlLogLanguageFile($function,$tag)
+	{
+		$core = e107::getConfig('core');
+		
+		switch ($function)
+		{
+		    case 'install' :
+			case 'upgrade' :
+			case 'refresh' :
+				$core->setPref('logLanguageFile/'.$this->plugFolder,$tag['@attributes']['filename']);
+			  break;
+			case 'uninstall' :
+				$core->removePref('logLanguageFile/'.$this->plugFolder);
+			  break;
+		}	
+	}
+	
+	
+
+	/**
+	 * Process XML Tag <siteLinks>
+	 * @param string $function install|upgrade|refresh|uninstall
+	 * @param array $array
+	 * @return 
+	 */
+	function XmlSiteLinks($function,$array)
+	{
+		$emessage = &eMessage::getInstance();
+		
+		foreach($array['link'] as $link)
+		{
+				$attrib = $link['@attributes'];
+				$linkName = (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
+				$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
+				$url = e_PLUGIN.$attrib['url'];;
+				$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
+
+				switch($function)
+				{
+					case 'upgrade':
+					case 'install':
+						
+						if(!$remove) // Add any non-deprecated link 
+						{							
+							$status = ($this->manage_link('add', $url, $linkName, $perm)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+							$emessage->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); 
+						}
+						
+						if($function == 'upgrade' && $remove) //remove inactive links on upgrade
+						{
+							$status = ($this->manage_link('remove', $url, $linkName)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+							$emessage->add("Removing Link: {$linkName} with url [{$url}]", $status);
+						}
+						break;
+
+					case 'refresh' : // Probably best to leave well alone
+						break;
+
+					case 'uninstall': //remove all links
+						
+						$status = ($this->manage_link('remove', $url, $linkName)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+						$emessage->add("Removing Link: {$linkName} with url [{$url}]", $status); 
+						break;
+				}
+			}		
 	}
 
 	/**
-	 * New Pref Management Function for 0.8. Handles Core and Plugin prefs. 
+	 * Process XML Tag <adminLinks> 
+	 * @return 
+	 */
+	function XmlAdminLinks()
+	{
+		//TODO
+	}
+
+
+
+	/**
+	 * Process XML Tag <userClasses> 
+	 * @param string $function install|upgrade|refresh|uninstall
+	 * @param array $array
+	 * @return 
+	 */
+	function XmlUserClasses($function,$array)
+	{
+		$emessage = &eMessage::getInstance();
+		
+		foreach($array['class'] as $uclass)
+		{
+				$attrib = $uclass['@attributes'];
+				$name = $attrib['name'];
+				$description = $attrib['description'];
+				$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
+				
+				switch($function)
+				{
+					case 'install' :
+					case 'upgrade' :
+					case 'refresh' :
+					
+						if(!$remove) // Add all active userclasses (code checks for already installed)
+						{
+							$status = $this->manage_userclass('add', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+							$emessage->add('Adding Userclass: '.$name, $status); 
+						}
+	
+						
+						if($function == 'upgrade' && $remove) //If upgrading, removing any inactive userclass
+						{
+							$status = $this->manage_userclass('remove', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;			
+							$emessage->add('Removing Userclass: '.$name, $status); 
+						}
+						
+					break;
+
+					
+					case 'uninstall': //If uninstalling, remove all userclasses (active or inactive)
+						
+						if (varsettrue($this->unInstallOpts['del_userclasses'], FALSE))
+						{
+							$status = $this->manage_userclass('remove', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+							$emessage->add('Removing Userclass: '.$name, $status); 
+						}
+						else
+						{
+							$emessage->add('Userclass: '.$name.' left in place'.$name, $status); 
+						}
+						
+					break;
+				}
+		}
+	}
+
+
+	/**
+	 * Process XML Tag <extendedFields> 
+	 * @param string $function install|upgrade|refresh|uninstall
+	 * @param array $array
+	 * @return 
+	 */
+	function XmlExtendedFields($function,$array)
+	{
+		$emessage = &eMessage::getInstance();
+		
+		foreach($array['field'] as $efield)
+		{
+				$attrib = $efield['@attributes'];
+				$attrib['default'] = varset($attrib['default']);
+				$name = 'plugin_'.$this->plugFolder.'_'.$attrib['name'];
+				$source = 'plugin_'.$this->plugFolder;
+				$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
+				$type = $attrib['type'];
+
+				switch($function)
+				{
+					case 'install': // Add all active extended fields
+					case 'upgrade':
+						
+						if(!$remove)
+						{
+							$status = $this->manage_extended_field('add', $name, $type, $attrib['default'], $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;		
+							$emessage->add('Adding Extended Field: '.$name.' ... ', $status);
+						}
+						
+						if($function == 'upgrade' && $remove) //If upgrading, removing any inactive extended fields
+						{		
+							$status = $this->manage_extended_field('remove', $name, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;		
+							$emessage->add('Removing Extended Field: '.$name.' ... ', $status);
+						}
+						break;
+
+					
+					case 'uninstall': //If uninstalling, remove all extended fields (active or inactive)
+					
+						if (varsettrue($this->unInstallOpts['del_extended'], FALSE))
+						{
+							$status = ($this->manage_extended_field('remove', $name, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;					
+							$emessage->add('Removing Extended Field: '.$name.' ... ', $status);
+						}
+						else
+						{
+							$emessage->add('Extended Field: '.$name.' left in place'.$name, E_MESSAGE_SUCCESS); 
+						}
+						break;
+				}
+			}
+	}
+
+
+	/**
+	 * Process XML tags <mainPrefs> and <pluginPrefs>
 	 * @param object $mode 'core' or the folder name of the plugin.
 	 * @param object $function install|uninstall|upgrade|refresh
 	 * @param object $prefArray XML array of prefs. eg. mainPref() or pluginPref();
 	 * @return 
 	 */
-	function managePrefs($mode='core',$function,$prefArray)
+	function XmlPrefs($mode='core',$function,$prefArray)
 	{
 		
 		//XXX Could also be used for theme prefs.. perhaps this function should be moved elsewhere?
@@ -1350,7 +1374,7 @@ class e107plugin
 		{
 			$key = varset($tag['@attributes']['name']);
 			$value = vartrue($tag['@value']);
-			$remove = (varset($tag['@attributes']['active'])=='false') ? TRUE : FALSE; 
+			$remove = (varset($tag['@attributes']['deprecate'])=='true') ? TRUE : FALSE; 
 			
 			if(varset($tag['@attributes']['value']))
 			{
@@ -1387,57 +1411,13 @@ class e107plugin
 			
 		}
 		
-		$config->save();
-		return;
-		
-		
-		
-		
-		// TODO - 'active' 'inactive' etc. needs to be reviewed in light of the new pref-handler upgrades. 
-
-/*		foreach (array('pref','listPref','arrayPref') as $prefType)
+		if($mode != "core") // Do only one core pref save during install/uninstall etc. 
 		{
-			if(isset($plug_vars['pluginPrefs'][$prefType]))
-			{
-			  $list = $this->parse_prefs($plug_vars['pluginPrefs'][$prefType]);
-			  print_a($list);
-			  switch($function)
-			  {
-				case 'install':
-					if(varset($list['active']) && is_array($list['active']))
-					{
-						$txt .= $this->displayArray($list['active'], "Adding '{$prefType}' prefs:");
-				//		$this->manage_prefs('add', $list['active'], $prefType, $plug['plugin_path'], TRUE);
-					}
-					break;
-				case 'upgrade' :
-				case 'refresh' :		// Add any defined prefs which don't already exist
-					if(varset($list['active']) && is_array($list['active']))
-					{
-						$txt .= $this->displayArray($list['active'], "Updating '{$prefType}' prefs:");
-				//		$this->manage_prefs('update', $list['active'], $prefType, $plug['plugin_path'], TRUE);		// This only adds prefs which aren't already defined
-					}
+			$config->save();	
+		} 
+		return;
 
-					//If upgrading, removing any inactive pref
-					if(varset($list['inactive']) && is_array($list['inactive']))
-					{
-						$txt .= $this->displayArray($list['inactive'], "Removing '{$prefType}' prefs:");
-				//		$this->manage_prefs('remove', $list['inactive'], $prefType, $plug['plugin_path'], TRUE);
-					}
-					break;
 
-					//If uninstalling, remove all prefs (active or inactive)
-				case 'uninstall':
-					if(varset($list['all']) && is_array($list['all']))
-					{
-						$txt .= $this->displayArray($list['all'], "Removing '{$prefType}' prefs:");
-				//		$this->manage_prefs('remove', $list['all'], $prefType, $plug['plugin_path'], TRUE);
-					}
-					break;
-			  }
-			}
-		  }
-		  */
 	}
 
 
@@ -1474,7 +1454,7 @@ class e107plugin
 		}
 	}
 
-	// DEPRECATED - See managePrefs();
+	// DEPRECATED - See XMLPrefs();
 	function parse_prefs($pref_array,$mode='simple')
 	{
 		$ret = array();
@@ -1720,7 +1700,7 @@ class e107plugin
 			}
 		}
 
-		$core->save(FALSE); 
+	//	$core->save(FALSE); 
 
 		if($this->manage_icons())
 		{
@@ -1889,14 +1869,15 @@ class e107plugin
 	// Called to parse the plugin.xml file if it exists
 	function parse_plugin_xml($plugName)
 	{
+	
 		$tp = e107::getParser();
 	//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		require_once(e_HANDLER.'xml_class.php');
 		$xml = new xmlClass;
-		$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
-		$xml->setOptStringTags('icon,iconSmall,configFile,caption,installDone,install,uninstall,upgrade'); 
+	//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
+	//	$xml->setOptStringTags('install,uninstall,upgrade'); 
 		
-	//	$plug_vars2 = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', true, true);
+	//	$plug_vars2 = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin2.xml', 'advanced');
 		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', 'advanced');
 		if ($this->plug_vars === FALSE)
 		{
@@ -1908,16 +1889,22 @@ class e107plugin
 		
 		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";	
 		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml. 
-/*		
-		if($plugName == "tinymce")
+		
+/*		if($plugName == "forum")
 		{
 			echo "<table><tr><td>";
-			print_a($plug_vars2);
+			//print_a($plug_vars2);
 			echo "</td><td>";		
 			print_a($this->plug_vars);
 			echo "</table>";
-		}
-*/
+		}*/
+		
+		// TODO search for $this->plug_vars['adminLinks']['link'][0]['@attributes']['primary']==true. 
+		$this->plug_vars['administration']['icon'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['icon']);
+		$this->plug_vars['administration']['caption'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['description']);
+		$this->plug_vars['administration']['iconSmall'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['iconSmall']);
+		$this->plug_vars['administration']['configFile'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['url']);
+		
 		return TRUE;
 	}
 
