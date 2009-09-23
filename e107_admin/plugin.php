@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2009-09-21 20:57:54 $
-|     $Author: e107steved $
+|     $Revision: 1.46 $
+|     $Date: 2009-09-23 23:18:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -131,7 +131,7 @@ class pluginManager{
 			save_prefs('user');
 		}
 
-        $this -> fieldpref = (is_array($user_pref['admin_pluginmanager_columns'])) ? $user_pref['admin_pluginmanager_columns'] : array("plugin_icon","plugin_name","plugin_version","plugin_description","plugin_category","plugin_author","plugin_website","plugin_notes");
+        $this -> fieldpref = (vartrue($user_pref['admin_pluginmanager_columns'])) ? $user_pref['admin_pluginmanager_columns'] : array("plugin_icon","plugin_name","plugin_version","plugin_description","plugin_category","plugin_author","plugin_website","plugin_notes");
 
 
 
@@ -205,6 +205,7 @@ class pluginManager{
 			//Uninstall Plugin
 			if ($plug['plugin_installflag'] == TRUE )
 			{
+				$eplug_folder = $plug['plugin_path'];
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
 				$eplug_folder = $plug['plugin_path'];
 				if(file_exists($_path.'plugin.xml'))
@@ -219,7 +220,7 @@ class pluginManager{
 				else
 				{	// Deprecated - plugin uses plugin.php
 					include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-					
+
 					$func = $eplug_folder.'_uninstall';
 					if (function_exists($func))
 					{
@@ -431,16 +432,15 @@ class pluginManager{
 
    function pluginInstall()
    {
-        global $plugin,$admin_log;
-
-			$text = $plugin->install_plugin($this->id);
+        global $plugin,$admin_log,$eplug_folder;
+		$text = $plugin->install_plugin($this->id);
 			if ($text === FALSE)
 			{ // Tidy this up
 				$this->show_message("Error messages above this line", E_MESSAGE_ERROR);
 			}
 			else
 			{
-				$plugin ->save_addon_prefs();
+				 $plugin ->save_addon_prefs();
 		//	if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".LAN_CONFIGURE."]</a>"; }
 				$admin_log->log_event('PLUGMAN_01', $this->id.':'.$eplug_folder, E_LOG_INFORMATIVE, '');
 				$this->show_message($text, E_MESSAGE_SUCCESS);
@@ -454,13 +454,15 @@ class pluginManager{
    function pluginUpgrade()
    {
        global $plugin,$pref;
+	   
+	   		$emessage = eMessage::getInstance();
 
 			$plug = $plugin->getinfo($this->id);
 
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
 			if(file_exists($_path.'plugin.xml'))
 			{
-				$text .= $plugin->manage_plugin_xml($this->id, 'upgrade');
+				$plugin->manage_plugin_xml($this->id, 'upgrade');
 			}
 			else
 			{
@@ -571,8 +573,9 @@ class pluginManager{
 				$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
 				save_prefs();
 			}
-			e107::getRender()->tablerender(EPL_ADLAN_34, $text);
-
+			
+	
+			$emessage->add($text, E_MESSAGE_SUCCESS);
 			$plugin->save_addon_prefs();
 
    }
@@ -893,7 +896,7 @@ class pluginManager{
 			}
 			$userclasses = '';
 			$eufields = '';
-			if (isset($plug_vars['userclass']))
+			if (isset($plug_vars['userClasses']))
 			{
 				if (isset($plug_vars['userclass']['@attributes']))
 				{
@@ -901,21 +904,21 @@ class pluginManager{
 					unset($plug_vars['userclass']['@attributes']);
 				}
 				$spacer = '';
-				foreach ($plug_vars['userclass'] as $uc)
+				foreach ($plug_vars['userClasses']['class'] as $uc)
 				{
 					$userclasses .= $spacer.$uc['@attributes']['name'].' - '.$uc['@attributes']['description'];
 					$spacer = '<br />';
 				}
 			}
-			if (isset($plug_vars['extendedField']))
+			if (isset($plug_vars['extendedFields']))
 			{
-				if (isset($plug_vars['extendedField']['@attributes']))
+				if (isset($plug_vars['extendedFields']['@attributes']))
 				{
 					$plug_vars['extendedField'][0]['@attributes'] = $plug_vars['extendedField']['@attributes'];
 					unset($plug_vars['extendedField']['@attributes']);
 				}
 				$spacer = '';
-				foreach ($plug_vars['extendedField'] as $eu)
+				foreach ($plug_vars['extendedFields']['field'] as $eu)
 				{
 					$eufields .= $spacer.'plugin_'.$plug_vars['folder'].'_'.$eu['@attributes']['name'];
 					$spacer = '<br />';
