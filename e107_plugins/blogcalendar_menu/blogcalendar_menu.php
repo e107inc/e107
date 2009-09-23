@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-12-03 20:38:01 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-09-23 16:21:09 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -35,8 +35,10 @@ $pref['blogcal_ws'] = "monday";
 // get the requested and current date information
 // ----------------------------------------------
 list($cur_year, $cur_month, $cur_day) = explode(" ", date("Y n j"));
-if (strstr(e_QUERY, "day")) {
-	$tmp = explode(".", e_QUERY);
+if (e_PAGE == 'news.php' && strstr(e_QUERY, "day")) 
+{
+	//$tmp = explode(".", e_QUERY);
+	$tmp = e107::getUrl()->parseRequest('core:news', 'main', urldecode(e_QUERY));
 	$item = $tmp[1];
 	$req_year = intval(substr($item, 0, 4));
 	$req_month = intval(substr($item, 4, 2));
@@ -45,25 +47,35 @@ if (strstr(e_QUERY, "day")) {
 	//$req_day = substr($item, 6, 2);
 	// if the requested year and month are the current, then add
 	// the current day to the mix so the calendar highlights it
-	if (($req_year == $cur_year) && ($req_month == $cur_month)) {
+	if (($req_year == $cur_year) && ($req_month == $cur_month)) 
+	{
 		$req_day = $cur_day;
-	} else {
+	} 
+	else 
+	{
 		$req_day = "";
 	}
 }
-else if(strstr(e_QUERY, "month")) {
-	$tmp = explode(".", e_QUERY);
+elseif(e_PAGE == 'news.php' && strstr(e_QUERY, "month")) 
+{
+	//$tmp = explode(".", e_QUERY);
+	$tmp = e107::getUrl()->parseRequest('core:news', 'main', urldecode(e_QUERY));
 	$item = $tmp[1];
 	$req_year = intval(substr($item, 0, 4));
 	$req_month = intval(substr($item, 4, 2));
 	// if the requested year and month are the current, then add
 	// the current day to the mix so the calendar highlights it
-	if (($req_year == $cur_year) && ($req_month == $cur_month)) {
+	if (($req_year == $cur_year) && ($req_month == $cur_month)) 
+	{
 		$req_day = $cur_day;
-	} else {
+	} 
+	else 
+	{
 		$req_day = "";
 	}
-} else {
+} 
+else 
+{
 	$req_year = $cur_year;
 	$req_month = $cur_month;
 	$req_day = $cur_day;
@@ -90,25 +102,27 @@ while ($news = $sql->db_Fetch())
 	$xmonth = date("n", $news['news_datestamp']);
 	if (!isset($month_links[$xmonth]) || !$month_links[$xmonth])
 	{
-		$month_links[$xmonth] = e_BASE."news.php?month.".formatDate($req_year, $xmonth);
+		$month_links[$xmonth] = e107::getUrl()->create('core:news', 'main', 'action=month&value='.formatDate($req_year, $xmonth));//e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 	}
 	if($news['news_datestamp'] >= $month_start AND $news['news_datestamp'] <= $month_end)
 	{
 		$xday = date("j", $news['news_datestamp']);
 		if (!isset($day_links[$xday]) || !$day_links[$xday])
 		{
-			$day_links[$xday] = e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
+			$day_links[$xday] = e107::getUrl()->create('core:news', 'main', 'action=day&value='.formatDate($req_year, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 		}
 	}
 }
 
 // if we're listing the current year, add the current month to the list regardless of posts
-if ($req_year == $cur_year) {
-	$month_links[$cur_month] = e_BASE."news.php?month.".formatDate($cur_year, $cur_month);
+if ($req_year == $cur_year) 
+{
+	$month_links[$cur_month] = e107::getUrl()->create('core:news', 'main', 'action=month&value='.formatDate($cur_year, $cur_month));//e_BASE."news.php?month.".formatDate($cur_year, $cur_month);
 }
 	
 // go over the link array and create the option fields
-foreach($month_links as $index => $val) {
+foreach($month_links as $index => $val) 
+{
 	$month_selector .= "<option value='".$val."'";
 	$month_selector .= ($index == $req_month)?" selected='selected'":
 	"";
