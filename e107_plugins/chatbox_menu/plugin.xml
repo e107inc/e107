@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.6 2009-09-21 22:14:43 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.7 2009-09-24 00:11:19 e107coders Exp $ -->
 
 <e107Plugin name="CHBLAN_40" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" email="jalist@e107.org" />
@@ -8,12 +8,9 @@
 	<category>content</category>
 	<logLanguageFile filename="languages/--LAN--/--LAN--_config.php" />
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
-	<administration>
-		<configFile>admin_chatbox.php</configFile>
-		<icon>images/chatbox_32.png</icon>
-		<iconSmall>images/chatbox_16.png</iconSmall>
-		<caption>LAN_CONFIGURE</caption>
-	</administration>
+	<adminLinks>
+		<link url='admin_chatbox.php' description='LAN_CONFIGURE' icon='images/chatbox_32.png' iconSmall='images/chatbox_16.png' primary='true' >LAN_CONFIGURE</link>	
+	</adminLinks>
 	<mainPrefs>
 		<pref name="chatbox_posts">10</pref>
 		<pref name="cb_wordwrap">20</pref>

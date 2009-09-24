@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.5 2009-09-21 22:14:44 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.6 2009-09-24 00:11:20 e107coders Exp $ -->
 <e107Plugin name="LWLANINS_1" version="1.1" compatibility="0.8" installRequired="true" >
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>This plugin will link specified words with a defined link and/or tooltip</description>
 	<logLanguageFile filename="languages/--LAN--_admin_linkwords.php" />
-	<administration>
-		<configFile>admin_config.php</configFile>
-		<icon>images/linkwords_32.png</icon>
-		<iconSmall>images/linkwords_16.png</iconSmall>
-		<caption>Configure LinkWords</caption>
-		<installDone>To configure please click on the link in the plugins section of the admin front page</installDone>
-	</administration>
+	<adminLinks>
+		<link url='admin_config.php' description='Configure LinkWords' icon='images/linkwords_32.png' iconSmall='images/linkwords_16.png' primary='true' >Configure LinkWords</link>	
+	</adminLinks>
 	<mainPrefs>
-		<pref name="lw_page_visibility" value="" />
-		<pref name="lw_context_visibility" type="array">
-				<key name="OLDDEFAULT" value="" />
-				<key name="TITLE" value="" />
-				<key name="SUMMARY" value="1" />
-				<key name="BODY" value="1" />
-				<key name="DESCRIPTION" value="1" />
-				<key name="USER_TITLE" value="" />
-				<key name="USER_BODY" value="1" />
-				<key name="LINKTEXT" value="" />
-				<key name="RAWTEXT" value="" />
+		<pref name="lw_page_visibility"></pref>
+		<pref name="lw_ajax_enable">0</pref>
+		<pref name="lw_context_visibility">array (
+				'OLDDEFAULT' => '',
+				'TITLE' => '',
+				'SUMMARY' => 1,
+				'BODY' => 1,
+				'DESCRIPTION'=> 1,
+				'USER_TITLE' => '',
+				'USER_BODY' => 1,
+				'LINKTEXT' => '',
+				'RAWTEXT' => ''
+			)
 		</pref>
-		<pref name="lw_ajax_enable" value="0" />
-		<arrayPref name="e_tohtml_list" value="linkwords" />
 	</mainPrefs>
+	<management>
+		<installDone>To configure please click on the link in the plugins section of the admin front page</installDone>
+	</management>
 </e107Plugin>

@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.10 2009-07-19 14:48:01 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.11 2009-09-24 00:11:20 e107coders Exp $ -->
 <e107Plugin name="ADLAN_PM" version="3.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." email="mcfly@e107.org" />
 	<description>ADLAN_PM_57</description>
-	<folder>pm</folder>
 	<category>users</category>
-	<administration>
-		<configFile>pm_conf.php</configFile>
-		<icon>images/pvt_message_32.png</icon>
-		<iconSmall>images/pvt_message_16.png</iconSmall>
-		<caption>ADLAN_PM_2</caption>
-	</administration>
+	<adminLinks>
+		<link url='pm_conf.php' description='ADLAN_PM_2' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' >ADLAN_PM_2</link>	
+	</adminLinks>
 	<management>
 		<install type="fileFunction" file="pm_install.php" function="forum_install" />
 		<uninstall type="fileFunction" file="pm_uninstall.php" function="forum_uninstall" />

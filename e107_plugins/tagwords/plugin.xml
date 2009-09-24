@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.5 2009-07-19 14:48:01 marj_nl_fr Exp $ -->
+<!-- $Id: plugin.xml,v 1.6 2009-09-24 00:11:20 e107coders Exp $ -->
 <e107Plugin name="Tagwords" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org/" />
 	<description>A fully featured Tagword system</description>
-	<folder>tagwords</folder>
 	<category>misc</category>
-	<administration>
-		<configFile>admin_tagwords_config.php</configFile>
-		<icon>images/tagwords_32.png</icon>
-		<iconSmall>images/tagwords_16.png</iconSmall>
-		<caption>Configure Tagwords</caption>
+	<adminLinks>
+		<link url='admin_tagwords_config.php' description='Configure Tagwords' icon='images/tagwords_32.png' iconSmall='images/tagwords_16.png' primary='true' >Configure Tagwords</link>	
+	</adminLinks>
+	<siteLinks>
+		<link url="tagwords/tagwords.php" perm="everyone">Tagwords</link>
+	</siteLinks>
+	<management>
 		<installDone>Tagwords is installed<br />To configure please click on the link in the plugins section of the admin front page</installDone>
-	</administration>
-	<menuLink name="Tagwords" url="tagwords/tagwords.php" perm="everyone" />
+	</management>
 </e107Plugin>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.9 2009-09-21 22:14:43 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.10 2009-09-24 00:11:19 e107coders Exp $ -->
 
 <e107Plugin name="EC_ADLAN_1" version="3.70" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc. + Barry" url="http://e107.org" />
@@ -9,14 +9,12 @@
 	<category>content</category>
 	<installLanguageFile filename="languages/--LAN--_install.php" />
 	<logLanguageFile filename="languages/--LAN--_log.php" />
-	<administration>
-		<configFile>admin_config.php</configFile>
-		<icon>images/calendar_32.png</icon>
-		<iconSmall>images/calendar_16.png</iconSmall>
-		<caption>EC_ADINST_LAN_05</caption>
-		<installDone>EC_ADINST_LAN_04</installDone>
-	</administration>
-	<menuLink name="Calendar" url="calendar_menu/calendar.php" />
+	<adminLinks>
+		<link url='admin_config.php' description='EC_ADINST_LAN_05' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' primary='true' >EC_ADINST_LAN_05</link>	
+	</adminLinks>
+	<siteLinks>
+		<link url="calendar_menu/calendar.php" >Calendar</link>		
+	</siteLinks>
 	<mainPrefs>
 		<pref name="eventpost_admin">254</pref>
 		<pref name="eventpost_super">254</pref>
@@ -60,5 +58,6 @@
 		<install when="post" type="classFunction" file="calendar_install.php" class="calendarInstall" function="postInstall" />
 		<uninstall when="pre" type="classFunction" file="calendar_install.php" class="calendarInstall" function="preUninstall" />
 		<upgrade when="pre" type="classFunction" file="calendar_install.php" class="calendarInstall" function="postUpgrade" />
+		<installDone>EC_ADINST_LAN_04</installDone>
 	</management>
 </e107Plugin>

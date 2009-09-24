@@ -9,11 +9,11 @@
  * Alternate News
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_news/alt_news.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-08-23 10:57:50 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.6 $
+ * $Date: 2009-09-24 00:11:19 $
+ * $Author: e107coders $
 */
-
+//TODO should be moved into the shortcode, and the shortcode moved into the 'news' plugin folder. 
 if (!defined('e107_INIT')) { exit; }
 
 require_once(e_HANDLER."news_class.php");
