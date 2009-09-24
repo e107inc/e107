@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-09-18 23:14:00 $
+|     $Revision: 1.18 $
+|     $Date: 2009-09-24 02:33:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -322,8 +322,52 @@ function log_request()
 function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 {
 	global $sql, $tp;
-
+	
+	$pref = e107::getConfig('core')->getPref();
+	
 	$text = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", $iconSize, $linkStyle);
+
+	$plugs = e107::getObject('e107plugin');
+	
+	foreach($pref['plug_installed'] as $plug=>$vers)
+	{
+		$plugs->parse_plugin_xml($plug);
+		$plugin_path = $plug;
+		$name = $plugs->plug_vars['@attributes']['name'];
+		
+		foreach($plugs->plug_vars['adminLinks']['link'] as $tag)
+		{
+			if(varset($tag['@attributes']['primary']) !='true')
+			{
+				continue;
+			}
+			loadLanFiles($plugin_path, 'admin');
+			
+			$att = $tag['@attributes'];
+	
+			$eplug_name 		= $tp->toHTML($name,FALSE,"defs, emotes_off");
+			$eplug_conffile 	= $att['url'];
+			$eplug_icon_small 	= $plugin_path.'/'.$att['iconSmall'];
+			$eplug_icon 		= $plugin_path.'/'.$att['icon'];
+			$eplug_caption 		= str_replace("'", '', $tp->toHTML($att['description'], FALSE, 'defs, emotes_off'));
+			
+			if (varset($eplug_conffile))
+			{
+				$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
+				$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
+				$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" : E_32_PLUGIN;
+				$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+			}
+		}
+	}	
+
+	
+//	print_a($plugs->plug_vars['adminLinks']['link']);
+	
+	
+
+
+/*	echo "hello there";
 
 	require_once(e_HANDLER.'xml_class.php');
 	$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
@@ -376,7 +420,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	{
 		$plugin_array = array();	
 	}
-
+*/
 	ksort($plugin_array, SORT_STRING);  // To FIX, without changing the current key format, sort by 'title'
 
 	if($linkStyle == "array")
