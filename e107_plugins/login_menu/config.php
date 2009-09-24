@@ -9,8 +9,8 @@
  * Plugin Administration - Login menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/config.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-07-21 07:10:25 $
+ * $Revision: 1.8 $
+ * $Date: 2009-09-24 00:11:20 $
  * $Author: e107coders $
  *
 */
@@ -74,7 +74,7 @@ if ($_POST['update_menu'])
 
 	unset($menu_pref['login_menu']);
 	$menu_pref['login_menu'] = $_POST['pref'];
-	$tmp = addslashes(serialize($menu_pref));
+	$tmp = addslashes(serialize($menu_pref)); //TODO Save using ArrayStorage. 
 	$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='menu_pref' ");
 	$admin_log->log_event('MISC_03','', E_LOG_INFORMATIVE,'');
 	$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
