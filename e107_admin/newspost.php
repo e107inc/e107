@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.54 $
- * $Date: 2009-09-19 15:27:25 $
+ * $Revision: 1.55 $
+ * $Date: 2009-09-25 20:20:23 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -351,9 +351,14 @@ class admin_newspost
 	function clear_cache()
 	{
 		$ecache = e107::getCache();
-		$ecache->clear("news.php");
-		$ecache->clear("othernews");
-		$ecache->clear("othernews2");
+		$ecache->clear("news.php"); //TODO change it to 'news_*' everywhere
+		
+		$ecache->clear("news_", false, true); //NEW global news cache prefix
+		//$ecache->clear("nq_news_"); - supported by cache::clear() now
+		//$ecache->clear("nomd5_news_"); supported by cache::clear() now
+		
+		$ecache->clear("othernews"); //TODO change it to 'news_othernews' everywhere
+		$ecache->clear("othernews2"); //TODO change it to 'news_othernews2' everywhere
 		return $this;
 	}
 	
@@ -502,7 +507,7 @@ class admin_newspost
 						$this->clear_cache();
 
 						$data = array('method'=>'delete', 'table'=>'news', 'id'=>$del_id, 'plugin'=>'news', 'function'=>'delete');
-						$this->show_message($e107->e_event->triggerHook($data), E_MESSAGE_WARNING);
+						$this->show_message(e107::getEvent()->triggerHook($data), E_MESSAGE_WARNING);
 
 						admin_purge_related("news", $del_id);
 					}
@@ -1655,7 +1660,7 @@ class admin_newspost
 		}
 		//triggerHook
 		$data = array('method'=>'form', 'table'=>'news', 'id'=>$id, 'plugin'=>'news', 'function'=>'create_item');
-		$hooks = $e107->e_event->triggerHook($data);
+		$hooks = e107::getEvent()->triggerHook($data);
 		if(!empty($hooks))
 		{
 			$text .= "

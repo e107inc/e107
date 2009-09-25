@@ -9,9 +9,9 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-08-28 16:11:00 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.10 $
+ * $Date: 2009-09-25 20:20:23 $
+ * $Author: secretr $
 */
 
 require_once('../class2.php');
@@ -21,24 +21,19 @@ if (!getperms('L'))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'eurl';
 require_once(e_ADMIN.'auth.php');
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."message_handler.php");
 
-$frm = new e_form(); //new form handler
-$emessage = &eMessage::getInstance();
-$urlc = new admin_url_config();
+$urlc = new admin_eurl_config();
 
 if (isset($_POST['update']))
 {
-	//$res = $urlc->update();
-	admin_update($urlc->update(), 'update', false, false, false);
-	//$plug_message = $res ? LAN_UPDATED : ($res === 0 ? LAN_NO_CHANGE : LAN_UPDATED_FAILED);
-	//$plug_message = "<div class='center clear'>".$plug_message."</div><br />";
+	if($urlc->update())
+	{
+		e107::getAdminLog()->logArrayDiffs(e107::getConfig('core')->getPref('url_config'), e107::getConfig('core_backup')->getPref('url_config'), 'EURL_01');
+	}
 }
 
 //var_dump($pref['url_config'], $e107->url->getUrl('pm', 'main', array('f'=>'box', 'box'=>2)));
@@ -46,28 +41,39 @@ if (isset($_POST['update']))
 $urlc->renderPage();
 require_once(e_ADMIN.'footer.php');
 
-class admin_url_config {
+class admin_eurl_config {
 
-	var $_frm;
-	var $_plug;
-	var $_api;
+	/**
+	 * @var e_form
+	 */
+	protected $_frm;
+	
+	/**
+	 * @var e107plugin
+	 */
+	protected $_plug;
+	
+	/**
+	 * @var e_file
+	 */
+	protected $_fl;
+	
+	/**
+	 * @var e107
+	 */
+	protected $_api;
 
-	function admin_url_config()
+	function __construct()
 	{
-		global $e107;
-		require_once(e_HANDLER.'plugin_class.php');
-		require_once(e_HANDLER.'file_class.php');
-		require_once(e_HANDLER."form_handler.php");
-
-		$this->_frm = new e_form();
-		$this->_plug = new e107plugin();
-		$this->_fl = new e_file();
-		$this->_api = &$e107;
+		$this->_api = e107::getInstance();
+		$this->_frm = e107::getObject('e_form');
+		$this->_plug = e107::getObject('e107Plugin');
+		$this->_fl = e107::getFile();
 	}
 
 	function renderPage()
 	{
-		global $emessage;
+		$emessage = e107::getMessageHandler();
 		$empty = "
 							<tr>
 								<td colspan='2'>".LAN_EURL_EMPTY."</td>
@@ -119,7 +125,7 @@ class admin_url_config {
 			</form>
 		";
 
-		$this->_api->ns->tablerender(PAGE_NAME, $emessage->render().$text);
+		e107::getRender()->tablerender(PAGE_NAME, $emessage->render().$text);
 	}
 
 	function render_sections($id)
@@ -165,7 +171,7 @@ class admin_url_config {
 	{
 		global $pref;
 		//DEFAULT
-		$checked_def = varset($pref['url_config'][$section['path']]) ? '' : ' checked="checked"';
+		$checked_def = e107::findPref('url_config/'.$section['path']) ? '' : ' checked="checked"';
 		$def = "
 			<div class='field-spacer'>
 				<input type='radio' class='radio' id='{$section['path']}-default' name='cprofile[{$section['path']}]' value='0'{$checked_def} /><label for='{$section['path']}-default'>".LAN_EURL_DEFAULT."</label>
@@ -261,12 +267,12 @@ class admin_url_config {
 
 	function render_shutdown($save)
 	{
-		global $pref, $emessage;
+		global $pref;
 		if($save && !isset($_POST['update']))
 		{
 			if(save_prefs())
 			{
-				$emessage->add(LAN_EURL_AUTOSAVE);
+				e107::getMessageHandler()->add(LAN_EURL_AUTOSAVE);
 			}
 
 		}
@@ -296,9 +302,9 @@ class admin_url_config {
 
 	function update()
 	{
-		global $pref;
-		$pref['url_config'] = $_POST['cprofile'];
-		return save_prefs();
+		$core = e107::getConfig();
+		$core->setPosted('url_config', $_POST['cprofile']);
+		return $core->save();
 	}
 }
 
