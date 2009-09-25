@@ -9,9 +9,9 @@
  * Tagwords Template
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_template.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-07-21 08:27:23 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-09-25 20:13:12 $
+ * $Author: secretr $
  *
 */
 
@@ -54,10 +54,10 @@ $TEMPLATE_TAGWORDS['link_end'] = "</ul></div>";
 //##### options --------------------------------------------------
 
 $TEMPLATE_TAGWORDS['options'] = "
-<form id='dataform' name='dataform' method='get' action='".e_PLUGIN."tagwords/tagwords.php'>
+<form id='plugin-tagwords-form' method='get' action='".e_PLUGIN_ABS."tagwords/tagwords.php'>
 	{TAG_SEARCH}
 </form>
-<form id='dataform' name='dataform' method='get' action='".e_PLUGIN."tagwords/tagwords.php'>
+<form id='dataform' name='dataform' method='get' action='".e_PLUGIN_ABS."tagwords/tagwords.php'>
 	<div style='line-height:150%; padding-bottom:10px;'>
 		{TAG_TYPE} {TAG_SORT} {TAG_AREA} {TAG_BUTTON}
 	</div>

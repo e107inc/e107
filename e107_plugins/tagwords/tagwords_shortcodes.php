@@ -9,9 +9,9 @@
  * Tagwords Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_shortcodes.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-07-21 10:21:20 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.7 $
+ * $Date: 2009-09-25 20:13:12 $
+ * $Author: secretr $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -61,7 +61,7 @@ class tagwords_shortcodes
 				$id = 'tagwords_searchform_menu';
 
 				return "
-				<form id='".$id."' method='get' action='".e_PLUGIN."tagwords/tagwords.php'>
+				<form id='".$id."' method='get' action='".e_PLUGIN_ABS."tagwords/tagwords.php'>
 				<div>
 				<input class='tbox' style='width:100px;' type='text'  name='q' size='35' value='".$value."' maxlength='50' />
 				<input class='button' type='submit' name='se' value='".LAN_TAG_SEARCH_2."' />
@@ -76,7 +76,7 @@ class tagwords_shortcodes
 				}
 				$id = 'tagwords_searchform';
 				return "
-				<form id='".$id."' method='get' action='".e_PLUGIN."tagwords/tagwords.php'>
+				<form id='".$id."' method='get' action='".e_PLUGIN_ABS."tagwords/tagwords.php'>
 				<div>
 				<input class='tbox' style='width:100px;' type='text'  name='q' size='35' value='".$value."' maxlength='50' />
 				<input class='button' type='submit' name='s' value='".LAN_TAG_SEARCH_2."' />
@@ -108,10 +108,10 @@ class tagwords_shortcodes
 		switch($sc_mode)
 		{
 			case 'menu':
-				return "<a href='".e_PLUGIN."tagwords/tagwords.php'>".LAN_TAG_MENU_1."</a>";
+				return "<a href='".e107::getUrl()->createTagwords()."'>".LAN_TAG_MENU_1."</a>";
 				break;
 			case 'home':
-				return "<a href='".e_PLUGIN."tagwords/tagwords.php'>".LAN_TAG_7."</a>";
+				return "<a href='".e107::getUrl()->createTagwords()."'>".LAN_TAG_7."</a>";
 				break;
 			default:
 				if(method_exists($tag->area, 'getLink'))
