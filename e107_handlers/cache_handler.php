@@ -9,8 +9,8 @@
  * Cache handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-09-13 10:29:56 $
+ * $Revision: 1.14 $
+ * $Date: 2009-09-25 20:17:34 $
  * $Author: secretr $
 */
 
@@ -23,7 +23,7 @@ define('CACHE_PREFIX','<?php exit;');
  * 
  * @package     e107
  * @category	e107_handlers
- * @version     $Revision: 1.13 $
+ * @version     $Revision: 1.14 $
  * @author      $Author: secretr $
  */
 class ecache {
@@ -198,17 +198,25 @@ class ecache {
 
 
 	/**
-	* @return bool
-	* @param string $CacheTag
-	* @desc Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
-	*/
-	function clear($CacheTag = '', $syscache = false)
+	 * Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
+	 * 
+	 * @param string $CacheTag
+	 * @param boolean $syscache
+	 * @param boolean $related clear also 'nq_' and 'nomd5_' entries 
+	 * @return bool
+	 * 
+	 */
+	function clear($CacheTag = '', $syscache = false, $related = false)
 	{
-		$e107 = e107::getInstance();
-//		global $pref;
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
-		$e107->e_event->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");	
+		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");	
 		$ret = ecache::delete(e_CACHE, $file, $syscache);
+		
+		if($CacheTag && $related) //TODO - too dirty - add it to the $file pattern above
+		{
+			ecache::delete(e_CACHE, 'nq_'.$file, $syscache);
+			ecache::delete(e_CACHE, 'nomd5_'.$file, $syscache);
+		}
 		return $ret;
 	}
 
@@ -217,15 +225,15 @@ class ecache {
 	* @param string $CacheTag
 	* @desc Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
 	*/
-	function clear_sys($CacheTag = '')
+	function clear_sys($CacheTag = '', $related = false)
 	{
 		if(isset($this) && $this instanceof ecache)
 		{
-			return $this->clear($CacheTag, true);
+			return $this->clear($CacheTag, true, $related);
 		}
 		else
 		{
-			ecache::clear($CacheTag, true);
+			ecache::clear($CacheTag, true, $related);
 		}
 	}
 
