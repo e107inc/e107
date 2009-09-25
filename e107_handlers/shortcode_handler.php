@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-09-21 22:25:22 $
- * $Author: e107coders $
+ * $Revision: 1.33 $
+ * $Date: 2009-09-25 20:15:19 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -292,9 +292,18 @@ class e_shortcode
 		$this->parseSCFiles = $useSCFiles;
 		
 		//object support
-		if(is_object($extraCodes) && !$this->isScClass(get_class($extraCodes)))
+		if(is_object($extraCodes))
 		{
-			register_shortcode($extraCodes, true);
+			$classname = get_class($extraCodes);
+			
+			//register once
+			if(!$this->isScClass($classname))
+			{
+				register_shortcode($extraCodes, true);
+			}
+			
+			//always overwrite object
+			$this->scClasses[$classname] = $extraCodes;
 		}
 		elseif(is_array($extraCodes))
 		{
