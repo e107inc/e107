@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2009-09-23 23:18:13 $
+|     $Revision: 1.47 $
+|     $Date: 2009-09-25 02:02:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -90,8 +90,9 @@ class pluginManager{
 				"plugin_description"	=> array("title" => EPL_ADLAN_14, "type"=>"text", "width" => "auto", "thclass" => "middle center", "url" => ""),
 			   	"plugin_compatible"		=> array("title" => EPL_ADLAN_13, "type"=>"text", "width" => "auto", "thclass" => "middle", "url" => ""),
 				"plugin_compliant"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
-				"plugin_release"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
-				"options"				=> array("title" => LAN_OPTIONS, "width" => "15%", "thclass" => "middle center last", "url" => "")
+		//		"plugin_release"		=> array("title" => EPL_ADLAN_81, "type"=>"text", "width" => "5%", "thclass" => "middle center", "url" => ""),
+				"options"				=> array("title" => LAN_OPTIONS, 'forced'=>TRUE, "width" => "15%", "thclass" => "middle center last", "url" => ""),
+				
 		);
 
 
@@ -119,6 +120,7 @@ class pluginManager{
 
     function pluginObserver()
 	{
+		
         global $user_pref,$admin_log;
     	if (isset($_POST['upload']))
 		{
@@ -177,17 +179,19 @@ class pluginManager{
 			}
       		$this -> action = "installed";
 		}
-
-        if($this->action != 'avail')
+		
+        if($this->action != 'avail' && varset($this->fields['plugin_checkboxes']))
 		{
-			unset($this-> fields['plugin_checkboxes']);
+		 	$this->fields['plugin_checkboxes'] = FALSE;  
 		}
 
 		if($this->action !='upload' && $this->action !='uninstall')
 		{
 			$this -> pluginRenderList();
 		}
-
+		
+		
+		
 	}
 
 	function pluginUninstall()
@@ -665,7 +669,7 @@ class pluginManager{
 	{
 
 		global $plugin, $frm;
-		$e107 = &e107::getInstance();
+		$e107 = e107::getInstance();
 		
 		if($this->action == "" || $this->action == "installed")
 		{

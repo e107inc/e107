@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-09-22 15:42:27 $
+ * $Revision: 1.45 $
+ * $Date: 2009-09-25 02:02:38 $
  * $Author: e107coders $
  *
 */
@@ -640,12 +640,13 @@ class e_form
 
 	function columnSelector($columnsArray,$columnsDefault='',$id='column_options')
 	{
+		$columnsArray = array_filter($columnsArray);
         $text = "<div style='position:relative;float:right;'>
 		<a href='#".$id."' class='e-show-if-js e-expandit' title='Click to select columns to display'>
 		<img class='middle' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' /></a>
 
 		<div id='".$id."' class='e-show-if-js e-hideme col-selection'>\n";
-        unset($columnsArray['options']);
+        unset($columnsArray['options'],$columnsArray['checkboxes']);
 
 		foreach($columnsArray as $key=>$fld)
 		{
