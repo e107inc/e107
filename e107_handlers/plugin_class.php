@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.96 $
-|     $Date: 2009-09-23 23:18:13 $
-|     $Author: e107coders $
+|     $Revision: 1.97 $
+|     $Date: 2009-09-25 20:14:29 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,25 +25,26 @@ class e107plugin
 {
 	// Reserved Addon names. 
 	var	$plugin_addons = array(
-		"e_rss",
-		"e_notify",
-		"e_linkgen",
-		"e_list",
-		"e_bb",
-		"e_meta",
-		"e_emailprint",
-		"e_frontpage",
-		"e_latest",
-		"e_status",
-		"e_search",
-		"e_shortcode",
-		"e_module",
-		"e_comment",
-		"e_sql",
-		"e_userprofile",
-		"e_header",
-		"e_userinfo",
-		"e_tagwords"
+		'e_rss',
+		'e_notify',
+		'e_linkgen',
+		'e_list',
+		'e_bb',
+		'e_meta',
+		'e_emailprint',
+		'e_frontpage',
+		'e_latest',
+		'e_status',
+		'e_search',
+		'e_shortcode',
+		'e_module',
+		'e_event',
+		'e_comment',
+		'e_sql',
+		'e_userprofile',
+		'e_header',
+		'e_userinfo',
+		'e_tagwords'
 		);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
@@ -156,7 +157,7 @@ class e107plugin
 		
 		$p_installed = e107::getPref('plug_installed',array()); // load preference; 
 		require_once(e_HANDLER."message_handler.php");
-		$emessage = &eMessage::getInstance();
+		$emessage = eMessage::getInstance();
 
 		foreach($pluginList as $p)
 		{
@@ -1639,7 +1640,7 @@ class e107plugin
 				$is_installed = ($row['plugin_installflag'] == 1 );
 				$tmp = explode(",",$row['plugin_addons']);
 				$path = $row['plugin_path'];
-
+				
 				if ($is_installed)
 				{
 					foreach($tmp as $val)
@@ -1651,6 +1652,7 @@ class e107plugin
 						}
 					}
 				}
+				
 				// search for .bb and .sc files.
 				$sc_array = array();
 				$bb_array = array();
@@ -1700,7 +1702,7 @@ class e107plugin
 			}
 		}
 
-	//	$core->save(FALSE); 
+		$core->save(FALSE); 
 
 		if($this->manage_icons())
 		{
