@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.145 $
-* $Date: 2009-09-19 15:27:26 $
+* $Revision: 1.146 $
+* $Date: 2009-09-25 20:21:30 $
 * $Author: secretr $
 *
 */
@@ -1105,13 +1105,25 @@ if(!defined("THEME_LAYOUT"))
 
 	if(is_array($cusPagePref) && count($cusPagePref)>0)  // check if we match a page in layout custompages.
 	{
+		$c_url = e_SELF.(e_QUERY ? '?'.e_QUERY : ''); //TODO rewritten URLs?
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
-			if(!is_array($cusPageArray)) { break; }
+			if(!is_array($cusPageArray)) { continue; }
 
    			foreach($cusPageArray as $kpage)
 			{
-				if ($kpage && (strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)))
+				if(substr($kpage, -1) === '!' )
+				{
+					$kpage = rtrim($kpage, '!');
+					if(substr($c_url, - strlen($kpage)) === $kpage)
+					{
+						$def =  $lyout;
+						break 2;
+					}
+					continue;
+				}
+
+				if ($kpage && ($kpage == e_PAGE || strpos($c_url, $kpage) !== false))
 				{
             	 //	$def = ($lyout) ? $lyout : "legacyCustom";
 					$def =  $lyout;
