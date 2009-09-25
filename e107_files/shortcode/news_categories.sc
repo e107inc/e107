@@ -1,10 +1,19 @@
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: news_categories.sc,v 1.5 2009-09-15 15:08:50 secretr Exp $
+ * $Id: news_categories.sc,v 1.6 2009-09-25 20:20:23 secretr Exp $
  *
  * News Categories shortcode
 */
 global $e107, $sql,$pref,$tp,$NEWSCAT,$NEWSCAT_ITEM;
+
+$cString = 'nq_news_categories_sc';
+$cached = e107::getCache()->retrieve($cString);
+
+if(false !== $cached)
+{
+	return $cached;
+}
+
 require_once(e_HANDLER."news_class.php");
 $ix = new news;
 
@@ -72,7 +81,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	$sql2 = new db;
 	$qry = "SELECT nc.*, ncr.news_rewrite_string AS news_category_rewrite_string, ncr.news_rewrite_id AS news_category_rewrite_id FROM #news_category AS nc
         LEFT JOIN #news_rewrite AS ncr ON nc.category_id=ncr.news_rewrite_source AND ncr.news_rewrite_type=2
-        ORDER BY nc.category_order
+        ORDER BY nc.category_order ASC
     ";
 	if(!$sql2->db_Select_gen($qry))
 	{
@@ -145,4 +154,5 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 
 	$text3 .= "</table></div>";
 
+e107::getCache()->set($cString, $text3);
 return $text3;

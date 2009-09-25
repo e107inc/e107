@@ -14,6 +14,9 @@
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_FILENAME} !-l 
 	
+### TAGWORDS ###
+	RewriteRule ^tagwords/?(.*)$ e107_plugins/tagwords/tagwords.php?q=$1 [L]
+	
 ### NEWS SEF URLs - set 'news' to the 'URL identifier' value (news Administration area) ###
 	RewriteRule ^news/?$ news.php [L]
 	RewriteRule ^news/(.*)$ news.php?rewrite=$1 [L]

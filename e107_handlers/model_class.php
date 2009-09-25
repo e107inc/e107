@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-09-08 12:13:00 $
+ * $Revision: 1.9 $
+ * $Date: 2009-09-25 20:20:23 $
  * $Author: secretr $
 */
 
@@ -121,7 +121,7 @@ class e_model
      */
     public function setFieldIdName($name)
     {
-        $this->_idFieldName = $name;
+        $this->_field_id = $name;
         return $this;
     }
 
@@ -135,7 +135,7 @@ class e_model
      */
     public function getFieldIdName()
     {
-        return $this->_idFieldName;
+        return $this->_field_id;
     }
     
     /**
@@ -168,11 +168,11 @@ class e_model
      */
     public function getId()
     {
-        if ($this->getIdFieldName()) 
+        if ($this->getFieldIdName()) 
         {
-            return $this->getData($this->getIdFieldName(), 0, null);
+            return $this->get($this->getFieldIdName(), 0);
         }
-        return $this->getData('id', 0, null);
+        return $this->get('id', 0);
     }
     
     /**
@@ -439,6 +439,15 @@ class e_model
     {
     	return $this->_hasData('', '_posted_data');
     }
+	
+    /**
+     * @param string $key
+     * @return boolean
+     */
+    public function is($key)
+    {
+    	return (isset($this->_data[$key]));
+    }
     
     /**
      * @param string $key
@@ -447,6 +456,15 @@ class e_model
     public function isData($key)
     {
     	return $this->_isData($key);
+    }
+	
+    /**
+     * @param string $key
+     * @return boolean
+     */
+    public function isPosted($key)
+    {
+    	return (isset($this->_posted_data[$key]));
     }
     
     /**

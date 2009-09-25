@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.37 2009-09-13 16:37:18 secretr Exp $
+// $Id: lan_log_messages.php,v 1.38 2009-09-25 20:20:23 secretr Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -350,6 +350,9 @@ define('LAN_AL_PLUGMAN_02', 'Plugin updated');
 define('LAN_AL_PLUGMAN_03', 'Plugin uninstalled');
 define('LAN_AL_PLUGMAN_04', 'Plugin refreshed');
 
+// URL Manager
+//---------------
+define('LAN_AL_EURL_01', 'Site URL configuration changed');
 
 // Sundry Pseudo-plugins - technically they're plugins, but not worth the file overhead of treating them separately
 //----------------------
