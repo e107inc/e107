@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-09-19 15:23:49 $
+|     $Revision: 1.9 $
+|     $Date: 2009-09-25 20:18:34 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -162,12 +162,11 @@ class e107_event
 	*/
 	function triggerHook($data='')
 	{
-		global $pref;
-
-		$text = '';
-		if(isset($pref['e_event_list']) && is_array($pref['e_event_list']))
+		$text = ''; 
+		$e_event_list = e107::getPref('e_event_list');
+		if(is_array($e_event_list))
 		{
-			foreach($pref['e_event_list'] as $hook)
+			foreach($e_event_list as $hook)
 			{
 				if(e107::isInstalled($hook))
 				{
