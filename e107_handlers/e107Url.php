@@ -9,8 +9,8 @@
  * URL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107Url.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-09-14 18:19:17 $
+ * $Revision: 1.13 $
+ * $Date: 2009-09-25 20:17:48 $
  * $Author: secretr $
 */
 
@@ -18,8 +18,10 @@ if (!defined('e107_INIT')) { exit; }
 
 class eURL
 {
-
-	var $_link_handlers = array();
+	/**
+	 * @var array
+	 */
+	protected $_link_handlers = array();
 
 	/**
 	 * Create site url
@@ -39,14 +41,7 @@ class eURL
 			//strange looking... well, I like it
 			parse_str($urlItems, $urlItems);
 		}
-
-		$handlerId = $section . '/' . $urlType;
-		if (!isset($this->_link_handlers[$handlerId]))
-		{
-			$this->_link_handlers[$handlerId] = $this->_initHandler($section, $urlType);
-		}
-
-		if($link = call_user_func($this->_link_handlers[$handlerId], $urlItems))
+		if($link = call_user_func($this->getHandlerFunction($section, $urlType), $urlItems))
 		{
 			return $link;
 		}
@@ -54,7 +49,7 @@ class eURL
 	}
 	
 	/**
-	 * Alias of {@link get()}
+	 * Alias of {@link create()}
 	 * @param string $section
 	 * @param string $urlType
 	 * @param array $urlItems [optional]
@@ -79,30 +74,45 @@ class eURL
 		{
 			$request = e_QUERY;
 		}
-
-		$handlerId = $section . '/' . $urlType;
+		return call_user_func('parse_'.$this->getHandlerFunction($section, $urlType), $request);
+	}
+	
+	/**
+	 * Get required profile function string
+	 * NOTE: function existence is not granted
+	 * 
+	 * @param string $section
+	 * @param string $urlType
+	 * @return string handler function
+	 */
+	public function getHandlerFunction($section, $urlType)
+	{
+		$handlerId = $this->toHandlerId($section, $urlType);
 		if (!isset($this->_link_handlers[$handlerId]))
 		{
 			$this->_link_handlers[$handlerId] = $this->_initHandler($section, $urlType);
 		}
 		
-		return call_user_func('parse_'.$this->_link_handlers[$handlerId], $request);
+		return $this->_link_handlers[$handlerId];
 	}
 
+	/**
+	 * Try to load required url profile script
+	 * 
+	 * @param string $section
+	 * @param string $urlType
+	 * @return string function name
+	 */
 	protected function _initHandler($section, $urlType)
 	{
-		global $pref; //FIXME pref handler, $e107->prefs instance
-
-		if (strpos($section, ':') === false)
-		{
-			$section = 'plugin:'.$section;
-		}
+		$section = $this->formatSection($section);
 
 		list($type, $section) = explode(':', $section, 2);
 		$handler = 'url_' . $section . '_' . $urlType;
 
 		// Check to see if custom code is active and exists
-		if (varsettrue($pref['url_config'][$section]))
+		$val = e107::findPref('url_config/'.$section);
+		if ($val)
 		{
 			$filePath = str_replace(
 				array(
@@ -111,13 +121,15 @@ class eURL
 					'plugin-custom:',
 					'plugin-profile:'
 				),
+				
 				array(
 					e_FILE.'e_url/custom/core/',
 					e_FILE.'e_url/core/'.$section.'/',
 					e_FILE.'e_url/custom/plugin/',
 					e_PLUGIN.$section.'/e_url/',
 				),
-				$pref['url_config'][$section]
+				
+				$val
 			);
 			$fileName = $filePath.'/'.$urlType.'.php';
 
@@ -132,34 +144,92 @@ class eURL
 		}
 
 		//Search the default url config - the last station
-		$core = ($type === 'core');
 		$handlerId = $section . '/' . $urlType;
-		$fileName = ($core ? e_FILE."e_url/core/{$handlerId}.php" : e_PLUGIN."{$section}/e_url/{$urlType}.php");
+		$fileName = ($type === 'core' ? e_FILE."e_url/core/{$handlerId}.php" : e_PLUGIN."{$section}/e_url/{$urlType}.php");
 		if (is_readable($fileName))
 		{
 			include_once ($fileName);
 		}
 		return $handler;
 	}
-
-	/*
-	Preparing for PHP5
-	Exmample future calls (after stopping PHP4 support):
-	$e107->url->getForum('post', array('edit' => 10));
-	$e107->url->getCoreUser('user', array('id' => 10));
-
-	function __call($method, $arguments) {
-		if (strpos($method, "getCore") === 0)
+	
+	/**
+	 * Format section to 'core|plugin:section_name' to be safe used in 
+	 * all internal routines.
+	 * This method is here because plugins are allowed to omit 'plugin:' prefix.
+	 * 
+	 * @param string $section
+	 * @return string formatted section
+	 */
+	public function formatSection($section)
+	{
+		if (strpos($section, ':') === false)
 		{
-			$section = strtolower(substr($method, 7));
-			return $this->getCoreUrl($section, varset($arguments[0]), varset($arguments[1]));
+			$section = 'plugin:'.$section;
 		}
-		elseif (strpos($method, "get") === 0)
-		{
-			$section = strtolower(substr($method, 3));
-			return $this->getUrl($section, varset($arguments[0]), varset($arguments[1]));
-		}
-		return '';
+		return $section;
 	}
-	*/
+	
+	/**
+	 * Create the unique key for $_link_handlers 
+	 * 
+	 * @param string $section
+	 * @param string $urlType
+	 * @return string 
+	 */
+	public function toHandlerId($section, $urlType)
+	{
+		return $this->formatSection($section). '/' . $urlType;
+	}
+	
+	/**
+	 * Get profile currently used for a given section
+	 * 
+	 * @param string $section
+	 * @param boolean $strict true - return null if not found, false - return 'main' if not found 
+	 * @return string section id
+	 */
+	public function getProfileId($section, $strict = false)
+	{
+		$val = e107::findPref('url_config/'.str_replace(array('core:', 'plugin:'), '', $section));
+		if($val)
+		{
+			$val = explode(':', $val, 2);
+			return $val[1];
+		}
+		return (!$strict || e107::getConfig()->isData('url_config/'.$section) ? 'main' : null);
+	}
+	
+	/**
+	 * Proxy for undefined methods. It allows quick (less arguments)
+	 * call to {@link create()}. 
+	 * NOTE that passed to {@link create()} second argument
+	 * ($urlType) is always 'main'!
+	 * 
+	 * Example:
+	 * <code>
+	 * echo e107::getUrl()->createCoreNews('action=month&value=092009');
+	 * //calls internal $this->create('core:news', 'main', 'action=month&value=092009');
+	 * 
+	 * echo e107::getUrl()->createTagwords('q=tag word');
+	 * //calls internal $this->create('plugin:tagwords', 'main', 'q=month&value=092009');
+	 * </code>
+	 * @param string $method
+	 * @param array $arguments array(0 => request string|array)
+	 * @return string URL
+	 * @throws Exception
+	 */
+	function __call($method, $arguments) {
+		if (strpos($method, "createCore") === 0)
+		{
+			$section = strtolower(substr($method, 10));
+			return $this->create('core:'.$section, 'main', varset($arguments[0]));
+		}
+		elseif (strpos($method, "create") === 0)
+		{
+			$section = strtolower(substr($method, 6));
+			return $this->create('plugin:'.$section, 'main', varset($arguments[0]));
+		}
+		throw new Exception('Method '.$method.' does not exist!');//FIXME - e107Exception handler
+	}
 }
