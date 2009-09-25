@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-09-08 14:48:44 $
+ * $Revision: 1.22 $
+ * $Date: 2009-09-25 20:16:18 $
  * $Author: secretr $
 */
 
@@ -532,7 +532,7 @@ class e_pref extends e_model
 					}
 					if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
 					{
-						$emessage->add('Backup successfully created.', E_MESSAGE_SUCCESS, $session_messages);
+						$emessage->add('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, $session_messages);
 						ecache::clear_sys('Config_'.$this->alias.'_backup');
 					}
 				}
