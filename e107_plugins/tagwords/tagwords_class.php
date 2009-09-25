@@ -9,9 +9,9 @@
  * Tagwords Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-05-04 13:39:37 $
- * $Author: bugrain $
+ * $Revision: 1.6 $
+ * $Date: 2009-09-25 20:13:12 $
+ * $Author: secretr $
  *
 */
 
@@ -270,11 +270,12 @@ class tagwords
 	function createTagWordLink($word, $class='')
 	{
 		$word = trim($word);
-		$qry = $this->e107->tp->toDB($word);
-		$qry = str_replace(' ', '+', $qry);
+		/*$qry = $this->e107->tp->toDB($word);
+		$qry = str_replace(' ', '+', $qry);*/
+		$url = e107::getUrl()->createTagwords('q='.$word);
 		$word = $this->e107->tp->toHTML($word,true,'no_hook, emotes_off');
 		$class = ($class ? "class='tag".intval($class)."'" : "");
-		return "<a href='".e_PLUGIN."tagwords/tagwords.php?q=".$qry."' ".$class." title=''>".$word."</a>";
+		return "<a href='".$url."' ".$class." title=''>".$word."</a>";
 	}
 
 	/*
