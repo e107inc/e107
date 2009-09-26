@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-09-22 19:47:02 $
+ * $Revision: 1.35 $
+ * $Date: 2009-09-26 18:08:14 $
  * $Author: e107coders $
  *
 */
@@ -135,7 +135,7 @@ class system_tools
 		
 		if(isset($_POST['delplug']))
 		{
-			$this->delete_plugin_entry();	
+			$this->delete_plugin_entry($_POST['pref_type']);	
 		}
 		
 		if(isset($_POST['upload']))
@@ -145,7 +145,7 @@ class system_tools
 		
 		if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST['delpref2'])))
 		{
-			$this->del_pref_val();
+			$this->del_pref_val($_POST['pref_type']);
 		}
 		
 		if(isset($_POST['verify_sql_record']) || varset($_GET['mode'])=='verify_sql_record' || isset($_POST['check_verify_sql_record']) || isset($_POST['delete_verify_sql_record']))
@@ -195,41 +195,42 @@ class system_tools
 	 * Delete selected preferences. 
 	 * @return 
 	 */	
-	private function del_pref_val()
+	private function del_pref_val($mode='core')
 	{
-		global $pref, $e107cache, $emessage;
-		$delpref = key($_POST['delpref']);
-	
-		if($delpref)
+		global $emessage;
+		
+		$deleted_list = "";
+		
+		$config = ($mode == 'core') ? e107::getConfig('core') : e107::getPlugConfig($mode);
+		
+		// Single Pref Deletion	using button
+		if(varset($_POST['delpref']))
 		{
-			unset($pref[$delpref]);
-			$deleted_list .= "<li>".$delpref."</li>";
+			$delpref = key($_POST['delpref']);
+			if($config->remove($delpref))
+			{
+				$deleted_list .= "<li>".$delpref."</li>";	
+			}						
 		}
 	
-		if($_POST['delpref2'])
-		{
-	
+		// Multiple Pref deletion using checkboxes
+		if(varset($_POST['delpref2']))
+		{	
 			foreach($_POST['delpref2'] as $k => $v)
 			{
-				$deleted_list .= "<li>".$k."</li>";
-				unset($pref[$k]);
+				if($config->remove($k))
+				{
+					$deleted_list .= "<li>".$k."</li>";	
+				}						
 			}
-		}
-				
-
-		if($_POST['pref_type']=='core' || !vartrue($_POST['pref_type']))
-		{
-			save_prefs();
+		}	
+		
+		if($deleted_list && $config->save())
+		{			
 			$emessage->add(LAN_DELETED."<ul>".$deleted_list."</ul>");
-			$e107cache->clear();	
+			e107::getCache()->clear();
 		}
-		else
-		{
-			//FIXME - Add Pref deletion function to pref_class for easy removal. 
-			// eg. e107::getConfig($type)->deletePref($value); where $type = core|ipool|menu etc. $value = single pref or array of prefs. 
-			$emessage->add("Deletion of pref-type: ".$_POST['pref_type']." is not yet supported.",E_MESSAGE_WARNING);	
-		}
-	
+
 	}
 
 	private function delete_plugin_entry()
@@ -353,6 +354,8 @@ class system_tools
 	{
 		$emessage = eMessage::getInstance();
 		$frm = e107::getSingleton('e_form');
+		
+		
 	//TODO LANs
 		
 		$text = "<form method='post' action='".e_SELF."?".e_QUERY."' id='core-db-export-form'>
@@ -510,21 +513,31 @@ class system_tools
 		global $pref, $e107, $emessage, $frm;
 		
 
-		$spref = e107::getConfig($type)->getPref();
+		
+		$config = ($type == 'core') ? e107::getConfig('core') : e107::getPlugConfig($type);
+
+		$spref = $config->getPref();
 	
 		ksort($spref);	
 	
 		$text = "
-				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."' id='pref_edit'>
+				<form method='post' action='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$type."' id='pref_edit'>
 					<fieldset id='core-db-pref-edit'>
 						<legend class='e-hideme'>".DBLAN_20."</legend>";
 		
-		$text .= "<select class='tbox' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >";				
-		foreach(e107::getConfig($type)->aliases as $key=>$val)
+		$text .= "<select class='tbox' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >
+		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=core'>Core</option>\n";
+		
+	//	e107::getConfig($type)->aliases
+		
+		e107::getDb()->db_Select_gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('plugin_%') ORDER BY e107_name");
+		while ($row = e107::getDb()->db_Fetch())
 		{
+			$key = str_replace("plugin_","",$row['e107_name']);
 			$selected = (varset($_GET['type'])==$key) ? "selected='selected'" : "";
-			$text .= "<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$key."' {$selected}>".$key."</option>\n";	
-		}
+			$text .= "<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=".$key."' {$selected}>".ucwords($key)."</option>\n";	
+		}				
+		
 		
 		$text .= "</select></div>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
@@ -571,8 +584,7 @@ class system_tools
 					</fieldset>
 				</form>\n\n";
 				
-		//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
-		e107::getRender()->tablerender(DBLAN_10.' - '.DBLAN_20, $emessage->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.' :: '.DBLAN_20." :: ".ucwords($type), $emessage->render().$text);
 	
 		return $text;
 	}
