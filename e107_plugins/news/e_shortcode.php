@@ -1,24 +1,14 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Alternate News
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/alt_news/alt_news.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-09-24 00:11:19 $
- * $Author: e107coders $
+* Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+* $Id: e_shortcode.php,v 1.1 2009-09-26 16:54:15 e107coders Exp $
+*
+* news shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
-//TODO should be moved into the shortcode, and the shortcode moved into the 'news' plugin folder. 
-if (!defined('e107_INIT')) { exit; }
 
-require_once(e_HANDLER."news_class.php");
-
-function alt_news($news_category) {
+class news_shortcodes // must match the plugin's folder name. ie. [PLUGIN_FOLDER]_shortcodes
+{	
+	function sc_alt_news($news_category) {
 	global $sql, $aj, $ns;
 	$ix = new news;
 	if (strstr(e_QUERY, "cat")) {
@@ -126,4 +116,5 @@ function alt_news($news_category) {
 	}
 }
 
+}
 ?>
