@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: plugin.xml,v 1.1 2009-09-26 16:54:15 e107coders Exp $ -->
+<e107Plugin name="News" version="1.0" compatibility="0.8" installRequired="false" >
+	<category>menu</category>
+</e107Plugin>

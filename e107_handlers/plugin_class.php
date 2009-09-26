@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2009-09-25 20:14:29 $
-|     $Author: secretr $
+|     $Revision: 1.98 $
+|     $Date: 2009-09-26 16:54:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -718,9 +718,7 @@ class e107plugin
 		
 		e107::getConfig('core')->setPref($pref);
 		e107::getConfig('core')->save();
-		
-	//	save_prefs(); //FIXME - should be a better way to do this. 
-		// e107::getConfig()->loadData($pref, false)->save(false, true);
+
 	}
 
 
