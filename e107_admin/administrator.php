@@ -9,9 +9,9 @@
  * Administrators Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-08-28 16:10:58 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.15 $
+ * $Date: 2009-09-27 21:24:02 $
+ * $Author: e107coders $
  *
 */
 
@@ -442,10 +442,13 @@ function renderperms($perm, $id)
 		$ret .= $langperm;
 	}
 
-	$text = "
-		<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$ret}</div>
-		<div id='id_{$id}' class='e-hideme'><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>
-	";
+	$text = "<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$ret}</div>";
+		
+	if(varset($ptext))
+	{
+		$text .= "<div id='id_{$id}' class='e-hideme'><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>";
+	}
+		
 
     return $text;
 }
