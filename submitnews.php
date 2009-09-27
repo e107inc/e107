@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-08-28 15:30:24 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.14 $
+|     $Date: 2009-09-27 21:45:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -180,10 +180,10 @@ if (!$sql->db_Select("news_category"))
 else
 {
 	$text .= "
-		<select name='submitnews_category' class='tbox'>";
+		<select name='cat_id' class='tbox'>";
 	while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch(MYSQL_NUM))
 	{
-		$sel = ($_POST['submitnews_category'] == $cat_id) ? "selected='selected'" : "";
+		$sel = (varset($_POST['cat_id'],'') == $cat_id) ? "selected='selected'" : "";
 		$text .= "<option value='{$cat_id}' {$sel}>".$tp->toHTML($cat_name, FALSE, "defs")."</option>";
 	}
 	$text .= "</select>";
