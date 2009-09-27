@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
- |     $Revision: 1.1 $
- |     $Date: 2009-08-20 13:54:42 $
+ |     $Revision: 1.2 $
+ |     $Date: 2009-09-27 21:18:37 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -33,19 +33,39 @@ class redirection
 			$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php');
 		} 
 		
+		/**
+		 * Perform re-direction when Maintenance Mode is active. 
+		 * @return 
+		 */
 		public function checkMaintenance()
-		{
-			if(ADMIN == TRUE)
+		{	
+		
+			if(strpos(e_SELF, 'sitedown.php') !== FALSE) // prevent looping. 
 			{
 				return;
 			}
-			
-			if (!e107::getPref('maintainance_flag') || (strpos(e_SELF, 'admin.php') !== FALSE) || (strpos(e_SELF, 'sitedown.php') !== FALSE))
-			{
+						
+			if(e107::getPref('maintainance_flag')) 
+			{				
+				if(e107::getPref('main_admin_only')==1 && ADMIN==TRUE && !getperms('0'))
+				{
+					$this->redirect(SITEURL.'sitedown.php?logout');
+				}
+				
+				if((strpos(e_SELF, 'admin.php') !== FALSE) || (ADMIN == TRUE))
+				{
 					return;
-			} 
-			$this->redirect(SITEURL.'sitedown.php');
+				} 
+				
+				$this->redirect(SITEURL.'sitedown.php');			
+			}
+			else
+			{
+				return;
+			}		
 		} 
+		
+		
 		/** check if user is logged in.
 		 *
 		 */

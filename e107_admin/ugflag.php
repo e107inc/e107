@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ugflag.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-08-28 16:11:00 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.5 $
+ * $Date: 2009-09-27 21:18:37 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -25,7 +25,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 require_once(e_HANDLER."form_handler.php");
 require_once (e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+$emessage = eMessage::getInstance();
 $emessage_method = e_AJAX_REQUEST ? 'add' : 'addSession';
 
 $frm = new e_form(true);
@@ -45,6 +45,14 @@ if (isset($_POST['updatesettings']))
 		$pref['maintainance_text'] = $temp;
 		$changed = TRUE;
 	}
+	
+	$temp = intval($_POST['main_admin_only']);
+	if(getperms('0') && $pref['main_admin_only'] != $temp)
+	{
+		$pref['main_admin_only'] = $temp;
+		$changed = TRUE;	
+	}
+	
 	if ($changed)
 	{
 		$admin_log->log_event(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01',$pref['maintainance_text'],E_LOG_INFORMATIVE,'');
@@ -79,13 +87,31 @@ $text = "
 								".$frm->checkbox('maintainance_flag', '1', $pref['maintainance_flag'])."
 							</div>
 						</td>
-					</tr>
+					</tr>";
+					
+					if(getperms('0'))
+					{
+						$text .= "<tr>
+						<td class='label'>".UGFLAN_8.": 
+						</td>
+						<td class='control'>
+							<div class='auto-toggle-area autocheck'>
+								".$frm->checkbox('main_admin_only', '1', $pref['main_admin_only'])."
+							</div>
+							<div class='field-help'>".UGFLAN_9."</div>
+						</td>
+						</tr>";
+					}
+					
+					
+					$text .= "
 					<tr>
 						<td class='label'>".UGFLAN_5."
-							<div class='field-help'>".UGFLAN_6."</div>
+							
 						</td>
 						<td class='control'>
 							".$frm->bbarea('maintainance_text', $pref['maintainance_text'], 'maintenance', 'maintenance_bbhelp')."
+						<div class='field-help'>".UGFLAN_6."</div>
 						</td>
 					</tr>
 				</tbody>
