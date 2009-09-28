@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-09-26 18:08:14 $
+ * $Revision: 1.36 $
+ * $Date: 2009-09-28 07:17:51 $
  * $Author: e107coders $
  *
 */
@@ -201,7 +201,7 @@ class system_tools
 		
 		$deleted_list = "";
 		
-		$config = ($mode == 'core') ? e107::getConfig('core') : e107::getPlugConfig($mode);
+		$config = ($mode == 'core' || $mode='') ? e107::getConfig('core') : e107::getPlugConfig($mode);
 		
 		// Single Pref Deletion	using button
 		if(varset($_POST['delpref']))
@@ -506,7 +506,7 @@ class system_tools
 	 * Preferences Editor
 	 * @return 
 	 */
-	private function pref_editor($type='')
+	private function pref_editor($type='core')
 	{
 		//TODO Add drop-down filter for editing plugin prefs also. 
 		
@@ -579,7 +579,7 @@ class system_tools
 						<div class='buttons-bar center'>
 							".$frm->admin_button('delpref_checked', DBLAN_21, 'delete')."
 							".$frm->admin_button('back', DBLAN_13, 'back')."
-							<input type='hidden' name='pref_type' value='".$_GET['type']."' />
+							<input type='hidden' name='pref_type' value='".$type."' />
 						</div>
 					</fieldset>
 				</form>\n\n";
