@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-08-28 16:11:01 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.23 $
+ * $Date: 2009-09-28 07:17:52 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -661,6 +661,10 @@ if(!e_AJAX_REQUEST) require_once("footer.php");
 function icon_editor()
 {
 	global $iconpool, $e107, $emessage, $frm, $tp;
+	
+	$ns = e107::getRender();
+	$tp = e107::getParser();
+	
 	ksort($iconpool);
 
 	$text = "
@@ -734,7 +738,7 @@ function icon_editor()
 
 		";
 	//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
-	$e107->ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_71, $emessage->render().$text);
+	$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_71, $emessage->render().$text);
 
 	return $text;
 }

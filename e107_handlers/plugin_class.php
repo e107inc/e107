@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.98 $
-|     $Date: 2009-09-26 16:54:09 $
+|     $Revision: 1.99 $
+|     $Date: 2009-09-28 07:17:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -294,13 +294,28 @@ class e107plugin
 		}
 	}
 
-    function manage_icons($plugin='')
+    function manage_icons($plugin='',$function='')
 	{
 		global $iconpool,$pref;
-	
+		
+		$emessage = eMessage::getInstance();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$fl = e107::getFile();
+			
+		if($plugin && ($function == 'uninstall') )
+		{
+			if(vartrue($this->unInstallOpts['del_ipool'], FALSE))
+			{
+				$ipool_entry = 'plugin-'.$plugin;
+				e107::getConfig('ipool')->remove($ipool_entry); 	// FIXME - ipool removal issue. 
+	        	$status = (e107::getConfig('ipool')->save(FALSE)) ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$emessage->add('Removing Icon-Pool entry: '.$ipool_entry, $status); 
+			}
+			return;
+		}
+	
+
 
          $query = "SELECT * FROM #plugin WHERE plugin_installflag =0 ORDER BY plugin_path ASC";
 		$sql->db_Select_gen($query);
@@ -950,7 +965,7 @@ class e107plugin
 				$tableList = $dbHandler->get_table_def('',$path.$sqlFile);
 				if (!is_array($tableList))
 				{
-					$error[] = 'Can\'t read SQL definition: '.$path.$sqlFile;
+					$emessage->add("Can\'t read SQL definition: ".$path.$sqlFile,E_MESSAGE_ERROR);
 					break;
 				}
 				// Got the required definition here
@@ -960,9 +975,9 @@ class e107plugin
 					{
 						case 'install' :
 							$sqlTable = str_replace("CREATE TABLE ".MPREFIX.'`', "CREATE TABLE `".MPREFIX, preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $ct[0]));
-							$txt .= "Adding table: {$ct[1]} ... ";
-							$result = $this->manage_tables('add', array($sqlTable));		// Pass the statement to create the table
-							$txt .= ($result ? "Success" : "Failed!").'<br />';
+							$txt = "Adding table: {$ct[1]} ... ";
+							$status = $this->manage_tables('add', array($sqlTable)) ? E_MESSAGE_SUCCESS: E_MESSAGE_ERROR;		// Pass the statement to create the table
+							$emessage->add($txt,$status);
 							break;
 						case 'upgrade' :
 							$tmp = $dbHandler->update_table_structure($ct,FALSE,TRUE, $pref['multilanguage']);
@@ -980,12 +995,13 @@ class e107plugin
 						case 'uninstall' :
 							if (varsettrue($options['del_tables'], FALSE))
 							{
-								$txt .= "Removing table {$ct[1]} <br />";
-								$this->manage_tables('remove', array($ct[1]));				// Delete the table
+								$txt = "Removing table {$ct[1]} <br />";
+								$status = $this->manage_tables('remove', array($ct[1])) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;				// Delete the table
+								$emessage->add($txt,$status);
 							}
 							else
-							{
-								$txt .= "Table {$ct[1]} left in place<br />";
+							{								
+								$emessage->add("Table {$ct[1]} left in place.",E_MESSAGE_SUCCESS);
 							}
 							break;
 					}
@@ -1022,6 +1038,9 @@ class e107plugin
 		{
 			$this->XmlLogLanguageFile($function,$plug_vars['logLanguageFile']);
 		}
+		
+		$this->manage_icons($this->plugFolder,$function);
+		
 		
 		//FIXME 
 		//If any commentIDs are configured, we need to remove all comments on uninstall

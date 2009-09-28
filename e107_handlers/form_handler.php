@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-09-25 02:02:38 $
+ * $Revision: 1.46 $
+ * $Date: 2009-09-28 07:17:52 $
  * $Author: e107coders $
  *
 */
@@ -308,6 +308,10 @@ class e_form
 
 	function selectbox($name, $option_array, $selected = false, $options = array())
 	{
+		if($option_array == 'yesno')
+		{
+			$option_array = array(1=>LAN_YES,0=>LAN_NO);
+		} 
 		return $this->select_open($name, $options)."\n".$this->option_multi($option_array, $selected)."\n".$this->select_close();
 	}
 

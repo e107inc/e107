@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2009-09-25 02:02:38 $
+|     $Revision: 1.48 $
+|     $Date: 2009-09-28 07:17:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -217,7 +217,8 @@ class pluginManager{
 					$options = array(
 						'del_tables' => varset($_POST['delete_tables'],FALSE),
 						'del_userclasses' => varset($_POST['delete_userclasses'],FALSE),
-						'del_extended' => varset($_POST['delete_xfields'],FALSE)
+						'del_extended' => varset($_POST['delete_xfields'],FALSE),
+						'del_ipool' => varset($_POST['delete_ipool'],FALSE)
 						);
 					$text .= $plugin->manage_plugin_xml($this->id, 'uninstall', $options);
 				}
@@ -621,6 +622,8 @@ class pluginManager{
 	{
          global $plugin,$frm;
 
+		//TODO 'install' checkbox in plugin upload form. (as it is for theme upload)
+
 		/* plugin upload form */
 
 			if(!is_writable(e_PLUGIN))
@@ -733,9 +736,11 @@ class pluginManager{
 
 	function pluginRenderPlugin($pluginList)
 	{
-			global $tp, $plugin, $frm;
+			global $plugin, $frm;
 
 			if (empty($pluginList)) return '';
+			
+			$tp = e107::getParser();
 			
 
 			$text = "";
@@ -880,7 +885,9 @@ class pluginManager{
 
 		function pluginConfirmUninstall()
 		{
-			global $plugin, $tp;
+			global $plugin, $frm;
+			$tp = e107::getParser();
+						
 			$plug = $plugin->getinfo($this->id);
 
 			if ($plug['plugin_installflag'] == true )
@@ -931,12 +938,7 @@ class pluginManager{
 
 			if(is_writable(e_PLUGIN.$plug['plugin_path']))
 			{
-				$del_text = "
-				<select class='tbox' name='delete_files'>
-				<option value='0'>".LAN_NO."</option>
-				<option value='1'>".LAN_YES."</option>
-				</select>
-				";
+				$del_text = $frm->selectbox('delete_files','yesno',0);
 			}
 			else
 			{
@@ -956,32 +958,22 @@ class pluginManager{
             		<col class='col-control' />
             	</colgroup>
  			<tr>
-			<td>".EPL_ADLAN_55."</td>
-			<td>".LAN_YES."</td>
+				<td>".EPL_ADLAN_55."</td>
+				<td>".LAN_YES."</td>
 			</tr>
 			<tr>
-			<td>
-			".EPL_ADLAN_57."<div class='smalltext'>".EPL_ADLAN_58."</div>
-			</td>
-			<td>
-			<select class='tbox' name='delete_tables'>
-			<option value='1'>".LAN_YES."</option>
-			<option value='0'>".LAN_NO."</option>
-			</select>
-			</td>
+				<td>".EPL_ADLAN_57."</td>
+				<td>".$frm->selectbox('delete_tables','yesno',1)."
+				<div class='field-help'>".EPL_ADLAN_58."</div>
+				</td>
 			</tr>";
 
 			if ($userclasses)
 			{
 				$text .= "	<tr>
-				<td>
-				".EPL_ADLAN_78."<div class='indent'>".$userclasses."</div><div class='smalltext'>".EPL_ADLAN_79."</div>
-				</td>
-				<td>
-					<select class='tbox' name='delete_userclasses'>
-					<option value='1'>".LAN_YES."</option>
-					<option value='0'>".LAN_NO."</option>
-					</select>
+				<td>".EPL_ADLAN_78."<div class='indent'>".$userclasses."</div></td>
+				<td>".$frm->selectbox('delete_userclasses','yesno',1)."
+				<div class='field-help'>".EPL_ADLAN_79."</div>
 				</td>
 				</tr>";
 			}
@@ -990,20 +982,30 @@ class pluginManager{
 			{
 				$text .= "	<tr>
 				<td>
-				".EPL_ADLAN_80."<div class='indent'>".$eufields."</div><div class='smalltext'>".EPL_ADLAN_79."</div>
+				".EPL_ADLAN_80."<div class='indent'>".$eufields."</div>
 				</td>
-				<td>
-					<select class='tbox' name='delete_xfields'>
-					<option value='1'>".LAN_YES."</option>
-					<option value='0'>".LAN_NO."</option>
-					</select>
-				</td>
+				<td>".$frm->selectbox('delete_xfields','yesno',0)."
+				<div class='field-help'>".EPL_ADLAN_79."</div></td>
 				</tr>";
 			}
+			
+			if(e107::getConfig('ipool')->getPref('plugin-'.$plug['plugin_path']))
+			{
+				$text .= "<tr>
+				<td>Remove icons from icon-pool<div class='indent'>".$eufields."</div>
+				</td>
+				<td>".$frm->selectbox('delete_ipool','yesno',1)."
+				<div class='field-help'>".EPL_ADLAN_79."</div></td>
+				</tr>";
+			}
+			
+			
 
 			$text .="<tr>
-			<td>".EPL_ADLAN_59."<div class='smalltext'>".EPL_ADLAN_60."</div></td>
-			<td>{$del_text}</td>
+			<td>".EPL_ADLAN_59."</td>
+			<td>{$del_text}
+			<div class='field-help'>".EPL_ADLAN_60."</div>
+			</td>
 			</tr>
 			</table>
 			<div class='buttons-bar center'>";
