@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-09-27 21:45:09 $
+|     $Revision: 1.15 $
+|     $Date: 2009-09-28 21:22:16 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -63,24 +63,6 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 		require_once(e_HANDLER.'upload_handler.php');
 		$uploaded = process_uploaded_files(e_IMAGE . 'newspost_images/', FALSE, array('file_mask' => 'jpg,gif,png', 'max_file_count' => 1));
 	
-/*	
-		if ($filename && $fileext != "jpg" && $fileext != "gif" && $fileext != "png")
-		{
-			$message = SUBNEWSLAN_3;
-			$submitnews_error = TRUE;
-		}
-	
-		if (!$pref['upload_maxfilesize'])
-		{
-			$pref['upload_maxfilesize'] = ini_get('upload_max_filesize') * 1048576;
-		}
-	
-		if ($filesize > $pref['upload_maxfilesize'])
-		{
-			$message = SUBNEWSLAN_4;
-			$submitnews_error = TRUE;
-		}
-*/
 		if (($uploaded === FALSE) || !is_array($uploaded))
 		{	// Non-specific error
 			$submitnews_error = TRUE;
@@ -93,24 +75,27 @@ if (isset($_POST['submitnews_submit']) && $_POST['submitnews_title'] && $_POST['
 		}
 		else
 		{
-			$filename = $uploaded[0]['name'];
-			$filetype = $uploaded[0]['type'];
-			$filesize = $uploaded[0]['size'];
-			$fileext  = substr(strrchr($filename, "."), 1);
-			$today = getdate();
-			$submitnews_file = USERID."_".$today[0]."_".str_replace(" ", "_", substr($submitnews_title, 0, 6)).".".$fileext;
-			if (is_numeric($pref['subnews_resize']) && ($pref['subnews_resize'] > 30)  && ($pref['subnews_resize'] < 5000))
+			if (isset($uploaded[0]['name']) && isset($uploaded[0]['type']) && isset($uploaded[0]['size']))
 			{
-				require_once(e_HANDLER.'resize_handler.php');
-		
-				if (!resize_image(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file, $pref['subnews_resize']))
+				$filename = $uploaded[0]['name'];
+				$filetype = $uploaded[0]['type'];
+				$filesize = $uploaded[0]['size'];
+				$fileext  = substr(strrchr($filename, "."), 1);
+				$today = getdate();
+				$submitnews_file = USERID."_".$today[0]."_".str_replace(" ", "_", substr($submitnews_title, 0, 6)).".".$fileext;
+				if (is_numeric($pref['subnews_resize']) && ($pref['subnews_resize'] > 30)  && ($pref['subnews_resize'] < 5000))
 				{
-				  rename(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file);
+					require_once(e_HANDLER.'resize_handler.php');
+			
+					if (!resize_image(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file, $pref['subnews_resize']))
+					{
+					  rename(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file);
+					}
 				}
-			}
-			elseif ($filename)
-			{
-				rename(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file);
+				elseif ($filename)
+				{
+					rename(e_IMAGE.'newspost_images/'.$filename, e_IMAGE.'newspost_images/'.$submitnews_file);
+				}
 			}
 		}
 	
