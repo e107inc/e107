@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.111 $
-|     $Date: 2009-07-14 19:26:24 $
+|     $Revision: 1.112 $
+|     $Date: 2009-09-28 21:32:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -646,7 +646,7 @@ function deleteExpired($force = FALSE)
 	}
 	if ($force)
 	{	// Remove 'orphaned' extended user field records
-		$sql->db_Select_gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id`=`#user`.`user_id`
+		$sql->db_Select_gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id` = `#user`.`user_id`
 				WHERE `#user`.`user_id` IS NULL");
 	}
 	return $temp1;
