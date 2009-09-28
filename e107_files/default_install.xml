@@ -55,6 +55,13 @@
 		<core name='displaysql'>0</core>
 		<core name='displaythemeinfo'>0</core>
 		<core name='download_email'>0</core>
+		<core name='e_jslib_core'><![CDATA[array (
+  'prototype/prototype.js' => 'all',
+  'scriptaculous/scriptaculous.js' => 'all',
+  'scriptaculous/effects.js' => 'all',
+  'e107.js.php' => 'all',
+)]]></core>
+		<core name='e_jslib_plugin'><![CDATA[array ()]]></core>
 		<core name='email_notify'>0</core>
 		<core name='email_text'></core>
 		<core name='emotepack'>default</core>
