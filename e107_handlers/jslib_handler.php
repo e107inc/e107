@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-11-21 16:24:48 $
+ * $Revision: 1.5 $
+ * $Date: 2009-09-28 19:17:58 $
  * $Author: secretr $
  * 
 */
@@ -45,11 +45,11 @@ class e_jslib
 	    header('Content-type: text/javascript', TRUE);
         
         //array - uses the same format as $core_jslib
-        if (! varset($THEME_CORE_JSLIB) || ! is_array($THEME_CORE_JSLIB))
+        if (!isset($THEME_CORE_JSLIB) || ! is_array($THEME_CORE_JSLIB))
             $THEME_CORE_JSLIB = array();
             
         //array - uses the same format as $core_jslib
-        if (! varset($THEME_JSLIB) || ! is_array($THEME_JSLIB))
+        if (!isset($THEME_JSLIB) || ! is_array($THEME_JSLIB))
             $THEME_JSLIB = array();
             
         //available values - admin,front,all,none
@@ -61,7 +61,7 @@ class e_jslib
             //'jslib/core/decorate.js' => 'all'
         );
         
-        $core_jslib = array_merge($core_jslib, $THEME_CORE_JSLIB, varsettrue($pref['e_jslib']['core'], array()));
+        $core_jslib = array_merge($core_jslib, $THEME_CORE_JSLIB, varsettrue($pref['e_jslib_core'], array()));
         $where_now = $eplug_admin ? 'admin' : 'front';
         
         //1. Core libs - prototype + scriptaculous effects

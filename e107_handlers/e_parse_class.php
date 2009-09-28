@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.62 $
-* $Date: 2009-09-12 18:20:23 $
+* $Revision: 1.63 $
+* $Date: 2009-09-28 19:17:58 $
 * $Author: secretr $
 *
 */
@@ -1293,34 +1293,79 @@ class e_parse
 		return $matches[1];
 	}
 
+	/**
+	 * Create and substitute e107 constants in passed URL
+	 * 
+	 * @param string $url
+	 * @param string $mode 0-folders, 1-relative, 2-absolute, 3-full (with domain), 4-absolute & relative (combination of 1,2,3)
+	 * @return 
+	 */
     function createConstants($url, $mode=0)
     {
     	//FIXME - create constants for absolute paths and site URL's
-        if($mode == 0) // folder name only.
+		$e107 = e107::getInstance();
+		switch($mode)
 		{
-			$e107 = e107::getInstance();
-			$tmp = array(
-				'{e_IMAGE}' 	=> $e107->getFolder('images'),
-				'{e_PLUGIN}'	=> $e107->getFolder('plugins'),
-				'{e_FILE}'		=> $e107->getFolder('files'),
-				'{e_THEME}'		=> $e107->getFolder('themes'),
-				'{e_DOWNLOAD}'	=> $e107->getFolder('downloads'),
-				'{e_ADMIN}'		=> $e107->getFolder('admin'),
-				'{e_HANDLER}'	=> $e107->getFolder('handlers')
-  			);
-        }
-		elseif($mode == 1)  // relative path
-		{
-			$tmp = array(
-				'{e_IMAGE}'		=> e_IMAGE,
-				'{e_PLUGIN}'	=> e_PLUGIN,
-				'{e_FILE}'		=> e_FILE,
-				'{e_THEME}'		=> e_THEME,
-				'{e_DOWNLOAD}'	=> e_DOWNLOAD,
-				'{e_ADMIN}'		=> e_ADMIN,
-				'{e_HANDLER}'	=> e_HANDLER
-			);
+			case 0: // folder name only.
+				$tmp = array(
+					'{e_IMAGE}' 	=> $e107->getFolder('images'),
+					'{e_PLUGIN}'	=> $e107->getFolder('plugins'),
+					'{e_FILE}'		=> $e107->getFolder('files'),
+					'{e_THEME}'		=> $e107->getFolder('themes'),
+					'{e_DOWNLOAD}'	=> $e107->getFolder('downloads'),
+					'{e_ADMIN}'		=> $e107->getFolder('admin'),
+					'{e_HANDLER}'	=> $e107->getFolder('handlers')
+	  			);
+			break;
+		
+			case 1: // relative path only
+				$tmp = array(
+					'{e_IMAGE}'		=> e_IMAGE,
+					'{e_PLUGIN}'	=> e_PLUGIN,
+					'{e_FILE}'		=> e_FILE,
+					'{e_THEME}'		=> e_THEME,
+					'{e_DOWNLOAD}'	=> e_DOWNLOAD,
+					'{e_ADMIN}'		=> e_ADMIN,
+					'{e_HANDLER}'	=> e_HANDLER
+				);
+			break;
+			
+			case 2: // absolute path only
+				$tmp = array(
+					'{e_IMAGE}'		=> e_IMAGE_ABS,
+					'{e_PLUGIN}'	=> e_PLUGIN_ABS,
+					'{e_FILE}'		=> e_FILE_ABS,
+					'{e_THEME}'		=> e_THEME_ABS,
+					'{e_DOWNLOAD}'	=> e_DOWNLOAD_ABS,
+					'{e_ADMIN}'		=> e_ADMIN_ABS,
+					'{e_HANDLER}'	=> e_HANDLER_ABS
+				);
+			break;
+			
+			case 3: // full path (e.g http://domain.com/e107_images/)
+				$tmp = array(
+					'{e_IMAGE}' 	=> SITEURL.$e107->getFolder('images'),
+					'{e_PLUGIN}'	=> SITEURL.$e107->getFolder('plugins'),
+					'{e_FILE}'		=> SITEURL.$e107->getFolder('files'),
+					'{e_THEME}'		=> SITEURL.$e107->getFolder('themes'),
+					'{e_DOWNLOAD}'	=> SITEURL.$e107->getFolder('downloads'),
+					'{e_ADMIN}'		=> SITEURL.$e107->getFolder('admin'),
+					'{e_HANDLER}'	=> SITEURL.$e107->getFolder('handlers')
+				);
+			break;
+			
+			case 4: // absolute & relative paths
+				$url = $this->replaceConstants($url, 3);
+				$url = $this->replaceConstants($url, 2);
+				$url = $this->replaceConstants($url, 1);
+				return $url;
+			break;
+			
+			default:
+				$tmp = array();
+			break;
 		}
+
 		foreach($tmp as $key=>$val)
 		{
         	$len = strlen($val);
