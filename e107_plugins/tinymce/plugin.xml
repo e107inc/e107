@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: plugin.xml,v 1.1 2009-09-28 07:18:42 e107coders Exp $ -->
+<e107Plugin name="TinyMce" version="1.0" compatibility="0.8" installRequired="true" >
+	<author name="e107 Inc." url="http://e107.org" />
+	<description>Wysiwyg Text-Area Replacement</description>
+	<category>misc</category>
+	<adminLinks>
+		<link url='admin_config.php' description='Configure TinyMce' icon='images/icon_32.png' iconSmall='images/icon_16.png' primary='true' >Configure TinyMce</link>	
+	</adminLinks>  
+	<pluginPrefs>
+		<pref name="key1">val1</pref>
+	</pluginPrefs>
+</e107Plugin>
