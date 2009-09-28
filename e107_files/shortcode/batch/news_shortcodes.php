@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2009-03-29 21:41:15 $
+|     $Revision: 1.41 $
+|     $Date: 2009-09-28 21:00:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -164,6 +164,10 @@ SC_END
 
 
 SC_BEGIN EMAILICON
+if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
+{
+	return '';
+}
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 require_once(e_HANDLER.'emailprint_class.php');

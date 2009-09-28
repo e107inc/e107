@@ -11,12 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-09-25 21:14:44 $
+|     $Revision: 1.23 $
+|     $Date: 2009-09-28 21:00:01 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once('class2.php');
+if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
+{
+	header('Location: '.e_BASE.'index.php');
+	exit();
+}
 require_once(HEADERF);
 
 $use_imagecode = FALSE;

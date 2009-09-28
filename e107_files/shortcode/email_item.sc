@@ -1,3 +1,7 @@
+if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
+{
+	return '';
+}
 if (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL)) 
 {
 	$icon = THEME_ABS."images/".ICONMAIL;

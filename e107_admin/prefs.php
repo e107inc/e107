@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2008-12-31 17:08:08 $
+|     $Revision: 1.107 $
+|     $Date: 2009-09-28 21:00:00 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -946,6 +946,16 @@ $text .= "<div id='comments' style='display:none; text-align:center'>
 	<input type='radio' name='comments_emoticons' value='0'".(!$pref['comments_emoticons'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
+
+	<tr>
+	<td class='fcaption' style='text-align:left;' colspan='2'>".PRFLAN_209."</td>
+	</tr>
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_208.": </td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	".r_userclass('email_item_class',varset($pref['email_item_class'],e_UC_MEMBER),'off','nobody,admin,main,public,member,classes')."
+	</td>
+	</tr>
 	";
 
 $text .= pref_submit();
@@ -1037,7 +1047,7 @@ function prefs_adminmenu() {
 	$var['signup']['text'] = PRFLAN_19;
 	$var['textpost']['text'] = PRFLAN_101;
 	$var['security']['text'] = PRFLAN_47;
-	$var['comments']['text'] = PRFLAN_87;
+	$var['comments']['text'] = PRFLAN_210;
 	$var['advanced']['text'] = PRFLAN_149;
 	show_admin_menu(LAN_OPTIONS, $action, $var, TRUE);
 }

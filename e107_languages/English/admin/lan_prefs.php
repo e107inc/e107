@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2009-03-08 18:38:38 $
-|     $Author: e107coders $
+|     $Revision: 1.70 $
+|     $Date: 2009-09-28 21:00:01 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -192,6 +192,11 @@ define("PRFLAN_174", "Name for responses to emails from site");
 define("PRFLAN_175", "This will appear in the 'From' field of registration and other emails from this site");
 define("PRFLAN_176", "Email address for emails from site");
 define("PRFLAN_177", "Address specified for replies to emails from this site.");
+
+// Following numbers used for consistency with 0.8
+define('PRFLAN_208', 'User class which can email links to items on site');
+define('PRFLAN_209', 'Other Features');
+define('PRFLAN_210', 'Comments/Posting');
 
 
 ?>
