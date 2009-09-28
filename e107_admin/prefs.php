@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-08-28 16:10:59 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.35 $
+ * $Date: 2009-09-28 21:00:15 $
+ * $Author: e107steved $
  *
 */
 require_once ("../class2.php");
@@ -1051,6 +1051,24 @@ $text .= "
 
 				</tbody>
 			</table>
+
+			<legend>".PRFLAN_209."</legend>
+			<table cellpadding='0' cellspacing='0' class='adminform'>
+				<colgroup span='2'>
+					<col class='col-label' />
+					<col class='col-control' />
+				</colgroup>
+				<tbody>
+
+					<tr>
+						<td class='label'>".PRFLAN_208.":</td>
+						<td class='control'>
+							".$e_userclass->uc_dropdown('email_item_class',varset($pref['email_item_class'],e_UC_MEMBER),'nobody,admin,main,public,member,classes', "tabindex='".$frm->getNext()."'")."
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
 			".pref_submit('comments')."
 		</fieldset>
 	";
@@ -1170,7 +1188,7 @@ function prefs_adminmenu()
 	$var['core-prefs-signup']['text'] = PRFLAN_19;
 	$var['core-prefs-textpost']['text'] = PRFLAN_101;
 	$var['core-prefs-security']['text'] = PRFLAN_47;
-	$var['core-prefs-comments']['text'] = PRFLAN_87;
+	$var['core-prefs-comments']['text'] = PRFLAN_210;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	e_admin_menu(LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
