@@ -9,8 +9,8 @@
  * Tagwords Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-09-25 20:13:12 $
+ * $Revision: 1.7 $
+ * $Date: 2009-09-29 17:43:44 $
  * $Author: secretr $
  *
 */
@@ -37,14 +37,14 @@ class tagwords
 	/*
 	* constructor (include all e_tagwords.php files)
 	*/
-	function tagwords()
+	function __construct()
 	{
 		global $pref, $TEMPLATE_TAGWORDS, $tagwords_shortcodes;
 
 		$this->e107 = e107::getInstance();
 
 		//language
-		include_lan(e_PLUGIN."tagwords/languages/".e_LANGUAGE.".php");
+		e107::includeLan(e_PLUGIN."tagwords/languages/".e_LANGUAGE.".php");
 
 		//shortcodes
 		require_once(e_PLUGIN.'tagwords/tagwords_shortcodes.php');

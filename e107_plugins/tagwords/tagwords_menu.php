@@ -9,9 +9,9 @@
  * Tagwords Menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_menu.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-17 22:46:37 $
- * $Author: lisa_ $
+ * $Revision: 1.3 $
+ * $Date: 2009-09-29 17:43:44 $
+ * $Author: secretr $
  *
 */
 
@@ -28,7 +28,7 @@ if(varsettrue($tag->pref['tagwords_class']) && !check_class($tag->pref['tagwords
 }
 
 $text = $e107->tp->parseTemplate($tag->template['menu_cloud'], true, $tag->shortcodes);
-$caption = ($tag->pref['tagwords_menu_caption'] ? $tag->pref['tagwords_menu_caption'] : LAN_TAG_16);
+$caption = $tag->pref['tagwords_menu_caption'] ? defset($tag->pref['tagwords_menu_caption'], $tag->pref['tagwords_menu_caption']) : LAN_TAG_16;
 $e107->ns->tablerender($caption, $text);
 
 ?>
