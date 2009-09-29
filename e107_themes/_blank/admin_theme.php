@@ -5,10 +5,11 @@ define('STANDARDS_MODE', TRUE);
 
 include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
-$THEME_CORE_JSLIB = array(
-	'jslib/core/decorate.js' => 'all',
-	'jslib/core/tabs.js' => 'admin'
-);
+//temporary fixed - awaiting theme.xml addition
+e107::getJs()->requireCoreLib(array(
+	'core/decorate.js' => 2,
+	'core/tabs.js' => 2
+));
 
 $register_sc[]='FS_ADMIN_ALT_NAV';
 $no_core_css = TRUE;

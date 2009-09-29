@@ -9,18 +9,22 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-09-12 19:27:24 $
- * $Author: e107coders $
+ * $Revision: 1.41 $
+ * $Date: 2009-09-29 17:42:22 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
 if(!defined('USER_AREA'))
 {
-	//overlod is now possible, prevent warnings
+	//overload is now possible, prevent warnings
 	define('USER_AREA',TRUE);
 }
 define('ADMIN_AREA',FALSE);
+
+// Header included notification 
+define('HEADER_INIT', TRUE);
+
 $e107 = e107::getInstance();
 $e107->sql->db_Mark_Time('(Header Top)');
 
