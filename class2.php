@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.379 $
-|     $Date: 2009-08-15 11:54:29 $
+|     $Revision: 1.380 $
+|     $Date: 2009-09-29 09:25:35 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -1119,25 +1119,37 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 	return FALSE;
 }
 
-function getperms($arg, $ap = ADMINPERMS) {
+function getperms($arg, $ap = ADMINPERMS) 
+{
+	if(!ADMIN)
+	{
+		return FALSE;
+	}
 	global $PLUGINS_DIRECTORY;
-	if ($ap == "0") {
+	if ($ap == "0")
+	{
 		return TRUE;
 	}
-	if ($ap == "") {
+	if ($ap == "")
+	{
 		return FALSE;
 	}
 	$ap='.'.$ap;
-	if ($arg == 'P' && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#", e_SELF, $matches)) {
+	if ($arg == 'P' && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#", e_SELF, $matches)) 
+	{
 		$psql=new db;
-		if ($psql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' ")) {
+		if ($psql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' "))
+		{
 			$row=$psql->db_Fetch();
 			$arg='P'.$row[0];
 		}
 	}
-	if (strpos($ap, ".".$arg.".") !== FALSE) {
+	if (strpos($ap, ".".$arg.".") !== FALSE) 
+	{
 		return TRUE;
-	} else {
+	} 
+	else 
+	{
 		return FALSE;
 	}
 }
