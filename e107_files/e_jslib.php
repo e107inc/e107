@@ -6,35 +6,42 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  * 
- * e107 Javascript API
+ * Javascript files consolidation script (gzip compression)
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/e_jslib.php,v $
- * $Revision: 1.3 $
- * $Date: 2008-11-21 16:24:49 $
+ * $Revision: 1.4 $
+ * $Date: 2009-09-29 17:40:56 $
  * $Author: secretr $
  * 
 */
 
-/*
-    called from header_default.php - just after e_header processing
-*/
+// prevent notices/warnings to break JS source
     error_reporting(0);
 
 //output cache if available before calling the api
     e_jslib_cache_out();
 
-//v0.8 - we need THEME defines here (do we?)
-    $_E107 = array('no_forceuserupdate' => 1, 'no_online' => 1,'no_menus' => 1,'no_prunetmp' => 1);
+//v0.8 - we need THEME defines here (do we?) - WE DON'T
+    //$_E107 = array('no_forceuserupdate' => 1, 'no_online' => 1, 'no_menus' => 1, 'no_prunetmp' => 1);
+	$_E107['minimal'] = true;
     
 //admin or front-end call
     if(strpos($_SERVER['QUERY_STRING'], '_admin') !== FALSE)
-        $eplug_admin = TRUE;
-        
+	{
+        define('ADMIN_AREA', true); //force admin area
+	}
+	else 
+	{
+		define('USER_AREA', true); //force user area
+	}
+    
+//call jslib handler, render content
     require_once("../class2.php");
     require_once(e_HANDLER.'jslib_handler.php');
     $jslib = new e_jslib();
     $jslib->core_run(); 
-
+	
+	exit;
  
     /**
      * FUNCTIONS required for retrieveing cache without e107 API

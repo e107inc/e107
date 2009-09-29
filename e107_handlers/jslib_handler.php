@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-09-28 19:17:58 $
+ * $Revision: 1.6 $
+ * $Date: 2009-09-29 17:40:55 $
  * $Author: secretr $
  * 
 */
@@ -17,7 +17,7 @@ global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
 class e_jslib
 {
     
-    function e_jslib()
+    function __construct()
     {
 
     }
@@ -36,14 +36,23 @@ class e_jslib
      */
     function core_run()
     {
-        global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
+        //global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
         
 		ob_start(); 
 	    ob_implicit_flush(0);
 	
 	    header("Last-modified: " . gmdate("D, d M Y H:i:s",mktime(0,0,0,15,2,2004)) . " GMT");
 	    header('Content-type: text/javascript', TRUE);
-        
+		
+		$e_jsmanager = e107::getJs();
+		$e_jsmanager->renderJs('core', null, false);
+		$e_jsmanager->renderJs('plugin', null, false);
+		$e_jsmanager->renderJs('theme', null, false);
+		
+		
+        //Output
+        $this->content_out();
+ /*       
         //array - uses the same format as $core_jslib
         if (!isset($THEME_CORE_JSLIB) || ! is_array($THEME_CORE_JSLIB))
             $THEME_CORE_JSLIB = array();
@@ -65,7 +74,7 @@ class e_jslib
         $where_now = $eplug_admin ? 'admin' : 'front';
         
         //1. Core libs - prototype + scriptaculous effects
-        echo "/* Prototype/Scriptaculous/Core libraries */\n";
+        echo "// Prototype/Scriptaculous/Core libraries \n";
         foreach ($core_jslib as $core_path => $where)
         {
             if ($where != 'all' && $where != $where_now)
@@ -84,9 +93,9 @@ class e_jslib
         }
         
         //2. Plugins output - all 3-rd party libs
-        if (varset($pref['e_jslib']))
+        if (varsettrue($pref['e_jslib_plugin']))
         {
-            foreach ($pref['e_jslib']['plugins'] as $plugin_name => $plugin_libs)
+            foreach ($pref['e_jslib_plugin'] as $plugin_name => $plugin_libs)
             {
                 if ($plugin_libs)
                 {
@@ -98,7 +107,7 @@ class e_jslib
                         
                         $lib_path = $plugin_name . '/' . trim($plugin_lib, '/');
                         
-                        echo "/* $plugin_name libraries */\n\n";
+                        echo "// $plugin_name libraries \n\n";
                         
                         if (substr($plugin_lib, - 4) == '.php')
                         {
@@ -118,7 +127,7 @@ class e_jslib
         //3. Theme libs
         if (varset($THEME_JSLIB) && is_array($THEME_JSLIB))
         {
-            echo "/* Theme libraries */\n\n";
+            echo "// Theme libraries \n\n";
             foreach ($THEME_JSLIB as $lib_path => $where)
             {
                 if ($where != 'all' && $where != $where_now)
@@ -136,9 +145,7 @@ class e_jslib
                 }
             }
         }
-        
-        //Output
-        $this->content_out();
+*/   
     }
     
     /**
