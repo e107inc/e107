@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.51 $
- * $Date: 2009-09-19 15:27:26 $
+ * $Revision: 1.52 $
+ * $Date: 2009-09-29 17:43:13 $
  * $Author: secretr $
 */
 
@@ -57,12 +57,6 @@ class e107
 	 * @var boolean
 	 */
 	protected static $_sc_core_loaded = false;
-	
-	/**
-	 * message handler included check
-	 * @var boolean
-	 */
-	protected static $_message_included = false;
 	
 	/**
 	 * Singleton instance
@@ -795,14 +789,31 @@ class e107
 	 *
 	 * @return eMessage
 	 */
-	public static function getMessageHandler()
+	public static function getMessage()
 	{
-		if(!self::$_message_included)
+		static $included = false;
+		if(!$included)
 		{
 			e107_require_once(e_HANDLER.'message_handler.php');
-			self::$_message_included = true;
+			$included = true;
 		}
 		return eMessage::getInstance();
+	}
+	
+	/**
+	 * Retrieve JS Manager singleton object
+	 *
+	 * @return e_jsmanager
+	 */
+	public static function getJs()
+	{
+		static $included = false;
+		if(!$included)
+		{
+			e107_require_once(e_HANDLER.'js_manager.php');
+			$included = true;
+		}
+		return e_jsmanager::getInstance();
 	}
 	
 	/**
