@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/admin_theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-19 19:42:13 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.3 $
+|     $Date: 2009-09-29 17:42:23 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,13 +41,11 @@ define("IMODE", "lite");
 // [dont render core style sheet link]
 	$no_core_css = TRUE;
 
-/**
- * JSLIB instructions (could be chaged in the near future)
- */
-$THEME_CORE_JSLIB = array(
-	'jslib/core/decorate.js' => 'all',
-	'jslib/core/tabs.js' => 'admin'
-);
+//temporary fixed - awaiting theme.xml addition
+e107::getJs()->requireCoreLib(array(
+	'core/decorate.js' => 2,
+	'core/tabs.js' => 2
+));
 
 function theme_head() 
 {
