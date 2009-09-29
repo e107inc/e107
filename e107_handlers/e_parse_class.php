@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.63 $
-* $Date: 2009-09-28 19:17:58 $
+* $Revision: 1.64 $
+* $Date: 2009-09-29 11:32:09 $
 * $Author: secretr $
 *
 */
@@ -1355,9 +1355,9 @@ class e_parse
 			break;
 			
 			case 4: // absolute & relative paths
-				$url = $this->replaceConstants($url, 3);
-				$url = $this->replaceConstants($url, 2);
-				$url = $this->replaceConstants($url, 1);
+				$url = $this->createConstants($url, 3);
+				$url = $this->createConstants($url, 2);
+				$url = $this->createConstants($url, 1);
 				return $url;
 			break;
 			
