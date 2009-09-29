@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: plugin.xml,v 1.1 2009-09-29 00:03:01 e107coders Exp $ -->
+<e107Plugin name="Release" version="1.0" compatibility="0.8" installRequired="true" >
+	<author name="e107 Inc." url="http://e107.org" />
+	<description>Manage Release Feeds for e107 Plugins and Themes</description>
+	<category>tools</category>
+	<logLanguageFile filename="languages/--LAN--_admin_poll.php" />
+	<adminLinks>
+		<link url='admin_config.php' description='Configure' icon='images/e107_icon_32.png' iconSmall='images/e107_icon_16.png' primary='true' >Configure</link>
+	</adminLinks>
+	<pluginPrefs>
+	</pluginPrefs>
+</e107Plugin>
