@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.42 $
-* $Date: 2009-09-19 15:27:26 $
-* $Author: secretr $
+* $Revision: 1.43 $
+* $Date: 2009-09-29 21:25:01 $
+* $Author: e107steved $
 *
 */
 
@@ -1219,11 +1219,10 @@ class e_install
 
 		foreach ($result[0] as $sql_table)
 		{
-			//@TODO is this still in use?
-			preg_match("/CREATE TABLE\s(.*?)\s\(/si", $sql_table, $match);
-			$tablename = $match[1];
+//			preg_match("/CREATE TABLE\s(.*?)\s\(/si", $sql_table, $match);
+//			$tablename = $match[1];
 
-			preg_match_all("/create(.*?)myisam;/si", $sql_data, $result );
+//			preg_match_all("/create(.*?)myisam;/si", $sql_data, $result );
 			$sql_table = preg_replace("/create table\s/si", "CREATE TABLE {$this->previous_steps['mysql']['prefix']}", $sql_table);
 			if (!$this->dbqry($sql_table, $link))
 			{
