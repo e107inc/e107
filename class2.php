@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.146 $
-* $Date: 2009-09-25 20:21:30 $
-* $Author: secretr $
+* $Revision: 1.147 $
+* $Date: 2009-09-29 09:25:07 $
+* $Author: marj_nl_fr $
 *
 */
 //
@@ -1346,7 +1346,7 @@ function check_class($var, $userclass = USERCLASS_LIST, $uid = 0)
 
 function getperms($arg, $ap = ADMINPERMS)
 {
-	if (trim($ap) === '')
+	if( ! ADMIN || trim($ap) === '')
 	{
 		return false;
 	}
@@ -1356,14 +1356,14 @@ function getperms($arg, $ap = ADMINPERMS)
 		return true;
 	}
 
-	$ap='.'.$ap;
+	$ap = '.'.$ap;
 	if ($arg == 'P' && preg_match("#(.*?)/".e107::getInstance()->getFolder('plugins')."(.*?)/(.*?)#", e_SELF, $matches))
 	{
-		$psql=new db;
+		$psql = new db;
 		if ($psql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' "))
 		{
-			$row=$psql->db_Fetch();
-			$arg='P'.$row[0];
+			$row = $psql->db_Fetch();
+			$arg = 'P'.$row[0];
 		}
 	}
 
@@ -1372,9 +1372,9 @@ function getperms($arg, $ap = ADMINPERMS)
 	{
 		return true;
 	}
-    elseif(strpos($arg,"|")) // check for multiple perms - separated by '|'.
+    elseif(strpos($arg, "|")) // check for multiple perms - separated by '|'.
 	{
-    	$tmp = explode("|",$arg);
+    	$tmp = explode("|", $arg);
 		foreach($tmp as $val)
 		{
             if (strpos($ap, '.'.$val.'.') !== false)
