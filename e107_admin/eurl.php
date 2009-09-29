@@ -9,8 +9,8 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-09-25 20:20:23 $
+ * $Revision: 1.11 $
+ * $Date: 2009-09-29 17:43:13 $
  * $Author: secretr $
 */
 
@@ -73,7 +73,7 @@ class admin_eurl_config {
 
 	function renderPage()
 	{
-		$emessage = e107::getMessageHandler();
+		$emessage = e107::getMessage();
 		$empty = "
 							<tr>
 								<td colspan='2'>".LAN_EURL_EMPTY."</td>
@@ -272,7 +272,7 @@ class admin_eurl_config {
 		{
 			if(save_prefs())
 			{
-				e107::getMessageHandler()->add(LAN_EURL_AUTOSAVE);
+				e107::getMessage()->add(LAN_EURL_AUTOSAVE);
 			}
 
 		}

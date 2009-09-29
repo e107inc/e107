@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision: 1.26 $
- |     $Date: 2009-09-21 12:52:52 $
+ |     $Revision: 1.27 $
+ |     $Date: 2009-09-29 17:43:13 $
  |     $Author: secretr $
  +----------------------------------------------------------------------------+
  */
@@ -64,7 +64,7 @@ class comment
 			}
 			//FIXME - e_REQUEST_URI?
 			//e_SELF."?".e_QUERY
-			$text = "\n<div id='e-comment-form' style='text-align:center'>\n".e107::getMessageHandler()->render('postcomment', true, false, false);//temporary here
+			$text = "\n<div id='e-comment-form' style='text-align:center'>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
 			$text .= "<form method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."' id='dataform' >\n<table style='width:100%'>";
 			if ($pref['nested_comments'])
 			{
@@ -457,7 +457,7 @@ class comment
 					if (!($inserted_id = $sql->db_Insert("comments", $edata_li)))
 					{
 						//echo "<b>".COMLAN_323."</b> ".COMLAN_11;
-						e107::getMessageHandler()->addStack(COMLAN_11, 'postcomment', E_MESSAGE_ERROR);
+						e107::getMessage()->addStack(COMLAN_11, 'postcomment', E_MESSAGE_ERROR);
 						
 					}
 					else
