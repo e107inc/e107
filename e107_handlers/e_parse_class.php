@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.64 $
-* $Date: 2009-09-29 11:32:09 $
+* $Revision: 1.65 $
+* $Date: 2009-09-29 17:40:55 $
 * $Author: secretr $
 *
 */
@@ -1191,7 +1191,7 @@ class e_parse
 	 * 									"" (default) = URL's get relative path e.g. ../e107_plugins/etc
 	 * @param mixed $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
 	 * 									when $mode is "" (default), ALL other e107 constants are replaced
-	 * @return 
+	 * @return string
 	 */
 	function replaceConstants($text, $mode = '', $all = false)
 	{

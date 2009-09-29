@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
-|   $Revision: 1.45 $
-|   $Date: 2009-08-31 13:12:03 $
-|   $Author: e107coders $
+|   $Revision: 1.46 $
+|   $Date: 2009-09-29 17:40:56 $
+|   $Author: secretr $
 +---------------------------------------------------------------+
 */
 
@@ -25,6 +25,10 @@ if(!defined('ADMIN_AREA'))
 	define("ADMIN_AREA", TRUE);
 }
 define("USER_AREA", FALSE);
+
+// Header included notification 
+define('HEADER_INIT', TRUE);
+
 $sql->db_Mark_Time('(Header Top)');
 
 //
@@ -214,22 +218,29 @@ else
 	define("e_WYSIWYG",FALSE);
 }
 
-// Load Javascript Libraries
-$hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).THEME.e_LANGUAGE.ADMIN).'_admin';
-//echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
+// [JSManager] Load JS Includes - Zone 1 - Before Library
+e107::getJs()->renderJs('header', 1);
+e107::getJs()->renderJs('header_inline', 1);
+
+// Load Javascript Library consolidation script
+// TODO - option to call libraries external (admin preferences)
+$hash = md5(serialize(varset($pref['e_jslib'])).THEME.e_LANGUAGE.ADMIN).'_admin'; //FIXME - hash is wrong, move this to e_jsmanager?
 echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
 
-//if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 
-	//echo "<script type='text/javascript' src='".e_FILE_ABS."e_ajax.php'></script>\n";
-//}
-	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
-	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
+// [JSManager] Load JS Includes - Zone 2 - After Library, before CSS
+e107::getJs()->renderJs('header', 2);
+e107::getJs()->renderJs('header_inline', 2);
 
+//DEPRECATED - use e107::getJs()->headerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
 if (isset($eplug_js) && $eplug_js) {
 	echo "\n<!-- eplug_js -->\n";
 	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }
+
+//FIXME - theme.js/user.js should be registered/rendered through e_jsmanager
+	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
+	if (is_readable(e_FILE.'user.js') && filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 
 
 if ((strpos(e_SELF, 'fileinspector.php') === FALSE) && getperms("0"))
@@ -264,8 +275,6 @@ if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == tru
 	echo "<![endif]-->\n";
 }
 
-if (function_exists('headerjs')){echo headerjs();  }
-
 //
 // E: Send CSS
 //
@@ -279,6 +288,10 @@ if (isset($eplug_css) && $eplug_css) {
 }
 
 echo "<!-- Theme css -->\n";
+if (!isset($no_core_css) || !$no_core_css) 
+{
+	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
+}
 //NEW - Iframe mod
 if (!defsettrue('e_IFRAME') && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) 
 {
@@ -296,11 +309,15 @@ else
 	$css_file = file_exists(THEME.'admin_style.css') ? THEME_ABS.'admin_style.css' : THEME_ABS.'style.css';
 	echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 }
-if (!isset($no_core_css) || !$no_core_css) 
-{
-	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
-}
 
+
+
+// [JSManager] Load JS Includes - Zone 3 - After Theme CSS, before e_meta and headerjs()
+e107::getJs()->renderJs('header', 3);
+e107::getJs()->renderJs('header_inline', 3);
+
+//XXX - do we still need it? 
+if (function_exists('headerjs')){echo headerjs();  }
 
 //
 // F: Send Meta Tags and Icon links
@@ -319,6 +336,10 @@ if (vartrue($pref['e_meta_list']))
 		}
 	}
 }
+
+// [JSManager] Load JS Includes - Zone 4 - After e_meta
+e107::getJs()->renderJs('header', 4);
+e107::getJs()->renderJs('header_inline', 4);
 
 
 // ---------- Favicon ---------
@@ -357,6 +378,7 @@ $body_onload = "";
 
 /*
  * Admin LAN
+ * TODO - remove it from here
  */
 require_once(e_HANDLER.'js_helper.php');
 echo "
@@ -367,8 +389,14 @@ echo "
 ";
 
 
+// [JSManager] Load JS Includes - Zone 5 - After theme_head, before e107:loaded trigger
+e107::getJs()->renderJs('header', 5);
+e107::getJs()->renderJs('header_inline', 5);
+
 /*
- * Fire Event e107:loaded
+ * Fire Event e107:loaded 
+ * TODO - remove it from here, should be registered to e_jsmanager
+ * or better - moved to core init.js(.php)
  */
 echo "<script type='text/javascript'>\n";
 echo "<!--\n";

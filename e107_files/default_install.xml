@@ -55,6 +55,15 @@
 		<core name='displaysql'>0</core>
 		<core name='displaythemeinfo'>0</core>
 		<core name='download_email'>0</core>
+		<core name='e_jslib_browser_cache'>0</core>
+		<core name='e_jslib_core'><![CDATA[array (
+  'prototype/prototype.js' => 'all',
+  'scriptaculous/scriptaculous.js' => 'all',
+  'scriptaculous/effects.js' => 'all',
+  'e107.js.php' => 'all',
+)]]></core>
+		<core name='e_jslib_plugin'><![CDATA[array ()]]></core>
+		<core name='e_jslib_theme'><![CDATA[array ()]]></core>
 		<core name='email_notify'>0</core>
 		<core name='email_text'></core>
 		<core name='emotepack'>default</core>
@@ -213,8 +222,7 @@ City, State, Country
 		<core name='wysiwyg'>0</core>
 		<core name='xup_enabled'>1</core>
 		<core name='xmlfeed_languagepacks'>http://www.e107.org/themeupdate.php</core>
-		<core name='xmlfeed_security'>http://www.e107.org/themeupdate.php</core>
-		<core name='email_item_class'>253</core>
+		<core name='xmlfeed_security'>http://www.e107.org/themeupdate.php</core>	
 		<emote name='alien!png'>!alien</emote>
 		<emote name='amazed!png'>!amazed</emote>
 		<emote name='angry!png'>!grr !angry</emote>
