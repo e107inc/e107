@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.147 $
-* $Date: 2009-09-29 09:25:07 $
-* $Author: marj_nl_fr $
+* $Revision: 1.148 $
+* $Date: 2009-09-29 17:45:06 $
+* $Author: secretr $
 *
 */
 //
@@ -83,8 +83,9 @@ if($register_globals == true)
 	unset($global);
 }
 
+// TODO - better ajax detection method (headers when possible)
 define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
-unset($_REQUEST['ajax_used']);
+unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something... 
 
 if(isset($_E107['minimal']) || e_AJAX_REQUEST)
 {
@@ -1066,12 +1067,13 @@ if	(
 	// Load admin phrases ASAP
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 }
-
+// This should avoid further checks - NOTE: used in js_manager.php
+define('e_ADMIN_AREA', $inAdminDir);
 
 if(!defined('THEME'))
 {
 	//Force USER_AREA added
-	if ($inAdminDir && varsettrue($pref['admintheme']) && !defsettrue('USER_AREA'))
+	if (e_ADMIN_AREA && varsettrue($pref['admintheme']) && !defsettrue('USER_AREA'))
 	{
 		//We have now e_IFRAME mod and USER_AREA force
 		// && (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE)
@@ -1082,7 +1084,7 @@ if(!defined('THEME'))
 	  }  */
 		checkvalidtheme($pref['admintheme']);
 	}
-	elseif (USERTHEME !== false/* && USERTHEME != 'USERTHEME'*/ && !$inAdminDir)
+	elseif (USERTHEME !== false/* && USERTHEME != 'USERTHEME'*/ && !e_ADMIN_AREA)
 	{
 		checkvalidtheme(USERTHEME);
 	}
