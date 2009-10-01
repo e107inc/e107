@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.148 $
-* $Date: 2009-09-29 17:45:06 $
+* $Revision: 1.149 $
+* $Date: 2009-10-01 15:05:41 $
 * $Author: secretr $
 *
 */
@@ -1068,12 +1068,12 @@ if	(
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 }
 // This should avoid further checks - NOTE: used in js_manager.php
-define('e_ADMIN_AREA', $inAdminDir);
+define('e_ADMIN_AREA', ($inAdminDir  && !defsettrue('USER_AREA'))); //Force USER_AREA added
 
 if(!defined('THEME'))
 {
-	//Force USER_AREA added
-	if (e_ADMIN_AREA && varsettrue($pref['admintheme']) && !defsettrue('USER_AREA'))
+	
+	if (e_ADMIN_AREA && varsettrue($pref['admintheme']))
 	{
 		//We have now e_IFRAME mod and USER_AREA force
 		// && (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE)

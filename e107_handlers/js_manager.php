@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-09-29 17:40:55 $
+ * $Revision: 1.3 $
+ * $Date: 2009-10-01 15:05:41 $
  * $Author: secretr $
  * 
 */
@@ -681,7 +681,8 @@ class e_jsmanager
 	 */
 	public function getCurrentTheme()
 	{
-		return ($this->isInAdmin() ? e107::getPref('admintheme') : e107::getPref('sitetheme'));
+		// XXX - USERTHEME is defined only on user session init
+		return ($this->isInAdmin() ? e107::getPref('admintheme') : defsettrue('USERTHEME', e107::getPref('sitetheme')));
 	}
 	
 	/**
