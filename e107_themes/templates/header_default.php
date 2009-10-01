@@ -9,8 +9,8 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-09-29 17:42:22 $
+ * $Revision: 1.42 $
+ * $Date: 2009-10-01 15:05:40 $
  * $Author: secretr $
 */
 
@@ -21,9 +21,6 @@ if(!defined('USER_AREA'))
 	define('USER_AREA',TRUE);
 }
 define('ADMIN_AREA',FALSE);
-
-// Header included notification 
-define('HEADER_INIT', TRUE);
 
 $e107 = e107::getInstance();
 $e107->sql->db_Mark_Time('(Header Top)');
@@ -113,6 +110,10 @@ else
 	define("e_WYSIWYG",FALSE);
 }
 
+// [JSManager] Load JS Includes - Zone 1 - Before Library, e_header and style
+e107::getJs()->renderJs('header', 1);
+e107::getJs()->renderJs('header_inline', 1);
+
 //
 // D: send CSS comes first
 //
@@ -201,14 +202,13 @@ if (varset($pref['e_header_list']) && is_array($pref['e_header_list']))
 // Send Javascript Libraries ALWAYS (for now)
 $hash = md5(serialize(varset($pref['e_jslib'])).serialize(varset($THEME_JSLIB)).THEME.e_LANGUAGE.ADMIN).'_front';
 echo "<script type='text/javascript' src='".e_FILE_ABS."e_jslib.php?{$hash}'></script>\n";
-/*
-if (!isset($no_core_js) || !$no_core_js)
-{
-	echo "<script type='text/javascript' src='".e_FILE_ABS."e_js.php'></script>\n";
-}
-*/
+
+// [JSManager] Load JS Includes - Zone 2 - After Library
+e107::getJs()->renderJs('header', 2);
+e107::getJs()->renderJs('header_inline', 2);
 
 // Send Plugin JS Files
+//DEPRECATED - use e107::getJs()->headerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
 if (isset($eplug_js) && $eplug_js)
 {
 	echo "\n<!-- eplug_js -->\n";
@@ -227,6 +227,7 @@ if (isset($eplug_js) && $eplug_js)
 }
 
 // Send Theme JS Files
+//DEPRECATE this as well?
 if (isset($theme_js_php) && $theme_js_php)
 {
 	echo "<script type='text/javascript' src='".THEME_ABS."theme-js.php'></script>\n";
@@ -240,6 +241,7 @@ else
 }
 
 //XXX - CHAP JS
+// TODO - convert it to e107::getJs()->header/footerFile() call
 if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHAP'],0))
 {
   if ($pref['password_CHAP'] == 2)
@@ -251,11 +253,12 @@ if (!USER && ($pref['user_tracking'] == "session") && varset($pref['password_CHA
   $js_body_onload[] = "getChallenge();";
 }
 
-
+/*
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true))
 {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n\n";
 }
+*/
 
 //IEpngfix - visible by IE6 only
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
@@ -279,6 +282,10 @@ if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == tru
 // Deprecated function finally removed
 //if(function_exists('core_head')){ echo core_head(); }
 
+// [JSManager] Load JS Includes - Zone 3 - After e_plug/theme.js, before e_meta and headerjs()
+e107::getJs()->renderJs('header', 3);
+e107::getJs()->renderJs('header_inline', 3);
+
 
 //
 // F: Send Meta Tags, Icon links, headerjs()
@@ -298,6 +305,10 @@ if (is_array($pref['e_meta_list']))
 
 //headerjs moved here - it should be able to read any JS/code sent by e_meta
 if (function_exists('headerjs')) {echo headerjs();  }
+
+// [JSManager] Load JS Includes - Zone 4 - Just after e_meta, headerjs
+e107::getJs()->renderJs('header', 4);
+e107::getJs()->renderJs('header_inline', 4);
 
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
@@ -408,6 +419,10 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
 // J: Send end of <head> and start of <body>
 //
 
+// [JSManager] Load JS Includes - Zone 5 - After theme_head, just before e107:loaded trigger
+e107::getJs()->renderJs('header', 5);
+e107::getJs()->renderJs('header_inline', 5);
+
 /*
  * Fire Event e107:loaded
  * FIXME - disable core JS
@@ -422,12 +437,16 @@ echo "</script>\n";
 
 echo "</head>
 <body".$body_onload.">\n";
+
+// Header included notification, from this point header includes are not possible
+define('HEADER_INIT', TRUE);
+
 $e107->sql->db_Mark_Time("Main Page Body");
 
 //
 // K: (The rest is ignored for popups, which have no menus)
 //
-//echo "XX - ".$e107_popup;
+//echo "XXX - ".$e107_popup;
 // require $e107_popup =1; to use it as header for popup without menus
 if(!isset($e107_popup))
 {
