@@ -1,5 +1,5 @@
 /**
- * $Id: editor_template_src.js,v 1.1 2009-09-28 07:18:42 e107coders Exp $
+ * $Id: editor_template_src.js,v 1.2 2009-10-02 18:20:04 e107coders Exp $
  *
  * This file is meant to showcase how to create a simple theme. The advanced
  * theme is more suitable for production use.

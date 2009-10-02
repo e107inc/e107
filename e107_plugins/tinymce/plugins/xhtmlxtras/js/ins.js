@@ -1,5 +1,5 @@
  /**
- * $Id: ins.js,v 1.2 2009-09-21 16:33:20 e107coders Exp $
+ * $Id: ins.js,v 1.3 2009-10-02 18:19:50 e107coders Exp $
  *
  * @author Moxiecode - based on work by Andrew Tetlaw
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
