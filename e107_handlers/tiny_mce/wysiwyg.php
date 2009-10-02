@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2009-09-21 02:32:59 $
+|     $Revision: 1.41 $
+|     $Date: 2009-10-02 18:45:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ if(strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"],""), "gzip") && (ini_get("zlib
 		debug : false
 	});
 	</script>
-";
+	";
 }
 else
 {
@@ -116,7 +116,8 @@ $text .= ",convert_fonts_to_spans : true\n";
 $text .= ",trim_span_elements: true\n";
 $text .= ",inline_styles: true\n";
 $text .= ",debug: false\n";
-$text .= ",force_br_newlines: true\n";
+$text .= ",force_br_newlines: false\n";
+$text .= ",forced_root_block : ''\n";
 $text .= ",force_p_newlines: false\n";
 $text .= ",entity_encoding: \"raw\" \n";
 $text .= ",convert_fonts_to_styles: true\n";

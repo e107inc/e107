@@ -1,5 +1,5 @@
 /**
- * $Id: editor_plugin_src.js,v 1.13 2009-09-21 02:33:10 e107coders Exp $
+ * $Id: editor_plugin_src.js,v 1.14 2009-10-02 18:45:46 e107coders Exp $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
@@ -7,6 +7,20 @@
 
 (function() {
 	var each = tinymce.each;
+
+	// Checks if the selection/caret is at the start of the specified block element
+	function isAtStart(rng, par) {
+		var doc = par.ownerDocument, rng2 = doc.createRange(), elm;
+
+		rng2.setStartBefore(par);
+		rng2.setEnd(rng.endContainer, rng.endOffset);
+
+		elm = doc.createElement('body');
+		elm.appendChild(rng2.cloneContents());
+
+		// Check for text characters of other elements that should be treated as content
+		return elm.innerHTML.replace(/<(br|img|object|embed|input|textarea)[^>]*>/gi, '-').replace(/<[^>]+>/g, '').length == 0;
+	};
 
 	tinymce.create('tinymce.plugins.TablePlugin', {
 		init : function(ed, url) {
@@ -64,6 +78,34 @@
 						if (last && last.nodeName == 'TABLE')
 							ed.dom.add(ed.getBody(), 'p', null, '<br mce_bogus="1" />');
 					};
+
+					// Fixes an bug where it's impossible to place the caret before a table in Gecko
+					// this fix solves it by detecting when the caret is at the beginning of such a table
+					// and then manually moves the caret infront of the table
+					if (tinymce.isGecko) {
+						ed.onKeyDown.add(function(ed, e) {
+							var rng, table, dom = ed.dom;
+
+							// On gecko it's not possible to place the caret before a table
+							if (e.keyCode == 37 || e.keyCode == 38) {
+								rng = ed.selection.getRng();
+								table = dom.getParent(rng.startContainer, 'table');
+
+								if (table && ed.getBody().firstChild == table) {
+									if (isAtStart(rng, table)) {
+										rng = dom.createRng();
+
+										rng.setStartBefore(table);
+										rng.setEndBefore(table);
+
+										ed.selection.setRng(rng);
+
+										e.preventDefault();
+									}
+								}
+							}
+						});
+					}
 
 					ed.onKeyUp.add(fixTableCaretPos);
 					ed.onSetContent.add(fixTableCaretPos);
