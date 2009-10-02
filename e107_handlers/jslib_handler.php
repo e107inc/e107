@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-09-29 17:40:55 $
+ * $Revision: 1.7 $
+ * $Date: 2009-10-02 13:46:25 $
  * $Author: secretr $
  * 
 */
@@ -26,13 +26,13 @@ class e_jslib
      * Collect & output all available JS libraries  (requires e107 API)
      * FIXME 
      * - cache jslib in a pref on plugin/theme install only (plugin.xml, theme.xml)
-     * - the structure of the cached pref array?
-     * - kill all dupps
+     * - [done - e_jslib_*] the structure of the cached pref array?
+     * - [done - js manager] kill all dupps
      * - jslib settings - Administration area (compression on/off, admin log on/off 
      * manual control for included JS - really not sure about this, 
      * Force Browser Cache refresh - timestamp added to the url hash)
      * - how and when to add JS lans for core libraries? 
-     * - separate methods for collecting & storing JS files (to be used in install/update routines) and output the JS content 
+     * - [done - js manager] separate methods for collecting & storing JS files (to be used in install/update routines) and output the JS content 
      */
     function core_run()
     {
@@ -40,18 +40,54 @@ class e_jslib
         
 		ob_start(); 
 	    ob_implicit_flush(0);
-	
-	    header("Last-modified: " . gmdate("D, d M Y H:i:s",mktime(0,0,0,15,2,2004)) . " GMT");
-	    header('Content-type: text/javascript', TRUE);
 		
 		$e_jsmanager = e107::getJs();
+		
+		$lmodified = array();
 		$e_jsmanager->renderJs('core', null, false);
+		$lmodified[] = $e_jsmanager->getLastModfied('core');
+		
 		$e_jsmanager->renderJs('plugin', null, false);
+		$lmodified[] = $e_jsmanager->getLastModfied('plugin');
+		
 		$e_jsmanager->renderJs('theme', null, false);
+		$lmodified[] = $e_jsmanager->getLastModfied('theme');
 		
+		$lmodified[] = $e_jsmanager->getCacheId(); //e107::getPref('e_jslib_browser_cache', 0)
 		
+		// last modification time for loaded files
+		$lmodified = max($lmodified);
+		
+		if (function_exists('date_default_timezone_set')) 
+		{
+		    date_default_timezone_set('UTC');
+		}
+
+		// If-Modified check only if cache disabled
+		// if cache is enabled, cache file modification date is set to $lmodified
+		if(!e107::getPref('syscachestatus'))
+		{
+			// not modified - send 304 and exit
+			if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lmodified) 
+			{
+			    header("HTTP/1.1 304 Not Modified", true);
+			    exit;
+			}
+		}
+
+		// send last modified date
+		header('Cache-Control: must-revalidate');
+		header('Last-modified: '.gmdate('r', $lmodified), true);
+		
+		// send content type
+		header('Content-type: text/javascript', true);
+		
+		// Expire header - 1 year
+		$time = time()+ 365 * 86400;
+		header('Expires: '.gmdate('r', $time), true);
+
         //Output
-        $this->content_out();
+        $this->content_out($lmodified);
  /*       
         //array - uses the same format as $core_jslib
         if (!isset($THEME_CORE_JSLIB) || ! is_array($THEME_CORE_JSLIB))
@@ -152,7 +188,7 @@ class e_jslib
      * Output buffered content (requires e107 API)
      *
      */
-    function content_out()
+    function content_out($lmodified)
     {
         global $pref, $admin_log;
         
@@ -172,7 +208,7 @@ class e_jslib
             $gzdata .= pack("V", $crc) . pack("V", $size);
             
             $gsize = strlen($gzdata);
-            $this->set_cache($gzdata, $encoding);
+            $this->set_cache($gzdata, $encoding, $lmodified);
             
             header('Content-Encoding: ' . $encoding);
             //header('Content-Length: '.$gsize);
@@ -184,7 +220,7 @@ class e_jslib
         else
         {
             //header('Content-Length: '.strlen($contents));
-            $this->set_cache($contents);
+            $this->set_cache($contents, '', $lmodified);
             print($contents);
             //TODO - log/debug
             //@file_put_contents('cache/e_jslib_log', "----------\nno cache used - raw\n\n", FILE_APPEND);
@@ -198,17 +234,17 @@ class e_jslib
      *
      * @param string $contents
      * @param string $encoding browser accepted encoding
+     * @param integer $lmodified last modfied time
      */
-    function set_cache($contents, $encoding = '')
+    function set_cache($contents, $encoding = '', $lmodified = 0)
     {
-        global $pref;
-        
-        if (varsettrue($pref['syscachestatus']))
+        if (e107::getPref('syscachestatus'))
         {
-            $cacheFile = $this->cache_file($encoding);
+            $cacheFile = $this->cache_filename($encoding);
+			if(!$lmodified) $lmodified = time(); 
             @file_put_contents($cacheFile, $contents);
             @chmod($cacheFile, 0775);
-            @touch($cacheFile);
+            @touch($cacheFile, $lmodified);
         }
     }
     
@@ -219,37 +255,43 @@ class e_jslib
      */
     function browser_enc()
     {
-        //double-compression fix (thanks Topper), remove possible php warning
-        if ( headers_sent() || ini_get('zlib.output_compression') || !isset($_SERVER["HTTP_ACCEPT_ENCODING"]) )
-        {
-            $encoding = '';
-        }
-        elseif (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false)
-        {
-            $encoding = 'x-gzip';
-        }
-        elseif (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false)
-        {
-            $encoding = 'gzip';
-        }
-        else
-        {
-            $encoding = '';
-        }
-        return $encoding;
+		//NEW - option to disable completely gzip compression
+		if(strpos($_SERVER['QUERY_STRING'], '_nogzip'))
+		{
+			return '';
+		}
+		//double-compression fix - thanks Topper
+		if (headers_sent() || ini_get('zlib.output_compression') || !isset($_SERVER["HTTP_ACCEPT_ENCODING"]))
+		{
+			$encoding = '';
+		}
+		elseif (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false)
+		{
+			$encoding = 'x-gzip';
+		}
+		elseif (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false)
+		{
+			$encoding = 'gzip';
+		}
+		else
+		{
+			$encoding = '';
+		}
+		
+		return $encoding;
     }
     
     /**
      * Create cache filename (doesn't require e107 API)
      *
      * @param string $encoding
-     * @param string $cacheStr
+     * @param string $cacheStr defaults to 'S_e_jslib'
      * @return string cache filename
      */
-    function cache_file($encoding = '', $cacheStr =  'S_e_jslib')
+    function cache_filename($encoding = '', $cacheStr =  'S_e_jslib')
     {
         $cacheDir = 'cache/';
-        $hash = $_SERVER['QUERY_STRING'] ? md5($_SERVER['QUERY_STRING']) : 'nomd5';
+        $hash = $_SERVER['QUERY_STRING'] && $_SERVER['QUERY_STRING'] !== '_nogzip' ? md5(str_replace('_nogzip', '', $_SERVER['QUERY_STRING'])) : 'nomd5';
         $cacheFile = $cacheDir . $cacheStr . ($encoding ? '_' . $encoding : '') . '_' . $hash . '.cache.php';
         
         return $cacheFile;
