@@ -1,5 +1,5 @@
 /**
- * $Id: editor_plugin_src.js,v 1.2 2009-09-21 16:31:49 e107coders Exp $
+ * $Id: editor_plugin_src.js,v 1.3 2009-10-02 18:18:25 e107coders Exp $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
@@ -71,7 +71,7 @@
 					return;
 
 				// Create container to paste into
-				n = dom.add(body, 'div', {id : '_mcePaste'}, '&nbsp;');
+				n = dom.add(body, 'div', {id : '_mcePaste'}, '\uFEFF');
 
 				// If contentEditable mode we need to find out the position of the closest element
 				if (body != ed.getDoc().body)
@@ -100,8 +100,11 @@
 
 					// Check if the contents was changed, if it wasn't then clipboard extraction failed probably due
 					// to IE security settings so we pass the junk though better than nothing right
-					if (n.innerHTML === '&nbsp;')
+					if (n.innerHTML === '\uFEFF') {
+						ed.execCommand('mcePasteWord');
+						e.preventDefault();
 						return;
+					}
 
 					// Process contents
 					process({content : n.innerHTML});
@@ -120,11 +123,15 @@
 
 					// Wait a while and grab the pasted contents
 					window.setTimeout(function() {
-						var h = '';
+						var h = '', nl = dom.select('div[id=_mcePaste]');
 
 						// WebKit will split the div into multiple ones so this will loop through then all and join them to get the whole HTML string
-						each(dom.select('div[id=_mcePaste]').reverse(), function(n) {
+						each(nl, function(n) {
 							h += (dom.select('> span.Apple-style-span div', n)[0] || dom.select('> span.Apple-style-span', n)[0] || n).innerHTML;
+						});
+
+						// Remove the nodes
+						each(nl, function(n) {
 							dom.remove(n);
 						});
 
@@ -235,19 +242,31 @@
 
 			// Allow for class names to be retained if desired; either all, or just the ones from Word
 			// Note that the paste_strip_class_attributes: 'none, verify_css_classes: true is also a good variation.
-			stripClass = ed.getParam('paste_strip_class_attributes', 'all');
+			stripClass = ed.getParam('paste_strip_class_attributes');
 			if (stripClass != 'none') {
-				if (stripClass == 'all') {
-					process([
-						/ class=\"([^\"]*)\"/gi,	// class attributes with quotes
-						/ class=(\w+)/gi			// class attributes without quotes (IE)
-					]);
-				} else { // Only strip the 'mso*' classes
-					process([
-						/ class=\"(mso[^\"]*)\"/gi,	// class attributes with quotes
-						/ class=(mso\w+)/gi			// class attributes without quotes (IE)
-					]);
-				}
+				// Cleans everything but mceItem... classes
+				function cleanClasses(str, cls) {
+					var i, out = '';
+
+					// Remove all classes
+					if (stripClass == 'all')
+						return '';
+
+					cls = tinymce.explode(cls, ' ');
+
+					for (i = cls.length - 1; i >= 0; i--) {
+						// Remove Mso classes
+						if (!/^(Mso)/i.test(cls[i]))
+							out += (!out ? '' : ' ') + cls[i];
+					}
+
+					return ' class="' + out + '"';
+				};
+
+				process([
+					[/ class=\"([^\"]*)\"/gi, cleanClasses],	// class attributes with quotes
+					[/ class=(\w+)/gi, cleanClasses]			// class attributes without quotes (IE)
+				]);
 			}
 
 			// Remove spans option

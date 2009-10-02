@@ -1,5 +1,5 @@
 /**
- * $Id: form_utils.js,v 1.3 2009-09-21 16:31:03 e107coders Exp $
+ * $Id: form_utils.js,v 1.4 2009-10-02 18:17:40 e107coders Exp $
  *
  * Various form utilitiy functions.
  *

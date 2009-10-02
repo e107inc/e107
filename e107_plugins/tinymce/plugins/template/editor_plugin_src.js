@@ -1,5 +1,5 @@
 /**
- * $Id: editor_plugin_src.js,v 1.2 2009-09-21 16:31:49 e107coders Exp $
+ * $Id: editor_plugin_src.js,v 1.3 2009-10-02 18:18:25 e107coders Exp $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
@@ -141,10 +141,10 @@
 				fmt = fmt.replace("%S", "" + addZeros(d.getSeconds(), 2));
 				fmt = fmt.replace("%I", "" + ((d.getHours() + 11) % 12 + 1));
 				fmt = fmt.replace("%p", "" + (d.getHours() < 12 ? "AM" : "PM"));
-				fmt = fmt.replace("%B", "" + tinyMCE.getLang("template_months_long").split(',')[d.getMonth()]);
-				fmt = fmt.replace("%b", "" + tinyMCE.getLang("template_months_short").split(',')[d.getMonth()]);
-				fmt = fmt.replace("%A", "" + tinyMCE.getLang("template_day_long").split(',')[d.getDay()]);
-				fmt = fmt.replace("%a", "" + tinyMCE.getLang("template_day_short").split(',')[d.getDay()]);
+				fmt = fmt.replace("%B", "" + this.editor.getLang("template_months_long").split(',')[d.getMonth()]);
+				fmt = fmt.replace("%b", "" + this.editor.getLang("template_months_short").split(',')[d.getMonth()]);
+				fmt = fmt.replace("%A", "" + this.editor.getLang("template_day_long").split(',')[d.getDay()]);
+				fmt = fmt.replace("%a", "" + this.editor.getLang("template_day_short").split(',')[d.getDay()]);
 				fmt = fmt.replace("%%", "%");
 
 				return fmt;
