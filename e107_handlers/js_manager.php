@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-10-01 15:05:41 $
+ * $Revision: 1.4 $
+ * $Date: 2009-10-02 13:46:25 $
  * $Author: secretr $
  * 
 */
@@ -85,7 +85,12 @@ class e_jsmanager
 	 * 
 	 * @var integer
 	 */
-	protected $_cache_id = 0;
+	protected $_browser_cache_id = 0;
+	
+	/**
+	 * @var array
+	 */
+	protected $_lastModified = array();
     
 	/**
 	 * Singleton instance
@@ -496,21 +501,21 @@ class e_jsmanager
 		
 		switch($mod)
 		{
-			case 'core':
-				$this->renderFile($this->_e_jslib_core, $external, 'Core libraries');
+			case 'core': //e_jslib
+				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_core, $external, 'Core libraries'));
 				$this->_e_jslib_core = array();
 			break;
 		
-			case 'plugin':
+			case 'plugin': //e_jslib
 				foreach($this->_e_jslib_plugin as $plugname => $paths)
 				{
-					$this->renderFile($paths, $external, $plugname.' libraries');
+					$this->setLastModfied($mod, $this->renderFile($paths, $external, $plugname.' libraries'));
 				}
 				$this->_e_jslib_plugin = array();
 			break;
 			
-			case 'theme':
-				$this->renderFile($this->_e_jslib_theme, $external, 'Theme libraries');
+			case 'theme': //e_jslib
+				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_theme, $external, 'Theme libraries'));
 				$this->_e_jslib_theme = array();
 			break;
 			
@@ -576,7 +581,7 @@ class e_jsmanager
 	 * @param string $label added as comment if non-empty
 	 * @return void
 	 */
-	public function renderFile($file_path_array, $external = false, $label = '')
+	public function renderFile($file_path_array, $external = false, $label = '', $checkModified = true)
 	{
 		if(empty($file_path_array))
 		{
@@ -588,6 +593,8 @@ class e_jsmanager
 		{
 			echo "<!-- [JSManager] ".$label." -->\n";
 		}
+		
+		$lmodified = 0;
 		foreach ($file_path_array as $path)
 		{
             if (substr($path, - 4) == '.php')
@@ -598,7 +605,10 @@ class e_jsmanager
 					echo "\n";
 					continue;
 				}
-                include_once($tp->replaceConstants($path, ''));
+				
+				$path = $tp->replaceConstants($path, '');
+				if($checkModified) $lmodified = max($lmodified, filemtime($path));
+                include_once($path);
                 echo "\n";
             }
             else
@@ -609,10 +619,15 @@ class e_jsmanager
 					echo "\n";
 					continue;
 				}
-                echo file_get_contents($tp->replaceConstants($path, ''));
+				
+				$path = $tp->replaceConstants($path, '');
+				if($checkModified) $lmodified = max($lmodified, filemtime($path));
+                echo file_get_contents($path);
                 echo "\n";
             }
 		}
+		
+		return $lmodified;
 	}
 	
 	/**
@@ -692,7 +707,7 @@ class e_jsmanager
 	 */
 	public function getCacheId()
 	{
-		return $this->_cache_id;
+		return $this->_browser_cache_id;
 	}
 	
 	/**
@@ -702,7 +717,31 @@ class e_jsmanager
 	 */
 	public function setCacheId($cacheid)
 	{
-		$this->_cache_id = $cacheid;
+		$this->_browser_cache_id = intval($cacheid);
 		return $this;
+	}
+	
+	/**
+	 * Set last modification timestamp for given namespace
+	 * 
+	 * @param string $what
+	 * @param integer $when [optional]
+	 * @return e_jsmanager
+	 */
+	public function setLastModfied($what, $when = 0)
+	{
+		$this->_lastModified[$what] = $when;
+		return $this;
+	}
+	
+	/**
+	 * Get last modification timestamp for given namespace
+	 * 
+	 * @param string $what
+	 * @return integer
+	 */
+	public function getLastModfied($what)
+	{
+		return (isset($this->_lastModified[$what]) ? $this->_lastModified[$what] : 0);
 	}
 }
