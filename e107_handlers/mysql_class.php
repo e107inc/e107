@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.55 $
- * $Date: 2009-09-21 22:50:07 $
- * $Author: e107coders $
+ * $Revision: 1.56 $
+ * $Date: 2009-10-03 14:54:46 $
+ * $Author: e107steved $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -49,8 +49,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.55 $
- * @author $Author: e107coders $
+ * @version $Revision: 1.56 $
+ * @author $Author: e107steved $
  * 
  */
 class e_db_mysql {
@@ -655,17 +655,14 @@ class e_db_mysql {
 		{
 			$row = @mysql_fetch_array($this->mySQLresult,$type);
 			e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
+			if ($row) 
+			{
+				$this->dbError('db_Fetch');
+				return $row;		// Success - return data
+			} 
 		}
-		if ($row) 
-		{
-			$this->dbError('db_Fetch');
-			return $row;
-		} 
-		else 
-		{
-			$this->dbError('db_Fetch');
-			return FALSE;
-		}
+		$this->dbError('db_Fetch');
+		return FALSE;				// Failure
 	}
 
 	/**
