@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2009-08-03 18:36:04 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.47 $
+|     $Date: 2009-10-03 21:41:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -308,7 +308,7 @@ class page
 			if($type)  // it's a menu.
 			{
 				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
-				if($sql -> db_Update("menus", "menu_name='$menu_name' WHERE menu_path='$mode' "))
+				if($sql -> db_Update('menus', "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ") !== FALSE)
 				{
 				  	$update++;
 				}
