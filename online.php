@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/online.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-08-28 15:30:24 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.10 $
+|     $Date: 2009-10-03 21:58:41 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -289,8 +289,8 @@ if (!isset($gen) || !is_object($gen))
 $datestamp = $gen->convert_date($menu_pref['most_online_datestamp'], "short");
 	
 $ONLINE_TABLE_MOST_EVER_ONLINE = ONLINE_EL8.($menu_pref['most_members_online'] + $menu_pref['most_guests_online']);
-$ONLINE_TABLE_MOST_MEMBERS_ONLINE = strtolower(ONLINE_EL2).$menu_pref['most_members_online'];
-$ONLINE_TABLE_MOST_GUESTS_ONLINE = strtolower(ONLINE_EL1).$menu_pref['most_guests_online'];
+$ONLINE_TABLE_MOST_MEMBERS_ONLINE = ONLINE_EL2.$menu_pref['most_members_online'];
+$ONLINE_TABLE_MOST_GUESTS_ONLINE = ONLINE_EL1.$menu_pref['most_guests_online'];
 $ONLINE_TABLE_DATESTAMP = $datestamp;
 	
 $total_members = $sql->db_Count("user","(*)","where user_ban = 0");
