@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-08-28 16:10:55 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.22 $
+ * $Date: 2009-10-03 21:42:03 $
+ * $Author: e107steved $
  *
 */
 
@@ -456,8 +456,7 @@ class page
 			if($type)
 			{
 				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
-
-				if($sql -> db_Update("menus", "menu_name='{$menu_name}' WHERE menu_path='{$mode}' "))
+				if($sql -> db_Update('menus', "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ") !== FALSE)
 				{
 				  	$update++;
 				}
