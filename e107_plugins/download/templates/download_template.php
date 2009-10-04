@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/templates/download_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-02-11 21:41:54 $
-|     $Author: bugrain $
+|     $Revision: 1.3 $
+|     $Date: 2009-10-04 19:28:28 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -261,6 +261,9 @@ $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE_LAN']['post'] = "</td>";
 $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE']['pre'] = "<td style='width:80%' class='forumheader3'>";
 $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE']['post'] = "</td></tr>";
 
+$sc_style['DOWNLOAD_REPORT_LINK']['pre'] = "<tr><td style='width:20%' class='forumheader3' colspan='2'>";
+$sc_style['DOWNLOAD_REPORT_LINK']['post'] = "</td></tr>";
+
 if(!isset($DOWNLOAD_VIEW_TABLE))
 {
 	$DOWNLOAD_VIEW_TABLE = "
@@ -309,9 +312,7 @@ if(!isset($DOWNLOAD_VIEW_TABLE))
 		         <td class='forumheader3'>{DOWNLOAD_VIEW_RATING_LAN}</td>
 		         <td class='forumheader3'>{DOWNLOAD_VIEW_RATING}</td>
 		      </tr>
-		      <tr>
-		         <td class='forumheader3' colspan='2'>{DOWNLOAD_REPORT_LINK}</td>
-		      </tr>
+			{DOWNLOAD_REPORT_LINK}
 		   </table>
 		   <div style='text-align:right; ".USER_WIDTH."; margin-left: auto; margin-right: auto'>{DOWNLOAD_ADMIN_EDIT}</div>
 		</div>\n";
