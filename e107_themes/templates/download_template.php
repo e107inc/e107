@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2007-09-20 11:08:14 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2009-10-04 15:35:24 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -249,6 +249,9 @@ $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE_LAN']['post'] = "</td>";
 $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE']['pre'] = "<td style='width:80%' class='forumheader3'>";
 $sc_style['DOWNLOAD_VIEW_AUTHORWEBSITE']['post'] = "</td></tr>";
 
+$sc_style['DOWNLOAD_REPORT_LINK']['pre'] = "<tr><td style='width:20%' class='forumheader3' colspan='2'>";
+$sc_style['DOWNLOAD_REPORT_LINK']['post'] = "</td></tr>";
+
 if(!isset($DOWNLOAD_VIEW_TABLE))
 {
 		$DOWNLOAD_VIEW_TABLE = "
@@ -304,9 +307,7 @@ if(!isset($DOWNLOAD_VIEW_TABLE))
 		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_RATING}</td>
 		</tr>
 
-		<tr>
-		<td style='width:20%' class='forumheader3' colspan='2'>{DOWNLOAD_REPORT_LINK}</td>
-		</tr>
+		{DOWNLOAD_REPORT_LINK}
 		</table>
 		<div style='text-align:right; ".USER_WIDTH."; margin-left: auto; margin-right: auto'>{DOWNLOAD_ADMIN_EDIT}</div>
 		</div>\n";

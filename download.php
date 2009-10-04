@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2009-03-19 22:07:02 $
-|     $Author: bugrain $
+|     $Revision: 1.101 $
+|     $Date: 2009-10-04 15:35:23 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -542,7 +542,7 @@ if ($action == "report" && check_class($pref['download_reportbroken']))
 			<input class='button' type='submit' name='report_download' value=\"".LAN_dl_45."\" />
 			</td>
 			</tr>
-			</table>";
+			</table></form>";
 		$ns->tablerender(LAN_dl_50, $text);
 	}
 	require_once(FOOTERF);
