@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-08-23 10:39:53 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.17 $
+|     $Date: 2009-10-05 19:13:12 $
+|     $Author: e107steved $
 |
 | 10.11.06 - mods for next CVS release
 +----------------------------------------------------------------------------+
@@ -450,24 +450,24 @@ SC_BEGIN NEXT_EVENT_TITLE
 SC_END
 
 SC_BEGIN NEXT_EVENT_ICON
-  global $pref, $cal_row, $ecal_dir;
-  $fe_icon_file = "";
-  if ($pref['eventpost_showcaticon'] == 1)
-  {
+	global $pref, $cal_row, $ecal_dir;
+	$fe_icon_file = "";
+	if ($pref['eventpost_showcaticon'] == 1)
+	{
 		if($cal_row['event_cat_icon'] && file_exists($ecal_dir."images/".$cal_row['event_cat_icon']))
 		{
-		  $fe_icon_file = $ecal_dir."images/".$cal_row['event_cat_icon'];
+			$fe_icon_file = $ecal_dir."images/".$cal_row['event_cat_icon'];
 		}
 		elseif(defined('BULLET'))
 		{
-			$img = HEME.'images/'.BULLET;
+			$fe_icon_file = THEME.'images/'.BULLET;
 		}
 		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-			$img = THEME.'images/bullet2.gif';
+			$fe_icon_file = THEME.'images/bullet2.gif';
 		}
-  }
-  return $fe_icon_file;
+	}
+	return $fe_icon_file;
 SC_END
 
 SC_BEGIN NEXT_EVENT_GAP
