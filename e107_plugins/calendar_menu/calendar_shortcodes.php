@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-08-23 10:57:51 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.12 $
+|     $Date: 2009-10-05 19:13:16 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -559,11 +559,11 @@ SC_BEGIN EC_NEXT_EVENT_ICON
 		}
 		elseif(defined('BULLET'))
 		{
-			$img = HEME.'images/'.BULLET;
+			$fe_icon_file = THEME.'images/'.BULLET;
 		}
 		elseif(file_exists(THEME.'images/bullet2.gif'))
 		{
-			$img = THEME.'images/bullet2.gif';
+			$fe_icon_file = THEME.'images/bullet2.gif';
 		}
   }
   return $fe_icon_file;
