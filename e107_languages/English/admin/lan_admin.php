@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.28 2009-09-06 20:04:03 e107coders Exp $
+ * $Id: lan_admin.php,v 1.29 2009-10-06 18:58:08 e107steved Exp $
  *
  * Admin Language File
 */
@@ -233,7 +233,7 @@ define("LAN_CREATED","Successfully created");
 define("LAN_CREATED_FAILED","Creation Unsuccessful");
 define("LAN_DELETED_FAILED","Deletion Unsuccessful");
 define("LAN_UPDATED_FAILED","Update Unsuccessful");
-define("LAN_NO_CHANGE","Update unsuccessful as no changes were made.");
+define("LAN_NO_CHANGE","Nothing updated as no changes were made.");
 define("LAN_TRY_AGAIN","Please try again.");
 
 define("LAN_RESET","Reset");

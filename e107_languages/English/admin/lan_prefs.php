@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-09-28 21:00:17 $
+|     $Revision: 1.23 $
+|     $Date: 2009-10-06 18:58:08 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -225,6 +225,9 @@ define("PRFLAN_207", "Members only-mode will be disabled for URLs that match any
 define('PRFLAN_208', 'User class which can email links to items on site');
 define('PRFLAN_209', 'Other Features');
 define('PRFLAN_210', 'Comments/Posting');
+define('PRFLAN_211', 'Cannot make email address optional if required for validation or login');
+define('PRFLAN_212', 'Value for --FIELD-- too high - changed to --VALUE--');
+define('PRFLAN_213', 'Value for --FIELD-- too low - changed to --VALUE--');
 
 
 ?>

@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-09-28 21:32:00 $
+ * $Revision: 1.13 $
+ * $Date: 2009-10-06 18:58:08 $
  * $Author: e107steved $
  *
 */
@@ -93,7 +93,7 @@ class UserHandler
 		'user_password' => array('niceName'=> LAN_USER_05, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'dataType' => 2, 'minLength' => varset($pref['signup_pass_len'],1)),
 		'user_sess' => array('niceName'=> LAN_USER_06, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'image', 'imagePath' => e_FILE.'public/avatars/', 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Photo
 		'user_image' => array('niceName'=> LAN_USER_07, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'image', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'avatar', 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Avatar
-		'user_email' => array('niceName'=> LAN_USER_08, 'fieldType' => 'string', 'vetMethod' => '1,3', 'vetParam' => '', 'srcName' => 'email', 'dbClean' => 'toDB'),
+		'user_email' => array('niceName'=> LAN_USER_08, 'fieldType' => 'string', 'vetMethod' => '1,3', 'vetParam' => '', 'fieldOptional' => varset($pref['disable_emailcheck'],0), 'srcName' => 'email', 'dbClean' => 'toDB'),
 		'user_signature' => array('niceName'=> LAN_USER_09, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
 		'user_hideemail' => array('niceName'=> LAN_USER_10, 'fieldType' => 'int', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
 		'user_xup' => array('niceName'=> LAN_USER_11, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
@@ -507,12 +507,16 @@ Following fields auto-filled in code as required:
 		global $e107, $pref;
 		$u_sql = new db;
 		$ret = TRUE;
+		$errMsg = '';
 		if (isset($targetData['data']['user_email']))
 		{
 			$v = trim($targetData['data']['user_email']);		// Always check email address if its entered
 			if ($v == '')
 			{
-				$errMsg = ERR_MISSING_VALUE;
+				if (!varsettrue($pref['disable_emailcheck']))
+				{
+					$errMsg = ERR_MISSING_VALUE;
+				}
 			}
 			elseif (!check_email($v))
 			{
@@ -528,7 +532,7 @@ Following fields auto-filled in code as required:
 				if ($wc) { $wc = "`banlist_ip`='{$v}' OR ".$wc;  }
 				if (($wc === FALSE) || !$e107->check_ban($wc, FALSE, TRUE))
 				{
-					echo "Email banned<br />";
+//					echo "Email banned<br />";
 					$errMsg = ERR_BANNED_EMAIL;
 				}
 			}

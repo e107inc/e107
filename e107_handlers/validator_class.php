@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-08-08 23:09:08 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.10 $
+ * $Date: 2009-10-06 18:58:08 $
+ * $Author: e107steved $
  *
 */
 
@@ -96,7 +96,10 @@ class validatorClass
 				}
 				else
 				{
-					$ret['errors'][$dest] = ERR_MISSING_VALUE;		// No source value
+					if (!varsettrue($defs['fieldOptional']))
+					{
+						$ret['errors'][$dest] = ERR_MISSING_VALUE;		// No source value
+					}
 				}
 			}
 			else
@@ -130,9 +133,12 @@ class validatorClass
 				}
 				if (!$errNum && isset($defs['minLength']) && ($tp->uStrLen($value) < $defs['minLength']))
 				{
-					if ($value == '')
+					if ($value == '') 
 					{
-						$errNum = ERR_MISSING_VALUE;
+						if (!varsettrue($defs['fieldOptional']))
+						{
+							$errNum = ERR_MISSING_VALUE;
+						}
 					}
 					else
 					{
@@ -307,6 +313,7 @@ class validatorClass
 		$u_sql = new db;
 		$allOK = TRUE;
 		$userID = intval($userID);			// Precautionary
+		$errMsg = '';
 		if (!$targetTable) return FALSE;
 		foreach ($targetData['data'] as $f => $v)
 		{
@@ -314,7 +321,7 @@ class validatorClass
 			if (isset($definitions[$f]))
 			{
 				$options = $definitions[$f];			// Validation options to use
-				if (isset($options['vetMethod']))
+				if (!varsettrue($options['fieldOptional']) || ($v != ''))
 				{
 					$toDo = explode(',',$options['vetMethod']);
 					foreach ($toDo as $vm)

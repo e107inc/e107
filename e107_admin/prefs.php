@@ -9,8 +9,8 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-09-28 21:00:15 $
+ * $Revision: 1.36 $
+ * $Date: 2009-10-06 18:58:07 $
  * $Author: e107steved $
  *
 */
@@ -66,9 +66,10 @@ if(isset($_POST['updateprefs']))
 	$_POST['siteurl'] = substr($_POST['siteurl'], - 1) == "/" ? $_POST['siteurl'] : $_POST['siteurl']."/";
 
 	// If email verification or Email/Password Login Method - email address is required!
-	if($_POST['user_reg_veri'] == 1 && $_POST['allowEmailLogin'] == 1)
+	if (($_POST['user_reg_veri'] == 1 || $_POST['allowEmailLogin'] == 1) && $_POST['disable_emailcheck'])
 	{
 		$_POST['disable_emailcheck'] = 0;
+		$emessage->add(PRFLAN_211, E_MESSAGE_ERROR);
     }
 
 	// Table of range checking values - min and max for numerics. Only do the important ones
@@ -90,9 +91,15 @@ if(isset($_POST['updateprefs']))
 			if(is_numeric($value))
 			{
 				if($value < $pref_limits[$key]['min'])
+				{
 					$value = $pref_limits[$key]['min'];
+					$emessage->add(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_213), E_MESSAGE_WARNING);
+				}
 				if($value > $pref_limits[$key]['max'])
+				{
 					$value = $pref_limits[$key]['max'];
+					$emessage->add(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_212), E_MESSAGE_WARNING);
+				}
 			}
 			else
 			{
