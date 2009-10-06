@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.112 $
-|     $Date: 2009-09-28 21:32:08 $
+|     $Revision: 1.113 $
+|     $Date: 2009-10-06 18:58:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -243,26 +243,29 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 
 	// Always validate an email address if entered. If its blank, that's OK if checking disabled
 	$_POST['email'] = $tp->toDB(trim(varset($_POST['email'],'')));
-	$do_email_validate = !varset($pref['disable_emailcheck'],FALSE) || ($_POST['email'] !='');
-	if ($do_email_validate && !check_email($_POST['email']))
+	$do_email_validate = (!varset($pref['disable_emailcheck'],FALSE)) || ($_POST['email'] !='');
+	if ($do_email_validate)
 	{
-	  $error .= LAN_106."\\n";
-	}
+		if  (!check_email($_POST['email']))
+		{
+			$error .= LAN_106."\\n";
+		}
 
-	// Check Email address against banlist.
-	$wc = make_email_query($_POST['email']);
-	if ($wc) $wc = ' OR '.$wc;
+		// Check Email address against banlist.
+		$wc = make_email_query($_POST['email']);
+		if ($wc) $wc = ' OR '.$wc;
 
-	if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
-	{
-	  $error .= LAN_106."\\n";
-	}
+		if (($wc === FALSE) || ($do_email_validate && $sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'".$wc)))
+		{
+			$error .= LAN_106."\\n";
+		}
 
 
-	// Check for duplicate of email address (always)
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$_POST['email']."' AND user_id !='".intval($inp)."' "))
-	{
-	  $error .= LAN_408."\\n";
+		// Check for duplicate of email address (always)
+		if ($sql->db_Select("user", "user_name, user_email", "user_email='".$_POST['email']."' AND user_id !='".intval($inp)."' "))
+		{
+			$error .= LAN_408."\\n";
+		}
 	}
 
 
