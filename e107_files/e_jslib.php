@@ -9,8 +9,8 @@
  * Javascript files consolidation script (gzip compression)
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/e_jslib.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-10-02 13:46:26 $
+ * $Revision: 1.6 $
+ * $Date: 2009-10-07 11:05:55 $
  * $Author: secretr $
  *
  */
@@ -39,7 +39,7 @@ else
 require_once ("../class2.php");
 require_once (e_HANDLER.'jslib_handler.php');
 $jslib = new e_jslib();
-$jslib->core_run();
+$jslib->getContent();
 
 exit;
 

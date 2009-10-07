@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-10-02 13:46:25 $
+ * $Revision: 1.5 $
+ * $Date: 2009-10-07 11:05:55 $
  * $Author: secretr $
  * 
 */
@@ -175,7 +175,7 @@ class e_jsmanager
 		{
 			$theme_libs = array();
 		}
-		$this->themeLib($lib_paths);
+		$this->themeLib($theme_libs);
 	}
 	
 	/**
@@ -282,6 +282,46 @@ class e_jsmanager
 	public function headerFile($file_path, $zone = 5)
 	{
 		$this->addJs('header', $file_path, $zone);		
+		return $this;
+	}
+	
+	/**
+	 * Add Core JS file for inclusion in site header, shorthand of headerFile() method
+	 * 
+	 * @param string $file_path relative to {e_FILE}jslib/ folder
+	 * @param integer $zone 1-5 (see header.php)
+	 * @return e_jsmanager
+	 */
+	public function headerCore($file_path, $zone = 1)
+	{
+		$this->headerFile('{e_FILE}jslib/'.trim($file_path, '/'), $zone);	
+		return $this;
+	}
+	
+	/**
+	 * Add Theme JS file for inclusion in site header, shorthand of headerFile() method
+	 * 
+	 * @param string $file_path relative to theme root folder
+	 * @param integer $zone 1-5 (see header.php)
+	 * @return e_jsmanager
+	 */
+	public function headerTheme($file_path, $zone = 5)
+	{
+		$this->headerFile(THEME.trim($file_path, '/'), $zone);	
+		return $this;
+	}
+	
+	/**
+	 * Add Plugin JS file for inclusion in site header, shorthand of headerFile() method
+	 * 
+	 * @param string $plugname
+	 * @param string $file_path relative to plugin root folder
+	 * @param integer $zone 1-5 (see header.php)
+	 * @return e_jsmanager
+	 */
+	public function headerPlugin($plugname, $file_path, $zone = 3)
+	{
+		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), $zone);	
 		return $this;
 	}
 	
@@ -507,10 +547,11 @@ class e_jsmanager
 			break;
 		
 			case 'plugin': //e_jslib
-				foreach($this->_e_jslib_plugin as $plugname => $paths)
+				/*foreach($this->_e_jslib_plugin as $plugname => $paths)
 				{
 					$this->setLastModfied($mod, $this->renderFile($paths, $external, $plugname.' libraries'));
-				}
+				}*/
+				$this->setLastModfied($mod, $this->renderFile($this->_e_jslib_plugin, $external, $plugname.' libraries'));
 				$this->_e_jslib_plugin = array();
 			break;
 			
@@ -744,4 +785,99 @@ class e_jsmanager
 	{
 		return (isset($this->_lastModified[$what]) ? $this->_lastModified[$what] : 0);
 	}
+	
+	public function addLibPref($mod, $array_newlib)
+	{
+				
+		if(!$array_newlib || !is_array($array_newlib))
+		{
+			return $this;
+		}
+		$core = e107::getConfig();
+		$plugname = '';
+		if(strpos($mod, 'plugin:') === 0)
+		{
+			$plugname = str_replace('plugin:', '', $mod);
+			$mod = 'plugin';
+		}
+		
+		switch($mod)
+		{
+			case 'core':
+			case 'theme':
+				$key = 'e_jslib_'.$mod;
+			break;
+			
+			case 'plugin':
+				$key = 'e_jslib_plugin/'.$plugname;
+			break;
+			
+			default:
+				return $this;
+			break;
+		}
+		
+		
+		$libs = $core->getPref($key);
+		if(!$libs) $libs = array();
+		foreach ($array_newlib as $path => $location)
+		{
+			$path = trim($path, '/');
+			
+			if(!$path) continue;
+			
+			$newlocation = $location == 'all' || (varset($libs[$path]) && $libs[$path] != $location) ? 'all' : $location;
+			$libs[$path] = $newlocation;
+		}
+		
+		$core->setPref($key, $libs);
+		return $this;
+	}
+	
+	public function removeLibPref($mod, $array_removelib)
+	{
+				
+		if(!$array_removelib || !is_array($array_removelib))
+		{
+			return $this;
+		}
+		$core = e107::getConfig();
+		$plugname = '';
+		if(strpos($mod, 'plugin:') === 0)
+		{
+			$plugname = str_replace('plugin:', '', $mod);
+			$mod = 'plugin';
+		}
+		
+		switch($mod)
+		{
+			case 'core':
+			case 'theme':
+				$key = 'e_jslib_'.$mod;
+			break;
+			
+			case 'plugin':
+				$key = 'e_jslib_plugin/'.$plugname;
+			break;
+			
+			default:
+				return $this;
+			break;
+		}
+		
+		
+		$libs = $core->getPref($key);
+		if(!$libs) $libs = array();
+		foreach ($array_removelib as $path => $location)
+		{
+			$path = trim($path, '/');
+			if(!$path) continue;
+
+			unset($libs[$path]);
+		}
+		
+		$core->setPref($key, $libs);
+		return $this;
+	}
+	
 }
