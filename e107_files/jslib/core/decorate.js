@@ -9,8 +9,8 @@
  * Inspired by Magento' decorate JS functions (www.magentocommerce.com) 
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/decorate.js,v $
- * $Revision: 1.3 $
- * $Date: 2008-11-17 17:43:57 $
+ * $Revision: 1.4 $
+ * $Date: 2009-10-07 10:52:53 $
  * $Author: secretr $
  * 
 */
@@ -42,17 +42,17 @@ e107Utils.Decorate = {
 	        this._decorate(table.select('tbody'), this._options['tbody']);
 	    }
 	    if (this._options['tbody_tr']) {
-	        this._decorate(table.select('tbody tr'), this._options['tbody_tr']);
+	        this._decorate(table.select('tbody tr:not(.no-decorate)'), this._options['tbody_tr']);
 	    }
 	    if (this._options['thead_tr']) {
-	        this._decorate(table.select('thead tr'), this._options['thead_tr']);
+	        this._decorate(table.select('thead tr:not(.no-decorate)'), this._options['thead_tr']);
 	    }
 	    if (this._options['tfoot_tr']) {
-	        this._decorate(table.select('tfoot tr'), this._options['tfoot_tr']);
+	        this._decorate(table.select('tfoot tr:not(.no-decorate)'), this._options['tfoot_tr']);
 	    }
 	    if (this._options['tr_td']) {
-	        table.select('tr').each( function(tr) {
-	            this._decorate(tr.select('td'), this._options['tr_td']);
+	        table.select('tr:not(.no-decorate)').each( function(tr) {
+	            this._decorate(tr.select('td:not(.no-decorate)'), this._options['tr_td']);
 	        }.bind(this));
 	    }
 	},
@@ -73,7 +73,7 @@ e107Utils.Decorate = {
 	    list = $(list);
 	    if (list) {
 	        if (!varset(arguments[2])) {
-	            var items = list.select('li');
+	            var items = list.select('li:not(.no-decorate)');
 	        } else {
 	            var items = list.childElements();
 	        }
@@ -94,8 +94,8 @@ e107Utils.Decorate = {
 	dataList: function(list) {
 	    list = $(list);
 	    if (list) {
-	        this._decorate(list.select('dt'), (arguments[1] || 'odd even last'));
-	        this._decorate(list.select('dd'), (arguments[2] || 'odd even last'));
+	        this._decorate(list.select('dt:not(.no-decorate)'), (arguments[1] || 'odd even last'));
+	        this._decorate(list.select('dd:not(.no-decorate)'), (arguments[2] || 'odd even last'));
 	    }
 	},
 	
