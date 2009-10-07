@@ -1,6 +1,6 @@
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: news_categories.sc,v 1.6 2009-09-25 20:20:23 secretr Exp $
+ * $Id: news_categories.sc,v 1.7 2009-10-07 15:15:36 secretr Exp $
  *
  * News Categories shortcode
 */
@@ -96,9 +96,21 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 			$wid = floor(100/$nbr_cols);
 	while ($row3 = $sql2->db_Fetch()) {
 		extract($row3);
-
+		//quick fix
+		if($category_icon)
+		{
+			// new path
+			if(strpos($category_icon, '{') === 0)
+			{
+				$category_icon = e107::getParser()->replaceConstants($category_icon, 'abs');
+			}
+			else //old paths
+			{
+				$category_icon = e_IMAGE_ABS."icons/".$category_icon;
+			}
+		}
 		$search[0] = "/\{NEWSCATICON\}(.*?)/si";
-		$replace[0] = ($category_icon) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."'><img src='".e_IMAGE_ABS."icons/".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
+		$replace[0] = ($category_icon) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."'><img src='".$category_icon."' alt='' style='".$param['caticon']."' /></a>" : "";
 
 		$search[1] = "/\{NEWSCATEGORY\}(.*?)/si";
 		$replace[1] = ($category_name) ? "<a href='".$e107->url->getUrl('core:news', 'main', 'action=list&id='.$category_id.'&sef='.$news_category_rewrite_string)."' style='".$param['catlink']."' >".$tp->toHTML($category_name,TRUE,"defs")."</a>" : "";
