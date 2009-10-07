@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-10-02 13:46:25 $
+ * $Revision: 1.8 $
+ * $Date: 2009-10-07 11:05:55 $
  * $Author: secretr $
  * 
 */
@@ -23,7 +23,7 @@ class e_jslib
     }
     
     /**
-     * Collect & output all available JS libraries  (requires e107 API)
+     * Collect & output content of all available JS libraries  (requires e107 API)
      * FIXME 
      * - cache jslib in a pref on plugin/theme install only (plugin.xml, theme.xml)
      * - [done - e_jslib_*] the structure of the cached pref array?
@@ -34,7 +34,7 @@ class e_jslib
      * - how and when to add JS lans for core libraries? 
      * - [done - js manager] separate methods for collecting & storing JS files (to be used in install/update routines) and output the JS content 
      */
-    function core_run()
+    function getContent()
     {
         //global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
         

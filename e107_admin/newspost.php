@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.55 $
- * $Date: 2009-09-25 20:20:23 $
+ * $Revision: 1.56 $
+ * $Date: 2009-10-07 11:05:55 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -254,7 +254,7 @@ class admin_newspost
 		require_once(e_HANDLER."calendar/calendar_class.php");
 		$this->_cal = new DHTML_Calendar(true);
 
-		$this->_pst = &$pstobj;
+		$this->_pst = $pstobj;
 
 		$this->fieldpref = varset($user_pref['admin_news_columns'], array('news_id', 'news_title', 'news_author', 'news_render_type', 'options'));
 
