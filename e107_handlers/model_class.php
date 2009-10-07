@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-09-25 20:20:23 $
+ * $Revision: 1.10 $
+ * $Date: 2009-10-07 10:53:33 $
  * $Author: secretr $
 */
 
@@ -845,7 +845,7 @@ class e_model
         	{
         		$this->data_has_changed = true;
         	}
-        	$this->$data_src = array();
+        	$this->{$data_src} = array();
             return $this;
         } 
 		
@@ -853,10 +853,9 @@ class e_model
         if(strpos($key,'/')) 
         {
         	$keyArr = explode('/', $key);
-        	$data = &$this->$data_src;
+        	$data = &$this->{$data_src};
         	
-        	$unskey = array_pop($data);
-        	
+        	$unskey = array_pop($keyArr);
             for ($i = 0, $l = count($keyArr); $i < $l; $i++) 
             {
 	            $k = $keyArr[$i];
