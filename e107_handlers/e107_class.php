@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.52 $
- * $Date: 2009-09-29 17:43:13 $
+ * $Revision: 1.53 $
+ * $Date: 2009-10-07 10:54:13 $
  * $Author: secretr $
 */
 
@@ -732,7 +732,7 @@ class e107
 	/**
 	 * Retrieve file handler singleton or new fresh object
 	 *
-	 * @param boolean $singleton
+	 * @param boolean $singleton default true
 	 * @return e_file
 	 */
 	public static function getFile($singleton = true)
@@ -742,6 +742,21 @@ class e107
 			return self::getSingleton('e_file', true);
 		}
 		return self::getObject('e_file', null, true);
+	}
+	
+	/**
+	 * Retrieve form handler singleton or new fresh object
+	 *
+	 * @param boolean $singleton default false
+	 * @return e_form
+	 */
+	public static function getForm($singleton = false)
+	{
+		if($singleton)
+		{
+			return self::getSingleton('e_form', true);
+		}
+		return self::getObject('e_form', null, true);
 	}
 	
 	/**
