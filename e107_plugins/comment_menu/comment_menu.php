@@ -1,47 +1,54 @@
-<?php
+<?php 
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:52 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Comment menu
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/comment_menu.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-10-08 10:53:02 $
+ * $Author: secretr $
 */
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT'))
+{
+	exit;
+}
 
-require_once(e_PLUGIN."comment_menu/comment_menu_shortcodes.php");
-require_once(e_HANDLER."comment_class.php");
-$cobj = new comment;
+require_once (e_PLUGIN."comment_menu/comment_menu_shortcodes.php");
 
-if (file_exists(THEME."comment_menu_template.php")){
-	require_once(THEME."comment_menu_template.php");
-}else{
-	require_once(e_PLUGIN."comment_menu/comment_menu_template.php");
+$cobj = e107::getObject('comment');
+//require_once (e_HANDLER."comment_class.php");
+//$cobj = new comment;
+
+if (file_exists(THEME."comment_menu_template.php"))
+{
+	require_once (THEME."comment_menu_template.php");
+}
+else
+{
+	require_once (e_PLUGIN."comment_menu/comment_menu_template.php");
 }
 
 $data = $cobj->getCommentData(intval($menu_pref['comment_display']));
 
 $text = '';
 // no posts yet ..
-if(empty($data) || !is_array($data)){
+if (empty($data) || !is_array($data))
+{
 	$text = CM_L1;
 }
 
-global $row;
-foreach($data as $row){
+foreach ($data as $row)
+{
+	e107::setRegistry('plugin/comment_menu/current', $row);
 	$text .= $tp->parseTemplate($COMMENT_MENU_TEMPLATE, true, $comment_menu_shortcodes);
 }
+e107::setRegistry('plugin/comment_menu/current', null);
 
-$ns->tablerender($menu_pref['comment_caption'], $text, 'comment');
-
+e107::getRender()->tablerender($menu_pref['comment_caption'], $text, 'comment_menu');
 ?>
