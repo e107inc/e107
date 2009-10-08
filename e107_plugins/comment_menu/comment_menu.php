@@ -9,8 +9,8 @@
  * Comment menu
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/comment_menu.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-10-08 10:53:02 $
+ * $Revision: 1.3 $
+ * $Date: 2009-10-08 14:53:37 $
  * $Author: secretr $
 */
 
@@ -50,5 +50,6 @@ foreach ($data as $row)
 }
 e107::setRegistry('plugin/comment_menu/current', null);
 
-e107::getRender()->tablerender($menu_pref['comment_caption'], $text, 'comment_menu');
+$title = e107::getConfig('menu')->get('comment_caption');
+e107::getRender()->tablerender(defset($title, $title), $text, 'comment_menu');
 ?>
