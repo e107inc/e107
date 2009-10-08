@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2009-09-28 07:17:52 $
-|     $Author: e107coders $
+|     $Revision: 1.100 $
+|     $Date: 2009-10-08 14:47:54 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -1707,7 +1707,7 @@ class e107plugin
 				if(count($bb_array) > 0)
 				{
 					ksort($bb_array);
-					$core->setPref('bbcode_list/'.$path,$sc_array);
+					$core->setPref('bbcode_list/'.$path, $bb_array);
 				}
 
 				// Build shortcode list - do if uninstalled as well
