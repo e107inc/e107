@@ -9,8 +9,8 @@
  * Comment menu shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/comment_menu/comment_menu_shortcodes.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-10-08 10:53:02 $
+ * $Revision: 1.6 $
+ * $Date: 2009-10-08 14:53:37 $
  * $Author: secretr $
 */
 
@@ -65,15 +65,16 @@ return $row['comment_author'];
 SC_END
 
 SC_BEGIN CM_COMMENT
-global $menu_pref, $pref, $tp;
 $row = e107::getRegistry('plugin/comment_menu/current');
+$menu_pref = e107::getConfig('menu')->getPref();
+$tp = e107::getParser();
 $COMMENT = '';
-if($menu_pref['comment_characters']>0)
+if($menu_pref['comment_characters'] > 0)
 {
-  $COMMENT = strip_tags($tp->toHTML($row['comment_comment'], TRUE, "emotes_off, no_make_clickable", "", $pref['menu_wordwrap']));
-  if (strlen($COMMENT) > $menu_pref['comment_characters'])
+  $COMMENT = strip_tags($tp->toHTML($row['comment_comment'], TRUE, "emotes_off, no_make_clickable", "", e107::getPref('menu_wordwrap')));
+  if ($tp->uStrLen($COMMENT) > $menu_pref['comment_characters'])
   {
-	$COMMENT = $tp->text_truncate($COMMENT, $menu_pref['comment_characters'],'').($row['comment_url'] ? " <a href='".$row['comment_url']."'>" : "").$menu_pref['comment_postfix'].($row['comment_url'] ? "</a>" : "");
+	$COMMENT = $tp->text_truncate($COMMENT, $menu_pref['comment_characters'],'').($row['comment_url'] ? " <a href='".$row['comment_url']."'>" : "").defset($menu_pref['comment_postfix'], $menu_pref['comment_postfix']).($row['comment_url'] ? "</a>" : "");
   }
 }
 return $COMMENT;
