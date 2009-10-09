@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.56 $
- * $Date: 2009-10-07 11:05:55 $
+ * $Revision: 1.57 $
+ * $Date: 2009-10-09 15:06:44 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -259,19 +259,19 @@ class admin_newspost
 		$this->fieldpref = varset($user_pref['admin_news_columns'], array('news_id', 'news_title', 'news_author', 'news_render_type', 'options'));
 
 		$this->_fields = array(
-				"checkboxes"	   	=> array("title" => "", "forced"=> TRUE, "width" => "3%", "thclass" => "center first", "url" => ""),
-				"news_id"			=> array("title" => LAN_NEWS_45, "type"=>"number", "width" => "5%", "thclass" => "center", "url" => e_SELF."?main.news_id.".$this->_sort_link.".".$this->getFrom()),
- 				"news_title"		=> array("title" => NWSLAN_40, "type"=>"text", "width" => "30%", "thclass" => "", "url" => e_SELF."?main.news_title.".$this->_sort_link.".".$this->getFrom()),
-    			"news_author"		=> array("title" => LAN_NEWS_50, "type"=>"user", "width" => "10%", "thclass" => "", "url" => ""),
-				"news_datestamp"	=> array("title" => LAN_NEWS_32, "type"=>"datestamp", "width" => "15%", "thclass" => "", "url" => ""),
-                "news_category"		=> array("title" => NWSLAN_6, "type"=>"dropdown", "width" => "auto", "thclass" => "", "url" => ""),
-  				"news_class"		=> array("title" => NWSLAN_22, "type"=>"userclass", "width" => "auto", "thclass" => "", "url" => ""),
-				"news_render_type"	=> array("title" => LAN_NEWS_49, "type"=>"dropdown", "width" => "auto", "thclass" => "center", "url" => ""),
-			   	"news_thumbnail"	=> array("title" => LAN_NEWS_22, "width" => "auto", "thclass" => "", "url" => ""),
-		  		"news_sticky"		=> array("title" => LAN_NEWS_28, "type"=>"boolean", "width" => "auto", "thclass" => "", "url" => ""),
-                "news_allow_comments" => array("title" => NWSLAN_15, "type"=>"boolean", "width" => "auto", "thclass" => "", "url" => ""),
-                "news_comment_total" => array("title" => LAN_NEWS_60, "type"=>"number", "width" => "auto", "thclass" => "", "url" => ""),
-				"options"			=> array("title" => LAN_OPTIONS, "width" => "10%", "thclass" => "center last", "url" => "", 'forced'=>TRUE)
+				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => null, 		'url' => '', 'forced' => TRUE),
+				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'url' => e_SELF.'?main.news_id.'.$this->_sort_link.'.'.$this->getFrom()),
+ 				'news_title'			=> array('title' => NWSLAN_40, 		'type' => 'text', 		'width' => '30%', 	'thclass' => '', 				'class' => null, 		'url' => e_SELF.'?main.news_title.'.$this->_sort_link.'.'.$this->getFrom()),
+    			'news_author'			=> array('title' => LAN_NEWS_50, 	'type' => 'user', 		'width' => '10%', 	'thclass' => '', 				'class' => null, 		'url' => ''),
+				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'width' => '15%', 	'thclass' => '', 				'class' => null, 		'url' => ''),
+                'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'url' => ''),
+  				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclass', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'url' => ''),
+				'news_render_type'		=> array('title' => LAN_NEWS_49, 	'type' => 'dropdown', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'url' => ''),
+			   	'news_thumbnail'		=> array('title' => LAN_NEWS_22, 	'type' => null, 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'url' => ''),
+		  		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'url' => ''),
+                'news_allow_comments' 	=> array('title' => NWSLAN_15, 		'type' => 'boolean', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'url' => ''),
+                'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'url' => ''),
+				'options'				=> array('title' => LAN_OPTIONS, 	'width' => '10%', 		'width' => null, 	'thclass' => 'center last', 	'class' => null, 		'url' => '', 'forced' => TRUE)
 
 		);
 

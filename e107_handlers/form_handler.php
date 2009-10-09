@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.46 $
- * $Date: 2009-09-28 07:17:52 $
- * $Author: e107coders $
+ * $Revision: 1.47 $
+ * $Date: 2009-10-09 15:06:44 $
+ * $Author: secretr $
  *
 */
 
@@ -642,47 +642,65 @@ class e_form
 
 
 
-	function columnSelector($columnsArray,$columnsDefault='',$id='column_options')
+	function columnSelector($columnsArray, $columnsDefault = '', $id = 'column_options')
 	{
 		$columnsArray = array_filter($columnsArray);
-        $text = "<div style='position:relative;float:right;'>
-		<a href='#".$id."' class='e-show-if-js e-expandit' title='Click to select columns to display'>
-		<img class='middle' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' /></a>
+        $text = "
+		<div style='position:relative;float:right;'>
+			<a href='#".$id."' class='e-show-if-js e-expandit' title='Click to select columns to display'>"
+				."<img class='icon' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' />"
+			."</a>
+			<div id='".$id."' class='e-show-if-js e-hideme col-selection'>
+		";
+        unset($columnsArray['options'], $columnsArray['checkboxes']);
 
-		<div id='".$id."' class='e-show-if-js e-hideme col-selection'>\n";
-        unset($columnsArray['options'],$columnsArray['checkboxes']);
-
-		foreach($columnsArray as $key=>$fld)
+		foreach($columnsArray as $key => $fld)
 		{
 			if(!varset($fld['forced']))
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
-				$text .= $this->checkbox('e-columns[]', $key, $checked). varset($fld['title'])."<br />\n";
+				$text .= "
+					<div class='field-spacer'>
+						".$this->checkbox_label(varset($fld['title'], $key), 'e-columns[]', $key, $checked)."
+					</div>
+				";
 			}
 		}
 
-        $text .= "<div id='button' style='text-align:right'>\n";  // has issues with the checkboxes.
-	 	$text .= $this->admin_button('submit-e-columns','Save','Save');
+		// has issues with the checkboxes.
+        $text .= "
+				<div id='{$id}-button' class='right'>
+					".$this->admin_button('submit-e-columns', LAN_SAVE, 'update')."
+				</div>
+			</div>
+		</div>
+		";  
 
-   	 	$text .= "</div>\n";
-		$text .= "</div></div>";
+		$text .= "";
 		return $text;
 	}
 
-	function colGroup($fieldarray,$columnPref='')
+	function colGroup($fieldarray, $columnPref = '')
 	{
         $text = "";
         $count = 0;
 		foreach($fieldarray as $key=>$val)
 		{
-			if(in_array($key,$columnPref) || $key=='options' || varsettrue($val['forced']))
+			if(in_array($key, $columnPref) || $key=='options' || varsettrue($val['forced']))
 			{
-				$text .= "\n<col style='width: ".$val['width'].";'></col>";
+				$class = vartrue($val['class']) ? ' class="'.$val['class'].'"' : '';
+				$text .= '
+					<col style="width: '.$val['width'].';"'.$class.'></col>
+				';
 				$count++;
 			}
 		}
 
-		return "<colgroup span='".$count."'>\n".$text."\n</colgroup>\n";
+		return '
+			<colgroup span="'.$count.'">
+				'.$text.'
+			</colgroup>
+		';
 	}
 
 	function thead($fieldarray,$columnPref='',$querypattern = '')
@@ -744,7 +762,11 @@ class e_form
 			}
 		}
 
-      return "<thead>\n<tr>\n".$text."\n</tr>\n</thead>\n\n";
+		return "
+		<thead>
+	  		<tr>".$text."</tr>
+		</thead>
+		";
 
 	}
 

@@ -9,8 +9,8 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-09-25 20:13:47 $
+ * $Revision: 1.25 $
+ * $Date: 2009-10-09 15:06:43 $
  * $Author: secretr $
 */
 
@@ -1253,8 +1253,9 @@ class e_news_category_tree extends e_model
 			
 			if($tablerender)
 			{
-				$caption = true === $tablerender ? 'News Categories' : defset($caption, $caption); //TODO lan
-				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], 'news_categories_menu'), $return);
+				$caption = vartrue($parms['caption']) ? defset($parms['caption'], $parms['caption']) : LAN_NEWSCAT_MENU_TITLE; // found in plugins/news/languages/English.php
+				$mod = true === $tablerender ? 'news_categories_menu' : $tablerender;
+				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
 			}
 			
 			if($return) return $ret;
