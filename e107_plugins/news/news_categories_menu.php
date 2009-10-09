@@ -6,6 +6,8 @@ $cacheString = 'nq_news_categories_menu_'.preg_replace('#[^\w]#', '', $parm);
 $cached = e107::getCache()->retrieve($cacheString);
 if(false === $cached)
 {
+	e107::includeLan(e_PLUGIN.'news/languages'.e_LANGUAGE.'.php');
+	
 	parse_str($parm, $parms);
 	$ctree = e107::getObject('e_news_category_tree', null, e_HANDLER.'news_class.php');
 	
