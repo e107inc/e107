@@ -63,4 +63,6 @@ define("LAN_TAG_OPT_26", "display");
 define("LAN_TAG_MENU_1", "view complete tagwords cloud");
 define("LAN_TAG_MENU_2", "Tagwords");
 
+define("LAN_TAG_CORE_NEWS_1", "News");
+define("LAN_TAG_CORE_CPAGES_1", "Pages");
 ?>

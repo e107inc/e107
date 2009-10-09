@@ -9,8 +9,8 @@
  * Tagwords Shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/tagwords_shortcodes.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-09-25 20:13:12 $
+ * $Revision: 1.8 $
+ * $Date: 2009-10-09 15:07:44 $
  * $Author: secretr $
  *
 */
@@ -99,7 +99,7 @@ class tagwords_shortcodes
 	function sc_tag_area_heading()
 	{
 		global $tag;
-		return varsettrue($tag->area->settings['caption']);
+		return (varsettrue($tag->area->settings['caption']) ? defset($tag->area->settings['caption'], $tag->area->settings['caption']) : '');
 	}
 
 	function sc_tag_link($parm, $sc_mode)
