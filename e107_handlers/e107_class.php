@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.53 $
- * $Date: 2009-10-07 10:54:13 $
+ * $Revision: 1.54 $
+ * $Date: 2009-10-09 10:18:07 $
  * $Author: secretr $
 */
 
@@ -959,10 +959,9 @@ class e107
 	 */
 	public static function includeLan($path, $force = false)
 	{
-		global $pref;
 		if (!is_readable($path))
 		{
-			if (varsettrue($pref['noLanguageSubs']) || (e_LANGUAGE == 'English'))
+			if (self::getPref('noLanguageSubs') || (e_LANGUAGE == 'English'))
 			{
 				return FALSE;
 			}
