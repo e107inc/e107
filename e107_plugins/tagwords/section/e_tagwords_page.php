@@ -13,7 +13,7 @@ class e_tagwords_page
 		$this->settings['plugin'] = "";
 		$this->settings['table'] = "page";
 		$this->settings['db_id'] = "page_id";
-		$this->settings['caption'] = "page";
+		$this->settings['caption'] = "LAN_TAG_CORE_CPAGES_1";
 	}
 
 	function getLink($id)

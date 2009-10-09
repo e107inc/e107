@@ -13,7 +13,7 @@ class e_tagwords_news
 		$this->settings['plugin'] = "";
 		$this->settings['table'] = "news";
 		$this->settings['db_id'] = "news_id";
-		$this->settings['caption'] = "news";
+		$this->settings['caption'] = "LAN_TAG_CORE_NEWS_1";
 	}
 
 	function getLink($id)
