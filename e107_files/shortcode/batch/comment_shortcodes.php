@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/comment_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-09-19 15:30:47 $
+|     $Revision: 1.12 $
+|     $Date: 2009-10-09 15:05:12 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ SC_BEGIN USERNAME
 global $USERNAME, $comrow;
 if (isset($comrow['user_id']) && $comrow['user_id']) 
 {
-  $USERNAME = "<a href='".e_BASE."user.php?id.".$comrow['user_id']."'>".$comrow['user_name']."</a>\n";
+  $USERNAME = $parm == 'raw' ? $comrow['user_name'] : "<a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$comrow['user_id'])."'>".$comrow['user_name']."</a>\n";
 }
 else
 {
