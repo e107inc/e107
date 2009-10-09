@@ -9,8 +9,8 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-09-14 18:22:15 $
+ * $Revision: 1.21 $
+ * $Date: 2009-10-09 15:08:28 $
  * $Author: secretr $
 */
 
@@ -277,6 +277,7 @@ if ($action == "extend")
 	$news = $sql->db_Fetch();
 	
 	//***NEW [SecretR] - comments handled inside now
+	e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
 	if(!$news['news_allow_comments'] && isset($_POST['commentsubmit']))
 	{
 		$pid = intval(varset($_POST['pid'], 0));				// ID of the specific comment being edited (nested comments - replies)
@@ -307,7 +308,7 @@ if ($action == "extend")
 	
 	ob_start();
 	$ix->render_newsitem($news, 'extend', '', '', $param);
-	if(!$news['news_allow_comment'])
+	if(e107::getRegistry('news/page_allow_comments'))
 	{
 		global $comment_edit_query; //FIXME - kill me
 		$comment_edit_query = 'comment.news.'.$news['news_id'];
