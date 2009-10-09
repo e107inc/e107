@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2009-10-08 14:47:54 $
-|     $Author: secretr $
+|     $Revision: 1.101 $
+|     $Date: 2009-10-09 18:58:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,7 +44,8 @@ class e107plugin
 		'e_userprofile',
 		'e_header',
 		'e_userinfo',
-		'e_tagwords'
+		'e_tagwords',
+		'e_url'
 		);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
@@ -242,8 +243,16 @@ class e107plugin
 						// Can just add to DB - shouldn't matter that its not in our current table
 						//				echo "Trying to insert: ".$eplug_folder."<br />";
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1 );
-						e107::getDb()->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' ");
-						echo "<br />Installing: ".$plug_info['@attributes']['name'];
+						if(e107::getDb()->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' "))
+						{
+							$emessage->add("Added <b>".$plug_info['@attributes']['name']."</b> to the plugin table.", E_MESSAGE_DEBUG);	
+						}
+						else
+						{
+							$emessage->add("Failed to add ".$plug_info['@attributes']['name']." to the plugin table.", E_MESSAGE_DEBUG);							
+						}
+	
+						
 					}
 				}
 			}
