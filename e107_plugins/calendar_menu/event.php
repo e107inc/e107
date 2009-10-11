@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-14 11:05:52 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2009-10-11 21:12:54 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -810,7 +810,7 @@ if ($ds == "event")
     }
     $next10_start = $thisevent['event_start'] +1;
 	$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE_START, FALSE, $calendar_shortcodes);
-	if ($ec_err) $text2.= "Software Error<br />"; else $text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE, FALSE, $calendar_shortcodes);
+	if ($ec_err) $text2.= "Software Error<br />"; else $text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE, TRUE, $calendar_shortcodes);
 	$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE_END, FALSE, $calendar_shortcodes);
 }
 else
@@ -868,7 +868,7 @@ else
 	  $ev_list[$ptr]['event_start'] = $tim;
 //	  $text2 .= show_event($ev_list[$ptr]);
 	  $thisevent = $ev_list[$ptr];
-	  $text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE, FALSE, $calendar_shortcodes);
+	  $text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE, TRUE, $calendar_shortcodes);
 	}
 	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calendar_shortcodes);
   }
