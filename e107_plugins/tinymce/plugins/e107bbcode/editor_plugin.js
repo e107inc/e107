@@ -1,12 +1,12 @@
 /**
- * $Id: editor_plugin_src.js,v 1.2 2009-10-02 18:18:24 e107coders Exp $
+ * $Id: editor_plugin.js,v 1.1 2009-10-12 06:38:01 e107coders Exp $
  *
  * @author Moxiecode
- * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright ï¿½ 2004-2008, Moxiecode Systems AB, All rights reserved.
  */
 
 (function() {
-	tinymce.create('tinymce.plugins.BBCodePlugin', {
+	tinymce.create('tinymce.plugins.e107BBCodePlugin', {
 		init : function(ed, url) {
 			var t = this, dialect = ed.getParam('bbcode_dialect', 'punbb').toLowerCase();
 
@@ -25,8 +25,8 @@
 
 		getInfo : function() {
 			return {
-				longname : 'BBCode Plugin',
-				author : 'Moxiecode Systems AB',
+				longname : 'e107 BBCode Plugin',
+				author : 'Moxiecode Systems AB - Modified by e107 Inc',
 				authorurl : 'http://tinymce.moxiecode.com',
 				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/bbcode',
 				version : tinymce.majorVersion + "." + tinymce.minorVersion
@@ -81,7 +81,14 @@
 			rep(/&lt;/gi,"<");
 			rep(/&gt;/gi,">");
 			rep(/&amp;/gi,"&");
-
+			
+			// e107
+			rep(/<ul>/gi,"[list]");
+			rep(/<\/ul>/gi,"[/list]");
+			rep(/<ol>/gi,"[list=decimal]");
+			rep(/<\/ol>/gi,"[/list]");
+			rep(/<li>/gi,"[*]");
+			rep(/<\/li>/gi,"\n");
 			return s; 
 		},
 
@@ -108,10 +115,19 @@
 			rep(/\[code\](.*?)\[\/code\]/gi,"<span class=\"codeStyle\">$1</span>&nbsp;");
 			rep(/\[quote.*?\](.*?)\[\/quote\]/gi,"<span class=\"quoteStyle\">$1</span>&nbsp;");
 
+			// e107 FIXME!
+
+			rep(/\[list\]/gi,"<ul>");
+			rep(/\[\/list\]/gi,"</ul>");
+
+			rep(/\[list=decimal\]/gi,"<ol>");
+			rep(/\[\/list\]/gi,"</ol>");
+
+
 			return s; 
 		}
 	});
 
 	// Register plugin
-	tinymce.PluginManager.add('bbcode', tinymce.plugins.BBCodePlugin);
+	tinymce.PluginManager.add('e107bbcode', tinymce.plugins.e107BBCodePlugin);
 })();
