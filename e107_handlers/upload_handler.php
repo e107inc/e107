@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.19 $
-|   $Date: 2009-09-28 19:07:40 $
+|   $Revision: 1.20 $
+|   $Date: 2009-10-13 20:50:39 $
 |   $Author: e107steved $
 +---------------------------------------------------------------+
 */
@@ -558,6 +558,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	case '7z' :
 	case 'csv' :
 	case 'wmv' :
+	case 'swf' :
 	  break;			// Just accept these
 
 	case 'php' :
