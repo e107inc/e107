@@ -4,7 +4,7 @@
 |        e107 website system
 |        /classes/upload_class.php
 |
-|        ©Steve Dunstan 2001-2002
+|        Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.36 $
-|   $Date: 2009-10-13 20:50:35 $
-|   $Author: e107steved $
+|   $Revision: 1.37 $
+|   $Date: 2009-10-16 21:18:27 $
+|   $Author: secretr $
 +---------------------------------------------------------------+
 */
 
@@ -559,6 +559,10 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	case 'csv' :
 	case 'wmv' :
 	case 'swf' :
+	case 'flv': //Flash stream
+	case 'f4v': //Flash stream
+	case 'mov': //media
+	case 'avi': //media
 	  break;			// Just accept these
 
 	case 'php' :
