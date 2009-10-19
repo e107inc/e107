@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-10-06 18:58:08 $
- * $Author: e107steved $
+ * $Revision: 1.11 $
+ * $Date: 2009-10-19 16:13:29 $
+ * $Author: secretr $
  *
 */
 
@@ -38,6 +38,698 @@ define('ERR_GENERIC', '19');				// This requires coder-defined error text
 define('ERR_IMAGE_TOO_WIDE', '20');
 define('ERR_IMAGE_TOO_HIGH', '21');
 
+/**
+ * Validator class - used by e_model and its child classes
+ *
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author SecretR
+ * @copyright Copyright (c) 2009, e107 Inc.
+ */
+class e_validator
+{
+	/**
+	 * @var integer Unknown error code
+	 */
+	const ERR_UNKNOWN = -1;
+	
+	/**
+	 * @var integer Value not found error code
+	 */
+	const ERR_MISSING_VALUE = 101;
+	
+	/**
+	 * @var integer Unexpected value error code (bad rule)
+	 */
+	const ERR_UNEXPECTED_VALUE = 102;
+	
+	/**
+	 * @var integer Invalid characters error code
+	 */
+	const ERR_INVALID_CHARS = 103;
+	
+	/**
+	 * @var integer Invalid email error code
+	 */
+	const ERR_INVALID_EMAIL = 104;
+	
+	/**
+	 * @var integer Invalid email error code
+	 */
+	const ERR_FIELDS_MATCH = 105;
+	
+	/**
+	 * @var integer String too short error code
+	 */
+	const ERR_TOO_SHORT = 131;
+	
+	/**
+	 * @var integer String too long error code
+	 */
+	const ERR_TOO_LONG = 132;
+	
+	/**
+	 * @var integer Number too low error code
+	 */
+	const ERR_TOO_LOW = 133;
+	
+	/**
+	 * @var integer Number too high error code
+	 */
+	const ERR_TOO_HIGH = 134;
+	
+	/**
+	 * @var integer Array count too low error code
+	 */
+	const ERR_ARRCOUNT_LOW = 135;
+	
+	/**
+	 * @var integer Array count high error code
+	 */
+	const ERR_ARRCOUNT_HIGH = 136;
+	
+	/**
+	 * @var integer Type of integer expected error code
+	 */
+	const ERR_INT_EXPECTED = 151;
+	
+	/**
+	 * @var integer Type of float expected error code
+	 */
+	const ERR_FLOAT_EXPECTED = 152;
+	
+	/**
+	 * @var integer Instance type expected error code
+	 */
+	const ERR_INSTANCEOF_EXPECTED = 153;
+	
+	/**
+	 * @var integer Type of array expected error code
+	 */
+	const ERR_ARRAY_EXPECTED = 154;
+	
+	/**
+	 * @var integer Generic (empty value) error code
+	 */
+	const ERR_GENERIC = 191;
+
+	/**
+	 * Required rules - Used by validate method
+	 * 
+	 * Structure: array(type, condition, field title LAN[, condition help, validation error message]);
+	 * 
+	 * @example $_required_rules['download_category_id'] = array('int', '1', 'Download Category', 'choose category')
+	 * 
+	 * Validation array structure:
+	 * - type | condition = 
+	 * 		- regex | regex string
+	 * 		- email | no condition required
+	 * 		- int/integer | number range in format 'min-max'
+	 * 		- float |  number range in format 'min-max'
+	 * 		- str/string | number string length range in format 'min-max'
+	 * 		- required | no condition required
+	 * 		- callback | string function name or array(class name|object, method) (static call)
+	 * 		- instanceof | string class name
+	 * 		- array | array count range in format 'min-max'
+	 * 		- compare | string field_name, value should be in format field_name => array('value1', 'value1')
+	 * 					if value1 === value1, field_name => value1 will be added to $_valid_data array
+	 * - field title LAN = 
+	 * 		human readable field (data key) name
+	 * - [optional] condition help = 
+	 * 		can be used for both inline field help and validation error message
+	 * - [optional] validation error message = 
+	 * 		if empty condition help will be used
+	 * 
+	 * @var array
+	 */
+	protected $_required_rules = array();
+	
+	/**
+	 * Check data only if exist/non-empty
+	 * 
+	 * @var array
+	 */
+	protected $_optional_rules = array();
+	
+	/**
+	 * Contains validation error codes in format 'field=>error_code'
+	 * @var array
+	 */
+	protected $_validation_results = array();
+	
+	/**
+	 * Stores validated data (only after successful {@link validateField()} call
+	 * @var array
+	 */
+	protected $_valid_data = array();
+	
+	/**
+	 * Stores validate check result
+	 * @var boolean
+	 */
+	protected $_is_valid_data = true;
+	
+	/**
+	 * eMessage handler namespace
+	 * 
+	 * @var string
+	 */
+	protected $_message_stack = 'validator';
+	
+	/**
+	 * Constructore 
+	 * @param string [optional] $message_stack [optional] eMessage handler namespace 
+	 * @param array [optional] $rules validation rules
+	 * @param array [optional] $optrules optional validation rules
+	 */
+	public function __construct($message_stack = '', $rules = array(), $optrules = array())
+	{
+		if($message_stack)
+		{
+			$this->_message_stack = $message_stack;
+		}
+		$this->setRules($rules)
+			->setOptionalRules($optrules);
+	}
+	
+	/**
+	 * @param array $rules
+	 * @return e_validator
+	 */
+	public function setRules($rules)
+	{
+		$this->_required_rules = $rules;
+		return $this;
+	}
+	
+	/**
+	 * @param array $rules
+	 * @return e_validator
+	 */
+	public function setOptionalRules($rules)
+	{
+		$this->_optional_rules = $rules;
+		return $this;
+	}
+	
+	/**
+	 * Add successfully validated data to the valid array 
+	 * @param string $field_name
+	 * @param mixed $value
+	 * @return 
+	 */
+	protected function addValidData($field_name, $value)
+	{
+		$this->_valid_data[$field_name] = $value;
+		return $this;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getValidData()
+	{
+		return $this->_valid_data;
+	}
+	
+	/**
+	 * Validate data
+	 * 
+	 * @param array $data
+	 * @return boolean
+	 */
+	function validate($data)
+	{
+		//XXX add direct e_model $data type support?
+		$this->reset();
+		
+		$rules = array_merge(array_keys($this->_required_rules), array_keys($this->_optional_rules)); 
+		foreach ($rules as $field_name)
+		{
+			$value = varset($data[$field_name], null);
+			$required = $this->isRequiredField($field_name);
+			if(($required || $this->isOptionalField($field_name)) && !$this->validateField($field_name, $value, $required))
+			{
+				$this->_is_valid_data = false; 
+				$this->addValidateMessage($this->getFieldName($field_name, $required), $this->getErrorCode($field_name), $this->getFieldMessage($field_name, $required));
+				continue;
+			}
+		}
+
+		return $this->_is_valid_data;
+	}
+	
+	/**
+	 * Check if field is required
+	 * 
+	 * @param string $name
+	 * @return boolean
+	 */
+	function isRequiredField($name)
+	{
+		return isset($this->_required_rules[$name]);
+	}
+	
+	/**
+	 * Check if there is optional rule for this field
+	 * 
+	 * @param string $name
+	 * @return boolean
+	 */
+	function isOptionalField($name)
+	{
+		return isset($this->_optional_rules[$name]);
+	}
+	
+	/**
+	 * Retrieve help for the required field
+	 * 
+	 * @param string $name
+	 * @return string
+	 */
+	function getFieldHelp($name, $required = true, $default = '')
+	{
+		if($required)
+		{
+			$msg = (isset($this->_required_rules[$name][3]) ? $this->_required_rules[$name][3] : $default);
+		}
+		else
+		{
+			$msg = (isset($this->_optional_rules[$name][3]) ? $this->_optional_rules[$name][3] : $default);
+		}
+		
+		return defset($msg, $msg);
+	}
+	
+	/**
+	 * Retrieve validation error message for the required field
+	 * 
+	 * @param string $name
+	 * @return string
+	 */
+	function getFieldMessage($name, $required = true)
+	{
+		if($required)
+		{
+			if(!isset($this->_required_rules[$name][4]))
+			{
+				return $this->getFieldHelp($name, true, 'Invalid value');
+			}
+			$msg = $this->_required_rules[$name][4];
+		}
+		else
+		{
+			if(!isset($this->_optional_rules[$name][4]))
+			{
+				return $this->getFieldHelp($name, false, 'Invalid value');
+			}
+			$msg = $this->_optional_rules[$name][4];
+		}
+		
+		return defset($msg, $msg);
+	}
+	
+	/**
+	 * @param string $name
+	 * @return string
+	 */
+	function getFieldName($name, $required = true)
+	{
+		if($required)
+		{
+			$msg = (isset($this->_required_rules[$name][2]) ? $this->_required_rules[$name][2] : $name);
+		}
+		else
+		{
+			$msg = (isset($this->_optional_rules[$name][2]) ? $this->_optional_rules[$name][2] : $name);
+		}
+		
+		return defset($msg, $msg);
+	}
+	
+	/**
+	 * Validate single field
+	 *
+	 * @param string $name
+	 * @param string $newval
+	 * @param boolean $required
+	 * @return boolean
+	 */
+	function validateField($name, $value, $required = true)
+	{
+		if(!$required && empty($value)) 
+		{
+			switch($this->_optional_rules[$name][0])
+			{
+				case 'int':
+				case 'integer':
+					$value = 0;
+				break;
+				
+				case 'float':
+					$value = floatval($value);
+				break;
+				
+				case 'array':
+					$value = array();
+				break;
+			
+				default:
+					$value = '';
+				break;
+			}
+			$this->addValidData($name, $value);
+			return true;
+		}
+		if($required)
+		{
+			$type = $this->_required_rules[$name][0];
+			$cond = $this->_required_rules[$name][1];
+		}
+		else 
+		{
+			$type = $this->_optional_rules[$name][0];
+			$cond = $this->_optional_rules[$name][1];
+		}
+		switch ($type) 
+		{
+			case 'required': 
+				if(empty($value))
+				{
+					$this->addValidateResult($name, self::ERR_GENERIC);
+					return false;
+				}
+				$this->addValidData($name, $value);
+				return true;
+			break;
+			
+			case 'email':
+				if(!check_email($value))
+				{
+					$this->addValidateResult($name, self::ERR_INVALID_EMAIL);
+					return false;
+				}
+				$this->addValidData($name, $value);
+				return true;
+			break;
+			
+			case 'regex':
+				if(!preg_match($cond, $value))
+				{
+					$this->addValidateResult($name, self::ERR_INVALID_CHARS);
+					return false;
+				}
+				$this->addValidData($name, $value);
+				return true;
+			break;
+			
+			case 'callback':
+				if(!call_user_func($cond, $value))
+				{
+					$this->addValidateResult($name, self::ERR_INVALID_CHARS);
+					return false;
+				}
+				$this->addValidData($name, $value);
+				return true;
+			break;
+			
+			case 'instanceof':
+				if(!(is_object($value) && $value instanceof $cond))
+				{
+					$this->addValidateResult($name, self::ERR_INSTANCEOF_EXPECTED);
+					return false;
+				}
+				$this->addValidData($name, $value);
+				return true;
+			break;
+		
+			case 'int':
+			case 'integer':
+				if(!preg_match('/[0-9]/', $value))
+				{
+					$this->addValidateResult($name, self::ERR_INT_EXPECTED);
+					return false;
+				}
+				$tmp = explode('-', $cond);
+				if(is_numeric($tmp[0]) && (integer) $tmp[0] > (integer) $value)
+				{
+					$this->addValidateResult($name, self::ERR_TOO_LOW);
+					return false;
+				}
+				if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < (integer) $value)
+				{
+					$this->addValidateResult($name, self::ERR_TOO_HIGH);
+					return false;
+				}
+				$this->addValidData($name, intval($value));
+				return true;
+			break;
+			
+			case 'str':
+			case 'string':
+				$tmp = explode('-', $cond);
+				$length = e107::getParser()->uStrLen($value);
+				if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+				{
+					$this->addValidateResult($name, self::ERR_TOO_SHORT);
+					return false;
+				}
+				if(is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+				{
+					$this->addValidateResult($name, self::ERR_TOO_LONG);
+					return false;
+				}
+				$this->addValidData($name, (string) $value);
+				return true;
+			break;
+
+			case 'float':
+				if(!is_numeric($value))
+				{
+					$this->addValidateResult($name, self::ERR_FLOAT_EXPECTED);
+					return false;
+				}
+				$tmp = explode('-', $cond);
+				if(is_numeric($tmp[0]) && (float) $tmp[0] > (float) $value)
+				{
+					$this->addValidateResult($name, self::ERR_TOO_LOW);
+					return false;
+				}
+				if(is_numeric(varset($tmp[1])) && (float) $tmp[1] < (float) $value)
+				{
+					$this->addValidateResult($name, self::ERR_TOO_HIGH);
+					return false;
+				}
+				$this->addValidData($name, (float) $value);
+				return true;
+			break;
+			
+			case 'array':
+				if(!is_array($value))
+				{
+					$this->addValidateResult($name, self::ERR_ARRAY_EXPECTED);
+					return false;
+				}
+				$length = count($value);
+				$tmp = explode('-', $cond);
+				if(is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+				{
+					$this->addValidateResult($name, self::ERR_ARRCOUNT_LOW);
+					return false;
+				}
+				if(is_numeric(varset($tmp[1])) && (float) $tmp[1] < $length)
+				{
+					$this->addValidateResult($name, self::ERR_ARRCOUNT_HIGH);
+					return false;
+				}
+				$this->addValidData($name, $value);
+				return true;
+			break;
+			
+			case 'compare':
+				if(!is_array($value))
+				{
+					$this->addValidateResult($name, self::ERR_UNEXPECTED_VALUE);
+					return false;
+				}
+				if(!($value[0] && $value[1] && $value[0] == $value[1]))
+				{
+					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);
+					return false;
+				}
+				$this->addValidData($name, $value[0]);
+				return true;
+			break;
+			
+			case 'compare_strict':
+				if(!is_array($value))
+				{
+					$this->addValidateResult($name, self::ERR_UNEXPECTED_VALUE);
+					return false;
+				}
+				if(!($value[0] && $value[1] && $value[0] === $value[1]))
+				{
+					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);
+					return false;
+				}
+				$this->addValidData($name, $value[0]);
+				return true;
+			break;
+			
+			default:
+				$this->addValidateResult($name, self::ERR_UNEXPECTED_VALUE);
+				return false;
+			break;
+		}
+	}
+	
+	/**
+	 * Add validation error to validate result stack
+	 *
+	 * @param string $field_title
+	 * @param string $err_code
+	 * @param string $err_message
+	 * @param string $custom
+	 * @return e_validator
+	 */
+	function addValidateMessage($field_title, $err_code = 0, $err_message = '', $custom = '')
+	{
+		if($custom)
+		{
+			e107::getMessage()->addStack(sprintf($err_message, $field_title), $this->_message_stack, (true === $custom ? E_MESSAGE_ERROR : $custom));
+			return $this;
+		}
+		
+		//Core message
+		$msg = sprintf(
+			'<strong>&quot;%s&quot;</strong> validation error: [#%d] %s. ', 
+			$field_title, 
+			$err_code,
+			$this->getErrorByCode($err_code)
+		);
+		
+		//Additional message
+		if($err_message)
+		{
+			$msg .= $err_message;
+		}
+		e107::getMessage()->addStack($msg, $this->_message_stack, E_MESSAGE_ERROR);
+		
+		return $this;
+	}
+	
+	/**
+	 * Get validate message array
+	 *
+	 * @param boolean $clear
+	 * @return array
+	 */
+	function getValidateMessages($clear = true)
+	{
+		return e107::getMessage()->getAll($this->_message_stack, true, $clear);
+	}
+	
+	/**
+	 * Render validate messages
+	 * 
+	 * @param boolean $session merge with session messages
+	 * @param boolean $clear
+	 * @return string
+	 */
+	function renderValidateMessages($session = false, $clear = true)
+	{
+		return e107::getMessage()->render($this->_message_stack, $session, $clear);
+	}
+	
+	/**
+	 * @return e_validator
+	 */
+	function clearValidateMessages()
+	{
+		$this->_validate_results = array();
+		return $this;
+	}
+	
+	/**
+	 * Add validate error code for a field
+	 *
+	 * @param string $name
+	 * @param integer $code
+	 * @return e_validator
+	 */
+	function addValidateResult($name, $code)
+	{
+		$this->_validation_results[$name] = $code;
+		return $this;
+	}
+	
+	/**
+	 * Get validate result array
+	 *
+	 * @param boolean $clear
+	 * @return array
+	 */
+	function getValidateResults($clear = true)
+	{
+		return $this->_validation_results;
+	}
+	
+	/**
+	 * Get validate result for a field
+	 *
+	 * @param string $field
+	 * @param mixed $default
+	 * @return integer error code
+	 */
+	function getErrorCode($field, $default)
+	{
+		return (isset($this->_validation_results[$field]) ? $this->_validation_results[$field] : -1);
+	}
+	
+	/**
+	 * Get error string by given error code
+	 *
+	 * @param string $error_code
+	 * @return integer error code
+	 */
+	function getErrorByCode($error_code)
+	{
+		$lan = 'LAN_VALIDATE_'.$error_code;
+		return defset($lan, $lan);
+	}
+	
+	/**
+	 * @return e_validator
+	 */
+	function clearValidateResults()
+	{
+		$this->_validation_results = array();
+		return $this;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function isValid()
+	{
+		return empty($this->_is_valid_data);
+	}
+	
+	/**
+	 * Reset object validate result data
+	 * @return e_validator
+	 */
+	function reset()
+	{
+		$this->_is_valid_data = true;
+		$this->_valid_data = array();
+		$this->clearValidateResults()
+			->clearValidateMessages();
+			
+		return $this;
+	}
+}
 
 /*
 The validator functions use an array of parameters for each variable to be validated.
