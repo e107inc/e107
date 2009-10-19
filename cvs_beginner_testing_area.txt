@@ -1,0 +1,1 @@
+Use this module testmodule to check your CVS configuration and test the committing and creating of files. 
