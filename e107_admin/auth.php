@@ -9,9 +9,9 @@
  * Administration Area Authorization
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/auth.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-08-19 14:39:56 $
- * $Author: secretr $
+ * $Revision: 1.12 $
+ * $Date: 2009-10-19 20:09:15 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 */
 if (ADMIN)
 {
-	define("ADMIN_PAGE", true);
+	define('ADMIN_PAGE', true);
 	//don't include it if it'a an AJAX call or not wanted
 	if(!e_AJAX_REQUEST && !defset('e_NOHEADER'))
 	{

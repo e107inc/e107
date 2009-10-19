@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.10 $
+|     $Date: 2009-10-19 20:09:15 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
-require_once("../../class2.php");
+require_once('../../class2.php');
 if (!plugInstalled('chatbox_menu')) 
 {
 	header("Location: ".e_BASE."index.php");
