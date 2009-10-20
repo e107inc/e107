@@ -9,8 +9,8 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-10-12 06:38:01 $
+ * $Revision: 1.9 $
+ * $Date: 2009-10-20 21:02:02 $
  * $Author: e107coders $
  *
 */
@@ -191,6 +191,7 @@ class tinymce
 	function renderValue($key,$row)
 	{
 		$att = $this->fields[$key];	
+		$frm = e107::getForm();	
 		
 		if($key == "options")
 		{
@@ -198,6 +199,16 @@ class tinymce
 			$text = "<input type='image' class='action edit' name='edit[{$row[$id]}]' src='".ADMIN_EDIT_ICON_PATH."' title='".LAN_EDIT."' />";
 			$text .= "<input type='image' class='action delete' name='delete[{$row[$id]}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$row[$id]} ]' />";
 			return $text;
+		}
+		
+		if($key == "tinymce_userclass")
+		{
+			return $frm->uc_label($row[$key]);	
+		}
+		
+		if($key == "tinymce_plugins")
+		{
+			return str_replace(",","<br />",$row[$key]);	
 		}
 		
 		switch($att['type'])

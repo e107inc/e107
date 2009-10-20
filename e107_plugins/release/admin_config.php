@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-09-29 00:03:01 $
+ * $Revision: 1.2 $
+ * $Date: 2009-10-20 21:02:02 $
  * $Author: e107coders $
  *
 */
@@ -26,6 +26,7 @@ $ef = new efeed;
 
 if(varset($_POST['update']) || varset($_POST['create']))
 {
+
 	$id = intval($_POST['record_id']);
 	$ef->submitPage($id);
 }

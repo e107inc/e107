@@ -46,7 +46,9 @@ if(!plugInstalled('gsitemap'))
 
 
 // include the XML-RPC class library
-require_once('xmlrpc/xmlrpc.inc');
+include (e_HANDLER.'xmlrpc/xmlrpc.inc');
+include (e_HANDLER.'xmlrpc/xmlrpcs.inc');
+include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc');
 
 class Weblog_Pinger {
     // Weblogs.Com XML-RPC settings
