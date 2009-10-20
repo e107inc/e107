@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-09-25 20:16:18 $
+ * $Revision: 1.23 $
+ * $Date: 2009-10-20 19:09:27 $
  * $Author: secretr $
 */
 
@@ -27,7 +27,7 @@ require_once(e_HANDLER.'model_class.php');
  * @author SecretR
  * @copyright Copyright (c) 2009, e107 Inc.
  */
-class e_pref extends e_model 
+class e_pref extends e_model_admin 
 {
 	/**
 	 * Preference ID - DB row value
