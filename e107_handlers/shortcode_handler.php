@@ -9,8 +9,8 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-09-25 20:15:19 $
+ * $Revision: 1.34 $
+ * $Date: 2009-10-20 16:00:37 $
  * $Author: secretr $
 */
 
@@ -215,9 +215,7 @@ class e_shortcode
 			}
 		}	
 	}
-	
-	
-	
+
 	/**
 	 * Register Plugin Shortcode Batch files (e_shortcode.php) for use site-wide. 
 	 * Equivalent to multiple .sc files in the plugin's folder. 
@@ -260,6 +258,7 @@ class e_shortcode
 
 	/**
 	 * Register Core Shortcode Batches. 
+	 * FIXME - currently loaded all the time (even on front-end)
 	 * @return 
 	 */
 	function loadCoreShortcodes()
@@ -392,7 +391,7 @@ class e_shortcode
 							$_method = 'sc_'.strtolower($code);
 							if(!isset($this->scClasses[$_class]))
 							{
-								if(!class_exists($_class) && $this->registered_codes[$code]['path'])
+								if(!class_exists($_class, false) && $this->registered_codes[$code]['path'])
 								{
 									include_once($this->registered_codes[$code]['path']);
 								}
