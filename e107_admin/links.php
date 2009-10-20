@@ -9,9 +9,9 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-08-28 16:10:54 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.30 $
+ * $Date: 2009-10-20 11:07:08 $
+ * $Author: e107coders $
  *
 */
 
@@ -45,9 +45,12 @@ require_once(e_HANDLER."message_handler.php");
 require_once (e_HANDLER."ren_help.php");
 
 $rs = new form();
+
+define("URL_SEPARATOR", 'X'); // Used in names of 'inc' and 'dec' fields
+
 $linkpost = new links();
 $emessage = &eMessage::getInstance();
-
+/*
 $action = '';
 if(e_QUERY)
 {
@@ -57,10 +60,10 @@ if(e_QUERY)
 	$id = varset($tmp[2], '');
 	unset($tmp);
 }
+*/
 
-define("URL_SEPARATOR", 'X'); // Used in names of 'inc' and 'dec' fields
 
-
+/*
 $incdec_action = '';
 foreach(array_keys($_POST) as $k)
 {
@@ -74,7 +77,7 @@ foreach(array_keys($_POST) as $k)
 		$linkid = intval($matches[2]);
 		$link_order = intval($matches[3]);
 	}
-}
+}*/
 
 if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] != "")
 {
@@ -116,7 +119,8 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 		sitelinks_adminlog('01', $message); // 'Sublinks generated'
 	}
 }
-
+// DEPRECATED. 
+/*
 if($incdec_action == 'inc')
 {
 	$sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order - 1)."'");
@@ -128,9 +132,10 @@ elseif($incdec_action == 'dec')
 	$sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order + 1)."'");
 	$sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".intval($linkid)."'");
 	sitelinks_adminlog('03', 'Id: '.$linkid);
-}
+}*/
 
-if(isset($_POST['update']))
+// DEPRECATED - use batch method instead. 
+/*if(isset($_POST['update']))
 {
 	foreach($_POST['link_order'] as $loid)
 	{
@@ -144,7 +149,7 @@ if(isset($_POST['update']))
 	$e107cache->clear("sitelinks");
 	$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS);
 	sitelinks_adminlog('04', '');
-}
+}*/
 
 if(isset($_POST['updateoptions']))
 {
@@ -172,48 +177,10 @@ if(isset($_POST['updateoptions']))
 	}
 }
 
-if($delete == 'main')
-{
-	if($sql->db_Select("links", "link_id, link_name, link_order, link_parent", "link_id=".intval($del_id)))
-	{
-		$row = $sql->db_Fetch();
-		$linkpost->delete_link($row); // Admin logging in class routine
-	}
-}
 
-if(isset($_POST['add_link']))
-{
-	$linkpost->submit_link($sub_action, $_POST['link_id']);
-	unset($id);
-}
 
-$linkArray = $linkpost->getLinks();
 
-switch ($action) {
-	case 'create':
-		$linkpost->create_link($sub_action, $id);
-	break;
 
-	case 'debug':
-		$linkpost->show_existing_items(TRUE);
-	break;
-
-	case 'opt':
-		$linkpost->show_pref_options();
-	break;
-
-	case 'sublinks':
-		$linkpost->show_sublink_generator();
-	break;
-
-	case 'savepreset':
-	case 'clr_preset':
-	default: //handles preset urls as well
-		$action = 'main';
-		$sub_action = $id = '';
-		$linkpost->show_existing_items();
-	break;
-}
 
 require_once ('footer.php');
 exit();
@@ -226,6 +193,151 @@ class links
 	var $link_total;
 	var $aIdOptPrep, $aIdOptData, $aIdOptTest;
 	var $debug_dis = FALSE;
+	var $linkArray = array();
+	var $linkCategory = array();
+	var $linkOpen = array();
+	var $mode = 'main';
+	
+	function __construct()
+	{
+		global $user_pref;
+		$sql = e107::getDb();
+		
+		if(varset($_GET['mode']))
+		{
+			$this->mode = $_GET['mode'];
+		}
+		
+		if (varset($_POST['submit-e-columns']))
+		{
+			$user_pref['admin_links_columns'] = $_POST['e-columns'];
+			save_prefs('user');
+		}
+		
+		$this->linkCategory = array(
+			1	=> "1 - Main",
+			2	=> "2 - Alt",
+			3	=> "3 - Alt",
+			4	=> "4 - Alt",
+			5	=> "5 - Alt",
+			6	=> "6 - Alt",
+			7	=> "7 - Alt",
+			8	=> "8 - Alt",
+			9	=> "9 - Alt",
+			10	=> "10 - Alt"
+		);
+		
+		$this->linkOpen = array(
+			0 => LCLAN_20, // 0 = same window
+			4 => LCLAN_24, // 4 = miniwindow  600x400
+			5 => LINKLAN_1 // 5 = miniwindow  800x600
+		);					
+		
+		$this->fields = array(
+			'checkboxes' 		=> array('title'=> '','width' => '3%','forced' => true,'thclass' => 'center first'),
+			'link_button'		=> array('title'=> LCLAN_89, 'width'=>'5%', 'thclass' => 'center'),		
+			'link_id'			=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE, 'primary'=>TRUE),
+			'link_name'	   		=> array('title'=> LCLAN_15, 'width'=>'auto','type'=>'text'),
+			'link_url'	   		=> array('title'=> LCLAN_93, 'width'=>'auto','type'=>'text'),
+			'link_class' 		=> array('title'=> LAN_USERCLASS, 'type' => 'array', 'method'=>'tinymce_class', 'width' => 'auto'),	
+			'link_description' 	=> array('title'=> LCLAN_17, 'type' => 'array', 'method'=>'tinymce_plugins', 'width' => 'auto'),	
+			'link_category' 	=> array('title'=> LCLAN_12, 'type' => 'text', 'method'=>'tinymce_buttons', 'methodparms'=>1, 'width' => 'auto'),
+			'link_order' 		=> array('title'=> LAN_ORDER, 'type' => 'text', 'method'=>'tinymce_buttons', 'methodparms'=>2, 'width' => 'auto'),
+			'link_parent' 		=> array('title'=> LINKLAN_2, 'type' => 'text', 'method'=>'tinymce_buttons', 'methodparms'=>3, 'width' => 'auto', 'thclass' => 'left first'), 
+         	'link_open'		 	=> array('title'=> LCLAN_19, 'type' => 'text', 'method'=>'tinymce_buttons', 'methodparms'=>4, 'width' => 'auto', 'thclass' => 'left first'),
+			'increment' 		=> array('title'=> LCLAN_91,'width' => '3%','forced' => true,'thclass' => 'center'),	  	
+			'options' 			=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
+		);
+		
+		$this->fieldpref = (varset($user_pref['admin_links_columns'])) ? $user_pref['admin_links_columns'] : array_keys($this->fields);
+	
+		if(varset($_POST['inc']))
+		{
+			list($link_id,$link_order) = explode(URL_SEPARATOR,key($_POST['inc']));
+			$sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".intval($link_order - 1)."'");
+			$sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".intval($link_id)."'");
+			sitelinks_adminlog('02', 'Id: '.$link_id);
+		}
+		
+		if(varset($_POST['dec']))
+		{			
+			list($link_id,$link_order) = explode(URL_SEPARATOR,key($_POST['dec']));
+			$sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".intval($link_order + 1)."'");
+			$sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".intval($link_id)."'");
+			sitelinks_adminlog('03', 'Id: '.$link_id);
+		}
+		
+		if(varset($_POST['execute_batch']))
+		{
+			$this->process_batch($_POST['link_selected']);
+		}
+		
+		if(varset($_POST['add_link']))
+		{
+			$this->submit_link($sub_action, $_POST['link_id']);
+		}
+		
+		if(varset($_POST['delete']))
+		{
+			$del_id = key($_POST['delete']);
+			if($sql->db_Select("links", "link_id, link_name, link_order, link_parent", "link_id=".intval($del_id)))
+			{
+				$row = $sql->db_Fetch();
+				$this->delete_link($row); // Admin logging in class routine
+			}
+		}
+		
+		$this->linkArray = $this->getLinks();
+		
+		if(varset($_POST['edit']))
+		{
+			$this->create_link('edit', key($_POST['edit']));
+			return;
+		}
+		
+		if(varset($_POST['sub']))
+		{
+			$this->mode = 'sub';
+			$this->create_link('sub', key($_POST['sub']));
+			return;
+		}
+					
+			
+		switch ($this->mode) // page display mode
+		{
+			
+			case 'main':
+				
+				$this->show_existing_items();
+			break;
+			
+			case 'create':
+				$this->create_link($sub_action,0);
+			break;
+		
+			case 'debug':
+				$linkpost->show_existing_items(TRUE);
+			break;
+		
+			case 'opt':
+				$this->show_pref_options();
+			break;
+		
+			case 'sub':
+				$this->show_sublink_generator();
+			break;
+		
+			case 'savepreset':
+			case 'clr_preset':
+			default: //handles preset urls as well
+				$action = 'main';
+				$sub_action = $id = '';
+			//	$linkpost->show_existing_items();
+			break;
+		}
+				
+	}
+	
 
 	function getLinks()
 	{
@@ -274,13 +386,15 @@ class links
 
 	function dropdown($curval = "", $lid = 0, $indent = 0)
 	{ // Drop-down list using on the parent_id. :)
+	
+	
 		global $linkArray, $id, $sub_action;
 
 		if(0 == $indent)
 		{
 			$ret = "<option value=''>".LINKLAN_3."</option>\n";
 		}
-		foreach($linkArray[$lid] as $l)
+		foreach($this->linkArray[$lid] as $l)
 		{
 			$s = ($l['link_id'] == $curval ? " selected='selected' " : "");
 			$thename = $this->linkName($l['link_name']);
@@ -299,13 +413,14 @@ class links
 			}
 			$ret .= "<option value='".$thelink."' {$s}>".str_pad("", $indent * 36, "&nbsp;").$thename." </option>\n";
 
-			if(array_key_exists($l['link_id'], $linkArray))
+			if(array_key_exists($l['link_id'], $this->linkArray))
 			{
 				$ret .= $this->dropdown($curval, $l['link_id'], $indent + 1);
 			}
 		}
 		return $ret;
 	}
+
 
 	function existing($id = 0, $level = 0)
 	{
@@ -315,7 +430,7 @@ class links
 		{
 			$s = ($l['link_parent'] == $curval ? " selected='selected' " : "");
 			$ret .= $this->display_row($l, $level);
-			if(array_key_exists($l['link_id'], $linkArray))
+			if(array_key_exists($l['link_id'], $this->linkArray))
 			{
 				$ret .= $this->existing($l['link_id'], $level + 1);
 			}
@@ -323,13 +438,52 @@ class links
 		return $ret;
 	}
 
+
 	function show_existing_items($dbg_display = FALSE)
 	{
-		global $sql, $rs, $e107, $tp, $linkArray, $emessage;
+		global $rs, $emessage;
+		
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+				
 		$this->debug_dis = $dbg_display;
 
-		if(count($linkArray))
+		if(count($this->linkArray))
 		{
+			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
+			$text .= "
+        		<fieldset id='core-links-list'>
+				<legend class='e-hideme'>".$this->pluginTitle."</legend>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>".
+				$frm->colGroup($this->fields,$this->fieldpref).
+				$frm->thead($this->fields,$this->fieldpref).
+				"<tbody>";
+		
+			foreach($this->linkArray[0] as $field)
+			{
+				$text .= "<tr>\n";
+				foreach($this->fields as $key=>$att)
+				{	
+					$class = vartrue($this->fields[$key]['thclass']) ? "class='".$this->fields[$key]['thclass']."'" : "";		
+					$text .= (in_array($key,$this->fieldpref) || $att['forced']==TRUE) ? "\t<td ".$class.">".$this->renderValue($key,$field)."</td>\n" : "";						
+				}
+				$text .= "</tr>\n";				
+			}
+		
+			$text .= "
+				</tbody>
+				</table>";
+			
+			$text .= "<div class='buttons-bar center'>".$this->show_batch_options()."</div>";	
+				
+				$text .= "
+				</fieldset>
+			</form>
+			";
+			
+			/*
 
 			$this->prepIdOpts(); // Prepare the options list for all links
 			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
@@ -368,15 +522,87 @@ class links
 				</div>
 			</fieldset>
 
-			";
+			";	
+			
 			$text .= $rs->form_close();
+			*/
+			
 		}
 		else
 		{
 			$text .= "<div class='center'>".LCLAN_61."</div>";
 		}
-		$e107->ns->tablerender(LCLAN_8, $emessage->render().$text);
+		
+		$ns->tablerender(LCLAN_8, $emessage->render().$text);
 	}
+	
+	
+	
+	function renderValue($key,$row)
+	{
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		
+		$text = "";
+		$att = $this->fields[$key];	
+		
+		if($key == 'checkboxes')
+		{
+			$rowid = "link_selected[".$row["link_id"]."]";
+			return $frm->checkbox($rowid, $row['link_id']);
+		}
+		
+		if($key == "link_name") // FIXME - incorrect links. 
+		{
+			return "<a href='".$tp->replaceConstants($row['link_url'],'full')."'>".$row['link_name']."</a>";	
+		}
+		
+		if($key == "link_button")
+		{
+			$button = $tp->replaceConstants($row['link_button']);
+			return ($button) ? "<img src='".$button."' alt='' />" : "&nbsp;";
+		}
+		
+		if($key == "link_class")
+		{
+			return $frm->uc_label($row['link_class']);
+		}
+		
+		if($key == "link_category")
+		{
+			$cat = $row['link_category'];
+			return $this->linkCategory[$cat];
+		}
+		
+		if($key == "link_open")
+		{
+			return $this->linkOpen[$row['link_open']];
+		}
+		
+		if($key == "increment")
+		{
+			$name_suffix = $row["link_id"].URL_SEPARATOR.$row["link_order"];
+			$text .= "<input type='image' class='action' name='inc[{$name_suffix}]' src='".ADMIN_UP_ICON_PATH."' title='".LCLAN_30."' />";
+			$text .= "<input type='image' class='action' name='dec[{$name_suffix}]'  src='".ADMIN_DOWN_ICON_PATH."' title='".LCLAN_31."' />";
+			return $text;
+		}
+		
+		
+		if($key == "options")
+		{
+			$id = $row['link_id'];
+			
+			$text .= "<input type='image' class='action' name='sub[{$id}]' src='".ADMIN_ADD_ICON_PATH."' title='".LINKLAN_10."' />";
+			$text .= "<input type='image' class='action edit' name='edit[{$id}]' src='".ADMIN_EDIT_ICON_PATH."' title='".LAN_EDIT."' />";
+			$text .= "<input type='image' class='action delete' name='delete[{$id}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$id} ]' />";
+			return $text;
+		}
+		
+		return $row[$key];
+	}
+
+
+
 
 	function prepIdOpts()
 	{
@@ -396,89 +622,89 @@ class links
 
 		if($link_category > 1 && $link_category != $previous_cat)
 		{
+				$text .= "
+				</tbody>
+			</table>
+		</fieldset>
+		<fieldset id='core-links-list-".$link_category."'>
+			<legend class='e-hideme'>".LCLAN_12.": ".$link_category."</legend>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+				<colgroup>
+					<col style='width:  5%' />
+					<col style='width: 60%' />
+					<col style='width: 15%' />
+	                <col style='width: 10%' />
+					<col style='width:  5%' />
+					<col style='width:  5%' />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class='center'>".LCLAN_89."</th>
+						<th>".LCLAN_15." (".LCLAN_12.": ".$link_category.")</th>
+	                    <th class='center'>".LAN_OPTIONS." hihihi</th>
+						<th class='center'>".LCLAN_95."</th>
+						<th class='center'>".LCLAN_91."</th>
+						<th class='center last'>".LAN_ORDER."</th>
+					</tr>
+				</thead>
+				<tbody>
+			";
+				$previous_cat = $link_category;
+			}
+	
+			if(strpos($link_name, "submenu.") !== FALSE || $link_parent != 0) // 'submenu' for upgrade compatibility only.
+			{
+				$link_name = $this->linkName($link_name);
+			}
+	
+			if($this->debug_dis)
+			{
+				$link_name .= ' ['.$link_url.']';
+			}
+	
+			if($indent)
+			{
+				$subimage = "<img src='".e_IMAGE."generic/branchbottom.gif' alt='' />";
+				$subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
+			}
+	
 			$text .= "
-			</tbody>
-		</table>
-	</fieldset>
-	<fieldset id='core-links-list-".$link_category."'>
-		<legend class='e-hideme'>".LCLAN_12.": ".$link_category."</legend>
-		<table cellpadding='0' cellspacing='0' class='adminlist'>
-			<colgroup>
-				<col style='width:  5%' />
-				<col style='width: 60%' />
-				<col style='width: 15%' />
-                <col style='width: 10%' />
-				<col style='width:  5%' />
-				<col style='width:  5%' />
-			</colgroup>
-			<thead>
 				<tr>
-					<th class='center'>".LCLAN_89."</th>
-					<th>".LCLAN_15." (".LCLAN_12.": ".$link_category.")</th>
-                    <th class='center'>".LAN_OPTIONS." hihihi</th>
-					<th class='center'>".LCLAN_95."</th>
-					<th class='center'>".LCLAN_91."</th>
-					<th class='center last'>".LAN_ORDER."</th>
+					<td title='".$link_description."'>
+			";
+			$text .= $link_button ? "<img class='icon S16' src='".e_IMAGE_ABS."icons/".$link_button."' alt='' /> " : "";
+			$text .= "
+					</td>
+					<td title='".$link_description."'".$subspacer.">
+						".$subimage." <a href='".$tp->replaceConstants(e_BASE.$row2['link_url'], true, true)."'>".$link_name."</a>
+					</td>
+			";
+			$text .= "
+	
+					<td>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,main,admin,classes")."</td>
+					<td class='center'>
+			";
+			$name_suffix = URL_SEPARATOR.$link_id.URL_SEPARATOR.$link_order;
+			$text .= "
+						<input name='inc".$name_suffix."' type='image' src='".ADMIN_UP_ICON_PATH."' title='".LCLAN_30."' />
+						<input name='dec".$name_suffix."' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".LCLAN_31."' />
+					</td>
+					<td>
+						<select name='link_order[]' class='tbox select order'>\n
+			";
+			$text .= $this->genOpts($this->aIdOptPrep, $this->aIdOptTest, $link_order, $link_id);
+			$text .= "
+						</select>
+					</td>
+	                <td class='center'>
+						<a href='".e_SELF."?create.sub.{$link_id}' title='".LINKLAN_10."'>".ADMIN_ADD_ICON."</a>&nbsp;
+						<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;
+						<input class='action delete' type='image' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' title='".$tp->toJS(LCLAN_58." [ $link_name ]")."' />
+					</td>
 				</tr>
-			</thead>
-			<tbody>
-		";
-			$previous_cat = $link_category;
-		}
-
-		if(strpos($link_name, "submenu.") !== FALSE || $link_parent != 0) // 'submenu' for upgrade compatibility only.
-		{
-			$link_name = $this->linkName($link_name);
-		}
-
-		if($this->debug_dis)
-		{
-			$link_name .= ' ['.$link_url.']';
-		}
-
-		if($indent)
-		{
-			$subimage = "<img src='".e_IMAGE."generic/branchbottom.gif' alt='' />";
-			$subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
-		}
-
-		$text .= "
-			<tr>
-				<td title='".$link_description."'>
-		";
-		$text .= $link_button ? "<img class='icon S16' src='".e_IMAGE_ABS."icons/".$link_button."' alt='' /> " : "";
-		$text .= "
-				</td>
-				<td title='".$link_description."'".$subspacer.">
-					".$subimage." <a href='".$tp->replaceConstants(e_BASE.$row2['link_url'], true, true)."'>".$link_name."</a>
-				</td>
-		";
-		$text .= "
-
-				<td>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,main,admin,classes")."</td>
-				<td class='center'>
-		";
-		$name_suffix = URL_SEPARATOR.$link_id.URL_SEPARATOR.$link_order;
-		$text .= "
-					<input name='inc".$name_suffix."' type='image' src='".ADMIN_UP_ICON_PATH."' title='".LCLAN_30."' />
-					<input name='dec".$name_suffix."' type='image' src='".ADMIN_DOWN_ICON_PATH."' title='".LCLAN_31."' />
-				</td>
-				<td>
-					<select name='link_order[]' class='tbox select order'>\n
-		";
-		$text .= $this->genOpts($this->aIdOptPrep, $this->aIdOptTest, $link_order, $link_id);
-		$text .= "
-					</select>
-				</td>
-                <td class='center'>
-					<a href='".e_SELF."?create.sub.{$link_id}' title='".LINKLAN_10."'>".ADMIN_ADD_ICON."</a>&nbsp;
-					<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;
-					<input class='action delete' type='image' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' title='".$tp->toJS(LCLAN_58." [ $link_name ]")."' />
-				</td>
-			</tr>
-		";
-
-		return $text;
+			";
+	
+			return $text;
 	}
 
 	function show_message($message)
@@ -486,6 +712,69 @@ class links
 		global $ns;
 		$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".$message."</b></div>");
 	}
+	
+	
+	function show_batch_options()
+	{
+		$e107 = e107::getInstance();
+		$classObj = $e107->getUserClass();
+		$frm = new e_form();
+		$classes = $classObj->uc_get_classlist();
+		$comments_array = array("Disable Comments","Allow Comments");
+			
+		return $frm->batchoptions(
+			array(
+					'delete_selected'	=> LAN_DELETE,
+					'rendertype' 			=> array('Modify Render-type', $this->linkCategory),
+					'opentype'				=> array('Modify Open-Type', $this->linkOpen),
+					// 'comments'			=> array('Modify Comments', $comments_array)
+			),
+		      array(
+		         	'userclass'    		=> array('Assign Visibility...',$classes),
+			)
+	   );
+	}
+	
+	
+	function process_batch($id_array)
+	{
+		list($type,$tmp,$value) = explode("_",$_POST['execute_batch']);
+		$method = "batch_".$type;
+		
+		if (method_exists($this,$method) && isset($id_array) )
+		{
+			$this->$method($id_array,$value);
+		}
+	}
+	
+		
+	
+	function batch_opentype($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Update("links","link_open = ".$value." WHERE link_id IN (".implode(",",$ids).") ");
+	}	
+
+	function batch_rendertype($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Update("links","link_category = ".$value." WHERE link_id IN (".implode(",",$ids).") ");
+	}
+	
+	function batch_userclass($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Update("links","link_class = ".$value." WHERE link_id IN (".implode(",",$ids).") ");
+	}
+	
+	function batch_delete($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Delete("links","link_id IN (".implode(",",$ids).") ");
+	}	
+	
+	
+		
 
 	// Show the form for link create/edit
 	function create_link($sub_action, $id)
@@ -584,29 +873,27 @@ class links
 		$linkop[5] = LINKLAN_1; // 5 = miniwindow  800x600
 
 
-		$text .= "
-
-								</td>
-							</tr>
-							<tr>
-								<td class='label'>".LCLAN_19.": </td>
-								<td class='control'>
-									<select name='linkopentype' class='tbox select'>
+		$text .= "</td>
+			</tr>
+			<tr>
+			<td class='label'>".LCLAN_19.": </td>
+			<td class='control'>
+			<select name='linkopentype' class='tbox select'>
 			";
-		foreach($linkop as $key => $val)
-		{
-			$selectd = ($link_open == $key) ? " selected='selected'" : "";
-			$text .= "<option value='$key'{$selectd}>".$val."</option>\n";
-		}
+			foreach($linkop as $key => $val)
+			{
+				$selectd = ($link_open == $key) ? " selected='selected'" : "";
+				$text .= "<option value='$key'{$selectd}>".$val."</option>\n";
+			}
 
 		$text .= "
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td class='label'>".LCLAN_12.": </td>
-								<td class='control'>
-									<select name='linkrender' class='tbox select'>
+			</select>
+			</td>
+			</tr>
+			<tr>
+				<td class='label'>".LCLAN_12.": </td>
+				<td class='control'>
+					<select name='linkrender' class='tbox select'>
 			";
 		$rentype = array("", "Main", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt");
 		for($i = 1; $i < count($rentype); $i++)
@@ -656,11 +943,10 @@ class links
 
 	function submit_link($sub_action, $id)
 	{
-		global $sql, $e107cache, $tp, $emessage;
-		if(!is_object($tp))
-		{
-			$tp = new e_parse();
-		}
+		global $e107cache,$emessage;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 
 		$id = intval($id);
 		$parent_id = ($_POST['link_parent']) ? intval($_POST['link_parent']) : 0;
@@ -680,7 +966,7 @@ class links
 		$link_t = $sql->db_Count("links", "(*)");
 		if($id)
 		{
-			$sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'");
+			$sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'",TRUE);
 			//rename all sublinks to eliminate old embedded 'submenu' etc hierarchy.
 			// this is for upgrade compatibility only. Current hierarchy uses link_parent.
 			$e107cache->clear("sitelinks");
@@ -689,7 +975,7 @@ class links
 		}
 		else
 		{ // New link
-			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t + 1).", ".$parent_id.", ".$link_open.", ".$link_class);
+			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t + 1).", ".$parent_id.", ".$link_open.", ".$link_class,TRUE);
 			$e107cache->clear("sitelinks");
 			sitelinks_adminlog('07', $message);
 			$emessage->add(LCLAN_2, E_MESSAGE_SUCCESS);
@@ -952,22 +1238,21 @@ function sitelinks_adminlog($msg_num = '00', $woffle = '')
 
 function links_adminmenu()
 {
-	global $action;
-	if($action == "")
-	{
-		$action = "main";
-	}
+	global $action,$linkpost;
+	
+	$action = $linkpost->mode;
+	
 	$var['main']['text'] = LCLAN_62;
 	$var['main']['link'] = e_SELF;
 
 	$var['create']['text'] = LCLAN_63;
-	$var['create']['link'] = e_SELF."?create";
+	$var['create']['link'] = e_SELF."?mode=create";
 
 	$var['opt']['text'] = LAN_OPTIONS;
-	$var['opt']['link'] = e_SELF."?opt";
+	$var['opt']['link'] = e_SELF."?mode=opt";
 
 	$var['sub']['text'] = LINKLAN_4;
-	$var['sub']['link'] = e_SELF."?sublinks";
+	$var['sub']['link'] = e_SELF."?mode=sub";
 
 	//	$var['debug']['text'] = "List DB";
 	//	$var['debug']['link'] = e_SELF."?debug";
