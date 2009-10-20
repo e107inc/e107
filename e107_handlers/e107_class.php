@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.54 $
- * $Date: 2009-10-09 10:18:07 $
- * $Author: secretr $
+ * $Revision: 1.55 $
+ * $Date: 2009-10-20 03:49:12 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1159,10 +1159,12 @@ class e107
 			if($NEWSIMAGES_DIRECTORY)
 			{
             	define("e_NEWSIMAGE", e_BASE.$NEWSIMAGES_DIRECTORY);
+				define("e_NEWSIMAGE_ABS", e_HTTP.$NEWSIMAGES_DIRECTORY);
 			}
 			else
 			{
             	define("e_NEWSIMAGE", e_IMAGE."newspost_images/");
+				define("e_NEWSIMAGE_ABS", e_HTTP.$IMAGES_DIRECTORY."newspost_images/");
 			}
 
 			if($CUSTIMAGES_DIRECTORY)

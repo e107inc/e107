@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.13 2009-09-24 00:11:19 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.14 2009-10-20 03:49:22 e107coders Exp $ -->
 <e107Plugin name="Download" version="1.0" compatibility="0.8" installRequired="true" releaseUrl=''>
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>DOWLAN_DESCRIPTION</description>
 	<category>content</category>
-	<installLanguageFile filename="languages/--LAN--/admin_download.php" />
+	<languageFiles>
+		<file type='install' path='languages/--LAN--/admin_download.php' />
+	</languageFiles>
 	<adminLinks>
 		<link url='admin_download.php' description='LAN_CONFIGURE' icon='images/downloads_32.png' iconSmall='images/downloads_16.png' primary='true' >DOWLAN_CAPTION</link>		
 		<link url='admin_download.php' description='' icon='manage' iconSmall=''>DOWLAN_29</link>
@@ -31,10 +33,4 @@
 		<pref name="agree_text"></pref>
 		<pref name="download_denied"></pref>
 	</mainPrefs>
-	<management>
-		<install when="post" type="classFunction" file="download_management.php" class="download_management" function="download_install_post" />
-		<uninstall type="classFunction" file="download_management.php" class="download_management" function="download_uninstall" />
-		<upgrade type="classFunction" file="download_management.php" class="download_management" function="download_upgrade"  />
-		<installDone>DOWLAN_INSTALL_DONE</installDone>
-	</management>
 </e107Plugin>

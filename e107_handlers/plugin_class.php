@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2009-10-09 18:58:12 $
+|     $Revision: 1.102 $
+|     $Date: 2009-10-20 03:49:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -97,8 +97,10 @@ class e107plugin
 	var $current_plug;
 	var $parsed_plugin;
 	var $plugFolder;
+	var $plugConfigFile;
 	var $unInstallOpts;
 	var $module = array();
+	
 
 	function e107plugin()
 	{
@@ -938,11 +940,17 @@ class e107plugin
 			$canContinue = FALSE;
 		}
 
-		// First of all, see if there's a language file specific to install
+		if(varset($plug_vars['languageFiles']))
+		{
+			$this->XmlLanguageFiles($function,$plug_vars['languageFiles'],'pre'); // First of all, see if there's a language file specific to install	
+		}
+
+		/*		// DEPRECATED
 		if (isset($plug_vars['installLanguageFile']) && isset($plug_vars['installLanguageFile']['@attributes']['filename']))
 		{
 			include_lan($path.str_replace('--LAN--',e_LANGUAGE, $plug_vars['installLanguageFile']['@attributes']['filename']));
 		}
+		*/
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
 		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
@@ -974,10 +982,12 @@ class e107plugin
 				$tableList = $dbHandler->get_table_def('',$path.$sqlFile);
 				if (!is_array($tableList))
 				{
-					$emessage->add("Can\'t read SQL definition: ".$path.$sqlFile,E_MESSAGE_ERROR);
+					$emessage->add("Can't read SQL definition: ".$path.$sqlFile,E_MESSAGE_ERROR);
 					break;
 				}
 				// Got the required definition here
+				
+				
 				foreach ($tableList as $ct)
 				{ // Process one table at a time (but they could be multi-language)
 					switch($function)
@@ -1016,7 +1026,13 @@ class e107plugin
 					}
 				}
 			}
-		}	
+		}
+		
+		if(varset($plug_vars['adminLinks']))
+		{
+			$this->XmlAdminLinks($function,$plug_vars['adminLinks']);
+		}
+			
 		
 		if(varset($plug_vars['siteLinks']))
 		{
@@ -1043,9 +1059,9 @@ class e107plugin
 			$this->XmlExtendedFields($function,$plug_vars['extendedFields']);
 		}
 		
-		if(varset($plug_vars['logLanguageFile']))
+		if(varset($plug_vars['languageFiles']))
 		{
-			$this->XmlLogLanguageFile($function,$plug_vars['logLanguageFile']);
+			$this->XmlLanguageFiles($function,$plug_vars['languageFiles']);
 		}
 		
 		$this->manage_icons($this->plugFolder,$function);
@@ -1061,13 +1077,6 @@ class e107plugin
 
 		$this->manage_search($function, $plug_vars['folder']);
 		$this->manage_notify($function, $plug_vars['folder']);
-
-		if ($canContinue)
-		{	// Let's call any custom post functions defined in <management> section
-			$ret = $this->execute_function($path, $function, 'post');
-			if (!is_bool($ret)) $txt .= $ret;
-		}
-
 
 		$eplug_addons = $this->getAddons($plug['plugin_path']);
 
@@ -1093,17 +1102,35 @@ class e107plugin
 		
 		e107::getConfig('core')->save();	
 
-		if($function == 'install')
+/*		if($function == 'install')
 		{
-			$txt .= LAN_INSTALL_SUCCESSFUL."<br />";
 			if(isset($plug_vars['management']['installDone'][0]))
 			{
 				$emessage->add($plug_vars['management']['installDone'][0], E_MESSAGE_SUCCESS);
 			}
-		}
+		}*/
+		
+		if(!$this->execute_function($path, $function, 'post')) // Call any custom post functions defined in <plugin>_setup.php or the deprecated <management> section	
+		{
+			if($function == 'install')
+			{
+				$text = "Installation Complete."; 
+
+				if($this->plugConfigFile)
+				{
+					$text .= "&nbsp;<a href='".$this->plugConfigFile."'>[".LAN_CONFIGURE."]</a>";	
+				}
 				
-		// return $txt;
+				$emessage->add($text, E_MESSAGE_SUCCESS);
+			}		
+			
+		} 
+		
 	}
+
+
+
+
 	
 	/**
 	 * Process XML Tag <dependencies> (deprecated 'depend' which is a brand of adult diapers)
@@ -1177,31 +1204,53 @@ class e107plugin
 	}
 	
 	
-	
-	
+		
+
+
+
+
 	/**
-	 * Process XML Tag <logLanguageFile>
+	 * Process XML Tag <LanguageFiles>
 	 * @param object $function
 	 * @param object $tag
 	 * @return 
 	 */
-	function XmlLogLanguageFile($function,$tag)
+	function XmlLanguageFiles($function,$tag,$when='')
 	{
 		$core = e107::getConfig('core');
-		
-		switch ($function)
-		{
-		    case 'install' :
-			case 'upgrade' :
-			case 'refresh' :
-				$core->setPref('logLanguageFile/'.$this->plugFolder,$tag['@attributes']['filename']);
-			  break;
-			case 'uninstall' :
-				$core->removePref('logLanguageFile/'.$this->plugFolder);
-			  break;
-		}	
+
+		foreach($tag['file'] as $val)
+		{			
+			$att = $val['@attributes'];
+			
+			if($when == 'pre') // just check for install language file BEFORE install. 			 
+			{
+				if($att['type']=='install')
+				{
+					$file = str_replace('--LAN--',e_LANGUAGE, $att['path']);
+					$fullpath_file = e_PLUGIN.$this->plugFolder."/".$file;
+					include_lan($fullpath_file);
+					return;
+				}
+			}
+			elseif($att['type']=='log')
+			{
+				switch ($function)
+				{
+				    case 'install' :
+					case 'upgrade' :
+					case 'refresh' :
+						$core->setPref('logLanguageFile/'.$this->plugFolder,$att['path']);
+					  break;
+					case 'uninstall' :
+						$core->removePref('logLanguageFile/'.$this->plugFolder);
+					  break;
+				}
+			}
+		}
+			
 	}
-	
+
 	
 
 	/**
@@ -1219,7 +1268,7 @@ class e107plugin
 				$attrib = $link['@attributes'];
 				$linkName = (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
 				$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
-				$url = e_PLUGIN.$attrib['url'];;
+				$url = e_PLUGIN.$attrib['url']; //TODO should also handle links to the root directory. (eg. /news.php)
 				$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
 
 				switch($function)
@@ -1256,9 +1305,18 @@ class e107plugin
 	 * Process XML Tag <adminLinks> 
 	 * @return 
 	 */
-	function XmlAdminLinks()
+	function XmlAdminLinks($function,$tag)
 	{
-		//TODO
+		foreach($tag['link'] as $link)
+		{
+			$attrib = $link['@attributes'];
+			$linkName = (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
+			$url = e_PLUGIN_ABS.$this->plugFolder."/".$attrib['url'];
+			if($attrib['primary']=='true')
+			{
+				$this->plugConfigFile = $url;	
+			}
+		}
 	}
 
 
@@ -1452,7 +1510,55 @@ class e107plugin
 
 
 	function execute_function($path = '', $what='', $when='')
-	{
+	{	
+		$emessage = eMessage::getInstance();
+		$class_name = $this->plugFolder."_setup";
+		$method_name = $this->plugFolder."_".$what."_".$when;	
+		
+		if(varset($this->plug_vars['@attributes']['setupFile']))
+		{
+			$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plug_vars['@attributes']['setupFile'];	
+		}
+		else
+		{
+			$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plugFolder.'_setup.php';
+		}
+		
+		if(is_readable($setup_file))
+		{
+			$emessage->add("Found setup file <b>".$setup_file."</b> ", E_MESSAGE_DEBUG);
+			include_once($setup_file);
+				
+			if(class_exists($class_name))
+			{
+				$obj = new $class_name;
+				if(method_exists($obj,$method_name))
+				{
+					$emessage->add("Executing setup function <b>".$method_name."()</b>", E_MESSAGE_DEBUG);
+					return call_user_func(array($obj,$method_name), $this);							
+				}
+				else
+				{
+					$emessage->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+					return FALSE;
+				}	
+			}
+			else
+			{
+				$emessage->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+				return FALSE;
+			}						
+		}
+		else
+		{
+			$emessage->add("Optional Setup File NOT Found <b>".$setup_file."</b> ", E_MESSAGE_DEBUG);
+		}
+
+		$emessage->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+		return FALSE;
+
+		// deprecated 0.8 method below. Can safely be removed.   
+		
 		if($what == '' || $when == '') { return true; }
 		if(!isset($this->plug_vars['management'][$what])) { return true; }
 		$vars = $this->plug_vars['management'][$what];
@@ -1479,7 +1585,13 @@ class e107plugin
 				}
 			}
 		}
+		
+		return FALSE; // IMPORTANT. 
 	}
+	
+	
+	
+	
 
 	// DEPRECATED - See XMLPrefs();
 	function parse_prefs($pref_array,$mode='simple')
@@ -1603,6 +1715,10 @@ class e107plugin
 		e107::getConfig('core')->setPref('plug_installed',$p_installed)->save();
 	
 		$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
+		if($eplug_conffile)
+		{
+			 $text .= "&nbsp;<a href='".e_PLUGIN.$eplug_folder."/".$eplug_conffile."'>[".LAN_CONFIGURE."]</a>";
+		}
 
 		return $text;
 	}

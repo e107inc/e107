@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2009-09-28 07:17:52 $
+|     $Revision: 1.49 $
+|     $Date: 2009-10-20 03:49:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -438,7 +438,7 @@ class pluginManager{
    function pluginInstall()
    {
         global $plugin,$admin_log,$eplug_folder;
-		$text = $plugin->install_plugin($this->id);
+			$text = $plugin->install_plugin($this->id);
 			if ($text === FALSE)
 			{ // Tidy this up
 				$this->show_message("Error messages above this line", E_MESSAGE_ERROR);
@@ -446,7 +446,6 @@ class pluginManager{
 			else
 			{
 				 $plugin ->save_addon_prefs();
-		//	if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".LAN_CONFIGURE."]</a>"; }
 				$admin_log->log_event('PLUGMAN_01', $this->id.':'.$eplug_folder, E_LOG_INFORMATIVE, '');
 				$this->show_message($text, E_MESSAGE_SUCCESS);
 			}
