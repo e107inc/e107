@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.56 $
- * $Date: 2009-10-03 14:54:46 $
- * $Author: e107steved $
+ * $Revision: 1.57 $
+ * $Date: 2009-10-20 16:05:03 $
+ * $Author: secretr $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -49,8 +49,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.56 $
- * @author $Author: e107steved $
+ * @version $Revision: 1.57 $
+ * @author $Author: secretr $
  * 
  */
 class e_db_mysql {
@@ -63,8 +63,8 @@ class e_db_mysql {
 	var $mySQLaccess;
 	var $mySQLresult;
 	var $mySQLrows;
-	var $mySQLerror;			// Error reporting mode - TRUE shows messages
-	var	$mySQLlastErrNum;		// Number of last error
+	var $mySQLerror = '';			// Error reporting mode - TRUE shows messages
+	var	$mySQLlastErrNum = 0;		// Number of last error
 	var	$mySQLlastErrText;		// Text of last error (empty string if no error)
 	var $mySQLcurTable;
 	var $mySQLlanguage;
@@ -574,7 +574,7 @@ class e_db_mysql {
 				break;
 				
 			case 'null':
-				return ($fieldValue ? "'{$fieldValue}'" : 'NULL');
+				return ($fieldValue && $fieldValue !== 'NULL' ? "'{$fieldValue}'" : 'NULL');
 				break;
 
 			case 'escape':

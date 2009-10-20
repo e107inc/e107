@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.48 $
- * $Date: 2009-10-20 07:39:40 $
- * $Author: e107coders $
+ * $Revision: 1.49 $
+ * $Date: 2009-10-20 16:05:02 $
+ * $Author: secretr $
  *
 */
 
@@ -703,18 +703,17 @@ class e_form
 		';
 	}
 
-	function thead($fieldarray,$columnPref='',$querypattern = '')
+	function thead($fieldarray, $columnPref='', $querypattern = '')
 	{
         $text = "";
 
         $tmp = explode(".",e_QUERY);
-
 		$etmp = explode(".",$querypattern);
 
 		// Note: this function should probably be adapted to ALSO deal with $_GET. eg. ?mode=main&field=user_name&asc=desc&from=100
 		// or as a pattern: ?mode=main&field=[FIELD]&asc=[ASC]&from=[FROM]
 
-		foreach($etmp as $key=>$val)    // I'm sure there's a more efficient way to do this, but too tired to see it right now!.
+		foreach($etmp as $key => $val)    // I'm sure there's a more efficient way to do this, but too tired to see it right now!.
 		{
 
         	if($val == "[FIELD]")
@@ -755,7 +754,7 @@ class e_form
 	            $text .= $val['title'];
 				$text .= ($val['url']) ? "</a>" : "";
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
-				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle',$val['toggle']) : "";
+				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle', $val['toggle']) : "";
 
 
 	 			$text .= "</th>";
@@ -826,14 +825,15 @@ class e_form
     * Generates a batch options select component
     * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
     * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
-    * @param options => array - associative array of option elements, keyed on the option value
-    * @param ucOptions => array - associative array of userclass option groups to display, keyed on the option value prefix
-    * @return the HTML for the form component
+    * 
+    * @param array $options associative array of option elements, keyed on the option value
+    * @param array ucOptions [optional] associative array of userclass option groups to display, keyed on the option value prefix
+    * @return string the HTML for the form component
     */
 	function batchoptions($options, $ucOptions=null) {
       $text = "
          <div class='f-left'>
-         <img src='".e_IMAGE."generic/branchbottom.gif' alt='' class='TODO' />
+         <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
 			<select class='tbox e-execute-batch' name='execute_batch'>
 			<option value=''>With selected...</option>\n";
 

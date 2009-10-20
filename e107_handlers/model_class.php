@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-10-07 10:53:33 $
+ * $Revision: 1.11 $
+ * $Date: 2009-10-20 16:05:02 $
  * $Author: secretr $
 */
 
@@ -18,12 +18,12 @@ if (!defined('e107_INIT')) { exit; }
 
 /**
  * Base e107 Model class
- *
+ * 
  * @package e107
  * @category e107_handlers
  * @version 1.0
  * @author SecretR
- * @copyright Copyright (c) 2009, e107 Inc.
+ * @copyright Copyright (C) 2009, e107 Inc.
  */
 class e_model
 {
@@ -35,62 +35,19 @@ class e_model
     protected $_data = array();
     
     /**
-    * Posted data
-    * Back-end related data
-    *
-    * @var array
-    */
-    protected $_posted_data = array();
-    
-    /**
      * Runtime cache of parsed from {@link _getData()} keys
      *
      * @var array
      */
     protected $_parsed_keys = array();
-    
-    /**
-     * DB structure array
-     * Awaits implementation logic, 
-     * should be consistent with db::_getTypes() and db::_getFieldValue()
-     *
-     * @var array
-     */
-    protected $_FIELD_TYPES = array();
-    
+	
     /**
      * Avoid DB calls if data is not changed
      *
-     * @see mergePostedData()
+     * @see _setData()
      * @var boolean
      */
     protected $data_has_changed = false;
-    
-    /**
-     * Validation structure in format 
-     * 'field_name' => rule (to be used with core validator handler)
-     * Awaits implementation logic, should be consistent with expected frmo the validator 
-     * structure.
-     *
-     * @var array
-     */
-    protected $_validation_rules = array();
-    
-    /**
-     * Validator object
-     * 
-     * @var validatorClass 
-     */
-    protected $_validator = null;
-    
-    /**
-     * Validation error stack 
-     * See also {@link validate()}, {@link setErrors()}, {@link getErrors()}
-     * 
-     * @var array
-     */
-    protected $_validation_errors = array();
-
     
     /**
     * Name of object id field
@@ -99,6 +56,13 @@ class e_model
     * @var string
     */
     protected $_field_id;
+	
+	/**
+	 * Namespace to be used for model related system messages in {@link eMessage} handler
+	 * 
+	 * @var string 
+	 */
+	protected $_message_stack = 'default';
     
 
     /**
@@ -137,30 +101,7 @@ class e_model
     {
         return $this->_field_id;
     }
-    
-    /**
-     * @return array
-     */
-    public function getValidationRules()
-    {
-    	return $this->_validation_rules;
-    }
-    
-    /**
-     * Set object validation rules if $_validation_rules array is empty
-     * 
-     * @param array $vrules
-     * @return e_model
-     */
-    public function setValidationRules(array $vrules)
-    {
-    	if(empty($this->_validation_rules))
-    	{
-    		$this->_validation_rules = $vrules;
-    	}
-    	return $this;
-    }
-    
+
     /**
      * Retrieve object field id value
      *
@@ -205,56 +146,6 @@ class e_model
     }
     
     /**
-     * Retrieves data from the object ($_posted_data) without
-     * key parsing (performance wise, prefered when possible)
-     *
-     * @see _getDataSimple()
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
-     */
-	public function getPosted($key, $default = null)
-    {
-    	return $this->_getDataSimple((string) $key, $default, '_posted_data');
-    }
-    
-    /**
-     * Retrieves data from the object ($_posted_data)
-     * If $key is empty, return all object posted data
-     * @see _getData()
-     * @param string $key
-     * @param mixed $default
-     * @param integer $index
-     * @return mixed
-     */
-	public function getPostedData($key = '', $default = null, $index = null)
-    {
-    	return $this->_getData($key, $default, $index, '_posted_data');
-    }
-    
-    /**
-     * Search for requested data from available sources in this order:
-     * - posted data
-     * - default object data
-     * - empty string
-     * 
-     * Use this method inside forms
-     *
-     * @param string $key
-     * @param string $default
-     * @param integer $index
-     * @return string
-     */
-    public function getIfPosted($key, $default = '', $index = null)
-    {
-		if(null !== $this->getPostedData((string) $key))
-		{
-			return e107::getParser()->post_toForm($this->getPostedData((string) $key, null, $index));
-		}
-		return e107::getParser()->toForm($this->getData((string) $key, $default, $index));
-    }
-    
-    /**
      * Overwrite data in the object for a single field. Key is not parsed.
      * Public proxy of {@link _setDataSimple()}
      * Data isn't sanitized so use this method only when data comes from trustable sources (e.g. DB)
@@ -287,38 +178,6 @@ class e_model
     }
     
     /**
-     * Overwrite posted data in the object for a single field. Key is not parsed.
-     * Public proxy of {@link _setDataSimple()}
-     * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite 
-     * the original object data
-     * 
-     * @param string $key
-     * @param mixed $data
-     * @param boolean $strict update only
-     * @return e_model
-     */
-    public function setPosted($key, $data = null, $strict = false)
-    {
-        return $this->_setDataSimple($key, $data, $strict, '_posted_data');
-    }
-    
-    /**
-     * Overwrite posted data in the object. Key is parsed (multidmensional array support).
-     * Public proxy of {@link _setData()}
-     * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite 
-     * the original object data
-     *
-     * @param string|array $key
-     * @param mixed $data
-     * @param boolean $strict update only
-     * @return e_model
-     */
-    public function setPostedData($key = null, $data = null, $strict = false)
-    {
-        return $this->_setData($key, $data, $strict, '_posted_data');
-    }
-    
-    /**
      * Add data to the object.
      * Retains existing data in the object.
      * Public proxy of {@link _addData()}
@@ -333,23 +192,6 @@ class e_model
     public function addData($key, $value = null, $override = true)
     {
     	return $this->_addData($key, $value, $override);
-    }
-    
-    /**
-     * Add data to the object.
-     * Retains existing data in the object.
-     * Public proxy of {@link _addData()}
-     * 
-     * If $override is false, data will be updated only (check against existing data)
-     * 
-     * @param string|array $key
-     * @param mixed $value
-     * @param boolean $override override existing data
-     * @return e_model
-     */
-    public function addPostedData($key, $value = null, $override = true)
-    {
-    	return $this->_addData($key, $value, $override, '_posted_data');
     }
     
 	/**
@@ -380,34 +222,6 @@ class e_model
     	return $this->_unsetData($key);
     }
     
-	/**
-     * Unset single posted data field from the object.
-     * Public proxy of {@link _unsetDataSimple()}
-     *
-     * @param string $key
-     * @return e_model
-     */
-    public function removePosted($key)
-    {
-    	return $this->_unsetDataSimple($key, '_posted_data');
-    }
-    
-	/**
-     * Unset posted data from the object.
-     * $key can be a string only. Array will be ignored.
-     * '/' inside the key will be treated as array path
-     * if $key is null entire object will be reset
-     * 
-     * Public proxy of {@link _unsetData()}
-     *
-     * @param string|null $key
-     * @return e_model
-     */
-    public function removePostedData($key = null)
-    {
-    	return $this->_unsetData($key, '_posted_data');
-    }
-    
     /**
      * @param string $key
      * @return boolean
@@ -424,20 +238,6 @@ class e_model
     public function hasData($key = '')
     {
     	return $this->_hasData($key);
-    }
-
-    /**
-     * @param string $key
-     * @return boolean
-     */
-    public function hasPosted($key)
-    {
-    	return $this->_hasData($key, '_posted_data');
-    }
-    
-    public function hasPostedData()
-    {
-    	return $this->_hasData('', '_posted_data');
     }
 	
     /**
@@ -456,111 +256,6 @@ class e_model
     public function isData($key)
     {
     	return $this->_isData($key);
-    }
-	
-    /**
-     * @param string $key
-     * @return boolean
-     */
-    public function isPosted($key)
-    {
-    	return (isset($this->_posted_data[$key]));
-    }
-    
-    /**
-     * @param string $key
-     * @return boolean
-     */
-    public function isPostedData($key)
-    {
-    	return $this->_isData($key, '_posted_data');
-    }
-    
-    /**
-     * Compares posted data vs object data
-     *
-     * @param string $field
-     * @param boolean $strict compare variable type as well
-     * @return boolean
-     */
-    public function dataHasChangedFor($field, $strict = false)
-    {
-        $newData = $this->getData($field);
-        $postedData = $this->getPostedData($field);
-        return ($strict ? $newData !== $postedData : $newData != $postedData);
-    }
-    
-    /**
-     * @return boolean
-     */
-    public function dataHasChanged()
-    {
-        return $this->data_has_changed;
-    }
-    
-    /**
-     * Merge posted data with the object data
-     * Should be used on edit/update/create record (back-end)
-     * Copied posted data will be removed (no matter if copy is successfull or not)
-     * 
-     * If $strict is true, only existing object data will be copied (update)
-     * TODO - move to admin e_model extension
-     *
-     * @param boolean $strict
-     * @param boolean $sanitize
-     * @param boolean $validate perform validation check
-     * @return e_model
-     */
-    public function mergePostedData($strict = true, $sanitize = true, $validate = true)
-    {
-    	if(!$this->getPostedData() || ($validate && !$this->validate()))
-    	{
-    		return $this;
-    	}
-    	
-    	$tp = e107::getParser();
-    	
-    	//TODO - sanitize method based on validation rules OR _FIELD_TYPES array?
-       	$data = $sanitize ? $tp->toDB($this->getPostedData()) : $this->getPostedData();
-       	
-    	foreach ($data as $field => $dt) 
-    	{
-    		$this->setData($field, $dt, $strict)
-    			->removePostedData($field);
-    	}
-    	return $this;
-    }
-    
-    /**
-     * Merge passed data array with the object data
-     * If $strict is true, only existing object data will be copied (update)
-     * TODO - move to admin e_model extension
-     *
-     * @param array $src_data
-     * @param boolean $sanitize
-     * @param boolean $validate perform validation check
-     * @return e_model
-     */
-    public function mergeData(array $src_data, $strict = true, $sanitize = true, $validate = true)
-    {
-    	//FIXME
-    	if(!$src_data || ($validate && !$this->validate($src_data)))
-    	{
-    		return $this;
-    	}
-    	
-   	    //TODO - sanitize method based on validation rules OR _FIELD_TYPES array?
-   		if($sanitize)
-   		{
-   			$src_data =  e107::getParser()->toDB($src_data);
-   		}
-   		
-		foreach ($src_data as $key => $value)
-		{
-			$this->setData($key, $value, $strict);
-		}
-   		
-    	return $this;
     }
     
     /**
@@ -713,7 +408,7 @@ class e_model
 	        }
 	        
         	$keyArr = explode('/', $key);
-        	$data = &$this->$data_src;
+        	$data = &$this->{$data_src};
             for ($i = 0, $l = count($keyArr); $i < $l; $i++) 
             {
 	            $k = $keyArr[$i];
@@ -931,55 +626,91 @@ class e_model
     {
         return (null !== $this->_getData($key, null, null, $data_src));
     }
-    
+
+	/**
+	 * Add system message of type Information
+	 * 
+	 * @param string $message
+	 * @param boolean $session [optional]
+	 * @return e_validator
+	 */
+	public function addMessageInfo($message, $session = false)
+	{
+		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_INFO, $session);
+		return $this;
+	}
+	
+	/**
+	 * Add system message of type Warning
+	 * 
+	 * @param string $message
+	 * @param boolean $session [optional]
+	 * @return e_validator
+	 */
+	public function addMessageWarning($message, $session = false)
+	{
+		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_WARNING, $session);
+		return $this;
+	}
+	
+	/**
+	 * Add system message of type Error
+	 * 
+	 * @param string $message
+	 * @param boolean $session [optional]
+	 * @return e_validator
+	 */
+	public function addMessageError($message, $session = false)
+	{
+		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_ERROR, $session);
+		return $this;
+	}
+	
+	/**
+	 * Add system message of type Information
+	 * 
+	 * @param string $message
+	 * @param boolean $session [optional]
+	 * @return e_validator
+	 */
+	public function addMessageDebug($message, $session = false)
+	{
+		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_DEBUG, $session);
+		return $this;
+	}
+	
     /**
-     * Validate posted data:
-     * 1. validate posted data against object validation rules
-     * 2. add validation errors to the object if any
-     * 3. return true for valid and false for non-valid data
-     *
-     * @param array $data optional - data for validation, defaults to posted data
-     * @return boolean
-     */
-    public function validate(array $data = array())
-    {
-    	$this->_validation_errors = array();
-    	
-    	if(!$this->getValidationRules())
-    	{
-    		return true;
-    	}
-    	
-    	$result = $this->getValidator()->validateFields(($data ? $data : $this->getPostedData()), $this->getValidationRules());
-    	if(!empty($result['errors']))
-    	{
-    		$this->_validation_errors = $result['errors'];
-    		return false;
-    	}
-    	
-    	return true;
-    }
-    
-    /**
-     * @return boolean
-     */
-    public function isError()
-    {
-    	return !empty($this->_validation_errors);
-    }
-    
-    /**
-     * Under construction
-     * Add human readable errors to eMessage stack
+     * Render validation errors (if any)
      * 
-     * @param boolean $reset reset errors
+     * @param boolean $validation render validation messages as well
      * @param boolean $session store messages to session
-     * @return e_model
+     * @param boolean $reset reset errors
+     * @return string
      */
-    public function setErrors($reset = true, $session = false)
+    public function renderMessages($validation = true, $session = false, $reset = true)
     {
-    	//$emessage = eMessage::getInstance();
-    	return $this;
+    	if($validation)
+		{
+			e107::getMessage()->moveStack($this->_message_stack.'_validator', $this->_message_stack, false, $session);
+		}
+		return $this->getValidator()->renderValidateMessages($session, $reset);
+    }
+	
+    /**
+     * User defined model validation
+     * Awaiting for child class implementation
+     *
+     */
+    public function verify()
+    {
+    }
+	
+    /**
+     * Model validation 
+     * @see e_model_admin
+     */
+    public function verify()
+    {
     }
     
     /**
@@ -994,7 +725,7 @@ class e_model
     /**
      * Save data to DB
      * Awaiting for child class implementation
-     *
+     * @see e_model_admin
      */
     public function save()
     {
@@ -1003,7 +734,7 @@ class e_model
     /**
      * Insert data to DB
      * Awaiting for child class implementation
-     *
+     * @see e_model_admin
      */
     public function dbInsert()
     {
@@ -1012,22 +743,38 @@ class e_model
     /**
      * Update DB data
      * Awaiting for child class implementation
-     *
+     * @see e_model_admin
      */
     public function dbUpdate()
     {
     }
-    
+	
 	/**
-	 * @return validatorClass
+	 * Try to convert string to a number
+	 * Shoud fix locale related troubles
+	 * 
+	 * @param string $value
+	 * @return 
 	 */
-	public function getValidator()
+	public function toNumber($value)
 	{
-		if(null === $this->_validator)
+		if(!is_numeric($value))
 		{
-			$this->_validator = e107::getObject('validatorClass', null, e_HANDLER.'validator_class.php');
+			$larr = localeconv(); 
+			$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+			$replace = array('.', '.', '', '', '', '');
+			$value = str_replace($search, $replace, $value);
 		}
-		return $this->_validator;
+		return (0 + $value);
+	}
+	
+	/**
+	 * Convert model object to array
+	 * @return array object data
+	 */
+	public function toArray()
+	{
+		return $this->getData();
 	}
 	
 	/**
@@ -1064,5 +811,767 @@ class e_model
 	public function __toString()
 	{
 		return $this->toString((@func_get_arg(0) === true));
+	}
+}
+
+//FIXME - move e_model_admin to e_model_admin.php
+
+/**
+ * Base e107 Admin Model class
+ * 
+ * Some important points:
+ * - model data should be always in toDB() format:
+ * 		- retrieved direct from DB
+ * 		- set & sanitized via setPostedData()->mergePostedData()
+ * 		- manually sanitized before passed to model setter (set(), setData(), add(), addData(), etc.) methods 
+ * - $_db_fields property is important, it tells to sanitize() method how to sanitize posted data
+ * - if $_db_fields is missing, sanitize() will call internally e107::getParser()->toDB() on the data
+ * - sanitize() is triggered by default on mergePostedData() and mergeData() methods
+ * - mergePostedData() and mergeData() methods will filter posted/passed data against (in this order):
+ * 		- getValidator()->getValidData() if true is passed as validate parameter (currently disabled, gather feedback)
+ * 		- $_db_fields if true is passed as sanitize parameter
+ * - toSqlQuery() needs $_db_fields and $_field_id to work proper, $_FIELD_TYPES is optional but recommended (faster SQL queries)
+ * - result array from toSqlQuery() call will be filtered against $_db_fields
+ * - in almost every case $_FIELD_TYPES shouldn't contain 'escape' and 'todb' - dont't forget you are going to pass already sanitized data (see above)
+ * - most probably $_FIELD_TYPES will go in the future, $_db_fields alone could do the job
+ * - default db related methods (save(), dbUpdate(), etc.) need $_db_table
+ * 
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author SecretR
+ * @copyright Copyright (C) 2009, e107 Inc.
+ */
+class e_model_admin extends e_model
+{
+	/**
+	 * Current model DB table, used in all db calls
+	 * 
+	 * This can/should be overwritten by extending the class
+	 * 
+	 * @var string
+	 */
+	protected $_db_table;
+	
+    /**
+    * Posted data
+    * Back-end related
+    *
+    * @var array
+    */
+    protected $_posted_data = array();
+	
+    /**
+     * DB structure array, required for {@link sanitize()} method, 
+     * it also serves as a map (find data) for building DB queries,
+     * copy/sanitize posted data to object data, etc.
+     * 
+     * This can/should be overwritten by extending the class
+     *
+     * @var array
+     */
+    protected $_db_fields = array();
+	
+    /**
+     * DB format array - see db::_getTypes() and db::_getFieldValue() (mysql_class.php)
+     * for example
+     * 
+     * This can/should be overwritten by extending the class
+     *
+     * @var array
+     */
+    protected $_FIELD_TYPES = array();
+    
+    /**
+     * Validation structure - see {@link e_validator::$_required_rules} for
+     * more information about the array format.
+     * Used in {@link validate()} method.
+     * 
+     * This can/should be overwritten by extending the class.
+     *
+     * @var array
+     */
+    protected $_validation_rules = array();
+	
+	/**
+	 * @var integer Last SQL error number
+	 */
+	protected $_db_errno = 0;
+    
+    /**
+     * Validator object
+     * 
+     * @var e_validator 
+     */
+    protected $_validator = null;
+	
+	public function setModelTable($table)
+	{
+		$this->_db_table = $table;
+		return $this;
+	}
+	
+	public function getModelTable()
+	{
+		return $this->_db_table;
+	}
+	
+    /**
+     * @return array
+     */
+    public function getValidationRules()
+    {
+    	return $this->_validation_rules;
+    }
+    
+    /**
+     * Set object validation rules if $_validation_rules array is empty
+     * 
+     * @param array $vrules
+     * @return e_model
+     */
+    public function setValidationRules(array $vrules)
+    {
+    	if(empty($this->_validation_rules))
+    	{
+    		$this->_validation_rules = $vrules;
+    	}
+    	return $this;
+    }
+	
+    /**
+     * @return array
+     */
+    public function getDbFields()
+    {
+    	return $this->_db_fields;
+    }
+	
+    /**
+     * @return array
+     */
+    public function getFieldTypes()
+    {
+    	return $this->_FIELD_TYPES;
+    }
+    
+    /**
+     * Retrieves data from the object ($_posted_data) without
+     * key parsing (performance wise, prefered when possible)
+     *
+     * @see _getDataSimple()
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+	public function getPosted($key, $default = null)
+    {
+    	return $this->_getDataSimple((string) $key, $default, '_posted_data');
+    }
+    
+    /**
+     * Retrieves data from the object ($_posted_data)
+     * If $key is empty, return all object posted data
+     * @see _getData()
+     * @param string $key
+     * @param mixed $default
+     * @param integer $index
+     * @return mixed
+     */
+	public function getPostedData($key = '', $default = null, $index = null)
+    {
+    	return $this->_getData($key, $default, $index, '_posted_data');
+    }
+    
+    /**
+     * Search for requested data from available sources in this order:
+     * - posted data
+     * - default object data
+     * - passed default value
+     * 
+     * Use this method inside forms
+     *
+     * @param string $key
+     * @param string $default
+     * @param integer $index
+     * @return string
+     */
+    public function getIfPosted($key, $default = '', $index = null)
+    {
+		if(null !== $this->getPostedData((string) $key))
+		{
+			return e107::getParser()->post_toForm($this->getPostedData((string) $key, null, $index));
+		}
+		return e107::getParser()->toForm($this->getData((string) $key, $default, $index));
+    }
+    
+    /**
+     * Overwrite posted data in the object for a single field. Key is not parsed.
+     * Public proxy of {@link _setDataSimple()}
+     * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite 
+     * the original object data
+     * 
+     * @param string $key
+     * @param mixed $value
+     * @param boolean $strict update only
+     * @param boolean $toForm use post_toForm() on both key and data arguments
+     * @return e_model
+     */
+    public function setPosted($key, $value, $strict = false, $toForm = true)
+    {
+    	if($toForm)
+		{
+			$tp = e107::getParser();
+			$key = $tp->post_toForm($key);
+			$value = $tp->post_toForm($value);
+		}
+        return $this->_setDataSimple($key, $value, $strict, '_posted_data');
+    }
+    
+    /**
+     * Overwrite posted data in the object. Key is parsed (multidmensional array support).
+     * Public proxy of {@link _setData()}
+     * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite 
+     * the original object data
+     *
+     * @param string|array $key
+     * @param mixed $value
+     * @param boolean $strict update only
+     * @param boolean $toForm use post_toForm() on both key and data arguments
+     * @return e_model
+     */
+    public function setPostedData($key, $value = null, $strict = false, $toForm = true)
+    {
+    	if($toForm)
+		{
+			$tp = e107::getParser();
+			$key = $tp->post_toForm($key);
+			$value = $tp->post_toForm($value);
+		}
+        return $this->_setData($key, $value, $strict, '_posted_data');
+    }
+    
+    /**
+     * Add data to the object.
+     * Retains existing data in the object.
+     * Public proxy of {@link _addData()}
+     * 
+     * If $override is false, data will be updated only (check against existing data)
+     * 
+     * @param string|array $key
+     * @param mixed $value
+     * @param boolean $override override existing data
+     * @param boolean $toForm use post_toForm() on both key and data arguments
+     * @return e_model
+     */
+    public function addPostedData($key, $value = null, $override = true, $toForm = true)
+    {
+    	if($toForm)
+		{
+			$tp = e107::getParser();
+			$key = $tp->post_toForm($key);
+			$value = $tp->post_toForm($value);
+		}
+    	return $this->_addData($key, $value, $override, '_posted_data');
+    }
+    
+	/**
+     * Unset single posted data field from the object.
+     * Public proxy of {@link _unsetDataSimple()}
+     *
+     * @param string $key
+     * @return e_model
+     */
+    public function removePosted($key)
+    {
+    	return $this->_unsetDataSimple($key, '_posted_data');
+    }
+    
+	/**
+     * Unset posted data from the object.
+     * $key can be a string only. Array will be ignored.
+     * '/' inside the key will be treated as array path
+     * if $key is null entire object will be reset
+     * 
+     * Public proxy of {@link _unsetData()}
+     *
+     * @param string|null $key
+     * @return e_model
+     */
+    public function removePostedData($key = null)
+    {
+    	return $this->_unsetData($key, '_posted_data');
+    }
+
+    /**
+     * Check if given key exists and non-empty in the posted data array
+     * @param string $key
+     * @return boolean
+     */
+    public function hasPosted($key)
+    {
+    	return $this->_hasData($key, '_posted_data');
+    }
+    
+	/**
+	 * Check if posted data is empty
+	 * @return boolean
+	 */
+    public function hasPostedData()
+    {
+    	return $this->_hasData('', '_posted_data');
+    }
+	
+    /**
+     * Check if given key exists in the posted data array
+     * 
+     * @param string $key
+     * @return boolean
+     */
+    public function isPosted($key)
+    {
+    	return (isset($this->_posted_data[$key]));
+    }
+    
+    /**
+     * Check if given key exists in the posted data array ($key us parsed)
+     * 
+     * @param string $key
+     * @return boolean
+     */
+    public function isPostedData($key)
+    {
+    	return $this->_isData($key, '_posted_data');
+    }
+    
+    /**
+     * Compares posted data vs object data
+     *
+     * @param string $field
+     * @param boolean $strict compare variable type as well
+     * @return boolean
+     */
+    public function dataHasChangedFor($field, $strict = false)
+    {
+        $newData = $this->getData($field);
+        $postedData = $this->getPostedData($field);
+        return ($strict ? $newData !== $postedData : $newData != $postedData);
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function dataHasChanged()
+    {
+        return $this->data_has_changed;
+    }
+	
+    /**
+     * Merge posted data with the object data
+     * Should be used on edit/update/create record (back-end)
+     * Retrieved for copy Posted data will be removed (no matter if copy is successfull or not)
+     * 
+     * If $strict is true, only existing object data will be copied (update)
+     * If $validate is true, data will be copied only after successful validation
+     * TODO - move to admin e_model extension?
+     *
+     * @param boolean $strict 
+     * @param boolean $sanitize sanitize posted data before move it to the object data
+     * @param boolean $validate perform validation check
+     * @return e_model
+     */
+    public function mergePostedData($strict = true, $sanitize = true, $validate = true)
+    {
+    	if(!$this->hasPostedData() || ($validate && !$this->validate()))
+    	{
+    		return $this; 
+    	}
+    	
+		/* Wrong?
+		// retrieve only valid data
+		if($validate) 
+		{
+			$data = $this->getValidator()->getValidData();
+		}
+		else // retrieve all posted data
+		{
+			$data = $this->getPostedData();
+		}*/
+		
+		$data = $this->getPostedData();
+		if($sanitize)
+		{
+			// search for db_field types
+			if($this->getDbFields())
+			{
+				$data = $this->sanitize($data);
+			}
+			else //no db field types, use toDB()
+			{
+				$data = $tp->toDB($data);
+			}
+		}
+		
+    	foreach ($data as $field => $dt) 
+    	{
+    		$this->setData($field, $dt, $strict)
+    			->removePostedData($field);
+    	}
+    	return $this;
+    }
+    
+    /**
+     * Merge passed data array with the object data
+     * Should be used on edit/update/create record (back-end)
+     * 
+     * If $strict is true, only existing object data will be copied (update)
+     * If $validate is true, data will be copied only after successful validation
+     * TODO - move to admin e_model extension?
+     *
+     * @param array $src_data
+     * @param boolean $sanitize
+     * @param boolean $validate perform validation check
+     * @return e_model
+     */
+    public function mergeData(array $src_data, $strict = true, $sanitize = true, $validate = true)
+    {
+    	//FIXME
+    	if(!$src_data || ($validate && !$this->validate($src_data)))
+    	{
+    		return $this;
+    	}
+		
+		/* Wrong?
+		// retrieve only valid data
+		if($validate) 
+		{
+			$src_data = $this->getValidator()->getValidData();
+		}*/
+    	
+		if($sanitize)
+		{
+			// search for db_field types
+			if($this->getDbFields())
+			{
+				$src_data = $this->sanitize($src_data);
+			}
+			else //no db field types, use toDB()
+			{
+				$src_data = $tp->toDB($src_data);
+			}
+		}
+   		
+		foreach ($src_data as $key => $value)
+		{
+			$this->setData($key, $value, $strict);
+		}
+   		
+    	return $this;
+    }
+    
+    /**
+     * Validate posted data:
+     * 1. validate posted data against object validation rules
+     * 2. add validation errors to the object if any
+     * 3. return true for valid and false for non-valid data
+     *
+     * @param array $data optional - data for validation, defaults to posted data
+     * @return boolean
+     */
+    public function validate(array $data = array())
+    {
+    	if(!$this->getValidationRules())
+    	{
+    		return true;
+    	}
+		if(!$data) 
+		{
+			$data = $this->getPostedData();
+		}
+		return $this->getValidator()->validate($data);
+    }
+    
+	/**
+	 * @return e_validator
+	 */
+	public function getValidator()
+	{
+		if(null === $this->_validator)
+		{
+			$this->_validator = e107::getObject('e_validate');
+			$this->_validator->setRules($this->getValidationRules())->setMessageStack($this->_message_stack.'_validator');
+			//TODO - optional check rules
+		}
+		return $this->_validator;
+	}
+
+	/**
+	 * Add custom validation message.
+	 * $field_type and $error_code will be inserted via sprintf()
+	 * in the $message string
+	 * Example: 
+	 * <code>
+	 * $model->addValidationError('Custom error message [#%d] for %s', 'My Field', 1000); 
+	 * //produces 'Custom error message [#1000] for My Field'
+	 * </code>
+	 * 
+	 * @param string $message
+	 * @param string $field_title [optional]
+	 * @param integer $error_code [optional]
+	 * @return 
+	 */
+	public function addValidationError($message, $field_title = '', $error_code = '')
+	{
+		$this->getValidator()->addValidateMessage($field_title, $error_code, $message);
+		return $this;
+	}
+    
+    /**
+     * Render validation errors (if any)
+     * 
+     * @param boolean $session store messages to session
+     * @param boolean $reset reset errors
+     * @return string
+     */
+    public function renderValidationErrors($session = false, $reset = true)
+    {
+		return $this->getValidator()->renderValidateMessages($session, $reset);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasValidationError()
+    {
+    	return $this->getValidator()->isValid();
+    }
+	
+    /**
+     * @return boolean
+     */
+    public function hasSqlError()
+    {
+    	return !empty($this->_db_errno);
+    }
+	
+    /**
+     * @return boolean
+     */
+    public function hasError()
+    {
+    	return (!$this->hasValidationError() && !$this->hasSqlError());
+    }
+	
+    /**
+     * Save data to DB
+     * 
+     * @param boolen $from_post
+     */
+    public function save($from_post = true)
+    {
+    	if(!$this->getFieldIdName())
+		{
+			return false;
+		}
+		
+		if($from_post)
+		{
+			//no strict copy, validate, sanitize 
+			$this->mergePostedData(false, true, true);
+		}
+		
+		if($this->getId())
+		{
+			return $this->dbUpdate();
+		}
+		
+		return $this->dbInsert();
+    }
+    
+    /**
+     * Insert data to DB
+     * 
+     * @param boolean $force force query even if $data_has_changed is false
+     * @param boolean $session_messages to use or not session to store system messages
+     */
+    public function dbInsert($force = false, $session_messages = false)
+    {
+    	$this->_db_errno = 0;
+		if(!$this->data_has_changed && !$force)
+		{
+			return 0;
+		}
+		
+		$res = e107::getDb()->db_Insert($this->getModelTable(), $this->toSqlQuery('create'));
+		if(!$res)
+		{
+			$this->_db_errno = e107::getDb()->getLastErrorNumber();
+			$this->addMessageError('SQL Insert Error', $session_messages);
+			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+		}
+		
+		return $res;
+    }
+	
+    /**
+     * Replace data in DB
+     * 
+     * @param boolean $force force query even if $data_has_changed is false
+     * @param boolean $session_messages to use or not session to store system messages
+     */
+    public function dbReplace($force = false, $session_messages = false)
+    {
+    	$this->_db_errno = 0;
+		if(!$this->data_has_changed && !$force)
+		{
+			return 0;
+		}
+		
+		$res = e107::getDb()->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
+		if(!$res)
+		{
+			$this->_db_errno = e107::getDb()->getLastErrorNumber();
+			if($this->_db_errno)
+			{
+				$this->addMessageError('SQL Replace Error', $session_messages);
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+			}
+		}
+		
+		return $res;
+    }
+    
+    /**
+     * Update DB data
+     * 
+     * @param boolean $force force query even if $data_has_changed is false
+     * @param boolean $session_messages to use or not session to store system messages
+     */
+    public function dbUpdate($force = false, $session_messages = false)
+    {
+    	$this->_db_errno = 0;
+		$res = e107::getDb()->db_Update($this->getModelTable(), $this->toSqlQuery('update'));
+		if(!$res)
+		{
+			$this->_db_errno = e107::getDb()->getLastErrorNumber();
+			if($this->_db_errno)
+			{
+				$this->addMessageError('SQL Update Error', $session_messages);
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+			}
+		}
+    }
+	
+	
+	/**
+	 * Build query array to be used with db methods (db_Update, db_Insert, db_Replace)
+	 * 
+	 * @param string $force [optional] force action - possible values are create|update|replace
+	 * @return array db query
+	 */
+	public function toSqlQuery($force = '')
+	{
+		$fields = array_keys($this->_db_fields);
+		$qry = array();
+		
+		$action = $this->getId() ? 'update' : 'create';
+		if($force)
+		{
+			$action = $force;
+		}
+		
+		foreach ($fields as $key => $value)
+		{
+			$qry['data'][$key] = $this->getData($key);
+		}
+		$qry['_FIELD_TYPES'] = $this->_FIELD_TYPES;
+		
+		switch($action)
+		{
+			case 'create':
+				$qry['data'][$this->getFieldIdName()] = 0;
+			break;
+			case 'replace':
+				$qry['_REPLACE'] = true;
+			break;
+		
+			case 'update':
+				unset($qry['data'][$this->getFieldIdName()]);
+				$qry['WHERE'] = $this->getFieldIdName().'='.intval($this->getId()); //intval just in case...
+			break;
+		}
+		
+		return $qry;
+	}
+	
+	/**
+	 * Sanitize value based on its db field type ($_db_fields),
+	 * method will return null only if db field rule is not found.
+	 * If $value is null, it'll be retrieved from object posted data
+	 * If $key is an array, $value is omitted.
+	 * 
+	 * NOTE: If $key is not found in object's _db_fields array, null is returned
+	 * 
+	 * @param mixed $key string key name or array data to be sanitized
+	 * @param mixed $value 
+	 * @return mixed sanitized $value or null on failure
+	 */
+	public function sanitize($key, $value = null)
+	{
+		$tp = e107::getParser();
+		if(is_array($key))
+		{
+			$ret = array(); 
+			foreach ($key as $k=>$v)
+			{
+				if(isset($this->_db_fields[$k]))
+				{
+					$ret[$k] = $this->toDb($k, $v);
+				}
+			}
+			return $ret;
+		}
+		
+		if(!isset($this->_db_fields[$key]))
+		{
+			return null;
+		}
+		$type =  $this->_db_fields[$key];
+		if(null === $value)
+		{
+			$value = $this->getPostedData($key);
+		}
+		
+		switch ($type)
+		{
+			case 'int':
+			case 'integer':
+				return intval($this->toNumber($value));
+			break;
+
+			case 'str':
+			case 'string':
+				return $tp->toDB($value);
+			break;
+
+			case 'float': 
+				return $this->toNumber($value);
+			break;
+
+			case 'bool':
+			case 'boolean':
+				return ($value ? 1 : 0);
+			break;
+
+			case 'model':
+				return $value->mergePostedData()->toArray();
+			break;
+			
+			case 'null':
+				return ($value && $value !== 'NULL' ? $tp->toDB($value) : 'NULL');
+			break;
+	  	}
+		
+		return null;
 	}
 }

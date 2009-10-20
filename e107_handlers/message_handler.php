@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-09-21 12:52:52 $
+ * $Revision: 1.19 $
+ * $Date: 2009-10-20 16:05:03 $
  * $Author: secretr $
  *
 */
@@ -248,6 +248,29 @@ class eMessage
 
 		return (true === $raw ? $message : self::formatMessage($mstack, $type, $message));
 	}
+	
+	/**
+	 * Get all messages for a stack
+	 *
+	 * @param string $mstack message stack name
+	 * @param bool $raw force array return
+	 * @param bool $reset reset message type stack
+	 * @return array messages
+	 */
+	public function getAll($mstack = 'default', $raw = false, $reset = true)
+	{	
+		$ret = array();
+		foreach ($this->_get_types() as $type)
+		{
+			$message = $this->get($type, $mstack, $raw, $reset);
+			if(!empty($message))
+			{
+				$ret[$type] = $message;
+			}
+		}
+		
+		return $ret;
+	}
 
 	/**
 	 * Session message getter
@@ -264,6 +287,29 @@ class eMessage
 		if($reset) $this->resetSession($type, $mstack);
 
 		return (true === $raw ? $message : self::formatMessage($mstack, $type, $message));
+	}
+	
+	/**
+	 * Get all session messages for a stack
+	 *
+	 * @param string $mstack message stack name
+	 * @param bool $raw force array return
+	 * @param bool $reset reset message type stack
+	 * @return array session messages
+	 */
+	public function getAllSession($mstack = 'default', $raw = false, $reset = true)
+	{	
+		$ret = array();
+		foreach ($this->_get_types() as $type)
+		{
+			$message = $this->getSession($type, $mstack, $raw, $reset);
+			if(!empty($message))
+			{
+				$ret[$type] = $message;
+			}
+		}
+		
+		return $ret;
 	}
 
 	/**
@@ -471,9 +517,9 @@ class eMessage
 				if(!isset($this->_sysmsg[$_type][$to_stack]))
 				{
 					$this->_sysmsg[$_type][$to_stack] = array();
-					array_merge($this->_sysmsg[$_type][$from_stack], $this->_sysmsg[$_type][$to_stack]);
-					unset($this->_sysmsg[$_type][$to_stack]);
 				}
+				array_merge($this->_sysmsg[$_type][$from_stack], $this->_sysmsg[$_type][$to_stack]);
+				unset($this->_sysmsg[$_type][$to_stack]);
 			}
 		}
 		
@@ -504,9 +550,9 @@ class eMessage
 				if(!isset($_SESSION[$this->_session_id][$_type][$to_stack]))
 				{
 					$this->_sysmsg[$_type][$to_stack] = array();
-					array_merge($_SESSION[$this->_session_id][$_type][$from_stack], $this->_sysmsg[$_type][$to_stack]);
-					unset($_SESSION[$this->_session_id][$_type][$to_stack]);
 				}
+				array_merge($_SESSION[$this->_session_id][$_type][$from_stack], $this->_sysmsg[$_type][$to_stack]);
+				unset($_SESSION[$this->_session_id][$_type][$to_stack]);
 			}
 		}
 		
