@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.58 $
- * $Date: 2009-10-20 07:39:40 $
- * $Author: e107coders $
+ * $Revision: 1.59 $
+ * $Date: 2009-10-20 16:01:47 $
+ * $Author: secretr $
 */
 require_once("../class2.php");
 
@@ -1064,8 +1064,8 @@ class admin_newspost
 					<fieldset id='core-newspost-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							".$frm->colGroup($this->_fields,$this->fieldpref).
-                             $frm->thead($this->_fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]")."
+							".$frm->colGroup($this->fields, $this->fieldpref)."
+							".$frm->thead($this->_fields, $this->fieldpref, 'main.[FIELD].[ASC].[FROM]')."
 							<tbody>";
 
 			$ren_type = array("default","title","other-news","other-news 2");
