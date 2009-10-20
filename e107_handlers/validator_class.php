@@ -9,8 +9,8 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-10-19 16:13:29 $
+ * $Revision: 1.12 $
+ * $Date: 2009-10-20 16:05:02 $
  * $Author: secretr $
  *
 */
@@ -205,12 +205,22 @@ class e_validator
 	 */
 	public function __construct($message_stack = '', $rules = array(), $optrules = array())
 	{
-		if($message_stack)
-		{
-			$this->_message_stack = $message_stack;
-		}
-		$this->setRules($rules)
+		$this->setMessageStack($message_stack)
+			->setRules($rules)
 			->setOptionalRules($optrules);
+	}
+	
+	/**
+	 * Set message stack
+	 * 
+	 * @param string $mstack
+	 * @return e_validator
+	 */
+	public function setMessageStack($mstack)
+	{
+		if($mstack) $mstack = 'validator';
+		$this->_message_stack = $mstack;
+		return $this;
 	}
 	
 	/**
@@ -265,6 +275,14 @@ class e_validator
 		$this->reset();
 		
 		$rules = array_merge(array_keys($this->_required_rules), array_keys($this->_optional_rules)); 
+		// no rules, no check
+		if(!$rules)
+		{
+			$this->_is_valid_data = true;
+			$this->_valid_data = $data;
+			return true;
+		}
+		
 		foreach ($rules as $field_name)
 		{
 			$value = varset($data[$field_name], null);
@@ -597,7 +615,7 @@ class e_validator
 	{
 		if($custom)
 		{
-			e107::getMessage()->addStack(sprintf($err_message, $field_title), $this->_message_stack, (true === $custom ? E_MESSAGE_ERROR : $custom));
+			e107::getMessage()->addStack(sprintf($err_message, $err_code, $field_title), $this->_message_stack, (true === $custom ? E_MESSAGE_ERROR : $custom));
 			return $this;
 		}
 		
@@ -643,11 +661,12 @@ class e_validator
 	}
 	
 	/**
+	 * @param boolean $session clear session messages as well, default true
 	 * @return e_validator
 	 */
-	function clearValidateMessages()
+	function clearValidateMessages($session = true)
 	{
-		$this->_validate_results = array();
+		e107::getMessage()->reset(false, $this->_message_stack, $session);
 		return $this;
 	}
 	

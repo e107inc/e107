@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.55 $
- * $Date: 2009-10-20 03:49:12 $
- * $Author: e107coders $
+ * $Revision: 1.56 $
+ * $Date: 2009-10-20 16:05:03 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -114,13 +114,15 @@ class e107
 		'e_news_tree' 	=> '{e_HANDLER}news_class.php',
 		'news' 			=> '{e_HANDLER}news_class.php',
 		'e_form' 		=> '{e_HANDLER}form_handler.php',
+		//'e_fieldset' 	=> '{e_HANDLER}form_handler.php',
 		'e_upgrade' 	=> '{e_HANDLER}e_upgrade_class.php',
 		'e_jshelper' 	=> '{e_HANDLER}js_helper.php',
 		'e_menu' 		=> '{e_HANDLER}menu_class.php',
 		'e107plugin' 	=> '{e_HANDLER}plugin_class.php',
 		'xmlClass' 		=> '{e_HANDLER}xml_class.php',
 		'e107_traffic'	=> '{e_HANDLER}traffic_class.php',
-		'comment'		=> '{e_HANDLER}comment_class.php'
+		'comment'		=> '{e_HANDLER}comment_class.php',
+		'e_validator'	=> '{e_HANDLER}validator_class.php'
 	);
 	
 	/**
@@ -1692,7 +1694,7 @@ class e107
 			break;
 		}
 		
-		$this->$name = $ret;
+		$this->{$name} = $ret;
 		return $ret;
 	}
 }
