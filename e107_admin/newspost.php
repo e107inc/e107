@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.57 $
- * $Date: 2009-10-09 15:06:44 $
- * $Author: secretr $
+ * $Revision: 1.58 $
+ * $Date: 2009-10-20 07:39:40 $
+ * $Author: e107coders $
 */
 require_once("../class2.php");
 
@@ -241,6 +241,8 @@ class admin_newspost
 	var $_sort_order;
 	var $_sort_link;
 	var $fieldpref;
+	var $news_categories;
+	var $news_renderTypes = array();
 	
 	public $error = false;
 
@@ -274,6 +276,15 @@ class admin_newspost
 				'options'				=> array('title' => LAN_OPTIONS, 	'width' => '10%', 		'width' => null, 	'thclass' => 'center last', 	'class' => null, 		'url' => '', 'forced' => TRUE)
 
 		);
+		
+/*		$ren_type = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
+		$r_array = array();
+		foreach($ren_type as $key=>$value)
+		{
+			$this->news_renderTypes[$key] = $value;
+		}*/
+
+		$this->news_renderTypes = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
 
 	}
 
@@ -404,6 +415,10 @@ class admin_newspost
 		{
 			$this->_observe_delete();
 		}
+		elseif(isset($_POST['execute_batch']))
+		{
+			$this->process_batch($_POST['news_selected']);
+		}
 		elseif(isset($_POST['submit_news']))
 		{
 			$this->_observe_submit_item($this->getSubAction(), $this->getId());
@@ -432,7 +447,8 @@ class admin_newspost
 		{
 			$this->_observe_newsCommentsRecalc();
 		}
-		elseif(isset($_POST['submit-e-columns']))
+		
+		if(isset($_POST['submit-e-columns'])) //elseif fails. 
 		{
         	$this->_observe_saveColumns();
 		}
@@ -1014,33 +1030,23 @@ class admin_newspost
 	        	$news_category[$val['category_id']] = $val['category_name'];
 			}
 
+			$this->news_categories = $news_category;
 
         // ------ Search Filter ------
 
         $text .= "
 			<form method='post' action='".e_SELF."'>
-			<div class='center' style='padding:20px'>
-			<table style='width:auto' cellspacing='2'>
-			<tr>
-            <td class='left'>".
-				$frm->admin_button('dupfield', "Add Filter", 'action', '', array('other' => 'onclick="duplicateHTML(\'filterline\',\'srch_container\');"'))
-			."</td>
-			<td>
-				<div id='srch_container' class='nowrap'><span id='filterline' >".$frm->filterType($field_columns)."<span id='filterValue'>".$frm->filterValue()."</span></span></div>
-		  	</td>
-			<td>".
-				$frm->admin_button('searchsubmit', NWSLAN_63, 'search')."
-			</td>
-
-		  </tr>
-		  </table>
+			<div class='left' style='padding:20px'>
+			<input type='text' name='searchquery' value='".$_POST['searchquery']."' />";
+			$text .= $frm->admin_button('searchsubmit', NWSLAN_63, 'search');
+			$text .= "
 			</div></form>
 		";
 
         // --------------------------------------------
 
 
-		if (varsettrue($_POST['searchquery']))
+		if (vartrue($_POST['searchquery']))
 		{
 			$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
 		}
@@ -1101,15 +1107,20 @@ class admin_newspost
 
 			$text .= "
 							</tbody>
-						</table>
+						</table>";
+			$text .= "<div class='buttons-bar center'>".$this->show_batch_options()."</div>";			
+			$text .= "
 					</fieldset>
 				</form>
 			";
+			
 		}
 		else
 		{
 			$text .= "<div class='center'>".isset($_POST['searchquery']) ? sprintf(NWSLAN_121, '<em>&quot;'.$_POST['searchquery'])."&quot;</em> <a href='".e_SELF."'>&laquo; ".LAN_BACK."</a>" : NWSLAN_43."</div>";
 		}
+
+
 
 		$newsposts = $e107->sql->db_Count('news');
 
@@ -1124,6 +1135,90 @@ class admin_newspost
 		$emessage = &eMessage::getInstance();
 		$e107->ns->tablerender(NWSLAN_4, $emessage->render().$text);
 	}
+
+	function show_batch_options()
+	{
+		$e107 = e107::getInstance();
+		$classObj = $e107->getUserClass();
+		$frm = new e_form();
+		$classes = $classObj->uc_get_classlist();
+		
+/*
+		$assignClasses = array(); // Userclass list of userclasses that can be assigned
+		foreach ($classes as $key => $val)
+		{
+			if ($classObj->isEditableClass($key))
+			{
+				$assignClasses[$key] = $classes[$key];
+			}
+		}
+		unset($assignClasses[0]);	
+	
+		$removeClasses = $assignClasses; // Userclass list of userclasses that can be removed
+		$removeClasses[0] = array('userclass_name'=>array('userclass_id'=>0, 'userclass_name'=>USRLAN_220));
+*/
+		
+		$comments_array = array("Disable Comments","Allow Comments");
+		
+		
+		return $frm->batchoptions(
+			array(
+					'delete_selected'	=> LAN_DELETE,
+					'category' 			=> array('Modify Category', $this->news_categories),
+					'rendertype'		=> array('Modify Render-type', $this->news_renderTypes),
+					'comments'			=> array('Modify Comments', $comments_array)
+			),
+		      array(
+		         	'userclass'    		=> array('Assign Visibility...',$classes),
+			)
+	   );
+	}
+
+	function batch_category($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Update("news","news_category = ".$value." WHERE news_id IN (".implode(",",$ids).") ");
+	}
+	
+	function batch_comments($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Update("news","news_allow_comments = ".$value." WHERE news_id IN (".implode(",",$ids).") ");
+	}
+	
+	function batch_rendertype($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Update("news","news_render_type = ".$value." WHERE news_id IN (".implode(",",$ids).") ");
+	}
+	
+	function batch_userclass($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Update("news","news_class = ".$value." WHERE news_id IN (".implode(",",$ids).") ");
+	}
+	
+	function batch_delete($ids,$value)
+	{
+		$sql = e107::getDb();
+		$count = $sql->db_Delete("news","news_id IN (".implode(",",$ids).") ");
+	}
+	
+
+
+
+	function process_batch($id_array)
+	{
+		list($type,$tmp,$value) = explode("_",$_POST['execute_batch']);
+		$method = "batch_".$type;
+		
+		if (method_exists($this,$method) && isset($id_array) )
+		{
+			$this->$method($id_array,$value);
+		}
+	}
+
+
 
 
 	function _pre_create()
@@ -1525,15 +1620,10 @@ class admin_newspost
 								<td class='control'>
 
 		";
-		$ren_type = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
-		$r_array = array();
-		foreach($ren_type as $key=>$value) {
-			$r_array[$key] = $value;
-		}
-
+		
 
 		$text .= "
-										".$frm->radio_multi('news_rendertype', $r_array, $_POST['news_rendertype'], true)."
+										".$frm->radio_multi('news_rendertype', $this->news_renderTypes, $_POST['news_rendertype'], true)."
 										<div class='field-help'>
 											".NWSLAN_74."
 										</div>
