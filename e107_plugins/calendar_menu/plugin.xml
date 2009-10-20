@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.11 2009-10-20 03:49:22 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.12 2009-10-20 18:15:21 e107coders Exp $ -->
 
 <e107Plugin name="EC_ADLAN_1" version="3.70" compatibility="0.8" installRequired="true" setupFile='calendar_setup.php'>
 	<author name="e107 Inc. + Barry" url="http://e107.org" />
@@ -12,7 +12,11 @@
 		<file type='log' path='languages/--LAN--_log.php' />	
 	</languageFiles>
 	<adminLinks>
-		<link url='admin_config.php' description='EC_ADINST_LAN_05' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' primary='true' >EC_ADINST_LAN_05</link>	
+		<link url='admin_config.php' description='EC_ADINST_LAN_05' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' primary='true' >EC_ADINST_LAN_05</link>
+		<link url='admin_config.php?cat' description='EC_ADLAN_A11' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A11</link>
+		<link url='admin_config.php?forthcoming' description='EC_ADLAN_A100' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A100</link>
+		<link url='admin_config.php?maint' description='EC_ADLAN_A141' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A141</link>
+		<link url='admin_config.php?subs' description='EC_ADLAN_A173' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A173</link>		
 	</adminLinks>
 	<siteLinks>
 		<link url="calendar_menu/calendar.php" >Calendar</link>		
