@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.149 $
-* $Date: 2009-10-01 15:05:41 $
+* $Revision: 1.150 $
+* $Date: 2009-10-20 16:00:38 $
 * $Author: secretr $
 *
 */
@@ -879,7 +879,7 @@ if (!function_exists('checkvalidtheme'))
 $sql->db_Mark_Time('Start: Misc Setup');
 
 //------------------------------------------------------------------------------------------------------------------------------------//
-if (!class_exists('e107table'))
+if (!class_exists('e107table', false))
 {
 	class e107table
 	{
@@ -1248,11 +1248,11 @@ else
 	define('e_REFERER_SELF', FALSE);
 }
 
-//BC, DEPRECATED - use e107::getDateConvert()
-if (!class_exists('convert'))
+//BC, DEPRECATED - use e107::getDateConvert(), catched by __autoload as well
+/*if (!class_exists('convert'))
 {
 	require_once(e_HANDLER.'date_handler.php');
-}
+}*/
 
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
@@ -2099,18 +2099,38 @@ function plugInstalled($plugname)
 	return isset($pref['plug_installed'][$plugname]);*/
 }
 
-function __autoload($className) {
+/**
+ * Magic autoload
+ * TODO - move to spl_autoload[_*] some day (PHP5 > 5.1.2)
+ * @param string $className
+ * @return void
+ */
+function __autoload($className) 
+{
+	//Security...
+    if (strpos($className, '/') !== false) 
+	{
+        return;
+    }
 	$tmp = explode('_', $className);
-	//TODO: Make it support core classes in e107_handlers
-	if('plugin' !== $tmp[0]) { return; }
-	if('plugin' == $tmp[0])
+	
+	switch($tmp[0])
 	{
-		array_shift($tmp);
-		$filename = e_PLUGIN.implode('/', $tmp).'.php';
+		case 'plugin':
+		case 'eplug_':
+			array_shift($tmp);
+			$filename = e_PLUGIN.implode('/', $tmp).'.php';
+			//TODO add debug screen Auto-loaded classes - ['plugin: '.$filename.' - '.$className];
+		break;
+	
+		default: //core libraries
+			$filename = e107::getHandlerPath($className, true);
+			//TODO add debug screen Auto-loaded classes - ['core: '.$filename.' - '.$className];
+		break;
 	}
-	else
+	
+	if($filename)
 	{
-		$filename = e_HANDLER.implode('/', $tmp).'.php';
+		include($filename);
 	}
-	require_once($filename);
-} // end __autoload
+} 
