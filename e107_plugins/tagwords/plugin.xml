@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.6 2009-09-24 00:11:20 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.7 2009-10-20 03:49:22 e107coders Exp $ -->
 <e107Plugin name="Tagwords" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org/" />
 	<description>A fully featured Tagword system</description>
@@ -10,7 +10,4 @@
 	<siteLinks>
 		<link url="tagwords/tagwords.php" perm="everyone">Tagwords</link>
 	</siteLinks>
-	<management>
-		<installDone>Tagwords is installed<br />To configure please click on the link in the plugins section of the admin front page</installDone>
-	</management>
 </e107Plugin>

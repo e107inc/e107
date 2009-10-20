@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.2 2009-10-12 06:38:01 e107coders Exp $ -->
-<e107Plugin name="TinyMce" version="1.0" compatibility="0.8" installRequired="true" >
+<!-- $Id: plugin.xml,v 1.3 2009-10-20 03:49:22 e107coders Exp $ -->
+<e107Plugin name="TinyMce" version="1.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>Wysiwyg Text-Area Replacement</description>
 	<category>misc</category>
