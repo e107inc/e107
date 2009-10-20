@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.49 $
- * $Date: 2009-10-20 16:05:02 $
- * $Author: secretr $
+ * $Revision: 1.50 $
+ * $Date: 2009-10-20 16:18:07 $
+ * $Author: e107coders $
  *
 */
 
@@ -261,6 +261,12 @@ class e_form
 		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->uc_get_classdescription($classnum).')</span>' : '';
 
 		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum).$descr, $treename.'[]', $classnum)."</div>\n";
+	}
+	
+	
+	function uc_label($classnum)
+	{
+		return $this->_uc->uc_get_classname($classnum);	
 	}
 
 	function radio($name, $value, $checked = false, $options = array())
