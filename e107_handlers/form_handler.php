@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.47 $
- * $Date: 2009-10-09 15:06:44 $
- * $Author: secretr $
+ * $Revision: 1.48 $
+ * $Date: 2009-10-20 07:39:40 $
+ * $Author: e107coders $
  *
 */
 
@@ -247,8 +247,8 @@ class e_form
 		if($classnum == e_UC_BLANK)
 			return '';
 
-		$tmp = explode(',', $current_value);
-
+		$tmp = explode(',', $current_value); //TODO add support for when $current_value is an array.
+		
 		$class = $style = '';
 		if($nest_level == 0)
 		{
@@ -835,26 +835,40 @@ class e_form
          <div class='f-left'>
          <img src='".e_IMAGE."generic/branchbottom.gif' alt='' class='TODO' />
 			<select class='tbox e-execute-batch' name='execute_batch'>
-			<option value=''>With selected...</option>";
+			<option value=''>With selected...</option>\n";
 
 		foreach ($options as $key => $val)
 		{
-		   $text .= "<option value='".$key."'>".$val."</option>";
+			if(!is_array($val))
+			{
+				$text .= "<option value='".$key."'>".$val."</option>\n";					
+			}
+			else
+			{
+	            $text .= "<optgroup label='".$val[0]."'>\n";
+		      	foreach ($val[1] as $k => $v)
+		      	{
+		      		$text .= "\t<option value='".$key."_selected_".$k."'>".$v."</option>\n";
+		      	}
+		      	$text .= "</optgroup>\n";
+				
+			}		   
 		}
 
 
-		if ($ucOptions)
-	   {
-   		foreach ($ucOptions as $ucKey => $ucVal)
-   	   {
-            $text .= "<optgroup label='".$ucVal[0]."'>";
-      		foreach ($ucVal[1] as $key => $val)
-      		{
-      			$text .= "<option value='".$ucKey."_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
-      		}
-      		$text .= "</optgroup>";
-         }
-      }
+		if ($ucOptions) // Userclass List. 
+		{
+	   		foreach ($ucOptions as $ucKey => $ucVal)
+			{
+	            $text .= "<optgroup label='".$ucVal[0]."'>\n";
+	      		foreach ($ucVal[1] as $key => $val)
+	      		{
+	      			$text .= "\t<option value='".$ucKey."_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
+	      		}
+	      		$text .= "</optgroup>\n";
+			}
+		}
+		
 
 		$text .= "
 			</select>
