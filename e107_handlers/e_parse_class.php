@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.65 $
-* $Date: 2009-09-29 17:40:55 $
+* $Revision: 1.66 $
+* $Date: 2009-10-20 14:47:05 $
 * $Author: secretr $
 *
 */
@@ -301,7 +301,8 @@ class e_parse
 		{
 			foreach ($data as $key => $var)
 			{
-				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode, $mod, $original_author);
+				//Fix - sanitize keys as well
+				$ret[$this->toDB($key, $nostrip, $no_encode, $mod, $original_author)] = $this->toDB($var, $nostrip, $no_encode, $mod, $original_author);
 			}
 		}
 		else
@@ -355,6 +356,14 @@ class e_parse
 
 	function post_toForm($text)
 	{
+		if(is_array($text))
+		{
+			foreach ($text as $key => $value)
+			{
+				$text[$this->post_toForm($key)] = $this->post_toForm($value);
+			}
+			return $text;
+		}
 		if (MAGIC_QUOTES_GPC == true)
 		{
 			$text = stripslashes($text);
@@ -1242,7 +1251,7 @@ class e_parse
 				break;
 			}
 
-			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_DOWNLOAD}","{e_HANDLER}");
+			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_HANDLER}");//,"{e_DOWNLOAD}"
 
 			if (ADMIN)
 			{
