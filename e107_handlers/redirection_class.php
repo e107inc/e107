@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
- |     $Revision: 1.2 $
- |     $Date: 2009-09-27 21:18:37 $
+ |     $Revision: 1.3 $
+ |     $Date: 2009-10-20 03:59:20 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -144,6 +144,7 @@ class redirection
 		function redirect($url)
 		{
 				header('Location: '.$url);
+				header("Content-Length: 0"); // Safari endless loop fix. 
 				exit();
 		} 
 }
