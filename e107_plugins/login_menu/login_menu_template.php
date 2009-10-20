@@ -9,9 +9,9 @@
  * Login menu template
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_template.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-07-18 18:23:44 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.9 $
+ * $Date: 2009-10-20 03:58:47 $
+ * $Author: e107coders $
  */
 
 if ( ! isset($LOGIN_MENU_FORM))
@@ -79,6 +79,7 @@ if ( ! isset($LOGIN_MENU_FORM))
             {LM_SIGNUP_LINK}
             {LM_FPW_LINK}
             {LM_RESEND_LINK}
+			{FB_LOGIN_BUTTON} 
     	</div>
 	";
 }
