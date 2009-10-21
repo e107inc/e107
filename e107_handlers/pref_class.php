@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-10-20 19:09:27 $
+ * $Revision: 1.24 $
+ * $Date: 2009-10-21 08:58:33 $
  * $Author: secretr $
 */
 
@@ -494,9 +494,8 @@ class e_pref extends e_model_admin
 			$this->mergePostedData(); //all posted data is sanitized and filtered vs preferences array
 		}
 		
-		//TODO - LAN
-		require_once(e_HANDLER.'message_handler.php');
-		$emessage = eMessage::getInstance();
+		//FIXME - switch to new model system messages (separate eMessage namespaces)
+		$emessage = e107::getMessage();
 		
 		if(!$this->data_has_changed && !$force)
 		{
@@ -505,7 +504,7 @@ class e_pref extends e_model_admin
 		}
 		
 		//Save to DB
-		if(!$this->isError())
+		if(!$this->hasError())
 		{
 			if($this->serial_bc)
 			{
@@ -544,19 +543,20 @@ class e_pref extends e_model_admin
 				{
 					$pref = $this->getData();
 				}
-				return true;
+				return true; 
 			}
-			elseif(e107::getDb()->mySQLlastErrNum)
+			elseif(e107::getDb()->getLastErrorNumber())
 			{
-				$emessage->add('mySQL error #'.e107::getDb()->$mySQLlastErrNum.': '.e107::getDb()->mySQLlastErrText, E_MESSAGE_ERROR, $session_messages);
+				$emessage->add('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), E_MESSAGE_ERROR, $session_messages);
 				$emessage->add('Settings not saved.', E_MESSAGE_ERROR, $session_messages);
 				return false;
 			}
 		}
 		
-		if($this->isError())
+		if($this->hasError())
 		{
-			$this->setErrors(true, $session_messages); //add errors to the eMessage stack
+			//add errors to the eMessage stack
+			//$this->setErrors(true, $session_messages); old - doesn't needed anymore
 			$emessage->add('Settings not saved.', E_MESSAGE_ERROR, $session_messages);
 			return false;
 		}
