@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.59 $
-* $Date: 2009-10-21 07:31:07 $
-* $Author: e107coders $
+* $Revision: 1.60 $
+* $Date: 2009-10-21 19:19:53 $
+* $Author: e107steved $
 *
 */
 require_once ('../class2.php');
@@ -1063,7 +1063,6 @@ class users
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-users-list'>
-						<legend class='e-hideme'>".NWSLAN_4."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>".
 						$frm->colGroup($this->fields,$this->fieldpref).
 						$frm->thead($this->fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]").
