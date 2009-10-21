@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.56 $
- * $Date: 2009-10-20 16:05:03 $
+ * $Revision: 1.57 $
+ * $Date: 2009-10-21 10:29:42 $
  * $Author: secretr $
 */
 
@@ -122,7 +122,8 @@ class e107
 		'xmlClass' 		=> '{e_HANDLER}xml_class.php',
 		'e107_traffic'	=> '{e_HANDLER}traffic_class.php',
 		'comment'		=> '{e_HANDLER}comment_class.php',
-		'e_validator'	=> '{e_HANDLER}validator_class.php'
+		'e_validator'	=> '{e_HANDLER}validator_class.php',
+		'themeHandler'	=> '{e_HANDLER}theme_handler.php'
 	);
 	
 	/**
