@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.45 $
-* $Date: 2009-10-21 07:56:39 $
-* $Author: marj_nl_fr $
+* $Revision: 1.46 $
+* $Date: 2009-10-21 11:08:32 $
+* $Author: e107coders $
 *
 */
 
@@ -1227,6 +1227,9 @@ class e_install
 		// Force UTF-8 again
 		$this->dbqry('SET NAMES `utf8`');
 
+		$srch = array("CREATE TABLE","(");
+		$repl = array("DROP TABLE IF EXISTS","");
+
 		foreach ($result[0] as $sql_table)
 		{
 //			preg_match("/CREATE TABLE\s(.*?)\s\(/si", $sql_table, $match);
@@ -1234,6 +1237,12 @@ class e_install
 
 //			preg_match_all("/create(.*?)myisam;/si", $sql_data, $result );
 			$sql_table = preg_replace("/create table\s/si", "CREATE TABLE {$this->previous_steps['mysql']['prefix']}", $sql_table);
+			
+			// Drop existing tables before creating. 
+			$tmp = explode("\n",$sql_table);
+			$drop_table = str_replace($srch,$repl,$tmp[0]);
+			$this->dbqry($drop_table);
+			
 			if (!$this->dbqry($sql_table, $link))
 			{
 				return nl2br(LANINS_061."\n\n<b>".LANINS_083."\n</b><i>".mysql_error($link)."</i>");
