@@ -7,8 +7,8 @@
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_setup.php,v $
-* $Revision: 1.1 $
-* $Date: 2009-10-20 03:58:47 $
+* $Revision: 1.2 $
+* $Date: 2009-10-21 12:53:00 $
 * $Author: e107coders $
 *
 */
@@ -16,7 +16,7 @@
 class pm_setup
 {
 	
-	function pm_uninstall_post()
+	function uninstall_post()
 	{
 		$sql = e107::getDb();
 		$sql->db_Delete("core", "e107_name = 'pm_prefs'");

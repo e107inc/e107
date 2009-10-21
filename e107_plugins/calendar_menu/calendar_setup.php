@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_setup.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-10-20 03:58:47 $
+|     $Revision: 1.2 $
+|     $Date: 2009-10-21 12:52:59 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -24,7 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 class calendar_menu_setup // must match folder name ie. <pluginfolder>_setup
 {
 
-	function calendar_menu_install_post($param)
+	function install_post($param)
 	{
 		$mes = eMessage::getInstance();
 		if($this->insertDefaultCategory(FALSE))
@@ -41,13 +41,13 @@ class calendar_menu_setup // must match folder name ie. <pluginfolder>_setup
 	}
   
   
-	function calendar_menu_install_pre($param)
+	function install_pre($param)
 	{
 		//    echo "Calendar uninstall routine<br />";
 	}
   
   
-	function calendar_menu_upgrade_post($param)
+	function upgrade_post($param)
 	{
 		$mes = eMessage::getInstance();
 		if($this->insertDefaultCategory(TRUE))
