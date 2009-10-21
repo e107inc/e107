@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-10-21 10:24:32 $
+ * $Revision: 1.14 $
+ * $Date: 2009-10-21 11:57:15 $
  * $Author: secretr $
 */
 
@@ -1380,7 +1380,7 @@ class e_model_admin extends e_model
      */
     public function hasError()
     {
-    	return (!$this->hasValidationError() && !$this->hasSqlError());
+    	return ($this->hasValidationError() || $this->hasSqlError());
     }
 	
     /**
