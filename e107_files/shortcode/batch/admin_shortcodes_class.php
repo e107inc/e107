@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.25 2009-09-25 22:45:28 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.26 2009-10-21 11:41:15 secretr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -344,7 +344,7 @@ class admin_shortcodes
 						$cnt = $sql -> db_Select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
 					}
 					$text .= ($cnt) ? '<ul>' : '';
-					$gen = new convert;
+					$gen = e107::getDateConvert();
 					while ($row = $sql -> db_Fetch())
 					{
 						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
@@ -750,7 +750,7 @@ class admin_shortcodes
 				include(e_ADMIN.'ver.php');
 			}
 
-			$obj = new convert;
+			$obj = e107::getDateConvert();
 			$install_date = $obj->convert_date($pref['install_date'], 'long');
 
 			$text = "<b>".FOOTLAN_1."</b>
