@@ -9,8 +9,8 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-10-21 20:05:55 $
+ * $Revision: 1.27 $
+ * $Date: 2009-10-21 20:07:31 $
  * $Author: e107coders $
 */
 
@@ -82,8 +82,6 @@ class news {
 		$data['data']['news_render_type'] = $news['news_render_type'];
 		$data['_FIELD_TYPES']['news_render_type'] = 'int';
 		
-		$data['data']['news_render_type'] = $news['news_render_type'];
-		$data['_FIELD_TYPES']['news_render_type'] = 'int';
 		
 		//news_comment_total
 		
