@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.60 $
-* $Date: 2009-10-21 19:19:53 $
+* $Revision: 1.61 $
+* $Date: 2009-10-21 21:36:10 $
 * $Author: e107steved $
 *
 */
@@ -582,12 +582,14 @@ class users
 			'user_pwchange'		=> array('title' => LAN_USER_24,'width' => 'auto'),
 		);
 
-		$sql->db_Select("user_extended_struct");
-		while ($row = $sql->db_Fetch())
+		if($sql->db_Select('user_extended_struct', 'user_extended_struct_name', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC"))
 		{
-			$field = "user_".$row['user_extended_struct_name'];
-			$title = ucfirst(str_replace("user_","",$field));
-			$this->fields[$field] = array('title' => $title,'width' => 'auto');
+			while ($row = $sql->db_Fetch())
+			{
+				$field = "user_".$row['user_extended_struct_name'];
+				$title = ucfirst(str_replace("user_","",$field));
+				$this->fields[$field] = array('title' => $title,'width' => 'auto');
+			}
 		}
 		$this->fields['options'] = array('title' => LAN_OPTIONS,'width' => '10%',"thclass" => "center last",'forced' => true);
 	}
