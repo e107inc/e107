@@ -9,18 +9,18 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.44 $
-* $Date: 2009-10-21 03:53:27 $
-* $Author: e107coders $
+* $Revision: 1.45 $
+* $Date: 2009-10-21 07:56:39 $
+* $Author: marj_nl_fr $
 *
 */
 
-// 
+// minimal software version
+define('MIN_PHP_VERSION',   '5.0');
+define('MIN_MYSQL_VERSION', '4.1.2');
 
-
-define('MIN_PHP_VERSION','5.0');
-define('MIN_MYSQL_VERSION','4.1.2');
-
+// ensure CHARSET is UTF-8 if used
+define('CHARSET', 'utf-8');
 
 /* Default Options and Paths for Installer */
 $MySQLPrefix	     = 'e107_';
@@ -54,7 +54,7 @@ define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 
-define("E107_INSTALL",TRUE); 
+define("E107_INSTALL",TRUE);
 
 error_reporting(E_ALL);
 
@@ -215,7 +215,7 @@ class e_install
 			$_POST['stage'] = 1;
 		}
 		$_POST['stage'] = intval($_POST['stage']);
-		
+
 		switch ($_POST['stage'])
 		{
 			case 1:
@@ -949,7 +949,7 @@ class e_install
 		$e_HTTP = preg_replace("#".$udirs."#i", "", substr($e_SELF, 0, strrpos($e_SELF, "/"))."/");
 	
 		define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? true : false));
-		define("CHARSET",'utf-8');
+	//	define('CHARSET', 'utf-8');
 	//	define("e_LANGUAGE", $this->previous_steps['language']);
 		define('e_SELF', 'http://'.$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']);	
 
