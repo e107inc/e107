@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-10-21 09:12:11 $
+ * $Revision: 1.13 $
+ * $Date: 2009-10-21 10:24:32 $
  * $Author: secretr $
 */
 
@@ -1302,7 +1302,7 @@ class e_model_admin extends e_model
 	{
 		if(null === $this->_validator)
 		{
-			$this->_validator = e107::getObject('e_validate');
+			$this->_validator = e107::getObject('e_validator');
 			$this->_validator->setRules($this->getValidationRules())->setMessageStack($this->_message_stack.'_validator');
 			//TODO - optional check rules
 		}
@@ -1482,7 +1482,6 @@ class e_model_admin extends e_model
 			}
 		}
     }
-	
 	
 	/**
 	 * Build query array to be used with db methods (db_Update, db_Insert, db_Replace)
