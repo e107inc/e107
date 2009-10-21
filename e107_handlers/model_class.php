@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-10-21 11:57:15 $
- * $Author: secretr $
+ * $Revision: 1.15 $
+ * $Date: 2009-10-21 19:34:18 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1203,6 +1203,7 @@ class e_model_admin extends e_model
 			}
 			else //no db field types, use toDB()
 			{
+				$tp = e107::getParser();
 				$data = $tp->toDB($data);
 			}
 		}
