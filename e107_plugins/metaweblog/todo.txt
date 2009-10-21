@@ -1,0 +1,15 @@
+9.47 21/10/2009
+METAWELOG PLUGIN TODO LIST DRAFT
+
+- admin log implementation to log out all the traffic
+- error handling (not really sure how can be done, at least in log)
+- better ACL configuration (getperms) and admin panel to configure ACL (example this user has rw access to news?) wraps ACL configuration
+- custom content plugin support
+- sintax to write in custom field of custom (ie sort of: {field_name:value}) this one need WLW customization OR use the wordpress plugin 
+- better admin preferences panel (for example to choise to use content plugin instead of pages)
+- full manual to explain configuration of plugin and WLW
+
+
+
+
+
