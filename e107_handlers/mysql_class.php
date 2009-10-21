@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.57 $
- * $Date: 2009-10-20 16:05:03 $
+ * $Revision: 1.58 $
+ * $Date: 2009-10-21 09:12:12 $
  * $Author: secretr $
 */
 
@@ -49,7 +49,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * @author $Author: secretr $
  * 
  */
@@ -561,7 +561,7 @@ class e_db_mysql {
 		{
 			case 'int':
 			case 'integer':
-				return (int)$fieldValue;
+				return (int) $fieldValue;
 				break;
 
 			case 'cmd':
@@ -572,6 +572,10 @@ class e_db_mysql {
 			case 'string':
 				return "'{$fieldValue}'";
 				break;
+				
+			case 'float': 
+				return (float) $fieldValue;
+			break;
 				
 			case 'null':
 				return ($fieldValue && $fieldValue !== 'NULL' ? "'{$fieldValue}'" : 'NULL');

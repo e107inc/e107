@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-10-20 16:05:02 $
+ * $Revision: 1.12 $
+ * $Date: 2009-10-21 09:12:11 $
  * $Author: secretr $
 */
 
@@ -680,20 +680,15 @@ class e_model
 	}
 	
     /**
-     * Render validation errors (if any)
+     * Render System messages (if any)
      * 
-     * @param boolean $validation render validation messages as well
      * @param boolean $session store messages to session
      * @param boolean $reset reset errors
      * @return string
      */
-    public function renderMessages($validation = true, $session = false, $reset = true)
+    public function renderMessages($session = false, $reset = true)
     {
-    	if($validation)
-		{
-			e107::getMessage()->moveStack($this->_message_stack.'_validator', $this->_message_stack, false, $session);
-		}
-		return $this->getValidator()->renderValidateMessages($session, $reset);
+    	return e107::getMessage()->render($this->_message_stack, $session, $reset);
     }
 	
     /**
@@ -709,7 +704,7 @@ class e_model
      * Model validation 
      * @see e_model_admin
      */
-    public function verify()
+    public function validate()
     {
     }
     
@@ -1187,7 +1182,7 @@ class e_model_admin extends e_model
     		return $this; 
     	}
     	
-		/* Wrong?
+		/* XXX - Wrong? Should validator keep track on validated data at all?
 		// retrieve only valid data
 		if($validate) 
 		{
@@ -1290,6 +1285,15 @@ class e_model_admin extends e_model
 		}
 		return $this->getValidator()->validate($data);
     }
+	
+    /**
+     * User defined model validation
+     * Awaiting for child class implementation
+     *
+     */
+    public function verify()
+    {
+    }
     
 	/**
 	 * @return e_validator
@@ -1337,6 +1341,23 @@ class e_model_admin extends e_model
     {
 		return $this->getValidator()->renderValidateMessages($session, $reset);
     }
+	
+    /**
+     * Render System messages (if any)
+     * 
+     * @param boolean $validation render validation messages as well
+     * @param boolean $session store messages to session
+     * @param boolean $reset reset errors
+     * @return string
+     */
+    public function renderMessages($validation = true, $session = false, $reset = true)
+    {
+    	if($validation)
+		{
+			e107::getMessage()->moveStack($this->_message_stack.'_validator', $this->_message_stack, false, $session);
+		}
+		return parent::renderMessages($session, $reset);
+    }
 
     /**
      * @return boolean
@@ -1376,7 +1397,7 @@ class e_model_admin extends e_model
 		
 		if($from_post)
 		{
-			//no strict copy, validate, sanitize 
+			//no strict copy, validate & sanitize 
 			$this->mergePostedData(false, true, true);
 		}
 		
@@ -1406,7 +1427,7 @@ class e_model_admin extends e_model
 		if(!$res)
 		{
 			$this->_db_errno = e107::getDb()->getLastErrorNumber();
-			$this->addMessageError('SQL Insert Error', $session_messages);
+			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 		}
 		
@@ -1433,7 +1454,7 @@ class e_model_admin extends e_model
 			$this->_db_errno = e107::getDb()->getLastErrorNumber();
 			if($this->_db_errno)
 			{
-				$this->addMessageError('SQL Replace Error', $session_messages);
+				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 			}
 		}
@@ -1456,7 +1477,7 @@ class e_model_admin extends e_model
 			$this->_db_errno = e107::getDb()->getLastErrorNumber();
 			if($this->_db_errno)
 			{
-				$this->addMessageError('SQL Update Error', $session_messages);
+				$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 			}
 		}
@@ -1560,15 +1581,15 @@ class e_model_admin extends e_model
 
 			case 'bool':
 			case 'boolean':
-				return ($value ? 1 : 0);
+				return ($value ? true : false);
 			break;
 
 			case 'model':
-				return $value->mergePostedData()->toArray();
+				return $value->mergePostedData()->toArray(); //XXX - ???
 			break;
 			
 			case 'null':
-				return ($value && $value !== 'NULL' ? $tp->toDB($value) : 'NULL');
+				return ($value ? $tp->toDB($value) : null);
 			break;
 	  	}
 		
