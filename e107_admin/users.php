@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.58 $
-* $Date: 2009-09-22 19:43:34 $
+* $Revision: 1.59 $
+* $Date: 2009-10-21 07:31:07 $
 * $Author: e107coders $
 *
 */
@@ -565,18 +565,19 @@ class users
 	 		'user_image' 		=> array('title' => LAN_USER_07,'type' => 'text','width' => 'auto'), // Avatar
 	 		'user_email' 		=> array('title' => LAN_USER_08,'type' => 'text','width' => 'auto'),
 			'user_signature' 	=> array('title' => LAN_USER_09,'type' => 'text','width' => 'auto'),
-			'user_hideemail' 	=> array('title' => LAN_USER_10,'type' => 'int','width' => 'auto'),
+			'user_hideemail' 	=> array('title' => LAN_USER_10,'type' => 'boolean','width' => 'auto'),
 			'user_xup' 			=> array('title' => LAN_USER_11,'type' => 'text','width' => 'auto'),
-			'user_class' 		=> array('title' => LAN_USER_12,'type' => 'class'),
-			'user_join' 		=> array('title' => LAN_USER_14,'width' => 'auto'),
-			'user_lastvisit' 	=> array('title' => LAN_USER_15,'width' => 'auto'),
-			'user_currentvisit' => array('title' => LAN_USER_16,'width' => 'auto'),
+			'user_class' 		=> array('title' => LAN_USER_12,'type' => 'class'),			
+			'user_join' 		=> array('title' => LAN_USER_14,'type' => 'date', 'width' => 'auto'),
+			'user_lastvisit' 	=> array('title' => LAN_USER_15,'type' => 'date', 'width' => 'auto'),
+			'user_currentvisit' => array('title' => LAN_USER_16,'type' => 'date', 'width' => 'auto'),
 			'user_comments' 	=> array('title' => LAN_USER_17,'width' => 'auto'),
+			'user_lastpost' 	=> array('title' => 'Last Post','type' => 'date', 'width' => 'auto'),
 			'user_ip' 			=> array('title' => LAN_USER_18,'width' => 'auto'),
-			'user_ban' 			=> array('title' => LAN_USER_19,'width' => 'auto'),
+			'user_ban' 			=> array('title' => LAN_USER_19,'type' => 'boolean', 'width' => 'auto'),
 			'user_prefs' 		=> array('title' => LAN_USER_20,'width' => 'auto'),
-			'user_visits' 		=> array('title' => LAN_USER_21,'width' => 'auto'),
-			'user_admin' 		=> array('title' => LAN_USER_22,'width' => 'auto'),
+			'user_visits' 		=> array('title' => LAN_USER_21,'width' => 'auto','thclass'=>'right'),
+			'user_admin' 		=> array('title' => LAN_USER_22,'type' => 'boolean', 'width' => 'auto', 'thclass'=>'center'),
 			'user_perms' 		=> array('title' => LAN_USER_23,'width' => 'auto'),
 			'user_pwchange'		=> array('title' => LAN_USER_24,'width' => 'auto'),
 		);
@@ -1029,6 +1030,13 @@ class users
 			}
 		}
 			// $user_total = db_Count($table, $fields = '(*)',
+			
+		if($_SESSION['searchclass']==e_UC_ADMIN)
+		{
+			$this->fieldpref[] = 'user_perms';
+		}	
+			
+			
 		$qry_insert = 'SELECT u.*, ue.* FROM `#user` AS u	LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id ';
 
         return ($query) ? $qry_insert." WHERE ".$query.$qry_order : $qry_insert.$qry_order;
@@ -1036,89 +1044,64 @@ class users
 
 	function show_existing_users($action,$sub_action,$id,$from,$amount)
 	{
-		global $sql,$frm,$ns,$tp,$mySQLdefaultdb,$pref,$unverified,$userMethods;
+		global $mySQLdefaultdb,$pref,$unverified,$userMethods;
+		
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$tp = e107::getParser();
+		
 		$e107 = e107 :: getInstance();
 		$qry = $this->get_search_query();
+		
+		$this->fieldpref = array_unique($this->fieldpref);
 
 		$text = "<div>".$this->show_search_filter();
 
 		if ($user_total = $sql->db_Select_gen($qry))
 		{
-			$text .= "<form method='post' action='".e_SELF."?".e_QUERY."'>
+			$text .= "
+			<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-users-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
-						<table cellpadding='0' cellspacing='0' class='adminlist'>".$frm->colGroup($this->fields,$this->fieldpref).$frm->thead($this->fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]")."<tbody>";
+						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+						$frm->colGroup($this->fields,$this->fieldpref).
+						$frm->thead($this->fields,$this->fieldpref,"main.[FIELD].[ASC].[FROM]").
+			"<tbody>\n";
+			
 			while ($row = $sql->db_Fetch())
 			{
-				extract($row);
-				$text .= "<tr>
 
-
-				<td class='center' >".$frm->checkbox('user_selected[]',$user_id)."</td>
-				<td class='center' style='width:5%; text-align:center' >{$user_id}</td>";
-				// Display Chosen options
-				$datefields = array("user_lastpost","user_lastvisit","user_join","user_currentvisit");
-				$boleanfields = array("user_admin","user_hideemail","user_ban");
-				foreach ($this->fieldpref as $disp)
-				{
-					$text .= "<td style='white-space:nowrap'>";
-					if ($disp == 'user_class')
-					{
-						if ($user_class)
-						{
-							$tmp = explode(",",$user_class);
-							while (list($key,$class_id) = each($tmp))
-							{
-								$text .= $e107->user_class->uc_get_classname($class_id)."<br />\n";
-							}
-						}
-						else
-						{
-							$text .= "&nbsp;";
-						}
-					}
-					elseif ($disp == 'user_ip')
-					{
-						$text .= $e107->ipDecode($user_ip);
-					}
-					elseif (in_array($disp,$boleanfields))
-					{
-						$text .= ($row[$disp] == 1) ? ADMIN_TRUE_ICON : '';
-					}
-					elseif (in_array($disp,$datefields))
-					{
-						$text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp]).'&nbsp;' : '&nbsp';
-					}
-					elseif ($disp == 'user_name')
-					{
-						$text .= "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a>";
-					}
-					elseif ($disp == "user_status")
-					{
-						$text .= $this->showUserStatus($row);
-					}
-					else
-					{
-						$text .= $row[$disp].'&nbsp;';
-					}
-					$text .= "</td>";
-				}
-				// -------------------------------------------------------------
-				$qry = (e_QUERY) ? "?".e_QUERY : "";
 				$text .= "
-				<td style='width:30%' class='center'>".$this->showUserOptions($row)."</td></tr>";
+				<tr>
+					<td class='center' >".$frm->checkbox('user_selected[]',$row['user_id'])."</td>
+					<td class='center' style='width:5%; text-align:center' >{$row['user_id']}</td>";
+								
+					foreach ($this->fieldpref as $disp)
+					{
+						$class = vartrue($this->fields[$disp]['thclass']) ? "class='".$this->fields[$disp]['thclass']."'" : "";		
+						$text .= "<td ".$class." style='white-space:nowrap'>".$this->renderValue($disp,$row)."</td>\n";
+					}
+				
+				$text .= "
+				<td style='width:30%' class='center'>".$this->showUserOptions($row)."</td></tr>\n";
 			}
+			
 			$text .= "</tbody>
 			</table>
+			
 			<div class='buttons-bar center'>".$this->show_batch_options();
 			$users = (e_QUERY != "unverified") ? $sql->db_Count("user") : $unverified;
+			
 			if ($users > $amount && !$_POST['searchquery'])
 			{
 				$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
 				$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 			}
+			
 			if ($action == "unverified")
 			{
+				$qry = (e_QUERY) ? "?".e_QUERY : "";
 				$text .= "
 				<form method='post' action='".e_SELF.$qry."'>";
 				if ($pref['mail_bounce_pop3'] != '')
@@ -1133,12 +1116,80 @@ class users
 		$text .= "</fieldset></form>
 
 		</div>";
+		
 		$emessage = & eMessage :: getInstance();
-		// ======================
+
 		$total_cap = (isset ($_POST['searchquery'])) ? $user_total : $users;
 		$caption = USRLAN_77."&nbsp;&nbsp;   (total: $total_cap)";
 		$ns->tablerender($caption,$emessage->render().$text);
 	}
+
+
+	function renderValue($key,$row)
+	{
+		$frm = e107::getForm();
+		$e107 = e107 :: getInstance();
+		$type = $this->fields[$key]['type'];
+		$pref = e107::getConfig()->getPref();
+		
+		switch($key) // switch based on field. 
+		{
+			case 'user_class':
+				if ($row['user_class'])
+				{
+					$tmp = explode(",",$row['user_class']);
+					while (list($key,$class_id) = each($tmp))
+					{
+						$text .= $frm->uc_label($class_id)."<br />\n"; 
+					}
+					return $text;
+				}
+				else
+				{
+					return "&nbsp;";
+				}
+			break;
+			
+			case 'user_ip':
+				return $e107->ipDecode($row['user_ip']);
+			break;
+
+
+			case 'user_status':
+				return $this->showUserStatus($row);
+			break;
+			
+			case 'user_name':
+				return "<a href='".$e107->url->getUrl('core:user','main','func=profile&id='.$row['user_id'])."'>{$row['user_name']}</a>";			
+			break;
+			
+			case 'user_perms': //TODO display link to popup window with editable perms. 
+				return $row[$key].'&nbsp;';	
+			break;
+			
+		}
+				
+		switch($type) // switch based on type. 
+		{
+			case 'date':
+				return ($row[$key]) ? strftime($pref['shortdate'],$row[$key]).'&nbsp;' : '&nbsp';
+			break;
+			
+			case 'boolean':
+				return ($row[$key] == 1) ? ADMIN_TRUE_ICON : '';
+			break;
+
+
+			case 'user_status':
+				return $this->showUserStatus($row);
+			break;			
+			
+		}
+		
+		return $row[$key].'&nbsp;';
+		
+	}
+
 
 
 	function show_batch_options()
