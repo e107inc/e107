@@ -9,9 +9,9 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-10-20 16:05:03 $
- * $Author: secretr $
+ * $Revision: 1.20 $
+ * $Date: 2009-10-21 20:40:28 $
+ * $Author: e107coders $
  *
 */
 
@@ -332,10 +332,16 @@ class eMessage
 		foreach ($this->_get_types() as $type)
 		{
 			$message = $this->get($type, $mstack, $raw);
+			if($type == 'debug' && (E107_DEBUG_LEVEL == 0)) // Quick-fix:  hide debug types when debug mode inactive.
+			{
+				continue;
+			}
+			
 			if(!empty($message))
 			{
 				$ret[$type] = $message;
-			}
+			}		
+			
 		}
 
 		if($reset) $this->reset(false, $mstack);
