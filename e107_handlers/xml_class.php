@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-09-21 22:22:14 $
+ * $Revision: 1.30 $
+ * $Date: 2009-10-21 11:43:30 $
  * $Author: e107coders $
 */
 
@@ -801,18 +801,25 @@ class xmlClass
 	 */
 	public function e107ImportPrefs($XMLData,$prefType='core')
 	{
+		
+		
 		if(!vartrue($XMLData['prefs'][$prefType]))
 		{
 			return;
 		} 
+		
+		$mes = eMessage::getInstance();
 		
 		$pref = array();
 		foreach($XMLData['prefs'][$prefType] as $val)
 		{	
 			$name = $val['@attributes']['name'];
 			$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
-			$pref[$name] = $value;									
+			$pref[$name] = $value;
+
+			$mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);									
 		}	
+	
 		
 		return $pref;	
 	}
@@ -832,10 +839,13 @@ class xmlClass
 	{
 
 		$xmlArray = $this->loadXMLfile($file,'advanced');
+	//	$message = "<pre>".htmlentities(print_r($xmlArray,TRUE))."</pre>";
+		$mes = eMessage::getInstance();
+		$mes->add($message, E_MESSAGE_DEBUG);
 		
 		if($debug)
 		{
-			print_a($xmlArray);
+			// $message = print_r($xmlArray);
 			return;
 		}
 
