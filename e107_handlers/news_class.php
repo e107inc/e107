@@ -9,9 +9,9 @@
  * News handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/news_class.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-10-09 15:06:43 $
- * $Author: secretr $
+ * $Revision: 1.26 $
+ * $Date: 2009-10-21 20:05:55 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -95,16 +95,7 @@ class news {
 		
 		$data['data']['news_sticky'] = $news['news_sticky'];
 		$data['_FIELD_TYPES']['news_sticky'] = 'int';
-		
-		$data['data']['news_summary'] = $news['news_summary'];
-		$data['_FIELD_TYPES']['news_summary'] = 'todb';
-		
-		$data['data']['news_thumbnail'] = $news['news_thumbnail'];
-		$data['_FIELD_TYPES']['news_thumbnail'] = 'todb';
-		
-		$data['data']['news_sticky'] = $news['news_sticky'];
-		$data['_FIELD_TYPES']['news_sticky'] = 'int';
-		
+
 		$data['data']['news_meta_keywords'] = $news['news_meta_keywords'];
 		$data['_FIELD_TYPES']['news_meta_keywords'] = 'todb';
 		
