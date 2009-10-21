@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.102 $
-|     $Date: 2009-10-20 03:49:12 $
+|     $Revision: 1.103 $
+|     $Date: 2009-10-21 12:52:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1508,12 +1508,18 @@ class e107plugin
 
 
 
-
+	/**
+	 * 
+	 * @param object $path [unused]
+	 * @param object $what install|uninstall|upgrade
+	 * @param object $when pre|post
+	 * @return 
+	 */
 	function execute_function($path = '', $what='', $when='')
 	{	
 		$emessage = eMessage::getInstance();
 		$class_name = $this->plugFolder."_setup";
-		$method_name = $this->plugFolder."_".$what."_".$when;	
+		$method_name = $what."_".$when;	
 		
 		if(varset($this->plug_vars['@attributes']['setupFile']))
 		{
@@ -1555,36 +1561,6 @@ class e107plugin
 		}
 
 		$emessage->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
-		return FALSE;
-
-		// deprecated 0.8 method below. Can safely be removed.   
-		
-		if($what == '' || $when == '') { return true; }
-		if(!isset($this->plug_vars['management'][$what])) { return true; }
-		$vars = $this->plug_vars['management'][$what];
-		if(count($vars) <= 1) { $vars = array($vars); }
-		foreach($vars as $var)
-		{
-			$attrib = varset($var['@attributes']);
-			if(isset($attrib['when']) && $attrib['when'] == $when)
-			{
-				if(is_readable($path.$attrib['file']))
-				{
-					include_once($path.$attrib['file']);
-					if($attrib['type'] == 'fileFunction')
-					{
-						$result = call_user_func($attrib['function'], $this);
-						return $result;
-					}
-					elseif($attrib['type'] == 'classFunction')
-					{
-						$_tmp = new $attrib['class'];
-						$result = call_user_func(array($_tmp, $attrib['function']), $this);
-						return $result;
-					}
-				}
-			}
-		}
 		
 		return FALSE; // IMPORTANT. 
 	}
