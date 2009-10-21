@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-10-21 11:43:30 $
+ * $Revision: 1.31 $
+ * $Date: 2009-10-21 12:28:17 $
  * $Author: e107coders $
 */
 
@@ -839,9 +839,6 @@ class xmlClass
 	{
 
 		$xmlArray = $this->loadXMLfile($file,'advanced');
-	//	$message = "<pre>".htmlentities(print_r($xmlArray,TRUE))."</pre>";
-		$mes = eMessage::getInstance();
-		$mes->add($message, E_MESSAGE_DEBUG);
 		
 		if($debug)
 		{
