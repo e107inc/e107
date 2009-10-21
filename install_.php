@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.43 $
-* $Date: 2009-09-29 21:25:01 $
-* $Author: e107steved $
+* $Revision: 1.44 $
+* $Date: 2009-10-21 03:53:27 $
+* $Author: e107coders $
 *
 */
 
@@ -200,7 +200,11 @@ class e_install
 		$this->get_lan_file();
 		$this->post_data = $_POST;
 		
-		$this->template->SetTag("required", "");	
+		$this->template->SetTag("required", "");
+		if(isset($this->previous_steps['language']))
+		{
+			define("e_LANGUAGE", $this->previous_steps['language']);
+		}
 
 	}
 	
@@ -946,7 +950,7 @@ class e_install
 	
 		define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? true : false));
 		define("CHARSET",'utf-8');
-		define("e_LANGUAGE", $this->previous_steps['language']);
+	//	define("e_LANGUAGE", $this->previous_steps['language']);
 		define('e_SELF', 'http://'.$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']);	
 
 		$themeImportFile = array();
@@ -955,7 +959,7 @@ class e_install
 		$themeImportFile[3] = $this->e107->e107_dirs['FILES_DIRECTORY']. "default_install.xml";	
 		
 		
-		if($this->previous_steps['generate_content']==1)
+		if(vartrue($this->previous_steps['generate_content']))
 		{
 			foreach($themeImportFile as $file)
 			{
@@ -983,7 +987,7 @@ class e_install
 		e107::getSingleton('e107plugin')->update_plugins_table(); 
 				
 		// Install Theme-required plugins
-		if($this->previous_steps['install_plugins']==1)
+		if(vartrue($this->previous_steps['install_plugins']))
 		{
 			if($themeInfo = $this->get_theme_xml($this->previous_steps['prefs']['sitetheme']))
 			{
@@ -1129,6 +1133,7 @@ class e_install
 	
 	function get_theme_xml($theme_folder)
 	{
+	
 		if(!defined("SITEURL"))
 		{
 			define("SITEURL","");
@@ -1139,9 +1144,14 @@ class e_install
 		{
 			return FALSE;
 		}
+		
 		require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."theme_handler.php");
+		
+		
 		$tm = new themeHandler;
+
 		$xmlArray = $tm->parse_theme_xml($theme_folder);
+
 	//	require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."xml_class.php");
 	//	$xml = new xmlClass;		
 	//	$xmlArray = $xml->loadXMLfile($path,'advanced');
