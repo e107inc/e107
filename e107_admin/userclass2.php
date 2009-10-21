@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-08-28 16:11:00 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.29 $
+ * $Date: 2009-10-21 07:31:05 $
+ * $Author: e107coders $
  *
 */
 
@@ -743,176 +743,6 @@ $ns->tablerender(UCSLAN_21, $text);
 	$ns->tablerender('User classes - test features', $text);
 	break;				// End of temporary test options
 
-//-----------------------------------
-//		Edit class membership
-//-----------------------------------
-  case 'membs' :
-	if ($params == 'clear')
-	{
-	  $class_id = intval(varset($uc_qs[2]));
-	  check_allowed($class_id);
-	  if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
-	  {
-		while ($row = $sql->db_Fetch())
-		{
-		  $uidList[$row['user_id']] = $row['user_class'];
-		}
-		$e_userclass->class_remove($class_id, $uidList);
-		$message = UCSLAN_1;
-		userclass2_adminlog("06","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
-	  }
-	}
-	elseif($params)
-	{	// Process the updated membership list
-	  $tmp2 = explode('-', $params,2);
-	  $class_id = intval($tmp2[0]);
-	  check_allowed($class_id);
-	  $message = UCSLAN_2;
-
-	  if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')"))
-	  {
-		while ($row = $sql->db_Fetch())
-		{
-			$uidList[$row['user_id']] = $row['user_class'];
-		}
-		$e_userclass->class_remove($class_id, $uidList);
-	  }
-	  unset($uidList);
-	  if ($sql->db_Select('user', 'user_id, user_class', "user_id IN({$tmp2[1]})"))
-	  {
-		while ($row = $sql->db_Fetch())
-		{
-			$uidList[$row['user_id']] = $row['user_class'];
-		}
-		$e_userclass->class_add($class_id, $uidList);
-	  }
-	  userclass2_adminlog("04","ID:{$class_id} (".$e_userclass->uc_get_classname($class_id).")");
-	}
-
-
-	if ($message)
-	{
-	  $ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-	}
-
-
-	// If we're editing a class, get the info on the class
-	if(isset($_POST['class_members_edit']))
-	{
-		$uc_edit_class = varset($_POST['class_to_edit'],0);
-		check_allowed($uc_edit_class);
-		$sql->db_Select('userclass_classes', '*', "userclass_id=".$uc_edit_class);
-		$row = $sql->db_Fetch();
-		extract($row);
-	}
-
-	$class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
-
-	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?membs' id='classForm'>
-		<table class='fborder' style='".ADMIN_WIDTH."'>
-		<tr>
-		<td class='fcaption' style='text-align:center' colspan='2'>";
-
-	if ($class_total == "0")
-	{
-	  $text .= UCSLAN_7;
-	}
-	else
-	{
-	  $text .= "<span class='defaulttext'>".UCSLAN_8.":</span>
-			<select name='class_to_edit' class='tbox'>";
-	  while ($row = $sql->db_Fetch())
-	  {
-		if (check_class($row['userclass_editclass']) || getperms("0"))
-		{
-		  $s =  $uc_edit_class == $row['userclass_id'] ? " selected='selected'" : '';
-		  $text .= "<option value='{$row['userclass_id']}'{$s}>{$row['userclass_name']}</option>";
-		}
-	  }
-	  $text .= "</select>
-			<input class='button' type='submit' name='class_members_edit' value='".LAN_EDIT."' />";
-	}
-
-$text .= "</td></tr><tr><td>&nbsp;</td></tr></table>";
-
-
-if(isset($_POST['class_members_edit']))
-{
-	$sql->db_Select("user", "user_id, user_name, user_class, user_login", "user_ban != 1 ORDER BY user_name ");
-	$c = 0;
-	$d = 0;
-	while ($row = $sql->db_Fetch())
-	{
-		extract($row);
-		if (check_class($userclass_id, $user_class))
-		{
-			$in_userid[$c] = $user_id;
-			$in_username[$c] = $user_name;
-			$in_userlogin[$c] = $user_login ? "(".$user_login.")" : "";
-			$c++;
-		}
-		else
-		{
-			$out_userid[$d] = $user_id;
-			$out_username[$d] = $user_name;
-			$out_userlogin[$d] = $user_login ? "(".$user_login.")" : "";
-			$d++;
-		}
-	}
-
-	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
-		<tr>
-		<td class='fcaption' style='text-align:center;width:30%'>".UCSLAN_16." ".$userclass_name."</td></tr>
-		<tr>
-		<td style='width:70%; text-align:center'>
-
-		<table style='width:90%'>
-		<tr>
-		<td style='width:45%; vertical-align:top'>
-		".UCSLAN_22."<br />
-		<select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' onchange='addIt()'>";
-//		<select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' multiple='multiple'>";
-
-	for ($a = 0; $a <= ($d-1); $a++)
-	{
-	  $text .= "<option value='".$out_userid[$a]."'>".htmlentities($out_username[$a])." ".htmlentities($out_userlogin[$a])."</option>\n";
-	}
-
-	$text .= "</select>
-		</td>\n
-		<td style='width:45%; vertical-align:top'>
-		".UCSLAN_23."<br />
-		<select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:220px' onchange='delIt()'>";
-//		<select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:220px' multiple='multiple'>";
-	for($a = 0; $a <= ($c-1); $a++)
-	{
-	  $text .= "<option value='".$in_userid[$a]."'>".htmlentities($in_username[$a])." ".htmlentities($in_userlogin[$a])."</option>\n";
-	}
-	$text .= "</select><br />\n<br />";
-	if (count($in_userid))
-	{	// No option to clear class if it starts empty
-	  $text .= "<input class='button' type='button' value='".UCSLAN_18."' onclick='clearMe({$userclass_id});' />";
-	}
-
-	$text .= "<input type='hidden' name='class_id' value='{$userclass_id}' />
-
-		</td></tr></table>
-		</td></tr>
-		<tr><td colspan='2' style='text-align:center' class='forumheader'>
-		<input class='button' type='button' value='".UCSLAN_19." ".$userclass_name." ".UCSLAN_20."' onclick='saveMe({$userclass_id});' />
-		</td>
-		</tr>
-		</table>";
-
-}
-
-	$text .= "</form>
-			</div>";
-	$ns->tablerender(UCSLAN_28, $text);
-
-    break;				// End of 'membs' (class membership) option
-
 
 //-----------------------------------
 //		Special fooling around
@@ -982,8 +812,11 @@ function userclass2_adminmenu()
 	$var['config']['text'] = UCSLAN_25;
 	$var['config']['link'] = 'userclass2.php?config';
 
+//DEPRECATED - use admin->users instead. 
+/*	
 	$var['membs']['text'] = UCSLAN_26;
 	$var['membs']['link'] ='userclass2.php?membs';
+*/
 
 	$var['initial']['text'] = UCSLAN_38;
 	$var['initial']['link'] ='userclass2.php?initial';
@@ -1027,9 +860,9 @@ class uclass_manager
 			'userclass_id'				=> array('title'=> ID, 'width'=>'5%', 'thclass' => 'left'),
             'userclass_name'	   		=> array('title'=> UCSLAN_12, 'width'=>'auto', 'thclass' => 'left'),
 			'userclass_description'   	=> array('title'=> UCSLAN_13, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),
-         	'userclass_editclass' 		=> array('title'=> UCSLAN_24, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'), // Display name
-			'userclass_parent' 			=> array('title'=> UCSLAN_35, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),	// User name
-            'userclass_visibility' 		=> array('title'=> UCSLAN_34, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),	 	// Photo
+         	'userclass_editclass' 		=> array('title'=> UCSLAN_24, 'type' => 'userclass', 'width' => 'auto', 'thclass' => 'left'), // Display name
+			'userclass_parent' 			=> array('title'=> UCSLAN_35, 'type' => 'userclass', 'width' => 'auto', 'thclass' => 'left'),	// User name
+            'userclass_visibility' 		=> array('title'=> UCSLAN_34, 'type' => 'userclass', 'width' => 'auto', 'thclass' => 'left'),	 	// Photo
 			'userclass_type' 			=> array('title'=> UCSLAN_79, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
    			'options' 					=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
 		);
@@ -1057,10 +890,7 @@ class uclass_manager
 
 							"<tbody>";
 			$classes = $sql->db_getList('ALL', FALSE, FALSE);
-            $types = array(
-				UC_TYPE_STD 	=> UCSLAN_80,
-			   	UC_TYPE_GROUP	=> UCSLAN_81
-			);
+
 
             foreach($classes as $row)
 			{
@@ -1069,18 +899,32 @@ class uclass_manager
                 	$iconpath = $tp->replaceConstants($row['userclass_icon']);
             		$icon = is_readable($iconpath) ? "<img src='".$iconpath."' alt='' />" : "&nbsp;";
                 }
-
+				
+			//	$disp = key($row);		
+	
+			//	
+				
 				$text .= "
 						<tr>";
-                $text .= (in_array("userclass_icon",$this->fieldpref)) ? "<td class='center'>".$icon."</td>" : "";
-				$text .= (in_array("userclass_id",$this->fieldpref)) ? "<td>".$row['userclass_id']."</td>" : "";
-                $text .= (in_array("userclass_name",$this->fieldpref)) ? "<td>".($row['userclass_name'])."</td>" : "";
-                $text .= (in_array("userclass_description",$this->fieldpref)) ? "<td>".($row['userclass_description'])."</td>" : "";
-				$text .= (in_array("userclass_editclass",$this->fieldpref)) ? "<td>".r_userclass_name($row['userclass_editclass'])."</td>" : "";
-				$text .= (in_array("userclass_parent",$this->fieldpref)) ? "<td>".(r_userclass_name($row['userclass_parent']))."</td>" : "";
-				$text .= (in_array("userclass_visibility",$this->fieldpref)) ? "<td>".(r_userclass_name($row['userclass_visibility']))."</td>" : "";
-				$text .= (in_array("userclass_type",$this->fieldpref)) ? "<td>".($types[$row['userclass_type']])."</td>" : "";
-
+						
+				foreach($this->fieldpref as $key)
+				{
+					$class = vartrue($this->fields[$key]['thclass']) ? "class='".$this->fields[$key]['thclass']."'" : "";		
+					$text .= "<td ".$class.">";
+					$text .= $this->renderValue($key, $row);
+					$text .= "</td>";	
+				}			
+						
+				/*		
+                $text .= (in_array("userclass_icon",$this->fieldpref)) ? "<td ".$class.">".$icon."</td>" : "";
+				$text .= (in_array("userclass_id",$this->fieldpref)) ? "<td ".$class.">".$row['userclass_id']."</td>" : "";
+                $text .= (in_array("userclass_name",$this->fieldpref)) ? "<td ".$class.">".($row['userclass_name'])."</td>" : "";
+                $text .= (in_array("userclass_description",$this->fieldpref)) ? "<td ".$class.">".($row['userclass_description'])."</td>" : "";
+				$text .= (in_array("userclass_editclass",$this->fieldpref)) ? "<td ".$class.">".r_userclass_name($row['userclass_editclass'])."</td>" : "";
+				$text .= (in_array("userclass_parent",$this->fieldpref)) ? "<td ".$class.">".(r_userclass_name($row['userclass_parent']))."</td>" : "";
+				$text .= (in_array("userclass_visibility",$this->fieldpref)) ? "<td ".$class.">".(r_userclass_name($row['userclass_visibility']))."</td>" : "";
+				$text .= (in_array("userclass_type",$this->fieldpref)) ? "<td ".$class.">".($types[$row['userclass_type']])."</td>" : "";
+*/
 
 
 				$text .= "<td class='center'>
@@ -1096,6 +940,27 @@ class uclass_manager
 	    return $text;
 
 
+	}
+	
+	
+	function renderValue($key,$row)
+	{
+		$types = array(
+				UC_TYPE_STD 	=> UCSLAN_80,
+			   	UC_TYPE_GROUP	=> UCSLAN_81
+		);
+			
+		if($this->fields[$key]['type']=='userclass')
+		{
+			return r_userclass_name($row[$key]);	
+		} 
+		
+		if($key == "userclass_type")
+		{
+			return $types[$row['userclass_type']];		
+		}	
+
+		return $row[$key];		
 	}
 
 }
