@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-10-20 21:02:02 $
+ * $Revision: 1.3 $
+ * $Date: 2009-10-22 04:15:32 $
  * $Author: e107coders $
  *
 */
@@ -20,46 +20,10 @@ if (!getperms("P")) { header("location:".e_BASE."index.php"); exit; }
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $frm = new e_form(true);
-
-$ef = new efeed;
-
-
-if(varset($_POST['update']) || varset($_POST['create']))
-{
-
-	$id = intval($_POST['record_id']);
-	$ef->submitPage($id);
-}
-
-if(varset($_POST['delete']))
-{
-	$id = key($_POST['delete']);
-	$ef->deleteRecord($id);
-	$_GET['mode'] = "list";
-}
-
-if(varset($_GET['mode'])=='create')
-{
-	$id = varset($_POST['edit']) ? key($_POST['edit']) : "";
-	$ef->createRecord($id);	
-}
-else
-{
-	$ef->listRecords();
-}
-
-if(isset($_POST['submit-e-columns']))
-{
-	$user_pref['admin_release_columns'] = $_POST['e-columns'];
-	save_prefs('user');
-}
+require_once(e_HANDLER."model_class.php");
 
 
-require_once(e_ADMIN."footer.php");
-
-
-
-class efeed
+class efeed extends e_model_interface
 {
 	var $fields;
 	var $fieldpref;
@@ -105,7 +69,7 @@ class efeed
 	 * @param object $mode [optional]
 	 * @return 
 	 */
-	function listRecords($mode=FALSE)
+	/*function listRecords($mode=FALSE)
 	{
 		$ns = e107::getRender();
 		$sql = e107::getDb();
@@ -153,7 +117,7 @@ class efeed
 
 		$ns->tablerender($this->pluginTitle." :: ".$this->listCaption, $emessage->render().$text);
 	}
-
+*/
 	/**
 	 * Render Field value (listing page)
 	 * @param object $key
@@ -221,7 +185,7 @@ class efeed
 	}
 
 
-	function createRecord($id=FALSE)
+	/*function createRecord($id=FALSE)
 	{
 		global $frm, $e_userclass, $e_event;
 
@@ -285,14 +249,14 @@ class efeed
 		</form>";	
 		
 		$ns->tablerender($this->pluginTitle." :: ".$this->createCaption, $text);
-	}
+	}*/
 
 	/**
 	 * Generic Save DB Record Function. 
 	 * @param object $id [optional]
 	 * @return 
 	 */
-	function submitPage($id=FALSE)
+	/*function submitPage($id=FALSE)
 	{
 		global $sql, $tp, $e107cache, $admin_log, $e_event;
 		$emessage = eMessage::getInstance();
@@ -339,7 +303,7 @@ class efeed
 		$message = LAN_DELETED;
 		$emessage->add($message, $status);		
 	}
-
+*/
 	function optionsPage()
 	{
 		global $e107, $pref, $frm, $emessage;
@@ -420,6 +384,19 @@ class efeed
 		e_admin_menu($this->pluginTitle, $action, $var);
 	}
 }
+
+
+$ef = new efeed;
+$ef->init();
+
+
+
+
+
+require_once(e_ADMIN."footer.php");
+
+
+
 
 function admin_config_adminmenu()
 {
