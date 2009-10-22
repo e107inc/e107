@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.7 $
+|     $Date: 2009-10-22 19:14:26 $
+|     $Author: secretr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -23,26 +23,43 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
 
 class convert
 {
+	/**
+	 * Convert datestamp to human readable date.
+	 * System time offset is considered.
+	 * 
+	 * @param integer $datestamp unix stamp
+	 * @param string $mask [optional] long|short|forum or any strftime() valid string
+	 * 
+	 * @return string parsed date
+	 */
+	function convert_date($datestamp, $mask = '') {
+		if(empty($mask))
+		{
+			$mask = 'long';
+		}
+		
+		switch($mask)
+		{
+			case 'long':
+				$mask = e107::getPref('longdate');
+			break;
+			
+			case 'short':
+				$mask = e107::getPref('shortdate');
+			break;
 
-	function convert_date($datestamp, $mode = "long") {
-		/*
-		# Date convert
-		# - parameter #1:  string $datestamp, unix stamp
-		# - parameter #2:  string $mode, date format, default long
-		# - return         parsed text
-		# - scope          public
-		*/
-		global $pref;
+			case 'forum': // DEPRECATED - temporary here from BC reasons only
+			default:
+				//BC - old 'forum' call
+				if(strpos('%', $mask) === FALSE)
+				{
+					$mask = e107::getPref('forumdate');
+				}
+			break;
+		}
 
 		$datestamp += TIMEOFFSET;
-
-		if ($mode == "long") {
-			return strftime($pref['longdate'], $datestamp);
-		} else if ($mode == "short") {
-			return strftime($pref['shortdate'], $datestamp);
-		} else {
-			return strftime($pref['forumdate'], $datestamp);
-		}
+		return strftime($mask, $datestamp);
 	}
 
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
