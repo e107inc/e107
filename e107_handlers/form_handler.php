@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.52 $
- * $Date: 2009-10-22 19:17:34 $
- * $Author: secretr $
+ * $Revision: 1.53 $
+ * $Date: 2009-10-22 23:46:49 $
+ * $Author: e107coders $
  *
 */
 
@@ -524,7 +524,7 @@ class e_form
 		//format data first
 		$name = $this->name2id($name);
 		$value = trim(preg_replace('#[^a-z0-9\-]/i#','-', $value), '-');
-
+		$value = str_replace("/","-",$value);
 		if(!$id_value && is_numeric($value)) $id_value = $value;
 
 		if(empty($id_value) ) return " {$return_attribute}='{$name}".($value ? "-{$value}" : '')."'";// also useful when name is e.g. name='my_name[some_id]'
@@ -534,7 +534,7 @@ class e_form
 
 	function name2id($name)
 	{
-		return rtrim(str_replace(array('[]', '[', ']', '_'), array('-', '-', '', '-'), $name), '-');
+		return rtrim(str_replace(array('[]', '[', ']', '_', '/'), array('-', '-', '', '-', '-'), $name), '-');
 	}
 
 
