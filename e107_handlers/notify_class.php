@@ -9,9 +9,9 @@
 * Forum plugin notify configuration
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-* $Revision: 1.6 $
-* $Date: 2009-08-11 17:25:48 $
-* $Author: marj_nl_fr $
+* $Revision: 1.7 $
+* $Date: 2009-10-22 13:00:11 $
+* $Author: e107coders $
 *
 */
 
@@ -26,11 +26,14 @@ class notify
 		global $sysprefs, $e_event, $eArrayStorage;
 		$this->notify_prefs = $sysprefs->get('notify_prefs');
 		$this->notify_prefs = $eArrayStorage->ReadArray($this->notify_prefs);
-		foreach ($this->notify_prefs['event'] as $id => $status)
+		if(varset($this->notify_prefs['event']))
 		{
-			if ($status['class'] != 255)
+			foreach ($this->notify_prefs['event'] as $id => $status)
 			{
-				$e_event->register($id, 'notify_'.$id);
+				if ($status['class'] != 255)
+				{
+					$e_event->register($id, 'notify_'.$id);
+				}
 			}
 		}
 

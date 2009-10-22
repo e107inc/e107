@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.66 $
-* $Date: 2009-10-20 14:47:05 $
-* $Author: secretr $
+* $Revision: 1.67 $
+* $Date: 2009-10-22 13:00:10 $
+* $Author: e107coders $
 *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -776,7 +776,7 @@ class e_parse
 			return constant(trim($text));
 		}
 
-
+		
 
 		if ($opts['no_tags'])
 		{
@@ -1046,9 +1046,13 @@ class e_parse
 								{
 									if (!is_object($this->e_hook[$hook]))
 									{
-										require_once(e_PLUGIN.$hook."/".$hook.".php");
-										$hook_class = "e_".$hook;
-										$this->e_hook[$hook] = new $hook_class;
+										if(is_readable(e_PLUGIN.$hook."/".$hook.".php"))
+										{
+											require_once(e_PLUGIN.$hook."/".$hook.".php");
+											$hook_class = "e_".$hook;
+											$this->e_hook[$hook] = new $hook_class;
+										}
+										
 									}
 									$sub_blk = $this->e_hook[$hook]->$hook($sub_blk,$opts['context']);
 								}
@@ -1060,9 +1064,12 @@ class e_parse
 								{
 									if (!is_object($this->e_hook[$hook]))
 									{
-									  require_once(e_PLUGIN.$hook."/e_tohtml.php");
-									  $hook_class = "e_tohtml_".$hook;
-									  $this->e_hook[$hook] = new $hook_class;
+										if(is_readable(e_PLUGIN.$hook."/e_tohtml.php"))
+										{
+										  	require_once(e_PLUGIN.$hook."/e_tohtml.php");
+											$hook_class = "e_tohtml_".$hook;
+									  		$this->e_hook[$hook] = new $hook_class;
+										}
 									}
 									$sub_blk = $this->e_hook[$hook]->to_html($sub_blk, $opts['context']);
 								}

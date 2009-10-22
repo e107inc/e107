@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.12 $
+|     $Date: 2009-10-22 13:00:37 $
+|     $Author: e107coders $
 |
 |	This is just a stub so that systems migrated from 0.7 don't crash
 |	It auto-updates the prefs so that the newer routine is called in future.
@@ -22,7 +22,7 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-if (!plugInstalled('linkwords')) exit;
+// if (!plugInstalled('linkwords')) exit; // This will break a site completely under some circumstance. 
 
 
 class e_linkwords
