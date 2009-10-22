@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.9 2009-10-20 03:49:22 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.10 2009-10-22 04:14:45 e107coders Exp $ -->
 
 <e107Plugin name="LIST_PLUGIN_1" version="1.0" compatibility="0.8" installRequired="true" releaseUrl=''>
 	<author name="e107 Inc." url="http://e107.org" />
@@ -13,7 +13,7 @@
 		<link url='admin_list_config.php' description='LIST_PLUGIN_3' icon='icon/list_32.png' iconSmall='icon/list_16.png' primary='true' >LIST_PLUGIN_3</link>	
 	</adminLinks>
 	<siteLinks>
-		<link url="list_new/list.php" >LIST_PLUGIN_5</link>
+		<link url="{e_PLUGIN}list_new/list.php" >LIST_PLUGIN_5</link>
 	</siteLinks>
 	<pluginPrefs>
 	</pluginPrefs>

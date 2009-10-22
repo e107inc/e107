@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2009-10-21 12:52:53 $
+|     $Revision: 1.104 $
+|     $Date: 2009-10-22 04:14:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -945,13 +945,6 @@ class e107plugin
 			$this->XmlLanguageFiles($function,$plug_vars['languageFiles'],'pre'); // First of all, see if there's a language file specific to install	
 		}
 
-		/*		// DEPRECATED
-		if (isset($plug_vars['installLanguageFile']) && isset($plug_vars['installLanguageFile']['@attributes']['filename']))
-		{
-			include_lan($path.str_replace('--LAN--',e_LANGUAGE, $plug_vars['installLanguageFile']['@attributes']['filename']));
-		}
-		*/
-
 		// Next most important, if installing or upgrading, check that any dependencies are met
 		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
 		{
@@ -1268,7 +1261,7 @@ class e107plugin
 				$attrib = $link['@attributes'];
 				$linkName = (defset($link['@value'])) ? constant($link['@value']) : $link['@value'];
 				$remove = (varset($attrib['deprecate']) == 'true') ? TRUE : FALSE;
-				$url = e_PLUGIN.$attrib['url']; //TODO should also handle links to the root directory. (eg. /news.php)
+				$url = $attrib['url']; 
 				$perm = (isset($attrib['perm']) ? $attrib['perm'] : 0);
 
 				switch($function)
@@ -1609,15 +1602,18 @@ class e107plugin
 
 	function install_plugin_php($id)
 	{
-	
+		$function = 'install';
 		$sql = e107::getDb();
-
+		$mes = e107::getMessage();
+				
 		$plug = $this->getinfo($id);
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 
 		$plug['plug_action'] = 'install';
 
-		//	$plug_vars = $this->parse_plugin_php($plug['plugin_path']);
+		$this->parse_plugin_php($plug['plugin_path']);
+		$plug_vars = $this->plug_vars;
+		
 		include($_path.'plugin.php');
 
 		$func = $eplug_folder.'_install';
@@ -1632,21 +1628,29 @@ class e107plugin
 			if ($result === TRUE)
 			{
 				$text .= EPL_ADLAN_19.'<br />';
+
+				$mes->add(EPL_ADLAN_19, E_MESSAGE_SUCCESS);
 				//success
 			}
 			else
 			{
-				$text .= EPL_ADLAN_18.'<br />';
+				$mes->add(EPL_ADLAN_18, E_MESSAGE_ERROR);
 				//fail
 			}
 		}
 
-
-		if (is_array($eplug_prefs))
+/*		if (is_array($eplug_prefs))
 		{
 			$this->manage_prefs('add', $eplug_prefs);
 			$text .= EPL_ADLAN_8.'<br />';
-		}
+		}*/
+	
+		if(varset($plug_vars['mainPrefs'])) //Core pref items <mainPrefs>
+		{
+			$this->XmlPrefs('core',$function,$plug_vars['mainPrefs']);
+			$text .= EPL_ADLAN_8.'<br />';
+		}	
+	
 
 		if (is_array($eplug_array_pref))
 		{
@@ -1655,27 +1659,17 @@ class e107plugin
 				$this->manage_plugin_prefs('add', $key, $eplug_folder, $val);
 			}
 		}
-/*
-		if (is_array($eplug_sc))
-		{
-			$this->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
-		}
 
-		if (is_array($eplug_bb))
-		{
-			$this->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
-		}
-*/
-		if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '')
-		{
-			$linkperm = (isset($eplug_link_perms) ? $eplug_link_perms : e_UC_PUBLIC);
-			$this->manage_link('add', $eplug_link_url, $eplug_link_name, $linkperm);
-		}
 
-		if ($eplug_userclass)
+		if(varset($plug_vars['siteLinks']))
 		{
-			$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
+			$this->XmlSiteLinks($function,$plug_vars['siteLinks']);	
 		}
+				
+		if(varset($plug_vars['userClasses']))
+		{
+			$this->XmlUserClasses($function,$plug_vars['userClasses']);
+		}	
 
 		$this -> manage_search('add', $eplug_folder);
 
@@ -1953,34 +1947,80 @@ class e107plugin
 	// Called to parse the (deprecated) plugin.php file
 	function parse_plugin_php($plugName)
 	{
-		include(e_PLUGIN.$plugName.'/plugin.php');
+		
+		$mes = e107::getMessage();
+		$tp = e107::getParser();		
+				
+		if(include(e_PLUGIN.$plugName.'/plugin.php'))
+		{
+			//$mes->add("Loading ".e_PLUGIN.$plugName.'/plugin.php', E_MESSAGE_DEBUG);	
+		}
+		
+		
 		$ret = array();
 
 //		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
-		$ret['@attributes']['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
-
-		$ret['@attributes']['version'] = varset($eplug_version);
+				
 		$ret['@attributes']['name'] = varset($eplug_name);
+		$ret['@attributes']['version'] = varset($eplug_version);
 		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
+		$ret['@attributes']['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) ? 'true' : '';
+		$ret['@attributes']['xhtmlcompliant'] = vartrue($eplug_compliant) ? 'true' : '';
 		$ret['folder'] = (varset($eplug_folder)) ? $eplug_folder : $plugName;
-		$ret['category'] = varset($eplug_category) ? $this->manage_category($eplug_category) : "misc";
-		$ret['description'] = varset($eplug_description);
+		
 		$ret['author']['@attributes']['name'] = varset($eplug_author);
 		$ret['author']['@attributes']['url'] = varset($eplug_url);
 		$ret['author']['@attributes']['email'] = varset($eplug_email);
+		$ret['description'] = varset($eplug_description);
+		
+		$ret['category'] = varset($eplug_category) ? $this->manage_category($eplug_category) : "misc";
 		$ret['readme'] = varset($eplug_readme);
-		$ret['compliant'] = varset($eplug_compliant);
+
 		$ret['menuName'] = varset($eplug_menu_name);
+		
+		if(varset($eplug_prefs))
+		{
+			$c = 0;
+			foreach($eplug_prefs as $name=>$value)
+			{
+				$ret['mainPrefs']['pref'][$c]['@attributes']['name'] = $name;
+				$ret['mainPrefs']['pref'][$c]['@value'] = $value;
+				$c++;
+			}
+		}
 
-
+		// For BC. 
 		$ret['administration']['icon'] = varset($eplug_icon);
 		$ret['administration']['caption'] = varset($eplug_caption);
 		$ret['administration']['iconSmall'] = varset($eplug_icon_small);
 		$ret['administration']['configFile'] = varset($eplug_conffile);
 
+		if(varset($eplug_conffile))
+		{
+	 		$ret['adminLinks']['link'][0]['@attributes']['url'] = varset($eplug_conffile);
+	        $ret['adminLinks']['link'][0]['@attributes']['description'] = LAN_CONFIGURE;
+	        $ret['adminLinks']['link'][0]['@attributes']['icon'] = varset($eplug_icon);
+	        $ret['adminLinks']['link'][0]['@attributes']['iconSmall'] = varset($eplug_icon_small);
+	     	$ret['adminLinks']['link'][0]['@attributes']['primary'] = 'true';
+		}
+		if(vartrue($eplug_link) && varset($eplug_link_name) && varset($eplug_link_url))
+		{
+			$ret['siteLinks']['link'][0]['@attributes']['url'] = $tp->createConstants($eplug_link_url,1);
+			$ret['siteLinks']['link'][0]['@attributes']['perm'] = $eplug_link_perms;                                    
+        	$ret['siteLinks']['link'][0]['@value'] = $eplug_link_name;
+		}
+		
+		if(vartrue($eplug_userclass) && vartrue($eplug_userclass_description))
+		{
+			$ret['userClasses']['class'][0]['@attributes']['name'] = $eplug_userclass;
+        	$ret['userClasses']['class'][0]['@attributes']['description'] = $eplug_userclass_description;	
+		}
+
+	
 		// Set this key so we know the vars came from a plugin.php file
 		$ret['plugin_php'] = true;
 		$this->plug_vars = $ret;
+		
 		return true;
 	}
 
@@ -1997,7 +2037,7 @@ class e107plugin
 	//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 	//	$xml->setOptStringTags('install,uninstall,upgrade'); 
 		
-	//	$plug_vars2 = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin2.xml', 'advanced');
+
 		$this->plug_vars = $xml->loadXMLfile(e_PLUGIN.$plugName.'/plugin.xml', 'advanced');
 		if ($this->plug_vars === FALSE)
 		{
@@ -2009,22 +2049,34 @@ class e107plugin
 		
 		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";	
 		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml. 
-		
-/*		if($plugName == "forum")
+	
+	/*
+		// Very useful debug code.to compare plugin.php vs plugin.xml 
+		$testplug = 'forum';
+		if($plugName == $testplug)
 		{
-			echo "<table><tr><td>";
-			//print_a($plug_vars2);
+			$plug_vars1 = $this->plug_vars;
+			$this->parse_plugin_php($testplug);
+			$plug_vars2 = $this->plug_vars;
+			ksort($plug_vars2);
+			ksort($plug_vars1);
+			echo "<table>
+			<tr><td><h1>PHP</h1></td><td><h1>XML</h1></td></tr>
+			<tr><td style='border-right:1px solid black'>";
+			print_a($plug_vars2);
 			echo "</td><td>";		
-			print_a($this->plug_vars);
+			print_a($plug_vars1);
 			echo "</table>";
-		}*/
+		}
+
+	*/
 		
 		// TODO search for $this->plug_vars['adminLinks']['link'][0]['@attributes']['primary']==true. 
 		$this->plug_vars['administration']['icon'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['icon']);
 		$this->plug_vars['administration']['caption'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['description']);
 		$this->plug_vars['administration']['iconSmall'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['iconSmall']);
 		$this->plug_vars['administration']['configFile'] = varset($this->plug_vars['adminLinks']['link'][0]['@attributes']['url']);
-		
+	
 		return TRUE;
 	}
 

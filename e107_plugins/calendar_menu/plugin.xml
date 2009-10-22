@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.12 2009-10-20 18:15:21 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.13 2009-10-22 04:14:45 e107coders Exp $ -->
 
 <e107Plugin name="EC_ADLAN_1" version="3.70" compatibility="0.8" installRequired="true" setupFile='calendar_setup.php'>
 	<author name="e107 Inc. + Barry" url="http://e107.org" />
@@ -19,7 +19,7 @@
 		<link url='admin_config.php?subs' description='EC_ADLAN_A173' icon='images/calendar_32.png' iconSmall='images/calendar_16.png' >EC_ADLAN_A173</link>		
 	</adminLinks>
 	<siteLinks>
-		<link url="calendar_menu/calendar.php" >Calendar</link>		
+		<link url="{e_PLUGIN}calendar_menu/calendar.php" >Calendar</link>		
 	</siteLinks>
 	<mainPrefs>
 		<pref name="eventpost_admin">254</pref>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-09-13 10:29:56 $
-|     $Author: secretr $
+|     $Revision: 1.15 $
+|     $Date: 2009-10-22 04:14:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -598,7 +598,7 @@ class e107_db_debug {
 //
 function e107_debug_shutdown()
 {
-global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
+global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY,$THEME_DIRECTORY;
 	if (isset($e107_Clean_Exit)) return;
 
 	if (!isset($In_e107_Footer))
@@ -609,7 +609,9 @@ global $error_handler,$e107_Clean_Exit,$In_e107_Footer,$ADMIN_DIRECTORY;
 			require_once($filewanted);
 		} else if (defset('USER_AREA'))
 		{
-			$filewanted=realpath(dirname(__FILE__)).'/../'.FOOTERF;
+			$filewanted=realpath(dirname(__FILE__)."/../".$THEME_DIRECTORY.'templates/')."/footer_default.php"; // FOOTERF;
+			// Works better than FOOTERF for e107_files/e_jslib.php. 
+
 			require_once($filewanted);
 		}
 	}

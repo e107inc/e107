@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.14 2009-10-20 03:49:22 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.15 2009-10-22 04:14:45 e107coders Exp $ -->
 <e107Plugin name="Download" version="1.0" compatibility="0.8" installRequired="true" releaseUrl=''>
 	<author name="e107 Inc." url="http://e107.org" />
 	<description>DOWLAN_DESCRIPTION</description>
@@ -17,7 +17,7 @@
 		<link url='admin_download.php?mirror' description='' icon='images/downloads_32.png' iconSmall=''>DOWLAN_128</link>			
 	</adminLinks>
 	<siteLinks>
-		<link url="download/download.php" perm="everyone" >DOWLAN_29</link>	
+		<link url="{e_PLUGIN}download/download.php" perm="everyone" >DOWLAN_29</link>	
 	</siteLinks>	
 	<mainPrefs>
 		<pref name="download_php"></pref>
