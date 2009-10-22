@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-10-22 07:52:07 $
- * $Author: e107coders $
+ * $Revision: 1.20 $
+ * $Date: 2009-10-22 14:18:18 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -33,6 +33,17 @@ class e_model
      * @var array
      */
     protected $_data = array();
+	
+    /**
+     * Data structure (types) array, required for {@link e_admin_model::sanitize()} method, 
+     * it also serves as a map (find data) for building DB queries,
+     * copy/sanitize posted data to object data, etc.
+     * 
+     * This can/should be overwritten by extending the class
+     *
+     * @var array
+     */
+    protected $_data_fields = array();
     
     /**
      * Runtime cache of parsed from {@link _getData()} keys
@@ -74,6 +85,15 @@ class e_model
 	{
 		$this->setData($data);
 	}
+	
+    /**
+     * Predefined data fields in format key => type
+     * @return array
+     */
+    public function getDataFields()
+    {
+    	return $this->_data_fields;
+    }
     
     /**
      * Set name of object's field id
@@ -103,9 +123,9 @@ class e_model
     }
 
     /**
-     * Retrieve object field id value
+     * Retrieve object primary id field value
      *
-     * @return mixed
+     * @return integer
      */
     public function getId()
     {
@@ -114,6 +134,20 @@ class e_model
             return $this->get($this->getFieldIdName(), 0);
         }
         return $this->get('id', 0);
+    }
+	
+    /**
+     * Set object primary id field value
+     *
+     * @return e_model
+     */
+    public function setId($id)
+    {
+        if ($this->getFieldIdName()) 
+        {
+            return $this->set($this->getFieldIdName(), intval($id));
+        }
+        return $this;
     }
     
     /**
@@ -692,6 +726,18 @@ class e_model
     }
 	
     /**
+     * Move model System messages (if any) to the default eMessage stack
+     * 
+     * @param boolean $session store messages to session
+     * @return setMessages
+     */
+    public function setMessages($session = false)
+    {
+    	e107::getMessage()->moveStack($this->_message_stack, 'default', false, $session);
+		return $this;
+    }
+	
+    /**
      * User defined model validation
      * Awaiting for child class implementation
      *
@@ -819,16 +865,16 @@ class e_model
  * 		- retrieved direct from DB
  * 		- set & sanitized via setPostedData()->mergePostedData()
  * 		- manually sanitized before passed to model setter (set(), setData(), add(), addData(), etc.) methods 
- * - $_db_fields property is important, it tells to sanitize() method how to sanitize posted data
- * - if $_db_fields is missing, sanitize() will call internally e107::getParser()->toDB() on the data
+ * - $_data_fields property is important, it tells to sanitize() method how to sanitize posted data
+ * - if $_data_fields is missing, sanitize() will call internally e107::getParser()->toDB() on the data
  * - sanitize() is triggered by default on mergePostedData() and mergeData() methods
  * - mergePostedData() and mergeData() methods will filter posted/passed data against (in this order):
  * 		- getValidator()->getValidData() if true is passed as validate parameter (currently disabled, gather feedback)
- * 		- $_db_fields if true is passed as sanitize parameter
- * - toSqlQuery() needs $_db_fields and $_field_id to work proper, $_FIELD_TYPES is optional but recommended (faster SQL queries)
- * - result array from toSqlQuery() call will be filtered against $_db_fields
+ * 		- $_data_fields if true is passed as sanitize parameter
+ * - toSqlQuery() needs $_data_fields and $_field_id to work proper, $_FIELD_TYPES is optional but recommended (faster SQL queries)
+ * - result array from toSqlQuery() call will be filtered against $_data_fields
  * - in almost every case $_FIELD_TYPES shouldn't contain 'escape' and 'todb' - dont't forget you are going to pass already sanitized data (see above)
- * - most probably $_FIELD_TYPES will go in the future, $_db_fields alone could do the job
+ * - most probably $_FIELD_TYPES will go in the future, $_data_fields alone could do the job
  * - default db related methods (save(), dbUpdate(), etc.) need $_db_table
  * 
  * @package e107
@@ -837,7 +883,7 @@ class e_model
  * @author SecretR
  * @copyright Copyright (C) 2009, e107 Inc.
  */
-class e_model_admin extends e_model
+class e_admin_model extends e_model
 {
 	/**
 	 * Current model DB table, used in all db calls
@@ -855,17 +901,6 @@ class e_model_admin extends e_model
     * @var array
     */
     protected $_posted_data = array();
-	
-    /**
-     * DB structure array, required for {@link sanitize()} method, 
-     * it also serves as a map (find data) for building DB queries,
-     * copy/sanitize posted data to object data, etc.
-     * 
-     * This can/should be overwritten by extending the class
-     *
-     * @var array
-     */
-    protected $_db_fields = array();
 	
     /**
      * DB format array - see db::_getTypes() and db::_getFieldValue() (mysql_class.php)
@@ -935,14 +970,7 @@ class e_model_admin extends e_model
     }
 	
     /**
-     * @return array
-     */
-    public function getDbFields()
-    {
-    	return $this->_db_fields;
-    }
-	
-    /**
+     * Predefined data fields types, passed to DB handler
      * @return array
      */
     public function getFieldTypes()
@@ -1197,7 +1225,7 @@ class e_model_admin extends e_model
 		if($sanitize)
 		{
 			// search for db_field types
-			if($this->getDbFields())
+			if($this->getDataFields())
 			{
 				$data = $this->sanitize($data);
 			}
@@ -1247,7 +1275,7 @@ class e_model_admin extends e_model
 		if($sanitize)
 		{
 			// search for db_field types
-			if($this->getDbFields())
+			if($this->getDataFields())
 			{
 				$src_data = $this->sanitize($src_data);
 			}
@@ -1358,6 +1386,23 @@ class e_model_admin extends e_model
 			e107::getMessage()->moveStack($this->_message_stack.'_validator', $this->_message_stack, false, $session);
 		}
 		return parent::renderMessages($session, $reset);
+    }
+	
+    /**
+     * Move model System messages (if any) to the default eMessage stack
+     * 
+     * @param boolean $validation move validation messages as well
+     * @param boolean $session store messages to session
+     * @return e_admin_model
+     */
+    public function setMessages($validation = true, $session = false)
+    {
+    	if($validation)
+		{
+			e107::getMessage()->moveStack($this->_message_stack.'_validator', 'default', false, $session);
+		}
+    	parent::setMessages($session);
+		return $this;
     }
 
     /**
@@ -1492,7 +1537,7 @@ class e_model_admin extends e_model
 	 */
 	public function toSqlQuery($force = '')
 	{
-		$fields = array_keys($this->_db_fields);
+		$fields = array_keys($this->_data_fields);
 		$qry = array();
 		
 		$action = $this->getId() ? 'update' : 'create';
@@ -1526,12 +1571,12 @@ class e_model_admin extends e_model
 	}
 	
 	/**
-	 * Sanitize value based on its db field type ($_db_fields),
+	 * Sanitize value based on its db field type ($_data_fields),
 	 * method will return null only if db field rule is not found.
 	 * If $value is null, it'll be retrieved from object posted data
 	 * If $key is an array, $value is omitted.
 	 * 
-	 * NOTE: If $key is not found in object's _db_fields array, null is returned
+	 * NOTE: If $key is not found in object's _data_fields array, null is returned
 	 * 
 	 * @param mixed $key string key name or array data to be sanitized
 	 * @param mixed $value 
@@ -1545,7 +1590,7 @@ class e_model_admin extends e_model
 			$ret = array(); 
 			foreach ($key as $k=>$v)
 			{
-				if(isset($this->_db_fields[$k]))
+				if(isset($this->_data_fields[$k]))
 				{
 					$ret[$k] = $this->toDb($k, $v);
 				}
@@ -1553,11 +1598,11 @@ class e_model_admin extends e_model
 			return $ret;
 		}
 		
-		if(!isset($this->_db_fields[$key]))
+		if(!isset($this->_data_fields[$key]))
 		{
 			return null;
 		}
-		$type =  $this->_db_fields[$key];
+		$type =  $this->_data_fields[$key];
 		if(null === $value)
 		{
 			$value = $this->getPostedData($key);
