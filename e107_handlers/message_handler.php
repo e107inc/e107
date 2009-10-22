@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-10-22 11:18:55 $
+ * $Revision: 1.22 $
+ * $Date: 2009-10-22 14:18:18 $
  * $Author: secretr $
  *
 */
@@ -149,7 +149,7 @@ class eMessage
 	 * Should be used for dealing with messages with custom message stacks.
 	 * Supports message arrays.
 	 * 
-	 * @param string $message message(s)
+	 * @param string|array $message message(s)
 	 * @param string $mstack defaults to 'default' 
 	 * @param string $type [optional]
 	 * @param boolean $sesion [optional]

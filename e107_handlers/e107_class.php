@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.57 $
- * $Date: 2009-10-21 10:29:42 $
+ * $Revision: 1.58 $
+ * $Date: 2009-10-22 14:18:18 $
  * $Author: secretr $
 */
 
@@ -123,7 +123,9 @@ class e107
 		'e107_traffic'	=> '{e_HANDLER}traffic_class.php',
 		'comment'		=> '{e_HANDLER}comment_class.php',
 		'e_validator'	=> '{e_HANDLER}validator_class.php',
-		'themeHandler'	=> '{e_HANDLER}theme_handler.php'
+		'themeHandler'	=> '{e_HANDLER}theme_handler.php',
+		'e_model'		=> '{e_HANDLER}model_class.php',
+		'e_admin_model'	=> '{e_HANDLER}model_class.php',
 	);
 	
 	/**
