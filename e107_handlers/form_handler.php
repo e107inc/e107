@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.51 $
- * $Date: 2009-10-22 04:19:29 $
- * $Author: e107coders $
+ * $Revision: 1.52 $
+ * $Date: 2009-10-22 19:17:34 $
+ * $Author: secretr $
  *
 */
 
@@ -709,12 +709,13 @@ class e_form
 		';
 	}
 
-	function thead($fieldarray, $columnPref='', $querypattern = '')
+	function thead($fieldarray, $columnPref=array(), $querypattern = '', $requeststr = '')
 	{
         $text = "";
 
-        $tmp = explode(".",e_QUERY);
-		$etmp = explode(".",$querypattern);
+		// FIXME - Temporary solution, we really need to add parse_str() support
+        $tmp = explode(".", ($requeststr ? $requeststr : e_QUERY)); 
+		$etmp = explode(".", $querypattern);
 
 		// Note: this function should probably be adapted to ALSO deal with $_GET. eg. ?mode=main&field=user_name&asc=desc&from=100
 		// or as a pattern: ?mode=main&field=[FIELD]&asc=[ASC]&from=[FROM]
@@ -743,7 +744,7 @@ class e_form
 
 		foreach($fieldarray as $key=>$val)
 		{
-     		if(in_array($key,$columnPref) || $key == "options" || (varsettrue($val['forced'])))
+     		if(in_array($key,$columnPref) || $key == "options" || (vartrue($val['forced'])))
 			{
 				$cl = (varset($val['thclass'])) ? "class='".$val['thclass']."'" : "";
 				$text .= "\n\t<th id='e-column-".$key."' {$cl}>";
@@ -773,6 +774,93 @@ class e_form
 		</thead>
 		";
 
+	}
+	
+	function trow($fieldarray, $currentlist, $fieldvalues)
+	{
+		$cnt = 0;
+		$ret = '';
+		
+		foreach ($fieldarray as $field => $data)
+		{
+			//Not found
+			if(!$data['forced'] && (!in_array($field, $currentlist) || !isset($fieldvalues[$field])))
+			{
+				continue;
+			}
+			
+			$tdclass = vartrue($data['class']);
+			if($tdclass)
+			{
+				$tdclass = ' class="'.$tdclass.'"';
+			}
+			
+			$value = $fieldvalues[$field];
+			
+			switch($field)
+			{
+				case 'options':
+					$data['type'] = 'text';
+				break;
+			
+				case 'checkboxes':
+					$value = $this->checkbox($data['toggle'].'[]', $value);
+					$data['type'] = 'text';
+				break;
+			}
+			
+			switch($data['type'])
+			{
+				case 'text':
+				case 'number':
+				case 'image': //TODO - thumb, js tooltip...
+					//same
+				break;
+				
+				case 'datestamp':
+					$mask = 'short';
+					if(is_array($value)) 
+					{
+						$mask = $value[1];
+						$value = $value[0];
+					}
+					$value = e107::getDateConvert()->convert_date($value, $mask);
+				break;
+				
+				case 'userclass':
+					$value = $this->_uc->uc_get_classname($value);
+				break;
+				
+				case 'boolean':
+					$value = $value ? ADMIN_TRUE_ICON : '';
+				break;
+				
+				//TODO - form_userclass, order,... and maybe more types
+				
+				default:
+					continue; //unknown type
+				break;
+			}
+			
+			$ret .= '
+				<td'.$tdclass.'>
+					'.$value.'
+				</td>
+			';
+			
+			$cnt++;
+		}
+		
+		if($cnt)
+		{
+			$trclass = vartrue($fieldvalues['trclass']) ?  ' class="'.$trclass.'"' : '';
+			return '
+				<tr'.$trclass.'>
+					'.$ret.'
+				</tr>
+			';
+		}
+		return '';
 	}
 
 	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
