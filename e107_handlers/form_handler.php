@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.50 $
- * $Date: 2009-10-20 16:18:07 $
+ * $Revision: 1.51 $
+ * $Date: 2009-10-22 04:19:29 $
  * $Author: e107coders $
  *
 */
@@ -73,9 +73,9 @@ class e_form
 
 	function e_form($enable_tabindex = false)
 	{
+		
 		$this->_tabindex_enabled = $enable_tabindex;
-		$e107 = &e107::getInstance();
-		$this->_uc = &$e107->user_class;
+		$this->_uc = e107::getUserClass();		
 	}
 
 	function text($name, $value, $maxlength = 200, $options = array())
