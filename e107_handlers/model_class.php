@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-10-21 19:34:18 $
- * $Author: e107steved $
+ * $Revision: 1.16 $
+ * $Date: 2009-10-22 04:15:27 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1596,3 +1596,247 @@ class e_model_admin extends e_model
 		return null;
 	}
 }
+
+
+// Experimental admin interface class. //TODO integrate with the above. 
+// see e107_plugins/release/admin_config.php.  
+class e_model_interface
+{
+	var $fields;
+	var $fieldpref;
+	var $listQry;
+	var $table;
+	var $primary;
+			
+	function __construct()
+	{
+
+	}
+	
+	function init()
+	{
+		
+		global $user_pref;
+		
+		if(varset($_POST['update']) || varset($_POST['create']))
+		{
+		
+			$id = intval($_POST['record_id']);
+			$this->submitPage($id);
+		}
+		
+		if(varset($_POST['delete']))
+		{
+			$id = key($_POST['delete']);
+			$this->deleteRecord($id);
+			$_GET['mode'] = "list";
+		}
+		
+		if(varset($_GET['mode'])=='create')
+		{
+			$id = varset($_POST['edit']) ? key($_POST['edit']) : "";
+			$this->createRecord($id);	
+		}
+		else
+		{
+			$this->listRecords();
+		}
+		
+		if(isset($_POST['submit-e-columns']))
+		{
+			$column_pref_name = "admin_".$this->table."_columns";
+			$user_pref[$column_pref_name] = $_POST['e-columns'];
+			save_prefs('user');
+		}
+	}
+	
+	
+	/**
+	 * Generic DB Record Listing Function. 
+	 * @param object $mode [optional]
+	 * @return 
+	 */
+	function listRecords($mode=FALSE)
+	{
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
+	
+		global $pref;
+		
+
+        $text = "<form method='post' action='".e_SELF."?mode=create'>
+                        <fieldset id='core-release-list'>
+						<legend class='e-hideme'>".$this->pluginTitle."</legend>
+						<table cellpadding='0' cellspacing='0' class='adminlist'>".
+							$frm->colGroup($this->fields,$this->fieldpref).
+							$frm->thead($this->fields,$this->fieldpref).
+
+							"<tbody>";
+
+
+		if(!$sql->db_Select_gen($this->listQry))
+		{
+			$text .= "\n<tr><td colspan='".count($this->fields)."' class='center middle'>".CUSLAN_42."</td></tr>\n";
+		}
+		else
+		{
+			$row = $sql->db_getList('ALL', FALSE, FALSE);
+
+			foreach($row as $field)
+			{
+				$text .= "<tr>\n";
+				foreach($this->fields as $key=>$att)
+				{	
+					$class = vartrue($this->fields[$key]['thclass']) ? "class='".$this->fields[$key]['thclass']."'" : "";		
+					$text .= (in_array($key,$this->fieldpref) || $att['forced']==TRUE) ? "\t<td ".$class.">".$this->renderValue($key,$field)."</td>\n" : "";						
+				}
+				$text .= "</tr>\n";				
+			}
+		}
+
+		$text .= "
+						</tbody>
+					</table>
+				</fieldset>
+			</form>
+		";
+
+		$ns->tablerender($this->pluginTitle." :: ".$this->listCaption, $mes->render().$text);
+	}
+	
+	
+	/**
+	 * 
+	 * @param object $id [optional]
+	 * @return 
+	 */
+	function createRecord($id=FALSE)
+	{
+		global $frm, $e_userclass, $e_event;
+
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+
+		if($id)
+		{
+			$query = str_replace("{ID}",$id,$this->editQry);
+			$sql->db_Select_gen($query);
+			$row = $sql->db_Fetch(MYSQL_ASSOC);			
+		}
+		else
+		{
+			$row = array();
+		}
+
+		$text = "
+			<form method='post' action='".e_SELF."?mode=list' id='dataform' enctype='multipart/form-data'>
+				<fieldset id='core-cpage-create-general'>
+					<legend class='e-hideme'>".$this->pluginTitle."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminedit'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>";
+			
+		foreach($this->fields as $key=>$att)
+		{
+			if($att['forced']!==TRUE)
+			{
+				$text .= "
+					<tr>
+						<td class='label'>".$att['title']."</td>
+						<td class='control'>".$this->renderElement($key,$row)."</td>
+					</tr>";
+			}
+							
+		}
+
+		$text .= "
+			</tbody>
+			</table>	
+		<div class='buttons-bar center'>";
+					
+					if($id)
+					{
+						$text .= $frm->admin_button('update', LAN_UPDATE, 'update');
+						$text .= "<input type='hidden' name='record_id' value='".$id."' />";						
+					}	
+					else
+					{
+						$text .= $frm->admin_button('create', LAN_CREATE, 'create');	
+					}
+					
+		$text .= "
+			</div>
+			</fieldset>
+		</form>";	
+		
+		$ns->tablerender($this->pluginTitle." :: ".$this->createCaption, $text);
+	}
+	
+	
+	/**
+	 * Generic Save DB Record Function. 
+	 * @param object $id [optional]
+	 * @return 
+	 */
+	function submitPage($id=FALSE)
+	{
+		global $sql, $tp, $e107cache, $admin_log, $e_event;
+		$emessage = eMessage::getInstance();
+		
+		$insert_array = array();
+		
+		foreach($this->fields as $key=>$att)
+		{
+			if($att['forced']!=TRUE)
+			{
+				$insert_array[$key] = $_POST[$key];
+			}
+		}
+			
+		if($id)
+		{
+			$insert_array['WHERE'] = $this->primary." = ".$id;
+			$status = $sql->db_Update($this->table,$insert_array) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
+			$message = LAN_UPDATED;	
+
+		}
+		else
+		{
+			$status = $sql->db_Insert($this->table,$insert_array) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
+			$message = LAN_CREATED;	
+		}
+		
+
+		$emessage->add($message, $status);		
+	}
+
+	/**
+	 * Generic Save DB Record Function. 
+	 * @param object $id
+	 * @return 
+	 */
+	function deleteRecord($id)
+	{
+		if(!$id || !$this->primary || !$this->table)
+		{
+			return;
+		}
+		
+		$emessage = eMessage::getInstance();
+		$sql = e107::getDb();
+		
+		$query = $this->primary." = ".$id;
+		$status = $sql->db_Delete($this->table,$query) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
+		$message = LAN_DELETED;
+		$emessage->add($message, $status);		
+	}
+
+	
+}
+
