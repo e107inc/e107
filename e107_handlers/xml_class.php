@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-10-21 12:28:17 $
+ * $Revision: 1.32 $
+ * $Date: 2009-10-22 04:14:35 $
  * $Author: e107coders $
 */
 
@@ -817,7 +817,7 @@ class xmlClass
 			$value = (substr($val['@value'],0,7) == "array (") ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
 			$pref[$name] = $value;
 
-			$mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);									
+			// $mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);									
 		}	
 	
 		

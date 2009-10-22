@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision: 1.28 $
- |     $Date: 2009-10-09 15:05:12 $
- |     $Author: secretr $
+ |     $Revision: 1.29 $
+ |     $Date: 2009-10-22 04:14:35 $
+ |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))
@@ -338,7 +338,14 @@ class comment
 	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex = FALSE)
 	{
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
-		global $sql,$sql2,$tp,$e107cache,$e_event,$e107,$pref,$rater;
+		global $e_event,$e107,$pref,$rater;
+		
+		$sql 		= e107::getDb();
+		$sql2 		= e107::getDb('sql2');
+		$tp 		= e107::getParser();
+		$e107cache 	= e107::getCache();
+		
+		
 		if (isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
 		{
 			return;

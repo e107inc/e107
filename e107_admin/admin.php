@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-09-24 02:33:43 $
+|     $Revision: 1.19 $
+|     $Date: 2009-10-22 04:14:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -321,6 +321,7 @@ function log_request()
 // - common to the various admin layouts.
 function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 {
+
 	global $sql, $tp;
 	
 	$pref = e107::getConfig('core')->getPref();
@@ -328,13 +329,17 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	$text = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", $iconSize, $linkStyle);
 
 	$plugs = e107::getObject('e107plugin');
-	
+
 	foreach($pref['plug_installed'] as $plug=>$vers)
 	{
-		$plugs->parse_plugin_xml($plug);
+		$plugs->parse_plugin($plug);
+
 		$plugin_path = $plug;
 		$name = $plugs->plug_vars['@attributes']['name'];
 		
+/*		echo "<h1>".$name." ($plug)</h1>";
+		print_a($plugs->plug_vars);*/
+
 		foreach($plugs->plug_vars['adminLinks']['link'] as $tag)
 		{
 			if(varset($tag['@attributes']['primary']) !='true')
@@ -344,6 +349,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 			loadLanFiles($plugin_path, 'admin');
 			
 			$att = $tag['@attributes'];
+
 	
 			$eplug_name 		= $tp->toHTML($name,FALSE,"defs, emotes_off");
 			$eplug_conffile 	= $att['url'];
