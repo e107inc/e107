@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-10-22 07:23:22 $
+ * $Revision: 1.6 $
+ * $Date: 2009-10-22 07:52:13 $
  * $Author: e107coders $
  *
 */
@@ -21,16 +21,9 @@ require_once(e_ADMIN."auth.php");
 
 class releasePlugin extends e_model_interface
 {
-	var $fields;
-	var $fieldpref;
-	var $listQry;
-	var $table;
-	var $primary;
-
 
 	function __construct()
-	{
-	    
+	{	    
     	$this->fields = array(
 		
 			'release_id'				=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE, 'primary'=>TRUE),
@@ -40,7 +33,6 @@ class releasePlugin extends e_model_interface
 			'release_version' 			=> array('title'=> 'version', 'type' => 'text', 'width' => 'auto'),
 			'release_author' 			=> array('title'=> LAN_AUTHOR, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'), 
          	'release_authorURL' 		=> array('title'=> LAN_AUTHOR.'URL', 'type' => 'url', 'width' => 'auto', 'thclass' => 'left'), 
-
             'release_date' 				=> array('title'=> LAN_DATE, 'type' => 'text', 'width' => 'auto'),	 
 			'release_compatibility' 	=> array('title'=> 'compatib', 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 
 			'release_url' 				=> array('title'=> 'URL', 'type' => 'url', 'width' => '10%', 'thclass' => 'center' ),	 
@@ -51,15 +43,11 @@ class releasePlugin extends e_model_interface
 		
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')
-		
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
 		);
-		
-		$this->fieldpref = (varset($user_pref['admin_release_columns'])) ? $user_pref['admin_release_columns'] : array_keys($this->fields);
-		
+				
 		$this->listQry = "SELECT * FROM #release ORDER BY release_id DESC";
-		$this->editQry = "SELECT * FROM #release WHERE release_id = {ID}";
-		
+		$this->editQry = "SELECT * FROM #release WHERE release_id = {ID}";		
 		$this->table = "release";
 		$this->primary = "release_id";
 		$this->pluginTitle = "e107 Release";
@@ -69,8 +57,7 @@ class releasePlugin extends e_model_interface
 			'create' 	=> array('caption'=>LAN_CREATE."/".LAN_EDIT, 'perm'=>'0'),
 			'options' 	=> array('caption'=>LAN_OPTIONS, 'perm'=>'0'),
 			'custom'	=> array('caption'=>'Custom Page', 'perm'=>0)				
-		);
-		
+		);		
 	}
 	
 	// Custom View/Form-Element method. ie. Naming should match field/key with type=method.
@@ -99,7 +86,6 @@ class releasePlugin extends e_model_interface
 		$ns->tablerender("Custom","This is a custom Page");
 	}
 
-
 }
 
 $rp = new releasePlugin;
@@ -107,11 +93,9 @@ $rp->init();
 
 require_once(e_ADMIN."footer.php");
 
-
-function admin_config_adminmenu()
+function admin_config_adminmenu() //TODO move this into e_model_interface
 {
 	global $rp;
-	global $action;
 	$rp->show_options($action);
 }
 

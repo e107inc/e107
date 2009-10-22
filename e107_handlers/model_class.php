@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-10-22 07:23:17 $
+ * $Revision: 1.19 $
+ * $Date: 2009-10-22 07:52:07 $
  * $Author: e107coders $
 */
 
@@ -1621,12 +1621,16 @@ class e_model_interface
 		
 		$this->mode = varset($_GET['mode']) ? $_GET['mode'] : 'list';
 		
+		$column_pref_name = "admin_".$this->table."_columns";
+				
 		if(isset($_POST['submit-e-columns']))
-		{
-			$column_pref_name = "admin_".$this->table."_columns";
+		{		
 			$user_pref[$column_pref_name] = $_POST['e-columns'];
 			save_prefs('user');
+			$this->mode = 'list';
 		}
+				
+		$this->fieldpref = (varset($user_pref[$column_pref_name])) ? $user_pref[$column_pref_name] : array_keys($this->fields);		
 			
 		if(varset($_POST['update']) || varset($_POST['create']))
 		{
@@ -1666,7 +1670,8 @@ class e_model_interface
 		$sql = e107::getDb();
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
-		$pref = e107::getConfig()->getPref();		
+		$pref = e107::getConfig()->getPref();
+				
 
         $text = "<form method='post' action='".e_SELF."?mode=create'>
                         <fieldset id='core-".$this->table."-list'>
@@ -1704,6 +1709,8 @@ class e_model_interface
 				</fieldset>
 			</form>
 		";
+		
+		//TODO Auto next/prev
 
 		$ns->tablerender($this->pluginTitle." :: ".$this->adminMenu['list']['caption'], $mes->render().$text);
 	}
@@ -1969,24 +1976,18 @@ class e_model_interface
 	}
 
 
-	function saveSettings() // Non Functional.. needs to use native e_model functions.  
+	function saveSettings() //TODO needs to use native e_model functions, validation etc.  
 	{
 		global $pref, $admin_log;
 		
-		$mes = e107::getMessage();
+		unset($_POST['saveOptions'],$_POST['e-columns']);
 		
-		$temp['listPages'] = $_POST['listPages'];
-	
-		if ($admin_log->logArrayDiffs($temp, $pref, 'CPAGE_04'))
+		foreach($_POST as $key=>$val)
 		{
-			save_prefs();		// Only save if changes
-			// e107::getConfig()->
-			$mes->add(LAN_SAVED, E_MESSAGE_SUCCESS);
+			e107::getConfig('core')->set($key,$val);
 		}
-		else
-		{
-			$mes->add(CUSLAN_46);
-		}
+						
+		e107::getConfig('core')->save();
 	}
 
 
