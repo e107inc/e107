@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2009-09-21 19:52:38 $
-|     $Author: e107steved $
+|     $Revision: 1.55 $
+|     $Date: 2009-10-22 14:31:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -678,6 +678,7 @@ function update_706_to_800($type='')
 		if (plugInstalled($plugName))
 		{
 			$ttc = explode(',',$plugList);
+			$mes = e107::getMessage();
 			foreach ($ttc as $ct)
 			{
 				$sqlDefs = e_PLUGIN.$plugName.'/'.$plugName.'_sql.php';		// Filename containing definitions
@@ -689,7 +690,13 @@ function update_706_to_800($type='')
 					continue;
 				}
 				$req_fields = $db_parser->parse_field_defs($req_defs[0][2]);					// Required definitions
-				if (E107_DBG_FILLIN8) echo "Required plugin table structure: <br />".$db_parser->make_field_list($req_fields);
+				if (E107_DBG_SQLDETAILS)
+				{
+				  $message = "Required plugin table structure: <br />".$db_parser->make_field_list($req_fields);
+				  
+				  $mes->add($message, E_MESSAGE_DEBUG);
+				  	
+				} 
 
 				if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
 				{
@@ -699,16 +706,28 @@ function update_706_to_800($type='')
 				{
 //					echo $db_parser->make_table_list($actual_defs);
 					$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
-					if (E107_DBG_FILLIN8) echo "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
+					if (E107_DBG_SQLDETAILS)
+					{					
+						$message= "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
+						$mes->add($message, E_MESSAGE_DEBUG);
+					} 
 
 					$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
 					if (count($diffs[0]))
 					{  // Changes needed
-						if (E107_DBG_FILLIN8) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
+						if (E107_DBG_SQLDETAILS)
+						{
+							$message = "List of changes found:<br />".$db_parser->make_changes_list($diffs);
+							$mes->add($message, E_MESSAGE_DEBUG);	
+						} 
 						if ($just_check) return update_needed("Field changes rqd; plugin table: ".$ct);
 						// Do the changes here
 						$qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
-						if (E107_DBG_FILLIN8) echo "Update Query used: ".$qry."<br />";
+						if (E107_DBG_SQLDETAILS)
+						{
+							 $message = "Update Query used: ".$qry."<br />";
+							 $mes->add($message, E_MESSAGE_DEBUG);	
+						}
 						$sql->db_Select_gen($qry);
 						$updateMessages[] = LAN_UPDATE_51.$ct;
 						catch_error();

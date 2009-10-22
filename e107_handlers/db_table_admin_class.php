@@ -9,9 +9,9 @@
  * Database utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-09-13 20:22:39 $
- * $Author: secretr $
+ * $Revision: 1.11 $
+ * $Date: 2009-10-22 14:31:28 $
+ * $Author: e107coders $
 */
 
 /*
@@ -225,7 +225,11 @@ class db_table_admin
 									$defs['autoinc'] = TRUE;
 								break;
 								default:
-									echo "Unknown definition {$i}: ".$fd[$i]."<br />";
+									if(E107_DBG_SQLDETAILS)
+									{
+										$mes = e107::getMessage();
+										$mes->add("db_table_admin_class.php :: parse_field_defs() Line: 230 - Unknown definition {$i}: ".$fd[$i], E_MESSAGE_DEBUG);								
+									}
 								}
 								$i++;
 							}
@@ -599,7 +603,7 @@ class db_table_admin
 			global $sql;
 			// Pull out table name
 			$debugLevel = E107_DBG_SQLDETAILS;
-			
+	
 			$tableName = $newStructure[1];
 			if (!$sql->db_Table_exists($tableName))
 			{
