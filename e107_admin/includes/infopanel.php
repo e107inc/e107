@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.12 $
- |     $Date: 2009-09-18 23:14:00 $
+ |     $Revision: 1.13 $
+ |     $Date: 2009-10-22 23:43:15 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -131,7 +131,8 @@ $text .= "
 			<tr>
 				<th>Timestamp</th>
 				<th>Username</th>
-				<th>Location</th>
+				<th>IP</th>
+				<th>Page</th>
 			</tr>
 		</thead>
 		<tbody>";
@@ -141,9 +142,10 @@ $text .= "
 		foreach ($newsarray as $key=>$val)
 		{
 			$text .= "<tr>
-				<td>".$val['online_timestamp']."</td>
-					<td>".$val['online_user_id']."</td>
-					<td>".$val['online_location']."</td>
+				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['online_timestamp'],'short')."</td>
+					<td>".renderOnlineName($val['online_user_id'])."</td>
+					<td>".($val['online_ip'])."</td>
+					<td class='nowrap'><a href='".$val['online_location']."'>".$tp->text_truncate($val['online_location'],50)."</a></td>
 				</tr>
 				";
 		}
@@ -157,11 +159,13 @@ $text .= "
 
 	if (varset($user_pref['core-infopanel-menus']))
 	{
+
 		foreach ($user_pref['core-infopanel-menus'] as $val)
 		{
+			$id = $frm->name2id('core-infopanel_'.$val);
 			$text .= "
-			<div id='core-infopanel_{$val}' class='f-left' style='width:49%' >
-			<div style='border:1px solid silver;margin:10px'>
+			<div id='".$id."' class='f-left' style='width:24.5%' >
+			<div class='left' style='border:1px solid silver;margin:10px'>
 			";
 			$text .= $tp->parseTemplate("{PLUGIN=$val|TRUE}");
 			$text .= "
@@ -185,6 +189,17 @@ $text .= render_infopanel_options();
 $text .= "</form>";
 $text .= "</div>";
 $ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);
+
+
+
+function renderOnlineName($val)
+{
+	if($val==0)
+	{
+		return "Guest";
+	}
+	return $val;	
+}
 
 function render_info_panel($caption, $text)
 {
@@ -258,9 +273,11 @@ function render_infopanel_menu_options()
 	{
 		while ($row = e107::getDb()->db_Fetch())
 		{
-			$checked = ($settings && in_array($row['menu_name'], $settings)) ? true : false;
-			$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
-			$text .= $frm->checkbox_label($row['menu_name'], "e-mymenus[]", $row['menu_name'], $checked);
+			$label = str_replace("_menu","",$row['menu_name']);
+			$path_to_menu = $row['menu_path'].$row['menu_name'];
+			$checked = ($settings && in_array($path_to_menu, $settings)) ? true : false;
+			$text .= "\n<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
+			$text .= $frm->checkbox_label($label, "e-mymenus[]",$path_to_menu, $checked);
 			$text .= "</div>";
 		}
 	}
