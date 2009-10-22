@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-10-22 05:14:11 $
+ * $Revision: 1.5 $
+ * $Date: 2009-10-22 07:23:22 $
  * $Author: e107coders $
  *
 */
@@ -19,8 +19,7 @@ require_once("../../class2.php");
 if (!getperms("P")) { header("location:".e_BASE."index.php"); exit; }
 require_once(e_ADMIN."auth.php");
 
-
-class efeed extends e_model_interface
+class releasePlugin extends e_model_interface
 {
 	var $fields;
 	var $fieldpref;
@@ -33,6 +32,7 @@ class efeed extends e_model_interface
 	{
 	    
     	$this->fields = array(
+		
 			'release_id'				=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE, 'primary'=>TRUE),
             'release_type'	   			=> array('title'=> 'type', 'type' => 'method', 'width'=>'auto'),
 			'release_folder' 			=> array('title'=> 'folder', 'type' => 'text', 'width' => 'auto'),	// User name
@@ -47,10 +47,11 @@ class efeed extends e_model_interface
 			'options' 					=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
 		);
 		
-		$this->prefs = array(
+		$this->prefs = array( //TODO add option for core or plugin pref. 
+		
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'text', 'width' => 'auto'),	// User name
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'width' => 'auto'),
+			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')
 		
 		);
 		
@@ -65,14 +66,21 @@ class efeed extends e_model_interface
 		
 		$this->adminMenu = array(
 			'list'		=> array('caption'=>'Release List', 'perm'=>'0'),
-			'create' 	=> array('caption'=>LAN_CREATE."/".LAN_EDIT, 'perm'=>'0')			
+			'create' 	=> array('caption'=>LAN_CREATE."/".LAN_EDIT, 'perm'=>'0'),
+			'options' 	=> array('caption'=>LAN_OPTIONS, 'perm'=>'0'),
+			'custom'	=> array('caption'=>'Custom Page', 'perm'=>0)				
 		);
 		
 	}
 	
-	// custom method. (matches field/key name)
+	// Custom View/Form-Element method. ie. Naming should match field/key with type=method.
 	function release_type($curVal)
 	{
+		if($this->mode == 'list')
+		{
+			return $curVal;
+		}
+		
 		$types = array("theme","plugin");
 		$text = "<select class='tbox' name='release_type' >";
 		foreach($types as $val)
@@ -83,118 +91,28 @@ class efeed extends e_model_interface
 		$text .= "</select>";
 		return $text;
 	}
-
-
-	//TODO move this to the model class.. and make generic. 
-	function optionsPage()
+	
+	//custom Page = Naming should match $this->adminMenu key + 'Page'. 
+	function customPage()
 	{
-		global $e107, $pref,$emessage;
-		
-		$frm = e107::getForm();
-		
-
-		if(!isset($pref['pageCookieExpire'])) $pref['pageCookieExpire'] = 84600;
-
-		//XXX Lan - Options
-		$text = "
-			<form method='post' action='".e_SELF."?".e_QUERY."'>
-				<fieldset id='core-cpage-options'>
-					<legend class='e-hideme'>".LAN_OPTIONS."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>
-							<tr>
-								<td class='label'>".CUSLAN_29."</td>
-								<td class='control'>
-									".$frm->radio_switch('listPages', $pref['listPages'])."
-								</td>
-							</tr>
-
-							<tr>
-								<td class='label'>".CUSLAN_30."</td>
-								<td class='control'>
-									".$frm->text('pageCookieExpire', $pref['pageCookieExpire'], 10)."
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<div class='buttons-bar center'>
-						".$frm->admin_button('saveOptions', CUSLAN_40, 'submit')."
-					</div>
-				</fieldset>
-			</form>
-		";
-
-		$e107->ns->tablerender(LAN_OPTIONS, $emessage->render().$text);
+		$ns = e107::getRender();
+		$ns->tablerender("Custom","This is a custom Page");
 	}
-
-
-	function saveSettings()
-	{
-		global $pref, $admin_log, $emessage;
-		$temp['listPages'] = $_POST['listPages'];
-		$temp['pageCookieExpire'] = $_POST['pageCookieExpire'];
-		if ($admin_log->logArrayDiffs($temp, $pref, 'CPAGE_04'))
-		{
-			save_prefs();		// Only save if changes
-			$emessage->add(CUSLAN_45, E_MESSAGE_SUCCESS);
-		}
-		else
-		{
-			$emessage->add(CUSLAN_46);
-		}
-	}
-
 
 
 }
 
-
-$ef = new efeed;
-$ef->init();
-
-
-
-
+$rp = new releasePlugin;
+$rp->init();
 
 require_once(e_ADMIN."footer.php");
 
 
-
-
 function admin_config_adminmenu()
 {
-	global $ef;
+	global $rp;
 	global $action;
-	$ef->show_options($action);
+	$rp->show_options($action);
 }
 
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	require_once(e_HANDLER.'js_helper.php');
-	$ret = "
-		<script type='text/javascript'>
-			if(typeof e107Admin == 'undefined') var e107Admin = {}
-
-			/**
-			 * OnLoad Init Control
-			 */
-			e107Admin.initRules = {
-				'Helper': true,
-				'AdminMenu': false
-			}
-		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
-
-	return $ret;
-}
 ?>

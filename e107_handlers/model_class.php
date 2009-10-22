@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-10-22 05:14:07 $
+ * $Revision: 1.18 $
+ * $Date: 2009-10-22 07:23:17 $
  * $Author: e107coders $
 */
 
@@ -1607,7 +1607,7 @@ class e_model_interface
 	var $listQry;
 	var $table;
 	var $primary;
-	var $mode; // to work with $_GET and admin menu. 
+	var $mode; // as found in the URL query. $_GET['mode]
 			
 	function __construct()
 	{
@@ -1617,32 +1617,9 @@ class e_model_interface
 	function init()
 	{
 		
-		global $user_pref;
+		global $user_pref; // e107::getConfig('user') ??
 		
-		if(varset($_POST['update']) || varset($_POST['create']))
-		{
-		
-			$id = intval($_POST['record_id']);
-			$this->submitPage($id);
-		}
-		
-		if(varset($_POST['delete']))
-		{
-			$id = key($_POST['delete']);
-			$this->deleteRecord($id);
-			$_GET['mode'] = "list";
-		}
-		
-		if(varset($_GET['mode'])=='create')
-		{
-			$id = varset($_POST['edit']) ? key($_POST['edit']) : "";
-			$this->createRecord($id);	
-		}
-		else
-		{
-			$this->listRecords();
-		}
-		//TODO add options 'preferences page'. 
+		$this->mode = varset($_GET['mode']) ? $_GET['mode'] : 'list';
 		
 		if(isset($_POST['submit-e-columns']))
 		{
@@ -1650,26 +1627,49 @@ class e_model_interface
 			$user_pref[$column_pref_name] = $_POST['e-columns'];
 			save_prefs('user');
 		}
+			
+		if(varset($_POST['update']) || varset($_POST['create']))
+		{
+		
+			$id = intval($_POST['record_id']);
+			$this->saveRecord($id);
+		}
+		
+		if(varset($_POST['delete']))
+		{
+			$id = key($_POST['delete']);
+			$this->deleteRecord($id);
+			$this->mode = "list";
+		}
+		
+		if(varset($_POST['saveOptions']))
+		{
+			$this->saveSettings();
+		}
+		
+		if($this->mode)
+		{
+			$method = $this->mode."Page";
+			$this->$method();
+		}
+		
 	}
 	
 	
 	/**
 	 * Generic DB Record Listing Function. 
-	 * @param object $mode [optional]
 	 * @return 
 	 */
-	function listRecords($mode=FALSE)
+	function listPage()
 	{
 		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
-	
-		global $pref;
-		
+		$pref = e107::getConfig()->getPref();		
 
         $text = "<form method='post' action='".e_SELF."?mode=create'>
-                        <fieldset id='core-release-list'>
+                        <fieldset id='core-".$this->table."-list'>
 						<legend class='e-hideme'>".$this->pluginTitle."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
@@ -1680,7 +1680,7 @@ class e_model_interface
 
 		if(!$sql->db_Select_gen($this->listQry))
 		{
-			$text .= "\n<tr><td colspan='".count($this->fields)."' class='center middle'>".CUSLAN_42."</td></tr>\n";
+			$text .= "\n<tr><td colspan='".count($this->fields)."' class='center middle'>".LAN_NO_RECORDS."</td></tr>\n";
 		}
 		else
 		{
@@ -1714,9 +1714,11 @@ class e_model_interface
 	 * @param object $id [optional]
 	 * @return 
 	 */
-	function createRecord($id=FALSE)
+	function createPage()
 	{
 		global $e_userclass, $e_event;
+		
+		$id = varset($_POST['edit']) ? key($_POST['edit']) : "";
 
 		$tp = e107::getParser();
 		$ns = e107::getRender();
@@ -1788,13 +1790,13 @@ class e_model_interface
 	 * @param object $id [optional]
 	 * @return 
 	 */
-	function submitPage($id=FALSE)
+	function saveRecord($id=FALSE)
 	{
 		global $e107cache, $admin_log, $e_event;
-		$emessage = eMessage::getInstance();
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-
+		$mes = e107::getMessage();
 		
 		$insert_array = array();
 		
@@ -1822,11 +1824,11 @@ class e_model_interface
 		}
 		
 
-		$emessage->add($message, $status);		
+		$mes->add($message, $status);		
 	}
 
 	/**
-	 * Generic Save DB Record Function. 
+	 * Generic Delete DB Record Function. 
 	 * @param object $id
 	 * @return 
 	 */
@@ -1837,13 +1839,13 @@ class e_model_interface
 			return;
 		}
 		
-		$emessage = eMessage::getInstance();
+		$mes = e107::getMessage();
 		$sql = e107::getDb();
 		
 		$query = $this->primary." = ".$id;
 		$status = $sql->db_Delete($this->table,$query) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
 		$message = LAN_DELETED; 
-		$emessage->add($message, $status);	
+		$mes->add($message, $status);	
 	}
 
 
@@ -1858,13 +1860,18 @@ class e_model_interface
 	{
 		$frm = e107::getForm();
 		
-		$att = $this->fields[$key];
+		$att = ($this->mode == 'options') ? $this->prefs[$key] : $this->fields[$key];
 		$value = $row[$key];	
 		
 		if($att['type']=='method')
 		{
 			$meth = $key;
 			return $this->$meth($value);
+		}
+		
+		if($att['type']=='boolean')
+		{
+			return $frm->radio_switch($key, $row[$key]);	
 		}
 		
 		return $frm->text($key, $row[$key], 50);
@@ -1884,6 +1891,14 @@ class e_model_interface
 	{
 		$att = $this->fields[$key];	
 		//TODO add checkbox. 
+				
+		if($att['type']=='method')
+		{
+			$meth = $key;
+			return $this->$meth($row[$key]);
+		}
+				
+		
 		if($key == "options")
 		{
 			$id = $this->primary;
@@ -1904,6 +1919,76 @@ class e_model_interface
 		}	
 		return $row[$key] .$att['type'];	
 	}
+
+
+	/**
+	 * Generic Options/Preferences Form. 
+	 * @return 
+	 */
+	function optionsPage()
+	{
+		$pref = e107::getConfig()->getPref();
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
+
+		//XXX Lan - Options
+		$text = "
+			<form method='post' action='".e_SELF."?".e_QUERY."'>
+				<fieldset id='core-cpage-options'>
+					<legend class='e-hideme'>".LAN_OPTIONS."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminform'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>\n";
+						
+						
+						foreach($this->prefs as $key => $var)
+						{
+							$text .= "
+							<tr>
+								<td class='label'>".$var['title']."</td>
+								<td class='control'>
+									".$this->renderElement($key,$pref)."
+								</td>
+							</tr>\n";	
+						}
+					
+						$text .= "</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						".$frm->admin_button('saveOptions', LAN_SAVE, 'submit')."
+					</div>
+				</fieldset>
+			</form>
+		";
+
+		$ns->tablerender($this->pluginTitle." :: ".LAN_OPTIONS, $mes->render().$text);
+	}
+
+
+	function saveSettings() // Non Functional.. needs to use native e_model functions.  
+	{
+		global $pref, $admin_log;
+		
+		$mes = e107::getMessage();
+		
+		$temp['listPages'] = $_POST['listPages'];
+	
+		if ($admin_log->logArrayDiffs($temp, $pref, 'CPAGE_04'))
+		{
+			save_prefs();		// Only save if changes
+			// e107::getConfig()->
+			$mes->add(LAN_SAVED, E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+			$mes->add(CUSLAN_46);
+		}
+	}
+
 
 
 	/**
