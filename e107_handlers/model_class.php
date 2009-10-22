@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-10-22 04:15:27 $
+ * $Revision: 1.17 $
+ * $Date: 2009-10-22 05:14:07 $
  * $Author: e107coders $
 */
 
@@ -1607,6 +1607,7 @@ class e_model_interface
 	var $listQry;
 	var $table;
 	var $primary;
+	var $mode; // to work with $_GET and admin menu. 
 			
 	function __construct()
 	{
@@ -1641,6 +1642,7 @@ class e_model_interface
 		{
 			$this->listRecords();
 		}
+		//TODO add options 'preferences page'. 
 		
 		if(isset($_POST['submit-e-columns']))
 		{
@@ -1703,22 +1705,24 @@ class e_model_interface
 			</form>
 		";
 
-		$ns->tablerender($this->pluginTitle." :: ".$this->listCaption, $mes->render().$text);
+		$ns->tablerender($this->pluginTitle." :: ".$this->adminMenu['list']['caption'], $mes->render().$text);
 	}
 	
 	
 	/**
-	 * 
+	 * Generic DB Record Creation Form. 
 	 * @param object $id [optional]
 	 * @return 
 	 */
 	function createRecord($id=FALSE)
 	{
-		global $frm, $e_userclass, $e_event;
+		global $e_userclass, $e_event;
 
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$sql = e107::getDb();
+		$frm = e107::getForm();
+		
 
 		if($id)
 		{
@@ -1775,7 +1779,7 @@ class e_model_interface
 			</fieldset>
 		</form>";	
 		
-		$ns->tablerender($this->pluginTitle." :: ".$this->createCaption, $text);
+		$ns->tablerender($this->pluginTitle." :: ".$this->adminMenu['create']['caption'], $text);
 	}
 	
 	
@@ -1786,16 +1790,21 @@ class e_model_interface
 	 */
 	function submitPage($id=FALSE)
 	{
-		global $sql, $tp, $e107cache, $admin_log, $e_event;
+		global $e107cache, $admin_log, $e_event;
 		$emessage = eMessage::getInstance();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
 		
 		$insert_array = array();
+		
+		//TODO validation and sanitizing using above classes. 
 		
 		foreach($this->fields as $key=>$att)
 		{
 			if($att['forced']!=TRUE)
 			{
-				$insert_array[$key] = $_POST[$key];
+				$insert_array[$key] = $_POST[$key]; 
 			}
 		}
 			
@@ -1803,7 +1812,7 @@ class e_model_interface
 		{
 			$insert_array['WHERE'] = $this->primary." = ".$id;
 			$status = $sql->db_Update($this->table,$insert_array) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
-			$message = LAN_UPDATED;	
+			$message = LAN_UPDATED;	// deliberately ambiguous - to be used on success or error. 
 
 		}
 		else
@@ -1833,10 +1842,90 @@ class e_model_interface
 		
 		$query = $this->primary." = ".$id;
 		$status = $sql->db_Delete($this->table,$query) ? E_MESSAGE_SUCCESS : E_MESSAGE_FAILED;
-		$message = LAN_DELETED;
-		$emessage->add($message, $status);		
+		$message = LAN_DELETED; 
+		$emessage->add($message, $status);	
 	}
 
+
+
+	/**
+	 * Render Form Element (edit page)
+	 * @param object $key
+	 * @param object $row
+	 * @return 
+	 */
+	function renderElement($key,$row)
+	{
+		$frm = e107::getForm();
+		
+		$att = $this->fields[$key];
+		$value = $row[$key];	
+		
+		if($att['type']=='method')
+		{
+			$meth = $key;
+			return $this->$meth($value);
+		}
+		
+		return $frm->text($key, $row[$key], 50);
+			
+	}
+
+
+
+
+	/**
+	 * Render Field value (listing page)
+	 * @param object $key
+	 * @param object $row
+	 * @return 
+	 */
+	function renderValue($key,$row)
+	{
+		$att = $this->fields[$key];	
+		//TODO add checkbox. 
+		if($key == "options")
+		{
+			$id = $this->primary;
+			$text = "<input type='image' class='action edit' name='edit[{$row[$id]}]' src='".ADMIN_EDIT_ICON_PATH."' title='".LAN_EDIT."' />";
+			$text .= "<input type='image' class='action delete' name='delete[{$row[$id]}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$row[$id]} ]' />";
+			return $text;
+		}
+		
+		switch($att['type']) 
+		{
+			case 'url':
+				return "<a href='".$row[$key]."'>".$row[$key]."</a>";
+			break;
+		
+			default:
+				return $row[$key];
+			break;
+		}	
+		return $row[$key] .$att['type'];	
+	}
+
+
+	/**
+	 * Generic Admin Menu Generator
+	 * @param object $action
+	 * @return 
+	 */
+	function show_options($action)
+	{
+		
+		$action = varset($_GET['mode'],'list');
+		
+		foreach($this->adminMenu as $key=>$val)
+		{
+			$var[$key]['text'] = $val['caption'];
+			$var[$key]['link'] = e_SELF."?mode=".$key;
+			$var[$key]['perm'] = $val['perm'];	
+		}
+
+		e_admin_menu($this->pluginTitle, $action, $var);
+	}
+	
 	
 }
 
