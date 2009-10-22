@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/arraystorage_class.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:33:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-10-22 13:00:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -54,6 +54,15 @@ class ArrayData {
 		if ($ArrayData == ""){
 			return false;
 		}
+		
+		// Saftety mechanism for 0.7 -> 0.8 transition. 
+		if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:')
+		{
+			$dat = unserialize($ArrayData);
+			$ArrayData = $this->WriteArray($dat,FALSE);
+		}
+		
+		
 		$data = "";
 		$ArrayData = '$data = '.trim($ArrayData).';';
 		@eval($ArrayData);

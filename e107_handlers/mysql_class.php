@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.58 $
- * $Date: 2009-10-21 09:12:12 $
- * $Author: secretr $
+ * $Revision: 1.59 $
+ * $Date: 2009-10-22 13:00:11 $
+ * $Author: e107coders $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -49,8 +49,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.58 $
- * @author $Author: secretr $
+ * @version $Revision: 1.59 $
+ * @author $Author: e107coders $
  * 
  */
 class e_db_mysql {
@@ -310,6 +310,7 @@ class e_db_mysql {
 		global $db_mySQLQueryCount;
 
 		$table = $this->db_IsLang($table);
+
 		$this->mySQLcurTable = $table;
 		if ($arg != '' && $mode == 'default')
 		{
@@ -915,7 +916,9 @@ class e_db_mysql {
 	{
 		global $pref;
 		
-		if ((!$this->mySQLlanguage || !$pref['multilanguage']) && $multiple==FALSE) 
+		//When running a multi-language site with english included. English must be the main site language. 
+		
+		if ((!$this->mySQLlanguage || !$pref['multilanguage'] || $this->mySQLlanguage=='English') && $multiple==FALSE) 
 		{
 		  	return $table;
 		}

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_tohtml.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-07-19 11:44:28 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.7 $
+|     $Date: 2009-10-22 13:00:37 $
+|     $Author: e107coders $
 |
 | *utf - flags functions which need utf-8-aware code
 TODO:
@@ -25,7 +25,7 @@ TODO:
 */
 
 if (!defined('e107_INIT')) { exit; }
-if (!plugInstalled('linkwords')) exit;
+// if (!plugInstalled('linkwords')) exit; // This will completely break a site during  upgrades. 
 
 define('LW_CACHE_ENABLE', TRUE);
 define('LW_CACHE_TAG', 'nomd5_linkwords');

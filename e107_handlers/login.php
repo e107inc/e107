@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2009-07-25 21:18:09 $
-|     $Author: e107steved $
+|     $Revision: 1.26 $
+|     $Date: 2009-10-22 13:00:11 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -122,6 +122,8 @@ class userlogin
 		}
 
 
+
+
         $qry[0] = "`user_loginname`= '".$tp -> toDB($username)."'";  // username only  (default)
 		$qry[1] = "`user_email` = '".$tp -> toDB($username)."'";   // email only
 		$qry[2] = (strpos($username,'@') !== FALSE ) ? "`user_loginname`= '".$tp -> toDB($username)."'  OR `user_email` = '".$tp -> toDB($username)."'" : $qry[0];  //username or email
@@ -133,7 +135,7 @@ class userlogin
 		{	// Invalid user
 			return $this->invalidLogin($username,LOGIN_BAD_USER,$fip);
 		}
-
+	
 		// User is in DB here
 		$lode = $sql -> db_Fetch(MYSQL_ASSOC);		// Get user info
 		$lode['user_perms'] = trim($lode['user_perms']);
