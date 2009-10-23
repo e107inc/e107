@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.29 2009-10-06 18:58:08 e107steved Exp $
+ * $Id: lan_admin.php,v 1.30 2009-10-23 14:16:08 e107coders Exp $
  *
  * Admin Language File
 */
@@ -175,8 +175,8 @@ define('ADLAN_154', "Error contacting Sourceforge to check for new version");
 define('ADLAN_155', 'System Logs');
 define('ADLAN_156', 'Admin log, user audit, rolling log');
 
-define("ADLAN_157", "Schedule Tasks");
-define("ADLAN_158", "Cron Jobs and Automated Tasks");
+define("ADLAN_157", "Schedule Maintenance");
+define("ADLAN_158", "Cron Jobs and Automated Maintenance");
 
 define("ADLAN_159", "URL Configuration");
 define("ADLAN_160", "Configure Site URLs");

@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_cron.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-06-17 05:39:30 $
+|     $Revision: 1.2 $
+|     $Date: 2009-10-23 14:16:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Schedule Tasks"); }
+if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Schedule Maintenance"); }
 
 define("LAN_CRON_1", "Name");
 define("LAN_CRON_2", "Description");

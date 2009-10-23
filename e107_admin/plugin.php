@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2009-10-20 03:49:12 $
+|     $Revision: 1.50 $
+|     $Date: 2009-10-23 14:16:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -220,7 +220,7 @@ class pluginManager{
 						'del_extended' => varset($_POST['delete_xfields'],FALSE),
 						'del_ipool' => varset($_POST['delete_ipool'],FALSE)
 						);
-					$text .= $plugin->manage_plugin_xml($this->id, 'uninstall', $options);
+					$text .= $plugin->install_plugin_xml($this->id, 'uninstall', $options);
 				}
 				else
 				{	// Deprecated - plugin uses plugin.php
@@ -466,7 +466,7 @@ class pluginManager{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
 			if(file_exists($_path.'plugin.xml'))
 			{
-				$plugin->manage_plugin_xml($this->id, 'upgrade');
+				$plugin->install_plugin_xml($this->id, 'upgrade');
 			}
 			else
 			{
@@ -596,7 +596,7 @@ class pluginManager{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
 			if(file_exists($_path.'plugin.xml'))
 			{
-				$text .= $plugin->manage_plugin_xml($this->id, 'refresh');
+				$text .= $plugin->install_plugin_xml($this->id, 'refresh');
 				$admin_log->log_event('PLUGMAN_04', $this->id.':'.$plug['plugin_path'], E_LOG_INFORMATIVE, '');
 			}
 
