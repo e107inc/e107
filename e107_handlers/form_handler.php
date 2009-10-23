@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.54 $
- * $Date: 2009-10-23 04:25:13 $
- * $Author: e107coders $
+ * $Revision: 1.55 $
+ * $Date: 2009-10-23 18:08:01 $
+ * $Author: secretr $
  *
 */
 
@@ -356,12 +356,12 @@ class e_form
 		return "<optgroup class='optgroup' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
 	}
 
-	function option($option_name, $value, $selected = false, $options = array())
+	function option($option_title, $value, $selected = false, $options = array())
 	{
 		if(false === $value) $value = '';
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
-		return "<option value='{$value}'".$this->get_attributes($options).">{$option_name}</option>";
+		return "<option value='{$value}'".$this->get_attributes($options).">{$option_title}</option>";
 	}
 
 	function option_multi($option_array, $selected = false, $options = array())
@@ -420,9 +420,8 @@ class e_form
 
 	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
-
 		$btype = 'submit';
-		if($action == 'action') $btype = 'button';
+		if(strpos($action, 'action') === 0) $btype = 'button';
 		$options = $this->format_options('admin_button', $name, $options);
 		$options['class'] = $action;//shorthand
 		if(empty($label)) $label = $value;
@@ -472,6 +471,10 @@ class e_form
 
 				case 'title':
 					if($optval) $ret .= " title='{$optval}'";
+					break;
+					
+				case 'label':
+					if($optval) $ret .= " label='{$optval}'";
 					break;
 
 				case 'tabindex':
@@ -582,6 +585,7 @@ class e_form
 			'checked' => false,
 			'disabled' => false,
 			'tabindex' => 0,
+			'label' => '',
 			'other' => ''
 		);
 
@@ -611,7 +615,7 @@ class e_form
 				break;
 
 			case 'option':
-				$def_options = array('class' => '', 'selected' => false, 'other' => '');
+				$def_options = array('class' => '', 'selected' => false, 'other' => '', 'disabled' => false, 'label' => '');
 				break;
 
 			case 'radio':
@@ -652,11 +656,11 @@ class e_form
 	{
 		$columnsArray = array_filter($columnsArray);
         $text = "
-		<div style='position:relative;float:right;'>
+		<div class='col-selection-cont'>
 			<a href='#".$id."' class='e-show-if-js e-expandit' title='Click to select columns to display'>"
 				."<img class='icon' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' />"
 			."</a>
-			<div id='".$id."' class='e-show-if-js e-hideme col-selection'>
+			<div id='".$id."' class='e-show-if-js e-hideme col-selection'><div class='col-selection-body'>
 		";
         unset($columnsArray['options'], $columnsArray['checkboxes']);
 
@@ -678,7 +682,7 @@ class e_form
 				<div id='{$id}-button' class='right'>
 					".$this->admin_button('submit-e-columns', LAN_SAVE, 'update')."
 				</div>
-			</div>
+			</div></div>
 		</div>
 		";  
 
@@ -717,7 +721,11 @@ class e_form
 		
 		if(strpos($querypattern,'&')!==FALSE)
 		{
-			$tmp = $_GET; // we can assume it's always $_GET since that's what it will generate 
+			// we can assume it's always $_GET since that's what it will generate 
+			// more flexible (e.g. pass default values for order/field when they can't be found in e_QUERY) & secure
+			$tmp = $requeststr ? $requeststr : str_replace('&amp;', '&', e_QUERY); 
+			parse_str($tmp, $tmp);
+			
 			$etmp = array();
 			parse_str($querypattern,$etmp);
 		}
@@ -726,12 +734,9 @@ class e_form
 			$tmp = explode(".", ($requeststr ? $requeststr : e_QUERY)); 
 			$etmp = explode(".", $querypattern);
 		}
-		
-
 
 		foreach($etmp as $key => $val)    // I'm sure there's a more efficient way to do this, but too tired to see it right now!.
 		{
-
         	if($val == "[FIELD]")
 			{
             	$field = $tmp[$key];
@@ -746,22 +751,20 @@ class e_form
             	$fromval = $tmp[$key];
 			}
 		}
-		
-
-
 
 		if(!varset($fromval)){ $fromval = 0; }
 
         $ascdesc = (varset($ascdesc) == 'desc') ? 'asc' : 'desc';
-
 		foreach($fieldarray as $key=>$val)
 		{
-     		if(in_array($key,$columnPref) || $key == "options" || (vartrue($val['forced'])))
+     		if(in_array($key,$columnPref) || $key == 'options' || (vartrue($val['forced'])))
 			{
-				$cl = (varset($val['thclass'])) ? "class='".$val['thclass']."'" : "";
-				$text .= "\n\t<th id='e-column-".$key."' {$cl}>";
+				$cl = (vartrue($val['thclass'])) ? " class='".$val['thclass']."'" : "";
+				$text .= "
+					<th id='e-column-".str_replace('_', '-', $key)."'{$cl}>
+				";
 
-                if($querypattern!="" && !varsettrue($val['nosort']) && $key != "options")
+                if($querypattern!="" && !varsettrue($val['nosort']) && $key != "options" && $key != "checkboxes")
 				{
 					$from = ($key == $field) ? $fromval : 0;
 					$srch = array("[FIELD]","[ASC]","[FROM]");
@@ -769,14 +772,16 @@ class e_form
                 	$val['url'] = e_SELF."?".str_replace($srch,$repl,$querypattern);
 				}
 
-				$text .= (varset($val['url'])) ? "<a href='".str_replace("&","&amp;",$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
-	            $text .= $val['title'];
+				$text .= (vartrue($val['url'])) ? "<a href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
+	            $text .= vartrue($val['title'], '');
 				$text .= ($val['url']) ? "</a>" : "";
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
-				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle', $val['toggle']) : "";
+				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle', vartrue($val['toggle'], 'multiselect')) : "";
 
 
-	 			$text .= "</th>";
+	 			$text .= "
+					</th>
+				";
 			}
 		}
 
@@ -796,8 +801,18 @@ class e_form
 		foreach ($fieldarray as $field => $data)
 		{
 			//Not found
-			if(!$data['forced'] && (!in_array($field, $currentlist) || !isset($fieldvalues[$field])))
+			if(!$data['forced'] && !in_array($field, $currentlist))
 			{
+				continue;
+			}
+			elseif(!$data['forced'] && !isset($fieldvalues[$field]))
+			{
+				$ret .= "
+					<td>
+						Not Found!
+					</td>
+				";
+				
 				continue;
 			}
 			
@@ -809,6 +824,13 @@ class e_form
 			
 			$value = $fieldvalues[$field];
 			
+			$parms = array();
+			if(isset($data['colparms']))
+			{
+				if(!is_array($data['colparms'])) parse_str($data['colparms'], $data['colparms']);
+				$parms = $data['colparms'];
+			}
+
 			switch($field)
 			{
 				case 'options':
@@ -816,7 +838,7 @@ class e_form
 				break;
 			
 				case 'checkboxes':
-					$value = $this->checkbox($data['toggle'].'[]', $value);
+					$value = $this->checkbox(vartrue($data['toggle'], 'multiselect').'[]', $value);
 					$data['type'] = 'text';
 				break;
 			}
@@ -830,21 +852,31 @@ class e_form
 				break;
 				
 				case 'datestamp':
-					$mask = 'short';
-					if(is_array($value)) 
-					{
-						$mask = $value[1];
-						$value = $value[0];
-					}
-					$value = e107::getDateConvert()->convert_date($value, $mask);
+					$value = e107::getDateConvert()->convert_date($value, vartrue($parms['mask'], 'short'));
 				break;
 				
 				case 'userclass':
 					$value = $this->_uc->uc_get_classname($value);
 				break;
 				
+				case 'user_name':
+				case 'user_loginname':
+				case 'user_login':
+				case 'user_customtitle':
+				case 'user_email':
+					$value = get_user_data($value);
+					if($value)
+					{
+						$value = $value[$data['type']] ? $value[$data['type']] : $value['user_name'];
+					}
+					else 
+					{
+						$value = 'not found';
+					}
+				break;
+				
 				case 'boolean':
-					$value = $value ? ADMIN_TRUE_ICON : '';
+					$value = $value ? ADMIN_TRUE_ICON : '';// TODO  - ADMIN_FALSE_ICON
 				break;
 				
 				//TODO - form_userclass, order,... and maybe more types
@@ -852,6 +884,16 @@ class e_form
 				default:
 					continue; //unknown type
 				break;
+			}
+			
+			//TODO - this should be done per type!
+			if(vartrue($parms['truncate']))
+			{
+				$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+			}
+			elseif(vartrue($parms['htmltruncate']))
+			{
+				$value = e107::getParser()->html_truncate($value, $parms['htmltruncate'], '...');
 			}
 			
 			$ret .= '
@@ -940,23 +982,49 @@ class e_form
       $text = "
          <div class='f-left'>
          <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
-			<select class='tbox e-execute-batch' name='execute_batch'>
-			<option value=''>With selected...</option>\n";
-
+			".$this->select_open('execute_batch', array('class' => 'tbox select e-execute-batch', 'id' => false))."
+				".$this->option('With selected...', '')."
+		";
+		
+		
+		//used for getperms() check 
+		$permissions = vartrue($options['__permissions'], array());
+		//used for check_classs() check
+		$classes = vartrue($options['__check_class'], array());
+		unset($options['__permissions'], $options['__check_class']);
+		
 		foreach ($options as $key => $val)
 		{
+			if(isset($permissions[$key]) && !getperms($permissions[$key]))
+			{
+				continue;
+			}
+			$disabled = false;
+			if(isset($classes[$key]) && !is_array($classes[$key]) && !check_class($classes[$key]))
+			{
+				$disabled = true; 
+			}
 			if(!is_array($val))
 			{
-				$text .= "<option value='".$key."'>".$val."</option>\n";					
+				if($disabled) $val = $val.' ('.LAN_NOPERMISSION.')';
+				$text .= "\t".$this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.$val, $key, false, array('disabled' => $disabled))."\n";		
 			}
 			else
 			{
-	            $text .= "<optgroup label='".$val[0]."'>\n";
+				if($disabled) $val[0] = $val[0].' ('.LAN_NOPERMISSION.')';
+				
+				$text .= "\t".$this->optgroup_open($val[0], $disabled)."\n";
 		      	foreach ($val[1] as $k => $v)
 		      	{
-		      		$text .= "\t<option value='".$key."_selected_".$k."'>".$v."</option>\n";
+		      		$disabled = false; 
+					if(isset($classes[$key][$k]) && !check_class($classes[$key][$k]))
+					{
+						$disabled = true; 
+						$v = $v.' ('.LAN_NOPERMISSION.')';
+					}
+					$text .= "\t\t".$this->option($v, $key.'_selected_'.$k, false, array('disabled' => $disabled))."\n";	
 		      	}
-		      	$text .= "</optgroup>\n";
+		      	$text .= $this->optgroup_close()."\n";
 				
 			}		   
 		}
@@ -966,21 +1034,22 @@ class e_form
 		{
 	   		foreach ($ucOptions as $ucKey => $ucVal)
 			{
-	            $text .= "<optgroup label='".$ucVal[0]."'>\n";
+				$text .= "\t".$this->optgroup_open($ucVal[0])."\n";
 	      		foreach ($ucVal[1] as $key => $val)
 	      		{
-	      			$text .= "\t<option value='".$ucKey."_selected_".$val['userclass_name']['userclass_id']."'>".$val['userclass_name']['userclass_name']."</option>\n";
+	      			$text .= "\t\t".$this->option($val['userclass_name']['userclass_name'], $ucKey.'_selected_'.$val['userclass_name']['userclass_id'])."\n";
 	      		}
-	      		$text .= "</optgroup>\n";
+	      		$text .= $this->optgroup_close()."\n";
 			}
 		}
 		
 
 		$text .= "
-			</select>
-			<button class='update e-hide-if-js' type='submit' value='no-value'><span>Go</span></button>
+				".$this->select_close()."
+				".$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
 			</div>
-			<span class='clear'>&nbsp;</span>";
+		";
+		
 		return $text;
 	}
 }

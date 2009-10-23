@@ -417,6 +417,10 @@ img.S128		{ width: 128px; height: 128px }
 .adminlist tr.odd {}
 .adminlist tr.even { background-color:#f6f6f6; }
 
+.adminlist .col-selection-cont { position: relative; float:right; }
+.col-selection-cont .col-selection { text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px; overflow:visible; position: absolute; z-index:101; right:0px;}
+.col-selection .col-selection-body { padding: 5px; clear: both; }
+
 /* Form elements */ 
 input.input-text,
 textarea,
@@ -461,7 +465,6 @@ label { cursor: pointer; }
 /* form used for settings */
 .col-label { width: 250px; }
 .col-control {}
-.col-selection { padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
 
 
 
@@ -500,6 +503,8 @@ label { cursor: pointer; }
 
 .adminedit td.label {}
 .adminedit td.control {}
+
+
 
 
 /* Admin Info Table */ 
