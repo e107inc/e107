@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-10-22 19:14:26 $
+|     $Revision: 1.8 $
+|     $Date: 2009-10-23 13:06:21 $
 |     $Author: secretr $
 |
 +----------------------------------------------------------------------------+
@@ -49,15 +49,15 @@ class convert
 			break;
 
 			case 'forum': // DEPRECATED - temporary here from BC reasons only
-			default:
+			default: 
 				//BC - old 'forum' call
-				if(strpos('%', $mask) === FALSE)
+				if(strpos($mask, '%') === FALSE)
 				{
 					$mask = e107::getPref('forumdate');
 				}
 			break;
 		}
-
+		
 		$datestamp += TIMEOFFSET;
 		return strftime($mask, $datestamp);
 	}
