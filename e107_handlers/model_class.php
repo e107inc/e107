@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-10-22 14:18:18 $
- * $Author: secretr $
+ * $Revision: 1.21 $
+ * $Date: 2009-10-23 04:25:13 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1716,24 +1716,32 @@ class e_model_interface
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		$pref = e107::getConfig()->getPref();
-				
+		$tp = e107::getParser();
+		
+		$amount = 20; // do we hardcode or let the plugin developer decide.. OR - a pref in admin?
+		$from = vartrue($_GET['frm']) ? $_GET['frm'] : 0;	//TODO sanitize?. 	
 
         $text = "<form method='post' action='".e_SELF."?mode=create'>
                         <fieldset id='core-".$this->table."-list'>
 						<legend class='e-hideme'>".$this->pluginTitle."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
-							$frm->thead($this->fields,$this->fieldpref).
+							$frm->thead($this->fields,$this->fieldpref, 'mode='.$this->mode.'&fld=[FIELD]&asc=[ASC]&frm=[FROM]').
 
 							"<tbody>";
 
 
-		if(!$sql->db_Select_gen($this->listQry))
+		if(!$total = $sql->db_Select_gen($this->listQry))
 		{
 			$text .= "\n<tr><td colspan='".count($this->fields)."' class='center middle'>".LAN_NO_RECORDS."</td></tr>\n";
 		}
 		else
 		{
+			$query = $this->listQry;
+			$query .= ($_GET['fld'] && $_GET['asc']) ? " ORDER BY ".$_GET['fld']." ".$_GET['asc'] : "";
+			$query .= " LIMIT ".$from.",".$amount;
+			
+			$sql->db_Select_gen($query);
 			$row = $sql->db_getList('ALL', FALSE, FALSE);
 
 			foreach($row as $field)
@@ -1756,6 +1764,8 @@ class e_model_interface
 		";
 		
 		//TODO Auto next/prev
+		 $parms = $total.",".$amount.",".$from.",".e_SELF.'?action='.$this->mode.'&frm=[FROM]';
+      	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
 		$ns->tablerender($this->pluginTitle." :: ".$this->adminMenu['list']['caption'], $mes->render().$text);
 	}
