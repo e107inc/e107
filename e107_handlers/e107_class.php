@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.58 $
- * $Date: 2009-10-22 14:18:18 $
+ * $Revision: 1.59 $
+ * $Date: 2009-10-23 18:14:42 $
  * $Author: secretr $
 */
 
@@ -753,15 +753,16 @@ class e107
 	 * Retrieve form handler singleton or new fresh object
 	 *
 	 * @param boolean $singleton default false
+	 * @param boolean $tabindex passed to e_form when initialized as an object (not singleton)
 	 * @return e_form
 	 */
-	public static function getForm($singleton = false)
+	public static function getForm($singleton = false, $tabindex = false)
 	{
 		if($singleton)
 		{
 			return self::getSingleton('e_form', true);
 		}
-		return self::getObject('e_form', null, true);
+		return self::getObject('e_form', $tabindex, true);
 	}
 	
 	/**

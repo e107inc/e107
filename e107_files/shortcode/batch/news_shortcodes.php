@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.30 2009-09-28 21:00:16 e107steved Exp $
+* $Id: news_shortcodes.php,v 1.31 2009-10-23 18:14:42 secretr Exp $
 *
 * News shortcode batch
 */
@@ -293,7 +293,7 @@ class news_shortcodes
 		switch($parm)
 		{
 			case 'src':
-				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? e_IMAGE_ABS.$this->news_item['news_thumbnail'] : '');
+				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'] : '');
 			break;
 			
 			case 'tag':

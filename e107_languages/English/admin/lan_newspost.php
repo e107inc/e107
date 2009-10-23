@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-09-13 16:37:18 $
+|     $Revision: 1.13 $
+|     $Date: 2009-10-23 18:14:41 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ define("NWSLAN_38", "Are you sure you want to delete this submitted news item?")
 define("NWSLAN_39", "Are you sure you want to delete this news item?");
 define("NWSLAN_40", "Title");
 
-define("NWSLAN_42", "Untitled");
+//define("NWSLAN_42", "Untitled"); - not allowed anymore
 define("NWSLAN_43", "No news items");
 define("NWSLAN_44", "News Front Page");
 define("NWSLAN_45", "Create News Item");
