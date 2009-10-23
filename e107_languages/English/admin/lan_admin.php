@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.30 2009-10-23 14:16:08 e107coders Exp $
+ * $Id: lan_admin.php,v 1.31 2009-10-23 18:14:42 secretr Exp $
  *
  * Admin Language File
 */
@@ -283,7 +283,9 @@ define("LAN_ENABLED", "Enabled");
 define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
 define("LAN_CONFIGURE", "Configure");
 
-define("LAN_BACK","Back");
+define("LAN_BACK", "Back");
+
+define("LAN_NOPERMISSION", "no permissions");
 
 define("LAN_CREDITS","Credits");
 define("LAN_NEWVERSION","New Version Available");
