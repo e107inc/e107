@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-10-23 09:08:15 $
+|     $Revision: 1.6 $
+|     $Date: 2009-10-23 14:16:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,8 @@ class cron
 
     function cron()
 	{
-
+		global $pref;
+		
     	$this->cronAction = e_QUERY;
 
         if(isset($_POST['submit']))
@@ -58,20 +59,19 @@ class cron
 		
 		if(isset($_POST['execute']))
 		{
-			$func = key($_POST['execute']);
-			$this -> cronExecute($func);
+			$class_func = key($_POST['execute']);
+			$this -> cronExecute($class_func);
 		}
 
 		// Set Core Cron Options.
-
-		$this->coreCrons['user'] = array(
-			0 => array('name'=>'User Purge','function' => 'user_purge', 'description'=>'Purge Unactivated Users'),
-			1 => array('name'=>'User UnActivated','function' => 'user_unactivated', 'description'=>'Resend activation email to unactivated users.')
-		);
 		
-		$this->coreCrons['news'] = array(
-			0 => array('name'=>'News Sticky','function' => 'news_purge', 'description'=>'Remove Sticky News Items')
-		);
+		$this->coreCrons['_system'] = array(
+			0 => array('name' => "Test Email", 'function' => "sendEmail", 'description' => "Send a test email to ".$pref['siteadminemail']."<br />Recommended to test the scheduling system."),
+		//	1 => array('name'=>'User Purge', 'function' => 'userPurge', 'description'=>'Purge Unactivated Users'),
+		//	2 => array('name'=>'User UnActivated', 'function' => 'userUnactivated', 'description'=>'Resend activation email to unactivated users.'),
+		//	3 => array('name'=>'News Sticky', 'function' => 'newsPurge', 'description'=>'Remove Sticky News Items')		
+		);		
+	
 		
 
         // These core functions need to be put into e_BASE/cron.php  ie. news_purge()
@@ -80,6 +80,8 @@ class cron
 		{
 			$this -> cronRenderPage();
 		}
+		
+		
 
 		if($this->cronAction == "pref")
 		{
@@ -88,7 +90,7 @@ class cron
 	}
 	
 	
-	function cronExecute($func)
+	function cronExecute($class_func)
 	{
 		//TODO LANs
 		$mes = eMessage::getInstance();
@@ -114,12 +116,17 @@ class cron
 		global $pref;
 		
 		$mes = e107::getMessage();
+		$activeCount = 0;
 		
     	foreach($_POST['cron'] as $key=>$val)
 		{
 	    	if(!$val['active'])
 			{
 	         	$val['active'] = 0;
+			}
+			else
+			{
+				$activeCount++;
 			}
 
 			$t['minute'] 	= implode(",",$_POST['tab'][$key]['minute']);
@@ -135,17 +142,39 @@ class cron
 			
 			$val['function'] = $func;
 			$val['class']	= $class;
+			$val['path']	= $class;
 			
 	    	$cron[$key] = $val;
 		}
 
 		$pref['e_cron_pref'] = $cron;
 		
+		if(!vartrue($pref['e_cron_pwd']) || varset($_POST['generate_pwd']))
+		{	
+		
+			require_once (e_HANDLER.'user_handler.php');
+			$userMethods = new UserHandler;
+			
+			//		# - an alpha character
+	//		. - a numeric character
+	//		* - an alphanumeric character
+	//		^ - next character from seed
+			
+			$newpwd = $userMethods->generateRandomString('*^*#.**^*');
+			$newpwd = sha1($newpwd.time());			
+			$pref['e_cron_pwd'] = $newpwd; 
+			$setpwd_message = "Use the following Cron Command:<br /><b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
+			This cron command is unique and will not be displayed again. Please copy and paste it into your webserver cron area to be run every minute of every day.";
+			$mes->add($setpwd_message, E_MESSAGE_WARNING);
+		}
+		
+		
 	//	print_a($pref['e_cron_pref']);
 
 		if(save_prefs())
 		{
 	  		$mes->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
+			$mes->add($activeCount." Cron(s) Active", E_MESSAGE_SUCCESS);
 		}
 		else
 		{
@@ -168,16 +197,12 @@ class cron
 	    </td>
 	    </tr>
 
-	    <tr>
-	    <td style='width:30%'>bcc: </td>
-	    <td style='width:70%'>
-	    <input type='text' name='name2' class='tbox' style='width:80%' value='' />
-	    </td>
-	    </tr>
+
 
 	    <tr style='vertical-align:top'>
 	    <td colspan='2' class='center buttons-bar'>";
 	    $text .= $frm->admin_button('save_prefs',LAN_SAVE, 'update');
+		
 	    $text .= "</td>
 	    </tr>
 	    </table>
@@ -203,13 +228,15 @@ class cron
 		$mes = e107::getMessage();
 
 		$core_cron = $this->coreCrons;
-				
+		$new_cron = array();
+		
+		
 		foreach($pref['e_cron_list'] as $key=>$val)
 		{
 			$eplug_cron = array();
 			if(is_readable(e_PLUGIN.$key."/e_cron.php"))
 			{
-				require_once(e_PLUGIN.$key."/e_cron.php");
+				include_once(e_PLUGIN.$key."/e_cron.php");
 				
 				$class_name = $key."_cron";
 				$method_name = 'config';
@@ -234,7 +261,8 @@ class cron
 		}
 		
 		$e_cron = array_merge($core_cron,$new_cron);
-	
+
+//	print_a($e_cron);	
 		
 	// ----------------------  List All Functions -----------------------------
 
@@ -316,7 +344,7 @@ class cron
 					if($sep['minute'] == $key)
 					{
 						$sel = "selected='selected'";
-						$minute = "";
+						$minute = array();
 					}
 					else
 					{
@@ -342,7 +370,7 @@ class cron
 					if($sep['hour'] == $key)
 					{
 						$sel = "selected='selected'";
-						$hour = "";
+						$hour = array();
 					}
 					else
 					{
@@ -416,6 +444,7 @@ class cron
 		   <div class='center buttons-bar'>";
 		 //  $text .= "<input class='button' type='submit' name='submit' value='".LAN_SAVE."' />";
 		   $text .=  $frm->admin_button('submit', LAN_SAVE, $action = 'update');
+		   $text .= $frm->checkbox_switch('generate_pwd',1,'','Generate new cron command');
 		   $text .= "</div></td>
 		   </tr>
 		   </tbody>
@@ -433,12 +462,12 @@ class cron
 
 		$var['main']['text'] = PAGE_NAME;
 		$var['main']['link'] = e_SELF;
-
+/*
 		$var['pref']['text'] = LAN_PREFS;
 		$var['pref']['link'] = e_SELF."?pref";
 		$var['pref']['perm'] = "N";
 
-		$action = ($this->cronAction) ? $this->cronAction : "main";
+	*/	$action = ($this->cronAction) ? $this->cronAction : "main";
 
 		e_admin_menu(PAGE_NAME, $action, $var);
 	}

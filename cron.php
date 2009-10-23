@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/cron.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-10-23 09:08:15 $
+|     $Revision: 1.5 $
+|     $Date: 2009-10-23 14:16:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,11 +22,25 @@
 
 $_E107['cli'] = TRUE;
 require_once(realpath(dirname(__FILE__)."/class2.php"));
+	
+	$pwd = trim($_SERVER['argv'][1]);
+	if($pref['e_cron_pwd'] != $pwd)
+	{
+		require_once(e_HANDLER."mail.php");
+		$message = "Your Cron Schedule is not configured correctly. Your passwords do not match.
+		<br /><br /> 
+		Sent from cron: ".$pwd."<br />
+		Stored in e107: ".$pref['e_cron_pwd']."<br /><br />
+		You should regenerate the cron command in admin and enter it again in your server configuration. 
+		";
+						
+	    sendemail($pref['siteadminemail'], "e107 - Cron Schedule Misconfigured.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+		exit;
+	}
+
 // from the plugin directory:
 // realpath(dirname(__FILE__)."/../../")."/";
 
-//echo "\n\nUSERNAME= ".USERNAME."\n";
-//echo "\nUSEREMAIL= ".USEREMAIL."\n";
 
 if($pref['e_cron_pref']) // grab cron
 {
@@ -39,29 +53,42 @@ if($pref['e_cron_pref']) // grab cron
 	}
 }
 
+
 require_once(e_HANDLER."cron_class.php");
 
+
 $cron = new CronParser();
+
 foreach($list as $func=>$val)
 {
 	$cron->calcLastRan($val['tab']);
-
 	$due = $cron->getLastRanUnix();
+	
     if($due > (time()-45))
 	{
-		if(is_readable(e_PLUGIN.$val['path']."/e_cron.php"))
+		if(($val['path']=='_system') || is_readable(e_PLUGIN.$val['path']."/e_cron.php"))
 		{
-			//	echo date("r")." ".$func."\n";
-			require_once(e_PLUGIN.$val['path']."/e_cron.php");
-
-			require_once(e_HANDLER."mail.php");
-			$message = "Your Cron Job worked correctly. Sent at ".date("r").".";
-	    	sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
-
-	      	if(call_user_func($func)===FALSE)
+			if($val['path'] != '_system')
 			{
-	        	// echo "\nerror running the function ".$func.".\n"; log the error.
+				include_once(e_PLUGIN.$val['path']."/e_cron.php");
 			}
+				
+			$classname = $val['class']."_cron";
+			if(class_exists($classname))
+			{
+				$obj = new $classname;
+				if(method_exists($obj,$val['function']))
+				{
+					//	$mes->add("Executing config function <b>".$key." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
+					$status = call_user_func(array($obj,$val['function']));
+					if(!$status)
+					{
+						//TODO log error in admin log. 
+						// echo "\nerror running the function ".$func.".\n"; log the error.
+					}					 					
+				}
+			}
+
 		}
 	}
     //  echo "Cron Unix = ". $cron->getLastRanUnix();
@@ -70,6 +97,32 @@ foreach($list as $func=>$val)
 }
 
 
+
+class _system_cron 
+{
+	
+	// See admin/cron.php to configure more core cron function to be added below.  
+	
+	
+	function myfunction() 
+	{
+	    // Whatever code you wish.
+	}
+	
+		
+	function sendEmail() // Test Email. 
+	{
+		global $pref;
+	    require_once(e_HANDLER."mail.php");
+		$message = "Your Cron test worked correctly. Sent at ".date("r").".";
+		
+	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+	}
+	
+	
+	
+	
+}
 
 
 // echo "<br />Cron '$cron_str0' last due at: " . date('r', $cron->getLastRanUnix()) . "<p>";
