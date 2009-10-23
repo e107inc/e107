@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/cron.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-23 08:34:20 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.4 $
+|     $Date: 2009-10-23 09:08:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,12 +32,10 @@ if($pref['e_cron_pref']) // grab cron
 {
 	foreach($pref['e_cron_pref'] as $func=>$cron)
 	{
-
     	if($cron['active']==1)
 		{
         	$list[$func] = $cron;
 		}
-
 	}
 }
 
@@ -55,6 +53,10 @@ foreach($list as $func=>$val)
 		{
 			//	echo date("r")." ".$func."\n";
 			require_once(e_PLUGIN.$val['path']."/e_cron.php");
+
+			require_once(e_HANDLER."mail.php");
+			$message = "Your Cron Job worked correctly. Sent at ".date("r").".";
+	    	sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 
 	      	if(call_user_func($func)===FALSE)
 			{

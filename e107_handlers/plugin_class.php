@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2009-10-22 04:14:35 $
+|     $Revision: 1.105 $
+|     $Date: 2009-10-23 09:08:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,8 @@ class e107plugin
 		'e_header',
 		'e_userinfo',
 		'e_tagwords',
-		'e_url'
+		'e_url',
+		'e_cron'
 		);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
@@ -160,7 +161,7 @@ class e107plugin
 		
 		$p_installed = e107::getPref('plug_installed',array()); // load preference; 
 		require_once(e_HANDLER."message_handler.php");
-		$emessage = eMessage::getInstance();
+		$mes = eMessage::getInstance();
 
 		foreach($pluginList as $p)
 		{
@@ -169,7 +170,7 @@ class e107plugin
 
 			if(strpos($plugin_path,'e107_')!==FALSE)
 			{
-				$emessage->add("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.", E_MESSAGE_WARNING);
+				$mes->add("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.", E_MESSAGE_WARNING);
 				continue;
 			}
 			$plug['plug_action'] = 'scan';			// Make sure plugin.php knows what we're up to
@@ -179,16 +180,11 @@ class e107plugin
 			if(!$this->parse_plugin($p['path']))
 			{
 				//parsing of plugin.php/plugin.xml failed.			  
-				$emessage->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
+				$mes->add("Parsing failed - file format error: {$p['path']}", E_MESSAGE_ERROR);
 			  	continue;		// Carry on and do any others that are OK
 			}
 						
 			$plug_info = $this->plug_vars;
-		//	$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
-
-			// scan for addons.
-			$eplug_addons = $this->getAddons($plugin_path);			// Returns comma-separated list
-			//		  $eplug_addons = $this->getAddons($plugin_path,'check');		// Checks opening/closing tags on addon files
 
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml
 			if ($plugin_path == $plug_info['folder'])
@@ -236,25 +232,21 @@ class e107plugin
 						}
 					}
 				}
-				else
-				{  // New plugin - not in table yet, so add it. If no install needed, mark it as 'installed'
-					//SecretR - update to latest XML version
+				else // New plugin - not in table yet, so add it. If no install needed, mark it as 'installed'
+				{  
 					if ($plug_info['@attributes']['name'])
 					{
-//					  echo "New plugin to add: {$plug_info['name']}<br />";
-						// Can just add to DB - shouldn't matter that its not in our current table
-						//				echo "Trying to insert: ".$eplug_folder."<br />";
+						$eplug_addons = $this->getAddons($plugin_path);	// Only scan for newly installed. 
+
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1 );
 						if(e107::getDb()->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' "))
 						{
-							$emessage->add("Added <b>".$plug_info['@attributes']['name']."</b> to the plugin table.", E_MESSAGE_DEBUG);	
+							$mes->add("Added <b>".$plug_info['@attributes']['name']."</b> to the plugin table.", E_MESSAGE_DEBUG);	
 						}
 						else
 						{
-							$emessage->add("Failed to add ".$plug_info['@attributes']['name']." to the plugin table.", E_MESSAGE_DEBUG);							
-						}
-	
-						
+							$mes->add("Failed to add ".$plug_info['@attributes']['name']." to the plugin table.", E_MESSAGE_DEBUG);							
+						}					
 					}
 				}
 			}
@@ -309,7 +301,7 @@ class e107plugin
 	{
 		global $iconpool,$pref;
 		
-		$emessage = eMessage::getInstance();
+		$mes = eMessage::getInstance();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$fl = e107::getFile();
@@ -321,7 +313,7 @@ class e107plugin
 				$ipool_entry = 'plugin-'.$plugin;
 				e107::getConfig('ipool')->remove($ipool_entry); 	// FIXME - ipool removal issue. 
 	        	$status = (e107::getConfig('ipool')->save(FALSE)) ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$emessage->add('Removing Icon-Pool entry: '.$ipool_entry, $status); 
+				$mes->add('Removing Icon-Pool entry: '.$ipool_entry, $status); 
 			}
 			return;
 		}
@@ -893,12 +885,12 @@ class e107plugin
 	//		'del_userclasses' - to delete userclasses created
 	//		'del_tables' - to delete DB tables
 	//		'del_extended' - to delete extended fields
-	function manage_plugin_xml($id, $function='', $options = FALSE)
+	function install_plugin_xml($id, $function='', $options = FALSE)
 	{
 		global $pref;
 
 		$sql = e107::getDb();
-		$emessage = eMessage::getInstance();
+		$mes = eMessage::getInstance();
 			
 		$error = array();			// Array of error messages
 		$canContinue = TRUE;		// Clear flag if must abort part way through
@@ -975,7 +967,7 @@ class e107plugin
 				$tableList = $dbHandler->get_table_def('',$path.$sqlFile);
 				if (!is_array($tableList))
 				{
-					$emessage->add("Can't read SQL definition: ".$path.$sqlFile,E_MESSAGE_ERROR);
+					$mes->add("Can't read SQL definition: ".$path.$sqlFile,E_MESSAGE_ERROR);
 					break;
 				}
 				// Got the required definition here
@@ -989,7 +981,7 @@ class e107plugin
 							$sqlTable = str_replace("CREATE TABLE ".MPREFIX.'`', "CREATE TABLE `".MPREFIX, preg_replace("/create table\s+/si", "CREATE TABLE ".MPREFIX, $ct[0]));
 							$txt = "Adding table: {$ct[1]} ... ";
 							$status = $this->manage_tables('add', array($sqlTable)) ? E_MESSAGE_SUCCESS: E_MESSAGE_ERROR;		// Pass the statement to create the table
-							$emessage->add($txt,$status);
+							$mes->add($txt,$status);
 							break;
 						case 'upgrade' :
 							$tmp = $dbHandler->update_table_structure($ct,FALSE,TRUE, $pref['multilanguage']);
@@ -1009,11 +1001,11 @@ class e107plugin
 							{
 								$txt = "Removing table {$ct[1]} <br />";
 								$status = $this->manage_tables('remove', array($ct[1])) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;				// Delete the table
-								$emessage->add($txt,$status);
+								$mes->add($txt,$status);
 							}
 							else
 							{								
-								$emessage->add("Table {$ct[1]} left in place.",E_MESSAGE_SUCCESS);
+								$mes->add("Table {$ct[1]} left in place.",E_MESSAGE_SUCCESS);
 							}
 							break;
 					}
@@ -1099,7 +1091,7 @@ class e107plugin
 		{
 			if(isset($plug_vars['management']['installDone'][0]))
 			{
-				$emessage->add($plug_vars['management']['installDone'][0], E_MESSAGE_SUCCESS);
+				$mes->add($plug_vars['management']['installDone'][0], E_MESSAGE_SUCCESS);
 			}
 		}*/
 		
@@ -1114,7 +1106,7 @@ class e107plugin
 					$text .= "&nbsp;<a href='".$this->plugConfigFile."'>[".LAN_CONFIGURE."]</a>";	
 				}
 				
-				$emessage->add($text, E_MESSAGE_SUCCESS);
+				$mes->add($text, E_MESSAGE_SUCCESS);
 			}		
 			
 		} 
@@ -1133,7 +1125,7 @@ class e107plugin
 	function XmlDependencies($tag)
 	{
 		$canContinue = TRUE;
-		$emessage = eMessage::getInstance();
+		$mes = eMessage::getInstance();
 		$error = array();
 		
 		foreach ($tag as $dt => $dv)
@@ -1190,7 +1182,7 @@ class e107plugin
 		if(count($error))
 		{
 			$text = '<b>'.LAN_INSTALL_FAIL.'</b><br />'.implode('<br />',$error);
-			$emessage->add($text, E_MESSAGE_ERROR); 	
+			$mes->add($text, E_MESSAGE_ERROR); 	
 		}
 		
 		return $canContinue;
@@ -1254,7 +1246,7 @@ class e107plugin
 	 */
 	function XmlSiteLinks($function,$array)
 	{
-		$emessage = &eMessage::getInstance();
+		$mes = e107::getMessage();
 		
 		foreach($array['link'] as $link)
 		{
@@ -1272,13 +1264,13 @@ class e107plugin
 						if(!$remove) // Add any non-deprecated link 
 						{							
 							$status = ($this->manage_link('add', $url, $linkName, $perm)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$emessage->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); 
+							$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); 
 						}
 						
 						if($function == 'upgrade' && $remove) //remove inactive links on upgrade
 						{
 							$status = ($this->manage_link('remove', $url, $linkName)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$emessage->add("Removing Link: {$linkName} with url [{$url}]", $status);
+							$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
 						}
 						break;
 
@@ -1288,7 +1280,7 @@ class e107plugin
 					case 'uninstall': //remove all links
 						
 						$status = ($this->manage_link('remove', $url, $linkName)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$emessage->add("Removing Link: {$linkName} with url [{$url}]", $status); 
+						$mes->add("Removing Link: {$linkName} with url [{$url}]", $status); 
 						break;
 				}
 			}		
@@ -1322,7 +1314,7 @@ class e107plugin
 	 */
 	function XmlUserClasses($function,$array)
 	{
-		$emessage = &eMessage::getInstance();
+		$mes = e107::getMessage();
 		
 		foreach($array['class'] as $uclass)
 		{
@@ -1340,14 +1332,14 @@ class e107plugin
 						if(!$remove) // Add all active userclasses (code checks for already installed)
 						{
 							$status = $this->manage_userclass('add', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$emessage->add('Adding Userclass: '.$name, $status); 
+							$mes->add('Adding Userclass: '.$name, $status); 
 						}
 	
 						
 						if($function == 'upgrade' && $remove) //If upgrading, removing any inactive userclass
 						{
 							$status = $this->manage_userclass('remove', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;			
-							$emessage->add('Removing Userclass: '.$name, $status); 
+							$mes->add('Removing Userclass: '.$name, $status); 
 						}
 						
 					break;
@@ -1358,11 +1350,11 @@ class e107plugin
 						if (varsettrue($this->unInstallOpts['del_userclasses'], FALSE))
 						{
 							$status = $this->manage_userclass('remove', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$emessage->add('Removing Userclass: '.$name, $status); 
+							$mes->add('Removing Userclass: '.$name, $status); 
 						}
 						else
 						{
-							$emessage->add('Userclass: '.$name.' left in place'.$name, $status); 
+							$mes->add('Userclass: '.$name.' left in place'.$name, $status); 
 						}
 						
 					break;
@@ -1379,7 +1371,7 @@ class e107plugin
 	 */
 	function XmlExtendedFields($function,$array)
 	{
-		$emessage = &eMessage::getInstance();
+		$mes = e107::getMessage();
 		
 		foreach($array['field'] as $efield)
 		{
@@ -1398,13 +1390,13 @@ class e107plugin
 						if(!$remove)
 						{
 							$status = $this->manage_extended_field('add', $name, $type, $attrib['default'], $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;		
-							$emessage->add('Adding Extended Field: '.$name.' ... ', $status);
+							$mes->add('Adding Extended Field: '.$name.' ... ', $status);
 						}
 						
 						if($function == 'upgrade' && $remove) //If upgrading, removing any inactive extended fields
 						{		
 							$status = $this->manage_extended_field('remove', $name, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;		
-							$emessage->add('Removing Extended Field: '.$name.' ... ', $status);
+							$mes->add('Removing Extended Field: '.$name.' ... ', $status);
 						}
 						break;
 
@@ -1414,11 +1406,11 @@ class e107plugin
 						if (varsettrue($this->unInstallOpts['del_extended'], FALSE))
 						{
 							$status = ($this->manage_extended_field('remove', $name, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;					
-							$emessage->add('Removing Extended Field: '.$name.' ... ', $status);
+							$mes->add('Removing Extended Field: '.$name.' ... ', $status);
 						}
 						else
 						{
-							$emessage->add('Extended Field: '.$name.' left in place'.$name, E_MESSAGE_SUCCESS); 
+							$mes->add('Extended Field: '.$name.' left in place'.$name, E_MESSAGE_SUCCESS); 
 						}
 						break;
 				}
@@ -1439,7 +1431,7 @@ class e107plugin
 		//XXX Could also be used for theme prefs.. perhaps this function should be moved elsewhere?
 		//TODO array support for prefs. <key>? or array() as used in xml site export? 
 		
-		$emessage = &eMessage::getInstance();
+		$mes = e107::getMessage();
 		
 		if(!varset($prefArray) || !varset($prefArray))
 		{
@@ -1456,14 +1448,14 @@ class e107plugin
 			
 			if(varset($tag['@attributes']['value']))
 			{
-				$emessage->add("Deprecated plugin.xml spec. found. Use the following format: ".htmlentities("<pref name='name'>value</pref>"), E_MESSAGE_ERROR); 	
+				$mes->add("Deprecated plugin.xml spec. found. Use the following format: ".htmlentities("<pref name='name'>value</pref>"), E_MESSAGE_ERROR); 	
 			}
 			
 			switch($function)
 			{
 				case 'install':
 					$config->add($key,$value);		
-					$emessage->add("Adding Pref: ".$key, E_MESSAGE_SUCCESS); 						
+					$mes->add("Adding Pref: ".$key, E_MESSAGE_SUCCESS); 						
 				break;
 				
 				case 'upgrade' :
@@ -1471,19 +1463,19 @@ class e107plugin
 					if($remove) // remove active='false' prefs. 
 					{
 						$config->remove($key,$value);				
-						$emessage->add("Removing Pref: ".$key, E_MESSAGE_SUCCESS); 		
+						$mes->add("Removing Pref: ".$key, E_MESSAGE_SUCCESS); 		
 					}
 					else
 					{
 						$config->update($key,$value);		
-						$emessage->add("Updating Pref: ".$key, E_MESSAGE_SUCCESS);
+						$mes->add("Updating Pref: ".$key, E_MESSAGE_SUCCESS);
 					}
 					 	
 				break;
 				
 				case 'uninstall':
 					$config->remove($key,$value);				
-					$emessage->add("Removing Pref: ".$key, E_MESSAGE_SUCCESS); 	
+					$mes->add("Removing Pref: ".$key, E_MESSAGE_SUCCESS); 	
 				break;
 			}	
 			
@@ -1510,7 +1502,7 @@ class e107plugin
 	 */
 	function execute_function($path = '', $what='', $when='')
 	{	
-		$emessage = eMessage::getInstance();
+		$mes = eMessage::getInstance();
 		$class_name = $this->plugFolder."_setup";
 		$method_name = $what."_".$when;	
 		
@@ -1525,7 +1517,7 @@ class e107plugin
 		
 		if(is_readable($setup_file))
 		{
-			$emessage->add("Found setup file <b>".$setup_file."</b> ", E_MESSAGE_DEBUG);
+			$mes->add("Found setup file <b>".$setup_file."</b> ", E_MESSAGE_DEBUG);
 			include_once($setup_file);
 				
 			if(class_exists($class_name))
@@ -1533,27 +1525,27 @@ class e107plugin
 				$obj = new $class_name;
 				if(method_exists($obj,$method_name))
 				{
-					$emessage->add("Executing setup function <b>".$method_name."()</b>", E_MESSAGE_DEBUG);
+					$mes->add("Executing setup function <b>".$method_name."()</b>", E_MESSAGE_DEBUG);
 					return call_user_func(array($obj,$method_name), $this);							
 				}
 				else
 				{
-					$emessage->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+					$mes->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
 					return FALSE;
 				}	
 			}
 			else
 			{
-				$emessage->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+				$mes->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
 				return FALSE;
 			}						
 		}
 		else
 		{
-			$emessage->add("Optional Setup File NOT Found <b>".$setup_file."</b> ", E_MESSAGE_DEBUG);
+			$mes->add("Optional Setup File NOT Found <b>".$setup_file."</b> ", E_MESSAGE_DEBUG);
 		}
 
-		$emessage->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
+		$mes->add("Setup function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);
 		
 		return FALSE; // IMPORTANT. 
 	}
@@ -1718,7 +1710,7 @@ class e107plugin
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
 			if(file_exists($_path.'plugin.xml'))
 			{
-				$text = $this->manage_plugin_xml($id, 'install');
+				$text = $this->install_plugin_xml($id, 'install');
 			}
 			elseif(file_exists($_path.'plugin.php'))
 			{
@@ -1858,6 +1850,9 @@ class e107plugin
 						}
 						echo $plugin_path."/".$addon.".php - ".$passfail."<br />";
 					}
+					$mes = e107::getMessage();
+					$mes->add('Detected addon: <b>'.$addon.'</b>', E_MESSAGE_DEBUG);
+					
 					$p_addons[] = $addon;
 				}
 		}
@@ -2042,8 +2037,8 @@ class e107plugin
 		if ($this->plug_vars === FALSE)
 		{
             require_once(e_HANDLER."message_handler.php");
-			$emessage = &eMessage::getInstance();
-			$emessage->add("Error reading {$plugName}/plugin.xml", E_MESSAGE_ERROR);
+			$mes = e107::getMessage(); 
+			$mes->add("Error reading {$plugName}/plugin.xml", E_MESSAGE_ERROR);
  			return FALSE;
 		}
 		
