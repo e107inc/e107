@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.53 $
- * $Date: 2009-10-22 23:46:49 $
+ * $Revision: 1.54 $
+ * $Date: 2009-10-23 04:25:13 $
  * $Author: e107coders $
  *
 */
@@ -713,12 +713,21 @@ class e_form
 	{
         $text = "";
 
-		// FIXME - Temporary solution, we really need to add parse_str() support
-        $tmp = explode(".", ($requeststr ? $requeststr : e_QUERY)); 
-		$etmp = explode(".", $querypattern);
+		// Recommended pattern: ?mode=list&fld=[FIELD]&asc=[ASC]&frm=[FROM]
+		
+		if(strpos($querypattern,'&')!==FALSE)
+		{
+			$tmp = $_GET; // we can assume it's always $_GET since that's what it will generate 
+			$etmp = array();
+			parse_str($querypattern,$etmp);
+		}
+		else // Legacy Queries. eg. main.[FIELD].[ASC].[FROM]
+		{
+			$tmp = explode(".", ($requeststr ? $requeststr : e_QUERY)); 
+			$etmp = explode(".", $querypattern);
+		}
+		
 
-		// Note: this function should probably be adapted to ALSO deal with $_GET. eg. ?mode=main&field=user_name&asc=desc&from=100
-		// or as a pattern: ?mode=main&field=[FIELD]&asc=[ASC]&from=[FROM]
 
 		foreach($etmp as $key => $val)    // I'm sure there's a more efficient way to do this, but too tired to see it right now!.
 		{
@@ -737,6 +746,9 @@ class e_form
             	$fromval = $tmp[$key];
 			}
 		}
+		
+
+
 
 		if(!varset($fromval)){ $fromval = 0; }
 
@@ -757,7 +769,7 @@ class e_form
                 	$val['url'] = e_SELF."?".str_replace($srch,$repl,$querypattern);
 				}
 
-				$text .= (varset($val['url'])) ? "<a href='".$val['url']."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
+				$text .= (varset($val['url'])) ? "<a href='".str_replace("&","&amp;",$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
 	            $text .= $val['title'];
 				$text .= ($val['url']) ? "</a>" : "";
 	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";

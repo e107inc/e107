@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-10-22 07:52:13 $
+ * $Revision: 1.7 $
+ * $Date: 2009-10-23 04:25:19 $
  * $Author: e107coders $
  *
 */
@@ -46,7 +46,7 @@ class releasePlugin extends e_model_interface
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
 		);
 				
-		$this->listQry = "SELECT * FROM #release ORDER BY release_id DESC";
+		$this->listQry = "SELECT * FROM #release"; // without any Order or Limit. 
 		$this->editQry = "SELECT * FROM #release WHERE release_id = {ID}";		
 		$this->table = "release";
 		$this->primary = "release_id";
