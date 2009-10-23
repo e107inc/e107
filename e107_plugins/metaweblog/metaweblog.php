@@ -1,19 +1,32 @@
 <?php
-// These three files are from the PHP-XMLRPC library.
 
+//22/10/2009 9.58.12
+//general list of implementaion and 
+// TODO admin log implementation to log out all the traffic
+// TODO error handling (not really sure how can be done, at least in log)
+// TODO better ACL configuration (getperms) and admin panel to configure ACL (example this user has rw access to news?) wraps ACL configuration
+// TODO custom content plugin support
+// TODO sintax to write in custom field of custom (ie sort of: {field_name:value}) this one need WLW customization OR use the wordpress plugin see http://windowslivewire.spaces.live.com/blog/cns!2F7EB29B42641D59!41603.entry AND http://codex.wordpress.org/Custom_Fields
+// TODO better admin preferences panel (for example to choise to use content plugin instead of pages)
+// TODO full manual/instructions to explain configuration of plugin and WLW
+
+
+//check e107 instance
 if (!defined('e107_INIT'))
 { 
 	require_once("../../class2.php");
 }
 
+//check if plugin is installed
 if (!e107::isInstalled('metaweblog'))
 {
 	header("location:".e_BASE."index.php"); 
 }
 
-include (e_HANDLER.'xmlrpc/xmlrpc.inc');
-include (e_HANDLER.'xmlrpc/xmlrpcs.inc');
-include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc');
+// These three files are from the PHP-XMLRPC library.
+include (e_PLUGIN.'metaweblog/xmlrpc.inc');
+include (e_PLUGIN.'metaweblog/xmlrpcs.inc');
+include (e_PLUGIN.'metaweblog/xmlrpc_wrappers.inc');
 
 //general note: XMLRPC method functions parameters
 //have this rule: 1st parameter is the type of the OUT data (result: array,struct,etc), from 2nd are the IN parameters
@@ -21,7 +34,6 @@ include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc');
 //default caracter encoding !IMPORTANT
 $xmlrpc_internalencoding = 'UTF-8';
 
-//TO ADD LOG FUNCTIONS (MAYBE FROM WORDPRESS)
 
 // VARIABLES FOR SOME REASONS $pref seems to not work in code? so we define local variables
 define('eXMLRPC_FILES_UPLOAD_PATH', e_NEWSIMAGE);
@@ -89,7 +101,16 @@ function newPost($xmlrpcmsg)
 	{
 		$content = $xmlrpcmsg->getParam(3);
 		$title = $content->structMem('title')->scalarval();
+		
 		$description = '[html]'.htmlspecialchars_decode($content->structMem('description')->scalarval()).'[/html]';
+		
+		//22/10/2009 14.48.04 added mt_text_more ie news_extended
+		//check if we have something...
+		$tempTextMore = checkXmlElementS($content->serialize(), 'mt_text_more');
+		if($tempTextMore == 1){
+				$mt_text_more = '[html]'.$content->structMem('mt_text_more')->scalarval().'[/html]';
+		}
+		
 		//if date is null will be replaced with current datetime (wordpress like)
 		//check with simplexml for the parameter dateCreated? XMLRPC-PHP seems to not have such functions??
 		$tempDate = checkXmlElementS($content->serialize(), 'dateCreated');
@@ -102,9 +123,26 @@ function newPost($xmlrpcmsg)
 		{
 			$timestamp = time();
 		}
+		
+		//21/10/2009 17.17.46 added $mt_excerpt
+		//add in the news summary
+		//check if we have something...
+		$tempExcerpt = checkXmlElementS($content->serialize(), 'mt_excerpt');
+		if($tempExcerpt == 1){
+				$mt_excerpt = $content->structMem('mt_excerpt')->scalarval();
+		}
+		
+		//22/10/2009 11.51.54 added $mt_allow_comments
+		//add the news_allow_comments flag
+		//check if we have something...
+		$tempAllowComments = checkXmlElementS($content->serialize(), 'mt_allow_comments');
+		if($tempAllowComments == 1){
+				$mt_allow_comments = $content->structMem('mt_allow_comments')->scalarval();
+		}
+		
 		//author from e107
 		$query = 'SELECT u.user_id FROM `#user` AS u WHERE u.user_loginname = \''.$username.'\' AND u.user_password = \''.md5($password).'\'';
-		$sql = new db();
+		$sql = e107::getDb();
 		$sql->db_Select_gen($query);
 		$row = $sql->db_Fetch();
 		$author = $row['user_id'];
@@ -128,13 +166,43 @@ function newPost($xmlrpcmsg)
 		// $ix = new news;
 		// $ret = $ix->submit_item($arrayvalues);
 		
-		//add news
-		$query = "INSERT INTO `#news` 
-                    (news_title,news_body,news_extended,news_datestamp,news_author,news_category,news_render_type)
-                   VALUES
-                    ('".$title."','".$description."','".$description."','".$timestamp."','".$author."','".$categories."','".eXMLRPC_NEWS_RENDER_TYPE_LOC."')";
-		$sql->db_Select_gen($query);
-		$postid = mysql_insert_id();
+		//post data with new fuctions
+		$data = array();
+		$data['data']['news_title'] = $title;
+		$data['_FIELD_TYPES']['news_title'] = 'todb';
+		$data['data']['news_body'] = $description;
+		$data['_FIELD_TYPES']['news_body'] = 'todb';
+		$data['data']['news_extended'] = $mt_text_more;
+		$data['_FIELD_TYPES']['news_extended'] = 'todb';
+		$data['data']['news_datestamp'] = $timestamp;
+		$data['_FIELD_TYPES']['news_datestamp'] = 'int';
+		$data['data']['news_author'] = $author;
+		$data['_FIELD_TYPES']['news_author'] = 'int';
+		$data['data']['news_category'] = $categories; //category id is taken by a query against news categories
+		$data['_FIELD_TYPES']['news_category'] = 'int';
+		$data['data']['news_allow_comments'] = $mt_allow_comments;
+		$data['_FIELD_TYPES']['news_allow_comments'] = 'int';
+		$data['data']['news_start'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_start'] = 'int';
+		$data['data']['news_end'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_end'] = 'int';
+		//$data['data']['news_class'] = $news['news_class'];
+		//$data['_FIELD_TYPES']['news_class'] = 'todb';
+		$data['data']['news_render_type'] = eXMLRPC_NEWS_RENDER_TYPE_LOC; //from preferences
+		$data['_FIELD_TYPES']['news_render_type'] = 'int';
+		//news_comment_total
+		$data['data']['news_summary'] = $mt_excerpt; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_summary'] = 'todb';
+		$data['data']['news_thumbnail'] = ''; //NOT APPLICABLE?
+		$data['_FIELD_TYPES']['news_thumbnail'] = 'todb';
+		$data['data']['news_sticky'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_sticky'] = 'int';
+		$data['data']['news_meta_keywords'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_meta_keywords'] = 'todb';
+		$data['data']['news_meta_description'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_meta_description'] = 'todb';
+		
+		$postid = $sql->db_Insert('news', $data);
 		
 		return new xmlrpcresp( new xmlrpcval($postid, 'string')); // Return the id of the post just inserted into the DB. See mysql_insert_id() in the PHP manual.
 	}
@@ -162,7 +230,16 @@ function editPost($xmlrpcmsg)
 	{
 		$content = $xmlrpcmsg->getParam(3);
 		$title = $content->structMem('title')->scalarval();
+		
 		$description = '[html]'.$content->structMem('description')->scalarval().'[/html]';
+		
+		//22/10/2009 14.48.04 added mt_text_more ie news_extended
+		//check if we have something...
+		$tempTextMore = checkXmlElementS($content->serialize(), 'mt_text_more');
+		if($tempTextMore == 1){
+				$mt_text_more = '[html]'.$content->structMem('mt_text_more')->scalarval().'[/html]';
+		}
+		
 		//if date is null will be replaced with current datetime (wordpress like)
 		//check with simplexml for the parameter dateCreated? XMLRPC-PHP seems to not have such functions??
 		$tempDate = checkXmlElementS($content->serialize(), 'dateCreated');
@@ -175,6 +252,23 @@ function editPost($xmlrpcmsg)
 		{
 			$timestamp = time();
 		}
+		
+		//22/10/2009 11.51.54 added $mt_excerpt
+		//add the news summary
+		//check if we have something...
+		$tempExcerpt = checkXmlElementS($content->serialize(), 'mt_excerpt');
+		if($tempExcerpt == 1){
+				$mt_excerpt = $content->structMem('mt_excerpt')->scalarval();
+		}
+		
+		//22/10/2009 11.51.54 added $mt_allow_comments
+		//add the news_allow_comments flag
+		//check if we have something...
+		$tempAllowComments = checkXmlElementS($content->serialize(), 'mt_allow_comments');
+		if($tempAllowComments == 1){
+				$mt_allow_comments = $content->structMem('mt_allow_comments')->scalarval();
+		}
+		
 		//author from e107
 		$query = 'SELECT u.user_id FROM `#user` AS u WHERE u.user_loginname = \''.$username.'\' AND u.user_password = \''.md5($password).'\'';
 		$sql = new db();
@@ -195,23 +289,50 @@ function editPost($xmlrpcmsg)
 		}
 		$published = $xmlrpcmsg->getParam(4)->scalarval();
 		
-		//edit news
-		$query = "UPDATE `#news` SET 
-                    news_title        = '".$title."',
-                    news_body         = '".$description."',
-                    news_extended     = '".$description."',
-                    news_datestamp    = '".$timestamp."',
-                    news_author       = '".$author."',
-                    news_category     = '".$categories."',
-                    news_render_type  = '".eXMLRPC_NEWS_RENDER_TYPE_LOC."'
-             WHERE 
-                    news_id           = ".$postid;
-		
-		$sql->db_Select_gen($query);
-		
 		// TODO use:
 		// $ix = new news;
 		// $ret = $ix->submit_item($arrayvalues);
+		
+		//edit data with new fuctions
+		$data = array();
+		//to update we need to set news id...
+		$data['data']['news_id'] = $postid;
+		$data['_FIELD_TYPES']['news_id'] = 'int';
+		$data['data']['news_title'] = $title;
+		$data['_FIELD_TYPES']['news_title'] = 'todb';
+		$data['data']['news_body'] = $description;
+		$data['_FIELD_TYPES']['news_body'] = 'todb';
+		$data['data']['news_extended'] = $mt_text_more;
+		$data['_FIELD_TYPES']['news_extended'] = 'todb';
+		$data['data']['news_datestamp'] = $timestamp;
+		$data['_FIELD_TYPES']['news_datestamp'] = 'int';
+		$data['data']['news_author'] = $author;
+		$data['_FIELD_TYPES']['news_author'] = 'int';
+		$data['data']['news_category'] = $categories; //category id is taken by a query against news categories
+		$data['_FIELD_TYPES']['news_category'] = 'int';
+		$data['data']['news_allow_comments'] = $mt_allow_comments;
+		$data['_FIELD_TYPES']['news_allow_comments'] = 'int';
+		$data['data']['news_start'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_start'] = 'int';
+		$data['data']['news_end'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_end'] = 'int';
+		//$data['data']['news_class'] = $news['news_class'];
+		//$data['_FIELD_TYPES']['news_class'] = 'todb';
+		$data['data']['news_render_type'] = eXMLRPC_NEWS_RENDER_TYPE_LOC; //from preferences
+		$data['_FIELD_TYPES']['news_render_type'] = 'int';
+		//news_comment_total
+		$data['data']['news_summary'] = $mt_excerpt; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_summary'] = 'todb';
+		$data['data']['news_thumbnail'] = ''; //NOT APPLICABLE?
+		$data['_FIELD_TYPES']['news_thumbnail'] = 'todb';
+		$data['data']['news_sticky'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_sticky'] = 'int';
+		$data['data']['news_meta_keywords'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_meta_keywords'] = 'todb';
+		$data['data']['news_meta_description'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['_FIELD_TYPES']['news_meta_description'] = 'todb';
+		
+		$postid = $sql->db_Update('news', $data);
 		
 		return new xmlrpcresp( new xmlrpcval(true, 'boolean'));
 	}
@@ -249,8 +370,17 @@ function getPost($xmlrpcmsg)
 		
 		while ($row = $sql->db_Fetch())
 		{
-			return new xmlrpcresp( new xmlrpcval(array('postid'=> new xmlrpcval($row['news_id'], 'string'), 'dateCreated'=> new xmlrpcval(iso8601_encode($row['news_datestamp']), 'dateTime.iso8601'), 'title'=> new xmlrpcval($row['news_title'], 'string'), 'description'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_body'])), 'string'), 'categories'=> new xmlrpcval(array( new xmlrpcval($row['category_name'], 'string')), 'array'), 'publish'=> new xmlrpcval(1, 'boolean'), //e107 does not have this flag? 
-			'link'=> new xmlrpcval($link, 'string'), 'permaLink'=> new xmlrpcval($link, 'string')), 'struct'));
+			return new xmlrpcresp( new xmlrpcval(array(
+																									'postid'=> new xmlrpcval($row['news_id'], 'string'), 
+																									'dateCreated'=> new xmlrpcval(iso8601_encode($row['news_datestamp']),'dateTime.iso8601'),
+																									'title'=> new xmlrpcval($row['news_title'], 'string'),
+																									'mt_excerpt'=> new xmlrpcval($row['news_summary'], 'string'),
+																									'mt_allow_comments'=> new xmlrpcval($row['news_allow_comments'], 'string'),
+																									'description'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_body'])), 'string'),
+																									'mt_text_more'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_extended'])), 'string'),
+																									'categories'=> new xmlrpcval(array( new xmlrpcval($row['category_name'], 'string')), 'array'),
+																									'publish'=> new xmlrpcval(1, 'boolean'), //e107 does not have this flag? 
+																									'link'=> new xmlrpcval($link, 'string'), 'permaLink'=> new xmlrpcval($link, 'string')), 'struct'));
 		}
 	}
 	else
@@ -271,10 +401,11 @@ function deletePost($xmlrpcmsg)
 	$password = $xmlrpcmsg->getParam(3)->scalarval();
 	if (userLogin($username, $password, 'H') == true)
 	{
-		$query = 'DELETE FROM `#news` WHERE news_id=\''.$postid.'\' LIMIT 1';
-		$sql = e107::getDb();
-		$sql->db_Select_gen($query);
 		//TODO use: $sql->db_Delete();
+		$sql = e107::getDb();
+		//22/10/2009 15.06.16 delete news with new methods
+		$sql->db_Delete('news', 'news_id='.$postid);
+		
 		return new xmlrpcresp( new xmlrpcval(true, 'boolean'));
 	}
 	else
@@ -317,13 +448,16 @@ function getRecentPosts($xmlrpcmsg)
 		{
 			$structArray[] = new xmlrpcval(array(
 			
-				'postid'		=> new xmlrpcval($row['news_id'], 'string'),
-				'dateCreated'	=> new xmlrpcval(iso8601_encode($row['news_datestamp']),'dateTime.iso8601'),
-				'title'			=> new xmlrpcval($row['news_title'], 'string'),
-				'description'	=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_body'])), 'string'),
-				'categories'	=> new xmlrpcval(array( new xmlrpcval($row['category_name'], 'string')), 'array'),
-				'publish'		=> new xmlrpcval(1, 'boolean'), //e107 does not have this flag? 
-				'link'			=> new xmlrpcval($link, 'string'), 'permaLink'=> new xmlrpcval($link, 'string')
+				'postid'=> new xmlrpcval($row['news_id'], 'string'), 
+				'dateCreated'=> new xmlrpcval(iso8601_encode($row['news_datestamp']),'dateTime.iso8601'),
+				'title'=> new xmlrpcval($row['news_title'], 'string'),
+				'mt_excerpt'=> new xmlrpcval($row['news_summary'], 'string'),
+				'mt_allow_comments'=> new xmlrpcval($row['news_allow_comments'], 'string'),
+				'description'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_body'])), 'string'),
+				'mt_text_more'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_extended'])), 'string'),
+				'categories'=> new xmlrpcval(array( new xmlrpcval($row['category_name'], 'string')), 'array'),
+				'publish'=> new xmlrpcval(1, 'boolean'), //e107 does not have this flag? 
+				'link'=> new xmlrpcval($link, 'string'), 'permaLink'=> new xmlrpcval($link, 'string')
 			
 			), 'struct'
 			);
@@ -515,10 +649,32 @@ function getPages($xmlrpcmsg)
 		$sql->db_Select_gen($query);
 		while ($row = $sql->db_Fetch())
 		{
-			$structArray[] = new xmlrpcval(array('dateCreated'=> new xmlrpcval(iso8601_encode
-		($row['page_datestamp']), 'dateTime.iso8601')
-		, 'userid'=> new xmlrpcval($row['user_id'], 'string'),
-		'page_id'=> new xmlrpcval($row['page_id'], 'string'), 'page_status'=> new xmlrpcval('', 'string'), 'description'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['page_text'])), 'string'), 'title'=> new xmlrpcval($row['page_title'], 'string'), 'link'=> new xmlrpcval($link, 'string'), 'permaLink'=> new xmlrpcval($link, 'string'), 'categories'=> new xmlrpcval('', 'string'), 'excerpt'=> new xmlrpcval('', 'string'), 'text_more'=> new xmlrpcval('', 'string'), 'mt_allow_comments'=> new xmlrpcval($row['page_comment_flag'], 'boolean'), 'mt_allow_pings'=> new xmlrpcval('', 'string'), 'wp_slug'=> new xmlrpcval('', 'string'), 'wp_password'=> new xmlrpcval($row['page_password'], 'string'), 'wp_author'=> new xmlrpcval($row['user_name'], 'string'), 'wp_page_parent_id'=> new xmlrpcval('', 'string'), 'wp_page_parent_title'=> new xmlrpcval('', 'string'), 'wp_page_order'=> new xmlrpcval('', 'string'), 'wp_author_id'=> new xmlrpcval($row['user_id'], 'string'), 'wp_author_display_name'=> new xmlrpcval($row['user_name'], 'string'), 'date_created_gmt'=> new xmlrpcval('', 'string'), 'custom_fields'=> new xmlrpcval('', 'string'), 'wp_page_template'=> new xmlrpcval('', 'string')), 'struct');
+			$structArray[] = new xmlrpcval(array(
+					'dateCreated'=> new xmlrpcval(iso8601_encode($row['page_datestamp']), 'dateTime.iso8601'),
+					'userid'=> new xmlrpcval($row['user_id'], 'string'),
+					'page_id'=> new xmlrpcval($row['page_id'], 'string'),
+					'page_status'=> new xmlrpcval('', 'string'),
+					'description'=> new xmlrpcval(str_replace('[html]','', str_replace('[/html]', '', $row['page_text'])),'string'),
+					'title'=> new xmlrpcval($row['page_title'], 'string'),
+					'link'=> new xmlrpcval($link, 'string'),
+					'permaLink'=> new xmlrpcval($link, 'string'),
+					'categories'=> new xmlrpcval('', 'string'),
+					'excerpt'=> new xmlrpcval('', 'string'),
+					'text_more'=> new xmlrpcval('', 'string'),
+					'mt_allow_comments'=> new xmlrpcval($row['page_comment_flag'], 'boolean'),
+					'mt_allow_pings'=> new xmlrpcval('', 'string'),
+					'wp_slug'=> new xmlrpcval('', 'string'),
+					'wp_password'=> new xmlrpcval($row['page_password'],'string'),
+					'wp_author'=> new xmlrpcval($row['user_name'], 'string'),
+					'wp_page_parent_id'=> new xmlrpcval('', 'string'),
+					'wp_page_parent_title'=> new xmlrpcval('', 'string'),
+					'wp_page_order'=> new xmlrpcval('', 'string'),
+					'wp_author_id'=> new xmlrpcval($row['user_id'], 'string'),
+					'wp_author_display_name'=> new xmlrpcval($row['user_name'], 'string'),
+					'date_created_gmt'=> new xmlrpcval('', 'string'),
+					'custom_fields'=> new xmlrpcval('', 'string'),
+					'wp_page_template'=> new xmlrpcval('', 'string')),
+					'struct');
 		}
 		return new xmlrpcresp( new xmlrpcval($structArray, 'array')); // Return type is struct[] (array of struct)
 	}
@@ -561,23 +717,50 @@ function newPage($xmlrpcmsg)
 		{
 			$timestamp = time();
 		}
+		
+		//21/10/2009 17.17.46 added $wp_password
+		//add password page
+		//check if we have something...
+		$tempPassword = checkXmlElementS($content->serialize(), 'wp_password');
+		if($tempPassword == 1){
+				$wp_password = $content->structMem('wp_password')->scalarval();
+		}
+		
 		//author from e107
 		$query = 'SELECT u.user_id FROM `#user` AS u WHERE u.user_loginname = \''.$username.'\' AND u.user_password = \''.md5($password).'\'';
 
 		$sql->db_Select_gen($query);
 		$row = $sql->db_Fetch();
 		$author = $row['user_id'];
+		
 		//21/08/2009 14.37.49 allow comments
-		$comments = $content->structMem('mt_allow_comments')->scalarval();
+		//add comments flag
+		//check if we have something...
+		$tempAllowComments = checkXmlElementS($content->serialize(), 'mt_allow_comments');
+		if($tempAllowComments == 1){
+				$comments = $content->structMem('mt_allow_comments')->scalarval();
+		}
+		
 		$published = $xmlrpcmsg->getParam(4)->scalarval();
-		//add page
-		$query = "INSERT INTO `#page` 
-                    (page_title,page_text,page_datestamp,page_author,page_comment_flag,page_class)
-                   VALUES
-                    ('".$title."','".$description."','".$timestamp."','".$author."','".$comments."','0')";
-		$sql->db_Select_gen($query);
-		$postid = mysql_insert_id(
-		);
+		
+		//post data with new fuctions
+		$data['data']['page_title'] = $title;
+		$data['_FIELD_TYPES']['page_title'] = 'todb';
+		$data['data']['page_text'] = $description;
+		$data['_FIELD_TYPES']['page_text'] = 'todb';
+		$data['data']['page_datestamp'] = $timestamp;
+		$data['_FIELD_TYPES']['page_datestamp'] = 'int';
+		$data['data']['page_author'] = $author;
+		$data['_FIELD_TYPES']['page_author'] = 'int';
+		$data['data']['page_comment_flag'] = $comments;
+		$data['_FIELD_TYPES']['page_comment_flag'] = 'int';
+		$data['data']['page_password'] = $wp_password;
+		$data['_FIELD_TYPES']['page_password'] = 'todb';
+		$data['data']['page_class'] = 0;
+		$data['_FIELD_TYPES']['page_class'] = 'int';
+		
+		$postid = $sql->db_Insert('page', $data);
+		
 		return new xmlrpcresp( new xmlrpcval($postid, 'string')
 		); // Return the id of the post just inserted into the DB. See mysql_insert_id() in the PHP manual.
 	}
@@ -605,12 +788,10 @@ function deletePage($xmlrpcmsg)
 	$pageid = $xmlrpcmsg->getParam(3)->scalarval();
 	if (userLogin($username, $password, 'H') == true)
 	{
-		$query = 'DELETE 
-              FROM `#page` 
-              WHERE page_id=\''.$pageid.'\' LIMIT 1';
-
-		$sql->db_Select_gen($query);
 		//TODO Use db_Delete();
+		
+		//23/10/2009 16.15.15 delete page with new methods
+		$sql->db_Delete('page', 'page_id='.$pageid);
 		
 		return new xmlrpcresp( new xmlrpcval(true, 'boolean'));
 	
@@ -653,25 +834,43 @@ function editPage($xmlrpcmsg)
 		{
 			$timestamp = time();
 		}
+		
 		//author from e107
 		$query = 'SELECT u.user_id FROM `#user` AS u WHERE u.user_loginname = \''.$username.'\' AND u.user_password = \''.md5($password).'\'';
-
 		$sql->db_Select_gen($query);
 		$row = $sql->db_Fetch();
+		
 		$author = $row['user_id'];
+		
 		//21/08/2009 14.37.49 allow comments
-		$comments = $content->structMem('mt_allow_comments')->scalarval();
+		//add comments flag
+		//check if we have something...
+		$tempAllowComments = checkXmlElementS($content->serialize(), 'mt_allow_comments');
+		if($tempAllowComments == 1){
+				$comments = $content->structMem('mt_allow_comments')->scalarval();
+		}
+		
 		$published = $xmlrpcmsg->getParam(5)->scalarval();
-		//edit page
-		$query = "UPDATE `#page` SET 
-                    page_title        = '".$title."',
-                    page_text         = '".$description."',
-                    page_datestamp    = '".$timestamp."',
-                    page_author       = '".$author."',
-                    page_comment_flag = '".$comments."'
-             WHERE 
-                    page_id           = ".$pageid;
-		$sql->db_Select_gen($query);
+		
+		//edit data with new fuctions
+		$data['data']['page_id'] = $pageid;
+		$data['_FIELD_TYPES']['page_id'] = 'int';
+		$data['data']['page_title'] = $title;
+		$data['_FIELD_TYPES']['page_title'] = 'todb';
+		$data['data']['page_text'] = $description;
+		$data['_FIELD_TYPES']['page_text'] = 'todb';
+		$data['data']['page_datestamp'] = $timestamp;
+		$data['_FIELD_TYPES']['page_datestamp'] = 'int';
+		$data['data']['page_author'] = $author;
+		$data['_FIELD_TYPES']['page_author'] = 'int';
+		$data['data']['page_comment_flag'] = $comments;
+		$data['_FIELD_TYPES']['page_comment_flag'] = 'int';
+		$data['data']['page_password'] = $wp_password;
+		$data['_FIELD_TYPES']['page_password'] = 'todb';
+		$data['data']['page_class'] = 0;
+		$data['_FIELD_TYPES']['page_class'] = 'int';
+		
+		$pageid = $sql->db_Update('page', $data);
 		
 		return new	xmlrpcresp( new xmlrpcval(true, 'boolean'));
 	}
@@ -713,9 +912,14 @@ function getPageList($xmlrpcmsg)
 		$sql->db_Select_gen($query);
 		while ($row = $sql->db_Fetch())
 		{
-			$structArray[] = new xmlrpcval(array('page_id'=> new xmlrpcval($row['page_id'], 'string'), 'page_title'=>
-		new xmlrpcval($row['page_title'], 'string'), 'page_parent_title'=> new
-		xmlrpcval('', 'string'), 'date_created_gmt'=> new xmlrpcval('', 'string'), 'dateCreated'=> new xmlrpcval(iso8601_encode($row['page_datestamp']), 'dateTime.iso8601')), 'struct');
+			$structArray[] = new xmlrpcval(array(
+						'page_id'=> new xmlrpcval($row['page_id'], 'string'),
+						'page_title'=> new xmlrpcval($row['page_title'], 'string'),
+						'page_parent_title'=> new xmlrpcval('', 'string'),
+						'date_created_gmt'=> new xmlrpcval('', 'string'),
+						'dateCreated'=> new xmlrpcval(iso8601_encode($row['page_datestamp']),
+						'dateTime.iso8601')),
+						'struct');
 		}
 		return new xmlrpcresp( new xmlrpcval($structArray, 'array')); // Return type is struct[] (array of struct)
 	}
@@ -748,14 +952,13 @@ function newCategory($xmlrpcmsg)
 		$parentid = (checkXmlElementS($content->serialize(), 'parent_id') == true) ? $content->structMem('parent_id')->scalarval() : '';
 		//21/08/2009 16.20.02 unused at this stage
 		$description = (checkXmlElementS($content->serialize(), 'description') == true) ? $content->structMem('description')->scalarval() : '';
-
-		//add category
-		$query = "INSERT INTO `#news_category` 
-                    (category_name)
-                   VALUES
-                    ('".$name."')";
-		$sql->db_Select_gen($query);
-		$catid = mysql_insert_id();
+		
+		//post data with new fuctions
+		$data['data']['category_name'] = $name;
+		$data['_FIELD_TYPES']['category_name'] = 'todb';
+		
+		$catid = $sql->db_Insert('news_category', $data);
+		
 		return new xmlrpcresp( new xmlrpcval($postid, 'string')); // Return the id of the post just inserted into the DB. See mysql_insert_id() in the PHP manual.
 	}
 	else
@@ -783,11 +986,10 @@ function deleteCategory($xmlrpcmsg)
 	$cateid = $xmlrpcmsg->getParam(3)->scalarval();
 	if (userLogin($username, $password, 'H') == true || userLogin($username, $password, '5') == true)
 	{
-		$query = 'DELETE 
-              FROM `#e107_news_category` 
-              WHERE category_id=\''.$cateid.'\' LIMIT 1';
-
-		$sql->db_Select_gen($query);
+		
+		//23/10/2009 16.15.15 delete category with new methods
+		$sql->db_Delete('news_category', 'category_id='.$cateid);
+		
 		return new	xmlrpcresp( new xmlrpcval(true, 'boolean'));
 	}
 	else
@@ -892,13 +1094,16 @@ function setPostCategories($xmlrpcmsg)
 		{
 			$content->arrayMem(0)->structMem('categoryId')->scalarval();
 		}
-		//set post categories
-		$query = "UPDATE `#news` SET 
-                    news_category        = '".$categories."'
-             WHERE 
-                    page_id           = ".$pageid;
-
+		
+		$data['data']['news_id'] = $postid;
+		$data['_FIELD_TYPES']['news_id'] = 'int';
+		$data['data']['news_category'] = $categories;
+		$data['_FIELD_TYPES']['news_category'] = 'todb';
+		
+		$postid = $sql->db_Update('news', $data);
+		
 		$sql->db_Select_gen($query);
+		
 		return new xmlrpcresp( new xmlrpcval(true, 'boolean'));
 	}
 	else
