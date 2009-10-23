@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-09-19 15:21:50 $
-|     $Author: secretr $
+|     $Revision: 1.11 $
+|     $Date: 2009-10-23 19:54:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -73,7 +73,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$temp['submitnews']	= $BBCODE_TEMPLATE_SUBMITNEWS;
 	$temp['extended']	= $BBCODE_TEMPLATE_NEWSPOST;
 	$temp['admin']		= $BBCODE_TEMPLATE_ADMIN;
-	$temp['mailout']	= $BBCODE_TEMPLATE_ADMIN."{BB=shortcode}";
+	$temp['mailout']	= $BBCODE_TEMPLATE_MAILOUT;
 	$temp['cpage']		= $BBCODE_TEMPLATE_CPAGE;
 	$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
 	$temp['comment'] 	= "{BB_HELP}<br />".$BBCODE_TEMPLATE;
@@ -302,11 +302,11 @@ function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
 
 			if($file['id'])
 			{
-				$text .= "<option value=\"[file={e_BASE}request.php?".$file['id']."{$ucinfo}]".$file['name']."[/file]\">".$file['name']." - {$ucname}</option>\n";
+				$text .= "<option value=\"[file={e_BASE}request.php?".$file['id']."{$ucinfo}]".htmlspecialchars($file['name'])."[/file]\">".htmlspecialchars($file['name'])." - {$ucname}</option>\n";
 			}
 			else
 			{
-				$text .= "<option value=\"[file={e_BASE}request.php?".$file['url']."{$ucinfo}]".$file['name']."[/file]\">".$file['name']." - {$ucname}</option>\n";
+				$text .= "<option value=\"[file={e_BASE}request.php?".htmlspecialchars($file['url'])."{$ucinfo}]".htmlspecialchars($file['name'])."[/file]\">".htmlspecialchars($file['name'])." - {$ucname}</option>\n";
 			}
 
 		}

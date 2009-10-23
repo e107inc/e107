@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/bbcode_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-09-19 15:21:50 $
-|     $Author: secretr $
+|     $Revision: 1.14 $
+|     $Date: 2009-10-23 19:54:48 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -123,7 +123,7 @@ class bbcode_shortcodes
 		{
 
 			$text .= ($bbcode_helpactive && $_helptxt && !$iconpath[$parm]) ? "<span onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\" >" : "";
-			$text .= $_function($_function_var);
+			$text .= call_user_func($_function, $_function_var);
 			$text .= ($bbcode_helpactive && $_helptxt && !$iconpath[$parm]) ? "</span>" : "";
 		}
 
