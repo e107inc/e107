@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-09-10 12:49:47 $
+|     $Revision: 1.5 $
+|     $Date: 2009-10-23 09:08:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -64,9 +64,15 @@ class cron
 
 		// Set Core Cron Options.
 
-		$this->coreCrons[] = array('name'=>'User Purge','function' => 'user_purge', 'description'=>'Purge Unactivated Users');
-		$this->coreCrons[] = array('name'=>'User UnActivated','function' => 'user_unactivated', 'description'=>'Resend activation email to unactivated users.');
-		$this->coreCrons[] = array('name'=>'News Sticky','function' => 'news_purge', 'description'=>'Remove Sticky News Items');
+		$this->coreCrons['user'] = array(
+			0 => array('name'=>'User Purge','function' => 'user_purge', 'description'=>'Purge Unactivated Users'),
+			1 => array('name'=>'User UnActivated','function' => 'user_unactivated', 'description'=>'Resend activation email to unactivated users.')
+		);
+		
+		$this->coreCrons['news'] = array(
+			0 => array('name'=>'News Sticky','function' => 'news_purge', 'description'=>'Remove Sticky News Items')
+		);
+		
 
         // These core functions need to be put into e_BASE/cron.php  ie. news_purge()
 
@@ -85,15 +91,14 @@ class cron
 	function cronExecute($func)
 	{
 		//TODO LANs
-		$emessage = eMessage::getInstance();
+		$mes = eMessage::getInstance();
 		if(!function_exists($func) || !call_user_func($func))
-		{
-	    	
-	    	$emessage->add("Error running ".$func."()", E_MESSAGE_ERROR);    
+		{	    	
+	    	$mes->add("Error running ".$func."()", E_MESSAGE_ERROR);    
 		}
 		else
 		{
-			$emessage->add("Success running ".$func."()", E_MESSAGE_SUCCESS); 	
+			$mes->add("Success running ".$func."()", E_MESSAGE_SUCCESS); 	
 		}	
 	}
 
@@ -107,6 +112,9 @@ class cron
 	function cronSave()
 	{
 		global $pref;
+		
+		$mes = e107::getMessage();
+		
     	foreach($_POST['cron'] as $key=>$val)
 		{
 	    	if(!$val['active'])
@@ -122,18 +130,26 @@ class cron
 
 			$val['tab'] = implode(" ",$t);
 			$tabs .= $val['tab']."<br />";
+			
+			list($class,$func) = explode("__",$key);
+			
+			$val['function'] = $func;
+			$val['class']	= $class;
+			
 	    	$cron[$key] = $val;
 		}
 
 		$pref['e_cron_pref'] = $cron;
-        $emessage = &eMessage::getInstance();
+		
+	//	print_a($pref['e_cron_pref']);
+
 		if(save_prefs())
 		{
-	  		$emessage->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
+	  		$mes->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-        	$emessage->add("There was a problem saving your settings.", E_MESSAGE_ERROR);
+        	$mes->add("There was a problem saving your settings.", E_MESSAGE_ERROR);
 		}
 
 	}
@@ -180,34 +196,46 @@ class cron
 
 	function cronRenderPage()
 	{
-    	global $pref,$ns,$frm;
+    	global $pref;
     	$cronpref = $pref['e_cron_pref'];
-		
+		$ns = e107::getRender();
+		$frm = e107::getForm();
+		$mes = e107::getMessage();
 
-
-	  //	$count = 0;
-
-		$e_cron = $this->coreCrons;
-		$count = count($this->coreCrons);
-
+		$core_cron = $this->coreCrons;
+				
 		foreach($pref['e_cron_list'] as $key=>$val)
 		{
 			$eplug_cron = array();
 			if(is_readable(e_PLUGIN.$key."/e_cron.php"))
 			{
 				require_once(e_PLUGIN.$key."/e_cron.php");
-				foreach($eplug_cron as $v)
+				
+				$class_name = $key."_cron";
+				$method_name = 'config';
+				
+				if(class_exists($class_name))
 				{
-					$e_cron[$count]['name'] 		= $v['name'];
-					$e_cron[$count]['function'] 	= $v['function'];
-					$e_cron[$count]['description'] 	= $v['description'];
-					$e_cron[$count]['path'] 		= $key;
-					$count++;
+					$obj = new $class_name;
+					if(method_exists($obj,$method_name))
+					{
+						$mes->add("Executing config function <b>".$key." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
+						 $new_cron[$key] = call_user_func(array($obj,$method_name));
+						 
+						 					
+					}
+					else
+					{
+						$mes->add("Config function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);					
+					}	
 				}
+			
 			}
-
 		}
-
+		
+		$e_cron = array_merge($core_cron,$new_cron);
+	
+		
 	// ----------------------  List All Functions -----------------------------
 
 		$text = "<div style='text-align:center'>
@@ -238,10 +266,11 @@ class cron
 		   </thead>
 		   <tbody>";
 
-
-		foreach($e_cron as $cron)
+	foreach($e_cron as $plug=>$cfg)
+	{
+		foreach($cfg as $class=>$cron)
 		{
-		    $c = $cron['function'];
+		    $c = $plug.'__'. $cron['function']; // class and function. 
 		    $sep = array();
 
 			list($sep['minute'],$sep['hour'],$sep['day'],$sep['month'],$sep['weekday']) = explode(" ",$cronpref[$c]['tab']);
@@ -379,11 +408,11 @@ class cron
 				<td class='center'>".$frm->admin_button('execute['.$c.']', 'Run Now')."</td>
 		   	</tr>";
 		}
-
+	}
 		$text .= "
 
 		   <tr >
-		   <td colspan='8' class='center'>
+		   <td colspan='9' class='center'>
 		   <div class='center buttons-bar'>";
 		 //  $text .= "<input class='button' type='submit' name='submit' value='".LAN_SAVE."' />";
 		   $text .=  $frm->admin_button('submit', LAN_SAVE, $action = 'update');
@@ -394,8 +423,8 @@ class cron
 		   </form>
 		   </div>";
 
-           $emessage = &eMessage::getInstance();
-		   $ns -> tablerender(PAGE_NAME, $emessage->render() . $text);
+           $mes = e107::getMessage();
+		   $ns -> tablerender(PAGE_NAME, $mes->render() . $text);
 	}
 
 	function cronOptions()
