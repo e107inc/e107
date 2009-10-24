@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-10-24 10:48:11 $
+|     $Revision: 1.12 $
+|     $Date: 2009-10-24 12:01:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -40,6 +40,7 @@ class cron
 {
 	var $coreCrons = array();
     var $cronAction;
+	var $e_cron = array();
 
     function cron()
 	{
@@ -47,17 +48,28 @@ class cron
 		$mes = $mes = e107::getMessage();
     	$this->cronAction = e_QUERY;
 		
+		$this->coreCrons['_system_cron'] = array(
+			0 => array('name' => "Test Email", 'function' => "sendEmail", 'description' => "Send a test email to ".$pref['siteadminemail']."<br />Recommended to test the scheduling system."),
+		//	1 => array('name'=>'User Purge', 'function' => 'userPurge', 'description'=>'Purge Unactivated Users'),
+		//	2 => array('name'=>'User UnActivated', 'function' => 'userUnactivated', 'description'=>'Resend activation email to unactivated users.'),
+		//	3 => array('name'=>'News Sticky', 'function' => 'newsPurge', 'description'=>'Remove Sticky News Items')		
+		);		
+		
+				
 		if(!vartrue($pref['e_cron_pwd']))
 		{	
 			$pwd = $this->setCronPwd();
 		}
-		$this->lastRefresh();
+		
 	
 
         if(isset($_POST['submit']))
 		{
-        	$this -> cronSave();
+        	$this->cronSave();
 		}
+		
+		$this->lastRefresh();
+		$this->cronLoad();
 
 		if(isset($_POST['save_prefs']))
 		{
@@ -66,18 +78,14 @@ class cron
 		
 		if(isset($_POST['execute']))
 		{
+
 			$class_func = key($_POST['execute']);
 			$this -> cronExecute($class_func);
 		}
 
 		// Set Core Cron Options.
 		
-		$this->coreCrons['_system'] = array(
-			0 => array('name' => "Test Email", 'function' => "sendEmail", 'description' => "Send a test email to ".$pref['siteadminemail']."<br />Recommended to test the scheduling system."),
-		//	1 => array('name'=>'User Purge', 'function' => 'userPurge', 'description'=>'Purge Unactivated Users'),
-		//	2 => array('name'=>'User UnActivated', 'function' => 'userUnactivated', 'description'=>'Resend activation email to unactivated users.'),
-		//	3 => array('name'=>'News Sticky', 'function' => 'newsPurge', 'description'=>'Remove Sticky News Items')		
-		);		
+
 	
 		
 
@@ -106,7 +114,7 @@ class cron
 		$ago = (time() - $lastload); 
 		
 		$active = ($ago < 125) ? TRUE : FALSE;
-		$status = ($active) ? "Enabled" : "Offline";
+		$status = ($active) ? LAN_ENABLED : LAN_DISABLED; // "Enabled" : "Offline";
 
 		$mes->add("Status: <b>".$status."</b>", E_MESSAGE_INFO);
 		
@@ -131,23 +139,52 @@ class cron
 				$setpwd_message = "Use the following Cron Command: <b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
 				Using your server control panel (eg. cPanel,Plesk etc.) please create a crontab to run this command on your server every minute.";
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
+		}
+		else
+		{
+			if(count($list) && !is_executable(e_BASE."cron.php"))
+			{
+				$mes->add("Please CHMOD /cron.php to 777" , E_MESSAGE_WARNING);	
+			}
 		}		
 	}
 
+
+function cronName($classname,$method)
+{
+	$tp = e107::getParser();
+	
+	foreach($this->e_cron as $class=>$val)
+	{
+		
+		if($class == $classname)
+		{
+			foreach($val as $func)
+			{
+				if($func['function'] == $method)
+				{
+					return $tp->toHtml($func['name']);
+				}
+			}
+		}
+	}
+}
 	
 	
 	function cronExecute($class_func)
 	{
 		//TODO LANs
+		list($class_name,$method_name) = explode("__",$class_func);
 		$mes = e107::getMessage();
-		if(!function_exists($func) || !call_user_func($func))
-		{	    	
-	    	$mes->add("Error running ".$func."()", E_MESSAGE_ERROR);    
-		}
-		else
+		
+		if($class_name =='_system_cron')
 		{
-			$mes->add("Success running ".$func."()", E_MESSAGE_SUCCESS); 	
-		}	
+			require_once(e_HANDLER."cron_class.php");
+		}
+		
+		$status =  $this->cronExecuteMethod($class_name,$method_name) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$mes->add("Running <b>".$this->cronName($class_name,$method_name)."</b>", $status); 	
+
 	}
 
     function cronSavePref()
@@ -266,7 +303,33 @@ function setCronPwd()
 
     }
 
-
+	function cronLoad()
+	{
+		global $pref;
+		
+		$core_cron = $this->coreCrons;
+		$new_cron = array();
+		
+		if(vartrue($pref['e_cron_list']))
+		{	
+		
+			foreach($pref['e_cron_list'] as $key=>$val)
+			{
+				$eplug_cron = array();
+				if(is_readable(e_PLUGIN.$key."/e_cron.php"))
+				{
+					include_once(e_PLUGIN.$key."/e_cron.php");
+					
+					$class_name = $key."_cron";
+					$method_name = 'config';
+					
+					$this->cronExecuteMethod($class_name,$method_name);			
+				}
+			}
+		}
+		
+		$this->e_cron = array_merge($core_cron,$new_cron);
+	}
 
 
 
@@ -279,45 +342,9 @@ function setCronPwd()
 		$ns = e107::getRender();
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
-
-		$core_cron = $this->coreCrons;
-		$new_cron = array();
+	
+		$e_cron = $this->e_cron;
 		
-	if(vartrue($pref['e_cron_list']))
-	{	
-		foreach($pref['e_cron_list'] as $key=>$val)
-		{
-			$eplug_cron = array();
-			if(is_readable(e_PLUGIN.$key."/e_cron.php"))
-			{
-				include_once(e_PLUGIN.$key."/e_cron.php");
-				
-				$class_name = $key."_cron";
-				$method_name = 'config';
-				
-				if(class_exists($class_name))
-				{
-					$obj = new $class_name;
-					if(method_exists($obj,$method_name))
-					{
-						$mes->add("Executing config function <b>".$key." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
-						 $new_cron[$key] = call_user_func(array($obj,$method_name));
-						 
-						 					
-					}
-					else
-					{
-						$mes->add("Config function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);					
-					}	
-				}
-			
-			}
-		}
-	}
-		
-		$e_cron = array_merge($core_cron,$new_cron);
-
-//	print_a($e_cron);	
 		
 	// ----------------------  List All Functions -----------------------------
 
@@ -525,8 +552,29 @@ function setCronPwd()
 
 		e_admin_menu(PAGE_NAME, $action, $var);
 	}
-}
 
+
+	function cronExecuteMethod($class_name,$method_name)
+	{
+		$mes = e107::getMessage();
+
+		if(class_exists($class_name))
+		{
+			$obj = new $class_name;
+			if(method_exists($obj,$method_name))
+			{
+				$mes->add("Executing config function <b>".$key." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
+				call_user_func(array($obj,$method_name));
+				return TRUE;					 					
+			}
+			else
+			{
+				$mes->add("Config function <b>".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);					
+			}	
+		}
+		return FALSE;
+	}
+}
 
 function cron_adminmenu()
 {

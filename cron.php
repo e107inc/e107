@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 ||     e107 website system
 |
-|     Copyright (C) 2001-2009 e107 Inc 
+|     Copyright (C) 2008-2009 e107 Inc 
 |     http://e107.org
 |
 |
@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/cron.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-10-24 10:07:30 $
+|     $Revision: 1.7 $
+|     $Date: 2009-10-24 12:01:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -103,31 +103,6 @@ foreach($list as $func=>$val)
 
 
 
-class _system_cron 
-{
-	
-	// See admin/cron.php to configure more core cron function to be added below.  
-	
-	
-	function myfunction() 
-	{
-	    // Whatever code you wish.
-	}
-	
-		
-	function sendEmail() // Test Email. 
-	{
-		global $pref;
-	    require_once(e_HANDLER."mail.php");
-		$message = "Your Cron test worked correctly. Sent at ".date("r").".";
-		
-	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
-	}
-	
-	
-	
-	
-}
 
 
 // echo "<br />Cron '$cron_str0' last due at: " . date('r', $cron->getLastRanUnix()) . "<p>";

@@ -1,4 +1,54 @@
-<?php /* $Id: cron_class.php,v 1.2 2009-07-23 08:34:20 marj_nl_fr Exp $ */
+<?php
+/*
++ ----------------------------------------------------------------------------+
+||     e107 website system
+|
+|     Copyright (C) 2008-2009 e107 Inc 
+|     http://e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.8/e107_handlers/cron_class.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2009-10-24 12:01:24 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+if (!defined('e107_INIT')) { exit; }
+
+class _system_cron 
+{
+	
+	// See admin/cron.php to configure more core cron function to be added below.  
+	
+	
+	function myfunction() 
+	{
+	    // Whatever code you wish.
+	}
+	
+		
+	function sendEmail() // Test Email. 
+	{
+		global $pref;
+	    require_once(e_HANDLER."mail.php");
+		$message = "Your Cron test worked correctly. Sent at ".date("r").".";
+		
+	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+	}
+	
+	
+	
+	
+}
+
+
+
+
+
+
+ /* $Id: cron_class.php,v 1.3 2009-10-24 12:01:24 e107coders Exp $ */
 
 /**####################################################################################################**\
    Version: V1.01
