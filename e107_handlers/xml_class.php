@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-10-22 04:14:35 $
+ * $Revision: 1.33 $
+ * $Date: 2009-10-24 08:10:46 $
  * $Author: e107coders $
 */
 
@@ -278,7 +278,7 @@ class xmlClass
 		if (function_exists('file_get_contents'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$data = file_get_contents(urlencode($address));
+			$data = file_get_contents(urldecode($address));
 	
 			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
