@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-10-24 10:15:05 $
+|     $Revision: 1.9 $
+|     $Date: 2009-10-24 10:39:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -99,7 +99,7 @@ class cron
 
 	function lastRefresh()
 	{
-	
+		global $pref;
 		e107::getCache()->CachePageMD5 = '_';
 		$lastload = e107::getCache()->retrieve('cronLastLoad',FALSE,TRUE,TRUE);
 		$mes = e107::getMessage();
@@ -109,7 +109,8 @@ class cron
 		$status = ($active) ? "Enabled" : "Offline";
 
 		$mes->add("Status: <b>".$status."</b>", E_MESSAGE_INFO);
-			
+		
+		// print_a($pref['e_cron_pref']);	
 		
 		if($pref['e_cron_pref']) // grab cron
 		{
@@ -123,12 +124,13 @@ class cron
 		}
 		$mes->add("Active Crons: <b>".count($list)."</b>", E_MESSAGE_INFO);			
 		$mes->add("Last cron refresh was ".$ago.' seconds ago.', E_MESSAGE_INFO);
+
 		
 		if(!$active)
 		{
 
-					$setpwd_message = "Use the following Cron Command:<br /><b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
-					This cron command is unique and will not be displayed again. Please copy and paste it into your webserver cron area to be run every minute of every day.";
+					$setpwd_message = "Use the following Cron Command: <b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
+					Please configure your webserver cron to run this command every minute.";
 					$mes->add($setpwd_message, E_MESSAGE_INFO);
 		}		
 	}
@@ -282,7 +284,8 @@ function setCronPwd()
 		$core_cron = $this->coreCrons;
 		$new_cron = array();
 		
-		
+	if(vartrue($pref['e_cron_list']))
+	{	
 		foreach($pref['e_cron_list'] as $key=>$val)
 		{
 			$eplug_cron = array();
@@ -311,6 +314,7 @@ function setCronPwd()
 			
 			}
 		}
+	}
 		
 		$e_cron = array_merge($core_cron,$new_cron);
 
