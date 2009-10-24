@@ -11,42 +11,35 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/sitedown.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-09-15 15:02:35 $
-|     $Author: secretr $
+|     $Revision: 1.5 $
+|     $Date: 2009-10-24 08:45:43 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
-require_once("class2.php");
+require_once('class2.php');
 
-header("Content-type: text/html; charset=utf-8", TRUE);
+header('Content-type: text/html; charset=utf-8', TRUE);
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-/*
-global $pref;
-global $tp;
-
-e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
-e107_include_once(e_LANGUAGEDIR."English/lan_sitedown.php");
-*/
 if (!$pref['maintainance_flag'] )
 {
-	header("location: ".SITEURL);
+	header('location: '.SITEURL);
+	exit();
 }
 
-require_once(e_FILE."shortcode/batch/sitedown_shortcodes.php");
+require_once(e_FILE.'shortcode/batch/sitedown_shortcodes.php');
 
-if (!$SITEDOWN_TABLE) {
-	if (file_exists(THEME."sitedown_template.php"))
+if (!$SITEDOWN_TABLE)
+{
+	if (file_exists(THEME.'sitedown_template.php'))
 	{
-		require_once(THEME."sitedown_template.php");
+		require_once(THEME.'sitedown_template.php');
 	}
 	else
 	{
-		require_once(e_THEME."templates/sitedown_template.php");
+		require_once(e_THEME.'templates/sitedown_template.php');
 	}
 }
 
-	echo $tp->parseTemplate($SITEDOWN_TABLE, TRUE, $sitedown_shortcodes);
-
-?>
+echo $tp->parseTemplate($SITEDOWN_TABLE, TRUE, $sitedown_shortcodes);
