@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/cron.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-10-23 14:16:07 $
+|     $Revision: 1.6 $
+|     $Date: 2009-10-24 10:07:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -37,6 +37,11 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 	    sendemail($pref['siteadminemail'], "e107 - Cron Schedule Misconfigured.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 		exit;
 	}
+
+e107::getCache()->CachePageMD5 = '_';
+e107::getCache()->set('cronLastLoad',time(),TRUE,FALSE,TRUE);
+
+
 
 // from the plugin directory:
 // realpath(dirname(__FILE__)."/../../")."/";

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-10-23 14:16:07 $
+|     $Revision: 1.7 $
+|     $Date: 2009-10-24 10:07:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -44,8 +44,11 @@ class cron
     function cron()
 	{
 		global $pref;
-		
+		$mes = $mes = e107::getMessage();
     	$this->cronAction = e_QUERY;
+		
+		$this->lastRefresh();
+	
 
         if(isset($_POST['submit']))
 		{
@@ -88,12 +91,49 @@ class cron
         	$this -> cronRenderPrefs();
 		}
 	}
+
+
+	function lastRefresh()
+	{
+	
+		e107::getCache()->CachePageMD5 = '_';
+		$lastload = e107::getCache()->retrieve('cronLastLoad',FALSE,TRUE,TRUE);
+		$mes = e107::getMessage();
+		$ago = (time() - $lastload); 
+		
+		$active = ($ago < 125) ? TRUE : FALSE;
+		$status = ($active) ? "Enabled" : "Offline";
+
+		$mes->add("Status: <b>".$status."</b>", E_MESSAGE_INFO);
+			
+		
+		if($pref['e_cron_pref']) // grab cron
+		{
+			foreach($pref['e_cron_pref'] as $func=>$cron)
+			{
+		    	if($cron['active']==1)
+				{
+		        	$list[$func] = $cron;
+				}
+			}
+		}
+		$mes->add("Active Crons: <b>".count($list)."</b>", E_MESSAGE_INFO);			
+		$mes->add("Last cron refresh was ".$ago.' seconds ago.', E_MESSAGE_INFO);
+		
+		if(!$active)
+		{
+					$setpwd_message = "Use the following Cron Command:<br /><b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
+					This cron command is unique and will not be displayed again. Please copy and paste it into your webserver cron area to be run every minute of every day.";
+					$mes->add($setpwd_message, E_MESSAGE_INFO);
+		}		
+	}
+
 	
 	
 	function cronExecute($class_func)
 	{
 		//TODO LANs
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 		if(!function_exists($func) || !call_user_func($func))
 		{	    	
 	    	$mes->add("Error running ".$func."()", E_MESSAGE_ERROR);    
@@ -452,7 +492,6 @@ class cron
 		   </form>
 		   </div>";
 
-           $mes = e107::getMessage();
 		   $ns -> tablerender(PAGE_NAME, $mes->render() . $text);
 	}
 
