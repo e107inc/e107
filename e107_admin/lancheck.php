@@ -10,9 +10,9 @@
  * With code from Izydor and Lolo.
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-08-28 16:11:00 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.18 $
+ * $Date: 2009-10-24 07:52:32 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -191,7 +191,7 @@ $core_plugins = array(
 	"clock_menu", "comment_menu", "content", 'download', "featurebox", "forum",
 	"gsitemap", "links_page", "linkwords", "list_new", "log", "login_menu",
 	"newforumposts_main", "newsfeed", "newsletter", "online", "other_news_menu",
-	"pdf", "pm", "poll", "rss_menu", "search_menu", "siteinfo_menu", "trackback",
+	"pdf", "pm", "poll", "rss_menu", "search_menu", "siteinfo", "trackback",
 	"tree_menu", "user_menu"
 );
 
