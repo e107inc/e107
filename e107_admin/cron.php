@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-10-24 10:39:42 $
+|     $Revision: 1.10 $
+|     $Date: 2009-10-24 10:45:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -128,10 +128,9 @@ class cron
 		
 		if(!$active)
 		{
-
-					$setpwd_message = "Use the following Cron Command: <b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
-					Please configure your webserver cron to run this command every minute.";
-					$mes->add($setpwd_message, E_MESSAGE_INFO);
+				$setpwd_message = "Use the following Cron Command: <b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
+				Please create a crontab to run this command on your server every minute.";
+				$mes->add($setpwd_message, E_MESSAGE_INFO);
 		}		
 	}
 
