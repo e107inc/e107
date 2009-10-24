@@ -24,9 +24,9 @@ if (!e107::isInstalled('metaweblog'))
 }
 
 // These three files are from the PHP-XMLRPC library.
-include (e_PLUGIN.'metaweblog/xmlrpc.inc');
-include (e_PLUGIN.'metaweblog/xmlrpcs.inc');
-include (e_PLUGIN.'metaweblog/xmlrpc_wrappers.inc');
+include (e_HANDLER.'xmlrpc/xmlrpc.inc');
+include (e_HANDLER.'xmlrpc/xmlrpcs.inc');
+include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc');
 
 //general note: XMLRPC method functions parameters
 //have this rule: 1st parameter is the type of the OUT data (result: array,struct,etc), from 2nd are the IN parameters
