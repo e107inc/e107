@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-10-24 10:07:30 $
+|     $Revision: 1.8 $
+|     $Date: 2009-10-24 10:15:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -47,6 +47,10 @@ class cron
 		$mes = $mes = e107::getMessage();
     	$this->cronAction = e_QUERY;
 		
+		if(!vartrue($pref['e_cron_pwd']))
+		{	
+			$pwd = $this->setCronPwd();
+		}
 		$this->lastRefresh();
 	
 
@@ -122,6 +126,7 @@ class cron
 		
 		if(!$active)
 		{
+
 					$setpwd_message = "Use the following Cron Command:<br /><b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
 					This cron command is unique and will not be displayed again. Please copy and paste it into your webserver cron area to be run every minute of every day.";
 					$mes->add($setpwd_message, E_MESSAGE_INFO);
@@ -191,19 +196,9 @@ class cron
 		
 		if(!vartrue($pref['e_cron_pwd']) || varset($_POST['generate_pwd']))
 		{	
+			$pwd = $this->setCronPwd();
 		
-			require_once (e_HANDLER.'user_handler.php');
-			$userMethods = new UserHandler;
-			
-			//		# - an alpha character
-	//		. - a numeric character
-	//		* - an alphanumeric character
-	//		^ - next character from seed
-			
-			$newpwd = $userMethods->generateRandomString('*^*#.**^*');
-			$newpwd = sha1($newpwd.time());			
-			$pref['e_cron_pwd'] = $newpwd; 
-			$setpwd_message = "Use the following Cron Command:<br /><b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
+			$setpwd_message = "Use the following Cron Command:<br /><b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pwd."</b><br />
 			This cron command is unique and will not be displayed again. Please copy and paste it into your webserver cron area to be run every minute of every day.";
 			$mes->add($setpwd_message, E_MESSAGE_WARNING);
 		}
@@ -222,6 +217,23 @@ class cron
 		}
 
 	}
+	
+
+function setCronPwd()
+{
+		global $pref;
+		
+		require_once (e_HANDLER.'user_handler.php');
+			$userMethods = new UserHandler;		
+			$newpwd = $userMethods->generateRandomString('*^*#.**^*');
+			$newpwd = sha1($newpwd.time());			
+			$pref['e_cron_pwd'] = $newpwd; 
+			
+	return save_prefs();
+	
+}
+	
+	
 // --------------------------------------------------------------------------
 	function cronRenderPrefs()
 	{
