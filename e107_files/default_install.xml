@@ -635,7 +635,7 @@ City, State, Country
 			<field name='menu_order'>0</field>
 			<field name='menu_class'>0</field>
 			<field name='menu_pages'></field>
-			<field name='menu_path'>siteinfo_menu/</field>
+			<field name='menu_path'>siteinfo/</field>
 			<field name='menu_layout'></field>
 			<field name='menu_parms'></field>
 		</item>
@@ -657,7 +657,7 @@ City, State, Country
 			<field name='menu_order'>2</field>
 			<field name='menu_class'>0</field>
 			<field name='menu_pages'></field>
-			<field name='menu_path'>siteinfo_menu/</field>
+			<field name='menu_path'>siteinfo/</field>
 			<field name='menu_layout'></field>
 			<field name='menu_parms'></field>
 		</item>
@@ -690,7 +690,7 @@ City, State, Country
 			<field name='menu_order'>0</field>
 			<field name='menu_class'>0</field>
 			<field name='menu_pages'></field>
-			<field name='menu_path'>siteinfo_menu/</field>
+			<field name='menu_path'>siteinfo/</field>
 			<field name='menu_layout'></field>
 			<field name='menu_parms'></field>
 		</item>
@@ -767,7 +767,7 @@ City, State, Country
 			<field name='menu_order'>0</field>
 			<field name='menu_class'>0</field>
 			<field name='menu_pages'></field>
-			<field name='menu_path'>siteinfo_menu/</field>
+			<field name='menu_path'>siteinfo/</field>
 			<field name='menu_layout'></field>
 			<field name='menu_parms'></field>
 		</item>
@@ -778,7 +778,7 @@ City, State, Country
 			<field name='menu_order'>0</field>
 			<field name='menu_class'>0</field>
 			<field name='menu_pages'></field>
-			<field name='menu_path'>siteinfo_menu/</field>
+			<field name='menu_path'>siteinfo/</field>
 			<field name='menu_layout'></field>
 			<field name='menu_parms'></field>
 		</item>

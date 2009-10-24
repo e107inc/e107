@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.55 $
- * $Date: 2009-10-23 18:08:01 $
- * $Author: secretr $
+ * $Revision: 1.56 $
+ * $Date: 2009-10-24 07:53:25 $
+ * $Author: e107coders $
  *
 */
 
@@ -1047,7 +1047,7 @@ class e_form
 		$text .= "
 				".$this->select_close()."
 				".$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
-			</div>
+			</div><span class='clear'></span>
 		";
 		
 		return $text;

@@ -9,8 +9,8 @@
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-09-10 15:24:57 $
+ * $Revision: 1.15 $
+ * $Date: 2009-10-24 07:53:25 $
  * $Author: e107coders $
 */
 
@@ -252,7 +252,11 @@ class e_menu
 			//include once is not an option anymore
 			//e107_include will break many old menus (evel globals), so we'll wait for a while...
 			//e107_include(e_PLUGIN.$mpath."/".$mname.".php");
-			$e107_debug ? include(e_PLUGIN.$mpath.'/'.$mname.'.php') : @include(e_PLUGIN.$mpath.'/'.$mname.'.php');
+			if(substr($mpath,-1)!='/')
+			{
+				$mpath .= '/';	
+			}
+			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 			
 			/*if(file_exists(e_PLUGIN.$mpath."/".$mname.".php"))
 			{

@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-09-12 17:10:17 $
+ * $Revision: 1.22 $
+ * $Date: 2009-10-24 07:52:32 $
  * $Author: e107coders $
  *
  */
@@ -687,7 +687,7 @@ function zip_up_lang($language)
 	 "links_page","linkwords","list_new","log","login_menu",
 	 "newforumposts_main","newsfeed","newsletter","online",
 	 "other_news_menu","pdf","pm","poll","rss_menu",
-	 "search_menu","siteinfo_menu","trackback","tree_menu","user_menu","userlanguage_menu",
+	 "search_menu","siteinfo","trackback","tree_menu","user_menu","userlanguage_menu",
 	 "usertheme_menu"
 	 );
 	 $core_themes = array("crahan","e107v4a","human_condition","interfectus","jayya",

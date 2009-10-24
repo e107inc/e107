@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.54 $
- * $Date: 2009-09-21 21:53:37 $
+ * $Revision: 1.55 $
+ * $Date: 2009-10-24 07:53:25 $
  * $Author: e107coders $
 */
 
@@ -839,6 +839,34 @@ class themeHandler{
 
   //		$itext .= !$mode ? "<tr><td style='vertical-align:top;width:24%'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>".$previewbutton.$selectmainbutton.$selectadminbutton."</td></tr>" : "";
 
+		if($mode == 2)
+		{
+
+			$astext = "";
+			$file = e107::getFile();
+
+			$adminstyles = $file -> get_files(e_ADMIN."includes");
+
+				$astext = "\n<select id='mode2' name='adminstyle' class='tbox'>\n";
+
+				foreach($adminstyles as $as)
+				{
+					$style = str_replace(".php", "", $as['fname']);
+					$astext .= "<option value='{$style}'".($pref['adminstyle'] == $style ? " selected='selected'" : "").">".$style."</option>\n";
+				}
+				$astext .= "</select>";
+
+			$text .= "
+			<tr>
+				<td><b>".TPVLAN_41.":</b></td>
+				<td colspan='2'>".$astext."</td>
+			</tr>
+			\n";
+		}
+
+
+
+
 
         $text .= $itext;
 
@@ -898,30 +926,7 @@ class themeHandler{
 
 
 
-		if($mode == 2)
-		{
 
-			$astext = "";
-			$file = e107::getFile();
-
-			$adminstyles = $file -> get_files(e_ADMIN."includes");
-
-				$astext = "\n<select id='mode2' name='adminstyle' class='tbox'>\n";
-
-				foreach($adminstyles as $as)
-				{
-					$style = str_replace(".php", "", $as['fname']);
-					$astext .= "<option value='{$style}'".($pref['adminstyle'] == $style ? " selected='selected'" : "").">".$style."</option>\n";
-				}
-				$astext .= "</select>";
-
-			$text .= "
-			<tr>
-				<td><b>".TPVLAN_41.":</b></td>
-				<td colspan='2'>".$astext."</td>
-			</tr>
-			\n";
-		}
 
 
         if($mode == 1)

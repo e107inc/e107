@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2009-10-22 14:31:28 $
+|     $Revision: 1.56 $
+|     $Date: 2009-10-24 07:52:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -240,6 +240,7 @@ if (defined('TEST_UPDATE'))
 function update_706_to_800($type='')
 {
 	global $sql,$ns, $pref, $admin_log, $e107info;
+	$mes = e107::getMessage();
 
 	// List of unwanted $pref values which can go
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
@@ -271,6 +272,23 @@ function update_706_to_800($type='')
 								'links_page' => 'links_page',
 								'poll' => 'polls'
 								);
+		
+	// List of changed menu locations. 						
+	$changeMenuPaths = array(
+		array('oldpath'	=> 'siteinfo_menu',		'newpath' => 'siteinfo',	'menu' => 'sitebutton_menu'),
+		array('oldpath'	=> 'siteinfo_menu',		'newpath' => 'siteinfo',	'menu' => 'compliance_menu'),
+		array('oldpath'	=> 'siteinfo_menu',		'newpath' => 'siteinfo',	'menu' => 'powered_by_menu'),
+		array('oldpath'	=> 'siteinfo_menu',		'newpath' => 'siteinfo',	'menu' => 'sitebutton_menu'),
+		array('oldpath'	=> 'siteinfo_menu',		'newpath' => 'siteinfo',	'menu' => 'counter_menu'),
+		array('oldpath'	=> 'siteinfo_menu',		'newpath' => 'siteinfo',	'menu' => 'latestnews_menu'),		
+		array('oldpath'	=> 'compliance_menu',	'newpath' => 'siteinfo',	'menu' => 'compliance_menu'),
+		array('oldpath'	=> 'powered_by_menu',	'newpath' => 'siteinfo',	'menu' => 'powered_by_menu'),
+		array('oldpath'	=> 'sitebutton_menu',	'newpath' => 'siteinfo',	'menu' => 'sitebutton_menu'),
+		array('oldpath'	=> 'counter_menu',		'newpath' => 'siteinfo',	'menu' => 'counter_menu'),
+		array('oldpath'	=> 'usertheme_menu',	'newpath' => 'user_menu',	'menu' => 'usertheme_menu'),
+		array('oldpath'	=> 'userlanguage_menu',	'newpath' => 'user_menu',	'menu' => 'userlanguage_menu'),
+		array('oldpath'	=> 'lastseen_menu',		'newpath' => 'online',		'menu' => 'lastseen_menu')
+	);			
 
 
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
@@ -361,70 +379,25 @@ function update_706_to_800($type='')
 		}	
 	
 	//TODO de-serialize the user_prefs also. 
-
-	//change menu_path for usertheme_menu
-	if($sql->db_Select("menus", "menu_path", "menu_path='usertheme_menu' || menu_path='usertheme_menu/'"))
-	{
-		if ($just_check) return update_needed();
-		$sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='usertheme_menu' || menu_path='usertheme_menu/' ");
-		$updateMessages[] = LAN_UPDATE_23;
-		catch_error();
+	
+	// ++++++++ Modify Menu Paths +++++++. 
+	if(varset($changeMenuPaths))
+	{		
+		foreach($changeMenuPaths as $val)
+		{
+			$qry = "SELECT menu_path FROM #menus WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) LIMIT 1";
+			if($sql->db_Select_gen($qry))
+			{
+				if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
+				$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
+				$sql->db_Update("menus", $updqry);
+				$mes->add('Updating Menu Path for <b>'.$val['menu'].'</b> from '.$val['oldpath'].' => '.$val['newpath'], E_MESSAGE_DEBUG); // LAN_UPDATE_25;
+				// catch_error();
+			}	
+		}
 	}
 
-	//change menu_path for userlanguage_menu
-	if($sql->db_Select("menus", "menu_path", "menu_path='userlanguage_menu' || menu_path='userlanguage_menu/'"))
-	{
-		if ($just_check) return update_needed();
-		$sql->db_Update("menus", "menu_path='user_menu/' WHERE menu_path='userlanguage_menu' || menu_path='userlanguage_menu/' ");
-		$updateMessages[] = LAN_UPDATE_24;
-		catch_error();
-	}
-
-	//change menu_path for compliance_menu
-	if($sql->db_Select("menus", "menu_path", "menu_path='compliance_menu' || menu_path='compliance_menu/'"))
-	{
-	  if ($just_check) return update_needed();
-		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='compliance_menu' || menu_path='compliance_menu/' ");
-		$updateMessages[] = LAN_UPDATE_25;
-		catch_error();
-	}
-
-	//change menu_path for powered_by_menu
-	if($sql->db_Select("menus", "menu_path", "menu_path='powered_by_menu' || menu_path='powered_by_menu/'"))
-	{
-	  if ($just_check) return update_needed();
-		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='powered_by_menu' || menu_path='powered_by_menu/' ");
-		$updateMessages[] = LAN_UPDATE_26;
-		catch_error();
-	}
-
-	//change menu_path for sitebutton_menu
-	if($sql->db_Select("menus", "menu_path", "menu_path='sitebutton_menu' || menu_path='sitebutton_menu/'"))
-	{
-	  if ($just_check) return update_needed();
-		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='sitebutton_menu' || menu_path='sitebutton_menu/' ");
-		$updateMessages[] = LAN_UPDATE_27;
-		catch_error();
-	}
-
-	//change menu_path for counter_menu
-	if($sql->db_Select("menus", "menu_path", "menu_path='counter_menu' || menu_path='counter_menu/'"))
-	{
-	  if ($just_check) return update_needed();
-		$sql->db_Update("menus", "menu_path='siteinfo_menu/' WHERE menu_path='counter_menu' || menu_path='counter_menu/' ");
-		$updateMessages[] = LAN_UPDATE_28;
-		catch_error();
-	}
-
-	//change menu_path for lastseen_menu
-	if($sql->db_Select("menus", "menu_path", "menu_path='lastseen_menu' || menu_path='lastseen_menu/'"))
-	{
-	  if ($just_check) return update_needed();
-		$sql->db_Update("menus", "menu_path='online/' WHERE menu_path='lastseen_menu' || menu_path='lastseen_menu/' ");
-		$updateMessages[] = LAN_UPDATE_29;
-		catch_error();
-	}
-
+	// Leave this one here.. just in case.. 
 	//delete record for online_extended_menu (now only using one online menu)
 	if($sql->db_Select("menus", "*", "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
 	{
@@ -927,8 +900,8 @@ function copy_user_timezone()
 function update_needed($message='')
 {
 	global $ns, $update_debug;
-	require_once (e_HANDLER."message_handler.php");
-	$emessage = &eMessage::getInstance();
+
+	$emessage = e107::getMessage();
 
 	if ($update_debug) $emessage->add("Update: ".$message, E_MESSAGE_DEBUG);
 	if(E107_DEBUG_LEVEL)
