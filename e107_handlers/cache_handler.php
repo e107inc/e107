@@ -9,9 +9,9 @@
  * Cache handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-09-25 20:17:34 $
- * $Author: secretr $
+ * $Revision: 1.15 $
+ * $Date: 2009-10-24 10:07:30 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -23,8 +23,8 @@ define('CACHE_PREFIX','<?php exit;');
  * 
  * @package     e107
  * @category	e107_handlers
- * @version     $Revision: 1.14 $
- * @author      $Author: secretr $
+ * @version     $Revision: 1.15 $
+ * @author      $Author: e107coders $
  */
 class ecache {
 
@@ -155,15 +155,15 @@ class ecache {
 
 
 	/**
-	* @return void
-	* @param string $CacheTag - name of tag for future retrieval
-	* @param string $Data - data to be cached
-	* @param bool   $ForceCache (optional, default false) - if TRUE, writes cache even when disabled
-	* @param bool   $bRaw (optional, default false) - if TRUE, writes data exactly as provided instead of prefacing with php leadin
-	* @desc Creates / overwrites the cache file for $query, $text is the data to store for $query.
-	* @scope public
-	*/
-	function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false) 
+	 * 
+	 * @param string $CacheTag - name of tag for future retrieval
+	 * @param data $Data		- data to be cached
+	 * @param boolean $ForceCache [optional] if TRUE, writes cache even when disabled
+	 * @param boolean $bRaw [optional] if TRUE, writes data exactly as provided instead of prefacing with php leadin
+	 * @param boolean $syscache [optional]
+	 * @return 
+	 */
+	public function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false) 
 	{
 		global $pref, $FILES_DIRECTORY, $tp;
 		if(($ForceCache != false ) || ($syscache == false && varsettrue($pref['cachestatus'])) || ($syscache == true && varsettrue($pref['syscachestatus'])) && !$tp->checkHighlighting()) 
