@@ -9,9 +9,9 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-08-28 16:10:55 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.18 $
+ * $Date: 2009-10-25 01:43:06 $
+ * $Author: e107coders $
  *
 */
 
@@ -563,7 +563,7 @@ switch($action)
 			<form method='post' action='".e_ADMIN_ABS."banlist_export.php' id='core-banlist-transfer-form' >
 				<fieldset id='core-banlist-transfer-export'>
 					<legend>".BANLAN_40."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
 						<colgroup span='2'>
 							<col style='width:70%' />
 							<col style='width:30%' />
@@ -573,34 +573,45 @@ switch($action)
 								<th>".BANLAN_36."</th>
 								<th>".BANLAN_15."</th>
 							</tr>
-							<tr>
-								<td rowspan='2'>
+						
+								
 		";
 
 		for($i = 0; $i < BAN_REASON_COUNT; $i ++)
 		{
+			$colspan = ($i>1) ? "2" : 1;
+			
 			$text .= "
-									<div class='field-spacer'>
+									<tr>
+									<td colspan='".$colspan."'>
 										".$frm->checkbox("ban_types[{$i}]", $i).$frm->label(constant('BANLAN_10'.$i), "ban_types[{$i}]", $i)."
 										<span class='smalltext'>(".constant('BANLAN_11'.$i).")</span>
-									</div>
+									</td>
+									
 			";
+			
+			if($i == 0)
+			{
+				$text .= "<td>".select_box('ban_separator', $separator_char).' '.BANLAN_37."</td>";								
+			}
+			
+			if($i ==1)
+			{
+				$text .= "<td>".select_box('ban_quote', $quote_char).' '.BANLAN_38."</td>";
+			}
+			
+			$text .= "</tr>";
 		}
 
 		$text .= "
-								</td>
-								<td>
-									<div class='field-spacer'>".select_box('ban_separator', $separator_char).' '.BANLAN_37."</div>
-									<div class='field-spacer'>".select_box('ban_quote', $quote_char).' '.BANLAN_38."</div>
-								</td>
-							</tr>
-							<tr>
-								<td class='bottom'>
-									<div class='right'>".$frm->admin_button('ban_export', BANLAN_39, 'export', BANLAN_39)."</div>
-								</td>
-							</tr>
+						
+							
+							
+								
 						</tbody>
 					</table>
+							<div class='buttons-bar center'>".$frm->admin_button('ban_export', BANLAN_39, 'export', BANLAN_39)."</div>
+										
 				</fieldset>
 			</form>
 		";
@@ -610,7 +621,7 @@ switch($action)
 			<form enctype='multipart/form-data' method='post' action='".e_SELF."?transfer' id='ban_import_form' >
 				<fieldset id='core-banlist-transfer-import'>
 					<legend>".BANLAN_41."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
+					<table cellpadding='0' cellspacing='0' class='adminlist'>
 						<colgroup span='2'>
 							<col style='width:70%' />
 							<col style='width:30%' />
@@ -621,25 +632,25 @@ switch($action)
 								<th>".BANLAN_15."</th>
 							</tr>
 							<tr>
-								<td>
-									<div class='field-spacer'>".$frm->checkbox('ban_over_import', 1).$frm->label(BANLAN_43, 'ban_over_import', 1)."</div>
-									<div class='field-spacer'>".$frm->checkbox('ban_over_expiry', 1).$frm->label(BANLAN_44, 'ban_over_expiry', 1)."</div>
-								</td>
-								<td>
-									<div class='field-spacer'>".select_box('ban_separator', $separator_char).' '.BANLAN_37."</div>
-									<div class='field-spacer'>".select_box('ban_quote', $quote_char).' '.BANLAN_38."</div>
-								</td>
+								<td>".$frm->checkbox('ban_over_import', 1).$frm->label(BANLAN_43, 'ban_over_import', 1)."</td>
+								<td>".select_box('ban_separator', $separator_char).' '.BANLAN_37."</td>
 							</tr>
 							<tr>
-								<td>
+								<td>".$frm->checkbox('ban_over_expiry', 1).$frm->label(BANLAN_44, 'ban_over_expiry', 1)."</td>
+								<td>".select_box('ban_quote', $quote_char).' '.BANLAN_38."</td>
+							</tr>
+							<tr>
+								<td colspan='2'>
 									".$frm->file('file_userfile[]')."
 								</td>
-								<td class='bottom'>
-									<div class='right'>".$frm->admin_button('ban_import', BANLAN_45, 'import')."</div>
-								</td>
-							</tr>
+									</tr>
 						</tbody>
 					</table>
+								<div class='buttons-bar center'>
+								".$frm->admin_button('ban_import', BANLAN_45, 'import')."
+								</div>
+			
+					
 				</fieldset>
 			</form>
 	";
