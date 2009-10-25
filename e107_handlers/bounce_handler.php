@@ -19,8 +19,6 @@ $bnc = new e107Bounce;
 $process = (varset($_GET['eml']) && $_E107['debug']) ? $_GET['eml'].".eml" : FALSE;
 $bnc->process($process);
 
-print_a($_GET);
-
 
 class e107Bounce
 {
