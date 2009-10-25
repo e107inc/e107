@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-10-24 12:01:24 $
+|     $Revision: 1.13 $
+|     $Date: 2009-10-25 15:23:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -133,20 +133,19 @@ class cron
 		$mes->add("Active Crons: <b>".count($list)."</b>", E_MESSAGE_INFO);			
 		$mes->add("Last cron refresh was ".$ago.' seconds ago.', E_MESSAGE_INFO);
 
-		
-		if(!$active)
+		if(!is_executable(e_BASE."cron.php"))
+		{
+				$mes->add("Please CHMOD /cron.php to 755" , E_MESSAGE_WARNING);	
+		}
+		elseif(!$active)
 		{
 				$setpwd_message = "Use the following Cron Command: <b style='color:black'>".$_SERVER['DOCUMENT_ROOT'].e_HTTP."cron.php ".$pref['e_cron_pwd']."</b><br />
 				Using your server control panel (eg. cPanel,Plesk etc.) please create a crontab to run this command on your server every minute.";
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
 		}
-		else
-		{
-			if(count($list) && !is_executable(e_BASE."cron.php"))
-			{
-				$mes->add("Please CHMOD /cron.php to 777" , E_MESSAGE_WARNING);	
-			}
-		}		
+		
+
+		
 	}
 
 
