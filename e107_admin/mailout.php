@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-09-03 19:32:33 $
-|     $Author: e107steved $
+|     $Revision: 1.19 $
+|     $Date: 2009-10-25 15:03:52 $
+|     $Author: e107coders $
 |
 | Work in progress - supplementary mailer plugin
 |
@@ -1027,19 +1027,25 @@ function show_prefs()
 	global $pref;
 	$e107 = e107::getInstance();
 
+	e107::getCache()->CachePageMD5 = '_';
+	$lastload = e107::getCache()->retrieve('emailLastBounce',FALSE,TRUE,TRUE);
+	$lastBounce = round((time() - $lastload) / 60);
+	
+	$lastBounceText = ($lastBounce > 1256474) ? "<b>Never</b>" : "<b>".$lastBounce . " minutes </b>ago."; 
+
 	$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
 		<div id='mail'>
 		<table cellpadding='0' cellspacing='0' class='adminform'>
 		<colgroup span='2'>
 			<col class='col-label' />
-			<col class='col-control' />
+			<col class='col-control right' />
 		</colgroup>
 		<tr>
-		<td>".LAN_MAILOUT_110."<br /></td>
-		<td style='text-align:right'><input class='button' type='submit' name='testemail' value=\"".LAN_MAILOUT_112."\" />&nbsp;
-		<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".SITEADMINEMAIL."\" />
-		</td>
+			<td>".LAN_MAILOUT_110."<br /></td>
+			<td style='text-align:right'><input class='button' type='submit' name='testemail' value=\"".LAN_MAILOUT_112."\" />&nbsp;
+			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".SITEADMINEMAIL."\" />
+			</td>
 		</tr>
 
 		<tr>
@@ -1086,13 +1092,13 @@ function show_prefs()
 		<td colspan='2' style='text-align:right' >".LAN_MAILOUT_90.":&nbsp;
 		<select class='tbox' name='smtp_options'>\n
 		<option value=''>".LAN_MAILOUT_96."</option>\n";
-	$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
-	$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
-	$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-	$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
+		$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
+		$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
+		$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
+		$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
+		$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
+		$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
+		$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
 
 	$text .= "<tr>
 		<td colspan='2' style='text-align:right' >".LAN_MAILOUT_57.":&nbsp;
@@ -1101,6 +1107,9 @@ function show_prefs()
 	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
 		</td>
 		</tr>";
+		
+		
+
 
 	$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
 	$text .= "<tr>
@@ -1138,24 +1147,28 @@ function show_prefs()
 		</td>
 	</tr>\n
 
+
 	<tr>
 	<td style='vertical-align:top'>".LAN_MAILOUT_31."</td>
 	<td style=' text-align:right'>
-		".LAN_MAILOUT_32.": <input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /><br />
-		".LAN_MAILOUT_33.":  <input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /><br />
-		".LAN_MAILOUT_34.":  <input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /><br />
-		".LAN_MAILOUT_35.":  <input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /><br />
-		".LAN_MAILOUT_120.": <select class='tbox' name='mail_bounce_type'>\n
+		<div class='field-spacer'>Last Bounce Processed: ".$lastBounceText."<br />
+		<span class='field-help'>Forward the bounce email address below to <b>".$_SERVER['DOCUMENT_ROOT'].e_HANDLER_ABS."bounce_handler.php</b></span>
+		</div>
+		<div class='field-spacer'>".LAN_MAILOUT_32.": <input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></div>
+		<div class='field-spacer'>".LAN_MAILOUT_33.":  <input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></div>
+		<div class='field-spacer'>".LAN_MAILOUT_34.":  <input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /></div>
+		<div class='field-spacer'>".LAN_MAILOUT_35.":  <input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></div>
+		<div class='field-spacer'>".LAN_MAILOUT_120.": <select class='tbox' name='mail_bounce_type'>\n
 		<option value=''>&nbsp;</option>\n
 		<option value='pop3'".(($pref['mail_bounce_type']=='pop3') ? " selected='selected'" : "").">".LAN_MAILOUT_121."</option>\n
 		<option value='pop3/notls'".(($pref['mail_bounce_type']=='pop3/notls') ? " selected='selected'" : "").">".LAN_MAILOUT_122."</option>\n
 		<option value='pop3/tls'".(($pref['mail_bounce_type']=='pop3/tls') ? " selected='selected'" : "").">".LAN_MAILOUT_123."</option>\n
 		<option value='imap'".(($pref['mail_bounce_type']=='imap') ? " selected='selected'" : "").">".LAN_MAILOUT_124."</option>\n
-		</select><br />\n
+		</select></div>\n
 		";
 
 	$check = ($pref['mail_bounce_delete']==1) ? " checked='checked'" : "";
-	$text .= LAN_MAILOUT_36.":  <input type='checkbox' name='mail_bounce_delete' value='1' {$check} />
+	$text .= "<div class='field-spacer'>".LAN_MAILOUT_36.":  <input type='checkbox' name='mail_bounce_delete' value='1' {$check} /></div>
 
 	</td>
 	</tr>\n";
@@ -1180,14 +1193,15 @@ function show_prefs()
 	$text .= "<tr>
 		<td>".LAN_MAILOUT_72."</td>
 		<td style='text-align:right'> 
+		<div class='field-spacer'>
 		<select class='tbox' name='mail_log_option'>\n
 		<option value='0'".(($mail_log_option==0) ? " selected='selected'" : "").">".LAN_MAILOUT_73."</option>\n
 		<option value='1'".(($mail_log_option==1) ? " selected='selected'" : "").">".LAN_MAILOUT_74."</option>\n
 		<option value='2'".(($mail_log_option==2) ? " selected='selected'" : "").">".LAN_MAILOUT_75."</option>\n
 		<option value='2'".(($mail_log_option==3) ? " selected='selected'" : "").">".LAN_MAILOUT_119."</option>\n
-		</select><br />\n
-		<input type='checkbox' name='mail_log_email' value='1' {$check} />".LAN_MAILOUT_76.
-		"</td>
+		</select></div>\n
+		<div class='field-spacer'><input type='checkbox' name='mail_log_email' value='1' {$check} /> ".LAN_MAILOUT_76.
+		"</div></td>
 	</tr>\n";
 
 	$text .= "</table>
