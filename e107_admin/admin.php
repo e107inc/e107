@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-10-22 04:14:34 $
+|     $Revision: 1.20 $
+|     $Date: 2009-10-26 09:50:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -324,6 +324,14 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 
 	global $sql, $tp;
 	
+	$plug_id = array();
+	e107::getDb()->db_Select("plugin", "*", "plugin_installflag = 1"); // Grab plugin IDs. 
+	while ($row = e107::getDb()->db_Fetch())
+	{
+		$pth = $row['plugin_path'];
+		$plug_id[$pth] = $row['plugin_id'];
+	}
+	
 	$pref = e107::getConfig('core')->getPref();
 	
 	$text = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", $iconSize, $linkStyle);
@@ -362,7 +370,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 				$eplug_name = $tp->toHTML($eplug_name,FALSE,"defs, emotes_off");
 				$plugin_icon = $eplug_icon_small ? "<img class='icon S16' src='".e_PLUGIN.$eplug_icon_small."' alt=''  />" : E_16_PLUGIN;
 				$plugin_icon_32 = $eplug_icon ? "<img class='icon S32' src='".e_PLUGIN.$eplug_icon."' alt=''  />" : E_32_PLUGIN;
-				$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plugin_id, 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
+				$plugin_array['p-'.$plugin_path] = array('link' => e_PLUGIN.$plugin_path."/".$eplug_conffile, 'title' => $eplug_name, 'caption' => $eplug_caption, 'perms' => "P".$plug_id[$plugin_path], 'icon' => $plugin_icon, 'icon_32' => $plugin_icon_32);
 			}
 		}
 	}	
