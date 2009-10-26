@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-10-26 07:26:47 $
+ * $Revision: 1.23 $
+ * $Date: 2009-10-26 07:44:30 $
  * $Author: e107coders $
 */
 
@@ -1815,7 +1815,7 @@ class e_model_interface
 		$text = "<div class='buttons-bar left'>
          	<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />";
 			$text .= $frm->select_open('execute_batch', array('class' => 'tbox select e-execute-batch', 'id' => false)).
-			$frm->option('With selected...', '');			
+			$frm->option('With selected...', '').			
 			$frm->option(LAN_DELETE, 'batch__delete');
 		$text .= $this->renderBatchFilter('batch');	
 		$text .= "</div>";
@@ -1851,6 +1851,14 @@ class e_model_interface
 						{
 							$text .= $frm->option($name, $type.'__'.$key."__".$k);	
 						}
+					break;
+					
+					case 'date': // use $parm to determine unix-style or YYYY-MM-DD 
+					    //TODO last hour, today, yesterday, this-month, last-month etc. 
+					/*	foreach($val['parm'] as $k=>$name)
+						{
+							$text .= $frm->option($name, $type.'__'.$key."__".$k);	
+						}*/
 					break;
 					
 					case 'userclass':
