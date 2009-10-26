@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-10-26 07:44:30 $
+ * $Revision: 1.24 $
+ * $Date: 2009-10-26 08:12:59 $
  * $Author: e107coders $
 */
 
@@ -1690,6 +1690,7 @@ class e_model_interface
 		{
 			if(vartrue($_POST['multiselect']))
 			{
+				// $_SESSION[$this->table."_batch"] = $_POST['execute_batch']; // DO we want this to 'stick'?
 				list($tmp,$field,$value) = explode('__',$_POST['execute_batch']);
 				$this->processBatch($field,$_POST['multiselect'],$value);
 			}
@@ -1698,6 +1699,7 @@ class e_model_interface
 				
 		if(varset($_POST['execute_filter'])) // Filter the db records. 
 		{
+			$_SESSION[$this->table."_filter"] = $_POST['filter_options'];
 			list($tmp,$filterField,$filterValue) = explode('__',$_POST['filter_options']);
 			$this->modifyListQry($_POST['searchquery'],$filterField,$filterValue);
 			$this->mode = 'list';	
@@ -1836,20 +1838,20 @@ class e_model_interface
 			{
 				continue;
 			}
-			$text .= "\t".$frm->optgroup_open($optdiz[$type].$val['title'], $disabled)."\n";
-			if(!is_array($val[$type]))
+			
+			$option = array();
+			
+			switch($val['type'])
 			{
-				switch($val['type'])
-				{
 					case 'boolean': //TODO modify description based on $val['parm]
-						$text .= $frm->option(LAN_YES, $type.'__'.$key."__1");
-						$text .= $frm->option(LAN_NO, $type.'__'.$key."__0");
+						$option[$type.'__'.$key."__1"] = LAN_YES;
+						$option[$type.'__'.$key."__0"] = LAN_NO;
 					break;
 					
 					case 'dropdown': // use the array $parm; 
 						foreach($val['parm'] as $k=>$name)
 						{
-							$text .= $frm->option($name, $type.'__'.$key."__".$k);	
+							$option[$type.'__'.$key."__".$k] = $name;
 						}
 					break;
 					
@@ -1865,7 +1867,7 @@ class e_model_interface
 						$classes = e107::getUserClass()->uc_required_class_list($val['parm']);
 						foreach($classes as $k=>$name)
 						{
-							$text .= $frm->option($name, $type. '__'.$key."__".$k);	
+							$option[$type. '__'.$key."__".$k] = $name;
 						}
 					break;					
 				
@@ -1874,15 +1876,29 @@ class e_model_interface
 						$list = $this->$method('',$type);
 						foreach($list as $k=>$name)
 						{
-							$text .= $frm->option($name, $type.'__'.$key."__".$k);	
+							$option[$type.'__'.$key."__".$k] = $name;
 						}
 					break;
-				}
 			}
-			$text .= $frm->optgroup_close()."\n";		
-		
+				
+				if(count($option)>0)
+				{
+					$text .= "\t".$frm->optgroup_open($optdiz[$type].$val['title'], $disabled)."\n";
+					foreach($option as $okey=>$oval)
+					{
+						$sel = ($_SESSION[$this->table."_".$type] == $okey) ? TRUE : FALSE;
+						$text .= $frm->option($oval, $okey,$sel)."\n";			
+					}
+					$text .= "\t".$frm->optgroup_close()."\n";	
+				}
+				
+					
 		}
-		
+			
+
+			
+			
+				
 		$text .= "</select>";
 		
 		return $text;
