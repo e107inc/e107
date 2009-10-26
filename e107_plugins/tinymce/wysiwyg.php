@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-10-12 06:38:01 $
+|     $Revision: 1.18 $
+|     $Date: 2009-10-26 10:55:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -176,7 +176,7 @@ class wysiwyg
 	
 	function tinyMce_config()
 	{
-		$text .= "
+		$text = "
 			
 	function start_tinyMce()
 	{
@@ -188,7 +188,7 @@ class wysiwyg
 		{
 			$text .= "\t\t  ".$key." : '".$val."',\n";
 		}
-	
+	/*
 		if($tinyMcePrefs['customjs'])
 		{
 			$text .= "\n,
@@ -202,7 +202,7 @@ class wysiwyg
 			";
 		
 		}
-	
+	*/
 		$text .= "
 		});
 		
@@ -280,6 +280,7 @@ class wysiwyg
 			$this->config['cleanup_callback'] = 'tinymce_html_bbcode_control';		
 		}
 		
+		$paste_plugin = (strpos($config['tinymce_plugins'],'paste')!==FALSE) ? TRUE : FALSE;
 		
 		if($paste_plugin)
 		{

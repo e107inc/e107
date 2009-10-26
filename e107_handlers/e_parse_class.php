@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.67 $
-* $Date: 2009-10-22 13:00:10 $
+* $Revision: 1.68 $
+* $Date: 2009-10-26 10:55:39 $
 * $Author: e107coders $
 *
 */
@@ -1352,7 +1352,7 @@ class e_parse
 					'{e_PLUGIN}'	=> e_PLUGIN_ABS,
 					'{e_FILE}'		=> e_FILE_ABS,
 					'{e_THEME}'		=> e_THEME_ABS,
-					'{e_DOWNLOAD}'	=> e_DOWNLOAD_ABS,
+					'{e_DOWNLOAD}'	=> e_BASE.'request.php?',
 					'{e_ADMIN}'		=> e_ADMIN_ABS,
 					'{e_HANDLER}'	=> e_HANDLER_ABS
 				);
