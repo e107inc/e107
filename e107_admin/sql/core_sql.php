@@ -9,9 +9,9 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-09-25 20:20:23 $
- * $Author: secretr $
+ * $Revision: 1.29 $
+ * $Date: 2009-10-26 09:53:09 $
+ * $Author: e107coders $
 */
 
 header("location:../index.php");
@@ -343,20 +343,6 @@ CREATE TABLE rate (
   rate_voters text NOT NULL,
   PRIMARY KEY  (rate_id)
 ) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `session`
-#
-
-CREATE TABLE session (
-  session_id varchar(32) NOT NULL default '',
-  session_expire int(10) unsigned NOT NULL default '0',
-  session_datestamp int(10) unsigned NOT NULL default '0',
-  session_ip varchar(200) NOT NULL default '',
-  session_data text NOT NULL
-) TYPE=MyISAM;
-
 # --------------------------------------------------------
 
 #
