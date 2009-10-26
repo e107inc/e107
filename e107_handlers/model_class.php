@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-10-23 04:25:13 $
+ * $Revision: 1.22 $
+ * $Date: 2009-10-26 07:26:47 $
  * $Author: e107coders $
 */
 
@@ -1651,7 +1651,7 @@ class e_model_interface
 	var $fieldpref;
 	var $listQry;
 	var $table;
-	var $primary;
+	var $pid;
 	var $mode; // as found in the URL query. $_GET['mode]
 			
 	function __construct()
@@ -1676,6 +1676,33 @@ class e_model_interface
 		}
 				
 		$this->fieldpref = (varset($user_pref[$column_pref_name])) ? $user_pref[$column_pref_name] : array_keys($this->fields);		
+		
+		foreach($this->fields as $k=>$v) // Find Primary table ID field (before checkboxes is run. ). 
+		{
+			if(vartrue($v['primary']))
+			{
+				$this->pid = $k;
+			}
+		}
+		
+		
+		if(varset($_POST['execute_batch']))
+		{
+			if(vartrue($_POST['multiselect']))
+			{
+				list($tmp,$field,$value) = explode('__',$_POST['execute_batch']);
+				$this->processBatch($field,$_POST['multiselect'],$value);
+			}
+			$this->mode = 'list';	
+		}
+				
+		if(varset($_POST['execute_filter'])) // Filter the db records. 
+		{
+			list($tmp,$filterField,$filterValue) = explode('__',$_POST['filter_options']);
+			$this->modifyListQry($_POST['searchquery'],$filterField,$filterValue);
+			$this->mode = 'list';	
+		}
+		
 			
 		if(varset($_POST['update']) || varset($_POST['create']))
 		{
@@ -1696,11 +1723,161 @@ class e_model_interface
 			$this->saveSettings();
 		}
 		
-		if($this->mode)
+		if(varset($_POST['edit']))
+		{
+			$this->mode = 'create';
+		}
+		
+		
+		if($this->mode) // Render Page. 
 		{
 			$method = $this->mode."Page";
 			$this->$method();
 		}
+		
+	}
+
+
+	function modifyListQry($search,$filterField,$filterValue)
+	{
+		$searchQry = array();
+			
+			if(vartrue($filterField) && vartrue($filterValue))
+			{
+				$searchQry[] = $filterField." = '".$filterValue."'";
+			}
+			
+			$filter = array();
+			
+			foreach($this->fields as $key=>$var)
+			{
+				if(($var['type'] == 'text' || $var['type'] == 'method') && vartrue($search))
+				{
+					$filter[] = "(".$key." REGEXP ('".$search."'))";	
+				}
+			}
+			if(count($filter)>0)
+			{
+				$searchQry[] = " (".implode(" OR ",$filter)." )";
+			}
+			if(count($searchQry)>0)
+			{
+				$this->listQry .= " WHERE ".implode(" AND ",$searchQry);
+			}
+	}
+
+
+
+
+	function processBatch($field,$ids,$value)
+	{
+		$sql = e107::getDb();
+		
+		if($field == 'delete')
+		{
+			return $sql->db_Delete($this->table,$this->pid." IN (".implode(",",$ids).")");	
+		}
+		
+		if(!is_numeric($value))
+		{
+			$value = "'".$value."'";	
+		}
+		
+		$query = $field." = ".$value." WHERE ".$this->pid." IN (".implode(",",$ids).") ";
+		$count = $sql->db_Update($this->table,$query);
+	}
+	
+	function renderFilter()
+	{
+		$frm = e107::getForm();
+		$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<div class='left' style='padding-bottom:10px'>\n"; //TODO assign CSS
+		$text .= "<input class='tbox' type='text' name='searchquery' size='20' value=\"".$_POST['searchquery']."\" maxlength='50' />\n";
+		$text .= $frm->select_open('filter_options', array('class' => 'tbox select e-filter-options', 'id' => false));
+		$text .= $frm->option('Display All', '');	
+		$text .= $this->renderBatchFilter('filter');
+		
+        $text .= $frm->admin_button('execute_filter', ADLAN_142);
+		$text .= "</div></form>\n";
+		return $text;	
+	}
+	
+	function renderBatch()
+	{	
+		$frm = e107::getForm();
+		
+	
+		if(!varset($this->fields['checkboxes']))
+		{
+			return;
+		}	
+		
+		$text = "<div class='buttons-bar left'>
+         	<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />";
+			$text .= $frm->select_open('execute_batch', array('class' => 'tbox select e-execute-batch', 'id' => false)).
+			$frm->option('With selected...', '');			
+			$frm->option(LAN_DELETE, 'batch__delete');
+		$text .= $this->renderBatchFilter('batch');	
+		$text .= "</div>";
+		
+		return $text;
+
+	}
+	
+	function renderBatchFilter($type='batch') // Common function used for both batches and filters. 
+	{
+		$frm = e107::getForm();
+				
+		$optdiz 	= array('batch' => 'Modify ', 'filter'=> 'Filter by ');
+						
+		foreach($this->fields as $key=>$val)
+		{
+			if(!varset($val[$type]))
+			{
+				continue;
+			}
+			$text .= "\t".$frm->optgroup_open($optdiz[$type].$val['title'], $disabled)."\n";
+			if(!is_array($val[$type]))
+			{
+				switch($val['type'])
+				{
+					case 'boolean': //TODO modify description based on $val['parm]
+						$text .= $frm->option(LAN_YES, $type.'__'.$key."__1");
+						$text .= $frm->option(LAN_NO, $type.'__'.$key."__0");
+					break;
+					
+					case 'dropdown': // use the array $parm; 
+						foreach($val['parm'] as $k=>$name)
+						{
+							$text .= $frm->option($name, $type.'__'.$key."__".$k);	
+						}
+					break;
+					
+					case 'userclass':
+						$classes = e107::getUserClass()->uc_required_class_list($val['parm']);
+						foreach($classes as $k=>$name)
+						{
+							$text .= $frm->option($name, $type. '__'.$key."__".$k);	
+						}
+					break;					
+				
+					case 'method':
+						$method = $key;
+						$list = $this->$method('',$type);
+						foreach($list as $k=>$name)
+						{
+							$text .= $frm->option($name, $type.'__'.$key."__".$k);	
+						}
+					break;
+				}
+			}
+			$text .= $frm->optgroup_close()."\n";		
+		
+		}
+		
+		$text .= "</select>";
+		
+		return $text;
 		
 	}
 	
@@ -1720,8 +1897,8 @@ class e_model_interface
 		
 		$amount = 20; // do we hardcode or let the plugin developer decide.. OR - a pref in admin?
 		$from = vartrue($_GET['frm']) ? $_GET['frm'] : 0;	//TODO sanitize?. 	
-
-        $text = "<form method='post' action='".e_SELF."?mode=create'>
+		$text = $this->renderFilter();
+        $text .= "<form method='post' action='".e_SELF."'>
                         <fieldset id='core-".$this->table."-list'>
 						<legend class='e-hideme'>".$this->pluginTitle."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>".
@@ -1743,29 +1920,27 @@ class e_model_interface
 			
 			$sql->db_Select_gen($query);
 			$row = $sql->db_getList('ALL', FALSE, FALSE);
-
+			
 			foreach($row as $field)
 			{
-				$text .= "<tr>\n";
-				foreach($this->fields as $key=>$att)
-				{	
-					$class = vartrue($this->fields[$key]['thclass']) ? "class='".$this->fields[$key]['thclass']."'" : "";		
-					$text .= (in_array($key,$this->fieldpref) || $att['forced']==TRUE) ? "\t<td ".$class.">".$this->renderValue($key,$field)."</td>\n" : "";						
-				}
-				$text .= "</tr>\n";				
+				$text .= $frm->trow($this, $field);
 			}
+
 		}
 
 		$text .= "
 						</tbody>
-					</table>
+					</table>";
+					
+		$text .= $this->renderBatch();
+		
+		$text .= "
 				</fieldset>
 			</form>
 		";
 		
-		//TODO Auto next/prev
-		 $parms = $total.",".$amount.",".$from.",".e_SELF.'?action='.$this->mode.'&frm=[FROM]';
-      	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+		$parms = $total.",".$amount.",".$from.",".e_SELF.'?action='.$this->mode.'&frm=[FROM]';
+    	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
 		$ns->tablerender($this->pluginTitle." :: ".$this->adminMenu['list']['caption'], $mes->render().$text);
 	}
@@ -1949,7 +2124,7 @@ class e_model_interface
 	 * @param object $row
 	 * @return 
 	 */
-	function renderValue($key,$row)
+	function renderValue($key,$row) // NO LONGER REQUIRED. use $frm->trow();
 	{
 		$att = $this->fields[$key];	
 		//TODO add checkbox. 
@@ -1964,9 +2139,9 @@ class e_model_interface
 		if($key == "options")
 		{
 			$id = $this->primary;
-			$text = "<input type='image' class='action edit' name='edit[{$row[$id]}]' src='".ADMIN_EDIT_ICON_PATH."' title='".LAN_EDIT."' />";
-			$text .= "<input type='image' class='action delete' name='delete[{$row[$id]}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$row[$id]} ]' />";
-			return $text;
+	//		$text = "<input type='image' class='action edit' name='edit[{$row[$id]}]' src='".ADMIN_EDIT_ICON_PATH."' title='".LAN_EDIT."' />";
+	//		$text .= "<input type='image' class='action delete' name='delete[{$row[$id]}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$row[$id]} ]' />";
+	//		return $text;
 		}
 		
 		switch($att['type']) 
@@ -2052,10 +2227,10 @@ class e_model_interface
 	 * @param object $action
 	 * @return 
 	 */
-	function show_options($action)
+	function show_options()
 	{
 		
-		$action = varset($_GET['mode'],'list');
+		$action = $this->mode;
 		
 		foreach($this->adminMenu as $key=>$val)
 		{
