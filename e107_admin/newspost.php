@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.60 $
- * $Date: 2009-10-23 18:14:41 $
- * $Author: secretr $
+ * $Revision: 1.61 $
+ * $Date: 2009-10-26 07:26:47 $
+ * $Author: e107coders $
 */
 require_once("../class2.php");
 
@@ -259,7 +259,7 @@ class admin_newspost
 
 		$this->fieldpref = varset($user_pref['admin_news_columns'], array('news_id', 'news_title', 'news_author', 'news_render_type', 'options'));
 
-		$this->_fields = array(
+		$this->fields = array(
 				'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
 				'news_id'				=> array('title' => LAN_NEWS_45, 	'type' => 'number', 	'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
  				'news_title'			=> array('title' => NWSLAN_40, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
@@ -1054,7 +1054,7 @@ class admin_newspost
 		}
 
 
-		$field_columns = $this->_fields;
+		$field_columns = $this->fields;
 
 		$e107 = e107::getInstance();
 
@@ -1117,8 +1117,8 @@ class admin_newspost
 					<fieldset id='core-newspost-list'>
 						<legend class='e-hideme'>".NWSLAN_4."</legend>
 						<table cellpadding='0' cellspacing='0' class='adminlist'>
-							".$frm->colGroup($this->_fields, $this->fieldpref)."
-							".$frm->thead($this->_fields, $this->fieldpref, 'main.[FIELD].[ASC].[FROM]')."
+							".$frm->colGroup($this->fields, $this->fieldpref)."
+							".$frm->thead($this->fields, $this->fieldpref, 'main.[FIELD].[ASC].[FROM]')."
 							<tbody>";
 
 			$ren_type = array("default","title","other-news","other-news 2");
@@ -1143,7 +1143,7 @@ class admin_newspost
 				}
 				
 				// AUTO RENDER
-				$text .= $frm->trow($this->_fields, $this->fieldpref, $row);
+				$text .= $frm->trow($this, $row);
 			}
 
 			$text .= "
@@ -2262,7 +2262,7 @@ class admin_newspost
     function ajax_exec_searchValue()
 	{
 		$frm = e107::getForm();
-		echo $frm->filterValue($_POST['filtertype'], $this->_fields);
+		echo $frm->filterValue($_POST['filtertype'], $this->fields);
 	}
 */
 
@@ -2564,12 +2564,13 @@ class admin_newspost
 		$var['pref']['link'] = e_SELF."?pref";
 		$var['pref']['perm'] = "0";
 
-		$c = $e107->sql->db_Count('submitnews');
-		if ($c) {
+//TODO remove commented code before release.
+	//	$c = $e107->sql->db_Count('submitnews');
+	//	if ($c) {
 			$var['sn']['text'] = NWSLAN_47." ({$c})";
 			$var['sn']['link'] = e_SELF."?sn";
 			$var['sn']['perm'] = "N";
-		}
+	//	}
 
 		if (getperms('0'))
 		{

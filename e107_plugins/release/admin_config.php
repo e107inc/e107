@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-10-23 04:25:19 $
+ * $Revision: 1.8 $
+ * $Date: 2009-10-26 07:26:53 $
  * $Author: e107coders $
  *
 */
@@ -23,20 +23,25 @@ class releasePlugin extends e_model_interface
 {
 
 	function __construct()
-	{	    
+	{	
+	
+		$this->pluginTitle = "e107 Release";
+	
+		$this->table = "release";
+	    
     	$this->fields = array(
-		
-			'release_id'				=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE, 'primary'=>TRUE),
-            'release_type'	   			=> array('title'=> 'type', 'type' => 'method', 'width'=>'auto'),
-			'release_folder' 			=> array('title'=> 'folder', 'type' => 'text', 'width' => 'auto'),	// User name
-			'release_name' 				=> array('title'=> 'name', 'type' => 'text', 'width' => 'auto'),
-			'release_version' 			=> array('title'=> 'version', 'type' => 'text', 'width' => 'auto'),
-			'release_author' 			=> array('title'=> LAN_AUTHOR, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'), 
-         	'release_authorURL' 		=> array('title'=> LAN_AUTHOR.'URL', 'type' => 'url', 'width' => 'auto', 'thclass' => 'left'), 
-            'release_date' 				=> array('title'=> LAN_DATE, 'type' => 'text', 'width' => 'auto'),	 
-			'release_compatibility' 	=> array('title'=> 'compatib', 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 
-			'release_url' 				=> array('title'=> 'URL', 'type' => 'url', 'width' => '10%', 'thclass' => 'center' ),	 
-			'options' 					=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
+			'checkboxes'				=> array('title'=> '', 					'type' => '',		'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center'),
+			'release_id'				=> array('title'=> ID, 					'type' => '',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE),
+            'release_type'	   			=> array('title'=> 'Type', 				'type' => 'method', 'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
+			'release_folder' 			=> array('title'=> 'Folder', 			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),	
+			'release_name' 				=> array('title'=> 'Name', 				'type' => 'text', 	'width' => 'auto',	'thclass' => ''),
+			'release_version' 			=> array('title'=> 'Version',			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),
+			'release_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text', 	'width' => 'auto',	'thclass' => 'left'), 
+         	'release_authorURL' 		=> array('title'=> LAN_AUTHOR.'URL', 	'type' => 'url', 	'width' => 'auto',	'thclass' => 'left'), 
+            'release_date' 				=> array('title'=> LAN_DATE, 			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),	 
+			'release_compatibility' 	=> array('title'=> 'compatib',			'type' => 'text', 	'width' => '10%',	'thclass' => 'center' ),	 
+			'release_url' 				=> array('title'=> 'URL',				'type' => 'userclass', 	'width' => '10%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE),	 
+			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => '', 		'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
 		);
 		
 		$this->prefs = array( //TODO add option for core or plugin pref. 
@@ -45,13 +50,10 @@ class releasePlugin extends e_model_interface
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
 		);
-				
+		
 		$this->listQry = "SELECT * FROM #release"; // without any Order or Limit. 
 		$this->editQry = "SELECT * FROM #release WHERE release_id = {ID}";		
-		$this->table = "release";
-		$this->primary = "release_id";
-		$this->pluginTitle = "e107 Release";
-		
+	
 		$this->adminMenu = array(
 			'list'		=> array('caption'=>'Release List', 'perm'=>'0'),
 			'create' 	=> array('caption'=>LAN_CREATE."/".LAN_EDIT, 'perm'=>'0'),
@@ -61,11 +63,23 @@ class releasePlugin extends e_model_interface
 	}
 	
 	// Custom View/Form-Element method. ie. Naming should match field/key with type=method.
-	function release_type($curVal)
+	
+	
+	function release_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
 	{
-		if($this->mode == 'list')
+		if($mode == 'list')
 		{
-			return $curVal;
+			return $curVal.' (custom!)';
+		}
+		
+		if($mode == 'batch') // Custom Batch List for release_type
+		{
+			return array('theme'=>"Theme","plugin"=>'Plugin');	
+		}
+		
+		if($mode == 'filter') // Custom Filter List for release_type
+		{
+			return array('theme'=>"Theme","plugin"=>'Plugin');	
 		}
 		
 		$types = array("theme","plugin");
@@ -96,7 +110,28 @@ require_once(e_ADMIN."footer.php");
 function admin_config_adminmenu() //TODO move this into e_model_interface
 {
 	global $rp;
-	$rp->show_options($action);
+	$rp->show_options();
 }
 
+
+function headerjs() // needed for the checkboxes - how can we remove the need to duplicate this code?
+{
+	require_once (e_HANDLER.'js_helper.php');
+	$ret = "
+		<script type='text/javascript'>
+			if(typeof e107Admin == 'undefined') var e107Admin = {}
+
+			/**
+			 * OnLoad Init Control
+			 */
+			e107Admin.initRules = {
+				'Helper': true,
+				'AdminMenu': false
+			}
+		</script>
+		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+	";
+
+	return $ret;
+}
 ?>

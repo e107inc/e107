@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.57 $
- * $Date: 2009-10-26 01:23:19 $
+ * $Revision: 1.58 $
+ * $Date: 2009-10-26 07:26:47 $
  * $Author: e107coders $
  *
 */
@@ -802,13 +802,19 @@ class e_form
 
 	}
 	
-	function trow($fieldarray, $currentlist, $fieldvalues)
+	function trow($obj, $fieldvalues)
 	{
 		$cnt = 0;
 		$ret = '';
 		
+		$fieldarray 	= $obj->fields;
+		$currentlist 	= $obj->fieldpref;
+		$pid 			= $obj->pid;
+	
+		
 		foreach ($fieldarray as $field => $data)
 		{
+		
 			//Not found
 			if(!$data['forced'] && !in_array($field, $currentlist))
 			{
@@ -834,20 +840,22 @@ class e_form
 			$value = $fieldvalues[$field];
 			
 			$parms = array();
-			if(isset($data['colparms']))
+			if(isset($data['colparms'])) //TODO rename to 'parms'. 
 			{
 				if(!is_array($data['colparms'])) parse_str($data['colparms'], $data['colparms']);
 				$parms = $data['colparms'];
 			}
 
-			switch($field)
+			switch($field) // special fields
 			{
 				case 'options':
+					$value = "<input type='image' class='action edit' name='edit[{$fieldvalues[$pid]}]' src='".ADMIN_EDIT_ICON_PATH."' title='".LAN_EDIT."' />";
+					$value .= "<input type='image' class='action delete' name='delete[{$fieldvalues[$pid]}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$fieldvalues[$pid]} ]' />";
 					$data['type'] = 'text';
 				break;
 			
 				case 'checkboxes':
-					$value = $this->checkbox(vartrue($data['toggle'], 'multiselect').'[]', $value);
+					$value = $this->checkbox(vartrue($data['toggle'], 'multiselect').'['.$fieldvalues[$pid].']', $fieldvalues[$pid]);
 					$data['type'] = 'text';
 				break;
 			}
@@ -887,6 +895,15 @@ class e_form
 				case 'boolean':
 					$value = $value ? ADMIN_TRUE_ICON : '';// TODO  - ADMIN_FALSE_ICON
 				break;
+								
+				case 'url':
+					$value = "<a href='".$value ."'>".$value."</a>";
+				break;
+				
+				case 'method': // Custom Function 
+					$meth = $field;
+					$value = $obj->$meth($value,$obj->mode);
+				break;
 				
 				//TODO - form_userclass, order,... and maybe more types
 				
@@ -895,7 +912,7 @@ class e_form
 				break;
 			}
 			
-			//TODO - this should be done per type!
+			//TODO - this should be done per type! 
 			if(vartrue($parms['truncate']))
 			{
 				$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
