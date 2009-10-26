@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-12-22 14:49:21 $
-|     $Author: e107steved $
+|     $Revision: 1.2 $
+|     $Date: 2009-10-26 01:23:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -142,6 +142,8 @@ class core_mailout
   // Called to show current selection criteria, and optionally allow edit
   // Returns HTML which is displayed in a table cell. Typically we return a complete table
   // $allow_edit is TRUE to allow user to change the selection; FALSE to just display current settings
+ 
+  //TODO - remove HTML markup from this class! (see below)
   
   function show_select($allow_edit = FALSE)
   {
