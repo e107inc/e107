@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-10-20 11:07:08 $
+ * $Revision: 1.31 $
+ * $Date: 2009-10-26 09:51:56 $
  * $Author: e107coders $
  *
 */
@@ -554,7 +554,8 @@ class links
 		
 		if($key == "link_name") // FIXME - incorrect links. 
 		{
-			return "<a href='".$tp->replaceConstants($row['link_url'],'full')."'>".$row['link_name']."</a>";	
+			$link = (substr($row['link_url'],0,3)=='{e_') ? $tp->replaceConstants($row['link_url']) : e_BASE.$row['link_url'];
+			return "<a href='".$link."'>".$this->linkName($row['link_name'])."</a>";	
 		}
 		
 		if($key == "link_button")
@@ -966,7 +967,7 @@ class links
 		$link_t = $sql->db_Count("links", "(*)");
 		if($id)
 		{
-			$sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'",TRUE);
+			$sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'");
 			//rename all sublinks to eliminate old embedded 'submenu' etc hierarchy.
 			// this is for upgrade compatibility only. Current hierarchy uses link_parent.
 			$e107cache->clear("sitelinks");
