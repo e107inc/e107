@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-10-25 15:03:52 $
+|     $Revision: 1.20 $
+|     $Date: 2009-10-26 01:04:06 $
 |     $Author: e107coders $
 |
 | Work in progress - supplementary mailer plugin
@@ -20,7 +20,7 @@
 +----------------------------------------------------------------------------+
 
 Features:
-1. Additional sources of email addresses for mailouts can be provided via plugins
+1. Additional sources of email addresses for mailouts can be provided via plugins. (How?)
 2. Both list of email recipients and the email are separately stored in the DB using a documented interface (allows alternative creation/mailout routines)
 3. Can specify qmail in the sendmail path
 4. Handling of partially sent email runs
@@ -630,7 +630,7 @@ function showMailouts($sub_par,$mail_id)
 					$text .= "
 						</table>
 					";
-					$e107->ns->tablerender(LAN_MAILOUT_102,$text);
+					$e107->ns->tablerender(LAN_MAILOUT_102." :: ".LAN_MAILOUT_97,$text);
 				}
 				else
 				{	// Should only happen if people fiddle!
@@ -729,7 +729,7 @@ function showMailouts($sub_par,$mail_id)
 	if (!$count)
 	{
 		$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_79."</div>";
-		$e107->ns -> tablerender("<div style='text-align:center'>".LAN_MAILOUT_78."</div>", $text);
+		$e107->ns -> tablerender(ADLAN_136." :: ".LAN_MAILOUT_78, $text);
 		require_once(e_ADMIN."footer.php");
 		exit;
 	}
@@ -785,7 +785,7 @@ function showMailouts($sub_par,$mail_id)
 	}
 
 	$text .= "</table>\n</form><br /><br /><br /></div>";
-	$e107->ns -> tablerender("<div style='text-align:center'>".LAN_MAILOUT_78."</div>", $text);
+	$e107->ns -> tablerender(ADLAN_136." :: ".LAN_MAILOUT_78, $text);
   
 	// Now see if we can find any 'orphaned' mailout entries
 	$qry = "SELECT 
@@ -846,10 +846,13 @@ function show_mailform($foo="")
 	global $pref,$HANDLERS_DIRECTORY;
 	global $mail_handlers;
 	$e107 = e107::getInstance();
+	$tp = e107::getParser();
+	$frm = e107::getForm();
+	
 
 	
 	$email_subject = $foo['gen_ip'];
-	$email_body = $e107->tp->toForm($foo['gen_chardata']);
+	$email_body = $tp->toForm($foo['gen_chardata']);
 	$email_id = $foo['gen_id'];
 	$text = "";
 
@@ -931,7 +934,7 @@ function show_mailform($foo="")
 		</tr>";
 
 
-// Attachment.
+// Attachment. //TODO needs to be pluginized. eg. e_mailout.php
 	$text .= "<tr>
 		<td>".LAN_MAILOUT_07.": </td>
 		<td >";
@@ -986,7 +989,8 @@ function show_mailform($foo="")
 
 	if(e_WYSIWYG) 
 	{
-		$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'><input type='button' class='button' name='usrname' value=\"".LAN_MAILOUT_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERNAME|')\" />
+		$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'>
+		<input type='button' class='button' name='usrname' value=\"".LAN_MAILOUT_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERNAME|')\" />
 		<input type='button' class='button' name='usrlink' value=\"".LAN_MAILOUT_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|SIGNUP_LINK|')\" />
 		<input type='button' class='button' name='usrid' value=\"".LAN_MAILOUT_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERID|')\" /></span>";
 	}
@@ -1001,21 +1005,25 @@ function show_mailform($foo="")
 	if(isset($_POST['edit']))
 	{
 		$text .= "<input type='hidden' name='update_id' value='".$email_id."' />";
-		$text .= "<input class='button' type='submit' name='update_email' value=\"".LAN_UPDATE."\" />";
+		$text .= $frm->admin_button('update_email', LAN_UPDATE);
 	}
 	else
 	{
-		$text .= "<input class='button' type='submit' name='save_email' value=\"".LAN_SAVE."\" />";
+
+		$text .= $frm->admin_button('save_email', LAN_SAVE);
 	}
 
-	$text .="&nbsp;<input class='button' type='submit' name='submit' value=\"".LAN_MAILOUT_08."\" />
 
+	
+	$text .= $frm->admin_button('submit', LAN_MAILOUT_08);
+	
+	$text .= "
 	</div>
 
 	</form>
 	</div>";
 
-	$e107->ns->tablerender(LAN_MAILOUT_15, $text);
+	$e107->ns->tablerender(ADLAN_136." :: ".LAN_MAILOUT_56, $text);
 }
 
 //----------------------------------------------------
@@ -1026,6 +1034,9 @@ function show_prefs()
 {
 	global $pref;
 	$e107 = e107::getInstance();
+	$frm = e107::getForm();
+	$mes = e107::getMessage();
+
 
 	e107::getCache()->CachePageMD5 = '_';
 	$lastload = e107::getCache()->retrieve('emailLastBounce',FALSE,TRUE,TRUE);
@@ -1039,57 +1050,57 @@ function show_prefs()
 		<table cellpadding='0' cellspacing='0' class='adminform'>
 		<colgroup span='2'>
 			<col class='col-label' />
-			<col class='col-control right' />
+			<col class='col-control' />
 		</colgroup>
 		<tr>
 			<td>".LAN_MAILOUT_110."<br /></td>
-			<td style='text-align:right'><input class='button' type='submit' name='testemail' value=\"".LAN_MAILOUT_112."\" />&nbsp;
-			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".SITEADMINEMAIL."\" />
+			<td>".$frm->admin_button(testemail, LAN_MAILOUT_112)."&nbsp;
+			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : SITEADMINEMAIL)."\" />
 			</td>
 		</tr>
 
 		<tr>
-		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /><span class='smalltext'>".LAN_MAILOUT_116."</span></td>
-		<td style='text-align:right'>
+		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
+		<td>
 		<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
-	$mailers = array('php','smtp','sendmail');
-	foreach($mailers as $opt)
-	{
-		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : "";
-		$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
-	}
-	$text .="</select><br />";
+		$mailers = array('php','smtp','sendmail');
+		foreach($mailers as $opt)
+		{
+			$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : "";
+			$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
+		}
+		$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
 
 
 
 // SMTP. -------------->
 	$smtp_opts = explode(',',varset($pref['smtp_options'],''));
 	$smtpdisp = ($pref['mailer'] != "smtp") ? "display:none;" : "";
-	$text .= "<div id='smtp' style='{$smtpdisp} text-align:right'>
-		<table style='margin-right:0px;margin-left:auto;border:0px'>";
+	$text .= "<div id='smtp' style='{$smtpdisp}  '>
+		<table style='margin-right:auto;margin-left:0px;border:0px'>";
 	$text .= "	<tr>
-		<td style='text-align:right' >".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
-		<td style='width:50%; text-align:right' >
+		<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
+		<td style='width:50%' >
 		<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
 		</td>
 		</tr>
 
 		<tr>
-		<td style='text-align:right' >".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td style='width:50%; text-align:right' >
+		<td style=' ' >".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+		<td style='width:50%' >
 		<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
 		</td>
 		</tr>
 
 		<tr>
-		<td style='text-align:right' >".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td style='width:50%; text-align:right' >
+		<td style=' ' >".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+		<td style='width:50%;' >
 		<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
 		</td>
 		</tr>
 
 		<tr>
-		<td colspan='2' style='text-align:right' >".LAN_MAILOUT_90.":&nbsp;
+		<td colspan='2'>".LAN_MAILOUT_90.":&nbsp;
 		<select class='tbox' name='smtp_options'>\n
 		<option value=''>".LAN_MAILOUT_96."</option>\n";
 		$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
@@ -1101,7 +1112,7 @@ function show_prefs()
 		$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
 
 	$text .= "<tr>
-		<td colspan='2' style='text-align:right' >".LAN_MAILOUT_57.":&nbsp;
+		<td colspan='2' style=' ' >".LAN_MAILOUT_57.":&nbsp;
 		";
 	$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : "";
 	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
@@ -1113,7 +1124,7 @@ function show_prefs()
 
 	$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
 	$text .= "<tr>
-		<td colspan='2' style='text-align:right' >".LAN_MAILOUT_95.":&nbsp;
+		<td colspan='2'>".LAN_MAILOUT_95.":&nbsp;
 		<input type='checkbox' name='smtp_useVERP' value='1' {$checked} />
 		</td>
 		</tr>
@@ -1122,12 +1133,12 @@ function show_prefs()
 
 // Sendmail. -------------->
 	$senddisp = ($pref['mailer'] != "sendmail") ? "display:none;" : "";
-	$text .= "<div id='sendmail' style='{$senddisp} text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
+	$text .= "<div id='sendmail' style='{$senddisp}  '><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "
 
 	<tr>
 	<td >".LAN_MAILOUT_20.":&nbsp;&nbsp;</td>
-	<td style='text-align:right' >
+	<td style=' ' >
 	<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
 	</td>
 	</tr>
@@ -1140,44 +1151,21 @@ function show_prefs()
 
 	<tr>
 		<td>".LAN_MAILOUT_25."</td>
-		<td style='text-align: right;'> ".LAN_MAILOUT_26."
+		<td> ".LAN_MAILOUT_26."
 		<input class='tbox' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> ".LAN_MAILOUT_27.
-		"<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".LAN_MAILOUT_29.".<br />
-		<span class='smalltext'>".LAN_MAILOUT_30."</span>
+		"<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".LAN_MAILOUT_29.".
+		<span class='field-help'>".LAN_MAILOUT_30."</span>
 		</td>
-	</tr>\n
-
-
-	<tr>
-	<td style='vertical-align:top'>".LAN_MAILOUT_31."</td>
-	<td style=' text-align:right'>
-		<div class='field-spacer'>Last Bounce Processed: ".$lastBounceText."<br />
-		<span class='field-help'>Forward the bounce email address below to <b>".$_SERVER['DOCUMENT_ROOT'].e_HANDLER_ABS."bounce_handler.php</b></span>
-		</div>
-		<div class='field-spacer'>".LAN_MAILOUT_32.": <input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></div>
-		<div class='field-spacer'>".LAN_MAILOUT_33.":  <input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></div>
-		<div class='field-spacer'>".LAN_MAILOUT_34.":  <input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /></div>
-		<div class='field-spacer'>".LAN_MAILOUT_35.":  <input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></div>
-		<div class='field-spacer'>".LAN_MAILOUT_120.": <select class='tbox' name='mail_bounce_type'>\n
-		<option value=''>&nbsp;</option>\n
-		<option value='pop3'".(($pref['mail_bounce_type']=='pop3') ? " selected='selected'" : "").">".LAN_MAILOUT_121."</option>\n
-		<option value='pop3/notls'".(($pref['mail_bounce_type']=='pop3/notls') ? " selected='selected'" : "").">".LAN_MAILOUT_122."</option>\n
-		<option value='pop3/tls'".(($pref['mail_bounce_type']=='pop3/tls') ? " selected='selected'" : "").">".LAN_MAILOUT_123."</option>\n
-		<option value='imap'".(($pref['mail_bounce_type']=='imap') ? " selected='selected'" : "").">".LAN_MAILOUT_124."</option>\n
-		</select></div>\n
-		";
-
-	$check = ($pref['mail_bounce_delete']==1) ? " checked='checked'" : "";
-	$text .= "<div class='field-spacer'>".LAN_MAILOUT_36.":  <input type='checkbox' name='mail_bounce_delete' value='1' {$check} /></div>
-
-	</td>
-	</tr>\n";
+	</tr>\n";	
+	
+	
+	
 
 	if (isset($pref['mailout_sources']))
 	{  // Allow selection of email address sources
 	  $text .= "<tr>
 		<td>".LAN_MAILOUT_77."</td>
-		<td style='text-align:right'> 
+		<td > 
 	  ";
 	  $mail_enable = explode(',',$pref['mailout_enabled']);
 	  foreach (explode(',',$pref['mailout_sources']) as $mailer)
@@ -1192,27 +1180,61 @@ function show_prefs()
 	$check = ($mail_log_email == 1) ? " checked='checked'" : "";
 	$text .= "<tr>
 		<td>".LAN_MAILOUT_72."</td>
-		<td style='text-align:right'> 
+		<td > 
 		<div class='field-spacer'>
 		<select class='tbox' name='mail_log_option'>\n
 		<option value='0'".(($mail_log_option==0) ? " selected='selected'" : "").">".LAN_MAILOUT_73."</option>\n
 		<option value='1'".(($mail_log_option==1) ? " selected='selected'" : "").">".LAN_MAILOUT_74."</option>\n
 		<option value='2'".(($mail_log_option==2) ? " selected='selected'" : "").">".LAN_MAILOUT_75."</option>\n
 		<option value='2'".(($mail_log_option==3) ? " selected='selected'" : "").">".LAN_MAILOUT_119."</option>\n
-		</select></div>\n
-		<div class='field-spacer'><input type='checkbox' name='mail_log_email' value='1' {$check} /> ".LAN_MAILOUT_76.
+		</select> <input type='checkbox' name='mail_log_email' value='1' {$check} /> ".LAN_MAILOUT_76.
 		"</div></td>
 	</tr>\n";
 
-	$text .= "</table>
-	<div class='buttons-bar center'>
-	<input class='button' type='submit' name='updateprefs' value=\"".LAN_MAILOUT_28."\" />
-	</div>
+	$text .= "
+
+	</table>
+
+	<fieldset id='core-mail-prefs-bounce'>
+		<legend".($mode ? " class='e-hideme'" : "").">".LAN_MAILOUT_31."</legend>
+		<table cellpadding='0' cellspacing='0' class='adminedit'>
+		<colgroup span='2'>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>
+		<tbody>
+	<tr>
+		<td>Last Bounce Processed</td><td>".$lastBounceText."</td>
+	</tr>
+	
+	<tr>
+		<td>Auto-process script</td><td><b>".$_SERVER['DOCUMENT_ROOT'].e_HANDLER_ABS."bounce_handler.php</b></td>
+	</tr>		
+	<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
+		<tr><td>".LAN_MAILOUT_33."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></td></tr>
+		<tr><td>".LAN_MAILOUT_34."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /></td></tr>
+		<tr><td>".LAN_MAILOUT_35."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></td></tr>
+		<tr><td>".LAN_MAILOUT_120."</td><td><select class='tbox' name='mail_bounce_type'>\n
+			<option value=''>&nbsp;</option>\n
+			<option value='pop3'".(($pref['mail_bounce_type']=='pop3') ? " selected='selected'" : "").">".LAN_MAILOUT_121."</option>\n
+			<option value='pop3/notls'".(($pref['mail_bounce_type']=='pop3/notls') ? " selected='selected'" : "").">".LAN_MAILOUT_122."</option>\n
+			<option value='pop3/tls'".(($pref['mail_bounce_type']=='pop3/tls') ? " selected='selected'" : "").">".LAN_MAILOUT_123."</option>\n
+			<option value='imap'".(($pref['mail_bounce_type']=='imap') ? " selected='selected'" : "").">".LAN_MAILOUT_124."</option>\n
+		</select></td></tr>\n
+		";
+
+	$check = ($pref['mail_bounce_delete']==1) ? " checked='checked'" : "";
+	$text .= "<tr><td>".LAN_MAILOUT_36."</td><td><input type='checkbox' name='mail_bounce_delete' value='1' {$check} /></td></tr>
+
+	</tbody>
+	</table></fieldset>
+
+	<div class='buttons-bar center'>".$frm->admin_button('updateprefs',LAN_MAILOUT_28)."</div>
 
 	</div></form>";
 
-	$caption = LAN_PREFS;
-	$e107->ns->tablerender($caption, $text);
+	$caption = ADLAN_136." :: ".LAN_PREFS;
+	$e107->ns->tablerender($caption,$mes->render(). $text);
 }
 
 
@@ -1235,7 +1257,7 @@ function showList($type='massmail')
   if (!$count)
   {
 	$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_22."</div>";
-	$ns -> tablerender("<div style='text-align:center'>".LAN_MAILOUT_21."</div>", $text);
+	$ns -> tablerender(ADLAN_136." :: ".LAN_MAILOUT_97, $text);
 	require_once(e_ADMIN."footer.php");
 	exit;
   }
@@ -1283,7 +1305,7 @@ function showList($type='massmail')
   }
 
   $text .= "</table>\n</form><br /><br /><br /></div>";
-  $ns -> tablerender("<div style='text-align:center'>".LAN_MAILOUT_21."</div>", $text);
+  $ns -> tablerender(ADLAN_136." :: ".LAN_MAILOUT_97, $text);
 }
 
 
@@ -1335,11 +1357,11 @@ function mailout_adminmenu()
 	$var['mailouts']['perm'] = "W";
 
 	if(getperms("0")){
-		$var['prefs']['text'] = LAN_OPTIONS;
+		$var['prefs']['text'] = LAN_PREFS;
 		$var['prefs']['link'] = e_SELF."?prefs";
    		$var['prefs']['perm'] = "0";
     }
-	show_admin_menu(LAN_MAILOUT_15, $action, $var);
+	show_admin_menu(ADLAN_136, $action, $var);
 }
 
 

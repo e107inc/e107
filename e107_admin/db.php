@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-09-28 07:17:51 $
+ * $Revision: 1.37 $
+ * $Date: 2009-10-26 01:04:05 $
  * $Author: e107coders $
  *
 */
@@ -627,7 +627,16 @@ class system_tools
 		$error_messages = array(0 => DBLAN_31, 1 => DBLAN_32, 2 => DBLAN_33, 3 => DBLAN_34);
 		$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
 	
-		global $sql, $e107, $emessage, $frm;
+	
+	
+		global $e107;
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+		$emessage = e107::getMessage();
+
+		
+		
 	
 		require_once (e_HANDLER."plugin_class.php");
 		$ep = new e107plugin();
@@ -670,6 +679,8 @@ class system_tools
 		$previous = '';
 		while($row = $sql->db_Fetch())
 		{
+			e107::loadLanFiles($row['plugin_path'],'admin');
+			
 			$text .= "
 								<tr>
 									<td>".$e107->tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
