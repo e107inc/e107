@@ -1,5 +1,6 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set("display_errors", 1); 
 //22/10/2009 9.58.12
 //general list of implementaion and 
 // TODO admin log implementation to log out all the traffic
@@ -27,6 +28,27 @@ if (!e107::isInstalled('metaweblog'))
 include (e_HANDLER.'xmlrpc/xmlrpc.inc');
 include (e_HANDLER.'xmlrpc/xmlrpcs.inc');
 include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc');
+
+if ( isset( $_GET['rsd'] ) ) { // http://archipelago.phrasewise.com/rsd
+header('Content-Type: text/xml; charset=UTF-8', true);
+echo '<?xml version="1.0" encoding="UTF-8"?>'; ?>
+<rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd">
+  <service>
+    <engineName>e107</engineName>
+    <engineLink>http://www.e107.org/</engineLink>
+    <homePageLink><?php echo SITEURL ?></homePageLink>
+    <apis>
+      <api name="WordPress" blogID="1" preferred="true" apiLink="<?php echo SITEURLBASE.e_PLUGIN_ABS.'metaweblog/metaweblog.php' ?>" />
+      <api name="Movable Type" blogID="1" preferred="false" apiLink="<?php echo SITEURLBASE.e_PLUGIN_ABS.'metaweblog/metaweblog.php' ?>" />
+      <api name="MetaWeblog" blogID="1" preferred="false" apiLink="<?php echo SITEURLBASE.e_PLUGIN_ABS.'metaweblog/metaweblog.php' ?>" />
+      <api name="Blogger" blogID="1" preferred="false" apiLink="<?php echo SITEURLBASE.e_PLUGIN_ABS.'metaweblog/metaweblog.php' ?>" />
+    </apis>
+  </service>
+</rsd>
+<?php
+exit;
+}
+
 
 //general note: XMLRPC method functions parameters
 //have this rule: 1st parameter is the type of the OUT data (result: array,struct,etc), from 2nd are the IN parameters
@@ -78,7 +100,13 @@ $getUsersBlogs_doc = 'Returns a list of weblogs to which an author has posting p
 function getUsersBlogs($xmlrpcmsg)
 {
 	$structArray = array();
-	$structArray[] = new xmlrpcval(array('isAdmin'=> new xmlrpcval(true, 'boolean'), 'url'=> new xmlrpcval(SITEURL, 'string'), 'blogid'=> new xmlrpcval(eXMLRPC_BLOG_ID_LOC, 'string'), 'blogName'=> new xmlrpcval(eXMLRPC_BLOG_NAME_LOC, 'string'), 'xmlrpc'=> new xmlrpcval(eXMLRPC_BLOG_XMLRPC, 'string')), 'struct');
+	$structArray[] = new xmlrpcval(array(
+		'isAdmin'=> new xmlrpcval(true, 'boolean'),
+		'url'=> new xmlrpcval(SITEURL, 'string'),
+		'blogid'=> new xmlrpcval(eXMLRPC_BLOG_ID_LOC, 'string'),
+		'blogName'=> new xmlrpcval(eXMLRPC_BLOG_NAME_LOC, 'string'),
+		'xmlrpc'=> new xmlrpcval(eXMLRPC_BLOG_XMLRPC, 'string')
+		),'struct');
 	
 	return new xmlrpcresp(new xmlrpcval($structArray, 'array'));
 }
@@ -140,6 +168,13 @@ function newPost($xmlrpcmsg)
 				$mt_allow_comments = $content->structMem('mt_allow_comments')->scalarval();
 		}
 		
+		//26/10/2009 14.30.41 added mt_keywords ie tags
+		//check if we have something...
+		$tempKeywords = checkXmlElementS($content->serialize(), 'mt_keywords');
+		if($tempKeywords == 1){
+				$mt_keywords = $content->structMem('mt_keywords')->scalarval();
+		}
+		
 		//author from e107
 		$query = 'SELECT u.user_id FROM `#user` AS u WHERE u.user_loginname = \''.$username.'\' AND u.user_password = \''.md5($password).'\'';
 		$sql = e107::getDb();
@@ -197,7 +232,7 @@ function newPost($xmlrpcmsg)
 		$data['_FIELD_TYPES']['news_thumbnail'] = 'todb';
 		$data['data']['news_sticky'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
 		$data['_FIELD_TYPES']['news_sticky'] = 'int';
-		$data['data']['news_meta_keywords'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['data']['news_meta_keywords'] = $mt_keywords;
 		$data['_FIELD_TYPES']['news_meta_keywords'] = 'todb';
 		$data['data']['news_meta_description'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
 		$data['_FIELD_TYPES']['news_meta_description'] = 'todb';
@@ -269,6 +304,13 @@ function editPost($xmlrpcmsg)
 				$mt_allow_comments = $content->structMem('mt_allow_comments')->scalarval();
 		}
 		
+		//26/10/2009 14.30.41 added mt_keywords ie tags
+		//check if we have something...
+		$tempKeywords = checkXmlElementS($content->serialize(), 'mt_keywords');
+		if($tempKeywords == 1){
+				$mt_keywords = $content->structMem('mt_keywords')->scalarval();
+		}
+		
 		//author from e107
 		$query = 'SELECT u.user_id FROM `#user` AS u WHERE u.user_loginname = \''.$username.'\' AND u.user_password = \''.md5($password).'\'';
 		$sql = new db();
@@ -327,7 +369,7 @@ function editPost($xmlrpcmsg)
 		$data['_FIELD_TYPES']['news_thumbnail'] = 'todb';
 		$data['data']['news_sticky'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
 		$data['_FIELD_TYPES']['news_sticky'] = 'int';
-		$data['data']['news_meta_keywords'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
+		$data['data']['news_meta_keywords'] = $mt_keywords;
 		$data['_FIELD_TYPES']['news_meta_keywords'] = 'todb';
 		$data['data']['news_meta_description'] = ''; //NOT AVAIBLE MAKE A CUSTOM FIELD?
 		$data['_FIELD_TYPES']['news_meta_description'] = 'todb';
@@ -375,6 +417,7 @@ function getPost($xmlrpcmsg)
 																									'dateCreated'=> new xmlrpcval(iso8601_encode($row['news_datestamp']),'dateTime.iso8601'),
 																									'title'=> new xmlrpcval($row['news_title'], 'string'),
 																									'mt_excerpt'=> new xmlrpcval($row['news_summary'], 'string'),
+																									'mt_keywords'=> new xmlrpcval($row['news_meta_keywords'], 'string'),
 																									'mt_allow_comments'=> new xmlrpcval($row['news_allow_comments'], 'string'),
 																									'description'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_body'])), 'string'),
 																									'mt_text_more'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_extended'])), 'string'),
@@ -452,6 +495,7 @@ function getRecentPosts($xmlrpcmsg)
 				'dateCreated'=> new xmlrpcval(iso8601_encode($row['news_datestamp']),'dateTime.iso8601'),
 				'title'=> new xmlrpcval($row['news_title'], 'string'),
 				'mt_excerpt'=> new xmlrpcval($row['news_summary'], 'string'),
+				'mt_keywords'=> new xmlrpcval($row['news_meta_keywords'], 'string'),
 				'mt_allow_comments'=> new xmlrpcval($row['news_allow_comments'], 'string'),
 				'description'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_body'])), 'string'),
 				'mt_text_more'=> new xmlrpcval(str_replace('[html]', '', str_replace('[/html]', '', $row['news_extended'])), 'string'),
@@ -1153,6 +1197,58 @@ function getPostCategories($xmlrpcmsg)
 		return new xmlrpcresp(0, $xmlrpcerruser + 1, 'Login Failed');
 	}
 }
+/*
+ *************************
+ ***** GET TAGS **********
+ *************************
+ */
+$getTags_sig = array(array($xmlrpcBoolean, $xmlrpcString, $xmlrpcString, $xmlrpcString));
+$getTags_doc = 'Set the categories on blog.';
+function getTags($xmlrpcmsg)
+{
+	$sql = e107::getDb();
+	
+	$blogid   = $xmlrpcmsg->getParam(0)->scalarval();
+	$username = $xmlrpcmsg->getParam(1)->scalarval();
+	$password = $xmlrpcmsg->getParam(2)->scalarval();
+	
+	if (userLogin($username, $password, 'H') == true)
+	{
+		// get set post categories
+		$query = "SELECT 
+                 GROUP_CONCAT( n.news_meta_keywords SEPARATOR ',') AS meta_keys
+              FROM `#news` AS n 
+              WHERE news_meta_keywords != '' ;";
+		
+		$sql->db_Select_gen($query);
+		$row = $sql->db_Fetch();
+		
+		//explode data in array and remove duplicates
+		$meta_tags = array();
+		$meta_tags = explode(',', $row['meta_keys']);
+		$meta_tags = array_unique( $meta_tags );
+		
+		foreach ($meta_tags as $key => $value)
+		{
+			$structArray[] = new xmlrpcval(array(
+				'tag_id'   => new xmlrpcval($key, 'string'),
+				'name'     => new xmlrpcval($value, 'string'),
+				'count'    => new xmlrpcval('1', 'string'), //NOT SENSE IN e107 for now??
+				'slug'     => new xmlrpcval('1', 'string'), //NOT SENSE IN e107 for now??
+				'html_url' => new xmlrpcval('1', 'string'), //NOT SENSE IN e107 for now??
+				'rss_url'  => new xmlrpcval('1', 'string') //NOT SENSE IN e107 for now??
+				
+				), 'struct');
+		}
+		
+		return new xmlrpcresp( new xmlrpcval($structArray, 'array')); // Return type is struct[] (array of struct)
+	}
+	else
+	{
+		return new xmlrpcresp(0, $xmlrpcerruser + 1, 'Login Failed');
+	}
+}
+
 //
 //METHODS DECLARATION
 //
@@ -1179,19 +1275,32 @@ $a = array(
 	'wp.getCategories'			=>	array('function'=>'getCategories', 'signature'=>$getCategories_sig, 'docstring'=>$getCategories_doc),
 	
 	
-		/* TO BE IMPLEMENTED
-	 'wp.getTags' => array(
-	 'function' => 'getTags',
-	 'signature' => $getTags_sig,
-	 'docstring' => $getTags_doc
-	 ),*/
-	'wp.newCategory'=>array('function'=>'newCategory', 'signature'=>$newCategory_sig, 'docstring'=>$newCategory_doc), 'wp.deleteCategory'=>array('function'=>'deleteCategory', 'signature'=>$deleteCategory_sig, 'docstring'=>$deleteCategory_doc),	/*TO BE IMPLEMENTED
+		
+	'wp.getTags' => array(
+	'function' => 'getTags',
+	'signature' => $getTags_sig,
+	'docstring' => $getTags_doc
+	),
+	'wp.newCategory'=>array(
+	'function'=>'newCategory',
+	'signature'=>$newCategory_sig,
+	'docstring'=>$newCategory_doc
+	),
+	'wp.deleteCategory'=>array('function'=>'deleteCategory',
+	'signature'=>$deleteCategory_sig,
+	'docstring'=>$deleteCategory_doc
+	),
+	'wp.uploadFile'=>array(
+	'function'=>'newMediaObject',
+	'signature'=>$newMediaObject_sig,
+	'docstring'=>$newMediaObject_doc
+	),
+	/* TO BE IMPLEMENTED
 	 'wp.suggestCategories' => array(
 	 'function' => 'suggestCategories',
 	 'signature' => $suggestCategories_sig,
 	 'docstring' => $suggestCategories_doc
-	 ),*/
-	'wp.uploadFile'=>array('function'=>'newMediaObject', 'signature'=>$newMediaObject_sig, 'docstring'=>$newMediaObject_doc),	/*TO BE IMPLEMENTED
+	 ),
 	 'wp.getCommentCount' => array(
 	 'function' => 'getCommentCount',
 	 'signature' => $getCommentCount_sig,
@@ -1252,7 +1361,22 @@ $a = array(
 	 'signature' => $getCommentStatusList_sig,
 	 'docstring' => $getCommentStatusList_doc
 	 )*/
-	'mt.getCategoryList'=>array('function'=>'getCategoryList', 'signature'=>$getCategoryList_sig, 'docstring'=>$getCategoryList_doc), 'mt.setPostCategories'=>array('function'=>'setPostCategories', 'signature'=>$setPostCategories_sig, 'docstring'=>$setPostCategories_doc), 'mt.getPostCategories'=>array('function'=>'getPostCategories', 'signature'=>$getPostCategories_sig, 'docstring'=>$getPostCategories_doc));
+	'mt.getCategoryList'=>array(
+	'function'=>'getCategoryList',
+	'signature'=>$getCategoryList_sig,
+	'docstring'=>$getCategoryList_doc
+	),
+	'mt.setPostCategories'=>array(
+	'function'=>'setPostCategories',
+	'signature'=>$setPostCategories_sig,
+	'docstring'=>$setPostCategories_doc
+	),
+	'mt.getPostCategories'=>array(
+	'function'=>'getPostCategories',
+	'signature'=>$getPostCategories_sig,
+	'docstring'=>$getPostCategories_doc
+	)
+	);
 $s = new xmlrpc_server($a, false);
 $s->setdebug(1);
 $s->service();
