@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-10-26 07:26:53 $
+ * $Revision: 1.9 $
+ * $Date: 2009-10-26 08:16:09 $
  * $Author: e107coders $
  *
 */
@@ -29,6 +29,8 @@ class releasePlugin extends e_model_interface
 	
 		$this->table = "release";
 	    
+		//TODO change the release_url type back to URL before release. 
+		
     	$this->fields = array(
 			'checkboxes'				=> array('title'=> '', 					'type' => '',		'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center'),
 			'release_id'				=> array('title'=> ID, 					'type' => '',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE),
@@ -40,7 +42,7 @@ class releasePlugin extends e_model_interface
          	'release_authorURL' 		=> array('title'=> LAN_AUTHOR.'URL', 	'type' => 'url', 	'width' => 'auto',	'thclass' => 'left'), 
             'release_date' 				=> array('title'=> LAN_DATE, 			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),	 
 			'release_compatibility' 	=> array('title'=> 'compatib',			'type' => 'text', 	'width' => '10%',	'thclass' => 'center' ),	 
-			'release_url' 				=> array('title'=> 'URL',				'type' => 'userclass', 	'width' => '10%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE),	 
+			'release_url' 				=> array('title'=> 'Userclass',				'type' => 'userclass', 	'width' => '10%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE),	 
 			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => '', 		'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
 		);
 		
