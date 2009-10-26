@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2009-10-23 09:08:15 $
+|     $Revision: 1.106 $
+|     $Date: 2009-10-26 01:04:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -185,6 +185,7 @@ class e107plugin
 			}
 						
 			$plug_info = $this->plug_vars;
+			$eplug_addons = $this->getAddons($plugin_path);	
 
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml
 			if ($plugin_path == $plug_info['folder'])
@@ -236,7 +237,7 @@ class e107plugin
 				{  
 					if ($plug_info['@attributes']['name'])
 					{
-						$eplug_addons = $this->getAddons($plugin_path);	// Only scan for newly installed. 
+
 
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1 );
 						if(e107::getDb()->db_Insert("plugin", "0, '".$tp -> toDB($plug_info['@attributes']['name'], true)."', '".$tp -> toDB($plug_info['@attributes']['version'], true)."', '".$tp -> toDB($plugin_path, true)."', {$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."', '".varset($plug_info['@attributes']['releaseUrl'])."' "))
@@ -1064,7 +1065,7 @@ class e107plugin
 		$this->manage_notify($function, $plug_vars['folder']);
 
 		$eplug_addons = $this->getAddons($plug['plugin_path']);
-
+		
 		$p_installed = e107::getPref('plug_installed',array()); // load preference; 
 
 		if($function == 'install' || $function == 'upgrade')
