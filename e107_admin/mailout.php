@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-10-26 01:04:06 $
+|     $Revision: 1.21 $
+|     $Date: 2009-10-26 01:23:19 $
 |     $Author: e107coders $
 |
 | Work in progress - supplementary mailer plugin
@@ -244,7 +244,8 @@ if (($action == 'savedmail') && $sub_par && $mail_id)
 
 function ret_extended_field_list($list_name, $add_blank = FALSE)
 {
-  global $sql;
+	$sql = e107::getDb();
+
   $ret = "<select name='{$list_name}' class='tbox'>\n";
   if ($add_blank) $ret .= "<option value=''>&nbsp;</option>\n";
   
@@ -1208,7 +1209,14 @@ function show_prefs()
 	</tr>
 	
 	<tr>
-		<td>Auto-process script</td><td><b>".$_SERVER['DOCUMENT_ROOT'].e_HANDLER_ABS."bounce_handler.php</b></td>
+		<td>Auto-process script</td><td><b>".substr($_SERVER['DOCUMENT_ROOT'],0,-1).e_HANDLER_ABS."bounce_handler.php</b>";
+		
+	if(!is_executable(e_HANDLER."bounce_handler.php"))
+	{
+		$text .= " <b style='color:red'>IMPORTANT! You need to CHMOD this file to 0755</b>";
+	}
+		
+	$text .= "</td>
 	</tr>		
 	<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_33."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></td></tr>
@@ -1246,7 +1254,12 @@ function show_prefs()
 // Debug modes list any type of data in the generic table - don't believe the column headings!
 function showList($type='massmail')
 {
-  global $sql,$ns,$tp, $images_path;
+  global $images_path;
+  
+  $ns = e107::getRender();
+  $sql = e107::getDb();
+  $tp = e107::getParser();
+  
   $gen = new convert;
   if (!(trim($type))) $type = 'massmail';
   $qry ="SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type = '{$type}' ORDER BY g.gen_datestamp DESC";
@@ -1313,7 +1326,9 @@ function showList($type='massmail')
 // Generate list of userclasses, including the number of members in each class.
 function userclasses($name) 
 {
-	global $sql;
+
+	$sql = e107::getDb();
+	
 	$text .= "<select style='width:80%' class='tbox' name='{$name}' >
 		<option value='all'>".LAN_MAILOUT_12."</option>
 		<option value='unverified'>".LAN_MAILOUT_13."</option>

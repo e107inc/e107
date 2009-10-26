@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.56 $
- * $Date: 2009-10-24 07:53:25 $
+ * $Revision: 1.57 $
+ * $Date: 2009-10-26 01:23:19 $
  * $Author: e107coders $
  *
 */
@@ -418,6 +418,15 @@ class e_form
 		return "<input type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
+	/**
+	 * 
+	 * @param object $name
+	 * @param object $value
+	 * @param object $action [optional] default is submit
+	 * @param object $label [optional]
+	 * @param object $options [optional]
+	 * @return 
+	 */
 	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		$btype = 'submit';
