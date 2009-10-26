@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.13 $
- |     $Date: 2009-10-22 23:43:15 $
+ |     $Revision: 1.14 $
+ |     $Date: 2009-10-26 09:50:00 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -273,12 +273,15 @@ function render_infopanel_menu_options()
 	{
 		while ($row = e107::getDb()->db_Fetch())
 		{
-			$label = str_replace("_menu","",$row['menu_name']);
-			$path_to_menu = $row['menu_path'].$row['menu_name'];
-			$checked = ($settings && in_array($path_to_menu, $settings)) ? true : false;
-			$text .= "\n<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
-			$text .= $frm->checkbox_label($label, "e-mymenus[]",$path_to_menu, $checked);
-			$text .= "</div>";
+			if(!is_numeric($row['menu_path']))
+			{
+				$label = str_replace("_menu","",$row['menu_name']);
+				$path_to_menu = $row['menu_path'].$row['menu_name'];
+				$checked = ($settings && in_array($path_to_menu, $settings)) ? true : false;
+				$text .= "\n<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
+				$text .= $frm->checkbox_label($label, "e-mymenus[]",$path_to_menu, $checked);
+				$text .= "</div>";
+			}
 		}
 	}
 	return $text;
