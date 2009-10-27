@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2009-07-14 20:59:42 $
-|     $Author: e107steved $
+|     $Revision: 1.26 $
+|     $Date: 2009-10-27 11:32:56 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -205,11 +205,14 @@ $text .= "
 	<tr>
 	<td class='forumheader3' style='width:30%'>".UCSLAN_12."</td>
 	<td class='forumheader3' style='width:70%'>
-	<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='$userclass_name' /></td>
+	<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='$userclass_name' />
+	</td>
 	</tr>
 	<tr>
 	<td class='forumheader3'>".UCSLAN_13."</td>
-	<td class='forumheader3' style='width:70%'><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='$userclass_description' /></td>
+	<td class='forumheader3' style='width:70%'>
+	<input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='$userclass_description' />
+	</td>
 	</tr>
 	";
 
@@ -230,12 +233,15 @@ $text .= "
 
 if(isset($_POST['edit']))
 {
-	$text .= "<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />
-		<input type='hidden' name='userclass_id' value='$userclass_id' />";
+	$text .= "
+		<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />
+		<input type='hidden' name='userclass_id' value='$userclass_id' />
+		";
 }
 else
 {
-	$text .= "<input class='button' type='submit' name='createclass' value='".UCSLAN_15."' />";
+	$text .= "<input class='button' type='submit' name='createclass' value='".UCSLAN_15."' />
+	";
 }
 
 $text .= "</td></tr></table>";
@@ -314,13 +320,16 @@ $text .= "</form>
 // lazy get list again
 $class_total = $sql->db_Select("userclass_classes", "*", "ORDER BY userclass_name", "nowhere");
 
-$text .= "<br /><div style='text-align:center'>
+$text .= "
+	<br />
+	<div style='text-align:center'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='fcaption'>".UCSLAN_12."</td>
 	<td class='fcaption'>".UCSLAN_24."</td>
 	<td class='fcaption'>".UCSLAN_13."</td>
-	</tr>\n";
+	</tr>
+	";
 	
 if ($class_total == "0")
 {
@@ -338,14 +347,17 @@ else
 				$rEditClass = e_UC_ADMIN;
 			}
 
-			$text .= "<tr>
+			$text .= "
+			<tr>
 			<td class='forumheader3'>{$row['userclass_name']}</td>
 			<td class='forumheader3'>".r_userclass_name($rEditClass)."</td>
-			<td class='forumheader3'>{$row['userclass_description']}</td>\n";
+			<td class='forumheader3'>{$row['userclass_description']}</td>";
 		}
 	}
 }
-$text .="</table>";
+$text .="
+</table>
+</div>";
 
 $ns->tablerender(UCSLAN_21, $text);
 
