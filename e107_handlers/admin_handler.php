@@ -282,7 +282,7 @@ class e_admin_request
 	 * 
 	 * @return string
 	 */
-	public function getMode()
+	public function getModeName()
 	{
 		return strtolower(str_replace('-', '_', $this->_mode));
 	}
