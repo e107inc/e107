@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/e107db_auth.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-05 18:47:52 $
+|     $Revision: 1.4 $
+|     $Date: 2009-10-27 20:46:27 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -95,7 +95,7 @@ class auth_login
 
 
 		//Get record containing supplied login name
-		$qry = "SELECT ".implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}'";
+		$qry = "SELECT ".implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}' AND `user_ban` = 0";
 //	  echo "Query: {$qry}<br />";
 		if(!$r1 = mysql_query($qry))
 		{
