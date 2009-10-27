@@ -413,6 +413,289 @@ class e_admin_request
 }
 
 /**
+ * TODO - front response parent, should do all the header.php work
+ */
+class e_admin_response
+{
+	protected $_body = array();
+	protected $_title = array();
+	protected $_e_PAGETITLE = array();
+	protected $_META_DESCRIPTION = array();
+	protected $_META_KEYWORDS = array();
+	protected $_render_mod = array();
+	protected $_meta_title_separator = ' - ';
+	protected $_title_separator = ' &raquo; ';
+	
+	public function __construct()
+	{
+		$this->__render_mod['default'] = 'admin_page';
+	}
+
+	function setBody($content, $name = 'default')
+	{
+		$this->_body[$name] = $content;
+		return $this;
+	}
+
+	function appendBody($content, $name = 'default')
+	{
+		if(!isset($this->_body[$name]))
+		{
+			$this->_body[$name] = array();
+		}
+		$this->_body[$name][] = $content;
+		return $this;
+	}
+
+	function prependBody($content, $name = 'default')
+	{
+		if(!isset($this->_body[$name]))
+		{
+			$this->_body[$name] = array();
+		}
+		$this->_body[$name] = array_merge(array($content), $this->_body[$name]);
+		return $this;
+	}
+
+	function getBody($name = 'default', $reset = false, $glue = false)
+	{
+		$content = varset($this->_body[$name]);
+		if($reset)
+		{
+			$this->_body[$name] = array();
+		}
+		if(is_bool($glue))
+		{
+			return ($glue ? $content : implode('', $content));
+		}
+		return implode($glue, $content);
+	}
+
+	function appendTitle($title, $name = 'default')
+	{
+		if(empty($title))
+		{
+			return $this;
+		}
+		if(!isset($this->_title[$name]))
+		{
+			$this->_title[$name] = array();
+		}
+		$this->_title[$name][] = $title;
+		return $this;
+	}
+
+	function prependTitle($title, $name = 'default')
+	{
+		if(empty($title))
+		{
+			return $this;
+		}
+		if(!isset($this->_title[$name]))
+		{
+			$this->_title[$name] = array();
+		}
+		$this->_title[$name] = array_merge(array($title), $this->_title[$name]);
+		return $this;
+	}
+
+	function getTitle($name = 'default', $reset = false, $glue = false)
+	{
+		$content = array();
+		if(!isset($this->_title[$name]) && is_array($this->_title[$name]))
+		{
+			$content = $this->_title[$name];
+			
+		}
+		if($reset)
+		{
+			unset($this->_title[$name]);
+		}
+		if(is_bool($glue) || empty($glue))
+		{
+			return ($glue ? $content : implode($this->_title_separator, $content));
+		}
+
+		return implode($glue, $content);
+	}
+
+	function setRenderMod($render_mod, $name = 'default')
+	{
+		$this->_render_mod[$name] = $render_mod;
+		return $this;
+	}
+
+	function getRenderMod($name = 'default')
+	{
+		return varset($this->_render_mod[$name], null);
+	}
+
+	/**
+	 * Add meta title, description and keywords
+	 *
+	 * @param string $meta property name
+	 * @param string $content meta content
+	 */
+	function addMetaData($meta, $content)
+	{
+		$tp = e107::getParser();
+		$meta = '_' . $meta;
+		if(isset($this->{$meta}) && !empty($content))
+		{
+			$this->{$meta}[] = $tp->toAttribute(strip_tags($content));
+		}
+		return $this;
+	}
+	
+	function addMetaTitle($title)
+	{
+		return $this->addMetaData('e_PAGETITLE', $title);
+	}
+	
+	function addMetaDescription($description)
+	{
+		return $this->addMetaData('META_DESCRIPTION', $description);
+	}
+	
+	function addMetaKeywords($keywords)
+	{
+		return $this->addMetaData('META_KEYWORDS', $keywords);
+	}
+
+	/**
+	 * Send e107 meta-data
+	 *
+	 * @return e_admin_response
+	 */
+	function sendMeta()
+	{
+		//HEADERF already included or meta content already sent
+		if(e_AJAX_REQUEST || defined('USER_AREA') || defined('e_PAGETITLE'))
+			return $this;
+			
+		if(!defined('e_PAGETITLE') && !empty($this->_e_PAGETITLE))
+		{
+			define('e_PAGETITLE', implode($this->_meta_title_separator, $this->_e_PAGETITLE));
+		}
+		
+		if(!defined('META_DESCRIPTION') && !empty($this->_META_DESCRIPTION))
+		{
+			define('META_DESCRIPTION', implode(' ', $this->_META_DESCRIPTION));
+		}
+		if(!defined('META_KEYWORDS') && !empty($this->_META_KEYWORDS))
+		{
+			define('META_KEYWORDS', implode(',', $this->_META_KEYWORDS));
+		}
+		return $this;
+	}
+	
+	
+	function addHeaderContent($content)
+	{
+		$this->appendBody($content, 'header_content');
+		return $this;
+	}
+	
+	/**
+	 * Get page Header content
+	 *
+	 * @param boolean $reset
+	 * @param boolean $glue
+	 * @return string
+	 */
+	function getHeaderContent($reset = true, $glue = false)
+	{
+		return $this->getBody('header_content', $reset, $glue);
+	}
+
+
+	function setTitle($title, $name = 'default')
+	{
+		
+		$this->_title[$name] = array($title);
+		return $this;
+	}
+	
+	/**
+	 * Switch to iframe mod
+	 * FIXME - implement e_IFRAME
+	 *
+	 * @return e_admin_response
+	 */
+	function setIframeMod()
+	{
+		global $HEADER, $FOOTER, $CUSTOMHEADER, $CUSTOMFOOTER;
+		$HEADER = $FOOTER = ''; 
+		$CUSTOMHEADER = $CUSTOMFOOTER = array();
+		
+		return $this;
+	}
+
+	/**
+	 * Send Response Output
+	 *
+	 * @param string $name segment
+	 * @param array $options valid keys are: messages|render|meta|return|raw
+	 * @return mixed
+	 */
+	function send($name = 'default', $options = array())
+	{
+		if(is_string($options))
+		{
+			parse_str($options, $options);
+		}
+		
+		// Merge with all available default options
+		$options = array_merge(array(
+			'messages' => true, 
+			'render' => true, 
+			'meta' => false, 
+			'return' => false, 
+			'raw' => false
+		), $options);
+		
+		$content = $this->getBody($name, true);
+		$title = $this->getTitle($name, true);
+		$return = vartrue($options['return']);
+		
+		if(vartrue($options['messages']))
+		{
+			$content = e107::getMessage()->render().$content;
+		}
+		
+		if(vartrue($options['meta']))
+		{
+			$this->sendMeta();
+		}
+		
+		// raw output expected - force return array
+		if(vartrue($options['raw']))
+		{
+			return array($title, $content, $this->getRenderMod($name));
+		}
+		
+		//render disabled by the controller or ajax request
+		if(!$this->getRenderMod($name) || e_AJAX_REQUEST)
+		{
+			$options['render'] = false;
+		}
+
+		if(vartrue($options['render']))
+		{
+			return e107::getRender()->tablerender($title, $content, $this->getRenderMod($name), varset($options['return']));
+		}
+		
+		if(varset($options['return']))
+		{
+			return $content;
+		}
+		
+		print($content);
+		return '';
+	}
+}
+
+/**
  * TODO - request related code should be moved to core
  * request handler
  */
@@ -421,7 +704,12 @@ class e_admin_dispatcher
 	/**
 	 * @var e_admin_request
 	 */
-	protected $_request;
+	protected $_request = null;
+	
+	/**
+	 * @var e_admin_response
+	 */
+	protected $_response = null;
 	
 	/** 
 	 * @var e_admin_controller
@@ -456,16 +744,22 @@ class e_admin_dispatcher
 	 * Constructor 
 	 * 
 	 * @param string|array|e_admin_request $request [optional]
+	 * @param e_admin_response $response
 	 */
-	public function __construct($request = null)
+	public function __construct($request = null, $response = null)
 	{
 		if(null === $request || !is_object($request))
 		{
 			$request = new e_admin_request($request);
 		}
 		
-		$this->setRequest($request)->init();
-		$this->_initController();
+		if(null === $response)
+		{
+			$response = new e_admin_response();
+		}
+		
+		$this->setRequest($request)->setResponse($response)->init();
+		//$this->_initController();
 		
 	}
 	
@@ -475,6 +769,15 @@ class e_admin_dispatcher
 	 */
 	public function init()
 	{
+	}
+	
+	/**
+	 * Get request object
+	 * @return e_admin_request
+	 */
+	public function getRequest()
+	{
+		return $this->_request;
 	}
 	
 	/**
@@ -489,12 +792,23 @@ class e_admin_dispatcher
 	}
 	
 	/**
-	 * Get request object
-	 * @return e_admin_request
+	 * Get response object
+	 * @return e_admin_response
 	 */
-	public function getRequest()
+	public function getResponse()
 	{
-		return $this->_request;
+		return $this->_response;
+	}
+	
+	/**
+	 * Set response object
+	 * @param e_admin_response $response
+	 * @return e_admin_dispatcher
+	 */
+	public function setResponse($response)
+	{
+		$this->_response = $response;
+		return $this;
 	}
 	
 	/**
@@ -516,32 +830,86 @@ class e_admin_dispatcher
 	public function runObservers($run_header = true)
 	{
 		//search for $actionName.'Observer' method. Additional $actionName.$triggerName.'Trigger' methods will be called as well
-		//call_user_func(array($this->_current_controller, 'dispatchObserver'), $this->getRequest()->getActionName());
-		$this->_current_controller->dispatchObserver();
+		$this->getController()->dispatchObserver();
 		
 		//search for $actionName.'Header' method, js manager should be used inside
-		if($run_header && !deftrue('e_AJAX_REQUEST'))
+		if($run_header)
 		{
-			//call_user_func(array($this->_current_controller, 'dispatchHeader'), $this->getRequest()->getActionName());
-			$this->_current_controller->dispatchHeader();
+			$this->getController()->dispatchHeader();
 			
 		}
 		return $this;
 	}
 	
 	/**
-	 * Render page body
-	 * TODO - set/getParams(), convert $return to parameter, pass parameters to the requet object
+	 * Run page action.
+	 * If return type is array, it should contain allowed response options (see e_admin_response::send())
+	 * Available return type string values:
+	 * - render_return: return rendered content ( see e107::getRender()->tablerender()), add system messages, send meta information
+	 * - render: outputs rendered content ( see e107::getRender()->tablerender()), add system messages
+	 * - response: return response object
+	 * - raw: return array(title, content, render mode)
+	 * - ajax: force ajax output (and exit)
 	 * 
-	 * @param boolean $return if true, array(title, body, render_mod) will be returned 
-	 * @return string|array
+	 * @param string|array $return_type expected string values: render|render_out|response|raw|ajax
+	 * @return mixed
 	 */
-	public function renderPage($return = false)
+	public function runPage($return_type = 'render')
 	{
-		//search for $actionName.'Page' method, js manager should be used inside
-		//return call_user_func_array(array($this->_current_controller, 'dispatchPage'), array($this->getRequest()->getActionName(), $return));
-		$this->_current_controller->setParam('return_type', $return);
-		return $this->_current_controller->dispatchHeader();
+		$response = $this->getController()->dispatchPage();
+		if(is_array($return_type))
+		{
+			return $response->send('default', $return_type);
+		}
+		switch($return_type)
+		{
+			case 'render':
+				$options = array(
+					'messages' => true, 
+					'render' => true, 
+					'meta' => false, 
+					'return' => false, 
+					'raw' => false
+				);
+			break;
+		
+			case 'render_return':
+				$options = array(
+					'messages' => true, 
+					'render' => true, 
+					'meta' => true, 
+					'return' => true, 
+					'raw' => false
+				);
+			break;
+
+			case 'raw':
+				$options = array(
+					'messages' => false, 
+					'render' => false, 
+					'meta' => false, 
+					'return' => true, 
+					'raw' => true
+				);
+			break;
+
+			case 'ajax':
+				$options = array(
+					'messages' => false, 
+					'render' => false, 
+					'meta' => false, 
+					'return' => false, 
+					'raw' => false,
+					'ajax' => true //TODO - ajax
+				);
+			break;
+		
+			case 'response':
+			default:
+				return $response;
+			break;
+		}
+		return $response->send('default', $options);
 	}
 	
 	/**
@@ -550,6 +918,10 @@ class e_admin_dispatcher
 	 */
 	public function getController()
 	{
+		if(null === $this->_current_controller)
+		{
+			$this->_initController();
+		}
 		return $this->_current_controller;
 	}
 	
@@ -667,6 +1039,11 @@ class e_admin_controller
 	protected $_request;
 	
 	/**
+	 * @var e_admin_response
+	 */
+	protected $_response;
+	
+	/**
 	 * @var array User defined parameters
 	 */
 	protected $_params = array();
@@ -675,9 +1052,12 @@ class e_admin_controller
 	 * Constructor 
 	 * @param e_admin_request $request [optional]
 	 */
-	public function __construct($request = null)
+	public function __construct($request, $response, $params = array())
 	{
-		$this->_request = $request;
+		$this->_params = array('enable_triggers');
+		$this->setRequest($request)
+			->setResponse($response)
+			->setParams($params);
 	}
 	
 	/**
@@ -689,7 +1069,11 @@ class e_admin_controller
 	}
 	
 	/**
-	 * Get parameter
+	 * Get controller parameter
+	 * Currently used core parameters:
+	 * - enable_triggers: don't use it direct, see {@link setTriggersEnabled()}
+	 * - TODO - more parameters
+	 * 
 	 * @param string $key [optional] if null - get whole array 
 	 * @param mixed $default [optional]
 	 * @return mixed
@@ -721,17 +1105,29 @@ class e_admin_controller
 	}
 	
 	/**
-	 * Reset parameter array
+	 * Merge passed parameter array with current parameters
 	 * @param array $params
 	 * @return e_admin_controller
 	 */
 	public function setParams($params)
 	{
-		$this->_params = (array) $params;
+		$this->_params = array_merge($this->_params, $params);
 		return $this;
 	}
 	
 	/**
+	 * Reset parameter array
+	 * @param array $params
+	 * @return e_admin_controller
+	 */
+	public function resetParams($params)
+	{
+		$this->_params = $params;
+		return $this;
+	}
+	
+	/**
+	 * Get current request object
 	 * @return e_admin_request 
 	 */
 	public function getRequest()
@@ -746,7 +1142,27 @@ class e_admin_controller
 	 */
 	public function setRequest($request)
 	{
-		$this->_dispatcher = $request;
+		$this->_request = $request;
+		return $this;
+	}
+
+	/**
+	 * Get current response object
+	 * @return e_admin_response 
+	 */
+	public function getResponse()
+	{
+		return $this->_response;
+	}
+	
+	/**
+	 * Set current response object
+	 * @param e_admin_response $response
+	 * @return e_admin_controller
+	 */
+	public function setResponse($response)
+	{
+		$this->_response = $response;
 		return $this;
 	}
 	
@@ -817,14 +1233,14 @@ class e_admin_controller
 		}
 		
 		// check for observer
-		$actionObserverName = $action.'Observer';
+		$actionObserverName = $action.(e_AJAX_REQUEST ? 'Ajax' : '').'Observer';
 		if(method_exists($this, $actionObserverName))
 		{
 			$this->$actionObserverName();
 		}
 		
-		// check for triggers
-		if($this->triggersEnabled())
+		// check for triggers, not available in Ajax mode
+		if(!e_AJAX_REQUEST && $this->triggersEnabled())
 		{
 			$posted = $request->getPosted();
 			foreach ($posted as $key => $value)
@@ -849,12 +1265,17 @@ class e_admin_controller
 	}
 	
 	/**
-	 * Dispatch header
+	 * Dispatch header, not allowed in Ajax mode
 	 * @param string $action [optional]
 	 * @return e_admin_controller
 	 */
 	public function dispatchHeader($action = null)
 	{
+		// not available in Ajax mode
+		if(e_AJAX_REQUEST)
+		{
+			return $this;
+		}
 		$request = $this->getRequest();
 		if(null === $request)
 		{
@@ -876,14 +1297,16 @@ class e_admin_controller
 		return $this;
 	}
 	
+	/**
+	 * Dispatch controller action
+	 * 
+	 * @param string $action [optional]
+	 * @return e_admin_response
+	 */
 	public function dispatchPage($action = null)
 	{
 		$request = $this->getRequest();
-		if(null === $request)
-		{
-			$request = new e_admin_request();
-			$this->setRequest($request);
-		}
+		$response = $this->getResponse();
 		
 		if(null === $action)
 		{
@@ -891,7 +1314,7 @@ class e_admin_controller
 		}
 		
 		// check for observer
-		$actionName = $action.'Page';
+		$actionName = $action.(e_AJAX_REQUEST ? 'Ajax' : '').'Page';
 		$ret = '';
 		if(!method_exists($this, $actionName))
 		{
@@ -902,11 +1325,10 @@ class e_admin_controller
 		ob_start(); //catch any output
 		$ret = $this->$actionName();
 		$ret .= ob_get_clean();
+
+		$response->appendBody($ret);
 		
-		// show messages if any
-		$ret = e107::getMessage()->render().$ret;
-		
-		return $ret;
+		return $response;
 	}
 	
 	/**
