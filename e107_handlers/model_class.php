@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-10-26 08:12:59 $
- * $Author: e107coders $
+ * $Revision: 1.25 $
+ * $Date: 2009-10-27 17:49:12 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -958,7 +958,7 @@ class e_admin_model extends e_model
      * Set object validation rules if $_validation_rules array is empty
      * 
      * @param array $vrules
-     * @return e_model
+     * @return e_admin_model
      */
     public function setValidationRules(array $vrules)
     {
@@ -1038,7 +1038,7 @@ class e_admin_model extends e_model
      * @param mixed $value
      * @param boolean $strict update only
      * @param boolean $toForm use post_toForm() on both key and data arguments
-     * @return e_model
+     * @return e_admin_model
      */
     public function setPosted($key, $value, $strict = false, $toForm = true)
     {
@@ -1061,7 +1061,7 @@ class e_admin_model extends e_model
      * @param mixed $value
      * @param boolean $strict update only
      * @param boolean $toForm use post_toForm() on both key and data arguments
-     * @return e_model
+     * @return e_admin_model
      */
     public function setPostedData($key, $value = null, $strict = false, $toForm = true)
     {
@@ -1085,7 +1085,7 @@ class e_admin_model extends e_model
      * @param mixed $value
      * @param boolean $override override existing data
      * @param boolean $toForm use post_toForm() on both key and data arguments
-     * @return e_model
+     * @return e_admin_model
      */
     public function addPostedData($key, $value = null, $override = true, $toForm = true)
     {
@@ -1103,7 +1103,7 @@ class e_admin_model extends e_model
      * Public proxy of {@link _unsetDataSimple()}
      *
      * @param string $key
-     * @return e_model
+     * @return e_admin_model
      */
     public function removePosted($key)
     {
@@ -1119,7 +1119,7 @@ class e_admin_model extends e_model
      * Public proxy of {@link _unsetData()}
      *
      * @param string|null $key
-     * @return e_model
+     * @return e_admin_model
      */
     public function removePostedData($key = null)
     {
@@ -1196,12 +1196,11 @@ class e_admin_model extends e_model
      * 
      * If $strict is true, only existing object data will be copied (update)
      * If $validate is true, data will be copied only after successful validation
-     * TODO - move to admin e_model extension?
      *
      * @param boolean $strict 
      * @param boolean $sanitize sanitize posted data before move it to the object data
      * @param boolean $validate perform validation check
-     * @return e_model
+     * @return e_admin_model
      */
     public function mergePostedData($strict = true, $sanitize = true, $validate = true)
     {
@@ -1250,12 +1249,11 @@ class e_admin_model extends e_model
      * 
      * If $strict is true, only existing object data will be copied (update)
      * If $validate is true, data will be copied only after successful validation
-     * TODO - move to admin e_model extension?
      *
      * @param array $src_data
      * @param boolean $sanitize
      * @param boolean $validate perform validation check
-     * @return e_model
+     * @return e_admin_model
      */
     public function mergeData(array $src_data, $strict = true, $sanitize = true, $validate = true)
     {
@@ -1590,10 +1588,10 @@ class e_admin_model extends e_model
 			$ret = array(); 
 			foreach ($key as $k=>$v)
 			{
-				if(isset($this->_data_fields[$k]))
-				{
-					$ret[$k] = $this->toDb($k, $v);
-				}
+	            if(isset($this->_data_fields[$k]))
+	            {
+	               $ret[$k] = $this->sanitize($k, $v);
+	            }
 			}
 			return $ret;
 		}
@@ -2268,4 +2266,3 @@ class e_model_interface
 	
 	
 }
-
