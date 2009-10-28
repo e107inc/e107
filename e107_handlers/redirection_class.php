@@ -11,21 +11,40 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-10-28 16:57:51 $
+|     $Revision: 1.5 $
+|     $Date: 2009-10-28 20:16:12 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
+/**
+ * Redirection class
+ *
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author Cameron
+ * @copyright Copyright (C) 2009, e107 Inc.
+ */
 class redirection
 {
+    /**
+     * List of pages to not check agaist e_SELF
+     *
+     * @var array
+     */
+    protected $self_exceptions = array();
 		
-		var $self_exceptions = array();
-		
-		var $page_exceptions = array();
+    /**
+     * List of pages to not check agaist e_PAGE
+     *
+     * @var array
+     */
+    protected $page_exceptions = array();
 
 		/**
 		 * Manage Member-Only Mode.
+		 *
 		 * @return void
 		 */
 		function __construct()
@@ -36,29 +55,28 @@ class redirection
 		
 		/**
 		 * Perform re-direction when Maintenance Mode is active. 
+		 *
 		 * @return void
 		 */
 		public function checkMaintenance()
 		{	
-		
-			if(strpos(e_SELF, 'sitedown.php') !== FALSE) // prevent looping. 
+		  // prevent looping.
+			if(strpos(e_SELF, 'admin.php') !== FALSE || strpos(e_SELF, 'sitedown.php') !== FALSE)
 			{
 				return;
 			}
-						
+
 			if(e107::getPref('maintainance_flag')) 
-			{				
-				if(e107::getPref('main_admin_only')==1 && ADMIN==TRUE && !getperms('0'))
+			{
+				if(!ADMIN
+				   || (e_UC_MAINADMIN == e107::getPref('maintainance_flag')
+					     && !getperms('0')
+							 )
+						)
 				{
-					$this->redirect(SITEURL.'sitedown.php?logout');
+					// 307 Temporary Redirect
+					$this->redirect(SITEURL.'sitedown.php', TRUE, 307);
 				}
-				
-				if((strpos(e_SELF, 'admin.php') !== FALSE) || (ADMIN == TRUE))
-				{
-					return;
-				} 
-				
-				$this->redirect(SITEURL.'sitedown.php');			
 			}
 			else
 			{
@@ -68,10 +86,10 @@ class redirection
 		
 		
 		/**
-		 * check if user is logged in.
+		 * Check if user is logged in.
+		 *
 		 * @return void
 		 */
-		
 		public function checkMembersOnly()
 		{
 			
@@ -113,12 +131,13 @@ class redirection
 			$this->saveMembersOnlyUrl();
 			$this->redirect(e_HTTP.'membersonly.php');
 		} 
+
 		
 		/**
 		 * Store the current URL so that it can retrieved after login.
+		 *
 		 * @return void
 		 */
-		
 		private function saveMembersOnlyUrl()
 		{
 				// remember the url for after-login. 
@@ -130,9 +149,9 @@ class redirection
 		
 		/**
 		 * Restore the previously saved URL, and redirect the User to it after login.
+		 *
 		 * @return void
 		 */
-		
 		private function restoreMembersOnlyUrl()
 		{
 				if (USER && ($_SESSION[e_COOKIE.'_afterlogin'] || $_COOKIE[e_COOKIE.'_afterlogin']))
@@ -143,10 +162,28 @@ class redirection
 				} 
 		} 
 		
-		function redirect($url)
+
+		/**
+		 * Redirect to the given URI
+		 *
+		 * @param string $url
+		 * @param boolean $replace - default TRUE
+     * @param integer|null $http_response_code - default NULL
+		 * @return void
+		 */
+		public function redirect($url, $replace = TRUE, $http_response_code = NULL)
 		{
-				header('Location: '.$url);
-				header("Content-Length: 0"); // Safari endless loop fix. 
+				if(NULL == $http_response_code)
+				{
+					header('Location: '.$url, $replace);
+				}
+				else
+				{
+					header('Location: '.$url, $replace, $http_response_code);
+				}
+
+				// Safari endless loop fix.
+				header('Content-Length: 0');
 				exit();
 		} 
 }
