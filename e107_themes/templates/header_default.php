@@ -9,9 +9,9 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-10-01 15:05:40 $
- * $Author: secretr $
+ * $Revision: 1.43 $
+ * $Date: 2009-10-28 22:37:30 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -43,7 +43,7 @@ $e107->sql->db_Mark_Time('(Header Top)');
 // I: Calculate onload() JS functions to be called
 // J: Send end of html <head> and start of <body>
 // K: (The rest is ignored for popups, which have no menus)
-// L: (optional) Body JS to disable right clicks
+// L: Removed
 // M: Send top of body for custom pages and for news
 // N: Send other top-of-body HTML
 //
@@ -455,36 +455,8 @@ if(!isset($e107_popup))
 if ($e107_popup != 1) {
 
 //
-// L: (optional) Body JS to disable right clicks
+// L: Removed
 //
-
-// --------------------- REMOVE IT!!! ------------------------->
-/*	if (isset($pref['no_rightclick']) && $pref['no_rightclick']) {
-		echo "<script language='javascript'>\n";
-		echo "<!--\n";
-		echo "var message=\"Not Allowed\";\n";
-		echo "function click(e) {\n";
-		echo "	if (document.all) {\n";
-		echo "		if (event.button==2||event.button==3) {\n";
-		echo "			alert(message);\n";
-		echo "			return false;\n";
-		echo "		}\n";
-		echo "	}\n";
-		echo "	if (document.layers) {\n";
-		echo "		if (e.which == 3) {\n";
-		echo "			alert(message);\n";
-		echo "			return false;\n";
-		echo "		}\n";
-		echo "	}\n";
-		echo "}\n";
-		echo "if (document.layers) {\n";
-		echo "	document.captureevents(event.mousedown);\n";
-		echo "}\n";
-		echo "document.onmousedown=click;\n";
-		echo "// -->\n";
-		echo "</script>\n";
-	}*/
-// --------------------- REMOVE END  ------------------------->
 
 //
 // M: Send top of body for custom pages and for news
