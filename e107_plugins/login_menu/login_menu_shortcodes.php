@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-08-23 10:39:51 $
+|     $Revision: 1.14 $
+|     $Date: 2009-10-28 14:06:58 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -94,9 +94,11 @@ SC_END
 
 SC_BEGIN LM_MAINTENANCE
 global $pref;
-if(ADMIN == TRUE){
-	return ($pref['maintainance_flag'] == 1 ? '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />' : '' );
+if(ADMIN && varset($pref['maintainance_flag']))
+{
+	return '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />';
 }
+return '';
 SC_END
 
 SC_BEGIN LM_ADMINLINK_BULLET
