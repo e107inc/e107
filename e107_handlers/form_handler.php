@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
  * e107 website system
  *
@@ -9,13 +9,16 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.58 $
- * $Date: 2009-10-26 07:26:47 $
- * $Author: e107coders $
+ * $Revision: 1.59 $
+ * $Date: 2009-10-28 16:57:51 $
+ * $Author: marj_nl_fr $
  *
-*/
+ */
 
-if (!defined('e107_INIT')) { exit; }
+if(!defined('e107_INIT'))
+{
+	exit;
+}
 //FIXME hardcoded text
 /**
  * Automate Form fields creation. Produced markup is following e107 CSS/XHTML standards
@@ -65,19 +68,19 @@ class e_form
 	var $_tabindex_counter = 0;
 	var $_tabindex_enabled = true;
 	var $_cached_attributes = array();
-
+	
 	/**
 	 * @var user_class
 	 */
 	var $_uc;
-
+	
 	function e_form($enable_tabindex = false)
 	{
-		
+	
 		$this->_tabindex_enabled = $enable_tabindex;
-		$this->_uc = e107::getUserClass();		
+		$this->_uc = e107::getUserClass();
 	}
-
+	
 	function text($name, $value, $maxlength = 200, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
@@ -85,27 +88,27 @@ class e_form
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 	
-	function iconpreview($id,$default,$width='',$height='') // FIXME
-	{		
+	function iconpreview($id, $default, $width = '', $height = '') // FIXME
+	{
 		$parms = $name."|".$width."|".$height."|".$id;
 		$sc_parameters .= 'mode=preview&default='.$default.'&id='.$id;
 		return e107::getParser()->parseTemplate("{ICONPICKER=".$sc_parameters."}");
 	}
-
+	
 	function iconpicker($name, $default, $label, $sc_parameters = '', $ajax = true)
 	{
-    	// TODO - Hide the <input type='text'> element, and display the icon itself after it has been chosen.
+		// TODO - Hide the <input type='text'> element, and display the icon itself after it has been chosen.
 		// eg. <img id='iconview' src='".$img."' style='border:0; ".$blank_display."' alt='' />
 		// The button itself could be replaced with an icon just for this purpose.
 
-
+		
 		$e107 = &e107::getInstance();
 		$id = $this->name2id($name);
 		$sc_parameters .= '&id='.$id;
 		$jsfunc = $ajax ? "e107Ajax.toggleUpdate('{$id}-iconpicker', '{$id}-iconpicker-cn', 'sc:iconpicker=".urlencode($sc_parameters)."', '{$id}-iconpicker-ajax', { overlayElement: '{$id}-iconpicker-button' })" : "e107Helper.toggle('{$id}-iconpicker')";
 		$ret = $this->text($name, $default);
-	//	$ret .= $this->iconpreview($id,$default); //FIXME
-		$ret .= $this->admin_button($name.'-iconpicker-button', $label, 'action', '', array('other' => "onclick=\"{$jsfunc}\""));
+		//	$ret .= $this->iconpreview($id,$default); //FIXME
+		$ret .= $this->admin_button($name.'-iconpicker-button', $label, 'action', '', array('other'=>"onclick=\"{$jsfunc}\""));
 		$ret .= "
 			<div id='{$id}-iconpicker' class='e-hideme'>
 				<div class='expand-container' id='{$id}-iconpicker-cn'>
@@ -113,21 +116,21 @@ class e_form
 				</div>
 			</div>
 		";
-
+		
 		return $ret;
 	}
-
-   /**
-    * Date field with popup calendar
-    * @param name => string - the name of the field
-    * @param datestamp => UNIX timestamp - default value of the field
-    **/
-   function datepicker($name, $datestamp=false)
-   {
-      global $pref;
-      //TODO can some of these values be set in an admin section somewhere so they are set per site?
-      //TODO allow time option ?
-      $cal = new DHTML_Calendar(true);
+	
+	/**
+	 * Date field with popup calendar
+	 * @param name => string - the name of the field
+	 * @param datestamp => UNIX timestamp - default value of the field
+	 **/
+	function datepicker($name, $datestamp = false)
+	{
+		global $pref;
+		//TODO can some of these values be set in an admin section somewhere so they are set per site?
+		//TODO allow time option ?
+		$cal = new DHTML_Calendar(true);
 		$cal_options['showsTime'] = false;
 		$cal_options['showOthers'] = false;
 		$cal_options['weekNumbers'] = false;
@@ -137,15 +140,15 @@ class e_form
 		$cal_attrib['class'] = "tbox";
 		$cal_attrib['size'] = "12";
 		$cal_attrib['name'] = $name;
-		if ($datestamp)
+		if($datestamp)
 		{
-   		//TODO use $prefs values for format?
-		   $cal_attrib['value'] = date("d/m/Y H:i:s", $datestamp);
-		   $cal_attrib['value'] = date("d/m/Y", $datestamp);
+			//TODO use $prefs values for format?
+			$cal_attrib['value'] = date("d/m/Y H:i:s", $datestamp);
+			$cal_attrib['value'] = date("d/m/Y", $datestamp);
 		}
 		return $cal->make_input_field($cal_options, $cal_attrib);
-   }
-
+	}
+	
 	function file($name, $options = array())
 	{
 		$options = $this->format_options('file', $name, $options);
@@ -153,27 +156,27 @@ class e_form
 		return "<input type='file' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
 
-
+	
 	function password($name, $maxlength = 50, $options = array())
 	{
 		$options = $this->format_options('text', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<input type='password' name='{$name}' value='' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
-
+	
 	function textarea($name, $value, $rows = 15, $cols = 40, $options = array())
 	{
 		$options = $this->format_options('textarea', $name, $options);
 		//never allow id in format name-value for text fields
 		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>";
 	}
-
-	function bbarea($name, $value, $help_mod = '', $help_tagid='', $size = 'large')
+	
+	function bbarea($name, $value, $help_mod = '', $help_tagid = '', $size = 'large')
 	{
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
 		switch($size)
-		{			
+		{
 			case 'medium':
 				$rows = '10';
 			break;
@@ -188,15 +191,15 @@ class e_form
 				$size = 'large';
 			break;
 		}
-	   	$options = array('class' => 'tbox'.($size ? ' '.$size : '').' e-wysiwyg');
+		$options = array('class'=>'tbox'.($size ? ' '.$size : '').' e-wysiwyg');
 		$bbbar = '';
 		if(!deftrue('e_WYSIWYG'))
 		{
-			require_once(e_HANDLER."ren_help.php");
+			require_once (e_HANDLER."ren_help.php");
 			$options['other'] = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";
 			$bbbar = display_help($help_tagid, $help_mod, 'addtext', 'help', $size);
 		}
-
+		
 		$ret = "
 		<div class='bbarea {$size}'>
 			".$this->textarea($name, $value, $rows, 50, $options)."
@@ -204,49 +207,50 @@ class e_form
 			{$bbbar}
 		</div>
 		";
-
+		
 		return $ret;
 	}
-
+	
 	function checkbox($name, $value, $checked = false, $options = array())
 	{
 		$options = $this->format_options('checkbox', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		return "<input type='checkbox' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
-
+		
 	}
 	
 	function checkbox_label($label_title, $name, $value, $checked = false, $options = array())
 	{
 		return $this->checkbox($name, $value, $checked, $options).$this->label($label_title, $name, $value);
 	}
-
+	
 	function checkbox_switch($name, $value, $checked = false, $label = '')
 	{
 		return $this->checkbox($name, $value, $checked).$this->label($label ? $label : LAN_ENABLED, $name, $value);
 	}
-
+	
 	function checkbox_toggle($name, $selector = 'multitoggle')
 	{
 		$selector = 'jstarget:'.$selector;
-		return $this->checkbox($name, $selector, false, array('id'=>false,'class'=>'checkbox toggle-all'));
+		return $this->checkbox($name, $selector, false, array('id'=>false, 'class'=>'checkbox toggle-all'));
 	}
-
+	
 	function uc_checkbox($name, $current_value, $uc_options, $field_options = array())
 	{
-		if(!is_array($field_options)) parse_str($field_options, $field_options);
+		if(!is_array($field_options))
+			parse_str($field_options, $field_options);
 		return '
 			<div class="check-block">
 				'.$this->_uc->vetted_tree($name, array($this, '_uc_checkbox_cb'), $current_value, $uc_options, $field_options).'
 			</div>
 		';
 	}
-
+	
 	function _uc_checkbox_cb($treename, $classnum, $current_value, $nest_level, $field_options)
 	{
 		if($classnum == e_UC_BLANK)
 			return '';
-
+			
 		$tmp = explode(',', $current_value); //TODO add support for when $current_value is an array.
 		
 		$class = $style = '';
@@ -256,82 +260,86 @@ class e_form
 		}
 		else
 		{
-			$style = " style='text-indent:" . (1.2 * $nest_level) . "em'";
+			$style = " style='text-indent:".(1.2 * $nest_level)."em'";
 		}
 		$descr = varset($field_options['description']) ? ' <span class="smalltext">('.$this->_uc->uc_get_classdescription($classnum).')</span>' : '';
-
-		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum).$descr, $treename.'[]', $classnum)."</div>\n";
+		
+		return "<div class='field-spacer{$class}'{$style}>".$this->checkbox($treename.'[]', $classnum, in_array($classnum, $tmp), $field_options).$this->label($this->_uc->uc_get_classname($classnum).$descr,
+			 $treename.'[]', $classnum)."</div>\n";
 	}
-	
+
 	
 	function uc_label($classnum)
 	{
-		return $this->_uc->uc_get_classname($classnum);	
+		return $this->_uc->uc_get_classname($classnum);
 	}
-
+	
 	function radio($name, $value, $checked = false, $options = array())
 	{
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
 		return "<input type='radio' name='{$name}' value='".$value."'".$this->get_attributes($options, $name, $value)." />";
-
+		
 	}
-
+	
 	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '')
 	{
 		return $this->radio($name, 1, $checked_enabled)."".$this->label($label_enabled ? $label_enabled : LAN_ENABLED, $name, 1)."&nbsp;&nbsp;
 			".$this->radio($name, 0, !$checked_enabled)."".$this->label($label_disabled ? $label_disabled : LAN_DISABLED, $name, 0);
-
+			
 	}
-
-	function radio_multi($name, $elements, $checked, $multi_line = false)
+	
+	function radio_multi($name, $elements, $checked, $multi_line = FALSE)
 	{
 		$text = array();
-		if(is_string($elements)) parse_str($elements, $elements);
-
-		foreach ($elements as $value => $label)
+		if(is_string($elements))
+			parse_str($elements, $elements);
+			
+		foreach ($elements as $value=>$label)
 		{
 			$text[] = $this->radio($name, $value, $checked == $value)."".$this->label($label, $name, $value);
 		}
 		if(!$multi_line)
 			return implode("&nbsp;&nbsp;", $text);
-
+			
 		return "<div class='field-spacer'>".implode("</div><div class='field-spacer'>", $text)."</div>";
-
+		
 	}
-
+	
 	function label($text, $name = '', $value = '')
 	{
 		$for_id = $this->_format_id('', $name, $value, 'for');
 		return "<label$for_id>{$text}</label>";
 	}
-
+	
 	function select_open($name, $options = array())
 	{
 		$options = $this->format_options('select', $name, $options);
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
-
+	
 	function selectbox($name, $option_array, $selected = false, $options = array())
 	{
 		if($option_array == 'yesno')
 		{
-			$option_array = array(1=>LAN_YES,0=>LAN_NO);
-		} 
+			$option_array = array(1=>LAN_YES,
+				 0=>LAN_NO);
+		}
 		return $this->select_open($name, $options)."\n".$this->option_multi($option_array, $selected)."\n".$this->select_close();
 	}
-
+	
 	function uc_select($name, $current_value, $uc_options, $select_options = array(), $opt_options = array())
 	{
-		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options, $opt_options)."\n".$this->select_close();
+		return $this->select_open($name, $select_options)."\n".$this->_uc->vetted_tree($name, array($this, '_uc_select_cb'), $current_value, $uc_options,
+			 $opt_options)."\n".$this->select_close();
 	}
-
+	
 	// Callback for vetted_tree - Creates the option list for a selection box
 	function _uc_select_cb($treename, $classnum, $current_value, $nest_level)
 	{
 		if($classnum == e_UC_BLANK)
 			return $this->option('&nbsp;', '');
-
+			
 		$tmp = explode(',', $current_value);
 		if($nest_level == 0)
 		{
@@ -350,177 +358,196 @@ class e_form
 		}
 		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), array("style"=>"{$style}"))."\n";
 	}
-
+	
 	function optgroup_open($label, $disabled)
 	{
 		return "<optgroup class='optgroup' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
 	}
-
+	
 	function option($option_title, $value, $selected = false, $options = array())
 	{
-		if(false === $value) $value = '';
+		if(false === $value)
+			$value = '';
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
 		return "<option value='{$value}'".$this->get_attributes($options).">{$option_title}</option>";
 	}
-
+	
 	function option_multi($option_array, $selected = false, $options = array())
 	{
-		if(is_string($option_array)) parse_str($option_array, $option_array);
-
+		if(is_string($option_array))
+			parse_str($option_array, $option_array);
+			
 		$text = '';
-		foreach ($option_array as $value => $label)
+		foreach ($option_array as $value=>$label)
 		{
 			$text .= $this->option($label, $value, $selected == $value, $options)."\n";
 		}
-
+		
 		return $text;
 	}
-
+	
 	function optgroup_close()
 	{
 		return "</optgroup>";
 	}
-
+	
 	function select_close()
 	{
 		return "</select>";
 	}
-
+	
 	function hidden($name, $value, $options = array())
 	{
 		$options = $this->format_options('hidden', $name, $options);
 		return "<input type='hidden' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
-
+	
 	function submit($name, $value, $options = array())
 	{
 		$options = $this->format_options('submit', $name, $options);
 		return "<input type='submit' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
-
-	function submit_image($name, $value, $image, $title='', $options = array())
+	
+	function submit_image($name, $value, $image, $title = '', $options = array())
 	{
 		$options = $this->format_options('submit_image', $name, $options);
-		switch ($image) {
+		switch($image)
+		{
 			case 'edit':
 				$image = ADMIN_EDIT_ICON_PATH;
 				$options['class'] = 'action edit';
 			break;
-
+			
 			case 'delete':
 				$image = ADMIN_DELETE_ICON_PATH;
 				$options['class'] = 'action delete';
 			break;
 		}
 		$options['title'] = $title;//shorthand
-
+		
 		return "<input type='image' src='{$image}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
-
+	
 	/**
-	 * 
+	 *
 	 * @param object $name
 	 * @param object $value
 	 * @param object $action [optional] default is submit
 	 * @param object $label [optional]
 	 * @param object $options [optional]
-	 * @return 
+	 * @return string
 	 */
 	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		$btype = 'submit';
-		if(strpos($action, 'action') === 0) $btype = 'button';
+		if(strpos($action, 'action') === 0)
+			$btype = 'button';
 		$options = $this->format_options('admin_button', $name, $options);
 		$options['class'] = $action;//shorthand
-		if(empty($label)) $label = $value;
-
+		if( empty($label))
+			$label = $value;
+			
 		return "
 			<button type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
 		";
 	}
-
+	
 	function getNext()
 	{
-		if(!$this->_tabindex_enabled) return 0;
+		if(!$this->_tabindex_enabled)
+			return 0;
 		$this->_tabindex_counter += 1;
 		return $this->_tabindex_counter;
 	}
-
+	
 	function getCurrent()
 	{
-		if(!$this->_tabindex_enabled) return 0;
+		if(!$this->_tabindex_enabled)
+			return 0;
 		return $this->_tabindex_counter;
 	}
-
+	
 	function resetTabindex($reset = 0)
 	{
 		$this->_tabindex_counter = $reset;
 	}
-
+	
 	function get_attributes($options, $name = '', $value = '')
 	{
 		$ret = '';
 		//
-		foreach ($options as $option => $optval)
+		foreach ($options as $option=>$optval)
 		{
-			switch ($option) {
-
+			switch($option)
+			{
+			
 				case 'id':
 					$ret .= $this->_format_id($optval, $name, $value);
-					break;
-
+				break;
+				
 				case 'class':
-					if(!empty($optval)) $ret .= " class='{$optval}'";
-					break;
-
+					if(! empty($optval))
+						$ret .= " class='{$optval}'";
+				break;
+				
 				case 'size':
-					if($optval) $ret .= " size='{$optval}'";
-					break;
-
+					if($optval)
+						$ret .= " size='{$optval}'";
+				break;
+				
 				case 'title':
-					if($optval) $ret .= " title='{$optval}'";
-					break;
-					
+					if($optval)
+						$ret .= " title='{$optval}'";
+				break;
+				
 				case 'label':
-					if($optval) $ret .= " label='{$optval}'";
-					break;
-
+					if($optval)
+						$ret .= " label='{$optval}'";
+				break;
+				
 				case 'tabindex':
-					if($optval) $ret .= " tabindex='{$optval}'";
-					elseif(false === $optval || !$this->_tabindex_enabled) break;
+					if($optval)
+						$ret .= " tabindex='{$optval}'";
+					elseif(false === $optval || !$this->_tabindex_enabled)
+					break;
 					else
 					{
 						$this->_tabindex_counter += 1;
 						$ret .= " tabindex='".$this->_tabindex_counter."'";
 					}
-					break;
-
+				break;
+				
 				case 'readonly':
-					if($optval) $ret .= " readonly='readonly'";
-					break;
-
+					if($optval)
+						$ret .= " readonly='readonly'";
+				break;
+				
 				case 'selected':
-					if($optval) $ret .= " selected='selected'";
-					break;
-
+					if($optval)
+						$ret .= " selected='selected'";
+				break;
+				
 				case 'checked':
-					if($optval) $ret .= " checked='checked'";
-					break;
-
+					if($optval)
+						$ret .= " checked='checked'";
+				break;
+				
 				case 'disabled':
-					if($optval) $ret .= " disabled='disabled'";
-					break;
-
+					if($optval)
+						$ret .= " disabled='disabled'";
+				break;
+				
 				case 'other':
-					if($optval) $ret .= " $optval";
-					break;
+					if($optval)
+						$ret .= " $optval";
+				break;
 			}
 		}
-
+		
 		return $ret;
 	}
-
+	
 	/**
 	 * Auto-build field attribute id
 	 *
@@ -531,25 +558,30 @@ class e_form
 	 */
 	function _format_id($id_value, $name, $value = '', $return_attribute = 'id')
 	{
-		if($id_value === false) return '';
-
+		if($id_value === false)
+			return '';
+			
 		//format data first
 		$name = $this->name2id($name);
-		$value = trim(preg_replace('#[^a-z0-9\-]/i#','-', $value), '-');
-		$value = str_replace("/","-",$value);
-		if(!$id_value && is_numeric($value)) $id_value = $value;
-
-		if(empty($id_value) ) return " {$return_attribute}='{$name}".($value ? "-{$value}" : '')."'";// also useful when name is e.g. name='my_name[some_id]'
-		elseif(is_numeric($id_value) && $name) return " {$return_attribute}='{$name}-{$id_value}'";// also useful when name is e.g. name='my_name[]'
-		else return " {$return_attribute}='{$id_value}'";
+		$value = trim(preg_replace('#[^a-z0-9\-]/i#', '-', $value), '-');
+		$value = str_replace("/", "-", $value);
+		if(!$id_value && is_numeric($value))
+			$id_value = $value;
+			
+		if( empty($id_value))
+			return " {$return_attribute}='{$name}".($value ? "-{$value}" : '')."'";// also useful when name is e.g. name='my_name[some_id]'
+		elseif(is_numeric($id_value) && $name)
+			return " {$return_attribute}='{$name}-{$id_value}'";// also useful when name is e.g. name='my_name[]'
+		else
+			return " {$return_attribute}='{$id_value}'";
 	}
-
+	
 	function name2id($name)
 	{
 		return rtrim(str_replace(array('[]', '[', ']', '_', '/'), array('-', '-', '', '-', '-'), $name), '-');
 	}
 
-
+	
 	/**
 	 * Format options based on the field type,
 	 * merge with default
@@ -561,19 +593,21 @@ class e_form
 	 */
 	function format_options($type, $name, $user_options)
 	{
-		if(is_string($user_options)) parse_str($user_options, $user_options);
-
+		if(is_string($user_options))
+			parse_str($user_options, $user_options);
+			
 		$def_options = $this->_default_options($type);
-
+		
 		foreach (array_keys($user_options) as $key)
 		{
-			if(!isset($def_options[$key])) unset($user_options[$key]);//remove it?
+			if(!isset($def_options[$key]))
+				unset($user_options[$key]);//remove it?
 		}
-
+		
 		$user_options['name'] = $name; //required for some of the automated tasks
 		return array_merge($def_options, $user_options);
 	}
-
+	
 	/**
 	 * Get default options array based on the field type
 	 *
@@ -582,102 +616,103 @@ class e_form
 	 */
 	function _default_options($type)
 	{
-		if(isset($this->_cached_attributes[$type])) return $this->_cached_attributes[$type];
-
-		$def_options = array(
-			'id' => '',
-			'class' => '',
-			'title' => '',
-			'size' => '',
-			'readonly' => false,
-			'selected' => false,
-			'checked' => false,
-			'disabled' => false,
-			'tabindex' => 0,
-			'label' => '',
-			'other' => ''
-		);
-
-		switch ($type) {
+		if(isset($this->_cached_attributes[$type]))
+			return $this->_cached_attributes[$type];
+			
+		$def_options = array('id'=>'',
+			 'class'=>'',
+			 'title'=>'',
+			 'size'=>'',
+			 'readonly'=>false,
+			 'selected'=>false,
+			 'checked'=>false,
+			 'disabled'=>false,
+			 'tabindex'=>0,
+			 'label'=>'',
+			 'other'=>'');
+		
+		switch($type)
+		{
 			case 'hidden':
-				$def_options = array('id' => false, 'disabled' => false, 'other' => '');
-				break;
-
+				$def_options = array('id'=>false,
+					 'disabled'=>false,
+					 'other'=>'');
+			break;
+			
 			case 'text':
 				$def_options['class'] = 'tbox input-text';
 				unset($def_options['selected'], $def_options['checked']);
-				break;
-
+			break;
+			
 			case 'file':
 				$def_options['class'] = 'tbox file';
 				unset($def_options['selected'], $def_options['checked']);
-				break;
-
+			break;
+			
 			case 'textarea':
 				$def_options['class'] = 'tbox textarea';
 				unset($def_options['selected'], $def_options['checked'], $def_options['size']);
-				break;
-
+			break;
+			
 			case 'select':
 				$def_options['class'] = 'tbox select';
-				unset($def_options['checked'],  $def_options['checked']);
-				break;
-
+				unset($def_options['checked'], $def_options['checked']);
+			break;
+			
 			case 'option':
-				$def_options = array('class' => '', 'selected' => false, 'other' => '', 'disabled' => false, 'label' => '');
-				break;
-
+				$def_options = array('class'=>'',
+					 'selected'=>false,
+					 'other'=>'',
+					 'disabled'=>false,
+					 'label'=>'');
+			break;
+			
 			case 'radio':
 				$def_options['class'] = 'radio';
 				unset($def_options['size'], $def_options['selected']);
-				break;
-
+			break;
+			
 			case 'checkbox':
 				$def_options['class'] = 'checkbox';
-				unset($def_options['size'],  $def_options['selected']);
-				break;
-
+				unset($def_options['size'], $def_options['selected']);
+			break;
+			
 			case 'submit':
 				$def_options['class'] = 'button';
 				unset($def_options['checked'], $def_options['selected'], $def_options['readonly']);
-				break;
-
+			break;
+			
 			case 'submit_image':
 				$def_options['class'] = 'action';
 				unset($def_options['checked'], $def_options['selected'], $def_options['readonly']);
-				break;
-
+			break;
+			
 			case 'admin_button':
-				unset($def_options['checked'],  $def_options['selected'], $def_options['readonly']);
-				break;
-
+				unset($def_options['checked'], $def_options['selected'], $def_options['readonly']);
+			break;
+			
 		}
-
+		
 		$this->_cached_attributes[$type] = $def_options;
 		return $def_options;
 	}
 
-
-
-
-
+	
 	function columnSelector($columnsArray, $columnsDefault = '', $id = 'column_options')
 	{
 		$columnsArray = array_filter($columnsArray);
-        $text = "
+		$text = "
 		<div class='col-selection-cont'>
-			<a href='#".$id."' class='e-show-if-js e-expandit' title='Click to select columns to display'>"
-				."<img class='icon' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' />"
-			."</a>
+			<a href='#".$id."' class='e-show-if-js e-expandit' title='Click to select columns to display'>"."<img class='icon' src='".e_IMAGE_ABS."admin_images/select_columns_16.png' alt='select columns' />"."</a>
 			<div id='".$id."' class='e-show-if-js e-hideme col-selection'><div class='col-selection-body'>
 		";
-        unset($columnsArray['options'], $columnsArray['checkboxes']);
-
-		foreach($columnsArray as $key => $fld)
+		unset($columnsArray['options'], $columnsArray['checkboxes']);
+		
+		foreach ($columnsArray as $key=>$fld)
 		{
 			if(!varset($fld['forced']))
 			{
-				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
+				$checked = (in_array($key, $columnsDefault)) ? TRUE : FALSE;
 				$text .= "
 					<div class='field-spacer'>
 						".$this->checkbox_label(varset($fld['title'], $key), 'e-columns[]', $key, $checked)."
@@ -685,27 +720,27 @@ class e_form
 				";
 			}
 		}
-
+		
 		// has issues with the checkboxes.
-        $text .= "
+		$text .= "
 				<div id='{$id}-button' class='right'>
 					".$this->admin_button('submit-e-columns', LAN_SAVE, 'update')."
 				</div>
 			</div></div>
 		</div>
-		";  
-
+		";
+		
 		$text .= "";
 		return $text;
 	}
-
+	
 	function colGroup($fieldarray, $columnPref = '')
 	{
-        $text = "";
-        $count = 0;
-		foreach($fieldarray as $key=>$val)
+		$text = "";
+		$count = 0;
+		foreach ($fieldarray as $key=>$val)
 		{
-			if(in_array($key, $columnPref) || $key=='options' || varsettrue($val['forced']))
+			if(in_array($key, $columnPref) || $key == 'options' || varsettrue($val['forced']))
 			{
 				$class = vartrue($val['class']) ? ' class="'.$val['class'].'"' : '';
 				$text .= '
@@ -714,92 +749,99 @@ class e_form
 				$count++;
 			}
 		}
-
+		
 		return '
 			<colgroup span="'.$count.'">
 				'.$text.'
 			</colgroup>
 		';
 	}
-
-	function thead($fieldarray, $columnPref=array(), $querypattern = '', $requeststr = '')
+	
+	function thead($fieldarray, $columnPref = array(), $querypattern = '', $requeststr = '')
 	{
-        $text = "";
-
+		$text = "";
+		
 		// Recommended pattern: ?mode=list&fld=[FIELD]&asc=[ASC]&frm=[FROM]
 		
-		if(strpos($querypattern,'&')!==FALSE)
+		if(strpos($querypattern, '&') !== FALSE)
 		{
-			// we can assume it's always $_GET since that's what it will generate 
+			// we can assume it's always $_GET since that's what it will generate
 			// more flexible (e.g. pass default values for order/field when they can't be found in e_QUERY) & secure
-			$tmp = $requeststr ? $requeststr : str_replace('&amp;', '&', e_QUERY); 
+			$tmp = $requeststr ? $requeststr : str_replace('&amp;', '&', e_QUERY);
 			parse_str($tmp, $tmp);
 			
 			$etmp = array();
-			parse_str($querypattern,$etmp);
+			parse_str($querypattern, $etmp);
 		}
 		else // Legacy Queries. eg. main.[FIELD].[ASC].[FROM]
 		{
-			$tmp = explode(".", ($requeststr ? $requeststr : e_QUERY)); 
+			$tmp = explode(".", ($requeststr ? $requeststr : e_QUERY));
 			$etmp = explode(".", $querypattern);
 		}
-
-		foreach($etmp as $key => $val)    // I'm sure there's a more efficient way to do this, but too tired to see it right now!.
+		
+		foreach ($etmp as $key=>$val) // I'm sure there's a more efficient way to do this, but too tired to see it right now!.
 		{
-        	if($val == "[FIELD]")
+			if($val == "[FIELD]")
 			{
-            	$field = $tmp[$key];
+				$field = $tmp[$key];
 			}
-
+			
 			if($val == "[ASC]")
 			{
-            	$ascdesc = $tmp[$key];
+				$ascdesc = $tmp[$key];
 			}
 			if($val == "[FROM]")
 			{
-            	$fromval = $tmp[$key];
+				$fromval = $tmp[$key];
 			}
 		}
-
-		if(!varset($fromval)){ $fromval = 0; }
-
-        $ascdesc = (varset($ascdesc) == 'desc') ? 'asc' : 'desc';
-		foreach($fieldarray as $key=>$val)
+		
+		if(!varset($fromval))
 		{
-     		if(in_array($key,$columnPref) || $key == 'options' || (vartrue($val['forced'])))
+			$fromval = 0;
+		}
+		
+		$ascdesc = (varset($ascdesc) == 'desc') ? 'asc' : 'desc';
+		foreach ($fieldarray as $key=>$val)
+		{
+			if(in_array($key, $columnPref) || $key == 'options' || (vartrue($val['forced'])))
 			{
 				$cl = (vartrue($val['thclass'])) ? " class='".$val['thclass']."'" : "";
 				$text .= "
 					<th id='e-column-".str_replace('_', '-', $key)."'{$cl}>
 				";
-
-                if($querypattern!="" && !varsettrue($val['nosort']) && $key != "options" && $key != "checkboxes")
+				
+				if($querypattern != "" && !varsettrue($val['nosort']) && $key != "options" && $key != "checkboxes")
 				{
 					$from = ($key == $field) ? $fromval : 0;
-					$srch = array("[FIELD]","[ASC]","[FROM]");
-					$repl = array($key,$ascdesc,$from);
-                	$val['url'] = e_SELF."?".str_replace($srch,$repl,$querypattern);
+					$srch = array("[FIELD]",
+						 "[ASC]",
+						 "[FROM]");
+					$repl = array($key,
+						 $ascdesc,
+						 $from);
+					$val['url'] = e_SELF."?".str_replace($srch, $repl, $querypattern);
 				}
-
-				$text .= (vartrue($val['url'])) ? "<a href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
-	            $text .= vartrue($val['title'], '');
+				
+				$text .= (vartrue($val['url'])) ? "<a href='".str_replace(array('&amp;', '&'), array('&', '&amp;'), $val['url'])."'>" : ""; // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
+				$text .= vartrue($val['title'], '');
 				$text .= ($val['url']) ? "</a>" : "";
-	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
+				$text .= ($key == "options") ? $this->columnSelector($fieldarray, $columnPref) : "";
 				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle', vartrue($val['toggle'], 'multiselect')) : "";
 
-
-	 			$text .= "
+				
+				$text .= "
 					</th>
 				";
 			}
 		}
-
+		
 		return "
 		<thead>
 	  		<tr>".$text."</tr>
 		</thead>
 		";
-
+		
 	}
 	
 	function trow($obj, $fieldvalues)
@@ -807,12 +849,12 @@ class e_form
 		$cnt = 0;
 		$ret = '';
 		
-		$fieldarray 	= $obj->fields;
-		$currentlist 	= $obj->fieldpref;
-		$pid 			= $obj->pid;
-	
+		$fieldarray = $obj->fields;
+		$currentlist = $obj->fieldpref;
+		$pid = $obj->pid;
+
 		
-		foreach ($fieldarray as $field => $data)
+		foreach ($fieldarray as $field=>$data)
 		{
 		
 			//Not found
@@ -840,12 +882,13 @@ class e_form
 			$value = $fieldvalues[$field];
 			
 			$parms = array();
-			if(isset($data['colparms'])) //TODO rename to 'parms'. 
+			if(isset($data['colparms'])) //TODO rename to 'parms'.
 			{
-				if(!is_array($data['colparms'])) parse_str($data['colparms'], $data['colparms']);
+				if(!is_array($data['colparms']))
+					parse_str($data['colparms'], $data['colparms']);
 				$parms = $data['colparms'];
 			}
-
+			
 			switch($field) // special fields
 			{
 				case 'options':
@@ -853,7 +896,7 @@ class e_form
 					$value .= "<input type='image' class='action delete' name='delete[{$fieldvalues[$pid]}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$fieldvalues[$pid]} ]' />";
 					$data['type'] = 'text';
 				break;
-			
+				
 				case 'checkboxes':
 					$value = $this->checkbox(vartrue($data['toggle'], 'multiselect').'['.$fieldvalues[$pid].']', $fieldvalues[$pid]);
 					$data['type'] = 'text';
@@ -886,311 +929,333 @@ class e_form
 					{
 						$value = $value[$data['type']] ? $value[$data['type']] : $value['user_name'];
 					}
-					else 
+					else
 					{
 						$value = 'not found';
 					}
 				break;
 				
 				case 'boolean':
-					$value = $value ? ADMIN_TRUE_ICON : '';// TODO  - ADMIN_FALSE_ICON
-				break;
-								
-				case 'url':
-					$value = "<a href='".$value ."'>".$value."</a>";
-				break;
+					$value = $value ? ADMIN_TRUE_ICON:
+						'';// TODO  - ADMIN_FALSE_ICON
+					break;
+					
+					case 'url':
+						$value = "<a href='".$value."'>".$value."</a>";
+					break;
+					
+					case 'method': // Custom Function
+						$meth = $field;
+						$value = $obj->$meth($value, $obj->mode);
+					break;
+					
+					//TODO - form_userclass, order,... and maybe more types
+					
+					default:
+						continue; //unknown type
+					break;
+				}
 				
-				case 'method': // Custom Function 
-					$meth = $field;
-					$value = $obj->$meth($value,$obj->mode);
-				break;
+				//TODO - this should be done per type!
+				if(vartrue($parms['truncate']))
+				{
+					$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+				}
+				elseif(vartrue($parms['htmltruncate']))
+				{
+					$value = e107::getParser()->html_truncate($value, $parms['htmltruncate'], '...');
+				}
 				
-				//TODO - form_userclass, order,... and maybe more types
-				
-				default:
-					continue; //unknown type
-				break;
-			}
-			
-			//TODO - this should be done per type! 
-			if(vartrue($parms['truncate']))
-			{
-				$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
-			}
-			elseif(vartrue($parms['htmltruncate']))
-			{
-				$value = e107::getParser()->html_truncate($value, $parms['htmltruncate'], '...');
-			}
-			
-			$ret .= '
+				$ret .= '
 				<td'.$tdclass.'>
 					'.$value.'
 				</td>
 			';
 			
-			$cnt++;
-		}
-		
-		if($cnt)
-		{
-			$trclass = vartrue($fieldvalues['trclass']) ?  ' class="'.$trclass.'"' : '';
-			return '
+				$cnt++;
+			}
+			
+			if($cnt)
+			{
+				$trclass = vartrue($fieldvalues['trclass']) ? ' class="'.$trclass.'"' : '';
+				return '
 				<tr'.$trclass.'>
 					'.$ret.'
 				</tr>
 			';
+			}
+			return '';
 		}
-		return '';
-	}
-
-	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
-	function filterType($fieldarray)
-	{
-		return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
-		define("e_AJAX_REQUEST",TRUE);
-    	$text = "<select name='search_filter[]' style='margin:2px' onchange='UpdateForm(this.options[selectedIndex].value)'>";
-		foreach($fieldarray as $key=>$val)
+		
+		// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
+		function filterType($fieldarray)
 		{
-        	$text .= varset($val['type']) ? "<option value='$key'>".$val['title']."</option>\n" : "";
-
+			return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
+			define("e_AJAX_REQUEST", TRUE);
+			$text = "<select name='search_filter[]' style='margin:2px' onchange='UpdateForm(this.options[selectedIndex].value)'>";
+			foreach ($fieldarray as $key=>$val)
+			{
+				$text .= varset($val['type']) ? "<option value='$key'>".$val['title']."</option>\n" : "";
+				
+			}
+			$text .= "</select>";
+			return $text;
 		}
-		$text .= "</select>";
-		return $text;
-	}
-
-	function filterValue($type='',$fields='')
-	{
-		return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
-
-		if($type)
+		
+		function filterValue($type = '', $fields = '')
 		{
-
-			switch ($fields[$type]['type']) {
-				case "datestamp":
-					return "[date field]";
-               	break;
-
-				case "boolean":
-
-					return "<select name='searchquery'><option value='1'>".LAN_YES."</option>\n
+			return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
+			
+			if($type)
+			{
+			
+				switch($fields[$type]['type'])
+				{
+					case "datestamp":
+						return "[date field]";
+					break;
+					
+					case "boolean":
+					
+						return "<select name='searchquery'><option value='1'>".LAN_YES."</option>\n
 				  	<option value='0'>".LAN_NO."</option>
 				  	</select>";
-               	break;
+					break;
+					
+					case "user":
+						return "<select name='searchquery'><option value='1'>User One</option><option value='2'>User Two</option></select>";
+					break;
 
-			   	case "user":
- 			   		return "<select name='searchquery'><option value='1'>User One</option><option value='2'>User Two</option></select>";
-				break;
-
-
-              default :
-
-			  return $this->text('searchquery', '', 50);
-
-            }
-		}
-		else
-		{
-    		return $this->text('searchquery', '', 50);
-		}
-		// This needs to be dynamic for the various form types, and be loaded via ajax.
-	}
-
-   /**
-    * Generates a batch options select component
-    * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
-    * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
-    * 
-    * @param array $options associative array of option elements, keyed on the option value
-    * @param array ucOptions [optional] associative array of userclass option groups to display, keyed on the option value prefix
-    * @return string the HTML for the form component
-    */
-	function batchoptions($options, $ucOptions=null) {
-      $text = "
-         <div class='f-left'>
-         <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
-			".$this->select_open('execute_batch', array('class' => 'tbox select e-execute-batch', 'id' => false))."
-				".$this->option('With selected...', '')."
-		";
-		
-		
-		//used for getperms() check 
-		$permissions = vartrue($options['__permissions'], array());
-		//used for check_classs() check
-		$classes = vartrue($options['__check_class'], array());
-		unset($options['__permissions'], $options['__check_class']);
-		
-		foreach ($options as $key => $val)
-		{
-			if(isset($permissions[$key]) && !getperms($permissions[$key]))
-			{
-				continue;
-			}
-			$disabled = false;
-			if(isset($classes[$key]) && !is_array($classes[$key]) && !check_class($classes[$key]))
-			{
-				$disabled = true; 
-			}
-			if(!is_array($val))
-			{
-				if($disabled) $val = $val.' ('.LAN_NOPERMISSION.')';
-				$text .= "\t".$this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.$val, $key, false, array('disabled' => $disabled))."\n";		
+					
+					default:
+					
+						return $this->text('searchquery', '', 50);
+						
+				}
 			}
 			else
 			{
-				if($disabled) $val[0] = $val[0].' ('.LAN_NOPERMISSION.')';
-				
-				$text .= "\t".$this->optgroup_open($val[0], $disabled)."\n";
-		      	foreach ($val[1] as $k => $v)
-		      	{
-		      		$disabled = false; 
-					if(isset($classes[$key][$k]) && !check_class($classes[$key][$k]))
-					{
-						$disabled = true; 
-						$v = $v.' ('.LAN_NOPERMISSION.')';
-					}
-					$text .= "\t\t".$this->option($v, $key.'_selected_'.$k, false, array('disabled' => $disabled))."\n";	
-		      	}
-		      	$text .= $this->optgroup_close()."\n";
-				
-			}		   
-		}
-
-
-		if ($ucOptions) // Userclass List. 
-		{
-	   		foreach ($ucOptions as $ucKey => $ucVal)
-			{
-				$text .= "\t".$this->optgroup_open($ucVal[0])."\n";
-	      		foreach ($ucVal[1] as $key => $val)
-	      		{
-	      			$text .= "\t\t".$this->option($val['userclass_name']['userclass_name'], $ucKey.'_selected_'.$val['userclass_name']['userclass_id'])."\n";
-	      		}
-	      		$text .= $this->optgroup_close()."\n";
+				return $this->text('searchquery', '', 50);
 			}
+			// This needs to be dynamic for the various form types, and be loaded via ajax.
 		}
 		
+		/**
+		 * Generates a batch options select component
+		 * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
+		 * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
+		 *
+		 * @param array $options associative array of option elements, keyed on the option value
+		 * @param array ucOptions [optional] associative array of userclass option groups to display, keyed on the option value prefix
+		 * @return string the HTML for the form component
+		 */
+		function batchoptions($options, $ucOptions = null)
+		{
+			$text = "
+         <div class='f-left'>
+         <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
+			".$this->select_open('execute_batch', array('class'=>'tbox select e-execute-batch', 'id'=>false))."
+				".$this->option('With selected...', '')."
+		";
 
-		$text .= "
+		
+			//used for getperms() check
+			$permissions = vartrue($options['__permissions'], array());
+			//used for check_classs() check
+			$classes = vartrue($options['__check_class'], array());
+			unset($options['__permissions'], $options['__check_class']);
+			
+			foreach ($options as $key=>$val)
+			{
+				if(isset($permissions[$key]) && !getperms($permissions[$key]))
+				{
+					continue;
+				}
+				$disabled = false;
+				if(isset($classes[$key]) && !is_array($classes[$key]) && !check_class($classes[$key]))
+				{
+					$disabled = true;
+				}
+				if(!is_array($val))
+				{
+					if($disabled)
+						$val = $val.' ('.LAN_NOPERMISSION.')';
+					$text .= "\t".$this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.$val, $key, false, array('disabled'=>$disabled))."\n";
+				}
+				else
+				{
+					if($disabled)
+						$val[0] = $val[0].' ('.LAN_NOPERMISSION.')';
+						
+					$text .= "\t".$this->optgroup_open($val[0], $disabled)."\n";
+					foreach ($val[1] as $k=>$v)
+					{
+						$disabled = false;
+						if(isset($classes[$key][$k]) && !check_class($classes[$key][$k]))
+						{
+							$disabled = true;
+							$v = $v.' ('.LAN_NOPERMISSION.')';
+						}
+						$text .= "\t\t".$this->option($v, $key.'_selected_'.$k, false, array('disabled'=>$disabled))."\n";
+					}
+					$text .= $this->optgroup_close()."\n";
+					
+				}
+			}
+
+			
+			if($ucOptions) // Userclass List.
+			{
+				foreach ($ucOptions as $ucKey=>$ucVal)
+				{
+					$text .= "\t".$this->optgroup_open($ucVal[0])."\n";
+					foreach ($ucVal[1] as $key=>$val)
+					{
+						$text .= "\t\t".$this->option($val['userclass_name']['userclass_name'], $ucKey.'_selected_'.$val['userclass_name']['userclass_id'])."\n";
+					}
+					$text .= $this->optgroup_close()."\n";
+				}
+			}
+
+			
+			$text .= "
 				".$this->select_close()."
 				".$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
 			</div><span class='clear'></span>
 		";
 		
-		return $text;
+			return $text;
+		}
 	}
-}
-
-class form {
-
-	function form_open($form_method, $form_action, $form_name = "", $form_target = "", $form_enctype = "", $form_js = "") {
-		$method = ($form_method ? "method='".$form_method."'" : "");
-		$target = ($form_target ? " target='".$form_target."'" : "");
-		$name = ($form_name ? " id='".$form_name."' " : " id='myform'");
-		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js.">";
+	
+	class form
+	{
+	
+		function form_open($form_method, $form_action, $form_name = "", $form_target = "", $form_enctype = "", $form_js = "")
+		{
+			$method = ($form_method ? "method='".$form_method."'" : "");
+			$target = ($form_target ? " target='".$form_target."'" : "");
+			$name = ($form_name ? " id='".$form_name."' " : " id='myform'");
+			return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js.">";
+		}
+		
+		function form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "",
+			 $form_js = "")
+		{
+			$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
+			$value = (isset($form_value) ? " value='".$form_value."'" : "");
+			$size = ($form_size ? " size='".$form_size."'" : "");
+			$maxlength = ($form_maxlength ? " maxlength='".$form_maxlength."'" : "");
+			$readonly = ($form_readonly ? " readonly='readonly'" : "");
+			$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
+			return "\n<input class='".$form_class."' type='text' ".$name.$value.$size.$maxlength.$readonly.$tooltip.$form_js." />";
+		}
+		
+		function form_password($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "",
+			 $form_js = "")
+		{
+			$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
+			$value = (isset($form_value) ? " value='".$form_value."'" : "");
+			$size = ($form_size ? " size='".$form_size."'" : "");
+			$maxlength = ($form_maxlength ? " maxlength='".$form_maxlength."'" : "");
+			$readonly = ($form_readonly ? " readonly='readonly'" : "");
+			$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
+			return "\n<input class='".$form_class."' type='password' ".$name.$value.$size.$maxlength.$readonly.$tooltip.$form_js." />";
+		}
+		
+		function form_button($form_type, $form_name, $form_value, $form_js = "", $form_image = "", $form_tooltip = "")
+		{
+			$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
+			$image = ($form_image ? " src='".$form_image."' " : "");
+			$tooltip = ($form_tooltip ? " title='".$form_tooltip."' " : "");
+			return "\n<input class='button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip." />";
+		}
+		
+		function form_textarea($form_name, $form_columns, $form_rows, $form_value, $form_js = "", $form_style = "", $form_wrap = "", $form_readonly = "",
+			 $form_tooltip = "")
+		{
+			$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
+			$readonly = ($form_readonly ? " readonly='readonly'" : "");
+			$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
+			$wrap = ($form_wrap ? " wrap='".$form_wrap."'" : "");
+			$style = ($form_style ? " style='".$form_style."'" : "");
+			return "\n<textarea class='tbox' cols='".$form_columns."' rows='".$form_rows."' ".$name.$form_js.$style.$wrap.$readonly.$tooltip.">".$form_value."</textarea>";
+		}
+		
+		function form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
+		{
+			$name = ($form_name ? " id='".$form_name.$form_value."' name='".$form_name."'" : "");
+			$checked = ($form_checked ? " checked='checked'" : "");
+			$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
+			return "\n<input type='checkbox' value='".$form_value."'".$name.$checked.$tooltip.$form_js." />";
+			
+		}
+		
+		function form_radio($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
+		{
+			$name = ($form_name ? " id='".$form_name.$form_value."' name='".$form_name."'" : "");
+			$checked = ($form_checked ? " checked='checked'" : "");
+			$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
+			return "\n<input type='radio' value='".$form_value."'".$name.$checked.$tooltip.$form_js." />";
+			
+		}
+		
+		function form_file($form_name, $form_size, $form_tooltip = "", $form_js = "")
+		{
+			$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
+			$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
+			return "<input type='file' class='tbox' size='".$form_size."'".$name.$tooltip.$form_js." />";
+		}
+		
+		function form_select_open($form_name, $form_js = "")
+		{
+			return "\n<select id='".$form_name."' name='".$form_name."' class='tbox' ".$form_js." >";
+		}
+		
+		function form_select_close()
+		{
+			return "\n</select>";
+		}
+		
+		function form_option($form_option, $form_selected = "", $form_value = "", $form_js = "")
+		{
+			$value = ($form_value !== FALSE ? " value='".$form_value."'" : "");
+			$selected = ($form_selected ? " selected='selected'" : "");
+			return "\n<option".$value.$selected." ".$form_js.">".$form_option."</option>";
+		}
+		
+		function form_hidden($form_name, $form_value)
+		{
+			return "\n<input type='hidden' id='".$form_name."' name='".$form_name."' value='".$form_value."' />";
+		}
+		
+		function form_close()
+		{
+			return "\n</form>";
+		}
 	}
-
-	function form_text($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {
-		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
-		$value = (isset($form_value) ? " value='".$form_value."'" : "");
-		$size = ($form_size ? " size='".$form_size."'" : "");
-		$maxlength = ($form_maxlength ? " maxlength='".$form_maxlength."'" : "");
-		$readonly = ($form_readonly ? " readonly='readonly'" : "");
-		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
-		return "\n<input class='".$form_class."' type='text' ".$name.$value.$size.$maxlength.$readonly.$tooltip.$form_js." />";
-	}
-
-	function form_password($form_name, $form_size, $form_value, $form_maxlength = FALSE, $form_class = "tbox", $form_readonly = "", $form_tooltip = "", $form_js = "") {
-		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
-		$value = (isset($form_value) ? " value='".$form_value."'" : "");
-		$size = ($form_size ? " size='".$form_size."'" : "");
-		$maxlength = ($form_maxlength ? " maxlength='".$form_maxlength."'" : "");
-		$readonly = ($form_readonly ? " readonly='readonly'" : "");
-		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
-		return "\n<input class='".$form_class."' type='password' ".$name.$value.$size.$maxlength.$readonly.$tooltip.$form_js." />";
-	}
-
-	function form_button($form_type, $form_name, $form_value, $form_js = "", $form_image = "", $form_tooltip = "") {
-		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
-		$image = ($form_image ? " src='".$form_image."' " : "");
-		$tooltip = ($form_tooltip ? " title='".$form_tooltip."' " : "");
-		return "\n<input class='button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip." />";
-	}
-
-	function form_textarea($form_name, $form_columns, $form_rows, $form_value, $form_js = "", $form_style = "", $form_wrap = "", $form_readonly = "", $form_tooltip = "") {
-		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
-		$readonly = ($form_readonly ? " readonly='readonly'" : "");
-		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
-		$wrap = ($form_wrap ? " wrap='".$form_wrap."'" : "");
-		$style = ($form_style ? " style='".$form_style."'" : "");
-		return "\n<textarea class='tbox' cols='".$form_columns."' rows='".$form_rows."' ".$name.$form_js.$style.$wrap.$readonly.$tooltip.">".$form_value."</textarea>";
-	}
-
-	function form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "") {
-		$name = ($form_name ? " id='".$form_name.$form_value."' name='".$form_name."'" : "");
-		$checked = ($form_checked ? " checked='checked'" : "");
-		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
-		return "\n<input type='checkbox' value='".$form_value."'".$name.$checked.$tooltip.$form_js." />";
-
-	}
-
-	function form_radio($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "") {
-		$name = ($form_name ? " id='".$form_name.$form_value."' name='".$form_name."'" : "");
-		$checked = ($form_checked ? " checked='checked'" : "");
-		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
-		return "\n<input type='radio' value='".$form_value."'".$name.$checked.$tooltip.$form_js." />";
-
-	}
-
-	function form_file($form_name, $form_size, $form_tooltip = "", $form_js = "") {
-		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
-		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
-		return "<input type='file' class='tbox' size='".$form_size."'".$name.$tooltip.$form_js." />";
-	}
-
-	function form_select_open($form_name, $form_js = "") {
-		return "\n<select id='".$form_name."' name='".$form_name."' class='tbox' ".$form_js." >";
-	}
-
-	function form_select_close() {
-		return "\n</select>";
-	}
-
-	function form_option($form_option, $form_selected = "", $form_value = "", $form_js = "") {
-		$value = ($form_value !== FALSE ? " value='".$form_value."'" : "");
-		$selected = ($form_selected ? " selected='selected'" : "");
-		return "\n<option".$value.$selected." ".$form_js.">".$form_option."</option>";
-	}
-
-	function form_hidden($form_name, $form_value) {
-		return "\n<input type='hidden' id='".$form_name."' name='".$form_name."' value='".$form_value."' />";
-	}
-
-	function form_close() {
-		return "\n</form>";
-	}
-}
-
-/*
-Usage
-echo $rs->form_open("post", e_SELF, "_blank");
-echo $rs->form_text("testname", 100, "this is the value", 100, 0, "tooltip");
-echo $rs->form_button("submit", "testsubmit", "SUBMIT!", "", "Click to submit");
-echo $rs->form_button("reset", "testreset", "RESET!", "", "Click to reset");
-echo $rs->form_textarea("textareaname", 10, 10, "Value", "overflow:hidden");
-echo $rs->form_checkbox("testcheckbox", 1, 1);
-echo $rs->form_checkbox("testcheckbox2", 2);
-echo $rs->form_hidden("hiddenname", "hiddenvalue");
-echo $rs->form_radio("testcheckbox", 1, 1);
-echo $rs->form_radio("testcheckbox", 1);
-echo $rs->form_file("testfile", "20");
-echo $rs->form_select_open("testselect");
-echo $rs->form_option("Option 1");
-echo $rs->form_option("Option 2");
-echo $rs->form_option("Option 3", 1, "defaultvalue");
-echo $rs->form_option("Option 4");
-echo $rs->form_select_close();
-echo $rs->form_close();
-*/
-
+	
+	/*
+	 Usage
+	 echo $rs->form_open("post", e_SELF, "_blank");
+	 echo $rs->form_text("testname", 100, "this is the value", 100, 0, "tooltip");
+	 echo $rs->form_button("submit", "testsubmit", "SUBMIT!", "", "Click to submit");
+	 echo $rs->form_button("reset", "testreset", "RESET!", "", "Click to reset");
+	 echo $rs->form_textarea("textareaname", 10, 10, "Value", "overflow:hidden");
+	 echo $rs->form_checkbox("testcheckbox", 1, 1);
+	 echo $rs->form_checkbox("testcheckbox2", 2);
+	 echo $rs->form_hidden("hiddenname", "hiddenvalue");
+	 echo $rs->form_radio("testcheckbox", 1, 1);
+	 echo $rs->form_radio("testcheckbox", 1);
+	 echo $rs->form_file("testfile", "20");
+	 echo $rs->form_select_open("testselect");
+	 echo $rs->form_option("Option 1");
+	 echo $rs->form_option("Option 2");
+	 echo $rs->form_option("Option 3", 1, "defaultvalue");
+	 echo $rs->form_option("Option 4");
+	 echo $rs->form_select_close();
+	 echo $rs->form_close();
+	 */
+	
 
 ?>
