@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.7/e107_admin/ugflag.php,v $
- |     $Revision: 1.12 $
- |     $Date: 2009-10-28 15:34:24 $
+ |     $Revision: 1.13 $
+ |     $Date: 2009-10-28 16:53:53 $
  |     $Author: marj_nl_fr $
  +----------------------------------------------------------------------------+
  */
@@ -84,7 +84,7 @@ $text .= '
 			<input type="radio" name="maintainance_flag" value="'.e_UC_ADMIN.'"'.
 			((varset($pref['maintainance_flag']) == e_UC_ADMIN) ? ' checked="checked"' : '')
 			.' />
-			'.LAN_ENABLED.'
+			'.UGFLAN_8.'
 			</label>
 			<br />
 ';
@@ -93,7 +93,7 @@ $text .= '
 			<input type="radio" name="maintainance_flag" value="'.e_UC_MAINADMIN.'"'.
 			((varset($pref['maintainance_flag']) == e_UC_MAINADMIN) ? ' checked="checked"' : '')
 			.' />
-			'.UGFLAN_8.'
+			'.UGFLAN_9.'
 			</label>
 			<br />
 ';
