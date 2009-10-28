@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.59 $
- * $Date: 2009-10-23 18:14:42 $
- * $Author: secretr $
+ * $Revision: 1.60 $
+ * $Date: 2009-10-28 14:13:44 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -840,13 +840,13 @@ class e107
 	/**
 	 * Get core template. Use this method for templates, which are following the 
 	 * new template standards:
-	 * - template variables naming convetnions
+	 * - template variables naming conventions
 	 * - one array variable per template only
 	 * - theme override is made now by current_theme/templates/ folder
 	 * 
 	 * <br><br>Results are cached (depending on $id and $override so it's safe to use
 	 * this method e.g. in loop for retrieving a template string. If template (or template key) is not 
-	 * found, <b>null</b> is returned.<br><br>
+	 * found, <b>NULL</b> is returned.<br><br>
 	 * 
 	 * Example usage: <code>e107::getCoreTemplate('user', 'short_start');</code>
 	 * Will search for:
@@ -855,7 +855,7 @@ class e107
 	 * - $USER_TEMPLATE array which contains all user templates
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
 	 * 
-	 * @param string $id
+	 * @param string $id - file prefix, e.g. user for user_template.php
 	 * @param string|null $key
 	 * @param boolean $override
 	 * 
@@ -874,13 +874,13 @@ class e107
 	/**
 	 * Get plugin template. Use this method for plugin templates, which are following the 
 	 * new template standards:
-	 * - template variables naming convetnions
+	 * - template variables naming conventions
 	 * - one array variable per template only
 	 * - theme override is made now by current_theme/templates/plugin_name/ folder
 	 * 
 	 * <br><br>Results are cached (depending on $id and $override so it's safe to use
 	 * this method e.g. in loop for retrieving a template string. If template (or template key) is not 
-	 * found, <b>null</b> is returned.<br><br>
+	 * found, <b>NULL</b> is returned.<br><br>
 	 * 
 	 * Example usage: <code>e107::getTemplate('user', 'short_start');</code>
 	 * Will search for:
@@ -890,7 +890,7 @@ class e107
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
 	 * 
 	 * @param string $plug_name
-	 * @param string $id
+	 * @param string $id - file prefix, e.g. calendar for calendar_template.php
 	 * @param string|null $key
 	 * @param boolean $override
 	 * 
