@@ -3,20 +3,20 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Copyright (C) 2001-2009 e107 Inc
 |     http://e107.org
-|     jalist@e107.org
+|
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-08-23 10:57:51 $
+|     $Revision: 1.9 $
+|     $Date: 2009-10-28 14:14:10 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 global $tp;
 $login_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
@@ -132,8 +132,9 @@ SC_END
 
 SC_BEGIN LM_MAINTENANCE
 global $pref;
-if(ADMIN == TRUE){
-	return ($pref['maintainance_flag'] == 1 ? LOGIN_MENU_L10 : '' );
+if(ADMIN && varset($pref['maintainance_flag']))
+{
+	return LOGIN_MENU_L10;
 }
 return '';
 SC_END
