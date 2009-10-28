@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
  * e107 website system
  *
@@ -9,38 +9,38 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ugflag.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-09-27 21:18:37 $
- * $Author: e107coders $
+ * $Revision: 1.6 $
+ * $Date: 2009-10-28 16:57:51 $
+ * $Author: marj_nl_fr $
  *
-*/
-require_once("../class2.php");
-if (!getperms("9"))
+ */
+require_once ("../class2.php");
+if(!getperms("9"))
 {
 	header("location:".e_BASE."index.php");
-	exit;
+	exit();
 }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
-require_once(e_HANDLER."form_handler.php");
+require_once (e_HANDLER."form_handler.php");
 require_once (e_HANDLER."message_handler.php");
 $emessage = eMessage::getInstance();
 $emessage_method = e_AJAX_REQUEST ? 'add' : 'addSession';
 
 $frm = new e_form(true);
 
-if (isset($_POST['updatesettings']))
+if(isset($_POST['updatesettings']))
 {
 	$changed = FALSE;
 	$temp = intval($_POST['maintainance_flag']);
-	if ($pref['maintainance_flag'] != $temp)
+	if($pref['maintainance_flag'] != $temp)
 	{
 		$pref['maintainance_flag'] = $temp;
 		$changed = TRUE;
 	}
 	$temp = $tp->toDB($_POST['maintainance_text']);
-	if ($pref['maintainance_text'] != $temp)
+	if($pref['maintainance_text'] != $temp)
 	{
 		$pref['maintainance_text'] = $temp;
 		$changed = TRUE;
@@ -50,25 +50,26 @@ if (isset($_POST['updatesettings']))
 	if(getperms('0') && $pref['main_admin_only'] != $temp)
 	{
 		$pref['main_admin_only'] = $temp;
-		$changed = TRUE;	
+		$changed = TRUE;
 	}
 	
-	if ($changed)
+	if($changed)
 	{
-		$admin_log->log_event(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01',$pref['maintainance_text'],E_LOG_INFORMATIVE,'');
+		$admin_log->log_event(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
 		save_prefs();
 		$emessage->$emessage_method(UGFLAN_1, E_MESSAGE_SUCCESS);
 	}
-	else $emessage->$emessage_method(UGFLAN_7);
-
+	else
+		$emessage->$emessage_method(UGFLAN_7);
+		
 	if(!e_AJAX_REQUEST)
 	{
 		header("location:".e_SELF);
-		exit;
+		exit();
 	}
 }
 
-require_once("auth.php");
+require_once ("auth.php");
 
 $text = "
 	<form method='post' action='".e_SELF."' id='core-ugflag-form'>
@@ -79,32 +80,22 @@ $text = "
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
-				<tbody>
+				<tbody>";
+				
+$elements = array(e_UC_PUBLIC=>LAN_DISABLED,
+	 e_UC_ADMIN=>UGFLAN_8,
+	 e_UC_MAINADMIN=>UGFLAN_9);
+	 
+$text .= "
 					<tr>
 						<td class='label'>".UGFLAN_2.": </td>
 						<td class='control'>
-							<div class='auto-toggle-area autocheck'>
-								".$frm->checkbox('maintainance_flag', '1', $pref['maintainance_flag'])."
-							</div>
+							".$frm->radio_multi('maintainance_flag', $elements, $pref['maintainance_flag'], TRUE)."
 						</td>
 					</tr>";
+
 					
-					if(getperms('0'))
-					{
-						$text .= "<tr>
-						<td class='label'>".UGFLAN_8.": 
-						</td>
-						<td class='control'>
-							<div class='auto-toggle-area autocheck'>
-								".$frm->checkbox('main_admin_only', '1', $pref['main_admin_only'])."
-							</div>
-							<div class='field-help'>".UGFLAN_9."</div>
-						</td>
-						</tr>";
-					}
-					
-					
-					$text .= "
+$text .= "
 					<tr>
 						<td class='label'>".UGFLAN_5."
 							
@@ -130,8 +121,8 @@ if(!e_AJAX_REQUEST)
 	echo "<div id='ajax-container'>\n";
 	$e107->ns->tablerender(UGFLAN_4, $emessage->render().$text, 'core-ugflag');
 	echo "\n</div>";
-	require_once(e_ADMIN."footer.php");
-	exit;
+	require_once (e_ADMIN."footer.php");
+	exit();
 }
 
 $e107->ns->tablerender(UGFLAN_4, $emessage->render().$text, 'core-ugflag');
@@ -167,7 +158,7 @@ function headerjs()
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 	";
-
+	
 	return $ret;
 }
 ?>

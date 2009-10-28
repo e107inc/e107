@@ -1,21 +1,21 @@
 <?php
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     �Steve Dunstan 2001-2002
- |     http://e107.org
- |     jalist@e107.org
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
- |     $Revision: 1.3 $
- |     $Date: 2009-10-20 03:59:20 $
- |     $Author: e107coders $
- +----------------------------------------------------------------------------+
- */
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     Copyright (C) 2001-2009 e107 Inc
+|     http://e107.org
+|
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2009-10-28 16:57:51 $
+|     $Author: marj_nl_fr $
++----------------------------------------------------------------------------+
+*/
 
 class redirection
 {
@@ -23,10 +23,11 @@ class redirection
 		var $self_exceptions = array();
 		
 		var $page_exceptions = array();
+
 		/**
-		 *	Manage Member-Only Mode.
+		 * Manage Member-Only Mode.
+		 * @return void
 		 */
-		
 		function __construct()
 		{
 			$this->self_exceptions = array(SITEURL.e_SIGNUP, SITEURL.'index.php', SITEURL.'fpw.php', SITEURL.e_LOGIN, SITEURL.'membersonly.php');
@@ -35,7 +36,7 @@ class redirection
 		
 		/**
 		 * Perform re-direction when Maintenance Mode is active. 
-		 * @return 
+		 * @return void
 		 */
 		public function checkMaintenance()
 		{	
@@ -66,8 +67,9 @@ class redirection
 		} 
 		
 		
-		/** check if user is logged in.
-		 *
+		/**
+		 * check if user is logged in.
+		 * @return void
 		 */
 		
 		public function checkMembersOnly()
@@ -112,9 +114,9 @@ class redirection
 			$this->redirect(e_HTTP.'membersonly.php');
 		} 
 		
-		/** Store the current URL so that it can retrieved after login. 
-		 * @param
-		 * @return
+		/**
+		 * Store the current URL so that it can retrieved after login.
+		 * @return void
 		 */
 		
 		private function saveMembersOnlyUrl()
@@ -126,9 +128,9 @@ class redirection
 		} 
 		
 		
-		/** Restore the previously saved URL, and redirect the User to it after login. 
-		 * @param
-		 * @return
+		/**
+		 * Restore the previously saved URL, and redirect the User to it after login.
+		 * @return void
 		 */
 		
 		private function restoreMembersOnlyUrl()
@@ -148,4 +150,3 @@ class redirection
 				exit();
 		} 
 }
-?>
