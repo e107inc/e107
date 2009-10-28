@@ -3,21 +3,21 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Copyright (C) 2001-2009 e107 Inc
 |     http://e107.org
-|     jalist@e107.org
+|
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2008-05-16 19:40:18 $
-|     $Author: e107steved $
+|     $Revision: 1.63 $
+|     $Date: 2009-10-28 14:00:42 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 
 /**
  * Core e107 class
