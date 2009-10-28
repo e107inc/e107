@@ -48,7 +48,10 @@ if (!function_exists('multiarray_sort')) {
            $sort_values[$i] = $arr[$key];
         }
 
-        if(!$natsort) ($order=='asc')? asort($sort_values) : arsort($sort_values);
+        if(!$natsort) 
+        {
+        	($order=='asc')? asort($sort_values) : arsort($sort_values);
+        }
         else
         {
              $case ? natsort($sort_values) : natcasesort($sort_values);
@@ -417,52 +420,132 @@ class e_admin_request
  */
 class e_admin_response
 {
+	/**
+	 * Body segments
+	 *
+	 * @var array
+	 */
 	protected $_body = array();
+	
+	/**
+	 * Title segments
+	 *
+	 * @var unknown_type
+	 */
 	protected $_title = array();
+	
+	/**
+	 * e107 meta title
+	 *
+	 * @var array
+	 */
 	protected $_e_PAGETITLE = array();
+	
+	/**
+	 * e107 meta description
+	 *
+	 * @var array
+	 */
 	protected $_META_DESCRIPTION = array();
+	
+	/**
+	 * e107 meta keywords
+	 *
+	 * @var array
+	 */
 	protected $_META_KEYWORDS = array();
+	
+	/**
+	 * Render mods
+	 *
+	 * @var array
+	 */
 	protected $_render_mod = array();
+	
+	/**
+	 * Meta title segment description
+	 *
+	 * @var string
+	 */
 	protected $_meta_title_separator = ' - ';
+	
+	/**
+	 * Title segment separator
+	 *
+	 * @var string
+	 */
 	protected $_title_separator = ' &raquo; ';
 	
+	/**
+	 * Constructor
+	 *
+	 */
 	public function __construct()
 	{
 		$this->__render_mod['default'] = 'admin_page';
 	}
 
-	function setBody($content, $name = 'default')
+	/**
+	 * Set body segments for a namespace
+	 *
+	 * @param string $content
+	 * @param string $namespace segment namesapce
+	 * @return e_admin_response
+	 */
+	function setBody($content, $namespace = 'default')
 	{
-		$this->_body[$name] = $content;
+		$this->_body[$namespace] = $content;
 		return $this;
 	}
 
-	function appendBody($content, $name = 'default')
+	/**
+	 * Append body segment to a namespace
+	 *
+	 * @param string $content
+	 * @param string $namespace segment namesapce
+	 * @return e_admin_response
+	 */
+	function appendBody($content, $namespace = 'default')
 	{
-		if(!isset($this->_body[$name]))
+		if(!isset($this->_body[$namespace]))
 		{
-			$this->_body[$name] = array();
+			$this->_body[$namespace] = array();
 		}
-		$this->_body[$name][] = $content;
+		$this->_body[$namespace][] = $content;
 		return $this;
 	}
 
-	function prependBody($content, $name = 'default')
+	/**
+	 * Prepend body segment to a namespace
+	 *
+	 * @param string $content
+	 * @param string $namespace segment namespace
+	 * @return e_admin_response
+	 */
+	function prependBody($content, $namespace = 'default')
 	{
-		if(!isset($this->_body[$name]))
+		if(!isset($this->_body[$namespace]))
 		{
-			$this->_body[$name] = array();
+			$this->_body[$namespace] = array();
 		}
-		$this->_body[$name] = array_merge(array($content), $this->_body[$name]);
+		$this->_body[$namespace] = array_merge(array($content), $this->_body[$namespace]);
 		return $this;
 	}
-
-	function getBody($name = 'default', $reset = false, $glue = false)
+	
+	/**
+	 * Get body segments from a namespace
+	 *
+	 * @param string $namespace segment namesapce
+	 * @param boolean $reset reset segment namespace
+	 * @param string|boolean $glue if false return array, else return string
+	 * @return string|array
+	 */
+	function getBody($namespace = 'default', $reset = false, $glue = '')
 	{
-		$content = varset($this->_body[$name]);
+		$content = varset($this->_body[$namespace]);
 		if($reset)
 		{
-			$this->_body[$name] = array();
+			$this->_body[$namespace] = array();
 		}
 		if(is_bool($glue))
 		{
@@ -471,45 +554,80 @@ class e_admin_response
 		return implode($glue, $content);
 	}
 
-	function appendTitle($title, $name = 'default')
+	/**
+	 * Set title segments for a namespace
+	 *
+	 * @param string $title
+	 * @param string $namespace
+	 * @return e_admin_response
+	 */
+	function setTitle($title, $namespace = 'default')
+	{
+		$this->_title[$namespace] = array($title);
+		return $this;
+	}
+
+	/**
+	 * Append title segment to a namespace
+	 *
+	 * @param string $title
+	 * @param string $namespace segment namesapce
+	 * @return e_admin_response
+	 */
+	function appendTitle($title, $namespace = 'default')
 	{
 		if(empty($title))
 		{
 			return $this;
 		}
-		if(!isset($this->_title[$name]))
+		if(!isset($this->_title[$namespace]))
 		{
-			$this->_title[$name] = array();
+			$this->_title[$namespace] = array();
 		}
-		$this->_title[$name][] = $title;
+		$this->_title[$namespace][] = $title;
 		return $this;
 	}
 
-	function prependTitle($title, $name = 'default')
+	/**
+	 * Prepend title segment to a namespace
+	 *
+	 * @param string $title
+	 * @param string $namespace segment namespace
+	 * @return e_admin_response
+	 */
+	function prependTitle($title, $namespace = 'default')
 	{
 		if(empty($title))
 		{
 			return $this;
 		}
-		if(!isset($this->_title[$name]))
+		if(!isset($this->_title[$namespace]))
 		{
-			$this->_title[$name] = array();
+			$this->_title[$namespace] = array();
 		}
-		$this->_title[$name] = array_merge(array($title), $this->_title[$name]);
+		$this->_title[$namespace] = array_merge(array($title), $this->_title[$namespace]);
 		return $this;
 	}
 
-	function getTitle($name = 'default', $reset = false, $glue = false)
+	/**
+	 * Get title segments from namespace
+	 *
+	 * @param string $namespace
+	 * @param boolean $reset
+	 * @param boolean|string $glue
+	 * @return unknown
+	 */
+	function getTitle($namespace = 'default', $reset = false, $glue = ' - ')
 	{
 		$content = array();
-		if(!isset($this->_title[$name]) && is_array($this->_title[$name]))
+		if(!isset($this->_title[$namespace]) && is_array($this->_title[$namespace]))
 		{
-			$content = $this->_title[$name];
+			$content = $this->_title[$namespace];
 			
 		}
 		if($reset)
 		{
-			unset($this->_title[$name]);
+			unset($this->_title[$namespace]);
 		}
 		if(is_bool($glue) || empty($glue))
 		{
@@ -519,22 +637,36 @@ class e_admin_response
 		return implode($glue, $content);
 	}
 
-	function setRenderMod($render_mod, $name = 'default')
+	/**
+	 * Set render mode for a namespace
+	 *
+	 * @param string $render_mod
+	 * @param string $namespace
+	 * @return e_admin_response
+	 */
+	function setRenderMod($render_mod, $namespace = 'default')
 	{
-		$this->_render_mod[$name] = $render_mod;
+		$this->_render_mod[$namespace] = $render_mod;
 		return $this;
 	}
 
-	function getRenderMod($name = 'default')
+	/**
+	 * Set render mode for namespace
+	 *
+	 * @param string $namespace
+	 * @return string
+	 */
+	function getRenderMod($namespace = 'default')
 	{
-		return varset($this->_render_mod[$name], null);
+		return varset($this->_render_mod[$namespace], null);
 	}
 
 	/**
-	 * Add meta title, description and keywords
+	 * Add meta title, description and keywords segments
 	 *
 	 * @param string $meta property name
 	 * @param string $content meta content
+	 * @return e_admin_response
 	 */
 	function addMetaData($meta, $content)
 	{
@@ -547,19 +679,40 @@ class e_admin_response
 		return $this;
 	}
 	
+	/**
+	 * Add meta title segment
+	 *
+	 * @param string $title
+	 * @return e_admin_response
+	 */
 	function addMetaTitle($title)
 	{
-		return $this->addMetaData('e_PAGETITLE', $title);
+		$this->addMetaData('e_PAGETITLE', $title);
+		return $this;
 	}
 	
+	/**
+	 * Add meta description segment
+	 *
+	 * @param string $description
+	 * @return e_admin_response
+	 */
 	function addMetaDescription($description)
 	{
-		return $this->addMetaData('META_DESCRIPTION', $description);
+		$this->addMetaData('META_DESCRIPTION', $description);
+		return $this;
 	}
 	
-	function addMetaKeywords($keywords)
+	/**
+	 * Add meta keywords segment
+	 *
+	 * @param string $keyword
+	 * @return e_admin_response
+	 */
+	function addMetaKeywords($keyword)
 	{
-		return $this->addMetaData('META_KEYWORDS', $keywords);
+		$this->addMetaData('META_KEYWORDS', $keyword);
+		return $this;
 	}
 
 	/**
@@ -570,7 +723,7 @@ class e_admin_response
 	function sendMeta()
 	{
 		//HEADERF already included or meta content already sent
-		if(e_AJAX_REQUEST || defined('USER_AREA') || defined('e_PAGETITLE'))
+		if(e_AJAX_REQUEST || defined('HEADER_INIT') || defined('e_PAGETITLE'))
 			return $this;
 			
 		if(!defined('e_PAGETITLE') && !empty($this->_e_PAGETITLE))
@@ -584,12 +737,17 @@ class e_admin_response
 		}
 		if(!defined('META_KEYWORDS') && !empty($this->_META_KEYWORDS))
 		{
-			define('META_KEYWORDS', implode(',', $this->_META_KEYWORDS));
+			define('META_KEYWORDS', implode(', ', $this->_META_KEYWORDS));
 		}
 		return $this;
 	}
 	
-	
+	/**
+	 * Add content segment to the header namespace
+	 *
+	 * @param string $content
+	 * @return e_admin_response
+	 */
 	function addHeaderContent($content)
 	{
 		$this->appendBody($content, 'header_content');
@@ -597,28 +755,20 @@ class e_admin_response
 	}
 	
 	/**
-	 * Get page Header content
+	 * Get page header namespace content segments
 	 *
 	 * @param boolean $reset
 	 * @param boolean $glue
 	 * @return string
 	 */
-	function getHeaderContent($reset = true, $glue = false)
+	function getHeaderContent($reset = true, $glue = "\n\n")
 	{
 		return $this->getBody('header_content', $reset, $glue);
-	}
-
-
-	function setTitle($title, $name = 'default')
-	{
-		
-		$this->_title[$name] = array($title);
-		return $this;
 	}
 	
 	/**
 	 * Switch to iframe mod
-	 * FIXME - implement e_IFRAME
+	 * FIXME - implement e_IFRAME to frontend - header_default.php
 	 *
 	 * @return e_admin_response
 	 */
@@ -628,6 +778,11 @@ class e_admin_response
 		$HEADER = $FOOTER = ''; 
 		$CUSTOMHEADER = $CUSTOMFOOTER = array();
 		
+		// New
+		if(!defined('e_IFRAME'))
+		{
+			define('e_IFRAME', true);
+		}
 		return $this;
 	}
 
@@ -635,7 +790,7 @@ class e_admin_response
 	 * Send Response Output
 	 *
 	 * @param string $name segment
-	 * @param array $options valid keys are: messages|render|meta|return|raw
+	 * @param array $options valid keys are: messages|render|meta|return|raw|ajax
 	 * @return mixed
 	 */
 	function send($name = 'default', $options = array())
@@ -651,47 +806,64 @@ class e_admin_response
 			'render' => true, 
 			'meta' => false, 
 			'return' => false, 
-			'raw' => false
+			'raw' => false,
+			'ajax' => false
 		), $options);
 		
 		$content = $this->getBody($name, true);
 		$title = $this->getTitle($name, true);
-		$return = vartrue($options['return']);
+		$return = $options['return'];
 		
-		if(vartrue($options['messages']))
+		if($options['ajax'] || e_AJAX_REQUEST)
+		{
+			$type = $options['ajax'] && is_string($options['ajax']) ? $options['ajax'] : '';
+			$this->getJsHelper()->sendResponse($type);
+		}
+		
+		if($options['messages'])
 		{
 			$content = e107::getMessage()->render().$content;
 		}
 		
-		if(vartrue($options['meta']))
+		if($options['meta'])
 		{
 			$this->sendMeta();
 		}
 		
 		// raw output expected - force return array
-		if(vartrue($options['raw']))
+		if($options['raw'])
 		{
 			return array($title, $content, $this->getRenderMod($name));
 		}
 		
-		//render disabled by the controller or ajax request
-		if(!$this->getRenderMod($name) || e_AJAX_REQUEST)
+		//render disabled by the controller
+		if(!$this->getRenderMod($name))
 		{
 			$options['render'] = false;
 		}
 
-		if(vartrue($options['render']))
+		if($options['render'])
 		{
-			return e107::getRender()->tablerender($title, $content, $this->getRenderMod($name), varset($options['return']));
+			return e107::getRender()->tablerender($title, $content, $this->getRenderMod($name), $return);
 		}
 		
-		if(varset($options['return']))
+		if($return)
 		{
 			return $content;
 		}
 		
 		print($content);
 		return '';
+	}
+	
+	/**
+	 * Get JS Helper instance
+	 *
+	 * @return e_jshelper
+	 */
+	public function getJsHelper()
+	{
+		return e107::getSingleton('e_jshelper', true, 'admin_response');
 	}
 }
 
@@ -832,7 +1004,8 @@ class e_admin_dispatcher
 		//search for $actionName.'Observer' method. Additional $actionName.$triggerName.'Trigger' methods will be called as well
 		$this->getController()->dispatchObserver();
 		
-		//search for $actionName.'Header' method, js manager should be used inside
+		//search for $actionName.'Header' method, js manager should be used inside for sending JS to the page,
+		// meta information should be created there as well
 		if($run_header)
 		{
 			$this->getController()->dispatchHeader();
@@ -851,7 +1024,7 @@ class e_admin_dispatcher
 	 * - raw: return array(title, content, render mode)
 	 * - ajax: force ajax output (and exit)
 	 * 
-	 * @param string|array $return_type expected string values: render|render_out|response|raw|ajax
+	 * @param string|array $return_type expected string values: render|render_out|response|raw|ajax[_text|_json|_xml]
 	 * @return mixed
 	 */
 	public function runPage($return_type = 'render')
@@ -863,16 +1036,6 @@ class e_admin_dispatcher
 		}
 		switch($return_type)
 		{
-			case 'render':
-				$options = array(
-					'messages' => true, 
-					'render' => true, 
-					'meta' => false, 
-					'return' => false, 
-					'raw' => false
-				);
-			break;
-		
 			case 'render_return':
 				$options = array(
 					'messages' => true, 
@@ -894,19 +1057,32 @@ class e_admin_dispatcher
 			break;
 
 			case 'ajax':
+			case 'ajax_text':
+			case 'ajax_xml';
+			case 'ajax_json';
 				$options = array(
 					'messages' => false, 
 					'render' => false, 
 					'meta' => false, 
 					'return' => false, 
 					'raw' => false,
-					'ajax' => true //TODO - ajax
+					'ajax' => str_replace(array('ajax_', 'ajax'), array('', 'text'), $return_type)
 				);
 			break;
 		
 			case 'response':
-			default:
 				return $response;
+			break;
+			
+			case 'render':
+			default:
+				$options = array(
+					'messages' => true, 
+					'render' => true, 
+					'meta' => false, 
+					'return' => false, 
+					'raw' => false
+				);
 			break;
 		}
 		return $response->send('default', $options);
@@ -1213,6 +1389,64 @@ class e_admin_controller
 	}
 	
 	/**
+	 * Add page title, response proxy method
+	 *
+	 * @param string $title
+	 * @return e_admin_controller
+	 */
+	public function addTitle($title)
+	{
+		$this->getResponse()->appendTitle($title);
+		return $this;
+	}
+	
+	/**
+	 * Add page meta title, response proxy method.
+	 * Should be called before header.php
+	 *
+	 * @param string $title
+	 * @return e_admin_controller
+	 */
+	public function addMetaTitle($title)
+	{
+		$this->getResponse()->addMetaTitle($title);
+		return $this;
+	}
+	
+	/**
+	 * Add header content, response proxy method
+	 * Should be called before header.php
+	 * 
+	 * @param string $content
+	 * @return e_admin_controller
+	 */
+	public function addHeader($content)
+	{
+		$this->getResponse()->addHeaderContent($content);
+		return $this;
+	}
+	
+	/**
+	 * Get header content, response proxy method
+	 *
+	 * @return string
+	 */
+	public function getHeader()
+	{
+		return $this->getResponse()->getHeaderContent();
+	}
+	
+	/**
+	 * Get response owned JS Helper instance, response proxy method
+	 *
+	 * @return e_jshelper
+	 */
+	public function getJsHelper()
+	{
+		return $this->getResponse()->getJsHelper();
+	}
+	
+	/**
 	 * Dispatch observer, check for triggers
 	 * 
 	 * @param string $action [optional]
@@ -1294,6 +1528,9 @@ class e_admin_controller
 		{
 			$this->$actionHeaderName();
 		}
+		
+		//send meta data
+		$this->getResponse()->sendMeta();
 		return $this;
 	}
 	
@@ -1321,12 +1558,34 @@ class e_admin_controller
 			e107::getMessage()->add('Action '.$actionName.' no found!', E_MESSAGE_ERROR);
 		}
 		
-		// get output TODO - response handler
 		ob_start(); //catch any output
 		$ret = $this->$actionName();
+		
+		//Ajax XML/JSON communictaion
+		if(e_AJAX_REQUEST && is_array($ret))
+		{
+			$response_type = $this->getParam('ajax_response', 'xml');
+			ob_clean();
+			$js_helper = $response->getJsHelper();
+			foreach ($ret as $act => $data) 
+			{
+				$js_helper->addResponseAction($act, $data);
+			}
+			$js_helper->sendResponse($response_type);
+		}
+		
 		$ret .= ob_get_clean();
-
-		$response->appendBody($ret);
+		
+		// Ajax text response
+		if(e_AJAX_REQUEST)
+		{
+			$response_type = $this->getParam('ajax_response', 'text');
+			$response->getJsHelper()->addTextResponse($ret)->sendResponse($response_type);
+		}
+		else
+		{
+			$response->appendBody($ret);
+		}
 		
 		return $response;
 	}
