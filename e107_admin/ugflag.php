@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ugflag.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-10-28 16:57:51 $
+ * $Revision: 1.7 $
+ * $Date: 2009-10-28 20:26:04 $
  * $Author: marj_nl_fr $
  *
  */
@@ -94,7 +94,7 @@ $text .= "
 						</td>
 					</tr>";
 
-					
+//TODO multilanguage pref					
 $text .= "
 					<tr>
 						<td class='label'>".UGFLAN_5."
