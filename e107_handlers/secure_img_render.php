@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2007-11-13 13:48:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2009-10-28 14:23:40 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
