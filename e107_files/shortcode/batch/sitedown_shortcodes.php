@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,21 +11,24 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/sitedown_shortcodes.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-06-30 04:16:39 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2009-10-28 14:21:44 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 include_once(e_HANDLER.'shortcode_handler.php');
 $sitedown_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 
 SC_BEGIN SITEDOWN_TABLE_MAINTAINANCETEXT
-global $pref,$tp;
-if($pref['maintainance_text']) {
+global $pref, $tp;
+if($pref['maintainance_text'])
+{
 	return $tp->toHTML($pref['maintainance_text'], TRUE, 'parse_sc', 'admin');
-} else {
+}
+else
+{
 	return "<b>- ".SITENAME." ".LAN_SITEDOWN_00." -</b><br /><br />".LAN_SITEDOWN_01 ;
 }
 SC_END
