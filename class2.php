@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.380 $
-|     $Date: 2009-09-29 09:25:35 $
+|     $Revision: 1.381 $
+|     $Date: 2009-10-28 15:34:23 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -778,9 +778,15 @@ $sql->db_Delete("tmp", "tmp_time < ".(time() - 300)." AND tmp_ip!='data' AND tmp
 
 
 
-if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") === FALSE && strpos(e_SELF, "sitedown.php") === FALSE) {
-	header("Location: ".SITEURL."sitedown.php");
-	exit();
+if (varset($pref['maintainance_flag'])
+ && strpos(e_SELF, 'admin.php') === FALSE && strpos(e_SELF, 'sitedown.php') === FALSE)
+{
+	if(!ADMIN || ($pref['maintainance_flag'] == e_UC_MAINADMIN && !getperms('0')))
+	{
+		// 307 Temporary Redirect
+		header('Location: '.SITEURL.'sitedown.php', TRUE, 307);
+		exit();
+	}
 }
 
 $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
