@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/sitedown.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-10-28 14:14:11 $
+|     $Revision: 1.7 $
+|     $Date: 2009-10-28 15:37:46 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (!varset($pref['maintainance_flag']))
 	exit();
 }
 
-header('Content-type: text/html; charset=utf-8', TRUE);
+header('Content-type: text/html; charset=utf-8');
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
