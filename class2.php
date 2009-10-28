@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.150 $
-* $Date: 2009-10-20 16:00:38 $
-* $Author: secretr $
+* $Revision: 1.151 $
+* $Date: 2009-10-28 15:42:16 $
+* $Author: marj_nl_fr $
 *
 */
 //
@@ -962,9 +962,9 @@ if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || $pref['mai
 {
 	//XXX move force_userupdate() also?
 	require_once(e_HANDLER."redirection_class.php");
-	$red = new redirection;
-	$red->checkMaintenance();
-	$red->checkMembersOnly();
+	$redirect = new redirection;
+	$redirect->checkMaintenance();
+	$redirect->checkMembersOnly();
 }
 
 // ------------------------------------------------------------------------
