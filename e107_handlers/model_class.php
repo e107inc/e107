@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-10-27 17:49:12 $
+ * $Revision: 1.26 $
+ * $Date: 2009-10-28 17:05:34 $
  * $Author: secretr $
 */
 
@@ -87,12 +87,22 @@ class e_model
 	}
 	
     /**
-     * Predefined data fields in format key => type
+     * Get data fields array
      * @return array
      */
     public function getDataFields()
     {
     	return $this->_data_fields;
+    }
+	
+    /**
+     * Set Predefined data fields in format key => type
+     * @return e_model
+     */
+    public function setDataFields($data_fields)
+    {
+    	$this->_data_fields = $data_fields;
+		return $this;
     }
     
     /**
@@ -977,6 +987,18 @@ class e_admin_model extends e_model
     {
     	return $this->_FIELD_TYPES;
     }
+	
+    /**
+     * Predefined data fields types, passed to DB handler
+     * 
+     * @param array $field_types
+     * @return e_admin_model
+     */
+    public function setFieldTypes($field_types)
+    {
+    	$this->_FIELD_TYPES = $field_types;
+		return $this;
+    }
     
     /**
      * Retrieves data from the object ($_posted_data) without
@@ -1525,6 +1547,36 @@ class e_admin_model extends e_model
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 			}
 		}
+		
+		return $res;
+    }
+	
+    /**
+     * Delete DB data
+     * 
+     * @param boolean $force force query even if $data_has_changed is false
+     * @param boolean $session_messages to use or not session to store system messages
+     */
+    public function dbDelete($session_messages = false)
+    {
+    	$this->_db_errno = 0;
+		if(!$this->getId())
+		{
+			$this->addMessageError('Record not found', $session_messages); //TODO - Lan
+			return 0;
+		}
+		$res = e107::getDb()->db_Delete($this->getModelTable(), $this->getFieldIdName().'='.intval($this->getId()));
+		if(!$res)
+		{
+			$this->_db_errno = e107::getDb()->getLastErrorNumber();
+			if($this->_db_errno)
+			{
+				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+			}
+		}
+		
+		return $res;
     }
 	
 	/**
@@ -1637,6 +1689,274 @@ class e_admin_model extends e_model
 	  	}
 		
 		return null;
+	}
+}
+
+/**
+ * Model collection handler
+ */
+class e_tree_model extends e_model 
+{
+	/**
+	 * @var array
+	 */
+	protected $_params = array();
+	
+	/**
+	 * Current model DB table, used in all db calls
+	 * This can/should be overwritten by extending the class
+	 * 
+	 * @var string
+	 */
+	protected $_db_table;
+	
+	/**
+	 * All records (no limit) cache
+	 * 
+	 * @var string
+	 */
+	protected $_total = 0;
+	
+	public function getTotal()
+	{
+		return $this->_total;
+	}
+	
+	public function setTotal($num)
+	{
+		$this->_total = $num;
+		return $this;
+	}
+	
+	/**
+	 * Set table name
+	 * @param object $table
+	 * @return e_admin_tree_model
+	 */
+	public function setModelTable($table)
+	{
+		$this->_db_table = $table;
+		return $this;
+	}
+	
+	/**
+	 * Get table name
+	 * @return string
+	 */
+	public function getModelTable()
+	{
+		return $this->_db_table;
+	}
+	
+	/**
+	 * Constructor
+	 *
+	 */
+	function __construct($tree_data = array())
+	{
+		if($tree_data)
+		{
+			$this->setTree($tree_data);
+		}
+	}
+	
+	/**
+	 * Set array of models
+	 * @return array
+	 */
+	function getTree($force = false)
+	{
+		return $this->get('__tree');
+	}
+	
+	/**
+	 * Set array of models
+	 * @return e_tree_model
+	 */
+	function setTree($tree_data, $force = false)
+	{
+		if($force || !$this->is('__tree'))
+		{
+			$this->set('__tree', $tree_data);
+		}
+
+		return $this;
+	}
+	
+	/**
+	 * Default load method
+	 * 
+	 * @return e_tree_model
+	 */
+	public function load()
+	{
+		if($this->getParam('db_query') && $this->getParam('model_class') && class_exists($this->getParam('model_class')))
+		{
+			$sql = e107::getDb();
+			$class_name = $this->getParam('model_class');
+			if($sql->db_Select_gen($this->getParam('db_query')))
+			{
+				$this->_total = $sql->total_results; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+				while($tmp = $sql->db_Fetch())
+				{
+					$tmp = new $class_name($tmp);
+					$this->setNode($tmp->getId(), $tmp);
+				}
+				unset($tmp);
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Get single model instance from the collection
+	 * @param integer $node_id
+	 * @return e_model
+	 */
+	function getNode($node_id)
+	{
+		return $this->getData('__tree/'.$node_id);
+	}
+	
+	/**
+	 * Add or remove (when $node is null) model to the collection
+	 * 
+	 * @param integer $node_id
+	 * @param e_model $node
+	 * @return e_tree_model
+	 */
+	function setNode($node_id, $node)
+	{
+		if(null === $node)
+		{
+			$this->removeData('__tree/'.$node_id);
+			return $this;
+		}
+		
+		$this->setData('__tree/'.$node_id, $node);
+		return $this;
+	}
+	
+	/**
+	 * Check if model with passed id exists in the collection
+	 * 
+	 * @param integer $node_id
+	 * @return boolean
+	 */
+	public function isNode($node_id)
+	{
+		return $this->isData('__tree/'.$node_id);
+	}
+	
+	/**
+	 * Check if model with passed id exists in the collection and is not empty
+	 * 
+	 * @param integer $node_id
+	 * @return boolean
+	 */
+	public function hasNode($node_id)
+	{
+		return $this->hasData('__tree/'.$node_id);
+	}
+	
+	/**
+	 * Check if collection is empty
+	 *
+	 * @return boolean
+	 */
+	function isEmpty()
+	{
+		return $this->has('__tree');
+	}
+	
+	/**
+	 * Set parameter array
+	 * Core parameters:
+	 * - db_query: string db query to be passed to $sql->db_Select_gen();
+	 * - model_class: string class name for creating nodes inside default load() method
+	 *
+	 * @param array $params
+	 * @return e_tree_model
+	 */
+	public function setParams(array $params)
+	{
+		$this->_params = $params;
+		return $this;
+	}
+	
+	
+	/**
+	 * Get parameter array
+	 * 
+	 * @return array parameters
+	 */
+	public function getParams()
+	{
+		return $this->_params;
+	}
+	
+	/**
+	 * Set parameter
+	 * 
+	 * @param string $key 
+	 * @param mixed $value
+	 * @return e_tree_model
+	 */
+	public function setParam($key, $value)
+	{
+		$this->_params[$key] = $value;
+		return $this;
+	}
+	
+	/**
+	 * Get parameter
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 */
+	public function getParam($key, $default = null)
+	{
+		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
+	}
+}
+
+class e_admin_tree_model extends e_tree_model
+{
+	/**
+	 * Delete records
+	 * @param mixed $ids
+	 * @param boolean $destroy [optional] destroy object instance after db delete
+	 * @param boolean $session_messages [optional]
+	 * @return mixed integer deleted records or false on DB error
+	 */
+	public function delete($ids, $destroy = true, $session_messages = false)
+	{
+		if(is_string($ids))
+		{
+			$ids = explode(',', $ids);
+		}
+		
+		$ids = e107::getParser()->toDB($ids);
+		$sql = e107::getDb();
+		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$ids.')');
+		if(!$res)
+		{	
+			if($sql->getLastErrorNumber())
+			{
+				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+			}
+		}
+		elseif($destroy)
+		{
+			foreach ($ids as $id)
+			{
+				call_user_func(array($this->getNode($id), 'destroy')); // first call model destroy method if any
+				$this->setNode($id, null);
+			}
+		}
+		
+		return $res;
 	}
 }
 
