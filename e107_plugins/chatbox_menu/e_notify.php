@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/chatbox_menu/e_notify.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-10-29 13:35:54 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -37,4 +37,3 @@ if (!function_exists('notify_cboxpost')) {
 	}
 }
 
-?>

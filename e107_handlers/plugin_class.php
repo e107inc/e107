@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2009-10-26 01:04:36 $
-|     $Author: e107coders $
+|     $Revision: 1.107 $
+|     $Date: 2009-10-29 13:35:54 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -1841,7 +1841,9 @@ class e107plugin
 					{
 						$passfail = '';
 						$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$addonPHP);
-						if ((substr($file_text,0,5) != '<'.'?php') || (substr($file_text,-2,2) !='?>'))
+						if ((substr($file_text, 0, 5) != '<'.'?php')
+								|| ( (substr($file_text, -2, 2) != '?'.'>') && (strrpos($file_text, '?'.'>') !== FALSE) )
+								)
 						{
 							$passfail = '<b>fail</b>';
 						}
@@ -1901,10 +1903,32 @@ class e107plugin
 
 	function checkAddon($plugin_path,$e_xxx)
 	{ // Return 0 = OK, 1 = Fail, 2 = inaccessible
+	
+	/*** debug
+	if($plugin_path == 'chatbox_menu' && $e_xxx == 'e_rss')
+	{
+		$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");
+  	if (substr($file_text, 0, 5) != '<'.'?php')
+  	  echo '<'.'?php';
+  	if (substr($file_text, -2, 2) != '?'.'>')
+  	  echo '?'.'>';
+  	if (strrpos($file_text, '?'.'>') !== FALSE)
+  	  echo 'no ?'.'>';
+		if ( (substr($file_text, -2, 2) != '?'.'>') AND (strrpos($file_text, '?'.'>') !== FALSE) )
+		  echo "( (substr(\$file_text, -2, 2) != '?'.'>') OR (strrpos(\$file_text, '?'.'>') === FALSE) )";
+		exit;
+	}
+*/
+
 		if(is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
 		{
 			$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");
-			if ((substr($file_text,0,5) != '<'.'?php') || (substr($file_text,-2,2) !='?>')) return 1;
+			if ((substr($file_text, 0, 5) != '<'.'?php')
+					|| ( (substr($file_text, -2, 2) != '?'.'>') && (strrpos($file_text, '?'.'>') !== FALSE) )
+					)
+			{
+				return 1;
+			}
 			return 0;
 		}
 		return 2;

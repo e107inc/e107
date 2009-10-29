@@ -41,4 +41,3 @@ if($items = $sql -> db_Select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestam
 
 $eplug_rss_data[] = $rss;
 $eplug_rss_feed[] = $feed;
-?>
