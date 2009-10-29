@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2007-12-03 20:42:50 $
-|     $Author: e107steved $
+|     $Revision: 1.68 $
+|     $Date: 2009-10-29 13:36:27 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -736,7 +736,16 @@ class e107plugin
 		  if ($debug == 'check')
 		  {
 		    $file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");
-			if ((substr($file_text,0,5) != '<'.'?php') || (substr($file_text,-2,2) !='?>')) $passfail = '<b>fail</b>'; else $passfail = 'pass';
+					if ((substr($file_text, 0, 5) != '<'.'?php')
+							|| ( (substr($file_text, -2, 2) != '?'.'>') && (strrpos($file_text, '?'.'>') !== FALSE) )
+							)
+					{
+						$passfail = '<b>fail</b>';
+					}
+					else
+					{
+						$passfail = 'pass';
+					}
 			echo $plugin_path."/".$e_xxx.".php - ".$passfail."<br />";
 		  }
 		  $p_addons[] = $e_xxx;
@@ -791,13 +800,18 @@ class e107plugin
 
 	function checkAddon($plugin_path,$e_xxx)
 	{ // Return 0 = OK, 1 = Fail, 2 = inaccessible
-	  if(is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
-	  {
-		$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");
-		if ((substr($file_text,0,5) != '<'.'?php') || (substr($file_text,-2,2) !='?>')) return 1;
-		return 0;
+		if(is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
+		{
+			$file_text = file_get_contents(e_PLUGIN.$plugin_path."/".$e_xxx.".php");
+			if ((substr($file_text, 0, 5) != '<'.'?php')
+					|| ( (substr($file_text, -2, 2) != '?'.'>') && (strrpos($file_text, '?'.'>') !== FALSE) )
+					)
+			{
+				return 1;
+			}
+			return 0;
 		}
-	  return 2;
+		return 2;
 	}
 }
 
