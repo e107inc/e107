@@ -9,8 +9,8 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-10-29 00:29:27 $
+ * $Revision: 1.46 $
+ * $Date: 2009-10-29 02:29:35 $
  * $Author: marj_nl_fr $
 */
 
@@ -364,7 +364,7 @@ if(function_exists('theme_head'))
 // possibility to overwrite some CSS definition according to TEXTDIRECTION
 // especially usefull for rtl.css
 // see _blank theme for examples
-if(defined('TEXTDIRECTION') && file_exists(e_FILE.'/'.strtolower(TEXTDIRECTION).'.css'))
+if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'.css'))
 {
 	echo '
 	<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
