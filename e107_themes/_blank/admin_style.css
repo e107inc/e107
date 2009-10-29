@@ -266,6 +266,7 @@ div.bbarea.small, .tbox.small, .tbox.helpbox.small { width: 250px !important; }
 .success { color: green; }
 .error { color: #FF0000 }
 .info {}
+.required { color:red }
 
 /******** Tooltip info */
 .e-info {}
