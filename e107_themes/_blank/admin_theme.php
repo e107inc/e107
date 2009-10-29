@@ -109,8 +109,18 @@ if (!defined('ADMIN_DOWN_ICON'))
 
 function theme_head() {
 	$ret = '';
+	if(defined('TEXTDIRECTION') && file_exists(THEME.'/menu/menu_'.strtolower(TEXTDIRECTION).'.css'))
+	{
+		$ret .= '
+		<link rel="stylesheet" href="'.THEME_ABS.'menu/menu_'.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
+	}
+	else
+	{
+		$ret .= '
+		<link rel="stylesheet" href="'.THEME_ABS.'menu/menu.css" type="text/css" media="all" />';
+	}
+
 	$ret .= '
-		<link rel="stylesheet" href="'.THEME_ABS.'menu/menu.css" type="text/css" media="all" />
 		<!--[if IE]>
 		<link rel="stylesheet" href="'.THEME_ABS.'ie_all.css" type="text/css" media="all" />
 		<![endif]-->
@@ -118,6 +128,7 @@ function theme_head() {
 			<script type="text/javascript" src="'.THEME_ABS.'menu/menu.js"></script>
 		<![endif]-->
 	';
+
 
     $ret .= "
     <script type='text/javascript'>

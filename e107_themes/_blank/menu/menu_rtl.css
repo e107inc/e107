@@ -1,0 +1,124 @@
+#nav, #nav ul { /* all lists */
+	padding: 0px;
+	margin: 0px;
+	list-style: none;
+	line-height: 38px;
+	padding: 0px 0px;
+}
+
+
+#nav a {
+	padding: 0px 10px 0px 10px;
+	vertical-align: middle;
+	display: block;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-align: center;
+	font-size: 14px;
+	color: #13394E;
+	font-weight: normal;
+	text-decoration: none;
+
+}
+
+#nav a:hover {
+	/* background-position: 0 -44px; */
+	color: #CB0000;
+}
+
+#nav li.sub a:hover,
+#nav li.sub.sfhover a,
+#nav li.sub:hover a {
+
+	/* background-position: 0 -88px; */
+}
+
+#nav li { /* all list items */
+	float: right;  /* rtl */
+	line-height: 36px;
+	/* width: 158px;  width needed or else Opera goes nuts */
+}
+ul.sub {border-top: 1px solid #DDDDDD;}
+
+#nav li ul { /* second-level lists */
+	position: absolute;
+	z-index: 10;
+	width: 200px;
+	/*white-space: nowrap;*/
+	left: -9999px; /* using left instead of display to hide menus because display: none isn't read by screen readers */
+}
+
+#nav li li a,
+#nav li:hover li a,
+#nav li.sfhover li a {
+	text-align: right;  /* rtl */
+	background-image: none;
+	background-color: #FFFFFF;
+	line-height: 28px;
+	font-size: 12px;
+	font-weight: normal;
+	padding-left: 0px;  /* rtl */
+	padding-right: 10px;  /* rtl */
+	border-left: 1px solid #DDDDDD;
+	border-right: 1px solid #DDDDDD;
+	border-bottom: 1px solid #DDDDDD;
+	width: 198px;
+	w\idth : 188px;
+	text-transform: none;
+	color: #13394E;
+	/*white-space: nowrap;*/
+}
+
+#nav .menuButton img { padding: 10px 0px; 
+margin-left: 10px;  /* rtl */
+}
+
+#nav .menuItem img { padding: 6px 0px; 
+margin-left: 10px;  /* rtl */
+}
+#nav li li a.sub,
+#nav li:hover li a.sub,
+#nav li.sfhover li a.sub {
+	background-image: url(../images/links_sub.gif) !important ; background-repeat: no-repeat; background-position:95% 50%;
+}
+#nav li li a.sub:hover,
+#nav li:hover li a.sub:hover,
+#nav li.sfhover li a.sub:hover {
+	/*background-image: url(../images/link_sub_over.png) !important ; background-repeat: no-repeat; background-position: 100% 50%;*/
+}
+
+
+#nav li li a:hover{
+	background-color: #f6f6f6;
+	color: #990000
+}
+
+
+
+#nav li ul ul { /* third-and-above-level lists */
+	margin: -25px 120px 0 0; /* rtl */
+	border-top: 1px solid #ddd;
+}
+
+#nav li:hover ul ul, 
+#nav li:hover ul ul ul, 
+#nav li:hover ul ul ul ul, 
+#nav li:hover ul ul ul ul ul,
+#nav li.sfhover ul ul, 
+#nav li.sfhover ul ul ul,
+#nav li.sfhover ul ul ul ul,
+#nav li.sfhover ul ul ul ul ul {
+	left: -999em;
+}
+
+#nav li:hover ul, 
+#nav li li:hover ul, 
+#nav li li li:hover ul,
+#nav li li li li:hover ul,
+#nav li li li li li:hover ul,
+#nav li.sfhover ul, 
+#nav li li.sfhover ul, 
+#nav li li li.sfhover ul,
+#nav li li li li.sfhover ul,
+#nav li li li li li.sfhover ul { /* lists nested under hovered list items */
+	left: auto;
+}
