@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.59 $
- * $Date: 2009-10-22 13:00:11 $
- * $Author: e107coders $
+ * $Revision: 1.60 $
+ * $Date: 2009-10-29 21:28:09 $
+ * $Author: e107steved $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -49,8 +49,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.59 $
- * @author $Author: e107coders $
+ * @version $Revision: 1.60 $
+ * @author $Author: e107steved $
  * 
  */
 class e_db_mysql {
@@ -392,6 +392,18 @@ class e_db_mysql {
 			}
 			if(!isset($arg['data'])) { return false; }
 
+
+			// Handle 'NOT NULL' fields without a default value
+			if (isset($arg['_NOTNULL']))
+			{
+				foreach ($arg['_NOTNULL'] as $f => $v)
+				{
+					if (!isset($arg['data'][$f]))
+					{
+						$arg['data'][$f] = $v;
+					}
+				}
+			}
 
 			$fieldTypes = $this->_getTypes($arg);
 			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
