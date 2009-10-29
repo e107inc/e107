@@ -9,9 +9,9 @@
  * Admin Footer
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/footer.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-10-01 15:05:40 $
- * $Author: secretr $
+ * $Revision: 1.16 $
+ * $Date: 2009-10-29 12:39:20 $
+ * $Author: marj_nl_fr $
  */
 if (!defined('e107_INIT'))
 {
@@ -157,7 +157,7 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info smalltext'>{$rinfo}</div>\n" : "");
+		echo($rinfo ? "\n<div class='e-footer-info'>{$rinfo}</div>\n" : "");
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)

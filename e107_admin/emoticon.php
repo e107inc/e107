@@ -9,9 +9,9 @@
  * Administration Area - Emotions Settings & Packs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/emoticon.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-10-22 04:19:29 $
- * $Author: e107coders $
+ * $Revision: 1.19 $
+ * $Date: 2009-10-29 12:39:21 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -287,7 +287,7 @@ class emotec
 						<tr>
 							<th>".EMOLAN_5."</th>
 							<th>".EMOLAN_2."</th>
-							<th class='last'>".EMOLAN_6."<span class='smalltext'> ( ".EMOLAN_7." )</span></th>
+							<th class='last'>".EMOLAN_6."<span class='field-help'> ( ".EMOLAN_7." )</span></th>
 						</tr>
 					</thead>
 					<tbody>
