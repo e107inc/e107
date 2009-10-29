@@ -9,8 +9,8 @@
  * Docs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/docs.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-08-28 16:11:00 $
+ * $Revision: 1.6 $
+ * $Date: 2009-10-29 14:25:29 $
  * $Author: marj_nl_fr $
  *
 */
@@ -49,8 +49,10 @@ if (e_QUERY) {
 	$filename = $doc_fpath.$helplist[$i]['fname'];
 	$filename_alt = $doc_fpath_alt.$helplist[$i]['fname'];
 
-	if(is_readable($filename)) $text = file_get_contents($filename);
-	else $text = file_get_contents($filename_alt);
+	if(is_readable($filename))
+		$text = file_get_contents($filename);
+	else
+		$text = file_get_contents($filename_alt);
 
 	$text = $tp->toHTML($text, TRUE);
 	$text = preg_replace('/Q\>(.*?)A>/si', "<img src='".e_IMAGE_ABS."generic/question.png' class='icon' alt='Q' /><strong>\\1</strong>A>", $text);
@@ -69,13 +71,15 @@ if (e_QUERY) {
 
 $text = '';
 $text_h = '';
-foreach ($helplist_all as $key => $helpdata)
+foreach ($helplist as $key => $helpdata)
 {
 	$filename = $doc_fpath.$helpdata['fname'];
 	$filename_alt = $doc_fpath_alt.$$helpdata['fname'];
 
-	if(is_readable($filename)) $tmp = file_get_contents($filename);
-	else $tmp = file_get_contents($filename_alt);
+	if(is_readable($filename))
+		$tmp = file_get_contents($filename);
+	else
+		$tmp = file_get_contents($filename_alt);
 
 	//$tmp = $tp->toHTML(trim($tmp), TRUE);
 	$tmp = preg_replace('/Q\>(.*?)A>/si', "###QSTART###<div class='qitem'><img src='".e_IMAGE_ABS."generic/question.png' class='icon S16 middle' alt='".LAN_DOCS_QUESTION."' />\\1</div>###QEND###", $tmp);
