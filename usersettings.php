@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-08-28 15:30:24 $
+ * $Revision: 1.40 $
+ * $Date: 2009-10-29 11:32:58 $
  * $Author: marj_nl_fr $
  *
 */
@@ -671,7 +671,7 @@ $text = (e_QUERY ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " 
 
 if (e_QUERY == "update")
 {
-	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*", "<span style='color:red'>*</span>", LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
+	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*", "<span class='required'>*</span>", LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
 }
 
 $text .= $tp->parseTemplate($USERSETTINGS_EDIT, true, $usersettings_shortcodes);
@@ -702,7 +702,7 @@ function req($field)
 	$ret = "";
 	if ($field == 2)
 	{
-		$ret = "<span style='text-align:right;font-size:15px; color:red'> *</span>";
+		$ret = "<span class='required'> *</span>";
 	}
 	return $ret;
 }

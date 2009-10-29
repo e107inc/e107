@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2008-12-28 22:37:43 $
-|     $Author: e107steved $
+|     $Revision: 1.13 $
+|     $Date: 2009-10-29 11:32:58 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,13 +21,13 @@ if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:100%"); }
 
 
-define("REQUIRED_FIELD_MARKER", "<span style='text-align:right;font-size:15px; color:red'> *</span>");
+define("REQUIRED_FIELD_MARKER", "<span class='required'> *</span>");
 
 
 
 $sc_style['SIGNUP_DISPLAYNAME']['pre'] = "
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_89."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_90."</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_89."<span class='required'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_90."</span></td>
 <td class='forumheader3' style='width:70%'>
 ";
 $sc_style['SIGNUP_DISPLAYNAME']['post'] = "
@@ -45,7 +45,7 @@ $sc_style['SIGNUP_REALNAME']['post'] = "
 </tr>
 ";
 
-$sc_style['SIGNUP_IS_MANDATORY']['pre'] = "<span style='font-size:15px; color:red'>";
+$sc_style['SIGNUP_IS_MANDATORY']['pre'] = "<span class='required'>";
 $sc_style['SIGNUP_IS_MANDATORY']['post'] = "</span>";
 
 
@@ -110,7 +110,7 @@ if(!defined($SIGNUP_EXTENDED_USER_FIELDS))
 
 if(!defined($EXTENDED_USER_FIELD_REQUIRED))
 {
-	$EXTENDED_USER_FIELD_REQUIRED	= "<span style='text-align:right;font-size:15px; color:red'> *</span>";
+	$EXTENDED_USER_FIELD_REQUIRED	= "<span class='required'> *</span>";
 }
 
 $SIGNUP_SIGNATURE_START = "
@@ -190,21 +190,21 @@ $SIGNUP_XUP_FORM = "
 	</tr>
 
 	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_81."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_82."</span></td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_81."<span class='required'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_82."</span></td>
 	<td class='forumheader3' style='width:70%'>
 	{SIGNUP_XUP_LOGINNAME}
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span style='font-size:15px; color:red'> *</span></td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span class='required'> *</span></td>
 	<td class='forumheader3' style='width:70%'>
 	{SIGNUP_XUP_PASSWORD1}
 	</td>
 	</tr>
 
 	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span style='font-size:15px; color:red'> *</span></td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span class='required'> *</span></td>
 	<td class='forumheader3' style='width:70%'>
 	{SIGNUP_XUP_PASSWORD2}
 	</td>
@@ -255,21 +255,21 @@ $SIGNUP_BODY = "
 <table class='fborder' style='".USER_WIDTH."'>
 {SIGNUP_DISPLAYNAME}
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_81."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_82."</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_SIGNUP_81."<span class='required'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_82."</span></td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_LOGINNAME}
 </td>
 </tr>
 {SIGNUP_REALNAME}
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span style='font-size:15px; color:red'> *</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span class='required'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_PASSWORD1}
 {SIGNUP_PASSWORD_LEN}
 </td>
 </tr>
 <tr>
-<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span style='font-size:15px; color:red'> *</span></td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span class='required'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 {SIGNUP_PASSWORD2}
 </td>

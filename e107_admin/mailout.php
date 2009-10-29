@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-10-26 01:23:19 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2009-10-29 11:32:57 $
+|     $Author: marj_nl_fr $
 |
 | Work in progress - supplementary mailer plugin
 |
@@ -1213,7 +1213,8 @@ function show_prefs()
 		
 	if(!is_executable(e_HANDLER."bounce_handler.php"))
 	{
-		$text .= " <b style='color:red'>IMPORTANT! You need to CHMOD this file to 0755</b>";
+		//FIXME hardcoded text and wrong info
+		$text .= " <span class='required'>IMPORTANT! You need to CHMOD this file to 0755</span>";
 	}
 		
 	$text .= "</td>
