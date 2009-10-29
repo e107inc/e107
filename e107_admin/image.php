@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-09-28 07:17:52 $
- * $Author: e107coders $
+ * $Revision: 1.24 $
+ * $Date: 2009-10-29 12:39:20 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -578,7 +578,7 @@ if (isset($_POST['check_avatar_sizes']))
 							<td class='control'>
 								<div class='auto-toggle-area autocheck'>
 									".$frm->checkbox('image_post', 1, $pref['image_post'])."
-									<div class='smalltext field-help'>".IMALAN_2."</div>
+									<div class='field-help'>".IMALAN_2."</div>
 								</div>
 							</td>
 						</tr>
@@ -588,7 +588,7 @@ if (isset($_POST['check_avatar_sizes']))
 							</td>
 							<td class='control'>
 								".r_userclass('image_post_class',$pref['image_post_class'],"off","public,guest,nobody,member,admin,main,classes")."
-								<div class='smalltext field-help'>".IMALAN_11."</div>
+								<div class='field-help'>".IMALAN_11."</div>
 							</td>
 						</tr>
 
@@ -601,7 +601,7 @@ if (isset($_POST['check_avatar_sizes']))
 									".$frm->option(IMALAN_14, '0', ($pref['image_post_disabled_method'] == "0"))."
 									".$frm->option(IMALAN_15, '1', ($pref['image_post_disabled_method'] == "1"))."
 								".$frm->select_close()."
-								<div class='smalltext field-help'>".IMALAN_13."</div>
+								<div class='field-help'>".IMALAN_13."</div>
 							</td>
 						</tr>
 
@@ -613,7 +613,7 @@ if (isset($_POST['check_avatar_sizes']))
 									".$frm->option('gd2', 'gd2', ($pref['resize_method'] == "gd2"))."
 									".$frm->option('ImageMagick', 'ImageMagick', ($pref['resize_method'] == "ImageMagick"))."
 								".$frm->select_close()."
-								<div class='smalltext field-help'>".IMALAN_4."</div>
+								<div class='field-help'>".IMALAN_4."</div>
 							</td>
 						</tr>
 
@@ -621,7 +621,7 @@ if (isset($_POST['check_avatar_sizes']))
 							<td class='label'>".IMALAN_5."<div class='label-note'>{$IM_NOTE}</div></td>
 							<td class='control'>
 								".$frm->text('im_path', $pref['im_path'])."
-								<div class='smalltext field-help'>".IMALAN_6."</div>
+								<div class='field-help'>".IMALAN_6."</div>
 							</td>
 						</tr>
 
@@ -631,7 +631,7 @@ if (isset($_POST['check_avatar_sizes']))
 							<td class='control'>
 								<div class='auto-toggle-area autocheck'>
 									".$frm->checkbox('enable_png_image_fix', 1, ($pref['enable_png_image_fix']))."
-									<div class='smalltext field-help'>".IMALAN_35."</div>
+									<div class='field-help'>".IMALAN_35."</div>
 								</div>
 							</td>
 						</tr>

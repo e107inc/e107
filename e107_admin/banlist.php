@@ -9,9 +9,9 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-10-25 01:43:06 $
- * $Author: e107coders $
+ * $Revision: 1.19 $
+ * $Date: 2009-10-29 12:39:21 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -579,13 +579,13 @@ switch($action)
 
 		for($i = 0; $i < BAN_REASON_COUNT; $i ++)
 		{
-			$colspan = ($i>1) ? "2" : 1;
+			$colspan = ($i > 1) ? "2" : '1';
 			
 			$text .= "
 									<tr>
 									<td colspan='".$colspan."'>
 										".$frm->checkbox("ban_types[{$i}]", $i).$frm->label(constant('BANLAN_10'.$i), "ban_types[{$i}]", $i)."
-										<span class='smalltext'>(".constant('BANLAN_11'.$i).")</span>
+										<span class='field-help'>(".constant('BANLAN_11'.$i).")</span>
 									</td>
 									
 			";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-10-26 09:50:57 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2009-10-29 12:39:21 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -168,7 +168,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 			$text = "<tr><td class='forumheader3'>
 				<div class='td' style='text-align:left; vertical-align:top; width:100%'
 				onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">
-				".$icon." <b>".$title."</b> ".($description ? "[ <span class='smalltext'>".$description."</span> ]" : "")."</div></td></tr>";
+				".$icon." <b>".$title."</b> ".($description ? "[ <span class='field-help'>".$description."</span> ]" : "")."</div></td></tr>";
 		}
 		else
 		{
