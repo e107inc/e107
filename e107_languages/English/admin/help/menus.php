@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/menus.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-10-29 11:32:58 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -49,7 +49,7 @@ If you find the menus are not updating properly click on the refresh button.
 <div><input type='submit' class='button' name='reset' value='Refresh' /></div>
 </form>
 <br />
-<div class='indent'><span style='color:red'>*</span> indicates menu visibility has been modified</div>
+<div class='indent'><span class='required'>*</span> indicates menu visibility has been modified</div>
 ";
 
 $ns -> tablerender("Menus Help", $text);

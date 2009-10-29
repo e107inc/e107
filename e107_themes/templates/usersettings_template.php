@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-08-05 21:47:18 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2009-10-29 11:32:58 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -97,7 +97,7 @@ $USEREXTENDED_FIELD = "
 </td>
 </tr>
 ";
-$REQUIRED_FIELD = "{FIELDNAME}<span style='text-align:right;font-size:15px; color:red'> *</span>";
+$REQUIRED_FIELD = "{FIELDNAME}<span class='required'> *</span>";
 
 $USERSETTINGS_EDIT = "
 <div style='text-align:center'>
