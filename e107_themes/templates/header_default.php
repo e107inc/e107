@@ -9,8 +9,8 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-10-29 00:16:39 $
+ * $Revision: 1.45 $
+ * $Date: 2009-10-29 00:29:27 $
  * $Author: marj_nl_fr $
 */
 
@@ -359,11 +359,6 @@ if(function_exists('theme_head'))
 	echo theme_head();
 }
 
-//
-// Unobtrusive JS, prevent 3rd party code overload
-//
-require_once(e_FILE."/e_css.php");
-
 // FIXME: TEXTDIRECTION compatibility CSS (marj?)
 // TODO: probably better to externalise along with some other things above
 // possibility to overwrite some CSS definition according to TEXTDIRECTION
@@ -374,6 +369,11 @@ if(defined('TEXTDIRECTION') && file_exists(e_FILE.'/'.strtolower(TEXTDIRECTION).
 	echo '
 	<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
 }
+//
+// Unobtrusive JS, prevent 3rd party code overload
+//
+require_once(e_FILE."/e_css.php");
+
 
 //
 // FIXME H: Generate JS for image preloads (do we really need this?)
