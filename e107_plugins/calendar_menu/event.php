@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-10-19 20:05:17 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-10-29 11:35:59 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -167,11 +167,11 @@ require_once(HEADERF);
 
 if ($mult_count > 1)
 {	// Need to handle writing of multiple events - display confirmation form
-	$message = str_replace('-NUM-',count($mult_count),EC_LAN_88);
+	$message = str_replace('-NUM-', count($mult_count), EC_LAN_88);
 	$text = "
 		<form method='post' action='".e_SELF."?mc.{$ev_start}.{$ev_end}' id='mulconf'><table style='width:98%' class='fborder' >
 		<colgroup><col style='width:30%' /><col style='width:70%' /></colgroup>
-		<tr><td class='forumheader3' colspan='2' style='text-align:center; color:red'>".$message."<br />".EC_LAN_89."</td></tr>";
+		<tr><td class='forumheader3 warning' colspan='2'>".$message."<br />".EC_LAN_89."</td></tr>";
 	if ($ev_allday)
 	{
       $text .= "
