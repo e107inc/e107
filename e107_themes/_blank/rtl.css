@@ -38,3 +38,240 @@
 th {
     text-align: right
 }
+
+
+/* E107 CORE ADMIN CSS *********************************************************************************************/
+
+
+/******** Decorate JS */
+/* Admin List Table */
+.adminlist { border:1px solid #ddd;}
+.adminlist th { border-right: 1px solid #ddd; } /* should be OK */
+.adminlist td { border-right: 1px solid #ddd; } /* should be OK */
+
+.adminlist .col-selection-cont { float:left; } /* rtl */
+.col-selection-cont .col-selection { text-align:right; margin-left:0px; left:0px;} /* rtl - TODO check margin-right */
+
+/* Form elements */
+input.input-text,
+textarea,
+select, .tbox, .helpbox {
+}
+
+option {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 10px;
+}
+
+input.radio {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 3px;
+}
+.checkbox {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 5px;
+}
+
+/* BBcode textareas */
+.check-block .checkbox {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 2px
+}
+
+/* Related JS functionality - .autocheck together with .auto-toggle-area (see admin/image.php) */
+
+/* form used for settings */
+.col-selection { text-align:right; margin-right:0px; left:0px;}
+
+
+/* TODO - rename it to adminprefs */
+
+.adminform td { text-align: right}
+
+
+/* form used for content edit */
+.adminedit td { text-align: right}
+
+/* Admin Info Table TODO - box model (div) */
+.admininfo td { text-align: right}
+
+/* Images and avatars */
+.image-box {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 10px;
+}
+
+/******** Prepare for Image Preview JS */
+
+/******** Tabs JS */
+.admintabs ul.e-tabs li { float: right;
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 3px; }
+
+/******** SyS Messages / Message text formatting */
+/* message boxes */
+.s-message { }
+
+.s-message .s-message-title {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 42px; }
+
+.s-message-body {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 42px; }
+
+/* validate result inline message */
+
+/* message text (overall) */
+
+/******** Tooltip info */
+
+/******** Admin Buttons */
+button {
+  padding:0 0 0 10px;
+}
+button span {
+  padding:0 13px 0 0;
+}
+
+/*blue buttons*/
+/* TODO The following buttons  probably needs treatment */
+button 					{ background:url(images/btn_right.gif) right no-repeat;  }
+button span 			{ background:url(images/btn_left.gif) left no-repeat;  }
+
+button:hover,
+button:focus 			{ background:url(images/btn_over_right.gif) right no-repeat; }
+button:hover span,
+button:focus span 		{ background:url(images/btn_over_left.gif) left no-repeat; }
+
+
+button:active			{ background:url(images/btn_active_right.gif) right no-repeat; }
+button:active	span	{ background:url(images/btn_active_left.gif) left no-repeat; }
+
+button.delete span			{ background-image:url(images/btn_remove_left.gif); }
+button.delete:hover span,
+button.delete:focus span 	{ background-image:url(images/btn_remove_over_left.gif) }
+button.delete:active span	{ background-image:url(images/btn_remove_active_left.gif)}
+button.delete span			{
+	/* reset left */
+	padding-left: 0;
+	/* add right */
+	padding-right: 30px; }
+
+/*default submit*/
+button.update span			{ background-image:url(images/btn_update_left.gif); }
+button.update:hover span,
+button.update:focus span 	{ background-image:url(images/btn_update_over_left.gif)}
+button.update:active span	{ background-image:url(images/btn_update_active_left.gif)}
+button.update span			{
+	/* reset left */
+	padding-left: 0;
+	/* add right */
+	padding-right: 30px; }
+
+button.create span			{
+	/* reset left */
+	padding-left: 0;
+	/* add right */
+	padding-right: 30px; }
+
+button.edit span			{
+	/* reset left */
+	padding-left: 0;
+	/* add right */
+	padding-right: 30px; }
+
+
+.buttons-bar button {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 10px; }
+.buttons-bar button.f-right {
+	/* reset right */
+	padding-right: 0;
+	/* add left */
+	padding-left: 0px; }
+
+/* Actions (adminlist) - input type image */
+
+/********** Page Loading Status default style */
+#loading-mask .loader { 
+	/* reset left */
+	padding-left: 0;
+	/* add right */
+	padding-right: -100px;
+	
+	/*FIXME left: 50%; */
+	left:auto;
+	right: 50%;
+}
+
+/********** Element Loading Status default style */
+
+/********** Docs */
+#docs-list 			{ padding: 10px; }
+#docs-list .qitem	{ padding-right: 10px; } /* something to do? */
+
+.docs-item .qitem,
+.docs-item .aitem,
+.docs-item .gotop   { padding-left: 10px; } /* something to do? */
+
+
+/********** Misc */
+
+
+/*******************************************************************************************************************/
+
+
+/* THEME SPECIFIC CSS *********************************************************************************************/
+/******** Page Base */
+
+/******** Layout */
+.col-main { padding: 0 0 0 15px;}
+
+/******** Horizontal navigation ADMIN_NAV_ALT */
+
+/******** Side Navigation
+	- Admin Navigation
+	- Plugin Navigation
+*/
+
+
+/******** Block Elements */
+
+
+
+/***** Admin Info Panel Buttons **/
+
+.core-mainpanel-block { float:right; }
+
+/*****************************/
+
+
+#core-admin-log-maintenance button {
+	/* reset left */
+	padding-left: 0;
+	/* add right */
+	padding-right: 10px; }
+
+#core-frontpage-edit-home			{ float: right; }
+#core-frontpage-edit-post-login		{ float: right; }
+
+#core-frontpage-edit-post-login .adminlist { float: left; }
