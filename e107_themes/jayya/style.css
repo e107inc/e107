@@ -571,7 +571,7 @@ label { cursor: pointer; }
 .success { color: green; }
 .error { color: #FF0000 }
 .info {}
-
+.required { color:red }
 /******** Tooltip info */
 .e-info {}
 
