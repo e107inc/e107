@@ -9,8 +9,8 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-10-28 22:37:30 $
+ * $Revision: 1.44 $
+ * $Date: 2009-10-29 00:16:39 $
  * $Author: marj_nl_fr $
 */
 
@@ -310,6 +310,7 @@ if (function_exists('headerjs')) {echo headerjs();  }
 e107::getJs()->renderJs('header', 4);
 e107::getJs()->renderJs('header_inline', 4);
 
+// FIXME description and keywords meta tags shouldn't be sent on all pages
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
 
@@ -360,9 +361,19 @@ if(function_exists('theme_head'))
 
 //
 // Unobtrusive JS, prevent 3rd party code overload
-// FIXME: TEXTDIRECTION compatibility CSS (marj?)
 //
 require_once(e_FILE."/e_css.php");
+
+// FIXME: TEXTDIRECTION compatibility CSS (marj?)
+// TODO: probably better to externalise along with some other things above
+// possibility to overwrite some CSS definition according to TEXTDIRECTION
+// especially usefull for rtl.css
+// see _blank theme for examples
+if(defined('TEXTDIRECTION') && file_exists(e_FILE.'/'.strtolower(TEXTDIRECTION).'.css'))
+{
+	echo '
+	<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
+}
 
 //
 // FIXME H: Generate JS for image preloads (do we really need this?)
