@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.8/e107_plugins/content/content.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2008-05-25 08:26:11 $
-|		$Author: e107steved $
+|		$Revision: 1.20 $
+|		$Date: 2009-10-29 11:38:11 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -236,7 +236,7 @@ function parsesearch($text, $match, $amount){
 					$text = "...".substr($text, ($pos-140), 280)."...";
 			}
 		}
-		$text = preg_replace("/".$match."/i", "<span class='searchhighlight' style='color:red;'>$match</span>", $text);
+		$text = preg_replace("/".$match."/i", "<span class='searchhighlight'>$match</span>", $text);
 		return($text);
 }
 
