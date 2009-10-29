@@ -1,0 +1,40 @@
+/* Right to Left StyleSheet
+ * Only a few redefinitions are necessary
+ * as this file is loaded after all other CSS files and other definitions
+ */
+
+/* Core Formatting */
+.left {
+    text-align: right
+}
+
+.right {
+    text-align: left
+}
+
+.f-left {
+    float: right
+}
+
+.f-right {
+    float: left
+}
+
+.clear-r {
+    clear: right
+}
+
+.clear-l {
+    clear: left
+}
+
+/* RESET CSS *********************************************************************************************/
+/* Global */
+*, body {
+    direction:  rtl;
+    text-align: right
+}
+
+th {
+    text-align: right
+}
