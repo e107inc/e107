@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.75 $
-* $Date: 2009-10-30 22:19:56 $
-* $Author: marj_nl_fr $
+* $Revision: 1.76 $
+* $Date: 2009-10-30 22:51:52 $
+* $Author: e107steved $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -392,18 +392,17 @@ class e_parse
 	//   native substr() routine can return FALSE. mb_substr and utf8_substr just return an empty string.
 	function uSubStr($str, $start, $length = NULL)
 	{
-		switch($this->utfAction)
+		switch ($this->utfAction)
 		{
-			case 0:
-				return strrpos($str, $start, $length);
-			case 1:
-				if(is_null($length))
+			case 0 : return substr($str, $start, $length);
+			case 1 :
+				if (is_null($length))
 				{
-					return mb_strrpos($haystack, $needle);
+					return mb_substr($haystack, $needle);
 				}
 				else
 				{
-					return mb_strrpos($haystack, $needle, $offset);
+					return mb_substr($haystack, $needle, $offset);
 				}
 		}
 		utf8_substr($str, $start, $length);
