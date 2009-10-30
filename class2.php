@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.151 $
-* $Date: 2009-10-28 15:42:16 $
+* $Revision: 1.152 $
+* $Date: 2009-10-30 20:58:52 $
 * $Author: marj_nl_fr $
 *
 */
@@ -50,7 +50,7 @@ $oblev_before_start = ob_get_level();
 if(!isset($_E107) || !is_array($_E107)) { $_E107 = array(); }
 if(isset($_E107['cli']) && !isset($_E107['debug']) && isset($_SERVER["HTTP_USER_AGENT"]))
 {
-	exit;
+	exit();
 }
 
 if(!isset($_E107['cli']))
@@ -726,7 +726,8 @@ e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.'_custom.php');
 
 // Now we know the site CHARSET, define how to handle utf-8 as necessary
-$tp->initCharset();
+// CHARSET is UTF-8, thus initCharset() is used in e_parse() constructor
+// $tp->initCharset();
 
 if($pref['sitelanguage'] != e_LANGUAGE && varset($pref['multilanguage']) && !$pref['multilanguage_subdomain'])
 {
