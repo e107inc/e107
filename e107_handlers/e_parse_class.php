@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.72 $
-* $Date: 2009-10-30 20:58:51 $
+* $Revision: 1.73 $
+* $Date: 2009-10-30 21:01:13 $
 * $Author: marj_nl_fr $
 *
 */
@@ -779,7 +779,7 @@ class e_parse
 	 * @param string $more ­ string which will be added if truncation
 	 * @return string
 	 */
-	public function text_truncate($text, $len = 200, $more = "[more]")
+	public function text_truncate($text, $len = 200, $more = ' ... ')
 	{
 		// Always valid
 		if(strlen($text) <= $len)
