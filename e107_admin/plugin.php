@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2009-10-30 09:13:31 $
+|     $Revision: 1.52 $
+|     $Date: 2009-10-30 12:56:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -879,8 +879,11 @@ class pluginManager{
 
 		function pluginConfirmUninstall()
 		{
-			global $plugin, $frm;
-			$tp = e107::getParser();
+			global $plugin;
+			
+			$frm 	= e107::getForm();
+			$tp 	= e107::getParser();
+			$mes 	= e107::getMessage();
 						
 			$plug = $plugin->getinfo($this->id);
 
@@ -1007,7 +1010,7 @@ class pluginManager{
 			{
 				include_once(e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php");
 				
-				$mes = e107::getMessage();
+			
 				$mes->add("Loading ".e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php", E_MESSAGE_DEBUG);
 				
 				$class_name = $plug['plugin_path']."_setup";
