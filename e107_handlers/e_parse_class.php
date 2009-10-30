@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.70 $
-* $Date: 2009-10-30 19:57:28 $
+* $Revision: 1.71 $
+* $Date: 2009-10-30 20:05:17 $
 * $Author: marj_nl_fr $
 *
 */
@@ -834,14 +834,14 @@ class e_parse
 	 * @param string $modifiers [optional] TITLE|SUMMARY|DESCRIPTION|BODY|RAW|LINKTEXT etc.
 	 * @param mixed $postID [optional]
 	 * @param boolean $wrap [optional]
-	 * @return
+	 * @return string
 	 */
 	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap = FALSE)
 	{
 		if($text == '')
 			return $text;
 
-		global $pref,$fromadmin;
+		global $pref, $fromadmin;
 
 		// Set default modifiers to start
 		$opts = $this->e_optDefault;
@@ -1282,8 +1282,9 @@ class e_parse
 
 	/**
 	 * Convert text blocks which are to be embedded within JS
+	 *
 	 * @param object $stringarray
-	 * @return
+	 * @return string
 	 */
 	function toJS($stringarray)
 	{
@@ -1301,9 +1302,10 @@ class e_parse
 
 	/**
 	 * Convert Text for RSS/XML use.
+	 *
 	 * @param object $text
 	 * @param object $tags [optional]
-	 * @return
+	 * @return string
 	 */
 	function toRss($text, $tags = FALSE)
 	{
@@ -1314,9 +1316,9 @@ class e_parse
 		}
 
 		$text = $this->toEmail($text);
-   		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;"," & ", e_BASE, "href='request.php");
-   		$replace = array("'", '$', "'", '$',' &amp; ', SITEURL, "href='".SITEURL."request.php" );
-   		$text = str_replace($search, $replace, $text);
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;"," & ", e_BASE, "href='request.php");
+		$replace = array("'", '$', "'", '$',' &amp; ', SITEURL, "href='".SITEURL."request.php" );
+		$text = str_replace($search, $replace, $text);
 
 		if($tags == TRUE && ($text))
 		{
@@ -1339,6 +1341,7 @@ class e_parse
 	/**
 	 * Replace e107 path constants
 	 * Note: only an ADMIN user can convert {e_ADMIN}
+	 *
 	 * @param string $text
 	 * @param string $mode [optional]	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
 	 * 									TRUE = produce truncated URL path, e.g. e107plugins/etc
@@ -1460,7 +1463,7 @@ class e_parse
 	 *
 	 * @param string $url
 	 * @param string $mode 0-folders, 1-relative, 2-absolute, 3-full (with domain), 4-absolute & relative (combination of 1,2,3)
-	 * @return
+	 * @return string
 	 */
 	function createConstants($url, $mode = 0)
 	{
