@@ -24,30 +24,37 @@ if (!e107::isInstalled('metaweblog'))
 	header("location:".e_BASE."index.php"); 
 }
 
+
+if((e_QUERY == 'rsd') || isset($_GET['rsd'])) // http://archipelago.phrasewise.com/rsd
+{ 
+	header('Content-Type: text/xml; charset=UTF-8', true);
+	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+	<rsd version=\"1.0\" xmlns=\"http://archipelago.phrasewise.com/rsd\">
+	  <service>
+	    <engineName>e107</engineName>
+	    <engineLink>http://www.e107.org/</engineLink>
+	    <homePageLink>".SITEURL."</homePageLink>
+	    <apis>
+	      <api name=\"WordPress\" blogID=\"1\" preferred=\"true\" apiLink=\"".SITEURLBASE.e_PLUGIN_ABS."metaweblog/metaweblog.php\" />
+	      <api name=\"Movable Type\" blogID=\"1\" preferred=\"false\" apiLink=\"". SITEURLBASE.e_PLUGIN_ABS."metaweblog/metaweblog.php\" />
+	      <api name=\"MetaWeblog\" blogID=\"1\" preferred=\"false\" apiLink=\"". SITEURLBASE.e_PLUGIN_ABS."metaweblog/metaweblog.php\" />
+	      <api name=\"Blogger\" blogID=\"1\" preferred=\"false\" apiLink=\"". SITEURLBASE.e_PLUGIN_ABS."metaweblog/metaweblog.php\"  />
+	    </apis>
+	  </service>
+	</rsd>";
+	
+	exit;
+}
+
+
+
+
 // These three files are from the PHP-XMLRPC library.
 include (e_HANDLER.'xmlrpc/xmlrpc.inc');
 include (e_HANDLER.'xmlrpc/xmlrpcs.inc');
 include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc');
 
-if ( isset( $_GET['rsd'] ) ) { // http://archipelago.phrasewise.com/rsd
-header('Content-Type: text/xml; charset=UTF-8', true);
-echo '<?xml version="1.0" encoding="UTF-8"?>'; ?>
-<rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd">
-  <service>
-    <engineName>e107</engineName>
-    <engineLink>http://www.e107.org/</engineLink>
-    <homePageLink><?php echo SITEURL ?></homePageLink>
-    <apis>
-      <api name="WordPress" blogID="1" preferred="true" apiLink="<?php echo SITEURLBASE.e_PLUGIN_ABS.'metaweblog/metaweblog.php' ?>" />
-      <api name="Movable Type" blogID="1" preferred="false" apiLink="<?php echo SITEURLBASE.e_PLUGIN_ABS.'metaweblog/metaweblog.php' ?>" />
-      <api name="MetaWeblog" blogID="1" preferred="false" apiLink="<?php echo SITEURLBASE.e_PLUGIN_ABS.'metaweblog/metaweblog.php' ?>" />
-      <api name="Blogger" blogID="1" preferred="false" apiLink="<?php echo SITEURLBASE.e_PLUGIN_ABS.'metaweblog/metaweblog.php' ?>" />
-    </apis>
-  </service>
-</rsd>
-<?php
-exit;
-}
+
 
 
 //general note: XMLRPC method functions parameters
