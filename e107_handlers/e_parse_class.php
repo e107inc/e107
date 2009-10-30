@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.74 $
-* $Date: 2009-10-30 21:32:18 $
+* $Revision: 1.75 $
+* $Date: 2009-10-30 22:19:56 $
 * $Author: marj_nl_fr $
 *
 */
@@ -274,8 +274,14 @@ class e_parse
 	}
 	
 
-
-	function uStrLen($str)
+	/**
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strlen strlen PHP function.
+	 * Returns the length of the given string.
+	 * 
+	 * @param string $str - The UTF-8 encoded string being measured for length.
+	 * @return integer - The length (amount of UTF-8 characters) of the string on success, and 0 if the string is empty.
+	 */
+	public function uStrLen($str)
 	{
 		switch($this->utfAction)
 		{
@@ -290,7 +296,14 @@ class e_parse
 	}
 
 
-	function uStrToLower($str)
+	/**
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtolower strtolower PHP function.
+	 * Make a string lowercase.
+	 * 
+	 * @param string $str - The UTF-8 encoded string to be lowercased.
+	 * @return string - Specified string with all alphabetic characters converted to lowercase.
+	 */
+	public function uStrToLower($str)
 	{
 		switch($this->utfAction)
 		{
@@ -304,7 +317,14 @@ class e_parse
 	}
 
 
-	function uStrToUpper($str)
+	/**
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtoupper strtoupper PHP function.
+	 * Make a string uppercase.
+	 *
+	 * @param string $str - The UTF-8 encoded string to be uppercased.
+	 * @return string - Specified string with all alphabetic characters converted to uppercase.
+	 */
+	public function uStrToUpper($str)
 	{
 		switch($this->utfAction)
 		{
@@ -318,7 +338,19 @@ class e_parse
 	}
 
 
-	function uStrPos($haystack, $needle, $offset = 0)
+	/**
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strpos strpos PHP function.
+	 * Find the position of the first occurrence of a case-sensitive UTF-8 encoded string.
+	 * Returns the numeric position (offset in amount of UTF-8 characters)
+	 *  of the first occurrence of needle in the haystack string.
+	 *  
+	 * @param string $haystack - The UTF-8 encoded string being searched in.
+	 * @param integer $needle - The UTF-8 encoded string being searched for.
+	 * @param integer $offset [optional] - The optional offset parameter allows you to specify which character in haystack to start searching.
+	 * 				 The position returned is still relative to the beginning of haystack.
+	 * @return integer|boolean - Returns the position as an integer. If needle is not found, the function will return boolean FALSE.
+	 */
+	public function uStrPos($haystack, $needle, $offset = 0)
 	{
 		switch($this->utfAction)
 		{
@@ -331,7 +363,19 @@ class e_parse
 	}
 
 
-	function uStrrPos($haystack, $needle, $offset = 0)
+	/**
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/strrpos strrpos PHP function.
+	 * Find the position of the last  occurrence of a case-sensitive UTF-8 encoded string.
+	 * Returns the numeric position (offset in amount of UTF-8 characters)
+	 *  of the last occurrence of needle in the haystack string.
+	 *  
+	 * @param string $haystack - The UTF-8 encoded string being searched in.
+	 * @param integer $needle - The UTF-8 encoded string being searched for.
+	 * @param integer $offset [optional] - The optional offset parameter allows you to specify which character in haystack to start searching.
+	 * 				 The position returned is still relative to the beginning of haystack.
+	 * @return integer|boolean - Returns the position as an integer. If needle is not found, the function will return boolean FALSE.
+	 */
+	public function uStrrPos($haystack, $needle, $offset = 0)
 	{
 		switch($this->utfAction)
 		{
