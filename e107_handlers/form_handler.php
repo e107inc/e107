@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.60 $
- * $Date: 2009-10-28 17:05:34 $
+ * $Revision: 1.61 $
+ * $Date: 2009-10-30 17:59:30 $
  * $Author: secretr $
  *
 */
@@ -99,7 +99,7 @@ class e_form
 		// The button itself could be replaced with an icon just for this purpose.
 
 
-		$e107 = &e107::getInstance();
+		$e107 = e107::getInstance();
 		$id = $this->name2id($name);
 		$sc_parameters .= '&id='.$id;
 		$jsfunc = $ajax ? "e107Ajax.toggleUpdate('{$id}-iconpicker', '{$id}-iconpicker-cn', 'sc:iconpicker=".urlencode($sc_parameters)."', '{$id}-iconpicker-ajax', { overlayElement: '{$id}-iconpicker-button' })" : "e107Helper.toggle('{$id}-iconpicker')";
@@ -116,35 +116,64 @@ class e_form
 
 		return $ret;
 	}
+	
+	// FIXME - better GUI, {IMAGESELECTOR} rewrite, flexibility, thumbnails, tooltip image preivew, etc.
+	function imagepicker($name, $default, $label = '', $sc_parameters = '')
+	{
+		if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
+		if(!$label) $label = LAN_SELECT;
+		$parms = "name={$name}";
+		$parms .= "&path=".urlencode(e107::getParser()->replaceConstants(vartue($sc_parameters['path'], '{e_FILE}images/')));
+		$parms .= "&filter=0";
+		$parms .= "&fullpath=1";
+		$parms .= "&default=".$default;
+		$parms .= "&multiple=FALSE";
+		$parms .= "&label=-- ".$label." --";
+		$parms .= "&subdirs=0";
+		//$parms .= "&tabindex=".$this->getNext();
+		//$parms .= "&click_target=data";
+		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
+		//$parms .= "&click_postfix=[/img]";
 
-   /**
-    * Date field with popup calendar
-    * @param name => string - the name of the field
-    * @param datestamp => UNIX timestamp - default value of the field
-    **/
-   function datepicker($name, $datestamp=false)
-   {
-      global $pref;
-      //TODO can some of these values be set in an admin section somewhere so they are set per site?
-      //TODO allow time option ?
-      $cal = new DHTML_Calendar(true);
-		$cal_options['showsTime'] = false;
-		$cal_options['showOthers'] = false;
-		$cal_options['weekNumbers'] = false;
-		//TODO use $prefs values for format?
-		$cal_options['ifFormat'] = $pref['inputdate'];
+		$ret = "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
+		$ret = "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
+		return $text;
+	}
+	
+	/**
+	 * Date field with popup calendar
+	 * @param string $name the name of the field
+	 * @param integer $datestamp UNIX timestamp - default value of the field
+	 * @param array $options calendar options
+	 */
+	function datepicker($name, $datestamp = false, $options = array())
+	{
+		$cal = new DHTML_Calendar(true);
+		$cal_options['showsTime'] = varset($options['time'], true);
+		$cal_options['showOthers'] = varset($options['others'], false);
+		$cal_options['weekNumbers'] = varset($options['weeks'], false);
+		$cal_options['ifFormat'] = e107::getPref('inputdate', '%d/%m/%Y %H:%M:%S');
 		$cal_options['timeFormat'] = "24";
-		$cal_attrib['class'] = "tbox";
-		$cal_attrib['size'] = "12";
+		$cal_attrib['class'] = "tbox date";
+		$cal_attrib['size'] = varset($options['size'], 25);
 		$cal_attrib['name'] = $name;
 		if ($datestamp)
 		{
-   		//TODO use $prefs values for format?
-		   $cal_attrib['value'] = date("d/m/Y H:i:s", $datestamp);
-		   $cal_attrib['value'] = date("d/m/Y", $datestamp);
+		   $cal_attrib['value'] = e107::getDateConvert()->convert_date($datestamp, 'input'); //date("d/m/Y H:i:s", $datestamp);
 		}
+		//JS manager to send JS/CSS to header if possible, if not - footer
+		e107::getJs()// FIXME - no CSS support yet!!! ->tryHeaderFile($cal->calendar_theme_file)
+			->tryHeaderFile($cal->calendar_file)
+			->tryHeaderFile($cal->calendar_setup_file)
+			->tryHeaderFile($cal->calendar_lang_file);
+
 		return $cal->make_input_field($cal_options, $cal_attrib);
-   }
+	}
+	
+	function user($name, $default_id, $options = array())
+	{
+		return 'User auto-complete search - under development';
+	}
 
 	function file($name, $options = array())
 	{
@@ -833,38 +862,59 @@ class e_form
 			}
 			
 			$tdclass = vartrue($data['class']);
-			if($tdclass)
-			{
-				$tdclass = ' class="'.$tdclass.'"';
-			}
-			
 			$value = $fieldvalues[$field];
-			
+
 			$parms = array();
-			if(isset($data['colparms'])) //TODO rename to 'parms'. 
+			if(isset($data['parms']))
 			{
-				if(!is_array($data['colparms'])) parse_str($data['colparms'], $data['colparms']);
-				$parms = $data['colparms'];
+				if(!is_array($data['parms'])) parse_str($data['parms'], $data['parms']);
+				$parms = $data['parms'];
 			}
 
 			switch($field) // special fields
 			{
 				case 'options':
-					$value = "<input type='image' class='action edit' name='edit[{$fieldvalues[$pid]}]' src='".ADMIN_EDIT_ICON_PATH."' title='".LAN_EDIT."' />";
-					$value .= "<input type='image' class='action delete' name='delete[{$fieldvalues[$pid]}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$fieldvalues[$pid]} ]' />";
+					if(!$value)
+					{
+						parse_str(str_replace('&amp;', '&', e_QUERY), $query);
+						// keep other vars in tact
+						$query['action'] = 'edit'; 
+						$query['id'] = $fieldvalues[$pid]; 
+						
+						//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $fieldvalues[$pid]);
+						$query = http_build_query($query);
+
+						$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>&nbsp;";
+						$value .= $this->submit_image('delete['.$fieldvalues[$pid].']', $fieldvalues[$pid], 'delete', LAN_DELETE.' [ ID: '.$fieldvalues[$pid].' ]');
+					}
 					$data['type'] = 'text';
 				break;
 			
 				case 'checkboxes':
 					$value = $this->checkbox(vartrue($data['toggle'], 'multiselect').'['.$fieldvalues[$pid].']', $fieldvalues[$pid]);
 					$data['type'] = 'text';
+					$tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
 				break;
 			}
 			
 			switch($data['type'])
 			{
-				case 'text':
 				case 'number':
+					// same
+				break;
+				
+				case 'text':
+					if(vartrue($parms['truncate']))
+					{
+						$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+					}
+					elseif(vartrue($parms['htmltruncate']))
+					{
+						$value = e107::getParser()->html_truncate($value, $parms['htmltruncate'], '...');
+					}
+				break;
+				
+				case 'icon':
 				case 'image': //TODO - thumb, js tooltip...
 					//same
 				break;
@@ -891,6 +941,10 @@ class e_form
 					{
 						$value = 'not found';
 					}
+					if(vartrue($parms['truncate']))
+					{
+						$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+					}
 				break;
 				
 				case 'boolean':
@@ -898,12 +952,17 @@ class e_form
 				break;
 								
 				case 'url':
-					$value = "<a href='".$value ."'>".$value."</a>";
+					$ttl = $data['title'];
+					if(vartrue($parms['truncate']))
+					{
+						$ttl = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+					}
+					$value = "<a href='".e107::getParser()->replaceConstants($value, 'abs')."' title='{$value}'>".$ttl."</a>";
 				break;
 				
 				case 'method': // Custom Function 
-					$meth = $field;
-					$value = $obj->$meth($value,$obj->mode);
+					$method = $field;
+					$value = call_user_func_array(array($this, $method), array($value, 'list'));
 				break;
 				
 				//TODO - form_userclass, order,... and maybe more types
@@ -912,17 +971,11 @@ class e_form
 					continue; //unknown type
 				break;
 			}
-			
-			//TODO - this should be done per type! 
-			if(vartrue($parms['truncate']))
+
+			if($tdclass)
 			{
-				$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+				$tdclass = ' class="'.$tdclass.'"';
 			}
-			elseif(vartrue($parms['htmltruncate']))
-			{
-				$value = e107::getParser()->html_truncate($value, $parms['htmltruncate'], '...');
-			}
-			
 			$ret .= '
 				<td'.$tdclass.'>
 					'.$value.'
@@ -940,74 +993,75 @@ class e_form
 					'.$ret.'
 				</tr>
 			';
-			}
-			return '';
 		}
 		
-		// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
-		function filterType($fieldarray)
+		return '';
+	}
+		
+	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
+	function filterType($fieldarray)
+	{
+		return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
+		define("e_AJAX_REQUEST", TRUE);
+		$text = "<select name='search_filter[]' style='margin:2px' onchange='UpdateForm(this.options[selectedIndex].value)'>";
+		foreach ($fieldarray as $key=>$val)
 		{
-			return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
-			define("e_AJAX_REQUEST", TRUE);
-			$text = "<select name='search_filter[]' style='margin:2px' onchange='UpdateForm(this.options[selectedIndex].value)'>";
-			foreach ($fieldarray as $key=>$val)
+			$text .= varset($val['type']) ? "<option value='$key'>".$val['title']."</option>\n" : "";
+			
+		}
+		$text .= "</select>";
+		return $text;
+	}
+		
+	function filterValue($type = '', $fields = '')
+	{
+		return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
+		
+		if($type)
+		{
+		
+			switch($fields[$type]['type'])
 			{
-				$text .= varset($val['type']) ? "<option value='$key'>".$val['title']."</option>\n" : "";
+				case "datestamp":
+					return "[date field]";
+				break;
 				
-			}
-			$text .= "</select>";
-			return $text;
-		}
-		
-		function filterValue($type = '', $fields = '')
-		{
-			return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
-			
-			if($type)
-			{
-			
-				switch($fields[$type]['type'])
-				{
-					case "datestamp":
-						return "[date field]";
-					break;
-					
-					case "boolean":
-					
-						return "<select name='searchquery'><option value='1'>".LAN_YES."</option>\n
-				  	<option value='0'>".LAN_NO."</option>
-				  	</select>";
-					break;
-					
-					case "user":
-						return "<select name='searchquery'><option value='1'>User One</option><option value='2'>User Two</option></select>";
-					break;
+				case "boolean":
+				
+					return "<select name='searchquery'><option value='1'>".LAN_YES."</option>\n
+			  	<option value='0'>".LAN_NO."</option>
+			  	</select>";
+				break;
+				
+				case "user":
+					return "<select name='searchquery'><option value='1'>User One</option><option value='2'>User Two</option></select>";
+				break;
 
+				
+				default:
+				
+					return $this->text('searchquery', '', 50);
 					
-					default:
-					
-						return $this->text('searchquery', '', 50);
-						
-				}
 			}
-			else
-			{
-				return $this->text('searchquery', '', 50);
-			}
-			// This needs to be dynamic for the various form types, and be loaded via ajax.
 		}
-		
-		/**
-		 * Generates a batch options select component
-		 * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
-		 * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
-		 *
-		 * @param array $options associative array of option elements, keyed on the option value
-		 * @param array ucOptions [optional] associative array of userclass option groups to display, keyed on the option value prefix
-		 * @return string the HTML for the form component
-		 */
-		function batchoptions($options, $ucOptions = null)
+		else
 		{
+			return $this->text('searchquery', '', 50);
+		}
+		// This needs to be dynamic for the various form types, and be loaded via ajax.
+	}
+		
+	/**
+	 * Generates a batch options select component
+	 * This component is generally associated with a table of items where one or more rows in the table can be selected (using checkboxes).
+	 * The list options determine some processing that wil lbe applied to all checked rows when the form is submitted.
+	 *
+	 * @param array $options associative array of option elements, keyed on the option value
+	 * @param array ucOptions [optional] associative array of userclass option groups to display, keyed on the option value prefix
+	 * @return string the HTML for the form component
+	 */
+	function batchoptions($options, $ucOptions = null)
+	{
 			$text = "
          <div class='f-left'>
          <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
@@ -1076,7 +1130,7 @@ class e_form
 		$text .= "
 				".$this->select_close()."
 				".$this->admin_button('trigger_execute_batch', 'trigger_execute_batch', 'submit multi e-hide-if-js', 'Go')."
-			</div><span class='clear'></span>
+			</div><div class='clear'></div>
 		";
 		
 		return $text;

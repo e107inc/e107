@@ -9,9 +9,9 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.61 $
- * $Date: 2009-10-26 07:26:47 $
- * $Author: e107coders $
+ * $Revision: 1.62 $
+ * $Date: 2009-10-30 17:59:32 $
+ * $Author: secretr $
 */
 require_once("../class2.php");
 
@@ -265,7 +265,7 @@ class admin_newspost
  				'news_title'			=> array('title' => NWSLAN_40, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_rewrite_string'	=> array('title' => 'SEF URL', 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
     			'user_name'				=> array('title' => LAN_NEWS_50, 	'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'colparms' => 'mask=%A %d %B %Y'),
+				'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
                 'category_name'			=> array('title' => NWSLAN_6, 		'type' => 'text', 		'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
   				'news_class'			=> array('title' => NWSLAN_22, 		'type' => 'userclass', 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_render_type'		=> array('title' => LAN_NEWS_49, 	'type' => 'dropdown', 	'width' => 'auto', 	'thclass' => 'center', 			'class' => null, 		'nosort' => false),
@@ -1143,7 +1143,7 @@ class admin_newspost
 				}
 				
 				// AUTO RENDER
-				$text .= $frm->trow($this, $row);
+				$text .= $frm->trow($this->fields, $this->fieldpref, $row, 'news_id');
 			}
 
 			$text .= "
@@ -1207,7 +1207,7 @@ class admin_newspost
 					'comments'				=> array('Modify Comments', $comments_array),
 					'__check_class' 		=> array('category' => $news_manage)
 			),
-		      array(
+		    array(
 		         	'userclass'    			=> array('Assign Visibility...',$classes),
 			)
 	   );

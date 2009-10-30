@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-10-28 17:05:34 $
+ * $Revision: 1.27 $
+ * $Date: 2009-10-30 17:59:31 $
  * $Author: secretr $
 */
 
@@ -44,6 +44,15 @@ class e_model
      * @var array
      */
     protected $_data_fields = array();
+	
+	/**
+	 * Current model DB table, used in all db calls
+	 * 
+	 * This can/should be overwritten/set by extending the class
+	 * 
+	 * @var string
+	 */
+	protected $_db_table;
     
     /**
      * Runtime cache of parsed from {@link _getData()} keys
@@ -74,8 +83,14 @@ class e_model
 	 * @var string 
 	 */
 	protected $_message_stack = 'default';
-    
-
+	
+	/**
+	 * Model parameters passed mostly from external sources
+	 * 
+	 * @var array
+	 */
+	protected $_params = array();
+	
     /**
      * Constructor - set data on initialization
      *
@@ -84,6 +99,27 @@ class e_model
 	function __construct($data = array())
 	{
 		$this->setData($data);
+	}
+	
+	/**
+	 * Optional DB table - used for auto-load data from the DB
+	 * @param string $table
+	 * @return e_model
+	 */	
+	public function getModelTable()
+	{
+		return $this->_db_table;
+	}
+
+	/**
+	 * Set model DB table
+	 * @param string $table
+	 * @return e_model
+	 */	
+	public function setModelTable($table)
+	{
+		$this->_db_table = $table;
+		return $this;
 	}
 	
     /**
@@ -427,7 +463,7 @@ class e_model
 		        return $this;
 	    	}
 
-            $this->$data_src = $key;
+            $this->${data_src} = $key;
             return $this;
         } 
         
@@ -765,13 +801,33 @@ class e_model
     }
     
     /**
-     * Load data from DB
-     * Awaiting for child class implementation
-     *
+     * Generic load data from DB
+     * @param boolean $force
+     * @return e_admin
      */
-    public function load()
-    {
-    }
+	public function load($id, $force = false)
+	{
+		if($this->hasData() && !$force)
+		{
+			return $this;
+		}
+		$id = intval($id);
+		
+		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
+		if(!$qry)
+		{
+			$qry = '
+				SELECT * FROM #'.$this->getModelTable().' WHERE '.$this->getFieldIdName().'='.$id.'
+			';
+		}
+		//TODO - error reporting
+		$sql = e107::getDb();
+		if($sql->db_Select_gen($qry))
+		{
+			$this->setData($sql->db_Fetch());
+		}
+		return $this;
+	}
     
     /**
      * Save data to DB
@@ -799,6 +855,73 @@ class e_model
     public function dbUpdate()
     {
     }
+	
+    /**
+     * Replace DB record
+     * Awaiting for child class implementation
+     * @see e_model_admin
+     */
+    public function dbReplace()
+    {
+    }
+	
+    /**
+     * Delete DB data
+     * Awaiting for child class implementation
+     * @see e_model_admin
+     */
+    public function dbDelete()
+    {
+    }
+	
+	/**
+	 * Set parameter array
+	 * Core parameters:
+	 * - db_query: string db query to be passed to load() ($sql->db_Select_gen())
+	 * - model_class: e_tree_model class - string class name for creating nodes inside default load() method
+	 *
+	 * @param array $params
+	 * @return e_model
+	 */
+	public function setParams(array $params)
+	{
+		$this->_params = $params;
+		return $this;
+	}
+	
+	/**
+	 * Get parameter array
+	 * 
+	 * @return array parameters
+	 */
+	public function getParams()
+	{
+		return $this->_params;
+	}
+	
+	/**
+	 * Set parameter
+	 * 
+	 * @param string $key 
+	 * @param mixed $value
+	 * @return e_model
+	 */
+	public function setParam($key, $value)
+	{
+		$this->_params[$key] = $value;
+		return $this;
+	}
+	
+	/**
+	 * Get parameter
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 */
+	public function getParam($key, $default = null)
+	{
+		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
+	}
 	
 	/**
 	 * Try to convert string to a number
@@ -863,6 +986,16 @@ class e_model
 	{
 		return $this->toString((@func_get_arg(0) === true));
 	}
+	
+	public function destroy()
+	{
+		$this->_data = array();
+		$this->_params = array();
+		$this->_data_fields = array();
+		$this->_parsed_keys = array();
+		$this->_db_table = $this->_field_id = '';
+		$this->data_has_changed = false;
+	}
 }
 
 //FIXME - move e_model_admin to e_model_admin.php
@@ -895,15 +1028,6 @@ class e_model
  */
 class e_admin_model extends e_model
 {
-	/**
-	 * Current model DB table, used in all db calls
-	 * 
-	 * This can/should be overwritten by extending the class
-	 * 
-	 * @var string
-	 */
-	protected $_db_table;
-	
     /**
     * Posted data
     * Back-end related
@@ -926,7 +1050,7 @@ class e_admin_model extends e_model
      * Validation structure - see {@link e_validator::$_required_rules} for
      * more information about the array format.
      * Used in {@link validate()} method.
-     * 
+     * TODO - check_rules (see e_validator::$_optional_rules)
      * This can/should be overwritten by extending the class.
      *
      * @var array
@@ -944,17 +1068,6 @@ class e_admin_model extends e_model
      * @var e_validator 
      */
     protected $_validator = null;
-	
-	public function setModelTable($table)
-	{
-		$this->_db_table = $table;
-		return $this;
-	}
-	
-	public function getModelTable()
-	{
-		return $this->_db_table;
-	}
 	
     /**
      * @return array
@@ -1450,11 +1563,29 @@ class e_admin_model extends e_model
     }
 	
     /**
+     * Generic load data from DB
+     * @param boolean $force
+     * @return e_admin_model
+     */
+	public function load($id, $force = false)
+	{
+		parent::load($id, $force);
+		
+		$this->_db_errno = e107::getDb()->getLastErrorNumber();
+		if($this->_db_errno)
+		{
+			$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
+			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+		}
+		return $this;
+	}
+	
+    /**
      * Save data to DB
      * 
      * @param boolen $from_post
      */
-    public function save($from_post = true)
+    public function save($from_post = true, $force = false, $session_messages = false)
     {
     	if(!$this->getFieldIdName())
 		{
@@ -1469,11 +1600,24 @@ class e_admin_model extends e_model
 		
 		if($this->getId())
 		{
-			return $this->dbUpdate();
+			return $this->dbUpdate($force, $session_messages);
 		}
 		
-		return $this->dbInsert();
+		return $this->dbInsert($force, $session_messages);
     }
+	
+	public function delete($destroy = true, $session_messages = false)
+	{
+		$ret = $this->dbDelete();
+		if($ret)
+		{
+			if($destroy)
+			{
+				$this->setMessages(true, $session_messages)->destroy();
+			}
+		}
+		return $ret;
+	}
     
     /**
      * Insert data to DB
@@ -1484,7 +1628,7 @@ class e_admin_model extends e_model
     public function dbInsert($force = false, $session_messages = false)
     {
     	$this->_db_errno = 0;
-		if(!$this->data_has_changed && !$force)
+		if($this->hasError() || (!$this->data_has_changed && !$force))
 		{
 			return 0;
 		}
@@ -1509,7 +1653,7 @@ class e_admin_model extends e_model
     public function dbReplace($force = false, $session_messages = false)
     {
     	$this->_db_errno = 0;
-		if(!$this->data_has_changed && !$force)
+		if($this->hasError() || (!$this->data_has_changed && !$force))
 		{
 			return 0;
 		}
@@ -1537,6 +1681,10 @@ class e_admin_model extends e_model
     public function dbUpdate($force = false, $session_messages = false)
     {
     	$this->_db_errno = 0;
+		if($this->hasError() || (!$this->data_has_changed && !$force))
+		{
+			return 0;
+		}
 		$res = e107::getDb()->db_Update($this->getModelTable(), $this->toSqlQuery('update'));
 		if(!$res)
 		{
@@ -1560,6 +1708,11 @@ class e_admin_model extends e_model
     public function dbDelete($session_messages = false)
     {
     	$this->_db_errno = 0;
+		if($this->hasError())
+		{
+			return 0;
+		}
+		
 		if(!$this->getId())
 		{
 			$this->addMessageError('Record not found', $session_messages); //TODO - Lan
@@ -1587,20 +1740,33 @@ class e_admin_model extends e_model
 	 */
 	public function toSqlQuery($force = '')
 	{
-		$fields = array_keys($this->_data_fields);
 		$qry = array();
 		
-		$action = $this->getId() ? 'update' : 'create';
 		if($force)
 		{
 			$action = $force;
 		}
-		
-		foreach ($fields as $key => $value)
+		else
 		{
+			$action = $this->getId() ? 'update' : 'create';
+		}
+		
+		$qry['_FIELD_TYPES'] = $this->_FIELD_TYPES; //DB field types are optional
+		$qry['data'][$this->getFieldIdName()] = $this->getId();
+		$qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'int';
+		
+		foreach ($this->_data_fields as $key => $type)
+		{
+			if($key == $this->getFieldIdName())
+			{
+				continue;
+			}
+			if(!isset($qry['_FIELD_TYPES'][$key]))
+			{
+				$qry['_FIELD_TYPES'][$key] = $type; //_FIELD_TYPES much more optional now...
+			}
 			$qry['data'][$key] = $this->getData($key);
 		}
-		$qry['_FIELD_TYPES'] = $this->_FIELD_TYPES;
 		
 		switch($action)
 		{
@@ -1690,6 +1856,17 @@ class e_admin_model extends e_model
 		
 		return null;
 	}
+
+	public function destroy()
+	{
+		parent::destroy();
+		$this->_validator = null;
+		$this->_validation_rules = array();
+		$this->_db_errno = null;
+		$this->_posted_data = array();
+		$this->data_has_changed = array();
+		$this->_FIELD_TYPES = array();		
+	}
 }
 
 /**
@@ -1697,11 +1874,6 @@ class e_admin_model extends e_model
  */
 class e_tree_model extends e_model 
 {
-	/**
-	 * @var array
-	 */
-	protected $_params = array();
-	
 	/**
 	 * Current model DB table, used in all db calls
 	 * This can/should be overwritten by extending the class
@@ -1717,9 +1889,21 @@ class e_tree_model extends e_model
 	 */
 	protected $_total = 0;
 	
+	/**
+	 * Constructor
+	 *
+	 */
+	function __construct($tree_data = array())
+	{
+		if($tree_data)
+		{
+			$this->setTree($tree_data);
+		}
+	}
+	
 	public function getTotal()
 	{
-		return $this->_total;
+		return $this->_total; 
 	}
 	
 	public function setTotal($num)
@@ -1746,18 +1930,6 @@ class e_tree_model extends e_model
 	public function getModelTable()
 	{
 		return $this->_db_table;
-	}
-	
-	/**
-	 * Constructor
-	 *
-	 */
-	function __construct($tree_data = array())
-	{
-		if($tree_data)
-		{
-			$this->setTree($tree_data);
-		}
 	}
 	
 	/**
@@ -1788,8 +1960,14 @@ class e_tree_model extends e_model
 	 * 
 	 * @return e_tree_model
 	 */
-	public function load()
+	public function load($force = false)
 	{
+		
+		if(!$this->isEmpty() && !$force)
+		{
+			return $this;
+		}
+		
 		if($this->getParam('db_query') && $this->getParam('model_class') && class_exists($this->getParam('model_class')))
 		{
 			$sql = e107::getDb();
@@ -1797,11 +1975,18 @@ class e_tree_model extends e_model
 			if($sql->db_Select_gen($this->getParam('db_query')))
 			{
 				$this->_total = $sql->total_results; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+				
 				while($tmp = $sql->db_Fetch())
 				{
 					$tmp = new $class_name($tmp);
-					$this->setNode($tmp->getId(), $tmp);
+					$this->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
+				if(!$this->_total && $this->getModelTable())
+				{
+					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
+					$this->_total = e107::getDb()->db_Count($this->getModelTable());
+				}
+				
 				unset($tmp);
 			}
 		}
@@ -1866,57 +2051,7 @@ class e_tree_model extends e_model
 	 */
 	function isEmpty()
 	{
-		return $this->has('__tree');
-	}
-	
-	/**
-	 * Set parameter array
-	 * Core parameters:
-	 * - db_query: string db query to be passed to $sql->db_Select_gen();
-	 * - model_class: string class name for creating nodes inside default load() method
-	 *
-	 * @param array $params
-	 * @return e_tree_model
-	 */
-	public function setParams(array $params)
-	{
-		$this->_params = $params;
-		return $this;
-	}
-	
-	
-	/**
-	 * Get parameter array
-	 * 
-	 * @return array parameters
-	 */
-	public function getParams()
-	{
-		return $this->_params;
-	}
-	
-	/**
-	 * Set parameter
-	 * 
-	 * @param string $key 
-	 * @param mixed $value
-	 * @return e_tree_model
-	 */
-	public function setParam($key, $value)
-	{
-		$this->_params[$key] = $value;
-		return $this;
-	}
-	
-	/**
-	 * Get parameter
-	 *
-	 * @param string $key
-	 * @param mixed $default
-	 */
-	public function getParam($key, $default = null)
-	{
-		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
+		return (!$this->has('__tree'));
 	}
 }
 
@@ -1931,11 +2066,11 @@ class e_admin_tree_model extends e_tree_model
 	 */
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
-		if(is_string($ids))
+		if(!$ids) return $this;
+		if(is_array($ids))
 		{
-			$ids = explode(',', $ids);
+			$ids = implode(',', $ids);
 		}
-		
 		$ids = e107::getParser()->toDB($ids);
 		$sql = e107::getDb();
 		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$ids.')');
@@ -1949,10 +2084,19 @@ class e_admin_tree_model extends e_tree_model
 		}
 		elseif($destroy)
 		{
+			if(is_string($ids))
+			{
+				$ids = explode(',', $ids);
+			}
+			
 			foreach ($ids as $id)
 			{
-				call_user_func(array($this->getNode($id), 'destroy')); // first call model destroy method if any
-				$this->setNode($id, null);
+				if($this->getNode($id))
+				{
+					$this->getNode($id)->setMessages(true, $session_messages);
+					call_user_func(array($this->getNode(trim($id)), 'destroy')); // first call model destroy method if any
+					$this->setNode($id, null);
+				}
 			}
 		}
 		

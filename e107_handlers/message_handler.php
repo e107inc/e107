@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-10-22 14:18:18 $
+ * $Revision: 1.23 $
+ * $Date: 2009-10-30 17:59:32 $
  * $Author: secretr $
  *
 */
@@ -511,20 +511,22 @@ class eMessage
 	 */
 	public function moveStack($from_stack, $to_stack = 'default', $type = false, $session = true)
 	{
+		if($from_stack == $to_stack) return $this;
 		foreach ($this->_sysmsg as $_type => $stacks)
 		{
 			if($type && $type !== $_type)
 			{
 				continue;
 			}
+			
 			if(isset($stacks[$from_stack]))
 			{
 				if(!isset($this->_sysmsg[$_type][$to_stack]))
 				{
 					$this->_sysmsg[$_type][$to_stack] = array();
 				}
-				array_merge($this->_sysmsg[$_type][$from_stack], $this->_sysmsg[$_type][$to_stack]);
-				unset($this->_sysmsg[$_type][$to_stack]);
+				$this->_sysmsg[$_type][$to_stack] = array_merge($this->_sysmsg[$_type][$to_stack], $this->_sysmsg[$_type][$from_stack]);
+				unset($this->_sysmsg[$_type][$from_stack]);
 			}
 		}
 		
@@ -544,6 +546,7 @@ class eMessage
 	 */
 	public function moveSessionStack($from_stack, $to_stack = 'default', $type = false)
 	{
+		if($from_stack == $to_stack) return $this;
 		foreach ($_SESSION[$this->_session_id] as $_type => $stacks)
 		{
 			if($type && $type !== $_type)
@@ -554,10 +557,10 @@ class eMessage
 			{
 				if(!isset($_SESSION[$this->_session_id][$_type][$to_stack]))
 				{
-					$this->_sysmsg[$_type][$to_stack] = array();
+					$_SESSION[$this->_session_id][$_type][$to_stack] = array();
 				}
-				array_merge($_SESSION[$this->_session_id][$_type][$from_stack], $this->_sysmsg[$_type][$to_stack]);
-				unset($_SESSION[$this->_session_id][$_type][$to_stack]);
+				$_SESSION[$this->_session_id][$_type][$to_stack] = array_merge($_SESSION[$this->_session_id][$_type][$to_stack], $this->_sysmsg[$_type][$from_stack]);
+				unset($_SESSION[$this->_session_id][$_type][$from_stack]);
 			}
 		}
 		

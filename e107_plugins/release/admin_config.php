@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-10-28 17:05:35 $
+ * $Revision: 1.11 $
+ * $Date: 2009-10-30 17:59:32 $
  * $Author: secretr $
  *
 */
@@ -64,29 +64,32 @@ class plugin_release_admin_controller_main extends e_admin_controller_main
 		
 		// optional 
 		protected $perPage = 20;
+		
+		// default - true
+		protected $batchDelete = true;
 	    
 		//TODO change the release_url type back to URL before release. 
 		// required
     	protected  $fields = array(
-			'checkboxes'				=> array('title'=> '', 					'type' => '',		'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center'),
-			'release_id'				=> array('title'=> ID, 					'type' => '',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE),
-            'release_type'	   			=> array('title'=> 'Type', 				'type' => 'method', 'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-			'release_folder' 			=> array('title'=> 'Folder', 			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),	
-			'release_name' 				=> array('title'=> 'Name', 				'type' => 'text', 	'width' => 'auto',	'thclass' => ''),
-			'release_version' 			=> array('title'=> 'Version',			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),
-			'release_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text', 	'width' => 'auto',	'thclass' => 'left'), 
-         	'release_authorURL' 		=> array('title'=> LAN_AUTHOR_URL, 		'type' => 'url', 	'width' => 'auto',	'thclass' => 'left'), 
-            'release_date' 				=> array('title'=> LAN_DATE, 			'type' => 'text', 	'width' => 'auto',	'thclass' => ''),	 
-			'release_compatibility' 	=> array('title'=> 'compatib',			'type' => 'text', 	'width' => '10%',	'thclass' => 'center' ),	 
-			'release_url' 				=> array('title'=> 'Userclass',			'type' => 'userclass', 	'width' => '10%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE),	 
-			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => '', 		'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
+			'checkboxes'				=> array('title'=> '', 					'type' => null,			'data' => null,			'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect'),
+			'release_id'				=> array('title'=> ID, 					'type' => 'int',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is note editable
+            'release_type'	   			=> array('title'=> 'Type', 				'type' => 'method', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
+			'release_folder' 			=> array('title'=> 'Folder', 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),	
+			'release_name' 				=> array('title'=> 'Name', 				'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
+			'release_version' 			=> array('title'=> 'Version',			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
+			'release_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'), 
+         	'release_authorURL' 		=> array('title'=> LAN_AUTHOR_URL, 		'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'), 
+            'release_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => ''),	 
+			'release_compatibility' 	=> array('title'=> 'compatib',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),	 
+			'release_url' 				=> array('title'=> 'release_url',		'type' => 'url', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => true, 'help' => 'Enter release URL here', 'error' => 'please, ener valid URL'),	 
+			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => null, 		'data' => null,			'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
 		);
 		
 		//required - default column user prefs 
-		protected $fieldpref = array('checkboxes', 'release_id', 'release_type', 'release_compatibility', 'options');
+		protected $fieldpref = array('checkboxes', 'release_id', 'release_type', 'release_url', 'release_compatibility', 'options');
 		
-		// required if no custom model is set in init()
-		protected $dataFields = array(
+		// optional if fields 'data' attribute is set or if custom model is set in init()
+		/*protected $dataFields = array(
 			'release_id' => 'int',
 			'release_type' => 'str',
 			'release_folder' => 'str',
@@ -97,10 +100,12 @@ class plugin_release_admin_controller_main extends e_admin_controller_main
 			'release_date' => 'int',
 			'release_compatibility' => 'str',
 			'release_url' => 'str',
-		);
+		);*/
 		
-		// optional
-		protected  $validationRules = array();
+		// optional, could be also set directly from $fields array with attributes 'validate' => true|'rule_name', 'rule' => 'condition_name', 'error' => 'Validation Error message'
+		/*protected  $validationRules = array(
+			'release_url' => array('required', '', 'Release URL', 'Help text', 'not valid error message')
+		);*/
 		
 		// optional
 		protected $prefs = array( //TODO add option for core or plugin pref. 
@@ -110,16 +115,47 @@ class plugin_release_admin_controller_main extends e_admin_controller_main
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
 		);
 		
-		// required if no custom model is set in init()
+		// required if no custom tree model is set in init()
 		protected $listQry = "SELECT * FROM #release"; // without any Order or Limit. 
 		
-		// required if no custom model is set in init()
+		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
 		protected $editQry = "SELECT * FROM #release WHERE release_id = {ID}";
 		
 		// optional
 		public function init()
 		{
 		}
+}
+
+class plugin_release_admin_ui_main extends e_admin_ui
+{
+	function release_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
+	{
+		if($mode == 'list')
+		{
+			return $curVal.' (custom!)';
+		}
+		
+		if($mode == 'batch') // Custom Batch List for release_type
+		{
+			return array('theme'=>"Theme","plugin"=>'Plugin');	
+		}
+		
+		if($mode == 'filter') // Custom Filter List for release_type
+		{
+			return array('theme'=>"Theme","plugin"=>'Plugin');	
+		}
+		
+		$types = array("theme","plugin");
+		$text = "<select class='tbox' name='release_type' >";
+		foreach($types as $val)
+		{
+			$selected = ($curVal == $val) ? "selected='selected'" : "";
+			$text .= "<option value='{$val}' {$selected}>".$val."</option>\n";
+		}
+		$text .= "</select>";
+		return $text;
+	}
 }
 
 $dispatcher = new plugin_release_admin_dispatcher();

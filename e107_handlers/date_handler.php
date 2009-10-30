@@ -1,21 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-10-23 13:06:21 $
-|     $Author: secretr $
-|
-+----------------------------------------------------------------------------+
+ * e107 website system
+ * 
+ * Copyright (c) 2001-2008 e107 Inc. (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://gnu.org).
+ * 
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
+ * $Revision: 1.9 $
+ * $Date: 2009-10-30 17:59:32 $
+ * $Author: secretr $
+ * 
 */
 if (!defined('e107_INIT')) { exit; }
 
@@ -48,6 +43,10 @@ class convert
 				$mask = e107::getPref('shortdate');
 			break;
 
+			case 'input': //New - use inputdate as mask; FIXME - add inputdate to Date site prefs 
+				$mask = e107::getPref('inputdate', '%d/%m/%Y %H:%M:%S');
+			break;
+
 			case 'forum': // DEPRECATED - temporary here from BC reasons only
 			default: 
 				//BC - old 'forum' call
@@ -60,6 +59,12 @@ class convert
 		
 		$datestamp += TIMEOFFSET;
 		return strftime($mask, $datestamp);
+	}
+	
+	function toDate($date_string, $maks = '')
+	{
+		//TODO - convert string to datestamp
+		return time();
 	}
 
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
