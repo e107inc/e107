@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2009-10-29 13:55:08 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.109 $
+|     $Date: 2009-10-30 09:13:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -309,7 +309,7 @@ class e107plugin
 			
 		if($plugin && ($function == 'uninstall') )
 		{
-			if(vartrue($this->unInstallOpts['del_ipool'], FALSE))
+			if(vartrue($this->unInstallOpts['delete_ipool'], FALSE))
 			{
 				$ipool_entry = 'plugin-'.$plugin;
 				e107::getConfig('ipool')->remove($ipool_entry); 	// FIXME - ipool removal issue. 
@@ -871,25 +871,23 @@ class e107plugin
 		$txt .='<br />';
 		return $txt;
 	}
-
-
-	//----------------------------------------------------------
-	//		Install routine for XML file
-	//----------------------------------------------------------
-	//	$id - the number of the plugin in the DB
-	// Values for $function:
-	//		'install'
-	//		'upgrade'
-	//		'uninstall'
-	// 		'refresh' 	- adds things that are missing, but doesn't change any existing settings
-	// $options is an array of possible options - ATM used only for uninstall:
-	//		'del_userclasses' - to delete userclasses created
-	//		'del_tables' - to delete DB tables
-	//		'del_extended' - to delete extended fields
+		
+	/**
+	 * Install routine for XML file
+	 * @param object $id (the number of the plugin in the DB)
+	 * @param object $function install|upgrade|uninstall|refresh (adds things that are missing, but doesn't change any existing settings)
+	 * @param object $options [optional] an array of possible options - ATM used only for uninstall:
+	 * 			'delete_userclasses' - to delete userclasses created
+	 * 			'delete_tables' - to delete DB tables
+	 * 			'delete_xfields' - to delete extended fields
+	 * 			'delete_ipool' - to delete icon pool entry
+	 * 			+ any defined in <pluginname>_setup.php in the uninstall_options() method. 		
+	 * @return 
+	 */
 	function install_plugin_xml($id, $function='', $options = FALSE)
 	{
 		global $pref;
-
+		
 		$sql = e107::getDb();
 		$mes = eMessage::getInstance();
 			
@@ -998,7 +996,7 @@ class e107plugin
 						case 'refresh' :		// Leave things alone
 							break;
 						case 'uninstall' :
-							if (varsettrue($options['del_tables'], FALSE))
+							if (vartrue($options['delete_tables'], FALSE))
 							{
 								$txt = "Removing table {$ct[1]} <br />";
 								$status = $this->manage_tables('remove', array($ct[1])) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;				// Delete the table
@@ -1348,7 +1346,7 @@ class e107plugin
 					
 					case 'uninstall': //If uninstalling, remove all userclasses (active or inactive)
 						
-						if (varsettrue($this->unInstallOpts['del_userclasses'], FALSE))
+						if (varsettrue($this->unInstallOpts['delete_userclasses'], FALSE))
 						{
 							$status = $this->manage_userclass('remove', $name, $description) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 							$mes->add('Removing Userclass: '.$name, $status); 
@@ -1404,7 +1402,7 @@ class e107plugin
 					
 					case 'uninstall': //If uninstalling, remove all extended fields (active or inactive)
 					
-						if (varsettrue($this->unInstallOpts['del_extended'], FALSE))
+						if (varsettrue($this->unInstallOpts['delete_xfields'], FALSE))
 						{
 							$status = ($this->manage_extended_field('remove', $name, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;					
 							$mes->add('Removing Extended Field: '.$name.' ... ', $status);
@@ -1514,7 +1512,7 @@ class e107plugin
 		else
 		{
 			$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plugFolder.'_setup.php';
-		}
+		}	
 		
 		if(is_readable($setup_file))
 		{
@@ -1854,7 +1852,7 @@ class e107plugin
 						echo $plugin_path."/".$addon.".php - ".$passfail."<br />";
 					}
 					$mes = e107::getMessage();
-					$mes->add('Detected addon: <b>'.$addon.'</b>', E_MESSAGE_DEBUG);
+					// $mes->add('Detected addon: <b>'.$addon.'</b>', E_MESSAGE_DEBUG);
 					
 					$p_addons[] = $addon;
 				}
