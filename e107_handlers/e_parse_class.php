@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.73 $
-* $Date: 2009-10-30 21:01:13 $
+* $Revision: 1.74 $
+* $Date: 2009-10-30 21:32:18 $
 * $Author: marj_nl_fr $
 *
 */
@@ -692,8 +692,15 @@ class e_parse
 		return $drain;
 	}
 
-
-	function html_truncate ($text, $len = 200, $more = "[more]")
+	/**
+	 * Truncate a HTML string to a maximum length $len ­ append the string $more if it was truncated
+	 *
+	 * @param string $text ­ string to process
+	 * @param integer $len ­ length of characters to be truncated
+	 * @param string $more ­ string which will be added if truncation
+	 * @return string
+	 */
+	public function html_truncate ($text, $len = 200, $more = ' ... ')
 	{
 		$pos = 0;
 		$curlen = 0;
@@ -771,7 +778,7 @@ class e_parse
 
 
 	/**
-	 * Truncate a string to a maximum length $len ­ append the string $more if it was truncated
+	 * Truncate a string of text to a maximum length $len ­ append the string $more if it was truncated
 	 * Uses current CHARSET ­ for utf-8, returns $len characters rather than $len bytes
 	 *
 	 * @param string $text ­ string to process
