@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.76 $
-* $Date: 2009-10-30 22:51:52 $
-* $Author: e107steved $
+* $Revision: 1.77 $
+* $Date: 2009-10-30 23:31:08 $
+* $Author: marj_nl_fr $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -23,11 +23,22 @@ define("E_NL", chr(2));
 
 class e_parse
 {
-	// Flag for global use indicates whether utf-8 character set
-	var $isutf8 = FALSE;
+	/**
+	 * Flag for global use indicates whether utf-8 character set
+	 * 
+	 * @var boolean
+	 */ 
+	protected $isutf8 = FALSE;
 
-	// Determine how to handle utf-8.   0 = 'do nothing'	1 = 'use mb_string'	2 = emulation
-	var $utfAction;
+	/**
+	 * Determine how to handle utf-8.
+	 *    0 = 'do nothing'
+	 *    1 = 'use mb_string'
+	 *    2 = emulation
+	 * 
+	 * @var integer
+	 */
+	protected $utfAction;
 
 	// Shortcode processor - see __get()
 	//var $e_sc;
@@ -278,8 +289,8 @@ class e_parse
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/strlen strlen PHP function.
 	 * Returns the length of the given string.
 	 * 
-	 * @param string $str - The UTF-8 encoded string being measured for length.
-	 * @return integer - The length (amount of UTF-8 characters) of the string on success, and 0 if the string is empty.
+	 * @param string $str The UTF-8 encoded string being measured for length.
+	 * @return integer The length (amount of UTF-8 characters) of the string on success, and 0 if the string is empty.
 	 */
 	public function uStrLen($str)
 	{
@@ -300,8 +311,8 @@ class e_parse
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtolower strtolower PHP function.
 	 * Make a string lowercase.
 	 * 
-	 * @param string $str - The UTF-8 encoded string to be lowercased.
-	 * @return string - Specified string with all alphabetic characters converted to lowercase.
+	 * @param string $str The UTF-8 encoded string to be lowercased.
+	 * @return string Specified string with all alphabetic characters converted to lowercase.
 	 */
 	public function uStrToLower($str)
 	{
@@ -321,8 +332,8 @@ class e_parse
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/strtoupper strtoupper PHP function.
 	 * Make a string uppercase.
 	 *
-	 * @param string $str - The UTF-8 encoded string to be uppercased.
-	 * @return string - Specified string with all alphabetic characters converted to uppercase.
+	 * @param string $str The UTF-8 encoded string to be uppercased.
+	 * @return string Specified string with all alphabetic characters converted to uppercase.
 	 */
 	public function uStrToUpper($str)
 	{
@@ -344,11 +355,11 @@ class e_parse
 	 * Returns the numeric position (offset in amount of UTF-8 characters)
 	 *  of the first occurrence of needle in the haystack string.
 	 *  
-	 * @param string $haystack - The UTF-8 encoded string being searched in.
-	 * @param integer $needle - The UTF-8 encoded string being searched for.
-	 * @param integer $offset [optional] - The optional offset parameter allows you to specify which character in haystack to start searching.
+	 * @param string $haystack The UTF-8 encoded string being searched in.
+	 * @param integer $needle The UTF-8 encoded string being searched for.
+	 * @param integer $offset [optional] The optional offset parameter allows you to specify which character in haystack to start searching.
 	 * 				 The position returned is still relative to the beginning of haystack.
-	 * @return integer|boolean - Returns the position as an integer. If needle is not found, the function will return boolean FALSE.
+	 * @return integer|boolean Returns the position as an integer. If needle is not found, the function will return boolean FALSE.
 	 */
 	public function uStrPos($haystack, $needle, $offset = 0)
 	{
@@ -369,11 +380,11 @@ class e_parse
 	 * Returns the numeric position (offset in amount of UTF-8 characters)
 	 *  of the last occurrence of needle in the haystack string.
 	 *  
-	 * @param string $haystack - The UTF-8 encoded string being searched in.
-	 * @param integer $needle - The UTF-8 encoded string being searched for.
+	 * @param string $haystack The UTF-8 encoded string being searched in.
+	 * @param integer $needle The UTF-8 encoded string being searched for.
 	 * @param integer $offset [optional] - The optional offset parameter allows you to specify which character in haystack to start searching.
 	 * 				 The position returned is still relative to the beginning of haystack.
-	 * @return integer|boolean - Returns the position as an integer. If needle is not found, the function will return boolean FALSE.
+	 * @return integer|boolean Returns the position as an integer. If needle is not found, the function will return boolean FALSE.
 	 */
 	public function uStrrPos($haystack, $needle, $offset = 0)
 	{
@@ -388,15 +399,28 @@ class e_parse
 	}
 
 
-	// May be subtle differences in return values dependent on which routine is used.
-	//   native substr() routine can return FALSE. mb_substr and utf8_substr just return an empty string.
-	function uSubStr($str, $start, $length = NULL)
+	/**
+	 * Unicode (UTF-8) analogue of standard @link http://php.net/substr substr PHP function.
+	 * Returns the portion of string specified by the start and length parameters.
+	 * 
+	 * NOTE: May be subtle differences in return values dependent on which routine is used.
+	 *  Native substr() routine can return FALSE. mb_substr() and utf8_substr() just return an empty string.
+	 * 
+	 * @param string $str The UTF-8 encoded string.
+	 * @param integer $start Start of portion to be returned. Position is counted in amount of UTF-8 characters from the beginning of str.
+	 * 				First character's position is 0. Second character position is 1, and so on.
+	 * @param integer $length [optional] If length is given, the string returned will contain at most length characters beginning from start 
+	 * 				(depending on the length of string). If length is omitted, the rest of string from start will be returned.
+	 * @return string The extracted UTF-8 encoded part of input string.
+	 */
+	public function uSubStr($str, $start, $length = NULL)
 	{
-		switch ($this->utfAction)
+		switch($this->utfAction)
 		{
-			case 0 : return substr($str, $start, $length);
-			case 1 :
-				if (is_null($length))
+			case 0:
+				return substr($str, $start, $length);
+			case 1:
+				if(is_null($length))
 				{
 					return mb_substr($haystack, $needle);
 				}
@@ -426,15 +450,20 @@ class e_parse
 	*/
 
 
-	function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
+	/**
+	 * Converts the supplied text (presumed to be from user input) to a format suitable for storing in a database table.
+	 *
+	 * @param string $data
+	 * @param boolean $nostrip [optional] Assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless indicate otherwise by setting this var to TRUE.
+	 * 				If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
+	 * @param boolean $no_encode [optional] This parameter should nearly always be FALSE. It is used by the save_prefs() function to preserve HTML content within prefs even when
+	 * 				the save_prefs() function has been called by a non admin user / user without html posting permissions.
+	 * @param boolean $mod [optional] The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
+	 * @param boolean $original_author [optional]
+	 * @return string
+	 */
+	public function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
 	{
-		/**
-		* $nostrip: toDB() assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless you indicate otherwise by setting this var to TRUE.
-		* If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
-		* $no_encode: This var should nearly always be FALSE. It is used by the save_prefs() function to preserve html content within prefs even when
-		* the save_prefs() function has been called by a non admin user / user without html posting permissions.
-		* $mod: the 'no_html' and 'no_php' modifiers blanket prevent html and php posting regardless of posting permissions. (used in logging)
-		*/
 		global $pref;
 		if (is_array($data))
 		{
@@ -738,9 +767,9 @@ class e_parse
 	/**
 	 * Truncate a HTML string to a maximum length $len ­ append the string $more if it was truncated
 	 *
-	 * @param string $text ­ string to process
-	 * @param integer $len ­ length of characters to be truncated
-	 * @param string $more ­ string which will be added if truncation
+	 * @param string $text String to process
+	 * @param integer $len Length of characters to be truncated
+	 * @param string $more String which will be added if truncation
 	 * @return string
 	 */
 	public function html_truncate ($text, $len = 200, $more = ' ... ')
@@ -904,6 +933,7 @@ class e_parse
 
 
 	/**
+	 * Converts the text (presumably retrieved from the database) for HTML output.
 	 *
 	 * @param string $text
 	 * @param boolean $parseBB [optional]
@@ -912,7 +942,7 @@ class e_parse
 	 * @param boolean $wrap [optional]
 	 * @return string
 	 */
-	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap = FALSE)
+	public function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap = FALSE)
 	{
 		if($text == '')
 			return $text;
@@ -1361,10 +1391,10 @@ class e_parse
 	/**
 	 * Convert text blocks which are to be embedded within JS
 	 *
-	 * @param object $stringarray
+	 * @param string|array $stringarray
 	 * @return string
 	 */
-	function toJS($stringarray)
+	public function toJS($stringarray)
 	{
 		$search = array("\r\n", "\r", "<br />", "'");
 		$replace = array("\\n", "", "\\n", "\'");
@@ -1381,8 +1411,8 @@ class e_parse
 	/**
 	 * Convert Text for RSS/XML use.
 	 *
-	 * @param object $text
-	 * @param object $tags [optional]
+	 * @param string $text
+	 * @param boolean $tags [optional]
 	 * @return string
 	 */
 	function toRss($text, $tags = FALSE)
@@ -1428,7 +1458,7 @@ class e_parse
 	 * 									when $mode is "" (default), ALL other e107 constants are replaced
 	 * @return string
 	 */
-	function replaceConstants($text, $mode = '', $all = FALSE)
+	public function replaceConstants($text, $mode = '', $all = FALSE)
 	{
 		if($mode != "")
 		{
@@ -1540,10 +1570,10 @@ class e_parse
 	 * Create and substitute e107 constants in passed URL
 	 *
 	 * @param string $url
-	 * @param string $mode 0-folders, 1-relative, 2-absolute, 3-full (with domain), 4-absolute & relative (combination of 1,2,3)
+	 * @param integer $mode 0-folders, 1-relative, 2-absolute, 3-full (with domain), 4-absolute & relative (combination of 1,2,3)
 	 * @return string
 	 */
-	function createConstants($url, $mode = 0)
+	public function createConstants($url, $mode = 0)
 	{
 		//FIXME - create constants for absolute paths and site URL's
 		$e107 = e107::getInstance();
