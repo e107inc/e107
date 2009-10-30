@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.71 $
-* $Date: 2009-10-30 20:05:17 $
+* $Revision: 1.72 $
+* $Date: 2009-10-30 20:58:51 $
 * $Author: marj_nl_fr $
 *
 */
@@ -207,27 +207,43 @@ class e_parse
 		);
 
 
-		function e_parse()
+	/**
+	 * Constructor - keep it public for backward compatibility
+	 still some new e_parse() in the core
+	 *
+	 * @return void
+	 */
+	public function __construct()
 	{
+		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
+		$this->initCharset();
+	  
 		// Preprocess the supermods to be useful default arrays with all values
-		foreach ($this->e_SuperMods as $key=>$val)
+		foreach ($this->e_SuperMods as $key => $val)
 		{
 			// precalculate super defaults
-			$this->e_SuperMods[$key] = array_merge($this->e_optDefault , $this->e_SuperMods [$key]);
+			$this->e_SuperMods[$key] = array_merge($this->e_optDefault , $this->e_SuperMods[$key]);
 			$this->e_SuperMods[$key]['context'] = $key;
 		}
 	}
 
 
-	// This has to be a separate function - can't be called until CHARSET known
-	//TODO deprecated?
-	function initCharset()
+	/**
+	 * Initialise the type of UTF-8 processing methods depending on PHP version and mb string extension.
+	 *
+	 * NOTE: can't be called until CHARSET is known
+	 but we all know that it is UTF-8 now
+	 *
+	 * @return void
+	 */
+	private function initCharset()
 	{
 		// Start by working out what, if anything, we do about utf-8 handling.
 		// 'Do nothing' is the simple option
 		$this->utfAction = 0;
-		if(strtolower(CHARSET) == 'utf-8')
-		{
+// CHARSET is utf-8
+//		if(strtolower(CHARSET) == 'utf-8')
+//		{
 			$this->isutf8 = TRUE;
 			if(version_compare(PHP_VERSION, '6.0.0') < 1)
 			{
@@ -254,7 +270,7 @@ class e_parse
 					require (E_UTF8_PACK.'native/core.php');
 				}
 			}
-		}
+//		}
 	}
 	
 
@@ -407,7 +423,7 @@ class e_parse
 			}
 			else
 			{
-				$data = htmlspecialchars($data, ENT_QUOTES, CHARSET);
+				$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 				$data = str_replace('\\', '&#092;', $data);
 				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 			}
@@ -754,23 +770,33 @@ class e_parse
 	}
 
 
-	// Truncate a string to a maximum length $len - append the string $more if it was truncated
-	// Uses current CHARSET - for utf-8, returns $len characters rather than $len bytes
-	function text_truncate($text, $len = 200, $more = "[more]")
+	/**
+	 * Truncate a string to a maximum length $len ­ append the string $more if it was truncated
+	 * Uses current CHARSET ­ for utf-8, returns $len characters rather than $len bytes
+	 *
+	 * @param string $text ­ string to process
+	 * @param integer $len ­ length of characters to be truncated
+	 * @param string $more ­ string which will be added if truncation
+	 * @return string
+	 */
+	public function text_truncate($text, $len = 200, $more = "[more]")
 	{
 		// Always valid
 		if(strlen($text) <= $len)
 			return $text;
+/* shouldn't be needed
 		if (strtolower(CHARSET) !== 'utf-8')
 		{
 			// Non-utf-8 - one byte per character - simple (unless there's an entity involved)
 			$ret = substr($text,0,$len);
 		}
 		else
+*/
 		{
-			// Its a utf-8 string here - don't know whether its longer than allowed length yet
+			// It's a utf-8 string here - don't know whether it's longer than allowed length yet
 			preg_match('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,0}'.
-				'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'})(.{0,1}).*#s',$text,$matches);
+				'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'})(.{0,1}).*#s',
+				$text, $matches);
 			// return if utf-8 length is less than max as well
 			if (empty($matches[2]))
 				return $text;
@@ -787,7 +813,7 @@ class e_parse
 	}
 
 
-	function textclean ($text, $wrap=100)
+	function textclean ($text, $wrap = 100)
 	{
 		$text = str_replace("\n\n\n", "\n\n", $text);
 		$text = $this->htmlwrap($text, $wrap);
@@ -982,8 +1008,10 @@ class e_parse
 							// Not sure whether checks are necessary now we've reorganised
 			//				if (!$matches[3]) $bbcode = str_replace($search, $replace, $matches[4]);
 							// Because we're bypassing most of the initial parser processing, we should be able to just reverse the effects of toDB() and execute the code
-							if (!$matches[3]) $bbcode = html_entity_decode($matches[4], ENT_QUOTES, CHARSET);
-							if (DB_INF_SHOW) echo "PHP after decode: ".htmlentities($bbcode)."<br /><br />";
+							if (!$matches[3])
+								$bbcode = html_entity_decode($matches[4], ENT_QUOTES, 'UTF-8');
+							if (DB_INF_SHOW)
+								echo "PHP after decode: ".htmlentities($bbcode)."<br /><br />";
 							break;
 						case 'html' :
 							$proc_funcs = TRUE;
@@ -1267,7 +1295,7 @@ class e_parse
 		// URLs posted without HTML access may have an &amp; in them.
 		$text = str_replace('&amp;', '&', $text);
 		// Xhtml compliance.
-		$text = htmlspecialchars($text, ENT_QUOTES, CHARSET);
+		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 		if(!preg_match('/&#|\'|"|\(|\)|<|>/s', $text))
 		{
 			$text = $this->replaceConstants($text);
