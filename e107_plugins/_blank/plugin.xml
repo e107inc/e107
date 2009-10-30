@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: plugin.xml,v 1.1 2009-10-30 09:11:01 e107coders Exp $ -->
+<e107Plugin name="Blank Plugin" version="2.0" compatibility="0.8" installRequired="true" xhtmlcompliant="true" >
+	<author name="e107 Inc." url="http://e107.org" />
+	<description>A Blank Plugin to help you get started in plugin development</description>
+	<category>misc</category> 
+	<adminLinks>
+		<link url='admin_config.php' description='Configure Blank Plugin' icon='images/blank_32.png' iconSmall='images/blank_16.png' primary='true' >Configure Blank</link>
+		<link url="admin_config.php?mode=options" description="Configure Blank Prefs" icon="manage" >Blank Prefs</link>
+	</adminLinks>
+	<siteLinks>
+		<link url="{e_PLUGIN}_blank/_blank.php" perm='everyone'>Blank</link>		
+	</siteLinks>
+	<pluginPrefs>
+		<pref name="blank_pref_1">1</pref>
+		<pref name="blank_pref_2">[more...]</pref>
+	</pluginPrefs>
+	<userClasses>
+		<class name="blank_userclass" description="Blank Userclass Description" />		
+	</userClasses>
+	<extendedFields>
+		<field name="custom" type='EUF_TEXTAREA' default='0' active="true" />
+	</extendedFields>		
+</e107Plugin>
