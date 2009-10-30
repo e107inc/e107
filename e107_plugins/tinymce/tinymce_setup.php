@@ -9,8 +9,8 @@
 * Custom TinyMce install/uninstall/update routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/tinymce_setup.php,v $
-* $Revision: 1.2 $
-* $Date: 2009-10-21 12:53:00 $
+* $Revision: 1.3 $
+* $Date: 2009-10-30 09:13:37 $
 * $Author: e107coders $
 *
 */
@@ -27,7 +27,7 @@ class tinymce_setup
 	function install_post($var)
 	{
 		$sql = e107::getDb();
-		$mes = eMessage::getInstance();
+		$mes = e107::getMessage();
 		
 		$query = "INSERT INTO #tinymce (
 		`tinymce_id`, `tinymce_name`, `tinymce_userclass`, `tinymce_plugins`, `tinymce_buttons1`, `tinymce_buttons2`, `tinymce_buttons3`, `tinymce_buttons4`, `tinymce_custom`, `tinymce_prefs`) VALUES 
@@ -47,10 +47,16 @@ class tinymce_setup
 		}
 
 	}
-/*
+/*	
+	function uninstall_options()
+	{
+	
+	}
+
+
 	function uninstall_post($var)
 	{
-		// $sql = e107::getDb();
+		// print_a($var);
 	}
 
 	function upgrade_post($var)

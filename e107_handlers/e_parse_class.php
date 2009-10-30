@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.68 $
-* $Date: 2009-10-26 10:55:39 $
+* $Revision: 1.69 $
+* $Date: 2009-10-30 09:13:31 $
 * $Author: e107coders $
 *
 */
@@ -723,7 +723,15 @@ class e_parse
 
 
 
-
+	/**
+	 * 
+	 * @param string $text
+	 * @param boolean $parseBB [optional]
+	 * @param string $modifiers [optional] TITLE|SUMMARY|DESCRIPTION|BODY|RAW|LINKTEXT etc.
+	 * @param mixed $postID [optional]
+	 * @param boolean $wrap [optional]
+	 * @return 
+	 */
 	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE)
 	{
 		if ($text == '') return $text;

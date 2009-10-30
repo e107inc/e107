@@ -1,5 +1,5 @@
 /**
- * $Id: editor_plugin.js,v 1.1 2009-10-12 06:38:01 e107coders Exp $
+ * $Id: editor_plugin.js,v 1.2 2009-10-30 09:13:36 e107coders Exp $
  *
  * @author Moxiecode
  * @copyright Copyright � 2004-2008, Moxiecode Systems AB, All rights reserved.
@@ -42,6 +42,8 @@
 			function rep(re, str) {
 				s = s.replace(re, str);
 			};
+			
+	
 
 			// example: <strong> to [b]
 			rep(/<a.*?href=\"(.*?)\".*?>(.*?)<\/a>/gi,"[url=$1]$2[/url]");
@@ -53,7 +55,10 @@
 			rep(/<font.*?color=\"(.*?)\".*?>(.*?)<\/font>/gi,"[color=$1]$2[/color]");
 			rep(/<span style=\"font-size:(.*?);\">(.*?)<\/span>/gi,"[size=$1]$2[/size]");
 			rep(/<font>(.*?)<\/font>/gi,"$1");
-			rep(/<img.*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
+		//	rep(/<img.*?src=\"(.*?)\".*?\/>/gi,"[img]$1[/img]");
+		//	rep(/<img.*?style=\"color: ?(.*?);\".*?>(.*?)\/>/gi,"[img style=$1]$2[/img]");
+			
+			rep(/<img.*?style=\"?(.*?);\".*? src=\"(.*?)\" alt=\"(.*?)\" .*?width=\"(.*?)\".*? .*?height=\"(.*?)\" .*?\/>/gi,"[img style=$1;width:$4px; height:$5;]$2[/img]");
 			rep(/<span class=\"codeStyle\">(.*?)<\/span>/gi,"[code]$1[/code]");
 			rep(/<span class=\"quoteStyle\">(.*?)<\/span>/gi,"[quote]$1[/quote]");
 			rep(/<strong class=\"codeStyle\">(.*?)<\/strong>/gi,"[code][b]$1[/b][/code]");
@@ -110,13 +115,13 @@
 			rep(/\[\/u\]/gi,"</u>");
 			rep(/\[url=([^\]]+)\](.*?)\[\/url\]/gi,"<a href=\"$1\">$2</a>");
 			rep(/\[url\](.*?)\[\/url\]/gi,"<a href=\"$1\">$1</a>");
-			rep(/\[img\](.*?)\[\/img\]/gi,"<img src=\"$1\" />");
+			rep(/\[img.*?\](.*?)\[\/img\]/gi,"<img src=\"$1\" />");
 			rep(/\[color=(.*?)\](.*?)\[\/color\]/gi,"<font color=\"$1\">$2</font>");
 			rep(/\[code\](.*?)\[\/code\]/gi,"<span class=\"codeStyle\">$1</span>&nbsp;");
 			rep(/\[quote.*?\](.*?)\[\/quote\]/gi,"<span class=\"quoteStyle\">$1</span>&nbsp;");
 
 			// e107 FIXME!
-
+		//	rep("/\[list\](.+?)\[\/list\]/is", '<ul class="listbullet">$1</ul>'); 
 			rep(/\[list\]/gi,"<ul>");
 			rep(/\[\/list\]/gi,"</ul>");
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2009-10-23 14:16:08 $
+|     $Revision: 1.51 $
+|     $Date: 2009-10-30 09:13:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -211,16 +211,11 @@ class pluginManager{
 			{
 				$eplug_folder = $plug['plugin_path'];
 				$_path = e_PLUGIN.$plug['plugin_path'].'/';
-				$eplug_folder = $plug['plugin_path'];
+	
 				if(file_exists($_path.'plugin.xml'))
-				{
-					$options = array(
-						'del_tables' => varset($_POST['delete_tables'],FALSE),
-						'del_userclasses' => varset($_POST['delete_userclasses'],FALSE),
-						'del_extended' => varset($_POST['delete_xfields'],FALSE),
-						'del_ipool' => varset($_POST['delete_ipool'],FALSE)
-						);
-					$text .= $plugin->install_plugin_xml($this->id, 'uninstall', $options);
+				{				
+					unset($_POST['uninstall_confirm']);							
+					$text .= $plugin->install_plugin_xml($this->id, 'uninstall', $_POST); //$_POST must be used.
 				}
 				else
 				{	// Deprecated - plugin uses plugin.php
@@ -959,45 +954,87 @@ class pluginManager{
  			<tr>
 				<td>".EPL_ADLAN_55."</td>
 				<td>".LAN_YES."</td>
-			</tr>
-			<tr>
-				<td>".EPL_ADLAN_57."</td>
-				<td>".$frm->selectbox('delete_tables','yesno',1)."
-				<div class='field-help'>".EPL_ADLAN_58."</div>
-				</td>
 			</tr>";
+			
+			$opts = array();
+			
+			$opts['delete_tables'] = array(
+					'label'			=> EPL_ADLAN_57,
+					'helpText'		=> EPL_ADLAN_58,
+					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),
+					'itemDefault' 	=> 1
+			);
 
 			if ($userclasses)
-			{
-				$text .= "	<tr>
-				<td>".EPL_ADLAN_78."<div class='indent'>".$userclasses."</div></td>
-				<td>".$frm->selectbox('delete_userclasses','yesno',1)."
-				<div class='field-help'>".EPL_ADLAN_79."</div>
-				</td>
-				</tr>";
+			{			
+				$opts['delete_userclasses'] = array(
+					'label'			=> EPL_ADLAN_78,
+					'preview'		=> $userclasses,
+					'helpText'		=> EPL_ADLAN_79,
+					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),
+					'itemDefault' 	=> 1
+				);
 			}
 
 			if ($eufields)
 			{
-				$text .= "	<tr>
-				<td>
-				".EPL_ADLAN_80."<div class='indent'>".$eufields."</div>
-				</td>
-				<td>".$frm->selectbox('delete_xfields','yesno',0)."
-				<div class='field-help'>".EPL_ADLAN_79."</div></td>
-				</tr>";
+				$opts['delete_xfields'] = array(
+					'label'			=> EPL_ADLAN_80,
+					'preview'		=> $eufields,
+					'helpText'		=> EPL_ADLAN_79,
+					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),
+					'itemDefault' 	=> 0
+				);
 			}
-			
-			if(e107::getConfig('ipool')->getPref('plugin-'.$plug['plugin_path']))
+
+			if(count($icons = e107::getConfig('ipool')->getPref('plugin-'.$plug['plugin_path']))>1)
 			{
-				$text .= "<tr>
-				<td>Remove icons from icon-pool<div class='indent'>".$eufields."</div>
-				</td>
-				<td>".$frm->selectbox('delete_ipool','yesno',1)."
-				<div class='field-help'>".EPL_ADLAN_79."</div></td>
-				</tr>";
+				foreach($icons as $key=>$val)
+				{
+					$iconText .= "<img src='".$tp->replaceConstants($val)."' alt='' />";	
+				}
+				
+				$opts['delete_ipool'] = array(
+					'label'			=>'Remove icons from icon-pool',
+					'preview'		=> $iconText,
+					'helpText'		=> EPL_ADLAN_79,
+					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),
+					'itemDefault' 	=> 1
+				);
+			}
+					
+			if(is_readable(e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php"))
+			{
+				include_once(e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php");
+				
+				$mes = e107::getMessage();
+				$mes->add("Loading ".e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php", E_MESSAGE_DEBUG);
+				
+				$class_name = $plug['plugin_path']."_setup";
+				
+				if(class_exists($class_name))
+				{
+					$obj = new $class_name;
+					if(method_exists($obj,'uninstall_options'))
+					{
+						$arr = call_user_func(array($obj,'uninstall_options'), $this);
+						foreach($arr as $key=>$val)
+						{
+							$newkey = $plug['plugin_path']."_".$key;
+							$opts[$newkey] = $val;
+						}	
+					}
+				}
 			}
 			
+			foreach($opts as $key=>$val)
+			{
+				$text .= "<tr>\n<td class='top'>".$tp->toHTML($val['label'],FALSE,'TITLE');
+				$text .= varset($val['preview']) ? "<div class='indent'>".$val['preview']."</div>" : "";
+				$text .= "</td>\n<td>".$frm->selectbox($key,$val['itemList'],$val['itemDefault']);
+				$text .= varset($val['helpText']) ? "<div class='field-help'>".$val['helpText']."</div>" : "";
+				$text .= "</td>\n</tr>\n";
+			}
 			
 
 			$text .="<tr>
@@ -1018,7 +1055,7 @@ class pluginManager{
 			</fieldset>
 			</form>
 			";
-			e107::getRender()->tablerender(EPL_ADLAN_63." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"), $text);
+			e107::getRender()->tablerender(EPL_ADLAN_63." ".$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
 
 		}
 
