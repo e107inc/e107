@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.220 $
-|     $Date: 2009-09-03 19:26:40 $
-|     $Author: e107steved $
+|     $Revision: 1.221 $
+|     $Date: 2009-10-30 21:34:55 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -441,7 +441,7 @@ class e_parse
 
 
 
-	function html_truncate ($text, $len = 200, $more = "[more]")
+	function html_truncate ($text, $len = 200, $more = ' ... ')
 	{
 		$pos = 0;
 		$curlen = 0;
@@ -509,7 +509,7 @@ class e_parse
 
 	// Truncate a string to a maximum length $len - append the string $more if it was truncated
 	// Uses current CHARSET - for utf-8, returns $len characters rather than $len bytes
-	function text_truncate($text, $len = 200, $more = "[more]") 
+	function text_truncate($text, $len = 200, $more = ' ... ') 
 	{
 	  if (strlen($text) <= $len) return $text; 		// Always valid
 	  if (strtolower(CHARSET) !== 'utf-8')
