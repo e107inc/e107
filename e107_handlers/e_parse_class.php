@@ -9,98 +9,144 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.69 $
-* $Date: 2009-10-30 09:13:31 $
-* $Author: e107coders $
+* $Revision: 1.70 $
+* $Date: 2009-10-30 19:57:28 $
+* $Author: marj_nl_fr $
 *
 */
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 
-define('E_UTF8_PACK',e_HANDLER.'utf8/');		// Directory for the hard-coded utf-8 handling routines
+// Directory for the hard-coded utf-8 handling routines
+define('E_UTF8_PACK', e_HANDLER.'utf8/');
 
-define ("E_NL", chr(2));
+define("E_NL", chr(2));
+
 class e_parse
 {
-	var	$isutf8 = FALSE;	// Flag for global use indicates whether utf-8 character set
-	var	$utfAction;			// Determine how to handle utf-8.   0 = 'do nothing'    1 = 'use mb_string'    2 = emulation
+	// Flag for global use indicates whether utf-8 character set
+	var $isutf8 = FALSE;
+
+	// Determine how to handle utf-8.   0 = 'do nothing'	1 = 'use mb_string'	2 = emulation
+	var $utfAction;
+
 	// Shortcode processor - see __get()
-	//var $e_sc;				
-	var $e_bb;				// BBCode processor
-	var $e_pf;				// Profanity filter
-	var $e_emote;			// Emote filter
-	var $e_hook;			// 'Hooked' parsers (array)
+	//var $e_sc;
+
+	// BBCode processor
+	var $e_bb;
+
+	// Profanity filter
+	var $e_pf;
+
+	// Emote filter
+	var $e_emote;
+
+	// 'Hooked' parsers (array)
+	var $e_hook;
+
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;', ' & ');
+
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"', ' &amp; ');
-	var $e_highlighting;	// Set to TRUE or FALSE once it has been calculated
-	var $e_query;			// Highlight query
 
-		// Set up the defaults
+	// Set to TRUE or FALSE once it has been calculated
+	var $e_highlighting;
+
+	// Highlight query
+	var $e_query;
+
+	// Set up the defaults
 	var $e_optDefault = array(
-		'context' 		=> 'OLDDEFAULT',	// default context: reflects legacy settings (many items enabled)
+		// default context: reflects legacy settings (many items enabled)
+		'context' 		=> 'OLDDEFAULT',
+		//
 		'fromadmin' 	=> FALSE,
-		'emotes'		=> TRUE,			// Enable emote display
-		'defs' 			=> FALSE,			// Convert defines(constants) within text.
-		'constants' 	=> FALSE,			// replace all {e_XXX} constants with their e107 value - 'rel' or 'abs'
-		'hook'			=> TRUE,			// Enable hooked parsers
-		'scripts'		=> TRUE,			// Allow scripts through (new for 0.8)
-		'link_click'	=> TRUE,			// Make links clickable
-		'link_replace'	=> TRUE,			// Substitute on clickable links (only if link_click == TRUE)
-		'parse_sc' 		=> FALSE,			// Parse shortcodes - TRUE enables parsing
-		'no_tags' 		=> FALSE,			// remove HTML tags.
-		'value'			=> FALSE,			// Restore entity form of quotes and such to single characters - TRUE disables
 
-		'nobreak' 		=> FALSE,			// Line break compression - TRUE removes newline characters
-		'retain_nl' 	=> FALSE			// Retain newlines - wraps to \n instead of <br /> if TRUE (for non-HTML email text etc)
+		// Enable emote display
+		'emotes'		=> TRUE,
+
+		// Convert defines(constants) within text.
+		'defs' 			=> FALSE,
+
+		// replace all {e_XXX} constants with their e107 value - 'rel' or 'abs'
+		'constants' 	=> FALSE,
+
+		// Enable hooked parsers
+		'hook'			=> TRUE,
+
+		// Allow scripts through (new for 0.8)
+		'scripts'		=> TRUE,
+
+		// Make links clickable
+		'link_click'	=> TRUE,
+
+		// Substitute on clickable links (only if link_click == TRUE)
+		'link_replace'	=> TRUE,
+
+		// Parse shortcodes - TRUE enables parsing
+
+		'parse_sc' 		=> FALSE,
+		// remove HTML tags.
+		'no_tags' 		=> FALSE,
+
+		// Restore entity form of quotes and such to single characters - TRUE disables
+		'value'			=> FALSE,
+
+		// Line break compression - TRUE removes newline characters
+		'nobreak' 		=> FALSE,
+
+		// Retain newlines - wraps to \n instead of <br /> if TRUE (for non-HTML email text etc)
+		'retain_nl' 	=> FALSE
 		);
 
-		// Super modifiers override default option values
+	// Super modifiers override default option values
 	var	$e_SuperMods = array(
-				'TITLE' =>				//text is part of a title (e.g. news title)
+				//text is part of a title (e.g. news title)
+				'TITLE' =>
 					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'link_click' => FALSE, 'emotes'=>FALSE, 'defs'=>TRUE, 'parse_sc'=>TRUE
 						),
-
-				'USER_TITLE' =>				//text is user-entered (i.e. untrusted) and part of a title (e.g. forum title)
+				//text is user-entered (i.e. untrusted) and part of a title (e.g. forum title)
+				'USER_TITLE' =>
 					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'link_click' => FALSE, 'scripts' => FALSE, 'emotes'=>FALSE, 'hook'=>FALSE
 						),
-
-				'E_TITLE' =>					// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
+				// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
+				'E_TITLE' =>
 					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'defs'=>TRUE, 'parse_sc'=>TRUE, 'emotes'=>FALSE, 'scripts' => FALSE, 'link_click' => FALSE
 						),
-
-				'SUMMARY' =>			// text is part of the summary of a longer item (e.g. content summary)
+				// text is part of the summary of a longer item (e.g. content summary)
+				'SUMMARY' =>
 					array(
 						'defs'=>TRUE, 'constants'=>'rel', 'parse_sc'=>TRUE
 						),
-
-				'DESCRIPTION' =>	// text is the description of an item (e.g. download, link)
+				// text is the description of an item (e.g. download, link)
+				'DESCRIPTION' =>
 					array(
 						'defs'=>TRUE, 'constants'=>'rel', 'parse_sc'=>TRUE
 						),
-
-				'BODY' =>					// text is 'body' or 'bulk' text (e.g. custom page body, content body)
+				// text is 'body' or 'bulk' text (e.g. custom page body, content body)
+				'BODY' =>
 					array(
 						'defs'=>TRUE, 'constants'=>'rel', 'parse_sc'=>TRUE
 						),
-
-				'USER_BODY' =>					// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
+				// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
+				'USER_BODY' =>
 					array(
 						'constants'=>TRUE, 'scripts' => FALSE
 						),
-
-				'E_BODY' =>					// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
+				// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
+				'E_BODY' =>
 					array(
 						'defs'=>TRUE, 'constants'=>'abs', 'parse_sc'=>TRUE, 'emotes'=>FALSE, 'scripts' => FALSE, 'link_click' => FALSE
 						),
-
-				'LINKTEXT' =>			// text is the 'content' of a link (A tag, etc)
+				// text is the 'content' of a link (A tag, etc)
+				'LINKTEXT' =>
 					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'link_click' => FALSE, 'emotes_on'=>FALSE, 'hook'=>FALSE, 'defs'=>TRUE, 'parse_sc'=>TRUE
 						),
-
-				'RAWTEXT' =>			// text is used (for admin edit) without fancy conversions or html.
+				// text is used (for admin edit) without fancy conversions or html.
+				'RAWTEXT' =>
 					array(
 						'nobreak'=>TRUE, 'retain_nl'=>TRUE, 'link_click' => FALSE, 'emotes'=>FALSE, 'hook'=>FALSE, 'no_tags'=>TRUE
 						)
@@ -112,30 +158,45 @@ class e_parse
 				'emotes_on'		=> array('emotes_on' => TRUE),
 				'no_hook'		=> array('hook' => FALSE),
 				'do_hook'		=> array('hook' => TRUE),
-				'scripts_off'	=> array('scripts' => FALSE),			// New for 0.8
-				'scripts_on'	=> array('scripts' => TRUE),			// New for 0.8
+				// New for 0.8
+				'scripts_off'	=> array('scripts' => FALSE),
+				// New for 0.8
+				'scripts_on'	=> array('scripts' => TRUE),
 				'no_make_clickable' => array('link_click' => FALSE),
 				'make_clickable' => array('link_click' => TRUE),
 				'no_replace' 	=> array('link_replace' => FALSE),
-				'replace' 		=> array('link_replace' => TRUE),		// Replace text of clickable links (only if make_clickable option set)
-				'consts_off'	=> array('constants' => FALSE),			// No path replacement
-				'consts_rel'	=> array('constants' => 'rel'),			// Relative path replacement
-				'consts_abs'	=> array('constants' => 'abs'),			// Absolute path replacement
-				'scparse_off'	=> array('parse_sc'	=> FALSE),			// No shortcode parsing
+				// Replace text of clickable links (only if make_clickable option set)
+				'replace' 		=> array('link_replace' => TRUE),
+				// No path replacement
+				'consts_off'	=> array('constants' => FALSE),
+				// Relative path replacement
+				'consts_rel'	=> array('constants' => 'rel'),
+				// Absolute path replacement
+				'consts_abs'	=> array('constants' => 'abs'),
+				// No shortcode parsing
+				'scparse_off'	=> array('parse_sc'	=> FALSE),
+
 				'scparse_on'	=> array('parse_sc'	=> TRUE),
-				'no_tags' 		=> array('no_tags' 	=> TRUE),			// Strip tags
-				'do_tags' 		=> array('no_tags' 	=> FALSE),			// Leave tags
+				// Strip tags
+				'no_tags' 		=> array('no_tags' 	=> TRUE),
+				// Leave tags
+				'do_tags' 		=> array('no_tags' 	=> FALSE),
+
 				'fromadmin'		=> array('fromadmin' => TRUE),
 				'notadmin'		=> array('fromadmin' => FALSE),
-				'er_off'		=> array('value' => FALSE),				// entity replacement
+				// entity replacement
+				'er_off'		=> array('value' => FALSE),
 				'er_on'			=> array('value' => TRUE),
-				'defs_off'		=> array('defs' => FALSE),				// Decode constant if exists
+				// Decode constant if exists
+				'defs_off'		=> array('defs' => FALSE),
 				'defs_on'		=> array('defs' => TRUE),
 
 				'dobreak'		=> array('nobreak' => TRUE),
 				'nobreak'		=> array('nobreak' => FALSE),
-				'lb_nl'			=> array('retain_nl' => TRUE),				// Line break using \n
-				'lb_br'			=> array('retain_nl' => FALSE),				// Line break using <br />
+				// Line break using \n
+				'lb_nl'			=> array('retain_nl' => TRUE),
+				// Line break using <br />
+				'lb_br'			=> array('retain_nl' => FALSE),
 
 				// Legacy option names below here - discontinue later
 				'retain_nl'		=> array('retain_nl' => TRUE),
@@ -146,93 +207,109 @@ class e_parse
 		);
 
 
-	function e_parse()
+		function e_parse()
 	{
 		// Preprocess the supermods to be useful default arrays with all values
 		foreach ($this->e_SuperMods as $key=>$val)
 		{
-			$this->e_SuperMods[$key] = array_merge($this->e_optDefault,$this->e_SuperMods[$key]); // precalculate super defaults
-			$this->e_SuperMods[$key]['context']=$key;
+			// precalculate super defaults
+			$this->e_SuperMods[$key] = array_merge($this->e_optDefault , $this->e_SuperMods [$key]);
+			$this->e_SuperMods[$key]['context'] = $key;
 		}
 	}
 
 
-
 	// This has to be a separate function - can't be called until CHARSET known
-	//@TODO deprecated
+	//TODO deprecated?
 	function initCharset()
 	{
 		// Start by working out what, if anything, we do about utf-8 handling.
-		$this->utfAction = 0;			// 'Do nothing' is the simple option
-		if (strtolower(CHARSET) == 'utf-8')
+		// 'Do nothing' is the simple option
+		$this->utfAction = 0;
+		if(strtolower(CHARSET) == 'utf-8')
 		{
 			$this->isutf8 = TRUE;
-			if (version_compare(PHP_VERSION, '6.0.0') < 1)
-			{	// Need to do something here
+			if(version_compare(PHP_VERSION, '6.0.0') < 1)
+			{
+				// Need to do something here
 				if(extension_loaded('mbstring'))
 				{
-					$temp = ini_get('mbstring.func_overload');		// Check for function overloading
-					if (($temp & MB_OVERLOAD_STRING) == 0)			// Just check the string functions - will be non-zero if overloaded
+					// Check for function overloading
+					$temp = ini_get('mbstring.func_overload');
+					// Just check the string functions - will be non-zero if overloaded
+					if(($temp & MB_OVERLOAD_STRING) == 0)
 					{
-						$this->utfAction = 1;			// Can use the mb_string routines
+						// Can use the mb_string routines
+						$this->utfAction = 1;
 					}
-					mb_internal_encoding('UTF-8');		// Set the default encoding, so we don't have to specify every time
+					// Set the default encoding, so we don't have to specify every time
+					mb_internal_encoding('UTF-8');
 				}
 				else
 				{
-					$this->utfAction = 2;			// Must use emulation - will probably be slow!
-					require(E_UTF8_PACK.'utils/unicode.php');
-					require(E_UTF8_PACK.'native/core.php');			// Always load the core routines - bound to need some of them!
+					// Must use emulation - will probably be slow!
+					$this->utfAction = 2;
+					require (E_UTF8_PACK.'utils/unicode.php');
+					// Always load the core routines - bound to need some of them!
+					require (E_UTF8_PACK.'native/core.php');
 				}
 			}
 		}
 	}
+	
 
 
 	function uStrLen($str)
 	{
-		switch ($this->utfAction)
+		switch($this->utfAction)
 		{
-			case 0 : return strlen($str);
-			case 1 : return mb_strlen($str);
+			case 0:
+				return strlen($str);
+			case 1:
+				return mb_strlen($str);
 		}
 		// Default case shouldn't happen often
-		return strlen(utf8_decode($str));		// Save a call - invoke the function directly
+		// Save a call - invoke the function directly
+		return strlen(utf8_decode($str));
 	}
 
 
 	function uStrToLower($str)
 	{
-		switch ($this->utfAction)
+		switch($this->utfAction)
 		{
-			case 0 : return strtolower($str);
-			case 1 : return mb_strtolower($str);
+			case 0:
+				return strtolower($str);
+			case 1:
+				return mb_strtolower($str);
 		}
 		// Default case shouldn't happen often
-
 		return utf8_strtolower($str);
 	}
 
 
 	function uStrToUpper($str)
 	{
-		switch ($this->utfAction)
+		switch($this->utfAction)
 		{
-			case 0 : return strtoupper($str);
-			case 1 : return mb_strtoupper($str);
+			case 0:
+				return strtoupper($str);
+			case 1:
+				return mb_strtoupper($str);
 		}
 		// Default case shouldn't happen often
-
 		return utf8_strtoupper($str);
 	}
 
 
 	function uStrPos($haystack, $needle, $offset = 0)
 	{
-		switch ($this->utfAction)
+		switch($this->utfAction)
 		{
-			case 0 : return strpos($haystack, $needle, $offset);
-			case 1 : return mb_strpos($haystack, $needle, $offset);
+			case 0:
+				return strpos($haystack, $needle, $offset);
+			case 1:
+				return mb_strpos($haystack, $needle, $offset);
 		}
 		utf8_strpos($haystack, $needle, $offset);
 	}
@@ -240,10 +317,12 @@ class e_parse
 
 	function uStrrPos($haystack, $needle, $offset = 0)
 	{
-		switch ($this->utfAction)
+		switch($this->utfAction)
 		{
-			case 0 : return strrpos($haystack, $needle, $offset);
-			case 1 : return mb_strrpos($haystack, $needle, $offset);
+			case 0:
+				return strrpos($haystack, $needle, $offset);
+			case 1:
+				return mb_strrpos($haystack, $needle, $offset);
 		}
 		utf8_strrpos($haystack, $needle, $offset);
 	}
@@ -253,11 +332,12 @@ class e_parse
 	//   native substr() routine can return FALSE. mb_substr and utf8_substr just return an empty string.
 	function uSubStr($str, $start, $length = NULL)
 	{
-		switch ($this->utfAction)
+		switch($this->utfAction)
 		{
-			case 0 : return strrpos($str, $start, $length);
-			case 1 :
-				if (is_null($length))
+			case 0:
+				return strrpos($str, $start, $length);
+			case 1:
+				if(is_null($length))
 				{
 					return mb_strrpos($haystack, $needle);
 				}
@@ -270,9 +350,9 @@ class e_parse
 	}
 
 
-
 	// Initialise the shortcode handler - has to be done when $prefs valid, so can't be done in constructor ATM
-	/*function sch_load($noCore=false)
+	/*
+	function sch_load($noCore = FALSE)
 	{
 		if (!is_object($this->e_sc))
 		{
@@ -283,16 +363,16 @@ class e_parse
 				$this->e_sc->loadCoreShortcodes();
 			}
 		}
-	}*/
+	}
+	*/
 
 
-
-	function toDB($data, $nostrip = false, $no_encode = false, $mod = false, $original_author = false)
+	function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
 	{
 		/**
-		* $nostrip: toDB() assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless you indicate otherwise by setting this var to true.
+		* $nostrip: toDB() assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless you indicate otherwise by setting this var to TRUE.
 		* If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
-		* $no_encode: This var should nearly always be false. It is used by the save_prefs() function to preserve html content within prefs even when
+		* $no_encode: This var should nearly always be FALSE. It is used by the save_prefs() function to preserve html content within prefs even when
 		* the save_prefs() function has been called by a non admin user / user without html posting permissions.
 		* $mod: the 'no_html' and 'no_php' modifiers blanket prevent html and php posting regardless of posting permissions. (used in logging)
 		*/
@@ -307,22 +387,22 @@ class e_parse
 		}
 		else
 		{
-			if (MAGIC_QUOTES_GPC == true && $nostrip == false)
+			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == FALSE)
 			{
 				$data = stripslashes($data);
 			}
 			if (isset($pref['post_html']) && check_class($pref['post_html']))
 			{
-				$no_encode = true;
+				$no_encode = TRUE;
 			}
 			if (is_numeric($original_author) && !check_class($pref['post_html'], '', $original_author))
 			{
-				$no_encode = false;
+				$no_encode = FALSE;
 			}
-			if ($no_encode === true && strpos($mod, 'no_html') === false)
+			if ($no_encode === TRUE && strpos($mod, 'no_html') === FALSE)
 			{
 				$search = array('$', '"', "'", '\\', '<?');
-				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt;?');
+				$replace = array('&#036;', '&quot;', '&#039;', '&#092;', '&lt;?');
 				$ret = str_replace($search, $replace, $data);
 			}
 			else
@@ -331,7 +411,7 @@ class e_parse
 				$data = str_replace('\\', '&#092;', $data);
 				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 			}
-			if (strpos($mod, 'no_php') !== false)
+			if (strpos($mod, 'no_php') !== FALSE)
 			{
 				$ret = str_replace(array("[php]", "[/php]"), array("&#91;php&#93;", "&#91;/php&#93;"), $ret);
 			}
@@ -342,13 +422,17 @@ class e_parse
 
 	function toForm($text)
 	{
-		if ($text == '') { return ''; }
+		if($text == '')
+		{
+			return '';
+		}
 		$search = array('&#036;', '&quot;', '<', '>');
 		$replace = array('$', '"', '&lt;', '&gt;');
 		$text = str_replace($search, $replace, $text);
-		if (e_WYSIWYG !== true)
+		if (e_WYSIWYG !== TRUE)
 		{
-	   	  	$text = str_replace("&nbsp;", " ", $text); // fix for utf-8 issue with html_entity_decode();
+			// fix for utf-8 issue with html_entity_decode(); ???
+			$text = str_replace("&nbsp;", " ", $text);
 		}
 		return $text;
 	}
@@ -358,24 +442,24 @@ class e_parse
 	{
 		if(is_array($text))
 		{
-			foreach ($text as $key => $value)
+			foreach ($text as $key=>$value)
 			{
 				$text[$this->post_toForm($key)] = $this->post_toForm($value);
 			}
 			return $text;
 		}
-		if (MAGIC_QUOTES_GPC == true)
+		if(MAGIC_QUOTES_GPC == TRUE)
 		{
 			$text = stripslashes($text);
 		}
-		return str_replace(array( "'", '"', "<", ">"), array("&#039;", "&quot;", "&lt;", "&gt;"), $text);
+		return str_replace(array("'", '"', "<", ">"), array("&#039;", "&quot;", "&lt;", "&gt;"), $text);
 	}
 
 
-	function post_toHTML($text, $original_author = false, $extra = '', $mod = false)
+	function post_toHTML($text, $original_author = FALSE, $extra = '', $mod = FALSE)
 	{
-		$text = $this -> toDB($text, false, false, $mod, $original_author);
-		return $this -> toHTML($text, true, $extra);
+		$text = $this->toDB($text, FALSE, FALSE, $mod, $original_author);
+		return $this->toHTML($text, TRUE, $extra);
 	}
 
 
@@ -386,8 +470,7 @@ class e_parse
 	}
 
 
-
-	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = false)
+	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)
 	{
 		/*
 		Pretty well complete rewrite to try and handle utf-8 properly.
@@ -409,7 +492,7 @@ class e_parse
 		$nobreak = explode(" ", strtolower($nobreak));
 
 		// Variable setup
-		$intag = false;
+		$intag = FALSE;
 		$innbk = array();
 		$drain = "";
 
@@ -450,9 +533,10 @@ class e_parse
 			{
 				// We are within an HTML tag
 				// Create a lowercase copy of this tag's contents
-				$lvalue = strtolower(substr($value,1,-1));
+				$lvalue = strtolower(substr($value, 1, -1)); 
 				if ($lvalue)
-				{	// Tag of non-zero length
+				{
+					// Tag of non-zero length
 					// If the first character is not a / then this is an opening tag
 					if ($lvalue[0] != "/")
 					{
@@ -460,10 +544,12 @@ class e_parse
 						preg_match("/^(\w*?)(\s|$)/", $lvalue, $t);
 
 						// If this is a protected element, activate the associated protection flag
-						if (in_array($t[1], $nobreak)) array_unshift($innbk, $t[1]);
+						if(in_array($t[1], $nobreak))
+							array_unshift($innbk, $t[1]); 
 					}
 					else
-					{  // Otherwise this is a closing tag
+					{
+						// Otherwise this is a closing tag
 						// If this is a closing tag for a protected element, unset the flag
 						if (in_array(substr($lvalue, 1), $nobreak))
 						{
@@ -519,23 +605,27 @@ class e_parse
 									$sp = '';
 								}
 								elseif (empty($matches[2]))
-								{  // utf-8 length is less than specified - treat as a special case
+								{
+									// utf-8 length is less than specified - treat as a special case
 									$value .= $sp;
 									$sp = '';
 								}
 								else
-								{		// Need to find somewhere to break the string
-									for ($i = strlen($matches[1])-1; $i >= 0; $i--)
+								{
+									// Need to find somewhere to break the string
+									for($i = strlen($matches[1]) - 1; $i >= 0; $i--)
 									{
-										if (strpos($lbrks,$matches[1][$i]) !== FALSE) break;
+										if(strpos($lbrks, $matches[1][$i]) !== FALSE)
+											break;
 									}
-									if ($i < 0)
-									{	// No 'special' break character found - break at the word boundary
+									if($i < 0)
+									{
+										// No 'special' break character found - break at the word boundary
 										$pulled = $matches[1];
 									}
 									else
 									{
-										$pulled = substr($sp,0,$i+1);
+										$pulled = substr($sp, 0, $i + 1);
 									}
 								}
 								$loopCount++;
@@ -548,34 +638,35 @@ class e_parse
 							}
 							else
 							{
-								for ($i = min($width,strlen($sp)); $i > 0; $i--)
+								for ($i = min($width, strlen($sp)); $i > 0; $i--)
 								{
 									// No speed advantage to defining match character
-									if (strpos($lbrks,$sp[$i-1]) !== FALSE)
+									if (strpos($lbrks, $sp[$i-1]) !== FALSE)
 										break;
 								}
 								if ($i == 0)
 								{
 									// No 'special' break boundary character found - break at the word boundary
-									$pulled = substr($sp,0,$width);
+									$pulled = substr($sp, 0, $width);
 								}
 								else
 								{
-									$pulled = substr($sp,0,$i);
+									$pulled = substr($sp, 0, $i);
 								}
 							}
 							if ($pulled)
 							{
 								$value .= $pulled.$break;
 								// Shorten $sp by whatever we've processed (will work even for utf-8)
-								$sp = substr($sp,strlen($pulled));
+								$sp = substr($sp, strlen($pulled));
 							}
 						}
 						// Add in any residue
 						$value .= $sp;
 					}
 					// Put captured HTML entities back into the string
-					foreach ($ents[0] as $ent) $value = preg_replace("/\x06/", $ent, $value, 1);
+					foreach ($ents[0] as $ent) 
+						$value = preg_replace("/\x06/", $ent, $value, 1);
 				}
 			}
 			// Send the modified segment down the drain
@@ -586,9 +677,6 @@ class e_parse
 	}
 
 
-
-
-
 	function html_truncate ($text, $len = 200, $more = "[more]")
 	{
 		$pos = 0;
@@ -597,52 +685,63 @@ class e_parse
 		$intag = FALSE;
 		while($curlen < $len && $curlen < strlen($text))
 		{
-			switch($text{$pos})
+			switch($text {$pos} )
 			{
-				case "<" :
-				if($text{$pos+1} == "/")
-				{
-					$closing_tag = TRUE;
-				}
-				$intag = TRUE;
-				$tmp_pos = $pos-1;
-				$pos++;
-				break;
-
-				case ">" :
-				if($text{$pos-1} == "/")
-				{
-					$closing_tag = TRUE;
-				}
-				if($closing_tag == TRUE)
-				{
-					$tmp_pos = 0;
-					$closing_tag = FALSE;
-				}
-				$intag = FALSE;
-				$pos++;
-				break;
-
-				case "&" :
-				if($text{$pos+1} == "#")
-				{
-					$end = strpos(substr($text, $pos, 7), ";");
-					if($end !== FALSE)
+				case "<":
+					if($text {$pos + 1} == "/")
 					{
-						$pos+=($end+1);
-						if(!$intag) {$curlen++;}
-						break;
+						$closing_tag = TRUE;
 					}
-				}
-				else
-				{
+					$intag = TRUE;
+					$tmp_pos = $pos - 1;
 					$pos++;
-					if(!$intag) {$curlen++;}
+				break;
+
+				
+				case ">":
+					if($text {$pos - 1} == "/")
+					{
+						$closing_tag = TRUE;
+					}
+					if($closing_tag == TRUE)
+					{
+						$tmp_pos = 0;
+						$closing_tag = FALSE;
+					}
+					$intag = FALSE;
+					$pos++;
+				break;
+
+				
+				case "&":
+					if($text {$pos + 1} == "#")
+					{
+						$end = strpos(substr($text, $pos, 7), ";");
+						if($end !== FALSE)
+						{
+							$pos += ($end + 1);
+							if(!$intag)
+							{
+								$curlen++;
+							}
+						break;
+						}
+					}
+					else
+					{
+						$pos++;
+						if(!$intag)
+						{
+							$curlen++;
+						}
 					break;
-				}
+					}
 				default:
-				$pos++;
-				if(!$intag) {$curlen++;}
+					$pos++;
+					if(!$intag)
+					{
+						$curlen++;
+					}
 				break;
 			}
 		}
@@ -659,38 +758,43 @@ class e_parse
 	// Uses current CHARSET - for utf-8, returns $len characters rather than $len bytes
 	function text_truncate($text, $len = 200, $more = "[more]")
 	{
-		if (strlen($text) <= $len) return $text; 		// Always valid
+		// Always valid
+		if(strlen($text) <= $len)
+			return $text;
 		if (strtolower(CHARSET) !== 'utf-8')
 		{
-			$ret = substr($text,0,$len);	// Non-utf-8 - one byte per character - simple (unless there's an entity involved)
+			// Non-utf-8 - one byte per character - simple (unless there's an entity involved)
+			$ret = substr($text,0,$len);
 		}
 		else
-		{	  // Its a utf-8 string here - don't know whether its longer than allowed length yet
+		{
+			// Its a utf-8 string here - don't know whether its longer than allowed length yet
 			preg_match('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,0}'.
 				'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'})(.{0,1}).*#s',$text,$matches);
-
-			if (empty($matches[2])) return $text;			// return if utf-8 length is less than max as well
+			// return if utf-8 length is less than max as well
+			if (empty($matches[2]))
+				return $text;
 			$ret = $matches[1];
 		}
 		// search for possible broken html entities
 		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
 		// it should work for any characters encoding
-		$leftAmp = strrpos(substr($ret,-8), '&');
-		if($leftAmp) $ret = substr($ret,0,strlen($ret)-8+$leftAmp);
+		$leftAmp = strrpos(substr($ret, -8), '&');
+		if($leftAmp)
+			$ret = substr($ret, 0, strlen($ret) - 8 + $leftAmp);
+
 		return $ret.$more;
 	}
 
 
-
 	function textclean ($text, $wrap=100)
 	{
-		$text = str_replace ("\n\n\n", "\n\n", $text);
+		$text = str_replace("\n\n\n", "\n\n", $text);
 		$text = $this->htmlwrap($text, $wrap);
-		$text = str_replace (array ('<br /> ', ' <br />', ' <br /> '), '<br />', $text);
+		$text = str_replace(array('<br /> ', ' <br />', ' <br /> '), '<br />', $text);
 		/* we can remove any linebreaks added by htmlwrap function as any \n's will be converted later anyway */
 		return $text;
 	}
-
 
 
 	// Test for text highlighting, and determine the text highlighting transformation
@@ -701,20 +805,21 @@ class e_parse
 
 		if (!defined('e_SELF'))
 		{
-			return FALSE;	// Still in startup, so can't calculate highlighting
+			// Still in startup, so can't calculate highlighting
+			return FALSE;
 		}
 
-		if (!isset($this->e_highlighting))
+		if(!isset($this->e_highlighting))
 		{
 			$this->e_highlighting = FALSE;
 			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
-			if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE)))
+			if($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE)))
 			{
 				$this->e_highlighting = TRUE;
-				if (!isset($this -> e_query))
+				if(!isset($this->e_query))
 				{
 					$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
-					$this -> e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
+					$this->e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
 				}
 			}
 		}
@@ -722,69 +827,77 @@ class e_parse
 	}
 
 
-
 	/**
-	 * 
+	 *
 	 * @param string $text
 	 * @param boolean $parseBB [optional]
 	 * @param string $modifiers [optional] TITLE|SUMMARY|DESCRIPTION|BODY|RAW|LINKTEXT etc.
 	 * @param mixed $postID [optional]
 	 * @param boolean $wrap [optional]
-	 * @return 
+	 * @return
 	 */
-	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE)
+	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap = FALSE)
 	{
-		if ($text == '') return $text;
+		if($text == '')
+			return $text;
 
-		global $pref, $fromadmin;
+		global $pref,$fromadmin;
 
 		// Set default modifiers to start
 		$opts = $this->e_optDefault;
+		
 
 		// Now process any modifiers that are specified
 		if ($modifiers)
 		{
-			$aMods = explode(',',$modifiers);
+			$aMods = explode(',', $modifiers);
 
 			// If there's a supermodifier, it must be first, and in uppercase
 			$psm = trim($aMods[0]);
 			if (isset($this->e_SuperMods[$psm]))
-			{	// Supermodifier found - it simply overrides the default
+			{
+				// Supermodifier found - it simply overrides the default
 				$opts = $this->e_SuperMods[$psm];
 				$opts['context'] = $psm;
 				unset($aMods[0]);
 			}
 
-
-			// Now find any regular modifiers; use them to modify the context (there should only be one or two out of the list of possibles)
+			// Now find any regular modifiers; use them to modify the context
+			// (there should only be one or two out of the list of possibles)
 			foreach ($aMods as $mod)
 			{
-				$mod = trim($mod);					// Slight concession to varying coding styles
+				// Slight concession to varying coding styles
+				$mod = trim($mod);
 				if (isset($this->e_Modifiers[$mod]))
 				{
-					foreach ($this->e_Modifiers[$mod] as $k => $v)		// This is probably quicker than array_merge - especially as usually only one or two loops
+					// This is probably quicker than array_merge
+					// - especially as usually only one or two loops
+					foreach ($this->e_Modifiers[$mod] as $k => $v)
 					{
-						$opts[$k] = $v;				// Update our context-specific options
+						// Update our context-specific options
+						$opts[$k] = $v;
 					}
 				}
 			}
 		}
 
 		// Turn off a few things if not enabled in options
-		if (!varsettrue($pref['smiley_activate'])) $opts['emotes'] = FALSE;
-		if (!varsettrue($pref['make_clickable'])) $opts['link_click'] = FALSE;
-		if (!varsettrue($pref['link_replace'])) $opts['link_replace'] = FALSE;
+		if(!varsettrue($pref['smiley_activate']))
+			$opts['emotes'] = FALSE;
+		if(!varsettrue($pref['make_clickable']))
+			$opts['link_click'] = FALSE;
+		if(!varsettrue($pref['link_replace']))
+			$opts['link_replace'] = FALSE;
 
 		$fromadmin = $opts['fromadmin'];
 
 		// Convert defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
-		// The check for '::' is a workaround for a bug in the Zend Optimiser 3.3.0 and PHP 5.2.4 combination - causes crashes if '::' in site name
-		if ($opts['defs'] && (strlen($text) < 25) && ((strpos($text,'::') === FALSE) && defined(trim($text))))
+		// The check for '::' is a workaround for a bug in the Zend Optimiser 3.3.0 and PHP 5.2.4 combination
+		// - causes crashes if '::' in site name
+		if($opts['defs'] && (strlen($text) < 25) && ((strpos($text, '::') === FALSE) && defined(trim($text))))
 		{
 			return constant(trim($text));
 		}
-
-		
 
 		if ($opts['no_tags'])
 		{
@@ -800,11 +913,11 @@ class e_parse
 //		$text = " ".$text;
 
 
-
-// Now get on with the parsing
+		// Now get on with the parsing
 		$ret_parser = '';
 		$last_bbcode = '';
-		$saveOpts = $opts;				// So we can change them on each loop
+		// So we can change them on each loop
+		$saveOpts = $opts;
 		if ($parseBB == FALSE)
 		{
 			$content = array($text);
@@ -832,19 +945,24 @@ class e_parse
 			}
 			else
 			{
-				$opts = $saveOpts;			// Set the options for this pass
+				// Set the options for this pass
+				$opts = $saveOpts;
 
-				// (Have to have a good test in case a 'non-key' bbcode starts the block - so pull out the bbcode parameters while we're there
+				// Have to have a good test in case a 'non-key' bbcode starts the block
+				// - so pull out the bbcode parameters while we're there
 				if (($parseBB !== FALSE) && preg_match('#(^\[(html|php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches ))
-				{  // It's one of the 'key' bbcodes
-					$proc_funcs = FALSE;			// Usually don't want 'normal' processing if its a 'special' bbcode
+				{
+					// It's one of the 'key' bbcodes
+					// Usually don't want 'normal' processing if its a 'special' bbcode
+					$proc_funcs = FALSE;
 					// $matches[0] - complete block from opening bracket of opening tag to closing bracket of closing tag
 					// $matches[1] - complete opening tag (inclusive of brackets)
 					// $matches[2] - bbcode word
 					// $matches[3] - parameter, including '='
 					// $matches[4] - bit between the tags (i.e. text to process)
 					// $matches[5] - closing tag
-					$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('_', '', $matches[2])).'.bb';		// In case we decide to load a file
+					// In case we decide to load a file
+					$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('_', '', $matches[2])).'.bb';
 					$bbcode = '';
 					$code_text = $matches[4];
 					$parm = $matches[3] ? substr($matches[3],1) : '';
@@ -853,12 +971,16 @@ class e_parse
 					{
 						case 'php' :
 							if (DB_INF_SHOW) echo "PHP decode: ".htmlentities($matches[4])."<br /><br />";
-							$proc_funcs = TRUE;		// Probably run the output through the normal processing functions - but put here so the PHP code can disable if desired
+							
+							// Probably run the output through the normal processing functions - but put here so the PHP code can disable if desired
+							$proc_funcs = TRUE;
+
 							// This is just the contents of the php.bb file pulled in - its short, so will be quicker
 			//				$search = array("&quot;", "&#039;", "&#036;", '<br />', E_NL, "-&gt;", "&lt;br /&gt;");
 			//				$replace = array('"', "'", "$", "\n", "\n", "->", "<br />");
 							// Shouldn't have any parameter on this bbcode
-			//				if (!$matches[3]) $bbcode = str_replace($search, $replace, $matches[4]);			// Not sure whether checks are necessary now we've reorganised
+							// Not sure whether checks are necessary now we've reorganised
+			//				if (!$matches[3]) $bbcode = str_replace($search, $replace, $matches[4]);
 							// Because we're bypassing most of the initial parser processing, we should be able to just reverse the effects of toDB() and execute the code
 							if (!$matches[3]) $bbcode = html_entity_decode($matches[4], ENT_QUOTES, CHARSET);
 							if (DB_INF_SHOW) echo "PHP after decode: ".htmlentities($bbcode)."<br /><br />";
@@ -870,7 +992,8 @@ class e_parse
 						case 'hide' :
 							$proc_funcs = TRUE;
 						default :		// Most bbcodes will just execute their normal file
-							$bbcode = file_get_contents($bbFile);		// Just read in the code file and execute it
+							// Just read in the code file and execute it
+							$bbcode = file_get_contents($bbFile);
 					}   // end - switch ($matches[2])
 					if ($bbcode)
 					{	// Execute the file
@@ -892,24 +1015,27 @@ class e_parse
 			}
 
 
-
+			// Do the 'normal' processing - in principle, as previously - but think about the order.
 			if ($proc_funcs)
-			{  // Do the 'normal' processing - in principle, as previously - but think about the order.
+			{
 
 				// Split out and ignore any scripts and style blocks. With just two choices we can match the closing tag in the regex
 				$subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 				foreach ($subcon as $sub_blk)
 				{
-					if (substr($sub_blk,0,7) == '<script')
+					if(substr($sub_blk, 0, 7) == '<script')
 					{
-						if ($opts['scripts'])
+						if($opts['scripts'])
 						{
-							$ret_parser .= $sub_blk;	// Strip scripts unless permitted
+							// Strip scripts unless permitted
+							$ret_parser .= $sub_blk;
 						}
 					}
-					elseif (substr($sub_blk,0,6) == '<style')
-					{  // Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
-						if (DB_INF_SHOW) echo "Processing stylesheet: {$sub_blk}<br />";
+					elseif(substr($sub_blk, 0, 6) == '<style')
+					{
+						// Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
+						if(DB_INF_SHOW)
+							echo "Processing stylesheet: {$sub_blk}<br />";
 						$ret_parser .= $sub_blk;
 					}
 					else
@@ -937,7 +1063,7 @@ class e_parse
 								$_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
 								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
 								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
-                                $email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : LAN_EMAIL_SUBS;
+								$email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : LAN_EMAIL_SUBS;
 								$sub_blk = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $sub_blk);
 							}
 							else
@@ -962,33 +1088,34 @@ class e_parse
 						}
 
 
-
 						// Reduce newlines in all forms to a single newline character (finds '\n', '\r\n', '\n\r')
 						if (!$opts['nobreak'])
 						{
 							if ($convertNL)
 							{
-								$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);		// We may need to convert to <br /> later
+								// We may need to convert to <br /> later
+								$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);
 							}
 							else
 							{
-								$sub_blk = preg_replace("#[\r]*\n[\r]*#", "\n", $sub_blk);		// Not doing any more - its HTML so keep \n so HTML is formatted
+								// Not doing any more - its HTML so keep \n so HTML is formatted
+								$sub_blk = preg_replace("#[\r]*\n[\r]*#", "\n", $sub_blk);
 							}
 						}
-
 
 
 						//	Entity conversion
 						// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
-						if ($opts['value'])
-						{   									// output used for attribute values.
-							$sub_blk = str_replace($this -> replace, $this -> search, $sub_blk);
+						if($opts['value'])
+						{
+							// output used for attribute values.
+							$sub_blk = str_replace($this->replace, $this->search, $sub_blk);
 						}
 						else
-						{ // output not used for attribute values.
-							$sub_blk = str_replace($this -> search, $this -> replace, $sub_blk);
+						{
+							// output not used for attribute values.
+							$sub_blk = str_replace($this->search, $this->replace, $sub_blk);
 						}
-
 
 
 						//   BBCode processing (other than the four already done, which shouldn't appear at all in the text)
@@ -1001,18 +1128,20 @@ class e_parse
 							}
 							if ($parseBB === TRUE)
 							{
-								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);		// 'Normal' or 'legacy' processing
+								// 'Normal' or 'legacy' processing
+								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);
 							}
 							elseif ($parseBB === 'STRIP')
 							{
-								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'default', TRUE);		// Need to strip all BBCodes
+								// Need to strip all BBCodes
+								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'default', TRUE);
 							}
 							else
 							{
-								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'default', $parseBB);		// Need to strip just some BBCodes
+								// Need to strip just some BBCodes
+								$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID, 'default', $parseBB);
 							}
 						}
-
 
 
 						// replace all {e_XXX} constants with their e107 value. modifier determines relative/absolute conversion
@@ -1021,7 +1150,6 @@ class e_parse
 						{
 							$sub_blk = $this->replaceConstants($sub_blk, ($opts['constants'] == 'abs' ? 'full' : ''));
 						}
-
 
 
 						// profanity filter
@@ -1044,13 +1172,13 @@ class e_parse
 						}
 
 
-
-					  //Run any hooked in parsers
+						//Run any hooked in parsers
 						if ($opts['hook'])
 						{
 							if ( varset($pref['tohtml_hook']))
-							{	//Process the older tohtml_hook pref (deprecated)
-								foreach(explode(",",$pref['tohtml_hook']) as $hook)
+							{
+								//Process the older tohtml_hook pref (deprecated)
+								foreach(explode(",", $pref['tohtml_hook']) as $hook)
 								{
 									if (!is_object($this->e_hook[$hook]))
 									{
@@ -1060,7 +1188,7 @@ class e_parse
 											$hook_class = "e_".$hook;
 											$this->e_hook[$hook] = new $hook_class;
 										}
-										
+
 									}
 									$sub_blk = $this->e_hook[$hook]->$hook($sub_blk,$opts['context']);
 								}
@@ -1074,9 +1202,9 @@ class e_parse
 									{
 										if(is_readable(e_PLUGIN.$hook."/e_tohtml.php"))
 										{
-										  	require_once(e_PLUGIN.$hook."/e_tohtml.php");
+											require_once(e_PLUGIN.$hook."/e_tohtml.php");
 											$hook_class = "e_tohtml_".$hook;
-									  		$this->e_hook[$hook] = new $hook_class;
+											$this->e_hook[$hook] = new $hook_class;
 										}
 									}
 									$sub_blk = $this->e_hook[$hook]->to_html($sub_blk, $opts['context']);
@@ -1088,9 +1216,8 @@ class e_parse
 						// 	Word wrap
 						if ($wrap && !$opts['nobreak'])
 						{
-							$sub_blk = $this -> textclean($sub_blk, $wrap);
+							$sub_blk = $this->textclean($sub_blk, $wrap);
 						}
-
 
 
 						//	Search highlighting
@@ -1098,14 +1225,15 @@ class e_parse
 						{
 							if ($this->checkHighlighting())
 							{
-								$sub_blk = $this -> e_highlight($sub_blk, $this -> e_query);
+								$sub_blk = $this->e_highlight($sub_blk, $this->e_query);
 							}
 						}
 
 
 						if ($convertNL)
 						{
-							$nl_replace = '<br />';			// Default replaces all \n with <br /> for HTML display
+							// Default replaces all \n with <br /> for HTML display
+							$nl_replace = '<br />';
 							if ($opts['nobreak'])
 							{
 								$nl_replace = '';
@@ -1126,19 +1254,21 @@ class e_parse
 			}		// End of 'normal' parsing (non-script text)
 			else
 			{
-				$ret_parser .= $full_text;			// Text block that needed no processing at all
+				// Text block that needed no processing at all
+				$ret_parser .= $full_text;
 			}
 		}
 		return trim($ret_parser);
 	}
 
 
-
 	function toAttribute($text)
 	{
-		$text = str_replace("&amp;","&",$text); // URLs posted without HTML access may have an &amp; in them.
-		$text = htmlspecialchars($text, ENT_QUOTES, CHARSET); // Xhtml compliance.
-		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text))
+		// URLs posted without HTML access may have an &amp; in them.
+		$text = str_replace('&amp;', '&', $text);
+		// Xhtml compliance.
+		$text = htmlspecialchars($text, ENT_QUOTES, CHARSET);
+		if(!preg_match('/&#|\'|"|\(|\)|<|>/s', $text))
 		{
 			$text = $this->replaceConstants($text);
 			return $text;
@@ -1153,33 +1283,33 @@ class e_parse
 	/**
 	 * Convert text blocks which are to be embedded within JS
 	 * @param object $stringarray
-	 * @return 
+	 * @return
 	 */
 	function toJS($stringarray)
 	{
-		$search = array("\r\n","\r","<br />","'");
-		$replace = array("\\n","","\\n","\'");
+		$search = array("\r\n", "\r", "<br />", "'");
+		$replace = array("\\n", "", "\\n", "\'");
 		$stringarray = str_replace($search, $replace, $stringarray);
-        $stringarray = strip_tags($stringarray);
+		$stringarray = strip_tags($stringarray);
 
-		$trans_tbl = get_html_translation_table (HTML_ENTITIES);
-		$trans_tbl = array_flip ($trans_tbl);
-
-		return strtr ($stringarray, $trans_tbl);
+		$trans_tbl = get_html_translation_table(HTML_ENTITIES);
+		$trans_tbl = array_flip($trans_tbl);
+		
+		return strtr($stringarray, $trans_tbl);
 	}
 
 
 	/**
-	 * Convert Text for RSS/XML use. 
+	 * Convert Text for RSS/XML use.
 	 * @param object $text
 	 * @param object $tags [optional]
-	 * @return 
+	 * @return
 	 */
-	function toRss($text,$tags=FALSE)
+	function toRss($text, $tags = FALSE)
 	{
 		if($tags != TRUE)
 		{
-			$text = $this -> toHTML($text,TRUE);
+			$text = $this -> toHTML($text, TRUE);
 			$text = strip_tags($text);
 		}
 
@@ -1190,7 +1320,7 @@ class e_parse
 
 		if($tags == TRUE && ($text))
 		{
-        	$text = "<![CDATA[".$text."]]>";
+			$text = "<![CDATA[".$text."]]>";
 		}
 
 		return $text;
@@ -1208,21 +1338,21 @@ class e_parse
 
 	/**
 	 * Replace e107 path constants
-	 * Note: only an ADMIN user can convert {e_ADMIN}	
+	 * Note: only an ADMIN user can convert {e_ADMIN}
 	 * @param string $text
-	 * @param string $mode [optional]  	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
+	 * @param string $mode [optional]	abs|full "full" = produce absolute URL path, e.g. http://sitename.com/e107_plugins/etc
 	 * 									TRUE = produce truncated URL path, e.g. e107plugins/etc
 	 * 									"" (default) = URL's get relative path e.g. ../e107_plugins/etc
 	 * @param mixed $all [optional] 	if TRUE, then when $mode is "full" or TRUE, USERID is also replaced...
 	 * 									when $mode is "" (default), ALL other e107 constants are replaced
 	 * @return string
 	 */
-	function replaceConstants($text, $mode = '', $all = false)
+	function replaceConstants($text, $mode = '', $all = FALSE)
 	{
 		if($mode != "")
 		{
 			$e107 = e107::getInstance();
-			
+
 			$replace_relative = array(
 				'',
 				SITEURL.$e107->getFolder('images'),
@@ -1235,11 +1365,11 @@ class e_parse
 				$e107->getFolder('handlers')
 			);
 
-			switch ($mode) 
+			switch ($mode)
 			{
 				case 'abs':
-	            	$replace_absolute = array(
-	            		$e107->server_path,
+					$replace_absolute = array(
+						$e107->server_path,
 						e_IMAGE_ABS,
 						e_THEME_ABS,
 						e_IMAGE_ABS,
@@ -1250,7 +1380,7 @@ class e_parse
 						e_HANDLER_ABS
 					);
 				break;
-				
+
 				case 'full':
 					$replace_absolute = array(
 						SITEURL,
@@ -1266,7 +1396,15 @@ class e_parse
 				break;
 			}
 
-			$search = array("{e_BASE}","{e_IMAGE_ABS}","{e_THEME_ABS}","{e_IMAGE}","{e_PLUGIN}","{e_FILE}","{e_THEME}","{e_HANDLER}");//,"{e_DOWNLOAD}"
+			$search = array("{e_BASE}",
+				 "{e_IMAGE_ABS}",
+				 "{e_THEME_ABS}",
+				 "{e_IMAGE}",
+				 "{e_PLUGIN}",
+				 "{e_FILE}",
+				 "{e_THEME}",
+				 //,"{e_DOWNLOAD}"
+				 "{e_HANDLER}");
 
 			if (ADMIN)
 			{
@@ -1296,13 +1434,13 @@ class e_parse
 
 //		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
 		$pattern = ($all ? '#\{([A-Za-z_0-9]*)\}#s' : '#\{(e_[A-Z]*(?:_ABS){0,1})\}#s');
-	 	$text = preg_replace_callback($pattern, array($this, 'doReplace'), $text);
-	 	
-	 	if(!defined('THEME'))
-	 	{
-	 		//if not already parsed by doReplace
-	 		$text = str_replace(array('{THEME}', '{THEME_ABS}'), '', $text);
-	 	}
+		$text = preg_replace_callback($pattern, array($this, 'doReplace'), $text);
+
+		if(!defined('THEME'))
+		{
+			//if not already parsed by doReplace
+			$text = str_replace(array('{THEME}', '{THEME_ABS}'), '', $text);
+		}
 
 		return $text;
 	}
@@ -1319,14 +1457,14 @@ class e_parse
 
 	/**
 	 * Create and substitute e107 constants in passed URL
-	 * 
+	 *
 	 * @param string $url
 	 * @param string $mode 0-folders, 1-relative, 2-absolute, 3-full (with domain), 4-absolute & relative (combination of 1,2,3)
-	 * @return 
+	 * @return
 	 */
-    function createConstants($url, $mode=0)
-    {
-    	//FIXME - create constants for absolute paths and site URL's
+	function createConstants($url, $mode = 0)
+	{
+		//FIXME - create constants for absolute paths and site URL's
 		$e107 = e107::getInstance();
 		switch($mode)
 		{
@@ -1339,9 +1477,9 @@ class e_parse
 					'{e_DOWNLOAD}'	=> $e107->getFolder('downloads'),
 					'{e_ADMIN}'		=> $e107->getFolder('admin'),
 					'{e_HANDLER}'	=> $e107->getFolder('handlers')
-	  			);
+					);
 			break;
-		
+
 			case 1: // relative path only
 				$tmp = array(
 					'{e_IMAGE}'		=> e_IMAGE,
@@ -1353,7 +1491,7 @@ class e_parse
 					'{e_HANDLER}'	=> e_HANDLER
 				);
 			break;
-			
+
 			case 2: // absolute path only
 				$tmp = array(
 					'{e_IMAGE}'		=> e_IMAGE_ABS,
@@ -1365,7 +1503,7 @@ class e_parse
 					'{e_HANDLER}'	=> e_HANDLER_ABS
 				);
 			break;
-			
+
 			case 3: // full path (e.g http://domain.com/e107_images/)
 				$tmp = array(
 					'{e_IMAGE}' 	=> SITEURL.$e107->getFolder('images'),
@@ -1377,14 +1515,14 @@ class e_parse
 					'{e_HANDLER}'	=> SITEURL.$e107->getFolder('handlers')
 				);
 			break;
-			
+
 			case 4: // absolute & relative paths
 				$url = $this->createConstants($url, 3);
 				$url = $this->createConstants($url, 2);
 				$url = $this->createConstants($url, 1);
 				return $url;
 			break;
-			
+
 			default:
 				$tmp = array();
 			break;
@@ -1392,18 +1530,19 @@ class e_parse
 
 		foreach($tmp as $key=>$val)
 		{
-        	$len = strlen($val);
-			if(substr($url,0,$len) == $val)
+			$len = strlen($val);
+			if(substr($url, 0, $len) == $val)
 			{
-            	return substr_replace($url,$key,0,$len); // replace the first instance only
+				// replace the first instance only
+				return substr_replace($url, $key, 0, $len);
 			}
 		}
 
 		return $url;
-    }
+	}
 
 
-    //FIXME - $match not used?
+	//FIXME - $match not used?
 	function e_highlight($text, $match)
 	{
 		$tags = array();
@@ -1418,23 +1557,23 @@ class e_parse
 	}
 
 
-    function toEmail($text,$posted="",$mods="parse_sc, no_make_clickable")
+	public function toEmail($text, $posted = "", $mods = "parse_sc, no_make_clickable")
 	{
-		if ($posted === TRUE && MAGIC_QUOTES_GPC)
+		if($posted === TRUE && MAGIC_QUOTES_GPC)
 		{
 			$text = stripslashes($text);
 		}
 
-	  	$text = (strtolower($mods) != "rawtext") ? $this->replaceConstants($text,"full") : $text;
-    	$text = $this->toHTML($text,TRUE,$mods);
-        return $text;
+		$text = (strtolower($mods) != "rawtext") ? $this->replaceConstants($text, "full") : $text;
+		$text = $this->toHTML($text, TRUE, $mods);
+		return $text;
 	}
 
 
 	// Given an email address, returns a link including js-based obfuscation
-	function emailObfuscate($email, $words='', $subject='')
+	function emailObfuscate($email, $words = '', $subject = '')
 	{
-		if (strpos($email,'@') === FALSE)
+		if(strpos($email, '@') === FALSE)
 		{
 			return '';
 		}
@@ -1442,28 +1581,29 @@ class e_parse
 		{
 			$subject = '?subject='.$subject;
 		}
-		list($name,$address) = explode('@',$email,2);
+		list($name, $address) = explode('@', $email, 2);
 		$reassembled = '"'.$name.'"+"@"+"'.$address.'"';
 		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+".$reassembled.$subject.";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+".$reassembled."; return true;' onmouseout='window.status=\"\";return true;'>".$words.'</a>';
 	}
 
 	public function __get($name)
-	{ 
-		switch ($name) 
+	{
+		switch($name)
 		{
 			case 'e_sc':
-				$ret = e107::getScParser(); 
+				$ret = e107::getScParser();
 			break;
+
 			
 			default:
 				trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
-				return null; 
+				return NULL;
 			break;
 		}
+
 		
 		$this->$name = $ret;
 		return $ret;
 	}
 }
 
-?>
