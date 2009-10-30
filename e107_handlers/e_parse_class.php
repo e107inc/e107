@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.77 $
-* $Date: 2009-10-30 23:31:08 $
-* $Author: marj_nl_fr $
+* $Revision: 1.78 $
+* $Date: 2009-10-30 23:38:14 $
+* $Author: e107steved $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -370,7 +370,7 @@ class e_parse
 			case 1:
 				return mb_strpos($haystack, $needle, $offset);
 		}
-		utf8_strpos($haystack, $needle, $offset);
+		return utf8_strpos($haystack, $needle, $offset);
 	}
 
 
@@ -395,7 +395,7 @@ class e_parse
 			case 1:
 				return mb_strrpos($haystack, $needle, $offset);
 		}
-		utf8_strrpos($haystack, $needle, $offset);
+		return utf8_strrpos($haystack, $needle, $offset);
 	}
 
 
@@ -429,7 +429,7 @@ class e_parse
 					return mb_substr($haystack, $needle, $offset);
 				}
 		}
-		utf8_substr($str, $start, $length);
+		return utf8_substr($str, $start, $length);
 	}
 
 
