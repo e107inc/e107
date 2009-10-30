@@ -9,8 +9,8 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-10-20 16:05:02 $
+ * $Revision: 1.13 $
+ * $Date: 2009-10-30 17:59:31 $
  * $Author: secretr $
  *
 */
@@ -218,7 +218,7 @@ class e_validator
 	 */
 	public function setMessageStack($mstack)
 	{
-		if($mstack) $mstack = 'validator';
+		if(!$mstack) $mstack = 'validator';
 		$this->_message_stack = $mstack;
 		return $this;
 	}

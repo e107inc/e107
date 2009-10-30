@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-10-07 11:05:55 $
+ * $Revision: 1.6 $
+ * $Date: 2009-10-30 17:59:32 $
  * $Author: secretr $
  * 
 */
@@ -51,6 +51,20 @@ class e_jsmanager
      * @var array
      */
     protected $_runtime_header_src = array();
+	
+    /**
+     * Current Header zone (under development)
+     *
+     * @var array
+     */
+    protected $_zone_header = 0;
+	
+    /**
+     * Current Footer zone (under development)
+     *
+     * @var array
+     */
+    protected $_zone_footer = 0;
 	
     /**
      * JS files array - loaded in page footer
@@ -292,7 +306,7 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerCore($file_path, $zone = 1)
+	public function headerCore($file_path, $zone = 2)
 	{
 		$this->headerFile('{e_FILE}jslib/'.trim($file_path, '/'), $zone);	
 		return $this;

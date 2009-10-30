@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.60 $
- * $Date: 2009-10-28 14:13:44 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.61 $
+ * $Date: 2009-10-30 17:59:31 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -114,7 +114,6 @@ class e107
 		'e_news_tree' 	=> '{e_HANDLER}news_class.php',
 		'news' 			=> '{e_HANDLER}news_class.php',
 		'e_form' 		=> '{e_HANDLER}form_handler.php',
-		//'e_fieldset' 	=> '{e_HANDLER}form_handler.php',
 		'e_upgrade' 	=> '{e_HANDLER}e_upgrade_class.php',
 		'e_jshelper' 	=> '{e_HANDLER}js_helper.php',
 		'e_menu' 		=> '{e_HANDLER}menu_class.php',
@@ -126,6 +125,7 @@ class e107
 		'themeHandler'	=> '{e_HANDLER}theme_handler.php',
 		'e_model'		=> '{e_HANDLER}model_class.php',
 		'e_admin_model'	=> '{e_HANDLER}model_class.php',
+		'DHTML_Calendar'=> '{e_HANDLER}calendar/calendar_class.php',
 	);
 	
 	/**
