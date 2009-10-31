@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2009-10-03 21:41:52 $
+|     $Revision: 1.48 $
+|     $Date: 2009-10-31 15:39:25 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -300,8 +300,10 @@ class page
 
 
 		if($mode)
-		{	// Don't think $_POST['page_ip_restrict'] is ever set.
-			$update = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."' WHERE page_id='{$mode}'");
+		{	// Saving existing page/menu after edit
+			// Don't think $_POST['page_ip_restrict'] is ever set.
+			$menuname = ($type ? " page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
+			$update = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."'{$menuname} WHERE page_id='{$mode}'");
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
 
@@ -343,8 +345,7 @@ class page
 			admin_update($update, 'update', LAN_UPDATED);
 		}
 		else
-		{
-
+		{	// New page/menu
 			$menuname = ($type ? $tp -> toDB($_POST['menu_name']) : "");
 
 			admin_update($sql -> db_Insert("page", "0, '$page_title', '$page_text', '$pauthor', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27);
