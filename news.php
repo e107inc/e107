@@ -9,9 +9,9 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-10-09 15:08:28 $
- * $Author: secretr $
+ * $Revision: 1.22 $
+ * $Date: 2009-10-31 15:02:02 $
+ * $Author: e107steved $
 */
 
 require_once("class2.php");
@@ -273,52 +273,58 @@ if ($action == "extend")
 		AND (n.news_end=0 || n.news_end>".time().") 
 		AND n.news_id=".intval($sub_action);
 	}
-	$sql->db_Select_gen($query);
-	$news = $sql->db_Fetch();
-	
-	//***NEW [SecretR] - comments handled inside now
-	e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
-	if(!$news['news_allow_comments'] && isset($_POST['commentsubmit']))
+	if ($sql->db_Select_gen($query))
 	{
-		$pid = intval(varset($_POST['pid'], 0));				// ID of the specific comment being edited (nested comments - replies)
-	
-		$clean_authorname = $_POST['author_name'];
-		$clean_comment = $_POST['comment'];
-		$clean_subject = $_POST['subject'];
+		$news = $sql->db_Fetch();
 		
-		e107::getSingleton('comment')->enter_comment($clean_authorname, $clean_comment, 'news', $sub_action, $pid, $clean_subject);
-	}
-	
-	//More SEO
-	setNewsFrontMeta($news);
-	/*
-	if($news['news_title'])
-	{
-	  if($pref['meta_news_summary'] && $news['news_title'])
-	  {
-       	define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
-	  }
-	  define("e_PAGETITLE",$news['news_title']);
-	}*/
+		//***NEW [SecretR] - comments handled inside now
+		e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
+		if(!$news['news_allow_comments'] && isset($_POST['commentsubmit']))
+		{
+			$pid = intval(varset($_POST['pid'], 0));				// ID of the specific comment being edited (nested comments - replies)
+		
+			$clean_authorname = $_POST['author_name'];
+			$clean_comment = $_POST['comment'];
+			$clean_subject = $_POST['subject'];
+			
+			e107::getSingleton('comment')->enter_comment($clean_authorname, $clean_comment, 'news', $sub_action, $pid, $clean_subject);
+		}
+		
+		//More SEO
+		setNewsFrontMeta($news);
+		/*
+		if($news['news_title'])
+		{
+		  if($pref['meta_news_summary'] && $news['news_title'])
+		  {
+			define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
+		  }
+		  define("e_PAGETITLE",$news['news_title']);
+		}*/
 
-	require_once(HEADERF);
-	
-	$param = array();
-	$param['current_action'] = $action;
-	
-	ob_start();
-	$ix->render_newsitem($news, 'extend', '', '', $param);
-	if(e107::getRegistry('news/page_allow_comments'))
-	{
-		global $comment_edit_query; //FIXME - kill me
-		$comment_edit_query = 'comment.news.'.$news['news_id'];
-		e107::getSingleton('comment')->compose_comment('news', 'comment', $news['news_id'], null, $news['news_title'], FALSE);
+		require_once(HEADERF);
+		
+		$param = array();
+		$param['current_action'] = $action;
+		
+		ob_start();
+		$ix->render_newsitem($news, 'extend', '', '', $param);
+		if(e107::getRegistry('news/page_allow_comments'))
+		{
+			global $comment_edit_query; //FIXME - kill me
+			$comment_edit_query = 'comment.news.'.$news['news_id'];
+			e107::getSingleton('comment')->compose_comment('news', 'comment', $news['news_id'], null, $news['news_title'], FALSE);
+		}
+		$cache_data = ob_get_contents();
+		ob_end_flush();
+		setNewsCache($cacheString, $cache_data);
+		require_once(FOOTERF);
+		exit;
 	}
-	$cache_data = ob_get_contents();
-	ob_end_flush();
-	setNewsCache($cacheString, $cache_data);
-	require_once(FOOTERF);
-	exit;
+	else
+	{
+		$action = 'default';
+	}
 }
 
 
