@@ -9,9 +9,9 @@
  * Admin Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
- * $Revision: 1.49 $
- * $Date: 2009-10-29 02:29:33 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.50 $
+ * $Date: 2009-10-31 17:57:15 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT'))
@@ -327,13 +327,22 @@ if (vartrue($pref['e_meta_list']))
 	}
 }
 
-//XXX - do we still need it?
+//XXX - do we still need it? Now we have better way of doing this - admin tools (see below)
 if (function_exists('headerjs'))
 {
 	echo headerjs();
 }
 
-// [JSManager] Load JS Includes - Zone 4 - After e_meta, headerjs
+// Admin UI - send header content if any - headerjs() replacement
+$tmp = e107::getAdminUI();
+if($tmp)
+{
+	// Note: normally you shouldn't send JS content here, former is (much better) handled by JS manager (both files and inline)
+	echo $tmp->getHeader();
+}
+unset($tmp);
+
+// [JSManager] Load JS Includes - Zone 4 - After e_meta, headerjs, before Admin UI headers
 e107::getJs()->renderJs('header', 4);
 e107::getJs()->renderJs('header_inline', 4);
 

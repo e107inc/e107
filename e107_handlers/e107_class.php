@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.61 $
- * $Date: 2009-10-30 17:59:31 $
+ * $Revision: 1.62 $
+ * $Date: 2009-10-31 17:57:15 $
  * $Author: secretr $
 */
 
@@ -93,39 +93,47 @@ class e107
 	 * 'class name' => 'path' pair
 	 * 
 	 * Used to auto-load core handlers 
+	 * TODO - we really need to alphabetically re-order this!
 	 *
 	 * @see getSingleton()
 	 * @see getObject()
 	 * @var array
 	 */
 	protected static $_known_handlers = array (
-		'db'			=> '{e_HANDLER}mysql_class.php',
-		'ecache'		=> '{e_HANDLER}cache_handler.php',
-		'user_class'	=> '{e_HANDLER}userclass_class.php',
-		'e107_event'	=> '{e_HANDLER}event_class.php',
-		'ArrayData'		=> '{e_HANDLER}arraystorage_class.php',
-		'eURL'			=> '{e_HANDLER}e107Url.php',
-		'e_file'		=> '{e_HANDLER}file_class.php',
-		'e_admin_log'	=> '{e_HANDLER}admin_log_class.php',
-		'notify'		=> '{e_HANDLER}notify_class.php',
-		'e_online'		=> '{e_HANDLER}online_class.php',
-		'convert'		=> '{e_HANDLER}date_handler.php',
-		'e_news_item' 	=> '{e_HANDLER}news_class.php',
-		'e_news_tree' 	=> '{e_HANDLER}news_class.php',
-		'news' 			=> '{e_HANDLER}news_class.php',
-		'e_form' 		=> '{e_HANDLER}form_handler.php',
-		'e_upgrade' 	=> '{e_HANDLER}e_upgrade_class.php',
-		'e_jshelper' 	=> '{e_HANDLER}js_helper.php',
-		'e_menu' 		=> '{e_HANDLER}menu_class.php',
-		'e107plugin' 	=> '{e_HANDLER}plugin_class.php',
-		'xmlClass' 		=> '{e_HANDLER}xml_class.php',
-		'e107_traffic'	=> '{e_HANDLER}traffic_class.php',
-		'comment'		=> '{e_HANDLER}comment_class.php',
-		'e_validator'	=> '{e_HANDLER}validator_class.php',
-		'themeHandler'	=> '{e_HANDLER}theme_handler.php',
-		'e_model'		=> '{e_HANDLER}model_class.php',
-		'e_admin_model'	=> '{e_HANDLER}model_class.php',
-		'DHTML_Calendar'=> '{e_HANDLER}calendar/calendar_class.php',
+		'db'						=> '{e_HANDLER}mysql_class.php',
+		'ecache'					=> '{e_HANDLER}cache_handler.php',
+		'user_class'				=> '{e_HANDLER}userclass_class.php',
+		'e107_event'				=> '{e_HANDLER}event_class.php',
+		'ArrayData'					=> '{e_HANDLER}arraystorage_class.php',
+		'eURL'						=> '{e_HANDLER}e107Url.php',
+		'e_file'					=> '{e_HANDLER}file_class.php',
+		'e_admin_log'				=> '{e_HANDLER}admin_log_class.php',
+		'notify'					=> '{e_HANDLER}notify_class.php',
+		'e_online'					=> '{e_HANDLER}online_class.php',
+		'convert'					=> '{e_HANDLER}date_handler.php',
+		'e_news_item' 				=> '{e_HANDLER}news_class.php',
+		'e_news_tree' 				=> '{e_HANDLER}news_class.php',
+		'news' 						=> '{e_HANDLER}news_class.php',
+		'e_form' 					=> '{e_HANDLER}form_handler.php',
+		'e_upgrade' 				=> '{e_HANDLER}e_upgrade_class.php',
+		'e_jshelper' 				=> '{e_HANDLER}js_helper.php',
+		'e_menu' 					=> '{e_HANDLER}menu_class.php',
+		'e107plugin' 				=> '{e_HANDLER}plugin_class.php',
+		'xmlClass' 					=> '{e_HANDLER}xml_class.php',
+		'e107_traffic'				=> '{e_HANDLER}traffic_class.php',
+		'comment'					=> '{e_HANDLER}comment_class.php',
+		'e_validator'				=> '{e_HANDLER}validator_class.php',
+		'themeHandler'				=> '{e_HANDLER}theme_handler.php',
+		'e_model'					=> '{e_HANDLER}model_class.php',
+		'e_admin_model'				=> '{e_HANDLER}model_class.php',
+		'e_admin_dispatcher' 		=> '{e_HANDLER}admin_handler.php',
+		'e_admin_request' 			=> '{e_HANDLER}admin_handler.php',
+		'e_admin_response' 			=> '{e_HANDLER}admin_handler.php',
+		'e_admin_controller' 		=> '{e_HANDLER}admin_handler.php',
+		'e_admin_controller_ui' 	=> '{e_HANDLER}admin_handler.php',
+		'e_admin_ui' 				=> '{e_HANDLER}admin_handler.php',
+		'e_admin_form_ui' 			=> '{e_HANDLER}admin_handler.php',
+		'DHTML_Calendar'			=> '{e_HANDLER}calendar/calendar_class.php',
 	);
 	
 	/**
@@ -835,6 +843,18 @@ class e107
 			$included = true;
 		}
 		return e_jsmanager::getInstance();
+	}
+	
+	/**
+	 * Retrieve admin dispatcher instance.
+	 * It's instance is self registered (for now, this could change in the future) on initialization (__construct())
+	 * 
+	 * @see e_admin_dispatcher
+	 * @return e_admin_dispatcher
+	 */
+	public static function getAdminUI()
+	{
+		return self::getRegistry('admin/ui/dispatcher');
 	}
 	
 	/**

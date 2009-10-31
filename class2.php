@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.152 $
-* $Date: 2009-10-30 20:58:52 $
-* $Author: marj_nl_fr $
+* $Revision: 1.153 $
+* $Date: 2009-10-31 17:57:15 $
+* $Author: secretr $
 *
 */
 //
@@ -2101,8 +2101,21 @@ function plugInstalled($plugname)
 }
 
 /**
- * Magic autoload
- * TODO - move to spl_autoload[_*] some day (PHP5 > 5.1.2)
+ * Magic class autoload.
+ * We are raising plugin structure standard here - plugin auto-loading works ONLY if 
+ * classes live inside 'includes' folder.
+ * Example: plugin_myplug_admin_ui -> 
+ * <code>
+ * <?php
+ * // __autoload() will look in e_PLUGIN.'myplug/includes/admin/ui.php for this class
+ * // e_admin_ui is core handler, so it'll be autoloaded as well
+ * class plugin_myplug_admin_ui extends e_admin_ui
+ * {
+ * 
+ * }
+ * </code>
+ * TODO - use spl_autoload[_*] for core autoloading some day (PHP5 > 5.1.2)
+ * 
  * @param string $className
  * @return void
  */
@@ -2117,9 +2130,10 @@ function __autoload($className)
 	
 	switch($tmp[0])
 	{
-		case 'plugin':
-		case 'eplug_':
+		case 'plugin': 
 			array_shift($tmp);
+			// folder 'includes' is not part of the class name
+			$tmp[0] = $tmp[0].'/includes'; 
 			$filename = e_PLUGIN.implode('/', $tmp).'.php';
 			//TODO add debug screen Auto-loaded classes - ['plugin: '.$filename.' - '.$className];
 		break;
@@ -2132,6 +2146,7 @@ function __autoload($className)
 	
 	if($filename)
 	{
+		// auto load doesn't REQUIRE files, because this will break things like call_user_func()
 		include($filename);
 	}
 } 

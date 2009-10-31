@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.27 2009-10-22 23:43:21 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.28 2009-10-31 17:57:15 secretr Exp $
 *
 * Admin shortcode batch - class
 */
@@ -439,46 +439,61 @@ class admin_shortcodes
 
 	function sc_admin_menu($parm)
 	{
-		if (ADMIN)
+		if (!ADMIN)
 		{
-			global $ns, $pref;
-
+			return '';
+		}
+		global $ns, $pref;
+		
+		// SecretR: NEW v0.8
+		$tmp = e107::getAdminUI();
+		if($tmp)
+		{
 			ob_start();
-			//Show upper_right menu if the function exists
-			$tmp = explode('.',e_PAGE);
-            $adminmenu_parms = "";
-
-			$adminmenu_func = $tmp[0].'_adminmenu';
-			if(function_exists($adminmenu_func))
-			{
-				if (!$parm)
-				{
-					call_user_func($adminmenu_func,$adminmenu_parms);   // ? not sure why there's an adminmenu_parms;
-				}
-				else
-				{
-					ob_end_clean();
-					return 'pre';
-				}
-			}
-			$plugindir = (str_replace('/','',str_replace('..', '', e_PLUGIN)).'/');
-			$plugpath = e_PLUGIN.str_replace(basename(e_SELF), '', str_replace($plugindir, '', strstr(e_SELF,$plugindir))).'admin_menu.php';
-			if(file_exists($plugpath))
-			{
-				if (!$parm)
-				{
-					@require_once($plugpath);
-				}
-				else
-				{
-					ob_end_clean();
-					return 'pre';
-				}
-			}
+			// FIXME - renderMenu(), respectively e_admin_menu() should return, not output content!
+			$tmp->renderMenu();
 			$ret = ob_get_contents();
 			ob_end_clean();
 			return $ret;
 		}
+		unset($tmp);
+
+		// Obsolete
+		ob_start();
+		//Show upper_right menu if the function exists
+		$tmp = explode('.',e_PAGE);
+        $adminmenu_parms = "";
+
+		$adminmenu_func = $tmp[0].'_adminmenu';
+		if(function_exists($adminmenu_func))
+		{
+			if (!$parm)
+			{
+				call_user_func($adminmenu_func,$adminmenu_parms);   // ? not sure why there's an adminmenu_parms;
+			}
+			else
+			{
+				ob_end_clean();
+				return 'pre';
+			}
+		}
+		$plugindir = (str_replace('/','',str_replace('..', '', e_PLUGIN)).'/');
+		$plugpath = e_PLUGIN.str_replace(basename(e_SELF), '', str_replace($plugindir, '', strstr(e_SELF,$plugindir))).'admin_menu.php';
+		if(file_exists($plugpath))
+		{
+			if (!$parm)
+			{
+				@require_once($plugpath);
+			}
+			else
+			{
+				ob_end_clean();
+				return 'pre';
+			}
+		}
+		$ret = ob_get_contents();
+		ob_end_clean();
+		return $ret;
 	}
 
 	function sc_admin_msg($parm)
@@ -1054,7 +1069,7 @@ class admin_shortcodes
 
 			$text .= adnav_cat(ADLAN_CL_8, '', E_16_CAT_ABOUT, 'docsMenu'); //E_16_NAV_DOCS
 			$text .= "<div id='docsMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
-			if (!$handle=opendir(e_DOCS.e_LANGUAGE."/"))
+			if (!is_readable(e_DOCS.e_LANGUAGE."/")) // warning killed
 			{
 				$handle=opendir(e_DOCS.'English/');
 			}
