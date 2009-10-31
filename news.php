@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.127 $
-|     $Date: 2009-07-10 20:30:01 $
+|     $Revision: 1.128 $
+|     $Date: 2009-10-31 15:01:54 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -227,26 +227,32 @@ if ($action == "extend")
 		AND NOT (n.news_class REGEXP ".$nobody_regexp.") 
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") ";
 	}
-	$sql->db_Select_gen($query);
-	$news = $sql->db_Fetch();
-
-	if($news['news_title'])
+	if ($sql->db_Select_gen($query))
 	{
-	  if($pref['meta_news_summary'] && $news['news_title'])
-	  {
-       	define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
-	  }
-	  define("e_PAGETITLE",$news['news_title']);
-	}
+		$news = $sql->db_Fetch();
 
-	require_once(HEADERF);
-	ob_start();
-	$ix->render_newsitem($news, "extend");
-	$cache_data = ob_get_contents();
-	ob_end_flush();
-	setNewsCache($cacheString, $cache_data);
-	require_once(FOOTERF);
-	exit;
+		if($news['news_title'])
+		{
+		  if($pref['meta_news_summary'] && $news['news_title'])
+		  {
+			define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
+		  }
+		  define("e_PAGETITLE",$news['news_title']);
+		}
+
+		require_once(HEADERF);
+		ob_start();
+		$ix->render_newsitem($news, "extend");
+		$cache_data = ob_get_contents();
+		ob_end_flush();
+		setNewsCache($cacheString, $cache_data);
+		require_once(FOOTERF);
+		exit;
+	}
+	else
+	{
+		$action = 'default';
+	}
 }
 
 
