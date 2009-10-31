@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-10-03 21:42:03 $
+ * $Revision: 1.23 $
+ * $Date: 2009-10-31 15:39:05 $
  * $Author: e107steved $
  *
 */
@@ -443,9 +443,10 @@ class page
 		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0);
 
 
-		if ($mode)
-		{	// Don't think $_POST['page_ip_restrict'] is ever set.
-			$update = $sql->db_Update("page", "page_title='{$page_title}', page_datestamp='".time()."', page_text='{$page_text}', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."' WHERE page_id='{$mode}'");
+		{	// Saving existing page/menu after edit
+			// Don't think $_POST['page_ip_restrict'] is ever set.
+			$menuname = ($type ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
+			$update = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."'{$menuname} WHERE page_id='{$mode}'");
 			$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
