@@ -9,10 +9,9 @@
  * Plugin - PDF generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/e107pdf.php,v $
- * $Revision: 1.6 $
- * $Date: 2008-12-21 12:03:28 $
+ * $Revision: 1.7 $
+ * $Date: 2009-10-31 15:18:28 $
  * $Author: e107steved $
- *
 */
 if (!defined('e107_INIT')) { exit; }
 
@@ -121,16 +120,20 @@ class e107PDF extends UFPDF{
 	input argument $text needs to be an array containing the following:
 	$text = array($text, $creator, $author, $title, $subject, $keywords, $url);
 	*/
-	function makePDF($text){
+	function makePDF($text)
+	{
 		global $tp, $pdfpref;
 
 		//call get preferences
 		$pdfpref = $this->getPDFPrefs();
 
 		//define logo and source pageurl (before the parser!)
-		if(is_readable(THEME."images/logopdf.png")){
+		if(is_readable(THEME."images/logopdf.png"))
+		{
 			$logo = THEME."images/logopdf.png";
-		}else{
+		}
+		else
+		{
 			$logo = e_IMAGE."logo.png";
 		}
 		define('PDFLOGO', $logo);					//define logo to add in header
@@ -139,7 +142,8 @@ class e107PDF extends UFPDF{
 		//parse the data
 		$text[3] = $this->toPDF($text[3]);					//replace some in the title
 		$text[3] = $this->toPDFTitle($text[3]);			//replace some in the title
-		foreach($text as $k=>$v){
+		foreach($text as $k=>$v)
+		{
 			$text[$k] = $tp->toHTML($v, TRUE);
 		}
 
@@ -148,6 +152,7 @@ class e107PDF extends UFPDF{
 		//$this->SetAutoPageBreak(true,25);
 
 		//start creating the pdf and adding the data
+		$this->DefOrientation=(varset($text[7], 'P') == 'L' ? 'L' : 'P'); 	// Page orientation - P=portrait, L=landscape
 		$this->AliasNbPages();						//calculate current page + number of pages
 		$this->AddPage();							//start page
 		$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);				//set font
