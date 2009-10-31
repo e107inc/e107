@@ -390,21 +390,36 @@ class e_admin_request
 	
 	/**
 	 * Build query string from current request array
+	 * NOTE: changing url separator to &amp; ($encode==true) (thus URL XHTML compliance) works in PHP 5.1.2+ environment
+	 * 
 	 * @param string|array $merge_with [optional] override request values
+	 * @param boolean $encode if true &amp; separator will be used, all values will be http encoded, default true
 	 * @return string url encoded query string
 	 */
-	public function buildQueryString($merge_with = array())
+	public function buildQueryString($merge_with = array(), $encode = true)
 	{
 		$ret = $this->getQuery();
 		if(is_string($merge_with))
 		{
 			parse_str($merge_with, $merge_with);
 		}
-		return http_build_query(array_merge($ret, (array) $merge_with));
+		$ret = array_merge($ret, (array) $merge_with);
+		$separator = '&';
+		if($encode)
+		{
+			$separator = '&amp;';
+			$ret = array_map('rawurlencode', $ret);
+			foreach ($ret as $key => $value)
+			{
+				$ret[$key] = rawurlencode($value);
+			}
+		}
+		
+		return http_build_query($ret, 'numeric_', $separator);
 	}
 	
 	/**
-	 * Convert string to camelCase
+	 * Convert string to CamelCase
 	 * 
 	 * @param string $str
 	 * @return string
@@ -894,7 +909,7 @@ class e_admin_dispatcher
 	 * 
 	 * @var array
 	 */
-	protected $controllerList;
+	protected $modes;
 	
 	/**
 	 * Optional (set by child class).
@@ -917,7 +932,7 @@ class e_admin_dispatcher
 	 * @param string|array|e_admin_request $request [optional]
 	 * @param e_admin_response $response
 	 */
-	public function __construct($request = null, $response = null)
+	public function __construct($request = null, $response = null, $auto_observe = true)
 	{
 		if(null === $request || !is_object($request))
 		{
@@ -930,7 +945,14 @@ class e_admin_dispatcher
 		}
 		
 		$this->setRequest($request)->setResponse($response)->init();
-		//$this->_initController();
+		
+		// register itself
+		e107::setRegistry('admin/ui/dispatcher', $this);
+		
+		if($auto_observe)
+		{
+			$this->runObservers(true);
+		}
 		
 	}
 	
@@ -1088,6 +1110,16 @@ class e_admin_dispatcher
 	}
 	
 	/**
+	 * Proxy method
+	 * 
+	 * @return string
+	 */
+	public function getHeader()
+	{
+		return $this->getController()->getHeader();
+	}
+	
+	/**
 	 * Get current controller object
 	 * @return e_admin_controller
 	 */
@@ -1109,10 +1141,10 @@ class e_admin_dispatcher
 	{
 		$request = $this->getRequest();
 		$response = $this->getResponse();
-		if(isset($this->controllerList[$request->getModeName()]) && isset($this->controllerList[$request->getModeName()]['controller']))
+		if(isset($this->modes[$request->getModeName()]) && isset($this->modes[$request->getModeName()]['controller']))
 		{
-			$class_name = $this->controllerList[$request->getModeName()]['controller'];
-			$class_path = vartrue($this->controllerList[$request->getModeName()]['path']);
+			$class_name = $this->modes[$request->getModeName()]['controller'];
+			$class_path = vartrue($this->modes[$request->getModeName()]['path']);
 			
 			if($class_path)
 			{
@@ -1138,10 +1170,10 @@ class e_admin_dispatcher
 				$this->_current_controller->setRequest($request)->init(); 
 			}
 			
-			if(vartrue($this->controllerList[$request->getModeName()]['ui']))
+			if(vartrue($this->modes[$request->getModeName()]['ui']))
 			{
-				$class_name = $this->controllerList[$request->getModeName()]['ui'];
-				$class_path = vartrue($this->controllerList[$request->getModeName()]['uipath']);
+				$class_name = $this->modes[$request->getModeName()]['ui'];
+				$class_path = vartrue($this->modes[$request->getModeName()]['uipath']);
 				if($class_path)
 				{
 					require_once(e107::getParser()->replaceConstants($class_path));
@@ -1151,6 +1183,8 @@ class e_admin_dispatcher
 					$this->_current_controller->setParam('ui', new $class_name($this->_current_controller));
 				}
 			}
+			$this->_current_controller->setParam('modes', $this->modes);
+			
 		}
 		
 		return $this;
@@ -1179,7 +1213,7 @@ class e_admin_dispatcher
 	 * Generic Admin Menu Generator
 	 * @return string
 	 */
-	function renderMenu()
+	function renderMenu($return = true)
 	{
 		$tp = e107::getParser();
 		$var = array();
@@ -1217,7 +1251,7 @@ class e_admin_dispatcher
 			$var[$key]['perm'] = $val['perm'];	*/
 		}
 		$request = $this->getRequest();
-		e_admin_menu($this->menuTitle, $request->getMode().'/'.$request->getAction(), $var);
+		return e_admin_menu($this->menuTitle, $request->getMode().'/'.$request->getAction(), $var);
 	}
 }
 
@@ -1267,7 +1301,8 @@ class e_admin_controller
 	 * Get controller parameter
 	 * Currently used core parameters:
 	 * - enable_triggers: don't use it direct, see {@link setTriggersEnabled()}
-	 * - TODO - more parameters
+	 * - modes - see dispatcher::$modes
+	 * - TODO - more parameters/add missing to this list
 	 * 
 	 * @param string $key [optional] if null - get whole array 
 	 * @param mixed $default [optional]
@@ -1675,6 +1710,99 @@ class e_admin_controller
 	}
 	
 	/**
+	 * Generic redirect handler, it handles almost everything we would need.
+	 * Additionally, it moves currently registered system messages to SESSION message stack
+	 * In almost every case {@link redirectAction()} and {@link redirectMode()} are better solution
+	 * 
+	 * @param string $action defaults to current action 
+	 * @param string $mode defaults to current mode 
+	 * @param string|array $exclude_query comma delimited variable names to be excluded from current query OR TRUE to exclude everything
+	 * @param string|array $merge_query query string (&amp; delimiter) or associative array to be merged with current query
+	 * @param string $path default to e_SELF
+	 * @return void
+	 */
+	public function redirect($action = null, $mode = null, $exclude_query = '', $merge_query = array(), $path = null)
+	{
+		$request = $this->getRequest();
+		
+		//special case - exclude all current
+		if(true === $exclude_query)
+		{
+			$exclude_query = $this->getQuery();
+		}
+		// to array
+		if(is_string($exclude_query))
+		{
+			$exclude_query = array_map('trim', explode(',', $exclude_query));
+		}
+		// to array
+		if(is_string($merge_query))
+		{
+			parse_str($merge_query, $merge_query);
+		}
+		//this should be part of request handler
+		if($exclude_query) 
+		{
+			// Converting array on the fly as of PHP 5.3+/6 - cool, isn't it!
+			// $request->setQuery(array_map(function($value) { return null; }, $exclude_query));
+			foreach ($exclude_query as $var)
+			{
+				$request->setQuery($var, null);
+			}
+		}
+		// Set them in the end
+		if($mode) $request->setMode($mode);
+		if($action) $request->setAction($action);
+		if(!$path) $path = e_SELF;
+		
+		$url = $path.'?'.$request->buildQueryString($merge_query, false);
+		// Transfer all messages to session
+		e107::getMessage()->mergeWithSession();
+		// write session data
+		session_write_close();
+		// do redirect
+		header('Location: '.$url);
+		exit;
+	}
+	
+	/**
+	 * Convenient redirect() proxy method, make life easier when redirecting between actions 
+	 * in same mode.
+	 * 
+	 * @param string $action [optional]
+	 * @param string|array $exclude_query [optional]
+	 * @param string|array $merge_query [optional]
+	 * @return 
+	 */
+	public function redirectAction($action = null, $exclude_query = '', $merge_query = array())
+	{
+		$this->redirect($action, null, $exclude_query, $merge_query);
+	}
+	
+	/**
+	 * Convenient redirect to another mode (doesn't use current Query state)
+	 * If path is empty, it'll be auto-detected from modes (dispatcher) array
+	 * 
+	 * @param string $mode
+	 * @param string $action
+	 * @param string|array $query [optional]
+	 * @param string $path
+	 * @return void
+	 */
+	public function redirectMode($mode, $action, $query = array(), $path = null)
+	{
+		if(!$path && $this->getParam('modes'))
+		{
+			$modes = $this->getParam('modes');
+			if(vartue($modes[$mode]) && vartrue($modes[$mode]['url']))
+			{
+				$path = e107::getParser()->replaceConstants($modes[$mode]['url'], 'abs');
+			}
+		}
+		$this->redirect($action, $mode, true, $query, $path);
+	}
+	
+	/**
 	 * Convert action name to method name
 	 * 
 	 * @param string $action_name formatted (e.g. request method getActionName()) action name  
@@ -1727,13 +1855,13 @@ class e_admin_controller
 	}
 }
 
-//FIXME - move everything from e_admin_controller_main except model auto-create related code
+//FIXME - move everything from e_admin_ui except model auto-create related code
 class e_admin_controller_ui extends e_admin_controller
 {
 	
 }
 
-class e_admin_controller_main extends e_admin_controller_ui
+class e_admin_ui extends e_admin_controller_ui
 {
 	protected $fields = array();
 	protected $fieldpref = array();
@@ -1870,6 +1998,14 @@ class e_admin_controller_main extends e_admin_controller_ui
 	}
 	
 	/**
+	 * Generic Create submit trigger
+	 */
+	public function EditCancelTrigger()
+	{
+		$this->redirectAction('list', 'id');
+	}
+	
+	/**
 	 * Generic Edit submit trigger
 	 */
 	public function EditSubmitTrigger()
@@ -1893,6 +2029,14 @@ class e_admin_controller_main extends e_admin_controller_ui
 	public function CreateObserver()
 	{
 		$this->triggersEnabled(true);
+	}
+	
+	/**
+	 * Generic Create submit trigger
+	 */
+	public function CreateCancelTrigger()
+	{
+		$this->redirectAction('list', 'id');
 	}
 	
 	/**
@@ -2069,7 +2213,7 @@ class e_admin_controller_main extends e_admin_controller_ui
 				->setValidationRules($this->validationRules)
 				->setFieldTypes($this->fieldTypes)
 				->setDataFields($this->dataFields)
-				->setParam($this->editQry);
+				->setParam('db_query', $this->editQry);
 		}
 		return $this->_model;
 	}
@@ -2122,16 +2266,16 @@ class e_admin_controller_main extends e_admin_controller_ui
 	}
 }
 
-class e_admin_ui extends e_form
+class e_admin_form_ui extends e_form
 {	
 	/**
-	 * @var e_admin_controller_main
+	 * @var e_admin_ui
 	 */
 	protected $_controller = null;
 	
 	/**
 	 * Constructor
-	 * @param e_admin_controller_main $controller
+	 * @param e_admin_ui $controller
 	 * @param boolean $tabindex [optional] enable form element auto tab-indexing
 	 */
 	function __construct($controller, $tabindex = false)
@@ -2211,6 +2355,7 @@ class e_admin_ui extends e_form
 						$text .= $this->admin_button('etrigger_submit', LAN_CREATE, 'create');	
 						$text .= "<input type='hidden' name='record_id' value='0' />";
 					}
+					$text .= $this->admin_button('etrigger_cancel', LAN_CANCEL, 'cancel');
 					
 		$text .= "
 				</div>
@@ -2502,7 +2647,7 @@ class e_admin_ui extends e_form
 	}
 	
 	/**
-	 * @return e_admin_controller_main
+	 * @return e_admin_ui
 	 */
 	public function getController()
 	{
@@ -2515,13 +2660,13 @@ class e_admin_ui extends e_form
 class e_admin_ui_dummy extends e_form
 {	
 	/**
-	 * @var e_admin_controller_main
+	 * @var e_admin_ui
 	 */
 	protected $_controller = null;
 	
 	/**
 	 * Constructor
-	 * @param e_admin_controller_main $controller
+	 * @param e_admin_ui $controller
 	 * @return 
 	 */
 	function __construct($controller)
@@ -2796,7 +2941,7 @@ class e_admin_ui_dummy extends e_form
 	}
 	
 	/**
-	 * @return e_admin_controller_main
+	 * @return e_admin_ui
 	 */
 	public function getController()
 	{
@@ -2804,3 +2949,16 @@ class e_admin_ui_dummy extends e_form
 	}
 }
 
+/**
+ * TODO:
+ * 1. move abstract peaces of code to the proper classes
+ * 2. remove duplicated code (e_form & e_admin_form_ui), refactoring
+ * 3. make JS Manager handle Styles (.css files and inline CSS)
+ * 4. e_form is missing some methods used in e_admin_form_ui
+ * 5. date convert needs string-to-datestamp auto parsing, strptime() is the solution but needs support for 
+ * 		Windows and PHP < 5.1.0 - build custom strptime() function (php_compatibility_handler.php) on this - 
+ * 		http://sauron.lionel.free.fr/?page=php_lib_strptime (bad license so no copy/paste is allowed!)
+ * 6. $fields[parms] mess - fix it, separate list/edit mode parms somehow
+ * 7. clean up/document all object vars (e_admin_ui, e_admin_dispatcher)
+ * 8. clean up/document all parameters (get/setParm()) in controller and model classes
+ */
