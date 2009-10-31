@@ -78,7 +78,7 @@ margin-left: 10px;  /* rtl */
 #nav li li a.sub,
 #nav li:hover li a.sub,
 #nav li.sfhover li a.sub {
-	background-image: url(../images/links_sub.gif) !important ; background-repeat: no-repeat; background-position:95% 50%;
+	background-image: url(../images/links_sub_rtl.gif) !important ; background-repeat: no-repeat; background-position:05% 50%;
 }
 #nav li li a.sub:hover,
 #nav li:hover li a.sub:hover,
