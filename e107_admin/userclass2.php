@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-10-21 07:31:05 $
- * $Author: e107coders $
+ * $Revision: 1.30 $
+ * $Date: 2009-11-01 17:19:26 $
+ * $Author: e107steved $
  *
 */
 
@@ -81,37 +81,48 @@ if(e_AJAX_REQUEST)
 			//by the JS AJAX handler
 			e_jshelper::sendAjaxError('403', 'Access denied. Form update failed!');
 		}
-		$sql->db_Select('userclass_classes', '*', "userclass_id='".$class_num."' ");
-		$row = $sql->db_Fetch(MYSQL_ASSOC);
-
-		//Response action - reset all group checkboxes
-		$jshelper->addResponseAction('reset-checked', array('group_classes_select' => '0'));
-
-		//it's grouped userclass
-		if ($row['userclass_type'] == UC_TYPE_GROUP)
+		elseif($sql->db_Select('userclass_classes', '*', "userclass_id='".$class_num."' "))
 		{
-			//Response action - show group, hide standard
-			$jshelper->addResponseAction('element-invoke-by-id', array('show' => 'userclass_type_groups', 'hide' => 'userclass_type_standard'));
+			$row = $sql->db_Fetch(MYSQL_ASSOC);
 
-			//fill in the classes array
-			$tmp = explode(',',$row['userclass_accum']);
-			foreach ($tmp as $uid) {
-				$row['group_classes_select_'.$uid] = $uid;
+			//Response action - reset all group checkboxes
+			$jshelper->addResponseAction('reset-checked', array('group_classes_select' => '0'));
+
+			//it's grouped userclass
+			if ($row['userclass_type'] == UC_TYPE_GROUP)
+			{
+				//Response action - show group, hide standard
+				$jshelper->addResponseAction('element-invoke-by-id', array('show' => 'userclass_type_groups', 'hide' => 'userclass_type_standard'));
+
+				//fill in the classes array
+				$tmp = explode(',',$row['userclass_accum']);
+				foreach ($tmp as $uid) 
+				{
+					$row['group_classes_select_'.$uid] = $uid;
+				}
+			} 
+			else 
+			{
+				//hide group, show standard rows
+				$jshelper->addResponseAction('element-invoke-by-id', array('hide' => 'userclass_type_groups', 'show' => 'userclass_type_standard'));
 			}
-		} else {
-			//hide group, show standard rows
-			$jshelper->addResponseAction('element-invoke-by-id', array('hide' => 'userclass_type_groups', 'show' => 'userclass_type_standard'));
-		}
-		unset($row['userclass_accum']);
-		$row['createclass'] = UCSLAN_14; //update the submit button value
-		$row['existing'] = $class_num; //required when user tree is clicked
-		//icon
-		$row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif";
-		$row['uc_icon_select'] = $row['userclass_icon']; //icons select box
+			unset($row['userclass_accum']);
+			$row['createclass'] = UCSLAN_14; //update the submit button value
+			$row['existing'] = $class_num; //required when user tree is clicked
+			//icon
+			$row['iconview'] = $row['userclass_icon'] ? e_IMAGE_ABS.'userclasses/'.$row['userclass_icon'] : e_IMAGE_ABS."generic/blank.gif";
+			$row['uc_icon_select'] = $row['userclass_icon']; //icons select box
 
-		//Send the prefered response type
-		//$jshelper->sendJSONResponse('fill-form', $row);
-		$jshelper->sendResponse('fill-form', $row);
+			//Send the prefered response type
+			//$jshelper->sendJSONResponse('fill-form', $row);
+			$jshelper->addResponseAction('fill-form', $row);
+			$jshelper->sendResponse('XML');
+		}
+		else
+		{
+			e_jshelper::sendAjaxError('500', 'Database read error!');
+		}
+
 		exit;
 	}
 }
@@ -364,25 +375,6 @@ switch ($action)
 
  	</colgroup>";
 
-   /*	$text .= "
-		<tr>
-		<td class='fcaption' style='text-align:center' colspan='3'>";
-
-	if ($class_total == "0")
-	{
-	  $text .= UCSLAN_7;
-	}
-	else
-	{
-	  $text .= "<span class='defaulttext'>".UCSLAN_8.":</span>";
-	  $text .= "<select name='existing' class='tbox'>".$e_userclass->vetted_tree('existing',array($e_userclass,'select'), $userclass_id,"main,admin,new,classes,matchclass").'</select>';
-	  $text .= "
-		<input class='button' type='submit' id='edit' name='edit' value='".LAN_EDIT."' />
-		<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
-		<input type='checkbox' name='confirm' id='confirm' value='1' /><label for='confirm' class='smalltext'> ".UCSLAN_11."</label>
-		</td>
-		</tr>";
-	}*/
 
 	$text .= "
 		<tr>
@@ -435,7 +427,7 @@ switch ($action)
 		<td>".UCSLAN_83."</td>
 		<td>";
 	  $text .= $e_userclass->vetted_tree('group_classes_select',array($e_userclass,'checkbox'),  $userclass_groupclass,"classes,matchclass");
-	$text .= "<div class='field-help'>".UCSLAN_32."</div></td>
+	$text .= "<div class='field-help'>".UCSLAN_89."</div></td>
 	  	</tr>
 		";
 

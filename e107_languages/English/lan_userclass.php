@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_userclass.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-08-04 14:36:56 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2009-11-01 17:19:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("UC_LAN_0", "Everyone (public)");
@@ -19,6 +19,7 @@ define("UC_LAN_6", "Main Admin");
 define('UC_LAN_7', 'Forum Moderators');
 define('UC_LAN_8','Admins and Mods');
 define('UC_LAN_9','New Users');
+define('UC_LAN_10', 'Search Bots');
 define('UC_LAN_INVERT', "Not --CLASS--");
 define('UC_LAN_INVERTLABEL', "Everyone but..");
 
