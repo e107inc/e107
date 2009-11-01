@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-08-04 14:36:56 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-01 17:19:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 define("UCSLAN_1", "Cleared all users from class.");
@@ -96,8 +96,8 @@ define('UCSLAN_84', ' (Group)');
 define('UCSLAN_85', 'You have assigned all available classes; please reassign one which is not in use');
 define('UCSLAN_86', 'Some settings not allowed for admin classes - they have been set to defaults. ');
 define('UCSLAN_87', 'Recently joined users');
-define('UCSLAN_88', '');
-define('UCSLAN_89', '');
+define('UCSLAN_88', 'Identified search bots');
+define('UCSLAN_89', 'Checked classes are members of the group');
 define('UCSLAN_90', '');
 define('UCSLAN_91', '');
 

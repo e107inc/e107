@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2009-09-17 00:13:40 $
-|     $Author: e107coders $
+|     $Revision: 1.43 $
+|     $Date: 2009-11-01 17:19:27 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,7 +42,8 @@ define("e_UC_NOBODY", 255);
 define('e_UC_ADMINMOD',249);
 define('e_UC_MODS',248);
 define('e_UC_NEWUSER',247);					// Users in 'probationary' period
-define('e_UC_SPECIAL_BASE',245);			// Assign class IDs 245 and above for fixed/special purposes
+define('e_UC_BOTS',246);					// Reserved to identify search bots
+define('e_UC_SPECIAL_BASE',243);			// Assign class IDs 243 and above for fixed/special purposes
 define('e_UC_SPECIAL_END',255);				// Highest 'special' class
 
 // define('UC_CLASS_ICON_DIR','userclasses/');		// Directory for userclass icons  -  deprecated - the icon will be saved with the full path. {e_IMAGE} or {e_PLUGIN} / images/ etc.
@@ -79,11 +80,13 @@ class user_class
 							e_UC_ADMIN => UC_LAN_5,
 							e_UC_MAINADMIN => UC_LAN_6,
 							e_UC_READONLY => UC_LAN_4,
-							e_UC_NEWUSER => UC_LAN_9
+							e_UC_NEWUSER => UC_LAN_9,
+							e_UC_BOTS => UC_LAN_10
 							);
 
 	  $this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER,
-									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'readonly' => e_UC_READONLY, 'new' => e_UC_NEWUSER);
+									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER,
+									'bots' => e_UC_BOTS, 'readonly' => e_UC_READONLY);
 
       $this->readTree(TRUE);			// Initialise the classes on entry
 	}
@@ -158,13 +161,6 @@ class user_class
 	$this->class_parents[e_UC_NOBODY] = e_UC_NOBODY;
 	foreach ($this->class_tree as $uc)
 	{
-/*
-		if ($uc['userclass_parent'] == e_UC_PUBLIC)
-		{	// Note parent (top level) classes
-			$this->class_parents[$uc['userclass_id']] = $uc['userclass_id'];
-		}
-		else
-*/
 		if (($uc['userclass_id'] != e_UC_PUBLIC) && ($uc['userclass_id'] != e_UC_NOBODY))
 		{
 //			if (!array_key_exists($uc['userclass_parent'],$this->class_tree))
@@ -202,7 +198,7 @@ class user_class
 	public function get_editable_classes($class_list = USERCLASS_LIST, $asArray = FALSE)
 	{
 		$ret = array();
-		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1, e_UC_NEWUSER => 1);
+		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1, e_UC_NEWUSER => 1, e_UC_BOTS => 1);
 		$possibles = array_flip(explode(',',$class_list));
 		unset($possibles[e_UC_READONLY]);
 		foreach ($this->class_tree as $uc => $uv)
@@ -305,9 +301,9 @@ class user_class
 			admin
 			main - main admin
 			new - new users
+			bots - search bot class
 			classes - shows all classes
 			matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
-			language - list of languages.
 			blank - puts an empty option at the top of select dropdowns
 
 			filter - only show those classes where member is in a class permitted to view them - i.e. as the new 'visible to' field - added for 0.8
@@ -350,17 +346,6 @@ class user_class
 				}
 			}
 			$text .= "</optgroup>\n";
-		}
-
-		if (strpos($optlist, "language") !== FALSE && $pref['multilanguage'])
-		{
-			$text .= "<optgroup label=' ------ ' />\n";
-			$tmpl = explode(",",e_LANLIST);
-			foreach($tmpl as $lang)
-			{
-				$s = ($curval == $lang) ?  " selected='selected'" : "";
-				$text .= "<option  value='$lang' ".$s.">".$lang."</option>\n";
-			}
 		}
 
 		// Only return the select box if we've ended up with some options
@@ -439,7 +424,7 @@ class user_class
 		}
 	  }
 /* Above loop slightly changes the display order of earlier code versions.
-	If readonly must be last (after language), delete it from the $text_class_link array, and uncomment the following code
+	If readonly must be last, delete it from the $text_class_link array, and uncomment the following code
 
 	if (isset($opt_arr['readonly']))
 	{
@@ -476,16 +461,6 @@ class user_class
 			}
 		}
 
-		if (strpos($optlist, "language") !== FALSE && $pref['multilanguage'])
-		{
-			$ret .= "<div class='separator'><!-- --></div>\n";
-			$tmpl = explode(",",e_LANLIST);
-			foreach($tmpl as $lang)
-			{
-			  $c = (in_array($lang, $curArray)) ? " checked='checked' " : "";
-			  $ret .= "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$lang}]' id='{$fieldname}-{$lang}'  value='1'{$c} /><label for='{$fieldname}-{$lang}'>{$lang}</label></div>";
-			}
-		}
 		return $ret;
 	}
 
@@ -778,7 +753,6 @@ admin
 main - main admin
 classes - shows all classes
 matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
-language - list of languages.
 
 filter - only show those classes where member is in a class permitted to view them - i.e. as the new 'visible to' field
 force  - show all classes (subject to the other options, including matchclass)
@@ -1397,6 +1371,12 @@ class user_class_admin extends user_class
 							'userclass_description' => UCSLAN_87,
 							'userclass_editclass' => e_UC_MAINADMIN,
 							'userclass_parent' => e_UC_MEMBER,
+							'userclass_visibility' => e_UC_ADMIN
+							),
+						array('userclass_id' => e_UC_BOT, 'userclass_name' => UC_LAN_10,
+							'userclass_description' => UCSLAN_88,
+							'userclass_editclass' => e_UC_MAINADMIN,
+							'userclass_parent' => e_UC_PUBLIC,
 							'userclass_visibility' => e_UC_ADMIN
 							)
 						);
