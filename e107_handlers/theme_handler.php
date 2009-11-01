@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.59 $
- * $Date: 2009-10-31 00:36:09 $
+ * $Revision: 1.60 $
+ * $Date: 2009-11-01 03:25:29 $
  * $Author: e107coders $
  */
 
@@ -666,12 +666,12 @@ class themeHandler
 		$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 		$preview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		
-		$previewbutton = (!$mode ? "<input class='button' type='submit' name='preview_".$theme['id']."' value='".TPVLAN_9."' /> " : "");
+		$previewbutton = (!$mode ? "<input class='button top' type='submit' name='preview_".$theme['id']."' value='".TPVLAN_9."' /> " : "");
 		
-		$main_icon = ($pref['sitetheme'] != $theme['path']) ? "<input style='vertical-align:middle;'  type='image' src='".e_IMAGE_ABS."admin_images/main_16.png'  name='selectmain[".$theme['id']."]' alt='' title=\"".TPVLAN_10."\" />\n" : ADMIN_TRUE_ICON;
+		$main_icon = ($pref['sitetheme'] != $theme['path']) ? "<input class='top' type='image' src='".e_IMAGE_ABS."admin_images/main_16.png'  name='selectmain[".$theme['id']."]' alt='' title=\"".TPVLAN_10."\" />\n" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S16' />";
 		$info_icon = "<a href='#themeInfo_".$theme['id']."' class='e-expandit' title='Click to select columns to display'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' title=\"".TPVLAN_7."\" class='icon S16' /></a>\n";
-		$preview_icon = "<input style='vertical-align:middle;' type='image' src='".e_IMAGE_ABS."admin_images/search_16.png'  name=\"preview[".$theme['id']."]\" title='".TPVLAN_9." #".$theme['id']."' />\n";
-		$admin_icon = ($pref['admintheme'] != $theme['path']) ? "<input type='image' src='".e_IMAGE_ABS."e107_icon_16.png'  name='selectadmin[".$theme['id']."]' alt='' title=\"".TPVLAN_32."\" />\n" : ADMIN_TRUE_ICON;
+		$preview_icon = "<input class='top' type='image' src='".e_IMAGE_ABS."admin_images/search_16.png'  name=\"preview[".$theme['id']."]\" title='".TPVLAN_9." #".$theme['id']."' />\n";
+		$admin_icon = ($pref['admintheme'] != $theme['path']) ? "<input class='top' type='image' src='".e_IMAGE_ABS."e107_icon_16.png'  name='selectadmin[".$theme['id']."]' alt='' title=\"".TPVLAN_32."\" />\n" : "<img src='".ADMIN_TRUE_ICON_PATH."' alt='' title='' class='icon S16' />";
 		
 		$newpreview = "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='width:200px; height:160px;' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' style='width:200px;height:160px;' title='".TPVLAN_12."' alt='' />")."</a>";
 		
@@ -681,10 +681,10 @@ class themeHandler
 			// styles NEED to be put into style.css
 			
 			$borderStyle = (($pref['sitetheme'] == $theme['path']) || ($pref['admintheme'] == $theme['path'])) ? "border:1px solid black" : "border:1px dotted silver;background-color:#DDDDDD";
-			$text = "<div class='block-text' style='margin:5px;".$borderStyle.";float:left;width:202px;height:160px'>
+			$text = "<div class='f-left block-text' style='margin:5px;".$borderStyle.";width:202px;height:160px'>
                      <div style='height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px'>".$newpreview."</div>
-                     <div class='mediumtext' style='width:60%;float:left;font-weight:bold'>".$theme['name']." ".$theme['version']."</div>
-					 <div style='text-align:right;float:right;width:40%;height:16px'>\n\n\n".$main_icon.$admin_icon.$info_icon.$preview_icon."\n\n</div>
+                     <div class='f-left mediumtext' style='width:55%;font-weight:bold'>".$theme['name']." ".$theme['version']."</div>
+					 <div class='f-right right' style='width:45%;height:16px'>\n\n\n".$main_icon.$admin_icon.$info_icon.$preview_icon."\n\n</div>
                      <div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='position:relative;top:30px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>
 
 			</div>";
