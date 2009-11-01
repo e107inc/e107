@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision: 1.29 $
- |     $Date: 2009-10-22 04:14:35 $
- |     $Author: e107coders $
+ |     $Revision: 1.30 $
+ |     $Date: 2009-11-01 20:21:13 $
+ |     $Author: e107steved $
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))
@@ -874,7 +874,7 @@ class comment
 					$comment_author_name = $row['comment_author_name'];
 					$ret['comment_author'] = (USERID ? "<a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$comment_author_id)."'>".$comment_author_name."</a>" : $comment_author_name);
 					//comment text
-					$comment = strip_tags(preg_replace("/\[.*\]/", "", $row['comment_comment'])); // remove bbcode
+					$comment = strip_tags(preg_replace("/\[.*?\]/", "", $row['comment_comment'])); // remove bbcode - but leave text in between
 					$ret['comment_comment'] = $tp->toHTML($comment, FALSE, "", "", $pref['main_wordwrap']);
 					//subject
 					$ret['comment_subject'] = $tp->toHTML($row['comment_subject'], TRUE);
