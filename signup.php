@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.133 $
-|     $Date: 2009-08-09 08:39:04 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.134 $
+|     $Date: 2009-11-01 21:30:33 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -635,7 +635,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 	if ((varset($pref['signup_option_image'],0) > 0) && $_POST['image'])
 	{
 		$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyway, so why allow them? (XSS Fix)
-		$avName = $tp -> toDB($_POST['image']);
+		$avName = e_IMAGE.'avatars/'.$tp -> toDB($_POST['image']);
 		if ($size = getimagesize($avName))
 		{
 			$avwidth = $size[0];
