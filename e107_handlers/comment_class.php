@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2009-08-15 11:54:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.82 $
+|     $Date: 2009-11-01 20:21:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -738,7 +738,7 @@ class comment {
 				$ret['comment_author'] = (USERID ? "<a href='".e_HTTP."user.php?id.".$comment_author_id."'>".$comment_author_name."</a>" : $comment_author_name);
 
 				//comment text
-				$comment = strip_tags(preg_replace("/\[.*\]/", "", $row['comment_comment'])); // remove bbcode
+				$comment = strip_tags(preg_replace("/\[.*?\]/", "", $row['comment_comment'])); // remove bbcode - but leave text in between
 				$ret['comment_comment'] = $tp->toHTML($comment, FALSE, "", "", $pref['main_wordwrap']);
 
 				//subject
