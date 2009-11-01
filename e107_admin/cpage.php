@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-10-31 15:39:05 $
- * $Author: e107steved $
+ * $Revision: 1.24 $
+ * $Date: 2009-11-01 23:10:57 $
+ * $Author: e107coders $
  *
 */
 
@@ -442,7 +442,7 @@ class page
 		$page_text = $tp->toDB($_POST['data']);
 		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0);
 
-
+		if($mode)
 		{	// Saving existing page/menu after edit
 			// Don't think $_POST['page_ip_restrict'] is ever set.
 			$menuname = ($type ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
