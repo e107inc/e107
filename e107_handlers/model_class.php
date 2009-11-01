@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-10-30 17:59:31 $
+ * $Revision: 1.28 $
+ * $Date: 2009-11-01 19:05:25 $
  * $Author: secretr $
 */
 
@@ -712,7 +712,7 @@ class e_model
 	 * 
 	 * @param string $message
 	 * @param boolean $session [optional]
-	 * @return e_validator
+	 * @return e_model
 	 */
 	public function addMessageInfo($message, $session = false)
 	{
@@ -721,11 +721,24 @@ class e_model
 	}
 	
 	/**
+	 * Add system message of type Success
+	 * 
+	 * @param string $message
+	 * @param boolean $session [optional]
+	 * @return e_model
+	 */
+	public function addMessageSuccess($message, $session = false)
+	{
+		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_SUCCESS, $session);
+		return $this;
+	}
+	
+	/**
 	 * Add system message of type Warning
 	 * 
 	 * @param string $message
 	 * @param boolean $session [optional]
-	 * @return e_validator
+	 * @return e_model
 	 */
 	public function addMessageWarning($message, $session = false)
 	{
@@ -738,7 +751,7 @@ class e_model
 	 * 
 	 * @param string $message
 	 * @param boolean $session [optional]
-	 * @return e_validator
+	 * @return e_model
 	 */
 	public function addMessageError($message, $session = false)
 	{
@@ -751,7 +764,7 @@ class e_model
 	 * 
 	 * @param string $message
 	 * @param boolean $session [optional]
-	 * @return e_validator
+	 * @return e_model
 	 */
 	public function addMessageDebug($message, $session = false)
 	{
@@ -775,7 +788,7 @@ class e_model
      * Move model System messages (if any) to the default eMessage stack
      * 
      * @param boolean $session store messages to session
-     * @return setMessages
+     * @return e_model
      */
     public function setMessages($session = false)
     {
@@ -1639,7 +1652,12 @@ class e_admin_model extends e_model
 			$this->_db_errno = e107::getDb()->getLastErrorNumber();
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+			return false;
 		}
+		
+		// Set the reutrned ID
+		$this->setId($res);
+		$this->addMessageSuccess(LAN_CREATED);
 		
 		return $res;
     }
@@ -1693,9 +1711,12 @@ class e_admin_model extends e_model
 			{
 				$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
+				return false;
 			}
+			$this->addMessageInfo(LAN_NO_CHANGE);
+			return 0;
 		}
-		
+		$this->addMessageSuccess(LAN_UPDATED);
 		return $res;
     }
 	

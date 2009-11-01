@@ -9,8 +9,8 @@
  * e107 Release Plugin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/admin_config.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-10-31 17:57:15 $
+ * $Revision: 1.13 $
+ * $Date: 2009-11-01 19:05:26 $
  * $Author: secretr $
  *
 */
@@ -42,7 +42,7 @@ e107::getAdminUI()->runPage();
 require_once(e_ADMIN."footer.php");
 
 /* OBSOLETE - see admin_shortcodes::sc_admin_menu()
-function admin_config_adminmenu() //TODO move this into e_model_interface
+function admin_config_adminmenu() 
 {
 	//global $rp;
 	//$rp->show_options();

@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-10-30 17:59:32 $
+ * $Revision: 1.24 $
+ * $Date: 2009-11-01 19:05:25 $
  * $Author: secretr $
  *
 */
@@ -466,7 +466,6 @@ class eMessage
 
 	/**
 	 * Merge _SESSION message array with the current messages
-	 * TODO - merge stacks, merge custom stack to default
 	 * 
 	 * @param boolean $reset
 	 * @return eMessage
@@ -496,6 +495,38 @@ class eMessage
 			}
 		}
 		if($reset) $this->resetSession(false, $mstack);
+		return $this;
+	}
+	
+	/**
+	 * Convert current messages to Session messages 
+	 *
+	 * @param string $mstack false - move all message stacks
+	 * @param string $message_type false - move all types
+	 * @return unknown
+	 */
+	public function moveToSession($mstack = false, $message_type = false)
+	{
+		foreach (array_keys($this->_sysmsg) as $type)
+		{
+			if(!$this->isType($type) || ($message_type && $message_type !== $type)) 
+			{ 
+				unset($this->_sysmsg[$type]);
+				continue;
+			}
+			if(false === $mstack)
+			{
+				$_SESSION[$this->_session_id][$type] = array_merge_recursive( $_SESSION[$this->_session_id][$type], $this->_sysmsg[$type]);
+				continue;
+			}
+			
+			if(isset($this->_sysmsg[$type][$mstack]))
+			{
+				$_SESSION[$this->_session_id][$type][$mstack] = $this->_sysmsg[$type][$mstack];
+			}
+		}
+
+		$this->reset($message_type, $mstack, false);
 		return $this;
 	}
 	

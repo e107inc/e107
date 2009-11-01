@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.61 $
- * $Date: 2009-10-30 17:59:30 $
+ * $Revision: 1.62 $
+ * $Date: 2009-11-01 19:05:25 $
  * $Author: secretr $
  *
 */
@@ -62,16 +62,16 @@ if (!defined('e107_INIT')) { exit; }
  */
 class e_form
 {
-	var $_tabindex_counter = 0;
-	var $_tabindex_enabled = true;
-	var $_cached_attributes = array();
+	protected $_tabindex_counter = 0;
+	protected $_tabindex_enabled = true;
+	protected $_cached_attributes = array();
 
 	/**
 	 * @var user_class
 	 */
-	var $_uc;
+	protected $_uc;
 
-	function e_form($enable_tabindex = false)
+	function __construct($enable_tabindex = false)
 	{
 		
 		$this->_tabindex_enabled = $enable_tabindex;
@@ -85,7 +85,7 @@ class e_form
 		return "<input type='text' name='{$name}' value='{$value}' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 	
-	function iconpreview($id,$default,$width='',$height='') // FIXME
+	function iconpreview($id, $default, $width='', $height='') // FIXME
 	{		
 		$parms = $name."|".$width."|".$height."|".$id;
 		$sc_parameters .= 'mode=preview&default='.$default.'&id='.$id;
@@ -134,10 +134,10 @@ class e_form
 		//$parms .= "&click_target=data";
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		//$parms .= "&click_postfix=[/img]";
-
+		$tp = e107::getParser();
 		$ret = "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
-		$ret = "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
-		return $text;
+		$ret .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
+		return $ret;
 	}
 	
 	/**
@@ -563,10 +563,13 @@ class e_form
 		if($id_value === false) return '';
 
 		//format data first
-		$name = $this->name2id($name);
+		$name = trim($this->name2id($name), '-');
 		$value = trim(preg_replace('#[^a-z0-9\-]/i#','-', $value), '-');
-		$value = str_replace("/","-",$value);
+		$value = trim(str_replace("/","-",$value), '-');
 		if(!$id_value && is_numeric($value)) $id_value = $value;
+		
+		// clean - do it better, this could lead to dups
+		$id_value = trim($id_value, '-');
 
 		if(empty($id_value) ) return " {$return_attribute}='{$name}".($value ? "-{$value}" : '')."'";// also useful when name is e.g. name='my_name[some_id]'
 		elseif(is_numeric($id_value) && $name) return " {$return_attribute}='{$name}-{$id_value}'";// also useful when name is e.g. name='my_name[]'

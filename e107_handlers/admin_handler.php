@@ -912,6 +912,12 @@ class e_admin_dispatcher
 	protected $modes;
 	
 	/**
+	 * Optional - map 'mode/action' pair to 'modeAlias/actionAlias'  
+	 * @var string
+	 */
+	protected $adminMenuAliases = array();
+	
+	/**
 	 * Optional (set by child class).
 	 * Required for admin menu render
 	 * Format: 'mode/action' => array('caption' => 'Link title'[, 'perm' => '0', 'url' => '{e_PLUGIN}plugname/admin_config.php'], ...);
@@ -1213,7 +1219,7 @@ class e_admin_dispatcher
 	 * Generic Admin Menu Generator
 	 * @return string
 	 */
-	function renderMenu($return = true)
+	function renderMenu()
 	{
 		$tp = e107::getParser();
 		$var = array();
@@ -1241,17 +1247,21 @@ class e_admin_dispatcher
 				}
 				$var[$key][$k2] = $v;
 			}
+			// TODO slide down menu options?
 			if(!vartrue($var[$key]['link']))
 			{
-				$var[$key]['link'] = e_SELF.'?mode='.$tmp[0].'&amp;action='.$tmp[1];
+				$var[$key]['link'] = e_SELF.'?mode='.$tmp[0].'&amp;action='.$tmp[1]; // FIXME - URL based on $modes, remove url key
 			}
 			
 			/*$var[$key]['text'] = $val['caption'];
 			$var[$key]['link'] = (vartrue($val['url']) ? $tp->replaceConstants($val['url'], 'abs') : e_SELF).'?mode='.$tmp[0].'&action='.$tmp[1];
 			$var[$key]['perm'] = $val['perm'];	*/
 		}
+		
 		$request = $this->getRequest();
-		return e_admin_menu($this->menuTitle, $request->getMode().'/'.$request->getAction(), $var);
+		$selected = $request->getMode().'/'.$request->getAction();
+		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
+		return e_admin_menu($this->menuTitle, $selected, $var);
 	}
 }
 
@@ -1757,7 +1767,7 @@ class e_admin_controller
 		
 		$url = $path.'?'.$request->buildQueryString($merge_query, false);
 		// Transfer all messages to session
-		e107::getMessage()->mergeWithSession();
+		e107::getMessage()->moveToSession(); 
 		// write session data
 		session_write_close();
 		// do redirect
@@ -2054,6 +2064,13 @@ class e_admin_ui extends e_admin_controller_ui
 		
 		// Copy model messages to the default message stack
 		$this->getModel()->setMessages();
+		
+		// Take action based on use choice after success
+		if(!$this->getModel()->hasError())
+		{
+			$this->doAfterSubmit($this->getModel()->getId(), 'edit');
+		}
+		
 	}
 	
 	/**
@@ -2063,6 +2080,39 @@ class e_admin_ui extends e_admin_controller_ui
 	public function CreatePage()
 	{
 		return $this->getUI()->getCreate();
+	}
+	
+	/**
+	 * Take approproate action after successfull submit
+	 *
+	 * @param integer $id optional, needed only if redirect action is 'edit'
+	 * @param string $noredirect_for don't redirect if action equals to its value
+	 */
+	public function doAfterSubmit($id = 0, $noredirect_for = '')
+	{
+		if($noredirect_for && $noredirect_for == $this->getPosted('__after_submit_action'))
+		{
+			return; 
+		}
+		$choice = $this->getPosted('__after_submit_action', 0);
+		switch ($choice) {
+			case 'create': // create
+				$this->redirectAction('create', 'id');
+			break;
+			
+			case 'edit': // edit
+				$this->redirectAction('edit', '', 'id='.$id);
+			break;
+			
+			case 'list': // list
+				$this->redirectAction('list');
+			break;
+
+			default:
+				$this->redirectAction(preg_replace('/[^\w\-]/', '', $choice), 'id');
+			break;
+		}
+		return;
 	}
 	
 	/**
@@ -2168,6 +2218,11 @@ class e_admin_ui extends e_admin_controller_ui
 		return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
 	}
 	
+	/**
+	 * Get current model
+	 *
+	 * @return e_admin_model
+	 */
 	public function getModel()
 	{
 		if(null === $this->_model)
@@ -2242,7 +2297,11 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_tree_model = $tree_model;
 	}
 	
-	
+	/**
+	 * Get extended (UI) Form instance
+	 *
+	 * @return e_admin_form_ui
+	 */
 	public function getUI()
 	{
 		if(null === $this->_ui)
@@ -2254,7 +2313,7 @@ class e_admin_ui extends e_admin_controller_ui
 			}
 			else// default ui
 			{
-				$this->_ui = new e_admin_ui($this);
+				$this->_ui = new e_admin_form_ui($this);
 			}
 		}
 		return $this->_ui;
@@ -2292,6 +2351,115 @@ class e_admin_form_ui extends e_form
 	}
 	
 	/**
+	 * WORK IN PROGRESS
+	 * Generic DB Record Creation Form. 
+	 * Expected array format:
+	 * <code>
+	 * $form = array(
+	 * 		'id'  => 'myplugin',
+	 * 		'url' => '{e_PLUGIN}myplug/admin_config.php',
+	 * 		'fieldsets' => array(
+	 * 			'create' => array(
+	 * 				'primary'  => 'primary_id',
+	 * 				'legend' => 'Fieldset Legend',
+	 * 				'fields' => array(...), //see e_admin_ui::$fields
+	 * 				
+	 * 			)
+	 * 		) 
+	 * );
+	 * </code>
+	 * @param array $form 
+	 * @param array $models instances of e_admin_model
+	 * @return string
+	 */
+	function createForm($forms, $models)
+	{
+		$text = '';
+		foreach ($forms as $fid => $form) 
+		{
+			$model = $models[$fid];
+			$text .= "
+				<form method='post' action='".e107::getParser()->replaceConstants($form['url'], 'abs')."' id='{$form['id']}-form' enctype='multipart/form-data'>
+			";
+		
+			foreach ($form['fieldsets'] as $elid => $data) 
+			{
+				$elid = $form['id'].'-'.$elid;
+				$text .= "
+					<fieldset id='{$elid}'>
+						<legend>{$data['legend']}</legend>
+						<table cellpadding='0' cellspacing='0' class='adminedit'>
+							<colgroup span='2'>
+								<col class='col-label' />
+								<col class='col-control' />
+							</colgroup>
+							<tbody>
+				";
+							
+				foreach($data['fields'] as $key => $att)
+				{
+					
+					$parms = vartrue($att['formparms'], array());
+					if(!is_array($parms)) parse_str($parms, $parms);
+					$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
+					$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
+					
+					// type null - system (special) fields
+					if($att['type'] !== null && !vartrue($att['noedit']) && $key != $form['primary'])
+					{
+						$text .= "
+							<tr>
+								<td class='label'>
+									".defset($att['title'], $att['title']).$label."
+								</td>
+								<td class='control'>
+									".$this->renderElement($key, $model->getIfPosted($key), $att)."
+									{$help}
+								</td>
+							</tr>
+						";
+					}
+									
+				}
+		
+				$text .= "
+							</tbody>
+						</table>	
+						<div class='buttons-bar center'>
+				";
+							// TODO - make this optional, introduce ui_parameters variable (array)
+							$text .= '
+								<div class="options">
+									After submit: '.$this->radio_multi('__after_submit_action', array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current'), $request->getPosted('__after_submit_action', 'list'), false).'
+								</div>
+							';
+							if($controller->getId())
+							{
+								$text .= $this->admin_button('etrigger_submit', LAN_UPDATE, 'update');
+								$text .= "<input type='hidden' name='record_id' value='".$controller->getId()."' />";						
+							}	
+							else
+							{
+								$text .= $this->admin_button('etrigger_submit', LAN_CREATE, 'create');	
+								$text .= "<input type='hidden' name='record_id' value='0' />";
+							}
+							$text .= $this->admin_button('etrigger_cancel', LAN_CANCEL, 'cancel');
+							
+				$text .= "
+						</div>
+					</fieldset>
+				</form>
+				";	
+			}
+		}
+			
+		
+		
+		return $text;
+	}
+	
+	/**
+	 * This will use the above (after it's done)
 	 * Generic DB Record Creation Form. 
 	 * @return string
 	 */
@@ -2344,7 +2512,12 @@ class e_admin_form_ui extends e_form
 				</table>	
 				<div class='buttons-bar center'>
 		";
-					
+					// TODO - make this optional, introduce ui_parameters variable (array)
+					$text .= '
+						<div class="options">
+							After submit: '.$this->radio_multi('__after_submit_action', array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current'), $request->getPosted('__after_submit_action', 'list'), false).'
+						</div>
+					';
 					if($controller->getId())
 					{
 						$text .= $this->admin_button('etrigger_submit', LAN_UPDATE, 'update');
