@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-10-31 17:57:15 $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-01 19:05:26 $
  * $Author: secretr $
 */
 
@@ -24,16 +24,26 @@ class plugin_release_admin extends e_admin_dispatcher
 	protected $modes = array(
 		'main'		=> array('controller' => 'plugin_release_admin_ui', 'path' => null, 'ui' => 'plugin_release_admin_form_ui', 'uipath' => null)				
 	);	
+
 	/**
 	 * Format: 'MODE/ACTION' => array('caption' => 'Menu link title'[, 'url' => '{e_PLUGIN}release/admin_config.php', 'perm' => '0']);
 	 * Additionally, any valid e_admin_menu() key-value pair could be added to the above array
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> 'Release List', 'perm'=>'0'),
-		'main/create' 	=> array('caption'=> LAN_CREATE, 'perm'=>'0'),
-		'main/options' 	=> array('caption'=> LAN_OPTIONS, 'perm'=>'0'),
-		'main/custom'	=> array('caption'=> 'Custom Page', 'perm'=>0)		
+		'main/list'		=> array('caption'=> 'Manage', 'perm' => '0'),
+		'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => '0'),
+		'main/options' 	=> array('caption'=> 'Settings', 'perm' => '0'),
+		'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
+	);
+
+	/**
+	 * Optional, map mode/action t
+	 * Format: 'MODE/ACTION' => 'MODE ALIAS/ACTION ALIAS';
+	 * @var array
+	 */
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'				
 	);	
 	
 	/**

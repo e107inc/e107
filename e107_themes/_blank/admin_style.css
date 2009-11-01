@@ -345,6 +345,7 @@ button.cancel:active span		{}
 .buttons-bar { padding: 10px 0px; }
 .buttons-bar button { margin-right: 10px; }
 .buttons-bar button.f-right { margin-right: 0px; }
+.buttons-bar .options { margin-bottom: 10px; }
 
 /* Actions (adminlist) - input type image */
 input.action { vertical-align: middle; } /* default */
