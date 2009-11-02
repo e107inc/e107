@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2007-10-11 19:46:05 $
-|     $Author: e107steved $
+|     $Revision: 1.15 $
+|     $Date: 2009-11-02 20:22:30 $
+|     $Author: mcfly_e107 $
 |
 | Mods to show extended field categories
 +----------------------------------------------------------------------------+
@@ -80,26 +80,29 @@ SC_END
 
 
 SC_BEGIN SIGNUP_DISPLAYNAME
-global $pref, $rs;
+global $pref, $rs, $signupValue;
 if (check_class($pref['displayname_class']))
 {
   $dis_name_len = varset($pref['displayname_maxlength'],15);
-  return $rs->form_text("name", $dis_name_len+5, ($_POST['name'] ? $_POST['name'] : $name), $dis_name_len);
+  $name = ($_POST['name'] ? $_POST['name'] : varset($signupValue['name']));
+  return $rs->form_text("name", $dis_name_len+5, $name, $dis_name_len);
 }
 SC_END
 
 
 SC_BEGIN SIGNUP_LOGINNAME
-global $rs;
+global $rs, $signupValue;
 $log_name_length = varset($pref['loginname_maxlength'],30);
-return $rs->form_text("loginname", $log_name_length+5,  ($_POST['loginname'] ? $_POST['loginname'] : $loginname), $log_name_length);
+$loginname = ($_POST['loginname'] ? $_POST['loginname'] : varset($signupValue['loginname']));
+return $rs->form_text("loginname", $log_name_length+5, $loginname, $log_name_length);
 SC_END
 
 SC_BEGIN SIGNUP_REALNAME
-global $rs, $pref;
+global $rs, $pref, $signupValue;
 if ($pref['signup_option_realname'])
 {
-	return $rs->form_text("realname", 30,  ($_POST['realname'] ? $_POST['realname'] : $realname), 100);
+	$realname = ($_POST['realname'] ? $_POST['realname'] : varset($signupValue['realname']));
+	return $rs->form_text("realname", 30,  $realname, 100);
 }
 SC_END
 
@@ -122,13 +125,15 @@ if($pref['signup_pass_len'])
 SC_END
 
 SC_BEGIN SIGNUP_EMAIL
-global $rs;
-return $rs->form_text("email", 30, ($_POST['email'] ? $_POST['email'] : $email), 100);
+global $rs, $signupValue;
+$email = ($_POST['email'] ? $_POST['email'] : varset($signupValue['email']));
+return $rs->form_text("email", 30, $email, 100);
 SC_END
 
 SC_BEGIN SIGNUP_EMAIL_CONFIRM
-global $rs;
-return $rs->form_text("email_confirm", 30, ($_POST['email_confirm'] ? $_POST['email_confirm'] : $email_confirm), 100);
+global $rs, $signupValue;
+$email_confirm = ($_POST['email_confirm'] ? $_POST['email_confirm'] : varset($signupValue['email_confirm']));
+return $rs->form_text("email_confirm", 30, $email_confirm, 100);
 SC_END
 
 
@@ -209,13 +214,13 @@ return $text;
 SC_END
 
 SC_BEGIN SIGNUP_SIGNATURE
-global $pref, $SIGNUP_SIGNATURE_START, $SIGNUP_SIGNATURE_END;
+global $pref, $SIGNUP_SIGNATURE_START, $SIGNUP_SIGNATURE_END, $signupValue;
 if($pref['signup_option_signature'])
 {
 	require_once(e_HANDLER."ren_help.php");
 	$SIGNUP_SIGNATURE_START = str_replace("{REN_HELP}", display_help('helpb', 2), $SIGNUP_SIGNATURE_START);
 	$SIGNUP_SIGNATURE_END = str_replace("{REN_HELP}", display_help('helpb', 2), $SIGNUP_SIGNATURE_END);
-	$sig = ($_POST['signature'] ? $_POST['signature'] : $signature);
+	$sig = ($_POST['signature'] ? $_POST['signature'] : varset($signupValue['signature']));
 	return $SIGNUP_SIGNATURE_START.$sig.$SIGNUP_SIGNATURE_END;
 }
 SC_END
