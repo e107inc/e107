@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-11-01 19:05:25 $
+ * $Revision: 1.29 $
+ * $Date: 2009-11-02 17:45:29 $
  * $Author: secretr $
 */
 
@@ -1993,6 +1993,7 @@ class e_tree_model extends e_model
 		{
 			$sql = e107::getDb();
 			$class_name = $this->getParam('model_class');
+			$this->_total = $sql->total_results = false;
 			if($sql->db_Select_gen($this->getParam('db_query')))
 			{
 				$this->_total = $sql->total_results; //requires SQL_CALC_FOUND_ROWS in query - see db handler
@@ -2002,6 +2003,7 @@ class e_tree_model extends e_model
 					$tmp = new $class_name($tmp);
 					$this->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
+				// FIXME - test for type of $this->_total to avoid query if table is empty
 				if(!$this->_total && $this->getModelTable())
 				{
 					//SQL_CALC_FOUND_ROWS not found in the query, do one more query

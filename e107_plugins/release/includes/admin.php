@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-01 19:05:26 $
+ * $Revision: 1.3 $
+ * $Date: 2009-11-02 17:45:28 $
  * $Author: secretr $
 */
 
@@ -68,7 +68,7 @@ class plugin_release_admin_ui extends e_admin_ui
 		protected $pid = "release_id";
 		
 		// optional 
-		protected $perPage = 20;
+		protected $perPage = 2;
 		
 		// default - true
 		protected $batchDelete = true;
@@ -87,6 +87,7 @@ class plugin_release_admin_ui extends e_admin_ui
             'release_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => ''),	 
 			'release_compatibility' 	=> array('title'=> 'compatib',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),	 
 			'release_url' 				=> array('title'=> 'release_url',		'type' => 'url', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => true, 'help' => 'Enter release URL here', 'error' => 'please, ener valid URL'),	 
+			'test_list_1'				=> array('title'=> 'test 1',		'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => null, 		'data' => null,			'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
 		);
 		

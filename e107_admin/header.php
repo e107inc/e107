@@ -9,8 +9,8 @@
  * Admin Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
- * $Revision: 1.50 $
- * $Date: 2009-10-31 17:57:15 $
+ * $Revision: 1.51 $
+ * $Date: 2009-11-02 17:45:29 $
  * $Author: secretr $
 */
 
@@ -189,7 +189,7 @@ echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " 
 <meta http-equiv='content-style-type' content='text/css' />
 ";
 echo(defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
-echo "<title>".SITENAME." : ".LAN_head_4.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
+echo "<title>".LAN_head_4.(defined("e_PAGETITLE") ? " - ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))." :: ".SITENAME."</title>\n";
 
 //
 // D: Send JS

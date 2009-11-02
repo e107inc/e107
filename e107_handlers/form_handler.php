@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.62 $
- * $Date: 2009-11-01 19:05:25 $
+ * $Revision: 1.63 $
+ * $Date: 2009-11-02 17:45:28 $
  * $Author: secretr $
  *
 */
@@ -999,6 +999,351 @@ class e_form
 		}
 		
 		return '';
+	}
+	
+	/**
+	 * Generic List Form
+	 * Search for the following GET variables:
+	 * Expected options array format:
+	 * <code>
+	 * <?php
+	 * $options = array(
+	 * 		'id' => 'myplugin', // unique string used for building element ids, REQUIRED
+	 * 		'pid' => 'primary_id', // primary field name, REQUIRED
+	 * 		'url' => '{e_PLUGIN}myplug/admin_config.php', // if not set, e_SELF is used
+	 * 		'query' => 'mode=main&amp;action=list', // or e_QUERY if not set
+	 * 		'head_query' => 'mode=main&amp;action=list', // without field, asc and from vars, REQUIRED
+	 * 		'np_query' => 'mode=main&amp;action=list', // without from var, REQUIRED for next/prev functionality
+	 * 		'legend' => 'Fieldset Legend', // hidden by default
+	 * 		'form_pre' => '', // markup to be added before opening form element (e.g. Filter form)
+	 * 		'form_post' => '', // markup to be added after closing form element
+	 * 		'fields' => array(...), // see e_admin_ui::$fields
+	 * 		'fieldpref' => array(...), // see e_admin_ui::$fieldpref
+	 * 		'table_pre' => '', // markup to be added before opening table element 
+	 * 		'table_post' => '', // markup to be added after closing table element (e.g. Batch actions)
+	 * 		'fieldset_pre' => '', // markup to be added before opening fieldset element 
+	 * 		'fieldset_post' => '', // markup to be added after closing fieldset element
+	 * 		'perPage' => 15, // if 0 - no next/prev navigation
+	 * 		'from' => 0, // current page, default 0
+	 * 		'field' => 'field_name', //current order field name, default - primary field
+	 * 		'asc' => 'desc', //current 'order by' rule, default 'asc'
+	 * );
+	 * $list = new e_admin_tree_model($data);
+	 * </code>
+	 * @param array $options
+	 * @param e_admin_tree_model $list
+	 * @return string
+	 */
+	public function listForm($options, $list)
+	{
+		$tp = e107::getParser();
+		$tree = $list->getTree();
+		$total = $list->getTotal();
+		
+		$amount = $options['perPage'];
+		$from = vartrue($options['from'], 0);
+		$field = vartrue($options['field'], $options['pid']);
+		$asc = strtoupper(vartrue($options['asc'], 'asc'));
+		$elid = $options['id'];
+		$query = isset($options['query']) ? $options['query'] : e_QUERY ;
+		$url = (isset($options['url']) ? $tp->replaceConstants($options['url'], 'abs') : e_SELF);
+		$formurl = $url.($query ? '?'.$query : '');
+		$fields = $options['fields'];
+		$current_fields = $options['fieldpref'];
+
+        $text .= "
+			".vartrue($options['form_pre'])."
+			<form method='post' action='{$formurl}' id='{$elid}-list-form'>
+				".vartrue($options['fieldset_pre'])."
+				<fieldset id='{$elid}-list'>
+					<legend class='e-hideme'>".$options['legend']."</legend>
+					".vartrue($options['table_pre'])."
+					<table cellpadding='0' cellspacing='0' class='adminlist' id='{$elid}-list-table'>
+						".$this->colGroup($fields, $current_fields)."
+						".$this->thead($fields, $current_fields, $options['head_query'], $options['query'])."
+						<tbody>
+		";
+
+		if(!$tree)
+		{
+			$text .= "
+							<tr>
+								<td colspan='".count($current_fields)."' class='center middle'>".LAN_NO_RECORDS."</td>
+							</tr>
+			";
+		}
+		else
+		{
+			foreach($tree as $model)
+			{
+				$text .= $this->trow($fields, $current_fields, $model->getData(), $options['pid']);
+			}
+
+		}
+
+		$text .= "
+						</tbody>
+					</table>
+					".vartrue($options['table_post'])."
+		";
+		
+		
+		if($tree && $amount)
+		{ 
+			$parms = $total.",".$amount.",".$from.",".$url.'?'.($options['np_query'] ? $options['np_query'].'&amp;' : '').'from=[FROM]';
+	    	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+		}
+		
+		$text .= "
+				</fieldset>
+				".vartrue($options['fieldset_post'])."
+			</form>
+			".vartrue($options['form_post'])."
+		";
+
+		return $text;
+	}
+	
+	/**
+	 * Generic DB Record Management Form. 
+	 * TODO - lans
+	 * Expected arrays format:
+	 * <code>
+	 * <?php
+	 * $forms[0] = array(
+	 * 		'id'  => 'myplugin',
+	 * 		'url' => '{e_PLUGIN}myplug/admin_config.php', //if not set, e_SELF is used
+	 * 		'query' => 'mode=main&amp;action=edit&id=1', //or e_QUERY if not set
+	 * 		'tabs' => true, // TODO - NOT IMPLEMENTED YET - enable tabs (only if fieldset count is > 1)
+	 * 		'fieldsets' => array(
+	 * 			'general' => array(
+	 * 				'legend' => 'Fieldset Legend',
+	 * 				'fields' => array(...), //see e_admin_ui::$fields
+	 * 				'after_submit_options' => array('action' => 'Label'[,...]), // or true for default redirect options
+	 * 				'after_submit_default' => 'action_name',
+	 * 				'triggers' => 'auto', // standard create/update-cancel triggers 
+	 * 				//or custom trigger array in format array('sibmit' => array('Title', 'create', '1'), 'cancel') - trigger name - title, action, optional hidden value (in this case named sibmit_value)
+	 * 			),
+	 * 			'advanced' => array(
+	 * 				'legend' => 'Fieldset Legend',
+	 * 				'fields' => array(...), //see e_admin_ui::$fields
+	 * 				'after_submit_options' => array('__default' => 'action_name' 'action' => 'Label'[,...]), // or true for default redirect options
+	 * 				'triggers' => 'auto', // standard create/update-cancel triggers 
+	 * 				//or custom trigger array in format array('sibmit' => array('Title', 'create', '1'), 'cancel') - trigger name - title, action, optional hidden value (in this case named sibmit_value)
+	 * 			)
+	 * 		) 
+	 * );
+	 * $models[0] = new e_admin_model($data);
+	 * $models[0]->setFieldIdName('primary_id'); // you need to do it if you don't use your own admin model extension
+	 * </code>
+	 * @param array $forms numerical array 
+	 * @param array $models numerical array with values instance of e_admin_model
+	 * @return string
+	 */
+	function createForm($forms, $models)
+	{
+		$text = '';
+		foreach ($forms as $fid => $form) 
+		{
+			$model = $models[$fid];
+			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
+			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
+			
+			$text .= "
+				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
+			";
+		
+			foreach ($form['fieldsets'] as $elid => $data) 
+			{
+				$elid = $form['id'].'-'.$elid;
+				$text .= "
+					{$data['fieldset_pre']}
+					<fieldset id='{$elid}'>
+						<legend>{$data['legend']}</legend>
+						{$data['table_pre']}
+						<table cellpadding='0' cellspacing='0' class='adminedit'>
+							<colgroup span='2'>
+								<col class='col-label' />
+								<col class='col-control' />
+							</colgroup>
+							<tbody>
+				";
+							
+				foreach($data['fields'] as $key => $att)
+				{
+					
+					$parms = vartrue($att['formparms'], array());
+					if(!is_array($parms)) parse_str($parms, $parms);
+					$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
+					$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
+					
+					// type null - system (special) fields
+					if($att['type'] !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
+					{
+						$text .= "
+							<tr>
+								<td class='label'>
+									".defset($att['title'], $att['title']).$label."
+								</td>
+								<td class='control'>
+									".$this->renderElement($key, $model->getIfPosted($key), $att)."
+									{$help}
+								</td>
+							</tr>
+						";
+					}
+									
+				}
+		
+				$text .= "
+							</tbody>
+						</table>	
+						{$data['table_post']}
+						<div class='buttons-bar center'>
+				";
+							// After submit options
+							$defsubmitopt = array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current');
+							$submitopt = isset($data['after_submit_options']) ? $data['after_submit_options'] : true;
+							if(true === $submitopt)
+							{
+								$submitopt = $defsubmitopt;
+							}
+							
+							if($submitopt)
+							{
+								$selected = isset($data['after_submit_default']) && array_key_exists($data['after_submit_default'], $submitopt) ? $data['after_submit_default'] : '';
+								$text .= '
+									<div class="options">
+										After submit: '.$this->radio_multi('__after_submit_action', $submitopt, $selected, false).'
+									</div>
+								';
+							}
+							
+							$triggers = vartrue($data['triggers'], 'auto');
+							if(is_string($triggers) && 'auto' === $triggers)
+							{
+								$triggers = array();
+								if($model->getId())
+								{
+									$triggers['submit'] = array(LAN_UPDATE, 'update', $model->getId());
+								}
+								else
+								{
+									$triggers['submit'] = array(LAN_CREATE, 'create', 0);
+								}
+								$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
+							}
+							
+							foreach ($triggers as $trigger => $tdata)
+							{
+								$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
+								if(isset($tdata[2]))
+								{
+									$text .= $this->hidden($trigger.'_value', $tdata[2]);
+								}
+							}
+							
+				$text .= "
+						</div>
+					</fieldset>
+					{$data['fieldset_post']}
+				";	
+			}
+			$text .= "
+			</form>
+			";	
+		}
+		return $text;
+	}
+	
+	/**
+	 * Auto-render Form Element
+	 * @param string $key
+	 * @param mixed $value
+	 * @param array $attributes field attributes including render parameters, element options
+	 * @return string
+	 */
+	function renderElement($key, $value, $attributes)
+	{
+		$parms = vartrue($attributes['parms'], array());
+		if(is_string($parms)) parse_str($parms, $parms);
+		
+		//FIXME - this block is present in trow(), so make it separate method, use it in both methods
+		switch($attributes['type'])
+		{
+			case 'number':
+				$maxlength = vartrue($parms['maxlength'], 255);
+				unset($parms['maxlength']);
+				if(!vartrue($parms['size'])) $parms['size'] = 15;
+				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number';
+				return $this->text($key, $value, $maxlength, $parms);
+			break;
+			
+			case 'url':
+			case 'text':
+				$maxlength = vartrue($parms['maxlength'], 255);
+				unset($parms['maxlength']);
+				return $this->text($key, $value, $maxlength, $parms);
+			break;
+			
+			case 'image': //TODO - thumb, image list shortcode, js tooltip...
+				$label = varset($parms['label']);
+				unset($parms['label']);
+				return $this->imagepicker($key, $value, $label, $parms);
+			break;
+			
+			case 'icon': 
+				$label = varset($parms['label']);
+				$ajax = varset($parms['ajax']) ? true : false;
+				unset($parms['label'], $parms['ajax']);
+				return $this->iconpicker($key, $value, $label, $parms, $ajax);
+			break;
+			
+			case 'datestamp':
+				return $this->datepicker($key, $value, $parms);
+			break;
+			
+			case 'dropdown':
+				$eloptions  = vartrue($parms['dropdown'], array());
+				if(is_string($eloptions)) parse_str($eloptions);
+				unset($parms['dropdown']);
+				return $this->selectbox($name, $eloptions, $value, $parms);
+			break; 
+			
+			case 'userclass':
+			case 'userclasses':
+				$uc_options = vartrue($parms['userclass'], '');
+				unset($parms['userclass']);
+				$method = $attributes['type'] == 'userclass' ? 'uc_select' : 'uc_checkbox';
+				return $this->$method($key, $value, $uc_options, $parms);
+			break;
+			
+			case 'user_name':
+			case 'user_loginname':
+			case 'user_login':
+			case 'user_customtitle':
+			case 'user_email':
+				//user_id expected
+				//$value = get_user_data($value); 
+				return $this->user($key, $value, $parms);
+			break;
+			
+			case 'boolean':
+				$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
+				$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
+				unset($parms['enabled'], $parms['disabled']);
+				return $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled));
+			break;
+			
+			case 'method': // Custom Function 
+				return call_user_func_array(array($this, $key), array($value, 'form'));
+			break;
+
+			default:
+				//unknown type
+			break;
+		}
+			
 	}
 		
 	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
