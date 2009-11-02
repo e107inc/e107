@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.60 $
- * $Date: 2009-11-01 03:25:29 $
+ * $Revision: 1.61 $
+ * $Date: 2009-11-02 01:10:50 $
  * $Author: e107coders $
  */
 
@@ -682,12 +682,15 @@ class themeHandler
 			
 			$borderStyle = (($pref['sitetheme'] == $theme['path']) || ($pref['admintheme'] == $theme['path'])) ? "border:1px solid black" : "border:1px dotted silver;background-color:#DDDDDD";
 			$text = "<div class='f-left block-text' style='margin:5px;".$borderStyle.";width:202px;height:160px'>
-                     <div style='height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px'>".$newpreview."</div>
-                     <div class='f-left mediumtext' style='width:55%;font-weight:bold'>".$theme['name']." ".$theme['version']."</div>
-					 <div class='f-right right' style='width:45%;height:16px'>\n\n\n".$main_icon.$admin_icon.$info_icon.$preview_icon."\n\n</div>
-                     <div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='position:relative;top:30px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>
+					<div style='height:130px;overflow:hidden;border:1px solid black;margin-bottom:10px'>".$newpreview."</div>
+					<div class='f-left mediumtext' style='width:55%;font-weight:bold'>".$theme['name']." ".$theme['version']."</div>
+					<div class='f-right right' style='width:45%;height:16px'>\n\n\n".$main_icon.$admin_icon.$info_icon.$preview_icon."\n\n</div>";
+			
+			//FIXME e-hideme doesn't work when JS is turned off. 
+			// This popup information should be loaded with ajax. 		
+		//	$text .=	"<div id='themeInfo_".$theme['id']."' class='e-hideme col-selection' style='position:relative;top:30px;width:480px'>\n".$this->renderThemeInfo($theme)."</div>\n";
 
-			</div>";
+			$text .= "</div>";
 			return $text;
 		}
 		
