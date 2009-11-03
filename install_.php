@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2009-10-02 22:03:37 $
-|     $Author: e107steved $
+|     $Revision: 1.74 $
+|     $Date: 2009-11-03 20:34:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -327,7 +327,7 @@ class e_install
 		$this->previous_steps['mysql']['createdb'] = (isset($_POST['createdb']) && $_POST['createdb'] == TRUE ? TRUE : FALSE);
 		$this->previous_steps['mysql']['db_utf8'] = (isset($_POST['db_utf8']) && $_POST['db_utf8'] == TRUE ? TRUE : FALSE);
 		$this->previous_steps['mysql']['prefix'] = trim($_POST['prefix']);
-		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
+		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], FALSE);
 		if(!$success || $this->previous_steps['mysql']['server'] == "" || $this->previous_steps['mysql']['user'] == "") 
 		{
 			$this->stage = 3;
