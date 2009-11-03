@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.109 $
-|     $Date: 2009-10-30 09:13:31 $
+|     $Revision: 1.110 $
+|     $Date: 2009-11-03 01:17:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -2007,8 +2007,8 @@ class e107plugin
 		if(vartrue($eplug_link) && varset($eplug_link_name) && varset($eplug_link_url))
 		{
 			$ret['siteLinks']['link'][0]['@attributes']['url'] = $tp->createConstants($eplug_link_url,1);
-			$ret['siteLinks']['link'][0]['@attributes']['perm'] = $eplug_link_perms;                                    
-        	$ret['siteLinks']['link'][0]['@value'] = $eplug_link_name;
+			$ret['siteLinks']['link'][0]['@attributes']['perm'] = varset($eplug_link_perms);                                    
+        	$ret['siteLinks']['link'][0]['@value'] = varset($eplug_link_name);
 		}
 		
 		if(vartrue($eplug_userclass) && vartrue($eplug_userclass_description))

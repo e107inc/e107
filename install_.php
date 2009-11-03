@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.46 $
-* $Date: 2009-10-21 11:08:32 $
+* $Revision: 1.47 $
+* $Date: 2009-11-03 01:17:25 $
 * $Author: e107coders $
 *
 */
@@ -204,6 +204,7 @@ class e_install
 		if(isset($this->previous_steps['language']))
 		{
 			define("e_LANGUAGE", $this->previous_steps['language']);
+			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 		}
 
 	}
@@ -1000,7 +1001,7 @@ class e_install
 				}
 			}
 		}
-							
+					
 		e107::getSingleton('xmlClass')->e107Import($XMLImportfile,'add'); // Add missing core pref values
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.			
 		$tm = e107::getSingleton('themeHandler');
