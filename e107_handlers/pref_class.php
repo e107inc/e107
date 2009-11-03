@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-11-03 10:47:16 $
+ * $Revision: 1.28 $
+ * $Date: 2009-11-03 10:57:15 $
  * $Author: secretr $
 */
 
@@ -611,17 +611,18 @@ class e_pref extends e_admin_model
 	
 	/**
 	 * Clear pref cache
-	 *
+	 * 
+	 * @param string $cache_name default to current alias
 	 * @param boolean $runtime clear runtime cache as well ($this->pref_cache)
 	 * @return e_pref
 	 */
-	protected function clearPrefCache($runtime = false)
+	protected function clearPrefCache($cache_name = '', $runtime = true)
 	{
 		if($runtime)
 		{
-			$this->pref_cache = $cache_string;
+			$this->pref_cache = '';
 		}
-		ecache::clear_sys('Config_'.$this->alias);
+		ecache::clear_sys('Config_'.(!empty($cache_name) ? $cache_name : $this->alias));
 		return $this;
 	}
 	
@@ -632,20 +633,6 @@ class e_pref extends e_admin_model
 	public function validate()
 	{
 		return true;
-	}
-	
-	/**
-	 * Clear preferences cache
-	 * 
-	 * @param object $cache_name [optional]
-	 * @return e_pref
-	 */
-	public function clearPrefCache($cache_name = '')
-	{
-		$this->pref_cache = '';
-		ecache::clear_sys('Config_'.(!empty($cache_name) ? $cache_name : $this->alias));
-		
-		return $this;
 	}
 	
 	/**
