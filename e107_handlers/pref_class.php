@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-10-22 14:18:17 $
+ * $Revision: 1.27 $
+ * $Date: 2009-11-03 10:47:16 $
  * $Author: secretr $
 */
 
@@ -606,6 +606,22 @@ class e_pref extends e_admin_model
 		{
 			ecache::set_sys('Config_'.($save !== true ? $save : $this->alias), $cache_string, true);
 		}
+		return $this;
+	}
+	
+	/**
+	 * Clear pref cache
+	 *
+	 * @param boolean $runtime clear runtime cache as well ($this->pref_cache)
+	 * @return e_pref
+	 */
+	protected function clearPrefCache($runtime = false)
+	{
+		if($runtime)
+		{
+			$this->pref_cache = $cache_string;
+		}
+		ecache::clear_sys('Config_'.$this->alias);
 		return $this;
 	}
 	
