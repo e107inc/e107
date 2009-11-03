@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.113 $
-|     $Date: 2009-10-06 18:58:12 $
-|     $Author: e107steved $
+|     $Revision: 1.114 $
+|     $Date: 2009-11-03 19:58:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -105,6 +105,12 @@ $error = "";
 
 if (isset($_POST['updatesettings']))
 {
+	if(!varset($_POST['__referer']))
+	{
+		header('location:'.e_BASE.'index.php');
+  		exit;
+	}
+	
 	if(!varsettrue($pref['auth_method']) || $pref['auth_method'] == '>e107')
 	{
 		$pref['auth_method'] = 'e107';
@@ -625,6 +631,7 @@ $text .= "<div>";
 
 $text .= "
 	<input type='hidden' name='_uid' value='{$uuid}' />
+	<input type='hidden' name='__referer' value='".POST_REFERER."' />
 	</div>
 	</form>
 	";

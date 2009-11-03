@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.381 $
-|     $Date: 2009-10-28 15:34:23 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.382 $
+|     $Date: 2009-11-03 19:58:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 //
@@ -1544,6 +1544,20 @@ function init_session() {
 
 	define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
+	
+	if(USER)
+	{
+		define('POST_REFERER', md5($currentUser['user_password'].$currentUser['user_lastvisit'].USERCLASS_LIST));
+	}
+	else
+	{
+		define('POST_REFERER', '');
+	}
+	if(varset($_POST['__referer']) && $_POST['__referer'] != POST_REFERER) {
+		header('location:'.e_BASE.'index.php');
+		exit;		
+	}
+	
 }
 
 $sql->db_Mark_Time('Start: Go online');
