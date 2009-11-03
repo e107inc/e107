@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2009-09-28 21:00:01 $
+|     $Revision: 1.24 $
+|     $Date: 2009-11-03 22:08:03 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,8 @@ unset($qs);
 $error = '';
 $message = '';
 
-$emailurl = ($source == 'referer') ? strip_tags($_SERVER['HTTP_REFERER']) : SITEURL;
+$referrer = strip_tags(urldecode(html_entity_decode(varset($_SERVER['HTTP_REFERER'],''), ENT_QUOTES)));
+$emailurl = ($source == 'referer') ? $referrer : SITEURL;
 
 $comments = $tp->post_toHTML(varset($_POST['comment'],''), TRUE, 'retain_nl, emotes_off, no_make_clickable');
 $author = $tp->post_toHTML(varset($_POST['author_name'],''),FALSE,'emotes_off, no_make_clickable');
@@ -215,20 +216,20 @@ $text .= "</textarea>
 	</tr>
 	";
 
-	if($use_imagecode)
-	{
-		$text .= "<tr><td>".LAN_EMAIL_190."</td><td>";
-		$text .= $sec_img->r_image();
-		$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />
-			<input type='hidden' name='rand_num' value='".$sec_img->random_number."' /></td></tr>";
-	}
+if($use_imagecode)
+{
+	$text .= "<tr><td>".LAN_EMAIL_190."</td><td>";
+	$text .= $sec_img->r_image();
+	$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />
+		<input type='hidden' name='rand_num' value='".$sec_img->random_number."' /></td></tr>";
+}
 
 $text .= "
 	<tr style='vertical-align:top'>
 	<td style='width:25%'></td>
 	<td style='width:75%'>
 	<input class='button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
-	<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />
+	<input type='hidden' name='referer' value='".$referrer."' />
 </td>
 	</tr>
 	</table>
