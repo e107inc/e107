@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision: 1.30 $
- |     $Date: 2009-11-01 20:21:13 $
+ |     $Revision: 1.31 $
+ |     $Date: 2009-11-03 20:57:10 $
  |     $Author: e107steved $
  +----------------------------------------------------------------------------+
  */
@@ -871,6 +871,7 @@ class comment
 					$ret['comment_datestamp'] = $row['comment_datestamp'];
 					//author - no ned to split now
 					$comment_author_id = $row['comment_author_id'];
+					$ret['comment_author_id'] = $comment_author_id ;
 					$comment_author_name = $row['comment_author_name'];
 					$ret['comment_author'] = (USERID ? "<a href='".e107::getUrl()->create('core:user', 'main', 'func=profile&id='.$comment_author_id)."'>".$comment_author_name."</a>" : $comment_author_name);
 					//comment text
