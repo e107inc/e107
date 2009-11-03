@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2009-08-15 11:54:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.36 $
+|     $Date: 2009-11-03 19:44:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,6 +22,7 @@ if (!getperms("D"))
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
 $e_sub_cat = 'banner';
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
@@ -210,6 +211,12 @@ if (!$action) {
 }
 
 if ($action == "create") {
+	if(isset($pref['install_date'])) { 
+		$_startYear = date('Y', $pref['install_date']);
+	} else {
+		$_startYear = date('Y') - 5;
+	}
+	$_endYear = date('Y') + 5;
 
 	if ($sub_action == "edit" && $id) {
 		if (!$sql->db_Select("banner", "*", "banner_id = '".$id."' " )) {
@@ -405,7 +412,7 @@ if ($action == "create") {
 		$text .= ($a == $_POST['startmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 	}
 	$text .= "</select> <select name='startyear' class='tbox'><option selected='selected'> </option>";
-	for($a = 2003; $a <= 2010; $a++) {
+	for($a = $_startYear; $a <= $_endYear; $a++) {
 		$text .= ($a == $_POST['startyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 	}
 	$text .= "</select> ".BNRLAN_38."
@@ -423,7 +430,7 @@ if ($action == "create") {
 		$text .= ($a == $_POST['endmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 	}
 	$text .= "</select> <select name='endyear' class='tbox'><option selected='selected'> </option>";
-	for($a = 2003; $a <= 2010; $a++) {
+	for($a = $_startYear; $a <= $_endYear; $a++) {
 		$text .= ($a == $_POST['endyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 	}
 	$text .= "</select> ".BNRLAN_38."
