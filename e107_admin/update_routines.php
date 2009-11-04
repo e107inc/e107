@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2009-10-24 07:52:32 $
+|     $Revision: 1.57 $
+|     $Date: 2009-11-04 03:37:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -195,6 +195,7 @@ function update_core_prefs($type='')
   $accum = array();
 
   $just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
+   
   foreach ($should as $k => $v)
   {
     if ($k && !array_key_exists($k,$pref))
@@ -261,7 +262,8 @@ function update_706_to_800($type='')
 
 	// List of changed DB tables (defined in core_sql.php)
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus', 'plugin', 'news', 'news_category');
+	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus',
+							 'plugin', 'news', 'news_category','online');
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)

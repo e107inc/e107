@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-11-04 03:07:39 $
+|     $Revision: 1.8 $
+|     $Date: 2009-11-04 03:37:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -57,7 +57,7 @@ class comments_admin_ui extends e_admin_ui
 		protected $pluginName = 'comments';
 		protected $table = "comments";
 		protected $pid = "comment_id";
-		protected $perPage = 20;
+		protected $perPage = 10;
 		protected $batchDelete = true;
 
     	protected $fields = array(
@@ -65,21 +65,18 @@ class comments_admin_ui extends e_admin_ui
 			'comment_id'			=> array('title'=> ID, 			'type' => 'int',	'width' =>'5%', 'forced'=> TRUE, 'primary'=>TRUE),
        		'comment_item_id' 		=> array('title'=> "item id", 	'type' => 'text',	'width' => 'auto'),
          	'comment_subject' 		=> array('title'=> "subject", 	'type' => 'text',	'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'comment_author_id' 	=> array('title'=> "authorID", 	'type' => 'text',	'width' => 'auto'),	// User name
+         	'comment_comment' 		=> array('title'=> "comment",	'type' => 'text',	'width' => 'auto'), // Display name
+		 	'comment_author_id' 	=> array('title'=> "authorID", 	'type' => 'text',	'width' => 'auto'),	// User name
          	'comment_author_name' 	=> array('title'=> "authorName", 	'type' => 'text',	'width' => 'auto'),	// User name
-			'comment_comment' 		=> array('title'=> "comment",	'type' => 'text',	'width' => 'auto'), // Display name
 		    'comment_datestamp' 	=> array('title'=> "datestamp",	'type' => 'text',	'width' => 'auto'),	// User name
             'comment_blocked' 		=> array('title'=> "blocked",	'type' => 'text',	'width' => 'auto'),	 	// Photo
 			'comment_ip' 			=> array('title'=> "IP",		'type' => 'text',	'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'comment_type' 			=> array('title'=> "Type",		'type' => 'method',	'width' => '10%', 'thclass' => 'center', 'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
 			'comment_lock' 			=> array('title'=> "Lock",		'type' => 'text',	'width' => 'auto'),
-
-	   //	'page_ip_restrict' 		=> array('title'=> LAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
-
-			'options' 	=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+			'options' 				=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		//required (but should be optional) - default column user prefs 
-		protected $fieldpref = array('checkboxes', 'comment_id', 'comment_item_id', 'comment_author_id', 'comment_author_name', 'comment_subject', 'comment_type', 'options');
+		protected $fieldpref = array('checkboxes', 'comment_id', 'comment_item_id', 'comment_author_id', 'comment_author_name', 'comment_subject', 'comment_comment', 'comment_type', 'options');
 		
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
@@ -95,7 +92,7 @@ class comments_admin_ui extends e_admin_ui
 		
 }
 
-//TODO Block and Unblock buttons
+//TODO Block and Unblock buttons, moderated comments?
 class comments_admin_form_ui extends e_admin_form_ui
 {
 	function comment_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
