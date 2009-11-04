@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.63 $
- * $Date: 2009-11-02 17:45:28 $
+ * $Revision: 1.64 $
+ * $Date: 2009-11-04 17:29:26 $
  * $Author: secretr $
  *
 */
@@ -142,6 +142,12 @@ class e_form
 	
 	/**
 	 * Date field with popup calendar
+	 * $options allowed keys:
+	 * - time: show time, default is true
+	 * - others: ???, default is false
+	 * - weeks: show weeks, default is false
+	 * - size: input field size attribute, default 25
+	 * 
 	 * @param string $name the name of the field
 	 * @param integer $datestamp UNIX timestamp - default value of the field
 	 * @param array $options calendar options
@@ -219,6 +225,7 @@ class e_form
 		}
 	   	$options = array('class' => 'tbox'.($size ? ' '.$size : '').' e-wysiwyg');
 		$bbbar = '';
+		// FIXME - see ren_help.php
 		if(!deftrue('e_WYSIWYG'))
 		{
 			require_once(e_HANDLER."ren_help.php");
@@ -721,7 +728,7 @@ class e_form
 		// has issues with the checkboxes.
         $text .= "
 				<div id='{$id}-button' class='right'>
-					".$this->admin_button('submit-e-columns', LAN_SAVE, 'update')."
+					".$this->admin_button('etrigger_ecolumns', LAN_SAVE, 'update')."
 				</div>
 			</div></div>
 		</div>
@@ -754,21 +761,21 @@ class e_form
 		';
 	}
 
-	function thead($fieldarray, $columnPref=array(), $querypattern = '', $requeststr = '')
+	function thead($fieldarray, $columnPref = array(), $querypattern = '', $requeststr = '')
 	{
         $text = "";
 
-		// Recommended pattern: ?mode=list&fld=[FIELD]&asc=[ASC]&frm=[FROM]
+		// Recommended pattern: mode=list&field=[FIELD]&asc=[ASC]&from=[FROM]
 		
 		if(strpos($querypattern,'&')!==FALSE)
 		{
 			// we can assume it's always $_GET since that's what it will generate 
 			// more flexible (e.g. pass default values for order/field when they can't be found in e_QUERY) & secure
-			$tmp = $requeststr ? $requeststr : str_replace('&amp;', '&', e_QUERY); 
+			$tmp = str_replace('&amp;', '&', $requeststr ? $requeststr : e_QUERY); 
 			parse_str($tmp, $tmp);
 			
 			$etmp = array();
-			parse_str($querypattern,$etmp);
+			parse_str(str_replace('&amp;', '&', $querypattern), $etmp);
 		}
 		else // Legacy Queries. eg. main.[FIELD].[ASC].[FROM]
 		{
@@ -798,7 +805,7 @@ class e_form
         $ascdesc = (varset($ascdesc) == 'desc') ? 'asc' : 'desc';
 		foreach($fieldarray as $key=>$val)
 		{
-     		if(in_array($key,$columnPref) || $key == 'options' || (vartrue($val['forced'])))
+     		if(in_array($key, $columnPref) || $key == 'options' || (vartrue($val['forced'])))
 			{
 				$cl = (vartrue($val['thclass'])) ? " class='".$val['thclass']."'" : "";
 				$text .= "
@@ -812,11 +819,11 @@ class e_form
 					$repl = array($key,$ascdesc,$from);
                 	$val['url'] = e_SELF."?".str_replace($srch,$repl,$querypattern);
 				}
-
+				
 				$text .= (vartrue($val['url'])) ? "<a href='".str_replace(array('&amp;', '&'), array('&', '&amp;'),$val['url'])."'>" : "";  // Really this column-sorting link should be auto-generated, or be autocreated via unobtrusive js.
 	            $text .= vartrue($val['title'], '');
 				$text .= ($val['url']) ? "</a>" : "";
-	            $text .= ($key == "options") ? $this->columnSelector($fieldarray,$columnPref) : "";
+	            $text .= ($key == "options") ? $this->columnSelector($fieldarray, $columnPref) : "";
 				$text .= ($key == "checkboxes") ? $this->checkbox_toggle('e-column-toggle', vartrue($val['toggle'], 'multiselect')) : "";
 
 
@@ -834,7 +841,6 @@ class e_form
 
 	}
 	
-	// FIXME - newspost.php
 	function trow($fieldarray, $currentlist, $fieldvalues, $pid)
 	{
 		$cnt = 0;
@@ -849,7 +855,7 @@ class e_form
 		{
 		
 			//Not found
-			if(!$data['forced'] && !in_array($field, $currentlist))
+			if((!$data['forced'] && !in_array($field, $currentlist)) || $data['nolist'])
 			{
 				continue;
 			}
@@ -866,12 +872,13 @@ class e_form
 			
 			$tdclass = vartrue($data['class']);
 			$value = $fieldvalues[$field];
+			$tp = e107::getParser();
 
 			$parms = array();
-			if(isset($data['parms']))
+			if(isset($data['readParms']))
 			{
-				if(!is_array($data['parms'])) parse_str($data['parms'], $data['parms']);
-				$parms = $data['parms'];
+				if(is_string($data['readParms'])) parse_str($data['readParms'], $data['readParms']);
+				$parms = $data['readParms'];
 			}
 
 			switch($field) // special fields
@@ -879,7 +886,7 @@ class e_form
 				case 'options':
 					if(!$value)
 					{
-						parse_str(str_replace('&amp;', '&', e_QUERY), $query);
+						parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
 						// keep other vars in tact
 						$query['action'] = 'edit'; 
 						$query['id'] = $fieldvalues[$pid]; 
@@ -888,7 +895,7 @@ class e_form
 						$query = http_build_query($query);
 
 						$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>&nbsp;";
-						$value .= $this->submit_image('delete['.$fieldvalues[$pid].']', $fieldvalues[$pid], 'delete', LAN_DELETE.' [ ID: '.$fieldvalues[$pid].' ]');
+						$value .= $this->submit_image('etrigger_delete['.$fieldvalues[$pid].']', $fieldvalues[$pid], 'delete', LAN_DELETE.' [ ID: '.$fieldvalues[$pid].' ]');
 					}
 					$data['type'] = 'text';
 				break;
@@ -899,27 +906,70 @@ class e_form
 					$tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
 				break;
 			}
-			
+			//FIXME - move this block to separate method renderValue(), similar to renderElement()
 			switch($data['type'])
 			{
 				case 'number':
-					// same
+					if($parms)
+					{
+						if(!isset($parms['sep'])) $value = number_format($number, $parms['decimals']);
+						else $value = number_format($number, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
+					}
+					$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
+					// else same
 				break;
 				
+				case 'dropdown':
 				case 'text':
 					if(vartrue($parms['truncate']))
 					{
-						$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+						$value = $tp->text_truncate($value, $parms['truncate'], '...');
 					}
 					elseif(vartrue($parms['htmltruncate']))
 					{
-						$value = e107::getParser()->html_truncate($value, $parms['htmltruncate'], '...');
+						$value = $tp->html_truncate($value, $parms['htmltruncate'], '...');
+					}
+					$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
+				break;
+				
+				case 'bbarea':
+				case 'textarea':
+					$expand = '...';
+					$toexpand = false;
+					if($data['type'] == 'bbarea' && !isset($parms['bb'])) $parms['bb'] = true; //force bb parsing for bbareas
+					$id = trim(str_replace('_', '-', $field));
+					if(!vartrue($parms['noparse'])) $value = $tp->toHTML($value, (vartrue($parms['bb']) ? true : false), vartrue($parms['parse']));
+					if(vartrue($parms['expand']))
+					{
+						$expand = '<a href="#'.$id.'-expand" class="e-show-if-js expandit">'.defset($parms['expand'], $parms['expand'])."</a>";
+					}
+					
+					$oldval = $value;
+					if(vartrue($parms['truncate']))
+					{
+						$value = $oldval = strip_tags($value);
+						$value = $tp->text_truncate($value, $parms['truncate'], $expand);
+						$toexpand = $value != $oldval;
+					}
+					elseif(vartrue($parms['htmltruncate']))
+					{
+						$value = $tp->html_truncate($value, $parms['htmltruncate'], $expand);
+						$toexpand = $value != $oldval;
+					}
+					if($toexpand)
+					{
+						// force hide! TODO - core style .expand-c (expand container)
+						$value .= '<div class="expand-c" style="display: none" id="'.$id.'-expand"><div>'.$oldval.'</div></div>';
 					}
 				break;
 				
 				case 'icon':
+					$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
+				break;
+				
 				case 'image': //TODO - thumb, js tooltip...
-					//same
+					$ttl = vartrue($parms['title'], 'LAN_PREVIEW');
+					$value = '<a href="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" title="'.basename($value).'">'.defset($ttl, $ttl).'</a>';
 				break;
 				
 				case 'datestamp':
@@ -928,6 +978,16 @@ class e_form
 				
 				case 'userclass':
 					$value = $this->_uc->uc_get_classname($value);
+				break;
+				
+				case 'userclasses':
+					$classes = explode(',', $value);
+					$value = array();
+					foreach ($classes as $cid)
+					{
+						$value[] = $this->_uc->uc_get_classname($cid);
+					}
+					$value = implode(vartrue($parms['separator']), $pieces);
 				break;
 				
 				case 'user_name':
@@ -946,7 +1006,7 @@ class e_form
 					}
 					if(vartrue($parms['truncate']))
 					{
-						$value = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+						$value = $tp->text_truncate($value, $parms['truncate'], '...');
 					}
 				break;
 				
@@ -955,17 +1015,17 @@ class e_form
 				break;
 								
 				case 'url':
-					$ttl = $data['title'];
+					$ttl = $value;
 					if(vartrue($parms['truncate']))
 					{
-						$ttl = e107::getParser()->text_truncate($value, $parms['truncate'], '...');
+						$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
 					}
-					$value = "<a href='".e107::getParser()->replaceConstants($value, 'abs')."' title='{$value}'>".$ttl."</a>";
+					$value = "<a href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
 				break;
 				
 				case 'method': // Custom Function 
 					$method = $field;
-					$value = call_user_func_array(array($this, $method), array($value, 'list'));
+					$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
 				break;
 				
 				//TODO - form_userclass, order,... and maybe more types
@@ -1002,8 +1062,103 @@ class e_form
 	}
 	
 	/**
-	 * Generic List Form
-	 * Search for the following GET variables:
+	 * Auto-render Form Element
+	 * @param string $key
+	 * @param mixed $value
+	 * @param array $attributes field attributes including render parameters, element options
+	 * @return string
+	 */
+	function renderElement($key, $value, $attributes)
+	{
+		$parms = vartrue($attributes['writeParms'], array());
+		if(is_string($parms)) parse_str($parms, $parms);
+		
+		switch($attributes['type'])
+		{
+			case 'number':
+				$maxlength = vartrue($parms['maxlength'], 255);
+				unset($parms['maxlength']);
+				if(!vartrue($parms['size'])) $parms['size'] = 15;
+				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number';
+				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']);
+			break;
+			
+			case 'url':
+			case 'text':
+				$maxlength = vartrue($parms['maxlength'], 255);
+				unset($parms['maxlength']);
+				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, vartrue($parms['__options'])).vartrue($parms['post']);
+			break;
+			
+			case 'textarea':
+				return $this->textarea($key, $value, vartrue($parms['rows'], 15), vartrue($parms['cols'], 40), vartrue($parms['__options']));
+			break;
+			
+			case 'bbarea':
+				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size']));
+			break;
+			
+			case 'image': //TODO - thumb, image list shortcode, js tooltip...
+				$label = varset($parms['label']);
+				unset($parms['label']);
+				return $this->imagepicker($key, $value, $label, vartrue($parms['__options']));
+			break;
+			
+			case 'icon': 
+				$label = varset($parms['label']);
+				$ajax = varset($parms['ajax']) ? true : false;
+				unset($parms['label'], $parms['ajax']);
+				return $this->iconpicker($key, $value, $label, $parms, $ajax);
+			break;
+			
+			case 'datestamp':
+				return $this->datepicker($key, $value, $parms);
+			break;
+			
+			case 'dropdown':
+				$eloptions  = vartrue($parms['__options'], array());
+				if(is_string($eloptions)) parse_str($eloptions);
+				unset($parms['dropdown']);
+				return $this->selectbox($name, $parms, $value, $eloptions);
+			break; 
+			
+			case 'userclass':
+			case 'userclasses':
+				$uc_options = vartrue($parms['classlist'], ''); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
+				unset($parms['classlist']);
+				$method = $attributes['type'] == 'userclass' ? 'uc_select' : 'uc_checkbox';
+				return $this->$method($key, $value, $uc_options, vartrue($parms['__options'], array()));
+			break;
+			
+			case 'user_name':
+			case 'user_loginname':
+			case 'user_login':
+			case 'user_customtitle':
+			case 'user_email':
+				//user_id expected
+				//$value = get_user_data($value); 
+				return $this->user($key, $value, $parms);
+			break;
+			
+			case 'boolean':
+				$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
+				$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
+				unset($parms['enabled'], $parms['disabled']);
+				return $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled));
+			break;
+			
+			case 'method': // Custom Function 
+				return call_user_func_array(array($this, $key), array($value, 'write', $parms));
+			break;
+
+			default:
+				//unknown type
+			break;
+		}
+	}
+	
+	/**
+	 * Generic List Form, used internal by admin UI
 	 * Expected options array format:
 	 * <code>
 	 * <?php
@@ -1129,7 +1284,7 @@ class e_form
 	 * 				'fields' => array(...), //see e_admin_ui::$fields
 	 * 				'after_submit_options' => array('__default' => 'action_name' 'action' => 'Label'[,...]), // or true for default redirect options
 	 * 				'triggers' => 'auto', // standard create/update-cancel triggers 
-	 * 				//or custom trigger array in format array('sibmit' => array('Title', 'create', '1'), 'cancel') - trigger name - title, action, optional hidden value (in this case named sibmit_value)
+	 * 				//or custom trigger array in format array('submit' => array('Title', 'create', '1'), 'cancel' => array('cancel', 'cancel')) - trigger name - title, action, optional hidden value (in this case named sibmit_value)
 	 * 			)
 	 * 		) 
 	 * );
@@ -1256,147 +1411,15 @@ class e_form
 		return $text;
 	}
 	
-	/**
-	 * Auto-render Form Element
-	 * @param string $key
-	 * @param mixed $value
-	 * @param array $attributes field attributes including render parameters, element options
-	 * @return string
-	 */
-	function renderElement($key, $value, $attributes)
-	{
-		$parms = vartrue($attributes['parms'], array());
-		if(is_string($parms)) parse_str($parms, $parms);
-		
-		//FIXME - this block is present in trow(), so make it separate method, use it in both methods
-		switch($attributes['type'])
-		{
-			case 'number':
-				$maxlength = vartrue($parms['maxlength'], 255);
-				unset($parms['maxlength']);
-				if(!vartrue($parms['size'])) $parms['size'] = 15;
-				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number';
-				return $this->text($key, $value, $maxlength, $parms);
-			break;
-			
-			case 'url':
-			case 'text':
-				$maxlength = vartrue($parms['maxlength'], 255);
-				unset($parms['maxlength']);
-				return $this->text($key, $value, $maxlength, $parms);
-			break;
-			
-			case 'image': //TODO - thumb, image list shortcode, js tooltip...
-				$label = varset($parms['label']);
-				unset($parms['label']);
-				return $this->imagepicker($key, $value, $label, $parms);
-			break;
-			
-			case 'icon': 
-				$label = varset($parms['label']);
-				$ajax = varset($parms['ajax']) ? true : false;
-				unset($parms['label'], $parms['ajax']);
-				return $this->iconpicker($key, $value, $label, $parms, $ajax);
-			break;
-			
-			case 'datestamp':
-				return $this->datepicker($key, $value, $parms);
-			break;
-			
-			case 'dropdown':
-				$eloptions  = vartrue($parms['dropdown'], array());
-				if(is_string($eloptions)) parse_str($eloptions);
-				unset($parms['dropdown']);
-				return $this->selectbox($name, $eloptions, $value, $parms);
-			break; 
-			
-			case 'userclass':
-			case 'userclasses':
-				$uc_options = vartrue($parms['userclass'], '');
-				unset($parms['userclass']);
-				$method = $attributes['type'] == 'userclass' ? 'uc_select' : 'uc_checkbox';
-				return $this->$method($key, $value, $uc_options, $parms);
-			break;
-			
-			case 'user_name':
-			case 'user_loginname':
-			case 'user_login':
-			case 'user_customtitle':
-			case 'user_email':
-				//user_id expected
-				//$value = get_user_data($value); 
-				return $this->user($key, $value, $parms);
-			break;
-			
-			case 'boolean':
-				$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
-				$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
-				unset($parms['enabled'], $parms['disabled']);
-				return $this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled));
-			break;
-			
-			case 'method': // Custom Function 
-				return call_user_func_array(array($this, $key), array($value, 'form'));
-			break;
-
-			default:
-				//unknown type
-			break;
-		}
-			
-	}
-		
 	// The 2 functions below are for demonstration purposes only, and may be moved/modified before release.
 	function filterType($fieldarray)
 	{
 		return " frm-> filterType() is Deprecated &nbsp;&nbsp;  ";
-		define("e_AJAX_REQUEST", TRUE);
-		$text = "<select name='search_filter[]' style='margin:2px' onchange='UpdateForm(this.options[selectedIndex].value)'>";
-		foreach ($fieldarray as $key=>$val)
-		{
-			$text .= varset($val['type']) ? "<option value='$key'>".$val['title']."</option>\n" : "";
-			
-		}
-		$text .= "</select>";
-		return $text;
 	}
 		
 	function filterValue($type = '', $fields = '')
 	{
 		return " frm-> filterValue() is Deprecated.&nbsp;&nbsp;   ";
-		
-		if($type)
-		{
-		
-			switch($fields[$type]['type'])
-			{
-				case "datestamp":
-					return "[date field]";
-				break;
-				
-				case "boolean":
-				
-					return "<select name='searchquery'><option value='1'>".LAN_YES."</option>\n
-			  	<option value='0'>".LAN_NO."</option>
-			  	</select>";
-				break;
-				
-				case "user":
-					return "<select name='searchquery'><option value='1'>User One</option><option value='2'>User Two</option></select>";
-				break;
-
-				
-				default:
-				
-					return $this->text('searchquery', '', 50);
-					
-			}
-		}
-		else
-		{
-			return $this->text('searchquery', '', 50);
-		}
-		// This needs to be dynamic for the various form types, and be loaded via ajax.
 	}
 		
 	/**

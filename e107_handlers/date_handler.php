@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-10-30 17:59:32 $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-04 17:29:26 $
  * $Author: secretr $
  * 
 */
@@ -61,9 +61,9 @@ class convert
 		return strftime($mask, $datestamp);
 	}
 	
-	function toDate($date_string, $maks = '')
+	function toTime($date_string, $mask = '')
 	{
-		//TODO - convert string to datestamp
+		//TODO - convert string to datestamp, coming soon
 		return time();
 	}
 
