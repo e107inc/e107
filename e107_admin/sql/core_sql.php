@@ -9,9 +9,9 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-11-04 20:19:11 $
- * $Author: e107steved $
+ * $Revision: 1.32 $
+ * $Date: 2009-11-04 21:59:35 $
+ * $Author: secretr $
 */
 
 header("location:../index.php");
@@ -22,7 +22,7 @@ exit;
 # |        e107 website system
 # |        /files/sql.php
 # |
-# |        ?Steve Dunstan 2001-2002
+# |        Steve Dunstan 2001-2002
 # |        http://e107.org
 # |        jalist@e107.org
 # |
