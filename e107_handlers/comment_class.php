@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/comment_class.php,v $
- |     $Revision: 1.31 $
- |     $Date: 2009-11-03 20:57:10 $
- |     $Author: e107steved $
+ |     $Revision: 1.32 $
+ |     $Date: 2009-11-04 03:07:39 $
+ |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))
@@ -31,6 +31,16 @@ require_once (e_FILE."shortcode/batch/comment_shortcodes.php");
 
 class comment
 {
+	public $known_types = array(
+			0	=> "news",
+			1	=> 'content',
+			2	=> 'download',
+			3	=> 'faq',
+			4	=> 'poll',
+			5	=> 'docs',
+			6	=> 'bugtrack'
+	);
+	
 	/**
 	 * Display the comment editing form
 	 *
@@ -571,31 +581,13 @@ class comment
 		{
 			return $type;
 		}
-		switch ($type)
+		else
 		{
-			case '0':
-				$type = "news";
-				break;
-			case '1':
-				$type = 'content';
-				break;
-			case '2':
-				$type = 'download';
-				break;
-			case '3':
-				$type = 'faq';
-				break;
-			case '4':
-				$type = 'poll';
-				break;
-			case '5':
-				$type = 'docs';
-				break;
-			case '6':
-				$type = 'bugtrack';
-				break;
+			if(varset($this->known_types[$type]))
+			{
+				return $this->known_types[$type];
+			}
 		}
-		return $type;
 	}
 		
 		/**

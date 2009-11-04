@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.62 $
- * $Date: 2009-10-31 17:57:15 $
- * $Author: secretr $
+ * $Revision: 1.63 $
+ * $Date: 2009-11-04 03:07:39 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -134,6 +134,7 @@ class e107
 		'e_admin_ui' 				=> '{e_HANDLER}admin_handler.php',
 		'e_admin_form_ui' 			=> '{e_HANDLER}admin_handler.php',
 		'DHTML_Calendar'			=> '{e_HANDLER}calendar/calendar_class.php',
+		'comment'					=> '{e_HANDLER}comment_class.php',
 	);
 	
 	/**
@@ -804,8 +805,16 @@ class e107
 	}
 	
 	/**
+	 * Retrieve Xml handler singleton object
+	 * @return e_online
+	 */
+	public static function getXml()
+	{
+		return self::getSingleton('xmlClass', true);
+	}
+	
+	/**
 	 * Retrieve online users handler singleton object
-	 *
 	 * @return e_online
 	 */
 	public static function getOnline()
@@ -813,9 +822,18 @@ class e107
 		return self::getSingleton('e_online', true);
 	}
 	
+	
+	/**
+	 * Retrieve comments handler singleton object
+	 * @return comment
+	 */
+	public static function getComment()
+	{
+		return self::getSingleton('comment', true);
+	}
+	
 	/**
 	 * Retrieve message handler singleton
-	 *
 	 * @return eMessage
 	 */
 	public static function getMessage()
