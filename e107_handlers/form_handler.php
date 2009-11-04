@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.64 $
- * $Date: 2009-11-04 17:29:26 $
- * $Author: secretr $
+ * $Revision: 1.65 $
+ * $Date: 2009-11-04 20:19:11 $
+ * $Author: e107steved $
  *
 */
 
@@ -714,7 +714,7 @@ class e_form
 
 		foreach($columnsArray as $key => $fld)
 		{
-			if(!varset($fld['forced']))
+			if (!varset($fld['forced']) && !vartrue($fld['hide']))
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
 				$text .= "
@@ -744,7 +744,7 @@ class e_form
         $count = 0;
 		foreach($fieldarray as $key=>$val)
 		{
-			if(in_array($key, $columnPref) || $key=='options' || varsettrue($val['forced']))
+			if ((in_array($key, $columnPref) || $key=='options' || varsettrue($val['forced'])) && !vartrue($val['hide']))
 			{
 				$class = vartrue($val['class']) ? ' class="'.$val['class'].'"' : '';
 				$text .= '
@@ -805,7 +805,7 @@ class e_form
         $ascdesc = (varset($ascdesc) == 'desc') ? 'asc' : 'desc';
 		foreach($fieldarray as $key=>$val)
 		{
-     		if(in_array($key, $columnPref) || $key == 'options' || (vartrue($val['forced'])))
+     		if ((in_array($key, $columnPref) || $key == 'options' || (vartrue($val['forced']))) && !vartrue($val['hide']))
 			{
 				$cl = (vartrue($val['thclass'])) ? " class='".$val['thclass']."'" : "";
 				$text .= "
