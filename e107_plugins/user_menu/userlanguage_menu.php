@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/user_menu/userlanguage_menu.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-08-15 15:44:37 $
+ * $Revision: 1.7 $
+ * $Date: 2009-11-04 09:23:00 $
  * $Author: marj_nl_fr $
  */
 //TODO homogenisation with languagelinks + do not force www + unobtrusive redirect
@@ -32,8 +32,6 @@ if(varset($pref['multilanguage_subdomain']))
 	{
 		$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
 		$urlval   = $slng->subdomainUrl($languageFolder);
-		$text .= '
-				<option value="'.$urlval.'" $selected>$languageFolder</option>';
 		$text .= '
 				<option value="'.$urlval.'"'.$selected.'>'.$languageFolder.'</option>';
 	}
