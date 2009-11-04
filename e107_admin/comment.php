@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-11-04 03:37:56 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2009-11-04 23:47:15 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -65,7 +65,7 @@ class comments_admin_ui extends e_admin_ui
 			'comment_id'			=> array('title'=> ID, 			'type' => 'int',	'width' =>'5%', 'forced'=> TRUE, 'primary'=>TRUE),
        		'comment_item_id' 		=> array('title'=> "item id", 	'type' => 'text',	'width' => 'auto'),
          	'comment_subject' 		=> array('title'=> "subject", 	'type' => 'text',	'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'comment_comment' 		=> array('title'=> "comment",	'type' => 'text',	'width' => 'auto'), // Display name
+         	'comment_comment' 		=> array('title'=> "comment",	'type' => 'textarea',	'width' => '30%', 'readParms' => 'expand=...&truncate=50'), // Display name
 		 	'comment_author_id' 	=> array('title'=> "authorID", 	'type' => 'text',	'width' => 'auto'),	// User name
          	'comment_author_name' 	=> array('title'=> "authorName", 	'type' => 'text',	'width' => 'auto'),	// User name
 		    'comment_datestamp' 	=> array('title'=> "datestamp",	'type' => 'text',	'width' => 'auto'),	// User name
@@ -96,7 +96,7 @@ class comments_admin_ui extends e_admin_ui
 class comments_admin_form_ui extends e_admin_form_ui
 {
 	function comment_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
-	{
+	{ 
 		if($mode == 'list')
 		{
 			return e107::getComment()->getTable($curVal);
