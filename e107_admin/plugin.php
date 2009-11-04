@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2009-10-30 12:56:07 $
-|     $Author: e107coders $
+|     $Revision: 1.53 $
+|     $Date: 2009-11-04 21:59:35 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -826,7 +826,7 @@ class pluginManager{
 						{
 							if ($plug['plugin_installflag'])
 							{
-						  		$text .= ($plug['plugin_installflag'] ? "<a href=\"".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
+						  		$text .= ($plug['plugin_installflag'] ? "<a href=\"".e_SELF."?uninstall.{$plug['plugin_id']}\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
 
                              //   $text .= ($plug['plugin_installflag'] ? "<button type='button' class='delete' value='no-value' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_1."</span></button>" : "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>");
 								if (PLUGIN_SHOW_REFRESH && !varsettrue($plug_vars['plugin_php']))
