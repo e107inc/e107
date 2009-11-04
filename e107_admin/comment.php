@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-11-04 23:47:15 $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-04 23:49:59 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,7 @@ class comments_admin_ui extends e_admin_ui
          	'comment_comment' 		=> array('title'=> "comment",	'type' => 'textarea',	'width' => '30%', 'readParms' => 'expand=...&truncate=50'), // Display name
 		 	'comment_author_id' 	=> array('title'=> "authorID", 	'type' => 'text',	'width' => 'auto'),	// User name
          	'comment_author_name' 	=> array('title'=> "authorName", 	'type' => 'text',	'width' => 'auto'),	// User name
-		    'comment_datestamp' 	=> array('title'=> "datestamp",	'type' => 'text',	'width' => 'auto'),	// User name
+		    'comment_datestamp' 	=> array('title'=> "datestamp",	'type' => 'datestamp',	'width' => 'auto'),	// User name
             'comment_blocked' 		=> array('title'=> "blocked",	'type' => 'text',	'width' => 'auto'),	 	// Photo
 			'comment_ip' 			=> array('title'=> "IP",		'type' => 'text',	'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'comment_type' 			=> array('title'=> "Type",		'type' => 'method',	'width' => '10%', 'thclass' => 'center', 'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
