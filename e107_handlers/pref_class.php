@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-11-03 10:57:15 $
+ * $Revision: 1.29 $
+ * $Date: 2009-11-04 17:29:26 $
  * $Author: secretr $
 */
 
@@ -491,7 +491,12 @@ class e_pref extends e_admin_model
 		
 		if($from_post)
 		{
-			$this->mergePostedData(); //all posted data is sanitized and filtered vs preferences array
+			$this->mergePostedData(); //all posted data is sanitized and filtered vs preferences/_data_fields array
+		}
+		
+		if($this->hasValidationError())
+		{ 
+			return false;
 		}
 		
 		//FIXME - switch to new model system messages (separate eMessage namespaces)
@@ -627,12 +632,13 @@ class e_pref extends e_admin_model
 	}
 	
 	/**
-	 * Validation override
+	 * Validation
+	 * @param array $data [optional] null to use Posted data
 	 * @return 
 	 */
-	public function validate()
+	public function validate($data = null)
 	{
-		return true;
+		return parent::validate($data);
 	}
 	
 	/**
@@ -660,6 +666,34 @@ class e_pref extends e_admin_model
 		$this->serial_bc = $optval;
 		return $this;
 	}
+	
+    /**
+     * Override
+     */
+    public function dbInsert()
+    {
+    }
+    
+    /**
+     * Override
+     */
+    public function dbUpdate()
+    {
+    }
+	
+    /**
+     * Override
+     */
+    public function dbReplace()
+    {
+    }
+	
+    /**
+     * Override
+     */
+    public function dbDelete()
+    {
+    }
 	
 }
 

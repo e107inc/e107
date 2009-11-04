@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-11-02 17:45:29 $
+ * $Revision: 1.30 $
+ * $Date: 2009-11-04 17:29:26 $
  * $Author: secretr $
 */
 
@@ -1448,13 +1448,13 @@ class e_admin_model extends e_model
      * @param array $data optional - data for validation, defaults to posted data
      * @return boolean
      */
-    public function validate(array $data = array())
+    public function validate($data = null)
     {
     	if(!$this->getValidationRules())
     	{
     		return true;
     	}
-		if(!$data) 
+		if(null === $data) 
 		{
 			$data = $this->getPostedData();
 		}
@@ -1867,7 +1867,7 @@ class e_admin_model extends e_model
 			break;
 
 			case 'model':
-				return $value->mergePostedData()->toArray(); //XXX - ???
+				return $value-mergePostedData(false, true, true)->sanitize(); //XXX - ???
 			break;
 			
 			case 'null':
@@ -2107,7 +2107,7 @@ class e_admin_tree_model extends e_tree_model
 		}
 		elseif($destroy)
 		{
-			if(is_string($ids))
+			if(!is_array($ids))
 			{
 				$ids = explode(',', $ids);
 			}

@@ -428,10 +428,15 @@ class e_admin_request
 		if($encode)
 		{
 			$separator = '&amp;';
-			$ret = array_map('rawurlencode', $ret);
+			//$ret = array_map('rawurlencode', $ret);
 		}
 		
-		return http_build_query($ret, 'numeric_', $separator);
+		$ret = http_build_query($ret, 'numeric_', $separator);
+		if(!$encode)
+		{
+			return rawurldecode($ret);
+		}
+		return $ret;
 	}
 	
 	/**
@@ -1819,6 +1824,23 @@ class e_admin_controller
 	}
 	
 	/**
+	 * Check if there is a trigger available in the posted data
+	 * @return boolean
+	 */
+	public function hasTrigger()
+	{
+		$posted = array_keys($this->getPosted()); 
+		foreach ($posted as $key)
+		{
+			if(strpos($key, 'etrigger_') === 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Get default action
 	 * @return string action
 	 */
@@ -1917,7 +1939,6 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->pluginName = 'core';
 		}
-		$this->_pref = $this->pluginName == 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
 		
 		$ufieldpref = $this->getUserPref();
 		if($ufieldpref)
@@ -1946,7 +1967,47 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListBatchTrigger($batch_trigger)
 	{
-		$this->_handleListBatch($batch_trigger);
+		$this->setPosted('etrigger_batch', null); 
+		// proceed ONLY if there is no other trigger
+		if($batch_trigger && !$this->hasTrigger()) $this->_handleListBatch($batch_trigger);
+	}
+	
+	/**
+	 * Catch fieldpref submit
+	 * @param string $batch_trigger
+	 * @return 
+	 */
+	public function ListEcolumnsTrigger()
+	{
+		$this->triggersEnabled(false); //disable further triggering
+		$cols = array();
+		$posted = $this->getPosted('e-columns', array());
+		foreach ($this->getFields() as $field => $attr)
+		{
+			if((vartrue($attr['forced']) || in_array($field, $posted)) && !vartrue($attr['nolist']))
+			{
+				$cols[] = $field;
+				continue;
+			}
+		}
+		
+		if($cols)
+		{
+			$this->setUserPref($cols);
+		}
+	}
+	
+	/**
+	 * Catch delete submit
+	 * @param string $batch_trigger
+	 * @return 
+	 */
+	public function ListDeleteTrigger($posted)
+	{
+		$this->triggersEnabled(false);
+		$id = intval(array_shift($posted));
+		$this->getTreeModel()->delete($id);
+		$this->getTreeModel()->setMessages();
 	}
 	
 	/**
@@ -2053,6 +2114,23 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this->getUI()->getCreate();
 	}
 	
+	public function SettingsSaveTrigger()
+	{
+		
+		$this->getConfig()
+			->setPostedData($this->getPosted(), null, false, false)
+			//->setPosted('not_existing_pref_test', 1)
+			->save(true);
+
+		$this->getConfig()->setMessages();
+		
+	}
+	
+	public function SettingsPage()
+	{
+		return $this->getUI()->getSettings();
+	}
+	
 	/**
 	 * Handle posted batch options
 	 * @param string $batch_trigger
@@ -2063,6 +2141,9 @@ class e_admin_ui extends e_admin_controller_ui
 		$tp = e107::getParser();
 		$multi_name = vartrue($this->fields['checkboxes']['toggle'], 'multiselect');
 		$selected = $tp->toDB(array_values($this->getPosted($multi_name, array())));
+		
+		if(empty($selected)) return;
+		
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
 		
 		$this->triggersEnabled(false); //disable further triggering
@@ -2079,24 +2160,26 @@ class e_admin_ui extends e_admin_controller_ui
 				$this->getTreeModel()->setMessages();
 			break;
 			
-			case 'bool':
+			case 'bool': // FIXME - tree method update
 				// direct query
 				$field = $trigger[1];
 				$value = $trigger[2];
-				if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}={$value} WHERE {$field} IN (".implode(', ', $selected).")"))
+				if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}={$value} WHERE ".$this->getPrimaryName()." IN (".implode(', ', $selected).")"))
 				{
-					$this->getTreeModel()->addMessageSuccess($cnt.' records successfully updated.');
+					$this->getTreeModel()->addMessageSuccess($cnt.' records successfully updated.', true);
 				}
 				$this->getTreeModel()->setMessages();
+				$this->redirectAction();
 			break;
 			
-			case 'boolreverse':
+			case 'boolreverse': // FIXME - tree method update
 				// direct query
 				$field = $trigger[1]; //TODO - errors
-				if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}=1-{$field} WHERE {$field} IN (".implode(', ', $selected).")"))
+				if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}=1-{$field} WHERE ".$this->getPrimaryName()." IN (".implode(', ', $selected).")"))
 				{
-					e107::getMessage()->add($cnt.' records successfully reversed.', E_MESSAGE_SUCCESS);
+					e107::getMessage()->add($cnt.' records successfully reversed.', E_MESSAGE_SUCCESS, true);
 				}
+				$this->redirectAction();
 			break;
 		
 			default:
@@ -2108,12 +2191,14 @@ class e_admin_ui extends e_admin_controller_ui
 				}
 				else // default handling
 				{
+					// FIXME - tree method update
 					$field = $trigger[0];
 					$value = $trigger[1]; //TODO - errors
-					if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}={$value} WHERE {$field} IN (".implode(', ', $selected).")"))
+					if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}='{$value}' WHERE ".$this->getPrimaryName()." IN (".implode(', ', $selected).")"))
 					{
-						e107::getMessage()->add('<strong>'.$value.'</strong> set for <strong>'.$cnt.'</strong> records.', E_MESSAGE_SUCCESS);
+						e107::getMessage()->add('<strong>'.$value.'</strong> set for <strong>'.$cnt.'</strong> records.', E_MESSAGE_SUCCESS, true);
 					}
+					$this->redirectAction();
 				}
 			break;
 		}
@@ -2143,11 +2228,12 @@ class e_admin_ui extends e_admin_controller_ui
 			break;
 			
 			case 'list': // list
-				$this->redirectAction('list');
+				$this->redirectAction('list', 'id');
 			break;
 
 			default:
-				$this->redirectAction(preg_replace('/[^\w\-]/', '', $choice), 'id');
+				$choice = explode('|', str_replace('{ID}', $id, $choice), 3);
+				$this->redirectAction(preg_replace('/[^\w\-]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
 			break;
 		}
 		return;
@@ -2171,7 +2257,7 @@ class e_admin_ui extends e_admin_controller_ui
 				case 'datestamp':
 					if(!is_numeric($data[$key]))
 					{
-						$data[$key] = e107::getDateConvert()->toDate($data[$key], 'input'); 
+						$data[$key] = e107::getDateConvert()->toTime($data[$key], 'input'); 
 					}
 				break;
 				//more to come
@@ -2288,8 +2374,46 @@ class e_admin_ui extends e_admin_controller_ui
 	 * @return e_plugin_pref|e_core_pref
 	 */
 	public function getConfig()
-	{
+	{ 
+		if(null === $this->_pref)
+		{
+			$this->_pref = $this->pluginName == 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
+			
+			$dataFields = $validateRules = array();
+			foreach ($this->prefs as $key => $att)
+			{
+				// create dataFields array
+				if(vartrue($att['data']))
+				{
+					$dataFields[$key] = $att['data'];
+				}
+				
+				// create validation array
+				if(vartrue($att['validate']))
+				{
+					$validateRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+				}
+				
+				
+				$this->_pref->setDataFields($dataFields)->setValidationRules($validateRules);
+				/* Not implemented in e_model yet 
+				elseif(vartrue($att['check']))
+				{
+					$validateRules[$key] = array($att['check'], varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+				}*/
+			}
+			
+		}
 		return $this->_pref;
+	}
+	
+	/**
+	 * Get Config object 
+	 * @return e_plugin_pref|e_core_pref
+	 */
+	public function getPrefs()
+	{
+		return $this->prefs;
 	}
 	
 	/**
@@ -2300,6 +2424,18 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		global $user_pref;
 		return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
+	}
+	
+	/**
+	 * Get column preference array
+	 * @return array
+	 */
+	public function setUserPref($new)
+	{
+		global $user_pref;
+		$user_pref['admin_cols_'.$this->getTableName()] = $new;
+		$this->fieldpref = $new;
+		save_prefs('user');
 	}
 	
 	/**
@@ -2435,7 +2571,6 @@ class e_admin_form_ui extends e_form
 	}
 	
 	/**
-	 * This will use the above (after it's done)
 	 * TODO - lans
 	 * Generic DB Record Creation Form. 
 	 * @return string
@@ -2474,6 +2609,37 @@ class e_admin_form_ui extends e_form
 	}
 	
 	/**
+	 * TODO - lans
+	 * Generic Settings Form. 
+	 * @return string
+	 */
+	function getSettings()
+	{
+		$controller = $this->getController();
+		$request = $controller->getRequest(); 
+		$legend = 'Settings';
+		$forms = $models = array();
+		$forms[] = array(
+				'id'  => $this->getElementId(),
+				//'url' => e_SELF,
+				//'query' => 'self', or custom GET query, self is default
+				'tabs' => false, // TODO - NOT IMPLEMENTED YET - enable tabs (only if fieldset count is > 1)
+				'fieldsets' => array(
+					'settings' => array(
+						'legend' => $legend,
+						'fields' => $controller->getPrefs(), //see e_admin_ui::$prefs
+						'after_submit_options' => false,
+						'after_submit_default' => false, // or true for default redirect options
+						'triggers' => array('save' => array(LAN_SAVE, 'update')), // standard create/update-cancel triggers 
+					)
+				) 
+		);
+		$models[] = $controller->getConfig();
+		
+		return $this->createForm($forms, $models);
+	}
+	
+	/**
 	 * Create list view
 	 * Search for the following GET variables:
 	 * - from: integer, current page
@@ -2485,14 +2651,14 @@ class e_admin_form_ui extends e_form
 		$tp = e107::getParser();
 		$controller = $this->getController();
 		$request = $controller->getRequest();
-		$tree = $controller->getTreeModel();
+		$tree = $controller->getTreeModel(); 
 		$options = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
 			//'url' => e_SELF, default
 			//'query' => e_QUERY, default 
-			'head_query' => $request->buildQueryString(array(), true, 'field,asc,from'), // without field, asc and from vars, REQUIRED
-			'np_query' => $request->buildQueryString(array(), true, 'from'), // without from var, REQUIRED for next/prev functionality
+			'head_query' => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
+			'np_query' => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
 			'legend' => $controller->getPluginTitle(), // hidden by default
 			'form_pre' => !$tree->isEmpty() ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options')), $controller->getModel().'/'.$controller->getAction())) : '',
 			'form_post' => '', // markup to be added after closing form element
@@ -2566,6 +2732,8 @@ class e_admin_form_ui extends e_form
 	{
 		$optdiz = array('batch' => 'Modify ', 'filter'=> 'Filter by ');
 		$table = $this->getController()->getTableName();
+		$text = '';
+		$textsingle = '';
 				
 		foreach($this->getController()->getFields() as $key=>$val)
 		{
@@ -2575,6 +2743,8 @@ class e_admin_form_ui extends e_form
 			}
 			
 			$option = array();
+			$parms = vartrue($val['writeParms'], array());
+			if(is_string($parms)) parse_str($parms, $parms);
 			
 			switch($val['type'])
 			{
@@ -2588,7 +2758,8 @@ class e_admin_form_ui extends e_form
 					break;
 					
 					case 'dropdown': // use the array $parm; 
-						foreach($val['parm'] as $k => $name)
+						unset($parms['__options']); //remove element options if any
+						foreach($parms as $k => $name)
 						{
 							$option[$key.'__'.$k] = $name;
 						}
@@ -2603,8 +2774,8 @@ class e_admin_form_ui extends e_form
 					break;
 					
 					case 'userclass':
-					case 'userclasses':
-						$classes = e107::getUserClass()->uc_required_class_list($val['parms']);
+					//case 'userclasses':
+						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], ''));
 						foreach($classes as $k => $name)
 						{
 							$option[$key.'__'.$k] = $name;
@@ -2616,17 +2787,29 @@ class e_admin_form_ui extends e_form
 						$list = call_user_func_array(array($this, $method), array('', $type));
 						if(is_array($list))
 						{
+							//check for single option
+							if(isset($list['singleOption']))
+							{
+								$textsingle .= $list['singleOption'];
+								continue;
+							}
+							// non rendered options array
 							foreach($list as $k => $name)
 							{
 								$option[$key.'__'.$k] = $name;
 							}
+						}
+						elseif(!empty($list)) //optgroup, continue
+						{
+							$text .= $list;
+							continue;
 						}
 					break;
 			}
 				
 			if(count($option) > 0)
 			{
-				$text .= "\t".$this->optgroup_open($optdiz[$type].$val['title'], $disabled)."\n";
+				$text .= "\t".$this->optgroup_open($optdiz[$type].defset($val['title'], $val['title']), $disabled)."\n";
 				foreach($option as $okey=>$oval)
 				{
 					$text .= $this->option($oval, $okey, $selected == $okey)."\n";			
@@ -2635,7 +2818,7 @@ class e_admin_form_ui extends e_form
 			}
 		}
 		
-		return $text;
+		return $textsingle.$text;
 		
 	}
 	
@@ -2832,9 +3015,9 @@ class e_admin_ui_dummy extends e_form
 						{
 							$text .= "
 							<tr>
-								<td class='label'>".$var['title']."</td>
+								<td class='label'>".defset($var['title'], $var['title'])."</td>
 								<td class='control'>
-									".$this->renderElement($key,$pref)."
+									".$this->renderElement($key, $pref)."
 								</td>
 							</tr>\n";	
 						}

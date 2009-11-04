@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-10-23 19:54:48 $
-|     $Author: e107steved $
+|     $Revision: 1.12 $
+|     $Date: 2009-11-04 17:29:26 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,7 +30,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 
 
 
-
+// FIXME - full rewrite, EVERYTHING - bbcode class (php + JS), core callbacks, tooltip help, optimize
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help", $helpsize = '')
 {
     if(defsettrue('e_WYSIWYG')) { return; }

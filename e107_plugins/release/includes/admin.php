@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-02 17:45:28 $
+ * $Revision: 1.4 $
+ * $Date: 2009-11-04 17:29:26 $
  * $Author: secretr $
 */
 
@@ -31,15 +31,16 @@ class plugin_release_admin extends e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> 'Manage', 'perm' => '0'),
-		'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => '0'),
-		'main/options' 	=> array('caption'=> 'Settings', 'perm' => '0'),
-		'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
+		'main/list'			=> array('caption'=> 'Manage', 'perm' => '0'),
+		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => '0'),
+		'main/settings' 	=> array('caption'=> 'Settings', 'perm' => '0'),
+		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
 
 	/**
-	 * Optional, map mode/action t
+	 * Optional, mode/action aliases, related with 'selected' menu CSS class 
 	 * Format: 'MODE/ACTION' => 'MODE ALIAS/ACTION ALIAS';
+	 * This will mark active main/list menu item, when current page is main/edit
 	 * @var array
 	 */
 	protected $adminMenuAliases = array(
@@ -68,23 +69,109 @@ class plugin_release_admin_ui extends e_admin_ui
 		protected $pid = "release_id";
 		
 		// optional 
-		protected $perPage = 2;
+		protected $perPage = 20;
 		
 		// default - true
 		protected $batchDelete = true;
 	    
 		//TODO change the release_url type back to URL before release. 
 		// required
+		/**
+		 * (use this as starting point for wiki documentation)
+		 * $fields format  (string) $field_name => (array) $attributes
+		 * 
+		 * $attributes format:
+		 * 	- title (string) Human readable field title, constant name will be accpeted as well (multi-language support
+		 * 
+		 *  - type (string) null (means system), number, text, dropdown, url, image, icon, datestamp, userclass, userclasses, user[_name|_loginname|_login|_customtitle|_email],
+		 *    boolean, method
+		 *  	full/most recent reference list - e_form::trow(), e_form::renderElement(), e_admin_form_ui::renderBatchFilter()
+		 *  
+		 *  - data (string) Data type, one of the following: int, integer, string, str, float, bool, boolean, model, null
+		 *    Used only if $dataFields is not set
+		 *  	full/most recent reference list - e_admin_model::sanitize(), db::_getFieldValue()
+		 *  - primary (boolean) primary field (obsolete, $pid is now used)
+		 *  
+		 *  - help (string) edit/create table - inline help, constant name will be accpeted as well, optional
+		 *  - note (string) edit/create table - text shown below the field title (left column), constant name will be accpeted as well, optional
+		 *  
+		 *  - validate (boolean|string) any of accepted validation types (see e_validator::$_required_rules), true == 'required'
+		 *  - rule (string) condition for chosen above validation type (see e_validator::$_required_rules), not required for all types
+		 *  - error (string) Human readable error message (validation failure), constant name will be accpeted as well, optional
+		 *  
+		 *  - batch (boolean) list table - add current field to batch actions, in use only for boolean, dropdown, datestamp, userclass, method field types
+		 *    NOTE: batch may accept string values in the future...
+		 *  	full/most recent reference type list - e_admin_form_ui::renderBatchFilter()
+		 *  
+		 *  - filter (boolean) list table - add current field to filter actions, rest is same as batch
+		 *  
+		 *  - forced (boolean) list table - forced fields are always shown in list table
+		 *  - nolist (boolean) list table - don't show in column choice list
+		 *  - noedit (boolean) edit table - don't show in edit mode
+		 *  
+		 *  - width (string) list table - width e.g '10%', 'auto'
+		 *  - thclass (string) list table header - th element class
+		 *  - class (string) list table body - td element additional class
+		 *  
+		 *  - readParms (mixed) parameters used by core routine for showing values of current field. Structure on this attribute
+		 *    depends on the current field type (see below). readParams are used mainly by list page
+		 *    
+		 *  - writeParms (mixed) parameters used by core routine for showing control element(s) of current field. 
+		 *    Structure on this attribute depends on the current field type (see below). 
+		 *    writeParams are used mainly by edit page, filter (list page), batch (list page)
+		 *    
+		 * $attributes['type']->$attributes['read/writeParams'] pairs:
+		 * - null -> read: n/a
+		 * 		  -> write: n/a
+		 * 
+		 * - number -> read: (array) [optional] 'point' => '.', [optional] 'sep' => ' ', [optional] 'decimals' => 2, [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY'
+		 * 			-> write: (array) [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY', [optional] 'maxlength' => 50, [optional] '__options' => array(...) see e_form class description for __options format
+		 * 
+		 * - text -> read: (array) [optional] 'htmltruncate' => 100, [optional] 'truncate' => 100, [optional] 'pre' => '', [optional] 'post' => ' px'
+		 * 		  -> write: (array) [optional] 'pre' => '', [optional] 'post' => ' px', [optional] 'maxlength' => 50 (default - 255), [optional] '__options' => array(...) see e_form class description for __options format
+		 * 
+		 * - textarea 	-> read: (array) 'noparse' => '1' default 0 (disable toHTML text parsing), [optional] 'bb' => '1' (parse bbcode) default 0, [optional] 'parse' => '' modifiers passed to e_parse::toHTML() e.g. 'BODY', [optional] 'htmltruncate' => 100, [optional] 'truncate' => 100, [optional] 'expand' => '[more]' title for expand link, empty - no expand
+		 * 		  		-> write: (array) [optional] 'rows' => '' default 15, [optional] 'cols' => '' default 40, [optional] '__options' => array(...) see e_form class description for __options format
+		 * 
+		 * - bbarea -> read: same as textarea type
+		 * 		  	-> write: (array) [optional] 'pre' => '', [optional] 'post' => ' px', [optional] 'maxlength' => 50 (default - 255), [optional] '__options' => array(...) see e_form class description for __options format
+		 * 
+		 * - image -> read: [optional] 'title' => 'SOME_LAN' (default - LAN_PREVIEW), [optional] 'pre' => '{e_PLUGIN}myplug/images/'
+		 * 		   -> write: (array) [optional] 'label' => '', [optional] '__options' => array(...) see e_form::imagepicker() for allowed options
+		 * 
+		 * - icon  -> read: [optional] 'class' => 'S16', [optional] 'pre' => '{e_PLUGIN}myplug/images/'
+		 * 		   -> write: (array) [optional] 'label' => '', [optional] 'ajax' => true/false , [optional] '__options' => array(...) see e_form::iconpicker() for allowed options
+		 * 
+		 * - datestamp  -> read: [optional] 'mask' => 'long'|'short'|strftime() string, default is 'short'
+		 * 		   		-> write: (array) [optional] 'label' => '', [optional] 'ajax' => true/false , [optional] '__options' => array(...) see e_form::iconpicker() for allowed options
+		 * 
+		 * - url	-> read: [optional] 'pre' => '{ePLUGIN}myplug/'|'http://somedomain.com/', 'truncate' => 50 default - no truncate, NOTE: 
+		 * 			-> write: 
+		 * 
+		 * - method -> read: optional, passed to given method (the field name)
+		 * 			-> write: optional, passed to given method (the field name)
+		 * 
+		 * Special attribute types:
+		 * - method (string) field name should be method from the current e_admin_form_ui class (or its extension). 
+		 * 		Example call: field_name($value, $render_action, $parms) where $value is current value, 
+		 * 		$render_action is on of the following: read|write|batch|filter, parms are currently used paramateres ( value of read/writeParms attribute).
+		 * 		Return type expected (by render action):
+		 * 			- read: list table - formatted value only
+		 * 			- write: edit table - form element (control)
+		 * 			- batch: either array('title1' => 'value1', 'title2' => 'value2', ..) or array('singleOption' => '<option value="somethig">Title</option>') or rendered option group (string '<optgroup><option>...</option></optgroup>'
+		 * 			- filter: same as batch
+		 * @var array
+		 */
     	protected  $fields = array(
 			'checkboxes'				=> array('title'=> '', 					'type' => null,			'data' => null,			'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect'),
-			'release_id'				=> array('title'=> ID, 					'type' => 'int',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is note editable
+			'release_id'				=> array('title'=> ID, 					'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
             'release_type'	   			=> array('title'=> 'Type', 				'type' => 'method', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 			'release_folder' 			=> array('title'=> 'Folder', 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),	
 			'release_name' 				=> array('title'=> 'Name', 				'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'release_version' 			=> array('title'=> 'Version',			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'release_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'), 
          	'release_authorURL' 		=> array('title'=> LAN_AUTHOR_URL, 		'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'), 
-            'release_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => ''),	 
+            'release_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => ''),	 
 			'release_compatibility' 	=> array('title'=> 'compatib',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),	 
 			'release_url' 				=> array('title'=> 'release_url',		'type' => 'url', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => true, 'help' => 'Enter release URL here', 'error' => 'please, ener valid URL'),	 
 			'test_list_1'				=> array('title'=> 'test 1',		'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
@@ -104,9 +191,9 @@ class plugin_release_admin_ui extends e_admin_ui
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		protected $prefs = array( 
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
+			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
+			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),	
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')		
 		);
 		
 		// required if no custom tree model is set in init()
@@ -125,7 +212,7 @@ class plugin_release_admin_form_ui extends e_admin_form_ui
 {
 	function release_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
 	{
-		if($mode == 'list')
+		if($mode == 'read')
 		{
 			return $curVal.' (custom!)';
 		}

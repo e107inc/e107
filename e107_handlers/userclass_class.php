@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2009-11-01 17:19:27 $
-|     $Author: e107steved $
+|     $Revision: 1.44 $
+|     $Date: 2009-11-04 17:29:26 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -375,7 +375,7 @@ class user_class
 		}
 		return $temp;
 	  }
-
+	  //TODO - $optlist == all
 	  $opt_arr = explode(',',$optlist);
 	  foreach ($opt_arr as $k => $v)
 	  {
