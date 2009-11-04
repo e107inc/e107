@@ -9,9 +9,9 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-11-04 03:07:39 $
- * $Author: e107coders $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-04 20:19:11 $
+ * $Author: e107steved $
 */
 
 header("location:../index.php");
@@ -176,6 +176,48 @@ CREATE TABLE links (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
+
+
+
+#
+# Table structure for mailing-related tables
+#
+CREATE TABLE mail_recipients (
+	mail_target_id int(10) unsigned NOT NULL auto_increment,
+	mail_recipient_id int(10) unsigned NOT NULL default '0',
+	mail_recipient_email varchar(80) NOT NULL default '',
+	mail_recipient_name varchar(80) NOT NULL default '',
+	mail_status tinyint(1) unsigned NOT NULL default '0',
+	mail_detail_id int(10) unsigned NOT NULL default '0',
+	mail_send_date int(10) unsigned NOT NULL default '0',
+	mail_target_info text,
+	PRIMARY KEY (mail_target_id),
+	KEY mail_status (mail_status),
+	KEY mail_detail_id (mail_detail_id)
+) TYPE=MyISAM;
+
+CREATE TABLE mail_content (
+	mail_source_id int(10) unsigned NOT NULL auto_increment,
+	mail_content_status tinyint(1) unsigned NOT NULL default '0',
+	mail_togo_count int(10) unsigned NOT NULL default '0',
+	mail_sent_count int(10) unsigned NOT NULL default '0',
+	mail_fail_count int(10) unsigned NOT NULL default '0',
+	mail_bounce_count int(10) unsigned NOT NULL default '0',
+	mail_start_send int(10) unsigned NOT NULL default '0',
+	mail_end_send int(10) unsigned NOT NULL default '0',
+	mail_create_date int(10) unsigned NOT NULL default '0',
+	mail_creator int(10) unsigned NOT NULL default '0',
+	mail_create_app varchar(10) NOT NULL default '',
+	mail_e107_priority tinyint(1) unsigned NOT NULL default '0',
+	mail_last_date int(10) unsigned NOT NULL default '0',
+	mail_title varchar(100) NOT NULL default '',
+	mail_subject varchar(100) NOT NULL default '',
+	mail_body text,
+	mail_other text,
+	PRIMARY KEY (mail_source_id),
+	KEY mail_content_status (mail_content_status)
+) TYPE=MyISAM;
+
 
 #
 # Table structure for table `menus`

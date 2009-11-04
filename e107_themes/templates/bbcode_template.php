@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/bbcode_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-09-19 15:21:50 $
-|     $Author: secretr $
+|     $Revision: 1.8 $
+|     $Date: 2009-11-04 20:19:11 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 // How to register your own BBcode button.
@@ -52,6 +52,16 @@ $BBCODE_TEMPLATE_ADMIN = "
 	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
 	{BB_PREIMAGEDIR=".e_IMAGE."}
 	{BB=preimage}{BB=prefile}{BB=flash}
+	<div class='field-spacer'><!-- --></div>
+";
+
+$BBCODE_TEMPLATE_MAILOUT = "
+	{BB_HELP=admin}
+	<div class='field-spacer'><!-- --></div>
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=center}{BB=left}
+	{BB=right}{BB=bq}{BB=code}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB_PREIMAGEDIR=".e_IMAGE."}
+	{BB=preimage}{BB=prefile}{BB=flash}{BB=shortcode}
 	<div class='field-spacer'><!-- --></div>
 ";
 
