@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.66 $
- * $Date: 2009-11-04 21:42:03 $
+ * $Revision: 1.67 $
+ * $Date: 2009-11-04 23:47:14 $
  * $Author: secretr $
  *
 */
@@ -941,7 +941,7 @@ class e_form
 					if(!vartrue($parms['noparse'])) $value = $tp->toHTML($value, (vartrue($parms['bb']) ? true : false), vartrue($parms['parse']));
 					if(vartrue($parms['expand']))
 					{
-						$expand = '<a href="#'.$id.'-expand" class="e-show-if-js expandit">'.defset($parms['expand'], $parms['expand'])."</a>";
+						$expand = '&nbsp;<a href="#'.$id.'-expand" class="e-show-if-js e-expandit">'.defset($parms['expand'], $parms['expand'])."</a>";
 					}
 					
 					$oldval = $value;
