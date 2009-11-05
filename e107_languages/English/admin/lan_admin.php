@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.32 2009-11-04 03:07:44 e107coders Exp $
+ * $Id: lan_admin.php,v 1.33 2009-11-05 08:07:53 e107coders Exp $
  *
  * Admin Language File
 */
@@ -307,4 +307,5 @@ define("LAN_COMMENTMAN", "Comments Manager");
 
 define("LAN_FILTER", "Filter");
 define("LAN_NO_RECORDS", "No Records Found");
+
 
