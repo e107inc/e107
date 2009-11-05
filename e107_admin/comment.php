@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-11-04 23:49:59 $
-|     $Author: secretr $
+|     $Revision: 1.11 $
+|     $Date: 2009-11-05 00:11:56 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -39,7 +39,7 @@ class comments_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> 'Manage', 'perm' => '0'),
 	//	'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => '0'),
-		'main/options' 	=> array('caption'=> 'Settings', 'perm' => '0'),
+		'main/prefs' 	=> array('caption'=> 'Settings', 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
 
@@ -62,12 +62,12 @@ class comments_admin_ui extends e_admin_ui
 
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '', 			'type' => null, 	'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'comment_id'			=> array('title'=> ID, 			'type' => 'int',	'width' =>'5%', 'forced'=> TRUE, 'primary'=>TRUE),
+			'comment_id'			=> array('title'=> ID, 			'type' => 'int',	'width' =>'5%', 'forced'=> TRUE),
        		'comment_item_id' 		=> array('title'=> "item id", 	'type' => 'text',	'width' => 'auto'),
          	'comment_subject' 		=> array('title'=> "subject", 	'type' => 'text',	'width' => 'auto', 'thclass' => 'left first'), // Display name
          	'comment_comment' 		=> array('title'=> "comment",	'type' => 'textarea',	'width' => '30%', 'readParms' => 'expand=...&truncate=50'), // Display name
 		 	'comment_author_id' 	=> array('title'=> "authorID", 	'type' => 'text',	'width' => 'auto'),	// User name
-         	'comment_author_name' 	=> array('title'=> "authorName", 	'type' => 'text',	'width' => 'auto'),	// User name
+         	'comment_author_name' 	=> array('title'=> "authorName",'type' => 'text',	'width' => 'auto'),	// User name
 		    'comment_datestamp' 	=> array('title'=> "datestamp",	'type' => 'datestamp',	'width' => 'auto'),	// User name
             'comment_blocked' 		=> array('title'=> "blocked",	'type' => 'text',	'width' => 'auto'),	 	// Photo
 			'comment_ip' 			=> array('title'=> "IP",		'type' => 'text',	'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
@@ -97,7 +97,7 @@ class comments_admin_form_ui extends e_admin_form_ui
 {
 	function comment_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
 	{ 
-		if($mode == 'list')
+		if($mode == 'read')
 		{
 			return e107::getComment()->getTable($curVal);
 			return $curVal.' (custom!)';
@@ -118,7 +118,7 @@ class comments_admin_form_ui extends e_admin_form_ui
 		if($mode == 'batch')
 		{
 			$types = e107::getComment()->known_types;
-			sort($types);
+		//	sort($types);
 			return $types;	
 		}
 	}
