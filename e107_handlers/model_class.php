@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-11-05 00:38:21 $
+ * $Revision: 1.32 $
+ * $Date: 2009-11-05 17:32:19 $
  * $Author: secretr $
 */
 
@@ -1537,11 +1537,11 @@ class e_admin_model extends e_model
     /**
      * Move model System messages (if any) to the default eMessage stack
      * 
-     * @param boolean $validation move validation messages as well
      * @param boolean $session store messages to session
+     * @param boolean $validation move validation messages as well
      * @return e_admin_model
      */
-    public function setMessages($validation = true, $session = false)
+    public function setMessages($session = false, $validation = true)
     {
     	if($validation)
 		{
@@ -1626,7 +1626,7 @@ class e_admin_model extends e_model
 		{
 			if($destroy)
 			{
-				$this->setMessages(true, $session_messages)->destroy();
+				$this->setMessages($session_messages)->destroy();
 			}
 		}
 		return $ret;
@@ -2081,22 +2081,24 @@ class e_tree_model extends e_model
 class e_admin_tree_model extends e_tree_model
 {
 	/**
-	 * Delete records
+	 * Batch Delete records
 	 * @param mixed $ids
 	 * @param boolean $destroy [optional] destroy object instance after db delete
 	 * @param boolean $session_messages [optional]
-	 * @return mixed integer deleted records or false on DB error
+	 * @return integer deleted records number or false on DB error
 	 */
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
-		if(!$ids) return $this;
-		if(is_array($ids))
+		if(!$ids) return 0;
+		if(!is_array($ids))
 		{
-			$ids = implode(',', $ids);
+			$ids = array_map('tirm', explode(',', $ids));
 		}
-		$ids = e107::getParser()->toDB($ids);
+		$ids = array_map('intval', $ids);
+		$idstr = implode(', ', $ids);
+		
 		$sql = e107::getDb();
-		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$ids.')');
+		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$idstr.')');
 		if(!$res)
 		{	
 			if($sql->getLastErrorNumber())
@@ -2107,22 +2109,76 @@ class e_admin_tree_model extends e_tree_model
 		}
 		elseif($destroy)
 		{
-			if(!is_array($ids))
-			{
-				$ids = explode(',', $ids);
-			}
-			
 			foreach ($ids as $id)
 			{
-				if($this->getNode($id))
+				if($this->hasNode($id))
 				{
-					$this->getNode($id)->setMessages(true, $session_messages);
+					$this->getNode($id)->setMessages($session_messages);
 					call_user_func(array($this->getNode(trim($id)), 'destroy')); // first call model destroy method if any
 					$this->setNode($id, null);
 				}
 			}
 		}
 		
+		return $res;
+	}
+	
+	/**
+	 * Batch update tree records/nodes
+	 * @param string $field field name
+	 * @param string $value
+	 * @param string|array $ids numerical array or string comma separated ids
+	 * @param mixed $syncvalue value to be used for model data synchronization (db value could be something like '1-field_name'), null - no sync
+	 * @param boolean $sanitize [optional] default true
+	 * @param boolean $session_messages [optional] default false
+	 * @return integer updated count or false on error
+	 */
+	public function update($field, $value, $ids, $syncvalue = null, $sanitize = true, $session_messages = false)
+	{
+		$tp = e107::getParser();
+		$sql = e107::getDb(); 
+		if(empty($ids))
+		{
+			return 0;
+		}
+		if(!is_array($ids))
+		{
+			$ids = array_map('tirm', explode(',', $ids));
+		}
+		
+		if($sanitize)
+		{
+			$ids = array_map('intval', $ids);
+			$field = $tp->toDb($field);
+			$value = "'".$tp->toDb($value)."'";
+		}
+		$idstr = implode(', ', $ids);
+		
+		$res = $sql->db_Update($this->getModelTable(), "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')');
+		if(!$res)
+		{	
+			if($sql->getLastErrorNumber())
+			{
+				$this->addMessageError(LAN_UPDATED_FAILED, $session_messages); 
+				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+			}
+			else
+			{
+				$this->addMessageInfo(LAN_NO_CHANGE, $session_messages); 
+			}
+		}
+		
+		if(null === $syncvalue) return $res;
+		
+		foreach ($ids as $id)
+		{
+			if($this->hasNode($id))
+			{
+				$this->getNode($id)
+					->set($field, $syncvalue)
+					->setMessages($session_messages);
+			}
+		}
 		return $res;
 	}
 }

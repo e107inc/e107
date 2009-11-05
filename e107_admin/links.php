@@ -9,9 +9,9 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-10-26 09:51:56 $
- * $Author: e107coders $
+ * $Revision: 1.32 $
+ * $Date: 2009-11-05 17:32:17 $
+ * $Author: secretr $
  *
 */
 
@@ -208,7 +208,7 @@ class links
 			$this->mode = $_GET['mode'];
 		}
 		
-		if (varset($_POST['submit-e-columns']))
+		if (varset($_POST['etrigger_ecolumns']))
 		{
 			$user_pref['admin_links_columns'] = $_POST['e-columns'];
 			save_prefs('user');

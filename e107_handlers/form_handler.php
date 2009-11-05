@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.68 $
- * $Date: 2009-11-05 12:26:44 $
- * $Author: e107coders $
+ * $Revision: 1.69 $
+ * $Date: 2009-11-05 17:32:18 $
+ * $Author: secretr $
  *
 */
 
@@ -848,7 +848,8 @@ class e_form
 	 * @param string $pid - eg. table_id
 	 * @return 
 	 */
-	function trow($fieldarray, $currentlist, $fieldvalues, $pid)
+	
+	function renderTableRow($fieldarray, $currentlist, $fieldvalues, $pid)
 	{
 		$cnt = 0;
 		$ret = '';
@@ -857,6 +858,8 @@ class e_form
 		$currentlist 	= $obj->fieldpref;
 		$pid 			= $obj->pid;*/
 	
+		$trclass = vartrue($fieldvalues['__trclass']) ?  ' class="'.$trclass.'"' : '';
+		unset($fieldvalues['__trclass']);
 		
 		foreach ($fieldarray as $field => $data)
 		{
@@ -878,169 +881,8 @@ class e_form
 			}
 			
 			$tdclass = vartrue($data['class']);
-			$value = $fieldvalues[$field];
-			$tp = e107::getParser();
-
-			$parms = array();
-			if(isset($data['readParms']))
-			{
-				if(is_string($data['readParms'])) parse_str($data['readParms'], $data['readParms']);
-				$parms = $data['readParms'];
-			}
-
-			switch($field) // special fields
-			{
-				case 'options':
-					if(!$value)
-					{
-						parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
-						// keep other vars in tact
-						$query['action'] = 'edit'; 
-						$query['id'] = $fieldvalues[$pid]; 
-						
-						//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $fieldvalues[$pid]);
-						$query = http_build_query($query);
-
-						$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>&nbsp;";
-						$value .= $this->submit_image('etrigger_delete['.$fieldvalues[$pid].']', $fieldvalues[$pid], 'delete', LAN_DELETE.' [ ID: '.$fieldvalues[$pid].' ]');
-					}
-					$data['type'] = 'text';
-				break;
-			
-				case 'checkboxes':
-					$value = $this->checkbox(vartrue($data['toggle'], 'multiselect').'['.$fieldvalues[$pid].']', $fieldvalues[$pid]);
-					$data['type'] = 'text';
-					$tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
-				break;
-			}
-			//FIXME - move this block to separate method renderValue(), similar to renderElement()
-			switch($data['type'])
-			{
-				case 'number':
-					if($parms)
-					{
-						if(!isset($parms['sep'])) $value = number_format($number, $parms['decimals']);
-						else $value = number_format($number, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
-					}
-					$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
-					// else same
-				break;
-				
-				case 'dropdown':
-				case 'text':
-					if(vartrue($parms['truncate']))
-					{
-						$value = $tp->text_truncate($value, $parms['truncate'], '...');
-					}
-					elseif(vartrue($parms['htmltruncate']))
-					{
-						$value = $tp->html_truncate($value, $parms['htmltruncate'], '...');
-					}
-					$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
-				break;
-				
-				case 'bbarea':
-				case 'textarea':
-					$expand = '...';
-					$toexpand = false;
-					if($data['type'] == 'bbarea' && !isset($parms['bb'])) $parms['bb'] = true; //force bb parsing for bbareas
-					$id = trim(str_replace('_', '-', $field));
-					if(!vartrue($parms['noparse'])) $value = $tp->toHTML($value, (vartrue($parms['bb']) ? true : false), vartrue($parms['parse']));
-					if(vartrue($parms['expand']))
-					{
-						$expand = '&nbsp;<a href="#'.$id.'-expand" class="e-show-if-js e-expandit">'.defset($parms['expand'], $parms['expand'])."</a>";
-					}
-					
-					$oldval = $value;
-					if(vartrue($parms['truncate']))
-					{
-						$value = $oldval = strip_tags($value);
-						$value = $tp->text_truncate($value, $parms['truncate'], $expand);
-						$toexpand = $value != $oldval;
-					}
-					elseif(vartrue($parms['htmltruncate']))
-					{
-						$value = $tp->html_truncate($value, $parms['htmltruncate'], $expand);
-						$toexpand = $value != $oldval;
-					}
-					if($toexpand)
-					{
-						// force hide! TODO - core style .expand-c (expand container)
-						$value .= '<div class="expand-c" style="display: none" id="'.$id.'-expand"><div>'.$oldval.'</div></div>';
-					}
-				break;
-				
-				case 'icon':
-					$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
-				break;
-				
-				case 'image': //TODO - thumb, js tooltip...
-					$ttl = vartrue($parms['title'], 'LAN_PREVIEW');
-					$value = '<a href="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" title="'.basename($value).'">'.defset($ttl, $ttl).'</a>';
-				break;
-				
-				case 'datestamp':
-					$value = e107::getDateConvert()->convert_date($value, vartrue($parms['mask'], 'short'));
-				break;
-				
-				case 'userclass':
-					$value = $this->_uc->uc_get_classname($value);
-				break;
-				
-				case 'userclasses':
-					$classes = explode(',', $value);
-					$value = array();
-					foreach ($classes as $cid)
-					{
-						$value[] = $this->_uc->uc_get_classname($cid);
-					}
-					$value = implode(vartrue($parms['separator']), $pieces);
-				break;
-				
-				case 'user_name':
-				case 'user_loginname':
-				case 'user_login':
-				case 'user_customtitle':
-				case 'user_email':
-					$value = get_user_data($value);
-					if($value)
-					{
-						$value = $value[$data['type']] ? $value[$data['type']] : $value['user_name'];
-					}
-					else 
-					{
-						$value = 'not found';
-					}
-					if(vartrue($parms['truncate']))
-					{
-						$value = $tp->text_truncate($value, $parms['truncate'], '...');
-					}
-				break;
-				
-				case 'boolean':
-					$value = $value ? ADMIN_TRUE_ICON : '';// TODO  - ADMIN_FALSE_ICON
-				break;
-								
-				case 'url':
-					$ttl = $value;
-					if(vartrue($parms['truncate']))
-					{
-						$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
-					}
-					$value = "<a href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
-				break;
-				
-				case 'method': // Custom Function 
-					$method = $field;
-					$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
-				break;
-				
-				//TODO - form_userclass, order,... and maybe more types
-				
-				default:
-					continue; //unknown type
-				break;
-			}
+			if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
+			$value = $this->renderValue($field, $fieldvalues[$field], $data, $fieldvalues[$pid]);
 
 			if($tdclass)
 			{
@@ -1057,7 +899,6 @@ class e_form
 		
 		if($cnt)
 		{
-			$trclass = vartrue($fieldvalues['trclass']) ?  ' class="'.$trclass.'"' : '';
 			return '
 				<tr'.$trclass.'>
 					'.$ret.'
@@ -1069,10 +910,183 @@ class e_form
 	}
 	
 	/**
+	 * Render Field Value
+	 * @param string $field field name
+	 * @param mixed $value field value
+	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
+	 * @return string
+	 */
+	function renderValue($field, $value, $attributes, $id = 0)
+	{
+		$parms = array();
+		if(isset($attributes['readParms']))
+		{
+			if(is_string($attributes['readParms'])) parse_str($attributes['readParms'], $attributes['readParms']);
+			$parms = $attributes['readParms'];
+		}
+		$tp = e107::getParser();
+		switch($field) // special fields
+		{
+			case 'options':
+				if(!$value)
+				{
+					parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
+					// keep other vars in tact
+					$query['action'] = 'edit'; 
+					$query['id'] = $id; 
+					
+					//$edit_query = array('mode' => varset($query['mode']), 'action' => varset($query['action']), 'id' => $id);
+					$query = http_build_query($query);
+
+					$value = "<a href='".e_SELF."?{$query}' title='".LAN_EDIT."'><img class='icon action edit' src='".ADMIN_EDIT_ICON_PATH."' alt='".LAN_EDIT."' /></a>&nbsp;";
+					$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]');
+				}
+				//$attributes['type'] = 'text';
+				return $value;
+			break;
+		
+			case 'checkboxes':
+				$value = $this->checkbox(vartrue($attributes['toggle'], 'multiselect').'['.$id.']', $id);
+				//$attributes['type'] = 'text';
+				return $value;
+			break;
+		}
+		
+		switch($attributes['type'])
+		{
+			case 'number':
+				if($parms)
+				{
+					if(!isset($parms['sep'])) $value = number_format($number, $parms['decimals']);
+					else $value = number_format($number, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
+				}
+				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
+				// else same
+			break;
+			
+			case 'dropdown':
+			case 'text':
+				if(vartrue($parms['truncate']))
+				{
+					$value = $tp->text_truncate($value, $parms['truncate'], '...');
+				}
+				elseif(vartrue($parms['htmltruncate']))
+				{
+					$value = $tp->html_truncate($value, $parms['htmltruncate'], '...');
+				}
+				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
+			break;
+			
+			case 'bbarea':
+			case 'textarea':
+				$expand = '...';
+				$toexpand = false;
+				if($attributes['type'] == 'bbarea' && !isset($parms['bb'])) $parms['bb'] = true; //force bb parsing for bbareas
+				$elid = trim(str_replace('_', '-', $field)).'-'.$id;
+				if(!vartrue($parms['noparse'])) $value = $tp->toHTML($value, (vartrue($parms['bb']) ? true : false), vartrue($parms['parse']));
+				if(vartrue($parms['expand']))
+				{
+					$expand = '&nbsp;<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($parms['expand'], $parms['expand'])."</a>";
+				}
+				
+				$oldval = $value;
+				if(vartrue($parms['truncate']))
+				{
+					$value = $oldval = strip_tags($value);
+					$value = $tp->text_truncate($value, $parms['truncate'], $expand);
+					$toexpand = $value != $oldval;
+				}
+				elseif(vartrue($parms['htmltruncate']))
+				{
+					$value = $tp->html_truncate($value, $parms['htmltruncate'], $expand);
+					$toexpand = $value != $oldval;
+				}
+				if($toexpand)
+				{
+					// force hide! TODO - core style .expand-c (expand container)
+					$value .= '<div class="expand-c" style="display: none" id="'.$elid.'-expand"><div>'.$oldval.'</div></div>';
+				}
+			break;
+			
+			case 'icon':
+				$value = '<img src="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" alt="'.basename($value).'" class="icon'.(vartrue($parms['class']) ? ' '.$parms['class'] : '').'" />';
+			break;
+			
+			case 'image': //TODO - thumb, js tooltip...
+				$ttl = vartrue($parms['title'], 'LAN_PREVIEW');
+				$value = '<a href="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" title="'.basename($value).'">'.defset($ttl, $ttl).'</a>';
+			break;
+			
+			case 'datestamp':
+				$value = e107::getDateConvert()->convert_date($value, vartrue($parms['mask'], 'short'));
+			break;
+			
+			case 'userclass':
+				$value = $this->_uc->uc_get_classname($value);
+			break;
+			
+			case 'userclasses':
+				$classes = explode(',', $value);
+				$value = array();
+				foreach ($classes as $cid)
+				{
+					$value[] = $this->_uc->uc_get_classname($cid);
+				}
+				$value = implode(vartrue($parms['separator']), $pieces);
+			break;
+			
+			case 'user_name':
+			case 'user_loginname':
+			case 'user_login':
+			case 'user_customtitle':
+			case 'user_email':
+				if(is_numeric($value))
+				{
+					$value = get_user_data($value);
+					if($value)
+					{
+						$value = $value[$attributes['type']] ? $value[$attributes['type']] : $value['user_name'];
+					}
+					else 
+					{
+						$value = 'not found';
+					}
+				}
+			break;
+			
+			case 'boolean':
+				$value = $value ? ADMIN_TRUE_ICON : '';// TODO  - ADMIN_FALSE_ICON
+			break;
+							
+			case 'url':
+				$ttl = $value;
+				if(vartrue($parms['truncate']))
+				{
+					$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
+				}
+				$value = "<a href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
+			break;
+			
+			case 'method': // Custom Function 
+				$method = $field; 
+				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
+			break;
+			
+			//TODO - form_userclass, order,... and maybe more types
+			
+			default:
+				//unknown type
+			break;
+		}
+		
+		return $value;
+	}
+	
+	/**
 	 * Auto-render Form Element
 	 * @param string $key
 	 * @param mixed $value
-	 * @param array $attributes field attributes including render parameters, element options
+	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
 	 * @return string
 	 */
 	function renderElement($key, $value, $attributes)
@@ -1238,7 +1252,7 @@ class e_form
 		{
 			foreach($tree as $model)
 			{
-				$text .= $this->trow($fields, $current_fields, $model->getData(), $options['pid']);
+				$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 			}
 
 		}

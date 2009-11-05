@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-05 00:28:25 $
+ * $Revision: 1.6 $
+ * $Date: 2009-11-05 17:32:18 $
  * $Author: secretr $
 */
 
@@ -59,11 +59,39 @@ class plugin_release_admin_ui extends e_admin_ui
 		// required
 		protected $pluginTitle = "e107 Release";
 		
-		// required
+		/**
+		 * plugin name or 'core'
+		 * IMPORTANT: should be 'core' for non-plugin areas because this 
+		 * value defines what CONFIG will be used. However, I think this should be changed 
+		 * very soon (awaiting discussion with Cam) 
+		 * Maybe we need something like $prefs['core'], $prefs['release'] ... multiple getConfig support?
+		 * 
+		 * @var string
+		 */
 		protected $pluginName = 'release';
 		
-		// required - if no custom model is set in init()
+		// required
 		protected $table = "release";
+		
+		/**
+		 * If present this array will be used to build your list query
+		 * You can link fileds from $field array with 'table' parameter, which should equal to a key (table) from this array
+		 * 'leftField', 'rightField' and 'fields' attributes here are required, the rest is optional
+		 * 
+		 * @var array [optional] table_name => array join parameters
+		 */
+		protected $tableJoin = array(
+			//'user' => array('leftField' => 'user_id', 'rightField' => 'comment_author_id', 'fields' => '*'/*, 'joinType' => 'LEFT JOIN', 'whereJoin' => '', 'where' => ''*/)
+		);
+		
+		// required if no custom tree model is set in init()
+		// NOT NEEDED ANYMORE!!!
+		//protected $listQry = "SELECT * FROM #release"; 
+		// without any Order or Limit. 
+		
+		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
+		// NOT NEEDED ANYMORE!!!
+		//protected $editQry = "SELECT * FROM #release WHERE release_id = {ID}";
 		
 		// required - if no custom model is set in init() (primary id)
 		protected $pid = "release_id";
@@ -71,8 +99,14 @@ class plugin_release_admin_ui extends e_admin_ui
 		// optional 
 		protected $perPage = 20;
 		
-		// default - true
+		// default - true - TODO - move to displaySettings
 		protected $batchDelete = true;
+		
+		// UNDER CONSTRUCTION
+		protected $displaySettings = array();
+		
+		// UNDER CONSTRUCTION
+		protected $disallowPages = array('main/create', 'main/prefs');
 	    
 		//TODO change the release_url type back to URL before release. 
 		// required
@@ -85,12 +119,14 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * 
 		 *  - type (string) null (means system), number, text, dropdown, url, image, icon, datestamp, userclass, userclasses, user[_name|_loginname|_login|_customtitle|_email],
 		 *    boolean, method
-		 *  	full/most recent reference list - e_form::trow(), e_form::renderElement(), e_admin_form_ui::renderBatchFilter()
+		 *  	full/most recent reference list - e_form::renderTableRow(), e_form::renderElement(), e_admin_form_ui::renderBatchFilter()
 		 *  
 		 *  - data (string) Data type, one of the following: int, integer, string, str, float, bool, boolean, model, null
 		 *    Used only if $dataFields is not set
 		 *  	full/most recent reference list - e_admin_model::sanitize(), db::_getFieldValue()
 		 *  - primary (boolean) primary field (obsolete, $pid is now used)
+		 *  
+		 *  - table (string) if there and non-empty - value is coming from another table, which SHOULD be found in $tableJoin (see above)
 		 *  
 		 *  - help (string) edit/create table - inline help, constant name will be accpeted as well, optional
 		 *  - note (string) edit/create table - text shown below the field title (left column), constant name will be accpeted as well, optional
@@ -195,12 +231,6 @@ class plugin_release_admin_ui extends e_admin_ui
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),	
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')		
 		);
-		
-		// required if no custom tree model is set in init()
-		protected $listQry = "SELECT * FROM #release"; // without any Order or Limit. 
-		
-		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
-		protected $editQry = "SELECT * FROM #release WHERE release_id = {ID}";
 		
 		// optional
 		public function init()

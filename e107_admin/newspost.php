@@ -9,8 +9,8 @@
  * News Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/newspost.php,v $
- * $Revision: 1.62 $
- * $Date: 2009-10-30 17:59:32 $
+ * $Revision: 1.63 $
+ * $Date: 2009-11-05 17:32:17 $
  * $Author: secretr $
 */
 require_once("../class2.php");
@@ -453,7 +453,7 @@ class admin_newspost
 			$this->_observe_newsCommentsRecalc();
 		}
 		
-		if(isset($_POST['submit-e-columns'])) //elseif fails. 
+		if(isset($_POST['etrigger_ecolumns'])) //elseif fails. 
 		{
         	$this->_observe_saveColumns();
 		}
@@ -1143,7 +1143,7 @@ class admin_newspost
 				}
 				
 				// AUTO RENDER
-				$text .= $frm->trow($this->fields, $this->fieldpref, $row, 'news_id');
+				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'news_id');
 			}
 
 			$text .= "

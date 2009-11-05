@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.61 $
-* $Date: 2009-10-21 21:36:10 $
-* $Author: e107steved $
+* $Revision: 1.62 $
+* $Date: 2009-11-05 17:32:17 $
+* $Author: secretr $
 *
 */
 require_once ('../class2.php');
@@ -762,7 +762,7 @@ class users
 	function usersSaveColumnPref()
 	{
 		global $pref,$user_pref,$admin_log;
-		if (isset ($_POST['submit-e-columns']))
+		if (isset ($_POST['etrigger_ecolumns']))
 		{
 			$user_pref['admin_users_columns'] = $_POST['e-columns'];
 			save_prefs('user');
