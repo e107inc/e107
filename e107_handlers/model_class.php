@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-11-04 17:29:26 $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-05 00:38:21 $
  * $Author: secretr $
 */
 
@@ -997,7 +997,7 @@ class e_model
 	 */
 	public function __toString()
 	{
-		return $this->toString((@func_get_arg(0) === true));
+		return $this->toString((func_num_args() && @func_get_arg(0) === true));
 	}
 	
 	public function destroy()
