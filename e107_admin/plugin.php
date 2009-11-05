@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2009-11-04 21:59:35 $
+|     $Revision: 1.54 $
+|     $Date: 2009-11-05 17:32:17 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -127,7 +127,7 @@ class pluginManager{
         	$this -> pluginProcessUpload();
 		}
 
-        if(isset($_POST['submit-e-columns']))
+        if(isset($_POST['etrigger_ecolumns']))
 		{
 			$user_pref['admin_pluginmanager_columns'] = $_POST['e-columns'];
 			save_prefs('user');

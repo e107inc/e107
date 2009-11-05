@@ -1894,10 +1894,13 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $validationRules = array();
 	protected $prefs = array();
 	protected $pluginName;
+	
 	protected $listQry;
+	protected $tableJoin;
 	protected $editQry;
 	protected $table;
 	protected $pid;
+	
 	protected $pluginTitle;
 	protected $perPage = 20;
 	protected $batchDelete = true;
@@ -2140,10 +2143,11 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$tp = e107::getParser();
 		$multi_name = vartrue($this->fields['checkboxes']['toggle'], 'multiselect');
-		$selected = $tp->toDB(array_values($this->getPosted($multi_name, array())));
+		$selected = array_values($this->getPosted($multi_name, array()));
 		
 		if(empty($selected)) return;
 		
+		$selected = array_map('intval', $selected);
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
 		
 		$this->triggersEnabled(false); //disable further triggering
@@ -2160,26 +2164,38 @@ class e_admin_ui extends e_admin_controller_ui
 				$this->getTreeModel()->setMessages();
 			break;
 			
-			case 'bool': // FIXME - tree method update
+			case 'bool': 
 				// direct query
 				$field = $trigger[1];
-				$value = $trigger[2];
-				if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}={$value} WHERE ".$this->getPrimaryName()." IN (".implode(', ', $selected).")"))
+				$value = $trigger[2] ? 1 : 0;
+				$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
+				if($cnt)
 				{
-					$this->getTreeModel()->addMessageSuccess($cnt.' records successfully updated.', true);
+					$this->getTreeModel()->addMessageSuccess($cnt.' records successfully updated.');
 				}
 				$this->getTreeModel()->setMessages();
-				$this->redirectAction();
 			break;
 			
-			case 'boolreverse': // FIXME - tree method update
+			case 'boolreverse':
 				// direct query
 				$field = $trigger[1]; //TODO - errors
-				if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}=1-{$field} WHERE ".$this->getPrimaryName()." IN (".implode(', ', $selected).")"))
+				$tree = $this->getTreeModel();
+				$cnt = $tree->update($field, "1-{$field}", $selected, null, false);
+				if($cnt)
 				{
-					e107::getMessage()->add($cnt.' records successfully reversed.', E_MESSAGE_SUCCESS, true);
+					$tree->addMessageSuccess($cnt.' records successfully reversed.');
+					//sync models
+					foreach ($selected as $id)
+					{
+						if($tree->hasNode($id))
+						{
+							$tree->getNode($id)
+								->set($field, $syncvalue)
+								->setMessages();
+						}
+					}
 				}
-				$this->redirectAction();
+				$this->getTreeModel()->setMessages();
 			break;
 		
 			default:
@@ -2191,14 +2207,17 @@ class e_admin_ui extends e_admin_controller_ui
 				}
 				else // default handling
 				{
-					// FIXME - tree method update
 					$field = $trigger[0];
 					$value = $trigger[1]; //TODO - errors
-					if($cnt = e107::getDb()->db_Update($this->getTableName(), "{$field}='{$value}' WHERE ".$this->getPrimaryName()." IN (".implode(', ', $selected).")"))
-					{
-						e107::getMessage()->add('<strong>'.$value.'</strong> set for <strong>'.$cnt.'</strong> records.', E_MESSAGE_SUCCESS, true);
+					
+					$cnt = $this->getTreeModel()->update($field, "'".$value."'", $selected, $value, false);
+					if($cnt)
+					{ 
+						$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
+						$this->getTreeModel()->addMessageSuccess('<strong>'.$vttl.'</strong> set for <strong>'.$cnt.'</strong> records.');
 					}
-					$this->redirectAction();
+					$this->getTreeModel()->setMessages();
+					//$this->redirectAction();
 				}
 			break;
 		}
@@ -2274,39 +2293,102 @@ class e_admin_ui extends e_admin_controller_ui
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		list($filterField, $filterValue) = $tp->toDB(explode('__', $request->getQuery('filter_options', '')));
 		
-		if($filterField)
+		// TODO - we have var types in current model, use them!
+		if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 		{
-			$searchQry[] = $filterField." = '".$filterValue."'";
+			$ftable = vartrue($this->fields[$filterField]['table'], $this->getTableName());
+			$searchQry[] = "`{$ftable}.`$filterField` = '".$filterValue."'";
 		}
 		
 		$filter = array();
 		
 		foreach($this->fields as $key=>$var)
 		{
+			$ftable = vartrue($var['table'], $this->getTableName());
 			if(($var['type'] == 'text' || $var['type'] == 'method') && $searchQuery)
 			{
-				$filter[] = "(".$key." REGEXP ('".$searchQuery."'))";	
+				$filter[] = "(`{$ftable}`.`".$key."` REGEXP ('".$searchQuery."'))";	
 			}
 		}
-		if(count($filter)>0)
+		
+		//$qry = $this->listQry; 
+		// We dont need list qry anymore!
+		$jwhere = array();
+		$joins = array();
+		if($this->tableJoin) 
+		{
+			$qry = "SELECT `#".$this->getTableName()."`.*";
+			foreach ($this->tableJoin as $jtable => $tparams)
+			{
+				// Select fields
+				$fields = vartrue($tparams['fields']);
+				if('*' === $fields)
+				{
+					$qry .= ", `#{$jtable}`.*";
+				}
+				else
+				{
+					$fields = array_map('trim', explode(',', $fields));
+					foreach ($fields as $field)
+					{
+						$qry .= ", `#{$jtable}`.`{$field}`";
+					}
+				}
+				// Prepare Joins
+				$joins[] = "
+					".vartrue($tparams['joinType'], 'LEFT JOIN')." `#{$jtable}` ON `#".vartrue($tparams['leftTable'], $this->getTableName())."`.`".vartrue($tparams['leftField'])."` = `#{$jtable}`.`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
+				
+				// Prepare Where
+				if(vartrue($tparams['where']))
+				{
+					$jwhere[] = $tparams['where'];
+				}
+			}
+			
+			//From
+			$qry .= " FROM `#".$this->getTableName()."`";
+			
+			// Joins
+			if(count($joins) > 0)
+			{
+				$qry .=  "\n".implode("\n", $joins);
+			}
+		}
+		else
+		{
+			$qry = "SELECT `#".$this->getTableName()."`.* FROM `#".$this->getTableName()."`";
+		}
+		
+		// join where
+		if(count($jwhere) > 0)
+		{
+			$searchQry[] = " (".implode(" AND ",$jwhere)." )";
+		}
+		// filter where
+		if(count($filter) > 0)
 		{
 			$searchQry[] = " (".implode(" OR ",$filter)." )";
 		}
 		
-		$qry = $this->listQry; 
+		// where query
 		if(count($searchQry) > 0)
 		{
 			$qry .= " WHERE ".implode(" AND ", $searchQry);
 		}
 		
-		
-		$qry .= ' ORDER BY '.$tp->toDB($request->getQuery('field', $this->getPrimaryName())).' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
+		$orderField = $request->getQuery('field', $this->getPrimaryName());
+		if(isset($this->fields[$orderField]))
+		{
+			$ftable = vartrue($this->fields[$orderField]['table'], $this->getTableName());
+			// no need of sanitize - it's found in field array
+			$qry .= ' ORDER BY `#'.$ftable.'`.`'.$orderField.'` '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
+		}
 		
 		if($this->getPerPage())
 		{
-			$from = $request->getQuery('from', 0) < 1 ? 1 : intval($request->getQuery('from'));
-			$startfrom = ($from-1) * intval($this->getPerPage());
-			$qry .= ' LIMIT '.$startfrom.', '.intval($this->getPerPage());
+			$from = intval($request->getQuery('from', 0));
+			//$startfrom = ($from-1) * intval($this->getPerPage());
+			$qry .= ' LIMIT '.$from.', '.intval($this->getPerPage());
 		}
 		return $qry;
 	}

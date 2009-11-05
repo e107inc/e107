@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-11-01 23:10:57 $
- * $Author: e107coders $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-05 17:32:17 $
+ * $Author: secretr $
  *
 */
 
@@ -111,7 +111,7 @@ class page
 	{
 
  		global $pref,$user_pref, $admin_log;
-		if(isset($_POST['submit-e-columns']))
+		if(isset($_POST['etrigger_ecolumns']))
 		{
 			$user_pref['admin_cpage_columns'] = $_POST['e-columns'];
 			save_prefs('user');

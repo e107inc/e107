@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-11-05 12:26:43 $
- * $Author: e107coders $
+ * $Revision: 1.32 $
+ * $Date: 2009-11-05 17:32:18 $
+ * $Author: secretr $
  *
 */
 
@@ -861,7 +861,7 @@ class uclass_manager
     function uclass_manager()
 	{
 		global $user_pref;
-    	if(isset($_POST['submit-e-columns']))
+    	if(isset($_POST['etrigger_ecolumns']))
 		{
 			$user_pref['admin_userclass_columns'] = $_POST['e-columns'];
 			save_prefs('user');
