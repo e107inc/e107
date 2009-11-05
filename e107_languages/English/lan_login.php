@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-05 18:47:52 $
-|     $Author: e107steved $
+|     $Revision: 1.6 $
+|     $Date: 2009-11-05 08:07:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define('LAN_LOGIN_1', 'User name');
@@ -30,7 +30,7 @@ define('LAN_LOGIN_18', 'Auto-ban: More than 10 failed login attempts');
 define('LAN_LOGIN_19', '> 10 failed login attempts');
 define('LAN_LOGIN_20', 'You left required field(s) blank');
 define('LAN_LOGIN_21', "Incorrect login. The entered data doesn't match to a registered user. Check if you have the CAPS-LOCK key activated as logins on this site are case sensitive");
-define('LAN_LOGIN_22', "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please click <a href='".e_BASE."signup.php?resend'>here</a>.");
+define('LAN_LOGIN_22', "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please click [here].");
 define('LAN_LOGIN_23', 'Incorrect code entered.');
 define('LAN_LOGIN_24', 'That username/password combination is already in use.');
 define('LAN_LOGIN_25', 'Banned user attempted to login');

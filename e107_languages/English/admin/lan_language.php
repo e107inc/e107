@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_language.php,v 1.7 2009-09-08 23:53:13 e107coders Exp $
+ * $Id: lan_language.php,v 1.8 2009-11-05 08:07:53 e107coders Exp $
  *
  * Admin Language File
  *
@@ -48,6 +48,7 @@ define('LANG_LAN_33', 'Delete all tables in %s?');
 define('LANG_LAN_09', 'Are you sure?');
 define('LANG_LAN_34', 'Available Language Packs');
 define('LANG_LAN_35', "The following language packs are available for this version of e107.");
+define('LANG_LAN_36', "Language-Pack errors found! Please first verify your language files are without errors, before creating a language-pack.");
 
 
 ?>

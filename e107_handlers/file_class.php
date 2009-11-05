@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-11-20 20:34:44 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-11-05 08:07:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -68,11 +68,17 @@ class e_file
 	function setDefaults()
 	{
 		$this->dirFilter = array('/', 'CVS', '.svn');										// Default directory filter (exact matches only)
-		$this->fileFilter = array('^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^index\.html$','^null\.txt$','\.bak$');		// Default file filter (regex format)
+		$this->fileFilter = array('^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^index\.html$','^null\.txt$','\.bak$','^.tmp');		// Default file filter (regex format)
 	}
 	
-
-
+	/**
+	 * 
+	 * @param object $path
+	 * @param object $fmask [optional]
+	 * @param object $omit [optional]
+	 * @param object $recurse_level [optional]
+	 * @return 
+	 */
 	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0)
 	{
 		$ret = array();

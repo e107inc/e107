@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2009-10-22 13:00:11 $
+|     $Revision: 1.27 $
+|     $Date: 2009-11-05 08:07:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -345,7 +345,9 @@ class userlogin
 			  $this->logNote('LAN_ROLL_LOG_02', $username);
 			  break;
 			case LOGIN_NOT_ACTIVATED :
-			  define("LOGINMESSAGE", LAN_LOGIN_22."<br /><br />");
+			  $srch = array("[","]");
+			  $repl = array("<a href='".e_BASE_ABS."signup.php?resend'>","</a>");					
+			  define("LOGINMESSAGE", str_replace($srch,$repl,LAN_LOGIN_22)."<br /><br />");
 			  $this->logNote('LAN_ROLL_LOG_05', $username);
 			  $this->genNote($fip, $username, LAN_LOGIN_27);
 			  $doCheck = TRUE;

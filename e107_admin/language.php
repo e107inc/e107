@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-10-24 07:52:32 $
+ * $Revision: 1.23 $
+ * $Date: 2009-11-05 08:07:48 $
  * $Author: e107coders $
  *
  */
@@ -161,10 +161,16 @@ if (varset($action) == 'db')
 }
 if (varset($_POST['ziplang']) && varset($_POST['language']))
 {
-	$text = zip_up_lang($_POST['language']);
-	$admin_log->log_event('LANG_04', $_POST['language'], E_LOG_INFORMATIVE, '');
-	//$ns -> tablerender(LANG_LAN_25, $text);
-	$emessage->add(LANG_LAN_25.': '.$text);
+	if(varset($pref['lancheck'][$_POST['language']]) == 1)
+	{
+		$text = zip_up_lang($_POST['language']);
+		$admin_log->log_event('LANG_04', $_POST['language'], E_LOG_INFORMATIVE, '');
+		$emessage->add(LANG_LAN_25.': '.$text);	
+	}
+	else
+	{
+		$emessage->add(LANG_LAN_36,E_MESSAGE_WARNING);		
+	}
 }
 if (varset($action) == "tools")
 {
@@ -575,8 +581,8 @@ function show_tools()
 
 function available_langpacks()
 {
-	require_once(e_HANDLER.'xml_class.php');
-	$xml = new xmlClass;
+
+	$xml = e107::getXml();
 	
 	$feed = e107::getPref('xmlfeed_languagepacks');
 		
