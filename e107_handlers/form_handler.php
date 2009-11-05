@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.67 $
- * $Date: 2009-11-04 23:47:14 $
- * $Author: secretr $
+ * $Revision: 1.68 $
+ * $Date: 2009-11-05 12:26:44 $
+ * $Author: e107coders $
  *
 */
 
@@ -840,7 +840,14 @@ class e_form
 		";
 
 	}
-	
+	/**
+	 * Render Table cells from field listing. 
+	 * @param array $fieldarray - eg. $this->fields
+	 * @param array $currentlist - eg $this->fieldpref
+	 * @param array $fieldvalues - eg. $row
+	 * @param string $pid - eg. table_id
+	 * @return 
+	 */
 	function trow($fieldarray, $currentlist, $fieldvalues, $pid)
 	{
 		$cnt = 0;
