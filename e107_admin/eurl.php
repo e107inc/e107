@@ -9,9 +9,9 @@
  * URL Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/eurl.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-09-29 17:43:13 $
- * $Author: secretr $
+ * $Revision: 1.12 $
+ * $Date: 2009-11-05 09:15:12 $
+ * $Author: e107coders $
 */
 
 require_once('../class2.php');
@@ -254,8 +254,7 @@ class admin_eurl_config {
 
 	function parse_config_xml($path)
 	{
-		require_once(e_HANDLER.'xml_class.php');
-		$xml = new xmlClass;
+		$xml = e107::getXml();
 		$parsed = $xml->loadXMLfile($path, true, true);
 
 		//Load Lan file if required

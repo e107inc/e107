@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.47 $
-* $Date: 2009-11-03 01:17:25 $
+* $Revision: 1.48 $
+* $Date: 2009-11-05 09:15:12 $
 * $Author: e107coders $
 *
 */
@@ -983,8 +983,9 @@ class e_install
 			
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/lan_prefs.php");
 		include_lan($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$this->previous_steps['language']."/admin/lan_theme.php");
-			
+		
 		//Create default plugin-table entries. 
+//		e107::getConfig('core')->clearPrefCache();
 		e107::getSingleton('e107plugin')->update_plugins_table(); 
 				
 		// Install Theme-required plugins
@@ -1001,13 +1002,17 @@ class e_install
 				}
 			}
 		}
-					
-		e107::getSingleton('xmlClass')->e107Import($XMLImportfile,'add'); // Add missing core pref values
+		
+		
+		//FIXME - should be 'add' not 'replace' - but 'add' doesn't insert arrays correctly. 
+		e107::getXml()->e107Import($XMLImportfile,'replace'); // Add missing core pref values
 		e107::getSingleton('e107plugin')->save_addon_prefs(); // save plugin addon pref-lists. eg. e_latest_list.			
+		
 		$tm = e107::getSingleton('themeHandler');
 		$tm->noLog = TRUE;
 		$tm->setTheme($this->previous_steps['prefs']['sitetheme']);
 		
+		$pref = e107::getConfig('core')->getPref();
 		
 		// Set Preferences defined during install - overwriting those that may exist in the XML. 
 		
@@ -1029,7 +1034,7 @@ class e_install
 		$this->previous_steps['prefs']['cookie_name']		= substr($cookiename,0,5)."cookie";
 		    				
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
-		e107::getConfig('core')->save(FALSE); // save preferences made during install. 
+		e107::getConfig('core')->save(FALSE,TRUE); // save preferences made during install. 
 				
 		// Create the admin user - replacing any that may be been included in the XML. 
 		$ip = $_SERVER['REMOTE_ADDR'];
@@ -1153,8 +1158,8 @@ class e_install
 
 		$xmlArray = $tm->parse_theme_xml($theme_folder);
 
-	//	require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."xml_class.php");
-	//	$xml = new xmlClass;		
+
+	//	$xml = e107::getXml();		
 	//	$xmlArray = $xml->loadXMLfile($path,'advanced');
 		return (is_array($xmlArray)) ? $xmlArray : FALSE;		
 	}

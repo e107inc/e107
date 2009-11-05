@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.111 $
-|     $Date: 2009-11-04 21:59:35 $
-|     $Author: secretr $
+|     $Revision: 1.112 $
+|     $Date: 2009-11-05 09:15:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -2033,8 +2033,8 @@ class e107plugin
 	
 		$tp = e107::getParser();
 	//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
-		require_once(e_HANDLER.'xml_class.php');
-		$xml = new xmlClass;
+		$xml = e107::getXml();
+		
 	//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 	//	$xml->setOptStringTags('install,uninstall,upgrade'); 
 		

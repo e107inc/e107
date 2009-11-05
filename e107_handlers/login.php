@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2009-11-05 08:07:48 $
+|     $Revision: 1.28 $
+|     $Date: 2009-11-05 09:15:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -416,8 +416,7 @@ class userlogin
 		$user_id = intval($user_id);		// Should already be an integer - but just in case...
 		if($user_xup)
 		{
-			require_once(e_HANDLER.'xml_class.php');
-			$xml = new xmlClass;
+			$xml = e107::getXml();
 			$xupData = array();
 			if($rawData = $xml -> getRemoteFile($user_xup))
 			{

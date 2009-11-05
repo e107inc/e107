@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/categories.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-11-01 20:41:34 $
-|     $Author: e107steved $
+|     $Revision: 1.8 $
+|     $Date: 2009-11-05 09:15:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 require_once(e_HANDLER."message_handler.php");
-$emessage = &eMessage::getInstance();
+$emessage = e107::getMessage();
 
 $text = "<div style='text-align:center'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>";
@@ -50,8 +50,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 	{
 		$text_rend = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
 
-		require_once(e_HANDLER.'xml_class.php');
-		$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
+		$xml = e107::getXml();
 		$xml->filter = array('@attributes' => FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
 
 		if ($text_rend)

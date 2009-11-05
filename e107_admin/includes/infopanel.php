@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.14 $
- |     $Date: 2009-10-26 09:50:00 $
+ |     $Revision: 1.15 $
+ |     $Date: 2009-11-05 09:15:12 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -82,9 +82,9 @@ if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 	<div class='left block-text'>";
 	// TODO Load with Ajax
 	
+	
 	/*
-	 require_once(e_HANDLER.'xml_class.php');
-	 $xml = new xmlClass;
+	$xml = e107::getXml();
 	 $vars = $xml->loadXMLfile('http://www.e107.org/e107_plugins/rss_menu/rss.php?1.2', true, true);
 	 $text .= print_r($vars,TRUE);
 	*/

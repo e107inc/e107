@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.61 $
- * $Date: 2009-11-02 01:10:50 $
+ * $Revision: 1.62 $
+ * $Date: 2009-11-05 09:15:12 $
  * $Author: e107coders $
  */
 
@@ -1299,10 +1299,10 @@ class themeHandler
 	
 	function parse_theme_xml($path)
 	{
-		global $tp;
-		//	loadLanFiles($path, 'admin');     // Look for LAN files on default paths
-		require_once (e_HANDLER.'xml_class.php');
-		$xml = new xmlClass;
+		$tp = e107::getParser();
+		$xml = e107::getXml();
+		
+				//	loadLanFiles($path, 'admin');     // Look for LAN files on default paths
 		// layout should always be an array.
 		$xml->setOptArrayTags('layout');
 		$xml->setOptStringTags('menuPresets,customPages');

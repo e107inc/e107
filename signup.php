@@ -9,9 +9,9 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-08-28 15:30:25 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.40 $
+ * $Date: 2009-11-05 09:15:12 $
+ * $Author: e107coders $
  *
 */
 
@@ -388,7 +388,7 @@ if (isset($_POST['register']))
 	if (!$error && $readXUP)
 	{
 		require_once(e_HANDLER."xml_class.php");
-		$xml = new parseXml;
+		$xml = new parseXml; // old parser
 		if(!$rawData = $xml -> getRemoteXmlFile($_POST['user_xup']))
 		{
 			$extraErrors[] = LAN_SIGNUP_68."\\n";

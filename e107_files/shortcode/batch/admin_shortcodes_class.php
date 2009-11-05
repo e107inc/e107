@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.28 2009-10-31 17:57:15 secretr Exp $
+* $Id: admin_shortcodes_class.php,v 1.29 2009-11-05 09:15:19 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -97,8 +97,7 @@ class admin_shortcodes
 			{
 				if (is_readable('plugin.xml'))
 				{
-					require_once(e_HANDLER.'xml_class.php');
-					$xml = new xmlClass;
+					$xml = e107::getXml();
 					$xml->filter = array('folder' => FALSE, 'administration' => FALSE);		// Just need one variable
 					$readFile = $xml->loadXMLfile('plugin.xml', true, true);
 					$eplug_icon = $readFile['folder'].'/'.$readFile['administration']['icon'];
@@ -552,8 +551,7 @@ class admin_shortcodes
 			/* SUBLINKS END */
 
 			// Plugin links menu
-			require_once(e_HANDLER.'xml_class.php');
-			$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
+			$xml = e107::getXml();
 			$xml->filter = array('@attributes' => FALSE, 'administration' => FALSE);	// .. and they're all going to need the same filter
 
 			$nav_sql = new db;
@@ -895,8 +893,8 @@ class admin_shortcodes
 		// remember it can cause delays/errors if its not possible to access the Internet
 		if ((strpos(e_SELF,'localhost') !== FALSE) || (strpos(e_SELF,'127.0.0.1') !== FALSE)) { return ''; }
 
-		require_once(e_HANDLER."xml_class.php");
-		$xml = new xmlClass;
+		$xml = e107::getXml();
+		
 		require_once(e_HANDLER."magpie_rss.php");
 
 		$ftext = '';
