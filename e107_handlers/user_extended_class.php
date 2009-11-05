@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-08-06 20:29:58 $
+|     $Revision: 1.25 $
+|     $Date: 2009-11-05 09:15:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -639,8 +639,7 @@ class e107_user_extended
 			return $this->extended_xml;
 		}
 
-		require_once(e_HANDLER."xml_class.php");
-		$xml = new xmlClass;
+		$xml = e107::getXml
 		$data = $xml->loadXMLfile(e_FILE."cache/user_extended.xml", true);
 		$ret['version'] = $data['@attributes']['version'];
 		unset($info);

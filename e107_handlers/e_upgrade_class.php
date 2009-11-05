@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/e_upgrade_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-08-17 18:42:22 $
+|     $Revision: 1.2 $
+|     $Date: 2009-11-05 09:15:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -74,8 +74,7 @@ class e_upgrade
 			return;
 		}
 
-	    require_once(e_HANDLER.'xml_class.php');
-		$xml = new xmlClass;
+		$xml = e107::getXml();
         $feed = $this->getOption('releaseUrl');
 
 	 	if(substr($feed,-4) == ".php")
@@ -123,6 +122,8 @@ class e_upgrade
 
 
 	}
+	
+	
 
 
     function checkAllPlugins()
@@ -149,7 +150,12 @@ class e_upgrade
 
         $options = array('curFolder' => $curTheme, 'curVersion' => $curVersion, 'releaseUrl' => $curUrl);
 		$this->setOptions($options);
-		$this->releaseCheck('theme');
+		$this->releaseCheck('theme',FALSE);
+	}
+	
+	function listLangPacks()
+	{
+		
 	}
 
 

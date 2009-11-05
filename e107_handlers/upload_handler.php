@@ -9,9 +9,9 @@
  * File Upload Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
- * $Revision: 1.21 $
- * $Date: 2009-10-16 21:15:56 $
- * $Author: secretr $
+ * $Revision: 1.22 $
+ * $Date: 2009-11-05 09:15:12 $
+ * $Author: e107coders $
  */
 
 if (!defined('e107_INIT'))
@@ -704,8 +704,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		
 		if ($def_file && is_readable(e_ADMIN.$def_file))
 		{
-			require_once (e_HANDLER.'xml_class.php');
-			$xml = new xmlClass;
+			$xml = e107::getXml();
 			$temp_vars = $xml->loadXMLfile(e_ADMIN.$def_file, true, false);
 			if ($temp_vars === FALSE)
 			{
