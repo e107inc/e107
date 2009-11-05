@@ -2114,7 +2114,7 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this->getUI()->getCreate();
 	}
 	
-	public function SettingsSaveTrigger()
+	public function PrefsSaveTrigger()
 	{
 		
 		$this->getConfig()
@@ -2126,7 +2126,7 @@ class e_admin_ui extends e_admin_controller_ui
 		
 	}
 	
-	public function SettingsPage()
+	public function PrefsPage()
 	{
 		return $this->getUI()->getSettings();
 	}

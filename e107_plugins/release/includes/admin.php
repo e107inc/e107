@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-04 17:29:26 $
+ * $Revision: 1.5 $
+ * $Date: 2009-11-05 00:28:25 $
  * $Author: secretr $
 */
 
@@ -33,7 +33,7 @@ class plugin_release_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'			=> array('caption'=> 'Manage', 'perm' => '0'),
 		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => '0'),
-		'main/settings' 	=> array('caption'=> 'Settings', 'perm' => '0'),
+		'main/prefs' 		=> array('caption'=> 'Settings', 'perm' => '0'),
 		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
 
