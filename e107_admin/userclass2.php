@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-11-01 17:19:26 $
- * $Author: e107steved $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-05 12:26:43 $
+ * $Author: e107coders $
  *
 */
 
@@ -29,9 +29,14 @@ $e_sub_cat = 'userclass';
 
 require_once(e_HANDLER.'userclass_class.php');		// Modified class handler
 $e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
-require_once (e_HANDLER.'form_handler.php');
+
+require_once(e_HANDLER."form_handler.php");
+
+
 $frm = new e_form();
 $uc = new uclass_manager;
+
+
 
 $message = '';
 
@@ -307,14 +312,30 @@ if ($message)
 	$emessage->add($message, E_MESSAGE_SUCCESS);
 }
 
+class uclassFrm extends e_form
+{
+	function userclass_type($curVal,$mode)
+	{
+		$types = array(
+				UC_TYPE_STD 	=> UCSLAN_80,
+			   	UC_TYPE_GROUP	=> UCSLAN_81
+		);
+		
+		return varset($types[$curVal]);
+	}	
+}
+
+
+
+
 if(!e_QUERY || $action == 'list')
 {
 	$ns->tablerender(UCSLAN_21, $emessage->render(). $uc->show_existing());
 }
-if($_GET['uc'])
+if(varset($_GET['id']) && varset($_GET['action'])=='edit')
 {
 	$action = 'config';
-    $_POST['existing'] = $_GET['uc'];
+    $_POST['existing'] = $_GET['id'];
 }
 
 switch ($action)
@@ -834,6 +855,7 @@ function userclass2_adminmenu()
 }
 
 
+
 class uclass_manager
 {
     function uclass_manager()
@@ -845,18 +867,18 @@ class uclass_manager
 			save_prefs('user');
 		}
 
-        $this->fieldpref = (varset($user_pref['admin_userclass_columns'])) ? $user_pref['admin_userclass_columns'] : array("userclass_id","userclass_name","userclass_description"); ;
+        $this->fieldpref = (varset($user_pref['admin_userclass_columns'])) ? $user_pref['admin_userclass_columns'] : array("userclass_id","userclass_name","userclass_description"); 
 
     	$this->fields = array(
-			'userclass_icon' 			=> array('title'=> UCSLAN_68, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // No real vetting
-			'userclass_id'				=> array('title'=> ID, 'width'=>'5%', 'thclass' => 'left'),
-            'userclass_name'	   		=> array('title'=> UCSLAN_12, 'width'=>'auto', 'thclass' => 'left'),
-			'userclass_description'   	=> array('title'=> UCSLAN_13, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left'),
-         	'userclass_editclass' 		=> array('title'=> UCSLAN_24, 'type' => 'userclass', 'width' => 'auto', 'thclass' => 'left'), // Display name
-			'userclass_parent' 			=> array('title'=> UCSLAN_35, 'type' => 'userclass', 'width' => 'auto', 'thclass' => 'left'),	// User name
-            'userclass_visibility' 		=> array('title'=> UCSLAN_34, 'type' => 'userclass', 'width' => 'auto', 'thclass' => 'left'),	 	// Photo
-			'userclass_type' 			=> array('title'=> UCSLAN_79, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
-   			'options' 					=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
+			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'width' => '5%',	'thclass' => 'center', 'class' => 'center'),	 
+			'userclass_id'				=> array('title'=> ID,			'type' => 'int', 		'width' => '5%',	'thclass' => 'left'),
+            'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
+			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
+         	'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'), 
+			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
+            'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),	
+			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'method',		'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
+   			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => null,			'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'center')
 		);
 
 	}
@@ -864,12 +886,15 @@ class uclass_manager
 
 	function show_existing()
 	{
-	    global $e_userclass, $sql, $frm, $tp;
-	 //	$text = "<div>";
-        $total = $sql->db_Select('userclass_classes', '*');
-		if ($total == "0")
+	    global $e_userclass;
+		
+		$tp 	= e107::getParser();
+		$sql 	= e107::getDb();
+		$frm 	= new uclassFrm;
+		
+		if (!$total = $sql->db_Select('userclass_classes', '*'))
 		{
-		  $text .= UCSLAN_7;
+			$text .= UCSLAN_7;
 		}
 		else
 		{
@@ -883,48 +908,9 @@ class uclass_manager
 							"<tbody>";
 			$classes = $sql->db_getList('ALL', FALSE, FALSE);
 
-
             foreach($classes as $row)
-			{
-				if(varset($row['userclass_icon']))
-				{
-                	$iconpath = $tp->replaceConstants($row['userclass_icon']);
-            		$icon = is_readable($iconpath) ? "<img src='".$iconpath."' alt='' />" : "&nbsp;";
-                }
-				
-			//	$disp = key($row);		
-	
-			//	
-				
-				$text .= "
-						<tr>";
-						
-				foreach($this->fieldpref as $key)
-				{
-					$class = vartrue($this->fields[$key]['thclass']) ? "class='".$this->fields[$key]['thclass']."'" : "";		
-					$text .= "<td ".$class.">";
-					$text .= $this->renderValue($key, $row);
-					$text .= "</td>";	
-				}			
-						
-				/*		
-                $text .= (in_array("userclass_icon",$this->fieldpref)) ? "<td ".$class.">".$icon."</td>" : "";
-				$text .= (in_array("userclass_id",$this->fieldpref)) ? "<td ".$class.">".$row['userclass_id']."</td>" : "";
-                $text .= (in_array("userclass_name",$this->fieldpref)) ? "<td ".$class.">".($row['userclass_name'])."</td>" : "";
-                $text .= (in_array("userclass_description",$this->fieldpref)) ? "<td ".$class.">".($row['userclass_description'])."</td>" : "";
-				$text .= (in_array("userclass_editclass",$this->fieldpref)) ? "<td ".$class.">".r_userclass_name($row['userclass_editclass'])."</td>" : "";
-				$text .= (in_array("userclass_parent",$this->fieldpref)) ? "<td ".$class.">".(r_userclass_name($row['userclass_parent']))."</td>" : "";
-				$text .= (in_array("userclass_visibility",$this->fieldpref)) ? "<td ".$class.">".(r_userclass_name($row['userclass_visibility']))."</td>" : "";
-				$text .= (in_array("userclass_type",$this->fieldpref)) ? "<td ".$class.">".($types[$row['userclass_type']])."</td>" : "";
-*/
-
-
-				$text .= "<td class='center'>
-								<a class='action edit' href='".e_SELF."?uc=".$row['userclass_id']."'>".ADMIN_EDIT_ICON."</a>
-								<input type='image' class='action delete' name='delete[{$row['userclass_id']}]' src='".ADMIN_DELETE_ICON_PATH."' title='".LAN_DELETE." [ ID: {$row['userclass_id']} ]' />
-							</td>
-						</tr>
-				";
+			{		
+				$text .= $frm->trow($this->fields, $this->fieldpref, $row, 'userclass_id');
 			}
 		}
 	    $text .= "</tbody></table></fieldset></form>";
@@ -933,28 +919,6 @@ class uclass_manager
 
 
 	}
-	
-	
-	function renderValue($key,$row)
-	{
-		$types = array(
-				UC_TYPE_STD 	=> UCSLAN_80,
-			   	UC_TYPE_GROUP	=> UCSLAN_81
-		);
-			
-		if($this->fields[$key]['type']=='userclass')
-		{
-			return r_userclass_name($row[$key]);	
-		} 
-		
-		if($key == "userclass_type")
-		{
-			return $types[$row['userclass_type']];		
-		}	
-
-		return $row[$key];		
-	}
-
 }
 require_once("footer.php");
 
