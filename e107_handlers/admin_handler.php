@@ -2008,7 +2008,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListDeleteTrigger($posted)
 	{
 		$this->triggersEnabled(false);
-		$id = intval(array_shift($posted));
+		$id = intval(array_shift($posted)); 
 		$this->getTreeModel()->delete($id);
 		$this->getTreeModel()->setMessages();
 	}
@@ -2185,15 +2185,7 @@ class e_admin_ui extends e_admin_controller_ui
 				{
 					$tree->addMessageSuccess($cnt.' records successfully reversed.');
 					//sync models
-					foreach ($selected as $id)
-					{
-						if($tree->hasNode($id))
-						{
-							$tree->getNode($id)
-								->set($field, $syncvalue)
-								->setMessages();
-						}
-					}
+					$tree->load(true);
 				}
 				$this->getTreeModel()->setMessages();
 			break;
@@ -2297,7 +2289,7 @@ class e_admin_ui extends e_admin_controller_ui
 		if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 		{
 			$ftable = vartrue($this->fields[$filterField]['table'], $this->getTableName());
-			$searchQry[] = "`{$ftable}.`$filterField` = '".$filterValue."'";
+			$searchQry[] = "`#{$ftable}`.`$filterField` = '".$filterValue."'";
 		}
 		
 		$filter = array();

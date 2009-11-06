@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-11-05 17:32:18 $
+|     $Revision: 1.13 $
+|     $Date: 2009-11-06 18:37:23 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -70,26 +70,27 @@ class comments_admin_ui extends e_admin_ui
 		
 		//protected $listQry = "SELECT SQL_CALC_FOUND_ROWS * FROM #comments"; // without any Order or Limit. 
 		
-		protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
+		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid = "comment_id";
 		protected $perPage = 10;
 		protected $batchDelete = true;
-
+		
+		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '', 			'type' => null, 	'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'comment_id'			=> array('title'=> ID, 			'type' => 'int',	'width' =>'5%', 'forced'=> TRUE),
        		'comment_item_id' 		=> array('title'=> "item id", 	'type' => 'text',	'width' => 'auto'),
          	'comment_subject' 		=> array('title'=> "subject", 	'type' => 'text',	'width' => 'auto', 'thclass' => 'left first'), // Display name
          	'comment_comment' 		=> array('title'=> "comment",	'type' => 'textarea',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'comment_author_id' 	=> array('title'=> "authorID", 	'type' => 'number',	'width' => 'auto'),	// User id
+		 	'comment_author_id' 	=> array('title'=> "authorID", 	'type' => 'user', 'data' => 'int',	'width' => 'auto'),	// User id
          	'comment_author_name' 	=> array('title'=> "authorName",'type' => 'text',	'width' => 'auto'),	// User name
          	'user_name' 			=> array('title'=> "System user", 'type' => 'text',	'width' => 'auto', 'table' => 'user', 'noedit' => true),	// User name
 		    'comment_datestamp' 	=> array('title'=> "datestamp",	'type' => 'datestamp',	'width' => 'auto'),	// User date
-            'comment_blocked' 		=> array('title'=> "blocked",	'type' => 'text',	'width' => 'auto'),	 	// Photo
+            'comment_blocked' 		=> array('title'=> "blocked",	'type' => 'boolean', 'data'=> 'int', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 			'comment_ip' 			=> array('title'=> "IP",		'type' => 'text',	'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'comment_type' 			=> array('title'=> "Type",		'type' => 'method',	'width' => '10%', 'thclass' => 'center', 'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
-			'comment_lock' 			=> array('title'=> "Lock",		'type' => 'text',	'width' => 'auto'),
+			'comment_lock' 			=> array('title'=> "Lock",		'type' => 'boolean', 'data'=> 'int', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 				=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		//required (but should be optional) - default column user prefs 

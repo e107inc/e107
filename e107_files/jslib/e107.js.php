@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-09-12 18:25:41 $
+ * $Revision: 1.36 $
+ * $Date: 2009-11-06 18:37:23 $
  * $Author: secretr $
  *
 */
@@ -863,7 +863,7 @@ Object.extend(e107Helper, {
 
     /**
      * Add fx scroll on click event
-     * on all <a href='#something" class="scroll-to"> elements
+     * on all '<a href="#something" class="scroll-to"></a>' elements
      */
     scrollToObserver: function(event) {
     	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
@@ -2239,7 +2239,7 @@ Ajax.Updater = Class.create(Ajax.Updater, {
 
 				onException: function(request, e) {
 					//TODO handle exceptions
-					alert('e107Ajax Exception: ' + e);
+					alert('e107Ajax Exception: ' + e); 
 				}
 		}
 

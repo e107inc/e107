@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.69 $
- * $Date: 2009-11-05 17:32:18 $
+ * $Revision: 1.70 $
+ * $Date: 2009-11-06 18:37:23 $
  * $Author: secretr $
  *
 */
@@ -176,9 +176,72 @@ class e_form
 		return $cal->make_input_field($cal_options, $cal_attrib);
 	}
 	
-	function user($name, $default_id, $options = array())
+	/**
+	 * UNDER CONSTRUCTION!!!
+	 * 
+	 * @param object $name
+	 * @param object $id_fld
+	 * @param object $default_name
+	 * @param object $default_id
+	 * @param object $options [optional]
+	 * @return 
+	 */
+	function userpicker($name, $id_fld, $default_name, $default_id, $options = array())
 	{
-		return 'User auto-complete search - under development';
+		if(!is_array($options)) parse_str($options, $options);
+		
+		$reset = '';
+		if(vartrue($options['reset']))
+		{
+			$reset = '
+				<a href="#" onclick="$(\'subscriber-system-id\').value=0; \$(\'subscriber-system-id\').previous(\'input\').value=\'\'; return false;">reset</a>
+			';
+		}
+		
+		$ret = '
+		<div class="e-autocomplete-c">
+			'.$this->text($name, $default_name, 150, array('id' => false, 'readonly' => vartrue($options['readonly']) ? true : false)).'
+			'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
+			'.$reset.'
+				<span class="indicator" style="display: none;">
+					<img src="'.e_IMAGE_ABS.'generic/loading_16.gif" class="icon action S16" alt="Loading..." />
+				</span>
+				<div class="e-autocomplete"></div>	
+		</div>	
+		';
+		
+		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
+		
+		e107::getJs()->footerInline("
+	            //autocomplete fields
+	             \$\$('input[name={$name}]').each(function(el) {
+
+	             	if(el.readOnly) { 
+	             		el.observe('click', function(ev) { ev.stop(); var el1 = ev.findElement('input'); el1.blur(); } ); 
+	             		el.next('span.indicator').hide(); 
+	             		el.next('div.e-autocomplete').hide();
+	             		return; 
+					}
+					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_FILE_ABS."e_ajax.php', {
+					  paramName: '{$name}',
+					  minChars: 2,
+					  frequency: 0.5,
+					  afterUpdateElement: function(txt, li) { 
+					  	console.log(\$(li).id, '{$id_fld}');
+					  	if(!\$(li)) return;
+					  	if(\$(li).id) { 
+							el.next('input[name={$id_fld}]').value = parseInt(\$(li).id); 
+						} else {
+							el.next('input[name={$id_fld}]').value = 0
+						}
+					  },
+					  indicator:  el.next('span.indicator'),
+					  parameters: 'ajax_used=1&ajax_sc=usersearch=".rawurlencode('searchfld=user--srcfld='.$name)."'
+					});
+				});
+		");
+		return $ret;
+		
 	}
 
 	function file($name, $options = array())
@@ -187,7 +250,11 @@ class e_form
 		//never allow id in format name-value for text fields
 		return "<input type='file' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
-
+	
+	function upload($name, $options = array())
+	{
+		return 'Ready to use upload form fields, optional - file list view';
+	}
 
 	function password($name, $maxlength = 50, $options = array())
 	{
@@ -1151,14 +1218,22 @@ class e_form
 				return $this->$method($key, $value, $uc_options, vartrue($parms['__options'], array()));
 			break;
 			
-			case 'user_name':
+			/*case 'user_name':
 			case 'user_loginname':
 			case 'user_login':
 			case 'user_customtitle':
-			case 'user_email':
+			case 'user_email':*/
+			case 'user':
 				//user_id expected
-				//$value = get_user_data($value); 
-				return $this->user($key, $value, $parms);
+				// Just temporary solution, will be changed soon
+				if(!is_array($value))
+				{
+					$value = get_user_data($value);
+				}
+				if(!$value) $value = array();
+				$uname = varset($value['user_name']);
+				$value = varset($value['user_id'], 0);
+				return $this->userpicker($key.'_usersearch', $key, $uname, $value, $parms);
 			break;
 			
 			case 'boolean':
