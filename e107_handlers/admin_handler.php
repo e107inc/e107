@@ -2634,6 +2634,7 @@ class e_admin_form_ui extends e_form
 	 */
 	protected $_controller = null;
 	
+	
 	/**
 	 * Constructor
 	 * @param e_admin_ui $controller
@@ -2643,7 +2644,33 @@ class e_admin_form_ui extends e_form
 	{
 		$this->_controller = $controller;
 		parent::__construct($tabindex);
+		
+		// protect current methods from conflict. 
+		$this->preventConflict();
+		
 	}
+	
+	protected function preventConflict()
+	{
+		$err = "";
+		$fields = array_keys($this->getController()->getFields());
+		foreach($fields as $val)
+		{
+			if(method_exists(e_form,$val)) // check even if type is not method. - just in case of an upgrade later by 3rd-party. 
+			{
+				$err .= "<h2>ERROR: The field name (".$val.") is not allowed.</h2>";
+				$err .= "Please rename the key (".$val.") to something else in your fields array and database table.<br /><br />";
+			}	
+		}
+		
+		if($err)
+		{
+			echo $err;
+			exit;
+		}		
+	}
+	
+	
 	
 	/**
 	 * User defined init

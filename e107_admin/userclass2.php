@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-11-05 17:32:18 $
- * $Author: secretr $
+ * $Revision: 1.33 $
+ * $Date: 2009-11-06 00:02:12 $
+ * $Author: e107coders $
  *
 */
 
@@ -910,7 +910,7 @@ class uclass_manager
 
             foreach($classes as $row)
 			{		
-				$text .= $frm->trow($this->fields, $this->fieldpref, $row, 'userclass_id');
+				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'userclass_id');
 			}
 		}
 	    $text .= "</tbody></table></fieldset></form>";
