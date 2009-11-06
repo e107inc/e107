@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-11-06 00:02:12 $
- * $Author: e107coders $
+ * $Revision: 1.34 $
+ * $Date: 2009-11-06 12:27:41 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -2090,10 +2090,13 @@ class e_admin_tree_model extends e_tree_model
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 		if(!$ids) return 0;
+
 		if(!is_array($ids))
 		{
-			$ids = array_map('tirm', explode(',', $ids));
+			$ids = explode(',', $ids);
+			
 		}
+		
 		$ids = array_map('intval', $ids);
 		$idstr = implode(', ', $ids);
 		
@@ -2143,7 +2146,7 @@ class e_admin_tree_model extends e_tree_model
 		}
 		if(!is_array($ids))
 		{
-			$ids = array_map('tirm', explode(',', $ids));
+			$ids = explode(',', $ids);
 		}
 		
 		if($sanitize)
