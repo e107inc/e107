@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-11-05 17:32:19 $
- * $Author: secretr $
+ * $Revision: 1.33 $
+ * $Date: 2009-11-06 00:02:12 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -463,7 +463,7 @@ class e_model
 		        return $this;
 	    	}
 
-            $this->${data_src} = $key;
+            $this->$data_src = $key;
             return $this;
         } 
         
