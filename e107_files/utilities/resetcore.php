@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/utilities/resetcore.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-11-07 02:28:59 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2009-11-07 11:07:34 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,6 +31,9 @@ people it shouldn't be used by.
 */
 
 define("ACTIVE", false);
+
+//FIXME build e_CACHE from e107_config.php - resetcore.php is a stand alone page
+define('e_CACHE', '../cache/');
 
 /* #################################################### */
 
@@ -53,6 +56,7 @@ if($register_globals == true)
 }
 
 require_once("../../e107_config.php");
+//TODO build e_CACHE from e107_config.php - resetcore.php is a stand alone page
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
@@ -72,7 +76,7 @@ $eArrayStorage = new ArrayData();
 </head>
 <body>
 <div class='mainbox'>
-<a href="http://e107.org"><img src="../../e107_images/logo_template_large.png" alt="Logo" style="border: 0px; vertical-align: middle;" /></a> <span class='headertext'>e107 Reset Core Utility</span>
+<a href="http://e107.org"><img src="../../<?php echo($IMAGES_DIRECTORY); ?>logo_template_large.png" alt="Logo" style="border: 0px; vertical-align: middle;" /></a> <span class='headertext'>e107 Reset Core Utility</span>
 <br />
 <br />
 <br />
