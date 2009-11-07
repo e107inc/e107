@@ -9,9 +9,9 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-10-29 11:32:58 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.41 $
+ * $Date: 2009-11-07 02:10:34 $
+ * $Author: e107coders $
  *
 */
 /*
@@ -721,9 +721,9 @@ function delete_file($fname, $dir = 'avatars/')
 	{
 		return $sql -> db_Delete("rbinary", "binary_id='".$tp -> toDB($match[1])."'");
 	}
-	elseif (file_exists(e_FILE."public/".$dir.$fname)) 
+	elseif (file_exists(e_UPLOAD.$dir.$fname)) 
 	{
-		unlink(e_FILE."public/".$dir.$fname);
+		unlink(e_UPLOAD.$dir.$fname);
 		return true;
 	}
 	return false;

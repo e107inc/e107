@@ -9,9 +9,9 @@
  * User information - shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/shortcode/batch/user_shortcodes.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-07-25 07:54:34 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.18 $
+ * $Date: 2009-11-07 02:10:40 $
+ * $Author: e107coders $
  *
 */
 if (!defined('e107_INIT')) { exit; }
@@ -366,9 +366,9 @@ SC_END
 
 SC_BEGIN USER_PICTURE
 global $user;
-if ($user['user_sess'] && file_exists(e_FILE."public/avatars/".$user['user_sess']))
+if ($user['user_sess'] && file_exists(e_UPLOAD."avatars/".$user['user_sess']))
 {
-	return "<img src='".e_FILE_ABS."public/avatars/".$user['user_sess']."' alt='' />";
+	return "<img src='".e_UPLOAD_ABS."public/avatars/".$user['user_sess']."' alt='' />";
 }
 else
 {

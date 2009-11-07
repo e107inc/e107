@@ -9,9 +9,9 @@
  * User information
  *
  * $Source: /cvs_backup/e107_0.8/user.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-08-28 15:30:24 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-07 02:10:34 $
+ * $Author: e107coders $
  *
 */
 //HCL define('PAGE_NAME', 'Members');
@@ -37,7 +37,7 @@ if (isset($_POST['delp']))
 	{
 		$sql->db_Select("user", "user_sess", "user_id='". USERID."'");
 		$row = $sql->db_Fetch();
-		@unlink(e_FILE."public/avatars/".$row['user_sess']);
+		@unlink(e_UPLOAD."avatars/".$row['user_sess']);
 		$sql->db_Update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
 		header("location:".e_SELF."?id.".$tmp[1]);
 		exit;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/upload.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-11-05 09:15:12 $
+|     $Revision: 1.11 $
+|     $Date: 2009-11-07 02:10:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -46,9 +46,9 @@ if ($action == "dis" && isset($_POST['updelete']['upload_'.$id]) )
 	{
 		$sql -> db_Delete("rbinary", "binary_id='".$tp -> toDB($match[1])."'");
 	} 
-	else if ($row['upload_file'] && file_exists(e_FILE."public/".$row['upload_file'])) 
+	else if ($row['upload_file'] && file_exists(e_UPLOAD.$row['upload_file'])) 
 	{
-		unlink(e_FILE."public/".$row['upload_file']);
+		unlink(e_UPLOAD.$row['upload_file']);
 	}
 	if (preg_match("#Binary (.*?)/#", $row['upload_ss'], $match)) 
 	{
@@ -56,7 +56,7 @@ if ($action == "dis" && isset($_POST['updelete']['upload_'.$id]) )
 	} 
 	else if ($row['upload_ss'] && file_exists(e_FILE."public/".$row['upload_ss'])) 
 	{
-		unlink(e_FILE."public/".$row['upload_ss']);
+		unlink(e_UPLOAD.$row['upload_ss']);
 	}
 	$message = ($sql->db_Delete("upload", "upload_id='".intval($id)."'")) ? UPLLAN_1 : LAN_DELETED_FAILED;
 	$admin_log->log_event('UPLOAD_01',$row['upload_file'],E_LOG_INFORMATIVE,'');
@@ -95,7 +95,7 @@ if ($action == "dl")
 	} 
 	else 
 	{
-		header("location:".e_FILE."public/".str_replace("dl.", "", e_QUERY));
+		header("location:".e_UPLOAD.str_replace("dl.", "", e_QUERY));
 		exit;
 	}
 }

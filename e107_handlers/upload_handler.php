@@ -9,8 +9,8 @@
  * File Upload Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-11-05 09:15:12 $
+ * $Revision: 1.23 $
+ * $Date: 2009-11-07 02:10:34 $
  * $Author: e107coders $
  */
 
@@ -447,7 +447,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 	
 	if (!$uploaddir)
 	{
-		$uploaddir = e_FILE."public/";
+		$uploaddir = e_UPLOAD;
 	}
 	
 	// Compute storage type - 1 is file, 2 is DB

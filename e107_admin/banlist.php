@@ -9,9 +9,9 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-10-29 12:39:21 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.20 $
+ * $Date: 2009-11-07 02:10:34 $
+ * $Author: e107coders $
  *
 */
 
@@ -539,7 +539,7 @@ switch($action)
 		if(isset($_POST['ban_import']))
 		{ // Got a file to import
 			require_once (e_HANDLER.'upload_handler.php');
-			if(($files = process_uploaded_files(e_FILE."public/", FALSE, array('overwrite' => TRUE, 'max_file_count' => 1, 'file_mask' => 'csv'))) === FALSE)
+			if(($files = process_uploaded_files(e_UPLOAD, FALSE, array('overwrite' => TRUE, 'max_file_count' => 1, 'file_mask' => 'csv'))) === FALSE)
 			{ // Invalid file
 				$error = true;
 				$message = BANLAN_47;
@@ -553,8 +553,8 @@ switch($action)
 			}
 			if(!$error)
 			{ // Got a file of some sort
-				$message = process_csv(e_FILE."public/".$files[0]['name'], intval(varset($_POST['ban_over_import'], 0)), intval(varset($_POST['ban_over_expiry'], 0)), $separator_char[intval(varset($_POST['ban_separator'], 1))], $quote_char[intval(varset($_POST['ban_quote'], 3))]);
-				banlist_adminlog("07", 'File: '.e_FILE."public/".$files[0]['name'].'<br />'.$message);
+				$message = process_csv(e_UPLOAD.$files[0]['name'], intval(varset($_POST['ban_over_import'], 0)), intval(varset($_POST['ban_over_expiry'], 0)), $separator_char[intval(varset($_POST['ban_separator'], 1))], $quote_char[intval(varset($_POST['ban_quote'], 3))]);
+				banlist_adminlog("07", 'File: '.e_UPLOAD.$files[0]['name'].'<br />'.$message);
 			}
 
 		}

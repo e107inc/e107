@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/filemanager.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-08-28 16:10:54 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.11 $
+|     $Date: 2009-11-07 02:10:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -35,7 +35,7 @@ require_once (e_HANDLER."message_handler.php");
 $emessage = &eMessage::getInstance();
 //FIXME - messages
 
-$pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")) ? TRUE : FALSE;
+$pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_UPLOAD)) ? TRUE : FALSE;
 
 
 $imagedir = e_IMAGE."filemanager/";
@@ -45,7 +45,7 @@ $imagedir = e_IMAGE."filemanager/";
 	$dir_options[2] = FMLAN_40;
 
 
-	$adchoice[0] = e_FILE."public/";
+	$adchoice[0] = e_UPLOAD;
 	$adchoice[1] = e_FILE;
 	$adchoice[2] = e_IMAGE."newspost_images/";
 
@@ -365,8 +365,8 @@ while ($files[$c]) {
 		}
 		sort($movechoice);
 		$movechoice[] = e_FILE."downloadimages/";
-		if(e_QUERY != str_replace("../","",e_FILE."public/")){
-        	$movechoice[] = e_FILE."public/";
+		if(e_QUERY != str_replace("../","",e_UPLOAD)){
+        	$movechoice[] = e_UPLOAD;
 		}
 		if(e_QUERY != str_replace("../","",e_FILE."downloadthumbs/")){
         	$movechoice[] = e_FILE."downloadthumbs/";

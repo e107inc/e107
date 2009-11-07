@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.63 $
- * $Date: 2009-11-04 03:07:39 $
+ * $Revision: 1.64 $
+ * $Date: 2009-11-07 02:10:34 $
  * $Author: e107coders $
 */
 
@@ -1241,6 +1241,7 @@ class e107
 			else
 			{
 				define("e_UPLOAD", e_BASE.$UPLOADS_DIRECTORY);
+				define("e_UPLOAD_ABS", e_HTTP.$UPLOADS_DIRECTORY);
 			}
 		}
 	}
