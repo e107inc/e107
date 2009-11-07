@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.33 2009-11-05 08:07:53 e107coders Exp $
+ * $Id: lan_admin.php,v 1.34 2009-11-07 11:20:33 e107coders Exp $
  *
  * Admin Language File
 */
@@ -300,7 +300,7 @@ define("LAN_CATEGORY", "Category");
 
 define("LAN_HELP", "Help");
 define("LAN_MENULAYOUT", "Menu Layout");
-define("LAN_IMAGEMANAGER", "Image Manager");
+define("LAN_MEDIAMANAGER", "Media Manager");
 
 define("LAN_MOREINFO","More Information...");
 define("LAN_COMMENTMAN", "Comments Manager");

@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-11-05 08:07:48 $
+ * $Revision: 1.24 $
+ * $Date: 2009-11-07 11:20:27 $
  * $Author: e107coders $
  *
  */
@@ -149,6 +149,13 @@ if (isset($_POST['create_tables']) && $_POST['language'])
  }
  */
  
+
+
+
+
+ 
+ 
+ 
  
 unset($text);
 if (!e_QUERY || $action == 'main' && !$_POST['language'] && !$_POST['edit_existing'])
@@ -175,8 +182,56 @@ if (varset($_POST['ziplang']) && varset($_POST['language']))
 if (varset($action) == "tools")
 {
 	show_tools();
-	e107::getRender()->tablerender(LANG_LAN_34, available_langpacks());
+	if($languagePacks = available_langpacks() )
+	{
+		e107::getRender()->tablerender(LANG_LAN_34,$languagePacks );	
+	}	
 }
+
+if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
+{
+	$mes = e107::getMessage();
+
+	$lanfile = $_POST['deprecatedLans'];
+
+				
+	$scriptname = str_replace("lan_","",basename($lanfile));
+	
+	if(is_readable(e_ADMIN.$script))
+	{
+		$script = e_ADMIN.$scriptname; // matching files. lan_xxxx.php and xxxx.php
+	}
+	
+	// Exceptions - same language loaded by several scripts. 
+	if($lanfile == e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php")
+	{
+		$script = e_ADMIN."update_routines.php,".e_ADMIN."e107_update.php";
+	}
+		
+	if(is_readable($lanfile))
+	{
+		if($res = unused($lanfile,$script))
+		{
+			$ns -> tablerender($res['caption'],$mes->render(). $res['text']);
+		} 		
+	}
+	else
+	{
+		// echo 'PROBLEM';	
+	}
+	
+
+} 
+
+
+
+
+
+
+
+
+
+
 //FIX - create or edit check
 if (isset($_POST['create_edit_existing']))
 	$_POST['edit_existing'] = true;
@@ -495,7 +550,9 @@ function multilang_db()
 
 function show_tools()
 {
-	global $emessage;
+	$frm = e107::getForm();
+	$mes = e107::getMessage();
+	
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
 	$text = "
 		<form id='core-language-lancheck-form' method='post' action='".e_ADMIN."lancheck.php'>
@@ -564,7 +621,33 @@ function show_tools()
 								<button class='submit' type='submit' name='ziplang' value='no-value'><span>".LANG_LAN_24."</span></button>
 								<input type='checkbox' name='contribute_pack' value='1' /> Check to share your language-pack with the e107 community.
 							</td>
-						</tr>
+						</tr>";
+						
+								
+						$text .= "						
+						<tr>
+							<td class='label'>Search for Deprecated Lans</td>
+							<td class='control'>
+								<select name='deprecatedLans' class='tbox select'>
+									<option value=''>".LAN_SELECT."</option>";
+									
+									$fl = e107::getFile();
+									$fl->mode = 'full';
+									$lans = $fl->get_files(e_LANGUAGEDIR."English/admin");
+									
+									foreach($lans as $script=>$lan)
+									{
+										$selected = ($lan == varset($_POST['deprecatedLans'])) ? "selected='selected'" : "";
+										$text .= "<option value='".$lan."' {$selected}>".str_replace(e_LANGUAGEDIR."English/","",$lan)."</option>\n";
+									}
+									
+								$text .= "
+								</select>".$frm->admin_button('searchDeprecated',"Check")."
+							</td>
+						</tr>";
+						
+						
+						$text .= "				
 					</tbody>
 				</table>
 			</fieldset>
@@ -573,7 +656,7 @@ function show_tools()
 	
 
 	
-	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_21, $emessage->render().$text);
+	e107::getRender()->tablerender(LANG_LAN_PAGE_TITLE.' - '.LANG_LAN_21, $mes->render().$text);
 }
 
 
@@ -588,6 +671,11 @@ function available_langpacks()
 		
 	if($rawData = $xml -> loadXMLfile($feed, TRUE))
 	{
+		if(!varset($rawData['language']))
+		{
+			return FALSE;
+		}
+		
 		$text .= "<div class='block-text'>".LANG_LAN_35."</div>";
 		$text .= "<table cellpadding='0' cellspacing='0' class='adminlist'>";
 		foreach($rawData['language'] as $val)
@@ -754,11 +842,200 @@ function grab_lans($path, $language, $filter = "")
 	}
 	return $pzip;
 }
+
+
+// -----------------------
+
+
+/**
+ * Compare Language File against script and find unused LANs
+ * @param object $lanfile
+ * @param object $script
+ * @return 
+ */
+function unused($lanfile,$script)
+{
+	$lanDefines = file_get_contents($lanfile);
+	
+	$tmp = explode(",",$script);
+	foreach($tmp as $scr)
+	{
+		$compare[$scr] = file_get_contents($scr);	
+	}
+	
+	
+	$mes = e107::getMessage();
+
+	if(!$compare)
+	{
+		$mes = e107::getMessage();
+		$mes->add("Couldn't read ".$script, E_MESSAGE_ERROR);
+	}
+	
+	if(!$lanDefines)
+	{
+		$mes = e107::getMessage();
+		$mes->add("Couldn't read ".$lanfile, E_MESSAGE_ERROR);
+	}
+
+
+	$srch = array("<?php","<?","?>");
+	$lanDefines = str_replace($srch,"",$lanDefines);
+	$lanDefines = explode("\n", $lanDefines);
+	
+	if($lanDefines && $compare)
+	{
+
+		$text = "<table class='adminlist' style='width:100%'>
+		<thead>
+		<tr>
+			<th>".$lanfile."</th>";
+			
+			foreach($compare as $k=>$val)
+			{
+				$text .= "<th>".$k."</th>";	
+			}
+			$text .= "
+			</tr>
+			</thead>
+			<tbody>";
+		
+	// 	for ($i=0; $i<count($lanDefines); $i++)
+	//	{
+		foreach($lanDefines as $line)
+		{
+			if(trim($line) !="")
+			{	    		
+		   		$disabled = (eregi("^//",$line)) ? " (disabled)" : FALSE;
+				if($match = getDefined($line))
+				{
+					$text .= compareit($match['define'],$compare,$match['value'],$disabled);					
+	    		}			
+	   	 		
+			}
+	 	}
+
+		$text .= "</tbody></table>";
+
+		$ret['text'] = $text;
+		$ret['caption'] = "Deprecated LAN Check (experimental!)";
+
+		return $ret;
+	}
+	else
+	{
+    	return FALSE;
+	}
+
+}
+
+function getDefined($line)
+{
+	if(preg_match("#\"(.*?)\".*?\"(.*)\"#",$line,$match) ||
+					preg_match("#\'(.*?)\'.*?\"(.*)\"#",$line,$match) ||
+					preg_match("#\"(.*?)\".*?\'(.*)\'#",$line,$match) ||
+					preg_match("#\'(.*?)\'.*?\'(.*)\'#",$line,$match) ||
+					preg_match("#\((.*?)\,.*?\"(.*)\"#",$line,$match) ||
+					preg_match("#\((.*?)\,.*?\'(.*)\'#",$line,$match))
+	{
+
+		return array('define'=>$match[1],'value'=>$match[2]);
+	}
+	
+}
+
+
+
+function compareit($needle,$haystack,$value='',$disabled){
+	
+	
+//	return "Need=".$needle."<br />hack=".$haystack."<br />val=".$val;
+	//TODO Move this into a separate function (use a class for this whole script)
+	
+	$commonPhrases = file_get_contents(e_LANGUAGEDIR."English/admin/lan_admin.php");	
+	$commonLines = explode("\n",$commonPhrases);
+	
+	foreach($commonLines as $line)
+	{
+		if($match = getDefined($line))
+		{
+			$id = $match['define'];
+			$ar[$id] = $match['value'];
+		}
+	}
+
+	// Check if a common phrases was used. 
+	foreach($ar as $def=>$common)
+	{
+    	if(strtoupper(trim($value)) == strtoupper($common))
+		{
+        	//$text .= "<div style='color:yellow'><b>$common</b></div>";
+			$foundCommon = TRUE;
+			break;
+		}
+	}
+
+	
+	
+	foreach($haystack as $script)
+	{
+		$lines = explode("\n",$script);
+		
+		$text .= "<td>";
+		
+		$count = 1;
+		foreach($lines as $ln)
+		{
+			if(strpos($ln,$needle.'.')!==FALSE || strpos($ln,$needle.';')!==FALSE || strpos($ln,$needle.';')!==FALSE)
+			{
+				$text .= "Line:<b>".$count."</b>  "; // "' Found";	
+				$found = TRUE;
+			}
+			$count++;	
+		}
+
+		if(!$found)
+		{
+			$text .= "-";
+		}
+		$text .= "</td>";
+		
+	}
+
+	$color = $found ? "" : "background-color:pink";
+
+	if($foundCommon && $found)
+	{	
+		$color = "background-color:yellow";
+		$disabled .= "<br /><i>".$common."</i> is a common phrase.<br />(Use <b>".$def."</b> instead.)";
+		// return "<tr><td style='width:25%;'>".$needle .$disabled. "</td><td></td></tr>";
+	}
+
+	return "<tr><td style='width:25%;$color'>".$needle .$disabled. "</td>".$text."</tr>";
+}
+
+
+
+
+
+
+
 /**
  * Handle page DOM within the page header
  *
  * @return string JS source
  */
+
+
+
+
+
+
+
+
+
+
+
 
 
 function headerjs()

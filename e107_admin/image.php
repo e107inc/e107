@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-11-07 02:10:34 $
+ * $Revision: 1.26 $
+ * $Date: 2009-11-07 11:20:26 $
  * $Author: e107coders $
  *
 */
@@ -21,17 +21,6 @@ if (!getperms("A"))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
-$e_sub_cat = 'image';
-
-require_once("auth.php");
-require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."userclass_class.php");
-require_once(e_HANDLER."message_handler.php");
-$frm = new e_form(); //new form handler
-$emessage = &eMessage::getInstance();
-
 /*
  * CLOSE - GO TO MAIN SCREEN
  */
@@ -41,6 +30,127 @@ if(isset($_POST['submit_cancel_show']))
 	exit();
 }
 
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
+$e_sub_cat = 'image';
+
+// require_once("auth.php");
+// require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER."message_handler.php");
+// $frm = new e_form(); //new form handler
+$emessage = &eMessage::getInstance();
+
+class media_admin extends e_admin_dispatcher
+{
+
+	protected $modes = array(
+		'main'		=> array(
+			'controller' 	=> 'media_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'comments_admin_form_ui',
+			'uipath' 		=> null
+		)				
+	);	
+
+
+	protected $adminMenu = array(
+		'main/list'			=> array('caption'=> 'Media Library', 'perm' => 'A'),
+		'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'),
+		'main/icons' 		=> array('caption'=> IMALAN_71, 'perm' => 'A'),
+		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
+		'main/avatars'		=> array('caption'=> IMALAN_23, 'perm' => 'A')		
+	);
+	
+/*	
+	$var['main']['text'] = IMALAN_7;
+	$var['main']['link'] = e_SELF;
+
+	$var['icons']['text'] = IMALAN_71;
+	$var['icons']['link'] = e_SELF."?icons";
+
+	$var['avatars']['text'] = IMALAN_23;
+	$var['avatars']['link'] = e_SELF."?avatars";
+
+
+	$var['editor']['text'] = "Image Manipulation (future release)";
+	$var['editor']['link'] = e_SELF."?editor";*/
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'				
+	);	
+	
+	protected $menuTitle = LAN_MEDIAMANAGER;
+}
+
+
+class media_admin_ui extends e_admin_ui
+{
+		
+		protected $pluginTitle = LAN_MEDIAMANAGER; 
+		protected $pluginName = 'core';
+		protected $table = "core_media";
+		
+		protected $listQry = "SELECT * FROM #core_media"; // without any Order or Limit. 
+		
+	//	//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
+		
+		protected $pid = "media_id";
+		protected $perPage = 10;
+		protected $batchDelete = true;
+		
+		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
+    	protected $fields = array(
+			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
+			'media_id'				=> array('title'=> ID,				'type' => 'int',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE),
+       		'media_preview' 		=> array('title'=> "Preview",		'type' => null,			'data'=> null,		'width' => '10%'), // Generate on the fly.
+       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> null,		'readParm' => 'hidden',	'width' => '10%'), // Generate on the fly.  
+			'media_title' 			=> array('title'=> "Title",			'type' => 'text',		'data'=> 'str',		'width' => '5%'),
+			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => '5%'),
+         	'media_description' 	=> array('title'=> "Description",	'type' => 'textarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first'), // Display name
+         	'media_category' 		=> array('title'=> "Category",		'type' => 'int',		'data'=> 'int',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+			'media_datestamp' 		=> array('title'=> "datestamp",		'type' => 'datestamp',	'data'=> 'int',		'width' => 'auto'),	// User date
+            'media_url' 			=> array('title'=> "URL",			'type' => 'url',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+			'media_userclass' 		=> array('title'=> "Userclass",		'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
+			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+		);
+
+
+		protected $fieldpref = array('checkboxes', 'media_id', 'media_thumb', 'media_title', 'media_caption', 'media_description', 'media_category', 'media_datestamp','media_userclass', 'options');
+		
+		
+		/*
+		protected $prefs = array( 
+			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
+			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
+		);*/
+		
+}
+
+
+new media_admin();
+
+require_once(e_ADMIN."auth.php");
+
+e107::getAdminUI()->runPage();
+
+
+
+
+
+
+
+
+
+
+
+// -----------------------------------------------------------------------
+
+ 
+
+
 $action = e_QUERY;
 
 
@@ -49,17 +159,17 @@ if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST
 	del_pref_val();
 }
 
-if($action == "icons")
+if($_GET['action'] == "icons")
 {
 	icon_editor();
 }
 
-if($action == "avatars")
+if($_GET['action'] == "avatars")
 {
 	show_avatars();
 }
 
-if($action !='avatars' && $action !='icons')
+if($_GET['action'] == 'settings')
 {
 	main_config();
 }
@@ -243,9 +353,15 @@ if (isset($_POST['update_options']))
  */
 function show_avatars()
 {
-	global $ns, $sql, $frm, $tp, $emessage, $e107, $pref;
+	global $e107, $pref;
+	
+	$ns = e107::getRender();
+	$sql = e107::getDb();
+	$frm = e107::getForm();
+	$tp = e107::getParser();
+	$mes = e107::getMessage();
 
-	$handle = opendir(e_UPLOAD."avatars/");
+	$handle = opendir(e_UPLOAD."avatars/"); //TODO replace with $fl
 	$dirlist = array();
 	while ($file = readdir($handle))
 	{
@@ -348,7 +464,7 @@ function show_avatars()
 	}
 
 
-	$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_18, $emessage->render().$text);
+	$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_18, $mes->render().$text);
 }
 
 /*
@@ -531,7 +647,14 @@ if (isset($_POST['check_avatar_sizes']))
  */
  function main_config()
  {
- 	global $pref, $frm, $tp, $sql, $ns, $emessage;
+ 	global $pref;
+	
+	$frm = e107::getForm();
+	$tp = e107::getParser();
+	$sql = e107::getDb();
+	$ns = e107::getRender();
+	$mes = e107::getMessage();
+
 	if(function_exists('gd_info'))
 	{
 		$gd_info = gd_info();
@@ -650,7 +773,7 @@ if (isset($_POST['check_avatar_sizes']))
 			</fieldset>
 		</form>";
 
-		$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_7, $emessage->render().$text);
+		$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_7, $mes->render().$text);
 }
 //Just in case...
 if(!e_AJAX_REQUEST) require_once("footer.php");
@@ -660,10 +783,12 @@ if(!e_AJAX_REQUEST) require_once("footer.php");
 
 function icon_editor()
 {
-	global $iconpool, $e107, $emessage, $frm, $tp;
+	global $iconpool, $e107;
 	
 	$ns = e107::getRender();
 	$tp = e107::getParser();
+	$frm = e107::getForm();
+	$mes = e107::getMessage();
 	
 	ksort($iconpool);
 
@@ -738,7 +863,7 @@ function icon_editor()
 
 		";
 	//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
-	$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_71, $emessage->render().$text);
+	$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_71, $mes->render().$text);
 
 	return $text;
 }
@@ -776,29 +901,6 @@ function del_pref_val()
 }
 
 
-function image_adminmenu()
-{
-	global $action;
-	if($action == "")
-	{
-		$action = "main";
-	}
-	$var['main']['text'] = IMALAN_7;
-	$var['main']['link'] = e_SELF;
-
-	$var['icons']['text'] = IMALAN_71;
-	$var['icons']['link'] = e_SELF."?icons";
-
-	$var['avatars']['text'] = IMALAN_23;
-	$var['avatars']['link'] = e_SELF."?avatars";
-
-
-	$var['editor']['text'] = "Image Manipulation (future release)";
-	$var['editor']['link'] = e_SELF."?editor";
-
-
-	e_admin_menu(LAN_IMAGEMANAGER, $action, $var);
-}
 
 
 

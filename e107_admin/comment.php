@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-11-06 18:37:23 $
-|     $Author: secretr $
+|     $Revision: 1.14 $
+|     $Date: 2009-11-07 11:20:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -78,20 +78,20 @@ class comments_admin_ui extends e_admin_ui
 		
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
-			'checkboxes'			=> array('title'=> '', 			'type' => null, 	'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'comment_id'			=> array('title'=> ID, 			'type' => 'int',	'width' =>'5%', 'forced'=> TRUE),
-       		'comment_item_id' 		=> array('title'=> "item id", 	'type' => 'text',	'width' => 'auto'),
-         	'comment_subject' 		=> array('title'=> "subject", 	'type' => 'text',	'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'comment_comment' 		=> array('title'=> "comment",	'type' => 'textarea',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'comment_author_id' 	=> array('title'=> "authorID", 	'type' => 'user', 'data' => 'int',	'width' => 'auto'),	// User id
-         	'comment_author_name' 	=> array('title'=> "authorName",'type' => 'text',	'width' => 'auto'),	// User name
-         	'user_name' 			=> array('title'=> "System user", 'type' => 'text',	'width' => 'auto', 'table' => 'user', 'noedit' => true),	// User name
-		    'comment_datestamp' 	=> array('title'=> "datestamp",	'type' => 'datestamp',	'width' => 'auto'),	// User date
-            'comment_blocked' 		=> array('title'=> "blocked",	'type' => 'boolean', 'data'=> 'int', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
-			'comment_ip' 			=> array('title'=> "IP",		'type' => 'text',	'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
-			'comment_type' 			=> array('title'=> "Type",		'type' => 'method',	'width' => '10%', 'thclass' => 'center', 'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
-			'comment_lock' 			=> array('title'=> "Lock",		'type' => 'boolean', 'data'=> 'int', 'filter' => true, 'batch' => true,	'width' => 'auto'),
-			'options' 				=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
+			'comment_id'			=> array('title'=> ID,				'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
+       		'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',			'width' => '5%'),
+         	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
+         	'comment_comment' 		=> array('title'=> "comment",		'type' => 'textarea',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+		 	'comment_author_id' 	=> array('title'=> "authorID",		'type' => 'user',			'data' => 'int',	'width' => 'auto'),	// User id
+         	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'text',			'width' => 'auto'),	// User name
+         	'user_name' 			=> array('title'=> "System user",	'type' => 'text',			'width' => 'auto', 'table' => 'user', 'noedit' => true),	// User name
+		    'comment_datestamp' 	=> array('title'=> "datestamp",		'type' => 'datestamp',		'width' => 'auto'),	// User date
+            'comment_blocked' 		=> array('title'=> "blocked",		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+			'comment_ip' 			=> array('title'=> "IP",			'type' => 'text',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+			'comment_type' 			=> array('title'=> "Type",			'type' => 'method',			'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
+			'comment_lock' 			=> array('title'=> "Lock",			'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
+			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		//required (but should be optional) - default column user prefs 
 		protected $fieldpref = array('checkboxes', 'comment_id', 'comment_item_id', 'comment_author_id', 'comment_author_name', 'comment_subject', 'comment_comment', 'comment_type', 'options');
@@ -132,7 +132,8 @@ class comments_admin_form_ui extends e_admin_form_ui
 		if($mode == 'batch')
 		{
 			$types = e107::getComment()->known_types;
-		//	sort($types);
+			asort($types);
+			
 			return $types;	
 		}
 	}
