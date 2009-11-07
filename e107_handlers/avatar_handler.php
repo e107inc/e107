@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/avatar_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2008-12-10 16:37:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2009-11-07 02:28:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT'))
@@ -26,7 +26,7 @@ function avatar($avatar)
 	global $tp;
 	if (stristr($avatar, '-upload-') !== false)
 	{
-		return e_FILE.'public/avatars/'.str_replace('-upload-', '', $avatar);
+		return e_UPLOAD.'avatars/'.str_replace('-upload-', '', $avatar);
 	}
 	elseif (stristr($avatar, 'Binary') !== false)
 	{

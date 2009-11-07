@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.112 $
-|     $Date: 2009-11-05 09:15:12 $
+|     $Revision: 1.113 $
+|     $Date: 2009-11-07 02:28:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -416,6 +416,10 @@ class e107plugin
 
 	function manage_extended_field($action, $field_name, $field_type, $field_default='', $field_source='')
 	{
+		$mes = e107::getMessage();
+
+		$mes->add("Extended Field: ".$action.": ".$field_name." : ".$field_type, E_MESSAGE_DEBUG);
+		
 		if(!isset($this->module['ue']))
 		{
 			include_once(e_HANDLER.'user_extended_class.php');
@@ -440,6 +444,9 @@ class e107plugin
 		global $e107;
 		$tp = e107::getParser();
 		$sql  = e107::getDb();
+		$mes = e107::getMessage();
+
+		$mes->add("Userclass: ".$action.": ".$class_name." : ".$class_description, E_MESSAGE_DEBUG);
 		
 		if (!$e107->user_class->isAdmin)
 		{

@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/online_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-09-21 21:43:44 $
- * $Author: e107steved $
+ * $Revision: 1.6 $
+ * $Date: 2009-11-07 02:28:54 $
+ * $Author: e107coders $
 */
 
 class e_online 
@@ -35,6 +35,7 @@ class e_online
 				}
 			}
 			$online_warncount = $online_bancount * 0.9;		// Set warning threshold at 90% of ban threshold
+			//TODO Add support for all queries. 
 			$page = (strpos(e_SELF, "forum_") !== FALSE) ? e_SELF.".".e_QUERY : e_SELF;
 			$page = (strpos(e_SELF, "comment") !== FALSE) ? e_SELF.".".e_QUERY : $page;
 			$page = (strpos(e_SELF, "content") !== FALSE) ? e_SELF.".".e_QUERY : $page;
