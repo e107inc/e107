@@ -3,16 +3,17 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ?Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|     Copyright (C) 2001-2009 e107 Inc
+|     http://e107.org/
+|
+|     Standalone page aimed to reset core preferences
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/utilities/resetcore.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-11-07 11:09:23 $
+|     $Revision: 1.6 $
+|     $Date: 2009-11-07 11:16:07 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
