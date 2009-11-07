@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-10-29 12:39:21 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.22 $
+|     $Date: 2009-11-07 02:16:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -80,7 +80,7 @@ if (count($allowed_types) == 0)
 
 //echo "Allowed filetypes = ".implode(', ',array_keys($allowed_types)).'<br />';
 // avatar check.
-$public = array(e_FILE.'public', e_FILE.'public/avatars');
+$public = array(e_UPLOAD, e_UPLOAD.'avatars');
 $exceptions = array(".","..","/","CVS","avatars","Thumbs.db",".htaccess","php.ini",".cvsignore");
 
 //TODO use $file-class to grab list and perform this check. 
@@ -383,8 +383,7 @@ function getPluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 
 /*	echo "hello there";
 
-	require_once(e_HANDLER.'xml_class.php');
-	$xml = new xmlClass;				// We're going to have some plugins with plugin.xml files, surely? So create XML object now
+ 	$xml = e107::getXml();
 	$xml->filter = array('@attributes' => FALSE,'description'=>FALSE,'administration' => FALSE);	// .. and they're all going to need the same filter
 
 	if ($sql->db_Select("plugin", "*", "plugin_installflag=1"))

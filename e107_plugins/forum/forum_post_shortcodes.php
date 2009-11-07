@@ -107,7 +107,7 @@ class forum_post_shortcodes
 
 		if ($pref['forum_attach'] && strpos(e_QUERY, 'edit') === FALSE && (check_class($pref['upload_class']) || getperms('0')))
 		{
-			if (is_writable(e_FILE.'public'))
+			if (is_writable(e_UPLOAD))
 			{
 				return $fileattach;
 			}
