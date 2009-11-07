@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-10-24 13:38:05 $
-|     $Author: mrpete $
+|     $Revision: 1.16 $
+|     $Date: 2009-11-07 11:10:42 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -65,11 +65,10 @@ require_once('../../'.$HANDLERS_DIRECTORY.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
 echo "<?xml version='1.0' encoding='".CHARSET."' ?>\n";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title><e107 resetcore></title>
+<title>e107 resetcore</title>
 <link rel="stylesheet" href="style.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>" />
 <meta http-equiv="content-style-type" content="text/css" />
