@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-11-07 11:20:27 $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-07 11:34:22 $
  * $Author: e107coders $
  *
  */
@@ -636,7 +636,11 @@ function show_tools()
 									$lans = $fl->get_files(e_LANGUAGEDIR."English/admin");
 									
 									foreach($lans as $script=>$lan)
-									{
+									{								
+										if(basename($lan)=='lan_admin.php')
+										{
+											continue;
+										}
 										$selected = ($lan == varset($_POST['deprecatedLans'])) ? "selected='selected'" : "";
 										$text .= "<option value='".$lan."' {$selected}>".str_replace(e_LANGUAGEDIR."English/","",$lan)."</option>\n";
 									}
