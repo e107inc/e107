@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-05-17 19:05:08 $
-|     $Author: e107steved $
+|     $Revision: 1.9 $
+|     $Date: 2009-11-07 02:16:56 $
+|     $Author: e107coders $
 |
 | Modifications in hand to work with most recent mailout.php
 
@@ -182,7 +182,7 @@ $email_info = unserialize($row['gen_chardata']);		// Gives us sender_name, sende
 	}
 	else
 	{
-		$attach_link = e_FILE.'public/'.$attach;
+		$attach_link = e_UPLOAD.$attach;
 	}
 
 	if (($temp = strrchr($attach,'/')) !== FALSE)

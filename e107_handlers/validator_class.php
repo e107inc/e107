@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-10-30 17:59:31 $
- * $Author: secretr $
+ * $Revision: 1.14 $
+ * $Date: 2009-11-07 02:16:52 $
+ * $Author: e107coders $
  *
 */
 
@@ -939,7 +939,7 @@ class validatorClass
 								{
 									if (strpos('-upload-', $value) === 0)
 									{
-										$img = e_FILE.'public/avatars/'.$value;		// Its a server-stored image
+										$img = e_UPLOAD.'avatars/'.$value;		// Its a server-stored image
 									}
 									else
 									{

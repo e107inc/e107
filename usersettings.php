@@ -9,8 +9,8 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-11-07 02:10:34 $
+ * $Revision: 1.42 $
+ * $Date: 2009-11-07 02:16:52 $
  * $Author: e107coders $
  *
 */
@@ -144,7 +144,7 @@ if (isset($_POST['updatesettings']))
 		require_once (e_HANDLER.'upload_handler.php');
 		require_once (e_HANDLER.'resize_handler.php');
 
-		if ($uploaded = process_uploaded_files(e_FILE.'public/avatars/', 'prefix+ap_'.$udata['user_id'].'_', array('overwrite' => TRUE, 'file_mask'=>'jpg,png,gif', 'max_file_count' => 2)))
+		if ($uploaded = process_uploaded_files(e_UPLOAD.'avatars/', 'prefix+ap_'.$udata['user_id'].'_', array('overwrite' => TRUE, 'file_mask'=>'jpg,png,gif', 'max_file_count' => 2)))
 		{
 			foreach ($uploaded as $upload)
 			{
