@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/download.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-08-28 16:10:56 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.19 $
+|     $Date: 2009-11-07 02:10:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -100,11 +100,11 @@ if($file_array = $fl->get_files(e_DOWNLOAD, "","standard",5))
 }
 
 
-if($public_array = $fl->get_files(e_FILE."public/"))
+if($public_array = $fl->get_files(e_UPLOAD))
 {
   foreach($public_array as $key=>$val)
   {
-    	$file_array[] = str_replace(e_FILE."public/","",$val);
+    	$file_array[] = str_replace(e_UPLOAD,"",$val);
 	}
 }
 
@@ -900,7 +900,7 @@ class download
 		}
 
 		$etext = " - (".DOWLAN_68.")";
-		if (file_exists(e_FILE."public/".$download_url)) 
+		if (file_exists(e_UPLOAD.$download_url)) 
 		{
 			$etext = "";
 		}
@@ -1258,7 +1258,7 @@ class download
 		{
 			if($_POST['download_thumb'])
 			{
-				$oldname = e_FILE."public/".$_POST['download_thumb'];
+				$oldname = e_UPLOAD.$_POST['download_thumb'];
 				$newname = e_FILE."downloadthumbs/".$_POST['download_thumb'];
 				if(!$this -> move_file($oldname,$newname))
 				{
@@ -1267,7 +1267,7 @@ class download
 			}
 			if($_POST['download_image'])
 			{
-				$oldname = e_FILE."public/".$_POST['download_image'];
+				$oldname = e_UPLOAD.$_POST['download_image'];
 				$newname = e_FILE."downloadimages/".$_POST['download_image'];
 				if(!$this -> move_file($oldname,$newname))
 				{
@@ -1278,7 +1278,7 @@ class download
 
         if($_POST['move_file'] && $_POST['download_url'])
 		{
-        	$oldname = e_FILE."public/".$_POST['download_url'];
+        	$oldname = e_UPLOAD.$_POST['download_url'];
 			$newname = $_POST['move_file'].$_POST['download_url'];
 			if(!$this -> move_file($oldname,$newname))
 			{

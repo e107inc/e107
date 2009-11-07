@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_uploads.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-01-17 20:47:35 $
-|     $Author: e107steved $
+|     $Revision: 1.3 $
+|     $Date: 2009-11-07 02:10:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -33,7 +33,7 @@ if(is_array($_POST['delete']))
 		$f = explode("_", $fname);
 		if($f[1] == USERID)
 		{
-			$path = e_FILE."public/".$fname;
+			$path = e_UPLOAD.$fname;
 			if(unlink($path) == TRUE)
 			{
 				$msg = FRMUP_2.": $path";
@@ -55,7 +55,7 @@ if($msg)
 
 $fi = new e_file;
 $mask = ".*_".USERID."_FT.*";
-$fileList = $fi->get_files(e_FILE."public", $mask);
+$fileList = $fi->get_files(e_UPLOAD, $mask);
 if($sql->db_Select('forum_t','thread_id, thread_thread, thread_parent', "thread_thread REGEXP '.*_".USERID."_FT.*'"))
 {
 	$threadList = $sql->db_getList();
@@ -76,7 +76,7 @@ if(is_array($fileList))
 		if($finfo['fname'])
 		{
 			$filecount++;
-			$txt .= "<tr><td class='forumheader3'><a href='".e_FILE."public/{$finfo['fname']}'>{$finfo['fname']}</a></td>";
+			$txt .= "<tr><td class='forumheader3'><a href='".e_UPLOAD.$finfo['fname']."'>{$finfo['fname']}</a></td>";
 			$found = FALSE;
 			if(is_array($threadList))
 			{

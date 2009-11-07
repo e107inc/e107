@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-10-29 12:39:20 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-07 02:10:34 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -88,7 +88,7 @@ if (isset($_POST['submit_show_delete_multi']))
 			}
 
 			//delete it from server
-			@unlink(e_FILE."public/avatars/".$todel[1]);
+			@unlink(e_UPLOAD."avatars/".$todel[1]);
 
 			//admin log & sysmessage
 			$message[] = $todel[1];
@@ -135,10 +135,10 @@ if (isset($_POST['submit_show_delete_multi']))
  */
 if (isset($_POST['submit_show_deleteall']))
 {
-	$handle = opendir(e_FILE."public/avatars/");
+	$handle = opendir(e_UPLOAD."avatars/");
 	$dirlist = array();
 	while ($file = readdir($handle)) {
-		if (!is_dir(e_FILE."public/avatars/{$file}") && $file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') {
+		if (!is_dir(e_UPLOAD."avatars/{$file}") && $file != '.' && $file != '..' && $file != "index.html" && $file != "null.txt" && $file != '/' && $file != 'CVS' && $file != 'Thumbs.db') {
 			$dirlist[] = $file;
 		}
 	}
@@ -153,7 +153,7 @@ if (isset($_POST['submit_show_deleteall']))
 			$image_name = basename($image_name);
 			$image_todb = $tp->toDB($image_name);
 			if (!$sql->db_Count('user', '(*)', "WHERE user_image='-upload-{$image_todb}' OR user_sess='{$image_todb}'")) {
-				unlink(e_FILE."public/avatars/".$image_name);
+				unlink(e_UPLOAD."avatars/".$image_name);
 				$imgList .= '[!br!]'.$image_name;
 				$count++;
 			}
@@ -245,7 +245,7 @@ function show_avatars()
 {
 	global $ns, $sql, $frm, $tp, $emessage, $e107, $pref;
 
-	$handle = opendir(e_FILE."public/avatars/");
+	$handle = opendir(e_UPLOAD."avatars/");
 	$dirlist = array();
 	while ($file = readdir($handle))
 	{
@@ -288,7 +288,7 @@ function show_avatars()
 			}
 
 			//directory?
-			if(is_dir(e_FILE."public/avatars/".$image_name))
+			if(is_dir(e_UPLOADE."avatars/".$image_name))
 			{
 				//File info
 				$users = "<a class='e-tooltip' href='#' title='".IMALAN_69.": {$image_name}'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> <span class='error'>".IMALAN_69."</span>";
@@ -303,7 +303,7 @@ function show_avatars()
 				$users = "<a class='e-tooltip' href='#' title='".IMALAN_66.": {$image_name}'><img src='".e_IMAGE_ABS."admin_images/info_16.png' alt='".IMALAN_66.": {$image_name}' /></a> ".$users;
 
 				// Control over the image size (design)
-				$image_size = getimagesize(e_FILE."public/avatars/".$image_name);
+				$image_size = getimagesize(e_UPLOAD."avatars/".$image_name);
 
 				//Friendly UI - click text to select a form element
 				$img_src = "<label for='image-action-{$count}' title='".IMALAN_56."'><img src='".e_FILE_ABS."public/avatars/{$image_name}' alt='{$image_name}' /></label>";

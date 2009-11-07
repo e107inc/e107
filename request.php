@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/request.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-07-14 05:31:57 $
+|     $Revision: 1.9 $
+|     $Date: 2009-11-07 02:10:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -114,9 +114,9 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 	if(strstr(e_QUERY, "pub_"))
 	{
 		$bid = str_replace("pub_", "", e_QUERY);
-		if (file_exists(e_FILE."public/".$bid))
+		if (file_exists(e_UPLOAD.$bid))
 		{
-			send_file(e_FILE."public/".$bid);
+			send_file(e_UPLOAD.$bid);
 			exit();
 		}
 	}
@@ -221,9 +221,9 @@ if ($type == "file")
 					send_file($DOWNLOADS_DIRECTORY.$download_url);
 					exit();
 				} 
-				elseif(file_exists(e_FILE."public/{$download_url}")) 
+				elseif(file_exists(ee_UPLOAD.$download_url)) 
 				{
-					send_file(e_FILE."public/{$download_url}");
+					send_file(e_UPLOAD.$download_url);
 					exit();
 				}
 			}
@@ -311,7 +311,7 @@ else
 		} 
 		else 
 		{
-			$disp = "<div style='text-align:center'><img src='".e_FILE."public/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img src='".e_UPLOAD.$image."' alt='' /></div>";
 		}
 		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>";
 		$ns->tablerender($image, $disp);
@@ -319,9 +319,9 @@ else
 		require_once(FOOTERF);
 	} else 
 	{
-		if (is_file(e_FILE."public/{$image}")) 
+		if (is_file(e_UPLOAD.$image)) 
 		{
-			echo "<img src='".e_FILE."public/{$image}' alt='' />";
+			echo "<img src='".e_UPLOAD.$image."' alt='' />";
 		} 
 		elseif(is_file(e_FILE."downloadimages/{$image}")) 
 		{
