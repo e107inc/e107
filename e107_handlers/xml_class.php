@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-10-24 08:10:46 $
+ * $Revision: 1.34 $
+ * $Date: 2009-11-07 02:28:54 $
  * $Author: e107coders $
 */
 
@@ -843,6 +843,7 @@ class xmlClass
 		if($debug)
 		{
 			// $message = print_r($xmlArray);
+		//	echo "<pre>".print_r($xmlArray,TRUE)."</pre>";
 			return;
 		}
 
@@ -860,7 +861,7 @@ class xmlClass
 				}
 				else
 				{
-					e107::getConfig($type)->addPref($pArray);
+					e107::getConfig($type)->addPref($pArray); // FIXME addPref() doesn't behave the same way as setPref() with arrays. 
 				}
 
 				if($debug == FALSE)

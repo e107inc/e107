@@ -9,9 +9,9 @@
  * Cache Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-08-28 16:10:54 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.11 $
+ * $Date: 2009-11-07 02:28:54 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -84,8 +84,8 @@ if (isset($_POST['empty_cache']))
 
 
 
-$syscache_files = glob($e107->file_path.$FILES_DIRECTORY."cache/S_*.*");
-$cache_files = glob($e107->file_path.$FILES_DIRECTORY."cache/C_*.*");
+$syscache_files = glob($e107->file_path.$CACHE_DIRECTORY."S_*.*");
+$cache_files = glob($e107->file_path.$CACHE_DIRECTORY."C_*.*");
 
 $syscache_files_num = count($syscache_files);
 $cache_files_num = count($cache_files);

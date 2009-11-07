@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_files/utilities/resetcore.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-19 11:44:28 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.3 $
+|     $Date: 2009-11-07 02:28:59 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -319,7 +319,8 @@ function e_verify() {
 }
 
 function clear_cache() {
-	$dir = "../cache/";
+	// $dir = "../cache/";
+	$dir = e_CACHE;
 	$pattern = "*.cache.php";
 	$deleted = false;
 	$pattern = str_replace(array("\*", "\?"), array(".*", "."), preg_quote($pattern));
