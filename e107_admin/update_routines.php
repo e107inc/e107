@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2009-11-04 03:37:56 $
+|     $Revision: 1.58 $
+|     $Date: 2009-11-07 11:20:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -254,7 +254,7 @@ function update_706_to_800($type='')
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
-	$new_tables = array('admin_log','audit_log', 'dblog','news_rewrite');
+	$new_tables = array('admin_log','audit_log', 'dblog','news_rewrite', 'core_media');
 	
 	// List of core prefs that need to be converted from serialized to e107ArrayStorage. 
 	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'");
@@ -346,14 +346,9 @@ function update_706_to_800($type='')
 		$s_prefs = $tp -> toDB($notify_prefs);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
-		if ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") === FALSE)
-		{
-			$updateMessages[] = LAN_UPDATE_21;		// Log error
-		}
-		else
-		{
-			$updateMessages[] = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);		// Log success
-		}
+		$status = ($sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") === FALSE) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$message = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);
+		$mes->add($message, $status);
 	}
 
 
@@ -363,7 +358,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed();
 		$pref['signup_option_customtitle'] = $pref['forum_user_customtitle'];
 		unset($pref['forum_user_customtitle']);
-		$updateMessages[] = LAN_UPDATE_22;
+		$mes->add(LAN_UPDATE_20.'customtitle', E_MESSAGE_SUCCESS);		
 		$do_save = TRUE;
 	}
 	
@@ -375,8 +370,8 @@ function update_706_to_800($type='')
 			if ($just_check) return update_needed();
 			while ($row = e107::getDb()->db_Fetch(MYSQL_ASSOC))
 			{
-				e107::getDb('sql2')->db_Update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");	
-				$updateMessages[] = "Converted Serialized prefs [".$row['e107_name']."]"; // LAN_UPDATE_23;
+				$status = e107::getDb('sql2')->db_Update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'");				
+				$mes->add(LAN_UPDATE_22.$row['e107_name'], $status);
 			}	
 		}	
 	
@@ -392,8 +387,8 @@ function update_706_to_800($type='')
 			{
 				if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
 				$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
-				$sql->db_Update("menus", $updqry);
-				$mes->add('Updating Menu Path for <b>'.$val['menu'].'</b> from '.$val['oldpath'].' => '.$val['newpath'], E_MESSAGE_DEBUG); // LAN_UPDATE_25;
+				$status = $sql->db_Update("menus", $updqry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$mes->add(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;				
 				// catch_error();
 			}	
 		}
@@ -410,14 +405,14 @@ function update_706_to_800($type='')
 	  //if online_extended is activated, we need to activate the new 'online' menu, and delete this record
 	  if($row['menu_location']!=0)
 	  {
-		$sql->db_Update("menus", "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
-		$updateMessages[] = LAN_UPDATE_30;
+		$status = $sql->db_Update("menus", "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$mes->add(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 				
 	  }
 	  else
 	  {	//else if the menu is not active
 		//we need to delete the online_extended menu row, and change the online_menu to online
 		$sql->db_Delete("menus", " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
-		$updateMessages[] = LAN_UPDATE_31;
+		// $updateMessages[] = LAN_UPXXDATE_31;
 	  }
 	  catch_error();
 	}
@@ -426,8 +421,8 @@ function update_706_to_800($type='')
 	if($sql->db_Select("menus", "menu_path", "menu_path='online_menu' || menu_path='online_menu/'"))
 	{
 	  if ($just_check) return update_needed();
-		$sql->db_Update("menus", "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ");
-		$updateMessages[] = LAN_UPDATE_32;
+		$status = $sql->db_Update("menus", "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$mes->add(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 		
 		catch_error();
 	}
 
@@ -438,32 +433,35 @@ function update_706_to_800($type='')
 	if($sql->db_Field("comments","comment_author"))
 	{
       if ($just_check) return update_needed('Comment table author field update');
-		$commentMessage = LAN_UPDATE_33;
+
 	  if ((!$sql->db_Field("comments","comment_author_id"))		// Check to see whether new fields already added - maybe data copy failed part way through
 		&& (!$sql->db_Select_gen("ALTER TABLE `#comments`
 			ADD COLUMN comment_author_id int(10) unsigned NOT NULL default '0' AFTER `comment_author`,
 			ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
 	  {
 		// Flag error
-		$commentMessage = LAN_UPDATE_34;
+		// $commentMessage = LAN_UPDAXXTE_34;
+		$mes->add(LAN_UPDATE_21."comments", E_MESSAGE_ERROR); 	
 	  }
 	  else
 	  {
 		if (FALSE ===$sql->db_Update("comments","comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
 		{
 			// Flag error
-			$commentMessage = LAN_UPDATE_35;
+			$mes->add(LAN_UPDATE_21."comments", E_MESSAGE_ERROR); 	
 		}
 		else
 		{	// Delete superceded field - comment_author
 		  if (!$sql->db_Select_gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
 		  {
 			// Flag error
-			$commentMessage = LAN_UPDATE_36;
+			$mes->add(LAN_UPDATE_24."comments - comment_author", E_MESSAGE_ERROR); 	
 		  }
 		}
 	  }
-		$updateMessages[] = $commentMessage;	// Hopefully this will usually add the 'success' message
+	  
+	  $mes->add(LAN_UPDATE_21."comments", E_MESSAGE_SUCCESS); 	
+
 	}
 
 
@@ -501,7 +499,8 @@ function update_706_to_800($type='')
 	  if ($just_check) return update_needed('Change front page prefs');
 	  $pref['frontpage_force'] = array(e_UC_PUBLIC => '');
 	  $pref['frontpage'] = array(e_UC_PUBLIC => 'news.php');
-		$updateMessages[] = LAN_UPDATE_38;
+		// $_pdateMessages[] = LAN_UPDATE_38; //FIXME
+		$mes->add(LAN_UPDATE_20."frontpage",E_MESSAGE_SUCCESS);
 	  $do_save = TRUE;
 	}
 
@@ -514,14 +513,15 @@ function update_706_to_800($type='')
 		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
 		{
 			if ($just_check) return update_needed('Update newsfeed field definition');
-			$sql->db_Select_gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ");
-			$updateMessages[] = LAN_UPDATE_40;
-			catch_error();
+			$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			$updateMessages[] = LAN_UPDATE_40; //FIXME
+			$mes->add(LAN_UPDATE_21."newsfeed",$status);
+		//	catch_error();
 		}
 	  }
 	}
 
-
+	//TODO use generic function for this update. 
 	if ($sql->db_Table_exists('download'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
 	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download LIKE 'download_url'"))
@@ -531,12 +531,13 @@ function update_706_to_800($type='')
 		{
 			if ($just_check) return update_needed('Update download table field definition');
 			$sql->db_Select_gen("ALTER TABLE `".MPREFIX."download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
-			$updateMessages[] = LAN_UPDATE_52;
+			$updateMessages[] = LAN_UPDATE_52;  //FIXME
 			catch_error();
 		}
 	  }
 	}
 
+	//TODO use generic function for this update. 
 	if ($sql->db_Table_exists('download_mirror'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
 	  if ($sql->db_Select_gen("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
@@ -546,7 +547,7 @@ function update_706_to_800($type='')
 		{
 			if ($just_check) return update_needed('Update download mirror table field definition');
 			$sql->db_Select_gen("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
-			$updateMessages[] = LAN_UPDATE_53;
+			$updateMessages[] = LAN_UPDATE_53;  //FIXME
 			catch_error();
 		}
 	  }
@@ -561,7 +562,7 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Move user timezone info');
 		if (!copy_user_timezone())
 		{  // Error doing the transfer
-			$updateMessages[] = LAN_UPDATE_42;
+			$updateMessages[] = LAN_UPDATE_42;  //FIXME
 			return FALSE;
 		}
 		$updateMessages[] = LAN_UPDATE_41;
@@ -576,19 +577,19 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Rename dblog to admin_log');
 		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
 		catch_error();
-		$updateMessages[] = LAN_UPDATE_43;
+		$updateMessages[] = LAN_UPDATE_43;  //FIXME
 	}
 
+	
 	// Next bit will be needed only by the brave souls who used an early CVS - probably delete before release
 	if ($sql->db_Table_exists('rl_history') && !$sql->db_Table_exists('dblog'))
 	{
 		if ($just_check) return update_needed('Rename rl_history to dblog');
 		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
-		$updateMessages[] = LAN_UPDATE_44;
+		$updateMessages[] = LAN_UPDATE_44;  //FIXME
 		catch_error();
 	}
-
-
+	  
 	// New tables required (list at top. Definitions in core_sql.php)
 	foreach ($new_tables as $nt)
 	{
@@ -597,15 +598,16 @@ function update_706_to_800($type='')
 	    if ($just_check) return update_needed("Add table: ".$nt);
 		// Get the definition
 		$defs = $db_parser->get_table_def($nt,e_ADMIN."sql/core_sql.php");
-		if (count($defs))
-		{	// **** Add in table here
-			$sql->db_Select_gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]);
-			$updateMessages[] = LAN_UPDATE_45.$defs[0][1];
-			catch_error();
+		if (count($defs)) // **** Add in table here
+		{	
+			$status = $sql->db_Select_gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		//	$updateMessages[] = LAN_UPDATE_45.$defs[0][1];		
+			$mes->add(LAN_UPDATE_27.$defs[0][1], $status); //TODO - all update messages should work like this. 
+			// catch_error();
 		}
 		else
 		{  // error parsing defs file
-			$updateMessages[] = LAN_UPDATE_46.$defs[0][1];
+			$mes->add(LAN_UPDATE_46.$defs[0][1], E_MESSAGE_ERROR);
 		}
 		unset($defs);
 	  }
@@ -619,29 +621,45 @@ function update_706_to_800($type='')
 	{
 	  $req_defs = $db_parser->get_table_def($ct,e_ADMIN."sql/core_sql.php");
 	  $req_fields = $db_parser->parse_field_defs($req_defs[0][2]);					// Required definitions
-	  if ($debugLevel) echo "Required table structure: <br />".$db_parser->make_field_list($req_fields);
+	  if ($debugLevel)
+	  {
+	  	$mes->add("Required table structure: <br />".$db_parser->make_field_list($req_fields), E_MESSAGE_DEBUG);			
+	  } 
 
 	  if ((($actual_defs = $db_parser->get_current_table($ct)) === FALSE) || !is_array($actual_defs))			// Adds current default prefix
 	  {
-	    echo "Couldn't get table structure: {$ct}<br />";
+			$mes->add("Couldn't get table structure: ".$ct, E_MESSAGE_DEBUG);		
 	  }
 	  else
 	  {
 //		echo $db_parser->make_table_list($actual_defs);
 		$actual_fields = $db_parser->parse_field_defs($actual_defs[0][2]);
-		if ($debugLevel) echo "Actual table structure: <br />".$db_parser->make_field_list($actual_fields);
+		if ($debugLevel)
+		{
+			$mes->add("Actual table structure: <br />".$db_parser->make_field_list($actual_fields), E_MESSAGE_DEBUG);		
+		} 
 
 		$diffs = $db_parser->compare_field_lists($req_fields,$actual_fields);
 		if (count($diffs[0]))
 		{  // Changes needed
-		  if ($just_check) return update_needed("Field changes rqd; table: ".$ct);
-		// Do the changes here
-		  if ($debugLevel) echo "List of changes found:<br />".$db_parser->make_changes_list($diffs);
-		  $qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
-		  if ($debugLevel) echo "Update Query used: ".$qry."<br />";
-		  $sql->db_Select_gen($qry);
-			$updateMessages[] = LAN_UPDATE_47.$ct;
-		  catch_error();
+		  	if ($just_check) return update_needed("Field changes rqd; table: ".$ct);
+		
+			// Do the changes here
+		  	if ($debugLevel)
+		  	{
+		  		$mes->add("List of changes found:<br />".$db_parser->make_changes_list($diffs), E_MESSAGE_DEBUG);		
+		  	} 
+		  
+			$qry = 'ALTER TABLE '.MPREFIX.$ct.' '.implode(', ',$diffs[1]);
+		  
+			if ($debugLevel)
+			{
+				$mes->add("Update Query used: ".$qry, E_MESSAGE_DEBUG);	
+			} 
+		  
+			$status = $sql->db_Select_gen($qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
+			$mes->add(LAN_UPDATE_21.$ct, $status);
+		  	catch_error();
 		}
 	  }
 	}
@@ -704,7 +722,7 @@ function update_706_to_800($type='')
 							 $mes->add($message, E_MESSAGE_DEBUG);	
 						}
 						$sql->db_Select_gen($qry);
-						$updateMessages[] = LAN_UPDATE_51.$ct;
+						$updateMessages[] = LAN_UPDATE_51.$ct;  //FIXME
 						catch_error();
 					}
 				}
@@ -719,7 +737,7 @@ function update_706_to_800($type='')
 		require_once(e_HANDLER."plugin_class.php");
 		$ep = new e107plugin;
 		$ep -> update_plugins_table();
-		$updateMessages[] = LAN_UPDATE_24;
+	//	$_pdateMessages[] = LAN_UPDATE_XX24; 
 	 //	catch_error();
 	}
 
@@ -730,8 +748,8 @@ function update_706_to_800($type='')
 		if ($sql->db_Table_exists($ot))
 		{
 			if ($just_check) return update_needed("Delete table: ".$ot);
-			$sql->db_Select_gen('DROP TABLE `'.MPREFIX.$ot.'`');
-			$updateMessages[] = LAN_UPDATE_48.$ot;
+			$status = $sql->db_Select_gen('DROP TABLE `'.MPREFIX.$ot.'`') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			$mes->add(LAN_UPDATE_25.$ot, $status);			
 		}
 	}
 
@@ -747,9 +765,9 @@ function update_706_to_800($type='')
 		  if (strtolower($field_info['Type']) != 'varchar(45)')
 		  {
             if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
-			$sql->db_Select_gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';");
-			$updateMessages[] = LAN_UPDATE_49.$t.' - '.$f;
-			catch_error();
+			$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			$mes->add(LAN_UPDATE_26.$t.' - '.$f, $status);				
+			// catch_error();
 		  }
 	    }
 	    else
@@ -777,8 +795,10 @@ function update_706_to_800($type='')
 	if ($do_save)
 	{
 		save_prefs();
-		$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum);
+		$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum); // FIXME
 	}
+	
+	//FIXME grab message-stack from $mes for the log. 
 
 	if ($just_check) return TRUE;
 	$admin_log->log_event('UPDATE_01',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode('[!br!]',$updateMessages),E_LOG_INFORMATIVE,'');	// Log result of actual update

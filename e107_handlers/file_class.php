@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-11-05 08:07:48 $
+|     $Revision: 1.4 $
+|     $Date: 2009-11-07 11:20:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ class e_file
 {
 	var	$dirFilter;				// Array of directory names to ignore (in addition to any set by caller)
 	var $fileFilter;			// Array of file names to ignore (in addition to any set by caller)
-
+	var $mode = 'default';
 
 	// Constructor
 	function e_file()
@@ -141,10 +141,27 @@ class e_file
 						}
 					}
 					if($rejected == FALSE)
-					{
-						$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
-						$finfo['fname'] = $file;
-						$ret[] = $finfo;
+					{						
+						switch($this->mode) //TODO remove this check from the loop. 
+						{
+							case 'fname':
+								$ret[] = $file;
+							break;
+							
+							case 'path':
+								$ret[] = $path."/";
+							break;						
+
+							case 'full':
+								$ret[] = $path."/".$file;
+							break;							
+						
+							default:
+								$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
+								$finfo['fname'] = $file;
+								$ret[] = $finfo;
+							break;
+						}						
 					}
 				}
 			}

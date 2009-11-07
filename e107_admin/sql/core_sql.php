@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-11-06 11:53:20 $
+ * $Revision: 1.34 $
+ * $Date: 2009-11-07 11:20:28 $
  * $Author: e107coders $
 */
 
@@ -118,6 +118,26 @@ CREATE TABLE core (
   PRIMARY KEY  (e107_name)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
+
+#
+# Table structure for table `core_media` - media manager
+#
+
+CREATE TABLE core_media (
+  media_id int(10) unsigned NOT NULL auto_increment,
+  media_caption varchar(255) NOT NULL default '',
+  media_description varchar(255) NOT NULL default '',
+  media_category int(10) unsigned NOT NULL default '0',
+  media_datestamp int(10) unsigned NOT NULL default '0',
+  media_url varchar(255) NOT NULL default '',
+  media_userclass varchar(255) NOT NULL default '',
+  media_tags text NOT NULL,
+  PRIMARY KEY  (media_id)
+) TYPE=MyISAM;
+
+
+
+
 
 #
 # Table structure for table `dblog` - db/debug/rolling

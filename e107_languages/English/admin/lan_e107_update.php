@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_e107_update.php,v 1.8 2008-12-30 15:56:12 secretr Exp $
+ * $Id: lan_e107_update.php,v 1.9 2009-11-07 11:20:34 e107coders Exp $
  *
  * Administration Language File
  *
@@ -10,7 +10,7 @@
 define("LAN_UPDATE_2", "Action");
 define("LAN_UPDATE_3", "Not Needed");
 
-define("LAN_UPDATE_5", "Update available");
+// define("LAN_UPDATE_5", "Update available");
 define("LAN_UPDATE_7", "Executed");
 define("LAN_UPDATE_8", "Update from");
 define("LAN_UPDATE_9", "to");
@@ -21,47 +21,37 @@ define("LAN_UPDATE_13", "Add additional/missing core settings");
 define('LAN_UPDATE_14', 'Start version: ');
 
 // Messages as part of 0.7 to 0.8 update process
-define('LAN_UPDATE_20', 'Notify values written - --COUNT-- updates');
-define('LAN_UPDATE_21', 'Error writing notify values');
-define('LAN_UPDATE_22', 'Update customtitle');
-define('LAN_UPDATE_23', 'Update theme menu paths');
-define('LAN_UPDATE_24', 'Update user menu paths');
-define('LAN_UPDATE_25', 'Update compliance menu path');
-define('LAN_UPDATE_26', 'Update \'powered by\' menu path');
-define('LAN_UPDATE_27', 'Update sitebutton menu path');
-define('LAN_UPDATE_28', 'Update counter menu path');
-define('LAN_UPDATE_29', 'Update \'last seen\' menu path');
-define('LAN_UPDATE_30', 'Update online_extended to online menu');
-define('LAN_UPDATE_31', 'Delete online_extended menu path');
-define('LAN_UPDATE_32', 'Update online_menu path');
-define('LAN_UPDATE_33', 'Update comment table format');
-define('LAN_UPDATE_34', 'Error adding columns to comment table');
-define('LAN_UPDATE_35', 'Error modifying data in comment table');
-define('LAN_UPDATE_36', 'Error deleting old field in comment table');
-define('LAN_UPDATE_37', 'Add index --INDEX-- to table --TABLE--');
+define('LAN_UPDATE_20', 'Updating Preference(s): ');
+define('LAN_UPDATE_21', 'Updating Table Structure: ');
+define('LAN_UPDATE_22', "Converting Serialized Preference(s): ");
+define('LAN_UPDATE_23', 'Updating Menu Path: ');
+define('LAN_UPDATE_24', "Deleting Deprecated Table Field: ");
+define('LAN_UPDATE_25', 'Deleting obsolete table: ');
+define('LAN_UPDATE_26', 'Extending IP address field: ');
+define('LAN_UPDATE_27',	'Adding Table: ');
+
+// Everything below here needs reviewing. 
+
+// define('LAN_UPDATE_35', 'Error modifying data in comment table');
+// define('LAN_UPDATE_36', 'Error deleting old field in comment table');
+// define('LAN_UPDATE_37', 'Add index --INDEX-- to table --TABLE--');
 define('LAN_UPDATE_38', 'Update front page settings');
-define('LAN_UPDATE_39', 'Update linkwords table');
+// define('LAN_UPDATE_39', 'Update linkwords table');
 define('LAN_UPDATE_40', 'Update newsfeeds table');
 define('LAN_UPDATE_41', 'User timezone field processed');
 define('LAN_UPDATE_42', 'Error transferring user timezone data - aborted');
 define('LAN_UPDATE_43', 'Rename dblog table');
 define('LAN_UPDATE_44', 'Rename rolling log table');
-define('LAN_UPDATE_45', 'Add new table to database: ');
+define('LAN_UPDATE_45', 'Adding new table to database: ');
 define('LAN_UPDATE_46', 'Error reading table definition: ');
-define('LAN_UPDATE_47', 'Update table definition: ');
-define('LAN_UPDATE_48', 'Delete obsolete table: ');
-define('LAN_UPDATE_49', 'Extend IP address field: ');
+
 define('LAN_UPDATE_50', 'Obsolete prefs deleted: ');
 define('LAN_UPDATE_51', 'Update plugin table definition: ');
 define('LAN_UPDATE_52', 'Update downloads table');
 define('LAN_UPDATE_53', 'Update download mirror table');
-define('LAN_UPDATE_54', 'Missing table --TABLE-- - cannot add index --INDEX--');
+// define('LAN_UPDATE_54', 'Missing table --TABLE-- - cannot add index --INDEX--');
 define('LAN_UPDATE_55', 'Description');
-define('LAN_UPDATE_56', 'System Update');
-define('LAN_UPDATE_57', '');
-define('LAN_UPDATE_58', '');
-define('LAN_UPDATE_59', '');
-define('LAN_UPDATE_60', '');
+// define('LAN_UPDATE_56', 'System Update');
 
 define('LAN_UPDATE_CAPTION_PLUGIN', 'Plugin Updates');
 define('LAN_UPDATE_CAPTION_CORE', 'Core Updates');
