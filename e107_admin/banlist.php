@@ -9,8 +9,8 @@
  * Ban List Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/banlist.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-11-07 02:10:34 $
+ * $Revision: 1.21 $
+ * $Date: 2009-11-08 09:14:22 $
  * $Author: e107coders $
  *
 */
@@ -820,7 +820,7 @@ function banlist_adminmenu()
 		$var['times']['link'] = e_SELF."?times";
 		$var['times']['perm'] = "0";
 
-		$var['options']['text'] = BANLAN_62;
+		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
 		$var['options']['perm'] = "0";
 	}

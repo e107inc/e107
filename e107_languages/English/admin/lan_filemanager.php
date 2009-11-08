@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_filemanager.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-11-08 09:14:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("FMLAN_1", "Uploaded");
-define("FMLAN_2", "to");
-define("FMLAN_3", "directory");
-define("FMLAN_4", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
+// define("FMLAN_1", "Uploaded");
+// define("FMLAN_2", "to");
+// define("FMLAN_3", "directory");
+// define("FMLAN_4", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
 // define("FMLAN_5", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
 // define("FMLAN_6", "The uploaded file was only partially uploaded.");
 // define("FMLAN_7", "No file was uploaded.");
@@ -40,12 +40,12 @@ define("FMLAN_30", "Up level");
 define("FMLAN_31", "folder");
 
 define("FMLAN_32", "Select Directory");
-define("FMLAN_33", "Select");
+// define("FMLAN_33", "Select");
 define("FMLAN_34", "Directory Choice");
 define("FMLAN_35", "Files Directory");
 
-define("FMLAN_36", "Custom Menus Directory");
-define("FMLAN_37", "Custom Pages Directory");
+// define("FMLAN_36", "Custom Menus Directory");
+// define("FMLAN_37", "Custom Pages Directory");
 
 define("FMLAN_38", "Successfully moved file to");
 define("FMLAN_39", "Unable to move file to");

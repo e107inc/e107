@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.29 2009-11-05 09:15:19 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.30 2009-11-08 09:14:28 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -848,7 +848,7 @@ class admin_shortcodes
 						$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' class='icon S16' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
 					}
 					$text .= "</div>";
-					return $ns -> tablerender(ADLAN_134, $text, '', TRUE);
+					return $ns -> tablerender(LAN_STATUS, $text, '', TRUE);
 				}
 			}
 

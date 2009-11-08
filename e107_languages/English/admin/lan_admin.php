@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.34 2009-11-07 11:20:33 e107coders Exp $
+ * $Id: lan_admin.php,v 1.35 2009-11-08 09:14:39 e107coders Exp $
  *
  * Admin Language File
 */
@@ -142,7 +142,6 @@ define("ADLAN_121", "Install");
 define("ADLAN_132", "Language");
 define("ADLAN_133", "default");
 
-define("ADLAN_134", "Status");
 define("ADLAN_135", "Admin Log");
 
 define("ADLAN_136", "Mail");
@@ -307,5 +306,7 @@ define("LAN_COMMENTMAN", "Comments Manager");
 
 define("LAN_FILTER", "Filter");
 define("LAN_NO_RECORDS", "No Records Found");
-
+define("LAN_STATUS", "Status");
+define("LAN_URL", "URL");
+define("LAN_USER", "User");
 

@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-10-26 01:04:05 $
+ * $Revision: 1.38 $
+ * $Date: 2009-11-08 09:14:22 $
  * $Author: e107coders $
  *
 */
@@ -577,8 +577,8 @@ class system_tools
 							</tbody>
 						</table>
 						<div class='buttons-bar center'>
-							".$frm->admin_button('delpref_checked', DBLAN_21, 'delete')."
-							".$frm->admin_button('back', DBLAN_13, 'back')."
+							".$frm->admin_button('delpref_checked', LAN_DELCHECKED, 'delete')."
+							".$frm->admin_button('back', LAN_BACK, 'back')."
 							<input type='hidden' name='pref_type' value='".$type."' />
 						</div>
 					</fieldset>
@@ -645,12 +645,12 @@ class system_tools
 	
 		/* we all are awaiting for PHP5 only support - method chaining...
 		$emessage->add(DBLAN_22.' - '.DBLAN_23, E_MESSAGE_SUCCESS)
-				 ->add("<a href='".e_SELF."'>".DBLAN_13."</a>", E_MESSAGE_SUCCESS)
+				 ->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS)
 				 ->add(DBLAN_30);
 		*/
 	
 		$emessage->add(DBLAN_23, E_MESSAGE_SUCCESS);
-		$emessage->add("<a href='".e_SELF."'>".DBLAN_13."</a>", E_MESSAGE_SUCCESS);
+		$emessage->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
 		$emessage->add(DBLAN_30);
 	
 		$text = "
@@ -913,7 +913,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			}
 
 			$emessage->add($qry, E_MESSAGE_DEBUG);
-			$emessage->add("<a href='".e_SELF."'>".DBLAN_13."</a>", E_MESSAGE_DEBUG);
+			$emessage->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_DEBUG);
 		}
 	}
 
@@ -958,7 +958,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 					</table>
 					<div class='buttons-bar center'>
 						".$frm->admin_button('check_verify_sql_record', DBLAN_38)."
-						".$frm->admin_button('back', DBLAN_13, 'back')."
+						".$frm->admin_button('back', LAN_BACK, 'back')."
 					</div>
 				</fieldset>
 			</form>
@@ -1013,7 +1013,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 									<th>".DBLAN_41."</th>
 									<th>".DBLAN_42."</th>
 									<th>".DBLAN_43."</th>
-									<th class='center last'>".DBLAN_44."</th>
+									<th class='center last'>".LAN_OPTIONS."</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -1031,7 +1031,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 										<td>{$v['itemid']}</td>
 										<td>".($v['table_exist'] ? DBLAN_45 : DBLAN_46)."</td>
 										<td class='center'>
-											".$frm->checkbox('del_dbrec['.$ctype.']['.$delkey.'][]', '1').$frm->label(DBLAN_47, 'del_dbrec['.$ctype.']['.$delkey.'][]', '1')."
+											".$frm->checkbox('del_dbrec['.$ctype.']['.$delkey.'][]', '1').$frm->label(LAN_DELETE, 'del_dbrec['.$ctype.']['.$delkey.'][]', '1')."
 										</td>
 									</tr>
 					";
@@ -1263,8 +1263,8 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 
 		$text .= "
 				<div class='buttons-bar center'>
-					".$frm->admin_button('delete_verify_sql_record', DBLAN_48, 'delete')."
-					".$frm->admin_button('verify_sql_record', DBLAN_13, 'back')."
+					".$frm->admin_button('delete_verify_sql_record', LAN_DELCHECKED, 'delete')."
+					".$frm->admin_button('verify_sql_record', LAN_BACK, 'back')."
 
 				</div>
 			</form>

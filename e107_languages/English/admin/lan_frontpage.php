@@ -1,30 +1,12 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_frontpage.php,v 1.5 2008-12-21 10:58:35 secretr Exp $
+ * $Id: lan_frontpage.php,v 1.6 2009-11-08 09:14:39 e107coders Exp $
  *
  * Admin Language File
  *
 */
 
-/*
-define("FRTLAN_2", "Set front page for");
-define("FRTLAN_6", "Links");
-define("FRTLAN_16", "error: no content main parent selected");
-define("FRTLAN_17", "error: no content sub category selected");
-define("FRTLAN_18", "error: no content item selected");
-define("FRTLAN_19", "content main parent");
-define("FRTLAN_20", "content category");
-define("FRTLAN_21", "content item");
-
-define("FRTLAN_26", "all users");
-define("FRTLAN_27", "Guests");
-define("FRTLAN_28", "Members");
-define("FRTLAN_29", "Administrators");
-define("FRTLAN_31", "All Users");
-define("FRTLAN_32", "User Class");
-define("FRTLAN_34", "Page");
-*/
 
 define("FRTLAN_1", "Front Page settings updated.");
 define("FRTLAN_12", "Update Front Page Settings");
@@ -42,7 +24,7 @@ define('FRTLAN_35', 'Post-login page');
 define('FRTLAN_40', 'Order');
 define('FRTLAN_42', 'Add new rule');
 define('FRTLAN_43', 'Class: ');
-define('FRTLAN_44', 'Go to this page after login');
+// define('FRTLAN_44', 'Go to this page after login');
 define('FRTLAN_45', 'Values not changed');
 define('FRTLAN_46', 'Edit existing rule');
 define('FRTLAN_47', 'Move up');
