@@ -9,8 +9,8 @@
  * Admin Navigation
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/ad_links.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-11-07 11:20:25 $
+ * $Revision: 1.20 $
+ * $Date: 2009-11-08 13:21:56 $
  * $Author: e107coders $
 */
 
@@ -608,12 +608,15 @@ $array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 
 $array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, E_16_CREATE, E_32_CREATE);
 $array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, ADLAN_4, 'H', 3, E_16_SETTINGS, E_32_SETTINGS);
 
-foreach($array_functions as $val)
+if(!defset('e_PAGETITLE'))
 {
-    $link = str_replace("../","",$val[0]);
-	if(strpos(e_SELF,$link)!==FALSE)
+	foreach($array_functions as $val)
 	{
-    	define(e_PAGETITLE,$val[1]);
+	    $link = str_replace("../","",$val[0]);
+		if(strpos(e_SELF,$link)!==FALSE)
+		{
+	    	define('e_PAGETITLE',$val[1]);
+		}
 	}
 }
 
