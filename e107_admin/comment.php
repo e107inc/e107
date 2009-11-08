@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-11-07 11:20:26 $
+|     $Revision: 1.15 $
+|     $Date: 2009-11-08 12:08:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -79,7 +79,7 @@ class comments_admin_ui extends e_admin_ui
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'comment_id'			=> array('title'=> ID,				'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
+			'comment_id'			=> array('title'=> LAN_ID,				'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
        		'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',			'width' => '5%'),
          	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
          	'comment_comment' 		=> array('title'=> "comment",		'type' => 'textarea',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name

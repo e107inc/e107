@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.30 2009-11-08 09:14:28 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.31 2009-11-08 12:08:30 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -116,7 +116,7 @@ class admin_shortcodes
 			}
 			else
 			{
-				$icon = $e_icon_array[$e_sub_cat];
+				$icon = varset($e_icon_array[$e_sub_cat]);
 			}
 			return $icon;
 		}
@@ -1072,12 +1072,15 @@ class admin_shortcodes
 				$handle=opendir(e_DOCS.'English/');
 			}
 			$i=1;
-			while ($file = readdir($handle))
+			if(varset($handle))
 			{
-				if ($file != '.' && $file != '..' && $file != 'CVS')
+				while ($file = readdir($handle))
 				{
-					$text .= adnav_main(str_replace('_', ' ', $file), e_ADMIN.'docs.php?'.$i, E_16_DOCS);
-					$i++;
+					if ($file != '.' && $file != '..' && $file != 'CVS')
+					{
+						$text .= adnav_main(str_replace('_', ' ', $file), e_ADMIN.'docs.php?'.$i, E_16_DOCS);
+						$i++;
+					}
 				}
 			}
 			closedir($handle);

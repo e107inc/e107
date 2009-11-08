@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.70 $
- * $Date: 2009-11-06 18:37:23 $
- * $Author: secretr $
+ * $Revision: 1.71 $
+ * $Date: 2009-11-08 12:08:24 $
+ * $Author: e107coders $
  *
 */
 
@@ -854,16 +854,16 @@ class e_form
 		{
         	if($val == "[FIELD]")
 			{
-            	$field = $tmp[$key];
+            	$field = varset($tmp[$key]);
 			}
 
 			if($val == "[ASC]")
 			{
-            	$ascdesc = $tmp[$key];
+            	$ascdesc = varset($tmp[$key]);
 			}
 			if($val == "[FROM]")
 			{
-            	$fromval = $tmp[$key];
+            	$fromval = varset($tmp[$key]);
 			}
 		}
 
@@ -932,7 +932,7 @@ class e_form
 		{
 		
 			//Not found
-			if((!$data['forced'] && !in_array($field, $currentlist)) || $data['nolist'])
+			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
 			{
 				continue;
 			}
@@ -949,7 +949,7 @@ class e_form
 			
 			$tdclass = vartrue($data['class']);
 			if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
-			$value = $this->renderValue($field, $fieldvalues[$field], $data, $fieldvalues[$pid]);
+			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
 
 			if($tdclass)
 			{
@@ -1300,9 +1300,9 @@ class e_form
 		$url = (isset($options['url']) ? $tp->replaceConstants($options['url'], 'abs') : e_SELF);
 		$formurl = $url.($query ? '?'.$query : '');
 		$fields = $options['fields'];
-		$current_fields = $options['fieldpref'];
+		$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
 
-        $text .= "
+        $text = "
 			".vartrue($options['form_pre'])."
 			<form method='post' action='{$formurl}' id='{$elid}-list-form'>
 				".vartrue($options['fieldset_pre'])."
@@ -1311,7 +1311,7 @@ class e_form
 					".vartrue($options['table_pre'])."
 					<table cellpadding='0' cellspacing='0' class='adminlist' id='{$elid}-list-table'>
 						".$this->colGroup($fields, $current_fields)."
-						".$this->thead($fields, $current_fields, $options['head_query'], $options['query'])."
+						".$this->thead($fields, $current_fields, varset($options['head_query']), varset($options['query']))."
 						<tbody>
 		";
 
