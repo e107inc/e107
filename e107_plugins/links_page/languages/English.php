@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2008-12-13 16:06:11 $
+|     $Revision: 1.6 $
+|     $Date: 2009-11-08 19:24:15 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -27,11 +27,12 @@ define("LCLAN_OPT_MENU_4", "links display");
 define("LCLAN_OPT_MENU_5", "refer page");
 define("LCLAN_OPT_MENU_6", "rating page");
 define("LCLAN_OPT_MENU_7", "menu");
-
+*/
 define("LCLAN_PAGETITLE_1", "Links");
 define("LCLAN_PAGETITLE_2", "All categories");
 define("LCLAN_PAGETITLE_3", "All Links");
 define("LCLAN_PAGETITLE_4", "category");
+/*
 define("LCLAN_PAGETITLE_5", "Top Rated");
 define("LCLAN_PAGETITLE_6", "Top Referrals");
 define("LCLAN_PAGETITLE_7", "Personal Link Manager");
