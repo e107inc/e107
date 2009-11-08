@@ -9,9 +9,9 @@
  * Default Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/header_default.php,v $
- * $Revision: 1.46 $
- * $Date: 2009-10-29 02:29:35 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.47 $
+ * $Date: 2009-11-08 17:00:46 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -488,9 +488,9 @@ if ($e107_popup != 1) {
 			$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
 		}
 	}
-	elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMHEADER[$def]))) // 0.7 themes
+	elseif($def && $def != "legacyCustom" && (isset($CUSTOMHEADER[$def]) || isset($CUSTOMFOOTER[$def]))) // 0.7 themes
 	{
-	  //	echo " MODE 0.7";
+	  	// echo " MODE 0.7";
 		$HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
 		$FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
 	}
