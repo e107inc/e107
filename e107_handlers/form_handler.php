@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.71 $
- * $Date: 2009-11-08 12:08:24 $
+ * $Revision: 1.72 $
+ * $Date: 2009-11-08 13:21:56 $
  * $Author: e107coders $
  *
 */
@@ -1407,11 +1407,10 @@ class e_form
 			foreach ($form['fieldsets'] as $elid => $data) 
 			{
 				$elid = $form['id'].'-'.$elid;
-				$text .= "
-					{$data['fieldset_pre']}
+				$text .= vartrue($data['fieldset_pre'])."
 					<fieldset id='{$elid}'>
-						<legend>{$data['legend']}</legend>
-						{$data['table_pre']}
+						<legend>".vartrue($data['legend'])."</legend>
+						".vartrue($data['table_pre'])."
 						<table cellpadding='0' cellspacing='0' class='adminedit'>
 							<colgroup span='2'>
 								<col class='col-label' />
@@ -1449,7 +1448,7 @@ class e_form
 				$text .= "
 							</tbody>
 						</table>	
-						{$data['table_post']}
+						".vartrue($data['table_post'])."
 						<div class='buttons-bar center'>
 				";
 							// After submit options
@@ -1497,7 +1496,7 @@ class e_form
 				$text .= "
 						</div>
 					</fieldset>
-					{$data['fieldset_post']}
+					".vartrue($data['fieldset_post'])."
 				";	
 			}
 			$text .= "

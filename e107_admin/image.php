@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-11-08 09:14:22 $
+ * $Revision: 1.28 $
+ * $Date: 2009-11-08 13:21:56 $
  * $Author: e107coders $
  *
 */
@@ -102,16 +102,16 @@ class media_admin_ui extends e_admin_ui
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'media_id'				=> array('title'=> ID,				'type' => 'int',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE),
+			'media_id'				=> array('title'=> LAN_ID,				'type' => 'int',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE),
        		'media_preview' 		=> array('title'=> "Preview",		'type' => null,			'data'=> null,		'width' => '10%'), // Generate on the fly.
        		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> null,		'readParm' => 'hidden',	'width' => '10%'), // Generate on the fly.  
-			'media_title' 			=> array('title'=> "Title",			'type' => 'text',		'data'=> 'str',		'width' => '5%'),
+			'media_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',		'data'=> 'str',		'width' => '5%'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => '5%'),
-         	'media_description' 	=> array('title'=> "Description",	'type' => 'textarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'media_category' 		=> array('title'=> "Category",		'type' => 'int',		'data'=> 'int',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-			'media_datestamp' 		=> array('title'=> "datestamp",		'type' => 'datestamp',	'data'=> 'int',		'width' => 'auto'),	// User date
-            'media_url' 			=> array('title'=> "URL",			'type' => 'url',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
-			'media_userclass' 		=> array('title'=> "Userclass",		'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first'), // Display name
+         	'media_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'int',		'data'=> 'int',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,		'type' => 'datestamp',	'data'=> 'int',		'width' => 'auto'),	// User date
+            'media_url' 			=> array('title'=> LAN_URL,			'type' => 'url',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+			'media_userclass' 		=> array('title'=> LAN_USERCLASS,		'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
@@ -159,17 +159,17 @@ if(isset($_POST['delpref']) || (isset($_POST['delpref_checked']) && isset($_POST
 	del_pref_val();
 }
 
-if($_GET['action'] == "icons")
+if(varset($_GET['action']) == "icons")
 {
 	icon_editor();
 }
 
-if($_GET['action'] == "avatars")
+if(varset($_GET['action']) == "avatars")
 {
 	show_avatars();
 }
 
-if($_GET['action'] == 'settings')
+if(varset($_GET['action']) == 'settings')
 {
 	main_config();
 }
@@ -464,7 +464,7 @@ function show_avatars()
 	}
 
 
-	$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_18, $mes->render().$text);
+	$ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_18, $mes->render().$text);
 }
 
 /*
@@ -773,7 +773,7 @@ if (isset($_POST['check_avatar_sizes']))
 			</fieldset>
 		</form>";
 
-		$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_7, $mes->render().$text);
+		$ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_7, $mes->render().$text);
 }
 //Just in case...
 if(!e_AJAX_REQUEST) require_once("footer.php");
@@ -863,7 +863,7 @@ function icon_editor()
 
 		";
 	//$text .= "<div style='text-align:center'><a href='".e_SELF."'>".DBLAN_13."</a></div>\n";
-	$ns->tablerender(LAN_IMAGEMANAGER." :: ".IMALAN_71, $mes->render().$text);
+	$ns->tablerender(LAN_MEDIAMANAGER." :: ".IMALAN_71, $mes->render().$text);
 
 	return $text;
 }

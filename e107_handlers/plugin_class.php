@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.113 $
-|     $Date: 2009-11-07 02:28:54 $
+|     $Revision: 1.114 $
+|     $Date: 2009-11-08 13:21:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1603,6 +1603,7 @@ class e107plugin
 		$function = 'install';
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$mySQLprefix = MPREFIX; // Fix for some plugin.php files. 
 				
 		$plug = $this->getinfo($id);
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
