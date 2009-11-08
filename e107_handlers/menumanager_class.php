@@ -10,9 +10,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-10-29 11:32:58 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-08 17:13:24 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -185,7 +185,7 @@ class e_menuManager {
 						$FOOTER = ($CUSTOMFOOTER) ? $CUSTOMFOOTER : $FOOTER;
 					}
 				}
-				elseif($this->curLayout && $this->curLayout != "legacyCustom" && (isset($CUSTOMHEADER[$this->curLayout]) || isset($CUSTOMHEADER[$this->curLayout]))) // 0.7 themes
+				elseif($this->curLayout && $this->curLayout != "legacyCustom" && (isset($CUSTOMHEADER[$this->curLayout]) || isset($CUSTOMFOOTER[$this->curLayout]))) // 0.7 themes
 				{
 				 // 	echo " MODE 0.7 ".$this->curLayout;
 					$HEADER = ($CUSTOMHEADER[$this->curLayout]) ? $CUSTOMHEADER[$this->curLayout] : $HEADER;
