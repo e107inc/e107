@@ -1,41 +1,27 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
 
-// Multi indice array sort by sweetland@whoadammit.com
-if (!function_exists('asortbyindex')) {
-	function asortbyindex($sortarray, $index) {
-		$lastindex = count ($sortarray) - 1;
-		for ($subindex = 0; $subindex < $lastindex; $subindex++) {
-			$lastiteration = $lastindex - $subindex;
-			for ($iteration = 0; $iteration < $lastiteration; $iteration++) {
-				$nextchar = 0;
-				if (comesafter ($sortarray[$iteration][$index], $sortarray[$iteration + 1][$index])) {
-					$temp = $sortarray[$iteration];
-					$sortarray[$iteration] = $sortarray[$iteration + 1];
-					$sortarray[$iteration + 1] = $temp;
-				}
-			}
-		}
-		return ($sortarray);
+// Better Array-sort by key function by acecream (22-Apr-2003 11:02) http://php.net/manual/en/function.asort.php
+if (!function_exists('asortbyindex')) 
+{
+	function asortbyindex($array, $key)
+	{
+	   foreach ($array as $i => $k)
+	   {
+	        $sort_values[$i] = $array[$i][$key];
+	   }
+	   asort ($sort_values);
+	   reset ($sort_values);
+	   while (list ($arr_key, $arr_val) = each ($sort_values))
+	   {
+	          $sorted_arr[] = $array[$arr_key];
+	   }
+	   return $sorted_arr;
 	}
 }
 
-if (!function_exists('comesafter')) {
-	function comesafter($s1, $s2) {
-		$order = 1;
-		if (strlen ($s1) > strlen ($s2)) {
-			$temp = $s1;
-			$s1 = $s2;
-			$s2 = $temp;
-			$order = 0;
-		}
-		for ($index = 0; $index < strlen ($s1); $index++) {
-			if ($s1[$index] > $s2[$index]) return ($order);
-				if ($s1[$index] < $s2[$index]) return (1 - $order);
-			}
-		return ($order);
-	}
-}
+
+
 
 if (!function_exists('multiarray_sort')) {
     function multiarray_sort(&$array, $key, $order = 'asc', $natsort = true, $case = true)
@@ -2646,9 +2632,10 @@ class e_admin_form_ui extends e_form
 	{
 		$err = "";
 		$fields = array_keys($this->getController()->getFields());
+
 		foreach($fields as $val)
 		{
-			if(method_exists(e_form,$val)) // check even if type is not method. - just in case of an upgrade later by 3rd-party. 
+			if(method_exists('e_form',$val)) // check even if type is not method. - just in case of an upgrade later by 3rd-party. 
 			{
 				$err .= "<h2>ERROR: The field name (".$val.") is not allowed.</h2>";
 				$err .= "Please rename the key (".$val.") to something else in your fields array and database table.<br /><br />";
@@ -2910,7 +2897,7 @@ class e_admin_form_ui extends e_form
 				
 			if(count($option) > 0)
 			{
-				$text .= "\t".$this->optgroup_open($optdiz[$type].defset($val['title'], $val['title']), $disabled)."\n";
+				$text .= "\t".$this->optgroup_open($optdiz[$type].defset($val['title'], $val['title']), varset($disabled))."\n";
 				foreach($option as $okey=>$oval)
 				{
 					$text .= $this->option($oval, $okey, $selected == $okey)."\n";			

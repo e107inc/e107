@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.60 $
- * $Date: 2009-10-29 21:28:09 $
- * $Author: e107steved $
+ * $Revision: 1.61 $
+ * $Date: 2009-11-08 12:08:24 $
+ * $Author: e107coders $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -49,8 +49,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.60 $
- * @author $Author: e107steved $
+ * @version $Revision: 1.61 $
+ * @author $Author: e107coders $
  * 
  */
 class e_db_mysql {
@@ -70,7 +70,7 @@ class e_db_mysql {
 	var $mySQLlanguage;
 	var $mySQLinfo;
 	var $tabset;
-	var $mySQLtablelist = array(); // list of all Db tables. 
+	var $mySQLtableList = array(); // list of all Db tables. 
 
 	var $mySQLtableListLanguage = array(); // Db table list for the currently selected language
 

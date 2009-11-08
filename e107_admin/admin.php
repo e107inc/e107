@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/admin.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-11-07 02:16:52 $
+|     $Revision: 1.23 $
+|     $Date: 2009-11-08 12:08:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -217,7 +217,9 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 function render_clean()
 {
 	global $td;
-	while ($td <= ADLINK_COLS) {
+	$text = "";
+	while ($td <= ADLINK_COLS)
+	{
 		$text .= "<td class='td' style='width:20%;'></td>";
 		$td++;
 	}

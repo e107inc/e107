@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.35 2009-11-08 09:14:39 e107coders Exp $
+ * $Id: lan_admin.php,v 1.36 2009-11-08 12:08:35 e107coders Exp $
  *
  * Admin Language File
 */
@@ -309,4 +309,6 @@ define("LAN_NO_RECORDS", "No Records Found");
 define("LAN_STATUS", "Status");
 define("LAN_URL", "URL");
 define("LAN_USER", "User");
+define("LAN_ID", "ID");
+
 
