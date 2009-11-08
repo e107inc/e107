@@ -1,43 +1,50 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|    	Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-| File locking, modified getip() 18.01.07
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/log/log.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-01-04 20:55:43 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration Area - User classes
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/log/log.php,v $
+ * $Revision: 1.7 $
+ * $Date: 2009-11-08 16:15:31 $
+ * $Author: e107steved $
+ *
 */
 
-// File called with:
-// e_PLUGIN_ABS."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
-// referer= ref
-// color= colord
-// eself= eself 
-// res= res
-// err_direct - optional error flag
-// err_referer - referrer if came via error page
+/* File to log page accesses - called with
+	e_PLUGIN_ABS."log/log.php?base64encode(referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );)";
+		referer= ref
+		color= colord
+		eself= eself 
+		res= res
+		err_direct - optional error flag
+		err_referer - referrer if came via error page
 
-// Normally the file is 'silent' - iff any errors occur, they'll usually appear within the page's CSS due to the way its called
-define("log_INIT", TRUE);
+// Normally the file is 'silent' - if any errors occur, not sure where they'll appear - (file type now text/html instead of text/css)
+*/
+define('log_INIT', TRUE);
 
+$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
+parse_str($logVals, $vals);
 
-$colour = strip_tags((isset($_REQUEST['color']) ? $_REQUEST['color'] : ''));
-$res = strip_tags((isset($_REQUEST['res']) ? $_REQUEST['res'] : ''));
-$self = strip_tags((isset($_REQUEST['eself']) ? $_REQUEST['eself'] : ''));
-$ref = addslashes(strip_tags((isset($_REQUEST['referer']) ? $_REQUEST['referer'] : '')));
+echo "\n";		// This is harmless data which seems to avoid intermittent problems.
+
+//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $logVals."\n"); fclose($logfp);
+//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, print_r($vals, TRUE)."\n"); fclose($logfp);
+
+$colour = strip_tags((isset($vals['colour']) ? $vals['colour'] : ''));
+$res = strip_tags((isset($vals['res']) ? $vals['res'] : ''));
+$self = strip_tags((isset($vals['eself']) ? $vals['eself'] : ''));
+$ref = addslashes(strip_tags((isset($vals['referer']) ? $vals['referer'] : '')));
 $date = date("z.Y", time());
 $logPfile = "logs/logp_".$date.".php";
+
+//$logString = "Colour: {$colour}  Res: {$res}  Self: {$self} Referrer: {$ref} ErrCode: {$vals['err_direct']}\n";
+//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $logString); fclose($logfp);
 
 
 // vet resolution and colour depth some more - avoid dud values
@@ -60,22 +67,21 @@ else
 }
 
 
-if ($err_code = strip_tags((isset($_REQUEST['err_direct']) ? $_REQUEST['err_direct'] : '')))
+if ($err_code = strip_tags((isset($vals['err_direct']) ? $vals['err_direct'] : '')))
 {
-	$ref = addslashes(strip_tags(isset($_REQUEST['err_referer']) ? $_REQUEST['err_referer'] : ''));
-	$log_string = $err_code.",".$self.",".$ref;
+	$ref = addslashes(strip_tags(isset($vals['err_referer']) ? $vals['err_referer'] : ''));
 // Uncomment the next two lines to create a separate CSV format log of invalid accesses - error code, entered URL, referrer
-//  $logname = "logs/errpages.csv";
-//  $logfp = fopen($logname, 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
+//	$log_string = $err_code.",".$self.",".$ref;
+//  $logfp = fopen("logs/errpages.csv", 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
 	$err_code .= ':';
 }
 
-if(strstr($ref, "admin")) 
+if(strstr($ref, 'admin')) 
 {
 	$ref = FALSE;
 }
 
-$screenstats = $res."@".$colour;
+$screenstats = $res.'@'.$colour;
 $agent = $_SERVER['HTTP_USER_AGENT'];
 $ip = getip();
 
@@ -230,5 +236,6 @@ function getip()
 		return $ret;
 	}
 }
+
 
 ?>
