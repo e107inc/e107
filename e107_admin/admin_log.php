@@ -9,9 +9,9 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-08-28 16:10:50 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-08 09:14:22 $
+ * $Author: e107coders $
  *
 */
 
@@ -213,7 +213,7 @@ if(($action == "confdel") || ($action == "auditdel"))
 	$text = "
 		<form method='post' action='".e_SELF."?backdel.{$qs[1]}.{$qs[2]}'>
 			<fieldset id='core-admin-log-confirm-delete'>
-				<legend class='e-hideme'>".RL_LAN_051."</legend>
+				<legend class='e-hideme'>".LAN_CONFDELETE."</legend>
 				<table cellpadding='0' cellspacing='0' class='adminform'>
 					<tr>
 						<td class='center'>
@@ -224,14 +224,14 @@ if(($action == "confdel") || ($action == "auditdel"))
 				<div class='buttons-bar center'>
 					<input type='hidden' name='backdeltype' value='{$action}' />
 					<button class='delete' type='submit' name='confirmdeleteold' value='no-value'><span>".RL_LAN_049."</span></button>
-					<button class='cancel' type='submit' name='confirmcancelold' value='no-value'><span>".RL_LAN_055."</span></button>
+					<button class='cancel' type='submit' name='confirmcancelold' value='no-value'><span>".LAN_CANCEL."</span></button>
 				</div>
 			</fieldset>
 		</form>
 
 	";
 
-	$ns->tablerender(RL_LAN_051, $text);
+	$ns->tablerender(LAN_CONFDELETE, $text);
 }
 
 // Arrays of options for the various logs - the $page_title array is used to determine the allowable values for $action ('options' is a special case)
@@ -519,7 +519,7 @@ if(isset($page_title[$action]))
 	$col_widths = array('adminlog' => array(18, 4, 14, 7, 15, 8, 14, 20), // Date - Pri - IP - UID - User - Code - Event - Info
 'auditlog' => array(18, 14, 7, 15, 8, 14, 24), 'rolllog' => array(15, 4, 12, 6, 12, 7, 13, 13, 18), // Date - Pri - IP - UID - User - Code - Caller - Event - Info
 'downlog' => array(18, 14, 7, 15, 8, 38), 'detailed' => array(10, 8, 6, 4, 14, 6, 17, 7, 17, 21), 'comments' => array(14, 7, 7, 7, 14, 3, 10, 12, 5, 17, 1, 1, 1), 'online' => array(18, 15, 7, 14, 32, 6, 4, 4));
-	$col_titles = array('adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_068, RL_LAN_069), 'detailed' => array(RL_LAN_097, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'comments' => array(RL_LAN_019, RL_LAN_100, RL_LAN_101, RL_LAN_102, RL_LAN_103, RL_LAN_104, RL_LAN_105, RL_LAN_020, RL_LAN_106, RL_LAN_107, RL_LAN_108, RL_LAN_109, RL_LAN_110), 'online' => array(RL_LAN_019, RL_LAN_020, RL_LAN_021, RL_LAN_022, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
+	$col_titles = array('adminlog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'auditlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'rolllog' => array(RL_LAN_019, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_024, RL_LAN_025, RL_LAN_033), 'downlog' => array(RL_LAN_019, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_068, RL_LAN_069), 'detailed' => array(LAN_TIME, RL_LAN_096, RL_LAN_098, RL_LAN_032, RL_LAN_020, RL_LAN_104, RL_LAN_022, RL_LAN_023, RL_LAN_025, RL_LAN_033), 'comments' => array(RL_LAN_019, RL_LAN_100, RL_LAN_101, RL_LAN_102, RL_LAN_103, RL_LAN_104, LAN_AUTHOR, RL_LAN_020, RL_LAN_106, RL_LAN_107, RL_LAN_108, RL_LAN_109, RL_LAN_110), 'online' => array(RL_LAN_019, RL_LAN_020, RL_LAN_021, RL_LAN_022, RL_LAN_116, RL_LAN_117, RL_LAN_118, RL_LAN_116));
 
 	// For DB where the delete option is available, specifies the ID field
 	$delete_field = array('comments' => 'comment_id');
@@ -1028,7 +1028,7 @@ function admin_log_adminmenu()
 	$var['comments']['text'] = 'Comments';
 	$var['comments']['link'] = "admin_log.php?comments";
 
-	$var['config']['text'] = RL_LAN_027;
+	$var['config']['text'] = LAN_OPTIONS;
 	$var['config']['link'] = "admin_log.php?config";
 
 	/* XXX - why?!
@@ -1068,7 +1068,7 @@ function headerjs()
 	$ret = "
 		<script type='text/javascript'>
 			//add required core lan - delete confirm message
-			(".e_jshelper::toString(RL_LAN_JS_CONFIRM).").addModLan('core', 'delete_confirm');
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 	";

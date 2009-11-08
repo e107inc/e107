@@ -10,9 +10,9 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.62 $
-* $Date: 2009-11-05 17:32:17 $
-* $Author: secretr $
+* $Revision: 1.63 $
+* $Date: 2009-11-08 09:14:22 $
+* $Author: e107coders $
 *
 */
 require_once ('../class2.php');
@@ -555,7 +555,7 @@ class users
 		$this->fields = array(
 			'checkboxes' 		=> array('title' => '','width' => '3%','forced' => true,'thclass' => 'center first'),
 			'user_id' 			=> array('title' => 'Id','width' => '5%','forced' => true),
-			'user_status' 		=> array('title' => ADLAN_134,'width' => 'auto', 'nosort'=>TRUE),
+			'user_status' 		=> array('title' => LAN_STATUS,'width' => 'auto', 'nosort'=>TRUE),
 			'user_name' 		=> array('title' => LAN_USER_01,'type' => 'text','width' => 'auto','thclass' => 'left first'), // Display name
 	 		'user_loginname' 	=> array('title' => LAN_USER_02,'type' => 'text','width' => 'auto'), // User name
 	 		'user_login' 		=> array('title' => LAN_USER_03,'type' => 'text','width' => 'auto'), // Real name (no real vetting)

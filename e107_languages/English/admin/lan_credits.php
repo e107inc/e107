@@ -4,22 +4,22 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_credits.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-11-08 09:14:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "e107 Credits");
 
-define("CRELAN_1", "Credits");
+// define("CRELAN_1", "Credits");
 define("CRELAN_2", "Here is a list of third-party software / resources used in e107. The e107 development team would like to personally thank the developers of the following for allowing us to redistribute their code with e107, and for releasing their software under the GPL licence.");
 define("CRELAN_3", "all rights reserved");
 define("CRELAN_4", "Show e107 Dev Team");
 define("CRELAN_5", "Show third party scripts");
 define("CRELAN_6", "e107 v0.7 was brought to you by ...");
 define("CRELAN_7", "version");
-define("CRELAN_8", "permission granted");
+// define("CRELAN_8", "permission granted");
 define("CRELAN_9", "Licence");
 
 // third party scripts
@@ -47,7 +47,7 @@ define("CRELAN_24", ""); // McFly
 define("CRELAN_25", ""); // que
 define("CRELAN_26", ""); // streaky
 define("CRELAN_27", "\"Wot? No tea?? 0_0\""); // SweetAs
-define("CRELAN_28", ""); // MrPete
+
 
 // end dev team
 

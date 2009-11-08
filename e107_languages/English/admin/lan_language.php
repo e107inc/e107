@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_language.php,v 1.8 2009-11-05 08:07:53 e107coders Exp $
+ * $Id: lan_language.php,v 1.9 2009-11-08 09:14:39 e107coders Exp $
  *
  * Admin Language File
  *
@@ -16,7 +16,7 @@ define("LANG_LAN_05","Not Installed");
 define("LANG_LAN_06", "Create tables");
 define("LANG_LAN_07", "Drop existing tables?");
 define("LANG_LAN_08", "Replace existing tables (data will be lost).");
-define("LANG_LAN_10", "Confirm delete");
+// define("LANG_LAN_10", "Confirm delete");
 define("LANG_LAN_11", "Delete unchecked tables above (if they exist).");
 define("LANG_LAN_12", "Enable Multi-Language Tables");
 define("LANG_LAN_13", "Language Preferences");
@@ -41,11 +41,11 @@ define('LANG_LAN_PAGE_TITLE', 'Languages');
 define('LANG_LAN_28', '%s deleted.');
 define('LANG_LAN_29', '%s couldn\'t be deleted.');
 define('LANG_LAN_30', '%s created.');
-define('LANG_LAN_31', '%s couldn\'t be deleted.');
+// define('LANG_LAN_31', '%s couldn\'t be deleted.');
 define('LANG_LAN_32', '%s was disabled but left intact.');
 define('LANG_LAN_33', 'Delete all tables in %s?');
 
-define('LANG_LAN_09', 'Are you sure?');
+// define('LANG_LAN_09', 'Are you sure?');
 define('LANG_LAN_34', 'Available Language Packs');
 define('LANG_LAN_35', "The following language packs are available for this version of e107.");
 define('LANG_LAN_36', "Language-Pack errors found! Please first verify your language files are without errors, before creating a language-pack.");

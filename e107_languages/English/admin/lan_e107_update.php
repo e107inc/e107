@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_e107_update.php,v 1.9 2009-11-07 11:20:34 e107coders Exp $
+ * $Id: lan_e107_update.php,v 1.10 2009-11-08 09:14:39 e107coders Exp $
  *
  * Administration Language File
  *
@@ -34,7 +34,7 @@ define('LAN_UPDATE_27',	'Adding Table: ');
 
 // define('LAN_UPDATE_35', 'Error modifying data in comment table');
 // define('LAN_UPDATE_36', 'Error deleting old field in comment table');
-// define('LAN_UPDATE_37', 'Add index --INDEX-- to table --TABLE--');
+define('LAN_UPDATE_37', 'Add index --INDEX-- to table --TABLE--');
 define('LAN_UPDATE_38', 'Update front page settings');
 // define('LAN_UPDATE_39', 'Update linkwords table');
 define('LAN_UPDATE_40', 'Update newsfeeds table');
@@ -49,11 +49,11 @@ define('LAN_UPDATE_50', 'Obsolete prefs deleted: ');
 define('LAN_UPDATE_51', 'Update plugin table definition: ');
 define('LAN_UPDATE_52', 'Update downloads table');
 define('LAN_UPDATE_53', 'Update download mirror table');
-// define('LAN_UPDATE_54', 'Missing table --TABLE-- - cannot add index --INDEX--');
+define('LAN_UPDATE_54', 'Missing table --TABLE-- - cannot add index --INDEX--');
 define('LAN_UPDATE_55', 'Description');
-// define('LAN_UPDATE_56', 'System Update');
+define('LAN_UPDATE_56', 'System Update');
 
-define('LAN_UPDATE_CAPTION_PLUGIN', 'Plugin Updates');
-define('LAN_UPDATE_CAPTION_CORE', 'Core Updates');
+// define('LAN_UPDATE_CAPTION_PLUGIN', 'Plugin Updates'); // Unused
+// define('LAN_UPDATE_CAPTION_CORE', 'Core Updates'); // Unused
 
 ?>

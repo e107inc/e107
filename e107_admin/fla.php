@@ -9,9 +9,9 @@
  * Manage/View failed login attempts
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/fla.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-07-18 13:08:37 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-08 09:14:22 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -146,7 +146,7 @@ else
 	$text = "
 		<form method='post' action='".e_SELF."' id='flaform' >
 			<fieldset id='core-fla'>
-				<legend class='e-hideme'>".FLALAN_1."</legend>
+				<legend class='e-hideme'>".ADLAN_146."</legend>
 				<table cellpadding='0' cellspacing='0' class='adminlist'>
 					<colgroup span='5'>
 						<col style='width: 20%'></col>
@@ -157,7 +157,7 @@ else
 					</colgroup>
 					<thead>
 						<tr>
-							<th>".FLALAN_6."</th>
+							<th>".LAN_DATE."</th>
 							<th>".FLALAN_7."</th>
 							<th>".FLALAN_8."</th>
 							<th class='center last'>
@@ -214,7 +214,7 @@ else
 
 }
 
-$e107->ns->tablerender(FLALAN_1, $emessage->render().$text);
+$e107->ns->tablerender(ADLAN_146, $emessage->render().$text);
 
 require_once("footer.php");
 /**

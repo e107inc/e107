@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_banlist.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-02-03 21:16:15 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-08 09:14:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("BANLAN_1", "Ban removed.");
+// define("BANLAN_1", "Ban removed.");
 define("BANLAN_2", 'No bans in list.');
 define("BANLAN_3", "Existing Bans");
-define("BANLAN_4", "Remove ban");
+// define("BANLAN_4", "Remove ban");
 define("BANLAN_5", "Enter IP, email address, or host");
 define("BANLAN_7", "Reason");
 define("BANLAN_8", "Ban Address");
@@ -53,7 +53,7 @@ define('BANLAN_42','Import Choices');
 define('BANLAN_43','Replace all existing imported bans');
 define('BANLAN_44','Use expiry date/time from import');
 define('BANLAN_45','Import');
-define('BANLAN_46','Import File');
+// define('BANLAN_46','Import File');
 define('BANLAN_47','File upload error');
 //define('BANLAN_48','Error importing file');
 define('BANLAN_49','CSV import: Unbalanced quotes in line ');
@@ -69,7 +69,7 @@ define('BANLAN_58','Add users to the whitelist');
 define('BANLAN_59','Edit existing whitelist entry');
 define('BANLAN_60','Edit existing banlist entry');
 define('BANLAN_61','Existing Whitelist entries');
-define('BANLAN_62','Options');
+// define('BANLAN_62','Options');
 define('BANLAN_63','Use reverse DNS to allow host banning');
 define('BANLAN_64','Reverse DNS accesses when adding ban');
 define('BANLAN_65','Turning this option on will allow you to ban users by hostname, rather then just IP or email address.  <br />NOTE: This may affect pageload times on some hosts, or if a server isn\'t responding');
@@ -85,34 +85,34 @@ define('BANLAN_74','Banlist Maintenance');
 define('BANLAN_75','Remove expired bans from list');
 define('BANLAN_76','Execute');
 define('BANLAN_77','Messages/Ban Periods');
-define('BANLAN_78','Hit count exceeded (--HITS-- requests within allotted time)');
-define('BANLAN_79','');
-define('BANLAN_80','');
+// define('BANLAN_78','Hit count exceeded (--HITS-- requests within allotted time)');
+// define('BANLAN_79','');
+// define('BANLAN_80','');
 
 // Ban types - block reserved 100-109
-define('BANLAN_100', 'Unknown');
-define('BANLAN_101','Manual');
-define('BANLAN_102','Flood');
-define('BANLAN_103','Hit count');
-define('BANLAN_104', 'Login failure');
-define('BANLAN_105', 'Imported');
-define('BANLAN_106', 'User');
-define('BANLAN_107', 'Unknown');
-define('BANLAN_108', 'Unknown');
-define('BANLAN_109', 'Old');
+// define('BANLAN_100', 'Unknown');
+// define('BANLAN_101','Manual');
+// define('BANLAN_102','Flood');
+// define('BANLAN_103','Hit count');
+// define('BANLAN_104', 'Login failure');
+// define('BANLAN_105', 'Imported');
+// define('BANLAN_106', 'User');
+// define('BANLAN_107', 'Unknown');
+// define('BANLAN_108', 'Unknown');
+// define('BANLAN_109', 'Old');
 
 // Detailed explanations for ban types - block reserved 110-119
-define('BANLAN_110', 'Most likely a ban that was imposed before e107 was upgraded to 0.8');
-define('BANLAN_111', 'Entered by an admin');
-define('BANLAN_112', 'Attempts to update the site too fast');
-define('BANLAN_113', 'Attempts to access the site too frequently from the same address');
-define('BANLAN_114', 'Multiple failed login attempts from the same user');
-define('BANLAN_115', 'Added from an external list');
-define('BANLAN_116', 'IP address banned on account of user ban');
-define('BANLAN_117', 'Spare reason');
-define('BANLAN_118', 'Spare reason');
-define('BANLAN_119', 'Indicates an import error - previously imported bans');
+// define('BANLAN_110', 'Most likely a ban that was imposed before e107 was upgraded to 0.8');
+// define('BANLAN_111', 'Entered by an admin');
+// define('BANLAN_112', 'Attempts to update the site too fast');
+// define('BANLAN_113', 'Attempts to access the site too frequently from the same address');
+// define('BANLAN_114', 'Multiple failed login attempts from the same user');
+// define('BANLAN_115', 'Added from an external list');
+// define('BANLAN_116', 'IP address banned on account of user ban');
+// define('BANLAN_117', 'Spare reason');
+// define('BANLAN_118', 'Spare reason');
+// define('BANLAN_119', 'Indicates an import error - previously imported bans');
 
-define('BANLAN_120', 'Unknown');
+// define('BANLAN_120', 'Unknown');
 
 ?>

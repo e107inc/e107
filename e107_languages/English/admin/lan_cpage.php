@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_cpage.php,v 1.7 2009-08-05 14:22:15 e107coders Exp $
+ * $Id: lan_cpage.php,v 1.8 2009-11-08 09:14:39 e107coders Exp $
  *
  * Admin Language File
  *
@@ -15,7 +15,7 @@ define("CUSLAN_7", "Menu Name");
 define("CUSLAN_8", "Title / Caption");
 define("CUSLAN_9", "Text");
 define("CUSLAN_10", "Allow page to be rated");
-define("CUSLAN_11", "Front page");
+// define("CUSLAN_11", "Front page");
 define("CUSLAN_12", "Create page");
 define("CUSLAN_13", "Allow comments");
 define("CUSLAN_14", "Password protect page");
@@ -36,14 +36,14 @@ define("CUSLAN_28", "Page deleted");
 define("CUSLAN_29", "List pages if no page selected");
 define("CUSLAN_30", "Expiry time for cookie (in seconds)");
 define("CUSLAN_31", "Create menu");
-define("CUSLAN_32", "Convert old pages/menus");
+// define("CUSLAN_32", "Convert old pages/menus");
 define("CUSLAN_33", "Page Options");
-define("CUSLAN_34", "Beginning conversion");
-define("CUSLAN_35", "Finished custom page update - updated");
-define("CUSLAN_36", "To set your preferences for each page, please return to front page and edit the pages.");
-define("CUSLAN_37", "Custom Page Update");
-define("CUSLAN_38", "on");
-define("CUSLAN_39", "off");
+//define("CUSLAN_34", "Beginning conversion");
+//define("CUSLAN_35", "Finished custom page update - updated");
+//define("CUSLAN_36", "To set your preferences for each page, please return to front page and edit the pages.");
+//define("CUSLAN_37", "Custom Page Update");
+//define("CUSLAN_38", "on");
+//define("CUSLAN_39", "off");
 define("CUSLAN_40", "Save Options");
 
 define("CUSLAN_41", "Display author and date information");

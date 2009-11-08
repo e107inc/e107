@@ -9,8 +9,8 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-11-07 11:34:22 $
+ * $Revision: 1.26 $
+ * $Date: 2009-11-08 09:14:22 $
  * $Author: e107coders $
  *
  */
@@ -298,7 +298,7 @@ if (isset($_POST['edit_existing']))
 						</td>
 					</tr>
 					<tr>
-						<td class='label'><strong>".LANG_LAN_10."</strong></td>
+						<td class='label'><strong>".LAN_CONFDELETE."</strong></td>
 						<td class='control'>
 							".$frm->checkbox('remove', 1)."
 							<div class='smalltext field-help'>".$frm->label(LANG_LAN_11, 'remove', 1)."</div>
@@ -523,7 +523,7 @@ function multilang_db()
 			{
 				//FIXME sprintf
 				$text .= "<button class='edit' type='submit' name='edit_existing' value='no-value'><span>".LAN_EDIT."</span></button>
-						<button class='delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_33, $e_language).' '.LANG_LAN_09."'><span>".LAN_DELETE."</span></button>";
+						<button class='delete' type='submit' name='del_existing' value='no-value' title='".sprintf(LANG_LAN_33, $e_language).' '.LAN_JSCONFIRM."'><span>".LAN_DELETE."</span></button>";
 			}
 			elseif ($e_language != $pref['sitelanguage'])
 			{
@@ -635,9 +635,12 @@ function show_tools()
 									$fl->mode = 'full';
 									$lans = $fl->get_files(e_LANGUAGEDIR."English/admin");
 									
+									$exclude = array('lan_admin.php');							
+									
+									
 									foreach($lans as $script=>$lan)
 									{								
-										if(basename($lan)=='lan_admin.php')
+										if(in_array(basename($lan),$exclude))
 										{
 											continue;
 										}
@@ -950,7 +953,7 @@ function getDefined($line)
 
 
 
-function compareit($needle,$haystack,$value='',$disabled){
+function compareit($needle,$haystack,$value='',$disabled=FALSE){
 	
 	
 //	return "Need=".$needle."<br />hack=".$haystack."<br />val=".$val;
@@ -973,7 +976,7 @@ function compareit($needle,$haystack,$value='',$disabled){
 	{
     	if(strtoupper(trim($value)) == strtoupper($common))
 		{
-        	//$text .= "<div style='color:yellow'><b>$common</b></div>";
+			//$text .= "<div style='color:yellow'><b>$common</b></div>";
 			$foundCommon = TRUE;
 			break;
 		}
@@ -989,12 +992,18 @@ function compareit($needle,$haystack,$value='',$disabled){
 		
 		$count = 1;
 		foreach($lines as $ln)
-		{
-			if(strpos($ln,$needle.'.')!==FALSE || strpos($ln,$needle.';')!==FALSE || strpos($ln,$needle.';')!==FALSE)
+		{	
+			if(preg_match("/\b".$needle."\b/i",$ln))
 			{
-				$text .= "Line:<b>".$count."</b>  "; // "' Found";	
+				if($disabled)
+				{
+					$text .= ADMIN_WARNING_ICON;
+				}	
+				$text .= " Line:<b>".$count."</b>  "; // "' Found";
+
 				$found = TRUE;
 			}
+
 			$count++;	
 		}
 
@@ -1051,7 +1060,7 @@ function headerjs()
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 		<script type='text/javascript'>
 			//add required core lan - delete confirm message
-			(".e_jshelper::toString(LANG_LAN_09).").addModLan('core', 'delete_confirm');
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 
 			//core object
 			e107Admin.CoreLanguage = {};

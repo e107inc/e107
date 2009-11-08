@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_emoticon.php,v 1.6 2008-12-15 11:35:33 secretr Exp $
+ * $Id: lan_emoticon.php,v 1.7 2009-11-08 09:14:39 e107coders Exp $
  *
  * Admin Language File
  *
@@ -32,11 +32,11 @@ define("EMOLAN_18", "Please rename the instances listed below so they no longer 
 define("EMOLAN_19", "Name");
 define("EMOLAN_20", "Location");
 define("EMOLAN_21", "Read Pack Error");
-//define("EMOLAN_2", "Name");
+
 define("EMOLAN_22", "New emote pack found:");
 define("EMOLAN_23", "New emote xml pack found:");
 define("EMOLAN_24", "New emote php pack found:");
-//define("EMOLAN_25", "Installing new PHP emotes: ");
+define("EMOLAN_25", "Installing new PHP emotes: ");
 define("EMOLAN_26", "Re-scan pack");
 define("EMOLAN_27", "Error occurred processing pack: ");
 define("EMOLAN_28", "Generate XML");

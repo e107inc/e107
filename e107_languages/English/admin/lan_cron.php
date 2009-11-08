@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_cron.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-10-23 14:16:08 $
+|     $Revision: 1.3 $
+|     $Date: 2009-11-08 09:14:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -19,8 +19,8 @@ define("LAN_CRON_5", "Day(s)");
 define("LAN_CRON_6", "Month(s)");
 define("LAN_CRON_7", "Weekday(s)");
 define("LAN_CRON_8", "Active");
-define("LAN_CRON_9", "Description");
-define("LAN_CRON_10", "Description");
+// define("LAN_CRON_9", "Description");
+// define("LAN_CRON_10", "Description");
 
 define("LAN_CRON_11", "Every Minute");
 define("LAN_CRON_12", "Every Other Minute");

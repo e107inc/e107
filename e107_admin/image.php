@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-11-07 11:20:26 $
+ * $Revision: 1.27 $
+ * $Date: 2009-11-08 09:14:22 $
  * $Author: e107coders $
  *
 */
@@ -450,9 +450,9 @@ function show_avatars()
 			<div class='spacer clear'>
 				<div class='buttons-bar'>
 					<input type='hidden' name='show_avatars' value='1' />
-					".$frm->admin_button('check_all', IMALAN_59, 'action')."
-					".$frm->admin_button('uncheck_all', IMALAN_60, 'action')."
-					".$frm->admin_button('submit_show_delete_multi', IMALAN_58, 'delete')."
+					".$frm->admin_button('check_all', LAN_CHECKALL, 'action')."
+					".$frm->admin_button('uncheck_all', LAN_UNCHECKALL, 'action')."
+					".$frm->admin_button('submit_show_delete_multi', LAN_DELCHECKED, 'delete')."
 					".$frm->admin_button('submit_show_deleteall', IMALAN_25, 'delete')."
 					".$frm->admin_button('submit_cancel_show', IMALAN_68, 'cancel')."
 				</div>
@@ -495,9 +495,9 @@ if (isset($_POST['check_avatar_sizes']))
 				<thead>
 					<tr>
 						<th class='center'>".LAN_OPTIONS."</th>
-						<th class='center'>".IMALAN_64."</th>
+						<th class='center'>".LAN_USER."</th>
 						<th class='center'>".IMALAN_62."</th>
-						<th class='center last'>".IMALAN_63."</th>
+						<th class='center last'>".LAN_URL."</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -593,9 +593,9 @@ if (isset($_POST['check_avatar_sizes']))
 			</table>
 			<div class='buttons-bar'>
 				<input type='hidden' name='check_avatar_sizes' value='1' />
-				".$frm->admin_button('check_all', IMALAN_59, 'action')."
-				".$frm->admin_button('uncheck_all', IMALAN_60, 'action')."
-				".$frm->admin_button('submit_avdelete_multi', IMALAN_58, 'delete')."
+				".$frm->admin_button('check_all', LAN_CHECKALL, 'action')."
+				".$frm->admin_button('uncheck_all', LAN_UNCHECKALL, 'action')."
+				".$frm->admin_button('submit_avdelete_multi', LAN_DELCHECKED, 'delete')."
 			</div>
 		</fieldset>
 	</form>
@@ -762,7 +762,7 @@ if (isset($_POST['check_avatar_sizes']))
 						<tr>
 							<td class='label'>".IMALAN_36."</td>
 							<td class='control'>
-								".$frm->admin_button('check_avatar_sizes', IMALAN_17)."
+								".$frm->admin_button('check_avatar_sizes', ADLAN_145)."
 							</td>
 						</tr>
 					</tbody>
@@ -924,7 +924,7 @@ function headerjs()
 	$ret = "
 		<script type='text/javascript'>
 			//add required core lan - delete confirm message
-			(".e_jshelper::toString(IMALAN_67).").addModLan('core', 'delete_confirm');
+			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 		</script>
 		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
 	";
