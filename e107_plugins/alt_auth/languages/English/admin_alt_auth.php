@@ -11,20 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/languages/English/admin_alt_auth.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-07-05 18:47:52 $
+|     $Revision: 1.4 $
+|     $Date: 2009-11-08 10:34:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
-define('LAN_ALT_1', 'Current authorisation type');
+define('LAN_ALT_1', 'Primary authorisation type');
 define('LAN_ALT_2', 'Update settings');
 define('LAN_ALT_3', 'Choose Alternate Authorisation Type');
 define('LAN_ALT_4', 'Configure parameters for');
 define('LAN_ALT_5', 'Configure authorisation parameters');
 define('LAN_ALT_6', 'Failed connection action');
-define('LAN_ALT_7', 'If connection to the alternate method fails, how should that be handled?');
-define('LAN_ALT_8', 'User not found action');
-define('LAN_ALT_9', 'If username is not found using alternate method, how should that be handled?');
+define('LAN_ALT_7', 'If connection to the primary authorisation type fails (and its not the local e107 DB), how should that be handled?');
+define('LAN_ALT_8', 'Secondary authorisation type');
+define('LAN_ALT_9', 'This is used if the primary authorisation method cannot find the user');
 
 define('LAN_ALT_10', 'User login name field');
 define('LAN_ALT_11', 'User password field');
@@ -96,9 +96,11 @@ define('LAN_ALT_74', 'Upper first');
 define('LAN_ALT_75', 'Upper words');
 define('LAN_ALT_76', 'User class restriction (a numeric value - zero or blank for everyone)');
 define('LAN_ALT_77', 'Only users in this class (on the database set above) are permitted access');
+define('LAN_ALT_78', 'Failed password action');
+define('LAN_ALT_79', 'If user exists in primary DB, but enters an incorrect password, how should that be handled?');
 
 
-define('LAN_ALT_FALLBACK', 'Use e107 user table');
+define('LAN_ALT_FALLBACK', 'Use secondary authorisation');
 define('LAN_ALT_FAIL', 'Failed login');
 define('LAN_ALT_UPDATESET', 'Update settings');
 define('LAN_ALT_UPDATED','Settings updated');
