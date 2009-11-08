@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_conf.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-07-21 19:49:36 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2009-11-08 10:34:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
@@ -37,7 +37,7 @@ if(isset($_POST['updateprefs']))
 	unset($temp);
 	$temp['auth_method'] = $tp->toDB($_POST['auth_method']);
 	$temp['auth_noconn'] = intval($_POST['auth_noconn']);
-	$temp['auth_nouser'] = intval($_POST['auth_nouser']);
+	$temp['auth_method2'] = $tp->toDB($_POST['auth_method2']);
 	if ($admin_log->logArrayDiffs($temp, $pref, 'AUTH_01'))
 	{
 		save_prefs();		// Only save if changes
@@ -63,6 +63,23 @@ if(isset($_POST['updateeufs']))
 	}
 }
 
+// Avoid need for lots of checks later
+if (!isset($pref['auth_badpassword'])) $pref['auth_badpassword'] = 0;
+if (!isset($pref['auth_noconn'])) $pref['auth_noconn'] = 0;
+
+// Convert prefs
+if (isset($pref['auth_nouser']))
+{
+	$pref['auth_method2'] = 'none';		// Default to no fallback
+	if ($pref['auth_nouser'])
+	{
+		$pref['auth_method2'] = 'e107';
+	}
+	unset($pref['auth_nouser']);
+	if (!isset($pref['auth_badpassword'])) $pref['auth_badpassword'] = 0;
+	save_prefs();
+}
+
 
 $authlist = alt_auth_get_authlist();
 if (isset($pref['auth_extended']))
@@ -75,13 +92,6 @@ else
 	$authExtended = array();
 }
 
-$auth_dropdown = "<select class='tbox' name='auth_method'>\n";
-foreach($authlist as $a)
-{
-	$s = ($pref['auth_method'] == $a) ? "selected='selected'" : "";
-	$auth_dropdown .= "<option value='{$a}' {$s}>".$a."</option>\n";
-}
-$auth_dropdown .= "</select>\n";
 
 if(isset($message))
 {
@@ -99,19 +109,29 @@ $text = "
 <tr>
 <td>".LAN_ALT_1.": </td>
 <td>".
-$auth_dropdown."
+alt_auth_get_dropdown('auth_method', $pref['auth_method'], 'e107')."
 </td>
 </tr>
 
 <tr>
-<td>".LAN_ALT_6.":<br />
-
-</td>
+<td>".LAN_ALT_78.":<br /></td>
 <td>
 <select class='tbox' name='auth_noconn'>";
-$sel = (isset($pref['auth_noconn']) && $pref['auth_noconn'] ? "" : " selected = 'selected' ");
+$sel = (!$pref['auth_badpassword'] ? "" : " selected = 'selected' ");
 $text .= "<option value='0' {$sel} >".LAN_ALT_FAIL."</option>";
-$sel = (isset($pref['auth_noconn']) && $pref['auth_noconn'] ? " selected = 'selected' " : "");
+$sel = ($pref['auth_badpassword'] ? " selected = 'selected' " : "");
+$text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
+</select><div class='smalltext field-help'>".LAN_ALT_79."</div>
+</td>
+</tr>
+
+<tr>
+<td>".LAN_ALT_6.":<br /></td>
+<td>
+<select class='tbox' name='auth_noconn'>";
+$sel = (!$pref['auth_noconn'] ? "" : " selected = 'selected' ");
+$text .= "<option value='0' {$sel} >".LAN_ALT_FAIL."</option>";
+$sel = ($pref['auth_noconn'] ? " selected = 'selected' " : "");
 $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 </select><div class='smalltext field-help'>".LAN_ALT_7."</div>
 </td>
@@ -121,13 +141,8 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 <td>".LAN_ALT_8.":<br />
 
 </td>
-<td>
-<select class='tbox' name='auth_nouser'>";
-$sel = (isset($pref['auth_nouser']) && $pref['auth_nouser'] ? "" : " selected = 'selected' ");
-$text .= "<option value='0' {$sel} >".LAN_ALT_FAIL."</option>";
-$sel = (isset($pref['auth_nouser']) && $pref['auth_nouser'] ? " selected = 'selected' " : "");
-$text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
-</select><div class='smalltext field-help'>".LAN_ALT_9."</div>
+<td>".alt_auth_get_dropdown('auth_method2', $pref['auth_method2'], 'none')."
+<div class='smalltext field-help'>".LAN_ALT_9."</div>
 </td>
 </tr>
 </table>
@@ -141,10 +156,7 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 $ns -> tablerender(LAN_ALT_3, $text);
 
 
-//$extendedFields = $euf->user_extended_get_fields();
-//$extendedFields = &$euf->fieldDefinitions;
-//print_a($extendedFields);
-if (count($euf->fieldDefinitions))
+if ($euf->userCount)
 {
 	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
 	$fl = &$euf->fieldDefinitions;

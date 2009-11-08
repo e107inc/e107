@@ -24,10 +24,10 @@ if (!is_object($euf))
   define('AUTH_UNKNOWN', 4);
   define('AUTH_NOT_AVAILABLE', 5);
 
-function alt_auth_get_authlist()
+function alt_auth_get_authlist($incE107 = TRUE)
 {
-	$authlist = array("e107");
-	$handle=opendir(e_PLUGIN."alt_auth");
+	$authlist = $incE107 ? array('e107') : array();
+	$handle=opendir(e_PLUGIN.'alt_auth');
 	while ($file = readdir($handle))
 	{
 		if(preg_match("/^(.*)_auth\.php/",$file,$match))
@@ -37,6 +37,21 @@ function alt_auth_get_authlist()
 	}
 	closedir($handle);
 	return $authlist;
+}
+
+
+function alt_auth_get_dropdown($name, $curval = '', $options = '')
+{
+	$optList = explode(',', $options);
+	$authList = array_merge($optList, alt_auth_get_authlist(FALSE));
+	$ret = "<select class='tbox' name='{$name}'>\n";
+	foreach ($authList as $v)
+	{
+		$sel = ($curval == $v ? " selected = 'selected' " : '');
+		$ret .= "<option value='{$v}'{$sel} >{$v}</option>\n";
+	}
+	$ret .= "</select>\n";
+	return $ret;
 }
 
 

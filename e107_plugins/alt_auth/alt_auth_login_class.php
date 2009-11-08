@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/alt_auth/alt_auth_login_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-07-21 19:21:26 $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-08 10:34:23 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,14 +21,23 @@ define('AA_DEBUG1',FALSE);
 
 class alt_login
 {
-	function alt_login($method, &$username, &$userpass)
+	protected $e107;
+
+	public function __construct($method, &$username, &$userpass)
 	{
-		global $pref, $admin_log;
+		global $pref;
+		$this->e107 = e107::getInstance();
 		$newvals=array();
 		define('AUTH_SUCCESS', -1);
 		define('AUTH_NOUSER', 1);
 		define('AUTH_BADPASSWORD', 2);
 		define('AUTH_NOCONNECT', 3);
+
+		if ($method == 'none')
+		{
+			return AUTH_NOCONNECT;
+		}
+
 		require_once(e_PLUGIN.'alt_auth/'.$method.'_auth.php');
 		$_login = new auth_login;
 
@@ -64,7 +73,7 @@ class alt_login
 					if (isset($_login->copyMethods[$k]))
 					{
 						$newvals[$k] = $this->translate($_login->copyMethods[$k], $v);
-						if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth convert",$k.': '.$v.'=>'.$newvals[$k],FALSE,LOG_TO_ROLLING);
+						if (AA_DEBUG1) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth convert",$k.': '.$v.'=>'.$newvals[$k],FALSE,LOG_TO_ROLLING);
 					}
 				}
 			}
@@ -88,7 +97,7 @@ class alt_login
 				$qry = "SELECT u.user_id,u.".implode(',u.',array_keys($db_vals)).", ue.user_extended_id, ue.".implode(',ue.',array_keys($xFields))." FROM `#user` AS u
 						LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id
 						WHERE u.user_loginname='{$username}' ";
-				if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Query: {$qry}[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
+				if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Query: {$qry}[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 			}
 			else
 			{
@@ -108,14 +117,14 @@ class alt_login
 					validatorClass::addFieldTypes($userMethods->userVettingInfo,$newUser);
 					$newUser['WHERE'] = '`user_id`='.$row['user_id'];
 					$aa_sql->db_Update('user',$newUser);
-					if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data update: ".print_r($newUser,TRUE),FALSE,LOG_TO_ROLLING);
+					if (AA_DEBUG1) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data update: ".print_r($newUser,TRUE),FALSE,LOG_TO_ROLLING);
 				}
 				foreach ($xFields as $k => $v)
 				{
 					if ($row[$k] == $v) unset($xFields[$k]);
 				}
-				if (AA_DEBUG1) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data read: ".print_r($row,TRUE)."[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
-				if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User xtnd read: ".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
+				if (AA_DEBUG1) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User data read: ".print_r($row,TRUE)."[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
+				if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User xtnd read: ".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 				if (count($xFields))
 				{
 					$xArray = array();
@@ -124,21 +133,21 @@ class alt_login
 					{
 						$ue->addFieldTypes($xArray);		// Add in the data types for storage
 						$xArray['WHERE'] = '`user_extended_id`='.intval($row['user_id']);
-						if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User xtnd update: ".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
+						if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","User xtnd update: ".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 						$aa_sql->db_Update('user_extended',$xArray );
 					}
 					else
 					{	// Never been an extended user fields record for this user
 						$xArray['data']['user_extended_id'] = $row['user_id'];
 						$ue->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
-						if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Write new extended record".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
+						if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Write new extended record".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 						$aa_sql->db_Insert('user_extended',$xArray);
 					}
 				}
 			}
 			else
 			{  // Just add a new user
-				if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Add new user: ".print_r($db_vals,TRUE)."[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
+				if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Alt auth login","Add new user: ".print_r($db_vals,TRUE)."[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 				if (!isset($db_vals['user_name'])) $db_vals['user_name'] = $username;
 				if (!isset($db_vals['user_loginname'])) $db_vals['user_loginname'] = $username;
 				if (!isset($db_vals['user_join'])) $db_vals['user_join'] = time();
@@ -161,12 +170,12 @@ class alt_login
 						$xArray['data'] = $xFields;
 						$ue->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
 						$result = $aa_sql->db_Insert('user_extended',$xArray);
-						if (AA_DEBUG) $admin_log->e_log_event(10,debug_backtrace(),'DEBUG','Alt auth login',"Add extended: UID={$newID}  result={$result}",FALSE,LOG_TO_ROLLING);
+						if (AA_DEBUG) $this->e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','Alt auth login',"Add extended: UID={$newID}  result={$result}",FALSE,LOG_TO_ROLLING);
 					}
 				}
 				else
 				{	// Error adding user to database - possibly a conflict on unique fields
-					$admin_log->e_log_event(10,__FILE__.'|'.__FUNCTION__.'@'.__LINE__,'ALT_AUTH','Alt auth login','Add user fail: DB Error '.$aa_sql->mySQLlastErrText."[!br!]".print_r($db_vals,TRUE),FALSE,LOG_TO_ROLLING);
+					$this->e107->admin_log->e_log_event(10,__FILE__.'|'.__FUNCTION__.'@'.__LINE__,'ALT_AUTH','Alt auth login','Add user fail: DB Error '.$aa_sql->mySQLlastErrText."[!br!]".print_r($db_vals,TRUE),FALSE,LOG_TO_ROLLING);
 					return LOGIN_DB_ERROR;
 				}
 			}
@@ -176,21 +185,28 @@ class alt_login
 		{	// Failure modes
 			switch($login_result)
 			{
-				case AUTH_NOUSER:
+/*
+				case AUTH_NOUSER:			// Now handled differently
 					if(!varset($pref['auth_nouser'],0))
 					{
 						$username=md5('xx_nouser_xx');
 						return LOGIN_ABORT;
 					}
 					break;
+*/
 				case AUTH_NOCONNECT:
-					if(!varset($pref['auth_noconn']))
+					if(varset($pref['auth_noconn'], TRUE))
 					{
-						$username=md5('xx_noconn_xx');
-						return LOGIN_ABORT;
+						return LOGIN_TRY_OTHER;
 					}
+					$username=md5('xx_noconn_xx');
+					return LOGIN_ABORT;
 					break;
 				case AUTH_BADPASSWORD:
+					if(varset($pref['auth_badpassword'], TRUE))
+					{
+						return LOGIN_TRY_OTHER;
+					}
 					$userpass=md5('xx_badpassword_xx');
 					return LOGIN_ABORT;					// Not going to magically be able to log in!
 					break;
@@ -199,9 +215,9 @@ class alt_login
 		return LOGIN_ABORT;			// catch-all just in case
 	}
 
-	
+
 	// Function to implement copy methods
-	function translate($method, $word)
+	public function translate($method, $word)
 	{
 		global $tp;
 		switch ($method)

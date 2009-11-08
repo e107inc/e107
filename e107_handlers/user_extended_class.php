@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2009-11-05 09:18:48 $
-|     $Author: e107coders $
+|     $Revision: 1.27 $
+|     $Date: 2009-11-08 10:34:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,14 +32,16 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
 
 class e107_user_extended
 {
-	var $user_extended_types;
+	var $user_extended_types;		// Text description corresponding to each field type
 	var $extended_xml;
-	var $typeArray;
-	var $reserved_names;
-	var	$fieldDefinitions;			// Array initialised from DB by constructor
+	var $typeArray;					// Cross-reference between names of field types, and numeric ID
+	var $reserved_names;			// List of field names used in main user DB - not allowed in extended DB
+	var	$fieldDefinitions;			// Array initialised from DB by constructor - currently non-system fields only
 	var $nameIndex;					// Array for field name lookup - initialised by constructor
+	public $systemCount = 0;		// Count of system fields - always zero ATM
+	public $userCount = 0;			// Count of non-system fields
 
-	function e107_user_extended()
+	public function __construct()
 	{
 		define('EUF_TEXT',1);
 		define('EUF_RADIO',2);
@@ -89,11 +91,22 @@ class e107_user_extended
 		'xup'
 		);
 
+		// At present we only load non-system fields - may want to change this
 		$this->fieldDefinitions = $this->user_extended_get_fieldList();			// Assume that we'll need these if an object has been instantiated
 		$this->nameIndex = array();
+		$this->systemCount = 0;
+		$this->userCount = 0;
 		foreach ($this->fieldDefinitions as $k => $v)
 		{
 			$this->nameIndex['user_'.$v['user_extended_struct_name']] = $k;			// Create name to ID index
+			if ($v['user_extended_struct_text'] == '_system_')
+			{
+				$this->systemCount++;
+			}
+			else
+			{
+				$this->userCount++;
+			}
 		}
 	}
 
@@ -269,6 +282,7 @@ class e107_user_extended
 
 
 	// Get the definition of all fields, or those in a specific category, grouped by category ID
+	// Reads non-system fields only
 	function user_extended_get_fields($cat = "")
 	{
 		global $sql;

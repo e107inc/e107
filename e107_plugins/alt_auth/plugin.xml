@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.7 2009-10-20 03:49:21 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.8 2009-11-08 10:34:23 e107steved Exp $ -->
 
 <e107Plugin name="LAN_ALT_65" version="0.4" compatibility="0.8" installRequired="true" >
 	<author name="e107 Inc." url="e107.org" email="mcfly@e107.org" />
@@ -15,7 +15,8 @@
 	</adminLinks>
 	<mainPrefs>
 		<pref name="auth_noconn">0</pref>
-		<pref name="auth_nouser">0</pref>
+		<pref name="auth_badpassword">0</pref>
+		<pref name="auth_method2">0</pref>
 		<pref name="auth_extended"></pref>
 	</mainPrefs>
 </e107Plugin>

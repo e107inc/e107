@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-11-04 17:29:26 $
-|     $Author: secretr $
+|     $Revision: 1.13 $
+|     $Date: 2009-11-08 10:34:23 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -218,26 +218,8 @@ function PreImage_Select($formid) {
 				foreach($imagelist as $image)
 				{
 					$e_path = $tp->createConstants($image['path'],1);
-					$showpath = str_replace($path,"",$image['path']);
-					if(strstr($image['fname'], "thumb"))
-					{
-						$fi = str_replace("thumb_", "", $image['fname']);
-						if(file_exists($path.$fi))
-						{
-							// thumb and main image found
-							$text .= "<option value=\"[link=".$e_path.$fi."][img]".$e_path.$image['fname']."[/img][/link]\">".$showpath.$image['fname']." (".LANHELP_38.")</option>\n
-							";
-						}
-						else
-						{
-							$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n
-							";
-						}
-					}
-					else
-					{
-						$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n";
-					}
+					$showpath = str_replace($path,'',$image['path']);
+					$text .= "<option value=\"[img]".$e_path.$image['fname']."[/img]\">".$showpath.$image['fname']."</option>\n";
 				}
 				$text .="</select>";
 			}
