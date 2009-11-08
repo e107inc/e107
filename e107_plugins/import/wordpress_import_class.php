@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/import/wordpress_import_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-07-21 07:53:10 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2009-11-08 21:13:29 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@
 //		b) The array index of certain variables
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 $import_class_names['wordpress_import'] = 'Wordpress';
-$import_class_comment['wordpress_import'] = 'Tested with version 2.8.x - passwords currently not working (salted!)';
+$import_class_comment['wordpress_import'] = 'Tested with version 2.8.x (salted passwords)';
 $import_class_support['wordpress_import'] = array('users');
 $import_default_prefix['wordpress_import'] = 'wp_';
 
