@@ -9,8 +9,8 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/log/e_meta.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-08 16:15:31 $
+ * $Revision: 1.5 $
+ * $Date: 2009-11-08 19:46:44 $
  * $Author: e107steved $
  *
 */
@@ -32,12 +32,10 @@ if (isset($pref['statActivate']) && $pref['statActivate'])
 		if (is_numeric(e_QUERY)) $err_flag .= '/'.substr(e_QUERY,0,10);		// This should pick up the error code - and limit numeric length to upset the malicious
 		$err_flag .= "&err_referer=".$_SERVER['HTTP_REFERER'];
 	}
-	echo "<script type='text/javascript'>
-			//<![CDATA[
+	$logJS = "
 function rstr2b64(input)
 {
-//	var b64pad  = \"=\"; /* base-64 pad character. \"=\" for strict RFC compliance   */
-	var b64pad  = \"\"; /* base-64 pad character. \"=\" for strict RFC compliance   */
+	var b64pad  = \"=\"; /* base-64 pad character. \"=\" for strict RFC compliance   */
 	var tab = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/\";
 	var output = \"\";
 	var len = input.length;
@@ -57,12 +55,13 @@ function rstr2b64(input)
 var ref=\"\"+escape(top.document.referrer);
 var colord = window.screen.colorDepth;
 var res = window.screen.width + \"x\" + window.screen.height;
-var eself = document.location; 
-var logString = 'referer=' + ref + '&colour=' + colord + '&eself=' + eself + '&res=' + res + '".$err_flag."';
+var logString = 'referer=' + ref + '&colour=' + colord + '&eself=' + document.location + '&res=' + res + '".$err_flag."';
 logString = rstr2b64(logString);
-document.write( '<link rel=\"stylesheet\" type=\"text/html\" href=\"".e_PLUGIN_ABS."log/log.php?'+logString + '\">' );\n
-//]]>
-</script>\n";
+document.write( '<link rel=\"stylesheet\" type=\"text/html\" href=\"".e_PLUGIN_ABS."log/log.php?'+logString + '\">' );
+";
+	$e107 = e107::getInstance();
+	$e107->getJs()->headerInline($logJS, 5);
+
 }
 
 
