@@ -2257,6 +2257,13 @@ class e_admin_ui extends e_admin_controller_ui
 						$data[$key] = e107::getDateConvert()->toTime($data[$key], 'input'); 
 					}
 				break;
+				
+				case 'ip': // TODO - ask Steve if this check is required
+					if(strpos($data[$key], '.') !== FALSE)
+					{
+						$data[$key] = e107::getInstance()->ipEncode($data[$key]);
+					}
+					var_dump($data[$key]);
 				//more to come
 			}
 		}
@@ -3169,7 +3176,8 @@ class e_admin_ui_dummy extends e_form
  * 5. date convert needs string-to-datestamp auto parsing, strptime() is the solution but needs support for 
  * 		Windows and PHP < 5.1.0 - build custom strptime() function (php_compatibility_handler.php) on this - 
  * 		http://sauron.lionel.free.fr/?page=php_lib_strptime (bad license so no copy/paste is allowed!)
- * 6. $fields[parms] mess - fix it, separate list/edit mode parms somehow
+ * 6. [DONE - read/writeParms introduced ] $fields[parms] mess - fix it, separate list/edit mode parms somehow
  * 7. clean up/document all object vars (e_admin_ui, e_admin_dispatcher)
  * 8. clean up/document all parameters (get/setParm()) in controller and model classes
+ * 9. [DONE] 'ip' field type - convert to human readable format while showing/editing record
  */

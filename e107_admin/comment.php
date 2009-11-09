@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-11-08 12:08:23 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2009-11-09 12:23:45 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -88,7 +88,7 @@ class comments_admin_ui extends e_admin_ui
          	'user_name' 			=> array('title'=> "System user",	'type' => 'text',			'width' => 'auto', 'table' => 'user', 'noedit' => true),	// User name
 		    'comment_datestamp' 	=> array('title'=> "datestamp",		'type' => 'datestamp',		'width' => 'auto'),	// User date
             'comment_blocked' 		=> array('title'=> "blocked",		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
-			'comment_ip' 			=> array('title'=> "IP",			'type' => 'text',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+			'comment_ip' 			=> array('title'=> "IP",			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'comment_type' 			=> array('title'=> "Type",			'type' => 'method',			'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
 			'comment_lock' 			=> array('title'=> "Lock",			'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
