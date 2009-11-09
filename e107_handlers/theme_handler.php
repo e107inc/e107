@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.62 $
- * $Date: 2009-11-05 09:15:12 $
+ * $Revision: 1.63 $
+ * $Date: 2009-11-09 00:13:59 $
  * $Author: e107coders $
  */
 
@@ -1251,6 +1251,21 @@ class themeHandler
 		 $themeArray['custompages'] = array_filter(explode(" ",$match[3]));*/
 		
 		$themeContentsArray = explode("\n", $themeContents);
+
+		preg_match_all("#\\$"."CUSTOMHEADER\[(\"|')(.*?)('|\")\].*?#",$themeContents,$match);
+		$customHeaderArray = $match[2];
+		
+		preg_match_all("#\\$"."CUSTOMFOOTER\[(\"|')(.*?)('|\")\].*?#",$themeContents,$match);
+		$customFooterArray = $match[2];	
+		
+		foreach ($themeContentsArray as $line)
+		{
+			if(strstr($line, "CUSTOMPAGES"))
+			{
+				eval(str_replace("$", "\$", $line)); // detect arrays also. 
+			}
+		}
+				
 		
 		if(!$themeArray['name'])
 		{
@@ -1267,13 +1282,7 @@ class themeHandler
 		// load custompages from theme.php only when theme.xml doesn't exist.
 		if(!file_exists(e_THEME.$path."theme.xml"))
 		{
-			foreach ($themeContentsArray as $line)
-			{
-				if(strstr($line, "CUSTOMPAGES"))
-				{
-					eval(str_replace("$", "\$", $line));
-				}
-			}
+
 			if(is_array($CUSTOMPAGES))
 			{
 				foreach ($CUSTOMPAGES as $key=>$val)
@@ -1289,10 +1298,29 @@ class themeHandler
 					 'previewFull'=>'',
 					 'plugins'=>'');
 			}
+			
+			
+			foreach($customHeaderArray as $tm)
+			{
+				$lays[$tm]['@attributes'] = array('title'=>str_replace("_"," ",$tm),
+						 'preview'=>'',
+						 'previewFull'=>'',
+						 'plugins'=>'');
+			}
+			
+			foreach($customFooterArray as $tm)
+			{
+				$lays[$tm]['@attributes'] = array('title'=>str_replace("_"," ",$tm),
+						 'preview'=>'',
+						 'previewFull'=>'',
+						 'plugins'=>'');
+			}
 		}
-		
+				
 		$themeArray['path'] = $path;
 		$themeArray['layouts'] = $lays;
+	//	 echo "<h2>".$themeArray['name']."</h2>";
+	//	 print_a($lays);
 		
 		return $themeArray;
 	}
