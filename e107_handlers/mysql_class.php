@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.61 $
- * $Date: 2009-11-08 12:08:24 $
+ * $Revision: 1.62 $
+ * $Date: 2009-11-09 03:03:41 $
  * $Author: e107coders $
 */
 
@@ -49,7 +49,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * @author $Author: e107coders $
  * 
  */
@@ -852,6 +852,9 @@ class e_db_mysql {
 		{
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
+		
+		//FIXME - this is a quick Fix for REGEXP queries, as used in admin_ui. 
+		$query = str_replace("`#","`".$this->mySQLPrefix,$query);
 
 		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE)
 		{	// Successful query which doesn't return a row count
