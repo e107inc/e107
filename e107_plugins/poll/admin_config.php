@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-09-22 18:28:45 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-09 16:54:29 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -165,7 +165,7 @@ function poll_list()
 	
 	
 	global $user_pref;
-	if(isset($_POST['submit-e-columns'])) //TODO User 
+	if(isset($_POST['etrigger_ecolumns'])) //TODO User 
 	{
 		$user_pref['admin_poll_columns'] = $_POST['e-columns'];
 		save_prefs('user');

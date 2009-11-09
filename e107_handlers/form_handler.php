@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.74 $
- * $Date: 2009-11-09 12:23:44 $
+ * $Revision: 1.75 $
+ * $Date: 2009-11-09 16:54:29 $
  * $Author: secretr $
  *
 */
@@ -198,10 +198,11 @@ class e_form
 			';
 		}
 		
+		//'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
 		$ret = '
 		<div class="e-autocomplete-c">
 			'.$this->text($name, $default_name, 150, array('id' => false, 'readonly' => vartrue($options['readonly']) ? true : false)).'
-			'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
+			'.$this->hidden($id_fld, $default_id, array('id' => false)).'
 			'.$reset.'
 				<span class="indicator" style="display: none;">
 					<img src="'.e_IMAGE_ABS.'generic/loading_16.gif" class="icon action S16" alt="Loading..." />
@@ -1194,7 +1195,7 @@ class e_form
 			break;
 			
 			case 'bbarea':
-				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size']));
+				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'));
 			break;
 			
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
@@ -1223,7 +1224,7 @@ class e_form
 			
 			case 'userclass':
 			case 'userclasses':
-				$uc_options = vartrue($parms['classlist'], ''); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
+				$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,classes,admin,main'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
 				unset($parms['classlist']);
 				$method = $attributes['type'] == 'userclass' ? 'uc_select' : 'uc_checkbox';
 				return $this->$method($key, $value, $uc_options, vartrue($parms['__options'], array()));

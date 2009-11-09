@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-11-09 12:23:45 $
+|     $Revision: 1.17 $
+|     $Date: 2009-11-09 16:54:30 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,7 @@ class comments_admin_ui extends e_admin_ui
 			'comment_id'			=> array('title'=> LAN_ID,				'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
        		'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',			'width' => '5%'),
          	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'comment_comment' 		=> array('title'=> "comment",		'type' => 'textarea',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+         	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'comment_author_id' 	=> array('title'=> "authorID",		'type' => 'user',			'data' => 'int',	'width' => 'auto'),	// User id
          	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'text',			'width' => 'auto'),	// User name
          	'user_name' 			=> array('title'=> "System user",	'type' => 'text',			'width' => 'auto', 'table' => 'user', 'noedit' => true),	// User name

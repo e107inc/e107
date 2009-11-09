@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-05 17:32:18 $
+ * $Revision: 1.7 $
+ * $Date: 2009-11-09 16:54:28 $
  * $Author: secretr $
 */
 
@@ -118,8 +118,9 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * 	- title (string) Human readable field title, constant name will be accpeted as well (multi-language support
 		 * 
 		 *  - type (string) null (means system), number, text, dropdown, url, image, icon, datestamp, userclass, userclasses, user[_name|_loginname|_login|_customtitle|_email],
-		 *    boolean, method
+		 *    boolean, method, ip
 		 *  	full/most recent reference list - e_form::renderTableRow(), e_form::renderElement(), e_admin_form_ui::renderBatchFilter()
+		 *  	for list of possible read/writeParms per type see below
 		 *  
 		 *  - data (string) Data type, one of the following: int, integer, string, str, float, bool, boolean, model, null
 		 *    Used only if $dataFields is not set
@@ -163,6 +164,9 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * - number -> read: (array) [optional] 'point' => '.', [optional] 'sep' => ' ', [optional] 'decimals' => 2, [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY'
 		 * 			-> write: (array) [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY', [optional] 'maxlength' => 50, [optional] '__options' => array(...) see e_form class description for __options format
 		 * 
+		 * - ip		-> read: n/a
+		 * 			-> write: [optional] element options array (see e_form class description for __options format)
+		 * 
 		 * - text -> read: (array) [optional] 'htmltruncate' => 100, [optional] 'truncate' => 100, [optional] 'pre' => '', [optional] 'post' => ' px'
 		 * 		  -> write: (array) [optional] 'pre' => '', [optional] 'post' => ' px', [optional] 'maxlength' => 50 (default - 255), [optional] '__options' => array(...) see e_form class description for __options format
 		 * 
@@ -170,7 +174,7 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * 		  		-> write: (array) [optional] 'rows' => '' default 15, [optional] 'cols' => '' default 40, [optional] '__options' => array(...) see e_form class description for __options format
 		 * 
 		 * - bbarea -> read: same as textarea type
-		 * 		  	-> write: (array) [optional] 'pre' => '', [optional] 'post' => ' px', [optional] 'maxlength' => 50 (default - 255), [optional] '__options' => array(...) see e_form class description for __options format
+		 * 		  	-> write: (array) [optional] 'pre' => '', [optional] 'post' => ' px', [optional] 'maxlength' => 50 (default - 0), [optional] 'size' => [optional] - medium, small, large - default is medium
 		 * 
 		 * - image -> read: [optional] 'title' => 'SOME_LAN' (default - LAN_PREVIEW), [optional] 'pre' => '{e_PLUGIN}myplug/images/'
 		 * 		   -> write: (array) [optional] 'label' => '', [optional] '__options' => array(...) see e_form::imagepicker() for allowed options

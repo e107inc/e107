@@ -10,9 +10,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
- |     $Revision: 1.22 $
- |     $Date: 2009-11-07 02:10:46 $
- |     $Author: e107coders $
+ |     $Revision: 1.23 $
+ |     $Date: 2009-11-09 16:54:29 $
+ |     $Author: secretr $
  +----------------------------------------------------------------------------+
 */
 if (!e107::isInstalled('download')) { exit(); }
@@ -1895,7 +1895,7 @@ class adminDownload extends download
 //		{
 //			$this->_observe_newsCommentsRecalc();
 //		}
-		if(isset($_POST['submit-e-columns']))
+		if(isset($_POST['etrigger_ecolumns']))
 		{
         	$this->_observe_saveColumns();
 		}
