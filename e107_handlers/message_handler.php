@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-11-01 19:05:25 $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-09 12:20:33 $
  * $Author: secretr $
  *
 */
@@ -75,6 +75,22 @@ class eMessage
 		
 		require_once(e_HANDLER.'e107_class.php');
 		$this->_session_id = e107::getPref('cookie_name', 'e107').'_system_messages';
+		
+		//clean up old not used sessions
+		$tmp = array_keys($_SESSION);
+		foreach ($tmp as $key)
+		{
+			if($key != $this->_session_id && strpos($key, '_system_messages'))
+			{
+				unset($_SESSION[$key]);
+			}
+		}
+		unset($tmp);
+		
+		if(!isset($_SESSION[$this->_session_id]))
+		{
+			$_SESSION[$this->_session_id] = array();
+		}
 		
 		$this->reset()->mergeWithSession();
 	}
