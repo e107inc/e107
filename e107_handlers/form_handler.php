@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.73 $
- * $Date: 2009-11-09 10:52:18 $
- * $Author: e107coders $
+ * $Revision: 1.74 $
+ * $Date: 2009-11-09 12:23:44 $
+ * $Author: secretr $
  *
 */
 
@@ -1032,6 +1032,12 @@ class e_form
 				// else same
 			break;
 			
+			case 'ip':
+				$e107 = e107::getInstance();
+				$value = $e107->ipDecode($value);
+				// else same
+			break;
+			
 			case 'dropdown':
 			case 'text':
 				if(vartrue($parms['truncate']))
@@ -1170,6 +1176,10 @@ class e_form
 				if(!vartrue($parms['size'])) $parms['size'] = 15;
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number';
 				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']);
+			break;
+			
+			case 'ip':
+				return $this->text($key, e107::getInstance()->ipDecode($value), 32, $parms);
 			break;
 			
 			case 'url':
