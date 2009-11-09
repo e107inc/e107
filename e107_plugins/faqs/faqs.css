@@ -1,0 +1,57 @@
+
+
+.faq-start
+{
+	
+}
+.faq-submit-question-container
+{
+	margin-top:20px;
+	margin-left:30px;
+}
+.faq-submit-question
+{
+	margin-top:20px;
+	margin-bottom: 10px;
+		
+}
+.faq-submit-question-form
+{
+	margin-top:20px;
+	margin-bottom: 10px;
+		
+}
+.faq-search
+{
+	padding:20px;	
+}
+
+.faq-listall-category
+{
+	
+}
+
+.faq-listall-container
+{
+	
+}
+
+li.faq-listall-loop
+{
+	list-style: circle outside; 
+	margin-bottom: 8px;	
+}
+
+.faq-question
+{
+	
+
+}
+
+.faq-answer
+{
+	margin:20px;;
+	border:1px solid silver;
+	background-color: #e3e3e3;
+	padding:10px;
+}

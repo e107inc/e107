@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- $Id: plugin.xml,v 1.1 2009-11-09 12:57:34 e107coders Exp $ -->
+
+<e107Plugin name="FAQs" version="1.0" compatibility="0.8" installRequired="true">
+	<author name="e107 Inc" url="http://www.e107.org" email="security@e107.org" />
+	<description>Based on the original FAQ plugin by Cameron of e107 Inc.</description>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<category>content</category>
+	<adminLinks>
+		<link url='admin_config.php' description='Configure FAQs' icon='images/icon_32.png' iconSmall='images/icon_16.png' primary='true' >Facebook Connect</link>		
+	</adminLinks>
+	<siteLinks>
+		<link url='{e_PLUGIN}faqs/faqs.php' description='FAQs' icon='images/icon_32.png' iconSmall='images/icon_16.png'>FAQs</link>		
+	</siteLinks>
+	<pluginPrefs>
+		<pref name="add_faq">255</pref>
+		<pref name="submit_question">255</pref>
+		<pref name="classic_look">0</pref>
+	</pluginPrefs>
+</e107Plugin>
