@@ -2285,9 +2285,11 @@ class e_admin_ui extends e_admin_controller_ui
 			$ftable = vartrue($var['table'], $this->getTableName());
 			if(($var['type'] == 'text' || $var['type'] == 'method') && $searchQuery)
 			{
-				$filter[] = "(`{$ftable}`.`".$key."` REGEXP ('".$searchQuery."'))";	
+				$filter[] = "(`#{$ftable}`.`".$key."` REGEXP ('".$searchQuery."'))";	
 			}
 		}
+		
+	
 		
 		//$qry = $this->listQry; 
 		// We dont need list qry anymore!
@@ -2378,6 +2380,12 @@ class e_admin_ui extends e_admin_controller_ui
 	
 	public function getPrimaryName()
 	{
+		if(!varset($this->pid))
+		{
+			$mes = e107::getMessage();
+			$mes->add("There is no <b>pid</b> set.", E_MESSAGE_WARNING);			
+		}
+		
 		return $this->pid;
 	}
 	
@@ -2738,6 +2746,7 @@ class e_admin_form_ui extends e_form
 	{
 		$tp = e107::getParser();
 		$controller = $this->getController();
+
 		$request = $controller->getRequest();
 		$tree = $controller->getTreeModel(); 
 		$options = array(
@@ -2920,7 +2929,7 @@ class e_admin_form_ui extends e_form
 	 * @return e_admin_ui
 	 */
 	public function getController()
-	{
+	{	
 		return $this->_controller;
 	}
 }
