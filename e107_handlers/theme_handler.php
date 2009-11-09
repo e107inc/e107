@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.63 $
- * $Date: 2009-11-09 00:13:59 $
+ * $Revision: 1.64 $
+ * $Date: 2009-11-09 00:27:43 $
  * $Author: e107coders $
  */
 
@@ -1256,16 +1256,7 @@ class themeHandler
 		$customHeaderArray = $match[2];
 		
 		preg_match_all("#\\$"."CUSTOMFOOTER\[(\"|')(.*?)('|\")\].*?#",$themeContents,$match);
-		$customFooterArray = $match[2];	
-		
-		foreach ($themeContentsArray as $line)
-		{
-			if(strstr($line, "CUSTOMPAGES"))
-			{
-				eval(str_replace("$", "\$", $line)); // detect arrays also. 
-			}
-		}
-				
+		$customFooterArray = $match[2];					
 		
 		if(!$themeArray['name'])
 		{
@@ -1282,6 +1273,13 @@ class themeHandler
 		// load custompages from theme.php only when theme.xml doesn't exist.
 		if(!file_exists(e_THEME.$path."theme.xml"))
 		{
+			foreach ($themeContentsArray as $line)
+			{
+				if(strstr($line, "CUSTOMPAGES"))
+				{
+					eval(str_replace("$", "\$", $line)); // detect arrays also. 
+				}
+			}
 
 			if(is_array($CUSTOMPAGES))
 			{
