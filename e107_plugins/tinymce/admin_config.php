@@ -9,9 +9,9 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-10-20 21:02:02 $
- * $Author: e107coders $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-09 16:54:30 $
+ * $Author: secretr $
  *
 */
 require_once("../../class2.php");
@@ -75,7 +75,7 @@ else
 	$ef->listRecords();
 }
 
-if(isset($_POST['submit-e-columns']))
+if(isset($_POST['etrigger_ecolumns']))
 {
 	$user_pref['admin_release_columns'] = $_POST['e-columns'];
 	save_prefs('user');

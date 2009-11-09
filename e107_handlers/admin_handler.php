@@ -1945,7 +1945,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListObserver()
 	{
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry())->load();
-		$this->addTitle('List');
+		$this->addTitle('List'); // FIXME - get captions from dispatch list
 		//var_dump($_POST, $this->getParam('enable_triggers'));
 	}
 	
@@ -2044,6 +2044,26 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 	
 	/**
+	 * Edit - send JS to page Header
+	 * @return 
+	 */
+	function EditHeader()
+	{
+		// TODO - make it part of e_from::textarea/bbarea(), invoke it on className (not all textarea elements)
+		e107::getJs()->requireCoreLib('core/admin.js')
+			->footerInline("
+			\$\$('textarea').each(function(textarea) {
+				//auto options
+				var options = {}, autoopt = '__' + textarea.name + '_opt', autooptel = textarea.next('input[name=autoopt]'); 
+				if(autooptel) {
+					options['max_length'] = parseInt(autooptel.value);
+				}
+				new e107Admin.Nicearea(textarea, options);
+			});  
+		");
+	}
+	
+	/**
 	 * Generic Edit page
 	 * @return string
 	 */
@@ -2092,6 +2112,26 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->doAfterSubmit($this->getModel()->getId(), 'edit');
 		}
 		
+	}
+	
+	/**
+	 * Create - send JS to page Header
+	 * @return 
+	 */
+	function CreateHeader()
+	{
+		// TODO - make it part of e_from::textarea/bbarea(), invoke it on className (not all textarea elements)
+		e107::getJs()->requireCoreLib('core/admin.js')
+			->footerInline("
+			\$\$('textarea').each(function(textarea) {
+				//auto options
+				var options = {}, autoopt = '__' + textarea.name + '_opt', autooptel = textarea.next('input[name=autoopt]'); 
+				if(autooptel) {
+					options['max_length'] = parseInt(autooptel.value);
+				}
+				new e107Admin.Nicearea(textarea, options);
+			});  
+		");
 	}
 	
 	/**
@@ -2765,7 +2805,7 @@ class e_admin_form_ui extends e_form
 			'head_query' => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
 			'np_query' => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
 			'legend' => $controller->getPluginTitle(), // hidden by default
-			'form_pre' => $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options')), $controller->getMode().'/'.$controller->getAction())), // needs to be visible when a search returns nothing
+			'form_pre' => $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()), // needs to be visible when a search returns nothing
 			'form_post' => '', // markup to be added after closing form element
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
@@ -2789,9 +2829,6 @@ class e_admin_form_ui extends e_form
 			$location = 'main/list'; //default location
 		}
 		$l = explode('/', $location); 
-		
-		//FIXME - this data is incorrect and always returns 'main/xxxx'. 
-		echo "Debug: LOCATION = ".$location; 
 		
 		$text = "
 			<form method='get' action='".e_SELF."?".e_QUERY."'>
@@ -3180,4 +3217,9 @@ class e_admin_ui_dummy extends e_form
  * 7. clean up/document all object vars (e_admin_ui, e_admin_dispatcher)
  * 8. clean up/document all parameters (get/setParm()) in controller and model classes
  * 9. [DONE] 'ip' field type - convert to human readable format while showing/editing record
+ * 10. draggable ordering (list view)
+ * 11. realtime search filter (typing text) - like downloads currently
+ * 12. autosubmit when 'filter' dropdown is changed (quick fix?)
+ * 13. tablerender captions 
+ * 14. [ALMOST - see Edit/CreateHeader() comments] textareas auto-height
  */

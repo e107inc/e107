@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-11-09 12:57:34 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2009-11-09 16:54:28 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -101,13 +101,13 @@ class faq_main_ui extends e_admin_ui
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_id'				=> array('title'=> LAN_ID,			'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
        		
-         	'faq_question' 			=> array('title'=> "Question",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'faq_answer' 			=> array('title'=> "Answer",		'type' => 'textarea',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'faq_parent' 			=> array('title'=> "Category",		'type' => 'method',			'width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
+         	'faq_question' 			=> array('title'=> "Question",		'type' => 'text',			'data'=> 'str',  'width' => 'auto', 'thclass' => 'left first'), // Display name
+         	'faq_answer' 			=> array('title'=> "Answer",		'type' => 'bbarea',		'data'=> 'str','width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+		 	'faq_parent' 			=> array('title'=> "Category",		'type' => 'method',			'data'=> 'int','width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
 			'faq_comment' 			=> array('title'=> "Comment",		'type' => 'userclass',		'data' => 'int',	'width' => 'auto'),	// User id
-			'faq_datestamp' 		=> array('title'=> "datestamp",		'type' => 'datestamp',		'width' => 'auto'),	// User date
+			'faq_datestamp' 		=> array('title'=> "datestamp",		'type' => 'datestamp',		'data'=> 'int','width' => 'auto'),	// User date
             'faq_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
-			'faq_order' 			=> array('title'=> "Order",			'type' => 'int',			'width' => '5%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+			'faq_order' 			=> array('title'=> "Order",			'type' => 'int',			'data'=> 'int','width' => '5%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		 
