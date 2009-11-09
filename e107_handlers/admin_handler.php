@@ -2558,6 +2558,7 @@ class e_admin_ui extends e_admin_controller_ui
 				->setDataFields($this->dataFields)
 				->setParam('db_query', $this->editQry);
 		}
+		
 		return $this->_model;
 	}
 	
@@ -2757,7 +2758,7 @@ class e_admin_form_ui extends e_form
 			'head_query' => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
 			'np_query' => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
 			'legend' => $controller->getPluginTitle(), // hidden by default
-			'form_pre' => !$tree->isEmpty() ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options')), $controller->getModel().'/'.$controller->getAction())) : '',
+			'form_pre' => $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options')), $controller->getMode().'/'.$controller->getAction())), // needs to be visible when a search returns nothing
 			'form_post' => '', // markup to be added after closing form element
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
@@ -2780,7 +2781,11 @@ class e_admin_form_ui extends e_form
 		{
 			$location = 'main/list'; //default location
 		}
-		$l = explode('/', $location);
+		$l = explode('/', $location); 
+		
+		//FIXME - this data is incorrect and always returns 'main/xxxx'. 
+		echo "Debug: LOCATION = ".$location; 
+		
 		$text = "
 			<form method='get' action='".e_SELF."?".e_QUERY."'>
 				<fieldset class='e-filter'>
