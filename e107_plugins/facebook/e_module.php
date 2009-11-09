@@ -2,8 +2,7 @@
 //error_reporting(E_ALL); 
 
 
-include_once ( e_PLUGIN . 'facebook/facebook_function.php' );
-
+include_once(e_PLUGIN.'facebook/facebook_function.php' );
 
 prevent_cache_headers();
 
