@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.72 $
- * $Date: 2009-11-08 13:21:56 $
+ * $Revision: 1.73 $
+ * $Date: 2009-11-09 10:52:18 $
  * $Author: e107coders $
  *
 */
@@ -263,7 +263,8 @@ class e_form
 		return "<input type='password' name='{$name}' value='' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 
-	function textarea($name, $value, $rows = 15, $cols = 40, $options = array())
+	//TODO make auto-expanding - like facebook. 
+	function textarea($name, $value, $rows = 10, $cols = 80, $options = array())
 	{
 		$options = $this->format_options('textarea', $name, $options);
 		//never allow id in format name-value for text fields
@@ -1179,7 +1180,7 @@ class e_form
 			break;
 			
 			case 'textarea':
-				return $this->textarea($key, $value, vartrue($parms['rows'], 15), vartrue($parms['cols'], 40), vartrue($parms['__options']));
+				return $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']));
 			break;
 			
 			case 'bbarea':
