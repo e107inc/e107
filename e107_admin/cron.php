@@ -3,19 +3,20 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|     Copyright (C) 2001-2009 e107 Inc
+|     http://e107.org/
+|
 |
 |     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
+|     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2009-10-25 15:23:28 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2009-11-10 15:33:00 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
+
 require_once('../class2.php');
 if (!getperms('U'))
 {
@@ -133,6 +134,8 @@ class cron
 		$mes->add("Active Crons: <b>".count($list)."</b>", E_MESSAGE_INFO);			
 		$mes->add("Last cron refresh was ".$ago.' seconds ago.', E_MESSAGE_INFO);
 
+		//FIXME: for Windows, the is_executable() function only checks the file
+		// extensions of exe, com, bat and cmd.
 		if(!is_executable(e_BASE."cron.php"))
 		{
 				$mes->add("Please CHMOD /cron.php to 755" , E_MESSAGE_WARNING);	

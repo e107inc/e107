@@ -3,20 +3,17 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|     Copyright (C) 2001-2009 e107 Inc
+|     http://e107.org/
+|
 |
 |     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
+|     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-10-29 11:32:57 $
+|     $Revision: 1.23 $
+|     $Date: 2009-11-10 15:32:57 $
 |     $Author: marj_nl_fr $
-|
-| Work in progress - supplementary mailer plugin
-|
 +----------------------------------------------------------------------------+
 
 Features:
@@ -1210,7 +1207,9 @@ function show_prefs()
 	
 	<tr>
 		<td>Auto-process script</td><td><b>".substr($_SERVER['DOCUMENT_ROOT'],0,-1).e_HANDLER_ABS."bounce_handler.php</b>";
-		
+
+	//FIXME: for Windows, the is_executable() function only checks the file
+	// extensions of exe, com, bat and cmd.
 	if(!is_executable(e_HANDLER."bounce_handler.php"))
 	{
 		//FIXME hardcoded text and wrong info
