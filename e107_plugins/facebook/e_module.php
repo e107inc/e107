@@ -35,7 +35,6 @@ if ($pref['disable_emailcheck'] == 0)
  * when clicked it insert a new User
  *
  */
-
 if (e_QUERY == 'facebook')
 {
 	
@@ -50,9 +49,7 @@ if (e_QUERY == 'facebook')
 
 if (e_QUERY == 'login')
 {
-	
 	Fb_LogIn();
-
 }
 
 /**
@@ -61,17 +58,18 @@ if (e_QUERY == 'login')
  */
 
 if (e_QUERY == 'logout')
-{
-	
+{	
 	Fb_LogOut();
-
 }
 
 if (e_QUERY == 'facebook_switch')
-{
-	
+{	
 	Switch_Facebook_User();
+}
 
+if (USERID && (e_QUERY == 'facebook_link'))
+{	
+	Add_Facebook_Connect_User('', USERID);
 }
 
 if (e_QUERY == 'facebook_delete')
