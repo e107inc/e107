@@ -8,9 +8,9 @@
  * e107 Admin Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.21 $
- * $Date: 2009-08-15 15:44:37 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.22 $
+ * $Date: 2009-11-09 16:55:41 $
+ * $Author: secretr $
  *
 */
 
@@ -300,12 +300,66 @@ e107Admin.AdminMenu = {
 	_track: $H()
 }
 
+// TEMPORARY HERE, awaiting the overall JS refactoring
+/**
+ * Auto resizeable textarea, max character counter (optional)
+ * Inspired by user post on stackoverflow.com
+ * TODO - make it e107 widget (or even part of BBArea widget?)
+ * @param string|Element textarea
+ * @param Object options
+ */
+e107Admin.Nicearea = Class.create({
+	initialize: function(textarea, options)
+  	{
+		this.textarea = $(textarea);
+		this.options = $H({
+			'min_height' : 30,
+			'max_height' : 400,
+			'max_length' : null
+		}).update(options);
+		
+		this.textarea.observe('keyup', this.refresh.bind(this));
+		
+		this._shadow = new Element('div').setStyle({
+			lineHeight : this.textarea.getStyle('lineHeight'),
+			fontSize : this.textarea.getStyle('fontSize'),
+			fontFamily : this.textarea.getStyle('fontFamily'),
+			position : 'absolute',
+			top: '-10000px',
+			left: '-10000px',
+			width: this.textarea.getWidth() + 'px'
+		});
+		this.textarea.insert({ after: this._shadow });
+		
+		if(null !== this.options.get('max_length')) {
+			this._remainingCharacters = new Element('p').addClassName('remainingCharacters');
+			this.textarea.insert({before: this._remainingCharacters});  
+		}
+		this.refresh();  
+	},
+
+	refresh: function()
+	{ 
+		this._shadow.update($F(this.textarea).replace(/\n/g, '<br/>') + '<br/>');
+		this.textarea.setStyle({
+			height: Math.min(Math.max(parseInt(this._shadow.getHeight()) + parseInt(this.textarea.getStyle('lineHeight').replace('px', '')), this.options.get('min_height')), this.options.get('max_height')) + 'px'
+		});
+		
+		if (null !== this.options.get('max_length')) {
+			var remaining = this.options.get('max_length') - $F(this.textarea).length;
+			if(!this.options.get('max_length')) this._remainingCharacters.update(Math.abs(remaining) + ' characters');
+			else this._remainingCharacters.update(Math.abs(remaining) + ' characters ' + (remaining > 0 ? 'remaining' : 'over the limit'));
+		}
+	}
+});
+
 if(e107Admin.initRules.AdminMenu)
 	document.observe( 'dom:loaded', function() { e107Admin.AdminMenu.init() });
 
 
 
 
+// SecretR - FIXME - need general solution for admin UI tools + user autocomplete uses built-in Scripty Ajax.Autocompleter
 //TODO find the right place for this and make generic - wanted it out of download plugin for now
 // Current use:
 // - filter text field must be in a form
