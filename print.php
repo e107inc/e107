@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/print.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2007-02-13 22:25:16 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2009-11-10 11:52:31 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -55,8 +55,8 @@ else
 	$row = $sql->db_Fetch();
 	extract($row);
 	define("e_PAGETITLE", $news_title);
-	$news_body = $tp->toHTML($news_body, TRUE);
-	$news_extended = $tp->toHTML($news_extended, TRUE);
+	$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
+	$news_extended = $tp->toHTML($news_extended, TRUE, 'BODY');
 	if ($news_author == 0)
 	{
 		$a_name = "e107";
@@ -73,7 +73,7 @@ else
 	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
 	<b>".LAN_PRINT_135.": ".$news_title."</b>
 	<br />
-	(".LAN_PRINT_86." ".$tp->toHTML($category_name,FALSE,"defs").")
+	(".LAN_PRINT_86." ".$tp->toHTML($category_name, FALSE, "defs").")
 	<br />
 	".LAN_PRINT_94." ".$a_name."<br />
 	".$news_datestamp."
