@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.75 $
- * $Date: 2009-11-09 16:54:29 $
+ * $Revision: 1.76 $
+ * $Date: 2009-11-10 19:13:06 $
  * $Author: secretr $
  *
 */
@@ -166,6 +166,7 @@ class e_form
 		if ($datestamp)
 		{
 		   $cal_attrib['value'] = e107::getDateConvert()->convert_date($datestamp, 'input'); //date("d/m/Y H:i:s", $datestamp);
+		  // var_dump('date picker', $datestamp, $cal_attrib['value'], e107::getDateConvert()->toTime($cal_attrib['value']), e107::getDateConvert()->convert_date(e107::getDateConvert()->toTime($cal_attrib['value']), 'input'));
 		}
 		//JS manager to send JS/CSS to header if possible, if not - footer
 		e107::getJs()// FIXME - no CSS support yet!!! ->tryHeaderFile($cal->calendar_theme_file)
@@ -177,16 +178,16 @@ class e_form
 	}
 	
 	/**
-	 * UNDER CONSTRUCTION!!!
+	 * User auto-complete search
 	 * 
-	 * @param object $name
-	 * @param object $id_fld
-	 * @param object $default_name
-	 * @param object $default_id
-	 * @param object $options [optional]
+	 * @param string $name_fld field name for user name
+	 * @param string $id_fld field name for user id
+	 * @param string $default_name default user name value 
+	 * @param integer $default_id default user id
+	 * @param array|string $options [optional] 'readonly' (make field read only), 'name' (db field name, default user_name) 
 	 * @return 
 	 */
-	function userpicker($name, $id_fld, $default_name, $default_id, $options = array())
+	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
 	{
 		if(!is_array($options)) parse_str($options, $options);
 		
@@ -201,7 +202,7 @@ class e_form
 		//'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
 		$ret = '
 		<div class="e-autocomplete-c">
-			'.$this->text($name, $default_name, 150, array('id' => false, 'readonly' => vartrue($options['readonly']) ? true : false)).'
+			'.$this->text($name_fld, $default_name, 150, array('id' => false, 'readonly' => vartrue($options['readonly']) ? true : false)).'
 			'.$this->hidden($id_fld, $default_id, array('id' => false)).'
 			'.$reset.'
 				<span class="indicator" style="display: none;">
@@ -215,7 +216,7 @@ class e_form
 		
 		e107::getJs()->footerInline("
 	            //autocomplete fields
-	             \$\$('input[name={$name}]').each(function(el) {
+	             \$\$('input[name={$name_fld}]').each(function(el) {
 
 	             	if(el.readOnly) { 
 	             		el.observe('click', function(ev) { ev.stop(); var el1 = ev.findElement('input'); el1.blur(); } ); 
@@ -224,7 +225,7 @@ class e_form
 	             		return; 
 					}
 					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_FILE_ABS."e_ajax.php', {
-					  paramName: '{$name}',
+					  paramName: '{$name_fld}',
 					  minChars: 2,
 					  frequency: 0.5,
 					  afterUpdateElement: function(txt, li) { 
@@ -237,7 +238,7 @@ class e_form
 						}
 					  },
 					  indicator:  el.next('span.indicator'),
-					  parameters: 'ajax_used=1&ajax_sc=usersearch=".rawurlencode('searchfld=user--srcfld='.$name)."'
+					  parameters: 'ajax_used=1&ajax_sc=usersearch=".rawurlencode('searchfld='.str_replace('user_', '', vartrue($options['name'], 'user_name')).'--srcfld='.$name_fld)."'
 					});
 				});
 		");
@@ -264,15 +265,22 @@ class e_form
 		return "<input type='password' name='{$name}' value='' maxlength='{$maxlength}'".$this->get_attributes($options, $name)." />";
 	}
 
-	//TODO make auto-expanding - like facebook. 
-	function textarea($name, $value, $rows = 10, $cols = 80, $options = array())
+	// autoexpand done
+	function textarea($name, $value, $rows = 10, $cols = 80, $options = array(), $counter = false)
 	{
+		if(is_string($options)) parse_str($options, $options);
+		// auto-height support
+		if(!vartrue($options['noresize']))
+		{
+			$options['class'] = $options['class'] ? $options['class'].' e-autoheight' : 'tbox textarea e-autoheight';
+		}
+		
 		$options = $this->format_options('textarea', $name, $options);
 		//never allow id in format name-value for text fields
-		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>";
+		return "<textarea name='{$name}' rows='{$rows}' cols='{$cols}'".$this->get_attributes($options, $name).">{$value}</textarea>".(false !== $counter ? $this->hidden('__'.$name.'autoheight_opt', $counter) : '');
 	}
 
-	function bbarea($name, $value, $help_mod = '', $help_tagid='', $size = 'large')
+	function bbarea($name, $value, $help_mod = '', $help_tagid='', $size = 'large', $counter = false)
 	{
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
@@ -292,7 +300,9 @@ class e_form
 				$size = 'large';
 			break;
 		}
-	   	$options = array('class' => 'tbox'.($size ? ' '.$size : '').' e-wysiwyg');
+		
+		// auto-height support
+	   	$options = array('class' => 'tbox bbarea '.($size ? ' '.$size : '').' e-wysiwyg');
 		$bbbar = '';
 		// FIXME - see ren_help.php
 		if(!deftrue('e_WYSIWYG'))
@@ -304,7 +314,7 @@ class e_form
 
 		$ret = "
 		<div class='bbarea {$size}'>
-			".$this->textarea($name, $value, $rows, 50, $options)."
+			".$this->textarea($name, $value, $rows, 50, $options, $counter)."
 			<div class='field-spacer'><!-- --></div>
 			{$bbbar}
 		</div>
@@ -951,6 +961,15 @@ class e_form
 			
 			$tdclass = vartrue($data['class']);
 			if($field == 'checkboxes') $tdclass = $tdclass ? $tdclass.' autocheck e-pointer' : 'autocheck e-pointer';
+			// there is no other way for now - prepare user data
+			if('user' == $data['type']/* && isset($data['readParms']['idField'])*/)
+			{
+				if(is_string($data['readParms'])) parse_str($data['readParms'], $data['readParms']);
+				if(isset($data['readParms']['idField']))
+				{
+					$data['readParms']['__idval'] = $fieldvalues[$data['readParms']['idField']];
+				}
+			}
 			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
 
 			if($tdclass)
@@ -1110,12 +1129,13 @@ class e_form
 				$value = implode(vartrue($parms['separator']), $pieces);
 			break;
 			
-			case 'user_name':
+			/*case 'user_name':
 			case 'user_loginname':
 			case 'user_login':
 			case 'user_customtitle':
-			case 'user_email':
-				if(is_numeric($value))
+			case 'user_email':*/
+			case 'user':
+				/*if(is_numeric($value))
 				{
 					$value = get_user_data($value);
 					if($value)
@@ -1126,6 +1146,11 @@ class e_form
 					{
 						$value = 'not found';
 					}
+				}*/
+				// Dirty, but the only way for now
+				if(vartrue($parms['__idval']) && vartrue($parms['link']))
+				{
+					$value = '<a href="'.e107::getUrl()->createCoreUser('func=profile&id='.intval($parms['__idval'])).'" title="Go to user profile">'.$value.'</a>';
 				}
 			break;
 			
@@ -1191,11 +1216,11 @@ class e_form
 			break;
 			
 			case 'textarea':
-				return $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']));
+				return $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), vartrue($parms['counter'], false));
 			break;
 			
 			case 'bbarea':
-				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'));
+				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'), vartrue($parms['counter'], false));
 			break;
 			
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
@@ -1237,7 +1262,7 @@ class e_form
 			case 'user_email':*/
 			case 'user':
 				//user_id expected
-				// Just temporary solution, will be changed soon
+				// Just temporary solution, could be changed soon
 				if(!is_array($value))
 				{
 					$value = get_user_data($value);
@@ -1245,7 +1270,7 @@ class e_form
 				if(!$value) $value = array();
 				$uname = varset($value['user_name']);
 				$value = varset($value['user_id'], 0);
-				return $this->userpicker($key.'_usersearch', $key, $uname, $value, $parms);
+				return $this->userpicker(vartrue($parms['nameField'] ,$key.'_usersearch'), $key, $uname, $value, $parms);
 			break;
 			
 			case 'boolean':
@@ -1260,7 +1285,7 @@ class e_form
 			break;
 
 			default:
-				//unknown type
+				return $value;
 			break;
 		}
 	}

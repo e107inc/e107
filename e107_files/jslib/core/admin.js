@@ -8,8 +8,8 @@
  * e107 Admin Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/admin.js,v $
- * $Revision: 1.22 $
- * $Date: 2009-11-09 16:55:41 $
+ * $Revision: 1.23 $
+ * $Date: 2009-11-10 19:13:07 $
  * $Author: secretr $
  *
 */
@@ -62,6 +62,14 @@ e107Admin.Helper = {
 			if(el.hasClassName('no-confirm') || (el.readAttribute('rel') &&  el.readAttribute('rel').toLowerCase() == 'no-confirm')) return;
 			var msg = el.readAttribute('delmsg') || e107.getModLan('delete_confirm');
 			if( !e107Helper.confirm(msg) ) e.stop();
+		});
+		
+		element.select('textarea.e-autoheight').each( function (textarea) {  
+			var options = {}, autoopt = '__' + textarea.name + 'autoheight_opt', autooptel = textarea.next('input[name=' + autoopt + ']'); 
+			if(autooptel) {
+				options['max_length'] = parseInt(autooptel.value);
+			}
+			new e107Admin.Nicearea(textarea, options);
 		});
 	},
 

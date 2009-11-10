@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-11-09 12:21:17 $
+ * $Revision: 1.36 $
+ * $Date: 2009-11-10 19:13:06 $
  * $Author: secretr $
 */
 
@@ -1701,6 +1701,7 @@ class e_admin_model extends e_model
     	$this->_db_errno = 0;
 		if($this->hasError() || (!$this->data_has_changed && !$force))
 		{
+			$this->addMessageInfo(LAN_NO_CHANGE);
 			return 0;
 		}
 		$res = e107::getDb()->db_Update($this->getModelTable(), $this->toSqlQuery('update'));
@@ -1713,6 +1714,7 @@ class e_admin_model extends e_model
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 				return false;
 			}
+			
 			$this->addMessageInfo(LAN_NO_CHANGE);
 			return 0;
 		}

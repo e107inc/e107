@@ -1885,6 +1885,7 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $tableJoin;
 	protected $editQry;
 	protected $table;
+	protected $tableAlias;
 	protected $pid;
 	
 	protected $pluginTitle;
@@ -1935,7 +1936,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->fieldpref = $ufieldpref;
 		}
 		
-		$this->addTitle($this->pluginTitle, true); 
+		$this->addTitle($this->pluginTitle, true)->parseAliases(); 
 	}
 	
 	/**
@@ -2050,17 +2051,7 @@ class e_admin_ui extends e_admin_controller_ui
 	function EditHeader()
 	{
 		// TODO - make it part of e_from::textarea/bbarea(), invoke it on className (not all textarea elements)
-		e107::getJs()->requireCoreLib('core/admin.js')
-			->footerInline("
-			\$\$('textarea').each(function(textarea) {
-				//auto options
-				var options = {}, autoopt = '__' + textarea.name + '_opt', autooptel = textarea.next('input[name=autoopt]'); 
-				if(autooptel) {
-					options['max_length'] = parseInt(autooptel.value);
-				}
-				new e107Admin.Nicearea(textarea, options);
-			});  
-		");
+		e107::getJs()->requireCoreLib('core/admin.js');
 	}
 	
 	/**
@@ -2121,17 +2112,7 @@ class e_admin_ui extends e_admin_controller_ui
 	function CreateHeader()
 	{
 		// TODO - make it part of e_from::textarea/bbarea(), invoke it on className (not all textarea elements)
-		e107::getJs()->requireCoreLib('core/admin.js')
-			->footerInline("
-			\$\$('textarea').each(function(textarea) {
-				//auto options
-				var options = {}, autoopt = '__' + textarea.name + '_opt', autooptel = textarea.next('input[name=autoopt]'); 
-				if(autooptel) {
-					options['max_length'] = parseInt(autooptel.value);
-				}
-				new e107Admin.Nicearea(textarea, options);
-			});  
-		");
+		e107::getJs()->requireCoreLib('core/admin.js');
 	}
 	
 	/**
@@ -2241,6 +2222,79 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
+	protected function parseAliases()
+	{
+		// parse table
+		if(strpos($this->table, '.') !== false)
+		{
+			$tmp = explode('.', $this->table, 2);
+			$this->table = $tmp[1]; 
+			$this->tableAlias = $tmp[0];
+			unset($tmp);
+		}
+		
+		if($this->tableJoin)
+		{
+			foreach ($this->tableJoin as $table => $att)
+			{
+				if(strpos($table, '.') !== false)
+				{
+					$tmp = explode('.', $table, 2);
+					unset($this->tableJoin[$table]);
+					$att['alias'] = $tmp[0];
+					$att['table'] = $tmp[1];
+					$att['__tablePath'] = $att['alias'].'.';
+					$att['__tableFrom'] = '`#'.$att['table'].'` AS '.$att['alias'];
+					$this->tableJoin[$att['alias']] = $att;
+					unset($tmp);
+					continue;
+				}
+				$this->tableJoin[$table]['table'] = $table;
+				$this->tableJoin[$table]['alias'] = '';
+				$this->tableJoin[$table]['__tablePath'] = '`#'.$this->tableJoin[$table]['table'].'`.';
+				$this->tableJoin[$table]['__tableFrom'] = '`#'.$this->tableJoin[$table]['table'].'`';
+			}
+		}
+		
+		// check for table aliases
+		$fields = array(); // preserve order
+		foreach ($this->fields as $field => $att)
+		{
+			if(strpos($field, '.') !== false)
+			{
+				$tmp = explode('.', $field, 2);
+				$att['alias'] = $tmp[0];
+				$fields[$tmp[1]] = $att;
+				$field = $tmp[1];
+				unset($tmp);
+			}
+			else
+			{
+				$att['alias'] = $this->tableAlias;
+				$fields[$field] = $att;
+			}
+			if($fields[$field]['alias'])
+			{
+				
+				if($fields[$field]['alias'] == $this->tableAlias)
+				{
+					$fields[$field]['__tableField'] = $this->tableAlias.'.'.$field;
+				}
+				else
+				{
+					$fields[$field]['__tableField'] = $this->tableJoin[$fields[$field]['alias']]['__tablePath'].$field;
+				}
+			}
+			else
+			{
+				$fields[$field]['__tableField'] = '`#'.$this->table.'`.'.$field;
+			}
+		}
+		$this->fields = $fields;
+		
+		return $this;
+	}
+	
 	/**
 	 * Take approproate action after successfull submit
 	 *
@@ -2303,7 +2357,7 @@ class e_admin_ui extends e_admin_controller_ui
 					{
 						$data[$key] = e107::getInstance()->ipEncode($data[$key]);
 					}
-					var_dump($data[$key]);
+				break;
 				//more to come
 			}
 		}
@@ -2314,6 +2368,15 @@ class e_admin_ui extends e_admin_controller_ui
 		$searchQry = array();
 		$request  = $this->getRequest();
 		$tp = e107::getParser();
+		$tablePath = '`#'.$this->table.'`.';
+		$tableFrom = '`#'.$this->table.'`';
+		$tableSFields = '`#'.$this->table.'`.*';
+		if($this->tableAlias)
+		{
+			$tablePath = $this->tableAlias.'.';
+			$tableFrom = '`#'.$this->table.'` AS '.$this->tableAlias;
+			$tableSFields = ''.$this->tableAlias.'.*';
+		}
 		
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		list($filterField, $filterValue) = $tp->toDB(explode('__', $request->getQuery('filter_options', '')));
@@ -2321,49 +2384,45 @@ class e_admin_ui extends e_admin_controller_ui
 		// TODO - we have var types in current model, use them!
 		if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 		{
-			$ftable = vartrue($this->fields[$filterField]['table'], $this->getTableName());
-			$searchQry[] = "`#{$ftable}`.`$filterField` = '".$filterValue."'";
+			$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$filterValue."'";
 		}
 		
 		$filter = array();
 		
 		foreach($this->fields as $key=>$var)
 		{
-			$ftable = vartrue($var['table'], $this->getTableName());
 			if(($var['type'] == 'text' || $var['type'] == 'method') && $searchQuery)
 			{
-				$filter[] = "(`#{$ftable}`.`".$key."` REGEXP ('".$searchQuery."'))";	
+				//$ftable = vartrue($var['alias'], '#'.$this->getTableName());
+				$filter[] = $var['__tableField']."` REGEXP ('".$searchQuery."'))";	
 			}
 		}
-		
-	
-		
-		//$qry = $this->listQry; 
-		// We dont need list qry anymore!
+
 		$jwhere = array();
 		$joins = array();
 		if($this->tableJoin) 
 		{
-			$qry = "SELECT `#".$this->getTableName()."`.*";
+			$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields;
 			foreach ($this->tableJoin as $jtable => $tparams)
 			{
 				// Select fields
 				$fields = vartrue($tparams['fields']);
 				if('*' === $fields)
 				{
-					$qry .= ", `#{$jtable}`.*";
+					$qry .= ", {$tparams['__tablePath']}*";
 				}
 				else
 				{
 					$fields = array_map('trim', explode(',', $fields));
 					foreach ($fields as $field)
 					{
-						$qry .= ", `#{$jtable}`.`{$field}`";
+						$qry .= ", {$tparams['__tablePath']}`{$field}`";
 					}
 				}
+
 				// Prepare Joins
 				$joins[] = "
-					".vartrue($tparams['joinType'], 'LEFT JOIN')." `#{$jtable}` ON `#".vartrue($tparams['leftTable'], $this->getTableName())."`.`".vartrue($tparams['leftField'])."` = `#{$jtable}`.`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
+					".vartrue($tparams['joinType'], 'LEFT JOIN')." {$tparams['__tableFrom']} ON ".(vartrue($tparams['leftTable']) ? $tparams['leftTable'].'.' : $tablePath)."`".vartrue($tparams['leftField'])."` = {$tparams['__tablePath']}`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
 				
 				// Prepare Where
 				if(vartrue($tparams['where']))
@@ -2373,7 +2432,7 @@ class e_admin_ui extends e_admin_controller_ui
 			}
 			
 			//From
-			$qry .= " FROM `#".$this->getTableName()."`";
+			$qry .= " FROM ".$tableFrom;
 			
 			// Joins
 			if(count($joins) > 0)
@@ -2383,7 +2442,7 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		else
 		{
-			$qry = "SELECT `#".$this->getTableName()."`.* FROM `#".$this->getTableName()."`";
+			$qry = $this->listQry ? $this->listQry : "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
 		}
 		
 		// join where
@@ -2406,9 +2465,8 @@ class e_admin_ui extends e_admin_controller_ui
 		$orderField = $request->getQuery('field', $this->getPrimaryName());
 		if(isset($this->fields[$orderField]))
 		{
-			$ftable = vartrue($this->fields[$orderField]['table'], $this->getTableName());
 			// no need of sanitize - it's found in field array
-			$qry .= ' ORDER BY `#'.$ftable.'`.`'.$orderField.'` '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
+			$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
 		}
 		
 		if($this->getPerPage())
@@ -2417,6 +2475,7 @@ class e_admin_ui extends e_admin_controller_ui
 			//$startfrom = ($from-1) * intval($this->getPerPage());
 			$qry .= ' LIMIT '.$from.', '.intval($this->getPerPage());
 		}
+
 		return $qry;
 	}
 	
@@ -2446,9 +2505,16 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this->pluginTitle;
 	}
 	
-	public function getTableName()
+	public function getTableName($alias = false, $prefix = false)
 	{
-		return $this->table;
+		if($alias && $this->tableAlias) return $this->tableAlias;
+		return ($prefix ? '#.' : '').$this->table;
+	}
+	
+	public function getJoinTable($alias = false, $prefix = false)
+	{
+		if($alias && $this->tableAlias) return $this->tableAlias;
+		return ($prefix ? '#.' : '').$this->table;
 	}
 	
 	public function getBatchDelete()
@@ -2568,11 +2634,10 @@ class e_admin_ui extends e_admin_controller_ui
 				$this->dataFields = array();
 				foreach ($this->fields as $key => $att)
 				{
-					if(null === $att['type'] || vartrue($att['noedit']) || !vartrue($att['data']))
+					if(null !== $att['type'] && !vartrue($att['noedit']))
 					{
-						continue;
+						$this->dataFields[$key] = vartrue($att['data'], 'str');
 					}
-					$this->dataFields[$key] = $att['data'];
 				}
 			}
 			// TODO - do it in one loop, or better - separate method(s) -> convertFields(validate), convertFields(data),...
@@ -2589,10 +2654,10 @@ class e_admin_ui extends e_admin_controller_ui
 					{
 						$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
 					}
-					elseif(vartrue($att['check']))
+					/*elseif(vartrue($att['check'])) could go?
 					{
 						$this->checkRules[$key] = array($att['check'], varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
-					}
+					}*/
 				}
 			}
 			
@@ -2681,7 +2746,8 @@ class e_admin_form_ui extends e_form
 		
 		// protect current methods from conflict. 
 		$this->preventConflict();
-		
+		// user constructor
+		$this->init();
 	}
 	
 	protected function preventConflict()
@@ -2930,7 +2996,8 @@ class e_admin_form_ui extends e_form
 				
 					case 'method':
 						$method = $key;
-						$list = call_user_func_array(array($this, $method), array('', $type));
+						$list = call_user_func_array(array($this, $method), array('', $type, $parms));
+						
 						if(is_array($list))
 						{
 							//check for single option
@@ -3209,17 +3276,18 @@ class e_admin_ui_dummy extends e_form
  * 1. move abstract peaces of code to the proper classes
  * 2. remove duplicated code (e_form & e_admin_form_ui), refactoring
  * 3. make JS Manager handle Styles (.css files and inline CSS)
- * 4. e_form is missing some methods used in e_admin_form_ui
- * 5. date convert needs string-to-datestamp auto parsing, strptime() is the solution but needs support for 
+ * 4. [DONE] e_form is missing some methods used in e_admin_form_ui
+ * 5. [DONE] date convert needs string-to-datestamp auto parsing, strptime() is the solution but needs support for 
  * 		Windows and PHP < 5.1.0 - build custom strptime() function (php_compatibility_handler.php) on this - 
  * 		http://sauron.lionel.free.fr/?page=php_lib_strptime (bad license so no copy/paste is allowed!)
  * 6. [DONE - read/writeParms introduced ] $fields[parms] mess - fix it, separate list/edit mode parms somehow
  * 7. clean up/document all object vars (e_admin_ui, e_admin_dispatcher)
- * 8. clean up/document all parameters (get/setParm()) in controller and model classes
+ * 8. [DONE hopefully] clean up/document all parameters (get/setParm()) in controller and model classes
  * 9. [DONE] 'ip' field type - convert to human readable format while showing/editing record
  * 10. draggable ordering (list view)
  * 11. realtime search filter (typing text) - like downloads currently
  * 12. autosubmit when 'filter' dropdown is changed (quick fix?)
  * 13. tablerender captions 
- * 14. [ALMOST - see Edit/CreateHeader() comments] textareas auto-height
+ * 14. [DONE] textareas auto-height
+ * 15. [DONE] multi JOIN table support (optional), aliases
  */

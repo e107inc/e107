@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2009-11-09 16:54:28 $
+|     $Revision: 1.3 $
+|     $Date: 2009-11-10 19:13:05 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -88,6 +88,10 @@ class faq_main_ui extends e_admin_ui
 		protected $pluginName		= 'faqs';
 		protected $table			= "faqs";
 		
+		protected $tableJoin = array(
+			'u.user' => array('leftField' => 'faq_author', 'rightField' => 'user_id', 'fields' => 'user_id,user_loginname,user_name')
+		);
+		
 		protected $listQry			= "SELECT  * FROM #faqs"; // without any Order or Limit. 
 		
 		protected $editQry			= "SELECT * FROM #faqs WHERE faq_id = {ID}";
@@ -100,14 +104,15 @@ class faq_main_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_id'				=> array('title'=> LAN_ID,			'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
-       		
-         	'faq_question' 			=> array('title'=> "Question",		'type' => 'text',			'data'=> 'str',  'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'faq_answer' 			=> array('title'=> "Answer",		'type' => 'bbarea',		'data'=> 'str','width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+         	'faq_question' 			=> array('title'=> "Question",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
+         	'faq_answer' 			=> array('title'=> "Answer",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'faq_parent' 			=> array('title'=> "Category",		'type' => 'method',			'data'=> 'int','width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
 			'faq_comment' 			=> array('title'=> "Comment",		'type' => 'userclass',		'data' => 'int',	'width' => 'auto'),	// User id
 			'faq_datestamp' 		=> array('title'=> "datestamp",		'type' => 'datestamp',		'data'=> 'int','width' => 'auto'),	// User date
-            'faq_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
-			'faq_order' 			=> array('title'=> "Order",			'type' => 'int',			'data'=> 'int','width' => '5%', 'thclass' => 'center' ),	 // Real name (no real vetting)
+            'faq_author' 			=> array('title'=> LAN_USER,		'type' => 'user',			'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+       		'u.user_name' 			=> array('title'=> "User name",		'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
+       		'u.user_loginname' 		=> array('title'=> "User login",	'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
+			'faq_order' 			=> array('title'=> "Order",			'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center' ),	 // Real name (no real vetting)
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		 
@@ -121,44 +126,73 @@ class faq_main_ui extends e_admin_ui
 			'classic_look'				=> array('title'=> 'Use Classic Layout', 'type'=>'boolean')
 		);
 		
+	/**
+	 * FAQ categories
+	 * @var array
+	 */
+	protected $categories = null;
+
+	/**
+	 * Get FAQ Category data
+	 * @param integer $id [optional] get category title, false - return whole array
+	 * @param object $default [optional] default value if not found (default 'n/a')
+	 * @return 
+	 */
+	function getFaqCategory($id = false, $default = 'n/a')
+	{
+		
+		if(null === $this->categories) //auto-retrieve on first call
+		{
+			$sql = e107::getDb();
+			if($sql->db_Select('faqs_info'))
+			{
+				while ($row = $sql->db_Fetch())
+				{
+					$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
+				}
+			}
+			else
+			{
+				$this->categories = array(); //prevent PHP warnings
+			}
+		}
+		if(false === $id)
+		{
+			return $this->categories;
+		}
+		return vartrue($this->categories[$id], $default);
+	}
+		
 }
 
-//TODO Block and Unblock buttons, moderated comments?
 class faq_admin_form_ui extends e_admin_form_ui
 {
-	var $categories = array('hello','hello2','hello3');
-	
-	//FIXME Breaks everything!!! 
-	/*
-	function __construct()
-	{
-		$sql = e107::getDb();
-		$sql->db_Select('faq_info');
-		while ($row = $sql->db_Fetch())
-		{
-			$id = $row['faq_info_id'];
-			$this->categories[$id] = $row['faq_info_title'];
-			echo "hello";
-		}	
-	}
-	*/
-	
-	
+	/**
+	 * faq_parent field method
+	 * 
+	 * @param integer $curVal
+	 * @param string $mode
+	 * @return mixed
+	 */
 	function faq_parent($curVal,$mode)
 	{ 
-		if($mode == 'read')
-		{
-			return $curVal.' (custom!)';
-		}
+		// Get UI instance
+		$controller = $this->getController();
 		
-		if($mode == 'filter') // Custom Filter List for release_type
+		switch($mode)
 		{
-			return array(1=>'Category 1',2=>'Category 2',3=>'Category 3');
-		}
-		
-		if($mode == 'batch')
-		{
-
+			case 'read':
+				return e107::getParser()->toHTML($controller->getFaqCategory($curVal), false, 'TITLE');
+			break;
+			
+			case 'write':
+				return $this->selectbox('faq_parent', $controller->getFaqCategory(), $curVal);
+			break;
+			
+			case 'filter':
+			case 'batch':
+				return $controller->getFaqCategory();
+			break;
 		}
 	}
 }

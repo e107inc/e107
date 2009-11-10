@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-11-09 16:54:30 $
+|     $Revision: 1.18 $
+|     $Date: 2009-11-10 19:13:07 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@ class comments_admin_ui extends e_admin_ui
 		 * @var array [optional]
 		 */
 		protected $tableJoin = array (
-			'user' => array('leftField' => 'comment_author_id', 'rightField' => 'user_id', 'fields' => '*'/*, 'leftTable' => '', 'joinType' => 'LEFT JOIN', 'whereJoin' => '', 'where' => ''*/)
+			'u.user' => array('leftField' => 'comment_author_id', 'rightField' => 'user_id', 'fields' => '*'/*, 'leftTable' => '', 'joinType' => 'LEFT JOIN', 'whereJoin' => 'AND u.user_ban=0', 'where' => ''*/)
 		);
 		
 		//protected $listQry = "SELECT SQL_CALC_FOUND_ROWS * FROM #comments"; // without any Order or Limit. 
@@ -85,7 +85,7 @@ class comments_admin_ui extends e_admin_ui
          	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'comment_author_id' 	=> array('title'=> "authorID",		'type' => 'user',			'data' => 'int',	'width' => 'auto'),	// User id
          	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'text',			'width' => 'auto'),	// User name
-         	'user_name' 			=> array('title'=> "System user",	'type' => 'text',			'width' => 'auto', 'table' => 'user', 'noedit' => true),	// User name
+         	'u.user_name' 			=> array('title'=> "System user",	'type' => 'text',			'width' => 'auto', 'noedit' => true),	// User name
 		    'comment_datestamp' 	=> array('title'=> "datestamp",		'type' => 'datestamp',		'width' => 'auto'),	// User date
             'comment_blocked' 		=> array('title'=> "blocked",		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 			'comment_ip' 			=> array('title'=> "IP",			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)

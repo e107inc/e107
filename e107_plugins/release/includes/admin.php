@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-09 16:54:28 $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-10 19:13:06 $
  * $Author: secretr $
 */
 
@@ -70,24 +70,38 @@ class plugin_release_admin_ui extends e_admin_ui
 		 */
 		protected $pluginName = 'release';
 		
-		// required
+		/**
+		 * DB Table, table alias is supported
+		 * Example: 'r.release'
+		 * @var string
+		 */
 		protected $table = "release";
 		
 		/**
 		 * If present this array will be used to build your list query
 		 * You can link fileds from $field array with 'table' parameter, which should equal to a key (table) from this array
 		 * 'leftField', 'rightField' and 'fields' attributes here are required, the rest is optional
+		 * Table alias is supported
+		 * Note: 
+		 * - 'leftTable' could contain only table alias
+		 * - 'leftField' and 'rightField' shouldn't contain table aliases, they will be auto-added
+		 * - 'whereJoin' and 'where' should contain table aliases e.g. 'whereJoin' => 'AND u.user_ban=0'
 		 * 
 		 * @var array [optional] table_name => array join parameters
 		 */
 		protected $tableJoin = array(
-			//'user' => array('leftField' => 'user_id', 'rightField' => 'comment_author_id', 'fields' => '*'/*, 'joinType' => 'LEFT JOIN', 'whereJoin' => '', 'where' => ''*/)
+			//'u.user' => array('leftField' => 'comment_author_id', 'rightField' => 'user_id', 'fields' => '*'/*, 'leftTable' => '', 'joinType' => 'LEFT JOIN', 'whereJoin' => '', 'where' => ''*/)
 		);
 		
-		// required if no custom tree model is set in init()
-		// NOT NEEDED ANYMORE!!!
-		//protected $listQry = "SELECT * FROM #release"; 
-		// without any Order or Limit. 
+		/**
+		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
+		 * Write your list query without any Order or Limit. 
+		 * NOTE: $tableJoin array is recommended join method 
+		 * 
+		 * @var string [optional]
+		 */
+		protected $listQry = ""; 
+		// 
 		
 		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
 		// NOT NEEDED ANYMORE!!!
@@ -114,6 +128,9 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * (use this as starting point for wiki documentation)
 		 * $fields format  (string) $field_name => (array) $attributes
 		 * 
+		 * $field_name format:
+		 * 	'table_alias.field_name' (if JOIN support is needed) OR just 'field_name'
+		 * 
 		 * $attributes format:
 		 * 	- title (string) Human readable field title, constant name will be accpeted as well (multi-language support
 		 * 
@@ -123,11 +140,10 @@ class plugin_release_admin_ui extends e_admin_ui
 		 *  	for list of possible read/writeParms per type see below
 		 *  
 		 *  - data (string) Data type, one of the following: int, integer, string, str, float, bool, boolean, model, null
+		 *    Default is 'str'
 		 *    Used only if $dataFields is not set
 		 *  	full/most recent reference list - e_admin_model::sanitize(), db::_getFieldValue()
 		 *  - primary (boolean) primary field (obsolete, $pid is now used)
-		 *  
-		 *  - table (string) if there and non-empty - value is coming from another table, which SHOULD be found in $tableJoin (see above)
 		 *  
 		 *  - help (string) edit/create table - inline help, constant name will be accpeted as well, optional
 		 *  - note (string) edit/create table - text shown below the field title (left column), constant name will be accpeted as well, optional
@@ -160,6 +176,9 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * $attributes['type']->$attributes['read/writeParams'] pairs:
 		 * - null -> read: n/a
 		 * 		  -> write: n/a
+		 * 
+		 * - user -> read: [optional] 'link' => true - create link to user profile, 'idField' => 'author_id' - tells to renderValue() where to search for user id (used when 'link' is true)
+		 * 		  -> write: [optional] 'nameField' => 'comment_author_name' the name of a 'user_name' field; 
 		 * 
 		 * - number -> read: (array) [optional] 'point' => '.', [optional] 'sep' => ' ', [optional] 'decimals' => 2, [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY'
 		 * 			-> write: (array) [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY', [optional] 'maxlength' => 50, [optional] '__options' => array(...) see e_form class description for __options format
