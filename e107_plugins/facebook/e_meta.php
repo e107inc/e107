@@ -8,15 +8,12 @@ if (!defined('e107_INIT')) { exit; }
  *  
  * but we can use a popup page instead ?
  */  
-
+//TODO use popup window for 'invite friends'. 
 $CUSTOMPAGES = array_push( explode( ' ' , $CUSTOMPAGES ) , ' facebook.php' );
-
 
 include_once (e_PLUGIN.'facebook/facebook_function.php');
 
-
 //echo '<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.3/prototype.js"></script>';
-
 
 echo '<link rel="stylesheet" href="'.e_PLUGIN.'facebook/facebook.css" type="text/css" />';
 

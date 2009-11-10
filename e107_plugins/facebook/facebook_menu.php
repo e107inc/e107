@@ -6,9 +6,6 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-$fb_pref = e107::getPlugConfig('facebook')->getPref();
-
-
 include_once (e_PLUGIN.'facebook/facebook_function.php');
 
 if (isset($_POST['fb_sig_in_canvas']))
@@ -23,9 +20,18 @@ if (isset($_POST['fb_sig_in_canvas']))
 
 global $pref;
 
+if (!vartrue($pref['user_reg']))
+{
+	if (ADMIN)
+	{
+		$ns->tablerender("Facebook", "User Registration is turned off.");
+	}
+	return;
+}
 
+$fb_pref = e107::getPlugConfig('facebook')->getPref();
 
-if (($fb_pref['Facebook_Api-Key'] != '') && ($fb_pref['Facebook_Secret-Key'] != '') && ($pref['user_reg'] == 1))
+if (vartrue($fb_pref['Facebook_Api-Key']) && vartrue($fb_pref['Facebook_Secret-Key']))
 {
 	
 	if (USER)
@@ -52,13 +58,13 @@ if (($fb_pref['Facebook_Api-Key'] != '') && ($fb_pref['Facebook_Secret-Key'] != 
 		}
 		else
 		{
-			
 			if (is_fb() && uid_exists() && (single_uid() == 1))
 			{
 				
 				Add_Facebook_Connect_User('', USERID);
 				
 				header('Location:'.e_SELF);
+
 			
 			}
 			else if (is_fb() && (USERID != get_id_from_uid(is_fb())))
@@ -95,19 +101,17 @@ if (($fb_pref['Facebook_Api-Key'] != '') && ($fb_pref['Facebook_Secret-Key'] != 
 			{
 				
 				$html .= '<a href="#" onclick="facebook_onlogin_ready();"> 
-    <img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
-    </a>';
+    			<img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
+    			</a>';
 				
 				// Fb_Connect_Me();
 			
 			}
 			else if (Get_Connection_Status() == 1)
 			{
-				
 				//not a real error!    just some problem with Facebook ID
 				
 				$html .= 'Ops... Some error Occur';
-			
 			}
 			else if (Get_Connection_Status() == 0)
 			{
@@ -124,7 +128,7 @@ if (($fb_pref['Facebook_Api-Key'] != '') && ($fb_pref['Facebook_Secret-Key'] != 
 
 }
 
-$caption = 'facebook';
+$caption = 'Facebook';
 // $text = $tp->parseTemplate($html, true, $facebook_shortcodes);
 
 $ns->tablerender($caption, $html);

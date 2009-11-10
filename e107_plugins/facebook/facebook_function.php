@@ -8,6 +8,8 @@ if (!defined('e107_INIT'))
 
 require_once (e_PLUGIN.'facebook/facebook-client/facebook.php');
 
+define("FB_DEBUG",TRUE); // Debug this script. 
+
 /**
  * simple get the Facebook  User ID one is logged in!
  *
@@ -37,6 +39,7 @@ function is_fb()
 
 function Add_Facebook_Connect_User($info = '', $user_id)
 {
+	$sql = e107::getDb();
 	
 	/*   $full = array (
 	 'facebook_about_me' => Get_Facebook_Info ( 'about_me' ) ,
@@ -89,7 +92,6 @@ function Add_Facebook_Connect_User($info = '', $user_id)
 		$query = array_push($standard, $full);
 	
 	}
-	global $sql;
 	
 	$sql->db_Insert('facebook', $query);
 
@@ -156,8 +158,6 @@ function Render_Facebook_Profile()
 
 function facebook_client()
 {
-	global $pref;
-	
 	$pref = e107::getPlugConfig('facebook')->getPref();
 	
 	static $facebook = null;
@@ -246,30 +246,24 @@ function Get_Facebook_Info($info, $friend = '')
  * Add new e107 User , by using Facebook Infos
  *
  */
-
 function Fb_Connect_Me()
 {
-	
-	global $sql;
-	$sql4 = new db;
-	if (!$sql4->db_select("user_extended", "*", "user_plugin_facebook_ID = '".is_fb()."' "))
+	$sql = e107::getDb();
+
+	if (!$sql->db_Select("user_extended", "*", "user_plugin_facebook_ID = '".is_fb()."' "))
 	{
-		
 		$nickname = username_exists(Get_Facebook_Info('first_name'));
 		$password = md5(is_fb());
 		$username = "FacebookUser_".is_fb();
 		
-		$sql2 = new db;
-		
-		$sql2->db_Insert('user', array('user_name'=>$nickname, 'user_loginname'=>$username, 'user_password'=>$password, 'user_login'=>Get_Facebook_Info('name'), 'user_image'=>Get_Facebook_Info('pic')));
-		$sql3 = new db;
-		$sql3->db_Insert('user_extended', array('user_extended_id'=>last_user(), 'user_plugin_facebook_ID'=>is_fb()));
+		$sql->db_Insert('user', array('user_name'=>$nickname, 'user_loginname'=>$username, 'user_password'=>$password, 'user_login'=>Get_Facebook_Info('name'), 'user_image'=>Get_Facebook_Info('pic')));
+		$sql->db_Insert('user_extended', array('user_extended_id'=>last_user(), 'user_plugin_facebook_ID'=>is_fb()));
 		
 		Add_Facebook_Connect_User('', last_user());
 		
 		set_cookies(last_user(), md5($password));
-		
-		header('Location:'.e_SELF);
+
+		fb_redirect(e_SELF);
 	}
 }
 
@@ -289,13 +283,12 @@ function UEID()
  * When logging out e107 , simulate a Log-Out from Facebook instead of expire Facebook session!
  *
  */
-
 function Fb_LogOut()
 {
+	$sql = e107::getDb();
 	
 	//$uid = UEID() ? UEID() : is_fb();
 	
-	global $sql;
 	if ($sql->db_Select("facebook", "*", "facebook_connected = '1' AND facebook_user_id = '".USERID."' "))
 	{
 		$row = $sql->db_Fetch();
@@ -303,7 +296,8 @@ function Fb_LogOut()
 		
 		$sql2 = new db;
 		$sql2->db_Update("facebook", "facebook_connected = '0' WHERE facebook_uid = '".$facebook_uid."' ");
-		header('Location: '.e_SELF);
+		
+		fb_redirect(e_SELF);
 	}
 }
 
@@ -338,7 +332,8 @@ function Fb_LogIn()
 	
 	}
 	
-	header('Location: '.e_SELF);
+	fb_redirect(e_SELF);
+
 }
 
 /**
@@ -355,20 +350,21 @@ function your_facebook_is()
 
 function Get_Connection_Status()
 {
-	$sql = new db;
-	$sql2 = new db;
+	$sql = e107::getDb();
 	
-	if (($sql->db_Select("facebook", "*", "facebook_uid = '".is_fb()."' ")) ||
-	($sql2->db_Select("user_extended", "*", "user_plugin_facebook_ID = '".is_fb()."' "))
-	)
+	if ($sql->db_Select("facebook", "facebook_connected", "facebook_uid = '".is_fb()."' ")) 
 	{
 		$row = $sql->db_Fetch();
 		return $row['facebook_connected'] ? $row['facebook_connected'] : '0';
 	
 	}
+	elseif($sql->db_Select("user_extended", "*", "user_plugin_facebook_ID = '".is_fb()."' "))
+	{
+		$row = $sql->db_Fetch();
+		return $row['user_extended_id'] ? $row['user_extended_id'] : '0';	
+	}
 	else
 	{
-		
 		return '';
 	
 	}
@@ -380,7 +376,7 @@ function Get_Connection_Status()
  */
 function Facebook_User_Is_Connected()
 {
-	global $sql;
+	$sql = e107::getDb();
 	
 	if ($sql->db_select("user_extended", "*", "user_extended_id = '".get_id_from_uid(is_fb())."' AND user_plugin_facebook_ID = '".is_fb()."' "))
 	{
@@ -418,7 +414,8 @@ function Delete_Duplicate_Facebook_User()
 	$sql = e107::getDb();
 	$id = get_id_from_uid(is_fb());
 	
-	$sql->db_Delete("user_extended", "user_extended_id='".$id."'");
+//	$sql->db_Update('user_extended', "user_plugin_facebook_ID = '' WHERE user_extended_id = ".$id." LIMIT 1");
+	$sql->db_Delete("user_extended", "user_extended_id='".$id."'"); 
 	$sql->db_Delete("facebook", "facebook_uid='".is_fb()."'");
 	$sql->db_Delete("user", "user_loginname='FacebookUser_".is_fb()."'");
 
@@ -426,23 +423,17 @@ function Delete_Duplicate_Facebook_User()
 
 function Switch_Facebook_User()
 {
-	
-	$sql1 = new db;
-	$sql2 = new db;
-	$sql3 = new db;
-	$sql4 = new db;
-	
-	if (!$sql1->db_Insert('user_extended', array('user_extended_id'=>USERID, 'user_plugin_facebook_ID'=>is_fb())))
+	$sql = e107::getDb();
+			
+	if (!$sql->db_Insert('user_extended', array('user_extended_id'=>USERID, 'user_plugin_facebook_ID'=>is_fb())))
 	{
-		
-		$sql2->db_Update("user_extended", "user_plugin_facebook_ID = '".is_fb()."' WHERE user_extended_id = '".USERID."' ");
-	
+		$sql->db_Update("user_extended", "user_plugin_facebook_ID = '".is_fb()."' WHERE user_extended_id = '".USERID."' ");
 	}
 	
 	$id = get_id_from_uid(is_fb());
 	
-	$sql3->db_Update("user_extended", "user_plugin_facebook_ID = '' WHERE user_extended_id = '".$id."' ");
-	$sql4->db_Update("facebook", "facebook_user_id = '".USERID."' WHERE facebook_uid = '".is_fb()."' ");
+	$sql->db_Update("user_extended", "user_plugin_facebook_ID = '' WHERE user_extended_id = '".$id."' ");
+	$sql->db_Update("facebook", "facebook_user_id = '".USERID."' WHERE facebook_uid = '".is_fb()."' ");
 }
 
 /**
@@ -460,46 +451,43 @@ function single_uid()
 function uid_check()
 {
 	$sql = e107::getDb();
-	$sql = new db;
-	$sql2 = new db;
-	$sql3 = new db;
-	$sql4 = new db;
-	$sql5 = new db;
-	$sql6 = new db;
 	
 	$msg = "";
 	
-	if ($sql->db_select("user_extended", "*", "user_plugin_facebook_ID = '".is_fb()."' AND user_extended_id !='".USERID."'"))
+	if ($sql->db_Select("user_extended", "*", "user_plugin_facebook_ID = '".is_fb()."' AND user_extended_id !='".USERID."'"))
 	{
-		
 		// header ( 'Location: ' . e_SELF ) ;
-		
 		$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_switch' title='switch user'>would you like to use facebook with this account? press this link!</a></div>";
 		$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_delete' title='delete user'>would you like to delete this facebook account? press this link!</a></div>";
-	
 	}
-	else if ($sql->db_select("user_extended", "*", "user_plugin_facebook_ID != '".is_fb()."' "))
+	else if($sql->db_Select("user_extended", "*", "user_plugin_facebook_ID != '".is_fb()."' AND user_plugin_facebook_ID != '' "))
 	{
-		
-		$msg = "<div class='facebook_notice'> <a href='usersettings.php' title='click here'>The provided Facebook ID is wrong!</a> </div> <div class='fb_green'>".your_facebook_is()."</div>";
-	
+		$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_link' title='click here'>The provided Facebook ID is wrong!</a> </div> <div class='fb_green'>".your_facebook_is()."</div>";	
 	}
-	else if ($sql->db_select("user_extended", "*", "user_plugin_facebook_ID = '' "))
+	else if($sql->db_Select("user_extended", "*", "user_plugin_facebook_ID = '' "))
 	{
-		
-		$msg = "<div class='facebook_notice'><a href='usersettings.php' title='click here'>Specify your Facebook ID in the Profile Settings! </a></div><div class='fb_green'>".your_facebook_is()."</div>";
-	
+		$msg .= "<div class='facebook_notice'><a href='usersettings.php' title='click here'>Specify your Facebook ID in the Profile Settings! </a></div><div class='fb_green'>".your_facebook_is()."</div>";
 	}
 	else
 	{
-		
-		$msg = '<a href="#" onclick="facebook_onlogin_ready();"> 
-    <img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
-    </a>';
-	
+		$msg .= '<a href="#" onclick="facebook_onlogin_ready();"> 
+    	<img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
+    	</a>';	
 	}
 	
 	return $msg;
+}
+
+function Link_Facebook_User()
+{
+	if(!USERID)
+	{
+		return;	
+	}
+	
+	// Set the extended field to the value of the Facebook ID. 
+	return e107::getUserExt()->set(USERID, 'user_plugin_facebook_ID', is_fb());
+		
 }
 
 function uid_exists()
@@ -830,10 +818,9 @@ function get_info($info, $uid)
 {
 	$sql = e107::getDb();
 	
-	if ($sql->db_select("user", "*", "user_id = '$uid'"))
+	if ($sql->db_Select("user", "*", "user_id = '$uid'"))
 	{
 		$row = $sql->db_Fetch();
-		extract($row);
 		return $row[$info];
 	}
 	else
@@ -846,13 +833,10 @@ function Log_In_Registered_User()
 {
 	if (!USER)
 	{
-		
 		$uid = get_id_from_uid(is_fb());
-		
 		set_cookies(get_info('user_id', $uid), md5(get_info('user_password', $uid)));
-		
-		header('Location:'.e_SELF);
-	
+		fb_redirect(e_SELF);
+
 	}
 }
 
@@ -876,4 +860,12 @@ function last_user()
 	$sql->db_Select_gen($qry);
 	$row = $sql->db_Fetch();
 	return $row['user_id'];
+}
+
+function fb_redirect($loc)
+{
+	header('Location:'.$loc);
+	// Stops endless loop issues. 
+	header('Content-Length: 0');
+	exit();
 }
