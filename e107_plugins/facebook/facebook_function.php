@@ -10,8 +10,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- |     $Revision: 1.5 $
- |     $Date: 2009-11-10 13:41:41 $
+ |     $Revision: 1.6 $
+ |     $Date: 2009-11-10 15:25:50 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -108,7 +108,16 @@ function Add_Facebook_Connect_User($info = '', $user_id)
 	
 	}
 	
-	$sql->db_Insert('facebook', $query);
+	if(!$sql->db_Select('facebook',"facebook_user_id = ".$user_id))
+	{
+		$sql->db_Insert('facebook', $query);	
+	}
+	else
+	{
+		$query['WHERE'] = "facebook_uid = ".is_fb();
+		$sql->db_Update('facebook', $query);	
+	}
+	
 
 }
 
@@ -273,10 +282,13 @@ function Fb_Connect_Me()
 		
 		$nid = $sql->db_Insert('user', array('user_name'=>$nickname, 'user_loginname'=>$username, 'user_password'=>$password, 'user_login'=>Get_Facebook_Info('name'), 'user_image'=>Get_Facebook_Info('pic')));
 		
-		Add_Facebook_Connect_User('', $nid);		
+		Add_Facebook_Connect_User('', $nid);
+		
+		require_once(e_HANDLER.'login.php');
+		$usr = new userlogin($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
+				
 		set_cookies($nid, md5($password));
-
-		fb_redirect(e_SELF);
+		// 	fb_redirect(e_SELF);
 	}
 }
 
@@ -389,17 +401,8 @@ function Get_Connection_Status()
  */
 function Facebook_User_Is_Connected()
 {
-	$sql = e107::getDb();
-	
-	if ($sql->db_Select("facebook", "*", "facebook_user_id = '".get_id_from_uid(is_fb())."' AND facebook_uid = ".is_fb()." "))
-	{
-		return true;
-	
-	}
-	else
-	{		
-		return false;	
-	}
+	$sql = e107::getDb(); // 
+	return ($sql->db_Select("facebook", "*", "facebook_user_id = '".get_id_from_uid(is_fb())."' AND facebook_uid = ".is_fb()." "))? TRUE : FALSE;
 }
 
 /**
@@ -846,7 +849,7 @@ function get_info($info, $uid)
 
 function Log_In_Registered_User()
 {
-	if (!USER)
+	if (!USERID)
 	{
 		$uid = get_id_from_uid(is_fb());
 		set_cookies(get_info('user_id', $uid), md5(get_info('user_password', $uid)));
@@ -883,4 +886,124 @@ function fb_redirect($loc)
 	// Stops endless loop issues. 
 	header('Content-Length: 0');
 	exit();
+}
+
+
+class e_facebook
+{
+	
+	function fb_login()
+	{
+		global $pref;
+		
+	
+		if (!vartrue($pref['user_reg']))
+		{
+			if (ADMIN)
+			{
+				$html = "User Registration is turned off.";
+			}
+			return $html;
+		}
+		
+		$fb_pref = e107::getPlugConfig('facebook')->getPref();
+		
+		if (vartrue($fb_pref['Facebook_Api-Key']) && vartrue($fb_pref['Facebook_Secret-Key']))
+		{
+			
+			if (USER)
+			{
+			
+				if (USERID == get_id_from_uid(is_fb()))
+				{
+						
+					if (Facebook_User_Is_Connected() === true)
+					{
+						$html .= Render_Facebook_Profile();				
+						$html .= Render_Connect_Invite_Friends();
+					
+					}
+					else
+					{
+						
+						$html .= uid_check();
+					
+					}
+				
+				}
+				else
+				{
+					if (is_fb() && uid_exists() && (single_uid() == 1))
+					{
+						
+						Add_Facebook_Connect_User('', USERID);					
+						header('Location:'.e_SELF);
+		
+					
+					}
+					else if (is_fb() && (USERID != get_id_from_uid(is_fb())))
+					{
+						
+						//return Facebook_LogOut();
+						
+						$html .= uid_check();
+					
+					}
+				
+				}
+				if ((Get_Connection_Status() == '') && (Facebook_User_Is_Connected() === true))
+				{
+					
+					$html .= uid_check();
+				
+				}
+				else
+				{
+					$html .= Render_Facebook_Connect_Button();
+				
+				}
+			
+			}
+			else
+			{
+				
+				if (is_fb())
+				{
+					
+					if (Get_Connection_Status() == '')
+					{
+						
+						$html .= '<a href="#" onclick="facebook_onlogin_ready();"> 
+		    			<img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
+		    			</a>';
+						
+						// Fb_Connect_Me();
+					
+					}
+					else if (Get_Connection_Status() == 1)
+					{
+						//not a real error!    just some problem with Facebook ID
+						
+						$html .= 'Ops... Some error Occur';
+					}
+					else if (Get_Connection_Status() == 0)
+					{
+							$html .= Render_Fcuk_Facebook_Connect_Button();
+					
+					}
+				
+				}
+				
+				$html .= Render_Facebook_Connect_Button();
+			
+			}
+		
+		}
+		
+	
+		return $html;
+	
+	
+	}
+	
 }
