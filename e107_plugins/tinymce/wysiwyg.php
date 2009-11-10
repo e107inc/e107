@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/wysiwyg.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-10-26 10:55:46 $
+|     $Revision: 1.19 $
+|     $Date: 2009-11-10 01:21:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -15,6 +15,7 @@ class wysiwyg
 {
 	var $js;
 	var $config = array();
+	var $configName;
 	
 	
 	function wysiwyg($config=FALSE)
@@ -56,7 +57,7 @@ class wysiwyg
 	
 	
 	$text .= "<script type='text/javascript'>\n";
-	
+	$text .= "\n /* TinyMce Config: ".$this->configName." */";
 	$text .= $this->tinyMce_config();
 	
 	$text .= "\t\t start_tinyMce(); \n
@@ -225,7 +226,7 @@ class wysiwyg
 		}
 		else
 		{
-			$query = "SELECT * FROM #tinymce WHERE tinymce_userclass REGEXP '".e_CLASS_REGEXP."' AND NOT (tinymce_userclass REGEXP '(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)') ORDER BY tinymce_userclass DESC LIMIT 1";			
+			$query = "SELECT * FROM #tinymce WHERE tinymce_userclass REGEXP '".e_CLASS_REGEXP."' AND NOT (tinymce_userclass REGEXP '(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)') ORDER BY Field(tinymce_userclass,250,254,253) LIMIT 1";			
 		}
 		
 		$sql -> db_Select_gen($query);
@@ -234,7 +235,7 @@ class wysiwyg
 		//TODO Cache!
 		
 		$plug_array = explode(",",$config['tinymce_plugins']);
-		
+		$this->configName = $config['tinymce_name'];
 		
 		$this->config = array(
 			'language'			=> $this->tinymce_lang(),
@@ -261,6 +262,7 @@ class wysiwyg
 			'convert_fonts_to_spans'			=> 'true',
 			'trim_span_elements'				=> 'true',
 			'inline_styles'						=> 'true',
+			'auto_resize'						=> 'true',
 			'debug'								=> 'false',
 			'force_br_newlines'					=> 'true',
 			'forced_root_block'					=> '',
