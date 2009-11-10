@@ -2427,7 +2427,7 @@ class e_admin_ui extends e_admin_controller_ui
 	
 	public function getPrimaryName()
 	{
-		if(!varset($this->pid))
+		if(!varset($this->pid) && vartrue($this->fields))
 		{
 			$mes = e107::getMessage();
 			$mes->add("There is no <b>pid</b> set.", E_MESSAGE_WARNING);			
