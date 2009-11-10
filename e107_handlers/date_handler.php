@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-04 17:29:26 $
+ * $Revision: 1.11 $
+ * $Date: 2009-11-10 19:13:06 $
  * $Author: secretr $
  * 
 */
@@ -61,10 +61,48 @@ class convert
 		return strftime($mask, $datestamp);
 	}
 	
-	function toTime($date_string, $mask = '')
+	/**
+	 * Convert date string back to integer (unix timestamp)
+	 * NOTE: after some tests, strptime (compat mode) is adding +1 sec. after parsing to time, investigate!
+	 * 
+	 * @param object $date_string
+	 * @param object $mask [optional]
+	 * @return 
+	 */
+	function toTime($date_string, $mask = 'input')
 	{
-		//TODO - convert string to datestamp, coming soon
-		return time();
+		switch($mask)
+		{
+			case 'long':
+				$mask = e107::getPref('longdate');
+			break;
+			
+			case 'short':
+				$mask = e107::getPref('shortdate');
+			break;
+
+			case 'input': //New - use inputdate as mask; FIXME - add inputdate to Date site prefs 
+				$mask = e107::getPref('inputdate', '%d/%m/%Y %H:%M:%S');
+			break;
+		}
+		
+		// see php compat handler
+		$tdata = strptime($date_string, $mask);
+		if(empty($tdata))
+		{
+			return null;
+		}
+		$unxTimestamp = mktime( 
+			$tdata['tm_hour'], 
+			$tdata['tm_min'], 
+			$tdata['tm_sec'], 
+			$tdata['tm_mon'] + 1, 
+			$tdata['tm_mday'], 
+			$tdata['tm_year'] + 1900 
+		); 
+		
+		//var_dump($tdata, $date_string, $this->convert_date($unxTimestamp, $mask), $unxTimestamp);
+		return $unxTimestamp;
 	}
 
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
