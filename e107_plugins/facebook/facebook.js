@@ -52,7 +52,7 @@ function facebook_onload(already_logged_into_facebook) {
  * dialog and the Facebook session has been set in the cookies.
  */
 function facebook_onlogin_ready() {
-FB.Connect.ifUserConnected("/news.php?login", null);
+FB.Connect.ifUserConnected("/index.php?login", null);
   // In this app, we redirect the user back to index.php. The server will read
   // the cookie and see that the user is logged in, and will deliver a new page
   // with content appropriate for a logged-in user.
