@@ -14,26 +14,102 @@ if (!getperms("P"))
 	exit();	
 }*/
 
-
-
-require_once (e_ADMIN."auth.php");
-
-$fb = new facebook_admin;
-	
-	
-if (isset($_POST['save-settings']))
+class facebook_admin extends e_admin_dispatcher
 {
- 	$fb->save_settings();
-	$fb->message = "<div style='text-align:center;padding:20px'>Preferences Updated!</div>";
+
+	protected $modes = array(
+		'main'		=> array(
+			'controller' 	=> 'facebook_main_ui',
+			'path' 			=> null,
+			'ui' 			=> 'facebook_admin_form_ui',
+			'uipath' 		=> null
+		)				
+	);	
+
+	protected $adminMenu = array(
+		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
+		'main/custom'	=> array('caption'=> 'Instructions', 'perm' => '0')		
+	);
+	
+	protected $menuTitle = 'Facebook';
+}
+
+
+
+class facebook_main_ui extends e_admin_ui
+{
+		protected $pluginTitle		= 'Facebook Connect';
+		protected $pluginName		= 'facebook';
+		
+
+		protected $prefs = array( 
+			'Facebook_App-Bundle'	=> array('title'=> 'Facebook Application ID', 'type'=>'text'),
+			'Facebook_Api-Key'	   	=> array('title'=> 'Facebook API Key', 'type'=>'text'),		
+			'Facebook_Secret-Key'	=> array('title'=> 'Facebook Secret Key', 'type'=>'text')
+		);
+		
+	function customPage()
+	{
+		global $ns,$pref;
+		
+		$text = '
+		
+		
+		<h2><img class="left" src="'.e_PLUGIN.'facebook/images/facebooklogo.gif" alt="" /> Setting Up Your Application and Getting an API Key</h2> 
+		<div style="padding:20px">
+		<table style="'.ADMIN_WIDTH.'">
+		<tr>
+	    <td> 			
+			<p>If you don\'t already have a Facebook Platform API key for your site, create an application with the <a href="http://www.facebook.com/developers" class="external text" title="http://www.facebook.com/developers" rel="nofollow">Facebook Developer application</a>.
+			</p><p><b>Note:</b> Even if you have created an application and received an API key, you should review steps 1.4 through 1.7 and make sure your application settings are appropriate.   
+			</p> 
+			
+			<ol><li>1. Go to <a href="http://www.facebook.com/developers/createapp.php" class="external free" title="http://www.facebook.com/developers/createapp.php" rel="nofollow">http://www.facebook.com/developers/createapp.php</a> to create a new application.
+			</li><li>2. Enter a name for your application in the <b>Application Name</b> field.
+			</li><li>3. Accept the <a href="http://developers.facebook.com/terms.php" class="external text" title="http://developers.facebook.com/terms.php" rel="nofollow">Developer Terms of Service</a>, then click <b>Save Changes</b>.
+			</li><li>4. On the <b>Basic</b> tab, keep all of the defaults.
+			</li><li>5. Take note of the <b>API Key</b>, you\'ll need this shortly.<br/> 
+			</li><li>6. Click the <b>Connect</b> tab. Set <b>Connect URL</b> to the top-level directory of the site where you plan to implement Facebook Connect (this is usually your domain, like <a href="http://www.example.com" class="external free" title="http://www.example.com" rel="nofollow">http://www.example.com</a>, but could also be a subdirectory).
+			</li><li>7. You should include a logo that appears on the Facebook Connect dialog. Next to <b>Facebook Connect Logo</b>, click <b>Change your Facebook Connect logo</b> and browse to an image file. The logo can be up to 99 pixels wide by 22 pixels tall, and must be in JPG, GIF, or PNG format.
+			</li><li>8. If you plan to implement Facebook Connect across a number of subdomains of your site (for example, foo.example.com and bar.example.com), you need to enter a <b><a href="/index.php/Base_Domain" title="Base Domain">Base Domain</a></b> (which would be example.com in this case). Specifying a base domain allows you to make calls using the <a href="/index.php/PHP" title="PHP">PHP</a> and <a href="/index.php/JavaScript_Client_Library" title="JavaScript Client Library">JavaScript</a> client libraries as well as get and store session information for any subdomain of the base domain. For more information about subdomains, see <a href="/index.php/Supporting_Subdomains_In_Facebook_Connect" title="Supporting Subdomains In Facebook Connect">Supporting Subdomains In Facebook Connect</a>.
+			</li><li>9. Click <b>Save Changes</b>.
+			</li></ol> 
+		</td>
+		</tr>
+		 </table>
+		 </div>
+		';
+
+		return $text;
+	}
+		
+}
+
+class facebook_admin_form_ui extends e_admin_form_ui
+{
+		
+	function init()
+	{
+
+	}
+	
 
 }
 
-$fb->pref_form();
-
-require_once (e_ADMIN."footer.php");	
+new facebook_admin();
 
 
-class facebook_admin
+require_once(e_ADMIN."auth.php");
+
+e107::getAdminUI()->runPage();
+
+require_once(e_ADMIN."footer.php");
+exit;
+
+
+
+
+class facebook_aasdadmin
 {
 	
 	var $message;
@@ -106,37 +182,7 @@ class facebook_admin
 
 
 	
-	function display_help()
-	{
-		global $ns,$pref;
-		
-		$text = '
-		<div style="padding:20px">
-		<h2>Setting Up Your Application and Getting an API Key</h2> 
-		<table style="'.ADMIN_WIDTH.'">
-		<tr>
-	    <td> 			
-			<p>If you don\'t already have a Facebook Platform API key for your site, create an application with the <a href="http://www.facebook.com/developers" class="external text" title="http://www.facebook.com/developers" rel="nofollow">Facebook Developer application</a>.
-			</p><p><b>Note:</b> Even if you have created an application and received an API key, you should review steps 1.4 through 1.7 and make sure your application settings are appropriate.   
-			</p> 
-			
-			<ol><li>1. Go to <a href="http://www.facebook.com/developers/createapp.php" class="external free" title="http://www.facebook.com/developers/createapp.php" rel="nofollow">http://www.facebook.com/developers/createapp.php</a> to create a new application.
-			</li><li>2. Enter a name for your application in the <b>Application Name</b> field.
-			</li><li>3. Accept the <a href="http://developers.facebook.com/terms.php" class="external text" title="http://developers.facebook.com/terms.php" rel="nofollow">Developer Terms of Service</a>, then click <b>Save Changes</b>.
-			</li><li>4. On the <b>Basic</b> tab, keep all of the defaults.
-			</li><li>5. Take note of the <b>API Key</b>, you\'ll need this shortly.<br/> 
-			</li><li>6. Click the <b>Connect</b> tab. Set <b>Connect URL</b> to the top-level directory of the site where you plan to implement Facebook Connect (this is usually your domain, like <a href="http://www.example.com" class="external free" title="http://www.example.com" rel="nofollow">http://www.example.com</a>, but could also be a subdirectory).
-			</li><li>7. You should include a logo that appears on the Facebook Connect dialog. Next to <b>Facebook Connect Logo</b>, click <b>Change your Facebook Connect logo</b> and browse to an image file. The logo can be up to 99 pixels wide by 22 pixels tall, and must be in JPG, GIF, or PNG format.
-			</li><li>8. If you plan to implement Facebook Connect across a number of subdomains of your site (for example, foo.example.com and bar.example.com), you need to enter a <b><a href="/index.php/Base_Domain" title="Base Domain">Base Domain</a></b> (which would be example.com in this case). Specifying a base domain allows you to make calls using the <a href="/index.php/PHP" title="PHP">PHP</a> and <a href="/index.php/JavaScript_Client_Library" title="JavaScript Client Library">JavaScript</a> client libraries as well as get and store session information for any subdomain of the base domain. For more information about subdomains, see <a href="/index.php/Supporting_Subdomains_In_Facebook_Connect" title="Supporting Subdomains In Facebook Connect">Supporting Subdomains In Facebook Connect</a>.
-			</li><li>9. Click <b>Save Changes</b>.
-			</li></ol> 
-		</td>
-		</tr>
-		 </table>
-		 </div>';
-		  
-		return $text;
-	}
+
 }
 
 
