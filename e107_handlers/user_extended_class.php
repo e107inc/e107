@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2009-11-08 10:34:23 $
-|     $Author: e107steved $
+|     $Revision: 1.28 $
+|     $Date: 2009-11-10 23:13:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -691,6 +691,34 @@ class e107_user_extended
 		return $this->extended_xml;
 	}
 
+	/**
+	 * Proxy Method to retrieve the value of an extended field
+	 * @param int $uid
+	 * @param var $field_name
+	 * @param object $ifnotset [optional]
+	 * @return mixed
+	 */
+	function get($uid, $field_name, $ifnotset=false)
+	{
+		return user_extended_getvalue($uid, $field_name, $ifnotset);
+	}
+
+
+	
+	/**
+	 * Proxy method for setting the value of an extended field
+	 * (inserts or updates)
+	 * @param int $uid
+	 * @param str $field_name eg. location
+	 * @param mixed $newvalue eg. USA
+	 * @param str $fieldType [optional] default 'todb' |
+	 * @return boolean;
+	 */
+	function set($uid, $field_name, $newvalue, $fieldType = 'todb')
+	{
+		return $this->user_extended_setvalue($uid, $field_name, $newvalue, $fieldType);	
+	}
+
 
 	/**
 	* Set the value of an extended field
@@ -702,7 +730,9 @@ class e107_user_extended
 	*/
 	function user_extended_setvalue($uid, $field_name, $newvalue, $fieldType = 'todb')
 	{
-		$e107 = e107::getInstance();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 		$uid = (int)$uid;
 		switch($fieldType)
 		{
@@ -715,7 +745,7 @@ class e107_user_extended
 				break;
 			
 			default:
-				$newvalue = "'".$e107->tp->toDB($newvalue)."'";
+				$newvalue = "'".$tp->toDB($newvalue)."'";
 				break;
 		}
 		if(substr($field_name, 0, 5) != 'user_')
@@ -727,7 +757,7 @@ class e107_user_extended
 		VALUES ({$uid}, {$newvalue}) 
 		ON DUPLICATE KEY UPDATE {$field_name} = {$newvalue}
 		";
-		return $e107->sql->db_Select_gen($qry);
+		return $sql->db_Select_gen($qry);
 	}
 
 

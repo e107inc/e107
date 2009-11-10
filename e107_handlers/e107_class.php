@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.64 $
- * $Date: 2009-11-07 02:10:34 $
+ * $Revision: 1.65 $
+ * $Date: 2009-11-10 23:13:30 $
  * $Author: e107coders $
 */
 
@@ -135,6 +135,7 @@ class e107
 		'e_admin_form_ui' 			=> '{e_HANDLER}admin_handler.php',
 		'DHTML_Calendar'			=> '{e_HANDLER}calendar/calendar_class.php',
 		'comment'					=> '{e_HANDLER}comment_class.php',
+		'e107_user_extended'		=> '{e_HANDLER}user_extended_class.php'
 	);
 	
 	/**
@@ -811,6 +812,16 @@ class e107
 	public static function getXml()
 	{
 		return self::getSingleton('xmlClass', true);
+	}
+	
+	
+	/**
+	 * Retrieve User Extended handler singleton object
+	 * @return e107_user_extended
+	 */
+	public static function getUserExt()
+	{
+		return self::getSingleton('e107_user_extended', true);
 	}
 	
 	/**
