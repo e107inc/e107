@@ -64,7 +64,7 @@ class facebook_main_ui extends e_admin_ui
 			</p><p><b>Note:</b> Even if you have created an application and received an API key, you should review steps 1.4 through 1.7 and make sure your application settings are appropriate.   
 			</p> 
 			
-			<ol><li>1. Go to <a href="http://www.facebook.com/developers/createapp.php" class="external free" title="http://www.facebook.com/developers/createapp.php" rel="nofollow">http://www.facebook.com/developers/createapp.php</a> to create a new application.
+			<ol><li>1. Go to <a rel="external" href="http://www.facebook.com/developers/createapp.php" class="external free" title="http://www.facebook.com/developers/createapp.php" rel="nofollow">http://www.facebook.com/developers/createapp.php</a> to create a new application.
 			</li><li>2. Enter a name for your application in the <b>Application Name</b> field.
 			</li><li>3. Accept the <a href="http://developers.facebook.com/terms.php" class="external text" title="http://developers.facebook.com/terms.php" rel="nofollow">Developer Terms of Service</a>, then click <b>Save Changes</b>.
 			</li><li>4. On the <b>Basic</b> tab, keep all of the defaults.

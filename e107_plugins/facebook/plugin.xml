@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.1 2009-11-09 02:48:44 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.2 2009-11-10 06:28:19 e107coders Exp $ -->
 
-<e107Plugin name="facebook" version="0.3" compatibility="0.8" installRequired="true">
+<e107Plugin name="Facebook" version="0.3" compatibility="0.8" installRequired="true">
 	<author name="Luca Filosofi" url="http://ask.altervista.org" email="aseptik@gmail.com" />
 	<description>Facebook Connect for e107</description>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
@@ -16,6 +16,6 @@
 		<pref name="Facebook_App-Bundle" active='false'></pref>
 	</mainPrefs>
 	<extendedFields>
-		<field name="facebookID" type='EUF_INTEGER' default='0' active="true" />
+		<field name="ID" type='EUF_INTEGER' default='0' active="true" />
 	</extendedFields>
 </e107Plugin>
