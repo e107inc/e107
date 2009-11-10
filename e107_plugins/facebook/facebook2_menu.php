@@ -20,11 +20,20 @@ if (isset($_POST['fb_sig_in_canvas']))
 
 global $pref;
 
+if (!vartrue($pref['user_reg']))
+{
+	if (ADMIN)
+	{
+		$ns->tablerender("Facebook", "User Registration is turned off.");
+	}
+	return;
+}
+
 $html = '';
 
 $fb_pref = e107::getPlugConfig('facebook')->getPref();
 
-if (($fb_pref['Facebook_Api-Key'] != '') && ($fb_pref['Facebook_Secret-Key'] != '') && ($pref['user_reg'] == 1))
+if (($fb_pref['Facebook_Api-Key'] != '') && ($fb_pref['Facebook_Secret-Key'] != ''))
 {
 	
 	$html = '';

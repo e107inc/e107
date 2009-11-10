@@ -3,8 +3,9 @@
 require_once('../../class2.php');
 
 require_once(HEADERF);
+//TODO include_lan();
 
-$text = '<fb:serverfbml style="width: 100%;">
+$text = '<fb:serverfbml style="'.USER_WIDTH.'">
 	    <script type="text/fbml">
 	      <fb:fbml>
 	          <fb:request-form

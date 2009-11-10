@@ -30,7 +30,7 @@ if (is_fb())
 	
 	$html .= Render_Fun_Box('0', '10', '200px');
 	
-	$caption = 'Fun Box';
+	$caption = 'Fan Box';
 	
 	$ns->tablerender($caption, $html);
 

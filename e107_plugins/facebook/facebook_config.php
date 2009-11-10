@@ -28,7 +28,8 @@ class facebook_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
-		'main/custom'	=> array('caption'=> 'Instructions', 'perm' => '0')		
+		'main/custom'	=> array('caption'=> 'Instructions', 'perm' => '0'),
+		'main/list'		=> array('caption'=> 'Facebook Users', 'perm' => '0')			
 	);
 	
 	protected $menuTitle = 'Facebook';
@@ -40,6 +41,11 @@ class facebook_main_ui extends e_admin_ui
 {
 		protected $pluginTitle		= 'Facebook Connect';
 		protected $pluginName		= 'facebook';
+		protected $table 			= "facebook";
+		protected $pid				= "facebook_id";
+		
+		
+		protected $fields; //coming soon. 
 		
 
 		protected $prefs = array( 
@@ -47,6 +53,45 @@ class facebook_main_ui extends e_admin_ui
 			'Facebook_Api-Key'	   	=> array('title'=> 'Facebook API Key', 'type'=>'text'),		
 			'Facebook_Secret-Key'	=> array('title'=> 'Facebook Secret Key', 'type'=>'text')
 		);
+		
+		
+	function init()
+	{
+		$this->fields = array();
+		// echo $this->readSQLFile();
+	}
+	
+	function readSQLFile()
+	{
+		$convert = array('varchar'=>'text','int'=>'int','text'=>'textarea');
+		$text = "<pre>";
+		$text .= "\$fields = array(\n";
+		$text .= "\t'checkboxes'		=> array('title'=> '', 'type' => null),\n";
+		
+		$tmp = file_get_contents(e_PLUGIN.$this->pluginName."/".$this->pluginName."_sql.php");
+		$lines = explode("\n",$tmp);
+		foreach($lines as $line)
+		{
+			$line = trim($line);
+			$line = str_replace("  "," ",$line); 
+			list($field,$tmp2,$other) = explode(" ",$line,3);
+			list($type,$dummy) = explode("(",$tmp2);
+			if($field == 'CREATE' || $field == 'PRIMARY' || $field == 'UNIQUE')
+			{
+				continue;
+			}
+			$title = str_replace("_"," ",$field);
+			
+			if($convert[$type])
+			{
+				$text .= "\t'".$field."'		=> array('title'=> '".ucwords($title)."', 'type'=> '".$convert[$type]."' ),\n";
+			}
+		}
+		$text .= "\t'options'		=> array('title'=> '', 'type' => null)\n);\n";
+		$text .= "</pre>";
+		return $text;
+	}
+
 		
 	function customPage()
 	{
@@ -60,11 +105,11 @@ class facebook_main_ui extends e_admin_ui
 		<table style="'.ADMIN_WIDTH.'">
 		<tr>
 	    <td> 			
-			<p>If you don\'t already have a Facebook Platform API key for your site, create an application with the <a href="http://www.facebook.com/developers" class="external text" title="http://www.facebook.com/developers" rel="nofollow">Facebook Developer application</a>.
+			<p>If you don\'t already have a Facebook Platform API key for your site, create an application with the <a href="http://www.facebook.com/developers" class="external text" title="http://www.facebook.com/developers" rel="external nofollow">Facebook Developer application</a>.
 			</p><p><b>Note:</b> Even if you have created an application and received an API key, you should review steps 1.4 through 1.7 and make sure your application settings are appropriate.   
 			</p> 
 			
-			<ol><li>1. Go to <a rel="external" href="http://www.facebook.com/developers/createapp.php" class="external free" title="http://www.facebook.com/developers/createapp.php" rel="nofollow">http://www.facebook.com/developers/createapp.php</a> to create a new application.
+			<ol><li>1. Go to <a rel="external nofollow" href="http://www.facebook.com/developers/createapp.php" class="external free" title="http://www.facebook.com/developers/createapp.php">http://www.facebook.com/developers/createapp.php</a> to create a new application.
 			</li><li>2. Enter a name for your application in the <b>Application Name</b> field.
 			</li><li>3. Accept the <a href="http://developers.facebook.com/terms.php" class="external text" title="http://developers.facebook.com/terms.php" rel="nofollow">Developer Terms of Service</a>, then click <b>Save Changes</b>.
 			</li><li>4. On the <b>Basic</b> tab, keep all of the defaults.
