@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.2 2009-11-10 06:28:19 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.3 2009-11-10 13:41:41 e107coders Exp $ -->
 
 <e107Plugin name="Facebook" version="0.3" compatibility="0.8" installRequired="true">
 	<author name="Luca Filosofi" url="http://ask.altervista.org" email="aseptik@gmail.com" />
@@ -15,7 +15,4 @@
 		<pref name="Facebook_Secret-Key"></pref>
 		<pref name="Facebook_App-Bundle" active='false'></pref>
 	</mainPrefs>
-	<extendedFields>
-		<field name="ID" type='EUF_INTEGER' default='0' active="true" />
-	</extendedFields>
 </e107Plugin>
