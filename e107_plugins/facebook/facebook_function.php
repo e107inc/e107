@@ -10,8 +10,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- |     $Revision: 1.6 $
- |     $Date: 2009-11-10 15:25:50 $
+ |     $Revision: 1.7 $
+ |     $Date: 2009-11-11 12:25:13 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -284,8 +284,8 @@ function Fb_Connect_Me()
 		
 		Add_Facebook_Connect_User('', $nid);
 		
-		require_once(e_HANDLER.'login.php');
-		$usr = new userlogin($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
+	//	require_once(e_HANDLER.'login.php');
+	//	$usr = new userlogin($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
 				
 		set_cookies($nid, md5($password));
 		// 	fb_redirect(e_SELF);
@@ -787,7 +787,7 @@ function register_feed_forms()
 function username_exists($user)
 {
 	$sql = e107::getDb();
-	$sql = e107::getDb('sql2');
+	$sql2 = e107::getDb('sql2');
 	if ($sql->db_Select("user", "user_loginname", "user_loginname = '$user' "))
 	{
 		$count = $sql2->db_Count("user", "(*)", "WHERE $name LIKE '$user%' ");
@@ -892,7 +892,106 @@ function fb_redirect($loc)
 class e_facebook
 {
 	
+	public $fb_uid;
+	public $e107_userid;
+	
+	function __construct()
+	{
+		$this->fb_uid = $this->getFacebookId();
+		$this->e107_userid = $this->getUserId($this->fb_uid);
+		
+		// echo "UID=".$this->fb_uid;
+		// echo "<br />e107=".$this->e107_userid;		
+	}
+	
+	function getUserId($uid)
+	{
+		$sql = e107::getDb();
+		
+		if($sql->db_Select("facebook", "facebook_user_id", "facebook_uid = ".$this->fb_uid))
+		{
+			$row = $sql->db_Fetch();
+			return $row['facebook_user_id'];	
+		}
+		else
+		{
+			return FALSE;	
+		}
+	}
+	
+	function getFacebookId()
+	{
+		try
+		{
+			$fbclient = &facebook_client();
+			if ($fbclient)
+			{
+				return $fbclient->get_loggedin_user();	
+			}
+				
+		}
+		catch (FacebookRestClientException $e)
+		{
+			//echo "Facebook connect error:".$e->getCode();
+		}
+		return null;
+	}
+	
+	function addFacebookUser()
+	{
+		$sql = e107::getDb();
+	
+		if (!$sql->db_Select("facebook", "*", "facebook_uid = '".$this->fb_uid."' "))
+		{
+			$nickname = username_exists(Get_Facebook_Info('first_name'));
+			$password = md5(is_fb());
+			$username = "FacebookUser_".is_fb();
+			
+			$nid = $sql->db_Insert('user', array('user_name'=>$nickname, 'user_loginname'=>$username, 'user_password'=>$password, 'user_login'=>Get_Facebook_Info('name'), 'user_image'=>Get_Facebook_Info('pic')));
+			
+			Add_Facebook_Connect_User('', $nid);
+			
+		//	require_once(e_HANDLER.'login.php');
+		//	$usr = new userlogin($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup', '');
+					
+			set_cookies($nid, md5($password));
+			// 	fb_redirect(e_SELF);
+		}
+	}
+	
+	
 	function fb_login()
+	{
+		$sql = e107::getDb();
+		
+		if ($sql->db_Update("facebook", "facebook_connected = '1' WHERE facebook_uid = '".is_fb()."' "))
+		{
+			Log_In_Registered_User(); // log in to e107. 
+		}
+		else
+		{
+			$this->addFacebookUser(); // not found, so create a new facebook user. 
+		}
+		
+		fb_redirect(e_SELF);
+	
+	}
+	
+	
+	
+	
+	function fb_logout()
+	{
+		if(!varset($this->fb_uid))
+		{		
+			// echo "UID not Found";
+		}
+		
+		$sql = e107::getDb();
+		$sql->db_Update("facebook", "facebook_connected = '0' WHERE facebook_uid = ".$this->fb_uid." ");
+	}
+	
+	function fb_connect()
 	{
 		global $pref;
 		

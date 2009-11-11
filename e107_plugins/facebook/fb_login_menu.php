@@ -14,7 +14,7 @@ if (isset($_POST['fb_sig_in_canvas']))
 }
 
 $fb = e107::getSingleton('e_facebook',e_PLUGIN.'facebook/facebook_function.php');
-$html = $fb->fb_login();
+$html = $fb->fb_connect();
 
 $caption = 'Facebook';
 // $text = $tp->parseTemplate($html, true, $facebook_shortcodes);
