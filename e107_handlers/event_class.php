@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-09-25 20:18:34 $
-|     $Author: secretr $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-11 16:02:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -53,7 +53,7 @@ class e107_event
 	 * @param mixed $data
 	 * @return mixed
 	 */
-	function trigger($eventname, &$data)
+	function trigger($eventname, $data='')
 	{
 		/*if (isset($this->includes[$eventname]))
 		{
@@ -78,10 +78,12 @@ class e107_event
 				}
 				if(is_array($evt_func)) //class, method
 				{
+					$class = $evt_func[0];
+					$method = $evt_func[1];
+						
 					try
 					{
-						$class = $evt_func[0];
-						$method = $evt_func[1];
+					
 						$tmp = new $class($eventname);
 						$ret = $tmp->{$method}($data, $eventname); //let callback know what event is calling it
 						unset($tmp);
@@ -93,6 +95,9 @@ class e107_event
 					catch(Exception $e)
 					{
 						//TODO log errors $eventname, $location, $class, $method
+					//	echo "event didn't work. Class=".$class." Method=".$method;
+					//	echo "<br />".$e;
+						exit;
 					}
 				}
 				if (function_exists($evt_func))

@@ -1,6 +1,6 @@
 <?php
 
-// $Id: wmessage.php,v 1.2 2009-07-09 20:51:57 e107coders Exp $
+// $Id: wmessage.php,v 1.3 2009-11-11 16:02:40 e107coders Exp $
 
 function wmessage_shortcode($parm)
 {
@@ -17,15 +17,18 @@ function wmessage_shortcode($parm)
 		$full_url = 'news.php';					// Set a default in case
 		$front_qry = '';
 		$uc_array = explode(',', USERCLASS_LIST);
-		foreach ($pref['frontpage'] as $fk => $fp)
+		if(varset($pref['frontpage']))
 		{
-			if (in_array($fk,$uc_array))
+			foreach ($pref['frontpage'] as $fk => $fp)
 			{
-				$full_url = $fp;
-				break;
+				if (in_array($fk,$uc_array))
+				{
+					$full_url = $fp;
+					break;
+				}
 			}
+			list($front_url, $front_qry) = explode('?', $full_url.'?'); // extra '?' ensure the array is filled
 		}
-		list($front_url, $front_qry) = explode('?', $full_url.'?'); // extra '?' ensure the array is filled
 	}
 
 	if (strpos($front_url, 'http') === FALSE) $front_url = SITEURL.$front_url;
