@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-11-09 12:20:33 $
+ * $Revision: 1.26 $
+ * $Date: 2009-11-11 12:13:57 $
  * $Author: secretr $
  *
 */
@@ -675,6 +675,30 @@ class eMessage
 	protected function _get_types()
 	{
 		return array_keys($this->_type_map());
+	}
+	
+	/**
+	 * Proxy for undefined methods. It allows quick (less arguments)
+	 * call to {@link addStack()}. 
+	 * Name of the method should equal to valid eMessage type - {@link _type_map()}
+	 * 
+	 * Example:
+	 * <code>
+	 * e107::getMessage()->success('Success', false);
+	 * //calls internal $this->addStack('Success', E_MESSAGE_SUCCESS, false);
+	 * </code>
+	 * @param string $method valid message type
+	 * @param array $arguments array(0 => (string) message, [optional] 1 =>(boolean) session, [optional] 2=> message stack )
+	 * @return eMessage
+	 * @throws Exception
+	 */
+	function __call($method, $arguments) {
+		if($this->isType($method))
+		{
+			$this->addStack($arguments[0], vartrue($arguments[2], 'default'), $method, (isset($arguments[1]) && !empty($arguments[1])));
+			return $this;
+		}
+		throw new Exception('Method eMessage::'.$method.' does not exist!');//FIXME - e107Exception handler
 	}
 
 }
