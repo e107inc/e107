@@ -18,12 +18,14 @@ if (!defined('e107_INIT'))
 
 include_once(e_PLUGIN.'facebook/facebook_function.php');
 
+global $fb;
+
 if (isset($_POST['fb_sig_in_canvas']))
 {
 	return;
 }
 
-if (is_fb())
+if ($this->fb_uid)
 {
 	
 	$html = '';

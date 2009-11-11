@@ -2,6 +2,7 @@
 //error_reporting(E_ALL);
 
 e107::getEvent()->register('logout',array('e_facebook','fb_logout'),e_PLUGIN.'facebook/facebook_function.php');
+global $fb;
 
 $fb = e107::getSingleton('e_facebook',e_PLUGIN.'facebook/facebook_function.php');
 
@@ -33,7 +34,7 @@ if (USER_AREA)
 	
 	if (e_QUERY == 'login') // simple Re-Login after logged out from e107
 	{
-		Fb_LogIn();
+		$fb->fb_login(); // Fb_LogIn();
 	}
 		
 	if (e_QUERY == 'logout') // simulate Facebook logOut when logged out from e107
@@ -61,7 +62,7 @@ if (USER_AREA)
 
 	function theme_foot()
 	{
-	
+		global $fb;
 		/**
 		 * the init js needs to be at the bottom of the document, within the </body> tag
 		 * this is so that any xfbml elements are already rendered by the time the xfbml
@@ -71,7 +72,7 @@ if (USER_AREA)
 		
 		global $onload_js;
 		
-		$text .= render_facebook_init_js(is_fb());
+		$text .= render_facebook_init_js($fb->fb_uid);
 		// Print out all onload function calls
 		
 		if ($onload_js)
