@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.153 $
-* $Date: 2009-10-31 17:57:15 $
-* $Author: secretr $
+* $Revision: 1.154 $
+* $Date: 2009-11-11 16:02:36 $
+* $Author: e107coders $
 *
 */
 //
@@ -1007,7 +1007,7 @@ if ((e_QUERY == 'logout') || (($pref['user_tracking'] == 'session') && isset($_S
 	}
 
 	cookie(e_COOKIE, '', (time() - 2592000));
-	$e_event->trigger('logout');
+	e107::getEvent()->trigger('logout');
 	header('location:'.e_BASE.'index.php');
 	exit();
 }

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2009-11-05 17:32:17 $
-|     $Author: secretr $
+|     $Revision: 1.55 $
+|     $Date: 2009-11-11 16:02:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -452,7 +452,9 @@ class pluginManager{
 
    function pluginUpgrade()
    {
-       global $plugin,$pref;
+       global $plugin,$pref,$admin_log;
+	   
+	   $sql = e107::getDb();
 	   
 	   		$emessage = eMessage::getInstance();
 
