@@ -35,25 +35,26 @@ $fb_pref = e107::getPlugConfig('facebook')->getPref();
 
 if (($fb_pref['Facebook_Api-Key'] != '') && ($fb_pref['Facebook_Secret-Key'] != ''))
 {
-	
+	$fb = e107::getSingleton('e_facebook',e_PLUGIN.'facebook/facebook_function.php');
+		
 	$html = '';
 	
 	if (USER)
 	{
 		
-		if (USERID == get_id_from_uid(is_fb()))
+		if (USERID == $fb->e107_userid)
 		{
 			
-			if (Facebook_User_Is_Connected() === true)
+			if ($fb->isConnected() === true)
 			{
 				
 				///$html .= Render_Facebook_Profile();
 				
 				//$caption = 'Welcome, ' . Get_Facebook_Info ( 'name' );
 				
-				$html .= Render_Facebook_Friends_Table();
+				$html .= $fb->Render_Facebook_Friends_Table();
 				
-				$html .= Render_Connect_Invite_Friends();
+				$html .= $fb->Render_Connect_Invite_Friends();
 				
 				$caption = 'Friends';
 				// $text = $tp->parseTemplate($html, true, $facebook_shortcodes);
