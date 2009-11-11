@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.76 $
- * $Date: 2009-11-10 19:13:06 $
+ * $Revision: 1.77 $
+ * $Date: 2009-11-11 20:57:33 $
  * $Author: secretr $
  *
 */
@@ -191,20 +191,11 @@ class e_form
 	{
 		if(!is_array($options)) parse_str($options, $options);
 		
-		$reset = '';
-		if(vartrue($options['reset']))
-		{
-			$reset = '
-				<a href="#" onclick="$(\'subscriber-system-id\').value=0; \$(\'subscriber-system-id\').previous(\'input\').value=\'\'; return false;">reset</a>
-			';
-		}
-		
 		//'.$this->text($id_fld, $default_id, 10, array('id' => false, 'readonly'=>true, 'class'=>'tbox number')).'
 		$ret = '
 		<div class="e-autocomplete-c">
 			'.$this->text($name_fld, $default_name, 150, array('id' => false, 'readonly' => vartrue($options['readonly']) ? true : false)).'
 			'.$this->hidden($id_fld, $default_id, array('id' => false)).'
-			'.$reset.'
 				<span class="indicator" style="display: none;">
 					<img src="'.e_IMAGE_ABS.'generic/loading_16.gif" class="icon action S16" alt="Loading..." />
 				</span>
@@ -213,7 +204,7 @@ class e_form
 		';
 		
 		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
-		
+		//TODO - external JS
 		e107::getJs()->footerInline("
 	            //autocomplete fields
 	             \$\$('input[name={$name_fld}]').each(function(el) {
@@ -229,7 +220,6 @@ class e_form
 					  minChars: 2,
 					  frequency: 0.5,
 					  afterUpdateElement: function(txt, li) { 
-					  	console.log(\$(li).id, '{$id_fld}');
 					  	if(!\$(li)) return;
 					  	if(\$(li).id) { 
 							el.next('input[name={$id_fld}]').value = parseInt(\$(li).id); 
@@ -535,12 +525,12 @@ class e_form
 
 	/**
 	 * 
-	 * @param object $name
-	 * @param object $value
-	 * @param object $action [optional] default is submit
-	 * @param object $label [optional]
-	 * @param object $options [optional]
-	 * @return 
+	 * @param string $name
+	 * @param string $value
+	 * @param string $action [optional] default is submit
+	 * @param string $label [optional]
+	 * @param string|array $options [optional]
+	 * @return string
 	 */
 	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
@@ -1263,14 +1253,30 @@ class e_form
 			case 'user':
 				//user_id expected
 				// Just temporary solution, could be changed soon
+				if(!isset($parms['__options'])) $parms['__options'] = array();
+				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
+				
+				if((empty($value) && vartrue($parms['currentInit'])) || vartrue($parms['current']))
+				{
+					$value = USERID;
+					if(vartrue($parms['current']))
+					{
+						$parms['__options']['readonly'] = true;
+					}
+				}
+
 				if(!is_array($value))
 				{
 					$value = get_user_data($value);
 				}
+				
+				$colname = vartrue($parms['nameType'], 'user_name');
+				$parms['__options']['name'] = $colname;
+				
 				if(!$value) $value = array();
-				$uname = varset($value['user_name']);
+				$uname = varset($value[$colname]);
 				$value = varset($value['user_id'], 0);
-				return $this->userpicker(vartrue($parms['nameField'] ,$key.'_usersearch'), $key, $uname, $value, $parms);
+				return $this->userpicker(vartrue($parms['nameField'], $key.'_usersearch'), $key, $uname, $value, vartrue($parms['__options']));
 			break;
 			
 			case 'boolean':
@@ -1320,9 +1326,10 @@ class e_form
 	 * </code>
 	 * @param array $options
 	 * @param e_admin_tree_model $list
+	 * @param boolean $nocontainer don't enclose in div container
 	 * @return string
 	 */
-	public function listForm($options, $list)
+	public function listForm($options, $list, $nocontainer = false)
 	{
 		$tp = e107::getParser();
 		$tree = $list->getTree();
@@ -1340,7 +1347,6 @@ class e_form
 		$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
 
         $text = "
-			".vartrue($options['form_pre'])."
 			<form method='post' action='{$formurl}' id='{$elid}-list-form'>
 				".vartrue($options['fieldset_pre'])."
 				<fieldset id='{$elid}-list'>
@@ -1386,10 +1392,12 @@ class e_form
 				</fieldset>
 				".vartrue($options['fieldset_post'])."
 			</form>
-			".vartrue($options['form_post'])."
 		";
-
-		return $text;
+		if(!$nocontainer)
+		{
+			$text = '<div class="e-container">'.$text.'</div>';
+		}
+		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
 	}
 	
 	/**
@@ -1426,9 +1434,10 @@ class e_form
 	 * </code>
 	 * @param array $forms numerical array 
 	 * @param array $models numerical array with values instance of e_admin_model
+	 * @param boolean $nocontainer don't enclose in div container
 	 * @return string
 	 */
-	function createForm($forms, $models)
+	function createForm($forms, $models, $nocontainer = false)
 	{
 		$text = '';
 		foreach ($forms as $fid => $form) 
@@ -1540,6 +1549,10 @@ class e_form
 			</form>
 			";	
 		}
+		if(!$nocontainer)
+		{
+			$text = '<div class="e-container">'.$text.'</div>';
+		}
 		return $text;
 	}
 	
@@ -1568,7 +1581,7 @@ class e_form
 			$text = "
          <div class='f-left'>
          <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
-			".$this->select_open('execute_batch', array('class' => 'tbox select e-execute-batch', 'id' => false))."
+			".$this->select_open('execute_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."
 				".$this->option('With selected...', '')."
 		";
 		

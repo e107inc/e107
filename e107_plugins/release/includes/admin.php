@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-10 19:13:06 $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-11 20:57:33 $
  * $Author: secretr $
 */
 
@@ -178,7 +178,7 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * 		  -> write: n/a
 		 * 
 		 * - user -> read: [optional] 'link' => true - create link to user profile, 'idField' => 'author_id' - tells to renderValue() where to search for user id (used when 'link' is true)
-		 * 		  -> write: [optional] 'nameField' => 'comment_author_name' the name of a 'user_name' field; 
+		 * 		  -> write: [optional] 'nameField' => 'comment_author_name' the name of a 'user_name' field; 'currentInit' - use currrent user if no data provided; 'current' - use always current user(editor); '__options' e_form::userpickup() options
 		 * 
 		 * - number -> read: (array) [optional] 'point' => '.', [optional] 'sep' => ' ', [optional] 'decimals' => 2, [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY'
 		 * 			-> write: (array) [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY', [optional] 'maxlength' => 50, [optional] '__options' => array(...) see e_form class description for __options format

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-11-10 19:13:05 $
+|     $Revision: 1.4 $
+|     $Date: 2009-11-11 20:57:32 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -91,8 +91,8 @@ class faq_main_ui extends e_admin_ui
 		protected $tableJoin = array(
 			'u.user' => array('leftField' => 'faq_author', 'rightField' => 'user_id', 'fields' => 'user_id,user_loginname,user_name')
 		);
-		
-		protected $listQry			= "SELECT  * FROM #faqs"; // without any Order or Limit. 
+		// without any Order or Limit. 
+		//protected $listQry			= "SELECT  * FROM #faqs"; 
 		
 		protected $editQry			= "SELECT * FROM #faqs WHERE faq_id = {ID}";
 		
@@ -109,7 +109,7 @@ class faq_main_ui extends e_admin_ui
 		 	'faq_parent' 			=> array('title'=> "Category",		'type' => 'method',			'data'=> 'int','width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
 			'faq_comment' 			=> array('title'=> "Comment",		'type' => 'userclass',		'data' => 'int',	'width' => 'auto'),	// User id
 			'faq_datestamp' 		=> array('title'=> "datestamp",		'type' => 'datestamp',		'data'=> 'int','width' => 'auto'),	// User date
-            'faq_author' 			=> array('title'=> LAN_USER,		'type' => 'user',			'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+            'faq_author' 			=> array('title'=> LAN_USER,		'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
        		'u.user_name' 			=> array('title'=> "User name",		'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User name
        		'u.user_loginname' 		=> array('title'=> "User login",	'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=faq_author&link=1'),	// User login name
 			'faq_order' 			=> array('title'=> "Order",			'type' => 'number',			'data'=> 'int','width' => '5%', 'thclass' => 'center' ),	 // Real name (no real vetting)
@@ -199,9 +199,7 @@ class faq_admin_form_ui extends e_admin_form_ui
 
 new faq_admin();
 
-
 require_once(e_ADMIN."auth.php");
-
 e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");

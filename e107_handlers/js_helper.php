@@ -9,8 +9,8 @@
  * Javascript Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_helper.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-10-28 01:32:40 $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-11 20:57:32 $
  * $Author: secretr $
  *
 */
@@ -266,8 +266,8 @@ class e_jshelper
      * @param string $action optional
      * @param array $data_array optional
      */
-    function sendTextResponse($data_text)
-    {
+    function sendTextResponse($data_text = '')
+    { 
     	header('Content-type: text/html; charset='.CHARSET, true);
     	echo $this->addTextResponse($data_text)->buildTextResponse();
     	exit;
@@ -288,7 +288,7 @@ class e_jshelper
     		//TODO - pref?
     		$response_type = strtolower(ucfirst($this->_prefered_response_type)); 
     	}
-    	$method = "send{$response_type}Response";
+    	$method = "send{$response_type}Response"; 
     	if(method_exists($this, $method))
     	{
     		$this->$method();
@@ -296,6 +296,30 @@ class e_jshelper
     	}
     	
     	return false;
+    }
+	
+    /**
+     * Add response by response type
+     * 
+     * @param mixed $data
+     * @param string $action 'text' or response action string
+     * @return e_jshelper
+     */
+    function addResponse($data, $action = '')
+    {
+		if(!$action)
+    	{
+    		$action = 'text'; 
+    	}
+		if('text' == $action)
+		{
+			$this->addTextResponse($data);
+		}
+		else
+		{
+			$this->addResponseAction($action, $data);
+		}
+		return $this;
     }
 
     /**

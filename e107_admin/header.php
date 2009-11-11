@@ -9,8 +9,8 @@
  * Admin Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
- * $Revision: 1.51 $
- * $Date: 2009-11-02 17:45:29 $
+ * $Revision: 1.52 $
+ * $Date: 2009-11-11 20:57:34 $
  * $Author: secretr $
 */
 
@@ -89,6 +89,7 @@ if (!defined('ADMIN_WIDTH'))
 	define('ADMIN_WIDTH', "width: 95%");
 }
 
+// FIXME - move to e.g. admin_constants.php
 if (!defined('ADMIN_TRUE_ICON'))
 {
 	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/true_16.png' alt='' />");

@@ -216,6 +216,7 @@ if (!function_exists('strptime'))
 			{
 				$vals['tm_mon'] = $names[substr($vals['tm_mon'], 0, 3)] - 1;
 			}
+			
 			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
 			
 			#-- calculate wday/yday

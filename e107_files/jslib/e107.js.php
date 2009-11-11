@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-11-06 18:37:23 $
+ * $Revision: 1.37 $
+ * $Date: 2009-11-11 20:57:33 $
  * $Author: secretr $
  *
 */
@@ -877,15 +877,23 @@ Object.extend(e107Helper, {
      *
      *
      */
-    executeBatch: function(event) {
+    executeAutoSubmit: function(event) {
     	var element = event.memo['element'] ? $(event.memo.element) : $$('body')[0];
-		Element.select(element, 'select.e-execute-batch').invoke('observe', 'change', function(e) {
-			var frm = e.element().up('form');
-			if (frm) {
-			   frm.submit();
-			   e.stop();
-			}
+		Element.select(element, 'select.e-autosubmit').invoke('observe', 'change', function(e) {
+			e107Helper.selectAutoSubmit(e.element());
 		});
+    },
+	
+    selectAutoSubmit: function(el) {
+		var frm = el.up('form');
+		if (frm) {
+			if(el.value == '___reset___') {
+				frm.getInputs('text').each(function(r) { r.value = '' });
+				frm.getInputs('password').each(function(r) { r.value = '' });
+				el.value = '';
+			}
+			frm.submit();
+		}
     },
 
     /**
@@ -2518,11 +2526,9 @@ Object.extend(e107Ajax, {
 
 		if(!opt.parameters) opt.parameters = {};
 		Object.extend(opt.parameters, parm || {});
-		opt.method = 'post';
-
-		if ($(form).hasAttribute('method') && !opt.method)
-		      opt.method = $(form).method;
-
+		if ($(form).hasAttribute('method') && !opt.method) opt.method = $(form).method;
+		if(!opt.method) opt.method = 'post';
+		
 		if(container)
 			return new e107Ajax.Updater(container, url, opt);
 
@@ -2685,6 +2691,6 @@ function sendInfo(handler, container, form) {
 /*
  * Core Auto-load
  */
-$w('autoExternalLinks autoNoHistory autoHide toggleObserver toggleManyObserver scrollToObserver executeBatch').each( function(f) {
+$w('autoExternalLinks autoNoHistory autoHide toggleObserver toggleManyObserver scrollToObserver executeAutoSubmit').each( function(f) {
 	e107.runOnLoad(e107Helper[f], null, true);
 });

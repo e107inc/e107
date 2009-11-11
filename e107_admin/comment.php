@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-11-10 19:13:07 $
+|     $Revision: 1.19 $
+|     $Date: 2009-11-11 20:57:34 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -79,13 +79,13 @@ class comments_admin_ui extends e_admin_ui
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'comment_id'			=> array('title'=> LAN_ID,				'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),
-       		'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',			'width' => '5%'),
+			'comment_id'			=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),
+       		'comment_item_id' 		=> array('title'=> "item id",		'type' => 'number',			'width' => '5%'),
          	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'comment_author_id' 	=> array('title'=> "authorID",		'type' => 'user',			'data' => 'int',	'width' => 'auto'),	// User id
-         	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'text',			'width' => 'auto'),	// User name
-         	'u.user_name' 			=> array('title'=> "System user",	'type' => 'text',			'width' => 'auto', 'noedit' => true),	// User name
+         	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+		 	'comment_author_id' 	=> array('title'=> "author",		'type' => 'user',			'data' => 'int',	'width' => 'auto', 'writeParms' => 'nameField=comment_author_name'),	// User id
+         	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true, 'forceSave' => true),	// User name
+         	'u.user_name' 			=> array('title'=> "System user",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true),	// User name
 		    'comment_datestamp' 	=> array('title'=> "datestamp",		'type' => 'datestamp',		'width' => 'auto'),	// User date
             'comment_blocked' 		=> array('title'=> "blocked",		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 			'comment_ip' 			=> array('title'=> "IP",			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
