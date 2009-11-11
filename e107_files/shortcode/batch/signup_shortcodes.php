@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/signup_shortcodes.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-11-02 20:22:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2009-11-11 19:53:44 $
+|     $Author: e107steved $
 |
 | Mods to show extended field categories
 +----------------------------------------------------------------------------+
@@ -279,6 +279,10 @@ if ($pref['signup_option_timezone'])
 	$text .= "
 	<select style='width:99%' name='timezone' class='tbox'>\n";
 
+	if (!isset($user_timezone) || (($user_timezone |= 'GMT') && (($user_timezone < -12) || ($user_timezone > 13))))
+	{
+		$user_timezone = 'GMT';		// Default to something a bit more helpful
+	}
 	$count = 0;
 	while ($timezone[$count])
 	{
