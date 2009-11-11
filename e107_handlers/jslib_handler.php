@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/jslib_handler.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-10-07 11:05:55 $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-11 10:53:32 $
  * $Author: secretr $
  * 
 */
@@ -65,7 +65,7 @@ class e_jslib
 
 		// If-Modified check only if cache disabled
 		// if cache is enabled, cache file modification date is set to $lmodified
-		if(!e107::getPref('syscachestatus'))
+		/*if(!e107::getPref('syscachestatus'))
 		{
 			// not modified - send 304 and exit
 			if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lmodified) 
@@ -73,7 +73,7 @@ class e_jslib
 			    header("HTTP/1.1 304 Not Modified", true);
 			    exit;
 			}
-		}
+		}*/
 
 		// send last modified date
 		header('Cache-Control: must-revalidate');
