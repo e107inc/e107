@@ -1319,6 +1319,7 @@ class e_admin_controller
 	 * Currently used core parameters:
 	 * - enable_triggers: don't use it direct, see {@link setTriggersEnabled()}
 	 * - modes - see dispatcher::$modes
+	 * - ajax_response - text|xml|json - default is 'text'; this should be set by the action method
 	 * - TODO - more parameters/add missing to this list
 	 * 
 	 * @param string $key [optional] if null - get whole array 
@@ -1548,8 +1549,8 @@ class e_admin_controller
 	
 	protected function _preDispatch($action = '')
 	{
-		if(!$action) $action = $this->getAction();
-		$method = $this->toMethodName($action, 'page');
+		if(!$action) $action = $this->getRequest()->getActionName(); 
+		$method = $this->toMethodName($action, 'page'); 
 		if(!method_exists($this, $method))
 		{
 			$this->getRequest()->setAction($this->getDefaultAction());
@@ -1670,26 +1671,27 @@ class e_admin_controller
 			$this->setRequest($request);
 		}
 		$response = $this->getResponse();
+		$this->_preDispatch($action); 
 		
-		$this->_preDispatch($action);
 		if(null === $action)
 		{
 			$action = $request->getActionName();
 		}
-		
+		 
 		// check for observer
-		$actionName = $this->toMethodName($action, 'page');
+		$actionName = $this->toMethodName($action, 'page');   
 		$ret = '';
 		if(!method_exists($this, $actionName)) // pre dispatch already switched to default action/not found page if needed
 		{
 			e107::getMessage()->add('Action '.$actionName.' no found!', E_MESSAGE_ERROR);
 			return $response;
 		}
-		
+		//var_dump(call_user_func(array($this, $actionName)), $this->{$actionName}());
 		ob_start(); //catch any output
-		$ret = $this->$actionName();
+		$ret = $this->{$actionName}();
 		
-		//Ajax XML/JSON communictaion
+		
+		//Ajax XML/JSON communication
 		if(e_AJAX_REQUEST && is_array($ret))
 		{
 			$response_type = $this->getParam('ajax_response', 'xml');
@@ -1697,7 +1699,7 @@ class e_admin_controller
 			$js_helper = $response->getJsHelper();
 			foreach ($ret as $act => $data) 
 			{
-				$js_helper->addResponseAction($act, $data);
+				$js_helper->addResponse($data, $act);
 			}
 			$js_helper->sendResponse($response_type);
 		}
@@ -1707,8 +1709,9 @@ class e_admin_controller
 		// Ajax text response
 		if(e_AJAX_REQUEST)
 		{
-			$response_type = $this->getParam('ajax_response', 'text');
-			$response->getJsHelper()->addTextResponse($ret)->sendResponse($response_type);
+			$response_type = 'text';
+			$response->getJsHelper()->addResponse($ret)->sendResponse($response_type);
+			var_dump($response_type, $response->getJsHelper());
 		}
 		else
 		{
@@ -1726,6 +1729,12 @@ class e_admin_controller
 	public function E404Page()
 	{
 		return '<div class="center">Requested page was not found!</div>'; // TODO - lan
+	}
+	
+	
+	public function E404AjaxPage()
+	{
+		exit;
 	}
 	
 	/**
@@ -1940,17 +1949,6 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 	
 	/**
-	 * List action observer
-	 * @return void
-	 */
-	public function ListObserver()
-	{
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry())->load();
-		$this->addTitle('List'); // FIXME - get captions from dispatch list
-		//var_dump($_POST, $this->getParam('enable_triggers'));
-	}
-	
-	/**
 	 * Catch batch submit
 	 * @param string $batch_trigger
 	 * @return 
@@ -2009,6 +2007,16 @@ class e_admin_ui extends e_admin_controller_ui
 		e107::getJs()->headerCore('core/tabs.js')
 			->headerCore('core/admin.js');
 	}
+
+	/**
+	 * List action observer
+	 * @return void
+	 */
+	public function ListObserver()
+	{
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry())->load();
+		$this->addTitle('List'); // FIXME - get captions from dispatch list
+	}
 	
 	/**
 	 * Generic List action page
@@ -2017,6 +2025,70 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListPage()
 	{
 		return $this->getUI()->getList();
+	}
+	
+	public function FilterAjaxPage()
+	{
+		$ret = '<ul>';
+		$ret .= "<li><span class='informal warning'> clear filter </span></li>";
+		
+		$srch = $this->getPosted('searchquery');
+		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
+		$reswords = array();
+		if(trim($srch) !== '')
+		{
+			// Build query
+			$qry = $this->_modifyListQry(true, 0, 20);
+
+			// Make query
+			$sql = e107::getDb();
+			if($qry && $sql->db_Select_gen($qry))
+			{
+				while ($res = $sql->db_Fetch())
+				{
+					$tmp1 = array();
+					$tmp = array_values(preg_grep('#'.$srch.'#i', $res));
+					foreach ($tmp as $w)
+					{
+						if($w == $srch) 
+						{
+							array_unshift($reswords, $w); //exact match
+							continue;
+						}
+						preg_match('#[\S]*('.$srch.')[\S]*#i', $w, $tmp1);
+						if($tmp1[0]) $reswords[] = $tmp1[0];
+					}
+				}
+			}
+			
+			// Build response 
+			$reswords = array_unique($reswords);
+			if($reswords)
+			{
+				$ret .= '<li>'.implode("</li>\n\t<li>", $reswords).'</li>';
+			}
+		}
+		
+		$ret .= '</ul>';
+		return $ret;
+	}
+	
+	/**
+	 * List action observer
+	 * @return void
+	 */
+	public function ListAjaxObserver()
+	{
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, 0))->load();
+	}
+	
+	/**
+	 * Generic List action page (Ajax)
+	 * @return string
+	 */
+	public function ListAjaxPage()
+	{
+		return $this->getUI()->getList(true);
 	}
 	
 	/**
@@ -2363,9 +2435,10 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	protected function _modifyListQry()
+	protected function _modifyListQry($isfilter = false, $forceFrom = false, $forceTo = false)
 	{
 		$searchQry = array();
+		$filterFrom = array();
 		$request  = $this->getRequest();
 		$tp = e107::getParser();
 		$tablePath = '`#'.$this->table.'`.';
@@ -2381,23 +2454,38 @@ class e_admin_ui extends e_admin_controller_ui
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		list($filterField, $filterValue) = $tp->toDB(explode('__', $request->getQuery('filter_options', '')));
 		
-		// TODO - we have var types in current model, use them!
+		// FIXME - currently broken
 		if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 		{
 			$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$filterValue."'";
 		}
 		
+		
 		$filter = array();
 		
-		foreach($this->fields as $key=>$var)
+		// Commented for now - we should search in ALL searchable fields, not only currently active. Discuss.
+		//foreach($this->fieldpref as $key)
+		foreach($this->fields as $key => $var)
 		{
-			if(($var['type'] == 'text' || $var['type'] == 'method') && $searchQuery)
+			//if(!vartrue($this->fields[$key])) continue;
+			//$var = $this->fields[$key];
+			$searchable_types = array('text', 'textearea', 'bbarea', 'user'); //method?
+			
+			if(trim($searchQuery) !== '' && !vartrue($var['nolist']) && in_array($var['type'], $searchable_types))
 			{
-				//$ftable = vartrue($var['alias'], '#'.$this->getTableName());
-				$filter[] = $var['__tableField']."` REGEXP ('".$searchQuery."'))";	
+				$filter[] = $var['__tableField']." REGEXP ('".$searchQuery."')";	
+				if($isfilter)
+				{
+					$filterFrom[] = $var['__tableField'];
+				}
 			}
 		}
-
+		if($isfilter)
+		{
+			if(!$filterFrom) return false;
+			$tableSFields = implode(', ', $filterFrom);
+		}
+		
 		$jwhere = array();
 		$joins = array();
 		if($this->tableJoin) 
@@ -2406,20 +2494,22 @@ class e_admin_ui extends e_admin_controller_ui
 			foreach ($this->tableJoin as $jtable => $tparams)
 			{
 				// Select fields
-				$fields = vartrue($tparams['fields']);
-				if('*' === $fields)
+				if(!$isfilter)
 				{
-					$qry .= ", {$tparams['__tablePath']}*";
-				}
-				else
-				{
-					$fields = array_map('trim', explode(',', $fields));
-					foreach ($fields as $field)
+					$fields = vartrue($tparams['fields']);
+					if('*' === $fields)
 					{
-						$qry .= ", {$tparams['__tablePath']}`{$field}`";
+						$qry .= ", {$tparams['__tablePath']}*";
+					}
+					else
+					{
+						$fields = explode(',', $fields);
+						foreach ($fields as $field)
+						{
+							$qry .= ", {$tparams['__tablePath']}`".trim($field).'`';
+						}
 					}
 				}
-
 				// Prepare Joins
 				$joins[] = "
 					".vartrue($tparams['joinType'], 'LEFT JOIN')." {$tparams['__tableFrom']} ON ".(vartrue($tparams['leftTable']) ? $tparams['leftTable'].'.' : $tablePath)."`".vartrue($tparams['leftField'])."` = {$tparams['__tablePath']}`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
@@ -2453,7 +2543,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// filter where
 		if(count($filter) > 0)
 		{
-			$searchQry[] = " (".implode(" OR ",$filter)." )";
+			$searchQry[] = " ( ".implode(" OR ",$filter)." ) ";
 		}
 		
 		// where query
@@ -2469,11 +2559,11 @@ class e_admin_ui extends e_admin_controller_ui
 			$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
 		}
 		
-		if($this->getPerPage())
+		if($this->getPerPage() || false !== $forceTo)
 		{
-			$from = intval($request->getQuery('from', 0));
-			//$startfrom = ($from-1) * intval($this->getPerPage());
-			$qry .= ' LIMIT '.$from.', '.intval($this->getPerPage());
+			$from = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
+			if(false === $forceTo) $forceTo = $this->getPerPage();
+			$qry .= ' LIMIT '.$from.', '.intval($forceTo);
 		}
 
 		return $qry;
@@ -2634,7 +2724,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$this->dataFields = array();
 				foreach ($this->fields as $key => $att)
 				{
-					if(null !== $att['type'] && !vartrue($att['noedit']))
+					if((null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 					{
 						$this->dataFields[$key] = vartrue($att['data'], 'str');
 					}
@@ -2815,7 +2905,7 @@ class e_admin_form_ui extends e_form
 		);
 		$models[] = $controller->getModel();
 		
-		return $this->createForm($forms, $models);
+		return $this->createForm($forms, $models, e_AJAX_REQUEST);
 	}
 	
 	/**
@@ -2846,7 +2936,7 @@ class e_admin_form_ui extends e_form
 		);
 		$models[] = $controller->getConfig();
 		
-		return $this->createForm($forms, $models);
+		return $this->createForm($forms, $models, e_AJAX_REQUEST);
 	}
 	
 	/**
@@ -2856,7 +2946,7 @@ class e_admin_form_ui extends e_form
 	 * 
 	 * @return string
 	 */
-	public function getList()
+	public function getList($ajax = false)
 	{
 		$tp = e107::getParser();
 		$controller = $this->getController();
@@ -2871,7 +2961,7 @@ class e_admin_form_ui extends e_form
 			'head_query' => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
 			'np_query' => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
 			'legend' => $controller->getPluginTitle(), // hidden by default
-			'form_pre' => $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()), // needs to be visible when a search returns nothing
+			'form_pre' => !$ajax ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
 			'form_post' => '', // markup to be added after closing form element
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
@@ -2884,7 +2974,7 @@ class e_admin_form_ui extends e_form
 			'field' => $controller->getQuery('field'), //current order field name, default - primary field
 			'asc' => $controller->getQuery('asc', 'desc'), //current 'order by' rule, default 'asc'
 		);
-		return $this->listForm($options, $tree);
+		return $this->listForm($options, $tree, $ajax);
 	}
 	
 	function renderFilter($current_query = array(), $location = '', $input_options = array())
@@ -2894,25 +2984,71 @@ class e_admin_form_ui extends e_form
 		{
 			$location = 'main/list'; //default location
 		}
-		$l = explode('/', $location); 
-		
+		$l = e107::getParser()->post_toForm(explode('/', $location)); 
+		if(!is_array($input_options))
+		{
+			parse_str($input_options, $input_options);
+		}
+		$input_options['id'] = false;
+		$input_options['class'] = 'tbox input-text filter';
 		$text = "
 			<form method='get' action='".e_SELF."?".e_QUERY."'>
 				<fieldset class='e-filter'>
 					<legend class='e-hideme'>Filter</legend>
 					<div class='left'>
 						".$this->text('searchquery', $current_query[0], 50, $input_options)."
-						".$this->select_open('filter_options', array('class' => 'tbox select e-filter-options', 'id' => false))."
+						".$this->select_open('filter_options', array('class' => 'tbox select filter', 'id' => false))."
 							".$this->option('Display All', '')."
+							".$this->option('Clear Filter', '___reset___')."
 							".$this->renderBatchFilter('filter', $current_query[1])."
 						".$this->select_close()."
+						<div class='e-autocomplete'></div>	
 						".$this->hidden('mode', $l[0])."
 						".$this->hidden('action', $l[1])."
-						".$this->admin_button('etrigger_filter', LAN_FILTER)."
+						".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', LAN_FILTER, array('id' => false))."
+						<span class='indicator' style='display: none;'>
+							<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='Loding...' />
+						</span>
 					</div>
 				</fieldset>
 			</form>
 		"; 
+
+		e107::getJs()->requireCoreLib('scriptaculous/controls.js', 2);
+		//TODO - external JS
+		e107::getJs()->footerInline("
+	            //autocomplete fields
+	             \$\$('input[name=searchquery]').each(function(el, cnt) { 
+				 	if(!cnt) el.focus();
+					else return;
+					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_SELF."?mode=".$l[0]."&action=filter', {
+					  paramName: 'searchquery',
+					  minChars: 2,
+					  frequency: 0.5,
+					  afterUpdateElement: function(txt, li) { 
+					  	var cfrm = el.up('form'), cont = cfrm.next('.e-container');
+						if(!cont) {
+							return;
+						} 
+					  	cfrm.submitForm(cont);
+					  },
+					  indicator:  el.next('span.indicator'),
+					  parameters: 'ajax_used=1'
+					});
+					var sel = el.next('select.filter');
+					if(sel) {
+						sel.observe('change', function (e) { 
+							var cfrm = e.element().up('form'), cont = cfrm.next('.e-container');
+							if(cfrm && cont && e.element().value != '___reset___') {
+								e.stop();
+								cfrm.submitForm(cont);
+								return;
+							}
+							e107Helper.selectAutoSubmit(e.element());
+						});
+					}
+				});
+		");
 		
 		return $text;	
 	}
@@ -2929,11 +3065,12 @@ class e_admin_form_ui extends e_form
 		$text = "
 			<div class='buttons-bar left'>
          		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
-				".$this->select_open('etrigger_batch', array('class' => 'tbox select e-execute-batch', 'id' => false))."
+				".$this->select_open('etrigger_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."
 					".$this->option('With selected...', '')."
 					".($allow_delete ? $this->option('&nbsp;&nbsp;&nbsp;&nbsp;'.LAN_DELETE, 'delete') : '')."
 					".$this->renderBatchFilter('batch')."
 				".$this->select_close()."
+				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', 'Execute', array('id' => false))."
 			</div>
 		";
 		return $text;
@@ -3050,225 +3187,95 @@ class e_admin_form_ui extends e_form
 	}
 }
 
-// One handler to rule them all
-// see e107_plugins/release/admin_config.php.  
-class e_admin_ui_dummy extends e_form
-{	
-	/**
-	 * @var e_admin_ui
-	 */
-	protected $_controller = null;
-	
-	/**
-	 * Constructor
-	 * @param e_admin_ui $controller
-	 * @return 
-	 */
-	function __construct($controller)
-	{
-		$this->_controller = $controller;
-		parent::__construct(false);
-	}
-	
-	function init()
-	{
-		
-		global $user_pref; // e107::getConfig('user') ??
-		
-		$this->mode = varset($_GET['mode']) ? $_GET['mode'] : 'list';
-		
-		$column_pref_name = "admin_".$this->table."_columns";
-				
-		if(isset($_POST['submit-e-columns']))
-		{		
-			$user_pref[$column_pref_name] = $_POST['e-columns'];
-			save_prefs('user');
-			$this->mode = 'list';
-		}
-				
-		$this->fieldpref = (varset($user_pref[$column_pref_name])) ? $user_pref[$column_pref_name] : array_keys($this->fields);		
-		
-		foreach($this->fields as $k=>$v) // Find Primary table ID field (before checkboxes is run. ). 
-		{
-			if(vartrue($v['primary']))
-			{
-				$this->pid = $k;
-			}
-		}
-		
-		
-		if(varset($_POST['execute_batch']))
-		{
-			if(vartrue($_POST['multiselect']))
-			{
-				// $_SESSION[$this->table."_batch"] = $_POST['execute_batch']; // DO we want this to 'stick'?
-				list($tmp,$field,$value) = explode('__',$_POST['execute_batch']);
-				$this->processBatch($field,$_POST['multiselect'],$value);
-			}
-			$this->mode = 'list';	
-		}
-				
-		if(varset($_POST['execute_filter'])) // Filter the db records. 
-		{
-			$_SESSION[$this->table."_filter"] = $_POST['filter_options'];
-			list($tmp,$filterField,$filterValue) = explode('__',$_POST['filter_options']);
-			$this->modifyListQry($_POST['searchquery'],$filterField,$filterValue);
-			$this->mode = 'list';	
-		}
-		
-			
-		if(varset($_POST['update']) || varset($_POST['create']))
-		{
-		
-			$id = intval($_POST['record_id']);
-			$this->saveRecord($id);
-		}
-		
-		if(varset($_POST['delete']))
-		{
-			$id = key($_POST['delete']);
-			$this->deleteRecord($id);
-			$this->mode = "list";
-		}
-		
-		if(varset($_POST['saveOptions']))
-		{
-			$this->saveSettings();
-		}
-		
-		if(varset($_POST['edit']))
-		{
-			$this->mode = 'create';
-		}
-		
-		
-		if($this->mode) // Render Page. 
-		{
-			$method = $this->mode."Page";
-			$this->$method();
-		}
-		
-	}
+// FIXME - here because needed on AJAX calls (header.php not loaded), should be moved to separate file!
+if (!defined('ADMIN_TRUE_ICON'))
+{
+	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/true_16.png' alt='' />");
+	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."admin_images/true_16.png");
+}
 
+if (!defined('ADMIN_FALSE_ICON'))
+{
+	define("ADMIN_FALSE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/false_16.png' alt='' />");
+	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."admin_images/false_16.png");
+}
 
-	function modifyListQry($search,$filterField,$filterValue)
-	{
-		$searchQry = array();
-			
-			if(vartrue($filterField) && vartrue($filterValue))
-			{
-				$searchQry[] = $filterField." = '".$filterValue."'";
-			}
-			
-			$filter = array();
-			
-			foreach($this->fields as $key=>$var)
-			{
-				if(($var['type'] == 'text' || $var['type'] == 'method') && vartrue($search))
-				{
-					$filter[] = "(".$key." REGEXP ('".$search."'))";	
-				}
-			}
-			if(count($filter)>0)
-			{
-				$searchQry[] = " (".implode(" OR ",$filter)." )";
-			}
-			if(count($searchQry)>0)
-			{
-				$this->listQry .= " WHERE ".implode(" AND ",$searchQry);
-			}
-	}
+if (!defined('ADMIN_EDIT_ICON'))
+{
+	define("ADMIN_EDIT_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' />");
+	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
+}
 
+if (!defined('ADMIN_DELETE_ICON'))
+{
+	define("ADMIN_DELETE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' />");
+	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
+}
 
+if (!defined('ADMIN_UP_ICON'))
+{
+	define("ADMIN_UP_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' title='".LAN_DELETE."' />");
+	define("ADMIN_UP_ICON_PATH", e_IMAGE."admin_images/up_16.png");
+}
 
+if (!defined('ADMIN_DOWN_ICON'))
+{
+	define("ADMIN_DOWN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/down_16.png' alt='' title='".LAN_DELETE."' />");
+	define("ADMIN_DOWN_ICON_PATH", e_IMAGE."admin_images/down_16.png");
+}
 
-	function processBatch($field,$ids,$value)
-	{
-		$sql = e107::getDb();
-		
-		if($field == 'delete')
-		{
-			return $sql->db_Delete($this->table,$this->pid." IN (".implode(",",$ids).")");	
-		}
-		
-		if(!is_numeric($value))
-		{
-			$value = "'".$value."'";	
-		}
-		
-		$query = $field." = ".$value." WHERE ".$this->pid." IN (".implode(",",$ids).") ";
-		$count = $sql->db_Update($this->table,$query);
-	}
+if (!defined('ADMIN_WARNING_ICON'))
+{
+	define("ADMIN_WARNING_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/warning_16.png' alt='' />");
+	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."admin_images/warning_16.png");
+}
 
-	/**
-	 * Generic Options/Preferences Form. 
-	 * @return 
-	 */
-	function optionsPage()
-	{
-		$pref = e107::getConfig()->getPref();
-		$frm = e107::getForm();
-		$ns = e107::getRender();
-		$mes = e107::getMessage();
+if (!defined('ADMIN_INFO_ICON'))
+{
+	define("ADMIN_INFO_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' />");
+	define("ADMIN_INFO_ICON_PATH", e_IMAGE."admin_images/info_16.png");
+}
 
-		//XXX Lan - Options
-		$text = "
-			<form method='post' action='".e_SELF."?".e_QUERY."'>
-				<fieldset id='core-cpage-options'>
-					<legend class='e-hideme'>".LAN_OPTIONS."</legend>
-					<table cellpadding='0' cellspacing='0' class='adminform'>
-						<colgroup span='2'>
-							<col class='col-label' />
-							<col class='col-control' />
-						</colgroup>
-						<tbody>\n";
-						
-						
-						foreach($this->prefs as $key => $var)
-						{
-							$text .= "
-							<tr>
-								<td class='label'>".defset($var['title'], $var['title'])."</td>
-								<td class='control'>
-									".$this->renderElement($key, $pref)."
-								</td>
-							</tr>\n";	
-						}
-					
-						$text .= "</tbody>
-					</table>
-					<div class='buttons-bar center'>
-						".$frm->admin_button('saveOptions', LAN_SAVE, 'submit')."
-					</div>
-				</fieldset>
-			</form>
-		";
+if (!defined('ADMIN_CONFIGURE_ICON'))
+{
+	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/configure_16.png' alt='' />");
+	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/configure_16.png");
+}
 
-		$ns->tablerender($this->pluginTitle." :: ".LAN_OPTIONS, $mes->render().$text);
-	}
+if (!defined('ADMIN_ADD_ICON'))
+{
+	define("ADMIN_ADD_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/add_16.png' alt='' />");
+	define("ADMIN_ADD_ICON_PATH", e_IMAGE."admin_images/add_16.png");
+}
 
+if (!defined('ADMIN_VIEW_ICON'))
+{
+	define("ADMIN_VIEW_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/search_16.png' alt='' />");
+	define("ADMIN_VIEW_ICON_PATH", e_IMAGE."admin_images/admin_images/search_16.png");
+}
 
-	function saveSettings() //TODO needs to use native e_model functions, validation etc.  
-	{
-		global $pref, $admin_log;
-		
-		unset($_POST['saveOptions'],$_POST['e-columns']);
-		
-		foreach($_POST as $key=>$val)
-		{
-			e107::getConfig('core')->set($key,$val);
-		}
-						
-		e107::getConfig('core')->save();
-	}
-	
-	/**
-	 * @return e_admin_ui
-	 */
-	public function getController()
-	{
-		return $this->_controller;
-	}
+if (!defined('ADMIN_URL_ICON'))
+{
+	define("ADMIN_URL_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/forums_16.png' alt='' />");
+	define("ADMIN_URL_ICON_PATH", e_IMAGE."admin_images/forums_16.png");
+}
+
+if (!defined('ADMIN_INSTALLPLUGIN_ICON'))
+{
+	define("ADMIN_INSTALLPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/plugin_install_16.png' alt='' />");
+	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_install_16.png");
+}
+
+if (!defined('ADMIN_UNINSTALLPLUGIN_ICON'))
+{
+	define("ADMIN_UNINSTALLPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/plugin_uninstall_16.png' alt='' />");
+	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_unstall_16.png");
+}
+
+if (!defined('ADMIN_UPGRADEPLUGIN_ICON'))
+{
+	define("ADMIN_UPGRADEPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' />");
+	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE."admin_images/up_16.png");
 }
 
 /**
