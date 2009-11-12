@@ -56,7 +56,7 @@ if (($fb_pref['Facebook_Api-Key'] != '') && ($fb_pref['Facebook_Secret-Key'] != 
 				
 				$html .= $fb->Render_Connect_Invite_Friends();
 				
-				$caption = 'Friends';
+				$caption = 'Friends on this site';
 				// $text = $tp->parseTemplate($html, true, $facebook_shortcodes);
 				
 				$ns->tablerender($caption, $html);

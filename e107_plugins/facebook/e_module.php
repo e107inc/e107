@@ -1,15 +1,16 @@
 <?php
 //error_reporting(E_ALL);
 
-e107::getEvent()->register('logout',array('e_facebook','fb_logout'),e_PLUGIN.'facebook/facebook_function.php');
-global $fb;
-
-$fb = e107::getSingleton('e_facebook',e_PLUGIN.'facebook/facebook_function.php');
 
 
-if (USER_AREA)
+
+if (e_ADMIN_AREA != TRUE)
 {
 	
+	e107::getEvent()->register('logout',array('e_facebook','fb_logout'),e_PLUGIN.'facebook/facebook_function.php');
+	global $fb;
+	
+	$fb = e107::getSingleton('e_facebook',e_PLUGIN.'facebook/facebook_function.php');
 	include_once (e_PLUGIN.'facebook/facebook_function.php');
 	
 	if (function_exists('prevent_cache_headers'))
