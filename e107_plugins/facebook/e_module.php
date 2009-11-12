@@ -4,8 +4,10 @@
 
 
 
-if (e_ADMIN_AREA != TRUE)
+if (e_ADMIN_AREA !== TRUE)
 {
+
+	
 	
 	e107::getEvent()->register('logout',array('e_facebook','fb_logout'),e_PLUGIN.'facebook/facebook_function.php');
 	global $fb;
@@ -47,10 +49,11 @@ if (e_ADMIN_AREA != TRUE)
 	{
 		Switch_Facebook_User();
 	}
-	
-	if (USERID && (e_QUERY == 'facebook_link'))
+
+	if (USERID &&  (e_QUERY == 'facebook_link') && $fb->fb_uid) //  
 	{
-		Add_Facebook_Connect_User('', USERID);
+		// $fb->Add_Facebook_Connect_User('', USERID);
+		$fb->addFacebookUser();
 	}
 	
 	if (e_QUERY == 'facebook_delete')

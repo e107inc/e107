@@ -10,8 +10,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- |     $Revision: 1.9 $
- |     $Date: 2009-11-12 09:09:37 $
+ |     $Revision: 1.10 $
+ |     $Date: 2009-11-12 10:42:32 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -465,64 +465,10 @@ function single_uid()
 	return $count;
 }
 
-function uid_check()
-{
-	$sql = e107::getDb();
-	
-	if (!$sql->db_Select("facebook", "*", "facebook_user_id = ".USERID."  "))
-	{	
-		return "<div class='facebook_notice'><a href='".e_SELF."?facebook_link' title='click here'>Click to Link your ".SITENAME." account with Facebook</a> </div>";
-		//  <div class='fb_green'>".your_facebook_is()."</div>";	
-	}
-	else
-	{
-		return '<a href="#" onclick="facebook_onlogin_ready();"> 
-    	<img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
-    	</a>';	
-	}
-	/*
-	$msg = "";
-	
-	if ($sql->db_Select("facebook", "*", "facebook_uid = '".is_fb()."' AND facebook_user_id != ".USERID."  "))
-	{
-		// header ( 'Location: ' . e_SELF ) ;
-		$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_switch' title='switch user'>would you like to use facebook with this account? press this link!</a></div>";
-		$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_delete' title='delete user'>would you like to delete this facebook account? press this link!</a></div>";
-	}
-	else if($sql->db_Select("user_extended", "*", "user_plugin_facebook_ID != '".is_fb()."' AND user_plugin_facebook_ID != '' "))
-	{
-		$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_link' title='click here'>The provided Facebook ID is wrong!</a> </div> <div class='fb_green'>".your_facebook_is()."</div>";	
-	}
-	else if($sql->db_Select("user_extended", "*", "user_plugin_facebook_ID = '' "))
-	{
-		$msg .= "<div class='facebook_notice'><a href='usersettings.php' title='click here'>Specify your Facebook ID in the Profile Settings! </a></div><div class='fb_green'>".your_facebook_is()."</div>";
-	}
-	else
-	{
-		$msg .= '<a href="#" onclick="facebook_onlogin_ready();"> 
-    	<img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
-    	</a>';	
-	}
-	
-	return $msg;*/
-}
 
 
-function uid_exists()
-{	
-	$sql = e107::getDb();
-	
-	if ($sql->db_Select("facebook", "*", "facebook_user_id = ".USERID." AND facebook_uid = ".is_fb()." "))
-	{	
-		return USERID;	
-		// $row = $sql->db_Fetch();		
-		// return $row['user_extended_id'];	
-	}
-	else
-	{		
-		return null;	
-	}
-}
+
+
 
 /**
  * simple display icon
@@ -890,10 +836,14 @@ class e_facebook
 				'user_loginname'	=> $username,
 				'user_password'		=> $password,
 				'user_login'		=> $this->fb_getUserData('name'),
+				'user_join'			=> time(),
 				'user_image'		=> $this->fb_getUserData('pic')
 			);
 			
-			$this->e107_userid = $sql->db_Insert('user',$insert);
+			if($this->e107_userid = $sql->db_Insert('user',$insert))
+			{
+				e107::getEvent()->trigger('usersup', $insert);	
+			}
 			
 			if(!$this->e107_userid)
 			{
@@ -907,6 +857,7 @@ class e_facebook
 			{
 				if($sql->db_Insert('facebook', $query))
 				{
+					e107::getEvent()->trigger('fb_usersignup', $query);	
 					$this->e107Login();	
 				}	
 			}
@@ -915,10 +866,27 @@ class e_facebook
 				$query['WHERE'] = "facebook_uid = ".$this->fb_uid;
 				if($sql->db_Update('facebook', $query))
 				{
+					e107::getEvent()->trigger('fb_userupdate', $query);	
 					$this->e107Login();	
 				}	
 			}
 			
+			$this->redirect(e_SELF);
+		}
+		else // Update existing Facebook Record to use current e107 account and delete other 'facebook' e107 user-account from e107.  
+		{
+			$sql->db_Update("facebook", "facebook_user_id = ".USERID.", facebook_connected =1 WHERE facebook_uid = ".$this->fb_uid." LIMIT 1 ");
+			if($sql->db_Select("user","user_loginname = 'FacebookUser_".$this->fb_uid."' "))
+			{
+				$data = $sql->db_Fetch();
+				
+				if($sql->db_Delete("user","user_loginname = 'FacebookUser_".$this->fb_uid."' "))
+				{
+					e107::getEvent()->trigger('fb_userdelete',$data);		
+				}
+					
+			}
+					
 			$this->redirect(e_SELF);
 		}
 	}
@@ -1211,6 +1179,7 @@ class e_facebook
 		
 		if ($sql->db_Update("facebook", "facebook_connected = '1' WHERE facebook_uid = ".$this->fb_uid))
 		{
+			e107::getEvent()->trigger('fb_userlogin',array('facebook_uid'=>$this->fb_uid));	
 			$this->e107Login(); // Log_In_Registered_User(); // log in to e107. 
 		}
 		else
@@ -1273,30 +1242,32 @@ class e_facebook
 				}
 				else
 				{
-					$html .= uid_check();		
+					$html .= $this->uid_check();		
 				}
 			
 			}
 			else
 			{
-				if ($this->fb_uid && uid_exists() && (single_uid() == 1))
+				if ($this->fb_uid && $this->uid_exists())
 				{
-					Add_Facebook_Connect_User('', USERID);					
-					header('Location:'.e_SELF);
+					echo "This shouldn't occur";
+					exit;
+					//Add_Facebook_Connect_User('', USERID);					
+					// header('Location:'.e_SELF);
 							
 				}
 				else if ($this->fb_uid && (USERID != $this->e107_userid))
 				{
 					
 					//return Facebook_LogOut();
-					$html .= uid_check();
+					return $this->uid_check();
 				
 				}
 			
 			}
 			if (!$this->isLoggedIn() && ($this->isConnected() === true))
 			{
-				$html .= uid_check();
+				$html .= $this->uid_check();
 			
 			}
 			else
@@ -1327,6 +1298,7 @@ class e_facebook
 					//not a real error!    just some problem with Facebook ID
 		
 					$html .= 'Ops... Some error Occur';
+					// Facebook table is marked as 'connected' but you are logged out of e107.
 				}
 				else if ($this->isLoggedIn() == 0)
 				{
@@ -1348,6 +1320,67 @@ class e_facebook
 	
 	
 	}
+
+
+	function uid_exists()
+	{	
+		$sql = e107::getDb();
+		
+		if ($sql->db_Select("facebook", "*", "facebook_user_id = ".USERID." AND facebook_uid = ".$this->fb_uid." LIMIT 1"))
+		{	
+			return USERID;	
+			// $row = $sql->db_Fetch();		
+			// return $row['user_extended_id'];	
+		}
+		else
+		{		
+			return null;	
+		}
+	}
+
+	function uid_check()
+	{
+		$sql = e107::getDb();
+		
+		if (!$sql->db_Select("facebook", "*", "facebook_user_id = ".USERID."  "))
+		{	
+			return "<div class='facebook_link'><a href='".e_SELF."?facebook_link' title='click here'>Link ".SITENAME." account with Facebook</a> </div>";
+			//  <div class='fb_green'>".your_facebook_is()."</div>";	
+		}
+		else
+		{
+			return '<a href="#" onclick="facebook_onlogin_ready();"> 
+	    	<img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
+	    	</a>';	
+		}
+		/*
+		$msg = "";
+		
+		if ($sql->db_Select("facebook", "*", "facebook_uid = '".is_fb()."' AND facebook_user_id != ".USERID."  "))
+		{
+			// header ( 'Location: ' . e_SELF ) ;
+			$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_switch' title='switch user'>would you like to use facebook with this account? press this link!</a></div>";
+			$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_delete' title='delete user'>would you like to delete this facebook account? press this link!</a></div>";
+		}
+		else if($sql->db_Select("user_extended", "*", "user_plugin_facebook_ID != '".is_fb()."' AND user_plugin_facebook_ID != '' "))
+		{
+			$msg .= "<div class='facebook_notice'><a href='".e_SELF."?facebook_link' title='click here'>The provided Facebook ID is wrong!</a> </div> <div class='fb_green'>".your_facebook_is()."</div>";	
+		}
+		else if($sql->db_Select("user_extended", "*", "user_plugin_facebook_ID = '' "))
+		{
+			$msg .= "<div class='facebook_notice'><a href='usersettings.php' title='click here'>Specify your Facebook ID in the Profile Settings! </a></div><div class='fb_green'>".your_facebook_is()."</div>";
+		}
+		else
+		{
+			$msg .= '<a href="#" onclick="facebook_onlogin_ready();"> 
+	    	<img id="fb_login_image" src="http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_medium_long.gif" alt="Connect" /> 
+	    	</a>';	
+		}
+		
+		return $msg;*/
+	}
+
+
 	
 	
 	function Render_Connect_Invite_Friends()
