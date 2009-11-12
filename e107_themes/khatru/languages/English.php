@@ -1,21 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_themes/khatru/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-03-03 19:59:25 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_themes/khatru/languages/English.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2009-11-12 15:01:36 $
+ * $Author: marj_nl_fr $
+ */
 
 define("LAN_THEME_1", "'khatru' by <a href='http://e107.org' rel='external'>jalist</a>");
 define("LAN_THEME_2", "Comments are turned off for this item");
