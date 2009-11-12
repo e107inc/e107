@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/admin_download.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2009-08-15 01:00:38 $
+|     $Revision: 1.13 $
+|     $Date: 2009-11-12 21:46:12 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -143,7 +143,7 @@ if (isset($_POST['update_catorder']))
 }
 
 
-if (isset($_POST['updateoptions']))
+if (isset($_POST['updatedownloadoptions']))
 {
 	unset($temp);
 	$temp['download_php'] = $_POST['download_php'];
@@ -160,6 +160,23 @@ if (isset($_POST['updateoptions']))
 	if ($_POST['download_subsub']) $temp['download_subsub'] = '1'; else $temp['download_subsub'] = '0';
 	if ($_POST['download_incinfo']) $temp['download_incinfo'] = '1'; else $temp['download_incinfo'] = '0';
 	if ($admin_log->logArrayDiffs($temp, $pref, 'DOWNL_01'))
+	{
+		save_prefs();
+		$message = DOWLAN_65;
+	}
+	else
+	{
+		$message = DOWLAN_8;
+	}
+}
+
+if (isset($_POST['updateuploadoptions']))
+{
+	unset($temp);
+	$temp['upload_enabled'] = intval($_POST['upload_enabled']);
+	$temp['upload_maxfilesize'] = $_POST['upload_maxfilesize'];
+	$temp['upload_class'] = intval($_POST['upload_class']);
+	if ($admin_log->logArrayDiffs($temp, $pref, 'DOWNL_02'))
 	{
 		save_prefs();
 		$message = DOWLAN_65;
@@ -331,7 +348,7 @@ if (!e_QUERY || $action == "main")
 
 if ($action == "opt")
 {
-	$adminDownload->show_options();
+	$adminDownload->show_download_options();
 }
 
 if ($action == 'maint')
@@ -416,7 +433,7 @@ if ($action == 'maint')
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_13.'</th>';
                      $text .= '<th>'.DOWLAN_182.'</th>';
-                     $text .= '<th>'.DOWLAN_170.'</th>';
+                     $text .= '<th>'.DOWLAN_66.'</th>';
                      $text .= '<th>'.LAN_OPTIONS.'</th>';
                      $text .= '</tr>';
                      $foundSome = true;
@@ -589,7 +606,7 @@ if ($action == 'maint')
          }
          case 'filesize':
          {
-            $title = DOWLAN_170;
+            $title = DOWLAN_66;
             $text = "";
             $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category WHERE d.download_url<>''";
             $count = $sql->db_Select_gen($query);
@@ -692,7 +709,7 @@ if ($action == 'maint')
       					</td>
       				</tr>
       				<tr>
-      					<td>".DOWLAN_170."</td>
+      					<td>".DOWLAN_66."</td>
       					<td>
       						".$eform->radio('dl_maint', 'filesize').$eform->label(DOWLAN_190, 'dl_maint', 'filesize')."
       					</td>
@@ -809,6 +826,21 @@ if ($action == 'limits')
 	exit;
 }
 
+if ($action == "ulist")
+{
+	$adminDownload->show_upload_list();
+}
+
+if ($action == "filetypes")
+{
+	$adminDownload->show_upload_filetypes();
+}
+
+if ($action == "uopt")
+{
+	$adminDownload->show_upload_options();
+}
+
 require_once(e_ADMIN."footer.php");
 exit;
 
@@ -834,5 +866,14 @@ function admin_download_adminmenu($parms)
 	$var['mirror']['text'] = DOWLAN_128;
 	$var['mirror']['link'] = e_SELF."?mirror";
 	e_admin_menu(DOWLAN_32, $action, $var);
+
+   unset($var);
+	$var['ulist']['text'] = DOWLAN_22;
+	$var['ulist']['link'] = e_SELF."?ulist";;
+	$var['filetypes']['text'] = DOWLAN_23;
+	$var['filetypes']['link'] = e_SELF."?filetypes";
+	$var['uopt']['text'] = LAN_OPTIONS;
+	$var['uopt']['link'] = e_SELF."?uopt";
+	e_admin_menu(DOWLAN_10, $action, $var);
 }
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/e_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-19 09:31:05 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.2 $
+|     $Date: 2009-11-12 21:46:13 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 
@@ -48,6 +48,18 @@ switch($action) {
    }
    case 'mirror' :{
       $text = DOWLAN_HELP_7;
+      break;
+   }
+   case 'ulist' :{
+      $text = DOWLAN_HELP_8;
+      break;
+   }
+   case 'utype' :{
+      $text = DOWLAN_HELP_9;
+      break;
+   }
+   case 'uopt' :{
+      $text = DOWLAN_HELP_10;
       break;
    }
    default : {
