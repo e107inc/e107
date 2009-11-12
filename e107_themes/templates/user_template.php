@@ -1,24 +1,21 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-05-18 21:37:50 $
-|     $Author: bugrain $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_themes/templates/user_template.php,v $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-12 15:01:35 $
+ * $Author: marj_nl_fr $
+ */
 
 if (!defined('e107_INIT')) { exit; }
-if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
+if (!defined("USER_WIDTH")){ define("USER_WIDTH", "width:95%"); }
 
 global $user_shortcodes, $pref, $user;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
