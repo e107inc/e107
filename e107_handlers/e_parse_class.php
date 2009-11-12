@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.78 $
-* $Date: 2009-10-30 23:38:14 $
-* $Author: e107steved $
+* $Revision: 1.79 $
+* $Date: 2009-11-12 21:41:34 $
+* $Author: marj_nl_fr $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -461,6 +461,7 @@ class e_parse
 	 * @param boolean $mod [optional] The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
 	 * @param boolean $original_author [optional]
 	 * @return string
+	 * @todo complete the documentation of this essential method
 	 */
 	public function toDB($data, $nostrip = FALSE, $no_encode = FALSE, $mod = FALSE, $original_author = FALSE)
 	{
@@ -768,8 +769,8 @@ class e_parse
 	 * Truncate a HTML string to a maximum length $len ­ append the string $more if it was truncated
 	 *
 	 * @param string $text String to process
-	 * @param integer $len Length of characters to be truncated
-	 * @param string $more String which will be added if truncation
+	 * @param integer $len [optional] Length of characters to be truncated - default 200
+	 * @param string $more [optional] String which will be added if truncation - default ' ... '
 	 * @return string
 	 */
 	public function html_truncate ($text, $len = 200, $more = ' ... ')
@@ -862,7 +863,9 @@ class e_parse
 	{
 		// Always valid
 		if(strlen($text) <= $len)
+		{
 			return $text;
+		}
 /* shouldn't be needed
 		if (strtolower(CHARSET) !== 'utf-8')
 		{
@@ -878,7 +881,9 @@ class e_parse
 				$text, $matches);
 			// return if utf-8 length is less than max as well
 			if (empty($matches[2]))
+			{
 				return $text;
+			}
 			$ret = $matches[1];
 		}
 		// search for possible broken html entities
@@ -886,7 +891,9 @@ class e_parse
 		// it should work for any characters encoding
 		$leftAmp = strrpos(substr($ret, -8), '&');
 		if($leftAmp)
+		{
 			$ret = substr($ret, 0, strlen($ret) - 8 + $leftAmp);
+		}
 
 		return $ret.$more;
 	}
@@ -941,11 +948,14 @@ class e_parse
 	 * @param mixed $postID [optional]
 	 * @param boolean $wrap [optional]
 	 * @return string
+	 * @todo complete the documentation of this essential method
 	 */
-	public function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap = FALSE)
+	public function toHTML($text, $parseBB = FALSE, $modifiers = '', $postID = "", $wrap = FALSE)
 	{
 		if($text == '')
+		{
 			return $text;
+		}	
 
 		global $pref, $fromadmin;
 
@@ -989,17 +999,24 @@ class e_parse
 
 		// Turn off a few things if not enabled in options
 		if(!varsettrue($pref['smiley_activate']))
+		{
 			$opts['emotes'] = FALSE;
+		}	
 		if(!varsettrue($pref['make_clickable']))
+		{
 			$opts['link_click'] = FALSE;
+		}
 		if(!varsettrue($pref['link_replace']))
+		{
 			$opts['link_replace'] = FALSE;
+		}
 
 		$fromadmin = $opts['fromadmin'];
 
 		// Convert defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
 		// The check for '::' is a workaround for a bug in the Zend Optimiser 3.3.0 and PHP 5.2.4 combination
 		// - causes crashes if '::' in site name
+		//TODO - marj - find a way to use language method here XOR remove the limit of 24 characters.
 		if($opts['defs'] && (strlen($text) < 25) && ((strpos($text, '::') === FALSE) && defined(trim($text))))
 		{
 			return constant(trim($text));
@@ -1076,7 +1093,10 @@ class e_parse
 					switch ($matches[2])
 					{
 						case 'php' :
-							if (DB_INF_SHOW) echo "PHP decode: ".htmlentities($matches[4])."<br /><br />";
+							if (DB_INF_SHOW)
+							{
+								echo "PHP decode: ".htmlentities($matches[4])."<br /><br />";
+							}
 							
 							// Probably run the output through the normal processing functions - but put here so the PHP code can disable if desired
 							$proc_funcs = TRUE;
@@ -1089,20 +1109,28 @@ class e_parse
 			//				if (!$matches[3]) $bbcode = str_replace($search, $replace, $matches[4]);
 							// Because we're bypassing most of the initial parser processing, we should be able to just reverse the effects of toDB() and execute the code
 							if (!$matches[3])
+							{
 								$bbcode = html_entity_decode($matches[4], ENT_QUOTES, 'UTF-8');
+							}
 							if (DB_INF_SHOW)
+							{
 								echo "PHP after decode: ".htmlentities($bbcode)."<br /><br />";
+							}
 							break;
+							
 						case 'html' :
 							$proc_funcs = TRUE;
 							$convertNL = FALSE;
 							break;
+							
 						case 'hide' :
 							$proc_funcs = TRUE;
+							
 						default :		// Most bbcodes will just execute their normal file
 							// Just read in the code file and execute it
 							$bbcode = file_get_contents($bbFile);
 					}   // end - switch ($matches[2])
+					
 					if ($bbcode)
 					{	// Execute the file
 						ob_start();
@@ -1143,7 +1171,9 @@ class e_parse
 					{
 						// Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
 						if(DB_INF_SHOW)
+						{
 							echo "Processing stylesheet: {$sub_blk}<br />";
+						}
 						$ret_parser .= $sub_blk;
 					}
 					else
