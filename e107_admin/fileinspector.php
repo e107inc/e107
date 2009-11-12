@@ -1,23 +1,19 @@
 <?php
 /*
-+----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2009-08-28 16:11:00 $
-|     $Author: marj_nl_fr $
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $
+ * $Revision: 1.18 $
+ * $Date: 2009-11-12 14:30:07 $
+ * $Author: marj_nl_fr $
+ */
 
-Includes standalone function - needs finishing
-+----------------------------------------------------------------------------+
-*/
 if ($_SERVER['QUERY_STRING'] == 'alone')
 {
 //@TODO make multi-language if possible
@@ -938,24 +934,24 @@ class file_inspector {
 		
 		$data = "<?php\n";
 		
-		if (!$plugin || $plugin == 'off') {
-			$data .= "/*\n";
-			$data .= "+ ----------------------------------------------------------------------------+\n";
-			$data .= "|     e107 website system\n";
-			$data .= "|\n";
-			$data .= "|     ©Steve Dunstan 2001-2002\n";
-			$data .= "|     http://e107.org\n";
-			$data .= "|     jalist@e107.org\n";
-			$data .= "|\n";
-			$data .= "|     Released under the terms and conditions of the\n";
-			$data .= "|     GNU General Public License (http://gnu.org).\n";
-			$data .= "|\n";
-			$data .= "|     \$Source: /cvs_backup/e107_0.8/e107_admin/fileinspector.php,v $\n";
-			$data .= "|     \$Revision: 1.17 $\n";
-			$data .= "|     \$Date: 2009-08-28 16:11:00 $\n";
-			$data .= "|     \$Author: marj_nl_fr $\n";
-			$data .= "+----------------------------------------------------------------------------+\n";
-			$data .= "*/\n\n";
+		if (!$plugin || $plugin == 'off')
+		{
+			$data .= '
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $'.'Source: $
+ * $'.'Revision: $
+ * $'.'Date: $
+ * $'.'Author: $
+ */
+';
 		}
 		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
 
