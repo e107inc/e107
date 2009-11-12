@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-12 01:53:16 $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-12 05:11:42 $
  * $Author: e107coders $
  *
 */
@@ -830,6 +830,126 @@ class e_userperms
 		}
 			*/	
 	    return $text;
+	}
+	
+	/**
+	 * Render edit admin perms form. 
+	 * @param array $row [optional] containing $row['user_id'], $row['user_name'], $row['user_perms'];
+	 * @return 
+	 */
+	function edit_administrator($row='')
+	{
+	    global $pref;
+		$lanlist = explode(",",e_LANLIST);
+		require_once(e_HANDLER."user_handler.php");
+		$prm = $this;
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+		
+	
+		$a_id = $row['user_id'];
+		$ad_name = $row['user_name'];
+		$a_perms = $row['user_perms'];
+	
+		$text = "
+			<form method='post' action='".e_SELF."' id='myform'>
+				<fieldset id='core-administrator-edit'>
+					<legend class='e-hideme'>".ADMSLAN_52."</legend>
+					<table cellpadding='0' cellspacing='0' class='adminform'>
+						<colgroup span='2'>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class='label'>".ADMSLAN_16.": </td>
+								<td class='control'>
+									".$ad_name."
+									<input type='hidden' name='ad_name' size='60' value='{$ad_name}' />
+								</td>
+							</tr>
+							<tr>
+								<td class='label'>".ADMSLAN_18."</td>
+								<td class='control'>
+	
+		";
+				
+		$groupedList = $prm->getPermList('grouped');
+			
+		foreach($groupedList as $section=>$list)
+		{
+			$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General	
+			foreach($list as $key=>$diz)
+			{
+				$text .= $prm->checkb($key, $a_perms, $diz);			
+			}
+			$text .= "</div>";
+		}
+	
+		$text .= "<div class='field-section'>
+			".$frm->admin_button('check_all', 'jstarget:perms', 'action', LAN_CHECKALL)."
+			".$frm->admin_button('uncheck_all', 'jstarget:perms', 'action', LAN_UNCHECKALL)."
+			</div>
+		</td>
+		</tr>
+				</tbody>
+					</table>
+					<div class='buttons-bar center'>
+						<input type='hidden' name='a_id' value='{$a_id}' />
+						".$frm->admin_button('update_admin', ADMSLAN_52, 'update')."
+						".$frm->admin_button('go_back', ADMSLAN_70)."
+					</div>
+				</fieldset>
+			</form>
+		";
+	
+		$ns->tablerender(ADMSLAN_52, $text);
+	}
+	
+	/**
+	 * Update user (admin) perms
+	 * @param int $uid
+	 * @param array $permArray eg. array('A','K','1');
+	 * @return 
+	 */
+	function updatePerms($uid,$permArray)
+	{
+		global $admin_log;
+		
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
+		$modID = intval($uid);
+		if ($modID == 0)
+		{
+			exit;
+		}
+		
+		$sql->db_Select("user", "*", "user_id=".$modID);
+		$row = $sql->db_Fetch();
+		$a_name = $row['user_name'];
+	
+		$perm = "";
+	
+		foreach($permArray as $value)
+		{
+			$value = $tp->toDB($value);
+			if ($value == "0")
+			{
+				if (!getperms('0')) { $value = ""; break; }
+				$perm = "0"; break;
+			}
+	
+			if ($value)
+			{
+				$perm .= $value.".";
+			}
+	    }
+	
+		admin_update($sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
+		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
+		$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}
 }
 

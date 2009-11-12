@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.65 $
- * $Date: 2009-11-10 23:13:30 $
+ * $Revision: 1.66 $
+ * $Date: 2009-11-12 05:11:41 $
  * $Author: e107coders $
 */
 
@@ -135,7 +135,8 @@ class e107
 		'e_admin_form_ui' 			=> '{e_HANDLER}admin_handler.php',
 		'DHTML_Calendar'			=> '{e_HANDLER}calendar/calendar_class.php',
 		'comment'					=> '{e_HANDLER}comment_class.php',
-		'e107_user_extended'		=> '{e_HANDLER}user_extended_class.php'
+		'e107_user_extended'		=> '{e_HANDLER}user_extended_class.php',
+		'e_userperms'				=> '{e_HANDLER}user_handler.php',
 	);
 	
 	/**
@@ -831,6 +832,15 @@ class e107
 	public static function getOnline()
 	{
 		return self::getSingleton('e_online', true);
+	}
+
+	/**
+	 * Retrieve User Perms (admin perms) handler singleton object
+	 * @return comment
+	 */
+	public static function getUserPerms()
+	{
+		return self::getSingleton('e_userperms', true);
 	}
 	
 	
