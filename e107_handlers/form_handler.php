@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.77 $
- * $Date: 2009-11-11 20:57:33 $
+ * $Revision: 1.78 $
+ * $Date: 2009-11-12 16:55:49 $
  * $Author: secretr $
  *
 */
@@ -657,7 +657,6 @@ class e_form
 		return rtrim(str_replace(array('[]', '[', ']', '_', '/'), array('-', '-', '', '-', '-'), $name), '-');
 	}
 
-
 	/**
 	 * Format options based on the field type,
 	 * merge with default
@@ -764,10 +763,6 @@ class e_form
 		$this->_cached_attributes[$type] = $def_options;
 		return $def_options;
 	}
-
-
-
-
 
 	function columnSelector($columnsArray, $columnsDefault = '', $id = 'column_options')
 	{
@@ -909,6 +904,7 @@ class e_form
 		";
 
 	}
+	
 	/**
 	 * Render Table cells from field listing. 
 	 * @param array $fieldarray - eg. $this->fields
@@ -917,7 +913,6 @@ class e_form
 	 * @param string $pid - eg. table_id
 	 * @return 
 	 */
-	
 	function renderTableRow($fieldarray, $currentlist, $fieldvalues, $pid)
 	{
 		$cnt = 0;
@@ -1145,7 +1140,7 @@ class e_form
 			break;
 			
 			case 'boolean':
-				$value = $value ? ADMIN_TRUE_ICON : '';// TODO  - ADMIN_FALSE_ICON
+				$value = $value ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
 			break;
 							
 			case 'url':
@@ -1162,7 +1157,7 @@ class e_form
 				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
 			break;
 			
-			//TODO - form_userclass, order,... and maybe more types
+			//TODO - order
 			
 			default:
 				//unknown type
@@ -1214,16 +1209,16 @@ class e_form
 			break;
 			
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
-				$label = varset($parms['label']);
+				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
-				return $this->imagepicker($key, $value, $label, vartrue($parms['__options']));
+				return $this->imagepicker($key, $value, defset($label, $label), vartrue($parms['__options']));
 			break;
 			
 			case 'icon': 
-				$label = varset($parms['label']);
-				$ajax = varset($parms['ajax']) ? true : false;
+				$label = varset($parms['label'], 'LAN_EDIT');
+				$ajax = varset($parms['ajax'], true) ? true : false;
 				unset($parms['label'], $parms['ajax']);
-				return $this->iconpicker($key, $value, $label, $parms, $ajax);
+				return $this->iconpicker($key, $value, defset($label, $label), $parms, $ajax);
 			break;
 			
 			case 'datestamp':
@@ -1324,9 +1319,10 @@ class e_form
 	 * );
 	 * $list = new e_admin_tree_model($data);
 	 * </code>
+	 * TODO - move fieldset & table generation in separate methods, needed for ajax calls
 	 * @param array $options
 	 * @param e_admin_tree_model $list
-	 * @param boolean $nocontainer don't enclose in div container
+	 * @param boolean $nocontainer don't enclose form in div container
 	 * @return string
 	 */
 	public function listForm($options, $list, $nocontainer = false)
@@ -1403,6 +1399,7 @@ class e_form
 	/**
 	 * Generic DB Record Management Form. 
 	 * TODO - lans
+	 * TODO - move fieldset & table generation in separate methods, needed for ajax calls
 	 * Expected arrays format:
 	 * <code>
 	 * <?php
@@ -1420,6 +1417,7 @@ class e_form
 	 * 				'triggers' => 'auto', // standard create/update-cancel triggers 
 	 * 				//or custom trigger array in format array('sibmit' => array('Title', 'create', '1'), 'cancel') - trigger name - title, action, optional hidden value (in this case named sibmit_value)
 	 * 			),
+	 * 
 	 * 			'advanced' => array(
 	 * 				'legend' => 'Fieldset Legend',
 	 * 				'fields' => array(...), //see e_admin_ui::$fields
@@ -1548,6 +1546,7 @@ class e_form
 			$text .= "
 			</form>
 			";	
+			e107::getJs()->footerInline("Form.focusFirstElement('{$form['id']}-form');");
 		}
 		if(!$nocontainer)
 		{
@@ -1578,7 +1577,7 @@ class e_form
 	 */
 	function batchoptions($options, $ucOptions = null)
 	{
-			$text = "
+		$text = "
          <div class='f-left'>
          <img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action' />
 			".$this->select_open('execute_batch', array('class' => 'tbox select batch e-autosubmit', 'id' => false))."

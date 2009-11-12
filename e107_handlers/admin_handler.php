@@ -1,4 +1,19 @@
 <?php
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2001-2010 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration UI handlers, admin helper functions
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-12 16:55:50 $
+ * $Author: secretr $
+*/
+
 if (!defined('e107_INIT')) { exit; }
 
 // Better Array-sort by key function by acecream (22-Apr-2003 11:02) http://php.net/manual/en/function.asort.php
@@ -2294,6 +2309,43 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
+	/**
+	 * Handle requested filter dropdown value
+	 * @param string $value
+	 * @return array field -> value
+	 */
+	protected function _parseFilterRequest($filter_value)
+	{
+		$tp = e107::getParser();
+		if(!$filter_value || $filter_value === '___reset___')
+		{
+			return array();
+		}
+		$filter = $tp->toDB(explode('__', $filter_value));
+		$res = array();
+		switch($filter[0])
+		{
+			case 'bool': 
+				// direct query
+				$res = array($filter[1], $filter[2]);
+			break;
+		
+			default:
+				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
+				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
+				if(method_exists($this, $method)) // callback handling
+				{
+					return $this->$method($filter[1], $selected);
+				}
+				else // default handling
+				{
+					$res = array($filter[0], $filter[1]);
+				}
+			break;
+		}
+		return $res;
+	}
+	
 	protected function parseAliases()
 	{
 		// parse table
@@ -2452,8 +2504,9 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
-		list($filterField, $filterValue) = $tp->toDB(explode('__', $request->getQuery('filter_options', '')));
-		
+		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
+		list($filterField, $filterValue) = $searchFilter;
+
 		// FIXME - currently broken
 		if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
 		{
@@ -2565,7 +2618,7 @@ class e_admin_ui extends e_admin_controller_ui
 			if(false === $forceTo) $forceTo = $this->getPerPage();
 			$qry .= ' LIMIT '.$from.', '.intval($forceTo);
 		}
-
+		
 		return $qry;
 	}
 	
@@ -2957,7 +3010,7 @@ class e_admin_form_ui extends e_form
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
 			//'url' => e_SELF, default
-			//'query' => e_QUERY, default 
+			//'query' => $request->buildQueryString(array(), true, 'ajax_used'), - ajax_used is now removed from QUERY_STRING - class2
 			'head_query' => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
 			'np_query' => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
 			'legend' => $controller->getPluginTitle(), // hidden by default
@@ -2992,7 +3045,7 @@ class e_admin_form_ui extends e_form
 		$input_options['id'] = false;
 		$input_options['class'] = 'tbox input-text filter';
 		$text = "
-			<form method='get' action='".e_SELF."?".e_QUERY."'>
+			<form method='get' action='".e_SELF."'>
 				<fieldset class='e-filter'>
 					<legend class='e-hideme'>Filter</legend>
 					<div class='left'>
@@ -3019,7 +3072,7 @@ class e_admin_form_ui extends e_form
 		e107::getJs()->footerInline("
 	            //autocomplete fields
 	             \$\$('input[name=searchquery]').each(function(el, cnt) { 
-				 	if(!cnt) el.focus();
+				 	if(!cnt) el.activate();
 					else return;
 					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_SELF."?mode=".$l[0]."&action=filter', {
 					  paramName: 'searchquery',
@@ -3187,101 +3240,162 @@ class e_admin_form_ui extends e_form
 	}
 }
 
-// FIXME - here because needed on AJAX calls (header.php not loaded), should be moved to separate file!
-if (!defined('ADMIN_TRUE_ICON'))
+/**
+ * Experiment
+ * Most basic & performance wise solution for admin icons override
+ */
+class e_admin_icons
 {
-	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/true_16.png' alt='' />");
-	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."admin_images/true_16.png");
+	/**
+	 * @var string icons absolute URL path
+	 */
+	protected $path;
+	
+	/**
+	 * @var string icons relative server path
+	 */
+	protected $relpath;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @return void
+	 */
+	function __construct()
+	{
+		//XXX maybe we should use admintheme pref instead THEME here?
+		if(is_readable(THEME.'icons/admin/'))
+		{
+			$this->path = THEME_ABS.'icons/admin/';
+			$this->relpath = THEME.'icons/admin/';
+		}
+		else
+		{
+			$this->path = e_IMAGE_ABS.'/admin_images/';
+			$this->relpath = e_IMAGE.'/admin_images/';
+		}
+	}
+	
+	/**
+	 * Get icon absolute path (url, without domain)
+	 * 
+	 * @param string $name without size and extension e.g. 'edit'
+	 * @param integer size pixel , default 16
+	 * @param string $extension without leading dot, default 'png'
+	 * @return string icon url without domain
+	 */
+	public function url($name, $size = 16, $extension = 'png')
+	{
+		return $this->path.$name.'.'.$extension;		
+	}
+	
+	/**
+	 * Get image tag of an icon
+	 * 
+	 * @param string $name without size and extension e.g. 'edit'
+	 * @param integer $size default 16
+	 * @param string $class default empty
+	 * @param string $alt default empty
+	 * @param string $extension default 'png'
+	 * @return string img tag
+	 */
+	public function tag($name, $size = 16, $class='', $alt = '', $extension = 'png')
+	{
+		$_class = 'icon';
+		if($size)
+		{
+			$name .= '_'.$size;
+			$_class .= ' S'.$size;
+		}
+		if($class)
+		{
+			$_class .= ' '.$class;
+		}
+		$src = $this->url($name, $extension);
+		
+		return '<img src="'.$src.'" alt="'.$alt.'" class="'.$_class.'" />';
+	}	
+	
+	/**
+	 * Get icon relative server path
+	 * 
+	 * @param string $name without size and extension e.g. 'edit'
+	 * @param integer size pixel , default 16
+	 * @param string $extension without leading dot, default 'png'
+	 * @return string icon relative server path
+	 */
+	public function path($name, $size = 16, $extension = 'png')
+	{
+		return $this->relpath.$name.'.'.$extension;
+	}
 }
 
-if (!defined('ADMIN_FALSE_ICON'))
+/**
+ * Convenient proxy to e_admin_icons::url()
+ * Get icon absolute path (url, without domain)
+ * Example:
+ * <code>
+ * echo ___I('edit');
+ * // If icon path is overloaded by current admin theme:
+ * // '/e107_themes/current_theme/icons/admin/edit_16.png'
+ * // else
+ * // '/e107_images/admin_images/edit_16.png'
+ * </code>
+ * 
+ * @param string $name without size and extension e.g. 'edit'
+ * @param integer size pixel , default 16
+ * @param string $extension without leading dot, default 'png'
+ * @return string icon url without domain
+ */
+function ___I($name, $size = 16, $extension = 'png')
 {
-	define("ADMIN_FALSE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/false_16.png' alt='' />");
-	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."admin_images/false_16.png");
+	return e107::getSingleton('e_admin_icons')->url($name, $size, $extension);
 }
 
-if (!defined('ADMIN_EDIT_ICON'))
+/**
+ * Convenient proxy to e_admin_icons::tag()
+ * Get image tag of an icon
+ * Example: <code>echo ___ITAG('edit');</code>
+ * @see ___I()
+ * @param string $name without size and extension e.g. 'edit'
+ * @param integer $size default 16
+ * @param string $class default empty
+ * @param string $alt default empty
+ * @param string $extension default 'png'
+ * @return string img tag
+ */
+function ___ITAG($name, $size = 16, $class = '', $alt = '', $extension = 'png')
 {
-	define("ADMIN_EDIT_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' />");
-	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
+	return e107::getSingleton('e_admin_icons')->tag($name, $size, $class, $alt, $extension);
 }
 
-if (!defined('ADMIN_DELETE_ICON'))
+/**
+ * Convenient proxy to e_admin_icons::path()
+ * Get icon relative server path
+ * <code>
+ * echo ___IPATH('edit');
+ * // If icon path is overloaded by current admin theme:
+ * // '../e107_themes/current_theme/icons/admin/edit_16.png'
+ * // else
+ * // '../e107_images/admin_images/edit_16.png'
+ * </code>
+ * 
+ * @param string $name without size and extension e.g. 'edit'
+ * @param integer size pixel , default 16
+ * @param string $extension without leading dot, default 'png'
+ * @return string icon relative server path
+ */
+function ___IPATH($name, $size = 16, $extension = 'png')
 {
-	define("ADMIN_DELETE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
+	return e107::getSingleton('e_admin_icons')->path($name, $size, $extension);
 }
 
-if (!defined('ADMIN_UP_ICON'))
-{
-	define("ADMIN_UP_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_UP_ICON_PATH", e_IMAGE."admin_images/up_16.png");
-}
-
-if (!defined('ADMIN_DOWN_ICON'))
-{
-	define("ADMIN_DOWN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/down_16.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_DOWN_ICON_PATH", e_IMAGE."admin_images/down_16.png");
-}
-
-if (!defined('ADMIN_WARNING_ICON'))
-{
-	define("ADMIN_WARNING_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/warning_16.png' alt='' />");
-	define("ADMIN_WARNING_ICON_PATH", e_IMAGE."admin_images/warning_16.png");
-}
-
-if (!defined('ADMIN_INFO_ICON'))
-{
-	define("ADMIN_INFO_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' />");
-	define("ADMIN_INFO_ICON_PATH", e_IMAGE."admin_images/info_16.png");
-}
-
-if (!defined('ADMIN_CONFIGURE_ICON'))
-{
-	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/configure_16.png' alt='' />");
-	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE."admin_images/configure_16.png");
-}
-
-if (!defined('ADMIN_ADD_ICON'))
-{
-	define("ADMIN_ADD_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/add_16.png' alt='' />");
-	define("ADMIN_ADD_ICON_PATH", e_IMAGE."admin_images/add_16.png");
-}
-
-if (!defined('ADMIN_VIEW_ICON'))
-{
-	define("ADMIN_VIEW_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/search_16.png' alt='' />");
-	define("ADMIN_VIEW_ICON_PATH", e_IMAGE."admin_images/admin_images/search_16.png");
-}
-
-if (!defined('ADMIN_URL_ICON'))
-{
-	define("ADMIN_URL_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/forums_16.png' alt='' />");
-	define("ADMIN_URL_ICON_PATH", e_IMAGE."admin_images/forums_16.png");
-}
-
-if (!defined('ADMIN_INSTALLPLUGIN_ICON'))
-{
-	define("ADMIN_INSTALLPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/plugin_install_16.png' alt='' />");
-	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_install_16.png");
-}
-
-if (!defined('ADMIN_UNINSTALLPLUGIN_ICON'))
-{
-	define("ADMIN_UNINSTALLPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/plugin_uninstall_16.png' alt='' />");
-	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE."admin_images/plugin_unstall_16.png");
-}
-
-if (!defined('ADMIN_UPGRADEPLUGIN_ICON'))
-{
-	define("ADMIN_UPGRADEPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' />");
-	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE."admin_images/up_16.png");
-}
+include_once(e107::coreTemplatePath('admin_icons'));
 
 /**
  * TODO:
  * 1. move abstract peaces of code to the proper classes
- * 2. remove duplicated code (e_form & e_admin_form_ui), refactoring
+ * 2. [DONE - at least for alpha release] remove duplicated code (e_form & e_admin_form_ui), refactoring
  * 3. make JS Manager handle Styles (.css files and inline CSS)
  * 4. [DONE] e_form is missing some methods used in e_admin_form_ui
  * 5. [DONE] date convert needs string-to-datestamp auto parsing, strptime() is the solution but needs support for 
@@ -3291,10 +3405,12 @@ if (!defined('ADMIN_UPGRADEPLUGIN_ICON'))
  * 7. clean up/document all object vars (e_admin_ui, e_admin_dispatcher)
  * 8. [DONE hopefully] clean up/document all parameters (get/setParm()) in controller and model classes
  * 9. [DONE] 'ip' field type - convert to human readable format while showing/editing record
- * 10. draggable ordering (list view)
- * 11. realtime search filter (typing text) - like downloads currently
- * 12. autosubmit when 'filter' dropdown is changed (quick fix?)
+ * 10. draggable (or not?) ordering (list view)
+ * 11. [DONE] realtime search filter (typing text) - like downloads currently
+ * 12. [DONE] autosubmit when 'filter' dropdown is changed (quick fix?)
  * 13. tablerender captions 
  * 14. [DONE] textareas auto-height
  * 15. [DONE] multi JOIN table support (optional), aliases
+ * 16. tabs support (create/edit view)
+ * 17. tree list view (should handle cases like Site Links admin page)
  */

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-11-11 20:57:32 $
+|     $Revision: 1.5 $
+|     $Date: 2009-11-12 16:55:49 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ class faq_admin extends e_admin_dispatcher
 		'cat'		=> array(
 			'controller' 	=> 'faq_cat_ui',
 			'path' 			=> null,
-		//	'ui' 			=> 'faq_cat_form_ui',
+			'ui' 			=> 'faq_cat_form_ui',
 			'uipath' 		=> null
 		)					
 	);	
@@ -45,7 +45,7 @@ class faq_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> 'FAQs', 'perm' => '0'),
 		'main/create'	=> array('caption'=> 'Create FAQ', 'perm' => '0'),
 		'cat/list' 		=> array('caption'=> 'Categories', 'perm' => '0'),
-		'cat/create' 	=> array('caption'=> "Create New Cat.", 'perm' => '0'),
+		'cat/create' 	=> array('caption'=> "Create Category", 'perm' => '0'),
 		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
@@ -63,23 +63,59 @@ class faq_cat_ui extends e_admin_ui
 		protected $pluginName	= 'plugin';
 		protected $table 		= "faqs_info";
 		protected $pid			= "faq_info_id";
-	//	protected $perPage = 10;
+		protected $perPage = 0; //no limit
 	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit. 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
 	 	 	
 		protected $fields = array(
-			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
+			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_info_icon' 			=> array('title'=> LAN_ICON,		'type' => 'icon',			'width' => '5%', 'thclass' => 'left' ),	 
-			'faq_info_id'				=> array('title'=> LAN_ID,			'type' => 'int',			'width' =>'5%', 'forced'=> TRUE),     		
+			'faq_info_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),     		
          	'faq_info_title' 			=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left'), 
-         	'faq_info_about' 			=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+         	'faq_info_about' 			=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'faq_info_parent' 			=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'width' => '5%'),		
-			'faq_info_class' 			=> array('title'=> LAN_VISIBILE,	'type' => 'userclass',		'data' => 'int',	'width' => 'auto'),
+			'faq_info_class' 			=> array('title'=> LAN_VISIBILE,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
 			'faq_info_order' 			=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'left' ),					
-			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+			'options' 					=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 		);	
+		
+	/**
+	 * Get FAQ Category data
+	 * @param integer $id [optional] get category title, false - return whole array
+	 * @param object $default [optional] default value if not found (default 'n/a')
+	 * @return 
+	 */
+	function getFaqCategoryTree($id = false, $default = 'n/a')
+	{
+		// TODO get faq category tree
+	}
+		
 }
 
+class faq_cat_form_ui extends e_admin_form_ui
+{
+	public function faq_info_parent($curVal,$mode)
+	{
+		// TODO - catlist combo without current cat ID in write mode, parents only for batch/filter 
+		// Get UI instance
+		$controller = $this->getController();
+		switch($mode)
+		{
+			case 'read':
+				return e107::getParser()->toHTML($controller->getFaqCategoryTree($curVal), false, 'TITLE');
+			break;
+			
+			case 'write':
+				return $this->selectbox('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
+			break;
+			
+			case 'filter':
+			case 'batch':
+				return $controller->getFaqCategoryTree();
+			break;
+		}
+	}
+}
 
 class faq_main_ui extends e_admin_ui
 {
