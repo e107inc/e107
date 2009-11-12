@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.154 $
-* $Date: 2009-11-11 16:02:36 $
+* $Revision: 1.155 $
+* $Date: 2009-11-12 01:53:15 $
 * $Author: e107coders $
 *
 */
@@ -1891,7 +1891,12 @@ function class_list($uid = '')
 // ---------------------------------------------------------------------------
 
 
-//DEPRECATED - use e107::includeLan();
+/**
+ * DEPRECATED - use e107::includeLan();
+ * @param object $path
+ * @param object $force [optional]
+ * @return 
+ */
 function include_lan($path, $force = false)
 {
 	return e107::includeLan($path, $force);

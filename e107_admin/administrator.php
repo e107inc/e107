@@ -9,8 +9,8 @@
  * Administrators Management
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/administrator.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-09-27 21:24:02 $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-12 01:53:16 $
  * $Author: e107coders $
  *
 */
@@ -135,9 +135,16 @@ else
 
 function show_admins()
 {
-    global $sql, $emessage, $e107, $frm;
+	$sql = e107::getDb();
+	$frm = e107::getForm();
+	$ns = e107::getRender();
+	$mes = e107::getMessage();
+	
 
-
+	require_once(e_HANDLER."user_handler.php");
+	$prm = new e_userperms;
+	
+	
 	$sql->db_Select("user", "*", "user_admin='1'");
 
 	$text = "
@@ -171,7 +178,7 @@ function show_admins()
 						<td>".$row['user_id']."</td>
 						<td><a href='".$e107->url->getUrl('core:user', 'main', "func=profile&id={$row['user_id']}")."'>".$row['user_name']."</a></td>
 						<td>
-							".renderperms($row['user_perms'],$row['user_id'],"words")."
+							".$prm->renderperms($row['user_perms'],$row['user_id'],"words")."
 						</td>
 						<td class='center'>
 		";
@@ -198,13 +205,19 @@ function show_admins()
 	</form>
 
 	";
-	$e107->ns->tablerender(ADMSLAN_13, $emessage->render().$text);
+	$ns->tablerender(ADMSLAN_13, $mes->render().$text);
 }
 
 function edit_administrator($row)
 {
-    global $sql, $e107, $pref, $frm;
+    global $pref;
 	$lanlist = explode(",",e_LANLIST);
+	require_once(e_HANDLER."user_handler.php");
+	$prm = new e_userperms;
+	$ns = e107::getRender();
+	$sql = e107::getDb();
+	$frm = e107::getForm();
+	
 
 	$a_id = $row['user_id'];
 	$ad_name = $row['user_name'];
@@ -232,102 +245,26 @@ function edit_administrator($row)
 							<td class='control'>
 
 	";
-	//XXX Lan - General
-	$text .= "
-								<div class='field-section'>
-									<h4>".ADMSLAN_74."</h4>
-	";
-	$text .= checkb("1", $a_perms, ADMSLAN_19);			// Alter site preferences
-	$text .= checkb("2", $a_perms, ADMSLAN_20);			// Alter Menus
-	$text .= checkb("3", $a_perms, ADMSLAN_21);			// Modify administrator permissions
-	$text .= checkb("4", $a_perms, ADMSLAN_22);			// Moderate users/bans etc
-	$text .= checkb("5", $a_perms, ADMSLAN_23);			// create/edit custom pages
-	$text .= checkb("J", $a_perms, ADMSLAN_41);			// create/edit custom menus
-	$text .= checkb("Q", $a_perms, ADMSLAN_24);			// Manage download categories
-	$text .= checkb("6", $a_perms, ADMSLAN_25);			// Upload /manage files
-	$text .= checkb("Y", $a_perms, ADMSLAN_67);			// file inspector
-	$text .= checkb("O", $a_perms, ADMSLAN_68);			// notify
-	$text .= checkb("7", $a_perms, ADMSLAN_26);			// Oversee news categories
-//	$text .= checkb("8", $a_perms, ADMSLAN_27);			// Oversee link categories
-	$text .= checkb("C", $a_perms, ADMSLAN_64);			// Clear Cache - Previously moderate chatbox
-	$text .= checkb("9", $a_perms, ADMSLAN_28);			// Take site down for maintenance
-	$text .= checkb("W", $a_perms, ADMSLAN_65);			// Configure mail settings and mailout
-
-	$text .= checkb("D", $a_perms, ADMSLAN_29);			// Manage banners
-//	$text .= checkb("E", $a_perms, ADMSLAN_30);			// Configure news feed headlines - now plugin
-	$text .= checkb("F", $a_perms, ADMSLAN_31);			// Configure emoticons
-	$text .= checkb("G", $a_perms, ADMSLAN_32);			// Configure front page content
-	$text .= checkb("S", $a_perms, ADMSLAN_33);			// Configure system logs  (previously log/stats - now plugin)
-	$text .= checkb("T", $a_perms, ADMSLAN_34);			// Configure meta tags
-	$text .= checkb("V", $a_perms, ADMSLAN_35);			// Configure public file uploads
-	$text .= checkb("X", $a_perms, ADMSLAN_66);			// Configure Search
-	$text .= checkb("A", $a_perms, ADMSLAN_36);			// Configure Image Settings (Previously Moderate forums - NOW PLUGIN)
-	$text .= checkb("B", $a_perms, ADMSLAN_37);			// Moderate comments
-	$text .= checkb("H", $a_perms, ADMSLAN_39);			// Post news
-	$text .= checkb("I", $a_perms, ADMSLAN_40);			// Post links
-
-//	$text .= checkb("K", $a_perms, ADMSLAN_42);					// Post reviews    - NOW PLUGIN
-	$text .= checkb("L", $a_perms, ADMSLAN_43);			// Configure URLs
-	$text .= checkb("R", $a_perms, ADMSLAN_44);			// Post downloads
-	$text .= checkb("U", $a_perms, ADMSLAN_45);			// Schedule Tasks
-	$text .= checkb("M", $a_perms, ADMSLAN_46);			// Welcome message
-	$text .= checkb("N", $a_perms, ADMSLAN_47);			// Moderate submitted news
-
-	$text .= "
-								</div>
-								<div class='field-section'>
-									<h4>".ADLAN_CL_7."</h4>";
-	$text .= checkb("Z", $a_perms, ADMSLAN_62);			// Plugin Manager
-
-	$sql->db_Select("plugin", "*", "plugin_installflag='1'");
-	while ($row = $sql->db_Fetch())
+			
+	$groupedList = $prm->getPermList('grouped');
+		
+	foreach($groupedList as $section=>$list)
 	{
-		$text .= checkb("P".$row['plugin_id'], $a_perms, LAN_PLUGIN." - ".$e107->tp->toHTML($row['plugin_name'] ,FALSE , 'RAWTEXT,defs'));
-	}
-	$text .= "
-								</div>";
-// Language Rights.. --------------
-	if($pref['multilanguage'])
-	{
-		sort($lanlist);
-		$text .= "
-								<div class='field-section'>
-									<h4>".ADLAN_132."</h4>";
-
-		$text .= checkb($pref['sitelanguage'], $a_perms, $pref['sitelanguage']);
-		foreach($lanlist as $langval)
+		$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General	
+		foreach($list as $key=>$diz)
 		{
-			//$langname = $langval;
-			$langval = ($langval == $pref['sitelanguage']) ? "" : $langval;
-			if ($langval)
-	   		{
-				$text .= checkb($langval, $a_perms, $langval);
-			}
+			$text .= $prm->checkb($key, $a_perms, $diz);			
 		}
-		$text .= "
-								</div>";
-	}
-	// -------------------------
-
-	if (getperms('0'))
-	{
-		$text .= "
-								<div class='field-section'>
-									<h4>".ADMSLAN_58."</h4>";
-		$text .= checkb("0", $a_perms, ADMSLAN_58);
-		$text .= "
-								</div>";
+		$text .= "</div>";
 	}
 
-	$text .= "
-								<div class='field-section'>
-									".$frm->admin_button('check_all', 'jstarget:perms', 'action', LAN_CHECKALL)."
-									".$frm->admin_button('uncheck_all', 'jstarget:perms', 'action', LAN_UNCHECKALL)."
-
-								</div>
-							</td>
-						</tr>
-					</tbody>
+	$text .= "<div class='field-section'>
+		".$frm->admin_button('check_all', 'jstarget:perms', 'action', LAN_CHECKALL)."
+		".$frm->admin_button('uncheck_all', 'jstarget:perms', 'action', LAN_UNCHECKALL)."
+		</div>
+	</td>
+	</tr>
+			</tbody>
 				</table>
 				<div class='buttons-bar center'>
 					<input type='hidden' name='a_id' value='{$a_id}' />
@@ -338,120 +275,13 @@ function edit_administrator($row)
 		</form>
 	";
 
-	$e107->ns->tablerender(ADMSLAN_52, $text);
+	$ns->tablerender(ADMSLAN_52, $text);
 }
 require_once("footer.php");
 
 
 
 
-
-
-function checkb($arg, $perms, $label='')
-{
-	global $frm;
-	$par = "<div class='field-spacer'>";
-	$par .= $frm->checkbox('perms[]', $arg, getperms($arg, $perms));
-	if ($label)
-	{
-		$par .= $frm->label($label,'perms[]', $arg);
-	}
-	$par .= "</div>";
-
-	return $par;
-}
-
-
-function renderperms($perm, $id)
-{
-	global $pref, $pt, $e107;
-	if($perm == "0")
-	{
-   		return ADMSLAN_58;
-	}
-    $sql2 = e107::getDb('sql2');
-	$lanlist = explode(",",e_LANLIST);
-
-
-	if(!$pt)
-	{
-    	$pt["1"] = ADMSLAN_19;
-		$pt["2"] = ADMSLAN_20;
-		$pt["3"] = ADMSLAN_21;
-		$pt["4"] = ADMSLAN_22;	// Moderate users/bans etc
-		$pt["5"] = ADMSLAN_23;	// create/edit custom pages
-        $pt["J"] = ADMSLAN_41;	// create/edit custom menus
-
-		$pt["Q"] = ADMSLAN_24;	// Manage download categories
-		$pt["6"] = ADMSLAN_25;	// Upload /manage files
-		$pt["Y"] = ADMSLAN_67;	// file inspector
-		$pt["O"] = ADMSLAN_68;	// notify
-		$pt["7"] = ADMSLAN_26;
-		$pt["8"] = ADMSLAN_27;
-		$pt["C"] = ADMSLAN_64;
-		$pt["9"] = ADMSLAN_28;
-		$pt["W"] = ADMSLAN_65;
-    	$pt["D"] = ADMSLAN_29;
-		$pt["E"] = ADMSLAN_30;
-		$pt["F"] = ADMSLAN_31;
-		$pt["G"] = ADMSLAN_32;
-		$pt["S"] = ADMSLAN_33;
-		$pt["T"] = ADMSLAN_34;
-		$pt["V"] = ADMSLAN_35;
-		$pt["X"] = ADMSLAN_66;
-		$pt["A"] = ADMSLAN_36;	// Configure Image Settings
-		$pt["B"] = ADMSLAN_37;
-		$pt["H"] = ADMSLAN_39;
-		$pt["I"] = ADMSLAN_40;
-		$pt["L"] = ADMSLAN_43;
-		$pt["R"] = ADMSLAN_44;
-		$pt["U"] = ADMSLAN_45;
-		$pt["M"] = ADMSLAN_46;
-		$pt["N"] = ADMSLAN_47;
-		$pt["Z"] = ADMSLAN_62;
-
-
-		$sql2->db_Select("plugin", "*", "plugin_installflag='1'");
-		while ($row2 = $sql2->db_Fetch())
-		{
-			$pt[("P".$row2['plugin_id'])] = LAN_PLUGIN." - ".$e107->tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs');
-		}
-	}
-
-	$tmp = explode(".", $perm);
-		$langperm = "";
-		foreach($tmp as $pms)
-		{
-			if(in_array($pms, $lanlist))
-			{
-				$langperm .= $pms."&nbsp;";
-			}
-			else
-			{
-				$permtxt[] = $pms;
-                if($pt[$pms])
-				{
-		   			$ptext[] = $pt[$pms];
-				}
-			}
-		}
-
-	$ret = implode(" ",$permtxt);
-	if($pref['multilanguage'])
-	{
-		$ret .= $langperm;
-	}
-
-	$text = "<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$ret}</div>";
-		
-	if(varset($ptext))
-	{
-		$text .= "<div id='id_{$id}' class='e-hideme'><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>";
-	}
-		
-
-    return $text;
-}
 
 /**
  * Handle page DOM within the page header
