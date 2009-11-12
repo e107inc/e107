@@ -1,22 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_files/import/e107_import_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-03-16 21:36:32 $
-|     $Author: e107steved $
-|
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_files/import/e107_import_class.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-12 14:37:12 $
+ * $Author: marj_nl_fr $
+ */
 
 // This must be an incredibly pointless file! But it does allow testing of the basic plugin structure.
 
