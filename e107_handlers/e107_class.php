@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.66 $
- * $Date: 2009-11-12 05:11:41 $
- * $Author: e107coders $
+ * $Revision: 1.67 $
+ * $Date: 2009-11-12 16:47:36 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -133,6 +133,7 @@ class e107
 		'e_admin_controller_ui' 	=> '{e_HANDLER}admin_handler.php',
 		'e_admin_ui' 				=> '{e_HANDLER}admin_handler.php',
 		'e_admin_form_ui' 			=> '{e_HANDLER}admin_handler.php',
+		'e_admin_icons' 			=> '{e_HANDLER}admin_handler.php',
 		'DHTML_Calendar'			=> '{e_HANDLER}calendar/calendar_class.php',
 		'comment'					=> '{e_HANDLER}comment_class.php',
 		'e107_user_extended'		=> '{e_HANDLER}user_extended_class.php',
@@ -147,7 +148,7 @@ class e107
 	 * $_overload_handlers before the first singleton call.
 	 * 
 	 * Example:
-	 * 'e_form' => array('e_form_myplugin' => '{e_PLUGIN}myplugin/handlers/form_handler.php');
+	 * <code> array('e_form' => array('plugin_myplugin_form_handler' => '{e_PLUGIN}myplugin/includes/form/handler.php'));</code>
 	 * 
 	 * Used to auto-load core handlers 
 	 * 
@@ -382,7 +383,7 @@ class e107
 			}
 			return;
 		}
-		if(self::isHandler($class_name) && !self::isHandlerOverloaded($class_name))
+		if(self::isHandler($class_name) && !self::isHandlerOverloadable($class_name))
 		{
 			self::$_overload_handlers[$class_name] = array($overload_class_name, $overload_path);
 		}
@@ -394,7 +395,7 @@ class e107
 	 * @param string $class_name
 	 * @return boolean
 	 */
-	public static function isHandlerOverloaded($class_name)
+	public static function isHandlerOverloadable($class_name)
 	{
 		return isset(self::$_overload_handlers[$class_name]);
 	}
@@ -421,7 +422,7 @@ class e107
 		if(is_bool($path))
 		{
 			//overload allowed
-			if(true === $path && self::isHandlerOverloaded($class_name))
+			if(true === $path && self::isHandlerOverloadable($class_name))
 			{
 				$tmp = self::getHandlerOverload($class_name);
 				$class_name = $tmp[0];
@@ -470,7 +471,7 @@ class e107
 		if(is_bool($path))
 		{
 			//overload allowed
-			if(true === $path && self::isHandlerOverloaded($class_name))
+			if(true === $path && self::isHandlerOverloadable($class_name))
 			{
 				$tmp = self::getHandlerOverload($class_name);
 				$class_name = $tmp[0];
@@ -897,6 +898,49 @@ class e107
 	}
 	
 	/**
+	 * Retrieve core template path
+	 * Example: <code>echo e107::coreTemplatePath('admin_icons');</code>
+	 * 
+	 * @param string $id part of the path/file name without _template.php part
+	 * @param boolean $override default true
+	 * @return string relative path
+	 */
+	public static function coreTemplatePath($id, $override = true)
+	{
+		$id = str_replace('..', '', $id); //simple security, '/' is allowed
+		$override_path = $override && defined('THEME') ? THEME.'templates/'.$id.'_template.php' : null;
+		$default_path = e_THEME.'templates/'.$id.'_template.php';
+		
+		return ($override_path && is_readable($override_path) ? $override_path : $default_path);
+	}
+	
+	/**
+	 * Retrieve plugin template path
+	 * Example: 
+	 * <code>
+	 * echo e107::templatePath(plug_name, 'my');
+	 * // result is something like:
+	 * // e107_themes/current_theme/templates/plug_name/my_template.php
+	 * // or if not found 
+	 * // e107_plugins/plug_name/templates/my_template.php
+	 * </code>
+	 * 
+	 * @param string $plug_name plugin name
+	 * @param string $id part of the path/file name without _template.php part
+	 * @param boolean $override default true
+	 * @return string relative path
+	 */
+	public static function templatePath($plug_name, $id, $override = true)
+	{
+		$id = str_replace('..', '', $id); //simple security, '/' is allowed
+		$plug_name = preg_replace('#[^a-z0-9_]#i', '', $plug_name); // only latin allowed, so \w not a solution since PHP5.3
+		$override_path = $override && defined('THEME') ? THEME.'templates/'.$plug_name.'/'.$id.'_template.php' : null;
+		$default_path = e_PLUGIN.$plug_name.'/templates/'.$id.'_template.php';
+		
+		return ($override_path && is_readable($override_path) ? $override_path : $default_path);
+	}
+	
+	/**
 	 * Get core template. Use this method for templates, which are following the 
 	 * new template standards:
 	 * - template variables naming conventions
@@ -922,12 +966,10 @@ class e107
 	 */
 	public static function getCoreTemplate($id, $key = null, $override = true)
 	{
-		global $pref;
-		$reg_path = 'core/e107/templates';
-		$override_path = $override ? e_THEME.$pref['sitetheme'].'/templates/'.$id.'_template.php' : null;
-		$default_path = e_THEME.'/templates/'.$id.'_template.php';
+		$reg_path = 'core/e107/templates'.$id.($override_path ? '/ext' : '');
+		$path = $this->coreTemplatePath($id, $override);
 		
-		return e107::_getTemplate($id, $key, $reg_path, $default_path, $override_path);
+		return e107::_getTemplate($id, $key, $reg_path, $path);
 	}
 	
 	/**
@@ -957,12 +999,10 @@ class e107
 	 */
 	public static function getTemplate($plug_name, $id, $key = null, $override = true)
 	{
-		global $pref;
-		$reg_path = 'plugin/'.$plug_name.'/templates';
-		$override_path = $override ? e_THEME.$pref['sitetheme'].'/templates/'.$plug_name.'/'.$id.'_template.php' : null;
-		$default_path = e_PLUGIN.$plug_name.'/templates/'.$id.'_template.php';
+		$reg_path = 'plugin/'.$plug_name.'/templates'.$id.($override_path ? '/ext' : '');
+		$path = $this->templatePath($plug_name, $id, $override);
 		
-		return e107::_getTemplate($id, $key, $reg_path, $default_path, $override_path);
+		return e107::_getTemplate($id, $key, $reg_path, $path);
 	}
 	
 	/**
@@ -976,40 +1016,20 @@ class e107
 	 * @param string $override_path
 	 * @return string|array
 	 */
-	public static function _getTemplate($id, $key = null, $reg_path, $default_path, $override_path = null)
+	public static function _getTemplate($id, $key, $reg_path, $path)
 	{
-		$regPath = $reg_path.'/'.$id.($override_path ? '/ext' : '');
+		$regPath = $reg_path;
 		$var = strtoupper($id).'_TEMPLATE';
 		
-		if(!e107::getRegistry($regPath))
+		if(null === e107::getRegistry($regPath))
 		{
-			if($override_path)
-			{
-				$path = $override_path.$id.'_template.php';
-				if(is_readable($path))
-				{
-					include_once($path);
-					if(isset($$var))
-					{
-						e107::setRegistry($regPath, $$var);
-					}
-				}
-			}
-			
-			if(!isset($$var))
-			{
-				$path = $default_path.$id.'_template.php';
-				e107_include_once($path);
-				if(isset($$var))
-				{
-					e107::setRegistry($regPath, $$var);
-				}
-			}
+			e107_include_once($path);
+			e107::setRegistry($regPath, (isset($$var) ? $$var : array()));
 		}
 		
 		if(!$key)
 		{
-			e107::getRegistry($regPath);
+			return e107::getRegistry($regPath);
 		}
 		$ret = e107::getRegistry($regPath);
 		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : $ret);
