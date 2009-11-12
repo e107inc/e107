@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.21 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2008-09-02 21:12:08 $
+|     $Revision: 1.22 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2009-11-12 21:55:35 $
 |     $Author: e107steved $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
@@ -62,12 +62,12 @@ $ecalVer = preg_replace("/[a-zA-z\s]/", '', $ecalVer);
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
-"eventpost_admin" => 0,
+"eventpost_admin" => 254,			// Admin
 "eventpost_adminlog" => 0,
 "eventpost_showeventcount" => 1,
 "eventpost_forum" => 1,
 "eventpost_recentshow" => 0,
-"eventpost_super" => 0,
+"eventpost_super" => 254,			// Admin
 "eventpost_menulink" => 0,
 "eventpost_dateformat" => 1,
 "eventpost_fivemins" => 0,
