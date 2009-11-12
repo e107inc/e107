@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.65 $
-* $Date: 2009-11-12 02:09:03 $
+* $Revision: 1.66 $
+* $Date: 2009-11-12 02:14:26 $
 * $Author: e107coders $
 *
 */
@@ -1418,6 +1418,9 @@ class users
 		$frm = e107::getForm();
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
+		
+		//TODO Better Password generation. 
+		// ie. a "Generate" button, which will place the text into the text field automatically. 
 		
 		if (!is_object($e_userclass))
 			$e_userclass = new user_class;
