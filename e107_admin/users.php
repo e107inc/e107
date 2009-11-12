@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.63 $
-* $Date: 2009-11-08 09:14:22 $
+* $Revision: 1.64 $
+* $Date: 2009-11-12 01:53:16 $
 * $Author: e107coders $
 *
 */
@@ -281,6 +281,14 @@ if (isset ($_POST['adduser']))
 	$user_data = & $allData['data'];
 	if (!$error)
 	{
+		
+		if(varset($_POST['perms']))
+		{
+			$allData['data']['user_admin'] = 1;
+			$allData['data']['user_perms'] = implode('.',$_POST['perms']);
+		}
+		
+		
 		$message = '';
 		$user_data['user_password'] = $userMethods->HashPassword($savePassword,$loginname);
 		$user_data['user_join'] = time();
@@ -1132,6 +1140,7 @@ class users
 		$e107 = e107 :: getInstance();
 		$type = $this->fields[$key]['type'];
 		$pref = e107::getConfig()->getPref();
+		$prm = new e_userperms;
 		
 		switch($key) // switch based on field. 
 		{
@@ -1165,7 +1174,8 @@ class users
 			break;
 			
 			case 'user_perms': //TODO display link to popup window with editable perms. 
-				return $row[$key].'&nbsp;';	
+				// return $row[$key].'&nbsp;';	
+				return $prm->renderPerms($row[$key],$row['user_id']);
 			break;
 			
 		}
@@ -1398,10 +1408,15 @@ class users
 	}
 
 
-	// Add a new user - may be passed existing data if there was an entry error on first pass
+	// Quick Add a new user - may be passed existing data if there was an entry error on first pass
 	function user_add($user_data)
 	{
 		global $rs,$ns,$pref,$e_userclass;
+		
+		$prm = new e_userperms;
+		$list = $prm->getPermList();
+
+		
 		if (!is_object($e_userclass))
 			$e_userclass = new user_class;
 		$text = "<div>".$rs->form_open("post",e_SELF.(e_QUERY ? '?'.e_QUERY : ''),"adduserform")."
@@ -1411,57 +1426,89 @@ class users
 		<col class='col-control' />
 		</colgroup>
 		<tr>
-		<td>".USRLAN_61."</td>
-		<td>
-		".$rs->form_text('username',40,varset($user_data['user_name'],""),varset($pref['displayname_maxlength'],15))."
-		</td>
+			<td>".USRLAN_61."</td>
+			<td>
+			".$rs->form_text('username',40,varset($user_data['user_name'],""),varset($pref['displayname_maxlength'],15))."
+			</td>
 		</tr>
 
 		<tr>
-		<td>".USRLAN_128."</td>
-		<td>
-		".$rs->form_text('loginname',40,varset($user_data['user_loginname'],""),varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
-		".$rs->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],false)).USRLAN_170."
-		</td>
+			<td>".USRLAN_128."</td>
+			<td>
+			".$rs->form_text('loginname',40,varset($user_data['user_loginname'],""),varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
+			".$rs->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],false)).USRLAN_170."
+			</td>
 		</tr>
 
 		<tr>
-		<td>".USRLAN_129."</td>
-		<td>
-		".$rs->form_text("realname",40,varset($user_data['user_login'],""),30)."
-		</td>
+			<td>".USRLAN_129."</td>
+			<td>
+			".$rs->form_text("realname",40,varset($user_data['user_login'],""),30)."
+			</td>
 		</tr>
 
 		<tr>
-		<td>".USRLAN_62."</td>
-		<td>
-		".$rs->form_password("password1",40,"",20)."&nbsp;&nbsp;
-		".$rs->form_checkbox('generatepassword',1,false).USRLAN_171."
-		</td>
+			<td>".USRLAN_62."</td>
+			<td>
+			".$rs->form_password("password1",40,"",20)."&nbsp;&nbsp;
+			".$rs->form_checkbox('generatepassword',1,false).USRLAN_171."
+			</td>
 		</tr>
+		
 		<tr>
-		<td>".USRLAN_63."</td>
-		<td>
-		".$rs->form_password("password2",40,"",20)."
-		</td>
+			<td>".USRLAN_63."</td>
+			<td>
+			".$rs->form_password("password2",40,"",20)."
+			</td>
 		</tr>
+		
 		<tr>
-		<td>".USRLAN_64."</td>
-		<td>
-		".$rs->form_text("email",60,varset($user_data['user_email'],""),100)."
-		</td>
+			<td>".USRLAN_64."</td>
+			<td>
+			".$rs->form_text("email",60,varset($user_data['user_email'],""),100)."
+			</td>
 		</tr>\n";
+		
 		if (!isset ($user_data['user_class']))
 			$user_data['user_class'] = varset($pref['initial_user_classes'],'');
 		$temp = $e_userclass->vetted_tree('class',array($e_userclass,'checkbox_desc'),$user_data['user_class'],'classes');
+		
 		if ($temp)
 		{
 			$text .= "<tr style='vertical-align:top'>
 			<td>
 			".USRLAN_120."
-			</td><td>{$temp}</td>
+			</td><td>
+			<a href='#set_class' class='e-expandit'>".USRLAN_120."</a>
+			<div class='e-hideme' id='set_class' >
+			{$temp}
+			</div></td>
 			</tr>\n";
 		}
+		
+		// Make Admin. 
+		$text .= "<tr>
+			<td>".USRLAN_35."</td>
+			<td>
+			<a href='#set_perms' class='e-expandit'>Set Permissions</a>
+			<div class='e-hideme' id='set_perms' >\n";
+			
+			$groupedList = $prm->getPermList('grouped');
+		
+			foreach($groupedList as $section=>$list)
+			{
+				$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General	
+				foreach($list as $key=>$diz)
+				{
+					$text .= $prm->checkb($key, '', $diz);			
+				}
+				$text .= "</div>";
+			}
+
+		$text .= "</div></td>
+		</tr>\n";
+		
+		
 		$text .= "
 		<tr style='vertical-align:top'>
 			<td colspan='2' class='center'>

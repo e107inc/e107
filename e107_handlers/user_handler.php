@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-07 02:16:52 $
+ * $Revision: 1.15 $
+ * $Date: 2009-11-12 01:53:16 $
  * $Author: e107coders $
  *
 */
@@ -647,6 +647,190 @@ Following fields auto-filled in code as required:
 	}
 }
 
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_administrator.php");
 
+class e_userperms
+{
+	protected $core_perms = array(
+	
+		"1"=> ADMSLAN_19,
+		"2"=> ADMSLAN_20,
+		"3"=> ADMSLAN_21,
+		"4"=> ADMSLAN_22,	// Moderate users/bans etc
+		"5"=> ADMSLAN_23,	// create/edit custom pages
+        "J"=> ADMSLAN_41,	// create/edit custom menus
+		"Q"=> ADMSLAN_24,	// Manage download categories
+		"6"=> ADMSLAN_25,	// Upload /manage files
+		"Y"=> ADMSLAN_67,	// file inspector
+		"O"=> ADMSLAN_68,	// notify
+		"7"=> ADMSLAN_26,
+		"8"=> ADMSLAN_27,
+		"C"=> ADMSLAN_64,
+		"9"=> ADMSLAN_28,
+		"W"=> ADMSLAN_65,
+    	"D"=> ADMSLAN_29,
+		"E"=> ADMSLAN_30,
+		"F"=> ADMSLAN_31,
+		"G"=> ADMSLAN_32,
+		"S"=> ADMSLAN_33,
+		"T"=> ADMSLAN_34,
+		"V"=> ADMSLAN_35,
+		"X"=> ADMSLAN_66,
+		"A"=> ADMSLAN_36,	// Configure Image Settings
+		"B"=> ADMSLAN_37,
+		"H"=> ADMSLAN_39,
+		"I"=> ADMSLAN_40,
+		"L"=> ADMSLAN_43,
+		"R"=> ADMSLAN_44,
+		"U"=> ADMSLAN_45,
+		"M"=> ADMSLAN_46,
+		"N"=> ADMSLAN_47,
+	//	"Z"=> ADMSLAN_62,
+	);
+	
+	protected $plugin_perms = array();
+	
+	protected $language_perms = array();
+	
+	protected $main_perms = array();
+	
+	protected $permSectionDiz = array(
+		'core'		=> ADMSLAN_74,
+		'plugin'	=> ADLAN_CL_7,
+		'language'	=> ADLAN_132,
+		'main'		=> ADMSLAN_58
+	 );
+	
+	
+	function __construct()
+	{
+		
+		
+		$sql = e107::getDb('sql2');
+		$tp = e107::getParser();
+		
+		
+		$sql->db_Select("plugin", "*", "plugin_installflag='1'");
+		while ($row2 = $sql->db_Fetch())
+		{
+			$this->plugin_perms[("P".$row2['plugin_id'])] = LAN_PLUGIN." - ".$tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs');
+		}	
+		
+		asort($this->plugin_perms);
+		
+		$this->plugin_perms = array("Z"=>ADMSLAN_62) + $this->plugin_perms;
+		
+		if(e107::getConfig()->getPref('multilanguage'))
+		{
+			$lanlist = explode(",",e_LANLIST);
+			sort($lanlist);
+			foreach($lanlist as $langs)
+			{
+				$this->language_perms[$langs] = $langs;
+			}
+		}
+		
+		if(getperms('0'))
+		{
+			$this->main_perms = array('0' => ADMSLAN_58);
+		}
+		
+	}
+	
+	function renderSectionDiz($key)
+	{
+		return $this->permSectionDiz[$key];	
+	}
+	
+	
+	function getPermList($type='all')
+	{
+		if($type == 'core')
+		{
+			return $this->core_perms;
+		}
+		if($type == 'plugin')
+		{
+			return $this->plugin_perms;
+		}
+		if($type == 'language')
+		{
+			return $this->language_perms;
+		}
+		if($type == 'main')
+		{
+			return $this->main_perms;
+		}
+		
+		if($type == 'grouped')
+		{
+			$ret = array();
+			$ret['core'] 		= $this->core_perms;
+			$ret['plugin']		= $this->plugin_perms;
+			
+			if(vartrue($this->language_perms))
+			{
+				$ret['language'] = $this->language_perms;
+			}
+			
+			if(vartrue($this->main_perms))
+			{
+				$ret['main'] = $this->main_perms;
+			}
+		
+			return $ret;
+				
+		}
+			
+		return array_merge($this->core_perms,$this->plugin_perms,$this->language_perms,$this->main_perms);
+	}
+	
+	function checkb($arg, $perms, $label='')
+	{
+		$frm = e107::getForm();
+		
+		$par = "<div class='field-spacer'>";
+		$par .= $frm->checkbox('perms[]', $arg, getperms($arg, $perms));
+		if ($label)
+		{
+			$par .= $frm->label($label,'perms[]', $arg);
+		}
+		$par .= "</div>\n";
+	
+		return $par;
+	}
+	
+	function renderPerms($perms,$uniqueID='')
+	{
+		$tmp = explode(".",$perms);
+		$permdiz = $this->getPermList();
+		$ptext = array();
+		
+		foreach($tmp as $p)
+		{
+			$ptext[] = $permdiz[$p];
+		}		
+		
+		$id = "id_".$uniqueID;
+		
+		
+		$text = "<div onclick=\"e107Helper.toggle('id_{$id}')\" class='e-pointer' title='".ADMSLAN_71."'>{$perms}</div>";
+		
+		if(varset($ptext))
+		{
+			$text .= "<div id='id_{$id}' class='e-hideme'><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>";
+		}
+		
+		/*
+		$text = "<a href='#".$id."' class='e-expandit' title='".ADMSLAN_71."'>{$perms}</a>";
+		
+		if(varset($ptext))
+		{
+			$text .= "<div class='e-hideme' id='".$id."' ><ul><li>".implode("</li><li>",$ptext)."</li></ul></div>";
+		}
+			*/	
+	    return $text;
+	}
+}
 
 ?>
