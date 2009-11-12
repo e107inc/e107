@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.155 $
-* $Date: 2009-11-12 01:53:15 $
-* $Author: e107coders $
+* $Revision: 1.156 $
+* $Date: 2009-11-12 16:43:44 $
+* $Author: secretr $
 *
 */
 //
@@ -220,10 +220,14 @@ if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
  */
 define('CHARSET', 'utf-8');
 
+// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
+$_SERVER['QUERY_STRING'] = str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']);
+
 //
 // G: Retrieve Query data from URI
 //    (Until this point, we have no idea what the user wants to do)
 //
+
 if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches))
 {
 	define('e_MENU', $matches[1]);
