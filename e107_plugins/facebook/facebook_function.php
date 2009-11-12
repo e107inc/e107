@@ -10,8 +10,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- |     $Revision: 1.8 $
- |     $Date: 2009-11-11 16:00:43 $
+ |     $Revision: 1.9 $
+ |     $Date: 2009-11-12 09:09:37 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -1109,14 +1109,22 @@ class e_facebook
 		if ($this->fb_uid)
 		{
 			
-			$html .= '<div class="welcome_msg">';
+	/*		$html .= '<div class="welcome_msg">';
 			$html .= 'Welcome, '.$this->fb_getUserData('name');
 			$html .= '</div>';
 			$html .= '<div class="user_image">';
 			$html .= '<span class="fbimg">';
 			$html .= getProfilePic($this->fb_uid, true);
 			$html .= '</span>';
-			$html .= '</div>';
+			$html .= '</div>';*/
+			
+			$html .= "<table style='width:100%'>
+				<tr>
+				<td>".getProfilePic($this->fb_uid, true)."</td>
+				<td>Welcome ".$this->fb_getUserData('name')."</td>
+				</tr>
+				</table>";
+			
 			
 			//check for User Permission
 			
@@ -1140,11 +1148,11 @@ class e_facebook
 			 $html .= '<a href="' . e_BASE . 'user.php?id . ' . USERID . '">&rarr; Profile</a><br />';
 			 
 			 */
-	
+	/*
 			$html .= '<div class="facebook_link">';
 			$html .= '<a href="#" onclick="FB.Connect.logout ( function()  { refresh_page() ; } ) "> Logout </a>';
 			$html .= '</div>';
-			
+			*/
 			$html .= '<div class="facebook_link">';
 			$html .= '<a href="'.e_PLUGIN.'facebook/facebook.php"> Invite Friends</a>';
 			$html .= '</div>';
@@ -1368,31 +1376,54 @@ class e_facebook
 	}
 	
 	/**
-	 * Render all Facebook User Friends
+	 * Render Facebook User Friends who use this website. 
 	 *
 	 */
-	
+		//TODO move to shortcode, and just put shortcode inside the fb_friends Menu.
+	// parms for =online and =offline 
 	function Render_Facebook_Friends_Table()
 	{
-		$sql 			= e107::getDb();
-		$fb_friends 	= facebook_client()->api_client->friends_get();
-		$fb_this_site 	= array();
+		$sql 					= e107::getDb();
+		$fb_friends 			= facebook_client()->api_client->friends_get();
+		$fb_this_site_online	= array();
+		$fb_this_site_offline	= array();
 		
 		//TODO Cache
-		if($sql->db_Select('facebook','facebook_uid'))
+		if($sql->db_Select('facebook','facebook_connected,facebook_uid'))
 		{
 			while($row = $sql->db_Fetch())
 			{
-				$fb_this_site[] = $row['facebook_uid'];	
+				if(intval($row['facebook_connected'])==1)
+				{
+					$fb_this_site_online[] = $row['facebook_uid'];		
+				}
+				else
+				{
+					$fb_this_site_offline[] = $row['facebook_uid'];			
+				}
+				
 			}	
+			
 		}
 	
-		$friends = array_intersect($fb_this_site,$fb_friends);
-		
-		if (is_array($friends) && ! empty($friends))
+		$friends_online = array_intersect($fb_this_site_online,$fb_friends);
+		$friends_offline = array_intersect($fb_this_site_offline,$fb_friends);
+
+		$text = $this->renderFriendImgList($friends_online,'Online');
+		$text .= $this->renderFriendImgList($friends_offline,'Offline');
+		return $text;
+	}	
+	
+	
+ 
+	function renderFriendImgList($friends,$caption='')
+	{
+				
+		if (is_array($friends) && !empty($friends))
 		{
 			
-			$html .= '<div>';
+			$html .= "<div>
+			<div class='fcaption'>".$caption."</div>";
 			
 			foreach ($friends as $friend)
 			{
@@ -1403,13 +1434,15 @@ class e_facebook
 				}
 			}
 			
-			$html .= '</div>';
+			$html .= "<div style='clear:both;margin-bottom:10px'><!-- --></div>
+			</div>";
+			
 			return $html;
 		}
 		else
 		{
 			return '';
-		}
-	}	
+		}	
+	}
 	
 }
