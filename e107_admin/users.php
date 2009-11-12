@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.64 $
-* $Date: 2009-11-12 01:53:16 $
+* $Revision: 1.65 $
+* $Date: 2009-11-12 02:09:03 $
 * $Author: e107coders $
 *
 */
@@ -1411,11 +1411,13 @@ class users
 	// Quick Add a new user - may be passed existing data if there was an entry error on first pass
 	function user_add($user_data)
 	{
-		global $rs,$ns,$pref,$e_userclass;
+		global $rs,$pref,$e_userclass;
 		
 		$prm = new e_userperms;
 		$list = $prm->getPermList();
-
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$mes = e107::getMessage();
 		
 		if (!is_object($e_userclass))
 			$e_userclass = new user_class;
@@ -1436,7 +1438,7 @@ class users
 			<td>".USRLAN_128."</td>
 			<td>
 			".$rs->form_text('loginname',40,varset($user_data['user_loginname'],""),varset($pref['loginname_maxlength'],30))."&nbsp;&nbsp;
-			".$rs->form_checkbox('generateloginname',1,varset($pref['predefinedLoginName'],false)).USRLAN_170."
+			".$frm->checkbox_label(USRLAN_170,'generateloginname', 1,varset($pref['predefinedLoginName'],false))."
 			</td>
 		</tr>
 
@@ -1451,7 +1453,7 @@ class users
 			<td>".USRLAN_62."</td>
 			<td>
 			".$rs->form_password("password1",40,"",20)."&nbsp;&nbsp;
-			".$rs->form_checkbox('generatepassword',1,false).USRLAN_171."
+			".$frm->checkbox_label(USRLAN_171,'generatepassword', 1)."
 			</td>
 		</tr>
 		
@@ -1467,7 +1469,15 @@ class users
 			<td>
 			".$rs->form_text("email",60,varset($user_data['user_email'],""),100)."
 			</td>
-		</tr>\n";
+		</tr>
+
+		<tr style='vertical-align:top'>
+			<td>Require Confirmation</td>
+			<td class='center'>".$frm->checkbox_label(USRLAN_181,'sendconfemail', 1)."</td>
+		</tr>";
+		
+		//FIXME check what this is doing exactly.. is it a confirmation email (activation link) or just a notification?
+		// Give drop-down option to: 1) Notify User and Activate. 2) Notify User and require activation. 3) Don't Notify
 		
 		if (!isset ($user_data['user_class']))
 			$user_data['user_class'] = varset($pref['initial_user_classes'],'');
@@ -1510,11 +1520,7 @@ class users
 		
 		
 		$text .= "
-		<tr style='vertical-align:top'>
-			<td colspan='2' class='center'>
-			<input class='button' type='checkbox' name='sendconfemail' value='1' />".USRLAN_181."
-			</td>
-		</tr>
+		
 		</table>
 		<div class='buttons-bar center'>
 			<input class='button' type='submit' name='adduser' value='".USRLAN_60."' />
@@ -1524,7 +1530,7 @@ class users
 		</div>
 		";
 		$emessage = & eMessage :: getInstance();
-		$ns->tablerender(USRLAN_59,$emessage->render().$text);
+		$ns->tablerender(USRLAN_59,$mes->render().$text);
 	}
 
 
