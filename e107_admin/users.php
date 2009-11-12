@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.66 $
-* $Date: 2009-11-12 02:14:26 $
+* $Revision: 1.67 $
+* $Date: 2009-11-12 05:11:41 $
 * $Author: e107coders $
 *
 */
@@ -224,6 +224,9 @@ if (isset ($_POST['prune']))
 	$ns->tablerender(USRLAN_57,"<div style='text-align:center'><b>".$text."</b></div>");
 	unset ($text);
 }
+
+
+
 // ------- Quick Add User --------------
 if (isset ($_POST['adduser']))
 {
@@ -427,12 +430,21 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == 'test')
 		exit;
 	}
 }
+
+
+$prm = e107::getUserPerms();
+
 // ------- Make Admin --------------
-if (isset ($_POST['useraction']) && $_POST['useraction'] == "admin" && getperms('3'))
+if ((varset($_POST['useraction'])== "admin" || varset($_POST['useraction'])== "adminperms") && getperms('3'))
 {
-	$sql->db_Select("user","user_id, user_name","user_id='".$_POST['userid']."'");
+	$sql->db_Select("user","user_id, user_name, user_perms","user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
-	$sql->db_Update("user","user_admin='1' WHERE user_id='".$_POST['userid']."' ");
+	
+	if(varset($_POST['useraction'])== "admin")
+	{
+		$sql->db_Update("user","user_admin='1' WHERE user_id='".$_POST['userid']."' ");
+	}
+		
 	$admin_log->log_event('USET_08',str_replace(array('--UID--','--NAME--'),array($row['user_id'],$row['user_name']),USRLAN_164),E_LOG_INFORMATIVE);
 	$user->show_message($row['user_name']." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.{$row['user_id']}'>".USRLAN_4."</a>");
 	$action = "main";
@@ -444,7 +456,19 @@ if (isset ($_POST['useraction']) && $_POST['useraction'] == "admin" && getperms(
 	{
 		$id = "DESC";
 	}
+	
+
+	$prm->edit_administrator($row);
+	require_once ("footer.php");
+	exit;
 }
+
+if (varset($_POST['update_admin'])) // Update admin Perms. 
+{	
+	$prm->updatePerms($_POST['a_id'],$_POST['perms']);	
+}
+
+
 // ------- Remove Admin --------------
 if (isset ($_POST['useraction']) && $_POST['useraction'] == "unadmin" && getperms('3'))
 {
@@ -921,6 +945,7 @@ class users
 			else
 				if ($user_admin && $user_perms != "0" && getperms('3'))
 				{
+					$text .= "<option value='adminperms'>".USRLAN_221."</option>\n";
 					$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
 				}
 		}
@@ -1140,7 +1165,7 @@ class users
 		$e107 = e107 :: getInstance();
 		$type = $this->fields[$key]['type'];
 		$pref = e107::getConfig()->getPref();
-		$prm = new e_userperms;
+		$prm = e107::getUserPerms();
 		
 		switch($key) // switch based on field. 
 		{
@@ -1413,7 +1438,7 @@ class users
 	{
 		global $rs,$pref,$e_userclass;
 		
-		$prm = new e_userperms;
+		$prm = e107::getUserPerms();
 		$list = $prm->getPermList();
 		$frm = e107::getForm();
 		$ns = e107::getRender();

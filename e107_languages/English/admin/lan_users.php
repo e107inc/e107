@@ -9,8 +9,8 @@
  * Language file - user admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-08-10 15:34:28 $
+ * $Revision: 1.20 $
+ * $Date: 2009-11-12 05:11:47 $
  * $Author: e107coders $
  *
 */
@@ -231,8 +231,9 @@ define('LAN_NOTVERIFIED','Not Verified');
 define('LAN_BANNED','Banned');
 define('LAN_BOUNCED','Bounced');
 
-define('USRLAN_220', 'All Userclasses');
 
+define('USRLAN_220', 'All Userclasses');
+define('USRLAN_221', 'Edit admin perms');
 
 // These need review - there are duplicates above - they come from admin/lan_userclass.php.
 define("UCSLAN_1", "Sending notification email to");
