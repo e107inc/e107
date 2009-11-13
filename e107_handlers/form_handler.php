@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.78 $
- * $Date: 2009-11-12 16:55:49 $
+ * $Revision: 1.79 $
+ * $Date: 2009-11-13 14:45:00 $
  * $Author: secretr $
  *
 */
@@ -123,7 +123,7 @@ class e_form
 		if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
 		if(!$label) $label = LAN_SELECT;
 		$parms = "name={$name}";
-		$parms .= "&path=".urlencode(e107::getParser()->replaceConstants(vartue($sc_parameters['path'], '{e_FILE}images/')));
+		$parms .= "&path=".urlencode(e107::getParser()->replaceConstants(vartrue($sc_parameters['path'], '{e_FILE}images/')));
 		$parms .= "&filter=0";
 		$parms .= "&fullpath=1";
 		$parms .= "&default=".$default;
