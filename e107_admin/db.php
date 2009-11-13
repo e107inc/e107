@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-11-08 09:14:22 $
+ * $Revision: 1.39 $
+ * $Date: 2009-11-13 07:14:57 $
  * $Author: e107coders $
  *
 */
@@ -37,6 +37,8 @@ $e_sub_cat = 'database';
 
 require_once (e_HANDLER."form_handler.php");
 $frm = new e_form();
+
+
 
 require_once (e_HANDLER."message_handler.php");
 $emessage = &eMessage::getInstance();
@@ -81,6 +83,7 @@ if(isset($_POST['exportXmlFile']))
 require_once ("auth.php");
 require_once (e_HANDLER."form_handler.php");
 $frm = new e_form();
+$st = new system_tools;
 
 
 /* No longer needed after XML feature added. 
@@ -102,7 +105,7 @@ if(isset($_POST['backup_core']) || $_GET['mode']=='backup_core')
 
 
 
-$st = new system_tools;
+
 
 require_once ("footer.php");
 
@@ -126,7 +129,8 @@ class system_tools
 			'verify_sql_record'		=> array('diz'=>DBLAN_35, 'label'=> DBLAN_36),
 			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59),
 			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58),
-			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56)
+			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56),
+			'convert_to_utf8'		=> array('diz'=>'Convert Database to UTF-8','label'=>'Convert DB to UTF-8')
 		);
 		
 		//TODO Merge db_verify.php into db.php 
@@ -157,6 +161,12 @@ class system_tools
 		{
 			$this->importForm();	
 		}
+		
+				
+		if(isset($_POST['convert_to_utf8']) ||  $_GET['mode']=='convert_to_utf8')
+		{
+			$this->convertUTF8Form();	
+		}
 				
 		if(isset($_POST['exportForm']) ||  $_GET['mode']=='exportForm')
 		{
@@ -184,12 +194,153 @@ class system_tools
 			$this->plugin_viewscan();
 		}
 		
+		if(vartrue($_POST['perform_utf8_convert']))
+		{
+			$this->perform_utf8_convert();
+		}
+		
 		if(!vartrue($_GET['mode']))
 		{		
 			$this->render_options();
 		}
+		
+
 					
 	}
+	
+	function convertUTF8Form()
+	{
+		$mes = e107::getMessage();
+		$frm = e107::getForm();
+		
+		//TODO LAN
+		$message = "
+			This function will permanantly modify all tables in your database.<br />
+			It is <b>HIGHLY</b> recommended that you backup your database first.<br />
+			Be sure to click the 'Convert Database' button only once.
+			The conversion process can take as up to one 1 minute or more depending on the size of your database.
+			";
+
+		$mes->add($message, E_MESSAGE_WARNING);
+
+		$text = "<div style='text-align:center'>
+		       	<form method='post' action='".e_SELF."' id='linkform'>
+		        <div class='buttons-bar center'>";
+		$text .= $frm->admin_button('perform_utf8_convert', "Convert Database");
+
+		$text .= "</div>
+		
+		          </form>
+		          </div>";
+		
+		e107::getRender()->tablerender("Convert", $mes->render().$text);	
+						   
+	}
+	
+	function perform_utf8_convert()
+	{
+		$dbtable = 'conversion_test';
+		
+		//TODO Add a check to be sure the database is not already utf-8. 
+		
+		$sql = e107::getDb();	
+		$mes = e107::getMessage();
+		
+		$ERROR = FALSE;
+			
+		if(!mysql_query("USE information_schema;"))
+		{
+			$mes->add("Couldn't read information_schema", E_MESSAGE_ERROR);
+			return;
+		}
+		
+		$queries = array();		
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%char%';");
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%text%';");
+		
+		$queries2 = array();	
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%char%';");
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE ', table_name, ' MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8;') FROM columns WHERE table_schema = '".$dbtable."' and data_type LIKE '%text%';");
+		
+		
+		mysql_query("USE ".$dbtable);
+			
+		foreach($queries as $qry)
+		{
+			foreach($qry as $q)
+			{
+				if(!$sql->db_Query($q))
+				{
+					$mes->add($q, E_MESSAGE_ERROR);	
+					$ERROR = TRUE;
+				}
+			}			
+		}
+		
+		//------------
+				
+		$result = mysql_list_tables($dbtable);
+		while ($row = mysql_fetch_array($result, MYSQL_NUM))
+		{
+   			$table = $row[0]; 
+			$tab_query = "ALTER TABLE ".$table." charset=utf8; ";
+			if(!$sql->db_Query($tab_query))
+			{
+				$mes->add($tab_query, E_MESSAGE_ERROR);	
+				$ERROR = TRUE;	
+			}
+		}
+		
+		// ---------------
+		
+		foreach($queries2 as $qry)
+		{
+			foreach($qry as $q)
+			{
+				if(!$sql->db_Query($q))
+				{
+					$mes->add($q, E_MESSAGE_ERROR);
+					$ERROR = TRUE;	
+				}
+			}			
+		}
+
+		//------------
+		
+		$lastQry = "ALTER DATABASE `".$dbtable."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		
+		if(!$sql->db_Query($lastQry))
+		{
+			$mes->add($lastQry, E_MESSAGE_ERROR);		
+		}
+		elseif($ERROR != TRUE)
+		{
+			$message = "Database Converted successfully to UTF-8. <br />
+			Please now add the following line to your e107_config.php file:<br /> 
+			<b>\$mySQLcharset   = 'utf8';</b>
+			";
+			
+			$mes->add($message, E_MESSAGE_SUCCESS);			
+		}
+		
+		
+	}
+	
+	function getQueries($query)
+	{
+		if(!$result = mysql_query($query))
+		{
+			$mes->add("Query Failed", E_MESSAGE_ERROR);
+			return;
+		}
+		while ($row = mysql_fetch_array($result, MYSQL_NUM))
+		{
+   			 $qry[] = $row[0]; 
+		}
+		
+		return $qry;	
+	}
+
 
 	/**
 	 * Delete selected preferences. 
