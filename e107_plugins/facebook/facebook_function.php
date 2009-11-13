@@ -10,8 +10,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- |     $Revision: 1.10 $
- |     $Date: 2009-11-12 10:42:32 $
+ |     $Revision: 1.11 $
+ |     $Date: 2009-11-13 09:51:19 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -982,23 +982,34 @@ class e_facebook
 		 'facebook_work_history' => Get_Facebook_Info ( 'work_history' )
 		 ) ; */
 		
+		
+		$fields = array(
+			'last_name','username','name','sex','timezone',
+			'birthday','profile_url','email_hashes','first_name',
+			'current_location','locale');
+		
+		$user = facebook_client()->api_client->users_getInfo($this->fb_uid, $fields); 
+		
+		$userData = $user[0];
+		
 		$standard = array(
 			'facebook_connected'		=> 1,
 			'facebook_uid'				=> $this->fb_uid,
 			'facebook_user_id'			=> $user_id,
-			'facebook_last_name'		=> $this->fb_getUserData('last_name'),
-			'facebook_username'			=> $this->fb_getUserData('username'),
-			'facebook_name'				=> $this->fb_getUserData('name'),
+			'facebook_last_name'		=> $userData['last_name'],
+			'facebook_username'			=> $userData['username'],
+			'facebook_name'				=> $userData['name'],
 	
-			'facebook_sex'				=> $this->fb_getUserData('sex'),
-			'facebook_timezone'			=> $this->fb_getUserData('timezone'),
-			'facebook_birthday'			=> $this->fb_getUserData('birthday'),
-			'facebook_profile_url'		=> $this->fb_getUserData('profile_url'),
+			'facebook_sex'				=> $userData['sex'],
+			'facebook_timezone'			=> $userData['timezone'],
+			'facebook_birthday'			=> $userData['birthday'],
+			'facebook_profile_url'		=> $userData['profile_url'],
 
-			'facebook_email_hashes'		=> $this->fb_getUserData('email_hashes'),
-			'facebook_first_name'		=> $this->fb_getUserData('first_name'),
-			'facebook_current_location'	=> $this->fb_getUserData('current_location'),
-			'facebook_locale'			=> $this->fb_getUserData('locale'));
+			'facebook_email_hashes'		=> $userData['email_hashes'],
+			'facebook_first_name'		=> $userData['first_name'],
+			'facebook_current_location'	=> implode(",",$userData['current_location']),
+			'facebook_locale'			=> $userData['locale']
+		);
 			
 		// 'facebook_affiliations' 		=> Get_Facebook_Info ( 'affiliations' ) ,
 		// 'facebook_proxied_email'  	=> Get_Facebook_Info (  'proxied_emai' ) ,
@@ -1077,6 +1088,15 @@ class e_facebook
 		if ($this->fb_uid)
 		{
 			
+		//	$info_data = facebook_client()->api_client->users_getInfo($this->fb_uid, $info);
+	 
+			//TODO needs template in a separate file. 
+			
+		//	$firstName=$user_details[0]['first_name']; 
+		//	$lastName=$user_details[0]['last_name'];
+		//	$email=$user_details[0]['proxied_email'];
+
+			
 	/*		$html .= '<div class="welcome_msg">';
 			$html .= 'Welcome, '.$this->fb_getUserData('name');
 			$html .= '</div>';
@@ -1092,7 +1112,7 @@ class e_facebook
 				<td>Welcome ".$this->fb_getUserData('name')."</td>
 				</tr>
 				</table>";
-			
+						
 			
 			//check for User Permission
 			
@@ -1298,7 +1318,9 @@ class e_facebook
 					//not a real error!    just some problem with Facebook ID
 		
 					$html .= 'Ops... Some error Occur';
-					// Facebook table is marked as 'connected' but you are logged out of e107.
+					// Facebook table is marked as 'connected' but you are logged out of e107
+					// AND/OR
+					// No e107 account was created for the new FB user.
 				}
 				else if ($this->isLoggedIn() == 0)
 				{
