@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.156 $
-* $Date: 2009-11-12 16:43:44 $
+* $Revision: 1.157 $
+* $Date: 2009-11-14 14:52:26 $
 * $Author: secretr $
 *
 */
@@ -2124,6 +2124,7 @@ function plugInstalled($plugname)
  * }
  * </code>
  * TODO - use spl_autoload[_*] for core autoloading some day (PHP5 > 5.1.2)
+ * TODO - at this time we could create e107 version of spl_autoload_register - e_event->register/trigger('autoload')
  * 
  * @param string $className
  * @return void
@@ -2148,14 +2149,21 @@ function __autoload($className)
 		break;
 	
 		default: //core libraries
-			$filename = e107::getHandlerPath($className, true);
+			$filename = e107::getHandlerPath($className, true); 
 			//TODO add debug screen Auto-loaded classes - ['core: '.$filename.' - '.$className];
 		break;
 	}
-	
+
 	if($filename)
 	{
 		// auto load doesn't REQUIRE files, because this will break things like call_user_func()
 		include($filename);
 	}
 } 
+
+// register __autoload if possible to prevent its override by 
+// 3rd party spl_autoload_register calls
+if(function_exists('spl_autoload_register'))
+{
+	spl_autoload_register('__autoload');
+}

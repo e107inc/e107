@@ -9,8 +9,8 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-11-12 16:55:50 $
+ * $Revision: 1.26 $
+ * $Date: 2009-11-14 14:52:26 $
  * $Author: secretr $
 */
 
@@ -91,7 +91,13 @@ class e_admin_request
 	 * Current Mode
 	 * @var string
 	 */
-	protected $_mode = 'main';
+	protected $_mode = '';
+	
+	/**
+	 * Default Mode
+	 * @var string
+	 */
+	protected $_default_mode = 'main';
 	
 	/**
 	 * Key name for mode search
@@ -103,7 +109,13 @@ class e_admin_request
 	 * Current action
 	 * @var string
 	 */
-	protected $_action = 'index';
+	protected $_action = '';
+	
+	/**
+	 * Default Action
+	 * @var string
+	 */
+	protected $_default_action = 'index';
 	
 	/**
 	 * Key name for action search
@@ -278,7 +290,17 @@ class e_admin_request
 	 */
 	public function getMode()
 	{
+		if(!$this->_mode) return $this->getDefaultMode();
 		return $this->_mode;
+	}
+	
+	/**
+	 * Get default mode
+	 * @return string
+	 */
+	public function getDefaultMode()
+	{
+		return $this->_default_mode;
 	}
 	
 	/**
@@ -288,7 +310,7 @@ class e_admin_request
 	 */
 	public function getModeName()
 	{
-		return strtolower(str_replace('-', '_', $this->_mode));
+		return strtolower(str_replace('-', '_', $this->getMode()));
 	}
 	
 	/**
@@ -300,6 +322,17 @@ class e_admin_request
 	{
 		$this->_mode = preg_replace('/[^\w]/', '', $mode);
 		$this->setQuery($this->_mode_key, $this->_mode);
+		return $this;
+	}
+	
+	/**
+	 * Set default mode
+	 * @param string $mode
+	 * @return e_admin_request
+	 */
+	public function setDefaultMode($mode)
+	{
+		if($mode) $this->_default_mode = $mode;
 		return $this;
 	}
 	
@@ -320,7 +353,17 @@ class e_admin_request
 	 */
 	public function getAction()
 	{
+		if(!$this->_action) return $this->getDefaultAction();
 		return $this->_action;
+	}
+	
+	/**
+	 * Get default action
+	 * @return string
+	 */
+	public function getDefaultAction()
+	{
+		return $this->_default_action;
 	}
 	
 	/**
@@ -329,7 +372,7 @@ class e_admin_request
 	 */
 	public function getActionName()
 	{
-		return $this->camelize($this->_action);
+		return $this->camelize($this->getAction());
 	}
 	
 	/**
@@ -342,6 +385,18 @@ class e_admin_request
 	{
 		$this->_action = preg_replace('/[^\w]/', '', $action);
 		$this->setQuery($this->_action_key, $this->_action);
+		return $this;
+	}
+	
+	/**
+	 * Set default action
+	 * 
+	 * @param string $action
+	 * @return e_admin_request
+	 */
+	public function setDefaultAction($action)
+	{
+		if($action) $this->_default_action = $action;
 		return $this;
 	}
 	
@@ -927,11 +982,21 @@ class e_admin_dispatcher
 	/**
 	 * Required (set by child class).
 	 * Controller map array in format 
-	 * 'MODE' => array('controller' =>'CONTROLLER_CLASS'[, 'path' => 'CONTROLLER SCRIPT PATH']);
+	 * 'MODE' => array('controller' =>'CONTROLLER_CLASS_NAME'[, 'path' => 'CONTROLLER SCRIPT PATH', 'ui' => extend of 'comments_admin_form_ui', 'uipath' => 'path/to/ui/']);
 	 * 
 	 * @var array
 	 */
 	protected $modes;
+	
+	/**
+	 * @var string
+	 */
+	protected $defaultMode = '';
+	
+	/**
+	 * @var string
+	 */
+	protected $defaultAction = '';
 	
 	/**
 	 * Optional - map 'mode/action' pair to 'modeAlias/actionAlias'  
@@ -953,7 +1018,12 @@ class e_admin_dispatcher
 	 * @var string
 	 */
 	protected $menuTitle = 'Menu';
-
+	
+	/**
+	 * @var string
+	 */
+	protected $pluginTitle = '';
+	
 	/**
 	 * Constructor 
 	 * 
@@ -974,6 +1044,13 @@ class e_admin_dispatcher
 		
 		$this->setRequest($request)->setResponse($response)->init();
 		
+		if(!$this->defaultMode || !$this->defaultAction)
+		{
+			$this->setDefaults();
+		}
+		
+		$request->setDefaultMode($this->defaultMode)->setDefaultAction($this->defaultAction);
+		
 		// register itself
 		e107::setRegistry('admin/ui/dispatcher', $this);
 		
@@ -990,6 +1067,31 @@ class e_admin_dispatcher
 	 */
 	public function init()
 	{
+	}
+	
+	/**
+	 * Retrieve missing default action/mode
+	 * @return e_admin_dispatcher
+	 */
+	public function setDefaults()
+	{
+		// try Admin menu first
+		if($this->adminMenu)
+		{
+			reset($this->adminMenu);
+			list($mode, $action) = explode('/', key($this->adminMenu), 2);
+		}
+		else
+		{
+			reset($this->modes);
+			$mode = key($this->modes);
+			$action = $this->modes[$mode]['index'];
+		}
+		
+		if(!$this->defaultMode) $this->defaultMode = $mode;
+		if(!$this->defaultAction) $this->defaultAction = $action;
+		
+		return $this;
 	}
 	
 	/**
@@ -1892,30 +1994,21 @@ class e_admin_controller
 //FIXME - move everything from e_admin_ui except model auto-create related code
 class e_admin_controller_ui extends e_admin_controller
 {
-	
-}
-
-class e_admin_ui extends e_admin_controller_ui
-{
+	/**
+	 * @var array UI field data
+	 */
 	protected $fields = array();
+	
+	/**
+	 * @var array default fields activated on List view
+	 */
 	protected $fieldpref = array();
-	protected $fieldTypes = array();
-	protected $dataFields = array();
-	protected $validationRules = array();
+	
+	/**
+	 * @var array Plugin Preference description array
+	 */
 	protected $prefs = array();
-	protected $pluginName;
 	
-	protected $listQry;
-	protected $tableJoin;
-	protected $editQry;
-	protected $table;
-	protected $tableAlias;
-	protected $pid;
-	
-	protected $pluginTitle;
-	protected $perPage = 20;
-	protected $batchDelete = true;
-
 	/**
 	 * @var e_admin_model
 	 */
@@ -1937,6 +2030,238 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $_pref = null;
 	
 	/**
+	 * Get all field data
+	 * @return array
+	 */
+	public function getFields()
+	{
+		return $this->fields;
+	}
+	
+	/**
+	 * 
+	 * @param string $field
+	 * @param string $key attribute name
+	 * @param mixed $default default value if not set, default is null
+	 * @return mixed
+	 */
+	public function getFieldAttr($field, $key, $default = null)
+	{
+		if(isset($this->fields[$field][$key]))
+		{
+			return $this->fields[$field][$key];
+		}
+		return $default;
+	}
+	
+	/**
+	 * Get fields stored as user preferences
+	 * @return array
+	 */
+	public function getFieldPref()
+	{
+		return $this->fieldpref;
+	}
+	
+	/**
+	 * Get Config data array 
+	 * @return array
+	 */
+	public function getPrefs()
+	{
+		return $this->prefs;
+	}
+	
+	
+	/**
+	 * Get column preference array
+	 * @return array
+	 */
+	public function getUserPref()
+	{
+		global $user_pref;
+		return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
+	}
+	
+	/**
+	 * Set column preference array
+	 * @return boolean success
+	 */
+	public function setUserPref($new)
+	{
+		global $user_pref;
+		$user_pref['admin_cols_'.$this->getTableName()] = $new;
+		$this->fieldpref = $new;
+		return save_prefs('user');
+	}
+	
+	/**
+	 * Get current model
+	 *
+	 * @return e_admin_model
+	 */
+	public function getModel()
+	{
+		if(null === $this->_model)
+		{
+			$this->_setModel();
+		}
+		
+		return $this->_model;
+	}
+
+	/**
+	 * Set controller model
+	 * @param e_admin_model $model
+	 * @return e_admin_controller_ui
+	 */
+	public function setModel($model)
+	{
+		$this->_model = $model;
+		return $this;
+	}
+	
+	public function getValidationRules()
+	{
+		return $this->getModel()->getValidationRules();
+	}
+	
+	public function getDataFields()
+	{
+		return $this->getModel()->getDataFields();
+	}
+	
+	/**
+	 * User defined model setter
+	 * @return e_admin_controller_ui
+	 */
+	protected function _setModel()
+	{
+		return $this;
+	}
+	
+	/**
+	 * Get current tree model
+	 * @return e_admin_tree
+	 */
+	public function getTreeModel()
+	{
+		if(null === $this->_tree_model)
+		{
+			$this->_setTreeModel();
+		}
+		
+		return $this->_tree_model;
+	}
+	
+	/**
+	 * Set controller tree model
+	 * @param e_admin_tree $tree_model
+	 * @return e_admin_controller_ui
+	 */
+	public function setTreeModel($tree_model)
+	{
+		$this->_tree_model = $tree_model;
+		return $this;
+	}
+	
+	/**
+	 * User defined tree model setter
+	 * @return e_admin_controller_ui
+	 */
+	protected function _setTreeModel()
+	{
+		return $this;
+	}
+	
+	/**
+	 * Get extended (UI) Form instance
+	 *
+	 * @return e_admin_form_ui
+	 */
+	public function getUI()
+	{
+		if(null === $this->_ui)
+		{
+			$this->_setUI();
+		}
+		return $this->_ui;
+	}
+	
+	/**
+	 * Set controller UI form
+	 * @param e_admin_form_ui $ui
+	 * @return e_admin_controller_ui
+	 */
+	public function setUI($ui)
+	{
+		$this->_ui = $ui;
+		return $this;
+	}
+
+	/**
+	 * User defined UI form setter
+	 * @return e_admin_controller_ui
+	 */
+	protected function _setUI()
+	{
+		return $this;
+	}
+	
+	/**
+	 * Get Config object 
+	 * @return e_plugin_pref or e_core_pref when used in core areas
+	 */
+	public function getConfig()
+	{ 
+		if(null === $this->_pref)
+		{
+			$this->_setConfig();
+		}
+		return $this->_pref;
+	}
+	
+	/**
+	 * Set Config object 
+	 * @return e_admin_controller_ui
+	 */
+	public function setConfig($config)
+	{
+		$this->_prefs = $config;
+		return $this;
+	}
+	
+	/**
+	 * User defined config setter
+	 * @return e_admin_controller_ui
+	 */
+	protected function _setConfig()
+	{
+		return $this;
+	}
+}
+
+class e_admin_ui extends e_admin_controller_ui
+{
+
+	protected $fieldTypes = array();
+	protected $dataFields = array();
+	protected $validationRules = array();
+	
+	protected $pluginName;
+	
+	protected $listQry;
+	protected $tableJoin;
+	protected $editQry;
+	protected $table;
+	protected $tableAlias;
+	protected $pid;
+	
+	protected $pluginTitle;
+	protected $perPage = 20;
+	protected $batchDelete = true;
+
+	/**
 	 * Constructor 
 	 * @param e_admin_request $request
 	 * @param e_admin_response $response
@@ -1944,7 +2269,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function __construct($request, $response, $params = array())
 	{
-		$this->setDefaultAction('list');
+		$this->setDefaultAction($request->getDefaultAction());	
 		$params['enable_triggers'] = true; // override
 		
 		parent::__construct($request, $response, $params);
@@ -2631,8 +2956,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		if(!varset($this->pid) && vartrue($this->fields))
 		{
-			$mes = e107::getMessage();
-			$mes->add("There is no <b>pid</b> set.", E_MESSAGE_WARNING);			
+			e107::getMessage()->add("There is no <strong>pid</strong> set.", E_MESSAGE_WARNING);			
 		}
 		
 		return $this->pid;
@@ -2657,7 +2981,7 @@ class e_admin_ui extends e_admin_controller_ui
 	public function getJoinTable($alias = false, $prefix = false)
 	{
 		if($alias && $this->tableAlias) return $this->tableAlias;
-		return ($prefix ? '#.' : '').$this->table;
+		return ($prefix ? '#' : '').$this->table;
 	}
 	
 	public function getBatchDelete()
@@ -2665,208 +2989,140 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this->batchDelete;
 	}
 	
-	public function getFields()
+	/**
+	 * Validation rules retrieved from controller object
+	 * @return array
+	 */
+	public function getValidationRules()
 	{
-		return $this->fields;
-	}
-	
-	public function getFieldAttr($key)
-	{
-		if(isset($this->fields[$key]))
-		{
-			return $this->fields[$key];
-		}
-		return array();
-	}
-	
-	public function getFieldPref()
-	{
-		return $this->fieldpref;
-	}
-	
-	public function getFieldPrefAttr($key)
-	{
-		if(isset($this->fieldpref[$key]))
-		{
-			return $this->fieldpref[$key];
-		}
-		return array();
+		return $this->validationRules;
 	}
 	
 	/**
-	 * Get Config object 
-	 * @return e_plugin_pref|e_core_pref
+	 * Data Field array retrieved from controller object
+	 * @return array
 	 */
-	public function getConfig()
+	public function getDataFields()
+	{
+		return $this->dataFields;
+	}
+	
+	/**
+	 * Set Config object 
+	 * @return e_admin_ui
+	 */
+	protected function _setConfig()
 	{ 
-		if(null === $this->_pref)
+		$this->_pref = $this->pluginName == 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
+		
+		$dataFields = $validateRules = array();
+		foreach ($this->prefs as $key => $att)
 		{
-			$this->_pref = $this->pluginName == 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
+			// create dataFields array
+			$dataFields[$key] = vartrue($att['data'], 'string');
 			
-			$dataFields = $validateRules = array();
-			foreach ($this->prefs as $key => $att)
+			// create validation array
+			if(vartrue($att['validate']))
 			{
-				// create dataFields array
-				if(vartrue($att['data']))
+				$validateRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+			}
+			/* Not implemented in e_model yet 
+			elseif(vartrue($att['check']))
+			{
+				$validateRules[$key] = array($att['check'], varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+			}*/
+		}
+		$this->_pref->setDataFields($dataFields)->setValidationRules($validateRules);
+		
+		return $this;
+	}
+	
+	/**
+	 * Set current model
+	 *
+	 * @return e_admin_ui
+	 */
+	public function _setModel()
+	{
+		// try to create dataFields array if missing
+		if(!$this->dataFields)
+		{
+			$this->dataFields = array();
+			foreach ($this->fields as $key => $att)
+			{
+				if((null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
-					$dataFields[$key] = $att['data'];
+					$this->dataFields[$key] = vartrue($att['data'], 'str');
 				}
-				
-				// create validation array
+			}
+		}
+		// TODO - do it in one loop, or better - separate method(s) -> convertFields(validate), convertFields(data),...
+		if(!$this->validationRules)
+		{
+			$this->validationRules = array();
+			foreach ($this->fields as $key => $att)
+			{
+				if(null === $att['type'] || vartrue($att['noedit']))
+				{
+					continue;
+				}
 				if(vartrue($att['validate']))
 				{
-					$validateRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+					$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
 				}
-				
-				
-				$this->_pref->setDataFields($dataFields)->setValidationRules($validateRules);
-				/* Not implemented in e_model yet 
-				elseif(vartrue($att['check']))
+				/*elseif(vartrue($att['check'])) could go?
 				{
-					$validateRules[$key] = array($att['check'], varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+					$this->checkRules[$key] = array($att['check'], varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
 				}*/
 			}
-			
-		}
-		return $this->_pref;
-	}
-	
-	/**
-	 * Get Config object 
-	 * @return e_plugin_pref|e_core_pref
-	 */
-	public function getPrefs()
-	{
-		return $this->prefs;
-	}
-	
-	/**
-	 * Get column preference array
-	 * @return array
-	 */
-	public function getUserPref()
-	{
-		global $user_pref;
-		return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
-	}
-	
-	/**
-	 * Get column preference array
-	 * @return array
-	 */
-	public function setUserPref($new)
-	{
-		global $user_pref;
-		$user_pref['admin_cols_'.$this->getTableName()] = $new;
-		$this->fieldpref = $new;
-		save_prefs('user');
-	}
-	
-	/**
-	 * Get current model
-	 *
-	 * @return e_admin_model
-	 */
-	public function getModel()
-	{
-		if(null === $this->_model)
-		{
-			// try to create dataFields array if missing
-			if(!$this->dataFields)
-			{
-				$this->dataFields = array();
-				foreach ($this->fields as $key => $att)
-				{
-					if((null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
-					{
-						$this->dataFields[$key] = vartrue($att['data'], 'str');
-					}
-				}
-			}
-			// TODO - do it in one loop, or better - separate method(s) -> convertFields(validate), convertFields(data),...
-			if(!$this->validationRules)
-			{
-				$this->validationRules = array();
-				foreach ($this->fields as $key => $att)
-				{
-					if(null === $att['type'] || vartrue($att['noedit']))
-					{
-						continue;
-					}
-					if(vartrue($att['validate']))
-					{
-						$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
-					}
-					/*elseif(vartrue($att['check'])) could go?
-					{
-						$this->checkRules[$key] = array($att['check'], varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
-					}*/
-				}
-			}
-			
-			// default model
-			$this->_model = new e_admin_model();
-			$this->_model->setModelTable($this->table)
-				->setFieldIdName($this->pid)
-				->setValidationRules($this->validationRules)
-				->setFieldTypes($this->fieldTypes)
-				->setDataFields($this->dataFields)
-				->setParam('db_query', $this->editQry);
 		}
 		
-		return $this->_model;
+		// default model
+		$this->_model = new e_admin_model();
+		$this->_model->setModelTable($this->table)
+			->setFieldIdName($this->pid)
+			->setValidationRules($this->validationRules)
+			->setFieldTypes($this->fieldTypes)
+			->setDataFields($this->dataFields)
+			->setParam('db_query', $this->editQry);		
+			
+		return $this;
 	}
 	
-	public function setModel($model)
+	/**
+	 * Set current tree
+	 * @return e_admin_ui
+	 */
+	public function _setTreeModel()
 	{
-		$this->_model = $model;
-	}
-	
-	public function getTreeModel()
-	{
-		if(null === $this->_tree_model)
-		{
-			// default tree model
-			$this->_tree_model = new e_admin_tree_model();
-			$this->_tree_model->setModelTable($this->table)
-				->setFieldIdName($this->pid)
-				->setParams(array('model_class' => 'e_admin_model', 'db_query' => $this->listQry));
-		}
+		// default tree model
+		$this->_tree_model = new e_admin_tree_model();
+		$this->_tree_model->setModelTable($this->table)
+			->setFieldIdName($this->pid)
+			->setParams(array('model_class' => 'e_admin_model', 'db_query' => $this->listQry));
 		
-		return $this->_tree_model;
+		return $this;
 	}
-	
-	public function setTreeModel($tree_model)
-	{
-		$this->_tree_model = $tree_model;
-	}
-	
+
 	/**
 	 * Get extended (UI) Form instance
 	 *
-	 * @return e_admin_form_ui
+	 * @return e_admin_ui
 	 */
-	public function getUI()
+	public function _setUI()
 	{
-		if(null === $this->_ui)
+		if($this->getParam('ui'))
 		{
-			if($this->getParam('ui'))
-			{
-				$this->_ui = $this->getParam('ui');
-				$this->setParam('ui', null);
-			}
-			else// default ui
-			{
-				$this->_ui = new e_admin_form_ui($this);
-			}
+			$this->_ui = $this->getParam('ui');
+			$this->setParam('ui', null);
 		}
-		return $this->_ui;
+		else// default ui
+		{
+			$this->_ui = new e_admin_form_ui($this);
+		}
+		return $this;
 	}
-	
-	public function setUI($ui)
-	{
-		$this->_ui = $ui;
-	}
+
 }
 
 class e_admin_form_ui extends e_form
