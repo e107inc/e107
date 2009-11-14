@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-11-14 04:14:56 $
+ * $Revision: 1.45 $
+ * $Date: 2009-11-14 04:26:07 $
  * $Author: marj_nl_fr $
  *
 */
@@ -239,17 +239,17 @@ class system_tools
 
 		$emessage->add($message, E_MESSAGE_WARNING);
 
-		$text = "<div style='text-align:center'>
-		       	<form method='post' action='".e_SELF."' id='linkform'>
-		        <div class='buttons-bar center'>";
-		$text .= $frm->admin_button('perform_utf8_convert', "Convert Database");
-
-		$text .= "</div>
+		$text = "
+			<form method='post' action='".e_SELF."' id='linkform'>
+				<fieldset id='core-db-utf8-convert'>
+					<legend class='e-hideme'>"."Convert Database"."</legend>
+					<div class='buttons-bar center'>
+						".$frm->admin_button('perform_utf8_convert', "Convert Database")."
+					</div>
+				</fieldset>
+			</form>";
 		
-		          </form>
-		          </div>";
-		
-		e107::getRender()->tablerender("Convert", $emessage->render().$text);	
+		e107::getRender()->tablerender("Convert Database to UTF-8", $emessage->render().$text);	
 						   
 	}
 	
