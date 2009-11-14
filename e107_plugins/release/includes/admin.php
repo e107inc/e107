@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-11 20:57:33 $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-14 14:52:26 $
  * $Author: secretr $
 */
 
@@ -18,12 +18,21 @@
 class plugin_release_admin extends e_admin_dispatcher
 {
 	/**
-	 * Format: 'MODE' => array('controller' =>'CONTROLLER_CLASS'[, 'path' => 'CONTROLLER SCRIPT PATH', 'ui' => 'UI CLASS NAME child of e_admin_ui', 'uipath' => 'UI SCRIPT PATH']);
+	 * Format: 'MODE' => array('controller' =>'CONTROLLER_CLASS'[, 'index' => 'list', 'path' => 'CONTROLLER SCRIPT PATH', 'ui' => 'UI CLASS NAME child of e_admin_ui', 'uipath' => 'UI SCRIPT PATH']);
+	 * Note - default mode/action is autodetected in this order:
+	 * - $defaultMode/$defaultAction (owned by dispatcher - see below)
+	 * - $adminMenu (first key if admin menu array is not empty)
+	 * - $modes (first key == mode, corresponding 'index' key == action)
 	 * @var array
 	 */
 	protected $modes = array(
 		'main'		=> array('controller' => 'plugin_release_admin_ui', 'path' => null, 'ui' => 'plugin_release_admin_form_ui', 'uipath' => null)				
 	);	
+	
+	/* Both are optional
+	protected $defaultMode = null;
+	protected $defaultAction = null;
+	*/
 
 	/**
 	 * Format: 'MODE/ACTION' => array('caption' => 'Menu link title'[, 'url' => '{e_PLUGIN}release/admin_config.php', 'perm' => '0']);
