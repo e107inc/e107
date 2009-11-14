@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-11-14 00:58:35 $
+ * $Revision: 1.42 $
+ * $Date: 2009-11-14 01:00:50 $
  * $Author: e107coders $
  *
 */
@@ -222,7 +222,7 @@ class system_tools
 			This function will permanantly modify all tables in your database. (".$mySQLdefaultdb.")<br />
 			It is <b>HIGHLY</b> recommended that you backup your database first.<br />
 			Be sure to click the 'Convert Database' button only once.
-			The conversion process can take as up to one 1 minute or more depending on the size of your database.
+			The conversion process can take up to one 1 minute or more depending on the size of your database.
 			";
 
 		$mes->add($message, E_MESSAGE_WARNING);
