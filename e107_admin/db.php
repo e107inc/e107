@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-11-13 07:14:57 $
+ * $Revision: 1.40 $
+ * $Date: 2009-11-14 00:56:57 $
  * $Author: e107coders $
  *
 */
@@ -208,14 +208,18 @@ class system_tools
 					
 	}
 	
-	function convertUTF8Form()
+	private function convertUTF8Form()
 	{
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
 		
+		//TODO a function to call the e107_config information in e107_class.php. 
+		require_once(e_BASE."e107_config.php");	
+		$dbtable = $mySQLdefaultdb;
+		
 		//TODO LAN
 		$message = "
-			This function will permanantly modify all tables in your database.<br />
+			This function will permanantly modify all tables in your database. (".$mySQLdefaultdb.")<br />
 			It is <b>HIGHLY</b> recommended that you backup your database first.<br />
 			Be sure to click the 'Convert Database' button only once.
 			The conversion process can take as up to one 1 minute or more depending on the size of your database.
@@ -237,9 +241,11 @@ class system_tools
 						   
 	}
 	
-	function perform_utf8_convert()
+	private function perform_utf8_convert()
 	{
-		$dbtable = 'conversion_test';
+		require_once(e_BASE."e107_config.php");
+		
+		$dbtable = $mySQLdefaultdb;
 		
 		//TODO Add a check to be sure the database is not already utf-8. 
 		
