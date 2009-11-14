@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-11-14 04:26:07 $
+ * $Revision: 1.46 $
+ * $Date: 2009-11-14 04:28:04 $
  * $Author: marj_nl_fr $
  *
 */
@@ -260,6 +260,7 @@ class system_tools
 		$dbtable = $mySQLdefaultdb;
 		
 		//TODO Add a check to be sure the database is not already utf-8. 
+		// yep, needs more methods - possibly a class in e107_handler
 		
 		$sql = e107::getDb();	
 		$mes = e107::getMessage();
