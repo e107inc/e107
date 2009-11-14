@@ -9,9 +9,9 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-11-14 04:05:35 $
- * $Author: e107coders $
+ * $Revision: 1.44 $
+ * $Date: 2009-11-14 04:14:56 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -210,22 +210,34 @@ class system_tools
 	
 	private function convertUTF8Form()
 	{
-		$mes = e107::getMessage();
+		$emessage = e107::getMessage();
 		$frm = e107::getForm();
-		
 		//TODO a function to call the e107_config information in e107_class.php. 
 		require(e_BASE."e107_config.php");	
 		$dbtable = $mySQLdefaultdb;
 		
 		//TODO LAN
-		$message = "
-			This function will permanantly modify all tables in your database. (".$mySQLdefaultdb.")<br />
+		$message = '
+			This function will permanently modify all tables in your database. ('.$mySQLdefaultdb.')<br />
 			It is <b>HIGHLY</b> recommended that you backup your database first.<br />
-			Be sure to click the 'Convert Database' button only once.
-			The conversion process can take up to one 1 minute or more depending on the size of your database.
-			";
+			If possible use a copy of your database.<br />
+			Do not forget to purge unnecessary input - e.g. old chatbox messages, pm, …<br />
+			as well as to set the maintenance flag to main admins only.<br />
+			<br />
+			Be sure to click the “Convert Database” button only once.<br />
+			The conversion process can take up to one minute or much much more depending on the size of your database.<br />
+			<br />
+			Known problems (list non-exhaustive):
+			<ul>
+			<li>The MySQL user needs privileges to ALTER the database - this is mandatory.</li>
+			<li>The conversion does not work with serialised arrays.<br />
+			<strong>Be sure</strong> you followed all steps of the upgrade process first.</li>
+			<li>It should work without troubles for databases of sites using only UTF-8 charset. Probably not with other charsets.</li>
+			<li>The function uses the information_schema database for now.</li>
+			</ul>			
+			';
 
-		$mes->add($message, E_MESSAGE_WARNING);
+		$emessage->add($message, E_MESSAGE_WARNING);
 
 		$text = "<div style='text-align:center'>
 		       	<form method='post' action='".e_SELF."' id='linkform'>
@@ -237,7 +249,7 @@ class system_tools
 		          </form>
 		          </div>";
 		
-		e107::getRender()->tablerender("Convert", $mes->render().$text);	
+		e107::getRender()->tablerender("Convert", $emessage->render().$text);	
 						   
 	}
 	
