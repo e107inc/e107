@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-11-14 00:56:57 $
+ * $Revision: 1.41 $
+ * $Date: 2009-11-14 00:58:35 $
  * $Author: e107coders $
  *
 */
@@ -214,7 +214,7 @@ class system_tools
 		$frm = e107::getForm();
 		
 		//TODO a function to call the e107_config information in e107_class.php. 
-		require_once(e_BASE."e107_config.php");	
+		require(e_BASE."e107_config.php");	
 		$dbtable = $mySQLdefaultdb;
 		
 		//TODO LAN
@@ -243,7 +243,7 @@ class system_tools
 	
 	private function perform_utf8_convert()
 	{
-		require_once(e_BASE."e107_config.php");
+		require(e_BASE."e107_config.php");
 		
 		$dbtable = $mySQLdefaultdb;
 		
