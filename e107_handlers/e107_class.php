@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.67 $
- * $Date: 2009-11-12 16:47:36 $
- * $Author: secretr $
+ * $Revision: 1.68 $
+ * $Date: 2009-11-14 04:13:10 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1154,7 +1154,9 @@ class e107
 	{
 		global $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY,
 		$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $CACHE_DIRECTORY,
-		$NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY, $UPLOADS_DIRECTORY,$_E107;
+		$UPLOADS_DIRECTORY,$_E107, $MEDIA_DIRECTORY;
+
+	//	global $NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY; 
 
 		$path = ""; $i = 0;
 
@@ -1210,6 +1212,7 @@ class e107
 			define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
 			define("e_DOCS", e_BASE.$HELP_DIRECTORY);
+			define("e_MEDIA", e_BASE.$MEDIA_DIRECTORY);
 //
 // HTTP absolute paths
 //
@@ -1220,6 +1223,7 @@ class e107
 			define("e_FILE_ABS", e_HTTP.$FILES_DIRECTORY);
 			define("e_HANDLER_ABS", e_HTTP.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR_ABS", e_HTTP.$LANGUAGES_DIRECTORY);
+			define("e_MEDIA_ABS", e_HTTP.$MEDIA_DIRECTORY);
 
 			if(isset($_SERVER['DOCUMENT_ROOT']))
 			{
@@ -1238,9 +1242,10 @@ class e107
 			}
 			else
 			{
-            	define("e_CACHE", e_BASE.$FILES_DIRECTORY."cache/");
+            	define("e_CACHE", e_MEDIA."cache/");
 			}
-
+/*
+ 
 			if($NEWSIMAGES_DIRECTORY)
 			{
             	define("e_NEWSIMAGE", e_BASE.$NEWSIMAGES_DIRECTORY);
@@ -1260,7 +1265,7 @@ class e107
 			{
             	define("e_CUSTIMAGE", e_IMAGE."custom/");
 			}
-
+*/
 			if ($DOWNLOADS_DIRECTORY{0} == "/")
 			{
 				define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);

@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.79 $
- * $Date: 2009-11-13 14:45:00 $
- * $Author: secretr $
+ * $Revision: 1.80 $
+ * $Date: 2009-11-14 04:13:10 $
+ * $Author: e107coders $
  *
 */
 
@@ -1177,6 +1177,8 @@ class e_form
 	function renderElement($key, $value, $attributes)
 	{
 		$parms = vartrue($attributes['writeParms'], array());
+		$tp = e107::getParser();
+		
 		if(is_string($parms)) parse_str($parms, $parms);
 		
 		switch($attributes['type'])
@@ -1283,6 +1285,10 @@ class e_form
 			
 			case 'method': // Custom Function 
 				return call_user_func_array(array($this, $key), array($value, 'write', $parms));
+			break;
+			
+			case 'upload':
+				return $tp->parseTemplate("{UPLOADFILE=".e_UPLOAD."}");
 			break;
 
 			default:

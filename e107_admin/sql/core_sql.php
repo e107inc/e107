@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-11-08 13:40:23 $
+ * $Revision: 1.36 $
+ * $Date: 2009-11-14 04:13:10 $
  * $Author: e107coders $
 */
 
@@ -125,12 +125,16 @@ CREATE TABLE core (
 
 CREATE TABLE core_media (
   media_id int(10) unsigned NOT NULL auto_increment,
+  media_type varchar(15) NOT NULL default '',
+  media_name varchar(255) NOT NULL default '',
   media_caption varchar(255) NOT NULL default '',
   media_description varchar(255) NOT NULL default '',
   media_category int(10) unsigned NOT NULL default '0',
   media_datestamp int(10) unsigned NOT NULL default '0',
   media_author int(10) unsigned NOT NULL default '0',
   media_url varchar(255) NOT NULL default '',
+  media_size int(20) unsigned NOT NULL default '0',
+  media_dimensions varchar(25) NOT NULL default '',
   media_userclass varchar(255) NOT NULL default '',
   media_usedby text NOT NULL,
   media_tags text NOT NULL,
