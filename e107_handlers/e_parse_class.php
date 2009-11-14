@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.79 $
-* $Date: 2009-11-12 21:41:34 $
-* $Author: marj_nl_fr $
+* $Revision: 1.80 $
+* $Date: 2009-11-14 04:13:10 $
+* $Author: e107coders $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -1503,7 +1503,8 @@ class e_parse
 				$e107->getFolder('files'),
 				$e107->getFolder('themes'),
 			//	$e107->getFolder('downloads'),
-				$e107->getFolder('handlers')
+				$e107->getFolder('handlers'),
+				$e107->getFolder('media')
 			);
 
 			switch ($mode)
@@ -1518,7 +1519,8 @@ class e_parse
 						e_FILE_ABS,
 						e_THEME_ABS,
 				//		e_DOWNLOAD_ABS, //impossible when download is done via php.
-						e_HANDLER_ABS
+						e_HANDLER_ABS,
+						e_MEDIA_ABS
 					);
 				break;
 
@@ -1532,7 +1534,8 @@ class e_parse
 						SITEURL.$e107->getFolder('files'),
 						SITEURL.$e107->getFolder('themes'),
 					//	SITEURL.$e107->getFolder('downloads'),
-						SITEURL.$e107->getFolder('handlers')
+						SITEURL.$e107->getFolder('handlers'),
+						SITEURL.$e107->getFolder('media')
 					);
 				break;
 			}
@@ -1545,7 +1548,9 @@ class e_parse
 				 "{e_FILE}",
 				 "{e_THEME}",
 				 //,"{e_DOWNLOAD}"
-				 "{e_HANDLER}");
+				 "{e_HANDLER}",
+				 "{e_MEDIA}"
+			);
 
 			if (ADMIN)
 			{

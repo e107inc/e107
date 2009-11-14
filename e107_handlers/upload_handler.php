@@ -9,8 +9,8 @@
  * File Upload Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-11-07 02:10:34 $
+ * $Revision: 1.24 $
+ * $Date: 2009-11-14 04:13:11 $
  * $Author: e107coders $
  */
 
@@ -24,7 +24,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
 //define("UH_DEBUG",TRUE);
 define("UH_DEBUG", FALSE);
 
-define('e_UPLOAD_TEMP_DIR', e_FILE.'temp/'); // Temporary directory
+define('e_UPLOAD_TEMP_DIR', e_MEDIA.'temp/'); // Temporary directory
 define('e_READ_FILETYPES', 'filetypes.xml'); // Upload permissions
 define('e_SAVE_FILETYPES', 'filetypes_.xml');
 

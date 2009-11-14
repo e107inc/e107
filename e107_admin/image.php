@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-11-08 13:21:56 $
+ * $Revision: 1.29 $
+ * $Date: 2009-11-14 04:13:10 $
  * $Author: e107coders $
  *
 */
@@ -75,12 +75,98 @@ class media_admin extends e_admin_dispatcher
 
 	$var['editor']['text'] = "Image Manipulation (future release)";
 	$var['editor']['link'] = e_SELF."?editor";*/
+	
+	protected $mimePaths = array(
+			"text"			=> 'files',
+			'multipart'		=> 'files',
+			'application'	=> 'files',
+			'audio'			=> 'audio',
+			'image'			=> 'images',
+			'video'			=> 'video',
+			'other'			=> 'files'
+	);
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'				
 	);	
 	
 	protected $menuTitle = LAN_MEDIAMANAGER;
+		
+	function init()
+	{
+		$this->observeUploaded();
+	}	
+		
+		
+	function observeUploaded()
+	{
+		$sql = e107::getDb();
+		$mes = e107::getMessage();
+		
+		if(!varset($_POST['uploadfiles']) && !varset($_POST['etrigger_submit']))
+		{
+			return;
+		}
+		
+		$pref['upload_storagetype'] = "1";
+		require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
+		$uploaded = process_uploaded_files(e_MEDIA.'temp/');
+		
+		foreach($uploaded as $upload)
+		{
+			$oldpath = 'temp/'.$upload['name'];
+			$newpath =$this->getPath($upload['type']).'/'.$upload['name'];
+						
+			$insert = array(
+				'media_type'		=> $upload['type'],
+				'media_name'		=> $upload['name'],
+				'media_description'	=> '',
+				'media_url'			=> "{e_MEDIA}".$newpath,
+				'media_datestamp'	=> time(),
+				'media_size'		=> $upload['size'],
+				'media_usedby'		=> '',
+				'media_tags'		=> '',
+				'media_author'		=> USERID
+			);
+			
+			// Temporary workaround for class limitation. 
+			/*
+			 * We need to process the data before it's saved to the DB. 
+			 * When the upload is done with ajax, we need to prepopulate the form with the data above.
+			 */
+			
+			if(rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
+			{
+				if($sql->db_Insert('core_media',$insert)) 
+				{
+					$mes->add("Added ".$upload['name']." to DB", E_MESSAGE_SUCCESS);	
+				} 				
+			}			
+		}
+		
+		$message .= print_a($uploaded,TRUE);
+
+		$mes->add($message, E_MESSAGE_DEBUG);
+		
+		
+	}
+	
+	function onDelete() // call when 'delete' is executed. - delete the file with the db record (optional pref)
+	{
+		
+	}
+	
+	function getPath($type)
+	{
+		list($pmime,$tmp) = explode('/',$type);
+		$dir = $this->mimePaths[$pmime]."/".date("Y-m"); 
+		if(!is_dir(e_MEDIA.$dir))
+		{
+			mkdir(e_MEDIA.$dir,0755);	
+		}
+		return $dir;		
+	}
+	
 }
 
 
@@ -91,41 +177,64 @@ class media_admin_ui extends e_admin_ui
 		protected $pluginName = 'core';
 		protected $table = "core_media";
 		
-		protected $listQry = "SELECT * FROM #core_media"; // without any Order or Limit. 
+	//	protected $listQry = "SELECT * FROM #core_media"; // without any Order or Limit. 
 		
 	//	//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
+		
+		protected $tableJoin = array(
+			'u.user' => array('leftField' => 'media_author', 'rightField' => 'user_id', 'fields' => 'user_id,user_loginname,user_name')
+		);
 		
 		protected $pid = "media_id";
 		protected $perPage = 10;
 		protected $batchDelete = true;
 		
 		//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
-    	protected $fields = array(
+    	/*
+    	 * We need a column with a preview that is generated from the path of another field. 
+    	 * ie. the preview column should show a thumbnail which is generated from the media_url column. 
+    	 * It needs to also take into consideration the type of media (image, video etc) which comes from another field. 
+    	 */
+			
+		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'media_id'				=> array('title'=> LAN_ID,				'type' => 'int',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE),
-       		'media_preview' 		=> array('title'=> "Preview",		'type' => null,			'data'=> null,		'width' => '10%'), // Generate on the fly.
-       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> null,		'readParm' => 'hidden',	'width' => '10%'), // Generate on the fly.  
-			'media_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',		'data'=> 'str',		'width' => '5%'),
+			'media_id'				=> array('title'=> LAN_ID,			'type' => 'int',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE),
+      		'media_url' 			=> array('title'=> LAN_URL,			'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 
+		
+	   	//	'media_preview' 		=> array('title'=> "Preview",		'type' => 'image',			'data'=> null,		'width' => '10%'), 
+       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> null,		'readParm' => 'hidden',	'width' => '10%'),  
+			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => '5%'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => '5%'),
-         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'media_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'int',		'data'=> 'int',		'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,		'type' => 'datestamp',	'data'=> 'int',		'width' => 'auto'),	// User date
-            'media_url' 			=> array('title'=> LAN_URL,			'type' => 'url',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
-			'media_userclass' 		=> array('title'=> LAN_USERCLASS,		'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
-			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	 // No real vetting
+         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first'), 
+         	'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'int',		'data'=> 'int',		'width' => '30%'), 
+			'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => '30%'), 
+		//	'media_author'			=> array('title'=> LAN_AUTHOR,		'type' => 'user',		'data'=> 'int'),
+			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => false	),	
+			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => 'auto'),	// User date
+          	'media_size' 			=> array('title'=> "Size",			'type' => 'int',		'data'=> 'int',		'width' => 'auto'), 
+			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => 'auto'), 
+			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center' ),	 
+			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	
+			'u.user_name' 			=> array('title'=> "User name",		'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=media_author&link=1'),	// User name
+       		'u.user_loginname' 		=> array('title'=> "User login",	'type' => 'user',			'width' => 'auto', 'noedit' => true, 'readParms'=>'idField=media_author&link=1'),	// User login name			
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 
 
-		protected $fieldpref = array('checkboxes', 'media_id', 'media_thumb', 'media_title', 'media_caption', 'media_description', 'media_category', 'media_datestamp','media_userclass', 'options');
+	//	protected $fieldpref = array('checkboxes','media_url', 'media_id', 'media_thumb', 'media_title', 'media_caption', 'media_description', 'media_category', 'media_datestamp','media_userclass', 'options');
 		
-		
+
+
+
 		/*
 		protected $prefs = array( 
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
 		);*/
+	
+		
+
 		
 }
 
