@@ -9,8 +9,8 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-11-14 01:00:50 $
+ * $Revision: 1.43 $
+ * $Date: 2009-11-14 04:05:35 $
  * $Author: e107coders $
  *
 */
@@ -665,7 +665,7 @@ class system_tools
 	 */
 	private function pref_editor($type='core')
 	{
-		//TODO Add drop-down filter for editing plugin prefs also. 
+		//TODO Add drop-down for editing personal perfs also. ie. user pref of self. (admin)
 		
 		global $pref, $e107, $emessage, $frm;
 		
