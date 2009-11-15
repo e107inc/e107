@@ -9,8 +9,8 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-10-31 15:02:02 $
+ * $Revision: 1.23 $
+ * $Date: 2009-11-15 21:41:35 $
  * $Author: e107steved $
 */
 
@@ -18,8 +18,8 @@ require_once("class2.php");
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(e_HANDLER."news_class.php");
-require_once(e_HANDLER."comment_class.php");
-$cobj = new comment;
+//require_once(e_HANDLER."comment_class.php");
+//$cobj = new comment;
 
 if (isset($NEWSHEADER))
 {
