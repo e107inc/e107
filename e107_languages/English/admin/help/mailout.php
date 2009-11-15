@@ -11,15 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/mailout.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-01-02 20:14:13 $
+|     $Revision: 1.4 $
+|     $Date: 2009-11-15 17:38:05 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'makemail';
+
+$e107 = e107::getInstance();
+$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
 
   switch ($action)
   {
@@ -27,22 +29,31 @@ if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'makemai
 	  $text = 'Send mail with constraints specified by an optional plugin';
 	  break;
 	case 'debug' :
-	  $text = 'For devs only. A second query parameter matches the gen_type field in the \'generic\' table. Ignore the column headings';
+	  $text = 'For devs only. Not used at present';
 	  break;
-	case 'list' :
+	case 'saved' :
 	  $text = 'Select and use a saved email template to send a mailshot. Delete any template no longer required';
 	  break;
-	case 'mailouts' :
-	  $text = 'List of stored mailshots. Allows you to see whether they have been sent, and re-send any emails which failed.<br />';
-	  $text .= 'You can also view some detail of the email, including the error reason for some of those that failed.<br />';
-	  $text .= 'To retry outstanding emails, click on the \'resend\' icon. Then click on \'Proceed\', which will open a progress window.';
-	  $text .= ' To abort a mailshot, click on the \'Cancel\' button in the main screen.';
+	case 'pending' :
+		$text = 'List of mailshots released for sending, together with current status.';
+		break;
+	case 'held' :
+		$text = 'List of emails which have been prepared for sending, but not yet released';
+		break;
+	case 'sent' :
+	  $text = 'List of completed mailshots. Allows you to see the sending results.<br />';
 	  break;
 	case 'savedmail' :
 	case 'makemail' :
-	  $text = 'Create an email, and select the list of recipients. You can save the email text as a template for later, or send immediately.<br />';
-	  $text .= 'Any attachment is selected from the list of valid downloads.';
+	  $text = 'Create an email, give it a meaningful title, and select the list of recipients. You can save everything as a template for later, or send immediately.<br />';
+	  $text .= 'Email addresses may be contributed by plugins (such as newsletter), and duplicates are removed when the mail is sent<br />';
+	  $text .= 'Any attachment is selected from the list of valid downloads.<br />';
+	  $text .= 'Mail may be sent as plain text (most universal, and least at risk of being classed as spam), or as HTML (in which case a plain text alternative is automatically generated). The theme style
+				may optionally be added to the email';
 	  break;
+	case 'recipients' :
+		$text = 'Shows all recipients or potential recipients of an email, together with current status';
+		break;
 	case 'prefs' :
 	  $text = '<b>Configure mailshot options.</b><br />
 	  A test email is sent using the current method and settings.<br /><br />';
@@ -54,13 +65,16 @@ if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'makemai
 	  $text .= '<b>Email Address Sources</b><br />
 	  If you have additional mail-related plugins, you can select which of them may contribute email addresses to the list.<br /><br />';
 	  $text .= '<b>Logging</b><br />
-	  The logging option creates a text file in the stats plugin\'s log directory. This must be deleted periodically. The \'logging
+	  The logging option creates a text file in the system log directory. This must be deleted periodically. The \'logging
 	  only\' options allow you to see exactly who would receive emails if actually sent. The \'with errors\' option fails every
 	  7th email, primarily for testing';
 	  break;
+	 case 'maint' :
+		$text = 'Maintenance functions for the mail database';
+		break;
 	default :
 	  $text = 'Undocumented option';
   }
 
-$ns -> tablerender("Mail Help", $text);
+$ns -> tablerender('Mail Help', $text);
 ?>
