@@ -10,13 +10,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cron_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-10-24 12:01:24 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2009-11-15 17:38:04 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
+define ('CRON_MAIL_DEBUG', TRUE);
 class _system_cron 
 {
 	
@@ -32,14 +33,28 @@ class _system_cron
 	function sendEmail() // Test Email. 
 	{
 		global $pref;
-	    require_once(e_HANDLER."mail.php");
+	    require_once(e_HANDLER.'mail.php');
 		$message = "Your Cron test worked correctly. Sent at ".date("r").".";
-		
+
 	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 	}
 	
-	
-	
+	function procEmailQueue()
+	{
+		global $pref;
+		if (CRON_MAIL_DEBUG)
+		{
+			$e107 = e107::getInstance();
+			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
+		}
+		require_once(e_HANDLER.'mail_manager_class.php');
+		$mailManager = new e107MailManager();
+		$mailManager->doEmailTask(varset($pref['mail_workpertick'],5));
+		if (CRON_MAIL_DEBUG)
+		{
+			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
+		}
+	}
 	
 }
 
@@ -48,7 +63,7 @@ class _system_cron
 
 
 
- /* $Id: cron_class.php,v 1.3 2009-10-24 12:01:24 e107coders Exp $ */
+ /* $Id: cron_class.php,v 1.4 2009-11-15 17:38:04 e107steved Exp $ */
 
 /**####################################################################################################**\
    Version: V1.01

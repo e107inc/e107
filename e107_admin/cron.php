@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-11-10 15:33:00 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.15 $
+|     $Date: 2009-11-15 17:38:04 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,7 +50,8 @@ class cron
     	$this->cronAction = e_QUERY;
 		
 		$this->coreCrons['_system_cron'] = array(
-			0 => array('name' => "Test Email", 'function' => "sendEmail", 'description' => "Send a test email to ".$pref['siteadminemail']."<br />Recommended to test the scheduling system."),
+			0 => array('name' => 'Test Email', 'function' => 'sendEmail', 'description' => 'Send a test email to '.$pref['siteadminemail'].'<br />Recommended to test the scheduling system.'),
+			1 => array('name' => 'Mail Queue', 'function' => 'procEmailQueue', 'description' => 'Process mail queue'),
 		//	1 => array('name'=>'User Purge', 'function' => 'userPurge', 'description'=>'Purge Unactivated Users'),
 		//	2 => array('name'=>'User UnActivated', 'function' => 'userUnactivated', 'description'=>'Resend activation email to unactivated users.'),
 		//	3 => array('name'=>'News Sticky', 'function' => 'newsPurge', 'description'=>'Remove Sticky News Items')		

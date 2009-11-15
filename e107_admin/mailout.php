@@ -1,471 +1,525 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2001-2009 e107 Inc
-|     http://e107.org/
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org/).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2009-11-10 15:32:57 $
-|     $Author: marj_nl_fr $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration - Site Maintenance
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
+ * $Revision: 1.24 $
+ * $Date: 2009-11-15 17:38:04 $
+ * $Author: e107steved $
+ *
+*/
 
+/*
+TODO:
+	1. Improve maintenance screen
+*/
+
+/*
 Features:
-1. Additional sources of email addresses for mailouts can be provided via plugins. (How?)
+1. Additional sources of email addresses for mailouts can be provided via plugins
 2. Both list of email recipients and the email are separately stored in the DB using a documented interface (allows alternative creation/mailout routines)
 3. Can specify qmail in the sendmail path
-4. Handling of partially sent email runs
 
 Interface to add extra mailout (source) handlers - these provide email addresses:
-1. Plugin path defined in $eplug_array_pref - added to $pref['mailout_sources']
+1. The handler is called 'e_mailout.php' in the plugin directory.
 2. Mailout options has a facility to enable the individual handlers
-3. The handler is called 'mailout_class.php' in the plugin directory.
-4. Certain variables may be defined at load time to determine whether this is exclusive or supplementary
-5. The class name must be 'mailout_plugin_path'
+3. Certain variables may be defined at load time to determine whether this is exclusive or supplementary
+4. The class name must be 'mailout_plugin_path'
 
 
 $pref['mailout_enabled'][plugin_path] - array of flags determining which mailers are active
+
 */
 
 
 /*
-Various information is stored in the 'generic' table, with tags:
-	'sendmail' - an entry for which an email is to be sent
-	'massmail' - a saved email
+All information is stored in two db tables (see mail_manager_class.php)
 
 Each mailout task is implemented as a class, which must include a number of mandatory entry points:
 	show_select($allow_edit = FALSE) - in edit mode, returns text which facilitates address selection. Otherwise shows the current selection criteria
+	function returnSelectors() - returns storable representation of user-entered selection criteria
 	select_init() - initialise the selection mechanism
 	select_add() - routine pulls out email addresses etc, for caller to add to the list of addressees
 	select_close() - selection complete
 
 */
 
-require_once("../class2.php");
 
-if (!getperms("W"))
+/*
+Valid actions ($_GET['mode']):
+	'prefs' - Edit options
+
+	'makemail' - Create an email for use as a template, or to send
+
+	'saved' - email templates saved (was 'list')
+
+	'sent' - list emails where sending process complete (was 'mailouts')
+	'pending' - list emails in queue or being sent
+
+	'maildelete' - delete email whose 'handle' is in $mailID - shows confirmation page
+	'maildeleteconfirm' - does it
+
+	'edit' - edit email whose 'handle' is in $mailID
+
+	'detail' - show all the target recipients of a specific email
+
+	'resend' - resend failures on a specific list
+
+	'orphans' - data tidy routine
+
+	'debug' - not currently used; may be useful to list other info
+ 
+Valid subparameters (where required):
+	$_GET['m'] - id of mail info in db
+	$_GET['t'] - id of target info in db
+*/
+
+require_once('../class2.php');
+
+if (!getperms('W'))
 {
-	header("location:".e_BASE."index.php");
-	 exit;
+	header('location:'.e_BASE.'index.php');
+	exit;
 }
-//TODO multilanguage?
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'mail';
 
-set_time_limit(180);
-session_write_close();
-require_once(e_ADMIN."auth.php");
-require_once(e_HANDLER."ren_help.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
-require_once(e_HANDLER."userclass_class.php");
+// TODO: Possibly next two lines not needed any more?
+//set_time_limit(180);
+//session_write_close();
 
 
-  $images_path = e_IMAGE.'admin_images/';
+
+require_once(e_ADMIN.'auth.php');
+require_once(e_HANDLER.'ren_help.php');
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
+require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'mailout_class.php');		// Class handler for core mailout functions
+require_once(e_HANDLER.'mailout_admin_class.php');			// Admin tasks handler
+require_once(e_HANDLER.'mail_manager_class.php');	// Mail DB API
+require_once (e_HANDLER.'message_handler.php');
+$emessage = &eMessage :: getInstance();
 
 
-$mail_plugin = FALSE;
-$action = '';
-$sub_par = '';
-$mail_id = 0;
-if (e_QUERY)
+$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
+$pageMode = varset($_GET['savepage'], $action);			// Sometimes we need to know what brought us here - $action gets changed
+$mailId = intval(varset($_GET['m'],0));
+$targetId = intval(varset($_GET['t'],0));
+
+
+// Create mail admin object, load all mail handlers
+$mailAdmin = new mailoutAdminClass($action);			// This decodes parts of the query using $_GET syntax
+if ($mailAdmin->loadMailHandlers() == 0)
+{	// No mail handlers loaded
+	echo 'No mail handlers loaded!!';
+	exit;
+}
+
+
+$errors = array();
+
+$subAction = '';
+$midAction = '';
+
+
+if (isset($_POST['mailaction']))
 {
-  $qs = explode('.',e_QUERY);
-  $action = varset($qs[0],'');
-  switch ($action)
-  {
-	case 'justone' :
-	  $mail_plugin = varset($qs[1],'');
-	  $mail_plugin = trim($mail_plugin);
-	  break;
+	if (is_array($_POST['mailaction']))
+	{
+		foreach ($_POST['mailaction'] as $k => $v)
+		{
+			if ($v)		// Look for non-empty action
+			{
+				$mailId = $k;
+				$action = $v;
+				break;
+			}
+		}
+	}
+}
+
+
+if (isset($_POST['targetaction']))
+{
+	if (is_array($_POST['targetaction']))
+	{
+		foreach ($_POST['targetaction'] as $k => $v)
+		{
+			if ($v)		// Look for non-empty action
+			{
+				$targetId = $k;
+				$action = $v;
+				break;
+			}
+		}
+	}
+}
+
+//echo "Action: {$action}  MailId: {$mailId}  Target: {$targetId}<br />";
+// ----------------- Actions ----------------------------------------------->
+switch ($action)
+{
+	case 'prefs' :
+		if (getperms('0'))
+		{
+			if (isset($_POST['testemail'])) 
+			{		//		Send test email - uses standard 'single email' handler
+				if(trim($_POST['testaddress']) == '')
+				{
+					$emessage->add(LAN_MAILOUT_19, E_MESSAGE_ERROR);
+					$subAction = 'error';
+				}
+				else
+				{
+					$mailheader_e107id = USERID;
+					require_once(e_HANDLER.'mail.php');
+					$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
+					$sendto = trim($_POST['testaddress']);
+					if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_189)) 
+					{
+						$emessage->add(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106, E_MESSAGE_ERROR);
+					} 
+					else 
+					{
+						$emessage->add(LAN_MAILOUT_81. ' ('.$sendto.')', E_MESSAGE_SUCCESS);
+						$admin_log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
+					}
+				}
+			}
+			elseif (isset($_POST['updateprefs']))
+			{
+				saveMailPrefs($emessage);
+			}
+		}
+		break;
+
+	case 'mailedit' :		// Edit existing mail
+		if (isset($_POST['mailaction']))
+		{
+			$action = 'makemail';
+			$mailData = $mailAdmin->retrieveEmail($mailId);
+			if ($mailData === FALSE)
+			{
+				$emessage->add(LAN_MAILOUT_164.':'.$mailId, E_MESSAGE_ERROR);
+				break;
+			}
+		}
+		break;
+
+	case 'makemail' :
+		$newMail = TRUE;
+		if (isset($_POST['save_email']))
+		{
+			$subAction = 'new';
+		}
+		elseif (isset($_POST['update_email']))
+		{
+			$subAction = 'update';
+			$newMail = FALSE;
+		}
+		elseif (isset($_POST['send_email'])) 
+		{	// Send bulk email
+			$subAction = 'send';
+		}
+		if ($subAction != '')
+		{
+			$mailData = $mailAdmin->parseEmailPost($newMail);
+			$errors = $mailAdmin->checkEmailPost($mailData, $subAction == 'send');		// Full check if sending email
+			if ($errors !== TRUE)
+			{
+				$subAction = 'error';
+				break;
+			}
+			$mailData['mail_selectors'] = $mailAdmin->getAllSelectors();	// Add in the selection criteria
+		}
+
+		// That's the checking over - now do something useful!
+		switch ($subAction)
+		{
+			case 'send' :					// This actually creates the list of recipients in the display routine
+				$action = 'marksend';
+				break;
+			case 'new' :
+				// TODO: Check all fields created - maybe 
+				$mailData['mail_content_status'] = MAIL_STATUS_SAVED;
+				$mailData['mail_create_app'] = 'core';
+				$result = $mailAdmin->saveEmail($mailData, TRUE);
+				if (is_numeric($result))
+				{
+					$mailData['mail_source_id'] = $result;
+					$emessage->add(LAN_MAILOUT_145, E_MESSAGE_SUCCESS);
+				}
+				else
+				{
+					$emessage->add(LAN_MAILOUT_146, E_MESSAGE_ERROR);
+				}
+				break;
+			case 'update' :
+				$mailData['mail_content_status'] = MAIL_STATUS_SAVED;
+				$result = $mailAdmin->saveEmail($mailData, FALSE);
+				if (is_numeric($result))
+				{
+					$mailData['mail_source_id'] = $result;
+					$emessage->add(LAN_MAILOUT_147, E_MESSAGE_SUCCESS);
+				}
+				else
+				{
+					$emessage->add(LAN_MAILOUT_146, E_MESSAGE_ERROR);
+				}
+				break;
+		}
+		break;
+
+	case 'mailcancel' :
+		$action = $pageMode;		// Want to return to some other page
+		if ($mailAdmin->cancelEmail($mailId))
+		{
+			$emessage->add(str_replace('--ID--', $mailId, LAN_MAILOUT_220), E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_221);
+		}
+		break;
+
+	case 'maildelete' :
+		break;
+
+	case 'mailtargets' :
+		$action = 'recipients';
+		// Intentional fall-through
+	case 'recipients' :
+		if (isset($_POST['etrigger_ecolumns']))
+		{
+			$mailAdmin->mailbodySaveColumnPref($action);
+		}
+		break;
+
+	case 'marksend' :			// Actually do something with an email and list of recipients - entry from email confirm page
+		$action = 'saved';
+		if (isset($_POST['email_cancel']))		// 'Cancel' in this context means 'delete' - don't want it any more
+		{
+			$midAction = 'midDeleteEmail';
+		}
+		elseif (isset($_POST['email_hold']))
+		{
+			if ($mailAdmin->activateEmail($mailId, TRUE))
+			{
+				$emessage->add(str_replace('--ID--', $mailId, LAN_MAILOUT_187), E_MESSAGE_SUCCESS);
+			}
+			else
+			{
+				$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
+			}
+			$action = 'held';
+		}
+		elseif (isset($_POST['email_send']))
+		{
+			$midAction = 'midMoveToSend';
+			$action = 'pending';
+		}
+		break;
+
+	case 'mailsendnow' :			// Send mail previously on 'held' list. 
+		$midAction = 'midMoveToSend';
+		$action = 'pending';
+		break;
+
+	case 'maildeleteconfirm' :
+		$action = $pageMode;		// Want to return to some other page
+		$midAction = 'midDeleteEmail';
+		if (!isset($_POST['mailIDConf']) || (intval($_POST['mailIDConf']) != $mailId))
+		{
+			$errors[] = str_replace(array('--ID--', '--CHECK--'), array($mailId, intval($_POST['mailIDConf'])), LAN_MAILOUT_174);
+			break;
+		}
+		break;
+
+	case 'mailonedelete' :
 	case 'debug' :
-	  $sub_par = varset($qs[1],'sendmail');
-	  break;
-	case 'savedmail' :
-	case 'mailouts' :
-	  $sub_par = varset($qs[1],'');
-	  if ($sub_par) $mail_id = intval(varset($qs[2],0));
-  }
-}
+		$emessage->add('Not implemented yet', E_MESSAGE_ERROR);
+		break;
 
-
-// Class handler for core mailout functions
-require_once(e_HANDLER."mailout_class.php");
-
-$mail_handlers = array();
-$mail_handlers[] = new core_mailout();		// Start by loading the core mailout class
-
-
-$active_mailers = explode(',',varset($pref['mailout_enabled'],''));
-
-
-// Load additional configured handlers
-foreach (explode(',',$pref['mailout_sources']) as $mailer)
-{
-  if (isset($pref['plug_installed'][$mailer]) && in_array($mailer,$active_mailers))
-//  if (isset($pref['plug_installed'][$mailer]))											// Check its enabled later
-  {  // Could potentially use this handler - its installed and enabled
-	if (($mail_plugin === FALSE) || ($mail_plugin == $mailer))
-	{
-	  if (!is_readable(e_PLUGIN.$mailer."/mailout_class.php"))
-	  {
-		echo "Invalid mailer selected: ".$mailer."<br />";
-		exit;
-	  }
-	  require_once(e_PLUGIN.$mailer."/mailout_class.php");
-	  if (varset($mailer_include_with_default,TRUE) || ($mail_plugin == $mailer))
-	  {	// Definitely need this plugin
-		$mail_class = 'mailout_'.$mailer;
-		$temp = new $mail_class;
-		if ($temp->mailer_enabled)
+	case 'saved' :		// Show template emails - probably no actions
+		if (isset($_POST['etrigger_ecolumns']))
 		{
-		  $mail_handlers[] = &$temp;
-		  if (($mail_plugin !== FALSE) && varset($mailer_exclude_default,FALSE))
-		  {
-			$mail_handlers[0]->mailer_enabled = FALSE;			// Don't need default handler
-		  }
+			$mailAdmin->mailbodySaveColumnPref($action);
+		}
+		break;
+
+	case 'sent' :
+	case 'pending' :
+	case 'held' :
+		if (isset($_POST['etrigger_ecolumns']))
+		{
+			$mailAdmin->mailbodySaveColumnPref($action);
+		}
+		break;
+
+	case 'maint' :		// Perform any maintenance actions required
+		if (isset($_POST['email_dross']))
+		if ($mailAdmin->dbTidy())
+		{
+			$emessage->add(LAN_MAILOUT_184, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-		  unset($temp);
+			$errors[] = LAN_MAILOUT_183;
 		}
-	  }
-	}
-  }
-}
+		break;
 
-
-//----------------------------------------
-//		Send test email - uses standard 'single email' handler
-//----------------------------------------
-if (isset($_POST['testemail']) && getperms("0")) 
-{
-    if(trim($_POST['testaddress']) == "")
-	{
-	  $message = LAN_MAILOUT_19;
-	}
-	else
-	{
-		$mailheader_e107id = USERID;
-		require_once(e_HANDLER."mail.php");
-		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : " (PHP)";
-		$sendto = trim($_POST['testaddress']);
-		if (!sendemail($sendto, LAN_MAILOUT_113." ".SITENAME.$add, LAN_MAILOUT_114,LAN_MAILOUT_125)) 
-		{
-			$message = ($pref['mailer'] == "smtp")  ? LAN_MAILOUT_67 : LAN_MAILOUT_106;
-		} 
-		else 
-		{
-			$message = LAN_MAILOUT_81. "(".$sendto.")";
-			$admin_log->log_event('MAIL_01',$sendto,E_LOG_INFORMATIVE,'');
-		}
-	}
-}
-
-/*
-// Delete any mailout entries that have hung around for a day or more (intentionally commented out - done manually now)
-$sql->db_Delete("generic", "gen_type='sendmail' AND gen_datestamp < ".(time()-86400));
-*/
-
-//----------------------------------------
-//		Saved emails
-//----------------------------------------
-if (isset($_POST['save_email']))
-{
-	$qry = "0,'massmail', '".time()."', '".USERID."', '".$tp->toDB($_POST['email_subject'])."',  '0', \"".$tp->toDB($_POST['email_body'])."\"  ";
-	$message = $sql -> db_Insert("generic", $qry) ? LAN_SAVED : LAN_ERROR;
-}
-
-
-if (isset($_POST['update_email']))
-{
-	$qry = "gen_user_id = '".USERID."', gen_datestamp = '".time()."', gen_ip = '".$tp->toDB($_POST['email_subject'])."', gen_chardata= \"".$tp->toDB($_POST['email_body'])."\" WHERE gen_id = '".$_POST['update_id']."' ";
-	$message = $sql -> db_Update("generic", $qry) ? LAN_UPDATED : LAN_UPDATED_FAILED;
-}
-
-/*
-if (isset($_POST['delete']))
-{
-	$d_idt = array_keys($_POST['delete']);
-	$message = ($sql -> db_Delete("generic", "gen_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
-	$action = 'list';
-}
-
-
-if (isset($_POST['edit']))
-{
-  $e_idt = array_keys($_POST['edit']);
-  if($sql -> db_Select("generic", "*", "gen_id='".$e_idt[0]."' "))
-  {
-	$foo = $sql -> db_Fetch();
-  }
-}
-*/
-
-if (($action == 'savedmail') && $sub_par && $mail_id)
-{
-//  echo "Dealing with saved emails {$sub_par} ID {$mail_id}<br />";
-  switch($sub_par)
-  {
-	case 'edit' : 
-	  if($sql -> db_Select("generic", "*", "gen_id='".$mail_id."' "))
-	  {
-		$foo = $sql -> db_Fetch();
-		$action = 'makemail';
-	  }
-	  break;
-	case 'delete' :
-	  $message = ($sql -> db_Delete("generic", "gen_id='".$mail_id."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
-	  $action = 'list';
-	  break;
 	default :
-	  $action = 'makemail';
-  }
-}
+		$emessage->add('Code malfunction 23! ('.$action.')', E_MESSAGE_ERROR);
+		$e107->ns->tablerender(LAN_MAILOUT_97, $emessage->render());
+		exit;			// Could be a hack attempt
+}	// switch($action) - end of 'executive' tasks
 
 
 
-
-
-  $_POST['mail_id']  = time();		// Unique ID for email - used to select our run of emails (as opposed to any other that might be going on)
-
-//  if (!is_object($sql2)) $sql2 = new db;				// Should be OK in 0.8
-
-
-
-function ret_extended_field_list($list_name, $add_blank = FALSE)
+// ------------------------ Intermediate actions ---------------------------
+// (These have more than one route to trigger them)
+switch ($midAction)
 {
-	$sql = e107::getDb();
-
-  $ret = "<select name='{$list_name}' class='tbox'>\n";
-  if ($add_blank) $ret .= "<option value=''>&nbsp;</option>\n";
-  
-  $sql -> db_Select("user_extended_struct");
-  while($row = $sql-> db_Fetch())
-  {
-	$ret .= "<option value='ue.user_".$row['user_extended_struct_name']."' >".ucfirst($row['user_extended_struct_name'])."</option>\n";
-  }
-  $ret .= "</select>\n";
-  return $ret;
-}
-
-// ---------------------------------------------
-//		Find a block of emails to send
-// ---------------------------------------------
-if (isset($_POST['submit'])) 
-{
-  $c = 0;					// Record count
-  $dups = 0;				// Counter for duplicates
-
-
-  $email_subject = $tp->toDB($_POST['email_subject']);
-  $mail_id = intval(varset($_POST['mail_id'],0));
-  
-/* Save the actual email, so we aren't reliant on passing $_POST data for immediate use
- Format is as follows:
-  gen_id int(10) unsigned NOT NULL auto_increment, 		- set to zero (auto assigned)
-  gen_type varchar(80) NOT NULL default '',				- record type being added ('savemail')
-  gen_datestamp int(10) unsigned NOT NULL default '0',	- Mail ID code - to match the destination address records
-  gen_user_id int(10) unsigned NOT NULL default '0',	- User ID of current author
-  gen_ip varchar(80) NOT NULL default '',				- Email subject
-  gen_intdata int(10) unsigned NOT NULL default '0',	- Initially set to zero - set to number of emails initially added
-  gen_chardata text NOT NULL,							- 'From' email address and name, Email body
-*/
-  $email_data = array('sender_email' => $email_address, 
-						'sender_name' => $email_name, 
-						'copy_to'		=> $tp->toDB($_POST['email_cc']),
-						'bcopy_to'		=> $tp->toDB($_POST['email_bcc']),
-						'attach'		=> $tp->toDB(trim($_POST['email_attachment'])),
-						'email_subject'	=> $tp->toDB(trim($_POST['email_subject'])),
-						'email_body' 	=> $tp->toDB($_POST['email_body']),
-						'use_theme'		=> intval(varset($_POST['use_theme'],0))
-					); 
-  $qry = "0,'savemail', '".$mail_id."', '".USERID."', '".$tp->toDB($_POST['email_subject'])."',  '0', '".serialize($email_data)."'  ";
-
-  
-
-  $message = ($mail_text_id = $sql -> db_Insert("generic", $qry)) ? LAN_SAVED : LAN_ERROR;
-
-  $mail_text_id = intval($mail_text_id);
-  if ($mail_text_id == 0)
-  {
-    Echo "Email not saved.<br />";
-	echo $message;
-	require_once(FOOTERF);
-	exit;
-  }
-
- 
-  foreach ($mail_handlers as $m)
-  {	// Get email addresses from each handler in turn. Do them one at a time, so that all can use the $sql data object
-	if ($m->mailer_enabled)
-	{
-	// Initialise
-      $m->select_init();
-	
-	// Get email addresses - add to list, strip duplicates
-	  while ($row = $m->select_add()) 
-	  {	// Add email addresses to the database ready for sending (the body is never saved in the DB - it gets passed as a $_POST value)
-
-		$email_address = trim($row['user_email']);
-		$email_name = $row['user_name'];
-		if ($email_name == '') { $email_name = 'unknown'; }
-
-		$email_target = serialize(array('user_email' => $email_address, 
-									'user_name' => $email_name, 
-									'user_signup' => varset($row['user_signup'],''))); 
-
-/*
-Table data:
-  gen_id int(10) unsigned NOT NULL auto_increment, 		- set to zero (auto assigned)
-  gen_type varchar(80) NOT NULL default '',				- record type being added - 'sendmail'
-  gen_datestamp int(10) unsigned NOT NULL default '0',	- Mail ID code (matches the stored email)
-  gen_user_id int(10) unsigned NOT NULL default '0',	- User ID - zero if not a registered user
-  gen_ip varchar(80) NOT NULL default '',				- User email address (so we can search for duplicates)
-  gen_intdata int(10) unsigned NOT NULL default '0',	- ID number of email text in 'generic' table (previous version used zero here)
-  gen_chardata text NOT NULL,							- User email address, name, signup link ID (previous version stored subject here)
-*/
-
-
-		$qry = "0,'sendmail', '".$_POST['mail_id']."', '".$row['user_id']."', '".$email_address."', '".$mail_text_id."', '".$email_target."' ";
-
-		if ($sql2->db_Select('generic', 'gen_ip', "`gen_datestamp`= '{$_POST['mail_id']}' AND `gen_ip`='{$email_address}'"))
+	case 'midDeleteEmail' :
+//		$emessage->add($pageMode.': Would delete here: '.$mailId, E_MESSAGE_SUCCESS);
+//		break;														// Delete this
+		$result = $mailAdmin->deleteEmail($mailId, 'all');
+		if (($result === FALSE) || !is_array($result))
 		{
-	      $dups++;		// Found second entry with same email address
+			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
 		}
 		else
 		{
-		  if($sql2 -> db_Insert("generic", $qry))
-		  {
-			$c++;
-		  }
-		  else
-		  {
-			echo "Error on insert: ".$qry."<br />";
-		  }
+			if (isset($result['content']))
+			{
+				if ($result['content'] === FALSE)
+				{
+					$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_167);
+				}
+				else
+				{
+					$emessage->add(str_replace('--ID--', $mailId, LAN_MAILOUT_167), E_MESSAGE_SUCCESS);
+				}
+			}
+			if (isset($result['recipients']))
+			{
+				if ($result['recipients'] === FALSE)
+				{
+					$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_169);
+				}
+				else
+				{
+					$emessage->add(str_replace(array('--ID--', '--NUM--'), array($mailId, $result['recipients']), LAN_MAILOUT_170), E_MESSAGE_SUCCESS);
+				}
+			}
 		}
-	  }
-
-	  // Close
-	  $m->select_close();
-	}
-  }
-  
-	$sql->db_Update('generic',"`gen_intdata`={$c} WHERE `gen_id`={$mail_text_id}");
-	$admin_log->log_event('MAIL_02','ID: '.$mail_text_id.' '.$c.'[!br!]'.$_POST['email_from_name']." &lt;".$_POST['email_from_email'],E_LOG_INFORMATIVE,'');
-
-
-
-
-// We've got all the email addresses here - display a confirmation form
-	$debug = (e_MENU == "debug") ? "?[debug]" : "";
-
-	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_HANDLER."phpmailer/mailout_process.php".$debug."' name='mailform' onsubmit=\"open('', 'popup','width=230,height=170,resizable=1,scrollbars=0');this.target = 'popup';return true;\" >
-		<div>";
-
-	$text .= "<input type='hidden' name='mail_text_id' value='".$mail_text_id."' />\n";
-	$text .= "<input type='hidden' name='mail_id' value='".$mail_id."' />\n";
-
-	$text .= "</div>";
-
-	$text .= "<div>{$c} ".LAN_MAILOUT_24."</div>";
-
-	$text .= "<div><br /><input class='button' type='submit' name='send_mails' value='".LAN_MAILOUT_37."' />
-	<input class='button' type='submit' name='cancel_emails' value='".LAN_MAILOUT_38."' />
-	</div>";
-	$text .= "<br /><br />".LAN_MAILOUT_118."</form><br /><br /></div>";
+		break;
+	case 'midMoveToSend' :
+		if ($mailAdmin->activateEmail($mailId, FALSE))
+		{
+			$emessage->add(LAN_MAILOUT_185, E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_188);
+		}
+		break;
+}
 
 
 
-//  Preview Email 
-// --------------
-	$text .= "
-	<div>
-    <table cellpadding='0' cellspacing='0' class='adminform'>
-    	<colgroup span='2'>
-    		<col class='col-label' />
-    		<col class='col-control' />
-    	</colgroup>
-		<tr>
-			<td>".LAN_MAILOUT_01." / ".LAN_MAILOUT_02."</td>
-			<td>".$_POST['email_from_name']." &lt;".$_POST['email_from_email']."&gt;</td>
-		</tr>";
-
-
-// Add in core and any plugin selectors here
-	foreach ($mail_handlers as $m)
-	{
-	  if ($m->mailer_enabled)
-	  {
-		$text .= "<tr><td>".$m->mailer_name."</td><td>".$m->show_select(FALSE)."</td></tr>";
-	  }
-	}
-
-
-// Support 'cc' and 'bcc' as standard mailout addresses
-	$text .= ($_POST['email_cc']) ? "
-		<tr>
-			<td>".LAN_MAILOUT_04."</td>
-			<td>".$_POST['email_cc']."&nbsp;</td>
-		</tr>": "";
-
-	$text .= ($_POST['email_bcc']) ? "
-		<tr>
-			<td>".LAN_MAILOUT_05."</td>
-			<td>".$_POST['email_bcc']."&nbsp;</td>
-		</tr>": "";
-
-	$text .= "
-		<tr>
-			<td>".LAN_MAILOUT_51."</td>
-			<td>".$_POST['email_subject']."&nbsp;</td>
-		</tr>";
-
-	// Attachment
-	if ($email_data['attach'])
-	{
-	$text .= "
-		<tr>
-			<td>".LAN_MAILOUT_07."</td>
-			<td>".$email_data['attach']."&nbsp;</td>
-		</tr>";
-	}
-
-	// Figures - number of emails to send, number of duplicates stripped
-	$text .= "
-		  <tr>
-			<td>".LAN_MAILOUT_71."</td>
-			<td> ".$c." ".LAN_MAILOUT_69.$dups.LAN_MAILOUT_70."</td>
-		  </tr>";
-
-	// Email text
-	$text .="<tr>
-			<td colspan='2'>".stripslashes($tp->toHTML($_POST['email_body'],TRUE))."</td>
-		</tr>
-
-	</table>
-	</div>";
-
-
- 	$ns->tablerender(LAN_MAILOUT_39." ({$c}) ", $text);
-	require_once(e_ADMIN."footer.php");
-	exit;
-}	// End of previewed email
-
-
-
-
-//. Update Preferences.
-
-if (isset($_POST['updateprefs']) && getperms('0')) 
+// --------------------- Display errors and results ------------------------
+if (is_array($errors) && (count($errors) > 0))
 {
+	foreach ($errors as $e)
+	{
+		$emessage->add($e, E_MESSAGE_ERROR);
+	}
+	unset($errors);
+}
+if ($emessage->hasMessage())
+{
+	$e107->ns->tablerender(LAN_MAILOUT_97, $emessage->render());
+}
+
+
+// ---------------------- Display required page ----------------------------
+// At this point $action determines which page display is required - one of a 
+// fairly limited number of choices
+$mailAdmin->newMode($action);
+//echo "Action: {$action}  MailId: {$mailId}  Target: {$targetId}<br />";
+
+switch ($action)
+{
+	case 'prefs' :
+		if (getperms('0'))
+		{
+			show_prefs($mailAdmin);
+		}
+		break;
+
+	case 'maint' :
+		if (getperms('0'))
+		{
+			show_maint(FALSE);
+		}
+		break;
+	
+	case 'debug' :
+		if (getperms('0'))
+		{
+			show_maint(TRUE);
+		}
+		break;
+
+	case 'saved' :				// Show template emails
+	case 'sent' :
+	case 'pending' :
+	case 'held' :
+		$mailAdmin->showEmailList($action, -1, -1);
+		break;
+
+	case 'maildelete' :			// NOTE:: need to set previous page in form
+		$mailAdmin->showDeleteConfirm($mailId, $pageMode);
+		break;
+
+	case 'marksend' :			// Show the send confirmation page
+		$mailAdmin->sendEmailCircular($mailData);
+		break;
+
+	case 'recipients' :
+		$mailAdmin->showmailRecipients($mailId, $action);
+		break;
+
+	case 'makemail' :
+	default :
+		if (!is_array($mailData))
+		{
+			$mailData = array();			// Empty array just in case
+		}
+		$mailAdmin->show_mailform($mailData);
+		break;
+}
+
+
+
+require_once(e_ADMIN."footer.php");
+
+
+
+
+// Update Preferences. (security handled elsewhere)
+function saveMailPrefs(&$emessage)
+{
+	global $pref;
+	$e107 = e107::getInstance();
 	unset($temp);
 	if (!in_array($_POST['mailer'], array('smtp', 'sendmail', 'php'))) $_POST['mailer'] = 'php';
 	$temp['mailer'] = $_POST['mailer'];
@@ -493,8 +547,11 @@ if (isset($_POST['updateprefs']) && getperms('0'))
 
 	$temp['smtp_options'] = implode(',',$smtp_opts);
 
+	$temp['mail_sendstyle'] = $e107->tp->toDB($_POST['mail_sendstyle']);
 	$temp['mail_pause'] 	= intval($_POST['mail_pause']);
 	$temp['mail_pausetime'] = intval($_POST['mail_pausetime']);
+	$temp['mail_workpertick'] = intval($_POST['mail_workpertick']);
+	$temp['mail_workpertick'] = min($temp['mail_workpertick'],1000);
 	$temp['mail_bounce_email'] = $e107->tp->toDB($_POST['mail_bounce_email']);
 	$temp['mail_bounce_pop3'] = $e107->tp->toDB($_POST['mail_bounce_pop3']);
 	$temp['mail_bounce_user'] =	$e107->tp->toDB($_POST['mail_bounce_user']);
@@ -505,530 +562,24 @@ if (isset($_POST['updateprefs']) && getperms('0'))
 	$temp['mailout_enabled'] = implode(',',$_POST['mail_mailer_enabled']);
 	$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
 
-	if ($admin_log->logArrayDiffs($temp, $pref, 'MAIL_03'))
+	if ($e107->admin_log->logArrayDiffs($temp, $pref, 'MAIL_03'))
 	{
-		save_prefs();		// Only save if changes
-		$message = LAN_SETSAVED;
+		save_prefs();		// Only save if changes - generates its own message
+//		$emessage->add(LAN_SETSAVED, E_MESSAGE_SUCCESS);
 	}
 	else
 	{
-		$message = IMALAN_20;
+		$emessage->add(LAN_NO_CHANGE, E_MESSAGE_INFO);
 	}
 }
 
 
-if (isset($message)) 
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
-
-
-
-// ----------------- Actions ----------------------------------------------->
-
-//if((!e_QUERY && !$_POST['delete']) || $_POST['edit']) $action = 'makemail';
-
-if (!varsettrue($action)) $action = 'makemail';
-switch ($action)
-{
-	case "prefs" :
-		if (getperms("0"))
-		{
-			show_prefs();
-		}
-		break;
-
-	case 'makemail' :
-		show_mailform($foo);
-		break;
-
-	case "list" :
-		showList();
-		break;
-
-	case 'debug' :
-		showList($sub_par);
-		break;
-
-	case 'mailouts' :
-		showMailouts($sub_par,$mail_id);
-}
-
-require_once(e_ADMIN."footer.php");
-
-
-
-//---------------------------------------------
-//		List of incomplete mailouts
-//---------------------------------------------
-function showMailouts($sub_par,$mail_id)
-{
-	global $images_path;
-	$e107 = e107::getInstance();
-//  gen_datestamp int(10) unsigned NOT NULL default '0',	- Mail ID code - to match the destination address records
-//  gen_user_id int(10) unsigned NOT NULL default '0',	- User ID of current author
-//  gen_ip varchar(80) NOT NULL default '',				- Email subject
-//  gen_intdata int(10) unsigned NOT NULL default '0',	- Initially set to zero - set to number of emails initially added
-
-	$message = '';
-	if ($sub_par && $mail_id)
-	{
-		switch ($sub_par)
-		{
-			case 'delete' :
-				if ($e107->sql->db_Select('generic','gen_datestamp',"`gen_datestamp`={$mail_id} AND `gen_type`='savemail'"))
-				{
-					$message = $e107->sql->db_Delete('generic',"`gen_datestamp`={$mail_id} AND (`gen_type`='sendmail' OR `gen_type`='savemail')") ? LAN_DELETED : LAN_DELETED_FAILED;
-					$e107->admin_log->log_event('MAIL_04',$mail_id,E_LOG_INFORMATIVE,'');
-				}
-				else
-				{	// Should only happen if people fiddle!
-					$message = "Error - database record not found";
-					echo "DB error<br />";
-				}
-				break;
-
-			case 'detail' :		// Show the detail of an email run above the main list
-				if ($e107->sql->db_Select('generic','gen_id,gen_datestamp,gen_chardata',"`gen_datestamp`={$mail_id} AND `gen_type`='savemail'"))
-				{	
-					$row = $e107->sql->db_Fetch();
-					// Display a little bit of the email
-					$mail = unserialize($row['gen_chardata']);
-					$text = "
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<colgroup>
-						<col style='width:25%; text-align: center;' />
-						<col style='width:75%' />
-						</colgroup>\n
-						<tr>
-						<td>".LAN_MAILOUT_51."</td>
-						<td>".$mail['email_subject']."</td>
-						</tr>\n
-						<tr>
-						<td>".LAN_MAILOUT_103."</td>
-						<td>".(isset($mail['send_results']) ? implode('<br />',$mail['send_results']) : LAN_MAILOUT_104)."</td>
-						</tr>\n";
-					if ($e107->sql->db_Select('generic','gen_id,gen_datestamp,gen_chardata',"`gen_datestamp`={$mail_id} AND `gen_type`='sendmail'"))
-					{
-						$text .= "<tr><td>".LAN_MAILOUT_105."</td><td>";
-						$spacer = '';
-						$i = 0;
-						while (($row = $e107->sql->db_Fetch()) && ($i < 10))
-						{
-							$this_mail = unserialize($row['gen_chardata']);
-							if (isset($this_mail['send_result'])) 
-							{
-								$text .= $spacer.LAN_MAILOUT_03.' '.$this_mail['user_name'].' '.LAN_MAILOUT_107.' '.$this_mail['user_email'].' '.LAN_MAILOUT_108.' '.$this_mail['send_result'];
-								$spacer = '<br />';
-								$i++;
-							}
-						}
-						$text .= "</td></tr>\n";
-					}
-					$text .= "
-						</table>
-					";
-					$e107->ns->tablerender(LAN_MAILOUT_102." :: ".LAN_MAILOUT_97,$text);
-				}
-				else
-				{	// Should only happen if people fiddle!
-				  $message = "Error - database record not found";
-				  echo "DB error<br />";
-				}
-				break;
-
-			case 'resend' :
-		//	    Echo "resend: {$mail_id}<br />";
-				if ($e107->sql->db_Select('generic','gen_id,gen_datestamp,gen_chardata',"`gen_datestamp`={$mail_id} AND `gen_type`='savemail'"))
-				{	// Put up confirmation
-					$row = $e107->sql->db_Fetch();
-
-					$debug = (e_MENU == "debug") ? "[debug]" : "";
-					$mailer_url = e_HANDLER."phpmailer/mailout_process.php?".$debug."{$row['gen_datestamp']}.{$row['gen_id']}";
-
-					$c = $e107->sql->db_Count('generic','(*)',"WHERE `gen_datestamp`={$mail_id} AND `gen_type`='sendmail'");	// Count of mails to go
-
-					$text = "<div style='text-align:center'>
-						<form method='post' action='{$mailer_url}' name='mailform' onsubmit=\"open('', 'popup','width=230,height=170,resizable=1,scrollbars=0');this.target = 'popup';return true;\" >
-						";
-					$text .= "<div>{$c} ".LAN_MAILOUT_24."</div>";
-
-					$text .= "<div><br /><input class='button' type='submit' name='send_mails' value='".LAN_MAILOUT_37."' />
-						<input class='button' type='submit' name='cancel_emails' value='".LAN_MAILOUT_38."' />
-						</div>";
-					$text .= "</form><br /><br /></div>";
-					$e107->ns->tablerender(LAN_MAILOUT_99,$text);
-
-					// Display a little bit of the email
-					$mail = unserialize($row['gen_chardata']);
-					$text = "
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<colgroup>
-						<col style='width:25%; text-align: center;' />
-						<col style='width:75%' />
-						</colgroup>\n
-						<tr>
-						<td>".LAN_MAILOUT_51."</td>
-						<td>".$mail['email_subject']."</td>
-						</tr>\n
-						<tr>
-						<td>".LAN_MAILOUT_100."</td>
-						<td>".$mail['email_body']."</td>
-						</tr>\n
-						</table>
-					  ";
-					$e107->ns->tablerender(LAN_MAILOUT_101,$text);
-
-					return;
-				}
-				else
-				{	// Should only happen if people fiddle!
-					$message = "Error - database record not found";
-					echo "DB error<br />";
-				}
-				break;
-			case 'orphans' :				// Delete any orphaned emails
-				if ($e107->sql->db_Select('generic','gen_datestamp',"`gen_datestamp`={$mail_id} AND `gen_type`='sendmail'"))
-				{
-					$message = $e107->sql->db_Delete('generic',"`gen_datestamp`={$mail_id} AND `gen_type`='sendmail'") ? LAN_DELETED : LAN_DELETED_FAILED;
-					$e107->admin_log->log_event('MAIL_04',$mail_id,E_LOG_INFORMATIVE,'');
-				}
-				else
-				{	// Should only happen if people fiddle!
-					$message = "Error - database record not found";
-					echo "DB error<br />";
-				}
-				break;
-			default :
-				echo "Invalid parameter: {$sub_par}<br />";
-		}
-	}
-
-
-	if ($message) $e107->ns -> tablerender("<div style='text-align:center'>".LAN_MAILOUT_78."</div>", $message);
-
-	// Need to select main email entries; count number of addresses attached to each
-	$gen = new convert;
-	$qry = "SELECT 
-		u.user_name, g.*, 
-		COUNT(m.gen_datestamp) AS pending
-		FROM `#generic` AS g 
-		LEFT JOIN `#user` as u ON g.gen_user_id=u.user_id
-		LEFT JOIN `#generic` AS m ON m.gen_datestamp = g.gen_datestamp AND m.gen_type='sendmail'
-		WHERE g.gen_type='savemail'
-		GROUP BY g.gen_datestamp
-		ORDER BY g.gen_id ASC";
-	$count = $e107->sql -> db_Select_gen($qry);
-  
-	$emails_found = array();			// Log ID and count for later
-
-	$text = "<div style='text-align:center'>";
-
-	if (!$count)
-	{
-		$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_79."</div>";
-		$e107->ns -> tablerender(ADLAN_136." :: ".LAN_MAILOUT_78, $text);
-		require_once(e_ADMIN."footer.php");
-		exit;
-	}
-
-	$text .= "
-		<form action='".e_SELF.'?'.e_QUERY."' id='email_list' method='post'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<colgroup>
-		<col style='width:5%; text-align: center;' />
-		<col style='width:12%' />
-		<col style='width:10%' />
-		<col style='width:30%' />
-		<col style='width:7%; text-align: center;' />
-		<col style='width:7%; text-align: center;' />
-		<col style='width:9%; text-align: center;' />
-		</colgroup>
-		<tr>
-		<td class='fcaption'>".LAN_MAILOUT_84."</td>
-		<td class='fcaption'>".LAN_MAILOUT_80."</td>
-		<td class='fcaption'>".LAN_MAILOUT_85."</td>
-		<td class='fcaption'>".LAN_MAILOUT_06."</td>
-		<td class='fcaption'>".LAN_MAILOUT_82."</td>
-		<td class='fcaption'>".LAN_MAILOUT_83."</td>
-		<td class='fcaption'>".LAN_OPTIONS."</td>
-		</tr>
-	";
-
-	while ($row = $e107->sql->db_Fetch())
-	{
-		$datestamp = $gen->convert_date($row['gen_datestamp'], "short");
-
-		if ($row['pending']) $emails_found[$row['gen_datestamp']] = $row['pending'];				// Log the mailshot in a list if any emails to go
-		$text .= "<tr>
-			<td >".$row['gen_datestamp'] ."</td>
-			<td>".$datestamp."</td>
-			<td>".$row['user_name']."</td>
-			<td>".$row['gen_ip']."</td>
-			<td>".$row['gen_intdata']."</td>
-			<td>".$row['pending']."</td>
-			<td style='width:50px;white-space:nowrap'>
-			<div>";
-		$text .= "<a href='".e_SELF."?mailouts.detail.{$row['gen_datestamp']}'><img src='".$images_path."search_16.png' alt='".LAN_MAILOUT_109."' title='".LAN_MAILOUT_109."' class='icon S16' /></a>";
-		if ($row['pending'])
-		{
-		  $text .= "<a href='".e_SELF."?mailouts.resend.{$row['gen_datestamp']}'><img src='".$images_path."mail_16.png' alt='".LAN_MAILOUT_86."' title='".LAN_MAILOUT_86."' class='icon S16' /></a>";
-		}
-		$text .= "
-			<a href='".e_SELF."?mailouts.delete.{$row['gen_datestamp']}' onclick='return jsconfirm(\"".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."\")'><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' class='icon S16' /></a>
-			</div>
-			</td>
-			</tr>
-		";
-	}
-
-	$text .= "</table>\n</form><br /><br /><br /></div>";
-	$e107->ns -> tablerender(ADLAN_136." :: ".LAN_MAILOUT_78, $text);
-  
-	// Now see if we can find any 'orphaned' mailout entries
-	$qry = "SELECT 
-		g.gen_datestamp, 
-		COUNT(g.gen_datestamp) AS pending
-		FROM `#generic` AS g 
-		WHERE g.gen_type='sendmail'
-		GROUP BY g.gen_datestamp
-		ORDER BY g.gen_id ASC";
-	$count = $e107->sql -> db_Select_gen($qry);
-	//  Echo "There are {$count} groups of unsent emails: ".count($emails_found)." in previous table<br />";
-	if ($count > count($emails_found))
-	{
-		$text = "
-			<form action='".e_SELF.'?'.e_QUERY."' id='email_orphans' method='post'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
-			<colgroup>
-			<col style='width:25%; text-align: center;' />
-			<col style='width:60%' />
-			<col style='width:15%; text-align: center;' />
-			</colgroup>
-			<tr>
-			<td class='fcaption'>".LAN_MAILOUT_84."</td>
-			<td class='fcaption'>".LAN_MAILOUT_83."</td>
-			<td class='fcaption'>".LAN_OPTIONS."</td>
-			</tr>\n
-		";
-		while ($row = $e107->sql->db_Fetch())
-		{
-		  if (!isset($emails_found[$row['gen_datestamp']]))
-		  {
-			$text .= "<tr>
-				<td >".$row['gen_datestamp'] ."</td>
-				<td>".$row['pending']."</td>
-				<td style='white-space:nowrap'>
-				<div>
-				<a href='".e_SELF."?mailouts.orphans.{$row['gen_datestamp']}' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row['gen_datestamp']."]")."') \"><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' class='icon S16' /></a>
-				</div>
-				</td>
-				</tr>\n
-			";
-		  }
-	//    echo "ID: {$row['gen_datestamp']}  Unsent: {$row['pending']}";
-		}
-		$text .= "</table>\n</form><br /><br /><br /></div>";
-		$e107->ns -> tablerender("<div style='text-align:center'>".LAN_MAILOUT_98."</div>", $text);
-	}
-}
-
-
-
-//---------------------------------------------
-// 			Display Mailout Form
-//---------------------------------------------
-
-function show_mailform($foo="")
-{
-	global $pref,$HANDLERS_DIRECTORY;
-	global $mail_handlers;
-	$e107 = e107::getInstance();
-	$tp = e107::getParser();
-	$frm = e107::getForm();
-	
-
-	
-	$email_subject = $foo['gen_ip'];
-	$email_body = $tp->toForm($foo['gen_chardata']);
-	$email_id = $foo['gen_id'];
-	$text = "";
-
-	if(strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip") && !is_readable(e_HANDLER."phpmailer/.htaccess"))
-	{
-		$warning = LAN_MAILOUT_40." ".$HANDLERS_DIRECTORY."phpmailer/ ".LAN_MAILOUT_41;
-		$e107->ns -> tablerender(LAN_MAILOUT_42, $warning);
-	}
-
-	$debug = (e_MENU == "debug") ? "?[debug]" : "";
-	$text .= "<div>
-		<form method='post' action='".e_SELF.$debug."' id='mailout_form'>
-		<table cellpadding='0' cellspacing='0' class='adminform'>
-		<colgroup span='2'>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>
-		<tr>
-		<td>".LAN_MAILOUT_01.": </td>
-		<td>
-		<input type='text' name='email_from_name' class='tbox' style='width:80%' size='10' value=\"".varset($_POST['email_from_name'],USERNAME)."\" />
-		</td>
-		</tr>";
-
-
-	$text .="
-		<tr>
-		<td>".LAN_MAILOUT_02.": </td>
-		<td >
-		<input type='text' name='email_from_email' class='tbox' style='width:80%' value=\"".varset($_POST['email_from_email'],USEREMAIL)."\" />
-		</td>
-		</tr>";
-
-
-// Add in the core and any plugin selectors here
-	foreach ($mail_handlers as $m)
-	{
-		if ($m->mailer_enabled)
-		{
-			$text .= "<tr><td>".$m->mailer_name."</td><td>".$m->show_select(TRUE)."</td></tr>";
-		}
-	}
-
-
-
-// CC, BCC
-	$text .= "
-		<tr>
-		<td>".LAN_MAILOUT_04.": </td>
-		<td >
-		<input type='text' name='email_cc' class='tbox' style='width:80%' value=\"".$_POST['email_cc']."\" />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_05.": </td>
-		<td >
-		<input type='text' name='email_bcc' class='tbox' style='width:80%' value='{$email_bcc}' />
-		</td>
-		</tr>";
-
-
-
-// Close one table, open another - to give a boundary between addressees and content
-	$text .= "</table>
-		<table cellpadding='0' cellspacing='0' class='adminform'>
-		<colgroup span='2'>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>";
-
-// Subject
-	$text .= "
-		<tr>
-		<td>".LAN_MAILOUT_51.": </td>
-		<td>
-		<input type='text' name='email_subject' class='tbox' style='width:80%' value='{$email_subject}' />
-		</td>
-		</tr>";
-
-
-// Attachment. //TODO needs to be pluginized. eg. e_mailout.php
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_07.": </td>
-		<td >";
-	$text .= "<select class='tbox' name='email_attachment' >
-		<option value=''>&nbsp;</option>\n";
-	$e107->sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name");
-	while ($row = $e107->sql->db_Fetch()) 
-	{
-		extract($row);
-		$selected = ($_POST['email_attachment'] == $download_url) ? "selected='selected'" :
-		 "";
-		$text .= "<option value=\"{$download_url} \" {$selected}>".htmlspecialchars($download_name)."</option>\n";
-	}
-	$text .= " </select>";
-
-	$text .= "</td>
-	</tr>";
-
-
-	$text .= "
-		<tr>
-		<td>".LAN_MAILOUT_09.": </td>
-		<td >
-		<input type='checkbox' name='use_theme' value='1' />
-		</td>
-		</tr>
-
-		<tr>
-		<td colspan='2' >
-		<textarea rows='10' cols='20' id='email_body' name='email_body'  class='e-wysiwyg tbox' style='width:80%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$email_body."</textarea>
-		</td>
-		</tr>";
-
-	$text .="
-		<tr>
-		<td colspan='2'>
-		<div>";
-
-    global $eplug_bb;
-
-    $eplug_bb[] = array(
-			'name'		=> 'shortcode',
-			'onclick'	=> 'expandit',
-			'onclick_var' => 'sc_selector',
-			'icon'		=> e_IMAGE.'generic/bbcode/shortcode.png',
-			'helptext'	=> LAN_MAILOUT_11,
-			'function'	=> 'sc_Select',
-			'function_var'	=> 'sc_selector'
-	);
-
-	$text .= display_help('helpb','mailout');
-
-	if(e_WYSIWYG) 
-	{
-		$text .="<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'>
-		<input type='button' class='button' name='usrname' value=\"".LAN_MAILOUT_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERNAME|')\" />
-		<input type='button' class='button' name='usrlink' value=\"".LAN_MAILOUT_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|SIGNUP_LINK|')\" />
-		<input type='button' class='button' name='usrid' value=\"".LAN_MAILOUT_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'|USERID|')\" /></span>";
-	}
-
- 	$text .="
-		</div></td>
-		</tr>
-		</table> ";
-
-
-	$text .= "<div class='buttons-bar center'>";
-	if(isset($_POST['edit']))
-	{
-		$text .= "<input type='hidden' name='update_id' value='".$email_id."' />";
-		$text .= $frm->admin_button('update_email', LAN_UPDATE);
-	}
-	else
-	{
-
-		$text .= $frm->admin_button('save_email', LAN_SAVE);
-	}
-
-
-	
-	$text .= $frm->admin_button('submit', LAN_MAILOUT_08);
-	
-	$text .= "
-	</div>
-
-	</form>
-	</div>";
-
-	$e107->ns->tablerender(ADLAN_136." :: ".LAN_MAILOUT_56, $text);
-}
 
 //----------------------------------------------------
 //		MAILER OPTIONS
 //----------------------------------------------------
 
-function show_prefs()
+function show_prefs($mailAdmin)
 {
 	global $pref;
 	$e107 = e107::getInstance();
@@ -1053,7 +604,7 @@ function show_prefs()
 		<tr>
 			<td>".LAN_MAILOUT_110."<br /></td>
 			<td>".$frm->admin_button(testemail, LAN_MAILOUT_112)."&nbsp;
-			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : SITEADMINEMAIL)."\" />
+			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
 			</td>
 		</tr>
 
@@ -1061,68 +612,71 @@ function show_prefs()
 		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
 		<td>
 		<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
-		$mailers = array('php','smtp','sendmail');
-		foreach($mailers as $opt)
-		{
-			$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : "";
-			$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
-		}
-		$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
+	$mailers = array('php','smtp','sendmail');
+	foreach($mailers as $opt)
+	{
+		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : "";
+		$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
+	}
+	$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
 
 
 
 // SMTP. -------------->
 	$smtp_opts = explode(',',varset($pref['smtp_options'],''));
-	$smtpdisp = ($pref['mailer'] != "smtp") ? "display:none;" : "";
-	$text .= "<div id='smtp' style='{$smtpdisp}  '>
-		<table style='margin-right:auto;margin-left:0px;border:0px'>";
-	$text .= "	<tr>
+	$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
+	$text .= "<div id='smtp' {$smtpdisp}>
+		<table style='margin-right:auto;margin-left:0px;border:0px'>
+		<colgroup span='2'>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>
+		";
+	$text .= "
+		<tr>
 		<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
-		<td style='width:50%' >
+		<td>
 		<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
 		</td>
 		</tr>
 
 		<tr>
-		<td style=' ' >".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td style='width:50%' >
+		<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+		<td style='width:50%;' >
 		<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
 		</td>
 		</tr>
 
 		<tr>
-		<td style=' ' >".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td style='width:50%;' >
+		<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+		<td>
 		<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
 		</td>
 		</tr>
 
 		<tr>
-		<td colspan='2'>".LAN_MAILOUT_90.":&nbsp;
+		<td>".LAN_MAILOUT_90."</td><td>
 		<select class='tbox' name='smtp_options'>\n
 		<option value=''>".LAN_MAILOUT_96."</option>\n";
-		$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
-		$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
-		$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-		$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
+	$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
+	$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
+	$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
+	$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
+	$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
+	$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
+	$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
 
 	$text .= "<tr>
-		<td colspan='2' style=' ' >".LAN_MAILOUT_57.":&nbsp;
+		<td>".LAN_MAILOUT_57."</td><td>
 		";
 	$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : "";
 	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
 		</td>
 		</tr>";
-		
-		
-
 
 	$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
 	$text .= "<tr>
-		<td colspan='2'>".LAN_MAILOUT_95.":&nbsp;
+		<td>".LAN_MAILOUT_95."</td><td>
 		<input type='checkbox' name='smtp_useVERP' value='1' {$checked} />
 		</td>
 		</tr>
@@ -1130,13 +684,13 @@ function show_prefs()
 
 
 // Sendmail. -------------->
-	$senddisp = ($pref['mailer'] != "sendmail") ? "display:none;" : "";
-	$text .= "<div id='sendmail' style='{$senddisp}  '><table style='margin-right:0px;margin-left:auto;border:0px'>";
+	$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : "";
+	$text .= "<div id='sendmail' {$senddisp}><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "
 
 	<tr>
-	<td >".LAN_MAILOUT_20.":&nbsp;&nbsp;</td>
-	<td style=' ' >
+	<td>".LAN_MAILOUT_20.":&nbsp;&nbsp;</td>
+	<td>
 	<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
 	</td>
 	</tr>
@@ -1147,27 +701,41 @@ function show_prefs()
 	$text .="</td>
 	</tr>
 
+
+	<tr>
+		<td>".LAN_MAILOUT_222."</td>
+		<td>";
+	$text .= $mailAdmin->sendStyleSelect(varset($pref['mail_sendstyle'], 'textonly'), 'mail_sendstyle');
+	$text .= 
+		"<span class='field-help'>".LAN_MAILOUT_223."</span>
+		</td>
+	</tr>\n
+
+	
 	<tr>
 		<td>".LAN_MAILOUT_25."</td>
 		<td> ".LAN_MAILOUT_26."
 		<input class='tbox' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> ".LAN_MAILOUT_27.
-		"<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".LAN_MAILOUT_29.".
+		"<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> ".LAN_MAILOUT_29.".<br />
 		<span class='field-help'>".LAN_MAILOUT_30."</span>
 		</td>
-	</tr>\n";	
+	</tr>\n
 	
-	
-	
+	<tr>
+		<td>".LAN_MAILOUT_156."</td>
+		<td><input class='tbox' size='3' type='text' name='mail_workpertick' value='".varset($pref['mail_workpertick'],5)."' />
+		<span class='field-help'>".LAN_MAILOUT_157."</span>
+		</td>
+	</tr>\n";
 
-	if (isset($pref['mailout_sources']))
+	if (isset($pref['e_mailout_list']))
 	{  // Allow selection of email address sources
-	  $text .= "<tr>
+		$text .= "<tr>
 		<td>".LAN_MAILOUT_77."</td>
-		<td > 
+		<td style='text-align:right'> 
 	  ";
 	  $mail_enable = explode(',',$pref['mailout_enabled']);
-	  foreach (explode(',',$pref['mailout_sources']) as $mailer)
-	  {
+	  foreach ($pref['e_mailout_list'] as $mailer => $v)	  {
 		$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
 		$text .= $mailer."&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /><br />";
 	  }
@@ -1178,21 +746,18 @@ function show_prefs()
 	$check = ($mail_log_email == 1) ? " checked='checked'" : "";
 	$text .= "<tr>
 		<td>".LAN_MAILOUT_72."</td>
-		<td > 
-		<div class='field-spacer'>
+		<td> 
 		<select class='tbox' name='mail_log_option'>\n
 		<option value='0'".(($mail_log_option==0) ? " selected='selected'" : "").">".LAN_MAILOUT_73."</option>\n
 		<option value='1'".(($mail_log_option==1) ? " selected='selected'" : "").">".LAN_MAILOUT_74."</option>\n
 		<option value='2'".(($mail_log_option==2) ? " selected='selected'" : "").">".LAN_MAILOUT_75."</option>\n
-		<option value='2'".(($mail_log_option==3) ? " selected='selected'" : "").">".LAN_MAILOUT_119."</option>\n
-		</select> <input type='checkbox' name='mail_log_email' value='1' {$check} /> ".LAN_MAILOUT_76.
-		"</div></td>
+		<option value='3'".(($mail_log_option==3) ? " selected='selected'" : "").">".LAN_MAILOUT_119."</option>\n
+		</select>\n
+		<input type='checkbox' name='mail_log_email' value='1' {$check} />".LAN_MAILOUT_76.
+		"</td>
 	</tr>\n";
 
-	$text .= "
-
-	</table>
-
+	$text .= "</table>
 	<fieldset id='core-mail-prefs-bounce'>
 		<legend".($mode ? " class='e-hideme'" : "").">".LAN_MAILOUT_31."</legend>
 		<table cellpadding='0' cellspacing='0' class='adminedit'>
@@ -1206,19 +771,21 @@ function show_prefs()
 	</tr>
 	
 	<tr>
-		<td>Auto-process script</td><td><b>".substr($_SERVER['DOCUMENT_ROOT'],0,-1).e_HANDLER_ABS."bounce_handler.php</b>";
-
-	//FIXME: for Windows, the is_executable() function only checks the file
-	// extensions of exe, com, bat and cmd.
-	if(!is_executable(e_HANDLER."bounce_handler.php"))
-	{
-		//FIXME hardcoded text and wrong info
-		$text .= " <span class='required'>IMPORTANT! You need to CHMOD this file to 0755</span>";
-	}
+		<td>Auto-process script</td><td><b>".(e_DOCROOT ? substr(e_DOCROOT, 0, -1) : '/').e_HANDLER_ABS."bounce_handler.php</b>";
 		
+	if(!is_readable(e_HANDLER.'bounce_handler.php'))
+	{
+		$text .= "<br /><span class='required'>".LAN_MAILOUT_161."</span>";
+	}
+	elseif(!is_executable(e_HANDLER.'bounce_handler.php'))		// Seems to give wrong answers on Windoze
+	{
+		$text .= "<br /><span class='required'>".LAN_MAILOUT_162."</span>";
+	}
+
+	// TODO: Determine type of bounce processing
 	$text .= "</td>
-	</tr>		
-	<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
+		</tr>		
+		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_33."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_34."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_35."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></td></tr>
@@ -1247,179 +814,78 @@ function show_prefs()
 
 
 
-//--------------------------------------------------------
-//		Show list of saved emails
-//--------------------------------------------------------
-// Default is what the user wants - saved emails
-// Debug modes list any type of data in the generic table - don't believe the column headings!
-function showList($type='massmail')
+//-----------------------------------------------------------
+//			MAINTENANCE OPTIONS
+//-----------------------------------------------------------
+function show_maint($debug = FALSE)
 {
-  global $images_path;
-  
-  $ns = e107::getRender();
-  $sql = e107::getDb();
-  $tp = e107::getParser();
-  
-  $gen = new convert;
-  if (!(trim($type))) $type = 'massmail';
-  $qry ="SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type = '{$type}' ORDER BY g.gen_datestamp DESC";
-  $count = $sql -> db_Select_gen($qry);
+	$e107 = e107::getInstance();
+	$text = "<div style='text-align:center'>";
 
-  $text = "<div style='text-align:center'>";
-
-  if (!$count)
-  {
-	$text = "<div class='forumheader2' style='text-align:center'>".LAN_MAILOUT_22."</div>";
-	$ns -> tablerender(ADLAN_136." :: ".LAN_MAILOUT_97, $text);
-	require_once(e_ADMIN."footer.php");
-	exit;
-  }
-
-  $text .= "
-		<form action='".e_SELF."' id='display' method='post'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<colgroup>
-		<col style='width:5%; text-align: center;' />
-		<col style='width:10%' />
-		<col style='width:40%' />
-		<col style='width:20%; text-align: center;' />
-		<col style='width:5%; text-align: center;' />
-		</colgroup>
-		<tr>
-		<td class='fcaption'>".LAN_MAILOUT_49."</td>
-		<td class='fcaption'>".LAN_MAILOUT_50."</td>
-		<td class='fcaption'>".LAN_MAILOUT_51."</td>
-		<td class='fcaption'>".LAN_MAILOUT_52."</td>
-		<td class='fcaption'>".LAN_OPTIONS."</td>
-		</tr>
-	";
-
-  $glArray = $sql -> db_getList();
-  foreach($glArray as $row2)
-  {
-	$datestamp = $gen->convert_date($row2['gen_datestamp'], "short");
-
-	$text .= "<tr>
-		<td >".$row2['gen_id'] ."</td>
-		<td>".$row2['user_name']."</td>
-		<td>".$row2['gen_ip']."</td>
-		<td>".$datestamp."</td>
-		<td style='width:50px;white-space:nowrap'>
-		<div>";
-	$text .= "<a href='".e_SELF."?savedmail.edit.{$row2['gen_id']}'><img src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' class='icon S16' /></a>";
-//		<input type='image' name='edit[{$row2['gen_id']}]' value='edit' src='".$images_path."edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
-//		<input type='image' name='delete[{$row2['gen_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \" src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
 	$text .= "
-		<a href='".e_SELF."?savedmail.delete.{$row2['gen_id']}' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \"><img src='".$images_path."delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' class='icon S16' /></a>
-		</div>
-		</td>
-		</tr>
-	";
-  }
+			<form action='".e_SELF."?mode=maint' id='email_maint' method='post'>
+			<fieldset id='email-maint'>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+			<colgroup span='2'>
+				<col class='col-label' />
+				<col class='col-control' />
+			</colgroup>
+			
+			<tbody>";
 
-  $text .= "</table>\n</form><br /><br /><br /></div>";
-  $ns -> tablerender(ADLAN_136." :: ".LAN_MAILOUT_97, $text);
+		$text .= "<tr><td colspan='2'>".LAN_MAILOUT_182." <input class='button' type='submit' name='email_dross' value=\"".LAN_SUBMIT."\" /></td></tr>";
+		$text .= "</tbody></table>\n</fieldset>";
+
+		$e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".ADLAN_40."</div>", $text);
+
+//	$text .= "</table></div>";
 }
 
 
 
-// Generate list of userclasses, including the number of members in each class.
-function userclasses($name) 
-{
 
-	$sql = e107::getDb();
-	
-	$text .= "<select style='width:80%' class='tbox' name='{$name}' >
-		<option value='all'>".LAN_MAILOUT_12."</option>
-		<option value='unverified'>".LAN_MAILOUT_13."</option>
-		<option value='admin'>".LAN_MAILOUT_53."</option>
-		<option value='self'>".LAN_MAILOUT_54."</option>";
-	$query = "SELECT uc.*, count(u.user_id) AS members
-			FROM #userclass_classes AS uc
-			LEFT JOIN #user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
-			GROUP BY uc.userclass_id
-					";
-
-	$sql->db_Select_gen($query);
-	while ($row = $sql->db_Fetch()) 
-	{
-		$public = ($row['userclass_editclass'] == 0)? "(".LAN_MAILOUT_10.")" : "";
-		$text .= "<option value='{$row['userclass_id']}' >".LAN_MAILOUT_55." - {$row['userclass_name']}  {$public} [{$row['members']}]</option>";
-	}
-	$text .= " </select>";
-
-	return $text;
-}
 
 
 function mailout_adminmenu() 
 {
-	$action = (e_QUERY) ? e_QUERY : "post";
-	if($action == "edit")
+	$e107 = e107::getInstance();
+	$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
+	if($action == 'mailedit')
 	{
-    	$action = "post";
+    	$action = 'makemail';
 	}
-    $var['post']['text'] = LAN_MAILOUT_56;
+    $var['post']['text'] = LAN_MAILOUT_190;
 	$var['post']['link'] = e_SELF;
-	$var['post']['perm'] = "W";
+	$var['post']['perm'] = 'W';
 
-    $var['list']['text'] = LAN_MAILOUT_97;			// Saved emails
-	$var['list']['link'] = e_SELF."?list";
-	$var['list']['perm'] = "W";
+    $var['saved']['text'] = LAN_MAILOUT_191;		// Saved emails
+	$var['saved']['link'] = e_SELF.'?mode=saved';
+	$var['saved']['perm'] = 'W';
 
-    $var['mailouts']['text'] = LAN_MAILOUT_78;		// Email runs
-	$var['mailouts']['link'] = e_SELF."?mailouts";
-	$var['mailouts']['perm'] = "W";
+    $var['pending']['text'] = LAN_MAILOUT_193;		// Pending email runs
+	$var['pending']['link'] = e_SELF.'?mode=pending';
+	$var['pending']['perm'] = 'W';
 
-	if(getperms("0")){
+    $var['held']['text'] = LAN_MAILOUT_194;			// Held email runs
+	$var['held']['link'] = e_SELF.'?mode=held';
+	$var['held']['perm'] = 'W';
+
+    $var['sent']['text'] = LAN_MAILOUT_192;			// Completed email runs
+	$var['sent']['link'] = e_SELF.'?mode=sent';
+	$var['sent']['perm'] = 'W';
+
+	if(getperms("0"))
+	{
 		$var['prefs']['text'] = LAN_PREFS;
-		$var['prefs']['link'] = e_SELF."?prefs";
-   		$var['prefs']['perm'] = "0";
+		$var['prefs']['link'] = e_SELF.'?mode=prefs';
+   		$var['prefs']['perm'] = '0';
+
+		$var['maint']['text'] = ADLAN_40;
+		$var['maint']['link'] = e_SELF.'?mode=maint';
+   		$var['maint']['perm'] = '0';
     }
-	show_admin_menu(ADLAN_136, $action, $var);
+	show_admin_menu(LAN_MAILOUT_15, $action, $var);
 }
-
-
-function sc_Select($container='sc_selector') 
-{
-	$text ="
-<!-- Start of Shortcode selector -->
-	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$container}'>
-	<div style='position:absolute; bottom:30px; right:125px'>
-	<table class='fborder' style='background-color: #fff'>
-	<tr><td>
-	<select class='tbox' name='sc_sel' onchange=\"addtext(this.value); this.selectedIndex= 0; expandit('{$container}')\">
-	<option value=''> -- </option>\n";
-
-	$sc = array(
-		"|USERNAME|" => LAN_MAILOUT_16,
-        "|SIGNUP_LINK|" => LAN_MAILOUT_17,
-        "|USERID|" => LAN_MAILOUT_18
-	);
-
-	foreach($sc as $key=>$val){
-		$text .= "<option value='".$key."'>".$val."</option>\n";
-	}
-	$text .="
-	</select></td></tr>	\n </table></div>
-	</div>
-\n<!-- End of SC selector -->
-
-";
-
-	return $text;
-}
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1429,16 +895,17 @@ function headerjs()
 
 	$text = "
 	<script type='text/javascript'>
-	function disp(type) {
-
-
-		if(type == 'smtp'){
+	function disp(type) 
+	{
+		if(type == 'smtp')
+		{
 			document.getElementById('smtp').style.display = '';
 			document.getElementById('sendmail').style.display = 'none';
 			return;
 		}
 
-		if(type =='sendmail'){
+		if(type =='sendmail')
+		{
             document.getElementById('smtp').style.display = 'none';
 			document.getElementById('sendmail').style.display = '';
 			return;
@@ -1446,13 +913,11 @@ function headerjs()
 
 		document.getElementById('smtp').style.display = 'none';
 		document.getElementById('sendmail').style.display = 'none';
-
 	}
 	</script>";
 
 	return $text;
 }
-
 
 
 ?>

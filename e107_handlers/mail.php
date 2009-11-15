@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-09-01 19:53:07 $
+ * $Revision: 1.14 $
+ * $Date: 2009-11-15 17:38:04 $
  * $Author: e107steved $
 */
 
@@ -26,7 +26,6 @@ Three main scenarios to handle:
 	- Personalised mailshots - template email modified to personalise for each recipient (based on DB list)
 
 TODO:
-1. Look at VERP - implement and check
 2. Bulk mailing - look at using the batching constants with SMTPKeepAlive to reset the connection every so often
 3. mail (PHP method) - note that it has parameters for additional headers and other parameters
 4. Check that language support works - PHPMailer defaults to English if other files not available
@@ -35,20 +34,15 @@ TODO:
 	- Use rolling log for errors - error string(s) available - sort out entry
 	- Look at support of some other logging options
 	- Debug option to just log, not send emails (variables in place, and supported by current bulk mailer)
-6. Capability to identify and log caller (for tracking down which bit of code sent emails)
-7. Look at how cc, bcc addresses are handled in bulk mailing scenarios - may need to disable them on later sends.
-8. Include theme info in header if enabled?
 9. Make sure SMTPDebug can be set (TRUE/FALSE)
 10. Get rid of mime_content_type() - deprecated (function $this->mime_types() does something similar, given a file extension)
-11. Add public/protected/private to all functions and variables
 12. Check support for port number - ATM we just override for SSL. Looks as if phpmailer can take it from end of server link.
-13. Possibly strip bbcode from plain text mailings
-14. Note option for class constants
-16. Add a routine or class which adds a list of recipients and an email to the mailout DB
+13. Possibly strip bbcode from plain text mailings - best done by caller?
 18. Note object iteration - may be useful for dump of object state
 19. Consider overriding error handler
 20. Look at using new prefs structure
 21. Should we always send an ID?
+22. Force singleton so all mail sending flow controlled a bit
 
 
 Tested so far (with PHP4 version)
@@ -137,7 +131,7 @@ if (!defined('e107_INIT')) { exit; }
 
 
 //define('MAIL_DEBUG',TRUE);
-define('LOG_CALLER', TRUE);
+//define('LOG_CALLER', TRUE);
 
 require_once(e_HANDLER.'phpmailer/class.phpmailer.php');
 
@@ -237,7 +231,7 @@ class e107Email extends PHPMailer
 					$pop->Authorise($overrides['smtp_server'], 110, 30, $overrides['smtp_username'], $overrides['smtp_password'], 1);
 				}
 
-				$this->Mailer = "smtp";
+				$this->Mailer = 'smtp';
 				$this->localUseVerp = isset($smtp_options['useVERP']);
 				if (isset($smtp_options['secure']))
 				{
@@ -245,7 +239,7 @@ class e107Email extends PHPMailer
 					{
 						case 'TLS' :
 							$this->SMTPSecure = 'tls';
-							$this->Port = 465;		// Can also use port 587
+							$this->Port = 465;		// Can also use port 587, and maybe even 25
 							break;
 						case 'SSL' :
 							$this->SMTPSecure = 'ssl';
@@ -322,10 +316,10 @@ class e107Email extends PHPMailer
 		}
 		if ($this->logHandle !== FALSE)
 		{
-			fwrite($this->logHandle,"=====".date('H:i:s y.m.d')."----------------------------------------------------------------=====\r\n");
+			fwrite($this->logHandle,"\n\n=====".date('H:i:s y.m.d')."----------------------------------------------------------------=====\r\n");
 			if ($logInfo)
 			{
-				fwrite($this->logHandle,'  Start of mail run by '.USERNAME." - {$count} emails to go. ID: {$mail_id}. Subject: {$mail_subject}\r\n");
+				fwrite($this->logHandle,'  Mailer opened by '.USERNAME." - ID: {$mail_id}. Subject: {$this->Subject}  Log action: {$this->logEnable}\r\n");
 				if ($this->add_email)
 				{
 					fwrite($this->logHandle, 'From: '.$this->From.' ('.$this->FromName.")\r\n");
@@ -587,24 +581,25 @@ class e107Email extends PHPMailer
 	public function arraySet($paramlist)
 	{
 		if (isset($paramlist['SMTPDebug'])) $this->SMTPDebug = $paramlist['SMTPDebug'];			// 'FALSE' is a valid value!
-		if (varsettrue($paramlist['subject'])) $this->Subject = $paramlist['subject'];
-		if (varsettrue($paramlist['from'])) $this->From = $paramlist['from'];
-		if (varsettrue($paramlist['fromname'])) $this->FromName = $paramlist['fromname'];
-		if (varsettrue($paramlist['replyto'])) $this->AddAddressList('replyto',$paramlist['replyto'],varsettrue($paramlist['replytonames'],''));	
+		if (varsettrue($paramlist['mail_subject'])) $this->Subject = $paramlist['mail_subject'];
+		if (varsettrue($paramlist['mail_sender_email'])) $this->From = $paramlist['mail_sender_email'];
+		if (varsettrue($paramlist['mail_sender_name'])) $this->FromName = $paramlist['mail_sender_name'];
+		if (varsettrue($paramlist['mail_replyto'])) $this->AddAddressList('replyto',$paramlist['mail_replyto'],varsettrue($paramlist['mail_replytonames'],''));	
 		if (isset($paramlist['send_html'])) $this->allow_html = $paramlist['send_html'];							// 'FALSE' is a valid value!
 		if (isset($paramlist['add_html_header'])) $this->add_HTML_header = $paramlist['add_html_header'];			// 'FALSE' is a valid value!
-		if (varsettrue($paramlist['message'])) $this->makeBody($paramlist['message'], $this->allow_html, $this->add_HTML_header);
-		if (varsettrue($paramlist['attachments'])) $this->attach($paramlist['attachments']);
-		if (varsettrue($paramlist['cc'])) $this->AddAddressList('cc',$paramlist['cc'],varsettrue($paramlist['ccnames'],''));
-		if (varsettrue($paramlist['bcc'])) $this->AddAddressList('bcc',$paramlist['bcc'],varsettrue($paramlist['bccnames'],''));
+		if (varsettrue($paramlist['mail_body'])) $this->makeBody($paramlist['mail_body'], $this->allow_html, $this->add_HTML_header);
+		if (varsettrue($paramlist['mail_attach'])) $this->attach($paramlist['mail_attach']);
+		if (varsettrue($paramlist['mail_copy_to'])) $this->AddAddressList('cc',$paramlist['mail_copy_to'],varsettrue($paramlist['mail_cc_names'],''));
+		if (varsettrue($paramlist['mail_bcopy_to'])) $this->AddAddressList('bcc',$paramlist['mail_bcopy_to'],varsettrue($paramlist['mail_bcc_names'],''));
 		if (varsettrue($paramlist['bouncepath'])) 
 		{
 			$this->Sender = $paramlist['bouncepath'];				// Bounce path
 			$this->save_bouncepath = $paramlist['bouncepath'];		// Bounce path
 		}
 		if (varsettrue($paramlist['returnreceipt'])) $this->ConfirmReadingTo = $paramlist['returnreceipt'];
-		if (varsettrue($paramlist['inline-images'])) $this->addInlineImages($paramlist['inline-images']);
-		if (varsettrue($paramlist['priority'])) $this->Priority = $paramlist['priority'];
+		if (varsettrue($paramlist['mail_inline_images'])) $this->addInlineImages($paramlist['mail_inline_images']);
+		if (varsettrue($paramlist['mail_priority'])) $this->Priority = $paramlist['mail_priority'];
+		if (varsettrue($paramlist['e107_header'])) $this->AddCustomHeader("X-e107-id: {$paramlist['e107_header']}");
 		if (varsettrue($paramlist['extra_header'])) 
 		{
 			if (is_array($paramlist['extra_header']))
@@ -627,30 +622,35 @@ class e107Email extends PHPMailer
 	}
 
 
-	  // Send an email where the bulk of the data is passed in an array. Returns 0 on success.
-	  // (Even if the array is null, because everything previously set up, this is the preferred entry point)
-	  // Where parameter not present in the array, doesn't get changed - useful for bulk mailing
-	  // If doing bulk mailing with repetitive calls, set $bulkmail parameter true, and must call allSent() when completed
-	  // Some of these parameters have been made compatible with the array calculated by render_email() in signup.php
-	  // Possible array parameters:
-	  // $eml['subject']
-	  // $eml['from']
-	  // $eml['fromname']
-	  // $eml['replyto']		- Optional 'reply to' field 
-	  // $eml['replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
-	  // $eml['send_html']		- if TRUE, includes HTML part in messages (only those added after this flag)
-	  // $eml['add_html_header'] - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>
-	  // $eml['message']		- message body. May be HTML or text. Added according to the current state of the HTML enable flag
-	  // $eml['attachments']	- string if one file, array of filenames if one or more.
-	  // $eml['cc']				- comma-separated list
-	  // $eml['bcc']			- comma-separated list
-	  // $eml['bouncepath']		- Sender field (used for bounces)
-	  // $eml['returnreceipt']	- email address for notification of receipt (reading)
-	  // $eml['inline-images']	- array of files for inline images
-	  // $eml['priority']		- Email priority (1 = High, 3 = Normal, 5 = low)
-	  // $eml['extra_header']	- additional headers
-	  // $eml['wordwrap']		- Set wordwrap value
-	  // $eml['split']			- If true, sends an individual email to each recipient
+	/*
+	Send an email where the bulk of the data is passed in an array. Returns 0 on success.
+	(Even if the array is null, because everything previously set up, this is the preferred entry point)
+	Where parameter not present in the array, doesn't get changed - useful for bulk mailing
+	If doing bulk mailing with repetitive calls, set $bulkmail parameter true, and must call allSent() when completed
+	Some of these parameters have been made compatible with the array calculated by render_email() in signup.php
+	Possible array parameters:
+	$eml['mail_subject']
+	$eml['mail_sender_email']	- 'From' email address
+	$eml['mail_sender_name']	- 'From' name
+	$eml['mail_replyto']		- Optional 'reply to' field 
+	$eml['mail_replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
+	$eml['send_html']		- if TRUE, includes HTML part in messages (only those added after this flag)
+	$eml['add_html_header'] - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
+	$eml['mail_body']		- message body. May be HTML or text. Added according to the current state of the HTML enable flag
+	$eml['mail_attach']	- string if one file, array of filenames if one or more.
+	$eml['mail_copy_to']	- comma-separated list of cc addresses.
+	$eml['mail_cc_names''] - comma-separated list of cc names. Optional, used only if $eml['mail_copy_to'] specified
+	$eml['mail_bcopy_to']	- comma-separated list
+	$eml['mail_bcc_names''] - comma-separated list of bcc names. Optional, used only if $eml['mail_copy_to'] specified
+	$eml['bouncepath']		- Sender field (used for bounces)
+	$eml['returnreceipt']	- email address for notification of receipt (reading)
+	$eml['mail_inline_images']	- array of files for inline images
+	$eml['priority']		- Email priority (1 = High, 3 = Normal, 5 = low)
+	$eml['e107_header']		- Adds specific 'X-e107-id:' header
+	$eml['extra_header']	- additional headers (format is name: value
+	$eml['wordwrap']		- Set wordwrap value
+	$eml['split']			- If true, sends an individual email to each recipient
+	*/
 	public function sendEmail($send_to, $to_name, $eml = '', $bulkmail = FALSE)
 	{
 //		$e107 = e107::getInstance();
@@ -681,7 +681,7 @@ class e107Email extends PHPMailer
 		{
 			$result = $this->Send();		// Actually send email
 
-			if (!$bulkmail && $this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
+			if (!$bulkmail && !$this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
 		}
 		else
 		{	// Debug
@@ -697,17 +697,23 @@ class e107Email extends PHPMailer
 			$this->SendCount = 0;
 		}
 
-		$this->logLine("Send to {$to_name} at {$send_to} Mail-ID={$mail_custom} - {$result}");
+		$this->logLine("Send to {$to_name} at {$send_to} Mail-ID={$mail_custom} - ".($result ? 'Success' : 'Fail'));
 
 		$this->ClearAddresses();			// In case we send another email
 		$this->ClearCustomHeaders();
 
-		if ($result) return TRUE;
-		
+		if ($result)
+		{
+			$this->closeLog();
+			return TRUE;
+		}
+
+		$this->logLine('Error info: '.$this->ErrorInfo);
 		// Error sending email
 		$e107 = e107::getInstance();
 		$e107->admin_log->e_log_event(3,debug_backtrace(),"MAIL","Send Failed",$this->ErrorInfo,FALSE,LOG_TO_ROLLING);
 		$this->TotalErrors++;
+		$this->closeLog();
 		return $this->ErrorInfo;
 	}
 
@@ -764,7 +770,7 @@ class e107Exception extends Exception
 //-----------------------------------------------------
 //		Legacy interface for backward compatibility
 //-----------------------------------------------------
-// (Preferred interface is to instantiate an e107_mail object, then call sendEmail method with an array of parameters
+// (Preferred interface is to instantiate an e107Mail object, then call sendEmail method with an array of parameters
 
 // If $send_from is blank, uses the 'replyto' name and email if set, otherwise site admins details
 // $inline is a comma-separated list of embedded images to be included
@@ -813,13 +819,12 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 
 	if (varsettrue($returnreceipt)) $mail->ConfirmReadingTo($returnreceipt);
 
-	if ($mail->sendEmail($send_to,$to_name)) 
+	if ($mail->sendEmail($send_to,$to_name) === TRUE) 
 	{	// Success
 		return TRUE;
 	}
 
-	// TODO: Possibly Log this somewhere (sendEmail method logs to rolling log)
-	echo "Mail sending error: ".$mail->ErrorInfo."<br />";
+	// Error info already logged
 	return FALSE;
 }
 

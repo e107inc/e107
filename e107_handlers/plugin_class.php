@@ -1,25 +1,24 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.114 $
-|     $Date: 2009-11-08 13:21:56 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Administration - Site Maintenance
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
+ * $Revision: 1.115 $
+ * $Date: 2009-11-15 17:38:05 $
+ * $Author: e107steved $
+ *
 */
+
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_plugin.php');
 
 class e107plugin
 {
@@ -46,7 +45,8 @@ class e107plugin
 		'e_userinfo',
 		'e_tagwords',
 		'e_url',
-		'e_cron'
+		'e_cron',
+		'e_mailout'
 		);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
