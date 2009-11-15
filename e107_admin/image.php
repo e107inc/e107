@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-11-14 04:13:10 $
- * $Author: e107coders $
+ * $Revision: 1.30 $
+ * $Date: 2009-11-15 20:24:55 $
+ * $Author: secretr $
  *
 */
 require_once("../class2.php");
@@ -92,81 +92,6 @@ class media_admin extends e_admin_dispatcher
 	
 	protected $menuTitle = LAN_MEDIAMANAGER;
 		
-	function init()
-	{
-		$this->observeUploaded();
-	}	
-		
-		
-	function observeUploaded()
-	{
-		$sql = e107::getDb();
-		$mes = e107::getMessage();
-		
-		if(!varset($_POST['uploadfiles']) && !varset($_POST['etrigger_submit']))
-		{
-			return;
-		}
-		
-		$pref['upload_storagetype'] = "1";
-		require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
-		$uploaded = process_uploaded_files(e_MEDIA.'temp/');
-		
-		foreach($uploaded as $upload)
-		{
-			$oldpath = 'temp/'.$upload['name'];
-			$newpath =$this->getPath($upload['type']).'/'.$upload['name'];
-						
-			$insert = array(
-				'media_type'		=> $upload['type'],
-				'media_name'		=> $upload['name'],
-				'media_description'	=> '',
-				'media_url'			=> "{e_MEDIA}".$newpath,
-				'media_datestamp'	=> time(),
-				'media_size'		=> $upload['size'],
-				'media_usedby'		=> '',
-				'media_tags'		=> '',
-				'media_author'		=> USERID
-			);
-			
-			// Temporary workaround for class limitation. 
-			/*
-			 * We need to process the data before it's saved to the DB. 
-			 * When the upload is done with ajax, we need to prepopulate the form with the data above.
-			 */
-			
-			if(rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
-			{
-				if($sql->db_Insert('core_media',$insert)) 
-				{
-					$mes->add("Added ".$upload['name']." to DB", E_MESSAGE_SUCCESS);	
-				} 				
-			}			
-		}
-		
-		$message .= print_a($uploaded,TRUE);
-
-		$mes->add($message, E_MESSAGE_DEBUG);
-		
-		
-	}
-	
-	function onDelete() // call when 'delete' is executed. - delete the file with the db record (optional pref)
-	{
-		
-	}
-	
-	function getPath($type)
-	{
-		list($pmime,$tmp) = explode('/',$type);
-		$dir = $this->mimePaths[$pmime]."/".date("Y-m"); 
-		if(!is_dir(e_MEDIA.$dir))
-		{
-			mkdir(e_MEDIA.$dir,0755);	
-		}
-		return $dir;		
-	}
-	
 }
 
 
@@ -233,8 +158,132 @@ class media_admin_ui extends e_admin_ui
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
 		);*/
 	
+	/**
+	 * Invoked just before item create event
+	 * @return array
+	 */
+	public function beforeCreate()
+	{
+		// return data to be merged with posted model data
+		return $this->observeUploaded();
+	}
+	
+	/**
+	 * Same as beforeCreate() but invoked on edit  
+	 * @return 
+	 */
+	public function beforeUpdate()
+	{
+		// return data to be merged with posted model data
+		return $this->observeUploaded();
+	}
 		
+	function observeUploaded()
+	{
+		$pref['upload_storagetype'] = "1";
+		require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
+		$uploaded = process_uploaded_files(e_MEDIA.'temp/');
+		
+		foreach($uploaded as $upload)
+		{
+			$oldpath = 'temp/'.$upload['name'];
+			$newpath = $this->getPath($upload['type']).'/'.$upload['name'];
+						
+			$upload_data = array(
+				'media_type'		=> $upload['type'],
+				'media_name'		=> $upload['name'],
+				'media_datestamp'	=> time(),
+				'media_url'			=> "{e_MEDIA}".$newpath,
+				'media_size'		=> $upload['size'],
+				'media_author'		=> USERID
+			);
+			
+			// only one upload? Not sure what's the idea here
+			// we are currently creating one media item
+			break;
+		}
+		
+		// remove 'media_upload' from save field list
+//		$this->getRequest()->setPosted('media_upload', null);
+//		$dataFields = $this->getModel()->getDataFields();
+//		unset($dataFields['media_upload']);
+//		$this->getModel()->setDataFields($dataFields);
+		
+		// return data to be merged with posted model data
+		return $upload_data;
+		
+		/*$sql = e107::getDb();
+		$mes = e107::getMessage();
+		
+		// not needed
+		if(!varset($_POST['uploadfiles']) && !varset($_POST['etrigger_submit']))
+		{
+			return;
+		}
+		
+		$pref['upload_storagetype'] = "1";
+		require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
+		$uploaded = process_uploaded_files(e_MEDIA.'temp/');
+		
+		foreach($uploaded as $upload)
+		{
+			$oldpath = 'temp/'.$upload['name'];
+			$newpath = $this->getPath($upload['type']).'/'.$upload['name'];
+						
+			$insert = array(
+				'media_type'		=> $upload['type'],
+				'media_name'		=> $upload['name'],
+				'media_description'	=> '',
+				'media_url'			=> "{e_MEDIA}".$newpath,
+				'media_datestamp'	=> time(),
+				'media_size'		=> $upload['size'],
+				'media_usedby'		=> '',
+				'media_tags'		=> '',
+				'media_author'		=> USERID
+			);*/
+			
+			// Temporary workaround for class limitation. 
+			/*
+			 * We need to process the data before it's saved to the DB. 
+			 * When the upload is done with ajax, we need to prepopulate the form with the data above.
+			 */
+			
+			/*if(rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
+			{
+				if($sql->db_Insert('core_media',$insert)) 
+				{
+					$mes->add("Added ".$upload['name']." to DB", E_MESSAGE_SUCCESS);	
+				} 				
+			}			
+		}
+		
+		$message .= print_a($uploaded,TRUE);
 
+		$mes->add($message, E_MESSAGE_DEBUG);*/
+		
+		
+	}
+	
+	function beforeDelete($id) // call before 'delete' is executed. - return false to prevent delete execution (e.g. some dependencies check)
+	{
+		return true;
+	}
+	
+	function afterDelete($deleted_data) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
+	{
+		
+	}
+	
+	function getPath($type)
+	{
+		list($pmime,$tmp) = explode('/',$type);
+		$dir = $this->mimePaths[$pmime]."/".date("Y-m"); 
+		if(!is_dir(e_MEDIA.$dir))
+		{
+			mkdir(e_MEDIA.$dir,0755);	
+		}
+		return $dir;		
+	}
 		
 }
 

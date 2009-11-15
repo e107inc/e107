@@ -9,8 +9,8 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-11-14 14:52:26 $
+ * $Revision: 1.27 $
+ * $Date: 2009-11-15 20:24:55 $
  * $Author: secretr $
 */
 
@@ -2010,6 +2010,25 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $prefs = array();
 	
 	/**
+	 * Data required for _modifyListQry() to automate
+	 * db query building
+	 * @var array 
+	 */
+	protected $tableJoin = array();
+	
+	/**
+	 * Main model table alias
+	 * @var string
+	 */
+	protected $tableAlias;
+	
+	/**
+	 * Default (db) limit value
+	 * @var integer
+	 */
+	protected $perPage = 20;
+	
+	/**
 	 * @var e_admin_model
 	 */
 	protected $_model = null;
@@ -2045,11 +2064,15 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param mixed $default default value if not set, default is null
 	 * @return mixed
 	 */
-	public function getFieldAttr($field, $key, $default = null)
+	public function getFieldAttr($field, $key = null, $default = null)
 	{
-		if(isset($this->fields[$field][$key]))
+		if(isset($this->fields[$field]))
 		{
-			return $this->fields[$field][$key];
+			if(null !== $key)
+			{
+				return isset($this->fields[$field][$key]) ? $this->fields[$field][$key] : $default;
+			}
+			return $this->fields[$field];
 		}
 		return $default;
 	}
@@ -2072,6 +2095,15 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->prefs;
 	}
 	
+	public function getPerPage()
+	{
+		return $this->perPage;
+	}
+	
+	public function getPrimaryName()
+	{
+		return $this->getModel()->getFieldIdName();
+	}
 	
 	/**
 	 * Get column preference array
@@ -2121,14 +2153,64 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this;
 	}
 	
+	/**
+	 * Get model validation array
+	 * @return array
+	 */
 	public function getValidationRules()
 	{
 		return $this->getModel()->getValidationRules();
 	}
 	
+	/**
+	 * Get model data field array
+	 * @return array
+	 */
 	public function getDataFields()
 	{
 		return $this->getModel()->getDataFields();
+	}
+	
+	/**
+	 * Get model table or alias
+	 * @param boolean $alias get table alias on true, default false
+	 * @param object $prefix add e107 special '#' prefix, default false
+	 * @return string
+	 */
+	public function getTableName($alias = false, $prefix = false)
+	{
+		if($alias) return ($this->tableAlias ? $this->tableAlias : '');
+		return ($prefix ? '#' : '').$this->getModel()->getModelTable();
+	}
+	
+	/**
+	 * Get join table data
+	 * @param string $table if null all data will be returned
+	 * @param string $att_name search for specific attribute, default null (no search)
+	 * @return mixed
+	 */
+	public function getJoinData($table = null, $att_name = null, $default_att = null)
+	{
+		if(null === $table)
+		{
+			return $this->tableJoin;
+		}
+		if(null === $att_name)
+		{
+			return (isset($this->tableJoin[$table]) ? $this->tableJoin[$table] : array());
+		}
+		return (isset($this->tableJoin[$table][$att_name]) ? $this->tableJoin[$table][$att_name] : $default_att);
+	}
+	
+	public function setJoinData($table, $data)
+	{
+		if(null === $data) 
+		{
+			unset($this->tableJoin[$table]);
+			return $this;
+		}
+		$this->tableJoin[$table] = (array) $data;
+		return $this;
 	}
 	
 	/**
@@ -2239,6 +2321,495 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this;
 	}
+	
+	/**
+	 * Handle posted batch options routine
+	 * @param string $batch_trigger
+	 * @return e_admin_controller_ui
+	 */
+	protected function _handleListBatch($batch_trigger)
+	{
+		$tp = e107::getParser();
+		//$multi_name = vartrue($this->fields['checkboxes']['toggle'], 'multiselect');
+		$multi_name = $this->getFieldAttr('checkboxes', 'toggle', 'multiselect');
+		$selected = array_values($this->getPosted($multi_name, array()));
+		
+		if(empty($selected)) return $this;
+		
+		$selected = array_map('intval', $selected);
+		$trigger = $tp->toDB(explode('__', $batch_trigger));
+		
+		$this->triggersEnabled(false); //disable further triggering
+
+		switch($trigger[0])
+		{
+			case 'delete': //FIXME - confirmation screen
+				//something like handleListDeleteBatch(); for custom handling of 'delete' batch
+				$method = 'handle'.$this->getRequest()->getActionName().'DeleteBatch';
+				if(method_exists($this, $method)) // callback handling
+				{
+					$this->$method($selected);
+				}
+			break;
+			
+			case 'bool': 
+				$field = $trigger[1];
+				$value = $trigger[2] ? 1 : 0;
+				//something like handleListBoolBatch(); for custom handling of 'bool' batch
+				$method = 'handle'.$this->getRequest()->getActionName().'BoolBatch';
+				if(method_exists($this, $method)) // callback handling
+				{
+					$this->$method($selected, $field, $value);
+					break;
+				}
+			break;
+			
+			case 'boolreverse':
+				$field = $trigger[1];
+				//something like handleListBoolreverseBatch(); for custom handling of 'boolreverse' batch
+				$method = 'handle'.$this->getRequest()->getActionName().'BoolreverseBatch';
+				if(method_exists($this, $method)) // callback handling
+				{
+					$this->$method($selected, $field);
+					break;
+				}
+			break;
+		
+			default:
+				$field = $trigger[0];
+				$value = $trigger[1]; //TODO - errors
+				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
+				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($field).'Batch';
+				if(method_exists($this, $method)) // callback handling
+				{
+					$this->$method($selected, $value);
+					break;
+				}
+				//handleListBatch(); for custom handling of all field names
+				$method = 'handle'.$this->getRequest()->getActionName().'Batch';
+				if(method_exists($this, $method))
+				{
+					$this->$method($selected, $field, $value);
+				}
+			break;
+		}
+		return $this;
+	}	
+
+	/**
+	 * Handle requested filter dropdown value
+	 * @param string $value
+	 * @return array field -> value
+	 */
+	protected function _parseFilterRequest($filter_value)
+	{
+		$tp = e107::getParser();
+		if(!$filter_value || $filter_value === '___reset___')
+		{
+			return array();
+		}
+		$filter = $tp->toDB(explode('__', $filter_value));
+		$res = array();
+		switch($filter[0])
+		{
+			case 'bool': 
+				// direct query
+				$res = array($filter[1], $filter[2]);
+			break;
+		
+			default:
+				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
+				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
+				if(method_exists($this, $method)) // callback handling
+				{
+					return $this->$method($filter[1], $selected);
+				}
+				else // default handling
+				{
+					$res = array($filter[0], $filter[1]);
+				}
+			break;
+		}
+		return $res;
+	}
+	
+	
+	/**
+	 * Convert posted to model values after submit (based on field type)
+	 * @param array $data
+	 * @return void
+	 */
+	protected function convertToData(&$data)
+	{
+		foreach ($this->getFields() as $key => $attributes)
+		{
+			if(!isset($data[$key]))
+			{
+				continue;
+			}
+			switch($attributes['type'])
+			{
+				case 'datestamp':
+					if(!is_numeric($data[$key]))
+					{
+						$data[$key] = e107::getDateConvert()->toTime($data[$key], 'input'); 
+					}
+				break;
+				
+				case 'ip': // TODO - ask Steve if this check is required
+					if(strpos($data[$key], '.') !== FALSE)
+					{
+						$data[$key] = e107::getInstance()->ipEncode($data[$key]);
+					}
+				break;
+			}
+		}
+		$this->toData($data);
+	}
+	
+	/**
+	 * User defined method for converting POSTED to MODEL data
+	 * @param array $data posted data
+	 * @param string $type current action type - edit, create, list or user defined
+	 * @return void
+	 */
+	protected function toData(&$data, $type)
+	{
+	}
+	
+	/**
+	 * Take approproate action after successfull submit
+	 *
+	 * @param integer $id optional, needed only if redirect action is 'edit'
+	 * @param string $noredirect_for don't redirect if action equals to its value
+	 */
+	protected function doAfterSubmit($id = 0, $noredirect_for = '')
+	{
+		if($noredirect_for && $noredirect_for == $this->getPosted('__after_submit_action') && $noredirect_for == $this->getAction())
+		{
+			return; 
+		}
+		
+		$choice = $this->getPosted('__after_submit_action', 0);
+		switch ($choice) {
+			case 'create': // create
+				$this->redirectAction('create', 'id');
+			break;
+			
+			case 'edit': // edit
+				$this->redirectAction('edit', '', 'id='.$id);
+			break;
+			
+			case 'list': // list
+				$this->redirectAction('list', 'id');
+			break;
+
+			default:
+				$choice = explode('|', str_replace('{ID}', $id, $choice), 3);
+				$this->redirectAction(preg_replace('/[^\w\-]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
+			break;
+		}
+		return;
+	}
+	
+	/**
+	 * Build ajax auto-complete filter response
+	 * @return string response markup
+	 */
+	protected function renderAjaxFilterResponse($listQry = '')
+	{
+		$ret = '<ul>';
+		$ret .= "<li><span class='informal warning'> clear filter </span></li>";
+		
+		$srch = $this->getPosted('searchquery');
+		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
+		$reswords = array();
+		if(trim($srch) !== '')
+		{
+			// Build query
+			$qry = $this->_modifyListQry(false, true, 0, 20, $listQry);
+
+			// Make query
+			$sql = e107::getDb();
+			if($qry && $sql->db_Select_gen($qry))
+			{
+				while ($res = $sql->db_Fetch())
+				{
+					$tmp1 = array();
+					$tmp = array_values(preg_grep('#'.$srch.'#i', $res));
+					foreach ($tmp as $w)
+					{
+						if($w == $srch) 
+						{
+							array_unshift($reswords, $w); //exact match
+							continue;
+						}
+						preg_match('#[\S]*('.$srch.')[\S]*#i', $w, $tmp1);
+						if($tmp1[0]) $reswords[] = $tmp1[0];
+					}
+				}
+			}
+			
+			// Build response 
+			$reswords = array_unique($reswords);
+			if($reswords)
+			{
+				$ret .= '<li>'.implode("</li>\n\t<li>", $reswords).'</li>';
+			}
+		}
+		
+		$ret .= '</ul>';
+		return $ret;
+	}
+	
+	/**
+	 * Parses all available field data, adds internal attributes for handling join requests 
+	 * @return e_admin_controller_ui
+	 */
+	protected function parseAliases()
+	{
+		if($this->getJoinData())
+		{
+			foreach ($this->getJoinData() as $table => $att)
+			{
+				if(strpos($table, '.') !== false)
+				{
+					$tmp = explode('.', $table, 2);
+					$this->setJoinData($table, null);
+					$att['alias'] = $tmp[0];
+					$att['table'] = $tmp[1];
+					$att['__tablePath'] = $att['alias'].'.';
+					$att['__tableFrom'] = '`#'.$att['table'].'` AS '.$att['alias'];
+					$this->setJoinData($att['alias'], $att);
+					unset($tmp);
+					continue;
+				}
+				$att['table'] = $table;
+				$att['alias'] = '';
+				$att['__tablePath'] = '`#'.$att['table'].'`.';
+				$att['__tableFrom'] = '`#'.$att['table'].'`';
+				$this->setJoinData($table, $att);
+			}
+		}
+		
+		// check for table aliases
+		$fields = array(); // preserve order
+		foreach ($this->fields as $field => $att)
+		{
+			if(strpos($field, '.') !== false)
+			{
+				$tmp = explode('.', $field, 2);
+				$att['alias'] = $tmp[0];
+				$fields[$tmp[1]] = $att;
+				$field = $tmp[1];
+				unset($tmp);
+			}
+			else
+			{
+				$att['alias'] = $this->getTableName(true);
+				$fields[$field] = $att;
+			}
+			if($fields[$field]['alias'])
+			{
+				
+				if($fields[$field]['alias'] == $this->getTableName(true))
+				{
+					$fields[$field]['__tableField'] = $this->getTableName(true).'.'.$field;
+				}
+				else
+				{
+					$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['alias'], '__tablePath').$field;
+				}
+			}
+			else
+			{
+				$fields[$field]['__tableField'] = '`'.$this->getTableName(false, true).'`.'.$field;
+			}
+		}
+		$this->fields = $fields;
+		
+		return $this;
+	}
+	
+	// TODO - abstract, array return type, move to parent?
+	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry)
+	{
+		$searchQry = array();
+		$filterFrom = array();
+		$request  = $this->getRequest();
+		$tp = e107::getParser();
+		$tablePath = '`'.$this->getTableName(false, true).'`.';
+		$tableFrom = '`'.$this->getTableName(false, true).'`';
+		$tableSFields = '`'.$this->getTableName(false, true).'`.*';
+		// check for alias
+		if($this->getTableName(true))
+		{
+			$tablePath = $this->getTableName(true).'.';
+			$tableFrom = '`'.$this->getTableName(false, true).'` AS '.$this->getTableName(true);
+			$tableSFields = ''.$this->getTableName(true).'.*';
+		}
+		
+		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
+		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
+		list($filterField, $filterValue) = $searchFilter;
+
+		if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
+		{
+			$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$filterValue."'";
+		}
+		
+		
+		$filter = array();
+		
+		// Commented for now - we should search in ALL searchable fields, not only currently active. Discuss.
+		//foreach($this->fieldpref as $key)
+		foreach($this->getFields() as $key => $var)
+		{
+			//if(!vartrue($this->fields[$key])) continue;
+			//$var = $this->fields[$key];
+			$searchable_types = array('text', 'textearea', 'bbarea', 'user'); //method?
+			
+			if(trim($searchQuery) !== '' && !vartrue($var['nolist']) && in_array($var['type'], $searchable_types))
+			{
+				$filter[] = $var['__tableField']." REGEXP ('".$searchQuery."')";	
+				if($isfilter)
+				{
+					$filterFrom[] = $var['__tableField'];
+				}
+			}
+		}
+		if($isfilter)
+		{
+			if(!$filterFrom) return false;
+			$tableSFields = implode(', ', $filterFrom);
+		}
+		
+		$jwhere = array();
+		$joins = array();
+		
+		if($this->getJoinData()) 
+		{
+			$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields;
+			foreach ($this->getJoinData() as $jtable => $tparams)
+			{
+				
+				// Select fields
+				if(!$isfilter)
+				{
+					$fields = vartrue($tparams['fields']);
+					if('*' === $fields)
+					{
+						$qry .= ", {$tparams['__tablePath']}*";
+					}
+					else
+					{
+						$fields = explode(',', $fields);
+						foreach ($fields as $field)
+						{
+							$qry .= ", {$tparams['__tablePath']}`".trim($field).'`';
+						}
+					}
+				}
+				
+				// Prepare Joins
+				$joins[] = "
+					".vartrue($tparams['joinType'], 'LEFT JOIN')." {$tparams['__tableFrom']} ON ".(vartrue($tparams['leftTable']) ? $tparams['leftTable'].'.' : $tablePath)."`".vartrue($tparams['leftField'])."` = {$tparams['__tablePath']}`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
+				
+				// Prepare Where
+				if(vartrue($tparams['where']))
+				{
+					$jwhere[] = $tparams['where'];
+				}
+			}
+			
+			//From
+			$qry .= " FROM ".$tableFrom;
+			
+			// Joins
+			if(count($joins) > 0)
+			{
+				$qry .=  "\n".implode("\n", $joins);
+			}
+		}
+		else
+		{
+			$qry = $listQry ? $listQry : "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
+		}
+
+		if($raw)
+		{
+			$rawData = array('joinWhere' => $jwhere, 'filter' => $filter, 'filterFrom' => $filterFrom, 'search' => $searchQry, 'tableFrom' => $tableFrom);
+			$rawData['orderField'] = isset($this->fields[$orderField]) ? $this->fields[$orderField]['__tableField'] : '';
+			$rawData['orderType'] = $request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC';
+			$rawData['limitFrom'] = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
+			$rawData['limitTo'] = false === $forceTo ? intval($this->getPerPage()) : intval($forceTo);
+			return $rawData;
+		}
+		
+		// join where
+		if(count($jwhere) > 0)
+		{
+			$searchQry[] = " (".implode(" AND ",$jwhere)." )";
+		}
+		// filter where
+		if(count($filter) > 0)
+		{
+			$searchQry[] = " ( ".implode(" OR ",$filter)." ) ";
+		}
+		
+		// where query
+		if(count($searchQry) > 0)
+		{
+			$qry .= " WHERE ".implode(" AND ", $searchQry);
+		}
+		
+		$orderField = $request->getQuery('field', $this->getPrimaryName());
+		if(isset($this->fields[$orderField]))
+		{
+			// no need of sanitize - it's found in field array
+			$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
+		}
+		
+		if($this->getPerPage() || false !== $forceTo)
+		{
+			$from = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
+			if(false === $forceTo) $forceTo = $this->getPerPage();
+			$qry .= ' LIMIT '.$from.', '.intval($forceTo);
+		}
+		
+		return $qry;
+	}
+	
+	/**
+	 * Manage submit item
+	 * @param array $posted [optional] additional model data
+	 * @return 
+	 */
+	protected function _manageSubmit($posted = array(), $noredirectAction = '')
+	{
+		// Scenario I - use request owned POST data - toForm already exeuted
+		$_posted = $this->getPosted();
+		$this->convertToData($_posted);
+		if($posted && is_array($posted))
+		{
+			$_posted = array_merge($_posted, $posted);
+		}
+		$this->getModel()->setPostedData($_posted, null, false, false)
+			->save(true);
+		// Scenario II - inner model sanitize
+		//$this->getModel()->setPosted($this->convertToData($_POST(, null, false, true);
+		
+		// Copy model messages to the default message stack
+		$this->getModel()->setMessages();
+		
+		// Take action based on use choice after success
+		if(!$this->getModel()->hasError())
+		{
+			$this->doAfterSubmit($this->getModel()->getId(), $noredirectAction);
+			return true;
+		}
+		return false;
+	}
 }
 
 class e_admin_ui extends e_admin_controller_ui
@@ -2251,14 +2822,11 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $pluginName;
 	
 	protected $listQry;
-	protected $tableJoin;
 	protected $editQry;
 	protected $table;
-	protected $tableAlias;
 	protected $pid;
 	
 	protected $pluginTitle;
-	protected $perPage = 20;
 	protected $batchDelete = true;
 
 	/**
@@ -2301,6 +2869,90 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 	
 	/**
+	 * Batch delete trigger
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListDeleteBatch($selected)
+	{
+		if(!$this->getBatchDelete())
+		{
+			e107::getMessage()->add('Batch delete not allowed!', E_MESSAGE_WARNING);
+			return;
+		} 
+		// delete one by one - more control, less performance
+		// TODO - pass  afterDelete() callback to tree delete method?
+		foreach ($selected as $id)
+		{
+			if($this->beforeDelete($id))
+			{
+				$data = array();
+				$model = $this->getTreeModel()->getNode($id);
+				if($model)
+				{
+					$data = $model->getData();
+				}
+				if($this->getTreeModel()->delete($id))
+				{
+					$this->afterDelete($data);
+				}
+			}
+		}
+
+		//$this->getTreeModel()->delete($selected);
+		$this->getTreeModel()->setMessages();
+	}
+	
+	/**
+	 * Batch boolean trigger
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListBoolBatch($selected, $field, $value)
+	{
+		$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
+		if($cnt)
+		{
+			$this->getTreeModel()->addMessageSuccess($cnt.' records successfully updated.');
+		}
+		$this->getTreeModel()->setMessages();
+	}
+	
+	/**
+	 * Batch boolean reverse trigger
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListBoolreverseBatch($selected, $field, $value)
+	{
+		$tree = $this->getTreeModel();
+		$cnt = $tree->update($field, "1-{$field}", $selected, null, false);
+		if($cnt)
+		{
+			$tree->addMessageSuccess($cnt.' records successfully reversed.');
+			//sync models
+			$tree->load(true);
+		}
+		$this->getTreeModel()->setMessages();
+	}
+	
+	/**
+	 * Batch default (field) trigger
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListBatch($selected, $field, $value)
+	{
+		$cnt = $this->getTreeModel()->update($field, "'".$value."'", $selected, $value, false);
+		if($cnt)
+		{ 
+			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field)); 
+			$this->getTreeModel()->addMessageSuccess('<strong>'.$vttl.'</strong> set for <strong>'.$cnt.'</strong> record(s).');
+		}
+		$this->getTreeModel()->setMessages();
+	}
+	
+	/**
 	 * Catch fieldpref submit
 	 * @param string $batch_trigger
 	 * @return 
@@ -2334,8 +2986,35 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->triggersEnabled(false);
 		$id = intval(array_shift($posted)); 
-		$this->getTreeModel()->delete($id);
-		$this->getTreeModel()->setMessages();
+		if($this->beforeDelete($id))
+		{
+			$data = array();
+			$model = $this->getTreeModel()->getNode($id);
+			if($model)
+			{
+				$data = $model->getData();
+			}
+			if($this->getTreeModel()->delete($id))
+			{
+				$this->afterDelete($data);
+			}
+			$this->getTreeModel()->setMessages();
+		}
+	}
+	
+	/**
+	 * User defined pre-delete logic
+	 */
+	public function beforeDelete($id)
+	{
+		return true;
+	}
+	
+	/**
+	 * User defined after-create logic
+	 */
+	public function afterDelete($deleted_data)
+	{
 	}
 	
 	/**
@@ -2354,8 +3033,17 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListObserver()
 	{
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry())->load();
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
 		$this->addTitle('List'); // FIXME - get captions from dispatch list
+	}
+	
+	/**
+	 * Filter response ajax page
+	 * @return string
+	 */
+	public function FilterAjaxPage()
+	{
+		return $this->renderAjaxFilterResponse($this->listQry); //listQry will be used only if available
 	}
 	
 	/**
@@ -2367,59 +3055,13 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this->getUI()->getList();
 	}
 	
-	public function FilterAjaxPage()
-	{
-		$ret = '<ul>';
-		$ret .= "<li><span class='informal warning'> clear filter </span></li>";
-		
-		$srch = $this->getPosted('searchquery');
-		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
-		$reswords = array();
-		if(trim($srch) !== '')
-		{
-			// Build query
-			$qry = $this->_modifyListQry(true, 0, 20);
-
-			// Make query
-			$sql = e107::getDb();
-			if($qry && $sql->db_Select_gen($qry))
-			{
-				while ($res = $sql->db_Fetch())
-				{
-					$tmp1 = array();
-					$tmp = array_values(preg_grep('#'.$srch.'#i', $res));
-					foreach ($tmp as $w)
-					{
-						if($w == $srch) 
-						{
-							array_unshift($reswords, $w); //exact match
-							continue;
-						}
-						preg_match('#[\S]*('.$srch.')[\S]*#i', $w, $tmp1);
-						if($tmp1[0]) $reswords[] = $tmp1[0];
-					}
-				}
-			}
-			
-			// Build response 
-			$reswords = array_unique($reswords);
-			if($reswords)
-			{
-				$ret .= '<li>'.implode("</li>\n\t<li>", $reswords).'</li>';
-			}
-		}
-		
-		$ret .= '</ul>';
-		return $ret;
-	}
-	
 	/**
 	 * List action observer
 	 * @return void
 	 */
 	public function ListAjaxObserver()
 	{
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, 0))->load();
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
 	}
 	
 	/**
@@ -2453,7 +3095,10 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function EditSubmitTrigger()
 	{
-		$this->CreateSubmitTrigger();
+		if($this->_manageSubmit($this->beforeUpdate(), 'edit'))
+		{
+			$this->afterUpdate();
+		}
 	}
 	
 	/**
@@ -2498,23 +3143,38 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function CreateSubmitTrigger()
 	{
-		// Scenario I - use request owned POST data - toForm already exeuted
-		$posted = $this->getPosted();
-		$this->convertToData($posted);
-		$this->getModel()->setPostedData($posted, null, false, false)
-			->save(true);
-		// Scenario II - inner model sanitize
-		//$this->getModel()->setPosted($this->convertToData($_POST(, null, false, true);
-		
-		// Copy model messages to the default message stack
-		$this->getModel()->setMessages();
-		
-		// Take action based on use choice after success
-		if(!$this->getModel()->hasError())
+		if($this->_manageSubmit($this->beforeCreate(), ''))
 		{
-			$this->doAfterSubmit($this->getModel()->getId(), 'edit');
+			$this->afterCreate();
 		}
-		
+	}
+	
+	/**
+	 * User defined pre-create logic
+	 */
+	public function beforeCreate()
+	{
+	}
+	
+	/**
+	 * User defined after-create logic
+	 */
+	public function afterCreate()
+	{
+	}
+	
+	/**
+	 * User defined pre-update logic
+	 */
+	public function beforeUpdate()
+	{
+	}
+	
+	/**
+	 * User defined after-update logic
+	 */
+	public function afterUpdate()
+	{
 	}
 	
 	/**
@@ -2554,123 +3214,9 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 	
 	/**
-	 * Handle posted batch options
-	 * @param string $batch_trigger
-	 * @return void
+	 * Parent overload
+	 * @return e_admin_ui
 	 */
-	protected function _handleListBatch($batch_trigger)
-	{
-		$tp = e107::getParser();
-		$multi_name = vartrue($this->fields['checkboxes']['toggle'], 'multiselect');
-		$selected = array_values($this->getPosted($multi_name, array()));
-		
-		if(empty($selected)) return;
-		
-		$selected = array_map('intval', $selected);
-		$trigger = $tp->toDB(explode('__', $batch_trigger));
-		
-		$this->triggersEnabled(false); //disable further triggering
-
-		switch($trigger[0])
-		{
-			case 'delete': //FIXME - confirmation screen
-				if(!$this->getBatchDelete())
-				{
-					e107::getMessage()->add('Batch delete not allowed!', E_MESSAGE_WARNING);
-					return;
-				} 
-				$this->getTreeModel()->delete($selected);
-				$this->getTreeModel()->setMessages();
-			break;
-			
-			case 'bool': 
-				// direct query
-				$field = $trigger[1];
-				$value = $trigger[2] ? 1 : 0;
-				$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
-				if($cnt)
-				{
-					$this->getTreeModel()->addMessageSuccess($cnt.' records successfully updated.');
-				}
-				$this->getTreeModel()->setMessages();
-			break;
-			
-			case 'boolreverse':
-				// direct query
-				$field = $trigger[1]; //TODO - errors
-				$tree = $this->getTreeModel();
-				$cnt = $tree->update($field, "1-{$field}", $selected, null, false);
-				if($cnt)
-				{
-					$tree->addMessageSuccess($cnt.' records successfully reversed.');
-					//sync models
-					$tree->load(true);
-				}
-				$this->getTreeModel()->setMessages();
-			break;
-		
-			default:
-				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
-				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($trigger[0]).'Batch';
-				if(method_exists($this, $method)) // callback handling
-				{
-					$this->$method($trigger[1], $selected);
-				}
-				else // default handling
-				{
-					$field = $trigger[0];
-					$value = $trigger[1]; //TODO - errors
-					
-					$cnt = $this->getTreeModel()->update($field, "'".$value."'", $selected, $value, false);
-					if($cnt)
-					{ 
-						$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
-						$this->getTreeModel()->addMessageSuccess('<strong>'.$vttl.'</strong> set for <strong>'.$cnt.'</strong> records.');
-					}
-					$this->getTreeModel()->setMessages();
-					//$this->redirectAction();
-				}
-			break;
-		}
-	}
-	
-	/**
-	 * Handle requested filter dropdown value
-	 * @param string $value
-	 * @return array field -> value
-	 */
-	protected function _parseFilterRequest($filter_value)
-	{
-		$tp = e107::getParser();
-		if(!$filter_value || $filter_value === '___reset___')
-		{
-			return array();
-		}
-		$filter = $tp->toDB(explode('__', $filter_value));
-		$res = array();
-		switch($filter[0])
-		{
-			case 'bool': 
-				// direct query
-				$res = array($filter[1], $filter[2]);
-			break;
-		
-			default:
-				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
-				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
-				if(method_exists($this, $method)) // callback handling
-				{
-					return $this->$method($filter[1], $selected);
-				}
-				else // default handling
-				{
-					$res = array($filter[0], $filter[1]);
-				}
-			break;
-		}
-		return $res;
-	}
-	
 	protected function parseAliases()
 	{
 		// parse table
@@ -2682,276 +3228,11 @@ class e_admin_ui extends e_admin_controller_ui
 			unset($tmp);
 		}
 		
-		if($this->tableJoin)
-		{
-			foreach ($this->tableJoin as $table => $att)
-			{
-				if(strpos($table, '.') !== false)
-				{
-					$tmp = explode('.', $table, 2);
-					unset($this->tableJoin[$table]);
-					$att['alias'] = $tmp[0];
-					$att['table'] = $tmp[1];
-					$att['__tablePath'] = $att['alias'].'.';
-					$att['__tableFrom'] = '`#'.$att['table'].'` AS '.$att['alias'];
-					$this->tableJoin[$att['alias']] = $att;
-					unset($tmp);
-					continue;
-				}
-				$this->tableJoin[$table]['table'] = $table;
-				$this->tableJoin[$table]['alias'] = '';
-				$this->tableJoin[$table]['__tablePath'] = '`#'.$this->tableJoin[$table]['table'].'`.';
-				$this->tableJoin[$table]['__tableFrom'] = '`#'.$this->tableJoin[$table]['table'].'`';
-			}
-		}
-		
-		// check for table aliases
-		$fields = array(); // preserve order
-		foreach ($this->fields as $field => $att)
-		{
-			if(strpos($field, '.') !== false)
-			{
-				$tmp = explode('.', $field, 2);
-				$att['alias'] = $tmp[0];
-				$fields[$tmp[1]] = $att;
-				$field = $tmp[1];
-				unset($tmp);
-			}
-			else
-			{
-				$att['alias'] = $this->tableAlias;
-				$fields[$field] = $att;
-			}
-			if($fields[$field]['alias'])
-			{
-				
-				if($fields[$field]['alias'] == $this->tableAlias)
-				{
-					$fields[$field]['__tableField'] = $this->tableAlias.'.'.$field;
-				}
-				else
-				{
-					$fields[$field]['__tableField'] = $this->tableJoin[$fields[$field]['alias']]['__tablePath'].$field;
-				}
-			}
-			else
-			{
-				$fields[$field]['__tableField'] = '`#'.$this->table.'`.'.$field;
-			}
-		}
-		$this->fields = $fields;
+		parent::parseAliases();
 		
 		return $this;
 	}
-	
-	/**
-	 * Take approproate action after successfull submit
-	 *
-	 * @param integer $id optional, needed only if redirect action is 'edit'
-	 * @param string $noredirect_for don't redirect if action equals to its value
-	 */
-	protected function doAfterSubmit($id = 0, $noredirect_for = '')
-	{
-		if($noredirect_for && $noredirect_for == $this->getPosted('__after_submit_action') && $noredirect_for == $this->getAction())
-		{
-			return; 
-		}
-		
-		$choice = $this->getPosted('__after_submit_action', 0);
-		switch ($choice) {
-			case 'create': // create
-				$this->redirectAction('create', 'id');
-			break;
-			
-			case 'edit': // edit
-				$this->redirectAction('edit', '', 'id='.$id);
-			break;
-			
-			case 'list': // list
-				$this->redirectAction('list', 'id');
-			break;
 
-			default:
-				$choice = explode('|', str_replace('{ID}', $id, $choice), 3);
-				$this->redirectAction(preg_replace('/[^\w\-]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
-			break;
-		}
-		return;
-	}
-	
-	/**
-	 * Convert posted values when needed (based on field type)
-	 * @param array $data
-	 * @return void
-	 */
-	protected function convertToData(&$data)
-	{
-		foreach ($this->getFields() as $key => $attributes)
-		{
-			if(!isset($data[$key]))
-			{
-				continue;
-			}
-			switch($attributes['type'])
-			{
-				case 'datestamp':
-					if(!is_numeric($data[$key]))
-					{
-						$data[$key] = e107::getDateConvert()->toTime($data[$key], 'input'); 
-					}
-				break;
-				
-				case 'ip': // TODO - ask Steve if this check is required
-					if(strpos($data[$key], '.') !== FALSE)
-					{
-						$data[$key] = e107::getInstance()->ipEncode($data[$key]);
-					}
-				break;
-				//more to come
-			}
-		}
-	}
-	
-	protected function _modifyListQry($isfilter = false, $forceFrom = false, $forceTo = false)
-	{
-		$searchQry = array();
-		$filterFrom = array();
-		$request  = $this->getRequest();
-		$tp = e107::getParser();
-		$tablePath = '`#'.$this->table.'`.';
-		$tableFrom = '`#'.$this->table.'`';
-		$tableSFields = '`#'.$this->table.'`.*';
-		if($this->tableAlias)
-		{
-			$tablePath = $this->tableAlias.'.';
-			$tableFrom = '`#'.$this->table.'` AS '.$this->tableAlias;
-			$tableSFields = ''.$this->tableAlias.'.*';
-		}
-		
-		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
-		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
-		list($filterField, $filterValue) = $searchFilter;
-
-		// FIXME - currently broken
-		if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
-		{
-			$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$filterValue."'";
-		}
-		
-		
-		$filter = array();
-		
-		// Commented for now - we should search in ALL searchable fields, not only currently active. Discuss.
-		//foreach($this->fieldpref as $key)
-		foreach($this->fields as $key => $var)
-		{
-			//if(!vartrue($this->fields[$key])) continue;
-			//$var = $this->fields[$key];
-			$searchable_types = array('text', 'textearea', 'bbarea', 'user'); //method?
-			
-			if(trim($searchQuery) !== '' && !vartrue($var['nolist']) && in_array($var['type'], $searchable_types))
-			{
-				$filter[] = $var['__tableField']." REGEXP ('".$searchQuery."')";	
-				if($isfilter)
-				{
-					$filterFrom[] = $var['__tableField'];
-				}
-			}
-		}
-		if($isfilter)
-		{
-			if(!$filterFrom) return false;
-			$tableSFields = implode(', ', $filterFrom);
-		}
-		
-		$jwhere = array();
-		$joins = array();
-		if($this->tableJoin) 
-		{
-			$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields;
-			foreach ($this->tableJoin as $jtable => $tparams)
-			{
-				// Select fields
-				if(!$isfilter)
-				{
-					$fields = vartrue($tparams['fields']);
-					if('*' === $fields)
-					{
-						$qry .= ", {$tparams['__tablePath']}*";
-					}
-					else
-					{
-						$fields = explode(',', $fields);
-						foreach ($fields as $field)
-						{
-							$qry .= ", {$tparams['__tablePath']}`".trim($field).'`';
-						}
-					}
-				}
-				// Prepare Joins
-				$joins[] = "
-					".vartrue($tparams['joinType'], 'LEFT JOIN')." {$tparams['__tableFrom']} ON ".(vartrue($tparams['leftTable']) ? $tparams['leftTable'].'.' : $tablePath)."`".vartrue($tparams['leftField'])."` = {$tparams['__tablePath']}`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
-				
-				// Prepare Where
-				if(vartrue($tparams['where']))
-				{
-					$jwhere[] = $tparams['where'];
-				}
-			}
-			
-			//From
-			$qry .= " FROM ".$tableFrom;
-			
-			// Joins
-			if(count($joins) > 0)
-			{
-				$qry .=  "\n".implode("\n", $joins);
-			}
-		}
-		else
-		{
-			$qry = $this->listQry ? $this->listQry : "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
-		}
-		
-		// join where
-		if(count($jwhere) > 0)
-		{
-			$searchQry[] = " (".implode(" AND ",$jwhere)." )";
-		}
-		// filter where
-		if(count($filter) > 0)
-		{
-			$searchQry[] = " ( ".implode(" OR ",$filter)." ) ";
-		}
-		
-		// where query
-		if(count($searchQry) > 0)
-		{
-			$qry .= " WHERE ".implode(" AND ", $searchQry);
-		}
-		
-		$orderField = $request->getQuery('field', $this->getPrimaryName());
-		if(isset($this->fields[$orderField]))
-		{
-			// no need of sanitize - it's found in field array
-			$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
-		}
-		
-		if($this->getPerPage() || false !== $forceTo)
-		{
-			$from = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
-			if(false === $forceTo) $forceTo = $this->getPerPage();
-			$qry .= ' LIMIT '.$from.', '.intval($forceTo);
-		}
-		
-		return $qry;
-	}
-	
-	public function getPerPage()
-	{
-		return $this->perPage;
-	}
-	
 	public function getPrimaryName()
 	{
 		if(!varset($this->pid) && vartrue($this->fields))
@@ -2974,13 +3255,7 @@ class e_admin_ui extends e_admin_controller_ui
 	
 	public function getTableName($alias = false, $prefix = false)
 	{
-		if($alias && $this->tableAlias) return $this->tableAlias;
-		return ($prefix ? '#.' : '').$this->table;
-	}
-	
-	public function getJoinTable($alias = false, $prefix = false)
-	{
-		if($alias && $this->tableAlias) return $this->tableAlias;
+		if($alias) return ($this->tableAlias ? $this->tableAlias : '');
 		return ($prefix ? '#' : '').$this->table;
 	}
 	
