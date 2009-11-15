@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.80 $
- * $Date: 2009-11-14 04:13:10 $
- * $Author: e107coders $
+ * $Revision: 1.81 $
+ * $Date: 2009-11-15 20:24:55 $
+ * $Author: secretr $
  *
 */
 
@@ -1154,7 +1154,7 @@ class e_form
 			
 			case 'method': // Custom Function 
 				$method = $field; 
-				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms));
+				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms)); 
 			break;
 			
 			//TODO - order
