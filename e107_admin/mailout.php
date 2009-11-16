@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-11-15 17:38:04 $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-16 20:40:38 $
  * $Author: e107steved $
  *
 */
@@ -18,6 +18,7 @@
 /*
 TODO:
 	1. Improve maintenance screen
+	2. 'Mail hold' function
 */
 
 /*
@@ -275,6 +276,10 @@ switch ($action)
 				}
 				break;
 		}
+		break;
+
+	case 'mailhold' :
+		$emessage->add('Mail hold - not implemented yet: '.$mailId, E_MESSAGE_ERROR);
 		break;
 
 	case 'mailcancel' :

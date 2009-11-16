@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-15 17:38:04 $
+ * $Revision: 1.15 $
+ * $Date: 2009-11-16 20:40:39 $
  * $Author: e107steved $
 */
 
@@ -35,7 +35,6 @@ TODO:
 	- Look at support of some other logging options
 	- Debug option to just log, not send emails (variables in place, and supported by current bulk mailer)
 9. Make sure SMTPDebug can be set (TRUE/FALSE)
-10. Get rid of mime_content_type() - deprecated (function $this->mime_types() does something similar, given a file extension)
 12. Check support for port number - ATM we just override for SSL. Looks as if phpmailer can take it from end of server link.
 13. Possibly strip bbcode from plain text mailings - best done by caller?
 18. Note object iteration - may be useful for dump of object state
@@ -551,9 +550,11 @@ class e107Email extends PHPMailer
 
 		foreach($attachments as $attach)
 		{
-			if(is_readable($attach))
-			{
-				$mail->AddAttachment(dirname($attach), basename($attach),"base64",$this->_mime_types($attach));
+			$tempName = basename($attach);
+			if(is_readable($attach) && $tempName)
+			{	// First parameter is complete path + filename; second parameter is 'name' of file to send
+				$ext = substr(strrchr($attach, "."), 1);
+				$this->AddAttachment($attach, $tempName,'base64',$this->_mime_types($ext));
 			}
 		}
 	}
@@ -568,7 +569,8 @@ class e107Email extends PHPMailer
 		{
 			if(is_readable($inline_img) && !is_dir($inline_img))
 			{
-				$mail->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),"base64",mime_content_type($inline_img));
+				$ext = substr(strrchr($inline_img, "."), 1);
+				$this->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),'base64',$this->_mime_types($ext));
 			}
 		}
 	}

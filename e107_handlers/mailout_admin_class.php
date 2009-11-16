@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-15 17:38:05 $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-16 20:40:39 $
  * $Author: e107steved $
  *
 */
@@ -604,7 +604,7 @@ class mailoutAdminClass extends e107MailManager
 	 * Does some basic checking on email data.
 	 * 
 	 * @param $email - array of data in parseEmailPost() format
-	 * @param $fulLCheck - TRUE to check all fields that are required (immediately prior to sending); FALSE to just check a few basics (prior to save)
+	 * @param $fullCheck - TRUE to check all fields that are required (immediately prior to sending); FALSE to just check a few basics (prior to save)
 	 * @return TRUE if OK. Array of error messages if any errors found
 	 */
 	public function checkEmailPost($email, $fullCheck = FALSE)
@@ -805,9 +805,9 @@ class mailoutAdminClass extends e107MailManager
 			$this->e107->sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name");
 			while ($row = $this->e107->sql->db_Fetch()) 
 			{
-				$selected = ($mailSource['mail_attach'] == $row['download_url']) ? "selected='selected'" :
-				 "";
-				$text .= "<option value=\"{$download_url} \" {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
+				$selected = ($mailSource['mail_attach'] == $row['download_url']) ? "selected='selected'" : '';
+//				$text .= "<option value='".urlencode($row['download_url'])."' {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
+				$text .= "<option value='".$row['download_url']."' {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
 			}
 			$text .= " </select>";
 

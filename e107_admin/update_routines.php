@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2009-11-07 11:20:27 $
-|     $Author: e107coders $
+|     $Revision: 1.59 $
+|     $Date: 2009-11-16 20:40:39 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -254,7 +254,7 @@ function update_706_to_800($type='')
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
-	$new_tables = array('admin_log','audit_log', 'dblog','news_rewrite', 'core_media');
+	$new_tables = array('admin_log','audit_log', 'dblog','news_rewrite', 'core_media', 'mail_recipients', 'mail_content');
 	
 	// List of core prefs that need to be converted from serialized to e107ArrayStorage. 
 	$serialized_prefs = array("'emote'", "'menu_pref'", "'search_prefs'", "'emote_default'");
@@ -430,7 +430,7 @@ function update_706_to_800($type='')
 //---------------------------------------------------------
 //			Comments - split user field
 //---------------------------------------------------------
-	if($sql->db_Field("comments","comment_author"))
+	if($sql->db_Field('comments','comment_author'))
 	{
       if ($just_check) return update_needed('Comment table author field update');
 
@@ -445,10 +445,10 @@ function update_706_to_800($type='')
 	  }
 	  else
 	  {
-		if (FALSE ===$sql->db_Update("comments","comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
+		if (FALSE ===$sql->db_Update('comments',"comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
 		{
 			// Flag error
-			$mes->add(LAN_UPDATE_21."comments", E_MESSAGE_ERROR); 	
+			$mes->add(LAN_UPDATE_21.'comments', E_MESSAGE_ERROR); 	
 		}
 		else
 		{	// Delete superceded field - comment_author
