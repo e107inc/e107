@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-11-15 17:38:04 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2009-11-16 22:39:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -315,7 +315,7 @@ function setCronPwd()
 		
 		if(vartrue($pref['e_cron_list']))
 		{	
-		
+			
 			foreach($pref['e_cron_list'] as $key=>$val)
 			{
 				$eplug_cron = array();
@@ -326,12 +326,17 @@ function setCronPwd()
 					$class_name = $key."_cron";
 					$method_name = 'config';
 					
-					$this->cronExecuteMethod($class_name,$method_name);			
+					if($array = $this->cronExecuteMethod($class_name,$method_name,'data'))
+					{
+						$new_cron[] = $array;
+					}
+							
 				}
 			}
 		}
 		
 		$this->e_cron = array_merge($core_cron,$new_cron);
+
 	}
 
 
@@ -557,7 +562,7 @@ function setCronPwd()
 	}
 
 
-	function cronExecuteMethod($class_name,$method_name)
+	function cronExecuteMethod($class_name,$method_name,$return='boolean')
 	{
 		$mes = e107::getMessage();
 
@@ -567,8 +572,15 @@ function setCronPwd()
 			if(method_exists($obj,$method_name))
 			{
 				$mes->add("Executing config function <b>".$key." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
-				call_user_func(array($obj,$method_name));
-				return TRUE;					 					
+				if($return == 'boolean')
+				{
+					call_user_func(array($obj,$method_name));
+					return TRUE;
+				}
+				else
+				{
+					return call_user_func(array($obj,$method_name));
+				}
 			}
 			else
 			{
