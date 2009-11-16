@@ -9,8 +9,8 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-11-15 20:24:55 $
+ * $Revision: 1.28 $
+ * $Date: 2009-11-16 12:23:07 $
  * $Author: secretr $
 */
 
@@ -1709,7 +1709,7 @@ class e_admin_controller
 		{
 			$this->$actionObserverName();
 		}
-		
+
 		// check for triggers, not available in Ajax mode
 		if(!e_AJAX_REQUEST && $this->triggersEnabled())
 		{
@@ -1718,7 +1718,7 @@ class e_admin_controller
 			{
 				if(strpos($key, 'etrigger_') === 0)
 				{
-					$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
+					$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false); 
 					if(method_exists($this, $actionTriggerName))
 					{
 						$this->$actionTriggerName($value);
@@ -2023,6 +2023,17 @@ class e_admin_controller_ui extends e_admin_controller
 	protected $tableAlias;
 	
 	/**
+	 * @var string plugin name
+	 */
+	protected $pluginName;
+	
+	/**
+	 * Could be LAN constant (mulit-language support)
+	 * @var string plugin name
+	 */
+	protected $pluginTitle;
+	
+	/**
 	 * Default (db) limit value
 	 * @var integer
 	 */
@@ -2047,6 +2058,22 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var e_plugin_pref|e_core_pref
 	 */
 	protected $_pref = null;
+	
+	/**
+	 * @return string
+	 */
+	public function getPluginName()
+	{
+		return $this->pluginName;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getPluginTitle()
+	{
+		return deftrue($this->pluginTitle, $this->pluginTitle);
+	}
 	
 	/**
 	 * Get all field data
@@ -2320,6 +2347,30 @@ class e_admin_controller_ui extends e_admin_controller
 	protected function _setConfig()
 	{
 		return $this;
+	}
+	
+	/**
+	 * Manage column visibility
+	 * @param string $batch_trigger
+	 * @return 
+	 */
+	public function manageColumns()
+	{
+		$cols = array();
+		$posted = $this->getPosted('e-columns', array());
+		foreach ($this->getFields() as $field => $attr)
+		{
+			if((vartrue($attr['forced']) || in_array($field, $posted)) && !vartrue($attr['nolist']))
+			{
+				$cols[] = $field;
+				continue;
+			}
+		}
+		
+		if($cols)
+		{
+			$this->setUserPref($cols);
+		}
 	}
 	
 	/**
@@ -2632,7 +2683,7 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 	
 	// TODO - abstract, array return type, move to parent?
-	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry)
+	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
 	{
 		$searchQry = array();
 		$filterFrom = array();
@@ -2819,14 +2870,11 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $dataFields = array();
 	protected $validationRules = array();
 	
-	protected $pluginName;
-	
-	protected $listQry;
-	protected $editQry;
 	protected $table;
 	protected $pid;
+	protected $listQry;
+	protected $editQry;
 	
-	protected $pluginTitle;
 	protected $batchDelete = true;
 
 	/**
@@ -2854,6 +2902,17 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		
 		$this->addTitle($this->pluginTitle, true)->parseAliases(); 
+	}
+	
+	/**
+	 * Catch fieldpref submit
+	 * @param string $batch_trigger
+	 * @return 
+	 */
+	public function ListEcolumnsTrigger()
+	{
+		$this->triggersEnabled(false); //disable further triggering
+		parent::manageColumns();
 	}
 	
 	/**
@@ -2950,31 +3009,6 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->getTreeModel()->addMessageSuccess('<strong>'.$vttl.'</strong> set for <strong>'.$cnt.'</strong> record(s).');
 		}
 		$this->getTreeModel()->setMessages();
-	}
-	
-	/**
-	 * Catch fieldpref submit
-	 * @param string $batch_trigger
-	 * @return 
-	 */
-	public function ListEcolumnsTrigger()
-	{
-		$this->triggersEnabled(false); //disable further triggering
-		$cols = array();
-		$posted = $this->getPosted('e-columns', array());
-		foreach ($this->getFields() as $field => $attr)
-		{
-			if((vartrue($attr['forced']) || in_array($field, $posted)) && !vartrue($attr['nolist']))
-			{
-				$cols[] = $field;
-				continue;
-			}
-		}
-		
-		if($cols)
-		{
-			$this->setUserPref($cols);
-		}
 	}
 	
 	/**
@@ -3183,7 +3217,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	function CreateHeader()
 	{
-		// TODO - make it part of e_from::textarea/bbarea(), invoke it on className (not all textarea elements)
+		// TODO - invoke it on className (not all textarea elements)
 		e107::getJs()->requireCoreLib('core/admin.js');
 	}
 	
@@ -3198,7 +3232,6 @@ class e_admin_ui extends e_admin_controller_ui
 	
 	public function PrefsSaveTrigger()
 	{
-		
 		$this->getConfig()
 			->setPostedData($this->getPosted(), null, false, false)
 			//->setPosted('not_existing_pref_test', 1)
@@ -3241,16 +3274,6 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		
 		return $this->pid;
-	}
-	
-	public function getPluginName()
-	{
-		return $this->pluginName;
-	}
-	
-	public function getPluginTitle()
-	{
-		return $this->pluginTitle;
 	}
 	
 	public function getTableName($alias = false, $prefix = false)
