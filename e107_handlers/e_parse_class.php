@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.80 $
-* $Date: 2009-11-14 04:13:10 $
-* $Author: e107coders $
+* $Revision: 1.81 $
+* $Date: 2009-11-16 20:40:39 $
+* $Author: e107steved $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -149,7 +149,12 @@ class e_parse
 				// text is 'body' of email or similar - being sent 'off-site' so don't rely on server availability
 				'E_BODY' =>
 					array(
-						'defs'=>TRUE, 'constants'=>'abs', 'parse_sc'=>TRUE, 'emotes'=>FALSE, 'scripts' => FALSE, 'link_click' => FALSE
+						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE, 'emotes'=>FALSE, 'scripts' => FALSE, 'link_click' => FALSE
+						),
+				// text is text-only 'body' of email or similar - being sent 'off-site' so don't rely on server availability
+				'E_BODY_PLAIN' =>
+					array(
+						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE, 'emotes'=>FALSE, 'scripts' => FALSE, 'link_click' => FALSE, 'retain_nl' => TRUE, 'no_tags' => TRUE
 						),
 				// text is the 'content' of a link (A tag, etc)
 				'LINKTEXT' =>
@@ -1286,7 +1291,7 @@ class e_parse
 						// (Moved to after bbcode processing by Cameron)
 						if ($opts['constants'])
 						{
-							$sub_blk = $this->replaceConstants($sub_blk, ($opts['constants'] == 'abs' ? 'full' : ''));
+							$sub_blk = $this->replaceConstants($sub_blk, $opts['constants']);		// Now decodes text values
 						}
 
 
@@ -1605,12 +1610,22 @@ class e_parse
 	 * Create and substitute e107 constants in passed URL
 	 *
 	 * @param string $url
-	 * @param integer $mode 0-folders, 1-relative, 2-absolute, 3-full (with domain), 4-absolute & relative (combination of 1,2,3)
+	 * @param integer $mode 0-folders, 1-relative ('rel'), 2-absolute ('abs'), 3-full ('full') (with domain), 4-absolute & relative ('mix') (combination of 1,2,3)
 	 * @return string
 	 */
 	public function createConstants($url, $mode = 0)
 	{
 		//FIXME - create constants for absolute paths and site URL's
+		if (!is_numeric($mode))
+		{
+			switch ($mode)
+			{
+				case 'rel' : $mode = 1; break;
+				case 'abs' : $mode = 2; break;
+				case 'full' : $mode = 3; break;
+				case 'mix' : $mode = 4; break;
+			}
+		}
 		$e107 = e107::getInstance();
 		switch($mode)
 		{

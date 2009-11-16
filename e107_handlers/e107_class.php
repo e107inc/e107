@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.68 $
- * $Date: 2009-11-14 04:13:10 $
- * $Author: e107coders $
+ * $Revision: 1.69 $
+ * $Date: 2009-11-16 20:40:39 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1308,13 +1308,15 @@ class e107
 	/**
 	 * Check if current user is banned
 	 * 
-	 * XXX add more description? return type e107?
+	 * Generates the queries to interrogate the ban list, then calls $this->check_ban().
+	 * If the user is banned, $check_ban() never returns - so a return from this routine indicates a non-banned user.
+	 *
 	 * @return void
 	 */
 	public function ban()
 	{
 		global $sql, $pref;
-		$ban_count = $sql->db_Count("banlist");
+		$ban_count = $sql->db_Count('banlist');
 		if($ban_count)
 		{
 			$vals = array();
@@ -1410,6 +1412,7 @@ class e107
 		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
 		return TRUE; // Email address OK
 	}
+
 
 	/**
 	 * Add an entry to the banlist. $bantype = 1 for manual, 2 for flooding, 4 for multiple logins

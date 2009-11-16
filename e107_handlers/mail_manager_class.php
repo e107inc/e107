@@ -2,15 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-15 17:38:05 $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-16 20:40:39 $
  * $Author: e107steved $
 */
 
@@ -30,8 +30,9 @@ will be included in preference to the current theme style.
 
 
 TODO:
-	- Handle inline images
+	- Check handling of inline images
 	- Better check on e107 ID - add encoded value
+
 
 Database tables
 ---------------
@@ -103,7 +104,7 @@ class e107MailManager
 	protected	$mailCounters = array();	// Counters to track adding recipients
 	protected	$queryCount = array();		// Stores total number of records if SQL_CALC_ROWS is used (index = db object #)
 	protected	$currentBatchInfo = array();	// Used during batch send to hold info about current mailout
-	protected	$mailBody = '';				// Buffers current mail body
+	protected	$currentMailBody = '';			// Buffers current mail body
 
 	protected	$mailer = NULL;				// Mailer class when required
 
@@ -237,7 +238,6 @@ class e107MailManager
 	{
 		$res = array();
 		
-		// Now do the main email array
 		foreach ($this->dbTypes['mail_content'] as $f => $v)
 		{
 			if (isset($data[$f]))
@@ -273,7 +273,7 @@ class e107MailManager
 
 
 	/**
-	 * Generate an array of data which can be passed directly to the DB routines.
+	 * Generate an array of mail recipient data which can be passed directly to the DB routines.
 	 * Only valid DB fields are copied
 	 * Combining/splitting of fields is done as necessary
 	 * (This is essentially the translation between internal storage format and db storage format. If
@@ -337,6 +337,65 @@ class e107MailManager
 		if (isset($data['mail_target_info']))
 		{
 			$array = new ArrayData;
+			$tmp = $array->ReadArray($data['mail_target_info']);
+			$res['mail_target_info'] = $tmp;
+		}
+		return $res;
+	}
+
+
+
+
+	/**
+	 * Given an array (row) of data retrieved from the DB table, converts to internal format.
+	 * Combining/splitting of fields is done as necessary
+	 * This version intended for 'Joined' reads which have both recipient and content data
+	 * (This is essentially the translation between internal storage format and db storage format. If
+	 * the DB format changes, only this routine and its counterpart should need changing)
+	 *
+	 * @param $data - array of DB-sourced target-related data
+	 * @param $addMissing - if TRUE, undefined fields are added
+	 *
+	 * @return void
+	 */
+	public function dbToBoth(&$data, $addMissing = FALSE)
+	{	// Direct correspondence at present - but could change
+		$res = array();
+		$oneToOne = array_merge($this->dbTypes['mail_content'], $this->dbTypes['mail_recipients']);
+
+		// Start with simpoe 'one to one' fields
+		foreach ($oneToOne as $f => $v)
+		{
+			if (isset($data[$f]))
+			{
+				$res[$f] = $data[$f];
+			}
+			elseif ($addMissing)
+			{
+				$res[$f] = '';
+			}
+		}
+
+		// Now array fields
+		$array = new ArrayData;
+		if (isset($data['mail_other']))
+		{
+			$tmp = $array->ReadArray($data['mail_other']);
+			if (is_array($tmp))
+			{
+				$res = array_merge($res,$tmp);
+			}
+			unset($res['mail_other']);
+		}
+		elseif ($addMissing)
+		{
+			foreach ($this->dbOther as $f => $v)
+			{
+				$res[$f] = '';
+			}
+		}
+		if (isset($data['mail_target_info']))
+		{
 			$tmp = $array->ReadArray($data['mail_target_info']);
 			$res['mail_target_info'] = $tmp;
 		}
@@ -433,7 +492,8 @@ class e107MailManager
 		if ($result = $this->db->db_Fetch(MYSQL_ASSOC))
 		{
 			$this->queryActive--;
-			return $result;
+			return $this->dbToBoth($result);
+//			return array_merge($this->dbToMail($result), $this->dbToTarget($result));
 		}
 		else
 		{
@@ -474,6 +534,7 @@ class e107MailManager
 			{	// New email body etc started
 				//echo "New email body: {$this->currentBatchInfo['mail_source_id']} != {$email['mail_source_id']}<br />";
 				$this->currentBatchInfo = array();		// New source email - clear stored info
+				$this->currentMailBody = '';			// ...and clear cache for message body
 			}
 		}
 		if (count($this->currentBatchInfo) == 0)
@@ -513,17 +574,35 @@ class e107MailManager
 			$replace[] = $v;
 		}
 		$email['mail_body'] = str_replace($search, $replace, $this->currentMailBody);
-		$email['send_html'] = $email['mail_send_style'] != 'textonly';
+		$email['send_html'] = ($email['mail_send_style'] != 'textonly');
 		
 		// Set up any extra mailer parameters that need it
 		if (!vartrue($email['e107_header']))
 		{
-			$email['e107_header'] = intval(mail_source_id).'/'.intval(mail_target_id).'/'.md5($email['mail_recipient_email']);		// Set up an ID
+			$email['e107_header'] = intval($email['mail_source_id']).'/'.intval($email['mail_target_id']).'/'.md5($email['mail_source_id'].$email['mail_target_id'].$email['mail_recipient_email']);		// Set up an ID
 		}
-		
+		if (isset($email['mail_attach']))
+		{
+			$downDir = realpath(e_ROOT.$this->e107->getFolder('downloads'));
+			if (is_array($email['mail_attach']))
+			{
+				foreach ($email['mail_attach'] as $k => $v)
+				{
+					$email['mail_attach'][$k] = $downDir.$v;
+				}
+			}
+			else
+			{
+				$email['mail_attach'] = $downDir.$email['mail_attach'];
+			}
+		}
+
+//		print_a($email);
+
 		// Try and send
-		$result = FALSE;				// Will be result of send
 		$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $email, TRUE);
+
+//		return;			// ************************************************************************* Temporarily stop DB being updated *****************************
 		
 		$this->checkDB(2);			// Make sure DB object created
 
@@ -582,7 +661,7 @@ class e107MailManager
 	/**
 	 * Call to do a number of 'units' of email processing - from a cron job, for example
 	 * Each 'unit' sends one email from the queue - potentially it could do some other task.
-	 * @param $limit - numbe rof units of work to do - zero to clear the queue (or do maximum allowed by a hard-coded limit)
+	 * @param $limit - number of units of work to do - zero to clear the queue (or do maximum allowed by a hard-coded limit)
 	 * @return None
 	 */
 	public function doEmailTask($limit = 0)
@@ -617,7 +696,7 @@ class e107MailManager
 
 		$dbData = $this->mailToDB($emailData, FALSE);		// Convert array formats
 //		print_a($dbData);
-//		return TRUE;
+
 		if ($isNew)
 		{
 			unset($dbData['mail_source_id']);				// Just in case - there are circumstances where might be set
@@ -804,7 +883,7 @@ class e107MailManager
 		$lt = '';
 		if (!$hold)
 		{		// Sending email - set sensible first and last times
-			if ($lastTime < time() + 3600)				// Force at least an hour to send emails
+			if ($lastTime < (time() + 3600))				// Force at least an hour to send emails
 			{
 				if ($firstTime < time())
 				{
@@ -1038,7 +1117,8 @@ class e107MailManager
 		global $pref;
 		if ($format == 'textonly')
 		{	// Plain text email - strip bbcodes etc
-			return str_replace($search,$replace,stripslashes($this->e107->tp->toText($this->message_body, STRIP)));
+			$temp = $this->e107->tp->toHTML($text, TRUE, 'E_BODY_PLAIN');				// Decode bbcodes into HTML, plain text as far as possible etc
+			return stripslashes(strip_tags($temp));						// Have to do strip_tags() again in case bbcode added some
 		}
 
 		// HTML format email here
@@ -1059,207 +1139,19 @@ class e107MailManager
 		if ($format == 'texttheme') 
 		{
 			$message_body .= "<div style='padding:10px;width:97%'><div class='forumheader3'>\n";
-			$message_body .= $tp -> toEmail($text)."</div></div></body></html>";
+			$message_body .= $this->e107->tp->toEmail($text)."</div></div></body></html>";
 		}
 		else
 		{
-			$message_body .= $tp -> toEmail($text)."</body></html>";
+			$message_body .= $this->e107->tp->toEmail($text)."</body></html>";
 			$message_body = str_replace("&quot;", '"', $message_body);
-			$message_body = str_replace('src="', 'src="'.SITEURL, $message_body);
-			$message_body = str_replace("src='", "src='".SITEURL, $message_body);
 		}
+
+		$message_body = str_replace('<br />', "<br />\n", $message_body);			// This gives a more readable alternate (plain text) part
 
 		return stripslashes($message_body);
 	}
-
-
-
-
-/// TODO: Below here can probably be removed in due course
-
-	// Called to do the setup for the mail run - gets an email body, stores it in this instance. Returns TRUE on success, FALSE on error
-	function setupMailRun($mail_id, $mail_text_id)
-	{
-	  global $sql, $tp;
-	  
-	  if (($mail_id == 0)  || ($mail_text_id == 0)) return FALSE;
-
-	  // Get the email itself from the 'generic' table
-	  $qry = "SELECT * FROM #generic WHERE `gen_id` = {$mail_text_id} AND gen_type='savemail' and gen_datestamp = '".$mail_id."' ";
-	  if (!$sql -> db_Select_gen($qry))
-	  {
-//		echo "Can't access email in DB<br />";
-		return FALSE;
-	  }
-
-	  if (!$row = $sql->db_Fetch())
-	  {
-//		echo "Can't read email<br />";
-	    return FALSE;
-	  }
-	  $email_info = unserialize($row['gen_chardata']);		// Gives us sender_name, sender_email, email_body
-
-
-	  if (varsettrue($email_info['sender_email'])) $this->From = $email_info['sender_email'];
-	  if (varsettrue($email_info['sender_name']))  $this->FromName = $email_info['sender_name'];
-
-	  $message_subject = stripslashes($tp -> toHTML($email_info['email_subject'],FALSE,RAWTEXT));
-	  $this->SMTPDebug = (e_MENU == "debug") ? TRUE : FALSE;
-
-	  if($email_info['copy_to'])
-	  {
-        $tmp = explode(",",$email_info['copy_to']);
-		foreach($tmp as $addc)
-		{
-		  $this->AddCC(trim($addc));
-        }
-	  }
-
-	  if($email_info['bcopy_to'])
-	  {
-        $tmp = explode(",",$email_info['bcopy_to']);
-		foreach($tmp as $addc)
-		{
-		  $this->AddBCC(trim($addc));
-        }
-	  }
-
-
-	  $attach = trim($email_info['attach']);
-
-	  if(is_readable(e_DOWNLOAD.$attach))
-	  {
-		$attach_link = e_DOWNLOAD.$attach;
-	  }
-	  else
-	  {
-		$attach_link = e_FILE.'public/'.$attach;
-	  }
-
-	  if (($temp = strrchr($attach,'/')) !== FALSE)
-	  {	// Just specify filename as attachment - no path
-		$attach = substr($temp,1);
-	  }
-
-	  if ($attach != "" && !$this->AddAttachment($attach_link, $attach))
-	  {
-		echo "Problem with attachment: {$attach_link}->{$attach}<br />";  // problem with attachment.
-	    return FALSE;
-	  }
-
-	  $email_info['use_theme'] = varset($email_info['use_theme'],FALSE);
-
-	  $this->makeEmailBody($email_info['email_body'],$email_info['use_theme']);		// Create and save email body
-	  return TRUE;
-	}	// end - function setupMailRun()
-
-
-
 	
-	
-
-
-	// Sends a single bulk email, assuming everything else is already set up.
-	// Passed the data row from the DB (by reference, to save memory)
-	function sendBulkEmail(&$row)
-	{
-	  $mail_info = unserialize($row['gen_chardata']);		// Has most of the info needed
-
-	  $activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$row['gen_user_id'].".".$mail_info['user_signup'] : SITEURL."/signup.php?activate.".$row['gen_user_id'].".".$mail_info['user_signup']);
-      $signup_link = ($mail_info['user_signup']) ? "<a href='{$activator}'>{$activator}</a>" : "";
-
-	  // Allow username in subject
-	  $mail_subject = str_replace(array('|USERNAME|','{USERNAME}'),$mail_info['user_name'],$message_subject);
-	  $mail_handler->Subject = $mail_subject;
-
-
-	  // Allow username, userID, signup link in body
-	  $search = array('|USERNAME|','|LOGINNAME|','|USERID|','|SIGNUP_LINK|');
-	  $replace = array($mail_info['user_name'],$mail_info['login_name'],$row['gen_user_id'],$signup_link);
-
-		// Handle any substitution - build the arrays
-		$search = array();
-		$replace = array();
-		foreach ($mail_info['mail_target_info'] as $s => $v)
-		{
-			$search[] = '|'.$s.'|';
-			$replace[] = $v;
-		}
-		if (count($search))
-		{
-			$mes_body = str_replace($search,$replace,$this->message_body);
-		//	  $alt_body = str_replace($search,$replace,stripslashes($tp->toText($email_info['email_body'], STRIP)));
-			$alt_body = str_replace($search,$replace,stripslashes($tp->toText($this->message_body, STRIP)));				// Is this right?
-		}
-
-	  $mail_handler->Body = $mes_body;
-	  $mail_handler->AltBody = $alt_body;
-
-	  $mail_handler->AddAddress($mail_info['user_email'], $mail_info['user_name']);
-	  if ($row['gen_user_id'])
-	  {
-		$mail_custom = $row['gen_user_id'];
-	  }
-	  else
-	  {
-		$mail_custom = md5($mail_info['user_name'].$mail_info['user_email']);
-	  }
-	  $mail_custom = "X-e107-id: ".$mail_id.'/'.$mail_custom;		// Will become xx-yy-md5(time) where 'xx' is recipient record ID, 'yy' is mail ID
-	  $mail_handler->AddCustomHeader($mail_custom);
-
-
-		$debug_message = '';
-		if (($logenable == 0) || ($logenable == 2))
-		{  // Actually send email
-		  $mail_result = $mail->Send();
-		}
-		else
-		{  // Debug mode - decide result of email here
-		  $mail_result = TRUE;
-		  if (($logenable == 3) && (($c % 7) == 4)) $mail_result = FALSE;			// Fail one email in 7 for testing
-		  $debug_message = 'Debug';
-		}
-		if ($mail_result)
-		{
-		  $send_ok++;
-		  $sql2->db_Delete('generic',"gen_id={$row['gen_id']}");		// Mail sent - delete from database
-		} 
-		else 
-		{
-		  $send_fail++;
-		  $mail_info['send_result'] = 'Fail: '.$mail->ErrorInfo.$debug_message;
-		  $temp = serialize($mail_info);
-		  // Log any error info we can
-		  $sql2->db_Update('generic',"`gen_chardata`='{$temp}' WHERE gen_id={$row['gen_id']}");
-		}
-
-		if ($logenable) 
-		{ 
-		  fwrite($loghandle,date("H:i:s d.m.y")."  Send to {$mail_info['user_name']} at {$mail_info['user_email']} Mail-ID={$mail_custom} - {$mail_result}\r\n");  
-		}
-
-		$mail->ClearAddresses();
-   		$mail->ClearCustomHeaders();
-
-
-// --------- One email sent
-
-		$cur = round((($c / $count) * 100) + $unit);
-
-		if($pause_count > $pause_amount)
-		{
-		  sleep($pause_time);
-          $pause_count = 1;
-        }
-
-		// Default sleep to reduce server-load: 1 second.
-		sleep(1);
-
-		$c++;
-		$pause_count++;
-	}
-
-
 }
 
 ?>
