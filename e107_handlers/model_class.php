@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-11-10 19:13:06 $
+ * $Revision: 1.37 $
+ * $Date: 2009-11-16 12:23:07 $
  * $Author: secretr $
 */
 
@@ -899,6 +899,17 @@ class e_model
 	public function setParams(array $params)
 	{
 		$this->_params = $params;
+		return $this;
+	}
+	
+	/**
+	 * Update parameter array
+	 * @param array $params
+	 * @return e_model
+	 */
+	public function updateParams(array $params)
+	{
+		$this->_params = array_merge($this->_params, $params);
 		return $this;
 	}
 	
