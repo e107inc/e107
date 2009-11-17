@@ -50,9 +50,9 @@ if((e_QUERY == 'rsd') || isset($_GET['rsd'])) // http://archipelago.phrasewise.c
 
 
 // These three files are from the PHP-XMLRPC library.
-include (e_HANDLER.'xmlrpc/xmlrpc.inc');
-include (e_HANDLER.'xmlrpc/xmlrpcs.inc');
-include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc');
+include (e_HANDLER.'xmlrpc/xmlrpc.inc.php');
+include (e_HANDLER.'xmlrpc/xmlrpcs.inc.php');
+include (e_HANDLER.'xmlrpc/xmlrpc_wrappers.inc.php');
 
 
 

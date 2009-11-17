@@ -1,7 +1,7 @@
 <?php
 // by Edd Dumbill (C) 1999-2002
 // <edd@usefulinc.com>
-// $Id: xmlrpcs.inc,v 1.1 2009-10-20 21:02:09 e107coders Exp $
+// $Id: xmlrpcs.inc.php,v 1.1 2009-11-17 09:25:55 marj_nl_fr Exp $
 
 // Copyright (c) 1999,2000,2002 Edd Dumbill.
 // All rights reserved.
@@ -36,7 +36,7 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	// XML RPC Server class
-	// requires: xmlrpc.inc
+	// requires: xmlrpc.inc.php
 
 	$GLOBALS['xmlrpcs_capabilities'] = array(
 		// xmlrpc spec: always supported
@@ -479,7 +479,7 @@
 		* NB: if we can, we will convert the generated response from internal_encoding to the intended one.
 		* can be: a supported xml encoding (only UTF-8 and ISO-8859-1 at present, unless mbstring is enabled),
 		* null (leave unspecified in response, convert output stream to US_ASCII),
-		* 'default' (use xmlrpc library default as specified in xmlrpc.inc, convert output stream if needed),
+		* 'default' (use xmlrpc library default as specified in xmlrpc.inc.php, convert output stream if needed),
 		* or 'auto' (use client-specified charset encoding or same as request if request headers do not specify it (unless request is US-ASCII: then use library default anyway).
 		* NB: pretty dangerous if you accept every charset and do not have mbstring enabled)
 		*/
