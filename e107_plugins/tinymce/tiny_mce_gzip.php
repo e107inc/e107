@@ -1,12 +1,12 @@
 <?php
 /**
  * $RCSfile: tiny_mce_gzip.php,v $
- * $Revision: 1.1 $
- * $Date: 2006-12-22 18:45:26 $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-17 12:02:32 $
  *
  * @version 1.07
  * @author Moxiecode
- * @copyright Copyright © 20052006, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright Â© 2005 2006, Moxiecode Systems AB, All rights reserved.
  *
  * This file compresses the TinyMCE JavaScript using GZip and
  * enables the browser to do two requests instead of one for each .js file.
