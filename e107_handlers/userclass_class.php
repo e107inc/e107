@@ -1,22 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     �Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2009-11-04 17:29:26 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
-*/
-
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/userclass_class.php,v $
+ * $Revision: 1.45 $
+ * $Date: 2009-11-17 10:46:34 $
+ * $Author: marj_nl_fr $
+ */
 
 /*
 This class handles everything a user needs. Admin functions inherit from it.

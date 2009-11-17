@@ -1,21 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     �Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-09-18 19:05:50 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-17 10:46:34 $
+ * $Author: marj_nl_fr $
+ */
 
 /*
 Query string: content_type.rss_type.[topic id]
@@ -699,7 +696,7 @@ class rssCreate
 						//	<id>http://example.org/</id>
 						//	<title>Fourty-Two</title>
 						//	<updated>2003-12-13T18:30:02Z</updated>
-						//	<rights>� 2005 Example, Inc.</rights>
+						//	<rights>© 2005 Example, Inc.</rights>
 						//</source>
 						//<rights type='html'>&amp;copy; 2005 John Doe</rights>
 						echo "

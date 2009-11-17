@@ -1,22 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     �Steve Dun.an 2001-2002
-|     http://e107.org
-|     jali.@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subs_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2009-11-17 09:17:08 $
-|     $Author: marj_nl_fr $
-|
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subs_menu.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-17 10:46:34 $
+ * $Author: marj_nl_fr $
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
