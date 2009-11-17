@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.50 $
-* $Date: 2009-11-17 09:11:05 $
+* $Revision: 1.51 $
+* $Date: 2009-11-17 10:31:05 $
 * $Author: marj_nl_fr $
 *
 */
@@ -1052,7 +1052,7 @@ class e_install
 	/**
 	 * Install a Theme required plugin.
 	 * @param string $plugpath - plugin folder name
-	 * @return 
+	 * @return void
 	 */
 	public function install_plugin($plugpath) //FIXME - requires default plugin table entries, see above. 
 	{
