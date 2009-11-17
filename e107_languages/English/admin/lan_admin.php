@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_admin.php,v 1.37 2009-11-08 13:22:02 e107coders Exp $
+ * $Id: lan_admin.php,v 1.38 2009-11-17 08:16:40 e107coders Exp $
  *
  * Admin Language File
 */
@@ -312,6 +312,9 @@ define("LAN_USER", "User");
 define("LAN_ID", "ID");
 define("LAN_TITLE", "Title");
 define("LAN_DESCRIPTION", "Description");
+define("LAN_VISIBILITY", "Visibility");
+define("LAN_ICON", "Icon");
+
 
 
 

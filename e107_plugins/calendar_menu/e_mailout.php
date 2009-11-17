@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_mailout.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-15 17:44:19 $
- * $Author: e107steved $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-17 08:16:46 $
+ * $Author: e107coders $
  *
 */
 
@@ -30,7 +30,7 @@ Allows admins to send mail to those subscribed to calendar events
 	$mailerIncludeWithDefault = TRUE;			// Mandatory - if false, show only when mailout for this specific plugin is enabled 
 	$mailerExcludeDefault = FALSE;				// Mandatory - if TRUE, when this plugin's mailout is active, the default (core) isn't loaded
 
-class mailout_calendar_menu
+class mailout_calendar_menu    //FIXME <-- should be calendar_menu_mailout for consistency
 {
 	protected $mailCount = 0;
 	protected $mailRead = 0;
