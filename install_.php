@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.51 $
-* $Date: 2009-11-17 10:31:05 $
+* $Revision: 1.52 $
+* $Date: 2009-11-17 14:05:34 $
 * $Author: marj_nl_fr $
 *
 */
@@ -605,7 +605,8 @@ class e_install
 
 	/**
 	 * Collect Admin Login Data.
-	 * @return 
+	 *
+	 * @return string HTML form of stage 5.
 	 */
 
 	private function stage_5()  
@@ -660,9 +661,10 @@ class e_install
 		$this->template->SetTag("stage_content", $e_forms->return_form());
 	}
 	
-	/** Collect User's Website Preferences
+	/**
+	 * Collect User's Website Preferences
 	 * 
-	 * @return html form. 
+	 * @return string HTML form of stage 6.
 	 */
 	private function stage_6()  
 	{
@@ -940,9 +942,11 @@ class e_install
 
 
 	/**
-	 * Import and Generate Preferences and default content.
-	 * @return 
+	 * Import and generate preferences and default content.
+	 *
+	 * @return boolean
 	 */
+	 //FIXME always return FALSE???
 	public function import_configuration()
 	{
 		// Basic stuff to get the handlers/classes to work.
@@ -1051,6 +1055,7 @@ class e_install
 
 	/**
 	 * Install a Theme required plugin.
+	 *
 	 * @param string $plugpath - plugin folder name
 	 * @return void
 	 */
@@ -1067,8 +1072,9 @@ class e_install
 	 * Check a DB name or table prefix - anything starting with a numeric followed by 'e' causes problems.
 	 * Return TRUE if acceptable, FALSE if unacceptable
 	 * Empty string returns the value of $blank_ok (caller should set TRUE for prefix, FALSE for DB name)
-	 * @param object $str
-	 * @param object $blank_ok [optional]
+	 *
+	 * @param string $str
+	 * @param boolean $blank_ok [optional]
 	 * @return boolean
 	 */
 	function check_name($str, $blank_ok = FALSE)
@@ -1204,6 +1210,7 @@ class e_install
 
 	/**
 	 * Create Core MySQL tables
+	 *
 	 * @return 
 	 */
 	public function create_tables()

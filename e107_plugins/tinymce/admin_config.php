@@ -9,9 +9,9 @@
  * Plugin Administration - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tinymce/admin_config.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-09 16:54:30 $
- * $Author: secretr $
+ * $Revision: 1.11 $
+ * $Date: 2009-11-17 14:05:34 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../../class2.php");
@@ -128,10 +128,11 @@ class tinymce
 // --------------------------------------------------------------------------
 	/**
 	 * Generic DB Record Listing Function. 
-	 * @param object $mode [optional]
-	 * @return 
+	 *
+	 * @param object $mode [optional] - reserved
+	 * @return void
 	 */
-	function listRecords($mode=FALSE)
+	function listRecords($mode = FALSE)
 	{
 		$ns = e107::getRender();
 		$sql = e107::getDb();
@@ -184,11 +185,12 @@ class tinymce
 
 	/**
 	 * Render Field value (listing page)
-	 * @param object $key
-	 * @param object $row
-	 * @return 
+	 *
+	 * @param array $key
+	 * @param array $row
+	 * @return string
 	 */
-	function renderValue($key,$row)
+	function renderValue($key, $row)
 	{
 		$att = $this->fields[$key];	
 		$frm = e107::getForm();	
@@ -226,13 +228,14 @@ class tinymce
 	
 	/**
 	 * Render Form Element (edit page)
-	 * @param object $key
-	 * @param object $row
-	 * @return 
+	 *
+	 * @param array $key
+	 * @param array $row
+	 * @return string method's value or HTML input
 	 */
-	function renderElement($key,$row)
+	function renderElement($key, $row)
 	{
-		global $frm;
+		$frm = e107::getForm();
 		$att = $this->fields[$key];
 		$value = $row[$key];	
 		
@@ -241,7 +244,7 @@ class tinymce
 			$meth = $att['method'];
 			if(isset($att['methodparms']))
 			{
-				return $this->$meth($value,$att['methodparms']);
+				return $this->$meth($value, $att['methodparms']);
 			}
 			return $this->$meth($value);
 		}
@@ -377,11 +380,13 @@ class tinymce
 
 
 	/**
-	 * Generic Save DB Record Function. 
-	 * @param object $id [optional]
-	 * @return 
+	 * Generic Save DB Record Function.
+	 * Insert or Update a table row.
+	 *
+	 * @param mixed $id [optional] if set, $id correspond to the primary key of the table
+	 * @return void
 	 */
-	function submitPage($id=FALSE)
+	function submitPage($id = FALSE)
 	{
 		global $sql, $tp, $e107cache, $admin_log, $e_event;
 		$emessage = eMessage::getInstance();
