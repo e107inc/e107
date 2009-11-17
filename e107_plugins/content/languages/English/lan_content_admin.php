@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2007-04-18 21:41:58 $
-|     $Author: lisa_ $
+|     $Revision: 1.12 $
+|     $Date: 2009-11-17 15:29:55 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -621,7 +621,7 @@ define("CONTENT_ADMIN_OPT_LAN_102", "link : top score");
 define("CONTENT_ADMIN_OPT_LAN_103", "link : recent items");
 define("CONTENT_ADMIN_OPT_LAN_104", "link : Submit And Content Manager");
 define("CONTENT_ADMIN_OPT_LAN_105", "icon : links");
-define("CONTENT_ADMIN_OPT_LAN_106", "none (), bullet (), middot (&middot;), white bullet (บ), arrow (&raquo;), category_icon()");
+define("CONTENT_ADMIN_OPT_LAN_106", "none (), bullet (), middot (&middot;), white bullet (ยบ), arrow (&raquo;), category_icon()");
 define("CONTENT_ADMIN_OPT_LAN_107", "none");
 define("CONTENT_ADMIN_OPT_LAN_108", "bullet");
 define("CONTENT_ADMIN_OPT_LAN_109", "middot");
