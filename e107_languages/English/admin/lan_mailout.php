@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-15 17:38:05 $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-17 20:34:50 $
  * $Author: e107steved $
  *
 */
@@ -242,8 +242,8 @@ define('LAN_MAILOUT_220', 'Email ID --ID-- cancelled');
 define('LAN_MAILOUT_221', 'Error cancelling email with ID --ID--');
 define('LAN_MAILOUT_222', 'Default email format');
 define('LAN_MAILOUT_223', '(Used for some non-bulk emails)');
-define('LAN_MAILOUT_224', '');
-define('LAN_MAILOUT_225', '');
+define('LAN_MAILOUT_224', 'Inc. Images');
+define('LAN_MAILOUT_225', 'Include images in email');
 define('LAN_MAILOUT_226', '');
 define('LAN_MAILOUT_227', '');
 define('LAN_MAILOUT_228', '');

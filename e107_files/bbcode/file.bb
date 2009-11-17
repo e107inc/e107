@@ -15,22 +15,25 @@ if ((e_PAGE == 'page.php') || (array_key_exists('forum_attach', $pref) && $pref[
 
 	if(is_readable(THEME.'images/'.$ext.'.png'))
 	{
-		$image = THEME.'images/'.$ext.'.png';
+		$image = THEME_ABS.'images/'.$ext.'.png';
 	}
 	elseif(is_readable(e_IMAGE.'/generic/'.$ext.'.png'))
 	{
-		$image = e_IMAGE.'generic/'.$ext.'.png';
+		$image = e_IMAGE_ABS.'generic/'.$ext.'.png';
 	
 	}
 	elseif(is_readable(THEME.'images/file.png'))
 	{
-		$image = THEME.'images/file.png';
+		$image = THEME_ABS.'images/file.png';
 	
 	}
 	else
 	{
-		$image = e_IMAGE.'generic/lite/file.png';
+		$image = e_IMAGE_ABS.'generic/lite/file.png';
 	}
-
+	if (strpos($fname, '{e_BASE}') === 0)
+	{
+		$fname = str_replace('{e_BASE}', SITEURL, $fname);			// Translate into an absolute URL
+	}
 	return "<a href='".$tp -> toAttribute($fname)."'><img src='".$image."' alt='' style='border:0; vertical-align:middle' /></a> <a href='".$tp -> toAttribute($fname)."'>".$code_text."</a>";
 }

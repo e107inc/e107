@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-16 20:40:39 $
+ * $Revision: 1.3 $
+ * $Date: 2009-11-17 20:34:50 $
  * $Author: e107steved $
  *
 */
@@ -87,6 +87,7 @@ class mailoutAdminClass extends e107MailManager
 			'mail_attach'		=> array('title' => LAN_MAILOUT_153),
 			'mail_send_style'	=> array('title' => LAN_MAILOUT_154),
 			'mail_selectors'	=> array('title' => LAN_MAILOUT_155, 'proc' => 'selectors', 'nolist' => 'TRUE'),
+			'mail_include_images' => array('title' => LAN_MAILOUT_224, 'proc' => 'yesno'),
 			'options' 			=> array('title' => LAN_OPTIONS, 'forced' => TRUE)
 		)
 	);
@@ -427,7 +428,7 @@ class mailoutAdminClass extends e107MailManager
 		if (in_array('core', $toLoad) || ($options == 'all'))
 		{
 			require_once(e_HANDLER.'mailout_class.php');
-			$this->mailHandlers[] = new mailout_core($this);		// Start by loading the core mailout class
+			$this->mailHandlers[] = new core_mailout($this);		// Start by loading the core mailout class
 			$ret++;
 		}
 
@@ -446,7 +447,7 @@ class mailoutAdminClass extends e107MailManager
 				require_once(e_PLUGIN.$mailer.'/e_mailout.php');
 				if (varset($mailerIncludeWithDefault,TRUE))
 				{	// Definitely need this plugin
-					$mailClass = 'mailout_'.$mailer;
+					$mailClass = $mailer.'_mailout';
 					$temp = new $mailClass;
 					if ($temp->mailerEnabled)
 					{
@@ -584,7 +585,8 @@ class mailoutAdminClass extends e107MailManager
 						'mail_copy_to'		=> $this->e107->tp->toDB($_POST['email_cc']),
 						'mail_bcopy_to'		=> $this->e107->tp->toDB($_POST['email_bcc']),
 						'mail_attach'		=> $this->e107->tp->toDB(trim($_POST['email_attachment'])),
-						'mail_send_style'	=> $this->e107->tp->toDB(varset($_POST['send_style'],'textonly'))
+						'mail_send_style'	=> $this->e107->tp->toDB(varset($_POST['send_style'],'textonly')),
+						'mail_include_images' => (isset($_POST['mail_include_images']) ? 1 : 0)
 					); 
 		if (isset($_POST['mail_source_id']))
 		{
@@ -822,6 +824,8 @@ class mailoutAdminClass extends e107MailManager
 			<td >\n";
 
 		$text .= $this->sendStyleSelect($mailSource['mail_send_style']);
+		$checked = (isset($mailSource['mail_include_images']) && $mailSource['mail_include_images']) ? " checked='checked'" : '';
+		$text .= "&nbsp;&nbsp;<input type='checkbox' name='mail_include_images' value='1' {$checked} />".LAN_MAILOUT_225;
 		$text .="
 		</td></tr>\n
 			<tr>
@@ -1061,6 +1065,9 @@ class mailoutAdminClass extends e107MailManager
 							break;
 						case 'selectors' :
 							$text .= 'cannot display';
+							break;
+						case 'yesno' :
+							$text .= $row[$fieldName] ? LAN_YES : LAN_NO;
 							break;
 						case 'default' :
 						default :

@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-16 20:40:39 $
+ * $Revision: 1.3 $
+ * $Date: 2009-11-17 20:34:50 $
  * $Author: e107steved $
 */
 
@@ -30,8 +30,10 @@ will be included in preference to the current theme style.
 
 
 TODO:
-	- Check handling of inline images
+	- optional notify flag
+	- Consider whether to extract links in text-only emails
 	- Better check on e107 ID - add encoded value
+	- makeEmailBody - could use regex to modify links
 
 
 Database tables
@@ -161,7 +163,8 @@ class e107MailManager
 					'mail_bcopy_to'		=> 1,
 					'mail_attach'		=> 1,
 					'mail_send_style'	=> 1,
-					'mail_selectors'	=> 1			// Only used internally
+					'mail_selectors'	=> 1,			// Only used internally
+					'mail_include_images' => 1			// Used to determine whether to embed images, or link to them
 		);
 
 	/**
@@ -350,8 +353,6 @@ class e107MailManager
 	 * Given an array (row) of data retrieved from the DB table, converts to internal format.
 	 * Combining/splitting of fields is done as necessary
 	 * This version intended for 'Joined' reads which have both recipient and content data
-	 * (This is essentially the translation between internal storage format and db storage format. If
-	 * the DB format changes, only this routine and its counterpart should need changing)
 	 *
 	 * @param $data - array of DB-sourced target-related data
 	 * @param $addMissing - if TRUE, undefined fields are added
@@ -359,11 +360,11 @@ class e107MailManager
 	 * @return void
 	 */
 	public function dbToBoth(&$data, $addMissing = FALSE)
-	{	// Direct correspondence at present - but could change
+	{	
 		$res = array();
-		$oneToOne = array_merge($this->dbTypes['mail_content'], $this->dbTypes['mail_recipients']);
+		$oneToOne = array_merge($this->dbTypes['mail_content'], $this->dbTypes['mail_recipients']);		// List of valid elements
 
-		// Start with simpoe 'one to one' fields
+		// Start with simple 'one to one' fields
 		foreach ($oneToOne as $f => $v)
 		{
 			if (isset($data[$f]))
@@ -563,7 +564,7 @@ class e107MailManager
 
 		if (!$this->currentMailBody)
 		{
-			$this->currentMailBody = $this->makeEmailBody($email['mail_body'], $email['mail_send_style']);
+			$this->currentMailBody = $this->makeEmailBody($email['mail_body'], $email['mail_send_style'], varset($email['mail_include_images'], FALSE));
 		}
 		// Do any substitutions
 		$search = array();
@@ -581,7 +582,7 @@ class e107MailManager
 		{
 			$email['e107_header'] = intval($email['mail_source_id']).'/'.intval($email['mail_target_id']).'/'.md5($email['mail_source_id'].$email['mail_target_id'].$email['mail_recipient_email']);		// Set up an ID
 		}
-		if (isset($email['mail_attach']))
+		if (isset($email['mail_attach']) && (trim($email['mail_attach']) || is_array($email['mail_attach'])))
 		{
 			$downDir = realpath(e_ROOT.$this->e107->getFolder('downloads'));
 			if (is_array($email['mail_attach']))
@@ -897,7 +898,9 @@ class e107MailManager
 			if ($firstTime > 0) $ft = ', `mail_send_date` = '.$firstTime;
 			$lt = ', `mail_end_send` = '.$lastTime;
 		}
-		$query = '`mail_content_status` = '.($hold ? MAIL_STATUS_HELD : MAIL_STATUS_PENDING).$lt.' WHERE `mail_source_id` = '.intval($handle);
+		$query = '';
+		if (!$hold) $query = '`mail_creator` = '.USERID.', `mail_create_date` = '.time().', ';		// Update when we send - might be someone different
+		$query .= '`mail_content_status` = '.($hold ? MAIL_STATUS_HELD : MAIL_STATUS_PENDING).$lt.' WHERE `mail_source_id` = '.intval($handle);
 //		echo "Update mail body: {$query}<br />";
 		// Set status of email body first
 		if (!$this->db->db_Update('mail_content',$query))
@@ -1110,9 +1113,12 @@ class e107MailManager
 	 *				textonly - generate plain text email
 	 *				texthtml - HTML format email, no theme info
 	 *				texttheme - HTML format email, including current theme stylesheet etc
+	 * @param boolean $incImages - valid only with HTML output; 
+	 *					if true any 'absolute' format images are embedded in the source of the email.
+	 *					if FALSE, absolute links are converted to URLs on the local server		
 	 * @return string - updated body
 	 */
-	protected function makeEmailBody($text, $format = 'textonly')
+	protected function makeEmailBody($text, $format = 'textonly', $incImages = TRUE)
 	{
 		global $pref;
 		if ($format == 'textonly')
@@ -1120,6 +1126,8 @@ class e107MailManager
 			$temp = $this->e107->tp->toHTML($text, TRUE, 'E_BODY_PLAIN');				// Decode bbcodes into HTML, plain text as far as possible etc
 			return stripslashes(strip_tags($temp));						// Have to do strip_tags() again in case bbcode added some
 		}
+
+		$consts = $incImages ? ',consts_abs' : 'consts_full';			// If inline images, absolute constants so we can change them
 
 		// HTML format email here
 		$mail_head = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
@@ -1139,17 +1147,30 @@ class e107MailManager
 		if ($format == 'texttheme') 
 		{
 			$message_body .= "<div style='padding:10px;width:97%'><div class='forumheader3'>\n";
-			$message_body .= $this->e107->tp->toEmail($text)."</div></div></body></html>";
+			//$message_body .= $this->e107->tp->toEmail($text)."</div></div></body></html>";
+			$message_body .= $this->e107->tp->toHTML($text, TRUE, 'E_BODY'.$consts)."</div></div></body></html>";
 		}
 		else
 		{
-			$message_body .= $this->e107->tp->toEmail($text)."</body></html>";
+			//$message_body .= $this->e107->tp->toEmail($text)."</body></html>";
+			$message_body .= $this->e107->tp->toHTML($text, TRUE, 'E_BODY'.$consts)."</body></html>";
 			$message_body = str_replace("&quot;", '"', $message_body);
 		}
 
-		$message_body = str_replace('<br />', "<br />\n", $message_body);			// This gives a more readable alternate (plain text) part
+		$message_body = stripslashes($message_body);
 
-		return stripslashes($message_body);
+
+		if (!$incImages)
+		{
+			// Handle internally generated 'absolute' links - they need the full URL
+			$message_body = str_replace("src='".e_HTTP, "src='".SITEURL, $message_body);
+			$message_body = str_replace('src="'.e_HTTP, 'src="'.SITEURL, $message_body);
+			$message_body = str_replace("href='".e_HTTP, "src='".SITEURL, $message_body);
+			$message_body = str_replace('href="'.e_HTTP, 'src="'.SITEURL, $message_body);
+		}
+
+//		print_a($message_body);
+		return $message_body;
 	}
 	
 }
