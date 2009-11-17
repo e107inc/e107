@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.69 $
- * $Date: 2009-11-16 20:40:39 $
- * $Author: e107steved $
+ * $Revision: 1.70 $
+ * $Date: 2009-11-17 09:11:05 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1223,6 +1223,7 @@ class e107
 			define("e_FILE_ABS", e_HTTP.$FILES_DIRECTORY);
 			define("e_HANDLER_ABS", e_HTTP.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR_ABS", e_HTTP.$LANGUAGES_DIRECTORY);
+			//FIXME Shouldn't be available
 			define("e_MEDIA_ABS", e_HTTP.$MEDIA_DIRECTORY);
 
 			if(isset($_SERVER['DOCUMENT_ROOT']))
