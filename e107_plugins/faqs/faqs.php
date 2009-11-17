@@ -1,18 +1,19 @@
 <?php
 /*
- +---------------------------------------------------------------+
- |        e107 website system
- |        FAQs v3.2 with Page-Titles by Cameron (cameron@e107coders.org)
- |
- |        �Steve Dunstan 2001-2002
- |        http://jalist.com
- |        stevedunstan@jalist.com
- |
- |
- |        Released under the terms and conditions of the
- |        GNU General Public License (http://gnu.org).
- +---------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-17 10:46:35 $
+ * $Author: marj_nl_fr $
  */
+
 require_once ("../../class2.php");
 
 include_lan(e_PLUGIN."faqs/languages/faq_lan_".e_LANGUAGE.".php");
