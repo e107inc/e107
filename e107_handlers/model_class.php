@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-11-17 15:23:01 $
+ * $Revision: 1.39 $
+ * $Date: 2009-11-17 15:34:54 $
  * $Author: secretr $
 */
 
@@ -820,9 +820,14 @@ class e_model
      */
 	public function load($id, $force = false)
 	{
-		if($this->hasData() && !$force)
+		if(!$force && $this->hasData())
 		{
 			return $this;
+		}
+		
+		if($force)
+		{
+			$this->setData(array());
 		}
 		$id = intval($id);
 		
@@ -1937,7 +1942,7 @@ class e_tree_model extends e_model
 	 * 
 	 * @var string
 	 */
-	protected $_total = 0;
+	protected $_total = false;
 	
 	/**
 	 * Constructor
@@ -2013,9 +2018,15 @@ class e_tree_model extends e_model
 	public function load($force = false)
 	{
 		
-		if(!$this->isEmpty() && !$force)
+		if(!$force && !$this->isEmpty())
 		{
 			return $this;
+		}
+		
+		if ($force)
+		{
+			$this->setTree(array(), true);
+			$this->_total = false;
 		}
 		
 		if($this->getParam('db_query') && $this->getParam('model_class') && class_exists($this->getParam('model_class')))
@@ -2025,15 +2036,16 @@ class e_tree_model extends e_model
 			$this->_total = $sql->total_results = false;
 			if($sql->db_Select_gen($this->getParam('db_query')))
 			{
-				$this->_total = $sql->total_results; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+				// TODO - $sql->total_results variable type!!!
+				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
 				
 				while($tmp = $sql->db_Fetch())
 				{
 					$tmp = new $class_name($tmp);
 					$this->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
-				// FIXME - test for type of $this->_total to avoid query if table is empty
-				if(!$this->_total && $this->getModelTable())
+
+				if(false === $this->_total && $this->getModelTable())
 				{
 					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
 					$this->_total = e107::getDb()->db_Count($this->getModelTable());
