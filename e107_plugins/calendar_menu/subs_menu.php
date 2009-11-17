@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subs_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-11-17 07:40:43 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2009-11-17 09:17:08 $
+|     $Author: marj_nl_fr $
 |
 +----------------------------------------------------------------------------+
 */
@@ -83,7 +83,8 @@ function subs_log_a_line($log_text,$close_after = FALSE, $log_always = FALSE)
   if ($ec_run_from_menu && ($log_always == FALSE)) return;
 //  echo "Logging: ".$log_text."<br />";
   static $handle = NULL;
-  $log_filename = e_MEDIA."logs/calendar_mail.txt";
+  //FIXME need another name
+	$log_filename = e_MEDIA."logs/calendar_mail.txt";
   if ($handle == NULL)
   {
     if (!($handle = fopen($log_filename, "a"))) 

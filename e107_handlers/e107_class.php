@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.70 $
- * $Date: 2009-11-17 09:11:05 $
+ * $Revision: 1.71 $
+ * $Date: 2009-11-17 09:17:08 $
  * $Author: marj_nl_fr $
 */
 
@@ -1212,6 +1212,7 @@ class e107
 			define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
 			define("e_DOCS", e_BASE.$HELP_DIRECTORY);
+			//FIXME need another name
 			define("e_MEDIA", e_BASE.$MEDIA_DIRECTORY);
 //
 // HTTP absolute paths
@@ -1243,7 +1244,8 @@ class e107
 			}
 			else
 			{
-            	define("e_CACHE", e_MEDIA."cache/");
+            	//FIXME need another name
+							define("e_CACHE", e_MEDIA."cache/");
 			}
 /*
  

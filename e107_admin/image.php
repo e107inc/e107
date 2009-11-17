@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-11-15 20:24:55 $
- * $Author: secretr $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-17 09:17:08 $
+ * $Author: marj_nl_fr $
  *
 */
 require_once("../class2.php");
@@ -182,6 +182,7 @@ class media_admin_ui extends e_admin_ui
 	{
 		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
+		//FIXME need another name
 		$uploaded = process_uploaded_files(e_MEDIA.'temp/');
 		
 		foreach($uploaded as $upload)
@@ -193,6 +194,7 @@ class media_admin_ui extends e_admin_ui
 				'media_type'		=> $upload['type'],
 				'media_name'		=> $upload['name'],
 				'media_datestamp'	=> time(),
+				//FIXME need another name
 				'media_url'			=> "{e_MEDIA}".$newpath,
 				'media_size'		=> $upload['size'],
 				'media_author'		=> USERID
@@ -278,9 +280,10 @@ class media_admin_ui extends e_admin_ui
 	{
 		list($pmime,$tmp) = explode('/',$type);
 		$dir = $this->mimePaths[$pmime]."/".date("Y-m"); 
+		//FIXME need another name
 		if(!is_dir(e_MEDIA.$dir))
 		{
-			mkdir(e_MEDIA.$dir,0755);	
+			mkdir(e_MEDIA.$dir, 0755);
 		}
 		return $dir;		
 	}

@@ -9,9 +9,9 @@
  * File Upload Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-11-14 04:13:11 $
- * $Author: e107coders $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-17 09:17:08 $
+ * $Author: marj_nl_fr $
  */
 
 if (!defined('e107_INIT'))
@@ -24,6 +24,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
 //define("UH_DEBUG",TRUE);
 define("UH_DEBUG", FALSE);
 
+//FIXME need another name
 define('e_UPLOAD_TEMP_DIR', e_MEDIA.'temp/'); // Temporary directory
 define('e_READ_FILETYPES', 'filetypes.xml'); // Upload permissions
 define('e_SAVE_FILETYPES', 'filetypes_.xml');
