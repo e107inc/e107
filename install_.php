@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.52 $
-* $Date: 2009-11-17 14:05:34 $
+* $Revision: 1.53 $
+* $Date: 2009-11-17 14:21:11 $
 * $Author: marj_nl_fr $
 *
 */
@@ -1211,7 +1211,7 @@ class e_install
 	/**
 	 * Create Core MySQL tables
 	 *
-	 * @return 
+	 * @return string|FALSE error code or FALSE if no errors are detected
 	 */
 	public function create_tables()
 	{
