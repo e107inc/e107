@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-11-16 12:23:07 $
+ * $Revision: 1.38 $
+ * $Date: 2009-11-17 15:23:01 $
  * $Author: secretr $
 */
 
@@ -1579,6 +1579,22 @@ class e_admin_model extends e_model
     }
 	
     /**
+     * @return integer last mysql error number
+     */
+    public function getSqlErrorNumber()
+    {
+    	return $this->_db_errno;
+    }
+	
+    /**
+     * @return string last mysql error message
+     */
+    public function getSqlError()
+    {
+    	return e107::getDb()->getLastErrorText();
+    }
+	
+    /**
      * @return boolean
      */
     public function hasError()
@@ -1656,7 +1672,7 @@ class e_admin_model extends e_model
 		{
 			return 0;
 		}
-		
+
 		$res = e107::getDb()->db_Insert($this->getModelTable(), $this->toSqlQuery('create'));
 		if(!$res)
 		{

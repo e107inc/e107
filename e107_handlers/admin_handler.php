@@ -9,8 +9,8 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-11-16 12:23:07 $
+ * $Revision: 1.29 $
+ * $Date: 2009-11-17 15:23:00 $
  * $Author: secretr $
 */
 
@@ -2027,6 +2027,9 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected $pluginName;
 	
+	
+	protected $batchDelete = true;
+	
 	/**
 	 * Could be LAN constant (mulit-language support)
 	 * @var string plugin name
@@ -2058,6 +2061,11 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var e_plugin_pref|e_core_pref
 	 */
 	protected $_pref = null;
+	
+	public function getBatchDelete()
+	{
+		return $this->batchDelete;
+	}
 	
 	/**
 	 * @return string
@@ -2503,14 +2511,14 @@ class e_admin_controller_ui extends e_admin_controller
 				case 'datestamp':
 					if(!is_numeric($data[$key]))
 					{
-						$data[$key] = e107::getDateConvert()->toTime($data[$key], 'input'); 
+						$data[$key] = trim($data[$key]) ? e107::getDateConvert()->toTime($data[$key], 'input') : 0; 
 					}
 				break;
 				
 				case 'ip': // TODO - ask Steve if this check is required
 					if(strpos($data[$key], '.') !== FALSE)
 					{
-						$data[$key] = e107::getInstance()->ipEncode($data[$key]);
+						$data[$key] = trim($data[$key]) ? e107::getInstance()->ipEncode($data[$key]) : '';
 					}
 				break;
 			}
@@ -2833,30 +2841,52 @@ class e_admin_controller_ui extends e_admin_controller
 	
 	/**
 	 * Manage submit item
-	 * @param array $posted [optional] additional model data
+	 * Note: $callbackBefore will break submission if returns false
+	 * 
+	 * @param string $callbackBefore existing method from $this scope to be called before submit
+	 * @param string $callbackAfter existing method from $this scope to be called after successfull submit
+	 * @param string $noredirectAction passed to doAfterSubmit()
 	 * @return 
 	 */
-	protected function _manageSubmit($posted = array(), $noredirectAction = '')
+	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $noredirectAction = '')
 	{
-		// Scenario I - use request owned POST data - toForm already exeuted
+		$model = $this->getModel();
+		$old_data = $model->getData();
+		
 		$_posted = $this->getPosted();
 		$this->convertToData($_posted);
-		if($posted && is_array($posted))
+		
+		if($callbackBefore && method_exists($this, $callbackBefore))
 		{
-			$_posted = array_merge($_posted, $posted);
+			$data = $this->$callbackBefore($_posted, $old_data, $model->getId());
+			if(false === $data)
+			{
+				return false;
+			}
+			if($data && is_array($data))
+			{
+				$_posted = array_merge($_posted, $data);
+			}
 		}
-		$this->getModel()->setPostedData($_posted, null, false, false)
+		
+		// Scenario I - use request owned POST data - toForm already executed
+		$model->setPostedData($_posted, null, false, false)
 			->save(true);
 		// Scenario II - inner model sanitize
-		//$this->getModel()->setPosted($this->convertToData($_POST(, null, false, true);
+		//$this->getModel()->setPosted($this->convertToData($_POST, null, false, true);
 		
 		// Copy model messages to the default message stack
-		$this->getModel()->setMessages();
+		$model->setMessages();
 		
 		// Take action based on use choice after success
 		if(!$this->getModel()->hasError())
 		{
-			$this->doAfterSubmit($this->getModel()->getId(), $noredirectAction);
+			// callback (if any)
+			if($callbackAfter && method_exists($this, $callbackAfter)) 
+			{
+				$this->$callbackAfter($model->getData(), $old_data, $model->getId());
+			}
+			$this->doAfterSubmit($model->getId(), $noredirectAction);
 			return true;
 		}
 		return false;
@@ -2874,8 +2904,6 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $pid;
 	protected $listQry;
 	protected $editQry;
-	
-	protected $batchDelete = true;
 
 	/**
 	 * Constructor 
@@ -3020,17 +3048,17 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->triggersEnabled(false);
 		$id = intval(array_shift($posted)); 
-		if($this->beforeDelete($id))
+		$data = array();
+		$model = $this->getTreeModel()->getNode($id);
+		if($model)
 		{
-			$data = array();
-			$model = $this->getTreeModel()->getNode($id);
-			if($model)
-			{
-				$data = $model->getData();
-			}
+			$data = $model->getData();
+		}
+		if($this->beforeDelete($data, $id))
+		{
 			if($this->getTreeModel()->delete($id))
 			{
-				$this->afterDelete($data);
+				$this->afterDelete($data, $id);
 			}
 			$this->getTreeModel()->setMessages();
 		}
@@ -3039,7 +3067,7 @@ class e_admin_ui extends e_admin_controller_ui
 	/**
 	 * User defined pre-delete logic
 	 */
-	public function beforeDelete($id)
+	public function beforeDelete($data, $id)
 	{
 		return true;
 	}
@@ -3047,7 +3075,7 @@ class e_admin_ui extends e_admin_controller_ui
 	/**
 	 * User defined after-create logic
 	 */
-	public function afterDelete($deleted_data)
+	public function afterDelete($deleted_data, $id)
 	{
 	}
 	
@@ -3129,10 +3157,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function EditSubmitTrigger()
 	{
-		if($this->_manageSubmit($this->beforeUpdate(), 'edit'))
-		{
-			$this->afterUpdate();
-		}
+		$this->_manageSubmit('beforeUpdate', 'afterUpdate', 'edit');
 	}
 	
 	/**
@@ -3177,37 +3202,34 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function CreateSubmitTrigger()
 	{
-		if($this->_manageSubmit($this->beforeCreate(), ''))
-		{
-			$this->afterCreate();
-		}
+		$this->_manageSubmit('beforeCreate', 'afterCreate');
 	}
 	
 	/**
 	 * User defined pre-create logic
 	 */
-	public function beforeCreate()
+	public function beforeCreate($new_data, $old_data)
 	{
 	}
 	
 	/**
 	 * User defined after-create logic
 	 */
-	public function afterCreate()
+	public function afterCreate($new_data, $old_data, $id)
 	{
 	}
 	
 	/**
 	 * User defined pre-update logic
 	 */
-	public function beforeUpdate()
+	public function beforeUpdate($new_data, $old_data, $id)
 	{
 	}
 	
 	/**
 	 * User defined after-update logic
 	 */
-	public function afterUpdate()
+	public function afterUpdate($new_data, $old_data, $id)
 	{
 	}
 	
@@ -3280,11 +3302,6 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		if($alias) return ($this->tableAlias ? $this->tableAlias : '');
 		return ($prefix ? '#' : '').$this->table;
-	}
-	
-	public function getBatchDelete()
-	{
-		return $this->batchDelete;
 	}
 	
 	/**
@@ -3901,7 +3918,7 @@ class e_admin_icons
  * @param string $extension without leading dot, default 'png'
  * @return string icon url without domain
  */
-function ___I($name, $size = 16, $extension = 'png')
+function _I($name, $size = 16, $extension = 'png')
 {
 	return e107::getSingleton('e_admin_icons')->url($name, $size, $extension);
 }
@@ -3918,7 +3935,7 @@ function ___I($name, $size = 16, $extension = 'png')
  * @param string $extension default 'png'
  * @return string img tag
  */
-function ___ITAG($name, $size = 16, $class = '', $alt = '', $extension = 'png')
+function _ITAG($name, $size = 16, $class = '', $alt = '', $extension = 'png')
 {
 	return e107::getSingleton('e_admin_icons')->tag($name, $size, $class, $alt, $extension);
 }
@@ -3939,7 +3956,7 @@ function ___ITAG($name, $size = 16, $class = '', $alt = '', $extension = 'png')
  * @param string $extension without leading dot, default 'png'
  * @return string icon relative server path
  */
-function ___IPATH($name, $size = 16, $extension = 'png')
+function _IPATH($name, $size = 16, $extension = 'png')
 {
 	return e107::getSingleton('e_admin_icons')->path($name, $size, $extension);
 }
@@ -3948,7 +3965,7 @@ include_once(e107::coreTemplatePath('admin_icons'));
 
 /**
  * TODO:
- * 1. move abstract peaces of code to the proper classes
+ * 1. [DONE - a good start] move abstract peaces of code to the proper classes
  * 2. [DONE - at least for alpha release] remove duplicated code (e_form & e_admin_form_ui), refactoring
  * 3. make JS Manager handle Styles (.css files and inline CSS)
  * 4. [DONE] e_form is missing some methods used in e_admin_form_ui
