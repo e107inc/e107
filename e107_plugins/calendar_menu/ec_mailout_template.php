@@ -1,26 +1,24 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_mailout_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2007-07-13 19:37:52 $
-|     $Author: e107steved $
-|
-+----------------------------------------------------------------------------+
-
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_mailout_template.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-17 12:53:09 $
+ * $Author: marj_nl_fr $
+ */
+/*
 This template is used during the subscription mailouts - it is inserted at the front of the text
 defined for each category.
 Main purpose is to define the 'pre' and 'post' styles, but it can be used much as any E107 template
 */
+
 if (!defined('e107_INIT')) { exit; }
 
 $sc_style['EC_MAIL_HEADING_DATE']['pre'] = "";
