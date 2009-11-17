@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-10-20 16:00:37 $
- * $Author: secretr $
+ * $Revision: 1.35 $
+ * $Date: 2009-11-17 15:29:33 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -142,7 +142,8 @@ class e_shortcode
 	
 	/**
 	 * Register any shortcode from the shortcode/override/ directory
-	 * @return 
+	 *
+	 * @return void
 	 */
 	protected function loadOverrideShortcodes()
 	{
@@ -163,7 +164,8 @@ class e_shortcode
 	/**
 	 * Register any shortcodes that were registered by the theme
 	 * $register_sc[] = 'MY_THEME_CODE'
-	 * @return 
+	 *
+	 * @return void
 	 */
 	protected function loadThemeShortcodes()
 	{
@@ -185,7 +187,8 @@ class e_shortcode
 	
 	/**
 	 * Register all .sc files found in plugin directories (via pref)
-	 * @return 
+	 *
+	 * @return void
 	 */
 	protected function loadPluginSCFiles()
 	{	
@@ -219,7 +222,8 @@ class e_shortcode
 	/**
 	 * Register Plugin Shortcode Batch files (e_shortcode.php) for use site-wide. 
 	 * Equivalent to multiple .sc files in the plugin's folder. 
-	 * @return 
+	 *
+	 * @return void
 	 */
 	protected function loadPluginShortcodes()
 	{
@@ -259,7 +263,8 @@ class e_shortcode
 	/**
 	 * Register Core Shortcode Batches. 
 	 * FIXME - currently loaded all the time (even on front-end)
-	 * @return 
+	 *
+	 * @return void
 	 */
 	function loadCoreShortcodes()
 	{

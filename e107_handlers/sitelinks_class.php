@@ -9,19 +9,14 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-11-17 10:46:34 $
+ * $Revision: 1.21 $
+ * $Date: 2009-11-17 15:29:33 $
  * $Author: marj_nl_fr $
  */
 
 if (!defined('e107_INIT')) { exit; }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
-
-/**
-* @return void
-* @desc Outputs sitelinks
-*/
 
 class sitelinks
 {
