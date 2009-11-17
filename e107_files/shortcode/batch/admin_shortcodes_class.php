@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.31 2009-11-08 12:08:30 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.32 2009-11-17 13:12:43 e107coders Exp $
 *
 * Admin shortcode batch - class
 */
@@ -824,13 +824,17 @@ class admin_shortcodes
 					$members = $sql -> db_Count('user');
 					$unverified = $sql -> db_Count('user', '(*)', 'WHERE user_ban=2');
 					$banned = $sql -> db_Count('user', '(*)', 'WHERE user_ban=1');
-					$comments = $sql -> db_Count('comments');
-					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?unverified'>".ADLAN_111."</a>" : ADLAN_111);
+					$comments = $sql -> db_Count('comments'); 
+					
+				
+					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?filter=unverified'>".ADLAN_111."</a>" : ADLAN_111);
 
-					$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_110.": ".$members."</div>";
-					$text .= "<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}: ".$unverified."</div>";
-					$text .= "<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": ".$banned."</div>";
-					$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": ".$comments."</div>";
+					$text = "
+					<div class='left'>
+						<div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_110.": <a href='".e_ADMIN."users.php?filter=0'>".$members."</a></div>
+						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}: <a href='".e_ADMIN."users.php?filter=unverified'>".$unverified."</a></div>
+						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": <a href='".e_ADMIN."users.php?filter=banned'>".$banned."</a></div>
+						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": <a href='".e_ADMIN."comment.php'>".$comments."</a></div>";
 
 					if(vartrue($pref['e_status_list']))
 					{
