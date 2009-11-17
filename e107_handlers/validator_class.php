@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-17 14:50:26 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-17 15:23:00 $
+ * $Author: secretr $
  *
 */
 
@@ -702,9 +702,9 @@ class e_validator
 	 * @param mixed $default
 	 * @return integer error code
 	 */
-	function getErrorCode($field, $default)
+	function getErrorCode($field, $default = -1)
 	{
-		return (isset($this->_validation_results[$field]) ? $this->_validation_results[$field] : -1);
+		return (isset($this->_validation_results[$field]) ? $this->_validation_results[$field] : $default);
 	}
 	
 	/**

@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.81 $
- * $Date: 2009-11-15 20:24:55 $
+ * $Revision: 1.82 $
+ * $Date: 2009-11-17 15:23:00 $
  * $Author: secretr $
  *
 */
@@ -123,13 +123,15 @@ class e_form
 		if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
 		if(!$label) $label = LAN_SELECT;
 		$parms = "name={$name}";
-		$parms .= "&path=".urlencode(e107::getParser()->replaceConstants(vartrue($sc_parameters['path'], '{e_FILE}images/')));
+		$parms .= "&path=".rawurlencode(e107::getParser()->replaceConstants(vartrue($sc_parameters['path'], '{e_FILE}images/')));
 		$parms .= "&filter=0";
 		$parms .= "&fullpath=1";
-		$parms .= "&default=".$default;
+		$parms .= "&default=".rawurlencode($default);
 		$parms .= "&multiple=FALSE";
 		$parms .= "&label=-- ".$label." --";
 		$parms .= "&subdirs=0";
+		$parms .= '&width='.vartrue($sc_parameters['width'], 150).'px';
+		if(vartrue($sc_parameters['height'])) $parms .= '&height='.$sc_parameters['height'].'px';
 		//$parms .= "&tabindex=".$this->getNext();
 		//$parms .= "&click_target=data";
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
@@ -165,7 +167,7 @@ class e_form
 		$cal_attrib['name'] = $name;
 		if ($datestamp)
 		{
-		   $cal_attrib['value'] = e107::getDateConvert()->convert_date($datestamp, 'input'); //date("d/m/Y H:i:s", $datestamp);
+		   $cal_attrib['value'] = is_numeric($datestamp) ? e107::getDateConvert()->convert_date($datestamp, 'input') : $datestamp; //date("d/m/Y H:i:s", $datestamp);
 		  // var_dump('date picker', $datestamp, $cal_attrib['value'], e107::getDateConvert()->toTime($cal_attrib['value']), e107::getDateConvert()->convert_date(e107::getDateConvert()->toTime($cal_attrib['value']), 'input'));
 		}
 		//JS manager to send JS/CSS to header if possible, if not - footer
@@ -456,7 +458,7 @@ class e_form
 		return $this->option($prefix.$this->_uc->uc_get_classname($classnum), $classnum, in_array($classnum, $tmp), array("style"=>"{$style}"))."\n";
 	}
 
-	function optgroup_open($label, $disabled)
+	function optgroup_open($label, $disabled = false)
 	{
 		return "<optgroup class='optgroup' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
 	}
@@ -927,7 +929,6 @@ class e_form
 		
 		foreach ($fieldarray as $field => $data)
 		{
-		
 			//Not found
 			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
 			{
@@ -1092,12 +1093,17 @@ class e_form
 			break;
 			
 			case 'image': //TODO - thumb, js tooltip...
-				$ttl = vartrue($parms['title'], 'LAN_PREVIEW');
-				$value = '<a href="'.$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs').'" title="'.basename($value).'">'.defset($ttl, $ttl).'</a>';
+				if($value)
+				{
+					$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
+					$alt = $src; //basename($value);
+					$ttl = vartrue($parms['thumb']) ? '<img src="'.$src.'" alt="'.$alt.'" style="width: '.(is_numeric($parms['thumb']) ? $parms['thumb'] : 80).'px" />' : vartrue($parms['title'], 'LAN_PREVIEW');
+					$value = '<a href="'.$src.'" class="e-image-preview" title="'.$alt.'" rel="external">'.defset($ttl, $ttl).'</a>';
+				}
 			break;
 			
 			case 'datestamp':
-				$value = e107::getDateConvert()->convert_date($value, vartrue($parms['mask'], 'short'));
+				$value = $value ? e107::getDateConvert()->convert_date($value, vartrue($parms['mask'], 'short')) : '';
 			break;
 			
 			case 'userclass':
@@ -1133,9 +1139,29 @@ class e_form
 					}
 				}*/
 				// Dirty, but the only way for now
-				if(vartrue($parms['__idval']) && vartrue($parms['link']))
+				$id = 0;
+				$ttl = '';
+				if(vartrue($parms['link']))
 				{
-					$value = '<a href="'.e107::getUrl()->createCoreUser('func=profile&id='.intval($parms['__idval'])).'" title="Go to user profile">'.$value.'</a>';
+					$id = vartrue($parms['__idval']);
+					if($value && !is_numeric($value))
+					{
+						$id = vartrue($parms['__idval']);
+						$ttl = $value;
+					}
+					elseif($value && is_numeric($value))
+					{
+						$id = $value;
+						$ttl = vartrue($parms['__titleval']);
+					}
+				}
+				if($id && $ttl && is_numeric($id))
+				{
+					$value = '<a href="'.e107::getUrl()->createCoreUser('func=profile&id='.intval($id)).'" title="Go to user profile">'.$ttl.'</a>';
+				}
+				else
+				{
+					$value = $ttl;
 				}
 			break;
 			
@@ -1155,6 +1181,10 @@ class e_form
 			case 'method': // Custom Function 
 				$method = $field; 
 				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms)); 
+			break;
+			
+			case 'hidden':
+				return (vartrue($parms['show']) ? ($value ? $value : vartrue($parms['empty'])) : '');
 			break;
 			
 			//TODO - order
@@ -1203,11 +1233,11 @@ class e_form
 			break;
 			
 			case 'textarea':
-				return $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), vartrue($parms['counter'], false));
+				return $this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options']), varset($parms['counter'], false));
 			break;
 			
 			case 'bbarea':
-				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'), vartrue($parms['counter'], false));
+				return $this->bbarea($key, $value, vartrue($parms['help']), vartrue($parms['helptag']), vartrue($parms['size'], 'medium'), varset($parms['counter'], false));
 			break;
 			
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
@@ -1287,8 +1317,13 @@ class e_form
 				return call_user_func_array(array($this, $key), array($value, 'write', $parms));
 			break;
 			
-			case 'upload':
+			case 'upload': //TODO - from method
 				return $tp->parseTemplate("{UPLOADFILE=".e_UPLOAD."}");
+			break;
+			
+			case 'hidden':
+				$ret = (vartrue($parms['show']) ? ($value ? $value : vartrue($parms['empty'])) : '');
+				return $ret.$this->hidden($key, $value);
 			break;
 
 			default:
@@ -1370,6 +1405,7 @@ class e_form
 		}
 		else
 		{
+			
 			foreach($tree as $model)
 			{
 				$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);

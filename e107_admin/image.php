@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-11-17 09:17:08 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.32 $
+ * $Date: 2009-11-17 15:23:01 $
+ * $Author: secretr $
  *
 */
 require_once("../class2.php");
@@ -162,7 +162,7 @@ class media_admin_ui extends e_admin_ui
 	 * Invoked just before item create event
 	 * @return array
 	 */
-	public function beforeCreate()
+	public function beforeCreate($new_data)
 	{
 		// return data to be merged with posted model data
 		return $this->observeUploaded();
@@ -172,7 +172,7 @@ class media_admin_ui extends e_admin_ui
 	 * Same as beforeCreate() but invoked on edit  
 	 * @return 
 	 */
-	public function beforeUpdate()
+	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		// return data to be merged with posted model data
 		return $this->observeUploaded();
@@ -266,12 +266,12 @@ class media_admin_ui extends e_admin_ui
 		
 	}
 	
-	function beforeDelete($id) // call before 'delete' is executed. - return false to prevent delete execution (e.g. some dependencies check)
+	function beforeDelete($data, $id) // call before 'delete' is executed. - return false to prevent delete execution (e.g. some dependencies check)
 	{
 		return true;
 	}
 	
-	function afterDelete($deleted_data) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
+	function afterDelete($deleted_data, $id) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
 	{
 		
 	}
