@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dun.an 2001-2002
+|     ï¿½Steve Dun.an 2001-2002
 |     http://e107.org
 |     jali.@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subs_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.6 $
+|     $Date: 2009-11-17 07:40:43 $
+|     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
 */
@@ -83,7 +83,7 @@ function subs_log_a_line($log_text,$close_after = FALSE, $log_always = FALSE)
   if ($ec_run_from_menu && ($log_always == FALSE)) return;
 //  echo "Logging: ".$log_text."<br />";
   static $handle = NULL;
-  $log_filename = e_FILE."logs/calendar_mail.txt";
+  $log_filename = e_MEDIA."logs/calendar_mail.txt";
   if ($handle == NULL)
   {
     if (!($handle = fopen($log_filename, "a"))) 

@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_themes/templates/footer_default.php,v $
- |     $Revision: 1.18 $
- |     $Date: 2009-10-01 15:05:40 $
- |     $Author: secretr $
+ |     $Revision: 1.19 $
+ |     $Date: 2009-11-17 07:40:51 $
+ |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
 if (!defined('e107_INIT'))
@@ -127,7 +127,7 @@ if (varset($e107_popup) != 1)
 	
 	if ($pref['log_page_accesses'])
 	{ // Need to log the page info to a text file as CSV data
-		$logname = e_FILE."logs/logd_".date("z.Y", time()).".csv";
+		$logname = e_MEDIA."logs/logd_".date("z.Y", time()).".csv";
 		$logfp = fopen($logname, 'a+');
 		fwrite($logfp, $logLine."\n");
 		fclose($logfp);

@@ -9,8 +9,8 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.48 $
-* $Date: 2009-11-05 09:15:12 $
+* $Revision: 1.49 $
+* $Date: 2009-11-17 07:40:43 $
 * $Author: e107coders $
 *
 */
@@ -28,14 +28,15 @@ $MySQLPrefix	     = 'e107_';
 $ADMIN_DIRECTORY     = "e107_admin/";
 $FILES_DIRECTORY     = "e107_files/";
 $IMAGES_DIRECTORY    = "e107_images/";
+$MEDIA_DIRECTORY	 = "e107_media/";
 $THEMES_DIRECTORY    = "e107_themes/";
 $PLUGINS_DIRECTORY   = "e107_plugins/";
 $HANDLERS_DIRECTORY  = "e107_handlers/";
 $LANGUAGES_DIRECTORY = "e107_languages/";
 $HELP_DIRECTORY      = "e107_docs/help/";
-$CACHE_DIRECTORY 	 = "e107_files/cache/";
-$DOWNLOADS_DIRECTORY = "e107_files/downloads/";
-$UPLOADS_DIRECTORY   = "e107_files/public/";
+$CACHE_DIRECTORY 	 = "e107_media/cache/";
+$DOWNLOADS_DIRECTORY = "e107_media/downloads/";
+$UPLOADS_DIRECTORY   = "e107_media/public/";
 
 /* End configurable variables */
 
@@ -140,7 +141,7 @@ function check_class($whatever)
 }
 
 
-$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
+$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY');
 
 $e107 = e107::getInstance();
 $e107->init($e107_paths, realpath(dirname(__FILE__)));
@@ -904,6 +905,7 @@ class e_install
 \$CACHE_DIRECTORY     = '{$this->e107->e107_dirs['CACHE_DIRECTORY']}';
 \$DOWNLOADS_DIRECTORY = '{$this->e107->e107_dirs['DOWNLOADS_DIRECTORY']}';
 \$UPLOADS_DIRECTORY   = '{$this->e107->e107_dirs['UPLOADS_DIRECTORY']}';
+\$MEDIA_DIRECTORY   = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
 
 
 ";
