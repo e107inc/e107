@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2009-11-10 23:13:30 $
-|     $Author: e107coders $
+|     $Revision: 1.29 $
+|     $Date: 2009-11-17 09:34:04 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -708,10 +708,11 @@ class e107_user_extended
 	/**
 	 * Proxy method for setting the value of an extended field
 	 * (inserts or updates)
-	 * @param int $uid
-	 * @param str $field_name eg. location
-	 * @param mixed $newvalue eg. USA
-	 * @param str $fieldType [optional] default 'todb' |
+	 *
+	 * @param integer $uid
+	 * @param string $field_name eg. location
+	 * @param string $newvalue eg. USA
+	 * @param string $fieldType [optional] default 'todb' |
 	 * @return boolean;
 	 */
 	function set($uid, $field_name, $newvalue, $fieldType = 'todb')
