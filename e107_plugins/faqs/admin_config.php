@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2009-11-17 08:16:46 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2009-11-17 14:16:47 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -81,8 +81,9 @@ class faq_cat_ui extends e_admin_ui
 		
 	/**
 	 * Get FAQ Category data
+	 *
 	 * @param integer $id [optional] get category title, false - return whole array
-	 * @param object $default [optional] default value if not found (default 'n/a')
+	 * @param mixed $default [optional] default value if not found (default 'n/a')
 	 * @return 
 	 */
 	function getFaqCategoryTree($id = false, $default = 'n/a')
@@ -170,9 +171,10 @@ class faq_main_ui extends e_admin_ui
 
 	/**
 	 * Get FAQ Category data
+	 *
 	 * @param integer $id [optional] get category title, false - return whole array
-	 * @param object $default [optional] default value if not found (default 'n/a')
-	 * @return 
+	 * @param mixed $default [optional] default value if not found (default 'n/a')
+	 * @return array
 	 */
 	function getFaqCategory($id = false, $default = 'n/a')
 	{
