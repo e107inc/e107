@@ -1,19 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jali.@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-08-08 23:09:08 $
-|     $Author: marj_nl_fr $
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
+ * $Revision: 1.4 $
+ * $Date: 2009-11-17 12:53:09 $
+ * $Author: marj_nl_fr $
+ */
+/*
 |
 | Generate a printer-friendly page of calendar events
 | Query is: ec_pf_page.php?ssssss.eeeeee[[[.cat].template].output]
@@ -27,6 +27,7 @@
 | uses $thisevent as a parameter. MAIL is best since it's never used elsewhere at the same time
 +----------------------------------------------------------------------------+
 */
+
 require_once("../../class2.php");
 if (!isset($pref['plug_installed']['calendar_menu'])) header("Location: ".e_BASE."index.php");
 include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
