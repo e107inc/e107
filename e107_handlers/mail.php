@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-16 20:40:39 $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-17 20:34:50 $
  * $Author: e107steved $
 */
 
@@ -553,7 +553,7 @@ class e107Email extends PHPMailer
 			$tempName = basename($attach);
 			if(is_readable($attach) && $tempName)
 			{	// First parameter is complete path + filename; second parameter is 'name' of file to send
-				$ext = substr(strrchr($attach, "."), 1);
+				$ext = pathinfo($attach, PATHINFO_EXTENSION);
 				$this->AddAttachment($attach, $tempName,'base64',$this->_mime_types($ext));
 			}
 		}
@@ -569,7 +569,7 @@ class e107Email extends PHPMailer
 		{
 			if(is_readable($inline_img) && !is_dir($inline_img))
 			{
-				$ext = substr(strrchr($inline_img, "."), 1);
+				$ext = pathinfo($inline_img, PATHINFO_EXTENSION);
 				$this->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),'base64',$this->_mime_types($ext));
 			}
 		}
@@ -729,7 +729,69 @@ class e107Email extends PHPMailer
 			$this->SendCount = 0;
 		}
 	}
-}
+
+  /**
+   * Evaluates the message and returns modifications for inline images and backgrounds
+   * Also creates an alternative plain text part (unless $this->AltBody already non-empty)
+   * Modification of standard PHPMailer function (which it overrides)
+   * @access public
+   * @return $message
+   */
+	public function MsgHTML($message, $basedir = '') 
+	{
+		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
+		if(isset($images[3])) 
+		{
+			foreach($images[3] as $i => $url) 
+			{
+				// do not change urls for absolute images (thanks to corvuscorax)
+				if (!preg_match('#^[A-z]+://#',$url)) 
+				{
+					$delim = $images[2][$i];			// Will be single or double quote
+					$filename = basename($url);
+					$directory = dirname($url);
+					if ($directory == '.') $directory='';
+					if (strpos($directory, e_HTTP) === 0)
+					{
+						$directory = str_replace(e_HTTP, '', $directory);
+						$basedir = e_ROOT;
+					}
+					//echo "CID file {$filename} in {$directory}. Base = ".e_HTTP."   BaseDir = {$basedir}<br />";
+					$cid = 'cid:' . md5($filename);
+					$ext = pathinfo($filename, PATHINFO_EXTENSION);
+					$mimeType  = self::_mime_types($ext);
+					if ( (strlen($basedir) > 1) && (substr($basedir,-1) != '/') && (substr($basedir,-1) != '\\')) { $basedir .= '/'; }
+					if ( strlen($directory) > 1 && substr($directory,-1) != '/' && substr($directory,-1) != '\\') { $directory .= '/'; }
+					//echo "Add image: {$basedir}|{$directory}|{$filename}<br />";
+					if ( $this->AddEmbeddedImage($basedir.$directory.$filename, md5($filename), $filename, 'base64',$mimeType) ) 
+					{
+						// $images[1][$i] contains 'src' or 'background'
+						$message = preg_replace("/".$images[1][$i]."=".$delim.preg_quote($url, '/').$delim."/Ui", $images[1][$i]."=".$delim.$cid.$delim, $message);
+					}
+					else
+					{
+						echo "Add embedded image {$url} failed<br />";
+					}
+				}
+			}
+		}
+		$this->IsHTML(true);
+		$this->Body = $message;
+		// print_a($message);
+		$textMsg = str_replace(array('<br />', '<br>'), "\n", $message);		// Modified to make sure newlines carried through
+		$textMsg = trim(strip_tags(preg_replace('/<(head|title|style|script)[^>]*>.*?<\/\\1>/s','',$textMsg)));
+		if (!empty($textMsg) && empty($this->AltBody)) 
+		{
+			$this->AltBody = html_entity_decode($textMsg);
+		}
+		if (empty($this->AltBody)) 
+		{
+			$this->AltBody = 'To view this email message, enable HTML!' . "\n\n";
+		}
+	}
+
+
+}		// End of e107Mailer class
 
 
 

@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-15 17:38:04 $
+ * $Revision: 1.4 $
+ * $Date: 2009-11-17 20:34:50 $
  * $Author: e107steved $
  *
 */
@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 Class for 'core' mailout function. 
 For plugins:
 	- the equivalent file must be called 'e_mailout.php', and reside in the root of the plugin directory.
-	- the classname must be 'mailout_'.$plugdir    (e.g. 'mailout_calendar_menu')
+	- the classname must be $plugdir.'_mailout'    (e.g. 'calendar_menu_mailout')
 
 Additional mailout sources may replicate the functions of this class under a different name, or may use inheritance.
 When managing bulk emails, class calls are made for each data handler.
@@ -43,7 +43,7 @@ TODO:
 	$mailerIncludeWithDefault = TRUE;			// Mandatory - if false, show only when mailout for this specific plugin is enabled 
 	$mailerExcludeDefault = TRUE;				// Mandatory - if TRUE, when this plugin's mailout is active, the default (core) isn't loaded
 
-class mailout_core
+class core_mailout
 {
 	protected $mailCount = 0;
 	protected $mailRead = 0;

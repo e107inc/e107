@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.83 $
-* $Date: 2009-11-17 11:00:40 $
-* $Author: marj_nl_fr $
+* $Revision: 1.84 $
+* $Date: 2009-11-17 20:34:50 $
+* $Author: e107steved $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -189,6 +189,8 @@ class e_parse
 				'consts_rel'	=> array('constants' => 'rel'),
 				// Absolute path replacement
 				'consts_abs'	=> array('constants' => 'abs'),
+				// Full path replacement
+				'consts_full'	=> array('constants' => 'full'),
 				// No shortcode parsing
 				'scparse_off'	=> array('parse_sc'	=> FALSE),
 
