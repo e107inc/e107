@@ -9,9 +9,9 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-11-04 17:29:26 $
- * $Author: secretr $
+ * $Revision: 1.30 $
+ * $Date: 2009-11-17 15:04:46 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -633,8 +633,9 @@ class e_pref extends e_admin_model
 	
 	/**
 	 * Validation
+	 *
 	 * @param array $data [optional] null to use Posted data
-	 * @return 
+	 * @return boolean
 	 */
 	public function validate($data = null)
 	{
@@ -914,10 +915,10 @@ class prefs
 	/**
 	* Return current pref string $name from $table (only core for now)
 	*
-	* - @param  string $name -- name of pref row
-	* - @param  string $table -- "core"
-	* - @return  string pref value, slashes already stripped. FALSE on error
-	* - @access  public
+	* @param  string $name -- name of pref row
+	* @param  string $table -- "core"
+	* @return  string pref value, slashes already stripped. FALSE on error
+	* @access  public
 	*/
 	function get($Name) 
 	{
@@ -951,10 +952,10 @@ class prefs
 	/**
 	* Return current array from pref string $name in $table (core only for now)
 	*
-	* - @param:  string $name -- name of pref row
-	* - @param  string $table -- "core" only now
-	* - @return  array pref values
-	* - @access     public
+	* @param:  string $name -- name of pref row
+	* @param  string $table -- "core" only now
+	* @return  array pref values
+	* @access     public
 	*/
 	// retrieve prefs as an array of values
 	function getArray($name)
