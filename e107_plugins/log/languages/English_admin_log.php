@@ -1,22 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English_admin_log.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-07 21:41:04 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
-*/
-	
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English_admin_log.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-17 13:48:46 $
+ * $Author: marj_nl_fr $
+ */
+
 define("ADSTAT_ON", "On");
 define("ADSTAT_OFF", "Off");
 define("ADSTAT_L1", "This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.");

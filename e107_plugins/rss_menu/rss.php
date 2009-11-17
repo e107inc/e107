@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-11-17 10:46:34 $
+ * $Revision: 1.17 $
+ * $Date: 2009-11-17 13:48:46 $
  * $Author: marj_nl_fr $
  */
 
@@ -410,7 +410,7 @@ class rssCreate
 		switch ($this -> rssType) 
 		{
 			case 1:		// RSS 1.0
-				echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
+				echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?".">
 						<!-- generator=\"e107\" -->
 						<!-- content type=\"".$this -> contentType."\" -->
 						<rss version=\"0.92\">
@@ -447,7 +447,7 @@ class rssCreate
 
 			case 2:	// RSS 2.0
 				$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON));
-				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?".">
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rss {$rss_namespace} version=\"2.0\">
@@ -552,7 +552,7 @@ class rssCreate
 			break;
 
 			case 3: 	// RDF
-				echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
+				echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?".">
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rdf:RDF xmlns=\"http://purl.org/rss/1.0/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\" xmlns:admin=\"http://webns.net/mvcb/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
@@ -613,7 +613,7 @@ class rssCreate
 
 			// Atom
 			case 4:
-				echo "<?xml version='1.0' encoding='utf-8'?>\n
+				echo "<?xml version='1.0' encoding='utf-8'?".">\n
 				<feed xmlns='http://www.w3.org/2005/Atom'>\n";
 				/*
 				<feed version='0.3'
@@ -730,4 +730,3 @@ class rssCreate
 		return ($tmp[0] != "") ? $tmp[0].RSS_LAN_2 : RSS_LAN_3;
 	}
 } // End class rssCreate
-?>

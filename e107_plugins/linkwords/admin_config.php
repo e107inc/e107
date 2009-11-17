@@ -1,24 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.9 $
-|
-| ***** START OF VERSION WHICH ALLOWS TOOLTIPS (also order of forms changed )
-|
-|     $Date: 2009-08-15 11:55:30 $
-|     $Author: marj_nl_fr $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * ***** START OF VERSION WHICH ALLOWS TOOLTIPS (also order of forms changed )
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/admin_config.php,v $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-17 13:48:45 $
+ * $Author: marj_nl_fr $
+ */
+
 require_once("../../class2.php");
 if (!getperms("P") || !plugInstalled('linkwords')) 
 {

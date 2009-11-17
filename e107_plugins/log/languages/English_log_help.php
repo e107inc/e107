@@ -1,21 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English_log_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-07 21:41:04 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/log/languages/English_log_help.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-17 13:48:46 $
+ * $Author: marj_nl_fr $
+ */
 
 define('LAN_STAT_HELP_01','Statistics Logging');
 define('LAN_STAT_HELP_02','This option deletes historical data from the database. It does not affect the \'all-time\' figures.<br /><br />
