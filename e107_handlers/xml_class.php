@@ -9,8 +9,8 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-11-17 10:30:39 $
+ * $Revision: 1.36 $
+ * $Date: 2009-11-17 14:50:30 $
  * $Author: marj_nl_fr $
 */
 
@@ -383,12 +383,12 @@ class xmlClass
 	
 	/**
 	 * Advanced XML parser - handles tags with attributes and values
-	 * proper. 
+	 * properly.
 	 * TODO - filter (see xml_convert_to_array)
 	 * 
 	 * @param SimpleXMLElement $xml
 	 * @param string $rec_parent used for recursive calls only
-	 * @return 
+	 * @return array
 	 */
 	function xml2array($xml, $rec_parent = '')
 	{
@@ -555,7 +555,7 @@ class xmlClass
 	 * Convert Array(0) to String based on specified Tags. 
 	 *
 	 * @param array|string $vars
-	 * @return 
+	 * @return string
 	 */
 	function parseStringTags($vars)
 	{
