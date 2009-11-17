@@ -1,21 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/admin_log.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2008-05-17 15:00:40 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/admin_log.php,v $
+ * $Revision: 1.4 $
+ * $Date: 2009-11-17 11:13:04 $
+ * $Author: marj_nl_fr $
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
