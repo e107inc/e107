@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_admin/includes/infopanel.php,v $
- |     $Revision: 1.15 $
- |     $Date: 2009-11-05 09:15:12 $
+ |     $Revision: 1.16 $
+ |     $Date: 2009-11-17 13:12:33 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -144,7 +144,7 @@ $text .= "
 			$text .= "<tr>
 				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['online_timestamp'],'short')."</td>
 					<td>".renderOnlineName($val['online_user_id'])."</td>
-					<td>".($val['online_ip'])."</td>
+					<td>".e107::ipDecode($val['online_ip'])."</td>
 					<td class='nowrap'><a href='".$val['online_location']."'>".$tp->text_truncate($val['online_location'],50)."</a></td>
 				</tr>
 				";

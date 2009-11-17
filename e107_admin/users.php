@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.67 $
-* $Date: 2009-11-12 05:11:41 $
+* $Revision: 1.68 $
+* $Date: 2009-11-17 13:12:35 $
 * $Author: e107coders $
 *
 */
@@ -971,18 +971,18 @@ class users
 		global $frm;
 		$e_userclass = new user_class;
    		// TODO - The search field (not the userclass drop-down) should be replaced with a generic ajax search-filter class element.
-		$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
+		$text = "<form method='get' action='".e_SELF."'>
 		<table class='adminform'>\n";
-		$text .= "<tr><td><input class='tbox' type='text' name='searchquery' size='20' value=\"".$_POST['searchquery']."\" maxlength='50' />\n";
+		$text .= "<tr><td><input class='tbox' type='text' name='srch' size='20' value=\"".$_GET['srch']."\" maxlength='50' />\n";
 
         $list = $e_userclass->uc_required_class_list("public,member,admin,main,classes");
 		$ulist = $list + array('unverified'=>LAN_NOTVERIFIED,'banned'=>LAN_BANNED,'bounced'=>LAN_BOUNCED);
 
-        $text .= "<select class='tbox' name='searchclass' onchange='this.form.submit()' >\n";
+        $text .= "<select class='tbox' name='filter' onchange='this.form.submit()' >\n";
 
 		foreach($ulist as $key=>$val)
 		{
-			$sel = ($_SESSION['searchclass'] == $key) ? "selected='selected'" : "";
+			$sel = ($_SESSION['filter'] == $key) ? "selected='selected'" : "";
         	$text .= "<option value='$key' {$sel}>".$val."</option>\n";
 		}
 
@@ -1002,28 +1002,28 @@ class users
 		global $sql,$frm,$ns,$tp,$mySQLdefaultdb,$pref,$unverified,$userMethods,$sub_action,$id,$from, $amount;
 
 
-        if(isset($_POST['searchquery'])) // We could use $_GET, if so, would need to rework the ordering to use $_GET also.
+        if(isset($_GET['srch'])) // We could use $_GET, if so, would need to rework the ordering to use $_GET also.
 		{
-        	$_SESSION['searchquery'] = $_POST['searchquery'];
+        	$_SESSION['srch'] = $_GET['srch'];
 		}
 
-		if(isset($_POST['searchclass']))
+		if(isset($_GET['filter']))
 		{
-        	$_SESSION['searchclass'] = $_POST['searchclass'];
+        	$_SESSION['filter'] = $_GET['filter'];
 		}
 
 
-	    if (isset ($_SESSION['searchquery']) && $_SESSION['searchquery'] != "")
+	    if (isset ($_SESSION['srch']) && $_SESSION['srch'] != "")
 		{
-			$_SESSION['searchquery'] = $tp->toDB(trim($_SESSION['searchquery']));
+			$_SESSION['srch'] = $tp->toDB(trim($_SESSION['srch']));
 			$query .= "( ";
-			$query .= (strpos($_SESSION['searchquery'],"@") !== false) ? "user_email REGEXP('".$_SESSION['searchquery']."') OR " : "";
-	  		$query .= (strpos($_SESSION['searchquery'],".") !== false) ? "user_ip REGEXP('".$_SESSION['searchquery']."') OR " : "";
+			$query .= (strpos($_SESSION['srch'],"@") !== false) ? "user_email REGEXP('".$_SESSION['srch']."') OR " : "";
+	  		$query .= (strpos($_SESSION['srch'],".") !== false) ? "user_ip REGEXP('".$_SESSION['srch']."') OR " : "";
 
 			$fquery = array();
 	   		foreach ($this->fieldpref as $field)
 			{
-				$fquery[] = $field." REGEXP('".$_SESSION['searchquery']."')";
+				$fquery[] = $field." REGEXP('".$_SESSION['srch']."')";
 			}
 
 			$query .= implode(" OR ",$fquery);
@@ -1041,7 +1041,7 @@ class users
 			$qry_order = 'ORDER BY '.($sub_action ? $sub_action : 'user_id').' '.($id ? $id : 'DESC')."  LIMIT $from, $amount";
 		}
 
-		if(varset($_SESSION['searchclass']))
+		if(varset($_SESSION['filter']))
 		{
 			$uqry[e_UC_ADMIN] 		= " u.user_admin = 1 ";
 			$uqry[e_UC_MEMBER]		= " u.user_ban = '0' ";
@@ -1055,18 +1055,18 @@ class users
              	$query .= " AND ";
 			}
 
-			if(isset($uqry[$_SESSION['searchclass']]))
+			if(isset($uqry[$_SESSION['filter']]))
 			{
-            	$query .= $uqry[$_SESSION['searchclass']];
+            	$query .= $uqry[$_SESSION['filter']];
 			}
             else
 			{
-        		$query .= " FIND_IN_SET(".$_SESSION['searchclass'].",u.user_class) ";
+        		$query .= " FIND_IN_SET(".$_SESSION['filter'].",u.user_class) ";
 			}
 		}
 			// $user_total = db_Count($table, $fields = '(*)',
 			
-		if($_SESSION['searchclass']==e_UC_ADMIN)
+		if($_SESSION['filter']==e_UC_ADMIN)
 		{
 			$this->fieldpref[] = 'user_perms';
 		}	
@@ -1127,7 +1127,7 @@ class users
 			<div class='buttons-bar center'>".$this->show_batch_options();
 			$users = (e_QUERY != "unverified") ? $sql->db_Count("user") : $unverified;
 			
-			if ($users > $amount && !$_POST['searchquery'])
+			if ($users > $amount && !$_GET['srch'])
 			{
 				$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
 				$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
@@ -1153,7 +1153,7 @@ class users
 		
 		$emessage = & eMessage :: getInstance();
 
-		$total_cap = (isset ($_POST['searchquery'])) ? $user_total : $users;
+		$total_cap = (isset ($_GET['srch'])) ? $user_total : $users;
 		$caption = USRLAN_77."&nbsp;&nbsp;   (total: $total_cap)";
 		$ns->tablerender($caption,$emessage->render().$text);
 	}
