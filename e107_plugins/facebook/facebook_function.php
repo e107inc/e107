@@ -10,9 +10,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- |     $Revision: 1.11 $
- |     $Date: 2009-11-13 09:51:19 $
- |     $Author: e107coders $
+ |     $Revision: 1.12 $
+ |     $Date: 2009-11-17 14:31:43 $
+ |     $Author: marj_nl_fr $
  +----------------------------------------------------------------------------+
  */
 
@@ -938,10 +938,12 @@ class e_facebook
 	
 	/**
 	 * Return an Array suitable for insertion into the 'facebook' db table. 
-	 * @param object $info [optional]
-	 * @param object $user_id
-	 * @return 
+	 *
+	 * @param string $info [optional]
+	 * @param integer $user_id
+	 * @return array
 	 */
+	 //FIXME arguments order. $user_id looks mandatory whereas $info is optionnal
 	function prepareUserData($info = '', $user_id)
 	{
 		

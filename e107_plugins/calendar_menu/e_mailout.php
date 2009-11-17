@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_mailout.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-17 08:16:46 $
- * $Author: e107coders $
+ * $Revision: 1.3 $
+ * $Date: 2009-11-17 14:31:43 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -79,9 +79,9 @@ class mailout_calendar_menu    //FIXME <-- should be calendar_menu_mailout for c
 	 * Needs to save any queries or other information into internal variables, do initial DB queries as appropriate.
 	 * Could in principle read all addresses and buffer them for later routines, if this is more convenient
 	 *
-	 * @param $selectVals - array of selection criteria as returned by returnSelectors()
+	 * @param string $selectVals - array of selection criteria as returned by returnSelectors()
 	 *
-	 * @return Return number of records available (or 1 if unknown) on success, FALSE on failure
+	 * @return integer Return number of records available (or 1 if unknown) on success, FALSE on failure
 	 */
 	public function selectInit($selectVals = FALSE)
 	{
@@ -106,7 +106,7 @@ class mailout_calendar_menu    //FIXME <-- should be calendar_menu_mailout for c
 	/**
 	 * Return an email address to add to the recipients list. Return FALSE if no more addresses to add 
 	 *
-	 * @return FALSE if no more addresses available; else an array:
+	 * @return array|boolean FALSE if no more addresses available; else an array:
 	 *	'mail_recipient_id' - non-zero if a registered user, zero if a non-registered user. (Always non-zero from this class)
 	 *	'mail_recipient_name' - user name
 	 *	'mail_recipient_email' - email address to use
@@ -146,10 +146,10 @@ class mailout_calendar_menu    //FIXME <-- should be calendar_menu_mailout for c
 	/**
 	 * Called to show current selection criteria, and optionally allow edit
 	 * 
-	 * @param $allow_edit is TRUE to allow user to change the selection; FALSE to just display current settings
-	 * @param $selectVals is the current selection information - in the same format as returned by returnSelectors()
+	 * @param boolean $allow_edit is TRUE to allow user to change the selection; FALSE to just display current settings
+	 * @param string $selectVals is the current selection information - in the same format as returned by returnSelectors()
 	 *
-	 * @return Returns HTML which is displayed in a table cell. Typically we return a complete table
+	 * @return string Returns HTML which is displayed in a table cell. Typically we return a complete table
 	 */
 	public function showSelect($allow_edit = FALSE, $selectVals = FALSE)
 	{
