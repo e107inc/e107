@@ -9,9 +9,9 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-11-07 02:28:54 $
- * $Author: e107coders $
+ * $Revision: 1.35 $
+ * $Date: 2009-11-17 10:30:39 $
+ * $Author: marj_nl_fr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -68,7 +68,8 @@ class xmlClass
 	
 	/**
 	 * Log of all paths replaced.
-	 * @var
+	 *
+	 * @var array
 	 */	
 	public $fileConvertLog = array();
 	
@@ -76,7 +77,7 @@ class xmlClass
 	
 	public $filePathDestination = FALSE;
 	
-	public $convertFileTypes = array("jpg","gif","png","jpeg");
+	public $convertFileTypes = array("jpg", "gif", "png", "jpeg");
 	
 	public $filePathPrepend = array();
 	
@@ -198,25 +199,27 @@ class xmlClass
 	
 	/**
 	 * Set Xml tags that should always return arrays.
+	 *
+	 *FIXME is this an array or a string???
 	 * @param object $array
-	 * @return 
+	 * @return xmlClass
 	 */
 	public function setOptArrayTags($string)
 	{
-		$this->arrayTags = (array) explode(",",$string);
+		$this->arrayTags = (array) explode(",", $string);
 		return $this;
 	}
 	
 	public function setOptStringTags($string)
 	{
-		$this->stringTags = (array) explode(",",$string);
+		$this->stringTags = (array) explode(",", $string);
 		return $this;
 	}
 	
 	/**
 	 * Set forceArray option
 	 * 
-	 * @param string $flag
+	 * @param boolean $flag
 	 * @return xmlClass
 	 */
 	public function setOptForceArray($flag)
@@ -550,7 +553,8 @@ class xmlClass
 
 	/**
 	 * Convert Array(0) to String based on specified Tags. 
-	 * @param object $vars
+	 *
+	 * @param array|string $vars
 	 * @return 
 	 */
 	function parseStringTags($vars)
@@ -574,7 +578,8 @@ class xmlClass
 	/**
 	 * Return as an array, even when a single xml tag value is found
 	 * Use setArrayTags() to set which tags are affected. 
-	 * @param object $vars
+	 *
+	 * @param array $vars
 	 * @return array
 	 */
 	private function parseArrayTags($vars)
@@ -654,8 +659,10 @@ class xmlClass
 	
 	/**
 	 * Convert file path for inclusion in XML file. 
-	 * @param callback function $text - see e107ExportValue()
-	 * @return converted file path
+
+	 * @see e107ExportValue()
+	 * @param string $text - callback function
+	 * @return string converted file path
 	 */
 	private function replaceFilePaths($text)
 	{
@@ -669,12 +676,14 @@ class xmlClass
 	
 	
 	/**
-	 * Process data values for XML file. If $this->convertFilePaths is TRUE, convert paths - see replaceFilePaths()
+	 * Process data values for XML file. If $this->convertFilePaths is TRUE, convert paths
+	 *
+	 * @see replaceFilePaths()
 	 * @param mixed $val
 	 * @param string $key key for the current value. Used for exception processing. 
 	 * @return mixed
 	 */
-	private function e107ExportValue($val,$key='')
+	private function e107ExportValue($val, $key = '')
 	{
 		if($key && isset($this->filePathPrepend[$key]))
 		{
@@ -703,17 +712,18 @@ class xmlClass
 	/**
 	 * Create an e107 Export File in XML format
 	 * Note: If $this->filePathDestination has a value, then the file will be saved there. 
+	 *
 	 * @param array $prefs  - see e_core_pref $aliases (eg. core, ipool etc)
 	 * @param array $tables - table names without the prefix
 	 * @param boolean $debug [optional]
-	 * @return text / file for download
+	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs,$tables,$debug=FALSE)
+	public function e107Export($xmlprefs, $tables, $debug = FALSE)
 	{
 		
 		require_once(e_ADMIN."ver.php");
 		
-		$text = "<?xml version='1.0' encoding='utf-8' ?>\n";
+		$text = "<?xml version='1.0' encoding='utf-8' ?".">\n";
 		$text .= "<e107Export version='".$e107info['e107_version']."' timestamp='".time()."' >\n";
 	
 		if(varset($xmlprefs)) // Export Core Preferences. 
@@ -795,11 +805,12 @@ class xmlClass
 	
 	/**
 	 * Return an Array of core preferences from e107 XML Dump data
-	 * @param object $XMLData Raw XML e107 Export Data
-	 * @param object $prefType [optional] the type of core pref: core|emote|ipool|menu etc. 
-	 * @return preference array equivalent to the old $pref global;
+	 *
+	 * @param array $XMLData Raw XML e107 Export Data
+	 * @param string $prefType [optional] the type of core pref: core|emote|ipool|menu etc.
+	 * @return array preference array equivalent to the old $pref global;
 	 */
-	public function e107ImportPrefs($XMLData,$prefType='core')
+	public function e107ImportPrefs($XMLData, $prefType='core')
 	{
 		
 		
@@ -830,6 +841,7 @@ class xmlClass
 	
 	/**
 	 * Import an e107 XML file into site preferences and DB tables
+	 *
 	 * @param path $file - e107 XML file path
 	 * @param string $mode[optional] - add|replace
 	 * @param boolean $debug [optional]
