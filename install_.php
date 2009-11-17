@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.49 $
-* $Date: 2009-11-17 07:40:43 $
-* $Author: e107coders $
+* $Revision: 1.50 $
+* $Date: 2009-11-17 09:11:05 $
+* $Author: marj_nl_fr $
 *
 */
 
@@ -28,7 +28,8 @@ $MySQLPrefix	     = 'e107_';
 $ADMIN_DIRECTORY     = "e107_admin/";
 $FILES_DIRECTORY     = "e107_files/";
 $IMAGES_DIRECTORY    = "e107_images/";
-$MEDIA_DIRECTORY	 = "e107_media/";
+//FIXME need another name
+$MEDIA_DIRECTORY     = "e107_media/";
 $THEMES_DIRECTORY    = "e107_themes/";
 $PLUGINS_DIRECTORY   = "e107_plugins/";
 $HANDLERS_DIRECTORY  = "e107_handlers/";
