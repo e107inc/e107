@@ -9,9 +9,9 @@
  * Handler - general purpose validation functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/validator_class.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-07 02:16:52 $
- * $Author: e107coders $
+ * $Revision: 1.15 $
+ * $Date: 2009-11-17 14:50:26 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -245,9 +245,10 @@ class e_validator
 	
 	/**
 	 * Add successfully validated data to the valid array 
+	 *
 	 * @param string $field_name
 	 * @param mixed $value
-	 * @return 
+	 * @return e_validator
 	 */
 	protected function addValidData($field_name, $value)
 	{

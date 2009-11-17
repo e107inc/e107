@@ -9,9 +9,9 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.64 $
- * $Date: 2009-11-09 00:27:43 $
- * $Author: e107coders $
+ * $Revision: 1.65 $
+ * $Date: 2009-11-17 14:50:33 $
+ * $Author: marj_nl_fr $
  */
 
 if(!defined('e107_INIT'))
@@ -279,9 +279,10 @@ class themeHandler
 	}
 	
 	/**
-	 * Validate and return the name of the category
-	 * @param object $categoryfromXML
-	 * @return
+	 * Validate and return the name of the categories.
+	 *
+	 * @param string [optional] $categoryfromXML
+	 * @return string
 	 */
 	function getThemeCategory($categoryfromXML = '')
 	{
@@ -1046,8 +1047,9 @@ class themeHandler
 	
 	/**
 	 * Set Theme as Main Theme.
-	 * @param object $name [optional] name (folder) of the theme to set.
-	 * @return
+	 *
+	 * @param string $name [optional] name (folder) of the theme to set.
+	 * @return boolean TRUE on success, FALSE otherwise
 	 */
 	function setTheme($name = '')
 	{

@@ -9,9 +9,9 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-11-12 05:11:42 $
- * $Author: e107coders $
+ * $Revision: 1.17 $
+ * $Date: 2009-11-17 14:50:32 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -834,13 +834,14 @@ class e_userperms
 	
 	/**
 	 * Render edit admin perms form. 
+	 *
 	 * @param array $row [optional] containing $row['user_id'], $row['user_name'], $row['user_perms'];
-	 * @return 
+	 * @return void
 	 */
-	function edit_administrator($row='')
+	function edit_administrator($row = '')
 	{
-	    global $pref;
-		$lanlist = explode(",",e_LANLIST);
+		$pref = e107::getPref();
+		$lanlist = explode(",", e_LANLIST);
 		require_once(e_HANDLER."user_handler.php");
 		$prm = $this;
 		$ns = e107::getRender();
@@ -908,12 +909,14 @@ class e_userperms
 	}
 	
 	/**
-	 * Update user (admin) perms
-	 * @param int $uid
-	 * @param array $permArray eg. array('A','K','1');
-	 * @return 
+	 * Update user (admin) permissions.
+	 * NOTE: exit if $uid is not an integer or is 0.
+	 *
+	 * @param integer $uid
+	 * @param array $permArray eg. array('A', 'K', '1');
+	 * @return void 
 	 */
-	function updatePerms($uid,$permArray)
+	function updatePerms($uid, $permArray)
 	{
 		global $admin_log;
 		
@@ -923,7 +926,7 @@ class e_userperms
 		$modID = intval($uid);
 		if ($modID == 0)
 		{
-			exit;
+			exit();
 		}
 		
 		$sql->db_Select("user", "*", "user_id=".$modID);
@@ -945,12 +948,11 @@ class e_userperms
 			{
 				$perm .= $value.".";
 			}
-	    }
+	  }
 	
 		admin_update($sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' "), 'update', sprintf(ADMSLAN_2, $tp->toDB($_POST['ad_name'])), false, false);
 		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
 		$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}
-}
 
-?>
+}

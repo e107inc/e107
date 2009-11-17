@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
- |     $Revision: 1.17 $
- |     $Date: 2009-11-17 10:30:40 $
+ |     $Revision: 1.18 $
+ |     $Date: 2009-11-17 14:50:37 $
  |     $Author: marj_nl_fr $
  To do:
  1. Do we need to check for presence of elements of debug_backtrace() to avoid notices?
@@ -316,7 +316,7 @@ class e_admin_log
 	 * Removes all events older than $days, or truncates the table if $days == false
 	 *
 	 * @param integer|false $days
-	 *@return void
+	 * @return void
 	 */
 	function purge_log_events($days)
 	{
