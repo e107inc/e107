@@ -2,16 +2,16 @@
 /*
 * e107 website system
 *
-* Copyright ( c ) 2008-2009 e107 Inc (e107.org)
+* Copyright (C) 2008-2009 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Custom install/uninstall/update routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/_blank/_blank_setup.php,v $
-* $Revision: 1.1 $
-* $Date: 2009-10-30 09:11:01 $
-* $Author: e107coders $
+* $Revision: 1.2 $
+* $Date: 2009-11-18 01:49:18 $
+* $Author: marj_nl_fr $
 *
 */
 

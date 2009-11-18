@@ -1,7 +1,7 @@
 /*
  * e107 website system
  * 
- * Copyright (c) 2001-2008 e107 Developers (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  * 
@@ -9,9 +9,9 @@
  * Create static/ajax tooltips (unobtrusive Javascript)
  * 
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/core/tooltip.js,v $
- * $Revision: 1.1 $
- * $Date: 2008-12-08 23:40:18 $
- * $Author: secretr $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-18 01:49:18 $
+ * $Author: marj_nl_fr $
  * 
 */
 
