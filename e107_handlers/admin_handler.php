@@ -9,8 +9,8 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-11-18 14:46:27 $
+ * $Revision: 1.34 $
+ * $Date: 2009-11-18 19:57:07 $
  * $Author: secretr $
 */
 
@@ -1803,7 +1803,6 @@ class e_admin_controller
 			e107::getMessage()->add('Action '.$actionName.' no found!', E_MESSAGE_ERROR);
 			return $response;
 		}
-		//var_dump(call_user_func(array($this, $actionName)), $this->{$actionName}());
 		ob_start(); //catch any output
 		$ret = $this->{$actionName}();
 		
@@ -1828,7 +1827,6 @@ class e_admin_controller
 		{
 			$response_type = 'text';
 			$response->getJsHelper()->addResponse($ret)->sendResponse($response_type);
-			var_dump($response_type, $response->getJsHelper());
 		}
 		else
 		{
@@ -2262,6 +2260,16 @@ class e_admin_controller_ui extends e_admin_controller
 		return ($prefix ? '#' : '').$this->getModel()->getModelTable();
 	}
 	
+	public function getIfTableAlias($prefix = false, $quote = false)
+	{
+		$alias = $this->getTableName(true);
+		if($alias)
+		{
+			return $alias;
+		} 
+		return ( !$quote ? $this->getTableName(false, $prefix) : '`'.$this->getTableName(false, $prefix).'`' );
+	}
+	
 	/**
 	 * Get join table data
 	 * @param string $table if null all data will be returned
@@ -2633,7 +2641,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			// Build query
 			$qry = $this->_modifyListQry(false, true, 0, 20, $listQry);
-
+			
 			// Make query
 			$sql = e107::getDb();
 			if($qry && $sql->db_Select_gen($qry))
@@ -2698,39 +2706,54 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 		
-		// check for table aliases
+		// check for table & field aliases
 		$fields = array(); // preserve order
 		foreach ($this->fields as $field => $att)
 		{
+			// tableAlias.fieldName.fieldAlias 
 			if(strpos($field, '.') !== false)
 			{
-				$tmp = explode('.', $field, 2);
-				$att['alias'] = $tmp[0];
-				$fields[$tmp[1]] = $att;
-				$field = $tmp[1];
+				$tmp = explode('.', $field, 3);
+				$att['table'] = $tmp[0] ? $tmp[0] : $this->getIfTableAlias(false);
+				$att['alias'] = vartrue($tmp[2]);
+				$att['field'] = $tmp[1];
+				$field = $att['alias'] ? $att['alias'] : $tmp[1];
+				$fields[$field] = $att; 
 				unset($tmp);
 			}
 			else
 			{
-				$att['alias'] = $this->getTableName(true);
+				$att['table'] = $this->getIfTableAlias(false);
+				$att['alias'] = '';
+				$att['field'] = $field;
 				$fields[$field] = $att;
 			}
-			if($fields[$field]['alias'])
+			
+			if($fields[$field]['table'] == $this->getIfTableAlias(false))
+			{ 
+				$fields[$field]['__tableField'] = $att['alias'] ? $att['alias'] : $this->getIfTableAlias(true, true).'.'.$att['field'];
+				$fields[$field]['__tableFrom'] = $this->getIfTableAlias(true, true).'.'.$att['field'].($att['alias'] ? ' AS '.$att['alias'] : '');
+			}
+			else
 			{
-				
-				if($fields[$field]['alias'] == $this->getTableName(true))
-				{
-					$fields[$field]['__tableField'] = $this->getTableName(true).'.'.$field;
+				$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['table'], '__tablePath').$field;
+			}
+			/*if($fields[$field]['table'])
+			{ 
+				if($fields[$field]['table'] == $this->getIfTableAlias(false))
+				{ 
+					$fields[$field]['__tableField'] = $att['alias'] ? $att['alias'] : $this->getIfTableAlias(true, true).'.'.$att['field'];
+					$fields[$field]['__tableFrom'] = $this->getIfTableAlias(true, true).'.'.$att['field'].($att['alias'] ? ' AS '.$att['alias'] : '');
 				}
 				else
 				{
-					$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['alias'], '__tablePath').$field;
+					$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['table'], '__tablePath').$field;
 				}
 			}
 			else
 			{
 				$fields[$field]['__tableField'] = '`'.$this->getTableName(false, true).'`.'.$field;
-			}
+			}*/
 		}
 		$this->fields = $fields;
 		
@@ -2744,16 +2767,11 @@ class e_admin_controller_ui extends e_admin_controller
 		$filterFrom = array();
 		$request  = $this->getRequest();
 		$tp = e107::getParser();
-		$tablePath = '`'.$this->getTableName(false, true).'`.';
-		$tableFrom = '`'.$this->getTableName(false, true).'`';
-		$tableSFields = '`'.$this->getTableName(false, true).'`.*';
-		// check for alias
-		if($this->getTableName(true))
-		{
-			$tablePath = $this->getTableName(true).'.';
-			$tableFrom = '`'.$this->getTableName(false, true).'` AS '.$this->getTableName(true);
-			$tableSFields = ''.$this->getTableName(true).'.*';
-		}
+		$tablePath = $this->getIfTableAlias(true, true).'.';
+		$tableFrom = '`'.$this->getTableName(false, true).'`'.($this->getTableName(true) ? ' AS '.$this->getTableName(true) : '');
+		$tableSFieldsArr = array(); // FROM for main table
+		$tableSJoinArr = array(); // FROM for join tables
+		$filter = array();
 		
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
@@ -2763,19 +2781,26 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$filterValue."'";
 		}
-		
-		
-		$filter = array();
-		
-		// Commented for now - we should search in ALL searchable fields, not only currently active. Discuss.
-		//foreach($this->fieldpref as $key)
+
+		// main table should select everything
+		$tableSFieldsArr[] = $tablePath.'*';
 		foreach($this->getFields() as $key => $var)
 		{
-			//if(!vartrue($this->fields[$key])) continue;
-			//$var = $this->fields[$key];
-			$searchable_types = array('text', 'textearea', 'bbarea', 'user'); //method?
+			// disabled or system
+			if(vartrue($var['nolist']) || null === $var['type'])
+			{
+				continue;
+			}
 			
-			if(trim($searchQuery) !== '' && !vartrue($var['nolist']) && in_array($var['type'], $searchable_types))
+			// select FROM... for main table
+			if($var['alias'] && vartrue($var['__tableFrom']))
+			{
+				$tableSFieldsArr[] = $var['__tableFrom'];
+			}
+			
+			// filter for WHERE and FROM clauses 
+			$searchable_types = array('text', 'textarea', 'bbarea', 'user'); //method?
+			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types))
 			{
 				$filter[] = $var['__tableField']." REGEXP ('".$searchQuery."')";	
 				if($isfilter)
@@ -2784,36 +2809,41 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 			}
 		}
+		
 		if($isfilter)
 		{
 			if(!$filterFrom) return false;
 			$tableSFields = implode(', ', $filterFrom);
 		}
+		else
+		{
+			$tableSFields = $tableSFieldsArr ? implode(', ', $tableSFieldsArr) : $tablePath.'*';
+		}
 		
 		$jwhere = array();
 		$joins = array();
-		
+		//file_put_contents('e:/www/log', $tableSFields."\n\n", FILE_APPEND);
 		if($this->getJoinData()) 
 		{
 			$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields;
 			foreach ($this->getJoinData() as $jtable => $tparams)
 			{
-				
 				// Select fields
 				if(!$isfilter)
 				{
 					$fields = vartrue($tparams['fields']);
 					if('*' === $fields)
 					{
-						$qry .= ", {$tparams['__tablePath']}*";
+						$tableSJoinArr[] = "{$tparams['__tablePath']}*";
 					}
 					else
 					{
-						$fields = explode(',', $fields);
+						$tableSJoinArr[] = $fields;
+						/*$fields = explode(',', $fields);
 						foreach ($fields as $field)
 						{
 							$qry .= ", {$tparams['__tablePath']}`".trim($field).'`';
-						}
+						}*/
 					}
 				}
 				
@@ -2829,7 +2859,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			
 			//From
-			$qry .= " FROM ".$tableFrom;
+			$qry .= ', '.implode(', ', $tableSJoinArr)." FROM ".$tableFrom;
 			
 			// Joins
 			if(count($joins) > 0)
@@ -2845,6 +2875,9 @@ class e_admin_controller_ui extends e_admin_controller
 		if($raw)
 		{
 			$rawData = array('joinWhere' => $jwhere, 'filter' => $filter, 'filterFrom' => $filterFrom, 'search' => $searchQry, 'tableFrom' => $tableFrom);
+			$rawData['tableFrom'] = $tableSFieldsArr;
+			$rawData['joinsFrom'] = $tableSJoinArr;
+			$rawData['joins'] = $joins;
 			$rawData['orderField'] = isset($this->fields[$orderField]) ? $this->fields[$orderField]['__tableField'] : '';
 			$rawData['orderType'] = $request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC';
 			$rawData['limitFrom'] = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
@@ -2873,7 +2906,7 @@ class e_admin_controller_ui extends e_admin_controller
 		if(isset($this->fields[$orderField]))
 		{
 			// no need of sanitize - it's found in field array
-			$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
+			$qry .= ' ORDER BY  '.$this->fields[$orderField]['__tableField'].' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
 		}
 		
 		if($this->getPerPage() || false !== $forceTo)
