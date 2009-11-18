@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.41 $
+ * $Date: 2009-11-18 09:32:31 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -138,6 +138,16 @@ class e_model
     public function setDataFields($data_fields)
     {
     	$this->_data_fields = $data_fields;
+		return $this;
+    }
+	
+    /**
+     * Set Predefined data field
+     * @return e_model
+     */
+    public function setDataField($field, $type)
+    {
+    	$this->_data_fields[$field] = $type;
 		return $this;
     }
     
