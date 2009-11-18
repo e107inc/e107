@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Forum View Topic
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-09-08 02:48:48 $
- * $Author: mcfly_e107 $
+ * $Revision: 1.24 $
+ * $Date: 2009-11-18 01:05:36 $
+ * $Author: e107coders $
  *
 */
 

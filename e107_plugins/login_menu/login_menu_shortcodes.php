@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2001-2009 e107 Inc
+|     Copyright (C) 2008-2009 e107 Inc
 |     http://e107.org
 |
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-10-28 14:14:10 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-18 01:05:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit(); }

@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Tagwords Event Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/e_event.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-05-06 21:54:33 $
- * $Author: lisa_ $
+ * $Revision: 1.4 $
+ * $Date: 2009-11-18 01:06:01 $
+ * $Author: e107coders $
  *
 */
 

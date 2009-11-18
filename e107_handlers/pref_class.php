@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-11-17 15:04:46 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-18 01:04:43 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }

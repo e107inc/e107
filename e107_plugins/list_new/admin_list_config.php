@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * List Admin Config
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/list_new/admin_list_config.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-01-28 08:47:37 $
- * $Author: lisa_ $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-18 01:05:47 $
+ * $Author: e107coders $
  *
 */
 

@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Language File
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_eurl.php,v $
- * $Revision: 1.4 $
- * $Date: 2008-12-20 12:30:18 $
- * $Author: secretr $
+ * $Revision: 1.5 $
+ * $Date: 2009-11-18 01:05:12 $
+ * $Author: e107coders $
 */
 if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Manage Site URLs"); }
 

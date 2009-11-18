@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Language file - User signup
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-07-06 07:50:44 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.20 $
+ * $Date: 2009-11-18 01:05:22 $
+ * $Author: e107coders $
  *
 */
 define("PAGE_NAME", "Register");

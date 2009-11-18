@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Tagwords Admin
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/tagwords/admin_tagwords_config.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-01-17 22:46:37 $
- * $Author: lisa_ $
+ * $Revision: 1.3 $
+ * $Date: 2009-11-18 01:06:01 $
+ * $Author: e107coders $
  *
 */
 

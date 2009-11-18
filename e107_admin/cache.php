@@ -2,15 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Cache Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cache.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-11-07 02:28:54 $
+ * $Revision: 1.12 $
+ * $Date: 2009-11-18 01:04:25 $
  * $Author: e107coders $
  *
 */

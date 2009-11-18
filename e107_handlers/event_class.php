@@ -3,16 +3,16 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Steve Dunstan 2001-2002
+|     Copyright (C) 2008-2009 e107 Inc (e107.org)
 |     http://e107.org
-|     jalist@e107.org
+|
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/event_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-11-11 16:02:42 $
+|     $Revision: 1.11 $
+|     $Date: 2009-11-18 01:04:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
