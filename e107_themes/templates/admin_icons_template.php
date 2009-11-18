@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration Icons, should handle all icons in the future (somehow)
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/admin_icons_template.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-12 16:45:35 $
- * $Author: secretr $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-18 02:03:35 $
+ * $Author: marj_nl_fr $
 */
 
 	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/true_16.png' alt='' />");

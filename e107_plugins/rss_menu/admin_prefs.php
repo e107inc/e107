@@ -1,20 +1,19 @@
 <?php
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     Copyright (c) e107 Inc. 2001-2009
- |     http://e107.org
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
- |     $Revision: 1.7 $
- |     $Date: 2009-09-18 19:05:49 $
- |     $Author: e107coders $
- +----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/admin_prefs.php,v $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-18 02:03:35 $
+ * $Author: marj_nl_fr $
+ */
+
 /*
 Notes:
 - array_flip method deprecated for delete item detection.

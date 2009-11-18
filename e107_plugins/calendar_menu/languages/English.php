@@ -1,26 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ?Steve Dun.an 2001-2002
-|     http://e107.org
-|     jali.@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2008-08-25 10:46:46 $
-|     $Author: e107steved $
-|
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * These messages are for the 'user' pages of the event calendar (including event entry/editing)
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-18 02:03:35 $
+ * $Author: marj_nl_fr $
+ */
 
-These messages are for the 'user' pages of the event calendar (including event entry/editing)
-*/
-	
-	
 define('EC_ADLAN_1', "Event Calendar");
 define('EC_ADLAN_2', "Configure Event Calendar");
 define('EC_LAN_TODAY', "today");
@@ -268,5 +261,3 @@ define("NT_LAN_EC_8", "Event Calendar - Event modified");
 // Prefs - language defines can be used in various places where text is set through the admin screens
 define('EC_MAILOUT_SUBJECT', "Advice of calendar event");	// Use shortcode EC_MAIL_SUBJECT
 
-
-?>

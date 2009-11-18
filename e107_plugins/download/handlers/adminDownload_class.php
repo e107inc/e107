@@ -1,20 +1,19 @@
 <?php
 /*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     Copyright (c) e107 Inc. 2001-2009
- |     http://e107.org
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
- |     $Revision: 1.24 $
- |     $Date: 2009-11-12 21:46:13 $
- |     $Author: bugrain $
- +----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-18 02:03:35 $
+ * $Author: marj_nl_fr $
+ */
+
 if (!e107::isInstalled('download')) { exit(); }
 
 require_once(e_PLUGIN.'download/handlers/download_class.php');
