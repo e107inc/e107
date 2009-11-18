@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-11-18 01:04:26 $
- * $Author: e107coders $
+ * $Revision: 1.27 $
+ * $Date: 2009-11-18 20:45:18 $
+ * $Author: e107steved $
  *
 */
 
@@ -737,12 +737,12 @@ function show_prefs($mailAdmin)
 	{  // Allow selection of email address sources
 		$text .= "<tr>
 		<td>".LAN_MAILOUT_77."</td>
-		<td style='text-align:right'> 
+		<td> 
 	  ";
 	  $mail_enable = explode(',',$pref['mailout_enabled']);
 	  foreach ($pref['e_mailout_list'] as $mailer => $v)	  {
 		$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
-		$text .= $mailer."&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /><br />";
+		$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
 	  }
 	  $text .= "</td></tr>\n";
 	}

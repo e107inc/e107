@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2001-2008 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-11-18 01:04:24 $
- * $Author: e107coders $
+ * $Revision: 1.42 $
+ * $Date: 2009-11-18 20:45:20 $
+ * $Author: e107steved $
  *
 */
 
@@ -39,18 +39,18 @@ require_once(e_HANDLER.'user_handler.php');
 $userMethods = new UserHandler;
 $userMethods->deleteExpired();				// Delete time-expired partial registrations
 
-if (is_readable(THEME."signup_template.php"))
+if (is_readable(THEME.'signup_template.php'))
 {
-	require_once(THEME."signup_template.php");
+	require_once(THEME.'signup_template.php');
 }
 else
 {
-	require_once(e_THEME."templates/signup_template.php");
+	require_once(e_THEME.'templates/signup_template.php');
 }
 
-include_once(e_FILE."shortcode/batch/signup_shortcodes.php");
+include_once(e_FILE.'shortcode/batch/signup_shortcodes.php');
 
-$signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
+$signup_imagecode = ($pref['signcode'] && extension_loaded('gd'));
 $text = '';
 $extraErrors = array();
 $error = FALSE;
@@ -59,9 +59,8 @@ $error = FALSE;
 //-------------------------------
 // Resend Activation Email
 //-------------------------------
-if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
+if((e_QUERY == 'resend') && !USER && ($pref['user_reg_veri'] == 1))
 {
-// done above:	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 	require_once(HEADERF);
 
 	$clean_email = $tp -> toDB($_POST['resend_email']);
@@ -120,8 +119,11 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 		// Now send the email - got some valid info
 		$row['user_password'] = 'xxxxxxx';		// Don't know the real one
 		$eml = render_email($row);
-		$mailheader_e107id = $row['user_id'];
-		require_once(e_HANDLER."mail.php");
+		$eml['e107_header'] = $row['user_id'];
+		require_once(e_HANDLER.'mail.php');
+		$mailer = new e107Email();
+
+		if(!$mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE))
 
 		$do_log['signup_action'] = LAN_SIGNUP_63;
 
@@ -188,24 +190,22 @@ if(e_QUERY == "resend" && !USER && ($pref['user_reg_veri'] == 1))
 
 if(!$_POST)
 {
-
-	$error = "";
-	$text = " ";
-	$password1 = "";
-	$password2 = "";
-	$email = "";				// Used in shortcodes
-	$loginname = "";
-	$realname = "";
-	$image = "";
-	$avatar_upload = "";
-	$photo_upload = "";
-	$_POST['ue'] = "";
-	$signature = "";
+	$error = '';
+	$text = ' ';
+	$password1 = '';
+	$password2 = '';
+	$email = '';				// Used in shortcodes
+	$loginname = '';
+	$realname = '';
+	$image = '';
+	$avatar_upload = '';
+	$photo_upload = '';
+	$_POST['ue'] = '';
+	$signature = '';
 }
 
-if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.aftersignup"))
+if(ADMIN && (e_QUERY == 'preview' || e_QUERY == 'test'  || e_QUERY == 'preview.aftersignup'))
 {
-// done above:	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 	if(e_QUERY == "preview.aftersignup")
 	{
 		require_once(HEADERF);
@@ -224,17 +224,12 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test"  || e_QUERY == "preview.a
 	$eml = render_email($temp,TRUE);		// It ignores the data, anyway
 	echo $eml['preview'];
 
-	if(e_QUERY == "test")
+	if(e_QUERY == 'test')
 	{
-		require_once(e_HANDLER."mail.php");
-		$message = $eml['message'];
-		$subj = $eml['subject'];
-		$inline = $eml['inline-images'];
-		$Cc = $eml['cc'];
-		$Bcc = $eml['bcc'];
-		$attachments = $eml['attachments'];
+		require_once(e_HANDLER.'mail.php');
+		$mailer = new e107Email();
 
-		if(!sendemail(USEREMAIL, $subj, $message, USERNAME, "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
+		if(!$mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE))
 		{
 			echo "<br /><br /><br /><br >&nbsp;&nbsp;>> ".LAN_SIGNUP_42; // there was a problem.
 		}
@@ -251,14 +246,14 @@ if ($pref['membersonly_enabled'])
 	$HEADER = "<div style='text-align:center; width:100%;margin-left:auto;margin-right:auto;text-align:center'><div style='width:70%;text-align:center;margin-left:auto;margin-right:auto'><br />";
 	if (file_exists(THEME."images/login_logo.png"))
 	{
-		$HEADER .= "<img src='".THEME."images/login_logo.png' alt='' />\n";
+		$HEADER .= "<img src='".THEME_ABS."images/login_logo.png' alt='' />\n";
 	}
 	else
 	{
-		$HEADER .= "<img src='".e_IMAGE."logo.png' alt='' />\n";
+		$HEADER .= "<img src='".e_IMAGE_ABS."logo.png' alt='' />\n";
 	}
-	$HEADER .= "<br />";
-	$FOOTER = "</div></div>";
+	$HEADER .= '<br />';
+	$FOOTER = '</div></div>';
 }
 
 if($signup_imagecode)
@@ -267,31 +262,26 @@ if($signup_imagecode)
 	$sec_img = new secure_image;
 }
 
-if($pref['user_reg'] == 0)
+if (USER || ($pref['user_reg'] == 0) || ($pref['auth_method'] != 'e107'))
 {
-	header("location: ".e_HTTP."index.php");
+	header('location: '.e_HTTP.'index.php');
 	exit;
 }
 
-if(USER)
-{
-	header("location: ".e_HTTP."index.php");
-	exit;
-}
 
 //----------------------------------------
 // After clicking the activation link
 //----------------------------------------
 if (e_QUERY)
 {
-	$qs = explode(".", e_QUERY);
-	if ($qs[0] == "activate" && (count($qs) == 3 || count($qs) == 4) && $qs[2])
+	$qs = explode('.', e_QUERY);
+	if ($qs[0] == 'activate' && (count($qs) == 3 || count($qs) == 4) && $qs[2])
 	{
 		//TODO use generic multilanguage selection
 		// return the message in the correct language.
 		if(isset($qs[3]) && strlen($qs[3]) == 2 )
 		{
-			require_once(e_HANDLER."language_class.php");
+			require_once(e_HANDLER.'language_class.php');
 			$slng = new language;
 			$the_language = $slng->convert($qs[3]);
 			if(is_readable(e_LANGUAGEDIR.$the_language.'/lan_'.e_PAGE))
@@ -457,13 +447,16 @@ if (isset($_POST['register']))
 		$allData['user_ip'] = $e107->getip();
 
 
-		// check for multiple signups from the same IP address.
-		if($ipcount = $sql->db_Select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
+		// check for multiple signups from the same IP address. But ignore localhost
+		if ($allData['user_ip'] != LOCALHOST_IP)
 		{
-			if($ipcount >= $pref['signup_maxip'] && trim($pref['signup_maxip']) != "")
+			if($ipcount = $sql->db_Select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
 			{
-				$allData['errors']['user_email'] = ERR_GENERIC;
-				$allData['errortext']['user_email'] =  LAN_SIGNUP_71;
+				if($ipcount >= $pref['signup_maxip'] && trim($pref['signup_maxip']) != "")
+				{
+					$allData['errors']['user_email'] = ERR_GENERIC;
+					$allData['errortext']['user_email'] =  LAN_SIGNUP_71;
+				}
 			}
 		}
 
@@ -620,14 +613,15 @@ if (isset($_POST['register']))
 				$allData['data']['user_id'] = $nid;					// User ID
 				$allData['data']['user_password'] = $savePassword;	// Might need to send plaintext password in the email
                 $eml = render_email($allData['data']);
-				$mailheader_e107id = $eml['userid'];
-				require_once(e_HANDLER."mail.php");
+				$eml['e107_header'] = $eml['userid'];
+				require_once(e_HANDLER.'mail.php');
+				$mailer = new e107Email();
 
-
-				if(!sendemail($_POST['email'], $eml['subject'], $eml['message'], "", "", "", $eml['attachments'], $eml['cc'], $eml['bcc'], "", "", $eml['inline-images']))
+				if(!$mailer->sendEmail($allData['data']['user_email'], $allData['data']['user_name'], $eml,FALSE))
 				{
 					$error_message = LAN_SIGNUP_42; // There was a problem, the registration mail was not sent, please contact the website administrator.
 				}
+				unset($allData['data']['user_password']);
 			}
 			$e_event->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
 			$e_event->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
@@ -749,7 +743,13 @@ function headerjs()
 }
 
 
-// Create the email to send. $userInfo is the array of DB variables
+/**
+ * Create email to send to user who just registered.
+ *
+ * @param array $userInfo is the array of user-related DB variables
+ *
+ * @return array of data for mailer - field names directly compatible
+ */
 function render_email($userInfo, $preview = FALSE)
 {
 	// 1 = Body
@@ -767,69 +767,74 @@ function render_email($userInfo, $preview = FALSE)
 		$userInfo['user_sess'] = "1234567890ABCDEFGHIJKLMNOP";
 	}
 
-	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'] : SITEURL."/signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'].".".e_LAN));
-	$pass_show = ($pref['user_reg_secureveri'])? "*******" : $userInfo['user_password'];
+	define('RETURNADDRESS', (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'] : SITEURL."/signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'].".".e_LAN));
+	$pass_show = ($pref['user_reg_secureveri'])? '*******' : $userInfo['user_password'];
 
-	if (file_exists(THEME."email_template.php"))
+	if (file_exists(THEME.'email_template.php'))
 	{
-		require_once(THEME."email_template.php");
+		require_once(THEME.'email_template.php');
 	}
 	else
 	{
-		require_once(e_THEME."templates/email_template.php");
+		require_once(e_THEME.'templates/email_template.php');
 	}
 
-	$inline_images = explode(",",$SIGNUPEMAIL_IMAGES);
-	if($SIGNUPEMAIL_BACKGROUNDIMAGE)
+	/*	Inline images now handled automatically - just include in email template with an absolute link
+	$inlineImages = array();
+	$inlineImages = explode(",",$SIGNUPEMAIL_IMAGES);
+	if (vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE))
 	{
-		$inline_images[] = $SIGNUPEMAIL_BACKGROUNDIMAGE;
+		$inlineImages[] = $SIGNUPEMAIL_BACKGROUNDIMAGE;
 	}
+	if (count($inlineImages)) { $ret['mail_inline_images'] = implode(",",$inlineImages); }
+	*/
 
-	$ret['userid'] = $userInfo['user_id'];
-	$ret['cc'] = $SIGNUPEMAIL_CC;
-	$ret['bcc'] = $SIGNUPEMAIL_BCC;
-	$ret['attachments'] = $SIGNUPEMAIL_ATTACHMENTS;
-	$ret['inline-images'] = implode(",",$inline_images);
+	$ret['mail_recipient_id'] = $userInfo['user_id'];
+	if (vartrue($SIGNUPEMAIL_CC)) { $ret['mail_copy_to'] = $SIGNUPEMAIL_CC; }
+	if (vartrue($SIGNUPEMAIL_BCC)) { $ret['mail_bcopy_to'] = $SIGNUPEMAIL_BCC; }
+	if (vartrue($SIGNUPEMAIL_ATTACHMENTS)) { $ret['mail_attach'] = $SIGNUPEMAIL_ATTACHMENTS; }
 
-	$style = ($SIGNUPEMAIL_LINKSTYLE) ? "style='$SIGNUPEMAIL_LINKSTYLE'" : "";
+	$style = ($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
 
-	$search[0] = "{LOGINNAME}";
+	$search[0] = '{LOGINNAME}';
 	$replace[0] = $userInfo['user_loginname'];
 
-	$search[1] = "{PASSWORD}";
+	$search[1] = '{PASSWORD}';
 	$replace[1] = $pass_show;
 
-	$search[2] = "{ACTIVATION_LINK}";
+	$search[2] = '{ACTIVATION_LINK}';
 	$replace[2] = "<a href='".RETURNADDRESS."' {$style}>".RETURNADDRESS."</a>";
 
-	$search[3] = "{SITENAME}";
+	$search[3] = '{SITENAME}';
 	$replace[3] = SITENAME;
 
-	$search[4] = "{SITEURL}";
+	$search[4] = '{SITEURL}';
 	$replace[4] = "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
 
-	$search[5] = "{USERNAME}";
+	$search[5] = '{USERNAME}';
 	$replace[5] = $userInfo['user_name'];
 
-	$search[6] = "{USERURL}";
+	$search[6] = '{USERURL}';
 	$replace[6] = varsettrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 
+	/*	Inline images now handled automatically - just include in email template with an absolute link
 	$cnt=1;
-
-	foreach($inline_images as $img)
+	foreach($inlineImages as $img)
 	{
-		if(is_readable($inline_images[$cnt-1]))
+		if(is_readable($inlineImages[$cnt-1]))
 		{
 			$cid_search[] = "{IMAGE".$cnt."}";
-			$cid_replace[] = "<img alt=\"".SITENAME."\" src='cid:".md5($inline_images[$cnt-1])."' />\n";
+			$cid_replace[] = "<img alt=\"".SITENAME."\" src='cid:".md5($inlineImages[$cnt-1])."' />\n";
 			$path_search[] = "{IMAGE".$cnt."}";
-			$path_replace[] = "<img alt=\"".SITENAME."\" src=\"".$inline_images[$cnt-1]."\" />\n";
+			$path_replace[] = "<img alt=\"".SITENAME."\" src=\"".$inlineImages[$cnt-1]."\" />\n";
 		}
 		$cnt++;
 	}
+	*/
 
 	$subject = str_replace($search,$replace,$SIGNUPEMAIL_SUBJECT);
-	$ret['subject'] =  $subject;
+	$ret['mail_subject'] =  $subject;
+	$ret['send_html'] = TRUE;
 
 	$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
@@ -843,9 +848,9 @@ function render_email($userInfo, $preview = FALSE)
 	}
 
 	$HEAD .= "</head>\n";
-	if($SIGNUPEMAIL_BACKGROUNDIMAGE)
+	if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE))
 	{
-		$HEAD .= "<body background=\"cid:".md5($SIGNUPEMAIL_BACKGROUNDIMAGE)."\" >\n";
+		$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
 	}
 	else
 	{
@@ -853,14 +858,12 @@ function render_email($userInfo, $preview = FALSE)
 	}
 	$FOOT = "\n</body>\n</html>\n";
 
-	$SIGNUPEMAIL_TEMPLATE = $HEAD.$SIGNUPEMAIL_TEMPLATE.$FOOT;
-	$message = str_replace($search,$replace,$SIGNUPEMAIL_TEMPLATE);
-
-	$ret['message'] = str_replace($cid_search,$cid_replace,$message);
-	$ret['preview'] = str_replace($path_search,$path_replace,$message);
+	$ret['mail_body'] = str_replace($search,$replace,$HEAD.$SIGNUPEMAIL_TEMPLATE.$FOOT);
+	$ret['preview'] = $ret['mail_body'];												// Non-standard field
 
 	return $ret;
 }
+
 
 
 function render_after_signup($error_message)
