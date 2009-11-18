@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2009-11-18 01:04:25 $
+|     $Revision: 1.19 $
+|     $Date: 2009-11-18 21:59:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -91,16 +91,16 @@ class cron
 	
 		
 
-        // These core functions need to be put into e_BASE/cron.php  e.g. news_purge()
+        // These core functions need to be put into e_BASE/cron.php  ie. news_purge()
 
-        if($this->cronAction == '' || $this->cronAction == 'main')
+        if($this->cronAction == "" || $this->cronAction == "main")
 		{
 			$this -> cronRenderPage();
 		}
 		
 		
 
-		if($this->cronAction == 'pref')
+		if($this->cronAction == "pref")
 		{
         	$this -> cronRenderPrefs();
 		}
@@ -310,6 +310,7 @@ function setCronPwd()
 	{
 		global $pref;
 		
+		$core_cron = $this->coreCrons;
 		$new_cron = array();
 		
 		if(vartrue($pref['e_cron_list']))
@@ -333,9 +334,9 @@ function setCronPwd()
 				}
 			}
 		}
-		$this->e_cron = $this->coreCrons;
-		$this->e_cron['_plugins'] = $new_cron;
-		//print_a($this->e_cron);
+		
+		$this->e_cron = array_merge($core_cron,$new_cron);
+
 	}
 
 
