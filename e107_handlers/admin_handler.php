@@ -9,9 +9,9 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-11-18 02:07:14 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-18 07:16:42 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -2869,6 +2869,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 		
+			
 		// Scenario I - use request owned POST data - toForm already executed
 		$model->setPostedData($_posted, null, false, false)
 			->save(true);

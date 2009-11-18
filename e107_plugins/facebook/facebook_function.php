@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-18 02:03:35 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.14 $
+ * $Date: 2009-11-18 07:16:51 $
+ * $Author: e107coders $
  */
 
 if (!defined('e107_INIT'))
@@ -789,6 +789,11 @@ class e_facebook
 	
 	function getUserId($uid)
 	{
+		if(!$this->fb_uid)
+		{
+			return;
+		}
+		
 		$sql = e107::getDb();
 		if($sql->db_Select("facebook", "facebook_user_id", "facebook_uid = ".$this->fb_uid))
 		{
