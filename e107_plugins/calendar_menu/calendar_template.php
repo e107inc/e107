@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_template.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-17 12:53:08 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-18 01:05:23 $
+ * $Author: e107coders $
  */
 
 if (!defined('e107_INIT')) { exit; }

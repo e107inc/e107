@@ -2,15 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * e107 Menu Class
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/menu_class.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-10-24 07:53:25 $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-18 01:04:43 $
  * $Author: e107coders $
 */
 

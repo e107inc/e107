@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Forum icons template - jayya
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/jayya/forum/forum_icons_template.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-07-28 04:50:12 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-18 01:06:02 $
+ * $Author: e107coders $
  */
 
 if ( ! defined('e107_INIT')) { exit(); }

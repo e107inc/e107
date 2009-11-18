@@ -2,15 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-11-14 04:13:10 $
+ * $Revision: 1.37 $
+ * $Date: 2009-11-18 01:04:42 $
  * $Author: e107coders $
 */
 
@@ -22,7 +22,7 @@ exit;
 # |        e107 website system
 # |        /files/sql.php
 # |
-# |        Steve Dunstan 2001-2002
+# |        Copyright (C) 2008-2009 e107 Inc (e107.org)
 # |        http://e107.org
 # |        jalist@e107.org
 # |

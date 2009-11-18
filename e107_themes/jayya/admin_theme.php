@@ -3,17 +3,17 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Steve Dunstan 2001-2002
+|     Copyright (C) 2008-2009 e107 Inc (e107.org)
 |     http://e107.org
-|     jalist@e107.org
+|
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_themes/jayya/admin_theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-09-29 17:42:23 $
-|     $Author: secretr $
+|     $Revision: 1.4 $
+|     $Date: 2009-11-18 01:06:02 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 

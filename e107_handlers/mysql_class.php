@@ -2,15 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.62 $
- * $Date: 2009-11-09 03:03:41 $
+ * $Revision: 1.63 $
+ * $Date: 2009-11-18 01:04:43 $
  * $Author: e107coders $
 */
 
@@ -49,7 +49,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * @author $Author: e107coders $
  * 
  */

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2001-2009 e107 Inc 
+|     Copyright (C) 2008-2009 e107 Inc 
 |     http://e107.org
 |
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2009-09-28 21:22:16 $
-|     $Author: e107steved $
+|     $Revision: 1.16 $
+|     $Date: 2009-11-18 01:04:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 

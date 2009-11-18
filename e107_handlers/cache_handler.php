@@ -2,15 +2,15 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2008 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Cache handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-10-24 10:07:30 $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-18 01:04:43 $
  * $Author: e107coders $
 */
 
@@ -23,7 +23,7 @@ define('CACHE_PREFIX','<?php exit;');
  * 
  * @package     e107
  * @category	e107_handlers
- * @version     $Revision: 1.15 $
+ * @version     $Revision: 1.16 $
  * @author      $Author: e107coders $
  */
 class ecache {

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ?e107 Inc 2001-2009
+|     Copyright (C) 2008-2009 e107 Inc (e107.org)
 |     http://e107.org
 |
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/email.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-11-03 22:07:55 $
-|     $Author: e107steved $
+|     $Revision: 1.10 $
+|     $Date: 2009-11-18 01:04:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('class2.php');

@@ -2,16 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2001-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-17 20:34:50 $
- * $Author: e107steved $
+ * $Revision: 1.5 $
+ * $Date: 2009-11-18 01:04:43 $
+ * $Author: e107coders $
  *
 */
 
