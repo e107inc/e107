@@ -1,25 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ?Steve Dun.an 2001-2002
-|     http://e107.org
-|     jali.@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_admin_calendar_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-07 21:41:04 $
-|     $Author: e107steved $
-|
-+----------------------------------------------------------------------------+
-
-Messages for admin pages of event calendar
-*/
-	
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Messages for admin pages of event calendar
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_admin_calendar_menu.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-18 02:03:35 $
+ * $Author: marj_nl_fr $
+ */
 	
 define('EC_ADLAN_1', "Event Calendar");
 
@@ -375,16 +368,7 @@ define('EC_ADLAN_A217', 'year/month');
 define('EC_ADLAN_A218', 'Update Settings');
 define('EC_ADLAN_A219', 'Icon:');
 define('EC_ADLAN_A220', 'Choose');
-define('EC_ADLAN_A221', '');
-define('EC_ADLAN_A222', '');
-define('EC_ADLAN_A223', '');
-define('EC_ADLAN_A224', '');
-define('EC_ADLAN_A225', '');
-define('EC_ADLAN_A226', '');
-define('EC_ADLAN_A227', '');
-define('EC_ADLAN_A228', '');
-define('EC_ADLAN_A229', '');
-define('EC_ADLAN_A230', '');
+
 
 /*
 // Notify
@@ -397,6 +381,3 @@ define("NT_LAN_EC_6", "Event Calendar - Event added");
 define("NT_LAN_EC_7", "New event posted");
 define("NT_LAN_EC_8", "Event Calendar - Event modified");
 */
-
-
-?>

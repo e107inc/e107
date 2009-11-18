@@ -1,20 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (c) e107 Inc. 2001-2009
-|     http://e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/import/languages/English_admin_import.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2009-07-20 15:24:34 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/import/languages/English_admin_import.php,v $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-18 02:03:35 $
+ * $Author: marj_nl_fr $
+ */
+
 if (!defined('e107_INIT')) { exit; }
 
 define('LAN_CONTINUE','Continue');
@@ -67,18 +66,3 @@ define('LAN_CONVERT_45','Cannot read import code file');
 define('LAN_CONVERT_46','Error: --ERRNUM-- while writing to --DB-- database, line ');
 define('LAN_CONVERT_47','Block --BLOCK-- import completed. --LINES-- read, --USERS-- added, --ERRORS-- errors');
 define('LAN_CONVERT_48','Forum posts');
-define('LAN_CONVERT_49','');
-define('LAN_CONVERT_50','');
-define('LAN_CONVERT_51','');
-define('LAN_CONVERT_52','');
-define('LAN_CONVERT_53','');
-define('LAN_CONVERT_54','');
-define('LAN_CONVERT_55','');
-define('LAN_CONVERT_56','');
-define('LAN_CONVERT_57','');
-define('LAN_CONVERT_58','');
-define('LAN_CONVERT_59','');
-define('LAN_CONVERT_60','');
-
-
-?>
