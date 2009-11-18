@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.83 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.84 $
+ * $Date: 2009-11-18 07:16:42 $
  * $Author: e107coders $
  *
 */
@@ -780,7 +780,7 @@ class e_form
 
 		foreach($columnsArray as $key => $fld)
 		{
-			if (!varset($fld['forced']) && !vartrue($fld['nolist']))
+			if (!varset($fld['forced']) && !vartrue($fld['nolist']) && vartrue($fld['type'])!='upload')
 			{
 				$checked = (in_array($key,$columnsDefault)) ?  TRUE : FALSE;
 				$text .= "
@@ -1211,6 +1211,11 @@ class e_form
 		
 		if(is_string($parms)) parse_str($parms, $parms);
 		
+		if(vartrue($attributes['readonly'])) // quick fix (maybe 'noedit'=>'readonly'?)
+		{
+			return $this->renderValue($key,$value,$attributes);	
+		}
+		
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -1227,6 +1232,7 @@ class e_form
 			
 			case 'url':
 			case 'text':
+				
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
 				return vartrue($parms['pre']).$this->text($key, $value, $maxlength, vartrue($parms['__options'])).vartrue($parms['post']);
