@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-11-18 09:53:39 $
+ * $Revision: 1.36 $
+ * $Date: 2009-11-18 10:16:50 $
  * $Author: e107coders $
  *
 */
@@ -346,7 +346,11 @@ class media_admin_ui extends e_admin_ui
 			
 			// only one upload? Not sure what's the idea here
 			// we are currently creating one media item
-			rename(e_MEDIA.$oldpath, e_MEDIA.$newpath);
+			if(!rename(e_MEDIA.$oldpath, e_MEDIA.$newpath))
+			{
+				$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
+				return FALSE;	
+			};
 			return $upload_data;
 		}
 				
@@ -378,7 +382,11 @@ class media_admin_ui extends e_admin_ui
 
 		if(!is_dir(e_MEDIA.$dir))
 		{
-			mkdir(e_MEDIA.$dir, 0755);
+			if(!mkdir(e_MEDIA.$dir, 0755))
+			{
+				$mes->add("Couldn't create folder ($dir).", E_MESSAGE_ERROR);
+				return FALSE;	
+			};
 		}
 		return $dir;		
 	}
