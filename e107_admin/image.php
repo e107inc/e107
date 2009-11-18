@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-11-18 07:16:42 $
+ * $Revision: 1.35 $
+ * $Date: 2009-11-18 09:53:39 $
  * $Author: e107coders $
  *
 */
@@ -241,12 +241,12 @@ class media_admin_ui extends e_admin_ui
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => '5%'),
          	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first'), 
          	'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => '30%', 'filter' => true, 'batch' => true,), 
-			'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE), 
+			'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE), 
 		//	'media_author'			=> array('title'=> LAN_AUTHOR,		'type' => 'user',		'data'=> 'int'),
-			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true, 'readonly'=>TRUE	),	
-			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => 'auto', 'readonly'=>TRUE),	// User date
-          	'media_size' 			=> array('title'=> "Size",			'type' => 'int',		'data'=> 'int',		'width' => 'auto', 'readonly'=>TRUE), 
-			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE), 
+			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),	
+			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE),	// User date
+          	'media_size' 			=> array('title'=> "Size",			'type' => 'int',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE), 
+			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE), 
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),	 
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	
 			'media_usedby' 			=> array('title'=> '',		'type' => 'text',			'data'=> 'text', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),	
@@ -291,7 +291,7 @@ class media_admin_ui extends e_admin_ui
 		$dataFields = $this->getModel()->getDataFields();
 		unset($dataFields['media_upload']);
 		$this->getModel()->setDataFields($dataFields);
-		return $this->observeUploaded();
+		return $this->observeUploaded($new_data);
 	}
 	
 	/**
@@ -304,7 +304,7 @@ class media_admin_ui extends e_admin_ui
 		return $this->observeUploaded();
 	}
 		
-	function observeUploaded()
+	function observeUploaded($new_data)
 	{
 		$mes = e107::getMessage();
 		
@@ -318,16 +318,19 @@ class media_admin_ui extends e_admin_ui
 			if(vartrue($upload['error']))
 			{			
 				$mes->add($upload['message'], E_MESSAGE_ERROR);
-				//continue; //FIXME - we need to return an error so that the DB is not updated. 
+				return FALSE;
 			}
-			
-			$oldpath = 'temp/'.$upload['name'];
+						
+			if(!$typePath = $this->getPath($upload['type']))
+			{
+				return FALSE;
+			}
 					
-			$newpath = $this->getPath($upload['type']).'/'.$upload['name'];
+			$oldpath = 'temp/'.$upload['name'];
+			$newpath = $typePath.'/'.$upload['name'];
 						
 			$upload_data = array( // not saved if 'noedit' is active. 
 				'media_type'		=> $upload['type'],
-				'media_name'		=> $upload['name'], //FIXME - needs to added only if not posted value exists. 
 				'media_datestamp'	=> time(), 
 				'media_url'			=> "{e_MEDIA}".$newpath, 
 				'media_size'		=> $upload['size'],
@@ -335,6 +338,11 @@ class media_admin_ui extends e_admin_ui
 				'media_usedby'		=> '', 
 				'media_tags'		=> ''
 			);
+			
+			if(!varset($new_data['media_name']))
+			{
+				$upload_data['media_name'] = $upload['name'];
+			}
 			
 			// only one upload? Not sure what's the idea here
 			// we are currently creating one media item
