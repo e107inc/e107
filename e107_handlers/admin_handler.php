@@ -9,9 +9,9 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-11-18 07:16:42 $
- * $Author: e107coders $
+ * $Revision: 1.32 $
+ * $Date: 2009-11-18 09:32:31 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -2113,6 +2113,26 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 	
 	/**
+	 * 
+	 * @param string $field
+	 * @param string $key attribute name
+	 * @param mixed $value default value if not set, default is null
+	 * @return mixed FIXME
+	 */
+	public function setFieldAttr($field, $key = null, $default = null)
+	{
+		if(isset($this->fields[$field]))
+		{
+			if(null !== $key)
+			{
+				return isset($this->fields[$field][$key]) ? $this->fields[$field][$key] : $default;
+			}
+			return $this->fields[$field];
+		}
+		return $default;
+	}
+	
+	/**
 	 * Get fields stored as user preferences
 	 * @return array
 	 */
@@ -2865,6 +2885,14 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			if($data && is_array($data))
 			{
+				// add to model data fields array if required
+				foreach ($data as $f => $val)
+				{
+					if($this->getFieldAttr($f, 'data'))
+					{
+						$model->setDataField($f, $this->getFieldAttr($f, 'data'));
+					}
+				}
 				$_posted = array_merge($_posted, $data);
 			}
 		}

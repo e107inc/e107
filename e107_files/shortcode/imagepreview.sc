@@ -1,5 +1,5 @@
 
-// $Id: imagepreview.sc,v 1.2 2008-12-17 17:27:07 secretr Exp $
+// $Id: imagepreview.sc,v 1.3 2009-11-18 09:32:31 secretr Exp $
 global $e107;
 
 list($name, $width, $height) = explode("|",$parm, 3);
@@ -11,9 +11,8 @@ if(varset($width))
 }
 if(varset($height))
 {
-	$height = " width: {$height};";
+	$height = " height: {$height};";
 }
 
 $path = (varset($_POST[$name]) && defsettrue('e_AJAX_REQUEST')) ? $e107->tp->replaceConstants($_POST[$name], 'full') : e_IMAGE_ABS."generic/blank.gif";
-
-return "<img src='{$path}' alt=\"\" class='image-selector' style='{$width}{$height}' />";
+return "<a href='{$path}' rel='external' class='e-image-preview'><img src='{$path}' alt=\"\" class='image-selector' style='{$width}{$height}' /></a>";

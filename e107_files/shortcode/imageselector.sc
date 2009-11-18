@@ -1,12 +1,12 @@
 
-// $Id: imageselector.sc,v 1.9 2009-01-16 17:57:56 secretr Exp $
+// $Id: imageselector.sc,v 1.10 2009-11-18 09:32:31 secretr Exp $
 //FIXME - full rewrite, backward compatible
 global $sql,$parm,$tp;
 
 if(strstr($parm,"="))
 {  // query style parms.
-	parse_str($parm, $tmp);
-	extract($tmp);
+	parse_str($parm, $parms);
+	extract($parms);
 }
 else
 {        // comma separated parms.
@@ -17,7 +17,7 @@ $paths = explode("|",$path);
 
 if(trim($default[0])=="{")
 {
-	$pvw_default = $tp->replaceConstants($default);
+	$pvw_default = $tp->replaceConstants($default, 'abs');
 	$path = ""; // remove the default path if a constant is used.
 }
 
@@ -92,6 +92,7 @@ if(!$pvw_default)
 	$pvw_default = ($default) ? $path.$default : e_IMAGE_ABS."generic/blank.gif";
 }
 
+
 $text .= "<div class='imgselector-container' id='{$name}_prev'>";
 if(varset($click_target))
 {
@@ -99,11 +100,14 @@ if(varset($click_target))
    $post 	= varset($click_postfix);
    $text .= "<a href='#' onclick='addtext(\"{$pre}\"+document.getElementById(\"{$name}\").value+\"{$post}\", true);document.getElementById(\"{$name}\").selectedIndex = -1;return false;'>";
 }
-$text .= "<img src='{$pvw_default}' alt='' style='width:{$width};height:{$height}' />";
-if(varset($click_target))
+else
 {
-   $text .= "</a>";
+	$text .= "<a href='{$pvw_default}' rel='external' class='e-image-preview'>";
 }
+if(vartrue($height)) $height = "height:{$height}";
+if(vartrue($width)) $width = "width:{$width}; ";
+$text .= "<img src='{$pvw_default}' alt='' style='{$width}{$height}' /></a>";
+
 $text .= "</div>\n";
 
 return "\n\n<!-- Start Image Selector [{$scaction}] -->\n\n".$text."\n\n<!-- End Image Selector [{$scaction}] -->\n\n";
