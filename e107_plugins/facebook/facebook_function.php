@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-18 07:16:51 $
+ * $Revision: 1.15 $
+ * $Date: 2009-11-18 21:18:21 $
  * $Author: e107coders $
  */
 
@@ -813,7 +813,20 @@ class e_facebook
 			$fbclient = &facebook_client();
 			if ($fbclient)
 			{
-				return $fbclient->get_loggedin_user();	
+				if($fbclient->get_loggedin_user()): //prevent session expire error.
+			    try {
+			        $fbid = $fbclient->api_client->fql_query('SELECT uid FROM user WHERE uid = ' . $fbclient->get_loggedin_user());
+			    } catch (Exception $ex) {
+			        $fbclient->clear_cookie_state();
+			    }
+				endif;	
+				
+				if($fbid)
+				{
+					// echo "fbid=".print_a($fbid);
+					return $fbid[0]['uid'];
+				}			
+				//return $fbclient->get_loggedin_user();	
 			}
 				
 		}
