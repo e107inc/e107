@@ -1,20 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (c) e107 Inc. 2001-2009
-|     http://e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-11-08 17:13:24 $
-|     $Author: e107steved $
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_handlers/menumanager_class.php,v $
+ * $Revision: 1.11 $
+ * $Date: 2009-11-18 02:07:14 $
+ * $Author: marj_nl_fr $
+ */
+
 if (!defined('e107_INIT')) { exit; }
 
 

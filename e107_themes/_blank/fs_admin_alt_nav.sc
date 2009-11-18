@@ -1,7 +1,7 @@
 /*
-* e107 website system (c) 2001-2008 Steve Dunstan (e107.org)
-* $Id: fs_admin_alt_nav.sc,v 1.5 2009-07-18 11:47:50 marj_nl_fr Exp $
-*/
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * $Id: fs_admin_alt_nav.sc,v 1.6 2009-11-18 02:07:15 marj_nl_fr Exp $
+ */
 
 if (!ADMIN) return '';
 
