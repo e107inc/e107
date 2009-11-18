@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-11-18 09:32:31 $
+ * $Revision: 1.42 $
+ * $Date: 2009-11-18 14:46:27 $
  * $Author: secretr $
 */
 
@@ -2003,7 +2003,7 @@ class e_tree_model extends e_model
 	 */
 	function getTree($force = false)
 	{
-		return $this->get('__tree');
+		return $this->get('__tree', array());
 	}
 	
 	/**

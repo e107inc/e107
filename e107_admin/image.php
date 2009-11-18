@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-11-18 10:16:50 $
- * $Author: e107coders $
+ * $Revision: 1.37 $
+ * $Date: 2009-11-18 14:46:28 $
+ * $Author: secretr $
  *
 */
 require_once("../class2.php");
@@ -232,20 +232,20 @@ class media_admin_ui extends e_admin_ui
 			
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'media_id'				=> array('title'=> LAN_ID,			'type' => 'int',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE),
+			'media_id'				=> array('title'=> LAN_ID,			'type' => 'number',		'data'=> 'int',		'width' =>'5%', 'forced'=> TRUE),
       		'media_url' 			=> array('title'=> 'Preview',		'type' => 'image',		'data'=> 'str',		'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=100',	'width' => 'auto','readonly'=>TRUE),	 
 		
 	   	//	'media_preview' 		=> array('title'=> "Preview",		'type' => 'image',			'data'=> null,		'width' => '10%'), 
-       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> null,		'readParm' => 'hidden',	'width' => '10%'),  
+       		'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParm' => 'hidden',	'width' => '10%', 'nolist' => true),  
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'width' => '5%'),
 			'media_caption' 		=> array('title'=> "Caption",		'type' => 'text',		'data'=> 'str',		'width' => '5%'),
-         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first'), 
+         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',	'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'), 
          	'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'method',		'data'=> 'str',		'width' => '30%', 'filter' => true, 'batch' => true,), 
 			'media_type' 			=> array('title'=> "Mime Type",		'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE), 
 		//	'media_author'			=> array('title'=> LAN_AUTHOR,		'type' => 'user',		'data'=> 'int'),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),	
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE),	// User date
-          	'media_size' 			=> array('title'=> "Size",			'type' => 'int',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE), 
+          	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE), 
 			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE), 
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),	 
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	
@@ -255,7 +255,7 @@ class media_admin_ui extends e_admin_ui
 		);
 
 		protected $mimePaths = array(
-				"text"			=> 'files',
+				'text'			=> 'files',
 				'multipart'		=> 'files',
 				'application'	=> 'files',
 				'audio'			=> 'audio',
@@ -288,8 +288,8 @@ class media_admin_ui extends e_admin_ui
 	{
 		// return data to be merged with posted model data
 		$this->getRequest()->setPosted('media_upload', null);
-		$dataFields = $this->getModel()->getDataFields();
-		unset($dataFields['media_upload']);
+		//$dataFields = $this->getModel()->getDataFields();
+		//unset($dataFields['media_upload']);
 		$this->getModel()->setDataFields($dataFields);
 		return $this->observeUploaded($new_data);
 	}
@@ -301,13 +301,13 @@ class media_admin_ui extends e_admin_ui
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		// return data to be merged with posted model data
-		return $this->observeUploaded();
+		return $this->observeUploaded($new_data);
 	}
-		
+	
+	// XXX - strict mysql error on Create without UPLOAD!
 	function observeUploaded($new_data)
 	{
 		$mes = e107::getMessage();
-		
 		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php"); //TODO - still not a class!
 	
@@ -339,6 +339,8 @@ class media_admin_ui extends e_admin_ui
 				'media_tags'		=> ''
 			);
 			
+			//TODO - media_dimensions
+
 			if(!varset($new_data['media_name']))
 			{
 				$upload_data['media_name'] = $upload['name'];
@@ -353,7 +355,7 @@ class media_admin_ui extends e_admin_ui
 			};
 			return $upload_data;
 		}
-				
+		
 	}
 	
 	function beforeDelete($data, $id) // call before 'delete' is executed. - return false to prevent delete execution (e.g. some dependencies check)
@@ -1181,18 +1183,18 @@ function del_pref_val()
  *
  * @return string JS source
  */
-function headerjs()
-{
-	require_once(e_HANDLER.'js_helper.php');
-	//FIXME - how exactly to auto-call JS lan? This and more should be solved in Stage II.
-	$ret = "
-		<script type='text/javascript'>
-			//add required core lan - delete confirm message
-			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
-		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
-
-	return $ret;
-}
+//function headerjs()
+//{
+//	require_once(e_HANDLER.'js_helper.php');
+//	//FIXME - how exactly to auto-call JS lan? This and more should be solved in Stage II.
+//	$ret = "
+//		<script type='text/javascript'>
+//			//add required core lan - delete confirm message
+//			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
+//		</script>
+//		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
+//	";
+//
+//	return $ret;
+//}
 ?>

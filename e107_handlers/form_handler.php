@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.84 $
- * $Date: 2009-11-18 07:16:42 $
- * $Author: e107coders $
+ * $Revision: 1.85 $
+ * $Date: 2009-11-18 14:46:25 $
+ * $Author: secretr $
  *
 */
 
@@ -1064,9 +1064,10 @@ class e_form
 				if($attributes['type'] == 'bbarea' && !isset($parms['bb'])) $parms['bb'] = true; //force bb parsing for bbareas
 				$elid = trim(str_replace('_', '-', $field)).'-'.$id;
 				if(!vartrue($parms['noparse'])) $value = $tp->toHTML($value, (vartrue($parms['bb']) ? true : false), vartrue($parms['parse']));
-				if(vartrue($parms['expand']))
+				if(vartrue($parms['expand']) || vartrue($parms['truncate']) || vartrue($parms['htmltruncate']))
 				{
-					$expand = '&nbsp;<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($parms['expand'], $parms['expand'])."</a>";
+					$ttl = vartrue($parms['expand'], '&nbsp;...');
+					$expand = '&nbsp;<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
 				}
 				
 				$oldval = $value;

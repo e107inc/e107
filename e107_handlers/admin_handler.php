@@ -9,8 +9,8 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-11-18 09:32:31 $
+ * $Revision: 1.33 $
+ * $Date: 2009-11-18 14:46:27 $
  * $Author: secretr $
 */
 
@@ -2117,19 +2117,43 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param string $field
 	 * @param string $key attribute name
 	 * @param mixed $value default value if not set, default is null
-	 * @return mixed FIXME
+	 * @return e_admin_controller_ui
 	 */
-	public function setFieldAttr($field, $key = null, $default = null)
+	public function setFieldAttr($field, $key = null, $value = null)
 	{
-		if(isset($this->fields[$field]))
+		// add field array
+		if(is_array($field))
 		{
-			if(null !== $key)
+			foreach ($field as $f => $atts)
 			{
-				return isset($this->fields[$field][$key]) ? $this->fields[$field][$key] : $default;
+				$this->setFieldAttr($f, $atts);
 			}
-			return $this->fields[$field];
+			return $this;
 		}
-		return $default;
+		// remove a field
+		if(null === $key)
+		{
+			unset($this->fields[$field]);
+			return $this;
+		}
+		// add to attribute array of a field
+		if(is_array($key))
+		{
+			foreach ($key as $k => $att)
+			{
+				$this->setFieldAttr($field, $k, $att);
+			}
+			return $this;
+		}
+		// remove attribute from field attribute set
+		if(null === $value && $key != 'type')
+		{
+			unset($this->fields[$field][$key]);
+			return $this;
+		}
+		// set attribute value
+		$this->fields[$field][$key] = $value;
+		return $this;
 	}
 	
 	/**
@@ -2552,7 +2576,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param string $type current action type - edit, create, list or user defined
 	 * @return void
 	 */
-	protected function toData(&$data, $type)
+	protected function toData(&$data, $type = '')
 	{
 	}
 	
@@ -2597,11 +2621,13 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function renderAjaxFilterResponse($listQry = '')
 	{
-		$ret = '<ul>';
-		$ret .= "<li><span class='informal warning'> clear filter </span></li>";
 		
 		$srch = $this->getPosted('searchquery');
 		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
+		
+		$ret = '<ul>';
+		$ret .= '<li>'.$srch.'<span class="informal warning"> (typed)</span></li>'; // fix Enter - search for typed word only
+
 		$reswords = array();
 		if(trim($srch) !== '')
 		{
@@ -2637,6 +2663,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 		
+		$ret .= '<li><span class="informal warning"> clear filter </span></li>'; // clear filter option
 		$ret .= '</ul>';
 		return $ret;
 	}
@@ -2881,6 +2908,8 @@ class e_admin_controller_ui extends e_admin_controller
 			$data = $this->$callbackBefore($_posted, $old_data, $model->getId());
 			if(false === $data)
 			{
+				// we don't wanna loose posted data
+				$model->setPostedData($_posted, null, false, false);
 				return false;
 			}
 			if($data && is_array($data))
@@ -3394,7 +3423,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->dataFields = array();
 			foreach ($this->fields as $key => $att)
 			{
-				if((null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
+				if((false !== varset($att['data']) && null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
 				}
