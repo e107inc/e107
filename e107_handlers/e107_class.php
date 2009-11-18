@@ -9,13 +9,15 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.73 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.74 $
+ * $Date: 2009-11-18 20:45:18 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+
+define('LOCALHOST_IP', '0000:0000:0000:0000:0000:ffff:7f00:0001');		// IPV6 string for localhost - as stored in DB
 /**
  * e107 class
  *

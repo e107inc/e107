@@ -9,9 +9,9 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-11-18 01:04:24 $
- * $Author: e107coders $
+ * $Revision: 1.44 $
+ * $Date: 2009-11-18 20:45:20 $
+ * $Author: e107steved $
  *
 */
 /*
@@ -234,7 +234,7 @@ if (isset($_POST['updatesettings']))
 	$changedEUFData = array();
 	if (isset($_POST['ue']))
 	{
-		$eufVals = $ue->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],array()));		// Validate the extended user fields
+		$eufVals = $ue->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],TRUE));		// Validate the extended user fields
 		$changedEUFData['data'] = validatorClass::findChanges($eufVals['data'], $udata,FALSE);
 	}
 
