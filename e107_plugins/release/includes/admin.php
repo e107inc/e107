@@ -9,9 +9,9 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision: 1.12 $
+ * $Date: 2009-11-18 19:57:06 $
+ * $Author: secretr $
 */
 
 //require_once(e_HANDLER.'admin_handler.php'); - autoloaded - see class2.php __autoload()
@@ -138,7 +138,9 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * $fields format  (string) $field_name => (array) $attributes
 		 * 
 		 * $field_name format:
-		 * 	'table_alias.field_name' (if JOIN support is needed) OR just 'field_name'
+		 * 	'table_alias_or_name.field_name.field_alias' (if JOIN support is needed) OR just 'field_name'
+		 * NOTE: Keep in mind the count of exploded data can be 1 or 3!!! This means if you wanna give alias
+		 * on main table field you can't omit the table (first key), alternative is just '.' e.g. '.field_name.field_alias'
 		 * 
 		 * $attributes format:
 		 * 	- title (string) Human readable field title, constant name will be accpeted as well (multi-language support
@@ -186,7 +188,8 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * - null -> read: n/a
 		 * 		  -> write: n/a
 		 * 
-		 * - user -> read: [optional] 'link' => true - create link to user profile, 'idField' => 'author_id' - tells to renderValue() where to search for user id (used when 'link' is true)
+		 * - user -> read: [optional] 'link' => true - create link to user profile, 'idField' => 'author_id' - tells to renderValue() where to search for user id (used when 'link' is true and current field is NOT ID field)
+		 * 				   'nameField' => 'comment_author_name' - tells to renderValue() where to search for user name (used when 'link' is true and current field is ID field)
 		 * 		  -> write: [optional] 'nameField' => 'comment_author_name' the name of a 'user_name' field; 'currentInit' - use currrent user if no data provided; 'current' - use always current user(editor); '__options' e_form::userpickup() options
 		 * 
 		 * - number -> read: (array) [optional] 'point' => '.', [optional] 'sep' => ' ', [optional] 'decimals' => 2, [optional] 'pre' => '&euro; ', [optional] 'post' => 'LAN_CURRENCY'
@@ -198,11 +201,16 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * - text -> read: (array) [optional] 'htmltruncate' => 100, [optional] 'truncate' => 100, [optional] 'pre' => '', [optional] 'post' => ' px'
 		 * 		  -> write: (array) [optional] 'pre' => '', [optional] 'post' => ' px', [optional] 'maxlength' => 50 (default - 255), [optional] '__options' => array(...) see e_form class description for __options format
 		 * 
-		 * - textarea 	-> read: (array) 'noparse' => '1' default 0 (disable toHTML text parsing), [optional] 'bb' => '1' (parse bbcode) default 0, [optional] 'parse' => '' modifiers passed to e_parse::toHTML() e.g. 'BODY', [optional] 'htmltruncate' => 100, [optional] 'truncate' => 100, [optional] 'expand' => '[more]' title for expand link, empty - no expand
+		 * - textarea 	-> read: (array) 'noparse' => '1' default 0 (disable toHTML text parsing), [optional] 'bb' => '1' (parse bbcode) default 0, 
+		 * 								[optional] 'parse' => '' modifiers passed to e_parse::toHTML() e.g. 'BODY', [optional] 'htmltruncate' => 100, 
+		 * 								[optional] 'truncate' => 100, [optional] 'expand' => '[more]' title for expand link, empty - no expand
 		 * 		  		-> write: (array) [optional] 'rows' => '' default 15, [optional] 'cols' => '' default 40, [optional] '__options' => array(...) see e_form class description for __options format
+		 * 								[optional] 'counter' => 0 number of max characters - has only visual effect, doesn't truncate the value (default - false) 
 		 * 
 		 * - bbarea -> read: same as textarea type
-		 * 		  	-> write: (array) [optional] 'pre' => '', [optional] 'post' => ' px', [optional] 'maxlength' => 50 (default - 0), [optional] 'size' => [optional] - medium, small, large - default is medium
+		 * 		  	-> write: (array) [optional] 'pre' => '', [optional] 'post' => ' px', [optional] 'maxlength' => 50 (default - 0), 
+		 * 				[optional] 'size' => [optional] - medium, small, large - default is medium,
+		 * 				[optional] 'counter' => 0 number of max characters - has only visual effect, doesn't truncate the value (default - false) 
 		 * 
 		 * - image -> read: [optional] 'title' => 'SOME_LAN' (default - LAN_PREVIEW), [optional] 'pre' => '{e_PLUGIN}myplug/images/'
 		 * 		   -> write: (array) [optional] 'label' => '', [optional] '__options' => array(...) see e_form::imagepicker() for allowed options
@@ -218,6 +226,12 @@ class plugin_release_admin_ui extends e_admin_ui
 		 * 
 		 * - method -> read: optional, passed to given method (the field name)
 		 * 			-> write: optional, passed to given method (the field name)
+		 * 
+		 * - hidden -> read: 'show' => 1|0 - show hidden value, 'empty' => 'something' - what to be shown if value is empty (only id 'show' is 1) 
+		 * 			-> write: same as readParms
+		 * 
+		 * - upload -> read: n/a
+		 * 			-> write: Under construction
 		 * 
 		 * Special attribute types:
 		 * - method (string) field name should be method from the current e_admin_form_ui class (or its extension). 

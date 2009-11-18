@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.85 $
- * $Date: 2009-11-18 14:46:25 $
+ * $Revision: 1.86 $
+ * $Date: 2009-11-18 19:57:07 $
  * $Author: secretr $
  *
 */
@@ -168,7 +168,6 @@ class e_form
 		if ($datestamp)
 		{
 		   $cal_attrib['value'] = is_numeric($datestamp) ? e107::getDateConvert()->convert_date($datestamp, 'input') : $datestamp; //date("d/m/Y H:i:s", $datestamp);
-		  // var_dump('date picker', $datestamp, $cal_attrib['value'], e107::getDateConvert()->toTime($cal_attrib['value']), e107::getDateConvert()->convert_date(e107::getDateConvert()->toTime($cal_attrib['value']), 'input'));
 		}
 		//JS manager to send JS/CSS to header if possible, if not - footer
 		e107::getJs()// FIXME - no CSS support yet!!! ->tryHeaderFile($cal->calendar_theme_file)
@@ -929,6 +928,13 @@ class e_form
 		
 		foreach ($fieldarray as $field => $data)
 		{
+			// shouldn't happen...
+			if(!isset($fieldvalues[$field]) && $data['alias'])
+			{
+				$fieldvalues[$data['alias']] = $fieldvalues[$data['field']];
+				$field = $data['alias'];
+			}
+			
 			//Not found
 			if((!varset($data['forced']) && !in_array($field, $currentlist)) || varset($data['nolist']))
 			{
@@ -954,6 +960,10 @@ class e_form
 				if(isset($data['readParms']['idField']))
 				{
 					$data['readParms']['__idval'] = $fieldvalues[$data['readParms']['idField']];
+				}
+				if(isset($data['readParms']['nameField']))
+				{
+					$data['readParms']['__nameval'] = $fieldvalues[$data['readParms']['nameField']];
 				}
 			}
 			$value = $this->renderValue($field, varset($fieldvalues[$field]), $data, varset($fieldvalues[$pid]));
@@ -1153,7 +1163,7 @@ class e_form
 					elseif($value && is_numeric($value))
 					{
 						$id = $value;
-						$ttl = vartrue($parms['__titleval']);
+						$ttl = vartrue($parms['__nameval']);
 					}
 				}
 				if($id && $ttl && is_numeric($id))
@@ -1514,7 +1524,11 @@ class e_form
 							
 				foreach($data['fields'] as $key => $att)
 				{
-					
+					// convert aliases - not supported in edit mod
+					if(!$model->has($key) && $att['alias'])
+					{
+						$key = $att['field']; 
+					}
 					$parms = vartrue($att['formparms'], array());
 					if(!is_array($parms)) parse_str($parms, $parms);
 					$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
@@ -1535,6 +1549,7 @@ class e_form
 							</tr>
 						";
 					}
+					//if($bckp) $model->remove($bckp);
 									
 				}
 		
