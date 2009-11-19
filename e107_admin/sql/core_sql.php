@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-11-18 10:05:53 $
+ * $Revision: 1.40 $
+ * $Date: 2009-11-19 12:35:33 $
  * $Author: e107coders $
 */
 
@@ -370,6 +370,7 @@ CREATE TABLE page (
   page_class varchar(250) NOT NULL default '',
   page_ip_restrict text NOT NULL,
   page_theme varchar(50) NOT NULL default '',
+  page_template varchar(50) NOT NULL default '',
   PRIMARY KEY  (page_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
