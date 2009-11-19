@@ -4,7 +4,7 @@
 |        e107 website system
 |        content_convert_class.php
 |
-|        ©Steve Dunstan 2001-2002
+|        (C)Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.21 $
-|		$Date: 2006-07-28 14:07:15 $
-|		$Author: lisa_ $
+|		$Revision: 1.22 $
+|		$Date: 2009-11-19 11:45:49 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -24,10 +24,8 @@ $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 $datequery		= " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_admin.php");
 
 require_once($plugindir."handlers/content_class.php");
 $aa = new content;

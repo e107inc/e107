@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |    e107 website system
 |
-|    ©Steve Dunstan 2001-2002
+|    (C)Steve Dunstan 2001-2002
 |    http://e107.org
 |    jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.8 $
-|    $Date: 2006-11-01 18:48:46 $
-|    $Author: lisa_ $
+|    $Revision: 1.9 $
+|    $Date: 2009-11-19 11:45:49 $
+|    $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,8 +34,7 @@ $eArrayStorage = new ArrayData();
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass;
 
-$lan_file = $plugindir."languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English.php");
+include_lan($plugindir."languages/".e_LANGUAGE.".php");
 
 $linkspage_pref = $lc -> getLinksPagePref();
 

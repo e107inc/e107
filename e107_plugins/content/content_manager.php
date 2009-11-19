@@ -4,7 +4,7 @@
 |        e107 website system
 |        /admin/review.php
 |
-|        ©Steve Dunstan 2001-2002
+|        (C)Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.26 $
-|		$Date: 2008-10-07 19:22:17 $
-|		$Author: e107steved $
+|		$Revision: 1.27 $
+|		$Date: 2009-11-19 11:45:49 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -38,11 +38,9 @@ $adb = new contentdb;
 require_once($plugindir."handlers/content_form_class.php");
 $aform = new contentform;
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php');
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content.php');
 
 $deltest = array_flip($_POST);
 

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2009-08-23 10:39:52 $
+|     $Revision: 1.24 $
+|     $Date: 2009-11-19 11:45:49 $
 |     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
@@ -21,14 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 global $tp;
 $gen = new convert;
 
-if (file_exists(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_newforumposts_menu.php"))
-{
-	include_once(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_newforumposts_menu.php");
-}
-else
-{
-	include_once(e_PLUGIN."forum/languages/English/lan_newforumposts_menu.php");
-}
+include_lan(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_newforumposts_menu.php");
 
 $max_age = varset($menu_pref['newforumposts_maxage'],0);
 $max_age = $max_age == 0 ? '' : "(t.thread_datestamp > ".intval(time()-$max_age*86400).") AND ";

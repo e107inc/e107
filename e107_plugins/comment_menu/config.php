@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,25 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-10-24 13:41:56 $
-|     $Author: mrpete $
+|     $Revision: 1.6 $
+|     $Date: 2009-11-19 11:45:50 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
 require_once("../../class2.php");
-require_once(e_HANDLER."userclass_class.php");
-	
-$lan_file = e_PLUGIN."comment_menu/languages/".e_LANGUAGE.".php";
-if (file_exists($lan_file)) {
-	require_once($lan_file);
-} else {
-	require_once(e_PLUGIN."comment_menu/languages/English.php");
-}
 if (!getperms("1")) {
 	header("location:".e_BASE."index.php");
 	 exit ;
 }
+
+require_once(e_HANDLER."userclass_class.php");
+	
+include_lan(e_PLUGIN."comment_menu/languages/".e_LANGUAGE.".php");
+
 require_once(e_ADMIN."auth.php");
 	
 if (isset($_POST['update_menu'])) {

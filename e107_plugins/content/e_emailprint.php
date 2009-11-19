@@ -1,4 +1,5 @@
 <?php
+/* $Id: e_emailprint.php,v 1.28 2009-11-19 11:45:49 marj_nl_fr Exp $ */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -13,8 +14,7 @@ function print_item($id)
 
 		require_once(e_PLUGIN."content/content_shortcodes.php");
 
-		$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
-		include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
+		include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
 
 		if(!is_object($sql)){ $sql = new db; }
 		$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_image, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ");

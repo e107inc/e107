@@ -4,7 +4,7 @@
 |        e107 website system
 |        /admin/review.php
 |
-|        ©Steve Dunstan 2001-2002
+|        (C)Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.25 $
-|		$Date: 2006-12-07 12:57:01 $
-|		$Author: mrpete $
+|		$Revision: 1.26 $
+|		$Date: 2009-11-19 11:45:49 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -41,8 +41,7 @@ $eArrayStorage = new ArrayData();
 $e_wysiwyg	= "content_text";
 global $tp;
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content.php');
 
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);

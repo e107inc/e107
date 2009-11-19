@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,24 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:53:09 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2009-11-19 11:45:50 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-require_once(e_HANDLER."userclass_class.php");
-	
-$lan_file = e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php";
-if (file_exists($lan_file)) {
-	require_once($lan_file);
-} else {
-	require_once(e_PLUGIN."newforumposts_main/languages/English.php");
-}
+
 if (!getperms("1")) {
 	header("location:".e_BASE."index.php");
 	 exit ;
 }
+require_once(e_HANDLER."userclass_class.php");
+	
+include_lan(e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php");
 require_once(e_ADMIN."auth.php");
 	
 if (isset($_POST['updatesettings'])) {

@@ -3,7 +3,7 @@
 +---------------------------------------------------------------+
 |       e107 website system
 |
-|       ©Steve Dunstan 2001-2002
+|       (C)Steve Dunstan 2001-2002
 |       http://e107.org
 |       jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2007-03-23 20:26:12 $
-|		$Author: lisa_ $
+|		$Revision: 1.9 $
+|		$Date: 2009-11-19 11:45:49 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -30,8 +30,7 @@ require_once($listplugindir."list_class.php");
 $rc = new listclass;
 
 //get language file
-$lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
-include(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
+include_lan($listplugindir."languages/".e_LANGUAGE.".php");
 
 //get all sections to use (and reload if new e_list.php files are added)
 $rc -> getSections();

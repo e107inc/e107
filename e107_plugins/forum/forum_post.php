@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2009-05-26 20:08:55 $
-|     $Author: e107steved $
+|     $Revision: 1.89 $
+|     $Date: 2009-11-19 11:45:49 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
 $e_wysiwyg = "post";
-$lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php';
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_post.php');
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
 
 if (IsSet($_POST['fjsubmit'])) {
 	header("location:".e_BASE.$PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$_POST['forumjump']);

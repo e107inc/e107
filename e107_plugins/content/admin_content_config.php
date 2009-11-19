@@ -4,7 +4,7 @@
 |        e107 website system
 |        /admin/review.php
 |
-|        ©Steve Dunstan 2001-2002
+|        (C)Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.64 $
-|		$Date: 2007-01-13 23:21:24 $
-|		$Author: lisa_ $
+|		$Revision: 1.65 $
+|		$Date: 2009-11-19 11:45:49 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -25,11 +25,9 @@ $e_sub_cat = 'content';
 $e_wysiwyg = "content_text,cat_text";
 $plugindir = e_PLUGIN."content/";
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php');
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content.php');
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");

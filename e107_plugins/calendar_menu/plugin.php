@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.22 $ - with mods to hopefully trigger upgrade to new version
-|     $Date: 2009-11-12 21:55:35 $
-|     $Author: e107steved $
+|     $Revision: 1.23 $ - with mods to hopefully trigger upgrade to new version
+|     $Date: 2009-11-19 11:45:49 $
+|     $Author: marj_nl_fr $
 |
 | 22.07.06 - Mods for V3.6 upgrade, including log directory
 | 02.08.06 - Support for category icon display added
@@ -28,8 +28,8 @@
 if (!defined('e107_INIT')) { exit; }
 
 // Plugin info -------------------------------------------------------------------------------------------------------
-$lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
-@require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
+include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
+
 $eplug_name = 'EC_ADLAN_1';
 $eplug_version = "3.6";
 $eplug_author = "jalist / cameron / McFly / Barry / Lisa_ / steved";

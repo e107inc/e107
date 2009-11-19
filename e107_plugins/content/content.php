@@ -4,7 +4,7 @@
 |        e107 website system
 |        /admin/review.php
 |
-|        ©Steve Dunstan 2001-2002
+|        (C)Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.115 $
-|		$Date: 2009-01-29 15:26:37 $
-|		$Author: lisa_ $
+|		$Revision: 1.116 $
+|		$Date: 2009-11-19 11:45:49 $
+|		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
 
@@ -33,8 +33,7 @@ require_once($plugindir."handlers/content_class.php");
 $aa = new content;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
-$lan_file = $plugindir."languages/".e_LANGUAGE."/lan_content.php";
-include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English/lan_content.php");
+include_lan($plugindir."languages/".e_LANGUAGE."/lan_content.php");
 
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,15 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/e_notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2007-09-06 07:23:37 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2009-11-19 11:45:49 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }   
 
-$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
 
 $config_category = CONTENT_NOTIFY_LAN_1;
 $config_events = array('content' => CONTENT_NOTIFY_LAN_2);

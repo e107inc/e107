@@ -1,11 +1,10 @@
 <?php
+/* $Id: e_help.php,v 1.2 2009-11-19 11:45:49 marj_nl_fr Exp $ */
 if (!defined('e107_INIT')) { exit; }
 
 global $plugindir;
 require_once($plugindir."handlers/content_defines.php");
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_help.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_help.php');
-
+include_lan($plugindir.'languages/'.e_LANGUAGE.'/lan_content_help.php');
 
 //$arrhide = array("creation", "submission", "paththeme", "general", "contentmanager", "menu", "recentpages", "catpages", "contentpages", "authorpage", "archivepage", "toppage", "scorepage");
 

@@ -3,7 +3,7 @@
 +---------------------------------------------------------------+
 |        e107 website system
 |
-|        ©Steve Dunstan 2001-2002
+|        (C)Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -14,8 +14,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
+include_lan(e_PLUGIN."pdf/languages/".e_LANGUAGE.".php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "PDF_PLUGIN_LAN_1";

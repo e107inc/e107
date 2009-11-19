@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2009-11-03 19:44:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.37 $
+|     $Date: 2009-11-19 11:45:48 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if (!getperms("D")) 
 {
 	header("location:".e_BASE."index.php");
-	exit;
+	exit();
 }
 
 $e_sub_cat = 'banner';
@@ -31,7 +31,7 @@ require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 
-//@FIXME mix up in banner language files
+//FIXME mix up in banner language files
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 include_lan(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
 

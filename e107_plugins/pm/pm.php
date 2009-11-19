@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,18 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2009-08-24 22:01:49 $
-|     $Author: bugrain $
+|     $Revision: 1.31 $
+|     $Date: 2009-11-19 11:45:49 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 
 $retrieve_prefs[] = 'pm_prefs';
 require_once("../../class2.php");
+
+include_lan(e_PLUGIN."pm/languages/".e_LANGUAGE.".php");
+
 require_once(e_PLUGIN."pm/pm_class.php");
 require_once(e_PLUGIN."pm/pm_func.php");
-$lan_file = e_PLUGIN."pm/languages/".e_LANGUAGE.".php";
-include_once(is_readable($lan_file) ? $lan_file : e_PLUGIN."pm/languages/English.php");
 
 define("ATTACHMENT_ICON", "<img src='".e_PLUGIN."pm/images/attach.png' alt='' />");
 

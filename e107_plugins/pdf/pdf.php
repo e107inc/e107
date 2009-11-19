@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2006-01-13 10:49:03 $
-|     $Author: lisa_ $
+|     $Revision: 1.9 $
+|     $Date: 2009-11-19 11:45:49 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -25,8 +25,7 @@ if ($qs[0] == "") {
 $source = $qs[0];
 $parms = $qs[1];
 
-$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
+include_lan(e_PLUGIN."pdf/languages/".e_LANGUAGE.".php");
 
 define('FPDF_FONTPATH', 'font/');
 require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class

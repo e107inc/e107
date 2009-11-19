@@ -1,12 +1,12 @@
 <?php
+/* $Id: content_preset.php,v 1.11 2009-11-19 11:45:50 marj_nl_fr Exp $ */
 require_once("../../../class2.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
-$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_admin.php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content_admin.php");
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php");
+include_lan(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_admin.php");
+
 $months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
 if(isset($_POST['addpreset'])){

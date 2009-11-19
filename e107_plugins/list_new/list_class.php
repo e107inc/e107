@@ -3,7 +3,7 @@
 +---------------------------------------------------------------+
 |       e107 website system
 |
-|       ©Steve Dunstan 2001-2002
+|       (C)Steve Dunstan 2001-2002
 |       http://e107.org
 |       jalist@e107.org
 |
@@ -11,12 +11,12 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2009-08-23 10:39:53 $
+|		$Revision: 1.20 $
+|		$Date: 2009-11-19 11:45:49 $
 |		$Author: marj_nl_fr $
 +---------------------------------------------------------------+
 */
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 
 global $sql, $rc, $list_pref, $sc_style, $tp, $list_shortcodes, $defaultarray;
 
@@ -30,8 +30,7 @@ $listplugindir = e_PLUGIN."list_new/";
 $defaultarray = array("news", "comment", "download", "members");
 
 //get language file
-$lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
+include_lan($listplugindir."languages/".e_LANGUAGE.".php");
 
 if (file_exists(THEME."list_template.php")) {
 	require_once(THEME."list_template.php");

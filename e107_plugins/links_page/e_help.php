@@ -1,8 +1,8 @@
 <?php
+/* $Id: e_help.php,v 1.2 2009-11-19 11:45:49 marj_nl_fr Exp $ */
 if (!defined('e107_INIT')) { exit; }
 
-$lan_file = $plugindir."languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English.php");
+include_lan($plugindir."languages/".e_LANGUAGE.".php");
 
 if(!e_QUERY){
 	$text = LAN_ADMIN_HELP_1;

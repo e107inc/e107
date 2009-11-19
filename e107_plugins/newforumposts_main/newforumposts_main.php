@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     (C)Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,18 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2008-07-28 20:15:57 $
-|     $Author: e107steved $
+|     $Revision: 1.28 $
+|     $Date: 2009-11-19 11:45:50 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 require_once(e_HANDLER."userclass_class.php");
 $query = ($pref['nfp_posts'] ? "thread_lastpost" : "thread_datestamp");
-$lan_file = e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php";
+include_lan(e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php");
+
 $path = e_PLUGIN."forum/";
-include_once((file_exists($lan_file) ? $lan_file : e_PLUGIN."newforumposts_main/languages/English.php"));
 global $sql, $ns;
 // get template ...
 
