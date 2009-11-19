@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.76 $
- * $Date: 2009-11-19 10:44:59 $
+ * $Revision: 1.77 $
+ * $Date: 2009-11-19 11:12:08 $
  * $Author: secretr $
 */
 
@@ -968,7 +968,7 @@ class e107
 	 */
 	public static function getCoreTemplate($id, $key = null, $override = true)
 	{
-		$reg_path = 'core/e107/templates'.$id.($override_path ? '/ext' : '');
+		$reg_path = 'core/e107/templates/'.$id.($override ? '/ext' : '');
 		$path = e107::coreTemplatePath($id, $override);
 		
 		return e107::_getTemplate($id, $key, $reg_path, $path);
@@ -1001,9 +1001,9 @@ class e107
 	 */
 	public static function getTemplate($plug_name, $id, $key = null, $override = true)
 	{
-		$reg_path = 'plugin/'.$plug_name.'/templates'.$id.($override_path ? '/ext' : '');
+		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
 		$path = e107::templatePath($plug_name, $id, $override);
-		
+
 		return e107::_getTemplate($id, $key, $reg_path, $path);
 	}
 	
@@ -1025,7 +1025,7 @@ class e107
 		
 		if(null === e107::getRegistry($regPath))
 		{
-			e107_include_once($path);
+			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
 			e107::setRegistry($regPath, (isset($$var) ? $$var : array()));
 		}
 		
