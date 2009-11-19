@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt) -->
+<!-- $Id: plugin.xml,v 1.1 2009-11-19 20:24:21 e107steved Exp $ -->
+
+<e107Plugin name="NLLAN_01" version="1.1" compatibility="0.8" installRequired="true">
+	<author name="e107 Inc, nlstart" url="http://e107.org" />
+	<description>NLLAN_02</description>
+	<folder>newsletter</folder>
+	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
+	<category>content</category>  
+	<languageFiles>
+		<file type='log' path='languages/--LAN--_admin_newsletter.php' />
+	</languageFiles>
+	<adminLinks>
+		<link url='admin_config.php' description='LAN_CONFIGURE' icon='images/nl_32.png' iconSmall='images/nl_16.png' primary='true' >NLLAN_03</link>	
+	</adminLinks>
+	<mainPrefs/>
+</e107Plugin>

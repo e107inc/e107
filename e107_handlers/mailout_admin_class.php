@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-11-19 20:24:21 $
+ * $Author: e107steved $
  *
 */
 
@@ -338,6 +338,8 @@ class mailoutAdminClass extends e107MailManager
 				return LAN_MAILOUT_213;
 			case MAIL_STATUS_CANCELLED :
 				return LAN_MAILOUT_218;
+			case MAIL_STATUS_PARTIAL :
+				return LAN_MAILOUT_219;
 			case MAIL_STATUS_FAILED :
 				return LAN_MAILOUT_212;
 			case MAIL_STATUS_PENDING :

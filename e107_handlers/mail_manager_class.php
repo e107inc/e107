@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-11-19 20:24:21 $
+ * $Author: e107steved $
 */
 
 /*
@@ -78,6 +78,7 @@ if (!defined('e107_INIT')) { exit; }
 define('MAIL_STATUS_SENT', 0);			// Mail sent. Email handler happy, but may have bounced (or may be yet to bounce)
 define('MAIL_STATUS_BOUNCED', 1);
 define('MAIL_STATUS_CANCELLED', 2);
+define('MAIL_STATUS_PARTIAL', 3);		// A run which was abandoned - errors, out of time etc
 define('MAIL_STATUS_FAILED', 5);		// Failure on initial send - rejected by selected email handler
 										// This must be the numerically highest 'processing complete' code
 define('MAIL_STATUS_PENDING', 10);		// Mail which is in the sending list (even if outside valid sending window)
@@ -750,7 +751,7 @@ class e107MailManager
 	/**
 	 * Delete an email from the DB, including (potential) recipients
 	 * @param $mailID - number for email (assumed to be integral)
-	 * @param $actions - allows selection of whic DB to delete from
+	 * @param $actions - allows selection of which DB to delete from
 	 *
 	 * @return FALSE on code error. Array of results on success.
 	 */
