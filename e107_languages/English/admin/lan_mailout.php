@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-18 01:05:12 $
- * $Author: e107coders $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-19 20:24:21 $
+ * $Author: e107steved $
  *
 */
 define('LAN_MAILOUT_01','From Name');
@@ -235,7 +235,7 @@ define('LAN_MAILOUT_215', 'Saved');
 define('LAN_MAILOUT_216', 'Code error');
 define('LAN_MAILOUT_217', 'Held');
 define('LAN_MAILOUT_218', 'Cancelled');
-define('LAN_MAILOUT_219', '');
+define('LAN_MAILOUT_219', 'Partial');
 
 // General messages continued
 define('LAN_MAILOUT_220', 'Email ID --ID-- cancelled');

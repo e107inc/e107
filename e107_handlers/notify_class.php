@@ -9,9 +9,9 @@
 * Forum plugin notify configuration
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-* $Revision: 1.8 $
-* $Date: 2009-11-18 01:04:43 $
-* $Author: e107coders $
+* $Revision: 1.9 $
+* $Date: 2009-11-19 20:24:21 $
+* $Author: e107steved $
 *
 */
 
@@ -40,40 +40,127 @@ class notify
 		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
 	}
 
+
+
+	/**
+	 * Send an email notification following an event.
+	 *
+	 * For up to a (hard-coded) number of recipients, the mail is sent immediately.
+	 * Otherwise its added to the queue
+	 * 
+	 * @param string $id - identifies event actions
+	 * @param string $subject - subject for email
+	 * @param string $message - email message body
+	 * @return none
+	 */
+	// TODO: handle 'everyone except' clauses (email address filter done)
 	function send($id, $subject, $message)
 	{
-		global $sql, $tp;
-		e107_require_once(e_HANDLER.'mail.php');
-		$subject = SITENAME.': '.$subject;
-		if ($this->notify_prefs['event'][$id]['class'] == e_UC_MAINADMIN)
+		$e107 = e107::getInstance();
+
+		$subject = $e107->tp->toEmail(SITENAME.': '.$subject);
+		$message = $e107->tp->toEmail($message);
+		$emailFilter = '';
+		$notifyTarget = $this->notify_prefs['event'][$id]['class'];
+		if ($notifyTarget == '-email')
 		{
-			sendemail(SITEADMINEMAIL, $tp->toEmail($subject), $tp->toEmail($message));
+			$emailFilter = $this->notify_prefs['event'][$id]['email'];
 		}
-		elseif (is_numeric($this -> notify_prefs['event'][$id]['class']))
+		if (is_numeric($this -> notify_prefs['event'][$id]['class']))
 		{
-			if ($this->notify_prefs['event'][$id]['class'] == e_UC_ADMIN)
+			switch ($notifyTarget)
 			{
-				$sql->db_Select('user', 'user_email', "user_admin = 1 AND user_ban = 0");
+				case e_UC_MAINADMIN :
+					$qry = "`user_admin` = 1 AND `user_perms` = '0' AND `user_ban` = 0";
+					break;
+				case e_UC_ADMIN :
+					$qry = "`user_admin` = 1 AND `user_ban` = 0";
+					break;
+				case e_UC_MEMBER :
+					$qry = "`user_ban` = 0";
+					break;
+				default :
+					$qry = "user_ban = 0 AND user_class REGEXP '(^|,)(".$this->notify_prefs['event'][$id]['class'].")(,|$)'";
+					break;
 			}
-			elseif ($this->notify_prefs['event'][$id]['class'] == e_UC_MEMBER)
+			$qry = 'SELECT user_id,user_name,user_email FROM `#user` WHERE '.$qry;
+			if (FALSE !== ($count = $e107->sql->db_Select_gen($qry)))
 			{
-				$sql->db_Select('user', 'user_email', 'user_ban = 0');
-			}
-			else
-			{
-				$sql->db_Select('user', 'user_email', "user_ban = 0 AND user_class REGEXP '(^|,)(".$this->notify_prefs['event'][$id]['class'].")(,|$)'");
-			}
-			while ($email = $sql->db_Fetch())
-			{
-				sendemail($email['user_email'], $tp->toEmail($subject), $tp->toEmail($message));
+				if ($count <= 5)
+				{	// Arbitrary number below which we send emails immediately
+					e107_require_once(e_HANDLER.'mail.php');
+					while ($email = $e107->sql->db_Fetch())
+					{
+						if ($email['user_email'] != $emailFilter)
+						{
+							sendemail($email['user_email'], $subject, $message, $email['user_name']);
+						}
+					}
+				}
+				else
+				{	// Otherwise add to mailout queue
+					require(e_HANDLER.'mail_manager_class.php');
+					$mailer = new e107MailManager;
+
+
+					// Start by creating the mail body
+					$mailData = array(
+						'mail_content_status' => MAIL_STATUS_TEMP,
+						'mail_create_app' => 'notify',
+						'mail_title' => 'NOTIFY',
+						'mail_subject' => $subject,
+						'mail_sender_email' => $pref['siteadminemail'],
+						'mail_sender_name'	=> $pref['siteadmin'],
+						'mail_send_style'	=> 'textonly',
+						'mail_body' => $message
+					);
+					$result = $mailer->saveEmail($mailData, TRUE);
+					if (is_numeric($result))
+					{
+						$mailMainID = $mailData['mail_source_id'] = $result;
+					}
+					else
+					{
+						// TODO: Handle error
+						return;			// Probably nothing else we can do
+					}
+					$mailer->mailInitCounters($mailMainID);			// Initialise counters for emails added
+
+					// Now add email addresses to the list
+					while ($row = $e107->sql->db_Fetch(MYSQL_ASSOC))
+					{
+						if ($row['user_email'] != $emailFilter)
+						{
+							$uTarget = array('mail_recipient_id' => $row['user_id'],
+											 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
+											 'mail_recipient_email' => $row['user_email']
+											 );	
+							$result = $mailer->mailAddNoDup($mailMainID, $uTarget, MAIL_STATUS_TEMP);
+						}
+					}
+					$mailer->mailUpdateCounters($mailMainID);			// Update the counters
+					$counters = $mailer->mailRetrieveCounters($mailMainID);		// Retrieve the counters
+					if ($counters['add'] == 0)
+					{
+						$mailer->deleteEmail($mailMainID);			// Probably a fault, but precautionary - delete email 
+					}
+					else
+					{
+						$mailer->activateEmail($mailMainID, FALSE);					// Actually mark the email for sending
+					}
+				}
+				$e107->admin_log->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 			}
 		}
-		elseif ($this->notify_prefs['event'][$id]['class'] == 'email')
-		{
-			sendemail($this->notify_prefs['event'][$id]['email'], $tp->toEmail($subject), $tp->toEmail($message));
+		elseif ($notifyTarget == 'email')
+		{	// Single email address - that can always go immediately
+			e107_require_once(e_HANDLER.'mail.php');
+			sendemail($this->notify_prefs['event'][$id]['email'], $subject, $message);
 		}
 	}
 }
+
+
 
 
 //DEPRECATED, BC, call the method only when needed, $e107->notify caught by __get()
@@ -145,16 +232,20 @@ function notify_subnews($data)
 
 function notify_newspost($data)
 {
-	global $nt;
-	$message = '<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended'];
-	$nt->send('newspost', $data['news_title'], $message);
+	$message = '<b>'.$data['news_title'].'</b>';
+	if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
+	if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
+	if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
+	e107::getNotify()->send('newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
 }
 
 function notify_newsupd($data)
 {
-	global $nt;
-	$message = '<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended'];
-	$nt->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], $message);
+	$message = '<b>'.$data['news_title'].'</b>';
+	if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
+	if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
+	if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
+	e107::getNotify()->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
 }
 
 function notify_newsdel($data)

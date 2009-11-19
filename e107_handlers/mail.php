@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-11-19 10:07:32 $
- * $Author: e107coders $
+ * $Revision: 1.19 $
+ * $Date: 2009-11-19 20:24:21 $
+ * $Author: e107steved $
 */
 
 /*
@@ -155,6 +155,7 @@ class e107Email extends PHPMailer
 	private $pause_amount = 10;			// Number of emails to send before pausing/resetting (or closing if SMTPkeepAlive set)
 	private $pause_time = 1;			// Time to pause after sending a block of emails
 
+	public	$legacyBody = FALSE;		// TRUE enables legacy conversion of plain text body to HTML in HTML emails
 
 	/**
 	 * Constructor sets up all the global options, and sensible defaults - it should be the only place the prefs are accessed
@@ -450,11 +451,21 @@ class e107Email extends PHPMailer
 				$message = 	"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n
 				<html xmlns='http://www.w3.org/1999/xhtml' >\n".$message;
 			}
+			if ($this->legacyBody && !preg_match('/<(font|br|a|img|b)/i', $message)) // Assume html if it includes one of these tags
+			{	// Otherwise assume its a plain text message which needs some conversion to render in HTML
+				$message = htmlspecialchars($message);
+				$message = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $message);
+				$message = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', $message);
+				$message = preg_replace('/([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i', '<a href="mailto:\\1">\\1</a>', $message);
+				$message = str_replace("\r\n","\n",$message);		// Handle alternative newline characters
+				$message = str_replace("\n\r","\n",$message);		// Handle alternative newline characters
+				$message = str_replace("\r","\n",$message);			// Handle alternative newline characters
+				$message = str_replace("\n", "<br />\n", $message);
+			}
 			$this->MsgHTML($message);		// Theoretically this should do everything, including handling of inline images.
 		}
 		else
-		{
-	// generate the plain text part
+		{	// generate the plain text as the sole part of the email
 			if (defined('MAIL_DEBUG')) echo "Generating plain text email<br />";
 			if (strpos($message,'</style>') !== FALSE)
 			{
@@ -471,75 +482,10 @@ class e107Email extends PHPMailer
 			// TODO: strip bbcodes here
 
 			$this->Body = $text;
+			$this->AltBody = '';		// Single part email
 		}
 	}
 
- 
-	// Legacy way of creating an HTML and a text part - as used in 0.7
-	// $want_HTML= 1 uses default setting for HTML part. Set TRUE to enable, FALSE to disable
-	function makeBodyLegacy($message,$want_HTML = 1, $add_HTML_header = FALSE)
-	{
-		switch (varset($this->general_opts['textonly'],'off'))
-		{
-			case 'pref' :		// Disable HTML as default
-				if ($want_HTML == 1) $want_HTML = FALSE;
-				break;
-			case 'force' :	// Always disable HTML
-				$want_HTML = FALSE;
-				break;
-		}
-
-		if ($want_HTML)
-		{
-			if (preg_match('/<(font|br|a|img|b)/i', $message)) 
-			{
-				$Html = $message; // Assume html if it includes one of these tags
-			} 
-			else 
-			{
-				$Html = htmlspecialchars($message);
-				$Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
-				$Html = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', $Html);
-				$Html = preg_replace('/([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i', '<a href="mailto:\\1">\\1</a>', $Html);
-				$Html = str_replace("\r\n","\n",$Html);		// Handle alternative newline characters
-				$Html = str_replace("\n\r","\n",$Html);		// Handle alternative newline characters
-				$Html = str_replace("\r","\n",$Html);		// Handle alternative newline characters
-				$Html = str_replace("\n", "<br />\n", $Html);
-			}
-			if ($add_HTML_header)
-			{
-				$this->Body = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n
-				<html xmlns='http://www.w3.org/1999/xhtml' >\n".$Html;
-			}
-			else
-			{
-				$this->Body = $Html;
-			}
-		}
-
-		// Now generate the plain text part - always have one
-		if (strpos($message,"</style>") !== FALSE)
-		{
-			$text = strstr($message,"</style>");
-		}
-		else
-		{
-			$text = $message;
-		}
-
-		$text = str_replace("<br />", "\n", $text);
-		$text = strip_tags(str_replace("<br>", "\n", $text));
-
-		if ($want_HTML)
-		{
-		  $this->AltBody = $text;
-		  $this->IsHTML = TRUE;
-		}
-		else
-		{
-		  $this->Body = $text;
-		}
-	}  
   
 
 	// Add attachments - either a single one as a string, or an array  
@@ -859,8 +805,8 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 
 	if (varsettrue($mailheader_e107id)) $mail->AddCustomHeader("X-e107-id: {$mailheader_e107id}");
 
-	//Legacy required - \n must be converted to <br /> in HTML version of email. 
-	$mail->makeBodyLegacy($message);				// Add body, with conversion if required
+	$mail->legacyBody = TRUE;				// Need to handle plain text email conversion to HTML
+	$mail->makeBody($message);				// Add body, with conversion if required
 
 	if($Cc) $mail->AddAddressList('cc', $Cc);
 
