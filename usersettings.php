@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.115 $
-|     $Date: 2009-11-03 20:22:22 $
-|     $Author: secretr $
+|     $Revision: 1.116 $
+|     $Date: 2009-11-19 20:32:37 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -379,26 +379,25 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 			}
 		}
 
-		foreach($_POST['ue'] as $key => $val)
+		foreach ($extList as $key => $settings)
 		{
-			if (isset($extList[$key]))
-			{	// Only allow valid keys
-				$err = $ue->user_extended_validate_entry($val,$extList[$key]);
-				if($err === TRUE && !$_uid)
-				{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-					$error .= LAN_SIGNUP_6.($tp->toHtml($extList[$key]['user_extended_struct_text'],FALSE,"defs"))." ".LAN_SIGNUP_7."\\n";
-				}
-				elseif ($err)
-				{	// Specific error message returned - usually regex fail
-					$error .= $err."\\n";
-					$err = TRUE;
-				}
-				if(!$err)
-				{
-					$val = $tp->toDB($val);
-					$ue_fields .= ($ue_fields) ? ", " : "";
-					$ue_fields .= $key."='".$val."'";
-				}
+			$val = '';
+			if (isset($_POST['ue'][$key])) $val = $_POST['ue'][$key]; 
+			$err = $ue->user_extended_validate_entry($val,$settings);
+			if($err === TRUE && !$_uid)
+			{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+				$error .= LAN_SIGNUP_6.($tp->toHtml($settings['user_extended_struct_text'],FALSE,'defs')).' '.LAN_SIGNUP_7."\\n";
+			}
+			elseif ($err)
+			{	// Specific error message returned - usually regex fail
+				$error .= $err."\\n";
+				$err = TRUE;
+			}
+			if(!$err)
+			{
+				$val = $tp->toDB($val);
+				$ue_fields .= ($ue_fields) ? ", " : "";
+				$ue_fields .= $key."='".$val."'";
 			}
 		}
 
