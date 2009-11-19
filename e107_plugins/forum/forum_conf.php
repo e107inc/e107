@@ -9,16 +9,16 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_conf.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-19 09:46:14 $
+ * $Author: marj_nl_fr $
  */
 
 require_once('../../class2.php');
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
-include_lan(e_PLUGIN.'forum/languages/English/lan_forum_conf.php');
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
 
 $e_sub_cat = 'forum';
 
