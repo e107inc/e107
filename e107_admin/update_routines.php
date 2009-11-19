@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2009-11-18 01:04:26 $
+|     $Revision: 1.61 $
+|     $Date: 2009-11-19 10:07:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -274,6 +274,23 @@ function update_706_to_800($type='')
 								'links_page' => 'links_page',
 								'poll' => 'polls'
 								);
+								
+	$setCorePrefs = array( //modified prefs during upgrade. 
+		'adminstyle' => 'infopanel',
+		'admintheme' => 'jayya'
+	);
+	
+
+	
+	
+	
+	$do_save = TRUE;	
+	
+	foreach($setCorePrefs as $k=>$v)
+	{
+		$pref[$k] = $v;		
+	}
+	
 		
 	// List of changed menu locations. 						
 	$changeMenuPaths = array(
@@ -307,6 +324,22 @@ function update_706_to_800($type='')
 	$updateMessages = array();
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
+
+
+
+	// Check that custompages have been imported from current theme.php file
+	if(!varset($pref['sitetheme_custompages']))
+	{
+		$th = e107::getSingleton('themeHandler');
+		$tmp = $th->getThemeInfo($pref['sitetheme']);
+		if(is_array($tmp['custompages']))
+		{
+			if ($just_check) return update_needed();
+			$pref['sitetheme_custompages'] = $tmp['custompages'];
+			$do_save = TRUE;
+		}
+	}
+
 
 
 	// Check notify prefs

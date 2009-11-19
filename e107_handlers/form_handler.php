@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.86 $
- * $Date: 2009-11-18 19:57:07 $
- * $Author: secretr $
+ * $Revision: 1.87 $
+ * $Date: 2009-11-19 10:07:32 $
+ * $Author: e107coders $
  *
 */
 
@@ -118,6 +118,7 @@ class e_form
 	}
 	
 	// FIXME - better GUI, {IMAGESELECTOR} rewrite, flexibility, thumbnails, tooltip image preivew, etc.
+	//FIXME - use the media-manager as an image selector. 
 	function imagepicker($name, $default, $label = '', $sc_parameters = '')
 	{
 		if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
