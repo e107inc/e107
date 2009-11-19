@@ -9,22 +9,22 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/newforumposts_menu_config.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-11-19 09:52:35 $
+ * $Author: marj_nl_fr $
  */
 
 $eplug_admin = TRUE;
-require_once("../../class2.php");
-if (!getperms("1")) {
-	header("location:".e_BASE."index.php");
-	 exit ;
+require_once('../../class2.php');
+if (!getperms('1'))
+{
+	header('location:'.e_BASE.'index.php');
+	 exit();
 }
-require_once(e_ADMIN."auth.php");
+require_once(e_ADMIN.'auth.php');
 	
-$lan_file = e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_newforumposts_menu.php";
-require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."forum/languages/English/lan_newforumposts_menu.php");
-	
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
+
 if (isset($_POST['update_menu'])) {
 	while (list($key, $value) = each($_POST)) {
 		if ($value != NFP_9) {

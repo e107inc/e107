@@ -9,15 +9,14 @@
  * Forum Posting
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_post.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision: 1.41 $
+ * $Date: 2009-11-19 09:52:35 $
+ * $Author: marj_nl_fr $
 */
 
 require_once('../../class2.php');
 
-$lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php';
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_post.php');
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php');
 
 if (isset($_POST['fjsubmit']))
 {
