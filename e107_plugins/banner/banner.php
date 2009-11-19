@@ -9,8 +9,8 @@
  * 
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/banner.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-09-18 22:20:39 $
+ * $Revision: 1.3 $
+ * $Date: 2009-11-19 13:46:29 $
  * $Author: e107coders $
  */
 
@@ -24,7 +24,7 @@ if (!e107::isInstalled('banner'))
 	header("location:".e_BASE."index.php"); 
 }
 
-e107::getLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php");
+e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php");
 
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;

@@ -1,4 +1,4 @@
-// $Id: img.bb,v 1.13 2009-09-05 08:23:55 e107steved Exp $
+// $Id: img.bb,v 1.14 2009-11-19 13:46:18 e107coders Exp $
 
 // General purpose image bbcode. As well as the obvious insertion of a picture:
 // 	a) if filname begins with 'th_' or 'thumb_', creates link to main image opening in new window
@@ -21,8 +21,8 @@ $replace = array('&#039;', e_IMAGE_ABS, e_FILE_ABS, e_IMAGE_ABS, e_FILE_ABS);
 $replaceInt = array('&#039;', e_IMAGE, e_FILE, e_IMAGE, e_FILE);
 $intName = str_replace($search, $replaceInt, $code_text);			// Server-relative file names
 unset($imgParms);
-//$imgParms['class']="bbcode";  
-$imgParms['class']='floatnone';		// This will be overridden if a new class is specified
+$imgParms['class']="bbcode floatnone";  //  This will be overridden if a new class is specified
+
 $imgParms['alt']='';
 
 $code_text = str_replace($search, $replace, $code_text);

@@ -9,8 +9,8 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.85 $
-* $Date: 2009-11-18 01:04:43 $
+* $Revision: 1.86 $
+* $Date: 2009-11-19 13:46:24 $
 * $Author: e107coders $
 *
 */
@@ -1500,6 +1500,7 @@ class e_parse
 	 */
 	public function replaceConstants($text, $mode = '', $all = FALSE)
 	{
+			
 		if($mode != "")
 		{
 			$e107 = e107::getInstance();
@@ -1584,7 +1585,7 @@ class e_parse
 					$replace_absolute[] = '';
 				}
 				$search[] = "{USERID}";
-			}
+			}	
 
 			$replace = ((string)$mode == "full" || (string)$mode=='abs' ) ? $replace_absolute : $replace_relative;
 			return str_replace($search,$replace,$text);
@@ -1598,6 +1599,12 @@ class e_parse
 		{
 			//if not already parsed by doReplace
 			$text = str_replace(array('{THEME}', '{THEME_ABS}'), '', $text);
+		}
+		else
+		{
+			$srch = array('{THEME}', '{THEME_ABS}');
+			$repl = array(THEME, THEME_ABS);
+			$text = str_replace($srch, $repl, $text);	
 		}
 
 		return $text;
