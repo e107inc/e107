@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_auth/ldap_conf.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-10-18 15:24:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2009-11-19 15:52:22 $
+|     $Author: marj_nl_fr $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = true;
 require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
-include_lan("languages/".e_LANGUAGE."/lan_ldap_auth.php");
+include_lan(e_PLUGIN."alt_auth/languages/".e_LANGUAGE."/lan_ldap_auth.php");
 define("ALT_AUTH_ACTION", "ldap");
 require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
 

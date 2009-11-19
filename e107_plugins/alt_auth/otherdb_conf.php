@@ -15,7 +15,7 @@ $eplug_admin = true;
 require_once("../../class2.php");
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
-include_lan("languages/".e_LANGUAGE."/lan_otherdb_auth.php");
+include_lan(e_PLUGIN."alt_auth/languages/".e_LANGUAGE."/lan_otherdb_auth.php");
 define("ALT_AUTH_ACTION", "otherdb");
 require_once(e_PLUGIN."alt_auth/alt_auth_adminmenu.php");
 
