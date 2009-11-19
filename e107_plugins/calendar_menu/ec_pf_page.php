@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision: 1.6 $
+ * $Date: 2009-11-19 10:09:58 $
+ * $Author: marj_nl_fr $
  */
 /*
 |
@@ -307,31 +307,46 @@ else
   $cal_text.= EC_LAN_148;
 }
 
-
-switch ($ec_output_type)
+switch($ec_output_type)
 {
-  case 'display':
-   $ns->tablerender(EC_LAN_80, $cal_text, 'ec_pf_page');
-   require_once(FOOTERF);
-   break;
-  case 'print' :
-    echo $cal_text;
+	case 'display':
+		$ns->tablerender(EC_LAN_80, $cal_text, 'ec_pf_page');
+		require_once (FOOTERF);
 	break;
-  case 'pdf' :
-	$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
-	include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
-	define('FPDF_FONTPATH', 'font/');
-	require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class
-	require_once(e_PLUGIN."pdf/e107pdf.php");	//require the e107pdf class
-	if ($ec_pdf_options == "")
-	  $pdf = new e107PDF();
-	else
-	  $pdf = new e107PDF($ec_pdf_options);
-//	$text = array($text, $creator, $author, $title, $subject, $keywords, $url);
-	$text = array($cal_text,'', '', EC_LAN_163,'','',e_SELF.e_QUERY);
-	$pdf->makePDF($text);
+	
+	case 'print':
+		echo $cal_text;
 	break;
+	
+	case 'pdf':
+		//TODO use a better way to pass info to pdf
+		include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'.php');
+		define('FPDF_FONTPATH', 'font/');
+		//require the ufpdf class
+		require_once (e_PLUGIN.'pdf/ufpdf.php');
+		//require the e107pdf class
+		require_once (e_PLUGIN.'pdf/e107pdf.php');
+		if('' == $ec_pdf_options)
+		{
+			$pdf = new e107PDF();
+		}
+		else
+		{
+			$pdf = new e107PDF($ec_pdf_options);
+		}
+		//	$text = array($text, $creator, $author, $title, $subject, $keywords, $url);
+		$text = array($cal_text,
+			 '',
+			 '',
+			 EC_LAN_163,
+			 '',
+			 '',
+			 e_SELF.e_QUERY);
+		$pdf->makePDF($text);
+	break;
+
 }
+
 
 
 // We're assuming $date_string is a string of digits
