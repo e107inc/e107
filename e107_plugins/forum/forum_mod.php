@@ -9,13 +9,13 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_mod.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-19 09:46:14 $
+ * $Author: marj_nl_fr $
  */
 
-if (!defined('e107_INIT')) { exit; }
-include_lan(e_PLUGIN.'forum/languages/English/lan_forum_admin.php');
+if (!defined('e107_INIT')) { exit(); }
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
 
 function forum_thread_moderate($p)
 {
