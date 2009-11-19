@@ -9,9 +9,9 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.18 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.19 $
+ * $Date: 2009-11-19 20:36:55 $
+ * $Author: e107steved $
  *
 */
 
@@ -362,19 +362,19 @@ class UserHandler
 	// Return false if invalid address. Otherwise returns a set of values to check
 	function make_email_query($email, $fieldname = 'banlist_ip')
 	{
-	  global $tp;
-	  $tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
-	  if ($tmp == '') return FALSE;
-	  if (strpos($tmp,'.') === FALSE) return FALSE;
-	  $em = array_reverse(explode('.',$tmp));
-	  $line = '';
-	  $out = array();
-	  foreach ($em as $e)
-	  {
-		$line = '.'.$e.$line;
-		$out[] = '`'.$fieldname."`='*{$line}'";
-	  }
-	  return implode(' OR ',$out);
+		global $tp;
+		$tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
+		if ($tmp == '') return FALSE;
+		if (strpos($tmp,'.') === FALSE) return FALSE;
+		$em = array_reverse(explode('.',$tmp));
+		$line = '';
+		$out = array('*@'.$tmp);		// First element looks for domain as email address
+		foreach ($em as $e)
+		{
+			$line = '.'.$e.$line;
+			$out[] = '`'.$fieldname."`='*{$line}'";
+		}
+		return implode(' OR ',$out);
 	}
 
 
