@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/newforumposts_menu.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision: 1.11 $
+ * $Date: 2009-11-19 09:37:13 $
+ * $Author: marj_nl_fr $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -19,7 +19,7 @@ if (!defined('e107_INIT')) { exit; }
 $e107 = e107::getInstance();
 $gen = new convert;
 
-include_lan(e_PLUGIN.'forum/languages/English/lan_newforumposts_menu.php');
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
 include_once(e_PLUGIN.'forum/forum_class.php');
 
 $max_age = varset($menu_pref['newforumposts_maxage'], 0);
