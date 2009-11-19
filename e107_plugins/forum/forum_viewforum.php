@@ -9,14 +9,14 @@
 * View specific forums
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewforum.php,v $
-* $Revision: 1.15 $
-* $Date: 2009-11-18 01:49:18 $
+* $Revision: 1.16 $
+* $Date: 2009-11-19 15:31:59 $
 * $Author: marj_nl_fr $
 *
 */
 
 require_once('../../class2.php');
-include_lan(e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
+include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
 
 if (isset($_POST['fjsubmit']))
 {

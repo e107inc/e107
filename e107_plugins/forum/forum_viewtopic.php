@@ -9,9 +9,9 @@
  * Forum View Topic
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/forum/forum_viewtopic.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-19 15:31:59 $
+ * $Author: marj_nl_fr $
  *
 */
 
@@ -32,9 +32,9 @@ if (!e_QUERY)
 	exit;
 }
 
-include_lan(e_PLUGIN . 'forum/languages/English/lan_forum_viewtopic.php');
+include_lan(e_PLUGIN . 'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php');
 include_once (e_PLUGIN . 'forum/forum_class.php');
-include_lan(e_PLUGIN . 'forum/templates/forum_icons_template.php');
+include_once(e_PLUGIN . 'forum/templates/forum_icons_template.php');
 
 $forum = new e107forum;
 $thread = new e107ForumThread;
