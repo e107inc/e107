@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/banner/banner_menu.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:22 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-11-19 22:02:19 $
+ * $Author: marj_nl_fr $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -27,66 +27,67 @@ To define your own banner to use here ...
 3. Save file
 */
 
-e107::getLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_menu_banner.php");
-global $THEMES_DIRECTORY;
-if (file_exists(THEME."banner_template.php")) 
+include_lan(e_PLUGIN."banner/languages/".e_LANGUAGE."_menu_banner.php");
+
+if(file_exists(THEME."banner_template.php"))
 {
-  require_once(THEME."banner_template.php");
-} 
-else 
+	require_once (THEME."banner_template.php");
+}
+else
 {
-  require_once(e_BASE.$THEMES_DIRECTORY."templates/banner_template.php");
+	require_once (e_THEME."templates/banner_template.php");
 }
 
 if(isset($campaign))
 {
-  $parm = $campaign;
-  $bannersccode = file_get_contents(e_FILE."shortcode/banner.sc");
-  $BANNER = eval($bannersccode);
-  $txt = $BANNER_MENU_START;
-  $txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
-  $txt .= $BANNER_MENU_END;
-	
-}
-else
-{
-  if (isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign'])
-  {
-	if(strstr($menu_pref['banner_campaign'], "|"))
-	{
-	  $campaignlist = explode("|", $menu_pref['banner_campaign']);
-	  $amount = ($menu_pref['banner_amount']<1 ? '1' : $menu_pref['banner_amount']);
-	  $amount = ($amount > count($campaignlist) ? count($campaignlist) : $amount);
-	  $keys = array_rand($campaignlist, $amount);
-	  $parms = array();
-	  foreach($keys as $k=>$v)
-	  {
-		$parms[] = $campaignlist[$v];
-	  }
-	}
-	else
-	{
-	  $parms[] = $menu_pref['banner_campaign'];
-	}
-  }
-
-  $txt = $BANNER_MENU_START;
-  foreach($parms as $parm)
-  {
+	$parm = $campaign;
 	$bannersccode = file_get_contents(e_FILE."shortcode/banner.sc");
 	$BANNER = eval($bannersccode);
+	$txt = $BANNER_MENU_START;
 	$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
-  }
-  $txt .= $BANNER_MENU_END;
-}
+	$txt .= $BANNER_MENU_END;
 
-if (isset($menu_pref['banner_rendertype']) && $menu_pref['banner_rendertype'] == 2)
-{
-  $ns->tablerender($menu_pref['banner_caption'], $txt);
 }
 else
 {
-  echo $txt;
+	if(isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign'])
+	{
+		if(strstr($menu_pref['banner_campaign'], "|"))
+		{
+			$campaignlist = explode("|", $menu_pref['banner_campaign']);
+			$amount = ($menu_pref['banner_amount'] < 1 ? '1' : $menu_pref['banner_amount']);
+			$amount = ($amount > count($campaignlist) ? count($campaignlist) : $amount);
+			$keys = array_rand($campaignlist, $amount);
+			$parms = array();
+			foreach ($keys as $k=>$v)
+			{
+				$parms[] = $campaignlist[$v];
+			}
+		}
+		else
+		{
+			$parms[] = $menu_pref['banner_campaign'];
+		}
+	}
+	
+	$txt = $BANNER_MENU_START;
+	foreach ($parms as $parm)
+	{
+		$bannersccode = file_get_contents(e_FILE."shortcode/banner.sc");
+		$BANNER = eval($bannersccode);
+		$txt .= preg_replace("/\{(.*?)\}/e", '$\1', $BANNER_MENU);
+	}
+	$txt .= $BANNER_MENU_END;
 }
+
+if(isset($menu_pref['banner_rendertype']) && $menu_pref['banner_rendertype'] == 2)
+{
+	$ns->tablerender($menu_pref['banner_caption'], $txt);
+}
+else
+{
+	echo $txt;
+}
+
 
 ?>
