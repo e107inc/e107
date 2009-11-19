@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.134 $
-|     $Date: 2009-11-01 21:30:33 $
+|     $Revision: 1.135 $
+|     $Date: 2009-11-19 20:37:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -545,7 +545,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
   if (strpos($tmp,'.') === FALSE) return FALSE;
   $em = array_reverse(explode('.',$tmp));
   $line = '';
-  $out = array();
+  $out = array('*@'.$tmp);		// First element looks for domain as email address
   foreach ($em as $e)
   {
     $line = '.'.$e.$line;
