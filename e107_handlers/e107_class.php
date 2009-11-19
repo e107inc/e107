@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.75 $
- * $Date: 2009-11-19 10:07:31 $
- * $Author: e107coders $
+ * $Revision: 1.76 $
+ * $Date: 2009-11-19 10:44:59 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -969,7 +969,7 @@ class e107
 	public static function getCoreTemplate($id, $key = null, $override = true)
 	{
 		$reg_path = 'core/e107/templates'.$id.($override_path ? '/ext' : '');
-		$path = $this->coreTemplatePath($id, $override);
+		$path = e107::coreTemplatePath($id, $override);
 		
 		return e107::_getTemplate($id, $key, $reg_path, $path);
 	}
@@ -1002,7 +1002,7 @@ class e107
 	public static function getTemplate($plug_name, $id, $key = null, $override = true)
 	{
 		$reg_path = 'plugin/'.$plug_name.'/templates'.$id.($override_path ? '/ext' : '');
-		$path = $this->templatePath($plug_name, $id, $override);
+		$path = e107::templatePath($plug_name, $id, $override);
 		
 		return e107::_getTemplate($id, $key, $reg_path, $path);
 	}
