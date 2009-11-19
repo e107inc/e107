@@ -9,8 +9,8 @@
  * e107 Admin Theme Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/theme_handler.php,v $
- * $Revision: 1.66 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.67 $
+ * $Date: 2009-11-19 10:07:32 $
  * $Author: e107coders $
  */
 
@@ -1082,7 +1082,7 @@ class themeHandler
 			//TODO LANs
 			$emessage->add(TPVLAN_3." <b>'".$name." v".$version."'</b>", E_MESSAGE_SUCCESS);
 			$emessage->add("Default Layout: ".$deflayout, E_MESSAGE_SUCCESS);
-			$emessage->add("Custom Pages: ".$customPages, E_MESSAGE_SUCCESS);
+			$emessage->add("Custom Pages: ".implode(" ",$customPages), E_MESSAGE_SUCCESS);
 			
 			$this->theme_adminlog('01', $name.', style.css');
 			return TRUE;

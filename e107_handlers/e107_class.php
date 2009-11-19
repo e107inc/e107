@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.74 $
- * $Date: 2009-11-18 20:45:18 $
- * $Author: e107steved $
+ * $Revision: 1.75 $
+ * $Date: 2009-11-19 10:07:31 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1207,6 +1207,12 @@ class e107
 //
 // HTTP relative paths
 //
+
+			if(!varset($MEDIA_DIRECTORY)) // BC/Upgrade Fix. 
+			{
+				$MEDIA_DIRECTORY = 'e107_media/'; 		
+			}
+
 			define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
 			define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
 			define("e_THEME", e_BASE.$THEMES_DIRECTORY);
@@ -1626,6 +1632,7 @@ class e107
 			}
 			$ret = implode('.',$z);
 		}
+
 		return $ret;
 	}
 	

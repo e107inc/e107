@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.18 $
+ * $Date: 2009-11-19 10:07:32 $
  * $Author: e107coders $
 */
 
@@ -859,7 +859,8 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from='', $from_
 
 	if (varsettrue($mailheader_e107id)) $mail->AddCustomHeader("X-e107-id: {$mailheader_e107id}");
 
-	$mail->makeBody($message);				// Add body, with conversion if required
+	//Legacy required - \n must be converted to <br /> in HTML version of email. 
+	$mail->makeBodyLegacy($message);				// Add body, with conversion if required
 
 	if($Cc) $mail->AddAddressList('cc', $Cc);
 

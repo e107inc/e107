@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.159 $
-* $Date: 2009-11-18 01:04:24 $
+* $Revision: 1.160 $
+* $Date: 2009-11-19 10:07:28 $
 * $Author: e107coders $
 *
 */
@@ -772,6 +772,12 @@ if(isset($pref['notify']) && $pref['notify'] == true)
 //
 $sql -> db_Mark_Time('Start: Init session');
 init_session();
+
+//DEPRECATED but necessary. BC Fix. 
+function getip() 
+{
+	return e107::ipDecode(USERIP);
+}
 
 // for multi-language these definitions needs to come after the language loaded.
 define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'emotes_off, defs, no_make_clickable')));

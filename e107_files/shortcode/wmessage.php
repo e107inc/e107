@@ -1,6 +1,6 @@
 <?php
 
-// $Id: wmessage.php,v 1.3 2009-11-11 16:02:40 e107coders Exp $
+// $Id: wmessage.php,v 1.4 2009-11-19 10:07:30 e107coders Exp $
 
 function wmessage_shortcode($parm)
 {
@@ -70,7 +70,7 @@ function wmessage_shortcode($parm)
 				ob_start();
 				if ($pref['wm_enclose'])
 				{
-				 //	$ns->tablerender($wmcaption, $wmessage, 'wm');
+				 	$ns->tablerender($wmcaption, implode("<br />",$wmessage), 'wm');
 				}
 				else
 				{
