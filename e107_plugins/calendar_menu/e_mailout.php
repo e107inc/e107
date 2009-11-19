@@ -9,17 +9,17 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_mailout.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision: 1.6 $
+ * $Date: 2009-11-19 10:09:12 $
+ * $Author: marj_nl_fr $
  *
 */
 
 
-if (!defined('e107_INIT')) { exit; }
+if (!defined('e107_INIT')) { exit(); }
 
 
-include_lan(e_PLUGIN.'/calendar_menu/languages/English_mailer.php');
+include_lan(e_PLUGIN.'/calendar_menu/languages/'.e_LANGUAGE.'_mailer.php');
 
 /* 
 Class for event calendar mailout function
