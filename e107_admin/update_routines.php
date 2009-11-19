@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2009-11-19 10:07:29 $
+|     $Revision: 1.62 $
+|     $Date: 2009-11-19 12:35:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -263,7 +263,7 @@ function update_706_to_800($type='')
 	// List of changed DB tables (defined in core_sql.php)
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
 	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus',
-							 'plugin', 'news', 'news_category','online');
+							 'plugin', 'news', 'news_category','online', 'page');
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)

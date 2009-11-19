@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-11-18 01:04:25 $
+ * $Revision: 1.27 $
+ * $Date: 2009-11-19 12:35:33 $
  * $Author: e107coders $
  *
 */
@@ -69,9 +69,18 @@ if(isset($_POST['updatePage']))
 	$page->submitPage($_POST['pe_id']);
 }
 
-if(isset($_POST['delete']))
+if(isset($_POST['delete']) || varset($_POST['etrigger_delete']))
 {
-	foreach(array_keys($_POST['delete']) as $pid)
+	if($_POST['etrigger_delete'])
+	{
+		$delArray = array_keys($_POST['etrigger_delete']);	
+	}
+	else
+	{
+		$delArray = array_keys($_POST['delete']);
+	}
+	
+	foreach($delArray as $pid)
 	{
 		$page->delete_page($pid);
 	}
@@ -93,6 +102,13 @@ if(!e_QUERY)
     	$page->showExistingPages('menus');
 	}
 
+}
+elseif($_GET['action']=='edit')
+{
+	$action = 'create';
+	$sub_action = 'edit';
+	$id = ($_GET['id']);
+	$page->createPage();		
 }
 else
 {
@@ -119,19 +135,20 @@ class page
         $this->fieldpref = (varset($user_pref['admin_cpage_columns'])) ? $user_pref['admin_cpage_columns'] : array("page_id","page_title","page_theme"); ;
 
     	$this->fields = array(
-			'page_id'			=> array('title'=> ID, 'width'=>'5%', 'forced'=> TRUE),
-            'page_title'	   	=> array('title'=> CUSLAN_1, 'width'=>'auto'),
-			'page_theme' 		=> array('title'=> CUSLAN_2, 'type' => 'text', 'width' => 'auto'),
-         	'page_author' 		=> array('title'=> LAN_AUTHOR, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left first'), // Display name
-			'page_datestamp' 	=> array('title'=> LAN_DATE, 'type' => 'text', 'width' => 'auto'),	// User name
-            'page_class' 		=> array('title'=> LAN_USERCLASS, 'type' => 'text', 'width' => 'auto'),	 	// Photo
-			'page_rating_flag' 		=> array('title'=> LAN_RATING, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
-			'page_comment_flag' 	=> array('title'=> ADLAN_114, 'type' => 'text', 'width' => '10%', 'thclass' => 'center' ),	 // No real vetting
-		//	'page_password' 	=> array('title'=> LAN_USER_05, 'type' => 'text', 'width' => 'auto'),
+			'page_id'			=> array('title'=> ID, 					'width'=>'5%', 'forced'=> TRUE),
+            'page_title'	   	=> array('title'=> CUSLAN_1, 		'type' => 'text', 'width'=>'auto'),
+			'page_theme' 		=> array('title'=> CUSLAN_2, 		'type' => 'text', 'width' => 'auto','nolist'=>true),
+			'page_template' 	=> array('title'=> 'Template', 		'type' => 'text', 'width' => 'auto'),
+         	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'type' => 'text', 'width' => 'auto', 'thclass' => 'left'), 
+			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 'width' => 'auto'),	
+            'page_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'width' => 'auto'),	 	
+			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'type' => 'boolean', 'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),	 
+			'page_comment_flag' => array('title'=> ADLAN_114,		'type' => 'boolean', 'width' => '10%', 'thclass' => 'center', 'class' => 'center' ),	
+		//	'page_password' 	=> array('title'=> LAN_USER_05, 	'type' => 'text', 'width' => 'auto'),
 
 	   //	'page_ip_restrict' 		=> array('title'=> LAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
 
-			'options' 	=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last')
+			'options' 	=> array('title'=> LAN_OPTIONS, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 
        // $this->fieldpref = array("page_id","page_title","page_author","page_class");
@@ -189,29 +206,11 @@ class page
 
 			foreach($pages as $pge)
 			{
-				//title='".LAN_DELETE."'
-				$title_text = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
-				$author = get_user_data($pge['page_author']);
+				$pge['page_title'] = $pge['page_title'] ? $pge['page_title'] : ($pge['page_theme'] ? CUSLAN_43.$pge['page_theme'] : CUSLAN_44);
+				$authorData = get_user_data($pge['page_author']);
+				$pge['page_author'] = $authorData['user_name'];
 
-
-				$text .= "
-						<tr>
-							<td>{$pge['page_id']}</td>";
-
-				$text .= (in_array("page_title",$this->fieldpref)) ? "<td><a href='".($pge['page_theme'] ? e_ADMIN."menus.php" : e_BASE."page.php?{$pge['page_id']}" )."'>{$title_text}</a></td>" : "";
-                $text .= (in_array("page_theme",$this->fieldpref)) ? "<td>".($pge['page_theme'] ? "menu" : "page")."</td>" : "";
-                $text .= (in_array("page_author",$this->fieldpref)) ? "<td>".($author['user_name'])."</td>" : "";
-				$text .= (in_array("page_datestamp",$this->fieldpref)) ? "<td>".strftime($pref['shortdate'],$pge['page_datestamp'])."</td>" : "";
-				$text .= (in_array("page_class",$this->fieldpref)) ? "<td>".(r_userclass_name($pge['page_class']))."</td>" : "";
-				$text .= (in_array("page_rating_flag",$this->fieldpref)) ? "<td class='center'>".($pge['page_rating_flag'] ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
-				$text .= (in_array("page_comment_flag",$this->fieldpref)) ? "<td class='center'>".($pge['page_comment_flag'] ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
-
-				$text .= "<td class='center'>
-								<a class='action edit' href='".e_SELF."?".($pge['page_theme'] ? "createm": "create").".edit.{$pge['page_id']}'>".ADMIN_EDIT_ICON."</a>
-								<input type='image' class='action delete' name='delete[{$pge['page_id']}]' src='".ADMIN_DELETE_ICON_PATH."' title='".CUSLAN_4." [ ID: {$pge['page_id']} ]' />
-							</td>
-						</tr>
-				";
+				$text .= $frm->renderTableRow($this->fields,$this->fieldpref,$pge,'page_id');
 			}
 		}
 
@@ -245,7 +244,12 @@ class page
 	{
 		/* mode: FALSE == page, mode: TRUE == menu */
 
-		global $sql, $tp, $e107, $sub_action, $id, $frm, $e_userclass, $e_event;
+		global $e107, $sub_action, $id, $e_userclass, $e_event;
+		
+		$frm = e107::getForm();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		
 
 		$edit = ($sub_action == 'edit');
 		$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
@@ -288,34 +292,62 @@ class page
 		{
 			$text .= "
 						<tr>
-							<td class='label'>".CUSLAN_7."</td>
-							<td class='control'>
+							<td>".CUSLAN_7."</td>
+							<td>
 								".$frm->text('menu_name', $menu_name, 50)."
 							</td>
 						</tr>
 			";
 		}
-
+		else
+		{
+		
+		$templates = array();
+		$tmp = e107::getTemplate('page', 'page');
+		foreach($tmp as $key=>$val)
+		{
+			$templates[$key] = $key; //TODO add LANS?
+		}
+		
+			
+			$text .= "
+						<tr>
+							<td>Template</td>
+							<td>
+								". $frm->selectbox('page_template',$templates,$row['page_template'])  ."
+							</td>
+						</tr>
+			";	
+		}
 		$text .= "
 						<tr>
-							<td class='label'>".CUSLAN_8."</td>
-							<td class='control'>
+							<td>".CUSLAN_8."</td>
+							<td>
 								".$frm->text('page_title', $page_title, 250)."
 							</td>
 						</tr>
 						<tr>
-							<td class='label'>".CUSLAN_9."</td>
-							<td class='control'>
+							<td>".CUSLAN_9."</td>
+							<td>
 		";
 
-		require_once(e_HANDLER."ren_help.php");
-		$insertjs = (!e_WYSIWYG)? " rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
+	//	require_once(e_HANDLER."ren_help.php");
+		
+	//	$insertjs = (!e_WYSIWYG)? " rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' style='width:95%'": "rows='25' style='width:100%' ";
+		
 		$data = $tp->toForm($data,FALSE,TRUE);	// Make sure we convert HTML tags to entities
-		$text .= "<textarea class='e-wysiwyg tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
-
-		$text .= "
-								<br />".display_help('cpage-help', 'cpage')."
-							</td>
+		
+		$textareaValue = (strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data));
+	//	$text .= $frm->textarea('data', $textareaValue);
+		$text .= $frm->bbarea('data', $textareaValue, 'data', 'cpage-help');
+		
+		
+		
+	//	$text .= "<textarea class='e-wysiwyg tbox' tabindex='".$frm->getNext()."' id='data' name='data' cols='80'{$insertjs}>".(strstr($data, "[img]http") ? $data : str_replace("[img]../", "[img]", $data))."</textarea>";
+	//			<br />".display_help('cpage-help', 'cpage')."
+	
+	
+				$text .= "</td>
 							</tr>
 							<tr>
 								<td class='label'>".LAN_UPLOAD_IMAGES."</td>
@@ -440,13 +472,14 @@ class page
 
 		$page_title = $tp->toDB($_POST['page_title']);
 		$page_text = $tp->toDB($_POST['data']);
-		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0);
+	//	$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // this check should be done in the front-end. 
+		$pauthor = USERID;
 
 		if($mode)
 		{	// Saving existing page/menu after edit
 			// Don't think $_POST['page_ip_restrict'] is ever set.
 			$menuname = ($type ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
-			$update = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."'{$menuname} WHERE page_id='{$mode}'");
+			$update = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."', page_template='".$_POST['page_template']."' {$menuname} WHERE page_id='{$mode}'");
 			$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
@@ -495,7 +528,7 @@ class page
 		{	// New page/menu
 			$menuname = ($type ? $tp->toDB($_POST['menu_name']) : "");
 
-			$pid = admin_update($sql->db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
+			$pid = admin_update($sql->db_Insert("page", "0, '{$page_title}', '{$page_text}', '{$pauthor}', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."', '".$_POST['page_template']."'"), 'insert', CUSLAN_27, LAN_CREATED_FAILED, false);
 			$admin_log->log_event('CPAGE_01',$menuname.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 
 			if($type)
