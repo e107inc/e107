@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-08-11 17:25:20 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.17 $
+|     $Date: 2009-11-19 20:30:55 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -131,14 +131,14 @@ function notify_subnews($data) {
 }
 
 function notify_newspost($data) {
-	global $nt;
-	$message = '<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended'];
+	global $nt, $tp;
+	$message = $tp->toDB('<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended']);
 	$nt -> send('newspost', $data['news_title'], $message);
 }
 
 function notify_newsupd($data) {
-	global $nt;
-	$message = '<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended'];
+	global $nt, $tp;
+	$message = $tp->toDB('<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended']);
 	$nt -> send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], $message);
 }
 
