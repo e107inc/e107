@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2009-11-19 11:45:49 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.90 $
+|     $Date: 2009-11-19 20:29:01 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -294,6 +294,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$poll -> submit_poll(2);
 		}
 
+		$e107cache->clear("newforumposts");
 		if ($pref['forum_redirect'])
 		{
 			redirect(e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last");
@@ -314,7 +315,6 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			}
 
 			echo (isset($_POST['newthread']) ? $FORUMTHREADPOSTED : $FORUMREPLYPOSTED);
-			$e107cache->clear("newforumposts");
 			require_once(FOOTERF);
 			exit;
 		}
