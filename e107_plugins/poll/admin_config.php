@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/admin_config.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-18 01:06:01 $
- * $Author: e107coders $
+ * $Revision: 1.13 $
+ * $Date: 2009-11-19 16:03:16 $
+ * $Author: marj_nl_fr $
  */
 
 require_once("../../class2.php");
@@ -23,7 +23,7 @@ if (!getperms("P") || !plugInstalled('poll'))
 }
 $e_sub_cat = 'poll';
 
-include_lan(e_PLUGIN.'poll/languages/English_admin_poll.php');
+include_lan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'_admin_poll.php');
 require_once(e_ADMIN."auth.php");
 require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."form_handler.php");
