@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.36 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.37 $
+ * $Date: 2009-11-20 22:23:02 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -98,6 +98,29 @@ function setScVar($className, $scVarName, $value)
 	if(isset($sc->scClasses[$className]))
 	{
 		$sc->scClasses[$className]->$scVarName = $value;
+	}
+}
+
+
+/**
+ * Call function on an already registered SC object
+ *
+ * @param string $className
+ * @param string $scFuncName
+ * @param mixed $param - passed to function
+ *
+ * @return mixed|boolean - FALSE if class doesn't exist; otherwise whatever the function returns.
+ */
+function callScFunc($className, $scFuncName, $param= '')
+{
+	$sc = e107::getScParser();
+	if(isset($sc->scClasses[$className]))
+	{
+		return call_user_func(array($sc->scClasses[$className],$scFuncName), $param);
+	}
+	else
+	{
+		return FALSE;
 	}
 }
 

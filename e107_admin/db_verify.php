@@ -9,9 +9,9 @@
  * Administration - DB Verify
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-18 01:04:25 $
- * $Author: e107coders $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-20 22:23:02 $
+ * $Author: e107steved $
  *
 */
 require_once("../class2.php");
@@ -40,7 +40,7 @@ if (!$sql_data)
 	exit(DBLAN_1);
 }
 
-$tables["core"] = $sql_data;
+$tables['core'] = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);		// Strip any comments as we copy
 
 if (!getperms("0"))
 {
@@ -51,11 +51,13 @@ if (!getperms("0"))
 //Get any plugin _sql.php files
 foreach($pref['e_sql_list'] as $path => $file)
 {
-	$filename = e_PLUGIN.$path."/".$file.".php";
+	$filename = e_PLUGIN.$path.'/'.$file.'.php';
 	if(is_readable($filename))
 	{
-		$id = str_replace("_sql","",$file);
-      	$tables[$id] = file_get_contents($filename);
+		$id = str_replace('_sql','',$file);
+      	$temp = file_get_contents($filename);
+		$tables[$id] = preg_replace("#\/\*.*?\*\/#mis", '', $temp);		// Strip comments as we copy
+		unset($temp);
 	}
 	else
 	{
@@ -183,29 +185,36 @@ function check_tables($what)
 
 		if ($current_tab)
 		{
-			$lines = split("\n", $current_tab);			// Create one element of $lines per field or other line of info
+			$lines = split("\n", $current_tab);			// Actual table - create one element of $lines per field or other line of info
 			$fieldnum = 0;
 			foreach($tablines[$k] as $x)
 			{	// $x is a line of the DB definition from the *_sql.php file
 		  		$x = str_replace('  ',' ',$x);				// Remove double spaces
 		  		$fieldnum++;
-		 		 $ffound = 0;
-		  		list($fname, $fparams) = explode(" ", $x, 2);
-				if ($fname == "UNIQUE" || $fname == 'FULLTEXT')
+				$ffound = 0;
+		  		list($fname, $fparams) = explode(' ', $x, 2);		// Pull out first word of definition
+				if ($fname == 'UNIQUE' || $fname == 'FULLTEXT')
 				{
-					list($key, $key1, $keyname, $keyparms) = split(" ", $x, 4);
+					list($key, $key1, $keyname, $keyparms) = split(' ', $x, 4);
 					$fname = $key." ".$key1." ".$keyname;
 					$fparams = $keyparms;
 				}
-				elseif ($fname == "KEY")
+				elseif ($fname == 'KEY')
 		  		{
-					list($key, $keyname, $keyparms) = split(" ", $x, 3);
+					list($key, $keyname, $keyparms) = split(' ', $x, 3);
 					$fname = $key." ".$keyname;
 					$fparams = $keyparms;
 		  		}
+				elseif ($fname == 'PRIMARY')
+		  		{	// Nothing to do ATM
+		  		}
+				else
+				{		// Must be a field name
+					$fname = str_replace('`','',$fname);		// Just remove back ticks if present
+				}
 		  		$fields[$fname] = 1;
 		 		$fparams = ltrim(rtrim($fparams));
-		  		$fparams = preg_replace("/\r?\n$|\r[^\n]$|,$/", "", $fparams);
+		  		$fparams = preg_replace("/\r?\n$|\r[^\n]$|,$/", '', $fparams);
 
 
 		 		if(stristr($k, "lan_") !== FALSE && $cur != 1)
@@ -219,13 +228,12 @@ function check_tables($what)
 								<td>{$fname} 
 				";
 
-				if (strpos($fparams, "KEY") !== FALSE)
+				if (strpos($fparams, 'KEY') !== FALSE)
 				{
-					$head_txt .= " $fparams aa";
+					$head_txt .= " {$fparams} aa";
 				}
 
-				$head_txt .= "
-								</td>
+				$head_txt .= "</td>
 				";
 
 				$xfieldnum = -1;

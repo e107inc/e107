@@ -9,9 +9,9 @@
  * Database utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.13 $
+ * $Date: 2009-11-20 22:23:02 $
+ * $Author: e107steved $
 */
 
 /*
@@ -61,19 +61,23 @@ class db_table_admin
 		return $matches;
 	}
 	
-	// Routine to do first-level parse of table structure
-	//---------------------------------------------------
-	// Given the name of a file, returns an array, with each element being a table creation definition.
-	// Tracks the last file read - only reads it once
-	// If the file name is an empty string, uses a previously read/set buffer
-	// If a table name is given, returns only that table's info; otherwise returns a list of all tables
-	// The table name must include a prefix where appropriate (although not required with standard E107 table definition files)
-	// Each element is itself an array:
-	//		[0] - The complete string which creates a table (unless a prefix needs adding to the table name), including terminating ';'
-	//		[1] - The table name. Any backticks are stripped
-	//		[2] - Field definitions, with the surrounding (...) stripped
-	//		[3] - The 'TYPE' field ('TYPE=' is stripped) and any AUTO-INCREMENT definition or other text.
-	//  function get_table_def($table_name='',$file_name = e_ADMIN."sql/core_sql.php")
+	/**
+	 * Routine to do first-level parse of table structure
+	 *---------------------------------------------------
+	 * Given the name of a file, returns an array, with each element being a table creation definition.
+	 * Tracks the last file read - only reads it once
+	 * If the file name is an empty string, uses a previously read/set buffer
+	 * 
+	 * @param string $table_name  - If specified, returns only that table's info; otherwise returns a list of all tables
+	 * 		The table name must include a prefix where appropriate (although not required with standard E107 table definition files)
+	 * @return  string|array
+	 *			- if error, returns a brief text message
+	 *			- if successful, returns an array of table definitions, each of which is itself an array:
+	 *				[0] - The complete string which creates a table (unless a prefix needs adding to the table name), including terminating ';'
+	 *				[1] - The table name. Any backticks are stripped
+	 *				[2] - Field definitions, with the surrounding (...) stripped
+	 *				[3] - The 'TYPE' field ('TYPE=' is stripped) and any AUTO-INCREMENT definition or other text.
+	 */
 	function get_table_def($table_name = '', $file_name = "")
 	{
 		if ($file_name != '')
@@ -86,7 +90,9 @@ class db_table_admin
 				}
 				$temp = file_get_contents($file_name);
 				// Strip any php header
-				$this->file_buffer = preg_replace("#\<\?php.*?\?\>#mis", '', $temp);
+				$temp = preg_replace("#\<\?php.*?\?\>#mis", '', $temp);
+				// Strip any comments  (only /*...*/ supported
+				$this->file_buffer = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
 				$this->last_file = $file_name;
 			}
 		}

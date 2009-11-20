@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-19 20:24:21 $
+ * $Revision: 1.11 $
+ * $Date: 2009-11-20 22:23:02 $
  * $Author: e107steved $
  *
 */
@@ -244,9 +244,9 @@ define('LAN_MAILOUT_222', 'Default email format');
 define('LAN_MAILOUT_223', '(Used for some non-bulk emails)');
 define('LAN_MAILOUT_224', 'Inc. Images');
 define('LAN_MAILOUT_225', 'Include images in email');
-define('LAN_MAILOUT_226', '');
-define('LAN_MAILOUT_227', '');
-define('LAN_MAILOUT_228', '');
+define('LAN_MAILOUT_226', '--COUNT-- orphaned recipient records removed');
+define('LAN_MAILOUT_227', 'Deleted --COUNT-- records from --TABLE--');
+define('LAN_MAILOUT_228', '--COUNT-- anomalies in mail_content corrected; records: --RECORDS--');
 define('LAN_MAILOUT_229', '');
 define('LAN_MAILOUT_230', '');
 
