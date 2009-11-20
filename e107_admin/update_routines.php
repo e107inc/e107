@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2009-11-20 05:01:30 $
-|     $Author: e107coders $
+|     $Revision: 1.64 $
+|     $Date: 2009-11-20 22:23:02 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -321,7 +321,7 @@ function update_706_to_800($type='')
 
 	$db_parser = new db_table_admin;				// Class to read table defs and process them
 	$do_save = FALSE;								// Set TRUE to update prefs when update complete
-	$updateMessages = array();
+	$updateMessages = array();						// Used to log actions for the admin log
 
 	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
 
@@ -707,7 +707,7 @@ function update_706_to_800($type='')
 			$mes = e107::getMessage();
 			foreach ($ttc as $ct)
 			{
-				$sqlDefs = e_PLUGIN.$plugName.'/'.$plugName.'_sql.php';		// Filename containing definitions
+				$sqlDefs = e_PLUGIN.$plugName.'/'.str_replace('_menu','',$plugName).'_sql.php';		// Filename containing definitions
 //				echo "Looking at file: {$sqlDefs}, table {$ct}<br />";
 				$req_defs = $db_parser->get_table_def($ct,$sqlDefs);
 				if (!is_array($req_defs))
@@ -764,10 +764,10 @@ function update_706_to_800($type='')
 	}
 
 	// This has to be done after the table is upgraded
-	if($sql->db_Select("plugin", "plugin_category", "plugin_category = ''"))
+	if($sql->db_Select('plugin', 'plugin_category', "plugin_category = ''"))
 	{
-		if ($just_check) return update_needed();
-		require_once(e_HANDLER."plugin_class.php");
+		if ($just_check) return update_needed('Update plugin table');
+		require_once(e_HANDLER.'plugin_class.php');
 		$ep = new e107plugin;
 		$ep -> update_plugins_table();
 	//	$_pdateMessages[] = LAN_UPDATE_XX24; 
@@ -828,7 +828,8 @@ function update_706_to_800($type='')
 	if ($do_save)
 	{
 		save_prefs();
-		$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum); // FIXME
+		$mes->add(LAN_UPDATE_50);
+		$updateMessages[] = LAN_UPDATE_50.implode(', ',$accum); 	// Note for admin log
 	}
 	
 	//FIXME grab message-stack from $mes for the log. 

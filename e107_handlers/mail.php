@@ -9,31 +9,19 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-11-19 20:24:21 $
+ * $Revision: 1.20 $
+ * $Date: 2009-11-20 22:23:02 $
  * $Author: e107steved $
 */
 
 /*
-This is a work in progress, upgrading the mailout routines to use the PHP5-compatible PHPMailer classes in a class-based structure
-
-A further class extension will add features for mass-mailouts
-
-
-Three main scenarios to handle:
-	- Individual email to a number of recipients (analagous to 'manual' email sending). May be called multiple times in a run
-	- One email send individually to a number of recipients (probably based on array of senders)
-	- Personalised mailshots - template email modified to personalise for each recipient (based on DB list)
-
 TODO:
-2. Bulk mailing - look at using the batching constants with SMTPKeepAlive to reset the connection every so often
 3. mail (PHP method) - note that it has parameters for additional headers and other parameters
 4. Check that language support works - PHPMailer defaults to English if other files not available
 		- PHPMailer expects a 2-letter code - $this->SetLanguage(CORE_LC)     - e.g. 'en', 'br'
 5. Logging:
 	- Use rolling log for errors - error string(s) available - sort out entry
 	- Look at support of some other logging options
-	- Debug option to just log, not send emails (variables in place, and supported by current bulk mailer)
 9. Make sure SMTPDebug can be set (TRUE/FALSE)
 12. Check support for port number - ATM we just override for SSL. Looks as if phpmailer can take it from end of server link.
 13. Possibly strip bbcode from plain text mailings - best done by caller?
