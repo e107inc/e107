@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.63 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.64 $
+ * $Date: 2009-11-20 05:01:31 $
  * $Author: e107coders $
 */
 
@@ -49,7 +49,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * @author $Author: e107coders $
  * 
  */
@@ -372,6 +372,10 @@ class e_db_mysql {
 		$this->mySQLcurTable = $table;
 		if(is_array($arg))
 		{
+			if(isset($arg['WHERE'])) // use same array for update and insert. 
+			{
+				unset($arg['WHERE']);
+			}
 			if(isset($arg['_REPLACE']))
 			{
 				$REPLACE = TRUE;

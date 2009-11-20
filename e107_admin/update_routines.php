@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2009-11-19 12:35:33 $
+|     $Revision: 1.63 $
+|     $Date: 2009-11-20 05:01:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -263,7 +263,7 @@ function update_706_to_800($type='')
 	// List of changed DB tables (defined in core_sql.php)
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
 	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus',
-							 'plugin', 'news', 'news_category','online', 'page');
+							 'plugin', 'news', 'news_category','online', 'page', 'links');
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
@@ -328,7 +328,7 @@ function update_706_to_800($type='')
 
 
 	// Check that custompages have been imported from current theme.php file
-	if(!varset($pref['sitetheme_custompages']))
+	if(!array_key_exists('sitetheme_custompages',$pref))
 	{
 		$th = e107::getSingleton('themeHandler');
 		$tmp = $th->getThemeInfo($pref['sitetheme']);

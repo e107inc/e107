@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-11-19 12:35:33 $
+ * $Revision: 1.41 $
+ * $Date: 2009-11-20 05:01:30 $
  * $Author: e107coders $
 */
 
@@ -207,6 +207,7 @@ CREATE TABLE links (
   link_parent int(10) unsigned NOT NULL default '0',
   link_open tinyint(1) unsigned NOT NULL default '0',
   link_class varchar(255) NOT NULL default '0',
+  link_function varchar(100) NOT NULL default '',
   PRIMARY KEY  (link_id)
 ) TYPE=MyISAM;
 

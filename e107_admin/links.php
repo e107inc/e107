@@ -9,8 +9,8 @@
  * Administration Area - Site Links
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-11-18 01:04:26 $
+ * $Revision: 1.34 $
+ * $Date: 2009-11-20 05:01:30 $
  * $Author: e107coders $
  *
 */
@@ -197,6 +197,7 @@ class links
 	var $linkCategory = array();
 	var $linkOpen = array();
 	var $mode = 'main';
+	private $linkFunctions = array();
 	
 	function __construct()
 	{
@@ -207,6 +208,22 @@ class links
 		{
 			$this->mode = $_GET['mode'];
 		}
+		
+		// get e_sitelink functions. 		
+		$tmp = e107::getAddonConfig('e_sitelink','sitelinks');
+		$this->linkFunctions[0] = "(".LAN_OPTIONAL.")";
+		foreach($tmp as $cat=> $array)
+		{
+			$func = array();
+			foreach($array as $val)
+			{
+				$newkey = $cat.'::'.$val['function'];
+				$func[$newkey] = $val['name'];
+			}
+			$this->linkFunctions[$cat] = $func;
+		}
+		
+		
 		
 		if (varset($_POST['etrigger_ecolumns']))
 		{
@@ -229,6 +246,7 @@ class links
 		
 		$this->linkOpen = array(
 			0 => LCLAN_20, // 0 = same window
+			1 => LCLAN_23, // new window
 			4 => LCLAN_24, // 4 = miniwindow  600x400
 			5 => LINKLAN_1 // 5 = miniwindow  800x600
 		);					
@@ -337,7 +355,7 @@ class links
 		}
 				
 	}
-	
+
 
 	function getLinks()
 	{
@@ -780,10 +798,14 @@ class links
 	// Show the form for link create/edit
 	function create_link($sub_action, $id)
 	{
-		global $sql, $e107, $pst, $tp, $emessage;
+		global $e107, $pst, $emessage;
 
-		$frm = new e_form();
-
+		$frm = e107::getForm();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$fl = e107::getFile();
+		$ns = e107::getRender();
+		
 		$preset = $pst->read_preset("admin_links");
 		extract($preset);
 
@@ -806,13 +828,7 @@ class links
 			$link_name = $this->linkName($link_name);
 		}
 
-		require_once (e_HANDLER."file_class.php");
-		$fl = new e_file();
 
-		if($iconlist = $fl->get_files(e_IMAGE."icons/", '\.jpg|\.gif|\.png|\.JPG|\.GIF|\.PNG'))
-		{
-			sort($iconlist);
-		}
 		$text = "
 
 			<form method='post' action='".e_SELF."' id='core-links-edit-form'>
@@ -825,115 +841,111 @@ class links
 						</colgroup>
 						<tbody>
 							<tr>
-								<td class='label'>".LINKLAN_2."</td>
-								<td class='control'>
+								<td>".LINKLAN_2."</td>
+								<td>
 									<select class='tbox select' name='link_parent' >
 										".$this->dropdown($link_parent)."
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".LCLAN_15.": </td>
-								<td class='control'>
+								<td>".LCLAN_15.": </td>
+								<td>
 									<input class='tbox input-text' type='text' name='link_name' size='60' value='{$link_name}' maxlength='100' />
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".LCLAN_16.": </td>
-								<td class='control'>
+								<td>".LCLAN_16.": </td>
+								<td>
 									<input class='tbox input-text' type='text' name='link_url' size='60' value='".$tp->replaceConstants($link_url, TRUE)."' maxlength='200' />
 									".((e_MENU == "debug") ? $link_url : "")."
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".LCLAN_17.": </td>
-								<td class='control'>
+								<td>".LCLAN_17.": </td>
+								<td>
 									<textarea class='tbox textarea' id='link_description' name='link_description' cols='70' rows='5' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$tp->toForm($link_description)."</textarea>
 									<br/>".display_help("helpb", "admin")."
 
 								</td>
 							</tr>
 							<tr>
-								<td class='label'>".LCLAN_18.": </td>
-								<td class='control'>
+								<td>".LCLAN_18.": </td>
+								<td>
 
 			";
 
 		//SecretR - more nice view now handled by e_form (inner use of new sc {ICONPICKER})
-		//Example sc opts (4th func argument)
-		//$opts = 'path='.e_IMAGE.'icons/|'.e_IMAGE.'generic/';
-		//$opts .= '&path_omit='.e_IMAGE.'icons/';
+
 		$text .= $frm->iconpicker('link_button', $link_button, LCLAN_39);
 
-		// 1 = _blank
-		// 2 = _parent   not in use.
-		// 3 = _top   not in use.
-		$linkop[0] = LCLAN_20; // 0 = same window
-		$linkop[1] = LCLAN_23;
-		$linkop[4] = LCLAN_24; // 4 = miniwindow  600x400
-		$linkop[5] = LINKLAN_1; // 5 = miniwindow  800x600
-
-
-		$text .= "</td>
+		$text .= "
+			</td>
 			</tr>
 			<tr>
-			<td class='label'>".LCLAN_19.": </td>
-			<td class='control'>
-			<select name='linkopentype' class='tbox select'>
-			";
-			foreach($linkop as $key => $val)
-			{
-				$selectd = ($link_open == $key) ? " selected='selected'" : "";
-				$text .= "<option value='$key'{$selectd}>".$val."</option>\n";
-			}
+				<td class='label'>".LCLAN_19.": </td>
+				<td class='control'>
+				<select name='linkopentype' class='tbox select'>\n";
+				
+				foreach($this->linkOpen as $key => $val)
+				{
+					$selectd = ($link_open == $key) ? " selected='selected'" : "";
+					$text .= "<option value='$key'{$selectd}>".$val."</option>\n";
+				}
 
 		$text .= "
 			</select>
 			</td>
 			</tr>
 			<tr>
-				<td class='label'>".LCLAN_12.": </td>
-				<td class='control'>
-					<select name='linkrender' class='tbox select'>
-			";
-		$rentype = array("", "Main", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt", "Alt");
-		for($i = 1; $i < count($rentype); $i++)
-		{
-			$sel = ($link_category == $i) ? " selected='selected'" : "";
-			$text .= "<option value='$i'{$sel}>$i - ".$rentype[$i]."</option>";
-		}
-		;
+				<td>".LCLAN_12.": </td>
+				<td>
+					<select name='linkrender' class='tbox select'>";
+			
+				foreach($this->linkCategory as $i=>$val)
+				{
+					$sel = ($link_category == $i) ? " selected='selected'" : "";
+					$text .= "<option value='$i' {$sel}>".$val."</option>";
+				}
+	
 
-		$text .= "
-									</select>
-									<div class='smalltext field-help'>".LCLAN_96." {SITELINKS=flat:[rendertype number]}</div>
-								</td>
-							</tr>
-							<tr>
-								<td class='label'>".LCLAN_25.":
 
-								</td>
-								<td class='control'>
-									".r_userclass("link_class", $link_class, "off", "public,guest,nobody,member,main,admin,classes")."
-									<div class='smalltext field-help'>(".LCLAN_26.")</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<div class='buttons-bar center'>
-			";
-		if($id && $sub_action == "edit")
-		{
-			$text .= "
-						<button class='update' type='submit' name='add_link' value='no-value'><span>".LCLAN_27."</span></button>
-						<input type='hidden' name='link_id' value='{$link_id}' />
-			";
-		} else
-		{
-			$text .= "
-						<button class='create' type='submit' name='add_link' value='no-value'><span>".LCLAN_28."</span></button>
-			";
-		}
+		$text .= "</select>
+				<div class='smalltext field-help'>".LCLAN_96." {SITELINKS=flat:[rendertype number]}</div>
+				</td>
+			</tr>
+			<tr>
+				<td>".LCLAN_25.":</td>
+				<td>".r_userclass("link_class", $link_class, "off", "public,guest,nobody,member,main,admin,classes")."
+					<div class='smalltext field-help'>(".LCLAN_26.")</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td>".LINKLAN_6.":</td>
+				<td>".$frm->selectbox('link_function',$this->linkFunctions,$link_function) ."</td>
+			</tr>			
+					
+			
+			
+			</tbody>
+			</table>
+			
+			
+			<div class='buttons-bar center'>\n";
+			
+			if($id && $sub_action == "edit")
+			{
+				$text .= "
+							<button class='update' type='submit' name='add_link' value='no-value'><span>".LCLAN_27."</span></button>
+							<input type='hidden' name='link_id' value='{$link_id}' />
+				";
+			} else
+			{
+				$text .= "
+							<button class='create' type='submit' name='add_link' value='no-value'><span>".LCLAN_28."</span></button>
+				";
+			}
 		$text .= "
 					</div>
 				</fieldset>
@@ -957,29 +969,52 @@ class links
 		$link_url = str_replace("&", "&amp;", $link_url); // xhtml compliant links.
 
 
-		$link_description = $tp->toDB($_POST['link_description']);
-		$link_button = $tp->toDB($_POST['link_button']);
-		$link_render = intval($_POST['linkrender']);
-		$link_open = intval($_POST['linkopentype']);
+	//	$link_description = ;
+	//	$link_button = ;
+	//	$link_render = ;
+//		$link_open = ;
 		$link_class = $tp->toDB($_POST['link_class']);
 
 		$message = implode('[!br!]', array($link_name, $link_url, $link_class)); // Probably enough to log
 		$link_t = $sql->db_Count("links", "(*)");
+		
+		
+		$insert = array(
+			'link_parent'		=> $parent_id,
+			'link_name'			=> $link_name,
+			'link_url'			=> $link_url,
+			'link_description'	=> $tp->toDB($_POST['link_description']),
+			'link_button' 		=> $tp->toDB($_POST['link_button']),
+			'link_category' 	=> intval($_POST['linkrender']),
+			'link_open'			=> intval($_POST['linkopentype']),
+			'link_class' 		=> $link_class,
+			'link_function' 	=> $_POST['link_function'],
+			'WHERE'				=> "link_id=".$id
+		);
+		
+		
+		
 		if($id)
 		{
-			$sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'");
+		//	$sql->db_Update("links", "link_parent='{$parent_id}', link_name='{$link_name}', link_url='{$link_url}', link_description='{$link_description}', link_button= '{$link_button}', link_category='{$link_render}', link_open='{$link_open}', link_class='{$link_class}' WHERE link_id='{$id}'");
+			$status = $sql->db_Update("links", $insert) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			
 			//rename all sublinks to eliminate old embedded 'submenu' etc hierarchy.
 			// this is for upgrade compatibility only. Current hierarchy uses link_parent.
 			$e107cache->clear("sitelinks");
 			sitelinks_adminlog('08', $message);
-			$emessage->add(LCLAN_3, E_MESSAGE_SUCCESS);
+			$emessage->add(LCLAN_3, $status);
 		}
 		else
 		{ // New link
-			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t + 1).", ".$parent_id.", ".$link_open.", ".$link_class,TRUE);
+		
+			$insert['link_order'] = $link_t + 1;
+		//	$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$link_render.", ".($link_t + 1).", ".$parent_id.", ".$link_open.", ".$link_class,TRUE);
+			$status = $sql->db_Insert("links", $insert) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			
 			$e107cache->clear("sitelinks");
 			sitelinks_adminlog('07', $message);
-			$emessage->add(LCLAN_2, E_MESSAGE_SUCCESS);
+			$emessage->add(LCLAN_2, $status);
 		}
 	}
 

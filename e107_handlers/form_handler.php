@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.87 $
- * $Date: 2009-11-19 10:07:32 $
+ * $Revision: 1.88 $
+ * $Date: 2009-11-20 05:01:31 $
  * $Author: e107coders $
  *
 */
@@ -478,7 +478,19 @@ class e_form
 		$text = '';
 		foreach ($option_array as $value => $label)
 		{
-			$text .= $this->option($label, $value, $selected == $value, $options)."\n";
+			if(is_array($label))
+			{
+				$text .= $this->optgroup_open($value);
+				foreach($label as $val => $lab)
+				{
+					$text .= $this->option($lab, $val, ($selected == $val), $options)."\n";		
+				}
+				$text .= $this->optgroup_close();	
+			}
+			else
+			{
+				$text .= $this->option($label, $value, $selected == $value, $options)."\n";	
+			}			
 		}
 
 		return $text;

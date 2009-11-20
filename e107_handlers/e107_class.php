@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.77 $
- * $Date: 2009-11-19 11:12:08 $
- * $Author: secretr $
+ * $Revision: 1.78 $
+ * $Date: 2009-11-20 05:01:30 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -898,6 +898,86 @@ class e107
 	{
 		return self::getRegistry('admin/ui/dispatcher');
 	}
+	
+	
+	
+	/**
+	 * Retrieves config() from addons such as e_url.php, e_cron.php, e_sitelink.php
+	 * @param str $addonName eg. e_cron, e_url
+	 * @param str $className [optional] (if different from addonName)
+	 * @return 
+	 */
+	public function getAddonConfig($addonName,$className='') 
+	{
+		global $pref;
+	
+		$new_cron = array();
+		
+		$filename = $addonName; // 'e_cron';
+		if(!$className)
+		{
+			$className = str_replace("e_","",$filename);
+		}	
+		
+		if(vartrue($pref[$filename.'_list']))
+		{	
+			
+			foreach($pref[$filename.'_list'] as $key=>$val)
+			{
+				$eplug_cron = array();
+				if(is_readable(e_PLUGIN.$key."/".$filename.".php"))
+				{
+					include_once(e_PLUGIN.$key."/".$filename.".php");
+					
+					$class_name = $key."_".$className;// cron";
+					$method_name = 'config';
+					
+					if($array = self::callMethod($class_name,$method_name))
+					{
+						$new_cron[$key] = $array;
+					}
+							
+				}
+			}
+		}
+		
+		return $new_cron;
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * Safe way to call user methods. 
+	 * @param str $class_name
+	 * @param str $method_name
+	 * @return 
+	 */
+	public function callMethod($class_name,$method_name)
+	{
+		$mes = e107::getMessage();
+
+		if(class_exists($class_name))
+		{
+			$obj = new $class_name;
+			if(method_exists($obj,$method_name))
+			{
+				$mes->add("Executing <b>".$class_name." :: ".$method_name."()</b>", E_MESSAGE_DEBUG);
+				return call_user_func(array($obj,$method_name));
+			}
+			else
+			{
+				$mes->add("Function <b>".$class_name." :: ".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);					
+			}	
+		}
+		return FALSE;
+	}
+	
+	
+	
+	
 	
 	/**
 	 * Retrieve core template path

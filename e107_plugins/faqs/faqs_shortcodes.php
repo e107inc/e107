@@ -10,8 +10,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs_shortcodes.php,v $
- |     $Revision: 1.1 $
- |     $Date: 2009-11-09 12:57:34 $
+ |     $Revision: 1.2 $
+ |     $Date: 2009-11-20 05:01:51 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -65,7 +65,7 @@ class faqs_shortcodes
 	function sc_faq_category()
 	{
 		$tp = e107::getParser();
-		return $tp->toHtml($this->row['faq_info_title']);	
+		return "<a href='".e_SELF."?cat.".$this->row['faq_info_id']."'>".$tp->toHtml($this->row['faq_info_title'])."</a>";	
 	}
 	
 	function sc_faq_catlink()
