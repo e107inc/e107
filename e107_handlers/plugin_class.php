@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
- * $Revision: 1.116 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.117 $
+ * $Date: 2009-11-20 05:01:31 $
  * $Author: e107coders $
  *
 */
@@ -46,7 +46,8 @@ class e107plugin
 		'e_tagwords',
 		'e_url',
 		'e_cron',
-		'e_mailout'
+		'e_mailout',
+		'e_sitelink'
 		);
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty

@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
- * $Revision: 1.22 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.23 $
+ * $Date: 2009-11-20 05:01:31 $
  * $Author: e107coders $
  */
 
@@ -24,23 +24,43 @@ class sitelinks
 	var $eLinkList;
 
 	function getlinks($cat=1)
-	{
-
-		global $sql;
-		if ($sql->db_Select('links', '*', "link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC")){
+	{	
+		$sql = e107::getDb('sqlSiteLinks');
+		
+		$query = "SELECT * FROM #links WHERE link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
+		if($sql->db_Select_gen($query))
+		{		
 			while ($row = $sql->db_Fetch())
 			{
 			//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
 			//		$tmp=explode('.', $row['link_name'], 3);
 			 //		$this->eLinkList[$tmp[1]][]=$row;
-				if (isset($row['link_parent']) && $row['link_parent'] != 0){
+				if (isset($row['link_parent']) && $row['link_parent'] != 0)
+				{
 					$this->eLinkList['sub_'.$row['link_parent']][]=$row;
-				}else{
+		
+				}
+				else
+				{
+				
 					$this->eLinkList['head_menu'][] = $row;
+					if(vartrue($row['link_function']))
+					{		
+						list($path,$method) = explode("::",$row['link_function']);
+						if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
+						{
+							$class = $path."_sitelinks";
+							$sublinkArray = e107::callMethod($class,$method); //TODO Cache it. 
+							if(vartrue($sublinkArray))
+							{
+								$this->eLinkList['sub_'.$row['link_id']] = $sublinkArray;
+							}
+						}						
+					}
 				}
 			}
 		}
-
+		
 	}
 
 	function get($cat=1, $style='', $css_class = false)

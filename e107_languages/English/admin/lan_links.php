@@ -1,15 +1,15 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_links.php,v 1.5 2009-10-26 07:44:35 e107coders Exp $
+ * $Id: lan_links.php,v 1.6 2009-11-20 05:01:42 e107coders Exp $
  *
  * Admin Language File
  * 
 */
 
 define("LCLAN_1", "Options Saved");
-define("LCLAN_2", "Link saved to database.");
-define("LCLAN_3", "Link updated in database.");
+define("LCLAN_2", "Saving link to database.");
+define("LCLAN_3", "Updating link in database.");
 // define("LCLAN_4", "Link deleted.");
 define("LCLAN_6", "Order updated.");
 define("LCLAN_8", "Site Navigation Links");

@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:36 $
+ * $Revision: 1.4 $
+ * $Date: 2009-11-20 05:01:51 $
  * $Author: e107coders $
  */
 
@@ -272,6 +272,7 @@ class faq
 		$sql->db_Select_gen($qry);
 		while ($row = $sql->db_Fetch())
 		{
+			
 			setScVar('faqs_shortcodes', 'row', $row);
 			
 			if ($row['faq_info_parent'] == '0') //
@@ -372,10 +373,10 @@ class faq
 	{
         global $faqpref,$timing_start,$tp,$cust_footer, $CUSTOMPAGES, $CUSTOMHEADER, $CUSTOMHEADER;
         $text_menu .= "<div style='text-align:center;' ><br />
-        &nbsp;&nbsp;[&nbsp;<a href=\"faq.php?main\">Back to Categories</a>&nbsp;]&nbsp;&nbsp;";
+        &nbsp;&nbsp;[&nbsp;<a href=\"faqs.php?main\">Back to Categories</a>&nbsp;]&nbsp;&nbsp;";
 
         if(check_class($faqpref['add_faq'])){
-                $text_menu .="[&nbsp;<a href=\"faq.php?new.$id\">Submit a Question</a>&nbsp;]";
+                $text_menu .="[&nbsp;<a href=\"faqs.php?new.$id\">Submit a Question</a>&nbsp;]";
         }
         $text_menu .="</div>";
 

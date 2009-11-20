@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2009-11-18 21:59:16 $
+|     $Revision: 1.20 $
+|     $Date: 2009-11-20 05:01:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -306,36 +306,14 @@ function setCronPwd()
 
     }
 
-	function cronLoad()
+	function cronLoad() //TODO Make a generic function to work with e_cron, e_sitelink, e_url etc.
 	{
 		global $pref;
 		
 		$core_cron = $this->coreCrons;
-		$new_cron = array();
-		
-		if(vartrue($pref['e_cron_list']))
-		{	
-			
-			foreach($pref['e_cron_list'] as $key=>$val)
-			{
-				$eplug_cron = array();
-				if(is_readable(e_PLUGIN.$key."/e_cron.php"))
-				{
-					include_once(e_PLUGIN.$key."/e_cron.php");
-					
-					$class_name = $key."_cron";
-					$method_name = 'config';
-					
-					if($array = $this->cronExecuteMethod($class_name,$method_name,'data'))
-					{
-						$new_cron[] = $array;
-					}
-							
-				}
-			}
-		}
-		
+		$new_cron = e107::getAddonConfig('e_cron');
 		$this->e_cron = array_merge($core_cron,$new_cron);
+		return;
 
 	}
 
