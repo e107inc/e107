@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.78 $
- * $Date: 2009-11-20 05:01:30 $
- * $Author: e107coders $
+ * $Revision: 1.79 $
+ * $Date: 2009-11-20 23:27:25 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -903,82 +903,70 @@ class e107
 	
 	/**
 	 * Retrieves config() from addons such as e_url.php, e_cron.php, e_sitelink.php
-	 * @param str $addonName eg. e_cron, e_url
-	 * @param str $className [optional] (if different from addonName)
+	 * @param string $addonName eg. e_cron, e_url
+	 * @param string $className [optional] (if different from addonName)
 	 * @return 
 	 */
-	public function getAddonConfig($addonName,$className='') 
+	public function getAddonConfig($addonName, $className = '') 
 	{
-		global $pref;
-	
-		$new_cron = array();
+		$new_addon = array();
 		
-		$filename = $addonName; // 'e_cron';
+		$filename = $addonName; // e.g. 'e_cron';
 		if(!$className)
 		{
-			$className = str_replace("e_","",$filename);
+			$className = substr($filename, 2); // remove 'e_'
 		}	
 		
-		if(vartrue($pref[$filename.'_list']))
+		$elist = self::getPref($filename.'_list');
+		if($elist)
 		{	
-			
-			foreach($pref[$filename.'_list'] as $key=>$val)
+			foreach(array_keys($elist) as $key)
 			{
-				$eplug_cron = array();
-				if(is_readable(e_PLUGIN.$key."/".$filename.".php"))
+				if(is_readable(e_PLUGIN.$key.'/'.$filename.'.php'))
 				{
-					include_once(e_PLUGIN.$key."/".$filename.".php");
+					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
 					
-					$class_name = $key."_".$className;// cron";
-					$method_name = 'config';
+					$class_name = $key.'_'.$className;
+					$array = self::callMethod($class_name, 'config');
 					
-					if($array = self::callMethod($class_name,$method_name))
+					if($array)
 					{
-						$new_cron[$key] = $array;
+						$new_addon[$key] = $array;
 					}
 							
 				}
 			}
 		}
 		
-		return $new_cron;
+		return $new_addon;
 	}
-	
-	
-	
-	
-	
-	
+
 	/**
 	 * Safe way to call user methods. 
-	 * @param str $class_name
-	 * @param str $method_name
+	 * @param string $class_name
+	 * @param string $method_name
 	 * @return 
 	 */
-	public function callMethod($class_name,$method_name)
+	public function callMethod($class_name, $method_name)
 	{
 		$mes = e107::getMessage();
 
 		if(class_exists($class_name))
 		{
 			$obj = new $class_name;
-			if(method_exists($obj,$method_name))
+			if(method_exists($obj, $method_name))
 			{
-				$mes->add("Executing <b>".$class_name." :: ".$method_name."()</b>", E_MESSAGE_DEBUG);
-				return call_user_func(array($obj,$method_name));
+				$mes->debug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
+				return call_user_func(array($obj, $method_name));
 			}
 			else
 			{
-				$mes->add("Function <b>".$class_name." :: ".$method_name."()</b> NOT found.", E_MESSAGE_DEBUG);					
+				$mes->debug('Function <strong>'.$class_name.' :: '.$method_name.'()</strong> NOT found.');					
 			}	
 		}
 		return FALSE;
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * Retrieve core template path
 	 * Example: <code>echo e107::coreTemplatePath('admin_icons');</code>
