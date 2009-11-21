@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-11-18 14:46:27 $
+ * $Revision: 1.43 $
+ * $Date: 2009-11-21 11:15:29 $
  * $Author: secretr $
 */
 
@@ -1195,9 +1195,10 @@ class e_admin_model extends e_model
      */
     public function getIfPosted($key, $default = '', $index = null)
     {
-		if(null !== $this->getPostedData((string) $key))
+    	$posted = $this->getPostedData((string) $key, null, $index);
+		if(null !== $posted)
 		{
-			return e107::getParser()->post_toForm($this->getPostedData((string) $key, null, $index));
+			return e107::getParser()->post_toForm($posted);
 		}
 		return e107::getParser()->toForm($this->getData((string) $key, $default, $index));
     }
