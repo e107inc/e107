@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2009-11-20 05:01:30 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2009-11-21 22:14:06 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,11 +30,11 @@ $e_sub_cat = 'cron';
 
 require_once('auth.php');
 require_once (e_HANDLER.'message_handler.php');
-require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER.'form_handler.php');
 $frm = new e_form(true);
 $cron = new cron;
 
-require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN.'footer.php');
 exit;
 
 class cron
@@ -182,10 +182,13 @@ function cronName($classname,$method)
 		
 		if($class_name =='_system_cron')
 		{
-			require_once(e_HANDLER."cron_class.php");
+			require_once(e_HANDLER.'cron_class.php');
 		}
-		
-		$status =  $this->cronExecuteMethod($class_name,$method_name) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		else
+		{
+			require_once(e_PLUGIN.$class_name.'/e_cron.php');
+		}
+		$status =  $this->cronExecuteMethod($class_name.'_cron',$method_name) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes->add("Running <b>".$this->cronName($class_name,$method_name)."</b>", $status); 	
 
 	}
@@ -534,7 +537,7 @@ function setCronPwd()
 		$var['pref']['link'] = e_SELF."?pref";
 		$var['pref']['perm'] = "N";
 
-	*/	$action = ($this->cronAction) ? $this->cronAction : "main";
+	*/	$action = ($this->cronAction) ? $this->cronAction : 'main';
 
 		e_admin_menu(PAGE_NAME, $action, $var);
 	}
