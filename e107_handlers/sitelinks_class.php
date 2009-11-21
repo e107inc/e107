@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
- * $Revision: 1.23 $
- * $Date: 2009-11-20 05:01:31 $
+ * $Revision: 1.24 $
+ * $Date: 2009-11-21 11:36:10 $
  * $Author: e107coders $
  */
 
@@ -62,6 +62,12 @@ class sitelinks
 		}
 		
 	}
+	
+	function getLinkArray()
+	{
+		return $this->eLinkList;
+	}
+	
 
 	function get($cat=1, $style='', $css_class = false)
 	{

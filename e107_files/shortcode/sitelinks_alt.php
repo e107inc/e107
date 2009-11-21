@@ -4,9 +4,9 @@
  |     e107 website system
  |
  |     $Source: /cvs_backup/e107_0.8/e107_files/shortcode/sitelinks_alt.php,v $
- |     $Revision: 1.1 $
- |     $Date: 2009-09-14 21:53:38 $
- |     $Author: secretr $
+ |     $Revision: 1.2 $
+ |     $Date: 2009-11-21 11:36:04 $
+ |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
 function sitelinks_alt_shortcode($parm)
@@ -168,23 +168,17 @@ function sitelinks_alt_shortcode($parm)
 	
 	// Setup Parent/Child Arrays ---->
 	
-	$link_total = $sql->db_Select("links", "*", "link_class IN (".USERCLASS_LIST.") AND link_category=1 ORDER BY link_order ASC");
-	while ($row = $sql->db_Fetch())
-	{
-		if ($row['link_parent'] == 0)
-		{
-			$linklist['head_menu'][] = $row;
-			$parents[] = $row['link_id'];
-		}
-		else
-		{
-			$pid = $row['link_parent'];
-			$linklist['sub_'.$pid][] = $row;
-		}
-	}
+	$lnk = e107::getSitelinks();
+	$lnk->getlinks(1);
+	$linklist = $lnk->getLinkArray();
 	
-	// Loops thru parents.--------->
-	global $tp;
+	$tp = e107::getParser();
+	
+	
+	// Loops thru parents.
+	
+	
+
 	foreach ($linklist['head_menu'] as $lk)
 	{
 		$lk['link_url'] = $tp->replaceConstants($lk['link_url'], TRUE, TRUE);
