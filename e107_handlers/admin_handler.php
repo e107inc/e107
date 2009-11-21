@@ -9,8 +9,8 @@
  * Administration UI handlers, admin helper functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/admin_handler.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-11-18 19:57:07 $
+ * $Revision: 1.35 $
+ * $Date: 2009-11-21 11:15:29 $
  * $Author: secretr $
 */
 
@@ -2552,29 +2552,34 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function convertToData(&$data)
 	{
+		$model = new e_model($data);
 		foreach ($this->getFields() as $key => $attributes)
 		{
-			if(!isset($data[$key]))
+			$value = vartrue($attributes['dataPath']) ? $model->getData($attributes['dataPath'])  : $model->get($data[$key]);
+			if(null === $value)
 			{
 				continue;
 			}
 			switch($attributes['type'])
 			{
 				case 'datestamp':
-					if(!is_numeric($data[$key]))
+					if(!is_numeric($value))
 					{
-						$data[$key] = trim($data[$key]) ? e107::getDateConvert()->toTime($data[$key], 'input') : 0; 
+						$value = trim($value) ? e107::getDateConvert()->toTime($value, 'input') : 0; 
 					}
 				break;
 				
 				case 'ip': // TODO - ask Steve if this check is required
-					if(strpos($data[$key], '.') !== FALSE)
+					if(strpos($value, '.') !== FALSE)
 					{
-						$data[$key] = trim($data[$key]) ? e107::getInstance()->ipEncode($data[$key]) : '';
+						$value = trim($value) ? e107::getInstance()->ipEncode($value) : '';
 					}
 				break;
 			}
 		}
+		$data = $model->getData();
+		unset($model);
+		
 		$this->toData($data);
 	}
 	
@@ -3620,7 +3625,7 @@ class e_admin_form_ui extends e_form
 		);
 		$models[] = $controller->getModel();
 		
-		return $this->createForm($forms, $models, e_AJAX_REQUEST);
+		return $this->renderCreateForm($forms, $models, e_AJAX_REQUEST);
 	}
 	
 	/**
@@ -3651,7 +3656,7 @@ class e_admin_form_ui extends e_form
 		);
 		$models[] = $controller->getConfig();
 		
-		return $this->createForm($forms, $models, e_AJAX_REQUEST);
+		return $this->renderCreateForm($forms, $models, e_AJAX_REQUEST);
 	}
 	
 	/**
@@ -3667,8 +3672,10 @@ class e_admin_form_ui extends e_form
 		$controller = $this->getController();
 
 		$request = $controller->getRequest();
-		$tree = $controller->getTreeModel(); 
-		$options = array(
+		$id = $this->getElementId();
+		$tree = $options = array();
+		$tree[$id] = $controller->getTreeModel(); 
+		$options[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
 			//'url' => e_SELF, default
@@ -3681,7 +3688,7 @@ class e_admin_form_ui extends e_form
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element 
-			'table_post' => !$tree->isEmpty() ? $this->renderBatch($controller->getBatchDelete()) : '',
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete()) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element 
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
@@ -3689,7 +3696,7 @@ class e_admin_form_ui extends e_form
 			'field' => $controller->getQuery('field'), //current order field name, default - primary field
 			'asc' => $controller->getQuery('asc', 'desc'), //current 'order by' rule, default 'asc'
 		);
-		return $this->listForm($options, $tree, $ajax);
+		return $this->renderListForm($options, $tree, $ajax);
 	}
 	
 	function renderFilter($current_query = array(), $location = '', $input_options = array())

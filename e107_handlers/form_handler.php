@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.88 $
- * $Date: 2009-11-20 05:01:31 $
- * $Author: e107coders $
+ * $Revision: 1.89 $
+ * $Date: 2009-11-21 11:15:28 $
+ * $Author: secretr $
  *
 */
 
@@ -1367,7 +1367,7 @@ class e_form
 	 * Expected options array format:
 	 * <code>
 	 * <?php
-	 * $options = array(
+	 * $form_options['myplugin'] = array(
 	 * 		'id' => 'myplugin', // unique string used for building element ids, REQUIRED
 	 * 		'pid' => 'primary_id', // primary field name, REQUIRED
 	 * 		'url' => '{e_PLUGIN}myplug/admin_config.php', // if not set, e_SELF is used
@@ -1388,82 +1388,88 @@ class e_form
 	 * 		'field' => 'field_name', //current order field name, default - primary field
 	 * 		'asc' => 'desc', //current 'order by' rule, default 'asc'
 	 * );
-	 * $list = new e_admin_tree_model($data);
+	 * $tree_models['myplugin'] = new e_admin_tree_model($data);
 	 * </code>
 	 * TODO - move fieldset & table generation in separate methods, needed for ajax calls
-	 * @param array $options
-	 * @param e_admin_tree_model $list
+	 * @param array $form_options
+	 * @param e_admin_tree_model $tree_model
 	 * @param boolean $nocontainer don't enclose form in div container
 	 * @return string
 	 */
-	public function listForm($options, $list, $nocontainer = false)
+	public function renderListForm($form_options, $tree_models, $nocontainer = false)
 	{
 		$tp = e107::getParser();
-		$tree = $list->getTree();
-		$total = $list->getTotal();
 		
-		$amount = $options['perPage'];
-		$from = vartrue($options['from'], 0);
-		$field = vartrue($options['field'], $options['pid']);
-		$asc = strtoupper(vartrue($options['asc'], 'asc'));
-		$elid = $options['id'];
-		$query = isset($options['query']) ? $options['query'] : e_QUERY ;
-		$url = (isset($options['url']) ? $tp->replaceConstants($options['url'], 'abs') : e_SELF);
-		$formurl = $url.($query ? '?'.$query : '');
-		$fields = $options['fields'];
-		$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
-
-        $text = "
-			<form method='post' action='{$formurl}' id='{$elid}-list-form'>
-				".vartrue($options['fieldset_pre'])."
-				<fieldset id='{$elid}-list'>
-					<legend class='e-hideme'>".$options['legend']."</legend>
-					".vartrue($options['table_pre'])."
-					<table cellpadding='0' cellspacing='0' class='adminlist' id='{$elid}-list-table'>
-						".$this->colGroup($fields, $current_fields)."
-						".$this->thead($fields, $current_fields, varset($options['head_query']), varset($options['query']))."
-						<tbody>
-		";
-
-		if(!$tree)
+		foreach ($form_options as $fid => $options)
 		{
-			$text .= "
-							<tr>
-								<td colspan='".count($current_fields)."' class='center middle'>".LAN_NO_RECORDS."</td>
-							</tr>
-			";
-		}
-		else
-		{
+			$tree_model = $tree_models[$fid];
+			$tree = $tree_model->getTree();
+			$total = $tree_model->getTotal();
 			
-			foreach($tree as $model)
+			$amount = $options['perPage'];
+			$from = vartrue($options['from'], 0);
+			$field = vartrue($options['field'], $options['pid']);
+			$asc = strtoupper(vartrue($options['asc'], 'asc'));
+			$elid = $fid;//$options['id'];
+			$query = isset($options['query']) ? $options['query'] : e_QUERY ;
+			$url = (isset($options['url']) ? $tp->replaceConstants($options['url'], 'abs') : e_SELF);
+			$formurl = $url.($query ? '?'.$query : '');
+			$fields = $options['fields'];
+			$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
+	
+	        $text = "
+				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
+					".vartrue($options['fieldset_pre'])."
+					<fieldset id='{$elid}-list'>
+						<legend class='e-hideme'>".$options['legend']."</legend>
+						".vartrue($options['table_pre'])."
+						<table cellpadding='0' cellspacing='0' class='adminlist' id='{$elid}-list-table'>
+							".$this->colGroup($fields, $current_fields)."
+							".$this->thead($fields, $current_fields, varset($options['head_query']), varset($options['query']))."
+							<tbody>
+			";
+	
+			if(!$tree)
 			{
-				$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
+				$text .= "
+								<tr>
+									<td colspan='".count($current_fields)."' class='center middle'>".LAN_NO_RECORDS."</td>
+								</tr>
+				";
 			}
-
-		}
-
-		$text .= "
-						</tbody>
-					</table>
-					".vartrue($options['table_post'])."
-		";
-		
-		
-		if($tree && $amount)
-		{ 
-			$parms = $total.",".$amount.",".$from.",".$url.'?'.($options['np_query'] ? $options['np_query'].'&amp;' : '').'from=[FROM]';
-	    	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
-		}
-		
-		$text .= "
-				</fieldset>
-				".vartrue($options['fieldset_post'])."
-			</form>
-		";
-		if(!$nocontainer)
-		{
-			$text = '<div class="e-container">'.$text.'</div>';
+			else
+			{
+				
+				foreach($tree as $model)
+				{
+					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
+				}
+	
+			}
+	
+			$text .= "
+							</tbody>
+						</table>
+						".vartrue($options['table_post'])."
+			";
+			
+			
+			if($tree && $amount)
+			{ 
+				$parms = $total.",".$amount.",".$from.",".$url.'?'.($options['np_query'] ? $options['np_query'].'&amp;' : '').'from=[FROM]';
+		    	$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+			}
+			
+			$text .= "
+					</fieldset>
+					".vartrue($options['fieldset_post'])."
+				</form>
+			";
+			if(!$nocontainer)
+			{
+				$text = '<div class="e-container">'.$text.'</div>';
+			}
+			
 		}
 		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
 	}
@@ -1507,7 +1513,7 @@ class e_form
 	 * @param boolean $nocontainer don't enclose in div container
 	 * @return string
 	 */
-	function createForm($forms, $models, $nocontainer = false)
+	function renderCreateForm($forms, $models, $nocontainer = false)
 	{
 		$text = '';
 		foreach ($forms as $fid => $form) 
@@ -1523,103 +1529,9 @@ class e_form
 			foreach ($form['fieldsets'] as $elid => $data) 
 			{
 				$elid = $form['id'].'-'.$elid;
-				$text .= vartrue($data['fieldset_pre'])."
-					<fieldset id='{$elid}'>
-						<legend>".vartrue($data['legend'])."</legend>
-						".vartrue($data['table_pre'])."
-						<table cellpadding='0' cellspacing='0' class='adminedit'>
-							<colgroup span='2'>
-								<col class='col-label' />
-								<col class='col-control' />
-							</colgroup>
-							<tbody>
-				";
-							
-				foreach($data['fields'] as $key => $att)
-				{
-					// convert aliases - not supported in edit mod
-					if(!$model->has($key) && $att['alias'])
-					{
-						$key = $att['field']; 
-					}
-					$parms = vartrue($att['formparms'], array());
-					if(!is_array($parms)) parse_str($parms, $parms);
-					$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
-					$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
-					
-					// type null - system (special) fields
-					if($att['type'] !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
-					{
-						$text .= "
-							<tr>
-								<td class='label'>
-									".defset($att['title'], $att['title']).$label."
-								</td>
-								<td class='control'>
-									".$this->renderElement($key, $model->getIfPosted($key), $att)."
-									{$help}
-								</td>
-							</tr>
-						";
-					}
-					//if($bckp) $model->remove($bckp);
-									
-				}
-		
-				$text .= "
-							</tbody>
-						</table>	
-						".vartrue($data['table_post'])."
-						<div class='buttons-bar center'>
-				";
-							// After submit options
-							$defsubmitopt = array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current');
-							$submitopt = isset($data['after_submit_options']) ? $data['after_submit_options'] : true;
-							if(true === $submitopt)
-							{
-								$submitopt = $defsubmitopt;
-							}
-							
-							if($submitopt)
-							{
-								$selected = isset($data['after_submit_default']) && array_key_exists($data['after_submit_default'], $submitopt) ? $data['after_submit_default'] : '';
-								$text .= '
-									<div class="options">
-										After submit: '.$this->radio_multi('__after_submit_action', $submitopt, $selected, false).'
-									</div>
-								';
-							}
-							
-							$triggers = vartrue($data['triggers'], 'auto');
-							if(is_string($triggers) && 'auto' === $triggers)
-							{
-								$triggers = array();
-								if($model->getId())
-								{
-									$triggers['submit'] = array(LAN_UPDATE, 'update', $model->getId());
-								}
-								else
-								{
-									$triggers['submit'] = array(LAN_CREATE, 'create', 0);
-								}
-								$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
-							}
-							
-							foreach ($triggers as $trigger => $tdata)
-							{
-								$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
-								if(isset($tdata[2]))
-								{
-									$text .= $this->hidden($trigger.'_value', $tdata[2]);
-								}
-							}
-							
-				$text .= "
-						</div>
-					</fieldset>
-					".vartrue($data['fieldset_post'])."
-				";	
+				$text .= $this->renderCreateFieldset($elid, $data, $model, $nocontainer);
 			}
+			
 			$text .= "
 			</form>
 			";	
@@ -1629,6 +1541,120 @@ class e_form
 		{
 			$text = '<div class="e-container">'.$text.'</div>';
 		}
+		return $text;
+	}
+	
+	function renderCreateFieldset($id, $fdata, $model, $nocontainer = false)
+	{
+		$text = vartrue($fdata['fieldset_pre'])."
+			<fieldset id='{$id}'>
+				<legend>".vartrue($fdata['legend'])."</legend>
+				".vartrue($fdata['table_pre'])."
+				<table cellpadding='0' cellspacing='0' class='adminedit'>
+					<colgroup span='2'>
+						<col class='col-label' />
+						<col class='col-control' />
+					</colgroup>
+					<tbody>
+		";
+					
+		foreach($fdata['fields'] as $key => $att)
+		{
+			// convert aliases - not supported in edit mod
+			if($att['alias'] && !$model->hasData($key))
+			{
+				$key = $att['field']; 
+			}
+			
+			$parms = vartrue($att['formparms'], array());
+			if(!is_array($parms)) parse_str($parms, $parms);
+			$label = vartrue($att['note']) ? '<div class="label-note">'.deftrue($att['note'], $att['note']).'</div>' : '';
+			$help = vartrue($att['help']) ? '<div class="field-help">'.deftrue($att['help'], $att['help']).'</div>' : '';
+			
+			$valPath = trim(vartrue($att['dataPath'], $key), '/');
+			$keyName = $key;
+			if(strpos($valPath, '/')) //not TRUE, cause string doesn't start with /
+			{
+				$tmp = explode('/', $valPath);
+				$keyName = array_shift($tmp);
+				foreach ($tmp as $path)
+				{
+					$keyName .= '['.$path.']';
+				}
+			}
+			
+			// type null - system (special) fields
+			if($att['type'] !== null && !vartrue($att['noedit']) && $key != $model->getFieldIdName())
+			{
+				$text .= "
+					<tr>
+						<td class='label'>
+							".defset($att['title'], $att['title']).$label."
+						</td>
+						<td class='control'>
+							".$this->renderElement($keyName, $model->getIfPosted($valPath), $att)."
+							{$help}
+						</td>
+					</tr>
+				";
+			}
+			//if($bckp) $model->remove($bckp);
+							
+		}
+
+		$text .= "
+					</tbody>
+				</table>	
+				".vartrue($fdata['table_post'])."
+				<div class='buttons-bar center'>
+		";
+					// After submit options
+					$defsubmitopt = array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current');
+					$submitopt = isset($fdata['after_submit_options']) ? $fdata['after_submit_options'] : true;
+					if(true === $submitopt)
+					{
+						$submitopt = $defsubmitopt;
+					}
+					
+					if($submitopt)
+					{
+						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : '';
+						$text .= '
+							<div class="options">
+								After submit: '.$this->radio_multi('__after_submit_action', $submitopt, $selected, false).'
+							</div>
+						';
+					}
+					
+					$triggers = vartrue($fdata['triggers'], 'auto');
+					if(is_string($triggers) && 'auto' === $triggers)
+					{
+						$triggers = array();
+						if($model->getId())
+						{
+							$triggers['submit'] = array(LAN_UPDATE, 'update', $model->getId());
+						}
+						else
+						{
+							$triggers['submit'] = array(LAN_CREATE, 'create', 0);
+						}
+						$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
+					}
+					
+					foreach ($triggers as $trigger => $tdata)
+					{
+						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
+						if(isset($tdata[2]))
+						{
+							$text .= $this->hidden($trigger.'_value', $tdata[2]);
+						}
+					}
+					
+		$text .= "
+				</div>
+			</fieldset>
+			".vartrue($fdata['fieldset_post'])."
+		";	
 		return $text;
 	}
 	
