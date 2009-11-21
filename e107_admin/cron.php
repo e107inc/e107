@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-11-21 22:14:06 $
+|     $Revision: 1.22 $
+|     $Date: 2009-11-21 22:26:15 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -180,6 +180,7 @@ function cronName($classname,$method)
 		list($class_name,$method_name) = explode("__",$class_func);
 		$mes = e107::getMessage();
 		
+		$taskName = $class_name;
 		if($class_name =='_system_cron')
 		{
 			require_once(e_HANDLER.'cron_class.php');
@@ -187,9 +188,10 @@ function cronName($classname,$method)
 		else
 		{
 			require_once(e_PLUGIN.$class_name.'/e_cron.php');
+			$class_name .= '_cron';
 		}
-		$status =  $this->cronExecuteMethod($class_name.'_cron',$method_name) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		$mes->add("Running <b>".$this->cronName($class_name,$method_name)."</b>", $status); 	
+		$status =  $this->cronExecuteMethod($class_name,$method_name) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$mes->add("Running <b>".$this->cronName($taskName,$method_name)."</b>", $status); 	
 
 	}
 
