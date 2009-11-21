@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.79 $
- * $Date: 2009-11-20 23:27:25 $
- * $Author: secretr $
+ * $Revision: 1.80 $
+ * $Date: 2009-11-21 11:36:10 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -140,6 +140,7 @@ class e107
 		'comment'					=> '{e_HANDLER}comment_class.php',
 		'e107_user_extended'		=> '{e_HANDLER}user_extended_class.php',
 		'e_userperms'				=> '{e_HANDLER}user_handler.php',
+		'sitelinks'					=> '{e_HANDLER}sitelinks_class.php'
 	);
 	
 	/**
@@ -697,6 +698,19 @@ class e107
 	{
 		return self::getSingleton('user_class', true);
 	}
+	
+	
+	
+	/**
+	 * Retrieve sitelinks singleton object
+	 *
+	 * @return user_class
+	 */
+	public static function getSitelinks()
+	{
+		return self::getSingleton('sitelinks', true);
+	}	
+
 	
 	/**
 	 * Retrieve render singleton object
