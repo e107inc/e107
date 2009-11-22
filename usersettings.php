@@ -9,9 +9,9 @@
  * User settings modify
  *
  * $Source: /cvs_backup/e107_0.8/usersettings.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-11-18 20:45:20 $
- * $Author: e107steved $
+ * $Revision: 1.45 $
+ * $Date: 2009-11-22 14:10:03 $
+ * $Author: e107coders $
  *
 */
 /*
@@ -49,20 +49,14 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_usersettings.php');
 
 require_once (e_HANDLER.'ren_help.php');
 require_once (e_HANDLER.'user_extended_class.php');
-require_once (e_HANDLER.'user_handler.php');
+// require_once (e_HANDLER.'user_handler.php');
 require_once(e_HANDLER.'validator_class.php');
 $ue = new e107_user_extended;
-$userMethods = new UserHandler;
-require_once (e_HANDLER.'ren_help.php');
 
-if (is_readable(THEME.'usersettings_template.php'))
-{
-	include_once (THEME.'usersettings_template.php');
-}
-else
-{
-	include_once (e_THEME.'templates/usersettings_template.php');
-}
+$userMethods = e107::getSession();
+
+require_once (e_HANDLER.'ren_help.php');
+include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template. 
 include_once (e_FILE.'shortcode/batch/usersettings_shortcodes.php');
 
 require_once (e_HANDLER.'calendar/calendar_class.php');

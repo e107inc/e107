@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-11-21 11:36:10 $
+ * $Revision: 1.25 $
+ * $Date: 2009-11-22 14:10:07 $
  * $Author: e107coders $
  */
 
@@ -130,7 +130,7 @@ class sitelinks
 			foreach ($this->eLinkList['head_menu'] as $key => $link){
 				$main_linkid = "sub_".$link['link_id'];
 
-				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !$style['linkmainonly'] && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
+				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !vartrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
 
 				$render_link[$key] = $this->makeLink($link,'', $style, $css_class);
 
@@ -212,7 +212,7 @@ class sitelinks
 				$tmp = explode('.', $linkInfo['link_name'], 3);
 				$linkInfo['link_name'] = $tmp[2];
 			}
-			$indent = ($style['linkdisplay'] != 3) ? $style['subindent'] : "";
+			$indent = ($style['linkdisplay'] != 3) ? varset($style['subindent']) : "";
 		}
 
 		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)

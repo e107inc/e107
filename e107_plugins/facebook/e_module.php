@@ -2,8 +2,6 @@
 //error_reporting(E_ALL);
 
 
-
-
 if (e_ADMIN_AREA !== TRUE)
 {
 
@@ -20,7 +18,7 @@ if (e_ADMIN_AREA !== TRUE)
 		prevent_cache_headers();
 	}
 
-	define(XMLNS, "xmlns:fb='http://www.facebook.com/2008/fbml'");
+	define('XMLNS', "xmlns:fb='http://www.facebook.com/2008/fbml'");
 	
 	global $pref;
 	

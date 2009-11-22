@@ -15,7 +15,8 @@ if (!defined('e107_INIT'))
 if (USER_AREA == TRUE)
 {
 	//TODO use popup window for 'invite friends'.
-	$CUSTOMPAGES = array_push(explode(' ', $CUSTOMPAGES), ' facebook.php');
+	// $CUSTOMPAGES = array_push(explode(' ', $CUSTOMPAGES), ' facebook.php');	
+	
 	$fb = e107::getSingleton('e_facebook',e_PLUGIN.'facebook/facebook_function.php');
 	
 	include_once (e_PLUGIN.'facebook/facebook_function.php');

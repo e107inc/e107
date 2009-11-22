@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-11-18 14:46:28 $
- * $Author: secretr $
+ * $Revision: 1.38 $
+ * $Date: 2009-11-22 14:10:05 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -328,7 +328,7 @@ class media_admin_ui extends e_admin_ui
 					
 			$oldpath = 'temp/'.$upload['name'];
 			$newpath = $typePath.'/'.$upload['name'];
-						
+									
 			$upload_data = array( // not saved if 'noedit' is active. 
 				'media_type'		=> $upload['type'],
 				'media_datestamp'	=> time(), 

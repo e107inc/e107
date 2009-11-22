@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/fpw.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2009-11-18 01:04:24 $
+|     $Revision: 1.11 $
+|     $Date: 2009-11-22 14:10:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -42,21 +42,14 @@ if ($pref['membersonly_enabled'])
 {
 	if (!$FPW_TABLE_HEADER) 
 	{
-		if (file_exists(THEME."fpw_template.php")) 
-		{
-			require_once(THEME."fpw_template.php");
-		} 
-		else 
-		{
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/fpw_template.php");
-		}
+		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template. 
 	}
 	$HEADER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_HEADER);
 	$FOOTER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_FOOTER);
 }
 
-require_once(e_HANDLER.'user_handler.php');
-$user_info = new UserHandler;
+// require_once(e_HANDLER.'user_handler.php');
+$user_info = e107::getSession();
 
 require_once(HEADERF);
 

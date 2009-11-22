@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.80 $
- * $Date: 2009-11-21 11:36:10 $
+ * $Revision: 1.81 $
+ * $Date: 2009-11-22 14:10:07 $
  * $Author: e107coders $
 */
 
@@ -140,7 +140,9 @@ class e107
 		'comment'					=> '{e_HANDLER}comment_class.php',
 		'e107_user_extended'		=> '{e_HANDLER}user_extended_class.php',
 		'e_userperms'				=> '{e_HANDLER}user_handler.php',
-		'sitelinks'					=> '{e_HANDLER}sitelinks_class.php'
+		'UserHandler'				=> '{e_HANDLER}user_handler.php',
+		'sitelinks'					=> '{e_HANDLER}sitelinks_class.php',
+		'redirection'				=> '{e_HANDLER}redirection_class.php'
 	);
 	
 	/**
@@ -216,6 +218,8 @@ class e107
 		{
 			$this->e107_dirs = $e107_paths;
 			$this->set_paths();
+			$this->set_base_path();
+			$this->set_eUrls();
 			$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
 		}
 		return $this;
@@ -651,6 +655,8 @@ class e107
 		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php');
 	}
 	
+
+	
 	/**
 	 * Retrieve sc parser singleton object
 	 *
@@ -698,7 +704,17 @@ class e107
 	{
 		return self::getSingleton('user_class', true);
 	}
-	
+
+
+	/**
+	 * Retrieve redirection singleton object
+	 *
+	 * @return redirection
+	 */
+	public static function getRedirect()
+	{
+		return self::getSingleton('redirection', true);
+	}	
 	
 	
 	/**
@@ -730,6 +746,16 @@ class e107
 	public static function getEvent()
 	{
 		return self::getSingleton('e107_event', true);
+	}
+	
+	/**
+	 * Retrieve user-session singleton object
+	 *
+	 * @return e107_event
+	 */
+	public static function getSession()
+	{
+		return self::getSingleton('UserHandler', true);
 	}
 	
 	/**
@@ -1230,6 +1256,9 @@ class e107
 	}
 
 
+
+
+
 	/**
 	 * Set all environment vars and constants
 	 * FIXME - remove globals
@@ -1398,6 +1427,59 @@ class e107
 		$fixed_path = (substr($fixed_path, 1, 2) == ":/" ? substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
 	}
+
+
+
+
+
+	/**
+	 * Define e_PAGE, e_SELF, e_ADMIN_AREA and USER_AREA;
+	 * The following files are assumed to use admin theme:
+	 * 1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
+	 * 2. any plugin file starting with 'admin_'
+	 * 3. any plugin file in a folder called admin/
+	 * 4. any file that specifies $eplug_admin = TRUE;
+	 * @return 
+	 */
+	public function set_eUrls()
+	{
+		global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY;
+		
+		$pref = $this->getConfig()->getPref();
+		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+		
+		define('e_PAGE', $page);
+		define('e_SELF', ($pref['ssl_enabled'] == '1' ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
+
+		define('e_SIGNUP', e_BASE.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
+		define('e_LOGIN', e_BASE.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
+
+
+
+		// e_SELF has the full HTML path
+		$inAdminDir = FALSE;
+		$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
+		$e107Path = str_replace($this->base_path, '', e_SELF);				// Knock off the initial bits
+		
+		if	(
+			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
+			  || ($isPluginDir && (strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
+			  || (varsettrue($eplug_admin) || defsettrue('ADMIN_AREA'))		// Admin forced
+			)
+		{
+			$inAdminDir = TRUE;	
+		}
+		
+		// This should avoid further checks - NOTE: used in js_manager.php
+		define('e_ADMIN_AREA', ($inAdminDir  && !defsettrue('USER_AREA'))); //Force USER_AREA added
+	}
+
+
+
+
+
+
+
 
 	/**
 	 * Check if current user is banned

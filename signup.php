@@ -9,9 +9,9 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-11-18 20:45:20 $
- * $Author: e107steved $
+ * $Revision: 1.43 $
+ * $Date: 2009-11-22 14:10:03 $
+ * $Author: e107coders $
  *
 */
 
@@ -35,18 +35,11 @@ $usere = new e107_user_extended;
 require_once(e_HANDLER.'calendar/calendar_class.php');
 $cal = new DHTML_Calendar(true);
 require_once(e_HANDLER.'validator_class.php');
-require_once(e_HANDLER.'user_handler.php');
-$userMethods = new UserHandler;
+// require_once(e_HANDLER.'user_handler.php');
+$userMethods = e107::getSession();
 $userMethods->deleteExpired();				// Delete time-expired partial registrations
 
-if (is_readable(THEME.'signup_template.php'))
-{
-	require_once(THEME.'signup_template.php');
-}
-else
-{
-	require_once(e_THEME.'templates/signup_template.php');
-}
+require_once(e107::coreTemplatePath('signup')); //correct way to load a core template. 
 
 include_once(e_FILE.'shortcode/batch/signup_shortcodes.php');
 
@@ -262,9 +255,13 @@ if($signup_imagecode)
 	$sec_img = new secure_image;
 }
 
-if (USER || ($pref['user_reg'] == 0) || ($pref['auth_method'] != 'e107'))
+if (USER || ($pref['user_reg'] == 0) || (vartrue($pref['auth_method'],'e107') != 'e107'))
 {
-	header('location: '.e_HTTP.'index.php');
+	//header('location: '.e_HTTP.'index.php');
+	var_dump(USER);
+	var_dump($pref['user_reg']);
+	var_dump($pref['auth_method']);
+	echo "hello";
 	exit;
 }
 
