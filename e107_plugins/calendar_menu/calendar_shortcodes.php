@@ -6,822 +6,1102 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ * Shortcodes for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
- */
+ * $Revision: 1.15 $
+ * $Date: 2009-11-22 10:11:28 $
+ * $Author: e107steved $
+ *
+*/
+
+/*
+TODO:
+	1. Could make date/month arrays 1-based instead of 0-based - might simplify maths
+	2.	Good way of reading categories
+
+	2. EC_EVENT_EVENT_DATE_TIME uses global template variable
+	3. EC_NEXT_EVENT_GAP uses global $cal_totev - use $numEvents
+	4. Have 'currentMonth' flag (means 'current day' if $ds == 'one') ?
+	5. Check whether $prop should be calculated better
+	4. Finish the conversion!
+*/
 
 if (!defined('e107_INIT')) { exit; }
-include_once(e_HANDLER.'shortcode_handler.php');
-$calendar_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
+//require_once(e_HANDLER.'shortcode_handler.php');				// Should only be temporary?
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');	
+register_shortcode('event_calendar_shortcodes', true);
+initShortcodeClass('event_calendar_shortcodes');
+
 /*
-// TIME SWITCH BUTTONS ------------------------------------------------
-SC_BEGIN EC_PREV_MONTH
-	global $previous, $months, $prevmonth;
-	return "<a href='".e_SELF."?".$previous."'>&lt;&lt; ".$months[($prevmonth-1)]."</a>";
-SC_END
+Navigation Shortcodes
+---------------------
+EC_PREV_MONTH
+EC_CURRENT_MONTH
+EC_NEXT_MONTH
+EC_PREV_YEAR
+EC_NEXT_YEAR
+EC_MONTH_LIST
 
-SC_BEGIN EC_NEXT_MONTH
-	global $next, $months, $nextmonth;
-	return "<a href='".e_SELF."?".$next."'> ".$months[($nextmonth-1)]." &gt;&gt;</a>";
-SC_END
+Navigation Buttons
+------------------
+EC_NAV_BUT_ALLEVENTS
+EC_NAV_BUT_VIEWCAT
+EC_NAV_BUT_SUBSCRIPTION
+EC_NAV_BUT_ENTEREVENT
+EC_NAV_LINKCURRENTMONTH
+EC_NAV_BUT_PRINTLISTS
 
-SC_BEGIN EC_CURRENT_MONTH
-	global $EC_CURRENT_MONTH, $pref, $months, $month, $year;
-	if($pref['eventpost_dateformat'] == 'my') 
+Shortcodes for 'big' calendar display
+-------------------------------------
+EC_CALENDAR_CALENDAR_HEADER_DAY
+EC_CALENDAR_CALENDAR_DAY_EVENT_HEADING
+EC_CALENDAR_CALENDAR_DAY_TODAY_HEADING
+EC_CALENDAR_CALENDAR_DAY_EMPTY_HEADING
+EC_CALENDAR_CALENDAR_RECENT_ICON
+
+Shortcodes for Event List
+-------------------------
+EC_EVENTLIST_CAPTION
+
+Return event information
+------------------------
+EC_EVENT_LOCATION - event location
+EC_EVENT_RECENT_ICON
+EC_SHOWEVENT_IMAGE
+EC_SHOWEVENT_INDICAT
+EC_SHOWEVENT_HEADING
+EC_IF_ALLDAY
+EC_IF_SAMEDAY
+EC_IFNOT_SAMEDAY
+EC_IFNOT_ALLDAY
+EC_EVENT_HEADING_DATE - date for heading
+EC_EVENT_DATE_START - date for body
+EC_EVENT_TIME_START
+EC_EVENT_DATE_END
+EC_EVENT_TIME_END
+EC_EVENT_EVENT_DATE_TIME
+EC_EVENT_TITLE
+EC_EVENT_CAT_ICON
+EC_EVENT_ID
+EC_EVENT_DISPLAYSTYLE
+EC_EVENT_DETAILS
+EC_EVENT_CATEGORY
+EC_EVENT_AUTHOR
+EC_EVENT_CONTACT
+EC_EVENT_THREAD
+EC_EVENT_OPTIONS
+EC_EC_EVENT_LINK
+EC_EVENT_SHORT_DATE
+
+Event Archive
+-------------
+EC_EVENTARCHIVE_CAPTION
+EC_EVENTARCHIVE_DATE
+EC_EVENTARCHIVE_DETAILS
+EC_EVENTARCHIVE_HEADING
+EC_EVENTARCHIVE_EMPTY
+
+Forthcoming Events menu
+-----------------------
+EC_NEXT_EVENT_RECENT_ICON
+EC_NEXT_EVENT_TIME
+EC_NEXT_EVENT_DATE
+EC_NEXT_EVENT_TITLE
+EC_NEXT_EVENT_ICON
+EC_NEXT_EVENT_GAP
+
+
+Shortcodes for event calendar mailout
+-------------------------------------
+EC_MAIL_HEADING_DATE - event start date, optional parameter to format date (intended for headings etc)
+EC_MAIL_DATE_START - event start date, optional parameter to format date  (intended for body text)
+EC_MAIL_DATE_START_ALLDAY - returns date only for all day events, otherwise empty string
+EC_MAIL_DATE_START_TIMED - returns date only for 'timed' events, otherwise empty string
+EC_MAIL_TIME_START - event start time
+EC_MAIL_DATE_END - event end date (empty string if same as start date)
+EC_MAIL_TIME_END - time at which event ends (empty string if all day)
+EC_MAIL_TITLE - title of event
+EC_MAIL_ID - event ID (in database)
+EC_MAIL_DETAILS - event details
+EC_MAIL_CATEGORY - event category text
+EC_MAIL_LOCATION - use EC_EVENT_LOCATION
+EC_MAIL_CONTACT - event contact
+EC_MAIL_THREAD - forum thread
+EC_MAIL_LINK - link to event detail on web site
+EC_MAIL_SHORT_DATE - short date (day, month) for event start
+EC_MAIL_SUBJECT - subject for mailout
+
+List printing
+-------------
+EC_PR_LIST_TITLE
+EC_PR_CAT_LIST
+EC_PR_CHANGE_YEAR
+EC_PR_CHANGE_MONTH
+EC_NOW_TIME
+EC_NOW_DATE
+EC_PR_LIST_START
+EC_PR_LIST_END
+EC_PRINT_BUTTON
+EC_IF_PRINT
+EC_IFNOT_PRINT
+EC_IF_DISPLAY
+EC_IFNOT_DISPLAY
+EC_IF_PDF
+EC_IFNOT_PDF
+*/
+class event_calendar_shortcodes
+{
+	protected $e107;
+
+	public 	$event;			// Current event being displayed
+	public 	$ecalClass;		// Pointer to event calendar class
+	public	$headerDay = 0;	// Day number for header
+	public	$todayStart;	// Start of current day
+	public	$curDay;		// Current day of month (1..31)
+	public	$numEvents = 0;	// Number of events to be expected in certain list formats
+	public	$catFilter = '*';	// Event category filter
+	public	$eventDisplayCodes = '';	// Set to be an array of options
+	public	$ecOutputType = '';	// Used by printing routines
+	public	$changeFlags = array();	// Used by printing routines
+	public	$printVars = array();	// USed by printing routine
+
+	private $months	= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, 
+						EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);		// 'Long' month names
+	private $monthabb = array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, 
+						EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);		// 'Short' month names
+	private $days = array(EC_LAN_DAY_1, EC_LAN_DAY_2, EC_LAN_DAY_3, EC_LAN_DAY_4, EC_LAN_DAY_5, EC_LAN_DAY_6, EC_LAN_DAY_7, 
+						EC_LAN_DAY_8, EC_LAN_DAY_9, EC_LAN_DAY_10, EC_LAN_DAY_11, EC_LAN_DAY_12, EC_LAN_DAY_13, EC_LAN_DAY_14, 
+						EC_LAN_DAY_15, EC_LAN_DAY_16, EC_LAN_DAY_17, EC_LAN_DAY_18, EC_LAN_DAY_19, EC_LAN_DAY_20, EC_LAN_DAY_21, 
+						EC_LAN_DAY_22, EC_LAN_DAY_23, EC_LAN_DAY_24, EC_LAN_DAY_25, EC_LAN_DAY_26, EC_LAN_DAY_27, EC_LAN_DAY_28, 
+						EC_LAN_DAY_29, EC_LAN_DAY_30, EC_LAN_DAY_31);			// Days of month (numbers)
+
+	private	$nowDay;	// Today
+	private	$nowMonth;
+	private	$nowYear;
+
+	private $day;		// Day of month - often not used
+	private $month;		// Month to display
+	private $year;		// Year to display
+
+	private $previous;	// Previous month - date stamp
+	private	$next;		// Next month - date stamp
+
+	private $monthStart;
+	private $monthEnd;
+	
+	private $prevMonth;
+	private $nextMonth;
+	
+	private $prevLink;	// Previous year
+	private $py;
+	private $nextLink;	// Next year
+	private $ny;
+	
+	private $prop;		// Start date for new event entry
+	private	$ds = '';	// Display type for some shortcodes (mostly event listing)
+
+	private	$ourDB;		// For when we need a DB object
+
+
+	public function __construct()
 	{
-	  $EC_CURRENT_MONTH = $months[($month-1)]." ".$year;
-	} 
-	else 
+		$this->e107 = e107::getInstance();
+	}
+
+
+	/**
+	 * Set the current date for calendar display
+	 *
+	 * Routine then calculates various values needed for shortcodes
+	 *
+	 * @param array $curDate - As returned by getdate()
+	 *
+	 * @return BOOLEAN TRUE
+	 */
+	public function setCalDate($curDate)
 	{
-	  $EC_CURRENT_MONTH = $year." ".$months[($month-1)];
+		$this->ds = varset($curDate['ds'],'');
+
+		$this->day = varset($curDate['mday'], 0);				// Day number being shown - rarely relevant
+		$this->month = $curDate['mon'];							// Number of month being shown
+		$this->year	= $curDate['year'];							// Number of year being shown
+		$this->monthStart	= mktime(0, 0, 0, $curDate['mon'], 1, $curDate['year']);			// Start of month to be shown
+		$this->monthEnd	= mktime(0, 0, 0, $curDate['mon'] + 1, 1, $curDate['year']) - 1;	// End of month to be shown
+		
+		
+		// Calculate date code for previous month
+		$this->prevMonth = $curDate['mon']-1;
+		$prevYear	= $curDate['year'];
+		if ($this->prevMonth == 0)
+		{
+			$this->prevMonth = 12;
+			$prevYear--;
+		} 
+		$this->previous = mktime(0, 0, 0, $this->prevMonth, 1, $prevYear);		// Previous month - Used by nav
+
+		// Calculate date code for next month
+		$this->nextMonth = $curDate['mon'] + 1;
+		$nextYear	= $curDate['year'];
+		if ($this->nextMonth == 13)
+		{
+			$this->nextMonth	= 1;
+			$nextYear++;
+		} 
+		$this->next = mktime(0, 0, 0, $this->nextMonth, 1, $nextYear);		// Next month - used by nav
+
+
+		$this->py	= $curDate['year']-1;									// Number of previous year for nav
+		$this->prevLink = mktime(0, 0, 0, $curDate['mon'], 1, $this->py);
+		$this->ny	= $curDate['year'] + 1;								// Number of next year for nav
+		$this->nextLink = mktime(0, 0, 0, $curDate['mon'], 1, $this->ny);
+
+		$this->prop		= gmmktime(0, 0, 0, $curDate['mon'], $curDate['mday'], $curDate['year']);		// Sets start date for new event entry
+
+		$this->nowMonth	= $this->ecalClass->cal_date['mon'];
+		$this->nowYear	= $this->ecalClass->cal_date['year'];
+		$this->nowDay	= $this->ecalClass->cal_date['mday'];
+		return TRUE;
 	}
-	return $EC_CURRENT_MONTH;
-SC_END
 
-SC_BEGIN EC_PREV_YEAR
-	global $prevlink, $py;
-	return "<a href='".e_SELF."?".$prevlink."'>&lt;&lt; ".$py."</a>";
-SC_END
-
-SC_BEGIN EC_NEXT_YEAR
-	global $nextlink, $ny;
-	return "<a href='".e_SELF."?".$nextlink."'>".$ny." &gt;&gt;</a>";
-SC_END
-
-SC_BEGIN EC_MONTH_LIST
-	global $EC_MONTH_LIST, $year, $monthjump, $monthabb;
-	$EC_MONTH_LIST = "";
-	for ($ii = 0; $ii < 12; $ii++)
+	// Navigation shortcodes
+	public function sc_ec_prev_month($parm = '')
 	{
-    	$m = $ii + 1;
-    	$monthjump = mktime(0, 0, 0, $m, 1, $year);
-		$EC_MONTH_LIST .= "<a href='".e_SELF."?".$monthjump."'>".$monthabb[$ii]."</a> &nbsp;";
+		return "<a href='".e_SELF."?".$this->previous."'>&lt;&lt; ".$this->months[($this->prevMonth-1)]."</a>";
 	}
-	return $EC_MONTH_LIST;
-SC_END
 
-
-
-// NAVIGATION BUTTONS ------------------------------------------------
-SC_BEGIN EC_NAV_BUT_ALLEVENTS
-	$allevents = (e_PAGE == "event.php" ? EC_LAN_96 : EC_LAN_93);
-	return "<input class='button' type='submit' style='width:140px;' name='viewallevents' value='".$allevents."' title='".$allevents."' />";
-SC_END
-
-SC_BEGIN EC_NAV_BUT_VIEWCAT
-	//return "<input type='hidden' name='do' value='vc' /><input class='button' type='submit' style='width:140px;' name='viewcat' value='".EC_LAN_92."' />";
-	return "<input type='hidden' name='do' value='vc' />";
-SC_END
-
-SC_BEGIN EC_NAV_BUT_SUBSCRIPTION
-	global $pref;
-	if (isset($pref['eventpost_asubs']) && ($pref['eventpost_asubs']>0) && USER)
+	public function sc_ec_next_month($parm = '')
 	{
-	  return "<input class='button' type='submit' style='width:140px;' name='subs' value='".EC_LAN_123."' />";
+		return "<a href='".e_SELF."?".$this->next."'> ".$this->months[($this->nextMonth-1)]." &gt;&gt;</a>";
 	}
-SC_END
 
-SC_BEGIN EC_NAV_BUT_PRINTLISTS
-	global $pref;
-	if (isset($pref['eventpost_printlists']) && ($pref['eventpost_printlists']>0) && USER)
+
+	public function sc_ec_current_month($parm = '')
 	{
-	  return "<input class='button' type='submit' style='width:140px;' name='printlists' value='".EC_LAN_164."' />";
+		global $pref;
+		if($pref['eventpost_dateformat'] == 'my') 
+		{
+			return $this->months[($this->month-1)].' '.$this->year;
+		} 
+			return $this->year.' '.$this->months[($this->month-1)];
 	}
-SC_END
 
-SC_BEGIN EC_NAV_BUT_ENTEREVENT
-	global $EC_NAV_BUT_ENTEREVENT, $pref, $prop, $cal_super;
-	$EC_NAV_BUT_ENTEREVENT = "<input type='hidden' name='enter_new_val' value='".$prop."' />";
-	if ($cal_super || check_class($pref['eventpost_admin']))
+
+	public function sc_ec_prev_year($parm = '')
 	{
-    	$EC_NAV_BUT_ENTEREVENT .= "<input class='button' type='submit' style='width:140px;' name='doit' value='".EC_LAN_94."' />";
+		return "<a href='".e_SELF."?".$this->prevLink."'>&lt;&lt; ".$this->py."</a>";
 	}
-	return $EC_NAV_BUT_ENTEREVENT;
-SC_END
 
-SC_BEGIN EC_NAV_LINKCURRENTMONTH
-	global $EC_NAV_LINKCURRENTMONTH, $month, $nowmonth, $year, $nowyear, $current, $ds;
-	$EC_NAV_LINKCURRENTMONTH = "";
-	if ($month != $nowmonth || $year != $nowyear || $ds == 'one'){
-		$EC_NAV_LINKCURRENTMONTH = "<input class='button' type='button' style='width:140px;' name='cur' value='".EC_LAN_40."' onclick=\"javascript:document.location='".e_SELF."?$current'\" />";
-	}
-	return $EC_NAV_LINKCURRENTMONTH;
-SC_END
-
-SC_BEGIN EC_NAV_CATEGORIES
-	global $EC_NAV_CATEGORIES, $sql, $pref, $_POST, $cal_super, $cat_filter;
-	(isset($parm) && ($parm == 'nosubmit')) ? $insert = '' : $insert = "onchange='this.form.submit()'";
-	$EC_NAV_CATEGORIES = "<select name='event_cat_ids' class='tbox' style='width:140px;' {$insert} >\n<option value='all'>".EC_LAN_97."</option>\n";
-	$event_cat_id = ( isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] ? $_POST['event_cat_ids'] : null);
-
-	$cal_arg = ($cal_super ? "" : " find_in_set(event_cat_class,'".USERCLASS_LIST."') AND ");
-	$cal_arg .= "(event_cat_name != '".EC_DEFAULT_CATEGORY."') ";
-	$sql->db_Select("event_cat", "*", $cal_arg);
-	while ($row = $sql->db_Fetch()){
- 	   if ($row['event_cat_id'] == $cat_filter){
- 	       $EC_NAV_CATEGORIES .= "<option class='tbox' value='".$row['event_cat_id']."' selected='selected'>".$row['event_cat_name']."</option>\n";
-  	  }else{
-    	    $EC_NAV_CATEGORIES .= "<option value='".$row['event_cat_id']."'>".$row['event_cat_name']."</option>\n";
-    	}
-	}
-	$EC_NAV_CATEGORIES .= "</select>\n";
-	return $EC_NAV_CATEGORIES;
-SC_END
-
-
-
-// CALENDAR SHOWEVENT ------------------------------------------------------------
-SC_BEGIN EC_SHOWEVENT_IMAGE
-	//TODO review bullet
-	global $ev;
-
-	$img = '';
-	if($ev['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$ev['event_cat_icon']))
+	public function sc_ec_next_year($parm = '')
 	{
-	  $img = "<img style='border:0' src='".e_PLUGIN_ABS."calendar_menu/images/".$ev['event_cat_icon']."' alt='' height='".$ev['imagesize']."' width='".$ev['imagesize']."' />";
+		return "<a href='".e_SELF."?".$this->nextLink."'>".$this->ny." &gt;&gt;</a>";
 	}
-	elseif(defined('BULLET'))
-	{
-		$img = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
-	}
-	elseif(file_exists(THEME.'images/bullet2.gif'))
-	{
-		$img = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
-	}
-	return $img;
-SC_END
 
-SC_BEGIN EC_SHOWEVENT_INDICAT
-	global $ev;
-	return $ev['indicat'];
-SC_END
 
-SC_BEGIN EC_SHOWEVENT_HEADING
-	global $ev, $datearray, $c, $tp;
-	$linkut = mktime(0 , 0 , 0 , $datearray['mon'], $c, $datearray['year']);
-	$show_title = $tp->toHTML($ev['event_title'],FALSE,'TITLE');	// Remove entities in case need to truncate
-	if(isset($ev['fulltopic']) && !$ev['fulltopic'])
+	public function sc_ec_month_list($parm = '')
 	{
-	  $show_title = $tp->text_truncate($show_title, 10, "...");
+		$ret = '';
+		for ($ii = 0; $ii < 12; $ii++)
+		{
+			$monthJump = mktime(0, 0, 0, $ii+1, 1, $this->year);
+			$ret .= "<a href='".e_SELF."?".$monthJump."'>".$this->monthabb[$ii]."</a> &nbsp;";
+		}
+		return $ret;
 	}
-	if($ev['startofevent'])
-	{
-	  return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
-	}
-	else
-	{
-	  return "<a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$ev['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
-	}
-SC_END
 
+
+	// Navigation buttons
+	public function sc_ec_nav_but_allevents($parm = '')
+	{
+		$allevents = (e_PAGE == "event.php" ? EC_LAN_96 : EC_LAN_93);
+		return "<input class='button' type='submit' style='width:140px;' name='viewallevents' value='".$allevents."' title='".$allevents."' />";
+	}
+
+	public function sc_ec_nav_but_viewcat($parm = '')
+	{
+		return "<input type='hidden' name='do' value='vc' />";
+	}
+
+	public function sc_ec_nav_but_subscription($parm = '')
+	{
+		global $pref;
+		if (isset($pref['eventpost_asubs']) && ($pref['eventpost_asubs']>0) && USER)
+		{
+			return "<input class='button' type='submit' style='width:140px;' name='subs' value='".EC_LAN_123."' />";
+		}
+		return '';
+	}
+
+	public function sc_ec_nav_but_enterevent($parm = '')
+	{
+		global $pref;
+		$ret = "<input type='hidden' name='enter_new_val' value='".$this->prop."' />";
+		if ($this->ecalClass->cal_super || check_class($pref['eventpost_admin']))
+		{
+			$ret .= "<input class='button' type='submit' style='width:140px;' name='doit' value='".EC_LAN_94."' />";
+		}
+		return $ret;
+	}
+
+	public function sc_ec_nav_linkcurrentmonth($parm = '')
+	{
+		$ret = '';
+		if ($this->month != $this->nowMonth || $this->year != $this->nowYear || $this->ds == 'one')
+		{	// Just jump to current page without a query part - that will default to today
+			$ret = "<input class='button' type='button' style='width:140px;' name='cur' value='".EC_LAN_40."' onclick=\"javascript:document.location='".e_SELF."'\" />";
+		}
+		return $ret;
+	}
+
+	public function sc_ec_nav_but_printlists($parm = '')
+	{
+		global $pref;
+		if (isset($pref['eventpost_printlists']) && ($pref['eventpost_printlists']>0) && USER)
+		{
+		  return "<input class='button' type='submit' style='width:140px;' name='printlists' value='".EC_LAN_164."' />";
+		}
+	}
+
+	// Categories listing
+	public function sc_ec_nav_categories($parm = '')
+	{
+		global $pref;
+		if ($this->ourDB == NULL)
+		{
+			$this->ourDB = new db;
+		}
+		($parm == 'nosubmit') ? $insert = '' : $insert = "onchange='this.form.submit()'";
+		$ret = "<select name='event_cat_ids' class='tbox' style='width:140px;' {$insert} >\n<option value='all'>".EC_LAN_97."</option>\n";
+
+		$cal_arg = ($this->ecalClass->cal_super ? '' : " find_in_set(event_cat_class,'".USERCLASS_LIST."') AND ");
+		$cal_arg .= "(event_cat_name != '".EC_DEFAULT_CATEGORY."') ";
+		$this->ourDB->db_Select("event_cat", "*", $cal_arg);
+		while ($row = $this->ourDB->db_Fetch())
+		{
+			$selected = ($row['event_cat_id'] == $this->catFilter) ? " selected='selected'" : '';
+			$ret .= "<option class='tbox' value='".$row['event_cat_id']."'{$selected}>".$row['event_cat_name']."</option>\n";
+		}
+		$ret .= "</select>\n";
+		return $ret;
+	}
+	
+
+// Event information shortcodes
+//-----------------------------
+
+
+	public function sc_ec_event_location($parm = '')
+	{
+		return $this->event['event_location'];
+	}
+
+	public function sc_ec_event_recent_icon()
+	{
+		return $this->sc_ec_calendar_calendar_recent_icon();
+	}
+
+
+
+	public function sc_ec_if_allday($parm= '')
+	{
+		if (!$this->event['event_allday']) return '';
+		if (trim($parm) == '') return '';
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+	public function sc_ec_ifnot_allday($parm= '')
+	{
+		if ($this->event['event_allday']) return '';
+		if (trim($parm) == '') return '';
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+	public function sc_ec_ifnot_sameday($parm= '')
+	{
+		if (intval($this->event['event_end']/86400) == intval($this->event['event_start']/86400)) return '';
+		if (!$this->event['event_allday']) return '';
+		if (trim($parm) == '') return;
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+	public function sc_ec_if_sameday($parm= '')
+	{
+		if (intval($this->event['event_end']/86400) != intval($this->event['event_start']/86400)) return '';
+		if (!$this->event['event_allday']) return '';
+		if (trim($parm) == '') return;
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+
+
+// Event mailout shortcodes
+//--------------------------
+	public function sc_ec_mail_heading_date($parm)
+	{
+		if (isset($parm) && ($parm !== ""))
+		{
+			return strftime($parm,$this->event['event_start']);
+		}
+		else
+		{
+			return $this->ecalClass->event_date_string($this->event['event_start']);
+		}
+	}
+
+
+	public function sc_ec_mail_date_start($parm)
+	{
+		return $this->sc_ec_mail_heading_date($parm);
+	}
+
+
+	public function sc_ec_mail_date_start_allday($parm)
+	{
+		if ($this->event['event_allday'] != 1) return '';
+		return $this->sc_ec_mail_heading_date($parm);
+	}
+
+
+	public function sc_ec_mail_date_start_timed($parm)
+	{
+		if ($this->event['event_allday'] == 1) return '';
+		return $this->sc_ec_mail_heading_date($parm);
+	}
+
+
+	public function sc_ec_mail_time_start($parm)
+	{
+		if ($this->event['event_allday'] == 1) return '';
+		return $this->ecalClass->time_string($this->event['event_start']);
+	}
+
+
+	public function sc_ec_mail_date_end($parm = '')
+	{
+		if ($this->event['event_allday'] ||($this->event['event_end'] == $this->event['event_start'])) return '';
+		if ($parm !== '')
+		{
+			return strftime($parm,$this->event['event_end']);
+		}
+		return $this->ecalClass->event_date_string($this->event['event_end']);
+	}
+
+
+
+	public function sc_ec_mail_time_end($parm = '')
+	{
+		if ($this->event['event_allday'] ||($this->event['event_end'] == $this->event['event_start'])) return '';
+		$endds = $ecal_class->time_string($this->event['event_end']);
+		return $endds;
+	}
+
+
+	public function sc_ec_mail_title($parm = '')
+	{
+		return $this->event['event_title'];
+	}
+
+
+	public function sc_ec_mail_id($parm = '')
+	{
+		return 'calevent'.$this->event['event_id'];
+	}
+
+
+	public function sc_ec_mail_details($parm = '')
+	{
+		return $this->e107->tp->toHTML($this->event['event_details'], TRUE,'E_BODY');
+	}
+
+
+
+	public function sc_ec_mail_category($parm = '')
+	{
+		return $this->event['event_cat_name'];
+	}
+
+
+
+
+	public function sc_ec_mail_contact($parm = '')
+	{
+		if ($this->event['event_contact'] == '') return '';
+		return $this->e107->tp->toHTML($this->event['event_contact'],TRUE,'LINKTEXT');
+	}
+
+
+	public function sc_ec_mail_thread($parm = '')
+	{
+		return $this->event['event_thread'];
+	}
+
+
+	public function sc_ec_mail_link($parm = '')
+	{
+		$cal_dayarray = getdate($this->event['event_start']);
+		$cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).".one";  // ALways need "one"
+		return ' '.str_replace(e_HTTP,SITEURL, e_PLUGIN_ABS).'calendar_menu/event.php?'.$cal_linkut.' ';
+	}
+
+
+	public function sc_ec_mail_short_date($parm = '')
+	{
+		return $this->ecalClass->next_date_string($this->event['event_start']);
+	}
+
+
+	// Codes can be used to return a LAN to help with multi-language
+	public function sc_ec_mail_subject($parm = '')
+	{
+		return EC_MAILOUT_SUBJECT;
+	}
 
 
 //------------------------------------------
 // CALENDAR CALENDAR - 'Big' calendar
 //------------------------------------------
-SC_BEGIN EC_CALENDAR_CALENDAR_HEADER_DAY
-	global $day, $pref, $tp;
-	if(isset($pref['eventpost_lenday']) && $pref['eventpost_lenday'])
+	public function sc_ec_calendar_calendar_header_day($parm = '')
 	{
-	  return "<strong>".$tp->text_truncate($day,$pref['eventpost_lenday'],'')."</strong>";
+		global $pref;
+		if(isset($pref['eventpost_lenday']) && $pref['eventpost_lenday'])
+		{
+		  return "<strong>".$this->e107->tp->text_truncate($this->headerDay,$pref['eventpost_lenday'],'')."</strong>";
+		}
+		else
+		{
+		  return "<strong>".$this->headerDay."</strong>";
+		}
 	}
-	else
+
+
+	public function sc_ec_calendar_calendar_day_today_heading()
 	{
- 	  return "<strong>".$day."</strong>";
+		return "<b><a href='".e_PLUGIN."calendar_menu/event.php?".$this->todayStart."'>".$this->days[($this->curDay-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
 	}
-SC_END
 
-SC_BEGIN EC_CALENDAR_CALENDAR_DAY_TODAY_HEADING
-	global $startt, $c, $days;
-	return "<b><a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
-SC_END
 
-SC_BEGIN EC_CALENDAR_CALENDAR_DAY_EVENT_HEADING
-	global $startt, $c, $days;
-	return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$days[($c-1)]."</a>";
-SC_END
-
-SC_BEGIN EC_CALENDAR_CALENDAR_DAY_EMPTY_HEADING
-	global $startt, $c, $days;
-	return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a>";
-SC_END
-
-SC_BEGIN EC_CALENDAR_CALENDAR_RECENT_ICON
-  global $ev;
-  if (!isset($ev['is_recent'])) return "";
-  if (!$ev['startofevent']) return "";		// Only display on first day of multi-day events
-//  $recent_icon = e_PLUGIN_ABS."calendar_menu/images/recent_icon.png";
-  $recent_icon = EC_RECENT_ICON;
-  if (file_exists($recent_icon))
+	public function sc_ec_calendar_calendar_day_event_heading()
 	{
-	  return "<img src='".$recent_icon."' alt='' /> ";
+		return "<a href='".e_PLUGIN."calendar_menu/event.php?".$this->todayStart.".one'>".$this->days[($this->curDay-1)]."</a>";
 	}
-  return "R";
-SC_END
 
+
+	public function sc_ec_calendar_calendar_day_empty_heading()
+	{
+		return "<a href='".e_PLUGIN."calendar_menu/event.php?".$this->todayStart."'>".$this->days[($this->curDay-1)]."</a>";
+	}
+
+
+	public function sc_ec_calendar_calendar_recent_icon()
+	{
+		if (!isset($this->event['is_recent'])) return '';
+		if (!$this->event['startofevent']) return '';		// Only display on first day of multi-day events
+		$recent_icon = EC_RECENT_ICON;
+		if (is_readable($recent_icon))
+		{
+			return "<img src='".$recent_icon."' alt='' /> ";
+		}
+		return "R";
+	}
+
+
+	public function sc_ec_event_page_title()
+	{
+		switch ($this->ds)
+		{
+			case 'one' : return EC_LAN_80.': '.$this->day.' '.$this->months[$this->month-1];
+//			case 'event' : return EC_LAN_122.': '.$this->day.' '.$this->months[$this->month-1];
+			case 'event' : return EC_LAN_122;
+			default : return EC_LAN_80;
+		}
+	}
+
+
+	public function sc_ec_showevent_image()
+	{
+		//TODO review bullet
+		$img = '';
+		if($this->event['event_cat_icon'] && file_exists(e_PLUGIN.'calendar_menu/images/'.$this->event['event_cat_icon']))
+		{
+			$img = "<img style='border:0' src='".e_PLUGIN_ABS.'calendar_menu/images/'.$this->event['event_cat_icon']."' alt='' height='".$this->event['imagesize']."' width='".$this->event['imagesize']."' />";
+		}
+		elseif(defined('BULLET'))
+		{
+			$img = '<img src="'.THEME.'images/'.BULLET.'" alt="" class="icon" />';
+		}
+		elseif(file_exists(THEME.'images/bullet2.gif'))
+		{
+			$img = '<img src="'.THEME.'images/bullet2.gif" alt="" class="icon" />';
+		}
+		return $img;
+	}
+
+
+	public function sc_ec_showevent_indicat()
+	{
+		return $this->event['indicat'];
+	}
+
+
+
+	public function sc_ec_showevent_heading()
+	{
+		$linkut = mktime(0 , 0 , 0 , $this->month, $this->curDay, $this->year);
+		$show_title = $this->e107->tp->toHTML($this->event['event_title'],FALSE,'TITLE');	// Remove entities in case need to truncate
+		if(isset($this->event['fulltopic']) && !$this->event['fulltopic'])
+		{
+		  $show_title = $this->e107->tp->text_truncate($show_title, 10, "...");
+		}
+		if($ev['startofevent'])
+		{
+		  return "<b><a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$this->event['event_id']."'><span class='mediumtext'>".$show_title."</span></a></b>";
+		}
+		else
+		{
+		  return "<a title='{$ev['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".event.".$this->event['event_id']."'><span class='smalltext'>".$show_title."</span></a>";
+		}
+	}
+
+
+	public function sc_ec_eventlist_caption()
+	{
+		$ret = '';
+		if ($this->ds == 'one')
+		{
+			$ret = EC_LAN_111.$this->months[$this->month-1].' '.$this->day;
+		}
+		elseif ($this->ds != 'event')
+		{
+			$ret = EC_LAN_112.$this->months[$this->month-1];
+		}
+		return $ret;
+	}
+
+
+//---------------------------------------------------
+// 	EVENT SHOWEVENT (Detail of individual events)
+//---------------------------------------------------
+
+	public function sc_ec_event_heading_date()
+	{
+		return $this->ecalClass->event_date_string($this->event['event_start']);
+	}
+
+	// Same code as previous
+	public function sc_ec_event_date_start()
+	{
+		return $this->ecalClass->event_date_string($this->event['event_start']);
+	}
+
+
+	public function sc_ec_event_time_start()
+	{
+		if ($this->event['event_allday'] == 1) return '';
+		return $this->ecalClass->time_string($this->event['event_start']);
+	}
+
+
+	public function sc_ec_event_date_end()
+	{
+		if ($this->event['event_end'] == $this->event['event_start']) return '';
+		return $this->ecalClass->event_date_string($this->event['event_end']);
+	}
+
+
+	public function sc_ec_event_time_end()
+	{
+		if ($this->event['event_allday'] ||($this->event['event_end'] == $this->event['event_start'])) return '';
+		return $this->ecalClass->time_string($this->event['event_end']);
+	}
+
+
+	public function sc_ec_event_title()
+	{
+		return $this->event['event_title'];
+	}
+
+
+	public function sc_ec_event_cat_icon()
+	{
+		if ($this->event['event_cat_icon'] && is_readable(e_PLUGIN.'calendar_menu/images/'.$this->event['event_cat_icon']))
+		{
+			return "<img src='".e_PLUGIN_ABS."calendar_menu/images/".$this->event['event_cat_icon']."' alt='' /> ";
+		}
+		return '';
+	}
+
+
+	public function sc_ec_event_id()
+	{
+		return 'calevent'.$this->event['event_id'];
+	}
+
+
+	public function sc_ec_event_displaystyle()
+	{	// Returns initial state of expandable blocks
+		if (($this->ds=='event') || ($this->ds=='one'))
+		{
+			return '';	// Let block display
+		}
+		return 'display: none; ';
+	}
+
+
+	/**
+	 * Display class for event display block - to manage expansion/contraction
+	 * When displaying a single event, or a single day's events, block to be expanded
+	 * For event lists, block to be contracted
+	 * 
+	 * @param int $param - optional supplementary list of classes to apply
+	 *
+	 * @return string - 
+	 */
+	public function sc_ec_event_displayclass($parm='')
+	{	
+		if (($this->ds=='event') || ($this->ds=='one'))
+		{	// Single event or one day's events - block expanded
+			return " class='{$parm}'";
+		}
+		return " class='e-show-if-js e-hideme {$parm}'";	// Block contracted
+//		return " class='e-hide-if-js e-showme {$parm}'";	// Block contracted
+	}
+
+
+	public function sc_ec_event_details()
+	{
+		return $this->e107->tp->toHTML($this->event['event_details'], TRUE, 'BODY');
+	}
+
+
+	public function sc_ec_event_category()
+	{
+		return $this->event['event_cat_name'];
+	}
+
+
+	public function sc_ec_event_author()
+	{
+		$lp = explode(".", $this->event['event_author'],2);		// Split into userid.username
+		if (preg_match("/[0-9]+/", $lp[0]))
+		{
+			$event_author_id = $lp[0];
+			$event_author_name = $lp[1];
+		}
+		if(USER)
+		{
+			return "<a href='".e_BASE."user.php?id.".$event_author_id."'>".$event_author_name."</a>";
+		}
+		return $event_author_name;
+	}
+
+
+	public function sc_ec_event_contact()
+	{
+		if ($this->event['event_contact'] == '') return '';
+		$tm = $this->event['event_contact'];
+		if (strpos($tm,'[') === FALSE)
+		{	// Add a bbcode if none exists
+			$tm = '[link=mailto:'.trim($tm).']'.substr($tm,0,strpos($tm,'@')).'[/link]';
+		}
+		return $this->e107->tp->toHTML($tm,TRUE,'LINKTEXT');	// Return obfuscated email link
+	}
+
+
+	public function sc_ec_event_thread()
+	{
+		if (isset($this->event['event_thread']) && ($this->event['event_thread'] != ''))
+		{
+		return "<a href='{$this->event['event_thread']}'><img src='".e_IMAGE_ABS."admin_images/forums_32.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /></a> <a href='{$this->event['event_thread']}'>".EC_LAN_39."</a>";
+		}
+		return '';
+	}
+
+
+	public function sc_ec_event_options()
+	{
+		global $pref;
+		$event_author_name = strstr(varset($this->event['event_author'],'0.??'),'.');
+		if (USERNAME == $event_author_name || $this_ecalClass->cal_super || check_class($pref['eventpost_admin']))
+		{
+			return "<a href='event.php?ed.".$this->event['event_id']."'><img class='icon S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN_ABS.'calendar_menu/event.php?de.'.$this->event['event_id']."'><img style='border:0;' src='".e_IMAGE_ABS."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
+		}
+	}
+
+
+	public function sc_ec_ec_event_link()
+	{
+		$cal_dayarray = getdate($this->event['event_start']);
+		$cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).'.one';  // ALways need "one"
+		return ' '.e_PLUGIN_ABS.'calendar_menu/event.php?'.$cal_linkut.' ';
+	}
+
+
+	// TODO: Resolve global
+	public function sc_ec_event_event_date_time()
+	{
+		$et = 0;
+		if (intval($this->event['event_end']/86400) == intval($this->event['event_start']/86400)) $et += 1;
+		if ($this->event['event_allday']) $et += 2;
+		if (is_array($this->eventDisplayCodes))
+		{
+			return $this->e107->tp->parseTemplate($this->eventDisplayCodes[$et]);
+		}
+		return '--** No template set **--';
+	}
+
+
+	public function sc_ec_event_short_date()
+	{
+		return $this->ecalClass->next_date_string($this->event['event_start']);
+	}
 
 
 //------------------------------------------
 // EVENT ARCHIVE (list of next events at bottom of event list)
 //------------------------------------------
-SC_BEGIN EC_EVENTARCHIVE_CAPTION
-	global $EC_EVENTARCHIVE_CAPTION, $num;
-	if ($num == 0) 
+
+	public function sc_ec_eventarchive_caption()
 	{
-		$EC_EVENTARCHIVE_CAPTION = EC_LAN_137;
+		if ($this->numEvents == 0) 
+		{
+			return EC_LAN_137;
+		}
+		return str_replace('-NUM-', $this->numEvents, EC_LAN_62);
 	}
-	else
+
+
+	public function sc_ec_eventarchive_date()
 	{
-		$EC_EVENTARCHIVE_CAPTION = str_replace("-NUM-", $num, EC_LAN_62);
+		$startds = $this->ecalClass->event_date_string($this->event['event_start']);
+		return "<a href='event.php?".$this->event['event_start'].'.event.'.$this->event['event_id']."'>".$startds."</a>";
 	}
-	return $EC_EVENTARCHIVE_CAPTION;
-SC_END
-
-SC_BEGIN EC_EVENTARCHIVE_DATE
-	global $EC_EVENTARCHIVE_DATE, $thisevent, $ecal_class;
-	$startds = $ecal_class->event_date_string($thisevent['event_start']);
-	$EC_EVENTARCHIVE_DATE = "<a href='event.php?".$thisevent['event_start'].".event.".$thisevent['event_id']."'>".$startds."</a>";
-	return $EC_EVENTARCHIVE_DATE;
-SC_END
-
-SC_BEGIN EC_EVENTARCHIVE_DETAILS
-	global $EC_EVENTARCHIVE_DETAILS, $thisevent, $tp;
-	$number = 40;
-	$rowtext = $tp->toHTML($thisevent['event_details'], TRUE, "nobreak");
-	$rowtext = strip_tags($rowtext);
-	$words = explode(" ", $rowtext);
-	$EC_EVENTARCHIVE_DETAILS = implode(" ", array_slice($words, 0, $number));
-	if(count($words) > $number){
-		$EC_EVENTARCHIVE_DETAILS .= " ".EC_LAN_133." ";
-	}
-	return $EC_EVENTARCHIVE_DETAILS;
-SC_END
-
-SC_BEGIN EC_EVENTARCHIVE_EMPTY
-	global $EC_EVENTARCHIVE_EMPTY;
-	return EC_LAN_37;
-SC_END
-
-SC_BEGIN EC_EVENTARCHIVE_HEADING
-	global $EC_EVENTARCHIVE_HEADING, $thisevent;
-	$EC_EVENTARCHIVE_HEADING = $thisevent['event_title'];
-	return $EC_EVENTARCHIVE_HEADING;
-SC_END
 
 
-
-//------------------------------------------
-// 				EVENT LIST
-//------------------------------------------
-SC_BEGIN EC_EVENTLIST_CAPTION
-	global $EC_EVENTLIST_CAPTION, $ds, $months, $selected_mon, $selected_day, $monthstart;
-	if ($ds == 'one')
+	public function sc_ec_eventarchive_details()
 	{
-		$EC_EVENTLIST_CAPTION = EC_LAN_111.$months[$selected_mon-1]." ".$selected_day;
+		$number = 40;
+		$rowtext = $this->e107->tp->toHTML($this->event['event_details'], TRUE, 'BODY');
+		$rowtext = strip_tags($rowtext);
+		$words = explode(' ', $rowtext);
+		$ret = implode(' ', array_slice($words, 0, $number));
+		if(count($words) > $number)
+		{
+			$ret .= ' '.EC_LAN_133.' ';
+		}
+		return $ret;
 	}
-    elseif ($ds != 'event')
-    {
-		$EC_EVENTLIST_CAPTION = EC_LAN_112.$months[date("m", $monthstart)-1];
-	}
-	return $EC_EVENTLIST_CAPTION;
-SC_END
 
 
-//------------------------------------------
-// 	EVENT SHOWEVENT (Detail of individual events in Event List)
-//------------------------------------------
-// Some of these shortcodes also used by big calendar
-
-SC_BEGIN EC_EVENT_RECENT_ICON
-  global $thisevent;
-  if (!isset($thisevent['is_recent'])) return;
-  $recent_icon = EC_RECENT_ICON;
-  if (file_exists($recent_icon))
-  {
-	return "<img src='".$recent_icon."' alt='' /> ";
-  }
-  return "";
-SC_END
-
-SC_BEGIN EC_EVENT_HEADING_DATE
-	global $thisevent, $ecal_class;
-	$startds = $ecal_class->event_date_string($thisevent['event_start']);
-    return $startds;
-SC_END
-
-SC_BEGIN EC_EVENT_DATE_START
-	global $thisevent, $ecal_class;
-	$startds = $ecal_class->event_date_string($thisevent['event_start']);
-    return $startds;
-SC_END
-
-SC_BEGIN EC_EVENT_TIME_START
-	global $thisevent, $ecal_class;
-	if ($thisevent['event_allday'] == 1) return "";
-	$startds = $ecal_class->time_string($thisevent['event_start']);
-    return $startds;
-SC_END
-
-SC_BEGIN EC_EVENT_DATE_END
-	global $thisevent, $ecal_class;
-//	if (intval($thisevent['event_end']/86400) == intval($thisevent['event_start']/86400)) return "";  // No end date if same day
-//	if ($thisevent['event_allday'] ||($thisevent['event_end'] == $thisevent['event_start'])) return "";
-	if ($thisevent['event_end'] == $thisevent['event_start']) return "";
-	$endds = $ecal_class->event_date_string($thisevent['event_end']);
-	return $endds;
-SC_END
-
-SC_BEGIN EC_EVENT_TIME_END
-	global $thisevent, $ecal_class;
-	if ($thisevent['event_allday'] ||($thisevent['event_end'] == $thisevent['event_start'])) return "";
-	$endds = $ecal_class->time_string($thisevent['event_end']);
-	return $endds;
-SC_END
-
-SC_BEGIN EC_EVENT_TITLE
-	global $thisevent, $tp;
-	return $thisevent['event_title'];
-SC_END
-
-SC_BEGIN EC_EVENT_CAT_ICON
-  global $thisevent;
-  if ($thisevent['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']))
-  {
-	return "<img src='".e_PLUGIN_ABS."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ";
-  }
-  else
-  {
-	return "";
-  }
-SC_END
-
-SC_BEGIN EC_EVENT_ID
-	global $thisevent;
-	return "calevent".$thisevent['event_id'];
-SC_END
-
-SC_BEGIN EC_EVENT_DISPLAYSTYLE
-	global $EC_EVENT_DISPLAYSTYLE, $ds;
-	if (($ds=="event") || ($ds=="one")){
-		$EC_EVENT_DISPLAYSTYLE = "show";
-	}else{
-		$EC_EVENT_DISPLAYSTYLE = "none";
-	}
-	return $EC_EVENT_DISPLAYSTYLE;
-SC_END
-
-SC_BEGIN EC_EVENT_DETAILS
-	global $thisevent, $tp;
-	return $tp->toHTML($thisevent['event_details'], TRUE, 'BODY');
-SC_END
-
-SC_BEGIN EC_EVENT_CATEGORY
-	global $EC_EVENT_CATEGORY, $thisevent;
-	$EC_EVENT_CATEGORY = $thisevent['event_cat_name'];
-	return $EC_EVENT_CATEGORY;
-SC_END
-
-SC_BEGIN EC_EVENT_LOCATION
-	global $EC_EVENT_LOCATION, $thisevent;
-	if ($thisevent['event_location'] == "")
+	public function sc_ec_eventarchive_empty()
 	{
-	  $EC_EVENT_LOCATION = "";
+		return EC_LAN_37;
 	}
-	else
+
+
+	public function sc_ec_eventarchive_heading()
 	{
-	  $EC_EVENT_LOCATION = $thisevent['event_location'];
+		return $this->event['event_title'];
 	}
-	return $EC_EVENT_LOCATION;
-SC_END
 
-SC_BEGIN EC_EVENT_AUTHOR
-	global $thisevent;
-    $lp = explode(".", $thisevent['event_author'],2);
-    if (preg_match("/[0-9]+/", $lp[0]))
-    {
-      $event_author_id = $lp[0];
-      $event_author_name = $lp[1];
-    }
-	if(USER)
-	{
-	  $EC_EVENT_AUTHOR = "<a href='".e_BASE."user.php?id.".$event_author_id."'>".$event_author_name."</a>";
-	}
-	else
-	{
-	  $EC_EVENT_AUTHOR = $event_author_name;
-	}
-	return $EC_EVENT_AUTHOR;
-SC_END
-
-SC_BEGIN EC_EVENT_CONTACT
-	global $EC_EVENT_CONTACT, $thisevent,$tp;
-	if ($thisevent['event_contact'] == "")
-	{
-	  $EC_EVENT_CONTACT = "";
-	}
-	else
-	{
-	  $tm = $thisevent['event_contact'];
-	  if (strpos($tm,'[') === FALSE)
-	  {
-	    $tm = '[link=mailto:'.trim($tm).']'.substr($tm,0,strpos($tm,'@')).'[/link]';
-	  }
-	  $EC_EVENT_CONTACT = $tp->toHTML($tm,TRUE,'LINKTEXT');
-	}
-	return $EC_EVENT_CONTACT;
-SC_END
-
-SC_BEGIN EC_EVENT_THREAD
-  global  $thisevent, $ec_images_path;
-  return (isset($thisevent['event_thread']) && ($thisevent['event_thread'] != "")) ? "<a href='{$thisevent['event_thread']}'><img src='".$ec_images_path."admin_images/forums_32.png' alt='' style='border:0; vertical-align:middle;' width='16' height='16' /></a> <a href='{$thisevent['event_thread']}'>".EC_LAN_39."</a>" : "";
-SC_END
-
-SC_BEGIN EC_EVENT_OPTIONS
-	global $EC_EVENT_OPTIONS, $thisevent, $event_author_name, $cal_super, $pref, $ec_images_path;
-	if (USERNAME == $event_author_name || $cal_super || check_class($pref['eventpost_admin']))
-	{
-	  $EC_EVENT_OPTIONS = "<a href='event.php?ed.".$thisevent['event_id']."'><img class='icon S16' src='".e_IMAGE."admin_images/edit_16.png' title='".EC_LAN_35."' alt='".EC_LAN_35 . "'/></a>&nbsp;&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?de.".$thisevent['event_id']."'><img style='border:0;' src='".e_IMAGE."admin_images/delete_16.png' title='".EC_LAN_36."' alt='".EC_LAN_36."'/></a>";
-	}
-	return $EC_EVENT_OPTIONS;
-SC_END
-
-SC_BEGIN EC_EC_EVENT_LINK
-  global $thisevent, $PLUGINS_DIRECTORY;
-  $cal_dayarray = getdate($thisevent['event_start']);
-  $cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).".one";  // ALways need "one"
-//  return " ".SITEURL.$PLUGINS_DIRECTORY. "calendar_menu/event.php?".$cal_linkut." ";
-  return " ".$pref['siteurl'].$PLUGINS_DIRECTORY. "calendar_menu/event.php?".$cal_linkut." ";
-SC_END
-
-
-SC_BEGIN EC_EVENT_EVENT_DATE_TIME
-  global $thisevent, $tp, $EVENT_EVENT_DATETIME;
-  $et = 0;
-  if (intval($thisevent['event_end']/86400) == intval($thisevent['event_start']/86400)) $et += 1;
-  if ($thisevent['event_allday']) $et += 2;
-  return $tp->parseTemplate($EVENT_EVENT_DATETIME[$et]);
-SC_END
-
-
-SC_BEGIN EC_EVENT_SHORT_DATE
-  global $thisevent, $ecal_class;
-  return $ecal_class->next_date_string($thisevent['event_start']);
-SC_END
-
-
-SC_BEGIN EC_IFNOT_ALLDAY
-  global $thisevent, $tp;
-  if ($thisevent['event_allday']) return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-SC_BEGIN EC_IF_ALLDAY
-  global $thisevent, $tp;
-  if (!$thisevent['event_allday']) return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-
-SC_BEGIN EC_IFNOT_SAMEDAY
-  global $thisevent, $tp;
-  if (intval($thisevent['event_end']/86400) == intval($thisevent['event_start']/86400)) return "";
-  if (!$thisevent['event_allday']) return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-SC_BEGIN EC_IF_SAMEDAY
-  global $thisevent, $tp;
-  if (intval($thisevent['event_end']/86400) != intval($thisevent['event_start']/86400)) return "";
-  if (!$thisevent['event_allday']) return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
 
 
 //   FORTHCOMING EVENTS MENU
-//--------------------------------------------
+//---------------------------
 
-SC_BEGIN EC_NEXT_EVENT_RECENT_ICON
-  global $cal_row;
-  if (!$pref['eventpost_fe_showrecent']) return;
-  if (!isset($cal_row['is_recent'])) return;
-  $recent_icon = EC_RECENT_ICON;
-  if (file_exists($recent_icon))
+	function sc_ec_next_event_recent_icon()
 	{
-	  return "<img src='".$recent_icon."' alt='' /> ";
-	}
-  return "";
-SC_END
-
-SC_BEGIN EC_NEXT_EVENT_TIME
-  global $cal_row, $ecal_class;
-  if ($cal_row['event_allday'] != 1) return $ecal_class->time_string($cal_row['event_start']); else return '';
-SC_END
-
-SC_BEGIN EC_NEXT_EVENT_DATE
-  global $cal_row, $ecal_class;
-  return $ecal_class->next_date_string($cal_row['event_start']);
-SC_END
-
-SC_BEGIN EC_NEXT_EVENT_TITLE
-  global $pref, $cal_row;
-  if (isset($pref['eventpost_namelink']) && ($pref['eventpost_namelink'] == '2') && (isset($cal_row['event_thread']) && ($cal_row['event_thread'] != "")))
-  {
-    $fe_event_title = "<a href='".$cal_row['event_thread']."'>";
-  }
-  else
-  { 
-    $fe_event_title = "<a href='".e_PLUGIN."calendar_menu/event.php?".$cal_row['event_start'].".event.".$cal_row['event_id']."'>";
-  }
-  $fe_event_title .= $cal_row['event_title']."</a>";
-  return $fe_event_title;
-SC_END
-
-SC_BEGIN EC_NEXT_EVENT_ICON
-  global $pref, $cal_row;
-  $fe_icon_file = "";
-  if ($pref['eventpost_showcaticon'] == 1)
-  {
-		if($cal_row['event_cat_icon'] && file_exists($ecal_dir."images/".$cal_row['event_cat_icon']))
+		global $pref;
+		if (!$pref['eventpost_fe_showrecent']) return;
+		if (!isset($this->event['is_recent'])) return;
+		$recent_icon = EC_RECENT_ICON;
+		if (is_readable($recent_icon))
 		{
-		  $fe_icon_file = $ecal_dir."images/".$cal_row['event_cat_icon'];
+			return "<img src='".$recent_icon."' alt='' /> ";
 		}
-		elseif(defined('BULLET'))
+		return '';
+	}
+
+
+	public function sc_ec_next_event_time()
+	{
+		if ($this->event['event_allday'] != 1) 
 		{
-			$fe_icon_file = THEME.'images/'.BULLET;
+		return $this->ecalClass->time_string($this->event['event_start']);
 		}
-		elseif(file_exists(THEME.'images/bullet2.gif'))
+		return '';
+	}
+
+
+	public function sc_ec_next_event_date()
+	{
+		return $this->ecalClass->next_date_string($this->event['event_start']);
+	}
+
+
+	public function sc_ec_next_event_title()
+	{
+		global $pref;
+		if (isset($pref['eventpost_namelink']) && ($pref['eventpost_namelink'] == '2') && (isset($this->event['event_thread']) && ($this->event['event_thread'] != '')))
 		{
-			$fe_icon_file = THEME.'images/bullet2.gif';
+			$fe_event_title = "<a href='".$this->event['event_thread']."'>";
 		}
-  }
-  return $fe_icon_file;
-SC_END
-
-SC_BEGIN EC_NEXT_EVENT_GAP
-  global $cal_totev;
-  if ($cal_totev) return "<br /><br />"; else return "";
-SC_END
-
-
-// Event mailout shortcodes
-//--------------------------
-SC_BEGIN EC_MAIL_HEADING_DATE
-	global $thisevent, $ecal_class;
-  if (isset($parm) && ($parm !== ""))
-  {
-    return strftime($parm,$thisevent['event_start']);
-  }
-  else
-  {
-    return $ecal_class->event_date_string($thisevent['event_start']);
-  }
-SC_END
-
-SC_BEGIN EC_MAIL_DATE_START
-	global $thisevent, $ecal_class;
-  if (isset($parm) && ($parm !== ""))
-  {
-    return strftime($parm,$thisevent['event_start']);
-  }
-  else
-  {
-    return $ecal_class->event_date_string($thisevent['event_start']);
-  }
-SC_END
-
-SC_BEGIN EC_MAIL_TIME_START
-	global $thisevent, $ecal_class;
-	if ($thisevent['event_allday'] == 1) return "";
-	$startds = $ecal_class->time_string($thisevent['event_start']);
-    return $startds;
-SC_END
-
-SC_BEGIN EC_MAIL_DATE_END
-	global $thisevent, $ecal_class;
-	if ($thisevent['event_allday'] ||($thisevent['event_end'] == $thisevent['event_start'])) return "";
-  if (isset($parm) && ($parm !== ""))
-  {
-    return strftime($parm,$thisevent['event_end']);
-  }
-  else
-  {
-    return $ecal_class->event_date_string($thisevent['event_end']);
-  }
-SC_END
-
-SC_BEGIN EC_MAIL_TIME_END
-	global $thisevent, $ecal_class;
-	if ($thisevent['event_allday'] ||($thisevent['event_end'] == $thisevent['event_start'])) return "";
-	$endds = $ecal_class->time_string($thisevent['event_end']);
-	return $endds;
-SC_END
-
-SC_BEGIN EC_MAIL_TITLE
-	global $thisevent;
-	return $thisevent['event_title'];
-SC_END
-
-
-SC_BEGIN EC_MAIL_ID
-	global $thisevent;
-	return "calevent".$thisevent['event_id'];
-SC_END
-
-
-SC_BEGIN EC_MAIL_DETAILS
-	global $EVENT_DETAILS, $thisevent, $tp;
-	return $tp->toHTML($thisevent['event_details'], TRUE,'BODY, no_make_clickable');
-SC_END
-
-
-SC_BEGIN EC_MAIL_CATEGORY
-	global $EVENT_CATEGORY, $thisevent;
-	$EVENT_CATEGORY = $thisevent['event_cat_name'];
-	return $EVENT_CATEGORY;
-SC_END
-
-SC_BEGIN EC_MAIL_LOCATION
-	global $EVENT_LOCATION, $thisevent;
-	if ($thisevent['event_location'] == "")
-	{
-	  $EVENT_LOCATION = "";
+		else
+		{ 
+			$fe_event_title = "<a href='".e_PLUGIN_ABS."calendar_menu/event.php?".$this->event['event_start'].".event.".$this->event['event_id']."'>";
+		}
+		$fe_event_title .= $this->event['event_title']."</a>";
+		return $fe_event_title;
 	}
-	else
+
+
+	public function sc_ec_next_event_icon()
 	{
-	  $EVENT_LOCATION = $thisevent['event_location'];
+		global $pref;
+		$fe_icon_file = '';
+		if ($pref['eventpost_showcaticon'] == 1)
+		{
+			if($this->event['event_cat_icon'] && is_readable(e_PLUGIN.'calendar_menu/images/'.$this->event['event_cat_icon']))
+			{
+				$fe_icon_file = e_PLUGIN_ABS.'calendar_menu/images/'.$this->event['event_cat_icon'];
+			}
+			elseif(defined('BULLET'))
+			{
+				$fe_icon_file = THEME.'images/'.BULLET;
+			}
+			elseif(file_exists(THEME.'images/bullet2.gif'))
+			{
+				$fe_icon_file = THEME.'images/bullet2.gif';
+			}
+		}
+		return $fe_icon_file;
 	}
-	return $EVENT_LOCATION;
-SC_END
 
 
-SC_BEGIN EC_MAIL_CONTACT
-	global $MAIL_CONTACT, $thisevent,$tp;
-	if ($thisevent['event_contact'] == "")
+	public function sc_ec_next_event_gap()
 	{
-	  $MAIL_CONTACT = "";
+		if ($this->numEvents) return '<br /><br />'; 	// Return a newline as a gap on all but last item
+		return '';
 	}
-	else
-	{
-	  $MAIL_CONTACT = $tp->toHTML($thisevent['event_contact'],TRUE,"LINKTEXT");
-	}
-	return $MAIL_CONTACT;
-SC_END
-
-SC_BEGIN EC_MAIL_THREAD
-  global $thisevent;
-  return (isset($thisevent['event_thread']) && ($thisevent['event_thread'] != "")) ? $thisevent['event_thread'] : "";
-SC_END
-
-SC_BEGIN EC_MAIL_LINK
-  global $thisevent, $PLUGINS_DIRECTORY, $pref;
-  $cal_dayarray = getdate($thisevent['event_start']);
-  $cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_dayarray['mday'], $cal_dayarray['year']).".one";  // ALways need "one"
-//  return " ".SITEURL.$PLUGINS_DIRECTORY. "calendar_menu/event.php?".$cal_linkut." ";
-  return " ".$pref['siteurl'].$PLUGINS_DIRECTORY. "calendar_menu/event.php?".$cal_linkut." ";
-SC_END
 
 
-SC_BEGIN EC_MAIL_SHORT_DATE
-  global $thisevent, $ecal_class;
-  return $ecal_class->next_date_string($thisevent['event_start']);
-SC_END
-
-// Codes can be used to return a LAN to help with multi-language
-SC_BEGIN EC_MAIL_SUBJECT
-  return EC_MAILOUT_SUBJECT;
-SC_END
 
 
 // Specific to the 'listings' page
 //--------------------------------
-SC_BEGIN EC_PR_LIST_TITLE
-  global $ec_list_title;
-  return $ec_list_title;
-SC_END
+
+	public function sc_ec_pr_list_title()
+	{
+		return $this->printVars['lt'];
+	}
 
 
-SC_BEGIN EC_PR_CAT_LIST
-  global $ec_category_list;
-  if (is_array($ec_category_list))
-    return implode(", ",$ec_category_list);
-  else
-    return $ec_category_list;
-SC_END
+
+	public function sc_ec_pr_cat_list()
+	{
+		if (is_array($this->printVars['cat']))
+		{
+		return implode(', ',$this->printVars['cat']);
+		}
+		return $this->printVars['cat'];
+	}
+
+	public function sc_ec_pr_change_year()
+	{
+		if (!$this->changeFlags['yc']) return '';
+		$thisevent_start_date = $this->ecalClass->gmgetdate($this->event['event_start']);
+		return $thisevent_start_date['year'];
+	}
+
+	public function sc_ec_pr_change_month()
+	{
+		if (!$this->changeFlags['mc']) return '';
+		$thisevent_start_date = $this->ecalClass->gmgetdate($this->event['event_start']);
+		return $thisevent_start_date['month'];
+	}
 
 
-SC_BEGIN EC_PR_CHANGE_YEAR
-  global $ec_year_change, $thisevent_start_date;
-  if ($ec_year_change) return $thisevent_start_date['year']; 
-SC_END
+	public function sc_ec_pr_list_start($parm = '')
+	{
+		if ($parm)
+		{
+			return $this->ecalClass->event_date_string($this->printVars['sd']);
+		}
+		return strftime($parm,$this->printVars['sd']);
+	}
+
+	public function sc_ec_pr_list_end($parm = '')
+	{
+		if ($parm)
+		{
+			return $this->ecalClass->event_date_string($this->printVars['ed']);
+		}
+		return strftime($parm,$this->printVars['ed']);
+	}
 
 
-SC_BEGIN EC_PR_CHANGE_MONTH
-  global $ec_month_change, $thisevent_start_date;
-  if ($ec_month_change) return $thisevent_start_date['month']; 
-SC_END
+	public function sc_ec_now_date($parm = '')
+	{
+		if ($parm == '') return $this->ecalClass->event_date_string(time());
+		return strftime($parm,time());
+	}
+
+	public function sc_ec_now_time($parm = '')
+	{
+		if ($parm == '') return $this->ecalClass->time_string(time());
+		return strftime($parm,time());
+	}
 
 
-SC_BEGIN EC_PR_LIST_START
-  global $ecal_class, $ec_start_date;
-  if (isset($parm) && ($parm !== ""))
-  {
-    return strftime($parm,$ec_start_date);
-  }
-  else
-  {
-    return $ecal_class->event_date_string($ec_start_date);
-  }
-SC_END
+	public function sc_ec_print_button()
+	{
+		if ($this->printVars['ot'] != 'print') return;
+		return "<input type='button' value='".EC_LAN_162."' onClick='window.print()' />";
+	}
 
 
-SC_BEGIN EC_PR_LIST_END
-  global $ecal_class, $ec_end_date;
-  if (isset($parm) && ($parm !== ""))
-    return strftime($parm,$ec_end_date);
-  else
-    return $ecal_class->event_date_string($ec_end_date);
-SC_END
+	public function sc_ec_if_print($parm = '')
+	{
+		if ($this->printVars['ot'] != 'print') return;
+		if (trim($parm) == '') return;
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+	public function sc_ec_ifnot_print($parm = '')
+	{
+		if ($this->printVars['ot'] == 'print') return;
+		if (trim($parm) == '') return;
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+	public function sc_ec_if_display($parm = '')
+	{
+		if ($this->printVars['ot'] != 'display') return;
+		if (trim($parm) == '') return;
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+	public function sc_ec_ifnot_display($parm = '')
+	{
+		if ($this->printVars['ot'] == 'display') return;
+		if (trim($parm) == '') return;
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+	public function sc_ec_if_pdf($parm = '')
+	{
+		if ($this->printVars['ot'] != 'pdf') return;
+		if (trim($parm) == '') return;
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+	public function sc_ec_ifnot_pdf($parm = '')
+	{
+		if ($this->printVars['ot'] == 'pdf') return;
+		if (trim($parm) == '') return;
+		return $this->e107->tp->parseTemplate('{'.$parm.'}');
+	}
+
+}	// END - shortcode class
 
 
-SC_BEGIN EC_NOW_DATE
-  global $ecal_class;
-  if (isset($parm) && ($parm !== ""))
-    return strftime($parm,time());
-  else
-    return $ecal_class->event_date_string(time());
-SC_END
-
-
-SC_BEGIN EC_NOW_TIME
-  global $ecal_class;
-  if (isset($parm) && ($parm !== ""))
-    return strftime($parm,time());
-  else
-    return $ecal_class->time_string(time());
-SC_END
-
-
-SC_BEGIN EC_PRINT_BUTTON
-  global $ec_output_type;
-  if ($ec_output_type != 'print') return;
-  return "<input type='button' value='".EC_LAN_162."' onClick='window.print()' />";
-SC_END
-
-
-SC_BEGIN EC_IF_PRINT
-  global $ec_output_type, $tp;
-  if ($ec_output_type != 'print') return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-SC_BEGIN EC_IFNOT_PRINT
-  global $ec_output_type, $tp;
-  if ($ec_output_type == 'print') return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-SC_BEGIN EC_IF_DISPLAY
-  global $ec_output_type, $tp;
-  if ($ec_output_type != 'display') return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-SC_BEGIN EC_IFNOT_DISPLAY
-  global $ec_output_type, $tp;
-  if ($ec_output_type == 'display') return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-SC_BEGIN EC_IF_PDF
-  global $ec_output_type, $tp;
-  if ($ec_output_type != 'pdf') return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-SC_BEGIN EC_IFNOT_PDF
-  global $ec_output_type, $tp;
-  if ($ec_output_type == 'pdf') return;
-  if (trim($parm) == "") return;
-  return $tp->parseTemplate('{'.$parm.'}');
-SC_END
-
-SC_BEGIN EC_PDF_OPTS
-  global $ec_pdf_options;
-  $ec_pdf_options = $parm;
-SC_END
-
-*/
 ?>

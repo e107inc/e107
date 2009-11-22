@@ -6,19 +6,19 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ * Event calendar plugin - admin functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision: 1.15 $
+ * $Date: 2009-11-22 10:11:24 $
+ * $Author: e107steved $
  */
 
 $eplug_admin = true;		// Make sure we show admin theme
 $e_sub_cat = 'event_calendar';
-require_once("../../class2.php");
+require_once('../../class2.php');
 require_once(e_HANDLER."userclass_class.php");
-if (!getperms("P")) 
+if (!getperms('P')) 
 {
   header("location:".e_BASE."index.php");
   exit;
@@ -28,7 +28,7 @@ if (!getperms("P"))
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');
 
 
-$message = "";
+$message = '';
 $calendarmenu_text = '';	// Notice removal
 $calendarmenu_msg  = '';	// Notice removal
 
@@ -164,38 +164,38 @@ if (isset($_POST['deleteold']) && isset($_POST['eventpost_deleteoldmonths']))
 
 if (isset($_POST['cache_clear']))
 {
-  $ec_qs[0] = "confcache";
+  $ec_qs[0] = 'confcache';
 }
 
 
 //-------------------------------------------------
 
-require_once(e_ADMIN."auth.php");
+require_once(e_ADMIN.'auth.php');
 
-if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:auto"); }
+if (!defined('USER_WIDTH')){ define('USER_WIDTH','width:auto'); }
 
 
 
 // Actually delete back events
 if (isset($_POST['confirmdeleteold']) && isset($ec_qs[0]) && ($ec_qs[0] == "backdel"))
 {
-  $old_date = $ec_qs[1];
-  $old_string = strftime("%d %B %Y",$old_date);
+	$old_date = $ec_qs[1];
+	$old_string = strftime("%d %B %Y",$old_date);
 	// Check both start and end dates to avoid problems with events originally entered under 0.617
-  $qry = "event_start < {$old_date} AND event_end < {$old_date} AND event_recurring = 0";
-//  $message = "Back delete {$back_count} months. Oldest date = {$old_string}  Query = {$qry}";
+	$qry = "event_start < {$old_date} AND event_end < {$old_date} AND event_recurring = 0";
+	//  $message = "Back delete {$back_count} months. Oldest date = {$old_string}  Query = {$qry}";
 	if ($sql -> db_Delete("event",$qry))
 	{
-  // Add in a log event
-	  $ecal_class->cal_log(4,"db_Delete - earlier than {$old_string} (past {$back_count} months)",$qry);
-      $message = EC_ADLAN_A146.$old_string.EC_ADLAN_A147;
+		// Add in a log event
+		$ecal_class->cal_log(4,"db_Delete - earlier than {$old_string} (past {$back_count} months)",$qry);
+		$message = EC_ADLAN_A146.$old_string.EC_ADLAN_A147;
 	}
 	else
 	{
-	  $message = EC_ADLAN_A149." : ".$sql->mySQLresult;
+		$message = EC_ADLAN_A149." : ".$sql->mySQLresult;
 	}
 
-  $ec_qs[0] = "maint";
+	$ec_qs[0] = 'maint';
 }
 
 
@@ -346,7 +346,7 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 			case '1': // Edit existing record
 				{
 					// We edit the record
-					$calendarmenu_db->db_Select("event_cat", "*", "event_cat_id='$calendarmenu_id'");
+					$calendarmenu_db->db_Select('event_cat', '*', 'event_cat_id='.$calendarmenu_id);
 					$calendarmenu_row = $calendarmenu_db->db_Fetch() ;
 					extract($calendarmenu_row);
 					$calendarmenu_cap1 = EC_ADLAN_A24;
@@ -356,15 +356,15 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 					  // First, set up a dummy event
 					  global $thisevent;
 					  $thisevent = array('event_start' => $ecal_class->time_now, 'event_end' => ($ecal_class->time_now)+3600,
-										 'event_title' => "Test event", 'event_details' => EC_ADLAN_A191,
+										 'event_title' => 'Test event', 'event_details' => EC_ADLAN_A191,
 										 'event_cat_name' => $event_cat_name, 'event_location' => EC_ADLAN_A192,
 										 'event_contact' => USEREMAIL, 
-										 'event_thread' => SITEURL."dodgypage",
+										 'event_thread' => SITEURL.'dodgypage',
 										 'event_id' => '6');
 					
 					// *************** SEND EMAIL HERE **************
-					  require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
-					  require_once(e_HANDLER . "mail.php");
+					  require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
+					  require_once(e_HANDLER . 'mail.php');
 					  switch ($ecal_send_email)
 					  {
 					    case 1 : $cal_msg = $event_cat_msg1;
@@ -372,8 +372,8 @@ if(isset($ec_qs[0]) && $ec_qs[0] == "cat")
 					    case 2 : $cal_msg = $event_cat_msg2;
 								 break;
 					  }
-					  $cal_msg = $tp -> parseTemplate($cal_msg, FALSE, $calendar_shortcodes);
-					  $cal_title = $tp -> parseTemplate($pref['eventpost_mailsubject'], FALSE, $calendar_shortcodes);
+					  $cal_msg = $tp -> parseTemplate($cal_msg, TRUE);
+					  $cal_title = $tp -> parseTemplate($pref['eventpost_mailsubject'], TRUE);
 					  $user_email = USEREMAIL;
 					  $user_name  = USERNAME;
 //					  $cal_msg = str_replace("\r","\n",$cal_msg);

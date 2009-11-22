@@ -6,12 +6,12 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ *	Event calendar - generate lists
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-19 10:09:58 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.7 $
+ * $Date: 2009-11-22 10:11:30 $
+ * $Author: e107steved $
  */
 /*
 |
@@ -28,35 +28,38 @@
 +----------------------------------------------------------------------------+
 */
 
-require_once("../../class2.php");
-if (!isset($pref['plug_installed']['calendar_menu'])) header("Location: ".e_BASE."index.php");
-include_lan(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php");
-define("PAGE_NAME", EC_LAN_80);
+require_once('../../class2.php');
+$e107 = e107::getInstance();
+if (!$e107->isInstalled('calendar_menu')) header('Location: '.e_BASE.'index.php');
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
+define('PAGE_NAME', EC_LAN_80);
 
 require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
 $ecal_class = new ecal_class;
 
-require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
 
-$message = "";
+e107::getScParser();
+require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
+
+$message = '';
 unset($ec_qs);
-if (e_QUERY) $ec_qs = explode(".", e_QUERY); 
+if (e_QUERY) $ec_qs = explode('.', e_QUERY); 
 else
 {
   if (!isset($pref['eventpost_printlists']) || ($pref['eventpost_printlists'] == 0))
-    header("location:".SITEURL);   // If disabled, just go back to index page
+    header('location:'.SITEURL);   // If disabled, just go back to index page
 }
 
 if (isset($_POST['set_dates']) && isset($_POST['start_date']) && (isset($_POST['end_date'])))
 {
-  $ec_qs[0] = $_POST['start_date'];
-  $ec_qs[1] = $_POST['end_date'];
-  if (isset($_POST['event_cat_ids']))
-  {
-    $ec_qs[2] = $_POST['event_cat_ids'];
-	if ($ec_qs[2] == 'all') $ec_qs[2] = '*';
-  }
-  if (isset($_POST['template_choice'])) $ec_qs[3] = $_POST['template_choice'];
+	$ec_qs[0] = $_POST['start_date'];
+	$ec_qs[1] = $_POST['end_date'];
+	if (isset($_POST['event_cat_ids']))
+	{
+		$ec_qs[2] = $_POST['event_cat_ids'];
+		if ($ec_qs[2] == 'all') $ec_qs[2] = '*';
+	}
+	if (isset($_POST['template_choice'])) $ec_qs[3] = $_POST['template_choice'];
 }
 
 if (!isset($ec_qs[3])) $ec_qs[3] = 'default';		// Template
@@ -66,7 +69,6 @@ if (!isset($ec_qs[4]) || (($ec_qs[4]) != 'print') && ($ec_qs[4] != 'pdf') ) $ec_
 
 
 
-global $cal_super, $calendar_shortcodes;
 $cal_super = $ecal_class->cal_super;
 
 // Get templates, since we may have to give a choice if we're displaying something
@@ -74,14 +76,14 @@ $cal_super = $ecal_class->cal_super;
 $EVENT_CAL_PDF_HEADER = array();
 $EVENT_CAL_PDF_BODY   = array();
 $EVENT_CAL_PDF_FOOTER = array();
-if (is_readable(e_PLUGIN."calendar_menu/ec_pf_template.php")) require_once(e_PLUGIN."calendar_menu/ec_pf_template.php");
-if (is_readable(e_PLUGIN."calendar_menu/ec_pf_user_template.php")) require_once(e_PLUGIN."calendar_menu/ec_pf_user_template.php");
-if (is_readable(THEME."ec_pf_template.php")) require_once(THEME."ec_pf_template.php");
+if (is_readable(e_PLUGIN.'calendar_menu/ec_pf_template.php')) require_once(e_PLUGIN.'calendar_menu/ec_pf_template.php');
+if (is_readable(e_PLUGIN.'calendar_menu/ec_pf_user_template.php')) require_once(e_PLUGIN.'calendar_menu/ec_pf_user_template.php');
+if (is_readable(THEME.'ec_pf_template.php')) require_once(THEME.'ec_pf_template.php');
 
 // Hard-coded alternatives
-if (!count($EVENT_CAL_PDF_HEADER)) $EVENT_CAL_PDF_HEADER['default'] = "<br />";
-if (!count($EVENT_CAL_PDF_BODY))   $EVENT_CAL_PDF_BODY['default']   = "{EC_MAIL_DATE_START} {EC_MAIL_TIME_START}  {EC_MAIL_TITLE}<br />";
-if (!count($EVENT_CAL_PDF_FOOTER)) $EVENT_CAL_PDF_FOOTER['default'] = "<br />";
+if (!count($EVENT_CAL_PDF_HEADER)) $EVENT_CAL_PDF_HEADER['default'] = '<br />';
+if (!count($EVENT_CAL_PDF_BODY))   $EVENT_CAL_PDF_BODY['default']   = '{EC_MAIL_DATE_START} {EC_MAIL_TIME_START}  {EC_MAIL_TITLE}<br />';
+if (!count($EVENT_CAL_PDF_FOOTER)) $EVENT_CAL_PDF_FOOTER['default'] = '<br />';
 if (!count($EVENT_CAL_PDF_NAMES))  $ec_pdf_template = 'default';
 // If one name only, we just assign that
 if (count($EVENT_CAL_PDF_NAMES) == 1)
@@ -113,7 +115,7 @@ if (!isset($ec_qs[0]) || !isset($ec_qs[1]))
 	</tr><tr>
 	<td class='forumheader3'>".EC_LAN_155."</td>
 	<td class='forumheader3' style='text_align:center'>";
-	$cal_text .= $tp->parseTemplate('{EC_NAV_CATEGORIES=nosubmit}',FALSE,$calendar_shortcodes);
+	$cal_text .= $e107->tp->parseTemplate('{EC_NAV_CATEGORIES=nosubmit}',FALSE,$calendar_shortcodes);
 	$cal_text .= "</td>
 	</tr>";
 	if (isset($EVENT_CAL_PDF_NAMES) && is_array($EVENT_CAL_PDF_NAMES) && (count($EVENT_CAL_PDF_NAMES) > 1))
@@ -176,8 +178,9 @@ if ($message !== "")
   exit;
 }
 
+setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);			// Give shortcodes a pointer to calendar class
+setScVar('event_calendar_shortcodes', 'catFilter', $cat_filter);			// Category filter
 
-global $ec_current_month, $thisevent_start_date, $thisevent_end_date, $ec_output_type, $ec_category_list, $ec_list_title;
 $ec_output_type = $ec_qs[4];
 if (isset($ec_qs[5])) $ec_list_title = $ec_qs[5]; else $ec_list_title = EC_LAN_163;
 $ec_list_title = str_replace('_',' ',$ec_list_title);
@@ -246,60 +249,67 @@ $ev_list = $ecal_class->get_events($ec_start_date, $ec_end_date, FALSE, $cat_fil
 if (isset($ec_qs[3])) $ec_pdf_template = $ec_qs[3];
 if (!isset($ec_pdf_template) || !array_key_exists($ec_pdf_template,$EVENT_CAL_PDF_NAMES)) $ec_pdf_template = 'default';
 
-
+/*
 // These available to templates/shortcodes to pick up change of start day/month/year
 global $ec_last_year, $ec_last_month, $ec_last_day, $ec_year_change, $ec_month_change, $ec_day_change;
 global $ec_start_date, $ec_end_date, $ec_pdf_options;
+global $ec_current_month, $thisevent_start_date, $thisevent_end_date ;
+*/
+
+setScVar('event_calendar_shortcodes', 'printVars', array('lt' => $ec_list_title, 'cat' => $ec_category_list, 'ot' => $ec_output_type,
+				'sd' => $ec_start_date, 'ed' => $ec_end_date));					// Give shortcodes the event data
+
 $ec_last_year = 0;
 $ec_last_month = 0;
 $ec_last_day = 0;
-$ec_pdf_options = "";     // Can configure the PDF driver
 
-$cal_text = "";
+$cal_text = '';
 $cal_totev = count($ev_list);
 if ($cal_totev > 0)
 {
-  if (isset($ec_template_styles[$ec_pdf_template]) && is_array($ec_template_styles[$ec_pdf_template]))
-  {
-    $ec_current_overrides = $ec_template_styles[$ec_pdf_template];    // Possible array of codes to override standard $sc_style
-    $sc_style = array_merge($sc_style,$ec_current_overrides);			// Override as necessary
-  }
+	if (isset($ec_template_styles[$ec_pdf_template]) && is_array($ec_template_styles[$ec_pdf_template]))
+	{
+		$ec_current_overrides = $ec_template_styles[$ec_pdf_template];    // Possible array of codes to override standard $sc_style
+		$sc_style = array_merge($sc_style,$ec_current_overrides);			// Override as necessary
+	}
 
-// If printing, wrap in a form so the button works 
-  if ($ec_output_type == 'print') $cal_text .= "<form action=''>\n";
-// Add header
-  $cal_text .= $tp->parseTemplate($EVENT_CAL_PDF_HEADER[$ec_pdf_template],TRUE,$calendar_shortcodes);
-// Debug code
-//  echo "Start date: ".strftime("%d-%m-%Y %H:%M:%S",$ec_start_date)."<br />";
-//  echo "End date:   ".strftime("%d-%m-%Y %H:%M:%S",$ec_end_date)."<br />";
-//  echo "Template:   ".$ec_pdf_template,"<br />";
-//  echo "Header:     ".$EVENT_CAL_PDF_HEADER[$ec_pdf_template]."<br />";
-//  echo "Body:       ".$EVENT_CAL_PDF_BODY[$ec_pdf_template]."<br />";
-//  echo "Footer:     ".$EVENT_CAL_PDF_FOOTER[$ec_pdf_template]."<br />";
+	// If printing, wrap in a form so the button works 
+	if ($ec_output_type == 'print') $cal_text .= "<form action=''>\n";
+	// Add header
+	$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_HEADER[$ec_pdf_template],TRUE);
+	// Debug code
+	//  echo "Start date: ".strftime("%d-%m-%Y %H:%M:%S",$ec_start_date)."<br />";
+	//  echo "End date:   ".strftime("%d-%m-%Y %H:%M:%S",$ec_end_date)."<br />";
+	//  echo "Template:   ".$ec_pdf_template,"<br />";
+	//  echo "Header:     ".$EVENT_CAL_PDF_HEADER[$ec_pdf_template]."<br />";
+	//  echo "Body:       ".$EVENT_CAL_PDF_BODY[$ec_pdf_template]."<br />";
+	//  echo "Footer:     ".$EVENT_CAL_PDF_FOOTER[$ec_pdf_template]."<br />";
   
-  foreach ($tim_arr as $tim => $ptr)
-  {
-	$ev_list[$ptr]['event_start'] = $tim;
-	$thisevent = $ev_list[$ptr];
-//    echo "Event: ".$thisevent['event_start']." ".$thisevent['event_title']."<br />";
-	// Decode dates into individual fields - we're bound to want them
-	$thisevent_start_date = $ecal_class->gmgetdate($thisevent['event_start']);
-	$thisevent_end_date   = $ecal_class->gmgetdate($thisevent['event_end']);
+	foreach ($tim_arr as $tim => $ptr)
+	{
+		$ev_list[$ptr]['event_start'] = $tim;
+		$thisevent = $ev_list[$ptr];
+		// Decode dates into individual fields - we're bound to want them
+		$thisevent_start_date = $ecal_class->gmgetdate($thisevent['event_start']);
+		$thisevent_end_date   = $ecal_class->gmgetdate($thisevent['event_end']);
 
-	$ec_year_change = ($ec_last_year != $thisevent_start_date['year']);
-	$ec_month_change = ($ec_last_month != $thisevent_start_date['mon']);
-	$ec_day_change   = ($ec_last_day != $thisevent_start_date['mday']);
+		$ec_year_change = ($ec_last_year != $thisevent_start_date['year']);
+		$ec_month_change = ($ec_last_month != $thisevent_start_date['mon']);
+		$ec_day_change   = ($ec_last_day != $thisevent_start_date['mday']);
 
-	$cal_totev --;    // Can use this to modify inter-event gap
-	$cal_text .= $tp->parseTemplate($EVENT_CAL_PDF_BODY[$ec_pdf_template],FALSE,$calendar_shortcodes);
-	  
-	$ec_last_year = $thisevent_start_date['year'];
-	$ec_last_month = $thisevent_start_date['mon'];
-	$ec_last_day = $thisevent_start_date['mday'];
-  }
+		$cal_totev --;    // Can use this to modify inter-event gap
+		setScVar('event_calendar_shortcodes', 'numEvents', $cal_totev);				// Number of events to display
+		setScVar('event_calendar_shortcodes', 'event', $thisevent);					// Give shortcodes the event data
+		setScVar('event_calendar_shortcodes', 'changeFlags', array('yc' => $ec_year_change, 'mc' => $ec_month_change, 'dc' => $ec_day_change));					// Give shortcodes the event data
+		$cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_BODY[$ec_pdf_template],TRUE);
+		  
+		$ec_last_year = $thisevent_start_date['year'];
+		$ec_last_month = $thisevent_start_date['mon'];
+		$ec_last_day = $thisevent_start_date['mday'];
+	}
 
 // Add footer
-  $cal_text .= $tp->parseTemplate($EVENT_CAL_PDF_FOOTER[$ec_pdf_template],FALSE,$calendar_shortcodes);
+  $cal_text .= $e107->tp->parseTemplate($EVENT_CAL_PDF_FOOTER[$ec_pdf_template],TRUE);
   if ($ec_output_type == 'print') $cal_text .= "</form>\n";
 }
 else
@@ -310,40 +320,36 @@ else
 switch($ec_output_type)
 {
 	case 'display':
-		$ns->tablerender(EC_LAN_80, $cal_text, 'ec_pf_page');
+		$e107->ns->tablerender(EC_LAN_80, $cal_text, 'ec_pf_page');
 		require_once (FOOTERF);
 	break;
 	
 	case 'print':
 		echo $cal_text;
-	break;
+		break;
 	
 	case 'pdf':
-		//TODO use a better way to pass info to pdf
+		//TODO find a way to pass initialisation options etc to PDF driver
 		include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'.php');
 		define('FPDF_FONTPATH', 'font/');
 		//require the ufpdf class
 		require_once (e_PLUGIN.'pdf/ufpdf.php');
 		//require the e107pdf class
 		require_once (e_PLUGIN.'pdf/e107pdf.php');
-		if('' == $ec_pdf_options)
-		{
-			$pdf = new e107PDF();
-		}
-		else
-		{
-			$pdf = new e107PDF($ec_pdf_options);
-		}
+		$pdf = new e107PDF();
 		//	$text = array($text, $creator, $author, $title, $subject, $keywords, $url);
-		$text = array($cal_text,
-			 '',
-			 '',
-			 EC_LAN_163,
-			 '',
-			 '',
-			 e_SELF.e_QUERY);
+		$text = array(
+			$cal_text,
+			'',
+			'',
+			EC_LAN_163,			// Title
+			'',
+			'',
+			e_SELF.'?'.e_QUERY,	// URL
+			''					// Page orientation
+			);
 		$pdf->makePDF($text);
-	break;
+		break;
 
 }
 
@@ -424,31 +430,31 @@ function decode_date($date_string, $last_day = FALSE)
 // For the last date we want end of next 
 function gen_drop($drop_type)
 {
-  $text = "<select name='".($drop_type ? 'end_date' : 'start_date')."' class='tbox' style='width:140px;' >\n";
-  if ($drop_type)
-  {
-    $start_date = strtotime("-3 months");
-	$match_date = strtotime("+3 months");	// Propose 3-month list
-  }
-  else
-  {
-    $start_date = strtotime("-9 months");
-//	$match_date = strtotime("-1 months");
-	$match_date = time();    // Use current month for start date
-  }
+	$text = "<select name='".($drop_type ? 'end_date' : 'start_date')."' class='tbox' style='width:140px;' >\n";
+	if ($drop_type)
+	{
+		$start_date = strtotime('-3 months');
+		$match_date = strtotime('+3 months');	// Propose 3-month list
+	}
+	else
+	{
+		$start_date = strtotime('-9 months');
+	//	$match_date = strtotime('-1 months');
+		$match_date = time();    // Use current month for start date
+	}
 
-  // Get date to be 1st of month
-  $date = getdate($match_date);
-  $match_date = mktime(0,0,0,$date['mon'],1,$date['year'],FALSE);
+	// Get date to be 1st of month
+	$date = getdate($match_date);
+	$match_date = mktime(0,0,0,$date['mon'],1,$date['year'],FALSE);
  
-  for ($i = 0; $i < 24; $i++)
-  { 
-    $sel_text = (($match_date == $start_date) ? "selected='selected'" : "");
-    $date = getdate($start_date);
-    $text .= "<option value = '{$date['year']}{$date['mon']}' {$sel_text}>{$date['month']} {$date['year']} </option>\n";
-	$start_date = mktime(0,0,0,$date['mon']+1,1,$date['year'],FALSE);
-  }
-  $text .= "</select>\n";
-  return $text;
+	for ($i = 0; $i < 24; $i++)
+	{ 
+		$sel_text = (($match_date == $start_date) ? "selected='selected'" : "");
+		$date = getdate($start_date);
+		$text .= "<option value = '{$date['year']}{$date['mon']}' {$sel_text}>{$date['month']} {$date['year']} </option>\n";
+		$start_date = mktime(0,0,0,$date['mon']+1,1,$date['year'],FALSE);
+	}
+	$text .= "</select>\n";
+	return $text;
 }
 ?>

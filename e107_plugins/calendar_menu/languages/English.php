@@ -9,14 +9,14 @@
  * These messages are for the 'user' pages of the event calendar (including event entry/editing)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-18 02:03:35 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.10 $
+ * $Date: 2009-11-22 10:11:32 $
+ * $Author: e107steved $
  */
-
-define('EC_ADLAN_1', "Event Calendar");
-define('EC_ADLAN_2', "Configure Event Calendar");
-define('EC_LAN_TODAY', "today");
+	
+define('EC_ADLAN_1', 'Event Calendar');
+define('EC_ADLAN_2', 'Configure Event Calendar');
+define('EC_LAN_TODAY', 'today');
 
 define('EC_LAN_DAY_1', "1");
 define('EC_LAN_DAY_2', "2");
@@ -184,7 +184,7 @@ define('EC_LAN_116', "Monday");
 //define('EC_LAN_119', "month/year");
 //define('EC_LAN_120', "year/month");
 define('EC_LAN_121', "Show Calendar");	
-
+define('EC_LAN_122', 'Event information (single event)');
 define('EC_LAN_123', "Subscriptions");
 define('EC_LAN_124', "Calendar Subscriptions");
 define('EC_LAN_125', "Categories available for subscription");
@@ -237,27 +237,53 @@ define('EC_LAN_171', "List including category");
 define('EC_LAN_172', "Event Categories: ");
 define('EC_LAN_173', "First event starts: ");
 define('EC_LAN_174', "Last event ends: ");
-define('EC_LAN_175', "All Day");
+define('EC_LAN_175', 'All Day');
 define('EC_LAN_176', "Recurring pattern: ");
 define('EC_LAN_177', "Cancel Entry");
 define('EC_LAN_178', "Accept Entries");
 define('EC_LAN_179', "Confirmation of multiple event entry");
-define('EC_LAN_180', " RECORDS NOT SAVED - DB UPDATE ERROR");
+define('EC_LAN_180', 'RECORDS NOT SAVED - DB UPDATE ERROR');
 
-define('EC_LAN_VIEWCALENDAR', "View Calendar");
-define('EC_LAN_VIEWALLEVENTS', "View all events");
+define('EC_LAN_VIEWCALENDAR', 'View Calendar');
+define('EC_LAN_VIEWALLEVENTS', 'View all events');
 define('EC_LAN_ALLEVENTS', "All events");
 
+// Recurring events texts - the numeric part of each define is the internal value assigned
+define('EC_LAN_RECUR_00', 'no');
+define('EC_LAN_RECUR_01', 'annual');
+define('EC_LAN_RECUR_02', 'biannual');
+define('EC_LAN_RECUR_03', 'quarterly');
+define('EC_LAN_RECUR_04', 'monthly');
+define('EC_LAN_RECUR_05', 'four weekly');
+define('EC_LAN_RECUR_06', 'fortnightly');
+define('EC_LAN_RECUR_07', 'weekly');
+define('EC_LAN_RECUR_08', 'daily');
+define('EC_LAN_RECUR_100', 'Sunday in month');
+define('EC_LAN_RECUR_101', 'Monday in month');
+define('EC_LAN_RECUR_102', 'Tuesday in month');
+define('EC_LAN_RECUR_103', 'Wednesday in month');
+define('EC_LAN_RECUR_104', 'Thursday in month');
+define('EC_LAN_RECUR_105', 'Friday in month');
+define('EC_LAN_RECUR_106', 'Saturday in month');
+
+define('EC_LAN_RECUR_1100', 'First');
+define('EC_LAN_RECUR_1200', 'Second');
+define('EC_LAN_RECUR_1300', 'Third');
+define('EC_LAN_RECUR_1400', 'Fourth');
+
+
 // Notify
-define("NT_LAN_EC_1", "Event Calendar Events");
-define("NT_LAN_EC_2", "Event Updated");
-define("NT_LAN_EC_3", "Update by");
-define("NT_LAN_EC_4", "IP Address");
-define("NT_LAN_EC_5", "Message");
-define("NT_LAN_EC_6", "Event Calendar - Event added");
-define("NT_LAN_EC_7", "New event posted");
-define("NT_LAN_EC_8", "Event Calendar - Event modified");
+define('NT_LAN_EC_1', 'Event Calendar Events');
+define('NT_LAN_EC_2', 'Event Updated');
+define('NT_LAN_EC_3', 'Update by');
+define('NT_LAN_EC_4', 'IP Address');
+define('NT_LAN_EC_5', 'Message');
+define('NT_LAN_EC_6', 'Event Calendar - Event added');
+define('NT_LAN_EC_7', 'New event posted');
+define('NT_LAN_EC_8', 'Event Calendar - Event modified');
 
 // Prefs - language defines can be used in various places where text is set through the admin screens
 define('EC_MAILOUT_SUBJECT', "Advice of calendar event");	// Use shortcode EC_MAIL_SUBJECT
 
+
+?>
