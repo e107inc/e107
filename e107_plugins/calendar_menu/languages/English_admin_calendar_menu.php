@@ -9,9 +9,9 @@
  * Messages for admin pages of event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_admin_calendar_menu.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-18 02:03:35 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.3 $
+ * $Date: 2009-11-22 10:11:32 $
+ * $Author: e107steved $
  */
 	
 define('EC_ADLAN_1', "Event Calendar");

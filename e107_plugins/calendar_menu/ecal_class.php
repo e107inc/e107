@@ -6,21 +6,16 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ * Event calendar class
+ *	Pre-calculates/caches many useful values
+ *	Implements functions used in most of the code
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ecal_class.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision: 1.12 $
+ * $Date: 2009-11-22 10:11:30 $
+ * $Author: e107steved $
  */
  
-/*
-|
-| Event calendar class:
-|	Pre-calculates/caches many useful values
-|	Implements functions used in most of the code
-|
-*/
 
 /*
 Preferences used:
@@ -31,10 +26,10 @@ Preferences used:
 
 if (!defined('e107_INIT')) { exit; }
 
-if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); }
+if (!defined('EC_DEFAULT_CATEGORY')) { define('EC_DEFAULT_CATEGORY','Default'); }
 
-  class ecal_class
-  {
+class ecal_class
+{
   // Useful time/date variables - set up on creation, and available externally
   // (All the times and dates are consistent, being derived from $time_now, which is the time the constructor was
   // called - probably doesn't matter, but may help someone.
@@ -64,28 +59,36 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	var $cat_text_cache = array();		// Used to cache category text as read
 	
 	var $ec_first_day_of_week = 0;		// First day of the week
-	var $days = array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);	// Array Sunday..Saturday
-	var $recur_type = array('0' => 'no', '1' => 'annual', '2' => 'biannual', '3' =>'quarterly', '4' => 'monthly', '5' => 'four weekly', 
-					'6' => 'fortnightly', '7' => 'weekly', '8' => 'daily', 
-					'100' => 'Sunday in month',
-					'101' => 'Monday in month',
-					'102' => 'Tuesday in month',
-					'103' => 'Wednesday in month',
-					'104' => 'Thursday in month',
-					'105' => 'Friday in month',
-					'106' => 'Saturday in month'
+	public $days = array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);	// Array Sunday..Saturday
+	public $recur_type = array(
+					'0' => EC_LAN_RECUR_00,		// 'no'
+					'1' => EC_LAN_RECUR_01,		//'annual'
+					'2' => EC_LAN_RECUR_02,		//'biannual'
+					'3' => EC_LAN_RECUR_03,		//'quarterly'
+					'4' => EC_LAN_RECUR_04,		//'monthly'
+					'5' => EC_LAN_RECUR_05,		//'four weekly'
+					'6' => EC_LAN_RECUR_06,		//'fortnightly'
+					'7' => EC_LAN_RECUR_07,		// 'weekly'
+					'8' => EC_LAN_RECUR_00,		// 'daily'
+					'100' => EC_LAN_RECUR_100,	// 'Sunday in month'
+					'101' => EC_LAN_RECUR_101,	// 'Monday in month'
+					'102' => EC_LAN_RECUR_102,	// 'Tuesday in month'
+					'103' => EC_LAN_RECUR_103,	// 'Wednesday in month'
+					'104' => EC_LAN_RECUR_104,	// 'Thursday in month'
+					'105' => EC_LAN_RECUR_105,	// 'Friday in month'
+					'106' => EC_LAN_RECUR_106	// 'Saturday in month'
 					);
-	var $recur_week = array('100' => 'First', '200' => 'Second', '300' => 'Third', '400' => 'Fourth');
+	var $recur_week = array(
+					'100' => EC_LAN_RECUR_1100,	//'First'
+					'200' => EC_LAN_RECUR_1200,	//'Second' 
+					'300' => EC_LAN_RECUR_1300,	// 'Third'
+					'400' => EC_LAN_RECUR_1400	// 'Fourth'
+					);
 
 
-    function ecal_class()
+    public function __construct()
 	{  // Constructor
-	  global $pref;
-	  if (!isset($pref['plug_installed']['calendar_menu']))
-	  {
-		header('location:'.e_BASE.'index.php');
-		exit;
-	  }
+		global $pref;
 
 		// Get all the times in terms of 'clock time' - i.e. allowing for TZ, DST, etc
 		// All the times in the DB should be 'absolute' - so if we compare with 'clock time' it should work out.
@@ -222,51 +225,55 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	  }
 
 	}
-	
-	function time_string($convtime)
+
+
+	public function time_string($convtime)
 	{  // Returns a time string from a time stamp, formatted as 24-hour, 12-hour or custom as set in prefs
-	  return gmstrftime($this->time_format_string, $convtime);
+		return gmstrftime($this->time_format_string, $convtime);
 	}
 
-	function event_date_string($convdate)
+
+	public function event_date_string($convdate)
 	{  // Returns a date string from a date stamp, formatted for display in event list
-	  return gmstrftime($this->event_date_format_string,$convdate);
+		return gmstrftime($this->event_date_format_string,$convdate);
 	}
 	
 	
-	function next_date_string($convdate)
+	public function next_date_string($convdate)
 	{  // Returns a date string from a date stamp, formatted for display in forthcoming event menu
-	  return gmstrftime($this->next_date_format_string,$convdate);
+		return gmstrftime($this->next_date_format_string,$convdate);
 	}
 	
 	
-	function full_date($convdate)
+	public function full_date($convdate)
 	{  // Returns a date as dd-mm-yyyy or yyyy-mm-dd according to prefs (for event entry)
-	  return gmdate($this->cal_format_string, $convdate);
+		return gmdate($this->cal_format_string, $convdate);
 	}
-	
-	function make_date($new_hour, $new_minute, $date_string)
+
+
+	public function make_date($new_hour, $new_minute, $date_string)
 	{   // Turns a date as entered in the calendar into a time stamp (for event entry)
-      $tmp = explode($this->date_separator, $date_string);
-	  switch ($this->java_format_code)
-	  {
-	    case 2 :
-          return  gmmktime($new_hour, $new_minute, 0, $tmp[1], $tmp[0], $tmp[2]);    // dd-mm-yyyy
-		case 3 :
-          return  gmmktime($new_hour, $new_minute, 0, $tmp[0], $tmp[1], $tmp[2]);		// mm-dd-yyyy
-		default :
-          return  gmmktime($new_hour, $new_minute, 0, $tmp[1], $tmp[2], $tmp[0]);		// yyyy-mm-dd
-	  }
+		$tmp = explode($this->date_separator, $date_string);
+		switch ($this->java_format_code)
+		{
+			case 2 :
+				return  gmmktime($new_hour, $new_minute, 0, $tmp[1], $tmp[0], $tmp[2]);    // dd-mm-yyyy
+			case 3 :
+				return  gmmktime($new_hour, $new_minute, 0, $tmp[0], $tmp[1], $tmp[2]);		// mm-dd-yyyy
+			default :
+				return  gmmktime($new_hour, $new_minute, 0, $tmp[1], $tmp[2], $tmp[0]);		// yyyy-mm-dd
+		}
 	}
-	
+
+
 	// Return day of week string relative to the start of the week
-	function day_offset_string($doff)
+	public function day_offset_string($doff)
 	{
-	  return $this->days[($doff+$this->ec_first_day_of_week) % 7];
+		return $this->days[($doff+$this->ec_first_day_of_week) % 7];
 	}
 
 
-	function cal_log($event_type, $event_title = '', $event_string='', $event_start=0)
+	public function cal_log($event_type, $event_title = '', $event_string='', $event_start=0)
 	{  // All calendar-related logging intentionally passed through a single point to maintain control
 	   // (so we could also add other info if we wanted)
 	   // Event types:
@@ -275,32 +282,40 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	   //	3 - delete event
 	   // 	4 - Bulk delete
 	   //	5 - add multiple events
-	  global $pref, $admin_log, $e_event, $PLUGINS_DIRECTORY, $e107;
-	  
+		global $pref;
+		$e107 = e107::getInstance();
+
 	  $log_titles = array(	'1' => 'EC_ADM_01',
 							'2' => 'EC_ADM_02',
 							'3' => 'EC_ADM_03',
 							'4' => 'EC_ADM_04',
 							'5' => 'EC_ADM_05',
+							'6' => 'EC_ADM_06',
+							'7' => 'EC_ADM_07',
+							'8' => 'EC_ADM_08',
+							'9' => 'EC_ADM_09',
+							'10' => 'EC_ADM_10',
+							'11' => 'EC_ADM_11'
 							);
-// Do the notifies first
+
+		// Do the notifies first
 	  $cmessage = $log_titles[$event_type]."<br />";
 	  if ($event_start > 0)
 	  {
-	    $cmessage .= "Event Start: ".strftime("%d-%B-%Y",$event_start)."<br />";
-	    $cmessage .= "Event Link:  ".$pref['siteurl'].$PLUGINS_DIRECTORY. "calendar_menu/event.php?".$event_start." <br />";
+	    $cmessage .= 'Event Start: '.strftime("%d-%B-%Y",$event_start)."<br />";
+	    $cmessage .= 'Event Link:  '.SITEURL.e_PLUGIN_ABS. 'calendar_menu/event.php?'.$event_start." <br />";
 	  }
 	  else
 	    $cmessage .= "Event Start unknown<br />";
-	  $edata_ec = array("cmessage" => $cmessage, "ip" => $e107->getip());
+	  $edata_ec = array('cmessage' => $cmessage, 'ip' => $e107->getip());
 	  switch ($event_type)
 	  {
 	    case 5 :
-	    case 1 : $e_event -> trigger("ecalnew", $edata_ec);
+	    case 1 : $e107->e_event -> trigger('ecalnew', $edata_ec);
 				 break;
 	    case 2 :
 		case 3 :
-		case 4 : $e_event -> trigger("ecaledit", $edata_ec);
+		case 4 : $e107->e_event -> trigger('ecaledit', $edata_ec);
 				 break;
 	  }
 
@@ -316,21 +331,21 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 							'4' => 'Event Calendar - Bulk Delete',
 							'5' => 'Event Calendar - multiple add '.strftime("%d-%B-%Y",$event_start)
 							);
-	  $admin_log->log_event($log_titles[$event_type],$event_title."&nbsp;\n".$log_detail[$event_type]."\n".$event_string,'');
+	  $e107->admin_log->log_event($log_titles[$event_type],$event_title."&nbsp;\n".$log_detail[$event_type]."\n".$event_string,'');
 	}
 
 
 
 	function get_category_text($ev_cat)
 	{
-	  global $sql;
-	  if (!isset($this->cat_text_cache[$ev_cat]))
-	  {
-	    $sql->db_Select('event_cat','event_cat_name',"event_cat_id='{$ev_cat}'");
-	    $row = $sql->db_Fetch();
-	    $this->cat_text_cache[$ev_cat] = $row['event_cat_name'];
-	  }
-	  return $this->cat_text_cache[$ev_cat];
+		global $sql;
+		if (!isset($this->cat_text_cache[$ev_cat]))
+		{
+			$sql->db_Select('event_cat','event_cat_name',"event_cat_id='{$ev_cat}'");
+			$row = $sql->db_Fetch();
+			$this->cat_text_cache[$ev_cat] = $row['event_cat_name'];
+		}
+		return $this->cat_text_cache[$ev_cat];
 	}
 
 
@@ -338,31 +353,47 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	// time() -date('Z') gives the correction to 'null out' the TZ and DST adjustments that getdate() does
 	function gmgetdate($date)
 	{
-	  return getdate($date-date('Z'));
+		return getdate($date-date('Z'));
 	}
 
 //------------------------------------------------
 //		Recurring event handling
 //------------------------------------------------
 
-// Generate a list of recurring events based on a 'first event' date, an interval and start/finish times
-// Returns an array of times
-	function gen_recur_regular($first_event, $last_event, $interval, $start_time, $end_time)
+	/**
+	 * Internal utility - Generate a list of time/date based on a 'first event' date, an interval and start/finish times
+	 * All fields are Unix-style time/date stamps
+	 * @param int $first_event 
+	 * @param int $last_event 
+	 * @param int $interval - interval between events (in seconds)
+	 * @param int $start_time
+	 * @param int $end_time - last date in time window
+	 *
+	 * @return array of start date/time entries
+	 */
+	protected function gen_recur_regular($first_event, $last_event, $interval, $start_time, $end_time)
 	{
-	  if ($last_event < $end_time) $end_time = $last_event;
-	  $ret = array();
-	  $first_event = $first_event + ceil(($start_time-$first_event)/$interval)*$interval;
-	  while ($first_event <= $end_time)
-	  {
-	    $ret[] = $first_event;
-		$first_event += $interval;
-	  }
-	  return $ret;
+		if ($last_event < $end_time) $end_time = $last_event;
+		$ret = array();
+		$first_event = $first_event + ceil(($start_time-$first_event)/$interval)*$interval;
+		while ($first_event <= $end_time)
+		{
+			$ret[] = $first_event;
+			$first_event += $interval;
+		}
+		return $ret;
 	}
 
 
-	function add_dates($main_date,$adder)
-	{  // Adds an offset of months and years to a date
+	/**
+	 * Internal utility - adds an offset of months and years to a date
+	 * @param array $main_date - a date in PHP standard array format
+	 * @param array $adder - a month+year offset in PHP standard array format
+	 *
+	 * @return array where 'mon' and 'year' fields filled in
+	 */
+	protected function add_dates($main_date,$adder)
+	{  
 	  if ($adder['mon'])
 	  {
 	    $main_date['mon'] += $adder['mon'];
@@ -377,9 +408,17 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	}
 
 	
-// Generate a list of recurring events based on a 'first event' date, an interval type and start/finish window
-// For day number, '0' = 'Sunday'
-	function gen_recur($first_event, $last_event, $interval_type, $start_time, $end_time)
+	/**
+	 * Generate a list of recurring events based on a 'first event' date, an interval type and start/finish window
+	 * @param int $first_event - earliest date for events
+	 * @param int $last_event - latest time for date of event
+	 * @param int $interval_type - numeric code defining the interval between events (N.B> day number zero is Sunday)
+	 * @param int $start_time - start time for each event
+	 * @param int $end_time - end time for each event
+	 *
+	 * @return array of events (may be empty)
+	 */
+	public function gen_recur($first_event, $last_event, $interval_type, $start_time, $end_time)
 	{
 	  if ($last_event < $end_time) $end_time = $last_event;
 	  $ret = array();
@@ -498,9 +537,21 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	  return $ret;
 	}
 
-// Read a list of events between start and end dates
-// If $start_only is TRUE, only searches based on the start date/time
-// Potential option to hook in other routines later
+
+	/**
+	 * Function to return all events between a given start and end date
+	 * Potential option to hook in other routines here later
+	 * @param int $start_time - earliest time for events
+	 * @param int $end_time - latest time for start of event
+	 * @param boolean $start_only - TRUE to scan based on start time only. FALSE to select events which overlap the specified time window
+	 * @param boolean|string $cat_filter = FALSE is 'no categories' - returns an empty array.
+	 * 					$cat_filter = '*' means 'all categories'
+	 * 					otherwise $cat_filter mst be a comma-separated list of category IDs.
+	 * @param string $event_fields - comma separated list of fields to read from the event record; '*' for all fields
+	 * @param string $cat_fields - comma separated list of fields to read from the category record; '*' for all fields
+	 *
+	 * @return array of events (may be empty)
+	 */
 	function get_events($start_time, $end_time, $start_only=FALSE, $cat_filter=0, $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
 	{
 	  global $sql;
@@ -557,13 +608,23 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	}
 
 
-	// Function to return up to a maximum number of events between a given start and end date
-	// It always uses the event start date only
-	// It tries to keep the actual number of events in memory to a minimum by discarding when it can.
-	// Once there are $num_events read, it pulls in the $end_time to speed up checks
-	// $cat_filter = FALSE is 'no categories' - returns an empty array.
-	// $cat_filter = '*' means 'all categories'
-	// otherwise $cat_filter mst be a comma-separated list of category IDs.
+	/**
+	 * Function to return up to a maximum number of events between a given start and end date
+	 *  It always uses the event start date only
+	 * It tries to keep the actual number of events in memory to a minimum by discarding when it can.
+	 * Once there are $num_events read, it pulls in the $end_time to speed up checks
+	 * @param int $num_event - number of events required
+	 * @param int $start_time - earliest time for events
+	 * @param int $end_time - latest time for start of event
+	 * @param boolean|string $cat_filter = FALSE is 'no categories' - returns an empty array.
+	 * 					$cat_filter = '*' means 'all categories'
+	 * 					otherwise $cat_filter mst be a comma-separated list of category IDs.
+	 * @param boolean $inc_recur TRUE to include recurring events
+	 * @param string $event_fields - comma separated list of fields to read from the event record; '*' for all fields
+	 * @param string $cat_fields - comma separated list of fields to read from the category record; '*' for all fields
+	 *
+	 * @return array of events (may be empty)
+	 */
 	function get_n_events($num_event, $start_time, $end_time, $cat_filter='*', $inc_recur=FALSE, $event_fields='*', $cat_fields='*')
 	{
 	  global $sql;
@@ -663,18 +724,24 @@ if (!defined("EC_DEFAULT_CATEGORY")) { define('EC_DEFAULT_CATEGORY',"Default"); 
 	} // End - function get_n_events()
 
 
-	function get_recur_text($recurring)
+	/**
+	 * Get text relating to recurring item
+	 * @param int numeric code for type of recurring item
+	 *
+	 * @return string corresponding text description
+	 */
+	public function get_recur_text($recurring)
 	{
-	  if ($recurring >= 100)
-	  {
-	    return $this->recur_week[100*intval($recurring/100)]." ".$this->recur_type[100+($recurring % 10)];
-	  }
-	  else
-	  {
-	    return $this->recur_type[$recurring];
-	  }
+		if ($recurring >= 100)
+		{
+			return $this->recur_week[100*intval($recurring/100)]." ".$this->recur_type[100+($recurring % 10)];
+		}
+		else
+		{
+			return $this->recur_type[$recurring];
+		}
 	}
 	  
-  }// End - class definition
+}// End - class definition
 
 ?>
