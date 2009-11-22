@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/facebook/facebook_function.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-18 21:18:21 $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-22 14:10:08 $
  * $Author: e107coders $
  */
 
@@ -821,7 +821,7 @@ class e_facebook
 			    }
 				endif;	
 				
-				if($fbid)
+				if(vartrue($fbid))
 				{
 					// echo "fbid=".print_a($fbid);
 					return $fbid[0]['uid'];

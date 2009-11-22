@@ -10,8 +10,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/login.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-22 14:10:07 $
  * $Author: e107coders $
 */
 
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 error_reporting(E_ALL);
 
 
-require_once(e_HANDLER.'user_handler.php');
+// require_once(e_HANDLER.'user_handler.php'); //shouldn't be necessary
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_login.php');
 
 define ('LOGIN_TRY_OTHER', 2);		// Try some other authentication method
@@ -72,6 +72,9 @@ class userlogin
 		{
 			return FALSE;
 		}
+		
+		$tp = e107::getParser();
+		$sql = e107::getDb();
 
 		$this->e107 = e107::getInstance();
 		$this->userIP = $this->e107->getip();
@@ -264,7 +267,15 @@ class userlogin
 				}
 			}
 		}
-		header("Location: ".$redir);
+		
+		$redirPrev = e107::getRedirect()->getPreviousUrl();  
+		
+		if($redirPrev)
+		{		
+			e107::getRedirect()->redirect($redirPrev);	
+		}
+
+		e107::getRedirect()->redirect($redir);	
 		exit();
 	}
 
@@ -334,7 +345,7 @@ class userlogin
 		}
 
 		// Now check password
-		$this->userMethods = new UserHandler;
+		$this->userMethods = e107::getSession();
 		if ($forceLogin)
 		{
 			if (md5($this->userData['user_name'].$this->userData['user_password'].$this->userData['user_join']) != $userpass)

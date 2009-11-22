@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.160 $
-* $Date: 2009-11-19 10:07:28 $
+* $Revision: 1.161 $
+* $Date: 2009-11-22 14:10:00 $
 * $Author: e107coders $
 *
 */
@@ -484,7 +484,7 @@ else
 
 //TODO - this could be part of e107->init() method now, prefs will be auto-initialized
 //when proper called (e107::getPref())
-$e107->set_base_path();
+// $e107->set_base_path(); moved to init(). 
 
 //DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
 $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
@@ -553,7 +553,6 @@ if ($pref['user_tracking'] == 'session')
   }
 }
 
-define('e_SELF', ($pref['ssl_enabled'] == '1' ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
 
 // if the option to force users to use a particular url for the site is enabled, redirect users there as needed
 // Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
@@ -606,8 +605,8 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 	}
 }
 
-$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
-define('e_PAGE', $page);
+// $page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+// define('e_PAGE', $page);
 
 // sort out the users language selection
 if (isset($_POST['setlanguage']) || isset($_GET['elan']) || isset($GLOBALS['elan']))
@@ -966,16 +965,12 @@ if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdat
 
 $sql->db_Mark_Time('Start: Signup/splash/admin');
 
-define('e_SIGNUP', e_BASE.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
-define('e_LOGIN', e_BASE.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
 
 if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || $pref['maintainance_flag'])
 {
 	//XXX move force_userupdate() also?
-	require_once(e_HANDLER."redirection_class.php");
-	$redirect = new redirection;
-	$redirect->checkMaintenance();
-	$redirect->checkMembersOnly();
+	e107::getRedirect()->checkMaintenance();
+	e107::getRedirect()->checkMembersOnly();
 }
 
 // ------------------------------------------------------------------------
@@ -1018,7 +1013,8 @@ if ((e_QUERY == 'logout') || (($pref['user_tracking'] == 'session') && isset($_S
 
 	cookie(e_COOKIE, '', (time() - 2592000));
 	e107::getEvent()->trigger('logout');
-	header('location:'.e_BASE.'index.php');
+	e107::getRedirect()->redirect(e_BASE.'index.php');
+	// header('location:'.e_BASE.'index.php');
 	exit();
 }
 
@@ -1055,31 +1051,11 @@ define('TIMEOFFSET', $e_deltaTime);
 // ----------------------------------------------------------------------------
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-
-// Work out which theme to use
-//----------------------------
-// The following files are assumed to use admin theme:
-//	  1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
-// 	  2. any plugin file starting with 'admin_'
-// 	  3. any plugin file in a folder called admin/
-// 	  4. any file that specifies $eplug_admin = TRUE;
-//
-// e_SELF has the full HTML path
-$inAdminDir = FALSE;
-$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
-$e107Path = str_replace($e107->base_path, '', e_SELF);				// Knock off the initial bits
-if	(
-	 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
-	  || ($isPluginDir && (strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
-	  || (varsettrue($eplug_admin) || defsettrue('ADMIN_AREA'))		// Admin forced
-	)
-{
-	$inAdminDir = TRUE;
-	// Load admin phrases ASAP
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
+if(e_ADMIN_AREA) // Load admin phrases ASAP
+{	
+	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 }
-// This should avoid further checks - NOTE: used in js_manager.php
-define('e_ADMIN_AREA', ($inAdminDir  && !defsettrue('USER_AREA'))); //Force USER_AREA added
+
 
 if(!defined('THEME'))
 {
@@ -1177,7 +1153,7 @@ if(!isset($_E107['no_menus']))
 }
 
 // here we USE the theme
-if($inAdminDir)
+if(e_ADMIN_AREA)
 {
 	if(file_exists(THEME.'admin_theme.php')&&(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY.'menus.php?configure')===FALSE)) // no admin theme when previewing.
 	{
@@ -1617,9 +1593,17 @@ function init_session()
 	# - return boolean
 	# - scope public
 	*/
-	global $sql, $pref, $user_pref, $tp, $currentUser, $e107, $_E107, $eArrayStorage;
+	
+	
+	global $pref, $user_pref, $currentUser, $e107, $_E107;
+	
+	$sql = e107::getDb();
+	$tp = e107::getParser();
+	$eArrayStorage = e107::getArrayStorage();
+	
 
 	define('USERIP', $e107->getip());
+	
 
     if(isset($_E107['cli']) && $_SERVER['argv'][1])
 	{
@@ -1657,6 +1641,8 @@ function init_session()
 
 		if (empty($uid) || empty($upw))
 		{
+			//$_SESSION[] = e_SELF."?".e_QUERY;
+			
 			cookie(e_COOKIE, '', (time() - 2592000));
 			$_SESSION[e_COOKIE] = "";
 			session_destroy();
@@ -1719,6 +1705,8 @@ function init_session()
 				define('ADMINPERMS', $result['user_perms']);
 				define('ADMINEMAIL', $result['user_email']);
 				define('ADMINPWCHANGE', $result['user_pwchange']);
+				e107::getRedirect()->setPreviousUrl();
+				
 			}
 			else
 			{

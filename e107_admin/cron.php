@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-11-21 22:26:15 $
-|     $Author: e107steved $
+|     $Revision: 1.23 $
+|     $Date: 2009-11-22 14:10:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -268,12 +268,11 @@ function cronName($classname,$method)
 function setCronPwd()
 {
 		global $pref;
-		
-		require_once (e_HANDLER.'user_handler.php');
-			$userMethods = new UserHandler;		
-			$newpwd = $userMethods->generateRandomString('*^*#.**^*');
-			$newpwd = sha1($newpwd.time());			
-			$pref['e_cron_pwd'] = $newpwd; 
+	
+		$userMethods = e107::getSession();
+		$newpwd = $userMethods->generateRandomString('*^*#.**^*');
+		$newpwd = sha1($newpwd.time());			
+		$pref['e_cron_pwd'] = $newpwd; 
 			
 	return save_prefs();
 	

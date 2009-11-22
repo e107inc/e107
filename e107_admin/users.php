@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.69 $
-* $Date: 2009-11-18 01:04:26 $
+* $Revision: 1.70 $
+* $Date: 2009-11-22 14:10:06 $
 * $Author: e107coders $
 *
 */
@@ -78,11 +78,11 @@ require_once (e_HANDLER.'form_handler.php');
 require_once (e_HANDLER.'userclass_class.php');
 include_once (e_HANDLER.'user_extended_class.php');
 require_once (e_HANDLER.'validator_class.php');
-require_once (e_HANDLER.'user_handler.php');
+// require_once (e_HANDLER.'user_handler.php');
 //      $userMethods = new UserHandler;
 //    	$colList = $userMethods->getNiceNames(TRUE);
 $ue = new e107_user_extended;
-$userMethods = new UserHandler;
+$userMethods = e107::getSession();
 $user_data = array();
 $frm = new e_form;
 $rs = new form;

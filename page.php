@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/page.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-11-18 01:04:24 $
+|     $Revision: 1.23 $
+|     $Date: 2009-11-22 14:10:03 $
 |     $Author: e107coders $
 |
 +----------------------------------------------------------------------------+
@@ -42,7 +42,7 @@ else
 {
 
 	$cacheString = 'page_'.$page->pageID;
-  $cachePageTitle = 'page-t_'.$page->pageID;
+	$cachePageTitle = 'page-t_'.$page->pageID;
 
 	if($cacheData = $e107cache->retrieve($cacheString))
 	{
@@ -58,25 +58,27 @@ else
 		$e107_core_custom_pages = $page -> showPage();
 		define("e_PAGETITLE", $e107_core_custom_pages['title']);
 		require_once(HEADERF);
+		
 		if ($e107_core_custom_pages['err'])		// Need to display error block after header defined
 		{
             $ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
 			require_once(FOOTERF);
 			exit;
 		}
+		
 		if ($e107_core_custom_pages['cachecontrol'] == TRUE)
 		{
-		ob_start();
-		$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
-		$cache_data = ob_get_flush();
-		$e107cache->set($cacheString, $cache_data);
-		$e107cache->set($cachePageTitle, $e107_core_custom_pages['title']."^".$e107_core_custom_pages['comment_flag']);
-		$comment_flag = $e107_core_custom_pages['comment_flag'];
+			ob_start();
+			$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
+			$cache_data = ob_get_flush();
+			$e107cache->set($cacheString, $cache_data);
+			$e107cache->set($cachePageTitle, $e107_core_custom_pages['title']."^".$e107_core_custom_pages['comment_flag']);
+			$comment_flag = $e107_core_custom_pages['comment_flag'];
 		}
 		else
 		{
-          $ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
-		  $comment_flag = $e107_core_custom_pages['comment_flag'];
+          	$ns -> tablerender($e107_core_custom_pages['title'], $e107_core_custom_pages['text'],"cpage");
+		  	$comment_flag = $e107_core_custom_pages['comment_flag'];
 		}
 	}
 

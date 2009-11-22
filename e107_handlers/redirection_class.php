@@ -11,8 +11,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
- |     $Revision: 1.7 $
- |     $Date: 2009-11-18 01:04:43 $
+ |     $Revision: 1.8 $
+ |     $Date: 2009-11-22 14:10:07 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -42,6 +42,9 @@ class redirection
 	 */
 	protected $page_exceptions = array();
 	
+	
+	protected $query_exceptions = array();
+	
 	/**
 	 * Manage Member-Only Mode.
 	 *
@@ -51,7 +54,60 @@ class redirection
 	{
 		$this->self_exceptions = array(SITEURL.e_SIGNUP, SITEURL.'index.php', SITEURL.'fpw.php', SITEURL.e_LOGIN, SITEURL.'membersonly.php');
 		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php');
+		$this->query_exceptions = array('logout');
 	}
+	
+	/**
+	 * Store the current URL in a cookie for 5 minutes so we can return to it after being logged out. 
+	 * @return 
+	 */
+	function setPreviousUrl()
+	{
+		if(in_array(e_SELF, $this->self_exceptions))
+		{
+			return;
+		}
+		if(in_array(e_PAGE, $this->page_exceptions))
+		{
+			return;
+		}
+		if(in_array(e_QUERY, $this->query_exceptions))
+		{
+			return;
+		}
+		
+		$self = (e_QUERY) ? e_SELF."?".e_QUERY : e_SELF;
+		
+		session_set(e_COOKIE.'_previousUrl',$self ,(time()+300));	
+	}
+
+	
+	/**
+	 * Return the URL the admin was on, prior to being logged-out. 
+	 * @return 
+	 */
+	public function getPreviousUrl()
+	{		
+		return $this->getCookie('previousUrl');
+	}
+		
+	
+	private function getCookie($name) //TODO move to e107_class or a new user l class. 
+	{	
+		$cookiename = e_COOKIE."_".$name;
+		
+		if(vartrue($_SESSION[$cookiename]))
+		{
+			return $_SESSION[$cookiename];
+		}
+		elseif(vartrue($_COOKIE[$cookiename]))
+		{
+			return $_COOKIE[$cookiename];	
+		}
+
+		return FALSE;	
+	}
+	
 	
 	/**
 	 * Perform re-direction when Maintenance Mode is active.

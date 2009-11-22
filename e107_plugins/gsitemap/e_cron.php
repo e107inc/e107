@@ -9,8 +9,8 @@
  * Plugin configuration module - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/gsitemap/e_cron.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:05:37 $
+ * $Revision: 1.6 $
+ * $Date: 2009-11-22 14:10:09 $
  * $Author: e107coders $
  *
 */
@@ -29,7 +29,7 @@ class gsitemap_cron // include plugin-folder in the name.
 		global $pref;
 		
 		$cron = array();
-		/*	
+	
 		$cron[] = array(
 			'name'			=> "Update Records",
 			'function'		=> "myfunction",
@@ -40,7 +40,7 @@ class gsitemap_cron // include plugin-folder in the name.
 			'name'			=> "Test Email",
 			'function'		=> "sendEmail",
 			'description' 	=> "Sends a test email to ".$pref['siteadminemail']
-		);		*/	
+		);		
 		
 		return $cron;
 	}
