@@ -9,8 +9,8 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-11-22 14:10:03 $
+ * $Revision: 1.44 $
+ * $Date: 2009-11-22 23:36:23 $
  * $Author: e107coders $
  *
 */
@@ -255,14 +255,10 @@ if($signup_imagecode)
 	$sec_img = new secure_image;
 }
 
+
 if (USER || ($pref['user_reg'] == 0) || (vartrue($pref['auth_method'],'e107') != 'e107'))
-{
-	//header('location: '.e_HTTP.'index.php');
-	var_dump(USER);
-	var_dump($pref['user_reg']);
-	var_dump($pref['auth_method']);
-	echo "hello";
-	exit;
+{	
+	header('location: '.e_HTTP.'index.php');
 }
 
 

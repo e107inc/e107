@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.161 $
-* $Date: 2009-11-22 14:10:00 $
+* $Revision: 1.162 $
+* $Date: 2009-11-22 23:36:23 $
 * $Author: e107coders $
 *
 */
@@ -183,6 +183,9 @@ unset($inc_path);
 // F: Grab e107_config, get directory paths and create $e107 object
 //
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
+
+define("MPREFIX", $mySQLprefix);
+
 if(!isset($ADMIN_DIRECTORY))
 {
   // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
@@ -305,7 +308,7 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
 e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 //$eTraffic->Calibrate($eTraffic); 
 
-define("MPREFIX", $mySQLprefix);
+
 
 e107_require_once(e_HANDLER.'mysql_class.php');
 
@@ -1340,7 +1343,7 @@ function getperms($arg, $ap = ADMINPERMS)
 		return false;
 	}
 	
-	if ($ap === '0')
+	if ($ap === '0' || $ap === '0.') // BC fix. 
 	{
 		return true;
 	}
