@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-11-20 22:23:02 $
- * $Author: e107steved $
+ * $Revision: 1.38 $
+ * $Date: 2009-11-23 10:27:42 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -443,6 +443,7 @@ class e_shortcode
 							if($this->registered_codes[$code]['path'])
 							{
 								include_once($this->registered_codes[$code]['path'].strtolower($code).'.php');
+
 							}
 							if(function_exists($_function))
 							{
@@ -471,8 +472,15 @@ class e_shortcode
 					if(is_readable(e_FILE.'shortcode/'.strtolower($code).'.php'))
 					{
 						$_function = strtolower($code).'_shortcode';
+						$_class = strtolower($code);
+						
 						include_once(e_FILE.'shortcode/'.strtolower($code).'.php');
-						if(function_exists($_function))
+						
+						if(class_exists($_class))
+						{
+							$ret = call_user_func(array($_class,$_function), $parm);
+						}
+						elseif(function_exists($_function))
 						{
 							$ret = call_user_func($_function, $parm);
 						}
