@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-19 20:24:21 $
+ * $Revision: 1.6 $
+ * $Date: 2009-11-23 21:06:00 $
  * $Author: e107steved $
  *
 */
@@ -24,12 +24,13 @@ Various admin-related mailout functions, mostly to do with creating and handling
 TODO:
 	1. Use API to downloads plugin to get available files (when available)
 	2. Fuller checking prior to send
-	3. Complete dbTidy()
-	4. May want more control over date display format
+	3. May want more control over date display format
+	4. Add JS calendar for 'last visit' selector
 */
 
 if (!defined('e107_INIT')) { exit; }
 
+define('MAIL_ADMIN_DEBUG', TRUE);
 
 require_once(e_HANDLER.'mail_manager_class.php');
 
@@ -517,8 +518,13 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
-	// Generate list of userclasses, including the number of members in each class.
-	// Returns a userclass selection dropdown
+	/**
+	 * Creates a 'select' dropdown of userclasses, including the number of members in each class.
+	 * 
+	 * @param string $name - name for <select>
+	 * @param string $curSel - current select value
+	 * @return text for display
+	 */
 	public function userClassesTotals($name, $curSel) 
 	{
 		$fixedClasses = array('all' => LAN_MAILOUT_12,'unverified' => LAN_MAILOUT_13, 'admin' => LAN_MAILOUT_53, 'self' => LAN_MAILOUT_54);
@@ -551,24 +557,33 @@ class mailoutAdminClass extends e107MailManager
 
 
 
-	// Return a list of extended user fields
-	// TODO: Exclude system fields, and maybe others.
+	/**
+	 * Creates a 'select' dropdown of non-system user fields
+	 * 
+	 * @param string $list_name - name for <select>
+	 * @param string $curval - current select value
+	 * @param boolean $add_blank - add a blank line before the options if TRUE
+	 * @return text for display
+	 */
 	public function ret_extended_field_list($list_name, $curval = '', $add_blank = FALSE)
 	{
-		$this->checkDB(2);			// Make sure DB object created
+		$ue = e107::getUserExt();			// Get the extended field handler
 		$ret = "<select name='{$list_name}' class='tbox'>\n";
 		if ($add_blank) $ret .= "<option value=''>&nbsp;</option>\n";
 
-		$this->db2->db_Select("user_extended_struct");
-		while($row = $this->db2->db_Fetch())
+		foreach ($ue->fieldDefinitions as $fd)
 		{
-			$value = 'ue.user_'.$row['user_extended_struct_name'];
-			$selected = ($value == $curval) ? " selected='selected'" : '';
-			$ret .= "<option value='".$value."' {$selected}>".ucfirst($row['user_extended_struct_name'])."</option>\n";
+			if ($v['user_extended_struct_text'] != '_system_')
+			{
+				$value = 'ue.user_'.$fd['user_extended_struct_name'];
+				$selected = ($value == $curval) ? " selected='selected'" : '';
+				$ret .= "<option value='".$value."' {$selected}>".ucfirst($fd['user_extended_struct_name'])."</option>\n";
+			}
 		}
 		$ret .= "</select>\n";
 		return $ret;
 	}
+
 
 
 	/**
@@ -1012,11 +1027,19 @@ class mailoutAdminClass extends e107MailManager
 		// Need to select main email entries; count number of addresses attached to each
 		$gen = new convert;
 		$frm = e107::getForm();
+		switch ($type)
+		{
+			case 'sent' :
+				$searchType = 'allcomplete';
+				break;
+			default :
+				$searchType = $type;
+		}
 
 		if ($from < 0) { $from = $this->showFrom; }
 		if ($amount < 0) { $amount = $this->showCount; }
 		// in $_GET, so = sort order, sf = sort field
-		$count = $this->selectEmailStatus($from, $amount, '*', $type, $this->sortField, $this->sortOrder);
+		$count = $this->selectEmailStatus($from, $amount, '*', $searchType, $this->sortField, $this->sortOrder);
 		$totalCount = $this->getEmailCount();
 	  
 		$emails_found = array();			// Log ID and count for later
@@ -1043,7 +1066,7 @@ class mailoutAdminClass extends e107MailManager
 
 		while ($row = $this->getNextEmailStatus(FALSE))
 		{
-//			print_a($row);
+			//print_a($row);
 			$text .= '<tr>';
 			foreach ($fieldPrefs as $fieldName)
 			{	// Output column data value
@@ -1152,12 +1175,12 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		$counters = $this->mailRetrieveCounters($mailMainID);
-//	$this->e107->admin_log->log_event('MAIL_02','ID: '.$mailMainID.' '.$counters['add'].'[!br!]'.$_POST['email_from_name']." &lt;".$_POST['email_from_email'],E_LOG_INFORMATIVE,'');
+		//	$this->e107->admin_log->log_event('MAIL_02','ID: '.$mailMainID.' '.$counters['add'].'[!br!]'.$_POST['email_from_name']." &lt;".$_POST['email_from_email'],E_LOG_INFORMATIVE,'');
 
 
 
-// We've got all the email addresses here - display a confirmation form
-// Include start/end dates for send
+		// We've got all the email addresses here - display a confirmation form
+		// Include start/end dates for send
 		$text = "<div style='text-align:center'>";
 
 		$text .= "
@@ -1197,9 +1220,6 @@ class mailoutAdminClass extends e107MailManager
 		</div>";
 
 		$this->e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_179."</div>", $text);
-
-//	$text .= "</table></div>";
-
 	}	// End of previewed email
 
 
@@ -1250,7 +1270,7 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "</tbody></table>\n</fieldset></form>";
 
 
-// List of recipients
+		// List of recipients
 		// in $_GET, asc = sort order, fld = sort field
 		$count = $this->selectTargetStatus($mailID, $this->showFrom, $this->showCount, '*', FALSE, $this->sortField, $this->sortOrder);
 		$totalCount = $this->getTargetCount();
@@ -1268,7 +1288,7 @@ class mailoutAdminClass extends e107MailManager
 
 		while ($row = $this->getNextTargetStatus(FALSE))
 		{
-//			print_a($row);
+			//	print_a($row);
 			$text .= '<tr>';
 			foreach ($fieldPrefs as $fieldName)
 			{	// Output column data value
@@ -1341,18 +1361,156 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
+	/**
+	 * Clean up mailout DB
+	 * Dump array of results to admin log
+	 * 
+	 * @return boolean TRUE if no errors, FALSE if errors
+	 */
 	public function dbTidy()
 	{
+		$noError = TRUE;
+		$results = array();
 		$this->checkDB(2);			// Make sure DB object created
-		if ($this->db2->db_Delete('mail_content', '`mail_content_status` = '.MAIL_STATUS_TEMP) === FALSE)
+		if (($res = $this->db2->db_Delete('mail_content', '`mail_content_status` = '.MAIL_STATUS_TEMP)) === FALSE)
 		{
-			return FALSE;
+			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' deleting temporary records from mail_content';
+			$noError = FALSE;
 		}
-		if ($this->db2->db_Delete('mail_recipients', '`mail_status` = '.MAIL_STATUS_TEMP) === FALSE)
+		else
 		{
-			return FALSE;
+			if ($res) $results[] = str_replace(array('--COUNT--', '--TABLE--'), array($res, 'mail_content'), LAN_MAILOUT_227);
 		}
-		return TRUE;
+		if (($res = $this->db2->db_Delete('mail_recipients', '`mail_status` = '.MAIL_STATUS_TEMP)) === FALSE)
+		{
+			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' deleting temporary records from mail_recipients';
+			$noError = FALSE;
+		}
+		else
+		{
+			if ($res) $results[] = str_replace(array('--COUNT--', '--TABLE--'), array($res, 'mail_recipients'), LAN_MAILOUT_227);
+		}
+
+		// Now look for 'orphaned' recipient records
+		if (($res = $this->db2->db_Select_gen("DELETE `#mail_recipients` FROM `#mail_recipients` 
+					LEFT JOIN `#mail_content` ON `#mail_recipients`.`mail_detail_id` = `#mail_content`.`mail_source_id`
+					WHERE `#mail_content`.`mail_source_id` IS NULL")) === FALSE)
+		{
+			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' deleting orphaned records from mail_recipients';
+			$noError = FALSE;
+		}
+		else
+		{
+			if ($res) $results[] = str_replace('--COUNT--', $res, LAN_MAILOUT_226);
+		}
+
+		// Scan content table for anomalies, out of time records
+		if (($res = $this->db2->db_Select_gen("SELECT * FROM `#mail_content` 
+					WHERE (`mail_content_status` >".MAIL_STATUS_FAILED.") AND (`mail_content_status` <=".MAIL_STATUS_MAX_ACTIVE.")
+					AND ((`mail_togo_count`=0) OR (`mail_last_date` < ".time()."))")) === FALSE)
+		{
+			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' checking bad status in mail_content';
+			$noError = FALSE;
+		}
+		else
+		{
+			$items = array();	// Store record number of any content record that needs to be changed
+			while ($row = $this->db2->db_Fetch(MYSQL_ASSOC))
+			{
+				$items[] = $row['mail_source_id'];
+				if ($row['mail_source_id'])
+				{
+					if (FALSE == $this->cancelEmail($row['mail_source_id']))
+					{
+						$results[] = 'Error cancelling email ref: '.$row['mail_source_id'];
+					}
+				}
+			}
+			if (count($items)) $results[] = str_replace(array('--COUNT--', '--RECORDS--'), array(count($items), implode(', ', $items)), LAN_MAILOUT_228);
+		}
+
+
+		//Finally - check for inconsistent recipient and content status records - basically verify counts
+		if (($res = $this->db2->db_Select_gen("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`, 
+					mc.`mail_source_id`, mc.`mail_togo_count`, mc.`mail_sent_count`, mc.`mail_fail_count`, mc.`mail_bounce_count`, mc.`mail_source_id` FROM `#mail_recipients` AS mr
+					LEFT JOIN `#mail_content` AS mc ON mr.`mail_detail_id` = mc.`mail_source_id` 
+					WHERE mc.`mail_content_status` <= ".MAIL_STATUS_MAX_ACTIVE."
+					GROUP BY mr.`mail_status`, mc.`mail_source_id` ORDER BY mc.`mail_source_id`
+					")) === FALSE)
+		{
+			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' assembling email counts';
+			$noError = FALSE;
+		}
+		else
+		{
+			$lastMail = 0;		// May get several rows per mail
+			$notLast = TRUE;	// This forces one more loop, so we can clean up for last record read
+			$changeCount = 0;
+			$saveRow = array();
+			while (($row = $this->db2->db_Fetch(MYSQL_ASSOC)) || $notLast)
+			{
+				if (($lastMail > 0 && $row === FALSE) || ($lastMail != $row['mail_source_id']))
+				{	// Change of mail ID here - handle any accumulated info
+					if ($lastMail > 0)
+					{  // Need to verify counts for mail just read
+						$changes = array();
+						foreach ($counters as $k => $v)
+						{
+							if ($saveRow[$k] != $v)
+							{
+								$changes[$k] = $v;		// Assume the counters have got it right
+							}
+						}
+						if (count($changes))
+						{
+						// *************** Update mail record here *********************
+							$this->checkDB(1);
+							$this->db->db_Update('mail_content', array('data' => $changes, 'WHERE' => '`mail_source_id` = '.$lastMail, '_FIELDS' => $this->dbTypes['mail_content']));
+							$line = "Count update for {$saveRow['mail_source_id']} - {$saveRow['mail_togo_count']}, {$saveRow['mail_sent_count']}, {$saveRow['mail_fail_count']}, {$saveRow['mail_bounce_count']} => ";
+							$line .= implode (', ', $counters);
+							$results[] = $line;
+							$changeCount++;
+							//echo $line.'<br />';
+						}
+					}
+					
+					// Now reset for current mail
+					$lastMail = $row['mail_source_id'];
+					$counters = array('mail_togo_count' => 0, 'mail_sent_count' => 0, 'mail_fail_count' => 0, 'mail_bounce_count' => 0);
+					$saveRow = $row;
+				}
+				if ($row === FALSE) $notLast = FALSE;
+				// We get one record for each mail_status value for a given email - use them to update counts
+				if ($notLast)
+				{
+					switch ($row['mail_status'])
+					{
+						case MAIL_STATUS_SENT :			// Mail sent. Email handler happy, but may have bounced (or may be yet to bounce)
+							$counters['mail_togo_count'] += $row['mr_count'];
+							break;
+						case MAIL_STATUS_BOUNCED :
+							$counters['mail_togo_count'] += $row['mr_count'];		// It was sent, so increment that counter
+							$counters['mail_bounce_count'] += $row['mr_count'];		//...but bounced, so extra status
+							break;
+						case MAIL_STATUS_CANCELLED :								// Cancelled email - treat as a failure
+						case MAIL_STATUS_FAILED :
+							$counters['mail_fail_count'] += $row['mr_count'];		// Never sent at all
+							break;
+						case MAIL_STATUS_PARTIAL :			// Shouldn't get this on individual emails - ignore if we do
+							break;
+						default :
+							if (($row['mail_status'] >= MAIL_STATUS_PENDING) && ($row['mail_status'] <= MAIL_STATUS_MAX_ACTIVE))
+							{
+								$counters['mail_togo_count'] += $row['mr_count'];		// Still in the queue
+							}
+					}
+				}
+			}
+			if ($changeCount) $results[] = str_replace('--COUNT--', $changeCount, LAN_MAILOUT_229);
+		}
+
+		$this->e107->admin_log->log_event('MAIL_05', implode('[!br!]', $results), E_LOG_INFORMATIVE, '');
+		return $noError;
 	}
 }
 

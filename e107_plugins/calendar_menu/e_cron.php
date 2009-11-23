@@ -9,8 +9,8 @@
  * Plugin configuration module - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_cron.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-22 10:11:31 $
+ * $Revision: 1.2 $
+ * $Date: 2009-11-23 21:06:00 $
  * $Author: e107steved $
  *
 */
@@ -36,7 +36,7 @@ class calendar_menu_cron // include plugin-folder in the name.
 	public function __construct()
 	{
 		$this->e107 = e107::getInstance();
-		$this->debugLevel = 2;
+		//$this->debugLevel = 2;
 	}
 
 
