@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.81 $
- * $Date: 2009-11-22 14:10:07 $
+ * $Revision: 1.82 $
+ * $Date: 2009-11-23 11:51:01 $
  * $Author: e107coders $
 */
 
@@ -1443,7 +1443,7 @@ class e107
 	 */
 	public function set_eUrls()
 	{
-		global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY;
+		global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
 		
 		$pref = $this->getConfig()->getPref();
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);

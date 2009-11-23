@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.89 $
- * $Date: 2009-11-21 11:15:28 $
- * $Author: secretr $
+ * $Revision: 1.90 $
+ * $Date: 2009-11-23 11:51:02 $
+ * $Author: e107coders $
  *
 */
 
@@ -425,7 +425,15 @@ class e_form
 		{
 			$option_array = array(1=>LAN_YES,0=>LAN_NO);
 		} 
-		return $this->select_open($name, $options)."\n".$this->option_multi($option_array, $selected)."\n".$this->select_close();
+		$text = $this->select_open($name, $options)."\n";
+		
+		if(vartrue($options['default']))
+		{
+			$text .= $this->option($options['default'],''); 
+		}
+		
+		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();
+		return $text;
 	}
 
 	function uc_select($name, $current_value, $uc_options, $select_options = array(), $opt_options = array())
