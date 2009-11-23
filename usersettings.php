@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.117 $
-|     $Date: 2009-11-19 20:37:09 $
+|     $Revision: 1.118 $
+|     $Date: 2009-11-23 21:04:06 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -381,6 +381,8 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 
 		foreach ($extList as $key => $settings)
 		{
+			if ($settings['user_extended_struct_applicable'] != e_UC_NOBODY)
+			{
 			$val = '';
 			if (isset($_POST['ue'][$key])) $val = $_POST['ue'][$key]; 
 			$err = $ue->user_extended_validate_entry($val,$settings);
@@ -398,6 +400,7 @@ function make_email_query($email, $fieldname = 'banlist_ip')
 				$val = $tp->toDB($val);
 				$ue_fields .= ($ue_fields) ? ", " : "";
 				$ue_fields .= $key."='".$val."'";
+			}
 			}
 		}
 
