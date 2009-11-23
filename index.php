@@ -9,8 +9,8 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/index.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:04:24 $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-23 00:52:27 $
  * $Author: e107coders $
  */
 
@@ -38,20 +38,23 @@ if (isset($pref['frontpage']['all']) && $pref['frontpage']['all'])
 }
 else
 { // This is the 'new' method - assumes $pref['frontpage'] is an ordered list of rules
-	foreach ($pref['frontpage'] as $fk=>$fp)
+	if(vartrue($pref['frontpage']))
 	{
-		if (in_array($fk, $class_list))
+		foreach ($pref['frontpage'] as $fk=>$fp)
 		{
-			// Debateable whether we should append $query - we may be redirecting to a custom page, for example
-			if (strpos($fp, '{') !== FALSE)
+			if (in_array($fk, $class_list))
 			{
-				$location = $tp->replaceConstants($fp).$query;
+				// Debateable whether we should append $query - we may be redirecting to a custom page, for example
+				if (strpos($fp, '{') !== FALSE)
+				{
+					$location = $tp->replaceConstants($fp).$query;
+				}
+				else
+				{
+					$location = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$fp.$query;
+				}
+			break;
 			}
-			else
-			{
-				$location = ((strpos($fp, 'http') === FALSE) ? e_BASE : '').$fp.$query;
-			}
-		break;
 		}
 	}
 }
