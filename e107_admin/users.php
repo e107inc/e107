@@ -10,8 +10,8 @@
 * Administration Area - Users
 *
 * $Source: /cvs_backup/e107_0.8/e107_admin/users.php,v $
-* $Revision: 1.70 $
-* $Date: 2009-11-22 14:10:06 $
+* $Revision: 1.71 $
+* $Date: 2009-11-23 01:17:29 $
 * $Author: e107coders $
 *
 */
@@ -1045,7 +1045,7 @@ class users
 		{
 			$uqry[e_UC_ADMIN] 		= " u.user_admin = 1 ";
 			$uqry[e_UC_MEMBER]		= " u.user_ban = '0' ";
-            $uqry[e_UC_MAINADMIN]	= " u.user_perms = '0' ";
+            $uqry[e_UC_MAINADMIN]	= " (u.user_perms = '0' OR u.user_perms = '0.') ";
 			$uqry['unverified']		= " u.user_ban = 2 ";
 			$uqry['banned']			= " u.user_ban = 1 ";
 			$uqry['bounced']		= " u.user_ban = 3 ";
@@ -1249,18 +1249,30 @@ class users
 	
 		$removeClasses = $assignClasses; // Userclass list of userclasses that can be removed
 		$removeClasses[0] = array('userclass_name'=>array('userclass_id'=>0, 'userclass_name'=>USRLAN_220));
-	   return $frm->batchoptions(
-	      array(
-	         'ban_selected'       =>USRLAN_30,
-				'unban_selected'     =>USRLAN_33,
-				'activate_selected'  =>USRLAN_32,
-				'delete_selected'    =>LAN_DELETE
-         ),
-	      array(
-	         'userclass'    =>array('Assign Userclass...',$assignClasses),
-	         'remuserclass' =>array('Remove Userclass..', $removeClasses)
-	      )
-	   );
+	  
+	  
+		 if(count($assignClasses))
+		 {
+		 	 $uclasses = array(
+		         'userclass'    =>array('Assign Userclass...',$assignClasses),
+		         'remuserclass' =>array('Remove Userclass..', $removeClasses)
+		      );
+		 }
+		 else
+		 {
+		 	$uclasses = FALSE;	
+		 }  
+	  
+	
+		   return $frm->batchoptions(
+		      array(
+		         'ban_selected'       =>USRLAN_30,
+					'unban_selected'     =>USRLAN_33,
+					'activate_selected'  =>USRLAN_32,
+					'delete_selected'    =>LAN_DELETE
+	         ),$uclasses 
+		      
+		   );
 	}
 
 
