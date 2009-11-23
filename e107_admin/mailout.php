@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-11-18 20:45:18 $
+ * $Revision: 1.28 $
+ * $Date: 2009-11-23 21:05:50 $
  * $Author: e107steved $
  *
 */
@@ -19,6 +19,7 @@
 TODO:
 	1. Improve maintenance screen
 	2. 'Mail hold' function
+	3. Admin log
 */
 
 /*

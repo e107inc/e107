@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-19 20:24:21 $
+ * $Revision: 1.6 $
+ * $Date: 2009-11-23 21:05:58 $
  * $Author: e107steved $
 */
 
@@ -928,13 +928,13 @@ class e107MailManager
 	{
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		$this->checkDB(1);			// Make sure DB object created
-		// Set status of email body first - in this context, 'SENT' really means 'COMPLETED'
-		if (!$this->db->db_Update('mail_content','`mail_content_status` = '.MAIL_STATUS_SENT.' WHERE `mail_source_id` = '.intval($handle)))
+		// Set status of individual emails first, so we can get a count
+		if (FALSE === ($count = $this->db->db_Update('mail_recipients','`mail_status` = '.MAIL_STATUS_CANCELLED.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
 		{
 			return FALSE;
 		}
-		// Now set status of individual emails
-		if (FALSE === $this->db->db_Update('mail_recipients','`mail_status` = '.MAIL_STATUS_CANCELLED.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED))
+		// Now do status of email body - no emails to go, add those not sent to fail count
+		if (!$this->db->db_Update('mail_content','`mail_content_status` = '.MAIL_STATUS_PARTIAL.', `mail_togo_count`=0, `mail_fail_count` = `mail_fail_count` + '.intval($count).' WHERE `mail_source_id` = '.intval($handle)))
 		{
 			return FALSE;
 		}
@@ -969,6 +969,9 @@ class e107MailManager
 				case 'sent' :
 					$filters = array('`mail_content_status` = '.MAIL_STATUS_SENT);
 					break;
+				case 'allcomplete' :
+					$filters = array('((`mail_content_status` = '.MAIL_STATUS_SENT.') OR (`mail_content_status` = '.MAIL_STATUS_PARTIAL.') OR (`mail_content_status` = '.MAIL_STATUS_CANCELLED.'))');
+					break;
 				case 'failed' :
 					$filters = array('`mail_content_status` = '.MAIL_STATUS_FAILED);
 					break;
@@ -999,7 +1002,7 @@ class e107MailManager
 		{
 			$query .= " LIMIT {$start}, {$count}";
 		}
-//		echo "{$start}, {$count} Mail query: {$query}<br />";
+		//echo "{$start}, {$count} Mail query: {$query}<br />";
 		$result = $this->db->db_Select_gen($query);
 		if ($result !== FALSE)
 		{
