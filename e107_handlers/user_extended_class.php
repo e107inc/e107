@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2009-11-18 01:04:43 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2009-11-23 21:04:22 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -223,28 +223,31 @@ class e107_user_extended
 		$hideFlags = array();
 		foreach ($this->fieldDefinitions as $k => $defs)
 		{
-			$f = 'user_'.$defs['user_extended_struct_name'];
-			if (isset($inArray[$f]) || ($isSignup && ($defs['user_extended_struct_required'] == 1)))
-			{	// Only allow valid keys
-				$val = varset($inArray[$f], FALSE);
-		   		$err = $this->user_extended_validate_entry($val, $defs);
-				if ($err === true)
-				{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-					$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml($defs['user_extended_struct_text'],FALSE,'defs'),LAN_USER_75);
-					$eufVals['errors'][$f] = ERR_GENERIC;
-				}
-				elseif ($err)
-				{	// Specific error message returned - usually regex fail
-			   		$eufVals['errortext'][$f] = $err;
-			   		$eufVals['errors'][$f] = ERR_GENERIC;
-				}
-				elseif (!$err)
-				{
-					$eufVals['data'][$f] = $tp->toDB($val);
-				}
-				if (isset($hideArray[$f]))
-				{
-					$hideFlags[] = $f;
+			if ($defs['user_extended_struct_applicable'] != e_UC_NOBODY)
+			{
+				$f = 'user_'.$defs['user_extended_struct_name'];
+				if (isset($inArray[$f]) || ($isSignup && ($defs['user_extended_struct_required'] == 1)))
+				{	// Only allow valid keys
+					$val = varset($inArray[$f], FALSE);
+					$err = $this->user_extended_validate_entry($val, $defs);
+					if ($err === true)
+					{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
+						$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml($defs['user_extended_struct_text'],FALSE,'defs'),LAN_USER_75);
+						$eufVals['errors'][$f] = ERR_GENERIC;
+					}
+					elseif ($err)
+					{	// Specific error message returned - usually regex fail
+						$eufVals['errortext'][$f] = $err;
+						$eufVals['errors'][$f] = ERR_GENERIC;
+					}
+					elseif (!$err)
+					{
+						$eufVals['data'][$f] = $tp->toDB($val);
+					}
+					if (isset($hideArray[$f]))
+					{
+						$hideFlags[] = $f;
+					}
 				}
 			}
 		}
