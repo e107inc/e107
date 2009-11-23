@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-11-22 14:10:07 $
+ * $Revision: 1.26 $
+ * $Date: 2009-11-23 10:27:43 $
  * $Author: e107coders $
  */
 
@@ -21,10 +21,12 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
 class sitelinks
 {
 
-	var $eLinkList;
+	var $eLinkList = array();
 
 	function getlinks($cat=1)
 	{	
+		$this->eLinkList = array(); // clear the array in case getlinks is called 2x on the same page.
+		
 		$sql = e107::getDb('sqlSiteLinks');
 		
 		$query = "SELECT * FROM #links WHERE link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC";
