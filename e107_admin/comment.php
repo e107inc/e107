@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/comment.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2009-11-18 01:04:25 $
+|     $Revision: 1.22 $
+|     $Date: 2009-11-23 04:03:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,8 @@ if (!getperms("B"))
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_prefs.php');
 
 class comments_admin extends e_admin_dispatcher
 {
@@ -98,11 +100,16 @@ class comments_admin_ui extends e_admin_ui
 		
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
-		protected $prefs = array( 
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text'),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean'),	
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text')		
+		
+		protected $prefs = array(
+			'anon_post'				=> array('title'=>PRFLAN_32, 	'type'=>'boolean'),
+			'comments_icon'			=> array('title'=>PRFLAN_89, 	'type'=>'boolean'),
+			'nested_comments'		=> array('title'=>PRFLAN_88, 	'type'=>'boolean'),
+			'allowCommentEdit'		=> array('title'=>PRFLAN_90, 	'type'=>'boolean'),
+			'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean'),
+			'comments_emoticons'	=> array('title'=>PRFLAN_166, 	'type'=>'boolean')
 		);
+				
 		
 }
 
