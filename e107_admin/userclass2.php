@@ -9,8 +9,8 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-11-18 01:04:26 $
+ * $Revision: 1.35 $
+ * $Date: 2009-11-23 01:17:29 $
  * $Author: e107coders $
  *
 */
@@ -330,7 +330,8 @@ class uclassFrm extends e_form
 
 if(!e_QUERY || $action == 'list')
 {
-	$ns->tablerender(UCSLAN_21, $emessage->render(). $uc->show_existing());
+	$uc->show_existing();
+	
 }
 if(varset($_GET['id']) && varset($_GET['action'])=='edit')
 {
@@ -891,10 +892,15 @@ class uclass_manager
 		$tp 	= e107::getParser();
 		$sql 	= e107::getDb();
 		$frm 	= new uclassFrm;
+		$ns = e107::getRender();
+		
 		
 		if (!$total = $sql->db_Select('userclass_classes', '*'))
 		{
-			$text .= UCSLAN_7;
+			$text = "";
+			$mes = e107::getMessage();
+			$mes->add(UCSLAN_7, E_MESSAGE_INFO);
+			
 		}
 		else
 		{
@@ -912,11 +918,11 @@ class uclass_manager
 			{		
 				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'userclass_id');
 			}
+			
+			$text .= "</tbody></table></fieldset></form>";
 		}
-	    $text .= "</tbody></table></fieldset></form>";
-
-	    return $text;
-
+	    	
+		$ns->tablerender(UCSLAN_21, $mes->render().$text );
 
 	}
 }
