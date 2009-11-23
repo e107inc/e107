@@ -9,9 +9,9 @@
  * Administration - DB Verify
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db_verify.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-20 22:23:02 $
- * $Author: e107steved $
+ * $Revision: 1.11 $
+ * $Date: 2009-11-23 00:52:27 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -71,6 +71,8 @@ function read_tables($tab)
 {
 	global $tablines, $table_list, $tables, $pref;
 
+	$mes = e107::getMessage();
+
 	$file = split("\n", $tables[$tab]);
 	foreach($file as $line)
 	{
@@ -104,6 +106,7 @@ function read_tables($tab)
 	if($pref['multilanguage'])
 	{
 		$langs = table_list();
+		$mes->add(print_a($langs,TRUE), E_MESSAGE_DEBUG);
 		foreach(array_keys($table_list) as $name)
 		{
 			if($langs[$name])
@@ -113,7 +116,14 @@ function read_tables($tab)
 				$tablines[$ltab] = $tablines[$name];
 			}
 		}
+		
+		
 	}
+	
+	$mes->add(print_a($table_list,TRUE), E_MESSAGE_DEBUG);
+	
+	
+
 }
 
 
@@ -675,24 +685,34 @@ function table_list()
 	$exclude[] = "stat_info";	$exclude[] = "stat_last";
 	$exclude[] = "submit_news";	$exclude[] = "rate";
 	$exclude[] = "stat_counter";$exclude[] = "user_extended";
-	$exclude[] = "user_extended_struc";
+	$exclude[] = "user_extended_struct";
 	$exclude[] = "pm_messages";
 	$exclude[] = "pm_blocks";
+	
+	$replace = array();
+	
+	$lanlist = explode(",",e_LANLIST);
+	foreach($lanlist as $lang)
+	{
+		if($lang != $pref['sitelanguage'])
+		{
+			$replace[] = "lan_".strtolower($lang)."_";
+		}
+	}
 
 	$tables = mysql_list_tables($mySQLdefaultdb);
 	while (list($temp) = mysql_fetch_array($tables))
 	{
 		$prefix = MPREFIX."lan_";
 		$match = array();
-		if(preg_match('/^'.$prefix.'(.*)/', $temp, $match))
+		if(strpos($temp,$prefix)!==FALSE)
 		{
-			$e107tab = str_replace(MPREFIX, "", $temp);
-			$pos = strrpos($match[1],"_")+1;
-			$core = substr(str_replace("lan_","",$e107tab),$pos);
+			$e107tab = str_replace(MPREFIX, "", $temp);	
+			$core = str_replace($replace,"",$e107tab);
 			if (str_replace($exclude, "", $e107tab))
 			{
 				$tabs[$core] = $e107tab;
-			}
+			}		
 		}
 	}
 
