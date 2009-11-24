@@ -9,9 +9,9 @@
  * User signup
  *
  * $Source: /cvs_backup/e107_0.8/signup.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-11-22 23:36:23 $
- * $Author: e107coders $
+ * $Revision: 1.45 $
+ * $Date: 2009-11-24 16:41:10 $
+ * $Author: secretr $
  *
 */
 
@@ -441,7 +441,7 @@ if (isset($_POST['register']))
 
 
 		// check for multiple signups from the same IP address. But ignore localhost
-		if ($allData['user_ip'] != LOCALHOST_IP)
+		if ($allData['user_ip'] != e107::LOCALHOST_IP)
 		{
 			if($ipcount = $sql->db_Select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
 			{
