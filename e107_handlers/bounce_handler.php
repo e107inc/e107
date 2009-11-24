@@ -85,7 +85,7 @@ class e107Bounce
 					e107::getEvent()->trigger('email-bounce-transient', $the);
 	                if($num_attempts  > 10)
 					{
-	                    $this->setUser_Bounced($the['user_email']);
+	                    $this->setUser_Bounced($the['user_email'], $the['user_id']);
 	                }
 	                else
 					{
@@ -120,12 +120,18 @@ class e107Bounce
 
 
 	
-	function setUser_Bounced($id_or_email)
+	function setUser_Bounced($email, $bounceString = '')
 	{
-		if(!$id_or_email){ return; }
+		if(!$email && !$bounceString){ return; }
 	//	echo "Email bounced ID: ".$id_or_email;	
-		$query = (is_numeric($id_or_email)) ? "user_ban = 3 WHERE user_id = ".intval($id_or_email)." LIMIT 1" : "user_ban = 3 WHERE user_email = '".$id_or_email."' ";
-		return e107::getDb()->db_Update('user',$query);
+		require_once(e_HANDLER.'mail_manager_class.php');
+		$mailHandler = new e107MailManager();
+		if ($mailManager->markBounce($bounceString, $email))
+		{	// Success
+		}
+		// Failure
+	//	$query = (is_numeric($id_or_email)) ? "user_ban = 3 WHERE user_id = ".intval($id_or_email)." LIMIT 1" : "user_ban = 3 WHERE user_email = '".$id_or_email."' ";
+	//	return e107::getDb()->db_Update('user',$query);
 	}
 
 	

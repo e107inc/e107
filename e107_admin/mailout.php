@@ -9,47 +9,45 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-11-23 21:05:50 $
+ * $Revision: 1.29 $
+ * $Date: 2009-11-24 20:40:34 $
  * $Author: e107steved $
  *
 */
 
 /*
 TODO:
-	1. Improve maintenance screen
-	2. 'Mail hold' function
-	3. Admin log
+	1. Improve maintenance page
+	2. Bounce handling
 */
 
 /*
 Features:
-1. Additional sources of email addresses for mailouts can be provided via plugins
+1. Additional sources of email addresses for mailouts can be provided via plugins, and can be enabled via the mailout preferences page
 2. Both list of email recipients and the email are separately stored in the DB using a documented interface (allows alternative creation/mailout routines)
+		- see mail_manager_class.php
 3. Can specify qmail in the sendmail path
-
-Interface to add extra mailout (source) handlers - these provide email addresses:
-1. The handler is called 'e_mailout.php' in the plugin directory.
-2. Mailout options has a facility to enable the individual handlers
-3. Certain variables may be defined at load time to determine whether this is exclusive or supplementary
-4. The class name must be 'mailout_plugin_path'
 
 
 $pref['mailout_enabled'][plugin_path] - array of flags determining which mailers are active
 
-*/
+
+Extra mailout address handlers - these provide email addresses
+------------------------------
+1. The handler is called 'e_mailout.php' in the plugin directory.
+2. Mailout options includes a facility to enable the individual handlers
+3. Certain variables may be defined at load time to determine whether loading is exclusive or supplementary
+4. Interface is implemented as a class, which must be called 'plugin_path_mailout'
+5. see mailout_class.php in the handlers directory for an example (also simpler examples in newsletter and event calendar plugins)
 
 
-/*
-All information is stored in two db tables (see mail_manager_class.php)
-
-Each mailout task is implemented as a class, which must include a number of mandatory entry points:
+Each mailout task class, must include a number of mandatory entry points:
 	show_select($allow_edit = FALSE) - in edit mode, returns text which facilitates address selection. Otherwise shows the current selection criteria
+		- the display is assigned to a single table cell
 	function returnSelectors() - returns storable representation of user-entered selection criteria
 	select_init() - initialise the selection mechanism
 	select_add() - routine pulls out email addresses etc, for caller to add to the list of addressees
 	select_close() - selection complete
-
 */
 
 
@@ -73,8 +71,6 @@ Valid actions ($_GET['mode']):
 
 	'resend' - resend failures on a specific list
 
-	'orphans' - data tidy routine
-
 	'debug' - not currently used; may be useful to list other info
  
 Valid subparameters (where required):
@@ -92,10 +88,6 @@ if (!getperms('W'))
 
 $e_sub_cat = 'mail';
 
-// TODO: Possibly next two lines not needed any more?
-//set_time_limit(180);
-//session_write_close();
-
 
 
 require_once(e_ADMIN.'auth.php');
@@ -103,9 +95,9 @@ require_once(e_HANDLER.'ren_help.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
 require_once(e_HANDLER.'userclass_class.php');
-require_once(e_HANDLER.'mailout_class.php');		// Class handler for core mailout functions
-require_once(e_HANDLER.'mailout_admin_class.php');			// Admin tasks handler
-require_once(e_HANDLER.'mail_manager_class.php');	// Mail DB API
+require_once(e_HANDLER.'mailout_class.php');			// Class handler for core mailout functions
+require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
+require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage :: getInstance();
 
@@ -165,7 +157,7 @@ if (isset($_POST['targetaction']))
 }
 
 //echo "Action: {$action}  MailId: {$mailId}  Target: {$targetId}<br />";
-// ----------------- Actions ----------------------------------------------->
+// ----------------- Actions ------------------->
 switch ($action)
 {
 	case 'prefs' :
@@ -280,7 +272,15 @@ switch ($action)
 		break;
 
 	case 'mailhold' :
-		$emessage->add('Mail hold - not implemented yet: '.$mailId, E_MESSAGE_ERROR);
+		$action = 'held';
+		if ($mailAdmin->holdEmail($mailId))
+		{
+			$emessage->add(str_replace('--ID--', $mailId, LAN_MAILOUT_229), E_MESSAGE_SUCCESS);
+		}
+		else
+		{
+			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_230);
+		}
 		break;
 
 	case 'mailcancel' :
@@ -298,15 +298,6 @@ switch ($action)
 	case 'maildelete' :
 		break;
 
-	case 'mailtargets' :
-		$action = 'recipients';
-		// Intentional fall-through
-	case 'recipients' :
-		if (isset($_POST['etrigger_ecolumns']))
-		{
-			$mailAdmin->mailbodySaveColumnPref($action);
-		}
-		break;
 
 	case 'marksend' :			// Actually do something with an email and list of recipients - entry from email confirm page
 		$action = 'saved';
@@ -353,13 +344,11 @@ switch ($action)
 		$emessage->add('Not implemented yet', E_MESSAGE_ERROR);
 		break;
 
+	case 'mailtargets' :
+		$action = 'recipients';
+		// Intentional fall-through
+	case 'recipients' :
 	case 'saved' :		// Show template emails - probably no actions
-		if (isset($_POST['etrigger_ecolumns']))
-		{
-			$mailAdmin->mailbodySaveColumnPref($action);
-		}
-		break;
-
 	case 'sent' :
 	case 'pending' :
 	case 'held' :
@@ -371,7 +360,7 @@ switch ($action)
 
 	case 'maint' :		// Perform any maintenance actions required
 		if (isset($_POST['email_dross']))
-		if ($mailAdmin->dbTidy())
+		if ($mailAdmin->dbTidy())			// Admin logging done in this routine
 		{
 			$emessage->add(LAN_MAILOUT_184, E_MESSAGE_SUCCESS);
 		}
@@ -397,6 +386,7 @@ switch ($midAction)
 //		$emessage->add($pageMode.': Would delete here: '.$mailId, E_MESSAGE_SUCCESS);
 //		break;														// Delete this
 		$result = $mailAdmin->deleteEmail($mailId, 'all');
+		$admin_log->log_event('MAIL_04','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		if (($result === FALSE) || !is_array($result))
 		{
 			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
@@ -431,6 +421,7 @@ switch ($midAction)
 		if ($mailAdmin->activateEmail($mailId, FALSE))
 		{
 			$emessage->add(LAN_MAILOUT_185, E_MESSAGE_SUCCESS);
+			$admin_log->log_event('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{
@@ -526,6 +517,7 @@ function saveMailPrefs(&$emessage)
 {
 	global $pref;
 	$e107 = e107::getInstance();
+	$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
 	unset($temp);
 	if (!in_array($_POST['mailer'], array('smtp', 'sendmail', 'php'))) $_POST['mailer'] = 'php';
 	$temp['mailer'] = $_POST['mailer'];
@@ -558,7 +550,19 @@ function saveMailPrefs(&$emessage)
 	$temp['mail_pausetime'] = intval($_POST['mail_pausetime']);
 	$temp['mail_workpertick'] = intval($_POST['mail_workpertick']);
 	$temp['mail_workpertick'] = min($temp['mail_workpertick'],1000);
-	$temp['mail_bounce_email'] = $e107->tp->toDB($_POST['mail_bounce_email']);
+	$temp['mail_bounce'] = isset($bounceOpts[$_POST['mail_bounce']]) ? $_POST['mail_bounce'] : 'none';
+	switch ($temp['mail_bounce'])
+	{
+		case 'none' :
+			$temp['mail_bounce_email'] = '';
+			break;
+		case 'auto' :
+			$temp['mail_bounce_email'] = $e107->tp->toDB($_POST['mail_bounce_email2']);
+			break;
+		case 'mail' :
+			$temp['mail_bounce_email'] = $e107->tp->toDB($_POST['mail_bounce_email']);
+			break;
+	}
 	$temp['mail_bounce_pop3'] = $e107->tp->toDB($_POST['mail_bounce_pop3']);
 	$temp['mail_bounce_user'] =	$e107->tp->toDB($_POST['mail_bounce_user']);
 	$temp['mail_bounce_pass'] = $e107->tp->toDB($_POST['mail_bounce_pass']);
@@ -765,7 +769,7 @@ function show_prefs($mailAdmin)
 
 	$text .= "</table>
 	<fieldset id='core-mail-prefs-bounce'>
-		<legend".($mode ? " class='e-hideme'" : "").">".LAN_MAILOUT_31."</legend>
+		<legend>".LAN_MAILOUT_31."</legend>
 		<table cellpadding='0' cellspacing='0' class='adminedit'>
 		<colgroup span='2'>
 			<col class='col-label' />
@@ -773,11 +777,32 @@ function show_prefs($mailAdmin)
 		</colgroup>
 		<tbody>
 	<tr>
-		<td>Last Bounce Processed</td><td>".$lastBounceText."</td>
-	</tr>
+		<td>".LAN_MAILOUT_231."</td><td>";
+		
+	// bounce divs = mail_bounce_none, mail_bounce_auto, mail_bounce_mail
+	$autoDisp = ($pref['mail_bounce'] != 'auto') ? "style='display:none;'" : "";
+	$autoMail = ($pref['mail_bounce'] != 'mail') ? "style='display:none;'" : "";
+	$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
+	$text .= "<select name='mail_bounce' class='tbox' onchange='bouncedisp(this.value)'>\n<option value=''>&nbsp;</option>\n";
+	foreach ($bounceOpts as $k => $v)
+	{
+		$selected = ($pref['mail_bounce'] == $k) ? " selected='selected'" : '';
+		$text .= "<option value='{$k}'{$selected}>{$v}</option>\n";
+	}
+	$text .= "</select>\n</td>
+	</tr></tbody></table>
+
+
+		<table cellpadding='0' cellspacing='0' class='adminedit' id='mail_bounce_auto' {$autoDisp}>
+		<colgroup span='2'>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>
+		<tbody>
+		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email2' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
 	
 	<tr>
-		<td>Auto-process script</td><td><b>".(e_DOCROOT ? substr(e_DOCROOT, 0, -1) : '/').e_HANDLER_ABS."bounce_handler.php</b>";
+		<td>".LAN_MAILOUT_233."</td><td><b>".(e_DOCROOT ? substr(e_DOCROOT, 0, -1) : '/').e_HANDLER_ABS."bounce_handler.php</b>";
 		
 	if(!is_readable(e_HANDLER.'bounce_handler.php'))
 	{
@@ -787,10 +812,18 @@ function show_prefs($mailAdmin)
 	{
 		$text .= "<br /><span class='required'>".LAN_MAILOUT_162."</span>";
 	}
+	$text .= "<br /><span class='field-help'>".LAN_MAILOUT_235."</span></td></tr>
+	<tr><td>".LAN_MAILOUT_236."</td><td>".$lastBounceText."</td></tr>
+	</tbody></table>";
 
-	// TODO: Determine type of bounce processing
-	$text .= "</td>
-		</tr>		
+	// Parameters for mail-account based bounce processing
+	$text .= "
+		<table cellpadding='0' cellspacing='0' class='adminedit' id='mail_bounce_mail' {$autoMail}>
+		<colgroup span='2'>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>
+		<tbody>
 		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_33."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pop3' value=\"".$pref['mail_bounce_pop3']."\" /></td></tr>
 		<tr><td>".LAN_MAILOUT_34."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_user' value=\"".$pref['mail_bounce_user']."\" /></td></tr>
@@ -919,6 +952,26 @@ function headerjs()
 
 		document.getElementById('smtp').style.display = 'none';
 		document.getElementById('sendmail').style.display = 'none';
+	}
+
+	function bouncedisp(type)
+	{
+		if(type == 'auto')
+		{
+			document.getElementById('mail_bounce_auto').style.display = '';
+			document.getElementById('mail_bounce_mail').style.display = 'none';
+			return;
+		}
+
+		if(type =='mail')
+		{
+            document.getElementById('mail_bounce_auto').style.display = 'none';
+			document.getElementById('mail_bounce_mail').style.display = '';
+			return;
+		}
+
+		document.getElementById('mail_bounce_auto').style.display = 'none';
+		document.getElementById('mail_bounce_mail').style.display = 'none';
 	}
 	</script>";
 

@@ -98,6 +98,7 @@
 		<core name='loginname_maxlength'>30</core>
 		<core name='longdate'>%A %d %B %Y - %H:%M:%S</core>
 		<core name='mail_pause'>3</core>
+		<core name='mail_bounce'>none</core>
 		<core name='mail_pausetime'>4</core>
 		<core name='mailer'>php</core>
 		<core name='main_wordwrap'></core>

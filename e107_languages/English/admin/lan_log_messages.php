@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.39 2009-11-20 22:23:02 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.40 2009-11-24 20:40:34 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -340,7 +340,7 @@ define('LAN_AL_MAIL_02', 'Mailshot created');
 define('LAN_AL_MAIL_03', 'Mail settings updated');
 define('LAN_AL_MAIL_04', 'Mailshot details deleted');
 define('LAN_AL_MAIL_05', 'Mail Database tidy');
-define('LAN_AL_MAIL_06', '');
+define('LAN_AL_MAIL_06', 'Mailout activated');
 define('LAN_AL_MAIL_07', '');
 
 // Plugin Manager

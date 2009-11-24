@@ -9,9 +9,9 @@
 * Installation file
 *
 * $Source: /cvs_backup/e107_0.8/install_.php,v $
-* $Revision: 1.54 $
-* $Date: 2009-11-18 01:04:24 $
-* $Author: e107coders $
+* $Revision: 1.55 $
+* $Date: 2009-11-24 20:40:35 $
+* $Author: e107steved $
 *
 */
 
@@ -1231,6 +1231,7 @@ class e_install
 		$filename = "{$this->e107->e107_dirs['ADMIN_DIRECTORY']}sql/core_sql.php";
 		$fd = fopen ($filename, "r");
 		$sql_data = fread($fd, filesize($filename));
+		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);		// Strip comments
 		fclose ($fd);
 
 		if (!$sql_data)
@@ -1248,10 +1249,6 @@ class e_install
 
 		foreach ($result[0] as $sql_table)
 		{
-//			preg_match("/CREATE TABLE\s(.*?)\s\(/si", $sql_table, $match);
-//			$tablename = $match[1];
-
-//			preg_match_all("/create(.*?)myisam;/si", $sql_data, $result );
 			$sql_table = preg_replace("/create table\s/si", "CREATE TABLE {$this->previous_steps['mysql']['prefix']}", $sql_table);
 			
 			// Drop existing tables before creating. 
