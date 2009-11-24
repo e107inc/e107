@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/templates/signup_template.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-18 01:06:08 $
- * $Author: e107coders $
+ * $Revision: 1.16 $
+ * $Date: 2009-11-24 20:08:11 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -147,7 +147,7 @@ $sc_style['SIGNUP_IMAGECODE']['post'] = "
 
 if(!defined($COPPA_TEMPLATE))
 {
-$COPPA_TEMPLATE = LAN_SIGNUP_77." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." ".$tp->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."
+$COPPA_TEMPLATE = LAN_SIGNUP_77." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." ".$tp->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."
 <br />
 <br />
 <div style='text-align:center'><b>".LAN_SIGNUP_17."</b>
