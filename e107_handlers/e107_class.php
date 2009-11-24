@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.82 $
- * $Date: 2009-11-23 11:51:01 $
- * $Author: e107coders $
+ * $Revision: 1.83 $
+ * $Date: 2009-11-24 16:30:06 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -25,7 +25,14 @@ define('LOCALHOST_IP', '0000:0000:0000:0000:0000:ffff:7f00:0001');		// IPV6 stri
 class e107
 {
 	public $server_path;
-	public $e107_dirs;
+	
+	public $e107_dirs = array();
+	
+	/**
+	 * @var array  SQL connection data
+	 */
+	protected $e107_config_mysql_info = array();
+	
 	public $http_path;
 	public $https_path;
 	public $base_path;
@@ -35,6 +42,11 @@ class e107
 	public $_host_name_cache;
 	
 	public $site_theme;
+	
+	/**
+	 * @var string Current request type (http or https)
+	 */
+	protected $HTTP_SCHEME;
 	
 	/**
 	 * Used for runtime caching of user extended struct
@@ -128,14 +140,14 @@ class e107
 		'themeHandler'				=> '{e_HANDLER}theme_handler.php',
 		'e_model'					=> '{e_HANDLER}model_class.php',
 		'e_admin_model'				=> '{e_HANDLER}model_class.php',
-		'e_admin_dispatcher' 		=> '{e_HANDLER}admin_handler.php',
-		'e_admin_request' 			=> '{e_HANDLER}admin_handler.php',
-		'e_admin_response' 			=> '{e_HANDLER}admin_handler.php',
-		'e_admin_controller' 		=> '{e_HANDLER}admin_handler.php',
-		'e_admin_controller_ui' 	=> '{e_HANDLER}admin_handler.php',
-		'e_admin_ui' 				=> '{e_HANDLER}admin_handler.php',
-		'e_admin_form_ui' 			=> '{e_HANDLER}admin_handler.php',
-		'e_admin_icons' 			=> '{e_HANDLER}admin_handler.php',
+		'e_admin_dispatcher' 		=> '{e_HANDLER}admin_ui.php',
+		'e_admin_request' 			=> '{e_HANDLER}admin_ui.php',
+		'e_admin_response' 			=> '{e_HANDLER}admin_ui.php',
+		'e_admin_controller' 		=> '{e_HANDLER}admin_ui.php',
+		'e_admin_controller_ui' 	=> '{e_HANDLER}admin_ui.php',
+		'e_admin_ui' 				=> '{e_HANDLER}admin_ui.php',
+		'e_admin_form_ui' 			=> '{e_HANDLER}admin_ui.php',
+		'e_admin_icons' 			=> '{e_HANDLER}admin_ui.php',
 		'DHTML_Calendar'			=> '{e_HANDLER}calendar/calendar_class.php',
 		'comment'					=> '{e_HANDLER}comment_class.php',
 		'e107_user_extended'		=> '{e_HANDLER}user_extended_class.php',
@@ -202,9 +214,9 @@ class e107
 	 * 
 	 * @return e107
 	 */
-	public function init($e107_paths, $e107_root_path)
+	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info)
 	{
-		return $this->_init($e107_paths, $e107_root_path);
+		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info);
 	}
 	
 	/**
@@ -212,15 +224,34 @@ class e107
 	 * 
 	 * @return e107
 	 */
-	protected function _init($e107_paths, $e107_root_path)
+	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info)
 	{
 		if(empty($this->e107_dirs))
 		{
+			// Do some security checks/cleanup, prepare the environment
+			$this->prepare_request();
+
+			// folder info
 			$this->e107_dirs = $e107_paths;
+			
+			// mysql connection info
+			$this->e107_config_mysql_info = $e107_config_mysql_info;
+			
+			// various constants - MAGIC_QUOTES_GPC, MPREFIX, ...
+			$this->set_constants();
+			
+			// build all paths
 			$this->set_paths();
-			$this->set_base_path();
-			$this->set_eUrls();
 			$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
+			
+			// set base path, SSL is auto-detected
+			$this->set_base_path(false);
+			
+			// set some core URLs (e_LOGIN/SIGNUP)
+			$this->set_urls();
+			
+			// cleanup QUERY_STRING and friends, set  related constants
+			$this->set_request();
 		}
 		return $this;
 	}
@@ -288,14 +319,29 @@ class e107
 	/**
 	 * Get folder name (e107_config)
 	 * Replaces all $(*)_DIRECTORY globals
-	 * Example: $e107->getFolder('images');
+	 * Example: <code>$e107->getFolder('images')</code>;
 	 *
 	 * @param string $for
 	 * @return string
 	 */
 	function getFolder($for)
 	{
-		return varset($this->e107_dirs[strtoupper($for).'_DIRECTORY']);
+		$key = strtoupper($for).'_DIRECTORY';
+		return (isset($this->e107_dirs[$key]) ? $this->e107_dirs[$key] : '');
+	}
+	
+	/**
+	 * Get mysql config var (e107_config.php)
+	 * Replaces all $mySQL(*) globals
+	 * Example: <code>$e107->getMySQLConfig('prefix');</code>
+	 *
+	 * @param string $for prefix|server|user|password|defaultdb
+	 * @return string
+	 */
+	function getMySQLConfig($for)
+	{
+		$key = 'mySQL'.$for;
+		return (isset($this->e107_config_mysql_info[$key]) ? $this->e107_config_mysql_info[$key] : '');
 	}
 	
 	/**
@@ -1236,32 +1282,122 @@ class e107
 	}
 	
 	/**
-	 * Check if plugin is installed
-	 * @param string $plugname
-	 * @return boolean
+	 * Prepare e107 environment
+	 * This is done before e107_dirs initilization and [TODO] config include
+	 * @return e107
 	 */
-	public static function isInstalled($plugname)
-	{
-		// Could add more checks here later if appropriate
-		return self::getConfig()->isData('plug_installed/'.$plugname);
+	public function prepare_request()
+	{		
+		// TODO - better ajax detection method (headers when possible)
+		define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
+		unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something... 
+		
+		//$GLOBALS['_E107'] - minimal mode - here because of the e_AJAX_REQUEST
+		if(isset($GLOBALS['_E107']['minimal']) || e_AJAX_REQUEST)
+		{
+			$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
+			foreach($_e107vars as $v)
+			{
+				$noname = 'no_'.$v;
+				if(!isset($GLOBALS['_E107'][$v]))
+				{
+					$GLOBALS['_E107'][$noname] = 1;
+				}
+				unset($GLOBALS['_E107'][$v]);
+			}
+		}
+		
+		// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
+		$_SERVER['QUERY_STRING'] = str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']);
+		
+		// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
+		if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
+		{
+			$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
+			$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url.'?'.$_SERVER['QUERY_STRING'] : $new_url;
+			header('Location: '.$new_loc);
+			exit();
+		}
+		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
+		$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+
+		// setup some php options
+		e107::ini_set('magic_quotes_runtime',     0);
+		e107::ini_set('magic_quotes_sybase',      0);
+		e107::ini_set('arg_separator.output',     '&amp;');
+		e107::ini_set('session.use_only_cookies', 1);
+		e107::ini_set('session.use_trans_sid',    0);
+		
+		//  Ensure thet '.' is the first part of the include path
+		$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
+		if($inc_path[0] != '.')
+		{
+			array_unshift($inc_path, '.');
+			$inc_path = implode(PATH_SEPARATOR, $inc_path);
+			e107_ini_set('include_path', $inc_path);
+		}
+		unset($inc_path);
+		
+		return $this;
 	}
 	
 	/**
+	 * Set base system path
 	 * @return e107
 	 */
-	public function set_base_path()
+	public function set_base_path($force = null)
 	{
-		$this->base_path = (self::getPref('ssl_enabled') == 1 ?  $this->https_path : $this->http_path);
+		$ssl_enabled = (null !== $force) ? $force : $this->isSecure();//(self::getPref('ssl_enabled') == 1);
+		$this->base_path = $ssl_enabled ?  $this->https_path : $this->http_path;
 		return $this;
 	}
-
-
-
-
+	
+	/**
+	 * Set various system environment constants
+	 * @return e107
+	 */
+	public function set_constants()
+	{
+		define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
+		
+		define('MPREFIX', $this->getMySQLConfig('prefix')); // mysql prefix
+		
+		define('CHARSET', 'utf-8'); // set CHARSET for backward compatibility
+		
+		// Define the domain name and subdomain name.
+		if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
+		{
+			$srvtmp = '';  // Host is an IP address.
+		}
+		else
+		{
+			$srvtmp = explode('.',str_replace('www.', '', $_SERVER['HTTP_HOST']));
+		}
+		
+		define('e_SUBDOMAIN', (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : false)); // needs to be available to e107_config.
+		
+		if(e_SUBDOMAIN)
+		{
+		   	unset($srvtmp[0]);
+		}
+		
+		define('e_DOMAIN',(count($srvtmp) > 1 ? (implode('.', $srvtmp)) : false)); // if it's an IP it must be set to false.
+		
+		define('e_UC_PUBLIC', 0);
+		define('e_UC_MAINADMIN', 250);
+		define('e_UC_READONLY', 251);
+		define('e_UC_GUEST', 252);
+		define('e_UC_MEMBER', 253);
+		define('e_UC_ADMIN', 254);
+		define('e_UC_NOBODY', 255);
+		
+		return $this;
+	}
 
 	/**
 	 * Set all environment vars and constants
 	 * FIXME - remove globals
+	 * @return e107
 	 */
 	public function set_paths()
 	{
@@ -1270,7 +1406,14 @@ class e107
 		$UPLOADS_DIRECTORY,$_E107, $MEDIA_DIRECTORY;
 
 	//	global $NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY; 
-
+	
+		// ssl_enabled pref not needed anymore, scheme is auto-detected
+		$this->HTTP_SCHEME = 'http';
+		if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+		{
+			$this->HTTP_SCHEME =  'https';
+		}
+		
 		$path = ""; $i = 0;
 
 		if(!isset($_E107['cli']))
@@ -1413,6 +1556,7 @@ class e107
 				define("e_UPLOAD_ABS", e_HTTP.$UPLOADS_DIRECTORY);
 			}
 		}
+		return $this;
 	}
 
 	/**
@@ -1428,28 +1572,27 @@ class e107
 		return $fixed_path;
 	}
 
-
-
-
-
 	/**
 	 * Define e_PAGE, e_SELF, e_ADMIN_AREA and USER_AREA;
 	 * The following files are assumed to use admin theme:
 	 * 1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
 	 * 2. any plugin file starting with 'admin_'
 	 * 3. any plugin file in a folder called admin/
-	 * 4. any file that specifies $eplug_admin = TRUE;
-	 * @return 
+	 * 4. any file that specifies $eplug_admin = TRUE; or ADMIN_AREA = TRUE;
+	 * NOTE: USER_AREA = true; will force e_ADMIN_AREA to FALSE
+	 * @return e107
 	 */
-	public function set_eUrls()
+	public function set_urls()
 	{
-		global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
+		//global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
+		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
+		$ADMIN_DIRECTORY = $this->getFolder('admin');
+		$eplug_admin = $GLOBALS['eplug_admin'];
 		
-		$pref = $this->getConfig()->getPref();
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 		
 		define('e_PAGE', $page);
-		define('e_SELF', ($pref['ssl_enabled'] == '1' ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST']) . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
+		define('e_SELF', $this->HTTP_SCHEME . '://' . $_SERVER['HTTP_HOST'] . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
 
 		define('e_SIGNUP', e_BASE.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
 		define('e_LOGIN', e_BASE.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
@@ -1471,16 +1614,69 @@ class e107
 		}
 		
 		// This should avoid further checks - NOTE: used in js_manager.php
-		define('e_ADMIN_AREA', ($inAdminDir  && !defsettrue('USER_AREA'))); //Force USER_AREA added
+		define('e_ADMIN_AREA', ($inAdminDir  && !deftrue('USER_AREA'))); //Force USER_AREA added
+		
+		define('ADMINDIR', $ADMIN_DIRECTORY);
+		
+		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
+		define('SITEURL', SITEURLBASE.e_HTTP);
+		
+		return $this;
 	}
-
-
-
-
-
-
-
-
+	
+	/**
+	 * Set request related constants
+	 * @return e107
+	 */
+	public function set_request()
+	{
+		$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
+		if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
+		{
+			foreach($inArray as $res)
+			{
+				if(stristr($_SERVER['QUERY_STRING'], $res))
+				 {
+					die('Access denied.');
+				}
+			}
+		}
+		
+		if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches))
+		{
+			define('e_MENU', $matches[1]);
+			$e_QUERY = $matches[2];
+			if(strlen(e_MENU) == 2) // language code ie. [fr]
+			{
+		        require_once(e_HANDLER."language_class.php");
+				$slng = new language;
+				define('e_LANCODE', true);
+				$_GET['elan'] = $slng->convert(e_MENU);
+			}
+		}
+		else
+		{
+			define('e_MENU', '');
+			$e_QUERY = $_SERVER['QUERY_STRING'];
+		  	define('e_LANCODE', '');
+		}
+		
+		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));
+		define('e_QUERY', $e_QUERY);
+		
+		define('e_TBQS', $_SERVER['QUERY_STRING']);
+		$_SERVER['QUERY_STRING'] = e_QUERY;
+	}
+	
+	/**
+	 * Check if current request is secure (https)
+	 * @return 
+	 */
+	public function isSecure()
+	{
+		return ($this->HTTP_SCHEME === 'https');
+	}
+	
 	/**
 	 * Check if current user is banned
 	 * 
@@ -1903,6 +2099,32 @@ class e107
 		}
 		
 		return (null !== $separator ? implode($separator, $ret) : $ret);
+	}
+	
+	/**
+	 * Check if plugin is installed
+	 * @param string $plugname
+	 * @return boolean
+	 */
+	public static function isInstalled($plugname)
+	{
+		// Could add more checks here later if appropriate
+		return self::getConfig()->isData('plug_installed/'.$plugname);
+	}
+	
+	/**
+	 * Safe way to set ini var
+	 * @param string $var
+	 * @param string $value
+	 * @return 
+	 */
+	public static function ini_set($var, $value)
+	{
+		if (function_exists('ini_set'))
+		{
+			return ini_set($var, $value);
+		}
+		return false;
 	}
 
 	public function __get($name)
