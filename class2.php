@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.163 $
-* $Date: 2009-11-23 21:04:16 $
-* $Author: e107steved $
+* $Revision: 1.164 $
+* $Date: 2009-11-24 16:30:08 $
+* $Author: secretr $
 *
 */
 //
@@ -63,6 +63,8 @@ if(!isset($_E107['cli']))
 // C: Find out if register globals is enabled and destroy them if so
 // (DO NOT use the value of any variables before this point! They could have been set by the user)
 //
+
+// Can't be moved to e107, required here for e107_config vars security
 $register_globals = true;
 if(function_exists('ini_get'))
 {
@@ -83,35 +85,37 @@ if($register_globals == true)
 	unset($global);
 }
 
+// MOVED TO $e107->prepare_request()
 // TODO - better ajax detection method (headers when possible)
-define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
-unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something... 
+//define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
+//unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something... 
+//
+//if(isset($_E107['minimal']) || e_AJAX_REQUEST)
+//{
+//	$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
+//	foreach($_e107vars as $v)
+//	{
+//		$noname = 'no_'.$v;
+//		if(!isset($_E107[$v]))
+//		{
+//			$_E107[$noname] = 1;
+//		}
+//		unset($_E107[$v]);
+//	}
+//}
 
-if(isset($_E107['minimal']) || e_AJAX_REQUEST)
-{
-	$_e107vars = array('forceuserupdate', 'online', 'theme', 'menus', 'prunetmp');
-	foreach($_e107vars as $v)
-	{
-		$noname = 'no_'.$v;
-		if(!isset($_E107[$v]))
-		{
-			$_E107[$noname] = 1;
-		}
-		unset($_E107[$v]);
-	}
-}
 
-
+// MOVED TO $e107->prepare_request()
 // e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
-if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
-{
-	$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
-	$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url.'?'.$_SERVER['QUERY_STRING'] : $new_url;
-	header('Location: '.$new_loc);
-	exit();
-}
+//if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
+//{
+//	$new_url = substr($_SERVER['PHP_SELF'], 0, $pos+4);
+//	$new_loc = ($_SERVER['QUERY_STRING']) ? $new_url.'?'.$_SERVER['QUERY_STRING'] : $new_url;
+//	header('Location: '.$new_loc);
+//	exit();
+//}
 // If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+//$_SERVER['PHP_SELF'] = (($pos = strpos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 
 //
 // D: Setup PHP error handling
@@ -125,14 +129,16 @@ set_error_handler(array(&$error_handler, 'handle_error'));
 //
 define('e107_INIT', true);
 
+// MOVED TO $e107->prepare_request()
 // setup some php options
-e107_ini_set('magic_quotes_runtime',     0);
-e107_ini_set('magic_quotes_sybase',      0);
-e107_ini_set('arg_separator.output',     '&amp;');
-e107_ini_set('session.use_only_cookies', 1);
-e107_ini_set('session.use_trans_sid',    0);
+//e107_ini_set('magic_quotes_runtime',     0);
+//e107_ini_set('magic_quotes_sybase',      0);
+//e107_ini_set('arg_separator.output',     '&amp;');
+//e107_ini_set('session.use_only_cookies', 1);
+//e107_ini_set('session.use_trans_sid',    0);
 
 
+// DEPRECATED, use e107::getConfig() and e107::getPlugConfig()
 if(isset($retrieve_prefs) && is_array($retrieve_prefs))
 {
 	foreach ($retrieve_prefs as $key => $pref_name)
@@ -145,46 +151,48 @@ else
 	unset($retrieve_prefs);
 }
 
-define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? true : false));
+// MOVED TO e107->set_constants()
+//define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? true : false));
+//
+//// Define the domain name and subdomain name.
+//if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
+//{
+//	$srvtmp = '';  // Host is an IP address.
+//}
+//else
+//{
+//	$srvtmp = explode('.',str_replace('www.', '', $_SERVER['HTTP_HOST']));
+//}
+//
+//define('e_SUBDOMAIN', (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : false)); // needs to be available to e107_config.
+//
+//if(e_SUBDOMAIN)
+//{
+//   	unset($srvtmp[0]);
+//}
+//
+//define('e_DOMAIN',(count($srvtmp) > 1 ? (implode('.', $srvtmp)) : false)); // if it's an IP it must be set to false.
+//
+//unset($srvtmp);
 
-// Define the domain name and subdomain name.
-if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
-{
-	$srvtmp = '';  // Host is an IP address.
-}
-else
-{
-	$srvtmp = explode('.',str_replace('www.', '', $_SERVER['HTTP_HOST']));
-}
 
-define('e_SUBDOMAIN', (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : false)); // needs to be available to e107_config.
-
-if(e_SUBDOMAIN)
-{
-   	unset($srvtmp[0]);
-}
-
-define('e_DOMAIN',(count($srvtmp) > 1 ? (implode('.', $srvtmp)) : false)); // if it's an IP it must be set to false.
-
-unset($srvtmp);
-
-
+// MOVED TO $e107->prepare_request()
 //  Ensure thet '.' is the first part of the include path
-$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
-if($inc_path[0] != '.')
-{
-	array_unshift($inc_path, '.');
-	$inc_path = implode(PATH_SEPARATOR, $inc_path);
-	e107_ini_set('include_path', $inc_path);
-}
-unset($inc_path);
+//$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
+//if($inc_path[0] != '.')
+//{
+//	array_unshift($inc_path, '.');
+//	$inc_path = implode(PATH_SEPARATOR, $inc_path);
+//	e107_ini_set('include_path', $inc_path);
+//}
+//unset($inc_path);
 
 //
 // F: Grab e107_config, get directory paths and create $e107 object
 //
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 
-define("MPREFIX", $mySQLprefix);
+//define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
 
 if(!isset($ADMIN_DIRECTORY))
 {
@@ -204,52 +212,56 @@ e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
 
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
-$e107 = e107::getInstance()->init($e107_paths, realpath(dirname(__FILE__)));
+$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
+$e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), $sql_info);
 
-$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
-if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
-{
-	foreach($inArray as $res)
-	{
-		if(stristr($_SERVER['QUERY_STRING'], $res))
-		 {
-			die('Access denied.');
-		}
-	}
-}
+// MOVED TO $e107->set_request()
+//$inArray = array("'", ';', '/**/', '/UNION/', '/SELECT/', 'AS ');
+//if (strpos($_SERVER['PHP_SELF'], 'trackback') === false)
+//{
+//	foreach($inArray as $res)
+//	{
+//		if(stristr($_SERVER['QUERY_STRING'], $res))
+//		 {
+//			die('Access denied.');
+//		}
+//	}
+//}
 
 /**
  * set CHARSET for backward compatibility
  */
-define('CHARSET', 'utf-8');
+//define('CHARSET', 'utf-8'); moved to e107->set_constants()
 
 // remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
-$_SERVER['QUERY_STRING'] = str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']);
+// MOVED TO $e107->prepare_request()
+//$_SERVER['QUERY_STRING'] = str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']);
 
 //
 // G: Retrieve Query data from URI
 //    (Until this point, we have no idea what the user wants to do)
 //
 
-if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches))
-{
-	define('e_MENU', $matches[1]);
-	$e_QUERY = $matches[2];
-	if(strlen(e_MENU) == 2) // language code ie. [fr]
-	{
-        require_once(e_HANDLER."language_class.php");
-		$slng = new language;
-		define('e_LANCODE', true);
-		$_GET['elan'] = $slng->convert(e_MENU);
-	}
-
-}
-else
-{
-	define('e_MENU', '');
-	$e_QUERY = $_SERVER['QUERY_STRING'];
-  	define('e_LANCODE', '');
-}
+// MOVED TO $e107->set_request()
+//if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches))
+//{
+//	define('e_MENU', $matches[1]);
+//	$e_QUERY = $matches[2];
+//	if(strlen(e_MENU) == 2) // language code ie. [fr]
+//	{
+//        require_once(e_HANDLER."language_class.php");
+//		$slng = new language;
+//		define('e_LANCODE', true);
+//		$_GET['elan'] = $slng->convert(e_MENU);
+//	}
+//
+//}
+//else
+//{
+//	define('e_MENU', '');
+//	$e_QUERY = $_SERVER['QUERY_STRING'];
+//  	define('e_LANCODE', '');
+//}
 
 //
 // Start the parser; use it to grab the full query string
@@ -263,21 +275,29 @@ $tp = e107::getParser(); //TODO - find & replace $tp, $e107->tp
 
 //define("e_QUERY", $matches[2]);
 //define("e_QUERY", $_SERVER['QUERY_STRING']);
-$e_QUERY = str_replace("&","&amp;",$tp->post_toForm($e_QUERY));
-define('e_QUERY', $e_QUERY);
+
+
+// MOVED TO $e107->set_request()
+//$e_QUERY = str_replace("&","&amp;",$tp->post_toForm($e_QUERY));
+//define('e_QUERY', $e_QUERY);
+
 //$e_QUERY = e_QUERY;
 
-define('e_TBQS', $_SERVER['QUERY_STRING']);
-$_SERVER['QUERY_STRING'] = e_QUERY;
+// MOVED TO $e107->set_request()
+//define('e_TBQS', $_SERVER['QUERY_STRING']);
+//$_SERVER['QUERY_STRING'] = e_QUERY;
 
-define('e_UC_PUBLIC', 0);
-define('e_UC_MAINADMIN', 250);
-define('e_UC_READONLY', 251);
-define('e_UC_GUEST', 252);
-define('e_UC_MEMBER', 253);
-define('e_UC_ADMIN', 254);
-define('e_UC_NOBODY', 255);
-define('ADMINDIR', $ADMIN_DIRECTORY);
+// MOVED TO $e107->set_constants()
+//define('e_UC_PUBLIC', 0);
+//define('e_UC_MAINADMIN', 250);
+//define('e_UC_READONLY', 251);
+//define('e_UC_GUEST', 252);
+//define('e_UC_MEMBER', 253);
+//define('e_UC_ADMIN', 254);
+//define('e_UC_NOBODY', 255);
+
+// MOVED TO $e107->set_urls() - DEPRECATED, use e107->getFolder()
+//define('ADMINDIR', $ADMIN_DIRECTORY);
 
 //
 // H: Initialize debug handling
@@ -307,8 +327,6 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
 //
 e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 //$eTraffic->Calibrate($eTraffic); 
-
-
 
 e107_require_once(e_HANDLER.'mysql_class.php');
 
@@ -352,6 +370,7 @@ e107_require_once(e_HANDLER.'php_compatibility_handler.php');
 //
 $sql->db_Mark_Time('Start: Extract Core Prefs');
 
+// TODO - remove it from here, auto-loaded when required
 e107_require_once(e_HANDLER.'cache_handler.php');
 
 //DEPRECATED, BC, call the method only when needed, $e107->arrayStorage caught by __get()
@@ -360,6 +379,7 @@ $eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorag
 //DEPRECATED, BC, call the method only when needed, $e107->e_event caught by __get()
 $e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
 
+// TODO - DEPRECATED - remove
 e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
 
@@ -410,82 +430,7 @@ if(!e107::getConfig()->hasData())
 //DEPRECATED, BC, call e107::getPref() instead
 $pref = e107::getPref();
 
-/*
-$PrefCache = ecache::retrieve_sys('SitePrefs', 24 * 60, true);
-if(!$PrefCache)
-{
-	// No cache of the prefs array, going for the db copy..
-	$retrieve_prefs[] = 'SitePrefs';
-	$sysprefs->ExtractPrefs($retrieve_prefs, TRUE);
-	$PrefData = $sysprefs->get('SitePrefs');
-	$pref = $eArrayStorage->ReadArray($PrefData);
-	if(!$pref)
-	{
-		$admin_log->log_event('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING); // Core prefs error, core is attempting to
-		// Try for the automatic backup..
-		$PrefData = $sysprefs->get('SitePrefs_Backup');
-		$pref = $eArrayStorage->ReadArray($PrefData);
-		if(!$pref)
-		{
-			// No auto backup, try for the 'old' prefs system.
-			$PrefData = $sysprefs->get('pref');
-			$pref = unserialize($PrefData);
-			if(!is_array($pref))
-			{
-				message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
-				// No old system, so point in the direction of resetcore :(
-				message_handler('CRITICAL_ERROR', 4, __LINE__, __FILE__);
-				$admin_log->log_event('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL); // Core could not restore from automatic backup. Execution halted.
-				exit;
-			}
-			else
-			{
-				// old prefs found, remove old system, and update core with new system
-				$PrefOutput = $eArrayStorage->WriteArray($pref);
-				if(!$sql->db_Update('core', "e107_value='{$PrefOutput}' WHERE e107_name='SitePrefs'"))
-				{
-					$sql->db_Insert('core', "'SitePrefs', '{$PrefOutput}'");
-				}
-				if(!$sql->db_Update('core', "e107_value='{$PrefOutput}' WHERE e107_name='SitePrefs_Backup'"))
-				{
-					$sql->db_Insert('core', "'SitePrefs_Backup', '{$PrefOutput}'");
-				}
-				$sql->db_Delete('core', "`e107_name` = 'pref'");
-			}
-		}
-		else
-		{
-			message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
-			// auto backup found, use backup to restore the core
-			if(!$sql->db_Update('core', "`e107_value` = '".addslashes($PrefData)."' WHERE `e107_name` = 'SitePrefs'"))
-			{
-				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefData)."'");
-			}
-		}
-	}
-	// write pref cache array
-	$PrefCache = $eArrayStorage->WriteArray($pref, false);
-	// store the prefs in cache if cache is enabled
-	ecache::set_sys('SitePrefs', $PrefCache);
-}
-else
-{
-	// cache of core prefs was found, so grab all the useful core rows we need
-	if(!isset($sysprefs->DefaultIgnoreRows))
-	{
-    	$sysprefs->DefaultIgnoreRows = '';
-	}
-	$sysprefs->DefaultIgnoreRows .= '|SitePrefs';
-	$sysprefs->prefVals['core']['SitePrefs'] = $PrefCache;
-	if(isset($retrieve_prefs))
-	{
-		$sysprefs->ExtractPrefs($retrieve_prefs, TRUE);
-	}
-	$pref = $eArrayStorage->ReadArray($PrefCache);
-}
-*/
-
-//TODO - this could be part of e107->init() method now, prefs will be auto-initialized
+//this could be part of e107->init() method now, prefs will be auto-initialized
 //when proper called (e107::getPref())
 // $e107->set_base_path(); moved to init(). 
 
@@ -503,12 +448,17 @@ $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 //
 
 // if a cookie name pref isn't set, make one :)
+// TODO - do we really need this? e107 method could do the job.
 if (!$pref['cookie_name']) { $pref['cookie_name'] = 'e107cookie'; }
-
-define('SITEURLBASE', ($pref['ssl_enabled'] == '1' ? 'https://' : 'http://').$_SERVER['HTTP_HOST']);
-define('SITEURL', SITEURLBASE.e_HTTP);
 define('e_COOKIE', $pref['cookie_name']);
 
+// MOVED TO $e107->set_urls()
+//define('SITEURLBASE', ($pref['ssl_enabled'] == '1' ? 'https://' : 'http://').$_SERVER['HTTP_HOST']);
+//define('SITEURL', SITEURLBASE.e_HTTP);
+
+/*
+ *  FIXME - pack all Language related code below to Language handler (new or extend the existing one)
+ */
 
 // let the subdomain determine the language (when enabled).
 if(varset($pref['multilanguage_subdomain']) && ($pref['user_tracking'] == 'session') && e_DOMAIN && MULTILANG_SUBDOMAIN !== FALSE)

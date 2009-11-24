@@ -9,9 +9,9 @@
  * Cache handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.17 $
+ * $Date: 2009-11-24 16:30:06 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -20,11 +20,12 @@ define('CACHE_PREFIX','<?php exit;');
 
 /**
  * Class to cache data as files, improving site speed and throughput.
+ * FIXME - pref independant cache handler, cache drivers
  * 
  * @package     e107
  * @category	e107_handlers
- * @version     $Revision: 1.16 $
- * @author      $Author: e107coders $
+ * @version     $Revision: 1.17 $
+ * @author      $Author: secretr $
  */
 class ecache {
 
