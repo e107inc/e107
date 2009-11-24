@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-23 21:05:58 $
+ * $Revision: 1.7 $
+ * $Date: 2009-11-24 20:40:34 $
  * $Author: e107steved $
 */
 
@@ -581,7 +581,8 @@ class e107MailManager
 		// Set up any extra mailer parameters that need it
 		if (!vartrue($email['e107_header']))
 		{
-			$email['e107_header'] = intval($email['mail_source_id']).'/'.intval($email['mail_target_id']).'/'.md5($email['mail_source_id'].$email['mail_target_id'].$email['mail_recipient_email']);		// Set up an ID
+			$temp = intval($email['mail_recipient_id']).'/'.intval($email['mail_source_id']).'/'.intval($email['mail_target_id']).'/';
+			$email['e107_header'] = $temp.md5($temp);		// Set up an ID
 		}
 		if (isset($email['mail_attach']) && (trim($email['mail_attach']) || is_array($email['mail_attach'])))
 		{
@@ -943,6 +944,131 @@ class e107MailManager
 
 
 	/**
+	 * Put email on hold, including marking all unsent recipient entries
+	 * @var integer $handle - as returned by makeEmail()
+	 * @return boolean - TRUE on success, FALSE on failure
+	 */
+	public function holdEmail($handle)
+	{
+		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
+		$this->checkDB(1);			// Make sure DB object created
+		// Set status of individual emails first, so we can get a count
+		if (FALSE === ($count = $this->db->db_Update('mail_recipients','`mail_status` = '.MAIL_STATUS_HELD.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
+		{
+			return FALSE;
+		}
+		if ($count == 0) return TRUE;		// If zero count, must have held email just as queue being emptied, so don't touch main status
+
+		if (!$this->db->db_Update('mail_content','`mail_content_status` = '.MAIL_STATUS_HELD.' WHERE `mail_source_id` = '.intval($handle)))
+		{
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+
+	/**
+	 * Handle a bounce report. 
+	 * @var string $bounceString - the string from header X-e107-id
+	 * @var string $emailAddress - optional email address string for checks
+	 * @return boolean - TRUE on success, FALSE on failure
+	 */
+	public function markBounce($bounceString, $emailAddress = '')
+	{
+		$errors = array();						// Log all errors, at least until proven
+		$vals = explode('/',$bounceString);		// Should get one or four fields
+		if (!is_numeric($vals[0])) 				// Email recipient user id number (may be zero)
+		{
+			$errors[] = 'Bad user ID: '.$vals[0];
+		}
+		$uid = intval($vals[0]);				// User ID (zero is valid)
+		if (count($vals) == 4) 
+		{
+			if (md5($vals[0].'/'.$vals[1].'/'.$vals[2].'/') != $vals[3])
+			{		// 'Extended' ID has md5 validation
+				$errors[] = 'Bad md5';
+			}
+			if (!is_numeric($vals[1])) 		// Email body record number
+			{
+				$errors[] = 'Bad body record: '.$vals[1];
+			}
+			if (!is_numeric($vals[2])) 		// Email recipient table record number
+			{
+				$errors[] = 'Bad recipient record: '.$vals[2];
+			}
+			$vals[1] = intval($vals[1]);
+			$vals[2] = intval($vals[2]);
+			if (count($errors) == 0)
+			{	// Look up in mailer DB if no errors so far
+				$this->checkDB(1);
+				if (FALSE === ($this->DB->db_Select_gen(
+					"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email` FROM `#mail_recipients` AS mr 
+						LEFT JOIN `#mail_content` as mc ON mr.`mail_detail_id` = mc.`mail_source_id`
+						WHERE mr.`mail_target_id` = {$vals[2]} AND mc.`mail_source_id` = {$vals[1]}")))
+				{	// Invalid mailer record
+					$errors[] = 'Not found in DB: '.$vals[1].'/'.$vals[2];
+				}
+				$row = $this->db->db_Fetch(MYSQL_ASSOC);
+				if ($emailAddress && ($emailAddress != $row['mail_recipient_email']))
+				{	// Email address mismatch
+					$errors[] = 'Email address mismatch: '.$emailAddress.'/'.$row['mail_recipient_email'];
+				}
+				if ($uid != $row['mail_recipient_id'])
+				{	// User ID mismatch
+					$errors[] = 'User ID mismatch: '.$uid.'/'.$row['mail_recipient_id'];
+				}
+				if (count($errors) == 0)
+				{	// All passed - can update mailout databases
+					$this->db->db_Update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = '.$vals[1]);
+					$this->db->db_Update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED);
+				}
+			}
+		}
+
+		if ((count($vals) != 1) && (count($vals) != 4))
+		{
+			$errors[] = 'Bad element count: '.count($vals);
+		}
+		elseif ($uid || $emailAddress)
+		{	// Now log the bounce against the user
+			$this->checkDB(1);
+			$qry = '';
+			if ($uid) { $qry = '`user_id`='.$uid; }
+			if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= '`user_email` = '.$emailAddress; }
+			$qry = 'WHERE '.$qry;
+			if (FALSE === $this->db->db_Select('user', 'user_id, user_email', $qry))
+			{
+				$errors[] = 'User not found: '.$uid.'/'.$emailAddress;
+			}
+			else
+			{
+				$row = $this->db->db_Fetch(MYSQL_ASSOC);
+				if ($uid && ($uid != $row['user_id']))
+				{
+					$errors[] = 'UID mismatch: '.$uid.'/'.$row['user_id'];
+				}
+				elseif ($emailAddress && ($emailAddress != $row['user_email']))
+				{
+					$errors[] = 'User email mismatch: '.$emailAddress.'/'.$row['user_email'];
+				}
+				else
+				{	// Valid user!
+					$this->db->db_Update('user', '`user_ban` = 3 WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
+				}
+			}
+		}
+		if (count($errors))
+		{
+			$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce receive error',$bounceString.'('.$emailAddress.')[!br!]'.implode('[!br!]',$errors),FALSE,LOG_TO_ROLLING);
+			return FALSE;
+		}
+		$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceString.'('.$emailAddress.')',FALSE,LOG_TO_ROLLING);
+		return TRUE;
+	}
+
+
+
+	/**
 	 * Does a query to select one or more emails for which status is required.
 	 * @var $start - sets the offset of the first email to return based on the search criteria
 	 * @var $count - sets the maximum number of emails to return
@@ -1127,8 +1253,8 @@ class e107MailManager
 		global $pref;
 		if ($format == 'textonly')
 		{	// Plain text email - strip bbcodes etc
-			$temp = $this->e107->tp->toHTML($text, TRUE, 'E_BODY_PLAIN');				// Decode bbcodes into HTML, plain text as far as possible etc
-			return stripslashes(strip_tags($temp));						// Have to do strip_tags() again in case bbcode added some
+			$temp = $this->e107->tp->toHTML($text, TRUE, 'E_BODY_PLAIN');		// Decode bbcodes into HTML, plain text as far as possible etc
+			return stripslashes(strip_tags($temp));								// Have to do strip_tags() again in case bbcode added some
 		}
 
 		$consts = $incImages ? ',consts_abs' : 'consts_full';			// If inline images, absolute constants so we can change them
@@ -1151,12 +1277,10 @@ class e107MailManager
 		if ($format == 'texttheme') 
 		{
 			$message_body .= "<div style='padding:10px;width:97%'><div class='forumheader3'>\n";
-			//$message_body .= $this->e107->tp->toEmail($text)."</div></div></body></html>";
 			$message_body .= $this->e107->tp->toHTML($text, TRUE, 'E_BODY'.$consts)."</div></div></body></html>";
 		}
 		else
 		{
-			//$message_body .= $this->e107->tp->toEmail($text)."</body></html>";
 			$message_body .= $this->e107->tp->toHTML($text, TRUE, 'E_BODY'.$consts)."</body></html>";
 			$message_body = str_replace("&quot;", '"', $message_body);
 		}
