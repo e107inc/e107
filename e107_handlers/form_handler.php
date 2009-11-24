@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.90 $
- * $Date: 2009-11-23 11:51:02 $
+ * $Revision: 1.91 $
+ * $Date: 2009-11-24 15:36:12 $
  * $Author: e107coders $
  *
 */
@@ -1076,7 +1076,18 @@ class e_form
 			break;
 			
 			case 'dropdown':
+				if(vartrue($parms) && is_array($parms))
+				{
+					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
+				}
+				else
+				{
+					$value = vartrue($parms['pre']).$value.vartrue($parms['post']);	
+				}
+			break;
+				
 			case 'text':
+				
 				if(vartrue($parms['truncate']))
 				{
 					$value = $tp->text_truncate($value, $parms['truncate'], '...');
@@ -1299,7 +1310,7 @@ class e_form
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions);
 				unset($parms['dropdown']);
-				return $this->selectbox($name, $parms, $value, $eloptions);
+				return $this->selectbox($key, $parms, $value, $eloptions);
 			break; 
 			
 			case 'userclass':
