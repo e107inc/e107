@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-11-21 11:15:29 $
+ * $Revision: 1.44 $
+ * $Date: 2009-11-24 16:32:02 $
  * $Author: secretr $
 */
 
@@ -1912,7 +1912,7 @@ class e_admin_model extends e_model
 			break;
 
 			case 'model':
-				return $value-mergePostedData(false, true, true)->sanitize(); //XXX - ???
+				return $value->mergePostedData(false, true, true);
 			break;
 			
 			case 'null':
@@ -2055,8 +2055,8 @@ class e_tree_model extends e_model
 					$tmp = new $class_name($tmp);
 					$this->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
-
-				if(false === $this->_total && $this->getModelTable())
+				
+				if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
 				{
 					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
 					$this->_total = e107::getDb()->db_Count($this->getModelTable());
