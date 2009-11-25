@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-11-19 12:35:33 $
+ * $Revision: 1.28 $
+ * $Date: 2009-11-25 11:01:12 $
  * $Author: e107coders $
  *
 */
@@ -108,7 +108,12 @@ elseif($_GET['action']=='edit')
 	$action = 'create';
 	$sub_action = 'edit';
 	$id = ($_GET['id']);
-	$page->createPage();		
+	$mod = (vartrue($_GET['menus'])) ? 'menus' : "";
+	$page->createPage($mod);		
+}
+elseif(vartrue($_GET['menus']))
+{
+	$page->menusPage();	
 }
 else
 {
@@ -276,8 +281,10 @@ class page
 			}
 		}
 
+		$e_qry = ($mode) ? "menus=1" : "";
+
 		$text = "
-			<form method='post' action='".e_SELF."' id='dataform' enctype='multipart/form-data'>
+			<form method='post' action='".e_SELF."?".$e_qry."' id='dataform' enctype='multipart/form-data'>
 				<fieldset id='core-cpage-create-general'>
 					<legend".($mode ? " class='e-hideme'" : "").">".CUSLAN_47."</legend>
 					<table cellpadding='0' cellspacing='0' class='adminedit'>
@@ -634,12 +641,18 @@ class page
 		{
 			$action = (getperms('5')) ? "pages" : "menus";
 		}
+		
+		if(vartrue($_GET['menus']))
+		{
+			$action = "menus";
+		}
+		
 		$var['pages']['text'] = CUSLAN_48;
 		$var['pages']['link'] = e_SELF;
 		$var['pages']['perm'] = 5;
 
         $var['menus']['text'] = CUSLAN_49;
-		$var['menus']['link'] = e_SELF."?menus";
+		$var['menus']['link'] = e_SELF."?menus=1";
 		$var['menus']['perm'] = "J";
 
 		$var['create']['text'] = CUSLAN_12;
