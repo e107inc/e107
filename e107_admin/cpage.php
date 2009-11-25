@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-11-25 11:01:12 $
+ * $Revision: 1.29 $
+ * $Date: 2009-11-25 11:54:53 $
  * $Author: e107coders $
  *
 */
@@ -107,8 +107,9 @@ elseif($_GET['action']=='edit')
 {
 	$action = 'create';
 	$sub_action = 'edit';
-	$id = ($_GET['id']);
-	$mod = (vartrue($_GET['menus'])) ? 'menus' : "";
+	$id = intval($_GET['id']);
+
+	$mod 	= (vartrue($_GET['menus'])) ? 'menus' : "";
 	$page->createPage($mod);		
 }
 elseif(vartrue($_GET['menus']))
@@ -298,44 +299,36 @@ class page
 		if($mode)  // menu mode.
 		{
 			$text .= "
-						<tr>
-							<td>".CUSLAN_7."</td>
-							<td>
-								".$frm->text('menu_name', $menu_name, 50)."
-							</td>
-						</tr>
+				<tr>
+					<td>".CUSLAN_7."</td>
+					<td>".$frm->text('menu_name', $menu_name, 50)."</td>
+				</tr>
 			";
 		}
 		else
-		{
-		
-		$templates = array();
-		$tmp = e107::getTemplate('page', 'page');
-		foreach($tmp as $key=>$val)
-		{
-			$templates[$key] = $key; //TODO add LANS?
-		}
-		
-			
+		{		
+			$templates = array();
+			$tmp = e107::getTemplate('page', 'page');
+			foreach($tmp as $key=>$val)
+			{
+				$templates[$key] = $key; //TODO add LANS?
+			}
+					
 			$text .= "
-						<tr>
-							<td>Template</td>
-							<td>
-								". $frm->selectbox('page_template',$templates,$row['page_template'])  ."
-							</td>
-						</tr>
+				<tr>
+					<td>Template</td>
+					<td>". $frm->selectbox('page_template',$templates,$row['page_template'])  ."</td>
+				</tr>
 			";	
 		}
 		$text .= "
-						<tr>
-							<td>".CUSLAN_8."</td>
-							<td>
-								".$frm->text('page_title', $page_title, 250)."
-							</td>
-						</tr>
-						<tr>
-							<td>".CUSLAN_9."</td>
-							<td>
+				<tr>
+					<td>".CUSLAN_8."</td>
+					<td>".$frm->text('page_title', $page_title, 250)."</td>
+				</tr>
+				<tr>
+					<td>".CUSLAN_9."</td>
+					<td>
 		";
 
 	//	require_once(e_HANDLER."ren_help.php");
@@ -481,12 +474,18 @@ class page
 		$page_text = $tp->toDB($_POST['data']);
 	//	$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0); // this check should be done in the front-end. 
 		$pauthor = USERID;
+	
 
 		if($mode)
 		{	// Saving existing page/menu after edit
 			// Don't think $_POST['page_ip_restrict'] is ever set.
-			$menuname = ($type ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
-			$update = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."', page_template='".$_POST['page_template']."' {$menuname} WHERE page_id='{$mode}'");
+			
+			$menuname = ($type && vartrue($_POST['menu_name']) ? ", page_theme = '".$tp -> toDB($_POST['menu_name'])."'" : "");
+			$status = $sql -> db_Update("page", "page_title='{$page_title}', page_text='{$page_text}', page_datestamp='".time()."', page_author='{$pauthor}', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".varset($_POST['page_ip_restrict'],'')."', page_template='".$_POST['page_template']."' {$menuname} WHERE page_id='{$mode}'") ?  E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			
+			$mes = e107::getMessage();
+			$mes->add($message, $status);
+			
 			$admin_log->log_event('CPAGE_02',$mode.'[!br!]'.$page_title.'[!br!]'.$pauthor,E_LOG_INFORMATIVE,'');
 			$e107cache->clear("page_{$mode}");
 			$e107cache->clear("page-t_{$mode}");
