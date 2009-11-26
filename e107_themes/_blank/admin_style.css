@@ -360,6 +360,32 @@ input.action.edit {}
 /********** Element Loading Status default style */
 .element-loading-mask { background-repeat: no-repeat; background-position: 50% 50%; background-color: #f5f5f5; }
 
+/********** Auto complete default style */
+div.e-autocomplete {
+  position:absolute;
+  width:250px;
+  background-color:white;
+  border:1px solid #c0c0c0;
+  margin:0;
+  padding:0;
+}
+div.e-autocomplete ul {
+  list-style-type:none;
+  margin:0;
+  padding:0;
+  font-weight: bold; font-size: 11px
+}
+div.e-autocomplete ul li.selected { background-color: #f5f5f5;}
+div.e-autocomplete ul li {
+  list-style-type:none;
+  display:block;
+  margin:0;
+  padding: 5px;
+  cursor:pointer;
+
+}
+div.e-autocomplete ul li span.informal { font-weight: normal; font-size: 9px}
+
 /********** Docs */
 #docs-list 			{ padding: 10px; margin-bottom: 15px; border: 1px solid #f5f5f5; }
 #docs-list .qitem	{ margin: 3px 0; padding-left: 10px; }
