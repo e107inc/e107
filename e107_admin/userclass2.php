@@ -9,9 +9,9 @@
  * Administration Area - User classes
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/userclass2.php,v $
- * $Revision: 1.35 $
- * $Date: 2009-11-23 01:17:29 $
- * $Author: e107coders $
+ * $Revision: 1.36 $
+ * $Date: 2009-11-26 21:43:38 $
+ * $Author: bugrain $
  *
 */
 
@@ -101,12 +101,12 @@ if(e_AJAX_REQUEST)
 
 				//fill in the classes array
 				$tmp = explode(',',$row['userclass_accum']);
-				foreach ($tmp as $uid) 
+				foreach ($tmp as $uid)
 				{
 					$row['group_classes_select_'.$uid] = $uid;
 				}
-			} 
-			else 
+			}
+			else
 			{
 				//hide group, show standard rows
 				$jshelper->addResponseAction('element-invoke-by-id', array('hide' => 'userclass_type_groups', 'show' => 'userclass_type_standard'));
@@ -320,9 +320,9 @@ class uclassFrm extends e_form
 				UC_TYPE_STD 	=> UCSLAN_80,
 			   	UC_TYPE_GROUP	=> UCSLAN_81
 		);
-		
+
 		return varset($types[$curVal]);
-	}	
+	}
 }
 
 
@@ -331,7 +331,7 @@ class uclassFrm extends e_form
 if(!e_QUERY || $action == 'list')
 {
 	$uc->show_existing();
-	
+
 }
 if(varset($_GET['id']) && varset($_GET['action'])=='edit')
 {
@@ -826,8 +826,8 @@ function userclass2_adminmenu()
 	$var['config']['text'] = UCSLAN_25;
 	$var['config']['link'] = 'userclass2.php?config';
 
-//DEPRECATED - use admin->users instead. 
-/*	
+//DEPRECATED - use admin->users instead.
+/*
 	$var['membs']['text'] = UCSLAN_26;
 	$var['membs']['link'] ='userclass2.php?membs';
 */
@@ -868,16 +868,16 @@ class uclass_manager
 			save_prefs('user');
 		}
 
-        $this->fieldpref = (varset($user_pref['admin_userclass_columns'])) ? $user_pref['admin_userclass_columns'] : array("userclass_id","userclass_name","userclass_description"); 
+        $this->fieldpref = (varset($user_pref['admin_userclass_columns'])) ? $user_pref['admin_userclass_columns'] : array("userclass_id","userclass_name","userclass_description");
 
     	$this->fields = array(
-			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'width' => '5%',	'thclass' => 'center', 'class' => 'center'),	 
+			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'width' => '5%',	'thclass' => 'center', 'class' => 'center'),
 			'userclass_id'				=> array('title'=> ID,			'type' => 'int', 		'width' => '5%',	'thclass' => 'left'),
             'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
 			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
-         	'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'), 
+         	'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
 			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
-            'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),	
+            'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
 			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'method',		'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
    			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => null,			'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'center')
 		);
@@ -888,19 +888,19 @@ class uclass_manager
 	function show_existing()
 	{
 	    global $e_userclass;
-		
+
 		$tp 	= e107::getParser();
 		$sql 	= e107::getDb();
 		$frm 	= new uclassFrm;
 		$ns = e107::getRender();
-		
-		
+   	$mes = e107::getMessage();
+
+
 		if (!$total = $sql->db_Select('userclass_classes', '*'))
 		{
 			$text = "";
-			$mes = e107::getMessage();
 			$mes->add(UCSLAN_7, E_MESSAGE_INFO);
-			
+
 		}
 		else
 		{
@@ -915,13 +915,13 @@ class uclass_manager
 			$classes = $sql->db_getList('ALL', FALSE, FALSE);
 
             foreach($classes as $row)
-			{		
+			{
 				$text .= $frm->renderTableRow($this->fields, $this->fieldpref, $row, 'userclass_id');
 			}
-			
+
 			$text .= "</tbody></table></fieldset></form>";
 		}
-	    	
+
 		$ns->tablerender(UCSLAN_21, $mes->render().$text );
 
 	}
