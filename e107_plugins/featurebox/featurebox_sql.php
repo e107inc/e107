@@ -1,22 +1,25 @@
 CREATE TABLE featurebox (
-  fb_id int(10) unsigned NOT NULL auto_increment,
-  fb_title varchar(200) NOT NULL default '',
-  fb_text text NOT NULL,
-  fb_mode tinyint(3) unsigned NOT NULL default '0',
-  fb_class smallint(5) unsigned NOT NULL default '0',
-  fb_rendertype tinyint(1) unsigned NOT NULL default '0',
-  fb_template varchar(50) NOT NULL default '',
-  fb_order tinyint(3) unsigned NOT NULL default '0',
-  fb_image varchar(255) NOT NULL default '',
-  fb_imageurl varchar(255) NOT NULL default '',
-  fb_category tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (fb_id)
+  `fb_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `fb_title` varchar(200) NOT NULL DEFAULT '',
+  `fb_text` text NOT NULL,
+  `fb_mode` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `fb_class` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `fb_rendertype` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `fb_template` varchar(50) NOT NULL DEFAULT '',
+  `fb_order` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `fb_image` varchar(255) NOT NULL DEFAULT '',
+  `fb_imageurl` text NOT NULL,
+  `fb_category` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`fb_id`),
+  KEY `fb_category` (`fb_category`)
 ) TYPE=MyISAM;
 
-CREATE TABLE featurebox_cat (
-  fb_cat_id int(10) unsigned NOT NULL auto_increment,
-  fb_cat_title varchar(200) NOT NULL default '',
-  fb_cat_class int(3) unsigned default '0',
-  fb_cat_order int(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (fb_cat_id)
+CREATE TABLE featurebox_category (
+  `fb_category_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `fb_category_title` varchar(200) NOT NULL DEFAULT '',
+  `fb_category_layout` varchar(50) NOT NULL DEFAULT 'default',
+  `fb_category_random` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `fb_category_class` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `fb_category_limit` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`fb_category_id`)
 ) TYPE=MyISAM;

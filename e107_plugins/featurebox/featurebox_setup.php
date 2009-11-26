@@ -9,9 +9,9 @@
 * Custom FAQ install/uninstall/update routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/featurebox_setup.php,v $
-* $Revision: 1.1 $
-* $Date: 2009-11-24 14:48:34 $
-* $Author: e107coders $
+* $Revision: 1.2 $
+* $Date: 2009-11-26 17:15:46 $
+* $Author: secretr $
 *
 */
 
@@ -35,7 +35,7 @@ class featurebox_setup
 		";
 		
 		$query2 = "
-		INSERT INTO #featurebox_cat (`fb_cat_id`, `fb_cat_title`, `fb_cat_class`, `fb_cat_order`) VALUES 
+		INSERT INTO #featurebox_category (`fb_category_id`, `fb_category_title`, `fb_category_class`, `fb_category_order`) VALUES 
 		(1, 'General', 0, 0);
 		";
 		
