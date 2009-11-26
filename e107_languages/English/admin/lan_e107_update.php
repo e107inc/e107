@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: lan_e107_update.php,v 1.10 2009-11-08 09:14:39 e107coders Exp $
+ * $Id: lan_e107_update.php,v 1.11 2009-11-26 09:02:39 e107coders Exp $
  *
  * Administration Language File
  *
@@ -53,7 +53,7 @@ define('LAN_UPDATE_54', 'Missing table --TABLE-- - cannot add index --INDEX--');
 define('LAN_UPDATE_55', 'Description');
 define('LAN_UPDATE_56', 'System Update');
 
-// define('LAN_UPDATE_CAPTION_PLUGIN', 'Plugin Updates'); // Unused
-// define('LAN_UPDATE_CAPTION_CORE', 'Core Updates'); // Unused
+define('LAN_UPDATE_CAPTION_PLUGIN', 'Plugin Updates'); // Unused
+define('LAN_UPDATE_CAPTION_CORE', 'Core Updates'); // Unused
 
 ?>

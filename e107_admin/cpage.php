@@ -9,8 +9,8 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-11-25 11:54:53 $
+ * $Revision: 1.30 $
+ * $Date: 2009-11-26 09:02:29 $
  * $Author: e107coders $
  *
 */
@@ -307,13 +307,8 @@ class page
 		}
 		else
 		{		
-			$templates = array();
-			$tmp = e107::getTemplate('page', 'page');
-			foreach($tmp as $key=>$val)
-			{
-				$templates[$key] = $key; //TODO add LANS?
-			}
-					
+			$templates = e107::getTemplateList('page');
+				
 			$text .= "
 				<tr>
 					<td>Template</td>

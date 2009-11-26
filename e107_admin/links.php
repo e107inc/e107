@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2009-11-23 11:51:00 $
+|     $Revision: 1.36 $
+|     $Date: 2009-11-26 09:02:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,6 @@ class links_admin extends e_admin_dispatcher
 		)				
 	);	
 
-
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> LCLAN_62, 'perm' => 'I'),
 		'main/create' 	=> array('caption'=> LCLAN_63, 'perm' => 'I'),
@@ -54,64 +53,140 @@ class links_admin extends e_admin_dispatcher
 }
 
 class links_admin_ui extends e_admin_ui
-{
-		
-		protected $pluginTitle = "Site links";
-		protected $pluginName = 'core';
-		protected $table = "links";
-		
-		/**
-		 * If present this array will be used to build your list query
-		 * You can link fileds from $field array with 'table' parameter, which should equal to a key (table) from this array
-		 * 'leftField', 'rightField' and 'fields' attributes here are required, the rest is optional
-		 * 
-		 * @var array [optional]
-		 */
-		protected $tableJoin = array (
-	//		'u.user' => array('leftField' => 'comment_author_id', 'rightField' => 'user_id', 'fields' => '*'/*, 'leftTable' => '', 'joinType' => 'LEFT JOIN', 'whereJoin' => 'AND u.user_ban=0', 'where' => ''*/)
-		);
-		
-		//protected $listQry = "SELECT SQL_CALC_FOUND_ROWS * FROM #links"; // without any Order or Limit. 
-		//protected $editQry = "SELECT * FROM #links WHERE comment_id = {ID}";
-		
-		protected $pid = "link_id";
-		protected $perPage = 15;
-		protected $batchDelete = true;
+{	
+		protected $pluginTitle 	= "Site links";
+		protected $pluginName 	= 'core';
+		protected $table 		= "links";		
+		protected $listQry 		= "SELECT * FROM #links ORDER BY link_category,link_order, link_id ASC"; // without any Order or Limit. 
+		protected $pid 			= "link_id";
+		protected $perPage 		= 15;
+		protected $batchDelete 	= true;
 				
 		protected $fields = array(
 			'checkboxes' 		=> array('title'=> '',							'width' => '3%','forced' => true,'thclass' => 'center first','class' => 'center first'),
 			'link_button'		=> array('title'=> LAN_ICON, 	'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),		
-			'link_id'			=> array('title'=> ID, 							'width'=>'5%', 'forced'=> TRUE, 'primary'=>TRUE),
-			'link_name'	   		=> array('title'=> LCLAN_15,	'width'=>'auto','type'=>'text'),
-			'link_parent' 		=> array('title'=> 'Sublink of', 'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),         
-			'link_url'	   		=> array('title'=> LCLAN_93, 					'width'=>'auto','type'=>'text'),
+			'link_id'			=> array('title'=> ID, 			'nolist'=>TRUE),
+			'link_name'	   		=> array('title'=> LCLAN_15,	'width'=>'auto','type'=>'method'),
+			'link_parent' 		=> array('title'=> 'Sublink of', 'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),         
+			'link_url'	   		=> array('title'=> LCLAN_93, 	'width'=>'auto', 'type'=>'text'),
 			'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),	
 			'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'bbarea', 'method'=>'tinymce_plugins', 'width' => 'auto'),	
-			'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'method', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
+			'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 			'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'text', 'width' => 'auto'),
-			'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'method', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-			'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
-						
+			'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+			'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),						
 		//	'increment' 		=> array('title'=> LCLAN_91,			'width' => '3%','forced' => true,'thclass' => 'center'),	  	
 			'options' 			=> array('title'=> LAN_OPTIONS, 		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center')
 		);
 		
 		protected $fieldpref =  array('checkboxes','link_id','link_name','link_class','link_order','options');
-	
-		
-		//required (but should be optional) - default column user prefs 
-	//	protected $fieldpref = array('checkboxes', 'comment_id', 'comment_item_id', 'comment_author_id', 'comment_author_name', 'comment_subject', 'comment_comment', 'comment_type', 'options');
-		
-		
-		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
-	
+
 		protected $prefs = array(
 			'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),
 			'sitelinks_expandsub'	=> array('title'=>LCLAN_80,	'type'=>'boolean', 'help'=>LCLAN_81)
 		);
 		
-			
+		
+		//FIXME - need to use linkArray data instead of $listQry-returned data	
+		protected $linkArray = array();
+		
 	
+	function init()
+	{
+		$sql = e107::getDb();
+		$mes = e107::getMessage();
+			
+		$this->getLinks();
+		
+		$query = "SELECT link_id,link_name FROM #links ORDER BY link_name";
+		$this->linkParent[0] = '-';
+		$sql->db_Select_gen($query);
+		while($row = $sql->db_Fetch())
+		{
+			$id = $row['link_id'];
+			$this->linkParent[$id] = $row['link_name'];
+		}
+				
+		$tmp = e107::getAddonConfig('e_sitelink','sitelinks');
+
+		foreach($tmp as $cat=> $array)
+		{
+			$func = array();
+			foreach($array as $val)
+			{
+				$newkey = $cat.'::'.$val['function'];
+				$func[$newkey] = $val['name'];
+			}
+			$this->linkFunctions[$cat] = $func;
+		}
+				
+		$this->linkCategory = array(
+			1	=> "1 - Main",
+			2	=> "2 - Alt",
+			3	=> "3 - Alt",
+			4	=> "4 - Alt",
+			5	=> "5 - Alt",
+			6	=> "6 - Alt",
+			7	=> "7 - Alt",
+			8	=> "8 - Alt",
+			9	=> "9 - Alt",
+			10	=> "10 - Alt"
+		);
+		
+		$this->linkOpen = array(
+			0 => LCLAN_20, // 0 = same window
+			1 => LCLAN_23, // new window
+			4 => LCLAN_24, // 4 = miniwindow  600x400
+			5 => LINKLAN_1 // 5 = miniwindow  800x600
+		);
+		
+		$sitelinksTemplates = e107::getCoreTemplateList('sitelinks');
+		
+		//TODO review. 
+		$this->setDropDown('link_parent',$this->linkParent);
+		$this->setDropDown('link_category',$this->linkCategory);
+		$this->setDropDown('link_open',$this->linkOpen);
+	//	$this->setDropDown('link_function',$this->linkFunctions);
+		// $this->setDropDown('link_template',$sitelinksTemplates);
+
+		
+		if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] != "")
+		{
+			$this->generateSublinks();	
+		}
+	}
+
+
+
+
+	
+	
+	/**
+	 * Get linklist in it's proper order. 
+	 * @return
+	 */
+	function getLinks()
+	{
+		$sql = e107::getDb();
+		
+		if($this->link_total = $sql->db_Select("links", "*", "ORDER BY link_category,link_order, link_id ASC", "nowhere"))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$ret[$row['link_parent']][] = $row;
+			}
+		}
+		
+		$this->linkArray = $ret;
+		
+		// print_a($this->linkArray);
+	}
+
+
+
+
+
+
 	function sublinksPage()
 	{
 		global $e107, $sql, $emessage;
@@ -213,16 +288,14 @@ class links_admin_ui extends e_admin_ui
 		return $sublink_type;
 
 	}
-	
-	
-	function init()
-	{
-		$sql = e107::getDb();
-		$mes = e107::getMessage();
+
+
+
+
 		
-		if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] != "")
-		{
-			$subtype = $_POST['sublink_type'];
+	function generateSublinks()
+	{
+		$subtype = $_POST['sublink_type'];
 			$sublink = $this->sublink_list($subtype);
 		
 			$sql2 = e107::getDb('sql2');
@@ -273,85 +346,31 @@ class links_admin_ui extends e_admin_ui
 			{
 				// sitelinks_adminlog('01', $message); // 'Sublinks generated'
 			}
-		}
-	}
-		
-		
+	}	
 }
 
-//TODO Block and Unblock buttons, moderated links?
+
 class links_admin_form_ui extends e_admin_form_ui
 {
-	public $linkFunctions = array();
-	public $linkCategory = array();
-	public $linkOpen = array();
-	public $linkParent = array();
 		
 	function init()
 	{
-		$sql = e107::getDb();
-		
-		$query = "SELECT link_id,link_name FROM #links ORDER BY link_name";
-		$this->linkParent[0] = '-';
-		$sql->db_Select_gen($query);
-		while($row = $sql->db_Fetch())
-		{
-			$id = $row['link_id'];
-			$this->linkParent[$id] = $row['link_name'];
-		}
-		
-		
-		$tmp = e107::getAddonConfig('e_sitelink','sitelinks');
-	//	$this->linkFunctions[0] = "(".LAN_OPTIONAL.")";
-		foreach($tmp as $cat=> $array)
-		{
-			$func = array();
-			foreach($array as $val)
-			{
-				$newkey = $cat.'::'.$val['function'];
-				$func[$newkey] = $val['name'];
-			}
-			$this->linkFunctions[$cat] = $func;
-		}
 				
-		$this->linkCategory = array(
-			1	=> "1 - Main",
-			2	=> "2 - Alt",
-			3	=> "3 - Alt",
-			4	=> "4 - Alt",
-			5	=> "5 - Alt",
-			6	=> "6 - Alt",
-			7	=> "7 - Alt",
-			8	=> "8 - Alt",
-			9	=> "9 - Alt",
-			10	=> "10 - Alt"
-		);
-		
-		$this->linkOpen = array(
-			0 => LCLAN_20, // 0 = same window
-			1 => LCLAN_23, // new window
-			4 => LCLAN_24, // 4 = miniwindow  600x400
-			5 => LINKLAN_1 // 5 = miniwindow  800x600
-		);					
 	}
-
-	function link_parent($curVal,$mode)
-	{
-		if($mode == 'read')
+	
+	
+	function link_name($curVal,$mode,$parm)
+	{		
+		//FIXME - I need access to the full array of $row, so I can check for the value of $link_parent;
+		if($mode == "read")
 		{
-			return $this->linkParent[$curVal];
+			return "<img src='".e_IMAGE."generic/branchbottom.gif' alt='' />".$curVal;		
 		}
-		
-		if($mode == 'write')
-		{
-			return $this->selectbox('link_parent',$this->linkParent,$curVal);
-		}
-		
 		else
 		{
-			unset($this->linkParent[0]);
-			return $this->linkParent;
+			return $curVal;	
 		}
+		
 	}
 
 
@@ -373,47 +392,6 @@ class links_admin_form_ui extends e_admin_form_ui
 			return $this->linkFunctions;
 		}
 	}
-
-
-	function link_category($curVal,$mode)
-	{
-		if($mode == 'read')
-		{
-			return $this->linkCategory[$curVal];
-		}
-		
-		if($mode == 'write')
-		{
-			return $this->selectbox('link_category',$this->linkCategory,$curVal);
-		}
-		
-		else
-		{
-			return $this->linkCategory;
-		}
-	}	
-	
-	
-	
-	function link_open($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
-	{ 
-		if($mode == 'read')
-		{
-			return $this->linkOpen[$curVal];
-		}
-		
-		if($mode == 'write')
-		{
-			$options['default'] = LAN_OPTIONAL;
-			return $this->selectbox('link_open',$this->linkOpen,$curVal);
-		}
-		
-		if($mode == 'filter' || $mode == 'batch') // Custom Filter List for release_type
-		{
-			return $this->linkOpen;
-		}
-	}
-	
 	
 
 }

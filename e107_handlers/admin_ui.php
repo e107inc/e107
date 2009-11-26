@@ -2838,12 +2838,12 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 		
 		$orderField = $request->getQuery('field', $this->getPrimaryName());
-		if(isset($this->fields[$orderField]))
+		if(isset($this->fields[$orderField]) && strpos($this->listQry,'ORDER BY')==FALSE) //override ORDER using listQry (admin->sitelinks)
 		{
 			// no need of sanitize - it's found in field array
 			$qry .= ' ORDER BY  '.$this->fields[$orderField]['__tableField'].' '.($request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC');
 		}
-		
+				
 		if($this->getPerPage() || false !== $forceTo)
 		{
 			$from = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
@@ -3347,6 +3347,20 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		return $this->dataFields;
 	}
+	
+	
+	/**
+	 * Set read and write parms with drop-down-list array data (ie. type='dropdown')
+	 * @param str $field
+	 * @param array $array [optional]
+	 * @return 
+	 */
+	public function setDropDown($field,$array) //TODO Have Miro check this. 
+	{
+		$this->fields[$field]['readParms'] = $array;
+		$this->fields[$field]['writeParms'] = $array;
+	}
+
 	
 	/**
 	 * Set Config object 

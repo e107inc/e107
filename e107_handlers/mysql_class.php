@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.64 $
- * $Date: 2009-11-20 05:01:31 $
+ * $Revision: 1.65 $
+ * $Date: 2009-11-26 09:02:34 $
  * $Author: e107coders $
 */
 
@@ -49,7 +49,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * @author $Author: e107coders $
  * 
  */
@@ -846,6 +846,9 @@ class e_db_mysql {
 	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$this->tabset = FALSE;
+		
+
+		
 		$query .= " "; // temp fix for failing regex below, when there is no space after the table name;
 		
 		if(strpos($query,'`#') !== FALSE)
@@ -857,6 +860,7 @@ class e_db_mysql {
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
 		
+		$query = str_replace("#",$this->mySQLPrefix,$query); //FIXME - quick fix for those that slip-thru
 		//FIXME - this is a quick Fix for REGEXP queries, as used in admin_ui. 
 		$query = str_replace("`#","`".$this->mySQLPrefix,$query);
 

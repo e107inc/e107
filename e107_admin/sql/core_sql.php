@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-11-20 05:01:30 $
+ * $Revision: 1.42 $
+ * $Date: 2009-11-26 09:02:32 $
  * $Author: e107coders $
 */
 
@@ -138,7 +138,8 @@ CREATE TABLE core_media (
   media_userclass varchar(255) NOT NULL default '',
   media_usedby text NOT NULL,
   media_tags text NOT NULL,
-  PRIMARY KEY  (media_id)
+  PRIMARY KEY (media_id),
+  UNIQUE KEY media_url (media_url)
 ) TYPE=MyISAM;
 
 CREATE TABLE core_media_cat (
