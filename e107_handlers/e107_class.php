@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.84 $
- * $Date: 2009-11-24 16:41:10 $
- * $Author: secretr $
+ * $Revision: 1.85 $
+ * $Date: 2009-11-26 09:02:33 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1164,6 +1164,47 @@ class e107
 		return e107::_getTemplate($id, $key, $reg_path, $path);
 	}
 	
+
+	/**
+	 * Return a list of available template IDs (eg. $MYTEMPLATE['id'])
+	 * @param str $plugin_name
+	 * @param str $var [optional] if different from $plugin_name;
+	 * @return array 
+	 */
+	public static function getCoreTemplateList($plugin_name,$var= null)
+	{
+		$id = (!$var) ? $plugin_name : $var;
+		$tmp = e107::getCoreTemplate($plugin_name, $id);
+		$templates = array();
+		foreach($tmp as $key=>$val)
+		{
+			$templates[$key] = $key; //TODO add LANS?
+		}
+		return $templates;	
+	}
+
+	
+	/**
+	 * Return a list of available template IDs for a plugin(eg. $MYTEMPLATE['id'])
+	 * @param str $plugin_name
+	 * @param str $var [optional] if different from $plugin_name;
+	 * @return array 
+	 */
+	public static function getTemplateList($plugin_name,$var= '')
+	{
+		$id = (!$var) ? $plugin_name : $var;
+		$tmp = e107::getTemplate($plugin_name, $id);
+		$templates = array();
+		foreach($tmp as $key=>$val)
+		{
+			$templates[$key] = $key; //TODO add LANS?
+		}
+		return $templates;	
+	}
+
+	
+	
+	
 	/**
 	 * More abstsract template loader, used
 	 * internal in {@link getTemplate()} and {@link getCoreTemplate()} methods
@@ -1590,7 +1631,7 @@ class e107
 		//global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
 		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
 		$ADMIN_DIRECTORY = $this->getFolder('admin');
-		$eplug_admin = $GLOBALS['eplug_admin'];
+		$eplug_admin = vartrue($GLOBALS['eplug_admin']);
 		
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 		
