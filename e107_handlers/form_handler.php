@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.91 $
- * $Date: 2009-11-24 15:36:12 $
- * $Author: e107coders $
+ * $Revision: 1.92 $
+ * $Date: 2009-11-26 17:14:03 $
+ * $Author: secretr $
  *
 */
 
@@ -1309,7 +1309,7 @@ class e_form
 			case 'dropdown':
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions);
-				unset($parms['dropdown']);
+				unset($parms['__options']);
 				return $this->selectbox($key, $parms, $value, $eloptions);
 			break; 
 			

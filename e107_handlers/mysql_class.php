@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.65 $
- * $Date: 2009-11-26 09:02:34 $
- * $Author: e107coders $
+ * $Revision: 1.66 $
+ * $Date: 2009-11-26 17:14:07 $
+ * $Author: secretr $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -49,8 +49,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.65 $
- * @author $Author: e107coders $
+ * @version $Revision: 1.66 $
+ * @author $Author: secretr $
  * 
  */
 class e_db_mysql {
@@ -694,7 +694,7 @@ class e_db_mysql {
 	* @desc Count the number of rows in a select<br />
 	* <br />
 	* Example:<br />
-	* <code>$topics = $sql->db_Count("forum_t", "(*)", " WHERE thread_forum_id='".$forum_id."' AND thread_parent='0' ");</code>
+	* <code>$topics = $sql->db_Count("forum_t", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
 	*
 	* @access public
 	*/
@@ -719,6 +719,11 @@ class e_db_mysql {
 		}
 
 		$this->mySQLcurTable = $table;
+		// normalize query arguments - only COUNT expected 'WHERE', not anymore 
+		if($arg && stripos(trim($arg), 'WHERE') !== 0)
+		{
+			$arg = 'WHERE '.$arg;
+		}
 		$query='SELECT COUNT'.$fields.' FROM '.$this->mySQLPrefix.$table.' '.$arg;
 		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) 
 		{

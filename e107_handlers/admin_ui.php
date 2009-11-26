@@ -2995,25 +2995,27 @@ class e_admin_ui extends e_admin_controller_ui
 		} 
 		// delete one by one - more control, less performance
 		// TODO - pass  afterDelete() callback to tree delete method?
+		$set_messages = true;
 		foreach ($selected as $id)
 		{
-			if($this->beforeDelete($id))
+			$data = array();
+			$model = $this->getTreeModel()->getNode($id);
+			if($model)
 			{
-				$data = array();
-				$model = $this->getTreeModel()->getNode($id);
-				if($model)
+				$data = $model->getData();
+				if($this->beforeDelete($data, $id))
 				{
-					$data = $model->getData();
-				}
-				if($this->getTreeModel()->delete($id))
-				{
-					$this->afterDelete($data);
+					$check = $this->getTreeModel()->delete($id);
+					if(!$this->afterDelete($data, $id, $check))
+					{
+						$set_messages = false;
+					}
 				}
 			}
 		}
 
 		//$this->getTreeModel()->delete($selected);
-		$this->getTreeModel()->setMessages();
+		if($set_messages) $this->getTreeModel()->setMessages();
 	}
 	
 	/**
@@ -3079,14 +3081,14 @@ class e_admin_ui extends e_admin_controller_ui
 		if($model)
 		{
 			$data = $model->getData();
-		}
-		if($this->beforeDelete($data, $id))
-		{
-			if($this->getTreeModel()->delete($id))
+			if($this->beforeDelete($data, $id))
 			{
-				$this->afterDelete($data, $id);
+				$check = $this->getTreeModel()->delete($id);
+				if($this->afterDelete($data, $id, $check))
+				{
+					$this->getTreeModel()->setMessages();
+				}
 			}
-			$this->getTreeModel()->setMessages();
 		}
 	}
 	
@@ -3099,10 +3101,11 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 	
 	/**
-	 * User defined after-create logic
+	 * User defined after-delete logic
 	 */
-	public function afterDelete($deleted_data, $id)
+	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
+		return true;
 	}
 	
 	/**

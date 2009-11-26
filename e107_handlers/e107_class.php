@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.85 $
- * $Date: 2009-11-26 09:02:33 $
- * $Author: e107coders $
+ * $Revision: 1.86 $
+ * $Date: 2009-11-26 17:14:07 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -899,14 +899,18 @@ class e107
 	}
 	
 	/**
-	 * Retrieve Xml handler singleton object
-	 * @return e_online
+	 * Retrieve Xml handler singleton or new instance object
+	 * @param mixed $singleton false - new instance, true - singleton from default registry location, 'string' - registry path
+	 * @return xmlClass
 	 */
-	public static function getXml()
+	public static function getXml($singleton = true)
 	{
-		return self::getSingleton('xmlClass', true);
+		if($singleton)
+		{
+			return self::getSingleton('xmlClass', true, (true === $singleton ? '' : $singleton));
+		}
+		return self::getObject('xmlClass', null, true);
 	}
-	
 	
 	/**
 	 * Retrieve User Extended handler singleton object
