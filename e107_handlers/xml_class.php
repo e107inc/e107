@@ -9,9 +9,9 @@
  * Simple XML Parser
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/xml_class.php,v $
- * $Revision: 1.37 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.38 $
+ * $Date: 2009-11-26 17:14:06 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -146,10 +146,6 @@ class xmlClass
 	 * @var string
 	 */
 	protected $_optValueKey = '@value';
-
-
-
-	
 
 	/**
 	 * Constructor - set defaults
@@ -497,7 +493,7 @@ class xmlClass
 		return ($this->_optForceArray ? array($this->_optValueKey => $ret) : $ret);
 	}
 
-
+	// OLD
 	function xml_convert_to_array($xml, $localFilter = FALSE, $stripComments = TRUE)
 	{
 		if (is_object($xml))
@@ -603,12 +599,6 @@ class xmlClass
 		
 		return $vars;
 	}
-	
-
-
-
-
-
 
 	/**
 	 * Load XML file and parse it (optional)
@@ -720,7 +710,6 @@ class xmlClass
 	 */
 	public function e107Export($xmlprefs, $tables, $debug = FALSE)
 	{
-		
 		require_once(e_ADMIN."ver.php");
 		
 		$text = "<?xml version='1.0' encoding='utf-8' ?".">\n";
@@ -799,8 +788,6 @@ class xmlClass
 			exit;
 		
 		}
-		
-
 	}
 	
 	/**
@@ -812,8 +799,6 @@ class xmlClass
 	 */
 	public function e107ImportPrefs($XMLData, $prefType='core')
 	{
-		
-		
 		if(!vartrue($XMLData['prefs'][$prefType]))
 		{
 			return;
@@ -834,11 +819,7 @@ class xmlClass
 		
 		return $pref;	
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * Import an e107 XML file into site preferences and DB tables
 	 *

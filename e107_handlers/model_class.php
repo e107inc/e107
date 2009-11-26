@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-11-24 16:32:02 $
+ * $Revision: 1.45 $
+ * $Date: 2009-11-26 17:14:06 $
  * $Author: secretr $
 */
 
@@ -963,11 +963,43 @@ class e_model
 	}
 	
 	/**
+	 * Render model data, all 'sc_*' methods will be recongnized
+	 * as shortcodes.
+	 * 
+	 * @param string $template
+	 * @param boolean $parsesc parse external shortcodes, default is true
+	 * @return string parsed template
+	 */
+	public function toHTML($template, $parsesc = true)
+	{
+		return e107::getParser()->parseTemplate($template, $parsesc, $this);
+	}
+	
+	public function toXML()
+	{
+		$ret = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
+		$ret .= "<e107Export type=\"model\" version=\"1.0\" timestamp=\"".time()."\" >\n";
+		
+		$ret .= "\t<data>\n";
+		// TODO - handle multi dimensional arrays (already possible - field1/field2?), method toXMLValue($value, $type)
+		foreach ($this->getDataFields() as $field => $type)
+		{
+			$ret .= "\t\t<field name=\"{$field}\" type=\"{$type}\">";
+			$ret .= $type == 'str' || $type == 'string' ? "<![CDATA[".$this->getData($field)."]]>" : $this->getData($field);
+			$ret .= "</field>\n";
+		}
+		$ret .= "\t</data>\n";
+		
+		$ret .= "</e107Export>";
+		return $ret;
+	}
+	
+	/**
 	 * Try to convert string to a number
 	 * Shoud fix locale related troubles
 	 * 
 	 * @param string $value
-	 * @return 
+	 * @return integer|float
 	 */
 	public function toNumber($value)
 	{
