@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-24 20:40:35 $
+ * $Revision: 1.13 $
+ * $Date: 2009-11-27 21:42:46 $
  * $Author: e107steved $
  *
 */
@@ -244,7 +244,7 @@ define('LAN_MAILOUT_222', 'Default email format');
 define('LAN_MAILOUT_223', '(Used for some non-bulk emails)');
 define('LAN_MAILOUT_224', 'Inc. Images');
 define('LAN_MAILOUT_225', 'Include images in email');
-define('LAN_MAILOUT_226', '--COUNT-- orphaned recipient records removed');
+define('LAN_MAILOUT_226', '--COUNT-- orphaned recipient record(s) removed');
 define('LAN_MAILOUT_227', 'Deleted --COUNT-- records from --TABLE--');
 define('LAN_MAILOUT_228', '--COUNT-- anomalies in mail_content corrected; records: --RECORDS--');
 define('LAN_MAILOUT_229', 'Email ID --ID-- put on hold');
@@ -255,10 +255,24 @@ define('LAN_MAILOUT_233', 'Auto-process script');
 define('LAN_MAILOUT_234', 'Mail account');
 define('LAN_MAILOUT_235', '(Your server has to be configured to use this script)');
 define('LAN_MAILOUT_236', 'Last Bounce Processed');
-define('LAN_MAILOUT_237', '');
-define('LAN_MAILOUT_238', '');
-define('LAN_MAILOUT_239', '');
-define('LAN_MAILOUT_240', '');
+define('LAN_MAILOUT_237', 'Summary counters updated on --COUNT-- emails');
+define('LAN_MAILOUT_238', 'Earliest time to send');
+define('LAN_MAILOUT_239', 'Latest time to send');
+define('LAN_MAILOUT_240', 'Notify me when run complete');
+define('LAN_MAILOUT_241', '  (This is in addition to the standard e107 notify options)');
+define('LAN_MAILOUT_242', 'Additional options (only when sending)');
+define('LAN_MAILOUT_243', 'Notify');
+define('LAN_MAILOUT_244', 'Email sent: ');
+define('LAN_MAILOUT_245', 'Check for bounces automatically');
+define('LAN_MAILOUT_246', 'If checked, you will need to activate the task in the scheduler');
+define('LAN_MAILOUT_247', 'Email information:');
+define('LAN_MAILOUT_248', 'Completion status: ');
+define('LAN_MAILOUT_249', 'Send results:');
+define('LAN_MAILOUT_250', '--- End of notification ---');
+define('LAN_MAILOUT_251', '');
+define('LAN_MAILOUT_252', '');
+define('LAN_MAILOUT_253', '');
+define('LAN_MAILOUT_254', '');
 
 
 define('LAN_SEND', 'Send');

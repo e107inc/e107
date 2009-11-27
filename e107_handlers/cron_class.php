@@ -10,8 +10,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_handlers/cron_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2009-11-15 17:38:04 $
+|     $Revision: 1.5 $
+|     $Date: 2009-11-27 21:42:46 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -56,6 +56,23 @@ class _system_cron
 		}
 	}
 	
+	function procEmailBounce()
+	{
+		global $pref;
+		if (CRON_MAIL_DEBUG)
+		{
+			$e107 = e107::getInstance();
+			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing started',FALSE,LOG_TO_ROLLING);
+		}
+		require_once(e_HANDLER.'pop_bounce_handler.php');
+		$mailBounce = new pop3BounceHandler();
+		$mailBounce->processBounces();
+		if (CRON_MAIL_DEBUG)
+		{
+			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Bounce','Bounce processing completed',FALSE,LOG_TO_ROLLING);
+		}
+	}
+	
 }
 
 
@@ -63,7 +80,7 @@ class _system_cron
 
 
 
- /* $Id: cron_class.php,v 1.4 2009-11-15 17:38:04 e107steved Exp $ */
+ /* $Id: cron_class.php,v 1.5 2009-11-27 21:42:46 e107steved Exp $ */
 
 /**####################################################################################################**\
    Version: V1.01

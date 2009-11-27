@@ -1,9 +1,9 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
-// $Id: pop3_class.php,v 1.2 2008-01-02 20:14:05 e107steved Exp $
-// Main ReciveMail Class File - Version 1.0 (01-03-2006)
+// $Id: pop3_class.php,v 1.3 2009-11-27 21:42:46 e107steved Exp $
+// Main ReceiveMail Class File - Version 1.0 (01-03-2006)
 /*
- * File: recivemail.class.php
+ * Original file name: recivemail.class.php
  * Description: Receiving mail With Attachment
  * Version: 1.0
  * Created: 01-03-2006
@@ -47,6 +47,7 @@ class receiveMail
 		$this->marubox=imap_open($this->server,$this->username,$this->password);
 	}
 
+
 	function getHeaders($mid) // Get Header info
 	{
 		$mail_header=imap_header($this->marubox,$mid);
@@ -69,6 +70,8 @@ class receiveMail
 
 		return $mail_details;
 	}
+
+
 	function get_mime_type(&$structure) //Get Mime type Internal Private Use
 	{
 		$primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO", "IMAGE", "VIDEO", "OTHER");
@@ -78,6 +81,8 @@ class receiveMail
 		}
 		return "TEXT/PLAIN";
 	}
+
+
 	function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) //Get Part Of Message Internal Private Use
 	{
 		if(!$structure) {
@@ -122,11 +127,15 @@ class receiveMail
 		}
 		return false;
 	}
+
+
 	function getTotalMails() //Get Total Number off Unread Email In Mailbox
 	{
 		$headers=imap_headers($this->marubox);
 		return count($headers);
 	}
+
+
 	function GetAttach($mid,$path) // Get Atteced File from Mail
 	{
 		$struckture = imap_fetchstructure($this->marubox,$mid);
@@ -159,6 +168,8 @@ class receiveMail
 		$ar=substr($ar,0,(strlen($ar)-1));
 		return $ar;
 	}
+
+
 	function getBody($mid,$mode="") // Get Message Body
 	{
 		if($mode != "plain")
@@ -172,10 +183,14 @@ class receiveMail
 		}
 		return $body;
 	}
+
+
 	function deleteMails($mid) // Delete That Mail
 	{
 		imap_delete($this->marubox,$mid);
 	}
+
+
 	function close_mailbox() //Close Mail Box
 	{
 		imap_close($this->marubox,CL_EXPUNGE);

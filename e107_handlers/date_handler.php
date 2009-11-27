@@ -7,9 +7,9 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-18 01:49:18 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.13 $
+ * $Date: 2009-11-27 21:42:46 $
+ * $Author: e107steved $
  * 
 */
 if (!defined('e107_INIT')) { exit; }
@@ -60,6 +60,9 @@ class convert
 		$datestamp += TIMEOFFSET;
 		return strftime($mask, $datestamp);
 	}
+
+
+
 	
 	/**
 	 * Convert date string back to integer (unix timestamp)
@@ -105,6 +108,150 @@ class convert
 		return $unxTimestamp;
 	}
 
+
+
+
+
+
+	/**
+	 * Tolerant date/time input routine - doesn't force use of specific delimiters, and can sometimes allow no delimiters at all
+	 * The format string defines the critical day/month/year order.
+	 * As examples, with suitable format specifiers all of the following will be interpreted into valid (and sensible) dates/times:
+	 *  09122003 153045		-> 9-12-03 at 15:30:45 (requires dmy or mdy format specifier)
+	 *	20031209 12:30:32	-> 9-12-03 at 12:30:32 (requires ymd specifier)
+	 *	091203 1530			-> 9-12-09 at 15:30:00
+	 *  9/12/3 12			-> 9-12-09 at 12:00:00
+	 *	6-3/4 15-45:27		-> 6-3-04 at 15:45:27
+	 *
+	 * @param string $input - usually date/time string with numeric values for relevant fields, and almost any separator. e.g. dd-mm-yy hh:mm
+	 *							Date and time must be separated by one or more spaces. In times, minutes and seconds are optional, and default to zero
+	 *							One special value is allowed - 'now'
+	 * @param string $decode - one of 'date', 'time', 'datetime'
+	 * @param string $format - sets field order for dates. Valid strings are dmy, mdy, ymd. Add suffix 'z' to return UTC/GMT
+	 * @param boolean $endDay - if TRUE, and no time entered, includes a time of 23:59:59 in the entered date
+	 *
+	 * @return integer time stamp.  returns zero on any error
+	 */
+	public function decodeDateTime($input, $decode = 'date', $format = 'dmy', $endDay = FALSE)
+	{
+		if ($input == 'now') return time();
+		$useLocale = TRUE;
+		if (substr($format,-1,1) == 'z')
+		{
+			$useLocale = FALSE;
+			$format = substr($format,0,-1);		// Remove local disable string
+		}
+		switch ($decode)
+		{
+			case 'date' :
+				$timeString = '';
+				$dateString = trim($input);
+				break;
+			case 'time' :
+				$timeString = trim($input);
+				$dateString = '';
+				break;
+			case 'datetime' :
+				$input = str_replace('  ',' ', $input);
+				list($dateString, $timeString) = explode(' ',$input,2);
+				$timeString = trim($timeString);
+				$dateString = trim($dateString);
+				break;
+			default :
+				return 0;
+		}
+		$dateVals = array (1 => 0, 2 => 0, 3 => 0);		// Preset date in case 
+		$timeVals = array (1 => 0, 2 => 0, 3 => 0);		// Preset time in case 
+		if ($dateString)
+		{
+			if (is_numeric($dateString))
+			{
+				if (strlen($dateString) == 6)
+				{	// Probably fixed format numeric without separators
+					$dateVals = array(1 => substr($dateString,0,2), 2 => substr($dateString,2,2), 3 => substr($dateString,-2));
+				}
+				elseif (strlen($dateString) == 8)
+				{	// Trickier - year may be first or last!
+					if ($format == 'ymd')
+					{
+						$dateVals = array(1 => substr($dateString,0,4), 2 => substr($dateString,4,2), 3 => substr($dateString,-2));
+					}
+					else
+					{
+						$dateVals = array(1 => substr($dateString,0,2), 2 => substr($dateString,2,2), 3 => substr($dateString,-4));
+					}
+				}
+			}
+			else
+			{  // Assume standard 'nn-nn-nn', 'nnnn-nn-nn' or 'nn-nn-nnnn' type format
+				if (!preg_match('#(\d{1,4})\D(\d{1,2})\D(\d{1,4})#', $dateString, $dateVals))
+				{
+					return 0;			// Can't decode date
+				}
+			}
+		}
+		if ($timeString)
+		{
+			if (is_numeric($timeString))
+			{
+				if (strlen($timeString) == 6)
+				{	// Assume hhmmss
+					$timeVals = array(1 => substr($timeString,0,2), 2 => substr($timeString,2,2), 3 => substr($timeString,-2));
+				}
+				elseif (strlen($timeString) == 4)
+				{	// Assume hhmm
+					$timeVals = array(1 => substr($timeString,0,2), 2 => substr($timeString,-2), 3 => 0);
+				}
+				else
+				{	// Hope its just hours!
+					if ($timeString < 24)
+					{
+						$timeVals[1] = $timeString;
+					}
+				}
+			}
+			else
+			{
+				preg_match('#(\d{1,2})(?:\D(\d{1,2})){0,1}(?:\D(\d{1,2})){0,1}#', $timeString, $timeVals);
+			}
+			//print_a($timeVals);
+		}
+		elseif ($endDay)
+		{
+			$timeVals = array (1 => 23, 2 => 59, 3 => 59);		// Last second of day
+		}
+		// Got all the values now - the rest is simple!
+		switch ($format)
+		{
+			case 'dmy' :
+				$month = $dateVals[2]; $day = $dateVals[1]; $year = $dateVals[3]; break;
+			case 'mdy' :
+				$month = $dateVals[1]; $day = $dateVals[2]; $year = $dateVals[3]; break;
+			case 'ymd' :
+				$month = $dateVals[2]; $day = $dateVals[3]; $year = $dateVals[1]; break;
+			default :
+				echo "Unsupported format string: {$format}<br />";
+				return 0;
+		}
+		if ($useLocale)
+		{
+			return mktime($timeVals[1], $timeVals[2], $timeVals[3], $month, $day, $year);
+		}
+		return gmmktime($timeVals[1], $timeVals[2], $timeVals[3], $month, $day, $year);
+	}
+
+
+
+	/**
+	 * Calculate difference between two dates for display in terms of years/months/weeks....
+	 * 
+	 * @param integer $older_date - time stamp
+	 * @param integer|boolean $newer_date - time stamp.  Defaults to current time if FALSE
+	 * @param boolean $mode -if TRUE, return value is an array. Otherwise return value is a string
+	 * @param boolean $show_secs
+	 * @param string $format - controls display format. 'short' misses off year. 'long' includes everything
+	 * @return array|string according to $mode, array or string detailing the time difference
+	 */
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
 	{	/*
 		$mode = TRUE :: return array
@@ -130,7 +277,7 @@ class convert
   If we go over a month boundary, then we need to add days to end of start month, plus days in 'end' month
   If start day > end day, we cross a month boundary. Calculate last day of start date. Otherwise we can just do a simple difference.
 */
-		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
+		$newer_date = ($newer_date === FALSE ? (time()) : $newer_date);
 		if($older_date>$newer_date)
 		{  // Just in case the wrong way round
 		  $tmp=$newer_date; 

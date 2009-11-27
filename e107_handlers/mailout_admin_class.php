@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-23 21:06:00 $
+ * $Revision: 1.7 $
+ * $Date: 2009-11-27 21:42:46 $
  * $Author: e107steved $
  *
 */
@@ -25,7 +25,7 @@ TODO:
 	1. Use API to downloads plugin to get available files (when available)
 	2. Fuller checking prior to send
 	3. May want more control over date display format
-	4. Add JS calendar for 'last visit' selector
+	4. Look at orphan removal query
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -36,6 +36,7 @@ require_once(e_HANDLER.'mail_manager_class.php');
 
 class mailoutAdminClass extends e107MailManager
 {
+	public	  $_cal = array();
 	protected $mode;					// So we know what the current task is
 	protected $mailHandlers = array();
 	protected $showFrom = 0;
@@ -78,6 +79,7 @@ class mailoutAdminClass extends e107MailManager
 			'mail_creator' 		=> array('title' => LAN_MAILOUT_85, 'proc' => 'username'),
 			'mail_create_app' 	=> array('title' => LAN_MAILOUT_133),
 			'mail_e107_priority' => array('title' => LAN_MAILOUT_134),
+			'mail_notify_complete' => array('title' => LAN_MAILOUT_243,  'nolist' => 'TRUE'),
 			'mail_last_date' 	=> array('title' => LAN_MAILOUT_129, 'proc' => 'sdatetime'),
 			'mail_body' 		=> array('title' => LAN_MAILOUT_100, 'proc' => 'trunc200'),
 		//	'mail_other' = array('title' => LAN_MAILOUT_84),
@@ -96,12 +98,12 @@ class mailoutAdminClass extends e107MailManager
 	// List of fields to be hidden for each action ('nolist' attribute true)
 	protected $hideFields = array(
 		'orphans' => array(),
-		'saved'  => 'mail_content_status,mail_togo_count,mail_sent_count,mail_fail_count,mail_bounce_count,mail_start_send,mail_end_send,mail_e107_priority,mail_last_date,mail_selectors',
-		'sent'  => 'mail_togo_count,mail_last_date,mail_selectors',
+		'saved'  => 'mail_content_status,mail_togo_count,mail_sent_count,mail_fail_count,mail_bounce_count,mail_start_send,mail_end_send,mail_e107_priority,mail_notify_complete,mail_last_date,mail_selectors',
+		'sent'  => 'mail_togo_count,mail_last_date,mail_selectors,mail_notify_complete',
 //		'pending'  => 'mail_togo_count,mail_sent_count,mail_fail_count,mail_bounce_count,mail_start_send,mail_end_send,mail_e107_priority,mail_last_date,mail_selectors',
-		'pending'  => 'mail_start_send,mail_end_send,mail_e107_priority,mail_last_date,mail_selectors',
-		'held'  => 'mail_sent_count,mail_fail_count,mail_bounce_count,mail_start_send,mail_end_send,mail_e107_priority,mail_last_date,mail_selectors',
-		'resend'  => 'mail_Selectors',
+		'pending'  => 'mail_start_send,mail_end_send,mail_e107_priority,mail_notify_complete,mail_last_date,mail_selectors',
+		'held'  => 'mail_sent_count,mail_fail_count,mail_bounce_count,mail_start_send,mail_end_send,mail_e107_priority,mail_notify_complete,mail_last_date,mail_selectors',
+		'resend'  => 'mail_Selectors,mail_notify_complete',
 		'recipients' => 'mail_detail_id'
 		);
 
@@ -164,7 +166,9 @@ class mailoutAdminClass extends e107MailManager
 	public function __construct($mode = '')
 	{
 		parent::__construct();
-//		$saveMode = $mode;
+		require_once(e_HANDLER.'calendar/calendar_class.php');
+		$this->_cal = new DHTML_Calendar(true);
+
 		$dbTable = '';
 		if (isset($this->tasks[$mode]))
 		{
@@ -256,6 +260,13 @@ class mailoutAdminClass extends e107MailManager
 
 
 
+	/**
+	 * Calculate the list of fields (columns) to be displayed for a given mode
+	 *
+	 * @param string $mode - display mode
+	 * @param boolean $noOptions - set TRUE to suppress inclusion of any 'options' column. FALSE to include 'options' (default)
+	 * @return array of field definitions
+	 */
 	protected function calcFieldSpec($mode, $noOptions = FALSE)
 	{
 		if (!isset($this->tasks[$mode]))
@@ -323,47 +334,14 @@ class mailoutAdminClass extends e107MailManager
 	}
 
 
-	/**
-	 * Convert numeric represntation of mail status to a text string
-	 * 
-	 * @param integer $status - numeric value of status
-	 * @return string text value
-	 */
-	public function statusToText($status)
-	{
-		switch (intval($status))
-		{
-			case MAIL_STATUS_SENT :
-				return LAN_MAILOUT_211;
-			case MAIL_STATUS_BOUNCED :
-				return LAN_MAILOUT_213;
-			case MAIL_STATUS_CANCELLED :
-				return LAN_MAILOUT_218;
-			case MAIL_STATUS_PARTIAL :
-				return LAN_MAILOUT_219;
-			case MAIL_STATUS_FAILED :
-				return LAN_MAILOUT_212;
-			case MAIL_STATUS_PENDING :
-				return LAN_MAILOUT_214;
-			case MAIL_STATUS_SAVED :
-				return LAN_MAILOUT_215;
-			case MAIL_STATUS_HELD :
-				return LAN_MAILOUT_217;
-			default :
-				if (($status > MAIL_STATUS_PENDING) && ($status <= MAIL_STATUS_ACTIVE)) return LAN_MAILOUT_214;
-		}
-		return LAN_MAILOUT_216.' ('.$status.')';		// General coding error
-	}
-
-
 
 	/**
 	 * Generate the HTML for displaying actions box for emails
 	 * 
 	 * Options given depend on $mode, and also values in the email data.
 	 *
-	 * @param $mailData - array of email-related info
-	 * @return HTML for display
+	 * @param array $mailData - array of email-related info
+	 * @return string HTML for display
 	 */
 	public function makeMailOptions($mode,$mailData)
 	{
@@ -1191,7 +1169,6 @@ class mailoutAdminClass extends e107MailManager
 				<col class='col-label' />
 				<col class='col-control' />
 			</colgroup>
-			
 			<tbody>";
 
 		$text .= $this->showMailDetail($mailData, 'send');
@@ -1209,14 +1186,16 @@ class mailoutAdminClass extends e107MailManager
 		// Figures - number of emails to send, number of duplicates stripped
 		$text .= '<tr><td>'.LAN_MAILOUT_173.'</td><td>'.($mailData['mail_togo_count'])."<input type='hidden' name='mailIDConf' value='{$mailID}' /></td></tr>";
 		$text .= '<tr><td>'.LAN_MAILOUT_71.'</td><td> '.$counters['add'].' '.LAN_MAILOUT_69.$counters['dups'].LAN_MAILOUT_70.'</td></tr>';
-		
-		$text .= "<tr><td colspan='2'>Add in start/end dates here</td></tr>";
 		$text .= "</tbody></table>\n</fieldset>";
+
+		$text .= $this->makeAdvancedOptions(TRUE);			// Show the table of advanced options
 
 		$text .= "<div class='buttons-bar center'>
 			<input class='button' type='submit' name='email_send' value=\"".LAN_SEND."\" />
 			&nbsp;<input class='button' type='submit' name='email_hold' value=\"".LAN_HOLD."\" />
 			&nbsp;<input class='button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />
+			</div>
+		</form>
 		</div>";
 
 		$this->e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".LAN_MAILOUT_179."</div>", $text);
@@ -1224,6 +1203,48 @@ class mailoutAdminClass extends e107MailManager
 
 
 
+	protected function makeAdvancedOptions($initHide = FALSE)
+	{
+		// Separate table for advanced mailout options
+		// mail_notify_complete field
+		$text = "
+			<legend>".LAN_MAILOUT_242."</legend>
+			<fieldset id='email-send-options'>
+			<table cellpadding='0' cellspacing='0' class='adminlist'>
+			<colgroup span='2'>
+				<col class='col-label' />
+				<col class='col-control' />
+			</colgroup>
+			<tbody>";
+
+		$text .= "<tr><td>".LAN_MAILOUT_238."</td><td>".$this->makeCalendar('mail_earliest_time')."</td></tr>";
+		$text .= "<tr><td>".LAN_MAILOUT_239."</td><td>".$this->makeCalendar('mail_latest_time')."</td></tr>";
+		// Can comment the two lines above, uncomment two lines below, and default time/date is shown. May or may not be preferable
+//		$text .= "<tr><td>".LAN_MAILOUT_238."</td><td>".$this->makeCalendar('mail_earliest_time', time())."</td></tr>";
+//		$text .= "<tr><td>".LAN_MAILOUT_239."</td><td>".$this->makeCalendar('mail_latest_time', time()+86400)."</td></tr>";
+		$text .= "<tr><td>".LAN_MAILOUT_240."</td><td><input type='checkbox' value='1' name='mail_notify_complete' />".LAN_MAILOUT_241."</td></tr>";
+		$text .= "</tbody></table>\n</fieldset>";
+		return $text;
+	}
+
+
+
+	public function makeCalendar($calName, $calVal = '')
+	{
+		$calOptions = array(
+			'showsTime' => TRUE,
+			'showOthers' => false,
+			'weekNumbers' => false,
+			'ifFormat' => '%d/%m/%Y %H:%I'
+			);
+		$calAttrib = array(
+			'class' => 'tbox',
+			'size' => 15,			// Number of characters
+			'name' => $calName,
+			'value' => (($calVal == '') ? '' : date('d/m/Y H:I',$calVal))
+		);
+		return $this->_cal->make_input_field($calOptions, $calAttrib);
+	}
 
 
 	/**
@@ -1372,6 +1393,8 @@ class mailoutAdminClass extends e107MailManager
 		$noError = TRUE;
 		$results = array();
 		$this->checkDB(2);			// Make sure DB object created
+		
+		// First thing, delete temporary records from both tables
 		if (($res = $this->db2->db_Delete('mail_content', '`mail_content_status` = '.MAIL_STATUS_TEMP)) === FALSE)
 		{
 			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' deleting temporary records from mail_content';
@@ -1407,7 +1430,7 @@ class mailoutAdminClass extends e107MailManager
 		// Scan content table for anomalies, out of time records
 		if (($res = $this->db2->db_Select_gen("SELECT * FROM `#mail_content` 
 					WHERE (`mail_content_status` >".MAIL_STATUS_FAILED.") AND (`mail_content_status` <=".MAIL_STATUS_MAX_ACTIVE.")
-					AND ((`mail_togo_count`=0) OR (`mail_last_date` < ".time()."))")) === FALSE)
+					AND ((`mail_togo_count`=0) OR ( (`mail_last_date` != 0) AND (`mail_last_date` < ".time().")))")) === FALSE)
 		{
 			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' checking bad status in mail_content';
 			$noError = FALSE;
@@ -1423,6 +1446,10 @@ class mailoutAdminClass extends e107MailManager
 					if (FALSE == $this->cancelEmail($row['mail_source_id']))
 					{
 						$results[] = 'Error cancelling email ref: '.$row['mail_source_id'];
+					}
+					else
+					{
+						$results[] = 'Email cancelled: '.$row['mail_source_id'];
 					}
 				}
 			}
@@ -1486,10 +1513,10 @@ class mailoutAdminClass extends e107MailManager
 					switch ($row['mail_status'])
 					{
 						case MAIL_STATUS_SENT :			// Mail sent. Email handler happy, but may have bounced (or may be yet to bounce)
-							$counters['mail_togo_count'] += $row['mr_count'];
+							$counters['mail_sent_count'] += $row['mr_count'];
 							break;
 						case MAIL_STATUS_BOUNCED :
-							$counters['mail_togo_count'] += $row['mr_count'];		// It was sent, so increment that counter
+							$counters['mail_sent_count'] += $row['mr_count'];		// It was sent, so increment that counter
 							$counters['mail_bounce_count'] += $row['mr_count'];		//...but bounced, so extra status
 							break;
 						case MAIL_STATUS_CANCELLED :								// Cancelled email - treat as a failure
@@ -1506,7 +1533,7 @@ class mailoutAdminClass extends e107MailManager
 					}
 				}
 			}
-			if ($changeCount) $results[] = str_replace('--COUNT--', $changeCount, LAN_MAILOUT_229);
+			if ($changeCount) $results[] = str_replace('--COUNT--', $changeCount, LAN_MAILOUT_237);
 		}
 
 		$this->e107->admin_log->log_event('MAIL_05', implode('[!br!]', $results), E_LOG_INFORMATIVE, '');

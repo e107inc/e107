@@ -9,9 +9,9 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-11-26 09:02:32 $
- * $Author: e107coders $
+ * $Revision: 1.43 $
+ * $Date: 2009-11-27 21:42:46 $
+ * $Author: e107steved $
 */
 
 header("location:../index.php");
@@ -244,8 +244,9 @@ CREATE TABLE mail_content (
 	mail_end_send int(10) unsigned NOT NULL default '0',
 	mail_create_date int(10) unsigned NOT NULL default '0',
 	mail_creator int(10) unsigned NOT NULL default '0',
-	mail_create_app varchar(10) NOT NULL default '',
+	mail_create_app varchar(20) NOT NULL default '',
 	mail_e107_priority tinyint(1) unsigned NOT NULL default '0',
+	mail_notify_complete tinyint(1) unsigned NOT NULL default '0',
 	mail_last_date int(10) unsigned NOT NULL default '0',
 	mail_title varchar(100) NOT NULL default '',
 	mail_subject varchar(100) NOT NULL default '',

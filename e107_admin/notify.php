@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/notify.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-11-18 01:04:26 $
- * $Author: e107coders $
+ * $Revision: 1.12 $
+ * $Date: 2009-11-27 21:42:46 $
+ * $Author: e107steved $
  */
 
 require_once('../class2.php');
@@ -149,6 +149,18 @@ class notify_config
 
 		$text .= "</table></fieldset>
 		<fieldset id='core-notify-4'>
+        <legend>".NM_LAN_1."</legend>
+        <table cellpadding='0' cellspacing='0' class='adminform'>
+        	<colgroup span='2'>
+        		<col class='col-label' />
+        		<col class='col-control' />
+        	</colgroup>";
+
+		$text .= $this -> render_event('maildone', NM_LAN_2);
+
+
+		$text .= "</table></fieldset>
+		<fieldset id='core-notify-5'>
         <legend>".NF_LAN_1."</legend>
         <table cellpadding='0' cellspacing='0' class='adminform'>
         	<colgroup span='2'>
