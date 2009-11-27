@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.29 $
- * $Date: 2009-11-24 20:40:34 $
+ * $Revision: 1.30 $
+ * $Date: 2009-11-27 21:42:46 $
  * $Author: e107steved $
  *
 */
@@ -18,7 +18,7 @@
 /*
 TODO:
 	1. Improve maintenance page
-	2. Bounce handling
+	2. Option to copy completed email to saved email page
 */
 
 /*
@@ -89,8 +89,6 @@ if (!getperms('W'))
 $e_sub_cat = 'mail';
 
 
-
-require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'ren_help.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
@@ -101,13 +99,6 @@ require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage :: getInstance();
 
-
-$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
-$pageMode = varset($_GET['savepage'], $action);			// Sometimes we need to know what brought us here - $action gets changed
-$mailId = intval(varset($_GET['m'],0));
-$targetId = intval(varset($_GET['t'],0));
-
-
 // Create mail admin object, load all mail handlers
 $mailAdmin = new mailoutAdminClass($action);			// This decodes parts of the query using $_GET syntax
 if ($mailAdmin->loadMailHandlers() == 0)
@@ -115,6 +106,16 @@ if ($mailAdmin->loadMailHandlers() == 0)
 	echo 'No mail handlers loaded!!';
 	exit;
 }
+e107::setRegistry('_mailout_admin', $mailAdmin);
+
+require_once(e_ADMIN.'auth.php');
+
+$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
+$pageMode = varset($_GET['savepage'], $action);			// Sometimes we need to know what brought us here - $action gets changed
+$mailId = intval(varset($_GET['m'],0));
+$targetId = intval(varset($_GET['t'],0));
+
+
 
 
 $errors = array();
@@ -418,7 +419,19 @@ switch ($midAction)
 		}
 		break;
 	case 'midMoveToSend' :
-		if ($mailAdmin->activateEmail($mailId, FALSE))
+		$notify = isset($_POST['mail_notify_complete']) ? 3 : 2;
+		$first = 0;
+		$last = 0;		// Set defaults for earliest and latest send times.
+		// TODO: Save these fields
+		if (isset($_POST['mail_earliest_time']))
+		{
+			$first = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', 'dmy', FALSE);
+		}
+		if (isset($_POST['mail_latest_time']))
+		{
+			$last = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', 'dmy', TRUE);
+		}
+		if ($mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
 		{
 			$emessage->add(LAN_MAILOUT_185, E_MESSAGE_SUCCESS);
 			$admin_log->log_event('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
@@ -561,6 +574,7 @@ function saveMailPrefs(&$emessage)
 			break;
 		case 'mail' :
 			$temp['mail_bounce_email'] = $e107->tp->toDB($_POST['mail_bounce_email']);
+			$temp['mail_bounce_auto'] = intval($_POST['mail_bounce_auto']);
 			break;
 	}
 	$temp['mail_bounce_pop3'] = $e107->tp->toDB($_POST['mail_bounce_pop3']);
@@ -838,7 +852,10 @@ function show_prefs($mailAdmin)
 		";
 
 	$check = ($pref['mail_bounce_delete']==1) ? " checked='checked'" : "";
-	$text .= "<tr><td>".LAN_MAILOUT_36."</td><td><input type='checkbox' name='mail_bounce_delete' value='1' {$check} /></td></tr>
+	$text .= "<tr><td>".LAN_MAILOUT_36."</td><td><input type='checkbox' name='mail_bounce_delete' value='1' {$check} /></td></tr>";
+
+	$check = ($pref['mail_bounce_auto']==1) ? " checked='checked'" : "";
+	$text .= "<tr><td>".LAN_MAILOUT_245."</td><td><input type='checkbox' name='mail_bounce_auto' value='1' {$check} /><span class='field-help'>&nbsp;".LAN_MAILOUT_246."</span></td></tr>
 
 	</tbody>
 	</table></fieldset>
@@ -974,6 +991,9 @@ function headerjs()
 		document.getElementById('mail_bounce_mail').style.display = 'none';
 	}
 	</script>";
+
+	$mailAdmin = e107::getRegistry('_mailout_admin');
+	$text .= $mailAdmin->_cal->load_files();
 
 	return $text;
 }

@@ -9,8 +9,8 @@
 * Forum plugin notify configuration
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/notify_class.php,v $
-* $Revision: 1.9 $
-* $Date: 2009-11-19 20:24:21 $
+* $Revision: 1.10 $
+* $Date: 2009-11-27 21:42:46 $
 * $Author: e107steved $
 *
 */
@@ -112,6 +112,7 @@ class notify
 						'mail_sender_email' => $pref['siteadminemail'],
 						'mail_sender_name'	=> $pref['siteadmin'],
 						'mail_send_style'	=> 'textonly',
+						'mail_notify_complete' => 0,			// NEVER notify when this email sent!!!!!
 						'mail_body' => $message
 					);
 					$result = $mailer->saveEmail($mailData, TRUE);
@@ -255,12 +256,20 @@ function notify_newsdel($data)
 }
 
 
+function notify_maildone($data)
+{
+	$message = '<b>'.$data['mail_subject'].'</b><br /><br />'.$data['mail_body'];
+	e107::getNotify()->send('maildone', NT_LAN_ML_1.': '.$data['mail_subject'], $message);
+}
+
+
 function notify_fileupload($data)
 {
 	global $nt;
 	$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
 	$nt->send('fileupload', $data['upload_name'], $message);
 }
+
 
 if (isset($nt->notify_prefs['plugins']))
 {

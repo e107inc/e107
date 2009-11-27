@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org/).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/cron.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2009-11-22 14:10:05 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2009-11-27 21:42:46 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -49,9 +49,11 @@ class cron
 		$mes = $mes = e107::getMessage();
     	$this->cronAction = e_QUERY;
 		
+		// The 'available' flag only gives the option to configure the cron if the underlying feature is enabled
 		$this->coreCrons['_system_cron'] = array(
 			0 => array('name' => 'Test Email', 'function' => 'sendEmail', 'description' => 'Send a test email to '.$pref['siteadminemail'].'<br />Recommended to test the scheduling system.'),
 			1 => array('name' => 'Mail Queue', 'function' => 'procEmailQueue', 'description' => 'Process mail queue'),
+			2 => array('name' => 'Mail Bounce Check', 'function' => 'procEmailBounce', 'description' => 'Check for bounced emails', 'available' => vartrue($pref['mail_bounce_auto'])),
 		//	1 => array('name'=>'User Purge', 'function' => 'userPurge', 'description'=>'Purge Unactivated Users'),
 		//	2 => array('name'=>'User UnActivated', 'function' => 'userUnactivated', 'description'=>'Resend activation email to unactivated users.'),
 		//	3 => array('name'=>'News Sticky', 'function' => 'newsPurge', 'description'=>'Remove Sticky News Items')		
@@ -314,7 +316,7 @@ function setCronPwd()
 	{
 		global $pref;
 		
-		$core_cron = $this->coreCrons;
+		$core_cron = $this->coreCrons;			// May need to check 'available' flag here
 		$new_cron = e107::getAddonConfig('e_cron');
 		$this->e_cron = array_merge($core_cron,$new_cron);
 		return;
@@ -370,143 +372,146 @@ function setCronPwd()
 	{
 		foreach($cfg as $class=>$cron)
 		{
-		    $c = $plug.'__'. $cron['function']; // class and function. 
-		    $sep = array();
-
-			list($sep['minute'],$sep['hour'],$sep['day'],$sep['month'],$sep['weekday']) = explode(" ",$cronpref[$c]['tab']);
-
-		    foreach($sep as $key=>$value)
+			if (!isset($cron['available']) || $cron['available'])		// Only display cron functions which are available
 			{
-		    	if($value=="")
+				$c = $plug.'__'. $cron['function']; // class and function. 
+				$sep = array();
+
+				list($sep['minute'],$sep['hour'],$sep['day'],$sep['month'],$sep['weekday']) = explode(" ",$cronpref[$c]['tab']);
+
+				foreach($sep as $key=>$value)
 				{
-		        	$sep[$key] = "*";
+					if($value=="")
+					{
+						$sep[$key] = "*";
+					}
 				}
+
+				$minute 	= explode(",",$sep['minute']);
+				$hour 		= explode(",",$sep['hour']);
+				$day 		= explode(",",$sep['day']);
+				$month 		= explode(",",$sep['month']);
+				$weekday	= explode(",",$sep['weekday']);
+
+				$min_options = array(
+					"*" => LAN_CRON_11,
+					"0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58" => LAN_CRON_12,
+					"0,5,10,15,20,25,30,35,40,45,50,55" => LAN_CRON_13,
+					"0,10,20,30,40,50" => LAN_CRON_14,
+					"0,15,30,45" => LAN_CRON_15
+				);
+
+				$hour_options = array(
+					"*" => LAN_CRON_16,
+					"0,2,4,6,8,10,12,14,16,18,20,22" => LAN_CRON_17,
+					"0,3,6,9,12,15,18,21" => LAN_CRON_18,
+					"0,6,12,18" => LAN_CRON_19
+				);
+
+				$text .= "<tr>
+				 <td>".$cron['name']."</td>
+				<td>".$cron['description']."</td>
+				<td>
+				<input type='hidden'  name='cron[$c][path]' value='".$cron['path']."' />
+					<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][minute][]'>\n";
+
+					foreach($min_options as $key=>$val)
+					{
+						if($sep['minute'] == $key)
+						{
+							$sel = "selected='selected'";
+							$minute = array();
+						}
+						else
+						{
+							$sel =  "";
+						}
+						$text .= "<option value='$key' $sel>".$val."</option>\n";
+					}
+
+
+					for ($i=0; $i<=59; $i++)
+					{
+						$sel = (in_array(strval($i),$minute)) ? "selected='selected'" : "";
+						$text .= "<option value='$i' $sel>".$i."</option>\n";
+					}
+					$text .= "</select>
+				</td>
+				<td>
+					<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][hour][]'>
+					\n";
+
+					foreach($hour_options as $key=>$val)
+					{
+						if($sep['hour'] == $key)
+						{
+							$sel = "selected='selected'";
+							$hour = array();
+						}
+						else
+						{
+							$sel =  "";
+						}
+						$text .= "<option value='$key' $sel>".$val."</option>\n";
+					}
+
+					for ($i=0; $i<=23; $i++)
+					{
+						$sel = (in_array(strval($i),$hour)) ? "selected='selected'" : "";
+						$diz = mktime($i,00,00,1,1,2000);
+						$text .= "<option value='$i' $sel>".$i." - ".date("g A",$diz)."</option>\n";
+					}
+					$text .= "</select>
+				</td>
+				<td>
+					<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][day][]'>\n";
+
+					$sel_day = ($day[0] == "*") ? "selected='selected'" : "";
+
+					$text .= "<option value='*' {$sel_day}>".LAN_CRON_20."</option>\n"; // Every Day
+					for ($i=1; $i<=31; $i++)
+					{
+						$sel = (in_array($i,$day)) ? "selected='selected'" : "";
+						$text .= "<option value='$i' $sel>".$i."</option>\n";
+					}
+					$text .= "</select>
+				</td>
+				<td>
+					<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][month][]'>\n";
+
+					$sel_month = ($month[0] == "*") ? "selected='selected'" : "";
+					$text .= "<option value='*' $sel_month>".LAN_CRON_21."</option>\n"; // Every Month
+
+					for ($i=1; $i<=12; $i++)
+					{
+						$sel = (in_array($i,$month)) ? "selected='selected'" : "";
+						$diz = mktime(00,00,00,$i,1,2000);
+						$text .= "<option value='$i' $sel>".strftime("%B",$diz)."</option>\n";
+					}
+					$text .= "</select>
+				</td>
+				<td>
+					<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][weekday][]'>\n";
+
+					$sel_weekday = ($weekday[0] == "*") ? "selected='selected'" : "";
+					$text .= "<option value='*' $sel_weekday>".LAN_CRON_22."</option>\n"; // Every Week Day.
+					$days = array(LAN_SUN,LAN_MON,LAN_TUE,LAN_WED,LAN_THU,LAN_FRI,LAN_SAT);
+
+					for ($i=0; $i<=6; $i++)
+					{
+						$sel = (in_array(strval($i),$weekday)) ? "selected='selected'" : "";
+						$text .= "<option value='$i' $sel>".$days[$i]."</option>\n";
+					}
+					$text .= "</select>
+				</td>
+					<td class='center'>";
+					$checked = ($cronpref[$c]['active'] == 1) ? "checked='checked'" : "";
+					$text .= "<input type='checkbox' name='cron[$c][active]' value='1' $checked />
+					</td>
+					
+					<td class='center'>".$frm->admin_button('execute['.$c.']', 'Run Now')."</td>
+				</tr>";
 			}
-
-		    $minute 	= explode(",",$sep['minute']);
-			$hour 		= explode(",",$sep['hour']);
-		    $day 		= explode(",",$sep['day']);
-		    $month 		= explode(",",$sep['month']);
-			$weekday	= explode(",",$sep['weekday']);
-
-			$min_options = array(
-				"*" => LAN_CRON_11,
-				"0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58" => LAN_CRON_12,
-				"0,5,10,15,20,25,30,35,40,45,50,55" => LAN_CRON_13,
-				"0,10,20,30,40,50" => LAN_CRON_14,
-				"0,15,30,45" => LAN_CRON_15
-			);
-
-			$hour_options = array(
-				"*" => LAN_CRON_16,
-				"0,2,4,6,8,10,12,14,16,18,20,22" => LAN_CRON_17,
-				"0,3,6,9,12,15,18,21" => LAN_CRON_18,
-				"0,6,12,18" => LAN_CRON_19
-			);
-
-			$text .= "<tr>
-		     <td>".$cron['name']."</td>
-		   	<td>".$cron['description']."</td>
-		   	<td>
-			<input type='hidden'  name='cron[$c][path]' value='".$cron['path']."' />
-		   		<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][minute][]'>\n";
-
-		        foreach($min_options as $key=>$val)
-				{
-					if($sep['minute'] == $key)
-					{
-						$sel = "selected='selected'";
-						$minute = array();
-					}
-					else
-					{
-						$sel =  "";
-					}
-		        	$text .= "<option value='$key' $sel>".$val."</option>\n";
-		    	}
-
-
-				for ($i=0; $i<=59; $i++)
-				{
-					$sel = (in_array(strval($i),$minute)) ? "selected='selected'" : "";
-			    	$text .= "<option value='$i' $sel>".$i."</option>\n";
-			    }
-				$text .= "</select>
-			</td>
-		   	<td>
-				<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][hour][]'>
-				\n";
-
-		        foreach($hour_options as $key=>$val)
-				{
-					if($sep['hour'] == $key)
-					{
-						$sel = "selected='selected'";
-						$hour = array();
-					}
-					else
-					{
-						$sel =  "";
-					}
-		        	$text .= "<option value='$key' $sel>".$val."</option>\n";
-		    	}
-
-				for ($i=0; $i<=23; $i++)
-				{
-					$sel = (in_array(strval($i),$hour)) ? "selected='selected'" : "";
-					$diz = mktime($i,00,00,1,1,2000);
-			    	$text .= "<option value='$i' $sel>".$i." - ".date("g A",$diz)."</option>\n";
-			    }
-				$text .= "</select>
-		 	</td>
-		   	<td>
-				<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][day][]'>\n";
-
-				$sel_day = ($day[0] == "*") ? "selected='selected'" : "";
-
-				$text .= "<option value='*' {$sel_day}>".LAN_CRON_20."</option>\n"; // Every Day
-				for ($i=1; $i<=31; $i++)
-				{
-					$sel = (in_array($i,$day)) ? "selected='selected'" : "";
-			    	$text .= "<option value='$i' $sel>".$i."</option>\n";
-			    }
-				$text .= "</select>
-			</td>
-		   	<td>
-				<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][month][]'>\n";
-
-				$sel_month = ($month[0] == "*") ? "selected='selected'" : "";
-				$text .= "<option value='*' $sel_month>".LAN_CRON_21."</option>\n"; // Every Month
-
-				for ($i=1; $i<=12; $i++)
-				{
-					$sel = (in_array($i,$month)) ? "selected='selected'" : "";
-					$diz = mktime(00,00,00,$i,1,2000);
-			    	$text .= "<option value='$i' $sel>".strftime("%B",$diz)."</option>\n";
-			    }
-				$text .= "</select>
-			</td>
-		   	<td>
-		    	<select class='tbox' style='height:70px' multiple='multiple' name='tab[$c][weekday][]'>\n";
-
-				$sel_weekday = ($weekday[0] == "*") ? "selected='selected'" : "";
-				$text .= "<option value='*' $sel_weekday>".LAN_CRON_22."</option>\n"; // Every Week Day.
-				$days = array(LAN_SUN,LAN_MON,LAN_TUE,LAN_WED,LAN_THU,LAN_FRI,LAN_SAT);
-
-				for ($i=0; $i<=6; $i++)
-				{
-					$sel = (in_array(strval($i),$weekday)) ? "selected='selected'" : "";
-			    	$text .= "<option value='$i' $sel>".$days[$i]."</option>\n";
-			    }
-				$text .= "</select>
-			</td>
-		       	<td class='center'>";
-		        $checked = ($cronpref[$c]['active'] == 1) ? "checked='checked'" : "";
-				$text .= "<input type='checkbox' name='cron[$c][active]' value='1' $checked />
-		      	</td>
-				
-				<td class='center'>".$frm->admin_button('execute['.$c.']', 'Run Now')."</td>
-		   	</tr>";
 		}
 	}
 		$text .= "

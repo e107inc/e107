@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-24 20:40:34 $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-27 21:42:46 $
  * $Author: e107steved $
 */
 
@@ -30,29 +30,32 @@ will be included in preference to the current theme style.
 
 
 TODO:
-	- optional notify flag
 	- Consider whether to extract links in text-only emails
-	- Better check on e107 ID - add encoded value
 	- makeEmailBody - could use regex to modify links
+	- call user API to set ban
+
+
+Event Triggers generated
+------------------------
+	mailbounce - when an email bounce is received
+	maildone - when the sending of a complete bulk email is complete (also does 'Notify' event)
 
 
 Database tables
 ---------------
-
 mail_recipients			- Details of individual recipients (targets) of an email
 	mail_target_id		Unique ID for this target/email combination
 	mail_recipient_id	User ID (if registered user), else zero
 	mail_recipient_email Email address of recipient
 	mail_recipient_name	Name of recipient
-	mail_status			0 = sent, 1 = failed, > 1 = retries to go (i.e. pending)
+	mail_status			Status of this  entry - see define() statements below
 	mail_detail_id		Email body link
-	mail_e107_priority	Our internal priority - generally high for single emails, low for bulk emails
 	mail_send_date		Earliest date/time when email may be sent. Once mail sent, actual time/date of sending (or time of failure to send)
-	mail_target_info	Array of target-specific info for substitution into email
+	mail_target_info	Array of target-specific info for substitution into email. Key is the code in the email body, value is the substitution
 
 mail_content			- Details of the email to be sent to a number of people
 	mail_source_id
-	mail_content_status	0 = sent, 2 = pending, 9 = saved?
+	mail_content_status	Overall status of mailshot record - See define() statements below
 	mail_togo_count		Number of recipients to go
 	mail_sent_count		Number of successful sends (including bounces)
 	mail_fail_count		Number of unsuccessful sends
@@ -62,10 +65,12 @@ mail_content			- Details of the email to be sent to a number of people
 	mail_create_date
 	mail_creator		User ID
 	mail_create_app		ID string for application/plugin creating mail
+	mail_e107_priority	Our internal priority - generally high for single emails, low for bulk emails
+	mail_notify_complete Notify options when email complete
 	mail_last_date		Don't send after this date/time
 	mail_title			A description of the mailout - not sent
-	mail_subject
-	mail_body
+	mail_subject		Subject line
+	mail_body			Body text
 	mail_other			Evaluates to an array of misc info - cc, bcc, attachments etc
 
 
@@ -137,6 +142,7 @@ class e107MailManager
 			'mail_creator' 		=> 'int',
 			'mail_create_app' 	=> 'todb',
 			'mail_e107_priority' => 'int',
+			'mail_notify_complete' => 'int',
 			'mail_last_date' 	=> 'int',
 			'mail_title' 		=> 'todb',
 			'mail_subject' 		=> 'todb',
@@ -166,6 +172,14 @@ class e107MailManager
 					'mail_send_style'	=> 1,
 					'mail_selectors'	=> 1,			// Only used internally
 					'mail_include_images' => 1			// Used to determine whether to embed images, or link to them
+		);
+	
+	// List of fields which are the status counts of an email, and their titles
+	protected	$mailCountFields = array(
+			'mail_togo_count' 	=> LAN_MAILOUT_83,
+			'mail_sent_count' 	=> LAN_MAILOUT_82,
+			'mail_fail_count' 	=> LAN_MAILOUT_128,
+			'mail_bounce_count' => LAN_MAILOUT_144,
 		);
 
 	/**
@@ -446,6 +460,40 @@ class e107MailManager
 
 
 	/**
+	 * Convert numeric represntation of mail status to a text string
+	 * 
+	 * @param integer $status - numeric value of status
+	 * @return string text value
+	 */
+	public function statusToText($status)
+	{
+		switch (intval($status))
+		{
+			case MAIL_STATUS_SENT :
+				return LAN_MAILOUT_211;
+			case MAIL_STATUS_BOUNCED :
+				return LAN_MAILOUT_213;
+			case MAIL_STATUS_CANCELLED :
+				return LAN_MAILOUT_218;
+			case MAIL_STATUS_PARTIAL :
+				return LAN_MAILOUT_219;
+			case MAIL_STATUS_FAILED :
+				return LAN_MAILOUT_212;
+			case MAIL_STATUS_PENDING :
+				return LAN_MAILOUT_214;
+			case MAIL_STATUS_SAVED :
+				return LAN_MAILOUT_215;
+			case MAIL_STATUS_HELD :
+				return LAN_MAILOUT_217;
+			default :
+				if (($status > MAIL_STATUS_PENDING) && ($status <= MAIL_STATUS_ACTIVE)) return LAN_MAILOUT_214;
+		}
+		return LAN_MAILOUT_216.' ('.$status.')';		// General coding error
+	}
+
+
+
+	/**
 	 * Select the next $count emails in the send queue
 	 * $count gives the maximum number. '*' does 'select all'
 	 * @return Returns FALSE on error.
@@ -605,7 +653,7 @@ class e107MailManager
 		// Try and send
 		$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $email, TRUE);
 
-//		return;			// ************************************************************************* Temporarily stop DB being updated *****************************
+//		return;			// ************************************************** Temporarily stop DB being updated when line active *****************************
 		
 		$this->checkDB(2);			// Make sure DB object created
 
@@ -654,6 +702,38 @@ class e107MailManager
 			$this->db2->db_Update('mail_content', array('data' => $this->currentBatchInfo, 
 														'_FIELD_TYPES' => $this->dbTypes['mail_content'], 
 														'WHERE' => '`mail_source_id` = '.intval($email['mail_source_id'])));
+		}
+
+		if (($this->currentBatchInfo['mail_togo_count'] == 0) && ($email['mail_notify_complete'] > 0))
+		{	// Need to notify completion
+			$email = array_merge($email, $this->currentBatchInfo);		// This should ensure the counters are up to date
+			$mailInfo = LAN_MAILOUT_247.'<br />'.LAN_MAILOUT_135.': '.$email['mail_title'].'<br />'.LAN_MAILOUT_248.$this->statusToText($email['mail_content_status']).'<br />';
+			$mailInfo .= '<br />'.LAN_MAILOUT_249.'<br />';
+			foreach ($this->mailCountFields as $f => $t)
+			{
+				$mailInfo .= $t.' => '.$email[$f].'<br />';
+			}
+			$mailInfo .= LAN_MAILOUT_250;
+			$message = array(				// Use same structure for email and notify
+					'mail_subject' => LAN_MAILOUT_244.$email['mail_subject'],
+					'mail_body' => $mailInfo.'<br />'
+				);
+
+			if ($email['mail_notify_complete'] & 1)
+			{	// Notify email initiator
+				if ($this->db2->db_Select('user', 'user_name, user_email', '`user_id`='.intval($email['mail_creator'])))
+				{
+					$row = $this->db2->db_Fetch(MYSQL_ASSOC);
+					require_once(e_HANDLER.'mail.php');
+					$mailer = new e107Email();
+					$mailer->sendEmail($row['user_name'], $row['user_email'], $message,FALSE);
+				}
+			}
+			if ($email['mail_notify_complete'] & 2)
+			{	// Do e107 notify
+				notify_maildone($message);
+			}
+			e107::getEvent()->trigger('maildone', $email);
 		}
 
 		return $result;
@@ -874,11 +954,16 @@ class e107MailManager
 	 * Update status for email, including all recipient entries (called once all recipients added)
 	 * @var int $handle - as returned by makeEmail()
 	 * @var $hold boolean - TRUE to set status to held, false to release for sending
+	 * @var $notify - value to set in the mail_notify_complete field:
+	 *			0 - no action on run complete
+	 *			1 - notify admin who sent email only
+	 *			2 - notify through e107 notify system only
+	 *			3 - notify both
 	 * @var $firstTime int - only valid if $hold === FALSE - earliest time/date when email may be sent
 	 * @var $lastTime int - only valid if $hold === FALSE - latest time/date when email may be sent
 	 * @return boolean TRUE on no errors, FALSE on errors
 	 */
-	public function activateEmail($handle, $hold = FALSE, $firstTime = 0, $lastTime = 0)
+	public function activateEmail($handle, $hold = FALSE, $notify = 0, $firstTime = 0, $lastTime = 0)
 	{
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		$this->checkDB(1);			// Make sure DB object created
@@ -902,18 +987,20 @@ class e107MailManager
 		}
 		$query = '';
 		if (!$hold) $query = '`mail_creator` = '.USERID.', `mail_create_date` = '.time().', ';		// Update when we send - might be someone different
-		$query .= '`mail_content_status` = '.($hold ? MAIL_STATUS_HELD : MAIL_STATUS_PENDING).$lt.' WHERE `mail_source_id` = '.intval($handle);
-//		echo "Update mail body: {$query}<br />";
+		$query .= '`mail_notify_complete`='.intval($notify).', `mail_content_status` = '.($hold ? MAIL_STATUS_HELD : MAIL_STATUS_PENDING).$lt.' WHERE `mail_source_id` = '.intval($handle);
+		//	echo "Update mail body: {$query}<br />";
 		// Set status of email body first
 		if (!$this->db->db_Update('mail_content',$query))
 		{
+			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		// Now set status of individual emails
 		$query = '`mail_status` = '.($hold ? MAIL_STATUS_HELD : (MAIL_STATUS_PENDING + e107MailManager::E107_EMAIL_MAX_TRIES)).$ft.' WHERE `mail_detail_id` = '.intval($handle);
-//		echo "Update individual emails: {$query}<br />";
+		//	echo "Update individual emails: {$query}<br />";
 		if (FALSE === $this->db->db_Update('mail_recipients',$query))
 		{
+			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		return TRUE;
@@ -975,6 +1062,7 @@ class e107MailManager
 	 */
 	public function markBounce($bounceString, $emailAddress = '')
 	{
+		$bounceInfo = array('mail_bounce_string' => $bounceString, 'mail_recipient_email' => $emailAddress);		// Ready for event data
 		$errors = array();						// Log all errors, at least until proven
 		$vals = explode('/',$bounceString);		// Should get one or four fields
 		if (!is_numeric($vals[0])) 				// Email recipient user id number (may be zero)
@@ -1001,8 +1089,8 @@ class e107MailManager
 			if (count($errors) == 0)
 			{	// Look up in mailer DB if no errors so far
 				$this->checkDB(1);
-				if (FALSE === ($this->DB->db_Select_gen(
-					"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email` FROM `#mail_recipients` AS mr 
+				if (FALSE === ($this->db->db_Select_gen(
+					"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email`, mr.`mail_recipient_name` FROM `#mail_recipients` AS mr 
 						LEFT JOIN `#mail_content` as mc ON mr.`mail_detail_id` = mc.`mail_source_id`
 						WHERE mr.`mail_target_id` = {$vals[2]} AND mc.`mail_source_id` = {$vals[1]}")))
 				{	// Invalid mailer record
@@ -1020,7 +1108,11 @@ class e107MailManager
 				if (count($errors) == 0)
 				{	// All passed - can update mailout databases
 					$this->db->db_Update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = '.$vals[1]);
-					$this->db->db_Update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED);
+					$this->db->db_Update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED.' WHERE `mail_target_id` = '.$vals[2]);
+					$bounceInfo['mail_source_id'] = $vals[1];
+					$bounceInfo['mail_target_id'] = $vals[2];
+					$bounceInfo['mail_recipient_id'] = $uid;
+					$bounceInfo['mail_recipient_name'] = $row['mail_recipient_name'];
 				}
 			}
 		}
@@ -1034,8 +1126,7 @@ class e107MailManager
 			$this->checkDB(1);
 			$qry = '';
 			if ($uid) { $qry = '`user_id`='.$uid; }
-			if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= '`user_email` = '.$emailAddress; }
-			$qry = 'WHERE '.$qry;
+			if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= "`user_email` = '{$emailAddress}'"; }
 			if (FALSE === $this->db->db_Select('user', 'user_id, user_email', $qry))
 			{
 				$errors[] = 'User not found: '.$uid.'/'.$emailAddress;
@@ -1053,16 +1144,18 @@ class e107MailManager
 				}
 				else
 				{	// Valid user!
-					$this->db->db_Update('user', '`user_ban` = 3 WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
+					$this->db->db_Update('user', '`user_ban` = 3 WHERE `user_id` = '.$row['user_id'].' LIMIT 1');	// TODO: Call via user API
 				}
 			}
 		}
 		if (count($errors))
 		{
-			$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce receive error',$bounceString.'('.$emailAddress.')[!br!]'.implode('[!br!]',$errors),FALSE,LOG_TO_ROLLING);
+			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors);
+			$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
-		$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceString.'('.$emailAddress.')',FALSE,LOG_TO_ROLLING);
+		$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceString.' ('.$emailAddress.')',FALSE,LOG_TO_ROLLING);
+		e107::getEvent()->trigger('mailbounce', $bounceInfo);
 		return TRUE;
 	}
 

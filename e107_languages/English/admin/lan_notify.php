@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_notify.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-11-27 21:42:46 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,6 +31,9 @@ define("NN_LAN_2", "News item submitted by user");
 define("NN_LAN_3", "News item posted by admin");
 define("NN_LAN_4", "News item edited by admin");
 define("NN_LAN_5", "News item deleted by admin");
+
+define('NM_LAN_1', 'Mail Events');
+define('NM_LAN_2', 'Bulk email run complete');
 
 define("NF_LAN_1", "File Events");
 define("NF_LAN_2", "File uploaded by user");

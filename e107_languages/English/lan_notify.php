@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_notify.php,v $
-|     $Revision: 1.1.1.1 $
-|     $Date: 2006-12-02 04:34:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2009-11-27 21:42:46 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,6 +27,8 @@ define("NT_LAN_FL_1", "Flood Ban");
 define("NT_LAN_FL_2", "IP address banned for flooding");
 
 define("NT_LAN_SN_1", "News Item Submitted");
+
+define('NT_LAN_ML_1', 'Bulk email send complete');
 
 define("NT_LAN_NU_1", "Updated");
 
