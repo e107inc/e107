@@ -9,9 +9,9 @@
  * Admin Header
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/header.php,v $
- * $Revision: 1.54 $
- * $Date: 2009-11-18 01:04:25 $
- * $Author: e107coders $
+ * $Revision: 1.55 $
+ * $Date: 2009-11-28 15:32:47 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT'))
@@ -478,7 +478,8 @@ if ($e107_popup != 1)
 			}
 			
 			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
-			$replace[1] = varsettrue($e107_vars[$act]['link'], "#{$act}");
+			// valid URLs
+			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), varsettrue($e107_vars[$act]['link'], "#{$act}"));
 			$replace[2] = '';
 			if (varsettrue($e107_vars[$act]['include']))
 			{
