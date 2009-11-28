@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.92 $
- * $Date: 2009-11-26 17:14:03 $
+ * $Revision: 1.93 $
+ * $Date: 2009-11-28 15:34:46 $
  * $Author: secretr $
  *
 */
@@ -137,7 +137,7 @@ class e_form
 		//$parms .= "&click_target=data";
 		//$parms .= "&click_prefix=[img][[e_IMAGE]]newspost_images/";
 		//$parms .= "&click_postfix=[/img]";
-		$tp = e107::getParser();
+		$tp = e107::getParser(); 
 		$ret = "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
 		$ret .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 		return $ret;
@@ -1075,14 +1075,28 @@ class e_form
 				// else same
 			break;
 			
+			case 'templates': 
+			case 'layouts':
+				$pre = vartrue($parms['pre']);
+				$post = vartrue($parms['post']);
+				unset($parms['pre'], $parms['post']);
+				if($parms)
+				{
+					$attributes['writeParms'] = $parms;
+				}
+				elseif(isset($attributes['writeParms']))
+				{
+					if(is_string($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
+				}
+				$attributes['writeParms']['raw'] = true;
+				$tmp = $this->renderElement($key, '', $attributes);
+				$value = $pre.vartrue($tmp[$value]).$post;
+			break;
+			
 			case 'dropdown':
 				if(vartrue($parms) && is_array($parms))
 				{
 					$value = vartrue($parms['pre']).vartrue($parms[$value]).vartrue($parms['post']);
-				}
-				else
-				{
-					$value = vartrue($parms['pre']).$value.vartrue($parms['post']);	
 				}
 			break;
 				
@@ -1213,6 +1227,7 @@ class e_form
 			break;
 							
 			case 'url':
+				if(!$value) break;
 				$ttl = $value;
 				if(vartrue($parms['truncate']))
 				{
@@ -1256,9 +1271,9 @@ class e_form
 		
 		if(vartrue($attributes['readonly'])) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
-			return $this->renderValue($key,$value,$attributes);	
+			return $this->renderValue($key, $value, $attributes);	
 		}
-		
+
 		switch($attributes['type'])
 		{
 			case 'number':
@@ -1306,6 +1321,46 @@ class e_form
 				return $this->datepicker($key, $value, $parms);
 			break;
 			
+			case 'layouts': //to do - exclude param (exact match)
+				$location = varset($parms['plugin']); // empty - core
+				$ilocation = vartrue($parms['id'], $location); // omit if same as plugin name
+				$where = vartrue($parms['area'], 'front'); //default is 'front' 
+				$filter = varset($parms['filter']);
+				$layouts = e107::getLayouts($location, $ilocation, $where, $filter);
+				if(varset($parms['default']))
+				{
+					$layouts = array('default' => $parms['default']) + $layouts;
+				}	
+				return (vartrue($parms['raw']) ? $layouts : $this->selectbox($key, $layouts, $value));
+			break; 
+				
+			case 'templates': //to do - exclude param (exact match)
+				$templates = array();
+				if(varset($parms['default']))
+				{
+					$templates['default'] = defset($parms['default'], $parms['default']);
+				}
+				$location = vartrue($parms['plugin']) ? e_PLUGIN.$parms['plugin'].'/' : e_THEME;
+				$ilocation = vartrue($parms['location']);
+				$tmp = e107::getFile()->get_files($location.'templates/'.$ilocation, vartrue($parms['fmask'], '_template\.php$'), vartrue($parms['omit'], 'standard'), vartrue($parms['recurse_level'], 0));
+				foreach($tmp as $files)
+				{
+					$k = str_replace('_template.php', '', $files['fname']);
+					$templates[$k] = implode(' ', array_map('ucfirst', explode('_', $k))); //TODO add LANS?
+				}
+				
+				// override
+				$where = vartrue($parms['area'], 'front');
+				$location = vartrue($parms['plugin']) ? $parms['plugin'].'/' : '';
+				$tmp = e107::getFile()->get_files(e107::getThemeInfo($where, 'rel').'templates/'.$location.$ilocation, vartrue($parms['fmask']), vartrue($parms['omit'], 'standard'), vartrue($parms['recurse_level'], 0));
+				foreach($tmp as $files)
+				{
+					$k = str_replace('_template.php', '', $files['fname']);
+					$templates[$k] = implode(' ', array_map('ucfirst', explode('_', $k))); //TODO add LANS?
+				}
+				return (vartrue($parms['raw']) ? $templates : $this->selectbox($key, $templates, $value));
+			break; 
+					
 			case 'dropdown':
 				$eloptions  = vartrue($parms['__options'], array());
 				if(is_string($eloptions)) parse_str($eloptions);
