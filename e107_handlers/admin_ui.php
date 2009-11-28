@@ -2380,7 +2380,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$selected = array_map('intval', $selected);
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
 		
-		$this->triggersEnabled(false); //disable further triggering
+		$this->setTriggersEnabled(false); //disable further triggering
 
 		switch($trigger[0])
 		{
@@ -2863,7 +2863,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param string $noredirectAction passed to doAfterSubmit()
 	 * @return 
 	 */
-	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $noredirectAction = '')
+	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $callbackError = '', $noredirectAction = '')
 	{
 		$model = $this->getModel();
 		$old_data = $model->getData();
@@ -2901,9 +2901,6 @@ class e_admin_controller_ui extends e_admin_controller
 		// Scenario II - inner model sanitize
 		//$this->getModel()->setPosted($this->convertToData($_POST, null, false, true);
 		
-		// Copy model messages to the default message stack
-		$model->setMessages();
-		
 		// Take action based on use choice after success
 		if(!$this->getModel()->hasError())
 		{
@@ -2915,6 +2912,19 @@ class e_admin_controller_ui extends e_admin_controller
 			$this->doAfterSubmit($model->getId(), $noredirectAction);
 			return true;
 		}
+		elseif($callbackError && method_exists($this, $callbackError))
+		{
+			// suppress messages if callback returns TRUE
+			if(true !== $this->$callbackError($_posted, $old_data, $model->getId()))
+			{
+				// Copy model messages to the default message stack
+				$model->setMessages();
+			}
+			return false;
+		}
+		
+		// Copy model messages to the default message stack
+		$model->setMessages();
 		return false;
 	}
 }
@@ -2965,7 +2975,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListEcolumnsTrigger()
 	{
-		$this->triggersEnabled(false); //disable further triggering
+		$this->setTriggersEnabled(false); //disable further triggering
 		parent::manageColumns();
 	}
 	
@@ -3074,7 +3084,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListDeleteTrigger($posted)
 	{
-		$this->triggersEnabled(false);
+		$this->setTriggersEnabled(false);
 		$id = intval(array_shift($posted)); 
 		$data = array();
 		$model = $this->getTreeModel()->getNode($id);
@@ -3186,7 +3196,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function EditSubmitTrigger()
 	{
-		$this->_manageSubmit('beforeUpdate', 'afterUpdate', 'edit');
+		$this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
 	}
 	
 	/**
@@ -3214,7 +3224,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function CreateObserver()
 	{
-		$this->triggersEnabled(true);
+		$this->setTriggersEnabled(true);
 		$this->addTitle(LAN_CREATE, true);
 	}
 	
@@ -3231,11 +3241,11 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function CreateSubmitTrigger()
 	{
-		$this->_manageSubmit('beforeCreate', 'afterCreate');
+		$this->_manageSubmit('beforeCreate', 'afterCreate', 'onCreateError');
 	}
 	
 	/**
-	 * User defined pre-create logic
+	 * User defined pre-create logic, return false to prevent DB query execution
 	 */
 	public function beforeCreate($new_data, $old_data)
 	{
@@ -3249,7 +3259,14 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 	
 	/**
-	 * User defined pre-update logic
+	 * User defined error handling, return true to suppress model messages
+	 */
+	public function onCreateError($new_data, $old_data)
+	{
+	}
+	
+	/**
+	 * User defined pre-update logic, return false to prevent DB query execution
 	 */
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
@@ -3262,6 +3279,13 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 	}
 	
+	/**
+	 * User defined error handling, return true to suppress model messages
+	 */
+	public function onUpdateError($new_data, $old_data, $id)
+	{
+	}
+		
 	/**
 	 * Create - send JS to page Header
 	 * @return 
@@ -3442,6 +3466,7 @@ class e_admin_ui extends e_admin_controller_ui
 			->setValidationRules($this->validationRules)
 			->setFieldTypes($this->fieldTypes)
 			->setDataFields($this->dataFields)
+			->setMessageStackName('admin_ui_model_'.$this->table)
 			->setParam('db_query', $this->editQry);		
 			
 		return $this;
@@ -3457,7 +3482,8 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-			->setParams(array('model_class' => 'e_admin_model', 'db_query' => $this->listQry));
+			->setMessageStackName('admin_ui_tree_'.$this->table)
+			->setParams(array('model_class' => 'e_admin_model', 'model_message_stack' => 'admin_ui_model_'.$this->table ,'db_query' => $this->listQry));
 		
 		return $this;
 	}
@@ -3772,6 +3798,17 @@ class e_admin_form_ui extends e_form
 						if($type == 'batch')
 						{
 							$option['boolreverse__'.$key] = LAN_BOOL_REVERSE;
+						}
+					break;
+
+					case 'templates': 
+					case 'layouts':
+						$parms['raw'] = true;
+						$val['writeParms'] = $parms;
+						$tmp = $this->renderElement($key, '', $val);
+						foreach ($tmp as $k => $name)
+						{
+							$option[$key.'__'.$k] = $name;
 						}
 					break;
 					

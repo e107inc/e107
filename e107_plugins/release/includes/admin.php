@@ -9,8 +9,8 @@
  * Release Plugin Administration UI
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/release/includes/admin.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-18 19:57:06 $
+ * $Revision: 1.13 $
+ * $Date: 2009-11-28 15:34:46 $
  * $Author: secretr $
 */
 
@@ -161,7 +161,7 @@ class plugin_release_admin_ui extends e_admin_ui
 		 *  
 		 *  - validate (boolean|string) any of accepted validation types (see e_validator::$_required_rules), true == 'required'
 		 *  - rule (string) condition for chosen above validation type (see e_validator::$_required_rules), not required for all types
-		 *  - error (string) Human readable error message (validation failure), constant name will be accpeted as well, optional
+		 *  - error (string) Human readable error message (validation failure), constant name will be accepted as well, optional
 		 *  
 		 *  - batch (boolean) list table - add current field to batch actions, in use only for boolean, dropdown, datestamp, userclass, method field types
 		 *    NOTE: batch may accept string values in the future...

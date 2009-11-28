@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.45 $
- * $Date: 2009-11-26 17:14:06 $
+ * $Revision: 1.46 $
+ * $Date: 2009-11-28 15:34:46 $
  * $Author: secretr $
 */
 
@@ -804,6 +804,26 @@ class e_model
     {
     	e107::getMessage()->moveStack($this->_message_stack, 'default', false, $session);
 		return $this;
+    }
+	
+	/**
+	 * Set model message stack
+	 * @param string $stack_name
+	 * @return e_model
+	 */
+    public function setMessageStackName($stack_name)
+    {
+    	$this->_message_stack = $stack_name;
+		return $this;
+    }
+	
+	/**
+	 * Get model message stack name
+	 * @return string
+	 */
+    public function getMessageStackName()
+    {
+		return $this->_message_stack;
     }
 	
     /**
@@ -2075,7 +2095,7 @@ class e_tree_model extends e_model
 		if($this->getParam('db_query') && $this->getParam('model_class') && class_exists($this->getParam('model_class')))
 		{
 			$sql = e107::getDb();
-			$class_name = $this->getParam('model_class');
+			$class_name = $this->getParam('model_class', 'e_model');
 			$this->_total = $sql->total_results = false;
 			if($sql->db_Select_gen($this->getParam('db_query')))
 			{
@@ -2085,6 +2105,10 @@ class e_tree_model extends e_model
 				while($tmp = $sql->db_Fetch())
 				{
 					$tmp = new $class_name($tmp);
+					if($this->getParam('model_message_stack'))
+					{
+						$tmp->setMessageStackName($this->getParam('model_message_stack'));
+					}
 					$this->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
 				

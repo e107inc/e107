@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2009-11-26 09:02:32 $
-|     $Author: e107coders $
+|     $Revision: 1.37 $
+|     $Date: 2009-11-28 15:34:45 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -140,7 +140,7 @@ class links_admin_ui extends e_admin_ui
 			5 => LINKLAN_1 // 5 = miniwindow  800x600
 		);
 		
-		$sitelinksTemplates = e107::getCoreTemplateList('sitelinks');
+		$sitelinksTemplates = e107::getLayouts(null, 'sitelinks');
 		
 		//TODO review. 
 		$this->setDropDown('link_parent',$this->linkParent);

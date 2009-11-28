@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.86 $
- * $Date: 2009-11-26 17:14:07 $
+ * $Revision: 1.87 $
+ * $Date: 2009-11-28 15:34:46 $
  * $Author: secretr $
 */
 
@@ -1061,9 +1061,51 @@ class e107
 	}
 
 	/**
+	 * Get theme name or path.
+	 * 
+	 * @param mixed $for true (default) - auto-detect (current), admin - admin theme, front - site theme
+	 * @param string $path default empty string (return name only), 'abs' - absolute url path, 'rel' - relative server path
+	 * @return string
+	 */
+	public static function getThemeInfo($for = true, $path = '')
+	{
+		global $user_pref; // FIXME - user model, kill user_pref global
+		
+		if(true === $for)
+		{
+			$for = e_ADMIN_AREA ? 'admin' : 'front';
+		}
+		switch($for )
+		{
+			case 'admin':
+				$for = e107::getPref('admintheme');
+			break;
+			
+			case 'front':
+				$for = isset($user_pref['sitetheme']) ? $user_pref['sitetheme'] : e107::getPref('sitetheme');
+			break;
+		}
+		if(!$path) return $for;
+
+		switch($path)
+		{
+			case 'abs':
+				$path = e_THEME_ABS.$for.'/';
+			break;
+			
+			case 'rel':
+			default:
+				$path = e_THEME.$for.'/';
+			break;
+		}
+		return $path;
+	}
+
+	/**
 	 * Retrieve core template path
 	 * Example: <code>echo e107::coreTemplatePath('admin_icons');</code>
 	 * 
+	 * @see getThemeInfo()
 	 * @param string $id part of the path/file name without _template.php part
 	 * @param boolean $override default true
 	 * @return string relative path
@@ -1071,7 +1113,7 @@ class e107
 	public static function coreTemplatePath($id, $override = true)
 	{
 		$id = str_replace('..', '', $id); //simple security, '/' is allowed
-		$override_path = $override && defined('THEME') ? THEME.'templates/'.$id.'_template.php' : null;
+		$override_path = $override ? self::getThemeInfo($override, 'rel').'templates/'.$id.'_template.php' : null;
 		$default_path = e_THEME.'templates/'.$id.'_template.php';
 		
 		return ($override_path && is_readable($override_path) ? $override_path : $default_path);
@@ -1079,6 +1121,8 @@ class e107
 	
 	/**
 	 * Retrieve plugin template path
+	 * Override path could be forced to front- or back-end via 
+	 * the $override parameter e.g. <code> e107::templatePath(plug_name, 'my', 'front')</code>
 	 * Example: 
 	 * <code>
 	 * echo e107::templatePath(plug_name, 'my');
@@ -1088,18 +1132,19 @@ class e107
 	 * // e107_plugins/plug_name/templates/my_template.php
 	 * </code>
 	 * 
+	 * @see getThemeInfo()
 	 * @param string $plug_name plugin name
 	 * @param string $id part of the path/file name without _template.php part
-	 * @param boolean $override default true
+	 * @param boolean|string $override default true
 	 * @return string relative path
 	 */
 	public static function templatePath($plug_name, $id, $override = true)
 	{
 		$id = str_replace('..', '', $id); //simple security, '/' is allowed
 		$plug_name = preg_replace('#[^a-z0-9_]#i', '', $plug_name); // only latin allowed, so \w not a solution since PHP5.3
-		$override_path = $override && defined('THEME') ? THEME.'templates/'.$plug_name.'/'.$id.'_template.php' : null;
+		$override_path = $override ? self::getThemeInfo($override, 'rel').'templates/'.$plug_name.'/'.$id.'_template.php' : null;
 		$default_path = e_PLUGIN.$plug_name.'/templates/'.$id.'_template.php';
-		
+
 		return ($override_path && is_readable($override_path) ? $override_path : $default_path);
 	}
 	
@@ -1123,16 +1168,16 @@ class e107
 	 * 
 	 * @param string $id - file prefix, e.g. user for user_template.php
 	 * @param string|null $key
-	 * @param boolean $override
+	 * @param boolean $override see {@link getThemeInfo())
 	 * 
 	 * @return string|array
 	 */
 	public static function getCoreTemplate($id, $key = null, $override = true)
 	{
 		$reg_path = 'core/e107/templates/'.$id.($override ? '/ext' : '');
-		$path = e107::coreTemplatePath($id, $override);
+		$path = self::coreTemplatePath($id, $override);
 		
-		return e107::_getTemplate($id, $key, $reg_path, $path);
+		return self::_getTemplate($id, $key, $reg_path, $path);
 	}
 	
 	/**
@@ -1156,59 +1201,70 @@ class e107
 	 * @param string $plug_name
 	 * @param string $id - file prefix, e.g. calendar for calendar_template.php
 	 * @param string|null $key
-	 * @param boolean $override
+	 * @param boolean $override see {@link getThemeInfo())
 	 * 
 	 * @return string|array
 	 */
 	public static function getTemplate($plug_name, $id, $key = null, $override = true)
 	{
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
-		$path = e107::templatePath($plug_name, $id, $override);
+		$path = self::templatePath($plug_name, $id, $override);
 
-		return e107::_getTemplate($id, $key, $reg_path, $path);
+		return self::_getTemplate($id, $key, $reg_path, $path);
 	}
-	
 
 	/**
-	 * Return a list of available template IDs (eg. $MYTEMPLATE['id'])
-	 * @param str $plugin_name
-	 * @param str $var [optional] if different from $plugin_name;
+	 * Return a list of available template IDs for a plugin(eg. $MYTEMPLATE['my_id'] -> array('id' => 'My Id'))
+	 * @param string $plugin_name
+	 * @param string $template_id [optional] if different from $plugin_name;
+	 * @param mixed $where true - current theme, 'admin' - admin theme, 'front' (default)  - front theme
 	 * @return array 
 	 */
-	public static function getCoreTemplateList($plugin_name,$var= null)
+	public static function getLayouts($plugin_name, $template_id = '', $where = 'front', $filter_mask = '')
 	{
-		$id = (!$var) ? $plugin_name : $var;
-		$tmp = e107::getCoreTemplate($plugin_name, $id);
-		$templates = array();
-		foreach($tmp as $key=>$val)
+		if(!$plugin_name) // Core template
 		{
-			$templates[$key] = $key; //TODO add LANS?
+			$tmp = self::getCoreTemplate($template_id, null, $where);
+		}
+		else // Plugin template
+		{
+			$id = (!$template_id) ? $plugin_name : $template_id;
+			$tmp = self::getTemplate($plugin_name, $id, null, $where);
+		}
+		
+		$templates = array();
+		$filter_mask = explode($filter_mask);
+		foreach($tmp as $key => $val)
+		{
+			// Special key INFO in format aray('layout' => array(info))
+			if($key == '__INFO__')
+			{
+				continue;
+			}
+			$match = true;
+			if($filter_mask)
+			{
+				$match = false;
+				foreach ($filter_mask as $mask)
+				{
+					if(strpos($key, $mask) === 0) //e.g. retrieve only keys starting with 'layout_'
+					{
+						$match = true;
+						break;
+					}
+				}
+				if(!$match) continue;
+			}
+			if(isset($val['__INFO__'][$key]))
+			{
+				$templates[$key] = defset($val['__INFO__'][$key]['title'], $val['__INFO__'][$key]['title']);
+				continue;
+			} 
+			$templates[$key] = implode(' ', array_map('ucfirst', explode('_', $key))); //TODO add LANS?
 		}
 		return $templates;	
 	}
 
-	
-	/**
-	 * Return a list of available template IDs for a plugin(eg. $MYTEMPLATE['id'])
-	 * @param str $plugin_name
-	 * @param str $var [optional] if different from $plugin_name;
-	 * @return array 
-	 */
-	public static function getTemplateList($plugin_name,$var= '')
-	{
-		$id = (!$var) ? $plugin_name : $var;
-		$tmp = e107::getTemplate($plugin_name, $id);
-		$templates = array();
-		foreach($tmp as $key=>$val)
-		{
-			$templates[$key] = $key; //TODO add LANS?
-		}
-		return $templates;	
-	}
-
-	
-	
-	
 	/**
 	 * More abstsract template loader, used
 	 * internal in {@link getTemplate()} and {@link getCoreTemplate()} methods
@@ -1225,17 +1281,17 @@ class e107
 		$regPath = $reg_path;
 		$var = strtoupper($id).'_TEMPLATE';
 		
-		if(null === e107::getRegistry($regPath))
+		if(null === self::getRegistry($regPath))
 		{
 			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
-			e107::setRegistry($regPath, (isset($$var) ? $$var : array()));
+			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
 		}
 		
 		if(!$key)
 		{
-			return e107::getRegistry($regPath);
+			return self::getRegistry($regPath);
 		}
-		$ret = e107::getRegistry($regPath);
+		$ret = self::getRegistry($regPath);
 		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : $ret);
 	}
 	
@@ -1635,7 +1691,7 @@ class e107
 		//global $PLUGINS_DIRECTORY,$ADMIN_DIRECTORY, $eplug_admin;
 		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
 		$ADMIN_DIRECTORY = $this->getFolder('admin');
-		$eplug_admin = vartrue($GLOBALS['eplug_admin']);
+		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
 		
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 		

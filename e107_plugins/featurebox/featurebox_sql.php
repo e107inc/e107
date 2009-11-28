@@ -17,9 +17,11 @@ CREATE TABLE featurebox (
 CREATE TABLE featurebox_category (
   `fb_category_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `fb_category_title` varchar(200) NOT NULL DEFAULT '',
+  `fb_category_icon` varchar(255) NOT NULL DEFAULT '',
   `fb_category_layout` varchar(50) NOT NULL DEFAULT 'default',
   `fb_category_random` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `fb_category_class` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `fb_category_limit` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`fb_category_id`)
+  `fb_category_limit` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`fb_category_id`),
+  UNIQUE KEY `fb_category_layout` (`fb_category_layout`)
 ) TYPE=MyISAM;
