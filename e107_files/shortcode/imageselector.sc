@@ -1,5 +1,5 @@
 
-// $Id: imageselector.sc,v 1.10 2009-11-18 09:32:31 secretr Exp $
+// $Id: imageselector.sc,v 1.11 2009-11-28 15:31:08 secretr Exp $
 //FIXME - full rewrite, backward compatible
 global $sql,$parm,$tp;
 
@@ -87,9 +87,11 @@ if($scaction == 'select' || $scaction == 'all')
 	if($scaction == 'select') return $text;
 }
 
+$hide = '';
 if(!$pvw_default)
 {
 	$pvw_default = ($default) ? $path.$default : e_IMAGE_ABS."generic/blank.gif";
+	$hide = 'display: none;';
 }
 
 
@@ -104,9 +106,9 @@ else
 {
 	$text .= "<a href='{$pvw_default}' rel='external' class='e-image-preview'>";
 }
-if(vartrue($height)) $height = "height:{$height}";
+if(vartrue($height)) $height = "height:{$height};";
 if(vartrue($width)) $width = "width:{$width}; ";
-$text .= "<img src='{$pvw_default}' alt='' style='{$width}{$height}' /></a>";
+$text .= "<img src='{$pvw_default}' alt='' style='{$width}{$height}{$hide}' /></a>";
 
 $text .= "</div>\n";
 
