@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
- * $Revision: 1.25 $
- * $Date: 2009-11-18 02:03:35 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.26 $
+ * $Date: 2009-11-28 20:46:04 $
+ * $Author: bugrain $
  */
 
 if (!e107::isInstalled('download')) { exit(); }
@@ -1655,8 +1655,8 @@ class adminDownload extends download
                <td class='center'>
                   <form action='".e_SELF."?dis.{$upload_id}' id='uploadform_{$upload_id}' method='post'>
                      <div>
-                        <a href='".e_SELF."?dlm.{$upload_id}'><img src='".e_IMAGE."admin_images/downloads_16.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0'/></a>
-                        <a href='".e_SELF."?news.{$upload_id}'><img src='".e_IMAGE."admin_images/news_16.png' alt='".DOWLAN_16."' title='".DOWLAN_16."' style='border:0'/></a>
+                        <a href='".e_SELF."?dlm.{$upload_id}'><img src='".e_IMAGE."admin_images/downloads_32.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0'/></a>
+                        <a href='".e_ADMIN."newspost.php?create.upload.1.{$upload_id}'><img src='".e_IMAGE."admin_images/news_32.png' alt='".DOWLAN_16."' title='".DOWLAN_16."' style='border:0'/></a>
                         <input type='image' title='".LAN_DELETE."' name='updelete[upload_{$upload_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_45." [ {$upload_name} ]")."') \"/>
                      </div>
                   </form>
