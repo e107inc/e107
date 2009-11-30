@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.30 $
- * $Date: 2009-11-27 21:42:46 $
+ * $Revision: 1.31 $
+ * $Date: 2009-11-30 20:40:02 $
  * $Author: e107steved $
  *
 */
@@ -18,7 +18,6 @@
 /*
 TODO:
 	1. Improve maintenance page
-	2. Option to copy completed email to saved email page
 */
 
 /*
@@ -122,6 +121,7 @@ $errors = array();
 
 $subAction = '';
 $midAction = '';
+$fromHold = FALSE;
 
 
 if (isset($_POST['mailaction']))
@@ -192,6 +192,20 @@ switch ($action)
 			{
 				saveMailPrefs($emessage);
 			}
+		}
+		break;
+
+	case 'mailcopy' :		// Copy existing email and go to edit screen
+		if (isset($_POST['mailaction']))
+		{
+			$action = 'makemail';
+			$mailData = $mailAdmin->retrieveEmail($mailId);
+			if ($mailData === FALSE)
+			{
+				$emessage->add(LAN_MAILOUT_164.':'.$mailId, E_MESSAGE_ERROR);
+				break;
+			}
+			unset($mailData['mail_source_id']);
 		}
 		break;
 
@@ -325,9 +339,12 @@ switch ($action)
 		}
 		break;
 
-	case 'mailsendnow' :			// Send mail previously on 'held' list. 
-		$midAction = 'midMoveToSend';
-		$action = 'pending';
+	case 'mailsendnow' :			// Send mail previously on 'held' list. Need to give opportunity to change time/date etc
+//		$midAction = 'midMoveToSend';
+//		$action = 'pending';
+		$action = 'marksend';			// This shows the email details for confirmation
+		$fromHold = TRUE;
+		$mailData['mail_source_id'] = $mailId;
 		break;
 
 	case 'maildeleteconfirm' :
@@ -501,7 +518,7 @@ switch ($action)
 		break;
 
 	case 'marksend' :			// Show the send confirmation page
-		$mailAdmin->sendEmailCircular($mailData);
+		$mailAdmin->sendEmailCircular($mailData, $fromHold);
 		break;
 
 	case 'recipients' :

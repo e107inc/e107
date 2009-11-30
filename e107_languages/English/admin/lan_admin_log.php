@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_admin_log.php,v 1.9 2009-11-08 09:14:39 e107coders Exp $
+// $Id: lan_admin_log.php,v 1.10 2009-11-30 20:40:03 e107steved Exp $
 
 //define('RL_LAN_001', 'System Logs');
 define('RL_LAN_002', "Rolling Log");
@@ -73,6 +73,10 @@ define('RL_LAN_077', 'Change email address');
 define('RL_LAN_078', 'Password Reset');
 define('RL_LAN_079', 'Change other user settings');
 define('RL_LAN_080', 'Admin quick add user');
+define('RL_LAN_081', 'Mail bounces');
+define('RL_LAN_082', 'User bans');
+define('RL_LAN_083', 'Mail bounce resets');
+define('RL_LAN_084', 'Temporary accounts');
 // Intentional gap
 define('RL_LAN_090', 'Download ID');
 define('RL_LAN_091', 'Detailed timings');

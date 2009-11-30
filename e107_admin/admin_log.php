@@ -9,9 +9,9 @@
  * Administration Area - Admin Log
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/admin_log.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-11-18 01:04:24 $
- * $Author: e107coders $
+ * $Revision: 1.33 $
+ * $Date: 2009-11-30 20:40:02 $
+ * $Author: e107steved $
  *
 */
 
@@ -50,9 +50,9 @@ if(is_array($pref['logLanguageFile'])) //... and for any plugins which support i
 
 unset($qs);
 
-require_once (e_ADMIN."auth.php");
-require_once (e_HANDLER."message_handler.php");
-require_once (e_HANDLER."form_handler.php");
+require_once (e_ADMIN.'auth.php');
+require_once (e_HANDLER.'message_handler.php');
+require_once (e_HANDLER.'form_handler.php');
 $emessage = &eMessage::getInstance();
 $frm = new e_form(false);
 
@@ -121,6 +121,7 @@ if(isset($_POST['deleteitems']) && ($action == 'comments'))
 	//$ns -> tablerender(LAN_DELETE, "<div style='text-align:center'><b>".$text."</b></div>");
 	unset($c_list);
 }
+
 
 // ****************** MAINTENANCE ******************
 unset($back_count);
@@ -357,18 +358,25 @@ if($action == "config")
 {
 	// User Audit log options (for info)
 	//=======================
-	//	  define('USER_AUDIT_SIGNUP',11);				// User signed up
-	//	  define('USER_AUDIT_EMAILACK',12);				// User responded to registration email
-	//	  define('USER_AUDIT_LOGIN',13);				// User logged in
-	//	  define('USER_AUDIT_LOGOUT',14);				// User logged out
-	//	  define('USER_AUDIT_NEW_DN',15);				// User changed display name
-	//	  define('USER_AUDIT_NEW_PW',16);				// User changed password
-	//	  define('USER_AUDIT_NEW_EML',17);				// User changed email
-	//	  define('USER_AUDIT_NEW_SET',19);				// User changed other settings (intentional gap in numbering)
+	//	define('USER_AUDIT_SIGNUP',11);				// User signed up
+	//	define('USER_AUDIT_EMAILACK',12);			// User responded to registration email
+	//	define('USER_AUDIT_LOGIN',13);				// User logged in
+	//	define('USER_AUDIT_LOGOUT',14);				// User logged out
+	//	define('USER_AUDIT_NEW_DN',15);				// User changed display name
+	//	define('USER_AUDIT_NEW_PW',16);				// User changed password
+	//	define('USER_AUDIT_NEW_EML',17);			// User changed email
+	//	define('USER_AUDIT_NEW_SET',19);			// User changed other settings (intentional gap in numbering)
+	//	define('USER_AUDIT_ADD_ADMIN', 20); 		// User added by admin
+	//	define('USER_AUDIT_MAIL_BOUNCE', 21); 		// User mail bounce
+	//	define('USER_AUDIT_BANNED', 22); 			// User banned
+	//	define('USER_AUDIT_BOUNCE_RESET', 23); 		// User bounce reset
+	//	define('USER_AUDIT_TEMP_ACCOUNT', 24); 		// User temporary account
 
 
 	$audit_checkboxes = array(USER_AUDIT_SIGNUP => RL_LAN_071, USER_AUDIT_EMAILACK => RL_LAN_072, USER_AUDIT_LOGIN => RL_LAN_073, //	USER_AUDIT_LOGOUT 	=> RL_LAN_074,			// Logout is lumped in with login
-	USER_AUDIT_NEW_DN => RL_LAN_075, USER_AUDIT_NEW_PW => RL_LAN_076, USER_AUDIT_PW_RES => RL_LAN_078, USER_AUDIT_NEW_EML => RL_LAN_077, USER_AUDIT_NEW_SET => RL_LAN_079, USER_AUDIT_ADD_ADMIN => RL_LAN_080);
+	USER_AUDIT_NEW_DN => RL_LAN_075, USER_AUDIT_NEW_PW => RL_LAN_076, USER_AUDIT_PW_RES => RL_LAN_078, USER_AUDIT_NEW_EML => RL_LAN_077, USER_AUDIT_NEW_SET => RL_LAN_079, 
+	USER_AUDIT_ADD_ADMIN => RL_LAN_080, USER_AUDIT_MAIL_BOUNCE => RL_LAN_081, USER_AUDIT_BANNED => RL_LAN_082, USER_AUDIT_BOUNCE_RESET => RL_LAN_083,
+	USER_AUDIT_TEMP_ACCOUNT => RL_LAN_084);
 
 	if(! isset($e_userclass) && ! is_object($e_userclass))
 	{

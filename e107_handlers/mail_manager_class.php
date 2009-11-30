@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-27 21:42:46 $
+ * $Revision: 1.9 $
+ * $Date: 2009-11-30 20:40:03 $
  * $Author: e107steved $
 */
 
@@ -32,7 +32,6 @@ will be included in preference to the current theme style.
 TODO:
 	- Consider whether to extract links in text-only emails
 	- makeEmailBody - could use regex to modify links
-	- call user API to set ban
 
 
 Event Triggers generated
@@ -1122,30 +1121,12 @@ class e107MailManager
 			$errors[] = 'Bad element count: '.count($vals);
 		}
 		elseif ($uid || $emailAddress)
-		{	// Now log the bounce against the user
-			$this->checkDB(1);
-			$qry = '';
-			if ($uid) { $qry = '`user_id`='.$uid; }
-			if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= "`user_email` = '{$emailAddress}'"; }
-			if (FALSE === $this->db->db_Select('user', 'user_id, user_email', $qry))
+		{	// Now log the bounce against the user  (user handler will do any required logging)
+			require_once(e_HANDLER.'user_handler.php');
+			$result = userHandler::userStatusUpdate('bounce', $uid, $emailAddress);
+			if ($result)	// Returns FALSE if update successful
 			{
-				$errors[] = 'User not found: '.$uid.'/'.$emailAddress;
-			}
-			else
-			{
-				$row = $this->db->db_Fetch(MYSQL_ASSOC);
-				if ($uid && ($uid != $row['user_id']))
-				{
-					$errors[] = 'UID mismatch: '.$uid.'/'.$row['user_id'];
-				}
-				elseif ($emailAddress && ($emailAddress != $row['user_email']))
-				{
-					$errors[] = 'User email mismatch: '.$emailAddress.'/'.$row['user_email'];
-				}
-				else
-				{	// Valid user!
-					$this->db->db_Update('user', '`user_ban` = 3 WHERE `user_id` = '.$row['user_id'].' LIMIT 1');	// TODO: Call via user API
-				}
+				$errors[] = $result;
 			}
 		}
 		if (count($errors))

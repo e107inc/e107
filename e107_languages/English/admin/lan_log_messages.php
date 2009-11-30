@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: lan_log_messages.php,v 1.40 2009-11-24 20:40:34 e107steved Exp $
+// $Id: lan_log_messages.php,v 1.41 2009-11-30 20:40:03 e107steved Exp $
 
 /*
 The definitions in this file are for standard 'explanatory' messages which might be entered
@@ -11,7 +11,7 @@ into any of the system logs. They are in three groups with different prefixes:
 */
 
 
-// User audit trail events. For messages 11-30, the last 2 digits must match the define for the event type in the admin log
+// User audit trail events. For messages 11-30, the last 2 digits must match the define for the event type in the admin log class file
 define('LAN_AUDIT_LOG_001', 'Access by banned user');
 define('LAN_AUDIT_LOG_002', 'Flood protection activated');
 define('LAN_AUDIT_LOG_003', 'Access from banned IP Address');
@@ -32,6 +32,10 @@ define('LAN_AUDIT_LOG_017', 'User changed email address');
 define('LAN_AUDIT_LOG_018', 'User password reset');
 define('LAN_AUDIT_LOG_019', 'User changed settings');
 define('LAN_AUDIT_LOG_020', 'User added by admin');
+define('LAN_AUDIT_LOG_021', 'User email bounce');
+define('LAN_AUDIT_LOG_022', 'User banned');
+define('LAN_AUDIT_LOG_023', 'User bounce reset');
+define('LAN_AUDIT_LOG_024', 'User temporary status');
 
 
 // Admin log events

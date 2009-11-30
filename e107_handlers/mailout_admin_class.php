@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-27 21:42:46 $
+ * $Revision: 1.8 $
+ * $Date: 2009-11-30 20:40:03 $
  * $Author: e107steved $
  *
 */
@@ -25,7 +25,6 @@ TODO:
 	1. Use API to downloads plugin to get available files (when available)
 	2. Fuller checking prior to send
 	3. May want more control over date display format
-	4. Look at orphan removal query
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -129,7 +128,6 @@ class mailoutAdminClass extends e107MailManager
 			'maildelete' => LAN_DELETE
 			),
 		'pending' => array(
-//			'mailsendnow' => LAN_MAILOUT_158,
 			'mailhold' => LAN_MAILOUT_159,
 			'mailcancel' => LAN_MAILOUT_160,
 			'mailtargets' => LAN_MAILOUT_181
@@ -140,7 +138,7 @@ class mailoutAdminClass extends e107MailManager
 			'mailtargets' => LAN_MAILOUT_181
 			),
 		'sent' => array(
-			'mailsendnow' => LAN_EDIT,
+			'mailcopy' => LAN_MAILOUT_251,
 			'maildelete' => LAN_DELETE,
 			'mailtargets' => LAN_MAILOUT_181
 			),
@@ -1105,56 +1103,70 @@ class mailoutAdminClass extends e107MailManager
 	 * Generate a list of emails to send
 	 * Returns various information to display in a confirmation screen
 	 *
-	 * The email and its recipients are stored in the DB with a tag of 'MAIL_STATUS-TEMP'
+	 * The email and its recipients are stored in the DB with a tag of 'MAIL_STATUS_TEMP' of its a new email (no change if already on hold)
 	 * 
-	 * @param $mailData array Details of the email, selection criteria etc
+	 * @param array $mailData - Details of the email, selection criteria etc
+	 * @param boolean $fromHold - FALSE if this is a 'new' email to send, TRUE if its already been put on hold (selects processing path)
 	 * @return text for display
 	 */
-	public function sendEmailCircular($mailData)
+	public function sendEmailCircular($mailData, $fromHold = FALSE)
 	{
-		// Start by saving the email
-		$mailData['mail_content_status'] = MAIL_STATUS_TEMP;
-		$mailData['mail_create_app'] = 'core';
-		$result = $this->saveEmail($mailData, TRUE);
-		if (is_numeric($result))
-		{
-			$mailMainID = $mailData['mail_source_id'] = $result;
+		if ($fromHold)
+		{	// Email data already generated
+			$mailMainID = $mailData['mail_source_id'];
+			if ($mailMainID == 0) return FALSE;
+			if (FALSE === ($mailData = $this->retrieveEmail($mailMainID)))		// Get the new data
+			{
+				return FALSE;
+			}
+			$counters['add'] = $mailData['mail_togo_count'];		// Set up the counters
+			$counters['dups'] = 0;
 		}
 		else
 		{
-				// TODO: Handle error
-		}
-  
-
-		$this->mailInitCounters($mailMainID);			// Initialise counters for emails added
-
-		foreach ($this->mailHandlers as $m)
-		{	// Get email addresses from each handler in turn. Do them one at a time, so that all can use the $sql data object
-			if ($m->mailerEnabled && isset($mailData['mail_selectors'][$m->mailerSource]))
+			// Start by saving the email
+			$mailData['mail_content_status'] = MAIL_STATUS_TEMP;
+			$mailData['mail_create_app'] = 'core';
+			$result = $this->saveEmail($mailData, TRUE);
+			if (is_numeric($result))
 			{
-				// Initialise
-				$mailerCount = $m->selectInit($mailData['mail_selectors'][$m->mailerSource]);
-				if ($mailerCount > 0)
+				$mailMainID = $mailData['mail_source_id'] = $result;
+			}
+			else
+			{
+					// TODO: Handle error
+			}
+	  
+
+			$this->mailInitCounters($mailMainID);			// Initialise counters for emails added
+
+			foreach ($this->mailHandlers as $m)
+			{	// Get email addresses from each handler in turn. Do them one at a time, so that all can use the $sql data object
+				if ($m->mailerEnabled && isset($mailData['mail_selectors'][$m->mailerSource]))
 				{
-					// Get email addresses - add to list, strip duplicates
-					while ($row = $m->selectAdd()) 
-					{	// Add email addresses to the database ready for sending (the body is never saved in the DB - it gets passed as a $_POST value)
-						$result = $this->mailAddNoDup($mailMainID, $row, MAIL_STATUS_TEMP);
-						if ($result === FALSE)
-						{
-							// Error
+					// Initialise
+					$mailerCount = $m->selectInit($mailData['mail_selectors'][$m->mailerSource]);
+					if ($mailerCount > 0)
+					{
+						// Get email addresses - add to list, strip duplicates
+						while ($row = $m->selectAdd()) 
+						{	// Add email addresses to the database ready for sending (the body is never saved in the DB - it gets passed as a $_POST value)
+							$result = $this->mailAddNoDup($mailMainID, $row, MAIL_STATUS_TEMP);
+							if ($result === FALSE)
+							{
+								// Error
+							}
 						}
 					}
+					$m->select_close();	// Close
+					// Update the stats after each handler
+					$this->mailUpdateCounters($mailMainID);
 				}
-				$m->select_close();	// Close
-				// Update the stats after each handler
-				$this->mailUpdateCounters($mailMainID);
 			}
+
+			$counters = $this->mailRetrieveCounters($mailMainID);
+			//	$this->e107->admin_log->log_event('MAIL_02','ID: '.$mailMainID.' '.$counters['add'].'[!br!]'.$_POST['email_from_name']." &lt;".$_POST['email_from_email'],E_LOG_INFORMATIVE,'');
 		}
-
-		$counters = $this->mailRetrieveCounters($mailMainID);
-		//	$this->e107->admin_log->log_event('MAIL_02','ID: '.$mailMainID.' '.$counters['add'].'[!br!]'.$_POST['email_from_name']." &lt;".$_POST['email_from_email'],E_LOG_INFORMATIVE,'');
-
 
 
 		// We've got all the email addresses here - display a confirmation form
@@ -1191,10 +1203,13 @@ class mailoutAdminClass extends e107MailManager
 		$text .= $this->makeAdvancedOptions(TRUE);			// Show the table of advanced options
 
 		$text .= "<div class='buttons-bar center'>
-			<input class='button' type='submit' name='email_send' value=\"".LAN_SEND."\" />
-			&nbsp;<input class='button' type='submit' name='email_hold' value=\"".LAN_HOLD."\" />
-			&nbsp;<input class='button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />
-			</div>
+			<input class='button' type='submit' name='email_send' value=\"".LAN_SEND."\" />";
+		if (!$fromHold)
+		{
+			$text .= "&nbsp;<input class='button' type='submit' name='email_hold' value=\"".LAN_HOLD."\" />
+			&nbsp;<input class='button' type='submit' name='email_cancel' value=\"".LAN_CANCEL."\" />";
+		}
+		$text .= "</div>
 		</form>
 		</div>";
 
@@ -1422,7 +1437,7 @@ class mailoutAdminClass extends e107MailManager
 			$results[] = 'Error '.$this->db2->mySQLlastErrNum.':'.$this->db2->mySQLlastErrText.' deleting orphaned records from mail_recipients';
 			$noError = FALSE;
 		}
-		else
+		elseif ($res)
 		{
 			if ($res) $results[] = str_replace('--COUNT--', $res, LAN_MAILOUT_226);
 		}
