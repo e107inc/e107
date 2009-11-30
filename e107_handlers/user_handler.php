@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.19 $
- * $Date: 2009-11-19 20:36:55 $
+ * $Revision: 1.20 $
+ * $Date: 2009-11-30 20:40:03 $
  * $Author: e107steved $
  *
 */
@@ -20,8 +20,6 @@
 USER HANDLER CLASS - manages login and various user functions
 
 Vetting routines TODO:
-	user_sess processing
-	user_image processing
 	user_xup processing - nothing special?
 */
 
@@ -70,6 +68,7 @@ class UserHandler
 		0 - Null method
 		1 - Check for duplicates
 		2 - Check against $pref['signup_disallow_text']
+		3 - Check email address against remote server, only if option enabled
 
 	Index is the destination field name. If the source index name is different, specify 'srcName' in the array.
 
@@ -643,9 +642,77 @@ Following fields auto-filled in code as required:
 				$ret = TRUE;
 			}
 		}
+	}
 
+
+	/**
+	 * Updates user status, primarily the user_ban field, to reflect outside events
+	 * @var string $start - 'ban', 'bounce'
+	 * @var integer $uid - internal user ID, zero if not known
+	 * @var string $emailAddress - email address (optional)
+	 * @return boolean | string - FALSE if user found, error message if not
+	 */
+	public function userStatusUpdate($action, $uid, $emailAddress = '')
+	{
+		$db = e107::getDb();
+		$qry = '';
+		$error = FALSE;				// Assume no error to start with
+		$uid = intval($uid);		// Precautionary - should have already been done
+		switch ($action)
+		{
+			case 'ban' :
+				$newVal = USER_BANNED;
+				$logEvent = USER_AUDIT_BANNED;
+				break;
+			case 'bounce' :
+				$newVal = USER_EMAIL_BOUNCED;
+				$logEvent = USER_AUDIT_MAIL_BOUNCE;
+				break;
+			case 'reset' :
+				$newVal = USER_BOUNCED_RESET;
+				$logEvent = USER_AUDIT_BOUNCE_RESET;
+				break;
+			case 'temp' :
+				$newVal = USER_TEMPORARY_ACCOUNT;
+				$logEvent = USER_AUDIT_TEMP_ACCOUNT;
+				break;
+			default :
+				return 'Invalid action: '.$action;
+		}
+		if ($uid) { $qry = '`user_id`='.$uid; }
+		if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= "`user_email` = '{$emailAddress}'"; }
+		if (FALSE === $db->db_Select('user', 'user_id, user_email, user_ban, user_loginname', $qry.' LIMIT 1'))
+		{
+			$error = 'User not found: '.$uid.'/'.$emailAddress;
+		}
+		else
+		{
+			$row = $db->db_Fetch(MYSQL_ASSOC);
+			if ($uid && ($uid != $row['user_id']))
+			{
+				$error = 'UID mismatch: '.$uid.'/'.$row['user_id'];
+			}
+			elseif ($emailAddress && ($emailAddress != $row['user_email']))
+			{
+				$error = 'User email mismatch: '.$emailAddress.'/'.$row['user_email'];
+			}
+			else
+			{	// Valid user!
+				if ($row['user_ban'] != $newVal)		// We could implement a hierarchy here, so that an important status isn't overridden by a lesser one
+				{	// Only update if needed
+					$db->db_Update('user', '`user_ban` = '.$newVal.', `user_email` = \'\' WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
+					// Add to user audit log		TODO: Should we log to admin log as well?
+					$adminLog = e107::getAdminLog();
+					$adminLog->user_audit($logEvent, array('user_ban' => $newVal, 'user_email' => $row['user_email']), $row['user_id'], $row['user_loginname']);
+				}
+			}
+		}
+		return $error;
 	}
 }
+
+
+
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_administrator.php");
 

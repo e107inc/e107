@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-27 21:42:46 $
+ * $Revision: 1.14 $
+ * $Date: 2009-11-30 20:40:03 $
  * $Author: e107steved $
  *
 */
@@ -169,8 +169,8 @@ define('LAN_MAILOUT_152', 'Blind copy to');
 define('LAN_MAILOUT_153', 'Attachments');
 define('LAN_MAILOUT_154', 'Send Format');
 define('LAN_MAILOUT_155', 'Selectors');
-define('LAN_MAILOUT_156', 'Maximum number of emails to send per cron tick');
-define('LAN_MAILOUT_157', 'Value will depend on a number of factors, including how often your mail queue cron job is triggered and the rate at which your ISP will accept outgoing mail. Zero to clear queue each time');
+define('LAN_MAILOUT_156', 'Maximum number of emails to send per scheduler tick');
+define('LAN_MAILOUT_157', 'Value will depend on a number of factors, including how often your mail queue scheduler job is triggered and the rate at which your ISP will accept outgoing mail. Zero to clear queue each time');
 define('LAN_MAILOUT_158', 'Send now');
 define('LAN_MAILOUT_159', 'Hold email');
 define('LAN_MAILOUT_160', 'Cancel send');
@@ -269,7 +269,7 @@ define('LAN_MAILOUT_247', 'Email information:');
 define('LAN_MAILOUT_248', 'Completion status: ');
 define('LAN_MAILOUT_249', 'Send results:');
 define('LAN_MAILOUT_250', '--- End of notification ---');
-define('LAN_MAILOUT_251', '');
+define('LAN_MAILOUT_251', 'Copy and edit');
 define('LAN_MAILOUT_252', '');
 define('LAN_MAILOUT_253', '');
 define('LAN_MAILOUT_254', '');

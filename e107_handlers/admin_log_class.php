@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/admin_log_class.php,v $
- |     $Revision: 1.19 $
- |     $Date: 2009-11-18 01:04:43 $
- |     $Author: e107coders $
+ |     $Revision: 1.20 $
+ |     $Date: 2009-11-30 20:40:03 $
+ |     $Author: e107steved $
  To do:
  1. Do we need to check for presence of elements of debug_backtrace() to avoid notices?
  2. Reflect possible DB structure changes once finalised
@@ -66,6 +66,7 @@ class e_admin_log
 		define("LOG_TO_ROLLING", 4);
 		
 		// User audit logging (intentionally start at 10 - stick to 2 digits)
+		// The last two digits must match that for the corresponding log message
 		define('USER_AUDIT_ADMIN', 10); // User data changed by admin
 		define('USER_AUDIT_SIGNUP', 11); // User signed up
 		define('USER_AUDIT_EMAILACK', 12); // User responded to registration email
@@ -77,6 +78,10 @@ class e_admin_log
 		define('USER_AUDIT_PW_RES', 18); // Password reset/resent activation email
 		define('USER_AUDIT_NEW_SET', 19); // User changed other settings
 		define('USER_AUDIT_ADD_ADMIN', 20); // User added by admin
+		define('USER_AUDIT_MAIL_BOUNCE', 21); // User mail bounce
+		define('USER_AUDIT_BANNED', 22); // User banned
+		define('USER_AUDIT_BOUNCE_RESET', 23); // User bounce reset
+		define('USER_AUDIT_TEMP_ACCOUNT', 24); // User temporary account
 	}
 	
 	/**

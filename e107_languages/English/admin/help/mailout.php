@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/mailout.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:05:12 $
- * $Author: e107coders $
+ * $Revision: 1.7 $
+ * $Date: 2009-11-30 20:40:03 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -32,7 +32,8 @@ $action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
 	  $text = 'Select and use a saved email template to send a mailshot. Delete any template no longer required';
 	  break;
 	case 'pending' :
-		$text = 'List of mailshots released for sending, together with current status.';
+		$text = 'List of mailshots released for sending, together with current status. The mail scheduler task will process these emails as it is able, taking account of
+		the earliest and latest sending dates you set';
 		break;
 	case 'held' :
 		$text = 'List of emails which have been prepared for sending, but not yet released';
@@ -56,8 +57,16 @@ $action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
 	  A test email is sent using the current method and settings.<br /><br />';
 	  $text .= '<b>Emailing Method</b><br />
 	  Use SMTP to send mail if possible. The settings will depend on your host\'s mail server.<br /><br />';
+	  $text .= '<b>Default email format</b><br />
+	  Emails may be sent either in plain text only, or in HTML format. The latter generally gives a better appearance, but is more prone to being filtered by various
+	  security measures. If you select HTML, a separate plain text part is added.<br /><br />';
+	  $text .= '<b>Bulk mail controls</b><br />
+	  The values you set here will depend on your host, and on the number of emails you send; it may be possible to set all values to zero so that the
+	  mail queue is emptied virtually instantly.<br /><br />';
 	  $text .= '<b>Bounced Emails</b><br />
-	  You can specify a POP3 account to receive the return response when an email is undeliverable. Normally this will be a standard
+	  You can specify an email address to receive the return response when an email is undeliverable. If you have control over your server, you can specify the
+	  separate scheduler-driven auto-processing script; this receives bounce messages as they arrive, and updates status instantly. Otherwise you can specify a separate email account,
+	  which can be checked either periodically (using the scheduler), or manually via the user options menu. Normally this will be a standard
 	  POP3 account; use the TLS-related options only if specifically required by your host<br /><br />';
 	  $text .= '<b>Email Address Sources</b><br />
 	  If you have additional mail-related plugins, you can select which of them may contribute email addresses to the list.<br /><br />';
