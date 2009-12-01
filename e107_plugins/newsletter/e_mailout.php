@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/e_mailout.php,v $
- * $Revision: 1.1 $
- * $Date: 2009-11-19 20:24:21 $
+ * $Revision: 1.2 $
+ * $Date: 2009-12-01 20:05:54 $
  * $Author: e107steved $
  *
 */
@@ -45,15 +45,10 @@ class newsletter_mailout
 
 
 	// Constructor
-	public function __construct(&$mailerAdminHandler = NULL)
+	public function __construct()
 	{
 		$this->e107 = e107::getInstance();
-		if ($mailerAdminHandler == NULL)
-		{
-			global $mailAdmin;
-			$mailerAdminHandler = $mailAdmin;
-		}
-		$this->adminHandler = $mailerAdminHandler;
+		$this->adminHandler = e107::getRegistry('_mailout_admin');		// Get the mailer admin object - we want to use some of its functions
 	}
   
   
@@ -68,9 +63,12 @@ class newsletter_mailout
 	public function returnSelectors()
 	{
 		$res = array();
-		foreach ($_POST['nl_category_sel'] as $k => $v)
+		if (is_array($_POST['nl_category_sel']))
 		{
-			$res[] = intval($v);
+			foreach ($_POST['nl_category_sel'] as $k => $v)
+			{
+				$res[] = intval($v);
+			}
 		}
 		return implode(',',$res);
 	}

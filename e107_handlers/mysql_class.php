@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.66 $
- * $Date: 2009-11-26 17:14:07 $
- * $Author: secretr $
+ * $Revision: 1.67 $
+ * $Date: 2009-12-01 20:05:54 $
+ * $Author: e107steved $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -49,8 +49,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  * 
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.66 $
- * @author $Author: secretr $
+ * @version $Revision: 1.67 $
+ * @author $Author: e107steved $
  * 
  */
 class e_db_mysql {
@@ -219,12 +219,15 @@ class e_db_mysql {
 
 
 	/**
-	* @desc Enter description here...
 	* This is the 'core' routine which handles much of the interface between other functions and the DB
 	* 
-	* @param unknown $query
+	* If a SELECT query includes SQL_CALC_FOUND_ROWS, the value of FOUND_ROWS() is retrieved and stored in $this->total_results
+	* @param string $query
 	* @param unknown $rli
-	* @return unknown
+	* @return boolean | resource - as mysql_query() function.
+	*			FALSE indicates an error
+	*			For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
+	*			TRUE indicates success in other cases
 	*/
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') 
 	{
@@ -262,7 +265,7 @@ class e_db_mysql {
 		if ((strpos($query,'SQL_CALC_FOUND_ROWS') !== FALSE) && (strpos($query,'SELECT') !== FALSE))
 		{	// Need to get the total record count as well. Return code is a resource identifier
 			// Have to do this before any debug action, otherwise this bit gets messed up
-			$fr = mysql_query("SELECT FOUND_ROWS()", $this->mySQLaccess);
+			$fr = mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
 			$rc = mysql_fetch_array($fr);
 			$this->total_results = $rc['FOUND_ROWS()'];
 		}
@@ -843,12 +846,15 @@ class e_db_mysql {
 
 
 	/**
-	* @return unknown
-	* @param unknown $arg
-	* @desc Enter description here...
-	* @access private
+	* Function to handle any MySQL query
+	* @param string $query - the MySQL query string, where '#' represents the database prefix in front of table names.
+	*		Recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions
+	* @return boolean | integer
+	*		Returns FALSE if there is an error in the query
+	*		Returns TRUE if the query is successful, and it does not return a row count
+	*		Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
 	*/
-	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
+	public function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
 		$this->tabset = FALSE;
 		
@@ -869,15 +875,21 @@ class e_db_mysql {
 		//FIXME - this is a quick Fix for REGEXP queries, as used in admin_ui. 
 		$query = str_replace("`#","`".$this->mySQLPrefix,$query);
 
-		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE)
-		{	// Successful query which doesn't return a row count
-			$this->dbError('db_Select_gen');
-			return TRUE;
-		}
-		elseif ($this->mySQLresult === FALSE)
+		if ($this->mySQLresult === FALSE)
 		{	// Failed query
 			$this->dbError('db_Select_gen('.$query.')');
 			return FALSE;
+		}
+		elseif (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === TRUE)
+		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
+			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
+			{	// Need to check mysql_affected_rows() - to return number of rows actually updated
+				$tmp = mysql_affected_rows($this->mySQLaccess);
+				$this->dbError('db_Select_gen');
+				return $tmp;
+			}
+			$this->dbError('db_Select_gen');		// No row count here
+			return TRUE;
 		}
 		else
 		{	// Successful query which does return a row count - get the count and return it

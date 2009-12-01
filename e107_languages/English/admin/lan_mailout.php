@@ -9,11 +9,15 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_mailout.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-11-30 20:40:03 $
+ * $Revision: 1.15 $
+ * $Date: 2009-12-01 20:05:54 $
  * $Author: e107steved $
  *
 */
+
+define('CORE_DATE_ORDER', 'dmy');			// Temporary until we find somewhere better to put it.
+											// Defines order of field entry/display in date boxes
+											// Acceptable values: dmy, mdy, ymd
 define('LAN_MAILOUT_01','From Name');
 define('LAN_MAILOUT_02','From Email');
 define('LAN_MAILOUT_03','To');
@@ -270,8 +274,8 @@ define('LAN_MAILOUT_248', 'Completion status: ');
 define('LAN_MAILOUT_249', 'Send results:');
 define('LAN_MAILOUT_250', '--- End of notification ---');
 define('LAN_MAILOUT_251', 'Copy and edit');
-define('LAN_MAILOUT_252', '');
-define('LAN_MAILOUT_253', '');
+define('LAN_MAILOUT_252', 'Does various consistency checks on the data, corrects counts, deletes temporary data');
+define('LAN_MAILOUT_253', 'No recipients found - check for database corruption');
 define('LAN_MAILOUT_254', '');
 
 

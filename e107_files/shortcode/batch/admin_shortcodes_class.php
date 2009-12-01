@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: admin_shortcodes_class.php,v 1.32 2009-11-17 13:12:43 e107coders Exp $
+* $Id: admin_shortcodes_class.php,v 1.33 2009-12-01 20:05:53 e107steved Exp $
 *
 * Admin shortcode batch - class
 */
@@ -1086,8 +1086,8 @@ class admin_shortcodes
 						$i++;
 					}
 				}
+				closedir($handle);
 			}
-			closedir($handle);
 			$text .= '</div>';
 
 

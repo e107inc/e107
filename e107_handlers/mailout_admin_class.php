@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_admin_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-30 20:40:03 $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-01 20:05:53 $
  * $Author: e107steved $
  *
 */
@@ -216,18 +216,21 @@ class mailoutAdminClass extends e107MailManager
 		global $user_pref;
 		$this->mode = $mode;
 		$curTable = $this->tasks[$this->mode]['defaultTable'];
-		if (is_array($user_pref['admin_mailout_columns'][$mode]))
-		{	// Use saved list of fields to view if it exists
-			$this->fieldPref = $user_pref['admin_mailout_columns'][$mode];
-		}
-		else
-		{	// Default list is minimal fields only
-			$this->fieldPref = array();
-			foreach ($this->fields[$curTable] as $f => $v)
-			{
-				if (vartrue($v['forced']))
+		if ($curTable)
+		{
+			if (is_array($user_pref['admin_mailout_columns'][$mode]))
+			{	// Use saved list of fields to view if it exists
+				$this->fieldPref = $user_pref['admin_mailout_columns'][$mode];
+			}
+			else
+			{	// Default list is minimal fields only
+				$this->fieldPref = array();
+				foreach ($this->fields[$curTable] as $f => $v)
 				{
-					$this->fieldPref[] = $f;
+					if (vartrue($v['forced']))
+					{
+						$this->fieldPref[] = $f;
+					}
 				}
 			}
 		}
@@ -468,7 +471,7 @@ class mailoutAdminClass extends e107MailManager
 		{
 			if ($m->mailerEnabled)
 			{
-				$ret .= "<tr><td>".$m->mailerName."</td><td>".$m->showSelect(TRUE, varset($selectorInfo[$m->mailerSource], FALSE))."</td></tr>";
+				$ret .= "<tr><td style='vertical-align: middle'>".$m->mailerName."</td><td>".$m->showSelect(TRUE, varset($selectorInfo[$m->mailerSource], FALSE))."</td></tr>";
 			}
 		}
 		return $ret;
@@ -1187,7 +1190,7 @@ class mailoutAdminClass extends e107MailManager
 
 
 		// Add in core and any plugin selectors here
-		foreach ($mail_handlers as $m)
+		foreach ($this->mailHandlers as $m)
 		{
 			if ($m->mailer_enabled)
 			{
@@ -1232,11 +1235,11 @@ class mailoutAdminClass extends e107MailManager
 			</colgroup>
 			<tbody>";
 
-		$text .= "<tr><td>".LAN_MAILOUT_238."</td><td>".$this->makeCalendar('mail_earliest_time')."</td></tr>";
-		$text .= "<tr><td>".LAN_MAILOUT_239."</td><td>".$this->makeCalendar('mail_latest_time')."</td></tr>";
+		$text .= "<tr><td>".LAN_MAILOUT_238."</td><td>".$this->makeCalendar('mail_earliest_time', '', CORE_DATE_ORDER)."</td></tr>";
+		$text .= "<tr><td>".LAN_MAILOUT_239."</td><td>".$this->makeCalendar('mail_latest_time', '', CORE_DATE_ORDER)."</td></tr>";
 		// Can comment the two lines above, uncomment two lines below, and default time/date is shown. May or may not be preferable
-//		$text .= "<tr><td>".LAN_MAILOUT_238."</td><td>".$this->makeCalendar('mail_earliest_time', time())."</td></tr>";
-//		$text .= "<tr><td>".LAN_MAILOUT_239."</td><td>".$this->makeCalendar('mail_latest_time', time()+86400)."</td></tr>";
+//		$text .= "<tr><td>".LAN_MAILOUT_238."</td><td>".$this->makeCalendar('mail_earliest_time', time(), CORE_DATE_ORDER)."</td></tr>";
+//		$text .= "<tr><td>".LAN_MAILOUT_239."</td><td>".$this->makeCalendar('mail_latest_time', time()+86400, CORE_DATE_ORDER)."</td></tr>";
 		$text .= "<tr><td>".LAN_MAILOUT_240."</td><td><input type='checkbox' value='1' name='mail_notify_complete' />".LAN_MAILOUT_241."</td></tr>";
 		$text .= "</tbody></table>\n</fieldset>";
 		return $text;
@@ -1244,19 +1247,35 @@ class mailoutAdminClass extends e107MailManager
 
 
 
-	public function makeCalendar($calName, $calVal = '')
+	public function makeCalendar($calName, $calVal = '', $dateOrder = 'dmy')
 	{
+		// Determine formatting strings this way, to give sensible default
+		switch ($dateOrder)
+		{
+			case 'mdy' :
+				$dateString = '%m/%d/%Y %H:%I';
+				$dispString = 'm/d/Y H:I';
+				break;
+			case 'ymd' :
+				$dateString = '%Y/%m/%d %H:%I';
+				$dispString = 'Y/m/d H:I';
+				break;
+			case 'dmy' :
+			default :
+				$dateString = '%d/%m/%Y %H:%I';
+				$dispString = 'd/m/Y H:I';
+		}
 		$calOptions = array(
 			'showsTime' => TRUE,
 			'showOthers' => false,
 			'weekNumbers' => false,
-			'ifFormat' => '%d/%m/%Y %H:%I'
+			'ifFormat' => $dateString
 			);
 		$calAttrib = array(
 			'class' => 'tbox',
 			'size' => 15,			// Number of characters
 			'name' => $calName,
-			'value' => (($calVal == '') ? '' : date('d/m/Y H:I',$calVal))
+			'value' => (($calVal == '') ? '' : date($dispString,$calVal))
 		);
 		return $this->_cal->make_input_field($calOptions, $calAttrib);
 	}
@@ -1311,84 +1330,91 @@ class mailoutAdminClass extends e107MailManager
 		$count = $this->selectTargetStatus($mailID, $this->showFrom, $this->showCount, '*', FALSE, $this->sortField, $this->sortOrder);
 		$totalCount = $this->getTargetCount();
 
-		$text .= "
-			<form action='".e_SELF."?mode=recipients&amp;m={$mailID}&amp;count={$count}&amp;frm={$this->showFrom}&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}&amp;savepage={$nextPage}' id='email_recip_body' method='post'>
-			<fieldset id='email-recip_body'>
-			<table cellpadding='0' cellspacing='0' class='adminlist'>";
-
-
-		$fieldPrefs = $this->calcFieldSpec('recipients', TRUE);			// Get columns to display
-
-		// Must use '&' rather than '&amp;' in query pattern
-		$text .= $frm->colGroup($this->fields['mail_recipients'],$this->fieldPref).$frm->thead($this->fields['mail_recipients'],$this->fieldPref,'mode='.'recipients&amp;m='.$mailID."&fld=[FIELD]&asc=[ASC]&frm=[FROM]")."<tbody>";
-
-		while ($row = $this->getNextTargetStatus(FALSE))
+		if ($count == 0)
 		{
-			//	print_a($row);
-			$text .= '<tr>';
-			foreach ($fieldPrefs as $fieldName)
-			{	// Output column data value
-				$text .= '<td>';
-				if (isset($row[$fieldName]))
-				{
-					$proctype = varset($this->fields['mail_recipients'][$fieldName]['proc'], 'default');
-					switch ($proctype)
+			$text .= "<span class='required'>".LAN_MAILOUT_253.'</span>';
+		}
+		else
+		{
+			$text .= "
+				<form action='".e_SELF."?mode=recipients&amp;m={$mailID}&amp;count={$count}&amp;frm={$this->showFrom}&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}&amp;savepage={$nextPage}' id='email_recip_body' method='post'>
+				<fieldset id='email-recip_body'>
+				<table cellpadding='0' cellspacing='0' class='adminlist'>";
+
+
+			$fieldPrefs = $this->calcFieldSpec('recipients', TRUE);			// Get columns to display
+
+			// Must use '&' rather than '&amp;' in query pattern
+			$text .= $frm->colGroup($this->fields['mail_recipients'],$this->fieldPref).$frm->thead($this->fields['mail_recipients'],$this->fieldPref,'mode='.'recipients&amp;m='.$mailID."&fld=[FIELD]&asc=[ASC]&frm=[FROM]")."<tbody>";
+
+			while ($row = $this->getNextTargetStatus(FALSE))
+			{
+				//	print_a($row);
+				$text .= '<tr>';
+				foreach ($fieldPrefs as $fieldName)
+				{	// Output column data value
+					$text .= '<td>';
+					if (isset($row[$fieldName]))
 					{
-						case 'username' :
-							$text .= $this->getUserName($row[$fieldName]);
-							break;
-						case 'sdatetime' :
-							$text .= $gen->convert_date($row[$fieldName], 'short');
-							break;
-						case 'trunc200' :
-							$text .= $this->e107->tp->text_truncate($row[$fieldName], 200, '...');
-							break;
-						case 'contentstatus' :
-							$text .= $this->statusToText($row[$fieldName]);
-							break;
-						case 'selectors' :
-							$text .= 'cannot display';
-							break;
-						case 'array' :
-							if (is_array($row[$fieldName]))
-							{
-								$nl = '';
-								foreach ($row[$fieldName] as $k => $v)
+						$proctype = varset($this->fields['mail_recipients'][$fieldName]['proc'], 'default');
+						switch ($proctype)
+						{
+							case 'username' :
+								$text .= $this->getUserName($row[$fieldName]);
+								break;
+							case 'sdatetime' :
+								$text .= $gen->convert_date($row[$fieldName], 'short');
+								break;
+							case 'trunc200' :
+								$text .= $this->e107->tp->text_truncate($row[$fieldName], 200, '...');
+								break;
+							case 'contentstatus' :
+								$text .= $this->statusToText($row[$fieldName]);
+								break;
+							case 'selectors' :
+								$text .= 'cannot display';
+								break;
+							case 'array' :
+								if (is_array($row[$fieldName]))
 								{
-									if ($v)
+									$nl = '';
+									foreach ($row[$fieldName] as $k => $v)
 									{
-										$text .= $nl.$k.' => '.$v;
-										$nl = '<br />';
+										if ($v)
+										{
+											$text .= $nl.$k.' => '.$v;
+											$nl = '<br />';
+										}
 									}
 								}
-							}
-							else
-							{
-								$text .= 'bad data: ';
-							}
-							break;
-						case 'default' :
-						default :
-							$text .= $row[$fieldName];
+								else
+								{
+									$text .= 'bad data: ';
+								}
+								break;
+							case 'default' :
+							default :
+								$text .= $row[$fieldName];
+						}
 					}
+					else
+					{	// Special stuff
+						$text .= 'special';
+					}
+					$text .= '</td>';
 				}
-				else
-				{	// Special stuff
-					$text .= 'special';
-				}
-				$text .= '</td>';
+				// Add in options here
+				$text .= '<td>'.$this->makeTargetOptions('recipients',$row).'</td>';
+				$text .= '</tr>';
 			}
-			// Add in options here
-			$text .= '<td>'.$this->makeTargetOptions('recipients',$row).'</td>';
-			$text .= '</tr>';
-		}
 
-		$text .= "</tbody></table>\n</fieldset></form><br /><br />";
+			$text .= "</tbody></table>\n</fieldset></form><br /><br />";
 
-		if ($totalCount > $count)
-		{
-			$parms = "{$totalCount},{$this->showCount},{$this->showFrom},".e_SELF."?mode=recipients&amp;m={$mailID}&amp;count={$this->showCount}&amp;frm=[FROM]&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}&amp;savepage={$nextPage}";
-			$text .= $this->e107->tp->parseTemplate("{NEXTPREV={$parms}}");
+			if ($totalCount > $count)
+			{
+				$parms = "{$totalCount},{$this->showCount},{$this->showFrom},".e_SELF."?mode=recipients&amp;m={$mailID}&amp;count={$this->showCount}&amp;frm=[FROM]&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}&amp;savepage={$nextPage}";
+				$text .= $this->e107->tp->parseTemplate("{NEXTPREV={$parms}}");
+			}
 		}
 
 		$text .= "</div>";

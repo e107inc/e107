@@ -11,25 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2009-11-20 22:23:02 $
+|     $Revision: 1.65 $
+|     $Date: 2009-12-01 20:05:52 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 // [debug=8] shows the operations on major table update
 
-require_once("../class2.php");
+require_once('../class2.php');
 require_once(e_HANDLER.'db_table_admin_class.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_e107_update.php");
-//include_lan(e_LANGUAGE.'admin/lan_e107_update.php');
-
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 // Modified update routine - combines checking and update code into one block per function
 //		- reduces code size typically 30%.
 //		- keeping check and update code together should improve clarity/reduce mis-types etc
 
 
-// To do - how do we handle multi-language tables?
+// TODO: how do we handle update of multi-language tables?
 
 // If following line uncommented, enables a test routine
 // define('TEST_UPDATE',TRUE);
@@ -38,20 +36,20 @@ $update_debug = FALSE;			// TRUE gives extra messages in places
 if (defined('TEST_UPDATE')) $update_debug = TRUE;
 
 
-if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
-if (!defined("LAN_UPDATE_9")) { define("LAN_UPDATE_9", ""); }
+if (!defined('LAN_UPDATE_8')) { define('LAN_UPDATE_8', ''); }
+if (!defined('LAN_UPDATE_9')) { define('LAN_UPDATE_9', ''); }
 
 
 // Determine which installed plugins have an update file - save the path and the installed version in an array
 $dbupdateplugs = array();		// Array of paths to installed plugins which have a checking routine
-$dbupdatep = array();		// Array of plugin upgrade actions (similar to $dbupdate)
-$dbupdate = array();
+$dbupdatep = array();			// Array of plugin upgrade actions (similar to $dbupdate)
+$dbupdate = array();			// Array of core upgrade actions
 
 global $e107cache;
 
-if (is_readable(e_ADMIN."ver.php"))
+if (is_readable(e_ADMIN.'ver.php'))
 {
-  include(e_ADMIN."ver.php");
+  include(e_ADMIN.'ver.php');
 }
 
 
@@ -61,123 +59,124 @@ $dont_check_update = varset($dont_check_update, FALSE);
 
 if ($dont_check_update === TRUE)
 {
-  $dont_check_update = FALSE;
-  if ($tempData = $e107cache->retrieve_sys("nq_admin_updatecheck",3600, TRUE))
-  {	// See when we last checked for an admin update
-    list($last_time, $dont_check_update,$last_ver) = explode(',',$tempData);
-	if ($last_ver != $e107info['e107_version'])
-	{
-	  $dont_check_update = FALSE;	// Do proper check on version change
+	$dont_check_update = FALSE;
+	if ($tempData = $e107cache->retrieve_sys('nq_admin_updatecheck',3600, TRUE))
+	{	// See when we last checked for an admin update
+		list($last_time, $dont_check_update, $last_ver) = explode(',',$tempData);
+		if ($last_ver != $e107info['e107_version'])
+		{
+			$dont_check_update = FALSE;		// Do proper check on version change
+		}
 	}
-  }
 }
 
 if (!$dont_check_update)
 {
-if ($sql->db_Select("plugin", "plugin_version, plugin_path", "plugin_installflag='1' "))
-{
-  while ($row = $sql->db_Fetch())
-  {  // Mark plugins for update which have a specific update file, or a plugin.php file to check
-	if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php'))
+	if ($sql->db_Select('plugin', 'plugin_version, plugin_path', 'plugin_installflag=1'))
 	{
-	  $dbupdateplugs[$row['plugin_path']] = $row['plugin_version'];
+		while ($row = $sql->db_Fetch())
+		{  // Mark plugins for update which have a specific update file, or a plugin.php file to check
+			if(is_readable(e_PLUGIN.$row['plugin_path'].'/'.$row['plugin_path'].'_update_check.php') || is_readable(e_PLUGIN.$row['plugin_path'].'/plugin.php'))
+			{
+				$dbupdateplugs[$row['plugin_path']] = $row['plugin_version'];
+			}
+		}
 	}
-  }
-}
 
 
-// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
-foreach ($dbupdateplugs as $path => $ver)
-{
-  $fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';
-  if (is_readable($fname)) include_once($fname);
-}
+	// Read in each update file - this will add an entry to the $dbupdatep array if a potential update exists
+	foreach ($dbupdateplugs as $path => $ver)
+	{
+		$fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';
+		if (is_readable($fname)) include_once($fname);
+	}
 
 
-// List of potential updates
-if (defined('TEST_UPDATE'))
-{
-  $dbupdate["test_code"] = "Test update routine";
-}
-$dbupdate["core_prefs"] = LAN_UPDATE_13;						// Prefs check
-$dbupdate["706_to_800"] = LAN_UPDATE_8." .706 ".LAN_UPDATE_9." .8";
-$dbupdate["70x_to_706"] = LAN_UPDATE_8." .70x ".LAN_UPDATE_9." .706";
+	// List of potential updates
+	if (defined('TEST_UPDATE'))
+	{
+		$dbupdate['test_code'] = 'Test update routine';
+	}
+	$dbupdate['core_prefs'] = LAN_UPDATE_13;						// Prefs check
+	$dbupdate['706_to_800'] = LAN_UPDATE_8.' .706 '.LAN_UPDATE_9.' .8';
+	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
 
 
+
+
+/**
+ *	Master routine to call to check for updates
+ */
 function update_check()
 {
   global $ns, $dont_check_update, $e107info;
 
 
+	$update_needed = FALSE;
 
-  $update_needed = FALSE;
-
-  if ($dont_check_update === FALSE)
-  {
-	global $dbupdate, $dbupdatep, $e107cache;
-
-	// See which core functions need update
-	foreach($dbupdate as $func => $rmks)
+	if ($dont_check_update === FALSE)
 	{
-//	  echo "Core Check {$func}=>{$rmks}<br />";
-	  if (function_exists("update_".$func))
-	  {
-		if (!call_user_func("update_".$func, FALSE))
+		global $dbupdate, $dbupdatep, $e107cache;
+
+		// See which core functions need update
+		foreach($dbupdate as $func => $rmks)
 		{
-		  $update_needed = TRUE;
-		  continue;
+		  if (function_exists('update_'.$func))
+			{
+				if (!call_user_func('update_'.$func, FALSE))
+				{
+				  $update_needed = TRUE;
+				  continue;
+				}
+			}
 		}
-	  }
+
+
+
+
+		// Now check plugins
+		foreach($dbupdatep as $func => $rmks)
+		{
+			if (function_exists('update_'.$func))
+			{
+				if (!call_user_func('update_'.$func, FALSE))
+				{
+				  $update_needed = TRUE;
+				  continue;
+				}
+			}
+		}
+
+		$e107cache->set_sys('nq_admin_updatecheck', time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
+	}
+	else
+	{
+		$update_needed = ($dont_check_update == '2');
 	}
 
-
-
-
-	// Now check plugins
-	foreach($dbupdatep as $func => $rmks)
+	if ($update_needed === TRUE)
 	{
-//	  echo "Plugin Check {$func}=>{$rmks}<br />";
-	  if (function_exists("update_".$func))
-	  {
-		if (!call_user_func("update_".$func, FALSE))
-		{
-		  $update_needed = TRUE;
-		  continue;
-		}
-	  }
+		require_once (e_HANDLER.'form_handler.php');
+		$frm = new e_form();
+		$txt = "
+		<form method='post' action='".e_ADMIN_ABS."e107_update.php'>
+		<div>
+			".ADLAN_120."
+			".$frm->admin_button('e107_system_update', LAN_UPDATE, 'update')."
+		</div>
+		</form>
+		";
+
+		require_once (e_HANDLER.'message_handler.php');
+		$emessage = &eMessage::getInstance();
+		$emessage->add($txt);
 	}
-  	$e107cache->set_sys("nq_admin_updatecheck", time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
-  }
-  else
-  {
-    $update_needed = ($dont_check_update == '2');
-  }
-
-  if ($update_needed === TRUE)
-  {
-	require_once (e_HANDLER."form_handler.php");
-	$frm = new e_form();
-	$txt = "
-
-	<form method='post' action='".e_ADMIN_ABS."e107_update.php'>
-	<div>
-		".ADLAN_120."
-		".$frm->admin_button('e107_system_update', LAN_UPDATE, 'update')."
-	</div>
-	</form>
-	";
-
-	require_once (e_HANDLER."message_handler.php");
-	$emessage = &eMessage::getInstance();
-	$emessage->add($txt);
-
-  }
 }
 
 
 
-	require_once(e_HANDLER."e_upgrade_class.php");
+require_once(e_HANDLER.'e_upgrade_class.php');
 //	$upg = new e_upgrade;
 	//TODO Enable this before release!!
 //	$upg->checkSiteTheme();
@@ -189,30 +188,31 @@ function update_check()
 //--------------------------------------------
 function update_core_prefs($type='')
 {
-  global $pref, $admin_log, $e107info;
-  $do_save = FALSE;
-  $should = get_default_prefs();
-  $accum = array();
+	global $pref, $admin_log, $e107info;
+	$do_save = FALSE;
+	$should = get_default_prefs();
+	$accum = array();
 
-  $just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
+	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing if an update is needed
    
-  foreach ($should as $k => $v)
-  {
-    if ($k && !array_key_exists($k,$pref))
+	foreach ($should as $k => $v)
 	{
-	  if ($just_check) return update_needed('Missing pref: '.$k);
-	  $pref[$k] = $v;
-	  $accum[] = $k;
-	  $do_save = TRUE;
+		if ($k && !array_key_exists($k,$pref))
+		{
+			if ($just_check) return update_needed('Missing pref: '.$k);
+			$pref[$k] = $v;
+			$accum[] = $k;
+			$do_save = TRUE;
+		}
 	}
-  }
-  if ($do_save)
-  {
-	save_prefs();
-	$admin_log->log_event('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
-  }
-  return $just_check;
+	if ($do_save)
+	{
+		save_prefs();
+		$admin_log->log_event('UPDATE_03',LAN_UPDATE_14.$e107info['e107_version'].'[!br!]'.implode(', ',$accum),E_LOG_INFORMATIVE,'');	// Log result of actual update
+	}
+	return $just_check;
 }
+
 
 
 if (defined('TEST_UPDATE'))
@@ -220,20 +220,23 @@ if (defined('TEST_UPDATE'))
 //--------------------------------------------
 //	Test routine - to activate, define TEST_UPDATE
 //--------------------------------------------
-  function update_test_code($type='')
-  {
-	global $sql,$ns, $pref;
-	$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
-	//--------------**************---------------
-	// Add your test code in here
-	//--------------**************---------------
+	function update_test_code($type='')
+	{
+		global $sql,$ns, $pref;
+		$just_check = $type == 'do' ? FALSE : TRUE;		// TRUE if we're just seeing whether an update is needed
+		//--------------**************---------------
+		// Add your test code in here
+		//--------------**************---------------
 
-	//--------------**************---------------
-	// End of test code
-	//--------------**************---------------
-	return $just_check;
-  }
+		//--------------**************---------------
+		// End of test code
+		//--------------**************---------------
+		return $just_check;
+	}
 }  // End of test routine
+
+
+
 
 //--------------------------------------------
 //	Upgrade later versions of 0.7.x to 0.8
@@ -415,48 +418,49 @@ function update_706_to_800($type='')
 	{		
 		foreach($changeMenuPaths as $val)
 		{
-			$qry = "SELECT menu_path FROM #menus WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) LIMIT 1";
+			$qry = "SELECT menu_path FROM `#menus` WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) LIMIT 1";
 			if($sql->db_Select_gen($qry))
 			{
 				if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
 				$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
-				$status = $sql->db_Update("menus", $updqry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$status = $sql->db_Update('menus', $updqry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 				$mes->add(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;				
-				// catch_error();
+				// catch_error($sql);
 			}	
 		}
 	}
 
 	// Leave this one here.. just in case.. 
 	//delete record for online_extended_menu (now only using one online menu)
-	if($sql->db_Select("menus", "*", "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
+	if($sql->db_Select('menus', '*', "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
 	{
-	  if ($just_check) return update_needed();
+		if ($just_check) return update_needed();
 
-	  $row=$sql->db_Fetch();
+		$row=$sql->db_Fetch();
 
-	  //if online_extended is activated, we need to activate the new 'online' menu, and delete this record
-	  if($row['menu_location']!=0)
-	  {
-		$status = $sql->db_Update("menus", "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		$mes->add(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 				
-	  }
-	  else
-	  {	//else if the menu is not active
-		//we need to delete the online_extended menu row, and change the online_menu to online
-		$sql->db_Delete("menus", " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
-		// $updateMessages[] = LAN_UPXXDATE_31;
-	  }
-	  catch_error();
+		//if online_extended is activated, we need to activate the new 'online' menu, and delete this record
+		if($row['menu_location']!=0)
+		{
+			$status = $sql->db_Update("menus", "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			$mes->add(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 				
+		}
+		else
+		{	//else if the menu is not active
+			//we need to delete the online_extended menu row, and change the online_menu to online
+			$sql->db_Delete('menus', " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
+			// $updateMessages[] = LAN_UPXXDATE_31;
+		}
+		catch_error($sql);
 	}
 
 	//change menu_path for online_menu (if it still exists)
-	if($sql->db_Select("menus", "menu_path", "menu_path='online_menu' || menu_path='online_menu/'"))
+	if($sql->db_Select('menus', 'menu_path', "menu_path='online_menu' || menu_path='online_menu/'"))
 	{
-	  if ($just_check) return update_needed();
+		if ($just_check) return update_needed();
+
 		$status = $sql->db_Update("menus", "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes->add(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 		
-		catch_error();
+		catch_error($sql);
 	}
 
 
@@ -465,36 +469,35 @@ function update_706_to_800($type='')
 //---------------------------------------------------------
 	if($sql->db_Field('comments','comment_author'))
 	{
-      if ($just_check) return update_needed('Comment table author field update');
+		if ($just_check) return update_needed('Comment table author field update');
 
-	  if ((!$sql->db_Field("comments","comment_author_id"))		// Check to see whether new fields already added - maybe data copy failed part way through
-		&& (!$sql->db_Select_gen("ALTER TABLE `#comments`
-			ADD COLUMN comment_author_id int(10) unsigned NOT NULL default '0' AFTER `comment_author`,
-			ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
-	  {
-		// Flag error
-		// $commentMessage = LAN_UPDAXXTE_34;
-		$mes->add(LAN_UPDATE_21."comments", E_MESSAGE_ERROR); 	
-	  }
-	  else
-	  {
-		if (FALSE ===$sql->db_Update('comments',"comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
+		if ((!$sql->db_Field('comments','comment_author_id'))		// Check to see whether new fields already added - maybe data copy failed part way through
+			&& (!$sql->db_Select_gen("ALTER TABLE `#comments`
+				ADD COLUMN comment_author_id int(10) unsigned NOT NULL default '0' AFTER `comment_author`,
+				ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
 		{
 			// Flag error
-			$mes->add(LAN_UPDATE_21.'comments', E_MESSAGE_ERROR); 	
+			// $commentMessage = LAN_UPDAXXTE_34;
+			$mes->add(LAN_UPDATE_21."comments", E_MESSAGE_ERROR); 	
 		}
 		else
-		{	// Delete superceded field - comment_author
-		  if (!$sql->db_Select_gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
-		  {
-			// Flag error
-			$mes->add(LAN_UPDATE_24."comments - comment_author", E_MESSAGE_ERROR); 	
-		  }
+		{
+			if (FALSE ===$sql->db_Update('comments',"comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
+			{
+				// Flag error
+				$mes->add(LAN_UPDATE_21.'comments', E_MESSAGE_ERROR); 	
+			}
+			else
+			{	// Delete superceded field - comment_author
+				if (!$sql->db_Select_gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
+				{
+					// Flag error
+					$mes->add(LAN_UPDATE_24.'comments - comment_author', E_MESSAGE_ERROR); 	
+				}
+			}
 		}
-	  }
-	  
-	  $mes->add(LAN_UPDATE_21."comments", E_MESSAGE_SUCCESS); 	
 
+		$mes->add(LAN_UPDATE_21.'comments', E_MESSAGE_SUCCESS);
 	}
 
 
@@ -529,77 +532,78 @@ function update_706_to_800($type='')
 	// Front page prefs (logic has changed)
 	if (!isset($pref['frontpage_force']))
 	{	// Just set basic options; no real method of converting the existing
-	  if ($just_check) return update_needed('Change front page prefs');
-	  $pref['frontpage_force'] = array(e_UC_PUBLIC => '');
-	  $pref['frontpage'] = array(e_UC_PUBLIC => 'news.php');
+		if ($just_check) return update_needed('Change front page prefs');
+		$pref['frontpage_force'] = array(e_UC_PUBLIC => '');
+		$pref['frontpage'] = array(e_UC_PUBLIC => 'news.php');
 		// $_pdateMessages[] = LAN_UPDATE_38; //FIXME
 		$mes->add(LAN_UPDATE_20."frontpage",E_MESSAGE_SUCCESS);
-	  $do_save = TRUE;
+		$do_save = TRUE;
 	}
 
 
 	if ($sql->db_Table_exists('newsfeed'))
 	{	// Need to extend field newsfeed_url varchar(250) NOT NULL default ''
-	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'"))
-	  {
-		$row = $sql -> db_Fetch();
-		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
+		if ($sql->db_Query("SHOW FIELDS FROM ".MPREFIX."newsfeed LIKE 'newsfeed_url'"))
 		{
-			if ($just_check) return update_needed('Update newsfeed field definition');
-			$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-			$updateMessages[] = LAN_UPDATE_40; //FIXME
-			$mes->add(LAN_UPDATE_21."newsfeed",$status);
-		//	catch_error();
+			$row = $sql -> db_Fetch();
+			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(250)')
+			{
+				if ($just_check) return update_needed('Update newsfeed field definition');
+				$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX."newsfeed` MODIFY `newsfeed_url` VARCHAR(250) NOT NULL DEFAULT '' ") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$updateMessages[] = LAN_UPDATE_40; //FIXME
+				$mes->add(LAN_UPDATE_21."newsfeed",$status);
+			//	catch_error($sql);
+			}
 		}
-	  }
 	}
+
 
 	//TODO use generic function for this update. 
 	if ($sql->db_Table_exists('download'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
-	  if ($sql -> db_Query("SHOW FIELDS FROM ".MPREFIX."download LIKE 'download_url'"))
-	  {
-		$row = $sql -> db_Fetch();
-		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
+		if ($sql->db_Query("SHOW FIELDS FROM ".MPREFIX."download LIKE 'download_url'"))
 		{
-			if ($just_check) return update_needed('Update download table field definition');
-			$sql->db_Select_gen("ALTER TABLE `".MPREFIX."download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
-			$updateMessages[] = LAN_UPDATE_52;  //FIXME
-			catch_error();
+			$row = $sql -> db_Fetch();
+			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
+			{
+				if ($just_check) return update_needed('Update download table field definition');
+				$sql->db_Select_gen("ALTER TABLE `#download` MODIFY `download_url` VARCHAR(255) NOT NULL DEFAULT '' ");
+				$updateMessages[] = LAN_UPDATE_52;  //FIXME
+				catch_error($sql);
+			}
 		}
-	  }
 	}
 
 	//TODO use generic function for this update. 
 	if ($sql->db_Table_exists('download_mirror'))
 	{	// Need to extend field download_url varchar(255) NOT NULL default ''
-	  if ($sql->db_Select_gen("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
-	  {
-		$row = $sql -> db_Fetch();
-		if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
+		if ($sql->db_Select_gen("SHOW FIELDS FROM ".MPREFIX."download_mirror LIKE 'mirror_url'"))
 		{
-			if ($just_check) return update_needed('Update download mirror table field definition');
-			$sql->db_Select_gen("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
-			$updateMessages[] = LAN_UPDATE_53;  //FIXME
-			catch_error();
+			$row = $sql -> db_Fetch();
+			if (str_replace('varchar', 'char', strtolower($row['Type'])) != 'char(255)')
+			{
+				if ($just_check) return update_needed('Update download mirror table field definition');
+				$sql->db_Select_gen("ALTER TABLE `".MPREFIX."download_mirror` MODIFY `mirror_url` VARCHAR(255) NOT NULL DEFAULT '' ");
+				$updateMessages[] = LAN_UPDATE_53;  //FIXME
+				catch_error($sql);
+			}
 		}
-	  }
 	}
 
 
 	// Check need for user timezone before we delete the field
 	if (varsettrue($pref['signup_option_timezone']))
 	{
-	  if ($sql->db_Field('user', 'user_timezone', '', TRUE) && !$sql->db_Field('user_extended','user_timezone','',TRUE))
-	  {
-		if ($just_check) return update_needed('Move user timezone info');
-		if (!copy_user_timezone())
-		{  // Error doing the transfer
-			$updateMessages[] = LAN_UPDATE_42;  //FIXME
-			return FALSE;
+		if ($sql->db_Field('user', 'user_timezone', '', TRUE) && !$sql->db_Field('user_extended','user_timezone','',TRUE))
+		{
+			if ($just_check) return update_needed('Move user timezone info');
+			if (!copy_user_timezone())
+			{  // Error doing the transfer
+				$updateMessages[] = LAN_UPDATE_42;  //FIXME
+				return FALSE;
+			}
+			$updateMessages[] = LAN_UPDATE_41;
 		}
-		$updateMessages[] = LAN_UPDATE_41;
-	  }
 	}
 
 
@@ -609,7 +613,7 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Rename dblog to admin_log');
 		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
-		catch_error();
+		catch_error($sql);
 		$updateMessages[] = LAN_UPDATE_43;  //FIXME
 	}
 
@@ -620,30 +624,30 @@ function update_706_to_800($type='')
 		if ($just_check) return update_needed('Rename rl_history to dblog');
 		$sql->db_Select_gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
 		$updateMessages[] = LAN_UPDATE_44;  //FIXME
-		catch_error();
+		catch_error($sql);
 	}
 	  
 	// New tables required (list at top. Definitions in core_sql.php)
 	foreach ($new_tables as $nt)
 	{
-	  if (!$sql->db_Table_exists($nt))
-	  {
-	    if ($just_check) return update_needed("Add table: ".$nt);
-		// Get the definition
-		$defs = $db_parser->get_table_def($nt,e_ADMIN."sql/core_sql.php");
-		if (count($defs)) // **** Add in table here
-		{	
-			$status = $sql->db_Select_gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		//	$updateMessages[] = LAN_UPDATE_45.$defs[0][1];		
-			$mes->add(LAN_UPDATE_27.$defs[0][1], $status); //TODO - all update messages should work like this. 
-			// catch_error();
+		if (!$sql->db_Table_exists($nt))
+		{
+			if ($just_check) return update_needed('Add table: '.$nt);
+			// Get the definition
+			$defs = $db_parser->get_table_def($nt,e_ADMIN.'sql/core_sql.php');
+			if (count($defs)) // **** Add in table here
+			{	
+				$status = $sql->db_Select_gen('CREATE TABLE `'.MPREFIX.$defs[0][1].'` ('.$defs[0][2].') TYPE='.$defs[0][3]) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			//	$updateMessages[] = LAN_UPDATE_45.$defs[0][1];		
+				$mes->add(LAN_UPDATE_27.$defs[0][1], $status); 		//TODO - all update messages should work like this.  But also need $updateMessages[] for admin log
+				// catch_error($sql);
+			}
+			else
+			{  // error parsing defs file
+				$mes->add(LAN_UPDATE_46.$defs[0][1], E_MESSAGE_ERROR);
+			}
+			unset($defs);
 		}
-		else
-		{  // error parsing defs file
-			$mes->add(LAN_UPDATE_46.$defs[0][1], E_MESSAGE_ERROR);
-		}
-		unset($defs);
-	  }
 	}
 
 
@@ -692,7 +696,7 @@ function update_706_to_800($type='')
 		  
 			$status = $sql->db_Select_gen($qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 			$mes->add(LAN_UPDATE_21.$ct, $status);
-		  	catch_error();
+		  	catch_error($sql);
 		}
 	  }
 	}
@@ -756,7 +760,7 @@ function update_706_to_800($type='')
 						}
 						$sql->db_Select_gen($qry);
 						$updateMessages[] = LAN_UPDATE_51.$ct;  //FIXME
-						catch_error();
+						catch_error($sql);
 					}
 				}
 			}
@@ -771,7 +775,7 @@ function update_706_to_800($type='')
 		$ep = new e107plugin;
 		$ep -> update_plugins_table();
 	//	$_pdateMessages[] = LAN_UPDATE_XX24; 
-	 //	catch_error();
+	 //	catch_error($sql);
 	}
 
 
@@ -800,7 +804,7 @@ function update_706_to_800($type='')
             if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
 			$status = $sql->db_Select_gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `{$f}` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 			$mes->add(LAN_UPDATE_26.$t.' - '.$f, $status);				
-			// catch_error();
+			// catch_error($sql);
 		  }
 	    }
 	    else
@@ -850,7 +854,7 @@ function update_70x_to_706($type='')
 	{
 	  if ($just_check) return update_needed();
       $sql->db_Select_gen("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
-	  catch_error();
+	  catch_error($sql);
 	}
 
 	//rename plugin_rss field
@@ -858,7 +862,7 @@ function update_70x_to_706($type='')
 	{
 	  if ($just_check) return update_needed();
 	  $sql->db_Select_gen("ALTER TABLE `".MPREFIX."plugin` CHANGE `plugin_rss` `plugin_addons` TEXT NOT NULL;");
-	  catch_error();
+	  catch_error($sql);
 	}
 
 
@@ -879,7 +883,7 @@ function update_70x_to_706($type='')
 		$mes = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.";
         //$ns -> tablerender(LAN_ERROR,$mes);
         $emessage->add($mes, E_MESSAGE_ERROR);
-       	catch_error();
+       	catch_error($sql);
 	  }
 	}
 
@@ -887,7 +891,7 @@ function update_70x_to_706($type='')
 	{
 	  if ($just_check) return update_needed();
 	  $sql->db_Select_gen("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
-	  catch_error();
+	  catch_error($sql);
 	}
 
 	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."tmp"))
@@ -1015,6 +1019,10 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 }
 
 
+/**	Check for database access errors
+ *	@param reference $target - pointer to db object
+ *	@return none
+ */
 function catch_error(&$target)
 {
 	if (vartrue($target->mySQLlastErrText) && E107_DEBUG_LEVEL != 0)

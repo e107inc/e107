@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.6 $
+ * $Date: 2009-12-01 20:05:53 $
+ * $Author: e107steved $
  *
 */
 
@@ -62,15 +62,10 @@ class core_mailout
 		);
 
 	// Constructor
-	public function __construct(&$mailerAdminHandler = NULL)
+	public function __construct()
 	{
 		$this->e107 = e107::getInstance();
-		if ($mailerAdminHandler == NULL)
-		{
-			global $mailAdmin;
-			$mailerAdminHandler = $mailAdmin;
-		}
-		$this->adminHandler = $mailerAdminHandler;
+		$this->adminHandler = e107::getRegistry('_mailout_admin');		// Get the mailer admin object - we want to use some of its functions
 	}
   
   
@@ -257,12 +252,20 @@ class core_mailout
 	{
 		$ret = "<table style='width:95%'>";
 
+		$ret = "<fieldset id='core-mail-recipients'>
+		<table cellpadding='0' cellspacing='0' class='adminedit'>
+		<colgroup span='2'>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>
+		<tbody>";
+
 		if ($allow_edit)
 		{  
 			// User class select
 			$ret .= "<tr>
-				<td class='forumheader3'>".LAN_MAILOUT_03.": </td>
-				<td class='forumheader3'>
+				<td>".LAN_MAILOUT_03.": </td>
+				<td>
 				".$this->adminHandler->userClassesTotals('email_to', varset($selectVals['email_to'], ''))."</td>
 				</tr>";
 		
@@ -270,7 +273,7 @@ class core_mailout
 			$u_array = array('user_name'=>LAN_MAILOUT_43,'user_login'=>LAN_MAILOUT_44,'user_email'=>LAN_MAILOUT_45);
 			$ret .= "
 				<tr>
-					<td style='width:35%' class='forumheader3'>".LAN_MAILOUT_46."
+					<td style='width:35%'>".LAN_MAILOUT_46."
 					<select name='user_search_name' class='tbox'>
 					<option value=''>&nbsp;</option>";
 
@@ -282,27 +285,27 @@ class core_mailout
 			}
 			$ret .= "
 				</select> ".LAN_MAILOUT_47." </td>
-				<td style='width:65%' class='forumheader3'>
+				<td style='width:65%'>
 				<input type='text' name='user_search_value' class='tbox' style='width:80%' value='".varset($selectVals['user_search_value'])."' />
 				</td></tr>
 				";
 
 			// User last visit
 			$ret .= "
-				<tr><td class='forumheader3'>".LAN_MAILOUT_56.' '.$this->adminHandler->comparisonSelect('last_visit_match', $selectVals['last_visit_match'])." </td>
-				<td class='forumheader3'>
+				<tr><td>".LAN_MAILOUT_56.' '.$this->adminHandler->comparisonSelect('last_visit_match', $selectVals['last_visit_match'])." </td>
+				<td>
 				<input type='text' name='last_visit_date' class='tbox' style='width:30%' value='".varset($selectVals['last_visit_date'], '')."' />
 				</td></tr>";
 			
 
 			// Extended user fields
 			$ret .= "
-				<tr><td class='forumheader3'>".LAN_MAILOUT_46.$this->adminHandler->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE).LAN_MAILOUT_48." </td>
-				<td class='forumheader3'>
+				<tr><td>".LAN_MAILOUT_46.$this->adminHandler->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE).LAN_MAILOUT_48." </td>
+				<td>
 				<input type='text' name='extended_1_value' class='tbox' style='width:80%' value='".varset($selectVals['extended_1_value'], '')."' />
 				</td></tr>
-				<tr><td class='forumheader3'>".LAN_MAILOUT_46.$this->adminHandler->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." </td>
-				<td class='forumheader3'>
+				<tr><td>".LAN_MAILOUT_46.$this->adminHandler->ret_extended_field_list('extended_2_name', varset($selectVals['extended_2_name'], ''), TRUE).LAN_MAILOUT_48." </td>
+				<td>
 				<input type='text' name='extended_2_value' class='tbox' style='width:80%' value='".varset($selectVals['extended_2_value'], '')."' />
 				</td></tr>
 				";
@@ -320,8 +323,8 @@ class core_mailout
 				$_to = $selectVals['email_to'];
 			}
 			$ret .= "<tr>
-					<td class='forumheader3'>".LAN_MAILOUT_03."</td>
-					<td class='forumheader3'>".$_to."&nbsp;";
+					<td>".LAN_MAILOUT_03."</td>
+					<td>".$_to."&nbsp;";
 			if($selectVals['email_to'] == "self")
 			{
 				$text .= "&lt;".USEREMAIL."&gt;";
@@ -333,8 +336,8 @@ class core_mailout
 			{
 				$ret .= "
 				<tr>
-					<td class='forumheader3'>".$selectVals['user_search_name']."</td>
-					<td class='forumheader3'>".varset($selectVals['user_search_value'])."&nbsp;</td>
+					<td>".$selectVals['user_search_name']."</td>
+					<td>".varset($selectVals['user_search_value'])."&nbsp;</td>
 				</tr>";
 			}
 
@@ -342,8 +345,8 @@ class core_mailout
 			{
 				$ret .= "
 				  <tr>
-					<td class='forumheader3'>".LAN_MAILOUT_56."</td>
-					<td class='forumheader3'>".$selectVals['last_visit_match'].' '.gmstrtotime("%D-%M-%Y",$selectVals['last_visit_date'])."&nbsp;</td>
+					<td>".LAN_MAILOUT_56."</td>
+					<td>".$selectVals['last_visit_match'].' '.gmstrtotime("%D-%M-%Y",$selectVals['last_visit_date'])."&nbsp;</td>
 				  </tr>";
 			}
 
@@ -351,21 +354,21 @@ class core_mailout
 			{
 				$ret .= "
 				  <tr>
-					<td class='forumheader3'>".$selectVals['extended_1_name']."</td>
-					<td class='forumheader3'>".$selectVals['extended_1_value']."&nbsp;</td>
+					<td>".$selectVals['extended_1_name']."</td>
+					<td>".$selectVals['extended_1_value']."&nbsp;</td>
 				  </tr>";
 			}
 			if (vartrue($selectVals['extended_2_name']) && vartrue($selectVals['extended_2_value']))
 			{
 				$ret .= "
 				  <tr>
-					<td class='forumheader3'>".$selectVals['extended_2_name']."</td>
-					<td class='forumheader3'>".$selectVals['extended_2_value']."&nbsp;</td>
+					<td>".$selectVals['extended_2_name']."</td>
+					<td>".$selectVals['extended_2_value']."&nbsp;</td>
 				  </tr>";
 			}
 		}
 
-		return $ret.'</table>';
+		return $ret.'</tbody></table></fieldset>';
 	}
 }
 
