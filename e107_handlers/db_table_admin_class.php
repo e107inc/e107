@@ -9,8 +9,8 @@
  * Database utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/db_table_admin_class.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-20 22:23:02 $
+ * $Revision: 1.14 $
+ * $Date: 2009-12-01 20:05:53 $
  * $Author: e107steved $
 */
 
@@ -125,6 +125,7 @@ class db_table_admin
 		{
 			unset($defs);
 			$fv = trim(str_replace('  ', ' ', $fv));
+			$fv = str_replace('`', '', $fv);
 			if (substr($fv, -1) == ',')
 			{
 				$fv = trim(substr($fv, 0, -1));

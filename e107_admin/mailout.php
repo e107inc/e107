@@ -9,15 +9,10 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/mailout.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-11-30 20:40:02 $
+ * $Revision: 1.32 $
+ * $Date: 2009-12-01 20:05:51 $
  * $Author: e107steved $
  *
-*/
-
-/*
-TODO:
-	1. Improve maintenance page
 */
 
 /*
@@ -98,21 +93,21 @@ require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage :: getInstance();
 
+$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
+$pageMode = varset($_GET['savepage'], $action);			// Sometimes we need to know what brought us here - $action gets changed
+$mailId = intval(varset($_GET['m'],0));
+$targetId = intval(varset($_GET['t'],0));
+
 // Create mail admin object, load all mail handlers
 $mailAdmin = new mailoutAdminClass($action);			// This decodes parts of the query using $_GET syntax
+e107::setRegistry('_mailout_admin', $mailAdmin);
 if ($mailAdmin->loadMailHandlers() == 0)
 {	// No mail handlers loaded
 	echo 'No mail handlers loaded!!';
 	exit;
 }
-e107::setRegistry('_mailout_admin', $mailAdmin);
 
 require_once(e_ADMIN.'auth.php');
-
-$action = $e107->tp->toDB(varset($_GET['mode'],'makemail'));
-$pageMode = varset($_GET['savepage'], $action);			// Sometimes we need to know what brought us here - $action gets changed
-$mailId = intval(varset($_GET['m'],0));
-$targetId = intval(varset($_GET['t'],0));
 
 
 
@@ -442,11 +437,11 @@ switch ($midAction)
 		// TODO: Save these fields
 		if (isset($_POST['mail_earliest_time']))
 		{
-			$first = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', 'dmy', FALSE);
+			$first = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', CORE_DATE_ORDER, FALSE);
 		}
 		if (isset($_POST['mail_latest_time']))
 		{
-			$last = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', 'dmy', TRUE);
+			$last = e107::getDateConvert()->decodeDateTime($_POST['mail_earliest_time'], 'datetime', CORE_DATE_ORDER, TRUE);
 		}
 		if ($mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
 		{
@@ -906,8 +901,8 @@ function show_maint($debug = FALSE)
 			
 			<tbody>";
 
-		$text .= "<tr><td colspan='2'>".LAN_MAILOUT_182." <input class='button' type='submit' name='email_dross' value=\"".LAN_SUBMIT."\" /></td></tr>";
-		$text .= "</tbody></table>\n</fieldset>";
+		$text .= "<tr><td>".LAN_MAILOUT_182."</td><td><input class='button' type='submit' name='email_dross' value=\"".LAN_SUBMIT."\" /> <br /><span class='field-help'>".LAN_MAILOUT_252."</span></td></tr>";
+		$text .= "</tbody></table>\n</fieldset></form></div>";
 
 		$e107->ns->tablerender("<div style='text-align:center'>".ADLAN_136." :: ".ADLAN_40."</div>", $text);
 

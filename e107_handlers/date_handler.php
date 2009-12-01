@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-27 21:42:46 $
+ * $Revision: 1.14 $
+ * $Date: 2009-12-01 20:05:53 $
  * $Author: e107steved $
  * 
 */
@@ -126,7 +126,7 @@ class convert
 	 * @param string $input - usually date/time string with numeric values for relevant fields, and almost any separator. e.g. dd-mm-yy hh:mm
 	 *							Date and time must be separated by one or more spaces. In times, minutes and seconds are optional, and default to zero
 	 *							One special value is allowed - 'now'
-	 * @param string $decode - one of 'date', 'time', 'datetime'
+	 * @param string $decode - one of 'date', 'time', 'datetime', 'timedate'
 	 * @param string $format - sets field order for dates. Valid strings are dmy, mdy, ymd. Add suffix 'z' to return UTC/GMT
 	 * @param boolean $endDay - if TRUE, and no time entered, includes a time of 23:59:59 in the entered date
 	 *
@@ -134,7 +134,7 @@ class convert
 	 */
 	public function decodeDateTime($input, $decode = 'date', $format = 'dmy', $endDay = FALSE)
 	{
-		if ($input == 'now') return time();
+		if ($input == 'now') return time();		// Current time   TODO: option to return UTC or local time here
 		$useLocale = TRUE;
 		if (substr($format,-1,1) == 'z')
 		{
@@ -145,21 +145,25 @@ class convert
 		{
 			case 'date' :
 				$timeString = '';
-				$dateString = trim($input);
+				$dateString = $input;
 				break;
 			case 'time' :
-				$timeString = trim($input);
+				$timeString = $input;
 				$dateString = '';
 				break;
-			case 'datetime' :
+			case 'datetime' :		// Date then time, separated by space
 				$input = str_replace('  ',' ', $input);
 				list($dateString, $timeString) = explode(' ',$input,2);
-				$timeString = trim($timeString);
-				$dateString = trim($dateString);
+				break;
+			case 'timedate' :		// Time then date, separated by space
+				$input = str_replace('  ',' ', $input);
+				list($timeString, $dateString) = explode(' ',$input,2);
 				break;
 			default :
 				return 0;
 		}
+		$timeString = trim($timeString);
+		$dateString = trim($dateString);
 		$dateVals = array (1 => 0, 2 => 0, 3 => 0);		// Preset date in case 
 		$timeVals = array (1 => 0, 2 => 0, 3 => 0);		// Preset time in case 
 		if ($dateString)
@@ -214,7 +218,6 @@ class convert
 			{
 				preg_match('#(\d{1,2})(?:\D(\d{1,2})){0,1}(?:\D(\d{1,2})){0,1}#', $timeString, $timeVals);
 			}
-			//print_a($timeVals);
 		}
 		elseif ($endDay)
 		{
