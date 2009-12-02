@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:04:43 $
+ * $Revision: 1.7 $
+ * $Date: 2009-12-02 10:03:53 $
  * $Author: e107coders $
  */
 
@@ -54,6 +54,7 @@ class e_file
 	var	$dirFilter;				// Array of directory names to ignore (in addition to any set by caller)
 	var $fileFilter;			// Array of file names to ignore (in addition to any set by caller)
 	var $mode = 'default';
+	var $finfo = 'default';
 
 	// Constructor
 	function e_file()
@@ -66,6 +67,11 @@ class e_file
 	{
 		$this->dirFilter = array('/', 'CVS', '.svn');										// Default directory filter (exact matches only)
 		$this->fileFilter = array('^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^index\.html$','^null\.txt$','\.bak$','^.tmp');		// Default file filter (regex format)
+	}
+	
+	public function setFileInfo($val='default')
+	{
+		$this->finfo = $val;	
 	}
 	
 	/**
@@ -154,18 +160,43 @@ class e_file
 							break;							
 						
 							default:
+								
+								if($this->finfo == 'all')
+								{
+									$finfo = $this->get_file_info($path."/".$file); 		
+								}
 								$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
-								$finfo['fname'] = $file;
+								$finfo['fname'] = $file;	
+								
 								$ret[] = $finfo;
 							break;
 						}						
 					}
 				}
-			}
+				
+
+				
+			}			
 		}
 		return $ret;
 	}
 
+	function get_file_info($path_to_file)
+	{
+		$finfo = array();
+		
+		$tmp = getimagesize($path_to_file);
+		$finfo['img-width'] = $tmp[0];
+		$finfo['img-height'] = $tmp[1];
+		$finfo['mime'] = $tmp['mime'];
+									
+									
+		$tmp2 = stat($path_to_file);
+		$finfo['fsize'] = $tmp2['size'];
+		$finfo['modified'] = $tmp2['mtime'];
+		
+		return $finfo;		
+	}
 
 
 	// Get a list of directories matching $fmask, omitting any in the $omit array - same calling syntax as get_files()

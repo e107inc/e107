@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2009-12-01 20:05:52 $
-|     $Author: e107steved $
+|     $Revision: 1.66 $
+|     $Date: 2009-12-02 10:03:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -827,6 +827,67 @@ function update_706_to_800($type='')
 		$accum[] = $p;
 	  }
 	}
+	
+	
+	//-- Media-manger import -------------------------------------------------- 
+	
+	$fl = e107::getFile();
+	$fl->setFileInfo('all');
+	$newspost_img = $fl->get_files(e_IMAGE.'newspost_images','','',2);
+	$custom_img = $fl->get_files(e_IMAGE.'custom','','',2);
+	$mes = e107::getMessage();
+	
+	foreach($newspost_img as $f)
+	{
+		$insert = array(
+		'media_caption'		=> $f['fname'], 
+		'media_description'	=>'', 
+		'media_category'	=>'news', 
+		'media_datestamp'	=> $f['modified'], 
+		'media_url'	=> '{e_IMAGE}newspost_images/'.$f['fname'], 
+		'media_userclass'	=> 0, 
+		'media_name'	=> $f['fname'], 
+		'media_author'	=> USERID, 
+		'media_size'	=> $f['fsize'], 
+		'media_dimensions'	=> $f['img-width']."|".$f['img-height'], 
+		'media_usedby'	=> '', 
+		'media_tags'	=> '', 
+		'media_type'	=> $f['mime']
+		);
+		
+		if($sql->db_Insert("core_media",$insert))
+		{
+			$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
+		}		
+	}
+	
+	foreach($custom_img as $f)
+	{
+		$insert = array(
+		'media_caption'		=> $f['fname'], 
+		'media_description'	=> '', 
+		'media_category'	=> 'page', 
+		'media_datestamp'	=> $f['modified'], 
+		'media_url'	=> '{e_IMAGE}custom/'.$f['fname'], 
+		'media_userclass'	=> 0, 
+		'media_name'	=> $f['fname'], 
+		'media_author'	=> USERID, 
+		'media_size'	=> $f['fsize'], 
+		'media_dimensions'	=> $f['img-width']."|".$f['img-height'], 
+		'media_usedby'	=> '', 
+		'media_tags'	=> '', 
+		'media_type'	=> $f['mime']
+		);
+		
+		if($sql->db_Insert("core_media",$insert))
+		{
+			$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
+		}		
+	}
+		
+	// ------------------------------------------------------------------
+	
+	
 
 
 	if ($do_save)
