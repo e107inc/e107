@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.87 $
- * $Date: 2009-11-28 15:34:46 $
+ * $Revision: 1.88 $
+ * $Date: 2009-12-02 16:51:02 $
  * $Author: secretr $
 */
 
@@ -26,16 +26,16 @@ class e107
 	 * IPV6 string for localhost - as stored in DB
 	 */
 	const LOCALHOST_IP = '0000:0000:0000:0000:0000:ffff:7f00:0001';
-	
+
 	public $server_path;
-	
+
 	public $e107_dirs = array();
-	
+
 	/**
 	 * @var array  SQL connection data
 	 */
 	protected $e107_config_mysql_info = array();
-	
+
 	public $http_path;
 	public $https_path;
 	public $base_path;
@@ -43,14 +43,14 @@ class e107
 	public $relative_base_path;
 	public $_ip_cache;
 	public $_host_name_cache;
-	
+
 	public $site_theme;
-	
+
 	/**
 	 * @var string Current request type (http or https)
 	 */
 	protected $HTTP_SCHEME;
-	
+
 	/**
 	 * Used for runtime caching of user extended struct
 	 *
@@ -58,7 +58,7 @@ class e107
 	 * @see get_user_data()
 	 */
 	public $extended_struct;
-	
+
 	/**
 	 * User login name
 	 *
@@ -66,7 +66,7 @@ class e107
 	 * @see init_session()
 	 */
 	public $currentUser = '';
-	
+
 	/**
 	 * Run once load core shortcodes
 	 * while initialize SC parser
@@ -74,42 +74,42 @@ class e107
 	 * @var boolean
 	 */
 	protected static $_sc_core_loaded = false;
-	
+
 	/**
 	 * Singleton instance
 	 * Allow class extends - override {@link getInstance()}
-	 * 
+	 *
 	 * @var e107
 	 */
 	protected static $_instance = null;
-	
+
 	/**
 	 * e107 registry
 	 *
 	 * @var array
 	 */
 	private static $_registry = array();
-	
+
 	/**
 	 * e107 core config object storage
 	 *
 	 * @var array
 	 */
 	protected static $_core_config_arr = array();
-	
+
 	/**
 	 * e107 plugin config object storage
 	 *
 	 * @var array
 	 */
 	protected static $_plug_config_arr = array();
-	
+
 	/**
 	 * Core handlers array
-	 * For new/missing handler add 
+	 * For new/missing handler add
 	 * 'class name' => 'path' pair
-	 * 
-	 * Used to auto-load core handlers 
+	 *
+	 * Used to auto-load core handlers
 	 * TODO - we really need to alphabetically re-order this!
 	 *
 	 * @see getSingleton()
@@ -159,28 +159,28 @@ class e107
 		'sitelinks'					=> '{e_HANDLER}sitelinks_class.php',
 		'redirection'				=> '{e_HANDLER}redirection_class.php'
 	);
-	
+
 	/**
 	 * Overload core handlers array
 	 * Format: 'core_class' => array('overload_class', 'overload_path');
-	 * 
+	 *
 	 * NOTE: to overload core singleton objects, you have to add record to
 	 * $_overload_handlers before the first singleton call.
-	 * 
+	 *
 	 * Example:
 	 * <code> array('e_form' => array('plugin_myplugin_form_handler' => '{e_PLUGIN}myplugin/includes/form/handler.php'));</code>
-	 * 
-	 * Used to auto-load core handlers 
-	 * 
-	 * @var array 
+	 *
+	 * Used to auto-load core handlers
+	 *
+	 * @var array
 	 */
 	protected static $_overload_handlers = array();
 
-	
+
 	/**
 	 * Constructor
-	 * 
-	 * Use {@link getInstance()}, direct instantiating 
+	 *
+	 * Use {@link getInstance()}, direct instantiating
 	 * is not possible for signleton objects
 	 *
 	 * @return void
@@ -196,7 +196,7 @@ class e107
 	private function __clone()
 	{
 	}
-	
+
 	/**
 	 * Get singleton instance (php4 no more supported)
 	 *
@@ -210,21 +210,21 @@ class e107
 		}
 	  	return self::$_instance;
 	}
-	
+
 	/**
 	 * Initialize environment path constants
 	 * Public proxy to the protected method {@link _init()}
-	 * 
+	 *
 	 * @return e107
 	 */
 	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info)
 	{
 		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info);
 	}
-	
+
 	/**
 	 * Resolve paths, will run only once
-	 * 
+	 *
 	 * @return e107
 	 */
 	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info)
@@ -236,35 +236,80 @@ class e107
 
 			// folder info
 			$this->e107_dirs = $e107_paths;
-			
+
 			// mysql connection info
 			$this->e107_config_mysql_info = $e107_config_mysql_info;
-			
+
 			// various constants - MAGIC_QUOTES_GPC, MPREFIX, ...
 			$this->set_constants();
-			
+
 			// build all paths
 			$this->set_paths();
 			$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
-			
+
 			// set base path, SSL is auto-detected
 			$this->set_base_path(false);
-			
+
 			// set some core URLs (e_LOGIN/SIGNUP)
 			$this->set_urls();
-			
+
 			// cleanup QUERY_STRING and friends, set  related constants
 			$this->set_request();
 		}
 		return $this;
 	}
-	
+
+	/**
+	 * Initialize environment path constants while installing e107
+	 *
+	 * @return e107
+	 */
+	public function initInstall($e107_paths, $e107_root_path)
+	{
+		// Do some security checks/cleanup, prepare the environment
+		$this->prepare_request();
+
+		// folder info
+		$this->e107_dirs = $e107_paths;
+
+		// build all paths
+		$this->set_paths();
+		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
+
+		// set base path, SSL is auto-detected
+		$this->set_base_path(false);
+
+		// set some core URLs (e_LOGIN/SIGNUP)
+		$this->set_urls();
+
+		// cleanup QUERY_STRING and friends, set  related constants
+		$this->set_request();
+
+		return $this;
+	}
+
+	/**
+	 * Set mysql data
+	 *
+	 * @return e107
+	 */
+	public function initInstallSql($e107_config_mysql_info)
+	{
+		// mysql connection info
+		$this->e107_config_mysql_info = $e107_config_mysql_info;
+
+		// various constants - MAGIC_QUOTES_GPC, MPREFIX, ...
+		$this->set_constants();
+
+		return $this;
+	}
+
 	/**
 	 * Get data from the registry
 	 * Returns $default if data not found
 	 * Replacement of cachevar()
-	 * 
-	 * @param string $id 
+	 *
+	 * @param string $id
 	 * @return mixed
 	 */
 	public static function getRegistry($id, $default = null)
@@ -273,28 +318,28 @@ class e107
 		{
 			return self::$_registry[$id];
 		}
-		
+
 		return $default;
 	}
-	
+
 	/**
 	 * Add data to the registry - replacement of getcachedvars().
 	 * $id is path-like unique id bind to the passed data.
 	 * If $data argument is null, $id will be removed from the registry.
-	 * When removing objects from the registry, __destruct() method will be auto-executed 
+	 * When removing objects from the registry, __destruct() method will be auto-executed
 	 * if available
-	 * 
+	 *
 	 * Naming standards (namespaces):
 	 * 'area/area_id/storage_type'<br>
 	 * where <br>
 	 * - area = 'core'|'plugin'|'external' (everything else)
 	 * - area_id = core handler id|plugin name (depends on area)
 	 * - (optional) storage_type = current data storage stack
-	 * 
+	 *
 	 * Examples:
 	 * - 'core/e107/' - reserved for this class
 	 * - 'core/e107/singleton/' - singleton objects repo {@link getSingleton()}
-	 * 
+	 *
 	 * @param string $id
 	 * @param mixed|null $data
 	 * @return void
@@ -310,15 +355,15 @@ class e107
 			unset(self::$_registry[$id]);
 			return;
 		}
-		
+
 		if(!$allow_override && null !== self::getRegistry($id))
 		{
 			return;
 		}
-		
+
 		self::$_registry[$id] = $data;
 	}
-	
+
 	/**
 	 * Get folder name (e107_config)
 	 * Replaces all $(*)_DIRECTORY globals
@@ -332,7 +377,7 @@ class e107
 		$key = strtoupper($for).'_DIRECTORY';
 		return (isset($this->e107_dirs[$key]) ? $this->e107_dirs[$key] : '');
 	}
-	
+
 	/**
 	 * Get mysql config var (e107_config.php)
 	 * Replaces all $mySQL(*) globals
@@ -346,10 +391,10 @@ class e107
 		$key = 'mySQL'.$for;
 		return (isset($this->e107_config_mysql_info[$key]) ? $this->e107_config_mysql_info[$key] : '');
 	}
-	
+
 	/**
 	 * Get known handler path
-	 * 
+	 *
 	 * @param string $class_name
 	 * @param boolean $parse_path [optional] parse path shortcodes
 	 * @return string|null
@@ -361,14 +406,14 @@ class e107
 		{
 			$ret = self::getParser()->replaceConstants($ret);
 		}
-		
+
 		return $ret;
 	}
-	
+
 	/**
 	 * Add handler to $_known_handlers array on runtime
 	 * If class name is array, method will add it (recursion) and ignore $path argument
-	 * 
+	 *
 	 * @param array|string $class_name
 	 * @param string $path [optional]
 	 * @return void
@@ -388,10 +433,10 @@ class e107
 			self::$_known_handlers[$class_name] = $path;
 		}
 	}
-	
+
 	/**
 	 * Check handler presence
-	 * 
+	 *
 	 * @param string $class_name
 	 * @return boolean
 	 */
@@ -399,10 +444,10 @@ class e107
 	{
 		return isset(self::$_known_handlers[$class_name]);
 	}
-	
+
 	/**
 	 * Get overlod class and path (if any)
-	 * 
+	 *
 	 * @param object $class_name
 	 * @param object $default_handler [optional] return data from $_known_handlers if no overload data available
 	 * @param object $parse_path [optional] parse path shortcodes
@@ -418,12 +463,12 @@ class e107
 
 		return $ret;
 	}
-	
+
 	/**
 	 * Overload present handler.
-	 * If class name is array, method will add it (recursion) and 
+	 * If class name is array, method will add it (recursion) and
 	 * ignore $overload_class_name and  $overload_path arguments
-	 * 
+	 *
 	 * @param string $class_name
 	 * @param string $overload_name [optional]
 	 * @param string $overload_path [optional]
@@ -444,10 +489,10 @@ class e107
 			self::$_overload_handlers[$class_name] = array($overload_class_name, $overload_path);
 		}
 	}
-	
+
 	/**
 	 * Check if handler is already overloaded
-	 * 
+	 *
 	 * @param string $class_name
 	 * @return boolean
 	 */
@@ -455,7 +500,7 @@ class e107
 	{
 		return isset(self::$_overload_handlers[$class_name]);
 	}
-	
+
 	/**
 	 * Retrieve singleton object
 	 *
@@ -467,13 +512,13 @@ class e107
 	public static function getSingleton($class_name, $path = true, $regpath = '')
 	{
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
-		
+
 		//singleton object found - overload not possible
 		if(self::getRegistry($id))
 		{
 			return self::getRegistry($id);
 		}
-		
+
 		//auto detection + overload check
 		if(is_bool($path))
 		{
@@ -503,7 +548,7 @@ class e107
 
 		return self::getRegistry($id);
 	}
-	
+
 	/**
 	 * Retrieve object
 	 * Prepare for __autoload
@@ -522,7 +567,7 @@ class e107
 				$path = self::getParser()->replaceConstants(self::$_known_handlers[$class_name]);
 			}
 		}
-		
+
 		//auto detection + overload check
 		if(is_bool($path))
 		{
@@ -539,12 +584,12 @@ class e107
 				$path = self::getHandlerPath($class_name);
 			}
 		}
-		
+
 		if($path && is_string($path) && !class_exists($class_name, false))
 		{
 			e107_require_once($path); //no existence/security checks here!
 		}
-		
+
 		if(class_exists($class_name, false))
 		{
 			if(null !== $arguments) return  new $class_name($arguments);
@@ -554,7 +599,7 @@ class e107
 		trigger_error("Class {$class_name} not found!", E_USER_ERROR);
 		return null;
 	}
-	
+
 	/**
 	 * Retrieve core config handlers.
 	 * List of allowed $name values (aliases) could be found
@@ -570,10 +615,10 @@ class e107
 			e107_require_once(e_HANDLER.'pref_class.php');
 			self::$_core_config_arr[$name] = new e_core_pref($name, true);
 		}
-		
+
 		return self::$_core_config_arr[$name];
 	}
-	
+
 	/**
 	 * Retrieve core config handler preference value or the core preference array
 	 * Shorthand of  self::getConfig()->get()
@@ -587,7 +632,7 @@ class e107
 	{
 		return empty($pref_name) ? self::getConfig()->getPref() : self::getConfig()->get($pref_name, $default);
 	}
-	
+
 	/**
 	 * Advanced version of self::getPref(). $pref_name is parsed,
 	 * so that $pref_name = 'x/y/z' will search for value pref_data[x][y][z]
@@ -602,7 +647,7 @@ class e107
 	{
 		return self::getConfig()->getPref($pref_name, $default, $index);
 	}
-	
+
 	/**
 	 * Retrieve plugin config handlers.
 	 * Multiple plugin preference DB rows are supported
@@ -614,9 +659,9 @@ class e107
 	 * - <code>e107::getPluginConfig('myplug', 'row2');<code>
 	 * 	 will search for e107_plugins/myplug/e_pref/myplug_row2_pref.php which
 	 * 	 should contain class 'e_plugin_myplug_row2_pref' class (child of e_plugin_pref)
-	 * 
+	 *
 	 * @param string $plug_name
-	 * @param string $multi_row 
+	 * @param string $multi_row
 	 * @param boolean $load load from DB on startup
 	 * @return e_plugin_pref
 	 */
@@ -626,13 +671,13 @@ class e107
 		{
 			e107_require_once(e_HANDLER.'pref_class.php');
 			$override_id = $plug_name.($multi_row ? "_{$multi_row}" : '');
-			
-			//check (once) for custom plugin pref handler 
+
+			//check (once) for custom plugin pref handler
 			if(is_readable(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php'))
 			{
 				require_once(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php');
 				$class_name = 'e_plugin_'.$override_id.'_pref';
-				
+
 				//PHPVER: string parameter for is_subclass_of require PHP 5.0.3+
 				if(class_exists($class_name, false) && is_subclass_of('e_plugin_pref', $class_name)) //or e_pref ?
 				{
@@ -640,13 +685,13 @@ class e107
 					return self::$_plug_config_arr[$plug_name.$multi_row];
 				}
 			}
-			
+
 			self::$_plug_config_arr[$plug_name.$multi_row] = new e_plugin_pref($plug_name, $multi_row, $load);
 		}
-		
+
 		return self::$_plug_config_arr[$plug_name.$multi_row];
 	}
-	
+
 	/**
 	 * Retrieve plugin preference value.
 	 * Shorthand of  self::getPluginConfig()->get()
@@ -663,7 +708,7 @@ class e107
 	{
 		return  empty($pref_name) ? self::getPlugConfig($plug_name)->getPref() : self::getPlugConfig($plug_name)->get($pref_name, $default);
 	}
-	
+
 	/**
 	 * Advanced version of self::getPlugPref(). $pref_name is parsed,
 	 * so that $pref_name = 'x/y/z' will search for value pref_data[x][y][z]
@@ -678,7 +723,7 @@ class e107
 	{
 		return self::getPlugConfig($plug_name)->getPref($pref_name, $default, $index);
 	}
-	
+
 	/**
 	 * Get current theme preference. $pref_name is parsed,
 	 * so that $pref_name = 'x/y/z' will search for value pref_data[x][y][z]
@@ -693,7 +738,7 @@ class e107
 	{
 		return e107::getConfig()->getPref('sitetheme_pref/'.$pref_name, $default, $index);
 	}
-	
+
 	/**
 	 * Retrieve text parser singleton object
 	 *
@@ -703,9 +748,9 @@ class e107
 	{
 		return self::getSingleton('e_parse', e_HANDLER.'e_parse_class.php');
 	}
-	
 
-	
+
+
 	/**
 	 * Retrieve sc parser singleton object
 	 *
@@ -713,17 +758,17 @@ class e107
 	 */
 	public static function getScParser()
 	{
-		$sc = self::getSingleton('e_shortcode', e_HANDLER.'shortcode_handler.php'); 
+		$sc = self::getSingleton('e_shortcode', e_HANDLER.'shortcode_handler.php');
 		if(!self::$_sc_core_loaded)
 		{
 			$sc->loadCoreShortcodes();
 			self::$_sc_core_loaded = true;
-		} 
+		}
 		return $sc;
 	}
-	
+
 	/**
-	 * Retrieve DB singleton object based on the 
+	 * Retrieve DB singleton object based on the
 	 * $instance_id
 	 *
 	 * @param string $instance_id
@@ -733,7 +778,7 @@ class e107
 	{
 		return self::getSingleton('db', true, $instance_id);
 	}
-	
+
 	/**
 	 * Retrieve event singleton object
 	 *
@@ -743,7 +788,7 @@ class e107
 	{
 		return self::getSingleton('ecache', true);
 	}
-	
+
 	/**
 	 * Retrieve user class singleton object
 	 *
@@ -763,9 +808,9 @@ class e107
 	public static function getRedirect()
 	{
 		return self::getSingleton('redirection', true);
-	}	
-	
-	
+	}
+
+
 	/**
 	 * Retrieve sitelinks singleton object
 	 *
@@ -774,9 +819,9 @@ class e107
 	public static function getSitelinks()
 	{
 		return self::getSingleton('sitelinks', true);
-	}	
+	}
 
-	
+
 	/**
 	 * Retrieve render singleton object
 	 *
@@ -786,7 +831,7 @@ class e107
 	{
 		return self::getSingleton('e107table');
 	}
-	
+
 	/**
 	 * Retrieve event singleton object
 	 *
@@ -796,7 +841,7 @@ class e107
 	{
 		return self::getSingleton('e107_event', true);
 	}
-	
+
 	/**
 	 * Retrieve user-session singleton object
 	 *
@@ -806,7 +851,7 @@ class e107
 	{
 		return self::getSingleton('UserHandler', true);
 	}
-	
+
 	/**
 	 * Retrieve array storage singleton object
 	 *
@@ -816,7 +861,7 @@ class e107
 	{
 		return self::getSingleton('ArrayData', true);
 	}
-	
+
 	/**
 	 * Retrieve menu handler singleton object
 	 *
@@ -826,7 +871,7 @@ class e107
 	{
 		return self::getSingleton('e_menu', true);
 	}
-	
+
 	/**
 	 * Retrieve URL singleton object
 	 *
@@ -836,7 +881,7 @@ class e107
 	{
 		return self::getSingleton('eURL', true);
 	}
-	
+
 	/**
 	 * Retrieve file handler singleton or new fresh object
 	 *
@@ -851,7 +896,7 @@ class e107
 		}
 		return self::getObject('e_file', null, true);
 	}
-	
+
 	/**
 	 * Retrieve form handler singleton or new fresh object
 	 *
@@ -867,7 +912,7 @@ class e107
 		}
 		return self::getObject('e_form', $tabindex, true);
 	}
-	
+
 	/**
 	 * Retrieve admin log singleton object
 	 *
@@ -887,7 +932,7 @@ class e107
 	{
 		return self::getSingleton('convert', true);
 	}
-	
+
 	/**
 	 * Retrieve notify handler singleton object
 	 *
@@ -897,7 +942,7 @@ class e107
 	{
 		return self::getSingleton('notify', true);
 	}
-	
+
 	/**
 	 * Retrieve Xml handler singleton or new instance object
 	 * @param mixed $singleton false - new instance, true - singleton from default registry location, 'string' - registry path
@@ -911,7 +956,7 @@ class e107
 		}
 		return self::getObject('xmlClass', null, true);
 	}
-	
+
 	/**
 	 * Retrieve User Extended handler singleton object
 	 * @return e107_user_extended
@@ -920,7 +965,7 @@ class e107
 	{
 		return self::getSingleton('e107_user_extended', true);
 	}
-	
+
 	/**
 	 * Retrieve online users handler singleton object
 	 * @return e_online
@@ -938,8 +983,8 @@ class e107
 	{
 		return self::getSingleton('e_userperms', true);
 	}
-	
-	
+
+
 	/**
 	 * Retrieve comments handler singleton object
 	 * @return comment
@@ -948,7 +993,7 @@ class e107
 	{
 		return self::getSingleton('comment', true);
 	}
-	
+
 	/**
 	 * Retrieve message handler singleton
 	 * @return eMessage
@@ -963,7 +1008,7 @@ class e107
 		}
 		return eMessage::getInstance();
 	}
-	
+
 	/**
 	 * Retrieve JS Manager singleton object
 	 *
@@ -979,11 +1024,11 @@ class e107
 		}
 		return e_jsmanager::getInstance();
 	}
-	
+
 	/**
 	 * Retrieve admin dispatcher instance.
 	 * It's instance is self registered (for now, this could change in the future) on initialization (__construct())
-	 * 
+	 *
 	 * @see e_admin_dispatcher
 	 * @return e_admin_dispatcher
 	 */
@@ -991,54 +1036,54 @@ class e107
 	{
 		return self::getRegistry('admin/ui/dispatcher');
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Retrieves config() from addons such as e_url.php, e_cron.php, e_sitelink.php
 	 * @param string $addonName eg. e_cron, e_url
 	 * @param string $className [optional] (if different from addonName)
-	 * @return 
+	 * @return
 	 */
-	public function getAddonConfig($addonName, $className = '') 
+	public function getAddonConfig($addonName, $className = '')
 	{
 		$new_addon = array();
-		
+
 		$filename = $addonName; // e.g. 'e_cron';
 		if(!$className)
 		{
 			$className = substr($filename, 2); // remove 'e_'
-		}	
-		
+		}
+
 		$elist = self::getPref($filename.'_list');
 		if($elist)
-		{	
+		{
 			foreach(array_keys($elist) as $key)
 			{
 				if(is_readable(e_PLUGIN.$key.'/'.$filename.'.php'))
 				{
 					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
-					
+
 					$class_name = $key.'_'.$className;
 					$array = self::callMethod($class_name, 'config');
-					
+
 					if($array)
 					{
 						$new_addon[$key] = $array;
 					}
-							
+
 				}
 			}
 		}
-		
+
 		return $new_addon;
 	}
 
 	/**
-	 * Safe way to call user methods. 
+	 * Safe way to call user methods.
 	 * @param string $class_name
 	 * @param string $method_name
-	 * @return 
+	 * @return
 	 */
 	public function callMethod($class_name, $method_name)
 	{
@@ -1054,15 +1099,15 @@ class e107
 			}
 			else
 			{
-				$mes->debug('Function <strong>'.$class_name.' :: '.$method_name.'()</strong> NOT found.');					
-			}	
+				$mes->debug('Function <strong>'.$class_name.' :: '.$method_name.'()</strong> NOT found.');
+			}
 		}
 		return FALSE;
 	}
 
 	/**
 	 * Get theme name or path.
-	 * 
+	 *
 	 * @param mixed $for true (default) - auto-detect (current), admin - admin theme, front - site theme
 	 * @param string $path default empty string (return name only), 'abs' - absolute url path, 'rel' - relative server path
 	 * @return string
@@ -1070,7 +1115,7 @@ class e107
 	public static function getThemeInfo($for = true, $path = '')
 	{
 		global $user_pref; // FIXME - user model, kill user_pref global
-		
+
 		if(true === $for)
 		{
 			$for = e_ADMIN_AREA ? 'admin' : 'front';
@@ -1080,7 +1125,7 @@ class e107
 			case 'admin':
 				$for = e107::getPref('admintheme');
 			break;
-			
+
 			case 'front':
 				$for = isset($user_pref['sitetheme']) ? $user_pref['sitetheme'] : e107::getPref('sitetheme');
 			break;
@@ -1092,7 +1137,7 @@ class e107
 			case 'abs':
 				$path = e_THEME_ABS.$for.'/';
 			break;
-			
+
 			case 'rel':
 			default:
 				$path = e_THEME.$for.'/';
@@ -1104,7 +1149,7 @@ class e107
 	/**
 	 * Retrieve core template path
 	 * Example: <code>echo e107::coreTemplatePath('admin_icons');</code>
-	 * 
+	 *
 	 * @see getThemeInfo()
 	 * @param string $id part of the path/file name without _template.php part
 	 * @param boolean $override default true
@@ -1115,23 +1160,23 @@ class e107
 		$id = str_replace('..', '', $id); //simple security, '/' is allowed
 		$override_path = $override ? self::getThemeInfo($override, 'rel').'templates/'.$id.'_template.php' : null;
 		$default_path = e_THEME.'templates/'.$id.'_template.php';
-		
+
 		return ($override_path && is_readable($override_path) ? $override_path : $default_path);
 	}
-	
+
 	/**
 	 * Retrieve plugin template path
-	 * Override path could be forced to front- or back-end via 
+	 * Override path could be forced to front- or back-end via
 	 * the $override parameter e.g. <code> e107::templatePath(plug_name, 'my', 'front')</code>
-	 * Example: 
+	 * Example:
 	 * <code>
 	 * echo e107::templatePath(plug_name, 'my');
 	 * // result is something like:
 	 * // e107_themes/current_theme/templates/plug_name/my_template.php
-	 * // or if not found 
+	 * // or if not found
 	 * // e107_plugins/plug_name/templates/my_template.php
 	 * </code>
-	 * 
+	 *
 	 * @see getThemeInfo()
 	 * @param string $plug_name plugin name
 	 * @param string $id part of the path/file name without _template.php part
@@ -1147,62 +1192,62 @@ class e107
 
 		return ($override_path && is_readable($override_path) ? $override_path : $default_path);
 	}
-	
+
 	/**
-	 * Get core template. Use this method for templates, which are following the 
+	 * Get core template. Use this method for templates, which are following the
 	 * new template standards:
 	 * - template variables naming conventions
 	 * - one array variable per template only
 	 * - theme override is made now by current_theme/templates/ folder
-	 * 
+	 *
 	 * <br><br>Results are cached (depending on $id and $override so it's safe to use
-	 * this method e.g. in loop for retrieving a template string. If template (or template key) is not 
+	 * this method e.g. in loop for retrieving a template string. If template (or template key) is not
 	 * found, <b>NULL</b> is returned.<br><br>
-	 * 
+	 *
 	 * Example usage: <code>e107::getCoreTemplate('user', 'short_start');</code>
 	 * Will search for:
 	 * - e107_themes/current_frontend_theme/templates/user_template.php (if $override is true)
 	 * - e107_themes/templates/user_template.php (if override not found or $override is false)
 	 * - $USER_TEMPLATE array which contains all user templates
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
-	 * 
+	 *
 	 * @param string $id - file prefix, e.g. user for user_template.php
 	 * @param string|null $key
 	 * @param boolean $override see {@link getThemeInfo())
-	 * 
+	 *
 	 * @return string|array
 	 */
 	public static function getCoreTemplate($id, $key = null, $override = true)
 	{
 		$reg_path = 'core/e107/templates/'.$id.($override ? '/ext' : '');
 		$path = self::coreTemplatePath($id, $override);
-		
+
 		return self::_getTemplate($id, $key, $reg_path, $path);
 	}
-	
+
 	/**
-	 * Get plugin template. Use this method for plugin templates, which are following the 
+	 * Get plugin template. Use this method for plugin templates, which are following the
 	 * new template standards:
 	 * - template variables naming conventions
 	 * - one array variable per template only
 	 * - theme override is made now by current_theme/templates/plugin_name/ folder
-	 * 
+	 *
 	 * <br><br>Results are cached (depending on $id and $override so it's safe to use
-	 * this method e.g. in loop for retrieving a template string. If template (or template key) is not 
+	 * this method e.g. in loop for retrieving a template string. If template (or template key) is not
 	 * found, <b>NULL</b> is returned.<br><br>
-	 * 
+	 *
 	 * Example usage: <code>e107::getTemplate('user', 'short_start');</code>
 	 * Will search for:
 	 * - e107_themes/current_frontend_theme/templates/user_template.php (if $override is true)
 	 * - e107_themes/templates/user_template.php (if override not found or $override is false)
 	 * - $USER_TEMPLATE array which contains all user templates
 	 * - $USER_TEMPLATE['short_start'] (if key is null, $USER_TEMPLATE will be returned)
-	 * 
+	 *
 	 * @param string $plug_name
 	 * @param string $id - file prefix, e.g. calendar for calendar_template.php
 	 * @param string|null $key
 	 * @param boolean $override see {@link getThemeInfo())
-	 * 
+	 *
 	 * @return string|array
 	 */
 	public static function getTemplate($plug_name, $id, $key = null, $override = true)
@@ -1218,7 +1263,7 @@ class e107
 	 * @param string $plugin_name
 	 * @param string $template_id [optional] if different from $plugin_name;
 	 * @param mixed $where true - current theme, 'admin' - admin theme, 'front' (default)  - front theme
-	 * @return array 
+	 * @return array
 	 */
 	public static function getLayouts($plugin_name, $template_id = '', $where = 'front', $filter_mask = '')
 	{
@@ -1231,7 +1276,7 @@ class e107
 			$id = (!$template_id) ? $plugin_name : $template_id;
 			$tmp = self::getTemplate($plugin_name, $id, null, $where);
 		}
-		
+
 		$templates = array();
 		$filter_mask = explode($filter_mask);
 		foreach($tmp as $key => $val)
@@ -1259,10 +1304,10 @@ class e107
 			{
 				$templates[$key] = defset($val['__INFO__'][$key]['title'], $val['__INFO__'][$key]['title']);
 				continue;
-			} 
+			}
 			$templates[$key] = implode(' ', array_map('ucfirst', explode('_', $key))); //TODO add LANS?
 		}
-		return $templates;	
+		return $templates;
 	}
 
 	/**
@@ -1280,13 +1325,13 @@ class e107
 	{
 		$regPath = $reg_path;
 		$var = strtoupper($id).'_TEMPLATE';
-		
+
 		if(null === self::getRegistry($regPath))
 		{
 			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
 			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
 		}
-		
+
 		if(!$key)
 		{
 			return self::getRegistry($regPath);
@@ -1294,7 +1339,7 @@ class e107
 		$ret = self::getRegistry($regPath);
 		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : $ret);
 	}
-	
+
 	/**
 	 * Load language file, replacement of include_lan()
 	 *
@@ -1317,20 +1362,20 @@ class e107
 	}
 
 	/**
-	 * Routine looks in standard paths for language files associated with a plugin or 
+	 * Routine looks in standard paths for language files associated with a plugin or
 	 * theme - primarily for core routines, which won't know for sure where the author has put them.
 	 * $unitName is the name (directory path) of the plugin or theme
 	 * $type determines what is to be loaded:
 	 * - 'runtime' - the standard runtime language file for a plugin
 	 * - 'admin' - the standard admin language file for a plugin
 	 * - 'theme' - the standard language file for a plugin (these are usually pretty small, so one is enough)
-	 * Otherwise, $type is treated as part of a filename within the plugin's language directory, 
-	 * prefixed with the current language. 
+	 * Otherwise, $type is treated as part of a filename within the plugin's language directory,
+	 * prefixed with the current language.
 	 * Returns FALSE on failure (not found).
 	 * Returns the include_once error return if there is one
 	 * Otherwise returns an empty string.
 	 * Note - if the code knows precisely where the language file is located, use {@link getLan()}
-	 * $pref['noLanguageSubs'] can be set TRUE to prevent searching for the English files if 
+	 * $pref['noLanguageSubs'] can be set TRUE to prevent searching for the English files if
 	 * the files for the current site language don't exist.
 	 *
 	 * @param string $unitName
@@ -1345,7 +1390,7 @@ class e107
 			case 'runtime' :
 				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_'.$unitName.'.php';
 				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'/'.$unitName.'.php';
-				$searchPath[3] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'.php'; // menu language file. 
+				$searchPath[3] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'.php'; // menu language file.
 				break;
 			case 'admin' :
 				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'_admin_'.$unitName.'.php';
@@ -1372,7 +1417,7 @@ class e107
 		{
 			return FALSE;		// No point looking for the English files twice
 		}
-	
+
 		foreach ($searchPath as $s)			// Now look for the English files
 		{
 			$s = str_replace(e_LANGUAGE, 'English', $s);
@@ -1384,18 +1429,18 @@ class e107
 		}
 		return FALSE;		// Nothing found
 	}
-	
+
 	/**
 	 * Prepare e107 environment
 	 * This is done before e107_dirs initilization and [TODO] config include
 	 * @return e107
 	 */
 	public function prepare_request()
-	{		
+	{
 		// TODO - better ajax detection method (headers when possible)
 		define('e_AJAX_REQUEST', isset($_REQUEST['ajax_used']));
-		unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something... 
-		
+		unset($_REQUEST['ajax_used']); // removed because it's auto-appended from JS (AJAX), could break something...
+
 		//$GLOBALS['_E107'] - minimal mode - here because of the e_AJAX_REQUEST
 		if(isset($GLOBALS['_E107']['minimal']) || e_AJAX_REQUEST)
 		{
@@ -1410,10 +1455,10 @@ class e107
 				unset($GLOBALS['_E107'][$v]);
 			}
 		}
-		
+
 		// remove ajax_used=1 from query string to avoid SELF problems, ajax should always be detected via e_AJAX_REQUEST constant
 		$_SERVER['QUERY_STRING'] = str_replace(array('ajax_used=1', '&&'), array('', '&'), $_SERVER['QUERY_STRING']);
-		
+
 		// e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
 		if(($pos = strpos($_SERVER['PHP_SELF'], '.php/')) !== false) // redirect bad URLs to the correct one.
 		{
@@ -1431,7 +1476,7 @@ class e107
 		e107::ini_set('arg_separator.output',     '&amp;');
 		e107::ini_set('session.use_only_cookies', 1);
 		e107::ini_set('session.use_trans_sid',    0);
-		
+
 		//  Ensure thet '.' is the first part of the include path
 		$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
 		if($inc_path[0] != '.')
@@ -1441,10 +1486,10 @@ class e107
 			e107_ini_set('include_path', $inc_path);
 		}
 		unset($inc_path);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Set base system path
 	 * @return e107
@@ -1455,7 +1500,7 @@ class e107
 		$this->base_path = $ssl_enabled ?  $this->https_path : $this->http_path;
 		return $this;
 	}
-	
+
 	/**
 	 * Set various system environment constants
 	 * @return e107
@@ -1463,11 +1508,11 @@ class e107
 	public function set_constants()
 	{
 		define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
-		
+
 		define('MPREFIX', $this->getMySQLConfig('prefix')); // mysql prefix
-		
+
 		define('CHARSET', 'utf-8'); // set CHARSET for backward compatibility
-		
+
 		// Define the domain name and subdomain name.
 		if($_SERVER['HTTP_HOST'] && is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
 		{
@@ -1477,16 +1522,16 @@ class e107
 		{
 			$srvtmp = explode('.',str_replace('www.', '', $_SERVER['HTTP_HOST']));
 		}
-		
+
 		define('e_SUBDOMAIN', (count($srvtmp)>2 && $srvtmp[2] ? $srvtmp[0] : false)); // needs to be available to e107_config.
-		
+
 		if(e_SUBDOMAIN)
 		{
 		   	unset($srvtmp[0]);
 		}
-		
+
 		define('e_DOMAIN',(count($srvtmp) > 1 ? (implode('.', $srvtmp)) : false)); // if it's an IP it must be set to false.
-		
+
 		define('e_UC_PUBLIC', 0);
 		define('e_UC_MAINADMIN', 250);
 		define('e_UC_READONLY', 251);
@@ -1494,7 +1539,7 @@ class e107
 		define('e_UC_MEMBER', 253);
 		define('e_UC_ADMIN', 254);
 		define('e_UC_NOBODY', 255);
-		
+
 		return $this;
 	}
 
@@ -1509,15 +1554,15 @@ class e107
 		$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $CACHE_DIRECTORY,
 		$UPLOADS_DIRECTORY,$_E107, $MEDIA_DIRECTORY;
 
-	//	global $NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY; 
-	
+	//	global $NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY;
+
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
 		if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
 		{
 			$this->HTTP_SCHEME =  'https';
 		}
-		
+
 		$path = ""; $i = 0;
 
 		if(!isset($_E107['cli']))
@@ -1566,9 +1611,9 @@ class e107
 // HTTP relative paths
 //
 
-			if(!varset($MEDIA_DIRECTORY)) // BC/Upgrade Fix. 
+			if(!varset($MEDIA_DIRECTORY)) // BC/Upgrade Fix.
 			{
-				$MEDIA_DIRECTORY = 'e107_media/'; 		
+				$MEDIA_DIRECTORY = 'e107_media/';
 			}
 
 			define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
@@ -1615,7 +1660,7 @@ class e107
 							define("e_CACHE", e_MEDIA."cache/");
 			}
 /*
- 
+
 			if($NEWSIMAGES_DIRECTORY)
 			{
             	define("e_NEWSIMAGE", e_BASE.$NEWSIMAGES_DIRECTORY);
@@ -1692,9 +1737,9 @@ class e107
 		$PLUGINS_DIRECTORY = $this->getFolder('plugins');
 		$ADMIN_DIRECTORY = $this->getFolder('admin');
 		$eplug_admin = vartrue($GLOBALS['eplug_admin'], false);
-		
+
 		$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
-		
+
 		define('e_PAGE', $page);
 		define('e_SELF', $this->HTTP_SCHEME . '://' . $_SERVER['HTTP_HOST'] . ($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
 
@@ -1707,27 +1752,27 @@ class e107
 		$inAdminDir = FALSE;
 		$isPluginDir = strpos(e_SELF,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
 		$e107Path = str_replace($this->base_path, '', e_SELF);				// Knock off the initial bits
-		
+
 		if	(
 			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
 			  || ($isPluginDir && (strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
 			  || (varsettrue($eplug_admin) || defsettrue('ADMIN_AREA'))		// Admin forced
 			)
 		{
-			$inAdminDir = TRUE;	
+			$inAdminDir = TRUE;
 		}
-		
+
 		// This should avoid further checks - NOTE: used in js_manager.php
 		define('e_ADMIN_AREA', ($inAdminDir  && !deftrue('USER_AREA'))); //Force USER_AREA added
-		
+
 		define('ADMINDIR', $ADMIN_DIRECTORY);
-		
+
 		define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 		define('SITEURL', SITEURLBASE.e_HTTP);
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Set request related constants
 	 * @return e107
@@ -1745,7 +1790,7 @@ class e107
 				}
 			}
 		}
-		
+
 		if (strpos($_SERVER['QUERY_STRING'], ']') && preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches))
 		{
 			define('e_MENU', $matches[1]);
@@ -1764,26 +1809,26 @@ class e107
 			$e_QUERY = $_SERVER['QUERY_STRING'];
 		  	define('e_LANCODE', '');
 		}
-		
+
 		$e_QUERY = str_replace("&","&amp;", self::getParser()->post_toForm($e_QUERY));
 		define('e_QUERY', $e_QUERY);
-		
+
 		define('e_TBQS', $_SERVER['QUERY_STRING']);
 		$_SERVER['QUERY_STRING'] = e_QUERY;
 	}
-	
+
 	/**
 	 * Check if current request is secure (https)
-	 * @return 
+	 * @return
 	 */
 	public function isSecure()
 	{
 		return ($this->HTTP_SCHEME === 'https');
 	}
-	
+
 	/**
 	 * Check if current user is banned
-	 * 
+	 *
 	 * Generates the queries to interrogate the ban list, then calls $this->check_ban().
 	 * If the user is banned, $check_ban() never returns - so a return from this routine indicates a non-banned user.
 	 *
@@ -1841,7 +1886,7 @@ class e107
 	 * If $do_return, will always return with ban status - TRUE for OK, FALSE for banned.
 	 * If return permitted, will never display a message for a banned user; otherwise will display any message then exit
 	 * XXX - clean up
-	 * 
+	 *
 	 * @param string $query
 	 * @param boolean $show_error
 	 * @param boolean $do_return
@@ -1895,13 +1940,13 @@ class e107
 	 * Returns TRUE if ban accepted.
 	 * Returns FALSE if ban not accepted (i.e. because on whitelist, or invalid IP specified)
 	 * FIXME - remove $admin_log global, add admin_log method getter instead
-	 * 
+	 *
 	 * @param string $bantype
 	 * @param string $ban_message
 	 * @param string $ban_ip
 	 * @param integer $ban_user
 	 * @param string $ban_notes
-	 * 
+	 *
 	 * @return boolean check result
 	 */
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
@@ -1939,7 +1984,7 @@ class e107
 	/**
 	 * Get the current user's IP address
 	 * returns the address in internal 'normalised' IPV6 format - so most code should continue to work provided the DB Field is big enougn
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getip()
@@ -1960,7 +2005,7 @@ class e107
 						'#^169\.254\..*#' , // RFC3330 - Link-local, auto-DHCP
 						'#^2(?:2[456789]|[345][0-9])\..*#'
 					); // Single check for Class D and Class E
-					
+
 					$ip = preg_replace($ip2, $ip, $ip3[1]);
 				}
 			}
@@ -1980,7 +2025,7 @@ class e107
 	/**
 	 * Encode an IP address to internal representation. Returns string if successful; FALSE on error
 	 * Default separates fields with ':'; set $div='' to produce a 32-char packed hex string
-	 * 
+	 *
 	 * @param string $ip
 	 * @param string $div divider
 	 * @return string encoded IP
@@ -2031,7 +2076,7 @@ class e107
 
 	/**
 	 * Takes an encoded IP address - returns a displayable one
-	 * Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format, 
+	 * Set $IP4Legacy TRUE to display 'old' (IPv4) addresses in the familiar dotted format,
 	 * FALSE to display in standard IPV6 format
 	 * Should handle most things that can be thrown at it.
 	 *
@@ -2099,7 +2144,7 @@ class e107
 
 		return $ret;
 	}
-	
+
 	/**
 	 * Given a string which may be IP address, email address etc, tries to work out what it is
 	 *
@@ -2138,10 +2183,10 @@ class e107
 	 * Return a memory value formatted helpfully
 	 * $dp overrides the number of decimal places displayed - realistically, only 0..3 are sensible
 	 * FIXME e107->parseMemorySize() START
-	 * - maybe we are in need of General Helper handler, this + the above ban/ip related methods 
+	 * - maybe we are in need of General Helper handler, this + the above ban/ip related methods
 	 * are not fitting e107 class logic anymore
-	 * - change access to public static - more useful 
-	 * - out of (integer) range case? 
+	 * - change access to public static - more useful
+	 * - out of (integer) range case?
 	 * 32 bit systems range: -2147483648 to 2147483647
 	 * 64 bit systems range: -9223372036854775808 9223372036854775807
 	 * {@link http://www.php.net/intval}
@@ -2184,7 +2229,7 @@ class e107
 	/**
 	 * Get the current memory usage of the code
 	 * If $separator argument is null, raw data (array) will be returned
-	 * 
+	 *
 	 * @param null|string $separator
 	 * @return string|array memory usage
 	 */
@@ -2201,10 +2246,10 @@ class e107
 		{
 		  $ret[] = 'Unknown';
 		}
-		
+
 		return (null !== $separator ? implode($separator, $ret) : $ret);
 	}
-	
+
 	/**
 	 * Check if plugin is installed
 	 * @param string $plugname
@@ -2215,12 +2260,12 @@ class e107
 		// Could add more checks here later if appropriate
 		return self::getConfig()->isData('plug_installed/'.$plugname);
 	}
-	
+
 	/**
 	 * Safe way to set ini var
 	 * @param string $var
 	 * @param string $value
-	 * @return 
+	 * @return
 	 */
 	public static function ini_set($var, $value)
 	{
@@ -2233,32 +2278,32 @@ class e107
 
 	public function __get($name)
 	{
-		switch ($name) 
+		switch ($name)
 		{
 			case 'tp':
 				$ret = e107::getParser();
 			break;
-			
+
 			case 'sql':
 				$ret = e107::getDb();
 			break;
-			
+
 			case 'ecache':
 				$ret = e107::getCache();
 			break;
-			
+
 			case 'arrayStorage':
 				$ret = e107::getArrayStorage();
 			break;
-			
+
 			case 'e_event':
 				$ret = e107::getEvent();
 			break;
-			
+
 			case 'ns':
 				$ret = e107::getRender();
 			break;
-			
+
 			case 'url':
 				$ret = e107::getUrl();
 			break;
@@ -2270,25 +2315,25 @@ class e107
 			case 'override':
 				$ret = e107::getSingleton('override', e_HANDLER.'override_class.php');
 			break;
-			
+
 			case 'notify':
 				$ret = e107::getNotify();
 			break;
-			
+
 			case 'e_online':
 				$ret = e107::getOnline();
 			break;
-			
+
 			case 'user_class':
 				$ret = e107::getUserClass();
 			break;
-			
+
 			default:
 				trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
-				return null; 
+				return null;
 			break;
 		}
-		
+
 		$this->{$name} = $ret;
 		return $ret;
 	}

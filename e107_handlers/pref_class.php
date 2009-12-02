@@ -9,9 +9,9 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.32 $
+ * $Date: 2009-12-02 16:50:58 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -27,7 +27,7 @@ require_once(e_HANDLER.'model_class.php');
  * @author SecretR
  * @copyright Copyright (c) 2009, e107 Inc.
  */
-class e_pref extends e_admin_model 
+class e_pref extends e_admin_model
 {
 	/**
 	 * Preference ID - DB row value
@@ -35,22 +35,22 @@ class e_pref extends e_admin_model
 	 * @var string
 	 */
 	protected $prefid;
-	
+
 	/**
 	 * Preference ID alias e.g. 'core' is an alias of prefid 'SitePrefs'
 	 * Used in e.g. server cache file name
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $alias;
-	
+
 	/**
 	 * Runtime cache, set on first data load
 	 *
 	 * @var string
 	 */
 	protected $pref_cache = '';
-	
+
 	/**
 	 * Backward compatibility - serialized preferences
 	 * Note: serialized preference storage is deprecated
@@ -58,7 +58,7 @@ class e_pref extends e_admin_model
 	 * @var boolean
 	 */
 	protected $serial_bc = false;
-	
+
 	/**
 	 * If true, $prefid.'_Backup' row will be created/updated
 	 * on every {@link save()} call
@@ -66,7 +66,7 @@ class e_pref extends e_admin_model
 	 * @var boolean
 	 */
 	protected $set_backup = false;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -78,19 +78,19 @@ class e_pref extends e_admin_model
 	function __construct($prefid, $alias = '', $data = array(), $sanitize_data = true)
 	{
 		require_once(e_HANDLER.'cache_handler.php');
-		
+
 		$this->prefid = preg_replace('/[^\w\-]/', '', $prefid);
 		if(empty($alias))
 		{
 			$alias = $prefid;
 		}
 		$this->alias = preg_replace('/[^\w\-]/', '', $alias);
-		
+
 		$this->loadData($data, $sanitize_data);
 	}
-	
+
 	/**
-	 * Advanced getter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support), 
+	 * Advanced getter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support),
 	 * alias of {@link e_model::getData()}
 	 * If $pref_name is empty, all data array will be returned
 	 *
@@ -103,11 +103,11 @@ class e_pref extends e_admin_model
 	{
 		return $this->getData($pref_name, $default, $index);
 	}
-	
+
 	/**
 	 * Simple getter - $pref_name is not parsed (no multidimensional arrays support), alias of {@link e_model::get()}
-	 * This is the prefered (performance wise) method when simple preference is retrieved  
-	 * 
+	 * This is the prefered (performance wise) method when simple preference is retrieved
+	 *
 	 * @param string $pref_name
 	 * @param mixed $default
 	 * @return mixed
@@ -116,11 +116,11 @@ class e_pref extends e_admin_model
 	{
 		return parent::get((string) $pref_name, $default);
 	}
-	
+
 	/**
 	 * Advanced setter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support)
 	 * If $pref_name is array, it'll be merged with existing preference data, non existing preferences will be added as well
-	 * 
+	 *
 	 * @param string|array $pref_name
 	 * @param mixed $value
 	 * @return e_pref
@@ -131,18 +131,18 @@ class e_pref extends e_admin_model
 		//object reset not allowed, adding new pref is allowed
 		if(empty($pref_name))
 		{
-			return $this; 
+			return $this;
 		}
-		
+
 		//Merge only allowed
 		if(is_array($pref_name))
 		{
 			$this->mergeData($pref_name, false, false, false);
 			return $this;
 		}
-		
+
 		parent::setData($pref_name, $value, false);
-		
+
 		//BC
 		if($this->alias === 'core')
 		{
@@ -150,11 +150,11 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Advanced setter - $pref_name could be path in format 'pref1/pref2/pref3' (multidimensional arrays support)
 	 * Object data reseting is not allowed, adding new preferences is controlled by $strict parameter
-	 * 
+	 *
 	 * @param string|array $pref_name
 	 * @param mixed $value
 	 * @param boolean $strict true - update only, false - same as setPref()
@@ -166,18 +166,18 @@ class e_pref extends e_admin_model
 		//object reset not allowed, adding new pref is not allowed
 		if(empty($pref_name))
 		{
-			return $this; 
+			return $this;
 		}
-		
+
 		//Merge only allowed
 		if(is_array($pref_name))
 		{
 			$this->mergeData($pref_name, $strict, false, false);
 			return $this;
 		}
-		
+
 		parent::setData($pref_name, $value, $strict);
-		
+
 		//BC
 		if($this->alias === 'core')
 		{
@@ -185,11 +185,11 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Simple setter - $pref_name is not parsed (no multidimensional arrays support)
 	 * Adding new pref is allowed
-	 * 
+	 *
 	 * @param string $pref_name
 	 * @param mixed $value
 	 * @return e_pref
@@ -202,7 +202,7 @@ class e_pref extends e_admin_model
 			return $this;
 		}
 		parent::set((string) $pref_name, $value, false);
-		
+
 		//BC
 		if($this->alias === 'core')
 		{
@@ -210,11 +210,11 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Simple setter - $pref_name is  not parsed (no multidimensional arrays support)
 	 * Non existing setting will be not created
-	 * 
+	 *
 	 * @param string $pref_name
 	 * @param mixed $value
 	 * @return e_pref
@@ -227,7 +227,7 @@ class e_pref extends e_admin_model
 			return $this;
 		}
 		parent::set((string) $pref_name, $value, true);
-		
+
 		//BC
 		if($this->alias === 'core')
 		{
@@ -235,46 +235,46 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Add new (single) preference (ONLY if doesn't exist)
 	 * No multidimensional arrays support
-	 * 
+	 *
 	 * @see addData()
 	 * @param string $pref_name
 	 * @param mixed $value
 	 * @return e_pref
 	 */
 	public function add($pref_name, $value)
-	{	
+	{
 		if(empty($pref_name) || !is_string($pref_name))
 		{
 			return $this;
 		}
-		
+
 		$this->addData($pref_name, $value);
-		return $this;	
+		return $this;
 	}
-	
+
 	/**
 	 * Add new preference or preference array (ONLY if it/they doesn't exist)
 	 * $pref_name could be path in format 'pref1/pref2/pref3'
-	 * 
+	 *
 	 * @see addData()
 	 * @param string|array $pref_name
 	 * @param mixed $value
 	 * @return e_pref
 	 */
 	public function addPref($pref_name, $value = null)
-	{	
+	{
 		$this->addData($pref_name, $value);
 		return $this;
 	}
-	
+
 	/**
 	 * Remove single preference
 	 * $pref_name is not parsed as a path
-	 * 
+	 *
 	 * @see e_model::remove()
 	 * @param string $pref_name
 	 * @return e_pref
@@ -283,7 +283,7 @@ class e_pref extends e_admin_model
 	{
 		global $pref;
 		parent::remove((string) $pref_name);
-		
+
 		//BC
 		if($this->alias === 'core')
 		{
@@ -291,21 +291,21 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Remove single preference (parse $pref_name)
 	 * $pref_name could be path in format 'pref1/pref2/pref3'
-	 * 
+	 *
 	 * @see removeData()
 	 * @param string $pref_name
 	 * @return e_pref
 	 */
 	public function removePref($pref_name)
 	{
-		$this->removeData($pref_name);		
+		$this->removeData($pref_name);
 		return $this;
 	}
-	
+
 	/**
 	 * Disallow public use of e_model::addData()
 	 * Disallow preference override
@@ -325,11 +325,11 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Disallow public use of e_model::setData()
 	 * Only data merge possible
-	 * 
+	 *
 	 * @param string|array $pref_name
 	 * @param mixed $value
 	 * @return e_pref
@@ -339,18 +339,18 @@ class e_pref extends e_admin_model
 		global $pref;
 		if(empty($pref_name))
 		{
-			return $this; 
+			return $this;
 		}
-		
+
 		//Merge only allowed
 		if(is_array($pref_name))
 		{
 			$this->mergeData($pref_name, false, false, false);
 			return $this;
 		}
-		
+
 		parent::setData($pref_name, $value, false);
-		
+
 		//BC
 		if($this->alias === 'core')
 		{
@@ -358,7 +358,7 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Disallow public use of e_model::removeData()
 	 * Object data reseting is not allowed
@@ -370,7 +370,7 @@ class e_pref extends e_admin_model
 	{
 		global $pref;
 		parent::removeData((string) $pref_name);
-		
+
 		//BC
 		if($this->alias === 'core')
 		{
@@ -378,7 +378,7 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Reset object data
 	 *
@@ -405,7 +405,7 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Load object data - public
 	 *
@@ -426,10 +426,10 @@ class e_pref extends e_admin_model
 				$pref = $this->getData();
 			}
 		}
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Load object data
 	 *
@@ -439,40 +439,40 @@ class e_pref extends e_admin_model
 	protected function _load($force = false)
 	{
 		$id = $this->prefid;
-		$data = $force ? false : $this->getPrefCache(true); 
-		
+		$data = $force ? false : $this->getPrefCache(true);
+
 		if($data !== false)
 		{
 			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
 			$this->loadData($data, false);
 			return $this;
 		}
-		
+
 		if (e107::getDb()->db_Select('core', 'e107_value', "e107_name='{$id}'"))
 		{
 			$row = e107::getDb()->db_Fetch();
-			
+
 			if($this->serial_bc)
 			{
-				$data = unserialize($row['e107_value']); 
+				$data = unserialize($row['e107_value']);
 				$row['e107_value'] = e107::getArrayStorage()->WriteArray($data, false);
 			}
-			else 
+			else
 			{
 				$data = e107::getArrayStorage()->ReadArray($row['e107_value']);
 			}
-			
+
 			$this->pref_cache = $row['e107_value']; //runtime cache
 			$this->setPrefCache($row['e107_value'], true);
 		}
 
 		if(empty($data))
 			$data = array();
-		
+
 		$this->loadData($data, false);
 		return $this;
 	}
-	
+
 	/**
 	 * Save object data to DB
 	 *
@@ -488,49 +488,49 @@ class e_pref extends e_admin_model
 		{
 			return false;
 		}
-		
+
 		if($from_post)
 		{
 			$this->mergePostedData(); //all posted data is sanitized and filtered vs preferences/_data_fields array
 		}
-		
+
 		if($this->hasValidationError())
-		{ 
+		{
 			return false;
 		}
-		
+
 		//FIXME - switch to new model system messages (separate eMessage namespaces)
 		$emessage = e107::getMessage();
-		
+
 		if(!$this->data_has_changed && !$force)
 		{
 			$emessage->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
 			return 0;
 		}
-		
+
 		//Save to DB
 		if(!$this->hasError())
 		{
 			if($this->serial_bc)
 			{
-				$dbdata = serialize($this->getPref()); 
+				$dbdata = serialize($this->getPref());
 			}
-			else 
+			else
 			{
 				$dbdata = $this->toString(false);
 			}
-			
+
 			if(e107::getDb()->db_Select_gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}', '".addslashes($dbdata)."') "))
 			{
 				$this->data_has_changed = false; //reset status
-				
+
 				if($this->set_backup === true && !empty($this->pref_cache))
 				{
 					if($this->serial_bc)
 					{
-						$dbdata = serialize(e107::getArrayStorage()->ReadArray($this->pref_cache)); 
+						$dbdata = serialize(e107::getArrayStorage()->ReadArray($this->pref_cache));
 					}
-					else 
+					else
 					{
 						$dbdata = $this->pref_cache;
 					}
@@ -541,14 +541,14 @@ class e_pref extends e_admin_model
 					}
 				}
 				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
-				
+
 				$emessage->add('Settings successfully saved.', E_MESSAGE_SUCCESS, $session_messages);
 				//BC
 				if($this->alias === 'core')
 				{
 					$pref = $this->getData();
 				}
-				return true; 
+				return true;
 			}
 			elseif(e107::getDb()->getLastErrorNumber())
 			{
@@ -557,7 +557,7 @@ class e_pref extends e_admin_model
 				return false;
 			}
 		}
-		
+
 		if($this->hasError())
 		{
 			//add errors to the eMessage stack
@@ -565,13 +565,13 @@ class e_pref extends e_admin_model
 			$emessage->add('Settings not saved.', E_MESSAGE_ERROR, $session_messages);
 			return false;
 		}
-		else 
+		else
 		{
 			$emessage->add('Settings not saved as no changes were made.', E_MESSAGE_INFO, $session_messages);
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Get cached data from server cache file
 	 *
@@ -584,10 +584,10 @@ class e_pref extends e_admin_model
 		{
 			$this->pref_cache = ecache::retrieve_sys('Config_'.$this->alias, 24 * 60, true);
 		}
-		
+
 		return ($toArray && $this->pref_cache ? e107::getArrayStorage()->ReadArray($this->pref_cache) : $this->pref_cache);
 	}
-	
+
 	/**
 	 * Convert data to a string and store it to a server cache file
 	 * If $cache_string is an array, it'll be converted to a string
@@ -613,10 +613,10 @@ class e_pref extends e_admin_model
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Clear pref cache
-	 * 
+	 *
 	 * @param string $cache_name default to current alias
 	 * @param boolean $runtime clear runtime cache as well ($this->pref_cache)
 	 * @return e_pref
@@ -630,7 +630,7 @@ class e_pref extends e_admin_model
 		ecache::clear_sys('Config_'.(!empty($cache_name) ? $cache_name : $this->alias));
 		return $this;
 	}
-	
+
 	/**
 	 * Validation
 	 *
@@ -641,90 +641,90 @@ class e_pref extends e_admin_model
 	{
 		return parent::validate($data);
 	}
-	
+
 	/**
 	 * Set $set_backup option
 	 *
 	 * @param boolean $optval
 	 * @return e_pref
-	 * 
+	 *
 	 */
 	public function setOptionBackup($optval)
 	{
 		$this->set_backup = $optval;
 		return $this;
 	}
-	
+
 	/**
 	 * Set $serial_bc option
 	 *
 	 * @param boolean $optval
 	 * @return e_pref
-	 * 
+	 *
 	 */
 	public function setOptionSerialize($optval)
 	{
 		$this->serial_bc = $optval;
 		return $this;
 	}
-	
+
     /**
      * Override
      */
     public function dbInsert()
     {
     }
-    
+
     /**
      * Override
      */
     public function dbUpdate()
     {
     }
-	
+
     /**
      * Override
      */
     public function dbReplace()
     {
     }
-	
+
     /**
      * Override
      */
     public function dbDelete()
     {
     }
-	
+
 }
 
 /**
  * Handle core preferences
- * 
+ *
  * @package e107
  * @category e107_handlers
  * @version 1.0
  * @author SecretR
  * @copyright Copyright (c) 2009, e107 Inc.
  */
-final class e_core_pref extends e_pref 
-{	
+final class e_core_pref extends e_pref
+{
 	/**
 	 * Allowed core id array
 	 *
 	 * @var array
 	 */
 	public $aliases = array(
-		'core' 			=> 'SitePrefs', 
-		'core_backup' 	=> 'SitePrefs_Backup', 
+		'core' 			=> 'SitePrefs',
+		'core_backup' 	=> 'SitePrefs_Backup',
 		'core_old' 		=> 'pref',
-		'emote' 		=> 'emote_default', //TODO include other emote packs of the user. 
-		'menu' 			=> 'menu_pref', 
-		'search' 		=> 'search_prefs', 
+		'emote' 		=> 'emote_default', //TODO include other emote packs of the user.
+		'menu' 			=> 'menu_pref',
+		'search' 		=> 'search_prefs',
 		'notify' 		=> 'notify_prefs',
 		'ipool'			=> 'IconPool'
 	);
-	
+
 	/**
 	 * Backward compatibility - list of prefid's which operate wit serialized data
 	 *
@@ -743,31 +743,31 @@ final class e_core_pref extends e_pref
 	{
 		$pref_alias = $alias;
 		$pref_id = $this->getConfigId($alias);
-		
-		if(!$pref_id) 
+
+		if(!$pref_id)
 		{
 			$pref_id = $pref_alias = '';
 			trigger_error('Core config ID '.$alias.' not found!', E_USER_WARNING);
 			return;
 		}
-		
+
 		if(in_array($pref_alias, $this->serial_bc_array))
 		{
 			$this->setOptionSerialize(true);
 		}
-		
+
 		if('core' === $pref_alias)
 		{
 			$this->setOptionBackup(true);
 		}
-		
+
 		parent::__construct($pref_id, $pref_alias);
 		if($load && $pref_id)
 		{
 			$this->load();
 		}
 	}
-	
+
 	/**
 	 * Get config ID
 	 * Allowed values: key or value from $alias array
@@ -785,7 +785,7 @@ final class e_core_pref extends e_pref
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get config ID
 	 * Allowed values: key or value from $alias array
@@ -803,14 +803,14 @@ final class e_core_pref extends e_pref
 
 /**
  * Handle plugin preferences
- * 
+ *
  * @package e107
  * @category e107_handlers
  * @version 1.0
  * @author SecretR
  * @copyright Copyright (c) 2009, e107 Inc.
  */
-class e_plugin_pref extends e_pref 
+class e_plugin_pref extends e_pref
 {
 	/**
 	 * Unique plugin name
@@ -818,7 +818,7 @@ class e_plugin_pref extends e_pref
 	 * @var string
 	 */
 	protected $plugin_id;
-	
+
 	/**
 	 * Constructor
 	 * Note: object data will be loaded only if the plugin is installed (no matter of the passed
@@ -841,7 +841,7 @@ class e_plugin_pref extends e_pref
 			$this->load();
 		}
 	}
-	
+
 	/**
 	 * Retrive unique plugin name
 	 *
@@ -872,7 +872,7 @@ class e_plugin_pref extends e_pref
 //  Just to be safe I have changed a number of menu_pref edits to use setArray().
 //
 
-class prefs 
+class prefs
 {
 	var $prefVals;
 	var $prefArrays;
@@ -885,7 +885,7 @@ class prefs
 	// If $use_default is TRUE, $RowList entries are added to the default array. Otherwise only $RowList is used.
 	// Returns TRUE on success (measured as getting at least one row of data); false on error.
 	// Any data read is buffered (in serialised form) here - retrieve using get()
-	function ExtractPrefs($RowList = "", $use_default = FALSE) 
+	function ExtractPrefs($RowList = "", $use_default = FALSE)
 	{
 		global $sql;
 		$Args = '';
@@ -920,29 +920,29 @@ class prefs
 	* @return  string pref value, slashes already stripped. FALSE on error
 	* @access  public
 	*/
-	function get($Name) 
+	function get($Name)
 	{
 		if(isset($this->prefVals['core'][$Name]))
 		{
 			if($this->prefVals['core'][$Name] != '### ROW CACHE FALSE ###')
 			{
 				return $this->prefVals['core'][$Name];		// Dava from cache
-			} 
-			else 
+			}
+			else
 			{
 				return false;
 			}
 		}
 
 		// Data not in cache - retrieve from DB
-		$get_sql = new db; // required so sql loops don't break using $tp->toHTML(). 
-		if($get_sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default')) 
+		$get_sql = new db; // required so sql loops don't break using $tp->toHTML().
+		if($get_sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default'))
 		{
 			$row = $get_sql->db_Fetch();
 			$this->prefVals['core'][$Name] = $row['e107_value'];
 			return $this->prefVals['core'][$Name];
-		} 
-		else 
+		}
+		else
 		{	// Data not in DB - put a 'doesn't exist' entry in cache to save another DB access
 			$this->prefVals['core'][$Name] = '### ROW CACHE FALSE ###';
 			return false;
