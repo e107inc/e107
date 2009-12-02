@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-12-02 10:03:51 $
+ * $Revision: 1.40 $
+ * $Date: 2009-12-02 10:09:39 $
  * $Author: e107coders $
  *
 */
@@ -563,7 +563,7 @@ class media_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					rename(e_MEDIA.$newpath,e_MEDIA.$oldpat);	//move it back. 
+					rename(e_MEDIA.$newpath,e_MEDIA.$oldpath);	//move it back. 
 				}
 			}
 		}	
