@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2009-11-28 15:34:45 $
-|     $Author: secretr $
+|     $Revision: 1.38 $
+|     $Date: 2009-12-02 22:34:15 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("I")) 
+if (!getperms("I"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -35,69 +35,69 @@ class links_admin extends e_admin_dispatcher
 			'path' 			=> null,
 			'ui' 			=> 'links_admin_form_ui',
 			'uipath' 		=> null
-		)				
-	);	
+		)
+	);
 
 	protected $adminMenu = array(
 		'main/list'		=> array('caption'=> LCLAN_62, 'perm' => 'I'),
 		'main/create' 	=> array('caption'=> LCLAN_63, 'perm' => 'I'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => 'I'),
-		'main/sublinks'	=> array('caption'=> LINKLAN_4, 'perm' => 'I')		
+		'main/sublinks'	=> array('caption'=> LINKLAN_4, 'perm' => 'I')
 	);
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'				
-	);	
-	
+		'main/edit'	=> 'main/list'
+	);
+
 	protected $menuTitle = 'links';
 }
 
 class links_admin_ui extends e_admin_ui
-{	
+{
 		protected $pluginTitle 	= "Site links";
 		protected $pluginName 	= 'core';
-		protected $table 		= "links";		
-		protected $listQry 		= "SELECT * FROM #links ORDER BY link_category,link_order, link_id ASC"; // without any Order or Limit. 
+		protected $table 		= "links";
+		protected $listQry 		= "SELECT * FROM #links ORDER BY link_category,link_order, link_id ASC"; // without any Order or Limit.
 		protected $pid 			= "link_id";
 		protected $perPage 		= 15;
 		protected $batchDelete 	= true;
-				
+
 		protected $fields = array(
 			'checkboxes' 		=> array('title'=> '',							'width' => '3%','forced' => true,'thclass' => 'center first','class' => 'center first'),
-			'link_button'		=> array('title'=> LAN_ICON, 	'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),		
+			'link_button'		=> array('title'=> LAN_ICON, 	'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center'),
 			'link_id'			=> array('title'=> ID, 			'nolist'=>TRUE),
 			'link_name'	   		=> array('title'=> LCLAN_15,	'width'=>'auto','type'=>'method'),
-			'link_parent' 		=> array('title'=> 'Sublink of', 'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),         
+			'link_parent' 		=> array('title'=> 'Sublink of', 'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
 			'link_url'	   		=> array('title'=> LCLAN_93, 	'width'=>'auto', 'type'=>'text'),
-			'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),	
-			'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'bbarea', 'method'=>'tinymce_plugins', 'width' => 'auto'),	
+			'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
+			'link_description' 	=> array('title'=> LCLAN_17, 		'type' => 'bbarea', 'method'=>'tinymce_plugins', 'width' => 'auto'),
 			'link_category' 	=> array('title'=> LCLAN_12, 		'type' => 'dropdown', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 			'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'text', 'width' => 'auto'),
 			'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
-			'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),						
-		//	'increment' 		=> array('title'=> LCLAN_91,			'width' => '3%','forced' => true,'thclass' => 'center'),	  	
+			'link_function'		=> array('title'=> 'Function', 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
+		//	'increment' 		=> array('title'=> LCLAN_91,			'width' => '3%','forced' => true,'thclass' => 'center'),
 			'options' 			=> array('title'=> LAN_OPTIONS, 		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center')
 		);
-		
+
 		protected $fieldpref =  array('checkboxes','link_id','link_name','link_class','link_order','options');
 
 		protected $prefs = array(
 			'linkpage_screentip'	=> array('title'=>LCLAN_78,	'type'=>'boolean', 'help'=>LCLAN_79),
 			'sitelinks_expandsub'	=> array('title'=>LCLAN_80,	'type'=>'boolean', 'help'=>LCLAN_81)
 		);
-		
-		
-		//FIXME - need to use linkArray data instead of $listQry-returned data	
+
+
+		//FIXME - need to use linkArray data instead of $listQry-returned data
 		protected $linkArray = array();
-		
-	
+
+
 	function init()
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-			
+
 		$this->getLinks();
-		
+
 		$query = "SELECT link_id,link_name FROM #links ORDER BY link_name";
 		$this->linkParent[0] = '-';
 		$sql->db_Select_gen($query);
@@ -106,7 +106,7 @@ class links_admin_ui extends e_admin_ui
 			$id = $row['link_id'];
 			$this->linkParent[$id] = $row['link_name'];
 		}
-				
+
 		$tmp = e107::getAddonConfig('e_sitelink','sitelinks');
 
 		foreach($tmp as $cat=> $array)
@@ -119,7 +119,7 @@ class links_admin_ui extends e_admin_ui
 			}
 			$this->linkFunctions[$cat] = $func;
 		}
-				
+
 		$this->linkCategory = array(
 			1	=> "1 - Main",
 			2	=> "2 - Alt",
@@ -132,43 +132,43 @@ class links_admin_ui extends e_admin_ui
 			9	=> "9 - Alt",
 			10	=> "10 - Alt"
 		);
-		
+
 		$this->linkOpen = array(
 			0 => LCLAN_20, // 0 = same window
 			1 => LCLAN_23, // new window
 			4 => LCLAN_24, // 4 = miniwindow  600x400
 			5 => LINKLAN_1 // 5 = miniwindow  800x600
 		);
-		
+
 		$sitelinksTemplates = e107::getLayouts(null, 'sitelinks');
-		
-		//TODO review. 
+
+		//TODO review.
 		$this->setDropDown('link_parent',$this->linkParent);
 		$this->setDropDown('link_category',$this->linkCategory);
 		$this->setDropDown('link_open',$this->linkOpen);
 	//	$this->setDropDown('link_function',$this->linkFunctions);
 		// $this->setDropDown('link_template',$sitelinksTemplates);
 
-		
+
 		if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] != "")
 		{
-			$this->generateSublinks();	
+			$this->generateSublinks();
 		}
 	}
 
 
 
 
-	
-	
+
+
 	/**
-	 * Get linklist in it's proper order. 
+	 * Get linklist in it's proper order.
 	 * @return
 	 */
 	function getLinks()
 	{
 		$sql = e107::getDb();
-		
+
 		if($this->link_total = $sql->db_Select("links", "*", "ORDER BY link_category,link_order, link_id ASC", "nowhere"))
 		{
 			while($row = $sql->db_Fetch())
@@ -176,9 +176,9 @@ class links_admin_ui extends e_admin_ui
 				$ret[$row['link_parent']][] = $row;
 			}
 		}
-		
+
 		$this->linkArray = $ret;
-		
+
 		// print_a($this->linkArray);
 	}
 
@@ -292,18 +292,18 @@ class links_admin_ui extends e_admin_ui
 
 
 
-		
+
 	function generateSublinks()
 	{
 		$subtype = $_POST['sublink_type'];
 			$sublink = $this->sublink_list($subtype);
-		
+
 			$sql2 = e107::getDb('sql2');
-		
+
 			$sql->db_Select("links", "*", "link_id = '".$_POST['sublink_parent']."'");
 			$par = $sql->db_Fetch();
 			extract($par);
-		
+
 			$sql->db_Select($sublink['table'], "*", $sublink['query']);
 			$count = 1;
 			while($row = $sql->db_Fetch())
@@ -315,9 +315,9 @@ class links_admin_ui extends e_admin_ui
 				$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $link_button;
 				$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
 				$subparent = $_POST['sublink_parent'];
-				
-		
-				$insert_array = array(				
+
+
+				$insert_array = array(
 						'link_name'			=> $subname,
 						'link_url'			=> $suburl,
 						'link_description'	=> $subdiz,
@@ -328,8 +328,8 @@ class links_admin_ui extends e_admin_ui
 						'link_open'			=> $link_open,
 						'link_class'		=> $link_class,
 						'link_function'		=> ''
-				);				
-		
+				);
+
 				if($sql2->db_Insert("links",$insert_array))
 				{
 					$message .= LAN_CREATED." ({$name})[!br!]";
@@ -341,36 +341,40 @@ class links_admin_ui extends e_admin_ui
 				}
 				$count++;
 			}
-		
+
 			if($message)
 			{
 				// sitelinks_adminlog('01', $message); // 'Sublinks generated'
 			}
-	}	
+	}
 }
 
 
 class links_admin_form_ui extends e_admin_form_ui
 {
-		
+
 	function init()
 	{
-				
+
 	}
-	
-	
+
+
 	function link_name($curVal,$mode,$parm)
-	{		
+	{
 		//FIXME - I need access to the full array of $row, so I can check for the value of $link_parent;
 		if($mode == "read")
 		{
-			return "<img src='".e_IMAGE."generic/branchbottom.gif' alt='' />".$curVal;		
+			return "<img src='".e_IMAGE."generic/branchbottom.gif' alt='' />".$curVal;
+		}
+		else if($mode == 'write')
+		{
+			return $this->text('link_name',$curVal,100,array('default'=> "(".LAN_OPTIONAL.")"));
 		}
 		else
 		{
-			return $curVal;	
+			return $curVal;
 		}
-		
+
 	}
 
 
@@ -381,18 +385,18 @@ class links_admin_form_ui extends e_admin_form_ui
 		{
 			return $curVal; //  $this->linkFunctions[$curVal];
 		}
-		
+
 		if($mode == 'write')
 		{
 			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('default'=> "(".LAN_OPTIONAL.")"));
 		}
-		
+
 		else
 		{
 			return $this->linkFunctions;
 		}
 	}
-	
+
 
 }
 
