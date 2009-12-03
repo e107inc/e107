@@ -9,19 +9,19 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/download/download.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-18 01:05:28 $
- * $Author: e107coders $
+ * $Revision: 1.13 $
+ * $Date: 2009-12-03 00:48:28 $
+ * $Author: bugrain $
  */
 
 if (!defined('e107_INIT'))
-{ 
+{
 	require_once("../../class2.php");
 }
 
 if (!e107::isInstalled('download'))
 {
-	header("location:".e_BASE."index.php"); 
+	header("location:".e_BASE."index.php");
 }
 
 include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php');
@@ -273,7 +273,7 @@ if ($action == "list")
          $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $download_shortcodes);
 	   }
 	   $dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $download_shortcodes);
-      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $type, DOWLAN_54));
+      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $type));
 	   $dl_title = $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
 		$ns->tablerender($dl_title, $dl_text);
 		$text = "";		   // If other files, show in a separate block
@@ -315,7 +315,12 @@ if ($action == "list")
    	}
 
       $dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_END, TRUE, $download_shortcodes);
-      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $type));
+
+	   if($sql->db_Select("download_category", "*", "download_category_id='{$download_category_parent}' "))
+	   {
+	      $parent = $sql->db_Fetch();
+	   }
+      $dlbreadcrumb = $dl->getBreadcrumb(array(LAN_dl_18=>e_SELF, $parent['download_category_name']=>e_SELF."?list.".$parent['download_category_id'], $type));
       $dl_title .= $tp->parseTemplate("{BREADCRUMB=dlbreadcrumb}", TRUE, $download_shortcodes);
 		$ns->tablerender($dl_title, $dl_text);
 	}
