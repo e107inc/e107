@@ -9,14 +9,17 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_rss.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-03 22:32:34 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
 
-if (isset($pref['plug_installed'])  && !isset($pref['plug_installed']['calendar_menu'])) return;
+if (!e107::isInstalled('calendar_menu')) return;
+
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');		// RSS messages are in admin language file
+
 
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
@@ -40,16 +43,18 @@ $current		= mktime(0,0,0,$current_month, $current_day, $current_year);
 
 $qry = "
 SELECT e.*, c.event_cat_name
-FROM #event AS e
-LEFT JOIN #event_cat AS c ON c.event_cat_id = e.event_category
-WHERE e.event_start>='$current' AND c.event_cat_class REGEXP '".e_CLASS_REGEXP."'
+FROM `#event` AS e
+LEFT JOIN `#event_cat` AS c ON c.event_cat_id = e.event_category
+WHERE e.event_start>='{$current}' AND c.event_cat_class REGEXP '".e_CLASS_REGEXP."'
 ORDER BY e.event_start ASC LIMIT 0,".$this->limit;
 
 $rss = array();
 $sqlrss = new db;
-if($items = $sqlrss->db_Select_gen($qry)){
+if($items = $sqlrss->db_Select_gen($qry))
+{
 	$i=0;
-	while($rowrss = $sqlrss -> db_Fetch()){
+	while($rowrss = $sqlrss -> db_Fetch())
+	{
 		$tmp						= explode(".", $rowrss['event_author']);
 		$rss[$i]['author']			= $tmp[1];
 		$rss[$i]['author_email']	= '';
