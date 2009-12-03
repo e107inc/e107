@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: news_shortcodes.php,v 1.31 2009-10-23 18:14:42 secretr Exp $
+* $Id: news_shortcodes.php,v 1.32 2009-12-03 20:46:39 bugrain Exp $
 *
 * News shortcode batch
 */
@@ -111,12 +111,12 @@ class news_shortcodes
 		{
 			return '';
 		}
-		
+
 		if (vartrue($pref['multilanguage']))
 		{	// Can have multilanguage news table, monlingual comment table. If the comment table is multilingual, it'll only count entries in the current language
 			$news_item['news_comment_total'] = $sql->db_Count("comments", "(*)", "WHERE comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
 		}
-		
+
 		//XXX - ??? - another query? We should cache it in news table.
 		if ($pref['comments_icon'] && $news_item['news_comment_total'])
 		{
@@ -166,24 +166,25 @@ class news_shortcodes
 
 	function sc_newsdate($parm)
 	{
+	   $date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
 		$con = new convert;
 		if($parm == '')
 		{
-			return  $con->convert_date($this->news_item['news_datestamp'], 'long');
+			return  $con->convert_date($date, 'long');
 		}
 		switch($parm)
 		{
 			case 'long':
-			return  $con->convert_date($this->news_item['news_datestamp'], 'long');
+			return  $con->convert_date($date, 'long');
 			break;
 			case 'short':
-			return  $con->convert_date($this->news_item['news_datestamp'], 'short');
+			return  $con->convert_date($date, 'short');
 			break;
 			case 'forum':
-			return  $con->convert_date($this->news_item['news_datestamp'], 'forum');
+			return  $con->convert_date($date, 'forum');
 			break;
 			default :
-			return date($parm, $this->news_item['news_datestamp']);
+			return date($parm, $date);
 			break;
 		}
 	}
@@ -242,7 +243,7 @@ class news_shortcodes
 
 	function sc_extended($parm)
 	{
-		
+
 		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
 			if (defined('PRE_EXTENDEDSTRING'))
@@ -295,11 +296,11 @@ class news_shortcodes
 			case 'src':
 				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail'] : '');
 			break;
-			
+
 			case 'tag':
 				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? "<img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' />" : '');
 			break;
-		
+
 			default:
 				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail']) ? "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=extend&id={$this->news_item['news_id']}&catid={$this->news_item['news_category']}&sef={$this->news_item['news_rewrite_string']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' /></a>" : '';
 			break;
@@ -313,11 +314,11 @@ class news_shortcodes
 			case 'src':
 				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? e_IMAGE_ABS.$this->news_item['news_thumbnail'] : '');
 			break;
-			
+
 			case 'tag':
 				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail'] ? "<img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' />" : '');
 			break;
-		
+
 			default:
 				return (isset($this->news_item['news_thumbnail']) && $this->news_item['news_thumbnail']) ? "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=extend&id={$this->news_item['news_id']}&catid={$this->news_item['news_category']}&sef={$this->news_item['news_rewrite_string']}")."'><img class='news_image' src='".e_IMAGE_ABS."newspost_images/".$this->news_item['news_thumbnail']."' alt='' style='".$this->param['thumbnail']."' /></a>" : '';
 			break;
@@ -352,26 +353,26 @@ class news_shortcodes
 		{
 			$category_icon = e_IMAGE_ABS.'icons/'.$category_icon;
 		}
-		
+
 		//TODO - remove inline styles
 		if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
-		
+
 		switch($parm)
 		{
 			case 'src':
 				return $category_icon;
 			break;
-			
+
 			case 'tag':
 				return "<img class='news_image' src='{$category_icon}' alt='' style='".$this->param['caticon']."' />";
 			break;
-		
+
 			default:
 				return "<a href='".$this->e107->url->getUrl('core:news', 'main', "action=list&id={$this->news_item['news_category']}&sef={$this->news_item['news_category_rewrite_string']}")."'><img style='".$this->param['caticon']."' src='".$category_icon."' alt='' /></a>";
 			break;
 		}
 	}
-	
+
 	/**
 	 * Example usage: {NEWSITEM_SCHOOK=mysc_name|my_var1=val1&myvar2=myval2}
 	 * will fire {MYSC_NAME=news_id=1&my_var1=val1&myvar2=myval2}
@@ -380,7 +381,7 @@ class news_shortcodes
 	 * $newsdata = e107::getRegistry('core/news/schook_data');
 	 * //returns array('data' => (array) $current_news_data, 'params' => array() $current_params)
 	 * </code>
-	 * 
+	 *
 	 * @param string $parm
 	 * @return string
 	 */
