@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2009-11-12 21:46:14 $
+|     $Revision: 1.9 $
+|     $Date: 2009-12-03 00:22:25 $
 |     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
@@ -105,12 +105,12 @@ define("DOWLAN_81",  "is");
 define("DOWLAN_82",  "are");
 define("DOWLAN_83",  "unmoderated public download");
 define("DOWLAN_84",  "unmoderated public downloads");
-define('DOWLAN_85', 'This page helps you create a file for managing file upload permissions. The file is saved as <strong>--SOURCE--</strong>, and must be copied to <strong>--DEST--</strong>  before it takes effect.');
-define('DOWLAN_86', 'Settings written to ');
-define('DOWLAN_87', 'Now move this file to ');
-define('DOWLAN_88', 'Error writing file: ');
-define('DOWLAN_90', 'Add new entry');
-
+define("DOWLAN_85",  "This page helps you create a file for managing file upload permissions. The file is saved as <strong>--SOURCE--</strong>, and must be copied to <strong>--DEST--</strong>  before it takes effect.");
+define("DOWLAN_86",  "Settings written to ");
+define("DOWLAN_87",  "Now move this file to ");
+define("DOWLAN_88",  "Error writing file: ");
+define("DOWLAN_90",  "Add new entry");
+define("DOWLAN_91",  "Copy to download manager");
 define("DOWLAN_100", "Activate Download Agreement");
 define("DOWLAN_101", "Agreement Text");
 define("DOWLAN_102", "Allow Comments?");
@@ -173,7 +173,7 @@ define("DOWLAN_158", "Show sub-sub-categories on main download page");
 define("DOWLAN_159", "Include sub-sub-category counts in subcategory counts");
 define("DOWLAN_160", "Mirror list order");
 define("DOWLAN_161", "Random");
-
+define("DOWLAN_162", "Copy to newspost");
 
 define("DOWLAN_164", "Recent downloads age (in days)");
 define("DOWLAN_165", "Download Maintenance");
