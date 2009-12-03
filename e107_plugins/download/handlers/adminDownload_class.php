@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-11-28 20:46:04 $
+ * $Revision: 1.27 $
+ * $Date: 2009-12-03 00:22:25 $
  * $Author: bugrain $
  */
 
@@ -1634,7 +1634,7 @@ class adminDownload extends download
       {
          $activeUploads = $sql -> db_getList();
 
-         $text .= DOWLAN_80." ".($active_uploads == 1 ? DOWLAN_81 : DOWLAN_82).$active_uploads." ".($active_uploads == 1 ? DOWLAN_83 : DOWLAN_84);
+         $text .= DOWLAN_80." ".($active_uploads == 1 ? DOWLAN_81 : DOWLAN_82)." ".$active_uploads." ".($active_uploads == 1 ? DOWLAN_83 : DOWLAN_84);
          $text .= "</td></tr>";
 
          foreach($activeUploads as $row)
@@ -1655,9 +1655,9 @@ class adminDownload extends download
                <td class='center'>
                   <form action='".e_SELF."?dis.{$upload_id}' id='uploadform_{$upload_id}' method='post'>
                      <div>
-                        <a href='".e_SELF."?dlm.{$upload_id}'><img src='".e_IMAGE."admin_images/downloads_32.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0'/></a>
-                        <a href='".e_ADMIN."newspost.php?create.upload.1.{$upload_id}'><img src='".e_IMAGE."admin_images/news_32.png' alt='".DOWLAN_16."' title='".DOWLAN_16."' style='border:0'/></a>
-                        <input type='image' title='".LAN_DELETE."' name='updelete[upload_{$upload_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_45." [ {$upload_name} ]")."') \"/>
+                        <a href='".e_SELF."?dlm.".$row['upload_id']."'><img src='".e_IMAGE."admin_images/downloads_32.png' alt='".DOWLAN_91."' title='".DOWLAN_91."' style='border:0'/></a>
+                        <a href='".e_ADMIN."newspost.php?create.upload.1.".$row['upload_id']."'><img src='".e_IMAGE."admin_images/news_32.png' alt='".DOWLAN_162."' title='".DOWLAN_162."' style='border:0'/></a>
+                        <input type='image' title='".LAN_DELETE."' name='updelete[upload_".$row['upload_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(" [ ".$row['upload_name']." ] ".DOWLAN_33)."') \"/>
                      </div>
                   </form>
                </td>
