@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2009-09-28 21:00:00 $
-|     $Author: e107steved $
+|     $Revision: 1.42 $
+|     $Date: 2009-12-03 20:47:46 $
+|     $Author: bugrain $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -33,7 +33,7 @@ global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
-if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != "noextend") 
+if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE) && $parm != "noextend")
 {
     $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
     $news_body .= "<br /><br />".$news_extended;
@@ -90,25 +90,26 @@ SC_END
 SC_BEGIN NEWSDATE
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
+$date = ($news_item['news_start'] > 0) ? $news_item['news_start'] : $news_item['news_datestamp'];
 $con = new convert;
-if($parm == "")
+if($parm == '')
 {
-	return  $con -> convert_date($news_item['news_datestamp'], 'long');
+	return  $con->convert_date($date, 'long');
 }
 switch($parm)
 {
 	case 'long':
-		return  $con -> convert_date($news_item['news_datestamp'], 'long');
-		break;
+	return  $con->convert_date($date, 'long');
+	break;
 	case 'short':
-		return  $con -> convert_date($news_item['news_datestamp'], 'short');
-		break;
+	return  $con->convert_date($date, 'short');
+	break;
 	case 'forum':
-		return  $con -> convert_date($news_item['news_datestamp'], 'forum');
-		break;
+	return  $con->convert_date($date, 'forum');
+	break;
 	default :
-		return date($parm, $news_item['news_datestamp']);
-		break;
+	return date($parm, $date);
+	break;
 }
 SC_END
 
@@ -144,7 +145,7 @@ else
 {
 	$NEWIMAGE = $param['image_nonew_small'];
 }
-return ($news_item['news_allow_comments'] ? $param['commentoffstring'] 
+return ($news_item['news_allow_comments'] ? $param['commentoffstring']
 :
  ''.($pref['comments_icon'] ? $NEWIMAGE : '')." <a href='".e_HTTP."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total'].'</a>');
 SC_END
@@ -209,26 +210,26 @@ SC_BEGIN EXTENDED
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-if ($news_item['news_extended'] && (strpos(e_QUERY, 'extend') === FALSE || $parm == "force")) 
+if ($news_item['news_extended'] && (strpos(e_QUERY, 'extend') === FALSE || $parm == "force"))
 {
-	if (defined("PRE_EXTENDEDSTRING")) 
+	if (defined("PRE_EXTENDEDSTRING"))
 	{
 		$es1 = PRE_EXTENDEDSTRING;
 	}
-	if (defined("POST_EXTENDEDSTRING")) 
+	if (defined("POST_EXTENDEDSTRING"))
 	{
 		$es2 = POST_EXTENDEDSTRING;
 	}
-	if (isset($_POST['preview'])) 
+	if (isset($_POST['preview']))
 	{
 		return $es1.EXTENDEDSTRING.$es2."<br />".$tp->toHTML($news_item['news_extended'], TRUE, 'BODY, fromadmin', $news_item['news_author']);
-	} 
-	else 
+	}
+	else
 	{
 		return $es1."<a class='".$GLOBALS['NEWS_CSSMODE']."_extendstring' href='".e_HTTP."news.php?extend.".$news_item['news_id']."'>".EXTENDEDSTRING."</a>".$es2;
 	}
-} 
-else 
+}
+else
 {
 	return "";
 }
