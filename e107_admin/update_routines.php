@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2009-12-02 10:03:53 $
+|     $Revision: 1.67 $
+|     $Date: 2009-12-04 11:42:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -849,7 +849,7 @@ function update_706_to_800($type='')
 		'media_name'	=> $f['fname'], 
 		'media_author'	=> USERID, 
 		'media_size'	=> $f['fsize'], 
-		'media_dimensions'	=> $f['img-width']."|".$f['img-height'], 
+		'media_dimensions'	=> $f['img-width']." x ".$f['img-height'], 
 		'media_usedby'	=> '', 
 		'media_tags'	=> '', 
 		'media_type'	=> $f['mime']
@@ -873,7 +873,7 @@ function update_706_to_800($type='')
 		'media_name'	=> $f['fname'], 
 		'media_author'	=> USERID, 
 		'media_size'	=> $f['fsize'], 
-		'media_dimensions'	=> $f['img-width']."|".$f['img-height'], 
+		'media_dimensions'	=> $f['img-width']." x ".$f['img-height'], 
 		'media_usedby'	=> '', 
 		'media_tags'	=> '', 
 		'media_type'	=> $f['mime']

@@ -9,8 +9,8 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.40 $
- * $Date: 2009-12-02 10:09:39 $
+ * $Revision: 1.41 $
+ * $Date: 2009-12-04 11:42:04 $
  * $Author: e107coders $
  *
 */
@@ -249,7 +249,7 @@ class media_admin_ui extends e_admin_ui
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),	
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
           	'media_size' 			=> array('title'=> "Size",			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'noedit'=>TRUE), 
-			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE), 
+			'media_dimensions' 		=> array('title'=> "Dimensions",	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'noedit'=>TRUE, 'class'=>'nowrap'), 
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),	 
 			'media_tags' 			=> array('title'=> "Tags/Keywords",	'type' => 'text',		'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),	
 			'media_usedby' 			=> array('title'=> '',		'type' => 'text',			'data'=> 'text', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),	
@@ -385,7 +385,7 @@ class media_admin_ui extends e_admin_ui
 				'media_author'		=> USERID, 
 				'media_usedby'		=> '', 
 				'media_tags'		=> '',
-				'media_dimensions'	=> $info['img-width']."|".$info['img-height']
+				'media_dimensions'	=> $info['img-width']." x ".$info['img-height']
 			);
 			
 
@@ -550,7 +550,7 @@ class media_admin_ui extends e_admin_ui
 					'media_name'	=> $f['fname'], 
 					'media_author'	=> USERID, 
 					'media_size'	=> $f['fsize'], 
-					'media_dimensions'	=> $f['img-width']."|".$f['img-height'], 
+					'media_dimensions'	=> $f['img-width']." x ".$f['img-height'], 
 					'media_usedby'	=> '', 
 					'media_tags'	=> '', 
 					'media_type'	=> $f['mime']
