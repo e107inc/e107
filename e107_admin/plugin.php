@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/plugin.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2009-11-18 01:04:26 $
+|     $Revision: 1.57 $
+|     $Date: 2009-12-04 11:54:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -706,7 +706,7 @@ class pluginManager{
 		else
 		{
 			//TODO LANs
-			$text .= "<tr><td class='center' colspan='".count($this->fields)."'>No plugins Found</td></tr>";	
+			$text .= "<tr><td class='center' colspan='".count($this->fields)."'>No plugins installed - <a href='".e_ADMIN."plugin.php?avail'>click here to install some</a>.</td></tr>";	
 		}
 
 		$text .= "
