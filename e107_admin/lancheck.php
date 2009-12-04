@@ -10,8 +10,8 @@
  * With code from Izydor and Lolo.
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/lancheck.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-11-18 01:04:26 $
+ * $Revision: 1.21 $
+ * $Date: 2009-12-04 12:00:05 $
  * $Author: e107coders $
  *
 */
@@ -543,7 +543,7 @@ class lancheck
 	
 				foreach($subkeys as $sk)
 				{
-					if($utf_error == "" && !is_utf8($check[$k_check][$sk]))
+					if($utf_error == "" && !$this->is_utf8($check[$k_check][$sk]))
 					{
 						$utf_error = "<span class='error'><em>".LAN_CHECK_19."</em></span><br />";
 					}
