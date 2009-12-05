@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/languages/English_admin_pdf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2008-12-21 12:03:28 $
+|     $Revision: 1.2 $
+|     $Date: 2009-12-05 12:33:30 $
 |     $Author: e107steved $
 +-----------------------------------------------------------------------------+
 */
 
 define("PDF_PLUGIN_LAN_1", "PDF");
-define("PDF_PLUGIN_LAN_2", "PDF creation support");
+define("PDF_PLUGIN_LAN_2", "PDF creation support using TCPDF");
 define("PDF_PLUGIN_LAN_3", "PDF");
 define("PDF_PLUGIN_LAN_4", "This plugin is now ready to be used.");
 
