@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.107 $
-|     $Date: 2009-05-19 22:22:39 $
-|     $Author: bugrain $
+|     $Revision: 1.108 $
+|     $Date: 2009-12-05 09:48:52 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -848,7 +848,7 @@ class download
 		}
 
 		$dt = 'display:none';
-		if (preg_match("/http:|ftp:/", $download_url))
+		if (preg_match("/http:|https:|ftp:/", $download_url))
 		{
 			$download_url_external = $download_url;
 			$download_url = '';
