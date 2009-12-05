@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/download/handlers/adminDownload_class.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-12-03 00:22:25 $
- * $Author: bugrain $
+ * $Revision: 1.28 $
+ * $Date: 2009-12-05 09:49:02 $
+ * $Author: e107steved $
  */
 
 if (!e107::isInstalled('download')) { exit(); }
@@ -637,7 +637,7 @@ class adminDownload extends download
          $counter++;
       }
 
-      if (preg_match("/http:|ftp:/", $download_url))
+      if (preg_match("/http:|https:|ftp:/", $download_url))
       {
          $download_url_external = $download_url;
          $download_url = '';
