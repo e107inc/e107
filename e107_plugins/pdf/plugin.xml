@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- $Id: plugin.xml,v 1.5 2009-10-20 03:49:22 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.6 2009-12-05 12:33:30 e107steved Exp $ -->
 
-	<e107Plugin name="PDF_PLUGIN_LAN_1" version="1.0" compatibility="0.8" installRequired="true" releaseUrl=''>
-	<author name="Eric Vanderfeesten (lisa)" url="http://eindhovenseschool.net" email="lisa@eindhovenseschool.net" />
+	<e107Plugin name="PDF_PLUGIN_LAN_1" version="2.0" compatibility="0.8" installRequired="true" releaseUrl=''>
+	<author name="e107Inc" />
 	<description>PDF_PLUGIN_LAN_2</description>
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>
 	<languageFiles>

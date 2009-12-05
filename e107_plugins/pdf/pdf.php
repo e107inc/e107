@@ -9,64 +9,60 @@
  * Plugin - PDF Generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/pdf.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-05 12:33:30 $
+ * $Author: e107steved $
  *
 */
-require_once("../../class2.php");
-if (!plugInstalled('pdf') || !e_QUERY) 
-{
-	header("location:".e_BASE."index.php");
-	 exit;
-}
-$qs = explode(".", e_QUERY,2);
+require_once('../../class2.php');
+$e107 = e107::getInstance();
+if (!$e107->isInstalled('calendar_menu') || !e_QUERY) header('Location: '.e_BASE.'index.php');
+
+$qs = explode('.', e_QUERY,2);
 $source = $qs[0];
 $parms = varset($qs[1],'');
 
-include_lan(e_PLUGIN.'pdf/languages/English_admin_pdf.php');
+include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'_admin_pdf.php');
 
-define('FPDF_FONTPATH', 'font/');
-require_once(e_PLUGIN.'pdf/ufpdf.php');		//require the ufpdf class
+require_once(e_PLUGIN.'pdf/tcpdf.php');		//require the ufpdf class
 require_once(e_PLUGIN.'pdf/e107pdf.php');	//require the e107pdf class
 $pdf = new e107PDF();
 
 if(strpos($source,'plugin:') !== FALSE)
 {
 	$plugin = substr($source,7);
-	if(file_exists(e_PLUGIN.$plugin."/e_emailprint.php"))
+	if(file_exists(e_PLUGIN.$plugin.'/e_emailprint.php'))
 	{
-		include_once(e_PLUGIN.$plugin."/e_emailprint.php");
+		include_once(e_PLUGIN.$plugin.'/e_emailprint.php');
 		$text = print_item_pdf($parms);
 		$pdf->makePDF($text);
 	}
 	else
 	{
-		echo "file missing.";
+		echo 'file missing: '.e_PLUGIN.$plugin.'/e_emailprint.php';
 		exit;
 	}
 }
 else
 {
-	
 	if($source == 'news')
 	{
 		$con = new convert;
-		$sql->db_Select("news", "*", "news_id='".intval($parms)."'");
+		$sql->db_Select('news', '*', 'news_id='.intval($parms));
 		$row = $sql->db_Fetch(); 
 		$news_body = $tp->toHTML($row['news_body'], TRUE);
 		$news_extended = $tp->toHTML($row['news_extended'], TRUE);
 		if ($row['news_author'] == 0)
 		{
-			$a_name = "e107";
-			$category_name = "e107 welcome message";
+			$a_name = 'e107';
+			$category_name = 'e107 welcome message';
 		}
 		else
 		{
-			$sql->db_Select("news_category", "category_id, category_name", "category_id='".intval($row['news_category'])."'");
+			$sql->db_Select('news_category', 'category_id, category_name', 'category_id='.intval($row['news_category']));
 			list($category_id, $category_name) = $sql->db_Fetch();
-			$sql->db_Select("user", "user_id, user_name", "user_id='".intval($row['news_author'])."'");
-			list($a_id, $a_name) = $sql->db_Fetch();
+			$sql->db_Select('user', 'user_id, user_name', 'user_id='.intval($row['news_author']));
+			list($a_id, $a_name) = $sql->db_Fetch(MYSQL_NUM);
 		}
 		$row['news_datestamp'] = $con->convert_date($row['news_datestamp'], "long");
 	
@@ -104,10 +100,10 @@ else
 		$author		= $a_name;					//define author
 		$title		= $row['news_title'];		//define title
 		$subject	= $category_name;			//define subject
-		$keywords	= "";						//define keywords
+		$keywords	= '';						//define keywords
 
 		//define url and logo to use in the header of the pdf file
-		$url		= SITEURL."news.php?item.".$row['news_id'];
+		$url		= SITEURL.'news.php?item.'.$row['news_id'];
 
 		//always return an array with the following data:
 		$text = array($text, $creator, $author, $title, $subject, $keywords, $url);

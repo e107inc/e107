@@ -9,9 +9,9 @@
  * Plugin Administration - PDF generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/admin_pdf_config.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-05 12:33:30 $
+ * $Author: e107steved $
  *
 */
 
@@ -63,7 +63,7 @@ function getDefaultPDFPrefs()
 	$pdfpref['pdf_margin_left']				= '25';
 	$pdfpref['pdf_margin_right']			= '15';
 	$pdfpref['pdf_margin_top']				= '15';
-	$pdfpref['pdf_font_family']				= 'arial';
+	$pdfpref['pdf_font_family']				= 'helvetica';
 	$pdfpref['pdf_font_size']				= '8';
 	$pdfpref['pdf_font_size_sitename']		= '14';
 	$pdfpref['pdf_font_size_page_url']		= '8';
@@ -125,7 +125,7 @@ $text = "
 	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_top", 10, $pdfpref['pdf_margin_top'], 10)."</td>
 </tr>";
 
-$fontlist=array("arial","times","courier","helvetica","symbol");
+$fontlist=array('times','courier','helvetica','symbol');
 $text .= "
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_8."</td>
