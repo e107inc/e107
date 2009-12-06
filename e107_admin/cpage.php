@@ -9,9 +9,9 @@
  * Custom Menus/Pages Administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/cpage.php,v $
- * $Revision: 1.31 $
- * $Date: 2009-11-28 15:34:45 $
- * $Author: secretr $
+ * $Revision: 1.32 $
+ * $Date: 2009-12-06 15:39:31 $
+ * $Author: e107steved $
  *
 */
 
@@ -278,7 +278,8 @@ class page
 				$page_link 					  = varset($row['link_name'],'');
 				$data                         = $tp->toForm($row['page_text']);
 				$edit                         = TRUE;
-				$menu_name					  = $tp->toForm($row['menu_name']);
+//				$menu_name					  = $tp->toForm($row['menu_name']);
+				$menu_name					  = $tp->toForm($row['page_theme']);
 			}
 		}
 
@@ -491,13 +492,21 @@ class page
 			if($type)
 			{
 				$menu_name = $tp -> toDB($_POST['menu_name']); // not to be confused with menu-caption.
-				if($sql -> db_Update('menus', "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ") !== FALSE)
-				{
-				  	$update++;
+				// Need to check whether menu already in table, else we can't distinguish between a failed update and no update needed
+				if ($sql->db_Select('menus', 'menu_name', "`menu_path` = '{$mode}'"))
+				{		// Updating existing entry
+					if($sql -> db_Update('menus', "menu_name='{$menu_name}' WHERE menu_path='{$mode}' ") !== FALSE)
+					{
+						$update++;
+					}
 				}
 				else
 				{
-                  	$sql -> db_Insert("menus", "0, '$menu_name', '0', '0', '0', '', '".$mode."' ");
+                  	$sql -> db_Insert('menus', "0, '$menu_name', '0', '0', '0', '', '".$mode."' ");
+					if ($sql -> db_Insert('menus', $menuData))
+					{
+						$update++;
+					}
 				}
 			}
 
