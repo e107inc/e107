@@ -9,8 +9,8 @@
  * Event calendar plugin - admin functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-22 10:11:24 $
+ * $Revision: 1.16 $
+ * $Date: 2009-12-06 10:45:49 $
  * $Author: e107steved $
  */
 
@@ -1026,10 +1026,15 @@ $text .= "
 	<tr>
 		<td class='forumheader3'>".EC_ADLAN_A193."<br /></td>
 		<td class='forumheader3'>
-			<select name='eventpost_printlists' class='tbox'>
-			<option value='0' ".($pref['eventpost_printlists']=='0'?" selected='selected' ":"")." >". EC_ADLAN_A194." </option>
-			<option value='1' ".($pref['eventpost_printlists']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A195."  </option>
-			<option value='2' ".($pref['eventpost_printlists']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A196." </option>
+			<select name='eventpost_printlists' class='tbox'>";
+	$listOpts = array( 0 => EC_ADLAN_A194, 1 => EC_ADLAN_A195);
+	if (e107::isInstalled('pdf')) { $listOpts[2] = EC_ADLAN_A196; }
+	foreach ($listOpts as $v => $t)
+	{
+		$s = $pref['eventpost_printlists'] == $v ? " selected='selected'" : '';
+		$text .= "<option value={$v}{$s}>{$t}</option>\n";
+	}
+	$text .= "
 			</select>
 		</td>
 	</tr>
