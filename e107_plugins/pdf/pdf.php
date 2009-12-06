@@ -9,8 +9,8 @@
  * Plugin - PDF Generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/pdf.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-12-05 12:33:30 $
+ * $Revision: 1.6 $
+ * $Date: 2009-12-06 10:45:50 $
  * $Author: e107steved $
  *
 */
@@ -22,9 +22,9 @@ $qs = explode('.', e_QUERY,2);
 $source = $qs[0];
 $parms = varset($qs[1],'');
 
-include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'_admin_pdf.php');
+//include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'_admin_pdf.php');
 
-require_once(e_PLUGIN.'pdf/tcpdf.php');		//require the ufpdf class
+//require_once(e_PLUGIN.'pdf/tcpdf.php');		//require the ufpdf class
 require_once(e_PLUGIN.'pdf/e107pdf.php');	//require the e107pdf class
 $pdf = new e107PDF();
 

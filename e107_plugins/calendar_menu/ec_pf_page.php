@@ -9,8 +9,8 @@
  *	Event calendar - generate lists
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-22 10:11:30 $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-06 10:45:49 $
  * $Author: e107steved $
  */
 /*
@@ -331,9 +331,9 @@ switch($ec_output_type)
 	case 'pdf':
 		//TODO find a way to pass initialisation options etc to PDF driver
 		include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'.php');
-		define('FPDF_FONTPATH', 'font/');
+//		define('FPDF_FONTPATH', 'font/');
 		//require the ufpdf class
-		require_once (e_PLUGIN.'pdf/ufpdf.php');
+//		require_once (e_PLUGIN.'pdf/ufpdf.php');
 		//require the e107pdf class
 		require_once (e_PLUGIN.'pdf/e107pdf.php');
 		$pdf = new e107PDF();

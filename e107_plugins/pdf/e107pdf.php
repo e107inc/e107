@@ -9,8 +9,8 @@
  * Plugin - PDF generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/e107pdf.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-05 12:33:30 $
+ * $Revision: 1.10 $
+ * $Date: 2009-12-06 10:45:50 $
  * $Author: e107steved $
 */
 if (!defined('e107_INIT')) { exit; }
@@ -34,6 +34,9 @@ The full tcpdf distribution includes a utility to generate new fonts, as well as
 It can be downloaded from: http://sourceforge.net/projects/tcpdf/
 */
 
+
+require_once(e_PLUGIN.'pdf/tcpdf.php');		//require the ufpdf class
+include_lan(e_PLUGIN.'pdf/languages/'.e_LANGUAGE.'_admin_pdf.php');
 
 
 //extend tcpdf class from package with custom functions
