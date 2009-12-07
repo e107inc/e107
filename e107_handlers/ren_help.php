@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/ren_help.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.16 $
+ * $Date: 2009-12-07 20:48:04 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -225,32 +225,37 @@ function PreImage_Select($formid) {
 	return $text;
 }
 
-function PreFile_Select($formid='prefile_selector',$bbcode_filedir) {
+
+
+
+// Parameter '$bbcode_filedir' removed - not used in code.
+function PreFile_Select($formid='prefile_selector') 
+{
 	require_once(e_HANDLER."userclass_class.php");
 	global $IMAGES_DIRECTORY, $fl, $sql;
-//		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 
-		$filelist = array();
-		$downloadList = array();
+	$filelist = array();
+	$downloadList = array();
 
-		$sql->db_Select("download", "*", "download_class != ".e_UC_NOBODY);
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			if($download_url)
-			{
-				$filelist[] = array("id" => $download_id, "name" => $download_name, "url" => $download_url, "class" => $download_class);
-				$downloadList[] = $download_url;
-			}
-		}
-
-		$tmp = $fl->get_files(e_FILE."downloads/");
-		foreach($tmp as $value)
+	$sql->db_Select('download', '*', 'download_class != '.e_UC_NOBODY);
+	while ($row = $sql->db_Fetch()) {
+		extract($row);
+		if($download_url)
 		{
-			if(!in_array($value['fname'], $downloadList))
-			{
-				$filelist[] = array("id" => 0, "name" => $value['fname'], "url" => $value['fname']);
-			}
+			$filelist[] = array('id' => $download_id, 'name' => $download_name, 'url' => $download_url, 'class' => $download_class);
+			$downloadList[] = $download_url;
 		}
+	}
+
+	$tmp = $fl->get_files(e_FILE.'downloads/');
+	foreach($tmp as $value)
+	{
+		if(!in_array($value['fname'], $downloadList))
+		{
+			$filelist[] = array('id' => 0, 'name' => $value['fname'], 'url' => $value['fname']);
+		}
+	}
+
 	$text ="<!-- Start of PreFile selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
 	$text .="<div style='position:absolute; bottom:30px; right:75px'>";
