@@ -9,8 +9,8 @@
  * Plugin Administration - PDF generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/admin_pdf_config.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-12-05 12:33:30 $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-07 20:46:56 $
  * $Author: e107steved $
  *
 */
@@ -107,6 +107,82 @@ $pdfpref = getPDFPrefs();
 
 if(!is_object($sql)){ $sql = new db; }
 
+// Default list just in case
+$fontlist=array('times','courier','helvetica','symbol');
+
+
+function getFontInfo($fontName)
+{
+	$type = 'empty';	// Preset the stuff we're going to read
+	$dw = 0;
+	$cw = array();
+	$name='';
+	//$desc=array('Ascent'=>900,'Descent'=>-300,'CapHeight'=>-29,'Flags'=>96,'FontBBox'=>'[-879 -434 1673 900]','ItalicAngle'=>-16.5,'StemV'=>70,'MissingWidth'=>600);
+	//$up=-125;
+	//$ut=50;
+	include(e_PLUGIN.'pdf/font/'.$fontName);
+	return array('type' => $type, 'weight' => $dw, 'codes' => count($cw), 'name' => $name);
+}
+
+
+
+function getFontList($match = '')
+{
+	require_once(e_HANDLER.'file_class.php');
+	$fl = new e_file();
+	if (!$match) $match = '~^uni2cid';
+	$fileList = $fl->get_files(e_PLUGIN.'pdf/font/',$match, 'standard', 1);
+	$fontList = array();
+	$intList = array();
+	foreach ($fileList as $v)
+	{
+		if (isset($v['fname']) && (substr($v['fname'],-4) == '.php'))
+		{
+			$intList[] = substr($v['fname'],0,-4);
+		}
+	}
+	unset($fileList);
+	sort($intList);				// This will guarantee that base font names appear before bold, italic etc
+	foreach ($intList as $f)
+	{
+		if (substr($f,-2) == 'bi')
+		{
+			$fontList[substr($f,0,-2)]['bi'] = $f.'.php';
+		}
+		elseif (substr($f,-1) == 'i')
+		{
+			$fontList[substr($f,0,-1)]['i'] = $f.'.php';
+		}
+		elseif (substr($f,-1) == 'b')
+		{
+			$fontList[substr($f,0,-1)]['b'] = $f.'.php';
+		}
+		else
+		{	// Must be base font name
+			$fontList[$f]['base'] = $f.'.php';
+		}
+	}
+	// Now get the info on each font.
+	foreach ($fontList as $font => $info)
+	{
+		$fontList[$font]['info'] = getFontInfo($info['base']);
+	}
+	//print_a($fontList);
+	return $fontList;
+}
+
+
+$fontList = getFontList();
+$coreList = array();
+foreach ($fontList as $font => $info)
+{
+	if ($info['info']['type'] == 'core')
+	{
+		$coreList[$font] = $font;
+	}
+}
+
+
 $text = "
 <div style='text-align:center'>
 ".$rs -> form_open("post", e_SELF, "pdfform", "", "enctype='multipart/form-data'")."
@@ -125,13 +201,13 @@ $text = "
 	<td class='forumheader3' style='width:70%;'>".$rs -> form_text("pdf_margin_top", 10, $pdfpref['pdf_margin_top'], 10)."</td>
 </tr>";
 
-$fontlist=array('times','courier','helvetica','symbol');
 $text .= "
 <tr>
 	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_8."</td>
 	<td class='forumheader3' style='width:70%;'>
 		".$rs -> form_select_open("pdf_font_family");
-		foreach($fontlist as $font){
+		foreach($coreList as $font => $info)
+		{
 			$text .= $rs -> form_option($font, ($pdfpref['pdf_font_family'] == $font ? "1" : "0"), $font);
 		}
 		$text .= $rs -> form_select_close()."
@@ -199,6 +275,26 @@ $text .= "
 </div>";
 
 $ns -> tablerender(PDF_LAN_2, $text);
+
+
+$text = "<div style='text-align:center;>\n
+<table cellpadding='0' cellspacing='0' class='adminform'>
+<tr><th>".PDF_LAN_21."</th><th>".PDF_LAN_22."</th><th>".PDF_LAN_23."</th>
+	<th>".PDF_LAN_24."</th><th title='".PDF_LAN_25."'>".PDF_LAN_26."</th></tr>\n";
+
+foreach ($fontList as $font => $info)
+{
+	$wa = array(PDF_LAN_27);
+	if (isset($info['b'])) $wa[] = PDF_LAN_28;
+	if (isset($info['i'])) $wa[] = PDF_LAN_29;
+	if (isset($info['bi'])) $wa[] = PDF_LAN_30;
+	$variants = implode(', ', $wa);
+	$text .= "<tr><td>{$font}</td><td>{$info['info']['type']}</td><td>{$variants}</td><td>{$info['info']['weight']}</td><td>{$info['info']['codes']}</td></tr>\n";
+}
+
+$text .= "</table></div>";
+$ns->tablerender(PDF_LAN_31, $text);
+
 
 require_once(e_ADMIN."footer.php");
 

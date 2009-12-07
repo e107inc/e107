@@ -9,8 +9,8 @@
  * Plugin - PDF Generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pdf/pdf.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-12-06 10:45:50 $
+ * $Revision: 1.7 $
+ * $Date: 2009-12-07 20:46:56 $
  * $Author: e107steved $
  *
 */
@@ -34,8 +34,15 @@ if(strpos($source,'plugin:') !== FALSE)
 	if(file_exists(e_PLUGIN.$plugin.'/e_emailprint.php'))
 	{
 		include_once(e_PLUGIN.$plugin.'/e_emailprint.php');
-		$text = print_item_pdf($parms);
-		$pdf->makePDF($text);
+		if (function_exists('print_item_pdf'))
+		{
+			$text = print_item_pdf($parms);
+			$pdf->makePDF($text);
+		}
+		else
+		{
+			echo 'PDF generation not supported in this section';
+		}
 	}
 	else
 	{
