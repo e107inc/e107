@@ -9,9 +9,9 @@
 * Text processing and parsing functions
 *
 * $Source: /cvs_backup/e107_0.8/e107_handlers/e_parse_class.php,v $
-* $Revision: 1.86 $
-* $Date: 2009-11-19 13:46:24 $
-* $Author: e107coders $
+* $Revision: 1.87 $
+* $Date: 2009-12-07 20:48:04 $
+* $Author: e107steved $
 *
 */
 if (!defined('e107_INIT')) { exit(); }
@@ -1100,11 +1100,6 @@ class e_parse
 					switch ($matches[2])
 					{
 						case 'php' :
-							if (DB_INF_SHOW)
-							{
-								echo "PHP decode: ".htmlentities($matches[4])."<br /><br />";
-							}
-							
 							// Probably run the output through the normal processing functions - but put here so the PHP code can disable if desired
 							$proc_funcs = TRUE;
 
@@ -1118,10 +1113,6 @@ class e_parse
 							if (!$matches[3])
 							{
 								$bbcode = html_entity_decode($matches[4], ENT_QUOTES, 'UTF-8');
-							}
-							if (DB_INF_SHOW)
-							{
-								echo "PHP after decode: ".htmlentities($bbcode)."<br /><br />";
 							}
 							break;
 							
