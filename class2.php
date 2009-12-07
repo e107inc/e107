@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.164 $
-* $Date: 2009-11-24 16:30:08 $
-* $Author: secretr $
+* $Revision: 1.165 $
+* $Date: 2009-12-07 20:47:37 $
+* $Author: e107steved $
 *
 */
 //
@@ -909,7 +909,7 @@ $e107->ban();
 
 if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']))
 {
-	if(force_userupdate())
+	if(force_userupdate($currentUser))
 	{
 	  header('Location: '.e_BASE.'usersettings.php?update');
 	  exit();
@@ -1890,14 +1890,14 @@ function loadLanFiles($unitName, $type='runtime')
 
 
 
-
-// Check that all required user fields (including extended fields) are valid.
-// Return TRUE if update required
-function force_userupdate()
+/**
+ *	Check that all required user fields (including extended fields) are valid.
+ *	@param array $currentUser - data for user
+ *	@return boolean TRUE if update required
+ */
+function force_userupdate($currentUser)
 {
-	global $sql,$pref,$currentUser;
-
-	if (e_PAGE == 'usersettings.php' || strpos(e_SELF, ADMINDIR) == TRUE || (defined("FORCE_USERUPDATE") && (FORCE_USERUPDATE == FALSE)))
+	if (e_PAGE == 'usersettings.php' || strpos(e_SELF, ADMINDIR) == TRUE || (defined('FORCE_USERUPDATE') && (FORCE_USERUPDATE == FALSE)))
 	{
 		return FALSE;
 	}
@@ -1906,27 +1906,32 @@ function force_userupdate()
 
 	foreach($signup_option_names as $key => $value)
 	{
-		if ($pref['signup_option_'.$value] == 2 && !$currentUser['user_'.$value])
+		if (e107::getPref('signup_option_'.$value, 0) == 2 && !$currentUser['user_'.$value])
 		{
 			return TRUE;
 		}
     }
 
-	if (!varset($pref['disable_emailcheck'],TRUE) && !trim($currentUser['user_email'])) return TRUE;
+	if (!e107::getPref('disable_emailcheck',TRUE) && !trim($currentUser['user_email'])) return TRUE;
 
-	if($sql -> db_Select('user_extended_struct', 'user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
+	if(e107::getDb()->db_Select('user_extended_struct', 'user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
 	{
-	  while($row = $sql -> db_Fetch())
-	  {
-		$user_extended_struct_name = "user_{$row['user_extended_struct_name']}";
-		if ((!$currentUser[$user_extended_struct_name]) || (($row['user_extended_struct_type'] == 7) && ($currentUser[$user_extended_struct_name] == '0000-00-00')))
+		while($row = e107::getDb()->db_Fetch())
 		{
-		  return TRUE;
+			if (!check_class($row['user_extended_struct_applicable'])) { continue; }		// Must be applicable to this user class
+			if (!check_class($row['user_extended_struct_write'])) { continue; }				// And user must be able to change it
+			$user_extended_struct_name = "user_{$row['user_extended_struct_name']}";
+			if ((!$currentUser[$user_extended_struct_name]) || (($row['user_extended_struct_type'] == 7) && ($currentUser[$user_extended_struct_name] == '0000-00-00')))
+			{
+				//e107::admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'FORCE', 'Force User update', 'Trigger field: '.$user_extended_struct_name, FALSE, LOG_TO_ROLLING);
+				return TRUE;
+			}
 		}
-	  }
 	}
 	return FALSE;
 }
+
+
 
 class error_handler
 {
