@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.88 $
- * $Date: 2009-12-02 16:51:02 $
+ * $Revision: 1.89 $
+ * $Date: 2009-12-08 17:21:32 $
  * $Author: secretr $
 */
 
@@ -1221,7 +1221,7 @@ class e107
 	{
 		$reg_path = 'core/e107/templates/'.$id.($override ? '/ext' : '');
 		$path = self::coreTemplatePath($id, $override);
-
+		$id = str_replace('/', '_', $id);
 		return self::_getTemplate($id, $key, $reg_path, $path);
 	}
 
@@ -1254,7 +1254,7 @@ class e107
 	{
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
 		$path = self::templatePath($plug_name, $id, $override);
-
+		$id = str_replace('/', '_', $id);
 		return self::_getTemplate($id, $key, $reg_path, $path);
 	}
 
@@ -1277,8 +1277,8 @@ class e107
 			$tmp = self::getTemplate($plugin_name, $id, null, $where);
 		}
 
-		$templates = array();
-		$filter_mask = explode($filter_mask);
+		$templates = array(); 
+		$filter_mask = $filter_mask ? explode(',', $filter_mask) : array(); 
 		foreach($tmp as $key => $val)
 		{
 			// Special key INFO in format aray('layout' => array(info))
@@ -1289,7 +1289,7 @@ class e107
 			$match = true;
 			if($filter_mask)
 			{
-				$match = false;
+				$match = false; 
 				foreach ($filter_mask as $mask)
 				{
 					if(strpos($key, $mask) === 0) //e.g. retrieve only keys starting with 'layout_'
@@ -1325,7 +1325,7 @@ class e107
 	{
 		$regPath = $reg_path;
 		$var = strtoupper($id).'_TEMPLATE';
-
+		
 		if(null === self::getRegistry($regPath))
 		{
 			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));

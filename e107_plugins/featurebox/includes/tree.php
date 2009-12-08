@@ -9,14 +9,17 @@
 * Featurebox Category Tree model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/tree.php,v $
-* $Revision: 1.1 $
-* $Date: 2009-12-04 18:52:19 $
+* $Revision: 1.2 $
+* $Date: 2009-12-08 17:21:32 $
 * $Author: secretr $
 *
 */
 
+if (!defined('e107_INIT')) { exit; }
+
 class plugin_featurebox_tree extends e_tree_model
 {
+	protected $_field_id = 'fb_id';
 	/**
 	 * Load tree data
 	 * TODO - system cache
@@ -32,13 +35,16 @@ class plugin_featurebox_tree extends e_tree_model
 		{
 			return $this;
 		}
+
+		$this->setParam('model_class', 'plugin_featurebox_item')
+			->setParam('model_message_stack', 'featurebox');
+
+		$this->updateParams($options);
 		
-		$this->setParams(array(
-			'model_class' => 'plugin_featurebox_item',
-			'model_message_stack' => 'featurebox'
-		));
-		
-		// TODO - options -> limit, random; set param 'db_query'
+		$order = $this->getParam('random') ? ' ORDER BY rand()' : ' ORDER BY fb_order ASC';
+		$limit = $this->getParam('limit') ? ' LIMIT 0,'.intval($this->getParam('limit')) : '';
+		$qry = 'SELECT SQL_CALC_FOUND_ROWS * FROM #featurebox WHERE fb_category='.intval($category_id).' AND fb_class IN('.USERCLASS_LIST.')'.$order.$limit;
+		$this->setParam('db_query', $qry);
 		
 		parent::load($force);
 		

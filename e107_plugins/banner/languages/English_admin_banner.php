@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
- * $Id: English_admin_banner.php,v 1.1 2009-07-23 16:43:03 e107coders Exp $
+ * $Id: English_admin_banner.php,v 1.2 2009-12-08 17:21:36 secretr Exp $
  *
  * Administration Language File
  *
@@ -77,4 +77,7 @@ define("BNRLAN_66", "N/A");
 
 define("BNRLAN_67", "No campaigns yet.");
 define("BNRLAN_68", "Banner Menu Configuration");
+
+// Plugin manager
+define("BNRLAN_100", "Banner Plugin Description TODO");
 ?>

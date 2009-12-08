@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.46 $
- * $Date: 2009-11-28 15:34:46 $
+ * $Revision: 1.47 $
+ * $Date: 2009-12-08 17:21:33 $
  * $Author: secretr $
 */
 
@@ -850,7 +850,7 @@ class e_model
      */
 	public function load($id, $force = false)
 	{
-		if(!$force && $this->hasData())
+		if(!$force && $this->getId())
 		{
 			return $this;
 		}
@@ -868,12 +868,18 @@ class e_model
 				SELECT * FROM #'.$this->getModelTable().' WHERE '.$this->getFieldIdName().'='.$id.'
 			';
 		}
-		//TODO - error reporting
+
 		$sql = e107::getDb();
 		if($sql->db_Select_gen($qry))
 		{
 			$this->setData($sql->db_Fetch());
 		}
+		
+		if($sql->getLastErrorNumber())
+		{
+			$this->addMessageDebug('SQL error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+		}
+
 		return $this;
 	}
     
