@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-09-03 13:30:01 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2009-12-08 09:46:57 $
+|     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,7 @@ class parseXml {
 		if (function_exists('file_get_contents'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$data = file_get_contents(urlencode($address));
+			$data = file_get_contents(urldecode($address));
 
 			// $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
