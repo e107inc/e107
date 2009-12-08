@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/languages/English_admin_featurebox.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:05:36 $
- * $Author: e107coders $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-08 17:21:34 $
+ * $Author: secretr $
  */
 
 define("FBLAN_01", "Feature Box");
@@ -46,5 +46,7 @@ define('LAN_AL_FBLAN_01', 'Featurebox created');
 define('LAN_AL_FBLAN_02', 'Featurebox updated');
 define('LAN_AL_FBLAN_03', 'Featurebox deleted');
 
-
+// Install/uninstall messages
+define('FBLAN_INSTALL_01', 'Adding Default category table data.');
+define('FBLAN_INSTALL_02', 'Adding Default table data.');
 ?>

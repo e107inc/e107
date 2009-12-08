@@ -1,37 +1,19 @@
 <?php
-/*
- + ----------------------------------------------------------------------------+
- |     e107 website system
- |
- |     Copyright (c) e107 Inc. 2001-2009
- |     http://e107.org
- |
- |     Released under the terms and conditions of the
- |     GNU General Public License (http://gnu.org).
- |
- |     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/templates/layout/default_template.php,v $
- |     $Revision: 1.1 $
- |     $Date: 2009-11-26 17:15:45 $
- |     $Author: secretr $
- +----------------------------------------------------------------------------+
- */
 
+$LAYOUT_DEFAULT_TEMPLATE['list_start'] = '
+<div class="box featurebox">
+	<h2>{FEATUREBOX_CATEGORY_ICON}{FEATUREBOX_CATEGORY_TITLE}</h2>
+	<div class="body">
+';
 
-$FEATUREBOX_TEMPLATE['default'] = "
-<div class='defaulttext'><b>$fb_title</b></div>
-<hr />
-$fb_text
-";
- 
- 
- 
-$FEATUREBOX_TEMPLATE['centered'] = "
-<div class='defaulttext' style='text-align: center;'><b>$fb_title</b>
-<hr />
-$fb_text
+$LAYOUT_DEFAULT_TEMPLATE['list_end'] = '
+	</div>
 </div>
-<br /><br />
-";
+';
+ 
+$LAYOUT_DEFAULT_TEMPLATE['item_start'] = '';
 
+$LAYOUT_DEFAULT_TEMPLATE['item_end'] = '';
 
+$LAYOUT_DEFAULT_TEMPLATE['item_separator'] = '';
 ?>

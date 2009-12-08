@@ -1,3 +1,4 @@
+<?php exit; ?>
 CREATE TABLE featurebox (
   `fb_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fb_title` varchar(200) NOT NULL DEFAULT '',
