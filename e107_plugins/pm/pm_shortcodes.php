@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2009-08-24 22:01:49 $
-|     $Author: bugrain $
+|     $Revision: 1.23 $
+|     $Date: 2009-12-09 21:26:56 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -262,7 +262,7 @@ SC_END
 
 SC_BEGIN PM_SELECT
 global $pm_info;
-return "<input type='checkbox' name='selected_pm[{$pm_info['pm_id']}]' id='selected_pm[{$pm_info['pm_id']}]' value='1' />";
+return "<input type='checkbox' name='selected_pm[{$pm_info['pm_id']}]' value='1' />";
 SC_END
 
 SC_BEGIN PM_READ_ICON
