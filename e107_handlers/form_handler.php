@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.93 $
- * $Date: 2009-11-28 15:34:46 $
+ * $Revision: 1.94 $
+ * $Date: 2009-12-09 18:33:41 $
  * $Author: secretr $
  *
 */
@@ -130,7 +130,7 @@ class e_form
 		$parms .= "&default=".rawurlencode($default);
 		$parms .= "&multiple=FALSE";
 		$parms .= "&label=-- ".$label." --";
-		$parms .= "&subdirs=0";
+		$parms .= "&subdirs=".varset($sc_parameters['subdirs'], 1);
 		$parms .= '&width='.vartrue($sc_parameters['width'], 150).'px';
 		if(vartrue($sc_parameters['height'])) $parms .= '&height='.$sc_parameters['height'].'px';
 		//$parms .= "&tabindex=".$this->getNext();
@@ -1326,8 +1326,9 @@ class e_form
 				$ilocation = vartrue($parms['id'], $location); // omit if same as plugin name
 				$where = vartrue($parms['area'], 'front'); //default is 'front' 
 				$filter = varset($parms['filter']);
-				$layouts = e107::getLayouts($location, $ilocation, $where, $filter);
-				if(varset($parms['default']))
+				$merge = vartrue($parms['merge']) ? true : false;
+				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge);
+				if(varset($parms['default']) && !isset($layouts['default']))
 				{
 					$layouts = array('default' => $parms['default']) + $layouts;
 				}	

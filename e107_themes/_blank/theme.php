@@ -62,11 +62,10 @@ function theme_head() {
 
 function tablestyle($caption, $text, $mod) {
 	global $style;
-	$class = '';
-	if(is_string($mod) && $mod == 'admin_help') $class = ' '.str_replace('_', '-', $mod); 
+
 	switch($style) {
 
-	case 'admin_menu' :
+	case 'menu' :
 		echo '
 			<div class="block">
 				<h4 class="caption">'.$caption.'</h4>
@@ -75,32 +74,10 @@ function tablestyle($caption, $text, $mod) {
 		';
 	break;
 
-	case 'site_info' :
-		echo '
-			<div class="block'.$class.'">
-				<h4 class="caption">'.$caption.'</h4>
-				<div class="block-text">
-					'.$text.'
-				</div>
-			</div>
-		';
-	break;
-
-	case 'admin_content':
-		echo '
-			<div class="block">
-				<h2 class="caption">'.$caption.'</h2>
-				<div class="block-text">
-					'.$text.'
-				</div>
-			</div>
-		';
-	break;
-
 	default:
 		echo '
 			<div class="block">
-				<h4>'.$caption.'</h4>
+				<h1 class="caption">'.$caption.'</h1>
 				<div class="block-text">
 					'.$text.'
 				</div>
@@ -110,8 +87,51 @@ function tablestyle($caption, $text, $mod) {
 	}
 }
 
-$HEADER['default'] = '';
-$FOOTER['default'] = '';
+$HEADER['default'] = '
+<div class="wrapper">
+	<div class="header">
+		<div class="header-content">
+			BLANK HEADER
+		</div>
+		<div style="height: 20px;"><!-- --></div>
+		<div class="navigation">
+			<div id="main-nav">{SITELINKS}</div>
+			<div class="clear"><!-- --></div>
+		</div>
+	</div>
+	<div class="page-body">
+		<table class="main-table" cellpadding="0" cellspacing="0">
+			<tr>
+
+				<td class="col-left">
+				{SETSTYLE=menu}
+				{MENU=1}
+				</td>
+
+				<td>
+					<div class="col-main">
+						<div class="inner-wrapper">
+						{SETSTYLE=content}
+						{FEATUREBOX|blank_default=notablestyle}
+';
+$FOOTER['default'] = '
+						</div>
+					</div>
+				</td>
+				<td class="col-right">
+					<div class="col-right">
+						{SETSTYLE=menu}
+						{MENU=2}
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="footer">
+		<!-- -->
+	</div>
+</div>
+';
 
 $HEADER['alternate'] = '';
 $FOOTER['alternate'] = '';
