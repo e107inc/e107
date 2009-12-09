@@ -9,9 +9,9 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.32 $
- * $Date: 2009-12-02 16:50:58 $
- * $Author: secretr $
+ * $Revision: 1.33 $
+ * $Date: 2009-12-09 20:35:58 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1027,27 +1027,32 @@ class prefs
 	*
 	* all pref sets other than menu_pref get toDB()
 	*/
-	function setArray($name = "", $table = "core", $uid = USERID) {
-		global $tp;
+	function setArray($name = '', $table = 'core', $uid = USERID) 
+	{
+		$tp = e107::getParser();
 
-		if (!strlen($name)) {
-			switch ($table) {
+		if (!strlen($name)) 
+		{
+			switch ($table) 
+			{
 				case 'core':
-				$name = "pref";
+				$name = 'pref';
 				break;
 				case 'user':
-				$name = "user_pref";
+				$name = 'user_pref';
 				break;
 			}
 		}
 
 		global $$name;
-		if ($name != "menu_pref") {
-			foreach($$name as $key => $prefvalue) {
+		if ($name != 'menu_pref') 
+		{
+			foreach($$name as $key => $prefvalue) 
+			{
 				$$name[$key] = $tp->toDB($prefvalue);
 			}
 		}
-		$tmp = e107::getArrayStorage()->WriteArray($$name);
+		$tmp = e107::getArrayStorage()->WriteArray($$name, FALSE);		// $this->set() adds slashes now
 	//	$tmp = serialize($$name);
 		$this->set($tmp, $name, $table, $uid);
 	}

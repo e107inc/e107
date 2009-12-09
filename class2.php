@@ -9,8 +9,8 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.165 $
-* $Date: 2009-12-07 20:47:37 $
+* $Revision: 1.166 $
+* $Date: 2009-12-09 20:35:57 $
 * $Author: e107steved $
 *
 */
@@ -2096,6 +2096,7 @@ function __autoload($className)
 		case 'plugin': 
 			array_shift($tmp);
 			// folder 'includes' is not part of the class name
+			if (!$tmp[0]) return;			// In case we get an empty class part
 			$tmp[0] = $tmp[0].'/includes'; 
 			$filename = e_PLUGIN.implode('/', $tmp).'.php';
 			//TODO add debug screen Auto-loaded classes - ['plugin: '.$filename.' - '.$className];
