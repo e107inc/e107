@@ -25,7 +25,7 @@ $FEATUREBOX_TEMPLATE['image_right'] = '
 ';
 
 $FEATUREBOX_TEMPLATE['__INFO__'] = array(
-	'deafult' => array('title' => 'Default - no image'),
+	'default' => array('title' => 'Default - no image'),
 	'image_right' => array('title' => 'Image to right'),
 	'image_left' => array('title' => 'Image to left'),
 );

@@ -9,8 +9,8 @@
 * Featurebox Category model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/category.php,v $
-* $Revision: 1.2 $
-* $Date: 2009-12-08 17:21:31 $
+* $Revision: 1.3 $
+* $Date: 2009-12-09 18:36:32 $
 * $Author: secretr $
 *
 */
@@ -73,26 +73,26 @@ class plugin_featurebox_category extends e_model
 		{
 			return $src;
 		}
-		return '<img src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_category_title')).'" class="icon" />';
+		return '<img src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_category_title')).'" class="icon featurebox" />';
 	}
 	
-	public function sc_featurebox_category_layout()
+	public function sc_featurebox_category_template()
 	{
-		return $this->get('fb_category_layout');
+		return $this->get('');
 	}
 	/**
 	 * Load category data by layout
 	 * TODO - system cache
 	 * 
-	 * @param string $layout
+	 * @param string $template
 	 * @param boolean $force
 	 * @return plugin_featurebox_category
 	 */
-	public function loadByLayout($layout, $force = false)
+	public function loadByTemplate($template, $force = false)
 	{
 		if($force || null === $this->_loaded_data)
 		{
-			if(e107::getDb()->db_Select('featurebox_category', '*', 'fb_category_class IN ('.USERCLASS_LIST.') AND fb_category_layout=\''.e107::getParser()->toDB($layout).'\''))
+			if(e107::getDb()->db_Select('featurebox_category', '*', 'fb_category_class IN ('.USERCLASS_LIST.') AND fb_category_template=\''.e107::getParser()->toDB($template).'\''))
 			{
 				$this->setData(e107::getDb()->db_Fetch());
 				$this->_loaded_data = true;
