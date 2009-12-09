@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.89 $
- * $Date: 2009-12-08 17:21:32 $
+ * $Revision: 1.90 $
+ * $Date: 2009-12-09 18:33:43 $
  * $Author: secretr $
 */
 
@@ -1214,15 +1214,27 @@ class e107
 	 * @param string $id - file prefix, e.g. user for user_template.php
 	 * @param string|null $key
 	 * @param boolean $override see {@link getThemeInfo())
-	 *
+	 * @param boolean $merge merge theme with core templates, default is false
 	 * @return string|array
 	 */
-	public static function getCoreTemplate($id, $key = null, $override = true)
+	public static function getCoreTemplate($id, $key = null, $override = true, $merge = false)
 	{
 		$reg_path = 'core/e107/templates/'.$id.($override ? '/ext' : '');
 		$path = self::coreTemplatePath($id, $override);
 		$id = str_replace('/', '_', $id);
-		return self::_getTemplate($id, $key, $reg_path, $path);
+		$ret = self::_getTemplate($id, $key, $reg_path, $path);
+		if(!$merge || !$override || !is_array($ret))
+		{
+			return $ret;
+		}
+		
+		// merge
+		$reg_path = 'core/e107/templates/'.$id;
+		$path = self::coreTemplatePath($id, false);
+		$id = str_replace('/', '_', $id);
+		$ret_core = self::_getTemplate($id, $key, $reg_path, $path);
+		
+		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
 	}
 
 	/**
@@ -1247,15 +1259,27 @@ class e107
 	 * @param string $id - file prefix, e.g. calendar for calendar_template.php
 	 * @param string|null $key
 	 * @param boolean $override see {@link getThemeInfo())
-	 *
+	 * @param boolean $merge merge theme with plugin templates, default is false
 	 * @return string|array
 	 */
-	public static function getTemplate($plug_name, $id, $key = null, $override = true)
+	public static function getTemplate($plug_name, $id, $key = null, $override = true, $merge = false)
 	{
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
 		$path = self::templatePath($plug_name, $id, $override);
 		$id = str_replace('/', '_', $id);
-		return self::_getTemplate($id, $key, $reg_path, $path);
+		$ret = self::_getTemplate($id, $key, $reg_path, $path);
+		if(!$merge || !$override || !is_array($ret))
+		{
+			return $ret;
+		}
+		
+		// merge
+		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id;
+		$path = self::templatePath($plug_name, $id, false);
+		$id = str_replace('/', '_', $id);
+		$ret_plug = self::_getTemplate($id, $key, $reg_path, $path);
+		
+		return (is_array($ret_plug) ? array_merge($ret_plug, $ret) : $ret);
 	}
 
 	/**
@@ -1263,22 +1287,30 @@ class e107
 	 * @param string $plugin_name
 	 * @param string $template_id [optional] if different from $plugin_name;
 	 * @param mixed $where true - current theme, 'admin' - admin theme, 'front' (default)  - front theme
+	 * @param boolean $merge merge theme with core/plugin layouts, default is false
 	 * @return array
 	 */
-	public static function getLayouts($plugin_name, $template_id = '', $where = 'front', $filter_mask = '')
+	public static function getLayouts($plugin_name, $template_id = '', $where = 'front', $filter_mask = '', $merge = false)
 	{
 		if(!$plugin_name) // Core template
 		{
-			$tmp = self::getCoreTemplate($template_id, null, $where);
+			$tmp = self::getCoreTemplate($template_id, null, $where, $merge);
 		}
 		else // Plugin template
 		{
 			$id = (!$template_id) ? $plugin_name : $template_id;
-			$tmp = self::getTemplate($plugin_name, $id, null, $where);
+			$tmp = self::getTemplate($plugin_name, $id, null, $where, $merge);
 		}
 
 		$templates = array(); 
-		$filter_mask = $filter_mask ? explode(',', $filter_mask) : array(); 
+		if(!$filter_mask) 
+		{
+			$filter_mask = array();
+		}
+		elseif(!is_array($filter_mask))
+		{
+			$filter_mask = array($filter_mask); 
+		}
 		foreach($tmp as $key => $val)
 		{
 			// Special key INFO in format aray('layout' => array(info))
@@ -1292,7 +1324,7 @@ class e107
 				$match = false; 
 				foreach ($filter_mask as $mask)
 				{
-					if(strpos($key, $mask) === 0) //e.g. retrieve only keys starting with 'layout_'
+					if(preg_match($mask, $key)) //e.g. retrieve only keys starting with 'layout_'
 					{
 						$match = true;
 						break;
@@ -1300,9 +1332,9 @@ class e107
 				}
 				if(!$match) continue;
 			}
-			if(isset($val['__INFO__'][$key]))
+			if(isset($tmp['__INFO__'][$key]))
 			{
-				$templates[$key] = defset($val['__INFO__'][$key]['title'], $val['__INFO__'][$key]['title']);
+				$templates[$key] = defset($tmp['__INFO__'][$key]['title'], $tmp['__INFO__'][$key]['title']);
 				continue;
 			}
 			$templates[$key] = implode(' ', array_map('ucfirst', explode('_', $key))); //TODO add LANS?

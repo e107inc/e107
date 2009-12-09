@@ -9,8 +9,8 @@
 * Custom Featurebox install/uninstall/update routines
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/featurebox_setup.php,v $
-* $Revision: 1.3 $
-* $Date: 2009-12-08 17:21:31 $
+* $Revision: 1.4 $
+* $Date: 2009-12-09 18:33:40 $
 * $Author: secretr $
 *
 */
@@ -34,7 +34,7 @@ class featurebox_setup
 		$query = array();
 		$query['fb_category_id'] = 0;
 		$query['fb_category_title'] = 'General';
-		$query['fb_category_layout'] = 'default';
+		$query['fb_category_template'] = 'default';
 		$query['fb_category_random'] = 0;
 		$query['fb_category_class'] = e_UC_PUBLIC;
 		$query['fb_category_limit'] = 1;
@@ -55,7 +55,7 @@ class featurebox_setup
 			$query['fb_template'] = 'default';
 			$query['fb_order'] = 0;
 			$query['fb_image'] = '';
-			$query['fb_imageurl'] = 0;
+			$query['fb_imageurl'] = '';
 			$status = e107::getDb('sql2')->db_Insert('featurebox', $query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 		}
 		else 

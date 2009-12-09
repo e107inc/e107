@@ -73,7 +73,7 @@ sup         { font-size:1em; vertical-align:top; }
 ul,ol       { list-style:none; }
 
 /* Tools */
-.no-display { display:none; }
+/*.no-display { display:none; }*/
 .no-margin  { margin:0 !important; }
 .no-padding { padding:0 !important; }
 .no-bg      { background:none !important; }
@@ -125,7 +125,7 @@ select, .tbox, .helpbox {
     background:#fff;
     font:12px arial, helvetica, sans-serif;
 }
-option { padding-right: 10px;}
+option { padding-left: 10px;}
 input.input-text, textarea, .tbox, .helpbox { padding:2px; }
 
 select.tbox  { min-height:17px; padding: 0px; /* setting the height of empty selects */ }

@@ -1,20 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2009-11-28 15:34:46 $
-|     $Author: secretr $
-+----------------------------------------------------------------------------+
+* e107 website system
+*
+* Copyright (c) 2008-2009 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* Featurebox administration
+*
+* $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
+* $Revision: 1.12 $
+* $Date: 2009-12-09 18:33:40 $
+* $Author: secretr $
+*
 */
 require_once("../../class2.php");
 if (!getperms("P") || !plugInstalled('featurebox')) 
@@ -23,7 +21,7 @@ if (!getperms("P") || !plugInstalled('featurebox'))
 	 exit;
 }
 
-include_lan(e_PLUGIN."featurebox/languages/".e_LANGUAGE."_admin_featurebox.php");
+e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php');
 
 class fb_admin extends e_admin_dispatcher
 {
@@ -69,15 +67,15 @@ class fb_category_ui extends e_admin_ui
 	protected $perPage 		= 0; //no limit
  	 	 	
 	protected $fields = array(
-		'checkboxes'			=> array('title'=> '',				'type' => null, 							'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center first'),
-		'fb_category_id'		=> array('title'=> LAN_ID,			'type' => 'number',		'data' => 'int',	'width' =>'5%', 'forced'=> TRUE),     		
-     	'fb_category_icon' 		=> array('title'=> LAN_ICON,		'type' => 'icon',		'data' => 'str', 	'width' => '5%', 'thclass' => 'center', 'class'=>'center'),
-		'fb_category_title' 	=> array('title'=> LAN_TITLE,		'type' => 'text',		'data' => 'str',  	'width' => 'auto', 'validate' => 'str', 'rule' => '1-200', 'error' => 'String between 1-200 characters expected', 'help' => 'up to 200 characters', 'thclass' => 'left'), 
-		'fb_category_layout' 	=> array('title'=> 'Render type',	'type' => 'templates',	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'writeParms' => 'plugin=featurebox&location=layout&default=Default', 'filter' => true),
-		'fb_category_random' 	=> array('title'=> 'Random',		'type' => 'boolean',	'data' => 'int', 	'width' => '5%', 'thclass' => 'center', 'class' => 'center', 'batch' => true, 'filter' => true),
-		'fb_category_class' 	=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',	'data' => 'int', 	'width' => 'auto'),
-		'fb_category_limit' 	=> array('title'=> 'Limit',			'type' => 'number',		'data' => 'int', 	'width' => '5%', 'thclass' => 'left', 'help' => 'number of items to be shown, 0 - show all'),
-		'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,								'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+		'checkboxes'			=> array('title'=> '',					'type' => null, 							'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center first'),
+		'fb_category_id'		=> array('title'=> LAN_ID,				'type' => 'number',		'data' => 'int',	'width' =>'5%', 'forced'=> TRUE),     		
+     	'fb_category_icon' 		=> array('title'=> LAN_ICON,			'type' => 'icon',		'data' => 'str', 	'width' => '5%', 'thclass' => 'center', 'class'=>'center'),
+		'fb_category_title' 	=> array('title'=> LAN_TITLE,			'type' => 'text',		'data' => 'str',  	'width' => 'auto', 'validate' => 'str', 'rule' => '1-200', 'error' => 'String between 1-200 characters expected', 'help' => 'up to 200 characters', 'thclass' => 'left'), 
+		'fb_category_template' 	=> array('title'=> 'Category template',	'type' => 'layouts',	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'writeParms' => 'plugin=featurebox&id=featurebox_category&merge=1', 'filter' => true),
+		'fb_category_random' 	=> array('title'=> 'Random',			'type' => 'boolean',	'data' => 'int', 	'width' => '5%', 'thclass' => 'center', 'class' => 'center', 'batch' => true, 'filter' => true),
+		'fb_category_class' 	=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'data' => 'int', 	'width' => 'auto'),
+		'fb_category_limit' 	=> array('title'=> 'Limit',				'type' => 'number',		'data' => 'int', 	'width' => '5%', 'thclass' => 'left', 'help' => 'number of items to be shown, 0 - show all'),
+		'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,								'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 	);	
 	
 	/**
@@ -132,9 +130,9 @@ class fb_category_ui extends e_admin_ui
 	{
 		if($this->getModel()->getSqlErrorNumber() == 1062)
 		{
-			$templates = $this->getFieldAttr('fb_category_layout', 'writeParms', array());
+			$templates = $this->getFieldAttr('fb_category_template', 'writeParms', array());
 			$msg = e107::getMessage();
-			$msg->error('Layout <strong>'.vartrue($templates[$new_data['fb_category_layout']], 'n/a').'</strong> is in use by another category. Layout should be unique per category. ');
+			$msg->error('Layout <strong>'.vartrue($templates[$new_data['fb_category_template']], 'n/a').'</strong> is in use by another category. Layout should be unique per category. ');
 			$msg->error($mod == 'create' ? LAN_CREATED_FAILED : LAN_UPDATED_FAILED);
 			
 			return (!E107_DEBUG_LEVEL); // suppress messages (TRUE) only when not in debug mod
@@ -173,13 +171,9 @@ class fb_main_ui extends e_admin_ui
 		'options' 			=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 	);
 	 
-//	protected $fieldpref = array('checkboxes', 'comment_id', 'comment_item_id', 'comment_author_id', 'comment_author_name', 'comment_subject', 'comment_comment', 'comment_type', 'options');
+	protected $fieldpref = array('checkboxes', 'fb_id', 'fb_category', 'fb_title', 'fb_template', 'fb_class', 'fb_order', 'options');
 	
-		protected $prefs = array( 
-		'fb_active'	   				=> array('title'=> 'Allow submitting of fbs by:', 'type'=>'userclass'),
-		'submit_question'	   		=> array('title'=> 'Allow submitting of Questions by:', 'type'=>'userclass'),		
-		'classic_look'				=> array('title'=> 'Use Classic Layout', 'type'=>'boolean')
-	);
+	protected $prefs = array();
 	
 
 	
@@ -188,7 +182,7 @@ class fb_main_ui extends e_admin_ui
 		$categories = array();
 		if(e107::getDb()->db_Select('featurebox_category'))
 		{
-			$categories[0] = LAN_SELECT;
+			//$categories[0] = LAN_SELECT;
 			while ($row = e107::getDb()->db_Fetch())
 			{
 				$id = $row['fb_category_id'];
