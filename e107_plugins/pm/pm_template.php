@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_template.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.6 $
+ * $Date: 2009-12-10 20:40:39 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -101,7 +101,7 @@ $PM_INBOX_TABLE = "
 <tr>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_READ_ICON}</td>
-	<td class='forumheader3'>{PM_SUBJECT=link}{PM_ATTACHMENT_ICON}</td>
+	<td class='forumheader3'>{PM_SUBJECT=link,inbox}{PM_ATTACHMENT_ICON}</td>
 	<td class='forumheader3'>{PM_FROM=link}</td>
 	<td class='forumheader3'>{PM_DATE}</td>
 	<td class='forumheader3' style='text-align: center; white-space: nowrap'>{PM_DELETE=inbox}&nbsp;{PM_BLOCK_USER}</td>
@@ -117,6 +117,7 @@ $PM_INBOX_EMPTY = "
 $PM_INBOX_FOOTER = "
 <tr>
 	<td class='forumheader' colspan='6' style='text-align:center'>
+	<input type='hidden' name='pm_come_from' value='inbox' />
 	{DELETE_SELECTED}
 	</td>
 </tr>
@@ -140,7 +141,7 @@ $PM_OUTBOX_TABLE = "
 <tr>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_READ_ICON}</td>
-	<td class='forumheader3'>{PM_SUBJECT=link}{PM_ATTACHMENT_ICON}</td>
+	<td class='forumheader3'>{PM_SUBJECT=link,outbox}{PM_ATTACHMENT_ICON}</td>
 		<td class='forumheader3'>{PM_TO=link}</td>
 	<td class='forumheader3'>{PM_DATE}</td>
 	<td class='forumheader3' style='text-align: center'>{PM_DELETE=outbox}</td>
@@ -156,12 +157,50 @@ $PM_OUTBOX_EMPTY = "
 $PM_OUTBOX_FOOTER = "
 <tr>
 	<td class='forumheader' colspan='6' style='text-align:center'>
+	<input type='hidden' name='pm_come_from' value='outbox' />
 	{DELETE_SELECTED}
 	</td>
 </tr>
 {PM_NEXTPREV=outbox}
 </table>
 ";
+
+
+$PM_BLOCKED_HEADER = "
+<table class='fborder' style='width:95%'>
+<tr>
+	<td class='fcaption' style='width:5%'>&nbsp;</td>
+	<td class='fcaption' style='width:48%'>".LAN_PM_68."</td>
+	<td class='fcaption' style='width:42%'>".LAN_PM_69."</td>
+	<td class='fcaption' style='width:5%'>&nbsp;</td>
+</tr>
+";
+
+$PM_BLOCKED_TABLE = "
+<tr>
+	<td class='forumheader3'>{PM_BLOCKED_SELECT}</td>
+	<td class='forumheader3'>{PM_BLOCKED_USER=link}</td>
+	<td class='forumheader3'>{PM_BLOCKED_DATE}</td>
+	<td class='forumheader3' style='text-align: center'>{PM_BLOCKED_DELETE}</td>
+</tr>
+";
+
+$PM_BLOCKED_EMPTY = "
+<tr>
+	<td colspan='4' class='forumheader'>".LAN_PM_67."</td>
+</tr>
+";
+
+$PM_BLOCKED_FOOTER = "
+<tr>
+	<td class='forumheader' colspan='4' style='text-align:center'>
+	{DELETE_BLOCKED_SELECTED}
+	</td>
+</tr>
+</table>
+";
+
+
 
 $PM_SHOW =
 "<div style='text-align: center'>
