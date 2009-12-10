@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2009-12-04 11:42:04 $
-|     $Author: e107coders $
+|     $Revision: 1.68 $
+|     $Date: 2009-12-10 21:26:53 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -266,7 +266,7 @@ function update_706_to_800($type='')
 	// List of changed DB tables (defined in core_sql.php)
 	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
 	$changed_tables = array('user', 'dblog','admin_log', 'userclass_classes', 'banlist', 'menus',
-							 'plugin', 'news', 'news_category','online', 'page', 'links');
+							 'plugin', 'news', 'news_category','online', 'page', 'links', 'comments');
 
 
 	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
@@ -314,9 +314,7 @@ function update_706_to_800($type='')
 
 
 	// List of DB tables (key) and field (value) which need changing to accommodate IPV6 addresses
-	$ip_upgrade = array('comments' => 'comment_ip',
-						'download_requests' => 'download_request_ip',
-						'online' => 'online_ip',
+	$ip_upgrade = array('download_requests' => 'download_request_ip',
 						'submitnews' => 'submitnews_ip',
 						'tmp' => 'tmp_ip',
 						'chatbox' => 'cb_ip'
