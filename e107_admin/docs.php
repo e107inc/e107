@@ -9,9 +9,9 @@
  * Docs
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/docs.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-18 01:04:25 $
- * $Author: e107coders $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-10 00:26:57 $
+ * $Author: bugrain $
  *
 */
 require_once("../class2.php");
@@ -26,7 +26,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'docs';
 require_once("auth.php");
 
-require_once ('../e107_handlers/file_class.php');
+require_once (e_HANDLER.'file_class.php');
 $fl = new e_file();
 $doc_fpath = e_DOCS.e_LANGUAGE.'/';
 $doc_fpath_alt = e_DOCS.'English/';
