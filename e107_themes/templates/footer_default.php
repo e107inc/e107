@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2009-07-12 03:28:21 $
-|     $Author: e107coders $
+|     $Revision: 1.55 $
+|     $Date: 2009-12-10 20:23:15 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 $In_e107_Footer = TRUE;	// For registered shutdown function
 
-global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
-
+global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107, $e107ParseHeaderFlag, $e107CustomFooter;
+global $pref;
 //
 // SHUTDOWN SEQUENCE
 //
@@ -62,7 +62,7 @@ if(varset($e107_popup)!=1){
 	//
 	// B Send footer template
 	//
-	parseheader(($ph ? $cust_footer : $FOOTER));
+	parseheader(($e107ParseHeaderFlag ? $e107CustomFooter : $FOOTER));
 
 	//
 	// C Dump all debug and traffic information

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2007-03-18 11:20:29 $
+|     $Revision: 1.21 $
+|     $Date: 2009-12-10 20:23:14 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,8 @@ define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_6."</i>");
 $layout = "_default";
 $logo = THEME_ABS."images/bullet3.gif";
 
-$HEADER .=
+
+$HEADER =
 "
 <table style='width:100%; background-color:#E4E0E0' cellspacing='3' class='topborder'>
 <tr>

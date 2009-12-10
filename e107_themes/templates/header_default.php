@@ -6,9 +6,9 @@
 |     Released under the terms and conditions of the GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.112 $
-|     $Date: 2009-07-13 10:17:41 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.113 $
+|     $Date: 2009-12-10 20:23:16 $
+|     $Author: e107steved $
 +-----------------------------------------------------------------------------------------------+
 */
 
@@ -391,27 +391,36 @@ if ($e107_popup != 1) {
 		$custompage['no_array'] = array();
 	}
 
-	$ph = FALSE;
-	if (e_PAGE == 'news.php' && isset($NEWSHEADER)) {
+	$e107ParseHeaderFlag = FALSE;				// Deliberately choose a distinct Name! (Its got to reach the footer)
+	if (e_PAGE == 'news.php' && isset($NEWSHEADER)) 
+	{
 		parseheader($NEWSHEADER);
-	} else {
+	} 
+	else 
+	{
 		$full_query = e_SELF."?".e_QUERY."!";
-		foreach ($custompage as $key_extract => $cust_extract) {
-			foreach ($cust_extract as $key => $kpage) {
-				if ($kpage && (strstr(e_SELF, $kpage) || strstr($full_query,$kpage))) {
-					$ph = TRUE;
-					if ($key_extract=='no_array') {
+		foreach ($custompage as $key_extract => $cust_extract) 
+		{
+			foreach ($cust_extract as $key => $kpage) 
+			{
+				if ($kpage && (strstr(e_SELF, $kpage) || strstr($full_query,$kpage))) 
+				{
+					$e107ParseHeaderFlag = TRUE;
+					if ($key_extract=='no_array') 
+					{
 						$cust_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
-						$cust_footer = $CUSTOMFOOTER ? $CUSTOMFOOTER : $FOOTER;
-					} else {
+						$e107CustomFooter = $CUSTOMFOOTER ? $CUSTOMFOOTER : $FOOTER;
+					} 
+					else 
+					{
 						$cust_header = $CUSTOMHEADER[$key_extract] ? $CUSTOMHEADER[$key_extract] : $HEADER;
-						$cust_footer = $CUSTOMFOOTER[$key_extract] ? $CUSTOMFOOTER[$key_extract] : $FOOTER;
+						$e107CustomFooter = $CUSTOMFOOTER[$key_extract] ? $CUSTOMFOOTER[$key_extract] : $FOOTER;	// Another intentionally distinct name
 					}
 					break;
 				}
 			}
 		}
-		parseheader(($ph ? $cust_header : $HEADER));
+		parseheader(($e107ParseHeaderFlag ? $cust_header : $HEADER));
 	}
 
 

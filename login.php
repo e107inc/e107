@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2009-05-26 20:14:29 $
+|     $Revision: 1.15 $
+|     $Date: 2009-12-10 20:23:17 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -54,11 +54,11 @@ if (!USER)
 	$LOGIN_TABLE_SUBMIT = "<input class='button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
 
 	$login_message = LAN_LOGIN_3." | ".SITENAME;
-	if (!$LOGIN_TABLE)
+	if (!isset($LOGIN_TABLE) || !$LOGIN_TABLE)
 	{
-		if (file_exists(THEME."login_template.php"))
+		if (file_exists(THEME.'login_template.php'))
 		{
-			require_once(THEME."login_template.php");
+			require_once(THEME.'login_template.php');
 		}
 		else
 		{
