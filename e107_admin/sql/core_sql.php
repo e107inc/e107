@@ -9,8 +9,8 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.43 $
- * $Date: 2009-11-27 21:42:46 $
+ * $Revision: 1.44 $
+ * $Date: 2009-12-10 21:26:53 $
  * $Author: e107steved $
 */
 
@@ -103,7 +103,7 @@ CREATE TABLE comments (
   comment_comment text NOT NULL,
   comment_blocked tinyint(3) unsigned NOT NULL default '0',
   comment_ip varchar(45) NOT NULL default '',
-  comment_type varchar(10) NOT NULL default '0',
+  comment_type varchar(20) NOT NULL default '0',
   comment_lock tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id)
 ) TYPE=MyISAM;
