@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/contact.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2009-11-18 01:04:24 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2009-12-10 21:03:56 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -39,10 +39,10 @@ if(isset($_POST['send-contactus'])){
 
 	$error = "";
 
-	$sender_name = $tp->toEmail($_POST['author_name'],TRUE,"rawtext");
+	$sender_name = $tp->toEmail($_POST['author_name'],TRUE,'RAWTEXT');
 	$sender = check_email($_POST['email_send']);
-	$subject = $tp->toEmail($_POST['subject'],TRUE,"rawtext");
-	$body = $tp->toEmail($_POST['body'],TRUE,"rawtext");
+	$subject = $tp->toEmail($_POST['subject'],TRUE,'RAWTEXT');
+	$body = $tp->toEmail($_POST['body'],TRUE,'RAWTEXT');
 
 
 // Check Image-Code
@@ -71,10 +71,10 @@ if(isset($_POST['send-contactus'])){
 
 
 // Check email address on remote server (if enabled).
-	if ($pref['signup_remote_emailcheck'] && $error == "")
+	if ($pref['signup_remote_emailcheck'] && $error == '')
 	{
 		require_once(e_HANDLER."mail_validation_class.php");
-		list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
+		list($adminuser,$adminhost) = split ('@', SITEADMINEMAIL);
 		$validator = new email_validation_class;
 		$validator->localuser= $adminuser;
 		$validator->localhost= $adminhost;
