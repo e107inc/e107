@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-12-08 17:21:35 $
+ * $Revision: 1.13 $
+ * $Date: 2009-12-10 22:46:46 $
  * $Author: secretr $
  */
 
@@ -74,6 +74,7 @@ $HEADER['3_column'] = "<table class='page_container'>
 <td class='default_menu'>
 {SETSTYLE=default}
 {FEATUREBOX|default}
+{FEATUREBOX|dynamic}
 {WMESSAGE}
 ";
 

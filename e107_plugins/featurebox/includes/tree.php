@@ -9,8 +9,8 @@
 * Featurebox Category Tree model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/tree.php,v $
-* $Revision: 1.2 $
-* $Date: 2009-12-08 17:21:32 $
+* $Revision: 1.3 $
+* $Date: 2009-12-10 22:46:45 $
 * $Author: secretr $
 *
 */
@@ -42,7 +42,7 @@ class plugin_featurebox_tree extends e_tree_model
 		$this->updateParams($options);
 		
 		$order = $this->getParam('random') ? ' ORDER BY rand()' : ' ORDER BY fb_order ASC';
-		$limit = $this->getParam('limit') ? ' LIMIT 0,'.intval($this->getParam('limit')) : '';
+		$limit = $this->getParam('limit') ? ' LIMIT '.intval($this->getParam('from'), 0).','.intval($this->getParam('limit')) : '';
 		$qry = 'SELECT SQL_CALC_FOUND_ROWS * FROM #featurebox WHERE fb_category='.intval($category_id).' AND fb_class IN('.USERCLASS_LIST.')'.$order.$limit;
 		$this->setParam('db_query', $qry);
 		

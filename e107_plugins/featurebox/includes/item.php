@@ -9,8 +9,8 @@
 * Featurebox Item model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/item.php,v $
-* $Revision: 1.2 $
-* $Date: 2009-12-08 17:21:32 $
+* $Revision: 1.3 $
+* $Date: 2009-12-10 22:46:45 $
 * $Author: secretr $
 *
 */
@@ -101,6 +101,32 @@ class plugin_featurebox_item extends e_model
 	public function sc_featurebox_counter()
 	{
 		return $this->getParam('counter', 1);
+	}
+	
+	public function sc_featurebox_limit()
+	{
+		return $this->getParam('limit', 0);
+	}
+	
+	public function sc_featurebox_total()
+	{
+		return $this->getParam('total', 0);
+	}
+	
+	public function sc_featurebox_all()
+	{
+		return $this->getCategory()->sc_featurebox_category_all();
+	}
+	
+	public function sc_featurebox_cols()
+	{
+		return $this->getParam('cols', 1);
+	}
+	
+	
+	public function sc_featurebox_colcount()
+	{
+		return $this->getParam('col_counter', 1);
 	}
 	
 	/**

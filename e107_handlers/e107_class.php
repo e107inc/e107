@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.90 $
- * $Date: 2009-12-09 18:33:43 $
+ * $Revision: 1.91 $
+ * $Date: 2009-12-10 22:46:45 $
  * $Author: secretr $
 */
 
@@ -1369,7 +1369,7 @@ class e107
 			return self::getRegistry($regPath);
 		}
 		$ret = self::getRegistry($regPath);
-		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : $ret);
+		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : (is_array($ret) ? array() : ''));
 	}
 
 	/**

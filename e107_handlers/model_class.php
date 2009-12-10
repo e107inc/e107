@@ -9,8 +9,8 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.47 $
- * $Date: 2009-12-08 17:21:33 $
+ * $Revision: 1.48 $
+ * $Date: 2009-12-10 22:46:45 $
  * $Author: secretr $
 */
 
@@ -2107,7 +2107,6 @@ class e_tree_model extends e_model
 			{
 				// TODO - $sql->total_results variable type!!!
 				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
-				
 				while($tmp = $sql->db_Fetch())
 				{
 					$tmp = new $class_name($tmp);

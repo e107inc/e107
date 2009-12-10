@@ -9,9 +9,9 @@
  * Unobtrusive JS support 
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/e_css.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-10 22:46:45 $
+ * $Author: secretr $
 */
 if (!defined('e107_INIT')) { exit; }
 // No JavaScript support using CSS
@@ -40,7 +40,9 @@ echo "
    button.e-hide-if-js { display: inline; }
 </style>
 <script type='text/javascript'>
-   $('e-js-css').disabled=true;
+   //$('e-js-css').disabled=true;
+   // 'disabled' is not valid style attribute, fails with Konqueror (tested on Fedora) 
+   $('e-js-css').remove();
 </script>
 ";
 ?>

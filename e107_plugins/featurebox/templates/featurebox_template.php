@@ -8,19 +8,21 @@ $FEATUREBOX_TEMPLATE['default'] = '
 </div>
 ';
 
-$sc_style['FEATUREBOX_IMAGE|image_left']['pre'] = '<div class="f-left">';
-$sc_style['FEATUREBOX_IMAGE|image_left']['post'] = '</div>';
-$FEATUREBOX_TEMPLATE['image_right'] = '
-<div class="featurebox-item imgleft" id="featurebox-item-{FEATUREBOX_ID}">
-	<div class="featurebox-body">{FEATUREBOX_IMAGE|image_left}<h3>{FEATUREBOX_TITLE|image_left}</h3>{FEATUREBOX_TEXT|image_left}</div>
+$sc_style['FEATUREBOX_IMAGE|image_left']['pre'] = '<img class="f-left" src="';
+$sc_style['FEATUREBOX_IMAGE|image_left']['post'] = '" alt="" />';
+$FEATUREBOX_TEMPLATE['image_left'] = '
+<div class="featurebox-item">
+	{FEATUREBOX_IMAGE|image_left=src}<h3>{FEATUREBOX_TITLE|image_left}</h3>{FEATUREBOX_TEXT|image_left}
+	<div class="clear"><!-- --></div>
 </div>
 ';
 
-$sc_style['FEATUREBOX_IMAGE|image_right']['pre'] = '<div class="f-right">';
-$sc_style['FEATUREBOX_IMAGE|image_right']['post'] = '</div>';
+$sc_style['FEATUREBOX_IMAGE|image_right']['pre'] = '<img class="f-right" src="';
+$sc_style['FEATUREBOX_IMAGE|image_right']['post'] = '" alt="" />';
 $FEATUREBOX_TEMPLATE['image_right'] = '
-<div class="featurebox-item imgright" id="featurebox-item-{FEATUREBOX_ID}">
-	<div class="featurebox-body">{FEATUREBOX_IMAGE|image_right}<h3>{FEATUREBOX_TITLE|image_right}</h3>{FEATUREBOX_TEXT|image_right}</div>
+<div class="featurebox-item">
+	{FEATUREBOX_IMAGE|image_right=src}<h3>{FEATUREBOX_TITLE|image_right}</h3>{FEATUREBOX_TEXT|image_right}
+	<div class="clear"><!-- --></div>
 </div>
 ';
 

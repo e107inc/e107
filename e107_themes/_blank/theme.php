@@ -62,28 +62,45 @@ function theme_head() {
 
 function tablestyle($caption, $text, $mod) {
 	global $style;
+	
+	$type = $style;
+	if(empty($caption))
+	{
+		$type = 'box';
+	}
+	
+	switch($type) 
+	{
 
-	switch($style) {
-
-	case 'menu' :
-		echo '
-			<div class="block">
-				<h4 class="caption">'.$caption.'</h4>
-				'.$text.'
-			</div>
-		';
-	break;
-
-	default:
-		echo '
-			<div class="block">
-				<h1 class="caption">'.$caption.'</h1>
-				<div class="block-text">
+		case 'menu' :
+			echo '
+				<div class="block">
+					<h4 class="caption">'.$caption.'</h4>
 					'.$text.'
 				</div>
-			</div>
-		';
-	break;
+			';
+		break;
+		
+		case 'box':
+			echo '
+				<div class="block">
+					<div class="block-text">
+						'.$text.'
+					</div>
+				</div>
+			';
+		break;
+	
+		default:
+			echo '
+				<div class="block">
+					<h1 class="caption">'.$caption.'</h1>
+					<div class="block-text">
+						'.$text.'
+					</div>
+				</div>
+			';
+		break;
 	}
 }
 
@@ -112,7 +129,8 @@ $HEADER['default'] = '
 					<div class="col-main">
 						<div class="inner-wrapper">
 						{SETSTYLE=content}
-						{FEATUREBOX|blank_default=notablestyle}
+						{FEATUREBOX|default=notablestyle}
+						{FEATUREBOX|dynamic=notablestyle}
 ';
 $FOOTER['default'] = '
 						</div>

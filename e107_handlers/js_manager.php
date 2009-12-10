@@ -7,9 +7,9 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-18 01:49:18 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-10 22:46:45 $
+ * $Author: secretr $
  * 
 */
 global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
@@ -443,6 +443,11 @@ class e_jsmanager
 		{
 			foreach ($file_path as $fp => $loc)
 			{
+				if(is_numeric($fp))
+				{
+					$fp = $loc;
+					$loc = $runtime_location;
+				}
 				$this->addJs($type, $fp, $loc);
 			}
 			return $this;
@@ -698,6 +703,8 @@ class e_jsmanager
 		{
 			return '';
 		}
+		
+		$js_content_array = array_unique($js_content_array); //TODO quick fix, we need better control!
 		echo "\n";
 		if($label) //TODO - print comments only if site debug is on
 		{

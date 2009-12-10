@@ -97,8 +97,8 @@ pre {
 /******** Decorate JS */
 /* Admin List Table */ 
 .adminlist { width:100%;  border:1px solid #ddd;}
-.adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold }
-.adminlist td { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; }
+.adminlist th { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; font-weight: bold; vertical-align: middle; }
+.adminlist td { padding: 5px; border-bottom:1px solid #ddd; border-right: 1px solid #ddd; vertical-align: middle; }
 .adminlist th.last,
 .adminlist td.last { border-right: 0px solid;}
 .adminlist tr.last td{ border-bottom: 0px solid;}

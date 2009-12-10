@@ -9,8 +9,8 @@
 * Featurebox Category model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/category.php,v $
-* $Revision: 1.3 $
-* $Date: 2009-12-09 18:36:32 $
+* $Revision: 1.4 $
+* $Date: 2009-12-10 22:46:45 $
 * $Author: secretr $
 *
 */
@@ -78,8 +78,44 @@ class plugin_featurebox_category extends e_model
 	
 	public function sc_featurebox_category_template()
 	{
-		return $this->get('');
+		return $this->get('fb_category_template');
 	}
+	
+	public function sc_featurebox_category_limit()
+	{
+		return $this->get('fb_category_limit');
+	}
+	
+	public function sc_featurebox_category_total()
+	{
+		return $this->getParam('total', 0);
+	}
+
+	public function sc_featurebox_category_all()
+	{
+		return $this->getItemTree()->getTotal();
+	}
+	
+	public function sc_featurebox_category_cols()
+	{
+		return $this->getParam('cols', 1);
+	}
+
+	public function sc_featurebox_nav_counter()
+	{
+		return $this->getParam('counter', 1);
+	}
+
+	public function sc_featurebox_nav_active()
+	{
+		return $this->getParam('active') ? ' active' : '';
+	}
+
+	public function sc_featurebox_category_emptyfill()
+	{
+		return $this->getParam('no_fill_empty', 0);
+	}
+	
 	/**
 	 * Load category data by layout
 	 * TODO - system cache
@@ -116,6 +152,7 @@ class plugin_featurebox_category extends e_model
 			$this->_tree = new plugin_featurebox_tree();
 			$options = array(
 				'limit' => $this->getParam('limit', $this->get('fb_category_limit')),
+				'from' => $this->getParam('from', 0),
 				'random' => $this->getParam('random', $this->get('fb_category_random'))
 			);
 			$this->_tree->load($this->getId(), $options, $force);
