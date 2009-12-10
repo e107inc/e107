@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-10 20:40:38 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -146,22 +146,22 @@ class private_message
 	{
 		global $sql;
 		$pmid = (int)$pmid;
-		$ret = "";
+		$ret = '';
 		$del_pm = FALSE;
-		$newvals = "";
-		if($sql->db_Select("private_msg", "*", "pm_id = ".$pmid." AND (pm_from = ".USERID." OR pm_to = ".USERID.")"))
+		$newvals = '';
+		if($sql->db_Select('private_msg', '*', 'pm_id = '.$pmid.' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')'))
 		{
 			$row = $sql->db_Fetch();
 			if($row['pm_to'] == USERID)
 			{
-				$newvals = "pm_read_del = 1";
-				$ret .= LAN_PM_42."<br />";
+				$newvals = 'pm_read_del = 1';
+				$ret .= LAN_PM_42.'<br />';
 				if($row['pm_sent_del'] == 1) { $del_pm = TRUE; }
 			}
 			if($row['pm_from'] == USERID)
 			{
-				if($newvals != "") { $del_pm = TRUE; }
-				$newvals = "pm_sent_del = 1";
+				if($newvals != '') { $del_pm = TRUE; }
+				$newvals = 'pm_sent_del = 1';
 				$ret .= LAN_PM_43."<br />";
 				if($row['pm_read_del'] == 1) { $del_pm = TRUE; }
 			}
@@ -170,16 +170,26 @@ class private_message
 			{
 				// Delete any attachments and remove PM from db
 				$attachments = explode(chr(0), $row['pm_attachments']);
+				$aCount = array(0,0);
 				foreach($attachments as $a)
 				{
-					$filename = getcwd()."/attachments/{$a}";
-					unlink($filename);
+					$a = trim($a);
+					if ($a)
+					{
+	//					$filename = getcwd()."/attachments/{$a}";
+						$filename = e_PLUGIN.'pm/attachments/'.$a;
+						if (unlink($filename)) $aCount[0]++; else $aCount[1]++;
+					}
 				}
-				$sql->db_Delete("private_msg", "pm_id = ".$pmid);
+				if ($aCount[0] || $aCount[1])
+				{
+					$ret .= str_replace(array('--GOOD--', '--FAIL--'), $aCount, LAN_PM_71).'<br />';
+				}
+				$sql->db_Delete('private_msg', 'pm_id = '.$pmid);
 			}
 			else
 			{
-				$sql->db_Update("private_msg", $newvals." WHERE pm_id = ".$pmid);
+				$sql->db_Update('private_msg', $newvals.' WHERE pm_id = '.$pmid);
 			}
 			return $ret;
 		}
@@ -187,7 +197,7 @@ class private_message
 
 	function pm_send_notify($uid, $pminfo, $pmid, $attach_count = 0)
 	{
-		require_once(e_HANDLER."mail.php");
+		require_once(e_HANDLER.'mail.php');
 		global $PLUGINS_DIRECTORY;
 		$subject = LAN_PM_100.SITENAME;
 		$pmlink = SITEURL.$PLUGINS_DIRECTORY."pm/pm.php?show.{$pmid}";
@@ -215,15 +225,43 @@ class private_message
 		sendemail($pminfo['from_email'], $subject, $txt, $pminfo['from_name']);
 	}
 
+
+	/**
+	 *	Get list of users blocked from sending to a specific user ID.
+	 *	@param integer $to - user ID
+	 *	@return array of blocked users as user IDs
+	 */
 	function block_get($to = USERID)
+	{
+		global $sql;
+		$ret = array();
+		$to = intval($to);		// Precautionary
+		if ($sql->db_Select('private_msg_block', 'pm_block_from', 'pm_block_to = '.$to))
+		{
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
+			{
+				$ret[] = $row['pm_block_from'];
+			}
+		}
+		return $ret;
+	}
+
+
+	/**
+	 *	Get list of users blocked from sending to a specific user ID.
+	 *	@param integer $to - user ID
+	 *	@return array of blocked users, including specific user info
+	 */
+	function block_get_user($to = USERID)
 	{
 		global $sql, $tp;
 		$ret = array();
-		if($sql->db_Select("private_msg_block", "pm_block_from", "pm_block_to = '".$tp -> toDB($to)."'"))
+		$to = intval($to);		// Precautionary
+		if ($sql->db_Select_gen('SELECT pm.*, u.user_name FROM `#private_msg_block` AS pm LEFT JOIN `#user` AS u ON `pm`.`pm_block_from` = `u`.`user_id` WHERE pm_block_to = '.$to))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
-				$ret[] = $row['pm_block_from'];
+				$ret[] = $row;
 			}
 		}
 		return $ret;
@@ -265,15 +303,16 @@ class private_message
 	function block_del($from, $to = USERID)
 	{
 		global $sql;
-		if($sql->db_Select("user", "user_name", "user_id = '".intval($from)."'"))
+		$from = intval($from);
+		if($sql->db_Select('user', 'user_name', 'user_id = '.$from))
 		{
 			$uinfo = $sql->db_Fetch();
-			if($sql->db_Select("private_msg_block", "pm_block_id", "pm_block_from = '".intval($from)."' AND pm_block_to = '".intval($to)."'"))
+			if($sql->db_Select('private_msg_block', 'pm_block_id', 'pm_block_from = '.$from.' AND pm_block_to = '.intval($to)))
 			{
 				$row = $sql->db_Fetch();
-				if($sql->db_Delete("private_msg_block", "pm_block_id = '".intval($row['pm_block_id'])."'"))
+				if($sql->db_Delete('private_msg_block', 'pm_block_id = '.intval($row['pm_block_id'])))
 				{
-					return str_replace("{UNAME}", $uinfo['user_name'], LAN_PM_44);
+					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_44);
 				}
 				else
 				{
@@ -282,7 +321,7 @@ class private_message
 			}
 			else
 			{
-				return str_replace("{UNAME}", $uinfo['user_name'], LAN_PM_46);
+				return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_46);
 			}
 		}
 		else
@@ -294,7 +333,7 @@ class private_message
 	function pm_getuid($var)
 	{
 		global $sql, $tp;
-
+		$var = trim($var);
 		if($sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '".$sql -> escape(trim($var), TRUE)."'"))
 		{
 			$row = $sql->db_Fetch();

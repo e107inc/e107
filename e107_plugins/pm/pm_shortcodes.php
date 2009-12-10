@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.14 $
+ * $Date: 2009-12-10 20:40:38 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -29,27 +29,6 @@ if($pm_info['from_name'])
 require_once(e_HANDLER."user_select_class.php");
 $us = new user_select;
 $type = ($pm_prefs['dropdown'] == TRUE ? 'list' : 'popup');
-
-
-$ret = "<ol>
-
-        <li id=\"facebook-list\" class=\"input-text\">
-            <input type=\"text\" value=\"\" id=\"facebook-demo\" />
-          <div id=\"facebook-auto\">
-
-            <div class=\"default\">Type the name of a user</div>
-            <ul class=\"feed\">
-
-            </ul>
-
-          </div>
-        </li>
-      </ol>";
-
-return $ret;
-
-
-
 if(check_class($pm_prefs['multi_class']))
 {
 	$ret = $us->select_form($type, 'textarea.pm_to');
@@ -60,6 +39,7 @@ else
 }
 return $ret;
 SC_END
+
 
 SC_BEGIN FORM_TOCLASS
 global $pm_prefs, $pm_info;
@@ -259,10 +239,13 @@ SC_END
 
 SC_BEGIN PM_SUBJECT
 global $pm_info, $tp;
-$ret = $tp->toHTML($pm_info['pm_subject'], true, 'no_make_clickable,no_hook');
-if('link' == $parm)
+$ret = $tp->toHTML($pm_info['pm_subject'], true, 'USER_TITLE');
+$prm = explode(',',$parm);
+if('link' == $prm[0])
 {
-	$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$pm_info['pm_id']}'>".$ret."</a>";
+	$extra = '';
+	if (isset($prm[1])) $extra = '.'.$prm[1];
+	$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$pm_info['pm_id']}{$extra}'>".$ret."</a>";
 }
 return $ret;
 SC_END
@@ -392,9 +375,62 @@ if($pm_prefs['animate'])
 return '';
 SC_END
 
+
+
 SC_BEGIN PM_NEXTPREV
 global $pmlist, $tp, $pm_start, $pm_prefs, $pmlist;
 return $tp->parseTemplate("{NEXTPREV={$pmlist['total_messages']},{$pm_prefs['perpage']},{$pm_start},".e_SELF."?{$parm}.[FROM]}");
+SC_END
+
+
+//---------------------------------------
+//		Blocked senders management
+//---------------------------------------
+SC_BEGIN BLOCKED_SENDERS_MANAGE
+global $sql;
+$count = $sql->db_Count('private_msg_block', '(*)', 'WHERE `pm_block_to` = '.USERID);
+if (!$count) return '';
+return LAN_PM_66;
+SC_END
+
+
+SC_BEGIN PM_BLOCKED_SELECT
+global $pmBlocked;
+return "<input type='checkbox' name='selected_pm[{$pmBlocked['pm_block_from']}]' value='1' />";
+SC_END
+
+
+
+SC_BEGIN PM_BLOCKED_USER
+global $pmBlocked;
+if (!$pmBlocked['user_name'])
+{
+	return LAN_PM_72;
+}
+if('link' == $parm)
+{
+	return "<a href='".e_BASE."user.php?id.{$pmBlocked['pm_block_from']}'>{$pmBlocked['user_name']}</a>";
+}
+else
+{
+	return $pmBlocked['user_name'];
+}
+SC_END
+
+
+SC_BEGIN PM_BLOCKED_DATE
+global $pmBlocked;
+require_once(e_HANDLER.'date_handler.php');
+return convert::convert_date($pmBlocked['pm_block_datestamp'], $parm);
+SC_END
+
+SC_BEGIN PM_BLOCKED_DELETE
+global $pmBlocked;
+return "<a href='".e_PLUGIN_ABS."pm/pm.php?delblocked.{$pmBlocked['pm_block_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
+SC_END
+
+SC_BEGIN DELETE_BLOCKED_SELECTED
+return "<input type='submit' name='pm_delete_blocked_selected' class='button' value='".LAN_PM_53."' />";
 SC_END
 
 */

@@ -9,45 +9,47 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:05:53 $
- * $Author: e107coders $
+ * $Revision: 1.7 $
+ * $Date: 2009-12-10 20:40:38 $
+ * $Author: e107steved $
  */
 
 $retrieve_prefs[] = 'pm_prefs';
 $eplug_admin = TRUE;
-require_once("../../class2.php");
-require_once(e_PLUGIN."pm/pm_class.php");
-require_once(e_HANDLER."userclass_class.php");
-require_once(e_HANDLER."form_handler.php");
+require_once('../../class2.php');
+require_once(e_PLUGIN.'pm/pm_class.php');
+require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'form_handler.php');
 
-if (!getperms("P"))
+if (!e107::isInstalled('pm') || !getperms('P'))
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 
 $action = e_QUERY;
 
-require_once(e_ADMIN."auth.php");
+require_once(e_ADMIN.'auth.php');
 
-if($action == "")
+if($action == '')
 {
-	$action = "main";
+	$action = 'main';
 }
 
-$pm_prefs = $sysprefs->getArray("pm_prefs");
+$pm_prefs = $sysprefs->getArray('pm_prefs');
 
 //pm_prefs record not found in core table, set to defaults and create record
 if(!is_array($pm_prefs))
 {
-	require_once(e_PLUGIN."pm/pm_default.php");
-	$pm_prefs = pm_set_default_prefs();
+	require_once(e_PLUGIN.'pm/pm_default.php');
+	$pm_prefs = pm_set_default_prefs();			// Use the default settings
 	$sysprefs->setArray('pm_prefs');
 	$message = ADLAN_PM_3;
 }
 
-$lan_file = e_PLUGIN."pm/languages/admin/".e_LANGUAGE.".php";
+
+
+//$lan_file = e_PLUGIN.'pm/languages/admin/'.e_LANGUAGE.'.php';
 // include_once(is_readable($lan_file) ? $lan_file : e_PLUGIN."pm/languages/admin/English.php");
 	
 if (isset($_POST['update_prefs'])) 
@@ -59,6 +61,7 @@ if (isset($_POST['update_prefs']))
 	$sysprefs->setArray('pm_prefs');
 	$message = ADLAN_PM_4;
 }
+
 
 if(isset($_POST['addlimit']))
 {
@@ -109,24 +112,25 @@ if(isset($_POST['updatelimits']))
 	}
 }
 
+
 if(isset($message))
 {
-	$ns->tablerender("", $message);
+	$ns->tablerender('', $message);
 }
 
 
-if($action == "main")
+switch ($action)
 {
-	$ns->tablerender(ADLAN_PM_12, show_options());
+	case 'main' :
+		$ns->tablerender(ADLAN_PM_12, show_options());
+		break;
+	case 'limits' :
+		$ns->tablerender(ADLAN_PM_14, show_limits());
+		$ns->tablerender(ADLAN_PM_15, add_limit());
+		break;
 }
 
-if($action == "limits")
-{
-	$ns->tablerender(ADLAN_PM_14, show_limits());
-	$ns->tablerender(ADLAN_PM_15, add_limit());
-}
-
-require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN.'footer.php');
 
 function yes_no($fname)
 {
@@ -136,6 +140,7 @@ function yes_no($fname)
 		form::form_radio("option[{$fname}]", "0", ($pm_prefs[$fname] ? "0" : "1"), "", "").LAN_NO;
 		return $ret;
 }
+
 
 
 function show_options()
@@ -216,6 +221,10 @@ function show_options()
 	";
 	return $txt;
 }
+
+
+
+
 
 function show_limits()
 {
