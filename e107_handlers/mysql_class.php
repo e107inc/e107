@@ -9,8 +9,8 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.68 $
- * $Date: 2009-12-02 16:51:00 $
+ * $Revision: 1.69 $
+ * $Date: 2009-12-10 22:46:46 $
  * $Author: secretr $
 */
 
@@ -51,30 +51,33 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  *
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * @author $Author: secretr $
  *
  */
 class e_db_mysql {
 
-	var $mySQLserver;
-	var $mySQLuser;
-	var $mySQLpassword;
-	var $mySQLdefaultdb;
-	var $mySQLPrefix;
-	var $mySQLaccess;
-	var $mySQLresult;
-	var $mySQLrows;
-	var $mySQLerror = '';			// Error reporting mode - TRUE shows messages
-	var	$mySQLlastErrNum = 0;		// Number of last error
-	var	$mySQLlastErrText;		// Text of last error (empty string if no error)
-	var $mySQLcurTable;
-	var $mySQLlanguage;
-	var $mySQLinfo;
-	var $tabset;
-	var $mySQLtableList = array(); // list of all Db tables.
+	// TODO switch to protected vars where needed
+	public $mySQLserver;
+	public $mySQLuser;
+	public $mySQLpassword;
+	public $mySQLdefaultdb;
+	public $mySQLPrefix;
+	public $mySQLaccess;
+	public $mySQLresult;
+	public $mySQLrows;
+	public $mySQLerror = '';			// Error reporting mode - TRUE shows messages
+	
+	protected $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrNum() 
+	protected $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrText()
+	
+	public $mySQLcurTable;
+	public $mySQLlanguage;
+	public $mySQLinfo;
+	public $tabset;
+	public $mySQLtableList = array(); // list of all Db tables.
 
-	var $mySQLtableListLanguage = array(); // Db table list for the currently selected language
+	public $mySQLtableListLanguage = array(); // Db table list for the currently selected language
 
 	/**
 	 * MySQL Charset
@@ -83,7 +86,7 @@ class e_db_mysql {
 	 */
 	public $mySQLcharset;
 
-	var $total_results;			// Total number of results
+	public $total_results = false;			// Total number of results
 
 	/**
 	* Constructor - gets language options from the cookie or session
@@ -264,12 +267,13 @@ class e_db_mysql {
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
 
+		$this->total_results = false;
 		if ((strpos($query,'SQL_CALC_FOUND_ROWS') !== FALSE) && (strpos($query,'SELECT') !== FALSE))
 		{	// Need to get the total record count as well. Return code is a resource identifier
 			// Have to do this before any debug action, otherwise this bit gets messed up
 			$fr = mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
 			$rc = mysql_fetch_array($fr);
-			$this->total_results = $rc['FOUND_ROWS()'];
+			$this->total_results = (int) $rc['FOUND_ROWS()'];
 		}
 
 		if (E107_DEBUG_LEVEL)

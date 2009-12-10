@@ -190,3 +190,19 @@ legend { font-size: 14px; font-weight: bold; padding: 5px; }
 
 /******** Horizontal navigation ADMIN_NAV_ALT */
 .navigation { border: 1px solid #DDDDDD;}
+
+/******** FEATUREBOX PLUGIN */
+#featurebox-ajax-container { display: block }
+#featurebox-ajax-container img { padding: 1px; margin: 5px; border: 1px solid #DDDDDD }
+
+div.featurebox-nav { text-align: right; margin-right: 5px }
+div.featurebox-nav a.featurebox-nav-link {  }
+div.featurebox-nav a.featurebox-nav-link.active,
+div.featurebox-nav a.featurebox-nav-link.active:hover { text-decoration: none; color: #000 }
+
+div.featurebox-nav a.featurebox-nav-next,
+div.featurebox-nav a.featurebox-nav-next:hover,
+div.featurebox-nav a.featurebox-nav-prev,
+div.featurebox-nav a.featurebox-nav-prev:hover { text-decoration: none; font-size: 16px }
+
+
