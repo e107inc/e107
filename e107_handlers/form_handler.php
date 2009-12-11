@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.95 $
- * $Date: 2009-12-11 00:36:25 $
+ * $Revision: 1.96 $
+ * $Date: 2009-12-11 00:51:19 $
  * $Author: e107coders $
  *
 */
@@ -131,8 +131,7 @@ class e_form
 				$opts[$row['media_category']][$row['media_url']] = $row['media_name']. " (".$row['media_dimensions'].") ";
 			}
 			
-			asort($opts);
-		
+			asort($opts);		
 			return $this->selectbox($name,$opts,$default, array('default'=>'&nbsp;'));	
 		}
 		
