@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.9 2009-12-11 14:33:31 secretr Exp $
+* $Id: e_shortcode.php,v 1.10 2009-12-11 14:38:26 secretr Exp $
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
@@ -272,11 +272,16 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			$ret .= $node->setParam('counter', $counter)
 				->setParam('cols', $cols)
 				->setParam('col_counter', $col_counter)
+				->setParam('cols_counter', $cols_counter)
 				->setParam('limit', $category->get('fb_category_limit'))
 				->setParam('total', $total)
 				->setCategory($category)
 				->toHTML($tmpl_item);
-				
+			
+			if($cols == $col_counter)
+			{
+				$cols_counter++;
+			}
 			
 			$counter++;
 			$col_counter++;
