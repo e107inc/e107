@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-10 20:40:38 $
+ * $Revision: 1.10 $
+ * $Date: 2009-12-11 22:33:15 $
  * $Author: e107steved $
  */
 
@@ -142,6 +142,16 @@ class private_message
 		return $ret;
 	}
 
+
+
+	/**
+	 *	Delete a PM from a user's inbox/outbox.
+	 *	PM is only actually deleted from DB once both sender and recipient have marked it as deleted
+	 *	When physically deleted, any attachments are deleted as well
+	 *
+	 *	@param integer $pmid - ID of the PM
+	 *	@return boolean|string - FALSE if PM not found, or other DB error. String if successful
+	 */
 	function del($pmid)
 	{
 		global $sql;
@@ -193,7 +203,10 @@ class private_message
 			}
 			return $ret;
 		}
+		return FALSE;
 	}
+
+
 
 	function pm_send_notify($uid, $pminfo, $pmid, $attach_count = 0)
 	{

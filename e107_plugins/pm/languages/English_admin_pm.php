@@ -6,7 +6,7 @@ define('ADLAN_PM_3', "PM settings not found, default values set");
 define('ADLAN_PM_4', "Options Updated");
 define('ADLAN_PM_5', "Limit for selected userclass already exists");
 define('ADLAN_PM_6', "Limit successfully added");
-define('ADLAN_PM_7', "Limit not added - unknown error");
+define('ADLAN_PM_7', "Limit not added/updated - unknown error");
 define('ADLAN_PM_8', "Limit status updated");
 define('ADLAN_PM_9', " - Limit successfully removed");
 define('ADLAN_PM_10', " - Limit not removed - unknown error");
@@ -45,19 +45,44 @@ define('ADLAN_PM_42', "Update Limits");
 define('ADLAN_PM_43', "Add New Limit");
 define('ADLAN_PM_44', "seconds");
 define('ADLAN_PM_45', "Limit PM By: ");
-define('ADLAN_PM_46', "PM Conversion");
-define('ADLAN_PM_47', "You do not appear to have any old messages from previous versions, it is safe to uninstall the old plugin");
-define('ADLAN_PM_48', "You have {OLDCOUNT} messages from the older version, please decide what you would like to do with these messages<br /><br />If converting messages, any message successfully converted will be removed from old system.");
-define('ADLAN_PM_49', "Convert to new PM");
-define('ADLAN_PM_50', "Discard old messages");
-define('ADLAN_PM_51', "PM #{PMNUM} not converted");
-define('ADLAN_PM_52', "messages converted");
-define('ADLAN_PM_53', "No records found to convert.");
+
+//define('ADLAN_PM_46', "PM Conversion");
+//define('ADLAN_PM_47', "You do not appear to have any old messages from previous versions, it is safe to uninstall the old plugin");
+//define('ADLAN_PM_48', "You have {OLDCOUNT} messages from the older version, please decide what you would like to do with these messages<br /><br />If converting messages, any message successfully converted will be removed from old system.");
+//define('ADLAN_PM_49', "Convert to new PM");
+//define('ADLAN_PM_50', "Discard old messages");
+//define('ADLAN_PM_51', "PM #{PMNUM} not converted");
+//define('ADLAN_PM_52', "messages converted");
+//define('ADLAN_PM_53', "No records found to convert.");
 
 define('ADLAN_PM_54', "Main settings");
 define('ADLAN_PM_55', "Limits");
-define('ADLAN_PM_56', "Conversion");
+//define('ADLAN_PM_56', "Conversion");
 
 define('ADLAN_PM_57', "This plugin is a fully featured Private Messaging system.");
 define('ADLAN_PM_58', "Private Messenger");
+
+define('ADLAN_PM_59', 'Maintenance');
+define('ADLAN_PM_60', 'PM Maintenance');
+define('ADLAN_PM_61', 'Execute');
+define('ADLAN_PM_62', 'These options remove transactions concerned with deleted users from the PM database tables');
+define('ADLAN_PM_63', 'Messages sent');
+define('ADLAN_PM_64', 'Messages received');
+define('ADLAN_PM_65', 'User blocks');
+define('ADLAN_PM_66', 'No maintenance tasks specified');
+define('ADLAN_PM_67', 'PM DB maintenance started');
+define('ADLAN_PM_68', '--COUNT-- blocks to deleted users removed');
+define('ADLAN_PM_69', '--COUNT-- blocks from deleted users removed');
+define('ADLAN_PM_70', 'Database error --NUM--: --TEXT-- removing user blocks');
+define('ADLAN_PM_71', 'Time-expired messages');
+define('ADLAN_PM_72', 'No PM timeouts set');
+define('ADLAN_PM_73', '--COUNT-- time-expired PMs deleted');
+define('ADLAN_PM_74', 'Removed --COUNT-- messages sent by deleted users');
+define('ADLAN_PM_75', 'Removed --COUNT-- messages received by deleted users');
+define('ADLAN_PM_76', 'No changes made - nothing logged');
+define('ADLAN_PM_77', '(Empty all fields and Update to delete a limit)');
+define('ADLAN_PM_78', '');
+define('ADLAN_PM_79', '');
+define('ADLAN_PM_80', '');
+
 ?>

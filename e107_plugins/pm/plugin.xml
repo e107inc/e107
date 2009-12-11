@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: plugin.xml,v 1.12 2009-10-20 03:49:22 e107coders Exp $ -->
+<!-- $Id: plugin.xml,v 1.13 2009-12-11 22:33:15 e107steved Exp $ -->
 <e107Plugin name="ADLAN_PM" version="3.0" compatibility="0.8" installRequired="true">
 	<author name="e107 Inc." email="mcfly@e107.org" />
 	<description>ADLAN_PM_57</description>
 	<category>users</category>
+	<languageFiles>
+		<file type='log' path='languages/--LAN--_log.php' />	
+	</languageFiles>
 	<adminLinks>
 		<link url='pm_conf.php' description='ADLAN_PM_2' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' >ADLAN_PM_2</link>	
 	</adminLinks>
