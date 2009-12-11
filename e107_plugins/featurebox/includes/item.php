@@ -9,9 +9,9 @@
 * Featurebox Item model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/item.php,v $
-* $Revision: 1.4 $
-* $Date: 2009-12-11 00:36:30 $
-* $Author: e107coders $
+* $Revision: 1.5 $
+* $Date: 2009-12-11 13:11:35 $
+* $Author: secretr $
 *
 */
 
@@ -103,35 +103,60 @@ class plugin_featurebox_item extends e_model
 		return '<a id="featurebox-imageurl-"'.$this->getId().' href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], 'external')).'">'.$tag.'</a>';
 	}
 	
+	/**
+	 * Item counter number (starting from 1)
+	 */
 	public function sc_featurebox_counter()
 	{
 		return $this->getParam('counter', 1);
 	}
 	
+	/**
+	 * Item limit number
+	 */
 	public function sc_featurebox_limit()
 	{
 		return $this->getParam('limit', 0);
 	}
 	
+	/**
+	 * Number of items (real) currently loaded
+	 */
 	public function sc_featurebox_total()
 	{
 		return $this->getParam('total', 0);
 	}
 	
+	/**
+	 * Total Number of items (no matter of the limit)
+	 */
 	public function sc_featurebox_all()
 	{
 		return $this->getCategory()->sc_featurebox_category_all();
 	}
 	
+	/**
+	 * Number of items per column
+	 */
 	public function sc_featurebox_cols()
 	{
 		return $this->getParam('cols', 1);
 	}
 	
-	
+	/**
+	 * Item counter number inside a column (1 to sc_featurebox_cols)
+	 */
 	public function sc_featurebox_colcount()
 	{
 		return $this->getParam('col_counter', 1);
+	}
+	
+	/**
+	 * Column counter
+	 */
+	public function sc_featurebox_colscount()
+	{
+		return $this->getParam('cols_counter', 1);
 	}
 	
 	/**

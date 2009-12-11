@@ -30,15 +30,15 @@ $FEATUREBOX_CATEGORY_TEMPLATE['default']['item_separator'] = '<div class="clear"
 $FEATUREBOX_CATEGORY_TEMPLATE['default']['item_empty'] = '';
 
 // no dynamic load support
-$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_start'] = '';
-$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_item'] = '';
-$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_end'] = '';
-$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_separator'] = '';
+//$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_start'] = '';
+//$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_item'] = '';
+//$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_end'] = '';
+//$FEATUREBOX_CATEGORY_TEMPLATE['default']['nav_separator'] = '';
 
 // external JS, comma separated list
-$FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js'] = '';
+//$FEATUREBOX_CATEGORY_TEMPLATE['default']['js'] = '';
 // inline JS, without <script> tags
-$FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js_inline'] = '';
+//$FEATUREBOX_CATEGORY_TEMPLATE['default']['js_inline'] = '';
 
 /*
  * Dynamic Template
