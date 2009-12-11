@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.4 2009-12-10 22:46:45 secretr Exp $
+* $Id: e_shortcode.php,v 1.5 2009-12-11 12:51:10 secretr Exp $
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
@@ -60,9 +60,10 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		$tp = e107::getParser();
 		$ret = array();
 		
-		$cols = intval(vartrue($parm['cols'], 1));
-		$counter = 1;
-		$col_counter = 1;
+		$cols = intval(vartrue($parm['cols'], 1)); // items per columns
+		$counter = 1; //item counter
+		$col_counter = 1; // current column item counter
+		$cols_counter = 1; // column counter
 		$total = count($tree->getTree());
 		$category->setParam('total', $total)
 			->setParam('cols', $cols)
@@ -73,7 +74,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			$tmpl_item = e107::getTemplate('featurebox', 'featurebox', $node->get('fb_template'));
 			if(!$tmpl_item) 
 			{
-				$tmpl_item = e107::getTemplate('featurebox', 'featurebox', 'default');
+				$tmpl_item = e107::getTemplate('featurebox', 'featurebox', 'default', 'front', true);
 			}
 			
 			// reset column counter
@@ -88,30 +89,34 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 				$tmpl_item = $tmpl['col_start'].$tmpl_item;
 			}
 			
+			// open item container
+			$tmpl_item .= $tmpl['item_start'];
+			
 			// there is more
 			if(($total - $counter) > 0)
 			{
 				// add column end if column end reached
 				if($cols == $col_counter && vartrue($tmpl['col_end']))
 				{
-					$tmpl_item .= $tmpl['col_end'];
+					$tmpl_item .= $tmpl['item_end'].$tmpl['col_end'];
 				}
 				// else add item separator
 				else 
 				{
-					$tmpl_item .= $tmpl['item_separator'];
+					$tmpl_item .= $tmpl['item_end'].$tmpl['item_separator'];
 				}
 			}
 			// no more items - clean & close
 			else
 			{
+				$tmpl_item .= $tmpl['item_end'];
 				$empty_cnt = $cols - $col_counter;
 				if($empty_cnt > 0 && !$category->getParam('no_fill_empty'))
 				{
 					// empty items fill
 					for ($index = 1; $index <= $empty_cnt; $index++) 
 					{
-						$tmpl_item .= $tmpl['item_separator'].varset($tmpl['item_empty'], '<div><!-- --></div>');
+						$tmpl_item .= $tmpl['item_separator'].$tmpl['item_start'].varset($tmpl['item_empty'], '<div><!-- --></div>').$tmpl['item_end'];
 					}
 				}
 				// add column end
@@ -121,11 +126,16 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			$ret[$counter] = $node->setParam('counter', $counter)
 				->setParam('cols', $cols)
 				->setParam('col_counter', $col_counter)
+				->setParam('cols_counter', $cols_counter)
 				->setParam('limit', $category->get('fb_category_limit'))
 				->setParam('total', $total)
 				->setCategory($category)
 				->toHTML($tmpl_item);
 				
+			if($cols == $col_counter)
+			{
+				$cols_counter++;
+			}
 			
 			$counter++;
 			$col_counter++;
@@ -277,7 +287,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			$tmpl_item = e107::getTemplate('featurebox', 'featurebox', $node->get('fb_template'));
 			if(!$tmpl_item) 
 			{
-				$tmpl_item = e107::getTemplate('featurebox', 'featurebox', 'default');
+				$tmpl_item = e107::getTemplate('featurebox', 'featurebox', 'default', true, true);
 			}
 			
 			// reset column counter
@@ -292,30 +302,34 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 				$tmpl_item = $tmpl['col_start'].$tmpl_item;
 			}
 			
+			// open item container
+			$tmpl_item .= $tmpl['item_start'];
+			
 			// there is more
 			if(($total - $counter) > 0)
 			{
 				// add column end if column end reached
 				if($cols == $col_counter && vartrue($tmpl['col_end']))
 				{
-					$tmpl_item .= $tmpl['col_end'];
+					$tmpl_item .= $tmpl['item_end'].$tmpl['col_end'];
 				}
 				// else add item separator
 				else 
 				{
-					$tmpl_item .= $tmpl['item_separator'];
+					$tmpl_item .= $tmpl['item_end'].$tmpl['item_separator'];
 				}
 			}
 			// no more items - clean & close
 			else
 			{
+				$tmpl_item .= $tmpl['item_end'];
 				$empty_cnt = $cols - $col_counter;
 				if($empty_cnt > 0 && !$category->getParam('no_fill_empty'))
 				{
 					// empty items fill
 					for ($index = 1; $index <= $empty_cnt; $index++) 
 					{
-						$tmpl_item .= $tmpl['item_separator'].varset($tmpl['item_empty'], '<div><!-- --></div>');
+						$tmpl_item .= $tmpl['item_separator'].$tmpl['item_start'].varset($tmpl['item_empty'], '<div><!-- --></div>').$tmpl['item_end'];
 					}
 				}
 				// add column end

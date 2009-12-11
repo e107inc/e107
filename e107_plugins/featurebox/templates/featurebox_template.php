@@ -2,9 +2,9 @@
 global $sc_style;
 
 $FEATUREBOX_TEMPLATE['default'] = '
-<div class="featurebox-item default">
+<div class="featurebox-item">
 	<h3>{FEATUREBOX_TITLE|default}</h3>
-	<div class="featurebox-body">{FEATUREBOX_TEXT|default}</div>
+	{FEATUREBOX_TEXT|default}
 </div>
 ';
 
