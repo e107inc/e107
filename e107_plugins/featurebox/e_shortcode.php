@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.8 2009-12-11 13:45:12 secretr Exp $
+* $Id: e_shortcode.php,v 1.9 2009-12-11 14:33:31 secretr Exp $
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
@@ -49,99 +49,10 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			return '';
 		}
 		
-		$tree = $category->getItemTree();
-		if($tree->isEmpty())
-		{
-			return '';
-		}
-		
 		$tmpl = $this->getFboxTemplate($category);
-		
 		$tp = e107::getParser();
-		$ret = array();
-		
-		$cols = intval(vartrue($parm['cols'], 1)); // items per columns
-		$counter = 1; //item counter
-		$col_counter = 1; // current column item counter
-		$cols_counter = 1; // column counter
-		$total = count($tree->getTree());
-		$category->setParam('total', $total)
-			->setParam('cols', $cols)
-			->setParam('no_fill_empty', isset($parm['no_fill_empty']) ? 1 : 0);
-			
-		foreach ($tree->getTree() as $id => $node) 
-		{
-			$tmpl_item = e107::getTemplate('featurebox', 'featurebox', $node->get('fb_template'));
-			if(!$tmpl_item) 
-			{
-				$tmpl_item = e107::getTemplate('featurebox', 'featurebox', 'default', 'front', true);
-			}
-			
-			// reset column counter
-			if($col_counter > $cols)
-			{
-				$col_counter = 1;
-			}
 
-			// add column start
-			if(1 == $col_counter && vartrue($tmpl['col_start']))
-			{
-				$tmpl_item = $tmpl['col_start'].$tmpl_item;
-			}
-			
-			// open item container
-			$tmpl_item .= $tmpl['item_start'];
-			
-			// there is more
-			if(($total - $counter) > 0)
-			{
-				// add column end if column end reached
-				if($cols == $col_counter && vartrue($tmpl['col_end']))
-				{
-					$tmpl_item .= $tmpl['item_end'].$tmpl['col_end'];
-				}
-				// else add item separator
-				else 
-				{
-					$tmpl_item .= $tmpl['item_end'].$tmpl['item_separator'];
-				}
-			}
-			// no more items - clean & close
-			else
-			{
-				$tmpl_item .= $tmpl['item_end'];
-				$empty_cnt = $cols - $col_counter;
-				if($empty_cnt > 0 && !$category->getParam('no_fill_empty'))
-				{
-					// empty items fill
-					for ($index = 1; $index <= $empty_cnt; $index++) 
-					{
-						$tmpl_item .= $tmpl['item_separator'].$tmpl['item_start'].varset($tmpl['item_empty'], '<div><!-- --></div>').$tmpl['item_end'];
-					}
-				}
-				// add column end
-				$tmpl_item .= varset($tmpl['col_end']);
-			}
-			
-			$ret[$counter] = $node->setParam('counter', $counter)
-				->setParam('cols', $cols)
-				->setParam('col_counter', $col_counter)
-				->setParam('cols_counter', $cols_counter)
-				->setParam('limit', $category->get('fb_category_limit'))
-				->setParam('total', $total)
-				->setCategory($category)
-				->toHTML($tmpl_item);
-				
-			if($cols == $col_counter)
-			{
-				$cols_counter++;
-			}
-			
-			$counter++;
-			$col_counter++;
-		}
-		
-		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).implode('', $ret).$tp->parseTemplate($tmpl['list_end'], true, $category);
+		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).$this->render($category, $parm).$tp->parseTemplate($tmpl['list_end'], true, $category);
 		if(isset($parm['notablestyle']))
 		{
 			return $ret;
@@ -259,12 +170,21 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		parse_str($parm, $parm);
 		
 		$category = clone $this->getCategoryModel($ctemplate);
-
 		if(!$category->hasData())
 		{
 			return '';
 		}
-		
+		return $this->render($category, $parm);
+	}
+	
+	/**
+	 * Render featurebox list
+	 * @param plugin_featurebox_category $category
+	 * @param array $parm
+	 */
+	public function render($category, $parm)
+	{
+		$tmpl = $this->getFboxTemplate($category);
 		$cols = intval(vartrue($parm['cols'], 1));
 		$limit = intval(varset($parm['limit'], $category->sc_featurebox_category_limit()));
 		$from = (intval(vartrue($parm['from'], 1)) - 1) * $limit;
@@ -279,10 +199,11 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			return '';
 		}
 		
-		$total = count($tree->getTree());
+		$total = $tree->getTotal();
 		$category->setParam('total', $total);
 		$counter = 1;
 		$col_counter = 1;
+		$cols_counter = 1; // column counter
 		$ret = '';
 		
 		foreach ($tree->getTree() as $id => $node) 
@@ -298,6 +219,9 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			{
 				$col_counter = 1;
 			}
+			
+			// item container (category template)
+			$tmpl_item = $tmpl['item_start'].$tmpl_item.$tmpl['item_end'];
 
 			// add column start
 			if(1 == $col_counter && vartrue($tmpl['col_start']))
@@ -305,35 +229,41 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 				$tmpl_item = $tmpl['col_start'].$tmpl_item;
 			}
 			
-			// open item container
-			$tmpl_item .= $tmpl['item_start'];
-			
 			// there is more
 			if(($total - $counter) > 0)
 			{
 				// add column end if column end reached
 				if($cols == $col_counter && vartrue($tmpl['col_end']))
 				{
-					$tmpl_item .= $tmpl['item_end'].$tmpl['col_end'];
+					$tmpl_item .= $tmpl['col_end'];
 				}
 				// else add item separator
 				else 
 				{
-					$tmpl_item .= $tmpl['item_end'].$tmpl['item_separator'];
+					$tmpl_item .= $tmpl['item_separator'];
 				}
 			}
 			// no more items - clean & close
 			else
 			{
-				$tmpl_item .= $tmpl['item_end'];
 				$empty_cnt = $cols - $col_counter;
 				if($empty_cnt > 0 && !$category->getParam('no_fill_empty'))
 				{
 					// empty items fill
+					$tmp = new plugin_featurebox_item();
+					$tmp->setCategory($category);
+					$tmp_tmpl_item = $tmpl['item_separator'].$tmpl['item_start'].varset($tmpl['item_empty'], '<div><!-- --></div>').$tmpl['item_end'];
 					for ($index = 1; $index <= $empty_cnt; $index++) 
 					{
-						$tmpl_item .= $tmpl['item_separator'].$tmpl['item_start'].varset($tmpl['item_empty'], '<div><!-- --></div>').$tmpl['item_end'];
+						$tmpl_item .= $tmp->setParam('counter', $counter + $index)
+							->setParam('cols', $cols)
+							->setParam('col_counter', $col_counter + $index)
+							->setParam('cols_counter', $cols_counter)
+							->setParam('limit', $category->get('fb_category_limit'))
+							->setParam('total', $total)
+							->toHTML($tmp_tmpl_item);
 					}
+					unset($tmp, $tmp_tmpl_item);
 				}
 				// add column end
 				$tmpl_item .= varset($tmpl['col_end']);
