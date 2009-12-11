@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.94 $
- * $Date: 2009-12-09 18:33:41 $
- * $Author: secretr $
+ * $Revision: 1.95 $
+ * $Date: 2009-12-11 00:36:25 $
+ * $Author: e107coders $
  *
 */
 
@@ -121,6 +121,23 @@ class e_form
 	//FIXME - use the media-manager as an image selector. 
 	function imagepicker($name, $default, $label = '', $sc_parameters = '')
 	{
+		// Temporary Fix for using Media-Manager data 
+		
+		$sql = e107::getDb();
+		if($sql->db_Select('core_media','*',"media_userclass IN (".USERCLASS_LIST.") ORDER BY media_name"))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$opts[$row['media_category']][$row['media_url']] = $row['media_name']. " (".$row['media_dimensions'].") ";
+			}
+			
+			asort($opts);
+		
+			return $this->selectbox($name,$opts,$default, array('default'=>'&nbsp;'));	
+		}
+		
+		// ----------------		
+		
 		if(is_string($sc_parameters)) parse_str($sc_parameters, $sc_parameters);
 		if(!$label) $label = LAN_SELECT;
 		$parms = "name={$name}";
@@ -419,6 +436,14 @@ class e_form
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
 	}
 
+	/**
+	 * 
+	 * @param object $name
+	 * @param object $option_array
+	 * @param object $selected [optional]
+	 * @param object $options [optional]
+	 * @return 
+	 */
 	function selectbox($name, $option_array, $selected = false, $options = array())
 	{
 		if($option_array == 'yesno')

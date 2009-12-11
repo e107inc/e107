@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2009-12-10 21:26:53 $
-|     $Author: e107steved $
+|     $Revision: 1.69 $
+|     $Date: 2009-12-11 00:36:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -1084,10 +1084,10 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
  */
 function catch_error(&$target)
 {
-	if (vartrue($target->mySQLlastErrText) && E107_DEBUG_LEVEL != 0)
+	if (vartrue($target->getLastErrText()) && E107_DEBUG_LEVEL != 0)
 	{
 		$tmp2 = debug_backtrace();
-		$tmp = $target->mySQLlastErrText;
+		$tmp = $target->getLastErrText();
 		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
 	}
 	return;
