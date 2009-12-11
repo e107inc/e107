@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.5 2009-12-11 12:51:10 secretr Exp $
+* $Id: e_shortcode.php,v 1.6 2009-12-11 13:11:35 secretr Exp $
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
@@ -177,7 +177,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		}
 		parse_str($parm, $parm);
 		
-		$category = $this->getCategoryModel($ctemplate);
+		$category = $this->getCategoryModel($ctemplate); 
 		if(!$category->hasData())
 		{
 			return '';
@@ -196,11 +196,13 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		
 		$base = vartrue($parm['base'], 'nav').'_';
 		$ret = $category->toHTML(varset($tmpl[$base.'start']), true); 
+		
 		if(isset($parm['loop']) && $tree->getTotal() > 0 && vartrue($tmpl[$base.'item']))
 		{
-			$total = ceil($tree->getTotal() / $category->sc_featurebox_category_limit());
+			$total = ceil($tree->getTotal() / ($category->sc_featurebox_category_limit() ? intval($category->sc_featurebox_category_limit()) : $tree->getTotal()) );
 			$model = clone $category;
 			$tmp = array();
+			var_dump($category->sc_featurebox_category_limit());
 			for ($index = 1; $index <= $total; $index++) 
 			{
 				$tmp[] = $model->setParam('counter', $index)
@@ -226,7 +228,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 	}
 	
 	/**
-	 * Render featurebox navigation
+	 * Get & Render featurebox items (custom)
 	 * Available parameters (GET string format)
 	 * - cols (integer): number of items per column, default 1
 	 * - no_fill_empty (boolean): don't fill last column with empty items (if required), default 0
@@ -271,7 +273,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			->setParam('limit', $limit)
 			->setParam('from', $from);
 			
-		$tree = $category->getItemTree(true);
+		$tree = $category->getItemTree(true); 
 		if($tree->isEmpty())
 		{
 			return '';
@@ -282,6 +284,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		$counter = 1;
 		$col_counter = 1;
 		$ret = '';
+		
 		foreach ($tree->getTree() as $id => $node) 
 		{
 			$tmpl_item = e107::getTemplate('featurebox', 'featurebox', $node->get('fb_template'));
