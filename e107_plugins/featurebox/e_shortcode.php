@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.6 2009-12-11 13:11:35 secretr Exp $
+* $Id: e_shortcode.php,v 1.7 2009-12-11 13:12:38 secretr Exp $
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
@@ -202,7 +202,6 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			$total = ceil($tree->getTotal() / ($category->sc_featurebox_category_limit() ? intval($category->sc_featurebox_category_limit()) : $tree->getTotal()) );
 			$model = clone $category;
 			$tmp = array();
-			var_dump($category->sc_featurebox_category_limit());
 			for ($index = 1; $index <= $total; $index++) 
 			{
 				$tmp[] = $model->setParam('counter', $index)
