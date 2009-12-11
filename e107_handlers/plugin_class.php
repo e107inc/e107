@@ -9,9 +9,9 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
- * $Revision: 1.118 $
- * $Date: 2009-12-09 22:38:18 $
- * $Author: bugrain $
+ * $Revision: 1.119 $
+ * $Date: 2009-12-11 21:17:09 $
+ * $Author: e107steved $
  *
 */
 
@@ -526,7 +526,19 @@ class e107plugin
 			$link_t = $sql->db_Count('links');
 			if (!$sql->db_Count('links', '(*)', "WHERE link_url = '{$path}' OR link_name = '{$link_name}'"))
 			{
-				return $sql->db_Insert('links', "0, '{$link_name}', '{$path}', '', '', '1', '".($link_t + 1)."', '0', '0', '{$link_class}' ");
+				$linkData = array(
+					'link_name' => $link_name,
+					'link_url' => $path,
+					'link_description' => '',
+					'link_button' => '',
+					'link_category' => '1',
+					'link_order' => $link_t + 1,
+					'link_parent' => '0',
+					'link_open' => '0',
+					'link_class' => $link_class,
+					'link_function' => ''
+					);
+				return $sql->db_Insert('links', $linkData);		// TODO: Add the _FIELD_DEFS array
 			}
 			else
 			{
