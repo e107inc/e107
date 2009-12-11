@@ -9,9 +9,9 @@
 * Featurebox Item model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/item.php,v $
-* $Revision: 1.3 $
-* $Date: 2009-12-10 22:46:45 $
-* $Author: secretr $
+* $Revision: 1.4 $
+* $Date: 2009-12-11 00:36:30 $
+* $Author: e107coders $
 *
 */
 
@@ -86,6 +86,11 @@ class plugin_featurebox_item extends e_model
 		$tp = e107::getParser();
 		
 		$src = $tp->replaceConstants($this->get('fb_image'), 'full');
+
+			
+		//FIXME - doesn't display anything that uses {e_MEDIA} in the path. 
+
+
 		if(isset($parm['src']))
 		{
 			return $src;
