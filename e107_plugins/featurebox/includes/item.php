@@ -9,9 +9,9 @@
 * Featurebox Item model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/item.php,v $
-* $Revision: 1.5 $
-* $Date: 2009-12-11 13:11:35 $
-* $Author: secretr $
+* $Revision: 1.6 $
+* $Date: 2009-12-11 23:49:35 $
+* $Author: e107coders $
 *
 */
 
@@ -95,7 +95,7 @@ class plugin_featurebox_item extends e_model
 		{
 			return $src;
 		}
-		$tag = '<img id="featurebox-image-"'.$this->getId().' src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox" />';
+		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox" />';
 		if(isset($parm['nourl']) || !$this->get('fb_imageurl'))
 		{
 			return $tag;
