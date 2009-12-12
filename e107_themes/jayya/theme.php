@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/jayya/theme.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-12-10 22:46:46 $
+ * $Revision: 1.14 $
+ * $Date: 2009-12-12 16:36:42 $
  * $Author: secretr $
  */
 
@@ -79,8 +79,8 @@ $HEADER['3_column'] = "<table class='page_container'>
 ";
 
 $FOOTER['3_column'] = "<br />
+{FEATUREBOX|tabs=notablestyle}
 </td>
-
 <td class='right_menu'>
 <table class='menus_container'><tr><td>
 {SETSTYLE=rightmenu}

@@ -11,20 +11,19 @@ class theme__blank implements e_theme_config
 		
 		$theme_pref = array();
 		$theme_pref['example'] = $_POST['_blank_example'];
-		$theme_pref['example2'] = $_POST['_blank_example2'];
+		$theme_pref['fb_tabs_cols'] = intval($_POST['fb_tabs_cols']);
 
 		$pref->set('sitetheme_pref', $theme_pref);
-		
 		return $pref->dataHasChanged();
 	}
 
 	function config()
 	{
 		$var[0]['caption'] = "Sample configuration field";
-		$var[0]['html'] = "<input type='text' name='_blank_example' value='".e107::getThemePref('example')."' />";
+		$var[0]['html'] = "<input type='text' name='_blank_example' value='".e107::getThemePref('example', 'default')."' />";
 
-		$var[1]['caption'] = "Another Example";
-		$var[1]['html'] = "<input type='text' name='_blank_example2' value='".e107::getThemePref('example2')."' />";
+		$var[1]['caption'] = "Featurebox Tab Category - number of items per tab";
+		$var[1]['html'] = "<input type='text' name='fb_tabs_cols' value='".e107::getThemePref('fb_tabs_cols', 1)."' />";
 		return $var;
 	}
 

@@ -125,6 +125,11 @@ div.e-autocomplete ul li {
 }
 div.e-autocomplete ul li span.informal { font-weight: normal; font-size: 9px}
 
+/******** Tabs JS */
+ul.e-tabs { border-bottom: 1px solid #DDDDDD; height: 31px; }
+ul.e-tabs li { border: 1px solid #DDDDDD; display: block; float: left; line-height: 30px; padding: 0px 7px; margin-right: 3px; background-color: #F9F9F9 }
+.admintabs ul.e-tabs li.active { border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF}
+
 /********** Misc */
 .e-pointer { cursor: pointer; } /* Pointer Hand */
 .expand-container { padding: 10px; } /* Block with expandable items */

@@ -2,20 +2,19 @@
 if ( ! defined('e107_INIT')) { exit(); }
 include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
 
-$THEME_CORE_JSLIB = array(
-	'jslib/core/decorate.js' => 'all',
-	'jslib/core/tabs.js' => 'admin'
-);
+// TODO theme.xml - add them to jslib/php source
+e107::getJs()->requireCoreLib('core/decorate.js')
+	->requireCoreLib('core/tabs.js');
 
-$register_sc[]='FS_ADMIN_ALT_NAV';
+//$register_sc[]='FS_ADMIN_ALT_NAV';
 $no_core_css = TRUE;
 
 define("STANDARDS_MODE",TRUE);
 
-
+// TODO - JS/CSS handling via JSManager
 function theme_head() {
 
-	global $theme_pref;
+	$theme_pref = e107::getThemePref();
 
 	$ret = '';
 	$ret .= '
@@ -32,16 +31,11 @@ function theme_head() {
     <script type='text/javascript'>
        /**
     	* Decorate all tables having e-list class
-    	* TODO: add 'adminlist' class to all list core tables, allow theme decorate.
     	*/
         e107.runOnLoad( function() {
-            \$\$('table.adminlist').each(function(element) {
-            	e107Utils.Decorate.table(element, {tr_td: 'first last'});
+            \$\$('table.e-list').each(function(element) {
+            	e107Utils.Decorate.table(element, { tr_td: 'first last' });
             });
-			\$\$('div.admintabs').each(function(element) {
-            	new e107Widgets.Tabs(element);
-            });
-
         }, document, true);
 
     </script>";
@@ -60,7 +54,8 @@ function theme_head() {
 	return $ret;
 }
 
-function tablestyle($caption, $text, $mod) {
+function tablestyle($caption, $text, $mod) 
+{
 	global $style;
 	
 	$type = $style;
@@ -133,6 +128,7 @@ $HEADER['default'] = '
 						{FEATUREBOX|dynamic=notablestyle}
 ';
 $FOOTER['default'] = '
+						{FEATUREBOX|tabs=notablestyle&cols='.e107::getThemePref('fb_tabs_cols', 1).'}
 						</div>
 					</div>
 				</td>
