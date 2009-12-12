@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.91 $
- * $Date: 2009-12-10 22:46:45 $
- * $Author: secretr $
+ * $Revision: 1.92 $
+ * $Date: 2009-12-12 11:01:03 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -235,6 +235,7 @@ class e107
 			$this->prepare_request();
 
 			// folder info
+			
 			$this->e107_dirs = $e107_paths;
 
 			// mysql connection info
@@ -1656,7 +1657,6 @@ class e107
 			define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
 			define("e_DOCS", e_BASE.$HELP_DIRECTORY);
-			//FIXME need another name
 			define("e_MEDIA", e_BASE.$MEDIA_DIRECTORY);
 //
 // HTTP absolute paths
@@ -1668,7 +1668,6 @@ class e107
 			define("e_FILE_ABS", e_HTTP.$FILES_DIRECTORY);
 			define("e_HANDLER_ABS", e_HTTP.$HANDLERS_DIRECTORY);
 			define("e_LANGUAGEDIR_ABS", e_HTTP.$LANGUAGES_DIRECTORY);
-			//FIXME Shouldn't be available
 			define("e_MEDIA_ABS", e_HTTP.$MEDIA_DIRECTORY);
 
 			if(isset($_SERVER['DOCUMENT_ROOT']))
@@ -1688,8 +1687,7 @@ class e107
 			}
 			else
 			{
-            	//FIXME need another name
-							define("e_CACHE", e_MEDIA."cache/");
+ 				define("e_CACHE", e_MEDIA."cache/");
 			}
 /*
 
