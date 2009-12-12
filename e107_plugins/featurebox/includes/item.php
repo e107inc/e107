@@ -9,9 +9,9 @@
 * Featurebox Item model
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/includes/item.php,v $
-* $Revision: 1.7 $
-* $Date: 2009-12-12 10:30:33 $
-* $Author: e107coders $
+* $Revision: 1.8 $
+* $Date: 2009-12-12 16:35:46 $
+* $Author: secretr $
 *
 */
 
@@ -86,10 +86,6 @@ class plugin_featurebox_item extends e_model
 		$tp = e107::getParser();
 		
 		$src = $tp->replaceConstants($this->get('fb_image'), 'full');
-
-			
-		//FIXME - doesn't display anything that uses {e_MEDIA} in the path. 
-
 
 		if(isset($parm['src']))
 		{
@@ -166,7 +162,7 @@ class plugin_featurebox_item extends e_model
 	 */
 	public function setCategory($category)
 	{
-		$this->_category = $category;
+		$this->_category = $category; 
 		return $this;
 	}
 
@@ -192,7 +188,7 @@ class plugin_featurebox_item extends e_model
 	 */
 	public function __call($method, $arguments)
 	{
-		if (strpos($method, "sc_featurebox_category_") === 0)
+		if (strpos($method, "sc_featurebox_") === 0)
 		{
 			return call_user_func_array(array($this->getCategory(), $method), $arguments);
 		}

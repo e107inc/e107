@@ -1,18 +1,11 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/languages/English_admin_featurebox.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-12-08 17:21:34 $
- * $Author: secretr $
- */
+* Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+* $Id: English_admin_featurebox.php,v 1.5 2009-12-12 16:35:46 secretr Exp $
+*
+* Featurebox back-end laguage defines
+* TODO - cleanup constants not in use
+*/
 
 define("FBLAN_01", "Feature Box");
 define("FBLAN_02", "This plugin allows you to display a box above your news items with features / whatever you like in it. The messages can either be revolved randomly or dynamically faded.");

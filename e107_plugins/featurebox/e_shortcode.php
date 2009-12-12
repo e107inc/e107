@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.10 2009-12-11 14:38:26 secretr Exp $
+* $Id: e_shortcode.php,v 1.11 2009-12-12 16:35:45 secretr Exp $
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
@@ -49,10 +49,11 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			return '';
 		}
 		
-		$tmpl = $this->getFboxTemplate($category);
+		$tmpl = $this->getFboxTemplate($ctemplate);
 		$tp = e107::getParser();
+		$category->updateParams($parm);
 
-		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).$this->render($category, $parm).$tp->parseTemplate($tmpl['list_end'], true, $category);
+		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).$this->render($category, $ctemplate, $parm).$tp->parseTemplate($tmpl['list_end'], true, $category);
 		if(isset($parm['notablestyle']))
 		{
 			return $ret;
@@ -66,7 +67,8 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 	 * Available parameters (GET string format)
 	 * - loop (boolean): loop using 'nav_loop' template, default 0
 	 * - base (string): template key prefix, default is 'nav'. Example: 'mynav' base key will search templates 'mynav_start', 'mynav_loop', 'mynav_end'.
-	 * - nolimit (boolean): ignore 'limit' field , us 'total' items number for navigation looping
+	 * - nolimit (boolean): ignore 'limit' field , use 'total' items number for navigation looping
+	 * - uselimit (boolean): ignore 'limit' field , use 'total' items number for navigation looping
 	 * 
 	 * @param string $parm parameters
 	 * @param string $mod category template
@@ -99,28 +101,69 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		{
 			return '';
 		}
-		
-		$tmpl = $this->getFboxTemplate($category);
+		$tmpl = $this->getFboxTemplate($ctemplate);
 		if($category->get('fb_category_random'))
 		{
 			$parm['loop'] = 0;
 		}
 		
 		$base = vartrue($parm['base'], 'nav').'_';
+		$tree_ids = array_keys($tree->getTree()); //all available item ids
+		
 		$ret = $category->toHTML(varset($tmpl[$base.'start']), true); 
+		$cols = $category->getParam('cols');
 		
 		if(isset($parm['loop']) && $tree->getTotal() > 0 && vartrue($tmpl[$base.'item']))
 		{
-			if(isset($parm['nolimit'])) $total = $tree->getTotal();
-			else $total = ceil($tree->getTotal() / ($category->sc_featurebox_category_limit() ? intval($category->sc_featurebox_category_limit()) : $tree->getTotal()) );
-			$model = clone $category;
-			$tmp = array();
-			for ($index = 1; $index <= $total; $index++) 
+			// loop for all
+			if(isset($parm['nolimit'])) 
 			{
+				$total = $tree->getTotal();
+			}
+			// loop for limit number
+			elseif(isset($parm['uselimit'])) 
+			{
+				$total = $category->sc_featurebox_category_limit() ? intval($category->sc_featurebox_category_limit()) : $tree->getTotal();
+			}
+			// default - number based on all / limit (usefull for ajax navigation)
+			else 
+			{ 
+				$total = ceil($tree->getTotal() / ($category->sc_featurebox_category_limit() ? intval($category->sc_featurebox_category_limit()) : $tree->getTotal()) );
+			}
+			if($cols > 1)
+			{
+				$total = ceil($total / $cols);
+			}
+			$model = clone $category;
+			$item = new plugin_featurebox_item();
+			$tmp = array();
+			for ($index = 1; $index <= $total; $index++)
+			{
+				$nodeid = varset($tree_ids[($index - 1) * $cols], 0); 
+				if($nodeid && $tree->hasNode($nodeid))
+				{
+					$model->setParam('counter', $index)
+						->setParam('total', $total)
+						->setParam('active', $index == varset($parm['from'], 1));
+						
+					$node = $tree->getNode($nodeid);
+					
+					e107::getScParser()->resetScClass('plugin_featurebox_category', $model);
+					$node->setCategory($model)
+						->setParam('counter', $index)
+						->setParam('total', $total)
+						->setParam('limit', $category->get('fb_category_limit'))
+						;
+	
+					$tmp[] = $node->toHTML($tmpl[$base.'item'], true); 
+					continue;
+				}
+				
+				e107::getScParser()->resetScClass('plugin_featurebox_item', $item);
 				$tmp[] = $model->setParam('counter', $index)
 					->setParam('active', $index == varset($parm['from'], 1))
 					->toHTML($tmpl[$base.'item'], true);
-			}
+			} 
 			$ret .= implode(varset($tmpl[$base.'separator']), $tmp);
 			unset($model, $tmp);
 		}
@@ -174,17 +217,18 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		{
 			return '';
 		}
-		return $this->render($category, $parm);
+		return $this->render($category, $ctemplate, $parm);
 	}
 	
 	/**
 	 * Render featurebox list
 	 * @param plugin_featurebox_category $category
+	 * @param string $ctemplate category template
 	 * @param array $parm
 	 */
-	public function render($category, $parm)
+	public function render($category, $ctemplate, $parm)
 	{
-		$tmpl = $this->getFboxTemplate($category);
+		$tmpl = $this->getFboxTemplate($ctemplate);
 		$cols = intval(vartrue($parm['cols'], 1));
 		$limit = intval(varset($parm['limit'], $category->sc_featurebox_category_limit()));
 		$from = (intval(vartrue($parm['from'], 1)) - 1) * $limit;
@@ -238,7 +282,7 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 					$tmpl_item .= $tmpl['col_end'];
 				}
 				// else add item separator
-				else 
+				elseif($cols != $col_counter && 1 != $col_counter)
 				{
 					$tmpl_item .= $tmpl['item_separator'];
 				}
@@ -292,15 +336,15 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 	/**
 	 * Retrieve template array by category
 	 * 
-	 * @param plugin_featurebox_category $category
+	 * @param string $ctemplate
 	 * @return array
 	 */
-	public function getFboxTemplate($category)
+	public function getFboxTemplate($ctemplate)
 	{
-		$tmpl = e107::getTemplate('featurebox', 'featurebox_category', $category->get('fb_category_template'), 'front');  
-		if(!$tmpl && e107::getTemplate('featurebox', 'featurebox_category', $category->get('fb_category_template'), false))
+		$tmpl = e107::getTemplate('featurebox', 'featurebox_category', $ctemplate, 'front');  
+		if(!$tmpl && e107::getTemplate('featurebox', 'featurebox_category', $ctemplate, false))
 		{
-			$tmpl = e107::getTemplate('featurebox', 'featurebox_category', $category->get('fb_category_template'), false); // plugin template
+			$tmpl = e107::getTemplate('featurebox', 'featurebox_category', $ctemplate, false); // plugin template
 		}
 		elseif(!$tmpl && e107::getTemplate('featurebox', 'featurebox_category', 'default'))
 		{

@@ -1,4 +1,11 @@
 <?php
+/*
+* Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+* $Id: featurebox_template.php,v 1.6 2009-12-12 16:35:46 secretr Exp $
+*
+* Featurebox core item templates
+*/
+
 global $sc_style;
 
 $FEATUREBOX_TEMPLATE['default'] = '
@@ -26,10 +33,9 @@ $FEATUREBOX_TEMPLATE['image_right'] = '
 </div>
 ';
 
-$FEATUREBOX_TEMPLATE['__INFO__'] = array(
-	'default' => array('title' => 'Default - no image'),
-	'image_right' => array('title' => 'Image to right'),
-	'image_left' => array('title' => 'Image to left'),
+$FEATUREBOX_INFO = array(
+	'default' 		=> array('title' => 'Default (core)', 		'description' => 'Title and description - no image'),
+	'image_right' 	=> array('title' => 'Right image (core)',	'description' => 'Right floated image'),
+	'image_left'	=> array('title' => 'Left image (core)'	, 	'description' => 'Left floated image')
 );
-
 ?>
