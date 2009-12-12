@@ -79,6 +79,82 @@ $FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['nav_separator'] = '&nbsp;';
 $FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js'] = '{e_PLUGIN}featurebox/featurebox.js';
 // inline JS, without <script> tags
 $FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js_inline'] = 'new Featurebox(\'featurebox-container\')';
+
+
+
+//TODO - tabs template. 
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_start'] = '';
+
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_end'] = '';
+
+// For Reference: 
+/*
+<div class="admintabs" id="tab-container">
+
+									<div class="tabs">
+
+										<ul class="e-tabs e-hideme clearer" id="front-tabs">
+
+											<li id="tab-01"><a href="#tab-01-activate"><span>'.LAN_THEME_TAB_1.'</span></a></li>
+
+											<li id="tab-02"><a href="#tab-02-activate"><span>'.LAN_THEME_TAB_2.'</span></a></li>
+
+											<li id="tab-03"><a href="#tab-03-activate"><span>'.LAN_THEME_TAB_3.'</span></a></li>
+
+											<li id="tab-04"><a href="#tab-04-activate"><span>'.LAN_THEME_TAB_4.'</span></a></li>
+
+										</ul>
+
+									</div>
+
+									<div class="tab-content-wrap">
+
+										<div id="tab-01-activate">
+
+											<div class="tab-content">
+
+												{MENU=2}
+
+											</div>
+
+										</div>
+
+										<div id="tab-02-activate">
+
+											<div class="tab-content">
+
+												{MENU=3}
+
+											</div>
+
+										</div>
+
+										<div id="tab-03-activate">
+
+											<div class="tab-content">
+
+												{MENU=4}
+
+											</div>
+
+										</div>
+
+										<div id="tab-04-activate">
+
+											<div class="tab-content">
+
+												{MENU=5}
+
+											</div>
+
+										</div>											
+
+									</div>
+
+								</div>
+*/
+
+
 /**
  * Template information. 
  * Allowed keys:
@@ -91,5 +167,6 @@ $FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js_inline'] = 'new Featurebox(\'featur
 $FEATUREBOX_CATEGORY_TEMPLATE['__INFO__'] = array(
 	'default' => array('title' => 'Default - show by category limit'),
 	'dynamic' => array('title' => 'Dynamic (AJAX) loading'),
+	'tabs'	=> array('title' => 'Tabs')
 );
 ?>
