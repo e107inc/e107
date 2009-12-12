@@ -78,8 +78,9 @@ $FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js_inline'] = 'new Featurebox("feature
  * 
  * @var array
  */
-$FEATUREBOX_CATEGORY_TEMPLATE['__INFO__'] = array(
-	'default' => array('title' => 'Blank Theme Default - show by category limit'),
-	'dynamic' => array('title' => 'Blank Theme Dynamic (AJAX) loading'),
+$FEATUREBOX_CATEGORY_INFO = array(
+	'default' 	=> array('title' => 'Default (Blank Theme)', 'description' => 'Flat - show by category limit'),
+	'dynamic' 	=> array('title' => 'Dynamic (Blank Theme)', 'description' => 'Load items on click (AJAX)'),
 );
+
 ?>
