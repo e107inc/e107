@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs.php,v $
- * $Revision: 1.5 $
- * $Date: 2009-12-02 22:34:58 $
- * $Author: bugrain $
+ * $Revision: 1.6 $
+ * $Date: 2009-12-12 10:30:28 $
+ * $Author: e107coders $
  */
 
 require_once ("../../class2.php");
@@ -107,10 +107,12 @@ if (isset($_POST['commentsubmit']))
 		if(vartrue($faqpref['classic_look']))
 		{
 			$tmp = $faq->show_existing_parents($action, $sub_action, $id, $from, $amount);
+			$caption = FAQLAN_41;
 		}
 		else
 		{
 			$tmp = $faq->view_all();
+			$caption = FAQLAN_FAQ;
 		}
 
 		if (vartrue($faqpref['faq_title']))
@@ -122,7 +124,7 @@ if (isset($_POST['commentsubmit']))
 			define("e_PAGETITLE", FAQLAN_23);
 		}
 		require_once (HEADERF);
-		$ns->tablerender(FAQLAN_41, $tmp['text']);
+		$ns->tablerender($caption, $tmp['text']);
 	}
 
 	if($action == "cat" && $idx)
