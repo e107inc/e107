@@ -9,8 +9,8 @@
  * Calender plugin - event listing and event entry
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/event.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-22 10:11:30 $
+ * $Revision: 1.16 $
+ * $Date: 2009-12-12 10:15:24 $
  * $Author: e107steved $
  */
 
@@ -90,18 +90,35 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 	{	// Problem - tell user to go away - fields are blank (mostly checked by JS)
 		header('location:event.php?'.$ev_start.'.0.m3');
 	}
-	elseif (!isset($_POST['ne_category']) || (intval($_POST['ne_category']) == 0))
+	elseif (!isset($_POST['ne_category']) || (($ev_category = intval($_POST['ne_category'])) == 0))
 	{
 		header('location:event.php?'.$ev_start.'.0.m6');
 	}
 	else
 	{
+		if (!$cal_super)
+		{
+			if ($sql->db_Select('event_cat', 'event_cat_addclass', 'event_cat_id = '.$ev_category))
+			{
+				$row = $sql->db_Fetch(MYSQL_ASSOC);
+				if (!check_class($row['event_cat_addclass']))
+				{
+					header('location:event.php?'.$ev_start.'.0.m8');
+					exit;
+				}
+			}
+			else
+			{		// Invalid category - definitely go away!
+				header('location:'.e_BASE.'index.php');
+				exit;
+			}
+		}
+
 		$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
 		$ev_title		= $e107->tp->toDB($_POST['ne_title']);
 		$ev_location	= $e107->tp->toDB($_POST['ne_location']);
 		$ev_event		= $e107->tp->toDB($_POST['ne_event']);
 		$ev_email		= $e107->tp -> toDB($_POST['ne_email']);
-		$ev_category	= intval($_POST['ne_category']);
 		$ev_thread		= $e107->tp->toDB($_POST['ne_thread']);
 		$temp_date 		= getdate($ecal_class->make_date(0,0,$_POST['start_date']));
 		$ev_allday		= intval($_POST['allday']);
@@ -130,7 +147,7 @@ if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super  |
 		  if ($mult_count <= 1)
 		  {
 			$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".$ev_allday."', '".$recurring."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$ev_email."', '".$ev_category."', '".$ev_thread."', '".intval($rec_m)."', '".intval($rec_y)."' ";
-			$sql->db_Insert("event", $qry);
+			$sql->db_Insert('event', $qry);
 
 			$id = mysql_insert_id();
 			$data = array('method'=>'create', 'table'=>'event', 'id'=>$id, 'plugin'=>'calendar_menu', 'function'=>'dbCalendarCreate');
@@ -197,7 +214,7 @@ if ($mult_count > 1)
     // Only display for forum thread/link if required.  No point if not wanted
     if (isset($pref['eventpost_forum']) && $pref['eventpost_forum'] == 1)
     {
-      $text .= "<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>".$ev_thread."</td></tr>";
+		$text .= "<tr><td class='forumheader3'>".EC_LAN_58." </td><td class='forumheader3'>".$ev_thread."</td></tr>";
     }
     $text .= "<tr><td class='forumheader3'>".EC_LAN_59."</td><td class='forumheader3'>".$ev_email."</td></tr>
 		<tr><td class='forumheader' colspan='2' style='text-align:center'>
@@ -206,7 +223,7 @@ if ($mult_count > 1)
 			<input type='hidden' name='qs' value='".e_QUERY."' />";
 	foreach ($ev_fields as $k => $v)
 	{
-	  $text .= "<input type='hidden' name='ev_{$k}' value='".$$v."' />";
+		$text .= "<input type='hidden' name='ev_{$k}' value='".$$v."' />";
 	}
 	$text .= "</td></tr></table></form>";
 
@@ -341,7 +358,7 @@ if ($cal_super || check_class($pref['eventpost_admin']))
 
 // Messages acknowledging actions
 $poss_message = array('m1' => EC_LAN_41, 'm2' => EC_LAN_42, 'm3' => EC_LAN_43, 'm4' => EC_LAN_44, 'm5' => EC_LAN_45,
-					  'm6' => EC_LAN_145, 'm7' => 'Could have saved -NUM- events');
+					  'm6' => EC_LAN_145, 'm7' => 'Could have saved -NUM- events', 'm8' => EC_LAN_181);
 if (isset($qs[2])) if (isset($poss_message[$qs[2]]))
 {
 	$message = $poss_message[$qs[2]];
@@ -622,11 +639,11 @@ if ($action == 'ne' || $action == 'ed')
 		// Always exclude the default categories
 	$cal_arg = ($ecal_class->cal_super ? "" : "find_in_set(event_cat_addclass,'".USERCLASS_LIST."') AND ");
 	$cal_arg .= "(event_cat_name != '".EC_DEFAULT_CATEGORY."') ";
-    if ($sql->db_Select("event_cat", "*", $cal_arg))
+    if ($sql->db_Select('event_cat', 'event_cat_id, event_cat_name', $cal_arg))
 		{
             while ($row = $sql->db_Fetch())
 			{
-				$text .= "<option value='{$row['event_cat_id']}' ".(isset($ne_category) && $ne_category == $row['event_cat_id'] ? "selected='selected'" :"")." >".$row['event_cat_name']."</option>";
+				$text .= "<option value='{$row['event_cat_id']}' ".(isset($ne_category) && $ne_category == $row['event_cat_id'] ? "selected='selected'" :'')." >".$row['event_cat_name']."</option>";
             }
         }
 		else
