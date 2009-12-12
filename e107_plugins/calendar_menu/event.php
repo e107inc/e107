@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2009-09-01 19:28:34 $
+|     $Revision: 1.36 $
+|     $Date: 2009-12-12 10:15:31 $
 |     $Author: e107steved $
 |
 | 09.11.06 - Started next batch of mods
@@ -53,69 +53,75 @@ if  ((isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] != "all"))
   $category_filter = " AND (e.event_category = '".intval($_POST['event_cat_ids'])."') ";
 }
 
-/*
-// enter new category into db
-if (isset($_POST['ne_cat_create']))
-{
-    if ($_POST['ne_new_category'] != "")
-    {
-        $sql->db_Insert("event_cat", "0, '".$tp->toDB($_POST['ne_new_category'])."', '".$tp->toDB($_POST['ne_new_category_icon'])."', '0', '0', '0', '0', '', '', '0', '0', '0', '".time()."', '0'  ");
-        header("location:event.php?".$_POST['qs'].".m1");
-    }
-    else
-    {
-        header("location:event.php?".$_POST['qs'].".m3");
-    }
-}
-*/
+
+
 // Event to add or update
 if ((isset($_POST['ne_insert']) || isset($_POST['ne_update'])) && ($cal_super || check_class($pref['eventpost_admin'])))
 {  
-  if (($_POST['ne_event'] == "") || !isset($_POST['qs']))
-  {	// Problem - tell user to go away
-	header("location:event.php?".$ev_start.".m3");
-  }
-  else
-  {
-	$ev_start		= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
-	$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
-    $ev_title		= $tp->toDB($_POST['ne_title']);
-    $ev_location	= $tp->toDB($_POST['ne_location']);
-    $ev_event		= $tp->toDB($_POST['ne_event']);
-	$temp_date 		= getdate($ecal_class->make_date(0,0,$_POST['start_date']));
-    if ($_POST['recurring'] == 1)
-	{
-	  $rec_m = $temp_date['mday'];		// Day of month
-      $rec_y = $temp_date['mon'];			// Month number
-    }
+	if (($_POST['ne_event'] == '') || !isset($_POST['qs']))
+	{	// Problem - tell user to go away
+		header('location:event.php?'.$ev_start.'.0.m8');
+		exit;
+	}
 	else
 	{
-      $rec_m = "";
-      $rec_y = "";
-    }
-	
-	$report_msg = '.m3';
-    if (isset($_POST['ne_insert']))
-	{  // Bits specific to inserting a new event
-		$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".intval($_POST['allday'])."', '".intval($_POST['recurring'])."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$tp -> toDB($_POST['ne_email'])."', '".intval($_POST['ne_category'])."', '".$tp -> toDB($_POST['ne_thread'])."', '".intval($rec_m)."', '".intval($rec_y)."' ";
-        $sql->db_Insert("event", $qry);
-		$ecal_class->cal_log(1,'db_Insert',$qry, $ev_start);
-        $qs = preg_replace("/ne./i", "", $_POST['qs']);	
-		$report_msg = '.m4';
+		if (!$cal_super)
+		{
+			$evCat = intval($_POST['ne_category']);
+			if ($sql->db_Select('event_cat', 'event_cat_addclass', 'event_cat_id = '.$evCat))
+			{
+				$row = $sql->db_Fetch(MYSQL_ASSOC);
+				if (!check_class($row['event_cat_addclass']))
+				{
+					header('location:event.php?'.$ev_start.'.0.m8');
+					exit;
+				}
+			}
+			else
+			{		// Invalid category - definitely go away!
+				header('location:'.e_BASE.'index.php');
+				exit;
+			}
+		}
+		$ev_start		= $ecal_class->make_date($_POST['ne_hour'], $_POST['ne_minute'],$_POST['start_date']);
+		$ev_end			= $ecal_class->make_date($_POST['end_hour'], $_POST['end_minute'],$_POST['end_date']);
+		$ev_title		= $tp->toDB($_POST['ne_title']);
+		$ev_location	= $tp->toDB($_POST['ne_location']);
+		$ev_event		= $tp->toDB($_POST['ne_event']);
+		$temp_date 		= getdate($ecal_class->make_date(0,0,$_POST['start_date']));
+		if ($_POST['recurring'] == 1)
+		{
+		  $rec_m = $temp_date['mday'];		// Day of month
+		  $rec_y = $temp_date['mon'];			// Month number
+		}
+		else
+		{
+		  $rec_m = "";
+		  $rec_y = "";
+		}
+		
+		$report_msg = '.m3';
+		if (isset($_POST['ne_insert']))
+		{  // Bits specific to inserting a new event
+			$qry = " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".intval($_POST['allday'])."', '".intval($_POST['recurring'])."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$tp -> toDB($_POST['ne_email'])."', '".intval($_POST['ne_category'])."', '".$tp -> toDB($_POST['ne_thread'])."', '".intval($rec_m)."', '".intval($rec_y)."' ";
+			$sql->db_Insert("event", $qry);
+			$ecal_class->cal_log(1,'db_Insert',$qry, $ev_start);
+			$qs = preg_replace("/ne./i", "", $_POST['qs']);	
+			$report_msg = '.m4';
+		}
+		
+		if (isset($_POST['ne_update']))
+		{  // Bits specific to updating an existing event
+			$qry = "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".intval($_POST['allday'])."', event_recurring='".intval($_POST['recurring'])."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$tp -> toDB($_POST['ne_email'])."', event_category='".intval($_POST['ne_category'])."', event_thread='".$tp -> toDB($_POST['ne_thread'])."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id='".intval($_POST['id'])."' ";
+			$sql->db_Update("event", $qry);
+			$ecal_class->cal_log(2,'db_Update',$qry, $ev_start);
+			$qs = preg_replace("/ed./i", "", $_POST['qs']);
+			$report_msg = '.m5';
+		}
+		// Now clear cache  - just do the lot for now - get clever later
+		$e107cache->clear('nq_event_cal');
+		header("location:event.php?".$ev_start.".".$qs.$report_msg);
 	}
-	
-	if (isset($_POST['ne_update']))
-	{  // Bits specific to updating an existing event
-		$qry = "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".intval($_POST['allday'])."', event_recurring='".intval($_POST['recurring'])."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$tp -> toDB($_POST['ne_email'])."', event_category='".intval($_POST['ne_category'])."', event_thread='".$tp -> toDB($_POST['ne_thread'])."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id='".intval($_POST['id'])."' ";
-        $sql->db_Update("event", $qry);
-		$ecal_class->cal_log(2,'db_Update',$qry, $ev_start);
-        $qs = preg_replace("/ed./i", "", $_POST['qs']);
-		$report_msg = '.m5';
-	}
-	// Now clear cache  - just do the lot for now - get clever later
-	$e107cache->clear('nq_event_cal');
-    header("location:event.php?".$ev_start.".".$qs.$report_msg);
-  }
 }
 
 $action = "";		// Remove notice
@@ -209,7 +215,7 @@ $months		= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_
 // ----------------------------------------------------------------------------------------------------------
 
 // Messages acknowledging actions
-$poss_message = array('m1' => EC_LAN_41, 'm2' => EC_LAN_42, 'm3' => EC_LAN_43, 'm4' => EC_LAN_44, 'm5' => EC_LAN_45);
+$poss_message = array('m1' => EC_LAN_41, 'm2' => EC_LAN_42, 'm3' => EC_LAN_43, 'm4' => EC_LAN_44, 'm5' => EC_LAN_45, 'm8' => EC_LAN_181);
 if (isset($qs[2])) if (isset($poss_message[$qs[2]])) $message = $poss_message[$qs[2]];
 
 if (isset($message))
@@ -398,7 +404,7 @@ function make_hourmin($boxname,$cur_hour,$cur_minute)
 		".EC_LAN_67;
 		
 
-	$text .= make_hourmin("ne_",$ne_hour,$ne_minute)."&nbsp;&nbsp;".EC_LAN_73.make_hourmin('end_',$end_hour,$end_minute);
+		$text .= make_hourmin("ne_",$ne_hour,$ne_minute)."&nbsp;&nbsp;".EC_LAN_73.make_hourmin('end_',$end_hour,$end_minute);
 		$text .= "<br /><input type='checkbox' name='allday' value='1' ".(isset($allday) && $allday == 1 ? "checked='checked'" :"")." />";
         $text .= EC_LAN_64."
 		</td>
@@ -422,9 +428,9 @@ function make_hourmin($boxname,$cur_hour,$cur_minute)
 		<select name='ne_category' class='tbox'>";
         // Check if supervisor, if so get all categories, otherwise just get those the user is allowed to see
 		$cal_arg = ($ecal_class->cal_super ? "" : "find_in_set(event_cat_addclass,'".USERCLASS_LIST."')");
-        if ($sql->db_Select("event_cat", "*", $cal_arg))
+        if ($sql->db_Select('event_cat', 'event_cat_id, event_cat_name', $cal_arg))
 		{
-            while ($row = $sql->db_Fetch())
+            while ($row = $sql->db_Fetch(MYSQL_ASSOC))
 			{
 				$text .= "<option value='{$row['event_cat_id']}' ".(isset($ne_category) && $ne_category == $row['event_cat_id'] ? "selected='selected'" :"")." >".$row['event_cat_name']."</option>";
             }
@@ -436,35 +442,6 @@ function make_hourmin($boxname,$cur_hour,$cur_minute)
         $text .= "</select>
 		</td>
 		</tr>";
-        // * *BK* Check if the add class is appropriate for adding new categories
-        // * *BK* It will default to everybody class when created.  Need to go in to admin categories if
-        // * *BK* you want to change read class.
-        if (FALSE && check_class($pref['eventpost_addcat']) && $action != "ed")
-        {
-            require_once(e_HANDLER."file_class.php");
-            $fi = new e_file;
-            $imagelist = $fi->get_files(e_PLUGIN."calendar_menu/images", "\.\w{3}$");
-            $text .= "<tr>
-			<td class='forumheader3' style='width:20%' rowspan='2'>".EC_LAN_53." </td>
-			<td class='forumheader3' style='width:80%'>".EC_LAN_54."
-			<input class='tbox' type='text' name='ne_new_category' size='30' value='".(isset($ne_new_category) ? $ne_new_category : "")."' maxlength='100' style='width:95%' /> ";
-            $text .= "</td></tr>
-			<tr><td class='forumheader3' style='width:80%'>".EC_LAN_55;
-            $text .= " <input class='tbox' style='width:150px' type='text' id='ne_new_category_icon' name='ne_new_category_icon' />";
-            $text .= " <input class='button' type='button' style='width: 45px; cursor:hand;' value='".EC_LAN_90."' onclick='expandit(\"cat_icons\")' />";
-            $text .= "<div style='display:none' id='cat_icons'>";
-
-            foreach($imagelist as $img){
-                if ($img['fname']){
-                    $text .= "<a href=\"javascript:insertext('".$img['fname']."','ne_new_category_icon','cat_icons')\"><img src='".e_PLUGIN."calendar_menu/images/".$img['fname']."' style='border:0px' alt='' /></a> ";
-                }
-            }
-            $text .= "</div>";
-            $text .= "<div style='text-align:center'>
-			<input class='button' type='submit' name='ne_cat_create' value='".EC_LAN_56."' onclick='submitted=this.name' /></div>
-			</td>
-			</tr>";
-        }
 
         $text .= "
 		<tr>
