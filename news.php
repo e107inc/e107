@@ -9,9 +9,9 @@
  * News frontend
  *
  * $Source: /cvs_backup/e107_0.8/news.php,v $
- * $Revision: 1.24 $
- * $Date: 2009-11-18 01:04:24 $
- * $Author: e107coders $
+ * $Revision: 1.25 $
+ * $Date: 2009-12-12 16:40:39 $
+ * $Author: secretr $
 */
 
 require_once("class2.php");
@@ -478,10 +478,11 @@ if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with 
 
 	if(!$action)
 	{
-		if (isset($pref['fb_active']))
-		{
-			require_once(e_PLUGIN."featurebox/featurebox.php");
-		}
+		// Removed, themes should use {FEATUREBOX} shortcode instead
+//		if (isset($pref['fb_active']))
+//		{
+//			require_once(e_PLUGIN."featurebox/featurebox.php");
+//		}
 		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1)
 		{
 			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
@@ -545,9 +546,10 @@ switch($action)
 require_once(HEADERF);
 if(!$action)
 {
-	if (isset($pref['fb_active'])){   // --->feature box
-		require_once(e_PLUGIN."featurebox/featurebox.php");
-	}
+	// Removed, themes should use {FEATUREBOX} shortcode instead
+//	if (isset($pref['fb_active'])){   // --->feature box
+//		require_once(e_PLUGIN."featurebox/featurebox.php");
+//	}
 
 	if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
 		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");

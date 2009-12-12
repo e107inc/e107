@@ -9,8 +9,8 @@
 * Featurebox administration
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-* $Revision: 1.13 $
-* $Date: 2009-12-10 22:46:45 $
+* $Revision: 1.14 $
+* $Date: 2009-12-12 16:40:41 $
 * $Author: secretr $
 *
 */
@@ -100,6 +100,19 @@ class fb_category_ui extends e_admin_ui
 		if(!is_numeric($new_data['fb_category_limit']))
 		{
 			$new_data['fb_category_limit'] = 1;
+		}
+		if(!varset($new_data['fb_category_template']))
+		{
+			$new_data['fb_category_template'] = 'default';
+		}
+		return $new_data;
+	}
+	
+	public function beforeUpdate($new_data)
+	{
+		if(!varset($new_data['fb_category_template']))
+		{
+			$new_data['fb_category_template'] = 'default';
 		}
 		return $new_data;
 	}
