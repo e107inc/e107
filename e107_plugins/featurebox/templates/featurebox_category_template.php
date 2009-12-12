@@ -1,4 +1,12 @@
 <?php
+/*
+* Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+* $Id: featurebox_category_template.php,v 1.5 2009-12-12 16:35:46 secretr Exp $
+*
+* Featurebox core category templates
+*/
+
+// TODO - list of all available shortcodes & schortcode parameters
 
 // avoid PHP warnings
 $FEATUREBOX_CATEGORY_TEMPLATE = array();
@@ -83,77 +91,39 @@ $FEATUREBOX_CATEGORY_TEMPLATE['dynamic']['js_inline'] = 'new Featurebox(\'featur
 
 
 //TODO - tabs template. 
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_start'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_start'] = '
+<div class="box featurebox admintabs" id="featurebox-tab-container">
+	{FEATUREBOX_NAVIGATION|tabs=loop&uselimit}
+	<div class="tab-content-wrap">
+';
 
-$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_end'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_end'] = '
+	</div>
+	<div class="clear"><!-- --></div>
+</div>
+';
 
-// For Reference: 
-/*
-<div class="admintabs" id="tab-container">
+// no column support
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['col_start'] = '<div id="tab-{FEATUREBOX_COLSCOUNT}-activate"><div class="tab-content">';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['col_end'] = '</div></div>';
 
-									<div class="tabs">
+// ajax navigation (unobtrusive)
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_start'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_end'] = '';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_separator'] = '<div class="clear"><!-- --></div>';
 
-										<ul class="e-tabs e-hideme clearer" id="front-tabs">
+// empty item  - used with col templates, no shortcodes just basic markup
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['item_empty'] = '';
 
-											<li id="tab-01"><a href="#tab-01-activate"><span>'.LAN_THEME_TAB_1.'</span></a></li>
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_start'] = '<div class="tabs"><ul class="e-tabs clear" id="front-tabs">';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_item'] = '<li id="featurebox-tab-{FEATUREBOX_NAV_COUNTER}"><a href="#tab-{FEATUREBOX_NAV_COUNTER}-activate"><span>{FEATUREBOX_TITLE}</span></a></li>';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_end'] = '</ul></div>';
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['nav_separator'] = '';
 
-											<li id="tab-02"><a href="#tab-02-activate"><span>'.LAN_THEME_TAB_2.'</span></a></li>
-
-											<li id="tab-03"><a href="#tab-03-activate"><span>'.LAN_THEME_TAB_3.'</span></a></li>
-
-											<li id="tab-04"><a href="#tab-04-activate"><span>'.LAN_THEME_TAB_4.'</span></a></li>
-
-										</ul>
-
-									</div>
-
-									<div class="tab-content-wrap">
-
-										<div id="tab-01-activate">
-
-											<div class="tab-content">
-
-												{MENU=2}
-
-											</div>
-
-										</div>
-
-										<div id="tab-02-activate">
-
-											<div class="tab-content">
-
-												{MENU=3}
-
-											</div>
-
-										</div>
-
-										<div id="tab-03-activate">
-
-											<div class="tab-content">
-
-												{MENU=4}
-
-											</div>
-
-										</div>
-
-										<div id="tab-04-activate">
-
-											<div class="tab-content">
-
-												{MENU=5}
-
-											</div>
-
-										</div>											
-
-									</div>
-
-								</div>
-*/
-
+// external JS, comma separated list
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js'] = '{e_FILE}jslib/core/tabs.js';
+// inline JS, without <script> tags
+$FEATUREBOX_CATEGORY_TEMPLATE['tabs']['js_inline'] = 'new e107Widgets.Tabs("featurebox-tab-container", { bookmarkFix: false });';
 
 /**
  * Template information. 
@@ -164,9 +134,9 @@ $FEATUREBOX_CATEGORY_TEMPLATE['tabs']['list_end'] = '';
  * 
  * @var array
  */
-$FEATUREBOX_CATEGORY_TEMPLATE['__INFO__'] = array(
-	'default' => array('title' => 'Default - show by category limit'),
-	'dynamic' => array('title' => 'Dynamic (AJAX) loading'),
-	'tabs'	=> array('title' => 'Tabs')
+$FEATUREBOX_CATEGORY_INFO = array(
+	'default' 	=> array('title' => 'Default (core)', 'description' => 'Flat - show by category limit'),
+	'dynamic' 	=> array('title' => 'Dynamic (core)', 'description' => 'Load items on click (AJAX)'),
+	'tabs'		=> array('title' => 'Tabs (core)'	, 'description' => 'Tabbed Feature box items')
 );
 ?>
