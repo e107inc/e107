@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2008-07-28 20:15:58 $
+|     $Revision: 1.14 $
+|     $Date: 2009-12-12 17:26:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -21,9 +21,9 @@ if (!defined('e107_INIT')) { exit; }
 global $sysprefs, $pref, $pm_prefs;
 if(!isset($pm_prefs['perpage']))
 {
-	$pm_prefs = $sysprefs->getArray("pm_prefs");
+	$pm_prefs = $sysprefs->getArray('pm_prefs');
 }
-require_once(e_PLUGIN."pm/pm_func.php");
+require_once(e_PLUGIN.'pm/pm_func.php');
 pm_getInfo('clear');
 
 define("PM_INBOX_ICON", "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' style='height:16px; width:16px; border:0px;' alt='".LAN_PM_25."' title='".LAN_PM_25."' />");
@@ -43,6 +43,9 @@ $sc_style['OUTBOX_FILLED']['post'] = "%]";
 $sc_style['NEWPM_ANIMATE']['pre'] = "<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>";
 $sc_style['NEWPM_ANIMATE']['post'] = "</a>";
 
+$sc_style['BLOCKED_SENDERS_MANAGE']['pre'] = "<br />[ <a href='".e_PLUGIN_ABS."pm/pm.php?blocked'>";
+$sc_style['BLOCKED_SENDERS_MANAGE']['post'] = '</a> ]';
+
 
 if(!isset($pm_menu_template))
 {
@@ -57,8 +60,10 @@ if(!isset($pm_menu_template))
 	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".LAN_PM_26."</a><br />
 	{OUTBOX_TOTAL} ".LAN_PM_36.", {OUTBOX_UNREAD} ".LAN_PM_37." {OUTBOX_FILLED}
 	{SEND_PM_LINK}
+	{BLOCKED_SENDERS_MANAGE}
 	";
 }
+
 
 if(check_class($pm_prefs['pm_class']))
 {

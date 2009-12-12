@@ -11,40 +11,40 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2008-12-30 16:35:10 $
+|     $Revision: 1.10 $
+|     $Date: 2009-12-12 17:26:09 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 $retrieve_prefs[] = 'pm_prefs';
 $eplug_admin = TRUE;
-require_once("../../class2.php");
-require_once(e_PLUGIN."pm/pm_class.php");
-require_once(e_HANDLER."userclass_class.php");
-require_once(e_HANDLER."form_handler.php");
+require_once('../../class2.php');
+require_once(e_PLUGIN.'pm/pm_class.php');
+require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'form_handler.php');
 
 if (!getperms("P"))
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 
 $action = e_QUERY;
 
-require_once(e_ADMIN."auth.php");
+require_once(e_ADMIN.'auth.php');
 
-if($action == "")
+if($action == '')
 {
-	$action = "main";
+	$action = 'main';
 }
 
-$pm_prefs = $sysprefs->getArray("pm_prefs");
+$pm_prefs = $sysprefs->getArray('pm_prefs');
 
 //pm_prefs record not found in core table, set to defaults and create record
 if(!is_array($pm_prefs))
 {
-	require_once(e_PLUGIN."pm/pm_default.php");
-	$pm_prefs = pm_set_default_prefs();
+	require_once(e_PLUGIN.'pm/pm_default.php');
+	$pm_prefs = pm_set_default_prefs();			// Use the default settings
 	$sysprefs->setArray('pm_prefs');
 	$message = ADLAN_PM_3;
 }
@@ -61,6 +61,7 @@ if (isset($_POST['update_prefs']))
 	$sysprefs->setArray('pm_prefs');
 	$message = ADLAN_PM_4;
 }
+
 
 if(isset($_POST['addlimit']))
 {
@@ -111,24 +112,25 @@ if(isset($_POST['updatelimits']))
 	}
 }
 
+
 if(isset($message))
 {
-	$ns->tablerender("", $message);
+	$ns->tablerender('', $message);
 }
 
 
-if($action == "main")
+switch ($action)
 {
+	case 'main' :
 	$ns->tablerender(ADLAN_PM_12, show_options());
-}
-
-if($action == "limits")
-{
+		break;
+	case 'limits' :
 	$ns->tablerender(ADLAN_PM_14, show_limits());
 	$ns->tablerender(ADLAN_PM_15, add_limit());
+		break;
 }
 
-require_once(e_ADMIN."footer.php");
+require_once(e_ADMIN.'footer.php');
 
 function yes_no($fname)
 {
@@ -138,6 +140,7 @@ function yes_no($fname)
 		form::form_radio("option[{$fname}]", "0", ($pm_prefs[$fname] ? "0" : "1"), "", "").LAN_NO;
 		return $ret;
 }
+
 
 
 function show_options()
@@ -176,7 +179,7 @@ function show_options()
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_23."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[pm_class]', $pm_prefs['pm_class'], 'off', 'member, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[pm_class]', $pm_prefs['pm_class'], 'off', 'member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_24."</td>
@@ -184,15 +187,15 @@ function show_options()
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_25."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[notify_class]', $pm_prefs['notify_class'], 'off', 'nobody, member, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[notify_class]', $pm_prefs['notify_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_26."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[receipt_class]', $pm_prefs['receipt_class'], 'off', 'nobody, member, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[receipt_class]', $pm_prefs['receipt_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_27."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[attach_class]', $pm_prefs['attach_class'], 'off', 'nobody, member, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[attach_class]', $pm_prefs['attach_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_28."</td>
@@ -200,11 +203,11 @@ function show_options()
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_29."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[sendall_class]', $pm_prefs['sendall_class'], 'off', 'nobody, member, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[sendall_class]', $pm_prefs['sendall_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_30."</td>
-		<td class='forumheader3' style='width:25%'>".r_userclass('option[multi_class]', $pm_prefs['multi_class'], 'off', 'nobody, member, admin, classes')."</td>
+		<td class='forumheader3' style='width:25%'>".r_userclass('option[multi_class]', $pm_prefs['multi_class'], 'off', 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td class='forumheader3' style='width:75%'>".ADLAN_PM_31."</td>
@@ -219,13 +222,13 @@ function show_options()
 	return $txt;
 }
 
+
+
+
+
 function show_limits()
 {
 	global $sql, $pref;
-	if($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
-	{
-		$classList = $sql->db_getList();
-	}
 	if($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
 		while($row = $sql->db_Fetch())
@@ -301,10 +304,6 @@ function show_limits()
 function add_limit()
 {
 	global $sql, $pref;
-	if($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
-	{
-		$classList = $sql->db_getList();
-	}
 	if($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
 		while($row = $sql->db_Fetch())
@@ -324,7 +323,7 @@ function add_limit()
 
 	$txt .= "
 	<tr>
-	<td class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
+	<td class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest,member,admin,classes,language")."</td>
 	<td class='forumheader3'>
 		".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> 
 		".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='new_outbox_count' value='' /> 

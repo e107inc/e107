@@ -66,6 +66,13 @@ define('LAN_PM_62', "File: [{FILENAME}] exceeds size limit - not attached");
 define('LAN_PM_63', "class:");
 define('LAN_PM_64', 'ERROR: You are not permitted to block messages from site administrators');
 define('LAN_PM_65', 'ERROR: Nothing to send');
+define('LAN_PM_66', 'Blocked Senders');
+define('LAN_PM_67', 'No users blocked');
+define('LAN_PM_68', 'User Name');
+define('LAN_PM_69', 'Date blocked');
+define('LAN_PM_70', 'Deleting block on user');
+define('LAN_PM_71', '--GOOD-- attachment(s) deleted. --FAIL-- failure(s)');
+define('LAN_PM_72', 'User deleted');
 
 define("LAN_PM_100", "New PM from ");
 define("LAN_PM_101", "You have received a new Private Message from ");

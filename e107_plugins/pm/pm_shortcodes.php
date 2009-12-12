@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2009-12-09 21:26:56 $
+|     $Revision: 1.24 $
+|     $Date: 2009-12-12 17:26:10 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -41,6 +41,7 @@ else
 }
 return $ret;
 SC_END
+
 
 SC_BEGIN FORM_TOCLASS
 global $pm_prefs, $pm_info;
@@ -240,10 +241,13 @@ SC_END
 
 SC_BEGIN PM_SUBJECT
 global $pm_info, $tp;
-$ret = $tp->toHTML($pm_info['pm_subject'], true, 'no_make_clickable,no_hook');
-if('link' == $parm)
+$ret = $tp->toHTML($pm_info['pm_subject'], true, 'USER_TITLE');
+$prm = explode(',',$parm);
+if('link' == $prm[0])
 {
-	$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$pm_info['pm_id']}'>".$ret."</a>";
+	$extra = '';
+	if (isset($prm[1])) $extra = '.'.$prm[1];
+	$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$pm_info['pm_id']}{$extra}'>".$ret."</a>";
 }
 return $ret;
 SC_END
@@ -371,6 +375,8 @@ if($pm_prefs['animate'])
 return '';
 SC_END
 
+
+
 SC_BEGIN PM_NEXTPREV
 global $pmlist, $tp, $pm_start, $pm_prefs, $pmlist;
 return $tp->parseTemplate("{NEXTPREV={$pmlist['total_messages']},{$pm_prefs['perpage']},{$pm_start},".e_SELF."?{$parm}.[FROM]}");
@@ -380,6 +386,54 @@ SC_BEGIN PM_CHECK_ALL_NONE
 return "<input type='checkbox' id='pm_check_all_none' class='tbox' onclick='setCheckboxes(\"pm_list_form\", document.getElementById(\"pm_check_all_none\").checked)'/>";
 SC_END
 
+
+//---------------------------------------
+//		Blocked senders management
+//---------------------------------------
+SC_BEGIN BLOCKED_SENDERS_MANAGE
+global $sql;
+$count = $sql->db_Count('private_msg_block', '(*)', 'WHERE `pm_block_to` = '.USERID);
+if (!$count) return '';
+return LAN_PM_66;
+SC_END
+
+
+SC_BEGIN PM_BLOCKED_SELECT
+global $pmBlocked;
+return "<input type='checkbox' name='selected_pm[{$pmBlocked['pm_block_from']}]' value='1' />";
+SC_END
+
+
+SC_BEGIN PM_BLOCKED_USER
+global $pmBlocked;
+if (!$pmBlocked['user_name'])
+{
+	return LAN_PM_72;
+}
+if('link' == $parm)
+{
+	return "<a href='".e_BASE."user.php?id.{$pmBlocked['pm_block_from']}'>{$pmBlocked['user_name']}</a>";
+}
+else
+{
+	return $pmBlocked['user_name'];
+}
+SC_END
+
+SC_BEGIN PM_BLOCKED_DATE
+global $pmBlocked;
+require_once(e_HANDLER.'date_handler.php');
+return convert::convert_date($pmBlocked['pm_block_datestamp'], $parm);
+SC_END
+
+SC_BEGIN PM_BLOCKED_DELETE
+global $pmBlocked;
+return "<a href='".e_PLUGIN_ABS."pm/pm.php?delblocked.{$pmBlocked['pm_block_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' class='icon S16' /></a>";
+SC_END
+
+SC_BEGIN DELETE_BLOCKED_SELECTED
+return "<input type='submit' name='pm_delete_blocked_selected' class='button' value='".LAN_PM_53."' />";
+SC_END
 
 */
 ?>

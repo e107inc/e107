@@ -11,29 +11,39 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2009-11-19 11:45:49 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.32 $
+|     $Date: 2009-12-12 17:26:09 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
 $retrieve_prefs[] = 'pm_prefs';
-require_once("../../class2.php");
+require_once('../../class2.php');
 
-include_lan(e_PLUGIN."pm/languages/".e_LANGUAGE.".php");
 
-require_once(e_PLUGIN."pm/pm_class.php");
-require_once(e_PLUGIN."pm/pm_func.php");
 
-define("ATTACHMENT_ICON", "<img src='".e_PLUGIN."pm/images/attach.png' alt='' />");
 
-$qs = explode(".", e_QUERY);
+
+	  if (!isset($pref['plug_installed']['pm']))
+	  {
+		header('location:'.e_BASE.'index.php');
+		exit;
+	  }
+
+
+require_once(e_PLUGIN.'pm/pm_class.php');
+require_once(e_PLUGIN.'pm/pm_func.php');
+include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
+
+define('ATTACHMENT_ICON', "<img src='".e_PLUGIN."pm/images/attach.png' alt='' />");
+
+$qs = explode('.', e_QUERY);
 $action = varset($qs[0],'inbox');
 if (!$action) $action = 'inbox';
 
 $pm_proc_id = intval(varset($qs[1],0));
 
-$pm_prefs = $sysprefs->getArray("pm_prefs");
+$pm_prefs = $sysprefs->getArray('pm_prefs');
 
 if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 {
@@ -44,12 +54,24 @@ if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 }
 
 $pm =& new private_message;
-$message = "";
+$message = '';
 $pm_prefs['perpage'] = intval($pm_prefs['perpage']);
 if($pm_prefs['perpage'] == 0)
 {
 	$pm_prefs['perpage'] = 10;
 }
+$pmSource = '';
+if (isset($_POST['pm_come_from']))
+{
+	$pmSource = $tp->toDB($_POST['pm_come_from']);
+}
+elseif (isset($qs[2]))
+{
+	$pmSource = $tp->toDB($qs[2]);
+}
+
+
+
 //Auto-delete message, if timeout set in admin
 $del_qry = array();
 $read_timeout = intval($pm_prefs['read_timeout']);
@@ -66,8 +88,8 @@ if($unread_timeout > 0)
 }
 if(count($del_qry) > 0)
 {
-	$qry = implode(" OR ", $del_qry);
-	if($sql->db_Select("private_msg", "pm_id", $qry))
+	$qry = implode(' OR ', $del_qry).' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')';
+	if($sql->db_Select('private_msg', 'pm_id', $qry))
 	{
 		$delList = $sql->db_getList();
 		foreach($delList as $p)
@@ -77,13 +99,15 @@ if(count($del_qry) > 0)
 	}
 }
 
-if("del" == $action || isset($_POST['pm_delete_selected']))
+
+
+if('del' == $action || isset($_POST['pm_delete_selected']))
 {
 	if(isset($_POST['pm_delete_selected']))
 	{
 		foreach(array_keys($_POST['selected_pm']) as $id)
 		{
-			$message .= LAN_PM_24.": $id <br />";
+			$message .= LAN_PM_24.": {$id} <br />";
 			$message .= $pm->del($id);
 		}
 	}
@@ -91,24 +115,46 @@ if("del" == $action || isset($_POST['pm_delete_selected']))
 	{
 		$message = $pm->del($pm_proc_id);
 	}
-	if($qs[2] != "")
+	if ($pmSource)
 	{
-		$action = $qs[2];
+		$action = $pmSource;
 	}
 	else
 	{
-		if(substr($_SERVER['HTTP_REFERER'], -5) == "inbox")
+		if(substr($_SERVER['HTTP_REFERER'], -5) == 'inbox')
 		{
-			$action = "inbox";
+			$action = 'inbox';
 		}
-		if(substr($_SERVER['HTTP_REFERER'], -6) == "outbox")
+		elseif(substr($_SERVER['HTTP_REFERER'], -6) == 'outbox')
 		{
-			$action = "outbox";
+			$action = 'outbox';
 		}
 	}
 	$pm_proc_id = 0;
 	unset($qs);
 }
+
+
+
+if('delblocked' == $action || isset($_POST['pm_delete_blocked_selected']))
+{
+	if(isset($_POST['pm_delete_blocked_selected']))
+	{
+		foreach(array_keys($_POST['selected_pm']) as $id)
+		{
+			$message .= LAN_PM_70.": {$id} <br />";
+			$message .= $pm->block_del($id).'<br />';
+		}
+		}
+	elseif('delblocked' == $action)
+	{
+		$message = $pm->block_del($pm_proc_id);
+	}
+	$action = 'blocked';
+	$pm_proc_id = 0;
+	unset($qs);
+}
+
 
 if('block' == $action)
 {
@@ -124,11 +170,12 @@ if('unblock' == $action)
 	$pm_proc_id = 0;
 }
 
-if("get" == $action)
+if('get' == $action)
 {
 	$pm->send_file($pm_proc_id, intval($qs[2]));
 	exit;
 }
+
 
 require_once(HEADERF);
 
@@ -138,18 +185,22 @@ if(isset($_POST['postpm']))
 	$action = 'outbox';
 }
 
-if($message != "")
+
+
+if($message != '')
 {
 	$ns->tablerender("", $message);
 }
 
-if("send" == $action)
-{
-	$ns->tablerender(LAN_PM, show_send($pm_proc_id));
-}
 
-if("reply" == $action)
+
+switch ($action)
 {
+	case 'send' :
+	$ns->tablerender(LAN_PM, show_send($pm_proc_id));
+		break;
+
+	case 'reply' :
 	$pmid = $pm_proc_id;
 	if($pm_info = $pm->pm_get($pmid))
 	{
@@ -166,25 +217,33 @@ if("reply" == $action)
 	{
 		$ns->tablerender(LAN_PM, LAN_PM_57);
 	}
+		break;
+
+	case 'inbox' :
+		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox($pm_proc_id), 'PM');
+		break;
+
+	case 'outbox' :
+		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox($pm_proc_id), 'PM');
+		break;
+
+	case 'show' :
+		show_pm($pm_proc_id, $pmSource);
+		break;
+
+	case 'blocked' :
+		$ns->tablerender(LAN_PM." - ".LAN_PM_66, showBlocked($pm_proc_id), 'PM');
+		break;
 }
 
-if("inbox" == $action)
-{
-	$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox($pm_proc_id), "PM");
-}
-
-if("outbox" == $action)
-{
-	$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox($pm_proc_id), "PM");
-}
-
-if("show" == $action)
-{
-	show_pm($pm_proc_id);
-}
 
 require_once(FOOTERF);
 exit;
+
+
+
+
+
 
 function show_send($to_uid)
 {
@@ -204,9 +263,9 @@ function show_send($to_uid)
 	{
 		return str_replace('{PERCENT}', $pm_outbox['outbox']['filled'], LAN_PM_13);
 	}
-	require_once(e_PLUGIN."pm/pm_shortcodes.php");
+	require_once(e_PLUGIN.'pm/pm_shortcodes.php');
 	$tpl_file = THEME."pm_template.php";
-	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
+	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 	$enc = (check_class($pm_prefs['attach_class']) ? "enctype='multipart/form-data'" : "");
 	$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform'>
 	<div><input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
@@ -214,6 +273,8 @@ function show_send($to_uid)
 	"</div></form>";
 	return $text;
 }
+
+
 
 function show_inbox($start = 0)
 {
@@ -244,13 +305,16 @@ function show_inbox($start = 0)
 	return $txt;
 }
 
+
+
+
 function show_outbox($start = 0)
 {
 	global $pm, $tp, $pm_shortcodes, $pm_info, $pm_start, $pm_prefs, $pmlist;
 	$pm_start = $start;
-	require_once(e_PLUGIN."pm/pm_shortcodes.php");
-	$tpl_file = THEME."pm_template.php";
-	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
+	require_once(e_PLUGIN.'pm/pm_shortcodes.php');
+	$tpl_file = THEME.'pm_template.php';
+	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 	$pmlist = $pm->pm_get_outbox(USERID, $pm_start, $pm_prefs['perpage']);
 	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."' id='pm_list_form'>";
 	$txt .= $tp->parseTemplate($PM_OUTBOX_HEADER, true, $pm_shortcodes);
@@ -258,7 +322,7 @@ function show_outbox($start = 0)
 	{
 		foreach($pmlist['messages'] as $rec)
 		{
-			if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = "[".LAN_PM_61."]"; }
+			if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
 			$pm_info = $rec;
 			$txt .= $tp->parseTemplate($PM_OUTBOX_TABLE, true, $pm_shortcodes);
 		}
@@ -272,12 +336,14 @@ function show_outbox($start = 0)
 	return $txt;
 }
 
-function show_pm($pmid)
+
+
+function show_pm($pmid, $comeFrom = '')
 {
 	global $pm, $tp, $pm_shortcodes, $pm_info, $ns;
-	require_once(e_PLUGIN."pm/pm_shortcodes.php");
-	$tpl_file = THEME."pm_template.php";
-	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
+	require_once(e_PLUGIN.'pm/pm_shortcodes.php');
+	$tpl_file = THEME.'pm_template.php';
+	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 	$pm_info = $pm->pm_get($pmid);
 	if($pm_info['pm_to'] != USERID && $pm_info['pm_from'] != USERID)
 	{
@@ -293,15 +359,23 @@ function show_pm($pmid)
 	}
 	$txt .= $tp->parseTemplate($PM_SHOW, true, $pm_shortcodes);
 	$ns -> tablerender(LAN_PM, $txt);
-	if($pm_info['pm_from'] == USERID)
+	if (!$comeFrom)
+	{
+		if ($pm_info['pm_from'] == USERID) { $comeFrom = 'outbox'; } 
+	}
+	if ($comeFrom == 'outbox')
 	{	// Show Outbox
-		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox($pm_proc_id), "PM");
+		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox($pm_proc_id), 'PM');
 	}
 	else
 	{	// Show Inbox
-		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox($pm_proc_id), "PM");
+		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox($pm_proc_id), 'PM');
 	}
 }
+
+
+
+
 
 function post_pm()
 {
@@ -323,7 +397,7 @@ function post_pm()
 	}
 	if(isset($_POST['pm_to']))
 	{
-		$msg = "";
+		$msg = '';
 		if(isset($_POST['to_userclass']) && $_POST['to_userclass'])
 		{
 			if(!$pm_prefs['allow_userclass'])
@@ -438,4 +512,56 @@ function post_pm()
 		return $msg.$pm->add($_POST);
 	}
 }
+
+
+function pm_user_lookup()
+{
+	global $sql;
+
+
+		$query = "SELECT * FROM #user WHERE user_name REGEXP '^".$_POST['keyword']."' ";
+	  	if($sql -> db_Select_gen($query))
+	  	{
+			echo "[";
+	        while($row = $sql-> db_Fetch())
+	        {
+	              $u[] =  "{\"caption\":\"".$row['user_name']."\",\"value\":".$row['user_id']."}";
+	         }
+
+			echo implode(",",$u);
+	        echo "]";
+		}
+
+    	exit;
+}
+
+
+function showBlocked($start = 0)
+{
+	global $pm, $tp, $pm_shortcodes, $pmBlocked, $pmTotalBlocked, $pm_start, $pm_prefs ;
+	$pm_start = $start;
+	require_once(e_PLUGIN.'pm/pm_shortcodes.php');
+	$tpl_file = THEME.'pm_template.php';
+	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+	$pmBlocks = $pm->block_get_user();			// TODO - handle pagination, maybe (is it likely to be necessary?)
+	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
+	$txt .= $tp->parseTemplate($PM_BLOCKED_HEADER, true, $pm_shortcodes);
+	if($pmTotalBlocked = count($pmBlocks))
+	{
+		foreach($pmBlocks as $pmBlocked)
+		{
+			$txt .= $tp->parseTemplate($PM_BLOCKED_TABLE, true, $pm_shortcodes);
+		}
+	}
+	else
+	{
+		$txt .= $tp->parseTemplate($PM_BLOCKED_EMPTY, true, $pm_shortcodes);
+	}
+	$txt .= $tp->parseTemplate($PM_BLOCKED_FOOTER, true, $pm_shortcodes);
+	$txt .= "</form>";
+	return $txt;
+}
+
+
+
 ?>
