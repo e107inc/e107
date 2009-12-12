@@ -3099,6 +3099,10 @@ class e_admin_ui extends e_admin_controller_ui
 					$this->getTreeModel()->setMessages();
 				}
 			}
+			else
+			{
+				$this->getTreeModel()->setMessages();// errors
+			}
 		}
 	}
 	
@@ -3205,7 +3209,6 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	function EditHeader()
 	{
-		// TODO - make it part of e_from::textarea/bbarea(), invoke it on className (not all textarea elements)
 		e107::getJs()->requireCoreLib('core/admin.js');
 	}
 	

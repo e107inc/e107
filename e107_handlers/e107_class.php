@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.92 $
- * $Date: 2009-12-12 11:01:03 $
- * $Author: e107coders $
+ * $Revision: 1.93 $
+ * $Date: 2009-12-12 16:40:41 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1216,14 +1216,15 @@ class e107
 	 * @param string|null $key
 	 * @param boolean $override see {@link getThemeInfo())
 	 * @param boolean $merge merge theme with core templates, default is false
+	 * @param boolean $info retrieve template info only
 	 * @return string|array
 	 */
-	public static function getCoreTemplate($id, $key = null, $override = true, $merge = false)
+	public static function getCoreTemplate($id, $key = null, $override = true, $merge = false, $info = false)
 	{
 		$reg_path = 'core/e107/templates/'.$id.($override ? '/ext' : '');
 		$path = self::coreTemplatePath($id, $override);
 		$id = str_replace('/', '_', $id);
-		$ret = self::_getTemplate($id, $key, $reg_path, $path);
+		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
 		if(!$merge || !$override || !is_array($ret))
 		{
 			return $ret;
@@ -1233,7 +1234,7 @@ class e107
 		$reg_path = 'core/e107/templates/'.$id;
 		$path = self::coreTemplatePath($id, false);
 		$id = str_replace('/', '_', $id);
-		$ret_core = self::_getTemplate($id, $key, $reg_path, $path);
+		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info);
 		
 		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
 	}
@@ -1261,14 +1262,15 @@ class e107
 	 * @param string|null $key
 	 * @param boolean $override see {@link getThemeInfo())
 	 * @param boolean $merge merge theme with plugin templates, default is false
+	 * @param boolean $info retrieve template info only
 	 * @return string|array
 	 */
-	public static function getTemplate($plug_name, $id, $key = null, $override = true, $merge = false)
+	public static function getTemplate($plug_name, $id, $key = null, $override = true, $merge = false, $info = false)
 	{
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id.($override ? '/ext' : '');
 		$path = self::templatePath($plug_name, $id, $override);
 		$id = str_replace('/', '_', $id);
-		$ret = self::_getTemplate($id, $key, $reg_path, $path);
+		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
 		if(!$merge || !$override || !is_array($ret))
 		{
 			return $ret;
@@ -1278,9 +1280,37 @@ class e107
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id;
 		$path = self::templatePath($plug_name, $id, false);
 		$id = str_replace('/', '_', $id);
-		$ret_plug = self::_getTemplate($id, $key, $reg_path, $path);
+		$ret_plug = self::_getTemplate($id, $key, $reg_path, $path, $info);
 		
 		return (is_array($ret_plug) ? array_merge($ret_plug, $ret) : $ret);
+	}
+	
+	/**
+	 * Get Template Info array.
+	 * Note: Available only after getTemplate()/getCoreTemplate() call
+	 * 
+	 * @param string $plug_name if null - search for core template
+	 * @param string $id
+	 * @param string $key
+	 * @param boolean $override
+	 * @param boolean $merge
+	 * @return array
+	 */
+	public function getTemplateInfo($plug_name = null, $id, $key = null, $override = true, $merge = false)
+	{
+		if($plug_name)
+		{
+			$ret = self::getTemplate($plug_name, $id, null, $override, $merge, true);
+		}
+		else
+		{
+			$ret = self::getCoreTemplate($id, null, $override, $merge, true);
+		}
+		if($key && isset($ret[$key]) && is_array($ret[$key]))
+		{
+			return $ret[$key];
+		}
+		return $ret;
 	}
 
 	/**
@@ -1289,18 +1319,21 @@ class e107
 	 * @param string $template_id [optional] if different from $plugin_name;
 	 * @param mixed $where true - current theme, 'admin' - admin theme, 'front' (default)  - front theme
 	 * @param boolean $merge merge theme with core/plugin layouts, default is false
+	 * @param boolean $allinfo reutrn nimerical array of templates and all available template information 
 	 * @return array
 	 */
-	public static function getLayouts($plugin_name, $template_id = '', $where = 'front', $filter_mask = '', $merge = false)
+	public static function getLayouts($plugin_name, $template_id = '', $where = 'front', $filter_mask = '', $merge = false, $allinfo = true)
 	{
 		if(!$plugin_name) // Core template
 		{
 			$tmp = self::getCoreTemplate($template_id, null, $where, $merge);
+			$tmp_info = self::getTemplateInfo(null, $template_id, null, $where, $merge);
 		}
 		else // Plugin template
 		{
 			$id = (!$template_id) ? $plugin_name : $template_id;
 			$tmp = self::getTemplate($plugin_name, $id, null, $where, $merge);
+			$tmp_info = self::getTemplateInfo($plugin_name, $id, null, $where, $merge);
 		}
 
 		$templates = array(); 
@@ -1314,11 +1347,6 @@ class e107
 		}
 		foreach($tmp as $key => $val)
 		{
-			// Special key INFO in format aray('layout' => array(info))
-			if($key == '__INFO__')
-			{
-				continue;
-			}
 			$match = true;
 			if($filter_mask)
 			{
@@ -1333,44 +1361,51 @@ class e107
 				}
 				if(!$match) continue;
 			}
-			if(isset($tmp['__INFO__'][$key]))
+			if(isset($tmp_info[$key]))
 			{
-				$templates[$key] = defset($tmp['__INFO__'][$key]['title'], $tmp['__INFO__'][$key]['title']);
+				$templates[$key] = defset($tmp_info[$key]['title'], $tmp_info[$key]['title']);
 				continue;
 			}
 			$templates[$key] = implode(' ', array_map('ucfirst', explode('_', $key))); //TODO add LANS?
 		}
-		return $templates;
+		return ($allinfo ? array($templates, $tmp_info) : $templates);
 	}
 
 	/**
 	 * More abstsract template loader, used
 	 * internal in {@link getTemplate()} and {@link getCoreTemplate()} methods
+	 * If $info is set to true, only template informational array will be returned 
 	 *
 	 * @param string $id
 	 * @param string|null $key
 	 * @param string $reg_path
-	 * @param string $default_path
-	 * @param string $override_path
+	 * @param string $path
+	 * @param boolean $info
 	 * @return string|array
 	 */
-	public static function _getTemplate($id, $key, $reg_path, $path)
+	public static function _getTemplate($id, $key, $reg_path, $path, $info = false)
 	{
 		$regPath = $reg_path;
 		$var = strtoupper($id).'_TEMPLATE';
+		$regPathInfo = $reg_path.'/info';
+		$var_info = strtoupper($id).'_INFO';
 		
 		if(null === self::getRegistry($regPath))
 		{
 			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
 			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
 		}
+		if(null === self::getRegistry($regPathInfo))
+		{
+			self::setRegistry($regPathInfo, (isset($$var_info) && is_array($$var_info) ? $$var_info : array()));
+		}
 
+		$ret = (!$info ? self::getRegistry($regPath) : self::getRegistry($regPathInfo));
 		if(!$key)
 		{
-			return self::getRegistry($regPath);
+			return $ret;
 		}
-		$ret = self::getRegistry($regPath);
-		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : (is_array($ret) ? array() : ''));
+		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : '');
 	}
 
 	/**

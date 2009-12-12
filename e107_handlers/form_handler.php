@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.96 $
- * $Date: 2009-12-11 00:51:19 $
- * $Author: e107coders $
+ * $Revision: 1.97 $
+ * $Date: 2009-12-12 16:40:40 $
+ * $Author: secretr $
  *
 */
 
@@ -407,14 +407,14 @@ class e_form
 
 	}
 
-	function radio_multi($name, $elements, $checked, $multi_line = false)
+	function radio_multi($name, $elements, $checked, $multi_line = false, $help = array())
 	{
 		$text = array();
 		if(is_string($elements)) parse_str($elements, $elements);
 
 		foreach ($elements as $value => $label)
 		{
-			$text[] = $this->radio($name, $value, $checked == $value)."".$this->label($label, $name, $value);
+			$text[] = $this->radio($name, $value, $checked == $value)."".$this->label($label, $name, $value).(isset($help[$value]) ? "<div class='field-help'>".$help[$value]."</div>" : '');
 		}
 		if(!$multi_line)
 			return implode("&nbsp;&nbsp;", $text);
@@ -1351,12 +1351,23 @@ class e_form
 				$where = vartrue($parms['area'], 'front'); //default is 'front' 
 				$filter = varset($parms['filter']);
 				$merge = vartrue($parms['merge']) ? true : false;
-				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge);
-				if(varset($parms['default']) && !isset($layouts['default']))
+				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge, true);
+				if(varset($parms['default']) && !isset($layouts[0]['default']))
 				{
-					$layouts = array('default' => $parms['default']) + $layouts;
+					$layouts[0] = array('default' => $parms['default']) + $layouts[0];
 				}	
-				return (vartrue($parms['raw']) ? $layouts : $this->selectbox($key, $layouts, $value));
+				$info = array();
+				if($layouts[1])
+				{
+					foreach ($layouts[1] as $key => $info_array) 
+					{
+						if(isset($info_array['description']))
+						$info[$key] = defset($info_array['description'], $info_array['description']);
+					}
+				}
+
+				//$this->selectbox($key, $layouts, $value)
+				return (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value, true, $info));
 			break; 
 				
 			case 'templates': //to do - exclude param (exact match)
