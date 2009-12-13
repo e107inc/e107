@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.33 $
- * $Date: 2009-12-09 20:35:58 $
+ * $Revision: 1.34 $
+ * $Date: 2009-12-13 21:52:32 $
  * $Author: e107steved $
 */
 
@@ -971,7 +971,7 @@ class prefs
 	* @param  string val -- pre-serialized string
 	* @param  string $name -- name of pref row
 	* @param  string $table -- "core" or "user"
-	* @global  $$name
+	* @global  mixed $$name
 	* @access  public
 	*
 	* set("val")    == 'core', 'pref'

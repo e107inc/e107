@@ -9,9 +9,9 @@
  * Cache handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/cache_handler.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-11-24 16:30:06 $
- * $Author: secretr $
+ * $Revision: 1.18 $
+ * $Date: 2009-12-13 21:52:31 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -24,8 +24,8 @@ define('CACHE_PREFIX','<?php exit;');
  * 
  * @package     e107
  * @category	e107_handlers
- * @version     $Revision: 1.17 $
- * @author      $Author: secretr $
+ * @version     $Revision: 1.18 $
+ * @author      $Author: e107steved $
  */
 class ecache {
 
@@ -162,7 +162,7 @@ class ecache {
 	 * @param boolean $ForceCache [optional] if TRUE, writes cache even when disabled
 	 * @param boolean $bRaw [optional] if TRUE, writes data exactly as provided instead of prefacing with php leadin
 	 * @param boolean $syscache [optional]
-	 * @return 
+	 * @return none
 	 */
 	public function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false) 
 	{

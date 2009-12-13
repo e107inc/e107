@@ -9,9 +9,9 @@
  * e107 Core functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/core_functions.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-13 21:52:31 $
+ * $Author: e107steved $
 */
 
 //
@@ -46,7 +46,7 @@ function varset(&$val, $default='')
  * 
  * @param string $str
  * @param mixed $default [optional]
- * @return 
+ * @return mixed 
  */
 function defset($str, $default='')
 {

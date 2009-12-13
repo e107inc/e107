@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/links.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2009-12-02 22:34:15 $
-|     $Author: bugrain $
+|     $Revision: 1.39 $
+|     $Date: 2009-12-13 21:52:31 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -163,7 +163,7 @@ class links_admin_ui extends e_admin_ui
 
 	/**
 	 * Get linklist in it's proper order.
-	 * @return
+	 * @return none
 	 */
 	function getLinks()
 	{

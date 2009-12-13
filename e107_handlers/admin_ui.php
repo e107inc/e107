@@ -69,7 +69,7 @@ class e_admin_request
 	 * Constructor
 	 * 
 	 * @param string|array $qry [optional]
-	 * @return 
+	 * @return none
 	 */
 	public function __construct($request_string = null, $parse = true)
 	{
@@ -279,7 +279,7 @@ class e_admin_request
 	
 	/**
 	 * Get current action
-	 * @return 
+	 * @return TBD
 	 */
 	public function getAction()
 	{
@@ -1262,7 +1262,7 @@ class e_admin_dispatcher
 	
 	/**
 	 *  Default controller name - needed if controller not found
-	 * @return 
+	 * @return string name of controller
 	 */
 	public function getDefaultControllerName()
 	{
@@ -1819,7 +1819,7 @@ class e_admin_controller
 	 * @param string $action [optional]
 	 * @param string|array $exclude_query [optional]
 	 * @param string|array $merge_query [optional]
-	 * @return 
+	 * @return none
 	 */
 	public function redirectAction($action = null, $exclude_query = '', $merge_query = array())
 	{
@@ -1855,7 +1855,7 @@ class e_admin_controller
 	 * @param string $action_name formatted (e.g. request method getActionName()) action name  
 	 * @param string $type page|observer|header|trigger
 	 * @param boolean $ajax force with true/false, if null will be auto-resolved
-	 * @return 
+	 * @return string
 	 */
 	public function toMethodName($action_name, $type= 'page', $ajax = null)
 	{
@@ -2342,7 +2342,7 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * Manage column visibility
 	 * @param string $batch_trigger
-	 * @return 
+	 * @return none
 	 */
 	public function manageColumns()
 	{
@@ -2861,7 +2861,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param string $callbackBefore existing method from $this scope to be called before submit
 	 * @param string $callbackAfter existing method from $this scope to be called after successfull submit
 	 * @param string $noredirectAction passed to doAfterSubmit()
-	 * @return 
+	 * @return boolean
 	 */
 	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $callbackError = '', $noredirectAction = '')
 	{
@@ -2971,7 +2971,7 @@ class e_admin_ui extends e_admin_controller_ui
 	/**
 	 * Catch fieldpref submit
 	 * @param string $batch_trigger
-	 * @return 
+	 * @return none
 	 */
 	public function ListEcolumnsTrigger()
 	{
@@ -2982,7 +2982,7 @@ class e_admin_ui extends e_admin_controller_ui
 	/**
 	 * Catch batch submit
 	 * @param string $batch_trigger
-	 * @return 
+	 * @return none
 	 */
 	public function ListBatchTrigger($batch_trigger)
 	{
@@ -3080,7 +3080,7 @@ class e_admin_ui extends e_admin_controller_ui
 	/**
 	 * Catch delete submit
 	 * @param string $batch_trigger
-	 * @return 
+	 * @return none
 	 */
 	public function ListDeleteTrigger($posted)
 	{
@@ -3205,7 +3205,7 @@ class e_admin_ui extends e_admin_controller_ui
 	
 	/**
 	 * Edit - send JS to page Header
-	 * @return 
+	 * @return none
 	 */
 	function EditHeader()
 	{
@@ -3291,7 +3291,7 @@ class e_admin_ui extends e_admin_controller_ui
 		
 	/**
 	 * Create - send JS to page Header
-	 * @return 
+	 * @return none
 	 */
 	function CreateHeader()
 	{
@@ -3301,7 +3301,7 @@ class e_admin_ui extends e_admin_controller_ui
 	
 	/**
 	 * 
-	 * @return 
+	 * @return TBD
 	 */
 	public function CreatePage()
 	{
@@ -3383,7 +3383,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 * Set read and write parms with drop-down-list array data (ie. type='dropdown')
 	 * @param str $field
 	 * @param array $array [optional]
-	 * @return 
+	 * @return none
 	 */
 	public function setDropDown($field,$array) //TODO Have Miro check this. 
 	{

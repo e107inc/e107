@@ -9,9 +9,9 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.28 $
+ * $Date: 2009-12-13 21:52:32 $
+ * $Author: e107steved $
  *
 */
 
@@ -120,7 +120,7 @@ class eMessage
 	/**
 	 * Set message session id
 	 * @param string $name 
-	 * @return 
+	 * @return object $this
 	 */
 	public function setSessionId($name)
 	{

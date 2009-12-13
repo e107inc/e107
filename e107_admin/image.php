@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.41 $
- * $Date: 2009-12-04 11:42:04 $
- * $Author: e107coders $
+ * $Revision: 1.42 $
+ * $Date: 2009-12-13 21:52:30 $
+ * $Author: e107steved $
  *
 */
 require_once("../class2.php");
@@ -122,7 +122,7 @@ class faq_cat_ui extends e_admin_ui
 	 *
 	 * @param integer $id [optional] get category title, false - return whole array
 	 * @param mixed $default [optional] default value if not found (default 'n/a')
-	 * @return 
+	 * @return TBD
 	 */
 	function getFaqCategoryTree($id = false, $default = 'n/a')
 	{
@@ -340,7 +340,7 @@ class media_admin_ui extends e_admin_ui
 	
 	/**
 	 * Same as beforeCreate() but invoked on edit  
-	 * @return 
+	 * @return TBD
 	 */
 	public function beforeUpdate($new_data, $old_data, $id)
 	{

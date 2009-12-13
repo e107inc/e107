@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-12-10 20:40:38 $
+ * $Revision: 1.15 $
+ * $Date: 2009-12-13 21:52:32 $
  * $Author: e107steved $
  */
 
@@ -254,7 +254,7 @@ SC_BEGIN PM_FROM
 global $pm_info;
 if("link" == $parm)
 {
-	return "<a href='".e_BASE."user.php?id.{$pm_info['pm_from']}'>{$pm_info['user_name']}</a>";
+	return "<a href='".e_HTTP."user.php?id.{$pm_info['pm_from']}'>{$pm_info['user_name']}</a>";
 }
 else
 {
@@ -320,7 +320,7 @@ if(is_numeric($pm_info['pm_to']))
 {
 	if("link" == $parm)
 	{
-		return "<a href='".e_BASE."user.php?id.{$pm_info['pm_to']}'>{$pm_info['user_name']}</a>";
+		return "<a href='".e_HTTP."user.php?id.{$pm_info['pm_to']}'>{$pm_info['user_name']}</a>";
 	}
 	else
 	{
@@ -409,7 +409,7 @@ if (!$pmBlocked['user_name'])
 }
 if('link' == $parm)
 {
-	return "<a href='".e_BASE."user.php?id.{$pmBlocked['pm_block_from']}'>{$pmBlocked['user_name']}</a>";
+	return "<a href='".e_HTTP."user.php?id.{$pmBlocked['pm_block_from']}'>{$pmBlocked['user_name']}</a>";
 }
 else
 {

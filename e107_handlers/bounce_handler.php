@@ -140,7 +140,7 @@ class e107Bounce
 	/**
 	 * Read the Mail. 
 	 * @param object $iKlimit [optional]
-	 * @return 
+	 * @return string mail message
 	 */
 	function mailRead($iKlimit = 4096)
     {

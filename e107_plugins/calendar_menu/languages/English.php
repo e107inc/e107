@@ -9,8 +9,8 @@
  * These messages are for the 'user' pages of the event calendar (including event entry/editing)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-22 10:11:32 $
+ * $Revision: 1.11 $
+ * $Date: 2009-12-13 21:52:32 $
  * $Author: e107steved $
  */
 	
@@ -243,6 +243,7 @@ define('EC_LAN_177', "Cancel Entry");
 define('EC_LAN_178', "Accept Entries");
 define('EC_LAN_179', "Confirmation of multiple event entry");
 define('EC_LAN_180', 'RECORDS NOT SAVED - DB UPDATE ERROR');
+define('EC_LAN_181', "You aren't allowed to do that!");
 
 define('EC_LAN_VIEWCALENDAR', 'View Calendar');
 define('EC_LAN_VIEWALLEVENTS', 'View all events');

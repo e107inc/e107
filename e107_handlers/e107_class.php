@@ -9,8 +9,8 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.94 $
- * $Date: 2009-12-13 19:51:36 $
+ * $Revision: 1.95 $
+ * $Date: 2009-12-13 21:52:31 $
  * $Author: e107steved $
 */
 
@@ -654,10 +654,10 @@ class e107
 	 * Multiple plugin preference DB rows are supported
 	 * Class overload is supported.
 	 * Examples:
-	 * - <code>e107::getPluginConfig('myplug');<code>
+	 * - <code>e107::getPluginConfig('myplug');</code>
 	 * 	 will search for e107_plugins/myplug/e_pref/myplug_pref.php which
 	 * 	 should contain class 'e_plugin_myplug_pref' class (child of e_plugin_pref)
-	 * - <code>e107::getPluginConfig('myplug', 'row2');<code>
+	 * - <code>e107::getPluginConfig('myplug', 'row2');</code>
 	 * 	 will search for e107_plugins/myplug/e_pref/myplug_row2_pref.php which
 	 * 	 should contain class 'e_plugin_myplug_row2_pref' class (child of e_plugin_pref)
 	 *
@@ -1044,7 +1044,7 @@ class e107
 	 * Retrieves config() from addons such as e_url.php, e_cron.php, e_sitelink.php
 	 * @param string $addonName eg. e_cron, e_url
 	 * @param string $className [optional] (if different from addonName)
-	 * @return
+	 * @return none
 	 */
 	public function getAddonConfig($addonName, $className = '')
 	{
@@ -1084,7 +1084,7 @@ class e107
 	 * Safe way to call user methods.
 	 * @param string $class_name
 	 * @param string $method_name
-	 * @return
+	 * @return boolean FALSE
 	 */
 	public function callMethod($class_name, $method_name)
 	{
@@ -1214,7 +1214,7 @@ class e107
 	 *
 	 * @param string $id - file prefix, e.g. user for user_template.php
 	 * @param string|null $key
-	 * @param boolean $override see {@link getThemeInfo())
+	 * @param boolean $override see {@link getThemeInfo()}
 	 * @param boolean $merge merge theme with core templates, default is false
 	 * @param boolean $info retrieve template info only
 	 * @return string|array
@@ -1260,7 +1260,7 @@ class e107
 	 * @param string $plug_name
 	 * @param string $id - file prefix, e.g. calendar for calendar_template.php
 	 * @param string|null $key
-	 * @param boolean $override see {@link getThemeInfo())
+	 * @param boolean $override see {@link getThemeInfo()}
 	 * @param boolean $merge merge theme with plugin templates, default is false
 	 * @param boolean $info retrieve template info only
 	 * @return string|array
@@ -1900,7 +1900,7 @@ class e107
 
 	/**
 	 * Check if current request is secure (https)
-	 * @return
+	 * @return boolean TRUE if https, FALSE if http
 	 */
 	public function isSecure()
 	{
@@ -2346,7 +2346,7 @@ class e107
 	 * Safe way to set ini var
 	 * @param string $var
 	 * @param string $value
-	 * @return
+	 * @return TBD
 	 */
 	public static function ini_set($var, $value)
 	{

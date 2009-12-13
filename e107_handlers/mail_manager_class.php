@@ -6,15 +6,22 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * e107 Main
+ * e107 Mailout - mail database API and utility routines
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mail_manager_class.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-30 20:40:03 $
+ * $Revision: 1.10 $
+ * $Date: 2009-12-13 21:52:32 $
  * $Author: e107steved $
 */
 
-/*
+/**
+ * 
+ * @package     e107
+ * @category	e107_handlers
+ * @version     $Revision: 1.10 $
+ * @author      $Author: e107steved $
+
+
 This class isolates the caller from the underlying database used to buffer and send emails.
 Also includes a number of useful routines
 
@@ -495,8 +502,8 @@ class e107MailManager
 	/**
 	 * Select the next $count emails in the send queue
 	 * $count gives the maximum number. '*' does 'select all'
-	 * @return Returns FALSE on error.
-	 * @return Returns a 'handle' on success (actually the ID in the DB of the email)
+	 * @return boolean|handle Returns FALSE on error.
+	 * 		 Returns a 'handle' on success (actually the ID in the DB of the email)
 	 */
 	public function selectEmails($count = 1)
 	{
@@ -951,15 +958,15 @@ class e107MailManager
 
 	/**
 	 * Update status for email, including all recipient entries (called once all recipients added)
-	 * @var int $handle - as returned by makeEmail()
-	 * @var $hold boolean - TRUE to set status to held, false to release for sending
-	 * @var $notify - value to set in the mail_notify_complete field:
+	 * @param int $handle - as returned by makeEmail()
+	 * @param $hold boolean - TRUE to set status to held, false to release for sending
+	 * @param $notify - value to set in the mail_notify_complete field:
 	 *			0 - no action on run complete
 	 *			1 - notify admin who sent email only
 	 *			2 - notify through e107 notify system only
 	 *			3 - notify both
-	 * @var $firstTime int - only valid if $hold === FALSE - earliest time/date when email may be sent
-	 * @var $lastTime int - only valid if $hold === FALSE - latest time/date when email may be sent
+	 * @param $firstTime int - only valid if $hold === FALSE - earliest time/date when email may be sent
+	 * @param $lastTime int - only valid if $hold === FALSE - latest time/date when email may be sent
 	 * @return boolean TRUE on no errors, FALSE on errors
 	 */
 	public function activateEmail($handle, $hold = FALSE, $notify = 0, $firstTime = 0, $lastTime = 0)
@@ -1031,7 +1038,7 @@ class e107MailManager
 
 	/**
 	 * Put email on hold, including marking all unsent recipient entries
-	 * @var integer $handle - as returned by makeEmail()
+	 * @param integer $handle - as returned by makeEmail()
 	 * @return boolean - TRUE on success, FALSE on failure
 	 */
 	public function holdEmail($handle)
@@ -1055,8 +1062,8 @@ class e107MailManager
 
 	/**
 	 * Handle a bounce report. 
-	 * @var string $bounceString - the string from header X-e107-id
-	 * @var string $emailAddress - optional email address string for checks
+	 * @param string $bounceString - the string from header X-e107-id
+	 * @param string $emailAddress - optional email address string for checks
 	 * @return boolean - TRUE on success, FALSE on failure
 	 */
 	public function markBounce($bounceString, $emailAddress = '')
@@ -1144,10 +1151,10 @@ class e107MailManager
 
 	/**
 	 * Does a query to select one or more emails for which status is required.
-	 * @var $start - sets the offset of the first email to return based on the search criteria
-	 * @var $count - sets the maximum number of emails to return
-	 * @var $fields - allows selection of which db fields are returned in each result
-	 * @var $filters - array contains filter/selection criteria - basically setting limits on each field
+	 * @param $start - sets the offset of the first email to return based on the search criteria
+	 * @param $count - sets the maximum number of emails to return
+	 * @param $fields - allows selection of which db fields are returned in each result
+	 * @param $filters - array contains filter/selection criteria - basically setting limits on each field
 	 * @return Returns number of records found (maximum $count); FALSE on error
 	 */
 	public function selectEmailStatus($start = 0, $count = 0, $fields = '*', $filters = FALSE, $orderField = 'mail_source_id', $sortOrder = 'asc')
@@ -1242,10 +1249,10 @@ class e107MailManager
 
 	/**
 	 * Does a query to select from the list of email targets which have been used
-	 * @var $start - sets the offset of the first email to return based on the search criteria
-	 * @var $count - sets the maximum number of emails to return
-	 * @var $fields - allows selection of which db fields are returned in each result
-	 * @var $filters - array contains filter/selection criteria
+	 * @param $start - sets the offset of the first email to return based on the search criteria
+	 * @param $count - sets the maximum number of emails to return
+	 * @param $fields - allows selection of which db fields are returned in each result
+	 * @param $filters - array contains filter/selection criteria
 	 *				'handle=nn' picks out a specific email
 	 * @return Returns number of records found; FALSE on error
 	 */
