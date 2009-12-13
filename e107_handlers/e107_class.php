@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.93 $
- * $Date: 2009-12-12 16:40:41 $
- * $Author: secretr $
+ * $Revision: 1.94 $
+ * $Date: 2009-12-13 19:51:36 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1670,15 +1670,17 @@ class e107
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $path;
 
-		if(!defined("e_HTTP") || !defined("e_ADMIN") )
+		if(!defined('e_HTTP') || !defined('e_ADMIN') )
 		{
-			define("e_HTTP", $this->server_path);
-		  	define("e_BASE", $this->relative_base_path);
+			define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
+		  	define('e_BASE', $this->relative_base_path);
+
+			// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
+			define('SERVERBASE', substr(e_ROOT, 0, -strlen(e_HTTP) + 1));	
 
 //
 // HTTP relative paths
 //
-
 			if(!varset($MEDIA_DIRECTORY)) // BC/Upgrade Fix.
 			{
 				$MEDIA_DIRECTORY = 'e107_media/';
@@ -1825,6 +1827,20 @@ class e107
 			)
 		{
 			$inAdminDir = TRUE;
+		}
+		if ($isPluginDir)
+		{
+			$temp = substr($e107Path, strpos($e107Path, '/') +1);
+			$plugDir = substr($temp, 0, strpos($temp, '/'));
+			define('e_CURRENT_PLUGIN', $plugDir);
+			define('e_PLUGIN_DIR', e_PLUGIN.e_CURRENT_PLUGIN.'/');
+			define('e_PLUGIN_DIR_ABS', e_PLUGIN_ABS.e_CURRENT_PLUGIN.'/');
+		}
+		else
+		{
+			define('e_CURRENT_PLUGIN', '');
+			define('e_PLUGIN_DIR', '');
+			define('e_PLUGIN_DIR_ABS', '');
 		}
 
 		// This should avoid further checks - NOTE: used in js_manager.php
