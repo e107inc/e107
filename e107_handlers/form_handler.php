@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.98 $
- * $Date: 2009-12-13 10:28:15 $
- * $Author: secretr $
+ * $Revision: 1.99 $
+ * $Date: 2009-12-13 21:52:31 $
+ * $Author: e107steved $
  *
 */
 
@@ -203,7 +203,7 @@ class e_form
 	 * @param string $default_name default user name value 
 	 * @param integer $default_id default user id
 	 * @param array|string $options [optional] 'readonly' (make field read only), 'name' (db field name, default user_name) 
-	 * @return 
+	 * @return string HTML text for display
 	 */
 	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
 	{
@@ -441,7 +441,7 @@ class e_form
 	 * @param object $option_array
 	 * @param object $selected [optional]
 	 * @param object $options [optional]
-	 * @return 
+	 * @return string HTML text for display
 	 */
 	function selectbox($name, $option_array, $selected = false, $options = array())
 	{
@@ -957,7 +957,7 @@ class e_form
 	 * @param array $currentlist - eg $this->fieldpref
 	 * @param array $fieldvalues - eg. $row
 	 * @param string $pid - eg. table_id
-	 * @return 
+	 * @return string
 	 */
 	function renderTableRow($fieldarray, $currentlist, $fieldvalues, $pid)
 	{

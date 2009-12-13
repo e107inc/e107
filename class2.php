@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.167 $
-* $Date: 2009-12-12 11:01:03 $
-* $Author: e107coders $
+* $Revision: 1.168 $
+* $Date: 2009-12-13 21:52:29 $
+* $Author: e107steved $
 *
 */
 //
@@ -36,6 +36,11 @@
 // O: Start user session
 // P: Load theme
 // Q: Other setups
+
+/**
+ * @package e107
+ */
+
 
 //
 // A: Honest global beginning point for processing time
@@ -694,7 +699,13 @@ if($pref['sitelanguage'] != e_LANGUAGE && varset($pref['multilanguage']) && !$pr
 }
 else
 {
+	/**
+	 * @ignore
+	 */
 	define('e_LAN', false);
+	/**
+	 * @ignore
+	 */
 	define('e_LANQRY', false);
 }
 $sql->db_Mark_Time('(Start: Pref/multilang done)');
@@ -844,6 +855,9 @@ $sql->db_Mark_Time('Start: Misc Setup');
 //------------------------------------------------------------------------------------------------------------------------------------//
 if (!class_exists('e107table', false))
 {
+	/**
+	 *	@package e107
+	 */
 	class e107table
 	{
 
@@ -1090,6 +1104,9 @@ if(!defined("THEME_LAYOUT"))
 	else // default layout.
 	{
     	$deflayout = (!isset($user_pref['sitetheme_deflayout'])) ? varset($pref['sitetheme_deflayout']) : $user_pref['sitetheme_deflayout'];
+		/**
+		 * @ignore
+		 */
 		define("THEME_LAYOUT",$deflayout);  // default layout.
 	}
 
@@ -1156,7 +1173,10 @@ if ($pref['antiflood1'] == 1)
 }
 else
 {
-  define('FLOODPROTECT', FALSE);
+	/**
+	 * @ignore
+	 */
+	define('FLOODPROTECT', FALSE);
 }
 
 $layout = isset($layout) ? $layout : '_default';
@@ -1185,6 +1205,9 @@ if(isset($_SERVER['HTTP_REFERER']))
 }
 else
 {
+	/**
+	 * @ignore
+	 */
 	define('e_REFERER_SELF', FALSE);
 }
 
@@ -1508,6 +1531,10 @@ function getcachedvars($id)
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+/**
+ * @package e107
+ */
 class floodprotect
 {
 	function flood($table, $orderfield)
@@ -1933,6 +1960,9 @@ function force_userupdate($currentUser)
 
 
 
+/**
+ * @package e107
+ */
 class error_handler
 {
 

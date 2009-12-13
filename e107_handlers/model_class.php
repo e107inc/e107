@@ -9,9 +9,9 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.48 $
- * $Date: 2009-12-10 22:46:45 $
- * $Author: secretr $
+ * $Revision: 1.49 $
+ * $Date: 2009-12-13 21:52:32 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -1582,7 +1582,7 @@ class e_admin_model extends e_model
 	 * @param string $message
 	 * @param string $field_title [optional]
 	 * @param integer $error_code [optional]
-	 * @return 
+	 * @return object
 	 */
 	public function addValidationError($message, $field_title = '', $error_code = '')
 	{

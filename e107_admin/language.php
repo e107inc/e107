@@ -9,9 +9,9 @@
  * Administration Area - Languages
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/language.php,v $
- * $Revision: 1.27 $
- * $Date: 2009-11-18 01:04:26 $
- * $Author: e107coders $
+ * $Revision: 1.28 $
+ * $Date: 2009-12-13 21:52:31 $
+ * $Author: e107steved $
  *
  */
 require_once ("../class2.php");
@@ -858,7 +858,7 @@ function grab_lans($path, $language, $filter = "")
  * Compare Language File against script and find unused LANs
  * @param object $lanfile
  * @param object $script
- * @return 
+ * @return string|boolean FALSE on error
  */
 function unused($lanfile,$script)
 {

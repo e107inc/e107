@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/file_class.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-12-02 10:03:53 $
- * $Author: e107coders $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-13 21:52:31 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -80,7 +80,7 @@ class e_file
 	 * @param object $fmask [optional]
 	 * @param object $omit [optional]
 	 * @param object $recurse_level [optional]
-	 * @return 
+	 * @return array of file names/paths
 	 */
 	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0)
 	{

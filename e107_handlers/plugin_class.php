@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/plugin_class.php,v $
- * $Revision: 1.119 $
- * $Date: 2009-12-11 21:17:09 $
+ * $Revision: 1.120 $
+ * $Date: 2009-12-13 21:52:32 $
  * $Author: e107steved $
  *
 */
@@ -902,7 +902,7 @@ class e107plugin
 	 * 			'delete_xfields' - to delete extended fields
 	 * 			'delete_ipool' - to delete icon pool entry
 	 * 			+ any defined in <pluginname>_setup.php in the uninstall_options() method.
-	 * @return
+	 * @return TBD
 	 */
 	function install_plugin_xml($id, $function='', $options = FALSE)
 	{
@@ -1217,7 +1217,7 @@ class e107plugin
 	 * Process XML Tag <LanguageFiles>
 	 * @param object $function
 	 * @param object $tag
-	 * @return
+	 * @return none
 	 */
 	function XmlLanguageFiles($function,$tag,$when='')
 	{
@@ -1261,7 +1261,7 @@ class e107plugin
 	 * Process XML Tag <siteLinks>
 	 * @param string $function install|upgrade|refresh|uninstall
 	 * @param array $array
-	 * @return
+	 * @return none
 	 */
 	function XmlSiteLinks($function,$array)
 	{
@@ -1307,7 +1307,7 @@ class e107plugin
 
 	/**
 	 * Process XML Tag <adminLinks>
-	 * @return
+	 * @return none
 	 */
 	function XmlAdminLinks($function,$tag)
 	{
@@ -1329,7 +1329,7 @@ class e107plugin
 	 * Process XML Tag <userClasses>
 	 * @param string $function install|upgrade|refresh|uninstall
 	 * @param array $array
-	 * @return
+	 * @return none
 	 */
 	function XmlUserClasses($function,$array)
 	{
@@ -1386,7 +1386,7 @@ class e107plugin
 	 * Process XML Tag <extendedFields>
 	 * @param string $function install|upgrade|refresh|uninstall
 	 * @param array $array
-	 * @return
+	 * @return none
 	 */
 	function XmlExtendedFields($function,$array)
 	{
@@ -1442,7 +1442,7 @@ class e107plugin
 	 * @param object $mode 'core' or the folder name of the plugin.
 	 * @param object $function install|uninstall|upgrade|refresh
 	 * @param object $prefArray XML array of prefs. eg. mainPref() or pluginPref();
-	 * @return
+	 * @return none
 	 */
 	function XmlPrefs($mode='core',$function,$prefArray)
 	{
@@ -1517,7 +1517,7 @@ class e107plugin
 	 * @param object $path [unused]
 	 * @param object $what install|uninstall|upgrade
 	 * @param object $when pre|post
-	 * @return
+	 * @return boolean FALSE
 	 */
 	function execute_function($path = '', $what='', $when='')
 	{

@@ -11,9 +11,9 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_handlers/redirection_class.php,v $
- |     $Revision: 1.8 $
- |     $Date: 2009-11-22 14:10:07 $
- |     $Author: e107coders $
+ |     $Revision: 1.9 $
+ |     $Date: 2009-12-13 21:52:32 $
+ |     $Author: e107steved $
  +----------------------------------------------------------------------------+
  */
 
@@ -59,7 +59,7 @@ class redirection
 	
 	/**
 	 * Store the current URL in a cookie for 5 minutes so we can return to it after being logged out. 
-	 * @return 
+	 * @return none
 	 */
 	function setPreviousUrl()
 	{
@@ -84,7 +84,7 @@ class redirection
 	
 	/**
 	 * Return the URL the admin was on, prior to being logged-out. 
-	 * @return 
+	 * @return string 
 	 */
 	public function getPreviousUrl()
 	{		

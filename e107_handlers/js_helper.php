@@ -9,9 +9,9 @@
  * Javascript Helper
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_helper.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.10 $
+ * $Date: 2009-12-13 21:52:31 $
+ * $Author: e107steved $
  *
 */
 
@@ -339,7 +339,7 @@ class e_jshelper
      * @param integer $errcode
      * @param string $errmessage
      * @param string $errextended
-     * @access public static
+     * @access public 
      */
     function sendAjaxError($errcode, $errmessage, $errextended = '')
     {

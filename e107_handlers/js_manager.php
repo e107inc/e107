@@ -7,9 +7,9 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/js_manager.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-10 22:46:45 $
- * $Author: secretr $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-13 21:52:31 $
+ * $Author: e107steved $
  * 
 */
 global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
@@ -431,7 +431,7 @@ class e_jsmanager
 	 * @param string $type core|plugin - jslib.php, header|footer|header_inline|footer_inline - runtime
 	 * @param string|array $file_path
 	 * @param string|integer $runtime_location admin|front|all (jslib), 0-5 (runtime inclusion)
-	 * @return 
+	 * @return object $this
 	 */
 	protected function addJs($type, $file_path, $runtime_location = '')
 	{

@@ -9,9 +9,9 @@
  * Administration - Database Utilities
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/db.php,v $
- * $Revision: 1.47 $
- * $Date: 2009-11-18 01:04:25 $
- * $Author: e107coders $
+ * $Revision: 1.48 $
+ * $Date: 2009-12-13 21:52:30 $
+ * $Author: e107steved $
  *
 */
 
@@ -363,7 +363,7 @@ class system_tools
 
 	/**
 	 * Delete selected preferences. 
-	 * @return 
+	 * @return none
 	 */	
 	private function del_pref_val($mode='core')
 	{
@@ -423,7 +423,7 @@ class system_tools
 
 	/**
 	 * Render Options
-	 * @return 
+	 * @return none
 	 */	
 	private function render_options()
 	{
@@ -469,7 +469,7 @@ class system_tools
 
 	/**
 	 * Import XML Form
-	 * @return 
+	 * @return none
 	 */	
 	private function importForm()
 	{
@@ -518,7 +518,7 @@ class system_tools
 
 	/**
 	 * Export XML Dump
-	 * @return 
+	 * @return  none
 	 */	
 	private function exportXmlForm()
 	{
@@ -638,7 +638,7 @@ class system_tools
 
 	/**
 	 * Import XML Dump
-	 * @return 
+	 * @return none
 	 */
 	private function importXmlFile()
 	{
@@ -657,7 +657,7 @@ class system_tools
 	
 	/**
 	 * Optimize SQL
-	 * @return 
+	 * @return none
 	 */
 	private function optimizesql($mySQLdefaultdb)
 	{
@@ -674,7 +674,7 @@ class system_tools
 	
 	/**
 	 * Preferences Editor
-	 * @return 
+	 * @return string text for display
 	 */
 	private function pref_editor($type='core')
 	{
@@ -761,7 +761,7 @@ class system_tools
 	
 	/**
 	 * Preferences Editor
-	 * @return 
+	 * @return none
 	 */	
 	private function scan_override()
 	{
@@ -790,7 +790,7 @@ class system_tools
 
 	/**
 	 * Plugin Folder Scanner
-	 * @return 
+	 * @return none
 	 */		
 	private function plugin_viewscan()
 	{
@@ -931,7 +931,7 @@ function db_adminmenu()
  * @param object $prefs
  * @param object $tables
  * @param object $debug [optional]
- * @return 
+ * @return none
  */
 function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 {

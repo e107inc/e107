@@ -7,8 +7,8 @@
  * GNU General Public License (http://gnu.org).
  * 
  * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-12-01 20:05:53 $
+ * $Revision: 1.15 $
+ * $Date: 2009-12-13 21:52:31 $
  * $Author: e107steved $
  * 
 */
@@ -70,7 +70,7 @@ class convert
 	 * 
 	 * @param object $date_string
 	 * @param object $mask [optional]
-	 * @return 
+	 * @return integer
 	 */
 	function toTime($date_string, $mask = 'input')
 	{
