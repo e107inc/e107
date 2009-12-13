@@ -1,7 +1,7 @@
 <?php
 /*
 * Copyright (c) e107 Inc 2009 - e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id: e_shortcode.php,v 1.11 2009-12-12 16:35:45 secretr Exp $
+* $Id: e_shortcode.php,v 1.12 2009-12-13 10:28:15 secretr Exp $
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
@@ -104,14 +104,14 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 		$tmpl = $this->getFboxTemplate($ctemplate);
 		if($category->get('fb_category_random'))
 		{
-			$parm['loop'] = 0;
+			unset($parm['loop']);
 		}
 		
 		$base = vartrue($parm['base'], 'nav').'_';
 		$tree_ids = array_keys($tree->getTree()); //all available item ids
 		
 		$ret = $category->toHTML(varset($tmpl[$base.'start']), true); 
-		$cols = $category->getParam('cols');
+		$cols = $category->getParam('cols', 1);
 		
 		if(isset($parm['loop']) && $tree->getTotal() > 0 && vartrue($tmpl[$base.'item']))
 		{
@@ -124,6 +124,10 @@ class featurebox_shortcodes // must match the plugin's folder name. ie. [PLUGIN_
 			elseif(isset($parm['uselimit'])) 
 			{
 				$total = $category->sc_featurebox_category_limit() ? intval($category->sc_featurebox_category_limit()) : $tree->getTotal();
+				if($total > $tree->getTotal())
+				{
+					$total = $tree->getTotal();
+				}
 			}
 			// default - number based on all / limit (usefull for ajax navigation)
 			else 

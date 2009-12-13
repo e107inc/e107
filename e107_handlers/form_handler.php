@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.97 $
- * $Date: 2009-12-12 16:40:40 $
+ * $Revision: 1.98 $
+ * $Date: 2009-12-13 10:28:15 $
  * $Author: secretr $
  *
 */
@@ -1359,10 +1359,10 @@ class e_form
 				$info = array();
 				if($layouts[1])
 				{
-					foreach ($layouts[1] as $key => $info_array) 
+					foreach ($layouts[1] as $k => $info_array) 
 					{
 						if(isset($info_array['description']))
-						$info[$key] = defset($info_array['description'], $info_array['description']);
+						$info[$k] = defset($info_array['description'], $info_array['description']);
 					}
 				}
 

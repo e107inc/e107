@@ -9,8 +9,8 @@
 * Featurebox administration
 *
 * $Source: /cvs_backup/e107_0.8/e107_plugins/featurebox/admin_config.php,v $
-* $Revision: 1.14 $
-* $Date: 2009-12-12 16:40:41 $
+* $Revision: 1.15 $
+* $Date: 2009-12-13 10:28:15 $
 * $Author: secretr $
 *
 */
@@ -143,7 +143,7 @@ class fb_category_ui extends e_admin_ui
 	{
 		if($this->getModel()->getSqlErrorNumber() == 1062)
 		{
-			$templates = $this->getFieldAttr('fb_category_template', 'writeParms', array());
+			$templates = e107::getLayouts('featurebox', 'featurebox_category', 'front', '', true, false);
 			$msg = e107::getMessage();
 			$msg->error('Layout <strong>'.vartrue($templates[$new_data['fb_category_template']], 'n/a').'</strong> is in use by another category. Layout should be unique per category. ');
 			$msg->error($mod == 'create' ? LAN_CREATED_FAILED : LAN_UPDATED_FAILED);
