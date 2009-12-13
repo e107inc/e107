@@ -9,8 +9,8 @@
  * PM Plugin - administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-11 22:33:15 $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-13 12:32:28 $
  * $Author: e107steved $
  */
 
@@ -115,6 +115,10 @@ if (isset($_POST['pm_maint_execute']))
 	{
 		$maintOpts['expired'] = 1;
 	}
+	if (vartrue($_POST['pm_maint_attach']))
+	{
+		$maintOpts['attach'] = 1;
+	}
 	$result = doMaint($maintOpts, $pm_prefs);
 	if (is_array($result))
 	{
@@ -162,9 +166,10 @@ if(isset($_POST['addlimit']))
 
 if(isset($_POST['updatelimits']))
 {
-	if($pref['pm_limits'] != $_POST['pm_limits'])
+	$limitVal = intval($_POST['pm_limits']);
+	if($pref['pm_limits'] != $limitVal)
 	{
-		$pref['pm_limits'] = $_POST['pm_limits'];
+		$pref['pm_limits'] = $limitVal;
 		save_prefs();
 		$emessage->add(ADLAN_PM_8, E_MESSAGE_SUCCESS);
 	}
@@ -509,7 +514,8 @@ function show_maint($pmPrefs)
 	<tr>
 		<td>".ADLAN_PM_65."</td>
 		<td>".yes_no('pm_maint_blocked', '0')."</td>
-	</tr>";
+	</tr>
+	";
 
 	if ($pmPrefs['read_timeout'] || $pmPrefs['unread_timeout'])
 	{
@@ -521,6 +527,10 @@ function show_maint($pmPrefs)
 	}
 
 	$txt .= "
+	<tr>
+		<td>".ADLAN_PM_78."</td>
+		<td>".yes_no('pm_maint_attach', '0')."</td>
+	</tr>
 	<tr>
 		<td colspan='2' style='text-align:center'><input type='submit' class='button' name='pm_maint_execute' value='".ADLAN_PM_61."' /></td>
 	</tr>
@@ -582,6 +592,7 @@ function doMaint($opts, $pmPrefs)
 	$db2 = new db();							// Will usually need a second DB object to avoid over load
 	$start = 0;						// Use to ensure we get different log times
 
+
 	if (isset($opts['sent']))		// Want pm_from = deleted user and pm_read_del = 1
 	{
 		$cnt = 0;
@@ -613,7 +624,7 @@ function doMaint($opts, $pmPrefs)
 				}
 			}
 		}
-		$start = max($start + 1, $time);
+		$start = max($start + 1, time());
 		$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_75);
 	}
 
@@ -623,26 +634,27 @@ function doMaint($opts, $pmPrefs)
 		if ($res = $e107->sql->db_Select_gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL"))
 		{
-			$start = max($start + 1, $time);
+			$start = max($start + 1, time());
 			$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
 		}
 		else
 		{
-			$start = max($start + 1, $time);
+			$start = max($start + 1, time());
 			$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_69);
 		}
 		if ($res = $e107->sql->db_Select_gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL"))
 		{
-			$start = max($start + 1, $time);
+			$start = max($start + 1, time());
 			$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
 		}
 		else
 		{
-			$start = max($start + 1, $time);
+			$start = max($start + 1, time());
 			$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_68);
 		}
 	}
+
 
 	if (isset($opts['expired']))
 	{
@@ -673,14 +685,71 @@ function doMaint($opts, $pmPrefs)
 					}
 				}
 			}
-			$start = max($start + 1, $time);
+			$start = max($start + 1, time());
 			$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_73);
 		}
 		else
 		{
-			$start = max($start + 1, $time);
+			$start = max($start + 1, time());
 			$results[E_MESSAGE_ERROR][$start] = ADLAN_PM_72;
 		}
+	}
+
+
+	if (isset($opts['attach']))
+	{	// Check for orphaned and missing attachments
+		require_once(e_HANDLER.'file_class.php');
+		$fl = new e_file();
+		$missing = array();
+		$orphans = array();
+		$fileArray = $fl->get_files(e_PLUGIN.'pm/attachments');
+		if ($db2->db_Select('private_msg', 'pm_id, pm_attachments', "pm_attachments != ''"))
+		{
+			while ($row = $db2->db_Fetch(MYSQL_ASSOC))
+			{
+				$attachList = explode(chr(0), $row['pm_attachments']);
+				foreach ($attachList as $a)
+				{
+					$found = FALSE;
+					foreach ($fileArray as $k => $fd)
+					{
+						if ($fd['fname'] == $a)
+						{
+							$found = TRUE;
+							unset($fileArray[$k]);
+							break;
+						}
+					}
+					if (!$found)
+					{
+						$missing[] = $row['pm_id'].':'.$a;
+					}
+				}
+			}
+		}
+		// Any files left in $fileArray now are unused
+		if (count($fileArray))
+		{
+			foreach ($fileArray as $k => $fd)
+			{
+				unlink($fd['path'].$fd['fname']);
+				$orphans[] = $fd['fname'];
+			}
+		}
+		$attachMessage = str_replace(array('--ORPHANS--', '--MISSING--'), array(count($orphans), count($missing)), ADLAN_PM_79);
+		if (TRUE)
+		{	// Mostly for testing - probably disable this
+			if (count($orphans))
+			{
+				$attachMessage .= '[!br!]Orphans:[!br!]'.implode('[!br!]', $orphans);
+			}
+			if (count($missing))
+			{
+				$attachMessage .= '[!br!]Missing:[!br!]'.implode('[!br!]', $missing);
+			}
+		}
+		$start = max($start + 1, time());
+		$results[E_MESSAGE_SUCCESS][$start] = $attachMessage;
 	}
 
 
