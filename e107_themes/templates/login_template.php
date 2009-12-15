@@ -1,5 +1,5 @@
 <?php
-// $Id: login_template.php,v 1.11 2009-12-14 19:36:14 e107steved Exp $
+// $Id: login_template.php,v 1.12 2009-12-15 22:12:11 e107steved Exp $
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -43,7 +43,7 @@ if(!isset($LOGIN_TABLE_FOOTER))
 			<div style='width:70%;margin-right:auto;margin-left:auto'>
 				<div style='text-align:center'><br />
 					{LOGIN_TABLE_FOOTER_USERREG}
-					&nbsp;&nbsp;&nbsp;<a href=".e_BASE."'fpw.php'>".LAN_LOGIN_12."</a>
+					&nbsp;&nbsp;&nbsp;<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>
 				</div>
 			</div>
 		</div>
