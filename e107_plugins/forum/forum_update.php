@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-01-09 09:55:14 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2009-12-15 22:21:13 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -34,8 +34,9 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_name = 'Forum'"))
 
 
 $forum_subs = FALSE;
+/*
 $fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum");
-$columns = mysql_num_fields($fields);
+$columns = mysql_num_fields($fields);		// Bug in PHP5.3 using mysql_num_fields() with mysql_list_fields()
 for ($i = 0; $i < $columns; $i++)
 {
 	if("forum_sub" == mysql_field_name($fields, $i))
@@ -43,6 +44,13 @@ for ($i = 0; $i < $columns; $i++)
 		$forum_subs = TRUE;
 	}
 }
+*/
+
+if ($sql->db_Field('forum', 'forum_sub'))
+{
+	$forum_subs = TRUE;
+}
+
 
 $text = "";
 if(!$forum_subs)

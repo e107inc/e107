@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_update_check.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2009-12-15 22:21:13 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -40,6 +40,14 @@ function update_forum_07($type)
 				return FALSE;
 			}
 		}
+
+
+		// Looking for:
+		//	forum_lastpost_info in table 'forum' - update if absent
+		//	thread_anon in table forum_t - update if absent
+		//	forum_sub in table 'forum' - update if present
+		// Bug in PHP5.3 using mysql_num_fields() with mysql_list_fields() - hence code replaced
+		/*
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum");
 		if(!$fields)
 		{
@@ -48,7 +56,7 @@ function update_forum_07($type)
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++)
 		{
-			if ("forum_lastpost_info" == mysql_field_name($fields, $i))
+			if ("forum_lastpost_info" == mysql_field_name($fields, $i))	
 			{
 				$flist = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum_t");
 				$cols = mysql_num_fields($flist);
@@ -63,6 +71,15 @@ function update_forum_07($type)
 			if("forum_sub" == mysql_field_name($fields, $i))
 			{
 				return TRUE; //not needed
+			}
+		}
+		*/
+
+		if ($sql->db_Field('forum', 'forum_lastpost_info'))
+		{
+			if (!$sql->db_Field('forum_t', 'thread_anon'))
+			{
+				if ($sql->db_Field('forum', 'forum_sub')) return TRUE;		// Return if no update needed
 			}
 		}
 		return FALSE; //needed

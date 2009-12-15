@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2009-12-05 09:48:52 $
+|     $Revision: 1.109 $
+|     $Date: 2009-12-15 22:21:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -656,11 +656,16 @@ class download
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
 		<table class='forumheader3' style='width:95%'><tr>";
+
+/*
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
-		$columns = mysql_num_fields($fields);
+		$columns = mysql_num_fields($fields);			// Bug in PHP5.3 using mysql_num_fields() with mysql_list_fields()
 		for ($i = 0; $i < $columns; $i++) {
 			$fname[] = mysql_field_name($fields, $i);
 		}
+*/
+		$fname = $sql->db_FieldList('download', '', FALSE);
+
         $m = 0;
 		$replacechar = array("download_","_");
 	foreach($fname as $fcol)

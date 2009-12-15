@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.194 $
-|     $Date: 2007-06-11 19:27:34 $
+|     $Revision: 1.195 $
+|     $Date: 2009-12-15 22:21:12 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
@@ -1663,7 +1663,7 @@ function update_603_to_604($type='') {
 		} else {
    		global $mySQLdefaultdb;
 		if (mysql_table_exists("link_category")) {
-			$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."link_category");
+			$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."link_category");		// This won't work with PHP5.3. But noone should be on version 0.603 now!!!!
 			$columns = mysql_num_fields($fields);
 			for ($i = 0; $i < $columns; $i++) {
 				if ("link_category_icon" == mysql_field_name($fields, $i)) {

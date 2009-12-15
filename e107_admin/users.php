@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2009-07-18 15:53:42 $
-|     $Author: marj_nl_fr $
+|     $Revision: 1.101 $
+|     $Date: 2009-12-15 22:21:12 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -68,6 +68,7 @@ if (e_QUERY)
 $from = varset($from, 0);
 $amount = 30;
 
+/*
 
 // ------- Check for Bounces --------------
 $bounce_act = '';
@@ -83,6 +84,7 @@ if ($bounce_act)
 	exit;
 }
 
+*/
 
 
 
@@ -495,6 +497,7 @@ echo "amount= ".$amount."<br />";
 */
 
 
+
 $unverified = $sql -> db_Count("user", "(*)", "WHERE user_ban = 2");
 
 if (!e_QUERY || ($action == "main")) {
@@ -719,6 +722,8 @@ class users
 		$prev[$disp] = $row[$disp];
 	}
 // -------------------------------------------------------------
+
+
 				$qry = (e_QUERY) ?  "?".e_QUERY : "";
 				$text .= "
 					<td style='width:30%;text-align:center' class='forumheader3'>
@@ -817,20 +822,29 @@ class users
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div  id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
 		<table class='forumheader3' style='width:95%'><tr>";
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
-		$columns = mysql_num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
+/*
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");		// Returns a resource. Deprecated
+		$columns = mysql_num_fields($fields);			// Bug in PHP5.3 using mysql_num_fields() with mysql_list_fields()
+
+		for ($i = 0; $i < $columns; $i++) 
+		{
 			$fname[] = mysql_field_name($fields, $i);
 		}
+*/
+		$fname = $sql->db_FieldList('user', '', FALSE);		// Get list of field names
 
 		// include extended fields in the list.
-        $sql -> db_Select("user_extended_struct");
-            while($row = $sql-> db_Fetch()){
-            $fname[] = "user_".$row['user_extended_struct_name'];
+        $sql -> db_Select('user_extended_struct');
+
+
+		while($row = $sql-> db_Fetch())
+		{
+			$fname[] = "user_".$row['user_extended_struct_name'];
 		}
         $m = 0;
-		foreach($fname as $fcol){
-        $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
+		foreach($fname as $fcol)
+		{
+			$checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
 			$text .= "<td style='text-align:left; padding:0px'>";
 			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace("user_","",$fcol) . "</td>\n";
 			$m++;
@@ -850,7 +864,6 @@ class users
 		$total_cap = (isset($_POST['searchquery'])) ? $user_total : $users;
 		$caption = USRLAN_77 ."&nbsp;&nbsp;   (total: $total_cap)";
 		$ns->tablerender($caption, $text);
-
 	}
 
 
