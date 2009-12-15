@@ -9,9 +9,9 @@
  * Core SQL
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/sql/core_sql.php,v $
- * $Revision: 1.44 $
- * $Date: 2009-12-10 21:26:53 $
- * $Author: e107steved $
+ * $Revision: 1.45 $
+ * $Date: 2009-12-15 11:51:02 $
+ * $Author: e107coders $
 */
 
 header("location:../index.php");
@@ -148,7 +148,8 @@ CREATE TABLE core_media_cat (
   media_cat_title text NOT NULL,
   media_cat_diz text NOT NULL,
   media_cat_class int(3) unsigned default '0',
-  PRIMARY KEY  (media_cat_id)
+  PRIMARY KEY  (media_cat_id),
+  UNIQUE KEY media_cat_nick (media_cat_nick)
 ) TYPE=MyISAM;
 
 
