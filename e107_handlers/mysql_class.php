@@ -9,9 +9,9 @@
  * mySQL Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/mysql_class.php,v $
- * $Revision: 1.69 $
- * $Date: 2009-12-10 22:46:46 $
- * $Author: secretr $
+ * $Revision: 1.70 $
+ * $Date: 2009-12-15 22:34:04 $
+ * $Author: e107steved $
 */
 
 if(defined('MYSQL_LIGHT'))
@@ -51,8 +51,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  *
  * @package e107
  * @category e107_handlers
- * @version $Revision: 1.69 $
- * @author $Author: secretr $
+ * @version $Revision: 1.70 $
+ * @author $Author: e107steved $
  *
  */
 class e_db_mysql {
@@ -922,11 +922,13 @@ class e_db_mysql {
 	* @desc Enter description here...
 	* @access private
 	*/
+	/* Function not used
 	function db_Fieldname($offset)
 	{
 		$result = @mysql_field_name($this->mySQLresult, $offset);
 		return $result;
 	}
+	*/
 
 
 	/**
@@ -934,11 +936,13 @@ class e_db_mysql {
 	* @desc Enter description here...
 	* @access private
 	*/
+	/*
 	function db_Field_info()
 	{
 		$result = @mysql_fetch_field($this->mySQLresult);
 		return $result;
 	}
+	*/
 
 
 	/**
@@ -946,11 +950,14 @@ class e_db_mysql {
 	* @desc Enter description here...
 	* @access private
 	*/
+	/* Function not used
 	function db_Num_fields()
 	{
 		$result = @mysql_num_fields($this->mySQLresult);
 		return $result;
 	}
+	*/
+
 
 	/**
 	* Check for the existence of a matching language table when multi-language tables are active.
@@ -1110,8 +1117,64 @@ class e_db_mysql {
 	}
 
 
-	// Determines if a plugin field (and key) exist. OR if fieldid is numeric - return the field name in that position.
-	// If $retinfo is true, returns complete array of field data; FALSE if not found
+
+	/**
+	 *	Return a list of the field names in a table.
+	 *
+	 *	@param string $table - table name (no prefix)
+	 *	@param string $prefix - table prefix to apply. If empty, MPREFIX is used.
+	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
+	 *	@return array|boolean - FALSE on error, field list array on success
+	 */
+	function db_FieldList($table, $prefix = '', $retinfo = FALSE)
+	{
+		if(!$this->mySQLdefaultdb)
+		{
+			global $mySQLdefaultdb;
+			$this->mySQLdefaultdb = $mySQLdefaultdb;
+		}
+
+		if(!$this->mySQLaccess)
+		{
+			global $db_ConnectionID;
+			$this->mySQLaccess = $db_ConnectionID;
+		}
+
+		if ($prefix == '') $prefix = $this->mySQLPrefix;
+
+		if (FALSE === ($result = mysql_query('SHOW COLUMNS FROM '.$prefix.$table,$this->mySQLaccess)))
+		{
+			return FALSE;		// Error return
+		}
+		$ret = array();
+        if (mysql_num_rows($result) > 0)
+		{
+			while ($row = mysql_fetch_assoc($result))
+			{
+				if ($retinfo) 
+				{
+					$ret[$row['Field']] = $row['Field'];
+				}
+				else
+				{
+					$ret[] = $row['Field']; 
+				}
+			}
+		}
+		return $ret;
+	}
+
+
+
+	/**
+	 *	Determines if a plugin field (and key) exist. OR if fieldid is numeric - return the field name in that position.
+	 *
+	 *	@param string $table - table name (no prefix)
+	 *	@param string $fieldid - Numeric offset or field/key name
+	 *	@param string $key - PRIMARY|INDEX|UNIQUE - type of key when searching for key name
+	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
+	 *	@return array|boolean - FALSE on error, field information on success
+	 */
     function db_Field($table,$fieldid="",$key="", $retinfo = FALSE)
 	{
 		if(!$this->mySQLdefaultdb)
