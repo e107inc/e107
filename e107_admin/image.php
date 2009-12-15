@@ -9,9 +9,9 @@
  * Image Administration Area
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/image.php,v $
- * $Revision: 1.42 $
- * $Date: 2009-12-13 21:52:30 $
- * $Author: e107steved $
+ * $Revision: 1.43 $
+ * $Date: 2009-12-15 11:51:01 $
+ * $Author: e107coders $
  *
 */
 require_once("../class2.php");
@@ -182,7 +182,7 @@ class media_form_ui extends e_admin_form_ui
 					
 		if($mode == 'read')
 		{
-			return $this->cats[$curVal].' (custom!)';
+			return $this->cats[$curVal];
 		}
 		
 		if($mode == 'batch') // Custom Batch List for release_type

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2009-12-15 11:05:16 $
+|     $Revision: 1.72 $
+|     $Date: 2009-12-15 11:51:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -828,71 +828,28 @@ function update_706_to_800($type='')
 	
 	
 	//-- Media-manger import -------------------------------------------------- 
-	
-	$fl = e107::getFile();
-	$fl->setFileInfo('all');
-	$newspost_img = $fl->get_files(e_IMAGE.'newspost_images','','',2);
-	$custom_img = $fl->get_files(e_IMAGE.'custom','','',2);
-	$mes = e107::getMessage();
-	
-	foreach($newspost_img as $f)
+	$count = $sql->db_Select('core_media_cat');
+	if($count < 5)
 	{
-		$insert = array(
-		'media_caption'		=> $f['fname'], 
-		'media_description'	=>'', 
-		'media_category'	=>'news', 
-		'media_datestamp'	=> $f['modified'], 
-		'media_url'	=> '{e_IMAGE}newspost_images/'.$f['fname'], 
-		'media_userclass'	=> 0, 
-		'media_name'	=> $f['fname'], 
-		'media_author'	=> USERID, 
-		'media_size'	=> $f['fsize'], 
-		'media_dimensions'	=> $f['img-width']." x ".$f['img-height'], 
-		'media_usedby'	=> '', 
-		'media_tags'	=> '', 
-		'media_type'	=> $f['mime']
-		);
+		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_nick`, `media_cat_title`, `media_cat_diz`, `media_cat_class`) VALUES
+		(1, '_common', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253),
+		(2, 'news', 'News', 'Will be available in the news area. ', 253),
+		(3, 'page', 'Custom Pages', 'Will be available in the custom pages area of admin. ', 253),
+		(4, 'download', 'Download Images', '', 253),
+		(5, 'downloadthumb', 'Download Thumbnails', '', 253);";
 		
-		if(!$sql->db_Select('core_media','media_url',"media_url = '{e_IMAGE}newspost_images/".$f['fname']."' LIMIT 1"))
-		{
-			if($sql->db_Insert("core_media",$insert))
-			{
-				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
-			}
-		}
+		mysql_query($query);
 	}
 	
-	foreach($custom_img as $f)
-	{
-		$insert = array(
-		'media_caption'		=> $f['fname'], 
-		'media_description'	=> '', 
-		'media_category'	=> 'page', 
-		'media_datestamp'	=> $f['modified'], 
-		'media_url'	=> '{e_IMAGE}custom/'.$f['fname'], 
-		'media_userclass'	=> 0, 
-		'media_name'	=> $f['fname'], 
-		'media_author'	=> USERID, 
-		'media_size'	=> $f['fsize'], 
-		'media_dimensions'	=> $f['img-width']." x ".$f['img-height'], 
-		'media_usedby'	=> '', 
-		'media_tags'	=> '', 
-		'media_type'	=> $f['mime']
-		);
+	core_media_import('news',e_IMAGE.'newspost_images');
+	core_media_import('page',e_IMAGE.'custom');
+	core_media_import('download',e_FILE.'downloadimages');
+	core_media_import('downloadthumb',e_IMAGE.'downloadthumbs');
 		
-		if(!$sql->db_Select('core_media','media_url',"media_url = '{e_IMAGE}custom/".$f['fname']."' LIMIT 1"))
-		{
-			if($sql->db_Insert("core_media",$insert))
-			{
-				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
-			}
-		}
-	}
+	// Any others should be done manually via Media Manager batch-import. 
 		
 	// ------------------------------------------------------------------
 	
-	
-
 
 	if ($do_save)
 	{
@@ -908,6 +865,49 @@ function update_706_to_800($type='')
 	return $just_check;
 }
 
+function core_media_import($cat,$epath)
+{
+	if(!vartrue($cat)){ return;}
+	
+	$fl = e107::getFile();
+	$tp = e107::getParser();
+	$sql = e107::getDb();
+	$mes = e107::getMessage();
+	
+	$fl->setFileInfo('all');
+	$img_array = $fl->get_files($epath,'','',2);
+	
+	if(!count($img_array)){ return;}
+		
+	foreach($img_array as $f)
+	{
+		$fullpath = $tp->createConstants($f['path'].$f['fname'],1);
+		
+		$insert = array(
+		'media_caption'		=> $f['fname'], 
+		'media_description'	=> '', 
+		'media_category'	=> $cat, 
+		'media_datestamp'	=> $f['modified'], 
+		'media_url'	=> $fullpath, 
+		'media_userclass'	=> 0, 
+		'media_name'	=> $f['fname'], 
+		'media_author'	=> USERID, 
+		'media_size'	=> $f['fsize'], 
+		'media_dimensions'	=> $f['img-width']." x ".$f['img-height'], 
+		'media_usedby'	=> '', 
+		'media_tags'	=> '', 
+		'media_type'	=> $f['mime']
+		);
+
+		if(!$sql->db_Select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
+		{
+			if($sql->db_Insert("core_media",$insert))
+			{
+				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
+			}
+		}
+	}	
+}
 
 
 function update_70x_to_706($type='')
