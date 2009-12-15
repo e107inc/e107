@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_admin/update_routines.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2009-12-11 20:12:44 $
-|     $Author: e107steved $
+|     $Revision: 1.71 $
+|     $Date: 2009-12-15 11:05:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -853,10 +853,13 @@ function update_706_to_800($type='')
 		'media_type'	=> $f['mime']
 		);
 		
-		if($sql->db_Insert("core_media",$insert))
+		if(!$sql->db_Select('core_media','media_url',"media_url = '{e_IMAGE}newspost_images/".$f['fname']."' LIMIT 1"))
 		{
-			$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
-		}		
+			if($sql->db_Insert("core_media",$insert))
+			{
+				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
+			}
+		}
 	}
 	
 	foreach($custom_img as $f)
@@ -877,10 +880,13 @@ function update_706_to_800($type='')
 		'media_type'	=> $f['mime']
 		);
 		
-		if($sql->db_Insert("core_media",$insert))
+		if(!$sql->db_Select('core_media','media_url',"media_url = '{e_IMAGE}custom/".$f['fname']."' LIMIT 1"))
 		{
-			$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
-		}		
+			if($sql->db_Insert("core_media",$insert))
+			{
+				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
+			}
+		}
 	}
 		
 	// ------------------------------------------------------------------

@@ -9,9 +9,9 @@
  * e107 Main
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/e107_class.php,v $
- * $Revision: 1.95 $
- * $Date: 2009-12-13 21:52:31 $
- * $Author: e107steved $
+ * $Revision: 1.96 $
+ * $Date: 2009-12-15 11:05:17 $
+ * $Author: e107coders $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -233,9 +233,34 @@ class e107
 		{
 			// Do some security checks/cleanup, prepare the environment
 			$this->prepare_request();
+			
+			// Set default paths if missing from e107_config.php
+			if(!vartrue($e107_paths['MEDIA_DIRECTORY']))
+			{
+				$e107_paths['MEDIA_DIRECTORY'] = 'e107_media/';		
+			}
+
+			if(!vartrue($e107_paths['DOWNLOADS_DIRECTORY']))
+			{
+				$e107_paths['DOWNLOADS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'files/';
+			}
+			
+			if(!vartrue($e107_paths['UPLOADS_DIRECTORY']))
+			{
+				$e107_paths['UPLOADS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'temp/';
+			}
+			
+			if(!vartrue($e107_paths['CACHE_DIRECTORY']))
+			{
+				$e107_paths['CACHE_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'cache/';
+			}			
+
+			if(!vartrue($e107_paths['LOGS_DIRECTORY']))
+			{
+				$e107_paths['LOGS_DIRECTORY'] = $e107_paths['MEDIA_DIRECTORY'].'logs/';
+			}	
 
 			// folder info
-			
 			$this->e107_dirs = $e107_paths;
 
 			// mysql connection info
@@ -1618,11 +1643,7 @@ class e107
 	 */
 	public function set_paths()
 	{
-		global $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY,
-		$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $CACHE_DIRECTORY,
-		$UPLOADS_DIRECTORY,$_E107, $MEDIA_DIRECTORY;
-
-	//	global $NEWSIMAGES_DIRECTORY, $CUSTIMAGES_DIRECTORY;
+		global $_E107;
 
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
@@ -1681,31 +1702,30 @@ class e107
 //
 // HTTP relative paths
 //
-			if(!varset($MEDIA_DIRECTORY)) // BC/Upgrade Fix.
-			{
-				$MEDIA_DIRECTORY = 'e107_media/';
-			}
-
-			define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
-			define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
-			define("e_THEME", e_BASE.$THEMES_DIRECTORY);
-			define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
-			define("e_FILE", e_BASE.$FILES_DIRECTORY);
-			define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
-			define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
-			define("e_DOCS", e_BASE.$HELP_DIRECTORY);
-			define("e_MEDIA", e_BASE.$MEDIA_DIRECTORY);
+			define("e_ADMIN", e_BASE.$this->e107_dirs['ADMIN_DIRECTORY']);
+			define("e_IMAGE", e_BASE.$this->e107_dirs['IMAGES_DIRECTORY']);
+			define("e_THEME", e_BASE.$this->e107_dirs['THEMES_DIRECTORY']);
+			define("e_PLUGIN", e_BASE.$this->e107_dirs['PLUGINS_DIRECTORY']);
+			define("e_FILE", e_BASE.$this->e107_dirs['FILES_DIRECTORY']);
+			define("e_HANDLER", e_BASE.$this->e107_dirs['HANDLERS_DIRECTORY']);
+			define("e_LANGUAGEDIR", e_BASE.$this->e107_dirs['LANGUAGES_DIRECTORY']);
+			define("e_DOCS", e_BASE.$this->e107_dirs['HELP_DIRECTORY']);
+			
+			define("e_MEDIA", e_BASE.$this->e107_dirs['MEDIA_DIRECTORY']);
+			define("e_CACHE", e_BASE.$this->e107_dirs['CACHE_DIRECTORY']);
+			define("e_LOGS", e_BASE,$this->e107_dirs['LOGS_DIRECTORY']);
+			
 //
 // HTTP absolute paths
 //
-			define("e_ADMIN_ABS", e_HTTP.$ADMIN_DIRECTORY);
-			define("e_IMAGE_ABS", e_HTTP.$IMAGES_DIRECTORY);
-			define("e_THEME_ABS", e_HTTP.$THEMES_DIRECTORY);
-			define("e_PLUGIN_ABS", e_HTTP.$PLUGINS_DIRECTORY);
-			define("e_FILE_ABS", e_HTTP.$FILES_DIRECTORY);
-			define("e_HANDLER_ABS", e_HTTP.$HANDLERS_DIRECTORY);
-			define("e_LANGUAGEDIR_ABS", e_HTTP.$LANGUAGES_DIRECTORY);
-			define("e_MEDIA_ABS", e_HTTP.$MEDIA_DIRECTORY);
+			define("e_ADMIN_ABS", e_HTTP.$this->e107_dirs['ADMIN_DIRECTORY']);
+			define("e_IMAGE_ABS", e_HTTP.$this->e107_dirs['IMAGES_DIRECTORY']);
+			define("e_THEME_ABS", e_HTTP.$this->e107_dirs['THEMES_DIRECTORY']);
+			define("e_PLUGIN_ABS", e_HTTP.$this->e107_dirs['PLUGINS_DIRECTORY']);
+			define("e_FILE_ABS", e_HTTP.$this->e107_dirs['FILES_DIRECTORY']);
+			define("e_HANDLER_ABS", e_HTTP.$this->e107_dirs['HANDLERS_DIRECTORY']);
+			define("e_LANGUAGEDIR_ABS", e_HTTP.$this->e107_dirs['LANGUAGES_DIRECTORY']);
+			define("e_MEDIA_ABS", e_HTTP.$this->e107_dirs['MEDIA_DIRECTORY']);
 
 			if(isset($_SERVER['DOCUMENT_ROOT']))
 			{
@@ -1716,38 +1736,11 @@ class e107
 			  	define("e_DOCROOT", false);
 			}
 
-			define("e_DOCS_ABS", e_HTTP.$HELP_DIRECTORY);
+			define("e_DOCS_ABS", e_HTTP.$this->e107_dirs['HELP_DIRECTORY']);
 
-			if($CACHE_DIRECTORY)
-			{
-            	define("e_CACHE", e_BASE.$CACHE_DIRECTORY);
-			}
-			else
-			{
- 				define("e_CACHE", e_MEDIA."cache/");
-			}
-/*
-
-			if($NEWSIMAGES_DIRECTORY)
-			{
-            	define("e_NEWSIMAGE", e_BASE.$NEWSIMAGES_DIRECTORY);
-				define("e_NEWSIMAGE_ABS", e_HTTP.$NEWSIMAGES_DIRECTORY);
-			}
-			else
-			{
-            	define("e_NEWSIMAGE", e_IMAGE."newspost_images/");
-				define("e_NEWSIMAGE_ABS", e_HTTP.$IMAGES_DIRECTORY."newspost_images/");
-			}
-
-			if($CUSTIMAGES_DIRECTORY)
-			{
-            	define("e_CUSTIMAGE", e_BASE.$CUSTIMAGES_DIRECTORY);
-			}
-			else
-			{
-            	define("e_CUSTIMAGE", e_IMAGE."custom/");
-			}
-*/
+			$DOWNLOADS_DIRECTORY = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
+			$UPLOADS_DIRECTORY = $this->e107_dirs['UPLOADS_DIRECTORY'];
+			
 			if ($DOWNLOADS_DIRECTORY{0} == "/")
 			{
 				define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
@@ -1755,11 +1748,6 @@ class e107
 			else
 			{
 				define("e_DOWNLOAD", e_BASE.$DOWNLOADS_DIRECTORY);
-			}
-
-			if(!$UPLOADS_DIRECTORY)
-			{
-            	$UPLOADS_DIRECTORY = $FILES_DIRECTORY."public/";
 			}
 
 			if ($UPLOADS_DIRECTORY{0} == "/")
