@@ -9,9 +9,9 @@
 * General purpose file
 *
 * $Source: /cvs_backup/e107_0.8/class2.php,v $
-* $Revision: 1.168 $
-* $Date: 2009-12-13 21:52:29 $
-* $Author: e107steved $
+* $Revision: 1.169 $
+* $Date: 2009-12-15 11:05:16 $
+* $Author: e107coders $
 *
 */
 //
@@ -216,7 +216,7 @@ $tmp = realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY);
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
 
-$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY');
+$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY');
 $sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 $e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), $sql_info);
 
