@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_template.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-12-10 20:40:39 $
+ * $Revision: 1.7 $
+ * $Date: 2009-12-16 20:23:37 $
  * $Author: e107steved $
  */
 
@@ -18,8 +18,8 @@ if (!defined('e107_INIT')) { exit; }
 
 global $sc_style;
 
-define("PM_READ_ICON", "<img src='".e_PLUGIN_ABS."/pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
-define("PM_UNREAD_ICON", "<img src='".e_PLUGIN_ABS."/pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
+define('PM_READ_ICON', "<img src='".e_PLUGIN_ABS."/pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
+define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."/pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
 
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 
@@ -29,26 +29,26 @@ $sc_style['PM_ATTACHMENTS']['post'] = "</div>";
 $sc_style['PM_NEXTPREV']['pre'] = "<tr><td class='forumheader' colspan='6' style='text-align:left'> ".LAN_PM_59;
 $sc_style['PM_NEXTPREV']['post'] = "</td></tr>";
 
-$sc_style['EMOTES']['pre'] = "
+$sc_style['PM_EMOTES']['pre'] = "
 <tr>
 	<td class='forumheader3'>".LAN_PM_7.": </td>
 	<td class='forumheader3'>
 ";
-$sc_style['EMOTES']['post'] = "</td></tr>";
+$sc_style['PM_EMOTES']['post'] = "</td></tr>";
 
-$sc_style['ATTACHMENT']['pre'] = "
+$sc_style['PM_ATTACHMENT']['pre'] = "
 <tr>
 	<td class='forumheader3'>".LAN_PM_8.": </td>
 	<td class='forumheader3'>
 ";
-$sc_style['ATTACHMENT']['post'] = "</td></tr>";
+$sc_style['PM_ATTACHMENT']['post'] = "</td></tr>";
 
-$sc_style['RECEIPT']['pre'] = "
+$sc_style['PM_RECEIPT']['pre'] = "
 <tr>
 	<td class='forumheader3'>".LAN_PM_9.": </td>
 	<td class='forumheader3'>
 ";
-$sc_style['RECEIPT']['post'] = "</td></tr>";
+$sc_style['PM_RECEIPT']['post'] = "</td></tr>";
 
 $sc_style['PM_REPLY']['pre'] = "<tr>
 	<td class='forumheader' style='text-align:center' colspan='2'>
@@ -65,19 +65,19 @@ $PM_SEND_PM = "<div style='text-align: center'>
 </tr>
 <tr>
 	<td class='forumheader3' style='width: 30%'>".LAN_PM_2.": </td>
-	<td class='forumheader3' style='width: 70%; text-align:left'>{FORM_TOUSER}<br />{FORM_TOCLASS}</td>
+	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TOUSER}<br />{PM_FORM_TOCLASS}</td>
 </tr>
 <tr>
 	<td class='forumheader3'>".LAN_PM_5.": </td>
-	<td class='forumheader3'>{FORM_SUBJECT}</td>
+	<td class='forumheader3'>{PM_FORM_SUBJECT}</td>
 </tr>
 <tr>
 	<td class='forumheader3'>".LAN_PM_6.": </td>
-	<td class='forumheader3'>{FORM_MESSAGE}</td>
+	<td class='forumheader3'>{PM_FORM_MESSAGE}</td>
 </tr>
-{EMOTES}
-{ATTACHMENT}
-{RECEIPT}
+{PM_EMOTES}
+{PM_ATTACHMENT}
+{PM_RECEIPT}
 <tr>
 	<td class='forumheader' colspan='2' style='text-align:center;'>{PM_POST_BUTTON}</td>
 </tr>
@@ -118,7 +118,7 @@ $PM_INBOX_FOOTER = "
 <tr>
 	<td class='forumheader' colspan='6' style='text-align:center'>
 	<input type='hidden' name='pm_come_from' value='inbox' />
-	{DELETE_SELECTED}
+	{PM_DELETE_SELECTED}
 	</td>
 </tr>
 {PM_NEXTPREV=inbox}
@@ -158,7 +158,7 @@ $PM_OUTBOX_FOOTER = "
 <tr>
 	<td class='forumheader' colspan='6' style='text-align:center'>
 	<input type='hidden' name='pm_come_from' value='outbox' />
-	{DELETE_SELECTED}
+	{PM_DELETE_SELECTED}
 	</td>
 </tr>
 {PM_NEXTPREV=outbox}
@@ -194,7 +194,7 @@ $PM_BLOCKED_EMPTY = "
 $PM_BLOCKED_FOOTER = "
 <tr>
 	<td class='forumheader' colspan='4' style='text-align:center'>
-	{DELETE_BLOCKED_SELECTED}
+	{PM_DELETE_BLOCKED_SELECTED}
 	</td>
 </tr>
 </table>

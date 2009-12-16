@@ -30,7 +30,7 @@ define('ADLAN_PM_27', "Allow posting of attachments");
 define('ADLAN_PM_28', "Maximum attachment size");
 define('ADLAN_PM_29', "Allow sending to all members");
 define('ADLAN_PM_30', "Allow sending to multiple recipients");
-define('ADLAN_PM_31', "Enable sending to userclass");
+define('ADLAN_PM_31', 'Userclass allowed to send to userclass');
 define('ADLAN_PM_32', "Update Settings");
 define('ADLAN_PM_33', "Inactive (no limits)");
 define('ADLAN_PM_34', "PM counts");
@@ -83,6 +83,9 @@ define('ADLAN_PM_76', 'No changes made - nothing logged');
 define('ADLAN_PM_77', '(Empty all fields and Update to delete a limit)');
 define('ADLAN_PM_78', 'Check attachments');
 define('ADLAN_PM_79', '--ORPHANS-- unused attachments deleted. --MISSING-- missing attachments noted');
-define('ADLAN_PM_80', '');
+define('ADLAN_PM_80', 'Preference formats updated');
+define('ADLAN_PM_81', '');
+define('ADLAN_PM_82', '');
+define('ADLAN_PM_83', '');
 
 ?>

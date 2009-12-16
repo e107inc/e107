@@ -9,21 +9,19 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
- * $Revision: 1.13 $
- * $Date: 2009-12-10 20:40:38 $
+ * $Revision: 1.14 $
+ * $Date: 2009-12-16 20:23:32 $
  * $Author: e107steved $
  */
 
+/*
+TODO:
+4. Check 'to' field - can sometimes be text
+
+*/
 
 $retrieve_prefs[] = 'pm_prefs';
 require_once('../../class2.php');
-
-	if($_POST['keyword'])
-	{
-		pm_user_lookup();
-	}
-
-
 
 
 if (!e107::isInstalled('pm')) 
@@ -32,9 +30,20 @@ if (!e107::isInstalled('pm'))
 	exit;
 }
 
+
+
+if($_POST['keyword'])
+{
+	pm_user_lookup();
+}
+
+
+
 require_once(e_PLUGIN.'pm/pm_class.php');
 require_once(e_PLUGIN.'pm/pm_func.php');
 include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
+e107::getScParser();
+require_once(e_PLUGIN.'pm/pm_shortcodes.php');
 
 define('ATTACHMENT_ICON', "<img src='".e_PLUGIN."pm/images/attach.png' alt='' />");
 
@@ -46,6 +55,13 @@ $pm_proc_id = intval(varset($qs[1],0));
 
 $pm_prefs = $sysprefs->getArray('pm_prefs');
 
+
+$pm_prefs['perpage'] = intval($pm_prefs['perpage']);
+if($pm_prefs['perpage'] == 0)
+{
+	$pm_prefs['perpage'] = 10;
+}
+
 if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 {
 	require_once(HEADERF);
@@ -54,13 +70,404 @@ if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 	exit;
 }
 
-$pm =& new private_message;
-$message = '';
-$pm_prefs['perpage'] = intval($pm_prefs['perpage']);
-if($pm_prefs['perpage'] == 0)
+setScVar('pm_handler_shortcodes','pmPrefs', $pm_prefs);
+
+
+
+
+
+
+
+
+
+
+
+class pm_extended extends private_message
 {
-	$pm_prefs['perpage'] = 10;
+	protected $e107;
+	protected	$pmPrefs;
+
+
+	/**
+	 *	Constructor
+	 *
+	 *	@param array $prefs - pref settings for PM plugin
+	 *	@return none
+	 */
+	public	function __construct($prefs)
+	{
+		$this->e107 = e107::getInstance();
+		$this->pmPrefs = $prefs;
+	}
+
+
+
+	/**
+	 *	Show the 'Send to' form
+	 *	@param array|int $to_uid - a PM block of message to reply to, or UID of user to send to
+	 *
+	 *	@return string text for display
+	 */
+	function show_send($to_uid)
+	{
+		$pm_outbox = pm_getInfo('outbox');
+		if (is_array($to_uid))
+		{
+			$pm_info = $to_uid;		// We've been passed a 'reply to' PM
+			$to_uid = $pm_info['pm_from'];
+		}
+		if($to_uid)
+		{
+			$sql2 =& new db;
+			if($sql2->db_Select('user', 'user_name', 'user_id = '.intval($to_uid)))
+			{
+				$row=$sql2->db_Fetch();
+				$pm_info['from_name'] = $row['user_name'];
+			}
+		}
+		echo "Show_send: {$to_uid} from {$pm_info['from_name']} is happening<br />";
+			
+		if($pm_outbox['outbox']['filled'] >= 100)
+		{
+			return str_replace('{PERCENT}', $pm_outbox['outbox']['filled'], LAN_PM_13);
+		}
+		$tpl_file = THEME.'pm_template.php';
+		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$enc = (check_class($this->pmPrefs['attach_class']) ? "enctype='multipart/form-data'" : '');
+		setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
+		$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform'>
+		<div><input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
+		$this->e107->tp->parseTemplate($PM_SEND_PM, TRUE).
+		'</div></form>';
+		return $text;
+	}
+
+
+	/**
+	 *	Show inbox
+	 *	@param int $start - offset into list
+	 *
+	 *	@return string text for display
+	 */
+
+	function show_inbox($start = 0)
+	{
+		$tpl_file = THEME.'pm_template.php';
+		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$pm_blocks = $this->block_get();
+		$pmlist = $this->pm_get_inbox(USERID, $start, $this->pmPrefs['perpage']);
+		setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
+		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
+		$txt .= $this->e107->tp->parseTemplate($PM_INBOX_HEADER, true);
+		if($pmlist['total_messages'])
+		{
+			foreach($pmlist['messages'] as $rec)
+			{
+				if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
+				setScVar('pm_handler_shortcodes','pmInfo', $rec);
+				$txt .= $this->e107->tp->parseTemplate($PM_INBOX_TABLE, true);
+			}
+		}
+		else
+		{
+			$txt .= $this->e107->tp->parseTemplate($PM_INBOX_EMPTY, true);
+		}
+		$txt .= $this->e107->tp->parseTemplate($PM_INBOX_FOOTER, true);
+		$txt .= "</form>";
+		return $txt;
+	}
+
+
+
+
+	/**
+	 *	Show outbox
+	 *	@param int $start - offset into list
+	 *
+	 *	@return string text for display
+	 */
+	function show_outbox($start = 0)
+	{
+		$tpl_file = THEME.'pm_template.php';
+		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$pmlist = $this->pm_get_outbox(USERID, $start, $this->pmPrefs['perpage']);
+		setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
+		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
+		$txt .= $this->e107->tp->parseTemplate($PM_OUTBOX_HEADER, true);
+		if($pmlist['total_messages'])
+		{
+			foreach($pmlist['messages'] as $rec)
+			{
+				if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
+				setScVar('pm_handler_shortcodes','pmInfo', $rec);
+				$txt .= $this->e107->tp->parseTemplate($PM_OUTBOX_TABLE, true);
+			}
+		}
+		else
+		{
+			$txt .= $this->e107->tp->parseTemplate($PM_OUTBOX_EMPTY, true);
+		}
+		$txt .= $this->e107->tp->parseTemplate($PM_OUTBOX_FOOTER, true);
+		$txt .= '</form>';
+		return $txt;
+	}
+
+
+
+	/**
+	 *	Show details of a pm
+	 *	@param int $pmid - DB ID for PM
+	 *	@param string $comeFrom - inbox|outbox - determines whether inbox or outbox is shown after PM
+	 *
+	 *	@return string text for display
+	 */
+	function show_pm($pmid, $comeFrom = '')
+	{
+		$tpl_file = THEME.'pm_template.php';
+		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$pm_info = $this->pm_get($pmid);
+		setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
+		if($pm_info['pm_to'] != USERID && $pm_info['pm_from'] != USERID)
+		{
+			$this->e107->ns->tablerender(LAN_PM, LAN_PM_60);
+			require_once(FOOTERF);
+			exit;
+		}
+		if($pm_info['pm_read'] == 0 && $pm_info['pm_to'] == USERID)
+		{	// Inbox
+			$now = time();
+			$pm_info['pm_read'] = $now;
+			$this->pm_mark_read($pmid, $pm_info);
+		}
+		$txt .= $this->e107->tp->parseTemplate($PM_SHOW, true);
+		$this->e107->ns->tablerender(LAN_PM, $txt);
+		if (!$comeFrom)
+		{
+			if ($pm_info['pm_from'] == USERID) { $comeFrom = 'outbox'; } 
+		}
+		if ($comeFrom == 'outbox')
+		{	// Show Outbox
+			$this->e107->ns->tablerender(LAN_PM." - ".LAN_PM_26, $this->show_outbox($pm_proc_id), 'PM');
+		} 
+		else
+		{	// Show Inbox
+			$this->e107->ns->tablerender(LAN_PM." - ".LAN_PM_25, $this->show_inbox($pm_proc_id), 'PM');
+		}
+	}
+
+
+
+
+	/**
+	 *	Show list of blocked users
+	 *	@param int $start - not used at present; offset into list
+	 *
+	 *	@return string text for display
+	 */
+	public function showBlocked($start = 0)
+	{
+		$tpl_file = THEME.'pm_template.php';
+		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$pmBlocks = $this->block_get_user();			// TODO - handle pagination, maybe (is it likely to be necessary?)
+		setScVar('pm_handler_shortcodes','pmBlocks', $pmBlocks);
+		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
+		$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_HEADER, true);
+		if($pmTotalBlocked = count($pmBlocks))
+		{
+			foreach($pmBlocks as $pmBlocked)
+			{
+				setScVar('pm_handler_shortcodes','pmBlocked', $pmBlocked);
+				$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_TABLE, true);
+			}
+		}
+		else
+		{
+			$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_EMPTY, true);
+		}
+		$txt .= $this->e107->tp->parseTemplate($PM_BLOCKED_FOOTER, true);
+		$txt .= '</form>';
+		return $txt;
+	}
+
+
+
+
+
+	/**
+	 *	Send a PM based on $_POST parameters
+	 *
+	 *	@return string text for display
+	 */
+	function post_pm()
+	{
+		if(!check_class($this->pmPrefs['pm_class']))
+		{
+			return LAN_PM_12;
+		}
+
+		$pm_info = pm_getInfo('outbox');
+		if($pm_info['outbox']['total'] != $_POST['numsent'])
+		{
+			return LAN_PM_14;
+		}
+
+		if(isset($_POST['user']))
+		{
+			$_POST['pm_to'] = $_POST['user'];
+		}
+		if(isset($_POST['pm_to']))
+		{
+			$msg = '';
+			if(isset($_POST['to_userclass']) && $_POST['to_userclass'])
+			{
+				if(!check_class($this->pmPrefs['opt_userclass']))
+				{
+					return LAN_PM_15;
+				}
+				elseif((!check_class($_POST['pm_userclass']) || !check_class($this->pmPrefs['multi_class'])) && !ADMIN)
+				{
+					return LAN_PM_16;
+				}
+			}
+			else
+			{
+				$to_array = explode("\n", trim($_POST['pm_to']));
+				foreach($to_array as $k => $v)
+				{
+					$to_array[$k] = trim($v);
+				}
+				$to_array = array_unique($to_array);
+				if(count($to_array) == 1)
+				{
+					$_POST['pm_to'] = $to_array[0];
+				}
+				if(check_class($this->pmPrefs['multi_class']) && count($to_array) > 1)
+				{
+					foreach($to_array as $to)
+					{
+						if($to_info = $this->pm_getuid($to))
+						{	// Check whether sender is blocked - if so, add one to count
+							if(!$this->e107->sql->db_Update('private_msg_block',"pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".$tp -> toDB($to)."'"))
+							{
+								$_POST['to_array'][] = $to_info;
+							}
+						}
+					}
+				}
+				else
+				{
+					if($to_info = $this->pm_getuid($_POST['pm_to']))
+					{
+						$_POST['to_info'] = $to_info;
+					}
+					else
+					{
+						return LAN_PM_17;
+					}
+
+					if($this->e107->sql->db_Update('private_msg_block',"pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '{$to_info['user_id']}'"))
+					{
+						return LAN_PM_18.$to_info['user_name'];
+					}
+				}
+			}
+
+			if(isset($_POST['receipt']))
+			{
+				if(!check_class($this->pmPrefs['receipt_class']))
+				{
+					unset($_POST['receipt']);
+				}
+			}
+			$totalsize = strlen($_POST['pm_message']);
+			$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
+			foreach(array_keys($_FILES['file_userfile']['size']) as $fid)
+			{
+				if($maxsize > 0 && $_FILES['file_userfile']['size'][$fid] > $maxsize)
+				{
+					$msg .= str_replace("{FILENAME}", $_FILES['file_userfile']['name'][$fid], LAN_PM_62)."<br />";
+					$_FILES['file_userfile']['size'][$fid] = 0;
+				}
+				$totalsize += $_FILES['file_userfile']['size'][$fid];
+			}
+
+			if(intval($this->pmPrefs['pm_limit']) > 0)
+			{
+				if($this->pmPrefs['pm_limit'] == '1')
+				{
+					if($pm_info['outbox']['total'] == $pm_info['outbox']['limit'])
+					{
+						return LAN_PM_19;
+					}
+				}
+				else
+				{
+					if($pm_info['outbox']['size'] + $totalsize > $pm_info['outbox']['limit'])
+					{
+						return LAN_PM_21;
+					}
+				}
+			}
+
+			if($_FILES['file_userfile']['name'][0])
+			{
+				if(check_class($this->pmPrefs['attach_class']))
+				{
+					require_once(e_HANDLER.'upload_handler.php');
+					$randnum = rand(1000, 9999);			
+					$_POST['uploaded'] = file_upload(e_PLUGIN.'pm/attachments', 'attachment', $randnum.'_');
+					if($_POST['uploaded'] == FALSE)
+					{
+						unset($_POST['uploaded']);
+						$msg .= LAN_PM_22."<br />";
+					}
+				}
+				else
+				{
+					$msg .= LAN_PM_23.'<br />';
+					unset($_POST['uploaded']);
+				}
+			}
+			$_POST['from_id'] = USERID;
+			return $msg.$this->add($_POST);
+		}
+	}
 }
+
+
+
+/**
+ *	Look up users matching a keyword, output a list of those found
+ *	Direct echo
+ */
+function pm_user_lookup()
+{
+	global $sql;
+
+	$query = "SELECT * FROM #user WHERE user_name REGEXP '^".$_POST['keyword']."' ";
+	if($sql -> db_Select_gen($query))
+	{
+		echo '[';
+		while($row = $sql-> db_Fetch())
+		{
+			  $u[] =  "{\"caption\":\"".$row['user_name']."\",\"value\":".$row['user_id']."}";
+		 }
+
+		echo implode(",",$u);
+		echo ']';
+	}
+	exit;
+}
+
+
+
+
+
+
+//$pm =& new private_message;
+$pm = new pm_extended($pm_prefs);
+
+$message = '';
 $pmSource = '';
 if (isset($_POST['pm_come_from']))
 {
@@ -182,7 +589,7 @@ require_once(HEADERF);
 
 if(isset($_POST['postpm']))
 {
-	$message = post_pm();
+	$message = $pm->post_pm();
 	$action = 'outbox';
 }
 
@@ -190,15 +597,18 @@ if(isset($_POST['postpm']))
 
 if($message != '')
 {
-	$ns->tablerender("", $message);
+	$ns->tablerender('', $message);
 }
 
 
 
+//-----------------------------------------
+//			DISPLAY TASKS
+//-----------------------------------------
 switch ($action)
 {
 	case 'send' :
-		$ns->tablerender(LAN_PM, show_send($pm_proc_id));
+		$ns->tablerender(LAN_PM, $pm->show_send($pm_proc_id));
 		break;
 
 	case 'reply' :
@@ -211,7 +621,7 @@ switch ($action)
 			}
 			else
 			{
-				$ns->tablerender(LAN_PM, show_send());
+				$ns->tablerender(LAN_PM, $pm->show_send($pm_info));
 			}
 		}
 		else
@@ -221,19 +631,19 @@ switch ($action)
 		break;
 
 	case 'inbox' :
-		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox($pm_proc_id), 'PM');
+		$ns->tablerender(LAN_PM.' - '.LAN_PM_25, $pm->show_inbox($pm_proc_id), 'PM');
 		break;
 
 	case 'outbox' :
-		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox($pm_proc_id), 'PM');
+		$ns->tablerender(LAN_PM.' - '.LAN_PM_26, $pm->show_outbox($pm_proc_id), 'PM');
 		break;
 
 	case 'show' :
-		show_pm($pm_proc_id, $pmSource);
+		$pm->show_pm($pm_proc_id, $pmSource);
 		break;
 
 	case 'blocked' :
-		$ns->tablerender(LAN_PM." - ".LAN_PM_66, showBlocked($pm_proc_id), 'PM');
+		$ns->tablerender(LAN_PM.' - '.LAN_PM_66, $pm->showBlocked($pm_proc_id), 'PM');
 		break;
 }
 
@@ -244,324 +654,6 @@ exit;
 
 
 
-
-
-function show_send($to_uid)
-{
-	global $tp, $pm_info, $pm_prefs;
-	$pm_outbox = pm_getInfo('outbox');
-	if($to_uid)
-	{
-		$sql2 =& new db;
-		if($sql2->db_Select('user', 'user_name', "user_id = '".intval($to_uid)."'"))
-		{
-			$row=$sql2->db_Fetch();
-			$pm_info['from_name'] = $row['user_name'];
-		}
-	}
-		
-	if($pm_outbox['outbox']['filled'] >= 100)
-	{
-		return str_replace('{PERCENT}', $pm_outbox['outbox']['filled'], LAN_PM_13);
-	}
-	require_once(e_PLUGIN.'pm/pm_shortcodes.php');
-	$tpl_file = THEME."pm_template.php";
-	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
-	$enc = (check_class($pm_prefs['attach_class']) ? "enctype='multipart/form-data'" : "");
-	$text = "<form {$enc} method='post' action='".e_SELF."' id='dataform'>
-	<div><input type='hidden' name='numsent' value='{$pm_outbox['outbox']['total']}' />".
-	$tp->parseTemplate($PM_SEND_PM, TRUE, $pm_shortcodes).
-	"</div></form>";
-	return $text;
-}
-
-
-
-function show_inbox($start = 0)
-{
-	global $pm, $tp, $pm_shortcodes, $pm_info, $pm_blocks, $pmlist, $pm_start, $pm_prefs;
-	$pm_start = $start;
-	require_once(e_PLUGIN."pm/pm_shortcodes.php");
-	$tpl_file = THEME."pm_template.php";
-	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
-	$pm_blocks = $pm->block_get();
-	$pmlist = $pm->pm_get_inbox(USERID, $pm_start, $pm_prefs['perpage']);
-	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-	$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true, $pm_shortcodes);
-	if($pmlist['total_messages'])
-	{
-		foreach($pmlist['messages'] as $rec)
-		{
-			if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = "[".LAN_PM_61."]"; }
-			$pm_info = $rec;
-			$txt .= $tp->parseTemplate($PM_INBOX_TABLE, true, $pm_shortcodes);
-		}
-	}
-	else
-	{
-		$txt .= $tp->parseTemplate($PM_INBOX_EMPTY, true, $pm_shortcodes);
-	}
-	$txt .= $tp->parseTemplate($PM_INBOX_FOOTER, true, $pm_shortcodes);
-	$txt .= "</form>";
-	return $txt;
-}
-
-
-
-
-function show_outbox($start = 0)
-{
-	global $pm, $tp, $pm_shortcodes, $pm_info, $pm_start, $pm_prefs, $pmlist;
-	$pm_start = $start;
-	require_once(e_PLUGIN.'pm/pm_shortcodes.php');
-	$tpl_file = THEME.'pm_template.php';
-	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
-	$pmlist = $pm->pm_get_outbox(USERID, $pm_start, $pm_prefs['perpage']);
-	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-	$txt .= $tp->parseTemplate($PM_OUTBOX_HEADER, true, $pm_shortcodes);
-	if($pmlist['total_messages'])
-	{
-		foreach($pmlist['messages'] as $rec)
-		{
-			if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = '['.LAN_PM_61.']'; }
-			$pm_info = $rec;
-			$txt .= $tp->parseTemplate($PM_OUTBOX_TABLE, true, $pm_shortcodes);
-		}
-	}
-	else
-	{
-		$txt .= $tp->parseTemplate($PM_OUTBOX_EMPTY, true, $pm_shortcodes);
-	}
-	$txt .= $tp->parseTemplate($PM_OUTBOX_FOOTER, true, $pm_shortcodes);
-	$txt .= "</form>";
-	return $txt;
-}
-
-
-
-function show_pm($pmid, $comeFrom = '')
-{
-	global $pm, $tp, $pm_shortcodes, $pm_info, $ns;
-	require_once(e_PLUGIN.'pm/pm_shortcodes.php');
-	$tpl_file = THEME.'pm_template.php';
-	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
-	$pm_info = $pm->pm_get($pmid);
-	if($pm_info['pm_to'] != USERID && $pm_info['pm_from'] != USERID)
-	{
-		$ns->tablerender(LAN_PM, LAN_PM_60);
-		require_once(FOOTERF);
-		exit;
-	}
-	if($pm_info['pm_read'] == 0 && $pm_info['pm_to'] == USERID)
-	{	// Inbox
-		$now = time();
-		$pm_info['pm_read'] = $now;
-		$pm->pm_mark_read($pmid, $pm_info);
-	}
-	$txt .= $tp->parseTemplate($PM_SHOW, true, $pm_shortcodes);
-	$ns -> tablerender(LAN_PM, $txt);
-	if (!$comeFrom)
-	{
-		if ($pm_info['pm_from'] == USERID) { $comeFrom = 'outbox'; } 
-	}
-	if ($comeFrom == 'outbox')
-	{	// Show Outbox
-		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox($pm_proc_id), 'PM');
-	} 
-	else
-	{	// Show Inbox
-		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox($pm_proc_id), 'PM');
-	}
-}
-
-
-
-
-
-function post_pm()
-{
-	global $pm_prefs, $pm, $pref, $sql, $tp;
-	if(!check_class($pm_prefs['pm_class']))
-	{
-		return LAN_PM_12;
-	}
-
-	$pm_info = pm_getInfo('outbox');
-	if($pm_info['outbox']['total'] != $_POST['numsent'])
-	{
-		return LAN_PM_14;
-	}
-
-	if(isset($_POST['user']))
-	{
-		$_POST['pm_to'] = $_POST['user'];
-	}
-	if(isset($_POST['pm_to']))
-	{
-		$msg = '';
-		if(isset($_POST['to_userclass']) && $_POST['to_userclass'])
-		{
-			if(!$pm_prefs['allow_userclass'])
-			{
-				return LAN_PM_15;
-			}
-			elseif((!check_class($_POST['pm_userclass']) || !check_class($pm_prefs['multi_class'])) && !ADMIN)
-			{
-				return LAN_PM_16;
-			}
-		}
-		else
-		{
-			$to_array = explode("\n", trim($_POST['pm_to']));
-			foreach($to_array as $k => $v)
-			{
-				$to_array[$k] = trim($v);
-			}
-			$to_array = array_unique($to_array);
-			if(count($to_array) == 1)
-			{
-				$_POST['pm_to'] = $to_array[0];
-			}
-			if(check_class($pm_prefs['multi_class']) && count($to_array) > 1)
-			{
-				foreach($to_array as $to)
-				{
-					if($to_info = $pm->pm_getuid($to))
-					{
- 						if(!$sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".$tp -> toDB($to)."'"))
- 						{
- 							$_POST['to_array'][] = $to_info;
- 						}
-					}
-				}
-			}
-			else
-			{
-				if($to_info = $pm->pm_getuid($_POST['pm_to']))
-				{
-					$_POST['to_info'] = $to_info;
-				}
-				else
-				{
-					return LAN_PM_17;
-				}
-
-				if($sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '{$to_info['user_id']}'"))
-				{
-					return LAN_PM_18.$to_info['user_name'];
-				}
-			}
-		}
-
-		if(isset($_POST['receipt']))
-		{
-			if(!check_class($pm_prefs['receipt_class']))
-			{
-				unset($_POST['receipt']);
-			}
-		}
-		$totalsize = strlen($_POST['pm_message']);
-		$maxsize = intval($pm_prefs['attach_size']) * 1024;
-		foreach(array_keys($_FILES['file_userfile']['size']) as $fid)
-		{
-			if($maxsize > 0 && $_FILES['file_userfile']['size'][$fid] > $maxsize)
-			{
-				$msg .= str_replace("{FILENAME}", $_FILES['file_userfile']['name'][$fid], LAN_PM_62)."<br />";
-				$_FILES['file_userfile']['size'][$fid] = 0;
-			}
-			$totalsize += $_FILES['file_userfile']['size'][$fid];
-		}
-
-		if(intval($pref['pm_limit']) > 0)
-		{
-			if($pref['pm_limit'] == '1')
-			{
-				if($pm_info['outbox']['total'] == $pm_info['outbox']['limit'])
-				{
-					return LAN_PM_19;
-				}
-			}
-			else
-			{
-				if($pm_info['outbox']['size'] + $totalsize > $pm_info['outbox']['limit'])
-				{
-					return LAN_PM_21;
-				}
-			}
-		}
-
-		if($_FILES['file_userfile']['name'][0])
-		{
-			if(check_class($pm_prefs['attach_class']))
-			{
-				require_once(e_HANDLER."upload_handler.php");
-				$randnum = rand(1000, 9999);			
-				$_POST['uploaded'] = file_upload(e_PLUGIN."pm/attachments", "attachment", $randnum."_");
-				if($_POST['uploaded'] == FALSE)
-				{
-					unset($_POST['uploaded']);
-					$msg .= LAN_PM_22."<br />";
-				}
-			}
-			else
-			{
-				$msg .= LAN_PM_23."<br />";
-				unset($_POST['uploaded']);
-			}
-		}
-		$_POST['from_id'] = USERID;
-		return $msg.$pm->add($_POST);
-	}
-}
-
-
-function pm_user_lookup()
-{
-	global $sql;
-
-
-		$query = "SELECT * FROM #user WHERE user_name REGEXP '^".$_POST['keyword']."' ";
-	  	if($sql -> db_Select_gen($query))
-	  	{
-			echo "[";
-	        while($row = $sql-> db_Fetch())
-	        {
-	              $u[] =  "{\"caption\":\"".$row['user_name']."\",\"value\":".$row['user_id']."}";
-	         }
-
-			echo implode(",",$u);
-	        echo "]";
-		}
-
-    	exit;
-}
-
-
-function showBlocked($start = 0)
-{
-	global $pm, $tp, $pm_shortcodes, $pmBlocked, $pmTotalBlocked, $pm_start, $pm_prefs ;
-	$pm_start = $start;
-	require_once(e_PLUGIN.'pm/pm_shortcodes.php');
-	$tpl_file = THEME.'pm_template.php';
-	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
-	$pmBlocks = $pm->block_get_user();			// TODO - handle pagination, maybe (is it likely to be necessary?)
-	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-	$txt .= $tp->parseTemplate($PM_BLOCKED_HEADER, true, $pm_shortcodes);
-	if($pmTotalBlocked = count($pmBlocks))
-	{
-		foreach($pmBlocks as $pmBlocked)
-		{
-			$txt .= $tp->parseTemplate($PM_BLOCKED_TABLE, true, $pm_shortcodes);
-		}
-	}
-	else
-	{
-		$txt .= $tp->parseTemplate($PM_BLOCKED_EMPTY, true, $pm_shortcodes);
-	}
-	$txt .= $tp->parseTemplate($PM_BLOCKED_FOOTER, true, $pm_shortcodes);
-	$txt .= "</form>";
-	return $txt;
-}
 
 
 
