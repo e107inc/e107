@@ -9,8 +9,8 @@
  * PM Plugin - administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
- * $Revision: 1.9 $
- * $Date: 2009-12-13 12:32:28 $
+ * $Revision: 1.10 $
+ * $Date: 2009-12-16 20:23:35 $
  * $Author: e107steved $
  */
 
@@ -20,11 +20,11 @@ TODO:
 1. Limits page needs some lines round the table
 2. Limits page - test
 3. Maintenance page - to be tested
-4. Check operation of user dropdown bit
+4. Check operation of user dropdown/popup bit
 5. User option to enable/disable email notification of PMs
 6. Cron-triggered bulk send.
-7. Is it right that limits are saved in $pref, not $pm_prefs? If not, import routine/change
-8. Put prefs into plugin.xml?
+7. What are implications of 'anyone but' userclasses?
+8. Put prefs into plugin.xml
 */
 
 
@@ -39,7 +39,7 @@ if (!e107::isInstalled('pm') || !getperms('P'))
 }
 
 require_once(e_PLUGIN.'pm/pm_class.php');
-require_once(e_HANDLER.'userclass_class.php');
+//require_once(e_HANDLER.'userclass_class.php');		Should already be loaded
 require_once(e_HANDLER.'form_handler.php');
 require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage :: getInstance();
@@ -53,6 +53,7 @@ if($action == '')
 	$action = 'main';
 }
 
+
 $pm_prefs = $sysprefs->getArray('pm_prefs');
 
 //pm_prefs record not found in core table, set to defaults and create record
@@ -65,6 +66,39 @@ if(!is_array($pm_prefs))
 	$e107->admin_log->log_event('PM_ADM_01', '');
 }
 
+
+// Couple of bits of BC/upgrade
+$savePMP = FALSE;
+if (isset($pref['pm_limits']))
+{
+	if (!isset($pm_prefs['pm_limits']))
+	{
+		$pm_prefs['pm_limits'] = $pref['pm_limits'];
+		$savePMP = TRUE;
+	}
+	unset($pref['pm_limits']);
+	save_prefs();
+}
+
+if (isset($pm_prefs['allow_userclass']))
+{
+	if (!isset($pm_prefs['opt_userclass']))
+	{
+		$pm_prefs['opt_userclass'] = e_UC_NOBODY;
+		if ($pm_prefs['allow_userclass'])
+		{
+			$pm_prefs['opt_userclass'] = e_UC_MEMBERS;
+		}
+	}
+	unset($pm_prefs['allow_userclass']);
+	$savePMP = TRUE;
+}
+
+if ($savePMP)
+{
+	$sysprefs->setArray('pm_prefs');
+	$emessage->add(ADLAN_PM_80, E_MESSAGE_SUCCESS);
+}
 
 
 //$lan_file = e_PLUGIN.'pm/languages/admin/'.e_LANGUAGE.'.php';
@@ -98,7 +132,6 @@ if (isset($_POST['update_prefs']))
 if (isset($_POST['pm_maint_execute']))
 {
 	$maintOpts = array();
-	$emessage->add('Starting maintenance', E_MESSAGE_INFO);
 	if (vartrue($_POST['pm_maint_sent']))
 	{
 		$maintOpts['sent'] = 1;
@@ -167,10 +200,10 @@ if(isset($_POST['addlimit']))
 if(isset($_POST['updatelimits']))
 {
 	$limitVal = intval($_POST['pm_limits']);
-	if($pref['pm_limits'] != $limitVal)
+	if($pm_prefs['pm_limits'] != $limitVal)
 	{
-		$pref['pm_limits'] = $limitVal;
-		save_prefs();
+		$pm_prefs['pm_limits'] = $limitVal;
+		$sysprefs->setArray('pm_prefs');
 		$emessage->add(ADLAN_PM_8, E_MESSAGE_SUCCESS);
 	}
 	foreach(array_keys($_POST['inbox_count']) as $id)
@@ -226,8 +259,8 @@ switch ($action)
 		$ns->tablerender(ADLAN_PM_12, show_options($pm_prefs));
 		break;
 	case 'limits' :
-		$ns->tablerender(ADLAN_PM_14, show_limits());
-		$ns->tablerender(ADLAN_PM_15, add_limit());
+		$ns->tablerender(ADLAN_PM_14, show_limits($pm_prefs));
+		$ns->tablerender(ADLAN_PM_15, add_limit($pm_prefs));
 		break;
 	case 'maint' :
 		$ns->tablerender(ADLAN_PM_60, show_maint($pm_prefs));
@@ -290,7 +323,7 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_23."</td>
-		<td>".r_userclass('pm_option-pm_class', $pm_prefs['pm_class'], 'off', 'member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-pm_class', $pm_prefs['pm_class'], 'member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_24."</td>
@@ -298,15 +331,15 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_25."</td>
-		<td>".r_userclass('pm_option-notify_class', $pm_prefs['notify_class'], 'off', 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-notify_class', $pm_prefs['notify_class'], 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_26."</td>
-		<td>".r_userclass('pm_option-receipt_class', $pm_prefs['receipt_class'], 'off', 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-receipt_class', $pm_prefs['receipt_class'], 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_27."</td>
-		<td>".r_userclass('pm_option-attach_class', $pm_prefs['attach_class'], 'off', 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-attach_class', $pm_prefs['attach_class'], 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_28."</td>
@@ -314,15 +347,15 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_29."</td>
-		<td>".r_userclass('pm_option-sendall_class', $pm_prefs['sendall_class'], 'off', 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_30."</td>
-		<td>".r_userclass('pm_option-multi_class', $pm_prefs['multi_class'], 'off', 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-multi_class', $pm_prefs['multi_class'], 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_31."</td>
-		<td>".yes_no('pm_option-allow_userclass', $pm_prefs['allow_userclass'])."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-opt_userclass', $pm_prefs['opt_userclass'], 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td colspan='2' style='text-align:center'><input type='submit' class='button' name='update_prefs' value='".ADLAN_PM_32."' /></td>
@@ -339,11 +372,11 @@ function show_options($pm_prefs)
 
 
 
-function show_limits()
+function show_limits($pm_prefs)
 {
-	global $sql, $pref;
+	global $sql;
 	
-	if (!isset($pref['pm_limits'])) { $pref['pm_limits'] = 0; }
+	if (!isset($pm_prefs['pm_limits'])) { $pm_prefs['pm_limits'] = 0; }
 
 	if($sql->db_Select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
@@ -354,7 +387,7 @@ function show_limits()
 	}
 	$txt = "
 		<fieldset id='plugin-pm-showlimits'>
-		<form method='post' action='".e_SELF."'>
+		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table cellpadding='0' cellspacing='0' class='adminedit'>
 		<colgroup span='3'>
 			<col class='col-label' />
@@ -366,13 +399,13 @@ function show_limits()
 			<td colspan='3' style='text-align:left'>".ADLAN_PM_45." 
 			<select name='pm_limits' class='tbox'>
 		";
-		$sel = ($pref['pm_limits'] == 0 ? "selected='selected'" : "");
+		$sel = ($pm_prefs['pm_limits'] == 0 ? "selected='selected'" : "");
 		$txt .= "<option value='0' {$sel}>".ADLAN_PM_33."</option>\n";
 
-		$sel = ($pref['pm_limits'] == 1 ? "selected='selected'" : "");
+		$sel = ($pm_prefs['pm_limits'] == 1 ? "selected='selected'" : "");
 		$txt .= "<option value='1' {$sel}>".ADLAN_PM_34."</option>\n";
 
-		$sel = ($pref['pm_limits'] == 2 ? "selected='selected'" : "");
+		$sel = ($pm_prefs['pm_limits'] == 2 ? "selected='selected'" : "");
 		$txt .= "<option value='2' {$sel}>".ADLAN_PM_35."</option>\n";
 
 		$txt .= "</select>\n";
@@ -393,7 +426,7 @@ function show_limits()
 		{
 			$txt .= "
 			<tr>
-			<td>".r_userclass_name($row['limit_classnum'])."</td>
+			<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
 			<td>
 			".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> 
 			".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /> 
@@ -434,10 +467,10 @@ function show_limits()
 
 
 
-function add_limit()
+function add_limit($pm_prefs)
 {
-	global $sql, $pref;
-	if($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
+	global $sql;
+	if($sql->db_Select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
 		while($row = $sql->db_Fetch())
 		{
@@ -446,7 +479,7 @@ function add_limit()
 	}
 	$txt = "
 		<fieldset id='plugin-pm-addlimit'>
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<form method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<table cellpadding='0' cellspacing='0' class='adminedit'>
 		<colgroup span='3'>
 			<col class='col-label' />
@@ -463,7 +496,7 @@ function add_limit()
 
 	$txt .= "
 	<tr>
-	<td>".r_userclass("newlimit_class", 0, "off", "guest,member,admin,classes,language")."</td>
+	<td>".e107::getUserClass()->uc_dropdown('newlimit_class', 0, 'guest,member,admin,classes')."</td>
 	<td>
 		".ADLAN_PM_39."<input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> 
 		".ADLAN_PM_40."<input type='text' class='tbox' size='5' name='new_outbox_count' value='' /> 
@@ -584,7 +617,7 @@ function doMaint($opts, $pmPrefs)
 		return array(E_MESSAGE_ERROR => array(ADLAN_PM_66));
 	}
 
-	$results = array(E_MESSAGE_INFO => array(ADLAN_PM_67));
+	$results = array(E_MESSAGE_INFO => array(ADLAN_PM_67));		// 'Maintenance started' - primarily for a log entry to mark start time
 	$logResults = array();
 	$e107 = e107::getInstance();
 	$e107->admin_log->log_event('PM_ADM_04', implode(', ',array_keys($opts)));
@@ -754,6 +787,13 @@ function doMaint($opts, $pmPrefs)
 
 
 	$e107->admin_log->logArrayAll('PM_ADM_03',makeLogEntry($results));
+	foreach ($results as $k => $r)
+	{
+		foreach ($r as $sk => $s)
+		{
+			$results[$k][$sk] = str_replace('[!br!]','<br />',$s);
+		}
+	}
 	return $results;
 }
 

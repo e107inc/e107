@@ -9,8 +9,8 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/private_msg_menu.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-12-10 20:40:39 $
+ * $Revision: 1.11 $
+ * $Date: 2009-12-16 20:23:37 $
  * $Author: e107steved $
  */
 
@@ -22,6 +22,9 @@ if(!isset($pm_prefs['perpage']))
 	$pm_prefs = $sysprefs->getArray('pm_prefs');
 }
 require_once(e_PLUGIN.'pm/pm_func.php');
+e107::getScParser();
+require_once(e_PLUGIN.'pm/pm_shortcodes.php');
+setScVar('pm_handler_shortcodes','pmPrefs', $pm_prefs);
 pm_getInfo('clear');
 
 define('PM_INBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' class='icon S16' alt='".LAN_PM_25."' title='".LAN_PM_25."' />");
@@ -30,20 +33,20 @@ define('PM_SEND_LINK', LAN_PM_35);
 define('NEWPM_ANIMATION', "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' />");
 
 
-$sc_style['SEND_PM_LINK']['pre'] = "<br /><br />[ ";
-$sc_style['SEND_PM_LINK']['post'] = " ]";
+$sc_style['PM_SEND_PM_LINK']['pre'] = "<br /><br />[ ";
+$sc_style['PM_SEND_PM_LINK']['post'] = " ]";
 
-$sc_style['INBOX_FILLED']['pre'] = "[";
-$sc_style['INBOX_FILLED']['post'] = "%]";
+$sc_style['PM_INBOX_FILLED']['pre'] = "[";
+$sc_style['PM_INBOX_FILLED']['post'] = "%]";
 
-$sc_style['OUTBOX_FILLED']['pre'] = "[";
-$sc_style['OUTBOX_FILLED']['post'] = "%]";
+$sc_style['PM_OUTBOX_FILLED']['pre'] = "[";
+$sc_style['PM_OUTBOX_FILLED']['post'] = "%]";
 
-$sc_style['NEWPM_ANIMATE']['pre'] = "<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>";
-$sc_style['NEWPM_ANIMATE']['post'] = "</a>";
+$sc_style['PM_NEWPM_ANIMATE']['pre'] = "<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>";
+$sc_style['PM_NEWPM_ANIMATE']['post'] = "</a>";
 
-$sc_style['BLOCKED_SENDERS_MANAGE']['pre'] = "<br />[ <a href='".e_PLUGIN_ABS."pm/pm.php?blocked'>";
-$sc_style['BLOCKED_SENDERS_MANAGE']['post'] = '</a> ]';
+$sc_style['PM_BLOCKED_SENDERS_MANAGE']['pre'] = "<br />[ <a href='".e_PLUGIN_ABS."pm/pm.php?blocked'>";
+$sc_style['PM_BLOCKED_SENDERS_MANAGE']['post'] = '</a> ]';
 
 
 if(!isset($pm_menu_template))
@@ -51,15 +54,15 @@ if(!isset($pm_menu_template))
 	$pm_menu_template = "
 	<a href='{URL=pm|main|f=box&box=inbox}'>".PM_INBOX_ICON."</a>
 	<a href='{URL=pm|main|f=box&box=inbox}'>".LAN_PM_25."</a>
-	{NEWPM_ANIMATE}
+	{PM_NEWPM_ANIMATE}
 	<br />
-	{INBOX_TOTAL} ".LAN_PM_36.", {INBOX_UNREAD} ".LAN_PM_37." {INBOX_FILLED}
+	{PM_INBOX_TOTAL} ".LAN_PM_36.", {PM_INBOX_UNREAD} ".LAN_PM_37." {PM_INBOX_FILLED}
 	<br />
 	<a href='{URL=pm|main|f=box&box=outbox}'>".PM_OUTBOX_ICON."</a>
 	<a href='{URL=pm|main|f=box&box=outbox}'>".LAN_PM_26."</a><br />
-	{OUTBOX_TOTAL} ".LAN_PM_36.", {OUTBOX_UNREAD} ".LAN_PM_37." {OUTBOX_FILLED}
-	{SEND_PM_LINK}
-	{BLOCKED_SENDERS_MANAGE}
+	{PM_OUTBOX_TOTAL} ".LAN_PM_36.", {PM_OUTBOX_UNREAD} ".LAN_PM_37." {PM_OUTBOX_FILLED}
+	{PM_SEND_PM_LINK}
+	{PM_BLOCKED_SENDERS_MANAGE}
 	";
 }
 
@@ -68,9 +71,9 @@ if(check_class($pm_prefs['pm_class']))
 {
 	global $tp, $pm_inbox;
 	$pm_inbox = pm_getInfo('inbox');
-	require_once(e_PLUGIN."pm/pm_shortcodes.php");
-	$txt = $tp->parseTemplate($pm_menu_template, TRUE, $pm_shortcodes);
-	if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, "pm.php") === FALSE && $_COOKIE["pm-alert"] != "ON")
+//	require_once(e_PLUGIN."pm/pm_shortcodes.php");
+	$txt = $tp->parseTemplate($pm_menu_template, TRUE);
+	if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php') === FALSE && $_COOKIE['pm-alert'] != 'ON')
 	{
 		$txt .= pm_show_popup();
 	}
