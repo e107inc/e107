@@ -9,8 +9,8 @@
  * Handler - user-related functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_handler.php,v $
- * $Revision: 1.20 $
- * $Date: 2009-11-30 20:40:03 $
+ * $Revision: 1.21 $
+ * $Date: 2009-12-16 22:26:27 $
  * $Author: e107steved $
  *
 */
@@ -647,9 +647,9 @@ Following fields auto-filled in code as required:
 
 	/**
 	 * Updates user status, primarily the user_ban field, to reflect outside events
-	 * @var string $start - 'ban', 'bounce'
-	 * @var integer $uid - internal user ID, zero if not known
-	 * @var string $emailAddress - email address (optional)
+	 * @param string $start - 'ban', 'bounce'
+	 * @param integer $uid - internal user ID, zero if not known
+	 * @param string $emailAddress - email address (optional)
 	 * @return boolean | string - FALSE if user found, error message if not
 	 */
 	public function userStatusUpdate($action, $uid, $emailAddress = '')

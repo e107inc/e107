@@ -9,8 +9,8 @@
  * e107 Preference Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/pref_class.php,v $
- * $Revision: 1.34 $
- * $Date: 2009-12-13 21:52:32 $
+ * $Revision: 1.35 $
+ * $Date: 2009-12-16 22:26:26 $
  * $Author: e107steved $
 */
 
@@ -952,7 +952,7 @@ class prefs
 	/**
 	* Return current array from pref string $name in $table (core only for now)
 	*
-	* @param:  string $name -- name of pref row
+	* @param  string $name -- name of pref row
 	* @param  string $table -- "core" only now
 	* @return  array pref values
 	* @access     public
