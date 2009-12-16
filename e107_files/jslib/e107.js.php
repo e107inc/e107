@@ -8,9 +8,9 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.39 $
+ * $Date: 2009-12-16 18:34:01 $
+ * $Author: secretr $
  *
 */
 
@@ -60,10 +60,10 @@ function SyncWithServerTime(serverTime)
  * @desc Retrieve the browser version
  */
 (function() {
-    var nav       = navigator;
-    var userAgent = ua = navigator.userAgent;
-    var v         = nav.appVersion;
-    var version   = parseFloat(v);
+    var nav       = navigator,
+    	userAgent = ua = navigator.userAgent,
+    	v         = nav.appVersion,
+    	version   = parseFloat(v);
 
     e107API.Browser = {
         IE      : (Prototype.Browser.IE)    ? parseFloat(v.split("MSIE ")[1]) || 0 : 0,
@@ -525,7 +525,7 @@ var e107Base = {
     },
 
     getParseData: function (data) {
-        Object.extend(data || {},
+        data = Object.extend(data || {},
           Object.extend(this.getLanVars(), this.getPathVars())
         );
 
@@ -1145,7 +1145,57 @@ Element.addMethods( {
 	downHide: e107Helper.downHide,
 	downShow: e107Helper.downShow,
 	downToggle: e107Helper.downToggle,
-	downExternalLinks: e107Helper.downExternalLinks
+	downExternalLinks: e107Helper.downExternalLinks,
+	
+	// -- more useful extensions - taken from Prototype UI --
+	getScrollDimensions: function(element) {
+	    element = $(element);
+	    return {
+	      width:  element.scrollWidth,
+	      height: element.scrollHeight
+	    }
+	},
+
+	getScrollOffset: function(element) {
+	    element = $(element);
+	    return Element._returnOffset(element.scrollLeft, element.scrollTop);
+	 },
+
+	setScrollOffset: function(element, offset) {
+	    element = $(element);
+	    if (arguments.length == 3)
+	      offset = { left: offset, top: arguments[2] };
+	    element.scrollLeft = offset.left;
+	    element.scrollTop  = offset.top;
+	    return element;
+	},
+
+	// returns "clean" numerical style (without "px") or null if style can not be resolved
+	// or is not numeric
+	getNumStyle: function(element, style) {
+	    var value = parseFloat($(element).getStyle(style));
+	    return isNaN(value) ? null : value;
+	},
+
+	// (http://tobielangel.com/2007/5/22/prototype-quick-tip)
+	appendText: function(element, text) {
+	    element = $(element);
+	    element.appendChild(document.createTextNode(String.interpret(text)));
+	    return element;
+	}
+});
+
+Object.extend(document.viewport, {
+	// Alias this method for consistency
+	getScrollOffset: document.viewport.getScrollOffsets,
+	
+	setScrollOffset: function(offset) {
+		Element.setScrollOffset(Prototype.Browser.WebKit ? document.body : document.documentElement, offset);
+	},
+	
+	getScrollDimensions: function() {
+		return Element.getScrollDimensions(Prototype.Browser.WebKit ? document.body : document.documentElement);
+	}
 });
 
 Element.addMethods('INPUT', {

@@ -1,0 +1,86 @@
+.e-dialog {
+  position: absolute;
+}
+
+.e-dialog .move_handle { 
+  cursor:move !important;
+}
+
+/*.e-dialog .e {
+  position: relative;
+}*/
+
+.e-dialog .resize_handle {
+  line-height: 1px;
+  font-size:1px;
+  width: 8px;
+  height: 8px;
+  z-index: 90;
+  position: absolute;
+}
+
+.e-dialog .se_sizer { 
+  cursor: se-resize;
+  z-index: 100;
+  bottom:0;
+  right:0;
+}          
+    
+.e-dialog .sw_sizer { 
+  cursor: sw-resize;
+  z-index: 100;
+  bottom:0;
+  left:0;  
+}
+
+.e-dialog .nw_sizer { 
+  cursor: nw-resize;
+  z-index: 100;
+  top:0;
+  left:0;  
+}
+
+.e-dialog .ne_sizer { 
+  cursor: ne-resize;
+  z-index: 100;
+  top:0;
+  right:0;  
+}
+            
+.e-dialog .n_sizer { 
+  cursor: n-resize;
+  width:100%;
+  top:0;
+  left:0;  
+}
+ 
+.e-dialog .s_sizer { 
+  cursor: s-resize;
+  width: 100%;
+  bottom:0;
+  left:0;
+}
+
+.e-dialog .e_sizer { 
+  cursor: e-resize;
+  height:100%;
+  top:0;
+  right:0;  
+}
+
+.e-dialog .w_sizer { 
+  cursor: w-resize;
+  height:100%;
+  top:0;
+  left:0;  
+}
+
+.e-dialog .content {
+  overflow: auto;
+  position: relative;
+}
+
+html>body .e-dialog .content {
+  /* fixes an unbelievable rendering bug in Safari 2 */
+  border-top: 1px solid transparent;
+}
