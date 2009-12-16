@@ -1,0 +1,194 @@
+.e107 .nw {
+	background:transparent url(icons/top_unactive.gif) no-repeat scroll 0px 0px;
+	height:22px;
+	padding-left:10px;
+}      
+.e107_focused .nw {
+	background:transparent url(icons/top.gif) no-repeat scroll 0px 0px !important;
+}       
+
+.e107 .ne {
+	background:transparent url(icons/top_unactive.gif) no-repeat scroll right -44px;
+	height:22px;
+	padding-right:10px;
+}
+
+.e107_focused .ne {
+	background:transparent url(icons/top.gif) no-repeat scroll right -44px !important;
+}
+
+.e107 .n {
+	background:transparent url(icons/top_unactive.gif) repeat-x scroll right -22px;
+	color:#17385B;
+	font:normal 14px/26px Arial, sans-serif;
+	height:22px;
+	margin:0;
+	padding:0;
+	text-align:center;
+	overflow: hidden;
+	padding-left:60px;
+	line-height: 20px; 
+	color: #000;
+}
+
+.e107_focused .n {
+	background:transparent url(icons/top.gif) repeat-x scroll right -22px !important;
+}
+
+.e107 .content {
+	background:#FFF;
+	color:#000;
+	font:normal 12px/1em Verdana, Arial, sans-serif;
+	overflow:auto;
+}
+
+.e107 .w {
+	border-left:1px solid #DDD;
+	border-right:1px solid #DDD;
+}
+
+.e107 .e {
+	border-left:1px solid #EEE;
+	border-right:1px solid #EEE;
+}
+
+
+.e107 .sw {
+	background:transparent url(icons/bottom_unactive.gif) no-repeat scroll 0 0px;
+	font-size:2px;
+	height:15px;
+	padding-left:12px;
+}
+
+.e107_focused .sw {
+	background:transparent url(icons/bottom.gif) no-repeat scroll 0 0px !important;
+}
+
+.e107 .se {
+	background:transparent url(icons/bottom_unactive.gif) no-repeat scroll right -30px;
+	font-size:2px;
+	height:15px;
+	padding-right:12px;
+}
+
+.e107_focused .se {
+	background:transparent url(icons/bottom.gif) no-repeat scroll right -30px !important;
+}
+
+.e107_focused .se_sizer { 
+  width:12px;
+  height:12px;
+}          
+ 
+.e107 .se_resize_handle {
+	background:transparent url(icons/bottom_unactive.gif) no-repeat scroll right -45px;
+	font-size:2px;
+	height:15px;
+	padding-right:12px;
+}                                                                          
+
+.e107_focused .se_resize_handle {
+	background:transparent url(icons/bottom.gif) no-repeat scroll right -45px !important;
+}
+
+.e107 .s {
+	background:transparent url(icons/bottom_unactive.gif) repeat-x scroll 0 -15px;
+	font-size:12px;
+	line-height:15px;
+	height:15px;
+	overflow:hidden;
+	border: 0 none;
+} 
+
+.e107_focused .s {
+	background:transparent url(icons/bottom.gif) repeat-x scroll 0 -15px !important;
+}
+
+.e107 .buttons {
+  position: absolute;
+  top:1px;
+  right:7px;
+  height: 20px;   
+}
+
+.e107 .buttons a.close {
+  	float:left;
+	background:transparent url(icons/button_unactive.gif) no-repeat 0 0; 
+	background-repeat: no-repeat;
+	height:15px;
+	width:14px;
+	margin: 3px 7px 0 0px;        
+	padding-top:0px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/       
+	overflow:hidden;
+}
+  
+.e107_focused .buttons a.close {
+	background:transparent url(icons/buttons.gif) no-repeat 0 0 !important;    
+	background-repeat: no-repeat;
+}
+
+.e107 .buttons.over a.close {
+	background:transparent url(icons/buttons_over.gif) no-repeat 0 0px !important; 
+}
+
+.e107 .buttons a.maximize {
+  float:left;
+	background:transparent url(icons/button_unactive.gif) no-repeat 0 0;
+	height:15px;
+	width:14px;
+	margin: 3px 7px 0 0;
+	padding-top:2px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/ 
+	overflow:hidden;
+}
+  
+.e107_focused .buttons a.maximize {
+	background:transparent url(icons/buttons.gif) no-repeat 0 -30px !important;
+}
+
+.e107 .buttons.over a.maximize {
+	background:transparent url(icons/buttons_over.gif) no-repeat 0 -30px !important;  
+}
+
+.e107 .buttons a.minimize {
+  float:left;
+	background:transparent url(icons/button_unactive.gif) no-repeat 0 0;
+	height:15px;
+	width:14px;
+	margin: 3px 7px 0 0;
+	padding-top:1px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/ 
+	overflow:hidden;
+}  
+
+.e107_focused .buttons a.minimize {
+	background:transparent url(icons/buttons.gif) no-repeat 0 -15px !important;
+}
+
+.e107 .buttons.over a.minimize {
+	background:transparent url(icons/buttons_over.gif) no-repeat 0 -15px !important;
+}         
+
+.e107 .buttons a.minimize.disabled, .e107 .buttons.over a.minimize.disabled  {
+	background:transparent url(icons/button_unactive.gif) no-repeat 0 0  !important; 
+}
+
+.e107_overlay {
+	position:absolute;
+	top:0;            
+	left:0;
+	width:100%;
+	background-color:#DDD;
+	filter:alpha(opacity=60);
+	opacity: 0.6;
+	-moz-opacity: 0.6;
+}
+
+.e107_wired {
+	position:absolute;
+	border: 3px dashed #f0f0f0;
+	background-color: #fff;
+	filter:alpha(opacity=60);
+	opacity: 0.6;
+	-moz-opacity: 0.6;
+}
+
+
