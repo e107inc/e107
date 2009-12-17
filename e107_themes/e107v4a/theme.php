@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_themes/e107v4a/theme.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:06:02 $
- * $Author: e107coders $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-17 22:47:20 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -238,13 +238,13 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 
 // [linkstyle]
 
-define(PRELINK, "");
-define(POSTLINK, "");
-define(LINKSTART, "<span><img src='".THEME_ABS."images/bullet2.gif' alt='bullet' /> ");
-define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME_ABS."images/bullet3.png' alt='bullet' /> ");
-define(LINKEND, "</span><br />");
-define(LINKDISPLAY, 2);
-define(LINKALIGN, "left");
+define('PRELINK', '');
+define('POSTLINK', '');
+define('LINKSTART', "<span><img src='".THEME_ABS."images/bullet2.gif' alt='bullet' /> ");
+define('LINKSTART_HILITE', "<span style='font-weight:bold'><img src='".THEME_ABS."images/bullet3.png' alt='bullet' /> ");
+define('LINKEND', "</span><br />");
+define('LINKDISPLAY', 2);
+define('LINKALIGN', "left");
 
 
 //        [tablestyle]

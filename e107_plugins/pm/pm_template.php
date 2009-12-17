@@ -6,12 +6,21 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ *	PM plugin - template file
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_template.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-12-16 20:23:37 $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-17 22:47:20 $
  * $Author: e107steved $
+ */
+
+
+/**
+ *	e107 Private messenger plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pm
+ *	@version 	$Id: pm_template.php,v 1.8 2009-12-17 22:47:20 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }

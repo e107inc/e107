@@ -1,4 +1,30 @@
 <?php
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ *	Private messenger plugin - default preferences (used if no stored values)
+ *
+ * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_default.php,v $
+ * $Revision: 1.3 $
+ * $Date: 2009-12-17 22:47:20 $
+ * $Author: e107steved $
+ */
+
+
+/**
+ *	e107 Private messenger plugin
+ *
+ *	default preferences (used if no stored values)
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pm
+ *	@version 	$Id: pm_default.php,v 1.3 2009-12-17 22:47:20 e107steved Exp $;
+ */
+
 if (!defined('e107_INIT')) { exit; }
 
 function pm_set_default_prefs()

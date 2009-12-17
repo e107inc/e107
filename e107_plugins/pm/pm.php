@@ -6,19 +6,23 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ *	PM plugin - main user interface
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
- * $Revision: 1.14 $
- * $Date: 2009-12-16 20:23:32 $
+ * $Revision: 1.15 $
+ * $Date: 2009-12-17 22:47:20 $
  * $Author: e107steved $
  */
 
-/*
-TODO:
-4. Check 'to' field - can sometimes be text
 
-*/
+/**
+ *	e107 Private messenger plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pm
+ *	@version 	$Id: pm.php,v 1.15 2009-12-17 22:47:20 e107steved Exp $;
+ */
+
 
 $retrieve_prefs[] = 'pm_prefs';
 require_once('../../class2.php');
@@ -32,7 +36,7 @@ if (!e107::isInstalled('pm'))
 
 
 
-if($_POST['keyword'])
+if(vartrue($_POST['keyword']))
 {
 	pm_user_lookup();
 }
@@ -71,10 +75,8 @@ if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 }
 
 setScVar('pm_handler_shortcodes','pmPrefs', $pm_prefs);
-
-
-
-
+$pmManager = new pmbox_manager($pm_prefs);
+setScVar('pm_handler_shortcodes','pmManager', &$pmManager);
 
 
 
@@ -84,9 +86,7 @@ setScVar('pm_handler_shortcodes','pmPrefs', $pm_prefs);
 
 class pm_extended extends private_message
 {
-	protected $e107;
-	protected	$pmPrefs;
-
+	protected	$pmManager = NULL;
 
 	/**
 	 *	Constructor
@@ -94,10 +94,10 @@ class pm_extended extends private_message
 	 *	@param array $prefs - pref settings for PM plugin
 	 *	@return none
 	 */
-	public	function __construct($prefs)
+	public	function __construct($prefs, $manager)
 	{
-		$this->e107 = e107::getInstance();
-		$this->pmPrefs = $prefs;
+		$this->pmManager = $manager;
+		parent::__construct($prefs);
 	}
 
 
@@ -110,7 +110,8 @@ class pm_extended extends private_message
 	 */
 	function show_send($to_uid)
 	{
-		$pm_outbox = pm_getInfo('outbox');
+		$pm_info = array();
+		$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 		if (is_array($to_uid))
 		{
 			$pm_info = $to_uid;		// We've been passed a 'reply to' PM
@@ -125,7 +126,7 @@ class pm_extended extends private_message
 				$pm_info['from_name'] = $row['user_name'];
 			}
 		}
-		echo "Show_send: {$to_uid} from {$pm_info['from_name']} is happening<br />";
+		//echo "Show_send: {$to_uid} from {$pm_info['from_name']} is happening<br />";
 			
 		if($pm_outbox['outbox']['filled'] >= 100)
 		{
@@ -465,7 +466,7 @@ function pm_user_lookup()
 
 
 //$pm =& new private_message;
-$pm = new pm_extended($pm_prefs);
+$pm = new pm_extended($pm_prefs, &$pmManager);
 
 $message = '';
 $pmSource = '';
