@@ -8,8 +8,8 @@
  * e107 Javascript API
  *
  * $Source: /cvs_backup/e107_0.8/e107_files/jslib/e107.js.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-12-16 18:34:01 $
+ * $Revision: 1.40 $
+ * $Date: 2009-12-17 17:15:20 $
  * $Author: secretr $
  *
 */
@@ -273,7 +273,6 @@ var e107EventManager = Class.create({
 
         var i = this.events.get(name).keys().length;
         observers.set(i, callback.bind(this.scope));
-
         return this;
     },
 
@@ -302,7 +301,6 @@ var e107EventManager = Class.create({
      */
     notify: function(name) {
         var observers = this.events.get(name);
-        //console.log('notifying ' + name);
         if(observers) {
             var args = $A(arguments).slice(1);
             //Fix - preserve order
@@ -313,7 +311,6 @@ var e107EventManager = Class.create({
                 }
             });
         }
-
         return this;
     }
 
@@ -1313,24 +1310,34 @@ e107Utils.IframeShim = Class.create({
 		return this;
 	},
 	positionUnder: function(element) {
-		var element = $(element);
-		var offset = element.cumulativeOffset();
-		var dimensions = element.getDimensions();
+		var element = $(element),
+			offset = element.cumulativeOffset(),
+			dimensions = element.getDimensions(),
+			style = {
+				left: offset[0] + 'px',
+				top: offset[1] + 'px',
+				width: dimensions.width + 'px',
+				height: dimensions.height + 'px',
+				zIndex: element.getStyle('zIndex') - 1
+			};
 
-		this.element.setStyle({
-			left: offset[0] + 'px',
-			top: offset[1] + 'px',
-			width: dimensions.width + 'px',
-			height: dimensions.height + 'px',
-			zIndex: element.getStyle('zIndex') - 1
-		}).show();
-
+		this.element.setStyle(style).show();
 		return this;
 	},
 	setBounds: function(bounds) {
 		for(prop in bounds)
 			bounds[prop] += 'px';
 		this.element.setStyle(bounds);
+		return this;
+	},
+	setSize: function(width, height) {
+		this.element.style.width = parseInt(width) + 'px';
+		this.element.style.height = parseInt(height) + 'px';
+		return this;
+	},
+	setPosition: function(top, left) {
+		this.element.style.top = parseInt(top) + 'px';
+		this.element.style.left = parseInt(left) + 'px';
 		return this;
 	},
 	destroy: function() {

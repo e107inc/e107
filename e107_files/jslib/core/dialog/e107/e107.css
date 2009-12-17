@@ -24,9 +24,9 @@
 	height:22px;
 	margin:0;
 	padding:0;
-	text-align:center;
+	text-align: left;
 	overflow: hidden;
-	padding-left:60px;
+	padding-right: 60px;
 	line-height: 20px; 
 	color: #000;
 }
@@ -112,7 +112,7 @@
 }
 
 .e107 .buttons a.close {
-  	float:left;
+  	float: right;
 	background:transparent url(icons/button_unactive.gif) no-repeat 0 0; 
 	background-repeat: no-repeat;
 	height:15px;
@@ -132,7 +132,7 @@
 }
 
 .e107 .buttons a.maximize {
-  float:left;
+  	float: right;
 	background:transparent url(icons/button_unactive.gif) no-repeat 0 0;
 	height:15px;
 	width:14px;
@@ -149,13 +149,15 @@
 	background:transparent url(icons/buttons_over.gif) no-repeat 0 -30px !important;  
 }
 
+/* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/ 
+/* not implemented
 .e107 .buttons a.minimize {
-  float:left;
+  	float: right;
 	background:transparent url(icons/button_unactive.gif) no-repeat 0 0;
 	height:15px;
 	width:14px;
 	margin: 3px 7px 0 0;
-	padding-top:1px; /* padding-top = buttons order, it will be reset to 0, do not use padding, use margin*/ 
+	padding-top:1px; 
 	overflow:hidden;
 }  
 
@@ -170,6 +172,7 @@
 .e107 .buttons a.minimize.disabled, .e107 .buttons.over a.minimize.disabled  {
 	background:transparent url(icons/button_unactive.gif) no-repeat 0 0  !important; 
 }
+*/
 
 .e107_overlay {
 	position:absolute;
