@@ -5,9 +5,10 @@
 e107Base.setPrefs('core-dialog', {
 	id: null,
 	theme : '',
+	shadow: false,
+	shadowTheme: '',
 	top: null,
 	left: null,
-	zIndex: 2000,
 	width: 300,
 	height: 200,
 	minWidth: 200,
@@ -22,13 +23,15 @@ e107Base.setPrefs('core-dialog', {
 	activeOnClick : true,
 	show: Element.show,
 	hide: Element.hide,
+	maximizeEffects: true,
 	dialogManager: null,
 	positionningStrategyOffset: null,
-	close: 'destroy' // e107Widgets.Dialog method for closing dialog
+	close: 'destroy', // e107Widgets.Dialog method for closing dialog or false to disable
+	maximize: 'toggleMaximize', // e107Widgets.Dialog method for closing dialog or false to disable
 });
 
 
-e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
+e107Widgets.Dialog = Class.create(e107WidgetAbstract, {
 	Version : '1.0',
 	style : "position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;",
 	wiredElement: null,
@@ -41,6 +44,7 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	focused: false, // windows on focus
 	modal: false, // modal window
 	zIndex: 0,
+	shadow: null,
 	
 	action: function(name) {
 		var action = this.options[name];
@@ -50,14 +54,12 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	
 	initialize : function(options) {
 		this.events = new e107EventManager(this);
-		this.events.observe('create', this.createButtons)//bind create and createButtons
-			.observe('destroy', this.destroyButtons); //bind destroy and destroyButtons
 		
 		this.initMod('core-dialog', options);
-		// TODO - check e107Widgets.DialogManagerDefault presence, create if not found
 		this.dialogManager = this.options.dialogManager || e107Widgets.DialogManagerDefault;
-		
 		if(this.options.id && this.dialogManager.getWindow($(this.options.id))) return;
+		
+		this.setMethodChains();
 
 		this.create();
 		this.id = this.element.id;
@@ -87,6 +89,25 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	// shadows are under construction
 	getShadowTheme: function() {
 		return this.options.shadowTheme || this.dialogManager.getShadowTheme();
+	},
+	
+	setMethodChains: function() {
+
+		this.events.observe('create', this.createButtons)//bind create and createButtons
+				.observe('destroy', this.destroyButtons); //bind destroy and destroyButtons
+
+		
+		if(Object.isUndefined(e107Widgets.Shadow))
+			this.options.shadow = false;
+
+		if(this.options.shadow) {
+			this.events.observe('create', this.createShadow)
+				.observe('addElements', this.addElementsShadow)
+				.observe('setZIndex:pre', this.setZIndexShadow)
+				.observe('setPosition', this.setPositionShadow)
+				.observe('setSize', this.setSizeShadow)
+				.observe('setBounds', this.setBoundsShadow);
+		}		
 	},
 
 	create : function() {
@@ -160,7 +181,7 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 		return this.setBounds(this.options);
 	},
 
-	show : function(modal) {
+	show: function(modal) {
 		if (this.visible)
 			return this;
 
@@ -247,8 +268,6 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 
 	/*
 	 * Method: blur Blurs the window (without changing windows order)
-	 * 
-	 * Returns: this
 	 */
 	blur: function() {
 		if (!this.focused)
@@ -269,6 +288,75 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	},
 	
 	/*
+	 * Method: maximize Maximizes window inside its viewport (managed by
+	 * WindowManager) Makes window take full size of its viewport
+	 */
+	maximize: function() {
+		if (this.maximized)
+			return this;
+
+		// Get bounds has to be before this.dialogManager.maximize for IE!!
+		// this.dialogManager.maximize remove overflow
+		// and it breaks this.getBounds()
+		var bounds = this.getBounds();
+		if (this.dialogManager.maximize(this)) {
+			this.disableButton('minimize').setResizable(false).setDraggable(false);
+
+			this.activate();
+			this.maximized = true;
+			this.savedArea = bounds;
+			var newBounds = Object.extend(this.dialogManager.viewport.getDimensions(), {
+				top: 0,
+				left: 0
+			});
+			this[this.options.maximizeEffects && !e107API.Browser.IE ? "morph" : "setBounds"](newBounds);
+
+			this.fire('maximized');
+			return this;
+		}
+	},
+
+	/*
+	 * Function: restore Restores a maximized window to its initial size
+	 */
+	restore: function() {
+		if (!this.maximized)
+			return this;
+
+		if (this.dialogManager.restore(this)) {
+			this[this.options.maximizeEffects && !e107API.Browser.IE ? "morph" : "setBounds"](this.savedArea);
+			this.enableButton("minimize").setResizable(true).setDraggable(true);
+
+			this.maximized = false;
+
+			this.fire('restored');
+			return this;
+		}
+	},
+
+	/*
+	 * Function: toggleMaximize Maximizes/Restores window inside it's
+	 * viewport (managed by DialogManager)
+	 */
+	toggleMaximize: function() {
+		return this.maximized ? this.restore() : this.maximize();
+	},
+
+	/*
+	 * Function: adapt Adapts window size to fit its content
+	 * 
+	 * Returns: this
+	 */
+	adapt: function() {
+		var dimensions = this.content.getScrollDimensions();
+		if (this.options.superflousEffects)
+			this.morph(dimensions, true);
+		else
+			this.setSize(dimensions.width, dimensions.height, true);
+		return this;
+	},
+	
+	/*
 	 * Method: destroy Destructor, closes window, cleans up DOM and memory
 	 */
 	destroy: function() {
@@ -277,8 +365,8 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 			Event.stopObserving(this.dialogManager.scrollContainer, "scroll", this.centerOptions.handler);
 		
 		this.dialogManager.unregister(this);
-		this.fire('destroyed');
 		this.events.notify('destroy');
+		this.fire('destroyed');
 	},
 	
 	setHeader: function(header) {
@@ -333,6 +421,7 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 		elementStyle.top = pos.top + 'px';
 		elementStyle.left = pos.left + 'px';
 		
+		this.events.notify('setPosition', top, left);
 		this.fire('position:changed');
 		return this;
 	},
@@ -365,8 +454,8 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 			}
 		else
 			return {
-			width: this.options.width,
-			height: this.options.height
+				width: this.options.width,
+				height: this.options.height
 			};
 	},
 
@@ -385,6 +474,7 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 		contentStyle.width = size.innerWidth + "px", contentStyle.height = size.innerHeight + "px";
 		this.overlay.style.height = size.innerHeight + "px";
 
+		this.events.notify('setSize', width, height, innerSize);
 		this.fire('size:changed');
 		return this;
 	},
@@ -409,7 +499,50 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	 * Returns: Hash {top:, left:, width:, height:}
 	 */
 	setBounds: function(bounds, innerSize) {
-		return this.setPosition(bounds.top, bounds.left).setSize(bounds.width, bounds.height, innerSize);
+		var ret = this.setPosition(bounds.top, bounds.left).setSize(bounds.width, bounds.height, innerSize);
+		this.events.notify('setBounds', bounds, innerSize);
+		return ret;
+	},
+	
+	morph: function(bounds, innerSize) {
+		bounds = Object.extend(this.getBounds(innerSize), bounds || {});
+			
+		if (this.centerOptions && this.centerOptions.auto)
+			bounds = Object.extend(bounds, this.computeRecenter(bounds));
+
+		if (innerSize) {
+			bounds.width += this.borderSize.width;
+			bounds.height += this.borderSize.height;
+		}
+
+		if (this.options.wired) {
+			this.createWiredElement();
+			if(this.shadow) this.shadow.hide();
+			this.wiredElement.style.cssText = this.element.style.cssText;
+			this.element.hide();
+			this.savedElement = this.element;
+			this.dialogManager.container.appendChild(this.wiredElement);
+			this.element = this.wiredElement;
+		}
+
+		this.animating = true;
+
+		new e107Widgets.Dialog.Effects.Morph(this, bounds, {
+			duration: 0.3,
+			afterFinish: function() {
+				this.animating = false;
+				if (this.options.wired) {
+					this.savedElement.style.cssText = this.wiredElement.style.cssText;
+					this.wiredElement.remove();
+					this.element = this.savedElement;
+					if(this.shadow) this.shadow.show();
+					this.savedElement = false;
+				}
+			}.bind(this)
+		});
+
+		Object.extend(this.options, bounds);
+		return this;
 	},
 	
 	/*
@@ -432,21 +565,23 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	},
 
 	setDraggable : function(draggable) {
+		var element = this.savedElement || this.element;
 		this.options.draggable = draggable;
-		this.element[(draggable ? 'add' : 'remove') + 'ClassName']('draggable');
+		element[(draggable ? 'add' : 'remove') + 'ClassName']('draggable');
 		return this;
 	},
 
 	setResizable: function(resizable) {
 		this.options.resizable = resizable;
 
-		var toggleClassName = (resizable ? 'add' : 'remove') + 'ClassName';
+		var toggleClassName = (resizable ? 'add' : 'remove') + 'ClassName',
+			element = this.savedElement || this.element;
 
-		this.element[toggleClassName]('resizable').select('div:[class*=_sizer]').invoke(resizable ? 'show' : 'hide');
+		element[toggleClassName]('resizable').select('div:[class*=_sizer]').invoke(resizable ? 'show' : 'hide');
 		if (resizable)
 			this.createResizeHandles();
 
-		this.element.select('div.se').first()[toggleClassName]('se_resize_handle');
+		element.select('div.se').first()[toggleClassName]('se_resize_handle');
 		return this;
 	},
 
@@ -457,12 +592,13 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	},
 
 	observe: function(eventName, handler) {
-		this.element.observe('edialog:' + eventName, handler.bind(this));
+		(this.savedElement || this.element).observe('edialog:' + eventName, handler.bind(this));
 		return this;
 	},
 	
 	addElements: function() {
 		this.dialogManager.container.appendChild(this.element);
+		this.events.notify('addElements');
 	},
 	
 	effect: function(name, element, options) {
@@ -473,11 +609,13 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	// Set z-index to all window elements
 	setZIndex: function(zIndex) {
 		if (this.zIndex != zIndex) {
+			this.events.notify('setZIndex:pre', zIndex);
 			this.zIndex = zIndex;
 			[ this.element ].concat(this.element.childElements()).each(function(element) {
 				element.style.zIndex = zIndex++;
 			});
 			this.lastZIndex = zIndex;
+			this.events.notify('setZIndex', zIndex);
 		}
 		return this;
 	},
@@ -575,6 +713,207 @@ e107Widgets.Dialog = Class.create(e107WidgetAbstract,{
 	}
 });
 
+e107Widgets.URLDialog = Class.create(e107Widgets.Dialog, {
+
+	setAjaxContent: function() {
+		return this;
+	},
+	
+	initialize: function($super, url, options) {
+		$super(options);
+		this.options.url = url || this.options.url;
+		this.createIFrame();
+	},
+	
+	destroy: function($super) {
+		this.iframe.src = null;
+		$super();
+	},
+	
+	getUrl: function() {
+		return this.iframe.src;
+	},
+	
+	setUrl: function(url) {
+		this.iframe.src = url;
+		return this;
+	},
+	
+	createIFrame: function($super) {
+		this.iframe = new Element('iframe', {
+			style: this.style,
+			frameborder: 0,
+			src: this.options.url,
+			name: this.element.id + "_frame",
+			id: this.element.id + "_frame"
+		});
+	
+		this.content.insert(this.iframe);
+	}
+});
+
+e107Base.setPrefs('core-confirm-dialog', {
+	buttons: null, // default = ok/cancel button
+	beforeSelect: function() {
+		return true;
+	},
+	close: false,
+	resizable: false,
+	activeOnClick: false
+});
+
+e107Widgets.ConfirmDialog = Class.create(e107Widgets.Dialog, {
+	
+	initialize: function($super, options) {
+		options = Object.extend(e107Base.getPrefs('core-confirm-dialog'), options || {});
+		$super(options);
+		
+	},
+	
+	disableDialogButton: function(index) {
+		var button = this.getDialogButton(index);
+		if (button)
+			button.addClassName("disabled");
+		return this;
+	},
+
+	enableDialogButton: function(index) {
+		var button = this.getDialogButton(index);
+		if (button)
+			button.removeClassName("disabled");
+		return this;
+	},
+
+	getDialogButton: function(index) {
+		var buttons = this.buttonContainer.childElements();
+		if (index >= 0 && index < buttons.length)
+			return buttons[index];
+		else
+			return null;
+	},
+
+	// Override create to add dialog buttons
+	create: function($super) {
+		$super();
+	
+		// Create buttons
+		this.buttonContainer = this.createButtons();
+		// Add a new content for dialog content
+		this.dialogContent = new Element('div', {
+			className: 'ui-dialog-confirm-content'
+		});
+	
+		this.content.update(this.dialogContent);
+		this.content.insert(this.buttonContainer);
+	},
+
+	addElements: function($super) {
+		$super();
+		// Pre compute buttons height
+		this.buttonsHeight = this.buttonContainer.getHeight() || this.buttonsHeight;
+		this.setDialogSize();
+	},
+
+	setContent: function(content, withoutButton) {
+		this.dialogContent.update(content);
+	
+		// Remove button if need be
+		if (withoutButton && this.buttonContainer.parentNode)
+			this.buttonContainer.remove();
+		else
+			this.content.insert(this.buttonContainer);
+	
+		// Update dialog size
+		this.setDialogSize();
+		return this;
+	},
+
+	onSelect: function(e) {
+		var element = e.element();
+		
+		if (element.callback && !element.hasClassName('disabled')) {
+			if (this.options.beforeSelect(element))
+				element.callback(this);
+		}
+	},
+
+	createButtons: function(dialogButtons) {
+		var buttonContainer = new Element('div', {
+			className: 'ui-dialog-confirm-buttons'
+		});
+		
+		(this.options.buttons || e107Widgets.ConfirmDialog.okCancelButtons).each(function(item) {
+			var button;
+			if (item.separator)
+				button = new Element('span', {
+					className: 'separator'
+				});
+			else
+				button = new Element('button', {
+					title: item.title,
+					className: (item.className || '') + (item.disabled ? ' disabled' : '')
+				}).observe('click', this.onSelect.bind(this)).update(item.title);
+	
+			buttonContainer.insert(button);
+			button.callback = item.callback;
+		}.bind(this));
+		return buttonContainer;
+	},
+
+	setDialogSize: function() {
+		// Do not compute dialog size if window is not completly ready
+		if (!this.borderSize)
+			return;
+	
+		this.buttonsHeight = this.buttonContainer.getHeight() || this.buttonsHeight;
+		var style = this.dialogContent.style, size = this.getSize(true);
+		style.width = size.width + "px", style.height = size.height - this.buttonsHeight + "px";
+	},
+
+	setSize: function($super, width, height, innerSize) {
+		$super(width, height, innerSize);
+		this.setDialogSize();
+		return this;
+	}
+});
+
+e107Widgets.ConfirmDialog =  Object.extend(e107Widgets.ConfirmDialog, {
+	  okButton        : [{title: 'Ok',     className: 'ok',     callback: function(win) { win.destroy(); }}],
+	  okCancelButtons : [{title: 'Ok',     className: 'ok',     callback: function(win) { win.destroy(); }},
+	                     {title: 'Cancel', className: 'cancel', callback: function(win) { win.destroy(); }}]
+});
+
+if (!Object.isUndefined(window.Effect)) {
+	e107Widgets.Dialog.Effects = e107Widgets.Dialog.Effects || {};
+	e107Widgets.Dialog.Effects.Morph = Class.create(Effect.Base, {
+		initialize: function(window, bounds) {
+			this.window = window;
+			var options = Object.extend( {
+				fromBounds: this.window.getBounds(),
+				toBounds: bounds,
+				from: 0,
+				to: 1
+			}, arguments[2] || {});
+			this.start(options);
+		},
+
+		update: function(position) {
+			var t = this.options.fromBounds.top + (this.options.toBounds.top - this.options.fromBounds.top) * position;
+			var l = this.options.fromBounds.left + (this.options.toBounds.left - this.options.fromBounds.left) * position;
+
+			var ow = this.options.fromBounds.width + (this.options.toBounds.width - this.options.fromBounds.width) * position;
+			var oh = this.options.fromBounds.height + (this.options.toBounds.height - this.options.fromBounds.height) * position;
+
+			this.window.setBounds( {
+				top: t,
+				left: l,
+				width: ow,
+				height: oh
+			})
+		}
+	});
+}
+
 e107Widgets.Dialog.addMethods( {
 
 	startDrag: function(handle) {
@@ -585,7 +924,8 @@ e107Widgets.Dialog.addMethods( {
 			this.createWiredElement();
 			this.wiredElement.style.cssText = this.element.style.cssText;
 			this.element.hide();
-			this.saveElement = this.element;
+			if(this.shadow) this.shadow.hide();
+			this.savedElement = this.element;
 			this.dialogManager.container.appendChild(this.wiredElement);
 			this.element = this.wiredElement;
 		}
@@ -597,10 +937,11 @@ e107Widgets.Dialog.addMethods( {
 		this.element.hasClassName('resized') ? this.endResize() : this.endMove();
 
 		if (this.options.wired) {
-			this.saveElement.style.cssText = this.wiredElement.style.cssText;
+			this.savedElement.style.cssText = this.wiredElement.style.cssText;
 			this.wiredElement.remove();
-			this.element = this.saveElement;
-			this.saveElement = false;
+			this.element = this.savedElement;
+			if(this.shadow) this.shadow.show();
+			this.savedElement = false;
 		}
 	},
 
@@ -674,6 +1015,7 @@ e107Widgets.Dialog.addMethods( {
 });
 
 e107Widgets.Dialog.addMethods( {
+	
 	createButtons: function() {
 		this.buttons = new Element("div", {
 			className: "buttons"
@@ -690,10 +1032,11 @@ e107Widgets.Dialog.addMethods( {
 	},
 	
 	destroyButtons: function() {
-		this.buttons.stopObserving();
+		if(this.buttons)
+			this.buttons.stopObserving();
 	},
 	
-	defaultButtons: $w('close'),
+	defaultButtons: $w('maximize close'),
 	
 	getButtonElement: function(buttonName) {
 		return this.buttons.down("." + buttonName);
@@ -717,17 +1060,20 @@ e107Widgets.Dialog.addMethods( {
 	},
 	
 	removeButton: function(buttonName) {
-		this.getButtonElement(buttonName).remove();
+		var b = this.getButtonElement(buttonName);
+		if(b) b.remove();
 		return this;
 	},
 	
 	disableButton: function(buttonName) {
-		this.getButtonElement(buttonName).addClassName("disabled");
+		var b = this.getButtonElement(buttonName);
+		if(b) b.addClassName("disabled");
 		return this;
 	},
 	
 	enableButton: function(buttonName) {
-		this.getButtonElement(buttonName).removeClassName("disabled");
+		var b = this.getButtonElement(buttonName);
+		if(b) b.removeClassName("disabled");
 		return this;
 	},
 	
@@ -748,6 +1094,7 @@ e107Widgets.Dialog.addMethods( {
 	},
 	
 	updateButtonsOrder: function() {
+		if(!this.buttons) return;
 		var buttons = this.buttons.childElements();
 	
 		buttons.inject(new Array(buttons.length), function(array, button) {
@@ -759,12 +1106,95 @@ e107Widgets.Dialog.addMethods( {
 	}
 });
 
+e107Widgets.Dialog.addMethods( {
+	
+	showShadow: function() {
+		if (this.shadow) {
+			this.shadow.hide();
+			this.effect('show', this.shadow.shadow);
+		}
+	},
+
+	hideShadow: function() {
+		if (this.shadow)
+			this.effect('hide', this.shadow.shadow);
+	},
+	
+	removeShadow: function() {
+		if (this.shadow)
+			this.shadow.remove();
+	},
+	
+	focusShadow: function() {
+		if (this.shadow)
+			this.shadow.focus();
+	},
+	
+	blurShadow: function() {
+		if (this.shadow)
+			this.shadow.blur();
+	},
+	
+	// Private Functions
+	createShadow: function() {
+		if (!this.options.shadow || Object.isUndefined(e107Widgets.Shadow)) return;
+		
+		this.observe('showing', this.showShadow)
+			.observe('hiding', this.hideShadow)
+			.observe('hidden', this.removeShadow)
+			.observe('focused', this.focusShadow)
+			.observe('blurred', this.blurShadow);
+
+		this.shadow = new e107Widgets.Shadow(this.element, {
+			theme: this.getShadowTheme()
+		});
+	},
+	
+	addElementsShadow: function() {
+		if (this.shadow) {
+			this.shadow.setBounds(this.options).render();
+		}
+	},
+	
+	setZIndexShadow: function(zIndex) {
+		if (this.zIndex != zIndex) {
+			if (this.shadow)
+				this.shadow.setZIndex(zIndex - 1);
+
+			this.zIndex = zIndex;
+		}
+		return this;
+	},
+	
+	setPositionShadow: function(top, left) {
+		if (this.shadow) {
+			var pos = this.getPosition();
+			this.shadow.setPosition(pos.top, pos.left);
+		}
+		return this;
+	},
+	
+	setSizeShadow: function(width, height, innerSize) {
+		if (this.shadow) {
+			var size = this.getSize();
+			this.shadow.setSize(size.width, size.height);
+		}
+		return this;
+	},
+	
+	setBoundsShadow: function(bounds, innerSize) {
+		if (this.shadow)
+			this.shadow.setBounds(this.getBounds());
+	}
+});
+
+
 e107Base.setPrefs('core-dialogmanager', {
 	className : 'e-dialog',
 	container: null, // will default to document.body
 	zIndex: 2000,
 	theme: "e107",
-	shadowTheme: "e107",
+	shadowTheme: "e107_shadow",
 	showOverlay: Element.show,
 	hideOverlay: Element.hide,
 	positionningStrategyOffset: null,

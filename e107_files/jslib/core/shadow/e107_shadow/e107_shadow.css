@@ -1,0 +1,67 @@
+.shadow_container.e107_shadow .shadow_center_wrapper {
+  float:left;
+  width:100%;
+}              
+
+.shadow_container.e107_shadow .shadow_right {
+  float:left;
+	width:30px;
+  margin-left:-30px
+}  
+
+.shadow_container.e107_shadow .shadow_left {
+  float:left;
+  margin-left:-100%;
+ 	width:30px;
+}
+
+.shadow_container.e107_shadow .se_shadow {
+  background:url(icons/se.png);
+  height:30px;   
+}
+
+.shadow_container.e107_shadow .s_shadow {
+  background:url(icons/s.png);
+  height:30px;
+  margin: 0 30px;
+}
+
+.shadow_container.e107_shadow .sw_shadow {
+  background:url(icons/sw.png);
+  height:30px;
+}
+
+.shadow_container.e107_shadow .ne_shadow {
+  background:url(icons/ne.png);
+  height:30px;
+}
+
+.shadow_container.e107_shadow .n_shadow {
+  background:url(icons/n.png);
+  height:30px; 
+  margin: 0 30px;
+}
+
+.shadow_container.e107_shadow .nw_shadow {
+  background:url(icons/nw.png);
+  height:30px;
+}
+
+.shadow_container.e107_shadow .e_shadow {
+  background:url(icons/e.png) repeat-y;
+}
+
+.shadow_container.e107_shadow .w_shadow {
+  background:url(icons/w.png) repeat-y;
+}
+
+.shadow_container.e107_shadow .c_shadow {
+  /* Padding is used to set shift values for unfocused window */
+  padding:20px 17px 17px 17px;
+  /* Maring is used to set shift values for focused window */
+  margin:17px 12px 12px 12px;
+}                   
+
+.shadow_container.e107_shadow {
+  font-size: 2px;
+}
