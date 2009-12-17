@@ -6,12 +6,24 @@
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
+*	PM plugin - install/uninstall routines
+*
 * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_setup.php,v $
-* $Revision: 1.3 $
-* $Date: 2009-11-18 01:49:18 $
-* $Author: marj_nl_fr $
+* $Revision: 1.4 $
+* $Date: 2009-12-17 22:47:20 $
+* $Author: e107steved $
 *
 */
+
+/**
+ *	e107 Private messenger plugin
+ *
+ *	install/uninstall routines
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pm
+ *	@version 	$Id: pm_setup.php,v 1.4 2009-12-17 22:47:20 e107steved Exp $;
+ */
 
 class pm_setup
 {
@@ -19,8 +31,8 @@ class pm_setup
 	function uninstall_post()
 	{
 		$sql = e107::getDb();
-		$sql->db_Delete("core", "e107_name = 'pm_prefs'");
-		$sql->db_Delete("menus", "menu_name = 'private_msg_menu'");
+		$sql->db_Delete('core', "e107_name = 'pm_prefs'");
+		$sql->db_Delete('menus', "menu_name = 'private_msg_menu'");
 	}
 	
 }

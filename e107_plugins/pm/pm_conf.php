@@ -9,9 +9,18 @@
  * PM Plugin - administration
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_conf.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-12-16 20:23:35 $
+ * $Revision: 1.11 $
+ * $Date: 2009-12-17 22:47:20 $
  * $Author: e107steved $
+ */
+
+
+/**
+ *	e107 Private messenger plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pm
+ *	@version 	$Id: pm_conf.php,v 1.11 2009-12-17 22:47:20 e107steved Exp $;
  */
 
 
@@ -253,6 +262,7 @@ if ($emessage->hasMessage())
 }
 
 
+
 switch ($action)
 {
 	case 'main' :
@@ -374,7 +384,7 @@ function show_options($pm_prefs)
 
 function show_limits($pm_prefs)
 {
-	global $sql;
+	$sql = e107::getDb();
 	
 	if (!isset($pm_prefs['pm_limits'])) { $pm_prefs['pm_limits'] = 0; }
 
@@ -469,7 +479,7 @@ function show_limits($pm_prefs)
 
 function add_limit($pm_prefs)
 {
-	global $sql;
+	$sql = e107::getDb();
 	if($sql->db_Select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
 		while($row = $sql->db_Fetch())
@@ -621,7 +631,7 @@ function doMaint($opts, $pmPrefs)
 	$logResults = array();
 	$e107 = e107::getInstance();
 	$e107->admin_log->log_event('PM_ADM_04', implode(', ',array_keys($opts)));
-	$pmHandler = new private_message();
+	$pmHandler = new private_message($pmPrefs);
 	$db2 = new db();							// Will usually need a second DB object to avoid over load
 	$start = 0;						// Use to ensure we get different log times
 
@@ -799,8 +809,10 @@ function doMaint($opts, $pmPrefs)
 
 
 
-function show_menu($action)
+
+function pm_conf_adminmenu() 
 {
+	global $action;
 	if ($action == '') { $action = 'main'; }
 
 	$var['main']['text'] = ADLAN_PM_54;
@@ -813,13 +825,6 @@ function show_menu($action)
 	$var['maint']['link'] = e_SELF.'?maint';
 
 	show_admin_menu(ADLAN_PM_12, $action, $var);
-}
-
-
-function pm_conf_adminmenu() 
-{
-	global $action;
-	show_menu($action);
 }
 
 ?>

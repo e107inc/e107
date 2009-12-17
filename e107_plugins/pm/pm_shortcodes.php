@@ -6,13 +6,23 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
+ *	PM plugin - shortcodes
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_shortcodes.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-12-16 20:23:37 $
+ * $Revision: 1.17 $
+ * $Date: 2009-12-17 22:47:20 $
  * $Author: e107steved $
  */
+
+
+/**
+ *	e107 Private messenger plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pm
+ *	@version 	$Id: pm_shortcodes.php,v 1.17 2009-12-17 22:47:20 e107steved Exp $;
+ */
+
 
 // Note: all shortcodes now begin with 'PM', so some changes from previous versions
 
@@ -78,6 +88,7 @@ class pm_handler_shortcodes
 	public		$pmBlocks = array();	// Array of blocked users.
 	public		$pmBlocked = array();	// Block info when using 'display blocked' page
 	public		$nextPrev = array();	// Variables used by nextprev
+	public		$pmManager = NULL;		// Pointer to pmbox_manager class instance
 
 	public function __construct()
 	{
@@ -87,7 +98,7 @@ class pm_handler_shortcodes
 
 	public function sc_pm_form_touser()
 	{
-		if($this->pmInfo['from_name'])
+		if(vartrue($this->pmInfo['from_name']))
 		{
 			return "<input type='hidden' name='pm_to' value='{$this->pmInfo['from_name']}' />{$this->pmInfo['from_name']}";
 		}
@@ -107,7 +118,7 @@ class pm_handler_shortcodes
 
 	public	function sc_pm_form_toclass()
 	{
-		if($this->pmInfo['from_name'])
+		if(vartrue($this->pmInfo['from_name']))
 		{
 			return '';
 		}
@@ -120,7 +131,7 @@ class pm_handler_shortcodes
 			{
 				$args = 'member, '.$args;
 			}
-			$ret .= e107::getUserClass()->uc_dropdown('pm_userclass', '', $args);		// TODO: userclass
+			$ret .= e107::getUserClass()->uc_dropdown('pm_userclass', '', $args);
 			if (strpos($ret,'option') === FALSE)  $ret = '';
 		}
 		return $ret;
@@ -130,7 +141,7 @@ class pm_handler_shortcodes
 	public	function sc_pm_form_subject()
 	{
 		$value = '';
-		if($this->pmInfo['pm_subject'])
+		if(vartrue($this->pmInfo['pm_subject']))
 		{
 			$value = $this->pmInfo['pm_subject'];
 			if(substr($value, 0, strlen(LAN_PM_58)) != LAN_PM_58)
@@ -145,7 +156,7 @@ class pm_handler_shortcodes
 	public	function sc_pm_form_message()
 	{
 		$value = '';
-		if($this->pmInfo['pm_text'])
+		if(vartrue($this->pmInfo['pm_text']))
 		{
 			if(isset($_POST['quote']))
 			{
@@ -233,42 +244,42 @@ class pm_handler_shortcodes
 
 	public	function sc_pm_inbox_total()
 	{
-		$pm_inbox = pm_getInfo('inbox');
+		$pm_inbox = $this->pmManager->pm_getInfo('inbox');
 		return intval($pm_inbox['inbox']['total']);
 	}
 
 
 	public	function sc_pm_inbox_unread()
 	{
-		$pm_inbox = pm_getInfo('inbox');
+		$pm_inbox = $this->pmManager->pm_getInfo('inbox');
 		return intval($pm_inbox['inbox']['unread']);
 	}
 
 
 	public	function sc_pm_inbox_filled()
 	{
-		$pm_inbox = pm_getInfo('inbox');
+		$pm_inbox = $this->pmManager->pm_getInfo('inbox');
 		return (intval($pm_inbox['inbox']['filled']) > 0 ? $pm_inbox['inbox']['filled'] : '');
 	}
 
 
 	public	function sc_pm_outbox_total()
 	{
-		$pm_outbox = pm_getInfo('outbox');
+		$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 		return intval($pm_outbox['outbox']['total']);
 	}
 
 
 	public	function sc_pm_outbox_unread()
 	{
-		$pm_outbox = pm_getInfo('outbox');
+		$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 		return intval($pm_outbox['outbox']['unread']);
 	}
 
 
 	public	function sc_pm_outbox_filled()
 	{
-		$pm_outbox = pm_getInfo('outbox');
+		$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 		return (intval($pm_outbox['outbox']['filled']) > 0 ? $pm_outbox['outbox']['filled'] : '');
 	}
 
@@ -454,7 +465,7 @@ class pm_handler_shortcodes
 
 	public	function sc_pm_send_pm_link()
 	{
-		$pm_outbox = pm_getInfo('outbox');
+		$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 		if($pm_outbox['outbox']['filled'] < 100)
 		{
 			$link = $this->e107->url->getUrl('pm','main',array('f' => 'send'));
@@ -468,7 +479,7 @@ class pm_handler_shortcodes
 	{
 		if($this->pmPrefs['animate'])
 		{
-			$pm_inbox = pm_getInfo('inbox');
+			$pm_inbox = $this->pmManager->pm_getInfo('inbox');
 			if($pm_inbox['inbox']['new'] > 0)
 			{
 				return NEWPM_ANIMATION;
@@ -478,7 +489,7 @@ class pm_handler_shortcodes
 	}
 
 
-	public	function sc_pm_nextprev()
+	public	function sc_pm_nextprev($parm = '')
 	{
 		return $this->e107->tp->parseTemplate("{NEXTPREV={$this->pmNextPrev['total']},{$this->pmPrefs['perpage']},{$this->pmNextPrev['start']},".e_SELF."?{$parm}.[FROM]}");
 	}
@@ -515,7 +526,7 @@ class pm_handler_shortcodes
 	}
 
 
-	public	function sc_pm_blocked_date()
+	public	function sc_pm_blocked_date($parm='')
 	{
 		require_once(e_HANDLER.'date_handler.php');
 		return convert::convert_date($this->pmBlocked['pm_block_datestamp'], $parm);

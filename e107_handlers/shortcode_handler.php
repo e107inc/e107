@@ -9,9 +9,9 @@
  * e107 Shortcode handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/shortcode_handler.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-12-12 16:40:41 $
- * $Author: secretr $
+ * $Revision: 1.40 $
+ * $Date: 2009-12-17 22:47:20 $
+ * $Author: e107steved $
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -523,7 +523,7 @@ class e_shortcode
 			$ret = eval($scCode);
 		}
 
-		if($ret != '' || is_numeric($ret))
+		if(isset($ret) && ($ret != '' || is_numeric($ret)))
 		{
 			//if $sc_mode exists, we need it to parse $sc_style
 			if($sc_mode)
@@ -544,9 +544,9 @@ class e_shortcode
 		}
 		if (E107_DBG_SC)
 		{
-			$sql->db_Mark_Time("(SC $code Done)");
+			$sql->db_Mark_Time("(SC {$code} Done)");
 		}
-		return $ret;
+		return isset($ret) ? $ret : '';
 	}
 
 	function parse_scbatch($fname, $type = 'file')

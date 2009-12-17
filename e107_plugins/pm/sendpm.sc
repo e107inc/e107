@@ -1,10 +1,25 @@
+/*
+ * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * $Id: sendpm.sc,v 1.4 2009-12-17 22:47:20 e107steved Exp $
+ *
+ * PM icon shortcode
+*/
+
+/**
+ *	e107 Private messenger plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	pm
+ *	@version 	$Id: sendpm.sc,v 1.4 2009-12-17 22:47:20 e107steved Exp $;
+ */
+
 include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 
 global $sysprefs, $pm_prefs;
 $pm_prefs = $sysprefs->getArray("pm_prefs");
 if(check_class($pm_prefs['pm_class']))
 {
-	if(file_exists(THEME."forum/pm.png"))
+	if(file_exists(THEME.'forum/pm.png'))
 	{
 		$img = "<img src='".THEME_ABS."forum/pm.png' alt='".LAN_PM."' title='".LAN_PM."' style='border:0' />";
 	}
@@ -16,5 +31,5 @@ if(check_class($pm_prefs['pm_class']))
 }
 else
 {
-	return "";
+	return '';
 }

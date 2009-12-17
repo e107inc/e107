@@ -9,8 +9,8 @@
  * Shortcodes for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-22 10:11:28 $
+ * $Revision: 1.16 $
+ * $Date: 2009-12-17 22:47:20 $
  * $Author: e107steved $
  *
 */
@@ -20,15 +20,12 @@ TODO:
 	1. Could make date/month arrays 1-based instead of 0-based - might simplify maths
 	2.	Good way of reading categories
 
-	2. EC_EVENT_EVENT_DATE_TIME uses global template variable
-	3. EC_NEXT_EVENT_GAP uses global $cal_totev - use $numEvents
 	4. Have 'currentMonth' flag (means 'current day' if $ds == 'one') ?
 	5. Check whether $prop should be calculated better
-	4. Finish the conversion!
 */
 
 if (!defined('e107_INIT')) { exit; }
-//require_once(e_HANDLER.'shortcode_handler.php');				// Should only be temporary?
+
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');	
 register_shortcode('event_calendar_shortcodes', true);
 initShortcodeClass('event_calendar_shortcodes');
@@ -836,7 +833,6 @@ class event_calendar_shortcodes
 	}
 
 
-	// TODO: Resolve global
 	public function sc_ec_event_event_date_time()
 	{
 		$et = 0;
