@@ -9,8 +9,8 @@
  *	PM plugin - main user interface
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-12-17 22:47:20 $
+ * $Revision: 1.16 $
+ * $Date: 2009-12-18 20:49:55 $
  * $Author: e107steved $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm.php,v 1.15 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id: pm.php,v 1.16 2009-12-18 20:49:55 e107steved Exp $;
  */
 
 
@@ -240,19 +240,20 @@ class pm_extended extends private_message
 			$pm_info['pm_read'] = $now;
 			$this->pm_mark_read($pmid, $pm_info);
 		}
-		$txt .= $this->e107->tp->parseTemplate($PM_SHOW, true);
+		$txt = $this->e107->tp->parseTemplate($PM_SHOW, true);
 		$this->e107->ns->tablerender(LAN_PM, $txt);
 		if (!$comeFrom)
 		{
 			if ($pm_info['pm_from'] == USERID) { $comeFrom = 'outbox'; } 
 		}
+		// Need to show inbox or outbox from start
 		if ($comeFrom == 'outbox')
 		{	// Show Outbox
-			$this->e107->ns->tablerender(LAN_PM." - ".LAN_PM_26, $this->show_outbox($pm_proc_id), 'PM');
+			$this->e107->ns->tablerender(LAN_PM." - ".LAN_PM_26, $this->show_outbox(), 'PM');
 		} 
 		else
 		{	// Show Inbox
-			$this->e107->ns->tablerender(LAN_PM." - ".LAN_PM_25, $this->show_inbox($pm_proc_id), 'PM');
+			$this->e107->ns->tablerender(LAN_PM.' - '.LAN_PM_25, $this->show_inbox(), 'PM');
 		}
 	}
 
@@ -306,7 +307,7 @@ class pm_extended extends private_message
 			return LAN_PM_12;
 		}
 
-		$pm_info = pm_getInfo('outbox');
+		$pm_info = $this->pmManager->pm_getInfo('outbox');
 		if($pm_info['outbox']['total'] != $_POST['numsent'])
 		{
 			return LAN_PM_14;
@@ -392,9 +393,9 @@ class pm_extended extends private_message
 				$totalsize += $_FILES['file_userfile']['size'][$fid];
 			}
 
-			if(intval($this->pmPrefs['pm_limit']) > 0)
+			if(intval($this->pmPrefs['pm_limits']) > 0)
 			{
-				if($this->pmPrefs['pm_limit'] == '1')
+				if($this->pmPrefs['pm_limits'] == '1')
 				{
 					if($pm_info['outbox']['total'] == $pm_info['outbox']['limit'])
 					{
@@ -443,7 +444,7 @@ class pm_extended extends private_message
  */
 function pm_user_lookup()
 {
-	global $sql;
+	$sql = e107::getDb();
 
 	$query = "SELECT * FROM #user WHERE user_name REGEXP '^".$_POST['keyword']."' ";
 	if($sql -> db_Select_gen($query))

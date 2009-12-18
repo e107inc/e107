@@ -9,8 +9,8 @@
  * Event calendar plugin - large calendar display
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-22 10:11:28 $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-18 20:49:55 $
  * $Author: e107steved $
  */
 
@@ -71,7 +71,7 @@ if (e_QUERY)
 	$qs = explode('.', e_QUERY);	// Get date from query
 	$dateArray	= getdate($qs[0]);
 }
-if (!is_array($dateArray))
+if (!isset($dateArray))
 {	// Show current month
 	$dateArray	= $ecal_class->cal_date;
 } 

@@ -9,8 +9,8 @@
  *	PM plugin - base class API
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_class.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-12-17 22:47:20 $
+ * $Revision: 1.12 $
+ * $Date: 2009-12-18 20:49:55 $
  * $Author: e107steved $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_class.php,v 1.11 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id: pm_class.php,v 1.12 2009-12-18 20:49:55 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -109,10 +109,12 @@ class private_message
 	 */
 	function add($vars)
 	{
+		$tp = $this->e107->tp;
 		$vars['options'] = '';
 		$pmsize = 0;
 		$attachlist = '';
 		$pm_options = '';
+		$ret = '';
 		if(isset($vars['receipt']) && $vars['receipt']) {$pm_options .= '+rr+';	}
 		if(isset($vars['uploaded']))
 		{
@@ -128,8 +130,8 @@ class private_message
 		}
 		$pmsize += strlen($vars['pm_message']);
 
-		$pm_subject = trim($this->e107->tp->toDB($vars['pm_subject']));
-		$pm_message = trim($this->e107->tp->toDB($vars['pm_message']));
+		$pm_subject = trim($tp->toDB($vars['pm_subject']));
+		$pm_message = trim($tp->toDB($vars['pm_message']));
 		
 		if (!$pm_subject && !$pm_message && !$attachlist)
 		{  // Error - no subject, no message body and no uploaded files
@@ -161,7 +163,7 @@ class private_message
 					{
 						$toclass .= $u['user_name'].", ";
 					}
-					if(check_class($pm_prefs['notify_class'], $u['user_class']))
+					if(check_class($this->pmPrefs['notify_class'], $u['user_class']))
 					{
 						$vars['to_info'] = $u;
 						$this->pm_send_notify($u['user_id'], $vars, $pmid, count($a_list));
@@ -182,7 +184,7 @@ class private_message
 		{
 			if($pmid = $this->e107->sql->db_Insert('private_msg', "0, '".intval($vars['from_id'])."', '".$tp -> toDB($vars['to_info']['user_id'])."', '".intval($sendtime)."', '0', '{$pm_subject}', '{$pm_message}', '0', '0', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
 			{
-				if(check_class($pm_prefs['notify_class'], $vars['to_info']['user_class']))
+				if(check_class($this->pmPrefs['notify_class'], $vars['to_info']['user_class']))
 				{
 					set_time_limit(30);
 					$this->pm_send_notify($vars['to_info']['user_id'], $vars, $pmid, count($a_list));
@@ -499,11 +501,11 @@ class private_message
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
-		if($total_messages = $this->e107->sql->db_Count("private_msg", "(*)", "WHERE pm_to='{$uid}' AND pm_read_del=0"))
+		if($total_messages = $this->e107->sql->db_Count('private_msg', '(*)', "WHERE pm_to='{$uid}' AND pm_read_del=0"))
 		{
 			$qry = "
-			SELECT pm.*, u.user_image, u.user_name FROM #private_msg AS pm
-			LEFT JOIN #user AS u ON u.user_id = pm.pm_from
+			SELECT pm.*, u.user_image, u.user_name FROM `#private_msg` AS pm
+			LEFT JOIN `#user` AS u ON u.user_id = pm.pm_from
 			WHERE pm.pm_to='{$uid}' AND pm.pm_read_del=0
 			ORDER BY pm.pm_sent DESC
 			LIMIT ".$from.", ".$limit."
@@ -511,8 +513,8 @@ class private_message
 			if($this->e107->sql->db_Select_gen($qry))
 			{
 				$ret['messages'] = $this->e107->sql->db_getList();
-				$ret['total_messages'] = $total_messages;
 			}
+			$ret['total_messages'] = $total_messages;		// Should always be defined
 			return $ret;
 		}
 		return FALSE;

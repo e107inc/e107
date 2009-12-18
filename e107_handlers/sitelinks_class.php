@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/sitelinks_class.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-11-23 10:27:43 $
- * $Author: e107coders $
+ * $Revision: 1.27 $
+ * $Date: 2009-12-18 20:49:55 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -314,16 +314,23 @@ class sitelinks
 
 
 
-
-function hilite($link,$enabled='')
+/**
+ *	Determine whether link highlighting needs to be active
+ *
+ *	@param string $link - the full link as stored in the DB
+ *	@param boolean $enabled - TRUE if the link is enabled
+ *
+ *	@return boolean TRUE if link to be highlighted, FALSE if not
+ */
+function hilite($link,$enabled = FALSE)
 {
 	global $PLUGINS_DIRECTORY,$tp,$pref;
     if(!$enabled){ return FALSE; }
 
     $link = $tp->replaceConstants($link, '', TRUE);			// The link saved in the DB
-  	$tmp = explode("?",$link);
-    $link_qry = (isset($tmp[1])) ? $tmp[1] : "";
-    $link_slf = (isset($tmp[0])) ? $tmp[0] : "";
+  	$tmp = explode('?',$link);
+    $link_qry = (isset($tmp[1])) ? $tmp[1] : '';
+    $link_slf = (isset($tmp[0])) ? $tmp[0] : '';
 	$link_pge = basename($link_slf);
 	$link_match = (empty($tmp[0])) ? "": strpos(e_SELF,$tmp[0]);	// e_SELF is the actual displayed page
 	
@@ -338,7 +345,7 @@ function hilite($link,$enabled='')
 
 
 // ----------- highlight overriding - set the link matching in the page itself.
-	if(defined("HILITE"))
+	if(defined('HILITE'))
 	{
 		if(strpos($link,HILITE))
 		{
@@ -435,35 +442,43 @@ function hilite($link,$enabled='')
 
 	}
 // --------------- highlight for Custom Pages.----------------
-// eg. page.php?1
+// eg. page.php?1, or page.php?5.7	[2nd parameter is page # within item]
 
-		if (strpos($link, "page.php?") !== FALSE && strpos(e_SELF,"/page.php")) {
-            list($custom,$page) = explode(".",$link_qry);
-			list($q_custom,$q_page) = explode(".",e_QUERY);
-			if($custom == $q_custom){
+		//echo "Link: {$link}, link query: {$link_qry}, e_SELF: ".e_SELF.", link_slf: {$link_slf}, link_pge: {$link_pge}, e_PAGE: ".e_PAGE."<br />";
+		if (($link_slf == e_HTTP.'page.php') && (e_PAGE == 'page.php'))
+		{
+            list($custom,$page) = explode('.',$link_qry.'.');
+			list($q_custom,$q_page) = explode('.',e_QUERY.'.');
+			if($custom == $q_custom)
+			{
             	return TRUE;
-			}else{
+			}
+			else
+			{
               	return FALSE;
 			}
 		}
 
 // --------------- highlight default ----------------
-		if(strpos($link, "?") !== FALSE){
-
+		if(strpos($link, '?') !== FALSE)
+		{
 			$thelink = str_replace("../", "", $link);
 			if(!preg_match("/all|item|cat|list/", e_QUERY) && (empty($link) == false) && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
 		   		return true;
 			}
 		}
-		if(!preg_match("/all|item|cat|list/", e_QUERY) && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
+		if(!preg_match("/all|item|cat|list/", e_QUERY) && (strpos(e_SELF, str_replace("../", "",$link)) !== false))
+		{
 		  	return true;
 		}
 
-		if((!$link_qry && !e_QUERY) && (empty($link) == FALSE) && (strpos(e_SELF,$link) !== FALSE)){
+		if((!$link_qry && !e_QUERY) && (empty($link) == FALSE) && (strpos(e_SELF,$link) !== FALSE))
+		{
 			return TRUE;
 		}
 
-		if(($link_slf == e_SELF && !link_qry) || (e_QUERY && empty($link) == FALSE && strpos(e_SELF."?".e_QUERY,$link)!== FALSE) ){
+		if(($link_slf == e_SELF && !link_qry) || (e_QUERY && empty($link) == FALSE && strpos(e_SELF."?".e_QUERY,$link)!== FALSE) )
+		{
           	return TRUE;
 		}
 

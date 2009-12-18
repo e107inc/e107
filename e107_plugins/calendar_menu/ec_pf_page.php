@@ -9,8 +9,8 @@
  *	Event calendar - generate lists
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_page.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-06 10:45:49 $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-18 20:49:55 $
  * $Author: e107steved $
  */
 /*
@@ -40,6 +40,7 @@ $ecal_class = new ecal_class;
 
 e107::getScParser();
 require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
+setScVar('event_calendar_shortcodes', 'ecalClass', &$ecal_class);			// Give shortcodes a pointer to calendar class
 
 $message = '';
 unset($ec_qs);
@@ -115,7 +116,7 @@ if (!isset($ec_qs[0]) || !isset($ec_qs[1]))
 	</tr><tr>
 	<td class='forumheader3'>".EC_LAN_155."</td>
 	<td class='forumheader3' style='text_align:center'>";
-	$cal_text .= $e107->tp->parseTemplate('{EC_NAV_CATEGORIES=nosubmit}',FALSE,$calendar_shortcodes);
+	$cal_text .= $e107->tp->parseTemplate('{EC_NAV_CATEGORIES=nosubmit}',TRUE);
 	$cal_text .= "</td>
 	</tr>";
 	if (isset($EVENT_CAL_PDF_NAMES) && is_array($EVENT_CAL_PDF_NAMES) && (count($EVENT_CAL_PDF_NAMES) > 1))
