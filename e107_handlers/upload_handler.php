@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.37 $
-|   $Date: 2009-10-16 21:18:27 $
-|   $Author: secretr $
+|   $Revision: 1.38 $
+|   $Date: 2009-12-18 21:35:15 $
+|   $Author: e107steved $
 +---------------------------------------------------------------+
 */
 
@@ -513,69 +513,75 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 */
 function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = FALSE)
 {
-// 1. Start by checking against filetypes - that's the easy one!
-  $file_ext = strtolower(substr(strrchr($target_name, "."), 1));
-  if (!in_array($file_ext, $allowed_filetypes))
-  {
-    if (is_bool($unknown)) return 1;	  // Reject out of hand if no possible alternative extensions
-	// Otherwise, it could be in the supplementary list
-	$tmp = explode(',', $unknown);
-	for ($i = 0; $i < count($tmp); $i++) { $tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));  }
-	if (!in_array($file_ext, $tmp)) return 6;
-  }
+	// 1. Start by checking against filetypes - that's the easy one!
+	$file_ext = strtolower(substr(strrchr($target_name, "."), 1));
+	if (!in_array($file_ext, $allowed_filetypes))
+	{
+		if (is_bool($unknown)) return 1;	  // Reject out of hand if no possible alternative extensions
+		// Otherwise, it could be in the supplementary list
+		$tmp = explode(',', $unknown);
+		for ($i = 0; $i < count($tmp); $i++) { $tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));  }
+		if (!in_array($file_ext, $tmp)) return 6;
+	}
 
 
-// 2. For all files, read the first little bit to check for any flags etc
-  $res = fopen($filename, 'rb');
-  $tstr = fread($res,100);
-  fclose($res);
-  if ($tstr === FALSE) return 2;			// If can't read file, not much use carrying on!
-  if (stristr($tstr,'<?php') !== FALSE) return 3;		// Pretty certain exploit
-  if (stristr($tstr,'<?') !== FALSE) return 7;			// Possible exploit - maybe allowable?
+	// 2. For all files, read the first little bit to check for any flags etc
+	$res = fopen($filename, 'rb');
+	$tstr = fread($res,100);
+	fclose($res);
+	if ($tstr === FALSE) return 2;			// If can't read file, not much use carrying on!
+	if (stristr($tstr,'<?php') !== FALSE) return 3;		// Pretty certain exploit
+	if (stristr($tstr,'<?') !== FALSE)				// Bit more tricky - can sometimes be OK
+	{
+		if (stristr($tstr, '<?xpacket') === FALSE)	// Allow the XMP header produced by CS4
+		{
+			return 7;
+		}
+	}
   
   
-// 3. Now do what we can based on file extension
-  switch ($file_ext)
-  {
-    case 'jpg' :
-	case 'gif' :
-	case 'png' :
-	case 'jpeg' :
-	case 'pjpeg' :
-	case 'bmp' :
-	  $ret = getimagesize($filename);
-	  if (!is_array($ret)) return 4;		// getimagesize didn't like something
-	  if (($ret[0] == 0) || ($ret[1] == 0)) return 5;		// Zero size picture or bad file format
-	  break;
-	  
-	case 'zip' :
-	case 'gzip' :
-	case 'gz' :
-	case 'tar' :
-	case 'bzip' :
-	case 'pdf' :
-	case 'rar' :
-	case '7z' :
-	case 'csv' :
-	case 'wmv' :
-	case 'swf' :
-	case 'flv': //Flash stream
-	case 'f4v': //Flash stream
-	case 'mov': //media
-	case 'avi': //media
-	  break;			// Just accept these
+	// 3. Now do what we can based on file extension
+	switch ($file_ext)
+	{
+		case 'jpg' :
+		case 'gif' :
+		case 'png' :
+		case 'jpeg' :
+		case 'pjpeg' :
+		case 'bmp' :
+			$ret = getimagesize($filename);
+			if (!is_array($ret)) return 4;		// getimagesize didn't like something
+			if (($ret[0] == 0) || ($ret[1] == 0)) return 5;		// Zero size picture or bad file format
+			break;
 
-	case 'php' :
-	case 'htm' :
-	case 'html' :
-	case 'cgi' :
-	case 'pl' :
-	  return 9;			// Never accept these! Whatever the user thinks!
-	  
-	default :
-	  if (is_bool($unknown)) return ($unknown ? TRUE : 8);
-  }
-  return TRUE;			// Accepted here
+		case 'zip' :
+		case 'gzip' :
+		case 'gz' :
+		case 'tar' :
+		case 'bzip' :
+		case 'pdf' :
+		case 'rar' :
+		case '7z' :
+		case 'csv' :
+		case 'wmv' :
+		case 'swf' :
+		case 'flv': //Flash stream
+		case 'f4v': //Flash stream
+		case 'mov': //media
+		case 'avi': //media
+			break;			// Just accept these
+
+		case 'php' :
+		case 'htm' :
+		case 'html' :
+		case 'cgi' :
+		case 'pl' :
+			return 9;			// Never accept these! Whatever the user thinks!
+		  
+		default :
+			if (is_bool($unknown)) return ($unknown ? TRUE : 8);
+	}
+	return TRUE;			// Accepted here
 }
 
 
