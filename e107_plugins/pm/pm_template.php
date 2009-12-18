@@ -9,8 +9,8 @@
  *	PM plugin - template file
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_template.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-17 22:47:20 $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-18 20:49:55 $
  * $Author: e107steved $
  */
 
@@ -20,15 +20,15 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: pm_template.php,v 1.8 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id: pm_template.php,v 1.9 2009-12-18 20:49:55 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
 
-global $sc_style;
+global $sc_style;		// Needed for the PM_REPLY shortcode!
 
-define('PM_READ_ICON', "<img src='".e_PLUGIN_ABS."/pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
-define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."/pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
+if (!defined('PM_READ_ICON')) define('PM_READ_ICON', "<img src='".e_PLUGIN_ABS."/pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
+if (!defined('PM_UNREAD_ICON')) define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."/pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
 
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 

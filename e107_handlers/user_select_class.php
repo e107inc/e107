@@ -9,9 +9,9 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/user_select_class.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-18 20:49:55 $
+ * $Author: e107steved $
  */
 
 if (!defined("e_THEME")) {
@@ -80,9 +80,10 @@ class user_select {
 		return $text;
 	}
 	
-	function select_form($type, $user_form, $user_value = '', $class_form = false, $class_value = '', $class = false) {
+	function select_form($type, $user_form, $user_value = '', $class_form = false, $class_value = '', $class = false) 
+	{
 		global $tp;
-		$text .= "<script type='text/javascript'>
+		$text = "<script type='text/javascript'>
 		<!--
 		function uc_switch(uctype) {
 			document.getElementById(uctype).value = '';
@@ -176,14 +177,15 @@ class user_select {
 		$text = "<form action='".e_SELF."?".e_QUERY."' method='POST'>
 			<table style='width:100%' class='fborder'>
 			<tr>
-			<td class='forumheader3' style='text-align: center'><input type='text' name='srch' class='tbox' value='".$tp -> post_toForm($_POST['srch'])."' size='40'>
+			<td class='forumheader3' style='text-align: center'><input type='text' name='srch' class='tbox' value='".$tp -> post_toForm(varset($_POST['srch'],''))."' size='40'>
 			<input class='button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."' /></td>
 			</tr>
 			</table>
 			</form>
 			";
 
-		if ($_POST['dosrch']) {
+		if (isset($_POST['dosrch'])) 
+		{
 			$userlist = $this -> findusers($_POST['srch']);
 			if($userlist == FALSE)
 			{

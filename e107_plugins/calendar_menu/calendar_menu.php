@@ -9,14 +9,19 @@
  * Forthcoming events menu handler for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_menu.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-22 10:11:28 $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-18 20:49:55 $
  * $Author: e107steved $
  */
 if (!defined('e107_INIT')) { exit; }
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('calendar_menu')) return '';
 
+if (!isset($ecal_class)) 
+{
+	require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
+	$ecal_class = new ecal_class;
+}
 // See if the page is already in the cache
 $cache_tag = 'nq_event_cal_cal';
 if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time))
@@ -25,11 +30,6 @@ if($cacheData = $e107->ecache->retrieve($cache_tag, $ecal_class->max_cache_time)
 	return;
 }
 global $pref;
-if (!is_object($ecal_class)) 
-{
-	require_once(e_PLUGIN.'calendar_menu/ecal_class.php');
-	$ecal_class = new ecal_class;
-}
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'.php');
 
 // Doesn't use shortcodes - rather a specific format for that
