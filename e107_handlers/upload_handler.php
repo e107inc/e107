@@ -9,9 +9,9 @@
  * File Upload Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/upload_handler.php,v $
- * $Revision: 1.26 $
- * $Date: 2009-11-18 01:04:43 $
- * $Author: e107coders $
+ * $Revision: 1.27 $
+ * $Date: 2009-12-18 21:34:58 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT'))
@@ -545,11 +545,20 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	$tstr = fread($res, 100);
 	fclose($res);
 	if ($tstr === FALSE)
+	{
 		return 2; // If can't read file, not much use carrying on!
+	}
 	if (stristr($tstr, '<?php') !== FALSE)
+	{
 		return 3; // Pretty certain exploit
-	if (stristr($tstr, '<?') !== FALSE)
-		return 7; // Possible exploit - maybe allowable?
+	}
+	if (stristr($tstr,'<?') !== FALSE)				// Bit more tricky - can sometimes be OK
+	{
+		if (stristr($tstr, '<?xpacket') === FALSE)	// Allow the XMP header produced by CS4
+		{
+			return 7;
+		}
+	}
 		
 	// 3. Now do what we can based on file extension
 	switch ($file_ext)
