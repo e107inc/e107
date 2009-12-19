@@ -13,27 +13,37 @@
 | File locking, modified getip() 18.01.07
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2007-11-11 12:11:03 $
+|     $Revision: 1.28 $
+|     $Date: 2009-12-19 12:14:41 $
 |     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
-// File called with:
-// e_PLUGIN_ABS."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
-// referer= ref
-// color= colord
-// eself= eself 
-// res= res
-// err_direct - optional error flag
-// err_referer - referrer if came via error page
-define("log_INIT", TRUE);
+/* File to log page accesses - called with
+	e_PLUGIN_ABS."log/log.php?base64encode(referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );)";
+		referer= ref
+		color= colord
+		eself= eself 
+		res= res
+		err_direct - optional error flag
+		err_referer - referrer if came via error page
+*/
+define('log_INIT', TRUE);
+
+$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
+parse_str($logVals, $vals);
 
 
-$colour = strip_tags((isset($_REQUEST['color']) ? $_REQUEST['color'] : ''));
-$res = strip_tags((isset($_REQUEST['res']) ? $_REQUEST['res'] : ''));
-$self = strip_tags((isset($_REQUEST['eself']) ? $_REQUEST['eself'] : ''));
-$ref = addslashes(strip_tags((isset($_REQUEST['referer']) ? $_REQUEST['referer'] : '')));
+header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
+header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
+
+//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, print_r($vals, TRUE)."\n"); fclose($logfp);
+
+$colour = strip_tags((isset($vals['colour']) ? $vals['colour'] : ''));
+$res = strip_tags((isset($vals['res']) ? $vals['res'] : ''));
+$self = strip_tags((isset($vals['eself']) ? $vals['eself'] : ''));
+$ref = addslashes(strip_tags((isset($vals['referer']) ? $vals['referer'] : '')));
+
 $date = date("z.Y", time());
 $logPfile = "logs/logp_".$date.".php";
 
@@ -41,49 +51,48 @@ $logPfile = "logs/logp_".$date.".php";
 // vet resolution and colour depth some more - avoid dud values
 if ($res && preg_match("#.*?((\d+)\w+?(\d+))#", $res, $match))
 {
-  $res = $match[2].'x'.$match[3];
+	$res = $match[2].'x'.$match[3];
 }
 else
 {
-  $res = '??';			// Can't decode resolution
+	$res = '??';			// Can't decode resolution
 }
 
 if ($colour && preg_match("#.*?(\d+)#",$colour,$match))
 {
-  $colour = intval($match[1]);
+	$colour = intval($match[1]);
 }
 else
 {
-  $colour='??';
+	$colour='??';
 }
 
 
-if ($err_code = strip_tags((isset($_REQUEST['err_direct']) ? $_REQUEST['err_direct'] : '')))
+if ($err_code = strip_tags((isset($vals['err_direct']) ? $vals['err_direct'] : '')))
 {
-  $ref = addslashes(strip_tags(isset($_REQUEST['err_referer']) ? $_REQUEST['err_referer'] : ''));
-  $log_string = $err_code.",".$self.",".$ref;
+	$ref = addslashes(strip_tags(isset($vals['err_referer']) ? $vals['err_referer'] : ''));
 // Uncomment the next two lines to create a separate CSV format log of invalid accesses - error code, entered URL, referrer
-//  $logname = "logs/errpages.csv";
-//  $logfp = fopen($logname, 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
-  $err_code .= ':';
+//	$log_string = $err_code.",".$self.",".$ref;
+//  $logfp = fopen("logs/errpages.csv", 'a+'); fwrite($logfp, $log_string."\n\r"); fclose($logfp);
+	$err_code .= ':';
 }
 
-if(strstr($ref, "admin")) 
+if(strstr($ref, 'admin')) 
 {
 	$ref = FALSE;
 }
 
-$screenstats = $res."@".$colour;
+$screenstats = $res.'@'.$colour;
 $agent = $_SERVER['HTTP_USER_AGENT'];
 $ip = getip();
 
 $oldref = $ref; // backup for search string being stripped off for referer
 if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) 
 {
-  if(preg_match("#http://(.*?)($|/)#is", $ref, $match)) 
-  {
-	$ref = $match[0];
-  }
+	if(preg_match("#http://(.*?)($|/)#is", $ref, $match)) 
+	{
+		$ref = $match[0];
+	}
 }
 
 $pageDisallow = "cache|file|eself|admin";
@@ -97,51 +106,52 @@ $PN = $pageName;
 $pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
 if($pageName == "") $pageName = "index";
 
-$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
-
 if(preg_match("/".$pageDisallow."/i", $pageName)) return;
 
+
+$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
+//$logfp = fopen('logs/rcvstring.txt', 'a+'); fwrite($logfp, $pageName."\n"); fclose($logfp);
 
 $p_handle = fopen($logPfile, 'r+');
 if($p_handle && flock( $p_handle, LOCK_EX ) ) 
 {
-  $log_file_contents = '';
-  while (!feof($p_handle))
-  {  // Assemble a string of data
-    $log_file_contents.= fgets($p_handle,1000);
-  }
-  $log_file_contents = str_replace(array('<'.'?php','?'.'>'),'',$log_file_contents);
-  if (eval($log_file_contents) === FALSE) echo "error in log file contents<br /><br /><br /><br />";
+	$log_file_contents = '';
+	while (!feof($p_handle))
+	{  // Assemble a string of data
+		$log_file_contents.= fgets($p_handle,1000);
+	}
+	$log_file_contents = str_replace(array('<'.'?php','?'.'>'),'',$log_file_contents);
+	if (eval($log_file_contents) === FALSE) echo "error in log file contents<br /><br /><br /><br />";
 }
 else
 {
-  echo "Couldn't log data<br /><br /><br /><br />";
-  exit;
+	echo "Couldn't log data<br /><br /><br /><br />";
+	exit;
 }
 
 
 $flag = FALSE;
 if(array_key_exists($pageName, $pageInfo)) 
 {  // Existing page - just increment stats
-  $pageInfo[$pageName]['ttl'] ++;
+	$pageInfo[$pageName]['ttl'] ++;
 }
 else 
 {  // First access of page
-  $url = preg_replace("/".$tagRemove2."/si", "", $self);
-  if(preg_match("/".$pageDisallow."/i", $url)) return;
-  $pageInfo[$pageName] = array('url' => $url, 'ttl' => 1, 'unq' => 1);
-  $flag = TRUE;
+	$url = preg_replace("/".$tagRemove2."/si", "", $self);
+	if(preg_match("/".$pageDisallow."/i", $url)) return;
+	$pageInfo[$pageName] = array('url' => $url, 'ttl' => 1, 'unq' => 1);
+	$flag = TRUE;
 }
 
 if(!strstr($ipAddresses, $ip)) 
 {	/* unique visit */
-  if(!$flag) 
-  {
-	$pageInfo[$pageName]['unq'] ++;
-  }
-  $siteUnique ++;
-  $ipAddresses .= $ip.".";		// IP address is stored as hex string
-  require_once("loginfo.php");
+	if(!$flag) 
+	{
+		$pageInfo[$pageName]['unq'] ++;
+	}
+	$siteUnique ++;
+	$ipAddresses .= $ip.".";		// IP address is stored as hex string
+	require_once("loginfo.php");
 }
 
 $siteTotal ++;
@@ -169,42 +179,31 @@ if ($p_handle)
 }
 
 
-
-function getip($mode=TRUE) 
+// Get current IP address - return as a hex-encoded string
+function getip() 
 {
-  if (getenv('HTTP_X_FORWARDED_FOR')) 
-  {
 	$ip = $_SERVER['REMOTE_ADDR'];
-	if (preg_match("#^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
-	{  
-      $ip2 = array('#^0\..*#', 
-			   '#^127\..*#', 							// Local loopbacks
-			   '#^192\.168\..*#', 						// RFC1918 - Private Network
-			   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
-			   '#^10\..*#', 							// RFC1918 - Private Network
-			   '#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
-			   '#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
-			   );
-	  $ip = preg_replace($ip2, $ip, $ip3[1]);
+	if (getenv('HTTP_X_FORWARDED_FOR')) 
+	{
+		if (preg_match("#^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
+		{  
+			$ip2 = array('#^0\..*#', 
+				   '#^127\..*#', 							// Local loopbacks
+				   '#^192\.168\..*#', 						// RFC1918 - Private Network
+				   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
+				   '#^10\..*#', 							// RFC1918 - Private Network
+				   '#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
+				   '#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
+				   );
+			$ip = preg_replace($ip2, $ip, $ip3[1]);
+		}
 	}
-  }
-  else 
-  {
-	$ip = $_SERVER['REMOTE_ADDR'];
-  }
-  if ($ip == "") 
-  {
-	$ip = "x.x.x.x";
-  }
-  if($mode) 
-  {
+	if ($ip == "") 
+	{
+		$ip = "x.x.x.x";
+	}
 	$ipa = explode(".", $ip);
 	return sprintf('%02x%02x%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-  }
-  else 
-  {
-	return $ip;
-  }
 }
 
 ?>
