@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/submitnews.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2009-11-18 01:04:24 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2009-12-19 14:52:57 $
+|     $Author: e107steved $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,7 @@ require_once(HEADERF);
 
 if (!isset($pref['subnews_class']))
 {
-	$pref['subnews_class'] = '0';
+	$pref['subnews_class'] = e_UC_MEMBER;
 }
 
 if (!check_class($pref['subnews_class']))
