@@ -9,14 +9,14 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/import/languages/English_admin_import.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-18 02:03:35 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.3 $
+ * $Date: 2009-12-19 17:54:00 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
 
-define('LAN_CONTINUE','Continue');
+//define('LAN_CONTINUE','Continue');		Now global definition
 
 define('LAN_CONVERT_01','Import into e107');
 define('LAN_CONVERT_02','This module allows you to import various data into E107');

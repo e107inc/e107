@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.38 $
- * $Date: 2009-11-18 01:04:26 $
- * $Author: e107coders $
+ * $Revision: 1.39 $
+ * $Date: 2009-12-19 17:54:00 $
+ * $Author: e107steved $
  *
 */
 require_once ("../class2.php");
@@ -48,9 +48,9 @@ $frm = new e_form(true); //enable inner tabindex counter
 $emessage = &eMessage::getInstance();
 
 /*	RESET DISPLAY NAMES	*/
-if($_POST['submit_resetdisplaynames'])
+if(isset($_POST['submit_resetdisplaynames']))
 {
-	$e107->sql->db_Update("user", "user_name=user_loginname");
+	$e107->sql->db_Update('user', 'user_name=user_loginname');
 	$emessage->add(PRFLAN_157);
 }
 
