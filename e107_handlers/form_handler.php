@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.99 $
- * $Date: 2009-12-13 21:52:31 $
+ * $Revision: 1.100 $
+ * $Date: 2009-12-19 17:54:00 $
  * $Author: e107steved $
  *
 */
@@ -280,7 +280,7 @@ class e_form
 		// auto-height support
 		if(!vartrue($options['noresize']))
 		{
-			$options['class'] = $options['class'] ? $options['class'].' e-autoheight' : 'tbox textarea e-autoheight';
+			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox textarea e-autoheight';
 		}
 		
 		$options = $this->format_options('textarea', $name, $options);

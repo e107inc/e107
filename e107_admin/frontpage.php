@@ -9,11 +9,19 @@
  * Administration Area - Front page
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/frontpage.php,v $
- * $Revision: 1.15 $
- * $Date: 2009-11-18 01:04:25 $
- * $Author: e107coders $
+ * $Revision: 1.16 $
+ * $Date: 2009-12-19 17:54:00 $
+ * $Author: e107steved $
  *
 */
+
+/**
+ *	e107 Front page administration
+ *
+ *	@package	e107
+ *	@subpackage	admin
+ *	@version 	$Id: frontpage.php,v 1.16 2009-12-19 17:54:00 e107steved Exp $;
+ */
 
 require_once ('../class2.php');
 if(! getperms('G'))
@@ -27,8 +35,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'frontpage';
 require_once ('auth.php');
 require_once (e_HANDLER.'form_handler.php');
-require_once (e_HANDLER."message_handler.php");
-$frm = new e_form();
+require_once (e_HANDLER.'message_handler.php');
 $emessage = &eMessage::getInstance();
 
 require_once (e_HANDLER.'userclass_class.php');
@@ -38,7 +45,7 @@ $front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
 $front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);
 $front_page['wmessage'] = array('page' => 'index.php', 'title' => ADLAN_28);
 
-if($sql->db_Select("page", "*", "page_theme=''"))
+if($sql->db_Select('page', 'page_id, page_title', "page_theme=''"))
 {
 	$front_page['custom']['title'] = 'Custom Page';
 	while($row = $sql->db_Fetch())
@@ -52,9 +59,9 @@ if(varset($pref['e_frontpage_list']))
 {
 	foreach($pref['e_frontpage_list'] as $val)
 	{
-		if(is_readable(e_PLUGIN.$val."/e_frontpage.php"))
+		if(is_readable(e_PLUGIN.$val.'/e_frontpage.php'))
 		{
-			require_once (e_PLUGIN.$val."/e_frontpage.php");
+			require_once (e_PLUGIN.$val.'/e_frontpage.php');
 		}
 	}
 }
@@ -230,63 +237,62 @@ if($fp_update_prefs)
 	for($i = 1; $i <= count($fp_settings); $i ++)
 	{
 		$fp_list[$fp_settings[$i]['class']] = $fp_settings[$i]['page'];
-		//	$fp_force[$fp_settings[$i]['class']] = intval($fp_settings[$i]['force']);
 		$fp_force[$fp_settings[$i]['class']] = $fp_settings[$i]['force'];
 	}
-	//  if (($fp_list != $pref['frontpage']) || ($fp_force != $pref['frontpage_force']))
-	//  {
 	$pref['frontpage'] = $fp_list;
 	$pref['frontpage_force'] = $fp_force;
 	save_prefs();
-	//$ns->tablerender(LAN_UPDATED, "<div style='text-align:center'><b>".FRTLAN_1."</b></div>");
 	$emessage->add(FRTLAN_1, E_MESSAGE_SUCCESS);
-
-//  }
-//  else
-//  {
-//    $ns -> tablerender(LAN_UPDATED, "<div style='text-align:center'><b>".FRTLAN_45."</b></div>");
-//  }
 }
 
-/* For reference:
-define("e_UC_PUBLIC", 0);
-define("e_UC_MAINADMIN", 250);
-define("e_UC_READONLY", 251);
-define("e_UC_GUEST", 252);
-define("e_UC_MEMBER", 253);
-define("e_UC_ADMIN", 254);
-define("e_UC_NOBODY", 255);
-*/
 
-$fp = new frontpage();
+
+
+// All updates complete now - latest data is in the $fp_settings, $fp_list and $fp_force arrays
+$fp = new frontpage($front_page);
+
 
 if(isset($_POST['fp_add_new']))
 {
 	$text = $fp->edit_rule(array('order' => 0, 'class' => e_UC_PUBLIC, 'page' => 'news.php', 'force' => FALSE)); // Display edit form as well
-	$text .= $fp->select_class(FALSE);
+	$text .= $fp->select_class($fp_settings, FALSE);
 	$e107->ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_42, $text);
 }
 elseif(isset($_POST['fp_edit_rule']))
 {
 	$text = $fp->edit_rule($fp_settings[key($_POST['fp_edit_rule'])]); // Display edit form as well
-	$text .= $fp->select_class(FALSE);
+	$text .= $fp->select_class($fp_settings, FALSE);
 	$e107->ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_46, $text);
 }
 else
 { // Just show existing rules
-	$e107->ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_13, $fp->select_class(TRUE));
+	$e107->ns->tablerender(FRTLAN_PAGE_TITLE." - ".FRTLAN_13, $emessage->render().$fp->select_class($fp_settings, TRUE));
 }
+
+
 
 class frontpage
 {
-	function select_class($show_button = TRUE)
-	{ // Display existing data
-		global $fp_settings, $frm, $emessage;
+	protected	$frm;
+	protected	$frontPage = array();		// List of options for front page
 
-		//Inline Page Help Info - system message for now
-		//TODO - inline tooltip help system
-		//$emessage->add(FRTLAN_38.". ".FRTLAN_39.". ".FRTLAN_41."."); - moved to a help file
+	public function __construct($fp)
+	{
+		$this->frm = new e_form();
+		$this->frontPage = $fp;
+	}
 
+
+
+	/**
+	 *	Show a list of existing rules, with edit/delete/move buttons, and optional button to add a new rule
+	 *
+	 *	@param boolean $show_button - show the 'Add new rule' button if true
+	 *
+	 *	@return string text for display
+	 */
+	function select_class(&$fp_settings, $show_button = TRUE)
+	{
 		// List of current settings
 		$show_legend = $show_button ? " class='e-hideme'" : '';
 		$text = "
@@ -315,7 +321,7 @@ class frontpage
 
 		foreach($fp_settings as $order => $current_value)
 		{
-			$title = r_userclass_name($current_value['class']);
+			$title = e107::getUserClass()->uc_get_classname($current_value['class']);
 			$text .= "
 					<tr>
 						<td class='right'>".$order."</td>
@@ -338,7 +344,7 @@ class frontpage
 		{
 			$text .= "
 				<div class='buttons-bar center'>
-					 ".$frm->admin_button('fp_add_new', FRTLAN_42, 'create')."
+					 ".$this->frm->admin_button('fp_add_new', FRTLAN_42, 'create')."
 				</div>";
 		}
 
@@ -346,21 +352,26 @@ class frontpage
 			</fieldset>
 			</form>";
 
-		return ($show_button ? $emessage->render() : '').$text;
+		return $text;
 	}
 
+
+
+	/**
+	 *	Display form to add/edit rules
+	 *
+	 *	@param array $rule_info - initial data (must be preset if new rule)
+	 *
+	 *	@return string - text for display
+	 */
 	function edit_rule($rule_info)
-	{ // Display form to add/edit rules
-		global $front_page, $frm;
-		// $rule_info contains existing data as an array, or a set of defaults otherwise ('order', 'class', 'page', 'force')
-
-
+	{
 		$is_other_home = TRUE;
 		$is_other_force = TRUE;
 		//$force_checked = $rule_info['force'] ? " checked='checked'" : '';
-		$text_tmp_1 = "";
-		$text_tmp_2 = "";
-		foreach($front_page as $front_key => $front_value)
+		$text_tmp_1 = '';
+		$text_tmp_2 = '';
+		foreach($this->frontPage as $front_key => $front_value)
 		{
 			//$type_selected = FALSE;
 
@@ -425,10 +436,10 @@ class frontpage
 					</table>
 				</div>
 				<div class='buttons-bar center'>
-					".$frm->hidden('fp_order', $rule_info['order'])."
-					".FRTLAN_43.r_userclass('class', $rule_info['class'], 'off', 'public,guest,member,admin,main,classes')."
-					".$frm->admin_button('fp_save_new', FRTLAN_12, 'update')."
-					".$frm->admin_button('fp_cancel', LAN_CANCEL, 'cancel')."
+					".$this->frm->hidden('fp_order', $rule_info['order'])."
+					".FRTLAN_43.e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."
+					".$this->frm->admin_button('fp_save_new', FRTLAN_12, 'update')."
+					".$this->frm->admin_button('fp_cancel', LAN_CANCEL, 'cancel')."
 				</div>
 			</fieldset>
 		</form>
@@ -436,11 +447,18 @@ class frontpage
 		return $text;
 	}
 
-	// Given a path string, returns the 'type' (title) for it
+
+
+	/**
+	 *	Given a path string related to a choice, returns the 'type' (title) for it
+	 *
+	 *	@param string $path
+	 *
+	 *	@return string - title of option
+	 */
 	function lookup_path($path)
 	{
-		global $front_page;
-		foreach($front_page as $front_value)
+		foreach($this->frontPage as $front_value)
 		{
 			if(is_array($front_value['page']))
 			{ // Its a URL with multiple options
@@ -467,14 +485,26 @@ class frontpage
 			return FRTLAN_52; // 'None'
 	}
 
+
+
+	/**
+	 *	Show the selection options for a possible target of a rule
+	 *
+	 *	@param string $ob_name - name of the radio button which selects this element 
+	 *	@param string $front_key 
+	 *	@param array|string $front_value - array of choices, or a single value
+	 *	@param boolean $is_other - passed by reference - set if some other option is selected
+	 *	@param string $current_setting - current value
+	 *
+	 *	@return string - text for display
+	 */
 	function show_front_val($ob_name, $front_key, $front_value, &$is_other, $current_setting)
 	{
-		global $frm;
-
 		$type_selected = FALSE;
 		$text = '';
 
-		if(is_array($front_value['page']))
+		// First, work out if the selection os one of these options
+		if (is_array($front_value['page']))
 		{ // Its a URL with multiple options
 			foreach($front_value['page'] as $multipage)
 			{
@@ -494,29 +524,30 @@ class frontpage
 			}
 		}
 
-		if(is_array($front_value['page']))
+		// Now generate the display text - two table cells worth
+		if (is_array($front_value['page']))
 		{ // Multiple options for same page name
 			$text .= "
 				<td>
-					".$frm->radio($ob_name, $front_key, $type_selected)."&nbsp;
-					".$frm->label($front_value['title'], $ob_name, $front_key)."
+					".$this->frm->radio($ob_name, $front_key, $type_selected)."&nbsp;
+					".$this->frm->label($front_value['title'], $ob_name, $front_key)."
 				</td>
 				<td>
 			";
-			$text .= $frm->select_open($ob_name.'_multipage['.$front_key.']');
+			$text .= $this->frm->select_open($ob_name.'_multipage['.$front_key.']');
 			foreach($front_value['page'] as $multipage_key => $multipage_value)
 			{
-				$text .= "\n".$frm->option($multipage_value['title'], $multipage_key, ($current_setting == $multipage_value['page']))."\n";
+				$text .= "\n".$this->frm->option($multipage_value['title'], $multipage_key, ($current_setting == $multipage_value['page']))."\n";
 			}
-			$text .= $frm->select_close();
+			$text .= $this->frm->select_close();
 			$text .= "</td>";
 		}
 		else
 		{ // Single option for URL
 			$text .= "
 				<td>
-					".$frm->radio($ob_name, $front_key, $type_selected)."&nbsp;
-					".$frm->label($front_value['title'], $ob_name, $front_key)."
+					".$this->frm->radio($ob_name, $front_key, $type_selected)."&nbsp;
+					".$this->frm->label($front_value['title'], $ob_name, $front_key)."
 
 				</td>
 				<td>&nbsp;</td>";
@@ -524,23 +555,40 @@ class frontpage
 		return $text;
 	}
 
+
+
+	/**
+	 *	Provide the text for an 'other' option - a text box for URL entry
+	 *
+	 *	@param string $ob_name - name of the radio button which selects this element 
+	 *	@param string $front_key 
+	 *	@param string $curval - current 'selected' value
+	 *	@param string $cur_page - probably the secondary (e.g. custom page) value for any option that has one
+	 *
+	 *	@return string - text for display
+	 */
 	function add_other($ob_name, $cur_val, $cur_page)
 	{
-		global $frm;
 	  	return  "
-			<td>".$frm->radio($ob_name, 'other', $cur_val)."&nbsp;".$frm->label(FRTLAN_15, $ob_name, 'other')."</td>
-			<td>".$frm->text($ob_name.'_other', ($cur_val ? $cur_page : ''), 150, "size=50&id={$ob_name}-other-txt")."</td>
+			<td>".$this->frm->radio($ob_name, 'other', $cur_val)."&nbsp;".$this->frm->label(FRTLAN_15, $ob_name, 'other')."</td>
+			<td>".$this->frm->text($ob_name.'_other', ($cur_val ? $cur_page : ''), 150, "size=50&id={$ob_name}-other-txt")."</td>
 		";
 	}
 }
 
 require_once ('footer.php');
 
-// Log event to admin log
+/**
+ *	Log event to admin log
+ *
+ *	@param string $msg_num - exactly two numeric characters corresponding to a log message
+ *	@param string $woffle - information for the body of the log entre
+ *
+ *	@return none
+ */
 function frontpage_adminlog($msg_num = '00', $woffle = '')
 {
-	global $pref, $admin_log;
-	$admin_log->log_event('FRONTPG_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
+	e107::getAdminLog()->log_event('FRONTPG_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
 }
 
 /**

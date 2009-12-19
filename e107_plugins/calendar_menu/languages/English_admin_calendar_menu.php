@@ -9,12 +9,12 @@
  * Messages for admin pages of event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English_admin_calendar_menu.php,v $
- * $Revision: 1.3 $
- * $Date: 2009-11-22 10:11:32 $
+ * $Revision: 1.4 $
+ * $Date: 2009-12-19 17:54:00 $
  * $Author: e107steved $
  */
-	
-define('EC_ADLAN_1', "Event Calendar");
+
+define('EC_ADLAN_1', 'Event Calendar');
 
 define('EC_LAN_12', "Monday");
 define('EC_LAN_13', "Tuesday");
@@ -168,7 +168,9 @@ define('EC_LAN_159', "Display ");
 define('EC_LAN_160', "Print ");
 define('EC_LAN_161', "PDF ");
 define('EC_LAN_162', "Print this page");
+*/
 define('EC_LAN_163', "Event Listing");
+/*
 define('EC_LAN_164', "Printable Lists");
 define('EC_LAN_165', "Default Listing");
 define('EC_LAN_166', "Tabular List no lines");
@@ -192,7 +194,7 @@ define('EC_LAN_VIEWALLEVENTS', "View all events");
 define('EC_LAN_ALLEVENTS', "All events");
 */
 
-
+define('EC_ADLAN_A09', 'Main Calendar');
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Categories");
 define('EC_ADLAN_A12', "Calendar");
@@ -239,7 +241,7 @@ define('EC_ADLAN_A93', "Email from email address");
 define('EC_ADLAN_A94', "Add new event class");
 define('EC_ADLAN_A95', "Enable manual subscriptions");
 define('EC_ADLAN_A96', "Disabling this removes the subscriptions button and overrides the category manual subscription setting.");
-//define('EC_ADLAN_A97', "If set to force subscriptions this category will not be displayed in the available subscription list for the user.");
+
 
 define('EC_ADLAN_A100', "Forthcoming Events");
 define('EC_ADLAN_A101', "Days to look forward:");
