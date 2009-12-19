@@ -9,15 +9,15 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/help/banlist.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-18 01:05:12 $
- * $Author: e107coders $
+ * $Revision: 1.11 $
+ * $Date: 2009-12-19 23:04:42 $
+ * $Author: e107steved $
  */
 
 if (!defined('e107_INIT')) { exit; }
 
 $caption = "Banning users from your site";
-if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'list';
+if (e_QUERY) list($action,$junk) = explode('.',e_QUERY.'.'); else $action = 'list';
 
 switch ($action)
 {
@@ -59,8 +59,9 @@ $text = "You can ban users from your site at this screen.<br />
 Either enter their full IP address or use a wildcard to ban a range of IP addresses. You can also enter an email address to stop a user registering as a member on your site.<br /><br />
 <b>Banning by IP address:</b><br />
 Entering the IP address 123.123.123.123 will stop the user with that address visiting your site.<br />
-Entering the IP address 123.123.123.* will stop anyone in that IP range from visiting your site.<br /><br />
-IPV6 format addresses are also supported, including '::' to represent a block of zero values.<br /><br />
+Entering an IP address with one or more wildcards in the end blocks, such as 123.123.123.* or 214.098.*.*, will stop anyone in that IP range from visiting your 
+site. (Note that there must be exactly four groups of digits or asterisks)<br /><br />
+IPV6 format addresses are also supported, including '::' to represent a block of zero values. Each pair of digits in the end fields may be a separate wildcard<br /><br />
 <b>Banning by email address</b><br />
 Entering the email address foo@bar.com will stop anyone using that email address from registering as a member on your site.<br />
 Entering the email address *@bar.com will stop anyone using that email domain from registering as a member on your site.<br /><br />
