@@ -9,10 +9,19 @@
  * Event calendar mailout - template file
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_mailout_template.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-22 10:11:29 $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-20 22:47:31 $
  * $Author: e107steved $
  */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: ec_mailout_template.php,v 1.5 2009-12-20 22:47:31 e107steved Exp $;
+ */
+
 /*
 This template is used during the subscription mailouts - it is inserted at the front of the text
 defined for each category.
@@ -22,6 +31,8 @@ Language constants should be in the English_mailer.php file
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_mailer.php');
 
 global $sc_style;
 

@@ -11,12 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_setup.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2009-11-18 01:05:23 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2009-12-20 22:47:20 $
+|     $Author: e107steved $
 |
 +----------------------------------------------------------------------------+
 */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: calendar_setup.php,v 1.4 2009-12-20 22:47:20 e107steved Exp $;
+ */
 
 if (!defined('e107_INIT')) { exit; }
 

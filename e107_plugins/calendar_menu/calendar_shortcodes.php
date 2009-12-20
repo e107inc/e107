@@ -9,19 +9,25 @@
  * Shortcodes for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_shortcodes.php,v $
- * $Revision: 1.16 $
- * $Date: 2009-12-17 22:47:20 $
+ * $Revision: 1.17 $
+ * $Date: 2009-12-20 22:47:22 $
  * $Author: e107steved $
  *
 */
 
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: calendar_shortcodes.php,v 1.17 2009-12-20 22:47:22 e107steved Exp $;
+ */
+
 /*
 TODO:
-	1. Could make date/month arrays 1-based instead of 0-based - might simplify maths
-	2.	Good way of reading categories
-
-	4. Have 'currentMonth' flag (means 'current day' if $ds == 'one') ?
-	5. Check whether $prop should be calculated better
+	1.	Good way of reading categories
+	2. Have 'currentMonth' flag (means 'current day' if $ds == 'one') ?
+	3. Check whether $prop should be calculated better
 */
 
 if (!defined('e107_INIT')) { exit; }

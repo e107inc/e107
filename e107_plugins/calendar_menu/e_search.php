@@ -9,10 +9,19 @@
  *
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_search.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-19 10:09:58 $
- * $Author: marj_nl_fr $
+ * $Revision: 1.3 $
+ * $Date: 2009-12-20 22:47:29 $
+ * $Author: e107steved $
  */
+ 
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: e_search.php,v 1.3 2009-12-20 22:47:29 e107steved Exp $;
+ */
+
 if (!defined('e107_INIT')) { exit(); }
 
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_search.php');

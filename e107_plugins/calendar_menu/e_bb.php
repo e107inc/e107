@@ -9,9 +9,17 @@
  * BBCode template for calendar menu (pretend we're custom page)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_bb.php,v $
- * $Revision: 1.4 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision: 1.5 $
+ * $Date: 2009-12-20 22:47:27 $
+ * $Author: e107steved $
+ */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: e_bb.php,v 1.5 2009-12-20 22:47:27 e107steved Exp $;
  */
 
 $temp['event'] = "

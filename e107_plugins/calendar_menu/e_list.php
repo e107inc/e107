@@ -9,11 +9,20 @@
  * Calendar e_list Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_list.php,v $
- * $Revision: 1.6 $
- * $Date: 2009-11-18 01:05:23 $
- * $Author: e107coders $
+ * $Revision: 1.7 $
+ * $Date: 2009-12-20 22:47:28 $
+ * $Author: e107steved $
  *
 */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: e_list.php,v 1.7 2009-12-20 22:47:28 e107steved Exp $;
+ */
+
 if (!defined('e107_INIT')) { exit; }
 
 class list_calendar_menu
