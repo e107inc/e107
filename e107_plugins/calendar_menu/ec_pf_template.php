@@ -9,10 +9,19 @@
  *	Event calendar - template file for list generator
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ec_pf_template.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-22 10:11:30 $
+ * $Revision: 1.3 $
+ * $Date: 2009-12-20 22:47:32 $
  * $Author: e107steved $
  */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: ec_pf_template.php,v 1.3 2009-12-20 22:47:32 e107steved Exp $;
+ */
+
 /*
   Templates file for the event calendar listings (display/print/pdf).
   There can be more than one template defined, in which case they are selectable.
@@ -30,7 +39,6 @@ There are two ways of managing the styling of the various shortcodes:
 	for all templates, or where you can set a 'default' styling which applies to most uses of the shortcode
 	b) An $ec_template_styles array sets styles for an individual template. This need only contain the
 	styles which override a default $sc_style entry.
-  
 */
 
 if (!defined('e107_INIT')) { exit; }

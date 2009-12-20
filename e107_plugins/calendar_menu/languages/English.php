@@ -9,11 +9,21 @@
  * These messages are for the 'user' pages of the event calendar (including event entry/editing)
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/languages/English.php,v $
- * $Revision: 1.11 $
- * $Date: 2009-12-13 21:52:32 $
+ * $Revision: 1.12 $
+ * $Date: 2009-12-20 22:47:33 $
  * $Author: e107steved $
  */
-	
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	Language file - 'user' pages
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: English.php,v 1.12 2009-12-20 22:47:33 e107steved Exp $;
+ */
+
 define('EC_ADLAN_1', 'Event Calendar');
 define('EC_ADLAN_2', 'Configure Event Calendar');
 define('EC_LAN_TODAY', 'today');
@@ -249,6 +259,7 @@ define('EC_LAN_VIEWCALENDAR', 'View Calendar');
 define('EC_LAN_VIEWALLEVENTS', 'View all events');
 define('EC_LAN_ALLEVENTS', "All events");
 
+/*
 // Recurring events texts - the numeric part of each define is the internal value assigned
 define('EC_LAN_RECUR_00', 'no');
 define('EC_LAN_RECUR_01', 'annual');
@@ -282,6 +293,7 @@ define('NT_LAN_EC_5', 'Message');
 define('NT_LAN_EC_6', 'Event Calendar - Event added');
 define('NT_LAN_EC_7', 'New event posted');
 define('NT_LAN_EC_8', 'Event Calendar - Event modified');
+*/
 
 // Prefs - language defines can be used in various places where text is set through the admin screens
 define('EC_MAILOUT_SUBJECT', "Advice of calendar event");	// Use shortcode EC_MAIL_SUBJECT

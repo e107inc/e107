@@ -11,11 +11,18 @@
  *	Implements functions used in most of the code
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/ecal_class.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-22 10:11:30 $
+ * $Revision: 1.13 $
+ * $Date: 2009-12-20 22:47:32 $
  * $Author: e107steved $
  */
- 
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: ecal_class.php,v 1.13 2009-12-20 22:47:32 e107steved Exp $;
+ */
 
 /*
 Preferences used:
@@ -27,6 +34,8 @@ Preferences used:
 if (!defined('e107_INIT')) { exit; }
 
 if (!defined('EC_DEFAULT_CATEGORY')) { define('EC_DEFAULT_CATEGORY','Default'); }
+
+include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_class.php');
 
 class ecal_class
 {
@@ -734,7 +743,7 @@ class ecal_class
 	{
 		if ($recurring >= 100)
 		{
-			return $this->recur_week[100*intval($recurring/100)]." ".$this->recur_type[100+($recurring % 10)];
+			return $this->recur_week[100*intval($recurring/100)].' '.$this->recur_type[100+($recurring % 10)];
 		}
 		else
 		{

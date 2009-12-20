@@ -9,12 +9,21 @@
  * Templates for event calendar displays
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar_template.php,v $
- * $Revision: 1.10 $
- * $Date: 2009-11-22 10:11:29 $
+ * $Revision: 1.11 $
+ * $Date: 2009-12-20 22:47:26 $
  * $Author: e107steved $
  */
 
-// TODO: Replace expandit on events with latest auto-management
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: calendar_template.php,v 1.11 2009-12-20 22:47:26 e107steved Exp $;
+ *
+ *	@todo Replace expandit on events with latest auto-management
+ */
+
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined('USER_WIDTH')){ define('USER_WIDTH','width:auto'); }
@@ -42,14 +51,14 @@ $sc_style['EC_CURRENT_MONTH']['post'] = "</b>";
 $sc_style['EC_NEXT_MONTH']['pre'] = "<span class='defaulttext'>";
 $sc_style['EC_NEXT_MONTH']['post'] = "</span>";
 
-$sc_style['EC_PREV_YEAR']['pre'] = "";
-$sc_style['EC_PREV_YEAR']['post'] = "";
+$sc_style['EC_PREV_YEAR']['pre'] = '';
+$sc_style['EC_PREV_YEAR']['post'] = '';
 
-$sc_style['EC_MONTH_LIST']['pre'] = "";
-$sc_style['EC_MONTH_LIST']['post'] = "";
+$sc_style['EC_MONTH_LIST']['pre'] = '';
+$sc_style['EC_MONTH_LIST']['post'] = '';
 
-$sc_style['EC_NEXT_YEAR']['pre'] = "";
-$sc_style['EC_NEXT_YEAR']['post'] = "";
+$sc_style['EC_NEXT_YEAR']['pre'] = '';
+$sc_style['EC_NEXT_YEAR']['post'] = '';
 
 
 $CALENDAR_TIME_TABLE = "

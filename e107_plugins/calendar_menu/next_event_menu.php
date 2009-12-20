@@ -9,9 +9,17 @@
  * Forthcoming events menu handler for event calendar
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/next_event_menu.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-11-22 10:11:30 $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-20 22:47:33 $
  * $Author: e107steved $
+ */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: next_event_menu.php,v 1.9 2009-12-20 22:47:33 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }

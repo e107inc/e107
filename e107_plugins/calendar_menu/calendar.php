@@ -9,9 +9,17 @@
  * Event calendar plugin - large calendar display
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/calendar.php,v $
- * $Revision: 1.8 $
- * $Date: 2009-12-18 20:49:55 $
+ * $Revision: 1.9 $
+ * $Date: 2009-12-20 22:47:19 $
  * $Author: e107steved $
+ */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: calendar.php,v 1.9 2009-12-20 22:47:19 e107steved Exp $;
  */
 
 require_once('../../class2.php');

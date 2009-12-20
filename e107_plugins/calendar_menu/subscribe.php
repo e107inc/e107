@@ -9,9 +9,17 @@
  * Event calendar plugin - mail subscription to events notification
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/subscribe.php,v $
- * $Revision: 1.7 $
- * $Date: 2009-11-22 10:11:31 $
+ * $Revision: 1.8 $
+ * $Date: 2009-12-20 22:47:33 $
  * $Author: e107steved $
+ */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: subscribe.php,v 1.8 2009-12-20 22:47:33 e107steved Exp $;
  */
 
 require_once('../../class2.php');

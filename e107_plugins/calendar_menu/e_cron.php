@@ -9,11 +9,19 @@
  * Plugin configuration module - gsitemap
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/e_cron.php,v $
- * $Revision: 1.2 $
- * $Date: 2009-11-23 21:06:00 $
+ * $Revision: 1.3 $
+ * $Date: 2009-12-20 22:47:27 $
  * $Author: e107steved $
  *
 */
+
+/**
+ *	e107 Event calendar plugin
+ *
+ *	@package	e107_plugins
+ *	@subpackage	event_calendar
+ *	@version 	$Id: e_cron.php,v 1.3 2009-12-20 22:47:27 e107steved Exp $;
+ */
 
 if (!defined('e107_INIT')) { exit; }
 
