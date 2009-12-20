@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2009-12-10 21:00:00 $
+|     $Revision: 1.76 $
+|     $Date: 2009-12-20 22:08:15 $
 |     $Author: e107steved $	   ** Amended by Marj to re-order list line 818 - 851
 +----------------------------------------------------------------------------+
 */
@@ -1056,7 +1056,7 @@ function img_path($filename)
 
 		if(file_exists(THEME.'forum/'.$filename) || is_readable(THEME.'forum/'.e_LANGUAGE."_".$filename))
 		{
-			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE."_".$filename)) ? THEME.'forum/'.e_LANGUAGE."_".$filename :  THEME.'forum/'.$filename;
+			$image = ($ML && is_readable(THEME.'forum/'.e_LANGUAGE."_".$filename)) ? THEME_ABS.'forum/'.e_LANGUAGE."_".$filename :  THEME_ABS.'forum/'.$filename;
 		}
 		else
 		{
@@ -1064,22 +1064,22 @@ function img_path($filename)
 			{
 				if($ML)
 				{
-                	$image = (is_readable(e_PLUGIN."forum/images/".IMODE."/".e_LANGUAGE."_".$filename)) ? e_PLUGIN."forum/images/".IMODE."/".e_LANGUAGE."_".$filename : e_PLUGIN."forum/images/".IMODE."/English_".$filename;
+                	$image = (is_readable(e_PLUGIN."forum/images/".IMODE."/".e_LANGUAGE."_".$filename)) ? e_PLUGIN_ABS."forum/images/".IMODE."/".e_LANGUAGE."_".$filename : e_PLUGIN_ABS."forum/images/".IMODE."/English_".$filename;
 				}
 				else
 				{
-                	$image = e_PLUGIN."forum/images/".IMODE."/".$filename;
+                	$image = e_PLUGIN_ABS."forum/images/".IMODE."/".$filename;
 				}
 			}
 			else
 			{
 				if($ML)
 				{
-					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE."_".$filename)) ? e_PLUGIN."forum/images/lite/".e_LANGUAGE."_".$filename : e_PLUGIN."forum/images/lite/English_".$filename;
+					$image = (is_readable(e_PLUGIN."forum/images/lite/".e_LANGUAGE."_".$filename)) ? e_PLUGIN_ABS."forum/images/lite/".e_LANGUAGE."_".$filename : e_PLUGIN_ABS."forum/images/lite/English_".$filename;
 				}
 				else
                 {
-           			$image = e_PLUGIN."forum/images/lite/".$filename;
+           			$image = e_PLUGIN_ABS."forum/images/lite/".$filename;
 				}
 
 			}
