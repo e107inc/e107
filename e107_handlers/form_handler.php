@@ -9,9 +9,9 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.100 $
- * $Date: 2009-12-19 17:54:00 $
- * $Author: e107steved $
+ * $Revision: 1.101 $
+ * $Date: 2009-12-20 23:46:51 $
+ * $Author: e107coders $
  *
 */
 
@@ -1260,6 +1260,16 @@ class e_form
 				$value = "<a href='".$tp->replaceConstants(vartrue($parms['pre']).$value, 'abs')."' title='{$value}'>".$ttl."</a>";
 			break;
 			
+			case 'email':
+				if(!$value) break;
+				$ttl = $value;
+				if(vartrue($parms['truncate']))
+				{
+					$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
+				}
+				$value = "<a href='mailto:".$value."' title='{$value}'>".$ttl."</a>";
+			break;
+			
 			case 'method': // Custom Function 
 				$method = $field; 
 				$value = call_user_func_array(array($this, $method), array($value, 'read', $parms)); 
@@ -1313,6 +1323,7 @@ class e_form
 			break;
 			
 			case 'url':
+			case 'email':
 			case 'text':
 				
 				$maxlength = vartrue($parms['maxlength'], 255);
