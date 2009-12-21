@@ -9,8 +9,8 @@
  * Message Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/message_handler.php,v $
- * $Revision: 1.28 $
- * $Date: 2009-12-13 21:52:32 $
+ * $Revision: 1.29 $
+ * $Date: 2009-12-21 22:31:02 $
  * $Author: e107steved $
  *
 */
@@ -767,9 +767,9 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		echo "<script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); </script>\n";
 		break;
 
-		case "POPUP":
+		case 'POPUP':
 
-		$mtext = "<html><head><title>Message</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% ><center><b>--- Message ---</b><br /><br />".$message."<br /><br /><form><input class=button type=submit onclick=self.close() value = ok /></form></center></td></tr></table></body></html> ";
+		$mtext = "<html><head><title>Message</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% style='text-align:center'><b>--- Message ---</b><br /><br />".$message."<br /><br /><form><input class=button type=submit onclick=self.close() value = ok /></form></td></tr></table></body></html> ";
 
 		echo "
 		<script type='text/javascript'>

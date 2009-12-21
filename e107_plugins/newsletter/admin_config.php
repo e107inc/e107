@@ -9,8 +9,8 @@
  * Administration - Site Maintenance
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/newsletter/admin_config.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-11-19 20:24:21 $
+ * $Revision: 1.13 $
+ * $Date: 2009-12-21 22:31:03 $
  * $Author: e107steved $
  *
 */
@@ -549,8 +549,8 @@ class newsletter
 		$_nl_sanatized = '';
 		if(!$nl_sql -> db_Select('newsletter', '*', 'newsletter_id='.$p_id))
 		{	// Check if newsletter id is available
-			$vs_text .= "<br /><br /><center>".NLLAN_56."<br /><br/>
-					 <input class='button' type=button value='".NLLAN_57."' onClick=\"window.location='".e_SELF."'\"></center>";
+			$vs_text .= "<br /><br /><span style='text-align:center'>".NLLAN_56."<br /><br/>
+					 <input class='button' type=button value='".NLLAN_57."' onClick=\"window.location='".e_SELF."'\"></span>";
 			$ns -> tablerender(NLLAN_58, $vs_text);
 			return;
 		} 
