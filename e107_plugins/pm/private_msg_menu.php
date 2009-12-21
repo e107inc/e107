@@ -9,8 +9,8 @@
  *	PM plugin - menu display
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/private_msg_menu.php,v $
- * $Revision: 1.12 $
- * $Date: 2009-12-17 22:47:20 $
+ * $Revision: 1.13 $
+ * $Date: 2009-12-21 22:31:04 $
  * $Author: e107steved $
  */
 
@@ -20,7 +20,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	pm
- *	@version 	$Id: private_msg_menu.php,v 1.12 2009-12-17 22:47:20 e107steved Exp $;
+ *	@version 	$Id: private_msg_menu.php,v 1.13 2009-12-21 22:31:04 e107steved Exp $;
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -81,35 +81,44 @@ if(check_class($pm_prefs['pm_class']))
 {
 	$tp = e107::getParser();
 	$pm_inbox = $pmManager->pm_getInfo('inbox');
-	$txt = $tp->parseTemplate($pm_menu_template, TRUE);
+	$txt = "\n".$tp->parseTemplate($pm_menu_template, TRUE);
 	if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php') === FALSE && $_COOKIE['pm-alert'] != 'ON')
 	{
-		$txt .= pm_show_popup($pm_inbox, $pm_prefs);
+		$txt .= pm_show_popup($pm_inbox, $pm_prefs['popup_delay']);
 	}
 	$ns->tablerender(LAN_PM, $txt, 'pm');
 }
 
 
-function pm_show_popup($pm_inbox, $pm_prefs)
+
+/**
+ *	Function to show a popup (if enabled) when new PMs arrive.
+ *
+ *	@param	array	$pm_inbox - information about current state of inbox
+ *	@param	int		$alertdelay - delay between popups, in seconds (defaults to 60 if pref not set)
+ *
+ *	@return string - text for display
+ *
+ *	@todo - check JS - may be some problems, especially if using debug in FF
+ */
+function pm_show_popup($pm_inbox, $alertdelay = 0)
 {
-	$alertdelay = intval($pm_prefs['popup_delay']);
-	if($alertdelay == 0) { $alertdalay = 60; }
+	if($alertdelay == 0) { $alertdelay = 60; }
 	setcookie('pm-alert', 'ON', time()+$alertdelay);
 	$popuptext = "
 	<html>
 		<head>
-			<title>".$pm_inbox['inbox']['new']." ".LAN_PM_109."</title>
-			<link rel=stylesheet href=" . THEME . "style.css>
+			<title>".$pm_inbox['inbox']['new'].' '.LAN_PM_109."</title>
+			<link rel=\'stylesheet\' href=\'".THEME."style.css\'>
 		</head>
 		<body style=\'padding-left:2px;padding-right:2px; padding:2px; padding-bottom:2px; margin:0px; text-align:center\' marginheight=\'0\' marginleft=\'0\' topmargin=\'0\' leftmargin=\'0\'>
 		<table style=\'width:100%; text-align:center; height:99%; padding-bottom:2px\' class=\'bodytable\'>
 			<tr>
-				<td width=100% >
-					<center><b>--- ".LAN_PM." ---</b><br />".$pm_inbox['inbox']['new']." ".LAN_PM_109."<br />".$pm_inbox['inbox']['unread']." ".LAN_PM_37."<br /><br />
+				<td width=100% style='text-align:center'>
+					<b>--- ".LAN_PM." ---</b><br />".$pm_inbox['inbox']['new'].' '.LAN_PM_109."<br />".$pm_inbox['inbox']['unread'].' '.LAN_PM_37."<br /><br />
 					<form>
 						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'".LAN_PM_110."\' />
 					</form>
-					</center>
 				</td>
 			</tr>
 		</table>
