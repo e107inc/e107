@@ -9,8 +9,8 @@
  * Event calendar plugin - admin functions
  *
  * $Source: /cvs_backup/e107_0.8/e107_plugins/calendar_menu/admin_config.php,v $
- * $Revision: 1.17 $
- * $Date: 2009-12-20 22:47:10 $
+ * $Revision: 1.18 $
+ * $Date: 2009-12-21 19:52:48 $
  * $Author: e107steved $
  */
 
@@ -19,7 +19,7 @@
  *
  *	@package	e107_plugins
  *	@subpackage	event_calendar
- *	@version 	$Id: admin_config.php,v 1.17 2009-12-20 22:47:10 e107steved Exp $;
+ *	@version 	$Id: admin_config.php,v 1.18 2009-12-21 19:52:48 e107steved Exp $;
  */
 
 $eplug_admin = true;		// Make sure we show admin theme
@@ -35,6 +35,8 @@ if (!getperms('P'))
 	
 include_lan(e_PLUGIN.'calendar_menu/languages/'.e_LANGUAGE.'_admin_calendar_menu.php');
 
+require_once(e_HANDLER.'form_handler.php');
+$frm = new e_form();
 
 $uc = e107::getUserClass();		// Userclass object pointer
 $message = '';
@@ -356,111 +358,106 @@ if($action == 'cat')
 		switch ($calendarmenu_do)
 		{
 			case '1': // Edit existing record
-				{
-					// We edit the record
-					$calendarmenu_db->db_Select('event_cat', '*', 'event_cat_id='.$calendarmenu_id);
-					$calendarmenu_row = $calendarmenu_db->db_Fetch() ;
-					extract($calendarmenu_row);
-					$calendarmenu_cap1 = EC_ADLAN_A24;
-					$calendarmenu_edit = TRUE;
-					if ($ecal_send_email != 0)
-					{  // Need to send a test email
-					  // First, set up a dummy event
-					  global $thisevent;
-					  $thisevent = array('event_start' => $ecal_class->time_now, 'event_end' => ($ecal_class->time_now)+3600,
-										 'event_title' => 'Test event', 'event_details' => EC_ADLAN_A191,
-										 'event_cat_name' => $event_cat_name, 'event_location' => EC_ADLAN_A192,
-										 'event_contact' => USEREMAIL, 
-										 'event_thread' => SITEURL.'dodgypage',
-										 'event_id' => '6');
-					
-					// *************** SEND EMAIL HERE **************
-					  require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
-					  require_once(e_HANDLER . 'mail.php');
-					  switch ($ecal_send_email)
-					  {
-					    case 1 : $cal_msg = $event_cat_msg1;
-								  break;
-					    case 2 : $cal_msg = $event_cat_msg2;
-								 break;
-					  }
-					  $cal_msg = $tp -> parseTemplate($cal_msg, TRUE);
-					  $cal_title = $tp -> parseTemplate($pref['eventpost_mailsubject'], TRUE);
-					  $user_email = USEREMAIL;
-					  $user_name  = USERNAME;
-//					  $cal_msg = str_replace("\r","\n",$cal_msg);
-//					  echo $cal_msg."<br /><br />";
-					  $send_result = sendemail($user_email, $cal_title, $cal_msg, $user_name, $pref['eventpost_mailaddress'], $pref['eventpost_mailfrom']); 
-					  if ($send_result)
-					    $calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A187.$ecal_send_email."</strong></td></tr>";
-					  else
-					    $calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A188.$ecal_send_email."</strong></td></tr>";
-					}
-					break;
-				} 
+				// We edit the record
+				$calendarmenu_db->db_Select('event_cat', '*', 'event_cat_id='.$calendarmenu_id);
+				$calendarmenu_row = $calendarmenu_db->db_Fetch() ;
+				extract($calendarmenu_row);
+				$calendarmenu_cap1 = EC_ADLAN_A24;
+				$calendarmenu_edit = TRUE;
+				if ($ecal_send_email != 0)
+				{  // Need to send a test email
+				  // First, set up a dummy event
+				  global $thisevent;
+				  $thisevent = array('event_start' => $ecal_class->time_now, 'event_end' => ($ecal_class->time_now)+3600,
+									 'event_title' => 'Test event', 'event_details' => EC_ADLAN_A191,
+									 'event_cat_name' => $event_cat_name, 'event_location' => EC_ADLAN_A192,
+									 'event_contact' => USEREMAIL, 
+									 'event_thread' => SITEURL.'dodgypage',
+									 'event_id' => '6');
+				
+				// *************** SEND EMAIL HERE **************
+				  require_once(e_PLUGIN.'calendar_menu/calendar_shortcodes.php');
+				  require_once(e_HANDLER . 'mail.php');
+				  switch ($ecal_send_email)
+				  {
+					case 1 : $cal_msg = $event_cat_msg1;
+							  break;
+					case 2 : $cal_msg = $event_cat_msg2;
+							 break;
+				  }
+				  $cal_msg = $tp -> parseTemplate($cal_msg, TRUE);
+				  $cal_title = $tp -> parseTemplate($pref['eventpost_mailsubject'], TRUE);
+				  $user_email = USEREMAIL;
+				  $user_name  = USERNAME;
+				  $send_result = sendemail($user_email, $cal_title, $cal_msg, $user_name, $pref['eventpost_mailaddress'], $pref['eventpost_mailfrom']); 
+				  if ($send_result)
+					$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A187.$ecal_send_email."</strong></td></tr>";
+				  else
+					$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A188.$ecal_send_email."</strong></td></tr>";
+				}
+				break;
+
 			case '2': // New category
+				// Create new record
+				$calendarmenu_id = 0; 
+				// set all fields to zero/blank
+				$calendar_category_name = '';
+				$calendar_category_description = '';
+				$calendarmenu_cap1 = EC_ADLAN_A23;
+				$calendarmenu_edit = TRUE;
+				$event_cat_name = '';		// Define some variables for notice removal
+				$event_cat_description = '';
+				$event_cat_class = e_UC_MEMBER;
+				$event_cat_addclass = e_UC_ADMIN;
+				$event_cat_icon = '';
+				$event_cat_subs = 0;
+				$event_cat_notify = 0;
+				$event_cat_force_class = '';
+				$event_cat_ahead = 5;
+				$event_cat_msg1 = '';
+				$event_cat_msg2 = '';
+				break;
+
+			case '3':		// Delete record
+				if ($_POST['calendarmenu_okdel'] == '1')
 				{
-					// Create new record
-					$calendarmenu_id = 0; 
-					// set all fields to zero/blank
-					$calendar_category_name = '';
-					$calendar_category_description = '';
-					$calendarmenu_cap1 = EC_ADLAN_A23;
-					$calendarmenu_edit = TRUE;
-					$event_cat_name = '';		// Define some variables for notice removal
-					$event_cat_description = '';
-					$event_cat_class = e_UC_MEMBER;
-					$event_cat_addclass = e_UC_ADMIN;
-					$event_cat_icon = '';
-					$event_cat_subs = 0;
-					$event_cat_notify = 0;
-					$event_cat_force_class = '';
-					$event_cat_ahead = 5;
-					$event_cat_msg1 = '';
-					$event_cat_msg2 = '';
-					break;
-				} 
-			case '3':
-				{ 	// delete the record
-					if ($_POST['calendarmenu_okdel'] == '1')
+					if ($calendarmenu_db->db_Select('event', 'event_id', 'event_category='.$calendarmenu_id, 'nowhere'))
 					{
-						if ($calendarmenu_db->db_Select('event', 'event_id', 'event_category='.$calendarmenu_id, 'nowhere'))
-						{
-							$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A59."</strong></td></tr>";
-						}
-						else
-						{
-							if ($calendarmenu_db->db_Delete('event_cat', 'event_cat_id='.$calendarmenu_id))
-							{
-								$admin_log->log_event(EC_ADM_10,'ID: '.$calendarmenu_id,'');
-								$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A30."</strong></td></tr>";
-							}
-							else
-							{
-							  $calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A32."</strong></td></tr>";
-							}
-						} 
+						$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A59."</strong></td></tr>";
 					}
 					else
 					{
-						$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A31."</strong></td></tr>";
+						if ($calendarmenu_db->db_Delete('event_cat', 'event_cat_id='.$calendarmenu_id))
+						{
+							$admin_log->log_event(EC_ADM_10,'ID: '.$calendarmenu_id,'');
+							$calendarmenu_msg .= "<tr><td class='forumheader3' colspan='2'><strong>".EC_ADLAN_A30."</strong></td></tr>";
+						}
+						else
+						{
+						  $calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A32."</strong></td></tr>";
+						}
 					} 
-					$calendarmenu_dodel = TRUE;
-					$calendarmenu_edit = FALSE;
+				}
+				else
+				{
+					$calendarmenu_msg .= "<tr><td colspan='2'><strong>".EC_ADLAN_A31."</strong></td></tr>";
 				} 
+				$calendarmenu_dodel = TRUE;
+				$calendarmenu_edit = FALSE;
+				break;
 		} 
 
 		if (!$calendarmenu_dodel)
 		{
-			require_once(e_HANDLER.'file_class.php');
+			//require_once(e_HANDLER.'file_class.php');
 			
 			$calendarmenu_text .= "
 			<form id='calformupdate' method='post' action='".e_SELF."?cat'>
 			<fieldset id='plugin-ecal-categories'>
 				<table cellpadding='0' cellspacing='0' class='adminform'>
 			<colgroup span='2'>
-				<col style = 'width:20%;' />
-				<col style = 'width:80%;' />
+				<col style = 'width:20%;' class='col-label' />
+				<col style = 'width:80%;' class='col-control' />
 			</colgroup>
 			<tbody>
 			<tr>
@@ -488,10 +485,11 @@ if($action == 'cat')
 			</tr>			
 			<tr>
 				<td>".EC_ADLAN_A219."</td>
-				<td>
-					<input class='tbox' style='width:150px' id='caticon' type='text' name='ne_new_category_icon' value='".$event_cat_icon."' />
-					<input class='button' type='button' style='width: 45px; cursor:pointer;' value='".EC_ADLAN_A220."' onclick='expandit(\"cat_icons\")' />
-					<div style='display:none' id='cat_icons'>";
+				<td>";
+					//<input class='tbox' style='width:150px' id='caticon' type='text' name='ne_new_category_icon' value='".$event_cat_icon."' />
+					//<input class='button' type='button' style='width: 45px; cursor:pointer;' value='".EC_ADLAN_A220."' onclick='expandit(\"cat_icons\")' />
+					//<div style='display:none' id='cat_icons'>";
+					/*
 					$fi = new e_file;
 					$imagelist = $fi->get_files(e_PLUGIN.'calendar_menu/images', "\.\w{3}$");
 					foreach($imagelist as $img)
@@ -501,8 +499,9 @@ if($action == 'cat')
 							$calendarmenu_text .= "<a href='javascript:insertext(\"{$img['fname']}\", \"caticon\", \"cat_icons\")'><img src='".e_PLUGIN."calendar_menu/images/".$img['fname']."' alt='' /></a> ";
 						} 
 					}
+					*/
+					$calendarmenu_text .= $frm->iconpicker('ne_new_category_icon', $event_cat_icon, LAN_SELECT);
 					$calendarmenu_text .= "
-					</div>
 				</td>
 			</tr>
 			<tr>
@@ -626,44 +625,52 @@ if($action == 'forthcoming')
 
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?forthcoming'>
-	<table style='width:97%' class='fborder'>
-	<tr><td style='vertical-align:top;' colspan='2' class='fcaption'>".EC_ADLAN_A100." </td></tr>
+	<fieldset id='plugin-ecal-forthcoming'>
+	<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup>
+		<col style = 'width:40%;' class='col-label' />
+		<col style = 'width:60%;' class='col-control' />
+	</colgroup>
+	<thead>
+	<tr><th style='vertical-align:top;' colspan='2'>".EC_ADLAN_A100." </th></tr>
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A108."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_menuheading' size='35' value='".$pref['eventpost_menuheading']."' maxlength='30' />
+		<td style='vertical-align:top;'>".EC_ADLAN_A108."</td>
+		<td style='vertical-align:top;'><input class='tbox' type='text' name='eventpost_menuheading' size='35' value='".$pref['eventpost_menuheading']."' maxlength='30' />
+		</td>
+	</tr>
+	</thead>
+
+	<tbody>
+	<tr>
+		<td style='vertical-align:top;'>".EC_ADLAN_A101."</td>
+		<td style='vertical-align:top;'><input class='tbox' type='text' name='eventpost_daysforward' size='20' value='".$pref['eventpost_daysforward']."' maxlength='10' />
 		</td>
 	</tr>
 
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A101."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_daysforward' size='20' value='".$pref['eventpost_daysforward']."' maxlength='10' />
+		<td style='vertical-align:top;'>".EC_ADLAN_A102."</td>
+		<td style='vertical-align:top;'><input class='tbox' type='text' name='eventpost_numevents' size='20' value='".$pref['eventpost_numevents']."' maxlength='10' />
 		</td>
 	</tr>
 
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A102."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_numevents' size='20' value='".$pref['eventpost_numevents']."' maxlength='10' />
-		</td>
+		<td style='vertical-align:top;'>".EC_ADLAN_A103."</td>
+		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_checkrecur' value='1' ".($pref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A103."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_checkrecur' value='1' ".($pref['eventpost_checkrecur']==1?" checked='checked' ":"")." /></td>
+		<td style='vertical-align:top;'>".EC_ADLAN_A107."</td>
+		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_fe_hideifnone' value='1' ".($pref['eventpost_fe_hideifnone']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A107."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_fe_hideifnone' value='1' ".($pref['eventpost_fe_hideifnone']==1?" checked='checked' ":"")." /></td>
+		<td style='vertical-align:top;'>".EC_ADLAN_A199."</td>
+		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_fe_showrecent' value='1' ".($pref['eventpost_fe_showrecent']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A199."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_fe_showrecent' value='1' ".($pref['eventpost_fe_showrecent']==1?" checked='checked' ":"")." /></td>
-	</tr>
-
-	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A130."<br /></td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+		<td style='vertical-align:top;'>".EC_ADLAN_A130."<br /></td>
+		<td style='vertical-align:top;'>
 			<select name='eventpost_namelink' class='tbox'>
 			<option value='1' ".($pref['eventpost_namelink']=='1'?" selected='selected' ":"")." > ".EC_ADLAN_A131." </option>
 			<option value='2' ".($pref['eventpost_namelink']=='2'?" selected='selected' ":"")." > ".EC_ADLAN_A132." </option>
@@ -672,20 +679,20 @@ if($action == 'forthcoming')
 	</tr>
 	
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A104."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_linkheader' value='1' ".($pref['eventpost_linkheader']==1?" checked='checked' ":"")." />
+		<td style='vertical-align:top;'>".EC_ADLAN_A104."</td>
+		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_linkheader' value='1' ".($pref['eventpost_linkheader']==1?" checked='checked' ":"")." />
 		</td>
 	</tr>
 	
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A120."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_showcaticon' value='1' ".($pref['eventpost_showcaticon']==1?" checked='checked' ":"")." />
+		<td style='vertical-align:top;'>".EC_ADLAN_A120."</td>
+		<td style='vertical-align:top;'><input class='tbox' type='checkbox' name='eventpost_showcaticon' value='1' ".($pref['eventpost_showcaticon']==1?" checked='checked' ":"")." />
 		</td>
 	</tr>
 	
 	<tr>
-		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A118."</td>
-		<td style='width:60%;vertical-align:top;' class='forumheader3'>";
+		<td style='vertical-align:top;'>".EC_ADLAN_A118."</td>
+		<td style='vertical-align:top;'>";
 
 // Now display all the current categories as checkboxes
 	$cal_fe_prefs = array();
@@ -707,8 +714,10 @@ if($action == 'forthcoming')
 	$text .= "</td>
 	</tr>
 	
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='updateforthcoming' value='".EC_ADLAN_A218."' /></td></tr>
+	<tr><td colspan='2' style='text-align:center'><input class='button' type='submit' name='updateforthcoming' value='".EC_ADLAN_A218."' /></td></tr>
+	</tbody>
 	</table>
+	</fieldset>
 	</form>
 	</div>";
 	
@@ -778,15 +787,16 @@ if($action == 'subs')
 
 	$num_entry = $sql->db_Count("event_subs", "(*)", "");		// Just count the lot
 
-	$qry = "SELECT es.*, u.user_id, u.user_name, u.user_class, ec.event_cat_id, ec.event_cat_name, ec.event_cat_class FROM #event_subs AS es 
-                     LEFT JOIN #user AS u ON es.event_userid = u.user_id
-					 LEFT JOIN #event_cat AS ec ON es.event_cat = ec.event_cat_id
+	$qry = "SELECT es.*, u.user_id, u.user_name, u.user_class, ec.event_cat_id, ec.event_cat_name, ec.event_cat_class FROM `#event_subs` AS es 
+                     LEFT JOIN `#user` AS u ON es.event_userid = u.user_id
+					 LEFT JOIN `#event_cat` AS ec ON es.event_cat = ec.event_cat_id
 					 ORDER BY u.user_id
 					 LIMIT {$from}, {$amount} ";
 
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?subs.".$from."'>
-	<table style='".USER_WIDTH."' class='fborder'>
+	<fieldset id='plugin-ecal-subscriptions'>
+	<table cellpadding='0' cellspacing='0' class='adminform'>
 	<colgroup>
 		<col style='width:10%; vertical-align:top;' />
 		<col style='width:20%; vertical-align:top;' />
@@ -797,13 +807,13 @@ if($action == 'subs')
 	
   	if (!$sql->db_Select_gen($qry))
 	{
-	  $text .= "<tr><td colspan='5' class='forumheader'>".EC_ADLAN_A174."</td></tr>";
+	  $text .= "<tbody><tr><td colspan='5'>".EC_ADLAN_A174."</td></tr>";
 	  $num_entry = 0;
 	}
 	else
 	{
-		$text .= "<tr><td class='forumheader'>".EC_ADLAN_A175."</td><td class='forumheader'>".EC_ADLAN_A176."</td>
-			<td class='forumheader'>".EC_ADLAN_A177."</td><td class='forumheader'>".EC_ADLAN_A178."</td><td class='forumheader'>".EC_ADLAN_A179."</td></tr>";
+		$text .= "<thead><tr><td>".EC_ADLAN_A175.'</td><td>'.EC_ADLAN_A176."</td>
+			<td>".EC_ADLAN_A177."</td><td>".EC_ADLAN_A178.'</td><td>'.EC_ADLAN_A179.'</td></tr></thead><tbody>';
 		while ($row = $sql->db_Fetch())
 		{
 	  // Columns - UID, User name, Category name, Action
@@ -817,12 +827,12 @@ if($action == 'subs')
 			}
 			$text .= "
 				<tr>
-				<td class='forumheader3'>".$row['user_id']."</td>
-				<td class='forumheader3'>".$row['user_name']."</td>
-				<td class='forumheader3'>".$row['event_cat_name']."</td>
-				<td class='forumheader3'>".$problems."</td>
-				<td class='forumheader3' style='text_align:center'><a href='".e_SELF."?".$action.".".$from.".del.".$row['event_subid']."'>
-				  <img src='".e_IMAGE."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' /></a></td>
+				<td>".$row['user_id']."</td>
+				<td>".$row['user_name']."</td>
+				<td>".$row['event_cat_name']."</td>
+				<td>".$problems."</td>
+				<td style='text_align:center'><a href='".e_SELF."?".$action.".".$from.".del.".$row['event_subid']."'>
+				  <img src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' /></a></td>
 				</tr>";
 		}  // End while
 
@@ -833,11 +843,11 @@ if($action == 'subs')
 			$text .= "<tr><td colspan='5' style='text-align:center'>".$tp->parseTemplate("{NEXTPREV={$parms}}".'</td></tr>');
 		}
 	}
-	$text .= "</table></form></div>";
+	$text .= "</tbody></table></fieldset></form></div>";
 
 	$text .= "&nbsp;&nbsp;&nbsp;".str_replace("--NUM--", $num_entry, EC_ADLAN_A182);
 	
-	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_ADLAN_A173."</div>", $text);
+	$ns->tablerender("<div style='text-align:center'>".EC_ADLAN_1." - ".EC_ADLAN_A173.'</div>', $text);
 }
 
 
@@ -864,37 +874,43 @@ if($action == 'config')
 
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
-	<table style='width:97%' class='fborder'><colgroup>
-	<col style='width:40%;vertical-align:top;' /><col style='width:60%;vertical-align:top;' /></colgroup>
-	<tr><td style='vertical-align:top;' colspan='2' class='fcaption'>".EC_ADLAN_A207." </td></tr>
+	<fieldset id='plugin-ecal-prefs'>
+	<table cellpadding='0' cellspacing='0' class='adminform'>
+	<colgroup>
+		<col style='width:40%;vertical-align:top;' />
+		<col style='width:60%;vertical-align:top;' />
+	</colgroup>
+	<thead>
+	<tr><th style='vertical-align:top;' colspan='2'>".EC_ADLAN_A207." </th></tr></thead>
+	<tbody>
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A208." </td>
-		<td class='forumheader3'>". $uc->uc_dropdown('eventpost_admin', $pref['eventpost_admin'], 'public, nobody, member, admin, classes')."
+		<td>".EC_ADLAN_A208." </td>
+		<td>". $uc->uc_dropdown('eventpost_admin', $pref['eventpost_admin'], 'public, nobody, member, admin, classes')."
 		</td>
 	</tr>
 	";
 $text .= "
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A211." </td>
-		<td class='forumheader3'>". $uc->uc_dropdown('eventpost_super', $pref['eventpost_super'],  'public, nobody, member, admin, classes')."
+		<td>".EC_ADLAN_A211." </td>
+		<td>". $uc->uc_dropdown('eventpost_super', $pref['eventpost_super'],  'public, nobody, member, admin, classes')."
 		</td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A134."</td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A134."</td>
+		<td>
 			<select name='eventpost_adminlog' class='tbox'>
 			<option value='0' ".($pref['eventpost_adminlog']=='0'?" selected='selected' ":"")." >". EC_ADLAN_A87." </option>
 			<option value='1' ".($pref['eventpost_adminlog']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A135." </option>
 			<option value='2' ".($pref['eventpost_adminlog']=='2'?" selected='selected' ":"")." >".EC_ADLAN_A136." </option>
 			</select>
-			<span class='smalltext'><em>".EC_ADLAN_A137."</em></span>
+			<span class='field-help'>".EC_ADLAN_A137."</span>
 		</td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A165."</td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A165."</td>
+		<td>
 			<select name='eventpost_menulink' class='tbox'>
 			<option value='0' ".($pref['eventpost_menulink']=='0'?" selected='selected' ":"")." >".EC_ADLAN_A209." </option>
 			<option value='1' ".($pref['eventpost_menulink']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A210." </option>
@@ -904,38 +920,38 @@ $text .= "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A183."</td>
-		<td class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_showmouseover' value='1' ".($pref['eventpost_showmouseover']==1?" checked='checked' ":"")." />
-		<span class='smalltext'><em>".EC_ADLAN_A184."</em></span></td>
+		<td>".EC_ADLAN_A183."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_showmouseover' value='1' ".($pref['eventpost_showmouseover']==1?" checked='checked' ":"")." />
+		<span class='field-help'>".EC_ADLAN_A184."</span></td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A140."</td>
-		<td class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_showeventcount' value='1' ".($pref['eventpost_showeventcount']==1?" checked='checked' ":"")." /></td>
+		<td>".EC_ADLAN_A140."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_showeventcount' value='1' ".($pref['eventpost_showeventcount']==1?" checked='checked' ":"")." /></td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A213."</td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A213."</td>
+		<td>
 		  <input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".($pref['eventpost_forum']==1?" checked='checked' ":"")." />
-		  		<span class='smalltext'><em>".EC_ADLAN_A22."</em></span>
+		  		<span class='field-help'>".EC_ADLAN_A22."</span>
 		  </td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A171."</td>
-		<td class='forumheader3'><input class='tbox' type='text' name='eventpost_recentshow' size='10' value='".$pref['eventpost_recentshow']."' maxlength='5' />
-		<span class='smalltext'><em>".EC_ADLAN_A172."</em></span>
+		<td>".EC_ADLAN_A171."</td>
+		<td><input class='tbox' type='text' name='eventpost_recentshow' size='10' value='".$pref['eventpost_recentshow']."' maxlength='5' />
+		<span class='field-help'>".EC_ADLAN_A172."</span>
 		</td>
 	</tr>  
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A212."</td>
-		<td class='forumheader3'>".select_day_start($pref['eventpost_weekstart'])."</td>
+		<td>".EC_ADLAN_A212."</td>
+		<td>".select_day_start($pref['eventpost_weekstart'])."</td>
 	</tr>
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A214."<br /></td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A214."<br /></td>
+		<td>
 			<select name='eventpost_lenday' class='tbox'>
 			<option value='1' ".($pref['eventpost_lenday']=='1'?" selected='selected' ":"")." > 1 </option>
 			<option value='2' ".($pref['eventpost_lenday']=='2'?" selected='selected' ":"")." > 2 </option>
@@ -945,8 +961,8 @@ $text .= "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A215."<br /></td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A215."<br /></td>
+		<td>
 			<select name='eventpost_dateformat' class='tbox'>
 			<option value='my' ".($pref['eventpost_dateformat']=='my'?" selected='selected' ":"")." >".EC_ADLAN_A216."</option>
 			<option value='ym' ".($pref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." >".EC_ADLAN_A217."</option>
@@ -955,8 +971,8 @@ $text .= "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A133."<br /></td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A133."<br /></td>
+		<td>
 			<select name='eventpost_datedisplay' class='tbox'>
 			<option value='1' ".($pref['eventpost_datedisplay']=='1'?" selected='selected' ":"")." > yyyy-mm-dd</option>
 			<option value='2' ".($pref['eventpost_datedisplay']=='2'?" selected='selected' ":"")." > dd-mm-yyyy</option>
@@ -972,14 +988,14 @@ $text .= "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A138."</td>
-		<td class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_fivemins' value='1' ".($pref['eventpost_fivemins']==1?" checked='checked' ":"")." />&nbsp;&nbsp;<span class='smalltext'><em>".EC_ADLAN_A139."</em></span>
+		<td>".EC_ADLAN_A138."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_fivemins' value='1' ".($pref['eventpost_fivemins']==1?" checked='checked' ":"")." />&nbsp;&nbsp;<span class='smalltext'><em>".EC_ADLAN_A139."</em></span>
 		</td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A200."<br /></td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A200."<br /></td>
+		<td>
 			<select name='eventpost_editmode' class='tbox'>
 			<option value='0' ".($pref['eventpost_editmode']=='0'?" selected='selected' ":"")." >".EC_ADLAN_A201."</option>
 			<option value='1' ".($pref['eventpost_editmode']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A202."</option>
@@ -990,79 +1006,79 @@ $text .= "
 
 	
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A122."<br />
-		<span class='smalltext'><em>".EC_ADLAN_A124."</em></span>".$ecal_class->time_string($ecal_class->time_now)."<br />
-		<span class='smalltext'><em>".EC_ADLAN_A125."</em></span>".$ecal_class->time_string($ecal_class->site_timedate)."<br />
-		<span class='smalltext'><em>".EC_ADLAN_A126."</em></span>".$ecal_class->time_string($ecal_class->user_timedate)."
+		<td>".EC_ADLAN_A122."<br />
+		<span class='field-help'>".EC_ADLAN_A124."</span>".$ecal_class->time_string($ecal_class->time_now)."<br />
+		<span class='field-help'>".EC_ADLAN_A125."</span>".$ecal_class->time_string($ecal_class->site_timedate)."<br />
+		<span class='field-help'>".EC_ADLAN_A126."</span>".$ecal_class->time_string($ecal_class->user_timedate)."
 		</td>
-		<td class='forumheader3'>
+		<td>
 			<select name='eventpost_caltime' class='tbox'>
-			<option value='1' ".($pref['eventpost_caltime']=='1'?" selected='selected' ":"")." > Server </option>
-			<option value='2' ".($pref['eventpost_caltime']=='2'?" selected='selected' ":"")." > Site </option>
-			<option value='3' ".($pref['eventpost_caltime']=='3'?" selected='selected' ":"")." > User </option>
-			</select><br /><span class='smalltext'><em>".EC_ADLAN_A129."</em></span>
+			<option value='1' ".($pref['eventpost_caltime']=='1'?" selected='selected' ":'')." > Server </option>
+			<option value='2' ".($pref['eventpost_caltime']=='2'?" selected='selected' ":'')." > Site </option>
+			<option value='3' ".($pref['eventpost_caltime']=='3'?" selected='selected' ":'')." > User </option>
+			</select><br /><span class='field-help'>".EC_ADLAN_A129."</span>
 		</td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A123."<br />
-		<span class='smalltext'><em>".EC_ADLAN_A127."</em></span>
+		<td>".EC_ADLAN_A123."<br />
+		<span class='field-help'>".EC_ADLAN_A127."</span>
 		</td>
-		<td class='forumheader3'>
+		<td>
 			<select name='eventpost_timedisplay' class='tbox'>
-			<option value='1' ".($pref['eventpost_timedisplay']=='1'?" selected='selected' ":"")." > 24-hour hhmm </option>
-			<option value='4' ".($pref['eventpost_timedisplay']=='4'?" selected='selected' ":"")." > 24-hour hh:mm </option>
-			<option value='2' ".($pref['eventpost_timedisplay']=='2'?" selected='selected' ":"")." > 12-hour </option>
-			<option value='3' ".($pref['eventpost_timedisplay']=='3'?" selected='selected' ":"")." > Custom </option>
+			<option value='1' ".($pref['eventpost_timedisplay']=='1'?" selected='selected' ":'')." > 24-hour hhmm </option>
+			<option value='4' ".($pref['eventpost_timedisplay']=='4'?" selected='selected' ":'')." > 24-hour hh:mm </option>
+			<option value='2' ".($pref['eventpost_timedisplay']=='2'?" selected='selected' ":'')." > 12-hour </option>
+			<option value='3' ".($pref['eventpost_timedisplay']=='3'?" selected='selected' ":'')." > Custom </option>
 			</select>
             <input class='tbox' type='text' name='eventpost_timecustom' size='20' value='".$pref['eventpost_timecustom']."' maxlength='30' />
-			<br /><span class='smalltext'><em>".EC_ADLAN_A128."</em></span>
+			<br /><span class='field-help'>".EC_ADLAN_A128."</span>
 		</td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A166."<br />
-		<span class='smalltext'><em>".EC_ADLAN_A169."</em></span>
+		<td>".EC_ADLAN_A166."<br />
+		<span class='field-help'>".EC_ADLAN_A169."</span>
 		</td>
-		<td class='forumheader3'>
+		<td>
 			<select name='eventpost_dateevent' class='tbox'>
-			<option value='1' ".($pref['eventpost_dateevent']=='1'?" selected='selected' ":"")." > dayofweek day month yyyy </option>
-			<option value='2' ".($pref['eventpost_dateevent']=='2'?" selected='selected' ":"")." > dyofwk day mon yyyy </option>
-			<option value='3' ".($pref['eventpost_dateevent']=='3'?" selected='selected' ":"")." > dyofwk dd-mm-yy </option>
-			<option value='0' ".($pref['eventpost_dateevent']=='0'?" selected='selected' ":"")." > Custom </option>
+			<option value='1' ".($pref['eventpost_dateevent']=='1'?" selected='selected' ":'')." > dayofweek day month yyyy </option>
+			<option value='2' ".($pref['eventpost_dateevent']=='2'?" selected='selected' ":'')." > dyofwk day mon yyyy </option>
+			<option value='3' ".($pref['eventpost_dateevent']=='3'?" selected='selected' ":'')." > dyofwk dd-mm-yy </option>
+			<option value='0' ".($pref['eventpost_dateevent']=='0'?" selected='selected' ":'')." > Custom </option>
 			</select>
             <input class='tbox' type='text' name='eventpost_eventdatecustom' size='20' value='".$pref['eventpost_eventdatecustom']."' maxlength='30' />
-			<br /><span class='smalltext'><em>".EC_ADLAN_A168."</em></span>
+			<br /><span class='field-help'>".EC_ADLAN_A168."</span>
 		</td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A167."<br />
-		<span class='smalltext'><em>".EC_ADLAN_A170."</em></span>
+		<td>".EC_ADLAN_A167."<br />
+		<span class='field-help'>".EC_ADLAN_A170."</span>
 		</td>
-		<td class='forumheader3'>
+		<td>
 			<select name='eventpost_datenext' class='tbox'>
-			<option value='1' ".($pref['eventpost_datenext']=='1'?" selected='selected' ":"")." > dd month </option>
-			<option value='2' ".($pref['eventpost_datenext']=='2'?" selected='selected' ":"")." > dd mon </option>
-			<option value='3' ".($pref['eventpost_datenext']=='3'?" selected='selected' ":"")." > month dd </option>
-			<option value='4' ".($pref['eventpost_datenext']=='4'?" selected='selected' ":"")." > mon dd </option>
-			<option value='0' ".($pref['eventpost_datenext']=='0'?" selected='selected' ":"")." > Custom </option>
+			<option value='1' ".($pref['eventpost_datenext']=='1'?" selected='selected' ":'')." > dd month </option>
+			<option value='2' ".($pref['eventpost_datenext']=='2'?" selected='selected' ":'')." > dd mon </option>
+			<option value='3' ".($pref['eventpost_datenext']=='3'?" selected='selected' ":'')." > month dd </option>
+			<option value='4' ".($pref['eventpost_datenext']=='4'?" selected='selected' ":'')." > mon dd </option>
+			<option value='0' ".($pref['eventpost_datenext']=='0'?" selected='selected' ":'')." > Custom </option>
 			</select>
             <input class='tbox' type='text' name='eventpost_nextdatecustom' size='20' value='".$pref['eventpost_nextdatecustom']."' maxlength='30' />
-			<br /><span class='smalltext'><em>".EC_ADLAN_A168."</em></span>
+			<br /><span class='field-help'>".EC_ADLAN_A168."</span>
 		</td>
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A193."<br /></td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A193."<br /></td>
+		<td>
 			<select name='eventpost_printlists' class='tbox'>";
-	$listOpts = array( 0 => EC_ADLAN_A194, 1 => EC_ADLAN_A195);
-	if (e107::isInstalled('pdf')) { $listOpts[2] = EC_ADLAN_A196; }
+	$listOpts = array( '0' => EC_ADLAN_A194, '1' => EC_ADLAN_A195);
+	if (e107::isInstalled('pdf')) { $listOpts['2'] = EC_ADLAN_A196; }
 	foreach ($listOpts as $v => $t)
 	{
 		$s = $pref['eventpost_printlists'] == $v ? " selected='selected'" : '';
-		$text .= "<option value={$v}{$s}>{$t}</option>\n";
+		$text .= "<option value='{$v}'{$s}>{$t}</option>\n";
 	}
 	$text .= "
 			</select>
@@ -1070,32 +1086,32 @@ $text .= "
 	</tr>
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A95."</td>
-		<td class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".($pref['eventpost_asubs']==1?" checked='checked' ":"")." />&nbsp;&nbsp;<span class='smalltext'><em>".EC_ADLAN_A96."</em></span>
+		<td>".EC_ADLAN_A95."</td>
+		<td><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".($pref['eventpost_asubs']==1?" checked='checked' ":'')." />&nbsp;&nbsp;<span class='smalltext'><em>".EC_ADLAN_A96."</em></span>
 		</td>
 	</tr>
 	
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A92."</td>
-		<td class='forumheader3'><input class='tbox' type='text' name='eventpost_mailfrom' size='60' value='".$pref['eventpost_mailfrom']."' maxlength='100' />
+		<td>".EC_ADLAN_A92."</td>
+		<td><input class='tbox' type='text' name='eventpost_mailfrom' size='60' value='".$pref['eventpost_mailfrom']."' maxlength='100' />
 		</td>
 	</tr>  
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A91."</td>
-		<td class='forumheader3'><input class='tbox' type='text' name='eventpost_mailsubject' size='60' value='".$pref['eventpost_mailsubject']."' maxlength='100' />
+		<td>".EC_ADLAN_A91."</td>
+		<td><input class='tbox' type='text' name='eventpost_mailsubject' size='60' value='".$pref['eventpost_mailsubject']."' maxlength='100' />
 		</td>
 	</tr>  
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A93."</td>
-		<td class='forumheader3'><input class='tbox' type='text' name='eventpost_mailaddress' size='60' value='".$pref['eventpost_mailaddress']."' maxlength='100' />
+		<td>".EC_ADLAN_A93."</td>
+		<td><input class='tbox' type='text' name='eventpost_mailaddress' size='60' value='".$pref['eventpost_mailaddress']."' maxlength='100' />
 		</td>
 	</tr>  
 
 	<tr>
-		<td class='forumheader3'>".EC_ADLAN_A114."<br /></td>
-		<td class='forumheader3'>
+		<td>".EC_ADLAN_A114."<br /></td>
+		<td>
 			<select name='eventpost_emaillog' class='tbox'>
 			<option value='0' ".($pref['eventpost_emaillog']=='0'?" selected='selected' ":"")." >". EC_ADLAN_A87." </option>
 			<option value='1' ".($pref['eventpost_emaillog']=='1'?" selected='selected' ":"")." >".EC_ADLAN_A115."  </option>
@@ -1104,8 +1120,10 @@ $text .= "
 		</td>
 	</tr>
 
-	<tr><td colspan='2'  style='text-align:center' class='fcaption'><input class='button' type='submit' name='updatesettings' value='".EC_ADLAN_A218."' /></td></tr>
+	<tr><td colspan='2' style='text-align:center'><input class='button' type='submit' name='updatesettings' value='".EC_ADLAN_A218."' /></td></tr>
+	</tbody>
 	</table>
+	</fieldset>
 	</form>
 	</div>";
 	
