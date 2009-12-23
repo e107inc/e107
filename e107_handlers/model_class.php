@@ -9,16 +9,16 @@
  * e107 Base Model
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/model_class.php,v $
- * $Revision: 1.49 $
- * $Date: 2009-12-13 21:52:32 $
- * $Author: e107steved $
+ * $Revision: 1.50 $
+ * $Date: 2009-12-23 15:12:12 $
+ * $Author: secretr $
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 /**
  * Base e107 Model class
- * 
+ *
  * @package e107
  * @category e107_handlers
  * @version 1.0
@@ -33,34 +33,34 @@ class e_model
      * @var array
      */
     protected $_data = array();
-	
+
     /**
-     * Data structure (types) array, required for {@link e_admin_model::sanitize()} method, 
+     * Data structure (types) array, required for {@link e_admin_model::sanitize()} method,
      * it also serves as a map (find data) for building DB queries,
      * copy/sanitize posted data to object data, etc.
-     * 
+     *
      * This can/should be overwritten by extending the class
      *
      * @var array
      */
     protected $_data_fields = array();
-	
+
 	/**
 	 * Current model DB table, used in all db calls
-	 * 
+	 *
 	 * This can/should be overwritten/set by extending the class
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_db_table;
-    
+
     /**
      * Runtime cache of parsed from {@link _getData()} keys
      *
      * @var array
      */
     protected $_parsed_keys = array();
-	
+
     /**
      * Avoid DB calls if data is not changed
      *
@@ -68,7 +68,7 @@ class e_model
      * @var boolean
      */
     protected $data_has_changed = false;
-    
+
     /**
     * Name of object id field
     * Required for {@link getId()()} method
@@ -76,21 +76,21 @@ class e_model
     * @var string
     */
     protected $_field_id;
-	
+
 	/**
 	 * Namespace to be used for model related system messages in {@link eMessage} handler
-	 * 
-	 * @var string 
+	 *
+	 * @var string
 	 */
 	protected $_message_stack = 'default';
-	
+
 	/**
 	 * Model parameters passed mostly from external sources
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_params = array();
-	
+
     /**
      * Constructor - set data on initialization
      *
@@ -100,12 +100,12 @@ class e_model
 	{
 		$this->setData($data);
 	}
-	
+
 	/**
 	 * Optional DB table - used for auto-load data from the DB
 	 * @param string $table
 	 * @return e_model
-	 */	
+	 */
 	public function getModelTable()
 	{
 		return $this->_db_table;
@@ -115,13 +115,13 @@ class e_model
 	 * Set model DB table
 	 * @param string $table
 	 * @return e_model
-	 */	
+	 */
 	public function setModelTable($table)
 	{
 		$this->_db_table = $table;
 		return $this;
 	}
-	
+
     /**
      * Get data fields array
      * @return array
@@ -130,7 +130,7 @@ class e_model
     {
     	return $this->_data_fields;
     }
-	
+
     /**
      * Set Predefined data fields in format key => type
      * @return e_model
@@ -140,7 +140,7 @@ class e_model
     	$this->_data_fields = $data_fields;
 		return $this;
     }
-	
+
     /**
      * Set Predefined data field
      * @return e_model
@@ -150,12 +150,12 @@ class e_model
     	$this->_data_fields[$field] = $type;
 		return $this;
     }
-    
+
     /**
      * Set name of object's field id
      *
      * @see getId()
-     * 
+     *
      * @param   string $name
      * @return  e_model
      */
@@ -169,7 +169,7 @@ class e_model
      * Retrieve name of object's field id
      *
      * @see getId()
-     * 
+     *
      * @param   string $name
      * @return  string
      */
@@ -185,13 +185,13 @@ class e_model
      */
     public function getId()
     {
-        if ($this->getFieldIdName()) 
+        if ($this->getFieldIdName())
         {
             return $this->get($this->getFieldIdName(), 0);
         }
         return $this->get('id', 0);
     }
-	
+
     /**
      * Set object primary id field value
      *
@@ -199,13 +199,13 @@ class e_model
      */
     public function setId($id)
     {
-        if ($this->getFieldIdName()) 
+        if ($this->getFieldIdName())
         {
             return $this->set($this->getFieldIdName(), intval($id));
         }
         return $this;
     }
-    
+
     /**
      * Retrieves data from the object ($_data) without
      * key parsing (performance wise, prefered when possible)
@@ -219,7 +219,7 @@ class e_model
     {
     	return $this->_getDataSimple((string) $key, $default);
     }
-    
+
     /**
      * Retrieves data from the object ($_data)
      * If $key is empty, return all object data
@@ -234,12 +234,12 @@ class e_model
     {
     	return $this->_getData($key, $default, $index);
     }
-    
+
     /**
      * Overwrite data in the object for a single field. Key is not parsed.
      * Public proxy of {@link _setDataSimple()}
      * Data isn't sanitized so use this method only when data comes from trustable sources (e.g. DB)
-     * 
+     *
      *
      * @see _setData()
      * @param string $key
@@ -251,7 +251,7 @@ class e_model
     {
     	return $this->_setDataSimple($key, $value, $strict);
     }
-    
+
     /**
      * Overwrite data in the object. Public proxy of {@link _setData()}
      * Data isn't sanitized so use this method only when data comes from trustable sources (e.g. DB)
@@ -266,14 +266,14 @@ class e_model
     {
     	return $this->_setData($key, $value, $strict);
     }
-    
+
     /**
      * Add data to the object.
      * Retains existing data in the object.
      * Public proxy of {@link _addData()}
-     * 
+     *
      * If $override is false, data will be updated only (check against existing data)
-     * 
+     *
      * @param string|array $key
      * @param mixed $value
      * @param boolean $override override existing data
@@ -283,7 +283,7 @@ class e_model
     {
     	return $this->_addData($key, $value, $override);
     }
-    
+
 	/**
      * Unset single field from the object.
      * Public proxy of {@link _unsetDataSimple()}
@@ -295,13 +295,13 @@ class e_model
     {
     	return $this->_unsetDataSimple($key);
     }
-    
+
 	/**
      * Unset data from the object.
      * $key can be a string only. Array will be ignored.
      * '/' inside the key will be treated as array path
      * if $key is null entire object will be reset
-     * 
+     *
      * Public proxy of {@link _unsetData()}
      *
      * @param string|null $key
@@ -311,7 +311,7 @@ class e_model
     {
     	return $this->_unsetData($key);
     }
-    
+
     /**
      * @param string $key
      * @return boolean
@@ -320,7 +320,7 @@ class e_model
     {
     	return $this->_hasData($key);
     }
-    
+
     /**
      * @param string $key
      * @return boolean
@@ -329,7 +329,7 @@ class e_model
     {
     	return $this->_hasData($key);
     }
-	
+
     /**
      * @param string $key
      * @return boolean
@@ -338,7 +338,7 @@ class e_model
     {
     	return (isset($this->_data[$key]));
     }
-    
+
     /**
      * @param string $key
      * @return boolean
@@ -347,7 +347,7 @@ class e_model
     {
     	return $this->_isData($key);
     }
-    
+
     /**
      * Retrieves data from the object
      *
@@ -367,7 +367,7 @@ class e_model
     protected function _getData($key = '', $default = null, $index = null, $data_src = '_data')
     {
     	$key = trim($key, '/');
-        if ('' === $key) 
+        if ('' === $key)
         {
             return $this->$data_src;
         }
@@ -380,21 +380,21 @@ class e_model
         	}
             $keyArr = explode('/', $key);
             $data = $this->$data_src;
-            foreach ($keyArr as $k) 
+            foreach ($keyArr as $k)
             {
-                if ('' === $k) 
+                if ('' === $k)
                 {
                     return $default;
                 }
-                if (is_array($data)) 
+                if (is_array($data))
                 {
-                    if (!isset($data[$k])) 
+                    if (!isset($data[$k]))
                     {
                         return $default;
                     }
                     $data = $data[$k];
                 }
-                else 
+                else
                 {
                     return $default;
                 }
@@ -404,23 +404,23 @@ class e_model
         }
 
         //get $index
-        if (isset($this->{$data_src}[$key])) 
+        if (isset($this->{$data_src}[$key]))
         {
-            if (null === $index) 
+            if (null === $index)
             {
                 return $this->{$data_src}[$key];
             }
 
             $value = $this->{$data_src}[$key];
-            if (is_array($value)) 
+            if (is_array($value))
             {
-                if (isset($value[$index])) 
+                if (isset($value[$index]))
                 {
                     return $value[$index];
                 }
                 return $default;
-            } 
-            elseif (is_string($value)) 
+            }
+            elseif (is_string($value))
             {
                 $arr = explode("\n", $value);
                 return (isset($arr[$index]) ? $arr[$index] : $default);
@@ -429,7 +429,7 @@ class e_model
         }
         return $default;
     }
-    
+
     /**
      * Get value from _data array without parsing the key
      *
@@ -442,7 +442,7 @@ class e_model
     {
         return isset($this->{$data_src}[$key]) ? $this->{$data_src}[$key] : $default;
     }
-    
+
     /**
      * Overwrite data in the object.
      *
@@ -451,7 +451,7 @@ class e_model
      * '/' inside the key will be treated as array path
      *
      * If $key is an array and $strict is false, it will overwrite all the data in the object.
-     * 
+     *
      * If $strict is true and $data_src is '_data', data will be updated only (no new data will be added)
      *
      * @param string|array $key
@@ -462,11 +462,11 @@ class e_model
      */
     protected function _setData($key, $value = null, $strict = false, $data_src = '_data')
     {
-        if(is_array($key)) 
+        if(is_array($key))
         {
             if($strict)
 	    	{
-				foreach(array_keys($key) as $k) 
+				foreach(array_keys($key) as $k)
 		        {
 		        	$this->_setData($k, $key[$k], true, $data_src);
 		        }
@@ -475,8 +475,8 @@ class e_model
 
             $this->$data_src = $key;
             return $this;
-        } 
-        
+        }
+
         //multidimensional array support - strict _setData for values of type array
     	if($strict && !empty($value) && is_array($value))
        	{
@@ -486,30 +486,30 @@ class e_model
 			}
 			return $this;
        	}
-        
+
         //multidimensional array support - parse key
         $key = trim($key, '/');
-        if(strpos($key,'/')) 
+        if(strpos($key,'/'))
         {
         	//if strict - update only
 	        if($strict && !$this->isData($key))
 	        {
 	        	return $this;
 	        }
-	        
+
         	$keyArr = explode('/', $key);
         	$data = &$this->{$data_src};
-            for ($i = 0, $l = count($keyArr); $i < $l; $i++) 
+            for ($i = 0, $l = count($keyArr); $i < $l; $i++)
             {
 	            $k = $keyArr[$i];
-		        
-	            if (!isset($data[$k])) 
+
+	            if (!isset($data[$k]))
 	            {
 	                $data[$k] = array();
 	            }
 	            $data = &$data[$k];
 	        }
-            
+
 	        //data has changed - optimized
 	        if('_data' === $data_src && !$this->data_has_changed)
 	        {
@@ -518,7 +518,7 @@ class e_model
 	        $this->_parsed_keys[$data_src.'/'.$key] = $value;
 	        $data = $value;
         }
-        else 
+        else
         {
 			//if strict - update only
 	        if($strict && !isset($this->_data[$key]))
@@ -534,7 +534,7 @@ class e_model
 
         return $this;
     }
-    
+
     /**
      * Set data for the given source. More simple (and performance wise) version
      * of {@link _setData()}
@@ -558,7 +558,7 @@ class e_model
 	        $this->{$data_src}[$key] = $value;
     		return $this;
     	}
-    	
+
     	if($this->isData($key))
     	{
 			if('_data' === $data_src && !$this->data_has_changed)
@@ -570,13 +570,13 @@ class e_model
 
     	return $this;
     }
-    
+
     /**
      * Add data to the object.
      * Retains existing data in the object.
-     * 
+     *
      * If $override is false, only new (non-existent) data will be added
-     * 
+     *
      * @param string|array $key
      * @param mixed $value
      * @param boolean $override allow override of existing data
@@ -593,7 +593,7 @@ class e_model
 			}
 			return $this;
     	}
-    	
+
 		if($override || !$this->_isData($key, $data_src))
        	{
        		if(is_array($value))
@@ -611,7 +611,7 @@ class e_model
        	}
         return $this;
     }
-    
+
     /**
      * Unset data from the object from the given source.
      * $key can be a string only. Array will be ignored.
@@ -624,7 +624,7 @@ class e_model
      */
     protected function _unsetData($key = null, $data_src = '_data')
     {
-        if (null === $key) 
+        if (null === $key)
         {
         	if('_data' === $data_src && !empty($this->_data))
         	{
@@ -632,19 +632,19 @@ class e_model
         	}
         	$this->{$data_src} = array();
             return $this;
-        } 
-		
+        }
+
         $key = trim($key, '/');
-        if(strpos($key,'/')) 
+        if(strpos($key,'/'))
         {
         	$keyArr = explode('/', $key);
         	$data = &$this->{$data_src};
-        	
+
         	$unskey = array_pop($keyArr);
-            for ($i = 0, $l = count($keyArr); $i < $l; $i++) 
+            for ($i = 0, $l = count($keyArr); $i < $l; $i++)
             {
 	            $k = $keyArr[$i];
-	            if (!isset($data[$k])) 
+	            if (!isset($data[$k]))
 	            {
 	                return $this; //not found
 	            }
@@ -659,7 +659,7 @@ class e_model
 	        	unset($data[$unskey], $this->_parsed_keys[$data_src.'/'.$key]);
 	        }
         }
-        else 
+        else
         {
        		if('_data' === $data_src && isset($this->{$data_src}[$key]))
         	{
@@ -669,7 +669,7 @@ class e_model
         }
         return $this;
     }
-    
+
 	/**
      * Unset single field from the object from the given source. Key is not parsed
      *
@@ -697,14 +697,14 @@ class e_model
      */
     protected function _hasData($key = '', $data_src = '_data')
     {
-        if (empty($key)) 
+        if (empty($key))
         {
             return !empty($this->$data_src);
         }
         $value = $this->_getData($key, null, null, $data_src);
         return !empty($value);
     }
-    
+
     /**
      * Checks if the specified key is set
      *
@@ -719,7 +719,7 @@ class e_model
 
 	/**
 	 * Add system message of type Information
-	 * 
+	 *
 	 * @param string $message
 	 * @param boolean $session [optional]
 	 * @return e_model
@@ -729,10 +729,10 @@ class e_model
 		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_INFO, $session);
 		return $this;
 	}
-	
+
 	/**
 	 * Add system message of type Success
-	 * 
+	 *
 	 * @param string $message
 	 * @param boolean $session [optional]
 	 * @return e_model
@@ -742,10 +742,10 @@ class e_model
 		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_SUCCESS, $session);
 		return $this;
 	}
-	
+
 	/**
 	 * Add system message of type Warning
-	 * 
+	 *
 	 * @param string $message
 	 * @param boolean $session [optional]
 	 * @return e_model
@@ -755,10 +755,10 @@ class e_model
 		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_WARNING, $session);
 		return $this;
 	}
-	
+
 	/**
 	 * Add system message of type Error
-	 * 
+	 *
 	 * @param string $message
 	 * @param boolean $session [optional]
 	 * @return e_model
@@ -768,10 +768,10 @@ class e_model
 		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_ERROR, $session);
 		return $this;
 	}
-	
+
 	/**
 	 * Add system message of type Information
-	 * 
+	 *
 	 * @param string $message
 	 * @param boolean $session [optional]
 	 * @return e_model
@@ -781,10 +781,10 @@ class e_model
 		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_DEBUG, $session);
 		return $this;
 	}
-	
+
     /**
      * Render System messages (if any)
-     * 
+     *
      * @param boolean $session store messages to session
      * @param boolean $reset reset errors
      * @return string
@@ -793,10 +793,10 @@ class e_model
     {
     	return e107::getMessage()->render($this->_message_stack, $session, $reset);
     }
-	
+
     /**
      * Move model System messages (if any) to the default eMessage stack
-     * 
+     *
      * @param boolean $session store messages to session
      * @return e_model
      */
@@ -805,7 +805,7 @@ class e_model
     	e107::getMessage()->moveStack($this->_message_stack, 'default', false, $session);
 		return $this;
     }
-	
+
 	/**
 	 * Set model message stack
 	 * @param string $stack_name
@@ -816,7 +816,7 @@ class e_model
     	$this->_message_stack = $stack_name;
 		return $this;
     }
-	
+
 	/**
 	 * Get model message stack name
 	 * @return string
@@ -825,7 +825,7 @@ class e_model
     {
 		return $this->_message_stack;
     }
-	
+
     /**
      * User defined model validation
      * Awaiting for child class implementation
@@ -834,15 +834,15 @@ class e_model
     public function verify()
     {
     }
-	
+
     /**
-     * Model validation 
+     * Model validation
      * @see e_model_admin
      */
     public function validate()
     {
     }
-    
+
     /**
      * Generic load data from DB
      * @param boolean $force
@@ -854,13 +854,13 @@ class e_model
 		{
 			return $this;
 		}
-		
+
 		if($force)
 		{
 			$this->setData(array());
 		}
 		$id = intval($id);
-		
+
 		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
 		if(!$qry)
 		{
@@ -874,7 +874,7 @@ class e_model
 		{
 			$this->setData($sql->db_Fetch());
 		}
-		
+
 		if($sql->getLastErrorNumber())
 		{
 			$this->addMessageDebug('SQL error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
@@ -882,7 +882,7 @@ class e_model
 
 		return $this;
 	}
-    
+
     /**
      * Save data to DB
      * Awaiting for child class implementation
@@ -891,7 +891,7 @@ class e_model
     public function save()
     {
     }
-    
+
     /**
      * Insert data to DB
      * Awaiting for child class implementation
@@ -900,7 +900,7 @@ class e_model
     public function dbInsert()
     {
     }
-    
+
     /**
      * Update DB data
      * Awaiting for child class implementation
@@ -909,7 +909,7 @@ class e_model
     public function dbUpdate()
     {
     }
-	
+
     /**
      * Replace DB record
      * Awaiting for child class implementation
@@ -918,7 +918,7 @@ class e_model
     public function dbReplace()
     {
     }
-	
+
     /**
      * Delete DB data
      * Awaiting for child class implementation
@@ -927,7 +927,7 @@ class e_model
     public function dbDelete()
     {
     }
-	
+
 	/**
 	 * Set parameter array
 	 * Core parameters:
@@ -942,7 +942,7 @@ class e_model
 		$this->_params = $params;
 		return $this;
 	}
-	
+
 	/**
 	 * Update parameter array
 	 * @param array $params
@@ -953,21 +953,21 @@ class e_model
 		$this->_params = array_merge($this->_params, $params);
 		return $this;
 	}
-	
+
 	/**
 	 * Get parameter array
-	 * 
+	 *
 	 * @return array parameters
 	 */
 	public function getParams()
 	{
 		return $this->_params;
 	}
-	
+
 	/**
 	 * Set parameter
-	 * 
-	 * @param string $key 
+	 *
+	 * @param string $key
 	 * @param mixed $value
 	 * @return e_model
 	 */
@@ -976,7 +976,7 @@ class e_model
 		$this->_params[$key] = $value;
 		return $this;
 	}
-	
+
 	/**
 	 * Get parameter
 	 *
@@ -987,11 +987,11 @@ class e_model
 	{
 		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
 	}
-	
+
 	/**
 	 * Render model data, all 'sc_*' methods will be recongnized
 	 * as shortcodes.
-	 * 
+	 *
 	 * @param string $template
 	 * @param boolean $parsesc parse external shortcodes, default is true
 	 * @return string parsed template
@@ -1000,12 +1000,12 @@ class e_model
 	{
 		return e107::getParser()->parseTemplate($template, $parsesc, $this);
 	}
-	
+
 	public function toXML()
 	{
 		$ret = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
 		$ret .= "<e107Export type=\"model\" version=\"1.0\" timestamp=\"".time()."\" >\n";
-		
+
 		$ret .= "\t<data>\n";
 		// TODO - handle multi dimensional arrays (already possible - field1/field2?), method toXMLValue($value, $type)
 		foreach ($this->getDataFields() as $field => $type)
@@ -1015,15 +1015,15 @@ class e_model
 			$ret .= "</field>\n";
 		}
 		$ret .= "\t</data>\n";
-		
+
 		$ret .= "</e107Export>";
 		return $ret;
 	}
-	
+
 	/**
 	 * Try to convert string to a number
 	 * Shoud fix locale related troubles
-	 * 
+	 *
 	 * @param string $value
 	 * @return integer|float
 	 */
@@ -1031,14 +1031,14 @@ class e_model
 	{
 		if(!is_numeric($value))
 		{
-			$larr = localeconv(); 
+			$larr = localeconv();
 			$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
 			$replace = array('.', '.', '', '', '', '');
 			$value = str_replace($search, $replace, $value);
 		}
 		return (0 + $value);
 	}
-	
+
 	/**
 	 * Convert model object to array
 	 * @return array object data
@@ -1047,7 +1047,7 @@ class e_model
 	{
 		return $this->getData();
 	}
-	
+
 	/**
 	 * Convert object data to a string
 	 *
@@ -1068,12 +1068,12 @@ class e_model
 		}
 		return (string) e107::getArrayStorage()->WriteArray($this->getData(), $AddSlashes);
 	}
-	
+
 	/**
 	 * Magic method - convert object data to a string
-	 * NOTE: before PHP 5.2.0 the __toString method was only 
+	 * NOTE: before PHP 5.2.0 the __toString method was only
 	 * called when it was directly combined with echo() or print()
-	 * 
+	 *
 	 * NOTE: PHP 5.3+ is throwing parse error if __toString has optional arguments.
 	 *
 	 * @param boolean $AddSlashes
@@ -1083,7 +1083,7 @@ class e_model
 	{
 		return $this->toString((func_num_args() && @func_get_arg(0) === true));
 	}
-	
+
 	public function destroy()
 	{
 		$this->_data = array();
@@ -1099,12 +1099,12 @@ class e_model
 
 /**
  * Base e107 Admin Model class
- * 
+ *
  * Some important points:
  * - model data should be always in toDB() format:
  * 		- retrieved direct from DB
  * 		- set & sanitized via setPostedData()->mergePostedData()
- * 		- manually sanitized before passed to model setter (set(), setData(), add(), addData(), etc.) methods 
+ * 		- manually sanitized before passed to model setter (set(), setData(), add(), addData(), etc.) methods
  * - $_data_fields property is important, it tells to sanitize() method how to sanitize posted data
  * - if $_data_fields is missing, sanitize() will call internally e107::getParser()->toDB() on the data
  * - sanitize() is triggered by default on mergePostedData() and mergeData() methods
@@ -1116,7 +1116,7 @@ class e_model
  * - in almost every case $_FIELD_TYPES shouldn't contain 'escape' and 'todb' - dont't forget you are going to pass already sanitized data (see above)
  * - most probably $_FIELD_TYPES will go in the future, $_data_fields alone could do the job
  * - default db related methods (save(), dbUpdate(), etc.) need $_db_table
- * 
+ *
  * @package e107
  * @category e107_handlers
  * @version 1.0
@@ -1132,17 +1132,17 @@ class e_admin_model extends e_model
     * @var array
     */
     protected $_posted_data = array();
-	
+
     /**
      * DB format array - see db::_getTypes() and db::_getFieldValue() (mysql_class.php)
      * for example
-     * 
+     *
      * This can/should be overwritten by extending the class
      *
      * @var array
      */
     protected $_FIELD_TYPES = array();
-    
+
     /**
      * Validation structure - see {@link e_validator::$_required_rules} for
      * more information about the array format.
@@ -1153,19 +1153,19 @@ class e_admin_model extends e_model
      * @var array
      */
     protected $_validation_rules = array();
-	
+
 	/**
 	 * @var integer Last SQL error number
 	 */
 	protected $_db_errno = 0;
-    
+
     /**
      * Validator object
-     * 
-     * @var e_validator 
+     *
+     * @var e_validator
      */
     protected $_validator = null;
-	
+
     /**
      * @return array
      */
@@ -1173,10 +1173,10 @@ class e_admin_model extends e_model
     {
     	return $this->_validation_rules;
     }
-    
+
     /**
      * Set object validation rules if $_validation_rules array is empty
-     * 
+     *
      * @param array $vrules
      * @return e_admin_model
      */
@@ -1188,7 +1188,7 @@ class e_admin_model extends e_model
     	}
     	return $this;
     }
-	
+
     /**
      * Predefined data fields types, passed to DB handler
      * @return array
@@ -1197,10 +1197,10 @@ class e_admin_model extends e_model
     {
     	return $this->_FIELD_TYPES;
     }
-	
+
     /**
      * Predefined data fields types, passed to DB handler
-     * 
+     *
      * @param array $field_types
      * @return e_admin_model
      */
@@ -1209,7 +1209,7 @@ class e_admin_model extends e_model
     	$this->_FIELD_TYPES = $field_types;
 		return $this;
     }
-    
+
     /**
      * Retrieves data from the object ($_posted_data) without
      * key parsing (performance wise, prefered when possible)
@@ -1223,7 +1223,7 @@ class e_admin_model extends e_model
     {
     	return $this->_getDataSimple((string) $key, $default, '_posted_data');
     }
-    
+
     /**
      * Retrieves data from the object ($_posted_data)
      * If $key is empty, return all object posted data
@@ -1237,13 +1237,13 @@ class e_admin_model extends e_model
     {
     	return $this->_getData($key, $default, $index, '_posted_data');
     }
-    
+
     /**
      * Search for requested data from available sources in this order:
      * - posted data
      * - default object data
      * - passed default value
-     * 
+     *
      * Use this method inside forms
      *
      * @param string $key
@@ -1260,13 +1260,13 @@ class e_admin_model extends e_model
 		}
 		return e107::getParser()->toForm($this->getData((string) $key, $default, $index));
     }
-    
+
     /**
      * Overwrite posted data in the object for a single field. Key is not parsed.
      * Public proxy of {@link _setDataSimple()}
-     * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite 
+     * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite
      * the original object data
-     * 
+     *
      * @param string $key
      * @param mixed $value
      * @param boolean $strict update only
@@ -1283,11 +1283,11 @@ class e_admin_model extends e_model
 		}
         return $this->_setDataSimple($key, $value, $strict, '_posted_data');
     }
-    
+
     /**
      * Overwrite posted data in the object. Key is parsed (multidmensional array support).
      * Public proxy of {@link _setData()}
-     * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite 
+     * Use this method to store data from non-trustable sources (e.g. _POST) - it doesn't overwrite
      * the original object data
      *
      * @param string|array $key
@@ -1306,14 +1306,14 @@ class e_admin_model extends e_model
 		}
         return $this->_setData($key, $value, $strict, '_posted_data');
     }
-    
+
     /**
      * Add data to the object.
      * Retains existing data in the object.
      * Public proxy of {@link _addData()}
-     * 
+     *
      * If $override is false, data will be updated only (check against existing data)
-     * 
+     *
      * @param string|array $key
      * @param mixed $value
      * @param boolean $override override existing data
@@ -1330,7 +1330,7 @@ class e_admin_model extends e_model
 		}
     	return $this->_addData($key, $value, $override, '_posted_data');
     }
-    
+
 	/**
      * Unset single posted data field from the object.
      * Public proxy of {@link _unsetDataSimple()}
@@ -1342,13 +1342,13 @@ class e_admin_model extends e_model
     {
     	return $this->_unsetDataSimple($key, '_posted_data');
     }
-    
+
 	/**
      * Unset posted data from the object.
      * $key can be a string only. Array will be ignored.
      * '/' inside the key will be treated as array path
      * if $key is null entire object will be reset
-     * 
+     *
      * Public proxy of {@link _unsetData()}
      *
      * @param string|null $key
@@ -1368,7 +1368,7 @@ class e_admin_model extends e_model
     {
     	return $this->_hasData($key, '_posted_data');
     }
-    
+
 	/**
 	 * Check if posted data is empty
 	 * @return boolean
@@ -1377,10 +1377,10 @@ class e_admin_model extends e_model
     {
     	return $this->_hasData('', '_posted_data');
     }
-	
+
     /**
      * Check if given key exists in the posted data array
-     * 
+     *
      * @param string $key
      * @return boolean
      */
@@ -1388,10 +1388,10 @@ class e_admin_model extends e_model
     {
     	return (isset($this->_posted_data[$key]));
     }
-    
+
     /**
      * Check if given key exists in the posted data array ($key us parsed)
-     * 
+     *
      * @param string $key
      * @return boolean
      */
@@ -1399,7 +1399,7 @@ class e_admin_model extends e_model
     {
     	return $this->_isData($key, '_posted_data');
     }
-    
+
     /**
      * Compares posted data vs object data
      *
@@ -1413,7 +1413,7 @@ class e_admin_model extends e_model
         $postedData = $this->getPostedData($field);
         return ($strict ? $newData !== $postedData : $newData != $postedData);
     }
-    
+
     /**
      * @return boolean
      */
@@ -1421,16 +1421,16 @@ class e_admin_model extends e_model
     {
         return $this->data_has_changed;
     }
-	
+
     /**
      * Merge posted data with the object data
      * Should be used on edit/update/create record (back-end)
      * Retrieved for copy Posted data will be removed (no matter if copy is successfull or not)
-     * 
+     *
      * If $strict is true, only existing object data will be copied (update)
      * If $validate is true, data will be copied only after successful validation
      *
-     * @param boolean $strict 
+     * @param boolean $strict
      * @param boolean $sanitize sanitize posted data before move it to the object data
      * @param boolean $validate perform validation check
      * @return e_admin_model
@@ -1439,12 +1439,12 @@ class e_admin_model extends e_model
     {
     	if(!$this->hasPostedData() || ($validate && !$this->validate()))
     	{
-    		return $this; 
+    		return $this;
     	}
-    	
+
 		/* XXX - Wrong? Should validator keep track on validated data at all?
 		// retrieve only valid data
-		if($validate) 
+		if($validate)
 		{
 			$data = $this->getValidator()->getValidData();
 		}
@@ -1452,7 +1452,7 @@ class e_admin_model extends e_model
 		{
 			$data = $this->getPostedData();
 		}*/
-		
+
 		$data = $this->getPostedData();
 		if($sanitize)
 		{
@@ -1467,19 +1467,19 @@ class e_admin_model extends e_model
 				$data = $tp->toDB($data);
 			}
 		}
-		
-    	foreach ($data as $field => $dt) 
+
+    	foreach ($data as $field => $dt)
     	{
     		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
     	}
     	return $this;
     }
-    
+
     /**
      * Merge passed data array with the object data
      * Should be used on edit/update/create record (back-end)
-     * 
+     *
      * If $strict is true, only existing object data will be copied (update)
      * If $validate is true, data will be copied only after successful validation
      *
@@ -1495,14 +1495,14 @@ class e_admin_model extends e_model
     	{
     		return $this;
     	}
-		
+
 		/* Wrong?
 		// retrieve only valid data
-		if($validate) 
+		if($validate)
 		{
 			$src_data = $this->getValidator()->getValidData();
 		}*/
-    	
+
 		if($sanitize)
 		{
 			// search for db_field types
@@ -1515,15 +1515,15 @@ class e_admin_model extends e_model
 				$src_data = $tp->toDB($src_data);
 			}
 		}
-   		
+
 		foreach ($src_data as $key => $value)
 		{
 			$this->setData($key, $value, $strict);
 		}
-   		
+
     	return $this;
     }
-    
+
     /**
      * Validate posted data:
      * 1. validate posted data against object validation rules
@@ -1539,13 +1539,13 @@ class e_admin_model extends e_model
     	{
     		return true;
     	}
-		if(null === $data) 
+		if(null === $data)
 		{
 			$data = $this->getPostedData();
 		}
 		return $this->getValidator()->validate($data);
     }
-	
+
     /**
      * User defined model validation
      * Awaiting for child class implementation
@@ -1554,7 +1554,7 @@ class e_admin_model extends e_model
     public function verify()
     {
     }
-    
+
 	/**
 	 * @return e_validator
 	 */
@@ -1573,12 +1573,12 @@ class e_admin_model extends e_model
 	 * Add custom validation message.
 	 * $field_type and $error_code will be inserted via sprintf()
 	 * in the $message string
-	 * Example: 
+	 * Example:
 	 * <code>
-	 * $model->addValidationError('Custom error message [#%d] for %s', 'My Field', 1000); 
+	 * $model->addValidationError('Custom error message [#%d] for %s', 'My Field', 1000);
 	 * //produces 'Custom error message [#1000] for My Field'
 	 * </code>
-	 * 
+	 *
 	 * @param string $message
 	 * @param string $field_title [optional]
 	 * @param integer $error_code [optional]
@@ -1589,10 +1589,10 @@ class e_admin_model extends e_model
 		$this->getValidator()->addValidateMessage($field_title, $error_code, $message);
 		return $this;
 	}
-    
+
     /**
      * Render validation errors (if any)
-     * 
+     *
      * @param boolean $session store messages to session
      * @param boolean $reset reset errors
      * @return string
@@ -1601,10 +1601,10 @@ class e_admin_model extends e_model
     {
 		return $this->getValidator()->renderValidateMessages($session, $reset);
     }
-	
+
     /**
      * Render System messages (if any)
-     * 
+     *
      * @param boolean $validation render validation messages as well
      * @param boolean $session store messages to session
      * @param boolean $reset reset errors
@@ -1618,10 +1618,10 @@ class e_admin_model extends e_model
 		}
 		return parent::renderMessages($session, $reset);
     }
-	
+
     /**
      * Move model System messages (if any) to the default eMessage stack
-     * 
+     *
      * @param boolean $session store messages to session
      * @param boolean $validation move validation messages as well
      * @return e_admin_model
@@ -1643,7 +1643,7 @@ class e_admin_model extends e_model
     {
     	return $this->getValidator()->isValid();
     }
-	
+
     /**
      * @return boolean
      */
@@ -1651,7 +1651,7 @@ class e_admin_model extends e_model
     {
     	return !empty($this->_db_errno);
     }
-	
+
     /**
      * @return integer last mysql error number
      */
@@ -1659,7 +1659,7 @@ class e_admin_model extends e_model
     {
     	return $this->_db_errno;
     }
-	
+
     /**
      * @return string last mysql error message
      */
@@ -1667,7 +1667,7 @@ class e_admin_model extends e_model
     {
     	return e107::getDb()->getLastErrorText();
     }
-	
+
     /**
      * @return boolean
      */
@@ -1675,7 +1675,7 @@ class e_admin_model extends e_model
     {
     	return ($this->hasValidationError() || $this->hasSqlError());
     }
-	
+
     /**
      * Generic load data from DB
      * @param boolean $force
@@ -1684,7 +1684,7 @@ class e_admin_model extends e_model
 	public function load($id, $force = false)
 	{
 		parent::load($id, $force);
-		
+
 		$this->_db_errno = e107::getDb()->getLastErrorNumber();
 		if($this->_db_errno)
 		{
@@ -1693,10 +1693,10 @@ class e_admin_model extends e_model
 		}
 		return $this;
 	}
-	
+
     /**
      * Save data to DB
-     * 
+     *
      * @param boolen $from_post
      */
     public function save($from_post = true, $force = false, $session_messages = false)
@@ -1705,21 +1705,21 @@ class e_admin_model extends e_model
 		{
 			return false;
 		}
-		
+
 		if($from_post)
 		{
-			//no strict copy, validate & sanitize 
+			//no strict copy, validate & sanitize
 			$this->mergePostedData(false, true, true);
 		}
-		
+
 		if($this->getId())
 		{
 			return $this->dbUpdate($force, $session_messages);
 		}
-		
+
 		return $this->dbInsert($force, $session_messages);
     }
-	
+
 	public function delete($destroy = true, $session_messages = false)
 	{
 		$ret = $this->dbDelete();
@@ -1732,10 +1732,10 @@ class e_admin_model extends e_model
 		}
 		return $ret;
 	}
-    
+
     /**
      * Insert data to DB
-     * 
+     *
      * @param boolean $force force query even if $data_has_changed is false
      * @param boolean $session_messages to use or not session to store system messages
      */
@@ -1755,17 +1755,17 @@ class e_admin_model extends e_model
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 			return false;
 		}
-		
+
 		// Set the reutrned ID
 		$this->setId($res);
 		$this->addMessageSuccess(LAN_CREATED);
-		
+
 		return $res;
     }
-	
+
     /**
      * Replace data in DB
-     * 
+     *
      * @param boolean $force force query even if $data_has_changed is false
      * @param boolean $session_messages to use or not session to store system messages
      */
@@ -1776,7 +1776,7 @@ class e_admin_model extends e_model
 		{
 			return 0;
 		}
-		
+
 		$res = e107::getDb()->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
 		if(!$res)
 		{
@@ -1787,13 +1787,13 @@ class e_admin_model extends e_model
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 			}
 		}
-		
+
 		return $res;
     }
-    
+
     /**
      * Update DB data
-     * 
+     *
      * @param boolean $force force query even if $data_has_changed is false
      * @param boolean $session_messages to use or not session to store system messages
      */
@@ -1815,17 +1815,17 @@ class e_admin_model extends e_model
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 				return false;
 			}
-			
+
 			$this->addMessageInfo(LAN_NO_CHANGE);
 			return 0;
 		}
 		$this->addMessageSuccess(LAN_UPDATED);
 		return $res;
     }
-	
+
     /**
      * Delete DB data
-     * 
+     *
      * @param boolean $force force query even if $data_has_changed is false
      * @param boolean $session_messages to use or not session to store system messages
      */
@@ -1836,7 +1836,7 @@ class e_admin_model extends e_model
 		{
 			return 0;
 		}
-		
+
 		if(!$this->getId())
 		{
 			$this->addMessageError('Record not found', $session_messages); //TODO - Lan
@@ -1852,20 +1852,20 @@ class e_admin_model extends e_model
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.e107::getDb()->getLastErrorText());
 			}
 		}
-		
+
 		return $res;
     }
-	
+
 	/**
 	 * Build query array to be used with db methods (db_Update, db_Insert, db_Replace)
-	 * 
+	 *
 	 * @param string $force [optional] force action - possible values are create|update|replace
 	 * @return array db query
 	 */
 	public function toSqlQuery($force = '')
 	{
 		$qry = array();
-		
+
 		if($force)
 		{
 			$action = $force;
@@ -1874,11 +1874,11 @@ class e_admin_model extends e_model
 		{
 			$action = $this->getId() ? 'update' : 'create';
 		}
-		
+
 		$qry['_FIELD_TYPES'] = $this->_FIELD_TYPES; //DB field types are optional
 		$qry['data'][$this->getFieldIdName()] = $this->getId();
 		$qry['_FIELD_TYPES'][$this->getFieldIdName()] = 'int';
-		
+
 		foreach ($this->_data_fields as $key => $type)
 		{
 			if($key == $this->getFieldIdName())
@@ -1891,7 +1891,7 @@ class e_admin_model extends e_model
 			}
 			$qry['data'][$key] = $this->getData($key);
 		}
-		
+
 		switch($action)
 		{
 			case 'create':
@@ -1900,26 +1900,26 @@ class e_admin_model extends e_model
 			case 'replace':
 				$qry['_REPLACE'] = true;
 			break;
-		
+
 			case 'update':
 				unset($qry['data'][$this->getFieldIdName()]);
 				$qry['WHERE'] = $this->getFieldIdName().'='.intval($this->getId()); //intval just in case...
 			break;
 		}
-		
+
 		return $qry;
 	}
-	
+
 	/**
 	 * Sanitize value based on its db field type ($_data_fields),
 	 * method will return null only if db field rule is not found.
 	 * If $value is null, it'll be retrieved from object posted data
 	 * If $key is an array, $value is omitted.
-	 * 
+	 *
 	 * NOTE: If $key is not found in object's _data_fields array, null is returned
-	 * 
+	 *
 	 * @param mixed $key string key name or array data to be sanitized
-	 * @param mixed $value 
+	 * @param mixed $value
 	 * @return mixed sanitized $value or null on failure
 	 */
 	public function sanitize($key, $value = null)
@@ -1927,7 +1927,7 @@ class e_admin_model extends e_model
 		$tp = e107::getParser();
 		if(is_array($key))
 		{
-			$ret = array(); 
+			$ret = array();
 			foreach ($key as $k=>$v)
 			{
 	            if(isset($this->_data_fields[$k]))
@@ -1937,7 +1937,7 @@ class e_admin_model extends e_model
 			}
 			return $ret;
 		}
-		
+
 		if(!isset($this->_data_fields[$key]))
 		{
 			return null;
@@ -1947,7 +1947,7 @@ class e_admin_model extends e_model
 		{
 			$value = $this->getPostedData($key);
 		}
-		
+
 		switch ($type)
 		{
 			case 'int':
@@ -1960,7 +1960,7 @@ class e_admin_model extends e_model
 				return $tp->toDB($value);
 			break;
 
-			case 'float': 
+			case 'float':
 				return $this->toNumber($value);
 			break;
 
@@ -1972,12 +1972,12 @@ class e_admin_model extends e_model
 			case 'model':
 				return $value->mergePostedData(false, true, true);
 			break;
-			
+
 			case 'null':
 				return ($value ? $tp->toDB($value) : null);
 			break;
 	  	}
-		
+
 		return null;
 	}
 
@@ -1989,30 +1989,30 @@ class e_admin_model extends e_model
 		$this->_db_errno = null;
 		$this->_posted_data = array();
 		$this->data_has_changed = array();
-		$this->_FIELD_TYPES = array();		
+		$this->_FIELD_TYPES = array();
 	}
 }
 
 /**
  * Model collection handler
  */
-class e_tree_model extends e_model 
+class e_tree_model extends e_model
 {
 	/**
 	 * Current model DB table, used in all db calls
 	 * This can/should be overwritten by extending the class
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_db_table;
-	
+
 	/**
 	 * All records (no limit) cache
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_total = false;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -2024,18 +2024,18 @@ class e_tree_model extends e_model
 			$this->setTree($tree_data);
 		}
 	}
-	
+
 	public function getTotal()
 	{
-		return $this->_total; 
+		return $this->_total;
 	}
-	
+
 	public function setTotal($num)
 	{
 		$this->_total = $num;
 		return $this;
 	}
-	
+
 	/**
 	 * Set table name
 	 * @param object $table
@@ -2046,7 +2046,7 @@ class e_tree_model extends e_model
 		$this->_db_table = $table;
 		return $this;
 	}
-	
+
 	/**
 	 * Get table name
 	 * @return string
@@ -2055,16 +2055,16 @@ class e_tree_model extends e_model
 	{
 		return $this->_db_table;
 	}
-	
+
 	/**
-	 * Set array of models
+	 * Get array of models
 	 * @return array
 	 */
-	function getTree($force = false)
+	function getTree()
 	{
 		return $this->get('__tree', array());
 	}
-	
+
 	/**
 	 * Set array of models
 	 * @return e_tree_model
@@ -2078,26 +2078,26 @@ class e_tree_model extends e_model
 
 		return $this;
 	}
-	
+
 	/**
 	 * Default load method
-	 * 
+	 *
 	 * @return e_tree_model
 	 */
 	public function load($force = false)
 	{
-		
+
 		if(!$force && !$this->isEmpty())
 		{
 			return $this;
 		}
-		
+
 		if ($force)
 		{
 			$this->setTree(array(), true);
 			$this->_total = false;
 		}
-		
+
 		if($this->getParam('db_query') && $this->getParam('model_class') && class_exists($this->getParam('model_class')))
 		{
 			$sql = e107::getDb();
@@ -2116,13 +2116,13 @@ class e_tree_model extends e_model
 					}
 					$this->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
-				
+
 				if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
 				{
 					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
 					$this->_total = e107::getDb()->db_Count($this->getModelTable());
 				}
-				
+
 				unset($tmp);
 			}
 		}
@@ -2138,10 +2138,10 @@ class e_tree_model extends e_model
 	{
 		return $this->getData('__tree/'.$node_id);
 	}
-	
+
 	/**
 	 * Add or remove (when $node is null) model to the collection
-	 * 
+	 *
 	 * @param integer $node_id
 	 * @param e_model $node
 	 * @return e_tree_model
@@ -2153,14 +2153,14 @@ class e_tree_model extends e_model
 			$this->removeData('__tree/'.$node_id);
 			return $this;
 		}
-		
+
 		$this->setData('__tree/'.$node_id, $node);
 		return $this;
 	}
-	
+
 	/**
 	 * Check if model with passed id exists in the collection
-	 * 
+	 *
 	 * @param integer $node_id
 	 * @return boolean
 	 */
@@ -2168,10 +2168,10 @@ class e_tree_model extends e_model
 	{
 		return $this->isData('__tree/'.$node_id);
 	}
-	
+
 	/**
 	 * Check if model with passed id exists in the collection and is not empty
-	 * 
+	 *
 	 * @param integer $node_id
 	 * @return boolean
 	 */
@@ -2179,7 +2179,7 @@ class e_tree_model extends e_model
 	{
 		return $this->hasData('__tree/'.$node_id);
 	}
-	
+
 	/**
 	 * Check if collection is empty
 	 *
@@ -2207,16 +2207,16 @@ class e_admin_tree_model extends e_tree_model
 		if(!is_array($ids))
 		{
 			$ids = explode(',', $ids);
-			
+
 		}
-		
+
 		$ids = array_map('intval', $ids);
 		$idstr = implode(', ', $ids);
-		
+
 		$sql = e107::getDb();
 		$res = $sql->db_Delete($this->getModelTable(), $this->getFieldIdName().' IN ('.$idstr.')');
 		if(!$res)
-		{	
+		{
 			if($sql->getLastErrorNumber())
 			{
 				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
@@ -2235,10 +2235,10 @@ class e_admin_tree_model extends e_tree_model
 				}
 			}
 		}
-		
+
 		return $res;
 	}
-	
+
 	/**
 	 * Batch update tree records/nodes
 	 * @param string $field field name
@@ -2252,7 +2252,7 @@ class e_admin_tree_model extends e_tree_model
 	public function update($field, $value, $ids, $syncvalue = null, $sanitize = true, $session_messages = false)
 	{
 		$tp = e107::getParser();
-		$sql = e107::getDb(); 
+		$sql = e107::getDb();
 		if(empty($ids))
 		{
 			return 0;
@@ -2261,7 +2261,7 @@ class e_admin_tree_model extends e_tree_model
 		{
 			$ids = explode(',', $ids);
 		}
-		
+
 		if($sanitize)
 		{
 			$ids = array_map('intval', $ids);
@@ -2269,23 +2269,23 @@ class e_admin_tree_model extends e_tree_model
 			$value = "'".$tp->toDb($value)."'";
 		}
 		$idstr = implode(', ', $ids);
-		
+
 		$res = $sql->db_Update($this->getModelTable(), "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')');
 		if(!$res)
-		{	
+		{
 			if($sql->getLastErrorNumber())
 			{
-				$this->addMessageError(LAN_UPDATED_FAILED, $session_messages); 
+				$this->addMessageError(LAN_UPDATED_FAILED, $session_messages);
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 			}
 			else
 			{
-				$this->addMessageInfo(LAN_NO_CHANGE, $session_messages); 
+				$this->addMessageInfo(LAN_NO_CHANGE, $session_messages);
 			}
 		}
-		
+
 		if(null === $syncvalue) return $res;
-		
+
 		foreach ($ids as $id)
 		{
 			if($this->hasNode($id))
