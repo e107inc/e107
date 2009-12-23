@@ -170,6 +170,7 @@ City, State, Country
 		<core name='sitedisclaimer'><![CDATA[This site is powered by [link=http://e107.org/]e107[link], which is released under the terms of the [link=http://www.gnu.org/]GNU[/link] GPL License.]]></core>
 		<core name='sitelang_init'>English</core>
 		<core name='sitelanguage'>English</core>
+		<core name='sitelogo'></core>
 		<core name='sitename'>e107 Website System</core>
 		<core name='sitetag'>e107 Website System</core>
 		<core name='sitetheme'>jayya</core>

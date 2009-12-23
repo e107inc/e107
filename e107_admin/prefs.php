@@ -9,9 +9,9 @@
  * Administration - Site Preferences
  *
  * $Source: /cvs_backup/e107_0.8/e107_admin/prefs.php,v $
- * $Revision: 1.39 $
- * $Date: 2009-12-19 17:54:00 $
- * $Author: e107steved $
+ * $Revision: 1.40 $
+ * $Date: 2009-12-23 10:04:38 $
+ * $Author: e107coders $
  *
 */
 require_once ("../class2.php");
@@ -234,11 +234,19 @@ $parms .= "&label=-- No Image --";
 $parms .= "&subdirs=1";
 $parms .= "&tabindex=".$frm->getNext();
 
+
 $text .= "<div class='field-section'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=select}")."</div>";
+// $text .= "<div class='field-section'>".$frm->imagepicker('sitebutton',$pref['sitebutton'],'-- No Image --')."</div>";
+
+//TODO make the preview update when image-picker is used. 
 $text .= "<div class='field-spacer'>".$tp->parseTemplate("{IMAGESELECTOR={$parms}&scaction=preview}")."</div>";
 
 $text .= "
 						</td>
+						
+	<tr>
+						<td class='label'>".PRFLAN_214."</td>
+						<td class='control'>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'-- No Image --')."</td>
 					</tr>
 					<tr>
 						<td class='label'>".PRFLAN_5."</td>

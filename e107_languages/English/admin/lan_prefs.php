@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2009-11-18 01:05:12 $
+|     $Revision: 1.25 $
+|     $Date: 2009-12-23 10:04:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -228,6 +228,6 @@ define('PRFLAN_210', 'Comments/Posting');
 define('PRFLAN_211', 'Cannot make email address optional if required for validation or login');
 define('PRFLAN_212', 'Value for --FIELD-- too high - changed to --VALUE--');
 define('PRFLAN_213', 'Value for --FIELD-- too low - changed to --VALUE--');
-
+define('PRFLAN_214', "Site Logo");
 
 ?>

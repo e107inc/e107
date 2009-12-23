@@ -9,8 +9,8 @@
  * Form Handler
  *
  * $Source: /cvs_backup/e107_0.8/e107_handlers/form_handler.php,v $
- * $Revision: 1.101 $
- * $Date: 2009-12-20 23:46:51 $
+ * $Revision: 1.102 $
+ * $Date: 2009-12-23 10:04:38 $
  * $Author: e107coders $
  *
 */
@@ -179,6 +179,7 @@ class e_form
 		$cal_options['weekNumbers'] = varset($options['weeks'], false);
 		$cal_options['ifFormat'] = e107::getPref('inputdate', '%d/%m/%Y %H:%M:%S');
 		$cal_options['timeFormat'] = "24";
+
 		$cal_attrib['class'] = "tbox date";
 		$cal_attrib['size'] = varset($options['size'], 25);
 		$cal_attrib['name'] = $name;
@@ -1353,6 +1354,16 @@ class e_form
 			break;
 			
 			case 'datestamp':
+				if(vartrue($parms['auto']))
+				{
+					$value = time();
+				}
+					
+				if(vartrue($parms['hidden']))
+				{
+					return $this->hidden($key, $value);
+				}
+					
 				return $this->datepicker($key, $value, $parms);
 			break;
 			
