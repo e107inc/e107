@@ -10,8 +10,8 @@
  |     GNU General Public License (http://gnu.org).
  |
  |     $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs_shortcodes.php,v $
- |     $Revision: 1.2 $
- |     $Date: 2009-11-20 05:01:51 $
+ |     $Revision: 1.3 $
+ |     $Date: 2009-12-23 11:32:09 $
  |     $Author: e107coders $
  +----------------------------------------------------------------------------+
  */
@@ -30,7 +30,7 @@ class faqs_shortcodes
 				
 		if($parm == 'expand')
 		{
-			$text = "<a class='e-expandit faq-question' href='faq.php'>".$tp->toHtml($this->row['faq_question'])."</a>
+			$text = "<a class='e-expandit faq-question' href='faqs.php'>".$tp->toHtml($this->row['faq_question'])."</a>
 			<div class='e-hideme faq-answer faq_answer'>".$tp->toHTML($this->row['faq_answer'],TRUE)."</div>";		
 		}
 		else
@@ -43,7 +43,7 @@ class faqs_shortcodes
 	function sc_faq_question_link($parm='')
 	{
 		$tp = e107::getParser();
-		return "<a class='faq-question' href='faq.php?cat.".$this->row['faq_info_id'].".".$this->row['faq_id']."' >".$tp -> toHtml($this->row['faq_question'])."</a>";	
+		return "<a class='faq-question' href='faqs.php?cat.".$this->row['faq_info_id'].".".$this->row['faq_id']."' >".$tp -> toHtml($this->row['faq_question'])."</a>";	
 	}
 	
 	function sc_faq_answer()
@@ -58,7 +58,7 @@ class faqs_shortcodes
 		$faqpref = e107::getPlugConfig('faqs')->getPref();
 		if(($faqpref['add_faq'] && $this->row['faq_author'] == USERID) || ADMIN )
 		{
-		 	return "[ <a href='faq.php?edit.".$this->row['faq_parent'].".".$this->row['faq_id']."'>Edit</a> ]";
+		 	return "[ <a href='faqs.php?edit.".$this->row['faq_parent'].".".$this->row['faq_id']."'>Edit</a> ]";
 		}	
 	}
 	
@@ -98,7 +98,7 @@ class faqs_shortcodes
 		
 		if (check_class($faqpref['add_faq']))
 		{
-			$text = "<div class='faq-submit-question-container'><a class='e-expandit faq-submit-question' href='faq.php'>Submit a Question</a>
+			$text = "<div class='faq-submit-question-container'><a class='e-expandit faq-submit-question' href='faqs.php'>Submit a Question</a>
 			<div class='e-hideme faq-submit-question-form'>
 			<form method=\"post\" action=\"".e_SELF."?cat.$id.$idx\" id=\"dataform\">
 			<div>".$frm->textarea('ask_a_question','').'<br />'.$frm->submit('submit_a_question','Go')."</div>
@@ -113,7 +113,7 @@ class faqs_shortcodes
 	function sc_faq_search()
 	{
 		$tp = e107::getParser();
-		return "<div style='text-align:center'><br />".$tp->parseTemplate("{SEARCH=faq}")."</div>";
+		return "<div style='text-align:center'><br />".$tp->parseTemplate("{SEARCH=faqs}")."</div>";
 	}
 
 }
